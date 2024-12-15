@@ -13,14 +13,14 @@ import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { CreatureFormationsComponent } from './creature-formations.component';
 import Spy = jasmine.Spy;
 
-class CreatureSpawnPage extends MultiRowEditorPageObject<CreatureFormationsComponent> {}
+class CreatureFormationPage extends MultiRowEditorPageObject<CreatureFormationsComponent> {}
 
-describe('CreatureSpawn integration tests', () => {
+describe('CreatureFormations integration tests', () => {
   let fixture: ComponentFixture<CreatureFormationsComponent>;
   let queryService: MysqlQueryService;
   let querySpy: Spy;
   let handlerService: CreatureHandlerService;
-  let page: CreatureSpawnPage;
+  let page: CreatureFormationPage;
 
   const id1 = 1234;
 
@@ -57,7 +57,7 @@ describe('CreatureSpawn integration tests', () => {
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
     fixture = TestBed.createComponent(CreatureFormationsComponent);
-    page = new CreatureSpawnPage(fixture);
+    page = new CreatureFormationPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
   }
@@ -71,48 +71,31 @@ describe('CreatureSpawn integration tests', () => {
       expect(page.formError.hidden).toBe(true);
       expect(page.addNewRowBtn.disabled).toBe(false);
       expect(page.deleteSelectedRowBtn.disabled).toBe(true);
-      expect(page.getInputById('guid').disabled).toBe(true);
-      expect(page.getInputById('map').disabled).toBe(true);
-      expect(page.getInputById('zoneId').disabled).toBe(true);
-      expect(page.getInputById('areaId').disabled).toBe(true);
-      expect(page.getInputById('spawnMask').disabled).toBe(true);
-      expect(page.getInputById('phaseMask').disabled).toBe(true);
-      expect(page.getInputById('equipment_id').disabled).toBe(true);
-      expect(page.getInputById('position_x').disabled).toBe(true);
-      expect(page.getInputById('position_y').disabled).toBe(true);
-      expect(page.getInputById('position_z').disabled).toBe(true);
-      expect(page.getInputById('orientation').disabled).toBe(true);
-      expect(page.getInputById('spawntimesecs').disabled).toBe(true);
-      expect(page.getInputById('wander_distance').disabled).toBe(true);
-      expect(page.getInputById('currentwaypoint').disabled).toBe(true);
-      expect(page.getInputById('curhealth').disabled).toBe(true);
-      expect(page.getInputById('curmana').disabled).toBe(true);
-      expect(page.getDebugElementByCss('#MovementType select').nativeElement.disabled).toBe(true);
-      expect(page.getInputById('npcflag').disabled).toBe(true);
-      expect(page.getInputById('unit_flags').disabled).toBe(true);
-      expect(page.getInputById('dynamicflags').disabled).toBe(true);
-      expect(page.getInputById('ScriptName').disabled).toBe(true);
+      expect(page.getInputById('leaderGUID').disabled).toBe(true);
+      expect(page.getInputById('memberGUID').disabled).toBe(true);
+      expect(page.getInputById('dist').disabled).toBe(true);
+      expect(page.getInputById('angle').disabled).toBe(true);
+      expect(page.getInputById('groupAI').disabled).toBe(true);
+      expect(page.getInputById('point_1').disabled).toBe(true);
+      expect(page.getInputById('point_2').disabled).toBe(true);
       expect(page.getEditorTableRowsCount()).toBe(0);
     });
 
     it('should correctly update the unsaved status', () => {
-      expect(handlerService.isCreatureSpawnUnsaved).toBe(false);
+      expect(handlerService.isCreatureFormationUnsaved).toBe(false);
       page.addNewRow();
-      expect(handlerService.isCreatureSpawnUnsaved).toBe(true);
+      expect(handlerService.isCreatureFormationUnsaved).toBe(true);
       page.deleteRow();
-      expect(handlerService.isCreatureSpawnUnsaved).toBe(false);
+      expect(handlerService.isCreatureFormationUnsaved).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {
       const expectedQuery =
-        'DELETE FROM `creature` WHERE (`id1` = 1234) AND (`guid` IN (0, 1, 2));\n' +
-        'INSERT INTO `creature` (`guid`, `id1`, `id2`, `id3`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
-        '`equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, ' +
-        '`wander_distance`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, ' +
-        '`dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-        "(0, 1234, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, '', 0),\n" +
-        "(1, 1234, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, '', 0),\n" +
-        "(2, 1234, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, '', 0);";
+        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 99999) AND (`memberGUID` IN (99997, 99998, 99999));\n' +
+        'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
+        '(99999, 99997, 0, 0, 0, 0, 0),\n' +
+        '(99999, 99998, 0, 0, 0, 0, 0),\n' +
+        '(99999, 99999, 0, 0, 0, 0, 0);';
       querySpy.calls.reset();
 
       page.addNewRow();
@@ -129,103 +112,166 @@ describe('CreatureSpawn integration tests', () => {
     });
 
     it('adding a row and changing its values should correctly update the queries', () => {
+      // Add a new row
       page.addNewRow();
+
+      // Initial DELETE and INSERT queries after adding a new row
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature` WHERE (`id1` = 1234) AND (`guid` IN (0));\n' +
-          'INSERT INTO `creature` (`guid`, `id1`, `id2`, `id3`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
-          '`equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, ' +
-          '`wander_distance`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, ' +
-          '`dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-          "(0, 1234, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, '', 0);",
+        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 99999) AND (`memberGUID` IN (0));\n' +
+          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
+          `(99999, 0, 0, 0, 0, 0, 0);`,
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `creature` WHERE (`id1` = 1234);\n' +
-          'INSERT INTO `creature` (`guid`, `id1`, `id2`, `id3`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
-          '`equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, ' +
-          '`wander_distance`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, ' +
-          '`dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-          "(0, 1234, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, '', 0);",
+        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 99999) AND (`memberGUID` IN (0));\n' +
+          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
+          `(99999, 0, 0, 0, 0, 0, 0);`,
       );
 
-      page.setInputValueById('map', '1');
+      // Reset the spy before making further changes
+      querySpy.calls.reset();
+
+      // Modify the memberGUID to 99997
+      page.setInputValueById('memberGUID', '99997');
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature` WHERE (`id1` = 1234) AND (`guid` IN (0));\n' +
-          'INSERT INTO `creature` (`guid`, `id1`, `id2`, `id3`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
-          '`equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, ' +
-          '`wander_distance`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, ' +
-          '`dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-          "(0, 1234, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, '', 0);",
+        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 99999) AND (`memberGUID` IN (0));\n' +
+          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
+          `(99999, 99997, 0, 0, 0, 0, 0);`,
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `creature` WHERE (`id1` = 1234);\n' +
-          'INSERT INTO `creature` (`guid`, `id1`, `id2`, `id3`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
-          '`equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, ' +
-          '`wander_distance`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, ' +
-          '`dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-          "(0, 1234, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, '', 0);",
+        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 99999) AND (`memberGUID` IN (99997));\n' +
+          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
+          `(99999, 99997, 0, 0, 0, 0, 0);`,
       );
 
-      page.setInputValueById('zoneId', '2');
+      // Modify the memberGUID to 99998
+      page.setInputValueById('memberGUID', '99998');
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature` WHERE (`id1` = 1234) AND (`guid` IN (0));\n' +
-          'INSERT INTO `creature` (`guid`, `id1`, `id2`, `id3`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
-          '`equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, ' +
-          '`wander_distance`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, ' +
-          '`dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-          "(0, 1234, 0, 0, 1, 2, 0, 1, 1, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, '', 0);",
+        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 99999) AND (`memberGUID` IN (99997));\n' +
+          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
+          `(99999, 99998, 0, 0, 0, 0, 0);`,
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `creature` WHERE (`id1` = 1234);\n' +
-          'INSERT INTO `creature` (`guid`, `id1`, `id2`, `id3`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
-          '`equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, ' +
-          '`wander_distance`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, ' +
-          '`dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-          "(0, 1234, 0, 0, 1, 2, 0, 1, 1, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, '', 0);",
+        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 99999) AND (`memberGUID` IN (99998));\n' +
+          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
+          `(99999, 99998, 0, 0, 0, 0, 0);`,
       );
 
-      page.setInputValueById('guid', '123');
+      // Modify the memberGUID to 99999
+      page.setInputValueById('memberGUID', '99999');
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature` WHERE (`id1` = 1234) AND (`guid` IN (123));\n' +
-          'INSERT INTO `creature` (`guid`, `id1`, `id2`, `id3`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
-          '`equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, ' +
-          '`wander_distance`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, ' +
-          '`dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-          "(123, 1234, 0, 0, 1, 2, 0, 1, 1, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, '', 0);",
+        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 99999) AND (`memberGUID` IN (99998));\n' +
+          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
+          `(99999, 99999, 0, 0, 0, 0, 0);`,
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `creature` WHERE (`id1` = 1234);\n' +
-          'INSERT INTO `creature` (`guid`, `id1`, `id2`, `id3`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
-          '`equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, ' +
-          '`wander_distance`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, ' +
-          '`dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-          "(123, 1234, 0, 0, 1, 2, 0, 1, 1, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, '', 0);",
+        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 99999) AND (`memberGUID` IN (99999));\n' +
+          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
+          `(99999, 99999, 0, 0, 0, 0, 0);`,
       );
+
+      // Modify the distance (dist) to 10
+      page.setInputValueById('dist', '10');
+      page.expectDiffQueryToContain(
+        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 99999) AND (`memberGUID` IN (99999));\n' +
+          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
+          `(99999, 99999, 10, 0, 0, 0, 0);`,
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 99999) AND (`memberGUID` IN (99999));\n' +
+          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
+          `(99999, 99999, 10, 0, 0, 0, 0);`,
+      );
+
+      // Modify the angle to 45
+      page.setInputValueById('angle', '45');
+      page.expectDiffQueryToContain(
+        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 99999) AND (`memberGUID` IN (99999));\n' +
+          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
+          `(99999, 99999, 10, 45, 0, 0, 0);`,
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 99999) AND (`memberGUID` IN (99999));\n' +
+          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
+          `(99999, 99999, 10, 45, 0, 0, 0);`,
+      );
+
+      // Modify the groupAI to 1
+      page.setInputValueById('groupAI', '1');
+      page.expectDiffQueryToContain(
+        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 99999) AND (`memberGUID` IN (99999));\n' +
+          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
+          `(99999, 99999, 10, 45, 1, 0, 0);`,
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 99999) AND (`memberGUID` IN (99999));\n' +
+          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
+          `(99999, 99999, 10, 45, 1, 0, 0);`,
+      );
+
+      // Modify point_1 to 100
+      page.setInputValueById('point_1', '100');
+      page.expectDiffQueryToContain(
+        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 99999) AND (`memberGUID` IN (99999));\n' +
+          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
+          `(99999, 99999, 10, 45, 1, 100, 0);`,
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 99999) AND (`memberGUID` IN (99999));\n' +
+          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
+          `(99999, 99999, 10, 45, 1, 100, 0);`,
+      );
+
+      // Modify point_2 to 200
+      page.setInputValueById('point_2', '200');
+      page.expectDiffQueryToContain(
+        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 99999) AND (`memberGUID` IN (99999));\n' +
+          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
+          `(99999, 99999, 10, 45, 1, 100, 200);`,
+      );
+      page.expectFullQueryToContain(
+        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 99999) AND (`memberGUID` IN (99999));\n' +
+          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
+          `(99999, 99999, 10, 45, 1, 100, 200);`,
+      );
+
+      // Define the final expected query after all modifications
+      const finalExpectedQuery =
+        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 99999) AND (`memberGUID` IN (99999));\n' +
+        'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
+        `(99999, 99999, 10, 45, 1, 100, 200);`;
+
+      // Reset the spy before executing the final query
+      querySpy.calls.reset();
+
+      // Ensure the final query is as expected
+      page.expectDiffQueryToContain(finalExpectedQuery);
+
+      // Execute the query
+      page.clickExecuteQuery();
+
+      // Verify that the querySpy was called correctly
+      expect(querySpy).toHaveBeenCalledTimes(1);
+      expect(querySpy.calls.mostRecent().args[0]).toContain(finalExpectedQuery);
     });
 
     it('adding a row changing its values and duplicate it should correctly update the queries', () => {
       page.addNewRow();
-      page.setInputValueById('map', '1');
-      page.setInputValueById('zoneId', '2');
-      page.setInputValueById('guid', '123');
+      page.setInputValueById('point_1', '1');
+      page.setInputValueById('point_2', '2');
+      page.setInputValueById('angle', '2.2');
       page.duplicateSelectedRow();
 
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature` WHERE (`id1` = 1234) AND (`guid` IN (123, 0));\n' +
-          'INSERT INTO `creature` (`guid`, `id1`, `id2`, `id3`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
-          '`equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, ' +
-          '`wander_distance`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, ' +
-          '`dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-          "(123, 1234, 0, 0, 1, 2, 0, 1, 1, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, '', 0),\n" +
-          "(0, 1234, 0, 0, 1, 2, 0, 1, 1, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, '', 0);",
+        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 99999) AND (`memberGUID` IN (99997, 99998, 99999));\n' +
+          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
+          '(123, 1234, 0, 0, 1, 2, 0),\n' +
+          '(0, 1234, 0, 0, 1, 2, 0);',
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `creature` WHERE (`id1` = 1234);\n' +
-          'INSERT INTO `creature` (`guid`, `id1`, `id2`, `id3`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
-          '`equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, ' +
-          '`wander_distance`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, ' +
-          '`dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-          "(123, 1234, 0, 0, 1, 2, 0, 1, 1, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, '', 0),\n" +
-          "(0, 1234, 0, 0, 1, 2, 0, 1, 1, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, '', 0);",
+        'DELETE FROM `creature_formations` WHERE (`id1` = 1234);\n' +
+          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`)' +
+          '(123, 1234, 0, 0, 1, 2, 0),\n' +
+          '(0, 1234, 0, 0, 1, 2, 0);',
       );
     });
   });
@@ -238,14 +284,11 @@ describe('CreatureSpawn integration tests', () => {
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(
-        'DELETE FROM `creature` WHERE (`id1` = 1234);\n' +
-          'INSERT INTO `creature` (`guid`, `id1`, `id2`, `id3`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
-          '`equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, ' +
-          '`wander_distance`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, ' +
-          '`dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-          "(0, 1234, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, '', 0),\n" +
-          "(1, 1234, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, '', 0),\n" +
-          "(2, 1234, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, '', 0);",
+        'DELETE FROM `creature_formations` WHERE (`id1` = 1234);\n' +
+          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`)' +
+          '(0, 1234, 0, 0, 0, 0, 0),\n' +
+          '(1, 1234, 0, 0, 0, 0, 0),\n' +
+          '(2, 1234, 0, 0, 0, 0, 0);',
       );
       expect(page.getEditorTableRowsCount()).toBe(3);
     });
@@ -253,32 +296,26 @@ describe('CreatureSpawn integration tests', () => {
     it('deleting rows should correctly work', () => {
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
-      page.expectDiffQueryToContain('DELETE FROM `creature` WHERE (`id1` = 1234) AND (`guid` IN (1));');
+      page.expectDiffQueryToContain('DELETE FROM `creature_formations` WHERE (`id1` = 1234) AND (`guid` IN (1));');
       page.expectFullQueryToContain(
-        'DELETE FROM `creature` WHERE (`id1` = 1234);\n' +
-          'INSERT INTO `creature` (`guid`, `id1`, `id2`, `id3`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
-          '`equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, ' +
-          '`wander_distance`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, ' +
-          '`dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-          "(0, 1234, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, '', 0),\n" +
-          "(2, 1234, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, '', 0);\n",
+        'DELETE FROM `creature_formations` WHERE (`id1` = 1234);\n' +
+          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`)' +
+          '(0, 1234, 0, 0, 0, 0, 0),\n' +
+          '(2, 1234, 0, 0, 0, 0, 0);\n',
       );
 
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
-      page.expectDiffQueryToContain('DELETE FROM `creature` WHERE (`id1` = 1234) AND (`guid` IN (1, 2));\n');
+      page.expectDiffQueryToContain('DELETE FROM `creature_formations` WHERE (`id1` = 1234) AND (`guid` IN (1, 2));\n');
       page.expectFullQueryToContain(
-        'DELETE FROM `creature` WHERE (`id1` = 1234);\n' +
-          'INSERT INTO `creature` (`guid`, `id1`, `id2`, `id3`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
-          '`equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, ' +
-          '`wander_distance`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, ' +
-          '`dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-          "(0, 1234, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, '', 0);",
+        'DELETE FROM `creature_formations` WHERE (`id1` = 1234);\n' +
+          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`)' +
+          '(0, 1234, 0, 0, 0, 0, 0);',
       );
 
       page.deleteRow(0);
       expect(page.getEditorTableRowsCount()).toBe(0);
-      page.expectDiffQueryToContain('DELETE FROM `creature` WHERE `id1` = 1234;');
+      page.expectDiffQueryToContain('DELETE FROM `creature_formations` WHERE `id1` = 1234;');
       page.expectFullQueryToBeEmpty();
     });
 
@@ -290,23 +327,17 @@ describe('CreatureSpawn integration tests', () => {
       page.setInputValueById('zoneId', 2);
 
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature` WHERE (`id1` = 1234) AND (`guid` IN (1, 2));\n' +
-          'INSERT INTO `creature` (`guid`, `id1`, `id2`, `id3`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
-          '`equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, ' +
-          '`wander_distance`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, ' +
-          '`dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-          "(1, 1234, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, '', 0),\n" +
-          "(2, 1234, 0, 0, 0, 2, 0, 1, 1, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, '', 0);",
+        'DELETE FROM `creature_formations` WHERE (`id1` = 1234) AND (`guid` IN (1, 2));\n' +
+          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`)' +
+          '(1, 1234, 0, 0, 1, 0, 0),\n' +
+          '(2, 1234, 0, 0, 0, 2, 0);',
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `creature` WHERE (`id1` = 1234);\n' +
-          'INSERT INTO `creature` (`guid`, `id1`, `id2`, `id3`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
-          '`equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, ' +
-          '`wander_distance`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, ' +
-          '`dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-          "(0, 1234, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, '', 0),\n" +
-          "(1, 1234, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, '', 0),\n" +
-          "(2, 1234, 0, 0, 0, 2, 0, 1, 1, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, '', 0);",
+        'DELETE FROM `creature_formations` WHERE (`id1` = 1234);\n' +
+          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`)' +
+          '(0, 1234, 0, 0, 0, 0, 0),\n' +
+          '(1, 1234, 0, 0, 1, 0, 0),\n' +
+          '(2, 1234, 0, 0, 0, 2, 0);',
       );
     });
 
@@ -322,23 +353,17 @@ describe('CreatureSpawn integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(3);
 
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature` WHERE (`id1` = 1234) AND (`guid` IN (1, 2, 3));\n' +
-          'INSERT INTO `creature` (`guid`, `id1`, `id2`, `id3`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
-          '`equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, ' +
-          '`wander_distance`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, ' +
-          '`dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-          "(1, 1234, 0, 0, 0, 10, 0, 1, 1, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, '', 0),\n" +
-          "(3, 1234, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, '', 0);",
+        'DELETE FROM `creature_formations` WHERE (`id1` = 1234) AND (`guid` IN (1, 2, 3));\n' +
+          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`)' +
+          '(1, 1234, 0, 0, 0, 10, 0),\n' +
+          '(3, 1234, 0, 0, 0, 0, 0);',
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `creature` WHERE (`id1` = 1234);\n' +
-          'INSERT INTO `creature` (`guid`, `id1`, `id2`, `id3`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
-          '`equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, ' +
-          '`wander_distance`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, ' +
-          '`dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-          "(0, 1234, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, '', 0),\n" +
-          "(1, 1234, 0, 0, 0, 10, 0, 1, 1, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, '', 0),\n" +
-          "(3, 1234, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, '', 0);",
+        'DELETE FROM `creature_formations` WHERE (`id1` = 1234);\n' +
+          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`)' +
+          '(0, 1234, 0, 0, 0, 0, 0),\n' +
+          '(1, 1234, 0, 0, 0, 10, 0),\n' +
+          '(3, 1234, 0, 0, 0, 0, 0);',
       );
     });
 
@@ -370,16 +395,16 @@ describe('CreatureSpawn integration tests', () => {
       await page.whenReady();
 
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature` WHERE (`id1` = 1234) AND (`guid` IN (0));\n' +
-          'INSERT INTO `creature` (`guid`, `id1`, `id2`, `id3`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `wander_distance`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-          "(0, 1234, 0, 0, 123, 0, 0, 1, 1, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, '', 0);",
+        'DELETE FROM `creature_formations` WHERE (`id1` = 1234) AND (`guid` IN (0));\n' +
+          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
+          '(0, 1234, 0, 0, 123, 0, 0);',
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `creature` WHERE (`id1` = 1234);\n' +
-          'INSERT INTO `creature` (`guid`, `id1`, `id2`, `id3`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `wander_distance`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-          "(0, 1234, 0, 0, 123, 0, 0, 1, 1, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, '', 0),\n" +
-          "(1, 1234, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, '', 0),\n" +
-          "(2, 1234, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 120, 0, 0, 1, 0, 0, 0, 0, 0, '', 0);\n",
+        'DELETE FROM `creature_formations` WHERE (`id1` = 1234);\n' +
+          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
+          '(0, 1234, 0, 0, 123, 0, 0),\n' +
+          '(1, 1234, 0, 0, 0, 0, 0),\n' +
+          '(2, 1234, 0, 0, 0, 0, 0);\n',
       );
     }));
   });

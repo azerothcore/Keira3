@@ -26,7 +26,7 @@ import { CreatureFormationsService } from './creature-formations.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'keira-creature-spawn',
+  selector: 'keira-creature-formations',
   templateUrl: './creature-formations.component.html',
   styleUrls: ['./creature-formations.component.scss'],
   standalone: true,
