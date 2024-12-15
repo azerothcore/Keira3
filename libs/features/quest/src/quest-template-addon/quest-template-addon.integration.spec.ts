@@ -95,7 +95,7 @@ describe('QuestTemplateAddon integration tests', () => {
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
       page.expectFullQueryToContain(expectedFullCreateQuery);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('should correctly update the unsaved status', () => {
@@ -106,7 +106,7 @@ describe('QuestTemplateAddon integration tests', () => {
       expect(handlerService.isQuestTemplateAddonUnsaved).toBe(true);
       page.setInputValueById(field, 0);
       expect(handlerService.isQuestTemplateAddonUnsaved).toBe(false);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('changing a property and executing the query should correctly work', () => {
@@ -127,7 +127,7 @@ describe('QuestTemplateAddon integration tests', () => {
 
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('changing a property should be reflected in the quest preview', () => {
@@ -137,7 +137,7 @@ describe('QuestTemplateAddon integration tests', () => {
       page.setInputValueById('MaxLevel', value);
 
       expect(page.questPreviewReqLevel.innerText).toContain(`0 - ${value}`);
-      page.removeElement();
+      page.removeNativeElement();
     });
   });
 
@@ -154,7 +154,7 @@ describe('QuestTemplateAddon integration tests', () => {
           ' `SpecialFlags`) VALUES\n' +
           '(1234, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0);',
       );
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('changing all properties and executing the query should correctly work', () => {
@@ -173,7 +173,7 @@ describe('QuestTemplateAddon integration tests', () => {
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(2); // 2 because the preview also calls it
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('changing values should correctly update the queries', () => {
@@ -199,7 +199,7 @@ describe('QuestTemplateAddon integration tests', () => {
           '`RequiredMinRepValue`, `RequiredMaxRepValue`, `ProvidedItemCount`, `SpecialFlags`) VALUES\n' +
           '(1234, 1, 2, 3, 11, 22, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0);',
       );
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     xit('changing a value via FlagsSelector should correctly work', waitForAsync(async () => {
@@ -227,7 +227,7 @@ describe('QuestTemplateAddon integration tests', () => {
           '`RequiredMinRepValue`, `RequiredMaxRepValue`, `ProvidedItemCount`, `SpecialFlags`) VALUES\n' +
           '(1234, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 10)',
       );
-      page.removeElement();
+      page.removeNativeElement();
     }));
 
     xit('changing a value via SpellSelector should correctly work', waitForAsync(async () => {
@@ -257,7 +257,7 @@ describe('QuestTemplateAddon integration tests', () => {
           '`RequiredMaxRepFaction`, `RequiredMinRepValue`, `RequiredMaxRepValue`, `ProvidedItemCount`, `SpecialFlags`) VALUES\n' +
           '(1234, 1, 2, 123, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0);',
       );
-      page.removeElement();
+      page.removeNativeElement();
     }));
 
     xit('changing a value via QuestSelector should correctly work', waitForAsync(async () => {
@@ -286,7 +286,7 @@ describe('QuestTemplateAddon integration tests', () => {
           '`RequiredMaxRepFaction`, `RequiredMinRepValue`, `RequiredMaxRepValue`, `ProvidedItemCount`, `SpecialFlags`) VALUES\n' +
           '(1234, 1, 2, 3, 4, 123, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0);',
       );
-      page.removeElement();
+      page.removeNativeElement();
     }));
   });
 });

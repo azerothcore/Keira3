@@ -75,9 +75,9 @@ describe('CreatureSpawnAddon integration tests', () => {
       expect(page.getInputById('guid').disabled).toBe(true);
       expect(page.getInputById('path_id').disabled).toBe(true);
       expect(page.getInputById('mount').disabled).toBe(true);
-      expect(page.getDebugElementByCss('#bytes1 select').nativeElement.disabled).toBe(true);
-      expect(page.getDebugElementByCss('#bytes2 select').nativeElement.disabled).toBe(true);
-      expect(page.getDebugElementByCss('#emote select').nativeElement.disabled).toBe(true);
+      expect(page.getDebugElementByCss<HTMLSelectElement>('#bytes1 select').nativeElement.disabled).toBe(true);
+      expect(page.getDebugElementByCss<HTMLSelectElement>('#bytes2 select').nativeElement.disabled).toBe(true);
+      expect(page.getDebugElementByCss<HTMLSelectElement>('#emote select').nativeElement.disabled).toBe(true);
       expect(page.getInputById('visibilityDistanceType').disabled).toBe(true);
       expect(page.getInputById('auras').disabled).toBe(true);
       expect(page.getEditorTableRowsCount()).toBe(0);

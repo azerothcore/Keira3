@@ -1,6 +1,6 @@
-import { PageObject } from './page-object';
+import { KeiraPageObject } from './keira-page-object';
 
-export abstract class SelectPageObject<T> extends PageObject<T> {
+export abstract class SelectPageObject<T> extends KeiraPageObject<T> {
   ID_FIELD = '';
 
   get createInput(): HTMLInputElement {

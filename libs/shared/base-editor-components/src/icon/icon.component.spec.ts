@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { ICON_SKILLS } from '@keira/shared/constants';
 
-import { PageObject } from '@keira/shared/test-utils';
+import { KeiraPageObject } from '@keira/shared/test-utils';
 import { of } from 'rxjs';
 import { IconComponent } from './icon.component';
 import { IconService } from './icon.service';
@@ -25,7 +25,7 @@ class TestHostComponent {
   spellId!: string;
 }
 
-class IconComponentPage extends PageObject<TestHostComponent> {
+class IconComponentPage extends KeiraPageObject<TestHostComponent> {
   get img(): HTMLImageElement {
     return this.query<HTMLImageElement>('img');
   }

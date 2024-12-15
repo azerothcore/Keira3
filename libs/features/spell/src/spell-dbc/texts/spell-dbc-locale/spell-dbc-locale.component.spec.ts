@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
+import { KeiraPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModelForm } from '@keira/shared/utils';
 import { SpellDbc } from '@keira/shared/acore-world-model';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
@@ -13,7 +13,7 @@ import { Locale, SPELL_DBC_TEXT_FIELDS, SpellDbcTextFieldPrefix } from '../spell
 import { SpellDbcLocaleComponent } from './spell-dbc-locale.component';
 
 describe('SpellDbcLocaleComponent', () => {
-  class SpellDbcLocaleComponentPage extends PageObject<TestHostComponent> {
+  class SpellDbcLocaleComponentPage extends KeiraPageObject<TestHostComponent> {
     getLabelByLocale(fieldName: string, locale: Locale): HTMLLabelElement {
       return this.query<HTMLLabelElement>(`.control-label[for="${fieldName}_${locale}"]`);
     }

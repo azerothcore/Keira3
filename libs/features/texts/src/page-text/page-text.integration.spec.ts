@@ -57,7 +57,7 @@ describe('PageText integration tests', () => {
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
       page.expectFullQueryToContain(expectedFullCreateQuery);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('should correctly update the unsaved status', () => {
@@ -68,7 +68,7 @@ describe('PageText integration tests', () => {
       expect(handlerService.isUnsaved).toBe(true);
       page.setInputValueById(field, 0);
       expect(handlerService.isUnsaved).toBe(false);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('changing a property and executing the query should correctly work', () => {
@@ -86,7 +86,7 @@ describe('PageText integration tests', () => {
 
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
-      page.removeElement();
+      page.removeNativeElement();
     });
   });
 
@@ -100,7 +100,7 @@ describe('PageText integration tests', () => {
           'INSERT INTO `page_text` (`ID`, `Text`, `NextPageID`, `VerifiedBuild`) VALUES\n' +
           "(1234, '2', 3, 4);",
       );
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('changing all properties and executing the query should correctly work', () => {
@@ -114,7 +114,7 @@ describe('PageText integration tests', () => {
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('changing values should correctly update the queries', () => {
@@ -134,7 +134,7 @@ describe('PageText integration tests', () => {
           'INSERT INTO `page_text` (`ID`, `Text`, `NextPageID`, `VerifiedBuild`) VALUES\n' +
           "(1234, 'Shin', 22, 4);",
       );
-      page.removeElement();
+      page.removeNativeElement();
     });
   });
 });

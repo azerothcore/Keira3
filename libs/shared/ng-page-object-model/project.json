@@ -1,0 +1,8 @@
+{
+  "name": "ng-page-object-model",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/ng-page-object-model/src",
+  "tags": ["scope:shared"],
+  "projectType": "library",
+  "targets": {}
+}

@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
+import { KeiraPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModelForm } from '@keira/shared/utils';
 import { SpellDbc } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -14,7 +14,7 @@ import { SpellDbcSpellEffectComponent } from './spell-dbc-spell-effect.component
 import { SPELL_DBC_SPELL_EFFECT_FIELDS, SpellDbcSpellEffectFieldPrefix } from './spell-dbc-spell-effect.model';
 
 describe('SpellDbcSpellEffectComponent', () => {
-  class SpellDbcSpellEffectComponentPage extends PageObject<TestHostComponent> {
+  class SpellDbcSpellEffectComponentPage extends KeiraPageObject<TestHostComponent> {
     getLabelByIndex(fieldName: string, index: number): HTMLLabelElement {
       return this.query<HTMLLabelElement>(`.control-label[for="${fieldName}_${index}"]`);
     }

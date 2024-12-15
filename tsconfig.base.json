@@ -54,6 +54,7 @@
       "@keira/shared/switch-language": ["libs/shared/switch-language/src/index.ts"],
       "@keira/shared/test-utils": ["libs/shared/test-utils/src/index.ts"],
       "@keira/shared/utils": ["libs/shared/utils/src/index.ts"],
+      "@ng-page-object-model": ["libs/shared/ng-page-object-model/src/index.ts"],
       "texts": ["libs/features/texts/src/index.ts"]
     },
     "rootDir": "."

@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup } from '@angular/forms';
 import { NpcText } from '@keira/shared/acore-world-model';
-import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
+import { KeiraPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModelForm } from '@keira/shared/utils';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { instance, mock } from 'ts-mockito';
@@ -22,7 +22,7 @@ describe(NpcTextFieldsGroupComponent.name, () => {
     groupId!: GroupIdType;
   }
 
-  class Page extends PageObject<TestHostNpcTextFieldsGroupComponent> {
+  class Page extends KeiraPageObject<TestHostNpcTextFieldsGroupComponent> {
     text0(groupId: number) {
       return this.getInputById(`text${groupId}_0`);
     }

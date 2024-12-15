@@ -1,6 +1,6 @@
-import { PageObject } from './page-object';
+import { KeiraPageObject } from './keira-page-object';
 
-export class QueryOutputComponentPage<ComponentType> extends PageObject<ComponentType> {
+export class QueryOutputComponentPage<ComponentType> extends KeiraPageObject<ComponentType> {
   get diffQueryWrapper(): HTMLElement {
     return this.query<HTMLElement>('keira-highlightjs-wrapper#diff-query');
   }

@@ -64,10 +64,10 @@ describe('CreatureTemplateResistance integration tests', () => {
       expect(page.formError.hidden).toBe(true);
       expect(page.addNewRowBtn.disabled).toBe(false);
       expect(page.deleteSelectedRowBtn.disabled).toBe(true);
-      expect(page.getDebugElementByCss('#School select').nativeElement.disabled).toBe(true);
+      expect(page.getDebugElementByCss<HTMLSelectElement>('#School select').nativeElement.disabled).toBe(true);
       expect(page.getInputById('Resistance').disabled).toBe(true);
       expect(page.getEditorTableRowsCount()).toBe(0);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('should correctly update the unsaved status', () => {
@@ -77,7 +77,7 @@ describe('CreatureTemplateResistance integration tests', () => {
       expect(handlerService.isCreatureTemplateResistanceUnsaved).toBe(true);
       page.deleteRow();
       expect(handlerService.isCreatureTemplateResistanceUnsaved).toBe(false);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('adding new rows and executing the query should correctly work', () => {
@@ -101,7 +101,7 @@ describe('CreatureTemplateResistance integration tests', () => {
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('adding a row and changing its values should correctly update the queries', () => {
@@ -118,7 +118,7 @@ describe('CreatureTemplateResistance integration tests', () => {
           '(1234, 1, 0, 0);',
       );
 
-      const select = page.getDebugElementByCss('#School select').nativeElement;
+      const select = page.getDebugElementByCss<HTMLSelectElement>('#School select').nativeElement;
       page.setInputValue(select, '1: 2');
 
       page.expectDiffQueryToContain(
@@ -131,14 +131,14 @@ describe('CreatureTemplateResistance integration tests', () => {
           'INSERT INTO `creature_template_resistance` (`CreatureID`, `School`, `Resistance`, `VerifiedBuild`) VALUES\n' +
           '(1234, 2, 0, 0);',
       );
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('adding a row changing its values and duplicate it should correctly update the queries', () => {
       const { page } = setup(true);
       page.addNewRow();
 
-      const select = page.getDebugElementByCss('#School select').nativeElement;
+      const select = page.getDebugElementByCss<HTMLSelectElement>('#School select').nativeElement;
       page.setInputValue(select, '1: 2');
 
       page.duplicateSelectedRow();
@@ -155,7 +155,7 @@ describe('CreatureTemplateResistance integration tests', () => {
           '(1234, 2, 0, 0),\n' +
           '(1234, 1, 0, 0);',
       );
-      page.removeElement();
+      page.removeNativeElement();
     });
   });
 
@@ -173,7 +173,7 @@ describe('CreatureTemplateResistance integration tests', () => {
           '(1234, 3, 0, 0);',
       );
       expect(page.getEditorTableRowsCount()).toBe(3);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('deleting rows should correctly work', () => {
@@ -201,7 +201,7 @@ describe('CreatureTemplateResistance integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(0);
       page.expectDiffQueryToContain('DELETE FROM `creature_template_resistance` WHERE `CreatureID` = 1234;');
       page.expectFullQueryToBeEmpty();
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('editing existing rows should correctly work', () => {
@@ -222,7 +222,7 @@ describe('CreatureTemplateResistance integration tests', () => {
           '(1234, 2, 1, 0),\n' +
           '(1234, 3, 0, 0);',
       );
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('combining add, edit and delete should correctly work', () => {
@@ -231,7 +231,7 @@ describe('CreatureTemplateResistance integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(4);
 
       page.clickRowOfDatatable(1);
-      const select = page.getDebugElementByCss('#School select').nativeElement;
+      const select = page.getDebugElementByCss<HTMLSelectElement>('#School select').nativeElement;
       page.setInputValue(select, '4: 5');
 
       expect(page.getEditorTableRowsCount()).toBe(4);
@@ -252,17 +252,17 @@ describe('CreatureTemplateResistance integration tests', () => {
           '(1234, 5, 0, 0),\n' +
           '(1234, 4, 0, 0);',
       );
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('using the same row id for multiple rows should correctly show an error', () => {
       const { page } = setup(false);
       page.clickRowOfDatatable(2);
-      const select = page.getDebugElementByCss('#School select').nativeElement;
+      const select = page.getDebugElementByCss<HTMLSelectElement>('#School select').nativeElement;
       page.setInputValue(select, '1: 2');
 
       page.expectUniqueError();
-      page.removeElement();
+      page.removeNativeElement();
     });
   });
 });

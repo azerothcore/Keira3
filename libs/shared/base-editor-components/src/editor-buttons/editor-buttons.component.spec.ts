@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
+import { KeiraPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { EditorButtonsComponent } from './editor-buttons.component';
 import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
 import { TableRow } from '@keira/shared/constants';
@@ -15,7 +15,7 @@ class TestHostComponent {
   editorService!: MultiRowEditorService<TableRow>;
 }
 
-class EditorButtonsPage extends PageObject<TestHostComponent> {
+class EditorButtonsPage extends KeiraPageObject<TestHostComponent> {
   get addBtn(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('#add-new-row-btn');
   }

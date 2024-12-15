@@ -87,7 +87,7 @@ describe('CreatureSpawn integration tests', () => {
       expect(page.getInputById('currentwaypoint').disabled).toBe(true);
       expect(page.getInputById('curhealth').disabled).toBe(true);
       expect(page.getInputById('curmana').disabled).toBe(true);
-      expect(page.getDebugElementByCss('#MovementType select').nativeElement.disabled).toBe(true);
+      expect(page.getDebugElementByCss<HTMLSelectElement>('#MovementType select').nativeElement.disabled).toBe(true);
       expect(page.getInputById('npcflag').disabled).toBe(true);
       expect(page.getInputById('unit_flags').disabled).toBe(true);
       expect(page.getInputById('dynamicflags').disabled).toBe(true);

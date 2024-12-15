@@ -83,7 +83,7 @@ describe('CreatureTemplateModel integration tests', () => {
       expect(page.getInputById('Probability').disabled).toBe(true);
       expect(page.getInputById('VerifiedBuild').disabled).toBe(true);
       expect(page.getEditorTableRowsCount()).toBe(0);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('should correctly update the unsaved status', () => {
@@ -93,7 +93,7 @@ describe('CreatureTemplateModel integration tests', () => {
       expect(handlerService.isCreatureTemplateModelUnsaved).toBe(true);
       page.deleteRow();
       expect(handlerService.isCreatureTemplateModelUnsaved).toBe(false);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('adding new rows and executing the query should correctly work', () => {
@@ -118,7 +118,7 @@ describe('CreatureTemplateModel integration tests', () => {
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('adding a row and changing its values should correctly update the queries', () => {
@@ -147,7 +147,7 @@ describe('CreatureTemplateModel integration tests', () => {
           'INSERT INTO `creature_template_model` (`CreatureID`, `Idx`, `CreatureDisplayID`, `DisplayScale`, `Probability`, `VerifiedBuild`) VALUES\n' +
           '(1234, 28, 0, 1, 0, 0);',
       );
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('adding a row changing its values and duplicate it should correctly update the queries', () => {
@@ -170,7 +170,7 @@ describe('CreatureTemplateModel integration tests', () => {
           '(1234, 28, 0, 1, 0, 0),\n' +
           '(1234, 0, 0, 1, 0, 0);',
       );
-      page.removeElement();
+      page.removeNativeElement();
     });
   });
 
@@ -189,7 +189,7 @@ describe('CreatureTemplateModel integration tests', () => {
       );
       expect(page.getEditorTableRowsCount()).toBe(3);
       expect(page.getAllModelViewers().length).toBe(3); // check one model viewer per row
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('deleting rows should correctly work', () => {
@@ -216,7 +216,7 @@ describe('CreatureTemplateModel integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(0);
       page.expectDiffQueryToContain('DELETE FROM `creature_template_model` WHERE `CreatureID` = 1234;');
       page.expectFullQueryToBeEmpty();
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('editing existing rows should correctly work', () => {
@@ -239,7 +239,7 @@ describe('CreatureTemplateModel integration tests', () => {
           '(1234, 1, 1111, 222, 333, 0),\n' +
           '(1234, 2, 0, 1, 0, 0);',
       );
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('combining add, edit and delete should correctly work', () => {
@@ -268,7 +268,7 @@ describe('CreatureTemplateModel integration tests', () => {
           '(1234, 28, 0, 1, 0, 0),\n' +
           '(1234, 3, 0, 1, 0, 0);',
       );
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('using the same row id for multiple rows should correctly show an error', () => {
@@ -277,7 +277,7 @@ describe('CreatureTemplateModel integration tests', () => {
       page.setInputValueById('Idx', 0);
 
       page.expectUniqueError();
-      page.removeElement();
+      page.removeNativeElement();
     });
   });
 });

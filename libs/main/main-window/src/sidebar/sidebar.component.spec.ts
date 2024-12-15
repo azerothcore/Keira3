@@ -1,7 +1,7 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
+import { KeiraPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { instance, mock } from 'ts-mockito';
 import { ConditionsHandlerService } from '@keira/features/conditions';
 import { CreatureHandlerService, SaiCreatureHandlerService } from '@keira/features/creature';
@@ -22,7 +22,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MysqlService } from '@keira/shared/db-layer';
 import { ElectronService, LocationService } from '@keira/shared/common-services';
 
-class SidebarComponentPage extends PageObject<SidebarComponent> {
+class SidebarComponentPage extends KeiraPageObject<SidebarComponent> {
   get toggleSidebarBtn(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('.sidebar-button');
   }
@@ -80,7 +80,7 @@ describe('SidebarComponent', () => {
     page.clickElement(page.toggleSidebarBtn);
     expect(sidebarService.getSidebarState()).toBe(false);
 
-    page.removeElement();
+    page.removeNativeElement();
   });
 
   it('toggling a section should correctly work', () => {
@@ -93,7 +93,7 @@ describe('SidebarComponent', () => {
     page.clickElement(page.creatureEditorToggle);
     expect(component.menuStates['creature']).toBe('down');
 
-    page.removeElement();
+    page.removeNativeElement();
   });
 
   it('collapse all button should correctly work ', () => {
@@ -108,7 +108,7 @@ describe('SidebarComponent', () => {
       expect(component.menuStates[key]).toEqual('up');
     }
 
-    page.removeElement();
+    page.removeNativeElement();
   });
 
   it('reload the app on logout', () => {
@@ -119,6 +119,6 @@ describe('SidebarComponent', () => {
 
     expect(reloadSpy).toHaveBeenCalledTimes(1);
 
-    page.removeElement();
+    page.removeNativeElement();
   });
 });

@@ -92,7 +92,7 @@ describe('QuestTemplate integration tests', () => {
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
       page.expectFullQueryToContain(expectedFullCreateQuery);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('should correctly update the unsaved status', () => {
@@ -103,7 +103,7 @@ describe('QuestTemplate integration tests', () => {
       expect(handlerService.isQuestTemplateUnsaved).toBe(true);
       page.setInputValueById(field, 0);
       expect(handlerService.isQuestTemplateUnsaved).toBe(false);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('changing a property and executing the query should correctly work', () => {
@@ -118,7 +118,7 @@ describe('QuestTemplate integration tests', () => {
 
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain('Shin');
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('changing a property should be reflected in the quest preview', () => {
@@ -128,7 +128,7 @@ describe('QuestTemplate integration tests', () => {
       page.setInputValueById('LogTitle', value);
 
       expect(page.questPreviewTitle.innerText).toContain(value);
-      page.removeElement();
+      page.removeNativeElement();
     });
   });
 
@@ -138,7 +138,7 @@ describe('QuestTemplate integration tests', () => {
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(expectedFullCreateQuery);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('changing all properties and executing the query should correctly work', () => {
@@ -175,7 +175,7 @@ describe('QuestTemplate integration tests', () => {
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(6);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('changing values should correctly update the queries', () => {
@@ -190,7 +190,7 @@ describe('QuestTemplate integration tests', () => {
       page.expectDiffQueryToContain("UPDATE `quest_template` SET `MinLevel` = 22, `LogTitle` = 'Shin' WHERE (`ID` = 1234);");
       page.expectFullQueryToContain('Shin');
       page.expectFullQueryToContain('22');
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     xit('changing a value via FlagsSelector should correctly work', waitForAsync(async () => {
@@ -212,7 +212,7 @@ describe('QuestTemplate integration tests', () => {
 
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
       page.expectFullQueryToContain('4100');
-      page.removeElement();
+      page.removeNativeElement();
     }));
   });
 });

@@ -76,7 +76,7 @@ describe('CreatureTemplateSpell integration tests', () => {
       expect(page.getInputById('Index').disabled).toBe(true);
       expect(page.getInputById('Spell').disabled).toBe(true);
       expect(page.getEditorTableRowsCount()).toBe(0);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('should correctly update the unsaved status', () => {
@@ -86,7 +86,7 @@ describe('CreatureTemplateSpell integration tests', () => {
       expect(handlerService.isCreatureTemplateSpellUnsaved).toBe(true);
       page.deleteRow();
       expect(handlerService.isCreatureTemplateSpellUnsaved).toBe(false);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('adding new rows and executing the query should correctly work', () => {
@@ -110,7 +110,7 @@ describe('CreatureTemplateSpell integration tests', () => {
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('adding a row and changing its values should correctly update the queries', () => {
@@ -138,7 +138,7 @@ describe('CreatureTemplateSpell integration tests', () => {
           'INSERT INTO `creature_template_spell` (`CreatureID`, `Index`, `Spell`, `VerifiedBuild`) VALUES\n' +
           '(1234, 1, 0, 0);',
       );
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('adding a row and changing its values should correctly update the queries', () => {
@@ -159,7 +159,7 @@ describe('CreatureTemplateSpell integration tests', () => {
           '(1234, 1, 0, 0),\n' +
           '(1234, 0, 0, 0);',
       );
-      page.removeElement();
+      page.removeNativeElement();
     });
   });
 
@@ -177,7 +177,7 @@ describe('CreatureTemplateSpell integration tests', () => {
           '(1234, 2, 0, 0);',
       );
       expect(page.getEditorTableRowsCount()).toBe(3);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('deleting rows should correctly work', () => {
@@ -205,7 +205,7 @@ describe('CreatureTemplateSpell integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(0);
       page.expectDiffQueryToContain('DELETE FROM `creature_template_spell` WHERE `CreatureID` = 1234;');
       page.expectFullQueryToBeEmpty();
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('editing existing rows should correctly work', () => {
@@ -225,7 +225,7 @@ describe('CreatureTemplateSpell integration tests', () => {
           '(1234, 1, 3, 0),\n' +
           '(1234, 2, 0, 0);',
       );
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('combining add, edit and delete should correctly work', () => {
@@ -253,7 +253,7 @@ describe('CreatureTemplateSpell integration tests', () => {
           '(1234, 7, 0, 0),\n' +
           '(1234, 3, 0, 0);',
       );
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('using the same row id for multiple rows should correctly show an error', () => {
@@ -262,7 +262,7 @@ describe('CreatureTemplateSpell integration tests', () => {
       page.setInputValueById('Index', '0: 0');
 
       page.expectUniqueError();
-      page.removeElement();
+      page.removeNativeElement();
     });
   });
 });

@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
-import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
+import { KeiraPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { BooleanOptionSelectorComponent } from './boolean-option-selector.component';
 
 @Component({
@@ -15,7 +15,7 @@ class TestHostComponent {
 }
 
 describe('BooleanOptionSelectorComponent', () => {
-  class BooleanOptionSelectorComponentPage extends PageObject<TestHostComponent> {}
+  class BooleanOptionSelectorComponentPage extends KeiraPageObject<TestHostComponent> {}
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -36,7 +36,7 @@ describe('BooleanOptionSelectorComponent', () => {
 
   it('changing the form value via input will be reflected in the template', () => {
     const { page, host } = setup();
-    const select = page.getDebugElementByCss('select').nativeElement;
+    const select = page.getDebugElementByCss<HTMLSelectElement>('select').nativeElement;
 
     host.mockFormControl.setValue(1);
     page.detectChanges();
@@ -53,7 +53,7 @@ describe('BooleanOptionSelectorComponent', () => {
 
   it('changing the input valuewill be reflected in the form control', () => {
     const { page, host } = setup();
-    const select = page.getDebugElementByCss('select').nativeElement;
+    const select = page.getDebugElementByCss<HTMLSelectElement>('select').nativeElement;
 
     page.setInputValue(select, '1: 1');
 

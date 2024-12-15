@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
-import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
+import { KeiraPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { QuestOfferReward, QuestRequestItems, QuestTemplate, QuestTemplateAddon } from '@keira/shared/acore-world-model';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -12,7 +12,7 @@ import { Class } from '@keira/shared/constants';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import Spy = jasmine.Spy;
 
-class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
+class QuestPreviewComponentPage extends KeiraPageObject<QuestPreviewComponent> {
   get title(): HTMLHeadElement {
     return this.query<HTMLHeadElement>('#title');
   }
@@ -145,7 +145,7 @@ describe('QuestPreviewComponent', () => {
     fixture.detectChanges();
 
     expect(initializeServicesSpy).toHaveBeenCalledTimes(1);
-    page.removeElement();
+    page.removeNativeElement();
   });
 
   it('should show title, level and required level', () => {
@@ -164,7 +164,7 @@ describe('QuestPreviewComponent', () => {
     expect(page.title.innerText).toContain(title);
     expect(page.level.innerText).toContain(level);
     expect(page.minLevel.innerText).toContain(`${minLevel} - ${maxLevel}`);
-    page.removeElement();
+    page.removeNativeElement();
   });
 
   it('should show questStart and questEnd icons', () => {
@@ -184,7 +184,7 @@ describe('QuestPreviewComponent', () => {
 
     expect(page.creatureQuestStartIcon.src).toContain('assets/img/quest/quest_start_daily.gif');
     expect(page.creatureQuestEndIcon.src).toContain('assets/img/quest/quest_end_daily.gif');
-    page.removeElement();
+    page.removeNativeElement();
   });
 
   it('should show questType', () => {
@@ -197,7 +197,7 @@ describe('QuestPreviewComponent', () => {
 
     expect(page.questType.innerText).toContain('Daily');
     expect(page.questType.innerText).toContain('PvP');
-    page.removeElement();
+    page.removeNativeElement();
   });
 
   it('should show showRaces', () => {
@@ -214,7 +214,7 @@ describe('QuestPreviewComponent', () => {
     sideSpy.and.returnValue('Alliance');
     fixture.detectChanges();
     expect(page.getRaces(false)).toBeFalsy();
-    page.removeElement();
+    page.removeNativeElement();
   });
 
   it('should show showClasses', () => {
@@ -225,7 +225,7 @@ describe('QuestPreviewComponent', () => {
 
     expect(page.classes.innerText).toContain('Paladin');
     expect(page.classes.innerText).toContain('Rogue');
-    page.removeElement();
+    page.removeNativeElement();
   });
 
   it('should show required skill', async () => {
@@ -243,7 +243,7 @@ describe('QuestPreviewComponent', () => {
 
     fixture.detectChanges();
     expect(page.requiredSkill.innerText).toContain('(10)');
-    page.removeElement();
+    page.removeNativeElement();
   });
 
   it('should show provided item (start item)', async () => {
@@ -259,7 +259,7 @@ describe('QuestPreviewComponent', () => {
 
     expect(page.providedItem.innerText).toContain(`[${mockStartItem}]`);
     expect(page.providedItem.innerText).toContain(mockStartItemName);
-    page.removeElement();
+    page.removeNativeElement();
   });
 
   it('should show rewardXP', async () => {
@@ -391,7 +391,7 @@ describe('QuestPreviewComponent', () => {
       expect(page.descriptionText.innerText).toContain(description);
       expect(page.progressText.innerText).toContain(progress);
       expect(page.completionText.innerText).toContain(completion);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('should correctly toggle', () => {
@@ -412,7 +412,7 @@ describe('QuestPreviewComponent', () => {
       page.clickElement(page.completionToggle);
       page.expectNotCollapsed(page.completionToggle);
 
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('should correctly show the required money', () => {
@@ -433,7 +433,7 @@ describe('QuestPreviewComponent', () => {
       expect(page.requiredMoney.innerHTML).toContain('<span class="moneysilver">34</span>');
       expect(page.requiredMoney.innerHTML).toContain('<span class="moneycopper">56</span>');
 
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('should correctly show the reward money', () => {
@@ -454,7 +454,7 @@ describe('QuestPreviewComponent', () => {
       expect(page.rewardMoney.innerHTML).toContain('<span class="moneysilver">34</span>');
       expect(page.rewardMoney.innerHTML).toContain('<span class="moneycopper">56</span>');
 
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('should correctly show the reward spell', async () => {
@@ -479,7 +479,7 @@ describe('QuestPreviewComponent', () => {
       expect(page.rewardSpell.innerText).toContain('You will learn:');
       expect(page.rewardSpell.innerText).toContain('Mock Spell');
 
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('should correctly show the reward items', async () => {
@@ -504,7 +504,7 @@ describe('QuestPreviewComponent', () => {
       expect(page.rewardItems.innerText).toContain('You will receive:');
       expect(page.rewardItems.innerText).toContain('Mock Item');
 
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('should correctly show the reward choice items', async () => {
@@ -529,7 +529,7 @@ describe('QuestPreviewComponent', () => {
       expect(page.rewardChoiceItems.innerText).toContain('You will be able to choose one of these rewards');
       expect(page.rewardChoiceItems.innerText).toContain('Mock Item');
 
-      page.removeElement();
+      page.removeNativeElement();
     });
   });
 });

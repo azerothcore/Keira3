@@ -1,5 +1,5 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { PageObject, Spied, TranslateTestingModule } from '@keira/shared/test-utils';
+import { KeiraPageObject, Spied, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ConnectionOptions, QueryError } from 'mysql2';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { of, throwError } from 'rxjs';
@@ -10,7 +10,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginConfigService } from '@keira/shared/login-config';
 import { MysqlService } from '@keira/shared/db-layer';
 
-class ConnectionWindowComponentPage extends PageObject<ConnectionWindowComponent> {
+class ConnectionWindowComponentPage extends KeiraPageObject<ConnectionWindowComponent> {
   get hostInput(): HTMLInputElement {
     return this.query<HTMLInputElement>('#host');
   }

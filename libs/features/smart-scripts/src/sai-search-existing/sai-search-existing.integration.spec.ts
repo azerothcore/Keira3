@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira/shared/db-layer';
-import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
+import { KeiraPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { SmartScripts } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
@@ -11,7 +11,7 @@ import { of } from 'rxjs';
 import { SaiSearchExistingComponent } from './sai-search-existing.component';
 import Spy = jasmine.Spy;
 
-class SaiSearchExistingComponentPage extends PageObject<SaiSearchExistingComponent> {
+class SaiSearchExistingComponentPage extends KeiraPageObject<SaiSearchExistingComponent> {
   get searchSourceTypeSelect(): HTMLInputElement {
     return this.query<HTMLInputElement>('select#source_type');
   }
