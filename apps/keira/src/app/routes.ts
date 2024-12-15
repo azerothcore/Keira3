@@ -5,6 +5,7 @@ import { DashboardComponent } from '@keira/features/dashboard';
 import { ConditionsComponent, ConditionsHandlerService, SelectConditionsComponent } from '@keira/features/conditions';
 import {
   CreatureEquipTemplateComponent,
+  CreatureFormationsComponent,
   CreatureHandlerService,
   CreatureLootTemplateComponent,
   CreatureOnkillReputationComponent,
@@ -193,6 +194,11 @@ export const KEIRA_ROUTES: Routes = [
       {
         path: 'creature-text',
         component: CreatureTextComponent,
+        canActivate: [CreatureHandlerService],
+      },
+      {
+        path: 'creature-formations',
+        component: CreatureFormationsComponent,
         canActivate: [CreatureHandlerService],
       },
     ],
