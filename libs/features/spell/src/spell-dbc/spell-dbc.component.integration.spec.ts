@@ -64,7 +64,7 @@ describe('SpellDbc integration tests', () => {
       const { page } = setup(true);
       page.expectFullQueryToBeShown();
       page.expectFullQueryToContain(expectedFullCreateQuery);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('should correctly update the unsaved status', () => {
@@ -75,7 +75,7 @@ describe('SpellDbc integration tests', () => {
       expect(handlerService.isSpellDbcUnsaved).toBe(true);
       page.setInputValueById(field, 0);
       expect(handlerService.isSpellDbcUnsaved).toBe(false);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('changing a property and executing the query should correctly work', () => {
@@ -91,7 +91,7 @@ describe('SpellDbc integration tests', () => {
 
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(String(value));
-      page.removeElement();
+      page.removeNativeElement();
     });
   });
 
@@ -101,7 +101,7 @@ describe('SpellDbc integration tests', () => {
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(expectedFullCreateQuery);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('changing values should correctly update the queries', () => {
@@ -116,7 +116,7 @@ describe('SpellDbc integration tests', () => {
       page.expectDiffQueryToContain('UPDATE `spell_dbc` SET `DispelType` = 111, `Mechanic` = 222 WHERE (`ID` = 1234);');
       page.expectFullQueryToContain(String(111));
       page.expectFullQueryToContain(String(222));
-      page.removeElement();
+      page.removeNativeElement();
     });
   });
 

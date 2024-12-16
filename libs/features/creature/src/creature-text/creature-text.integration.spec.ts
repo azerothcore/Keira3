@@ -68,14 +68,14 @@ describe('CreatureText integration tests', () => {
       expect(page.getInputById('GroupID').disabled).toBe(true);
       expect(page.getInputById('ID').disabled).toBe(true);
       expect(page.getInputById('Text').disabled).toBe(true);
-      expect(page.getDebugElementByCss('#Type select').nativeElement.disabled).toBe(true);
+      expect(page.getDebugElementByCss<HTMLSelectElement>('#Type select').nativeElement.disabled).toBe(true);
       expect(page.getInputById('Language').disabled).toBe(true);
       expect(page.getInputById('Probability').disabled).toBe(true);
-      expect(page.getDebugElementByCss('#Emote select').nativeElement.disabled).toBe(true);
+      expect(page.getDebugElementByCss<HTMLSelectElement>('#Emote select').nativeElement.disabled).toBe(true);
       expect(page.getInputById('Duration').disabled).toBe(true);
       expect(page.getInputById('Sound').disabled).toBe(true);
       expect(page.getInputById('BroadcastTextId').disabled).toBe(true);
-      expect(page.getDebugElementByCss('#TextRange select').nativeElement.disabled).toBe(true);
+      expect(page.getDebugElementByCss<HTMLSelectElement>('#TextRange select').nativeElement.disabled).toBe(true);
       expect(page.getInputById('comment').disabled).toBe(true);
       expect(page.getEditorTableRowsCount()).toBe(0);
     });

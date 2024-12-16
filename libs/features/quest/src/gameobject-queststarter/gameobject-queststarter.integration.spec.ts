@@ -79,7 +79,7 @@ describe('GameobjectQueststarter integration tests', () => {
       expect(page.deleteSelectedRowBtn.disabled).toBe(true);
       expect(page.getInputById('id').disabled).toBe(true);
       expect(page.getEditorTableRowsCount()).toBe(0);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('should correctly update the unsaved status', () => {
@@ -89,7 +89,7 @@ describe('GameobjectQueststarter integration tests', () => {
       expect(handlerService.isGameobjectQueststarterUnsaved).toBe(true);
       page.deleteRow();
       expect(handlerService.isGameobjectQueststarterUnsaved).toBe(false);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('adding new rows and executing the query should correctly work', () => {
@@ -113,7 +113,7 @@ describe('GameobjectQueststarter integration tests', () => {
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('adding a row and changing its values should correctly update the queries', () => {
@@ -141,7 +141,7 @@ describe('GameobjectQueststarter integration tests', () => {
           'INSERT INTO `gameobject_queststarter` (`id`, `quest`) VALUES\n' +
           '(1, 1234);',
       );
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('adding a row changing its values and duplicate it should correctly update the queries', () => {
@@ -162,7 +162,7 @@ describe('GameobjectQueststarter integration tests', () => {
           '(1, 1234),\n' +
           '(0, 1234);',
       );
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('changing a property should be reflected in the quest preview', () => {
@@ -174,7 +174,7 @@ describe('GameobjectQueststarter integration tests', () => {
       page.setInputValueById('id', value);
 
       expect(page.questPreviewGoStart.innerText).toContain(`[${value}]`);
-      page.removeElement();
+      page.removeNativeElement();
     });
   });
 
@@ -192,7 +192,7 @@ describe('GameobjectQueststarter integration tests', () => {
           '(2, 1234);\n',
       );
       expect(page.getEditorTableRowsCount()).toBe(3);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('deleting rows should correctly work', () => {
@@ -220,7 +220,7 @@ describe('GameobjectQueststarter integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(0);
       page.expectDiffQueryToContain('DELETE FROM `gameobject_queststarter` WHERE `quest` = 1234;');
       page.expectFullQueryToBeEmpty();
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('editing existing rows should correctly work', () => {
@@ -240,7 +240,7 @@ describe('GameobjectQueststarter integration tests', () => {
           '(111, 1234),\n' +
           '(2, 1234);\n',
       );
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('combining add, edit and delete should correctly work', () => {
@@ -268,7 +268,7 @@ describe('GameobjectQueststarter integration tests', () => {
           '(10, 1234),\n' +
           '(3, 1234);\n',
       );
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('using the same row id for multiple rows should correctly show an error', () => {
@@ -277,7 +277,7 @@ describe('GameobjectQueststarter integration tests', () => {
       page.setInputValueById('id', 0);
 
       page.expectUniqueError();
-      page.removeElement();
+      page.removeNativeElement();
     });
   });
 });

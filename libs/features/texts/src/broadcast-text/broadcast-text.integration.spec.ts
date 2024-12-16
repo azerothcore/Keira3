@@ -69,7 +69,7 @@ describe('BroadcastText integration tests', () => {
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
       page.expectFullQueryToContain(expectedFullCreateQuery);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('should correctly update the unsaved status', () => {
@@ -80,7 +80,7 @@ describe('BroadcastText integration tests', () => {
       expect(handlerService.isUnsaved).toBe(true);
       page.setInputValueById(field, 0);
       expect(handlerService.isUnsaved).toBe(false);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('changing a property and executing the query should correctly work', () => {
@@ -99,7 +99,7 @@ describe('BroadcastText integration tests', () => {
 
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
-      page.removeElement();
+      page.removeNativeElement();
     });
   });
 
@@ -114,7 +114,7 @@ describe('BroadcastText integration tests', () => {
           '`EmoteDelay1`, `EmoteDelay2`, `EmoteDelay3`, `SoundEntriesId`, `EmotesID`, `Flags`, `VerifiedBuild`) VALUES\n' +
           "(1234, 1, '2', '3', 4, 5, 6, 7, 8, 9, 10, 11, 12, 13);",
       );
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('changing all properties and executing the query should correctly work', () => {
@@ -132,7 +132,7 @@ describe('BroadcastText integration tests', () => {
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('changing values should correctly update the queries', () => {
@@ -153,7 +153,7 @@ describe('BroadcastText integration tests', () => {
           'INSERT INTO `broadcast_text` (`ID`, `LanguageID`, `MaleText`, `FemaleText`, `EmoteID1`, `EmoteID2`, `EmoteID3`, `EmoteDelay1`, `EmoteDelay2`, `EmoteDelay3`, `SoundEntriesId`, `EmotesID`, `Flags`, `VerifiedBuild`) VALUES\n' +
           "(1234, 1, '22', 'Shin', 4, 5, 6, 7, 8, 9, 10, 11, 12, 13);",
       );
-      page.removeElement();
+      page.removeNativeElement();
     });
   });
 });

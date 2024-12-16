@@ -116,11 +116,11 @@ describe('CreatureOnkillReputation integration tests', () => {
         '`MaxStanding2` = 1, `IsTeamAward2` = 1, `RewOnKillRepValue2` = 7, `TeamDependent` = 1 WHERE (`creature_id` = 1234);';
       querySpy.calls.reset();
 
-      const MaxStanding1 = page.getDebugElementByCss('#MaxStanding1 select').nativeElement;
-      const MaxStanding2 = page.getDebugElementByCss('#MaxStanding2 select').nativeElement;
-      const IsTeamAward1 = page.getDebugElementByCss('#IsTeamAward1 select').nativeElement;
-      const IsTeamAward2 = page.getDebugElementByCss('#IsTeamAward2 select').nativeElement;
-      const TeamDependent = page.getDebugElementByCss('#TeamDependent select').nativeElement;
+      const MaxStanding1 = page.getDebugElementByCss<HTMLSelectElement>('#MaxStanding1 select').nativeElement;
+      const MaxStanding2 = page.getDebugElementByCss<HTMLSelectElement>('#MaxStanding2 select').nativeElement;
+      const IsTeamAward1 = page.getDebugElementByCss<HTMLSelectElement>('#IsTeamAward1 select').nativeElement;
+      const IsTeamAward2 = page.getDebugElementByCss<HTMLSelectElement>('#IsTeamAward2 select').nativeElement;
+      const TeamDependent = page.getDebugElementByCss<HTMLSelectElement>('#TeamDependent select').nativeElement;
       page.setInputValue(MaxStanding1, '1: 1');
       page.setInputValue(MaxStanding2, '1: 1');
       page.setInputValue(IsTeamAward1, '1: 1');
@@ -146,7 +146,7 @@ describe('CreatureOnkillReputation integration tests', () => {
           '(1234, 0, 1, 0, 0, 0, 0, 0, 0, 0);',
       );
 
-      const IsTeamAward1 = page.getDebugElementByCss('#IsTeamAward1 select').nativeElement;
+      const IsTeamAward1 = page.getDebugElementByCss<HTMLSelectElement>('#IsTeamAward1 select').nativeElement;
       page.setInputValue(IsTeamAward1, '1: 1');
       page.expectDiffQueryToContain(
         'UPDATE `creature_onkill_reputation` SET `RewOnKillRepFaction2` = 1, `IsTeamAward1` = 1 WHERE (`creature_id` = 1234);',

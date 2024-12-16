@@ -1,14 +1,14 @@
 import { ComponentFixture } from '@angular/core/testing';
-import { DebugElement } from '@angular/core';
-import { By } from '@angular/platform-browser';
+import { PageObjectModel } from '@ng-page-object-model';
 
-export abstract class PageObject<ComponentType> {
+export abstract class PageObject<ComponentType> extends PageObjectModel<ComponentType> {
   readonly DT_SELECTOR = 'ngx-datatable';
 
   constructor(
-    protected fixture: ComponentFixture<ComponentType>,
+    public override readonly fixture: ComponentFixture<ComponentType>,
     config: { clearStorage: boolean } = { clearStorage: true },
   ) {
+    super(fixture);
     if (config.clearStorage) {
       localStorage.clear();
     }
@@ -23,24 +23,6 @@ export abstract class PageObject<ComponentType> {
     await this.fixture.whenRenderingDone();
   }
 
-  detectChanges(): void {
-    this.fixture.detectChanges();
-  }
-
-  removeElement(): void {
-    this.fixture.debugElement.nativeElement.remove();
-  }
-
-  query<T extends HTMLElement>(selector: string, assert = true): T {
-    const element: T = this.fixture.nativeElement.querySelector(selector);
-
-    if (assert) {
-      expect(element).toBeTruthy(`Element with selector "${selector}" was not found.`);
-    }
-
-    return element;
-  }
-
   queryInsideElement<T extends HTMLElement>(element: HTMLElement, selector: string, assert = true): HTMLElement {
     const child: T = element.querySelector<T>(selector) as T;
 
@@ -49,20 +31,6 @@ export abstract class PageObject<ComponentType> {
     }
 
     return child;
-  }
-
-  queryAll<T extends HTMLElement>(selector: string): T[] {
-    return this.fixture.nativeElement.querySelectorAll(selector);
-  }
-
-  queryAllInsideElement<T extends HTMLElement>(element: HTMLElement, selector: string, assert = true): T[] {
-    const children: T[] = Array.from(element.querySelectorAll<T>(selector));
-
-    if (assert) {
-      expect(children).toBeTruthy(`Element with selector "${selector}" inside "${element.tagName}" was not found.`);
-    }
-
-    return children;
   }
 
   public setInputValue(inputElement: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement, value: string | number): void {
@@ -120,16 +88,6 @@ export abstract class PageObject<ComponentType> {
 
   get queryWrapper(): HTMLElement {
     return this.query<HTMLElement>('#no-highlight-query-wrapper');
-  }
-
-  getDebugElementByCss(cssSelector: string, assert = true): DebugElement {
-    const debugElement = this.fixture.debugElement.query(By.css(cssSelector));
-
-    if (assert) {
-      expect(debugElement).withContext(`Element with selector "${cssSelector}" was not found.`).toBeTruthy();
-    }
-
-    return debugElement;
   }
 
   /*** ngx-datatable utilities ***/
