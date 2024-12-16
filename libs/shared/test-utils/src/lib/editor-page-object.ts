@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TableRow } from '@keira/shared/constants';
 import { BsModalService } from 'ngx-bootstrap/modal';
-import { KeiraPageObject } from './keira-page-object';
+import { PageObject } from './keira-page-object';
 import { QueryOutputComponentPage } from './query-output-page-object';
 
-export abstract class EditorPageObject<T> extends KeiraPageObject<T> {
+export abstract class EditorPageObject<T> extends PageObject<T> {
   readonly PREVIEW_CONTAINER_SELECTOR = '.preview-container';
   protected readonly queryPo: QueryOutputComponentPage<unknown>;
 

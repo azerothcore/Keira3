@@ -1,14 +1,14 @@
 import { Component, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { KeiraPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
+import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { SAI_TYPES } from '@keira/shared/acore-world-model';
 import { of } from 'rxjs';
 import { SaiHandlerService } from '../sai-handler.service';
 import { SaiTopBarComponent } from './sai-top-bar.component';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 
-class SaiTopBarComponentPage extends KeiraPageObject<TestHostComponent> {
+class SaiTopBarComponentPage extends PageObject<TestHostComponent> {
   get mainText(): HTMLSpanElement {
     return this.query<HTMLSpanElement>('.main-text');
   }

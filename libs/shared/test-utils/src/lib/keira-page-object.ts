@@ -1,7 +1,7 @@
 import { ComponentFixture } from '@angular/core/testing';
 import { PageObjectModel } from '@ng-page-object-model';
 
-export abstract class KeiraPageObject<ComponentType> extends PageObjectModel<ComponentType> {
+export abstract class PageObject<ComponentType> extends PageObjectModel<ComponentType> {
   readonly DT_SELECTOR = 'ngx-datatable';
 
   constructor(

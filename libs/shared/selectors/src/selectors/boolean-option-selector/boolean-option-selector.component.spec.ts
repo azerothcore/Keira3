@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
-import { KeiraPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
+import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { BooleanOptionSelectorComponent } from './boolean-option-selector.component';
 
 @Component({
@@ -15,7 +15,7 @@ class TestHostComponent {
 }
 
 describe('BooleanOptionSelectorComponent', () => {
-  class BooleanOptionSelectorComponentPage extends KeiraPageObject<TestHostComponent> {}
+  class BooleanOptionSelectorComponentPage extends PageObject<TestHostComponent> {}
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({

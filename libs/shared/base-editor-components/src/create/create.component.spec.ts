@@ -4,13 +4,13 @@ import { BrowserModule } from '@angular/platform-browser';
 import { MockHandlerService } from '@keira/shared/base-abstract-classes';
 import { TableRow } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
-import { KeiraPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
+import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { of, throwError } from 'rxjs';
 import { anything, instance, mock, reset, when } from 'ts-mockito';
 import { CreateComponent } from './create.component';
 import Spy = jasmine.Spy;
 
-class CreateComponentPage extends KeiraPageObject<CreateComponent<TableRow>> {
+class CreateComponentPage extends PageObject<CreateComponent<TableRow>> {
   get idInput(): HTMLInputElement {
     return this.query<HTMLInputElement>('#id');
   }

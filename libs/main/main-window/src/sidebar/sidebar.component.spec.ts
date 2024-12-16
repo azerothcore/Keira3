@@ -1,7 +1,7 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { KeiraPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
+import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { instance, mock } from 'ts-mockito';
 import { ConditionsHandlerService } from '@keira/features/conditions';
 import { CreatureHandlerService, SaiCreatureHandlerService } from '@keira/features/creature';
@@ -22,7 +22,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MysqlService } from '@keira/shared/db-layer';
 import { ElectronService, LocationService } from '@keira/shared/common-services';
 
-class SidebarComponentPage extends KeiraPageObject<SidebarComponent> {
+class SidebarComponentPage extends PageObject<SidebarComponent> {
   get toggleSidebarBtn(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('.sidebar-button');
   }

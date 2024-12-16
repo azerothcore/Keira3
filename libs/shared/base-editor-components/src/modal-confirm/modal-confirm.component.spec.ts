@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ModalConfirmComponent } from './modal-confirm.component';
-import { KeiraPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
+import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import Spy = jasmine.Spy;
 
-class ModalConfirmComponentPage extends KeiraPageObject<ModalConfirmComponent> {
+class ModalConfirmComponentPage extends PageObject<ModalConfirmComponent> {
   get yesBtn(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('#yes');
   }

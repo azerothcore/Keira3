@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SaiHandlerService } from '@keira/shared/sai-editor';
-import { KeiraPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
+import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { SaiSearchEntityComponent } from './sai-search-entity.component';
 
-class SaiSearchEntityComponentPage extends KeiraPageObject<SaiSearchEntityComponent> {
+class SaiSearchEntityComponentPage extends PageObject<SaiSearchEntityComponent> {
   get entryOrGuidInput(): HTMLInputElement {
     return this.query<HTMLInputElement>('input#entryorguid', false);
   }

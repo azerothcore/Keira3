@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
-import { KeiraPageObject } from '@keira/shared/test-utils';
+import { PageObject } from '@keira/shared/test-utils';
 import { TopBarComponent } from './top-bar.component';
 
 describe(TopBarComponent.name, () => {
@@ -17,7 +17,7 @@ describe(TopBarComponent.name, () => {
     isNew: boolean = false;
   }
 
-  class Page extends KeiraPageObject<TestHostComponent> {
+  class Page extends PageObject<TestHostComponent> {
     mainWrapper() {
       return this.getDebugElementByCss('.top-bar');
     }

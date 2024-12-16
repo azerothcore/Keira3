@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
 import { EXPANSION } from '@keira/shared/acore-world-model';
-import { KeiraPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
+import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { GenericOptionSelectorComponent } from './generic-option-selector.component';
 
 @Component({
@@ -17,7 +17,7 @@ class TestHostComponent {
 }
 
 describe('GenericOptionSelectorComponent', () => {
-  class GenericOptionSelectorComponentPage extends KeiraPageObject<TestHostComponent> {}
+  class GenericOptionSelectorComponentPage extends PageObject<TestHostComponent> {}
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({

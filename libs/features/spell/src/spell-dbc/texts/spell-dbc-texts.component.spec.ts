@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { KeiraPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
+import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModelForm } from '@keira/shared/utils';
 import { SpellDbc } from '@keira/shared/acore-world-model';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
@@ -13,7 +13,7 @@ import { SpellDbcTextsComponent } from './spell-dbc-texts.component';
 import { LOCALES } from './spell-dbc-texts.model';
 
 describe('SpellDbcTextsComponent', () => {
-  class SpellDbcTextsComponentPage extends KeiraPageObject<TestHostComponent> {
+  class SpellDbcTextsComponentPage extends PageObject<TestHostComponent> {
     readonly localesTabsetId = 'locales';
   }
 

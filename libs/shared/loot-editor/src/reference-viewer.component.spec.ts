@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 
-import { KeiraPageObject } from '@keira/shared/test-utils';
+import { PageObject } from '@keira/shared/test-utils';
 import { LootTemplate } from '@keira/shared/acore-world-model';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { of } from 'rxjs';
@@ -11,7 +11,7 @@ import { ReferenceViewerService } from './reference-viewer.service';
 import { instance, mock } from 'ts-mockito';
 import { SqliteService } from '@keira/shared/db-layer';
 
-class ReferenceViewerComponentPage extends KeiraPageObject<TestHostComponent> {
+class ReferenceViewerComponentPage extends PageObject<TestHostComponent> {
   get referenceViewers() {
     return this.queryAll('keira-reference-viewer');
   }

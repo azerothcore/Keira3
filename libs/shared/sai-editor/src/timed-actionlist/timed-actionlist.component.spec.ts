@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 
-import { KeiraPageObject } from '@keira/shared/test-utils';
+import { PageObject } from '@keira/shared/test-utils';
 import { SmartScripts } from '@keira/shared/acore-world-model';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { of } from 'rxjs';
@@ -18,7 +18,7 @@ class TestHostComponent {
   creatureId!: string;
 }
 
-class TimedActionlistPage extends KeiraPageObject<TestHostComponent> {}
+class TimedActionlistPage extends PageObject<TestHostComponent> {}
 
 describe('TimedActionlistComponent', () => {
   beforeEach(waitForAsync(() => {

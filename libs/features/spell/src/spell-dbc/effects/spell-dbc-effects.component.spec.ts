@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { KeiraPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
+import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModelForm } from '@keira/shared/utils';
 import { SpellDbc } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -14,7 +14,7 @@ import { SpellDbcService } from '../spell-dbc.service';
 import { SpellDbcEffectsComponent } from './spell-dbc-effects.component';
 
 describe('SpellDbcEffectsComponent', () => {
-  class SpellDbcEffectsComponentPage extends KeiraPageObject<TestHostComponent> {
+  class SpellDbcEffectsComponentPage extends PageObject<TestHostComponent> {
     getTargets(): HTMLInputElement {
       return this.query('#Targets');
     }

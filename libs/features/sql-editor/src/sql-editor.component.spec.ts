@@ -1,6 +1,6 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { MysqlQueryService } from '@keira/shared/db-layer';
-import { KeiraPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
+import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { QueryError } from 'mysql2';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ClipboardService } from 'ngx-clipboard';
@@ -8,7 +8,7 @@ import { of, throwError } from 'rxjs';
 import { SqlEditorComponent } from './sql-editor.component';
 import Spy = jasmine.Spy;
 
-export class SqlEditorPage extends KeiraPageObject<SqlEditorComponent> {
+export class SqlEditorPage extends PageObject<SqlEditorComponent> {
   readonly DT = 'ngx-datatable';
 
   get affectedRows(): HTMLTextAreaElement {

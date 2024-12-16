@@ -1,12 +1,12 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { KeiraPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
+import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { VersionDbRow, VersionRow } from '@keira/shared/constants';
 import { of, throwError } from 'rxjs';
 import { anyString, instance, mock, reset, when } from 'ts-mockito';
 import { DashboardComponent } from './dashboard.component';
 import { MysqlQueryService, MysqlService } from '@keira/shared/db-layer';
 
-class DashboardComponentPage extends KeiraPageObject<DashboardComponent> {
+class DashboardComponentPage extends PageObject<DashboardComponent> {
   get coreVersion(): HTMLTableCellElement {
     return this.query<HTMLTableCellElement>('#core-version');
   }
