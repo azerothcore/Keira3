@@ -14,12 +14,12 @@
         <form [formGroup]="editorService.form" class="form-group edit-form">
           <div class="row">
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
-              <label class="control-label" for="leaderGUID">leaderGUID</label>
-              <input [formControlName]="'leaderGUID'" id="leaderGUID" type="number" class="form-control form-control-sm" />
+              <label class="control-label" for="leaderGuid">leaderGuid</label>
+              <input [formControlName]="'leaderGuid'" id="leaderGuid" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
-              <label class="control-label" for="memberGUID">memberGUID</label>
-              <input [formControlName]="'memberGUID'" id="memberGUID" type="number" class="form-control form-control-sm" />
+              <label class="control-label" for="memberGuid">memberGuid</label>
+              <input [formControlName]="'memberGuid'" id="memberGuid" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
               <label class="control-label" for="dist">dist</label>
@@ -65,8 +65,8 @@
                   <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
                 </ng-template>
               </ngx-datatable-column>
-              <ngx-datatable-column name="leaderGUID" prop="leaderGUID" [minWidth]="80"></ngx-datatable-column>
-              <ngx-datatable-column name="memberGUID" prop="memberGUID" [minWidth]="80"></ngx-datatable-column>
+              <ngx-datatable-column name="leaderGuid" prop="leaderGuid" [minWidth]="80"></ngx-datatable-column>
+              <ngx-datatable-column name="memberGuid" prop="memberGuid" [minWidth]="80"></ngx-datatable-column>
               <ngx-datatable-column name="dist" prop="dist" [minWidth]="42"></ngx-datatable-column>
               <ngx-datatable-column name="angle" prop="angle" [minWidth]="42"></ngx-datatable-column>
               <ngx-datatable-column name="groupAI" prop="groupAI" [minWidth]="42"></ngx-datatable-column>
