@@ -217,6 +217,14 @@
                         }
                       </a>
                     </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-formations'">
+                        {{ 'SIDEBAR.CREATURE.FORMATIONS' | translate }}
+                        @if (creatureHandlerService.isCreatureFormationUnsaved) {
+                          <keira-unsaved-icon />
+                        }
+                      </a>
+                    </li>
                   }
                 }
               </ul>

@@ -8,6 +8,7 @@ export * from './entities/creature-questender.type';
 export * from './entities/creature-questitem.type';
 export * from './entities/creature-queststarter.type';
 export * from './entities/creature-spawn.type';
+export * from './entities/creature-formations.type';
 export * from './entities/creature-spawn-addon.type';
 export * from './entities/creature-template.type';
 export * from './entities/creature-template-addon.type';
