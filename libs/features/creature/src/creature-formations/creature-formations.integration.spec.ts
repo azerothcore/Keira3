@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { CreatureSpawn } from '@keira/shared/acore-world-model';
+import { CreatureFormation } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -22,15 +22,15 @@ describe('CreatureFormations integration tests', () => {
   let handlerService: CreatureHandlerService;
   let page: CreatureFormationPage;
 
-  const id1 = 1234;
+  const memberGuid = 99999;
 
-  const originalRow0 = new CreatureSpawn();
-  const originalRow1 = new CreatureSpawn();
-  const originalRow2 = new CreatureSpawn();
-  originalRow0.id1 = originalRow1.id1 = originalRow2.id1 = id1;
-  originalRow0.guid = 0;
-  originalRow1.guid = 1;
-  originalRow2.guid = 2;
+  const originalRow0 = new CreatureFormation();
+  const originalRow1 = new CreatureFormation();
+  const originalRow2 = new CreatureFormation();
+  originalRow0.memberGuid = originalRow1.memberGuid = originalRow2.memberGuid = memberGuid;
+  originalRow0.memberGuid = 99999;
+  originalRow1.memberGuid = 99998;
+  originalRow2.memberGuid = 99997;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -48,7 +48,7 @@ describe('CreatureFormations integration tests', () => {
 
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(CreatureHandlerService);
-    handlerService['_selected'] = `${id1}`;
+    handlerService['_selected'] = `${memberGuid}`;
     handlerService.isNew = creatingNew;
 
     queryService = TestBed.inject(MysqlQueryService);
@@ -117,14 +117,14 @@ describe('CreatureFormations integration tests', () => {
 
       // Initial DELETE and INSERT queries after adding a new row
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature_formations` WHERE (`leaderGuid` = 99999) AND (`memberGuid` IN (0));\n' +
+        'DELETE FROM `creature_formations` WHERE (`leaderGuid` = 99999) AND (`memberGuid` IN (99999));\n' +
           'INSERT INTO `creature_formations` (`leaderGuid`, `memberGuid`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
-          `(99999, 0, 0, 0, 0, 0, 0);`,
+          `(99999, 99999, 0, 0, 0, 0, 0);`,
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `creature_formations` WHERE (`leaderGuid` = 99999) AND (`memberGuid` IN (0));\n' +
+        'DELETE FROM `creature_formations` WHERE (`leaderGuid` = 99999) AND (`memberGuid` IN (99999));\n' +
           'INSERT INTO `creature_formations` (`leaderGuid`, `memberGuid`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
-          `(99999, 0, 0, 0, 0, 0, 0);`,
+          `(99999, 99999, 0, 0, 0, 0, 0);`,
       );
 
       // Reset the spy before making further changes
@@ -286,9 +286,9 @@ describe('CreatureFormations integration tests', () => {
       page.expectFullQueryToContain(
         'DELETE FROM `creature_formations` WHERE (`id1` = 1234);\n' +
           'INSERT INTO `creature_formations` (`leaderGuid`, `memberGuid`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`)' +
-          '(0, 1234, 0, 0, 0, 0, 0),\n' +
-          '(1, 1234, 0, 0, 0, 0, 0),\n' +
-          '(2, 1234, 0, 0, 0, 0, 0);',
+          '(99999, 99997, 0, 0, 0, 0, 0),\n' +
+          '(99999, 99998, 0, 0, 0, 0, 0),\n' +
+          '(99999, 99999, 0, 0, 0, 0, 0);',
       );
       expect(page.getEditorTableRowsCount()).toBe(3);
     });
@@ -300,8 +300,8 @@ describe('CreatureFormations integration tests', () => {
       page.expectFullQueryToContain(
         'DELETE FROM `creature_formations` WHERE (`id1` = 1234);\n' +
           'INSERT INTO `creature_formations` (`leaderGuid`, `memberGuid`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`)' +
-          '(0, 1234, 0, 0, 0, 0, 0),\n' +
-          '(2, 1234, 0, 0, 0, 0, 0);\n',
+          '(99999, 99998, 0, 0, 0, 0, 0),\n' +
+          '(99999, 99999, 0, 0, 0, 0, 0);\n',
       );
 
       page.deleteRow(1);
@@ -310,7 +310,7 @@ describe('CreatureFormations integration tests', () => {
       page.expectFullQueryToContain(
         'DELETE FROM `creature_formations` WHERE (`id1` = 1234);\n' +
           'INSERT INTO `creature_formations` (`leaderGuid`, `memberGuid`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`)' +
-          '(0, 1234, 0, 0, 0, 0, 0);',
+          '(99999, 99999, 0, 0, 0, 0, 0);',
       );
 
       page.deleteRow(0);
@@ -329,15 +329,15 @@ describe('CreatureFormations integration tests', () => {
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_formations` WHERE (`id1` = 1234) AND (`guid` IN (1, 2));\n' +
           'INSERT INTO `creature_formations` (`leaderGuid`, `memberGuid`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`)' +
-          '(1, 1234, 0, 0, 1, 0, 0),\n' +
-          '(2, 1234, 0, 0, 0, 2, 0);',
+          '(99999, 99997, 0, 0, 1, 0, 0),\n' +
+          '(99999, 99998, 0, 0, 0, 2, 0);',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_formations` WHERE (`id1` = 1234);\n' +
           'INSERT INTO `creature_formations` (`leaderGuid`, `memberGuid`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`)' +
-          '(0, 1234, 0, 0, 0, 0, 0),\n' +
-          '(1, 1234, 0, 0, 1, 0, 0),\n' +
-          '(2, 1234, 0, 0, 0, 2, 0);',
+          '(99999, 99997, 0, 0, 0, 0, 0),\n' +
+          '(99999, 99998, 0, 0, 1, 0, 0),\n' +
+          '(99999, 99999, 0, 0, 0, 2, 0);',
       );
     });
 
@@ -355,15 +355,15 @@ describe('CreatureFormations integration tests', () => {
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_formations` WHERE (`id1` = 1234) AND (`guid` IN (1, 2, 3));\n' +
           'INSERT INTO `creature_formations` (`leaderGuid`, `memberGuid`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`)' +
-          '(1, 1234, 0, 0, 0, 10, 0),\n' +
-          '(3, 1234, 0, 0, 0, 0, 0);',
+          '(99999, 99997, 0, 0, 0, 10, 0),\n' +
+          '(99999, 99998, 0, 0, 0, 0, 0);',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_formations` WHERE (`id1` = 1234);\n' +
           'INSERT INTO `creature_formations` (`leaderGuid`, `memberGuid`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`)' +
-          '(0, 1234, 0, 0, 0, 0, 0),\n' +
-          '(1, 1234, 0, 0, 0, 10, 0),\n' +
-          '(3, 1234, 0, 0, 0, 0, 0);',
+          '(99999, 99997, 0, 0, 0, 0, 0),\n' +
+          '(99999, 99998, 0, 0, 0, 10, 0),\n' +
+          '(99999, 99999, 0, 0, 0, 0, 0);',
       );
     });
 
@@ -397,14 +397,14 @@ describe('CreatureFormations integration tests', () => {
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_formations` WHERE (`id1` = 1234) AND (`guid` IN (0));\n' +
           'INSERT INTO `creature_formations` (`leaderGuid`, `memberGuid`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
-          '(0, 1234, 0, 0, 123, 0, 0);',
+          '(99999, 99999, 0, 0, 123, 0, 0);',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_formations` WHERE (`id1` = 1234);\n' +
           'INSERT INTO `creature_formations` (`leaderGuid`, `memberGuid`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
-          '(0, 1234, 0, 0, 123, 0, 0),\n' +
-          '(1, 1234, 0, 0, 0, 0, 0),\n' +
-          '(2, 1234, 0, 0, 0, 0, 0);\n',
+          '(99999, 99997, 0, 0, 123, 0, 0),\n' +
+          '(99999, 99998, 0, 0, 0, 0, 0),\n' +
+          '(99999, 99999, 0, 0, 0, 0, 0);\n',
       );
     }));
   });

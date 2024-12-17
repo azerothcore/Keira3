@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CreatureFormations } from '@keira/shared/acore-world-model';
+import { CreatureFormation } from '@keira/shared/acore-world-model';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { EditorButtonsComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { TranslateModule } from '@ngx-translate/core';
@@ -25,7 +25,7 @@ import { CreatureFormationsService } from './creature-formations.service';
     NgxDatatableModule,
   ],
 })
-export class CreatureFormationsComponent extends MultiRowEditorComponent<CreatureFormations> {
+export class CreatureFormationsComponent extends MultiRowEditorComponent<CreatureFormation> {
   override readonly editorService = inject(CreatureFormationsService);
   readonly handlerService = inject(CreatureHandlerService);
 }
