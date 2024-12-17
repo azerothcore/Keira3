@@ -14,6 +14,6 @@ import { CreatureHandlerService } from '../creature-handler.service';
 export class CreatureFormationsService extends MultiRowEditorService<CreatureFormations> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(protected override readonly handlerService: CreatureHandlerService) {
-    super(CreatureFormations, CREATURE_FORMATIONS_TABLE, CREATURE_FORMATIONS_MEMBER_GUID, CREATURE_FORMATIONS_LEADER_GUID, handlerService);
+    super(CreatureFormations, CREATURE_FORMATIONS_TABLE, CREATURE_FORMATIONS_LEADER_GUID, CREATURE_FORMATIONS_MEMBER_GUID, handlerService);
   }
 }
