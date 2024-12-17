@@ -29,5 +29,6 @@ export class CreatureSpawn extends TableRow {
   unit_flags: number = 0;
   dynamicflags: number = 0;
   ScriptName: string = '';
+  Comment: string = '';
   VerifiedBuild: number = 0;
 }
