@@ -4,7 +4,7 @@ export const CREATURE_FORMATIONS_TABLE = 'creature_formations';
 export const CREATURE_FORMATIONS_MEMBER_GUID = 'memberGUID';
 export const CREATURE_FORMATIONS_LEADER_GUID = 'leaderGUID';
 
-export class CreatureFormations extends TableRow {
+export class CreatureFormation extends TableRow {
   leaderGUID: number = 0;
   memberGUID: number = 0;
   dist: number = 0;
