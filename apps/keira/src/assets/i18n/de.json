@@ -55,7 +55,7 @@
   "CONNECTION_WINDOW": {
     "HOST": "Host",
     "PORT": "Port",
-    "USERNAME": "Benutzername",
+    "USERNAME": "Benutzer",
     "PASSWORD": "Passwort",
     "DATABASE": "Datenbank",
     "SAVE_PASSWORD": "Passwort speichern",
@@ -71,7 +71,7 @@
     "COLLAPSE_ALL": "Alles einklappen",
     "UNSAVED_CHANGES": "Ungespeicherte Änderungen",
     "DISCONNECT": "Trennen",
-    "MODAL_DISCONNECT": "Sind Sie sicher, dass Sie die Verbindung trennen möchten?",
+    "MODAL_DISCONNECT": "Bist du sicher, dass du die Verbindung trennen möchten?",
     "CREATURE": {
       "TITLE": "Kreatur",
       "SELECT_CREATURE": "Kreatur auswählen",
