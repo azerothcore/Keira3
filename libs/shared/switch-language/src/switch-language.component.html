@@ -10,6 +10,7 @@
       <span>&nbsp;{{ 'LANGUAGES.ENGLISH' | translate }}</span>
     }
   </option>
+
   <optgroup label="Beta">
     <option value="es">
       🇪🇸
@@ -47,12 +48,16 @@
         <span>&nbsp;{{ 'LANGUAGES.SWEDEN' | translate }}</span>
       }
     </option>
+    <option value="de">
+      🇩🇪
+      @if (longVersion) {
+        <span>&nbsp;{{ 'LANGUAGES.GERMAN' | translate }}</span>
+      }
+    </option>
     <!-- <option value="nl">
 🇳🇱 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.DUTCH' | translate }}</span>
 </option>
-<option value="de">
-  🇩🇪 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.GERMAN' | translate }}</span>
-</option>
+
 <option value="pl">
   🇵🇱 <span *ngIf="longVersion">&nbsp;{{ 'LANGUAGES.POLISH' | translate }}</span>
 </option>
