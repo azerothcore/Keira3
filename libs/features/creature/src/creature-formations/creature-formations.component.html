@@ -23,7 +23,6 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
               <label class="control-label" for="dist">dist</label>
-              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.SPAWN.EQUIPMENT_ID_TOOLTIP' | translate"></i>
               <input [formControlName]="'dist'" id="dist" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
@@ -40,8 +39,11 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
               <label class="control-label" for="point_2">point_2</label>
-              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.SPAWN.ORIENTATION' | translate"></i>
               <input [formControlName]="'point_2'" id="point_2" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
+              <i class="fas fa-exclamation-triangle"></i>
+              <span [innerHTML]="'UNIQUE' | translate: { ENTITY_SECOND_ID_FIELD: editorService.entitySecondIdField }"></span>
             </div>
           </div>
         </form>

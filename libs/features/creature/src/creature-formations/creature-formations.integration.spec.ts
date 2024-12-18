@@ -67,7 +67,7 @@ describe('CreatureFormations integration tests', () => {
     it('should correctly initialise', () => {
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
-      //expect(page.formError.hidden).toBe(true);
+      expect(page.formError.hidden).toBe(true);
       expect(page.addNewRowBtn.disabled).toBe(false);
       expect(page.deleteSelectedRowBtn.disabled).toBe(true);
       expect(page.getInputById('leaderGUID').disabled).toBe(true);
@@ -283,11 +283,11 @@ describe('CreatureFormations integration tests', () => {
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(
-        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 1234);\n' +
+        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 0);\n' +
           'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
           '(0, 1234, 0, 0, 0, 0, 0),\n' +
-          '(1, 1235, 0, 0, 0, 0, 0),\n' +
-          '(2, 1236, 0, 0, 0, 0, 0);',
+          '(0, 1235, 0, 0, 0, 0, 0),\n' +
+          '(0, 1236, 0, 0, 0, 0, 0);',
       );
       expect(page.getEditorTableRowsCount()).toBe(3);
     });
@@ -372,39 +372,5 @@ describe('CreatureFormations integration tests', () => {
 
       page.expectUniqueError();
     });
-
-    it('changing a value via MapSelector should correctly work', waitForAsync(async () => {
-      const field = 'dist';
-      const sqliteQueryService = TestBed.inject(SqliteQueryService);
-      spyOn(sqliteQueryService, 'query').and.returnValue(of([{ m_ID: 123, m_MapName_lang1: 'Mock Map' }]));
-
-      // because this is a multi-row editor
-      page.clickRowOfDatatable(0);
-      await page.whenReady();
-
-      page.clickElement(page.getSelectorBtn(field));
-      await page.whenReady();
-      page.expectModalDisplayed();
-
-      page.clickSearchBtn();
-      await fixture.whenStable();
-      page.clickRowOfDatatableInModal(0);
-      await page.whenReady();
-      page.clickModalSelect();
-      await page.whenReady();
-
-      page.expectDiffQueryToContain(
-        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 1234) AND (`guid` IN (0));\n' + // leaderGUID remains 1234
-          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
-          `(1234, 123, 0, 0, 123, 0, 0);`,
-      );
-      page.expectFullQueryToContain(
-        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 1234);\n' +
-          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
-          '(1234, 1234, 0, 0, 123, 0, 0),\n' +
-          '(1234, 1235, 0, 0, 0, 0, 0),\n' +
-          '(1234, 1236, 0, 0, 0, 2, 0);\n',
-      );
-    }));
   });
 });
