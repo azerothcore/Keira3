@@ -92,7 +92,8 @@
       "SPAWN": "Spawn",
       "SPAWN_ADDON": "Spawn Addon",
       "SMARTAI": "SmartAI",
-      "TEXT": "Text"
+      "TEXT": "Text",
+      "FORMATIONS": "Formations"
     },
     "QUEST": {
       "TITLE": "Quest",

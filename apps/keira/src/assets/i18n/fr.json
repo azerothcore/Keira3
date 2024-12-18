@@ -88,7 +88,8 @@
       "SPAWN": "Spawn",
       "SPAWN_ADDON": "Spawn d'addon",
       "SMARTAI": "SmartAI",
-      "TEXT": "Text"
+      "TEXT": "Text",
+      "FORMATIONS": "Formations"
     },
     "QUEST": {
       "TITLE": "Quêtes",
