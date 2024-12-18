@@ -1,10 +1,12 @@
 <ngx-datatable
-  class="bootstrap table table-striped text-center"
+  class="bootstrap table table-striped text-center datatable-select"
   [rows]="timedActionlists$ | async"
   [headerHeight]="DTCFG.headerHeight"
   [footerHeight]="DTCFG.footerHeight"
   [columnMode]="DTCFG.columnMode"
   [rowHeight]="DTCFG.rowHeight"
+  [selectionType]="DTCFG.selectionType"
+  (select)="onSelect($event)"
 >
   <ngx-datatable-column [minWidth]="100" [maxWidth]="100" name="entryorguid" prop="entryorguid"></ngx-datatable-column>
   <ngx-datatable-column [minWidth]="50" [maxWidth]="60" name="id" prop="id"></ngx-datatable-column>
