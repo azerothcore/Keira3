@@ -266,7 +266,8 @@
       "PATH_ID": "如果该生物有航路点路径移动，则输入该生物要遵循的路径，取值自waypoint_data表中的id字段。",
       "MOUNT": "用于使生物显示为坐骑的坐骑的模型ID。此处的值会覆盖生物单位字段UNIT_FIELD_MOUNTDISPLAYID的值。",
       "VISIBILITY_DISTANCE_TYPE": "控制生物的可见距离。0=正常（默认90码）；1=较远（250码）",
-      "AURAS": "该生物的光环技能列表，用英文逗号分割"
+      "AURAS": "该生物的光环技能列表，用英文逗号分割",
+      "COMMENT": "Comment"
     },
     "TEMPLATE_MOVEMENT": {
       "GROUND": "0 = 无; 1 = 奔跑; 2 = 巡逻",

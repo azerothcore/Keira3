@@ -268,7 +268,8 @@
       "PATH_ID": "Se a creature tem movimentação por waypoints, então este campo contém o waypoint_data.id para o trajeto que a creature deve seguir.",
       "MOUNT": "O model ID da montaria a ser usada para fazer com que a creature apareça montada. O valor aqui sobrepõe o valor do campo UNIT_FIELD_MOUNTDISPLAYID.%",
       "VISIBILITY_DISTANCE_TYPE": "Normal = 0, 100.0f (default visible distance, 100 yards on continents); Tiny = 1, 25.0f; Small = 2, 50.0f; Large = 3, 200.0f; Gigantic = 4, 400.0f; Infinite = 5 (SIZE_OF_GRIDS max distance for visible objects)",
-      "AURAS": "Uma lista de auras, separadas por vírgulas, para ser aplicadas na creature."
+      "AURAS": "Uma lista de auras, separadas por vírgulas, para ser aplicadas na creature.",
+      "COMMENT": "Comment"
     },
     "TEMPLATE_MOVEMENT": {
       "GROUND": "0 = None; 1 = Run; 2 = Hover",

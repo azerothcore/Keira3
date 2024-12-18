@@ -271,7 +271,8 @@
       "PATH_ID": "If the creature has waypoint pathed movement, contains the waypoint_data.id for the path the creature is to follow.",
       "MOUNT": "The model ID of the mount to be used to make the creature appear mounted. The value here overrides the value for the creature unit field UNIT_FIELD_MOUNTDISPLAYID.",
       "VISIBILITY_DISTANCE_TYPE": "Normal = 0, 100.0f (default visible distance, 100 yards on continents); Tiny = 1, 25.0f; Small = 2, 50.0f; Large = 3, 200.0f; Gigantic = 4, 400.0f; Infinite = 5 (SIZE_OF_GRIDS max distance for visible objects)",
-      "AURAS": "A list of space separated auras to be applied on the creature."
+      "AURAS": "A list of space separated auras to be applied on the creature.",
+      "COMMENT": "Kommentar"
     },
     "TEMPLATE_MOVEMENT": {
       "GROUND": "0 = None; 1 = Run; 2 = Hover",
