@@ -88,10 +88,10 @@ import {
   SelectBroadcastTextComponent,
   SelectNpcTextComponent,
   SelectPageTextComponent,
+  AcoreStringComponent,
+  AcoreStringHandlerService,
+  SelectAcoreStringComponent,
 } from 'texts';
-import { AcoreStringComponent } from '../../../../libs/features/texts/src/acore-text/acore-string.component';
-import { AcoreStringHandlerService } from '../../../../libs/features/texts/src/acore-text/acore-string-handler.service';
-import { SelectAcoreStringComponent } from '../../../../libs/features/texts/src/acore-text/select-acore-string.component';
 
 export const KEIRA_ROUTES: Routes = [
   {
