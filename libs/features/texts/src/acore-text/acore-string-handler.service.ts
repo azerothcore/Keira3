@@ -5,7 +5,7 @@ import { ACORE_STRING_TABLE, AcoreString } from '@keira/shared/acore-world-model
 @Injectable({
   providedIn: 'root',
 })
-export class AcoreTextHandlerService extends HandlerService<AcoreString> {
+export class AcoreStringHandlerService extends HandlerService<AcoreString> {
   protected readonly mainEditorRoutePath = 'texts/acore-string';
 
   get isUnsaved(): boolean {

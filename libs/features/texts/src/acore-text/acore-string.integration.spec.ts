@@ -7,11 +7,11 @@ import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
-import { AcoreTextComponent } from './acore-text.component';
-import { AcoreTextHandlerService } from './acore-text-handler.service';
+import { AcoreStringComponent } from './acore-string.component';
+import { AcoreStringHandlerService } from './acore-string-handler.service';
 
 describe('Acore String integration tests', () => {
-  class Page extends EditorPageObject<AcoreTextComponent> {}
+  class Page extends EditorPageObject<AcoreStringComponent> {}
 
   const entry = 1234;
   const expectedFullCreateQuery =
@@ -35,13 +35,13 @@ describe('Acore String integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, ToastrModule.forRoot(), ModalModule.forRoot(), AcoreTextComponent, TranslateTestingModule],
+      imports: [BrowserAnimationsModule, ToastrModule.forRoot(), ModalModule.forRoot(), AcoreStringComponent, TranslateTestingModule],
       providers: [{ provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG }],
     }).compileComponents();
   }));
 
   function setup(creatingNew: boolean) {
-    const handlerService = TestBed.inject(AcoreTextHandlerService);
+    const handlerService = TestBed.inject(AcoreStringHandlerService);
     handlerService['_selected'] = `${entry}`;
     handlerService.isNew = creatingNew;
 
@@ -50,7 +50,7 @@ describe('Acore String integration tests', () => {
 
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
 
-    const fixture = TestBed.createComponent(AcoreTextComponent);
+    const fixture = TestBed.createComponent(AcoreStringComponent);
     const component = fixture.componentInstance;
     const page = new Page(fixture);
     fixture.autoDetectChanges(true);

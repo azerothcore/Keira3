@@ -4,28 +4,28 @@ import { ACORE_STRING_CUSTOM_STARTING_ID, ACORE_STRING_ENTRY, ACORE_STRING_TABLE
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { SelectAcoreStringService } from './select-acore-string.service';
+import { AcoreStringHandlerService } from './acore-string-handler.service';
 import { CreateComponent, HighlightjsWrapperComponent, TopBarComponent } from '@keira/shared/base-editor-components';
-import { SelectAcoreTextService } from './select-acore-text.service';
-import { AcoreTextHandlerService } from './acore-text-handler.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './select-acore-text.component.html',
+  templateUrl: './select-acore-string.component.html',
   standalone: true,
   imports: [
-    TopBarComponent,
-    CreateComponent,
     TranslateModule,
     FormsModule,
     ReactiveFormsModule,
-    HighlightjsWrapperComponent,
     NgxDatatableModule,
+    TopBarComponent,
+    CreateComponent,
+    HighlightjsWrapperComponent,
   ],
 })
-export class SelectAcoreTextComponent extends SelectComponent<AcoreString> {
+export class SelectAcoreStringComponent extends SelectComponent<AcoreString> {
   readonly entityTable = ACORE_STRING_TABLE;
   readonly entityIdField = ACORE_STRING_ENTRY;
   readonly customStartingId = ACORE_STRING_CUSTOM_STARTING_ID;
-  readonly selectService = inject(SelectAcoreTextService);
-  readonly handlerService = inject(AcoreTextHandlerService);
+  readonly selectService = inject(SelectAcoreStringService);
+  readonly handlerService = inject(AcoreStringHandlerService);
 }

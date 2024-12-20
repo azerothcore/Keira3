@@ -7,12 +7,12 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
-import { SelectAcoreTextComponent } from './select-acore-text.component';
-import { AcoreTextHandlerService } from './acore-text-handler.service';
-import { SelectAcoreTextService } from './select-acore-text.service';
+import { SelectAcoreStringComponent } from './select-acore-string.component';
+import { AcoreStringHandlerService } from './acore-string-handler.service';
+import { SelectAcoreStringService } from './select-acore-string.service';
 
-describe(`${SelectAcoreTextComponent.name} integration tests`, () => {
-  class Page extends SelectPageObject<SelectAcoreTextComponent> {
+describe(`${SelectAcoreStringComponent.name} integration tests`, () => {
+  class Page extends SelectPageObject<SelectAcoreStringComponent> {
     override ID_FIELD = ACORE_STRING_ENTRY;
   }
 
@@ -21,8 +21,8 @@ describe(`${SelectAcoreTextComponent.name} integration tests`, () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, ToastrModule.forRoot(), ModalModule.forRoot(), SelectAcoreTextComponent, TranslateTestingModule],
-      providers: [AcoreTextHandlerService],
+      imports: [BrowserAnimationsModule, ToastrModule.forRoot(), ModalModule.forRoot(), SelectAcoreStringComponent, TranslateTestingModule],
+      providers: [AcoreStringHandlerService],
     }).compileComponents();
   }));
 
@@ -31,9 +31,9 @@ describe(`${SelectAcoreTextComponent.name} integration tests`, () => {
     const queryService = TestBed.inject(MysqlQueryService);
     const querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
 
-    const selectService = TestBed.inject(SelectAcoreTextService);
+    const selectService = TestBed.inject(SelectAcoreStringService);
 
-    const fixture = TestBed.createComponent(SelectAcoreTextComponent);
+    const fixture = TestBed.createComponent(SelectAcoreStringComponent);
     const page = new Page(fixture);
     const component = fixture.componentInstance;
     fixture.autoDetectChanges(true);

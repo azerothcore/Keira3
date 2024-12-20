@@ -1,16 +1,16 @@
 import { TestBed } from '@angular/core/testing';
-import { AcoreTextHandlerService } from './acore-text-handler.service';
+import { AcoreStringHandlerService } from './acore-string-handler.service';
 import { ACORE_STRING_TABLE } from '@keira/shared/acore-world-model';
 
-describe(AcoreTextHandlerService.name, () => {
+describe(AcoreStringHandlerService.name, () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      providers: [AcoreTextHandlerService],
+      providers: [AcoreStringHandlerService],
     }),
   );
 
   const setup = () => {
-    const service = TestBed.inject(AcoreTextHandlerService);
+    const service = TestBed.inject(AcoreStringHandlerService);
     return { service };
   };
 

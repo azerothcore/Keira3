@@ -8,16 +8,16 @@ import {
   ACORE_STRING_TABLE,
   AcoreString,
 } from '@keira/shared/acore-world-model';
-import { AcoreTextHandlerService } from './acore-text-handler.service';
+import { AcoreStringHandlerService } from './acore-string-handler.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class SelectAcoreTextService extends SelectService<AcoreString> {
+export class SelectAcoreStringService extends SelectService<AcoreString> {
   /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   constructor(
     override readonly queryService: MysqlQueryService,
-    public override readonly handlerService: AcoreTextHandlerService,
+    public override readonly handlerService: AcoreStringHandlerService,
   ) {
     super(queryService, handlerService, ACORE_STRING_TABLE, ACORE_STRING_ENTRY, ACORE_STRING_DEFAULT, ACORE_STRING_SEARCH_FIELDS);
   }
