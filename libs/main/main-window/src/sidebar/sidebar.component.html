@@ -540,6 +540,22 @@
             <div class="sidebar-submenu" [@slide]="menuStates['texts']">
               <ul>
                 <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'texts/select-acore-string'">
+                    {{ 'SIDEBAR.TEXTS.SELECT_ACORE_STRING_TEXT' | translate }}
+                  </a>
+                </li>
+                @if (broadcastTextHandlerService.selected) {
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'texts/acore-string'">
+                      {{ 'SIDEBAR.TEXTS.ACORE_STRING_TEXT' | translate }}
+                      @if (broadcastTextHandlerService.isUnsaved) {
+                        <keira-unsaved-icon />
+                      }
+                    </a>
+                  </li>
+                }
+                <hr />
+                <li>
                   <a href="#" routerLinkActive="active" [routerLink]="'texts/select-broadcast-text'">
                     {{ 'SIDEBAR.TEXTS.SELECT_BROADCAST_TEXT' | translate }}
                   </a>

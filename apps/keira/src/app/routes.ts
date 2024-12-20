@@ -89,6 +89,9 @@ import {
   SelectNpcTextComponent,
   SelectPageTextComponent,
 } from 'texts';
+import { AcoreTextComponent } from '../../../../libs/features/texts/src/acore-text/acore-text.component';
+import { AcoreTextHandlerService } from '../../../../libs/features/texts/src/acore-text/acore-text-handler.service';
+import { SelectAcoreTextComponent } from '../../../../libs/features/texts/src/acore-text/select-acore-text.component';
 
 export const KEIRA_ROUTES: Routes = [
   {
@@ -405,6 +408,15 @@ export const KEIRA_ROUTES: Routes = [
         path: 'npc-text',
         component: NpcTextComponent,
         canActivate: [NpcTextHandlerService],
+      },
+      {
+        path: 'acore-string',
+        component: AcoreTextComponent,
+        canActivate: [AcoreTextHandlerService],
+      },
+      {
+        path: 'select-acore-string',
+        component: SelectAcoreTextComponent,
       },
     ],
   },

@@ -149,7 +149,9 @@
         "ID": "The ID of the text in the page. This number is unique to every text ID.",
         "NEXT_PAGE_ID": "The ID of the next page's text ID.",
         "TEXT": "The actual text. The message in this field will be shown as the text on a page."
-      }
+      },
+      "ACORE_STRING_TEXT": "Acore Strings",
+      "SELECT_ACORE_STRING_TEXT": "Select Acore Strings"
     },
     "GOSSIP": {
       "TITLE": "Ventana de Texto de Criatura",
