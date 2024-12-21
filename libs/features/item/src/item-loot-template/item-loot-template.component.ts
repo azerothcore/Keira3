@@ -14,6 +14,6 @@ import { ItemLootTemplateService } from './item-loot-template.service';
   imports: [TopBarComponent, LootEditorComponent],
 })
 export class ItemLootTemplateComponent extends LootTemplateComponent<ItemLootTemplate> {
-  override readonly editorService = inject(ItemLootTemplateService);
+  protected override readonly editorService = inject(ItemLootTemplateService);
   readonly handlerService = inject(ItemHandlerService);
 }

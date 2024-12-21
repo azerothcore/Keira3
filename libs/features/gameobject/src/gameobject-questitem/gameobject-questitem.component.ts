@@ -30,6 +30,6 @@ import { GameobjectQuestitemService } from './gameobject-questitem.service';
   ],
 })
 export class GameobjectQuestitemComponent extends MultiRowEditorComponent<GameobjectQuestitem> {
-  override readonly editorService = inject(GameobjectQuestitemService);
+  protected override readonly editorService = inject(GameobjectQuestitemService);
   readonly handlerService = inject(GameobjectHandlerService);
 }

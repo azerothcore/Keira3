@@ -9,6 +9,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   template: '',
 })
 export abstract class SingleRowEditorComponent<T extends TableRow> extends EditorComponent<T> {
-  public abstract override readonly editorService: SingleRowEditorService<T>;
+  protected abstract override readonly editorService: SingleRowEditorService<T>;
   protected abstract override readonly handlerService: HandlerService<T>;
 }

@@ -14,6 +14,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   imports: [TopBarComponent, LootEditorComponent],
 })
 export class ProspectingLootTemplateComponent extends LootTemplateComponent<ProspectingLootTemplate> {
-  override readonly editorService = inject(ProspectingLootTemplateService);
+  protected override readonly editorService = inject(ProspectingLootTemplateService);
   readonly handlerService = inject(ItemHandlerService);
 }

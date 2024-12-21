@@ -13,7 +13,7 @@ import { LootTemplateComponent } from './loot-template.component';
   template: '',
 })
 export abstract class LootTemplateIdComponent<T extends LootTemplate> extends LootTemplateComponent<T> implements OnInit {
-  public abstract override editorService: LootEditorIdService<T>;
+  protected abstract override editorService: LootEditorIdService<T>;
   protected abstract override handlerService: HandlerService<T>;
 
   protected _lootId!: number;

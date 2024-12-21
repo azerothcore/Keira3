@@ -14,6 +14,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   imports: [TopBarComponent, LootEditorComponent],
 })
 export class PickpocketingLootTemplateComponent extends LootTemplateIdComponent<PickpocketingLootTemplate> {
-  override readonly editorService = inject(PickpocketingLootTemplateService);
+  protected override readonly editorService = inject(PickpocketingLootTemplateService);
   readonly handlerService = inject(CreatureHandlerService);
 }

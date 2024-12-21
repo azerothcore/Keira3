@@ -34,7 +34,7 @@ export class GossipMenuOptionComponent extends MultiRowEditorComponent<GossipMen
   readonly OPTION_ICON = OPTION_ICON;
   readonly OPTION_TYPE = OPTION_TYPE;
 
-  override readonly editorService = inject(GossipMenuOptionService);
+  protected override readonly editorService = inject(GossipMenuOptionService);
   readonly handlerService = inject(GossipHandlerService);
 
   showGossipPreview = true;

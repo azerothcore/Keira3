@@ -33,6 +33,6 @@ import { NpcVendorService } from './npc-vendor.service';
   ],
 })
 export class NpcVendorComponent extends MultiRowEditorComponent<NpcVendor> {
-  override readonly editorService = inject(NpcVendorService);
+  protected override readonly editorService = inject(NpcVendorService);
   readonly handlerService = inject(CreatureHandlerService);
 }

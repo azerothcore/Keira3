@@ -31,7 +31,7 @@ import { QuestOfferRewardService } from './quest-offer-reward.service';
 export class QuestOfferRewardComponent extends SingleRowEditorComponent<QuestOfferReward> {
   readonly EMOTE = EMOTE;
 
-  override readonly editorService = inject(QuestOfferRewardService);
+  protected override readonly editorService = inject(QuestOfferRewardService);
   readonly handlerService = inject(QuestHandlerService);
   readonly questPreviewService = inject(QuestPreviewService);
 }

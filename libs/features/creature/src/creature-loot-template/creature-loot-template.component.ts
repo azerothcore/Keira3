@@ -14,6 +14,6 @@ import { CreatureLootTemplateService } from './creature-loot-template.service';
   imports: [TopBarComponent, LootEditorComponent],
 })
 export class CreatureLootTemplateComponent extends LootTemplateIdComponent<CreatureLootTemplate> {
-  override readonly editorService = inject(CreatureLootTemplateService);
+  protected override readonly editorService = inject(CreatureLootTemplateService);
   readonly handlerService = inject(CreatureHandlerService);
 }

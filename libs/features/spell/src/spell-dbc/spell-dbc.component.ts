@@ -36,6 +36,6 @@ import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor
   ],
 })
 export class SpellDbcComponent extends SingleRowEditorComponent<SpellDbc> {
-  override readonly editorService = inject(SpellDbcService);
+  protected override readonly editorService = inject(SpellDbcService);
   readonly handlerService = inject(SpellHandlerService);
 }
