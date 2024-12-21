@@ -1,7 +1,7 @@
-import { ComplexKeyHandlerService } from '../../service/handlers/complex-key.handler.service';
-import { TableRow, WIKI_BASE_URL } from '@keira/shared/constants';
-import { DTCFG } from '@keira/shared/config';
 import { ChangeDetectorRef, inject } from '@angular/core';
+import { DTCFG } from '@keira/shared/config';
+import { TableRow, WIKI_BASE_URL } from '@keira/shared/constants';
+import { ComplexKeyHandlerService } from '../../service/handlers/complex-key.handler.service';
 import { SearchService } from '../../service/select/search.service';
 
 /* istanbul ignore next */ // TODO: fix coverage
@@ -14,7 +14,8 @@ export abstract class SelectComplexKeyComponent<T extends TableRow> {
 
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
-  onSelect(event: { selected: Array<Partial<T>> }) {
+  onSelect(event: { selected: Array<Partial<T>> }): void {
+    console.log('### event', event);
     this.handlerService.select(false, event.selected[0]);
   }
 
