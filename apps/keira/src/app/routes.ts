@@ -88,6 +88,9 @@ import {
   SelectBroadcastTextComponent,
   SelectNpcTextComponent,
   SelectPageTextComponent,
+  AcoreStringComponent,
+  AcoreStringHandlerService,
+  SelectAcoreStringComponent,
 } from 'texts';
 
 export const KEIRA_ROUTES: Routes = [
@@ -405,6 +408,15 @@ export const KEIRA_ROUTES: Routes = [
         path: 'npc-text',
         component: NpcTextComponent,
         canActivate: [NpcTextHandlerService],
+      },
+      {
+        path: 'acore-string',
+        component: AcoreStringComponent,
+        canActivate: [AcoreStringHandlerService],
+      },
+      {
+        path: 'select-acore-string',
+        component: SelectAcoreStringComponent,
       },
     ],
   },

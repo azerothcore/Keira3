@@ -147,7 +147,9 @@
       "SELECT_NPC_TEXT": "NPC-Text auswählen",
       "NPC_TEXT": "NPC-Text",
       "SELECT_PAGE_TEXT": "Seiten-Text auswählen",
-      "PAGE_TEXT": "Seiten-Text"
+      "PAGE_TEXT": "Seiten-Text",
+      "ACORE_STRING_TEXT": "Acore-String Texts",
+      "SELECT_ACORE_STRING_TEXT": "Acore-String Texts auswählen"
     },
     "GOSSIP": {
       "TITLE": "Klatsch",

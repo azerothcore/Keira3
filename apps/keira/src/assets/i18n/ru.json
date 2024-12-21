@@ -144,7 +144,9 @@
       "SELECT_NPC_TEXT": "Select NPC Text",
       "NPC_TEXT": "NPC Text",
       "SELECT_PAGE_TEXT": "Select Page Text",
-      "PAGE_TEXT": "Page Text"
+      "PAGE_TEXT": "Page Text",
+      "ACORE_STRING_TEXT": "Acore Strings",
+      "SELECT_ACORE_STRING_TEXT": "Select Acore Strings"
     },
     "GOSSIP": {
       "TITLE": "Разговоры",

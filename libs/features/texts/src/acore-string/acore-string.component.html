@@ -1,0 +1,73 @@
+<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
+
+<div class="container-fluid">
+  @if (editorService.loading) {
+    <span [translate]="'LOADING'"></span>
+  }
+
+  @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
+    <div>
+      <div class="content-block">
+        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)" />
+      </div>
+      <form [formGroup]="editorService.form" class="form-group edit-form">
+        <div class="content-block">
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="entry">Entry</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'OTHER_TEXTS.BROADCAST_TEXT.ID' | translate"></i>
+              <input [formControlName]="'entry'" id="entry" type="text" class="form-control form-control-sm" />
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-12">
+              <label class="control-label" for="content_default">Content Default</label>
+              <textarea [formControlName]="'content_default'" id="content_default" class="form-control form-control-sm" rows="5"></textarea>
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+              <label class="control-label" for="locale_koKR">Locale koKR</label>
+              <textarea [formControlName]="'locale_koKR'" id="locale_koKR" class="form-control form-control-sm" rows="5"></textarea>
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+              <label class="control-label" for="locale_frFR">Locale frFr</label>
+              <textarea [formControlName]="'locale_frFR'" id="locale_frFR" class="form-control form-control-sm" rows="5"></textarea>
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+              <label class="control-label" for="locale_deDE">Locale deDe</label>
+              <textarea [formControlName]="'locale_deDE'" id="locale_deDE" class="form-control form-control-sm" rows="5"></textarea>
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+              <label class="control-label" for="locale_zhCN">Locale zhCN</label>
+              <textarea [formControlName]="'locale_zhCN'" id="locale_zhCN" class="form-control form-control-sm" rows="5"></textarea>
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+              <label class="control-label" for="locale_zhTW">Locale zhTW</label>
+              <textarea [formControlName]="'locale_zhTW'" id="locale_zhTW" class="form-control form-control-sm" rows="5"></textarea>
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+              <label class="control-label" for="locale_esES">Locale esES</label>
+              <textarea [formControlName]="'locale_esES'" id="locale_esES" class="form-control form-control-sm" rows="5"></textarea>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+              <label class="control-label" for="locale_esMX">Locale esMX</label>
+              <textarea [formControlName]="'locale_esMX'" id="locale_esMX" class="form-control form-control-sm" rows="5"></textarea>
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+              <label class="control-label" for="locale_ruRU">Locale ruRU</label>
+              <textarea [formControlName]="'locale_ruRU'" id="locale_ruRU" class="form-control form-control-sm" rows="5"></textarea>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  }
+</div>

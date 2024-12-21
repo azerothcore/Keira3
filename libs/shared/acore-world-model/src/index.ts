@@ -1,3 +1,4 @@
+export * from './entities/acore-text.type';
 export * from './entities/area.type';
 export * from './entities/broadcast-text.type';
 export * from './entities/conditions.type';
