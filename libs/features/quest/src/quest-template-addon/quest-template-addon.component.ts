@@ -39,7 +39,7 @@ import { QuestTemplateAddonService } from './quest-template-addon.service';
   ],
 })
 export class QuestTemplateAddonComponent extends SingleRowEditorComponent<QuestTemplateAddon> {
-  override readonly editorService = inject(QuestTemplateAddonService);
+  protected override readonly editorService = inject(QuestTemplateAddonService);
   readonly handlerService = inject(QuestHandlerService);
   readonly questPreviewService = inject(QuestPreviewService);
 

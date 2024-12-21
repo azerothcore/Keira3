@@ -34,7 +34,7 @@ import { NpcTrainerService } from './npc-trainer.service';
   ],
 })
 export class NpcTrainerComponent extends MultiRowEditorComponent<NpcTrainer> {
-  override readonly editorService = inject(NpcTrainerService);
+  protected override readonly editorService = inject(NpcTrainerService);
   readonly handlerService = inject(CreatureHandlerService);
   readonly sqliteQueryService = inject(SqliteQueryService);
 }

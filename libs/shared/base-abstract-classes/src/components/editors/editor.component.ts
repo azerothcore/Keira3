@@ -11,7 +11,7 @@ import { HandlerService } from '../../service/handlers/handler.service';
   template: '',
 })
 export abstract class EditorComponent<T extends TableRow> extends SubscriptionHandler implements OnInit {
-  public abstract readonly editorService: EditorService<T>;
+  protected abstract readonly editorService: EditorService<T>;
   protected abstract readonly handlerService: HandlerService<T>;
 
   readonly WIKI_BASE_URL = WIKI_BASE_URL;

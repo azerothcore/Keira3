@@ -39,6 +39,6 @@ export class CreatureTemplateResistanceComponent extends MultiRowEditorComponent
 
   protected readonly CREATURE_TEMPLATE_RESISTANCE_SCHOOL = CREATURE_TEMPLATE_RESISTANCE_SCHOOL;
 
-  override readonly editorService = inject(CreatureTemplateResistanceService);
+  protected override readonly editorService = inject(CreatureTemplateResistanceService);
   readonly handlerService = inject(CreatureHandlerService);
 }

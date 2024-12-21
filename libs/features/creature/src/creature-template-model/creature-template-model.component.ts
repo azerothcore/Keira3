@@ -32,7 +32,7 @@ import { CreatureTemplateModelService } from './creature-template-model.service'
   ],
 })
 export class CreatureTemplateModelComponent extends MultiRowEditorComponent<CreatureTemplateModel> {
-  override readonly editorService = inject(CreatureTemplateModelService);
+  protected override readonly editorService = inject(CreatureTemplateModelService);
   readonly handlerService = inject(CreatureHandlerService);
 
   protected readonly NPC_VIEWER_TYPE = VIEWER_TYPE.NPC;

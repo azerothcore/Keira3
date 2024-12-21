@@ -29,6 +29,6 @@ import { GameobjectSpawnAddonService } from './gameobject-spawn-addon.service';
 export class GameobjectSpawnAddonComponent extends MultiRowEditorComponent<GameobjectSpawnAddon> {
   readonly INVISIBILITY_TYPE = INVISIBILITY_TYPE;
 
-  override readonly editorService = inject(GameobjectSpawnAddonService);
+  protected override readonly editorService = inject(GameobjectSpawnAddonService);
   readonly handlerService = inject(GameobjectHandlerService);
 }

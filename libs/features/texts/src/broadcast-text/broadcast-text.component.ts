@@ -26,7 +26,7 @@ import { BroadcastTextService } from './broadcast-text.service';
   ],
 })
 export class BroadcastTextComponent extends SingleRowEditorComponent<BroadcastText> {
-  override readonly editorService = inject(BroadcastTextService);
+  protected override readonly editorService = inject(BroadcastTextService);
   protected override readonly handlerService = inject(BroadcastTextHandlerService);
 
   protected readonly EMOTE = EMOTE;
