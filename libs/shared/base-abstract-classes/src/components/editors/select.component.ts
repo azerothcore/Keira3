@@ -7,10 +7,10 @@ import { HandlerService } from '../../service/handlers/handler.service';
 import { DTCFG } from '@keira/shared/config';
 
 export abstract class SelectComponent<T extends TableRow> {
-  abstract readonly entityTable: string;
-  abstract readonly entityIdField: string;
-  abstract readonly customStartingId: number;
-  abstract readonly selectService: SelectService<T>;
+  protected abstract readonly entityTable: string;
+  protected abstract readonly entityIdField: string;
+  protected abstract readonly customStartingId: number;
+  protected abstract readonly selectService: SelectService<T>;
   abstract readonly handlerService: HandlerService<T>;
 
   readonly queryService = inject(MysqlQueryService);

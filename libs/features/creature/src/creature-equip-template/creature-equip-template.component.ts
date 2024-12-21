@@ -27,6 +27,6 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
   ],
 })
 export class CreatureEquipTemplateComponent extends SingleRowEditorComponent<CreatureEquipTemplate> {
-  override readonly editorService = inject(CreatureEquipTemplateService);
+  protected override readonly editorService = inject(CreatureEquipTemplateService);
   readonly handlerService = inject(CreatureHandlerService);
 }

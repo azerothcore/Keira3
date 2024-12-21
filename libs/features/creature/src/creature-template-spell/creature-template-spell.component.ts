@@ -38,7 +38,7 @@ export class CreatureTemplateSpellComponent extends MultiRowEditorComponent<Crea
 
   protected readonly SPELL_INDEXES = [0, 1, 2, 3, 4, 5, 6, 7];
 
-  override readonly editorService = inject(CreatureTemplateSpellService);
+  protected override readonly editorService = inject(CreatureTemplateSpellService);
   readonly handlerService = inject(CreatureHandlerService);
   readonly sqliteQueryService = inject(SqliteQueryService);
 }

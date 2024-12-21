@@ -20,6 +20,6 @@ export class CreatureTemplateMovementComponent extends SingleRowEditorComponent<
     return this.WIKI_BASE_URL + CREATURE_TEMPLATE_MOVEMENT_TABLE;
   }
 
-  override readonly editorService = inject(CreatureTemplateMovementService);
+  protected override readonly editorService = inject(CreatureTemplateMovementService);
   readonly handlerService = inject(CreatureHandlerService);
 }

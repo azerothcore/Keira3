@@ -32,7 +32,7 @@ import { GossipMenuService } from './gossip-menu.service';
   ],
 })
 export class GossipMenuComponent extends MultiRowEditorComponent<GossipMenu> {
-  override readonly editorService = inject(GossipMenuService);
+  protected override readonly editorService = inject(GossipMenuService);
   readonly handlerService = inject(GossipHandlerService);
   readonly queryService = inject(MysqlQueryService);
 }

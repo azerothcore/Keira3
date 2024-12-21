@@ -91,6 +91,6 @@ export class CreatureTemplateComponent extends SingleRowEditorComponent<Creature
   protected RACE_ICON_GENDER = true;
   protected showCreaturePreview = false;
 
-  override readonly editorService = inject(CreatureTemplateService);
+  protected override readonly editorService = inject(CreatureTemplateService);
   readonly handlerService = inject(CreatureHandlerService);
 }

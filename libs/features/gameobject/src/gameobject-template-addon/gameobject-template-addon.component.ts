@@ -29,6 +29,6 @@ import { GameobjectTemplateAddonService } from './gameobject-template-addon.serv
 export class GameobjectTemplateAddonComponent extends SingleRowEditorComponent<GameobjectTemplateAddon> {
   readonly GAMEOBJECT_FLAGS = GAMEOBJECT_FLAGS;
 
-  override readonly editorService = inject(GameobjectTemplateAddonService);
+  protected override readonly editorService = inject(GameobjectTemplateAddonService);
   readonly handlerService = inject(GameobjectHandlerService);
 }

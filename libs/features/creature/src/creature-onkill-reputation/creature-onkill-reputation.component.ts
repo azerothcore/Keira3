@@ -36,6 +36,6 @@ import { CreatureOnkillReputationService } from './creature-onkill-reputation.se
 export class CreatureOnkillReputationComponent extends SingleRowEditorComponent<CreatureOnkillReputation> {
   readonly FACTION_RANK = FACTION_RANK;
 
-  override readonly editorService = inject(CreatureOnkillReputationService);
+  protected override readonly editorService = inject(CreatureOnkillReputationService);
   readonly handlerService = inject(CreatureHandlerService);
 }

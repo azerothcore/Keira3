@@ -14,6 +14,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   imports: [TopBarComponent, LootEditorComponent],
 })
 export class SkinningLootTemplateComponent extends LootTemplateIdComponent<SkinningLootTemplate> {
-  override readonly editorService = inject(SkinningLootTemplateService);
+  protected override readonly editorService = inject(SkinningLootTemplateService);
   readonly handlerService = inject(CreatureHandlerService);
 }

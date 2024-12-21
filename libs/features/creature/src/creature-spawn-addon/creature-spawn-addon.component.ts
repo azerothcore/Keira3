@@ -33,6 +33,6 @@ export class CreatureSpawnAddonComponent extends MultiRowEditorComponent<Creatur
   readonly CREATURE_ADDON_BYTES_1 = CREATURE_ADDON_BYTES_1;
   readonly CREATURE_ADDON_BYTES_2 = CREATURE_ADDON_BYTES_2;
 
-  override readonly editorService = inject(CreatureSpawnAddonService);
+  protected override readonly editorService = inject(CreatureSpawnAddonService);
   readonly handlerService = inject(CreatureHandlerService);
 }
