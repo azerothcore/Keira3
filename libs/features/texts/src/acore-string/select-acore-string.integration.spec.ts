@@ -39,51 +39,51 @@ describe(`${SelectAcoreStringComponent.name} integration tests`, () => {
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
 
-    return { component, fixture, selectService, broadcast: page, queryService, querySpy, navigateSpy };
+    return { component, fixture, selectService, acoreStrings: page, queryService, querySpy, navigateSpy };
   }
 
   it('should correctly initialise', waitForAsync(async () => {
-    const { fixture, broadcast, querySpy, component } = setup();
+    const { fixture, acoreStrings, querySpy, component } = setup();
 
     await fixture.whenStable();
-    expect(broadcast.createInput.value).toEqual(`${component.customStartingId}`);
-    broadcast.expectNewEntityFree();
+    expect(acoreStrings.createInput.value).toEqual(`${component.customStartingId}`);
+    acoreStrings.expectNewEntityFree();
     expect(querySpy).toHaveBeenCalledWith('SELECT MAX(entry) AS max FROM acore_string;');
-    expect(broadcast.queryWrapper.innerText).toContain('SELECT * FROM `acore_string` LIMIT 50');
+    expect(acoreStrings.queryWrapper.innerText).toContain('SELECT * FROM `acore_string` LIMIT 50');
   }));
 
   it('should correctly behave when inserting and selecting free entry', waitForAsync(async () => {
-    const { fixture, broadcast, querySpy, navigateSpy } = setup();
+    const { fixture, acoreStrings, querySpy, navigateSpy } = setup();
 
     await fixture.whenStable();
     querySpy.calls.reset();
     querySpy.and.returnValue(of([]));
 
-    broadcast.setInputValue(broadcast.createInput, value);
+    acoreStrings.setInputValue(acoreStrings.createInput, value);
 
     expect(querySpy).toHaveBeenCalledTimes(1);
     expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`acore_string\` WHERE (entry = ${value})`);
-    broadcast.expectNewEntityFree();
+    acoreStrings.expectNewEntityFree();
 
-    broadcast.clickElement(broadcast.selectNewBtn);
+    acoreStrings.clickElement(acoreStrings.selectNewBtn);
 
     expect(navigateSpy).toHaveBeenCalledTimes(1);
     expect(navigateSpy).toHaveBeenCalledWith([expectedRoute]);
-    broadcast.expectTopBarCreatingNew(value);
+    acoreStrings.expectTopBarCreatingNew(value);
   }));
 
   it('should correctly behave when inserting an existing entity', waitForAsync(async () => {
-    const { fixture, broadcast, querySpy } = setup();
+    const { fixture, acoreStrings, querySpy } = setup();
 
     await fixture.whenStable();
     querySpy.calls.reset();
     querySpy.and.returnValue(of([{}]));
 
-    broadcast.setInputValue(broadcast.createInput, value);
+    acoreStrings.setInputValue(acoreStrings.createInput, value);
 
     expect(querySpy).toHaveBeenCalledTimes(1);
     expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`acore_string\` WHERE (entry = ${value})`);
-    broadcast.expectEntityAlreadyInUse();
+    acoreStrings.expectEntityAlreadyInUse();
   }));
 
   for (const { id, entry, limit, expectedQuery } of [
@@ -95,17 +95,17 @@ describe(`${SelectAcoreStringComponent.name} integration tests`, () => {
     },
   ]) {
     it(`searching an existing entity should correctly work [${id}]`, () => {
-      const { broadcast, querySpy } = setup();
+      const { acoreStrings, querySpy } = setup();
 
       querySpy.calls.reset();
       if (entry) {
-        broadcast.setInputValue(broadcast.searchIdInput, entry);
+        acoreStrings.setInputValue(acoreStrings.searchIdInput, entry);
       }
-      broadcast.setInputValue(broadcast.searchLimitInput, limit);
+      acoreStrings.setInputValue(acoreStrings.searchLimitInput, limit);
 
-      expect(broadcast.queryWrapper.innerText).toContain(expectedQuery);
+      expect(acoreStrings.queryWrapper.innerText).toContain(expectedQuery);
 
-      broadcast.clickElement(broadcast.searchBtn);
+      acoreStrings.clickElement(acoreStrings.searchBtn);
 
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy).toHaveBeenCalledWith(expectedQuery);
@@ -113,28 +113,25 @@ describe(`${SelectAcoreStringComponent.name} integration tests`, () => {
   }
 
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
-    const { navigateSpy, broadcast, querySpy } = setup();
+    const { navigateSpy, acoreStrings, querySpy } = setup();
 
     const results = [{ entry: 1 }, { entry: 2 }, { entry: 3 }];
     querySpy.calls.reset();
     querySpy.and.returnValue(of(results));
 
-    broadcast.clickElement(broadcast.searchBtn);
+    acoreStrings.clickElement(acoreStrings.searchBtn);
 
-    const row0 = broadcast.getDatatableRow(0);
-    const row1 = broadcast.getDatatableRow(1);
-    const row2 = broadcast.getDatatableRow(2);
+    const row0 = acoreStrings.getDatatableRow(0);
+    const row1 = acoreStrings.getDatatableRow(1);
+    const row2 = acoreStrings.getDatatableRow(2);
 
     expect(row0.innerText).toContain(String(results[0].entry));
     expect(row1.innerText).toContain(String(results[1].entry));
     expect(row2.innerText).toContain(String(results[2].entry));
 
-    broadcast.clickElement(broadcast.getDatatableCell(0, 0));
+    acoreStrings.clickElement(acoreStrings.getDatatableCell(0, 0));
 
     expect(navigateSpy).toHaveBeenCalledTimes(1);
     expect(navigateSpy).toHaveBeenCalledWith([expectedRoute]);
-    // TODO: check this
-    // Note: this is different than in other editors
-    // expect(broadcast.topBar.innerText).toContain(`Editing: broadcast_text (${results[0].ID})`);
   });
 });

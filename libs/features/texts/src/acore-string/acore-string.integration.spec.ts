@@ -56,7 +56,7 @@ describe('Acore String integration tests', () => {
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
 
-    return { originalEntity, handlerService, queryService, querySpy, fixture, component, page: page };
+    return { originalEntity, handlerService, queryService, querySpy, fixture, component, page };
   }
 
   describe('Creating new', () => {

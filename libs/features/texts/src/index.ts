@@ -10,6 +10,6 @@ export { NpcTextHandlerService } from './npc-text/npc-text-handler.service';
 export { SelectNpcTextComponent } from './npc-text/select-npc-text.component';
 export { NpcTextComponent } from './npc-text/npc-text.component';
 
-export { AcoreStringHandlerService } from './acore-text/acore-string-handler.service';
-export { SelectAcoreStringComponent } from './acore-text/select-acore-string.component';
-export { AcoreStringComponent } from './acore-text/acore-string.component';
+export { AcoreStringHandlerService } from './acore-string/acore-string-handler.service';
+export { SelectAcoreStringComponent } from './acore-string/select-acore-string.component';
+export { AcoreStringComponent } from './acore-string/acore-string.component';
