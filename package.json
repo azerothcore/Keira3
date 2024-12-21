@@ -39,7 +39,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@ngx-translate/core": "16.0.3",
+    "@ngx-translate/core": "16.0.4",
     "@ngx-translate/http-loader": "16.0.0",
     "@types/electron-settings": "4.0.2",
     "acorn": "8.14.0",
