@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 
 
-def merge_with_en(en_data, target_data):
+def merge_with_en(en_data: dict, target_data: dict) -> dict:
     """
     Recursively merge en.json keys into target translation file.
     - Adds missing keys from en.json.
@@ -24,7 +24,7 @@ def merge_with_en(en_data, target_data):
     return merged
 
 
-def sync_keys(translations_dir, en_file):
+def sync_keys(translations_dir: Path, en_file: Path):
     # Load en.json as the reference file
     with open(en_file, 'r', encoding='utf-8') as f:
         en_data = json.load(f)
@@ -47,5 +47,5 @@ def sync_keys(translations_dir, en_file):
 
 if __name__ == "__main__":
     translations_dir = Path("apps", "keira", "src", "assets", "i18n")  # Update to your directory
-    en_file = translations_dir / "en.json"
+    en_file = Path(translations_dir, "en.json")
     sync_keys(translations_dir, en_file)
