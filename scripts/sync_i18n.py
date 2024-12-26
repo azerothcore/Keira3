@@ -2,7 +2,6 @@ import os
 import json
 from pathlib import Path
 
-
 def merge_with_en(en_data: dict, target_data: dict) -> dict:
     """
     Recursively merge en.json keys into target translation file.
@@ -23,8 +22,7 @@ def merge_with_en(en_data: dict, target_data: dict) -> dict:
 
     return merged
 
-
-def sync_keys(translations_dir: Path, en_file: Path):
+def sync_keys(translations_dir: Path, en_file: Path) -> None:
     # Load en.json as the reference file
     with open(en_file, 'r', encoding='utf-8') as f:
         en_data = json.load(f)
