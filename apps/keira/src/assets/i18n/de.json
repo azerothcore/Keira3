@@ -92,7 +92,8 @@
       "SPAWN": "Spawn",
       "SPAWN_ADDON": "Spawn-Addon",
       "SMARTAI": "SmartAI",
-      "TEXT": "Text"
+      "TEXT": "Text",
+      "FORMATIONS": "Formations"
     },
     "QUEST": {
       "TITLE": "Quest",
@@ -256,60 +257,60 @@
       "MOUNT": "Die Modell-ID des Reittiers, das verwendet werden soll, um die Kreatur als reitend erscheinen zu lassen. Der hier angegebene Wert überschreibt den Wert für das Kreaturen-Einheitsfeld UNIT_FIELD_MOUNTDISPLAYID.",
       "VISIBILITY_DISTANCE_TYPE": "Normal = 0, 100,0f (Standard-Sichtweite, 100 Yards auf Kontinenten); Tiny = 1, 25,0f; Small = 2, 50,0f; Large = 3, 200,0f; Gigantic = 4, 400,0f; Infinite = 5 (Größe der Gitter maximale Entfernung für sichtbare Objekte)",
       "AURAS": "Eine Liste von durch Leerzeichen getrennten Auren, die auf die Kreatur angewendet werden. Wenn die Kreatur Daten im Spawn-Addon hat, wird dies überschrieben."
+    },
+    "ONKILL_REPUTATION": {
+      "IS_TEAM_AWARD1": "Boolean (0 or 1) whether the player receives the reputation also the faction team or not.",
+      "REW_ON_KILL_REP_VALUE1": "The reputation value that the player gains (or loses if negative) by killing the creature.",
+      "IS_TEAM_AWARD2": "Boolean (0 or 1) whether the player receives the reputation also the faction team or not.",
+      "REW_ON_KILL_REP_VALUE2": "The reputation value that the player gains (or loses if negative) by killing the creature.",
+      "TEAM_DEPENDENT_TOOLTIP": "Boolean value. 0 - Will give reputation to the any player from both fields (RewOnKillRepFaction1 and RewOnKillRepFaction2); 1 - Will give reputation to alliance players from RewOnKillRepFaction1 and horde players from RewOnKillRepFaction2"
+    },
+    "SPAWN": {
+      "ORIENTATION": "The orientation of the creatures spawn point. (North = 0.0; South = pi (3.14159))",
+      "EQUIPMENT_ID_TOOLTIP": "1 = uses the info set in equipment template 0 = no weapons equipped",
+      "SPAWN_DIST_TOOLTIP": "The maximum distance that the creature may spawn from its spawn point. Also controls how far away the creature can walk from its spawn point if its MovementType = 1.",
+      "SCRIPT_NAME": "The name of the C++ script that this creature uses, if any.",
+      "GUID": "Link to creature.guid",
+      "PATH_ID": "If the creature has waypoint pathed movement, contains the waypoint_data.id for the path the creature is to follow.",
+      "MOUNT": "The model ID of the mount to be used to make the creature appear mounted. The value here overrides the value for the creature unit field UNIT_FIELD_MOUNTDISPLAYID.",
+      "VISIBILITY_DISTANCE_TYPE": "Normal = 0, 100.0f (default visible distance, 100 yards on continents); Tiny = 1, 25.0f; Small = 2, 50.0f; Large = 3, 200.0f; Gigantic = 4, 400.0f; Infinite = 5 (SIZE_OF_GRIDS max distance for visible objects)",
+      "AURAS": "A list of space separated auras to be applied on the creature.",
+      "COMMENT": "Comment"
+    },
+    "TEMPLATE_MOVEMENT": {
+      "GROUND": "0 = None; 1 = Run; 2 = Hover",
+      "SWIM": "0 = None; 1 = Swim",
+      "FLIGHT": "0 = None; 1 = Disable Gravity; 2 = CanFly",
+      "ROOTED": "0 = None; 1 = Rooted; ",
+      "CHASE": "0 = Run; 1 = CanWalk; 2 = AlwaysWalk",
+      "RANDOM": "0 = Walk; 1 = CanRun; 2 = AlwaysRun",
+      "INTERACTION_PAUSE_TIMER": "Time (in milliseconds) during which creature will not move after interaction with player"
+    },
+    "TEMPLATE_SPELL": {
+      "INDEX": "Allowed values: 0-7"
+    },
+    "NPC_TRAINER": {
+      "MONEY_COST": "The cost to pay to learn the spell represented in copper (1 gold = 100 silver = 10000 cooper)",
+      "REQ_SKILL_LINE": "The required skill the player needs to have in order to be able to learn the spell",
+      "REQ_SKILL_RANK": "The proficiency in the skill from reqskill that the player needs to meet to learn the spell",
+      "REQ_LEVEL": "The minimum level the player needs to be in order to learn the spell."
+    },
+    "NPC_VENDOR": {
+      "SLOT": "Position of the item in the vendor window",
+      "MAXCOUNT": "The maximum number of items carried by the vendor at any time. 0 for infinite (if choosing a value of 1 or higher also requires incrtime value to work)",
+      "INCRTIME": "Combined with maxcount, how often (in seconds) the vendor list is refreshed",
+      "EXTENDED_COST": "Value comes from DBC and a selector for this will be implemented later in Keira3"
+    },
+    "TEXT": {
+      "GROUP_ID": "If there is more than one of the same entry (more than one text the creature says), this column is used to choose if it is a random say or an ordered list. If a creature has got more than one say text to be shown in a given order, it must be incremented for each new matching entry (ex. 0, 1, 2, 3...). If there is only one entry or only one group, this value should be 0. If there are multiple groups of texts, this value stays the same within the group while the id increments within the same group.",
+      "ID": "Entry for each group of texts. This is the unique identifier when entry (creature) is the same and groupid is unchanged, it must be incremented (ex. 0, 1, 2, 3...). A creature say will be randomly selected from this list based on the groupid it belongs to.",
+      "LANGUAGE": "Value from Languages.dbc (+ the wiki table from the dbc file). When set to 0, the current default language will be used.",
+      "PROBABILITY": "A value from 1-100 that represents the percentage chance that this text will be executed.\n\nValue must be >=0. If the value does not meet the condition the SQL will fail on creature_text_chk_1.",
+      "EMOTE": "The emote that the creature plays when the text is executed. Value to use in this field can be obtained from the emote.dbc",
+      "DURATION": "Time in ms to see text. 0 is default and calculated by core.",
+      "SOUND": "The sound entry this creature will play at the same time the text is executed. Sounds are found in SoundEntries.dbc.",
+      "BROADCAST_TEXT_ID": "Id of the equivalent text found in broadcast_text"
     }
-  },
-  "ONKILL_REPUTATION": {
-    "IS_TEAM_AWARD1": "Boolean (0 oder 1), ob der Spieler den Ruf auch für das Fraktionsteam erhält oder nicht.",
-    "REW_ON_KILL_REP_VALUE1": "Der Rufwert, den der Spieler durch das Töten der Kreatur erhält (oder verliert, falls negativ).",
-    "IS_TEAM_AWARD2": "Boolean (0 oder 1), ob der Spieler den Ruf auch für das Fraktionsteam erhält oder nicht.",
-    "REW_ON_KILL_REP_VALUE2": "Der Rufwert, den der Spieler durch das Töten der Kreatur erhält (oder verliert, falls negativ).",
-    "TEAM_DEPENDENT_TOOLTIP": "Boolean-Wert. 0 - Gibt Ruf für jeden Spieler aus beiden Feldern (RewOnKillRepFaction1 und RewOnKillRepFaction2); 1 - Gibt Ruf für Allianzspieler von RewOnKillRepFaction1 und für Hordespieler von RewOnKillRepFaction2."
-  },
-  "SPAWN": {
-    "ORIENTATION": "Die Orientierung des Spawnpunkts der Kreatur. (Norden = 0.0; Süden = pi (3.14159))",
-    "EQUIPMENT_ID_TOOLTIP": "1 = Verwendet die Informationen aus der Ausrüstungsvorlage; 0 = Keine Waffen ausgerüstet; -1 = Eine zufällige Ausrüstung aus der Gruppe der Ausrüstungen in creature_equip_template wird ausgewählt.",
-    "SPAWN_DIST_TOOLTIP": "Die maximale Entfernung, die die Kreatur von ihrem Spawnpunkt entfernt spawnen kann. Kontrolliert auch, wie weit sich die Kreatur von ihrem Spawnpunkt entfernen kann, wenn ihr MovementType = 1 ist.",
-    "SCRIPT_NAME": "Der Name des C++-Skripts, das diese Kreatur verwendet, falls vorhanden.",
-    "GUID": "Verknüpft mit creature.guid",
-    "PATH_ID": "Wenn die Kreatur eine Wegpunktbewegung hat, enthält dies die waypoint_data.id für den Pfad, dem die Kreatur folgen soll.",
-    "MOUNT": "Die Modell-ID des Reittiers, das verwendet werden soll, um die Kreatur als reitend erscheinen zu lassen. Der hier angegebene Wert überschreibt den Wert für das Kreaturen-Einheitsfeld UNIT_FIELD_MOUNTDISPLAYID.",
-    "VISIBILITY_DISTANCE_TYPE": "Normal = 0, 100,0f (Standard-Sichtweite, 100 Yards auf Kontinenten); Tiny = 1, 25,0f; Small = 2, 50,0f; Large = 3, 200,0f; Gigantic = 4, 400,0f; Infinite = 5 (Größe der Gitter maximale Entfernung für sichtbare Objekte)",
-    "AURAS": "Eine Liste von durch Leerzeichen getrennten Auren, die auf die Kreatur angewendet werden.",
-    "COMMENT": "Kommentar"
-  },
-  "TEMPLATE_MOVEMENT": {
-    "GROUND": "0 = Keine; 1 = Laufen; 2 = Schweben",
-    "SWIM": "0 = Keine; 1 = Schwimmen",
-    "FLIGHT": "0 = Keine; 1 = Schwerkraft deaktivieren; 2 = Kann fliegen",
-    "ROOTED": "0 = Keine; 1 = Verwurzelt",
-    "CHASE": "0 = Laufen; 1 = Kann gehen; 2 = Immer gehen",
-    "RANDOM": "0 = Gehen; 1 = Kann laufen; 2 = Immer laufen",
-    "INTERACTION_PAUSE_TIMER": "Zeit (in Millisekunden), während der die Kreatur nach der Interaktion mit dem Spieler nicht bewegt wird."
-  },
-  "TEMPLATE_SPELL": {
-    "INDEX": "Zulässige Werte: 0-7"
-  },
-  "NPC_TRAINER": {
-    "MONEY_COST": "Die Kosten, um den Zauber zu lernen, dargestellt in Kupfer (1 Gold = 100 Silber = 10000 Kupfer).",
-    "REQ_SKILL_LINE": "Die erforderliche Fähigkeit, die der Spieler haben muss, um den Zauber lernen zu können.",
-    "REQ_SKILL_RANK": "Die Fertigkeit in der Fähigkeit aus reqskill, die der Spieler haben muss, um den Zauber zu lernen.",
-    "REQ_LEVEL": "Das Mindestlevel, das der Spieler haben muss, um den Zauber zu lernen."
-  },
-  "NPC_VENDOR": {
-    "SLOT": "Position des Gegenstands im Händlerfenster",
-    "MAXCOUNT": "Die maximale Anzahl von Gegenständen, die der Händler gleichzeitig führt. 0 für unendlich (wenn ein Wert von 1 oder höher gewählt wird, ist auch ein incrtime-Wert erforderlich).",
-    "INCRTIME": "In Kombination mit maxcount, wie oft (in Sekunden) die Händlerliste aktualisiert wird.",
-    "EXTENDED_COST": "Wert stammt aus DBC, und ein Selektor dafür wird später in Keira3 implementiert."
-  },
-  "TEXT": {
-    "GROUP_ID": "Wenn es mehr als einen Eintrag derselben Art gibt (mehr als einen Text, den die Kreatur sagt), wird diese Spalte verwendet, um auszuwählen, ob es sich um eine zufällige Auswahl oder eine geordnete Liste handelt. Wenn eine Kreatur mehr als einen Text hat, der in einer bestimmten Reihenfolge angezeigt werden soll, muss dieser Wert für jeden neuen passenden Eintrag inkrementiert werden (z. B. 0, 1, 2, 3...). Wenn es nur einen Eintrag oder nur eine Gruppe gibt, sollte dieser Wert 0 sein. Wenn es mehrere Textgruppen gibt, bleibt dieser Wert innerhalb der Gruppe gleich, während die ID innerhalb derselben Gruppe inkrementiert wird.",
-    "ID": "Eintrag für jede Gruppe von Texten. Dies ist der eindeutige Identifikator, wenn entry (Kreatur) gleich ist und groupid unverändert ist, muss er inkrementiert werden (z. B. 0, 1, 2, 3...). Ein Kreaturtext wird zufällig aus dieser Liste ausgewählt, basierend auf der groupid, zu der er gehört.",
-    "LANGUAGE": "Wert aus Languages.dbc (+ die Wiki-Tabelle aus der dbc-Datei). Wenn auf 0 gesetzt, wird die aktuelle Standardsprache verwendet.",
-    "PROBABILITY": "Ein Wert von 1-100, der den Prozentsatz angibt, mit dem dieser Text ausgeführt wird.\n\nDer Wert muss >=0 sein. Wenn der Wert die Bedingung nicht erfüllt, schlägt die SQL-Prüfung bei creature_text_chk_1 fehl.",
-    "EMOTE": "Das Emote, das die Kreatur spielt, wenn der Text ausgeführt wird. Der zu verwendende Wert in diesem Feld kann aus der emote.dbc abgerufen werden.",
-    "DURATION": "Zeit in ms, um den Text anzuzeigen. 0 ist Standard und wird vom Kern berechnet.",
-    "SOUND": "Die Sound-Einträge, die diese Kreatur gleichzeitig mit dem Ausführen des Textes abspielt. Sounds befinden sich in SoundEntries.dbc.",
-    "BROADCAST_TEXT_ID": "ID des entsprechenden Textes, der in broadcast_text gefunden wird."
   },
   "QUEST": {
     "TEMPLATE": {
@@ -603,6 +604,122 @@
         "SOURCE_TYPE_VEHICLE_SPELL": "creature_template Eintrag",
         "SOURCE_TYPE_SMART_EVENT": "ID (smart_scripts.id) + 1",
         "SOURCE_TYPE_NPC_VENDOR": "npc_vendor Eintrag"
+      },
+      "ENTRY": {
+        "SOURCE_TYPE_CREATURE_LOOT_TEMPLATE": "creature_loot_template or reference_loot_template Item",
+        "SOURCE_TYPE_DISENCHANT_LOOT_TEMPLATE": "disenchant_loot_template or reference_loot_template Item",
+        "SOURCE_TYPE_FISHING_LOOT_TEMPLATE": "fishing_loot_template or reference_loot_template Item",
+        "SOURCE_TYPE_GAMEOBJECT_LOOT_TEMPLATE": "gameobject_loot_template or reference_loot_template Item",
+        "SOURCE_TYPE_ITEM_LOOT_TEMPLATE": "item_loot_template or reference_loot_template Item",
+        "SOURCE_TYPE_MAIL_LOOT_TEMPLATE": "mail_loot_template or reference_loot_template Item",
+        "SOURCE_TYPE_MILLING_LOOT_TEMPLATE": "milling_loot_template or reference_loot_template Item",
+        "SOURCE_TYPE_PICKPOCKETING_LOOT_TEMPLATE": "pickpocketing_loot_template or reference_loot_template Item",
+        "SOURCE_TYPE_PROSPECTING_LOOT_TEMPLATE": "prospecting_loot_template or reference_loot_template Item",
+        "SOURCE_TYPE_REFERENCE_LOOT_TEMPLATE": "reference_loot_template Item",
+        "SOURCE_TYPE_SKINNING_LOOT_TEMPLATE": "skinning_loot_template or reference_loot_template Item",
+        "SOURCE_TYPE_SPELL_LOOT_TEMPLATE": "spell_loot_template or reference_loot_template Item",
+        "SOURCE_TYPE_SPELL_IMPLICIT_TARGET": "Spell Id from  Spell.dbc",
+        "SOURCE_TYPE_GOSSIP_MENU": "gossip_menu.TextID (points to npc_text.ID)",
+        "SOURCE_TYPE_GOSSIP_MENU_OPTION": "gossip_menu_option.OptionID",
+        "SOURCE_TYPE_CREATURE_TEMPLATE_VEHICLE": "creature_template.entry",
+        "SOURCE_TYPE_SPELL": "Spell ID from Spell.dbc",
+        "SOURCE_TYPE_SPELL_CLICK_EVENT": "Spell (npc_spellclick_spells.spell_id)",
+        "SOURCE_TYPE_QUEST_AVAILABLE": "Quest ID",
+        "SOURCE_TYPE_VEHICLE_SPELL": "Spell ID from Spell.dbc",
+        "SOURCE_TYPE_SMART_EVENT": "smart_scripts.entryorguid",
+        "SOURCE_TYPE_NPC_VENDOR": "npc_vendor.item",
+        "SOURCE_TYPE_SPELL_PROC": "Spell ID of aura which triggers the proc"
+      },
+      "TARGET": {
+        "SOURCE_TYPE_SPELL_IMPLICIT_TARGET": "0 = Potential spell Target;  1 = spell Caster",
+        "SOURCE_TYPE_GOSSIP_MENU": "0 = Player;  1 = WorldObject",
+        "SOURCE_TYPE_GOSSIP_MENU_OPTION": "0 = Player;  1 = WorldObject",
+        "SOURCE_TYPE_CREATURE_TEMPLATE_VEHICLE": "0 = Player riding vehicle;  1 = Vehicle creature",
+        "SOURCE_TYPE_SPELL": "0 = spell Caster;  1 =  Explicit Target of the spell (only for spells which take the object selected by caster into account)",
+        "SOURCE_TYPE_SPELL_CLICK_EVENT": "0 = Clicker;  1 = Spellclick target (clickee)",
+        "SOURCE_TYPE_VEHICLE_SPELL": "0 = Player for whom spell bar is shown;  1 =  Vehicle creature",
+        "SOURCE_TYPE_SMART_EVENT": "0 = Invoker;  1 = Object",
+        "SOURCE_TYPE_SPELL_PROC": "0 = Actor; 1 = ActionTarget"
+      },
+      "VALUE1": {
+        "CONDITION_NONE": "(Never used)",
+        "CONDITION_AURA": "Spell ID from Spell.dbc",
+        "CONDITION_ITEM": "item_template.entry",
+        "CONDITION_ITEM_EQUIPPED": "item_template.entry",
+        "CONDITION_ZONEID": "Zone ID where this condition will be true.",
+        "CONDITION_REPUTATION_RANK": "Faction template ID from Faction.dbc",
+        "CONDITION_TEAM": "Team id (Alliance = 469; Horde = 67)",
+        "CONDITION_SKILL": "Required skill. See SkillLine.dbc",
+        "CONDITION_QUESTREWARDED": "quest_template.ID",
+        "CONDITION_QUESTTAKEN": "quest_template.ID",
+        "CONDITION_DRUNKENSTATE": "Sober=0, Tipsy=1, Drunk=2, Smashed=3",
+        "CONDITION_WORLD_STATE": "World state index",
+        "CONDITION_ACTIVE_EVENT": "game_event.eventEntry",
+        "CONDITION_INSTANCE_INFO": "entry (see corresponding source script files for info)",
+        "CONDITION_QUEST_NONE": "quest_template.ID",
+        "CONDITION_CLASS": "Class mask from ChrClasses.dbc. Add flags together for all classes where condition is true",
+        "CONDITION_RACE": "Player must be this race. See ChrRaces.dbc. Add flags together for all races where condition is true.",
+        "CONDITION_ACHIEVEMENT": "Achievement ID from Achievement.dbc",
+        "CONDITION_TITLE": "Title ID from CharTitles.dbc\t",
+        "CONDITION_SPAWNMASK": "spawnMask fromm creature.spawnMask or gameobject.spawnMask",
+        "CONDITION_GENDER": "0 = Male, 1 = Female, 2 = None",
+        "CONDITION_UNIT_STATE": "UnitState (enum from Unit.h)",
+        "CONDITION_MAPID": "Map entry from Map.dbc (0=Eastern Kingdoms, 1=Kalimdor, etc..)",
+        "CONDITION_AREAID": "Area ID from AreaTable.dbc",
+        "CONDITION_CREATURE_TYPE": "Creature type from creature_template.type (True if creature_template.type == ConditionValue1)",
+        "CONDITION_SPELL": "Spell ID from Spell.dbc",
+        "CONDITION_PHASEMASK": "phasemask value",
+        "CONDITION_LEVEL": "Player level (1-80)",
+        "CONDITION_QUEST_COMPLETE": "quest_template.ID",
+        "CONDITION_NEAR_CREATURE": "creature_template.entry",
+        "CONDITION_NEAR_GAMEOBJECT": "gameobject_template.entry",
+        "CONDITION_OBJECT_ENTRY_GUID": "TypeID. 3-TYPEID_UNIT, 4-TYPEID_PLAYER, 5-TYPEID_GAMEOBJECT, 7-TYPEID_CORPSE(player corpse, after spirit release)",
+        "CONDITION_TYPE_MASK": "TypeMask - a bitmask of following object types: 0x0008 - TYPEMASK_UNIT (8) 0x0010 - TYPEMASK_PLAYER (16) 0x0020 - TYPEMASK_GAMEOBJECT (32) 0x0080 - TYPEMASK_CORPSE (player corpse after spirit release) (128)",
+        "CONDITION_TO": "Target to which relation is checked. One of the ConditionTargets available in current SourceType",
+        "CONDITION_ALIVE": "Always 0 (use NegativeCondition to require dead)",
+        "CONDITION_HP_VAL": "HP value",
+        "CONDITION_HP_PCT": "Percentage of max HP",
+        "CONDITION_REALM_ACHIEVEMENT": "Achievement ID from Achievement.dbc",
+        "CONDITION_IN_WATER": "Always 0",
+        "CONDITION_STAND_STATE": "stateType (\"exact\" or \"any\"): 0 = Exact state used in ConditionValue2;   1 = Any type of state in ConditionValue2",
+        "CONDITION_DAILY_QUEST_DONE": "quest_template.ID",
+        "CONDITION_CHARMED": "Always 0",
+        "CONDITION_PET_TYPE": "mask",
+        "CONDITION_TAXI": "Always 0",
+        "CONDITION_QUESTSTATE": "quest_template.ID",
+        "CONDITION_QUEST_OBJECTIVE_PROGRESS": "quest_template.id",
+        "CONDITION_WORLD_SCRIPT": "WorldStateCondition (defined in WorldState.h)"
+      },
+      "VALUE2": {
+        "CONDITION_NONE": "(Never used)",
+        "CONDITION_AURA": "Effect index (0-2)",
+        "CONDITION_ITEM": "Item count",
+        "RANK_MASK": "Rank mask. 1=hated, 2=hostile, 4=unfriendly, 8=neutral, 16=friendly, 32=honored, 64=revered, 128=exalted",
+        "CONDITION_SKILL": "Skill rank value (1-450)",
+        "CONDITION_WORLD_STATE": "World state value",
+        "CONDITION_INSTANCE_INFO": "data (see corresponding script source files for more info)",
+        "CONDITION_LEVEL": "Optional: 0 = Level must be equal, 1 = Level must be higher, 2 = Level must be lower, 3 = Level must be higher or equal, 4 = Level must be lower or equal.",
+        "CONDITION_NEAR_CREATURE": "Distance in yards",
+        "CONDITION_NEAR_GAMEOBJECT": "Distance in yards",
+        "CONDITION_OBJECT_ENTRY_GUID": "0 = Any object of given TypeID; if TypeID = TYPEID_UNIT => Creature entry from creature_template.entry; if TypeID = TYPEID_GAMEOBJECT => Gameobject entry from gameobject_template.entry",
+        "CONDITION_RELATION_TO": "RelationType - defines relation of current ConditionTarget to target specified in ConditionValue1. 0 - RELATION_SELF; 1 - RELATION_IN_PARTY; 2 - RELATION_IN_RAID_OR_PARTY; 3 - RELATION_OWNED_BY (ConditionTarget is owned by ConditionValue1); 4 - RELATION_PASSENGER_OF (ConditionTarget is passenger of ConditionValue1); 5 - RELATION_CREATED_BY (ConditionTarget is summoned by ConditionValue1)",
+        "CONDITION_DISTANCE_TO": "Defines distance between current ConditionTarget and target specified in ConditionValue1",
+        "CONDITION_HP_VAL": "ComparisionType:; 0 = HP must be equal; 1 = HP must be higher; 2 = HP must be lesser; 3 = HP must be equal or higher; 4 = HP must be equal or lower",
+        "CONDITION_HP_PCT": "ComparisionType: 0 = Percentage of max HP must be equal; 1 = Percentage of max HP must be higher; 2 = Percentage of max HP must be lower; 3 = Percentage of max HP must be equal or higher; 4 = Percentage of max HP must be equal or lower",
+        "CONDITION_STAND_STATE": "Exact stand state, or generic state (stand/sit), depending on value 10 = Standing; 1 = Sitting",
+        "CONDITION_QUESTSTATE": "state_mask",
+        "CONDITION_QUEST_OBJECTIVE_PROGRESS": "Quest Objective ID - see quest_template.RequiredNpcOrGo",
+        "CONDITION_WORLD_SCRIPT": "state, 0 = unused"
+      },
+      "VALUE3": {
+        "CONDITION_NONE": "(Never used)",
+        "CONDITION_ITEM": "0 = not in bank; 1 = in bank",
+        "CONDITION_INSTANCE_INFO": "0=INSTANCE_INFO_DATA; 1=INSTANCE_INFO_GUID_DATA; 2=INSTANCE_INFO_BOSS_STATE; 3=INSTANCE_INFO_DATA64; ",
+        "CONDITION_NEAR_CREATURE": "Alive=0; Dead=1",
+        "CONDITION_NEAR_GAMEOBJECT": "GoState |0 Ignore |1 Ready |2 Not Ready",
+        "CONDITION_OBJECT_ENTRY_GUID": "0 = Any object of given type;  1 - 500k = creature/gameobject GUID",
+        "CONDITION_DISTANCE_TO": "ComparisionType: 0 = distance must be equal to ConditionValue2; 1 = distance must be higher than ConditionValue2; 2 = distance must be lower than ConditionValue2; 3 = distance must be equal to or higher than ConditionValue2; 4 = distance must be equal to or lower than ConditionValue2",
+        "CONDITION_QUEST_OBJECTIVE_PROGRESS": "Quest Objective Count"
       }
     }
   },
@@ -666,6 +783,84 @@
       "SPELL_VISUAL_ID_2": "Visuelle Effekte eines Zaubers. Verknüpfung mit Eintrag in SpellVisual.dbc",
       "SPELL_MISSILE_ID": "Wird zur Erstellung visueller Zaubereffekte verwendet. Verknüpfung mit SpellMissile.dbc",
       "POWER_DISPLAY_ID": "Verknüpfung mit Eintrag in PowerDisplay.dbc"
+    },
+    "FLAGS": {
+      "GENERAL": "General",
+      "INTERRUPT_FLAGS": "Interrupt Flags",
+      "SPELL_ATTRIBUTES": "Spell Attributes",
+      "TARGET_CREATURE_TYPE": "Mask of creature types on which is spell usable. 0 = None",
+      "SHAPESHIFT_MASK": "Shapeshifts/Stances in which the spell is castable. 0 = No shape/stance required",
+      "SHAPESHIFT_EXCLUDE": "Shapeshifts/Stances in which the spell is not castable. 0 = No restriction",
+      "FACING_CASTER_FLAGS": "If marked, forces the Caster to use the ability in front of the enemy.",
+      "INTERRUPT_FLAGS_TOOLTIP": "Mask of cases which interrupt casting of a spell. 0 = None",
+      "AURA_INTERRUPT_FLAGS": "Mask of cases which interrupt casting of a spell. 0 = None",
+      "CHANNEL_INTERRUPT_FLAGS": "Mask of cases which interrupt casting of a spell. 0 = None",
+      "ATTRIBUTES": "General miscellaneous flags. 0 = None"
+    },
+    "ITEMS": {
+      "GENERAL": "General",
+      "NON_CONSUMABLE_ITEMS": "Non-consumable items",
+      "CONSUMABLE_ITEMS": "Consumable items",
+      "EQUIPPED_ITEM_CLASS": "item_template.class value which casters item held in hand must have",
+      "EQUIPPED_ITEM_SUBCLASS": "Mask of item_template.subclass values which caster's item held in hand must have",
+      "EQUIPPED_ITEM_INV_TYPES": "Mask of item_template.InventoryType values which targeted item must have",
+      "TOTEM_1": "Non consumable item required to cast the spell.",
+      "TOTEM_2": "Non consumable item required to cast the spell.",
+      "REQUIRED_TOTEM_CATEGORY_ID_1": "Non consumable items (e.g. enchanter rods) required to cast the spell.",
+      "REQUIRED_TOTEM_CATEGORY_ID_2": "Non consumable items (e.g. enchanter rods) required to cast the spell.",
+      "REAGENT": "Entry of item used by this spell as resources. Gets consumed. Materials for professions.",
+      "REAGENT_COUNT": "Number of reagent items needed by spell"
+    },
+    "TEXTS": {
+      "LANGUAGE": "Bitmask for Language string data",
+      "NAMESUBTEXT": "Bitmask for NameSubtext string data",
+      "DESCRIPTION": "Bitmask for Description string data",
+      "AURADESCRIPTION": "Bitmask for AuraDescription string data"
+    },
+    "EFFECTS": {
+      "TARGETS": "Which type of targets can be targeted by the Spell. 0 = TARGET_FLAG_NONE",
+      "PROC_TYPE_MASK": "Under which conditions a spell can proc. 0 = PROC_FLAG_NONE",
+      "PROC_CHANCE": "Most spells with 100% chance tend to have value 101.",
+      "PROC_CHARGES": "How many times a spell can proc. 0 = infinite"
+    },
+    "SPELL_EFFECTS": {
+      "EFFECT": "Effect",
+      "EFFECT_MECHANIC": "Effect Mechanic",
+      "EFFECT_AURA": "Effect Aura",
+      "MISC": "Misc",
+      "FIELD": {
+        "EFFECT": "Type of effect which spell has. All following effect fields refer to these.",
+        "EFFECT_BASE_POINTS": "Base points added to result of according effects rolled dice. e.g. EffectDieSides=26 and EffectBasePoints=49 will make 50-75.",
+        "EFFECT_REAL_POINTS_PER_LEVEL": "Base points added to according EffectBasePoints based on caster level.",
+        "EFFECT_RADIUS_INDEX": "According spell effect radius. May differ with caster level. Link to entry in SpellRadius.dbc",
+        "EFFECT_MULTIPLE_VALUE": "Number of stacks for Buffs/Debuffs",
+        "EFFECT_MISC_VALUE": "Used for according effects special misc values, commonly entries of called or used creature/item/gameobject.",
+        "EFFECT_MISC_VALUE_B": "Used for according effects special misc values, commonly entries of called or used creature/item/gameobject.",
+        "EFFECT_TRIGGER_SPELL": "Entry of spell triggered on affected target by this according effect.",
+        "EFFECT_POINTS_PER_COMBO": "Bonus to effect base value based on amount of combo points on target.",
+        "EFFECT_DIE_SIDES": "Number of sides of dice which is being rolled for random value of according effect.",
+        "EFFECT_CHAIN_AMPLITUDE": "Used for decreasing (or increasing) according effect value on next chained targets.",
+        "EFFECT_BONUS_MULTIPLIER": "Seems to be used for calculation of the according effect value of ticks for DoTs and HoTs.",
+        "EFFECT_MECHANIC": "Mechanic of according spell effect. Used by spells granting bonuses/immunities against certain effect types (stun, charm...).",
+        "EFFECT_AURA": "Type of aura (effect of effect) which according effect applies.",
+        "EFFECT_AURA_PERIOD": "How often the effect ticks in ms.",
+        "SPELL_CLASS_MASK": "?Mask for spells which are affected (buffed, ...) by this spell?",
+        "IMPLICIT_TARGET_A": "Type of implicit target(s) of according effect.",
+        "IMPLICIT_TARGET_B": "Type of implicit target(s) of according effect.",
+        "EFFECT_CHAIN_TARGETS": "?Used to create chaining visual effects (e.g. chain lightning)?",
+        "EFFECT_SPELL_CLASS_MASK_A": "Entry of fields 210-212 as hex value of the spell this spell is affecting. Used for effect #1",
+        "EFFECT_SPELL_CLASS_MASK_B": "Entry of fields 210-212 as hex value of the spell this spell is affecting. Used for effect #2",
+        "EFFECT_SPELL_CLASS_MASK_C": "Entry of fields 210-212 as hex value of the spell this spell is affecting. Used for effect #3"
+      }
+    },
+    "MISC": {
+      "UNK_320_2": "Unused since patch 3.2.0",
+      "UNK_320_3": "Unused since patch 3.2.0",
+      "START_RECOVERY_CATEGORY": "The only value which seems to be used here apart of 0 is 133 (spells affected by global CD).",
+      "START_RECOVERY_TIME": "The only value (in ms) which seems to be used here apart of 0 is 1500 (global CD value).",
+      "MODAL_NEXT_SPELL": "Seems to be only used for Hunter spells with the values 59 and 75.",
+      "SPELL_PRIORITY": "Unknown. Only used value is 50 for some spells.",
+      "REQUIRED_AURA_VISION": "Unknown. Only 16 Spells use another value as 0. Could be used for visual effects."
     }
   }
 }
