@@ -1,0 +1,41 @@
+name: Check and Fix Missing Translation Keys
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-translation-keys:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: pip install json-delta
+
+      - name: Run Python script to check and fix missing keys
+        run: |
+          python scripts/sync_i18n.py
+
+      - name: Commit and push changes if necessary
+        run: |
+          if [ "$(git status --porcelain)" != "" ]; then
+            git config user.name "i18n Sync Bot"
+            git config user.email "action@github.com"
+            git add apps/keira/src/assets/i18n/*.json
+            git commit -m "Fix missing translation keys"
+            git push
+          else
+            echo "No missing keys detected."
+          fi
