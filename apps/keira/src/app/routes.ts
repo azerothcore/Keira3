@@ -484,4 +484,17 @@ export const KEIRA_ROUTES: Routes = [
       },
     ],
   },
+  {
+    path: 'game-tele',
+    children: [
+      {
+        path: 'select',
+        component: SelectGameTeleComponent,
+      },
+      {
+        path: 'tele',
+        component: GameTeleComponent,
+      },
+    ],
+  },
 ];

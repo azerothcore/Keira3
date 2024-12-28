@@ -727,6 +727,33 @@
               </ul>
             </div>
           </li>
+
+          <li class="sidebar-dropdown" [class.active]="menuStates['gameTele'] === 'down'">
+            <a (click)="toggleState('gameTele')">
+              <i class="fa fa-magic"></i>
+              <span [translate]="'SIDEBAR.SPELL_DBC_OVERRIDES.TITLE'"></span>
+            </a>
+
+            <div class="sidebar-submenu" [@slide]="menuStates['gameTele']">
+              <ul>
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'game-tele/select'">
+                    {{ 'SIDEBAR.SPELL_DBC_OVERRIDES.SEARCH_SPELL' | translate }}
+                  </a>
+                </li>
+                @if (spellHandlerService.selected) {
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'game-tele/tele'">
+                      {{ 'SIDEBAR.SPELL_DBC_OVERRIDES.SPELL_DBC_EDITOR' | translate }}
+                      @if (spellHandlerService.isSpellDbcUnsaved) {
+                        <keira-unsaved-icon />
+                      }
+                    </a>
+                  </li>
+                }
+              </ul>
+            </div>
+          </li>
         </ul>
       </div>
     </div>

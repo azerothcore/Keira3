@@ -1,0 +1,97 @@
+<div class="container-fluid">
+  <div class="content-block">
+    <div class="wiki-link mb-2">
+      <a [href]="WIKI_BASE_URL + 'conditions'" target="_blank"> <i class="fas fa-link"></i> conditions documentation </a>
+    </div>
+
+    <form [formGroup]="selectService.queryForm">
+      <ng-container [formGroup]="selectService.fields">
+        <div class="form-group row">
+          <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="SourceTypeOrReferenceId" [translate]="'SOURCE_TYPE'"></label>
+          <div class="col-sm-8 col-md-9 col-lg-10">
+            <select [formControlName]="'SourceTypeOrReferenceId'" class="form-control form-control-sm" id="SourceTypeOrReferenceId">
+              @for (key of CONDITION_SOURCE_TYPES_KEYS; track key) {
+                <option [ngValue]="key" [label]="CONDITION_SOURCE_TYPES[key]"></option>
+              }
+            </select>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="SourceGroup">{{
+            'CONDITIONS.SELECT.SOURCE_GROUP' | translate
+          }}</label>
+          <div class="col-sm-8 col-md-9 col-lg-10">
+            <input
+              [formControlName]="'SourceGroup'"
+              type="number"
+              class="form-control form-control-sm"
+              id="SourceGroup"
+              placeholder="SourceGroup"
+            />
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="SourceEntry">{{
+            'CONDITIONS.SELECT.SOURCE_ENTRY' | translate
+          }}</label>
+          <div class="col-sm-8 col-md-9 col-lg-10">
+            <input
+              [formControlName]="'SourceEntry'"
+              type="number"
+              class="form-control form-control-sm"
+              id="SourceEntry"
+              placeholder="SourceEntry"
+            />
+          </div>
+        </div>
+      </ng-container>
+      <div class="form-group row">
+        <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="limit" [translate]="'LIMIT'"></label>
+        <div class="col-sm-4 col-md-3 col-lg-2">
+          <input [formControlName]="'limit'" class="form-control form-control-sm" id="limit" placeholder="Limit" />
+        </div>
+        <div class="col-sm-12 col-md-6 mt-1 mt-md-0">
+          <button id="search-btn" class="btn btn-primary btn-sm" [disabled]="selectService.queryForm.invalid" (click)="onSearch()">
+            <i class="fa fa-search"></i> {{ 'SEARCH' | translate }}
+          </button>
+          <button
+            class="btn btn-success btn-sm mt-1 ms-2 mt-sm-0"
+            id="create-new-btn"
+            [disabled]="selectService.queryForm.invalid"
+            (click)="onCreateNew()"
+          >
+            {{ 'CONDITIONS.SELECT.CREATE_NEW' | translate }}
+          </button>
+        </div>
+      </div>
+      <keira-highlightjs-wrapper [code]="selectService.query" />
+    </form>
+
+    @if (selectService.rows) {
+      <div>
+        <ngx-datatable
+          class="bootstrap table table-striped text-center datatable-select"
+          [rows]="selectService.rows"
+          [headerHeight]="DTCFG.headerHeight"
+          [footerHeight]="DTCFG.footerHeight"
+          [columnMode]="DTCFG.columnMode"
+          [rowHeight]="DTCFG.rowHeight"
+          [limit]="DTCFG.limit"
+          [selectionType]="DTCFG.selectionType"
+          (select)="onSelect($event)"
+        >
+          <ngx-datatable-column name="Type" prop="SourceTypeOrReferenceId" [minWidth]="60"></ngx-datatable-column>
+          <ngx-datatable-column name="Group" prop="SourceGroup"></ngx-datatable-column>
+          <ngx-datatable-column name="Entry" prop="SourceEntry"></ngx-datatable-column>
+          <ngx-datatable-column name="Id" prop="SourceId"></ngx-datatable-column>
+          <ngx-datatable-column name="CondType" prop="ConditionTypeOrReference"></ngx-datatable-column>
+          <ngx-datatable-column name="CondTarget" prop="ConditionTarget"></ngx-datatable-column>
+          <ngx-datatable-column name="CondValue1" prop="ConditionValue1"></ngx-datatable-column>
+          <ngx-datatable-column name="CondValue2" prop="ConditionValue2"></ngx-datatable-column>
+          <ngx-datatable-column name="CondValue3" prop="ConditionValue3"></ngx-datatable-column>
+          <ngx-datatable-column name="NegativeCond" prop="NegativeCondition"></ngx-datatable-column>
+        </ngx-datatable>
+      </div>
+    }
+  </div>
+</div>

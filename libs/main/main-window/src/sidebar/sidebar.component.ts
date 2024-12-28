@@ -45,6 +45,7 @@ interface MenuStats {
   texts: ToggleType;
   gossip: ToggleType;
   spell: ToggleType;
+  gameTele: ToggleType;
 }
 
 @Component({
@@ -84,6 +85,7 @@ export class SidebarComponent {
     texts: 'up',
     gossip: 'up',
     spell: 'up',
+    gameTele: 'up',
   };
   private readonly IMAGES_COUNT = 7;
   private readonly RANDOM_IMAGE = Math.floor(Math.random() * this.IMAGES_COUNT) + 1;
@@ -142,6 +144,7 @@ export class SidebarComponent {
     this.menuStates.texts = 'up';
     this.menuStates.gossip = 'up';
     this.menuStates.spell = 'up';
+    this.menuStates.gameTele = 'up';
   }
 
   logout(): void {

@@ -1,0 +1,235 @@
+<div class="container-fluid">
+  @if (editorService.loading) {
+    <span [translate]="'LOADING'"></span>
+  }
+
+  @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
+    <div>
+      <div class="content-block">
+        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)" />
+      </div>
+      <form [formGroup]="editorService.form" class="form-group edit-form">
+        <div class="content-block">
+          <span class="category-title" [translate]="'CONDITIONS.EDITOR.CONDITIONS_SOURCE'"></span>
+          <div class="form-group row">
+            <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="SourceTypeOrReferenceId" [translate]="'SOURCE_TYPE'"></label>
+            <div class="col-sm-8 col-md-9 col-lg-10">
+              <select [formControlName]="'SourceTypeOrReferenceId'" class="form-control form-control-sm" id="SourceTypeOrReferenceId">
+                @for (key of CONDITION_SOURCE_TYPES_KEYS; track key) {
+                  <option [ngValue]="key" [label]="key + ' - ' + CONDITION_SOURCE_TYPES[key]"></option>
+                }
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="SourceGroup">SourceGroup</label>
+              <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="SOURCE_GROUP_TOOLTIPS[selectedSourceType] | translate"></i>
+              <input [formControlName]="'SourceGroup'" id="SourceGroup" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="SourceEntry">SourceEntry</label>
+              <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="SOURCE_ENTRY_TOOLTIPS[selectedSourceType] | translate"></i>
+              <input [formControlName]="'SourceEntry'" id="SourceEntry" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="SourceId">SourceId</label>
+              <i
+                class="fas fa-info-circle ms-1"
+                [placement]="'auto'"
+                [tooltip]="
+                  selectedSourceType === CONDITION_SOURCE_TYPES.SOURCE_TYPE_SMART_EVENT
+                    ? 'smart_scripts.source_type'
+                    : ('ALWAYS_0' | translate)
+                "
+              ></i>
+              <input [formControlName]="'SourceId'" id="SourceId" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="ElseGroup">ElseGroup</label>
+              <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'CONDITIONS.EDITOR.ELSE_GROUP' | translate"></i>
+              <input [formControlName]="'ElseGroup'" id="ElseGroup" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="ConditionTarget">ConditionTarget</label>
+              <i
+                class="fas fa-info-circle ms-1"
+                [placement]="'auto'"
+                [tooltip]="CONDITION_TARGET_TOOLTIPS[selectedSourceType] | translate"
+              ></i>
+              <input [formControlName]="'ConditionTarget'" id="ConditionTarget" type="number" class="form-control form-control-sm" />
+            </div>
+          </div>
+        </div>
+        <div class="content-block">
+          <span class="category-title" [translate]="'CONDITIONS.EDITOR.CONDITION_TYPE_VALUE'"></span>
+          <div class="form-group row">
+            <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="ConditionTypeOrReference">{{
+              'CONDITIONS.EDITOR.CONDITION_TYPE' | translate
+            }}</label>
+            <div class="col-sm-8 col-md-9 col-lg-10">
+              <select [formControlName]="'ConditionTypeOrReference'" class="form-control form-control-sm" id="ConditionTypeOrReference">
+                @for (key of CONDITION_TYPES_KEYS; track key) {
+                  <option [ngValue]="key" [label]="key + ' - ' + CONDITION_TYPES[key]"></option>
+                }
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="ConditionValue1">ConditionValue1</label>
+              <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="CONDITION_VALUE_1_TOOLTIPS[conditionType] | translate"></i>
+              @if (showTypeMask) {
+                <keira-flags-selector-btn
+                  [control]="editorService.form.controls.ConditionValue1"
+                  [disabled]="editorService.form.controls.ConditionValue1.disabled"
+                  [config]="{ flags: TYPEMASK, name: 'ConditionValue1' }"
+                  [modalClass]="'modal-lg'"
+                />
+              }
+              @if (showObjectEntryGuid) {
+                <keira-single-value-selector-btn
+                  [control]="editorService.form.controls.ConditionValue1"
+                  [disabled]="editorService.form.controls.ConditionValue1.disabled"
+                  [config]="{ options: CONDITION_OBJECT_ENTRY_GUID_CV1, name: 'ConditionValue1' }"
+                  [modalClass]="'modal-md'"
+                />
+              }
+              @if (showStandState) {
+                <keira-single-value-selector-btn
+                  [control]="editorService.form.controls.ConditionValue1"
+                  [disabled]="editorService.form.controls.ConditionValue1.disabled"
+                  [config]="{ options: CONDITION_STAND_STATE_CV1, name: 'ConditionValue1' }"
+                  [modalClass]="'modal-md'"
+                />
+              }
+              <input [formControlName]="'ConditionValue1'" id="ConditionValue1" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="ConditionValue2">ConditionValue2</label>
+              <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="CONDITION_VALUE_2_TOOLTIPS[conditionType] | translate"></i>
+              @if (showQuestState) {
+                <keira-flags-selector-btn
+                  id="queststate-flag-selector"
+                  [control]="editorService.form.controls.ConditionValue2"
+                  [disabled]="editorService.form.controls.ConditionValue2.disabled"
+                  [config]="{ flags: QUEST_STATE, name: 'ConditionValue2' }"
+                  [modalClass]="'modal-lg'"
+                />
+              }
+              @if (showReactionTo) {
+                <keira-flags-selector-btn
+                  id="rankmask-flag-selector"
+                  [control]="editorService.form.controls.ConditionValue2"
+                  [disabled]="editorService.form.controls.ConditionValue2.disabled"
+                  [config]="{ flags: RANKMASK, name: 'ConditionValue2' }"
+                  [modalClass]="'modal-lg'"
+                />
+              }
+              @if (showLevel) {
+                <keira-single-value-selector-btn
+                  [control]="editorService.form.controls.ConditionValue2"
+                  [disabled]="editorService.form.controls.ConditionValue2.disabled"
+                  [config]="{ options: CONDITION_LEVEL_CV2, name: 'ConditionValue2' }"
+                  [modalClass]="'modal-md'"
+                />
+              }
+              @if (showRelationTo) {
+                <keira-single-value-selector-btn
+                  [control]="editorService.form.controls.ConditionValue2"
+                  [disabled]="editorService.form.controls.ConditionValue2.disabled"
+                  [config]="{ options: CONDITION_RELATION_TO_CV2, name: 'ConditionValue2' }"
+                  [modalClass]="'modal-md'"
+                />
+              }
+              @if (showHPVal) {
+                <keira-single-value-selector-btn
+                  [control]="editorService.form.controls.ConditionValue2"
+                  [disabled]="editorService.form.controls.ConditionValue2.disabled"
+                  [config]="{ options: CONDITION_HP_VAL_CV2, name: 'ConditionValue2' }"
+                  [modalClass]="'modal-md'"
+                />
+              }
+              @if (showHPPct) {
+                <keira-single-value-selector-btn
+                  [control]="editorService.form.controls.ConditionValue2"
+                  [disabled]="editorService.form.controls.ConditionValue2.disabled"
+                  [config]="{ options: CONDITION_HP_PCT_CV2, name: 'ConditionValue2' }"
+                  [modalClass]="'modal-md'"
+                />
+              }
+              @if (showStandState) {
+                <keira-single-value-selector-btn
+                  [control]="editorService.form.controls.ConditionValue2"
+                  [disabled]="editorService.form.controls.ConditionValue2.disabled"
+                  [config]="{ options: CONDITION_STAND_STATE_CV2, name: 'ConditionValue2' }"
+                  [modalClass]="'modal-md'"
+                />
+              }
+              <input [formControlName]="'ConditionValue2'" id="ConditionValue2" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="ConditionValue3">ConditionValue3</label>
+              <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="CONDITION_VALUE_3_TOOLTIPS[conditionType] | translate"></i>
+              @if (showInstanceInfo) {
+                <keira-single-value-selector-btn
+                  [control]="editorService.form.controls.ConditionValue3"
+                  [disabled]="editorService.form.controls.ConditionValue3.disabled"
+                  [config]="{ options: CONDITION_INSTANCE_INFO_CV3, name: 'ConditionValue3' }"
+                  [modalClass]="'modal-md'"
+                />
+              }
+              @if (showNearCreature) {
+                <keira-single-value-selector-btn
+                  [control]="editorService.form.controls.ConditionValue3"
+                  [disabled]="editorService.form.controls.ConditionValue3.disabled"
+                  [config]="{ options: CONDITION_NEAR_CREATURE_CV3, name: 'ConditionValue3' }"
+                  [modalClass]="'modal-md'"
+                />
+              }
+              @if (showDistanceTo) {
+                <keira-single-value-selector-btn
+                  [control]="editorService.form.controls.ConditionValue3"
+                  [disabled]="editorService.form.controls.ConditionValue3.disabled"
+                  [config]="{ options: CONDITION_DISTANCE_TO_CV3, name: 'ConditionValue3' }"
+                  [modalClass]="'modal-md'"
+                />
+              }
+              <input [formControlName]="'ConditionValue3'" id="ConditionValue3" type="number" class="form-control form-control-sm" />
+            </div>
+          </div>
+        </div>
+        <div class="content-block">
+          <span class="category-title" [translate]="'CONDITIONS.EDITOR.OTHER_PROPERTIES'"></span>
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="NegativeCondition">NegativeCondition</label>
+              <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'CONDITIONS.EDITOR.NEGATIVE_CONDITION' | translate"></i>
+              <input [formControlName]="'NegativeCondition'" id="NegativeCondition" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="ErrorType">ErrorType</label>
+              <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'CONDITIONS.EDITOR.ERROR_TYPE' | translate"></i>
+              <input [formControlName]="'ErrorType'" id="ErrorType" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="ErrorTextId">ErrorTextId</label>
+              <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'CONDITIONS.EDITOR.ERROR_TEXT_ID' | translate"></i>
+              <input [formControlName]="'ErrorTextId'" id="ErrorTextId" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="ScriptName">ScriptName</label>
+              <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'CONDITIONS.EDITOR.SCRIPT_NAME' | translate"></i>
+              <input [formControlName]="'ScriptName'" id="ScriptName" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6">
+              <label class="control-label" for="Comment">Comment</label>
+              <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'CONDITIONS.EDITOR.COMMENT' | translate"></i>
+              <input [formControlName]="'Comment'" id="Comment" class="form-control form-control-sm" />
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  }
+</div>
