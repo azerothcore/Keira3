@@ -96,6 +96,7 @@
       "SELECT_QUEST": "Sélectionner une quête",
       "QUEST_TEMPLATE": "Modèle de quête",
       "QUEST_TEMPLATE_ADDON": "Modèle d'addon de quête",
+      "QUEST_TEMPLATE_LOCALE": "Quest Template Locale",
       "QUEST_OFFER_REWARD": "Offre de récompense de quête",
       "QUEST_REQUEST_ITEMS": "Requête d'objets de quête",
       "CREATURE_QUESTSTARTER": "Créature qui débute une quête",
