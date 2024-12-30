@@ -7,7 +7,7 @@ import {
   GAMEOBJECT_QUESTSTARTER_TABLE,
   QUEST_OFFER_REWARD_TABLE,
   QUEST_REQUEST_ITEMS_TABLE,
-  QUEST_TEMPLATE_ADDON_TABLE,
+  QUEST_TEMPLATE_ADDON_TABLE, QUEST_TEMPLATE_LOCALE_TABLE,
   QUEST_TEMPLATE_TABLE,
   QuestTemplate,
 } from '@keira/shared/acore-world-model';
@@ -23,6 +23,9 @@ export class QuestHandlerService extends HandlerService<QuestTemplate> {
   }
   get isQuestTemplateAddonUnsaved(): boolean {
     return this.statusMap[QUEST_TEMPLATE_ADDON_TABLE];
+  }
+  get isQuestTemplateLocaleUnsaved(): boolean {
+    return this.statusMap[QUEST_TEMPLATE_LOCALE_TABLE];
   }
   get isQuestOfferRewardUnsaved(): boolean {
     return this.statusMap[QUEST_OFFER_REWARD_TABLE];
@@ -46,6 +49,7 @@ export class QuestHandlerService extends HandlerService<QuestTemplate> {
   protected _statusMap = {
     [QUEST_TEMPLATE_TABLE]: false,
     [QUEST_TEMPLATE_ADDON_TABLE]: false,
+    [QUEST_TEMPLATE_LOCALE_TABLE]: false,
     [QUEST_OFFER_REWARD_TABLE]: false,
     [QUEST_REQUEST_ITEMS_TABLE]: false,
     [CREATURE_QUESTSTARTER_TABLE]: false,

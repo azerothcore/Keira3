@@ -71,6 +71,7 @@ import {
   QuestOfferRewardComponent,
   QuestRequestItemsComponent,
   QuestTemplateAddonComponent,
+  QuestTemplateLocaleComponent,
   QuestTemplateComponent,
   SelectQuestComponent,
 } from '@keira/features/quest';
@@ -221,6 +222,11 @@ export const KEIRA_ROUTES: Routes = [
       {
         path: 'quest-template-addon',
         component: QuestTemplateAddonComponent,
+        canActivate: [QuestHandlerService],
+      },
+      {
+        path: 'quest-template-locale',
+        component: QuestTemplateLocaleComponent,
         canActivate: [QuestHandlerService],
       },
       {
