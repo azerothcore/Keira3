@@ -569,7 +569,7 @@
   "CONDITIONS": {
     "SELECT": {
       "SOURCE_GROUP": "Source Group:",
-      "SOURCE_ENTRY:": "Source Entry:",
+      "SOURCE_ENTRY": "Source Entry:",
       "CREATE_NEW": "Create new"
     },
     "EDITOR": {

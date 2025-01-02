@@ -564,7 +564,7 @@
   "CONDITIONS": {
     "SELECT": {
       "SOURCE_GROUP": "源组:",
-      "SOURCE_ENTRY:": "源输入:",
+      "SOURCE_ENTRY": "源输入:",
       "CREATE_NEW": "新建"
     },
     "EDITOR": {
