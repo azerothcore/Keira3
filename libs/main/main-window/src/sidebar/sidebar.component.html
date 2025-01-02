@@ -730,22 +730,22 @@
 
           <li class="sidebar-dropdown" [class.active]="menuStates['gameTele'] === 'down'">
             <a (click)="toggleState('gameTele')">
-              <i class="fa fa-magic"></i>
-              <span [translate]="'SIDEBAR.SPELL_DBC_OVERRIDES.TITLE'"></span>
+              <i class="fa fa-atom"></i>
+              <span [translate]="'SIDEBAR.GAME_TELE.TITLE'"></span>
             </a>
 
             <div class="sidebar-submenu" [@slide]="menuStates['gameTele']">
               <ul>
                 <li>
                   <a href="#" routerLinkActive="active" [routerLink]="'game-tele/select'">
-                    {{ 'SIDEBAR.SPELL_DBC_OVERRIDES.SEARCH_SPELL' | translate }}
+                    {{ 'SIDEBAR.GAME_TELE.SEARCH_GAME_TELE' | translate }}
                   </a>
                 </li>
-                @if (spellHandlerService.selected) {
+                @if (gameTeleHandlerService.selected) {
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'game-tele/tele'">
-                      {{ 'SIDEBAR.SPELL_DBC_OVERRIDES.SPELL_DBC_EDITOR' | translate }}
-                      @if (spellHandlerService.isSpellDbcUnsaved) {
+                      {{ 'SIDEBAR.GAME_TELE.GAME_TELE_EDITOR' | translate }}
+                      @if (gameTeleHandlerService.isGameTeleUnsaved) {
                         <keira-unsaved-icon />
                       }
                     </a>

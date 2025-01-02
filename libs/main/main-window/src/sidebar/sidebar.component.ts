@@ -22,6 +22,7 @@ import {
   PageTextHandlerService,
   AcoreStringHandlerService,
 } from '@keira/features/texts';
+import { GameTeleHandlerService } from '@keira/features/game-tele';
 import { LocationService } from '@keira/shared/common-services';
 import { MysqlService } from '@keira/shared/db-layer';
 import { SaiHandlerService } from '@keira/shared/sai-editor';
@@ -109,6 +110,7 @@ export class SidebarComponent {
   protected readonly broadcastTextHandlerService = inject(BroadcastTextHandlerService);
   protected readonly npcTextHandlerService = inject(NpcTextHandlerService);
   protected readonly acoreStringHandlerService = inject(AcoreStringHandlerService);
+  protected readonly gameTeleHandlerService = inject(GameTeleHandlerService);
   private readonly locationService = inject(LocationService);
 
   getSideBarState(): boolean {

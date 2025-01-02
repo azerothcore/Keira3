@@ -1,13 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
-
 import { ToastrService } from 'ngx-toastr';
 import { instance, mock } from 'ts-mockito';
-import { ConditionsHandlerService } from '../conditions-handler.service';
-import { ConditionsService } from './conditions.service';
+import { GameTeleService } from './game-tele.service';
 
-describe('ConditionsService', () => {
+describe('GameTeleService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
@@ -15,14 +13,14 @@ describe('ConditionsService', () => {
         { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
         { provide: ToastrService, useValue: instance(mock(ToastrService)) },
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
-        ConditionsHandlerService,
-        ConditionsService,
+        GameTeleService,
+        GameTeleService,
       ],
     }),
   );
 
   it('should be created', () => {
-    const service: ConditionsService = TestBed.inject(ConditionsService);
+    const service: GameTeleService = TestBed.inject(GameTeleService);
     expect(service).toBeTruthy();
   });
 });

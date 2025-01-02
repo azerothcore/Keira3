@@ -173,6 +173,11 @@
       "TITLE": "Spell DBC overrides",
       "SEARCH_SPELL": "Search Spell",
       "SPELL_DBC_EDITOR": "Spell DBC editor"
+    },
+    "GAME_TELE": {
+      "TITLE": "Game Teleport",
+      "SEARCH_GAME_TELE": "Search Teleport",
+      "GAME_TELE_EDITOR": "Game Tele Editor"
     }
   },
   "DASHBOARD": {
@@ -861,6 +866,12 @@
       "MODAL_NEXT_SPELL": "Seems to be only used for Hunter spells with the values 59 and 75.",
       "SPELL_PRIORITY": "Unknown. Only used value is 50 for some spells.",
       "REQUIRED_AURA_VISION": "Unknown. Only 16 Spells use another value as 0. Could be used for visual effects."
+    }
+  },
+  "GAME_TELE": {
+    "BASE": {
+      "ID": "The unique ID for the teleport.",
+      "MAP_ID": "The ID of the map that the teleport leads to."
     }
   }
 }
