@@ -121,7 +121,7 @@ describe('GameTele integration tests', () => {
 
       it('changing all properties and executing the query should correctly work', () => {
         const expectedQuery =
-          "UPDATE `game_tele` SET `postiion_x` = 1, `postiion_y` = 1, `postiion_z` = 2, `map` = 3, `name` = 'ABCD'," +
+          "UPDATE `game_tele` SET `postition_x` = 1, `postition_x` = 1, `postition_x` = 2, `map` = 3, `name` = 'ABCD'," +
           'WHERE (`id` = 1)' +
           ';\n';
         querySpy.calls.reset();
