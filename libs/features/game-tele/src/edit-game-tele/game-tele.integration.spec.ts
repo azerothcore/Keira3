@@ -11,7 +11,6 @@ import { instance, mock } from 'ts-mockito';
 import { GameTeleComponent } from './game-tele.component';
 import Spy = jasmine.Spy;
 import { GameTeleHandlerService } from '../game-tele-handler.service';
-import { CreatureHandlerService, SaiCreatureHandlerService } from '@keira/features/creature';
 
 class GameTelePage extends EditorPageObject<GameTeleComponent> {}
 
@@ -48,8 +47,7 @@ describe('GameTele integration tests', () => {
         TranslateTestingModule,
       ],
       providers: [
-        CreatureHandlerService,
-        SaiCreatureHandlerService,
+        GameTeleHandlerService,
         {
           provide: SqliteService,
           useValue: instance(mock(SqliteService)),
