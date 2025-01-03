@@ -29,6 +29,7 @@ export * from './entities/gameobject-spawn.type';
 export * from './entities/gameobject-spawn-addon.type';
 export * from './entities/gameobject-template.type';
 export * from './entities/gameobject-template-addon.type';
+export * from './entities/game-tele.type';
 export * from './entities/gossip-menu.type';
 export * from './entities/gossip-menu-option.type';
 export * from './entities/holiday.type';

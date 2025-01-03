@@ -22,6 +22,7 @@ import {
   PageTextHandlerService,
   AcoreStringHandlerService,
 } from '@keira/features/texts';
+import { GameTeleHandlerService } from '@keira/features/game-tele';
 import { LocationService } from '@keira/shared/common-services';
 import { MysqlService } from '@keira/shared/db-layer';
 import { SaiHandlerService } from '@keira/shared/sai-editor';
@@ -45,6 +46,7 @@ interface MenuStats {
   texts: ToggleType;
   gossip: ToggleType;
   spell: ToggleType;
+  gameTele: ToggleType;
 }
 
 @Component({
@@ -84,6 +86,7 @@ export class SidebarComponent {
     texts: 'up',
     gossip: 'up',
     spell: 'up',
+    gameTele: 'up',
   };
   private readonly IMAGES_COUNT = 7;
   private readonly RANDOM_IMAGE = Math.floor(Math.random() * this.IMAGES_COUNT) + 1;
@@ -107,6 +110,7 @@ export class SidebarComponent {
   protected readonly broadcastTextHandlerService = inject(BroadcastTextHandlerService);
   protected readonly npcTextHandlerService = inject(NpcTextHandlerService);
   protected readonly acoreStringHandlerService = inject(AcoreStringHandlerService);
+  protected readonly gameTeleHandlerService = inject(GameTeleHandlerService);
   private readonly locationService = inject(LocationService);
 
   getSideBarState(): boolean {
@@ -142,6 +146,7 @@ export class SidebarComponent {
     this.menuStates.texts = 'up';
     this.menuStates.gossip = 'up';
     this.menuStates.spell = 'up';
+    this.menuStates.gameTele = 'up';
   }
 
   logout(): void {
