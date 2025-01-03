@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { GameTele } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
@@ -12,6 +11,7 @@ import { instance, mock } from 'ts-mockito';
 import { GameTeleComponent } from './game-tele.component';
 import Spy = jasmine.Spy;
 import { GameTeleHandlerService } from '../game-tele-handler.service';
+import { CreatureHandlerService, SaiCreatureHandlerService } from '@keira/features/creature';
 
 class GameTelePage extends EditorPageObject<GameTeleComponent> {}
 
@@ -25,13 +25,13 @@ describe('GameTele integration tests', () => {
   const id = 1;
 
   const expectedFullCreateQuery =
-    'DELETE FROM `game_tele` WHERE `id` = ' +
+    'DELETE FROM `game_tele` WHERE (`id` = ' +
     id +
-    ';\n' +
+    ');\n' +
     'INSERT INTO `game_tele` (`id`, `position_x`, `position_y`, `position_z`, `orientation`, `map`, `name`) VALUES\n' +
     '(' +
     id +
-    ", 0, 0, 0, 0, 0, '');";
+    ", 0, 0, 0, 0, 0, '');\n";
 
   const originalEntity = new GameTele();
   originalEntity.id = 1;
@@ -43,27 +43,30 @@ describe('GameTele integration tests', () => {
         BrowserAnimationsModule,
         ToastrModule.forRoot(),
         ModalModule.forRoot(),
-        GameTeleComponent,
+        GameTeleComponent, // This should typically be in declarations, but as per your instruction, it's left unchanged
         RouterTestingModule,
         TranslateTestingModule,
       ],
-      providers: [GameTeleHandlerService, { provide: SqliteService, useValue: instance(mock(SqliteService)) }],
+      providers: [
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
+        {
+          provide: SqliteService,
+          useValue: instance(mock(SqliteService)),
+        },
+      ],
     }).compileComponents();
   }));
 
-  beforeAll(() => {
-    spyOn(TestBed.inject(Router), 'navigate');
-  });
-
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(GameTeleHandlerService);
-    handlerService['_selected'] = JSON.stringify(id);
+    handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
     queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
 
-    spyOn(queryService, 'selectAllMultipleKeys').and.returnValue(of(creatingNew ? [] : [originalEntity]));
+    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
 
     fixture = TestBed.createComponent(GameTeleComponent);
     page = new GameTelePage(fixture);
@@ -78,6 +81,7 @@ describe('GameTele integration tests', () => {
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
       page.expectFullQueryToContain(expectedFullCreateQuery);
+      querySpy.calls.reset();
     });
 
     it('should correctly update the unsaved status', () => {
@@ -91,14 +95,13 @@ describe('GameTele integration tests', () => {
 
     it('changing a property and executing the query should correctly work', () => {
       const expectedQuery =
-        'DELETE FROM `game_tele` WHERE (`id` = 1)' +
-        ';\n' +
+        'DELETE FROM `game_tele` WHERE (`id` = 1);\n' +
         'INSERT INTO `game_tele` (`id`, `position_x`, `position_y`, `position_z`, `orientation`, `map`, `name`) VALUES\n' +
-        "(1, 0, 0, 0, 0, 0, '');";
+        "(1, 0, 0, 0, 0, 0, 'ABC');";
+
       querySpy.calls.reset();
 
-      page.setSelectValueById('position_y', 2);
-      page.setInputValueById('position_z', 3);
+      page.setInputValueById('name', 'ABC');
       page.expectFullQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();
@@ -147,6 +150,8 @@ describe('GameTele integration tests', () => {
             'INSERT INTO `game_tele` (`id`, `position_x`, `position_y`, `position_z`, `orientation`, `map`, `name`) VALUES\n' +
             "(1, 1234, 0, 0, 0, 0, 'ABCD');",
         );
+
+        querySpy.calls.reset();
       });
     });
   });

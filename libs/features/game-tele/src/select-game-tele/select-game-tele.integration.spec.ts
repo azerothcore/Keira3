@@ -66,31 +66,39 @@ describe('SelectConditions integration tests', () => {
     },
     {
       id: 2,
-      name: 'AB',
+      name: '',
       limit: '100',
       expectedQuery: "SELECT * FROM `game_tele` WHERE (`id` LIKE '%2%') LIMIT 100",
     },
     {
-      id: 3,
+      id: null,
       name: 'AB',
       limit: '100',
       expectedQuery: "SELECT * FROM `game_tele` WHERE (`name` LIKE '%AB%') LIMIT 100",
     },
   ]) {
-    it(`searching an existing entity should correctly work [${id}]`, () => {
+    it(`searching an existing entity should correctly work [id: ${id}, name: ${name}]`, () => {
       querySpy.calls.reset();
+
+      // Set input values based on the test case
+      if (id !== null) {
+        page.setInputValue(page.searchIdInput, `${id}`);
+      }
       if (name) {
         page.setInputValue(page.searchNameInput, name);
       }
 
       page.setInputValue(page.searchLimitInput, limit);
 
+      // Validate the query in the UI
       expect(page.queryWrapper.innerText).toContain(expectedQuery);
 
+      // Trigger the search
       page.clickElement(page.searchBtn);
 
+      // Validate the query was executed as expected
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy).toHaveBeenCalledWith(expectedQuery);
+      expect(querySpy.calls.mostRecent().args[0]).toBe(expectedQuery);
     });
   }
 
