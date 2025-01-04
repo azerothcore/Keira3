@@ -26,7 +26,7 @@ import { CreateComponent, HighlightjsWrapperComponent, TopBarComponent } from '@
 export class SelectGameTeleComponent extends SelectComponent<GameTele> {
   protected readonly entityTable = GAME_TELE_TABLE;
   protected readonly entityIdField = GAME_TELE_ID;
-  protected readonly customStartingId = GAME_TELE_CUSTOM_STARTING_ID;
+  readonly customStartingId = GAME_TELE_CUSTOM_STARTING_ID;
   protected readonly selectService = inject(SelectGameTeleService);
   readonly handlerService = inject(GameTeleHandlerService);
   protected readonly WIKI_BASE_URL = WIKI_BASE_URL;

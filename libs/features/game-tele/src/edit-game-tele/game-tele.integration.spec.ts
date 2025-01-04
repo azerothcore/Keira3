@@ -69,20 +69,20 @@ describe('GameTele integration tests', () => {
 
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
 
-    const fixture = TestBed.createComponent(GameTeleComponent);
-    const page = new GameTelePage(fixture);
-    fixture.autoDetectChanges(true);
-    fixture.detectChanges();
-    return { page, fixture };
+    const _fixture = TestBed.createComponent(GameTeleComponent);
+    const page = new GameTelePage(_fixture);
+    _fixture.autoDetectChanges(true);
+    _fixture.detectChanges();
+    return { page, _fixture };
   }
 
   // Creating New Tests
   describe('Creating new', () => {
     let page: GameTelePage;
-    let fixture: ComponentFixture<GameTeleComponent>;
+    let _fixture: ComponentFixture<GameTeleComponent>;
 
     beforeEach(() => {
-      ({ page, fixture } = setup(true));
+      ({ page, _fixture } = setup(true));
     });
 
     it('should correctly initialise', () => {
@@ -122,10 +122,10 @@ describe('GameTele integration tests', () => {
   // Editing Existing Tests
   describe('Editing existing', () => {
     let page: GameTelePage;
-    let fixture: ComponentFixture<GameTeleComponent>;
+    let _fixture: ComponentFixture<GameTeleComponent>;
 
     beforeEach(() => {
-      ({ page, fixture } = setup(false));
+      ({ page, _fixture } = setup(false));
     });
 
     it('should correctly initialise', () => {

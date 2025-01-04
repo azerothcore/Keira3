@@ -12,36 +12,58 @@ import { instance, mock } from 'ts-mockito';
 import { GameTeleHandlerService } from '../game-tele-handler.service';
 import { GameTele } from '@keira/shared/acore-world-model';
 
-class SelectGameTeleComponentPage extends SelectPageObject<SelectGameTeleComponent> {}
-
 describe('SelectConditions integration tests', () => {
-  let fixture: ComponentFixture<SelectGameTeleComponent>;
-  let page: SelectGameTeleComponentPage;
+  class SelectGameTelePage extends SelectPageObject<SelectGameTeleComponent> {}
+
   let queryService: MysqlQueryService;
   let querySpy: Spy;
   let navigateSpy: Spy;
-  let component: SelectGameTeleComponent;
+  let router: Router;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, ToastrModule.forRoot(), ModalModule.forRoot(), SelectGameTeleComponent, TranslateTestingModule],
-      providers: [GameTeleHandlerService, { provide: SqliteService, useValue: instance(mock(SqliteService)) }],
-    }).compileComponents();
-  }));
-
-  beforeEach(() => {
-    navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+  /**
+   * Setup function to initialize the component, spies, and page object.
+   * Returns the fixture, page, and component instances for each test.
+   */
+  function setup() {
+    // Inject Services
+    router = TestBed.inject(Router);
+    navigateSpy = spyOn(router, 'navigate');
     queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
 
-    fixture = TestBed.createComponent(SelectGameTeleComponent);
-    page = new SelectGameTeleComponentPage(fixture);
-    component = fixture.componentInstance;
+    // Create Component Fixture and Page Object
+    const fixture: ComponentFixture<SelectGameTeleComponent> = TestBed.createComponent(SelectGameTeleComponent);
+    const page: SelectGameTelePage = new SelectGameTelePage(fixture);
+    const component: SelectGameTeleComponent = fixture.componentInstance;
+
+    // Initialize Change Detection
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
-  });
+
+    return { fixture, page, component };
+  }
+
+  /**
+   * TestBed Configuration
+   * - Declares the component in the `declarations` array.
+   * - Moves `SelectGameTeleComponent` from `imports` to `declarations`.
+   */
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [BrowserAnimationsModule, ToastrModule.forRoot(), ModalModule.forRoot(), TranslateTestingModule],
+      declarations: [],
+      providers: [
+        GameTeleHandlerService,
+        {
+          provide: SqliteService,
+          useValue: instance(mock(SqliteService)),
+        },
+      ],
+    }).compileComponents();
+  }));
 
   it('should correctly initialise', waitForAsync(async () => {
+    const { fixture, page, component } = setup();
     await fixture.whenStable();
     expect(page.createInput.value).toEqual(`${component.customStartingId}`);
     page.expectNewEntityFree();
@@ -70,6 +92,7 @@ describe('SelectConditions integration tests', () => {
     },
   ]) {
     it(`searching an existing entity should correctly work [id: ${id}, name: ${name}]`, () => {
+      const { page, _component } = setup();
       querySpy.calls.reset();
 
       // Set input values based on the test case
@@ -95,6 +118,7 @@ describe('SelectConditions integration tests', () => {
   }
 
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
+    const { page, _fixture, _component } = setup();
     const results = [
       {
         id: 1,
