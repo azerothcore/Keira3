@@ -8,7 +8,7 @@ import { HandlerService } from '@keira/shared/base-abstract-classes';
 export class GameTeleHandlerService extends HandlerService<GameTele> {
   protected readonly mainEditorRoutePath = 'game-tele/tele';
 
-  get isGameTeleUnsaved(): boolean {
+  protected get isGameTeleUnsaved(): boolean {
     return this.statusMap[GAME_TELE_TABLE];
   }
 

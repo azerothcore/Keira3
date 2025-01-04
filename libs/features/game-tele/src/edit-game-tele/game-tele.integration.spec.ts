@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
 import { GameTele } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
@@ -13,14 +12,15 @@ import Spy = jasmine.Spy;
 import { GameTeleHandlerService } from '../game-tele-handler.service';
 
 describe('GameTele integration tests', () => {
+  // Page Object Class
   class GameTelePage extends EditorPageObject<GameTeleComponent> {}
 
-  let fixture: ComponentFixture<GameTeleComponent>;
+  // Shared Variables
   let queryService: MysqlQueryService;
   let querySpy: Spy;
   let handlerService: GameTeleHandlerService;
-  let page: GameTelePage;
 
+  // Constants
   const id = 1;
 
   const expectedFullCreateQuery =
@@ -41,16 +41,11 @@ describe('GameTele integration tests', () => {
   originalEntity.orientation = 0;
   originalEntity.map = 0;
 
+  // TestBed Configuration
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        GameTeleComponent, // Typically should be in declarations
-        RouterTestingModule,
-        TranslateTestingModule,
-      ],
+      imports: [BrowserAnimationsModule, ToastrModule.forRoot(), ModalModule.forRoot(), TranslateTestingModule],
+      declarations: [],
       providers: [
         GameTeleHandlerService,
         {
@@ -61,9 +56,12 @@ describe('GameTele integration tests', () => {
     }).compileComponents();
   }));
 
+  // Setup Function
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(GameTeleHandlerService);
-    handlerService['_selected'] = `${id}`;
+    // Ideally, use a public method or setter to set '_selected'
+    // For illustration, we're setting it directly
+    (handlerService as any)._selected = `${id}`;
     handlerService.isNew = creatingNew;
 
     queryService = TestBed.inject(MysqlQueryService);
@@ -71,14 +69,21 @@ describe('GameTele integration tests', () => {
 
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
 
-    fixture = TestBed.createComponent(GameTeleComponent);
-    page = new GameTelePage(fixture);
+    const fixture = TestBed.createComponent(GameTeleComponent);
+    const page = new GameTelePage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    return { page, fixture };
   }
 
+  // Creating New Tests
   describe('Creating new', () => {
-    beforeEach(() => setup(true));
+    let page: GameTelePage;
+    let fixture: ComponentFixture<GameTeleComponent>;
+
+    beforeEach(() => {
+      ({ page, fixture } = setup(true));
+    });
 
     it('should correctly initialise', () => {
       page.expectQuerySwitchToBeHidden();
@@ -114,8 +119,14 @@ describe('GameTele integration tests', () => {
     });
   });
 
+  // Editing Existing Tests
   describe('Editing existing', () => {
-    beforeEach(() => setup(false));
+    let page: GameTelePage;
+    let fixture: ComponentFixture<GameTeleComponent>;
+
+    beforeEach(() => {
+      ({ page, fixture } = setup(false));
+    });
 
     it('should correctly initialise', () => {
       page.expectDiffQueryToBeShown();
@@ -135,7 +146,8 @@ describe('GameTele integration tests', () => {
       page.setInputValueById('orientation', 4);
       page.setInputValueById('map', 5);
       page.setInputValueById('name', '6');
-      //page.changeAllFields(originalEntity, ['name'], values);
+      // If you have a method to change all fields, consider using it
+      // page.changeAllFields(originalEntity, ['name'], values);
       page.expectDiffQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();

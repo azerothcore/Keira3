@@ -12,7 +12,6 @@ import { CreateComponent, HighlightjsWrapperComponent, TopBarComponent } from '@
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './select-game-tele.component.html',
-  styleUrls: ['./select-game-tele.component.scss'],
   standalone: true,
   imports: [
     FormsModule,
@@ -25,10 +24,10 @@ import { CreateComponent, HighlightjsWrapperComponent, TopBarComponent } from '@
   ],
 })
 export class SelectGameTeleComponent extends SelectComponent<GameTele> {
-  readonly entityTable = GAME_TELE_TABLE;
-  readonly entityIdField = GAME_TELE_ID;
-  readonly customStartingId = GAME_TELE_CUSTOM_STARTING_ID;
-  readonly selectService = inject(SelectGameTeleService);
+  protected readonly entityTable = GAME_TELE_TABLE;
+  protected readonly entityIdField = GAME_TELE_ID;
+  protected readonly customStartingId = GAME_TELE_CUSTOM_STARTING_ID;
+  protected readonly selectService = inject(SelectGameTeleService);
   readonly handlerService = inject(GameTeleHandlerService);
   protected readonly WIKI_BASE_URL = WIKI_BASE_URL;
 }
