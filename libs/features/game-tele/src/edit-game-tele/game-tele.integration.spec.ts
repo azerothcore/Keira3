@@ -12,9 +12,9 @@ import { GameTeleComponent } from './game-tele.component';
 import Spy = jasmine.Spy;
 import { GameTeleHandlerService } from '../game-tele-handler.service';
 
-class GameTelePage extends EditorPageObject<GameTeleComponent> {}
-
 describe('GameTele integration tests', () => {
+  class GameTelePage extends EditorPageObject<GameTeleComponent> {}
+
   let fixture: ComponentFixture<GameTeleComponent>;
   let queryService: MysqlQueryService;
   let querySpy: Spy;
@@ -34,7 +34,12 @@ describe('GameTele integration tests', () => {
 
   const originalEntity = new GameTele();
   originalEntity.id = 1;
-  originalEntity.name = 'ABC';
+  originalEntity.name = '';
+  originalEntity.position_x = 0;
+  originalEntity.position_y = 0;
+  originalEntity.position_z = 0;
+  originalEntity.orientation = 0;
+  originalEntity.map = 0;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -42,7 +47,7 @@ describe('GameTele integration tests', () => {
         BrowserAnimationsModule,
         ToastrModule.forRoot(),
         ModalModule.forRoot(),
-        GameTeleComponent, // This should typically be in declarations, but as per your instruction, it's left unchanged
+        GameTeleComponent, // Typically should be in declarations
         RouterTestingModule,
         TranslateTestingModule,
       ],
@@ -95,7 +100,7 @@ describe('GameTele integration tests', () => {
       const expectedQuery =
         'DELETE FROM `game_tele` WHERE (`id` = 1);\n' +
         'INSERT INTO `game_tele` (`id`, `position_x`, `position_y`, `position_z`, `orientation`, `map`, `name`) VALUES\n' +
-        "(1, 0, 0, 0, 0, 0, 'ABC');";
+        "(1, 0, 0, 0, 0, 0, 'ABC');\n";
 
       querySpy.calls.reset();
 
@@ -107,50 +112,55 @@ describe('GameTele integration tests', () => {
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
     });
+  });
 
-    describe('Editing existing', () => {
-      beforeEach(() => setup(false));
+  describe('Editing existing', () => {
+    beforeEach(() => setup(false));
 
-      it('should correctly initialise', () => {
-        page.expectDiffQueryToBeShown();
-        page.expectDiffQueryToBeEmpty();
-        page.expectFullQueryToContain(expectedFullCreateQuery);
-      });
+    it('should correctly initialise', () => {
+      page.expectDiffQueryToBeShown();
+      page.expectDiffQueryToBeEmpty();
+      page.expectFullQueryToContain(expectedFullCreateQuery);
+    });
 
-      it('changing all properties and executing the query should correctly work', () => {
-        const expectedQuery =
-          "UPDATE `game_tele` SET `position_x` = 1, `position_x` = 1, `position_x` = 2, `map` = 3, `name` = 'ABCD'," +
-          'WHERE (`id` = 1)' +
-          ';\n';
-        querySpy.calls.reset();
+    it('changing all properties and executing the query should correctly work', () => {
+      const expectedQuery =
+        "UPDATE `game_tele` SET `position_x` = 1, `position_y` = 2, `position_z` = 3, `orientation` = 4, `map` = 5, `name` = '6' " +
+        'WHERE (`id` = 1);';
+      querySpy.calls.reset();
 
-        page.changeAllFields(originalEntity, []);
-        page.expectDiffQueryToContain(expectedQuery);
+      page.setInputValueById('position_x', 1);
+      page.setInputValueById('position_y', 2);
+      page.setInputValueById('position_z', 3);
+      page.setInputValueById('orientation', 4);
+      page.setInputValueById('map', 5);
+      page.setInputValueById('name', '6');
+      //page.changeAllFields(originalEntity, ['name'], values);
+      page.expectDiffQueryToContain(expectedQuery);
 
-        page.clickExecuteQuery();
-        expect(querySpy).toHaveBeenCalledTimes(1);
-        expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
-      });
+      page.clickExecuteQuery();
+      expect(querySpy).toHaveBeenCalledTimes(1);
+      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+    });
 
-      it('changing values should correctly update the queries', () => {
-        page.setInputValueById('name', 'ABCD');
-        page.expectDiffQueryToContain("UPDATE `game_tele` SET `name` = 'ABCD' WHERE (`id` = 1)" + ';\n');
-        page.expectFullQueryToContain(
-          'DELETE FROM `game_tele` WHERE (`id` = 1);\n' +
-            'INSERT INTO `game_tele` (`id`, `position_x`, `position_y`, `position_z`, `orientation`, `map`, `name`) VALUES\n' +
-            "(1, 0, 0, 0, 0, 0, 'ABCD');",
-        );
+    it('changing values should correctly update the queries', () => {
+      page.setInputValueById('name', 'ABCD');
+      page.expectDiffQueryToContain("UPDATE `game_tele` SET `name` = 'ABCD' WHERE (`id` = 1);");
+      page.expectFullQueryToContain(
+        'DELETE FROM `game_tele` WHERE (`id` = 1);\n' +
+          'INSERT INTO `game_tele` (`id`, `position_x`, `position_y`, `position_z`, `orientation`, `map`, `name`) VALUES\n' +
+          "(1, 0, 0, 0, 0, 0, 'ABCD');\n",
+      );
 
-        page.setInputValueById('position_x', '1234');
-        page.expectDiffQueryToContain("UPDATE `game_tele` SET  `name` = 'ABCD', `position_x` = 1234 WHERE (`id` = 1)" + ';\n');
-        page.expectFullQueryToContain(
-          'DELETE FROM `game_tele` WHERE (`id` = 1);\n' +
-            'INSERT INTO `game_tele` (`id`, `position_x`, `position_y`, `position_z`, `orientation`, `map`, `name`) VALUES\n' +
-            "(1, 1234, 0, 0, 0, 0, 'ABCD');",
-        );
+      page.setInputValueById('position_x', 1.234);
+      page.expectDiffQueryToContain("UPDATE `game_tele` SET `position_x` = 1.234, `name` = 'ABCD' WHERE (`id` = 1);");
+      page.expectFullQueryToContain(
+        'DELETE FROM `game_tele` WHERE (`id` = 1);\n' +
+          'INSERT INTO `game_tele` (`id`, `position_x`, `position_y`, `position_z`, `orientation`, `map`, `name`) VALUES\n' +
+          "(1, 1.234, 0, 0, 0, 0, 'ABCD');\n",
+      );
 
-        querySpy.calls.reset();
-      });
+      querySpy.calls.reset();
     });
   });
 });

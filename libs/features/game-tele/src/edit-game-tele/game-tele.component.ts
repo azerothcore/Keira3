@@ -12,11 +12,10 @@ import { QueryOutputComponent } from '@keira/shared/base-editor-components';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-conditions',
   templateUrl: './game-tele.component.html',
-  styleUrls: ['./game-tele.component.scss'],
   standalone: true,
   imports: [TranslateModule, FormsModule, ReactiveFormsModule, TooltipModule, QueryOutputComponent],
 })
 export class GameTeleComponent extends SingleRowEditorComponent<GameTele> {
-  override readonly editorService = inject(GameTeleService);
-  readonly handlerService = inject(GameTeleHandlerService);
+  protected override readonly editorService = inject(GameTeleService);
+  protected readonly handlerService = inject(GameTeleHandlerService);
 }
