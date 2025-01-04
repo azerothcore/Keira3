@@ -92,7 +92,7 @@ describe('SelectConditions integration tests', () => {
     },
   ]) {
     it(`searching an existing entity should correctly work [id: ${id}, name: ${name}]`, () => {
-      const { page, _component } = setup();
+      const { page } = setup();
       querySpy.calls.reset();
 
       // Set input values based on the test case
@@ -118,7 +118,7 @@ describe('SelectConditions integration tests', () => {
   }
 
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
-    const { page, _fixture, _component } = setup();
+    const { page } = setup();
     const results = [
       {
         id: 1,

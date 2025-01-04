@@ -1,29 +1,28 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { instance, mock } from 'ts-mockito';
-
-import { CreatureSelectorModalComponent } from './creature-selector-modal.component';
+import { GameTeleSelectorModalComponent } from './game-tele-selector-modal.component';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
-import { CreatureSearchService } from '../../search/creature-search.service';
 import { MysqlQueryService } from '@keira/shared/db-layer';
+import { GameTeleSearchService } from '../../search/game-tele-search.service';
 
-describe('CreatureSelectorModalComponent', () => {
-  let component: CreatureSelectorModalComponent;
-  let fixture: ComponentFixture<CreatureSelectorModalComponent>;
-  let searchService: CreatureSearchService;
+describe('GameTeleSelectorModalComponent', () => {
+  let component: GameTeleSelectorModalComponent;
+  let fixture: ComponentFixture<GameTeleSelectorModalComponent>;
+  let searchService: GameTeleSearchService;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [CreatureSelectorModalComponent, TranslateTestingModule],
+      imports: [GameTeleSelectorModalComponent, TranslateTestingModule],
       providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) }],
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    searchService = TestBed.inject(CreatureSearchService);
+    searchService = TestBed.inject(GameTeleSearchService);
     searchService.query = '--mock query';
 
-    fixture = TestBed.createComponent(CreatureSelectorModalComponent);
+    fixture = TestBed.createComponent(GameTeleSelectorModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

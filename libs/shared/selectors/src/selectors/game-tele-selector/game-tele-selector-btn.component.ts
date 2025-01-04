@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-
-import { CreatureSelectorModalComponent } from './creature-selector-modal.component';
+import { GameTeleSelectorModalComponent } from './game-tele-selector-modal.component';
 import { BaseSelectorBtnComponent } from '../base-selector/base-selector-btn.component';
 
 @Component({
@@ -10,6 +9,6 @@ import { BaseSelectorBtnComponent } from '../base-selector/base-selector-btn.com
   styleUrls: ['../base-selector/base-selector-btn.component.scss'],
   standalone: true,
 })
-export class CreatureSelectorBtnComponent extends BaseSelectorBtnComponent {
-  protected readonly modalComponentClass = CreatureSelectorModalComponent;
+export class GameTeleSelectorBtnComponent extends BaseSelectorBtnComponent {
+  protected readonly modalComponentClass = GameTeleSelectorModalComponent;
 }

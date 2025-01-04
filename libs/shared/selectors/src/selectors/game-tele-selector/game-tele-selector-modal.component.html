@@ -1,11 +1,11 @@
 <div class="modal-body">
-  <p class="lead text-center mb-1">Creature selector</p>
+  <p class="lead text-center mb-1">Game Tele selector</p>
 
   <form [formGroup]="searchService.queryForm">
     <div class="row">
       <ng-container [formGroup]="searchService.fields">
         <div class="form-group col-3">
-          <input [formControlName]="'entry'" type="number" class="form-control form-control-sm" id="entry" placeholder="Entry" />
+          <input [formControlName]="'id'" type="number" class="form-control form-control-sm" id="id" placeholder="Id" />
         </div>
         <div class="form-group col-5">
           <input [formControlName]="'name'" class="form-control form-control-sm" id="name" placeholder="Name" />
@@ -41,7 +41,7 @@
             {{ row.entry }}
           </ng-template>
         </ngx-datatable-column>
-        <ngx-datatable-column name="name" prop="name"></ngx-datatable-column>
+        <ngx-datatable-column name="name" prop="name" />
       </ngx-datatable>
     </div>
   }
