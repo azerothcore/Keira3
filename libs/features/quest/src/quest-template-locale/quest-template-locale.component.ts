@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { EMOTE, QuestTemplateLocale } from '@keira/shared/acore-world-model';
+import { QUEST_LOCALE, QuestTemplateLocale } from '@keira/shared/acore-world-model';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { EditorButtonsComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
-import { GameobjectSelectorBtnComponent, SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
+import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 import { TranslateModule } from '@ngx-translate/core';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { QuestHandlerService } from '../quest-handler.service';
@@ -30,16 +30,14 @@ import { NgxDatatableModule } from '@siemens/ngx-datatable';
     SingleValueSelectorBtnComponent,
     QuestPreviewComponent,
     Model3DViewerComponent,
-    GameobjectSelectorBtnComponent,
     AsyncPipe,
     EditorButtonsComponent,
     NgxDatatableModule,
   ],
 })
 export class QuestTemplateLocaleComponent extends MultiRowEditorComponent<QuestTemplateLocale> {
-  readonly EMOTE = EMOTE;
-
   protected override readonly editorService = inject(QuestTemplateLocaleService);
   readonly handlerService = inject(QuestHandlerService);
   readonly questPreviewService = inject(QuestPreviewService);
+  protected readonly QUEST_LOCALE = QUEST_LOCALE;
 }

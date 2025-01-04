@@ -19,6 +19,16 @@
               <input [formControlName]="'ID'" id="id" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+              <label class="control-label" for="locale">locale</label>
+              <keira-single-value-selector-btn
+                [control]="editorService.form.controls.locale"
+                [disabled]="editorService.form.controls.locale.disabled"
+                [config]="{ options: QUEST_LOCALE, name: 'locale' }"
+                [modalClass]="'modal-md'"
+              />
+              <input [formControlName]="'locale'" id="locale" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
               <label class="control-label" for="id">Title</label>
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.LOG_TITLE' | translate"></i>
               <input [formControlName]="'Title'" id="title" class="form-control form-control-sm" />

@@ -135,8 +135,10 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
   }
 
   protected isRowIdTaken(id: number) {
+    const searchId = id.toString();
     for (const row of this._newRows) {
-      if (row[this._entitySecondIdField] === id) {
+      const rowId = row[this._entitySecondIdField].toString();
+      if (rowId === searchId) {
         return true;
       }
     }
@@ -223,7 +225,10 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     if (this._entityIdField) {
       this.addIdToNewRow(newRow);
     }
-    newRow[this._entitySecondIdField as keyof T] = this.getNextFreeRowId() as T[keyof T];
+    const nextId = this.getNextFreeRowId();
+    newRow[this._entitySecondIdField as keyof T] = typeof newRow[this._entitySecondIdField as keyof T] === 'string'
+      ? String(nextId) as T[keyof T]
+      : nextId as T[keyof T];
     this._newRows = [...this._newRows, { ...newRow }];
 
     this.updateDiffQuery();
