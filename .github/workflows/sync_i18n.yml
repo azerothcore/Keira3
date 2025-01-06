@@ -3,7 +3,7 @@ name: Check and Fix Missing Translation Keys
 on:
   push:
     branches-ignore:
-      - main
+      - master
 
 jobs:
   check-translation-keys:
