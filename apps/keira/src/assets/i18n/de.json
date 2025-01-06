@@ -570,7 +570,7 @@
   "CONDITIONS": {
     "SELECT": {
       "SOURCE_GROUP": "Quellgruppe:",
-      "SOURCE_ENTRY:": "Quelleintrag:",
+      "SOURCE_ENTRY": "Quelleintrag:",
       "CREATE_NEW": "Neu erstellen"
     },
     "EDITOR": {
