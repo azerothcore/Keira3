@@ -41,6 +41,7 @@
       <keira-highlightjs-wrapper [code]="selectService.query" />
     </form>
 
+    {{ selectService.pageOffset }}
     @if (selectService.rows) {
       <div>
         <ngx-datatable
@@ -52,6 +53,8 @@
           [rowHeight]="DTCFG.rowHeight"
           [limit]="DTCFG.limit"
           [selectionType]="DTCFG.selectionType"
+          [offset]="selectService.pageOffset"
+          (page)="onPage($event)"
           (select)="selectService.onSelect($event)"
         >
           <ngx-datatable-column name="entry" prop="entry" [minWidth]="100">

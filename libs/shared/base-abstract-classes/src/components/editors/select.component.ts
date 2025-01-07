@@ -1,6 +1,6 @@
 /* istanbul ignore file */ // TODO: fix coverage
 import { ChangeDetectorRef, inject } from '@angular/core';
-import { TableRow } from '@keira/shared/constants';
+import { DataTablePageEvent, TableRow } from '@keira/shared/constants';
 import { SelectService } from '../../service/select/select.service';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { HandlerService } from '../../service/handlers/handler.service';
@@ -20,5 +20,9 @@ export abstract class SelectComponent<T extends TableRow> {
 
   onSearch(): void {
     this.selectService.onSearch(this.changeDetectorRef);
+  }
+
+  onPage(event: DataTablePageEvent): void {
+    this.selectService.pageOffset = event.offset;
   }
 }
