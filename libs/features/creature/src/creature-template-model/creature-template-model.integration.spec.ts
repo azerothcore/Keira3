@@ -101,9 +101,9 @@ describe('CreatureTemplateModel integration tests', () => {
       const expectedQuery =
         'DELETE FROM `creature_template_model` WHERE (`CreatureID` = 1234) AND (`Idx` IN (0, 1, 2));\n' +
         'INSERT INTO `creature_template_model` (`CreatureID`, `Idx`, `CreatureDisplayID`, `DisplayScale`, `Probability`, `VerifiedBuild`) VALUES\n' +
-        '(1234, 0, 0, 1, 0, 0),\n' +
-        '(1234, 1, 0, 1, 0, 0),\n' +
-        '(1234, 2, 0, 1, 0, 0);';
+        '(1234, 0, 0, 1, 1, 0),\n' +
+        '(1234, 1, 0, 1, 1, 0),\n' +
+        '(1234, 2, 0, 1, 1, 0);';
       querySpy.calls.reset();
 
       page.addNewRow();
@@ -127,12 +127,12 @@ describe('CreatureTemplateModel integration tests', () => {
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_template_model` WHERE (`CreatureID` = 1234) AND (`Idx` IN (0));\n' +
           'INSERT INTO `creature_template_model` (`CreatureID`, `Idx`, `CreatureDisplayID`, `DisplayScale`, `Probability`, `VerifiedBuild`) VALUES\n' +
-          '(1234, 0, 0, 1, 0, 0);',
+          '(1234, 0, 0, 1, 1, 0);',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_model` WHERE (`CreatureID` = 1234);\n' +
           'INSERT INTO `creature_template_model` (`CreatureID`, `Idx`, `CreatureDisplayID`, `DisplayScale`, `Probability`, `VerifiedBuild`) VALUES\n' +
-          '(1234, 0, 0, 1, 0, 0)',
+          '(1234, 0, 0, 1, 1, 0)',
       );
 
       page.setInputValueById('Idx', '28');
@@ -140,12 +140,12 @@ describe('CreatureTemplateModel integration tests', () => {
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_template_model` WHERE (`CreatureID` = 1234) AND (`Idx` IN (28));\n' +
           'INSERT INTO `creature_template_model` (`CreatureID`, `Idx`, `CreatureDisplayID`, `DisplayScale`, `Probability`, `VerifiedBuild`) VALUES\n' +
-          '(1234, 28, 0, 1, 0, 0);',
+          '(1234, 28, 0, 1, 1, 0);',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_model` WHERE (`CreatureID` = 1234);\n' +
           'INSERT INTO `creature_template_model` (`CreatureID`, `Idx`, `CreatureDisplayID`, `DisplayScale`, `Probability`, `VerifiedBuild`) VALUES\n' +
-          '(1234, 28, 0, 1, 0, 0);',
+          '(1234, 28, 0, 1, 1, 0);',
       );
       page.removeNativeElement();
     });
@@ -161,14 +161,14 @@ describe('CreatureTemplateModel integration tests', () => {
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_template_model` WHERE (`CreatureID` = 1234) AND (`Idx` IN (28, 0));\n' +
           'INSERT INTO `creature_template_model` (`CreatureID`, `Idx`, `CreatureDisplayID`, `DisplayScale`, `Probability`, `VerifiedBuild`) VALUES\n' +
-          '(1234, 28, 0, 1, 0, 0),\n' +
-          '(1234, 0, 0, 1, 0, 0);',
+          '(1234, 28, 0, 1, 1, 0),\n' +
+          '(1234, 0, 0, 1, 1, 0);',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_model` WHERE (`CreatureID` = 1234);\n' +
           'INSERT INTO `creature_template_model` (`CreatureID`, `Idx`, `CreatureDisplayID`, `DisplayScale`, `Probability`, `VerifiedBuild`) VALUES\n' +
-          '(1234, 28, 0, 1, 0, 0),\n' +
-          '(1234, 0, 0, 1, 0, 0);',
+          '(1234, 28, 0, 1, 1, 0),\n' +
+          '(1234, 0, 0, 1, 1, 0);',
       );
       page.removeNativeElement();
     });
@@ -183,9 +183,9 @@ describe('CreatureTemplateModel integration tests', () => {
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_model` WHERE (`CreatureID` = 1234);\n' +
           'INSERT INTO `creature_template_model` (`CreatureID`, `Idx`, `CreatureDisplayID`, `DisplayScale`, `Probability`, `VerifiedBuild`) VALUES\n' +
-          '(1234, 0, 0, 1, 0, 0),\n' +
-          '(1234, 1, 0, 1, 0, 0),\n' +
-          '(1234, 2, 0, 1, 0, 0);',
+          '(1234, 0, 0, 1, 1, 0),\n' +
+          '(1234, 1, 0, 1, 1, 0),\n' +
+          '(1234, 2, 0, 1, 1, 0);',
       );
       expect(page.getEditorTableRowsCount()).toBe(3);
       expect(page.getAllModelViewers().length).toBe(3); // check one model viewer per row
@@ -199,8 +199,8 @@ describe('CreatureTemplateModel integration tests', () => {
       page.expectDiffQueryToContain('DELETE FROM `creature_template_model` WHERE (`CreatureID` = 1234) AND (`Idx` IN (1));');
       page.expectFullQueryToContain(
         'creature_template_model` (`CreatureID`, `Idx`, `CreatureDisplayID`, `DisplayScale`, `Probability`, `VerifiedBuild`) VALUES\n' +
-          '(1234, 0, 0, 1, 0, 0),\n' +
-          '(1234, 2, 0, 1, 0, 0);',
+          '(1234, 0, 0, 1, 1, 0),\n' +
+          '(1234, 2, 0, 1, 1, 0);',
       );
 
       page.deleteRow(1);
@@ -209,7 +209,7 @@ describe('CreatureTemplateModel integration tests', () => {
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_model` WHERE (`CreatureID` = 1234);\n' +
           'INSERT INTO `creature_template_model` (`CreatureID`, `Idx`, `CreatureDisplayID`, `DisplayScale`, `Probability`, `VerifiedBuild`) VALUES\n' +
-          '(1234, 0, 0, 1, 0, 0);',
+          '(1234, 0, 0, 1, 1, 0);',
       );
 
       page.deleteRow(0);
@@ -235,9 +235,9 @@ describe('CreatureTemplateModel integration tests', () => {
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_model` WHERE (`CreatureID` = 1234);\n' +
           'INSERT INTO `creature_template_model` (`CreatureID`, `Idx`, `CreatureDisplayID`, `DisplayScale`, `Probability`, `VerifiedBuild`) VALUES\n' +
-          '(1234, 0, 0, 1, 0, 0),\n' +
+          '(1234, 0, 0, 1, 1, 0),\n' +
           '(1234, 1, 1111, 222, 333, 0),\n' +
-          '(1234, 2, 0, 1, 0, 0);',
+          '(1234, 2, 0, 1, 1, 0);',
       );
       page.removeNativeElement();
     });
@@ -258,15 +258,15 @@ describe('CreatureTemplateModel integration tests', () => {
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_template_model` WHERE (`CreatureID` = 1234) AND (`Idx` IN (1, 2, 28, 3));\n' +
           'INSERT INTO `creature_template_model` (`CreatureID`, `Idx`, `CreatureDisplayID`, `DisplayScale`, `Probability`, `VerifiedBuild`) VALUES\n' +
-          '(1234, 28, 0, 1, 0, 0),\n' +
-          '(1234, 3, 0, 1, 0, 0);',
+          '(1234, 28, 0, 1, 1, 0),\n' +
+          '(1234, 3, 0, 1, 1, 0);',
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_template_model` WHERE (`CreatureID` = 1234);\n' +
           'INSERT INTO `creature_template_model` (`CreatureID`, `Idx`, `CreatureDisplayID`, `DisplayScale`, `Probability`, `VerifiedBuild`) VALUES\n' +
-          '(1234, 0, 0, 1, 0, 0),\n' +
-          '(1234, 28, 0, 1, 0, 0),\n' +
-          '(1234, 3, 0, 1, 0, 0);',
+          '(1234, 0, 0, 1, 1, 0),\n' +
+          '(1234, 28, 0, 1, 1, 0),\n' +
+          '(1234, 3, 0, 1, 1, 0);',
       );
       page.removeNativeElement();
     });
