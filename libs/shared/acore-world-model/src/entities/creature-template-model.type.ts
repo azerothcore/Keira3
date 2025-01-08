@@ -9,6 +9,6 @@ export class CreatureTemplateModel extends TableRow {
   Idx: number = 0;
   CreatureDisplayID: number = 0;
   DisplayScale: number = 1;
-  Probability: number = 0;
+  Probability: number = 1;
   VerifiedBuild: number = 0;
 }
