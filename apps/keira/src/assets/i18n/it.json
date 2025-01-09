@@ -13,7 +13,8 @@
     "POLISH": "Polacco",
     "PORTUGUESE": "Portoghese",
     "KOREAN": "Coreano",
-    "ROMANIAN": "Rumeno"
+    "ROMANIAN": "Rumeno",
+    "SLOVAK": "Slovak"
   },
   "MODAL": {
     "YES": "Yes",
@@ -686,7 +687,8 @@
         "CONDITION_PET_TYPE": "mask",
         "CONDITION_TAXI": "Always 0",
         "CONDITION_QUESTSTATE": "quest_template.ID",
-        "CONDITION_QUEST_OBJECTIVE_PROGRESS": "quest_template.id"
+        "CONDITION_QUEST_OBJECTIVE_PROGRESS": "quest_template.id",
+        "CONDITION_WORLD_SCRIPT": "WorldStateCondition (defined in WorldState.h)"
       },
       "VALUE2": {
         "CONDITION_NONE": "(Never used)",
@@ -706,7 +708,8 @@
         "CONDITION_HP_PCT": "ComparisionType: 0 = Percentage of max HP must be equal; 1 = Percentage of max HP must be higher; 2 = Percentage of max HP must be lower; 3 = Percentage of max HP must be equal or higher; 4 = Percentage of max HP must be equal or lower",
         "CONDITION_STAND_STATE": "Exact stand state, or generic state (stand/sit), depending on value 10 = Standing; 1 = Sitting",
         "CONDITION_QUESTSTATE": "state_mask",
-        "CONDITION_QUEST_OBJECTIVE_PROGRESS": "Quest Objective ID - see quest_template.RequiredNpcOrGo"
+        "CONDITION_QUEST_OBJECTIVE_PROGRESS": "Quest Objective ID - see quest_template.RequiredNpcOrGo",
+        "CONDITION_WORLD_SCRIPT": "state, 0 = unused"
       },
       "VALUE3": {
         "CONDITION_NONE": "(Never used)",

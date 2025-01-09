@@ -48,6 +48,10 @@
   "EXECUTE_AND_COPY": "Execute & copy",
   "RELOAD": "Recarregar",
   "CANCEL": "Cancelar",
+  "SELECTORS": {
+    "ENABLED": "Enabled",
+    "DISABLED": "Disabled"
+  },
   "CONNECTION_WINDOW": {
     "HOST": "Host",
     "PORT": "Port",
@@ -683,7 +687,8 @@
         "CONDITION_PET_TYPE": "mask",
         "CONDITION_TAXI": "Sempre 0",
         "CONDITION_QUESTSTATE": "quest_template.ID",
-        "CONDITION_QUEST_OBJECTIVE_PROGRESS": "quest_template.id"
+        "CONDITION_QUEST_OBJECTIVE_PROGRESS": "quest_template.id",
+        "CONDITION_WORLD_SCRIPT": "WorldStateCondition (defined in WorldState.h)"
       },
       "VALUE2": {
         "CONDITION_NONE": "(Nunca usado)",
@@ -703,7 +708,8 @@
         "CONDITION_HP_PCT": "ComparisionType: 0 = Porcentagem do HP máximo tem que ser igual; 1 = Porcentagem do HP máximo tem que ser maior; 2 = Porcentagem do HP máximo tem que ser menor; 3 = Porcentagem do HP máximo tem que ser maior ou igual; 4 = Porcentagem do HP máximo tem que ser menor ou igual",
         "CONDITION_STAND_STATE": "Exact stand state, ou generic state (levantar/sentar), denpendendo no valor 10 = Standing/Levantado; 1 = Sitting/Sentado",
         "CONDITION_QUESTSTATE": "state_mask",
-        "CONDITION_QUEST_OBJECTIVE_PROGRESS": "Quest Objective ID - veja quest_template.RequiredNpcOrGo"
+        "CONDITION_QUEST_OBJECTIVE_PROGRESS": "Quest Objective ID - veja quest_template.RequiredNpcOrGo",
+        "CONDITION_WORLD_SCRIPT": "state, 0 = unused"
       },
       "VALUE3": {
         "CONDITION_NONE": "(Nunca usado)",
