@@ -48,6 +48,10 @@
   "EXECUTE_AND_COPY": "Execute & copy",
   "RELOAD": "Recargar",
   "CANCEL": "Cancelar",
+  "SELECTORS": {
+    "ENABLED": "Enabled",
+    "DISABLED": "Disabled"
+  },
   "CONNECTION_WINDOW": {
     "HOST": "Host",
     "PORT": "Puerto",
@@ -145,11 +149,6 @@
       "NPC_TEXT": "NPC Text",
       "SELECT_PAGE_TEXT": "Select Page Text",
       "PAGE_TEXT": "Page Text",
-      "PAGE_TEXTS": {
-        "ID": "The ID of the text in the page. This number is unique to every text ID.",
-        "NEXT_PAGE_ID": "The ID of the next page's text ID.",
-        "TEXT": "The actual text. The message in this field will be shown as the text on a page."
-      },
       "ACORE_STRING_TEXT": "Acore Strings",
       "SELECT_ACORE_STRING_TEXT": "Select Acore Strings"
     },
@@ -571,7 +570,7 @@
   "CONDITIONS": {
     "SELECT": {
       "SOURCE_GROUP": "Fuente de Grupo:",
-      "SOURCE_ENTRY:": "Fuente de Entrada:",
+      "SOURCE_ENTRY": "Fuente de Entrada:",
       "CREATE_NEW": "Crear nuevo"
     },
     "EDITOR": {
@@ -688,7 +687,8 @@
         "CONDITION_PET_TYPE": "Máscara del Tipo de Mascota",
         "CONDITION_TAXI": "Siempre es 0",
         "CONDITION_QUESTSTATE": "Identificador de Misión extrado dentro de la tabla quest_template.ID",
-        "CONDITION_QUEST_OBJECTIVE_PROGRESS": "Identificador de Misión extrado dentro de la tabla 'quest_template.id'"
+        "CONDITION_QUEST_OBJECTIVE_PROGRESS": "Identificador de Misión extrado dentro de la tabla 'quest_template.id'",
+        "CONDITION_WORLD_SCRIPT": "WorldStateCondition (defined in WorldState.h)"
       },
       "VALUE2": {
         "CONDITION_NONE": "(Never used)",
@@ -708,7 +708,8 @@
         "CONDITION_HP_PCT": "Tipo de Comparación o 'ComparisionType': 0 = Porcentaje de Salud debe ser igual; 1 = Porcentaje de Salud debe ser mayor; 2 = Porcentaje de Salud debe ser menor; 3 = Porcentaje de Salud debe ser mayor o igual; 4 = Porcentaje de Salud debe ser menor o igual",
         "CONDITION_STAND_STATE": "Estado exacto al estar parado, o también para un estado genérico (parado/sentado), dependiendo del valor. 10 = De pie; 1 = Sentado",
         "CONDITION_QUESTSTATE": "Máscara de Estado de Misión (state_mask)",
-        "CONDITION_QUEST_OBJECTIVE_PROGRESS": "Identificador de Objetivo de Misión - Véase la tabla quest_template.RequiredNpcOrGo"
+        "CONDITION_QUEST_OBJECTIVE_PROGRESS": "Identificador de Objetivo de Misión - Véase la tabla quest_template.RequiredNpcOrGo",
+        "CONDITION_WORLD_SCRIPT": "state, 0 = unused"
       },
       "VALUE3": {
         "CONDITION_NONE": "(Nunca Usado)",
