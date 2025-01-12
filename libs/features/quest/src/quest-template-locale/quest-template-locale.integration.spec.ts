@@ -1,5 +1,5 @@
 import { QuestTemplateLocale } from '@keira/shared/acore-world-model';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { of } from 'rxjs';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
@@ -9,19 +9,12 @@ import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { ModalModule } from 'ngx-bootstrap/modal';
-import { RouterTestingModule } from '@angular/router/testing';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
-import Spy = jasmine.Spy;
 
 class QuestTemplateLocalePage extends MultiRowEditorPageObject<QuestTemplateLocaleComponent> { }
 
 describe('QuestTemplateLocale integration tests', () => {
   const id = 1234;
-  let fixture: ComponentFixture<QuestTemplateLocaleComponent>;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let handlerService: QuestHandlerService;
-  let page: QuestTemplateLocalePage;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -30,7 +23,6 @@ describe('QuestTemplateLocale integration tests', () => {
         ToastrModule.forRoot(),
         ModalModule.forRoot(),
         QuestTemplateLocaleComponent,
-        RouterTestingModule,
         TranslateTestingModule,
       ],
       providers: [QuestHandlerService, { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG }],
@@ -41,12 +33,12 @@ describe('QuestTemplateLocale integration tests', () => {
     const originalRow = new QuestTemplateLocale();
     originalRow.ID = id;
 
-    handlerService = TestBed.inject(QuestHandlerService);
+    const handlerService = TestBed.inject(QuestHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
     spyOn(queryService, 'queryValue').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow]));
@@ -55,16 +47,17 @@ describe('QuestTemplateLocale integration tests', () => {
       initializeServicesSpy.and.callThrough();
     }
 
-    fixture = TestBed.createComponent(QuestTemplateLocaleComponent);
-    page = new QuestTemplateLocalePage(fixture);
+    const fixture = TestBed.createComponent(QuestTemplateLocaleComponent);
+    const page = new QuestTemplateLocalePage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+
+    return { handlerService, queryService, querySpy, page };
   }
 
   describe('Creating new', () => {
-    beforeEach(() => setup(true));
-
     it('should correctly initialise', () => {
+      const { page } = setup(true);
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
       expect(page.formError.hidden).toBe(true);
@@ -84,6 +77,7 @@ describe('QuestTemplateLocale integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
+      const { page, handlerService } = setup(true);
       expect(handlerService.isQuestTemplateLocaleUnsaved).toBe(false);
       page.addNewRow();
       expect(handlerService.isQuestTemplateLocaleUnsaved).toBe(true);
@@ -92,6 +86,7 @@ describe('QuestTemplateLocale integration tests', () => {
     });
 
     it('adding new rows and executing the query should correctly work', () => {
+      const { page, querySpy } = setup(true);
       const expectedQuery =
         'DELETE FROM `quest_template_locale` WHERE (`ID` = 1234) AND (`locale` IN (\'0\', \'1\', \'2\'));\n' +
         'INSERT INTO `quest_template_locale` (`ID`, `locale`, `Title`, `Details`, `Objectives`, `EndText`, `CompletedText`, ' +
@@ -115,6 +110,7 @@ describe('QuestTemplateLocale integration tests', () => {
     });
 
     it('adding a row and changing its values should correctly update the queries', () => {
+      const { page } = setup(true);
       page.addNewRow();
       page.expectDiffQueryToContain(
         'DELETE FROM `quest_template_locale` WHERE (`ID` = 1234) AND (`locale` IN (\'0\'));\n' +
@@ -173,6 +169,7 @@ describe('QuestTemplateLocale integration tests', () => {
     });
 
     it('adding a row changing its values and duplicate it should correctly update the queries', () => {
+      const { page } = setup(true);
       page.addNewRow();
       page.setInputValueById('title', '1');
       page.setInputValueById('completed-text', '2');
