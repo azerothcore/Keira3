@@ -22,6 +22,11 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="map">map</label>
+              <keira-map-selector-btn
+                [config]="{ name: 'map' }"
+                [control]="editorService.form.controls.map"
+                [disabled]="editorService.form.controls.map.disabled"
+              />
               <input [formControlName]="'map'" id="map" type="number" class="form-control form-control-sm" />
             </div>
           </div>

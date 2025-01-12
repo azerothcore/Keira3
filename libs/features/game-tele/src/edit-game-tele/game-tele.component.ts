@@ -7,13 +7,14 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { GameTeleService } from './game-tele.service';
 import { GameTeleHandlerService } from '../game-tele-handler.service';
 import { QueryOutputComponent } from '@keira/shared/base-editor-components';
+import { MapSelectorBtnComponent } from '@keira/shared/selectors';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-conditions',
   templateUrl: './game-tele.component.html',
   standalone: true,
-  imports: [TranslateModule, FormsModule, ReactiveFormsModule, TooltipModule, QueryOutputComponent],
+  imports: [TranslateModule, FormsModule, ReactiveFormsModule, TooltipModule, QueryOutputComponent, MapSelectorBtnComponent],
 })
 export class GameTeleComponent extends SingleRowEditorComponent<GameTele> {
   protected override readonly editorService = inject(GameTeleService);
