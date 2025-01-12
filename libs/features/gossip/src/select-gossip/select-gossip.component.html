@@ -47,6 +47,8 @@
           [limit]="DTCFG.limit"
           [selectionType]="DTCFG.selectionType"
           (select)="selectService.onSelect($event)"
+          [offset]="selectService.pageOffset"
+          (page)="onPage($event)"
         >
           <ngx-datatable-column name="MenuID" prop="MenuID" [minWidth]="80">
             <ng-template let-row="row" ngx-datatable-cell-template>
