@@ -1,11 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { instance, mock } from 'ts-mockito';
-
 import { MysqlQueryService } from '@keira/shared/db-layer';
-
 import { MockHandlerService, SelectMockService } from '../../core.mock';
-import exp from 'node:constants';
 
 describe('SelectService', () => {
   beforeEach(() =>
