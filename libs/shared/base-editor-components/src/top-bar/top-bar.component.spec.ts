@@ -1,13 +1,11 @@
 import { Component, ViewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-
 import { PageObject } from '@keira/shared/test-utils';
 import { TopBarComponent } from './top-bar.component';
-import { describe } from 'node:test';
 
 describe(TopBarComponent.name, () => {
   @Component({
-    template: ` <keira-top-bar [selected]="selected" [selectedName]="selectedName" [isNew]="isNew" /> `,
+    template: ` <keira-top-bar [selected]="selected" [selectedName]="selectedName" [isNew]="isNew" [customScssClass]="customScssClass" /> `,
     standalone: true,
     imports: [TopBarComponent],
   })
@@ -57,6 +55,7 @@ describe(TopBarComponent.name, () => {
   describe('when there is a custom scss class', () => {
     it('should correctly show the custom scss class', () => {
       const { host, page } = setup();
+      host.selected = '1234'; // Ensure selected is truthy
       host.customScssClass = 'item-quality-q6';
 
       page.detectChanges();
@@ -68,6 +67,7 @@ describe(TopBarComponent.name, () => {
   describe('when there is no custom scss class', () => {
     it('should correctly use the default scss class', () => {
       const { host, page } = setup();
+      host.selected = '1234'; // Ensure selected is truthy
       host.customScssClass = undefined; // Falsy value
 
       page.detectChanges();
