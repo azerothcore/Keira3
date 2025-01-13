@@ -1,6 +1,6 @@
 <div class="top-bar">
   @if (selected) {
-    <span class="main-text text-truncate">
+    <span [class]="scssClass">
       @if (isNew) {
         Creating new: {{ selected }}
       } @else {
