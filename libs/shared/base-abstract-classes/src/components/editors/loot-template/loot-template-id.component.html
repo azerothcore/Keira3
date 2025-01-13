@@ -1,4 +1,9 @@
-<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
+<keira-top-bar
+  [selected]="handlerService.selected"
+  [selectedName]="handlerService.selectedName"
+  [isNew]="handlerService.isNew"
+  [customClass]="handlerService.itemQualityScssClass"
+/>
 
 @if (lootId !== null) {
   <div class="container-fluid">
