@@ -10,11 +10,11 @@ export class TopBarComponent {
   @Input({ required: true }) selected: string | undefined;
   @Input({ required: true }) selectedName: string | undefined;
   @Input({ required: true }) isNew = false;
-  @Input({ required: false }) customClass: string | undefined = undefined;
+  @Input({ required: false }) customScssClass: string | undefined = undefined;
 
-  get scssClass() {
-    if (this.customClass) {
-      return 'main-text text-truncate ' + this.customClass;
+  get scssClass(): string {
+    if (this.customScssClass) {
+      return 'main-text text-truncate ' + this.customScssClass;
     }
     return 'main-text text-truncate';
   }

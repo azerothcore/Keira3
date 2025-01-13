@@ -24,6 +24,7 @@ describe('HandlerService', () => {
     expect(service.selectedName).toBeUndefined();
     expect(service.isNew).toBe(false);
     expect(service.canActivate()).toBe(false);
+    expect(service.itemQualityScssClass).toBe('');
   });
 
   it('selection should behave correctly', () => {
@@ -41,6 +42,20 @@ describe('HandlerService', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['mock/route']);
   });
 
+  it('should not throw error when _statusMap is undefined in resetStatus()', () => {
+    (service as any)._statusMap = undefined;
+
+    expect(() => (service as any).resetStatus()).not.toThrow();
+  });
+
+  it('should correctly stringify object id', () => {
+    const id = { entryorguid: 123, source_type: 456 };
+    const name = 'myName';
+    service.select(true, id, name);
+
+    expect(service.selected).toEqual(JSON.stringify(id));
+  });
+
   it('selects the same entity and force the reload', () => {
     const id = 'myId';
     const name = 'myName';
@@ -52,5 +67,21 @@ describe('HandlerService', () => {
     service.select(isNew, id, name);
 
     expect(service.forceReload).toBeTrue();
+  });
+
+  it('should correctly save custom scss class', () => {
+    const quality = 5;
+    service.itemQualityScssClass = quality;
+    expect(service.itemQualityScssClass).toEqual(`item-quality-q${quality}`);
+  });
+
+  it('should not navigate when navigate is false', () => {
+    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    const id = 'myId';
+    const name = 'myName';
+
+    service.select(true, id, name, false);
+
+    expect(navigateSpy).not.toHaveBeenCalled();
   });
 });

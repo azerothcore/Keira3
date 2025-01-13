@@ -42,7 +42,7 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
     }
   }
 
-  set ItemQualityScssClass(quality: number) {
+  set itemQualityScssClass(quality: number) {
     this._customItemScssClass = `item-quality-q${quality || '0'}`;
   }
 

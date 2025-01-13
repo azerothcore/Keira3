@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { PageObject } from '@keira/shared/test-utils';
 import { TopBarComponent } from './top-bar.component';
+import { describe } from 'node:test';
 
 describe(TopBarComponent.name, () => {
   @Component({
@@ -15,6 +16,7 @@ describe(TopBarComponent.name, () => {
     selected: string | undefined;
     selectedName: string | undefined;
     isNew: boolean = false;
+    customScssClass: string | undefined;
   }
 
   class Page extends PageObject<TestHostComponent> {
@@ -49,6 +51,30 @@ describe(TopBarComponent.name, () => {
 
       expect(page.mainWrapper()).toBeTruthy();
       expect(page.mainText(false)).toBeFalsy();
+    });
+  });
+
+  describe('when there is a custom scss class', () => {
+    it('should correctly show the custom scss class', () => {
+      const { host, page } = setup();
+      host.customScssClass = 'item-quality-q6';
+
+      page.detectChanges();
+
+      expect(page.mainText().nativeElement.classList).toContain('item-quality-q6');
+    });
+  });
+
+  describe('when there is no custom scss class', () => {
+    it('should correctly use the default scss class', () => {
+      const { host, page } = setup();
+      host.customScssClass = undefined; // Falsy value
+
+      page.detectChanges();
+
+      expect(page.mainText().nativeElement.classList).toContain('main-text');
+      expect(page.mainText().nativeElement.classList).toContain('text-truncate');
+      expect(page.mainText().nativeElement.classList).not.toContain('item-quality-q6'); // Ensure no custom class
     });
   });
 

@@ -5,12 +5,20 @@ import { instance, mock } from 'ts-mockito';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 
 import { MockHandlerService, SelectMockService } from '../../core.mock';
+import exp from 'node:constants';
 
 describe('SelectService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      providers: [{ provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) }, SelectMockService, MockHandlerService],
+      providers: [
+        {
+          provide: MysqlQueryService,
+          useValue: instance(mock(MysqlQueryService)),
+        },
+        SelectMockService,
+        MockHandlerService,
+      ],
     }),
   );
 
@@ -26,6 +34,29 @@ describe('SelectService', () => {
       `${selected[0][service['entityIdField']]}`,
       `${selected[0][service['entityNameField'] as string]}`,
     );
+    expect(service.handlerService.itemQualityScssClass).toBe('');
+  });
+
+  it('onSelect() should correctly extract the Quality field if present', () => {
+    const service = TestBed.inject(SelectMockService);
+    const spy = spyOn(TestBed.inject(MockHandlerService), 'select');
+    const selected = [
+      {
+        [service['entityIdField']]: 'myId',
+        [service['entityNameField'] as string]: 'myName',
+        Quality: 5,
+      },
+    ];
+
+    service.onSelect({ selected });
+
+    expect(spy).toHaveBeenCalledWith(
+      false,
+      `${selected[0][service['entityIdField']]}`,
+      `${selected[0][service['entityNameField'] as string]}`,
+    );
+
+    expect(service.handlerService.itemQualityScssClass).toBe('item-quality-q5');
   });
 
   it('onSelect() should use the table name when the entityNameField is not defined', () => {
