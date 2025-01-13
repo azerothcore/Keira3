@@ -8,7 +8,7 @@
 
 
 ### Was the PR tested?
-<!-- Did you and someone else tested this and it was working before submiting this PR? -->
+<!-- Did you or someone else tested this and it was working before submiting this PR? -->
 - [ ] Yes
 
 ### Does this PR require a Wiki Update?
