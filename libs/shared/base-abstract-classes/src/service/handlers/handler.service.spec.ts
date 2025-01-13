@@ -75,6 +75,11 @@ describe('HandlerService', () => {
     expect(service.itemQualityScssClass).toEqual(`item-quality-q${quality}`);
   });
 
+  it('should correctly set the default itemQualityScssClass when quality is 0', () => {
+    service.itemQualityScssClass = 0;
+    expect(service.itemQualityScssClass).toEqual('item-quality-q0');
+  });
+
   it('should not navigate when navigate is false', () => {
     const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
     const id = 'myId';
