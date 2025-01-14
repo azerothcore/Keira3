@@ -310,7 +310,7 @@
               <keira-flags-selector-btn
                 [control]="editorService.form.controls.AllowableClass"
                 [disabled]="editorService.form.controls.AllowableClass.disabled"
-                [config]="{ flags: ALLOWABLE_CLASSES, name: 'AllowableClass' }"
+                [config]="{ flags: ALLOWABLE_CLASSES, name: 'AllowableClass', overrideDefaultBehavior: true }"
                 [modalClass]="'modal-lg'"
               />
               <input [formControlName]="'AllowableClass'" id="AllowableClass" type="number" class="form-control form-control-sm" />
@@ -320,7 +320,7 @@
               <keira-flags-selector-btn
                 [control]="editorService.form.controls.AllowableRace"
                 [disabled]="editorService.form.controls.AllowableRace.disabled"
-                [config]="{ flags: ALLOWABLE_RACES, name: 'AllowableRace' }"
+                [config]="{ flags: ALLOWABLE_RACES, name: 'AllowableRace', overrideDefaultBehavior: true }"
                 [modalClass]="'modal-lg'"
               />
               <input [formControlName]="'AllowableRace'" id="AllowableRace" type="number" class="form-control form-control-sm" />
