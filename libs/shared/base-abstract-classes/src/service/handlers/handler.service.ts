@@ -6,7 +6,9 @@ import { SubscriptionHandler } from '@keira/shared/utils';
 export abstract class HandlerService<T extends TableRow> extends SubscriptionHandler {
   protected readonly router = inject(Router);
 
+  private _customItemScssClass: string = '';
   protected _selected!: string;
+
   selectedName!: string;
   isNew = false;
   forceReload = false;
@@ -38,6 +40,14 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
     for (const key of Object.keys(this._statusMap)) {
       this._statusMap[key] = false;
     }
+  }
+
+  set itemQualityScssClass(quality: number) {
+    this._customItemScssClass = `item-quality-q${quality || '0'}`;
+  }
+
+  get itemQualityScssClass(): string {
+    return this._customItemScssClass;
   }
 
   select(isNew: boolean, id: string | number | Partial<T>, name?: string, navigate = true) {
