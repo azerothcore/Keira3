@@ -24,5 +24,7 @@ export abstract class SelectService<T extends TableRow> extends SearchService<T>
       `${selected[0][this.entityIdField]}`,
       this.entityNameField ? `${selected[0][this.entityNameField]}` : this.entityTable,
     );
+
+    if ('Quality' in selected[0]) this.handlerService.itemQualityScssClass = selected[0]['Quality'] as number;
   }
 }
