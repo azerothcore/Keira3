@@ -22,6 +22,9 @@
           <div class="form-group col-sm-6 col-md-4 col-lg-2 col-xl-2">
             <input formControlName="name" class="form-control form-control-sm" id="name" placeholder="Name" />
           </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <input [formControlName]="'map'" id="map" type="number" class="form-control form-control-sm" placeholder="Map Id" />
+          </div>
         </ng-container>
         <div class="form-group col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <input formControlName="limit" class="form-control form-control-sm" id="limit" placeholder="Limit" />

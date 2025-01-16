@@ -177,7 +177,7 @@
     "GAME_TELE": {
       "TITLE": "Game Teleport",
       "SEARCH_GAME_TELE": "Search Teleport",
-      "GAME_TELE_EDITOR": "Game Tele Editor"
+      "SELECT_GAME_TELE": "Game Tele Editor"
     }
   },
   "DASHBOARD": {
@@ -869,9 +869,6 @@
     }
   },
   "GAME_TELE": {
-    "BASE": {
-      "ID": "The unique ID for the teleport.",
-      "MAP_ID": "The ID of the map that the teleport leads to."
-    }
+    "EDITOR": "Teleport Editor"
   }
 }
