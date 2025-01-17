@@ -1,4 +1,9 @@
-<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
+<keira-top-bar
+  [selected]="handlerService.selected"
+  [selectedName]="handlerService.selectedName"
+  [isNew]="handlerService.isNew"
+  [customScssClass]="handlerService.itemQualityScssClass"
+/>
 
 <div class="container-fluid">
   @if (editorService.loading) {
