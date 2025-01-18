@@ -7,9 +7,7 @@ import { Flag } from '@keira/shared/constants';
 export class FlagsService {
   getBitsFromValue(value: number, bitsCount: number): boolean[] {
     const bits = new Array<boolean>(bitsCount);
-
-    let binaryStr: string = '0'.repeat(bitsCount);
-    if (value !== -1) binaryStr = value.toString(2).split('').reverse().join('');
+    const binaryStr: string = value !== -1 ? value.toString(2).split('').reverse().join('') : '0'.repeat(bitsCount);
 
     for (let i = 0; i < bitsCount; i++) {
       bits[i] = parseInt(binaryStr[i], 10) === 1;
@@ -20,7 +18,9 @@ export class FlagsService {
 
   getValueFromBits(bits: boolean[], overrideDefaultBehavior: boolean = false): number {
     // override default behavior if all bits are false
-    if (overrideDefaultBehavior && bits.every((bit) => !bit)) return -1;
+    if (overrideDefaultBehavior && bits.every((bit) => !bit)) {
+      return -1;
+    }
 
     let result = 0;
 
