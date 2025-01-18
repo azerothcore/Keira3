@@ -17,6 +17,8 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
     protected override handlerService: HandlerService<T>,
   ) {
     super(_entityClass, _entityTable, _entityIdField, handlerService);
+    console.log('Entity Class');
+    console.log(_entityClass);
     this.initForm();
   }
 
@@ -86,19 +88,27 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
 
   protected updateFormAfterReload() {
     this._loading = true;
+
     for (const field of this.fields) {
-      const control = this._form.controls[field];
-      /* istanbul ignore else */
-      if (control) {
-        control.setValue(this._originalValue[field]);
-      } else {
-        console.error(`Control '${field}' does not exist!`);
-        console.log(`----------- DEBUG CONTROL KEYS:`);
-        for (const k of Object.keys(this._form.controls)) {
-          console.log(k);
+      // Ensure `field` is of type `string`
+      if (typeof field === 'string') {
+        const control = this._form.controls[field];
+
+        if (control) {
+          const value = this._originalValue[field as keyof T]; // Ensure type safety here
+          control.setValue(value as T[typeof field]);
+        } else {
+          console.error(`Control '${field}' does not exist!`);
+          console.log(`----------- DEBUG CONTROL KEYS:`);
+          for (const k of Object.keys(this._form.controls)) {
+            console.log(k);
+          }
         }
+      } else {
+        console.warn(`Field '${String(field)}' is not a valid string key.`);
       }
     }
+
     this._loading = false;
   }
 

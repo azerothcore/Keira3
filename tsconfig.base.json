@@ -54,6 +54,8 @@
       "@keira/shared/switch-language": ["libs/shared/switch-language/src/index.ts"],
       "@keira/shared/test-utils": ["libs/shared/test-utils/src/index.ts"],
       "@keira/shared/utils": ["libs/shared/utils/src/index.ts"],
+      "@keira/shared/directives": ["libs/shared/directives/src/index.ts"],
+      "@keira/shared/error-templates": ["libs/shared/error-templates/src/index.ts"],
       "texts": ["libs/features/texts/src/index.ts"]
     },
     "rootDir": "."
