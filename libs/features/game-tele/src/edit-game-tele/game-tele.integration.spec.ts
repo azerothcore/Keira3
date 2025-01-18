@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { GameTele } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
@@ -8,18 +8,10 @@ import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
 import { GameTeleComponent } from './game-tele.component';
-import Spy = jasmine.Spy;
 import { GameTeleHandlerService } from '../game-tele-handler.service';
 
 describe('GameTele integration tests', () => {
-  // Page Object Class
   class GameTelePage extends EditorPageObject<GameTeleComponent> {}
-
-  // Shared Variables
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let handlerService: GameTeleHandlerService;
-
   // Constants
   const id = 1;
 
@@ -58,14 +50,14 @@ describe('GameTele integration tests', () => {
 
   // Setup Function
   function setup(creatingNew: boolean) {
-    handlerService = TestBed.inject(GameTeleHandlerService);
+    const handlerService = TestBed.inject(GameTeleHandlerService);
     // Ideally, use a public method or setter to set '_selected'
     // For illustration, we're setting it directly
     (handlerService as any)._selected = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
 
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
 
@@ -73,16 +65,17 @@ describe('GameTele integration tests', () => {
     const page = new GameTelePage(_fixture);
     _fixture.autoDetectChanges(true);
     _fixture.detectChanges();
-    return { page, _fixture };
+    return { page, querySpy, handlerService };
   }
 
   // Creating New Tests
   describe('Creating new', () => {
     let page: GameTelePage;
-    let _fixture: ComponentFixture<GameTeleComponent>;
+    let querySpy: jasmine.Spy;
+    let handlerService: GameTeleHandlerService;
 
     beforeEach(() => {
-      ({ page, _fixture } = setup(true));
+      ({ page, querySpy, handlerService } = setup(true));
     });
 
     it('should correctly initialise', () => {
@@ -122,10 +115,10 @@ describe('GameTele integration tests', () => {
   // Editing Existing Tests
   describe('Editing existing', () => {
     let page: GameTelePage;
-    let _fixture: ComponentFixture<GameTeleComponent>;
+    let querySpy: jasmine.Spy;
 
     beforeEach(() => {
-      ({ page, _fixture } = setup(false));
+      ({ page, querySpy } = setup(false));
     });
 
     it('should correctly initialise', () => {

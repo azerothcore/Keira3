@@ -7,29 +7,22 @@ import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { SelectGameTeleComponent } from './select-game-tele.component';
-import Spy = jasmine.Spy;
 import { instance, mock } from 'ts-mockito';
 import { GameTeleHandlerService } from '../game-tele-handler.service';
 import { GameTele } from '@keira/shared/acore-world-model';
 
 describe('SelectConditions integration tests', () => {
   class SelectGameTelePage extends SelectPageObject<SelectGameTeleComponent> {}
-
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let navigateSpy: Spy;
-  let router: Router;
-
   /**
    * Setup function to initialize the component, spies, and page object.
    * Returns the fixture, page, and component instances for each test.
    */
   function setup() {
     // Inject Services
-    router = TestBed.inject(Router);
-    navigateSpy = spyOn(router, 'navigate');
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
+    const router = TestBed.inject(Router);
+    const navigateSpy = spyOn(router, 'navigate');
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
 
     // Create Component Fixture and Page Object
     const fixture: ComponentFixture<SelectGameTeleComponent> = TestBed.createComponent(SelectGameTeleComponent);
@@ -40,7 +33,7 @@ describe('SelectConditions integration tests', () => {
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
 
-    return { fixture, page, component };
+    return { page, component, navigateSpy, querySpy };
   }
 
   /**
@@ -63,8 +56,8 @@ describe('SelectConditions integration tests', () => {
   }));
 
   it('should correctly initialise', waitForAsync(async () => {
-    const { fixture, page, component } = setup();
-    await fixture.whenStable();
+    const { page, component, querySpy } = setup();
+    await page.fixture.whenStable();
     expect(page.createInput.value).toEqual(`${component.customStartingId}`);
     page.expectNewEntityFree();
     expect(querySpy).toHaveBeenCalledWith('SELECT MAX(id) AS max FROM game_tele;');
@@ -92,7 +85,7 @@ describe('SelectConditions integration tests', () => {
     },
   ]) {
     it(`searching an existing entity should correctly work [id: ${id}, name: ${name}]`, () => {
-      const { page } = setup();
+      const { page, component: _component, navigateSpy: _navigateSpy, querySpy } = setup();
       querySpy.calls.reset();
 
       // Set input values based on the test case
@@ -118,7 +111,7 @@ describe('SelectConditions integration tests', () => {
   }
 
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
-    const { page } = setup();
+    const { page, component: _component, navigateSpy, querySpy } = setup();
     const results = [
       {
         id: 1,
