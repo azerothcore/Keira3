@@ -92,6 +92,7 @@ import {
   AcoreStringHandlerService,
   SelectAcoreStringComponent,
 } from 'texts';
+import { GameTeleComponent, GameTeleHandlerService, SelectGameTeleComponent } from '@keira/features/game-tele';
 
 export const KEIRA_ROUTES: Routes = [
   {
@@ -481,6 +482,20 @@ export const KEIRA_ROUTES: Routes = [
       {
         path: 'spell-dbc',
         component: SpellDbcComponent,
+      },
+    ],
+  },
+  {
+    path: 'game-tele',
+    children: [
+      {
+        path: 'select',
+        component: SelectGameTeleComponent,
+      },
+      {
+        path: 'tele',
+        component: GameTeleComponent,
+        canActivate: [GameTeleHandlerService],
       },
     ],
   },

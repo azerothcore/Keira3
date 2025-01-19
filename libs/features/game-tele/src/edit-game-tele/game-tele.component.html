@@ -1,0 +1,55 @@
+<div class="container-fluid">
+  @if (editorService.loading) {
+    <span [translate]="'LOADING'"></span>
+  }
+
+  @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
+    <div>
+      <div class="content-block">
+        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)" />
+      </div>
+      <form [formGroup]="editorService.form" class="form-group edit-form">
+        <div class="content-block">
+          <span class="category-title" [translate]="'GAME_TELE.EDITOR'"></span>
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="id">ID</label>
+              <input [formControlName]="'id'" id="id" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="name">name</label>
+              <input [formControlName]="'name'" id="name" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="map">map</label>
+              <keira-map-selector-btn
+                [config]="{ name: 'map' }"
+                [control]="editorService.form.controls.map"
+                [disabled]="editorService.form.controls.map.disabled"
+              />
+              <input [formControlName]="'map'" id="map" type="number" class="form-control form-control-sm" />
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="position_x">X</label>
+              <input [formControlName]="'position_x'" id="position_x" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="position_y">Y</label>
+              <input [formControlName]="'position_y'" id="position_y" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="position_z">Z</label>
+              <input [formControlName]="'position_z'" id="position_z" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="orientation">Orientation</label>
+              <input [formControlName]="'orientation'" id="orientation" type="number" class="form-control form-control-sm" />
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  }
+</div>

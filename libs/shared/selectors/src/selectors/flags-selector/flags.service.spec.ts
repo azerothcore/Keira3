@@ -61,4 +61,29 @@ describe('FlagsService', () => {
     expect(service.getBitsArray(flags, value)).toEqual(mockResult);
     expect(getBitsFromValueSpy).toHaveBeenCalledWith(value, flags[0].bit + 1);
   });
+
+  it('should handle value -1 (all bits not set)', () => {
+    const service = TestBed.inject(FlagsService);
+    expect(service.getBitsFromValue(-1, 5)).toEqual([false, false, false, false, false]);
+  });
+
+  it('should handle value 0 (all bits unset)', () => {
+    const service = TestBed.inject(FlagsService);
+    expect(service.getBitsFromValue(0, 3)).toEqual([false, false, false]);
+  });
+
+  it('should handle count 0 (empty bits array)', () => {
+    const service = TestBed.inject(FlagsService);
+    expect(service.getBitsFromValue(5, 0)).toEqual([]);
+  });
+
+  it('should return -1 when overrideDefaultBehavior is true and all bits are false', () => {
+    const service = TestBed.inject(FlagsService);
+    expect(service.getValueFromBits([false, false, false], true)).toEqual(-1);
+  });
+
+  it('should return 0 when overrideDefaultBehavior is false and all bits are false', () => {
+    const service = TestBed.inject(FlagsService);
+    expect(service.getValueFromBits([false, false, false], false)).toEqual(0);
+  });
 });
