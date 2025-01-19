@@ -48,3 +48,11 @@ export interface FieldDefinition {
   name: string;
   tooltip: string;
 }
+
+// Defines a type for the ngx datatable page event
+export interface DataTablePageEvent {
+  count: number; // Total number of rows in the table
+  pageSize: number; // Number of rows per page (same as the 'limit' property)
+  limit: number; // Maximum rows displayed per page (also same as 'pageSize')
+  offset: number; // Current page index (0-based)
+}

@@ -7,6 +7,7 @@ import { ModelForm, ModelNestedForm, SubscriptionHandler } from '@keira/shared/u
 export abstract class SearchService<T extends TableRow> extends SubscriptionHandler {
   query: string;
   rows: T[] | undefined;
+  pageOffset = 0; // Initialize to the first page
   fields: FormGroup<ModelForm<T>> = new FormGroup({} as any);
   queryForm = new FormGroup<ModelNestedForm<QueryForm<T>>>({
     limit: new FormControl<number>(50) as any, // TODO: fix typing
@@ -43,6 +44,9 @@ export abstract class SearchService<T extends TableRow> extends SubscriptionHand
   }
 
   onSearch(changeDetectorRef: ChangeDetectorRef): void {
+    // Reset to the first page
+    this.pageOffset = 0;
+
     this.subscriptions.push(
       this.queryService.query<T>(this.query).subscribe((data) => {
         this.rows = data as T[];

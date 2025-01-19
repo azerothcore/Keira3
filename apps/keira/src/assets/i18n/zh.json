@@ -173,6 +173,11 @@
       "TITLE": "技能DBC修改",
       "SEARCH_SPELL": "搜索技能",
       "SPELL_DBC_EDITOR": "技能DBC编辑"
+    },
+    "GAME_TELE": {
+      "TITLE": "Game Teleport",
+      "SEARCH_GAME_TELE": "Search Teleport",
+      "SELECT_GAME_TELE": "Game Tele Editor"
     }
   },
   "DASHBOARD": {
@@ -570,7 +575,7 @@
   "CONDITIONS": {
     "SELECT": {
       "SOURCE_GROUP": "源组:",
-      "SOURCE_ENTRY:": "源输入:",
+      "SOURCE_ENTRY": "源输入:",
       "CREATE_NEW": "新建"
     },
     "EDITOR": {
@@ -862,5 +867,8 @@
       "SPELL_PRIORITY": "未知...某些法术的唯一使用的值是50。",
       "REQUIRED_AURA_VISION": "未知...只有16个法术使用，其他均为0，可以用于视觉效果。"
     }
+  },
+  "GAME_TELE": {
+    "EDITOR": "Teleport Editor"
   }
 }

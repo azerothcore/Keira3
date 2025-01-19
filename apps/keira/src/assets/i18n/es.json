@@ -173,6 +173,11 @@
       "TITLE": "Anulaciones de Hechizos (Spell DBC)",
       "SEARCH_SPELL": "Buscar Hechizos",
       "SPELL_DBC_EDITOR": "Editor de Hechizos (Spell DBC)"
+    },
+    "GAME_TELE": {
+      "TITLE": "Game Teleport",
+      "SEARCH_GAME_TELE": "Search Teleport",
+      "SELECT_GAME_TELE": "Game Tele Editor"
     }
   },
   "DASHBOARD": {
@@ -570,7 +575,7 @@
   "CONDITIONS": {
     "SELECT": {
       "SOURCE_GROUP": "Fuente de Grupo:",
-      "SOURCE_ENTRY:": "Fuente de Entrada:",
+      "SOURCE_ENTRY": "Fuente de Entrada:",
       "CREATE_NEW": "Crear nuevo"
     },
     "EDITOR": {
@@ -862,5 +867,8 @@
       "SPELL_PRIORITY": "Desconocido. Sólo se usa el valor 50 para algunos hechizos.",
       "REQUIRED_AURA_VISION": "Desconocido. Sólo 16 hechizos usan otro valor como 0. Podría ser usado para efectos visuales."
     }
+  },
+  "GAME_TELE": {
+    "EDITOR": "Teleport Editor"
   }
 }
