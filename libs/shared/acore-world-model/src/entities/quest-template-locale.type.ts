@@ -1,18 +1,8 @@
-import { Option, TableRow } from '@keira/shared/constants';
+import { TableRow } from '@keira/shared/constants';
 
 export const QUEST_TEMPLATE_LOCALE_TABLE = 'quest_template_locale';
 export const QUEST_TEMPLATE_LOCALE_ID = 'ID';
 export const QUEST_TEMPLATE_LOCALE_ID_2 = 'locale';
-
-export const QUEST_LOCALE: Option[] = [
-  { value: 'deDE', name: 'German (Germany)' },
-  { value: 'esES', name: 'Spanish (Spain)' },
-  { value: 'esMX', name: 'Spanish (Mexico)' },
-  { value: 'frFR', name: 'French (France)' },
-  { value: 'ruRU', name: 'Russian (Russia)' },
-  { value: 'zhCN', name: 'Chinese (China)' },
-  { value: 'zhTW', name: 'Chinese (Taiwan)' }
-];
 
 export class QuestTemplateLocale extends TableRow {
   ID: number = 0;

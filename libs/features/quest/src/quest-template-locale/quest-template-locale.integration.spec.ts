@@ -1,17 +1,17 @@
-import { QuestTemplateLocale } from '@keira/shared/acore-world-model';
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { MysqlQueryService } from '@keira/shared/db-layer';
-import { of } from 'rxjs';
-import { QuestPreviewService } from '../quest-preview/quest-preview.service';
-import { QuestHandlerService } from '../quest-handler.service';
-import { QuestTemplateLocaleComponent } from './quest-template-locale.component';
-import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ToastrModule } from 'ngx-toastr';
-import { ModalModule } from 'ngx-bootstrap/modal';
+import { QuestTemplateLocale } from '@keira/shared/acore-world-model';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
+import { MysqlQueryService } from '@keira/shared/db-layer';
+import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { ToastrModule } from 'ngx-toastr';
+import { of } from 'rxjs';
+import { QuestHandlerService } from '../quest-handler.service';
+import { QuestPreviewService } from '../quest-preview/quest-preview.service';
+import { QuestTemplateLocaleComponent } from './quest-template-locale.component';
 
-class QuestTemplateLocalePage extends MultiRowEditorPageObject<QuestTemplateLocaleComponent> { }
+class QuestTemplateLocalePage extends MultiRowEditorPageObject<QuestTemplateLocaleComponent> {}
 
 describe('QuestTemplateLocale integration tests', () => {
   const id = 1234;
@@ -88,7 +88,7 @@ describe('QuestTemplateLocale integration tests', () => {
     it('adding new rows and executing the query should correctly work', () => {
       const { page, querySpy } = setup(true);
       const expectedQuery =
-        'DELETE FROM `quest_template_locale` WHERE (`ID` = 1234) AND (`locale` IN (\'0\', \'1\', \'2\'));\n' +
+        "DELETE FROM `quest_template_locale` WHERE (`ID` = 1234) AND (`locale` IN ('0', '1', '2'));\n" +
         'INSERT INTO `quest_template_locale` (`ID`, `locale`, `Title`, `Details`, `Objectives`, `EndText`, `CompletedText`, ' +
         '`ObjectiveText1`, `ObjectiveText2`, `ObjectiveText3`, `ObjectiveText4`, `VerifiedBuild`) VALUES\n' +
         "(1234, '0', '', '', '', '', '', '', '', '', '', 0),\n" +
@@ -113,58 +113,59 @@ describe('QuestTemplateLocale integration tests', () => {
       const { page } = setup(true);
       page.addNewRow();
       page.expectDiffQueryToContain(
-        'DELETE FROM `quest_template_locale` WHERE (`ID` = 1234) AND (`locale` IN (\'0\'));\n' +
-        'INSERT INTO `quest_template_locale` (`ID`, `locale`, `Title`, `Details`, `Objectives`, `EndText`, `CompletedText`, ' +
-        '`ObjectiveText1`, `ObjectiveText2`, `ObjectiveText3`, `ObjectiveText4`, `VerifiedBuild`) VALUES\n' +
-        "(1234, '0', '', '', '', '', '', '', '', '', '', 0);",
+        "DELETE FROM `quest_template_locale` WHERE (`ID` = 1234) AND (`locale` IN ('0'));\n" +
+          'INSERT INTO `quest_template_locale` (`ID`, `locale`, `Title`, `Details`, `Objectives`, `EndText`, `CompletedText`, ' +
+          '`ObjectiveText1`, `ObjectiveText2`, `ObjectiveText3`, `ObjectiveText4`, `VerifiedBuild`) VALUES\n' +
+          "(1234, '0', '', '', '', '', '', '', '', '', '', 0);",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `quest_template_locale` WHERE (`ID` = 1234);\n' +
-        'INSERT INTO `quest_template_locale` (`ID`, `locale`, `Title`, `Details`, `Objectives`, `EndText`, `CompletedText`, ' +
-        '`ObjectiveText1`, `ObjectiveText2`, `ObjectiveText3`, `ObjectiveText4`, `VerifiedBuild`) VALUES\n' +
-        "(1234, '0', '', '', '', '', '', '', '', '', '', 0);",
+          'INSERT INTO `quest_template_locale` (`ID`, `locale`, `Title`, `Details`, `Objectives`, `EndText`, `CompletedText`, ' +
+          '`ObjectiveText1`, `ObjectiveText2`, `ObjectiveText3`, `ObjectiveText4`, `VerifiedBuild`) VALUES\n' +
+          "(1234, '0', '', '', '', '', '', '', '', '', '', 0);",
       );
 
       page.setInputValueById('title', 'test');
       page.expectDiffQueryToContain(
-        'DELETE FROM `quest_template_locale` WHERE (`ID` = 1234) AND (`locale` IN (\'0\'));\n' +
-        'INSERT INTO `quest_template_locale` (`ID`, `locale`, `Title`, `Details`, `Objectives`, `EndText`, `CompletedText`, ' +
-        '`ObjectiveText1`, `ObjectiveText2`, `ObjectiveText3`, `ObjectiveText4`, `VerifiedBuild`) VALUES\n' +
-        "(1234, '0', 'test', '', '', '', '', '', '', '', '', 0);",
+        "DELETE FROM `quest_template_locale` WHERE (`ID` = 1234) AND (`locale` IN ('0'));\n" +
+          'INSERT INTO `quest_template_locale` (`ID`, `locale`, `Title`, `Details`, `Objectives`, `EndText`, `CompletedText`, ' +
+          '`ObjectiveText1`, `ObjectiveText2`, `ObjectiveText3`, `ObjectiveText4`, `VerifiedBuild`) VALUES\n' +
+          "(1234, '0', 'test', '', '', '', '', '', '', '', '', 0);",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `quest_template_locale` WHERE (`ID` = 1234);\n' +
-        'INSERT INTO `quest_template_locale` (`ID`, `locale`, `Title`, `Details`, `Objectives`, `EndText`, `CompletedText`, ' +
-        '`ObjectiveText1`, `ObjectiveText2`, `ObjectiveText3`, `ObjectiveText4`, `VerifiedBuild`) VALUES\n' +
-        "(1234, '0', 'test', '', '', '', '', '', '', '', '', 0);",
+          'INSERT INTO `quest_template_locale` (`ID`, `locale`, `Title`, `Details`, `Objectives`, `EndText`, `CompletedText`, ' +
+          '`ObjectiveText1`, `ObjectiveText2`, `ObjectiveText3`, `ObjectiveText4`, `VerifiedBuild`) VALUES\n' +
+          "(1234, '0', 'test', '', '', '', '', '', '', '', '', 0);",
       );
 
       page.setInputValueById('completed-text', 'test2');
       page.expectDiffQueryToContain(
-        'DELETE FROM `quest_template_locale` WHERE (`ID` = 1234) AND (`locale` IN (\'0\'));\n' +
-        'INSERT INTO `quest_template_locale` (`ID`, `locale`, `Title`, `Details`, `Objectives`, `EndText`, `CompletedText`, ' +
-        '`ObjectiveText1`, `ObjectiveText2`, `ObjectiveText3`, `ObjectiveText4`, `VerifiedBuild`) VALUES\n' +
-        "(1234, '0', 'test', '', '', '', 'test2', '', '', '', '', 0);",
+        "DELETE FROM `quest_template_locale` WHERE (`ID` = 1234) AND (`locale` IN ('0'));\n" +
+          'INSERT INTO `quest_template_locale` (`ID`, `locale`, `Title`, `Details`, `Objectives`, `EndText`, `CompletedText`, ' +
+          '`ObjectiveText1`, `ObjectiveText2`, `ObjectiveText3`, `ObjectiveText4`, `VerifiedBuild`) VALUES\n' +
+          "(1234, '0', 'test', '', '', '', 'test2', '', '', '', '', 0);",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `quest_template_locale` WHERE (`ID` = 1234);\n' +
-        'INSERT INTO `quest_template_locale` (`ID`, `locale`, `Title`, `Details`, `Objectives`, `EndText`, `CompletedText`, ' +
-        '`ObjectiveText1`, `ObjectiveText2`, `ObjectiveText3`, `ObjectiveText4`, `VerifiedBuild`) VALUES\n' +
-        "(1234, '0', 'test', '', '', '', 'test2', '', '', '', '', 0);",
+          'INSERT INTO `quest_template_locale` (`ID`, `locale`, `Title`, `Details`, `Objectives`, `EndText`, `CompletedText`, ' +
+          '`ObjectiveText1`, `ObjectiveText2`, `ObjectiveText3`, `ObjectiveText4`, `VerifiedBuild`) VALUES\n' +
+          "(1234, '0', 'test', '', '', '', 'test2', '', '', '', '', 0);",
       );
 
-      page.setInputValueById('locale', 'deDE');
+      const locale = page.getDebugElementByCss<HTMLSelectElement>('#locale select').nativeElement;
+      page.setInputValue(locale, '0: deDE');
       page.expectDiffQueryToContain(
-        'DELETE FROM `quest_template_locale` WHERE (`ID` = 1234) AND (`locale` IN (\'deDE\'));\n' +
-        'INSERT INTO `quest_template_locale` (`ID`, `locale`, `Title`, `Details`, `Objectives`, `EndText`, `CompletedText`, ' +
-        '`ObjectiveText1`, `ObjectiveText2`, `ObjectiveText3`, `ObjectiveText4`, `VerifiedBuild`) VALUES\n' +
-        "(1234, 'deDE', 'test', '', '', '', 'test2', '', '', '', '', 0);",
+        "DELETE FROM `quest_template_locale` WHERE (`ID` = 1234) AND (`locale` IN ('deDE'));\n" +
+          'INSERT INTO `quest_template_locale` (`ID`, `locale`, `Title`, `Details`, `Objectives`, `EndText`, `CompletedText`, ' +
+          '`ObjectiveText1`, `ObjectiveText2`, `ObjectiveText3`, `ObjectiveText4`, `VerifiedBuild`) VALUES\n' +
+          "(1234, 'deDE', 'test', '', '', '', 'test2', '', '', '', '', 0);",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `quest_template_locale` WHERE (`ID` = 1234);\n' +
-        'INSERT INTO `quest_template_locale` (`ID`, `locale`, `Title`, `Details`, `Objectives`, `EndText`, `CompletedText`, ' +
-        '`ObjectiveText1`, `ObjectiveText2`, `ObjectiveText3`, `ObjectiveText4`, `VerifiedBuild`) VALUES\n' +
-        "(1234, 'deDE', 'test', '', '', '', 'test2', '', '', '', '', 0);",
+          'INSERT INTO `quest_template_locale` (`ID`, `locale`, `Title`, `Details`, `Objectives`, `EndText`, `CompletedText`, ' +
+          '`ObjectiveText1`, `ObjectiveText2`, `ObjectiveText3`, `ObjectiveText4`, `VerifiedBuild`) VALUES\n' +
+          "(1234, 'deDE', 'test', '', '', '', 'test2', '', '', '', '', 0);",
       );
     });
 
@@ -173,22 +174,25 @@ describe('QuestTemplateLocale integration tests', () => {
       page.addNewRow();
       page.setInputValueById('title', '1');
       page.setInputValueById('completed-text', '2');
-      page.setInputValueById('locale', 'deDE');
+
+      const locale = page.getDebugElementByCss<HTMLSelectElement>('#locale select').nativeElement;
+      page.setInputValue(locale, '0: deDE');
+
       page.duplicateSelectedRow();
 
       page.expectDiffQueryToContain(
-        'DELETE FROM `quest_template_locale` WHERE (`ID` = 1234) AND (`locale` IN (\'deDE\', \'0\'));\n' +
-        'INSERT INTO `quest_template_locale` (`ID`, `locale`, `Title`, `Details`, `Objectives`, `EndText`, `CompletedText`, ' +
-        '`ObjectiveText1`, `ObjectiveText2`, `ObjectiveText3`, `ObjectiveText4`, `VerifiedBuild`) VALUES\n' +
-        "(1234, 'deDE', '1', '', '', '', '2', '', '', '', '', 0),\n" +
-        "(1234, '0', '1', '', '', '', '2', '', '', '', '', 0);",
+        "DELETE FROM `quest_template_locale` WHERE (`ID` = 1234) AND (`locale` IN ('deDE', '0'));\n" +
+          'INSERT INTO `quest_template_locale` (`ID`, `locale`, `Title`, `Details`, `Objectives`, `EndText`, `CompletedText`, ' +
+          '`ObjectiveText1`, `ObjectiveText2`, `ObjectiveText3`, `ObjectiveText4`, `VerifiedBuild`) VALUES\n' +
+          "(1234, 'deDE', '1', '', '', '', '2', '', '', '', '', 0),\n" +
+          "(1234, '0', '1', '', '', '', '2', '', '', '', '', 0);",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `quest_template_locale` WHERE (`ID` = 1234);\n' +
-        'INSERT INTO `quest_template_locale` (`ID`, `locale`, `Title`, `Details`, `Objectives`, `EndText`, `CompletedText`, ' +
-        '`ObjectiveText1`, `ObjectiveText2`, `ObjectiveText3`, `ObjectiveText4`, `VerifiedBuild`) VALUES\n' +
-        "(1234, 'deDE', '1', '', '', '', '2', '', '', '', '', 0),\n" +
-        "(1234, '0', '1', '', '', '', '2', '', '', '', '', 0);",
+          'INSERT INTO `quest_template_locale` (`ID`, `locale`, `Title`, `Details`, `Objectives`, `EndText`, `CompletedText`, ' +
+          '`ObjectiveText1`, `ObjectiveText2`, `ObjectiveText3`, `ObjectiveText4`, `VerifiedBuild`) VALUES\n' +
+          "(1234, 'deDE', '1', '', '', '', '2', '', '', '', '', 0),\n" +
+          "(1234, '0', '1', '', '', '', '2', '', '', '', '', 0);",
       );
     });
   });

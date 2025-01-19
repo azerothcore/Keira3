@@ -20,13 +20,11 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
               <label class="control-label" for="locale">locale</label>
-              <keira-single-value-selector-btn
+              <keira-generic-option-selector
                 [control]="editorService.form.controls.locale"
-                [disabled]="editorService.form.controls.locale.disabled"
-                [config]="{ options: QUEST_LOCALE, name: 'locale' }"
-                [modalClass]="'modal-md'"
-              />
-              <input [formControlName]="'locale'" id="locale" class="form-control form-control-sm" />
+                id="locale"
+                [optionList]="QUEST_LOCALE"
+              ></keira-generic-option-selector>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
               <label class="control-label" for="id">Title</label>
@@ -91,9 +89,9 @@
                   <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
                 </ng-template>
               </ngx-datatable-column>
-              <ngx-datatable-column name="Id" prop="ID" [minWidth]="80" [maxWidth]="150"/>
-              <ngx-datatable-column name="Locale" prop="locale" [minWidth]="200"/>
-              <ngx-datatable-column name="Title" prop="Title" [minWidth]="200"/>
+              <ngx-datatable-column name="Id" prop="ID" [minWidth]="80" [maxWidth]="150" />
+              <ngx-datatable-column name="Locale" prop="locale" [minWidth]="200" />
+              <ngx-datatable-column name="Title" prop="Title" [minWidth]="200" />
             </ngx-datatable>
           </div>
         </div>
