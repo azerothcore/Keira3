@@ -54,7 +54,32 @@ describe('FlagsSelectorModalComponent', () => {
 
     expect(component.flagValues).toEqual([true, true, true]);
     expect(spyGetValueFromBits).toHaveBeenCalledTimes(1);
-    expect(spyGetValueFromBits).toHaveBeenCalledWith([true, true, true]);
+    expect(spyGetValueFromBits).toHaveBeenCalledWith([true, true, true], false);
     expect(component.value).toEqual(value);
+  });
+
+  it('toggleBit() override should properly work', () => {
+    const value = 123456;
+    const overrideDefaultBehavior = true;
+    const flags = [{ bit: 1, name: 'flag-1' }];
+    const initialFlagValues = [true, false, true];
+    const updatedValue = 654321;
+
+    // Set up the component's initial state
+    component.value = value;
+    component.config = { name: 'Mock Modal Name', flags, overrideDefaultBehavior };
+    component.flagValues = [...initialFlagValues];
+
+    // Spy on the flagsService.getValueFromBits method
+    const spyGetValueFromBits = spyOn(flagsService, 'getValueFromBits').and.returnValue(updatedValue);
+
+    // Act: Call toggleBit with a specific bit index
+    component.toggleBit(1); // Toggle the second bit (index 1)
+
+    // Assertions
+    expect(component.flagValues).toEqual([true, true, true]); // Bit at index 1 should toggle to `true`
+    expect(spyGetValueFromBits).toHaveBeenCalledTimes(1);
+    expect(spyGetValueFromBits).toHaveBeenCalledWith([true, true, true], overrideDefaultBehavior);
+    expect(component.value).toEqual(updatedValue); // Value should update based on the override behavior
   });
 });

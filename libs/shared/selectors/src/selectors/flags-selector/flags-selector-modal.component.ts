@@ -28,6 +28,6 @@ export class FlagsSelectorModalComponent extends BaseSelectorModalComponent<Flag
 
   toggleBit(bit: number) {
     this.flagValues[bit] = !this.flagValues[bit];
-    this.value = this.flagsService.getValueFromBits(this.flagValues);
+    this.value = this.flagsService.getValueFromBits(this.flagValues, this.config?.overrideDefaultBehavior ?? false);
   }
 }
