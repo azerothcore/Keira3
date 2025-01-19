@@ -54,6 +54,7 @@ export * from './entities/prospecting-loot-template.type';
 export * from './entities/quest-offer-reward.type';
 export * from './entities/quest-request-items.type';
 export * from './entities/quest-template.type';
+export * from './entities/quest-template-locale.type';
 export * from './entities/quest-template-addon.type';
 export * from './entities/reference-loot-template.type';
 export * from './entities/skill.type';
