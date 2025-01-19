@@ -71,6 +71,7 @@ import {
   QuestOfferRewardComponent,
   QuestRequestItemsComponent,
   QuestTemplateAddonComponent,
+  QuestTemplateLocaleComponent,
   QuestTemplateComponent,
   SelectQuestComponent,
 } from '@keira/features/quest';
@@ -92,6 +93,7 @@ import {
   AcoreStringHandlerService,
   SelectAcoreStringComponent,
 } from 'texts';
+import { GameTeleComponent, GameTeleHandlerService, SelectGameTeleComponent } from '@keira/features/game-tele';
 
 export const KEIRA_ROUTES: Routes = [
   {
@@ -221,6 +223,11 @@ export const KEIRA_ROUTES: Routes = [
       {
         path: 'quest-template-addon',
         component: QuestTemplateAddonComponent,
+        canActivate: [QuestHandlerService],
+      },
+      {
+        path: 'quest-template-locale',
+        component: QuestTemplateLocaleComponent,
         canActivate: [QuestHandlerService],
       },
       {
@@ -481,6 +488,20 @@ export const KEIRA_ROUTES: Routes = [
       {
         path: 'spell-dbc',
         component: SpellDbcComponent,
+      },
+    ],
+  },
+  {
+    path: 'game-tele',
+    children: [
+      {
+        path: 'select',
+        component: SelectGameTeleComponent,
+      },
+      {
+        path: 'tele',
+        component: GameTeleComponent,
+        canActivate: [GameTeleHandlerService],
       },
     ],
   },

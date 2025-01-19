@@ -261,6 +261,14 @@
                       </a>
                     </li>
                     <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'quest/quest-template-locale'">
+                        {{ 'SIDEBAR.QUEST.QUEST_TEMPLATE_LOCALE' | translate }}
+                        @if (questHandlerService.isQuestTemplateLocaleUnsaved) {
+                          <keira-unsaved-icon />
+                        }
+                      </a>
+                    </li>
+                    <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/quest-offer-reward'">
                         {{ 'SIDEBAR.QUEST.QUEST_OFFER_REWARD' | translate }}
                         @if (questHandlerService.isQuestOfferRewardUnsaved) {
@@ -719,6 +727,33 @@
                     <a href="#" routerLinkActive="active" [routerLink]="'spell/spell-dbc'">
                       {{ 'SIDEBAR.SPELL_DBC_OVERRIDES.SPELL_DBC_EDITOR' | translate }}
                       @if (spellHandlerService.isSpellDbcUnsaved) {
+                        <keira-unsaved-icon />
+                      }
+                    </a>
+                  </li>
+                }
+              </ul>
+            </div>
+          </li>
+
+          <li class="sidebar-dropdown" [class.active]="menuStates['gameTele'] === 'down'">
+            <a (click)="toggleState('gameTele')">
+              <i class="fa fa-atom"></i>
+              <span [translate]="'SIDEBAR.GAME_TELE.TITLE'"></span>
+            </a>
+
+            <div class="sidebar-submenu" [@slide]="menuStates['gameTele']">
+              <ul>
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'game-tele/select'">
+                    {{ 'SIDEBAR.GAME_TELE.SEARCH_GAME_TELE' | translate }}
+                  </a>
+                </li>
+                @if (gameTeleHandlerService.selected) {
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'game-tele/tele'">
+                      {{ 'SIDEBAR.GAME_TELE.SELECT_GAME_TELE' | translate }}
+                      @if (gameTeleHandlerService.isGameTeleUnsaved) {
                         <keira-unsaved-icon />
                       }
                     </a>

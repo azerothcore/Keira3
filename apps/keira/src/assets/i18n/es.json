@@ -100,6 +100,7 @@
       "SELECT_QUEST": "Seleccionar Misión",
       "QUEST_TEMPLATE": "Plantilla de Misión",
       "QUEST_TEMPLATE_ADDON": "Addon de Plantilla de Misión",
+      "QUEST_TEMPLATE_LOCALE": "Quest Template Locale",
       "QUEST_OFFER_REWARD": "Recompensa por Ofrecimiento de la Misión",
       "QUEST_REQUEST_ITEMS": "Items Requeridos para la Misión",
       "CREATURE_QUESTSTARTER": "Criatura para Iniciar la Misión",
@@ -173,6 +174,11 @@
       "TITLE": "Anulaciones de Hechizos (Spell DBC)",
       "SEARCH_SPELL": "Buscar Hechizos",
       "SPELL_DBC_EDITOR": "Editor de Hechizos (Spell DBC)"
+    },
+    "GAME_TELE": {
+      "TITLE": "Game Teleport",
+      "SEARCH_GAME_TELE": "Search Teleport",
+      "SELECT_GAME_TELE": "Game Tele Editor"
     }
   },
   "DASHBOARD": {
@@ -862,5 +868,8 @@
       "SPELL_PRIORITY": "Desconocido. Sólo se usa el valor 50 para algunos hechizos.",
       "REQUIRED_AURA_VISION": "Desconocido. Sólo 16 hechizos usan otro valor como 0. Podría ser usado para efectos visuales."
     }
+  },
+  "GAME_TELE": {
+    "EDITOR": "Teleport Editor"
   }
 }

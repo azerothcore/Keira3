@@ -100,6 +100,7 @@
       "SELECT_QUEST": "Välj Quest",
       "QUEST_TEMPLATE": "Quest Template",
       "QUEST_TEMPLATE_ADDON": "Quest Template Addon",
+      "QUEST_TEMPLATE_LOCALE": "Quest Template Locale",
       "QUEST_OFFER_REWARD": "Quest Offer Reward",
       "QUEST_REQUEST_ITEMS": "Quest Request Items",
       "CREATURE_QUESTSTARTER": "Creature Queststarter",
@@ -173,6 +174,11 @@
       "TITLE": "Spell DBC overrides",
       "SEARCH_SPELL": "Search Spell",
       "SPELL_DBC_EDITOR": "Spell DBC editor"
+    },
+    "GAME_TELE": {
+      "TITLE": "Game Teleport",
+      "SEARCH_GAME_TELE": "Search Teleport",
+      "SELECT_GAME_TELE": "Game Tele Editor"
     }
   },
   "DASHBOARD": {
@@ -862,5 +868,8 @@
       "SPELL_PRIORITY": "Unknown. Only used value is 50 for some spells.",
       "REQUIRED_AURA_VISION": "Unknown. Only 16 Spells use another value as 0. Could be used for visual effects."
     }
+  },
+  "GAME_TELE": {
+    "EDITOR": "Teleport Editor"
   }
 }

@@ -19,8 +19,12 @@ export const MOCK_EXTRA_ID = 'extra_id';
 
 export class MockEntity extends TableRow {
   id: number = 0;
-  guid: number = 0;
+  guid: number | string = 0;
   name: string = '';
+}
+
+export class MockEntityWithGuidString extends MockEntity {
+  override guid: number | string = '';
 }
 
 export class MockEntityExtra extends MockEntity {
@@ -74,6 +78,15 @@ export class MockSingleRowComplexKeyEditorService extends SingleRowComplexKeyEdi
 export class MockMultiRowEditorService extends MultiRowEditorService<MockEntity> {
   constructor(protected override handlerService: MockHandlerService) {
     super(MockEntity, MOCK_TABLE, MOCK_ID, MOCK_ID_2, handlerService);
+  }
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class MockMultiRowEditorWithGuidStringService extends MultiRowEditorService<MockEntityWithGuidString> {
+  constructor(protected override handlerService: MockHandlerService) {
+    super(MockEntityWithGuidString, MOCK_TABLE, MOCK_ID, MOCK_ID_2, handlerService);
   }
 }
 

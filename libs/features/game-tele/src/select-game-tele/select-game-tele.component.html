@@ -1,0 +1,65 @@
+<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
+
+<div class="container-fluid">
+  <div class="content-block">
+    <keira-create
+      [entityTable]="entityTable"
+      [entityIdField]="entityIdField"
+      [customStartingId]="customStartingId"
+      [handlerService]="handlerService"
+      [queryService]="queryService"
+    />
+  </div>
+
+  <div class="content-block">
+    <p class="lead" [translate]="'SELECT_EXISTING'"></p>
+    <form [formGroup]="selectService.queryForm" class="mb-2">
+      <div class="row">
+        <ng-container [formGroup]="selectService.fields">
+          <div class="form-group col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <input formControlName="id" type="number" class="form-control form-control-sm" id="search-id" placeholder="Id" />
+          </div>
+          <div class="form-group col-sm-6 col-md-4 col-lg-2 col-xl-2">
+            <input formControlName="name" class="form-control form-control-sm" id="name" placeholder="Name" />
+          </div>
+          <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <input [formControlName]="'map'" id="map" type="number" class="form-control form-control-sm" placeholder="Map Id" />
+          </div>
+        </ng-container>
+        <div class="form-group col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <input formControlName="limit" class="form-control form-control-sm" id="limit" placeholder="Limit" />
+        </div>
+        <div class="mb-2 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <button id="search-btn" class="btn btn-primary btn-sm" [disabled]="selectService.queryForm.invalid" (click)="onSearch()">
+            <i class="fa fa-search"></i> {{ 'SEARCH' | translate }}
+          </button>
+        </div>
+      </div>
+      <keira-highlightjs-wrapper [code]="selectService.query" />
+    </form>
+
+    @if (selectService.rows) {
+      <div>
+        <ngx-datatable
+          class="bootstrap table table-striped text-center datatable-select"
+          [rows]="selectService.rows"
+          [headerHeight]="DTCFG.headerHeight"
+          [footerHeight]="DTCFG.footerHeight"
+          [columnMode]="DTCFG.columnMode"
+          [rowHeight]="DTCFG.rowHeight"
+          [limit]="DTCFG.limit"
+          [selectionType]="DTCFG.selectionType"
+          (select)="selectService.onSelect($event)"
+        >
+          <ngx-datatable-column name="id" prop="id" />
+          <ngx-datatable-column name="name" prop="name" [minWidth]="100" />
+          <ngx-datatable-column name="map" prop="map" />
+          <ngx-datatable-column name="position_x" prop="position_x" />
+          <ngx-datatable-column name="position_y" prop="position_y" />
+          <ngx-datatable-column name="position_z" prop="position_z" />
+          <ngx-datatable-column name="orientation" prop="orientation" />
+        </ngx-datatable>
+      </div>
+    }
+  </div>
+</div>
