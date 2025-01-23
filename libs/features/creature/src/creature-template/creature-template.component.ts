@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import {
   CREATURE_AI_NAME,
   CREATURE_CLASS,
@@ -25,6 +26,7 @@ import {
 } from '@keira/shared/acore-world-model';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
+import { InputValidationDirective } from '@keira/shared/directives';
 import {
   BooleanOptionSelectorComponent,
   CreatureSelectorBtnComponent,
@@ -39,9 +41,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateService } from './creature-template.service';
-import { RouterLink } from '@angular/router';
-import { InputValidationDirective } from '@keira/shared/directives';
-import { ValidationFeedbackComponent } from '@keira/shared/error-templates';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -65,7 +64,6 @@ import { ValidationFeedbackComponent } from '@keira/shared/error-templates';
     IconSelectorComponent,
     RouterLink,
     InputValidationDirective,
-    ValidationFeedbackComponent,
   ],
 })
 export class CreatureTemplateComponent extends SingleRowEditorComponent<CreatureTemplate> {
