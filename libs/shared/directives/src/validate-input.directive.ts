@@ -34,10 +34,9 @@ export class InputValidationDirective extends SubscriptionHandler implements OnI
     }
 
     if (control?.touched && control?.invalid) {
-      this.errorDiv = this.renderer.createElement('div');
-      this.renderer.addClass(this.errorDiv, 'error-message');
-
       const errorMessage = control?.errors?.['required'] ? 'This field is required' : 'Invalid field';
+
+      this.errorDiv = this.renderer.createElement('div');
 
       const text = this.renderer.createText(errorMessage);
       this.renderer.appendChild(this.errorDiv, text);
