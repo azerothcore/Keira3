@@ -1,7 +1,7 @@
 import { QueryError } from 'mysql2';
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { Class, StringKeys, TableRow } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
@@ -82,10 +82,19 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
   }
 
   protected initForm(): void {
+    // Create an instance of the entity class to access default values
+    const defaultValues = new this._entityClass();
+
+    // Initialize the FormGroup
     this._form = new FormGroup<ModelForm<T>>({} as any);
 
+    // Loop through the fields and initialize controls with default values
     for (const field of this.fields) {
-      this._form.addControl(field, new FormControl());
+      const defaultValue = defaultValues[field]; // Get the default value dynamically
+      this._form.addControl(
+        field,
+        new FormControl(defaultValue, [Validators.required]), // Use the default value
+      );
     }
 
     this.disableEntityIdField();
