@@ -22,7 +22,6 @@ export class InputValidationDirective extends SubscriptionHandler implements OnI
 
     this.subscriptions.push(
       control.statusChanges?.subscribe(() => {
-        console.log('control', control);
         this.updateErrorMessage(control);
       }),
     );
@@ -33,6 +32,8 @@ export class InputValidationDirective extends SubscriptionHandler implements OnI
       this.renderer.removeChild(this.el.nativeElement.parentNode, this.errorDiv);
       this.errorDiv = null;
     }
+
+    if (control?.invalid) control?.markAsTouched();
 
     if (control?.touched && control?.invalid) {
       console.log('control.errors', control.errors);
