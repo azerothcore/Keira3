@@ -47,15 +47,8 @@
               <input [formControlName]="'minlevel'" id="minlevel" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-              <label for="maxLevel">Max Level</label>
-              <input
-                [keiraInputValidation]="editorService.form.get('maxlevel')"
-                [formControlName]="'maxlevel'"
-                id="maxlevel"
-                type="number"
-                class="form-control form-control-sm"
-              />
-              <keira-validation-feedback [control]="editorService.form.get('maxlevel')"></keira-validation-feedback>
+              <label for="maxLevel">maxlevel</label>
+              <input keiraInputValidation [formControlName]="'maxlevel'" id="maxlevel" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="exp">expansion</label>

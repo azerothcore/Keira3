@@ -41,7 +41,6 @@ import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateService } from './creature-template.service';
 import { RouterLink } from '@angular/router';
 import { InputValidationDirective } from '@keira/shared/directives';
-import { ValidationFeedbackComponent } from '@keira/shared/error-templates';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -65,7 +64,6 @@ import { ValidationFeedbackComponent } from '@keira/shared/error-templates';
     IconSelectorComponent,
     RouterLink,
     InputValidationDirective,
-    ValidationFeedbackComponent,
   ],
 })
 export class CreatureTemplateComponent extends SingleRowEditorComponent<CreatureTemplate> {
