@@ -2,6 +2,7 @@ import { Directive, ElementRef, inject, OnInit, Renderer2 } from '@angular/core'
 import { AbstractControl, NgControl } from '@angular/forms';
 import { SubscriptionHandler } from '@keira/shared/utils';
 import { ValidationService } from '@keira/shared/common-services';
+import { distinctUntilChanged } from 'rxjs';
 
 @Directive({
   selector: '[keiraInputValidation]',
@@ -23,7 +24,7 @@ export class InputValidationDirective extends SubscriptionHandler implements OnI
     }
 
     this.subscriptions.push(
-      control.statusChanges?.subscribe(() => {
+      control.statusChanges?.pipe(distinctUntilChanged()).subscribe(() => {
         this.updateErrorMessage(control);
       }),
     );
