@@ -1,6 +1,7 @@
 import { Directive, ElementRef, inject, OnInit, Renderer2 } from '@angular/core';
 import { AbstractControl, NgControl } from '@angular/forms';
 import { SubscriptionHandler } from '@keira/shared/utils';
+import { ValidationService } from '@keira/shared/common-services';
 
 @Directive({
   selector: '[keiraInputValidation]',
@@ -10,6 +11,7 @@ export class InputValidationDirective extends SubscriptionHandler implements OnI
   private readonly el: ElementRef = inject(ElementRef);
   private readonly renderer: Renderer2 = inject(Renderer2);
   private readonly ngControl: NgControl = inject(NgControl);
+  private readonly validationService = inject(ValidationService);
 
   private errorDiv: HTMLElement | null = null;
 
@@ -33,10 +35,11 @@ export class InputValidationDirective extends SubscriptionHandler implements OnI
       this.errorDiv = null;
     }
 
-    if (control?.invalid) control?.markAsTouched();
+    if (control?.invalid) {
+      control?.markAsTouched();
+    }
 
     if (control?.touched && control?.invalid) {
-      console.log('control.errors', control.errors);
       this.errorDiv = this.renderer.createElement('div');
       this.renderer.addClass(this.errorDiv, 'error-message');
       const errorMessage = control?.errors?.['required'] ? 'This field is required' : 'Invalid field';
@@ -47,5 +50,7 @@ export class InputValidationDirective extends SubscriptionHandler implements OnI
       const parent = this.el.nativeElement.parentNode;
       this.renderer.appendChild(parent, this.errorDiv);
     }
+
+    this.validationService.validationPassed$.next(control?.valid);
   }
 }

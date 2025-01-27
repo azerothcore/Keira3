@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, inject, Input, Output } from '@angular/core';
-
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { EditorService } from '@keira/shared/base-abstract-classes';
 import { TableRow } from '@keira/shared/constants';
@@ -11,6 +10,7 @@ import { filter } from 'rxjs';
 import { HighlightjsWrapperComponent } from '../highlightjs-wrapper/highlightjs-wrapper.component';
 import { ModalConfirmComponent } from '../modal-confirm/modal-confirm.component';
 import { QueryErrorComponent } from './query-error/query-error.component';
+import { ValidationService } from '@keira/shared/common-services';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
@@ -21,17 +21,27 @@ import { QueryErrorComponent } from './query-error/query-error.component';
   standalone: true,
   imports: [FormsModule, HighlightjsWrapperComponent, QueryErrorComponent, TranslateModule],
 })
-export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandler {
+export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandler implements OnInit {
   private readonly clipboardService = inject(ClipboardService);
   private readonly modalService = inject(BsModalService);
+  private readonly validationService = inject(ValidationService);
 
   @Input() docUrl!: string;
   @Input() editorService!: EditorService<T>;
   @Output() executeQuery = new EventEmitter<string>();
   selectedQuery: 'diff' | 'full' = 'diff';
   private modalRef!: BsModalRef;
-
+  protected validationPassed: boolean = true;
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
+
+  ngOnInit() {
+    this.subscriptions.push(
+      this.validationService.validationPassed$.subscribe((validationPassed: boolean) => {
+        this.validationPassed = validationPassed;
+        this.changeDetectorRef.detectChanges();
+      }),
+    );
+  }
 
   showFullQuery(): boolean {
     return this.editorService.isNew || this.selectedQuery === 'full';
