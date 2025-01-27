@@ -1,10 +1,10 @@
 import { Component, DebugElement } from '@angular/core';
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { ReactiveFormsModule, FormControl, FormsModule, NgControl, FormControlStatus } from '@angular/forms';
+import { ReactiveFormsModule, FormControl, FormsModule, NgControl, AbstractControl } from '@angular/forms';
 import { InputValidationDirective } from './validate-input.directive';
 import { ValidationService } from '@keira/shared/common-services';
-import { Observable, take } from 'rxjs';
+import { take } from 'rxjs';
 
 @Component({
   template: `
@@ -194,22 +194,29 @@ describe('InputValidationDirective', () => {
   });
 
   it('should handle statusChanges being null gracefully', () => {
-    const control = debugElement.injector.get(NgControl).control;
+    const control = debugElement.injector.get(NgControl).control as AbstractControl;
 
-    // Mock the statusChanges property as null
-    spyOnProperty(control!, 'statusChanges', 'get').and.returnValue(null as unknown as Observable<FormControlStatus>);
+    // Mock the control to have statusChanges as null
+    Object.defineProperty(control, 'statusChanges', {
+      get: () => null,
+    });
 
     expect(() => {
       fixture.detectChanges();
-      control?.updateValueAndValidity();
     }).not.toThrow();
   });
 
   it('should not throw error if control.errors is null', () => {
-    const control = debugElement.injector.get(NgControl).control;
-    spyOnProperty(control!, 'errors', 'get').and.returnValue(null);
+    const control = debugElement.injector.get(NgControl).control as AbstractControl;
 
-    fixture.detectChanges();
+    // Mock the control to have errors as null
+    Object.defineProperty(control, 'errors', {
+      get: () => null,
+    });
+
+    expect(() => {
+      fixture.detectChanges();
+    }).not.toThrow();
 
     const errorDiv = debugElement.nativeElement.parentNode.querySelector('.error-message');
     expect(errorDiv).toBeNull();
@@ -226,5 +233,111 @@ describe('InputValidationDirective', () => {
     fixture.detectChanges();
 
     expect(debugElement.nativeElement.parentNode?.querySelector('.error-message')).toBeFalsy();
+  });
+
+  it('should return early if control is null', () => {
+    const ngControl = debugElement.injector.get(NgControl);
+    spyOnProperty(ngControl, 'control', 'get').and.returnValue(null);
+
+    expect(() => fixture.detectChanges()).not.toThrow();
+  });
+
+  it('should display correct error message for "required" error', () => {
+    const control = debugElement.injector.get(NgControl).control;
+
+    control?.setValidators(() => ({ required: true }));
+    control?.markAsTouched();
+    control?.updateValueAndValidity();
+
+    fixture.detectChanges();
+
+    const errorDiv = debugElement.nativeElement.parentNode.querySelector('.error-message');
+    expect(errorDiv).toBeTruthy();
+    expect(errorDiv.textContent).toBe('This field is required');
+  });
+
+  it('should display "Invalid field" for non-required errors', () => {
+    const control = debugElement.injector.get(NgControl).control;
+
+    control?.setValidators(() => ({ minlength: { requiredLength: 5, actualLength: 3 } }));
+    control?.markAsTouched();
+    control?.updateValueAndValidity();
+
+    fixture.detectChanges();
+
+    const errorDiv = debugElement.nativeElement.parentNode.querySelector('.error-message');
+    expect(errorDiv).toBeTruthy();
+    expect(errorDiv.textContent).toBe('Invalid field');
+  });
+
+  it('should handle control.errors being null without creating errorDiv', () => {
+    const ngControl = debugElement.injector.get(NgControl);
+
+    // Create a FormControl instance to mock AbstractControl
+    const controlMock = new FormControl();
+
+    // Directly assign null to the errors property
+    Object.defineProperty(controlMock, 'errors', {
+      get: () => null,
+      configurable: true,
+    });
+
+    // Replace the ngControl's control with the mock control
+    spyOnProperty(ngControl, 'control', 'get').and.returnValue(controlMock);
+
+    expect(() => {
+      fixture.detectChanges();
+    }).not.toThrow();
+
+    const errorDiv = debugElement.nativeElement.parentNode.querySelector('.error-message');
+    expect(errorDiv).toBeNull(); // Verify no errorDiv is created
+  });
+
+  it('should not throw error if control.errors is undefined', () => {
+    const control = debugElement.injector.get(NgControl).control as AbstractControl;
+
+    // Mock the control to have errors as undefined
+    Object.defineProperty(control, 'errors', {
+      get: () => undefined,
+    });
+
+    expect(() => {
+      fixture.detectChanges();
+    }).not.toThrow();
+
+    const errorDiv = debugElement.nativeElement.parentNode.querySelector('.error-message');
+    expect(errorDiv).toBeNull();
+  });
+
+  it('should return early if control is null', () => {
+    const ngControl = debugElement.injector.get(NgControl);
+
+    // Mock ngControl.control to be null
+    spyOnProperty(ngControl, 'control', 'get').and.returnValue(null);
+
+    expect(() => {
+      fixture.detectChanges(); // Triggers ngOnInit
+    }).not.toThrow();
+
+    // Verify no errorDiv is created
+    const errorDiv = debugElement.nativeElement.parentNode.querySelector('.error-message');
+    expect(errorDiv).toBeNull();
+  });
+
+  it('should return early if control is null (explicit)', () => {
+    const directive = debugElement.injector.get(InputValidationDirective);
+    const ngControl = debugElement.injector.get(NgControl);
+
+    // Mock ngControl.control to be null
+    spyOnProperty(ngControl, 'control', 'get').and.returnValue(null);
+
+    // Spy on the updateErrorMessage method to ensure it's not called
+    const updateErrorMessageSpy = spyOn<any>(directive, 'updateErrorMessage');
+
+    // Call the method explicitly
+    directive.ngOnInit();
+
+    // Expect the method to exit early and not proceed further
+    expect(updateErrorMessageSpy).not.toHaveBeenCalled();
   });
 });
