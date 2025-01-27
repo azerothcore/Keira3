@@ -30,12 +30,8 @@ export class InputValidationDirective extends SubscriptionHandler implements OnI
   }
 
   private updateErrorMessage(control: AbstractControl | null): void {
-    // Safely remove the existing errorDiv if it exists
     if (this.errorDiv) {
-      const parent = this.el.nativeElement.parentNode;
-      if (parent) {
-        this.renderer.removeChild(parent, this.errorDiv);
-      }
+      this.renderer.removeChild(this.el.nativeElement.parentNode, this.errorDiv);
       this.errorDiv = null;
     }
 
@@ -43,7 +39,7 @@ export class InputValidationDirective extends SubscriptionHandler implements OnI
       control.markAsTouched();
     }
 
-    if (control?.touched && control?.invalid && control.errors && Object.keys(control.errors).length && this.el.nativeElement.parentNode) {
+    if (control?.touched && control?.invalid && control.errors) {
       const parent = this.el.nativeElement.parentNode;
       if (parent) {
         this.errorDiv = this.renderer.createElement('div');
