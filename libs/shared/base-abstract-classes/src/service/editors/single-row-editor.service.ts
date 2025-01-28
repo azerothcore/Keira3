@@ -17,8 +17,6 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
     protected override handlerService: HandlerService<T>,
   ) {
     super(_entityClass, _entityTable, _entityIdField, handlerService);
-    console.log('Entity Class');
-    console.log(_entityClass);
     this.initForm();
   }
 

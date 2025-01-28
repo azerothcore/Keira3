@@ -82,7 +82,6 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
   }
 
   protected initForm(): void {
-    // Create an instance of the entity class to access default values
     const defaultValues = new this._entityClass();
 
     // Initialize the FormGroup
@@ -90,11 +89,8 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
 
     // Loop through the fields and initialize controls with default values
     for (const field of this.fields) {
-      const defaultValue = defaultValues[field]; // Get the default value dynamically
-      this._form.addControl(
-        field,
-        new FormControl(defaultValue, [Validators.required]), // Use the default value
-      );
+      const defaultValue = defaultValues[field];
+      this._form.addControl(field, new FormControl(defaultValue, [Validators.required]));
     }
 
     this.disableEntityIdField();

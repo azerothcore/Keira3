@@ -12,7 +12,6 @@ describe('SingleRowEditorService', () => {
 
   beforeEach(() =>
     TestBed.configureTestingModule({
-      imports: [],
       providers: [
         { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
         { provide: ToastrService, useValue: instance(mock(ToastrService)) },
@@ -194,9 +193,9 @@ describe('SingleRowEditorService', () => {
     it('should set values for valid fields in the form', () => {
       service['updateFormAfterReload']();
 
-      expect(mockForm.controls.id.setValue).toHaveBeenCalledWith(123); // Valid field
-      expect(mockForm.controls.name.setValue).toHaveBeenCalledWith('Test Name'); // Valid field
-      expect(mockForm.controls.guid.setValue).toHaveBeenCalledWith(456); // Valid field
+      expect(mockForm.controls.id.setValue).toHaveBeenCalledWith(123);
+      expect(mockForm.controls.name.setValue).toHaveBeenCalledWith('Test Name');
+      expect(mockForm.controls.guid.setValue).toHaveBeenCalledWith(456);
     });
 
     it('should log an error for missing controls', () => {

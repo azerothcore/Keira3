@@ -6,7 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class ValidationService {
   private controlsValidityMap = new Map<any, boolean>();
-  public validationPassed$: BehaviorSubject<boolean> = new BehaviorSubject(true);
+  readonly validationPassed$: BehaviorSubject<boolean> = new BehaviorSubject(true);
 
   setControlValidity(control: any, isValid: boolean): void {
     this.controlsValidityMap.set(control, isValid);

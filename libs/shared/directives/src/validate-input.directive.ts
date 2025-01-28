@@ -1,7 +1,7 @@
 import { Directive, ElementRef, inject, OnInit, OnDestroy, Renderer2 } from '@angular/core';
 import { AbstractControl, NgControl } from '@angular/forms';
 import { SubscriptionHandler } from '@keira/shared/utils';
-import { distinctUntilChanged } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { ValidationService } from '@keira/shared/common-services';
 
 @Directive({
@@ -26,7 +26,7 @@ export class InputValidationDirective extends SubscriptionHandler implements OnI
     this.validationService.setControlValidity(this, control.valid);
 
     this.subscriptions.push(
-      control.statusChanges?.pipe(distinctUntilChanged()).subscribe(() => {
+      control.statusChanges?.pipe(distinctUntilChanged(), debounceTime(500)).subscribe(() => {
         this.updateErrorMessage(control);
         this.validationService.setControlValidity(this, control.valid);
       }),
