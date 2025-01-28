@@ -1,14 +1,14 @@
-import { Directive, ElementRef, inject, OnInit, Renderer2 } from '@angular/core';
+import { Directive, ElementRef, inject, OnInit, OnDestroy, Renderer2 } from '@angular/core';
 import { AbstractControl, NgControl } from '@angular/forms';
 import { SubscriptionHandler } from '@keira/shared/utils';
-import { ValidationService } from '@keira/shared/common-services';
 import { distinctUntilChanged } from 'rxjs';
+import { ValidationService } from '@keira/shared/common-services';
 
 @Directive({
   selector: '[keiraInputValidation]',
   standalone: true,
 })
-export class InputValidationDirective extends SubscriptionHandler implements OnInit {
+export class InputValidationDirective extends SubscriptionHandler implements OnInit, OnDestroy {
   private readonly el: ElementRef = inject(ElementRef);
   private readonly renderer: Renderer2 = inject(Renderer2);
   private readonly ngControl: NgControl = inject(NgControl);
@@ -23,11 +23,19 @@ export class InputValidationDirective extends SubscriptionHandler implements OnI
       return;
     }
 
+    this.validationService.setControlValidity(this, control.valid);
+
     this.subscriptions.push(
       control.statusChanges?.pipe(distinctUntilChanged()).subscribe(() => {
         this.updateErrorMessage(control);
+        this.validationService.setControlValidity(this, control.valid);
       }),
     );
+  }
+
+  override ngOnDestroy(): void {
+    this.validationService.removeControl(this);
+    super.ngOnDestroy();
   }
 
   private updateErrorMessage(control: AbstractControl | null): void {
@@ -53,7 +61,5 @@ export class InputValidationDirective extends SubscriptionHandler implements OnI
         this.renderer.appendChild(parent, this.errorDiv);
       }
     }
-
-    this.validationService.validationPassed$.next(!!control?.valid);
   }
 }
