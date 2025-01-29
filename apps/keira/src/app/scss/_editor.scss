@@ -1,5 +1,9 @@
 @import 'variables';
 
+input.ng-invalid.ng-touched {
+  border-color: red;
+}
+
 .top-bar {
   background-color: #000;
   color: $content-block-bg-color;

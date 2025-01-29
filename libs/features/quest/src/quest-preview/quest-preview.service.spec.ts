@@ -169,7 +169,7 @@ describe('QuestPreviewService', () => {
     expect(mysqlQueryService.getItemNameByStartQuest).toHaveBeenCalledTimes(1);
     expect(mysqlQueryService.getItemNameByStartQuest).toHaveBeenCalledWith(mockID);
     expect(mysqlQueryService.getReputationRewardByFaction).toHaveBeenCalledTimes(1);
-    expect(mysqlQueryService.getReputationRewardByFaction).toHaveBeenCalledWith(null as any);
+    expect(mysqlQueryService.getReputationRewardByFaction).toHaveBeenCalledWith(0);
   });
 
   it('sqliteQuery', async () => {

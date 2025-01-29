@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, inject, Input, Output } from '@angular/core';
-
 import { FormsModule } from '@angular/forms';
 import { EditorService } from '@keira/shared/base-abstract-classes';
 import { TableRow } from '@keira/shared/constants';
@@ -11,6 +10,8 @@ import { filter } from 'rxjs';
 import { HighlightjsWrapperComponent } from '../highlightjs-wrapper/highlightjs-wrapper.component';
 import { ModalConfirmComponent } from '../modal-confirm/modal-confirm.component';
 import { QueryErrorComponent } from './query-error/query-error.component';
+import { ValidationService } from '@keira/shared/common-services';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
@@ -19,18 +20,18 @@ import { QueryErrorComponent } from './query-error/query-error.component';
   templateUrl: './query-output.component.html',
   styleUrls: ['./query-output.component.scss'],
   standalone: true,
-  imports: [FormsModule, HighlightjsWrapperComponent, QueryErrorComponent, TranslateModule],
+  imports: [FormsModule, HighlightjsWrapperComponent, QueryErrorComponent, TranslateModule, AsyncPipe],
 })
 export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandler {
   private readonly clipboardService = inject(ClipboardService);
   private readonly modalService = inject(BsModalService);
+  protected readonly validationService = inject(ValidationService);
 
   @Input() docUrl!: string;
   @Input() editorService!: EditorService<T>;
   @Output() executeQuery = new EventEmitter<string>();
   selectedQuery: 'diff' | 'full' = 'diff';
   private modalRef!: BsModalRef;
-
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
   showFullQuery(): boolean {
