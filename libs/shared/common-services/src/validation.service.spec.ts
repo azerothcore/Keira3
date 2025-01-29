@@ -3,21 +3,24 @@ import { ValidationService } from './validation.service';
 import { take } from 'rxjs/operators';
 
 describe('ValidationService', () => {
-  let service: ValidationService;
-
-  beforeEach(() => {
+  beforeEach(() =>
     TestBed.configureTestingModule({
       providers: [ValidationService],
-    });
+    }),
+  );
 
-    service = TestBed.inject(ValidationService);
-  });
+  function setup(): { service: ValidationService } {
+    const service = TestBed.inject(ValidationService);
+    return { service };
+  }
 
   it('should be created', () => {
+    const { service } = setup();
     expect(service).toBeTruthy();
   });
 
   it('should have a default value of true for validationPassed$', (done: DoneFn) => {
+    const { service } = setup();
     service.validationPassed$.pipe(take(1)).subscribe((value) => {
       expect(value).toBe(true);
       done();
@@ -25,6 +28,7 @@ describe('ValidationService', () => {
   });
 
   it('should set control validity and update validationPassed$', (done: DoneFn) => {
+    const { service } = setup();
     service.setControlValidity('control1', false);
 
     service.validationPassed$.pipe(take(1)).subscribe((value) => {
@@ -41,6 +45,7 @@ describe('ValidationService', () => {
   });
 
   it('should handle removing non-existing controls gracefully', (done: DoneFn) => {
+    const { service } = setup();
     service.removeControl('nonExistentControl');
 
     service.validationPassed$.pipe(take(1)).subscribe((value) => {
@@ -50,6 +55,7 @@ describe('ValidationService', () => {
   });
 
   it('should correctly update validation state with multiple controls', (done: DoneFn) => {
+    const { service } = setup();
     service.setControlValidity('control1', true);
     service.setControlValidity('control2', true);
     service.setControlValidity('control3', false);

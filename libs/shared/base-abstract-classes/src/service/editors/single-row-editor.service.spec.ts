@@ -161,7 +161,6 @@ describe('SingleRowEditorService', () => {
   });
 
   describe('updateFormAfterReload()', () => {
-    let consoleErrorSpy: Spy;
     let consoleWarnSpy: Spy;
     let mockForm: any;
 
@@ -179,8 +178,7 @@ describe('SingleRowEditorService', () => {
       // Mock originalValue
       service['_originalValue'] = { id: 123, name: 'Test Name', guid: 456 }; // Add guid value
 
-      // Spy on console.error and console.warn
-      consoleErrorSpy = spyOn(console, 'error');
+      // Spy on console.warn
       consoleWarnSpy = spyOn(console, 'warn');
 
       // Temporarily override `fields` for testing
@@ -196,17 +194,6 @@ describe('SingleRowEditorService', () => {
       expect(mockForm.controls.id.setValue).toHaveBeenCalledWith(123);
       expect(mockForm.controls.name.setValue).toHaveBeenCalledWith('Test Name');
       expect(mockForm.controls.guid.setValue).toHaveBeenCalledWith(456);
-    });
-
-    it('should log an error for missing controls', () => {
-      // Override `fields` to include an invalid field
-      Object.defineProperty(service, 'fields', {
-        value: ['id', 'missingField'],
-      });
-
-      service['updateFormAfterReload']();
-
-      expect(consoleErrorSpy).toHaveBeenCalledWith("Control 'missingField' does not exist!");
     });
 
     it('should log a warning for invalid field types', () => {

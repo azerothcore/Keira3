@@ -1,5 +1,5 @@
-import { Component, DebugElement } from '@angular/core';
-import { TestBed, ComponentFixture, fakeAsync, tick } from '@angular/core/testing';
+import { Component } from '@angular/core';
+import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ReactiveFormsModule, FormControl, FormsModule, NgControl } from '@angular/forms';
 import { InputValidationDirective } from './validate-input.directive';
@@ -19,22 +19,22 @@ class TestComponent {
 }
 
 describe('InputValidationDirective', () => {
-  let fixture: ComponentFixture<TestComponent>;
-  let debugElement: DebugElement;
-
-  beforeEach(() => {
+  function setup() {
     TestBed.configureTestingModule({
       declarations: [TestComponent],
       imports: [ReactiveFormsModule, FormsModule, InputValidationDirective],
       providers: [ValidationService],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(TestComponent);
-    debugElement = fixture.debugElement.query(By.directive(InputValidationDirective));
+    const fixture = TestBed.createComponent(TestComponent);
+    const debugElement = fixture.debugElement.query(By.directive(InputValidationDirective));
     fixture.detectChanges();
-  });
+
+    return { fixture, debugElement };
+  }
 
   it('should display error message when control is invalid and touched', fakeAsync(() => {
+    const { fixture, debugElement } = setup();
     const control = debugElement.injector.get(NgControl).control;
     control?.setValidators(() => ({ required: true }));
     control?.markAsTouched();
@@ -49,6 +49,7 @@ describe('InputValidationDirective', () => {
   }));
 
   it('should remove error message when control becomes valid', fakeAsync(() => {
+    const { fixture, debugElement } = setup();
     const control = debugElement.injector.get(NgControl).control;
     control?.setValidators(() => ({ required: true }));
     control?.markAsTouched();
@@ -72,6 +73,7 @@ describe('InputValidationDirective', () => {
   }));
 
   it('should handle multiple error types and display first error', fakeAsync(() => {
+    const { fixture, debugElement } = setup();
     const control = debugElement.injector.get(NgControl).control;
 
     control?.setValidators(() => ({ required: true, minlength: true }));
@@ -87,6 +89,7 @@ describe('InputValidationDirective', () => {
   }));
 
   it('should mark control as touched when invalid', fakeAsync(() => {
+    const { fixture, debugElement } = setup();
     const control = debugElement.injector.get(NgControl).control;
     spyOn(control!, 'markAsTouched').and.callThrough();
 
@@ -101,6 +104,7 @@ describe('InputValidationDirective', () => {
   }));
 
   it('should safely remove errorDiv if already exists', fakeAsync(() => {
+    const { fixture, debugElement } = setup();
     const control = debugElement.injector.get(NgControl).control;
 
     // Set invalid state to create an errorDiv
@@ -126,6 +130,7 @@ describe('InputValidationDirective', () => {
   }));
 
   it('should display correct error message for "required" error', fakeAsync(() => {
+    const { fixture, debugElement } = setup();
     const control = debugElement.injector.get(NgControl).control;
 
     control?.setValidators(() => ({ required: true }));
@@ -141,6 +146,7 @@ describe('InputValidationDirective', () => {
   }));
 
   it('should display "Invalid field" for non-required errors', fakeAsync(() => {
+    const { fixture, debugElement } = setup();
     const control = debugElement.injector.get(NgControl).control;
 
     control?.setValidators(() => ({ minlength: { requiredLength: 5, actualLength: 3 } }));
@@ -156,6 +162,7 @@ describe('InputValidationDirective', () => {
   }));
 
   it('should return early if control is null (explicit)', () => {
+    const { debugElement } = setup();
     const directive = debugElement.injector.get(InputValidationDirective);
     const ngControl = debugElement.injector.get(NgControl);
 

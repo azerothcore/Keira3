@@ -84,7 +84,6 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
   protected initForm(): void {
     const defaultValues = new this._entityClass();
 
-    // Initialize the FormGroup
     this._form = new FormGroup<ModelForm<T>>({} as any);
 
     // Loop through the fields and initialize controls with default values
