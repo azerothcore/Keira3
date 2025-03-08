@@ -38,6 +38,5 @@ export class SelectGameobjectComponent extends SelectComponent<GameobjectTemplat
   readonly selectService = inject(SelectGameobjectService);
   readonly handlerService = inject(GameobjectHandlerService);
 
-  protected readonly GAMEOBJECT_TYPE = GAMEOBJECT_TYPE;
-  protected readonly placeholderTypeValue = this.selectService.fields.controls.type.getRawValue();
+  protected readonly GAMEOBJECT_TYPE = [{ value: null, name: 'Select Type' }, ...GAMEOBJECT_TYPE];
 }
