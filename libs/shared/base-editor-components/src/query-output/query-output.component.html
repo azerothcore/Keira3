@@ -24,16 +24,40 @@
   <keira-highlightjs-wrapper id="diff-query" [code]="editorService.diffQuery" [hidden]="showFullQuery()" />
   <keira-highlightjs-wrapper id="full-query" [code]="editorService.fullQuery" [hidden]="!showFullQuery()" />
   <div>
-    <button type="button" class="btn btn-secondary btn-sm" (click)="copy()" id="copy-btn">
+    <button
+      type="button"
+      class="btn btn-secondary btn-sm"
+      (click)="copy()"
+      id="copy-btn"
+      [disabled]="(validationService.validationPassed$ | async) === false"
+    >
       <i class="fa fa-copy fa-sm"></i> {{ 'COPY' | translate }}
     </button>
-    <button type="button" class="btn btn-primary btn-sm" (click)="execute()" id="execute-btn">
+    <button
+      type="button"
+      class="btn btn-primary btn-sm"
+      (click)="execute()"
+      id="execute-btn"
+      [disabled]="(validationService.validationPassed$ | async) === false"
+    >
       <i class="fa fa-bolt fa-sm"></i> {{ 'EXECUTE' | translate }}
     </button>
-    <button type="button" class="btn btn-success btn-sm" (click)="copy(); execute()" id="execute-and-copy-btn">
+    <button
+      type="button"
+      class="btn btn-success btn-sm"
+      (click)="copy(); execute()"
+      id="execute-and-copy-btn"
+      [disabled]="(validationService.validationPassed$ | async) === false"
+    >
       <i class="fa fa-bolt fa-sm"></i> {{ 'EXECUTE_AND_COPY' | translate }} <i class="fa fa-copy fa-sm"></i>
     </button>
-    <button type="button" class="btn btn-danger btn-sm float-end" (click)="reload()" id="reload-btn">
+    <button
+      type="button"
+      class="btn btn-danger btn-sm float-end"
+      (click)="reload()"
+      id="reload-btn"
+      [disabled]="(validationService.validationPassed$ | async) === false"
+    >
       <i class="fa fa-sync fa-sm"></i> {{ 'RELOAD' | translate }}
     </button>
   </div>

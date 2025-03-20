@@ -1,6 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-
 import { ToastrService } from 'ngx-toastr';
 import { instance, mock } from 'ts-mockito';
 import { MysqlQueryService } from '@keira/shared/db-layer';
@@ -14,7 +12,6 @@ describe('SingleRowEditorService', () => {
 
   beforeEach(() =>
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
       providers: [
         { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
         { provide: ToastrService, useValue: instance(mock(ToastrService)) },
@@ -160,6 +157,66 @@ describe('SingleRowEditorService', () => {
       expect(service.loadedEntityId).toEqual(`${id}`);
       expect(service.isNew).toBe(true);
       expect(updateFullQuerySpy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('updateFormAfterReload()', () => {
+    let consoleWarnSpy: Spy;
+    let mockForm: any;
+
+    beforeEach(() => {
+      // Mock the form and its controls
+      mockForm = {
+        controls: {
+          id: { setValue: jasmine.createSpy('setValue') },
+          name: { setValue: jasmine.createSpy('setValue') },
+          guid: { setValue: jasmine.createSpy('setValue') }, // Add guid control
+        },
+      };
+      service['_form'] = mockForm;
+
+      // Mock originalValue
+      service['_originalValue'] = { id: 123, name: 'Test Name', guid: 456 }; // Add guid value
+
+      // Spy on console.warn
+      consoleWarnSpy = spyOn(console, 'warn');
+
+      // Temporarily override `fields` for testing
+      Object.defineProperty(service, 'fields', {
+        value: ['id', 'name', 'guid', 123 as any, null as any],
+        writable: true,
+      });
+    });
+
+    it('should set values for valid fields in the form', () => {
+      service['updateFormAfterReload']();
+
+      expect(mockForm.controls.id.setValue).toHaveBeenCalledWith(123);
+      expect(mockForm.controls.name.setValue).toHaveBeenCalledWith('Test Name');
+      expect(mockForm.controls.guid.setValue).toHaveBeenCalledWith(456);
+    });
+
+    it('should log a warning for invalid field types', () => {
+      service['updateFormAfterReload']();
+
+      expect(consoleWarnSpy).toHaveBeenCalledWith("Field '123' is not a valid string key.");
+      expect(consoleWarnSpy).toHaveBeenCalledWith("Field 'null' is not a valid string key.");
+    });
+
+    it('should not throw errors for valid but empty fields', () => {
+      Object.defineProperty(service, 'fields', {
+        value: [], // No fields to iterate
+      });
+
+      expect(() => service['updateFormAfterReload']()).not.toThrow();
+    });
+
+    it('should reset loading to false after execution', () => {
+      service['_loading'] = true;
+
+      service['updateFormAfterReload']();
+
+      expect(service['_loading']).toBe(false); // Ensure loading is reset
     });
   });
 });

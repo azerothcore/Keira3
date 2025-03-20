@@ -20,7 +20,7 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
     this.initForm();
   }
 
-  protected override initForm() {
+  protected override initForm(): void {
     super.initForm();
 
     this.subscriptions.push(
@@ -57,7 +57,7 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
   /*
    *  ****** onReloadSuccessful() and its helpers ******
    */
-  protected onLoadedExistingEntity(entity: T) {
+  protected onLoadedExistingEntity(entity: T): void {
     this._originalValue = entity;
     this._isNew = false;
 
@@ -71,7 +71,7 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
     }
   }
 
-  protected onCreatingNewEntity(id: string | number) {
+  protected onCreatingNewEntity(id: string | number): void {
     this._originalValue = new this._entityClass();
 
     // TODO: get rid of this type hack, see: https://github.com/microsoft/TypeScript/issues/32704
@@ -80,29 +80,31 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
     this._isNew = true;
   }
 
-  protected setLoadedEntity() {
+  protected setLoadedEntity(): void {
     this._loadedEntityId = this._originalValue[this._entityIdField];
   }
 
-  protected updateFormAfterReload() {
+  protected updateFormAfterReload(): void {
     this._loading = true;
+
     for (const field of this.fields) {
-      const control = this._form.controls[field];
-      /* istanbul ignore else */
-      if (control) {
-        control.setValue(this._originalValue[field]);
-      } else {
-        console.error(`Control '${field}' does not exist!`);
-        console.log(`----------- DEBUG CONTROL KEYS:`);
-        for (const k of Object.keys(this._form.controls)) {
-          console.log(k);
+      // Ensure `field` is of type `string`
+      if (typeof field === 'string') {
+        const control = this._form.controls[field];
+
+        if (control) {
+          const value = this._originalValue[field as keyof T]; // Ensure type safety here
+          control.setValue(value as T[typeof field]);
         }
+      } else {
+        console.warn(`Field '${String(field)}' is not a valid string key.`);
       }
     }
+
     this._loading = false;
   }
 
-  protected onReloadSuccessful(data: T[], id: string | number) {
+  protected onReloadSuccessful(data: T[], id: string | number): void {
     if (data.length > 0) {
       // we are loading an existing entity
       this.onLoadedExistingEntity(data[0]);
@@ -114,5 +116,6 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
     this.setLoadedEntity();
     this.updateFullQuery();
   }
+
   /* ****** */
 }
