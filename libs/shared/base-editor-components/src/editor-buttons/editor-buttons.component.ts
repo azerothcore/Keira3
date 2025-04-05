@@ -9,7 +9,6 @@ import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
   changeDetection: ChangeDetectionStrategy.Default,
   selector: 'keira-editor-buttons',
   templateUrl: './editor-buttons.component.html',
-  standalone: true,
   imports: [TranslateModule],
 })
 export class EditorButtonsComponent<T extends TableRow> {

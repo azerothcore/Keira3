@@ -6,7 +6,6 @@ import { BooleanOptionSelectorComponent } from './boolean-option-selector.compon
 
 @Component({
   template: `<keira-boolean-option-selector [control]="mockFormControl" controlName="mockFormControl"></keira-boolean-option-selector>`,
-  standalone: true,
   imports: [BooleanOptionSelectorComponent],
 })
 class TestHostComponent {

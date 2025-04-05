@@ -40,6 +40,33 @@ To use Keira3, you don't need to install any dependency. Just [download](https:/
 
 :warning: [Windows 7 or older Windows versions](https://github.com/azerothcore/Keira3/issues/2212) are not officially supported.
 
+Here's an improved version of your paragraph with better clarity, grammar, and flow:  
+
+---
+
+### Troubleshooting
+
+If Keira3 does not start after installing it on Linux via a package (e.g., `.deb`), try launching it from the terminal for debugging:  
+
+```bash
+keira3
+```
+
+If you encounter the following error:  
+
+```
+[72215:0401/191915.555407:FATAL:setuid_sandbox_host.cc(163)] The SUID sandbox helper binary was found, but is not configured correctly. Rather than run without sandboxing, I'm aborting now. You need to make sure that /opt/Keira3/chrome-sandbox is owned by root and has mode 4755.
+trace/breakpoint (core dump)
+```  
+
+You can resolve this issue by running:  
+
+```bash
+sudo chmod 4755 /opt/Keira3/chrome-sandbox
+```  
+
+This command sets the correct permissions for the `chrome-sandbox` file, ensuring Keira3 runs properly.  
+
 ## How to run Keira3 in development mode
 
 ### Dependencies

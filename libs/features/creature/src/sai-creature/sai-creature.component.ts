@@ -14,7 +14,6 @@ import { SaiCreatureEditorService } from './sai-creature-editor.service';
   selector: 'keira-sai-creature',
   templateUrl: '../../../../../libs/shared/sai-editor/src/sai-editor.component.html',
   styleUrls: ['../../../../../libs/shared/sai-editor/src/sai-editor.component.scss'],
-  standalone: true,
   imports: [
     SaiTopBarComponent,
     TranslateModule,

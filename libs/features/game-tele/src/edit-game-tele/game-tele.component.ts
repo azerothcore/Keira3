@@ -13,7 +13,6 @@ import { MapSelectorBtnComponent } from '@keira/shared/selectors';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-conditions',
   templateUrl: './game-tele.component.html',
-  standalone: true,
   imports: [TranslateModule, FormsModule, ReactiveFormsModule, TooltipModule, QueryOutputComponent, MapSelectorBtnComponent],
 })
 export class GameTeleComponent extends SingleRowEditorComponent<GameTele> {

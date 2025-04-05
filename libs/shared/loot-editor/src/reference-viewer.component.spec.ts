@@ -19,7 +19,6 @@ class ReferenceViewerComponentPage extends PageObject<TestHostComponent> {
 
 @Component({
   template: '<keira-reference-viewer [referenceId]="referenceId" />',
-  standalone: true,
   imports: [ReferenceViewerComponent],
 })
 class TestHostComponent {

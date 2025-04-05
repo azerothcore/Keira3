@@ -11,7 +11,6 @@ import { NpcTextHandlerService } from './npc-text-handler.service';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './select-npc-text.component.html',
-  standalone: true,
   imports: [
     TopBarComponent,
     CreateComponent,

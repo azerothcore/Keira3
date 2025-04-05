@@ -100,6 +100,7 @@
       "SELECT_QUEST": "选择任务",
       "QUEST_TEMPLATE": "任务模板",
       "QUEST_TEMPLATE_ADDON": "任务模板插件",
+      "QUEST_TEMPLATE_LOCALE": "Quest Template Locale",
       "QUEST_OFFER_REWARD": "任务提供的奖励",
       "QUEST_REQUEST_ITEMS": "接取任务道具配置",
       "CREATURE_QUESTSTARTER": "接取任务NPC配置",

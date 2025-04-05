@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { GameobjectTemplate } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { SelectPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
-import { GameobjectTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
+import { instance, mock } from 'ts-mockito';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { SelectGameobjectComponent } from './select-gameobject.component';
 import Spy = jasmine.Spy;
-import { instance, mock } from 'ts-mockito';
 
 class SelectGameobjectComponentPage extends SelectPageObject<SelectGameobjectComponent> {
   override ID_FIELD = 'entry';
@@ -49,7 +49,7 @@ describe('SelectGameobject integration tests', () => {
   beforeEach(() => {
     navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
     queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
+    querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1, type: 0 }]));
 
     fixture = TestBed.createComponent(SelectGameobjectComponent);
     page = new SelectGameobjectComponentPage(fixture);
@@ -162,9 +162,9 @@ describe('SelectGameobject integration tests', () => {
 
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
     const results: Partial<GameobjectTemplate>[] = [
-      { id: 1, name: 'An awesome Gameobject 1', GameobjectType: 0, GameobjectDisplayId: 1 },
-      { id: 2, name: 'An awesome Gameobject 2', GameobjectType: 0, GameobjectDisplayId: 2 },
-      { id: 3, name: 'An awesome Gameobject 3', GameobjectType: 0, GameobjectDisplayId: 3 },
+      { id: 1, name: 'An awesome Gameobject 1', type: 0, displayId: 1 },
+      { id: 2, name: 'An awesome Gameobject 2', type: 0, displayId: 2 },
+      { id: 3, name: 'An awesome Gameobject 3', type: 0, displayId: 3 },
     ];
     querySpy.calls.reset();
     querySpy.and.returnValue(of(results));

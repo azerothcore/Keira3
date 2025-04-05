@@ -9,3 +9,4 @@ export * from './quest-template/quest-template.component';
 export * from './quest-template-addon/quest-template-addon.component';
 export * from './select-quest/select-quest.component';
 export * from './quest-handler.service';
+export * from './quest-template-locale/quest-template-locale.component';

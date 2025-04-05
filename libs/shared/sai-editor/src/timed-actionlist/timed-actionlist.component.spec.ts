@@ -10,7 +10,6 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
 
 @Component({
   template: `<keira-timed-actionlist [creatureId]="creatureId" />`,
-  standalone: true,
   imports: [NgxDatatableModule, TimedActionlistComponent],
 })
 class TestHostComponent {

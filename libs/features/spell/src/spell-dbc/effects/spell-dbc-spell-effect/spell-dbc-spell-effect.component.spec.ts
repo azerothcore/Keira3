@@ -29,7 +29,6 @@ describe('SpellDbcSpellEffectComponent', () => {
 
   @Component({
     template: '<keira-spell-dbc-spell-effect [formGroup]="form" [index]="index" />',
-    standalone: true,
     imports: [RouterTestingModule, TranslateTestingModule, SpellDbcSpellEffectComponent],
   })
   class TestHostComponent {

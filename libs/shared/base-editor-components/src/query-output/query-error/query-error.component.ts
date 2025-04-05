@@ -6,7 +6,6 @@ import { QueryError } from 'mysql2';
   selector: 'keira-query-error',
   templateUrl: './query-error.component.html',
   styleUrls: ['./query-error.component.scss'],
-  standalone: true,
   imports: [],
 })
 export class QueryErrorComponent {

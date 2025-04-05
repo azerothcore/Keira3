@@ -34,7 +34,7 @@ jobs:
             git config user.name "i18n Sync Bot"
             git config user.email "action@github.com"
             git add apps/keira/src/assets/i18n/*.json
-            git commit -m "Fix missing translation keys"
+            git commit -m "fix: missing translation keys"
             git push origin HEAD
           else
             echo "No missing keys detected."

@@ -8,7 +8,6 @@ import { SidebarService } from './sidebar/sidebar.service';
   selector: 'keira-main-window',
   templateUrl: './main-window.component.html',
   styleUrls: ['./main-window.component.scss'],
-  standalone: true,
   imports: [SidebarComponent, RouterOutlet],
 })
 export class MainWindowComponent {

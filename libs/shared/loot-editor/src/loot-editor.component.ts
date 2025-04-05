@@ -21,7 +21,6 @@ import { ReferenceViewerComponent } from './reference-viewer.component';
   selector: 'keira-loot-editor',
   templateUrl: './loot-editor.component.html',
   styleUrls: ['./loot-editor.component.scss'],
-  standalone: true,
   imports: [
     QueryOutputComponent,
     FormsModule,

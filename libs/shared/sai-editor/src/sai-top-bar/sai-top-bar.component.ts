@@ -10,7 +10,6 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
   changeDetection: ChangeDetectionStrategy.Default,
   selector: 'keira-sai-top-bar',
   templateUrl: './sai-top-bar.component.html',
-  standalone: true,
   imports: [],
 })
 export class SaiTopBarComponent extends SubscriptionHandler implements OnInit {
