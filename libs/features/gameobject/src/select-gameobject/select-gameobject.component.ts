@@ -19,7 +19,6 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './select-gameobject.component.html',
-  standalone: true,
   imports: [
     TopBarComponent,
     CreateComponent,

@@ -7,7 +7,7 @@ import {
 } from '@keira/shared/acore-world-model';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { EditorButtonsComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
-import { GenericOptionSelectorComponent, SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
+import { GenericOptionSelectorComponent } from '@keira/shared/selectors';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { CreatureHandlerService } from '../creature-handler.service';
@@ -18,14 +18,12 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-creature-template-resistance',
   templateUrl: './creature-template-resistance.component.html',
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,
-    SingleValueSelectorBtnComponent,
     EditorButtonsComponent,
     NgxDatatableModule,
     GenericOptionSelectorComponent,

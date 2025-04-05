@@ -16,7 +16,6 @@ import { ConfigService } from '@keira/shared/common-services';
   selector: 'keira-home',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
-  standalone: true,
   imports: [TranslateModule, ClipboardModule, FormsModule],
 })
 export class DashboardComponent extends SubscriptionHandler implements OnInit {

@@ -8,7 +8,6 @@ import { TranslateModule } from '@ngx-translate/core';
   changeDetection: ChangeDetectionStrategy.Default,
   selector: 'keira-modal-confirm',
   templateUrl: './modal-confirm.component.html',
-  standalone: true,
   imports: [TranslateModule],
 })
 export class ModalConfirmComponent implements OnInit {

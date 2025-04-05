@@ -12,7 +12,6 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
   templateUrl: './timed-actionlist.component.html',
   styleUrls: ['./timed-actionlist.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [NgxDatatableModule, AsyncPipe],
 })
 export class TimedActionlistComponent implements OnChanges {

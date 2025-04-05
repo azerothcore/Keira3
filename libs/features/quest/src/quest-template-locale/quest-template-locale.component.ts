@@ -16,7 +16,6 @@ import { QuestTemplateLocaleService } from './quest-template-locale.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-quest-template-locale',
   templateUrl: './quest-template-locale.component.html',
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,

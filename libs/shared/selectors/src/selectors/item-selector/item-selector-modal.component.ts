@@ -12,7 +12,6 @@ import { HighlightjsWrapperComponent, IconComponent } from '@keira/shared/base-e
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-item-selector-modal',
   templateUrl: './item-selector-modal.component.html',
-  standalone: true,
   imports: [FormsModule, ReactiveFormsModule, HighlightjsWrapperComponent, NgxDatatableModule, IconComponent, TranslateModule],
 })
 export class ItemSelectorModalComponent extends SearchSelectorModalComponent<ItemTemplate> {

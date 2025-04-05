@@ -18,7 +18,6 @@ import { CreatureQueststarterService } from './creature-queststarter.service';
   selector: 'keira-creature-queststarter',
   templateUrl: './creature-queststarter.component.html',
   styleUrls: ['./creature-queststarter.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,

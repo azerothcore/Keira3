@@ -11,7 +11,6 @@ import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './acore-string.component.html',
-  standalone: true,
   imports: [TranslateModule, ReactiveFormsModule, TooltipModule, QueryOutputComponent, TopBarComponent],
 })
 export class AcoreStringComponent extends SingleRowEditorComponent<AcoreString> {

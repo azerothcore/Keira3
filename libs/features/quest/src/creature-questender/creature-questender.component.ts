@@ -18,7 +18,6 @@ import { CreatureQuestenderService } from './creature-questender.service';
   selector: 'keira-creature-questender',
   templateUrl: './creature-questender.component.html',
   styleUrls: ['./creature-questender.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,

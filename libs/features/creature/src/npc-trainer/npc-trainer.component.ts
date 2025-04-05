@@ -17,7 +17,6 @@ import { NpcTrainerService } from './npc-trainer.service';
   selector: 'keira-npc-trainer',
   templateUrl: './npc-trainer.component.html',
   styleUrls: ['./npc-trainer.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,

@@ -6,7 +6,6 @@ import { TopBarComponent } from './top-bar.component';
 describe(TopBarComponent.name, () => {
   @Component({
     template: ` <keira-top-bar [selected]="selected" [selectedName]="selectedName" [isNew]="isNew" [customScssClass]="customScssClass" /> `,
-    standalone: true,
     imports: [TopBarComponent],
   })
   class TestHostComponent {

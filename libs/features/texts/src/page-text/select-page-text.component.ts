@@ -11,7 +11,6 @@ import { PageTextHandlerService } from './page-text-handler.service';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './select-page-text.component.html',
-  standalone: true,
   imports: [
     TopBarComponent,
     CreateComponent,
