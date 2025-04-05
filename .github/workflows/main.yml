@@ -50,6 +50,9 @@ jobs:
           timeout_minutes: 20
       - name: Build
         run: npm run build:prod
+      - name: Allow unprivileged user namespaces
+        if: matrix.os == 'ubuntu-24.04'
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       - name: End-to-End tests
         uses: GabrielBB/xvfb-action@v1
         with:
