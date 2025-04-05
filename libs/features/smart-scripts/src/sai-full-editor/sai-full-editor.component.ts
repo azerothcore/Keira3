@@ -6,7 +6,6 @@ import { SaiEditorComponent } from '@keira/shared/sai-editor';
   selector: 'keira-sai-full-editor',
   templateUrl: './sai-full-editor.component.html',
   styleUrls: ['./sai-full-editor.component.scss'],
-  standalone: true,
   imports: [SaiEditorComponent],
 })
 export class SaiFullEditorComponent {}

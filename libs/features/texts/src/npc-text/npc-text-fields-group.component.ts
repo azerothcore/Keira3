@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input, Signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { EMOTE, NpcText } from '@keira/shared/acore-world-model';
-import { QueryOutputComponent } from '@keira/shared/base-editor-components';
 import { LanguageSelectorBtnComponent, SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 import { ModelForm } from '@keira/shared/utils';
 import { TranslateModule } from '@ngx-translate/core';
@@ -11,15 +10,7 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './npc-text-fields-group.component.html',
   selector: 'keira-npc-text-fields-group',
-  standalone: true,
-  imports: [
-    TranslateModule,
-    QueryOutputComponent,
-    ReactiveFormsModule,
-    SingleValueSelectorBtnComponent,
-    TooltipModule,
-    LanguageSelectorBtnComponent,
-  ],
+  imports: [TranslateModule, ReactiveFormsModule, SingleValueSelectorBtnComponent, TooltipModule, LanguageSelectorBtnComponent],
 })
 export class NpcTextFieldsGroupComponent {
   formGroup = input.required<FormGroup<ModelForm<NpcText>>>();

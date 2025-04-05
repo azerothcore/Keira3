@@ -18,7 +18,6 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
   selector: 'keira-sql-editor',
   templateUrl: './sql-editor.component.html',
   styleUrls: ['./sql-editor.component.scss'],
-  standalone: true,
   imports: [TooltipModule, FormsModule, QueryErrorComponent, NgxDatatableModule, TranslateModule],
 })
 export class SqlEditorComponent extends SubscriptionHandler {

@@ -7,7 +7,6 @@ import { ElectronService } from '@keira/shared/common-services';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-highlightjs-wrapper',
   templateUrl: './highlightjs-wrapper.component.html',
-  standalone: true,
   imports: [Highlight],
 })
 export class HighlightjsWrapperComponent {

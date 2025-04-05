@@ -20,7 +20,6 @@ import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-spell-dbc-flags',
   templateUrl: './spell-dbc-flags.component.html',
-  standalone: true,
   imports: [FormsModule, ReactiveFormsModule, TranslateModule, FlagsSelectorBtnComponent, TooltipModule],
 })
 export class SpellDbcFlagsComponent {

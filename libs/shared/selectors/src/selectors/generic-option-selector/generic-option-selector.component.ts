@@ -7,7 +7,6 @@ import { Option } from '@keira/shared/constants';
   selector: 'keira-generic-option-selector',
   templateUrl: './generic-option-selector.component.html',
   imports: [ReactiveFormsModule],
-  standalone: true,
 })
 export class GenericOptionSelectorComponent {
   @Input({ required: true }) control!: FormControl;

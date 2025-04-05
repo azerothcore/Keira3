@@ -28,7 +28,6 @@
               id="type"
               [optionList]="GAMEOBJECT_TYPE"
               [placeholder]="'- select Type -'"
-              [placeholderValue]="placeholderTypeValue"
             />
           </div>
           <div class="form-group col-sm-6 col-md-4 col-lg-2 col-xl-2">
@@ -70,7 +69,7 @@
           <ngx-datatable-column name="Name" prop="name" [minWidth]="120" [maxWidth]="600"></ngx-datatable-column>
           <ngx-datatable-column name="Type" prop="type" [minWidth]="75" [maxWidth]="100">
             <ng-template let-row="row" ngx-datatable-cell-template>
-              {{ GAMEOBJECT_TYPE[row.type]?.name }}
+              {{ GAMEOBJECT_TYPE[row.type].name }}
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column name="Display Id" prop="displayId" [minWidth]="75" [maxWidth]="100"></ngx-datatable-column>

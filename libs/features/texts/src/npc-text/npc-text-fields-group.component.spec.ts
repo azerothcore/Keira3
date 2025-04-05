@@ -13,7 +13,6 @@ describe(NpcTextFieldsGroupComponent.name, () => {
 
   @Component({
     template: `<keira-npc-text-fields-group [formGroup]="formGroup" [groupId]="groupId" />`,
-    standalone: true,
     imports: [NpcTextFieldsGroupComponent],
   })
   class TestHostNpcTextFieldsGroupComponent {

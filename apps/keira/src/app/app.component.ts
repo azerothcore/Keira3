@@ -22,7 +22,6 @@ import { SubscriptionHandler } from '@keira/shared/utils';
   selector: 'keira-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  standalone: true,
   imports: [ConnectionWindowComponent, MainWindowComponent, TranslateModule],
 })
 export class AppComponent extends SubscriptionHandler implements OnInit {

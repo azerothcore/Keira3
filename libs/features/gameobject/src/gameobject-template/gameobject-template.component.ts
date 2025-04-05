@@ -16,7 +16,6 @@ import { GameobjectTemplateService } from './gameobject-template.service';
   selector: 'keira-gameobject-template',
   templateUrl: './gameobject-template.component.html',
   styleUrls: ['./gameobject-template.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,

@@ -13,7 +13,6 @@ import { CreateComponent, HighlightjsWrapperComponent, TopBarComponent } from '@
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './select-gossip.component.html',
   styleUrls: ['./select-gossip.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     CreateComponent,

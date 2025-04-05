@@ -25,7 +25,6 @@ import {
 } from '@keira/shared/acore-world-model';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
-import { Model3DViewerComponent } from '@keira/shared/model-3d-viewer';
 import {
   BooleanOptionSelectorComponent,
   CreatureSelectorBtnComponent,
@@ -46,7 +45,6 @@ import { RouterLink } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-creature-template',
   templateUrl: './creature-template.component.html',
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,
@@ -59,7 +57,6 @@ import { RouterLink } from '@angular/router';
     FlagsSelectorBtnComponent,
     SpellSelectorBtnComponent,
     CreatureSelectorBtnComponent,
-    Model3DViewerComponent,
     GenericOptionSelectorComponent,
     BooleanOptionSelectorComponent,
     IconSelectorComponent,

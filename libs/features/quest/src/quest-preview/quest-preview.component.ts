@@ -13,7 +13,6 @@ import { QuestPreviewService } from './quest-preview.service';
   selector: 'keira-quest-preview',
   templateUrl: './quest-preview.component.html',
   styleUrls: ['./quest-preview.component.scss'],
-  standalone: true,
   imports: [IconComponent, CollapseModule, AsyncPipe],
 })
 export class QuestPreviewComponent implements OnInit {

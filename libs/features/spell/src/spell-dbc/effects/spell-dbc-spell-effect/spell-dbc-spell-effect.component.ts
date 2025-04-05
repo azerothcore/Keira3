@@ -17,7 +17,6 @@ import { TranslateModule } from '@ngx-translate/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-spell-dbc-spell-effect',
   templateUrl: './spell-dbc-spell-effect.component.html',
-  standalone: true,
   imports: [FormsModule, ReactiveFormsModule, TranslateModule, SingleValueSelectorBtnComponent, TooltipModule, FlagsSelectorBtnComponent],
 })
 export class SpellDbcSpellEffectComponent {

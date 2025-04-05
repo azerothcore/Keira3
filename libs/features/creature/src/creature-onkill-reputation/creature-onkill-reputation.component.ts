@@ -3,12 +3,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CreatureOnkillReputation, FACTION_RANK } from '@keira/shared/acore-world-model';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
-import {
-  BooleanOptionSelectorComponent,
-  FactionSelectorBtnComponent,
-  GenericOptionSelectorComponent,
-  SingleValueSelectorBtnComponent,
-} from '@keira/shared/selectors';
+import { BooleanOptionSelectorComponent, FactionSelectorBtnComponent, GenericOptionSelectorComponent } from '@keira/shared/selectors';
 import { TranslateModule } from '@ngx-translate/core';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
@@ -19,7 +14,6 @@ import { CreatureOnkillReputationService } from './creature-onkill-reputation.se
   selector: 'keira-creature-onkill-reputation',
   templateUrl: './creature-onkill-reputation.component.html',
   styleUrls: ['./creature-onkill-reputation.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,
@@ -27,7 +21,6 @@ import { CreatureOnkillReputationService } from './creature-onkill-reputation.se
     FormsModule,
     ReactiveFormsModule,
     FactionSelectorBtnComponent,
-    SingleValueSelectorBtnComponent,
     TooltipModule,
     BooleanOptionSelectorComponent,
     GenericOptionSelectorComponent,

@@ -16,7 +16,6 @@ import { QuestRequestItemsService } from './quest-request-items.service';
   selector: 'keira-quest-request-items',
   templateUrl: './quest-request-items.component.html',
   styleUrls: ['./quest-request-items.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,

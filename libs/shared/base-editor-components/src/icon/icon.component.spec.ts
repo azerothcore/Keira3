@@ -13,7 +13,6 @@ import Spy = jasmine.Spy;
 
 @Component({
   template: `<keira-icon [size]="size" [itemId]="itemId" [itemDisplayId]="itemDisplayId" [skillId]="skillId" [spellId]="spellId" />`,
-  standalone: true,
   imports: [IconComponent],
 })
 class TestHostComponent {
