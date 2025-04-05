@@ -19,7 +19,6 @@ import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-spell-dbc',
   templateUrl: './spell-dbc.component.html',
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,

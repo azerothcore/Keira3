@@ -13,7 +13,6 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'keira-item-enchantment-template',
   templateUrl: './item-enchantment-template.component.html',
   styleUrls: ['./item-enchantment-template.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,

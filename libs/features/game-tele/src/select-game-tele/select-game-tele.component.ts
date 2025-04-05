@@ -8,12 +8,10 @@ import { GameTeleHandlerService } from '../game-tele-handler.service';
 import { SelectGameTeleService } from './select-game-tele.service';
 import { WIKI_BASE_URL } from '@keira/shared/constants';
 import { CreateComponent, HighlightjsWrapperComponent, TopBarComponent } from '@keira/shared/base-editor-components';
-import { MapSelectorBtnComponent } from '@keira/shared/selectors';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './select-game-tele.component.html',
-  standalone: true,
   imports: [
     FormsModule,
     ReactiveFormsModule,
@@ -22,7 +20,6 @@ import { MapSelectorBtnComponent } from '@keira/shared/selectors';
     CreateComponent,
     HighlightjsWrapperComponent,
     TopBarComponent,
-    MapSelectorBtnComponent,
   ],
 })
 export class SelectGameTeleComponent extends SelectComponent<GameTele> {

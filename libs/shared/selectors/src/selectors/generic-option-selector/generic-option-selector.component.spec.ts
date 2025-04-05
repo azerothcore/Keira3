@@ -7,7 +7,6 @@ import { GenericOptionSelectorComponent } from './generic-option-selector.compon
 
 @Component({
   template: `<keira-generic-option-selector [control]="mockFormControl" [optionList]="EXPANSION"></keira-generic-option-selector>`,
-  standalone: true,
   imports: [GenericOptionSelectorComponent],
 })
 class TestHostComponent {

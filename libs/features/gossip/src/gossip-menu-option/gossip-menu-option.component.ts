@@ -16,7 +16,6 @@ import { GossipMenuOptionService } from './gossip-menu-option.service';
   selector: 'keira-gossip-menu-option',
   templateUrl: './gossip-menu-option.component.html',
   styleUrls: ['./gossip-menu-option.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,

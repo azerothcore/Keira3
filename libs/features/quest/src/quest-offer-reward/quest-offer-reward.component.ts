@@ -16,7 +16,6 @@ import { QuestOfferRewardService } from './quest-offer-reward.service';
   selector: 'keira-quest-offer-reward',
   templateUrl: './quest-offer-reward.component.html',
   styleUrls: ['./quest-offer-reward.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,

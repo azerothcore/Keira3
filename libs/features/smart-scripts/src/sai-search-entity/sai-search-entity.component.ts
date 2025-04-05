@@ -11,7 +11,6 @@ import { getEnumKeys, ModelForm } from '@keira/shared/utils';
   selector: 'keira-sai-search-entity',
   templateUrl: './sai-search-entity.component.html',
   styleUrls: ['./sai-search-entity.component.scss'],
-  standalone: true,
   imports: [FormsModule, ReactiveFormsModule, CreatureSelectorBtnComponent, GameobjectSelectorBtnComponent],
 })
 export class SaiSearchEntityComponent {

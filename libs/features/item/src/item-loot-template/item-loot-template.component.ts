@@ -10,7 +10,6 @@ import { ItemLootTemplateService } from './item-loot-template.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-item-loot-template',
   templateUrl: '../../../../shared/base-abstract-classes/src/components/editors/loot-template/loot-template.component.html',
-  standalone: true,
   imports: [TopBarComponent, LootEditorComponent],
 })
 export class ItemLootTemplateComponent extends LootTemplateComponent<ItemLootTemplate> {

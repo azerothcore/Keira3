@@ -12,7 +12,6 @@ import { CreatureTemplateMovementService } from './creature-template-movement.se
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-creature-template-movement',
   templateUrl: './creature-template-movement.component.html',
-  standalone: true,
   imports: [TopBarComponent, TranslateModule, QueryOutputComponent, FormsModule, ReactiveFormsModule, TooltipModule],
 })
 export class CreatureTemplateMovementComponent extends SingleRowEditorComponent<CreatureTemplateMovement> {

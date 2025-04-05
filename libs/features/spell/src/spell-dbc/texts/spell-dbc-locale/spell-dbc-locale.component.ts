@@ -8,7 +8,6 @@ import { Locale, SPELL_DBC_TEXT_FIELDS, SpellDbcTextFieldPrefix } from '../spell
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-spell-dbc-locale',
   templateUrl: './spell-dbc-locale.component.html',
-  standalone: true,
   imports: [FormsModule, ReactiveFormsModule],
 })
 export class SpellDbcLocaleComponent {

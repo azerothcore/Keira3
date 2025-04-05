@@ -63,7 +63,6 @@ interface MenuStats {
       transition('up <=> down', animate(animationTime)),
     ]),
   ],
-  standalone: true,
   imports: [
     SwitchLanguageComponent,
     LogoutBtnComponent,

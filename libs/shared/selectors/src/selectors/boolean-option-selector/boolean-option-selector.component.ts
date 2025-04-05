@@ -7,7 +7,6 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'keira-boolean-option-selector',
   templateUrl: './boolean-option-selector.component.html',
   imports: [ReactiveFormsModule, TranslateModule],
-  standalone: true,
 })
 export class BooleanOptionSelectorComponent {
   @Input({ required: true }) control!: FormControl;

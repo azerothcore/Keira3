@@ -16,7 +16,6 @@ class SaiTopBarComponentPage extends PageObject<TestHostComponent> {
 
 @Component({
   template: '<keira-sai-top-bar [handler]="handlerService"><</keira-sai-top-bar>',
-  standalone: true,
   imports: [SaiTopBarComponent, RouterTestingModule, TranslateTestingModule],
 })
 class TestHostComponent {

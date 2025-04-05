@@ -15,7 +15,6 @@ import { GameobjectSpawnService } from './gameobject-spawn.service';
   selector: 'keira-gameobject-spawn',
   templateUrl: './gameobject-spawn.component.html',
   styleUrls: ['./gameobject-spawn.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,
