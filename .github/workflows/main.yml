@@ -15,6 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [22]
+        #os: [ubuntu-22.04, ubuntu-24.04, macos-13, macos-14]
         os: [ubuntu-22.04, ubuntu-24.04, macos-13, macos-14]
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }}-node-${{ matrix.node-version }}
@@ -37,8 +38,14 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
-      - name: macOS dependencies fix
+      - name: macOS dependencies fix 1
         if: matrix.os == 'macos-13' || matrix.os == 'macos-14'
+        run: |
+          brew install python@3.11
+          echo "PYTHON=/usr/local/opt/python@3.11/bin/python3.11" >> $GITHUB_ENV
+          npm config set python /usr/local/opt/python@3.11/bin/python3.11
+      - name: macOS dependencies fix 2
+        if: runner.OS == 'macOS'
         run: |
           brew install python@3.11
           echo "PYTHON=/usr/local/opt/python@3.11/bin/python3.11" >> $GITHUB_ENV
