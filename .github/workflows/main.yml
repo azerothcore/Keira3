@@ -39,7 +39,7 @@ jobs:
             ${{ runner.OS }}-
       - name: macOS dependencies fix
         if: startsWith(matrix.os, 'macos')
-        run: brew install python-setuptools
+        run: sudo -H pip install setuptools
       - name: Install dependencies
         run: npm ci --include=optional
 
