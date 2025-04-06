@@ -38,7 +38,7 @@ jobs:
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
       - name: macOS dependencies fix
-        if: matrix.os == 'macos-13' || matrix.os == 'macos-14'
+        if: runner.os == 'macOS'
         run: |
           brew install python@3.11
           echo "PATH=/opt/homebrew/opt/python@3.11/bin:$PATH" >> $GITHUB_ENV
