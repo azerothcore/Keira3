@@ -39,7 +39,10 @@ jobs:
             ${{ runner.OS }}-
       - name: macOS dependencies fix
         if: startsWith(matrix.os, 'macos')
-        run: sudo -H pip install setuptools
+        run: |
+          brew install python@3.11
+          echo "PATH=/opt/homebrew/opt/python@3.11/bin:$PATH" >> $GITHUB_ENV
+          echo "PYTHON=/opt/homebrew/opt/python@3.11/bin/python3" >> $GITHUB_ENV
       - name: Install dependencies
         run: npm ci --include=optional
 
