@@ -37,6 +37,9 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
+      - name: macOS dependencies fix
+        if: startsWith(matrix.os, 'macos')
+        run: brew install python-setuptools
       - name: Install dependencies
         run: npm ci --include=optional
 
