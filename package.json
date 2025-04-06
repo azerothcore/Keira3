@@ -133,7 +133,7 @@
     "ts-mockito": "2.6.1",
     "ts-node": "10.9.2",
     "typescript": "5.8.3",
-    "wait-on": "8.0.2",
+    "wait-on": "8.0.3",
     "webdriver-manager": "13.0.2",
     "zone.js": "0.15.0"
   },
