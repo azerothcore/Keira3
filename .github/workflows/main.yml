@@ -44,12 +44,10 @@ jobs:
           brew install python@3.11
           echo "PYTHON=/usr/local/opt/python@3.11/bin/python3.11" >> $GITHUB_ENV
           npm config set python /usr/local/opt/python@3.11/bin/python3.11
-      - name: macOS dependencies fix 2
+      - name: macOS dependencies fix
         if: runner.OS == 'macOS'
         run: |
-          brew install python@3.11
-          echo "PYTHON=/usr/local/opt/python@3.11/bin/python3.11" >> $GITHUB_ENV
-          npm config set python /usr/local/opt/python@3.11/bin/python3.11
+          sudo -H pip install setuptools
       - name: Install dependencies
         run: npm ci --include=optional
 
