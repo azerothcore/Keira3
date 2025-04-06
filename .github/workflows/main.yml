@@ -38,7 +38,7 @@ jobs:
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
       - name: macOS dependencies fix
-        if: runner.os == 'macOS'
+        if: matrix.os == 'macos-13' || matrix.os == 'macos-14'
         run: |
           sudo -H pip install setuptools
       - name: Install dependencies
