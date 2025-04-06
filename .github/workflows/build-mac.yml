@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [20]
+        node-version: [22]
         os: [macos-13, macos-14]
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }}-node-${{ matrix.node-version }}
@@ -34,6 +34,17 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
+
+      # because of https://github.com/actions/runner/issues/2958
+      - name: macos-13 dependencies fix
+        if: matrix.os == 'macos-13'
+        run: |
+          sudo -H pip install setuptools
+      - name: macos-14 dependencies fix
+        if: matrix.os == 'macos-14'
+        run: |
+          brew install python-setuptools
+
       - name: Install dependencies
         run: npm ci --include=optional
 
