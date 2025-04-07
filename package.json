@@ -85,7 +85,7 @@
     "@schematics/angular": "19.2.6",
     "@siemens/ngx-datatable": "22.4.1",
     "@swc-node/register": "~1.10.0",
-    "@swc/core": "~1.10.0",
+    "@swc/core": "~1.11.0",
     "@swc/helpers": "~0.5.2",
     "@types/jasmine": "5.1.5",
     "@types/jasminewd2": "2.0.13",
