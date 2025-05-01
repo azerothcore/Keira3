@@ -12,7 +12,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-quest-faction-selector-modal',
   templateUrl: './faction-selector-modal.component.html',
-  standalone: true,
   imports: [FormsModule, ReactiveFormsModule, HighlightjsWrapperComponent, NgxDatatableModule, TranslateModule],
 })
 export class QuestFactionSelectorModalComponent extends SearchSelectorModalComponent<Faction> {

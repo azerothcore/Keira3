@@ -16,7 +16,6 @@ import { NpcVendorService } from './npc-vendor.service';
   selector: 'keira-npc-vendor',
   templateUrl: './npc-vendor.component.html',
   styleUrls: ['./npc-vendor.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,

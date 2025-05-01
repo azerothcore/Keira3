@@ -27,6 +27,7 @@
       "@keira/features/conditions": ["libs/features/conditions/src/index.ts"],
       "@keira/features/creature": ["libs/features/creature/src/index.ts"],
       "@keira/features/dashboard": ["libs/features/dashboard/src/index.ts"],
+      "@keira/features/game-tele": ["libs/features/game-tele/src/index.ts"],
       "@keira/features/gameobject": ["libs/features/gameobject/src/index.ts"],
       "@keira/features/gossip": ["libs/features/gossip/src/index.ts"],
       "@keira/features/item": ["libs/features/item/src/index.ts"],
@@ -62,6 +63,9 @@
   "exclude": ["node_modules", "tmp"],
   "angularCompilerOptions": {
     "strictTemplates": true,
-    "strictInjectionParameters": true
+    "strictInjectionParameters": true,
+    "extendedDiagnostics": {
+      "defaultCategory": "error"
+    }
   }
 }

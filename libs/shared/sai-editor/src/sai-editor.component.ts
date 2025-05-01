@@ -72,7 +72,6 @@ import { EditorButtonsComponent, QueryOutputComponent } from '@keira/shared/base
   selector: 'keira-sai-editor',
   templateUrl: './sai-editor.component.html',
   styleUrls: ['./sai-editor.component.scss'],
-  standalone: true,
   imports: [
     SaiTopBarComponent,
     TranslateModule,

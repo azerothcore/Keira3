@@ -48,6 +48,10 @@
   "EXECUTE_AND_COPY": "Execute & copy",
   "RELOAD": "重新加载",
   "CANCEL": "取消",
+  "SELECTORS": {
+    "ENABLED": "Enabled",
+    "DISABLED": "Disabled"
+  },
   "CONNECTION_WINDOW": {
     "HOST": "主机",
     "PORT": "端口",
@@ -96,6 +100,7 @@
       "SELECT_QUEST": "选择任务",
       "QUEST_TEMPLATE": "任务模板",
       "QUEST_TEMPLATE_ADDON": "任务模板插件",
+      "QUEST_TEMPLATE_LOCALE": "Quest Template Locale",
       "QUEST_OFFER_REWARD": "任务提供的奖励",
       "QUEST_REQUEST_ITEMS": "接取任务道具配置",
       "CREATURE_QUESTSTARTER": "接取任务NPC配置",
@@ -169,6 +174,11 @@
       "TITLE": "技能DBC修改",
       "SEARCH_SPELL": "搜索技能",
       "SPELL_DBC_EDITOR": "技能DBC编辑"
+    },
+    "GAME_TELE": {
+      "TITLE": "Game Teleport",
+      "SEARCH_GAME_TELE": "Search Teleport",
+      "SELECT_GAME_TELE": "Game Tele Editor"
     }
   },
   "DASHBOARD": {
@@ -237,6 +247,7 @@
       "HOVER_HEIGHT": "如果设置了MOVEMENTFLAG_DISABLE_GRAVITY，则生物悬停在地面上的距离在这里设置",
       "SCALE": "生物尺寸控制(生物模型的大小)。如果为0，则使用DBC默认模型大小。",
       "DAMAGE_MODIFIER": "伤害倍数，影响mindmg和maxdmg",
+      "ARMOR_MODIFIER_TOOLTIP": "Damage taken from physical attacks, a value of 1 is normal; Values under 1 mean it will take more damage; Values over 1 mean it will take less damage",
       "SPEED_RUN": "控制生物的移动速度。对于飞行载具来说，提高飞行速度。",
       "SPEED_WALK": "控制生物的奔跑速度。对于陆地载具来说，提高地面移动速度。",
       "SPEED_SWIM": "控制生物游泳的速度。",
@@ -262,6 +273,7 @@
     },
     "SPAWN": {
       "ORIENTATION": "生物刷新的方向。(北=0.0;南=圆周率(3.14159)",
+      "EQUIPMENT_ID_TOOLTIP": "1 = uses the info set in equipment template 0 = no weapons equipped",
       "SPAWN_DIST_TOOLTIP": "生物刷新点的刷新范围距离。如果MovementType = 1，就是生物刷新后可以走多远。",
       "SCRIPT_NAME": "此生物使用的C++脚本的名称(如果有的话)。",
       "GUID": "creature表中的guid字段",
@@ -681,7 +693,8 @@
         "CONDITION_PET_TYPE": "mask",
         "CONDITION_TAXI": "总是 0",
         "CONDITION_QUESTSTATE": "quest_template表的ID字段",
-        "CONDITION_QUEST_OBJECTIVE_PROGRESS": "quest_template表的id字段"
+        "CONDITION_QUEST_OBJECTIVE_PROGRESS": "quest_template表的id字段",
+        "CONDITION_WORLD_SCRIPT": "WorldStateCondition (defined in WorldState.h)"
       },
       "VALUE2": {
         "CONDITION_NONE": "(未使用)",
@@ -701,7 +714,8 @@
         "CONDITION_HP_PCT": "比较类型: 0 = 最大生命值必须相等; 1 = 最大生命值的百分比必须更高; 2 = 最大生命值的百分比必须更低; 3 = 最大生命值的百分比必须等于或高于; 4 = 最大生命值的百分比必须等于或低于",
         "CONDITION_STAND_STATE": "站立/坐下的状态, 10 = 站立; 1 = 坐下",
         "CONDITION_QUESTSTATE": "state_mask",
-        "CONDITION_QUEST_OBJECTIVE_PROGRESS": "任务目标ID - 参见quest_template表的RequiredNpcOrGo字段"
+        "CONDITION_QUEST_OBJECTIVE_PROGRESS": "任务目标ID - 参见quest_template表的RequiredNpcOrGo字段",
+        "CONDITION_WORLD_SCRIPT": "state, 0 = unused"
       },
       "VALUE3": {
         "CONDITION_NONE": "(从未使用)",
@@ -854,5 +868,8 @@
       "SPELL_PRIORITY": "未知...某些法术的唯一使用的值是50。",
       "REQUIRED_AURA_VISION": "未知...只有16个法术使用，其他均为0，可以用于视觉效果。"
     }
+  },
+  "GAME_TELE": {
+    "EDITOR": "Teleport Editor"
   }
 }

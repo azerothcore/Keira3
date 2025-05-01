@@ -12,7 +12,6 @@ import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-spell-dbc-effects',
   templateUrl: './spell-dbc-effects.component.html',
-  standalone: true,
   imports: [
     FormsModule,
     ReactiveFormsModule,

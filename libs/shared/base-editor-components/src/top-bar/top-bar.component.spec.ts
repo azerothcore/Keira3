@@ -1,13 +1,11 @@
 import { Component, ViewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-
 import { PageObject } from '@keira/shared/test-utils';
 import { TopBarComponent } from './top-bar.component';
 
 describe(TopBarComponent.name, () => {
   @Component({
-    template: ` <keira-top-bar [selected]="selected" [selectedName]="selectedName" [isNew]="isNew" /> `,
-    standalone: true,
+    template: ` <keira-top-bar [selected]="selected" [selectedName]="selectedName" [isNew]="isNew" [customScssClass]="customScssClass" /> `,
     imports: [TopBarComponent],
   })
   class TestHostComponent {
@@ -15,6 +13,7 @@ describe(TopBarComponent.name, () => {
     selected: string | undefined;
     selectedName: string | undefined;
     isNew: boolean = false;
+    customScssClass: string | undefined;
   }
 
   class Page extends PageObject<TestHostComponent> {
@@ -49,6 +48,32 @@ describe(TopBarComponent.name, () => {
 
       expect(page.mainWrapper()).toBeTruthy();
       expect(page.mainText(false)).toBeFalsy();
+    });
+  });
+
+  describe('when there is a custom scss class', () => {
+    it('should correctly show the custom scss class', () => {
+      const { host, page } = setup();
+      host.selected = '1234'; // Ensure selected is truthy
+      host.customScssClass = 'item-quality-q6';
+
+      page.detectChanges();
+
+      expect(page.mainText().nativeElement.classList).toContain('item-quality-q6');
+    });
+  });
+
+  describe('when there is no custom scss class', () => {
+    it('should correctly use the default scss class', () => {
+      const { host, page } = setup();
+      host.selected = '1234'; // Ensure selected is truthy
+      host.customScssClass = undefined; // Falsy value
+
+      page.detectChanges();
+
+      expect(page.mainText().nativeElement.classList).toContain('main-text');
+      expect(page.mainText().nativeElement.classList).toContain('text-truncate');
+      expect(page.mainText().nativeElement.classList).not.toContain('item-quality-q6'); // Ensure no custom class
     });
   });
 

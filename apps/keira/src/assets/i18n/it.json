@@ -13,7 +13,8 @@
     "POLISH": "Polacco",
     "PORTUGUESE": "Portoghese",
     "KOREAN": "Coreano",
-    "ROMANIAN": "Rumeno"
+    "ROMANIAN": "Rumeno",
+    "SLOVAK": "Slovak"
   },
   "MODAL": {
     "YES": "Yes",
@@ -99,6 +100,7 @@
       "SELECT_QUEST": "Select Quest",
       "QUEST_TEMPLATE": "Quest Template",
       "QUEST_TEMPLATE_ADDON": "Quest Template Addon",
+      "QUEST_TEMPLATE_LOCALE": "Quest Template Locale",
       "QUEST_OFFER_REWARD": "Quest Offer Reward",
       "QUEST_REQUEST_ITEMS": "Quest Request Items",
       "CREATURE_QUESTSTARTER": "Creature Queststarter",
@@ -172,6 +174,11 @@
       "TITLE": "Spell DBC overrides",
       "SEARCH_SPELL": "Search Spell",
       "SPELL_DBC_EDITOR": "Spell DBC editor"
+    },
+    "GAME_TELE": {
+      "TITLE": "Game Teleport",
+      "SEARCH_GAME_TELE": "Search Teleport",
+      "SELECT_GAME_TELE": "Game Tele Editor"
     }
   },
   "DASHBOARD": {
@@ -686,7 +693,8 @@
         "CONDITION_PET_TYPE": "mask",
         "CONDITION_TAXI": "Always 0",
         "CONDITION_QUESTSTATE": "quest_template.ID",
-        "CONDITION_QUEST_OBJECTIVE_PROGRESS": "quest_template.id"
+        "CONDITION_QUEST_OBJECTIVE_PROGRESS": "quest_template.id",
+        "CONDITION_WORLD_SCRIPT": "WorldStateCondition (defined in WorldState.h)"
       },
       "VALUE2": {
         "CONDITION_NONE": "(Never used)",
@@ -706,7 +714,8 @@
         "CONDITION_HP_PCT": "ComparisionType: 0 = Percentage of max HP must be equal; 1 = Percentage of max HP must be higher; 2 = Percentage of max HP must be lower; 3 = Percentage of max HP must be equal or higher; 4 = Percentage of max HP must be equal or lower",
         "CONDITION_STAND_STATE": "Exact stand state, or generic state (stand/sit), depending on value 10 = Standing; 1 = Sitting",
         "CONDITION_QUESTSTATE": "state_mask",
-        "CONDITION_QUEST_OBJECTIVE_PROGRESS": "Quest Objective ID - see quest_template.RequiredNpcOrGo"
+        "CONDITION_QUEST_OBJECTIVE_PROGRESS": "Quest Objective ID - see quest_template.RequiredNpcOrGo",
+        "CONDITION_WORLD_SCRIPT": "state, 0 = unused"
       },
       "VALUE3": {
         "CONDITION_NONE": "(Never used)",
@@ -859,5 +868,8 @@
       "SPELL_PRIORITY": "Unknown. Only used value is 50 for some spells.",
       "REQUIRED_AURA_VISION": "Unknown. Only 16 Spells use another value as 0. Could be used for visual effects."
     }
+  },
+  "GAME_TELE": {
+    "EDITOR": "Teleport Editor"
   }
 }

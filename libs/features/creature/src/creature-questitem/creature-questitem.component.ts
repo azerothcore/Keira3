@@ -15,7 +15,6 @@ import { CreatureQuestitemService } from './creature-questitem.service';
   selector: 'keira-creature-questitem',
   templateUrl: './creature-questitem.component.html',
   styleUrls: ['./creature-questitem.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,

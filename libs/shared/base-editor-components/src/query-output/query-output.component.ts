@@ -18,7 +18,6 @@ import { QueryErrorComponent } from './query-error/query-error.component';
   selector: 'keira-query-output',
   templateUrl: './query-output.component.html',
   styleUrls: ['./query-output.component.scss'],
-  standalone: true,
   imports: [FormsModule, HighlightjsWrapperComponent, QueryErrorComponent, TranslateModule],
 })
 export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandler {

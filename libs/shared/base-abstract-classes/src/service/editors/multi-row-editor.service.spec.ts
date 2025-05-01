@@ -13,6 +13,7 @@ import {
   MockEntityExtra,
   MockMultiRowEditorExtraService,
   MockMultiRowEditorService,
+  MockMultiRowEditorWithGuidStringService,
 } from '../../core.mock';
 
 describe('MultiRowEditorService', () => {
@@ -31,9 +32,13 @@ describe('MultiRowEditorService', () => {
   );
 
   function setup(
-    config: { loadedEntityId?: number; nextRowId?: number; newRows?: (MockEntity | MockEntityExtra)[]; extra?: boolean } = {},
+    config: { loadedEntityId?: number; nextRowId?: number; newRows?: (MockEntity | MockEntityExtra)[]; extra?: boolean, withGuidString?: boolean } = {},
   ) {
-    const service = config.extra ? TestBed.inject(MockMultiRowEditorExtraService) : TestBed.inject(MockMultiRowEditorService);
+    const service = config.extra
+      ? TestBed.inject(MockMultiRowEditorExtraService)
+      : config.withGuidString
+        ? TestBed.inject(MockMultiRowEditorWithGuidStringService)
+        : TestBed.inject(MockMultiRowEditorService);
 
     const updateDiffQuerySpy = spyOn<any>(service, 'updateDiffQuery');
     const updateFullQuerySpy = spyOn<any>(service, 'updateFullQuery');
@@ -330,6 +335,15 @@ describe('MultiRowEditorService', () => {
       service.addNewRow();
 
       expect(service['_nextRowId']).toEqual(5);
+    });
+
+    it('it should assign nextId as a string to string-typed field', () => {
+      const nextRowId = 3;
+      const { service } = setup({ nextRowId, newRows: [], withGuidString: true });
+
+      service.addNewRow();
+
+      expect(typeof service.newRows[0][MOCK_ID_2]).toBe('string');
     });
   });
 

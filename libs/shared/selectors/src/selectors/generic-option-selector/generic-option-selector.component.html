@@ -3,6 +3,9 @@
     <option [ngValue]="placeholderValue" disabled selected [label]="placeholder"></option>
   }
   @for (option of optionList; track option) {
-    <option [ngValue]="option.value" [label]="option.value + ' - ' + option.name"></option>
+    <option
+      [ngValue]="option.value"
+      [label]="(option.value !== undefined && option.value !== null ? option.value + ' - ' : '') + option.name"
+    ></option>
   }
 </select>

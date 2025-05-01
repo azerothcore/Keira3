@@ -19,7 +19,6 @@ import { ModelForm, SubscriptionHandler } from '@keira/shared/utils';
   selector: 'keira-connection-window',
   templateUrl: './connection-window.component.html',
   styleUrls: ['./connection-window.component.scss'],
-  standalone: true,
   imports: [FormsModule, ReactiveFormsModule, BsDropdownModule, TranslateModule, QueryErrorComponent, SwitchLanguageComponent],
 })
 export class ConnectionWindowComponent extends SubscriptionHandler implements OnInit {

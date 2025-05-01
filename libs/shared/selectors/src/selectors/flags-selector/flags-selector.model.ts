@@ -3,4 +3,5 @@ import { Flag } from '@keira/shared/constants';
 
 export interface FlagsModalConfig extends BaseModalConfig {
   flags: Flag[];
+  overrideDefaultBehavior?: boolean;
 }

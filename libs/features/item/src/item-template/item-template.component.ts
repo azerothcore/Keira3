@@ -55,7 +55,6 @@ import { ItemTemplateService } from './item-template.service';
   selector: 'keira-item-template',
   templateUrl: './item-template.component.html',
   styleUrls: ['./item-template.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,

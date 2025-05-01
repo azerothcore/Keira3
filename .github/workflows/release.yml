@@ -107,7 +107,7 @@ jobs:
   build-on-windows:
     needs: get-package-version
     name: Build and upload the Windows release assets
-    runs-on: windows-2022
+    runs-on: windows-2025
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

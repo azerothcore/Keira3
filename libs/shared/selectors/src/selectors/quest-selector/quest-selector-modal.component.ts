@@ -13,7 +13,6 @@ import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-component
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-quest-selector-modal',
   templateUrl: './quest-selector-modal.component.html',
-  standalone: true,
   imports: [FormsModule, ReactiveFormsModule, HighlightjsWrapperComponent, NgxDatatableModule, TranslateModule],
 })
 export class QuestSelectorModalComponent extends SearchSelectorModalComponent<QuestTemplate> {
