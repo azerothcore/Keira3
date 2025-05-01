@@ -1,0 +1,34 @@
+name: Build and Upload Binary
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up the build environment (if needed)
+      - name: Set up build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential
+
+      # Step 3: Build the binary
+      - name: Build binary
+        run: |
+          mkdir -p build
+          gcc -o build/my_binary source_file.c  # Replace with your build command
+
+      # Step 4: Upload the binary as an artifact
+      - name: Upload binary artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: my_binary
+          path: build/my_binary
