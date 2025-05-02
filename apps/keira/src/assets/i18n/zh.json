@@ -255,7 +255,8 @@
       "DETECTION_RANGE": "控制生物感知到玩家靠近的范围。",
       "ITEMID1": "This is the item number of the equipment used in the right hand from Item.dbc.",
       "ITEMID2": "This is the item number of the equipment used in the left hand from Item.dbc.",
-      "ITEMID3": "This is the item number of the equipment used in the ranged slot from Item.dbc."
+      "ItemID3": "This is the item number of the equipment used in the ranged slot from Item.dbc.",
+      "FactionHint": "When refering to the Creature's Faction ID it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki."
     },
     "TEMPLATE_ADDON": {
       "ENTRY": "链接至creature_template表的entry字段",
