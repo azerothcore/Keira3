@@ -13,12 +13,16 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { QueryErrorComponent } from '@keira/shared/base-editor-components';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 
+import { CodeEditor } from '@acrodata/code-editor';
+import { LanguageDescription } from '@codemirror/language';
+import { MySQL, sql } from '@codemirror/lang-sql';
+
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-sql-editor',
   templateUrl: './sql-editor.component.html',
   styleUrls: ['./sql-editor.component.scss'],
-  imports: [TooltipModule, FormsModule, QueryErrorComponent, NgxDatatableModule, TranslateModule],
+  imports: [CodeEditor, TooltipModule, FormsModule, QueryErrorComponent, NgxDatatableModule, TranslateModule],
 })
 export class SqlEditorComponent extends SubscriptionHandler {
   private readonly mysqlQueryService = inject(MysqlQueryService);
@@ -29,6 +33,8 @@ export class SqlEditorComponent extends SubscriptionHandler {
   readonly DTCFG = DTCFG;
   readonly docUrl = 'https://www.w3schools.com/sql/sql_intro.asp';
   private readonly MAX_COL_SHOWN = 20;
+
+  languages = [LanguageDescription.of({ name: 'MySQL', support: sql({ dialect: MySQL }) })];
 
   // displayLimit = 10;
   // get displayLimitOptions() {

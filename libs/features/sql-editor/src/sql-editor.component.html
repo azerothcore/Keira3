@@ -13,7 +13,15 @@
       </div>
     </div>
 
-    <textarea id="code" class="mb-1" [(ngModel)]="service.code" (keydown.f9)="execute()" rows="6" spellcheck="false"></textarea>
+    <code-editor
+      id="code"
+      [lineWrapping]="true"
+      (keydown.f9)="execute()"
+      [languages]="languages"
+      [language]="'MySQL'"
+      [setup]="'basic'"
+      [(ngModel)]="service.code"
+    />
 
     <div class="row">
       <div class="col-sm-7">
