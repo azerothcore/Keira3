@@ -36,11 +36,6 @@ export class SqlEditorComponent extends SubscriptionHandler {
 
   languages = [LanguageDescription.of({ name: 'MySQL', support: sql({ dialect: MySQL }) })];
 
-  // displayLimit = 10;
-  // get displayLimitOptions() {
-  //   return [10, 20, 50, 100, 200, 500, 1000];
-  // }
-
   private _error: QueryError | undefined;
   get error(): QueryError | undefined {
     return this._error;
