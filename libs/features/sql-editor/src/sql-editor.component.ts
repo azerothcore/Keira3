@@ -13,12 +13,17 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { QueryErrorComponent } from '@keira/shared/base-editor-components';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 
+import { CodeEditor } from '@acrodata/code-editor';
+import { LanguageDescription } from '@codemirror/language';
+import { MySQL, sql } from '@codemirror/lang-sql';
+import { githubLight } from '@uiw/codemirror-theme-github';
+
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-sql-editor',
   templateUrl: './sql-editor.component.html',
   styleUrls: ['./sql-editor.component.scss'],
-  imports: [TooltipModule, FormsModule, QueryErrorComponent, NgxDatatableModule, TranslateModule],
+  imports: [CodeEditor, TooltipModule, FormsModule, QueryErrorComponent, NgxDatatableModule, TranslateModule],
 })
 export class SqlEditorComponent extends SubscriptionHandler {
   private readonly mysqlQueryService = inject(MysqlQueryService);
@@ -30,10 +35,8 @@ export class SqlEditorComponent extends SubscriptionHandler {
   readonly docUrl = 'https://www.w3schools.com/sql/sql_intro.asp';
   private readonly MAX_COL_SHOWN = 20;
 
-  // displayLimit = 10;
-  // get displayLimitOptions() {
-  //   return [10, 20, 50, 100, 200, 500, 1000];
-  // }
+  languages = [LanguageDescription.of({ name: 'MySQL', support: sql({ dialect: MySQL, upperCaseKeywords: true }) })];
+  extensions = [githubLight];
 
   private _error: QueryError | undefined;
   get error(): QueryError | undefined {

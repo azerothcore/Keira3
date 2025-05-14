@@ -1,11 +1,14 @@
 #code {
-  width: 100%;
-  padding: 9.5px;
-  word-break: break-all;
-  word-wrap: break-word;
-  background-color: #f5f5f5;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  overflow: auto;
+  resize: vertical;
+  min-height: calc(1.5em * 6);
+  margin-bottom: 1rem;
+  border: 1px solid #e49649;
+  border-radius: 0.25rem;
+}
+
+#code ::ng-deep .cm-editor {
+  outline: none; // remove the default outline
 }
 
 .select-limit {
