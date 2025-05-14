@@ -625,6 +625,14 @@ export class SaiCommentGeneratorService {
       }
     }
 
+    if (actionLine.indexOf('_onOffActionParamTwo_') > -1) {
+      if (smartScript.action_param2 === 1) {
+        actionLine = actionLine.replace('_onOffActionParamTwo_', 'On');
+      } else {
+        actionLine = actionLine.replace('_onOffActionParamTwo_', 'Off');
+      }
+    }
+
     if (actionLine.indexOf('_gameobjectNameActionParamOne_') > -1) {
       actionLine = actionLine.replace(
         '_gameobjectNameActionParamOne_',
