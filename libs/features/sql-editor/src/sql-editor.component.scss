@@ -1,6 +1,14 @@
 #code {
+  overflow: auto;
   resize: vertical;
+  min-height: calc(1.5em * 6);
   margin-bottom: 1rem;
+  border: 1px solid #e49649;
+  border-radius: 0.25rem;
+}
+
+#code ::ng-deep .cm-editor {
+  outline: none; // remove the default outline
 }
 
 .select-limit {
