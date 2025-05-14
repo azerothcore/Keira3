@@ -178,6 +178,7 @@ export enum SAI_ACTIONS {
   MOVEMENT_PAUSE = 235,
   MOVEMENT_RESUME = 236,
   WORLD_SCRIPT = 237,
+  DISABLE_REWARD = 238,
 }
 export const SAI_ACTIONS_KEYS = getEnumKeys(SAI_ACTIONS);
 export const SAI_ACTION_TOOLTIPS: Record<string, string> = {};
@@ -448,7 +449,8 @@ SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.UPDATE_TEMPLATE] = ''; // TODO
 // SMART_ACTION_DIE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.DIE] = 'Kills the target.';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.DIE] = 'Kill Timer';
-SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.DIE] = 'Time in milliseconds after which the creature kills itself. Leave as 0 to kill it instantly.';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.DIE] =
+  'Time in milliseconds after which the creature kills itself. Leave as 0 to kill it instantly.';
 
 // SMART_ACTION_SET_IN_COMBAT_WITH_ZONE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_IN_COMBAT_WITH_ZONE] =
@@ -676,7 +678,8 @@ SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.MOVE_TO_POS] = BOOLEAN_VALUE_TOOLTIP;
 SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.MOVE_TO_POS] =
   '0 = aggro/threat will make it focus on player instead, 1 = Fixated to run to the xyzo position no matter what';
 SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.MOVE_TO_POS] = 'Absolute distance between the target and the source';
-SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.MOVE_TO_POS] = '0/1 Uses CombatReach as the minimum distance between target and source. If ContactDistance > 0, then it will be added on top of CombatReach distance';
+SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.MOVE_TO_POS] =
+  '0/1 Uses CombatReach as the minimum distance between target and source. If ContactDistance > 0, then it will be added on top of CombatReach distance';
 
 // SMART_ACTION_RESPAWN_TARGET
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.RESPAWN_TARGET] =
@@ -1202,14 +1205,16 @@ SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_GUID] = 'Index';
 SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_GUID] = '0/1 (0 = Self Guid, 1 = Invoker Guid)';
 
 // SMART_ACTION_SCRIPTED_SPAWN
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Sets up and allows the usage of a SmartAI Scripted Spawn system, allowing us to keep unique GUIDs despawned until a script ativates them';
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SCRIPTED_SPAWN] =
+  'Sets up and allows the usage of a SmartAI Scripted Spawn system, allowing us to keep unique GUIDs despawned until a script ativates them';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SCRIPTED_SPAWN] = 'State';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Minimum Spawn Timer';
 SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Maximum Spawn Timer';
 SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Respawn Delay';
 SAI_ACTION_PARAM5_NAMES[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Corpse Delay';
 SAI_ACTION_PARAM5_NAMES[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Dont Despawn';
-SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SCRIPTED_SPAWN] = '0: Disable Respawn and await script; 1: Respawn Once; 2: Respawn and Enable Respawning';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SCRIPTED_SPAWN] =
+  '0: Disable Respawn and await script; 1: Respawn Once; 2: Respawn and Enable Respawning';
 SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Delay in seconds until first spawn, if 0 respawn immediately';
 SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Delay in seconds until first spawn, if 0 respawn immediately';
 SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Delay in seconds to respawn after corpse is removed, if 0 use DB values';
@@ -1307,3 +1312,10 @@ SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.MOVEMENT_RESUME] = 'ms';
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.WORLD_SCRIPT] = 'Calls WorldState::HandleExternalEvent(WorldStateEvent eventId, uint32 param)';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.WORLD_SCRIPT] = 'eventId';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.WORLD_SCRIPT] = 'param';
+
+// SMART_ACTION_DISABLE_REWARD
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.DISABLE_REWARD] = 'Allows to disable reward from a creature.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.DISABLE_REWARD] = 'Disable Reputation';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.DISABLE_REWARD] = '1 = enabled 0 = disabled';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.DISABLE_REWARD] = 'Disable Loot';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.DISABLE_REWARD] = '1 = enabled 0 = disabled';
