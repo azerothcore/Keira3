@@ -37,6 +37,7 @@
       "@keira/features/spell": ["libs/features/spell/src/index.ts"],
       "@keira/features/sql-editor": ["libs/features/sql-editor/src/index.ts"],
       "@keira/features/texts": ["libs/features/texts/src/index.ts"],
+      "@keira/features/unused-guid-search": ["libs/features/unused-guid-search/src/index.ts"],
       "@keira/main/connection-window": ["libs/main/connection-window/src/index.ts"],
       "@keira/main/main-window": ["libs/main/main-window/src/index.ts"],
       "@keira/shared/acore-world-model": ["libs/shared/acore-world-model/src/index.ts"],
@@ -55,6 +56,7 @@
       "@keira/shared/switch-language": ["libs/shared/switch-language/src/index.ts"],
       "@keira/shared/test-utils": ["libs/shared/test-utils/src/index.ts"],
       "@keira/shared/utils": ["libs/shared/utils/src/index.ts"],
+      "keira-features-unused-guid-search": ["libs/features/unused-guid-search/src/index.ts"],
       "texts": ["libs/features/texts/src/index.ts"]
     },
     "rootDir": "."
