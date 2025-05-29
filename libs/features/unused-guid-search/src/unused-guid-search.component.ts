@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
@@ -31,6 +31,9 @@ import {
   imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslateModule],
 })
 export class UnusedGuidSearchComponent {
+  private readonly mysql = inject(MysqlQueryService);
+  private readonly cdr = inject(ChangeDetectorRef);
+
   readonly MAX_INT_UNSIGNED_VALUE = 4294967295;
 
   dbOptions = [
@@ -53,11 +56,6 @@ export class UnusedGuidSearchComponent {
   consecutive = false;
   amount = 10;
   startIndex = 1;
-
-  constructor(
-    private mysql: MysqlQueryService,
-    private cdr: ChangeDetectorRef,
-  ) {}
 
   async onSearch() {
     this.error = '';
