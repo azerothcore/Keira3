@@ -179,7 +179,8 @@
       "TITLE": "Game Teleport",
       "SEARCH_GAME_TELE": "Search Teleport",
       "SELECT_GAME_TELE": "Game Tele Editor"
-    }
+    },
+    "UNUSED_GUID_SEARCH": "Unused GUIDs"
   },
   "DASHBOARD": {
     "WELCOME": "Добро пожаловать в Keira3",
