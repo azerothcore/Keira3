@@ -1,6 +1,6 @@
 <div class="container-fluid">
   <div class="content-block">
-    <form (ngSubmit)="onSearch()" #guidForm="ngForm" class="mb-3">
+    <form (ngSubmit)="onSearch()" class="mb-3">
       <div class="form-group row">
         <label class="col-sm-2 col-form-label">Table</label>
         <div class="col-sm-4">
@@ -39,18 +39,20 @@
       </div>
       <div class="form-group row mt-3">
         <div class="col-sm-6">
-          <button class="btn btn-primary" type="submit" [disabled]="loading">Search</button>
+          <button class="btn btn-primary" type="submit" [disabled]="loading()">Search</button>
         </div>
       </div>
     </form>
 
-    @if (loading) {
+    @if (loading()) {
       <div class="alert alert-info">Searching...</div>
     }
-    @if (error) {
-      <div class="alert alert-danger">{{ error }}</div>
+
+    @if (error()) {
+      <div class="alert alert-danger">{{ error() }}</div>
     }
-    @if (results.length > 0) {
+
+    @if (results.length) {
       <div class="alert alert-success">Found unused GUIDs:</div>
       <textarea id="results" class="mb-1" [value]="results.join(', ')" rows="6" spellcheck="false" readonly></textarea>
     }

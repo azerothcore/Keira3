@@ -1,7 +1,6 @@
-import { Component, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { CommonModule } from '@angular/common';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { firstValueFrom } from 'rxjs';
 import {
@@ -28,15 +27,14 @@ import {
   selector: 'keira-features-unused-guid-search',
   templateUrl: './unused-guid-search.component.html',
   styleUrl: './unused-guid-search.component.scss',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslateModule],
+  imports: [FormsModule, ReactiveFormsModule, TranslateModule],
 })
 export class UnusedGuidSearchComponent {
   private readonly mysql = inject(MysqlQueryService);
-  private readonly cdr = inject(ChangeDetectorRef);
 
-  readonly MAX_INT_UNSIGNED_VALUE = 4294967295;
+  protected readonly MAX_INT_UNSIGNED_VALUE = 4294967295;
 
-  dbOptions = [
+  protected readonly dbOptions = [
     { table: CREATURE_SPAWN_TABLE, key: CREATURE_SPAWN_ID_2, label: `${CREATURE_SPAWN_TABLE} (${CREATURE_SPAWN_ID_2})` },
     { table: GAMEOBJECT_SPAWN_TABLE, key: GAMEOBJECT_SPAWN_ID_2, label: `${GAMEOBJECT_SPAWN_TABLE} (${GAMEOBJECT_SPAWN_ID_2})` },
     { table: CREATURE_TEMPLATE_TABLE, key: CREATURE_TEMPLATE_ID, label: `${CREATURE_TEMPLATE_TABLE} (${CREATURE_TEMPLATE_ID})` },
@@ -49,16 +47,21 @@ export class UnusedGuidSearchComponent {
     { table: 'pool_template', key: 'entry', label: 'pool_template (entry)' },
     { table: 'game_event', key: 'eventEntry', label: 'game_event (eventEntry)' },
   ];
-  selectedDb = this.dbOptions[0];
-  results: string[] = [];
-  loading = false;
-  error = '';
-  consecutive = false;
-  amount = 10;
-  startIndex = 1;
+  protected selectedDb = this.dbOptions[0];
+  protected results: string[] = [];
+  protected loading = signal(false);
+  protected error = signal('');
+  protected consecutive = false;
+  protected amount = 10;
+  protected startIndex = 1;
 
-  async onSearch() {
-    this.error = '';
+  protected async onSearch(): Promise<void> {
+    this.error.set('');
+
+    if (this.amount === null) {
+      this.error.set(`Amount value must be a number.`);
+      return;
+    }
 
     if (
       this.startIndex < 1 ||
@@ -66,67 +69,97 @@ export class UnusedGuidSearchComponent {
       this.startIndex > this.MAX_INT_UNSIGNED_VALUE ||
       this.amount > this.MAX_INT_UNSIGNED_VALUE
     ) {
-      this.error = `Start Index and Amount must be safe integers between 1 and ${this.MAX_INT_UNSIGNED_VALUE}.`;
+      this.error.set(`Start Index and Amount must be safe integers between 1 and ${this.MAX_INT_UNSIGNED_VALUE}.`);
       return;
     }
 
     this.results = [];
-    this.loading = true;
+    this.loading.set(true);
     try {
-      // Fetch all existing GUIDs
-      const rows = await firstValueFrom(
-        this.mysql.query<{ guid: number }>(
-          `SELECT ${this.selectedDb.key} AS guid FROM ${this.selectedDb.table} WHERE ${this.selectedDb.key} >= ${this.startIndex}`,
-        ),
-      );
-      const usedGuids = new Set(rows.map((r) => Number(r.guid)));
+      const usedGuids = await this.fetchUsedGuids();
 
-      // Find unused GUIDs
-      const found: number[] = [];
-      let current = this.startIndex;
       if (this.consecutive) {
-        let streak = 0;
-        let streakStart = current;
-        while (found.length < this.amount) {
-          if (!usedGuids.has(current)) {
-            streak++;
-            if (streak === 1) {
-              streakStart = current;
-            }
-            if (streak === this.amount) {
-              for (let i = 0; i < this.amount; i++) {
-                found.push(streakStart + i);
-              }
-              break;
-            }
-          } else {
-            streak = 0;
-          }
-          current++;
-          if (current >= this.MAX_INT_UNSIGNED_VALUE) {
-            break;
-          }
-        }
+        this.results = this.findConsecutiveUnusedGuids(usedGuids).map(String);
       } else {
-        while (found.length < this.amount) {
-          if (!usedGuids.has(current)) {
-            found.push(current);
-          }
-          current++;
-          if (current >= this.MAX_INT_UNSIGNED_VALUE) {
-            break;
-          }
-        }
+        this.results = this.findUnusedGuids(usedGuids).map(String);
       }
-      this.results = found.map(String);
-      if (found.length < this.amount) {
-        this.error = `Only found ${found.length} unused GUIDs.`;
+
+      if (this.results.length < this.amount) {
+        this.error.set(`Only found ${this.results.length} unused GUIDs.`);
       }
     } catch (e: any) {
-      this.error = e?.message || 'Error searching for unused GUIDs';
+      this.error.set(e?.message || 'Error searching for unused GUIDs');
     } finally {
-      this.loading = false;
-      this.cdr.markForCheck();
+      this.loading.set(false);
     }
+  }
+
+  private async fetchUsedGuids(): Promise<Set<number>> {
+    const rows = await firstValueFrom(
+      this.mysql.query<{ guid: number }>(
+        `SELECT ${this.selectedDb.key} AS guid FROM ${this.selectedDb.table} WHERE ${this.selectedDb.key} >= ${this.startIndex}`,
+      ),
+    );
+
+    return new Set(rows.map((r) => Number(r.guid)));
+  }
+
+  private findUnusedGuids(usedGuids: Set<number>): number[] {
+    if (this.amount === null) {
+      return [];
+    }
+
+    let current = this.startIndex;
+
+    const found: number[] = [];
+    while (found.length < this.amount) {
+      if (!usedGuids.has(current)) {
+        found.push(current);
+      }
+      current++;
+      if (current >= this.MAX_INT_UNSIGNED_VALUE) {
+        break;
+      }
+    }
+    return found;
+  }
+
+  private findConsecutiveUnusedGuids(usedGuids: Set<number>): number[] {
+    if (this.amount === null) {
+      return [];
+    }
+
+    let current = this.startIndex;
+
+    let streak = 0;
+    let streakStart = current;
+
+    const found: number[] = [];
+
+    while (found.length < this.amount) {
+      if (!usedGuids.has(current)) {
+        streak++;
+
+        if (streak === 1) {
+          streakStart = current;
+        }
+
+        if (streak === this.amount) {
+          for (let i = 0; i < this.amount; i++) {
+            found.push(streakStart + i);
+          }
+          break;
+        }
+      } else {
+        streak = 0;
+      }
+
+      current++;
+      if (current >= this.MAX_INT_UNSIGNED_VALUE) {
+        break;
+      }
+    }
+
+    return found;
   }
 }
