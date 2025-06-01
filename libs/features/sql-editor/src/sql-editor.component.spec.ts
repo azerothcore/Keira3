@@ -107,7 +107,7 @@ describe('SqlEditorComponent', () => {
 
     page.clickElement(page.executeBtn);
 
-    expect(component.columns.length).toBe(0);
+    expect(component['columns'].length).toBe(0);
   });
 
   it('should display the affected rows box when necessary', () => {
@@ -154,7 +154,7 @@ describe('SqlEditorComponent', () => {
 
     page.clickElement(page.executeBtn);
 
-    expect(component.columns.length).toBe(20);
+    expect(component['columns'].length).toBe(20);
   });
 
   it('clicking the copy button should copy the query', () => {
