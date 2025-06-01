@@ -1,10 +1,10 @@
 <div class="container-fluid">
   <div class="content-block">
-    <form (ngSubmit)="onSearch()" class="mb-3">
+    <form [formGroup]="form" (ngSubmit)="onSearch()" class="mb-3">
       <div class="form-group row">
         <label class="col-sm-2 col-form-label">Table</label>
         <div class="col-sm-4">
-          <select class="form-control" [(ngModel)]="selectedDb" name="selectedDb" required>
+          <select class="form-control" formControlName="selectedDb" required>
             @for (db of dbOptions; track db) {
               <option [ngValue]="db" [label]="db.label"></option>
             }
@@ -14,27 +14,19 @@
       <div class="form-group row mt-2">
         <label class="col-sm-2 col-form-label">Start Index</label>
         <div class="col-sm-4">
-          <input
-            type="number"
-            class="form-control"
-            [(ngModel)]="startIndex"
-            name="startIndex"
-            min="1"
-            [max]="MAX_INT_UNSIGNED_VALUE"
-            required
-          />
+          <input type="number" class="form-control" formControlName="startIndex" min="1" [max]="MAX_INT_UNSIGNED_VALUE" required />
         </div>
       </div>
       <div class="form-group row mt-2">
         <label class="col-sm-2 col-form-label">Amount</label>
         <div class="col-sm-4">
-          <input type="number" class="form-control" [(ngModel)]="amount" name="amount" min="1" [max]="MAX_INT_UNSIGNED_VALUE" required />
+          <input type="number" class="form-control" formControlName="amount" min="1" [max]="MAX_INT_UNSIGNED_VALUE" required />
         </div>
       </div>
       <div class="form-group row mt-2">
         <label class="col-sm-2 col-form-label">Consecutive</label>
         <div class="col-sm-4 d-flex align-items-center">
-          <input type="checkbox" [(ngModel)]="consecutive" name="consecutive" />
+          <input type="checkbox" formControlName="consecutive" />
         </div>
       </div>
       <div class="form-group row mt-3">

@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormControl, Form } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import {
@@ -30,6 +30,7 @@ import {
 })
 export class UnusedGuidSearchComponent {
   private readonly mysql = inject(MysqlQueryService);
+  private readonly fb = inject(FormBuilder);
 
   protected readonly MAX_INT_UNSIGNED_VALUE = 4294967295;
 
@@ -46,49 +47,45 @@ export class UnusedGuidSearchComponent {
     { table: 'pool_template', key: 'entry', label: 'pool_template (entry)' },
     { table: 'game_event', key: 'eventEntry', label: 'game_event (eventEntry)' },
   ];
-  protected selectedDb = this.dbOptions[0];
+
+  protected form: FormGroup = this.fb.group({
+    selectedDb: [this.dbOptions[0], Validators.required],
+    startIndex: [1, [Validators.required, Validators.min(1), Validators.max(this.MAX_INT_UNSIGNED_VALUE)]],
+    amount: [10, [Validators.required, Validators.min(1), Validators.max(this.MAX_INT_UNSIGNED_VALUE)]],
+    consecutive: [false, [Validators.required]],
+  });
+
   protected results: string[] = [];
   protected loading = signal(false);
   protected error = signal('');
-  protected consecutive = false;
-  protected amount = 10;
-  protected startIndex = 1;
 
   protected async onSearch(): Promise<void> {
     this.error.set('');
 
-    if (this.amount === null) {
-      this.error.set(`Amount value must be a number.`);
+    if (this.form.invalid) {
+      this.error.set(`Please enter valid numbers for Amount and Start Index (1 to ${this.MAX_INT_UNSIGNED_VALUE}).`);
       return;
     }
 
-    if (
-      this.startIndex < 1 ||
-      this.amount < 1 ||
-      this.startIndex > this.MAX_INT_UNSIGNED_VALUE ||
-      this.amount > this.MAX_INT_UNSIGNED_VALUE
-    ) {
-      this.error.set(`Start Index and Amount must be safe integers between 1 and ${this.MAX_INT_UNSIGNED_VALUE}.`);
-      return;
-    }
+    const { selectedDb, startIndex, amount, consecutive } = this.form.value;
 
     this.results = [];
     this.loading.set(true);
 
-    const query = `SELECT ${this.selectedDb.key} AS guid
-                   FROM ${this.selectedDb.table}
-                   WHERE ${this.selectedDb.key} >= ${this.startIndex}`;
+    const query = `SELECT ${selectedDb.key} AS guid
+                   FROM ${selectedDb.table}
+                   WHERE ${selectedDb.key} >= ${startIndex}`;
     this.mysql.query<{ guid: number }>(query).subscribe({
       next: (rows) => {
         const usedGuids = new Set(rows.map((r) => Number(r.guid)));
 
-        if (this.consecutive) {
-          this.results = this.findConsecutiveUnusedGuids(usedGuids).map(String);
+        if (consecutive) {
+          this.results = this.findConsecutiveUnusedGuids(usedGuids, startIndex, amount).map(String);
         } else {
-          this.results = this.findUnusedGuids(usedGuids).map(String);
+          this.results = this.findUnusedGuids(usedGuids, startIndex, amount).map(String);
         }
 
-        if (this.results.length < this.amount) {
+        if (this.results.length < amount) {
           this.error.set(`Only found ${this.results.length} unused GUIDs.`);
         }
       },
@@ -102,15 +99,11 @@ export class UnusedGuidSearchComponent {
     });
   }
 
-  private findUnusedGuids(usedGuids: Set<number>): number[] {
-    if (this.amount === null) {
-      return [];
-    }
-
-    let current = this.startIndex;
+  private findUnusedGuids(usedGuids: Set<number>, startIndex: number, amount: number): number[] {
+    let current = startIndex;
 
     const found: number[] = [];
-    while (found.length < this.amount) {
+    while (found.length < amount) {
       if (!usedGuids.has(current)) {
         found.push(current);
       }
@@ -122,19 +115,15 @@ export class UnusedGuidSearchComponent {
     return found;
   }
 
-  private findConsecutiveUnusedGuids(usedGuids: Set<number>): number[] {
-    if (this.amount === null) {
-      return [];
-    }
-
-    let current = this.startIndex;
+  private findConsecutiveUnusedGuids(usedGuids: Set<number>, startIndex: number, amount: number): number[] {
+    let current = startIndex;
 
     let streak = 0;
     let streakStart = current;
 
     const found: number[] = [];
 
-    while (found.length < this.amount) {
+    while (found.length < amount) {
       if (!usedGuids.has(current)) {
         streak++;
 
@@ -142,8 +131,8 @@ export class UnusedGuidSearchComponent {
           streakStart = current;
         }
 
-        if (streak === this.amount) {
-          for (let i = 0; i < this.amount; i++) {
+        if (streak === amount) {
+          for (let i = 0; i < amount; i++) {
             found.push(streakStart + i);
           }
           break;
