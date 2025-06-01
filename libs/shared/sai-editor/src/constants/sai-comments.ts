@@ -253,3 +253,5 @@ SAI_ACTION_COMMENTS[SAI_ACTIONS.MOVEMENT_STOP] = `Stop Movement`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.MOVEMENT_PAUSE] = `Pause Movement`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.MOVEMENT_RESUME] = `Resume Movement`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.WORLD_SCRIPT] = `Run World State Script: Event: _actionParamOne_, Param: _actionParamTwo_`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.DISABLE_REWARD] =
+  `Disable reward: Disable Reputation _onOffActionParamOne_, Disable Loot _onOffActionParamTwo_`;
