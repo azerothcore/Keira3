@@ -2,7 +2,6 @@ import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/cor
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { MysqlQueryService } from '@keira/shared/db-layer';
-import { firstValueFrom } from 'rxjs';
 import {
   CREATURE_SPAWN_TABLE,
   CREATURE_SPAWN_ID_2,
@@ -75,33 +74,32 @@ export class UnusedGuidSearchComponent {
 
     this.results = [];
     this.loading.set(true);
-    try {
-      const usedGuids = await this.fetchUsedGuids();
 
-      if (this.consecutive) {
-        this.results = this.findConsecutiveUnusedGuids(usedGuids).map(String);
-      } else {
-        this.results = this.findUnusedGuids(usedGuids).map(String);
-      }
+    const query = `SELECT ${this.selectedDb.key} AS guid
+                   FROM ${this.selectedDb.table}
+                   WHERE ${this.selectedDb.key} >= ${this.startIndex}`;
+    this.mysql.query<{ guid: number }>(query).subscribe({
+      next: (rows) => {
+        const usedGuids = new Set(rows.map((r) => Number(r.guid)));
 
-      if (this.results.length < this.amount) {
-        this.error.set(`Only found ${this.results.length} unused GUIDs.`);
-      }
-    } catch (e: any) {
-      this.error.set(e?.message || 'Error searching for unused GUIDs');
-    } finally {
-      this.loading.set(false);
-    }
-  }
+        if (this.consecutive) {
+          this.results = this.findConsecutiveUnusedGuids(usedGuids).map(String);
+        } else {
+          this.results = this.findUnusedGuids(usedGuids).map(String);
+        }
 
-  private async fetchUsedGuids(): Promise<Set<number>> {
-    const rows = await firstValueFrom(
-      this.mysql.query<{ guid: number }>(
-        `SELECT ${this.selectedDb.key} AS guid FROM ${this.selectedDb.table} WHERE ${this.selectedDb.key} >= ${this.startIndex}`,
-      ),
-    );
-
-    return new Set(rows.map((r) => Number(r.guid)));
+        if (this.results.length < this.amount) {
+          this.error.set(`Only found ${this.results.length} unused GUIDs.`);
+        }
+      },
+      error: (err) => {
+        this.error.set(err?.message || 'Error searching for unused GUIDs');
+        this.loading.set(false);
+      },
+      complete: () => {
+        this.loading.set(false);
+      },
+    });
   }
 
   private findUnusedGuids(usedGuids: Set<number>): number[] {
