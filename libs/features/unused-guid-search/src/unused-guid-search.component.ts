@@ -1,6 +1,5 @@
 import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import {
   CREATURE_SPAWN_TABLE,
@@ -32,7 +31,7 @@ type DbOptions = {
   selector: 'keira-features-unused-guid-search',
   templateUrl: './unused-guid-search.component.html',
   styleUrl: './unused-guid-search.component.scss',
-  imports: [FormsModule, ReactiveFormsModule, TranslateModule],
+  imports: [FormsModule, ReactiveFormsModule],
 })
 export class UnusedGuidSearchComponent {
   private readonly mysql = inject(MysqlQueryService);
