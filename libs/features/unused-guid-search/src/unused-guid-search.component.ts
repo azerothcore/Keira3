@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormControl, Form } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import {
@@ -21,6 +21,12 @@ import {
   ACORE_STRING_ENTRY,
 } from '@keira/shared/acore-world-model';
 
+type DbOptions = {
+  table: string;
+  key: string;
+  label: string;
+};
+
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-features-unused-guid-search',
@@ -30,11 +36,10 @@ import {
 })
 export class UnusedGuidSearchComponent {
   private readonly mysql = inject(MysqlQueryService);
-  private readonly fb = inject(FormBuilder);
 
   protected readonly MAX_INT_UNSIGNED_VALUE = 4294967295;
 
-  protected readonly dbOptions = [
+  protected readonly dbOptions: DbOptions[] = [
     { table: CREATURE_SPAWN_TABLE, key: CREATURE_SPAWN_ID_2, label: `${CREATURE_SPAWN_TABLE} (${CREATURE_SPAWN_ID_2})` },
     { table: GAMEOBJECT_SPAWN_TABLE, key: GAMEOBJECT_SPAWN_ID_2, label: `${GAMEOBJECT_SPAWN_TABLE} (${GAMEOBJECT_SPAWN_ID_2})` },
     { table: CREATURE_TEMPLATE_TABLE, key: CREATURE_TEMPLATE_ID, label: `${CREATURE_TEMPLATE_TABLE} (${CREATURE_TEMPLATE_ID})` },
@@ -48,11 +53,24 @@ export class UnusedGuidSearchComponent {
     { table: 'game_event', key: 'eventEntry', label: 'game_event (eventEntry)' },
   ];
 
-  protected form: FormGroup = this.fb.group({
-    selectedDb: [this.dbOptions[0], Validators.required],
-    startIndex: [1, [Validators.required, Validators.min(1), Validators.max(this.MAX_INT_UNSIGNED_VALUE)]],
-    amount: [10, [Validators.required, Validators.min(1), Validators.max(this.MAX_INT_UNSIGNED_VALUE)]],
-    consecutive: [false, [Validators.required]],
+  protected form = new FormGroup<{
+    selectedDb: FormControl<DbOptions>;
+    startIndex: FormControl<number>;
+    amount: FormControl<number>;
+    consecutive: FormControl<boolean>;
+  }>({
+    selectedDb: new FormControl<DbOptions>(this.dbOptions[0], [Validators.required]) as FormControl<DbOptions>,
+    startIndex: new FormControl<number>(1, [
+      Validators.required,
+      Validators.min(1),
+      Validators.max(this.MAX_INT_UNSIGNED_VALUE),
+    ]) as FormControl<number>,
+    amount: new FormControl<number>(10, [
+      Validators.required,
+      Validators.min(1),
+      Validators.max(this.MAX_INT_UNSIGNED_VALUE),
+    ]) as FormControl<number>,
+    consecutive: new FormControl<boolean>(false, [Validators.required]) as FormControl<boolean>,
   });
 
   protected results: string[] = [];
@@ -68,6 +86,11 @@ export class UnusedGuidSearchComponent {
     }
 
     const { selectedDb, startIndex, amount, consecutive } = this.form.value;
+
+    if (!selectedDb || !startIndex || !amount || !consecutive) {
+      this.error.set('Please fill in all fields.');
+      return;
+    }
 
     this.results = [];
     this.loading.set(true);
