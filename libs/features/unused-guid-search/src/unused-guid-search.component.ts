@@ -76,7 +76,7 @@ export class UnusedGuidSearchComponent {
   protected readonly loading = signal(false);
   protected readonly error = signal('');
 
-  protected async onSearch(): Promise<void> {
+  protected onSearch(): void {
     this.error.set('');
 
     if (this.form.invalid) {
