@@ -56,8 +56,8 @@ export class UnusedGuidSearchComponent {
   });
 
   protected results: string[] = [];
-  protected loading = signal(false);
-  protected error = signal('');
+  protected readonly loading = signal(false);
+  protected readonly error = signal('');
 
   protected async onSearch(): Promise<void> {
     this.error.set('');
