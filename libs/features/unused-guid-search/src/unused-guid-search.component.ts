@@ -52,7 +52,7 @@ export class UnusedGuidSearchComponent {
     { table: 'game_event', key: 'eventEntry', label: 'game_event (eventEntry)' },
   ];
 
-  protected form = new FormGroup<{
+  protected readonly form = new FormGroup<{
     selectedDb: FormControl<DbOptions>;
     startIndex: FormControl<number>;
     amount: FormControl<number>;
