@@ -41,7 +41,7 @@
     }
 
     @if (error()) {
-      <div class="alert alert-danger">{{ error() }}</div>
+      <div id="errors" class="alert alert-danger">{{ error() }}</div>
     }
 
     @if (results.length) {

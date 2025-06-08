@@ -86,7 +86,7 @@ export class UnusedGuidSearchComponent {
 
     const { selectedDb, startIndex, amount, consecutive } = this.form.value;
 
-    if (!selectedDb || !startIndex || !amount || !consecutive) {
+    if (!selectedDb || !startIndex || !amount) {
       this.error.set('Please fill in all fields.');
       return;
     }
@@ -125,6 +125,7 @@ export class UnusedGuidSearchComponent {
     let current = startIndex;
 
     const found: number[] = [];
+
     while (found.length < amount) {
       if (!usedGuids.has(current)) {
         found.push(current);
