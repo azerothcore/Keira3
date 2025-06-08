@@ -10,7 +10,7 @@
       "executor": "@angular-devkit/build-angular:karma",
       "options": {
         "tsConfig": "libs/features/unused-guid-search/tsconfig.spec.json",
-        "karmaConfig": "libs/features/game-tele/karma.conf.js",
+        "karmaConfig": "libs/features/unused-guid-search/karma.conf.js",
         "polyfills": ["zone.js", "zone.js/testing"],
         "sourceMap": true,
         "codeCoverage": true,
