@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { UnusedGuidSearchComponent } from './unused-guid-search.component';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 
@@ -83,5 +83,47 @@ describe('UnusedGuidSearchComponent', () => {
       component['onSearch']();
       expect(component['error']()).toBe('');
     }
+  });
+
+  it('should handle query errors and set the error message', () => {
+    const { component } = setupTest();
+    spyOn(queryService, 'query').and.returnValue(throwError(() => new Error('db failure')));
+    component['form'].patchValue({
+      selectedDb: component['dbOptions'][0],
+      startIndex: 1,
+      amount: 1,
+      consecutive: false,
+    });
+    component['onSearch']();
+    expect(component['error']()).toBe('db failure');
+    expect(component['loading']()).toBeFalse();
+  });
+
+  it('should set "Only found 0 unused GUIDs." when starting at MAX boundary with consecutive', () => {
+    const { component } = setupTest([{ guid: 1 }]);
+    const MAX = component['MAX_INT_UNSIGNED_VALUE'];
+    component['form'].patchValue({
+      selectedDb: component['dbOptions'][0],
+      startIndex: MAX,
+      amount: 100,
+      consecutive: true,
+    });
+    component['onSearch']();
+    expect(component['results'].length).toBe(0);
+    expect(component['error']()).toBe('Only found 0 unused GUIDs.');
+  });
+
+  it('should set "Only found 1 unused GUIDs." when starting at MAX boundary with non-consecutive', () => {
+    const { component } = setupTest([{ guid: 1 }]);
+    const MAX = component['MAX_INT_UNSIGNED_VALUE'];
+    component['form'].patchValue({
+      selectedDb: component['dbOptions'][0],
+      startIndex: MAX,
+      amount: 100,
+      consecutive: false,
+    });
+    component['onSearch']();
+    expect(component['results'].length).toBe(1);
+    expect(component['error']()).toBe('Only found 1 unused GUIDs.');
   });
 });

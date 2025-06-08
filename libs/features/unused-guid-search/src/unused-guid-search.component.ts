@@ -83,13 +83,12 @@ export class UnusedGuidSearchComponent {
       this.error.set(`Please enter valid numbers for Amount and Start Index (1 to ${this.MAX_INT_UNSIGNED_VALUE}).`);
       return;
     }
-
-    const { selectedDb, startIndex, amount, consecutive } = this.form.value;
-
-    if (!selectedDb || !startIndex || !amount) {
-      this.error.set('Please fill in all fields.');
-      return;
-    }
+    const { selectedDb, startIndex, amount, consecutive } = this.form.value as {
+      selectedDb: DbOptions;
+      startIndex: number;
+      amount: number;
+      consecutive: boolean;
+    };
 
     this.results = [];
     this.loading.set(true);
@@ -112,7 +111,7 @@ export class UnusedGuidSearchComponent {
         }
       },
       error: (err) => {
-        this.error.set(err?.message || 'Error searching for unused GUIDs');
+        this.error.set(err.message);
         this.loading.set(false);
       },
       complete: () => {
