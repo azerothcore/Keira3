@@ -225,6 +225,14 @@
                         }
                       </a>
                     </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'creature/waypoint-data'">
+                        {{ 'SIDEBAR.CREATURE.WAYPOINT_DATA' | translate }}
+                        @if (creatureHandlerService.isCreatureFormationUnsaved) {
+                          <keira-unsaved-icon />
+                        }
+                      </a>
+                    </li>
                   }
                 }
               </ul>

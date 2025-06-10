@@ -1,0 +1,98 @@
+<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
+
+<div class="container-fluid">
+  @if (editorService.loading) {
+    <span [translate]="'LOADING'"></span>
+  }
+
+  @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
+    <div>
+      <div class="content-block">
+        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)" />
+      </div>
+      <div class="content-block">
+        <form [formGroup]="editorService.form" class="form-group edit-form">
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="point">Point</label>
+              <input [formControlName]="'point'" id="point" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="position_x">Position X</label>
+              <input [formControlName]="'position_x'" id="position_x" type="number" step="0.01" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="position_y">Position Y</label>
+              <input [formControlName]="'position_y'" id="position_y" type="number" step="0.01" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="position_z">Position Z</label>
+              <input [formControlName]="'position_z'" id="position_z" type="number" step="0.01" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="orientation">Orientation</label>
+              <input [formControlName]="'orientation'" id="orientation" type="number" step="0.01" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="delay">Delay</label>
+              <input [formControlName]="'delay'" id="delay" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="move_type">Move Type</label>
+              <input [formControlName]="'move_type'" id="move_type" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="action">Action</label>
+              <input [formControlName]="'action'" id="action" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="action_chance">Action Chance</label>
+              <input [formControlName]="'action_chance'" id="action_chance" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="wpguid">WP GUID</label>
+              <input [formControlName]="'wpguid'" id="wpguid" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
+              <i class="fas fa-exclamation-triangle"></i>
+              <span [innerHTML]="'UNIQUE' | translate: { ENTITY_SECOND_ID_FIELD: editorService.entitySecondIdField }"></span>
+            </div>
+          </div>
+        </form>
+        <div class="row">
+          <div class="col-12">
+            <keira-editor-buttons [editorService]="editorService" />
+            <ngx-datatable
+              id="editor-table"
+              class="bootstrap table table-striped text-center datatable-select"
+              [rows]="editorService.newRows"
+              [headerHeight]="DTCFG.headerHeight"
+              [footerHeight]="DTCFG.footerHeight"
+              [columnMode]="DTCFG.columnMode"
+              [rowHeight]="DTCFG.rowHeight"
+              [selectionType]="DTCFG.selectionType"
+              (select)="editorService.onRowSelection($event)"
+              (keydown.delete)="editorService.deleteSelectedRow()"
+            >
+              <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                  <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="Point" prop="point" [minWidth]="60" [maxWidth]="80"></ngx-datatable-column>
+              <ngx-datatable-column name="Position X" prop="position_x" [minWidth]="80" [maxWidth]="120"></ngx-datatable-column>
+              <ngx-datatable-column name="Position Y" prop="position_y" [minWidth]="80" [maxWidth]="120"></ngx-datatable-column>
+              <ngx-datatable-column name="Position Z" prop="position_z" [minWidth]="80" [maxWidth]="120"></ngx-datatable-column>
+              <ngx-datatable-column name="Orientation" prop="orientation" [minWidth]="80" [maxWidth]="120"></ngx-datatable-column>
+              <ngx-datatable-column name="Delay" prop="delay" [minWidth]="60" [maxWidth]="80"></ngx-datatable-column>
+              <ngx-datatable-column name="Move Type" prop="move_type" [minWidth]="80" [maxWidth]="100"></ngx-datatable-column>
+              <ngx-datatable-column name="Action" prop="action" [minWidth]="60" [maxWidth]="80"></ngx-datatable-column>
+              <ngx-datatable-column name="Action Chance" prop="action_chance" [minWidth]="100" [maxWidth]="120"></ngx-datatable-column>
+              <ngx-datatable-column name="WP GUID" prop="wpguid" [minWidth]="80" [maxWidth]="100"></ngx-datatable-column>
+            </ngx-datatable>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

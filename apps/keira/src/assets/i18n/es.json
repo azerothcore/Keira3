@@ -93,7 +93,8 @@
       "SPAWN_ADDON": "Addon de Spawn",
       "SMARTAI": "SmartAI",
       "TEXT": "Text",
-      "FORMATIONS": "Formations"
+      "FORMATIONS": "Formations",
+      "WAYPOINT_DATA": "Waypoint Data"
     },
     "QUEST": {
       "TITLE": "Misión",

@@ -25,6 +25,7 @@ import {
   SaiCreatureComponent,
   SelectCreatureComponent,
   SkinningLootTemplateComponent,
+  WaypointDataComponent,
 } from '@keira/features/creature';
 import {
   GameobjectHandlerService,
@@ -204,6 +205,11 @@ export const KEIRA_ROUTES: Routes = [
       {
         path: 'creature-formations',
         component: CreatureFormationsComponent,
+        canActivate: [CreatureHandlerService],
+      },
+      {
+        path: 'waypoint-data',
+        component: WaypointDataComponent,
         canActivate: [CreatureHandlerService],
       },
     ],
