@@ -55,7 +55,7 @@ export class MysqlService {
     });
   }
 
-  private getConnectCallback(subscriber: Subscriber<unknown>) {
+  private getConnectCallback(subscriber: Subscriber<void>) {
     return (err: QueryError | null) => {
       this.ngZone.run(() => {
         if (err) {
