@@ -88,11 +88,12 @@ export class UnusedGuidSearchComponent {
       next: (guids: string[]) => {
         this.results = guids;
         if (this.results.length < amount) {
-          this.error.set(`Only found $this.{results.length} unused GUIDs.`);
+          this.error.set(`Only found ${this.results.length} unused GUIDs.`);
         }
       },
       error: (err) => {
         this.error.set(err.message);
+        this.loading.set(false);
       },
       complete: () => {
         this.loading.set(false);

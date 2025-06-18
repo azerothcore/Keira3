@@ -2,11 +2,9 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { UnusedGuidSearchComponent } from './unused-guid-search.component';
 import { MysqlQueryService } from '@keira/shared/db-layer';
+import { MAX_INT_UNSIGNED_VALUE } from './unused-guid-search.service';
 
 describe('UnusedGuidSearchComponent', () => {
-  let fixture: ComponentFixture<UnusedGuidSearchComponent>;
-  let queryService: MysqlQueryService;
-
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [UnusedGuidSearchComponent],
@@ -20,13 +18,13 @@ describe('UnusedGuidSearchComponent', () => {
   }));
 
   function setupTest(mockGuids?: { guid: number }[]) {
-    fixture = TestBed.createComponent(UnusedGuidSearchComponent);
+    const fixture: ComponentFixture<UnusedGuidSearchComponent> = TestBed.createComponent(UnusedGuidSearchComponent);
     const component = fixture.componentInstance;
-    queryService = TestBed.inject(MysqlQueryService);
+    const queryService: MysqlQueryService = TestBed.inject(MysqlQueryService);
     if (mockGuids) {
       spyOn(queryService, 'query').and.returnValue(of(mockGuids));
     }
-    return { fixture, component };
+    return { fixture, component, queryService };
   }
 
   it('should not allow a negative startIndex and produce an error', () => {
@@ -86,7 +84,7 @@ describe('UnusedGuidSearchComponent', () => {
   });
 
   it('should handle query errors and set the error message', () => {
-    const { component } = setupTest();
+    const { component, queryService } = setupTest();
     spyOn(queryService, 'query').and.returnValue(throwError(() => new Error('db failure')));
     component['form'].patchValue({
       selectedDb: component['dbOptions'][0],
@@ -101,10 +99,9 @@ describe('UnusedGuidSearchComponent', () => {
 
   it('should set "Only found 0 unused GUIDs." when starting at MAX boundary with consecutive', () => {
     const { component } = setupTest([{ guid: 1 }]);
-    const MAX = component['MAX_INT_UNSIGNED_VALUE'];
     component['form'].patchValue({
       selectedDb: component['dbOptions'][0],
-      startIndex: MAX,
+      startIndex: MAX_INT_UNSIGNED_VALUE,
       amount: 100,
       consecutive: true,
     });
@@ -115,10 +112,9 @@ describe('UnusedGuidSearchComponent', () => {
 
   it('should set "Only found 1 unused GUIDs." when starting at MAX boundary with non-consecutive', () => {
     const { component } = setupTest([{ guid: 1 }]);
-    const MAX = component['MAX_INT_UNSIGNED_VALUE'];
     component['form'].patchValue({
       selectedDb: component['dbOptions'][0],
-      startIndex: MAX,
+      startIndex: MAX_INT_UNSIGNED_VALUE,
       amount: 100,
       consecutive: false,
     });
