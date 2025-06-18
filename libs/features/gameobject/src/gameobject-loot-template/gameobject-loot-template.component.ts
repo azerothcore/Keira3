@@ -12,7 +12,6 @@ import { GameobjectLootTemplateService } from './gameobject-loot-template.servic
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-gameobject-loot-template',
   templateUrl: './gameobject-loot-template.component.html',
-  standalone: true,
   imports: [TopBarComponent, TranslateModule, LootEditorComponent],
 })
 export class GameobjectLootTemplateComponent extends LootTemplateIdComponent<GameobjectLootTemplate> implements OnInit {
@@ -35,7 +34,7 @@ export class GameobjectLootTemplateComponent extends LootTemplateIdComponent<Gam
     );
   }
 
-  override readonly editorService = inject(GameobjectLootTemplateService);
+  protected override readonly editorService = inject(GameobjectLootTemplateService);
   readonly handlerService = inject(GameobjectHandlerService);
 
   override ngOnInit() {

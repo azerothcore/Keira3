@@ -18,7 +18,6 @@ import { GameobjectQueststarterService } from './gameobject-queststarter.service
   selector: 'keira-gameobject-queststarter',
   templateUrl: './gameobject-queststarter.component.html',
   styleUrls: ['./gameobject-queststarter.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,
@@ -34,7 +33,7 @@ import { GameobjectQueststarterService } from './gameobject-queststarter.service
   ],
 })
 export class GameobjectQueststarterComponent extends MultiRowEditorComponent<GameobjectQueststarter> {
-  override readonly editorService = inject(GameobjectQueststarterService);
+  protected override readonly editorService = inject(GameobjectQueststarterService);
   readonly handlerService = inject(QuestHandlerService);
   readonly questPreviewService = inject(QuestPreviewService);
 }

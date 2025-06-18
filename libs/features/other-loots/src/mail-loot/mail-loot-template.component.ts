@@ -11,10 +11,9 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-mail-loot-template',
   templateUrl: '../../../../shared/base-abstract-classes/src/components/editors/loot-template/loot-template.component.html',
-  standalone: true,
   imports: [TopBarComponent, TranslateModule, LootEditorComponent],
 })
 export class MailLootTemplateComponent extends LootTemplateComponent<MailLootTemplate> {
-  override readonly editorService = inject(MailLootTemplateService);
+  protected override readonly editorService = inject(MailLootTemplateService);
   readonly handlerService = inject(MailLootHandlerService);
 }

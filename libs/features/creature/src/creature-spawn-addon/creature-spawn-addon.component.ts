@@ -3,7 +3,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CREATURE_ADDON_BYTES_1, CREATURE_ADDON_BYTES_2, CreatureSpawnAddon, EMOTE } from '@keira/shared/acore-world-model';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
-import { GenericOptionSelectorComponent, SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
+import { GenericOptionSelectorComponent } from '@keira/shared/selectors';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
@@ -15,7 +15,6 @@ import { CreatureSpawnAddonService } from './creature-spawn-addon.service';
   selector: 'keira-creature-spawn-addon',
   templateUrl: './creature-spawn-addon.component.html',
   styleUrls: ['./creature-spawn-addon.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,
@@ -23,7 +22,6 @@ import { CreatureSpawnAddonService } from './creature-spawn-addon.service';
     FormsModule,
     ReactiveFormsModule,
     TooltipModule,
-    SingleValueSelectorBtnComponent,
     NgxDatatableModule,
     GenericOptionSelectorComponent,
   ],
@@ -33,6 +31,6 @@ export class CreatureSpawnAddonComponent extends MultiRowEditorComponent<Creatur
   readonly CREATURE_ADDON_BYTES_1 = CREATURE_ADDON_BYTES_1;
   readonly CREATURE_ADDON_BYTES_2 = CREATURE_ADDON_BYTES_2;
 
-  override readonly editorService = inject(CreatureSpawnAddonService);
+  protected override readonly editorService = inject(CreatureSpawnAddonService);
   readonly handlerService = inject(CreatureHandlerService);
 }

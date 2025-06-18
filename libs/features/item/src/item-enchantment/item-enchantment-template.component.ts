@@ -13,7 +13,6 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'keira-item-enchantment-template',
   templateUrl: './item-enchantment-template.component.html',
   styleUrls: ['./item-enchantment-template.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,
@@ -25,6 +24,6 @@ import { TranslateModule } from '@ngx-translate/core';
   ],
 })
 export class ItemEnchantmentTemplateComponent extends MultiRowEditorComponent<ItemEnchantmentTemplate> {
-  override readonly editorService = inject(ItemEnchantmentTemplateService);
+  protected override readonly editorService = inject(ItemEnchantmentTemplateService);
   readonly handlerService = inject(ItemHandlerService);
 }

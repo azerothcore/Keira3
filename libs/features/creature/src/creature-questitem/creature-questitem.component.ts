@@ -15,7 +15,6 @@ import { CreatureQuestitemService } from './creature-questitem.service';
   selector: 'keira-creature-questitem',
   templateUrl: './creature-questitem.component.html',
   styleUrls: ['./creature-questitem.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,
@@ -30,6 +29,6 @@ import { CreatureQuestitemService } from './creature-questitem.service';
   ],
 })
 export class CreatureQuestitemComponent extends MultiRowEditorComponent<CreatureQuestitem> {
-  override readonly editorService = inject(CreatureQuestitemService);
+  protected override readonly editorService = inject(CreatureQuestitemService);
   readonly handlerService = inject(CreatureHandlerService);
 }

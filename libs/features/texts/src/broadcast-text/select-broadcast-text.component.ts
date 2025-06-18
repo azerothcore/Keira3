@@ -11,7 +11,6 @@ import { BroadcastTextHandlerService } from './broadcast-text-handler.service';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './select-broadcast-text.component.html',
-  standalone: true,
   imports: [
     TopBarComponent,
     CreateComponent,

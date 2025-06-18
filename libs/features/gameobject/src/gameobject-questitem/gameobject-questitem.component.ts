@@ -15,7 +15,6 @@ import { GameobjectQuestitemService } from './gameobject-questitem.service';
   selector: 'keira-gameobject-questitem',
   templateUrl: './gameobject-questitem.component.html',
   styleUrls: ['./gameobject-questitem.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,
@@ -30,6 +29,6 @@ import { GameobjectQuestitemService } from './gameobject-questitem.service';
   ],
 })
 export class GameobjectQuestitemComponent extends MultiRowEditorComponent<GameobjectQuestitem> {
-  override readonly editorService = inject(GameobjectQuestitemService);
+  protected override readonly editorService = inject(GameobjectQuestitemService);
   readonly handlerService = inject(GameobjectHandlerService);
 }

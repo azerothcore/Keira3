@@ -25,7 +25,6 @@ import {
 } from '@keira/shared/acore-world-model';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
-import { Model3DViewerComponent } from '@keira/shared/model-3d-viewer';
 import {
   BooleanOptionSelectorComponent,
   CreatureSelectorBtnComponent,
@@ -40,12 +39,12 @@ import { TranslateModule } from '@ngx-translate/core';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateService } from './creature-template.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-creature-template',
   templateUrl: './creature-template.component.html',
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,
@@ -58,10 +57,10 @@ import { CreatureTemplateService } from './creature-template.service';
     FlagsSelectorBtnComponent,
     SpellSelectorBtnComponent,
     CreatureSelectorBtnComponent,
-    Model3DViewerComponent,
     GenericOptionSelectorComponent,
     BooleanOptionSelectorComponent,
     IconSelectorComponent,
+    RouterLink,
   ],
 })
 export class CreatureTemplateComponent extends SingleRowEditorComponent<CreatureTemplate> {
@@ -89,6 +88,6 @@ export class CreatureTemplateComponent extends SingleRowEditorComponent<Creature
   protected RACE_ICON_GENDER = true;
   protected showCreaturePreview = false;
 
-  override readonly editorService = inject(CreatureTemplateService);
+  protected override readonly editorService = inject(CreatureTemplateService);
   readonly handlerService = inject(CreatureHandlerService);
 }

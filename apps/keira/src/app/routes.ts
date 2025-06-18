@@ -5,6 +5,7 @@ import { DashboardComponent } from '@keira/features/dashboard';
 import { ConditionsComponent, ConditionsHandlerService, SelectConditionsComponent } from '@keira/features/conditions';
 import {
   CreatureEquipTemplateComponent,
+  CreatureFormationsComponent,
   CreatureHandlerService,
   CreatureLootTemplateComponent,
   CreatureOnkillReputationComponent,
@@ -70,6 +71,7 @@ import {
   QuestOfferRewardComponent,
   QuestRequestItemsComponent,
   QuestTemplateAddonComponent,
+  QuestTemplateLocaleComponent,
   QuestTemplateComponent,
   SelectQuestComponent,
 } from '@keira/features/quest';
@@ -87,7 +89,11 @@ import {
   SelectBroadcastTextComponent,
   SelectNpcTextComponent,
   SelectPageTextComponent,
+  AcoreStringComponent,
+  AcoreStringHandlerService,
+  SelectAcoreStringComponent,
 } from 'texts';
+import { GameTeleComponent, GameTeleHandlerService, SelectGameTeleComponent } from '@keira/features/game-tele';
 
 export const KEIRA_ROUTES: Routes = [
   {
@@ -195,6 +201,11 @@ export const KEIRA_ROUTES: Routes = [
         component: CreatureTextComponent,
         canActivate: [CreatureHandlerService],
       },
+      {
+        path: 'creature-formations',
+        component: CreatureFormationsComponent,
+        canActivate: [CreatureHandlerService],
+      },
     ],
   },
   {
@@ -212,6 +223,11 @@ export const KEIRA_ROUTES: Routes = [
       {
         path: 'quest-template-addon',
         component: QuestTemplateAddonComponent,
+        canActivate: [QuestHandlerService],
+      },
+      {
+        path: 'quest-template-locale',
+        component: QuestTemplateLocaleComponent,
         canActivate: [QuestHandlerService],
       },
       {
@@ -400,6 +416,15 @@ export const KEIRA_ROUTES: Routes = [
         component: NpcTextComponent,
         canActivate: [NpcTextHandlerService],
       },
+      {
+        path: 'acore-string',
+        component: AcoreStringComponent,
+        canActivate: [AcoreStringHandlerService],
+      },
+      {
+        path: 'select-acore-string',
+        component: SelectAcoreStringComponent,
+      },
     ],
   },
   {
@@ -463,6 +488,20 @@ export const KEIRA_ROUTES: Routes = [
       {
         path: 'spell-dbc',
         component: SpellDbcComponent,
+      },
+    ],
+  },
+  {
+    path: 'game-tele',
+    children: [
+      {
+        path: 'select',
+        component: SelectGameTeleComponent,
+      },
+      {
+        path: 'tele',
+        component: GameTeleComponent,
+        canActivate: [GameTeleHandlerService],
       },
     ],
   },

@@ -41,7 +41,7 @@ module.exports = (config) => {
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
-    autoWatch: true,
+    autoWatch: false,
     browsers: ['ChromeHeadless'],
     customLaunchers: {
       ChromeHeadless: {
@@ -49,7 +49,7 @@ module.exports = (config) => {
         flags: ['--headless', '--remote-debugging-port=9222', '--no-sandbox'],
       },
     },
-    singleRun: false,
+    singleRun: true,
     restartOnFileChange: true,
     browserNoActivityTimeout: 60000,
     captureTimeout: 60000,

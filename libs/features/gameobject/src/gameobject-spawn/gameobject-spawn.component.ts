@@ -15,7 +15,6 @@ import { GameobjectSpawnService } from './gameobject-spawn.service';
   selector: 'keira-gameobject-spawn',
   templateUrl: './gameobject-spawn.component.html',
   styleUrls: ['./gameobject-spawn.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,
@@ -34,6 +33,6 @@ export class GameobjectSpawnComponent extends MultiRowEditorComponent<Gameobject
   readonly SPAWN_MASK = SPAWN_MASK;
   readonly PHASE_MASK = PHASE_MASK;
 
-  override readonly editorService = inject(GameobjectSpawnService);
+  protected override readonly editorService = inject(GameobjectSpawnService);
   readonly handlerService = inject(GameobjectHandlerService);
 }

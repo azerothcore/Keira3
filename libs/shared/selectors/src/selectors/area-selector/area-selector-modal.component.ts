@@ -12,7 +12,6 @@ import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-component
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-area-selector-modal',
   templateUrl: './area-selector-modal.component.html',
-  standalone: true,
   imports: [FormsModule, ReactiveFormsModule, HighlightjsWrapperComponent, NgxDatatableModule, TranslateModule],
 })
 export class AreaSelectorModalComponent extends SearchSelectorModalComponent<Area> {

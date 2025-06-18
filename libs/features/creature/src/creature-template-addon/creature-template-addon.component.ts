@@ -20,7 +20,6 @@ import { CreatureTemplateAddonService } from './creature-template-addon.service'
   selector: 'keira-creature-template-addon',
   templateUrl: './creature-template-addon.component.html',
   styleUrls: ['./creature-template-addon.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,
@@ -40,6 +39,6 @@ export class CreatureTemplateAddonComponent extends SingleRowEditorComponent<Cre
   protected readonly CREATURE_ADDON_BYTES_1 = CREATURE_ADDON_BYTES_1;
   protected readonly CREATURE_ADDON_BYTES_2 = CREATURE_ADDON_BYTES_2;
 
-  override readonly editorService = inject(CreatureTemplateAddonService);
+  protected override readonly editorService = inject(CreatureTemplateAddonService);
   readonly handlerService = inject(CreatureHandlerService);
 }

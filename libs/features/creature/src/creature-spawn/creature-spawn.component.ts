@@ -16,7 +16,6 @@ import {
   FlagsSelectorBtnComponent,
   GenericOptionSelectorComponent,
   MapSelectorBtnComponent,
-  SingleValueSelectorBtnComponent,
 } from '@keira/shared/selectors';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
@@ -29,7 +28,6 @@ import { CreatureSpawnService } from './creature-spawn.service';
   selector: 'keira-creature-spawn',
   templateUrl: './creature-spawn.component.html',
   styleUrls: ['./creature-spawn.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,
@@ -40,7 +38,6 @@ import { CreatureSpawnService } from './creature-spawn.service';
     AreaSelectorBtnComponent,
     FlagsSelectorBtnComponent,
     TooltipModule,
-    SingleValueSelectorBtnComponent,
     EditorButtonsComponent,
     NgxDatatableModule,
     GenericOptionSelectorComponent,
@@ -54,6 +51,6 @@ export class CreatureSpawnComponent extends MultiRowEditorComponent<CreatureSpaw
   readonly SPAWN_MASK = SPAWN_MASK;
   readonly PHASE_MASK = PHASE_MASK;
 
-  override readonly editorService = inject(CreatureSpawnService);
+  protected override readonly editorService = inject(CreatureSpawnService);
   readonly handlerService = inject(CreatureHandlerService);
 }

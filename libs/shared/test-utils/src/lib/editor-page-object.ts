@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TableRow } from '@keira/shared/constants';
 import { BsModalService } from 'ngx-bootstrap/modal';
-import { PageObject } from './page-object';
+import { PageObject } from './keira-page-object';
 import { QueryOutputComponentPage } from './query-output-page-object';
 
 export abstract class EditorPageObject<T> extends PageObject<T> {
@@ -13,7 +13,7 @@ export abstract class EditorPageObject<T> extends PageObject<T> {
   }
 
   constructor(
-    protected override fixture: ComponentFixture<T>,
+    public override fixture: ComponentFixture<T>,
     config: { clearStorage: boolean } = { clearStorage: true },
   ) {
     super(fixture, config);

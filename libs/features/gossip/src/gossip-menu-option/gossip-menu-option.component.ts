@@ -16,7 +16,6 @@ import { GossipMenuOptionService } from './gossip-menu-option.service';
   selector: 'keira-gossip-menu-option',
   templateUrl: './gossip-menu-option.component.html',
   styleUrls: ['./gossip-menu-option.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,
@@ -34,7 +33,7 @@ export class GossipMenuOptionComponent extends MultiRowEditorComponent<GossipMen
   readonly OPTION_ICON = OPTION_ICON;
   readonly OPTION_TYPE = OPTION_TYPE;
 
-  override readonly editorService = inject(GossipMenuOptionService);
+  protected override readonly editorService = inject(GossipMenuOptionService);
   readonly handlerService = inject(GossipHandlerService);
 
   showGossipPreview = true;

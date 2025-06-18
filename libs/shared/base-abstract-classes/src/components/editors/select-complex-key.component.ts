@@ -1,5 +1,5 @@
 import { ComplexKeyHandlerService } from '../../service/handlers/complex-key.handler.service';
-import { TableRow, WIKI_BASE_URL } from '@keira/shared/constants';
+import { DataTablePageEvent, TableRow, WIKI_BASE_URL } from '@keira/shared/constants';
 import { DTCFG } from '@keira/shared/config';
 import { ChangeDetectorRef, inject } from '@angular/core';
 import { SearchService } from '../../service/select/search.service';
@@ -24,5 +24,9 @@ export abstract class SelectComplexKeyComponent<T extends TableRow> {
 
   onSearch(): void {
     this.selectService.onSearch(this.changeDetectorRef);
+  }
+
+  onPage(event: DataTablePageEvent): void {
+    this.selectService.pageOffset = event.offset;
   }
 }

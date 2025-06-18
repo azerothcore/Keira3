@@ -12,7 +12,6 @@ import { CreatureTemplateMovementService } from './creature-template-movement.se
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-creature-template-movement',
   templateUrl: './creature-template-movement.component.html',
-  standalone: true,
   imports: [TopBarComponent, TranslateModule, QueryOutputComponent, FormsModule, ReactiveFormsModule, TooltipModule],
 })
 export class CreatureTemplateMovementComponent extends SingleRowEditorComponent<CreatureTemplateMovement> {
@@ -20,6 +19,6 @@ export class CreatureTemplateMovementComponent extends SingleRowEditorComponent<
     return this.WIKI_BASE_URL + CREATURE_TEMPLATE_MOVEMENT_TABLE;
   }
 
-  override readonly editorService = inject(CreatureTemplateMovementService);
+  protected override readonly editorService = inject(CreatureTemplateMovementService);
   readonly handlerService = inject(CreatureHandlerService);
 }

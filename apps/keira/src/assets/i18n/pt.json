@@ -48,6 +48,10 @@
   "EXECUTE_AND_COPY": "Execute & copy",
   "RELOAD": "Recarregar",
   "CANCEL": "Cancelar",
+  "SELECTORS": {
+    "ENABLED": "Enabled",
+    "DISABLED": "Disabled"
+  },
   "CONNECTION_WINDOW": {
     "HOST": "Host",
     "PORT": "Port",
@@ -88,13 +92,15 @@
       "SPAWN": "Spawn",
       "SPAWN_ADDON": "Spawn Addon",
       "SMARTAI": "SmartAI",
-      "TEXT": "Text"
+      "TEXT": "Text",
+      "FORMATIONS": "Formations"
     },
     "QUEST": {
       "TITLE": "Quest",
       "SELECT_QUEST": "Selecionar Quest",
       "QUEST_TEMPLATE": "Quest Template",
       "QUEST_TEMPLATE_ADDON": "Quest Template Addon",
+      "QUEST_TEMPLATE_LOCALE": "Quest Template Locale",
       "QUEST_OFFER_REWARD": "Quest Offer Reward",
       "QUEST_REQUEST_ITEMS": "Quest Request Items",
       "CREATURE_QUESTSTARTER": "Creature Queststarter",
@@ -143,7 +149,9 @@
       "SELECT_NPC_TEXT": "Select NPC Text",
       "NPC_TEXT": "NPC Text",
       "SELECT_PAGE_TEXT": "Select Page Text",
-      "PAGE_TEXT": "Page Text"
+      "PAGE_TEXT": "Page Text",
+      "ACORE_STRING_TEXT": "Acore Strings",
+      "SELECT_ACORE_STRING_TEXT": "Select Acore Strings"
     },
     "GOSSIP": {
       "TITLE": "Gossip",
@@ -166,6 +174,11 @@
       "TITLE": "Spell DBC overrides",
       "SEARCH_SPELL": "Procurar Spell",
       "SPELL_DBC_EDITOR": "Spell DBC editor"
+    },
+    "GAME_TELE": {
+      "TITLE": "Game Teleport",
+      "SEARCH_GAME_TELE": "Search Teleport",
+      "SELECT_GAME_TELE": "Game Tele Editor"
     }
   },
   "DASHBOARD": {
@@ -242,7 +255,8 @@
       "DETECTION_RANGE": "Controla o alcance do qual a creature pode detectar e ver jogadores.",
       "ITEMID1": "This is the item number of the equipment used in the right hand from Item.dbc.",
       "ITEMID2": "This is the item number of the equipment used in the left hand from Item.dbc.",
-      "ITEMID3": "This is the item number of the equipment used in the ranged slot from Item.dbc."
+      "ItemID3": "This is the item number of the equipment used in the ranged slot from Item.dbc.",
+      "FactionHint": "When refering to the Creature's Faction ID it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki."
     },
     "TEMPLATE_ADDON": {
       "ENTRY": "Link para creature_template.entry",
@@ -267,7 +281,8 @@
       "PATH_ID": "Se a creature tem movimentação por waypoints, então este campo contém o waypoint_data.id para o trajeto que a creature deve seguir.",
       "MOUNT": "O model ID da montaria a ser usada para fazer com que a creature apareça montada. O valor aqui sobrepõe o valor do campo UNIT_FIELD_MOUNTDISPLAYID.%",
       "VISIBILITY_DISTANCE_TYPE": "Normal = 0, 100.0f (default visible distance, 100 yards on continents); Tiny = 1, 25.0f; Small = 2, 50.0f; Large = 3, 200.0f; Gigantic = 4, 400.0f; Infinite = 5 (SIZE_OF_GRIDS max distance for visible objects)",
-      "AURAS": "Uma lista de auras, separadas por vírgulas, para ser aplicadas na creature."
+      "AURAS": "Uma lista de auras, separadas por vírgulas, para ser aplicadas na creature.",
+      "COMMENT": "Comment"
     },
     "TEMPLATE_MOVEMENT": {
       "GROUND": "0 = None; 1 = Run; 2 = Hover",
@@ -562,7 +577,7 @@
   "CONDITIONS": {
     "SELECT": {
       "SOURCE_GROUP": "Source Group:",
-      "SOURCE_ENTRY:": "Source Entry:",
+      "SOURCE_ENTRY": "Source Entry:",
       "CREATE_NEW": "Criar nova"
     },
     "EDITOR": {
@@ -679,7 +694,8 @@
         "CONDITION_PET_TYPE": "mask",
         "CONDITION_TAXI": "Sempre 0",
         "CONDITION_QUESTSTATE": "quest_template.ID",
-        "CONDITION_QUEST_OBJECTIVE_PROGRESS": "quest_template.id"
+        "CONDITION_QUEST_OBJECTIVE_PROGRESS": "quest_template.id",
+        "CONDITION_WORLD_SCRIPT": "WorldStateCondition (defined in WorldState.h)"
       },
       "VALUE2": {
         "CONDITION_NONE": "(Nunca usado)",
@@ -699,7 +715,8 @@
         "CONDITION_HP_PCT": "ComparisionType: 0 = Porcentagem do HP máximo tem que ser igual; 1 = Porcentagem do HP máximo tem que ser maior; 2 = Porcentagem do HP máximo tem que ser menor; 3 = Porcentagem do HP máximo tem que ser maior ou igual; 4 = Porcentagem do HP máximo tem que ser menor ou igual",
         "CONDITION_STAND_STATE": "Exact stand state, ou generic state (levantar/sentar), denpendendo no valor 10 = Standing/Levantado; 1 = Sitting/Sentado",
         "CONDITION_QUESTSTATE": "state_mask",
-        "CONDITION_QUEST_OBJECTIVE_PROGRESS": "Quest Objective ID - veja quest_template.RequiredNpcOrGo"
+        "CONDITION_QUEST_OBJECTIVE_PROGRESS": "Quest Objective ID - veja quest_template.RequiredNpcOrGo",
+        "CONDITION_WORLD_SCRIPT": "state, 0 = unused"
       },
       "VALUE3": {
         "CONDITION_NONE": "(Nunca usado)",
@@ -852,5 +869,8 @@
       "SPELL_PRIORITY": "Desconhecido. O único valor usado é 50 para alguns spells.",
       "REQUIRED_AURA_VISION": "Desconhecido. Somente 16 Spells usam um valor diferente de 0. Talvez é usado para efeitos visuais."
     }
+  },
+  "GAME_TELE": {
+    "EDITOR": "Teleport Editor"
   }
 }

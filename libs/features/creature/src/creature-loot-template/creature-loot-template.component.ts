@@ -10,10 +10,9 @@ import { CreatureLootTemplateService } from './creature-loot-template.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-creature-loot-template',
   templateUrl: '../../../../shared/base-abstract-classes/src/components/editors/loot-template/loot-template-id.component.html',
-  standalone: true,
   imports: [TopBarComponent, LootEditorComponent],
 })
 export class CreatureLootTemplateComponent extends LootTemplateIdComponent<CreatureLootTemplate> {
-  override readonly editorService = inject(CreatureLootTemplateService);
+  protected override readonly editorService = inject(CreatureLootTemplateService);
   readonly handlerService = inject(CreatureHandlerService);
 }

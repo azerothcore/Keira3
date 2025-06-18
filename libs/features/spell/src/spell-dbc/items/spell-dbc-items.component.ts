@@ -11,7 +11,6 @@ import { FlagsSelectorBtnComponent, ItemSelectorBtnComponent, SingleValueSelecto
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-spell-dbc-items',
   templateUrl: './spell-dbc-items.component.html',
-  standalone: true,
   imports: [
     FormsModule,
     ReactiveFormsModule,

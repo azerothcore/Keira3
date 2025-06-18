@@ -10,10 +10,9 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-milling-loot-template',
   templateUrl: '../../../../shared/base-abstract-classes/src/components/editors/loot-template/loot-template.component.html',
-  standalone: true,
   imports: [TopBarComponent, LootEditorComponent],
 })
 export class MillingLootTemplateComponent extends LootTemplateComponent<MillingLootTemplate> {
-  override readonly editorService = inject(MillingLootTemplateService);
+  protected override readonly editorService = inject(MillingLootTemplateService);
   readonly handlerService = inject(ItemHandlerService);
 }

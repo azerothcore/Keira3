@@ -11,10 +11,9 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-fishing-loot-template',
   templateUrl: '../../../../shared/base-abstract-classes/src/components/editors/loot-template/loot-template.component.html',
-  standalone: true,
   imports: [TopBarComponent, TranslateModule, LootEditorComponent],
 })
 export class FishingLootTemplateComponent extends LootTemplateComponent<FishingLootTemplate> {
-  override readonly editorService = inject(FishingLootTemplateService);
+  protected override readonly editorService = inject(FishingLootTemplateService);
   readonly handlerService = inject(FishingLootHandlerService);
 }

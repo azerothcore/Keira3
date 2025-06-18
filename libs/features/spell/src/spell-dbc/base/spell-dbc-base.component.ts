@@ -21,7 +21,6 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-spell-dbc-base',
   templateUrl: './spell-dbc-base.component.html',
-  standalone: true,
   imports: [FormsModule, ReactiveFormsModule, TranslateModule, TooltipModule, SingleValueSelectorBtnComponent, FlagsSelectorBtnComponent],
 })
 export class SpellDbcBaseComponent {

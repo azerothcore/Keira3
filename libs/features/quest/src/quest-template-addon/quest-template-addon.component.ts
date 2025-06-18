@@ -22,7 +22,6 @@ import { QuestTemplateAddonService } from './quest-template-addon.service';
   selector: 'keira-quest-template-addon',
   templateUrl: './quest-template-addon.component.html',
   styleUrls: ['./quest-template-addon.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,
@@ -39,7 +38,7 @@ import { QuestTemplateAddonService } from './quest-template-addon.service';
   ],
 })
 export class QuestTemplateAddonComponent extends SingleRowEditorComponent<QuestTemplateAddon> {
-  override readonly editorService = inject(QuestTemplateAddonService);
+  protected override readonly editorService = inject(QuestTemplateAddonService);
   readonly handlerService = inject(QuestHandlerService);
   readonly questPreviewService = inject(QuestPreviewService);
 

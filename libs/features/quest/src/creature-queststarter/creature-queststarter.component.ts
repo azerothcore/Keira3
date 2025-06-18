@@ -18,7 +18,6 @@ import { CreatureQueststarterService } from './creature-queststarter.service';
   selector: 'keira-creature-queststarter',
   templateUrl: './creature-queststarter.component.html',
   styleUrls: ['./creature-queststarter.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,
@@ -34,7 +33,7 @@ import { CreatureQueststarterService } from './creature-queststarter.service';
   ],
 })
 export class CreatureQueststarterComponent extends MultiRowEditorComponent<CreatureQueststarter> {
-  override readonly editorService = inject(CreatureQueststarterService);
+  protected override readonly editorService = inject(CreatureQueststarterService);
   readonly handlerService = inject(QuestHandlerService);
   readonly questPreviewService = inject(QuestPreviewService);
 }

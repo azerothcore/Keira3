@@ -55,7 +55,6 @@ import { ItemTemplateService } from './item-template.service';
   selector: 'keira-item-template',
   templateUrl: './item-template.component.html',
   styleUrls: ['./item-template.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,
@@ -80,7 +79,7 @@ import { ItemTemplateService } from './item-template.service';
   ],
 })
 export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate> implements OnInit {
-  override readonly editorService = inject(ItemTemplateService);
+  protected override readonly editorService = inject(ItemTemplateService);
   readonly handlerService = inject(ItemHandlerService);
   private readonly itemPreviewService = inject(ItemPreviewService);
   private readonly sanitizer = inject(DomSanitizer);

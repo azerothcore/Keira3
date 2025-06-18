@@ -48,6 +48,10 @@
   "EXECUTE_AND_COPY": "Execute & copy",
   "RELOAD": "Recargar",
   "CANCEL": "Cancelar",
+  "SELECTORS": {
+    "ENABLED": "Enabled",
+    "DISABLED": "Disabled"
+  },
   "CONNECTION_WINDOW": {
     "HOST": "Host",
     "PORT": "Puerto",
@@ -88,13 +92,15 @@
       "SPAWN": "Spawn (Aparición de Criatura)",
       "SPAWN_ADDON": "Addon de Spawn",
       "SMARTAI": "SmartAI",
-      "TEXT": "Text"
+      "TEXT": "Text",
+      "FORMATIONS": "Formations"
     },
     "QUEST": {
       "TITLE": "Misión",
       "SELECT_QUEST": "Seleccionar Misión",
       "QUEST_TEMPLATE": "Plantilla de Misión",
       "QUEST_TEMPLATE_ADDON": "Addon de Plantilla de Misión",
+      "QUEST_TEMPLATE_LOCALE": "Quest Template Locale",
       "QUEST_OFFER_REWARD": "Recompensa por Ofrecimiento de la Misión",
       "QUEST_REQUEST_ITEMS": "Items Requeridos para la Misión",
       "CREATURE_QUESTSTARTER": "Criatura para Iniciar la Misión",
@@ -144,11 +150,8 @@
       "NPC_TEXT": "NPC Text",
       "SELECT_PAGE_TEXT": "Select Page Text",
       "PAGE_TEXT": "Page Text",
-      "PAGE_TEXTS": {
-        "ID": "The ID of the text in the page. This number is unique to every text ID.",
-        "NEXT_PAGE_ID": "The ID of the next page's text ID.",
-        "TEXT": "The actual text. The message in this field will be shown as the text on a page."
-      }
+      "ACORE_STRING_TEXT": "Acore Strings",
+      "SELECT_ACORE_STRING_TEXT": "Select Acore Strings"
     },
     "GOSSIP": {
       "TITLE": "Ventana de Texto de Criatura",
@@ -171,6 +174,11 @@
       "TITLE": "Anulaciones de Hechizos (Spell DBC)",
       "SEARCH_SPELL": "Buscar Hechizos",
       "SPELL_DBC_EDITOR": "Editor de Hechizos (Spell DBC)"
+    },
+    "GAME_TELE": {
+      "TITLE": "Game Teleport",
+      "SEARCH_GAME_TELE": "Search Teleport",
+      "SELECT_GAME_TELE": "Game Tele Editor"
     }
   },
   "DASHBOARD": {
@@ -247,7 +255,8 @@
       "DETECTION_RANGE": "Controla el rango en el que las criaturas detectan y ven a los jugadores.",
       "ITEMID1": "This is the item number of the equipment used in the right hand from Item.dbc.",
       "ITEMID2": "This is the item number of the equipment used in the left hand from Item.dbc.",
-      "ITEMID3": "This is the item number of the equipment used in the ranged slot from Item.dbc."
+      "ItemID3": "This is the item number of the equipment used in the ranged slot from Item.dbc.",
+      "FactionHint": "When refering to the Creature's Faction ID it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki."
     },
     "TEMPLATE_ADDON": {
       "ENTRY": "Enlazado con creature_template.entry (ID de la Criatura)",
@@ -272,7 +281,8 @@
       "PATH_ID": "En tal caso de que la criatura posea un movimiento guiado por waypoints por ejemplo, este campo calmacena el waypoint_data.id del camino que debe recorrer.",
       "MOUNT": "Identificador (ID) del modelo de la montura que será utilizada para que aparezca sobre la misma al spawnear. El valor que aquí se preste sustituye al valor del Campo de Unidad de Criatura, o sea UNIT_FIELD_MOUNTDISPLAYID.",
       "VISIBILITY_DISTANCE_TYPE": "Normal = 0, 100.0f (default visible distance, 100 yards on continents); Tiny = 1, 25.0f; Small = 2, 50.0f; Large = 3, 200.0f; Gigantic = 4, 400.0f; Infinite = 5 (SIZE_OF_GRIDS max distance for visible objects)",
-      "AURAS": "Una lista de auras separadas por comas que se aplicarán sobre ésta criatura en particular"
+      "AURAS": "Una lista de auras separadas por comas que se aplicarán sobre ésta criatura en particular",
+      "COMMENT": "Comment"
     },
     "TEMPLATE_MOVEMENT": {
       "GROUND": "0 = Ninguno; 1 = Correr; 2 = Flotar",
@@ -567,7 +577,7 @@
   "CONDITIONS": {
     "SELECT": {
       "SOURCE_GROUP": "Fuente de Grupo:",
-      "SOURCE_ENTRY:": "Fuente de Entrada:",
+      "SOURCE_ENTRY": "Fuente de Entrada:",
       "CREATE_NEW": "Crear nuevo"
     },
     "EDITOR": {
@@ -684,7 +694,8 @@
         "CONDITION_PET_TYPE": "Máscara del Tipo de Mascota",
         "CONDITION_TAXI": "Siempre es 0",
         "CONDITION_QUESTSTATE": "Identificador de Misión extrado dentro de la tabla quest_template.ID",
-        "CONDITION_QUEST_OBJECTIVE_PROGRESS": "Identificador de Misión extrado dentro de la tabla 'quest_template.id'"
+        "CONDITION_QUEST_OBJECTIVE_PROGRESS": "Identificador de Misión extrado dentro de la tabla 'quest_template.id'",
+        "CONDITION_WORLD_SCRIPT": "WorldStateCondition (defined in WorldState.h)"
       },
       "VALUE2": {
         "CONDITION_NONE": "(Never used)",
@@ -704,7 +715,8 @@
         "CONDITION_HP_PCT": "Tipo de Comparación o 'ComparisionType': 0 = Porcentaje de Salud debe ser igual; 1 = Porcentaje de Salud debe ser mayor; 2 = Porcentaje de Salud debe ser menor; 3 = Porcentaje de Salud debe ser mayor o igual; 4 = Porcentaje de Salud debe ser menor o igual",
         "CONDITION_STAND_STATE": "Estado exacto al estar parado, o también para un estado genérico (parado/sentado), dependiendo del valor. 10 = De pie; 1 = Sentado",
         "CONDITION_QUESTSTATE": "Máscara de Estado de Misión (state_mask)",
-        "CONDITION_QUEST_OBJECTIVE_PROGRESS": "Identificador de Objetivo de Misión - Véase la tabla quest_template.RequiredNpcOrGo"
+        "CONDITION_QUEST_OBJECTIVE_PROGRESS": "Identificador de Objetivo de Misión - Véase la tabla quest_template.RequiredNpcOrGo",
+        "CONDITION_WORLD_SCRIPT": "state, 0 = unused"
       },
       "VALUE3": {
         "CONDITION_NONE": "(Nunca Usado)",
@@ -857,5 +869,8 @@
       "SPELL_PRIORITY": "Desconocido. Sólo se usa el valor 50 para algunos hechizos.",
       "REQUIRED_AURA_VISION": "Desconocido. Sólo 16 hechizos usan otro valor como 0. Podría ser usado para efectos visuales."
     }
+  },
+  "GAME_TELE": {
+    "EDITOR": "Teleport Editor"
   }
 }

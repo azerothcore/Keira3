@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import {
   CREATURE_EQUIP_TEMPLATE_TABLE,
+  CREATURE_FORMATIONS_TABLE,
   CREATURE_LOOT_TEMPLATE_TABLE,
   CREATURE_ONKLL_REPUTATION_TABLE,
   CREATURE_QUESTITEM_TABLE,
@@ -84,6 +85,9 @@ export class CreatureHandlerService extends HandlerService<CreatureTemplate> {
   get isCreatureTextUnsaved(): boolean {
     return this.statusMap[CREATURE_TEXT_TABLE];
   }
+  get isCreatureFormationUnsaved(): boolean {
+    return this.statusMap[CREATURE_FORMATIONS_TABLE];
+  }
 
   protected _statusMap = {
     [CREATURE_TEMPLATE_TABLE]: false,
@@ -102,6 +106,7 @@ export class CreatureHandlerService extends HandlerService<CreatureTemplate> {
     [CREATURE_SPAWN_TABLE]: false,
     [CREATURE_SPAWN_ADDON_TABLE]: false,
     [CREATURE_TEXT_TABLE]: false,
+    [CREATURE_FORMATIONS_TABLE]: false,
   };
 
   override select(isNew: boolean, id: string | number | Partial<CreatureTemplate>, name?: string) {

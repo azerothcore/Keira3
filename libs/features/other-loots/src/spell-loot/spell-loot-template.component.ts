@@ -11,10 +11,9 @@ import { LootEditorComponent } from '@keira/shared/loot-editor';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-spell-loot-template',
   templateUrl: '../../../../shared/base-abstract-classes/src/components/editors/loot-template/loot-template.component.html',
-  standalone: true,
   imports: [TopBarComponent, TranslateModule, LootEditorComponent],
 })
 export class SpellLootTemplateComponent extends LootTemplateComponent<SpellLootTemplate> {
-  override readonly editorService = inject(SpellLootTemplateService);
+  protected override readonly editorService = inject(SpellLootTemplateService);
   readonly handlerService = inject(SpellLootHandlerService);
 }

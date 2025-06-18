@@ -7,7 +7,6 @@ import { TableRow } from '@keira/shared/constants';
 
 @Component({
   template: `<keira-editor-buttons [editorService]="editorService" />`,
-  standalone: true,
   imports: [TranslateTestingModule, EditorButtonsComponent],
 })
 class TestHostComponent {

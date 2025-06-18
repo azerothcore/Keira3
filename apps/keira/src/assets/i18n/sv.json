@@ -48,6 +48,10 @@
   "EXECUTE_AND_COPY": "Execute & copy",
   "RELOAD": "Ladda om",
   "CANCEL": "Avbryt",
+  "SELECTORS": {
+    "ENABLED": "Enabled",
+    "DISABLED": "Disabled"
+  },
   "CONNECTION_WINDOW": {
     "HOST": "Host",
     "PORT": "Port",
@@ -88,13 +92,15 @@
       "SPAWN": "Spawn",
       "SPAWN_ADDON": "Spawn Addon",
       "SMARTAI": "SmartAI",
-      "TEXT": "Text"
+      "TEXT": "Text",
+      "FORMATIONS": "Formations"
     },
     "QUEST": {
       "TITLE": "Quest",
       "SELECT_QUEST": "Välj Quest",
       "QUEST_TEMPLATE": "Quest Template",
       "QUEST_TEMPLATE_ADDON": "Quest Template Addon",
+      "QUEST_TEMPLATE_LOCALE": "Quest Template Locale",
       "QUEST_OFFER_REWARD": "Quest Offer Reward",
       "QUEST_REQUEST_ITEMS": "Quest Request Items",
       "CREATURE_QUESTSTARTER": "Creature Queststarter",
@@ -143,7 +149,9 @@
       "SELECT_NPC_TEXT": "Select NPC Text",
       "NPC_TEXT": "NPC Text",
       "SELECT_PAGE_TEXT": "Select Page Text",
-      "PAGE_TEXT": "Page Text"
+      "PAGE_TEXT": "Page Text",
+      "ACORE_STRING_TEXT": "Acore Strings",
+      "SELECT_ACORE_STRING_TEXT": "Select Acore Strings"
     },
     "GOSSIP": {
       "TITLE": "Gossip",
@@ -166,6 +174,11 @@
       "TITLE": "Spell DBC overrides",
       "SEARCH_SPELL": "Search Spell",
       "SPELL_DBC_EDITOR": "Spell DBC editor"
+    },
+    "GAME_TELE": {
+      "TITLE": "Game Teleport",
+      "SEARCH_GAME_TELE": "Search Teleport",
+      "SELECT_GAME_TELE": "Game Tele Editor"
     }
   },
   "DASHBOARD": {
@@ -242,7 +255,8 @@
       "DETECTION_RANGE": "Kontrollerar hur nära eller långt ifrån en NPC kan upptäcka spelare.",
       "ITEMID1": "This is the item number of the equipment used in the right hand from Item.dbc.",
       "ITEMID2": "This is the item number of the equipment used in the left hand from Item.dbc.",
-      "ITEMID3": "This is the item number of the equipment used in the ranged slot from Item.dbc."
+      "ItemID3": "This is the item number of the equipment used in the ranged slot from Item.dbc.",
+      "FactionHint": "When refering to the Creature's Faction ID it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki."
     },
     "TEMPLATE_ADDON": {
       "ENTRY": "Länk till creature_template.entry",
@@ -267,7 +281,8 @@
       "PATH_ID": "Om den NPC har en Waypoint Pathed rörelse, innehåller waypoint_data.id för den väg denna NPC ska röra sig.",
       "MOUNT": "Model ID av den Mount som ska användas för den NPC ska vara Mounted. ID här åsidosätter ID för NPC unit field UNIT_FIELD_MOUNTDISPLAYID.",
       "VISIBILITY_DISTANCE_TYPE": "Normal = 0, 100.0f (default visible distance, 100 yards on continents); Tiny = 1, 25.0f; Small = 2, 50.0f; Large = 3, 200.0f; Gigantic = 4, 400.0f; Infinite = 5 (SIZE_OF_GRIDS max distance for visible objects)",
-      "AURAS": "En lista utav Comma-Separated Auras som appliceras på NPC."
+      "AURAS": "En lista utav Comma-Separated Auras som appliceras på NPC.",
+      "COMMENT": "Comment"
     },
     "TEMPLATE_MOVEMENT": {
       "GROUND": "0 = None; 1 = Run; 2 = Hover",
@@ -562,7 +577,7 @@
   "CONDITIONS": {
     "SELECT": {
       "SOURCE_GROUP": "Source Group:",
-      "SOURCE_ENTRY:": "Source Entry:",
+      "SOURCE_ENTRY": "Source Entry:",
       "CREATE_NEW": "Create new"
     },
     "EDITOR": {
@@ -679,7 +694,8 @@
         "CONDITION_PET_TYPE": "mask",
         "CONDITION_TAXI": "Always 0",
         "CONDITION_QUESTSTATE": "quest_template.ID",
-        "CONDITION_QUEST_OBJECTIVE_PROGRESS": "quest_template.id"
+        "CONDITION_QUEST_OBJECTIVE_PROGRESS": "quest_template.id",
+        "CONDITION_WORLD_SCRIPT": "WorldStateCondition (defined in WorldState.h)"
       },
       "VALUE2": {
         "CONDITION_NONE": "(Never used)",
@@ -699,7 +715,8 @@
         "CONDITION_HP_PCT": "ComparisionType: 0 = Percentage of max HP must be equal; 1 = Percentage of max HP must be higher; 2 = Percentage of max HP must be lower; 3 = Percentage of max HP must be equal or higher; 4 = Percentage of max HP must be equal or lower",
         "CONDITION_STAND_STATE": "Exact stand state, or generic state (stand/sit), depending on value 10 = Standing; 1 = Sitting",
         "CONDITION_QUESTSTATE": "state_mask",
-        "CONDITION_QUEST_OBJECTIVE_PROGRESS": "Quest Objective ID - see quest_template.RequiredNpcOrGo"
+        "CONDITION_QUEST_OBJECTIVE_PROGRESS": "Quest Objective ID - see quest_template.RequiredNpcOrGo",
+        "CONDITION_WORLD_SCRIPT": "state, 0 = unused"
       },
       "VALUE3": {
         "CONDITION_NONE": "(Never used)",
@@ -852,5 +869,8 @@
       "SPELL_PRIORITY": "Unknown. Only used value is 50 for some spells.",
       "REQUIRED_AURA_VISION": "Unknown. Only 16 Spells use another value as 0. Could be used for visual effects."
     }
+  },
+  "GAME_TELE": {
+    "EDITOR": "Teleport Editor"
   }
 }

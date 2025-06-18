@@ -10,10 +10,9 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-skinning-loot-template',
   templateUrl: '../../../../shared/base-abstract-classes/src/components/editors/loot-template/loot-template-id.component.html',
-  standalone: true,
   imports: [TopBarComponent, LootEditorComponent],
 })
 export class SkinningLootTemplateComponent extends LootTemplateIdComponent<SkinningLootTemplate> {
-  override readonly editorService = inject(SkinningLootTemplateService);
+  protected override readonly editorService = inject(SkinningLootTemplateService);
   readonly handlerService = inject(CreatureHandlerService);
 }

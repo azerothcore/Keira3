@@ -15,7 +15,6 @@ import { ReferenceViewerService } from './reference-viewer.service';
   selector: 'keira-reference-viewer',
   templateUrl: './reference-viewer.component.html',
   styleUrls: ['./loot-editor.component.scss'],
-  standalone: true,
   imports: [TooltipModule, NgxDatatableModule, IconComponent, AsyncPipe],
 })
 export class ReferenceViewerComponent extends SubscriptionHandler implements OnChanges {

@@ -14,7 +14,6 @@ import { GameobjectTemplateAddonService } from './gameobject-template-addon.serv
   selector: 'keira-gameobject-template-addon',
   templateUrl: './gameobject-template-addon.component.html',
   styleUrls: ['./gameobject-template-addon.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,
@@ -29,6 +28,6 @@ import { GameobjectTemplateAddonService } from './gameobject-template-addon.serv
 export class GameobjectTemplateAddonComponent extends SingleRowEditorComponent<GameobjectTemplateAddon> {
   readonly GAMEOBJECT_FLAGS = GAMEOBJECT_FLAGS;
 
-  override readonly editorService = inject(GameobjectTemplateAddonService);
+  protected override readonly editorService = inject(GameobjectTemplateAddonService);
   readonly handlerService = inject(GameobjectHandlerService);
 }

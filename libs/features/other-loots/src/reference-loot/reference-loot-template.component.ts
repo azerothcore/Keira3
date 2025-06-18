@@ -11,10 +11,9 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-reference-loot-template',
   templateUrl: '../../../../shared/base-abstract-classes/src/components/editors/loot-template/loot-template.component.html',
-  standalone: true,
   imports: [TopBarComponent, TranslateModule, LootEditorComponent],
 })
 export class ReferenceLootTemplateComponent extends LootTemplateComponent<ReferenceLootTemplate> {
-  override readonly editorService = inject(ReferenceLootTemplateService);
+  protected override readonly editorService = inject(ReferenceLootTemplateService);
   readonly handlerService = inject(ReferenceLootHandlerService);
 }

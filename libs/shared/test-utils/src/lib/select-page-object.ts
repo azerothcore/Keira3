@@ -1,4 +1,4 @@
-import { PageObject } from './page-object';
+import { PageObject } from './keira-page-object';
 
 export abstract class SelectPageObject<T> extends PageObject<T> {
   ID_FIELD = '';

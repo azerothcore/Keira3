@@ -17,7 +17,6 @@ import { GossipMenuService } from './gossip-menu.service';
   selector: 'keira-gossip-menu',
   templateUrl: './gossip-menu.component.html',
   styleUrls: ['./gossip-menu.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,
@@ -32,7 +31,7 @@ import { GossipMenuService } from './gossip-menu.service';
   ],
 })
 export class GossipMenuComponent extends MultiRowEditorComponent<GossipMenu> {
-  override readonly editorService = inject(GossipMenuService);
+  protected override readonly editorService = inject(GossipMenuService);
   readonly handlerService = inject(GossipHandlerService);
   readonly queryService = inject(MysqlQueryService);
 }

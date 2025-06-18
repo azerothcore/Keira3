@@ -14,7 +14,6 @@ import { GameobjectSpawnAddonService } from './gameobject-spawn-addon.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-gameobject-spawn-addon',
   templateUrl: './gameobject-spawn-addon.component.html',
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,
@@ -29,6 +28,6 @@ import { GameobjectSpawnAddonService } from './gameobject-spawn-addon.service';
 export class GameobjectSpawnAddonComponent extends MultiRowEditorComponent<GameobjectSpawnAddon> {
   readonly INVISIBILITY_TYPE = INVISIBILITY_TYPE;
 
-  override readonly editorService = inject(GameobjectSpawnAddonService);
+  protected override readonly editorService = inject(GameobjectSpawnAddonService);
   readonly handlerService = inject(GameobjectHandlerService);
 }

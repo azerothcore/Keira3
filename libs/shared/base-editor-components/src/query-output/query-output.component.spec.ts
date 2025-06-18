@@ -14,7 +14,6 @@ import { QueryOutputComponent } from './query-output.component';
 
 @Component({
   template: `<keira-query-output [editorService]="editorService" />`,
-  standalone: true,
   imports: [FormsModule, TranslateTestingModule, QueryOutputComponent],
 })
 class TestHostComponent {

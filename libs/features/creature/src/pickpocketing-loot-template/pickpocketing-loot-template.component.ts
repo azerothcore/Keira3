@@ -10,10 +10,9 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-pickpocketing-loot-template',
   templateUrl: '../../../../shared/base-abstract-classes/src/components/editors/loot-template/loot-template-id.component.html',
-  standalone: true,
   imports: [TopBarComponent, LootEditorComponent],
 })
 export class PickpocketingLootTemplateComponent extends LootTemplateIdComponent<PickpocketingLootTemplate> {
-  override readonly editorService = inject(PickpocketingLootTemplateService);
+  protected override readonly editorService = inject(PickpocketingLootTemplateService);
   readonly handlerService = inject(CreatureHandlerService);
 }

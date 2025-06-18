@@ -76,7 +76,7 @@ describe('QuestRequestItems integration tests', () => {
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
       page.expectFullQueryToContain(expectedFullCreateQuery);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('should correctly update the unsaved status', () => {
@@ -87,7 +87,7 @@ describe('QuestRequestItems integration tests', () => {
       expect(handlerService.isQuestRequestItemsUnsaved).toBe(true);
       page.setInputValueById(field, 0);
       expect(handlerService.isQuestRequestItemsUnsaved).toBe(false);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('changing a property and executing the query should correctly work', () => {
@@ -105,7 +105,7 @@ describe('QuestRequestItems integration tests', () => {
 
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('changing a property should be reflected in the quest preview', () => {
@@ -115,7 +115,7 @@ describe('QuestRequestItems integration tests', () => {
       page.setInputValueById('CompletionText', value);
 
       expect(page.progressText.innerText).toContain(value);
-      page.removeElement();
+      page.removeNativeElement();
     });
   });
 
@@ -129,7 +129,7 @@ describe('QuestRequestItems integration tests', () => {
           'INSERT INTO `quest_request_items` (`ID`, `EmoteOnComplete`, `EmoteOnIncomplete`, `CompletionText`, `VerifiedBuild`) VALUES\n' +
           "(1234, 2, 3, '4', 0);",
       );
-      page.removeElement();
+      page.removeNativeElement();
     }));
 
     it('changing all properties and executing the query should correctly work', () => {
@@ -144,7 +144,7 @@ describe('QuestRequestItems integration tests', () => {
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('changing values should correctly update the queries', waitForAsync(async () => {
@@ -166,7 +166,7 @@ describe('QuestRequestItems integration tests', () => {
           'INSERT INTO `quest_request_items` (`ID`, `EmoteOnComplete`, `EmoteOnIncomplete`, `CompletionText`, `VerifiedBuild`) VALUES\n' +
           "(1234, 11, 22, '4', 0);\n",
       );
-      page.removeElement();
+      page.removeNativeElement();
     }));
 
     xit('changing a value via SingleValueSelector should correctly work', waitForAsync(async () => {
@@ -188,7 +188,7 @@ describe('QuestRequestItems integration tests', () => {
           'INSERT INTO `quest_request_items` (`ID`, `EmoteOnComplete`, `EmoteOnIncomplete`, `CompletionText`, `VerifiedBuild`) VALUES\n' +
           "(1234, 4, 3, '4', 0);\n",
       );
-      page.removeElement();
+      page.removeNativeElement();
     }));
   });
 });

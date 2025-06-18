@@ -83,7 +83,7 @@ describe('QuestOfferReward integration tests', () => {
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
       page.expectFullQueryToContain(expectedFullCreateQuery);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('should correctly update the unsaved status', () => {
@@ -94,7 +94,7 @@ describe('QuestOfferReward integration tests', () => {
       expect(handlerService.isQuestOfferRewardUnsaved).toBe(true);
       page.setInputValueById(field, 0);
       expect(handlerService.isQuestOfferRewardUnsaved).toBe(false);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('changing a property and executing the query should correctly work', () => {
@@ -113,7 +113,7 @@ describe('QuestOfferReward integration tests', () => {
 
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('changing a property should be reflected in the quest preview', () => {
@@ -123,7 +123,7 @@ describe('QuestOfferReward integration tests', () => {
       page.setInputValueById('RewardText', value);
 
       expect(page.completionText.innerText).toContain(value);
-      page.removeElement();
+      page.removeNativeElement();
     });
   });
 
@@ -138,7 +138,7 @@ describe('QuestOfferReward integration tests', () => {
           '`EmoteDelay1`, `EmoteDelay2`, `EmoteDelay3`, `EmoteDelay4`, `RewardText`, `VerifiedBuild`) VALUES\n' +
           "(1234, 2, 3, 4, 5, 6, 7, 8, 9, '10', 0);",
       );
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('changing all properties and executing the query should correctly work', () => {
@@ -154,7 +154,7 @@ describe('QuestOfferReward integration tests', () => {
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     it('changing values should correctly update the queries', () => {
@@ -176,7 +176,7 @@ describe('QuestOfferReward integration tests', () => {
           '`EmoteDelay1`, `EmoteDelay2`, `EmoteDelay3`, `EmoteDelay4`, `RewardText`, `VerifiedBuild`) VALUES\n' +
           "(1234, 11, 22, 4, 5, 6, 7, 8, 9, '10', 0);",
       );
-      page.removeElement();
+      page.removeNativeElement();
     });
 
     xit('changing a value via SingleValueSelector should correctly work', waitForAsync(async () => {
@@ -201,7 +201,7 @@ describe('QuestOfferReward integration tests', () => {
           '`EmoteDelay1`, `EmoteDelay2`, `EmoteDelay3`, `EmoteDelay4`, `RewardText`, `VerifiedBuild`) VALUES\n' +
           "(1234, 4, 3, 4, 5, 6, 7, 8, 9, '10', 0);",
       );
-      page.removeElement();
+      page.removeNativeElement();
     }));
   });
 });

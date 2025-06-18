@@ -16,7 +16,6 @@ import { QuestRequestItemsService } from './quest-request-items.service';
   selector: 'keira-quest-request-items',
   templateUrl: './quest-request-items.component.html',
   styleUrls: ['./quest-request-items.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,
@@ -29,7 +28,7 @@ import { QuestRequestItemsService } from './quest-request-items.service';
   ],
 })
 export class QuestRequestItemsComponent extends SingleRowEditorComponent<QuestRequestItems> {
-  override readonly editorService = inject(QuestRequestItemsService);
+  protected override readonly editorService = inject(QuestRequestItemsService);
   readonly handlerService = inject(QuestHandlerService);
   readonly questPreviewService = inject(QuestPreviewService);
 

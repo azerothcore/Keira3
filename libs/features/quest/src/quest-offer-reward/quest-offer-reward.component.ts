@@ -16,7 +16,6 @@ import { QuestOfferRewardService } from './quest-offer-reward.service';
   selector: 'keira-quest-offer-reward',
   templateUrl: './quest-offer-reward.component.html',
   styleUrls: ['./quest-offer-reward.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,
@@ -31,7 +30,7 @@ import { QuestOfferRewardService } from './quest-offer-reward.service';
 export class QuestOfferRewardComponent extends SingleRowEditorComponent<QuestOfferReward> {
   readonly EMOTE = EMOTE;
 
-  override readonly editorService = inject(QuestOfferRewardService);
+  protected override readonly editorService = inject(QuestOfferRewardService);
   readonly handlerService = inject(QuestHandlerService);
   readonly questPreviewService = inject(QuestPreviewService);
 }

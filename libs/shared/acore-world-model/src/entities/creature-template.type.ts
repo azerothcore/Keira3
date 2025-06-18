@@ -39,7 +39,7 @@ export class CreatureTemplate extends TableRow {
   RangeAttackTime: number = 0;
   BaseVariance: number = 0;
   RangeVariance: number = 0;
-  unit_class: number = 0;
+  unit_class: number = 1;
   unit_flags: number = 0;
   unit_flags2: number = 0;
   dynamicflags: number = 0;

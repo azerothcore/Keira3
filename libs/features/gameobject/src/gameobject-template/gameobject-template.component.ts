@@ -16,7 +16,6 @@ import { GameobjectTemplateService } from './gameobject-template.service';
   selector: 'keira-gameobject-template',
   templateUrl: './gameobject-template.component.html',
   styleUrls: ['./gameobject-template.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,
@@ -36,7 +35,7 @@ export class GameobjectTemplateComponent extends SingleRowEditorComponent<Gameob
 
   showGameobjectPreview = true;
 
-  override readonly editorService = inject(GameobjectTemplateService);
+  protected override readonly editorService = inject(GameobjectTemplateService);
   readonly handlerService = inject(GameobjectHandlerService);
 
   dataFieldDefinition(dataIndex: number): FieldDefinition {

@@ -19,3 +19,4 @@ export * from './sai-creature-handler.service';
 export * from './sai-creature/sai-creature.component';
 export * from './select-creature/select-creature.component';
 export * from './skinning-loot-template/skinning-loot-template.component';
+export * from './creature-formations/creature-formations.component';

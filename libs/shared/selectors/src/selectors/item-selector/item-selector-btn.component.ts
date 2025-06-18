@@ -7,7 +7,6 @@ import { ItemSelectorModalComponent } from './item-selector-modal.component';
   selector: 'keira-item-selector-btn',
   templateUrl: '../base-selector/base-selector-btn.component.html',
   styleUrls: ['../base-selector/base-selector-btn.component.scss'],
-  standalone: true,
   imports: [],
 })
 export class ItemSelectorBtnComponent extends BaseSelectorBtnComponent {

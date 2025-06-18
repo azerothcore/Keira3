@@ -14,7 +14,6 @@ import { SaiGameobjectEditorService } from './sai-gameobject-editor.service';
   selector: 'keira-sai-gameobject',
   templateUrl: '../../../../../libs/shared/sai-editor/src/sai-editor.component.html',
   styleUrls: ['../../../../../libs/shared/sai-editor/src/sai-editor.component.scss'],
-  standalone: true,
   imports: [
     SaiTopBarComponent,
     TranslateModule,

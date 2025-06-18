@@ -14,7 +14,6 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
   selector: 'keira-creature-equip-template',
   templateUrl: './creature-equip-template.component.html',
   styleUrls: ['./creature-equip-template.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,
@@ -27,6 +26,6 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
   ],
 })
 export class CreatureEquipTemplateComponent extends SingleRowEditorComponent<CreatureEquipTemplate> {
-  override readonly editorService = inject(CreatureEquipTemplateService);
+  protected override readonly editorService = inject(CreatureEquipTemplateService);
   readonly handlerService = inject(CreatureHandlerService);
 }

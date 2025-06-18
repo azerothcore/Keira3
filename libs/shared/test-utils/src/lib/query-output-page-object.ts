@@ -1,4 +1,4 @@
-import { PageObject } from './page-object';
+import { PageObject } from './keira-page-object';
 
 export class QueryOutputComponentPage<ComponentType> extends PageObject<ComponentType> {
   get diffQueryWrapper(): HTMLElement {

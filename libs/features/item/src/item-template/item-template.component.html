@@ -1,4 +1,9 @@
-<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
+<keira-top-bar
+  [selected]="handlerService.selected"
+  [selectedName]="handlerService.selectedName"
+  [isNew]="handlerService.isNew"
+  [customScssClass]="handlerService.itemQualityScssClass"
+/>
 
 <div class="container-fluid editor-with-preview" [class.show-preview]="showItemPreview">
   @if (editorService.loading) {
@@ -22,7 +27,11 @@
             <div class="form-group col-12 col-sm-8 col-md-8 col-lg-4 col-xl-3">
               <label class="control-label" for="name">name</label>
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.NAME' | translate"></i>
-              <input [formControlName]="'name'" id="name" class="form-control form-control-sm" />
+              <input
+                [formControlName]="'name'"
+                id="name"
+                [class]="'form-control form-control-sm item-quality-q' + (editorService.form.controls.Quality.value || '0')"
+              />
             </div>
             <div class="form-group col-12 col-sm-7 col-md-7 col-lg-5 col-xl-4">
               <label class="control-label" for="description">description</label>
@@ -310,7 +319,7 @@
               <keira-flags-selector-btn
                 [control]="editorService.form.controls.AllowableClass"
                 [disabled]="editorService.form.controls.AllowableClass.disabled"
-                [config]="{ flags: ALLOWABLE_CLASSES, name: 'AllowableClass' }"
+                [config]="{ flags: ALLOWABLE_CLASSES, name: 'AllowableClass', overrideDefaultBehavior: true }"
                 [modalClass]="'modal-lg'"
               />
               <input [formControlName]="'AllowableClass'" id="AllowableClass" type="number" class="form-control form-control-sm" />
@@ -320,7 +329,7 @@
               <keira-flags-selector-btn
                 [control]="editorService.form.controls.AllowableRace"
                 [disabled]="editorService.form.controls.AllowableRace.disabled"
-                [config]="{ flags: ALLOWABLE_RACES, name: 'AllowableRace' }"
+                [config]="{ flags: ALLOWABLE_RACES, name: 'AllowableRace', overrideDefaultBehavior: true }"
                 [modalClass]="'modal-lg'"
               />
               <input [formControlName]="'AllowableRace'" id="AllowableRace" type="number" class="form-control form-control-sm" />
