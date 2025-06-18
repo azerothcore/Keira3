@@ -6,6 +6,8 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ClipboardService } from 'ngx-clipboard';
 import { of, throwError } from 'rxjs';
 import { SqlEditorComponent } from './sql-editor.component';
+import { By } from '@angular/platform-browser';
+import { CodeEditor } from '@acrodata/code-editor';
 import Spy = jasmine.Spy;
 
 export class SqlEditorPage extends PageObject<SqlEditorComponent> {
@@ -14,8 +16,8 @@ export class SqlEditorPage extends PageObject<SqlEditorComponent> {
   get affectedRows(): HTMLTextAreaElement {
     return this.query<HTMLTextAreaElement>('#affected-rows-box');
   }
-  get code(): HTMLTextAreaElement {
-    return this.query<HTMLTextAreaElement>('textarea#code');
+  get code(): HTMLElement {
+    return this.query<HTMLElement>('code-editor');
   }
   get copyBtn(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('#copy-btn');
@@ -47,9 +49,12 @@ describe('SqlEditorComponent', () => {
     const mysqlQueryService = TestBed.inject(MysqlQueryService);
     spyOn(mysqlQueryService, 'query').and.returnValue(of(mockRows));
 
+    const codeEditorDebugElement = fixture.debugElement.query(By.directive(CodeEditor));
+    const codeEditorInstance = codeEditorDebugElement.componentInstance as CodeEditor;
+
     fixture.detectChanges();
 
-    return { page, mysqlQueryService, component };
+    return { page, mysqlQueryService, component, codeEditorInstance };
   };
 
   it('should correctly query', () => {
@@ -68,10 +73,10 @@ describe('SqlEditorComponent', () => {
   });
 
   it('should allow the user to insert a custom query', () => {
-    const { page, mysqlQueryService } = setup();
+    const { page, mysqlQueryService, codeEditorInstance } = setup();
     const customQuery = 'SELECT col FROM table WHERE col > 10';
 
-    page.setInputValue(page.code, customQuery);
+    codeEditorInstance.writeValue(customQuery);
     page.clickElement(page.executeBtn);
 
     expect(mysqlQueryService.query).toHaveBeenCalledWith(customQuery);
@@ -102,7 +107,7 @@ describe('SqlEditorComponent', () => {
 
     page.clickElement(page.executeBtn);
 
-    expect(component.columns.length).toBe(0);
+    expect(component['columns'].length).toBe(0);
   });
 
   it('should display the affected rows box when necessary', () => {
@@ -149,15 +154,15 @@ describe('SqlEditorComponent', () => {
 
     page.clickElement(page.executeBtn);
 
-    expect(component.columns.length).toBe(20);
+    expect(component['columns'].length).toBe(20);
   });
 
   it('clicking the copy button should copy the query', () => {
-    const { page } = setup();
+    const { page, codeEditorInstance } = setup();
     const spy = spyOn(TestBed.inject(ClipboardService), 'copyFromContent');
     const customQuery = '-- some text that will be copied';
 
-    page.setInputValue(page.code, customQuery);
+    codeEditorInstance.writeValue(customQuery);
     page.clickElement(page.copyBtn);
 
     expect(spy).toHaveBeenCalledWith(customQuery);
