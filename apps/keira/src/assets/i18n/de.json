@@ -256,7 +256,7 @@
       "DETECTION_RANGE": "Steuert den Bereich, in dem Kreaturen Spieler erkennen und sehen.",
       "ITEMID1": "Dies ist die Gegenstandsnummer der Ausrüstung, die in der rechten Hand aus Item.dbc verwendet wird.",
       "ITEMID2": "Dies ist die Gegenstandsnummer der Ausrüstung, die in der linken Hand aus Item.dbc verwendet wird.",
-      "ItemID3": "This is the item number of the equipment used in the ranged slot from Item.dbc.",
+      "ItemID3": "Dies ist die Gegenstandsnummer der Ausrüstung, die im Fernkampf-Slot aus Item.dbc verwendet wird.",
       "FactionHint": "When refering to the Creature's Faction ID it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki."
     },
     "TEMPLATE_ADDON": {
