@@ -37,11 +37,11 @@
     </form>
 
     @if (loading()) {
-      <div class="alert alert-info">Searching...</div>
+      <div data-testid="loading" class="alert alert-info">Searching...</div>
     }
 
     @if (error()) {
-      <div id="errors" class="alert alert-danger">{{ error() }}</div>
+      <div data-testid="errors" id="errors" class="alert alert-danger">{{ error() }}</div>
     }
 
     @if (results.length) {

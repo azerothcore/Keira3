@@ -9,6 +9,14 @@ class UnusedGuidSearchPage extends PageObject<UnusedGuidSearchComponent> {
   get searchButton(): HTMLButtonElement {
     return this.getDebugElementByTestId<HTMLButtonElement>('search').nativeElement;
   }
+  get loading(): HTMLDivElement | null {
+    const debugEl = this.getDebugElementByTestId<HTMLDivElement>('loading', false);
+    return debugEl ? debugEl.nativeElement : null;
+  }
+  get errors(): HTMLDivElement | null {
+    const debugEl = this.getDebugElementByTestId<HTMLDivElement>('errors', false);
+    return debugEl ? debugEl.nativeElement : null;
+  }
 }
 
 describe('UnusedGuidSearchComponent', () => {
@@ -48,7 +56,7 @@ describe('UnusedGuidSearchComponent', () => {
     });
     fixture.detectChanges();
     page.clickElement(page.searchButton);
-    expect(component['error']()).not.toBe('');
+    expect(page.errors?.textContent).not.toBe('');
   });
 
   it('should find consecutive unused guids from db data', () => {
@@ -90,7 +98,7 @@ describe('UnusedGuidSearchComponent', () => {
         consecutive: true,
       });
       page.clickElement(page.searchButton);
-      expect(component['error']()).toBe('');
+      expect(page.errors).toBeNull();
     }
   });
 
@@ -104,8 +112,8 @@ describe('UnusedGuidSearchComponent', () => {
       consecutive: false,
     });
     page.clickElement(page.searchButton);
-    expect(component['error']()).toBe('db failure');
-    expect(component['loading']()).toBeFalse();
+    expect(page.errors?.textContent).toBe('db failure');
+    expect(page.loading).toBeNull();
   });
 
   it('should set "Only found 0 unused GUIDs." when starting at MAX boundary with consecutive', () => {
@@ -118,7 +126,7 @@ describe('UnusedGuidSearchComponent', () => {
     });
     page.clickElement(page.searchButton);
     expect(component['results'].length).toBe(0);
-    expect(component['error']()).toBe('Only found 0 unused GUIDs.');
+    expect(page.errors?.textContent).toBe('Only found 0 unused GUIDs.');
   });
 
   it('should set "Only found 1 unused GUIDs." when starting at MAX boundary with non-consecutive', () => {
@@ -131,6 +139,6 @@ describe('UnusedGuidSearchComponent', () => {
     });
     page.clickElement(page.searchButton);
     expect(component['results'].length).toBe(1);
-    expect(component['error']()).toBe('Only found 1 unused GUIDs.');
+    expect(page.errors?.textContent).toBe('Only found 1 unused GUIDs.');
   });
 });
