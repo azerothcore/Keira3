@@ -99,7 +99,7 @@
     "@types/sqlstring": "2.3.2",
     "@typescript-eslint/eslint-plugin": "7.18.0",
     "@typescript-eslint/parser": "7.18.0",
-    "bootstrap": "5.3.5",
+    "bootstrap": "5.3.7",
     "conventional-changelog-cli": "4.1.0",
     "cross-env": "7.0.3",
     "electron": "34.5.3",
