@@ -30,6 +30,8 @@ import { UnusedGuidService, DbOptions, MAX_INT_UNSIGNED_VALUE } from './unused-g
 export class UnusedGuidSearchComponent {
   private readonly unusedGuidService = inject(UnusedGuidService);
 
+  protected readonly MAX_INT_UNSIGNED_VALUE = MAX_INT_UNSIGNED_VALUE;
+
   protected readonly dbOptions: DbOptions[] = [
     { table: CREATURE_SPAWN_TABLE, key: CREATURE_SPAWN_ID_2, label: `${CREATURE_SPAWN_TABLE} (${CREATURE_SPAWN_ID_2})` },
     { table: GAMEOBJECT_SPAWN_TABLE, key: GAMEOBJECT_SPAWN_ID_2, label: `${GAMEOBJECT_SPAWN_TABLE} (${GAMEOBJECT_SPAWN_ID_2})` },
