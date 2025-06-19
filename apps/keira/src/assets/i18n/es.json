@@ -256,7 +256,7 @@
       "ITEMID1": "This is the item number of the equipment used in the right hand from Item.dbc.",
       "ITEMID2": "This is the item number of the equipment used in the left hand from Item.dbc.",
       "ITEMID3": "This is the item number of the equipment used in the ranged slot from Item.dbc.",
-      "FACTIONHINT": "When refering to the Creature's Faction ID it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki."
+      "FACTION": "When refering to the Creature's Faction ID it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki."
     },
     "TEMPLATE_ADDON": {
       "ENTRY": "Enlazado con creature_template.entry (ID de la Criatura)",
