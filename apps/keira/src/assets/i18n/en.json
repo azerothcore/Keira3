@@ -452,6 +452,12 @@
     },
     "SPAWN_ADDON": {
       "GUID": "Link to gameobject.guid"
+    },
+    "TEMPLATE_ADDON": {
+      "FACTION": "The Gameobject's faction, when refering to the Faction ID required, it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki.",
+      "MINGOLD": "Minimum money, in copper, that the gameobject can drop when accessed / used.",
+      "MAXGOLD": "Maximum money, in copper, that the gameobject can drop when accessed / used.",
+      "ARTKIT": "Updates display if object is activated by SPELL_EFFCT_ACTIVATE_OBJECT with MiscValue 19 - 22."
     }
   },
   "ITEM": {
