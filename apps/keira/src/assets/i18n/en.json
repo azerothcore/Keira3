@@ -355,7 +355,11 @@
       "REW_MONEY_DIFFICULTY": "TODO: RewardMoneyDifficulty tooltip",
       "REWARD_SPELL": "Spell that is shown to be casted on quest completion in the quest log. Note that this spell will NOT be casted if RewardSpell is non-zero.",
       "REWARD_HONOR": "Number of honorable kill honor rewarded for completing this quest",
-      "REWARD_FACTIONS_TOOLTIP": "Faction ID for which the quest adds (or subtracts) reputation points."
+      "REWARD_FACTIONS_TOOLTIP": "Faction ID for which the quest adds (or subtracts) reputation points.",
+      "REQUIRED_FACTION": "Required Faction to be able to pick up the quest, when refering to the Quest Faction ID required, it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki.",
+      "REQUIRED_CREATURE_OR_GAMEOBJECT": "Required Creature or Gameobject for the quest objective",
+      "REQUIRED_CREATURE_OR_GAMEOBJECT_COUNT": "The amount required to complete the objective.",
+      "REQUIRED_FACTION_VALUE": "The numeric value required for the specified faction."
     },
     "TEMPLATE_ADDON": {
       "ADDON_BASE": "Addon Base",
