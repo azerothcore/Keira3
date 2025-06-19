@@ -873,5 +873,12 @@
   },
   "GAME_TELE": {
     "EDITOR": "Teleport Editor"
+  },
+  "UNUSED_GUID_SEARCH": {
+    "TABLE": "Table",
+    "START_INDEX": "Start Index",
+    "AMOUNT": "Amount",
+    "CONSECUTIVE": "Consecutive",
+    "SEARCH": "Search"
   }
 }
