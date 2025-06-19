@@ -528,7 +528,9 @@
       "SPELL_PPM_RATES": "The proc per minute rate controlling how often the spell is triggered (if #spelltrigger == 2).",
       "SPELL_COOLDOWNS": "The cooldown in milliseconds for the specific spell controlling how often the spell can be used. Use -1 to use the default spell cooldown. Note: this is not the “internal cooldown” of procs commonly found on items such as trinkets with “Chance on hit” effects.",
       "SPELL_CATEGORIES": "The category that the spell is in",
-      "SPELL_CATEGORY_COOLDOWNS": "The cooldown time in milliseconds that is applied to all other spells in the category that the triggered spell is also in. Use -1 to use the default spell cooldown."
+      "SPELL_CATEGORY_COOLDOWNS": "The cooldown time in milliseconds that is applied to all other spells in the category that the triggered spell is also in. Use -1 to use the default spell cooldown.",
+      "REQUIRED_FACTION": "Required Faction to be able to use the item, when refering to the Item Faction ID required, it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki.",
+      "REQUIRED_FACTION_RANK": "The rank value required for the specified faction."
     }
   },
   "LOOT_EDITOR": {
