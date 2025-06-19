@@ -110,7 +110,7 @@
     "eslint-plugin-prettier": "5.2.6",
     "highlight.js": "11.11.1",
     "husky": "9.1.7",
-    "jasmine-core": "5.7.1",
+    "jasmine-core": "5.8.0",
     "jasmine-spec-reporter": "7.0.0",
     "jsonc-eslint-parser": "^2.1.0",
     "karma": "6.4.4",
