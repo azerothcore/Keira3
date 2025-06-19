@@ -16,7 +16,7 @@ export type DbOptions = {
 export class UnusedGuidService {
   private readonly mysql = inject(MysqlQueryService);
 
-  public search(selectedDb: DbOptions, startIndex: number, amount: number, consecutive: boolean): Observable<string[]> {
+  search(selectedDb: DbOptions, startIndex: number, amount: number, consecutive: boolean): Observable<string[]> {
     const query = `SELECT ${selectedDb.key} AS guid
                    FROM ${selectedDb.table}
                    WHERE ${selectedDb.key} >= ${startIndex}`;
@@ -31,9 +31,7 @@ export class UnusedGuidService {
         }
         return numbers.map(String);
       }),
-      catchError((err) => {
-        return throwError(() => new Error(err.message));
-      }),
+      catchError((err) => throwError(() => new Error(err.message))),
     );
   }
 
