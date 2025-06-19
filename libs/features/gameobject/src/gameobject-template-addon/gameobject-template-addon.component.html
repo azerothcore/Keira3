@@ -25,6 +25,7 @@
                 [control]="editorService.form.controls.faction"
                 [disabled]="editorService.form.controls.faction.disabled"
               />
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'GAMEOBJECT.TEMPLATE_ADDON.FACTION' | translate"></i>
               <input [formControlName]="'faction'" id="faction" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -39,10 +40,12 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="mingold">mingold</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'GAMEOBJECT.TEMPLATE_ADDON.MINGOLD' | translate"></i>
               <input [formControlName]="'mingold'" id="mingold" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="maxgold">maxgold</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'GAMEOBJECT.TEMPLATE_ADDON.MAXGOLD' | translate"></i>
               <input [formControlName]="'maxgold'" id="maxgold" type="number" class="form-control form-control-sm" />
             </div>
           </div>

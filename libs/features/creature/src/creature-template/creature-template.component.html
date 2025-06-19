@@ -61,7 +61,7 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="faction">faction</label>
-              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.FactionHint' | translate"></i>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.FACTION' | translate"></i>
               <keira-faction-selector-btn
                 [config]="{ name: 'faction' }"
                 [control]="editorService.form.controls.faction"
@@ -232,7 +232,8 @@
                 <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.MODEL_ID_TOOLTIP' | translate"></i>
               </span>
               <span
-                >Models are now available in the <a href="" [routerLink]="['/creature', 'creature-template-model']">Creature Template Model</a> editor.</span
+                >Models are now available in the
+                <a href="" [routerLink]="['/creature', 'creature-template-model']">Creature Template Model</a> editor.</span
               >
             </div>
           </div>
