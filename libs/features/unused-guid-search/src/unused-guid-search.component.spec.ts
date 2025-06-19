@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
-import { PageObject } from '@keira/shared/test-utils';
+import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { UnusedGuidSearchComponent } from './unused-guid-search.component';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { MAX_INT_UNSIGNED_VALUE } from './unused-guid-search.service';
@@ -22,7 +22,7 @@ class UnusedGuidSearchPage extends PageObject<UnusedGuidSearchComponent> {
 describe('UnusedGuidSearchComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [UnusedGuidSearchComponent],
+      imports: [UnusedGuidSearchComponent, TranslateTestingModule],
       providers: [
         {
           provide: MysqlQueryService,
