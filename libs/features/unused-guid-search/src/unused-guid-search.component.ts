@@ -1,5 +1,6 @@
-import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, DestroyRef } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   CREATURE_SPAWN_TABLE,
   CREATURE_SPAWN_ID_2,
@@ -28,6 +29,7 @@ import { UnusedGuidService, DbOptions, MAX_INT_UNSIGNED_VALUE } from './unused-g
   imports: [FormsModule, ReactiveFormsModule],
 })
 export class UnusedGuidSearchComponent {
+  private readonly destroyRef = inject(DestroyRef);
   private readonly unusedGuidService = inject(UnusedGuidService);
 
   protected readonly MAX_INT_UNSIGNED_VALUE = MAX_INT_UNSIGNED_VALUE;
@@ -86,20 +88,23 @@ export class UnusedGuidSearchComponent {
 
     this.results = [];
     this.loading.set(true);
-    this.unusedGuidService.search(selectedDb, startIndex, amount, consecutive).subscribe({
-      next: (guids: string[]) => {
-        this.results = guids;
-        if (this.results.length < amount) {
-          this.error.set(`Only found ${this.results.length} unused GUIDs.`);
-        }
-      },
-      error: (err) => {
-        this.error.set(err.message);
-        this.loading.set(false);
-      },
-      complete: () => {
-        this.loading.set(false);
-      },
-    });
+    this.unusedGuidService
+      .search(selectedDb, startIndex, amount, consecutive)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (guids: string[]) => {
+          this.results = guids;
+          if (this.results.length < amount) {
+            this.error.set(`Only found ${this.results.length} unused GUIDs.`);
+          }
+        },
+        error: (err) => {
+          this.error.set(err.message);
+          this.loading.set(false);
+        },
+        complete: () => {
+          this.loading.set(false);
+        },
+      });
   }
 }
