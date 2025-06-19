@@ -355,7 +355,11 @@
       "REW_MONEY_DIFFICULTY": "TODO: RewardMoneyDifficulty Beschreibung.",
       "REWARD_SPELL": "Zauber, der im Questlog angezeigt wird und beim Abschluss der Quest gewirkt wird. Beachte bitte, dass dieser Zauber NICHT gewirkt wird, wenn RewardSpell ungleich null ist.",
       "REWARD_HONOR": "Anzahl der ehrenhaften Kill-Ehrenpunkte, die für den Abschluss der Quest vergeben werden.",
-      "REWARD_FACTIONS_TOOLTIP": "Fraktions-ID, für die die Quest Rufpunkte hinzufügt (oder abzieht)."
+      "REWARD_FACTIONS_TOOLTIP": "Fraktions-ID, für die die Quest Rufpunkte hinzufügt (oder abzieht).",
+      "REQUIRED_FACTION": "Required Faction to be able to pick up the quest, when refering to the Quest Faction ID required, it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki.",
+      "REQUIRED_CREATURE_OR_GAMEOBJECT": "Required Creature or Gameobject for the quest objective",
+      "REQUIRED_CREATURE_OR_GAMEOBJECT_COUNT": "The amount required to complete the objective.",
+      "REQUIRED_FACTION_VALUE": "The numeric value required for the specified faction."
     },
     "TEMPLATE_ADDON": {
       "ADDON_BASE": "Addon-Basis",
@@ -448,6 +452,12 @@
     },
     "SPAWN_ADDON": {
       "GUID": "Link zu gameobject.guid"
+    },
+    "TEMPLATE_ADDON": {
+      "FACTION": "The Gameobject's faction, when refering to the Faction ID required, it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki.",
+      "MINGOLD": "Minimum money, in copper, that the gameobject can drop when accessed / used.",
+      "MAXGOLD": "Maximum money, in copper, that the gameobject can drop when accessed / used.",
+      "ARTKIT": "Updates display if object is activated by SPELL_EFFCT_ACTIVATE_OBJECT with MiscValue 19 - 22."
     }
   },
   "ITEM": {
@@ -518,7 +528,9 @@
       "SPELL_PPM_RATES": "Die Proc-Rate pro Minute, die steuert, wie oft der Zauber ausgelöst wird (wenn #spelltrigger == 2).",
       "SPELL_COOLDOWNS": "Die Abklingzeit in Millisekunden für den spezifischen Zauber, die steuert, wie oft der Zauber verwendet werden kann. Verwende -1, um die Standard-Abklingzeit des Zaubers zu verwenden. Hinweis: Dies ist nicht die 'interne Abklingzeit' von Procs, wie sie häufig bei Gegenständen wie Schmuckstücken mit 'Chance on hit'-Effekten vorkommt.",
       "SPELL_CATEGORIES": "Die Kategorie, zu der der Zauber gehört",
-      "SPELL_CATEGORY_COOLDOWNS": "Die Abklingzeit in Millisekunden, die auf alle anderen Zauber in der Kategorie angewendet wird, zu der der ausgelöste Zauber ebenfalls gehört. Verwende -1, um die Standard-Abklingzeit des Zaubers zu verwenden."
+      "SPELL_CATEGORY_COOLDOWNS": "Die Abklingzeit in Millisekunden, die auf alle anderen Zauber in der Kategorie angewendet wird, zu der der ausgelöste Zauber ebenfalls gehört. Verwende -1, um die Standard-Abklingzeit des Zaubers zu verwenden.",
+      "REQUIRED_FACTION": "Required Faction to be able to use the item, when refering to the Item Faction ID required, it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki.",
+      "REQUIRED_FACTION_RANK": "The rank value required for the specified faction."
     }
   },
   "LOOT_EDITOR": {

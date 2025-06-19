@@ -355,7 +355,11 @@
       "REW_MONEY_DIFFICULTY": "ID refere a um dos money factor em quest_money_reward ordenados pelo level.",
       "REWARD_SPELL": "Spell que é mostrado na quest log e que será aplicado quando a quest for completada. Note que este spell não será aplicado se RewardSpell é não-zero.",
       "REWARD_HONOR": "Quantidade de honra, equivalente a honorable kills, recebidos ao completar a quest. 1 HK no level 80 é equivalente a 124 honor. Um valor de 15 resulta em 1860 honor no level 80.",
-      "REWARD_FACTIONS_TOOLTIP": "Faction ID ao qual pontos de reputação são somados (ou subtraídos) ao completar a quest."
+      "REWARD_FACTIONS_TOOLTIP": "Faction ID ao qual pontos de reputação são somados (ou subtraídos) ao completar a quest.",
+      "REQUIRED_FACTION": "Required Faction to be able to pick up the quest, when refering to the Quest Faction ID required, it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki.",
+      "REQUIRED_CREATURE_OR_GAMEOBJECT": "Required Creature or Gameobject for the quest objective",
+      "REQUIRED_CREATURE_OR_GAMEOBJECT_COUNT": "The amount required to complete the objective.",
+      "REQUIRED_FACTION_VALUE": "The numeric value required for the specified faction."
     },
     "TEMPLATE_ADDON": {
       "ADDON_BASE": "Addon Base",
@@ -448,6 +452,12 @@
     },
     "SPAWN_ADDON": {
       "GUID": "Link para gameobject.guid"
+    },
+    "TEMPLATE_ADDON": {
+      "FACTION": "The Gameobject's faction, when refering to the Faction ID required, it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki.",
+      "MINGOLD": "Minimum money, in copper, that the gameobject can drop when accessed / used.",
+      "MAXGOLD": "Maximum money, in copper, that the gameobject can drop when accessed / used.",
+      "ARTKIT": "Updates display if object is activated by SPELL_EFFCT_ACTIVATE_OBJECT with MiscValue 19 - 22."
     }
   },
   "ITEM": {
@@ -518,7 +528,9 @@
       "SPELL_PPM_RATES": "A taxa proc-por-minuto que controla a frequência com que o spell é usado (se #spelltrigger == 2).",
       "SPELL_COOLDOWNS": "O cooldown em milisegundos do spell especificado que controla quão frequente o spell pode ser usado. Use -1 para utilizar o cooldown padrão do spell. Note: isso não é o “internal cooldown” de procs encontrados comumente em trinkets com efeitos “Chance on hit”.",
       "SPELL_CATEGORIES": "A categoria em que o spell se encontra",
-      "SPELL_CATEGORY_COOLDOWNS": "O cooldown em milisegundos que é aplicado em todos os outros spells da mesma categoria do spell que é usado. Use -1 para utilizar o cooldown padrão do spell."
+      "SPELL_CATEGORY_COOLDOWNS": "O cooldown em milisegundos que é aplicado em todos os outros spells da mesma categoria do spell que é usado. Use -1 para utilizar o cooldown padrão do spell.",
+      "REQUIRED_FACTION": "Required Faction to be able to use the item, when refering to the Item Faction ID required, it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki.",
+      "REQUIRED_FACTION_RANK": "The rank value required for the specified faction."
     }
   },
   "LOOT_EDITOR": {
