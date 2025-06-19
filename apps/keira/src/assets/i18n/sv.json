@@ -255,7 +255,7 @@
       "DETECTION_RANGE": "Kontrollerar hur nära eller långt ifrån en NPC kan upptäcka spelare.",
       "ITEMID1": "This is the item number of the equipment used in the right hand from Item.dbc.",
       "ITEMID2": "This is the item number of the equipment used in the left hand from Item.dbc.",
-      "ItemID3": "This is the item number of the equipment used in the ranged slot from Item.dbc.",
+      "ITEMID3": "This is the item number of the equipment used in the ranged slot from Item.dbc.",
       "FactionHint": "When refering to the Creature's Faction ID it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki."
     },
     "TEMPLATE_ADDON": {
