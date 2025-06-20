@@ -127,7 +127,7 @@
     "ngx-page-object-model": "1.0.0",
     "npm-run-all2": "7.0.2",
     "nx": "20.8.2",
-    "playwright": "1.52.0",
+    "playwright": "1.53.1",
     "prettier": "3.5.3",
     "pretty-quick": "4.2.2",
     "rxjs": "7.8.2",
