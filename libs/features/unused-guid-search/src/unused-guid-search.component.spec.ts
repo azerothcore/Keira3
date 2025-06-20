@@ -4,6 +4,8 @@ import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { UnusedGuidSearchComponent } from './unused-guid-search.component';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { MAX_INT_UNSIGNED_VALUE } from './unused-guid-search.service';
+import { getFormGroupOfDebugElement } from 'ngx-page-object-model';
+import { FormGroup } from '@angular/forms';
 
 class UnusedGuidSearchPage extends PageObject<UnusedGuidSearchComponent> {
   get searchButton(): HTMLButtonElement {
@@ -16,6 +18,10 @@ class UnusedGuidSearchPage extends PageObject<UnusedGuidSearchComponent> {
   get errors(): HTMLDivElement | null {
     const debugEl = this.getDebugElementByTestId<HTMLDivElement>('errors', false);
     return debugEl ? debugEl.nativeElement : null;
+  }
+  get form(): FormGroup {
+    const debugEl = this.getDebugElementByTestId('form');
+    return getFormGroupOfDebugElement(debugEl);
   }
 }
 
@@ -47,8 +53,7 @@ describe('UnusedGuidSearchComponent', () => {
 
   it('should not allow a negative startIndex and produce an error', () => {
     const { component, page, fixture } = setupTest([{ guid: 1 }, { guid: 2 }, { guid: 4 }, { guid: 8 }, { guid: 9 }, { guid: 10 }]);
-
-    component['form'].patchValue({
+    page.form.patchValue({
       selectedDb: component['dbOptions'][0], // creature
       startIndex: -1,
       amount: 10,
@@ -62,7 +67,7 @@ describe('UnusedGuidSearchComponent', () => {
   it('should find consecutive unused guids from db data', () => {
     const { component, page } = setupTest([{ guid: 1 }, { guid: 2 }, { guid: 4 }, { guid: 8 }, { guid: 9 }, { guid: 10 }]);
 
-    component['form'].patchValue({
+    page.form.patchValue({
       selectedDb: component['dbOptions'][0], // creature
       startIndex: 1,
       amount: 3,
@@ -76,7 +81,7 @@ describe('UnusedGuidSearchComponent', () => {
   it('should find non-consecutive unused guids from db data', () => {
     const { component, page } = setupTest([{ guid: 1 }, { guid: 2 }, { guid: 4 }, { guid: 8 }, { guid: 9 }, { guid: 10 }]);
 
-    component['form'].patchValue({
+    page.form.patchValue({
       selectedDb: component['dbOptions'][0], // creature
       startIndex: 1,
       amount: 3,
@@ -91,7 +96,7 @@ describe('UnusedGuidSearchComponent', () => {
     const { component, page } = setupTest([]);
 
     for (const dbOpt of component['dbOptions']) {
-      component['form'].patchValue({
+      page.form.patchValue({
         selectedDb: dbOpt,
         startIndex: 1,
         amount: 1,
@@ -105,7 +110,7 @@ describe('UnusedGuidSearchComponent', () => {
   it('should handle query errors and set the error message', () => {
     const { component, queryService, page } = setupTest();
     spyOn(queryService, 'query').and.returnValue(throwError(() => new Error('db failure')));
-    component['form'].patchValue({
+    page.form.patchValue({
       selectedDb: component['dbOptions'][0],
       startIndex: 1,
       amount: 1,
@@ -118,7 +123,7 @@ describe('UnusedGuidSearchComponent', () => {
 
   it('should set "Only found 0 unused GUIDs." when starting at MAX boundary with consecutive', () => {
     const { component, page } = setupTest([{ guid: 1 }]);
-    component['form'].patchValue({
+    page.form.patchValue({
       selectedDb: component['dbOptions'][0],
       startIndex: MAX_INT_UNSIGNED_VALUE,
       amount: 100,
@@ -131,7 +136,7 @@ describe('UnusedGuidSearchComponent', () => {
 
   it('should set "Only found 1 unused GUIDs." when starting at MAX boundary with non-consecutive', () => {
     const { component, page } = setupTest([{ guid: 1 }]);
-    component['form'].patchValue({
+    page.form.patchValue({
       selectedDb: component['dbOptions'][0],
       startIndex: MAX_INT_UNSIGNED_VALUE,
       amount: 100,
