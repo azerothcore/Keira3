@@ -231,6 +231,11 @@
                 <div class="row">
                   <div class="col-12">
                     <label class="control-label" for="RequiredNpcOrGo{{ i }}">Req.NpcOrGo{{ i }}</label>
+                    <i
+                      class="fas fa-info-circle ms-1"
+                      placement="auto"
+                      [tooltip]="'QUEST.TEMPLATE.REQUIRED_CREATURE_OR_GAMEOBJECT' | translate"
+                    ></i>
                     <input
                       [formControlName]="'RequiredNpcOrGo' + i"
                       id="RequiredNpcOrGo{{ i }}"
@@ -240,6 +245,11 @@
                   </div>
                   <div class="col-12">
                     <label class="control-label" for="RequiredNpcOrGoCount{{ i }}">Req.NpcOrGoCount{{ i }}</label>
+                    <i
+                      class="fas fa-info-circle ms-1"
+                      placement="auto"
+                      [tooltip]="'QUEST.TEMPLATE.REQUIRED_CREATURE_OR_GAMEOBJECT_COUNT' | translate"
+                    ></i>
                     <input
                       [formControlName]="'RequiredNpcOrGoCount' + i"
                       id="RequiredNpcOrGoCount{{ i }}"
@@ -258,6 +268,7 @@
                   [control]="editorService.form.controls['RequiredFactionId' + i]"
                   [disabled]="editorService.form.controls['RequiredFactionId' + i].disabled"
                 />
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.REQUIRED_FACTION' | translate"></i>
                 <input
                   [formControlName]="'RequiredFactionId' + i"
                   id="RequiredFactionId{{ i }}"
@@ -265,6 +276,7 @@
                   class="form-control form-control-sm"
                 />
                 <label class="control-label" for="RequiredFactionValue{{ i }}">Req.FactionValue{{ i }}</label>
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.REQUIRED_FACTION_VALUE' | translate"></i>
                 <input
                   [formControlName]="'RequiredFactionValue' + i"
                   id="RequiredFactionValue{{ i }}"
