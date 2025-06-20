@@ -94,6 +94,7 @@ import {
   SelectAcoreStringComponent,
 } from 'texts';
 import { GameTeleComponent, GameTeleHandlerService, SelectGameTeleComponent } from '@keira/features/game-tele';
+import { UnusedGuidSearchComponent } from '@keira/features/unused-guid-search';
 
 export const KEIRA_ROUTES: Routes = [
   {
@@ -504,5 +505,9 @@ export const KEIRA_ROUTES: Routes = [
         canActivate: [GameTeleHandlerService],
       },
     ],
+  },
+  {
+    path: 'unused-guid-search',
+    component: UnusedGuidSearchComponent,
   },
 ];
