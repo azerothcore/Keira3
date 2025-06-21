@@ -125,7 +125,7 @@
     "ngx-clipboard": "16.0.0",
     "ngx-highlightjs": "10.0.0",
     "ngx-page-object-model": "1.0.0",
-    "npm-run-all2": "7.0.2",
+    "npm-run-all2": "8.0.4",
     "nx": "20.8.2",
     "playwright": "1.52.0",
     "prettier": "3.5.3",
