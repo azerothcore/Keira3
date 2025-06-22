@@ -454,10 +454,7 @@ SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.DIE] =
 
 // SMART_ACTION_SET_IN_COMBAT_WITH_ZONE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_IN_COMBAT_WITH_ZONE] =
-  'Sets the creature in combat with its zone, can be used in instances and open world. Useful for creatures inside instances so all players will be set in combat until the fight ends. It only sets NPCs in combat with players';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_IN_COMBAT_WITH_ZONE] = 'Range';
-SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_IN_COMBAT_WITH_ZONE] =
-  'Range in yards for all players to be forced into combat with the creature. Only used in the open world. Leave as 0 if used in an instance.';
+  'Sets the creature in combat with its zone, can be used in instances and open world. Useful for creatures inside instances so all players will be set in combat until the fight ends. It only sets NPCs in combat with players, this only works with the target_type 9 - CREATURE_RANGE';
 
 // SMART_ACTION_CALL_FOR_HELP
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.CALL_FOR_HELP] =
