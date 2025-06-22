@@ -8,16 +8,14 @@ import { SpellHandlerService } from '../spell-handler.service';
   providedIn: 'root',
 })
 export class SelectSpellService extends SelectService<SpellDbc> {
-  override readonly queryService: MysqlQueryService;
-  override readonly handlerService: SpellHandlerService;
-
+  override readonly queryService = inject(MysqlQueryService);
+  override readonly handlerService = inject(SpellHandlerService);
+  protected override readonly entityTable = SPELL_DBC_TABLE;
+  protected override readonly entityIdField = SPELL_DBC_ID;
+  protected override entityNameField = SPELL_DBC_NAME;
+  protected override readonly fieldList = SPELL_DBC_SEARCH_FIELDS;
   constructor() {
-    const queryService = inject(MysqlQueryService);
-    const handlerService = inject(SpellHandlerService);
-
-    super(queryService, handlerService, SPELL_DBC_TABLE, SPELL_DBC_ID, SPELL_DBC_NAME, SPELL_DBC_SEARCH_FIELDS);
-
-    this.queryService = queryService;
-    this.handlerService = handlerService;
+    super();
+    this.init();
   }
 }

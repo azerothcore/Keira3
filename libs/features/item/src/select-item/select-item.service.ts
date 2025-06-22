@@ -14,16 +14,14 @@ import { ItemHandlerService } from '../item-handler.service';
   providedIn: 'root',
 })
 export class SelectItemService extends SelectService<ItemTemplate> {
-  override readonly queryService: MysqlQueryService;
-  override readonly handlerService: ItemHandlerService;
-
+  override readonly queryService = inject(MysqlQueryService);
+  override readonly handlerService = inject(ItemHandlerService);
+  protected override readonly entityTable = ITEM_TEMPLATE_TABLE;
+  protected override readonly entityIdField = ITEM_TEMPLATE_ID;
+  protected override entityNameField = ITEM_TEMPLATE_NAME;
+  protected override readonly fieldList = ITEM_TEMPLATE_SEARCH_FIELDS;
   constructor() {
-    const queryService = inject(MysqlQueryService);
-    const handlerService = inject(ItemHandlerService);
-
-    super(queryService, handlerService, ITEM_TEMPLATE_TABLE, ITEM_TEMPLATE_ID, ITEM_TEMPLATE_NAME, ITEM_TEMPLATE_SEARCH_FIELDS);
-
-    this.queryService = queryService;
-    this.handlerService = handlerService;
+    super();
+    this.init();
   }
 }

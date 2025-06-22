@@ -8,16 +8,14 @@ import { PageTextHandlerService } from './page-text-handler.service';
   providedIn: 'root',
 })
 export class SelectPageTextService extends SelectService<PageText> {
-  override readonly queryService: MysqlQueryService;
-  override readonly handlerService: PageTextHandlerService;
-
+  override readonly queryService = inject(MysqlQueryService);
+  override readonly handlerService = inject(PageTextHandlerService);
+  protected override readonly entityTable = PAGE_TEXT_TABLE;
+  protected override readonly entityIdField = PAGE_TEXT_ID;
+  protected override entityNameField = PAGE_TEXT_NAME;
+  protected override readonly fieldList = PAGE_TEXT_SEARCH_FIELDS;
   constructor() {
-    const queryService = inject(MysqlQueryService);
-    const handlerService = inject(PageTextHandlerService);
-
-    super(queryService, handlerService, PAGE_TEXT_TABLE, PAGE_TEXT_ID, PAGE_TEXT_NAME, PAGE_TEXT_SEARCH_FIELDS);
-
-    this.queryService = queryService;
-    this.handlerService = handlerService;
+    super();
+    this.init();
   }
 }

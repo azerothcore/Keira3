@@ -8,16 +8,14 @@ import { GossipHandlerService } from '../gossip-handler.service';
   providedIn: 'root',
 })
 export class SelectGossipService extends SelectService<GossipMenu> {
-  override readonly queryService: MysqlQueryService;
-  override readonly handlerService: GossipHandlerService;
-
+  override readonly queryService = inject(MysqlQueryService);
+  override readonly handlerService = inject(GossipHandlerService);
+  protected override readonly entityTable = GOSSIP_MENU_TABLE;
+  protected override readonly entityIdField = GOSSIP_MENU_ID;
+  protected override entityNameField = null;
+  protected override readonly fieldList = GOSSIP_MENU_SEARCH_FIELDS;
   constructor() {
-    const queryService = inject(MysqlQueryService);
-    const handlerService = inject(GossipHandlerService);
-
-    super(queryService, handlerService, GOSSIP_MENU_TABLE, GOSSIP_MENU_ID, null, GOSSIP_MENU_SEARCH_FIELDS);
-
-    this.queryService = queryService;
-    this.handlerService = handlerService;
+    super();
+    this.init();
   }
 }

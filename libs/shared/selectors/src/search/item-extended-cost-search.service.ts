@@ -8,13 +8,11 @@ import { SqliteQueryService } from '@keira/shared/db-layer';
   providedIn: 'root',
 })
 export class ItemExtendedCostSearchService extends SearchService<ItemExtendedCost> {
-  protected override queryService: SqliteQueryService;
-
+  protected override queryService = inject(SqliteQueryService);
+  protected override readonly entityTable = ITEM_EXTENDED_COST_TABLE;
+  protected override readonly fieldList = ITEM_EXTENDED_COST_SEARCH_FIELDS;
   constructor() {
-    const queryService = inject(SqliteQueryService);
-
-    super(queryService, ITEM_EXTENDED_COST_TABLE, ITEM_EXTENDED_COST_SEARCH_FIELDS);
-
-    this.queryService = queryService;
+    super();
+    this.init();
   }
 }

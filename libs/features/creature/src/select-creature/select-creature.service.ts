@@ -14,23 +14,15 @@ import { CreatureHandlerService } from '../creature-handler.service';
   providedIn: 'root',
 })
 export class SelectCreatureService extends SelectService<CreatureTemplate> {
-  override readonly queryService: MysqlQueryService;
-  override readonly handlerService: CreatureHandlerService;
+  override readonly queryService = inject(MysqlQueryService);
+  override readonly handlerService = inject(CreatureHandlerService);
+  protected override readonly entityTable = CREATURE_TEMPLATE_TABLE;
+  protected override readonly entityIdField = CREATURE_TEMPLATE_ID;
+  protected override entityNameField = CREATURE_TEMPLATE_NAME;
+  protected override readonly fieldList = CREATURE_TEMPLATE_SEARCH_FIELDS;
 
   constructor() {
-    const queryService = inject(MysqlQueryService);
-    const handlerService = inject(CreatureHandlerService);
-
-    super(
-      queryService,
-      handlerService,
-      CREATURE_TEMPLATE_TABLE,
-      CREATURE_TEMPLATE_ID,
-      CREATURE_TEMPLATE_NAME,
-      CREATURE_TEMPLATE_SEARCH_FIELDS,
-    );
-
-    this.queryService = queryService;
-    this.handlerService = handlerService;
+    super();
+    this.init();
   }
 }

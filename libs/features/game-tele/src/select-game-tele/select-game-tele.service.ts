@@ -8,16 +8,14 @@ import { GAME_TELE_ID, GAME_TELE_NAME, GAME_TELE_SEARCH_FIELDS, GAME_TELE_TABLE,
   providedIn: 'root',
 })
 export class SelectGameTeleService extends SelectService<GameTele> {
-  override readonly queryService: MysqlQueryService;
-  override readonly handlerService: GameTeleHandlerService;
-
+  override readonly queryService = inject(MysqlQueryService);
+  override readonly handlerService = inject(GameTeleHandlerService);
+  protected override readonly entityTable = GAME_TELE_TABLE;
+  protected override readonly entityIdField = GAME_TELE_ID;
+  protected override entityNameField = GAME_TELE_NAME;
+  protected override readonly fieldList = GAME_TELE_SEARCH_FIELDS;
   constructor() {
-    const queryService = inject(MysqlQueryService);
-    const handlerService = inject(GameTeleHandlerService);
-
-    super(queryService, handlerService, GAME_TELE_TABLE, GAME_TELE_ID, GAME_TELE_NAME, GAME_TELE_SEARCH_FIELDS);
-
-    this.queryService = queryService;
-    this.handlerService = handlerService;
+    super();
+    this.init();
   }
 }

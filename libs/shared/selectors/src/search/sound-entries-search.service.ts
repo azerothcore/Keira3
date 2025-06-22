@@ -8,13 +8,11 @@ import { SqliteQueryService } from '@keira/shared/db-layer';
   providedIn: 'root',
 })
 export class SoundEntriesSearchService extends SearchService<SoundEntries> {
-  protected override queryService: SqliteQueryService;
-
+  protected override queryService = inject(SqliteQueryService);
+  protected override readonly entityTable = SOUND_ENTRIES_TABLE;
+  protected override readonly fieldList = SOUND_ENTRIES_SEARCH_FIELDS;
   constructor() {
-    const queryService = inject(SqliteQueryService);
-
-    super(queryService, SOUND_ENTRIES_TABLE, SOUND_ENTRIES_SEARCH_FIELDS);
-
-    this.queryService = queryService;
+    super();
+    this.init();
   }
 }
