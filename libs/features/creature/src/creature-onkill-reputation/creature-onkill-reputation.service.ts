@@ -7,13 +7,9 @@ import { CreatureHandlerService } from '../creature-handler.service';
   providedIn: 'root',
 })
 export class CreatureOnkillReputationService extends SingleRowEditorService<CreatureOnkillReputation> {
-  protected override readonly handlerService: CreatureHandlerService;
+  protected override readonly handlerService = inject(CreatureHandlerService);
 
   constructor() {
-    const handlerService = inject(CreatureHandlerService);
-
-    super(CreatureOnkillReputation, CREATURE_ONKLL_REPUTATION_TABLE, CREATURE_ONKLL_REPUTATION_ID, null, false, handlerService);
-
-    this.handlerService = handlerService;
+    super(CreatureOnkillReputation, CREATURE_ONKLL_REPUTATION_TABLE, CREATURE_ONKLL_REPUTATION_ID, null, false);
   }
 }

@@ -7,13 +7,9 @@ import { MailLootHandlerService } from './mail-loot-handler.service';
   providedIn: 'root',
 })
 export class MailLootTemplateService extends MultiRowEditorService<MailLootTemplate> {
-  protected override readonly handlerService: MailLootHandlerService;
+  protected override readonly handlerService = inject(MailLootHandlerService);
 
   constructor() {
-    const handlerService = inject(MailLootHandlerService);
-
-    super(MailLootTemplate, MAIL_LOOT_TEMPLATE_TABLE, LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2, handlerService);
-
-    this.handlerService = handlerService;
+    super(MailLootTemplate, MAIL_LOOT_TEMPLATE_TABLE, LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2);
   }
 }

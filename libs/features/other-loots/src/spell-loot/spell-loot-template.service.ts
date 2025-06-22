@@ -7,13 +7,9 @@ import { SpellLootHandlerService } from './spell-loot-handler.service';
   providedIn: 'root',
 })
 export class SpellLootTemplateService extends MultiRowEditorService<SpellLootTemplate> {
-  protected override readonly handlerService: SpellLootHandlerService;
+  protected override readonly handlerService = inject(SpellLootHandlerService);
 
   constructor() {
-    const handlerService = inject(SpellLootHandlerService);
-
-    super(SpellLootTemplate, SPELL_LOOT_TEMPLATE_TABLE, LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2, handlerService);
-
-    this.handlerService = handlerService;
+    super(SpellLootTemplate, SPELL_LOOT_TEMPLATE_TABLE, LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2);
   }
 }

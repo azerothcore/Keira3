@@ -7,13 +7,9 @@ import { GameTeleHandlerService } from '../game-tele-handler.service';
   providedIn: 'root',
 })
 export class GameTeleService extends SingleRowEditorService<GameTele> {
-  protected override readonly handlerService: GameTeleHandlerService;
+  protected override readonly handlerService = inject(GameTeleHandlerService);
 
   constructor() {
-    const handlerService = inject(GameTeleHandlerService);
-
-    super(GameTele, GAME_TELE_TABLE, GAME_TELE_ID, GAME_TELE_NAME, true, handlerService);
-
-    this.handlerService = handlerService;
+    super(GameTele, GAME_TELE_TABLE, GAME_TELE_ID, GAME_TELE_NAME, true);
   }
 }

@@ -14,20 +14,15 @@ import { CreatureHandlerService } from '../creature-handler.service';
   providedIn: 'root',
 })
 export class SkinningLootTemplateService extends LootEditorIdService<SkinningLootTemplate> {
-  protected override readonly handlerService: CreatureHandlerService;
+  protected override readonly handlerService = inject(CreatureHandlerService);
 
   constructor() {
-    const handlerService = inject(CreatureHandlerService);
-
     super(
       CreatureLootTemplate,
       SKINNING_LOOT_TEMPLATE_TABLE,
       CREATURE_TEMPLATE_TABLE,
       CREATURE_TEMPLATE_ID,
       CREATURE_TEMPLATE_SKINNING_LOOT_ID,
-      handlerService,
     );
-
-    this.handlerService = handlerService;
   }
 }

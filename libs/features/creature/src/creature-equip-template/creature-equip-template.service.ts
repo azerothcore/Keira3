@@ -7,13 +7,9 @@ import { CreatureHandlerService } from '../creature-handler.service';
   providedIn: 'root',
 })
 export class CreatureEquipTemplateService extends SingleRowEditorService<CreatureEquipTemplate> {
-  protected override readonly handlerService: CreatureHandlerService;
+  protected override readonly handlerService = inject(CreatureHandlerService);
 
   constructor() {
-    const handlerService = inject(CreatureHandlerService);
-
-    super(CreatureEquipTemplate, CREATURE_EQUIP_TEMPLATE_TABLE, CREATURE_EQUIP_TEMPLATE_ID, null, false, handlerService);
-
-    this.handlerService = handlerService;
+    super(CreatureEquipTemplate, CREATURE_EQUIP_TEMPLATE_TABLE, CREATURE_EQUIP_TEMPLATE_ID, null, false);
   }
 }

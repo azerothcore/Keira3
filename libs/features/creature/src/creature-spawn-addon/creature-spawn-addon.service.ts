@@ -7,14 +7,10 @@ import { MultiRowExternalEditorService } from '@keira/shared/base-abstract-class
   providedIn: 'root',
 })
 export class CreatureSpawnAddonService extends MultiRowExternalEditorService<CreatureSpawnAddon> {
-  protected override readonly handlerService: CreatureHandlerService;
+  protected override readonly handlerService = inject(CreatureHandlerService);
 
   constructor() {
-    const handlerService = inject(CreatureHandlerService);
-
-    super(CreatureSpawnAddon, CREATURE_SPAWN_ADDON_TABLE, CREATURE_SPAWN_ADDON_ID_2, handlerService);
-
-    this.handlerService = handlerService;
+    super(CreatureSpawnAddon, CREATURE_SPAWN_ADDON_TABLE, CREATURE_SPAWN_ADDON_ID_2);
   }
 
   selectQuery(id: string | number) {

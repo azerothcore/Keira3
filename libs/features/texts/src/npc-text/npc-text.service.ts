@@ -7,13 +7,9 @@ import { NpcTextHandlerService } from './npc-text-handler.service';
   providedIn: 'root',
 })
 export class NpcTextService extends SingleRowEditorService<NpcText> {
-  protected override handlerService: NpcTextHandlerService;
+  protected override readonly handlerService = inject(NpcTextHandlerService);
 
   constructor() {
-    const handlerService = inject(NpcTextHandlerService);
-
-    super(NpcText, NPC_TEXT_TABLE, NPC_TEXT_ID, null, true, handlerService);
-
-    this.handlerService = handlerService;
+    super(NpcText, NPC_TEXT_TABLE, NPC_TEXT_ID, null, true);
   }
 }

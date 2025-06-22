@@ -12,13 +12,9 @@ import { GossipHandlerService } from '../gossip-handler.service';
   providedIn: 'root',
 })
 export class GossipMenuOptionService extends MultiRowEditorService<GossipMenuOption> {
-  protected override readonly handlerService: GossipHandlerService;
+  protected override readonly handlerService = inject(GossipHandlerService);
 
   constructor() {
-    const handlerService = inject(GossipHandlerService);
-
-    super(GossipMenuOption, GOSSIP_MENU_OPTION_TABLE, GOSSIP_MENU_OPTION_ID, GOSSIP_MENU_OPTION_ID_2, handlerService);
-
-    this.handlerService = handlerService;
+    super(GossipMenuOption, GOSSIP_MENU_OPTION_TABLE, GOSSIP_MENU_OPTION_ID, GOSSIP_MENU_OPTION_ID_2);
   }
 }

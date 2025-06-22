@@ -12,21 +12,16 @@ import { CreatureHandlerService } from '../creature-handler.service';
   providedIn: 'root',
 })
 export class CreatureTemplateResistanceService extends MultiRowEditorService<CreatureTemplateResistance> {
-  protected override readonly handlerService: CreatureHandlerService;
+  protected override readonly handlerService = inject(CreatureHandlerService);
 
   override FIRST_ROW_START_VALUE = 1;
 
   constructor() {
-    const handlerService = inject(CreatureHandlerService);
-
     super(
       CreatureTemplateResistance,
       CREATURE_TEMPLATE_RESISTANCE_TABLE,
       CREATURE_TEMPLATE_RESISTANCE_ID,
       CREATURE_TEMPLATE_RESISTANCE_ID_2,
-      handlerService,
     );
-
-    this.handlerService = handlerService;
   }
 }

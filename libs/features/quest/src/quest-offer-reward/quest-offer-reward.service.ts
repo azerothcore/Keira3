@@ -7,13 +7,9 @@ import { QuestHandlerService } from '../quest-handler.service';
   providedIn: 'root',
 })
 export class QuestOfferRewardService extends SingleRowEditorService<QuestOfferReward> {
-  protected override readonly handlerService: QuestHandlerService;
+  protected override readonly handlerService = inject(QuestHandlerService);
 
   constructor() {
-    const handlerService = inject(QuestHandlerService);
-
-    super(QuestOfferReward, QUEST_OFFER_REWARD_TABLE, QUEST_OFFER_REWARD_ID, null, false, handlerService);
-
-    this.handlerService = handlerService;
+    super(QuestOfferReward, QUEST_OFFER_REWARD_TABLE, QUEST_OFFER_REWARD_ID, null, false);
   }
 }

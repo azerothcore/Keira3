@@ -7,13 +7,9 @@ import { SpellHandlerService } from '../spell-handler.service';
   providedIn: 'root',
 })
 export class SpellDbcService extends SingleRowEditorService<SpellDbc> {
-  protected override readonly handlerService: SpellHandlerService;
+  protected override readonly handlerService = inject(SpellHandlerService);
 
   constructor() {
-    const handlerService = inject(SpellHandlerService);
-
-    super(SpellDbc, SPELL_DBC_TABLE, SPELL_DBC_ID, SPELL_DBC_NAME, true, handlerService);
-
-    this.handlerService = handlerService;
+    super(SpellDbc, SPELL_DBC_TABLE, SPELL_DBC_ID, SPELL_DBC_NAME, true);
   }
 }
