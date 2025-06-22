@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 import { TableRow } from '@keira/shared/constants';
 import { TranslateModule } from '@ngx-translate/core';
@@ -12,5 +12,5 @@ import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
   imports: [TranslateModule],
 })
 export class EditorButtonsComponent<T extends TableRow> {
-  @Input({ required: true }) editorService!: MultiRowEditorService<T>;
+  readonly editorService = input.required<MultiRowEditorService<T>>();
 }

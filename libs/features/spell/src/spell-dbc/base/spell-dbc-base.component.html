@@ -1,4 +1,4 @@
-<form [formGroup]="formGroup" class="form-group edit-form">
+<form [formGroup]="formGroup()" class="form-group edit-form">
   <div class="content-block">
     <span class="category-title" [translate]="'SPELL_DBC.BASE.BASE'"></span>
     <div class="row">
@@ -70,8 +70,8 @@
       <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
         <label class="control-label" for="PowerType">PowerType</label>
         <keira-single-value-selector-btn
-          [control]="formGroup.controls.PowerType"
-          [disabled]="formGroup.controls.PowerType.disabled"
+          [control]="formGroup().controls.PowerType"
+          [disabled]="formGroup().controls.PowerType.disabled"
           [config]="{ options: SPELL_DBC_POWER_TYPE, name: 'PowerType' }"
           [modalClass]="'modal-md'"
         />
@@ -116,8 +116,8 @@
       <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
         <label class="control-label" for="Mechanic">Mechanic</label>
         <keira-single-value-selector-btn
-          [control]="formGroup.controls.Mechanic"
-          [disabled]="formGroup.controls.Mechanic.disabled"
+          [control]="formGroup().controls.Mechanic"
+          [disabled]="formGroup().controls.Mechanic.disabled"
           [config]="{ options: SPELL_MECHANIC, name: 'Mechanic' }"
           [modalClass]="'modal-md'"
         />
@@ -127,8 +127,8 @@
       <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
         <label class="control-label" for="DefenseType">DefenseType</label>
         <keira-single-value-selector-btn
-          [control]="formGroup.controls.DefenseType"
-          [disabled]="formGroup.controls.DefenseType.disabled"
+          [control]="formGroup().controls.DefenseType"
+          [disabled]="formGroup().controls.DefenseType.disabled"
           [config]="{ options: SPELL_DBC_DAMAGE_CLASS, name: 'DefenseType' }"
           [modalClass]="'modal-md'"
         />
@@ -138,8 +138,8 @@
       <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
         <label class="control-label" for="PreventionType">PreventionType</label>
         <keira-single-value-selector-btn
-          [control]="formGroup.controls.PreventionType"
-          [disabled]="formGroup.controls.PreventionType.disabled"
+          [control]="formGroup().controls.PreventionType"
+          [disabled]="formGroup().controls.PreventionType.disabled"
           [config]="{ options: SPELL_DBC_PREVENTION_TYPE, name: 'PreventionType' }"
           [modalClass]="'modal-md'"
         />
@@ -149,8 +149,8 @@
       <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
         <label class="control-label" for="DispelType">DispelType</label>
         <keira-single-value-selector-btn
-          [control]="formGroup.controls.DispelType"
-          [disabled]="formGroup.controls.DispelType.disabled"
+          [control]="formGroup().controls.DispelType"
+          [disabled]="formGroup().controls.DispelType.disabled"
           [config]="{ options: DISPEL_TYPE, name: 'DispelType' }"
           [modalClass]="'modal-md'"
         />
@@ -161,8 +161,8 @@
         <label class="control-label" for="SchoolMask">SchoolMask</label>
         <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.BASE.SCHOOL_MASK' | translate"></i>
         <keira-flags-selector-btn
-          [control]="formGroup.controls.SchoolMask"
-          [disabled]="formGroup.controls.SchoolMask.disabled"
+          [control]="formGroup().controls.SchoolMask"
+          [disabled]="formGroup().controls.SchoolMask.disabled"
           [config]="{ flags: SPELL_DBC_SCHOOL_OPTIONS, name: 'SchoolMask' }"
         />
         <input [formControlName]="'SchoolMask'" id="SchoolMask" type="number" class="form-control form-control-sm" />
@@ -185,8 +185,8 @@
       <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
         <label class="control-label" for="CasterAuraState">CasterAuraState</label>
         <keira-single-value-selector-btn
-          [control]="formGroup.controls.CasterAuraState"
-          [disabled]="formGroup.controls.CasterAuraState.disabled"
+          [control]="formGroup().controls.CasterAuraState"
+          [disabled]="formGroup().controls.CasterAuraState.disabled"
           [config]="{ options: SPELL_DBC_CASTER_AURA_STATE, name: 'CasterAuraState' }"
           [modalClass]="'modal-md'"
         />
@@ -221,8 +221,8 @@
       <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
         <label class="control-label" for="TargetAuraState">TargetAuraState</label>
         <keira-single-value-selector-btn
-          [control]="formGroup.controls.TargetAuraState"
-          [disabled]="formGroup.controls.TargetAuraState.disabled"
+          [control]="formGroup().controls.TargetAuraState"
+          [disabled]="formGroup().controls.TargetAuraState.disabled"
           [config]="{ options: SPELL_DBC_TARGET_AURA_STATE, name: 'TargetAuraState' }"
           [modalClass]="'modal-md'"
         />
@@ -282,8 +282,8 @@
       <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
         <label class="control-label" for="CastingTimeIndex">CastingTimeIndex</label>
         <keira-single-value-selector-btn
-          [control]="formGroup.controls.CastingTimeIndex"
-          [disabled]="formGroup.controls.CastingTimeIndex.disabled"
+          [control]="formGroup().controls.CastingTimeIndex"
+          [disabled]="formGroup().controls.CastingTimeIndex.disabled"
           [config]="{ options: SPELL_DBC_CAST_TIME, name: 'CastingTimeIndex' }"
           [modalClass]="'modal-md'"
         />

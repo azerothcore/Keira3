@@ -15,6 +15,7 @@ describe('HighlightjsWrapperComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(HighlightjsWrapperComponent);
+    fixture.componentRef.setInput('code', 'test code');
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

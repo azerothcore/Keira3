@@ -1,7 +1,7 @@
-<div class="preview-container" [class.show-preview]="show" [class.hide-preview]="!show">
+<div class="preview-container" [class.show-preview]="show()" [class.hide-preview]="!show()">
   <div class="transparent perfect-scrollbar">
     <div class="gossip-preview">
-      @for (row of options; track row) {
+      @for (row of options(); track row) {
         <p>
           @if (OPTION_IMG[row.OptionIcon]) {
             <img [src]="'assets/img/gossip/' + OPTION_IMG[row.OptionIcon]" />

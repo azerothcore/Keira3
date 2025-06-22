@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ModelForm } from '@keira/shared/utils';
 import { SpellDbc } from '@keira/shared/acore-world-model';
@@ -12,5 +12,5 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
   imports: [FormsModule, ReactiveFormsModule, TooltipModule, TranslateModule],
 })
 export class SpellDbcMiscComponent {
-  @Input({ required: true }) formGroup!: FormGroup<ModelForm<SpellDbc>>;
+  readonly formGroup = input.required<FormGroup<ModelForm<SpellDbc>>>();
 }

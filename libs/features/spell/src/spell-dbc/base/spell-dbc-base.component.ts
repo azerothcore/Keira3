@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   DISPEL_TYPE,
@@ -34,5 +34,5 @@ export class SpellDbcBaseComponent {
   readonly SPELL_DBC_DAMAGE_CLASS = SPELL_DBC_DAMAGE_CLASS;
   readonly SPELL_DBC_PREVENTION_TYPE = SPELL_DBC_PREVENTION_TYPE;
 
-  @Input({ required: true }) formGroup!: FormGroup<ModelForm<SpellDbc>>;
+  readonly formGroup = input.required<FormGroup<ModelForm<SpellDbc>>>();
 }
