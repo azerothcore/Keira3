@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, viewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { ICON_SKILLS } from '@keira/shared/constants';
 
@@ -16,7 +16,7 @@ import Spy = jasmine.Spy;
   imports: [IconComponent],
 })
 class TestHostComponent {
-  @ViewChild(IconComponent) child!: IconComponent;
+  readonly child = viewChild.required(IconComponent);
   size!: 'small' | 'medium' | 'large';
   itemId!: string;
   itemDisplayId!: string;
@@ -41,7 +41,7 @@ describe('ItemIconComponent', () => {
   const setup = () => {
     const fixture = TestBed.createComponent(TestHostComponent);
     const host = fixture.componentInstance;
-    const component = host.child;
+    const component = host.child();
     const page = new IconComponentPage(fixture);
     const service = TestBed.inject(IconService);
 

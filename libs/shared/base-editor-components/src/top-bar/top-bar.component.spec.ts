@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { PageObject } from '@keira/shared/test-utils';
 import { TopBarComponent } from './top-bar.component';
@@ -9,7 +9,7 @@ describe(TopBarComponent.name, () => {
     imports: [TopBarComponent],
   })
   class TestHostComponent {
-    @ViewChild(TopBarComponent) child!: TopBarComponent;
+    readonly child = viewChild.required(TopBarComponent);
     selected: string | undefined;
     selectedName: string | undefined;
     isNew: boolean = false;

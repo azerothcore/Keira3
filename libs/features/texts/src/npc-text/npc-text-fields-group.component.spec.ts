@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, viewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup } from '@angular/forms';
 import { NpcText } from '@keira/shared/acore-world-model';
@@ -16,7 +16,7 @@ describe(NpcTextFieldsGroupComponent.name, () => {
     imports: [NpcTextFieldsGroupComponent],
   })
   class TestHostNpcTextFieldsGroupComponent {
-    @ViewChild(NpcTextFieldsGroupComponent) child!: NpcTextFieldsGroupComponent;
+    readonly child = viewChild.required(NpcTextFieldsGroupComponent);
     formGroup!: FormGroup<ModelForm<NpcText>>;
     groupId!: GroupIdType;
   }
@@ -172,7 +172,7 @@ describe(NpcTextFieldsGroupComponent.name, () => {
   it('should correctly initialise', () => {
     const { host } = setup({ groupId: 4 });
 
-    expect(host.child).toBeDefined();
+    expect(host.child()).toBeDefined();
   });
 
   describe('changing the value of the form should be reflected in the component', () => {
