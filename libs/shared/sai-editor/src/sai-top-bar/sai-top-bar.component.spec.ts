@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, inject as inject_1 } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
@@ -19,8 +19,9 @@ class SaiTopBarComponentPage extends PageObject<TestHostComponent> {
   imports: [SaiTopBarComponent, RouterTestingModule, TranslateTestingModule],
 })
 class TestHostComponent {
+  handlerService = inject_1(SaiHandlerService);
+
   @ViewChild(SaiTopBarComponent, { static: true }) child!: SaiTopBarComponent;
-  constructor(public handlerService: SaiHandlerService) {}
 }
 
 describe('SaiTopBarComponent', () => {

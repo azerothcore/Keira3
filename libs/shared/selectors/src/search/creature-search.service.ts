@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { CREATURE_TEMPLATE_SEARCH_FIELDS, CREATURE_TEMPLATE_TABLE, CreatureTemplate } from '@keira/shared/acore-world-model';
 import { SearchService } from '@keira/shared/base-abstract-classes';
@@ -7,8 +7,13 @@ import { SearchService } from '@keira/shared/base-abstract-classes';
   providedIn: 'root',
 })
 export class CreatureSearchService extends SearchService<CreatureTemplate> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(override readonly queryService: MysqlQueryService) {
+  override readonly queryService: MysqlQueryService;
+
+  constructor() {
+    const queryService = inject(MysqlQueryService);
+
     super(queryService, CREATURE_TEMPLATE_TABLE, CREATURE_TEMPLATE_SEARCH_FIELDS);
+
+    this.queryService = queryService;
   }
 }

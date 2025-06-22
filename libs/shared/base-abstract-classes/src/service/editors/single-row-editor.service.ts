@@ -7,7 +7,6 @@ import { EditorService } from './editor.service';
 export abstract class SingleRowEditorService<T extends TableRow> extends EditorService<T> {
   protected _originalValue!: T;
 
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   protected constructor(
     protected override _entityClass: Class,
     protected override _entityTable: string,

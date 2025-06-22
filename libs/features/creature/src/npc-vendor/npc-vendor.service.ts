@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
 import { ItemExtendedCost, NPC_VENDOR_ID, NPC_VENDOR_ID_2, NPC_VENDOR_TABLE, NpcVendor } from '@keira/shared/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
@@ -9,14 +9,17 @@ import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
   providedIn: 'root',
 })
 export class NpcVendorService extends MultiRowEditorService<NpcVendor> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    protected override readonly handlerService: CreatureHandlerService,
-    override readonly queryService: MysqlQueryService,
-    readonly sqliteQueryService: SqliteQueryService,
-    private iconService: IconService,
-  ) {
+  protected override readonly handlerService: CreatureHandlerService;
+  override readonly queryService = inject(MysqlQueryService);
+  readonly sqliteQueryService = inject(SqliteQueryService);
+  private iconService = inject(IconService);
+
+  constructor() {
+    const handlerService = inject(CreatureHandlerService);
+
     super(NpcVendor, NPC_VENDOR_TABLE, NPC_VENDOR_ID, NPC_VENDOR_ID_2, handlerService);
+
+    this.handlerService = handlerService;
   }
 
   private cache: Promise<string>[] = [];

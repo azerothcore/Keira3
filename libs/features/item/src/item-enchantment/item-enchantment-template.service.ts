@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
 import {
   ITEM_ENCHANTMENT_TEMPLATE_ID,
@@ -12,8 +12,11 @@ import { ItemHandlerService } from '../item-handler.service';
   providedIn: 'root',
 })
 export class ItemEnchantmentTemplateService extends MultiRowEditorService<ItemEnchantmentTemplate> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected override readonly handlerService: ItemHandlerService) {
+  protected override readonly handlerService: ItemHandlerService;
+
+  constructor() {
+    const handlerService = inject(ItemHandlerService);
+
     super(
       ItemEnchantmentTemplate,
       ITEM_ENCHANTMENT_TEMPLATE_TABLE,
@@ -21,5 +24,7 @@ export class ItemEnchantmentTemplateService extends MultiRowEditorService<ItemEn
       ITEM_ENCHANTMENT_TEMPLATE_ID_2,
       handlerService,
     );
+
+    this.handlerService = handlerService;
   }
 }

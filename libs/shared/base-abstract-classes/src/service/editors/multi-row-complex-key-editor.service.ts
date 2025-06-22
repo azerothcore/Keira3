@@ -10,7 +10,6 @@ export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extend
     return JSON.parse(this._entityIdField as string);
   }
 
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   protected constructor(
     protected override _entityClass: Class,
     protected override _entityTable: string,

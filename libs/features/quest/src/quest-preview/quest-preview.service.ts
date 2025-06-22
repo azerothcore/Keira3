@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Injectable } from '@angular/core';
+import { ChangeDetectorRef, Injectable, inject } from '@angular/core';
 import {
   CreatureQuestender,
   CreatureQueststarter,
@@ -44,26 +44,24 @@ import { DifficultyLevel, Quest, QUEST_FACTION_REWARD, QuestFactionRewardKey } f
   providedIn: 'root',
 })
 export class QuestPreviewService {
+  private readonly helperService = inject(PreviewHelperService);
+  readonly mysqlQueryService = inject(MysqlQueryService);
+  readonly sqliteQueryService = inject(SqliteQueryService);
+  private readonly questHandlerService = inject(QuestHandlerService);
+  private readonly questTemplateService = inject(QuestTemplateService);
+  private readonly questRequestItemsService = inject(QuestRequestItemsService);
+  private readonly questTemplateAddonService = inject(QuestTemplateAddonService);
+  private readonly questOfferRewardService = inject(QuestOfferRewardService);
+  private readonly gameobjectQueststarterService = inject(GameobjectQueststarterService);
+  private readonly gameobjectQuestenderService = inject(GameobjectQuestenderService);
+  private readonly creatureQueststarterService = inject(CreatureQueststarterService);
+  private readonly creatureQuestenderService = inject(CreatureQuestenderService);
+
   showPreview = true;
 
   private prevSerieCache: Promise<Quest[]>[] = [];
   private nextSerieCache: Promise<Quest[]>[] = [];
   private nextSerieUsingPrevCache: Promise<Quest[]>[] = [];
-
-  constructor(
-    private readonly helperService: PreviewHelperService,
-    readonly mysqlQueryService: MysqlQueryService,
-    readonly sqliteQueryService: SqliteQueryService,
-    private readonly questHandlerService: QuestHandlerService,
-    private readonly questTemplateService: QuestTemplateService,
-    private readonly questRequestItemsService: QuestRequestItemsService,
-    private readonly questTemplateAddonService: QuestTemplateAddonService,
-    private readonly questOfferRewardService: QuestOfferRewardService,
-    private readonly gameobjectQueststarterService: GameobjectQueststarterService,
-    private readonly gameobjectQuestenderService: GameobjectQuestenderService,
-    private readonly creatureQueststarterService: CreatureQueststarterService,
-    private readonly creatureQuestenderService: CreatureQuestenderService,
-  ) {}
 
   readonly RACES_TEXT = RACES_TEXT;
   readonly CLASSES_TEXT = CLASSES_TEXT;

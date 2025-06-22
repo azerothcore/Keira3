@@ -7,7 +7,7 @@ import { ITEM_TEMPLATE_SEARCH_FIELDS, ITEM_TEMPLATE_TABLE, ItemTemplate } from '
 import { SearchService } from './search.service';
 
 import { mockChangeDetectorRef } from '@keira/shared/test-utils';
-import { Injectable } from '@angular/core';
+import { Injectable, inject as inject_1 } from '@angular/core';
 import Spy = jasmine.Spy;
 
 describe('SearchService', () => {
@@ -25,9 +25,14 @@ describe('SearchService', () => {
     providedIn: 'root',
   })
   class TestSearchService extends SearchService<ItemTemplate> {
-    /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-    constructor(override readonly queryService: MysqlQueryService) {
+    override readonly queryService: MysqlQueryService;
+
+    constructor() {
+      const queryService = inject_1(MysqlQueryService);
+
       super(queryService, ITEM_TEMPLATE_TABLE, ITEM_TEMPLATE_SEARCH_FIELDS);
+
+      this.queryService = queryService;
     }
   }
 

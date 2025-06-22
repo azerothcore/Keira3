@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { TableRow } from '@keira/shared/constants';
 import { ItemExtendedCost, Lock } from '@keira/shared/acore-world-model';
 import { from, Observable, of, shareReplay, tap } from 'rxjs';
@@ -10,15 +10,11 @@ import { ConfigService } from '@keira/shared/common-services';
   providedIn: 'root',
 })
 export class SqliteQueryService extends BaseQueryService {
+  private readonly sqliteService = inject(SqliteService);
+  private readonly configService = inject(ConfigService);
+
   private itemDisplayIdCache: Observable<string | null>[] = [];
   private spellDisplayIdCache: Observable<string | null>[] = [];
-
-  constructor(
-    private readonly sqliteService: SqliteService,
-    private readonly configService: ConfigService,
-  ) {
-    super();
-  }
 
   /* istanbul ignore next */ // Note: will be tested in e2e
   query<T extends TableRow>(queryString: string, silent = false): Observable<T[]> {
