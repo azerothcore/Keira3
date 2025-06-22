@@ -6,7 +6,7 @@ import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { GenericOptionSelectorComponent } from './generic-option-selector.component';
 
 @Component({
-  template: `<keira-generic-option-selector [control]="mockFormControl" [optionList]="EXPANSION"></keira-generic-option-selector>`,
+  template: `<keira-generic-option-selector [control]="mockFormControl" [optionList]="EXPANSION" />`,
   imports: [GenericOptionSelectorComponent],
 })
 class TestHostComponent {

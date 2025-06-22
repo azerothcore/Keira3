@@ -5,7 +5,7 @@ import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { BooleanOptionSelectorComponent } from './boolean-option-selector.component';
 
 @Component({
-  template: `<keira-boolean-option-selector [control]="mockFormControl" controlName="mockFormControl"></keira-boolean-option-selector>`,
+  template: `<keira-boolean-option-selector [control]="mockFormControl" controlName="mockFormControl" />`,
   imports: [BooleanOptionSelectorComponent],
 })
 class TestHostComponent {
