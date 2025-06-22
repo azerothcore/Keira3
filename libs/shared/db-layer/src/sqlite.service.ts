@@ -1,4 +1,4 @@
-import { Inject, Injectable, NgZone } from '@angular/core';
+import { Injectable, NgZone, inject } from '@angular/core';
 
 import { KEIRA_APP_CONFIG_TOKEN, KeiraAppConfig } from '@keira/shared/config';
 import { TableRow } from '@keira/shared/constants';
@@ -10,13 +10,14 @@ import { ElectronService } from '@keira/shared/common-services';
   providedIn: 'root',
 })
 export class SqliteService {
+  private electronService = inject(ElectronService);
+  private ngZone = inject(NgZone);
+
   private readonly db;
 
-  constructor(
-    private electronService: ElectronService,
-    private ngZone: NgZone,
-    @Inject(KEIRA_APP_CONFIG_TOKEN) KEIRA_APP_CONFIG: KeiraAppConfig,
-  ) {
+  constructor() {
+    const KEIRA_APP_CONFIG = inject<KeiraAppConfig>(KEIRA_APP_CONFIG_TOKEN);
+
     /* istanbul ignore next */
     if (this.electronService.isElectron()) {
       const sqlite = window.require('sqlite3');

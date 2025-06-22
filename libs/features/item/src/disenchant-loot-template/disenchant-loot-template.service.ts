@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { LootEditorIdService } from '@keira/shared/base-abstract-classes';
 import {
   DISENCHANT_LOOT_TEMPLATE_TABLE,
@@ -13,8 +13,11 @@ import { ItemHandlerService } from '../item-handler.service';
   providedIn: 'root',
 })
 export class DisenchantLootTemplateService extends LootEditorIdService<DisenchantLootTemplate> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected override readonly handlerService: ItemHandlerService) {
+  protected override readonly handlerService: ItemHandlerService;
+
+  constructor() {
+    const handlerService = inject(ItemHandlerService);
+
     super(
       DisenchantLootTemplate,
       DISENCHANT_LOOT_TEMPLATE_TABLE,
@@ -23,5 +26,7 @@ export class DisenchantLootTemplateService extends LootEditorIdService<Disenchan
       DISENCHANT_TEMPLATE_LOOT_ID,
       handlerService,
     );
+
+    this.handlerService = handlerService;
   }
 }

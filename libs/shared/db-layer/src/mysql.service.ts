@@ -1,4 +1,4 @@
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable, NgZone, inject } from '@angular/core';
 import * as mysql from 'mysql2';
 import { Connection, ConnectionOptions, FieldPacket as FieldInfo, QueryError } from 'mysql2';
 import { Observable, Subject, Subscriber } from 'rxjs';
@@ -9,6 +9,9 @@ import { ElectronService } from '@keira/shared/common-services';
   providedIn: 'root',
 })
 export class MysqlService {
+  private readonly electronService = inject(ElectronService);
+  private readonly ngZone = inject(NgZone);
+
   private mysql!: typeof mysql;
   private _connection!: Connection;
 
@@ -30,10 +33,7 @@ export class MysqlService {
     return this._reconnecting;
   }
 
-  constructor(
-    private readonly electronService: ElectronService,
-    private readonly ngZone: NgZone,
-  ) {
+  constructor() {
     /* istanbul ignore next */
     if (this.electronService.isElectron()) {
       this.mysql = window.require('mysql2');

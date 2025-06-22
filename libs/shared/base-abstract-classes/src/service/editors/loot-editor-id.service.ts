@@ -15,7 +15,6 @@ export abstract class LootEditorIdService<T extends LootTemplate> extends MultiR
     return this._entityTemplateLootField;
   }
 
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   protected constructor(
     protected override _entityClass: Class,
     protected override _entityTable: string,

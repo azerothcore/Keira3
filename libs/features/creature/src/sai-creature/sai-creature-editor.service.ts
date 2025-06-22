@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { SaiEditorService } from '@keira/shared/sai-editor';
 
@@ -6,8 +6,5 @@ import { SaiEditorService } from '@keira/shared/sai-editor';
   providedIn: 'root',
 })
 export class SaiCreatureEditorService extends SaiEditorService {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected override readonly handlerService: SaiCreatureHandlerService) {
-    super(handlerService);
-  }
+  protected override readonly handlerService = inject(SaiCreatureHandlerService);
 }

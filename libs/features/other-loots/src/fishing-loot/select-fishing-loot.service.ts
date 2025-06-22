@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { SelectService } from '@keira/shared/base-abstract-classes';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { FISHING_LOOT_TEMPLATE_TABLE, FishingLootTemplate, LOOT_TEMPLATE_ID } from '@keira/shared/acore-world-model';
@@ -8,11 +8,13 @@ import { FishingLootHandlerService } from './fishing-loot-handler.service';
   providedIn: 'root',
 })
 export class SelectFishingLootService extends SelectService<FishingLootTemplate> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    override readonly queryService: MysqlQueryService,
-    public override readonly handlerService: FishingLootHandlerService,
-  ) {
+  override readonly queryService: MysqlQueryService;
+  override readonly handlerService: FishingLootHandlerService;
+
+  constructor() {
+    const queryService = inject(MysqlQueryService);
+    const handlerService = inject(FishingLootHandlerService);
+
     super(
       queryService,
       handlerService,
@@ -23,5 +25,8 @@ export class SelectFishingLootService extends SelectService<FishingLootTemplate>
       [LOOT_TEMPLATE_ID],
       [LOOT_TEMPLATE_ID],
     );
+
+    this.queryService = queryService;
+    this.handlerService = handlerService;
   }
 }

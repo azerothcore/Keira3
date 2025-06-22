@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { SingleRowEditorService } from '@keira/shared/base-abstract-classes';
 import { SPELL_DBC_ID, SPELL_DBC_NAME, SPELL_DBC_TABLE, SpellDbc } from '@keira/shared/acore-world-model';
 import { SpellHandlerService } from '../spell-handler.service';
@@ -7,8 +7,13 @@ import { SpellHandlerService } from '../spell-handler.service';
   providedIn: 'root',
 })
 export class SpellDbcService extends SingleRowEditorService<SpellDbc> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected override readonly handlerService: SpellHandlerService) {
+  protected override readonly handlerService: SpellHandlerService;
+
+  constructor() {
+    const handlerService = inject(SpellHandlerService);
+
     super(SpellDbc, SPELL_DBC_TABLE, SPELL_DBC_ID, SPELL_DBC_NAME, true, handlerService);
+
+    this.handlerService = handlerService;
   }
 }

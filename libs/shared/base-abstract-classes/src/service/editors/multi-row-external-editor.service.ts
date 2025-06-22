@@ -6,7 +6,6 @@ import { Observable } from 'rxjs';
 // Used where none of the editors table's fields matches with the main entity ID. For example creature_addon (CreatureSpawnAddonService)
 
 export abstract class MultiRowExternalEditorService<T extends TableRow> extends MultiRowEditorService<T> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   protected constructor(
     protected override _entityClass: Class,
     protected override _entityTable: string,

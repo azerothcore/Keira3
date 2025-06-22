@@ -31,7 +31,6 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     return this._errors;
   }
 
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   protected constructor(
     protected override readonly _entityClass: Class,
     protected override readonly _entityTable: string,
@@ -226,9 +225,8 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
       this.addIdToNewRow(newRow);
     }
     const nextId = this.getNextFreeRowId();
-    newRow[this._entitySecondIdField as keyof T] = typeof newRow[this._entitySecondIdField as keyof T] === 'string'
-      ? String(nextId) as T[keyof T]
-      : nextId as T[keyof T];
+    newRow[this._entitySecondIdField as keyof T] =
+      typeof newRow[this._entitySecondIdField as keyof T] === 'string' ? (String(nextId) as T[keyof T]) : (nextId as T[keyof T]);
     this._newRows = [...this._newRows, { ...newRow }];
 
     this.updateDiffQuery();

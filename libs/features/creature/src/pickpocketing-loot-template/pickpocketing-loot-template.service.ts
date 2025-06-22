@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { LootEditorIdService } from '@keira/shared/base-abstract-classes';
 import {
   CREATURE_TEMPLATE_ID,
@@ -14,8 +14,11 @@ import { CreatureHandlerService } from '../creature-handler.service';
   providedIn: 'root',
 })
 export class PickpocketingLootTemplateService extends LootEditorIdService<PickpocketingLootTemplate> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected override readonly handlerService: CreatureHandlerService) {
+  protected override readonly handlerService: CreatureHandlerService;
+
+  constructor() {
+    const handlerService = inject(CreatureHandlerService);
+
     super(
       CreatureLootTemplate,
       PICKPOCKETING_LOOT_TEMPLATE_TABLE,
@@ -24,5 +27,7 @@ export class PickpocketingLootTemplateService extends LootEditorIdService<Pickpo
       CREATURE_TEMPLATE_PICKPOCKETING_LOOT_ID,
       handlerService,
     );
+
+    this.handlerService = handlerService;
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
 import {
   GAMEOBJECT_QUESTENDER_ID,
@@ -12,8 +12,13 @@ import { QuestHandlerService } from '../quest-handler.service';
   providedIn: 'root',
 })
 export class GameobjectQuestenderService extends MultiRowEditorService<GameobjectQuestender> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected override readonly handlerService: QuestHandlerService) {
+  protected override readonly handlerService: QuestHandlerService;
+
+  constructor() {
+    const handlerService = inject(QuestHandlerService);
+
     super(GameobjectQuestender, GAMEOBJECT_QUESTENDER_TABLE, GAMEOBJECT_QUESTENDER_ID, GAMEOBJECT_QUESTENDER_ID_2, handlerService);
+
+    this.handlerService = handlerService;
   }
 }

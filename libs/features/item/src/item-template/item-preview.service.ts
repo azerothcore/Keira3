@@ -3,7 +3,7 @@
 //  - comments should be added to document what the code is actually doing
 //  - type errors should be fixed and any usage of "@ts-ignore" or "any" should be removed
 
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
   FACTION_RANK,
   ITEM_FLAG,
@@ -25,14 +25,11 @@ import { lastValueFrom } from 'rxjs';
   providedIn: 'root',
 })
 export class ItemPreviewService {
-  private readonly ITEM_CONSTANTS = ITEM_CONSTANTS;
+  private readonly sqliteQueryService = inject(SqliteQueryService);
+  private readonly mysqlQueryService = inject(MysqlQueryService);
+  private readonly helperService = inject(PreviewHelperService);
 
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    private readonly sqliteQueryService: SqliteQueryService,
-    private readonly mysqlQueryService: MysqlQueryService,
-    private readonly helperService: PreviewHelperService,
-  ) {}
+  private readonly ITEM_CONSTANTS = ITEM_CONSTANTS;
 
   /**
    * query functions
