@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, viewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 
 import { PageObject } from '@keira/shared/test-utils';
@@ -13,7 +13,7 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
   imports: [NgxDatatableModule, TimedActionlistComponent],
 })
 class TestHostComponent {
-  @ViewChild(TimedActionlistComponent) child!: TimedActionlistComponent;
+  readonly child = viewChild.required(TimedActionlistComponent);
   creatureId!: string;
 }
 
@@ -46,7 +46,7 @@ describe('TimedActionlistComponent', () => {
     spyOn(queryService, 'getTimedActionlists').and.returnValue(of(timedActionlists));
 
     host.creatureId = id;
-    host.child.ngOnChanges();
+    host.child().ngOnChanges();
     page.detectChanges();
 
     expect(page.getDatatableCell(0, 0).innerText).toContain(String(timedActionlists[0].entryorguid));

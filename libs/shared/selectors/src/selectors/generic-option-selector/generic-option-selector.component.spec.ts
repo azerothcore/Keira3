@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, viewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
 import { EXPANSION } from '@keira/shared/acore-world-model';
@@ -10,7 +10,7 @@ import { GenericOptionSelectorComponent } from './generic-option-selector.compon
   imports: [GenericOptionSelectorComponent],
 })
 class TestHostComponent {
-  @ViewChild(GenericOptionSelectorComponent) child!: GenericOptionSelectorComponent;
+  readonly child = viewChild.required(GenericOptionSelectorComponent);
   mockFormControl = new FormControl();
   EXPANSION = EXPANSION;
 }
@@ -27,7 +27,7 @@ describe('GenericOptionSelectorComponent', () => {
   const setup = () => {
     const fixture = TestBed.createComponent(TestHostComponent);
     const host = fixture.componentInstance;
-    const component = host.child;
+    const component = host.child();
     const page = new GenericOptionSelectorComponentPage(fixture);
 
     fixture.detectChanges();

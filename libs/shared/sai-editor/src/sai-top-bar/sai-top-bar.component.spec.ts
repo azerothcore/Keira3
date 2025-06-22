@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, viewChild } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
@@ -19,7 +19,7 @@ class SaiTopBarComponentPage extends PageObject<TestHostComponent> {
   imports: [SaiTopBarComponent, RouterTestingModule, TranslateTestingModule],
 })
 class TestHostComponent {
-  @ViewChild(SaiTopBarComponent, { static: true }) child!: SaiTopBarComponent;
+  readonly child = viewChild.required(SaiTopBarComponent);
   constructor(public handlerService: SaiHandlerService) {}
 }
 

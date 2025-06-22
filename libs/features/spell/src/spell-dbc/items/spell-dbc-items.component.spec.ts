@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -21,7 +21,7 @@ describe('SpellDbcItemsComponent', () => {
     imports: [RouterTestingModule, TranslateTestingModule, SpellDbcItemsComponent],
   })
   class TestHostComponent {
-    @ViewChild(SpellDbcItemsComponent) child!: SpellDbcItemsComponent;
+    readonly child = viewChild.required(SpellDbcItemsComponent);
     form!: FormGroup<ModelForm<SpellDbc>>;
   }
 
@@ -73,7 +73,7 @@ describe('SpellDbcItemsComponent', () => {
     host.form = form;
 
     fixture.detectChanges();
-    const component = host.child;
+    const component = host.child();
 
     return { fixture, component, page, form };
   };
