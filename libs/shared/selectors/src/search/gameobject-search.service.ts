@@ -8,7 +8,10 @@ import { SearchService } from '@keira/shared/base-abstract-classes';
 })
 export class GameobjectSearchService extends SearchService<GameobjectTemplate> {
   override readonly queryService = inject(MysqlQueryService);
-  protected readonly entityTable = GAMEOBJECT_TEMPLATE_TABLE;
-  protected readonly fieldList = GAMEOBJECT_TEMPLATE_SEARCH_FIELDS;
-  private readonly init = this.init();
+  protected override readonly entityTable = GAMEOBJECT_TEMPLATE_TABLE;
+  protected override readonly fieldList = GAMEOBJECT_TEMPLATE_SEARCH_FIELDS;
+  constructor() {
+    super();
+    this.init();
+  }
 }

@@ -48,11 +48,14 @@ export class MockHandlerService extends HandlerService<MockEntity> {
 export class SelectMockService extends SelectService<MockEntity> {
   override readonly queryService = inject(MysqlQueryService);
   override handlerService = inject(MockHandlerService);
-  protected readonly entityTable = MOCK_TABLE;
-  protected readonly entityIdField = MOCK_ID;
-  protected entityNameField = MOCK_NAME;
-  protected readonly fieldList: StringKeys<MockEntity>[] = [];
-  private readonly init = this.init();
+  protected override readonly entityTable = MOCK_TABLE;
+  protected override readonly entityIdField = MOCK_ID;
+  protected override entityNameField = MOCK_NAME;
+  protected override readonly fieldList: StringKeys<MockEntity>[] = [];
+  constructor() {
+    super();
+    this.init();
+  }
 }
 
 @Injectable({

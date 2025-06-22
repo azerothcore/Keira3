@@ -10,9 +10,12 @@ import { GossipHandlerService } from '../gossip-handler.service';
 export class SelectGossipService extends SelectService<GossipMenu> {
   override readonly queryService = inject(MysqlQueryService);
   override readonly handlerService = inject(GossipHandlerService);
-  protected readonly entityTable = GOSSIP_MENU_TABLE;
-  protected readonly entityIdField = GOSSIP_MENU_ID;
-  protected entityNameField = null;
-  protected readonly fieldList = GOSSIP_MENU_SEARCH_FIELDS;
-  private readonly init = this.init();
+  protected override readonly entityTable = GOSSIP_MENU_TABLE;
+  protected override readonly entityIdField = GOSSIP_MENU_ID;
+  protected override entityNameField = null;
+  protected override readonly fieldList = GOSSIP_MENU_SEARCH_FIELDS;
+  constructor() {
+    super();
+    this.init();
+  }
 }

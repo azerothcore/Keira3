@@ -10,9 +10,12 @@ import { SpellHandlerService } from '../spell-handler.service';
 export class SelectSpellService extends SelectService<SpellDbc> {
   override readonly queryService = inject(MysqlQueryService);
   override readonly handlerService = inject(SpellHandlerService);
-  protected readonly entityTable = SPELL_DBC_TABLE;
-  protected readonly entityIdField = SPELL_DBC_ID;
-  protected entityNameField = SPELL_DBC_NAME;
-  protected readonly fieldList = SPELL_DBC_SEARCH_FIELDS;
-  private readonly init = this.init();
+  protected override readonly entityTable = SPELL_DBC_TABLE;
+  protected override readonly entityIdField = SPELL_DBC_ID;
+  protected override entityNameField = SPELL_DBC_NAME;
+  protected override readonly fieldList = SPELL_DBC_SEARCH_FIELDS;
+  constructor() {
+    super();
+    this.init();
+  }
 }

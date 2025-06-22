@@ -16,9 +16,13 @@ import { CreatureHandlerService } from '../creature-handler.service';
 export class SelectCreatureService extends SelectService<CreatureTemplate> {
   override readonly queryService = inject(MysqlQueryService);
   override readonly handlerService = inject(CreatureHandlerService);
-  protected readonly entityTable = CREATURE_TEMPLATE_TABLE;
-  protected readonly entityIdField = CREATURE_TEMPLATE_ID;
-  protected entityNameField = CREATURE_TEMPLATE_NAME;
-  protected readonly fieldList = CREATURE_TEMPLATE_SEARCH_FIELDS;
-  private readonly init = this.init();
+  protected override readonly entityTable = CREATURE_TEMPLATE_TABLE;
+  protected override readonly entityIdField = CREATURE_TEMPLATE_ID;
+  protected override entityNameField = CREATURE_TEMPLATE_NAME;
+  protected override readonly fieldList = CREATURE_TEMPLATE_SEARCH_FIELDS;
+
+  constructor() {
+    super();
+    this.init();
+  }
 }

@@ -9,7 +9,10 @@ import { SqliteQueryService } from '@keira/shared/db-layer';
 })
 export class MapSearchService extends SearchService<Map> {
   protected override queryService = inject(SqliteQueryService);
-  protected readonly entityTable = MAP_TABLE;
-  protected readonly fieldList = MAP_SEARCH_FIELDS;
-  private readonly init = this.init();
+  protected override readonly entityTable = MAP_TABLE;
+  protected override readonly fieldList = MAP_SEARCH_FIELDS;
+  constructor() {
+    super();
+    this.init();
+  }
 }

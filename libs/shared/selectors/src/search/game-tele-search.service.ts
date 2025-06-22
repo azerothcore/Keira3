@@ -8,7 +8,10 @@ import { SearchService } from '@keira/shared/base-abstract-classes';
 })
 export class GameTeleSearchService extends SearchService<GameTele> {
   override readonly queryService = inject(MysqlQueryService);
-  protected readonly entityTable = GAME_TELE_TABLE;
-  protected readonly fieldList = GAME_TELE_SEARCH_FIELDS;
-  private readonly init = this.init();
+  protected override readonly entityTable = GAME_TELE_TABLE;
+  protected override readonly fieldList = GAME_TELE_SEARCH_FIELDS;
+  constructor() {
+    super();
+    this.init();
+  }
 }

@@ -26,9 +26,12 @@ describe('SearchService', () => {
   })
   class TestSearchService extends SearchService<ItemTemplate> {
     override readonly queryService = inject_1(MysqlQueryService);
-    protected readonly entityTable = ITEM_TEMPLATE_TABLE;
-    protected readonly fieldList = ITEM_TEMPLATE_SEARCH_FIELDS;
-    private readonly init = this.init();
+    protected override readonly entityTable = ITEM_TEMPLATE_TABLE;
+    protected override readonly fieldList = ITEM_TEMPLATE_SEARCH_FIELDS;
+    constructor() {
+      super();
+      this.init();
+    }
   }
 
   beforeEach(() => {

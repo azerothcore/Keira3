@@ -8,7 +8,10 @@ import { SearchService } from '@keira/shared/base-abstract-classes';
 })
 export class ConditionsSearchService extends SearchService<Conditions> {
   override readonly queryService = inject(MysqlQueryService);
-  protected readonly entityTable = CONDITIONS_TABLE;
-  protected readonly fieldList = CONDITIONS_SEARCH_FIELDS;
-  private readonly init = this.init();
+  protected override readonly entityTable = CONDITIONS_TABLE;
+  protected override readonly fieldList = CONDITIONS_SEARCH_FIELDS;
+  constructor() {
+    super();
+    this.init();
+  }
 }

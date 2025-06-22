@@ -16,9 +16,12 @@ import { ItemHandlerService } from '../item-handler.service';
 export class SelectItemService extends SelectService<ItemTemplate> {
   override readonly queryService = inject(MysqlQueryService);
   override readonly handlerService = inject(ItemHandlerService);
-  protected readonly entityTable = ITEM_TEMPLATE_TABLE;
-  protected readonly entityIdField = ITEM_TEMPLATE_ID;
-  protected entityNameField = ITEM_TEMPLATE_NAME;
-  protected readonly fieldList = ITEM_TEMPLATE_SEARCH_FIELDS;
-  private readonly init = this.init();
+  protected override readonly entityTable = ITEM_TEMPLATE_TABLE;
+  protected override readonly entityIdField = ITEM_TEMPLATE_ID;
+  protected override entityNameField = ITEM_TEMPLATE_NAME;
+  protected override readonly fieldList = ITEM_TEMPLATE_SEARCH_FIELDS;
+  constructor() {
+    super();
+    this.init();
+  }
 }

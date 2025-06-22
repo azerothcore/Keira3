@@ -10,9 +10,12 @@ import { GAME_TELE_ID, GAME_TELE_NAME, GAME_TELE_SEARCH_FIELDS, GAME_TELE_TABLE,
 export class SelectGameTeleService extends SelectService<GameTele> {
   override readonly queryService = inject(MysqlQueryService);
   override readonly handlerService = inject(GameTeleHandlerService);
-  protected readonly entityTable = GAME_TELE_TABLE;
-  protected readonly entityIdField = GAME_TELE_ID;
-  protected entityNameField = GAME_TELE_NAME;
-  protected readonly fieldList = GAME_TELE_SEARCH_FIELDS;
-  private readonly init = this.init();
+  protected override readonly entityTable = GAME_TELE_TABLE;
+  protected override readonly entityIdField = GAME_TELE_ID;
+  protected override entityNameField = GAME_TELE_NAME;
+  protected override readonly fieldList = GAME_TELE_SEARCH_FIELDS;
+  constructor() {
+    super();
+    this.init();
+  }
 }

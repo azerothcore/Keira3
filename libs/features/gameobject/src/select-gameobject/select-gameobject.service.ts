@@ -16,9 +16,12 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
 export class SelectGameobjectService extends SelectService<GameobjectTemplate> {
   override readonly queryService = inject(MysqlQueryService);
   override readonly handlerService = inject(GameobjectHandlerService);
-  protected readonly entityTable = GAMEOBJECT_TEMPLATE_TABLE;
-  protected readonly entityIdField = GAMEOBJECT_TEMPLATE_ID;
-  protected entityNameField = GAMEOBJECT_TEMPLATE_NAME;
-  protected readonly fieldList = GAMEOBJECT_TEMPLATE_SEARCH_FIELDS;
-  private readonly init = this.init();
+  protected override readonly entityTable = GAMEOBJECT_TEMPLATE_TABLE;
+  protected override readonly entityIdField = GAMEOBJECT_TEMPLATE_ID;
+  protected override entityNameField = GAMEOBJECT_TEMPLATE_NAME;
+  protected override readonly fieldList = GAMEOBJECT_TEMPLATE_SEARCH_FIELDS;
+  constructor() {
+    super();
+    this.init();
+  }
 }

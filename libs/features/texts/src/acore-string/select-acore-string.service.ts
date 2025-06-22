@@ -16,9 +16,12 @@ import { AcoreStringHandlerService } from './acore-string-handler.service';
 export class SelectAcoreStringService extends SelectService<AcoreString> {
   override readonly queryService = inject(MysqlQueryService);
   override readonly handlerService = inject(AcoreStringHandlerService);
-  protected readonly entityTable = ACORE_STRING_TABLE;
-  protected readonly entityIdField = ACORE_STRING_ENTRY;
-  protected entityNameField = ACORE_STRING_DEFAULT;
-  protected readonly fieldList = ACORE_STRING_SEARCH_FIELDS;
-  private readonly init = this.init();
+  protected override readonly entityTable = ACORE_STRING_TABLE;
+  protected override readonly entityIdField = ACORE_STRING_ENTRY;
+  protected override entityNameField = ACORE_STRING_DEFAULT;
+  protected override readonly fieldList = ACORE_STRING_SEARCH_FIELDS;
+  constructor() {
+    super();
+    this.init();
+  }
 }

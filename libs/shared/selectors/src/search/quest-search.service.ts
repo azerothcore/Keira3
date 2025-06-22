@@ -9,7 +9,10 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
 })
 export class QuestSearchService extends SearchService<QuestTemplate> {
   protected override queryService = inject(MysqlQueryService);
-  protected readonly entityTable = QUEST_TEMPLATE_TABLE;
-  protected readonly fieldList = QUEST_TEMPLATE_SEARCH_FIELDS;
-  private readonly init = this.init();
+  protected override readonly entityTable = QUEST_TEMPLATE_TABLE;
+  protected override readonly fieldList = QUEST_TEMPLATE_SEARCH_FIELDS;
+  constructor() {
+    super();
+    this.init();
+  }
 }

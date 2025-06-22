@@ -9,7 +9,10 @@ import { SqliteQueryService } from '@keira/shared/db-layer';
 })
 export class AreaSearchService extends SearchService<Area> {
   protected override queryService = inject(SqliteQueryService);
-  protected readonly entityTable = AREA_TABLE;
-  protected readonly fieldList = AREA_SEARCH_FIELDS;
-  private readonly init = this.init();
+  protected override readonly entityTable = AREA_TABLE;
+  protected override readonly fieldList = AREA_SEARCH_FIELDS;
+  constructor() {
+    super();
+    this.init();
+  }
 }

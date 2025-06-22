@@ -5,7 +5,7 @@ import { BaseQueryService } from '@keira/shared/db-layer';
 import { ModelForm, ModelNestedForm, SubscriptionHandler } from '@keira/shared/utils';
 
 export abstract class SearchService<T extends TableRow> extends SubscriptionHandler {
-  query: string;
+  query: string = '';
   rows: T[] | undefined;
   pageOffset = 0; // Initialize to the first page
   fields: FormGroup<ModelForm<T>> = new FormGroup({} as any);
@@ -20,21 +20,12 @@ export abstract class SearchService<T extends TableRow> extends SubscriptionHand
   protected readonly selectFields: string[] | undefined = undefined;
   protected readonly groupFields: string[] | undefined = undefined;
 
-  protected constructor() {
-    super();
-  }
-
   protected init(): void {
     for (const field of this.fieldList) {
       this.fields.addControl(field, new FormControl());
     }
 
-    this.query = this.queryService.getSearchQuery(
-      this.entityTable,
-      this.queryForm.getRawValue(),
-      this.selectFields,
-      this.groupFields,
-    );
+    this.query = this.queryService.getSearchQuery(this.entityTable, this.queryForm.getRawValue(), this.selectFields, this.groupFields);
 
     this.subscriptions.push(
       this.queryForm.valueChanges.subscribe(() => {

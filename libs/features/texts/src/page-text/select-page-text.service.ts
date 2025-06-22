@@ -10,9 +10,12 @@ import { PageTextHandlerService } from './page-text-handler.service';
 export class SelectPageTextService extends SelectService<PageText> {
   override readonly queryService = inject(MysqlQueryService);
   override readonly handlerService = inject(PageTextHandlerService);
-  protected readonly entityTable = PAGE_TEXT_TABLE;
-  protected readonly entityIdField = PAGE_TEXT_ID;
-  protected entityNameField = PAGE_TEXT_NAME;
-  protected readonly fieldList = PAGE_TEXT_SEARCH_FIELDS;
-  private readonly init = this.init();
+  protected override readonly entityTable = PAGE_TEXT_TABLE;
+  protected override readonly entityIdField = PAGE_TEXT_ID;
+  protected override entityNameField = PAGE_TEXT_NAME;
+  protected override readonly fieldList = PAGE_TEXT_SEARCH_FIELDS;
+  constructor() {
+    super();
+    this.init();
+  }
 }
