@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, viewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
@@ -9,7 +9,7 @@ import { BooleanOptionSelectorComponent } from './boolean-option-selector.compon
   imports: [BooleanOptionSelectorComponent],
 })
 class TestHostComponent {
-  @ViewChild(BooleanOptionSelectorComponent) child!: BooleanOptionSelectorComponent;
+  readonly child = viewChild.required(BooleanOptionSelectorComponent);
   mockFormControl = new FormControl();
 }
 
@@ -25,7 +25,7 @@ describe('BooleanOptionSelectorComponent', () => {
   const setup = () => {
     const fixture = TestBed.createComponent(TestHostComponent);
     const host = fixture.componentInstance;
-    const component = host.child;
+    const component = host.child();
     const page = new BooleanOptionSelectorComponentPage(fixture);
 
     fixture.detectChanges();
