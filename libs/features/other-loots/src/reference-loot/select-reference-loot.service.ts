@@ -8,25 +8,16 @@ import { ReferenceLootHandlerService } from './reference-loot-handler.service';
   providedIn: 'root',
 })
 export class SelectReferenceLootService extends SelectService<ReferenceLootTemplate> {
-  override readonly queryService: MysqlQueryService;
-  override readonly handlerService: ReferenceLootHandlerService;
-
+  override readonly queryService = inject(MysqlQueryService);
+  override readonly handlerService = inject(ReferenceLootHandlerService);
+  protected override readonly entityTable = REFERENCE_LOOT_TEMPLATE_TABLE;
+  protected override readonly entityIdField = LOOT_TEMPLATE_ID;
+  protected override entityNameField = null;
+  protected override readonly fieldList = [LOOT_TEMPLATE_ID];
+  protected override readonly selectFields = [LOOT_TEMPLATE_ID];
+  protected override readonly groupFields = [LOOT_TEMPLATE_ID];
   constructor() {
-    const queryService = inject(MysqlQueryService);
-    const handlerService = inject(ReferenceLootHandlerService);
-
-    super(
-      queryService,
-      handlerService,
-      REFERENCE_LOOT_TEMPLATE_TABLE,
-      LOOT_TEMPLATE_ID,
-      null,
-      [LOOT_TEMPLATE_ID],
-      [LOOT_TEMPLATE_ID],
-      [LOOT_TEMPLATE_ID],
-    );
-
-    this.queryService = queryService;
-    this.handlerService = handlerService;
+    super();
+    this.init();
   }
 }

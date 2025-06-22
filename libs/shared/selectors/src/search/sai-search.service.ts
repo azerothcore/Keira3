@@ -7,13 +7,13 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
   providedIn: 'root',
 })
 export class SaiSearchService extends SearchService<SmartScripts> {
-  override readonly queryService: MysqlQueryService;
-
+  override readonly queryService = inject(MysqlQueryService);
+  protected override readonly entityTable = SAI_TABLE;
+  protected override readonly fieldList = SAI_SEARCH_FIELDS;
+  protected override readonly selectFields = SAI_ID_FIELDS;
+  protected override readonly groupFields = SAI_ID_FIELDS;
   constructor() {
-    const queryService = inject(MysqlQueryService);
-
-    super(queryService, SAI_TABLE, SAI_SEARCH_FIELDS, SAI_ID_FIELDS, SAI_ID_FIELDS);
-
-    this.queryService = queryService;
+    super();
+    this.init();
   }
 }

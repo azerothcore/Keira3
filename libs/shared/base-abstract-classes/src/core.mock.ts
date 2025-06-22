@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 import { Injectable, inject } from '@angular/core';
-import { TableRow } from '@keira/shared/constants';
+import { TableRow, StringKeys } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { Observable } from 'rxjs';
 import { MultiRowComplexKeyEditorService } from './service/editors/multi-row-complex-key-editor.service';
@@ -46,17 +46,15 @@ export class MockHandlerService extends HandlerService<MockEntity> {
   providedIn: 'root',
 })
 export class SelectMockService extends SelectService<MockEntity> {
-  override readonly queryService: MysqlQueryService;
-  override handlerService: MockHandlerService;
-
+  override readonly queryService = inject(MysqlQueryService);
+  override handlerService = inject(MockHandlerService);
+  protected override readonly entityTable = MOCK_TABLE;
+  protected override readonly entityIdField = MOCK_ID;
+  protected override entityNameField = MOCK_NAME;
+  protected override readonly fieldList: StringKeys<MockEntity>[] = [];
   constructor() {
-    const queryService = inject(MysqlQueryService);
-    const handlerService = inject(MockHandlerService);
-
-    super(queryService, handlerService, MOCK_TABLE, MOCK_ID, MOCK_NAME, []);
-
-    this.queryService = queryService;
-    this.handlerService = handlerService;
+    super();
+    this.init();
   }
 }
 

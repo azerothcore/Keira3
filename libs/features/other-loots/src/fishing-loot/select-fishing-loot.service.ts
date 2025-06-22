@@ -8,25 +8,16 @@ import { FishingLootHandlerService } from './fishing-loot-handler.service';
   providedIn: 'root',
 })
 export class SelectFishingLootService extends SelectService<FishingLootTemplate> {
-  override readonly queryService: MysqlQueryService;
-  override readonly handlerService: FishingLootHandlerService;
-
+  override readonly queryService = inject(MysqlQueryService);
+  override readonly handlerService = inject(FishingLootHandlerService);
+  protected override readonly entityTable = FISHING_LOOT_TEMPLATE_TABLE;
+  protected override readonly entityIdField = LOOT_TEMPLATE_ID;
+  protected override entityNameField = null;
+  protected override readonly fieldList = [LOOT_TEMPLATE_ID];
+  protected override readonly selectFields = [LOOT_TEMPLATE_ID];
+  protected override readonly groupFields = [LOOT_TEMPLATE_ID];
   constructor() {
-    const queryService = inject(MysqlQueryService);
-    const handlerService = inject(FishingLootHandlerService);
-
-    super(
-      queryService,
-      handlerService,
-      FISHING_LOOT_TEMPLATE_TABLE,
-      LOOT_TEMPLATE_ID,
-      null,
-      [LOOT_TEMPLATE_ID],
-      [LOOT_TEMPLATE_ID],
-      [LOOT_TEMPLATE_ID],
-    );
-
-    this.queryService = queryService;
-    this.handlerService = handlerService;
+    super();
+    this.init();
   }
 }

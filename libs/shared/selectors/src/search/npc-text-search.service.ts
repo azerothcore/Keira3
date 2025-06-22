@@ -7,13 +7,11 @@ import { SearchService } from '@keira/shared/base-abstract-classes';
   providedIn: 'root',
 })
 export class NpcTextSearchService extends SearchService<NpcText> {
-  override readonly queryService: MysqlQueryService;
-
+  override readonly queryService = inject(MysqlQueryService);
+  protected override readonly entityTable = NPC_TEXT_TABLE;
+  protected override readonly fieldList = NPC_TEXT_SEARCH_FIELDS;
   constructor() {
-    const queryService = inject(MysqlQueryService);
-
-    super(queryService, NPC_TEXT_TABLE, NPC_TEXT_SEARCH_FIELDS);
-
-    this.queryService = queryService;
+    super();
+    this.init();
   }
 }

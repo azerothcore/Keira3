@@ -7,13 +7,11 @@ import { SearchService } from '@keira/shared/base-abstract-classes';
   providedIn: 'root',
 })
 export class ConditionsSearchService extends SearchService<Conditions> {
-  override readonly queryService: MysqlQueryService;
-
+  override readonly queryService = inject(MysqlQueryService);
+  protected override readonly entityTable = CONDITIONS_TABLE;
+  protected override readonly fieldList = CONDITIONS_SEARCH_FIELDS;
   constructor() {
-    const queryService = inject(MysqlQueryService);
-
-    super(queryService, CONDITIONS_TABLE, CONDITIONS_SEARCH_FIELDS);
-
-    this.queryService = queryService;
+    super();
+    this.init();
   }
 }

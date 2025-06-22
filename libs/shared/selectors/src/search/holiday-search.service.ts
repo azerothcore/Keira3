@@ -8,13 +8,11 @@ import { SqliteQueryService } from '@keira/shared/db-layer';
   providedIn: 'root',
 })
 export class HolidaySearchService extends SearchService<Holiday> {
-  protected override queryService: SqliteQueryService;
-
+  protected override queryService = inject(SqliteQueryService);
+  protected override readonly entityTable = HOLIDAY_TABLE;
+  protected override readonly fieldList = HOLIDAY_SEARCH_FIELDS;
   constructor() {
-    const queryService = inject(SqliteQueryService);
-
-    super(queryService, HOLIDAY_TABLE, HOLIDAY_SEARCH_FIELDS);
-
-    this.queryService = queryService;
+    super();
+    this.init();
   }
 }
