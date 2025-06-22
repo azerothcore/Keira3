@@ -40,8 +40,6 @@ To use Keira3, you don't need to install any dependency. Just [download](https:/
 
 :warning: [Windows 7 or older Windows versions](https://github.com/azerothcore/Keira3/issues/2212) are not officially supported.
 
-Here's an improved version of your paragraph with better clarity, grammar, and flow:  
-
 ---
 
 ### Troubleshooting

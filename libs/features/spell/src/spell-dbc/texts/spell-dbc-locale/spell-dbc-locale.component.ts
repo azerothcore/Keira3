@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, input } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ModelForm } from '@keira/shared/utils';
 import { SpellDbc } from '@keira/shared/acore-world-model';
@@ -14,9 +14,9 @@ export class SpellDbcLocaleComponent {
   readonly FIELDS = SPELL_DBC_TEXT_FIELDS;
 
   @Input({ required: true }) formGroup!: FormGroup<ModelForm<SpellDbc>>;
-  @Input({ required: true }) locale!: Locale;
+  readonly locale = input.required<Locale>();
 
   getFieldName(field: SpellDbcTextFieldPrefix): string {
-    return `${field}_${this.locale}`; // example: NameSubtext_Lang_esES
+    return `${field}_${this.locale()}`; // example: NameSubtext_Lang_esES
   }
 }

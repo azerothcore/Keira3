@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { instance, mock } from 'ts-mockito';
@@ -7,10 +7,6 @@ import { LanguageSelectorModalComponent } from './language-selector-modal.compon
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 
 describe('LanguageSelectorModalComponent', () => {
-  let component: LanguageSelectorModalComponent;
-  let fixture: ComponentFixture<LanguageSelectorModalComponent>;
-  let searchService: LanguageSearchService;
-
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [LanguageSelectorModalComponent, TranslateTestingModule],
@@ -22,16 +18,18 @@ describe('LanguageSelectorModalComponent', () => {
     }).compileComponents();
   }));
 
-  beforeEach(() => {
-    searchService = TestBed.inject(LanguageSearchService);
+  function setup() {
+    const searchService = TestBed.inject(LanguageSearchService);
     searchService.query = '--mock query';
 
-    fixture = TestBed.createComponent(LanguageSelectorModalComponent);
-    component = fixture.componentInstance;
+    const fixture = TestBed.createComponent(LanguageSelectorModalComponent);
+    const component = fixture.componentInstance;
     fixture.detectChanges();
-  });
+    return { searchService, fixture, component };
+  }
 
   it('should create', () => {
+    const { component } = setup();
     expect(component).toBeTruthy();
   });
 });

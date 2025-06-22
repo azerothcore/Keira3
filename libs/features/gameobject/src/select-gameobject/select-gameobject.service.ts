@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { SelectService } from '@keira/shared/base-abstract-classes';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import {
@@ -14,18 +14,14 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
   providedIn: 'root',
 })
 export class SelectGameobjectService extends SelectService<GameobjectTemplate> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(
-    override readonly queryService: MysqlQueryService,
-    public override readonly handlerService: GameobjectHandlerService,
-  ) {
-    super(
-      queryService,
-      handlerService,
-      GAMEOBJECT_TEMPLATE_TABLE,
-      GAMEOBJECT_TEMPLATE_ID,
-      GAMEOBJECT_TEMPLATE_NAME,
-      GAMEOBJECT_TEMPLATE_SEARCH_FIELDS,
-    );
+  override readonly queryService = inject(MysqlQueryService);
+  override readonly handlerService = inject(GameobjectHandlerService);
+  protected override readonly entityTable = GAMEOBJECT_TEMPLATE_TABLE;
+  protected override readonly entityIdField = GAMEOBJECT_TEMPLATE_ID;
+  protected override entityNameField = GAMEOBJECT_TEMPLATE_NAME;
+  protected override readonly fieldList = GAMEOBJECT_TEMPLATE_SEARCH_FIELDS;
+  constructor() {
+    super();
+    this.init();
   }
 }

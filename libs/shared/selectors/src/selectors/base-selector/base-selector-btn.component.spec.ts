@@ -39,6 +39,7 @@ describe('BaseSelectorBtnComponent', () => {
 
   const setup = () => {
     const fixture = TestBed.createComponent(ItemSelectorBtnComponent);
+    fixture.componentRef.setInput('disabled', false);
     const component = fixture.componentInstance;
     component.control = new UntypedFormControl();
     fixture.detectChanges();

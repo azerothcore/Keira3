@@ -10,6 +10,8 @@ import { lastValueFrom, Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScripts> {
+  protected override readonly handlerService = inject(SaiHandlerService);
+
   protected saiCommentGeneratorService = inject(SaiCommentGeneratorService);
 
   protected _errorLinkedEvent = false;
@@ -17,9 +19,8 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
     return this._errorLinkedEvent;
   }
 
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected override readonly handlerService: SaiHandlerService) {
-    super(SmartScripts, SAI_TABLE, SAI_ID_FIELDS, SAI_ID_2, handlerService);
+  constructor() {
+    super(SmartScripts, SAI_TABLE, SAI_ID_FIELDS, SAI_ID_2);
   }
 
   protected updateFullQuery(): void {

@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, viewChild } from '@angular/core';
 import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -17,7 +17,7 @@ import { QueryOutputComponent } from './query-output.component';
   imports: [FormsModule, TranslateTestingModule, QueryOutputComponent],
 })
 class TestHostComponent {
-  @ViewChild(QueryOutputComponent) child!: QueryOutputComponent<TableRow>;
+  readonly child = viewChild.required(QueryOutputComponent);
   docUrl!: string;
   editorService!: EditorService<any>;
 }
@@ -58,7 +58,7 @@ describe('QueryOutputComponent', () => {
 
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
-    const component = host.child;
+    const component = host.child();
 
     return { page, fixture, component, host };
   };

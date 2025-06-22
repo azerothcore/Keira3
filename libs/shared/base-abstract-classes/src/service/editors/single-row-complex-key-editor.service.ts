@@ -2,7 +2,6 @@ import { Observable } from 'rxjs';
 
 import { Class, TableRow } from '@keira/shared/constants';
 import { SingleRowEditorService } from './single-row-editor.service';
-import { HandlerService } from '../handlers/handler.service';
 import { getPartial } from '@keira/shared/utils';
 import { QueryError } from 'mysql2';
 import { ChangeDetectorRef } from '@angular/core';
@@ -12,16 +11,14 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
     return JSON.parse(this._entityIdField);
   }
 
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
   protected constructor(
     protected override _entityClass: Class,
     protected override _entityTable: string,
     _entityIdField: string[],
     protected override _entityNameField: string | undefined | null,
     protected override isMainEntity: boolean,
-    protected override handlerService: HandlerService<T>,
   ) {
-    super(_entityClass, _entityTable, JSON.stringify(_entityIdField), _entityNameField, isMainEntity, handlerService);
+    super(_entityClass, _entityTable, JSON.stringify(_entityIdField), _entityNameField, isMainEntity);
   }
 
   protected override disableEntityIdField() {}

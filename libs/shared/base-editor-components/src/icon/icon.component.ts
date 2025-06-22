@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input, input } from '@angular/core';
 import { ICON_SKILLS } from '@keira/shared/constants';
 import { IconService } from './icon.service';
 import { SubscriptionHandler } from '@keira/shared/utils';
@@ -17,7 +17,7 @@ export class IconComponent extends SubscriptionHandler {
   private readonly DEFAULT_ICON = 'inv_misc_questionmark';
   private _iconId: string = this.DEFAULT_ICON;
 
-  @Input() size: 'small' | 'medium' | 'large' = 'medium';
+  readonly size = input<'small' | 'medium' | 'large'>('medium');
   @Input() set itemId(itemId: string | number) {
     if (!!itemId) {
       this.subscriptions.push(this.service.getIconByItemId(itemId).subscribe(this.setIcon.bind(this)));
@@ -41,7 +41,7 @@ export class IconComponent extends SubscriptionHandler {
   }
 
   get iconLink(): string {
-    return `https://wow.zamimg.com/images/wow/icons/${this.size}/${this._iconId}.jpg`;
+    return `https://wow.zamimg.com/images/wow/icons/${this.size()}/${this._iconId}.jpg`;
   }
 
   private setIcon(icon: string) {
