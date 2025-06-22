@@ -255,8 +255,8 @@
       "DETECTION_RANGE": "Controla el rango en el que las criaturas detectan y ven a los jugadores.",
       "ITEMID1": "This is the item number of the equipment used in the right hand from Item.dbc.",
       "ITEMID2": "This is the item number of the equipment used in the left hand from Item.dbc.",
-      "ItemID3": "This is the item number of the equipment used in the ranged slot from Item.dbc.",
-      "FactionHint": "When refering to the Creature's Faction ID it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki."
+      "ITEMID3": "This is the item number of the equipment used in the ranged slot from Item.dbc.",
+      "FACTION": "When refering to the Creature's Faction ID it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki."
     },
     "TEMPLATE_ADDON": {
       "ENTRY": "Enlazado con creature_template.entry (ID de la Criatura)",
@@ -355,7 +355,11 @@
       "REW_MONEY_DIFFICULTY": "Si lo requiere, RewardMoneyDifficulty (Recompensa de Dinero por Dificultad)",
       "REWARD_SPELL": "Hechizo que será aprendido como recompensa al completar la Misión dentro del Registro de Misiones. Tenga en cuenta que este hechizo NO se enseñará si el campo RewardSpell no es igual a cero.",
       "REWARD_HONOR": "Número de Honor recompensado por completar esta Misión",
-      "REWARD_FACTIONS_TOOLTIP": "Identificador (ID) de la facción respectiva, para que al momento de completar la Misión sume (o reste) puntos de reputación."
+      "REWARD_FACTIONS_TOOLTIP": "Identificador (ID) de la facción respectiva, para que al momento de completar la Misión sume (o reste) puntos de reputación.",
+      "REQUIRED_FACTION": "Required Faction to be able to pick up the quest, when refering to the Quest Faction ID required, it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki.",
+      "REQUIRED_CREATURE_OR_GAMEOBJECT": "Required Creature or Gameobject for the quest objective",
+      "REQUIRED_CREATURE_OR_GAMEOBJECT_COUNT": "The amount required to complete the objective.",
+      "REQUIRED_FACTION_VALUE": "The numeric value required for the specified faction."
     },
     "TEMPLATE_ADDON": {
       "ADDON_BASE": "Addon Base",
@@ -448,6 +452,12 @@
     },
     "SPAWN_ADDON": {
       "GUID": "Enlazado con gameobject.guid (El Identificador Único Global del Objeto)"
+    },
+    "TEMPLATE_ADDON": {
+      "FACTION": "The Gameobject's faction, when refering to the Faction ID required, it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki.",
+      "MINGOLD": "Minimum money, in copper, that the gameobject can drop when accessed / used.",
+      "MAXGOLD": "Maximum money, in copper, that the gameobject can drop when accessed / used.",
+      "ARTKIT": "Updates display if object is activated by SPELL_EFFCT_ACTIVATE_OBJECT with MiscValue 19 - 22."
     }
   },
   "ITEM": {
@@ -518,7 +528,9 @@
       "SPELL_PPM_RATES": "Tasa de Procesos por Minuto, la cual controla la frecuencia con la que se activará el hechizo (En caso de que #spelltrigger == 2).",
       "SPELL_COOLDOWNS": "El Enfriamiento (la recarga) en milisegundos para este hechizo en particular, que controla la frecuencia con la que puede ser lanzado. Utilice el valor -1 en este campo para el Tiempo de Reutilización de Hechizos que viene por defecto en el mismo. Nota: Esto no equivale al 'Enfriamiento Interno' (Internal Cooldown) de los procesos que se encuentran comúnmente en Items como Abalorios, con efectos de 'Probabilidad al Golpear' a un objetivo aleatorio por ejemplo.",
       "SPELL_CATEGORIES": "La Categoría a la que pertenece este Hechizo en particular",
-      "SPELL_CATEGORY_COOLDOWNS": "El Tiempo de Enfriamiento (la recarga) en milisegundos que es aplicada a todos los demás Hechizos que caben dentro de la Categoría a la que también pertenece el Hechizo. Utilice el valor -1 en este campo para el Tiempo de Reutilización de Hechizos que viene por defecto en el mismo."
+      "SPELL_CATEGORY_COOLDOWNS": "El Tiempo de Enfriamiento (la recarga) en milisegundos que es aplicada a todos los demás Hechizos que caben dentro de la Categoría a la que también pertenece el Hechizo. Utilice el valor -1 en este campo para el Tiempo de Reutilización de Hechizos que viene por defecto en el mismo.",
+      "REQUIRED_FACTION": "Required Faction to be able to use the item, when refering to the Item Faction ID required, it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki.",
+      "REQUIRED_FACTION_RANK": "The rank value required for the specified faction."
     }
   },
   "LOOT_EDITOR": {

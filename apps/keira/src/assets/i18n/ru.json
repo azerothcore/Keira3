@@ -255,8 +255,8 @@
       "DETECTION_RANGE": "Controls the range at which creatures detect and see players.",
       "ITEMID1": "This is the item number of the equipment used in the right hand from Item.dbc.",
       "ITEMID2": "This is the item number of the equipment used in the left hand from Item.dbc.",
-      "ItemID3": "This is the item number of the equipment used in the ranged slot from Item.dbc.",
-      "FactionHint": "When refering to the Creature's Faction ID it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki."
+      "ITEMID3": "This is the item number of the equipment used in the ranged slot from Item.dbc.",
+      "FACTION": "When refering to the Creature's Faction ID it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki."
     },
     "TEMPLATE_ADDON": {
       "ENTRY": "Ссылка на creature_template.entry",
@@ -355,7 +355,11 @@
       "REW_MONEY_DIFFICULTY": "TODO: RewardMoneyDifficulty tooltip",
       "REWARD_SPELL": "Spell that is shown to be casted on quest completion in the quest log. Note that this spell will NOT be casted if RewardSpell is non-zero.",
       "REWARD_HONOR": "Number of honorable kill honor rewarded for completing this quest",
-      "REWARD_FACTIONS_TOOLTIP": "Faction ID for which the quest adds (or subtracts) reputation points."
+      "REWARD_FACTIONS_TOOLTIP": "Faction ID for which the quest adds (or subtracts) reputation points.",
+      "REQUIRED_FACTION": "Required Faction to be able to pick up the quest, when refering to the Quest Faction ID required, it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki.",
+      "REQUIRED_CREATURE_OR_GAMEOBJECT": "Required Creature or Gameobject for the quest objective",
+      "REQUIRED_CREATURE_OR_GAMEOBJECT_COUNT": "The amount required to complete the objective.",
+      "REQUIRED_FACTION_VALUE": "The numeric value required for the specified faction."
     },
     "TEMPLATE_ADDON": {
       "ADDON_BASE": "Addon Base",
@@ -448,6 +452,12 @@
     },
     "SPAWN_ADDON": {
       "GUID": "Link to gameobject.guid"
+    },
+    "TEMPLATE_ADDON": {
+      "FACTION": "The Gameobject's faction, when refering to the Faction ID required, it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki.",
+      "MINGOLD": "Minimum money, in copper, that the gameobject can drop when accessed / used.",
+      "MAXGOLD": "Maximum money, in copper, that the gameobject can drop when accessed / used.",
+      "ARTKIT": "Updates display if object is activated by SPELL_EFFCT_ACTIVATE_OBJECT with MiscValue 19 - 22."
     }
   },
   "ITEM": {
@@ -518,7 +528,9 @@
       "SPELL_PPM_RATES": "The proc per minute rate controlling how often the spell is triggered (if #spelltrigger == 2).",
       "SPELL_COOLDOWNS": "The cooldown in milliseconds for the specific spell controlling how often the spell can be used. Use -1 to use the default spell cooldown. Note: this is not the “internal cooldown” of procs commonly found on items such as trinkets with “Chance on hit” effects.",
       "SPELL_CATEGORIES": "The category that the spell is in",
-      "SPELL_CATEGORY_COOLDOWNS": "The cooldown time in milliseconds that is applied to all other spells in the category that the triggered spell is also in. Use -1 to use the default spell cooldown."
+      "SPELL_CATEGORY_COOLDOWNS": "The cooldown time in milliseconds that is applied to all other spells in the category that the triggered spell is also in. Use -1 to use the default spell cooldown.",
+      "REQUIRED_FACTION": "Required Faction to be able to use the item, when refering to the Item Faction ID required, it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki.",
+      "REQUIRED_FACTION_RANK": "The rank value required for the specified faction."
     }
   },
   "LOOT_EDITOR": {

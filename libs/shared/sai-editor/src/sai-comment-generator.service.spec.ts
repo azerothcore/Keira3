@@ -1963,6 +1963,17 @@ describe('SaiCommentGeneratorService', () => {
         },
         expected: `MockEntity - In Combat - Move To [unsupported target type]`,
       },
+      ...[
+        { action_param2: 0, comment: 'Off' },
+        { action_param2: 1, comment: 'On' },
+      ].map(({ action_param2, comment }) => ({
+        name: `SAI_ACTIONS.DISABLE_REWARD _onOffActionParamTwo_ ${comment}`,
+        input: {
+          action_type: SAI_ACTIONS.DISABLE_REWARD,
+          action_param2,
+        },
+        expected: `MockEntity - In Combat - Disable reward: Disable Reputation Off, Disable Loot ${comment}`,
+      })),
     ];
 
     for (const { name, input, expected } of cases) {
