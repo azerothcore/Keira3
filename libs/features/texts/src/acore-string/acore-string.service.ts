@@ -7,13 +7,9 @@ import { ACORE_STRING_DEFAULT, ACORE_STRING_ENTRY, ACORE_STRING_TABLE, AcoreStri
   providedIn: 'root',
 })
 export class AcoreStringService extends SingleRowEditorService<AcoreString> {
-  protected override handlerService: AcoreStringHandlerService;
+  protected override readonly handlerService = inject(AcoreStringHandlerService);
 
   constructor() {
-    const handlerService = inject(AcoreStringHandlerService);
-
-    super(AcoreString, ACORE_STRING_TABLE, ACORE_STRING_ENTRY, ACORE_STRING_DEFAULT, true, handlerService);
-
-    this.handlerService = handlerService;
+    super(AcoreString, ACORE_STRING_TABLE, ACORE_STRING_ENTRY, ACORE_STRING_DEFAULT, true);
   }
 }

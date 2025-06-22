@@ -12,11 +12,9 @@ import { ItemHandlerService } from '../item-handler.service';
   providedIn: 'root',
 })
 export class ItemEnchantmentTemplateService extends MultiRowEditorService<ItemEnchantmentTemplate> {
-  protected override readonly handlerService: ItemHandlerService;
+  protected override readonly handlerService = inject(ItemHandlerService);
 
   constructor() {
-    const handlerService = inject(ItemHandlerService);
-
     super(
       ItemEnchantmentTemplate,
       ITEM_ENCHANTMENT_TEMPLATE_TABLE,
@@ -24,7 +22,5 @@ export class ItemEnchantmentTemplateService extends MultiRowEditorService<ItemEn
       ITEM_ENCHANTMENT_TEMPLATE_ID_2,
       handlerService,
     );
-
-    this.handlerService = handlerService;
   }
 }

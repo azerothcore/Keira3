@@ -48,11 +48,12 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
     return this._error as QueryError;
   }
 
+  protected abstract handlerService: HandlerService<T>;
+
   protected constructor(
     protected _entityClass: Class,
     protected _entityTable: string,
     protected _entityIdField: string | undefined,
-    protected handlerService: HandlerService<T>,
   ) {
     super();
     this.fields = this.getClassAttributes(this._entityClass);

@@ -12,13 +12,9 @@ import { ReferenceLootHandlerService } from './reference-loot-handler.service';
   providedIn: 'root',
 })
 export class ReferenceLootTemplateService extends MultiRowEditorService<ReferenceLootTemplate> {
-  protected override readonly handlerService: ReferenceLootHandlerService;
+  protected override readonly handlerService = inject(ReferenceLootHandlerService);
 
   constructor() {
-    const handlerService = inject(ReferenceLootHandlerService);
-
-    super(ReferenceLootTemplate, REFERENCE_LOOT_TEMPLATE_TABLE, LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2, handlerService);
-
-    this.handlerService = handlerService;
+    super(ReferenceLootTemplate, REFERENCE_LOOT_TEMPLATE_TABLE, LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2);
   }
 }

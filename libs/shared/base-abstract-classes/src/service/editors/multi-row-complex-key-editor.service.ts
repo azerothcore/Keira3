@@ -1,7 +1,6 @@
 import { Class, TableRow } from '@keira/shared/constants';
 import { QueryError } from 'mysql2';
 import { Observable } from 'rxjs';
-import { HandlerService } from '../handlers/handler.service';
 import { MultiRowEditorService } from './multi-row-editor.service';
 import { ChangeDetectorRef } from '@angular/core';
 
@@ -15,9 +14,8 @@ export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extend
     protected override _entityTable: string,
     _entityIdField: string[],
     protected override _entitySecondIdField: string,
-    protected override handlerService: HandlerService<T>,
   ) {
-    super(_entityClass, _entityTable, JSON.stringify(_entityIdField), _entitySecondIdField, handlerService);
+    super(_entityClass, _entityTable, JSON.stringify(_entityIdField), _entitySecondIdField);
   }
 
   protected override disableEntityIdField() {}

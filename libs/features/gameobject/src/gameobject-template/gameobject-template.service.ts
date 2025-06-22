@@ -13,14 +13,10 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
   providedIn: 'root',
 })
 export class GameobjectTemplateService extends SingleRowEditorService<GameobjectTemplate> {
-  protected override readonly handlerService: GameobjectHandlerService;
+  protected override readonly handlerService = inject(GameobjectHandlerService);
 
   constructor() {
-    const handlerService = inject(GameobjectHandlerService);
-
-    super(GameobjectTemplate, GAMEOBJECT_TEMPLATE_TABLE, GAMEOBJECT_TEMPLATE_ID, GAMEOBJECT_TEMPLATE_NAME, true, handlerService);
-
-    this.handlerService = handlerService;
+    super(GameobjectTemplate, GAMEOBJECT_TEMPLATE_TABLE, GAMEOBJECT_TEMPLATE_ID, GAMEOBJECT_TEMPLATE_NAME, true);
   }
 
   getFieldDefinition(type: number, dataIndex: number): FieldDefinition {

@@ -7,13 +7,9 @@ import { ItemHandlerService } from '../item-handler.service';
   providedIn: 'root',
 })
 export class MillingLootTemplateService extends MultiRowEditorService<MillingLootTemplate> {
-  protected override readonly handlerService: ItemHandlerService;
+  protected override readonly handlerService = inject(ItemHandlerService);
 
   constructor() {
-    const handlerService = inject(ItemHandlerService);
-
-    super(MillingLootTemplate, MILLING_LOOT_TEMPLATE_TABLE, LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2, handlerService);
-
-    this.handlerService = handlerService;
+    super(MillingLootTemplate, MILLING_LOOT_TEMPLATE_TABLE, LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2);
   }
 }

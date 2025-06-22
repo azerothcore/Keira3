@@ -7,13 +7,9 @@ import { ItemHandlerService } from '../item-handler.service';
   providedIn: 'root',
 })
 export class ItemTemplateService extends SingleRowEditorService<ItemTemplate> {
-  protected override readonly handlerService: ItemHandlerService;
+  protected override readonly handlerService = inject(ItemHandlerService);
 
   constructor() {
-    const handlerService = inject(ItemHandlerService);
-
-    super(ItemTemplate, ITEM_TEMPLATE_TABLE, ITEM_TEMPLATE_ID, ITEM_TEMPLATE_NAME, true, handlerService);
-
-    this.handlerService = handlerService;
+    super(ItemTemplate, ITEM_TEMPLATE_TABLE, ITEM_TEMPLATE_ID, ITEM_TEMPLATE_NAME, true);
   }
 }

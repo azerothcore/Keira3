@@ -7,13 +7,9 @@ import { PageTextHandlerService } from './page-text-handler.service';
   providedIn: 'root',
 })
 export class PageTextService extends SingleRowEditorService<PageText> {
-  protected override handlerService: PageTextHandlerService;
+  protected override readonly handlerService = inject(PageTextHandlerService);
 
   constructor() {
-    const handlerService = inject(PageTextHandlerService);
-
-    super(PageText, PAGE_TEXT_TABLE, PAGE_TEXT_ID, PAGE_TEXT_NAME, true, handlerService);
-
-    this.handlerService = handlerService;
+    super(PageText, PAGE_TEXT_TABLE, PAGE_TEXT_ID, PAGE_TEXT_NAME, true);
   }
 }

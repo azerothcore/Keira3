@@ -7,13 +7,9 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
   providedIn: 'root',
 })
 export class GameobjectTemplateAddonService extends SingleRowEditorService<GameobjectTemplateAddon> {
-  protected override readonly handlerService: GameobjectHandlerService;
+  protected override readonly handlerService = inject(GameobjectHandlerService);
 
   constructor() {
-    const handlerService = inject(GameobjectHandlerService);
-
-    super(GameobjectTemplateAddon, GAMEOBJECT_TEMPLATE_ADDON_TABLE, GAMEOBJECT_TEMPLATE_ADDON_ID, null, true, handlerService);
-
-    this.handlerService = handlerService;
+    super(GameobjectTemplateAddon, GAMEOBJECT_TEMPLATE_ADDON_TABLE, GAMEOBJECT_TEMPLATE_ADDON_ID, null, true);
   }
 }

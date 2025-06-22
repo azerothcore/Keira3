@@ -7,13 +7,9 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
   providedIn: 'root',
 })
 export class GameobjectSpawnService extends MultiRowEditorService<GameobjectSpawn> {
-  protected override readonly handlerService: GameobjectHandlerService;
+  protected override readonly handlerService = inject(GameobjectHandlerService);
 
   constructor() {
-    const handlerService = inject(GameobjectHandlerService);
-
-    super(GameobjectSpawn, GAMEOBJECT_SPAWN_TABLE, GAMEOBJECT_SPAWN_ID, GAMEOBJECT_SPAWN_ID_2, handlerService);
-
-    this.handlerService = handlerService;
+    super(GameobjectSpawn, GAMEOBJECT_SPAWN_TABLE, GAMEOBJECT_SPAWN_ID, GAMEOBJECT_SPAWN_ID_2);
   }
 }

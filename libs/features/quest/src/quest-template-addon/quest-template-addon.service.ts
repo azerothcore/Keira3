@@ -7,13 +7,9 @@ import { QuestHandlerService } from '../quest-handler.service';
   providedIn: 'root',
 })
 export class QuestTemplateAddonService extends SingleRowEditorService<QuestTemplateAddon> {
-  protected override readonly handlerService: QuestHandlerService;
+  protected override readonly handlerService = inject(QuestHandlerService);
 
   constructor() {
-    const handlerService = inject(QuestHandlerService);
-
-    super(QuestTemplateAddon, QUEST_TEMPLATE_ADDON_TABLE, QUEST_TEMPLATE_ADDON_ID, null, false, handlerService);
-
-    this.handlerService = handlerService;
+    super(QuestTemplateAddon, QUEST_TEMPLATE_ADDON_TABLE, QUEST_TEMPLATE_ADDON_ID, null, false);
   }
 }

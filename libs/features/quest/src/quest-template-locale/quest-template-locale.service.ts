@@ -12,13 +12,9 @@ import { QuestHandlerService } from '../quest-handler.service';
   providedIn: 'root',
 })
 export class QuestTemplateLocaleService extends MultiRowEditorService<QuestTemplateLocale> {
-  protected override readonly handlerService: QuestHandlerService;
+  protected override readonly handlerService = inject(QuestHandlerService);
 
   constructor() {
-    const handlerService = inject(QuestHandlerService);
-
-    super(QuestTemplateLocale, QUEST_TEMPLATE_LOCALE_TABLE, QUEST_TEMPLATE_LOCALE_ID, QUEST_TEMPLATE_LOCALE_ID_2, handlerService);
-
-    this.handlerService = handlerService;
+    super(QuestTemplateLocale, QUEST_TEMPLATE_LOCALE_TABLE, QUEST_TEMPLATE_LOCALE_ID, QUEST_TEMPLATE_LOCALE_ID_2);
   }
 }

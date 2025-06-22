@@ -12,13 +12,9 @@ import { CreatureHandlerService } from '../creature-handler.service';
   providedIn: 'root',
 })
 export class CreatureQuestitemService extends MultiRowEditorService<CreatureQuestitem> {
-  protected override readonly handlerService: CreatureHandlerService;
+  protected override readonly handlerService = inject(CreatureHandlerService);
 
   constructor() {
-    const handlerService = inject(CreatureHandlerService);
-
-    super(CreatureQuestitem, CREATURE_QUESTITEM_TABLE, CREATURE_QUESTITEM_ID, CREATURE_QUESTITEM_ID_2, handlerService);
-
-    this.handlerService = handlerService;
+    super(CreatureQuestitem, CREATURE_QUESTITEM_TABLE, CREATURE_QUESTITEM_ID, CREATURE_QUESTITEM_ID_2);
   }
 }

@@ -7,13 +7,9 @@ import { ConditionsHandlerService } from '../conditions-handler.service';
   providedIn: 'root',
 })
 export class ConditionsService extends SingleRowComplexKeyEditorService<Conditions> {
-  protected override readonly handlerService: ConditionsHandlerService;
+  protected override readonly handlerService = inject(ConditionsHandlerService);
 
   constructor() {
-    const handlerService = inject(ConditionsHandlerService);
-
-    super(Conditions, CONDITIONS_TABLE, CONDITIONS_ID_FIELDS, null, true, handlerService);
-
-    this.handlerService = handlerService;
+    super(Conditions, CONDITIONS_TABLE, CONDITIONS_ID_FIELDS, null, true);
   }
 }

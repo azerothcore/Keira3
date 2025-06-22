@@ -2,7 +2,6 @@ import { FormGroup } from '@angular/forms';
 import { Class, TableRow } from '@keira/shared/constants';
 import { compareObjFn, ModelForm } from '@keira/shared/utils';
 import { distinctUntilChanged } from 'rxjs';
-import { HandlerService } from '../handlers/handler.service';
 import { EditorService } from './editor.service';
 
 export abstract class MultiRowEditorService<T extends TableRow> extends EditorService<T> {
@@ -36,10 +35,9 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     protected override readonly _entityTable: string,
     protected override readonly _entityIdField: string | undefined,
     protected readonly _entitySecondIdField: string,
-    protected override readonly handlerService: HandlerService<T>,
     protected readonly _entityExtraIdField: string | undefined = undefined,
   ) {
-    super(_entityClass, _entityTable, _entityIdField, handlerService);
+    super(_entityClass, _entityTable, _entityIdField);
     this.initForm();
   }
 

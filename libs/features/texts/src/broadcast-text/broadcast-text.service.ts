@@ -7,13 +7,9 @@ import { BroadcastTextHandlerService } from './broadcast-text-handler.service';
   providedIn: 'root',
 })
 export class BroadcastTextService extends SingleRowEditorService<BroadcastText> {
-  protected override handlerService: BroadcastTextHandlerService;
+  protected override readonly handlerService = inject(BroadcastTextHandlerService);
 
   constructor() {
-    const handlerService = inject(BroadcastTextHandlerService);
-
-    super(BroadcastText, BROADCAST_TEXT_TABLE, BROADCAST_TEXT_ID, BROADCAST_TEXT_NAME, true, handlerService);
-
-    this.handlerService = handlerService;
+    super(BroadcastText, BROADCAST_TEXT_TABLE, BROADCAST_TEXT_ID, BROADCAST_TEXT_NAME, true);
   }
 }

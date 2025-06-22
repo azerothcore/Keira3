@@ -9,17 +9,13 @@ import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
   providedIn: 'root',
 })
 export class NpcVendorService extends MultiRowEditorService<NpcVendor> {
-  protected override readonly handlerService: CreatureHandlerService;
+  protected override readonly handlerService = inject(CreatureHandlerService);
   override readonly queryService = inject(MysqlQueryService);
   readonly sqliteQueryService = inject(SqliteQueryService);
   private iconService = inject(IconService);
 
   constructor() {
-    const handlerService = inject(CreatureHandlerService);
-
-    super(NpcVendor, NPC_VENDOR_TABLE, NPC_VENDOR_ID, NPC_VENDOR_ID_2, handlerService);
-
-    this.handlerService = handlerService;
+    super(NpcVendor, NPC_VENDOR_TABLE, NPC_VENDOR_ID, NPC_VENDOR_ID_2);
   }
 
   private cache: Promise<string>[] = [];

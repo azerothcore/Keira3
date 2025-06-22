@@ -7,13 +7,9 @@ import { FishingLootHandlerService } from './fishing-loot-handler.service';
   providedIn: 'root',
 })
 export class FishingLootTemplateService extends MultiRowEditorService<FishingLootTemplate> {
-  protected override readonly handlerService: FishingLootHandlerService;
+  protected override readonly handlerService = inject(FishingLootHandlerService);
 
   constructor() {
-    const handlerService = inject(FishingLootHandlerService);
-
-    super(FishingLootTemplate, FISHING_LOOT_TEMPLATE_TABLE, LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2, handlerService);
-
-    this.handlerService = handlerService;
+    super(FishingLootTemplate, FISHING_LOOT_TEMPLATE_TABLE, LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2);
   }
 }

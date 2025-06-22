@@ -1,5 +1,4 @@
 import { Class, TableRow } from '@keira/shared/constants';
-import { HandlerService } from '../handlers/handler.service';
 import { MultiRowEditorService } from './multi-row-editor.service';
 import { Observable } from 'rxjs';
 
@@ -10,14 +9,12 @@ export abstract class MultiRowExternalEditorService<T extends TableRow> extends 
     protected override _entityClass: Class,
     protected override _entityTable: string,
     protected override _entitySecondIdField: string,
-    protected override handlerService: HandlerService<T>,
   ) {
     super(
       _entityClass,
       _entityTable,
       undefined, // none of the editors table's fields matches with the main entity ID
       _entitySecondIdField,
-      handlerService,
     );
   }
 

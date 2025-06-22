@@ -12,13 +12,9 @@ import { QuestHandlerService } from '../quest-handler.service';
   providedIn: 'root',
 })
 export class GameobjectQuestenderService extends MultiRowEditorService<GameobjectQuestender> {
-  protected override readonly handlerService: QuestHandlerService;
+  protected override readonly handlerService = inject(QuestHandlerService);
 
   constructor() {
-    const handlerService = inject(QuestHandlerService);
-
-    super(GameobjectQuestender, GAMEOBJECT_QUESTENDER_TABLE, GAMEOBJECT_QUESTENDER_ID, GAMEOBJECT_QUESTENDER_ID_2, handlerService);
-
-    this.handlerService = handlerService;
+    super(GameobjectQuestender, GAMEOBJECT_QUESTENDER_TABLE, GAMEOBJECT_QUESTENDER_ID, GAMEOBJECT_QUESTENDER_ID_2);
   }
 }
