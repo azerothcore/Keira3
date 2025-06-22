@@ -10,7 +10,7 @@ import { lastValueFrom, Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScripts> {
-  protected override readonly handlerService: SaiHandlerService;
+  protected override readonly handlerService = inject(SaiHandlerService);
 
   protected saiCommentGeneratorService = inject(SaiCommentGeneratorService);
 
@@ -20,11 +20,7 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
   }
 
   constructor() {
-    const handlerService = inject(SaiHandlerService);
-
-    super(SmartScripts, SAI_TABLE, SAI_ID_FIELDS, SAI_ID_2, handlerService);
-
-    this.handlerService = handlerService;
+    super(SmartScripts, SAI_TABLE, SAI_ID_FIELDS, SAI_ID_2);
   }
 
   protected updateFullQuery(): void {

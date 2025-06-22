@@ -15,12 +15,6 @@ export class ItemEnchantmentTemplateService extends MultiRowEditorService<ItemEn
   protected override readonly handlerService = inject(ItemHandlerService);
 
   constructor() {
-    super(
-      ItemEnchantmentTemplate,
-      ITEM_ENCHANTMENT_TEMPLATE_TABLE,
-      ITEM_ENCHANTMENT_TEMPLATE_ID,
-      ITEM_ENCHANTMENT_TEMPLATE_ID_2,
-      handlerService,
-    );
+    super(ItemEnchantmentTemplate, ITEM_ENCHANTMENT_TEMPLATE_TABLE, ITEM_ENCHANTMENT_TEMPLATE_ID, ITEM_ENCHANTMENT_TEMPLATE_ID_2);
   }
 }

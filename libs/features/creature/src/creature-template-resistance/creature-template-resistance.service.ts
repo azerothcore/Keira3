@@ -22,7 +22,6 @@ export class CreatureTemplateResistanceService extends MultiRowEditorService<Cre
       CREATURE_TEMPLATE_RESISTANCE_TABLE,
       CREATURE_TEMPLATE_RESISTANCE_ID,
       CREATURE_TEMPLATE_RESISTANCE_ID_2,
-      handlerService,
     );
   }
 }

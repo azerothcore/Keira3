@@ -15,21 +15,16 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
   providedIn: 'root',
 })
 export class GameobjectLootTemplateService extends LootEditorIdService<GameobjectLootTemplate> {
-  protected override readonly handlerService: GameobjectHandlerService;
+  protected override readonly handlerService = inject(GameobjectHandlerService);
 
   constructor() {
-    const handlerService = inject(GameobjectHandlerService);
-
     super(
       GameobjectLootTemplate,
       GAMEOBJECT_LOOT_TEMPLATE_TABLE,
       GAMEOBJECT_TEMPLATE_TABLE,
       GAMEOBJECT_TEMPLATE_ID,
       GAMEOBJECT_TEMPLATE_LOOT_ID,
-      handlerService,
     );
-
-    this.handlerService = handlerService;
   }
 
   getType(): Observable<{ type: number }[]> {
