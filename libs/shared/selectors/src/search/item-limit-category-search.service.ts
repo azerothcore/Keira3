@@ -8,13 +8,8 @@ import { SqliteQueryService } from '@keira/shared/db-layer';
   providedIn: 'root',
 })
 export class ItemLimitCategorySearchService extends SearchService<ItemLimitCategory> {
-  protected override queryService: SqliteQueryService;
-
-  constructor() {
-    const queryService = inject(SqliteQueryService);
-
-    super(queryService, ITEM_LIMIT_CATEGORY_TABLE, ITEM_LIMIT_CATEGORY_SEARCH_FIELDS);
-
-    this.queryService = queryService;
-  }
+  protected override queryService = inject(SqliteQueryService);
+  protected readonly entityTable = ITEM_LIMIT_CATEGORY_TABLE;
+  protected readonly fieldList = ITEM_LIMIT_CATEGORY_SEARCH_FIELDS;
+  private readonly init = this.init();
 }

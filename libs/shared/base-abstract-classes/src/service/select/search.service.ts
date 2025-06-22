@@ -14,20 +14,27 @@ export abstract class SearchService<T extends TableRow> extends SubscriptionHand
     fields: this.fields as any, // TODO: fix typing
   });
 
-  protected constructor(
-    protected readonly queryService: BaseQueryService,
-    protected readonly entityTable: string,
-    protected readonly fieldList: StringKeys<T>[],
-    protected readonly selectFields: string[] | undefined = undefined,
-    protected readonly groupFields: string[] | undefined = undefined,
-  ) {
-    super();
+  protected abstract readonly queryService: BaseQueryService;
+  protected abstract readonly entityTable: string;
+  protected abstract readonly fieldList: StringKeys<T>[];
+  protected readonly selectFields: string[] | undefined = undefined;
+  protected readonly groupFields: string[] | undefined = undefined;
 
+  protected constructor() {
+    super();
+  }
+
+  protected init(): void {
     for (const field of this.fieldList) {
       this.fields.addControl(field, new FormControl());
     }
 
-    this.query = this.queryService.getSearchQuery(this.entityTable, this.queryForm.getRawValue(), this.selectFields, this.groupFields);
+    this.query = this.queryService.getSearchQuery(
+      this.entityTable,
+      this.queryForm.getRawValue(),
+      this.selectFields,
+      this.groupFields,
+    );
 
     this.subscriptions.push(
       this.queryForm.valueChanges.subscribe(() => {

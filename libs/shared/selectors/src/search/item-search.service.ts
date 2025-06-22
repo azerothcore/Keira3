@@ -7,13 +7,8 @@ import { SearchService } from '@keira/shared/base-abstract-classes';
   providedIn: 'root',
 })
 export class ItemSearchService extends SearchService<ItemTemplate> {
-  override readonly queryService: MysqlQueryService;
-
-  constructor() {
-    const queryService = inject(MysqlQueryService);
-
-    super(queryService, ITEM_TEMPLATE_TABLE, ITEM_TEMPLATE_SEARCH_FIELDS);
-
-    this.queryService = queryService;
-  }
+  override readonly queryService = inject(MysqlQueryService);
+  protected readonly entityTable = ITEM_TEMPLATE_TABLE;
+  protected readonly fieldList = ITEM_TEMPLATE_SEARCH_FIELDS;
+  private readonly init = this.init();
 }

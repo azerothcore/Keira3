@@ -8,13 +8,8 @@ import { SqliteQueryService } from '@keira/shared/db-layer';
   providedIn: 'root',
 })
 export class ItemEnchantmentSearchService extends SearchService<ItemEnchantment> {
-  protected override queryService: SqliteQueryService;
-
-  constructor() {
-    const queryService = inject(SqliteQueryService);
-
-    super(queryService, ITEM_ENCHANTMENT_TABLE, ITEM_ENCHANTMENT_SEARCH_FIELDS);
-
-    this.queryService = queryService;
-  }
+  protected override queryService = inject(SqliteQueryService);
+  protected readonly entityTable = ITEM_ENCHANTMENT_TABLE;
+  protected readonly fieldList = ITEM_ENCHANTMENT_SEARCH_FIELDS;
+  private readonly init = this.init();
 }

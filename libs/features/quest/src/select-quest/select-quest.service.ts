@@ -14,16 +14,11 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
   providedIn: 'root',
 })
 export class SelectQuestService extends SelectService<QuestTemplate> {
-  override readonly queryService: MysqlQueryService;
-  override readonly handlerService: QuestHandlerService;
-
-  constructor() {
-    const queryService = inject(MysqlQueryService);
-    const handlerService = inject(QuestHandlerService);
-
-    super(queryService, handlerService, QUEST_TEMPLATE_TABLE, QUEST_TEMPLATE_ID, QUEST_TEMPLATE_NAME, QUEST_TEMPLATE_SEARCH_FIELDS);
-
-    this.queryService = queryService;
-    this.handlerService = handlerService;
-  }
+  override readonly queryService = inject(MysqlQueryService);
+  override readonly handlerService = inject(QuestHandlerService);
+  protected readonly entityTable = QUEST_TEMPLATE_TABLE;
+  protected readonly entityIdField = QUEST_TEMPLATE_ID;
+  protected entityNameField = QUEST_TEMPLATE_NAME;
+  protected readonly fieldList = QUEST_TEMPLATE_SEARCH_FIELDS;
+  private readonly init = this.init();
 }

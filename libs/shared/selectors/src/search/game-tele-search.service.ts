@@ -7,13 +7,8 @@ import { SearchService } from '@keira/shared/base-abstract-classes';
   providedIn: 'root',
 })
 export class GameTeleSearchService extends SearchService<GameTele> {
-  override readonly queryService: MysqlQueryService;
-
-  constructor() {
-    const queryService = inject(MysqlQueryService);
-
-    super(queryService, GAME_TELE_TABLE, GAME_TELE_SEARCH_FIELDS);
-
-    this.queryService = queryService;
-  }
+  override readonly queryService = inject(MysqlQueryService);
+  protected readonly entityTable = GAME_TELE_TABLE;
+  protected readonly fieldList = GAME_TELE_SEARCH_FIELDS;
+  private readonly init = this.init();
 }

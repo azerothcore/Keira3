@@ -8,13 +8,8 @@ import { SqliteQueryService } from '@keira/shared/db-layer';
   providedIn: 'root',
 })
 export class SpellSearchService extends SearchService<Spell> {
-  protected override queryService: SqliteQueryService;
-
-  constructor() {
-    const queryService = inject(SqliteQueryService);
-
-    super(queryService, SPELL_TABLE, SPELL_SEARCH_FIELDS);
-
-    this.queryService = queryService;
-  }
+  protected override queryService = inject(SqliteQueryService);
+  protected readonly entityTable = SPELL_TABLE;
+  protected readonly fieldList = SPELL_SEARCH_FIELDS;
+  private readonly init = this.init();
 }

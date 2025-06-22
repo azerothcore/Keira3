@@ -4,17 +4,17 @@ import { HandlerService } from '../handlers/handler.service';
 import { SearchService } from './search.service';
 
 export abstract class SelectService<T extends TableRow> extends SearchService<T> {
-  protected constructor(
-    override readonly queryService: MysqlQueryService,
-    public readonly handlerService: HandlerService<T>,
-    protected override readonly entityTable: string,
-    protected readonly entityIdField: string,
-    protected entityNameField: string | undefined | null,
-    protected override readonly fieldList: StringKeys<T>[],
-    protected override readonly selectFields: string[] | undefined = undefined,
-    protected override readonly groupFields: string[] | undefined = undefined,
-  ) {
-    super(queryService, entityTable, fieldList, selectFields, groupFields);
+  override abstract readonly queryService: MysqlQueryService;
+  abstract readonly handlerService: HandlerService<T>;
+  protected abstract readonly entityTable: string;
+  protected abstract readonly entityIdField: string;
+  protected entityNameField: string | undefined | null = undefined;
+  protected override abstract readonly fieldList: StringKeys<T>[];
+  protected override readonly selectFields: string[] | undefined = undefined;
+  protected override readonly groupFields: string[] | undefined = undefined;
+
+  protected constructor() {
+    super();
   }
 
   onSelect({ selected }: { selected: { [_key: string]: string | number }[] }) {

@@ -8,13 +8,8 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
   providedIn: 'root',
 })
 export class QuestSearchService extends SearchService<QuestTemplate> {
-  protected override queryService: MysqlQueryService;
-
-  constructor() {
-    const queryService = inject(MysqlQueryService);
-
-    super(queryService, QUEST_TEMPLATE_TABLE, QUEST_TEMPLATE_SEARCH_FIELDS);
-
-    this.queryService = queryService;
-  }
+  protected override queryService = inject(MysqlQueryService);
+  protected readonly entityTable = QUEST_TEMPLATE_TABLE;
+  protected readonly fieldList = QUEST_TEMPLATE_SEARCH_FIELDS;
+  private readonly init = this.init();
 }

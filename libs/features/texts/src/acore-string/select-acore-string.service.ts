@@ -14,16 +14,11 @@ import { AcoreStringHandlerService } from './acore-string-handler.service';
   providedIn: 'root',
 })
 export class SelectAcoreStringService extends SelectService<AcoreString> {
-  override readonly queryService: MysqlQueryService;
-  override readonly handlerService: AcoreStringHandlerService;
-
-  constructor() {
-    const queryService = inject(MysqlQueryService);
-    const handlerService = inject(AcoreStringHandlerService);
-
-    super(queryService, handlerService, ACORE_STRING_TABLE, ACORE_STRING_ENTRY, ACORE_STRING_DEFAULT, ACORE_STRING_SEARCH_FIELDS);
-
-    this.queryService = queryService;
-    this.handlerService = handlerService;
-  }
+  override readonly queryService = inject(MysqlQueryService);
+  override readonly handlerService = inject(AcoreStringHandlerService);
+  protected readonly entityTable = ACORE_STRING_TABLE;
+  protected readonly entityIdField = ACORE_STRING_ENTRY;
+  protected entityNameField = ACORE_STRING_DEFAULT;
+  protected readonly fieldList = ACORE_STRING_SEARCH_FIELDS;
+  private readonly init = this.init();
 }

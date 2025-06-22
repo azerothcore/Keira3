@@ -25,15 +25,10 @@ describe('SearchService', () => {
     providedIn: 'root',
   })
   class TestSearchService extends SearchService<ItemTemplate> {
-    override readonly queryService: MysqlQueryService;
-
-    constructor() {
-      const queryService = inject_1(MysqlQueryService);
-
-      super(queryService, ITEM_TEMPLATE_TABLE, ITEM_TEMPLATE_SEARCH_FIELDS);
-
-      this.queryService = queryService;
-    }
+    override readonly queryService = inject_1(MysqlQueryService);
+    protected readonly entityTable = ITEM_TEMPLATE_TABLE;
+    protected readonly fieldList = ITEM_TEMPLATE_SEARCH_FIELDS;
+    private readonly init = this.init();
   }
 
   beforeEach(() => {

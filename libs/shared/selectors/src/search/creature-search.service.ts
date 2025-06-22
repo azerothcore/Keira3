@@ -7,13 +7,8 @@ import { SearchService } from '@keira/shared/base-abstract-classes';
   providedIn: 'root',
 })
 export class CreatureSearchService extends SearchService<CreatureTemplate> {
-  override readonly queryService: MysqlQueryService;
-
-  constructor() {
-    const queryService = inject(MysqlQueryService);
-
-    super(queryService, CREATURE_TEMPLATE_TABLE, CREATURE_TEMPLATE_SEARCH_FIELDS);
-
-    this.queryService = queryService;
-  }
+  override readonly queryService = inject(MysqlQueryService);
+  protected readonly entityTable = CREATURE_TEMPLATE_TABLE;
+  protected readonly fieldList = CREATURE_TEMPLATE_SEARCH_FIELDS;
+  private readonly init = this.init();
 }

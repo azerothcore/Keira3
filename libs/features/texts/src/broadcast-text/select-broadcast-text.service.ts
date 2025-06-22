@@ -14,16 +14,11 @@ import { BroadcastTextHandlerService } from './broadcast-text-handler.service';
   providedIn: 'root',
 })
 export class SelectBroadcastTextService extends SelectService<BroadcastText> {
-  override readonly queryService: MysqlQueryService;
-  override readonly handlerService: BroadcastTextHandlerService;
-
-  constructor() {
-    const queryService = inject(MysqlQueryService);
-    const handlerService = inject(BroadcastTextHandlerService);
-
-    super(queryService, handlerService, BROADCAST_TEXT_TABLE, BROADCAST_TEXT_ID, BROADCAST_TEXT_NAME, BROADCAST_TEXT_SEARCH_FIELDS);
-
-    this.queryService = queryService;
-    this.handlerService = handlerService;
-  }
+  override readonly queryService = inject(MysqlQueryService);
+  override readonly handlerService = inject(BroadcastTextHandlerService);
+  protected readonly entityTable = BROADCAST_TEXT_TABLE;
+  protected readonly entityIdField = BROADCAST_TEXT_ID;
+  protected entityNameField = BROADCAST_TEXT_NAME;
+  protected readonly fieldList = BROADCAST_TEXT_SEARCH_FIELDS;
+  private readonly init = this.init();
 }

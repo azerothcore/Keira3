@@ -8,16 +8,11 @@ import { NpcTextHandlerService } from './npc-text-handler.service';
   providedIn: 'root',
 })
 export class SelectNpcTextService extends SelectService<NpcText> {
-  override readonly queryService: MysqlQueryService;
-  override readonly handlerService: NpcTextHandlerService;
-
-  constructor() {
-    const queryService = inject(MysqlQueryService);
-    const handlerService = inject(NpcTextHandlerService);
-
-    super(queryService, handlerService, NPC_TEXT_TABLE, NPC_TEXT_ID, null, NPC_TEXT_SEARCH_FIELDS);
-
-    this.queryService = queryService;
-    this.handlerService = handlerService;
-  }
+  override readonly queryService = inject(MysqlQueryService);
+  override readonly handlerService = inject(NpcTextHandlerService);
+  protected readonly entityTable = NPC_TEXT_TABLE;
+  protected readonly entityIdField = NPC_TEXT_ID;
+  protected entityNameField = null;
+  protected readonly fieldList = NPC_TEXT_SEARCH_FIELDS;
+  private readonly init = this.init();
 }
