@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
 import {
   CREATURE_TEMPLATE_SPELL_ID,
@@ -12,8 +12,9 @@ import { CreatureHandlerService } from '../creature-handler.service';
   providedIn: 'root',
 })
 export class CreatureTemplateSpellService extends MultiRowEditorService<CreatureTemplateSpell> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected override readonly handlerService: CreatureHandlerService) {
-    super(CreatureTemplateSpell, CREATURE_TEMPLATE_SPELL_TABLE, CREATURE_TEMPLATE_SPELL_ID, CREATURE_TEMPLATE_SPELL_ID_2, handlerService);
+  protected override readonly handlerService = inject(CreatureHandlerService);
+
+  constructor() {
+    super(CreatureTemplateSpell, CREATURE_TEMPLATE_SPELL_TABLE, CREATURE_TEMPLATE_SPELL_ID, CREATURE_TEMPLATE_SPELL_ID_2);
   }
 }

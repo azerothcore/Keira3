@@ -1,12 +1,12 @@
 <select
   class="btn btn-sm my-1"
-  [class.btn-secondary]="longVersion"
+  [class.btn-secondary]="longVersion()"
   (change)="switchLanguageService.setLanguage($event)"
   [value]="switchLanguageService.currentLanguage"
 >
   <option value="en">
     🇬🇧
-    @if (longVersion) {
+    @if (longVersion()) {
       <span>&nbsp;{{ 'LANGUAGES.ENGLISH' | translate }}</span>
     }
   </option>
@@ -14,19 +14,19 @@
   <optgroup label="Beta">
     <option value="es">
       🇪🇸
-      @if (longVersion) {
+      @if (longVersion()) {
         <span>&nbsp;{{ 'LANGUAGES.SPANISH' | translate }}</span>
       }
     </option>
     <option value="ru">
       🇷🇺
-      @if (longVersion) {
+      @if (longVersion()) {
         <span>&nbsp;{{ 'LANGUAGES.RUSSIAN' | translate }}</span>
       }
     </option>
     <option value="zh">
       🇨🇳
-      @if (longVersion) {
+      @if (longVersion()) {
         <span>&nbsp;{{ 'LANGUAGES.CHINESE' | translate }}</span>
       }
     </option>
@@ -35,7 +35,7 @@
 </option> -->
     <option value="fr">
       🇫🇷
-      @if (longVersion) {
+      @if (longVersion()) {
         <span>&nbsp;{{ 'LANGUAGES.FRENCH' | translate }}</span>
       }
     </option>
@@ -44,13 +44,13 @@
 </option> -->
     <option value="sv">
       🇸🇪
-      @if (longVersion) {
+      @if (longVersion()) {
         <span>&nbsp;{{ 'LANGUAGES.SWEDEN' | translate }}</span>
       }
     </option>
     <option value="de">
       🇩🇪
-      @if (longVersion) {
+      @if (longVersion()) {
         <span>&nbsp;{{ 'LANGUAGES.GERMAN' | translate }}</span>
       }
     </option>
@@ -64,7 +64,7 @@
 -->
     <option value="pt">
       🇵🇹
-      @if (longVersion) {
+      @if (longVersion()) {
         <span>&nbsp;{{ 'LANGUAGES.PORTUGUESE' | translate }}</span>
       }
     </option>

@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, viewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 
 import { PageObject } from '@keira/shared/test-utils';
@@ -22,7 +22,7 @@ class ReferenceViewerComponentPage extends PageObject<TestHostComponent> {
   imports: [ReferenceViewerComponent],
 })
 class TestHostComponent {
-  @ViewChild(ReferenceViewerComponent) child!: ReferenceViewerComponent;
+  readonly child = viewChild.required(ReferenceViewerComponent);
   referenceId!: number;
 }
 

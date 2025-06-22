@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { LootEditorIdService } from '@keira/shared/base-abstract-classes';
 import {
   GAMEOBJECT_LOOT_TEMPLATE_TABLE,
@@ -15,15 +15,15 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
   providedIn: 'root',
 })
 export class GameobjectLootTemplateService extends LootEditorIdService<GameobjectLootTemplate> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected override readonly handlerService: GameobjectHandlerService) {
+  protected override readonly handlerService = inject(GameobjectHandlerService);
+
+  constructor() {
     super(
       GameobjectLootTemplate,
       GAMEOBJECT_LOOT_TEMPLATE_TABLE,
       GAMEOBJECT_TEMPLATE_TABLE,
       GAMEOBJECT_TEMPLATE_ID,
       GAMEOBJECT_TEMPLATE_LOOT_ID,
-      handlerService,
     );
   }
 

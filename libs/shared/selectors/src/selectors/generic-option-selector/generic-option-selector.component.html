@@ -1,8 +1,8 @@
-<select [formControl]="control" class="form-control form-control-sm">
+<select [formControl]="control()" class="form-control form-control-sm">
   @if (placeholder !== '') {
-    <option [ngValue]="placeholderValue" disabled selected [label]="placeholder"></option>
+    <option [ngValue]="placeholderValue()" disabled selected [label]="placeholder"></option>
   }
-  @for (option of optionList; track option) {
+  @for (option of optionList(); track option) {
     <option
       [ngValue]="option.value"
       [label]="(option.value !== undefined && option.value !== null ? option.value + ' - ' : '') + option.name"

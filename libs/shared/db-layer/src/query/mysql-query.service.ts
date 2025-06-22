@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { SmartScripts } from '@keira/shared/acore-world-model';
 import { from, map, Observable, of, tap } from 'rxjs';
 import { Delete, Insert, Squel, Update } from 'squel';
@@ -14,12 +14,8 @@ declare const squel: Squel & { flavour: null };
   providedIn: 'root',
 })
 export class MysqlQueryService extends BaseQueryService {
-  constructor(
-    private mysqlService: MysqlService,
-    private configService: ConfigService,
-  ) {
-    super();
-  }
+  private mysqlService = inject(MysqlService);
+  private configService = inject(ConfigService);
 
   clearCache(): void {
     this.cache.clear();

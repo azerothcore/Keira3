@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { Highlight } from 'ngx-highlightjs';
 
 import { ElectronService } from '@keira/shared/common-services';
@@ -10,6 +10,6 @@ import { ElectronService } from '@keira/shared/common-services';
   imports: [Highlight],
 })
 export class HighlightjsWrapperComponent {
-  @Input({ required: true }) code!: string;
+  readonly code = input.required<string>();
   readonly electronService = inject(ElectronService);
 }

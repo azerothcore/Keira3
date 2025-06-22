@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -30,7 +30,7 @@ describe('SpellDbcLocaleComponent', () => {
     imports: [RouterTestingModule, TranslateTestingModule, SpellDbcLocaleComponent],
   })
   class TestHostComponent {
-    @ViewChild(SpellDbcLocaleComponent) child!: SpellDbcLocaleComponent;
+    readonly child = viewChild.required(SpellDbcLocaleComponent);
     form!: FormGroup<ModelForm<SpellDbc>>;
     locale!: Locale;
   }
@@ -57,7 +57,7 @@ describe('SpellDbcLocaleComponent', () => {
     host.form = form;
 
     fixture.detectChanges();
-    const component = host.child;
+    const component = host.child();
 
     return { fixture, component, page, host, form };
   };

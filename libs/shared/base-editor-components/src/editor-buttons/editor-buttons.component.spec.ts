@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, viewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { EditorButtonsComponent } from './editor-buttons.component';
@@ -10,7 +10,7 @@ import { TableRow } from '@keira/shared/constants';
   imports: [TranslateTestingModule, EditorButtonsComponent],
 })
 class TestHostComponent {
-  @ViewChild(EditorButtonsComponent) child!: EditorButtonsComponent<TableRow>;
+  readonly child = viewChild.required(EditorButtonsComponent);
   editorService!: MultiRowEditorService<TableRow>;
 }
 
@@ -44,7 +44,7 @@ describe('EditorButtonsComponent', () => {
     const host = fixture.componentInstance;
     host.editorService = editorService as unknown as MultiRowEditorService<TableRow>;
     fixture.detectChanges();
-    const component = host.child;
+    const component = host.child();
     return { fixture, host, component, editorService, page };
   };
 

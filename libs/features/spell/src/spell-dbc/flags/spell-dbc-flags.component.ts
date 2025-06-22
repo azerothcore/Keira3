@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   SPELL_DBC_ATTRIBUTES_FLAGS,
@@ -31,5 +31,5 @@ export class SpellDbcFlagsComponent {
   readonly SPELL_DBC_STANCES_FLAGS = SPELL_DBC_STANCES_FLAGS;
   readonly SPELL_DBC_FACING_FRONT_FLAG = SPELL_DBC_FACING_FRONT_FLAG;
 
-  @Input({ required: true }) formGroup!: FormGroup<ModelForm<SpellDbc>>;
+  readonly formGroup = input.required<FormGroup<ModelForm<SpellDbc>>>();
 }

@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, viewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
 import { EXPANSION } from '@keira/shared/acore-world-model';
@@ -6,11 +6,11 @@ import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { GenericOptionSelectorComponent } from './generic-option-selector.component';
 
 @Component({
-  template: `<keira-generic-option-selector [control]="mockFormControl" [optionList]="EXPANSION"></keira-generic-option-selector>`,
+  template: `<keira-generic-option-selector [control]="mockFormControl" [optionList]="EXPANSION" />`,
   imports: [GenericOptionSelectorComponent],
 })
 class TestHostComponent {
-  @ViewChild(GenericOptionSelectorComponent) child!: GenericOptionSelectorComponent;
+  readonly child = viewChild.required(GenericOptionSelectorComponent);
   mockFormControl = new FormControl();
   EXPANSION = EXPANSION;
 }
@@ -27,7 +27,7 @@ describe('GenericOptionSelectorComponent', () => {
   const setup = () => {
     const fixture = TestBed.createComponent(TestHostComponent);
     const host = fixture.componentInstance;
-    const component = host.child;
+    const component = host.child();
     const page = new GenericOptionSelectorComponentPage(fixture);
 
     fixture.detectChanges();
