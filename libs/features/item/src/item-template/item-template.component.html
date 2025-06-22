@@ -393,6 +393,7 @@
                 [control]="editorService.form.controls.RequiredReputationFaction"
                 [disabled]="editorService.form.controls.RequiredReputationFaction.disabled"
               />
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.REQUIRED_FACTION' | translate"></i>
               <input
                 [formControlName]="'RequiredReputationFaction'"
                 id="RequiredReputationFaction"
@@ -408,6 +409,7 @@
                 [config]="{ options: FACTION_RANK, name: 'RequiredReputationRank' }"
                 [modalClass]="'modal-md'"
               />
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.REQUIRED_FACTION_RANK' | translate"></i>
               <input
                 [formControlName]="'RequiredReputationRank'"
                 id="RequiredReputationRank"
