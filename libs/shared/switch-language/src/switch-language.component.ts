@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { SwitchLanguageService } from './switch-language.service';
@@ -11,7 +11,7 @@ import { SwitchLanguageService } from './switch-language.service';
   imports: [FormsModule, TranslateModule],
 })
 export class SwitchLanguageComponent {
-  @Input() longVersion = true;
+  readonly longVersion = input(true);
 
   readonly switchLanguageService = inject(SwitchLanguageService);
 }

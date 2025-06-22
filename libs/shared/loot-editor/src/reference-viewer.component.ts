@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, Input, OnChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnChanges, input } from '@angular/core';
 import { DTCFG } from '@keira/shared/config';
 
 import { AsyncPipe } from '@angular/common';
@@ -18,7 +18,7 @@ import { ReferenceViewerService } from './reference-viewer.service';
   imports: [TooltipModule, NgxDatatableModule, IconComponent, AsyncPipe],
 })
 export class ReferenceViewerComponent extends SubscriptionHandler implements OnChanges {
-  @Input({ required: true }) referenceId!: number;
+  readonly referenceId = input.required<number>();
 
   readonly service = inject(ReferenceViewerService);
   readonly queryService = inject(MysqlQueryService);
@@ -32,7 +32,7 @@ export class ReferenceViewerComponent extends SubscriptionHandler implements OnC
     this.nestedReferenceIds = [];
 
     this.subscriptions.push(
-      this.service.getReferenceById(this.referenceId)?.subscribe((result: ReferenceLootTemplate[]) => {
+      this.service.getReferenceById(this.referenceId())?.subscribe((result: ReferenceLootTemplate[]) => {
         this.referenceLootRows = result;
 
         this.nestedReferenceIds = this.referenceLootRows
