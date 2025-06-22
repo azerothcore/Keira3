@@ -10,13 +10,11 @@ import { of } from 'rxjs';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { GameobjectTemplateAddonComponent } from './gameobject-template-addon.component';
-import Spy = jasmine.Spy;
 import { instance, mock } from 'ts-mockito';
 
 class GameobjectTemplateAddonPage extends EditorPageObject<GameobjectTemplateAddonComponent> {}
 
 describe('GameobjectTemplateAddon integration tests', () => {
-
   const id = 1234;
   const expectedFullCreateQuery =
     'DELETE FROM `gameobject_template_addon` WHERE (`entry` = ' +
@@ -141,6 +139,7 @@ describe('GameobjectTemplateAddon integration tests', () => {
     });
 
     xit('changing a value via FlagsSelector should correctly work', waitForAsync(async () => {
+      const { page } = setup(false);
       const field = 'flags';
       page.clickElement(page.getSelectorBtn(field));
       await page.whenReady();

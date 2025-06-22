@@ -8,7 +8,6 @@ import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { of, throwError } from 'rxjs';
 import { anything, instance, mock, reset, when } from 'ts-mockito';
 import { CreateComponent } from './create.component';
-import Spy = jasmine.Spy;
 
 class CreateComponentPage extends PageObject<CreateComponent<TableRow>> {
   get idInput(): HTMLInputElement {
