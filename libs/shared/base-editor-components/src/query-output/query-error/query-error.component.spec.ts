@@ -1,23 +1,22 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { QueryErrorComponent } from './query-error.component';
 
 describe('QueryErrorComponent', () => {
-  let component: QueryErrorComponent;
-  let fixture: ComponentFixture<QueryErrorComponent>;
-
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [QueryErrorComponent],
     }).compileComponents();
   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(QueryErrorComponent);
-    component = fixture.componentInstance;
+  function setup() {
+    const fixture = TestBed.createComponent(QueryErrorComponent);
+    const component = fixture.componentInstance;
     fixture.detectChanges();
-  });
+    return { fixture, component };
+  }
 
   it('should create', () => {
+    const { component } = setup();
     expect(component).toBeTruthy();
   });
 });
