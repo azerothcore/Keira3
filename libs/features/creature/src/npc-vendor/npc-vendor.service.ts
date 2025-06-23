@@ -20,6 +20,7 @@ export class NpcVendorService extends MultiRowEditorService<NpcVendor> {
 
   constructor() {
     super();
+    this.init();
   }
 
   private cache: Promise<string>[] = [];

@@ -16,13 +16,14 @@ import { CreatureHandlerService } from '../creature-handler.service';
 export class PickpocketingLootTemplateService extends LootEditorIdService<PickpocketingLootTemplate> {
   protected override readonly handlerService = inject(CreatureHandlerService);
 
+  protected override _entityClass = CreatureLootTemplate;
+  protected override _entityTable = PICKPOCKETING_LOOT_TEMPLATE_TABLE;
+  protected override _entityTemplateTable = CREATURE_TEMPLATE_TABLE;
+  protected override _entityTemplateIdField = CREATURE_TEMPLATE_ID;
+  protected override _entityTemplateLootField = CREATURE_TEMPLATE_PICKPOCKETING_LOOT_ID;
+
   constructor() {
-    super(
-      CreatureLootTemplate,
-      PICKPOCKETING_LOOT_TEMPLATE_TABLE,
-      CREATURE_TEMPLATE_TABLE,
-      CREATURE_TEMPLATE_ID,
-      CREATURE_TEMPLATE_PICKPOCKETING_LOOT_ID,
-    );
+    super();
+    this.init();
   }
 }

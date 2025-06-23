@@ -16,5 +16,6 @@ export class GameobjectTemplateAddonService extends SingleRowEditorService<Gameo
 
   constructor() {
     super();
+    this.init();
   }
 }

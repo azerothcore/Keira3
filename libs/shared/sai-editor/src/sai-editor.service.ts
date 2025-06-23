@@ -26,6 +26,7 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
 
   constructor() {
     super();
+    this.init();
   }
 
   protected updateFullQuery(): void {

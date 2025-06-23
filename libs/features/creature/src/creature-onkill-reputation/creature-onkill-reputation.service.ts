@@ -16,5 +16,6 @@ export class CreatureOnkillReputationService extends SingleRowEditorService<Crea
 
   constructor() {
     super();
+    this.init();
   }
 }

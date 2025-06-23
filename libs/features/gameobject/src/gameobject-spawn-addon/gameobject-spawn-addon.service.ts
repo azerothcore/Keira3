@@ -14,6 +14,7 @@ export class GameobjectSpawnAddonService extends MultiRowExternalEditorService<G
 
   constructor() {
     super();
+    this.init();
   }
 
   selectQuery(id: string | number) {

@@ -16,5 +16,6 @@ export class SpellDbcService extends SingleRowEditorService<SpellDbc> {
 
   constructor() {
     super();
+    this.init();
   }
 }

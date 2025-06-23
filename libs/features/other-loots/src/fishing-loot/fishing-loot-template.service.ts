@@ -15,5 +15,6 @@ export class FishingLootTemplateService extends MultiRowEditorService<FishingLoo
 
   constructor() {
     super();
+    this.init();
   }
 }

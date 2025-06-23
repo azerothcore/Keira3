@@ -53,10 +53,6 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
   protected abstract _entityTable: string;
   protected abstract _entityIdField: string | undefined;
 
-  protected constructor() {
-    super();
-  }
-
   protected init(): void {
     this.fields = this.getClassAttributes(this._entityClass);
   }

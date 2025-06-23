@@ -23,5 +23,6 @@ export class CreatureTemplateResistanceService extends MultiRowEditorService<Cre
 
   constructor() {
     super();
+    this.init();
   }
 }

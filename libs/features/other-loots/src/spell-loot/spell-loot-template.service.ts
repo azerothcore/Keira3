@@ -15,5 +15,6 @@ export class SpellLootTemplateService extends MultiRowEditorService<SpellLootTem
 
   constructor() {
     super();
+    this.init();
   }
 }

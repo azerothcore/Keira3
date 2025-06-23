@@ -16,11 +16,12 @@ export class CreatureLootTemplateService extends LootEditorIdService<CreatureLoo
   protected override readonly handlerService = inject(CreatureHandlerService);
   protected override _entityClass = CreatureLootTemplate;
   protected override _entityTable = CREATURE_LOOT_TEMPLATE_TABLE;
-  protected _entityTemplateTable = CREATURE_TEMPLATE_TABLE;
-  protected _entityTemplateIdField = CREATURE_TEMPLATE_ID;
-  protected _entityTemplateLootField = CREATURE_TEMPLATE_LOOT_ID;
+  protected override _entityTemplateTable = CREATURE_TEMPLATE_TABLE;
+  protected override _entityTemplateIdField = CREATURE_TEMPLATE_ID;
+  protected override _entityTemplateLootField = CREATURE_TEMPLATE_LOOT_ID;
 
   constructor() {
     super();
+    this.init();
   }
 }

@@ -20,5 +20,6 @@ export class GameobjectQuestitemService extends MultiRowEditorService<Gameobject
 
   constructor() {
     super();
+    this.init();
   }
 }

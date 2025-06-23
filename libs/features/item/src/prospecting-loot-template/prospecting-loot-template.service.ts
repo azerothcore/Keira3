@@ -20,5 +20,6 @@ export class ProspectingLootTemplateService extends MultiRowEditorService<Prospe
 
   constructor() {
     super();
+    this.init();
   }
 }

@@ -14,6 +14,7 @@ export class CreatureSpawnAddonService extends MultiRowExternalEditorService<Cre
 
   constructor() {
     super();
+    this.init();
   }
 
   selectQuery(id: string | number) {

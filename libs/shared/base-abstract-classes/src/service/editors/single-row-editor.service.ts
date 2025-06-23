@@ -12,9 +12,8 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
   protected _entityNameField: string | undefined | null = undefined;
   protected isMainEntity = false;
 
-  protected constructor() {
-    super();
-    this.init();
+  protected override init(): void {
+    super.init();
     this.initForm();
   }
 

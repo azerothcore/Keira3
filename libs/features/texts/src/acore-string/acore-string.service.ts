@@ -16,5 +16,6 @@ export class AcoreStringService extends SingleRowEditorService<AcoreString> {
 
   constructor() {
     super();
+    this.init();
   }
 }

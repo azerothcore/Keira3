@@ -71,6 +71,7 @@ export class MockSingleRowEditorService extends SingleRowEditorService<MockEntit
 
   constructor() {
     super();
+    this.init();
   }
 }
 
@@ -87,6 +88,7 @@ export class MockSingleRowComplexKeyEditorService extends SingleRowComplexKeyEdi
 
   constructor() {
     super();
+    this.init();
   }
 }
 
@@ -102,6 +104,7 @@ export class MockMultiRowEditorService extends MultiRowEditorService<MockEntity>
 
   constructor() {
     super();
+    this.init();
   }
 }
 
@@ -117,6 +120,7 @@ export class MockMultiRowEditorWithGuidStringService extends MultiRowEditorServi
 
   constructor() {
     super();
+    this.init();
   }
 }
 
@@ -133,6 +137,7 @@ export class MockMultiRowEditorExtraService extends MultiRowEditorService<MockEn
 
   constructor() {
     super();
+    this.init();
   }
 }
 
@@ -147,6 +152,7 @@ export class MockMultiRowExternalEditorService extends MultiRowExternalEditorSer
 
   constructor() {
     super();
+    this.init();
   }
 
   selectQuery(id: string | number) {
@@ -169,6 +175,7 @@ export class MockMultiRowComplexKeyEditorService extends MultiRowComplexKeyEdito
 
   constructor() {
     super();
+    this.init();
   }
 
   protected updateFullQuery(): void {}

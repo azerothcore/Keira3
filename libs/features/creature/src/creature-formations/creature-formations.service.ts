@@ -20,5 +20,6 @@ export class CreatureFormationsService extends MultiRowEditorService<CreatureFor
 
   constructor() {
     super();
+    this.init();
   }
 }

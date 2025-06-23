@@ -16,5 +16,6 @@ export class QuestRequestItemsService extends SingleRowEditorService<QuestReques
 
   constructor() {
     super();
+    this.init();
   }
 }

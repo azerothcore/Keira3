@@ -15,5 +15,6 @@ export class GameobjectSpawnService extends MultiRowEditorService<GameobjectSpaw
 
   constructor() {
     super();
+    this.init();
   }
 }

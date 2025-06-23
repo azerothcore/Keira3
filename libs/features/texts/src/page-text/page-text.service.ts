@@ -16,5 +16,6 @@ export class PageTextService extends SingleRowEditorService<PageText> {
 
   constructor() {
     super();
+    this.init();
   }
 }

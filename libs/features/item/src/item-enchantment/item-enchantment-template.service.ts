@@ -20,5 +20,6 @@ export class ItemEnchantmentTemplateService extends MultiRowEditorService<ItemEn
 
   constructor() {
     super();
+    this.init();
   }
 }

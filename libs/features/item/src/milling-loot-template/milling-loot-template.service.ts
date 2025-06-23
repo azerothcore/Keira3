@@ -15,5 +15,6 @@ export class MillingLootTemplateService extends MultiRowEditorService<MillingLoo
 
   constructor() {
     super();
+    this.init();
   }
 }

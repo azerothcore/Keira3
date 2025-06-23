@@ -20,5 +20,6 @@ export class GossipMenuOptionService extends MultiRowEditorService<GossipMenuOpt
 
   constructor() {
     super();
+    this.init();
   }
 }

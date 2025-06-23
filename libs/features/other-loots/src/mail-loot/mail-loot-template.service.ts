@@ -15,5 +15,6 @@ export class MailLootTemplateService extends MultiRowEditorService<MailLootTempl
 
   constructor() {
     super();
+    this.init();
   }
 }

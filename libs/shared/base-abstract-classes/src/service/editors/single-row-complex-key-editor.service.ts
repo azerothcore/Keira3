@@ -17,10 +17,6 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
   protected override _entityNameField: string | undefined | null = undefined;
   protected override isMainEntity = false;
 
-  protected constructor() {
-    super();
-  }
-
   protected override disableEntityIdField() {}
 
   protected override selectQuery(): Observable<T[]> {

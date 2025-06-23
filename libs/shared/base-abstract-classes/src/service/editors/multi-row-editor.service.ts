@@ -36,9 +36,8 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
   protected abstract readonly _entitySecondIdField: string;
   protected readonly _entityExtraIdField: string | undefined = undefined;
 
-  protected constructor() {
-    super();
-    this.init();
+  protected override init(): void {
+    super.init();
     this.initForm();
   }
 

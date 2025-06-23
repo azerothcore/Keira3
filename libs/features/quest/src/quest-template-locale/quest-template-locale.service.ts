@@ -20,5 +20,6 @@ export class QuestTemplateLocaleService extends MultiRowEditorService<QuestTempl
 
   constructor() {
     super();
+    this.init();
   }
 }

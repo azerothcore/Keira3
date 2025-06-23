@@ -16,5 +16,6 @@ export class NpcTextService extends SingleRowEditorService<NpcText> {
 
   constructor() {
     super();
+    this.init();
   }
 }

@@ -16,5 +16,6 @@ export class ItemTemplateService extends SingleRowEditorService<ItemTemplate> {
 
   constructor() {
     super();
+    this.init();
   }
 }

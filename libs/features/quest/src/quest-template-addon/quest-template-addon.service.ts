@@ -16,5 +16,6 @@ export class QuestTemplateAddonService extends SingleRowEditorService<QuestTempl
 
   constructor() {
     super();
+    this.init();
   }
 }

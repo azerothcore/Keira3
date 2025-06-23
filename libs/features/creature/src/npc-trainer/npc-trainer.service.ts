@@ -15,5 +15,6 @@ export class NpcTrainerService extends MultiRowEditorService<NpcTrainer> {
 
   constructor() {
     super();
+    this.init();
   }
 }

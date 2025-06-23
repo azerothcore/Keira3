@@ -1,6 +1,5 @@
 /* istanbul ignore file */ // TODO: fix coverage
 
-import { Class } from '@keira/shared/constants';
 import { LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2, LootTemplate } from '@keira/shared/acore-world-model';
 import { Observable } from 'rxjs';
 import { MultiRowEditorService } from './multi-row-editor.service';
@@ -14,15 +13,11 @@ export abstract class LootEditorIdService<T extends LootTemplate> extends MultiR
     return this._entityTemplateLootField;
   }
 
-  protected abstract override _entityClass: Class;
-  protected abstract override _entityTable: string;
-  protected _entityTemplateTable!: string; // e.g. creature_template
-  protected _entityTemplateIdField!: string; // e.g. entry
-  protected _entityTemplateLootField!: string; // e.g. lootid
-
-  protected constructor() {
-    super();
-  }
+  protected override _entityIdField = LOOT_TEMPLATE_ID;
+  protected override _entitySecondIdField = LOOT_TEMPLATE_ID_2;
+  protected abstract _entityTemplateTable: string; // e.g. creature_template
+  protected abstract _entityTemplateIdField: string; // e.g. entry
+  protected abstract _entityTemplateLootField: string; // e.g. lootid
 
   getLootId(): Observable<{ lootId: number }[]> {
     return this.queryService.query(

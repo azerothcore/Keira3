@@ -16,5 +16,6 @@ export class CreatureTextService extends MultiRowEditorService<CreatureText> {
 
   constructor() {
     super();
+    this.init();
   }
 }

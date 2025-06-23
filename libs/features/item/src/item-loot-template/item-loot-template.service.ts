@@ -15,5 +15,6 @@ export class ItemLootTemplateService extends MultiRowEditorService<ItemLootTempl
 
   constructor() {
     super();
+    this.init();
   }
 }

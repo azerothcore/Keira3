@@ -16,5 +16,6 @@ export class GameTeleService extends SingleRowEditorService<GameTele> {
 
   constructor() {
     super();
+    this.init();
   }
 }

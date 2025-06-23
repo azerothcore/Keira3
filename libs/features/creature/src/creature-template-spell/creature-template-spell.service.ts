@@ -20,5 +20,6 @@ export class CreatureTemplateSpellService extends MultiRowEditorService<Creature
 
   constructor() {
     super();
+    this.init();
   }
 }

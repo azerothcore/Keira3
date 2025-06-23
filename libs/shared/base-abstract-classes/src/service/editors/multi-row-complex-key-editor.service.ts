@@ -14,10 +14,6 @@ export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extend
   protected abstract override _entityIdField: string;
   protected abstract override _entitySecondIdField: string;
 
-  protected constructor() {
-    super();
-  }
-
   protected override disableEntityIdField() {}
 
   protected override updateDiffQuery(): void {

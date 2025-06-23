@@ -16,5 +16,6 @@ export class CreatureTemplateAddonService extends SingleRowEditorService<Creatur
 
   constructor() {
     super();
+    this.init();
   }
 }

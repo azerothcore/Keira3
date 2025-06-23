@@ -20,5 +20,6 @@ export class ReferenceLootTemplateService extends MultiRowEditorService<Referenc
 
   constructor() {
     super();
+    this.init();
   }
 }

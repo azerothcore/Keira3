@@ -15,5 +15,6 @@ export class CreatureSpawnService extends MultiRowEditorService<CreatureSpawn> {
 
   constructor() {
     super();
+    this.init();
   }
 }

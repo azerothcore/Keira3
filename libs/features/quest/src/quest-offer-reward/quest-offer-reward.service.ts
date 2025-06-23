@@ -16,5 +16,6 @@ export class QuestOfferRewardService extends SingleRowEditorService<QuestOfferRe
 
   constructor() {
     super();
+    this.init();
   }
 }

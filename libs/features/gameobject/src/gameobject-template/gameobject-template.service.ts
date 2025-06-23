@@ -22,6 +22,7 @@ export class GameobjectTemplateService extends SingleRowEditorService<Gameobject
 
   constructor() {
     super();
+    this.init();
   }
 
   getFieldDefinition(type: number, dataIndex: number): FieldDefinition {

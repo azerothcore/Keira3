@@ -20,5 +20,6 @@ export class CreatureQuestitemService extends MultiRowEditorService<CreatureQues
 
   constructor() {
     super();
+    this.init();
   }
 }

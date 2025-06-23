@@ -16,5 +16,6 @@ export class ConditionsService extends SingleRowComplexKeyEditorService<Conditio
 
   constructor() {
     super();
+    this.init();
   }
 }

@@ -16,5 +16,6 @@ export class BroadcastTextService extends SingleRowEditorService<BroadcastText> 
 
   constructor() {
     super();
+    this.init();
   }
 }
