@@ -34,3 +34,5 @@ export function getEnumKeys(enumInput: { [s: number]: string }): number[] {
 
 /* istanbul ignore next */ // TODO: fix coverage
 export const compareObjFn = (a: object, b: object) => JSON.stringify(a) === JSON.stringify(b);
+
+export const UNDEFINED_PROMISE: Promise<undefined> = Promise.resolve(undefined);

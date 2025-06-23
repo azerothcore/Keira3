@@ -28,7 +28,6 @@ import {
 } from '@keira/shared/constants';
 import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
 import { PreviewHelperService } from '@keira/shared/preview';
-import { lastValueFrom, of } from 'rxjs';
 import { CreatureQuestenderService } from '../creature-questender/creature-questender.service';
 import { CreatureQueststarterService } from '../creature-queststarter/creature-queststarter.service';
 import { GameobjectQuestenderService } from '../gameobject-questender/gameobject-questender.service';
@@ -39,6 +38,7 @@ import { QuestRequestItemsService } from '../quest-request-items/quest-request-i
 import { QuestTemplateAddonService } from '../quest-template-addon/quest-template-addon.service';
 import { QuestTemplateService } from '../quest-template/quest-template.service';
 import { DifficultyLevel, Quest, QUEST_FACTION_REWARD, QuestFactionRewardKey } from './quest-preview.model';
+import { UNDEFINED_PROMISE } from '@keira/shared/utils';
 
 @Injectable({
   providedIn: 'root',
@@ -411,7 +411,7 @@ export class QuestPreviewService {
 
       return this.mysqlQueryService.getGameObjectNameById(Math.abs(RequiredNpcOrGo));
     }
-    return lastValueFrom(of(undefined));
+    return UNDEFINED_PROMISE;
   }
 
   getObjectiveCount(field: string | number): string {
