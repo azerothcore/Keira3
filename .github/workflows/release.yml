@@ -5,7 +5,7 @@ name: Release Draft
 jobs:
   get-package-version:
     name: Get Package Version
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     outputs:
       version: ${{ steps.version.outputs.PACKAGE_VERSION }}
       app_name: ${{ steps.app_name.outputs.APP_NAME }}
@@ -28,7 +28,7 @@ jobs:
   build-on-linux:
     needs: get-package-version
     name: Build and upload the Linux release assets
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
