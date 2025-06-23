@@ -8,7 +8,7 @@ export abstract class MultiRowExternalEditorService<T extends TableRow> extends 
   protected abstract override _entityClass: Class;
   protected abstract override _entityTable: string;
   protected abstract override _entitySecondIdField: string;
-  protected override _entityIdField = undefined;
+  protected override _entityIdField = undefined; // none of the editors table's fields matches with the main entity ID
 
   override disableEntityIdField() {}
 
