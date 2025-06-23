@@ -5,18 +5,10 @@ import { Observable } from 'rxjs';
 // Used where none of the editors table's fields matches with the main entity ID. For example creature_addon (CreatureSpawnAddonService)
 
 export abstract class MultiRowExternalEditorService<T extends TableRow> extends MultiRowEditorService<T> {
-  protected constructor(
-    protected override _entityClass: Class,
-    protected override _entityTable: string,
-    protected override _entitySecondIdField: string,
-  ) {
-    super(
-      _entityClass,
-      _entityTable,
-      undefined, // none of the editors table's fields matches with the main entity ID
-      _entitySecondIdField,
-    );
-  }
+  protected abstract override _entityClass: Class;
+  protected abstract override _entityTable: string;
+  protected abstract override _entitySecondIdField: string;
+  protected override _entityIdField = undefined; // none of the editors table's fields matches with the main entity ID
 
   override disableEntityIdField() {}
 

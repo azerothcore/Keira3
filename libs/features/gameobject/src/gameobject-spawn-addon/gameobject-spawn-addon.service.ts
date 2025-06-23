@@ -8,9 +8,13 @@ import { MultiRowExternalEditorService } from '@keira/shared/base-abstract-class
 })
 export class GameobjectSpawnAddonService extends MultiRowExternalEditorService<GameobjectSpawnAddon> {
   protected override readonly handlerService = inject(GameobjectHandlerService);
+  protected override _entityClass = GameobjectSpawnAddon;
+  protected override _entityTable = GAMEOBJECT_SPAWN_ADDON_TABLE;
+  protected override _entitySecondIdField = GAMEOBJECT_SPAWN_ADDON_ID_2;
 
   constructor() {
-    super(GameobjectSpawnAddon, GAMEOBJECT_SPAWN_ADDON_TABLE, GAMEOBJECT_SPAWN_ADDON_ID_2);
+    super();
+    this.init();
   }
 
   selectQuery(id: string | number) {

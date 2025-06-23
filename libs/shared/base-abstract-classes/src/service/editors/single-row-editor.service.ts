@@ -6,14 +6,14 @@ import { EditorService } from './editor.service';
 export abstract class SingleRowEditorService<T extends TableRow> extends EditorService<T> {
   protected _originalValue!: T;
 
-  protected constructor(
-    protected override _entityClass: Class,
-    protected override _entityTable: string,
-    protected override _entityIdField: string,
-    protected _entityNameField: string | undefined | null,
-    protected isMainEntity: boolean,
-  ) {
-    super(_entityClass, _entityTable, _entityIdField);
+  protected abstract override _entityClass: Class;
+  protected abstract override _entityTable: string;
+  protected abstract override _entityIdField: string;
+  protected _entityNameField: string | undefined | null = undefined;
+  protected isMainEntity = false;
+
+  protected override init(): void {
+    super.init();
     this.initForm();
   }
 

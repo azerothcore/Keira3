@@ -8,8 +8,14 @@ import { CreatureHandlerService } from '../creature-handler.service';
 })
 export class CreatureTemplateMovementService extends SingleRowEditorService<CreatureTemplateMovement> {
   protected override readonly handlerService = inject(CreatureHandlerService);
+  protected override _entityClass = CreatureTemplateMovement;
+  protected override _entityTable = CREATURE_TEMPLATE_MOVEMENT_TABLE;
+  protected override _entityIdField = CREATURE_TEMPLATE_MOVEMENT_ID;
+  protected override _entityNameField = null;
+  protected override isMainEntity = false;
 
   constructor() {
-    super(CreatureTemplateMovement, CREATURE_TEMPLATE_MOVEMENT_TABLE, CREATURE_TEMPLATE_MOVEMENT_ID, null, false);
+    super();
+    this.init();
   }
 }

@@ -17,14 +17,15 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
 export class GameobjectLootTemplateService extends LootEditorIdService<GameobjectLootTemplate> {
   protected override readonly handlerService = inject(GameobjectHandlerService);
 
+  protected override _entityClass = GameobjectLootTemplate;
+  protected override _entityTable = GAMEOBJECT_LOOT_TEMPLATE_TABLE;
+  protected override _entityTemplateTable = GAMEOBJECT_TEMPLATE_TABLE;
+  protected override _entityTemplateIdField = GAMEOBJECT_TEMPLATE_ID;
+  protected override _entityTemplateLootField = GAMEOBJECT_TEMPLATE_LOOT_ID;
+
   constructor() {
-    super(
-      GameobjectLootTemplate,
-      GAMEOBJECT_LOOT_TEMPLATE_TABLE,
-      GAMEOBJECT_TEMPLATE_TABLE,
-      GAMEOBJECT_TEMPLATE_ID,
-      GAMEOBJECT_TEMPLATE_LOOT_ID,
-    );
+    super();
+    this.init();
   }
 
   getType(): Observable<{ type: number }[]> {

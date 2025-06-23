@@ -11,15 +11,11 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
     return JSON.parse(this._entityIdField);
   }
 
-  protected constructor(
-    protected override _entityClass: Class,
-    protected override _entityTable: string,
-    _entityIdField: string[],
-    protected override _entityNameField: string | undefined | null,
-    protected override isMainEntity: boolean,
-  ) {
-    super(_entityClass, _entityTable, JSON.stringify(_entityIdField), _entityNameField, isMainEntity);
-  }
+  protected abstract override _entityClass: Class;
+  protected abstract override _entityTable: string;
+  protected abstract override _entityIdField: string;
+  protected override _entityNameField: string | undefined | null = undefined;
+  protected override isMainEntity = false;
 
   protected override disableEntityIdField() {}
 

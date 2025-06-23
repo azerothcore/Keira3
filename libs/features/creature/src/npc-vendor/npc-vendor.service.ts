@@ -13,9 +13,14 @@ export class NpcVendorService extends MultiRowEditorService<NpcVendor> {
   override readonly queryService = inject(MysqlQueryService);
   readonly sqliteQueryService = inject(SqliteQueryService);
   private iconService = inject(IconService);
+  protected override readonly _entityClass = NpcVendor;
+  protected override readonly _entityTable = NPC_VENDOR_TABLE;
+  protected override readonly _entityIdField = NPC_VENDOR_ID;
+  protected override readonly _entitySecondIdField = NPC_VENDOR_ID_2;
 
   constructor() {
-    super(NpcVendor, NPC_VENDOR_TABLE, NPC_VENDOR_ID, NPC_VENDOR_ID_2);
+    super();
+    this.init();
   }
 
   private cache: Promise<string>[] = [];
