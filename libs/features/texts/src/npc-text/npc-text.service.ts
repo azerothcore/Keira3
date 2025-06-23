@@ -8,8 +8,14 @@ import { NpcTextHandlerService } from './npc-text-handler.service';
 })
 export class NpcTextService extends SingleRowEditorService<NpcText> {
   protected override readonly handlerService = inject(NpcTextHandlerService);
+  protected override _entityClass = NpcText;
+  protected override _entityTable = NPC_TEXT_TABLE;
+  protected override _entityIdField = NPC_TEXT_ID;
+  protected override _entityNameField = null;
+  protected override isMainEntity = true;
 
   constructor() {
-    super(NpcText, NPC_TEXT_TABLE, NPC_TEXT_ID, null, true);
+    super();
+    this.init();
   }
 }

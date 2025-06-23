@@ -15,7 +15,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
 
   protected _loading = false;
   protected _loadedEntityId: string | number | Partial<T> | undefined;
-  protected readonly fields: StringKeys<T>[];
+  protected fields: StringKeys<T>[] = [];
   protected _diffQuery: string | undefined;
   protected _fullQuery: string | undefined;
   protected _isNew = false;
@@ -49,13 +49,11 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
   }
 
   protected abstract handlerService: HandlerService<T>;
+  protected abstract _entityClass: Class;
+  protected abstract _entityTable: string;
+  protected abstract _entityIdField: string | undefined;
 
-  protected constructor(
-    protected _entityClass: Class,
-    protected _entityTable: string,
-    protected _entityIdField: string | undefined,
-  ) {
-    super();
+  protected init(): void {
     this.fields = this.getClassAttributes(this._entityClass);
   }
 

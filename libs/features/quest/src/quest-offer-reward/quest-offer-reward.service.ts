@@ -8,8 +8,14 @@ import { QuestHandlerService } from '../quest-handler.service';
 })
 export class QuestOfferRewardService extends SingleRowEditorService<QuestOfferReward> {
   protected override readonly handlerService = inject(QuestHandlerService);
+  protected override _entityClass = QuestOfferReward;
+  protected override _entityTable = QUEST_OFFER_REWARD_TABLE;
+  protected override _entityIdField = QUEST_OFFER_REWARD_ID;
+  protected override _entityNameField = null;
+  protected override isMainEntity = false;
 
   constructor() {
-    super(QuestOfferReward, QUEST_OFFER_REWARD_TABLE, QUEST_OFFER_REWARD_ID, null, false);
+    super();
+    this.init();
   }
 }

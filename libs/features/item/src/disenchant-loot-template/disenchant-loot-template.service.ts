@@ -14,8 +14,14 @@ import { ItemHandlerService } from '../item-handler.service';
 })
 export class DisenchantLootTemplateService extends LootEditorIdService<DisenchantLootTemplate> {
   protected override readonly handlerService = inject(ItemHandlerService);
+  protected override _entityClass = DisenchantLootTemplate;
+  protected override _entityTable = DISENCHANT_LOOT_TEMPLATE_TABLE;
+  protected override _entityTemplateTable = ITEM_TEMPLATE_TABLE;
+  protected override _entityTemplateIdField = ITEM_TEMPLATE_ID;
+  protected override _entityTemplateLootField = DISENCHANT_TEMPLATE_LOOT_ID;
 
   constructor() {
-    super(DisenchantLootTemplate, DISENCHANT_LOOT_TEMPLATE_TABLE, ITEM_TEMPLATE_TABLE, ITEM_TEMPLATE_ID, DISENCHANT_TEMPLATE_LOOT_ID);
+    super();
+    this.init();
   }
 }
