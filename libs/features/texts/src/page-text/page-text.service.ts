@@ -8,8 +8,13 @@ import { PageTextHandlerService } from './page-text-handler.service';
 })
 export class PageTextService extends SingleRowEditorService<PageText> {
   protected override readonly handlerService = inject(PageTextHandlerService);
+  protected override _entityClass = PageText;
+  protected override _entityTable = PAGE_TEXT_TABLE;
+  protected override _entityIdField = PAGE_TEXT_ID;
+  protected override _entityNameField = PAGE_TEXT_NAME;
+  protected override isMainEntity = true;
 
   constructor() {
-    super(PageText, PAGE_TEXT_TABLE, PAGE_TEXT_ID, PAGE_TEXT_NAME, true);
+    super();
   }
 }

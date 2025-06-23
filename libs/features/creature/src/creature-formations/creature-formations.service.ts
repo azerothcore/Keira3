@@ -13,8 +13,12 @@ import { CreatureHandlerService } from '../creature-handler.service';
 })
 export class CreatureFormationsService extends MultiRowEditorService<CreatureFormation> {
   protected override readonly handlerService = inject(CreatureHandlerService);
+  protected override readonly _entityClass = CreatureFormation;
+  protected override readonly _entityTable = CREATURE_FORMATIONS_TABLE;
+  protected override readonly _entityIdField = CREATURE_FORMATIONS_LEADER_GUID;
+  protected override readonly _entitySecondIdField = CREATURE_FORMATIONS_MEMBER_GUID;
 
   constructor() {
-    super(CreatureFormation, CREATURE_FORMATIONS_TABLE, CREATURE_FORMATIONS_LEADER_GUID, CREATURE_FORMATIONS_MEMBER_GUID);
+    super();
   }
 }

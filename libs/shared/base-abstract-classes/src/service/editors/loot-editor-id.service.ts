@@ -14,14 +14,14 @@ export abstract class LootEditorIdService<T extends LootTemplate> extends MultiR
     return this._entityTemplateLootField;
   }
 
-  protected constructor(
-    protected override _entityClass: Class,
-    protected override _entityTable: string,
-    protected _entityTemplateTable: string, // e.g. creature_template
-    protected _entityTemplateIdField: string, // e.g. entry
-    protected _entityTemplateLootField: string, // e.g. lootid
-  ) {
-    super(_entityClass, _entityTable, LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2);
+  protected abstract override _entityClass: Class;
+  protected abstract override _entityTable: string;
+  protected _entityTemplateTable!: string; // e.g. creature_template
+  protected _entityTemplateIdField!: string; // e.g. entry
+  protected _entityTemplateLootField!: string; // e.g. lootid
+
+  protected constructor() {
+    super();
   }
 
   getLootId(): Observable<{ lootId: number }[]> {

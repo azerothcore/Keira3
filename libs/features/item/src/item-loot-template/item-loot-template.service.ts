@@ -8,8 +8,12 @@ import { ItemHandlerService } from '../item-handler.service';
 })
 export class ItemLootTemplateService extends MultiRowEditorService<ItemLootTemplate> {
   protected override readonly handlerService = inject(ItemHandlerService);
+  protected override readonly _entityClass = ItemLootTemplate;
+  protected override readonly _entityTable = ITEM_LOOT_TEMPLATE_TABLE;
+  protected override readonly _entityIdField = LOOT_TEMPLATE_ID;
+  protected override readonly _entitySecondIdField = LOOT_TEMPLATE_ID_2;
 
   constructor() {
-    super(ItemLootTemplate, ITEM_LOOT_TEMPLATE_TABLE, LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2);
+    super();
   }
 }

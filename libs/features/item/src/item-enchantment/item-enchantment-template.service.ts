@@ -13,8 +13,12 @@ import { ItemHandlerService } from '../item-handler.service';
 })
 export class ItemEnchantmentTemplateService extends MultiRowEditorService<ItemEnchantmentTemplate> {
   protected override readonly handlerService = inject(ItemHandlerService);
+  protected override readonly _entityClass = ItemEnchantmentTemplate;
+  protected override readonly _entityTable = ITEM_ENCHANTMENT_TEMPLATE_TABLE;
+  protected override readonly _entityIdField = ITEM_ENCHANTMENT_TEMPLATE_ID;
+  protected override readonly _entitySecondIdField = ITEM_ENCHANTMENT_TEMPLATE_ID_2;
 
   constructor() {
-    super(ItemEnchantmentTemplate, ITEM_ENCHANTMENT_TEMPLATE_TABLE, ITEM_ENCHANTMENT_TEMPLATE_ID, ITEM_ENCHANTMENT_TEMPLATE_ID_2);
+    super();
   }
 }

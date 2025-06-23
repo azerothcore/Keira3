@@ -8,8 +8,13 @@ import { QuestHandlerService } from '../quest-handler.service';
 })
 export class QuestTemplateAddonService extends SingleRowEditorService<QuestTemplateAddon> {
   protected override readonly handlerService = inject(QuestHandlerService);
+  protected override _entityClass = QuestTemplateAddon;
+  protected override _entityTable = QUEST_TEMPLATE_ADDON_TABLE;
+  protected override _entityIdField = QUEST_TEMPLATE_ADDON_ID;
+  protected override _entityNameField = null;
+  protected override isMainEntity = false;
 
   constructor() {
-    super(QuestTemplateAddon, QUEST_TEMPLATE_ADDON_TABLE, QUEST_TEMPLATE_ADDON_ID, null, false);
+    super();
   }
 }

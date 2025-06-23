@@ -13,8 +13,12 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
 })
 export class GameobjectQuestitemService extends MultiRowEditorService<GameobjectQuestitem> {
   protected override readonly handlerService = inject(GameobjectHandlerService);
+  protected override readonly _entityClass = GameobjectQuestitem;
+  protected override readonly _entityTable = GAMEOBJECT_QUESTITEM_TABLE;
+  protected override readonly _entityIdField = GAMEOBJECT_QUESTITEM_ID;
+  protected override readonly _entitySecondIdField = GAMEOBJECT_QUESTITEM_ID_2;
 
   constructor() {
-    super(GameobjectQuestitem, GAMEOBJECT_QUESTITEM_TABLE, GAMEOBJECT_QUESTITEM_ID, GAMEOBJECT_QUESTITEM_ID_2);
+    super();
   }
 }

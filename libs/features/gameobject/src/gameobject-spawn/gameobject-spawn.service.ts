@@ -8,8 +8,12 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
 })
 export class GameobjectSpawnService extends MultiRowEditorService<GameobjectSpawn> {
   protected override readonly handlerService = inject(GameobjectHandlerService);
+  protected override readonly _entityClass = GameobjectSpawn;
+  protected override readonly _entityTable = GAMEOBJECT_SPAWN_TABLE;
+  protected override readonly _entityIdField = GAMEOBJECT_SPAWN_ID;
+  protected override readonly _entitySecondIdField = GAMEOBJECT_SPAWN_ID_2;
 
   constructor() {
-    super(GameobjectSpawn, GAMEOBJECT_SPAWN_TABLE, GAMEOBJECT_SPAWN_ID, GAMEOBJECT_SPAWN_ID_2);
+    super();
   }
 }

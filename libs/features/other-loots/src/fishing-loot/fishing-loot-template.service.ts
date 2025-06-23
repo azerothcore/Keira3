@@ -8,8 +8,12 @@ import { FishingLootHandlerService } from './fishing-loot-handler.service';
 })
 export class FishingLootTemplateService extends MultiRowEditorService<FishingLootTemplate> {
   protected override readonly handlerService = inject(FishingLootHandlerService);
+  protected override readonly _entityClass = FishingLootTemplate;
+  protected override readonly _entityTable = FISHING_LOOT_TEMPLATE_TABLE;
+  protected override readonly _entityIdField = LOOT_TEMPLATE_ID;
+  protected override readonly _entitySecondIdField = LOOT_TEMPLATE_ID_2;
 
   constructor() {
-    super(FishingLootTemplate, FISHING_LOOT_TEMPLATE_TABLE, LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2);
+    super();
   }
 }

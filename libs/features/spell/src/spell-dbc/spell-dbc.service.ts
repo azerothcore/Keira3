@@ -8,8 +8,13 @@ import { SpellHandlerService } from '../spell-handler.service';
 })
 export class SpellDbcService extends SingleRowEditorService<SpellDbc> {
   protected override readonly handlerService = inject(SpellHandlerService);
+  protected override _entityClass = SpellDbc;
+  protected override _entityTable = SPELL_DBC_TABLE;
+  protected override _entityIdField = SPELL_DBC_ID;
+  protected override _entityNameField = SPELL_DBC_NAME;
+  protected override isMainEntity = true;
 
   constructor() {
-    super(SpellDbc, SPELL_DBC_TABLE, SPELL_DBC_ID, SPELL_DBC_NAME, true);
+    super();
   }
 }

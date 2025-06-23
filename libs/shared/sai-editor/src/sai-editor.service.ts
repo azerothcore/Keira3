@@ -19,8 +19,13 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
     return this._errorLinkedEvent;
   }
 
+  protected override _entityClass = SmartScripts;
+  protected override _entityTable = SAI_TABLE;
+  protected override _entityIdField = JSON.stringify(SAI_ID_FIELDS);
+  protected override _entitySecondIdField = SAI_ID_2;
+
   constructor() {
-    super(SmartScripts, SAI_TABLE, SAI_ID_FIELDS, SAI_ID_2);
+    super();
   }
 
   protected updateFullQuery(): void {

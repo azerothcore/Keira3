@@ -13,8 +13,12 @@ import { QuestHandlerService } from '../quest-handler.service';
 })
 export class CreatureQuestenderService extends MultiRowEditorService<CreatureQuestender> {
   protected override readonly handlerService = inject(QuestHandlerService);
+  protected override readonly _entityClass = CreatureQuestender;
+  protected override readonly _entityTable = CREATURE_QUESTENDER_TABLE;
+  protected override readonly _entityIdField = CREATURE_QUESTENDER_ID;
+  protected override readonly _entitySecondIdField = CREATURE_QUESTENDER_ID_2;
 
   constructor() {
-    super(CreatureQuestender, CREATURE_QUESTENDER_TABLE, CREATURE_QUESTENDER_ID, CREATURE_QUESTENDER_ID_2);
+    super();
   }
 }

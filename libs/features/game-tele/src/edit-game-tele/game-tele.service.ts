@@ -8,8 +8,13 @@ import { GameTeleHandlerService } from '../game-tele-handler.service';
 })
 export class GameTeleService extends SingleRowEditorService<GameTele> {
   protected override readonly handlerService = inject(GameTeleHandlerService);
+  protected override _entityClass = GameTele;
+  protected override _entityTable = GAME_TELE_TABLE;
+  protected override _entityIdField = GAME_TELE_ID;
+  protected override _entityNameField = GAME_TELE_NAME;
+  protected override isMainEntity = true;
 
   constructor() {
-    super(GameTele, GAME_TELE_TABLE, GAME_TELE_ID, GAME_TELE_NAME, true);
+    super();
   }
 }

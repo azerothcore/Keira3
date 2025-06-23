@@ -8,8 +8,13 @@ import { CreatureHandlerService } from '../creature-handler.service';
 })
 export class CreatureOnkillReputationService extends SingleRowEditorService<CreatureOnkillReputation> {
   protected override readonly handlerService = inject(CreatureHandlerService);
+  protected override _entityClass = CreatureOnkillReputation;
+  protected override _entityTable = CREATURE_ONKLL_REPUTATION_TABLE;
+  protected override _entityIdField = CREATURE_ONKLL_REPUTATION_ID;
+  protected override _entityNameField = null;
+  protected override isMainEntity = false;
 
   constructor() {
-    super(CreatureOnkillReputation, CREATURE_ONKLL_REPUTATION_TABLE, CREATURE_ONKLL_REPUTATION_ID, null, false);
+    super();
   }
 }

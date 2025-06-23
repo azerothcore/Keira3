@@ -16,12 +16,12 @@ export class CreatureTemplateResistanceService extends MultiRowEditorService<Cre
 
   override FIRST_ROW_START_VALUE = 1;
 
+  protected override readonly _entityClass = CreatureTemplateResistance;
+  protected override readonly _entityTable = CREATURE_TEMPLATE_RESISTANCE_TABLE;
+  protected override readonly _entityIdField = CREATURE_TEMPLATE_RESISTANCE_ID;
+  protected override readonly _entitySecondIdField = CREATURE_TEMPLATE_RESISTANCE_ID_2;
+
   constructor() {
-    super(
-      CreatureTemplateResistance,
-      CREATURE_TEMPLATE_RESISTANCE_TABLE,
-      CREATURE_TEMPLATE_RESISTANCE_ID,
-      CREATURE_TEMPLATE_RESISTANCE_ID_2,
-    );
+    super();
   }
 }

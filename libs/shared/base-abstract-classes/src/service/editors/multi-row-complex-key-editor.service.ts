@@ -9,13 +9,13 @@ export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extend
     return JSON.parse(this._entityIdField as string);
   }
 
-  protected constructor(
-    protected override _entityClass: Class,
-    protected override _entityTable: string,
-    _entityIdField: string[],
-    protected override _entitySecondIdField: string,
-  ) {
-    super(_entityClass, _entityTable, JSON.stringify(_entityIdField), _entitySecondIdField);
+  protected abstract override _entityClass: Class;
+  protected abstract override _entityTable: string;
+  protected abstract override _entityIdField: string;
+  protected abstract override _entitySecondIdField: string;
+
+  protected constructor() {
+    super();
   }
 
   protected override disableEntityIdField() {}

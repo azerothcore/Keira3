@@ -14,9 +14,14 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
 })
 export class GameobjectTemplateService extends SingleRowEditorService<GameobjectTemplate> {
   protected override readonly handlerService = inject(GameobjectHandlerService);
+  protected override _entityClass = GameobjectTemplate;
+  protected override _entityTable = GAMEOBJECT_TEMPLATE_TABLE;
+  protected override _entityIdField = GAMEOBJECT_TEMPLATE_ID;
+  protected override _entityNameField = GAMEOBJECT_TEMPLATE_NAME;
+  protected override isMainEntity = true;
 
   constructor() {
-    super(GameobjectTemplate, GAMEOBJECT_TEMPLATE_TABLE, GAMEOBJECT_TEMPLATE_ID, GAMEOBJECT_TEMPLATE_NAME, true);
+    super();
   }
 
   getFieldDefinition(type: number, dataIndex: number): FieldDefinition {

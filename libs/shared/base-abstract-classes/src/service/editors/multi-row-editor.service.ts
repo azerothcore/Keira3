@@ -30,14 +30,15 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     return this._errors;
   }
 
-  protected constructor(
-    protected override readonly _entityClass: Class,
-    protected override readonly _entityTable: string,
-    protected override readonly _entityIdField: string | undefined,
-    protected readonly _entitySecondIdField: string,
-    protected readonly _entityExtraIdField: string | undefined = undefined,
-  ) {
-    super(_entityClass, _entityTable, _entityIdField);
+  protected abstract override readonly _entityClass: Class;
+  protected abstract override readonly _entityTable: string;
+  protected abstract override readonly _entityIdField: string | undefined;
+  protected abstract readonly _entitySecondIdField: string;
+  protected readonly _entityExtraIdField: string | undefined = undefined;
+
+  protected constructor() {
+    super();
+    this.init();
     this.initForm();
   }
 
