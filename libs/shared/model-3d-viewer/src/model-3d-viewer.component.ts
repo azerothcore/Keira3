@@ -172,6 +172,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
       this.windowRef.WH = {};
       this.windowRef.WH.debug = () => {};
       this.windowRef.WH.defaultAnimation = `Stand`;
+      this.windowRef.WH.WebP = { getImageExtension: () => '.webp' };
     }
 
     const loadedViewer$ = this.loadedViewer$;
