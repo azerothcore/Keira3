@@ -12,5 +12,5 @@ export class GossipMenuOptionPreviewComponent {
   readonly options = input.required<GossipMenuOption[]>();
   readonly show = input(true);
 
-  readonly OPTION_IMG = OPTION_IMG;
+  protected readonly OPTION_IMG = OPTION_IMG;
 }
