@@ -197,8 +197,7 @@ SAI_ACTION_COMMENTS[SAI_ACTIONS.ADD_POWER] = `Add _actionParamTwo_ _powerTypeAct
 SAI_ACTION_COMMENTS[SAI_ACTIONS.REMOVE_POWER] = `Remove _actionParamTwo_ _powerTypeActionParamOne_`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.GAME_EVENT_STOP] = `Stop game event _actionParamTwo_`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.GAME_EVENT_START] = `Start game event _actionParamTwo_`;
-SAI_ACTION_COMMENTS[SAI_ACTIONS.START_CLOSEST_WAYPOINT] =
-  `Pick Closest Waypoint _actionParamOne_ _actionParamTwo_ _actionParamThree_ _actionParamFour_ _actionParamFive_ _actionParamSix_`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.START_CLOSEST_WAYPOINT] = `Start closest Waypoint _actionParamOne_ - _actionParamTwo_`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.RISE_UP] = `Move Up`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.RANDOM_SOUND] = `Play Random Sound`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_CORPSE_DELAY] = `Set Corpse Delay to _actionParamOne_s`;
