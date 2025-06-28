@@ -11,5 +11,6 @@
   <div class="newer-version-alert text-center">
     <span [translate]="'NEW_VERSION'"></span>
     <a class="btn btn-secondary btn-sm ms-2" [href]="KEIRA3_REPO_URL + '/releases'" target="_blank" [translate]="'DOWNLOAD'"></a>
+    <button class="btn btn-secondary btn-sm" (click)="showNewerVersionAlert = false"><i class="fas fa-xmark"></i></button>
   </div>
 }
