@@ -20,7 +20,7 @@ class UnusedGuidSearchPage extends PageObject<UnusedGuidSearchComponent> {
     return debugEl ? debugEl.nativeElement : null;
   }
   get form(): FormGroup {
-    const debugEl = this.getDebugElementByTestId('form');
+    const debugEl = this.getDebugElementByTestId('unused-guid-search-form');
     return getFormGroupOfDebugElement(debugEl);
   }
 }
