@@ -144,7 +144,7 @@ describe('SaiCommentGeneratorService', () => {
           action_param5: 55,
           action_param6: 66,
         },
-        expected: `MockEntity - In Combat - Pick Closest Waypoint 11 22 33 44 55 66`,
+        expected: `MockEntity - In Combat - Start closest Waypoint 11 - 22`,
       },
       {
         name: 'SAI_ACTIONS.FAIL_QUEST check action params 1',
