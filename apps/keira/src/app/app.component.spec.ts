@@ -116,5 +116,25 @@ describe('AppComponent', () => {
 
       httpTestingController.verify();
     });
+
+    it('should set showNewerVersionAlert to false when the fa-xmark button is clicked', () => {
+      const { fixture, httpTestingController, component } = setup();
+      fixture.detectChanges();
+      const req = httpTestingController.expectOne(LATEST_RELEASE_API_URL);
+      req.flush({ tag_name: 'some newer version' });
+      fixture.detectChanges();
+
+      // Check if the alert is shown with the close button
+      expect(component.showNewerVersionAlert).toBeTrue();
+      const closeBtn: HTMLButtonElement | null = fixture.nativeElement.querySelector('.newer-version-alert .fa-xmark').closest('button');
+      expect(closeBtn).toBeTruthy();
+
+      // click the close button
+      closeBtn!.click();
+      fixture.detectChanges();
+
+      // the alerth should be hidden now
+      expect(component.showNewerVersionAlert).toBeFalse();
+    });
   });
 });
