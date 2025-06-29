@@ -64,6 +64,7 @@ export * from './entities/sound-entries.type';
 export * from './entities/spell-dbc.type';
 export * from './entities/spell-loot-template.type';
 export * from './entities/spell.type';
+export * from './entities/waypoints-data.type';
 
 export * from './flags/allowable-classes';
 export * from './flags/allowable-races';
