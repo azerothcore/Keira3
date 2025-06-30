@@ -20,13 +20,11 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
               <label class="control-label" for="OptionIcon">OptionIcon</label>
-              <keira-single-value-selector-btn
+              <keira-generic-option-icon-selector
                 [control]="editorService.form.controls.OptionIcon"
-                [disabled]="editorService.form.controls.OptionIcon.disabled"
-                [config]="{ options: OPTION_ICON, name: 'OptionIcon' }"
-                [modalClass]="'modal-md'"
-              />
-              <input [formControlName]="'OptionIcon'" id="OptionIcon" type="number" class="form-control form-control-sm" />
+                id="OptionIcon"
+                [optionList]="OPTION_ICON"
+              ></keira-generic-option-icon-selector>
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
               <label class="control-label" for="OptionText">OptionText</label>
