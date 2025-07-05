@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Option } from '@keira/shared/constants';
 import { NgxSelectModule } from 'ngx-select-ex';
@@ -13,6 +13,6 @@ import { NgxSelectModule } from 'ngx-select-ex';
 export class GenericOptionIconSelectorComponent {
   readonly control = input.required<FormControl>();
   readonly optionList = input.required<Option[]>();
-  @Input() placeholder = '';
+  readonly placeholder = input('');
   readonly placeholderValue = input<string | number>();
 }

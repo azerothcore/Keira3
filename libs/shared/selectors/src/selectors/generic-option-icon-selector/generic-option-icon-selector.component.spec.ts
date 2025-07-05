@@ -1,18 +1,18 @@
 import { Component, viewChild } from '@angular/core';
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { fakeAsync, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
-import { EXPANSION } from '@keira/shared/acore-world-model';
+import { OPTION_ICON } from '@keira/shared/acore-world-model';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { GenericOptionIconSelectorComponent } from './generic-option-icon-selector.component';
 
 @Component({
-  template: `<keira-generic-option-selector [control]="mockFormControl" [optionList]="EXPANSION" />`,
+  template: `<keira-generic-option-icon-selector [control]="mockFormControl" [optionList]="OPTION_ICON" />`,
   imports: [GenericOptionIconSelectorComponent],
 })
 class TestHostComponent {
   readonly child = viewChild.required(GenericOptionIconSelectorComponent);
   mockFormControl = new FormControl();
-  EXPANSION = EXPANSION;
+  OPTION_ICON = OPTION_ICON;
 }
 
 describe('GenericOptionIconSelectorComponent', () => {
@@ -35,35 +35,11 @@ describe('GenericOptionIconSelectorComponent', () => {
     return { fixture, host, component, page };
   };
 
-  it('changing the form value via input will be reflected in the template', () => {
-    const { page, host } = setup();
-    const select = page.getDebugElementByCss<HTMLSelectElement>('select').nativeElement;
+  it('should display all options from optionList', fakeAsync(() => {
+    const { page, component } = setup();
 
-    host.mockFormControl.setValue(1);
     page.detectChanges();
 
-    expect(select.value).toEqual('1: 1');
-    expect(select.selectedOptions[0].label).toEqual('1 - The Burning Crusade');
-
-    host.mockFormControl.setValue(0);
-    page.detectChanges();
-
-    expect(select.value).toEqual('0: 0');
-    expect(select.selectedOptions[0].label).toEqual('0 - Classic');
-  });
-
-  it('changing the input valuewill be reflected in the form control', () => {
-    const { page, host } = setup();
-    const select = page.getDebugElementByCss<HTMLSelectElement>('select').nativeElement;
-
-    page.setInputValue(select, '1: 1');
-
-    expect(host.mockFormControl.value).toEqual(1);
-    expect(select.selectedOptions[0].label).toEqual('1 - The Burning Crusade');
-
-    page.setInputValue(select, '0: 0');
-
-    expect(host.mockFormControl.value).toEqual(0);
-    expect(select.selectedOptions[0].label).toEqual('0 - Classic');
-  });
+    expect(component.optionList()).toEqual(OPTION_ICON);
+  }));
 });

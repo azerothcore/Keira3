@@ -7,8 +7,10 @@
   [size]="'small'"
 >
   <ng-template ngx-select-option ngx-select-option-selected let-option let-text="text">
-    <img width="16" height="16" [src]="'assets/img/' + option.data.icon" />
-    &nbsp;
+    @if (option.data.icon) {
+      <img width="16" height="16" [src]="'assets/img/' + option.data.icon" />
+      &nbsp;
+    }
     <span [innerHtml]="text"></span>
   </ng-template>
 
