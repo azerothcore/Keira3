@@ -891,6 +891,8 @@
     "START_INDEX": "Start Index",
     "AMOUNT": "Amount",
     "CONSECUTIVE": "Consecutive",
-    "SEARCH": "Search"
+    "SEARCH": "Search",
+    "SEARCHING": "Searching...",
+    "FOUND_GUIDS": "Found unused GUIDs:"
   }
 }

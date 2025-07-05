@@ -47,7 +47,7 @@
     </form>
 
     @if (loading()) {
-      <div data-testid="loading" class="alert alert-info">Searching...</div>
+      <div data-testid="loading" class="alert alert-info">{{ 'UNUSED_GUID_SEARCH.SEARCHING' | translate }}</div>
     }
 
     @if (error()) {
@@ -55,7 +55,7 @@
     }
 
     @if (results.length) {
-      <div class="alert alert-success">Found unused GUIDs:</div>
+      <div class="alert alert-success">{{ 'UNUSED_GUID_SEARCH.FOUND_GUIDS' | translate }}</div>
       <textarea id="results" class="mb-1" [value]="results.join(', ')" rows="6" spellcheck="false" readonly></textarea>
     }
   </div>
