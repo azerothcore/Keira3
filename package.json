@@ -53,6 +53,7 @@
     "jquery": "3.7.1",
     "morgan": "1.10.0",
     "mysql2": "3.14.1",
+    "ngx-select-ex": "19.0.5",
     "ngx-toastr": "19.0.0",
     "ngx-ui-switch": "15.0.0",
     "node-fetch": "2.7.0",

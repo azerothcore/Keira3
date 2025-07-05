@@ -79,5 +79,6 @@ export * from './selectors/sound-entries-selector/sound-entries-selector-btn.com
 export * from './selectors/sound-entries-selector/sound-entries-selector-modal.component';
 
 export * from './selectors/generic-option-selector/generic-option-selector.component';
+export * from './selectors/generic-option-icon-selector/generic-option-icon-selector.component';
 export * from './selectors/boolean-option-selector/boolean-option-selector.component';
 export * from './selectors/icon-selector/icon-selector.component';
