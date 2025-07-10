@@ -449,7 +449,8 @@
       "ORIENTATION": "生物刷新的方向 (北 = 0.0; 南 = 圆周率 (3.14159))",
       "ANIMPROGRESS": "Always 100 for chests.",
       "STATE": "用于宝箱或者门。 1 = 关闭  0 = 打开",
-      "SCRIPT_NAME": "此生物使用的C++脚本的名称(如果有的话)。"
+      "SCRIPT_NAME": "此生物使用的C++脚本的名称(如果有的话)。",
+      "COMMENT": "Comment"
     },
     "SPAWN_ADDON": {
       "GUID": "链接到gameobject表的guid字段"

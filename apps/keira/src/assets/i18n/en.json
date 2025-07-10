@@ -449,7 +449,8 @@
       "ORIENTATION": "The orientation of the creatures spawn point. (North = 0.0; South = pi (3.14159))",
       "ANIMPROGRESS": "Always 100 for chests.",
       "STATE": "For chests or doors. 1 = closed  0 = open",
-      "SCRIPT_NAME": "The name of the C++ script that this creature uses, if any."
+      "SCRIPT_NAME": "The name of the C++ script that this creature uses, if any.",
+      "COMMENT": "Comment"
     },
     "SPAWN_ADDON": {
       "GUID": "Link to gameobject.guid"
