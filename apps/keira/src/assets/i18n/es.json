@@ -449,7 +449,8 @@
       "ORIENTATION": "La Orientación en el punto de aparición de la criatura. (Norte = 0.0; Sur = π (3.14159))",
       "ANIMPROGRESS": "Siempre 100 en el caso de los cofres.",
       "STATE": "Para puertas o cofres. 1 = cerrado,  0 = abierto",
-      "SCRIPT_NAME": "El nombre en clave del script escrito en C++ que utilizará el Objeto del Juego, si existe claro está."
+      "SCRIPT_NAME": "El nombre en clave del script escrito en C++ que utilizará el Objeto del Juego, si existe claro está.",
+      "COMMENT": "Comment"
     },
     "SPAWN_ADDON": {
       "GUID": "Enlazado con gameobject.guid (El Identificador Único Global del Objeto)"

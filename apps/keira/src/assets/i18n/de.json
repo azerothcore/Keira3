@@ -449,7 +449,8 @@
       "ORIENTATION": "Die Orientierung des Spawnpunkts der Kreatur. (Norden = 0.0; Süden = pi (3.14159))",
       "ANIMPROGRESS": "Immer 100 für Kisten.",
       "STATE": "Für Kisten oder Türen. 1 = geschlossen, 0 = offen",
-      "SCRIPT_NAME": "Der Name des C++-Skripts, das diese Kreatur verwendet, falls vorhanden."
+      "SCRIPT_NAME": "Der Name des C++-Skripts, das diese Kreatur verwendet, falls vorhanden.",
+      "COMMENT": "Comment"
     },
     "SPAWN_ADDON": {
       "GUID": "Link zu gameobject.guid"

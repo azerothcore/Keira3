@@ -25,4 +25,5 @@ export class GameobjectSpawn extends TableRow {
   state: number = 0;
   ScriptName: string = '';
   VerifiedBuild: number = 0;
+  Comment: string = '';
 }
