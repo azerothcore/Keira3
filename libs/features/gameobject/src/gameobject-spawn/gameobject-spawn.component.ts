@@ -14,7 +14,6 @@ import { GameobjectSpawnService } from './gameobject-spawn.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-gameobject-spawn',
   templateUrl: './gameobject-spawn.component.html',
-  styleUrls: ['./gameobject-spawn.component.scss'],
   imports: [
     TopBarComponent,
     TranslateModule,
@@ -30,9 +29,9 @@ import { GameobjectSpawnService } from './gameobject-spawn.service';
   ],
 })
 export class GameobjectSpawnComponent extends MultiRowEditorComponent<GameobjectSpawn> {
-  readonly SPAWN_MASK = SPAWN_MASK;
-  readonly PHASE_MASK = PHASE_MASK;
+  protected readonly SPAWN_MASK = SPAWN_MASK;
+  protected readonly PHASE_MASK = PHASE_MASK;
 
   protected override readonly editorService = inject(GameobjectSpawnService);
-  readonly handlerService = inject(GameobjectHandlerService);
+  protected readonly handlerService = inject(GameobjectHandlerService);
 }

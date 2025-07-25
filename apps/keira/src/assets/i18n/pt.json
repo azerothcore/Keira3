@@ -449,7 +449,8 @@
       "ORIENTATION": "A orientação do spawn point dos gameobjects. (Norte = 0.0; Sul = pi (3.14159))",
       "ANIMPROGRESS": "Sempre 100 para chests.",
       "STATE": "Para chests ou portas. 1 = fechado  0 = aberto",
-      "SCRIPT_NAME": "O nome do script C++ que esse gameobject usa, caso exista."
+      "SCRIPT_NAME": "O nome do script C++ que esse gameobject usa, caso exista.",
+      "COMMENT": "Comment"
     },
     "SPAWN_ADDON": {
       "GUID": "Link para gameobject.guid"
