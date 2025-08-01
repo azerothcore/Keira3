@@ -14,7 +14,7 @@ describe('SwitchLanguageService', () => {
 
   function setup() {
     const translateService = TestBed.inject(TranslateService);
-    const service = TestBed.get(SwitchLanguageService);
+    const service = TestBed.inject(SwitchLanguageService);
 
     return { translateService, service };
   }
@@ -25,7 +25,8 @@ describe('SwitchLanguageService', () => {
     const mockLang = 'it';
     const mockEvent = { target: { value: mockLang } };
 
-    service.setLanguage(mockEvent);
+    // TODO: fix typing
+    service.setLanguage(mockEvent as unknown as Event);
 
     expect(spy).toHaveBeenCalledOnceWith(mockLang);
   });
