@@ -55,7 +55,7 @@
     "mysql2": "3.14.2",
     "ngx-select-ex": "19.0.5",
     "ngx-toastr": "19.0.0",
-    "ngx-ui-switch": "15.0.0",
+    "ngx-ui-switch": "16.1.0",
     "node-fetch": "2.7.0",
     "serialize-javascript": "6.0.2",
     "sqlite3": "5.1.7",
