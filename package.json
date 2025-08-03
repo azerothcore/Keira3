@@ -42,7 +42,7 @@
     "@acrodata/code-editor": "0.5.1",
     "@codemirror/lang-sql": "6.9.1",
     "@ngx-translate/core": "17.0.0",
-    "@ngx-translate/http-loader": "16.0.1",
+    "@ngx-translate/http-loader": "17.0.0",
     "@types/electron-settings": "4.0.2",
     "@uiw/codemirror-theme-github": "4.24.2",
     "acorn": "8.15.0",
