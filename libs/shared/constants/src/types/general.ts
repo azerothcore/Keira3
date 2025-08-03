@@ -42,6 +42,7 @@ export interface Option {
   value: number | string | null;
   name: string;
   comment?: string;
+  icon?: string;
 }
 
 export interface FieldDefinition {
