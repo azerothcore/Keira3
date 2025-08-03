@@ -50,7 +50,7 @@
                   <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
                 </ng-template>
               </ngx-datatable-column>
-              <ngx-datatable-column name="TextID" prop="TextID" [minWidth]="80"></ngx-datatable-column>
+              <ngx-datatable-column name="TextID" prop="TextID" [minWidth]="80" />
               <ngx-datatable-column name="Text0_0" [minWidth]="80">
                 <ng-template let-row="row" ngx-datatable-cell-template>
                   {{ queryService.getText0ById(row.TextID) | async }}

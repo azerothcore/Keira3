@@ -81,16 +81,16 @@
                   <keira-icon [itemId]="row.item" />
                 </ng-template>
               </ngx-datatable-column>
-              <ngx-datatable-column name="item" prop="item" [minWidth]="80"></ngx-datatable-column>
+              <ngx-datatable-column name="item" prop="item" [minWidth]="80" />
               <ngx-datatable-column name="Name" [minWidth]="200">
                 <ng-template let-row="row" ngx-datatable-cell-template>
                   {{ editorService.queryService.getItemNameById(row.item) | async }}
                 </ng-template>
               </ngx-datatable-column>
-              <ngx-datatable-column name="slot" prop="slot"></ngx-datatable-column>
-              <ngx-datatable-column name="maxcount" prop="maxcount"></ngx-datatable-column>
-              <ngx-datatable-column name="incrtime" prop="incrtime"></ngx-datatable-column>
-              <ngx-datatable-column name="ExtendedCost" prop="ExtendedCost"></ngx-datatable-column>
+              <ngx-datatable-column name="slot" prop="slot" />
+              <ngx-datatable-column name="maxcount" prop="maxcount" />
+              <ngx-datatable-column name="incrtime" prop="incrtime" />
+              <ngx-datatable-column name="ExtendedCost" prop="ExtendedCost" />
               <ngx-datatable-column name="ExtendedCostReadable">
                 <ng-template let-row="row" ngx-datatable-cell-template>
                   <div [innerHTML]="editorService.getItemExtendedCost(row.ExtendedCost) | async"></div>
