@@ -20,7 +20,7 @@ export class SqliteQueryService extends BaseQueryService {
   query<T extends TableRow>(queryString: string, silent = false): Observable<T[]> {
     return this.sqliteService.dbQuery<T>(queryString).pipe(
       tap((val) => {
-        if (this.configService.debugMode && !silent) {
+        if (this.configService.debugMode() && !silent) {
           console.log(`\n${queryString}`);
           console.log(val);
         }
