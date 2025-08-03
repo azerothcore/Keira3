@@ -30,16 +30,10 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="IconName">
-                <keira-icon-selector
-                  [src]="'assets/img/creature-icons/' + editorService.form.controls.IconName.value + '.png'"
-                ></keira-icon-selector>
+                <keira-icon-selector [src]="'assets/img/creature-icons/' + editorService.form.controls.IconName.value + '.png'" />
                 IconName</label
               >
-              <keira-generic-option-selector
-                [control]="editorService.form.controls.IconName"
-                id="IconName"
-                [optionList]="CREATURE_ICON"
-              ></keira-generic-option-selector>
+              <keira-generic-option-selector [control]="editorService.form.controls.IconName" id="IconName" [optionList]="CREATURE_ICON" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="minlevel">minlevel</label>
@@ -53,11 +47,7 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="exp">expansion</label>
-              <keira-generic-option-selector
-                [control]="editorService.form.controls.exp"
-                id="exp"
-                [optionList]="EXPANSION"
-              ></keira-generic-option-selector>
+              <keira-generic-option-selector [control]="editorService.form.controls.exp" id="exp" [optionList]="EXPANSION" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="faction">faction</label>
@@ -81,27 +71,15 @@
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="rank">rank</label>
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.RANK' | translate"></i>
-              <keira-generic-option-selector
-                [control]="editorService.form.controls.rank"
-                id="rank"
-                [optionList]="RANK"
-              ></keira-generic-option-selector>
+              <keira-generic-option-selector [control]="editorService.form.controls.rank" id="rank" [optionList]="RANK" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="family">family</label>
-              <keira-generic-option-selector
-                [control]="editorService.form.controls.family"
-                id="family"
-                [optionList]="CREATURE_FAMILY"
-              ></keira-generic-option-selector>
+              <keira-generic-option-selector [control]="editorService.form.controls.family" id="family" [optionList]="CREATURE_FAMILY" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="type">type</label>
-              <keira-generic-option-selector
-                [control]="editorService.form.controls.type"
-                id="type"
-                [optionList]="CREATURE_TYPE"
-              ></keira-generic-option-selector>
+              <keira-generic-option-selector [control]="editorService.form.controls.type" id="type" [optionList]="CREATURE_TYPE" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="type_flags">type_flags</label>
@@ -114,11 +92,7 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="unit_class">unit_class</label>
-              <keira-generic-option-selector
-                [control]="editorService.form.controls.unit_class"
-                id="unit_class"
-                [optionList]="UNIT_CLASS"
-              ></keira-generic-option-selector>
+              <keira-generic-option-selector [control]="editorService.form.controls.unit_class" id="unit_class" [optionList]="UNIT_CLASS" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="unit_flags">unit_flags</label>
@@ -150,10 +124,7 @@
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="RegenHealth">RegenHealth</label>
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.REGEN_HEALTH' | translate"></i>
-              <keira-boolean-option-selector
-                [control]="editorService.form.controls.RegenHealth"
-                id="RegenHealth"
-              ></keira-boolean-option-selector>
+              <keira-boolean-option-selector [control]="editorService.form.controls.RegenHealth" id="RegenHealth" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="mechanic_immune_mask">mechanic_I_M</label>
@@ -200,10 +171,7 @@
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="RacialLeader">RacialLeader</label>
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.RACIAL_LEADER' | translate"></i>
-              <keira-boolean-option-selector
-                [control]="editorService.form.controls.RacialLeader"
-                id="RacialLeader"
-              ></keira-boolean-option-selector>
+              <keira-boolean-option-selector [control]="editorService.form.controls.RacialLeader" id="RacialLeader" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="PetSpellDataId">PetSpellDataId</label>
@@ -264,7 +232,7 @@
                     [control]="editorService.form.controls.trainer_type"
                     id="trainer_type"
                     [optionList]="TRAINER_TYPE"
-                  ></keira-generic-option-selector>
+                  />
                 </div>
                 <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
                   <label class="control-label" for="trainer_spell">trainer_spell</label>
@@ -279,16 +247,14 @@
                 </div>
                 <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
                   <label class="control-label" for="trainer_class">
-                    <keira-icon-selector
-                      [src]="'assets/img/class/' + editorService.form.controls.trainer_class.value + '.gif'"
-                    ></keira-icon-selector>
+                    <keira-icon-selector [src]="'assets/img/class/' + editorService.form.controls.trainer_class.value + '.gif'" />
                     trainer_class</label
                   >
                   <keira-generic-option-selector
                     [control]="editorService.form.controls.trainer_class"
                     id="trainer_class"
                     [optionList]="CREATURE_CLASS"
-                  ></keira-generic-option-selector>
+                  />
                 </div>
                 <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
                   <label class="control-label" for="trainer_race">
@@ -296,7 +262,7 @@
                       [src]="
                         'assets/img/race/' + editorService.form.controls.trainer_race.value + '-' + (RACE_ICON_GENDER ? 1 : 0) + '.gif'
                       "
-                    ></keira-icon-selector>
+                    />
                     trainer_race</label
                   >
                   <select
@@ -403,11 +369,7 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
               <label class="control-label" for="dmgschool">dmgschool</label>
-              <keira-generic-option-selector
-                [control]="editorService.form.controls.dmgschool"
-                id="dmgschool"
-                [optionList]="DAMAGE_TYPE"
-              ></keira-generic-option-selector>
+              <keira-generic-option-selector [control]="editorService.form.controls.dmgschool" id="dmgschool" [optionList]="DAMAGE_TYPE" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
               <label class="control-label" for="BaseAttackTime">BaseAttackTime</label>
@@ -450,7 +412,7 @@
                 [control]="editorService.form.controls.MovementType"
                 id="MovementType"
                 [optionList]="MOVEMENT_TYPE"
-              ></keira-generic-option-selector>
+              />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="movementId">movementId</label>

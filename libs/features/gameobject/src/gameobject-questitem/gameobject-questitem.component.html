@@ -60,8 +60,8 @@
                   <keira-icon [itemId]="row.ItemId" />
                 </ng-template>
               </ngx-datatable-column>
-              <ngx-datatable-column name="Idx" prop="Idx" [minWidth]="80" [maxWidth]="120"></ngx-datatable-column>
-              <ngx-datatable-column name="ItemId" prop="ItemId" [maxWidth]="150"></ngx-datatable-column>
+              <ngx-datatable-column name="Idx" prop="Idx" [minWidth]="80" [maxWidth]="120" />
+              <ngx-datatable-column name="ItemId" prop="ItemId" [maxWidth]="150" />
               <ngx-datatable-column name="Name" [minWidth]="200">
                 <ng-template let-row="row" ngx-datatable-cell-template>
                   {{ editorService.queryService.getItemNameById(row.ItemId) | async }}

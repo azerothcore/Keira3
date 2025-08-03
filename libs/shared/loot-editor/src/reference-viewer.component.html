@@ -21,7 +21,7 @@
           [columnMode]="DTCFG.columnMode"
           [rowHeight]="DTCFG.rowHeightWithIcon"
         >
-          <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false"></ngx-datatable-column>
+          <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false" />
           <ngx-datatable-column [minWidth]="42" [maxWidth]="42" [sortable]="false">
             <ng-template let-row="row" ngx-datatable-cell-template>
               @if (!isReference(row)) {
@@ -29,7 +29,7 @@
               }
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column name="Item" prop="Item" [minWidth]="80"></ngx-datatable-column>
+          <ngx-datatable-column name="Item" prop="Item" [minWidth]="80" />
           <ngx-datatable-column name="Name" [minWidth]="200" [sortable]="false">
             <ng-template let-row="row" ngx-datatable-cell-template>
               @if (!isReference(row)) {
@@ -45,9 +45,9 @@
               <span [class.reference]="isReference(row)">{{ row.Reference }}</span>
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column name="Chance" prop="Chance"></ngx-datatable-column>
-          <ngx-datatable-column name="QuestRequired" prop="QuestRequired"></ngx-datatable-column>
-          <ngx-datatable-column name="LootMode" prop="LootMode"></ngx-datatable-column>
+          <ngx-datatable-column name="Chance" prop="Chance" />
+          <ngx-datatable-column name="QuestRequired" prop="QuestRequired" />
+          <ngx-datatable-column name="LootMode" prop="LootMode" />
           <ngx-datatable-column name="GroupId" prop="GroupId">
             <ng-template let-row="row" ngx-datatable-cell-template>
               <span class="group-{{ row.GroupId }}">{{ row.GroupId }}</span>
@@ -60,7 +60,7 @@
               }
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column name="MaxCount" prop="MaxCount"></ngx-datatable-column>
+          <ngx-datatable-column name="MaxCount" prop="MaxCount" />
         </ngx-datatable>
       </div>
     </div>
