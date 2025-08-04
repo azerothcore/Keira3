@@ -8,6 +8,7 @@ import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { SaiGameobjectEditorService } from './sai-gameobject-editor.service';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,6 +26,7 @@ import { SaiGameobjectEditorService } from './sai-gameobject-editor.service';
     EditorButtonsComponent,
     NgxDatatableModule,
     TimedActionlistComponent,
+    AsyncPipe,
   ],
 })
 export class SaiGameobjectComponent extends SaiEditorComponent {
