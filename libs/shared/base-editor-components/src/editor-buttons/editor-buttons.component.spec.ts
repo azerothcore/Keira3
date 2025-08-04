@@ -6,7 +6,12 @@ import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
 import { TableRow } from '@keira/shared/constants';
 
 @Component({
-  template: `<keira-editor-buttons [editorService]="editorService" />`,
+  template: `<keira-editor-buttons
+    [selectedRowId]="editorService.selectedRowId"
+    (deleteSelectedRow)="editorService.deleteSelectedRow()"
+    (addNewRow)="editorService.addNewRow()"
+    (duplicateRow)="editorService.addNewRow(true)"
+  />`,
   imports: [TranslateTestingModule, EditorButtonsComponent],
 })
 class TestHostComponent {

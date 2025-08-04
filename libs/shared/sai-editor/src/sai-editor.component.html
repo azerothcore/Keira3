@@ -514,7 +514,12 @@
       </div>
       <div class="row">
         <div class="col-12">
-          <keira-editor-buttons [editorService]="editorService" />
+          <keira-editor-buttons
+            [selectedRowId]="editorService.selectedRowId"
+            (deleteSelectedRow)="editorService.deleteSelectedRow()"
+            (addNewRow)="editorService.addNewRow()"
+            (duplicateRow)="editorService.addNewRow(true)"
+          />
           <button id="generate-comments-btn" class="btn btn-primary btn-sm float-end" (click)="editorService.generateComments(true)">
             Generate comments (all)
           </button>
