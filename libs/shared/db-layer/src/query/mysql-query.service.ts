@@ -24,7 +24,7 @@ export class MysqlQueryService extends BaseQueryService {
   query<T extends TableRow>(queryString: string, values?: string[]): Observable<T[]> {
     return this.mysqlService.dbQuery<T>(queryString, values).pipe(
       tap((val) => {
-        if (this.configService.debugMode) {
+        if (this.configService.debugMode()) {
           console.log(`\n${queryString}`);
           console.log(val);
         }

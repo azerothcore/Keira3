@@ -49,7 +49,7 @@ describe('MysqlQueryService', () => {
 
   it('query() should call mysqlService.dbQuery() and output query and results if debug mode is enabled', () => {
     const logSpy = spyOn(console, 'log');
-    configService.debugMode = true;
+    configService.debugMode.set(true);
     const querySpy = spyOn(TestBed.inject(MysqlService), 'dbQuery').and.returnValue(of({ id: 'mock value' } as TableRow));
     const myQuery = 'SELECT azerothcore FROM projects;';
 
@@ -62,7 +62,7 @@ describe('MysqlQueryService', () => {
 
   it('query() should call mysqlService.dbQuery() and not output anything if debug mode is disabled', () => {
     const logSpy = spyOn(console, 'log');
-    configService.debugMode = false;
+    configService.debugMode.set(false);
     const querySpy = spyOn(TestBed.inject(MysqlService), 'dbQuery').and.returnValue(of(undefined as any));
     const myQuery = 'SELECT azerothcore FROM projects;';
 
