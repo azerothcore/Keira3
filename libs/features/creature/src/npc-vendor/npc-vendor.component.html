@@ -67,7 +67,12 @@
         </form>
         <div class="row">
           <div class="col-12">
-            <keira-editor-buttons [editorService]="editorService" />
+            <keira-editor-buttons
+              [selectedRowId]="editorService.selectedRowId"
+              (deleteSelectedRow)="editorService.deleteSelectedRow()"
+              (addNewRow)="editorService.addNewRow()"
+              (duplicateRow)="editorService.addNewRow(true)"
+            />
             <ngx-datatable
               id="editor-table"
               class="bootstrap table table-striped text-center datatable-select datatable-icon-list"
