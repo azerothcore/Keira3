@@ -12,19 +12,32 @@ import { HighlightjsWrapperComponent } from '../highlightjs-wrapper/highlightjs-
 import { QueryErrorComponent } from './query-error/query-error.component';
 import { QueryOutputComponent } from './query-output.component';
 
-@Component({
-  template: `<keira-query-output [editorService]="editorService" />`,
-  imports: [FormsModule, TranslateTestingModule, QueryOutputComponent],
-})
-class TestHostComponent {
-  readonly child = viewChild.required(QueryOutputComponent);
-  docUrl!: string;
-  editorService!: EditorService<any>;
-}
-
 describe('QueryOutputComponent', () => {
   const diffQuery = '--diffQuery';
   const fullQuery = '--fullQuery';
+
+  @Component({
+    template: `<keira-query-output
+      [docUrl]="docUrl"
+      [isNew]="isNew"
+      [diffQuery]="diffQuery"
+      [fullQuery]="fullQuery"
+      [error]="error"
+      [entityTable]="entityTable"
+      [editorService]="editorService"
+    />`,
+    imports: [FormsModule, TranslateTestingModule, QueryOutputComponent],
+  })
+  class TestHostComponent {
+    readonly child = viewChild.required(QueryOutputComponent);
+    docUrl!: string;
+    editorService!: EditorService<any>;
+    isNew = false;
+    diffQuery = diffQuery;
+    fullQuery = fullQuery;
+    error = null;
+    entityTable = '';
+  }
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -48,15 +61,10 @@ describe('QueryOutputComponent', () => {
     const host = fixture.componentInstance;
 
     host.editorService = {
-      isNew: false,
-      diffQuery,
-      fullQuery,
-      error: null,
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       reloadSameEntity(_changeDetectorRef: any) {},
     } as unknown as EditorService<TableRow>;
 
-    fixture.autoDetectChanges(true);
     fixture.detectChanges();
     const component = host.child();
 
@@ -75,9 +83,10 @@ describe('QueryOutputComponent', () => {
   });
 
   it('should always show the fullQuery when creating a new entity', () => {
-    const { page, component, fixture } = setup();
-    (component.editorService as any)['isNew'] = true;
-    fixture.detectChanges();
+    const { page, host } = setup();
+    host.isNew = true;
+
+    page.detectChanges();
 
     page.expectFullQueryToBeShown();
   });
@@ -126,37 +135,39 @@ describe('QueryOutputComponent', () => {
 
   describe('getQuery', () => {
     it('get fullQuery based on editorService isNew', () => {
-      const { component } = setup();
-      (component['editorService'] as any).isNew = true;
+      const { page, component, host } = setup();
+      host.isNew = true;
+      page.detectChanges();
 
-      const query = component['getQuery']();
+      const query = component.getQuery();
 
-      expect(query).toBe(component['editorService'].fullQuery);
+      expect(query).toBe(component.fullQuery());
     });
 
     it('get fullQuery based on selectedQuery', () => {
       const { component } = setup();
-      component.selectedQuery = 'full';
+      component.selectedQuery.set('full');
 
-      const query = component['getQuery']();
+      const query = component.getQuery();
 
-      expect(query).toBe(component['editorService'].fullQuery);
+      expect(query).toBe(component.fullQuery());
     });
 
     it('get diffQuery  based on selectedQuery', () => {
       const { component } = setup();
-      component.selectedQuery = 'diff';
+      component.selectedQuery.set('diff');
 
-      const query = component['getQuery']();
+      const query = component.getQuery();
 
-      expect(query).toBe(component['editorService'].diffQuery);
+      expect(query).toBe(component.diffQuery());
     });
   });
 
   describe('reload', () => {
     it('should not ask for confirmation if diffQuery is empty', fakeAsync(() => {
       const { page, host } = setup();
-      (host.editorService as any).diffQuery = '';
+      host.diffQuery = '';
+      page.detectChanges();
       spyOn(host.editorService, 'reloadSameEntity');
 
       page.clickElement(page.reloadBtn);
@@ -167,7 +178,7 @@ describe('QueryOutputComponent', () => {
 
     it('should ask for confirmation if diffQuery is empty, and reset if confirmed', () => {
       const { page, host, component } = setup();
-      (host.editorService as any).diffQuery = '-- some query';
+      host.diffQuery = '-- some query';
       spyOn(host.editorService, 'reloadSameEntity');
       const modalService = TestBed.inject(BsModalService);
       spyOn(modalService, 'show').and.callThrough();
@@ -182,7 +193,7 @@ describe('QueryOutputComponent', () => {
 
     it('should ask for confirmation if diffQuery is empty, and not reset if not confirmed', () => {
       const { page, host, component } = setup();
-      (host.editorService as any).diffQuery = '-- some query';
+      host.diffQuery = '-- some query';
       spyOn(host.editorService, 'reloadSameEntity');
       const modalService = TestBed.inject(BsModalService);
       spyOn(modalService, 'show').and.callThrough();

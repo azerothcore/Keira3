@@ -1,41 +1,39 @@
-@if (editorService) {
-  <div class="row">
-    <div class="col">
-      <span [hidden]="!editorService.isNew" class="badge badge-primary">CREATING NEW</span>
-      <div class="query-type-switch" [hidden]="editorService.isNew">
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" id="diff-query-input" [(ngModel)]="selectedQuery" [value]="'diff'" />
-          <label class="form-check-label" for="diff-query-input">Diff-query</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" id="full-query-input" [(ngModel)]="selectedQuery" [value]="'full'" />
-          <label class="form-check-label" for="full-query-input">Full-query</label>
-        </div>
+<div class="row">
+  <div class="col">
+    <span [hidden]="!isNew()" class="badge badge-primary">CREATING NEW</span>
+    <div class="query-type-switch" [hidden]="isNew()">
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" id="diff-query-input" [(ngModel)]="selectedQuery" [value]="'diff'" />
+        <label class="form-check-label" for="diff-query-input">Diff-query</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" id="full-query-input" [(ngModel)]="selectedQuery" [value]="'full'" />
+        <label class="form-check-label" for="full-query-input">Full-query</label>
       </div>
     </div>
-    <div class="col">
-      @if (docUrl) {
-        <div class="wiki-link mb-2">
-          <a [href]="docUrl" target="_blank"> <i class="fas fa-link"></i> {{ editorService.entityTable }} documentation </a>
-        </div>
-      }
-    </div>
   </div>
-  <keira-highlightjs-wrapper id="diff-query" [code]="editorService.diffQuery" [hidden]="showFullQuery()" />
-  <keira-highlightjs-wrapper id="full-query" [code]="editorService.fullQuery" [hidden]="!showFullQuery()" />
-  <div>
-    <button type="button" class="btn btn-secondary btn-sm" (click)="copy()" id="copy-btn">
-      <i class="fa fa-copy fa-sm"></i> {{ 'COPY' | translate }}
-    </button>
-    <button type="button" class="btn btn-primary btn-sm" (click)="execute()" id="execute-btn">
-      <i class="fa fa-bolt fa-sm"></i> {{ 'EXECUTE' | translate }}
-    </button>
-    <button type="button" class="btn btn-success btn-sm" (click)="copy(); execute()" id="execute-and-copy-btn">
-      <i class="fa fa-bolt fa-sm"></i> {{ 'EXECUTE_AND_COPY' | translate }} <i class="fa fa-copy fa-sm"></i>
-    </button>
-    <button type="button" class="btn btn-danger btn-sm float-end" (click)="reload()" id="reload-btn">
-      <i class="fa fa-sync fa-sm"></i> {{ 'RELOAD' | translate }}
-    </button>
+  <div class="col">
+    @if (docUrl()) {
+      <div class="wiki-link mb-2">
+        <a [href]="docUrl()" target="_blank"> <i class="fas fa-link"></i> {{ entityTable() }} documentation </a>
+      </div>
+    }
   </div>
-  <keira-query-error [error]="editorService.error" />
-}
+</div>
+<keira-highlightjs-wrapper id="diff-query" [code]="diffQuery()" [hidden]="showFullQuery()" />
+<keira-highlightjs-wrapper id="full-query" [code]="fullQuery()" [hidden]="!showFullQuery()" />
+<div>
+  <button type="button" class="btn btn-secondary btn-sm" (click)="copy()" id="copy-btn">
+    <i class="fa fa-copy fa-sm"></i> {{ 'COPY' | translate }}
+  </button>
+  <button type="button" class="btn btn-primary btn-sm" (click)="execute()" id="execute-btn">
+    <i class="fa fa-bolt fa-sm"></i> {{ 'EXECUTE' | translate }}
+  </button>
+  <button type="button" class="btn btn-success btn-sm" (click)="copy(); execute()" id="execute-and-copy-btn">
+    <i class="fa fa-bolt fa-sm"></i> {{ 'EXECUTE_AND_COPY' | translate }} <i class="fa fa-copy fa-sm"></i>
+  </button>
+  <button type="button" class="btn btn-danger btn-sm float-end" (click)="reload()" id="reload-btn">
+    <i class="fa fa-sync fa-sm"></i> {{ 'RELOAD' | translate }}
+  </button>
+</div>
+<keira-query-error [error]="error()" />
