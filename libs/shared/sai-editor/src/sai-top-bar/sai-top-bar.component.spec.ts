@@ -7,6 +7,7 @@ import { of } from 'rxjs';
 import { SaiHandlerService } from '../sai-handler.service';
 import { SaiTopBarComponent } from './sai-top-bar.component';
 import { MysqlQueryService } from '@keira/shared/db-layer';
+import { AsyncPipe } from '@angular/common';
 
 class SaiTopBarComponentPage extends PageObject<TestHostComponent> {
   get mainText(): HTMLSpanElement {
@@ -15,8 +16,9 @@ class SaiTopBarComponentPage extends PageObject<TestHostComponent> {
 }
 
 @Component({
-  template: '<keira-sai-top-bar [handler]="handlerService"><</keira-sai-top-bar>',
-  imports: [SaiTopBarComponent, RouterTestingModule, TranslateTestingModule],
+  template:
+    '<keira-sai-top-bar [isNew]="handlerService.isNew" [selected]="handlerService.selected" [selectedName]="handlerService.getName() | async" />',
+  imports: [SaiTopBarComponent, TranslateTestingModule, AsyncPipe],
 })
 class TestHostComponent {
   readonly child = viewChild.required(SaiTopBarComponent);
@@ -68,6 +70,8 @@ describe('SaiTopBarComponent', () => {
     { testId: 4, type: SAI_TYPES.SAI_TYPE_GAMEOBJECT, positive: false, expected: `Gameobject GUID ${entryorguid}` },
     { testId: 5, type: SAI_TYPES.SAI_TYPE_CREATURE, positive: true, expected: `Creature ID ${entryorguid}` },
     { testId: 6, type: SAI_TYPES.SAI_TYPE_CREATURE, positive: false, expected: `Creature GUID ${entryorguid}` },
+    { testId: 7, type: undefined as unknown as SAI_TYPES, positive: true, expected: `Unknown SAI Type undefined for ID ${entryorguid}` },
+    { testId: 8, type: undefined as unknown as SAI_TYPES, positive: false, expected: `Unknown SAI Type undefined for GUID ${entryorguid}` },
   ]) {
     it(`should correctly handle different types [${testId}]`, () => {
       handler['_selected'] = JSON.stringify({ source_type: type, entryorguid: positive ? entryorguid : -entryorguid });

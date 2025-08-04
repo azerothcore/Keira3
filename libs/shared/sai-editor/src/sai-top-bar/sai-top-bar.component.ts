@@ -1,52 +1,37 @@
-import { ChangeDetectionStrategy, Component, inject, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { SAI_TYPES } from '@keira/shared/acore-world-model';
-import { SaiHandlerService } from '../sai-handler.service';
 
-import { SubscriptionHandler } from '@keira/shared/utils';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-sai-top-bar',
   templateUrl: './sai-top-bar.component.html',
   imports: [],
 })
-export class SaiTopBarComponent extends SubscriptionHandler implements OnInit {
+export class SaiTopBarComponent {
   readonly queryService = inject(MysqlQueryService);
 
-  @Input({ required: true }) public handler!: SaiHandlerService;
+  readonly selected = input.required<string>();
+  readonly selectedName = input.required<string | null>();
+  readonly isNew = input.required<boolean>();
 
-  private _selectedText!: string;
-
-  get selectedText() {
-    return this._selectedText;
-  }
-
-  async ngOnInit() {
-    const selected: { entryorguid: number; source_type: number } = JSON.parse(this.handler.selected);
+  readonly selectedText = computed<string>(() => {
+    const selected: { entryorguid: number; source_type: number } = JSON.parse(this.selected());
 
     switch (selected.source_type) {
       case SAI_TYPES.SAI_TYPE_CREATURE:
-        this._selectedText = `Creature ${this.getGuidOrIdText(selected.entryorguid)}`;
-        this._selectedText = `${this._selectedText} (${await this.handler.getName().toPromise()})`;
-        break;
-
+        return `Creature ${this.getGuidOrIdText(selected.entryorguid)} (${this.selectedName()})`;
       case SAI_TYPES.SAI_TYPE_GAMEOBJECT:
-        this._selectedText = `Gameobject ${this.getGuidOrIdText(selected.entryorguid)}`;
-        this._selectedText = `${this._selectedText} (${await this.handler.getName().toPromise()})`;
-        break;
-
+        return `Gameobject ${this.getGuidOrIdText(selected.entryorguid)} (${this.selectedName()})`;
       case SAI_TYPES.SAI_TYPE_AREATRIGGER:
-        this._selectedText = `Areatrigger ID ${selected.entryorguid}`;
-        break;
-
+        return `Areatrigger ID ${selected.entryorguid}`;
       case SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST:
-        this._selectedText = `Timed Actionlist ID ${selected.entryorguid}`;
-        this._selectedText = `${this._selectedText} (${await this.handler.getName().toPromise()})`;
-        break;
+        return `Timed Actionlist ID ${selected.entryorguid} (${this.selectedName()})`;
+      default:
+        return `Unknown SAI Type ${selected.source_type} for ${this.getGuidOrIdText(selected.entryorguid)}`;
     }
-  }
+  });
 
   private getGuidOrIdText(entryorguid: number): string {
     if (entryorguid < 0) {
