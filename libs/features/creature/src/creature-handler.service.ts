@@ -91,6 +91,7 @@ export class CreatureHandlerService extends HandlerService<CreatureTemplate> {
 
   protected _statusMap = {
     [CREATURE_TEMPLATE_TABLE]: signal(false),
+    [CREATURE_TEMPLATE_MODEL_TABLE]: signal(false),
     [CREATURE_TEMPLATE_ADDON_TABLE]: signal(false),
     [CREATURE_TEMPLATE_RESISTANCE_TABLE]: signal(false),
     [CREATURE_TEMPLATE_SPELL_TABLE]: signal(false),

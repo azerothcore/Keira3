@@ -17,5 +17,6 @@ export class GossipHandlerService extends HandlerService<GossipMenu> {
 
   protected _statusMap = {
     [GOSSIP_MENU_TABLE]: signal(false),
+    [GOSSIP_MENU_OPTION_TABLE]: signal(false),
   };
 }
