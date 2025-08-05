@@ -48,6 +48,7 @@ import { ItemHandlerService } from '../item-handler.service';
 import { SPELL_TRIGGERS } from './item-constants';
 import { ItemPreviewService } from './item-preview.service';
 import { ItemTemplateService } from './item-template.service';
+import { compareObjFn } from '@keira/shared/utils';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
@@ -122,12 +123,9 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     this.subscriptions.push(
       this.editorService.form.valueChanges
         .pipe(
-          debounceTime(600),
+          debounceTime(300),
           /* TODO */
-          distinctUntilChanged(
-            /* istanbul ignore next */
-            (a, b) => JSON.stringify(a) === JSON.stringify(b),
-          ),
+          distinctUntilChanged(compareObjFn),
         )
         .subscribe(this.loadItemPreview.bind(this)),
     );
