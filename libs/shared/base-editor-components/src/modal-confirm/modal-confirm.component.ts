@@ -4,7 +4,8 @@ import { Subject } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'keira-modal-confirm',
   templateUrl: './modal-confirm.component.html',
   imports: [TranslateModule],
