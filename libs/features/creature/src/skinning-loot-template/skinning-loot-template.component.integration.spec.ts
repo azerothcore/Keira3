@@ -87,11 +87,11 @@ describe('SkinningLootTemplate integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
-      expect(handlerService.isSkinningLootTemplateUnsaved).toBe(false);
+      expect(handlerService.isSkinningLootTemplateUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isSkinningLootTemplateUnsaved).toBe(true);
+      expect(handlerService.isSkinningLootTemplateUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isSkinningLootTemplateUnsaved).toBe(false);
+      expect(handlerService.isSkinningLootTemplateUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {

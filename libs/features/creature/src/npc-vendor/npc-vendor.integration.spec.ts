@@ -82,11 +82,11 @@ describe('NpcVendor integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
-      expect(handlerService.isNpcVendorUnsaved).toBe(false);
+      expect(handlerService.isNpcVendorUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isNpcVendorUnsaved).toBe(true);
+      expect(handlerService.isNpcVendorUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isNpcVendorUnsaved).toBe(false);
+      expect(handlerService.isNpcVendorUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {

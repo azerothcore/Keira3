@@ -88,11 +88,11 @@ describe('CreatureTemplateModel integration tests', () => {
 
     it('should correctly update the unsaved status', () => {
       const { page, handlerService } = setup(true);
-      expect(handlerService.isCreatureTemplateModelUnsaved).toBe(false);
+      expect(handlerService.isCreatureTemplateModelUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isCreatureTemplateModelUnsaved).toBe(true);
+      expect(handlerService.isCreatureTemplateModelUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isCreatureTemplateModelUnsaved).toBe(false);
+      expect(handlerService.isCreatureTemplateModelUnsaved()).toBe(false);
       page.removeNativeElement();
     });
 

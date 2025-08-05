@@ -104,11 +104,11 @@ describe('Conditions integration tests', () => {
 
     it('should correctly update the unsaved status', () => {
       const field = 'ElseGroup';
-      expect(handlerService.isConditionsUnsaved).toBe(false);
+      expect(handlerService.isConditionsUnsaved()).toBe(false);
       page.setInputValueById(field, 3);
-      expect(handlerService.isConditionsUnsaved).toBe(true);
+      expect(handlerService.isConditionsUnsaved()).toBe(true);
       page.setInputValueById(field, 0);
-      expect(handlerService.isConditionsUnsaved).toBe(false);
+      expect(handlerService.isConditionsUnsaved()).toBe(false);
     });
 
     it('changing a property and executing the query should correctly work', () => {

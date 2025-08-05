@@ -77,11 +77,11 @@ describe('CreatureQuestitem integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
-      expect(handlerService.isCreatureQuestitemUnsaved).toBe(false);
+      expect(handlerService.isCreatureQuestitemUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isCreatureQuestitemUnsaved).toBe(true);
+      expect(handlerService.isCreatureQuestitemUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isCreatureQuestitemUnsaved).toBe(false);
+      expect(handlerService.isCreatureQuestitemUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {

@@ -78,11 +78,11 @@ describe('QuestTemplateLocale integration tests', () => {
 
     it('should correctly update the unsaved status', () => {
       const { page, handlerService } = setup(true);
-      expect(handlerService.isQuestTemplateLocaleUnsaved).toBe(false);
+      expect(handlerService.isQuestTemplateLocaleUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isQuestTemplateLocaleUnsaved).toBe(true);
+      expect(handlerService.isQuestTemplateLocaleUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isQuestTemplateLocaleUnsaved).toBe(false);
+      expect(handlerService.isQuestTemplateLocaleUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {

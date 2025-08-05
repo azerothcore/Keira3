@@ -106,11 +106,11 @@ describe('SaiCreatureComponent integration tests', () => {
     it('should correctly update the unsaved status', () => {
       const { page } = setup(true);
       const creatureHandlerService = TestBed.inject(CreatureHandlerService);
-      expect(creatureHandlerService.isCreatureSaiUnsaved).toBe(false);
+      expect(creatureHandlerService.isCreatureSaiUnsaved()).toBe(false);
       page.addNewRow();
-      expect(creatureHandlerService.isCreatureSaiUnsaved).toBe(true);
+      expect(creatureHandlerService.isCreatureSaiUnsaved()).toBe(true);
       page.deleteRow();
-      expect(creatureHandlerService.isCreatureSaiUnsaved).toBe(false);
+      expect(creatureHandlerService.isCreatureSaiUnsaved()).toBe(false);
     });
   });
 

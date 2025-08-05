@@ -74,11 +74,11 @@ describe('CreatureOnkillReputation integration tests', () => {
 
     it('should correctly update the unsaved status', () => {
       const field = 'RewOnKillRepFaction1';
-      expect(handlerService.isCreatureOnkillReputationUnsaved).toBe(false);
+      expect(handlerService.isCreatureOnkillReputationUnsaved()).toBe(false);
       page.setInputValueById(field, 3);
-      expect(handlerService.isCreatureOnkillReputationUnsaved).toBe(true);
+      expect(handlerService.isCreatureOnkillReputationUnsaved()).toBe(true);
       page.setInputValueById(field, 0);
-      expect(handlerService.isCreatureOnkillReputationUnsaved).toBe(false);
+      expect(handlerService.isCreatureOnkillReputationUnsaved()).toBe(false);
     });
 
     it('changing a property and executing the query should correctly work', () => {

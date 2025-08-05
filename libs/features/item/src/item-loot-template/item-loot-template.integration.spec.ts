@@ -84,11 +84,11 @@ describe('ItemLootTemplate integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
-      expect(handlerService.isItemLootTemplateUnsaved).toBe(false);
+      expect(handlerService.isItemLootTemplateUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isItemLootTemplateUnsaved).toBe(true);
+      expect(handlerService.isItemLootTemplateUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isItemLootTemplateUnsaved).toBe(false);
+      expect(handlerService.isItemLootTemplateUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {

@@ -109,11 +109,11 @@ describe('CreatureTemplate integration tests', () => {
 
     it('should correctly update the unsaved status', () => {
       const field = 'difficulty_entry_1';
-      expect(handlerService.isCreatureTemplateUnsaved).toBe(false);
+      expect(handlerService.isCreatureTemplateUnsaved()).toBe(false);
       page.setInputValueById(field, 3);
-      expect(handlerService.isCreatureTemplateUnsaved).toBe(true);
+      expect(handlerService.isCreatureTemplateUnsaved()).toBe(true);
       page.setInputValueById(field, 0);
-      expect(handlerService.isCreatureTemplateUnsaved).toBe(false);
+      expect(handlerService.isCreatureTemplateUnsaved()).toBe(false);
     });
   });
 

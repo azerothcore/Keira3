@@ -76,7 +76,7 @@ describe('GameobjectSpawnAddon integration tests', () => {
       expect(page.getInputById('invisibilityType').disabled).toBe(true);
       expect(page.getInputById('invisibilityValue').disabled).toBe(true);
       expect(page.getEditorTableRowsCount()).toBe(0);
-      expect(handlerService.isGameobjectSpawnAddonUnsaved).toBe(false);
+      expect(handlerService.isGameobjectSpawnAddonUnsaved()).toBe(false);
     });
 
     // it('adding new rows and executing the query should correctly work', () => {

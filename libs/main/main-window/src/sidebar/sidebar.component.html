@@ -75,7 +75,7 @@
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-template'">
                       {{ 'SIDEBAR.CREATURE.CREATURE_TEMPLATE' | translate }}
-                      @if (creatureHandlerService.isCreatureTemplateUnsaved) {
+                      @if (creatureHandlerService.isCreatureTemplateUnsaved()) {
                         <keira-unsaved-icon />
                       }
                     </a>
@@ -84,7 +84,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-template-addon'">
                         {{ 'SIDEBAR.CREATURE.TEMPLATE_ADDON' | translate }}
-                        @if (creatureHandlerService.isCreatureTemplateAddonUnsaved) {
+                        @if (creatureHandlerService.isCreatureTemplateAddonUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -92,7 +92,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-template-model'">
                         {{ 'SIDEBAR.CREATURE.TEMPLATE_MODEL' | translate }}
-                        @if (creatureHandlerService.isCreatureTemplateModelUnsaved) {
+                        @if (creatureHandlerService.isCreatureTemplateModelUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -100,7 +100,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-template-resistance'">
                         {{ 'SIDEBAR.CREATURE.TEMPLATE_RESISTANCE' | translate }}
-                        @if (creatureHandlerService.isCreatureTemplateResistanceUnsaved) {
+                        @if (creatureHandlerService.isCreatureTemplateResistanceUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -108,7 +108,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-template-spell'">
                         {{ 'SIDEBAR.CREATURE.TEMPLATE_SPELL' | translate }}
-                        @if (creatureHandlerService.isCreatureTemplateSpellUnsaved) {
+                        @if (creatureHandlerService.isCreatureTemplateSpellUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -116,7 +116,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-template-movement'">
                         {{ 'SIDEBAR.CREATURE.TEMPLATE_MOVEMENT' | translate }}
-                        @if (creatureHandlerService.isCreatureTemplateMovementUnsaved) {
+                        @if (creatureHandlerService.isCreatureTemplateMovementUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -124,7 +124,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-onkill-reputation'">
                         {{ 'SIDEBAR.CREATURE.ONKILL_REPUTATION' | translate }}
-                        @if (creatureHandlerService.isCreatureOnkillReputationUnsaved) {
+                        @if (creatureHandlerService.isCreatureOnkillReputationUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -132,7 +132,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-equip-template'">
                         {{ 'SIDEBAR.CREATURE.EQUIP_TEMPLATE' | translate }}
-                        @if (creatureHandlerService.isCreatureEquipTemplateUnsaved) {
+                        @if (creatureHandlerService.isCreatureEquipTemplateUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -140,7 +140,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/npc-vendor'">
                         {{ 'SIDEBAR.CREATURE.VENDOR' | translate }}
-                        @if (creatureHandlerService.isNpcVendorUnsaved) {
+                        @if (creatureHandlerService.isNpcVendorUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -148,7 +148,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/npc-trainer'">
                         {{ 'SIDEBAR.CREATURE.TRAINER' | translate }}
-                        @if (creatureHandlerService.isNpcTrainerUnsaved) {
+                        @if (creatureHandlerService.isNpcTrainerUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -156,7 +156,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-questitem'">
                         {{ 'SIDEBAR.CREATURE.QUEST_ITEM' | translate }}
-                        @if (creatureHandlerService.isCreatureQuestitemUnsaved) {
+                        @if (creatureHandlerService.isCreatureQuestitemUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -164,7 +164,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-loot-template'">
                         {{ 'SIDEBAR.CREATURE.CREATURE_LOOT' | translate }}
-                        @if (creatureHandlerService.isCreatureLootTemplateUnsaved) {
+                        @if (creatureHandlerService.isCreatureLootTemplateUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -172,7 +172,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/pickpocketing-loot-template'">
                         {{ 'SIDEBAR.CREATURE.PICKPOCKETING_LOOT' | translate }}
-                        @if (creatureHandlerService.isPickpocketingLootTemplateUnsaved) {
+                        @if (creatureHandlerService.isPickpocketingLootTemplateUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -180,7 +180,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/skinning-loot-template'">
                         {{ 'SIDEBAR.CREATURE.SKINNING_LOOT' | translate }}
-                        @if (creatureHandlerService.isSkinningLootTemplateUnsaved) {
+                        @if (creatureHandlerService.isSkinningLootTemplateUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -188,7 +188,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-spawn'">
                         {{ 'SIDEBAR.CREATURE.SPAWN' | translate }}
-                        @if (creatureHandlerService.isCreatureSpawnUnsaved) {
+                        @if (creatureHandlerService.isCreatureSpawnUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -196,7 +196,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-spawn-addon'">
                         {{ 'SIDEBAR.CREATURE.SPAWN_ADDON' | translate }}
-                        @if (creatureHandlerService.isCreatureSpawnAddonUnsaved) {
+                        @if (creatureHandlerService.isCreatureSpawnAddonUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -204,7 +204,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/sai-creature'">
                         {{ 'SIDEBAR.CREATURE.SMARTAI' | translate }}
-                        @if (creatureHandlerService.isCreatureSaiUnsaved) {
+                        @if (creatureHandlerService.isCreatureSaiUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -212,7 +212,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-text'">
                         {{ 'SIDEBAR.CREATURE.TEXT' | translate }}
-                        @if (creatureHandlerService.isCreatureTextUnsaved) {
+                        @if (creatureHandlerService.isCreatureTextUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -220,7 +220,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-formations'">
                         {{ 'SIDEBAR.CREATURE.FORMATIONS' | translate }}
-                        @if (creatureHandlerService.isCreatureFormationUnsaved) {
+                        @if (creatureHandlerService.isCreatureFormationUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -246,7 +246,7 @@
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'quest/quest-template'">
                       {{ 'SIDEBAR.QUEST.QUEST_TEMPLATE' | translate }}
-                      @if (questHandlerService.isQuestTemplateUnsaved) {
+                      @if (questHandlerService.isQuestTemplateUnsaved()) {
                         <keira-unsaved-icon />
                       }
                     </a>
@@ -255,7 +255,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/quest-template-addon'">
                         {{ 'SIDEBAR.QUEST.QUEST_TEMPLATE_ADDON' | translate }}
-                        @if (questHandlerService.isQuestTemplateAddonUnsaved) {
+                        @if (questHandlerService.isQuestTemplateAddonUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -263,7 +263,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/quest-template-locale'">
                         {{ 'SIDEBAR.QUEST.QUEST_TEMPLATE_LOCALE' | translate }}
-                        @if (questHandlerService.isQuestTemplateLocaleUnsaved) {
+                        @if (questHandlerService.isQuestTemplateLocaleUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -271,7 +271,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/quest-offer-reward'">
                         {{ 'SIDEBAR.QUEST.QUEST_OFFER_REWARD' | translate }}
-                        @if (questHandlerService.isQuestOfferRewardUnsaved) {
+                        @if (questHandlerService.isQuestOfferRewardUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -279,7 +279,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/quest-request-items'">
                         {{ 'SIDEBAR.QUEST.QUEST_REQUEST_ITEMS' | translate }}
-                        @if (questHandlerService.isQuestRequestItemsUnsaved) {
+                        @if (questHandlerService.isQuestRequestItemsUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -287,7 +287,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/creature-queststarter'">
                         {{ 'SIDEBAR.QUEST.CREATURE_QUESTSTARTER' | translate }}
-                        @if (questHandlerService.isCreatureQueststarterUnsaved) {
+                        @if (questHandlerService.isCreatureQueststarterUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -295,7 +295,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/creature-questender'">
                         {{ 'SIDEBAR.QUEST.CREATURE_QUESTENDER' | translate }}
-                        @if (questHandlerService.isCreatureQuestenderUnsaved) {
+                        @if (questHandlerService.isCreatureQuestenderUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -303,7 +303,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/gameobject-queststarter'">
                         {{ 'SIDEBAR.QUEST.GAMEOBJECT_QUESTSTARTER' | translate }}
-                        @if (questHandlerService.isGameobjectQueststarterUnsaved) {
+                        @if (questHandlerService.isGameobjectQueststarterUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -311,7 +311,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/gameobject-questender'">
                         {{ 'SIDEBAR.QUEST.GAMEOBJECT_QUESTENDER' | translate }}
-                        @if (questHandlerService.isGameobjectQuestenderUnsaved) {
+                        @if (questHandlerService.isGameobjectQuestenderUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -338,7 +338,7 @@
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-template'">
                       {{ 'SIDEBAR.GAME_OBJECT.GAMEOBJECT_TEMPLATE' | translate }}
-                      @if (gameobjectHandlerService.isGameobjectTemplateUnsaved) {
+                      @if (gameobjectHandlerService.isGameobjectTemplateUnsaved()) {
                         <keira-unsaved-icon />
                       }
                     </a>
@@ -347,7 +347,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-template-addon'">
                         {{ 'SIDEBAR.GAME_OBJECT.TEMPLATE_ADDON' | translate }}
-                        @if (gameobjectHandlerService.isGameobjectTemplateAddonUnsaved) {
+                        @if (gameobjectHandlerService.isGameobjectTemplateAddonUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -355,7 +355,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-questitem'">
                         {{ 'SIDEBAR.GAME_OBJECT.QUEST_ITEMS' | translate }}
-                        @if (gameobjectHandlerService.isGameobjectQuestitemUnsaved) {
+                        @if (gameobjectHandlerService.isGameobjectQuestitemUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -363,7 +363,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-loot-template'">
                         {{ 'SIDEBAR.GAME_OBJECT.GAMEOBJECT_LOOT' | translate }}
-                        @if (gameobjectHandlerService.isGameobjectLooTemplateUnsaved) {
+                        @if (gameobjectHandlerService.isGameobjectLooTemplateUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -371,7 +371,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-spawn'">
                         {{ 'SIDEBAR.GAME_OBJECT.SPAWN' | translate }}
-                        @if (gameobjectHandlerService.isGameobjectSpawnUnsaved) {
+                        @if (gameobjectHandlerService.isGameobjectSpawnUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -379,7 +379,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-spawn-addon'">
                         {{ 'SIDEBAR.GAME_OBJECT.SPAWN_ADDON' | translate }}
-                        @if (gameobjectHandlerService.isGameobjectSpawnAddonUnsaved) {
+                        @if (gameobjectHandlerService.isGameobjectSpawnAddonUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -387,7 +387,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'gameobject/sai-gameobject'">
                         {{ 'SIDEBAR.GAME_OBJECT.SMART_AI' | translate }}
-                        @if (gameobjectHandlerService.isGameobjectSaiUnsaved) {
+                        @if (gameobjectHandlerService.isGameobjectSaiUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -414,7 +414,7 @@
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'item/item-template'">
                       {{ 'SIDEBAR.ITEM.ITEM_TEMPLATE' | translate }}
-                      @if (itemHandlerService.isItemTemplateUnsaved) {
+                      @if (itemHandlerService.isItemTemplateUnsaved()) {
                         <keira-unsaved-icon />
                       }
                     </a>
@@ -423,7 +423,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'item/item-enchantment-template'">
                         {{ 'SIDEBAR.ITEM.ENCHANTMENT_TEMPLATE' | translate }}
-                        @if (itemHandlerService.isItemEnchantmentUnsaved) {
+                        @if (itemHandlerService.isItemEnchantmentUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -431,7 +431,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'item/item-loot-template'">
                         {{ 'SIDEBAR.ITEM.ITEM_LOOT' | translate }}
-                        @if (itemHandlerService.isItemLootTemplateUnsaved) {
+                        @if (itemHandlerService.isItemLootTemplateUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -439,7 +439,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'item/disenchant-loot-template'">
                         {{ 'SIDEBAR.ITEM.DISENCHANT_LOOT' | translate }}
-                        @if (itemHandlerService.isDisenchantmentLootTemplateUnsaved) {
+                        @if (itemHandlerService.isDisenchantmentLootTemplateUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -447,7 +447,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'item/prospecting-loot-template'">
                         {{ 'SIDEBAR.ITEM.PROSPECTING_LOOT' | translate }}
-                        @if (itemHandlerService.isProspectingLootTemplateUnsaved) {
+                        @if (itemHandlerService.isProspectingLootTemplateUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -455,7 +455,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'item/milling-loot-template'">
                         {{ 'SIDEBAR.ITEM.MILLING_LOOT' | translate }}
-                        @if (itemHandlerService.isMillingLootTemplateUnsaved) {
+                        @if (itemHandlerService.isMillingLootTemplateUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -482,7 +482,7 @@
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'other-loots/reference'">
                       {{ 'SIDEBAR.OTHER_LOOTS.REFERENCE_LOOT_TEMPLATE' | translate }}
-                      @if (referenceLootHandlerService.isUnsaved) {
+                      @if (referenceLootHandlerService.isUnsaved()) {
                         <keira-unsaved-icon />
                       }
                     </a>
@@ -498,7 +498,7 @@
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'other-loots/spell'">
                       {{ 'SIDEBAR.OTHER_LOOTS.SPELL_LOOT_TEMPLATE' | translate }}
-                      @if (spellLootHandlerService.isUnsaved) {
+                      @if (spellLootHandlerService.isUnsaved()) {
                         <keira-unsaved-icon />
                       }
                     </a>
@@ -514,7 +514,7 @@
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'other-loots/fishing'">
                       {{ 'SIDEBAR.OTHER_LOOTS.FISHING_LOOT_TEMPLATE' | translate }}
-                      @if (fishingLootHandlerService.isUnsaved) {
+                      @if (fishingLootHandlerService.isUnsaved()) {
                         <keira-unsaved-icon />
                       }
                     </a>
@@ -530,7 +530,7 @@
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'other-loots/mail'">
                       {{ 'SIDEBAR.OTHER_LOOTS.MAIL_LOOT_TEMPLATE' | translate }}
-                      @if (mailLootHandlerService.isUnsaved) {
+                      @if (mailLootHandlerService.isUnsaved()) {
                         <keira-unsaved-icon />
                       }
                     </a>
@@ -556,7 +556,7 @@
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'texts/acore-string'">
                       {{ 'SIDEBAR.TEXTS.ACORE_STRING_TEXT' | translate }}
-                      @if (acoreStringHandlerService.isUnsaved) {
+                      @if (acoreStringHandlerService.isUnsaved()) {
                         <keira-unsaved-icon />
                       }
                     </a>
@@ -572,7 +572,7 @@
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'texts/broadcast-text'">
                       {{ 'SIDEBAR.TEXTS.BROADCAST_TEXT' | translate }}
-                      @if (broadcastTextHandlerService.isUnsaved) {
+                      @if (broadcastTextHandlerService.isUnsaved()) {
                         <keira-unsaved-icon />
                       }
                     </a>
@@ -588,7 +588,7 @@
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'texts/npc-text'">
                       {{ 'SIDEBAR.TEXTS.NPC_TEXT' | translate }}
-                      @if (npcTextHandlerService.isUnsaved) {
+                      @if (npcTextHandlerService.isUnsaved()) {
                         <keira-unsaved-icon />
                       }
                     </a>
@@ -604,7 +604,7 @@
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'texts/page-text'">
                       {{ 'SIDEBAR.TEXTS.PAGE_TEXT' | translate }}
-                      @if (pageTextHandlerService.isUnsaved) {
+                      @if (pageTextHandlerService.isUnsaved()) {
                         <keira-unsaved-icon />
                       }
                     </a>
@@ -630,7 +630,7 @@
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'gossip/gossip-menu'">
                       {{ 'SIDEBAR.GOSSIP.GOSSIP_MENU' | translate }}
-                      @if (gossipHandlerService.isGossipMenuTableUnsaved) {
+                      @if (gossipHandlerService.isGossipMenuTableUnsaved()) {
                         <keira-unsaved-icon />
                       }
                     </a>
@@ -639,7 +639,7 @@
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'gossip/gossip-menu-option'">
                         {{ 'SIDEBAR.GOSSIP.GOSSIP_MENU_OPTION' | translate }}
-                        @if (gossipHandlerService.isGossipMenuOptionTableUnsaved) {
+                        @if (gossipHandlerService.isGossipMenuOptionTableUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -667,7 +667,7 @@
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'conditions/conditions'">
                       {{ 'SIDEBAR.CONDITIONS.CONDITIONS' | translate }}
-                      @if (conditionsHandlerService.isConditionsUnsaved) {
+                      @if (conditionsHandlerService.isConditionsUnsaved()) {
                         <keira-unsaved-icon />
                       }
                     </a>
@@ -699,7 +699,7 @@
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'smart-ai/editors'">
                       {{ 'SIDEBAR.SMARTAI.EDITOR' | translate }}
-                      @if (saiHandlerService.isSaiUnsaved) {
+                      @if (saiHandlerService.isSaiUnsaved()) {
                         <keira-unsaved-icon />
                       }
                     </a>
@@ -726,7 +726,7 @@
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'spell/spell-dbc'">
                       {{ 'SIDEBAR.SPELL_DBC_OVERRIDES.SPELL_DBC_EDITOR' | translate }}
-                      @if (spellHandlerService.isSpellDbcUnsaved) {
+                      @if (spellHandlerService.isSpellDbcUnsaved()) {
                         <keira-unsaved-icon />
                       }
                     </a>
@@ -753,7 +753,7 @@
                   <li>
                     <a href="#" routerLinkActive="active" [routerLink]="'game-tele/tele'">
                       {{ 'SIDEBAR.GAME_TELE.SELECT_GAME_TELE' | translate }}
-                      @if (gameTeleHandlerService.isGameTeleUnsaved) {
+                      @if (gameTeleHandlerService.isGameTeleUnsaved()) {
                         <keira-unsaved-icon />
                       }
                     </a>

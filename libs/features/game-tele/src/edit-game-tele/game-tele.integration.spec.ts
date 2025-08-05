@@ -87,11 +87,11 @@ describe('GameTele integration tests', () => {
 
     it('should correctly update the unsaved status', () => {
       const field = 'name';
-      expect(handlerService.isGameTeleUnsaved).toBe(false);
+      expect(handlerService.isGameTeleUnsaved()).toBe(false);
       page.setInputValueById(field, 'ABC');
-      expect(handlerService.isGameTeleUnsaved).toBe(true);
+      expect(handlerService.isGameTeleUnsaved()).toBe(true);
       page.setInputValueById(field, '');
-      expect(handlerService.isGameTeleUnsaved).toBe(false);
+      expect(handlerService.isGameTeleUnsaved()).toBe(false);
     });
 
     it('changing a property and executing the query should correctly work', () => {

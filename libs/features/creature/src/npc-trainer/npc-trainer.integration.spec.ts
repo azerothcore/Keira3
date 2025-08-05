@@ -81,11 +81,11 @@ describe('NpcTrainer integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
-      expect(handlerService.isNpcTrainerUnsaved).toBe(false);
+      expect(handlerService.isNpcTrainerUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isNpcTrainerUnsaved).toBe(true);
+      expect(handlerService.isNpcTrainerUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isNpcTrainerUnsaved).toBe(false);
+      expect(handlerService.isNpcTrainerUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {

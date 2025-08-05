@@ -75,11 +75,11 @@ describe('GameobjectTemplateAddon integration tests', () => {
     it('should correctly update the unsaved status', () => {
       const { page, handlerService } = setup(true);
       const field = 'faction';
-      expect(handlerService.isGameobjectTemplateAddonUnsaved).toBe(false);
+      expect(handlerService.isGameobjectTemplateAddonUnsaved()).toBe(false);
       page.setInputValueById(field, 3);
-      expect(handlerService.isGameobjectTemplateAddonUnsaved).toBe(true);
+      expect(handlerService.isGameobjectTemplateAddonUnsaved()).toBe(true);
       page.setInputValueById(field, 0);
-      expect(handlerService.isGameobjectTemplateAddonUnsaved).toBe(false);
+      expect(handlerService.isGameobjectTemplateAddonUnsaved()).toBe(false);
     });
 
     it('changing a property and executing the query should correctly work', () => {

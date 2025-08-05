@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal, Signal } from '@angular/core';
 import { HandlerService } from '@keira/shared/base-abstract-classes';
 import { ACORE_STRING_TABLE, AcoreString } from '@keira/shared/acore-world-model';
 
@@ -8,11 +8,11 @@ import { ACORE_STRING_TABLE, AcoreString } from '@keira/shared/acore-world-model
 export class AcoreStringHandlerService extends HandlerService<AcoreString> {
   protected readonly mainEditorRoutePath = 'texts/acore-string';
 
-  get isUnsaved(): boolean {
-    return this.statusMap[ACORE_STRING_TABLE];
+  get isUnsaved(): Signal<boolean> {
+    return this.statusMap[ACORE_STRING_TABLE].asReadonly();
   }
 
   protected _statusMap = {
-    [ACORE_STRING_TABLE]: false,
+    [ACORE_STRING_TABLE]: signal(false),
   };
 }

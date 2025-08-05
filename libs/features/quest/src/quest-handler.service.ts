@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal, Signal } from '@angular/core';
 import { HandlerService } from '@keira/shared/base-abstract-classes';
 import {
   CREATURE_QUESTENDER_TABLE,
@@ -7,7 +7,8 @@ import {
   GAMEOBJECT_QUESTSTARTER_TABLE,
   QUEST_OFFER_REWARD_TABLE,
   QUEST_REQUEST_ITEMS_TABLE,
-  QUEST_TEMPLATE_ADDON_TABLE, QUEST_TEMPLATE_LOCALE_TABLE,
+  QUEST_TEMPLATE_ADDON_TABLE,
+  QUEST_TEMPLATE_LOCALE_TABLE,
   QUEST_TEMPLATE_TABLE,
   QuestTemplate,
 } from '@keira/shared/acore-world-model';
@@ -18,43 +19,43 @@ import {
 export class QuestHandlerService extends HandlerService<QuestTemplate> {
   protected readonly mainEditorRoutePath = 'quest/quest-template';
 
-  get isQuestTemplateUnsaved(): boolean {
-    return this.statusMap[QUEST_TEMPLATE_TABLE];
+  get isQuestTemplateUnsaved(): Signal<boolean> {
+    return this.statusMap[QUEST_TEMPLATE_TABLE].asReadonly();
   }
-  get isQuestTemplateAddonUnsaved(): boolean {
-    return this.statusMap[QUEST_TEMPLATE_ADDON_TABLE];
+  get isQuestTemplateAddonUnsaved(): Signal<boolean> {
+    return this.statusMap[QUEST_TEMPLATE_ADDON_TABLE].asReadonly();
   }
-  get isQuestTemplateLocaleUnsaved(): boolean {
-    return this.statusMap[QUEST_TEMPLATE_LOCALE_TABLE];
+  get isQuestTemplateLocaleUnsaved(): Signal<boolean> {
+    return this.statusMap[QUEST_TEMPLATE_LOCALE_TABLE].asReadonly();
   }
-  get isQuestOfferRewardUnsaved(): boolean {
-    return this.statusMap[QUEST_OFFER_REWARD_TABLE];
+  get isQuestOfferRewardUnsaved(): Signal<boolean> {
+    return this.statusMap[QUEST_OFFER_REWARD_TABLE].asReadonly();
   }
-  get isQuestRequestItemsUnsaved(): boolean {
-    return this.statusMap[QUEST_REQUEST_ITEMS_TABLE];
+  get isQuestRequestItemsUnsaved(): Signal<boolean> {
+    return this.statusMap[QUEST_REQUEST_ITEMS_TABLE].asReadonly();
   }
-  get isCreatureQueststarterUnsaved(): boolean {
-    return this.statusMap[CREATURE_QUESTSTARTER_TABLE];
+  get isCreatureQueststarterUnsaved(): Signal<boolean> {
+    return this.statusMap[CREATURE_QUESTSTARTER_TABLE].asReadonly();
   }
-  get isCreatureQuestenderUnsaved(): boolean {
-    return this.statusMap[CREATURE_QUESTENDER_TABLE];
+  get isCreatureQuestenderUnsaved(): Signal<boolean> {
+    return this.statusMap[CREATURE_QUESTENDER_TABLE].asReadonly();
   }
-  get isGameobjectQueststarterUnsaved(): boolean {
-    return this.statusMap[GAMEOBJECT_QUESTSTARTER_TABLE];
+  get isGameobjectQueststarterUnsaved(): Signal<boolean> {
+    return this.statusMap[GAMEOBJECT_QUESTSTARTER_TABLE].asReadonly();
   }
-  get isGameobjectQuestenderUnsaved(): boolean {
-    return this.statusMap[GAMEOBJECT_QUESTENDER_TABLE];
+  get isGameobjectQuestenderUnsaved(): Signal<boolean> {
+    return this.statusMap[GAMEOBJECT_QUESTENDER_TABLE].asReadonly();
   }
 
   protected _statusMap = {
-    [QUEST_TEMPLATE_TABLE]: false,
-    [QUEST_TEMPLATE_ADDON_TABLE]: false,
-    [QUEST_TEMPLATE_LOCALE_TABLE]: false,
-    [QUEST_OFFER_REWARD_TABLE]: false,
-    [QUEST_REQUEST_ITEMS_TABLE]: false,
-    [CREATURE_QUESTSTARTER_TABLE]: false,
-    [CREATURE_QUESTENDER_TABLE]: false,
-    [GAMEOBJECT_QUESTSTARTER_TABLE]: false,
-    [GAMEOBJECT_QUESTENDER_TABLE]: false,
+    [QUEST_TEMPLATE_TABLE]: signal(false),
+    [QUEST_TEMPLATE_ADDON_TABLE]: signal(false),
+    [QUEST_TEMPLATE_LOCALE_TABLE]: signal(false),
+    [QUEST_OFFER_REWARD_TABLE]: signal(false),
+    [QUEST_REQUEST_ITEMS_TABLE]: signal(false),
+    [CREATURE_QUESTSTARTER_TABLE]: signal(false),
+    [CREATURE_QUESTENDER_TABLE]: signal(false),
+    [GAMEOBJECT_QUESTSTARTER_TABLE]: signal(false),
+    [GAMEOBJECT_QUESTENDER_TABLE]: signal(false),
   };
 }

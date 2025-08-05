@@ -84,11 +84,11 @@ describe('ProspectingLootTemplate integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
-      expect(handlerService.isProspectingLootTemplateUnsaved).toBe(false);
+      expect(handlerService.isProspectingLootTemplateUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isProspectingLootTemplateUnsaved).toBe(true);
+      expect(handlerService.isProspectingLootTemplateUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isProspectingLootTemplateUnsaved).toBe(false);
+      expect(handlerService.isProspectingLootTemplateUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {

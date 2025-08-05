@@ -85,11 +85,11 @@ describe('GameobjectQuestender integration tests', () => {
 
     it('should correctly update the unsaved status', () => {
       const { page, handlerService } = setup(true);
-      expect(handlerService.isGameobjectQuestenderUnsaved).toBe(false);
+      expect(handlerService.isGameobjectQuestenderUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isGameobjectQuestenderUnsaved).toBe(true);
+      expect(handlerService.isGameobjectQuestenderUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isGameobjectQuestenderUnsaved).toBe(false);
+      expect(handlerService.isGameobjectQuestenderUnsaved()).toBe(false);
       page.removeNativeElement();
     });
 

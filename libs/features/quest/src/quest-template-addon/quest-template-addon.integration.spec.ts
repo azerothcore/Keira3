@@ -101,11 +101,11 @@ describe('QuestTemplateAddon integration tests', () => {
     it('should correctly update the unsaved status', () => {
       const { page, handlerService } = setup(true);
       const field = 'NextQuestID';
-      expect(handlerService.isQuestTemplateAddonUnsaved).toBe(false);
+      expect(handlerService.isQuestTemplateAddonUnsaved()).toBe(false);
       page.setInputValueById(field, 3);
-      expect(handlerService.isQuestTemplateAddonUnsaved).toBe(true);
+      expect(handlerService.isQuestTemplateAddonUnsaved()).toBe(true);
       page.setInputValueById(field, 0);
-      expect(handlerService.isQuestTemplateAddonUnsaved).toBe(false);
+      expect(handlerService.isQuestTemplateAddonUnsaved()).toBe(false);
       page.removeNativeElement();
     });
 

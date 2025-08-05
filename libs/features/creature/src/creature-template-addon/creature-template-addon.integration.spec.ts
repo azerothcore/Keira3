@@ -78,11 +78,11 @@ describe('CreatureTemplateAddon integration tests', () => {
 
     it('should correctly update the unsaved status', () => {
       const field = 'path_id';
-      expect(handlerService.isCreatureTemplateAddonUnsaved).toBe(false);
+      expect(handlerService.isCreatureTemplateAddonUnsaved()).toBe(false);
       page.setInputValueById(field, 3);
-      expect(handlerService.isCreatureTemplateAddonUnsaved).toBe(true);
+      expect(handlerService.isCreatureTemplateAddonUnsaved()).toBe(true);
       page.setInputValueById(field, 0);
-      expect(handlerService.isCreatureTemplateAddonUnsaved).toBe(false);
+      expect(handlerService.isCreatureTemplateAddonUnsaved()).toBe(false);
     });
 
     it('changing a property and executing the query should correctly work', () => {

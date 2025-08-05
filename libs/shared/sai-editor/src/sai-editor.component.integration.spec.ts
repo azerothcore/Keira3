@@ -183,11 +183,11 @@ describe('SaiEditorComponent integration tests', () => {
 
     it('should correctly update the unsaved status', () => {
       const { handlerService, page } = setup(true);
-      expect(handlerService.isSaiUnsaved).toBe(false);
+      expect(handlerService.isSaiUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isSaiUnsaved).toBe(true);
+      expect(handlerService.isSaiUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isSaiUnsaved).toBe(false);
+      expect(handlerService.isSaiUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {
