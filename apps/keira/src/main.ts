@@ -1,4 +1,4 @@
-import { enableProdMode, importProvidersFrom } from '@angular/core';
+import { enableProdMode, importProvidersFrom, provideZonelessChangeDetection } from '@angular/core';
 
 import { KEIRA_APP_CONFIG } from './environments/environment';
 import { AppComponent } from './app/app.component';
@@ -29,6 +29,7 @@ export function createTranslateLoader(http: HttpClient) {
 
 bootstrapApplication(AppComponent, {
   providers: [
+    provideZonelessChangeDetection(),
     importProvidersFrom(
       /* Angular */
       BrowserModule,
