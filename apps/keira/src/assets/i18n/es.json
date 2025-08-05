@@ -513,7 +513,6 @@
       "RESISTANCE_TOOLTIP": "Resistencia relacionada por Tipo",
       "SCALING_STAT_DISTRIBUTION": "Al igual que las 'Estadísticas Estáticas', éstas mismas aumentan dependiendo del nivel que tienen los jugadores (principalmente con el Equipamiento por Niveles de las Reliquias).",
       "SCALING_STAT_VALUE": "El valor final (para el nivel 80) del 'Estado de Escala' de las mismas Estadísticas mencionadas anteriormente",
-      "STATS_COUNT": "Cuando un Item cualquiera, por ejemplo, posée ciertas Entradas de Estadísticas dentro de sus también llamadas columnas 'stat_type', éstas mismas se actualizan automáticamente para ser mostradas como un recuento dentro del mismo Item (Se desconoce realmente el cómo funciona este campo).",
       "STAT_VALUE": "El valor a modificar luego del Tipo de Estadística, (por ejemplo, si la estadística es aguante, aquí iría el valor del aguante para el mismo Item)",
       "GEM_PROPERTIES": "Corresponde al Identificador que puede ser hallado dentro de GemProperties.dbc",
       "SOCKET_CONTENTS": "La cantidad de Gemas permitidas dentro del SocketColor_{{idx}} del Item",

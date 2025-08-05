@@ -130,18 +130,6 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     );
   }
 
-  protected calculateCount(): void {
-    const countValue = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].reduce((count, i) => {
-      if (Number(this.editorService.form.controls[`stat_value${i}`].value) != 0) {
-        return count + 1;
-      }
-
-      return count;
-    }, 0);
-
-    this.editorService.form.controls.StatsCount.setValue(countValue);
-  }
-
   override ngOnInit(): void {
     super.ngOnInit();
 

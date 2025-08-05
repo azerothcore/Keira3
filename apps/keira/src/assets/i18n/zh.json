@@ -513,7 +513,6 @@
       "RESISTANCE_TOOLTIP": "Related resistance per type",
       "SCALING_STAT_DISTRIBUTION": "与静态属性类似，这些属性是随着用户等级(主要是传家宝升级装备)而增长的，就像静态属性。",
       "SCALING_STAT_VALUE": "缩放属性的最终值(80级)",
-      "STATS_COUNT": "When an item has entries in stat_type, this must be updated to display those entries (Unknown how this works).",
       "STAT_VALUE": "改变属性的类型的值",
       "GEM_PROPERTIES": "对应于GemProperties.dbc中的ID",
       "SOCKET_CONTENTS": "宝石的数量 SocketColor_{{idx}}",

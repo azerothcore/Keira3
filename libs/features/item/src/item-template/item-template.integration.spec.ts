@@ -27,7 +27,7 @@ describe('ItemTemplate integration tests', () => {
     '`Flags`, `FlagsExtra`, `BuyCount`, `BuyPrice`, `SellPrice`, `InventoryType`, `AllowableClass`, `AllowableRace`, ' +
     '`ItemLevel`, `RequiredLevel`, `RequiredSkill`, `RequiredSkillRank`, `requiredspell`, `requiredhonorrank`, ' +
     '`RequiredCityRank`, `RequiredReputationFaction`, `RequiredReputationRank`, `maxcount`, `stackable`, `ContainerSlots`, ' +
-    '`StatsCount`, `stat_type1`, `stat_value1`, `stat_type2`, `stat_value2`, `stat_type3`, `stat_value3`, ' +
+    '`stat_type1`, `stat_value1`, `stat_type2`, `stat_value2`, `stat_type3`, `stat_value3`, ' +
     '`stat_type4`, `stat_value4`, `stat_type5`, `stat_value5`, `stat_type6`, `stat_value6`, `stat_type7`, `stat_value7`, ' +
     '`stat_type8`, `stat_value8`, `stat_type9`, `stat_value9`, `stat_type10`, `stat_value10`, `ScalingStatDistribution`, ' +
     '`ScalingStatValue`, `dmg_min1`, `dmg_max1`, `dmg_type1`, `dmg_min2`, `dmg_max2`, `dmg_type2`, `armor`, `holy_res`, ' +
@@ -178,7 +178,7 @@ describe('ItemTemplate integration tests', () => {
         '`BuyCount` = 8, `BuyPrice` = 9, `SellPrice` = 10, `InventoryType` = 11, `AllowableClass` = 12, `AllowableRace` = 13, ' +
         '`ItemLevel` = 14, `RequiredLevel` = 15, `RequiredSkill` = 16, `RequiredSkillRank` = 17, `requiredspell` = 18, ' +
         '`requiredhonorrank` = 19, `RequiredCityRank` = 20, `RequiredReputationFaction` = 21, `RequiredReputationRank` = 22, ' +
-        '`maxcount` = 23, `stackable` = 24, `ContainerSlots` = 25, `StatsCount` = 10, `stat_type1` = 27, `stat_value1` = 28, ' +
+        '`maxcount` = 23, `stackable` = 24, `ContainerSlots` = 25, `stat_type1` = 27, `stat_value1` = 28, ' +
         '`stat_type2` = 29, `stat_value2` = 30, `stat_type3` = 31, `stat_value3` = 32, `stat_type4` = 33, `stat_value4` = 34, ' +
         '`stat_type5` = 35, `stat_value5` = 36, `stat_type6` = 37, `stat_value6` = 38, `stat_type7` = 39, `stat_value7` = 40, ' +
         '`stat_type8` = 41, `stat_value8` = 42, `stat_type9` = 43, `stat_value9` = 44, `stat_type10` = 45, `stat_value10` = 46, ' +
@@ -378,30 +378,6 @@ describe('ItemTemplate integration tests', () => {
       });
     });
 
-    describe('item stats count', () => {
-      it('calculate item stats count automatically editing stats value fields', () => {
-        const { page } = setup(false);
-
-        expect(page.getInputById('StatsCount').value).toEqual('0');
-
-        page.setInputValueById('stat_value1', 1);
-        page.setInputValueById('stat_value2', 2);
-        page.detectChanges();
-
-        expect(page.getInputById('StatsCount').value).toEqual('2');
-
-        page.setInputValueById('stat_value3', -1);
-        page.detectChanges();
-
-        expect(page.getInputById('StatsCount').value).toEqual('3');
-
-        page.setInputValueById('stat_value2', 0);
-        page.detectChanges();
-
-        expect(page.getInputById('StatsCount').value).toEqual('2');
-      });
-    });
-
     describe('item preview', () => {
       it('all fields', fakeAsync(() => {
         const { page, fixture } = setup(false);
@@ -431,7 +407,6 @@ describe('ItemTemplate integration tests', () => {
         page.setInputValueById('maxcount', 123);
         page.setInputValueById('stackable', 123);
         page.setInputValueById('ContainerSlots', 123);
-        page.setInputValueById('StatsCount', 123);
         page.setInputValueById('stat_type1', 123);
         page.setInputValueById('stat_value1', 123);
         page.setInputValueById('stat_type2', 123);

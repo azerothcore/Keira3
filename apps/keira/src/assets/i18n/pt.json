@@ -513,7 +513,6 @@
       "RESISTANCE_TOOLTIP": "Resistência relacionada por tipo",
       "SCALING_STAT_DISTRIBUTION": "Similar aos Static Stats, esses são as Stats que aumentam junto com o level da personagem (majoritariamente items heirloom). Use como static stats.",
       "SCALING_STAT_VALUE": "Valor final (level 80) da scaling-stat",
-      "STATS_COUNT": "Quando um item tem entries em stat_type, esse tem que ser atualizado para mostrar essas entries (Não se sabe como isso funciona).",
       "STAT_VALUE": "O valor que vai ser usado como stat type",
       "GEM_PROPERTIES": "Corresponde ao ID em GemProperties.dbc",
       "SOCKET_CONTENTS": "A quantidade de Gems de SocketColor_{{idx}}",
