@@ -1,5 +1,5 @@
 import { Component, provideZonelessChangeDetection, viewChild } from '@angular/core';
-import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -12,6 +12,7 @@ import { ClipboardService } from 'ngx-clipboard';
 import { HighlightjsWrapperComponent } from '../highlightjs-wrapper/highlightjs-wrapper.component';
 import { QueryErrorComponent } from './query-error/query-error.component';
 import { QueryOutputComponent } from './query-output.component';
+import { tickAsync } from 'ngx-page-object-model';
 
 describe('QueryOutputComponent', () => {
   const diffQuery = '--diffQuery';
@@ -40,7 +41,7 @@ describe('QueryOutputComponent', () => {
     entityTable = '';
   }
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         BrowserModule,
@@ -55,7 +56,7 @@ describe('QueryOutputComponent', () => {
       ],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
-  }));
+  });
 
   const setup = () => {
     const fixture = TestBed.createComponent(TestHostComponent);
@@ -177,17 +178,17 @@ describe('QueryOutputComponent', () => {
   });
 
   describe('reload', () => {
-    it('should not ask for confirmation if diffQuery is empty', fakeAsync(() => {
+    it('should not ask for confirmation if diffQuery is empty', async () => {
       const { page, host } = setup();
       host.diffQuery = '';
       page.detectChanges();
       spyOn(host.editorService, 'reloadSameEntity');
 
       page.clickElement(page.reloadBtn);
-      tick();
+      await tickAsync();
 
       expect(host.editorService.reloadSameEntity).toHaveBeenCalledTimes(1);
-    }));
+    });
 
     it('should ask for confirmation if diffQuery is empty, and reset if confirmed', () => {
       const { page, host } = setup();

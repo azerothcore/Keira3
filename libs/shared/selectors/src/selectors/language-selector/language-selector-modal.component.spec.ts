@@ -1,4 +1,4 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
@@ -9,7 +9,7 @@ import { LanguageSelectorModalComponent } from './language-selector-modal.compon
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 
 describe('LanguageSelectorModalComponent', () => {
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [LanguageSelectorModalComponent, TranslateTestingModule],
       providers: [
@@ -20,7 +20,7 @@ describe('LanguageSelectorModalComponent', () => {
         { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
       ],
     }).compileComponents();
-  }));
+  });
 
   function setup() {
     const searchService = TestBed.inject(LanguageSearchService);

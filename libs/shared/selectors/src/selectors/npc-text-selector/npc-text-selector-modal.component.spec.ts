@@ -1,4 +1,4 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { BsModalRef } from 'ngx-bootstrap/modal';
@@ -10,7 +10,7 @@ import { NpcTextSearchService } from '../../search/npc-text-search.service';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 
 describe('NpcTextSelectorModalComponent', () => {
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [NpcTextSelectorModalComponent, TranslateTestingModule],
       providers: [
@@ -20,7 +20,7 @@ describe('NpcTextSelectorModalComponent', () => {
         { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
       ],
     }).compileComponents();
-  }));
+  });
 
   function setup() {
     const fixture = TestBed.createComponent(NpcTextSelectorModalComponent);

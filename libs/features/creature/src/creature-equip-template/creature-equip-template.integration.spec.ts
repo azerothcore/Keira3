@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -32,7 +32,7 @@ describe('CreatureEquipTemplate integration tests', () => {
   const originalEntity = new CreatureEquipTemplate();
   originalEntity.CreatureID = id;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureEquipTemplateComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
@@ -43,7 +43,7 @@ describe('CreatureEquipTemplate integration tests', () => {
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(CreatureHandlerService);
@@ -136,7 +136,7 @@ describe('CreatureEquipTemplate integration tests', () => {
       );
     });
 
-    xit('changing a value via ItemSelector should correctly work', waitForAsync(async () => {
+    xit('changing a value via ItemSelector should correctly work', async () => {
       //  note: previously disabled because of:
       //  https://stackoverflow.com/questions/57336982/how-to-make-angular-tests-wait-for-previous-async-operation-to-complete-before-e
 
@@ -160,6 +160,6 @@ describe('CreatureEquipTemplate integration tests', () => {
           'INSERT INTO `creature_equip_template` (`CreatureID`, `ID`, `ItemID1`, `ItemID2`, `ItemID3`, `VerifiedBuild`) VALUES\n' +
           '(1234, 1, 1200, 0, 0, 0);',
       );
-    }));
+    });
   });
 });

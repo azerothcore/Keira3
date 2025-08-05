@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -38,7 +38,7 @@ describe('CreatureTemplateAddon integration tests', () => {
   originalEntity.mount = 0;
   originalEntity.path_id = 123;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureTemplateAddonComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
@@ -49,7 +49,7 @@ describe('CreatureTemplateAddon integration tests', () => {
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(CreatureHandlerService);
@@ -147,7 +147,7 @@ describe('CreatureTemplateAddon integration tests', () => {
       );
     });
 
-    xit('changing a value via SingleValueSelector should correctly work', waitForAsync(async () => {
+    xit('changing a value via SingleValueSelector should correctly work', async () => {
       const field = 'bytes1';
       page.clickElement(page.getSelectorBtn(field));
 
@@ -167,6 +167,6 @@ describe('CreatureTemplateAddon integration tests', () => {
           'INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `visibilityDistanceType`, `auras`) VALUES\n' +
           '(1234, 123, 0, 8, 2, 3, 0, NULL);',
       );
-    }));
+    });
   });
 });

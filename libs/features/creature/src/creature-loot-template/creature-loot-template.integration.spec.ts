@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -34,7 +34,7 @@ describe('CreatureLootTemplate integration tests', () => {
   originalRow1.Item = 1;
   originalRow2.Item = 2;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureLootTemplateComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
@@ -45,7 +45,7 @@ describe('CreatureLootTemplate integration tests', () => {
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean, lootId = id) {
     spyOn(TestBed.inject(CreatureLootTemplateService), 'getLootId').and.returnValue(of([{ lootId }]));
@@ -97,12 +97,12 @@ describe('CreatureLootTemplate integration tests', () => {
       expect(handlerService.isCreatureLootTemplateUnsaved()).toBe(false);
     });
 
-    xit('should reflect the item names', waitForAsync(async () => {
+    xit('should reflect the item names', async () => {
       page.addNewRow();
       page.detectChanges();
       await page.whenReady();
       expect(page.getDatatableCell(0, 3).innerText).toContain('MockItemName');
-    }));
+    });
 
     it('adding new rows and executing the query should correctly work', () => {
       const expectedQuery =

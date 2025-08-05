@@ -1,6 +1,6 @@
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -14,6 +14,7 @@ import { lastValueFrom, of } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
 import { ItemHandlerService } from '../item-handler.service';
 import { ItemTemplateComponent } from './item-template.component';
+import { tickAsync } from 'ngx-page-object-model';
 
 class ItemTemplatePage extends EditorPageObject<ItemTemplateComponent> {
   get itemStats(): HTMLDivElement {
@@ -53,7 +54,7 @@ describe('ItemTemplate integration tests', () => {
   const originalEntity = new ItemTemplate();
   originalEntity.entry = id;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), ItemTemplateComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
@@ -66,7 +67,7 @@ describe('ItemTemplate integration tests', () => {
         provideHttpClientTesting(),
       ],
     }).compileComponents();
-  }));
+  });
 
   const mockItemNameById = 'mockItemNameById';
   const mockGetSpellNameById = 'mockGetSpellNameById';
@@ -109,7 +110,6 @@ describe('ItemTemplate integration tests', () => {
     const fixture = TestBed.createComponent(ItemTemplateComponent);
     const component = fixture.componentInstance;
     const page = new ItemTemplatePage(fixture);
-    fixture.autoDetectChanges(true);
     fixture.detectChanges();
 
     const mysqlQueryService = TestBed.inject(MysqlQueryService);
@@ -134,15 +134,17 @@ describe('ItemTemplate integration tests', () => {
   }
 
   describe('Creating new', () => {
-    it('should correctly initialise', () => {
+    it('should correctly initialise', async () => {
       const { page } = setup(true);
+      await tickAsync();
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
-    it('should correctly update the unsaved status', () => {
+    it('should correctly update the unsaved status', async () => {
       const { page, handlerService } = setup(true);
+      await tickAsync();
       const field = 'Quality';
       expect(handlerService.isItemTemplateUnsaved()).toBe(false);
       page.setInputValueById(field, 3);
@@ -151,8 +153,9 @@ describe('ItemTemplate integration tests', () => {
       expect(handlerService.isItemTemplateUnsaved()).toBe(false);
     });
 
-    it('changing a property and executing the query should correctly work', () => {
+    it('changing a property and executing the query should correctly work', async () => {
       const { page, querySpy } = setup(true);
+      await tickAsync();
       querySpy.calls.reset();
 
       page.setInputValueById('name', 'Shin');
@@ -167,15 +170,17 @@ describe('ItemTemplate integration tests', () => {
   });
 
   describe('Editing existing', () => {
-    it('should correctly initialise', () => {
+    it('should correctly initialise', async () => {
       const { page } = setup(false);
+      await tickAsync();
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
-    it('changing all properties and executing the query should correctly work', () => {
+    it('changing all properties and executing the query should correctly work', async () => {
       const { page, querySpy } = setup(false);
+      await tickAsync();
       const expectedQuery =
         'UPDATE `item_template` SET ' +
         "`subclass` = 1, `SoundOverrideSubclass` = 2, `name` = '3', `displayid` = 4, `Quality` = 5, `Flags` = 6, `FlagsExtra` = 7, " +
@@ -229,8 +234,9 @@ describe('ItemTemplate integration tests', () => {
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
     });
 
-    it('changing values should correctly update the queries', () => {
+    it('changing values should correctly update the queries', async () => {
       const { page } = setup(false);
+      await tickAsync();
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
 
       page.setInputValueById('name', 'Shin');
@@ -243,8 +249,9 @@ describe('ItemTemplate integration tests', () => {
       page.expectFullQueryToContain('22');
     });
 
-    xit('changing a value via FlagsSelector should correctly work', waitForAsync(async () => {
+    xit('changing a value via FlagsSelector should correctly work', async () => {
       const { page } = setup(false);
+      await tickAsync();
       const field = 'Flags';
       page.clickElement(page.getSelectorBtn(field));
 
@@ -263,10 +270,11 @@ describe('ItemTemplate integration tests', () => {
 
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
       page.expectFullQueryToContain('4100');
-    }));
+    });
 
-    xit('changing a value via ItemEnchantmentSelector should correctly work', waitForAsync(async () => {
+    xit('changing a value via ItemEnchantmentSelector should correctly work', async () => {
       const { page, fixture } = setup(false);
+      await tickAsync();
       const field = 'socketBonus';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
       spyOn(sqliteQueryService, 'query').and.returnValue(of([{ id: 1248, name: 'Mock Enchantment', conditionId: 456 }]));
@@ -285,10 +293,11 @@ describe('ItemTemplate integration tests', () => {
       page.expectDiffQueryToContain('UPDATE `item_template` SET `socketBonus` = 1248 WHERE (`entry` = 1234);');
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
       page.expectFullQueryToContain('1248');
-    }));
+    });
 
-    xit('changing a value via HolidaySelector should correctly work', waitForAsync(async () => {
+    xit('changing a value via HolidaySelector should correctly work', async () => {
       const { page, fixture } = setup(false);
+      await tickAsync();
       const field = 'HolidayId';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
       spyOn(sqliteQueryService, 'query').and.returnValue(of([{ id: 1248, name: 'Mock Holiday' }]));
@@ -307,10 +316,11 @@ describe('ItemTemplate integration tests', () => {
       page.expectDiffQueryToContain('UPDATE `item_template` SET `HolidayId` = 1248 WHERE (`entry` = 1234);');
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
       page.expectFullQueryToContain('1248');
-    }));
+    });
 
-    xit('changing a value via ItemLimitCategorySelector should correctly work', waitForAsync(async () => {
+    xit('changing a value via ItemLimitCategorySelector should correctly work', async () => {
       const { page, fixture } = setup(false);
+      await tickAsync();
       const field = 'ItemLimitCategory';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
       spyOn(sqliteQueryService, 'query').and.returnValue(of([{ id: 1248, name: 'Mock ItemLimitCategory', count: 2, isGem: 1 }]));
@@ -329,10 +339,11 @@ describe('ItemTemplate integration tests', () => {
       page.expectDiffQueryToContain('UPDATE `item_template` SET `ItemLimitCategory` = 1248 WHERE (`entry` = 1234);');
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
       page.expectFullQueryToContain('1248');
-    }));
+    });
 
-    xit('changing a value via LanguageSelector should correctly work', waitForAsync(async () => {
+    xit('changing a value via LanguageSelector should correctly work', async () => {
       const { page, fixture } = setup(false);
+      await tickAsync();
       const field = 'LanguageID';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
       spyOn(sqliteQueryService, 'query').and.returnValue(of([{ id: 1248, name: 'Mock LanguageID' }]));
@@ -351,11 +362,12 @@ describe('ItemTemplate integration tests', () => {
       page.expectDiffQueryToContain('UPDATE `item_template` SET `LanguageID` = 1248 WHERE (`entry` = 1234);');
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
       page.expectFullQueryToContain('1248');
-    }));
+    });
 
     describe('the subclass field', () => {
-      it('should show the selector button only if class has a valid value', () => {
+      it('should show the selector button only if class has a valid value', async () => {
         const { page } = setup(false);
+        await tickAsync();
         page.setInputValueById('class', 100);
         expect(page.getSelectorBtn('subclass', false)).toBeFalsy();
 
@@ -372,8 +384,9 @@ describe('ItemTemplate integration tests', () => {
         expect(page.getSelectorBtn('subclass', false)).toBeFalsy();
       });
 
-      it('should show its values according to the value of class', () => {
+      it('should show its values according to the value of class', async () => {
         const { page } = setup(false);
+        await tickAsync();
         page.setInputValueById('class', 3);
         page.clickElement(page.getSelectorBtn('subclass'));
 
@@ -383,8 +396,9 @@ describe('ItemTemplate integration tests', () => {
     });
 
     describe('item preview', () => {
-      it('all fields', fakeAsync(() => {
+      it('all fields', async () => {
         const { page, fixture } = setup(false);
+        await tickAsync();
         page.setInputValueById('class', 1);
         page.setInputValueById('subclass', 2);
         page.setInputValueById('SoundOverrideSubclass', 3);
@@ -522,7 +536,7 @@ describe('ItemTemplate integration tests', () => {
         page.setInputValueById('maxMoneyLoot', 123);
         page.setInputValueById('flagsCustom', 123);
 
-        tick(700);
+        await tickAsync(400);
 
         fixture.whenStable().then(() => {
           const itemStats = page.itemStats.innerText;
@@ -566,7 +580,7 @@ describe('ItemTemplate integration tests', () => {
           expect(itemStats).toContain('<Right Click To Read>');
           expect(itemStats).toContain('123 Charges');
         });
-      }));
+      });
     });
   });
 });

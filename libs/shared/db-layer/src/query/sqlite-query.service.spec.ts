@@ -1,4 +1,4 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
@@ -10,7 +10,7 @@ import { instance, mock } from 'ts-mockito';
 describe('SqliteQueryService', () => {
   let service: SqliteQueryService;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         provideZonelessChangeDetection(),
@@ -19,10 +19,10 @@ describe('SqliteQueryService', () => {
       ],
     });
     service = TestBed.inject(SqliteQueryService);
-  }));
+  });
 
   describe('queryValue()', () => {
-    it('should correctly work', waitForAsync(async () => {
+    it('should correctly work', async () => {
       const value = 'mock result value';
       spyOn(service, 'query').and.returnValue(of([{ v: value }]));
       const query = 'SELECT something AS v FROM my_table WHERE index = 123';
@@ -31,9 +31,9 @@ describe('SqliteQueryService', () => {
         expect(result).toEqual(value);
       });
       expect(service.query).toHaveBeenCalledOnceWith(query);
-    }));
+    });
 
-    it('should be safe in case of no results', waitForAsync(async () => {
+    it('should be safe in case of no results', async () => {
       spyOn(service, 'query').and.returnValue(of(null as any));
       const query = 'SELECT something AS v FROM my_table WHERE index = 123';
 
@@ -41,7 +41,7 @@ describe('SqliteQueryService', () => {
         expect(result).toEqual(null);
       });
       expect(service.query).toHaveBeenCalledOnceWith(query);
-    }));
+    });
   });
 
   describe('get helpers', () => {
@@ -102,40 +102,37 @@ describe('SqliteQueryService', () => {
       { name: 'getSpellDescriptionById', query: `SELECT Description AS v FROM spells WHERE id = ${id}` },
     ];
     for (const test of cases) {
-      it(
-        test.name,
-        waitForAsync(async () => {
-          expect(await (service[test.name] as (arg: any) => Promise<string>)(id)).toEqual(mockResult);
-          expect(await (service[test.name] as (arg: any) => Promise<string>)(id)).toEqual(mockResult); // check cache
-          expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
-          expect(service.queryValue).toHaveBeenCalledWith(test.query);
-          expect(service['cache'].size).toBe(1);
-        }),
-      );
+      it(test.name, async () => {
+        expect(await (service[test.name] as (arg: any) => Promise<string>)(id)).toEqual(mockResult);
+        expect(await (service[test.name] as (arg: any) => Promise<string>)(id)).toEqual(mockResult); // check cache
+        expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
+        expect(service.queryValue).toHaveBeenCalledWith(test.query);
+        expect(service['cache'].size).toBe(1);
+      });
     }
 
-    it('getLockById', waitForAsync(async () => {
+    it('getLockById', async () => {
       spyOn(service, 'query').and.returnValue(of([]));
       expect(await service.getLockById(id)).toEqual([]);
       expect(await service.getLockById(id)).toEqual([]); // check cache
       expect(service.query).toHaveBeenCalledTimes(1); // check cache
       expect(service.query).toHaveBeenCalledWith(`SELECT * FROM lock WHERE id = ${id}`);
-    }));
+    });
 
-    it('getRewardXP', waitForAsync(async () => {
+    it('getRewardXP', async () => {
       expect(await service.getRewardXP(id, 2)).toEqual(mockResult);
       expect(await service.getRewardXP(id, 2)).toEqual(mockResult); // check cache
       expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
       expect(service.queryValue).toHaveBeenCalledWith(`SELECT field${Number(id) + 1} AS v FROM questxp WHERE id = 2`);
       expect(service['cache'].size).toBe(1);
-    }));
+    });
 
-    it('getItemExtendedCost', waitForAsync(async () => {
+    it('getItemExtendedCost', async () => {
       spyOn(service, 'query').and.returnValue(of([]));
       expect(await service.getItemExtendedCost([])).toEqual([]);
       expect(await service.getItemExtendedCost([])).toEqual([]); // check cache
       expect(service.query).toHaveBeenCalledTimes(1); // check cache
       expect(service.query).toHaveBeenCalledWith(`SELECT * FROM item_extended_cost WHERE id IN ()`);
-    }));
+    });
   });
 });

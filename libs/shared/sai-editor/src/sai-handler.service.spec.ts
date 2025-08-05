@@ -1,5 +1,5 @@
 /*eslint camelcase: ["error", {properties: "never"}]*/
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
@@ -27,7 +27,7 @@ describe('SaiHandlerService', () => {
     { testId: 1, sourceType: 1, entryOrGuid: 111, isNew: true },
     { testId: 2, sourceType: 2, entryOrGuid: 222, isNew: false },
   ]) {
-    it(`selectFromEntity() should correctly work [${testId}]`, fakeAsync(() => {
+    it(`selectFromEntity() should correctly work [${testId}]`, async () => {
       const service: SaiHandlerService = TestBed.inject(SaiHandlerService);
       const queryService: MysqlQueryService = TestBed.inject(MysqlQueryService);
       const mockResults = isNew ? [] : ['some result'];
@@ -35,15 +35,13 @@ describe('SaiHandlerService', () => {
       spyOn(service, 'select');
 
       service.selectFromEntity(sourceType, entryOrGuid);
-      tick();
-
       expect(queryService.query).toHaveBeenCalledTimes(1);
       expect(queryService.query).toHaveBeenCalledWith(
         `SELECT * FROM smart_scripts WHERE source_type = ${sourceType} AND entryorguid = ${entryOrGuid}`,
       );
       expect(service.select).toHaveBeenCalledTimes(1);
       expect(service.select).toHaveBeenCalledWith(isNew, { source_type: sourceType, entryorguid: entryOrGuid });
-    }));
+    });
   }
 
   const entry = 100;
@@ -156,7 +154,7 @@ describe('SaiHandlerService', () => {
     ];
 
     for (const { testId, sourceType, entryorguid, name, returnValue, expectedName, expectedQuery } of cases) {
-      it(`${testId}`, fakeAsync(() => {
+      it(`${testId}`, async () => {
         const service: SaiHandlerService = TestBed.inject(SaiHandlerService);
         const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
         const queryService = TestBed.inject(MysqlQueryService);
@@ -179,9 +177,7 @@ describe('SaiHandlerService', () => {
         service.getName().subscribe((actualName) => {
           expect(actualName).toEqual(`Unknown source_type`);
         });
-
-        tick();
-      }));
+      });
     }
   });
 });

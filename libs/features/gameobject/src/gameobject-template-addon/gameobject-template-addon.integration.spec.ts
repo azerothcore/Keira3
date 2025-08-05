@@ -1,4 +1,4 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -29,7 +29,7 @@ describe('GameobjectTemplateAddon integration tests', () => {
   const originalEntity = new GameobjectTemplateAddon();
   originalEntity.entry = id;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         ToastrModule.forRoot(),
@@ -46,7 +46,7 @@ describe('GameobjectTemplateAddon integration tests', () => {
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     const handlerService = TestBed.inject(GameobjectHandlerService);
@@ -140,7 +140,7 @@ describe('GameobjectTemplateAddon integration tests', () => {
       page.expectFullQueryToContain('35');
     });
 
-    xit('changing a value via FlagsSelector should correctly work', waitForAsync(async () => {
+    xit('changing a value via FlagsSelector should correctly work', async () => {
       const { page } = setup(false);
       const field = 'flags';
       page.clickElement(page.getSelectorBtn(field));
@@ -166,6 +166,6 @@ describe('GameobjectTemplateAddon integration tests', () => {
           id +
           ', 0, 10, 0, 0, 0, 0, 0, 0);',
       );
-    }));
+    });
   });
 });

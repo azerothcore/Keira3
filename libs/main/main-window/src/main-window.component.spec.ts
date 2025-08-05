@@ -1,4 +1,4 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -22,7 +22,7 @@ import { ElectronService } from '@keira/shared/common-services';
 import { MysqlService } from '@keira/shared/db-layer';
 
 describe('MainWindowComponent', () => {
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [MainWindowComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
@@ -45,7 +45,7 @@ describe('MainWindowComponent', () => {
         SpellHandlerService,
       ],
     }).compileComponents();
-  }));
+  });
 
   const setup = () => {
     const fixture = TestBed.createComponent(MainWindowComponent);

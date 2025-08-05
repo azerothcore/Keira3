@@ -1,5 +1,5 @@
 import { Component, viewChild, provideZonelessChangeDetection } from '@angular/core';
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FormControl, FormGroup } from '@angular/forms';
 import { NpcText } from '@keira/shared/acore-world-model';
@@ -58,7 +58,7 @@ describe(NpcTextFieldsGroupComponent.name, () => {
     }
   }
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [TestHostNpcTextFieldsGroupComponent, NpcTextFieldsGroupComponent, TranslateTestingModule],
       providers: [
@@ -67,7 +67,7 @@ describe(NpcTextFieldsGroupComponent.name, () => {
         { provide: BsModalService, useValue: instance(mock(BsModalService)) },
       ],
     }).compileComponents();
-  }));
+  });
   function setup(config: { groupId: GroupIdType }) {
     const formGroup = new FormGroup<ModelForm<NpcText>>({
       ID: new FormControl(),

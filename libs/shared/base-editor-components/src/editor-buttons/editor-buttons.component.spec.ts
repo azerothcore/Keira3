@@ -1,5 +1,5 @@
 import { Component, viewChild, provideZonelessChangeDetection } from '@angular/core';
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { EditorButtonsComponent } from './editor-buttons.component';
@@ -33,12 +33,12 @@ class EditorButtonsPage extends PageObject<TestHostComponent> {
 }
 
 describe('EditorButtonsComponent', () => {
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [TranslateTestingModule, EditorButtonsComponent, TestHostComponent],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
-  }));
+  });
 
   const setup = () => {
     const editorService = {

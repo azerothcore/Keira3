@@ -1,4 +1,4 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -23,7 +23,7 @@ class CreatureQueststarterPage extends MultiRowEditorPageObject<CreatureQueststa
 describe('CreatureQueststarter integration tests', () => {
   const id = 1234;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, CreatureQueststarterComponent, TranslateTestingModule],
       providers: [
@@ -32,7 +32,7 @@ describe('CreatureQueststarter integration tests', () => {
         { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
       ],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     const originalRow0 = new CreatureQueststarter();
@@ -164,7 +164,7 @@ describe('CreatureQueststarter integration tests', () => {
       page.removeNativeElement();
     });
 
-    // TODO: fix this test, broken after OnPush (probably needs tick())
+    // TODO: fix this test, broken after OnPush (probably needs await whenStable())
     xit('changing a property should be reflected in the quest preview', () => {
       const { page } = setup(true);
       const value = 1234;
@@ -280,7 +280,7 @@ describe('CreatureQueststarter integration tests', () => {
       page.removeNativeElement();
     });
 
-    xit('changing a value via CreatureSelector should correctly work', waitForAsync(async () => {
+    xit('changing a value via CreatureSelector should correctly work', async () => {
       const { page, fixture } = setup(false);
       const field = 'id';
       const mysqlQueryService = TestBed.inject(MysqlQueryService);
@@ -315,6 +315,6 @@ describe('CreatureQueststarter integration tests', () => {
           '(2, 1234);',
       );
       page.removeNativeElement();
-    }));
+    });
   });
 });

@@ -1,4 +1,4 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -22,7 +22,7 @@ class GameobjectQuestenderPage extends MultiRowEditorPageObject<GameobjectQueste
 describe('GameobjectQuestender integration tests', () => {
   const id = 1234;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, GameobjectQuestenderComponent, TranslateTestingModule],
       providers: [
@@ -31,7 +31,7 @@ describe('GameobjectQuestender integration tests', () => {
         { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
       ],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     const originalRow0 = new GameobjectQuestender();
@@ -164,7 +164,7 @@ describe('GameobjectQuestender integration tests', () => {
       page.removeNativeElement();
     });
 
-    // TODO: fix this test, broken after OnPush (probably needs tick())
+    // TODO: fix this test, broken after OnPush (probably needs await whenStable())
     xit('changing a property should be reflected in the quest preview', () => {
       const { page } = setup(true);
       const value = 1234;

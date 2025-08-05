@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
@@ -29,7 +29,7 @@ describe('SelectGameobject integration tests', () => {
 
   const value = 1200;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectGameobjectComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
@@ -40,7 +40,7 @@ describe('SelectGameobject integration tests', () => {
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
@@ -54,15 +54,15 @@ describe('SelectGameobject integration tests', () => {
     fixture.detectChanges();
   });
 
-  it('should correctly initialise', waitForAsync(async () => {
+  it('should correctly initialise', async () => {
     await fixture.whenStable();
     expect(page.createInput.value).toEqual(`${component.customStartingId}`);
     page.expectNewEntityFree();
     expect(querySpy).toHaveBeenCalledWith('SELECT MAX(entry) AS max FROM gameobject_template;');
     expect(page.queryWrapper.innerText).toContain('SELECT * FROM `gameobject_template` LIMIT 50');
-  }));
+  });
 
-  it('should correctly behave when inserting and selecting free id', waitForAsync(async () => {
+  it('should correctly behave when inserting and selecting free id', async () => {
     await fixture.whenStable();
     querySpy.calls.reset();
     querySpy.and.returnValue(of([]));
@@ -78,9 +78,9 @@ describe('SelectGameobject integration tests', () => {
     expect(navigateSpy).toHaveBeenCalledTimes(1);
     expect(navigateSpy).toHaveBeenCalledWith(['gameobject/gameobject-template']);
     page.expectTopBarCreatingNew(value);
-  }));
+  });
 
-  it('should correctly behave when inserting an existing entity', waitForAsync(async () => {
+  it('should correctly behave when inserting an existing entity', async () => {
     await fixture.whenStable();
     querySpy.calls.reset();
     querySpy.and.returnValue(of(['mock value']));
@@ -90,7 +90,7 @@ describe('SelectGameobject integration tests', () => {
     expect(querySpy).toHaveBeenCalledTimes(1);
     expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`gameobject_template\` WHERE (entry = ${value})`);
     page.expectEntityAlreadyInUse();
-  }));
+  });
 
   for (const { testId, id, name, scriptName, limit, expectedQuery } of [
     {

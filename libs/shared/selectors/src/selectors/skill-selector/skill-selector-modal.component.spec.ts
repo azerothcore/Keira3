@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { BsModalRef } from 'ngx-bootstrap/modal';
@@ -14,7 +14,7 @@ describe('SkillSelectorModalComponent', () => {
   let fixture: ComponentFixture<SkillSelectorModalComponent>;
   let searchService: SkillSearchService;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [SkillSelectorModalComponent, TranslateTestingModule],
       providers: [
@@ -25,7 +25,7 @@ describe('SkillSelectorModalComponent', () => {
         { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
       ],
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     searchService = TestBed.inject(SkillSearchService);

@@ -1,4 +1,4 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { SmartScripts } from '@keira/shared/acore-world-model';
@@ -79,7 +79,7 @@ describe('MysqlQueryService', () => {
     expect(querySpy).toHaveBeenCalledWith(myQuery, undefined);
   });
 
-  it('selectAll() should correctly work', waitForAsync(() => {
+  it('selectAll() should correctly work', () => {
     const data: TableRow[] = [{ key: 'value' }];
     const querySpy = spyOn(service, 'query').and.returnValue(of(data));
 
@@ -88,9 +88,9 @@ describe('MysqlQueryService', () => {
     });
 
     expect(querySpy).toHaveBeenCalledWith('SELECT * ' + 'FROM `my_ac` WHERE (param = value)');
-  }));
+  });
 
-  it('selectAllMultipleKeys() should correctly work', waitForAsync(() => {
+  it('selectAllMultipleKeys() should correctly work', () => {
     const data: TableRow[] = [{ key: 'value' }];
     const querySpy = spyOn(service, 'query').and.returnValue(of(data));
     const row: TableRow = { k1: 1, k2: 2 };
@@ -100,9 +100,9 @@ describe('MysqlQueryService', () => {
     });
 
     expect(querySpy).toHaveBeenCalledWith('SELECT * ' + 'FROM `my_ac` WHERE (k1 = 1) AND (k2 = 2)');
-  }));
+  });
 
-  it('getMaxId() should correctly work', waitForAsync(() => {
+  it('getMaxId() should correctly work', () => {
     const data: MaxRow[] = [{ max: 123 }];
     const querySpy = spyOn(service, 'query').and.returnValue(of());
 
@@ -111,9 +111,9 @@ describe('MysqlQueryService', () => {
     });
 
     expect(querySpy).toHaveBeenCalledWith('SELECT MAX(param) AS max ' + 'FROM my_ac;');
-  }));
+  });
 
-  it('getTimedActionlists() should correctly work', waitForAsync(() => {
+  it('getTimedActionlists() should correctly work', () => {
     const id = 1234;
     const data: SmartScripts[] = [{ entryorguid: 1111 } as SmartScripts];
     const querySpy = spyOn(service, 'query').and.returnValue(of(data));
@@ -125,7 +125,7 @@ describe('MysqlQueryService', () => {
     expect(querySpy).toHaveBeenCalledWith(
       `SELECT * FROM smart_scripts WHERE source_type = 9 AND entryorguid >= ${id * 100} AND entryorguid < ${id * 100 + 100}`,
     );
-  }));
+  });
 
   describe('Query builders', () => {
     const tableName = 'my_table';
@@ -772,14 +772,14 @@ describe('MysqlQueryService', () => {
       spyOn(service, 'queryValueToPromise').and.returnValue(resultToPromise);
     });
 
-    it('clearCache', waitForAsync(async () => {
+    it('clearCache', async () => {
       expect(await service.getCreatureNameById(id)).toEqual(result);
       expect(await service.getCreatureNameById(id)).toEqual(result);
       expect(service.queryValue).toHaveBeenCalledTimes(1);
       service.clearCache();
       expect(await service.getCreatureNameById(id)).toEqual(result);
       expect(service.queryValue).toHaveBeenCalledTimes(2);
-    }));
+    });
 
     const cases: { name: keyof MysqlQueryService; query: string }[] = [
       { name: 'getCreatureNameById', query: `SELECT name AS v FROM creature_template WHERE entry = ${id}` },
@@ -802,16 +802,13 @@ describe('MysqlQueryService', () => {
     ];
 
     for (const test of cases) {
-      it(
-        test.name,
-        waitForAsync(async () => {
-          expect(await (service[test.name] as (arg: any) => Promise<string>)(id)).toEqual(result);
-          expect(await (service[test.name] as (arg: any) => Promise<string>)(id)).toEqual(result); // check cache
-          expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
-          expect(service.queryValue).toHaveBeenCalledWith(test.query);
-          expect(service['cache'].size).toBe(1);
-        }),
-      );
+      it(test.name, async () => {
+        expect(await (service[test.name] as (arg: any) => Promise<string>)(id)).toEqual(result);
+        expect(await (service[test.name] as (arg: any) => Promise<string>)(id)).toEqual(result); // check cache
+        expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
+        expect(service.queryValue).toHaveBeenCalledWith(test.query);
+        expect(service['cache'].size).toBe(1);
+      });
     }
 
     it('getDisplayIdByItemId (case non-null)', () => {
@@ -843,29 +840,29 @@ describe('MysqlQueryService', () => {
       );
     });
 
-    it('getNextQuestById', waitForAsync(async () => {
+    it('getNextQuestById', async () => {
       expect(await service.getNextQuestById(id)).toEqual(result);
       expect(await service.getNextQuestById(id)).toEqual(result); // check cache
       expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
       expect(service.queryValue).toHaveBeenCalledWith(`SELECT NextQuestID AS v FROM quest_template_addon WHERE id = ${id}`);
       expect(service['cache'].size).toBe(1);
-    }));
+    });
 
-    it('getNextQuestById (usingPrev)', waitForAsync(async () => {
+    it('getNextQuestById (usingPrev)', async () => {
       expect(await service.getNextQuestById(id, true)).toEqual(result);
       expect(await service.getNextQuestById(id, true)).toEqual(result); // check cache
       expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
       expect(service.queryValue).toHaveBeenCalledWith(`SELECT id AS v FROM quest_template_addon WHERE PrevQuestID = ${id}`);
       expect(service['cache'].size).toBe(1);
-    }));
+    });
 
-    it('getReputationRewardByFaction (usingPrev)', waitForAsync(async () => {
+    it('getReputationRewardByFaction (usingPrev)', async () => {
       spyOn(service, 'query').and.returnValue(of([]));
       expect(await service.getReputationRewardByFaction(id)).toEqual([]);
       expect(await service.getReputationRewardByFaction(id)).toEqual([]); // check cache
       expect(service.query).toHaveBeenCalledTimes(1); // check cache
       expect(service.query).toHaveBeenCalledWith(`SELECT * FROM reputation_reward_rate WHERE faction = ${id}`);
       expect(service['cache'].size).toBe(1);
-    }));
+    });
   });
 });

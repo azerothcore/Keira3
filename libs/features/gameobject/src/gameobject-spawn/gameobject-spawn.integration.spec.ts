@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -33,7 +33,7 @@ describe('GameobjectSpawn integration tests', () => {
   originalRow1.guid = 1;
   originalRow2.guid = 2;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), GameobjectSpawnComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
@@ -45,7 +45,7 @@ describe('GameobjectSpawn integration tests', () => {
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(GameobjectHandlerService);
@@ -429,7 +429,7 @@ describe('GameobjectSpawn integration tests', () => {
       page.expectUniqueError();
     });
 
-    xit('changing a value via AreaSelector should correctly work', waitForAsync(async () => {
+    xit('changing a value via AreaSelector should correctly work', async () => {
       const field = 'areaId';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
       spyOn(sqliteQueryService, 'query').and.returnValue(of([{ m_ID: 123, m_ParentAreaID: 456, m_AreaName_lang: 'Mock Area' }]));
@@ -461,6 +461,6 @@ describe('GameobjectSpawn integration tests', () => {
           "(1, 1234, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, ''),\n" +
           "(2, 1234, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, '');",
       );
-    }));
+    });
   });
 });

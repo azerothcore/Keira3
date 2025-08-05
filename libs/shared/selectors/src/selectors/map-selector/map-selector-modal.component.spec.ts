@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { BsModalRef } from 'ngx-bootstrap/modal';
@@ -14,7 +14,7 @@ describe('MapSelectorModalComponent', () => {
   let fixture: ComponentFixture<MapSelectorModalComponent>;
   let searchService: MapSearchService;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [MapSelectorModalComponent, TranslateTestingModule],
       providers: [
@@ -25,7 +25,7 @@ describe('MapSelectorModalComponent', () => {
         { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
       ],
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     searchService = TestBed.inject(MapSearchService);

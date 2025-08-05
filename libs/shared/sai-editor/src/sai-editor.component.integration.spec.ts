@@ -1,4 +1,4 @@
-import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -15,6 +15,7 @@ import { SaiEditorComponent } from './sai-editor.component';
 import { SaiHandlerService } from './sai-handler.service';
 
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
+import { tickAsync } from 'ngx-page-object-model';
 
 class SaiEditorPage extends MultiRowEditorPageObject<SaiEditorComponent> {
   get event1Name(): HTMLLabelElement {
@@ -101,7 +102,7 @@ describe('SaiEditorComponent integration tests', () => {
   originalRow1.id = 1;
   originalRow2.id = 2;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, TranslateTestingModule],
       providers: [
@@ -110,7 +111,7 @@ describe('SaiEditorComponent integration tests', () => {
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean, hasTemplateQuery = false, st = sourceType) {
     const selected = { source_type: st, entryorguid: id };
@@ -338,7 +339,7 @@ describe('SaiEditorComponent integration tests', () => {
       );
     });
 
-    it('generating all comments should correctly work', fakeAsync(() => {
+    it('generating all comments should correctly work', async () => {
       const { component, handlerService, page } = setup(true);
       const saiColIndex = 9;
       const name = 'Shin';
@@ -354,8 +355,7 @@ describe('SaiEditorComponent integration tests', () => {
       component.editorService['_newRows'][2].action_type = SAI_ACTIONS.FLEE_FOR_ASSIST;
 
       page.clickElement(page.generateCommentsBtn);
-      tick(1000);
-      page.detectChanges();
+      await tickAsync();
 
       expect(page.getDatatableCell(0, saiColIndex).innerText).toEqual(`${name} - On Aggro - Kill Target`);
       expect(page.getDatatableCell(1, saiColIndex).innerText).toEqual(`${name} - On Just Died - Start Attacking`);
@@ -364,9 +364,9 @@ describe('SaiEditorComponent integration tests', () => {
       page.expectAllQueriesToContain(`${name} - On Aggro - Kill Target`);
       page.expectAllQueriesToContain(`${name} - On Just Died - Start Attacking`);
       page.expectAllQueriesToContain(`${name} - On Evade - Flee For Assist`);
-    }));
+    });
 
-    it('generating selected row comment should correctly work', fakeAsync(() => {
+    it('generating selected row comment should correctly work', async () => {
       const { component, handlerService, page } = setup(true);
       const saiColIndex = 9;
       const name = 'Shin';
@@ -382,15 +382,14 @@ describe('SaiEditorComponent integration tests', () => {
       component.editorService['_newRows'][2].action_type = SAI_ACTIONS.FLEE_FOR_ASSIST;
 
       page.clickElement(page.generateCommentSingleBtn);
-      tick(1000);
-      page.detectChanges();
+      await tickAsync();
 
       expect(page.getDatatableCell(0, saiColIndex).innerText).toEqual(``);
       expect(page.getDatatableCell(1, saiColIndex).innerText).toEqual(``);
       expect(page.getDatatableCell(2, saiColIndex).innerText).toEqual(`${name} - On Evade - Flee For Assist`);
 
       page.expectAllQueriesToContain(`${name} - On Evade - Flee For Assist`);
-    }));
+    });
 
     it('the single-row generate comment should be disabled until a row is selected', () => {
       const { handlerService, page } = setup(true);
@@ -526,7 +525,7 @@ describe('SaiEditorComponent integration tests', () => {
       );
     });
 
-    xit('changing a value via FlagsSelector should correctly work', waitForAsync(async () => {
+    xit('changing a value via FlagsSelector should correctly work', async () => {
       const { page } = setup(false);
       const field = 'event_flags';
       page.clickRowOfDatatable(0);
@@ -564,7 +563,7 @@ describe('SaiEditorComponent integration tests', () => {
           "(1234, 0, 1, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ''),\n" +
           "(1234, 0, 2, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '');\n",
       );
-    }));
+    });
 
     describe('errors on wrong linked event', () => {
       it('case: no errors', () => {

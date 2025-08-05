@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -13,7 +13,7 @@ describe('SaiEditorComponent', () => {
   let fixture: ComponentFixture<SaiEditorComponent>;
   let handler: SaiHandlerService;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), RouterTestingModule, TranslateTestingModule],
       providers: [
@@ -22,7 +22,7 @@ describe('SaiEditorComponent', () => {
         { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
       ],
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     const selected = { source_type: 1, entryorguid: 100 };

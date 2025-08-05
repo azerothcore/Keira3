@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
@@ -63,7 +63,7 @@ describe('Conditions integration tests', () => {
   originalEntity.SourceGroup = sourceGroup;
   originalEntity.SourceEntry = sourceEntry;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), ConditionsComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
@@ -73,7 +73,7 @@ describe('Conditions integration tests', () => {
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     spyOn(TestBed.inject(Router), 'navigate');

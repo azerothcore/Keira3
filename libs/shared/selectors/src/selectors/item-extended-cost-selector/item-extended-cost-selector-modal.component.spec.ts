@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { BsModalRef } from 'ngx-bootstrap/modal';
@@ -14,7 +14,7 @@ describe('ItemExtendedCostSelectorModalComponent', () => {
   let fixture: ComponentFixture<ItemExtendedCostSelectorModalComponent>;
   let searchService: ItemExtendedCostSearchService;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ItemExtendedCostSelectorModalComponent, TranslateTestingModule],
       providers: [
@@ -25,7 +25,7 @@ describe('ItemExtendedCostSelectorModalComponent', () => {
         { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
       ],
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     searchService = TestBed.inject(ItemExtendedCostSearchService);

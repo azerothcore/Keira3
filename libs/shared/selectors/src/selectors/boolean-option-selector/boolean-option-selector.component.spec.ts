@@ -1,5 +1,5 @@
 import { Component, viewChild, provideZonelessChangeDetection } from '@angular/core';
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FormControl } from '@angular/forms';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
@@ -17,12 +17,12 @@ class TestHostComponent {
 describe('BooleanOptionSelectorComponent', () => {
   class BooleanOptionSelectorComponentPage extends PageObject<TestHostComponent> {}
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [BooleanOptionSelectorComponent, TestHostComponent, TranslateTestingModule],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
-  }));
+  });
 
   const setup = () => {
     const fixture = TestBed.createComponent(TestHostComponent);

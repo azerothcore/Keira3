@@ -1,5 +1,5 @@
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -44,7 +44,7 @@ describe('CreatureTemplate integration tests', () => {
   const originalEntity = new CreatureTemplate();
   originalEntity.entry = id;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureTemplateComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
@@ -58,7 +58,7 @@ describe('CreatureTemplate integration tests', () => {
         provideHttpClientTesting(),
       ],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(CreatureHandlerService);
@@ -187,7 +187,7 @@ describe('CreatureTemplate integration tests', () => {
       page.expectFullQueryToContain('AC Developer');
     });
 
-    xit('changing a value via FlagsSelector should correctly work', waitForAsync(async () => {
+    xit('changing a value via FlagsSelector should correctly work', async () => {
       const field = 'unit_flags';
       page.clickElement(page.getSelectorBtn(field));
       page.expectModalDisplayed();
@@ -207,6 +207,6 @@ describe('CreatureTemplate integration tests', () => {
 
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
       page.expectFullQueryToContain('4100');
-    }));
+    });
   });
 });

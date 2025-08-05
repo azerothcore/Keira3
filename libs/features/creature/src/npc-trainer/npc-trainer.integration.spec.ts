@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -33,7 +33,7 @@ describe('NpcTrainer integration tests', () => {
   originalRow1.SpellID = 1;
   originalRow2.SpellID = 2;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), NpcTrainerComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
@@ -44,7 +44,7 @@ describe('NpcTrainer integration tests', () => {
         { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
       ],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(CreatureHandlerService);
@@ -276,7 +276,7 @@ describe('NpcTrainer integration tests', () => {
       page.expectUniqueError();
     });
 
-    xit('changing a value via SkillSelector should correctly work', waitForAsync(async () => {
+    xit('changing a value via SkillSelector should correctly work', async () => {
       const field = 'ReqSkillLine';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
       spyOn(sqliteQueryService, 'query').and.returnValue(of([{ id: 123, name: 'Mock Skill' }]));
@@ -308,6 +308,6 @@ describe('NpcTrainer integration tests', () => {
           '(1234, 1, 0, 0, 0, 0),\n' +
           '(1234, 2, 0, 0, 0, 0);',
       );
-    }));
+    });
   });
 });

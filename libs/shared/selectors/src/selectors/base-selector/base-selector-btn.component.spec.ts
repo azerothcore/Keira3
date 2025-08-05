@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, provideZonelessChangeDetection } from '@angular/core';
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -32,11 +32,11 @@ class TestModule {}
 describe('BaseSelectorBtnComponent', () => {
   const value = 'mock-value';
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ModalModule.forRoot(), TestModule, ItemSelectorBtnComponent],
     }).compileComponents();
-  }));
+  });
 
   const setup = () => {
     const fixture = TestBed.createComponent(ItemSelectorBtnComponent);

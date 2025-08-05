@@ -1,4 +1,4 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { BsModalRef } from 'ngx-bootstrap/modal';
@@ -11,7 +11,7 @@ import { ItemSearchService } from '../../search/item-search.service';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 
 describe('SearchSelectorModalComponent', () => {
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ItemSelectorModalComponent, TranslateTestingModule],
       providers: [
@@ -21,7 +21,7 @@ describe('SearchSelectorModalComponent', () => {
         { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
       ],
     }).compileComponents();
-  }));
+  });
 
   const setup = () => {
     const searchService = TestBed.inject(ItemSearchService);

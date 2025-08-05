@@ -1,4 +1,4 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
@@ -29,7 +29,7 @@ class SelectCreatureComponentPage extends SelectPageObject<SelectCreatureCompone
 describe('SelectCreature integration tests', () => {
   const value = 1200;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectCreatureComponent, TranslateTestingModule],
       providers: [
@@ -40,7 +40,7 @@ describe('SelectCreature integration tests', () => {
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
     }).compileComponents();
-  }));
+  });
 
   const setup = () => {
     const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
@@ -58,16 +58,16 @@ describe('SelectCreature integration tests', () => {
     return { navigateSpy, queryService, querySpy, selectService, fixture, page, component };
   };
 
-  it('should correctly initialise', waitForAsync(async () => {
+  it('should correctly initialise', async () => {
     const { querySpy, fixture, page, component } = setup();
     await fixture.whenStable();
     expect(page.createInput.value).toEqual(`${component.customStartingId}`);
     page.expectNewEntityFree();
     expect(querySpy).toHaveBeenCalledWith('SELECT MAX(entry) AS max FROM creature_template;');
     expect(page.queryWrapper.innerText).toContain('SELECT * FROM `creature_template` LIMIT 50');
-  }));
+  });
 
-  it('should correctly behave when inserting and selecting free entry', waitForAsync(async () => {
+  it('should correctly behave when inserting and selecting free entry', async () => {
     const { navigateSpy, querySpy, fixture, page } = setup();
     await fixture.whenStable();
     querySpy.calls.reset();
@@ -84,9 +84,9 @@ describe('SelectCreature integration tests', () => {
     expect(navigateSpy).toHaveBeenCalledTimes(1);
     expect(navigateSpy).toHaveBeenCalledWith(['creature/creature-template']);
     page.expectTopBarCreatingNew(value);
-  }));
+  });
 
-  it('should correctly behave when inserting an existing entity', waitForAsync(async () => {
+  it('should correctly behave when inserting an existing entity', async () => {
     const { querySpy, fixture, page } = setup();
     await fixture.whenStable();
     querySpy.calls.reset();
@@ -97,7 +97,7 @@ describe('SelectCreature integration tests', () => {
     expect(querySpy).toHaveBeenCalledTimes(1);
     expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`creature_template\` WHERE (entry = ${value})`);
     page.expectEntityAlreadyInUse();
-  }));
+  });
 
   for (const { id, entry, name, subname, scriptName, limit, expectedQuery } of [
     {

@@ -1,4 +1,4 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -30,7 +30,7 @@ describe('NpcVendorService', () => {
     }),
   );
 
-  it('should call extendedCostCache', waitForAsync(async () => {
+  it('should call extendedCostCache', async () => {
     const service: NpcVendorService = TestBed.inject(NpcVendorService);
     const extendedCostCacheSpy = spyOn<any>(service, 'extendedCostCache').and.returnValue(Promise.resolve('mockValue'));
     expect(extendedCostCacheSpy).not.toHaveBeenCalled();
@@ -38,9 +38,9 @@ describe('NpcVendorService', () => {
     await service.getItemExtendedCost(1);
 
     expect(extendedCostCacheSpy).toHaveBeenCalledTimes(1);
-  }));
+  });
 
-  it('should cache properly the extendedCost', waitForAsync(async () => {
+  it('should cache properly the extendedCost', async () => {
     const service: NpcVendorService = TestBed.inject(NpcVendorService);
     const getItemExtendedCostReadableSpy = spyOn<any>(service, 'getItemExtendedCostReadable').and.returnValue(Promise.resolve('mock'));
 
@@ -56,9 +56,9 @@ describe('NpcVendorService', () => {
 
     await service['extendedCostCache'](1);
     expect(getItemExtendedCostReadableSpy).not.toHaveBeenCalled();
-  }));
+  });
 
-  it('should parse the ExtendedCost', waitForAsync(async () => {
+  it('should parse the ExtendedCost', async () => {
     const mockItemExtendedCost = {
       id: 1,
       reqHonorPoints: 2,
@@ -97,9 +97,9 @@ describe('NpcVendorService', () => {
     expect(mockResult.replace(/ /g, '')).toBe(resultText.replace(/ /g, ''));
     expect(getItemExtendedCostSpy).toHaveBeenCalledTimes(1);
     expect(getIconByItemIdSpy).toHaveBeenCalledTimes(5);
-  }));
+  });
 
-  it('should parse the ExtendedCost with partial values', waitForAsync(async () => {
+  it('should parse the ExtendedCost with partial values', async () => {
     const mockItemExtendedCost = {
       id: 1,
       reqHonorPoints: 0,
@@ -131,9 +131,9 @@ describe('NpcVendorService', () => {
     expect(mockResult.replace(/ /g, '')).toBe(resultText.replace(/ /g, ''));
     expect(getItemExtendedCostSpy).toHaveBeenCalledTimes(1);
     expect(getIconByItemIdSpy).toHaveBeenCalledTimes(1);
-  }));
+  });
 
-  it('should parse the ExtendedCost with empty values', waitForAsync(async () => {
+  it('should parse the ExtendedCost with empty values', async () => {
     const mockResult = `<div class="item-extended-cost"></div>`;
     const service: NpcVendorService = TestBed.inject(NpcVendorService);
     const sqliteQueryService = TestBed.inject(SqliteQueryService);
@@ -146,5 +146,5 @@ describe('NpcVendorService', () => {
     expect(mockResult).toBe(resultText);
     expect(getItemExtendedCostSpy).toHaveBeenCalledTimes(1);
     expect(getIconByItemIdSpy).not.toHaveBeenCalled();
-  }));
+  });
 });

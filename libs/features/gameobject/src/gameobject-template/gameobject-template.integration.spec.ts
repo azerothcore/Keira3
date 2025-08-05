@@ -1,5 +1,5 @@
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -43,7 +43,7 @@ describe('GameobjectTemplate integration tests', () => {
   const originalEntity = new GameobjectTemplate();
   originalEntity.entry = id;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), GameobjectTemplateComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
@@ -57,7 +57,7 @@ describe('GameobjectTemplate integration tests', () => {
         provideHttpClientTesting(),
       ],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(GameobjectHandlerService);
@@ -160,7 +160,7 @@ describe('GameobjectTemplate integration tests', () => {
       page.expectFullQueryToContain('35');
     });
 
-    xit('changing a value via SingleValueSelector should correctly work', waitForAsync(async () => {
+    xit('changing a value via SingleValueSelector should correctly work', async () => {
       const field = 'type';
       page.clickElement(page.getSelectorBtn(field));
       await page.whenReady();
@@ -186,6 +186,6 @@ describe('GameobjectTemplate integration tests', () => {
           ", 7, 0, '', '', '', '', 1, 0, 0, 0, 0, 0, 0, 0, " +
           "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', 0);",
       );
-    }));
+    });
   });
 });

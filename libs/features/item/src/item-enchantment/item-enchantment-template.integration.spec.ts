@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -31,7 +31,7 @@ describe('ItemEnchantmentTemplate integration tests', () => {
   originalRow1.ench = 1;
   originalRow2.ench = 2;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         ToastrModule.forRoot(),
@@ -43,7 +43,7 @@ describe('ItemEnchantmentTemplate integration tests', () => {
       ],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations(), ItemHandlerService],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(ItemHandlerService);

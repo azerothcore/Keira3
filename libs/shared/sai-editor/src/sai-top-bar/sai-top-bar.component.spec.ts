@@ -1,5 +1,5 @@
 import { Component, viewChild, inject, provideZonelessChangeDetection } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
@@ -34,12 +34,12 @@ describe('SaiTopBarComponent', () => {
   const entryorguid = 1234;
   const name = 'Francesco';
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule, TranslateTestingModule, TestHostComponent],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     handler = TestBed.inject(SaiHandlerService);

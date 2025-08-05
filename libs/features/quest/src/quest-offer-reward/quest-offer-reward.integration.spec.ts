@@ -1,4 +1,4 @@
-import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -12,6 +12,7 @@ import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { QuestOfferRewardComponent } from './quest-offer-reward.component';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
+import { tickAsync } from 'ngx-page-object-model';
 
 class QuestOfferRewardPage extends EditorPageObject<QuestOfferRewardComponent> {
   get completionText(): HTMLDivElement {
@@ -39,7 +40,7 @@ describe('QuestOfferReward integration tests', () => {
   originalEntity.EmoteDelay4 = 9;
   originalEntity.RewardText = '10';
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, QuestOfferRewardComponent, TranslateTestingModule],
       providers: [
@@ -48,7 +49,7 @@ describe('QuestOfferReward integration tests', () => {
         { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
       ],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     const handlerService = TestBed.inject(QuestHandlerService);
@@ -114,17 +115,17 @@ describe('QuestOfferReward integration tests', () => {
       page.removeNativeElement();
     });
 
-    it('changing a property should be reflected in the quest preview', fakeAsync(() => {
+    it('changing a property should be reflected in the quest preview', async () => {
       const { page } = setup(true);
       const value = 'Fix all AzerothCore bugs';
       page.detectChanges();
 
       page.setInputValueById('RewardText', value);
-      tick(1000);
+      await tickAsync();
 
       expect(page.completionText.innerText).toContain(value);
       page.removeNativeElement();
-    }));
+    });
   });
 
   describe('Editing existing', () => {
@@ -179,7 +180,7 @@ describe('QuestOfferReward integration tests', () => {
       page.removeNativeElement();
     });
 
-    xit('changing a value via SingleValueSelector should correctly work', waitForAsync(async () => {
+    xit('changing a value via SingleValueSelector should correctly work', async () => {
       const { page } = setup(false);
       const field = 'Emote1';
       page.clickElement(page.getSelectorBtn(field));
@@ -202,6 +203,6 @@ describe('QuestOfferReward integration tests', () => {
           "(1234, 4, 3, 4, 5, 6, 7, 8, 9, '10', 0);",
       );
       page.removeNativeElement();
-    }));
+    });
   });
 });
