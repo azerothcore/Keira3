@@ -117,11 +117,12 @@ describe('AppComponent', () => {
       httpTestingController.verify();
     });
 
-    it('should set showNewerVersionAlert to false when the fa-xmark button is clicked', () => {
+    it('should set showNewerVersionAlert to false when the fa-xmark button is clicked', async () => {
       const { fixture, httpTestingController, component } = setup();
       fixture.detectChanges();
       const req = httpTestingController.expectOne(LATEST_RELEASE_API_URL);
       req.flush({ tag_name: 'some newer version' });
+      await fixture.whenStable();
       fixture.detectChanges();
 
       // Check if the alert is shown with the close button
@@ -133,7 +134,7 @@ describe('AppComponent', () => {
       closeBtn!.click();
       fixture.detectChanges();
 
-      // the alerth should be hidden now
+      // the alert should be hidden now
       expect(component.showNewerVersionAlert).toBeFalse();
     });
   });

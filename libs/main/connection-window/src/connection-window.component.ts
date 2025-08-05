@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { ConnectionOptions, QueryError } from 'mysql2';
@@ -24,6 +24,7 @@ import { ModelForm, SubscriptionHandler } from '@keira/shared/utils';
 export class ConnectionWindowComponent extends SubscriptionHandler implements OnInit {
   private readonly mysqlService = inject(MysqlService);
   private readonly loginConfigService = inject(LoginConfigService);
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
   private readonly IMAGES_COUNT = 11;
   readonly RANDOM_IMAGE = Math.floor(Math.random() * this.IMAGES_COUNT) + 1;
@@ -84,6 +85,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
           this.loginConfigService.saveRememberPreference(this.rememberMe);
           this.loginConfigService.saveNewConfig(newConfig);
           this.error = undefined;
+          this.changeDetectorRef.markForCheck();
         },
         error: (error: QueryError) => {
           this.error = error;
