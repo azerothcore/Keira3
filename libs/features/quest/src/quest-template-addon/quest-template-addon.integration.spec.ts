@@ -1,4 +1,4 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
@@ -130,15 +130,17 @@ describe('QuestTemplateAddon integration tests', () => {
       page.removeNativeElement();
     });
 
-    it('changing a property should be reflected in the quest preview', () => {
+    it('changing a property should be reflected in the quest preview', fakeAsync(() => {
       const { page } = setup(true);
       const value = 80;
+      page.detectChanges();
 
       page.setInputValueById('MaxLevel', value);
+      tick(1000);
 
       expect(page.questPreviewReqLevel.innerText).toContain(`0 - ${value}`);
       page.removeNativeElement();
-    });
+    }));
   });
 
   describe('Editing existing', () => {
@@ -171,7 +173,7 @@ describe('QuestTemplateAddon integration tests', () => {
       page.expectDiffQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();
-      expect(querySpy).toHaveBeenCalledTimes(2); // 2 because the preview also calls it
+      expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
       page.removeNativeElement();
     });

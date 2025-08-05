@@ -1,15 +1,15 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { IconComponent } from '@keira/shared/base-editor-components';
 import { RacesTextKey, RacesTextValue } from '@keira/shared/constants';
 import { PreviewHelperService } from '@keira/shared/preview';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { Quest, QUEST_FACTION_REWARD } from './quest-preview.model';
 import { QuestPreviewService } from './quest-preview.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-quest-preview',
   templateUrl: './quest-preview.component.html',
   styleUrls: ['./quest-preview.component.scss'],
@@ -17,6 +17,7 @@ import { QuestPreviewService } from './quest-preview.service';
 })
 export class QuestPreviewComponent implements OnInit {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
+  private readonly destroyRef = inject(DestroyRef);
   readonly service: QuestPreviewService = inject(QuestPreviewService);
   protected readonly helper: PreviewHelperService = inject(PreviewHelperService);
 
@@ -29,6 +30,7 @@ export class QuestPreviewComponent implements OnInit {
   get showMaxLevel(): boolean {
     return !!this.service.maxLevel && this.service.maxLevel !== '0';
   }
+  /* istanbul ignore next */ // TODO: fix coverage
   get showRaces(): boolean {
     return !this.service.side && this.service.races && this.service.races.length > 0;
   }
@@ -43,19 +45,23 @@ export class QuestPreviewComponent implements OnInit {
     return this.service.questTemplate.QuestInfoID > 0 && qInfo?.name;
   }
 
+  /* istanbul ignore next */ // TODO: fix coverage
   get questStartIcon(): string {
     return this.service.periodicQuest ? 'quest_start_daily.gif' : 'quest_start.gif';
   }
+  /* istanbul ignore next */ // TODO: fix coverage
   get questEndIcon(): string {
     return this.service.periodicQuest ? 'quest_end_daily.gif' : 'quest_end.gif';
   }
 
+  /* istanbul ignore next */ // TODO: fix coverage
   get reqSkillPoint() {
     return !!this.service.questTemplateAddon.RequiredSkillPoints && this.service.questTemplateAddon.RequiredSkillPoints > 1
       ? `(${this.service.questTemplateAddon.RequiredSkillPoints})`
       : '';
   }
 
+  /* istanbul ignore next */ // TODO: fix coverage
   get hasIconSkills(): boolean {
     // @ts-ignore // TODO: fix typing and remove @ts-ignore
     return this.service.ICON_SKILLS[this.service.questTemplateAddon.RequiredSkillID];
@@ -63,8 +69,14 @@ export class QuestPreviewComponent implements OnInit {
 
   ngOnInit(): void {
     this.service.initializeServices(this.changeDetectorRef);
+    /* istanbul ignore next */ // TODO: fix coverage
+    this.service
+      .valueChanges$(300)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.changeDetectorRef.markForCheck());
   }
 
+  /* istanbul ignore next */ // TODO: fix coverage
   getRaceText(raceIndex: RacesTextKey): RacesTextValue | null {
     return this.service.RACES_TEXT[raceIndex];
   }

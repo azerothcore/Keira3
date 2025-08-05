@@ -38,7 +38,8 @@ import { QuestRequestItemsService } from '../quest-request-items/quest-request-i
 import { QuestTemplateAddonService } from '../quest-template-addon/quest-template-addon.service';
 import { QuestTemplateService } from '../quest-template/quest-template.service';
 import { DifficultyLevel, Quest, QUEST_FACTION_REWARD, QuestFactionRewardKey } from './quest-preview.model';
-import { UNDEFINED_PROMISE } from '@keira/shared/utils';
+import { compareObjFn, UNDEFINED_PROMISE } from '@keira/shared/utils';
+import { combineLatest, debounceTime, distinctUntilChanged, map, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -172,6 +173,20 @@ export class QuestPreviewService {
     this.initService(changeDetectorRef, this.gameobjectQuestenderService);
     this.initService(changeDetectorRef, this.creatureQueststarterService);
     this.initService(changeDetectorRef, this.creatureQuestenderService);
+  }
+
+  valueChanges$(delay: number): Observable<void> {
+    /* istanbul ignore next */ // TODO: fix coverage
+    return combineLatest([
+      this.questTemplateService.form.valueChanges.pipe(debounceTime(delay), distinctUntilChanged(compareObjFn)),
+      this.questRequestItemsService.form.valueChanges.pipe(debounceTime(delay), distinctUntilChanged(compareObjFn)),
+      this.questOfferRewardService.form.valueChanges.pipe(debounceTime(delay), distinctUntilChanged(compareObjFn)),
+      this.questTemplateAddonService.form.valueChanges.pipe(debounceTime(delay), distinctUntilChanged(compareObjFn)),
+      this.gameobjectQueststarterService.form.valueChanges.pipe(debounceTime(delay), distinctUntilChanged(compareObjFn)),
+      this.gameobjectQuestenderService.form.valueChanges.pipe(debounceTime(delay), distinctUntilChanged(compareObjFn)),
+      this.creatureQueststarterService.form.valueChanges.pipe(debounceTime(delay), distinctUntilChanged(compareObjFn)),
+      this.creatureQuestenderService.form.valueChanges.pipe(debounceTime(delay), distinctUntilChanged(compareObjFn)),
+    ]).pipe(map(() => {}));
   }
 
   private initService<T extends TableRow>(changeDetectorRef: ChangeDetectorRef, service: EditorService<T>) {

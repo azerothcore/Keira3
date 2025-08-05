@@ -1,4 +1,4 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
@@ -108,15 +108,16 @@ describe('QuestRequestItems integration tests', () => {
       page.removeNativeElement();
     });
 
-    it('changing a property should be reflected in the quest preview', () => {
+    it('changing a property should be reflected in the quest preview', fakeAsync(() => {
       const { page } = setup(true);
       const value = 'Fix all AzerothCore bugs';
 
       page.setInputValueById('CompletionText', value);
+      tick(1000);
 
       expect(page.progressText.innerText).toContain(value);
       page.removeNativeElement();
-    });
+    }));
   });
 
   describe('Editing existing', () => {
