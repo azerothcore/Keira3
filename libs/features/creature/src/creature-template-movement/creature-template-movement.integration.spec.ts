@@ -79,11 +79,11 @@ describe('CreatureTemplateMovement integration tests', () => {
 
     it('should correctly update the unsaved status', () => {
       const field = 'Ground';
-      expect(handlerService.isCreatureTemplateMovementUnsaved).toBe(false);
+      expect(handlerService.isCreatureTemplateMovementUnsaved()).toBe(false);
       page.setSelectValueById(field, 3);
-      expect(handlerService.isCreatureTemplateMovementUnsaved).toBe(true);
+      expect(handlerService.isCreatureTemplateMovementUnsaved()).toBe(true);
       page.setSelectValueById(field, 0);
-      expect(handlerService.isCreatureTemplateMovementUnsaved).toBe(false);
+      expect(handlerService.isCreatureTemplateMovementUnsaved()).toBe(false);
     });
 
     it('changing a property and executing the query should correctly work', () => {

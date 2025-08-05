@@ -73,11 +73,11 @@ describe('CreatureEquipTemplate integration tests', () => {
 
     it('should correctly update the unsaved status', () => {
       const field = 'ItemID1';
-      expect(handlerService.isCreatureEquipTemplateUnsaved).toBe(false);
+      expect(handlerService.isCreatureEquipTemplateUnsaved()).toBe(false);
       page.setInputValueById(field, 3);
-      expect(handlerService.isCreatureEquipTemplateUnsaved).toBe(true);
+      expect(handlerService.isCreatureEquipTemplateUnsaved()).toBe(true);
       page.setInputValueById(field, 0);
-      expect(handlerService.isCreatureEquipTemplateUnsaved).toBe(false);
+      expect(handlerService.isCreatureEquipTemplateUnsaved()).toBe(false);
     });
 
     it('changing a property and executing the query should correctly work', () => {

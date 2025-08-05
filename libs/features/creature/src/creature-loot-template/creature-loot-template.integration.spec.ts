@@ -90,11 +90,11 @@ describe('CreatureLootTemplate integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
-      expect(handlerService.isCreatureLootTemplateUnsaved).toBe(false);
+      expect(handlerService.isCreatureLootTemplateUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isCreatureLootTemplateUnsaved).toBe(true);
+      expect(handlerService.isCreatureLootTemplateUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isCreatureLootTemplateUnsaved).toBe(false);
+      expect(handlerService.isCreatureLootTemplateUnsaved()).toBe(false);
     });
 
     xit('should reflect the item names', waitForAsync(async () => {

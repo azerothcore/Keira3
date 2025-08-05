@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
-import { GAME_TELE_TABLE, GameTele } from '@keira/shared/acore-world-model';
+import { Injectable, signal, Signal } from '@angular/core';
 import { HandlerService } from '@keira/shared/base-abstract-classes';
+import { GAME_TELE_TABLE, GameTele } from '@keira/shared/acore-world-model';
 
 @Injectable({
   providedIn: 'root',
@@ -8,15 +8,11 @@ import { HandlerService } from '@keira/shared/base-abstract-classes';
 export class GameTeleHandlerService extends HandlerService<GameTele> {
   protected readonly mainEditorRoutePath = 'game-tele/tele';
 
-  get isGameTeleUnsaved(): boolean {
-    return this.statusMap[GAME_TELE_TABLE];
+  get isGameTeleUnsaved(): Signal<boolean> {
+    return this.statusMap[GAME_TELE_TABLE].asReadonly();
   }
 
   protected _statusMap = {
-    [GAME_TELE_TABLE]: false,
+    [GAME_TELE_TABLE]: signal(false),
   };
-
-  override select(isNew: boolean, id: string | number | Partial<GameTele>, name?: string) {
-    super.select(isNew, id, name);
-  }
 }

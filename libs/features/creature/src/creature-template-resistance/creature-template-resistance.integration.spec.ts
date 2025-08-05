@@ -72,11 +72,11 @@ describe('CreatureTemplateResistance integration tests', () => {
 
     it('should correctly update the unsaved status', () => {
       const { page, handlerService } = setup(true);
-      expect(handlerService.isCreatureTemplateResistanceUnsaved).toBe(false);
+      expect(handlerService.isCreatureTemplateResistanceUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isCreatureTemplateResistanceUnsaved).toBe(true);
+      expect(handlerService.isCreatureTemplateResistanceUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isCreatureTemplateResistanceUnsaved).toBe(false);
+      expect(handlerService.isCreatureTemplateResistanceUnsaved()).toBe(false);
       page.removeNativeElement();
     });
 

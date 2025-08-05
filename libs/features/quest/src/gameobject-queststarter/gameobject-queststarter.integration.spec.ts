@@ -84,11 +84,11 @@ describe('GameobjectQueststarter integration tests', () => {
 
     it('should correctly update the unsaved status', () => {
       const { page, handlerService } = setup(true);
-      expect(handlerService.isGameobjectQueststarterUnsaved).toBe(false);
+      expect(handlerService.isGameobjectQueststarterUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isGameobjectQueststarterUnsaved).toBe(true);
+      expect(handlerService.isGameobjectQueststarterUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isGameobjectQueststarterUnsaved).toBe(false);
+      expect(handlerService.isGameobjectQueststarterUnsaved()).toBe(false);
       page.removeNativeElement();
     });
 

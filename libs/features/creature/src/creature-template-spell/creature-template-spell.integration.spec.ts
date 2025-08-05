@@ -81,11 +81,11 @@ describe('CreatureTemplateSpell integration tests', () => {
 
     it('should correctly update the unsaved status', () => {
       const { page, handlerService } = setup(true);
-      expect(handlerService.isCreatureTemplateSpellUnsaved).toBe(false);
+      expect(handlerService.isCreatureTemplateSpellUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isCreatureTemplateSpellUnsaved).toBe(true);
+      expect(handlerService.isCreatureTemplateSpellUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isCreatureTemplateSpellUnsaved).toBe(false);
+      expect(handlerService.isCreatureTemplateSpellUnsaved()).toBe(false);
       page.removeNativeElement();
     });
 

@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal, Signal } from '@angular/core';
 import { map, Observable, of } from 'rxjs';
 import { SAI_ID_FIELDS, SAI_TABLE, SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { ComplexKeyHandlerService } from '@keira/shared/base-abstract-classes';
@@ -12,12 +12,12 @@ export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
   protected readonly mainEditorRoutePath = 'smart-ai/editors';
   protected readonly idFields = SAI_ID_FIELDS;
 
-  get isSaiUnsaved(): boolean {
-    return this.statusMap[SAI_TABLE];
+  get isSaiUnsaved(): Signal<boolean> {
+    return this.statusMap[SAI_TABLE].asReadonly();
   }
 
   protected _statusMap = {
-    [SAI_TABLE]: false,
+    [SAI_TABLE]: signal(false),
   };
 
   protected _templateQuery!: string;

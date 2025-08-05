@@ -85,11 +85,11 @@ describe('CreatureQueststarter integration tests', () => {
 
     it('should correctly update the unsaved status', () => {
       const { page, handlerService } = setup(true);
-      expect(handlerService.isCreatureQueststarterUnsaved).toBe(false);
+      expect(handlerService.isCreatureQueststarterUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isCreatureQueststarterUnsaved).toBe(true);
+      expect(handlerService.isCreatureQueststarterUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isCreatureQueststarterUnsaved).toBe(false);
+      expect(handlerService.isCreatureQueststarterUnsaved()).toBe(false);
       page.removeNativeElement();
     });
 

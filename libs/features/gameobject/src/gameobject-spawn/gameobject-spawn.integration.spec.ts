@@ -98,11 +98,11 @@ describe('GameobjectSpawn integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
-      expect(handlerService.isGameobjectSpawnUnsaved).toBe(false);
+      expect(handlerService.isGameobjectSpawnUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isGameobjectSpawnUnsaved).toBe(true);
+      expect(handlerService.isGameobjectSpawnUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isGameobjectSpawnUnsaved).toBe(false);
+      expect(handlerService.isGameobjectSpawnUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {

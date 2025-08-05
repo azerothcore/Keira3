@@ -86,11 +86,11 @@ describe('PickpocketingLootTemplate integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
-      expect(handlerService.isPickpocketingLootTemplateUnsaved).toBe(false);
+      expect(handlerService.isPickpocketingLootTemplateUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isPickpocketingLootTemplateUnsaved).toBe(true);
+      expect(handlerService.isPickpocketingLootTemplateUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isPickpocketingLootTemplateUnsaved).toBe(false);
+      expect(handlerService.isPickpocketingLootTemplateUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {

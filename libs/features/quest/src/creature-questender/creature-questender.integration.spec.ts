@@ -84,11 +84,11 @@ describe('CreatureQuestender integration tests', () => {
 
     it('should correctly update the unsaved status', () => {
       const { page, handlerService } = setup(true);
-      expect(handlerService.isCreatureQuestenderUnsaved).toBe(false);
+      expect(handlerService.isCreatureQuestenderUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isCreatureQuestenderUnsaved).toBe(true);
+      expect(handlerService.isCreatureQuestenderUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isCreatureQuestenderUnsaved).toBe(false);
+      expect(handlerService.isCreatureQuestenderUnsaved()).toBe(false);
       page.removeNativeElement();
     });
 

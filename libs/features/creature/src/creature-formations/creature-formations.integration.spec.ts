@@ -81,11 +81,11 @@ describe('CreatureFormations integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
-      expect(handlerService.isCreatureFormationUnsaved).toBe(false);
+      expect(handlerService.isCreatureFormationUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isCreatureFormationUnsaved).toBe(true);
+      expect(handlerService.isCreatureFormationUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isCreatureFormationUnsaved).toBe(false);
+      expect(handlerService.isCreatureFormationUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {

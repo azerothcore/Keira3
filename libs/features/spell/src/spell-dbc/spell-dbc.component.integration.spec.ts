@@ -70,11 +70,11 @@ describe('SpellDbc integration tests', () => {
     it('should correctly update the unsaved status', () => {
       const { page, handlerService } = setup(true);
       const field = 'SchoolMask';
-      expect(handlerService.isSpellDbcUnsaved).toBe(false);
+      expect(handlerService.isSpellDbcUnsaved()).toBe(false);
       page.setInputValueById(field, 81);
-      expect(handlerService.isSpellDbcUnsaved).toBe(true);
+      expect(handlerService.isSpellDbcUnsaved()).toBe(true);
       page.setInputValueById(field, 0);
-      expect(handlerService.isSpellDbcUnsaved).toBe(false);
+      expect(handlerService.isSpellDbcUnsaved()).toBe(false);
       page.removeNativeElement();
     });
 

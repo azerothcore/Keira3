@@ -75,11 +75,11 @@ describe('GossipMenu integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
-      expect(handlerService.isGossipMenuTableUnsaved).toBe(false);
+      expect(handlerService.isGossipMenuTableUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isGossipMenuTableUnsaved).toBe(true);
+      expect(handlerService.isGossipMenuTableUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isGossipMenuTableUnsaved).toBe(false);
+      expect(handlerService.isGossipMenuTableUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {

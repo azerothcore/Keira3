@@ -95,11 +95,11 @@ describe('GameobjectLootTemplate integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
-      expect(handlerService.isGameobjectLooTemplateUnsaved).toBe(false);
+      expect(handlerService.isGameobjectLooTemplateUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isGameobjectLooTemplateUnsaved).toBe(true);
+      expect(handlerService.isGameobjectLooTemplateUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isGameobjectLooTemplateUnsaved).toBe(false);
+      expect(handlerService.isGameobjectLooTemplateUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {

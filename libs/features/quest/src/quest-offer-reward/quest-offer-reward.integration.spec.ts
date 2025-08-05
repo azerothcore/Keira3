@@ -89,11 +89,11 @@ describe('QuestOfferReward integration tests', () => {
     it('should correctly update the unsaved status', () => {
       const { page, handlerService } = setup(true);
       const field = 'Emote1';
-      expect(handlerService.isQuestOfferRewardUnsaved).toBe(false);
+      expect(handlerService.isQuestOfferRewardUnsaved()).toBe(false);
       page.setInputValueById(field, 3);
-      expect(handlerService.isQuestOfferRewardUnsaved).toBe(true);
+      expect(handlerService.isQuestOfferRewardUnsaved()).toBe(true);
       page.setInputValueById(field, 0);
-      expect(handlerService.isQuestOfferRewardUnsaved).toBe(false);
+      expect(handlerService.isQuestOfferRewardUnsaved()).toBe(false);
       page.removeNativeElement();
     });
 

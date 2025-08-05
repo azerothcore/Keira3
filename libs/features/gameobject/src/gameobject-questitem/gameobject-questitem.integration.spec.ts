@@ -81,11 +81,11 @@ describe('GameobjectQuestitem integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
-      expect(handlerService.isGameobjectQuestitemUnsaved).toBe(false);
+      expect(handlerService.isGameobjectQuestitemUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isGameobjectQuestitemUnsaved).toBe(true);
+      expect(handlerService.isGameobjectQuestitemUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isGameobjectQuestitemUnsaved).toBe(false);
+      expect(handlerService.isGameobjectQuestitemUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {

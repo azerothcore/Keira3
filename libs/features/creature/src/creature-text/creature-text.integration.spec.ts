@@ -82,11 +82,11 @@ describe('CreatureText integration tests', () => {
 
     it('should correctly update the unsaved status', () => {
       const { handlerService, page } = setup(true);
-      expect(handlerService.isCreatureTextUnsaved).toBe(false);
+      expect(handlerService.isCreatureTextUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isCreatureTextUnsaved).toBe(true);
+      expect(handlerService.isCreatureTextUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isCreatureTextUnsaved).toBe(false);
+      expect(handlerService.isCreatureTextUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {

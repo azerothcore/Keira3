@@ -50,9 +50,7 @@ interface MenuStats {
 }
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
-  // TODO: make the unsaved icons feature work with OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],

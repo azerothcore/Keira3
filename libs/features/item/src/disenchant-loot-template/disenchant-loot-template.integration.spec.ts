@@ -87,11 +87,11 @@ describe('DisenchantLootTemplate integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
-      expect(handlerService.isDisenchantmentLootTemplateUnsaved).toBe(false);
+      expect(handlerService.isDisenchantmentLootTemplateUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isDisenchantmentLootTemplateUnsaved).toBe(true);
+      expect(handlerService.isDisenchantmentLootTemplateUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isDisenchantmentLootTemplateUnsaved).toBe(false);
+      expect(handlerService.isDisenchantmentLootTemplateUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {

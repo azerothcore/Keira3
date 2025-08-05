@@ -7,7 +7,7 @@ import { Class, StringKeys, TableRow } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { ModelForm, SubscriptionHandler } from '@keira/shared/utils';
 import { HandlerService } from '../handlers/handler.service';
-import { ChangeDetectorRef, inject } from '@angular/core';
+import { ChangeDetectorRef, inject, signal } from '@angular/core';
 
 export abstract class EditorService<T extends TableRow> extends SubscriptionHandler {
   readonly queryService = inject(MysqlQueryService);
@@ -68,7 +68,10 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
 
   /* istanbul ignore next */ // TODO: fix coverage
   protected updateEditorStatus(): void {
-    this.handlerService.statusMap[this._entityTable] = !!this._diffQuery;
+    if (!this.handlerService.statusMap[this._entityTable]) {
+      this.handlerService.statusMap[this._entityTable] = signal(false);
+    }
+    this.handlerService.statusMap[this._entityTable].set(!!this._diffQuery);
   }
 
   private getClassAttributes(c: Class): StringKeys<T>[] {

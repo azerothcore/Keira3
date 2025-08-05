@@ -82,11 +82,11 @@ describe('GameobjectTemplate integration tests', () => {
 
     it('should correctly update the unsaved status', () => {
       const field = 'Data0';
-      expect(handlerService.isGameobjectTemplateUnsaved).toBe(false);
+      expect(handlerService.isGameobjectTemplateUnsaved()).toBe(false);
       page.setInputValueById(field, 3);
-      expect(handlerService.isGameobjectTemplateUnsaved).toBe(true);
+      expect(handlerService.isGameobjectTemplateUnsaved()).toBe(true);
       page.setInputValueById(field, 0);
-      expect(handlerService.isGameobjectTemplateUnsaved).toBe(false);
+      expect(handlerService.isGameobjectTemplateUnsaved()).toBe(false);
     });
 
     it('changing a property and executing the query should correctly work', () => {

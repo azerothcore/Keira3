@@ -97,11 +97,11 @@ describe('CreatureSpawn integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
-      expect(handlerService.isCreatureSpawnUnsaved).toBe(false);
+      expect(handlerService.isCreatureSpawnUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isCreatureSpawnUnsaved).toBe(true);
+      expect(handlerService.isCreatureSpawnUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isCreatureSpawnUnsaved).toBe(false);
+      expect(handlerService.isCreatureSpawnUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {

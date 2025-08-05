@@ -82,11 +82,11 @@ describe('QuestRequestItems integration tests', () => {
     it('should correctly update the unsaved status', () => {
       const { page, handlerService } = setup(true);
       const field = 'EmoteOnComplete';
-      expect(handlerService.isQuestRequestItemsUnsaved).toBe(false);
+      expect(handlerService.isQuestRequestItemsUnsaved()).toBe(false);
       page.setInputValueById(field, 3);
-      expect(handlerService.isQuestRequestItemsUnsaved).toBe(true);
+      expect(handlerService.isQuestRequestItemsUnsaved()).toBe(true);
       page.setInputValueById(field, 0);
-      expect(handlerService.isQuestRequestItemsUnsaved).toBe(false);
+      expect(handlerService.isQuestRequestItemsUnsaved()).toBe(false);
       page.removeNativeElement();
     });
 

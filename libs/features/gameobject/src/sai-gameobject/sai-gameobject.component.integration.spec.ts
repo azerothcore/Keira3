@@ -109,11 +109,11 @@ describe('SaiGameobjectComponent integration tests', () => {
     it('should correctly update the unsaved status', () => {
       const { page } = setup(true);
       const gameobjectHandlerService = TestBed.inject(GameobjectHandlerService);
-      expect(gameobjectHandlerService.isGameobjectSaiUnsaved).toBe(false);
+      expect(gameobjectHandlerService.isGameobjectSaiUnsaved()).toBe(false);
       page.addNewRow();
-      expect(gameobjectHandlerService.isGameobjectSaiUnsaved).toBe(true);
+      expect(gameobjectHandlerService.isGameobjectSaiUnsaved()).toBe(true);
       page.deleteRow();
-      expect(gameobjectHandlerService.isGameobjectSaiUnsaved).toBe(false);
+      expect(gameobjectHandlerService.isGameobjectSaiUnsaved()).toBe(false);
     });
   });
 

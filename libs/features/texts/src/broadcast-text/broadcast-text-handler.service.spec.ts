@@ -16,12 +16,12 @@ describe(BroadcastTextHandlerService.name, () => {
 
   it('isUnsaved should return the value of the statusMap for the broadcast_text table', () => {
     const { service } = setup();
-    expect(service.isUnsaved).toBe(false); // defaults to false
+    expect(service.isUnsaved()).toBe(false); // defaults to false
 
-    service.statusMap[BROADCAST_TEXT_TABLE] = true;
-    expect(service.isUnsaved).toBe(true);
+    service.statusMap[BROADCAST_TEXT_TABLE].set(true);
+    expect(service.isUnsaved()).toBe(true);
 
-    service.statusMap[BROADCAST_TEXT_TABLE] = false;
-    expect(service.isUnsaved).toBe(false);
+    service.statusMap[BROADCAST_TEXT_TABLE].set(false);
+    expect(service.isUnsaved()).toBe(false);
   });
 });

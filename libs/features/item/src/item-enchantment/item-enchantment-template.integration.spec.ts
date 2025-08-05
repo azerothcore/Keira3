@@ -73,11 +73,11 @@ describe('ItemEnchantmentTemplate integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
-      expect(handlerService.isItemEnchantmentUnsaved).toBe(false);
+      expect(handlerService.isItemEnchantmentUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isItemEnchantmentUnsaved).toBe(true);
+      expect(handlerService.isItemEnchantmentUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isItemEnchantmentUnsaved).toBe(false);
+      expect(handlerService.isItemEnchantmentUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {

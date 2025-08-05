@@ -1,5 +1,5 @@
 /* istanbul ignore file */
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { TableRow, StringKeys } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { Observable } from 'rxjs';
@@ -37,8 +37,8 @@ export class MockEntityExtra extends MockEntity {
 export class MockHandlerService extends HandlerService<MockEntity> {
   protected readonly mainEditorRoutePath = 'mock/route';
 
-  protected _statusMap!: {
-    [MOCK_TABLE]: false;
+  protected _statusMap = {
+    [MOCK_TABLE]: signal(false),
   };
 }
 
