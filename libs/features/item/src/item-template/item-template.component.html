@@ -510,11 +510,6 @@
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.SCALING_STAT_VALUE' | translate"></i>
               <input [formControlName]="'ScalingStatValue'" id="ScalingStatValue" type="number" class="form-control form-control-sm" />
             </div>
-            <div class="form-group col-12 col-sm-6 col-lg-4 col-xl-3">
-              <label class="control-label" for="StatsCount">count</label>
-              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.STATS_COUNT' | translate"></i>
-              <input [formControlName]="'StatsCount'" id="StatsCount" type="number" class="form-control form-control-sm" />
-            </div>
           </div>
           <div class="row">
             @for (i of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; track i) {
@@ -538,7 +533,6 @@
                       id="stat_value{{ i }}"
                       type="number"
                       class="form-control form-control-sm"
-                      (change)="calculateCount()"
                     />
                   </div>
                 </div>

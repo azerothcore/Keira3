@@ -513,7 +513,6 @@
       "RESISTANCE_TOOLTIP": "Zugehöriger Widerstandstyp",
       "SCALING_STAT_DISTRIBUTION": "Ähnlich wie statische Werte wachsen diese Werte mit dem Level des Benutzers (hauptsächlich Ausrüstung für Levelanstiege).",
       "SCALING_STAT_VALUE": "Endwert (Level 80) des skalierenden Wertes",
-      "STATS_COUNT": "Wenn ein Gegenstand Einträge in stat_type hat, muss dies aktualisiert werden, um diese Einträge anzuzeigen (Unbekannt, wie dies funktioniert).",
       "STAT_VALUE": "Der Wert, um den Typ des Wertes zu ändern",
       "GEM_PROPERTIES": "Entspricht der ID in GemProperties.dbc",
       "SOCKET_CONTENTS": "Die Anzahl der Edelsteine von SocketColor_{{idx}}",
