@@ -14,7 +14,6 @@
         "index": "apps/keira/src/index.html",
         "browser": "apps/keira/src/main.ts",
         "tsConfig": "apps/keira/src/tsconfig.app.json",
-        "polyfills": ["zone.js"],
         "assets": [
           "apps/keira/src/assets",
           "apps/keira/src/favicon.ico",
