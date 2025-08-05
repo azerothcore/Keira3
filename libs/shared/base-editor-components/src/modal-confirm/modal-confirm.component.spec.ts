@@ -1,4 +1,6 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ModalConfirmComponent } from './modal-confirm.component';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
@@ -16,7 +18,7 @@ describe('ModalConfirmComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ModalConfirmComponent, TranslateTestingModule],
-      providers: [BsModalRef],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), BsModalRef],
     }).compileComponents();
   }));
 

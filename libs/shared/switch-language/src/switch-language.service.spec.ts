@@ -1,4 +1,6 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { TranslateService } from '@ngx-translate/core';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -8,7 +10,7 @@ describe('SwitchLanguageService', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ModalModule.forRoot(), TranslateTestingModule],
-      providers: [SwitchLanguageService],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), SwitchLanguageService],
     }).compileComponents();
   }));
 

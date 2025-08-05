@@ -16,8 +16,8 @@ import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { KEIRA_APP_CONFIG_TOKEN, highlightOptions, toastrConfig, uiSwitchConfig } from '@keira/shared/config';
 import { provideRouter, withHashLocation } from '@angular/router';
 import { KEIRA_ROUTES } from './app/routes';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 if (KEIRA_APP_CONFIG.production) {
   enableProdMode();

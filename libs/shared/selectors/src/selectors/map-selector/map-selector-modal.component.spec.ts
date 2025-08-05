@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { instance, mock } from 'ts-mockito';
 
@@ -16,6 +18,8 @@ describe('MapSelectorModalComponent', () => {
     TestBed.configureTestingModule({
       imports: [MapSelectorModalComponent, TranslateTestingModule],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
         BsModalRef,
         { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },

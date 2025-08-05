@@ -1,11 +1,13 @@
 import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { BroadcastTextHandlerService } from './broadcast-text-handler.service';
 import { BROADCAST_TEXT_TABLE } from '@keira/shared/acore-world-model';
 
 describe(BroadcastTextHandlerService.name, () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      providers: [BroadcastTextHandlerService],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), BroadcastTextHandlerService],
     }),
   );
 

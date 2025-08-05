@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
@@ -39,7 +41,7 @@ describe('ItemEnchantmentTemplate integration tests', () => {
         ModalModule.forRoot(),
         TranslateTestingModule,
       ],
-      providers: [ItemHandlerService],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), ItemHandlerService],
     }).compileComponents();
   }));
 

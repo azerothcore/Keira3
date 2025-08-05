@@ -1,11 +1,12 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { MailLootTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { MailLootHandlerService } from './mail-loot-handler.service';
 import { MailLootTemplateComponent } from './mail-loot-template.component';
@@ -26,15 +27,13 @@ describe('MailLootTemplate integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        MailLootTemplateComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), MailLootTemplateComponent, RouterTestingModule, TranslateTestingModule],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        MailLootHandlerService,
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
-      providers: [MailLootHandlerService, { provide: SqliteService, useValue: instance(mock(SqliteService)) }],
     }).compileComponents();
   }));
 

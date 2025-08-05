@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { BsModalRef } from 'ngx-bootstrap/modal';
@@ -15,6 +17,8 @@ describe('SoundEntriesSelectorModalComponent', () => {
     TestBed.configureTestingModule({
       imports: [SoundEntriesSelectorModalComponent, TranslateTestingModule],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         BsModalRef,
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
         { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },

@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { instance, mock } from 'ts-mockito';
 import { GameTeleSelectorModalComponent } from './game-tele-selector-modal.component';
@@ -14,7 +16,12 @@ describe('GameTeleSelectorModalComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [GameTeleSelectorModalComponent, TranslateTestingModule],
-      providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        BsModalRef,
+        { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
+      ],
     }).compileComponents();
   }));
 

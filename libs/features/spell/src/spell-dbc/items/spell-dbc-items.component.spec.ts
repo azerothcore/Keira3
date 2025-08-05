@@ -1,5 +1,6 @@
-import { Component, viewChild } from '@angular/core';
+import { Component, viewChild, provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FormGroup } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
@@ -61,7 +62,7 @@ describe('SpellDbcItemsComponent', () => {
         TestHostComponent,
         SpellDbcItemsComponent,
       ],
-      providers: [SpellHandlerService],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), SpellHandlerService],
     }).compileComponents();
   });
 

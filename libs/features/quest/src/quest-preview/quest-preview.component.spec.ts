@@ -1,10 +1,11 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { QuestOfferReward, QuestRequestItems, QuestTemplate, QuestTemplateAddon } from '@keira/shared/acore-world-model';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { QuestPreviewComponent } from './quest-preview.component';
 import { QUEST_FACTION_REWARD } from './quest-preview.model';
 import { QuestPreviewService } from './quest-preview.service';
@@ -115,15 +116,12 @@ describe('QuestPreviewComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        RouterTestingModule,
-        QuestPreviewComponent,
-        TranslateTestingModule,
-        QuestPreviewComponent,
+      imports: [ToastrModule.forRoot(), RouterTestingModule, QuestPreviewComponent, TranslateTestingModule, QuestPreviewComponent],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
       ],
-      providers: [{ provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG }],
     }).compileComponents();
   }));
 

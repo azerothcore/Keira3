@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira/shared/db-layer';
@@ -6,7 +8,6 @@ import { SelectPageObject, TranslateTestingModule } from '@keira/shared/test-uti
 import { QuestTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { QuestHandlerService } from '../quest-handler.service';
 import { SelectQuestComponent } from './select-quest.component';
@@ -28,8 +29,8 @@ describe('SelectQuest integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, TranslateTestingModule],
-      providers: [QuestHandlerService],
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, TranslateTestingModule],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), QuestHandlerService],
     }).compileComponents();
   }));
 

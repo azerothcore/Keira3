@@ -1,5 +1,7 @@
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
@@ -45,6 +47,8 @@ describe('GameobjectTemplate integration tests', () => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), GameobjectTemplateComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         GameobjectHandlerService,
         SaiGameobjectHandlerService,
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },

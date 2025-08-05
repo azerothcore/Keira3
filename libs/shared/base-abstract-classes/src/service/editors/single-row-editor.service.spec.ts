@@ -1,4 +1,6 @@
 import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { ToastrService } from 'ngx-toastr';
@@ -16,6 +18,8 @@ describe('SingleRowEditorService', () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
         { provide: ToastrService, useValue: instance(mock(ToastrService)) },
       ],

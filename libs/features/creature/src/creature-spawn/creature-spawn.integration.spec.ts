@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CreatureSpawn } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
@@ -34,15 +35,14 @@ describe('CreatureSpawn integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        CreatureSpawnComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureSpawnComponent, RouterTestingModule, TranslateTestingModule],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
-      providers: [CreatureHandlerService, SaiCreatureHandlerService, { provide: SqliteService, useValue: instance(mock(SqliteService)) }],
     }).compileComponents();
   }));
 

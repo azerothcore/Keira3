@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { instance, mock } from 'ts-mockito';
 
@@ -14,6 +16,8 @@ describe('QuestFactionSelectorModalComponent', () => {
     TestBed.configureTestingModule({
       imports: [FactionSelectorModalComponent, TranslateTestingModule],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         BsModalRef,
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
         { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },

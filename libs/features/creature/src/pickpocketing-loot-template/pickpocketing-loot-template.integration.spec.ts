@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
@@ -41,7 +43,13 @@ describe('PickpocketingLootTemplate integration tests', () => {
         RouterTestingModule,
         TranslateTestingModule,
       ],
-      providers: [CreatureHandlerService, SaiCreatureHandlerService, { provide: SqliteService, useValue: instance(mock(SqliteService)) }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
+      ],
     }).compileComponents();
   }));
 

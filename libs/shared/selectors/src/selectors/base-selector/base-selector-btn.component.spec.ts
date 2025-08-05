@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
+import { NgModule, provideZonelessChangeDetection } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
@@ -24,7 +25,7 @@ import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-component
     TranslateTestingModule,
     ItemSelectorModalComponent,
   ],
-  providers: [{ provide: MysqlService, useValue: instance(mock(MysqlService)) }],
+  providers: [provideZonelessChangeDetection(), provideNoopAnimations(), { provide: MysqlService, useValue: instance(mock(MysqlService)) }],
 })
 class TestModule {}
 

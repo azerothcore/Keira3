@@ -1,5 +1,6 @@
-import { Component, viewChild } from '@angular/core';
+import { Component, provideZonelessChangeDetection, viewChild } from '@angular/core';
 import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 
@@ -52,6 +53,7 @@ describe('QueryOutputComponent', () => {
         HighlightjsWrapperComponent,
         QueryErrorComponent,
       ],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
   }));
 
@@ -65,14 +67,15 @@ describe('QueryOutputComponent', () => {
       reloadSameEntity(_changeDetectorRef: any) {},
     } as unknown as EditorService<TableRow>;
 
-    fixture.detectChanges();
-    const component = host.child();
+    // fixture.detectChanges();
+    // const component = host.child();
 
-    return { page, fixture, component, host };
+    return { page, fixture, host };
   };
 
   it('toggle diff/full query should correctly work', () => {
     const { page } = setup();
+    page.detectChanges();
     page.expectDiffQueryToBeShown();
 
     page.clickElement(page.fullQueryInput);
@@ -93,6 +96,7 @@ describe('QueryOutputComponent', () => {
 
   it('clicking the copy button should copy the correct query', () => {
     const { page } = setup();
+    page.detectChanges();
     const spy = spyOn(TestBed.inject(ClipboardService), 'copyFromContent');
 
     page.clickElement(page.copyBtn);
@@ -105,7 +109,9 @@ describe('QueryOutputComponent', () => {
   });
 
   it('clicking the execute button should emit the correct query', () => {
-    const { page, component } = setup();
+    const { page, host } = setup();
+    page.detectChanges();
+    const component = host.child();
     const spy = spyOn(component.executeQuery, 'emit');
 
     page.clickElement(page.executeBtn);
@@ -118,8 +124,10 @@ describe('QueryOutputComponent', () => {
   });
 
   it('clicking the execute & copy button should copy and emit the correct query', () => {
-    const { page, component } = setup();
+    const { page, host } = setup();
     const copySpy = spyOn(TestBed.inject(ClipboardService), 'copyFromContent');
+    page.detectChanges();
+    const component = host.child();
     const executeSpy = spyOn(component.executeQuery, 'emit');
 
     page.clickElement(page.executeAndCopyBtn);
@@ -135,9 +143,10 @@ describe('QueryOutputComponent', () => {
 
   describe('getQuery', () => {
     it('get fullQuery based on editorService isNew', () => {
-      const { page, component, host } = setup();
+      const { page, host } = setup();
       host.isNew = true;
       page.detectChanges();
+      const component = host.child();
 
       const query = component.getQuery();
 
@@ -145,7 +154,9 @@ describe('QueryOutputComponent', () => {
     });
 
     it('get fullQuery based on selectedQuery', () => {
-      const { component } = setup();
+      const { page, host } = setup();
+      page.detectChanges();
+      const component = host.child();
       component.selectedQuery.set('full');
 
       const query = component.getQuery();
@@ -154,7 +165,9 @@ describe('QueryOutputComponent', () => {
     });
 
     it('get diffQuery  based on selectedQuery', () => {
-      const { component } = setup();
+      const { page, host } = setup();
+      page.detectChanges();
+      const component = host.child();
       component.selectedQuery.set('diff');
 
       const query = component.getQuery();
@@ -177,11 +190,13 @@ describe('QueryOutputComponent', () => {
     }));
 
     it('should ask for confirmation if diffQuery is empty, and reset if confirmed', () => {
-      const { page, host, component } = setup();
+      const { page, host } = setup();
       host.diffQuery = '-- some query';
       spyOn(host.editorService, 'reloadSameEntity');
       const modalService = TestBed.inject(BsModalService);
       spyOn(modalService, 'show').and.callThrough();
+      page.detectChanges();
+      const component = host.child();
 
       page.clickElement(page.reloadBtn);
       expect(host.editorService.reloadSameEntity).toHaveBeenCalledTimes(0);
@@ -192,11 +207,13 @@ describe('QueryOutputComponent', () => {
     });
 
     it('should ask for confirmation if diffQuery is empty, and not reset if not confirmed', () => {
-      const { page, host, component } = setup();
+      const { page, host } = setup();
       host.diffQuery = '-- some query';
       spyOn(host.editorService, 'reloadSameEntity');
       const modalService = TestBed.inject(BsModalService);
       spyOn(modalService, 'show').and.callThrough();
+      page.detectChanges();
+      const component = host.child();
 
       page.clickElement(page.reloadBtn);
       expect(host.editorService.reloadSameEntity).toHaveBeenCalledTimes(0);

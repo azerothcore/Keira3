@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { GameobjectTemplate } from '@keira/shared/acore-world-model';
@@ -30,15 +31,10 @@ describe('SelectGameobject integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        SelectGameobjectComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
-      ],
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectGameobjectComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         GameobjectHandlerService,
         SaiGameobjectHandlerService,
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },

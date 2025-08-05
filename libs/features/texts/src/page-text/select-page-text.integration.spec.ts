@@ -1,11 +1,12 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { SelectPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { PAGE_TEXT_ID } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { SelectPageTextComponent } from './select-page-text.component';
 import { PageTextHandlerService } from './page-text-handler.service';
@@ -21,8 +22,8 @@ describe(`${SelectPageTextComponent.name} integration tests`, () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, ToastrModule.forRoot(), ModalModule.forRoot(), SelectPageTextComponent, TranslateTestingModule],
-      providers: [PageTextHandlerService],
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectPageTextComponent, TranslateTestingModule],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), PageTextHandlerService],
     }).compileComponents();
   }));
 

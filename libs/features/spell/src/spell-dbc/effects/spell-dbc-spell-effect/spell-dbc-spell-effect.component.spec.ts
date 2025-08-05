@@ -1,5 +1,6 @@
-import { Component, viewChild } from '@angular/core';
+import { Component, viewChild, provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FormGroup } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
@@ -48,7 +49,7 @@ describe('SpellDbcSpellEffectComponent', () => {
         TestHostComponent,
         SpellDbcSpellEffectComponent,
       ],
-      providers: [SpellHandlerService],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), SpellHandlerService],
     }).compileComponents();
   });
 
@@ -59,10 +60,7 @@ describe('SpellDbcSpellEffectComponent', () => {
     const page = new SpellDbcSpellEffectComponentPage(fixture);
     host.form = form;
 
-    fixture.detectChanges();
-    const component = host.child();
-
-    return { fixture, component, page, host, form };
+    return { fixture, page, host, form };
   };
 
   const testIndex = 3;

@@ -1,4 +1,6 @@
 import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { FlagsService } from './flags.service';
 import { Flag } from '@keira/shared/constants';
@@ -6,7 +8,11 @@ import { Flag } from '@keira/shared/constants';
 describe('FlagsService', () => {
   const toInt = (binary: string) => parseInt(binary, 2);
 
-  beforeEach(() => TestBed.configureTestingModule({}));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
+    }),
+  );
 
   describe('getBitsFromValue', () => {
     for (const { id, value, count, expected } of [

@@ -1,4 +1,6 @@
 import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { ConnectionOptions } from 'mysql2';
 import { LoginConfigService } from './login-config.service';
@@ -16,7 +18,11 @@ describe(LoginConfigService.name, () => {
   const setup = () => {
     const localStorageService = jasmine.createSpyObj('LocalStorageService', ['removeItem', 'getItem', 'setItem']);
     TestBed.configureTestingModule({
-      providers: [{ provide: LocalStorageService, useValue: localStorageService }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        { provide: LocalStorageService, useValue: localStorageService },
+      ],
     });
     const service = TestBed.inject(LoginConfigService);
 

@@ -1,4 +1,6 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { instance, mock } from 'ts-mockito';
@@ -16,15 +18,16 @@ import {
 import { QuestHandlerService } from '@keira/features/quest';
 import { SpellHandlerService } from '@keira/features/spell';
 import { MainWindowComponent } from './main-window.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ElectronService } from '@keira/shared/common-services';
 import { MysqlService } from '@keira/shared/db-layer';
 
 describe('MainWindowComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, MainWindowComponent, RouterTestingModule, TranslateTestingModule],
+      imports: [MainWindowComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         { provide: ElectronService, useValue: instance(mock(ElectronService)) },
         { provide: MysqlService, useValue: instance(mock(MysqlService)) },
         CreatureHandlerService,

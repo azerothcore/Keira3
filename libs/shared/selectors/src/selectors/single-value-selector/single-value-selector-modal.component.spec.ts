@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 
@@ -13,7 +15,7 @@ describe('SingleValueSelectorModalComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [SingleValueSelectorModalComponent, TranslateTestingModule],
-      providers: [BsModalRef],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), BsModalRef],
     }).compileComponents();
   }));
 

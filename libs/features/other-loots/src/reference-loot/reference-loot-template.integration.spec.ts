@@ -1,11 +1,12 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ReferenceLootTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { ReferenceLootHandlerService } from './reference-loot-handler.service';
 import { ReferenceLootTemplateComponent } from './reference-loot-template.component';
@@ -26,15 +27,13 @@ describe('ReferenceLootTemplate integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        ReferenceLootTemplateComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), ReferenceLootTemplateComponent, RouterTestingModule, TranslateTestingModule],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        ReferenceLootHandlerService,
+        { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
       ],
-      providers: [ReferenceLootHandlerService, { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG }],
     }).compileComponents();
   }));
 

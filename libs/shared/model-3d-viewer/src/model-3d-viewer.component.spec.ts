@@ -1,5 +1,7 @@
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { of } from 'rxjs';
@@ -13,6 +15,8 @@ describe('Model3DViewerComponent', () => {
     TestBed.configureTestingModule({
       imports: [ModalModule.forRoot(), Model3DViewerComponent],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),

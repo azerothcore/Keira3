@@ -1,4 +1,6 @@
 import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Conditions } from '@keira/shared/acore-world-model';
@@ -8,7 +10,7 @@ describe('ConditionsHandlerService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      providers: [ConditionsHandlerService],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), ConditionsHandlerService],
     }),
   );
 

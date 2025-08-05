@@ -1,4 +1,6 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { PageObject, Spied, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ConnectionOptions, QueryError } from 'mysql2';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
@@ -6,7 +8,6 @@ import { of, throwError } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
 
 import { ConnectionWindowComponent } from './connection-window.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginConfigService } from '@keira/shared/login-config';
 import { MysqlService } from '@keira/shared/db-layer';
 
@@ -85,8 +86,10 @@ describe('ConnectionWindowComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, TooltipModule.forRoot(), ConnectionWindowComponent, TranslateTestingModule],
+      imports: [TooltipModule.forRoot(), ConnectionWindowComponent, TranslateTestingModule],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         { provide: MysqlService, useValue: instance(mock(MysqlService)) },
         {
           provide: LoginConfigService,

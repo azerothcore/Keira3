@@ -1,7 +1,8 @@
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { LATEST_RELEASE_API_URL } from '@keira/shared/constants';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
@@ -30,7 +31,6 @@ describe('AppComponent', () => {
         FormsModule,
         ReactiveFormsModule,
         RouterTestingModule,
-        BrowserAnimationsModule,
         ModalConfirmComponent,
         ToastrModule.forRoot(),
         TranslateTestingModule,
@@ -40,6 +40,8 @@ describe('AppComponent', () => {
         AppComponent,
       ],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         { provide: ElectronService, useValue: instance(mock(ElectronService)) },
         { provide: MysqlService, useValue: instance(mock(MysqlService)) },
         { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },

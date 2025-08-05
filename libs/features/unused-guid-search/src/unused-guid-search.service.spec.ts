@@ -1,4 +1,6 @@
 import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { instance, mock } from 'ts-mockito';
 import { UnusedGuidService } from './unused-guid-search.service';
 import { MysqlQueryService } from '@keira/shared/db-layer';
@@ -6,7 +8,11 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
 describe('UnusedGuidSearchService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      providers: [{ provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
+      ],
     }),
   );
 

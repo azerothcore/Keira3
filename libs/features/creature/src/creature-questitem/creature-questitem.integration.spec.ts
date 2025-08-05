@@ -1,11 +1,12 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { CreatureQuestitem } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
@@ -34,15 +35,14 @@ describe('CreatureQuestitem integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        CreatureQuestitemComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureQuestitemComponent, RouterTestingModule, TranslateTestingModule],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
-      providers: [CreatureHandlerService, SaiCreatureHandlerService, { provide: SqliteService, useValue: instance(mock(SqliteService)) }],
     }).compileComponents();
   }));
 

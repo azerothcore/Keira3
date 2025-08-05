@@ -1,5 +1,6 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { CreatureTemplateResistance } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
@@ -17,14 +18,12 @@ describe('CreatureTemplateResistance integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        CreatureTemplateResistanceComponent,
-        TranslateTestingModule,
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureTemplateResistanceComponent, TranslateTestingModule],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
-      providers: [{ provide: SqliteService, useValue: instance(mock(SqliteService)) }],
     }).compileComponents();
   }));
 

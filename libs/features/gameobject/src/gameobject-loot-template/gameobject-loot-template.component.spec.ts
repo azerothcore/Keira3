@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
@@ -36,6 +38,8 @@ describe('GameobjectTemplateComponent', () => {
         TranslateTestingModule,
       ],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
         GameobjectHandlerService,

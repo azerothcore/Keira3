@@ -1,9 +1,15 @@
 import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RACES_TEXT } from '@keira/shared/constants';
 import { PreviewHelperService, RACE } from './preview-helper.service';
 
 describe('PreviewHelperService', () => {
-  beforeEach(() => TestBed.configureTestingModule({}));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
+    }),
+  );
 
   function setup() {
     const service: PreviewHelperService = TestBed.inject(PreviewHelperService);

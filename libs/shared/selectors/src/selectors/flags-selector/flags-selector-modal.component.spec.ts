@@ -1,4 +1,6 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { FlagsSelectorModalComponent } from './flags-selector-modal.component';
@@ -10,7 +12,7 @@ describe('FlagsSelectorModalComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [FlagsSelectorModalComponent, TranslateTestingModule],
-      providers: [BsModalRef],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), BsModalRef],
     }).compileComponents();
   }));
 

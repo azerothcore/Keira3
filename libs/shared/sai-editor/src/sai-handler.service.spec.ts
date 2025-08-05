@@ -1,5 +1,7 @@
 /*eslint camelcase: ["error", {properties: "never"}]*/
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
@@ -13,7 +15,11 @@ describe('SaiHandlerService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      providers: [{ provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
+      ],
     }),
   );
 

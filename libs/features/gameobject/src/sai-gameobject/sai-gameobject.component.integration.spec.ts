@@ -1,11 +1,12 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
@@ -29,15 +30,10 @@ describe('SaiGameobjectComponent integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        SaiGameobjectComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
-      ],
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SaiGameobjectComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         GameobjectHandlerService,
         SaiGameobjectHandlerService,
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },

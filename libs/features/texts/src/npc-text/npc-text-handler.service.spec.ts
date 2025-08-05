@@ -1,11 +1,13 @@
 import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { NpcTextHandlerService } from './npc-text-handler.service';
 import { NPC_TEXT_TABLE } from '@keira/shared/acore-world-model';
 
 describe(NpcTextHandlerService.name, () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      providers: [NpcTextHandlerService],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), NpcTextHandlerService],
     }),
   );
 

@@ -1,4 +1,6 @@
 import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Connection, ConnectionOptions, QueryError } from 'mysql2';
 import { Subscriber } from 'rxjs';
 import { instance, mock, reset } from 'ts-mockito';
@@ -22,7 +24,12 @@ describe('MysqlService', () => {
 
   beforeEach(() =>
     TestBed.configureTestingModule({
-      providers: [MysqlService, { provide: ElectronService, useValue: instance(mock(ElectronService)) }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        MysqlService,
+        { provide: ElectronService, useValue: instance(mock(ElectronService)) },
+      ],
     }),
   );
 

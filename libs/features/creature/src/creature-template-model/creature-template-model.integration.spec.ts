@@ -1,7 +1,8 @@
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { CreatureTemplateModel } from '@keira/shared/acore-world-model';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
@@ -24,14 +25,10 @@ describe('CreatureTemplateModel integration tests', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        CreatureTemplateModelComponent,
-        TranslateTestingModule,
-      ],
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureTemplateModelComponent, TranslateTestingModule],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
         { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
         provideHttpClient(withInterceptorsFromDi()),

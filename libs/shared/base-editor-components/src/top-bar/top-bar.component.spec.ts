@@ -1,5 +1,6 @@
-import { Component, viewChild } from '@angular/core';
+import { Component, viewChild, provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { PageObject } from '@keira/shared/test-utils';
 import { TopBarComponent } from './top-bar.component';
 
@@ -29,6 +30,7 @@ describe(TopBarComponent.name, () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [TopBarComponent, TestHostComponent],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
   });
 

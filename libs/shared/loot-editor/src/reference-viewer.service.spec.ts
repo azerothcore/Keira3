@@ -1,4 +1,6 @@
 import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { TableRow } from '@keira/shared/constants';
 import { ReferenceLootTemplate } from '@keira/shared/acore-world-model';
@@ -12,7 +14,11 @@ describe('ReferenceViewerService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
-      providers: [{ provide: SqliteService, useValue: instance(mock(SqliteService)) }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
+      ],
     });
   });
 

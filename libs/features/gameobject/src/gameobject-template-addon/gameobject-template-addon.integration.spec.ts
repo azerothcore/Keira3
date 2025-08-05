@@ -1,11 +1,12 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { GameobjectTemplateAddon } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
@@ -31,7 +32,6 @@ describe('GameobjectTemplateAddon integration tests', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
-        BrowserAnimationsModule,
         ToastrModule.forRoot(),
         ModalModule.forRoot(),
         GameobjectTemplateAddonComponent,
@@ -39,6 +39,8 @@ describe('GameobjectTemplateAddon integration tests', () => {
         TranslateTestingModule,
       ],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         GameobjectHandlerService,
         SaiGameobjectHandlerService,
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
