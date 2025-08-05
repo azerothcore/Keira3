@@ -178,27 +178,27 @@ describe('ItemTemplate integration tests', () => {
         '`BuyCount` = 8, `BuyPrice` = 9, `SellPrice` = 10, `InventoryType` = 11, `AllowableClass` = 12, `AllowableRace` = 13, ' +
         '`ItemLevel` = 14, `RequiredLevel` = 15, `RequiredSkill` = 16, `RequiredSkillRank` = 17, `requiredspell` = 18, ' +
         '`requiredhonorrank` = 19, `RequiredCityRank` = 20, `RequiredReputationFaction` = 21, `RequiredReputationRank` = 22, ' +
-        '`maxcount` = 23, `stackable` = 24, `ContainerSlots` = 25, `stat_type1` = 27, `stat_value1` = 28, ' +
-        '`stat_type2` = 29, `stat_value2` = 30, `stat_type3` = 31, `stat_value3` = 32, `stat_type4` = 33, `stat_value4` = 34, ' +
-        '`stat_type5` = 35, `stat_value5` = 36, `stat_type6` = 37, `stat_value6` = 38, `stat_type7` = 39, `stat_value7` = 40, ' +
-        '`stat_type8` = 41, `stat_value8` = 42, `stat_type9` = 43, `stat_value9` = 44, `stat_type10` = 45, `stat_value10` = 46, ' +
-        '`ScalingStatDistribution` = 47, `ScalingStatValue` = 48, `dmg_min1` = 49, `dmg_max1` = 50, `dmg_type1` = 51, ' +
-        '`dmg_min2` = 52, `dmg_max2` = 53, `dmg_type2` = 54, `armor` = 55, `holy_res` = 56, `fire_res` = 57, `nature_res` = 58, ' +
-        '`frost_res` = 59, `shadow_res` = 60, `arcane_res` = 61, `delay` = 62, `ammo_type` = 63, `RangedModRange` = 64, ' +
-        '`spellid_1` = 65, `spelltrigger_1` = 1, `spellcharges_1` = 66, `spellppmRate_1` = 67, `spellcooldown_1` = 68, ' +
-        '`spellcategory_1` = 69, `spellcategorycooldown_1` = 70, `spellid_2` = 71, `spelltrigger_2` = 2, `spellcharges_2` = 72, ' +
-        '`spellppmRate_2` = 73, `spellcooldown_2` = 74, `spellcategory_2` = 75, `spellcategorycooldown_2` = 76, `spellid_3` = 77, ' +
-        '`spelltrigger_3` = 4, `spellcharges_3` = 78, `spellppmRate_3` = 79, `spellcooldown_3` = 80, `spellcategory_3` = 81, ' +
-        '`spellcategorycooldown_3` = 82, `spellid_4` = 83, `spelltrigger_4` = 5, `spellcharges_4` = 84, `spellppmRate_4` = 85, ' +
-        '`spellcooldown_4` = 86, `spellcategory_4` = 87, `spellcategorycooldown_4` = 88, `spellid_5` = 89, `spelltrigger_5` = 6, ' +
-        '`spellcharges_5` = 90, `spellppmRate_5` = 91, `spellcooldown_5` = 92, `spellcategory_5` = 93, ' +
-        "`spellcategorycooldown_5` = 94, `bonding` = 95, `description` = '96', `PageText` = 97, `LanguageID` = 98, " +
-        '`PageMaterial` = 99, `startquest` = 100, `lockid` = 101, `Material` = 102, `sheath` = 103, `RandomProperty` = 104, ' +
-        '`RandomSuffix` = 105, `block` = 106, `itemset` = 107, `MaxDurability` = 108, `area` = 109, `Map` = 110, `BagFamily` = 111, ' +
-        '`TotemCategory` = 112, `socketColor_1` = 113, `socketContent_1` = 114, `socketColor_2` = 115, `socketContent_2` = 116, ' +
-        '`socketColor_3` = 117, `socketContent_3` = 118, `socketBonus` = 119, `GemProperties` = 120, `RequiredDisenchantSkill` = 121, ' +
-        "`ArmorDamageModifier` = 122, `duration` = 123, `ItemLimitCategory` = 124, `HolidayId` = 125, `ScriptName` = '126', " +
-        '`DisenchantID` = 127, `FoodType` = 128, `minMoneyLoot` = 129, `maxMoneyLoot` = 130, `flagsCustom` = 131 WHERE (`entry` = 1234);';
+        '`maxcount` = 23, `stackable` = 24, `ContainerSlots` = 25, `stat_type1` = 26, `stat_value1` = 27, ' +
+        '`stat_type2` = 28, `stat_value2` = 29, `stat_type3` = 30, `stat_value3` = 31, `stat_type4` = 32, `stat_value4` = 33, ' +
+        '`stat_type5` = 34, `stat_value5` = 35, `stat_type6` = 36, `stat_value6` = 37, `stat_type7` = 38, `stat_value7` = 39, ' +
+        '`stat_type8` = 40, `stat_value8` = 41, `stat_type9` = 42, `stat_value9` = 43, `stat_type10` = 44, `stat_value10` = 45, ' +
+        '`ScalingStatDistribution` = 46, `ScalingStatValue` = 47, `dmg_min1` = 48, `dmg_max1` = 49, `dmg_type1` = 50, ' +
+        '`dmg_min2` = 51, `dmg_max2` = 52, `dmg_type2` = 53, `armor` = 54, `holy_res` = 55, `fire_res` = 56, `nature_res` = 57, ' +
+        '`frost_res` = 58, `shadow_res` = 59, `arcane_res` = 60, `delay` = 61, `ammo_type` = 62, `RangedModRange` = 63, ' +
+        '`spellid_1` = 64, `spelltrigger_1` = 1, `spellcharges_1` = 65, `spellppmRate_1` = 66, `spellcooldown_1` = 67, ' +
+        '`spellcategory_1` = 68, `spellcategorycooldown_1` = 69, `spellid_2` = 70, `spelltrigger_2` = 2, `spellcharges_2` = 71, ' +
+        '`spellppmRate_2` = 72, `spellcooldown_2` = 73, `spellcategory_2` = 74, `spellcategorycooldown_2` = 75, `spellid_3` = 76, ' +
+        '`spelltrigger_3` = 4, `spellcharges_3` = 77, `spellppmRate_3` = 78, `spellcooldown_3` = 79, `spellcategory_3` = 80, ' +
+        '`spellcategorycooldown_3` = 81, `spellid_4` = 82, `spelltrigger_4` = 5, `spellcharges_4` = 83, `spellppmRate_4` = 84, ' +
+        '`spellcooldown_4` = 85, `spellcategory_4` = 86, `spellcategorycooldown_4` = 87, `spellid_5` = 88, `spelltrigger_5` = 6, ' +
+        '`spellcharges_5` = 89, `spellppmRate_5` = 90, `spellcooldown_5` = 91, `spellcategory_5` = 92, ' +
+        "`spellcategorycooldown_5` = 93, `bonding` = 94, `description` = '95', `PageText` = 96, `LanguageID` = 97, " +
+        '`PageMaterial` = 98, `startquest` = 99, `lockid` = 100, `Material` = 101, `sheath` = 102, `RandomProperty` = 103, ' +
+        '`RandomSuffix` = 104, `block` = 105, `itemset` = 106, `MaxDurability` = 107, `area` = 108, `Map` = 109, `BagFamily` = 110, ' +
+        '`TotemCategory` = 111, `socketColor_1` = 112, `socketContent_1` = 113, `socketColor_2` = 114, `socketContent_2` = 115, ' +
+        '`socketColor_3` = 116, `socketContent_3` = 117, `socketBonus` = 118, `GemProperties` = 119, `RequiredDisenchantSkill` = 120, ' +
+        "`ArmorDamageModifier` = 121, `duration` = 122, `ItemLimitCategory` = 123, `HolidayId` = 124, `ScriptName` = '125', " +
+        '`DisenchantID` = 126, `FoodType` = 127, `minMoneyLoot` = 128, `maxMoneyLoot` = 129, `flagsCustom` = 130 WHERE (`entry` = 1234);';
 
       const spelltriggers = {
         spelltrigger_1: 1,
