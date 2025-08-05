@@ -50,8 +50,7 @@ import { ItemPreviewService } from './item-preview.service';
 import { ItemTemplateService } from './item-template.service';
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-item-template',
   templateUrl: './item-template.component.html',
   styleUrls: ['./item-template.component.scss'],
