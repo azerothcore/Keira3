@@ -1,4 +1,6 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
@@ -18,7 +20,6 @@ import { QuestHandlerService } from '@keira/features/quest';
 import { SpellHandlerService } from '@keira/features/spell';
 import { SidebarComponent } from './sidebar.component';
 import { SidebarService } from './sidebar.service';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MysqlService } from '@keira/shared/db-layer';
 import { ElectronService, LocationService } from '@keira/shared/common-services';
 
@@ -37,8 +38,10 @@ class SidebarComponentPage extends PageObject<SidebarComponent> {
 describe('SidebarComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, SidebarComponent, RouterTestingModule, TranslateTestingModule],
+      imports: [SidebarComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         { provide: ElectronService, useValue: instance(mock(ElectronService)) },
         { provide: MysqlService, useValue: instance(mock(MysqlService)) },
         CreatureHandlerService,

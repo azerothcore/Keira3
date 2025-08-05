@@ -1,5 +1,6 @@
-import { Component, viewChild, inject } from '@angular/core';
+import { Component, viewChild, inject, provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { SAI_TYPES } from '@keira/shared/acore-world-model';
@@ -36,6 +37,7 @@ describe('SaiTopBarComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule, TranslateTestingModule, TestHostComponent],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
   }));
 
@@ -48,11 +50,13 @@ describe('SaiTopBarComponent', () => {
     page = new SaiTopBarComponentPage(fixture);
   });
 
-  it('should correctly distinguish between editing an existing entity and creating a new one', () => {
+  it('should show the correct text when isNew is false', () => {
     handler.isNew = false;
     fixture.detectChanges();
     expect(page.mainText.innerText).toContain('Editing');
+  });
 
+  it('should show the correct text when isNew is true', () => {
     handler.isNew = true;
     fixture.detectChanges();
     expect(page.mainText.innerText).toContain('Creating new');

@@ -1,5 +1,6 @@
-import { Component, viewChild } from '@angular/core';
+import { Component, viewChild, provideZonelessChangeDetection } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { PageObject } from '@keira/shared/test-utils';
 import { LootTemplate } from '@keira/shared/acore-world-model';
@@ -30,7 +31,11 @@ describe('ReferenceViewerComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [TooltipModule.forRoot(), TestHostComponent, ReferenceViewerComponent],
-      providers: [{ provide: SqliteService, useValue: instance(mock(SqliteService)) }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
+      ],
     }).compileComponents();
   }));
 

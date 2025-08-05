@@ -1,4 +1,6 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { FactionSelectorBtnComponent } from './faction-selector-btn.component';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -7,6 +9,7 @@ describe('FactionSelectorBtnComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ModalModule.forRoot(), FactionSelectorBtnComponent],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
   }));
 

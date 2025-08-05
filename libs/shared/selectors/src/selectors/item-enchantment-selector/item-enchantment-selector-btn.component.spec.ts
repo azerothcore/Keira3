@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { ItemEnchantmentSelectorBtnComponent } from './item-enchantment-selector-btn.component';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -10,6 +12,7 @@ describe('ItemEnchantmentSelectorBtnComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ModalModule.forRoot(), ItemEnchantmentSelectorBtnComponent],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
   }));
 

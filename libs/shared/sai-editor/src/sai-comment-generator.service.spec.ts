@@ -1,4 +1,6 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { lastValueFrom, of } from 'rxjs';
@@ -24,7 +26,11 @@ import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/sha
 describe('SaiCommentGeneratorService', () => {
   beforeEach(waitForAsync(() =>
     TestBed.configureTestingModule({
-      providers: [{ provide: SqliteService, useValue: instance(mock(SqliteService)) }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
+      ],
     })));
 
   describe('Comment generation should correctly work', () => {

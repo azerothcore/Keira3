@@ -1,11 +1,13 @@
 import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { PageTextHandlerService } from './page-text-handler.service';
 import { PAGE_TEXT_TABLE } from '@keira/shared/acore-world-model';
 
 describe(PageTextHandlerService.name, () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      providers: [PageTextHandlerService],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), PageTextHandlerService],
     }),
   );
 

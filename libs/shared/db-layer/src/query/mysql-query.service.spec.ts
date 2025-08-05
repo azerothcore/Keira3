@@ -1,4 +1,6 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { SmartScripts } from '@keira/shared/acore-world-model';
 import { lastValueFrom, of } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
@@ -38,7 +40,11 @@ describe('MysqlQueryService', () => {
 
   beforeEach(() =>
     TestBed.configureTestingModule({
-      providers: [{ provide: MysqlService, useValue: instance(mock(MysqlService)) }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        { provide: MysqlService, useValue: instance(mock(MysqlService)) },
+      ],
     }),
   );
 

@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { of, throwError } from 'rxjs';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { UnusedGuidSearchComponent } from './unused-guid-search.component';
@@ -30,6 +32,8 @@ describe('UnusedGuidSearchComponent', () => {
     TestBed.configureTestingModule({
       imports: [UnusedGuidSearchComponent, TranslateTestingModule],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         {
           provide: MysqlQueryService,
           useValue: { query: () => of([]) },

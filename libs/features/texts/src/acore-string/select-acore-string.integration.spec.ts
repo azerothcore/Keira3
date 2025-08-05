@@ -1,11 +1,12 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { SelectPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ACORE_STRING_ENTRY } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { SelectAcoreStringComponent } from './select-acore-string.component';
 import { AcoreStringHandlerService } from './acore-string-handler.service';
@@ -21,8 +22,8 @@ describe(`${SelectAcoreStringComponent.name} integration tests`, () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, ToastrModule.forRoot(), ModalModule.forRoot(), SelectAcoreStringComponent, TranslateTestingModule],
-      providers: [AcoreStringHandlerService],
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectAcoreStringComponent, TranslateTestingModule],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), AcoreStringHandlerService],
     }).compileComponents();
   }));
 

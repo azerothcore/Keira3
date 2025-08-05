@@ -1,11 +1,13 @@
 import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { AcoreStringHandlerService } from './acore-string-handler.service';
 import { ACORE_STRING_TABLE } from '@keira/shared/acore-world-model';
 
 describe(AcoreStringHandlerService.name, () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      providers: [AcoreStringHandlerService],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), AcoreStringHandlerService],
     }),
   );
 

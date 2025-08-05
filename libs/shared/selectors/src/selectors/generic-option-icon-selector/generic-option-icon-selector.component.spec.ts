@@ -1,5 +1,6 @@
-import { Component, viewChild } from '@angular/core';
+import { Component, provideZonelessChangeDetection, viewChild } from '@angular/core';
 import { fakeAsync, TestBed, waitForAsync } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FormControl } from '@angular/forms';
 import { OPTION_ICON } from '@keira/shared/acore-world-model';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
@@ -21,6 +22,7 @@ describe('GenericOptionIconSelectorComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [GenericOptionIconSelectorComponent, TestHostComponent, TranslateTestingModule],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
   }));
 

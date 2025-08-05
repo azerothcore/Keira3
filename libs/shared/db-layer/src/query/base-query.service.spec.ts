@@ -1,7 +1,8 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
+import { Injectable, provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { QueryForm } from '@keira/shared/constants';
-import { Injectable } from '@angular/core';
 import { BaseQueryService } from './base-query.service';
 
 describe('BaseQueryService', () => {
@@ -14,7 +15,11 @@ describe('BaseQueryService', () => {
     }
   }
 
-  beforeEach(() => TestBed.configureTestingModule({}));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
+    }),
+  );
 
   const setup = () => {
     const service = TestBed.inject(TestQueryService);
