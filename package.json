@@ -128,7 +128,7 @@
     "ngx-bootstrap": "20.0.0",
     "ngx-clipboard": "16.0.0",
     "ngx-highlightjs": "10.0.0",
-    "ngx-page-object-model": "1.0.0",
+    "ngx-page-object-model": "1.1.0",
     "npm-run-all2": "8.0.4",
     "nx": "21.3.11",
     "playwright": "1.54.2",

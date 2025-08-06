@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -33,7 +33,7 @@ describe('NpcVendor integration tests', () => {
   originalRow1.item = 1;
   originalRow2.item = 2;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), NpcVendorComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
@@ -44,7 +44,7 @@ describe('NpcVendor integration tests', () => {
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(CreatureHandlerService);
@@ -281,7 +281,7 @@ describe('NpcVendor integration tests', () => {
       page.expectUniqueError();
     });
 
-    xit('changing a value via ItemExtendedCost should correctly work', waitForAsync(async () => {
+    xit('changing a value via ItemExtendedCost should correctly work', async () => {
       const field = 'ExtendedCost';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
       spyOn(sqliteQueryService, 'query').and.returnValue(of([{ id: 123, name: 'Mock ExtendedCost' }]));
@@ -313,6 +313,6 @@ describe('NpcVendor integration tests', () => {
           '(1234, 0, 1, 0, 0, 0, 0),\n' +
           '(1234, 0, 2, 0, 0, 0, 0);',
       );
-    }));
+    });
   });
 });

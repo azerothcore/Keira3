@@ -11,7 +11,6 @@
       "options": {
         "tsConfig": "libs/features/other-loots/tsconfig.spec.json",
         "karmaConfig": "libs/features/other-loots/karma.conf.js",
-        "polyfills": ["zone.js", "zone.js/testing"],
         "sourceMap": true,
         "codeCoverage": true,
         "styles": ["apps/keira/src/app/scss/main-test.scss"],

@@ -1,4 +1,4 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
@@ -20,12 +20,12 @@ class SelectGossipComponentPage extends SelectPageObject<SelectGossipComponent> 
 describe('SelectGossip integration tests', () => {
   const value = 1200;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectGossipComponent, RouterTestingModule, TranslateTestingModule],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations(), GossipHandlerService],
     }).compileComponents();
-  }));
+  });
 
   function setup() {
     const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
@@ -43,16 +43,16 @@ describe('SelectGossip integration tests', () => {
     return { navigateSpy, queryService, querySpy, selectService, fixture, page, component };
   }
 
-  it('should correctly initialise', waitForAsync(async () => {
+  it('should correctly initialise', async () => {
     const { fixture, page, querySpy, component } = setup();
     await fixture.whenStable();
     expect(page.createInput.value).toEqual(`${component.customStartingId}`);
     page.expectNewEntityFree();
     expect(querySpy).toHaveBeenCalledWith('SELECT MAX(MenuID) AS max FROM gossip_menu;');
     expect(page.queryWrapper.innerText).toContain('SELECT * FROM `gossip_menu` LIMIT 50');
-  }));
+  });
 
-  it('should correctly behave when inserting and selecting free id', waitForAsync(async () => {
+  it('should correctly behave when inserting and selecting free id', async () => {
     const { fixture, page, querySpy, navigateSpy } = setup();
     await fixture.whenStable();
     querySpy.calls.reset();
@@ -69,9 +69,9 @@ describe('SelectGossip integration tests', () => {
     expect(navigateSpy).toHaveBeenCalledTimes(1);
     expect(navigateSpy).toHaveBeenCalledWith(['gossip/gossip-menu']);
     page.expectTopBarCreatingNew(value);
-  }));
+  });
 
-  it('should correctly behave when inserting an existing entity', waitForAsync(async () => {
+  it('should correctly behave when inserting an existing entity', async () => {
     const { fixture, page, querySpy } = setup();
     await fixture.whenStable();
     querySpy.calls.reset();
@@ -82,7 +82,7 @@ describe('SelectGossip integration tests', () => {
     expect(querySpy).toHaveBeenCalledTimes(1);
     expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`gossip_menu\` WHERE (MenuID = ${value})`);
     page.expectEntityAlreadyInUse();
-  }));
+  });
 
   for (const { testId, MenuID, TextID, limit, expectedQuery } of [
     {

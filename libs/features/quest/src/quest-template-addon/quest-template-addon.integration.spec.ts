@@ -1,4 +1,4 @@
-import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -13,6 +13,7 @@ import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { QuestTemplateAddonComponent } from './quest-template-addon.component';
 import Spy = jasmine.Spy;
+import { tickAsync } from 'ngx-page-object-model';
 
 class QuestTemplateAddonPage extends EditorPageObject<QuestTemplateAddonComponent> {
   get questPreviewReqLevel() {
@@ -49,7 +50,7 @@ describe('QuestTemplateAddon integration tests', () => {
   originalEntity.ProvidedItemCount = 15;
   originalEntity.SpecialFlags = 0;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, QuestTemplateAddonComponent, TranslateTestingModule],
       providers: [
@@ -58,7 +59,7 @@ describe('QuestTemplateAddon integration tests', () => {
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     const handlerService = TestBed.inject(QuestHandlerService);
@@ -128,17 +129,17 @@ describe('QuestTemplateAddon integration tests', () => {
       page.removeNativeElement();
     });
 
-    it('changing a property should be reflected in the quest preview', fakeAsync(() => {
+    it('changing a property should be reflected in the quest preview', async () => {
       const { page } = setup(true);
       const value = 80;
       page.detectChanges();
 
       page.setInputValueById('MaxLevel', value);
-      tick(1000);
+      await tickAsync();
 
       expect(page.questPreviewReqLevel.innerText).toContain(`0 - ${value}`);
       page.removeNativeElement();
-    }));
+    });
   });
 
   describe('Editing existing', () => {
@@ -202,7 +203,7 @@ describe('QuestTemplateAddon integration tests', () => {
       page.removeNativeElement();
     });
 
-    xit('changing a value via FlagsSelector should correctly work', waitForAsync(async () => {
+    xit('changing a value via FlagsSelector should correctly work', async () => {
       const { page } = setup(false);
       const field = 'SpecialFlags';
       page.clickElement(page.getSelectorBtn(field));
@@ -228,9 +229,9 @@ describe('QuestTemplateAddon integration tests', () => {
           '(1234, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 10)',
       );
       page.removeNativeElement();
-    }));
+    });
 
-    xit('changing a value via SpellSelector should correctly work', waitForAsync(async () => {
+    xit('changing a value via SpellSelector should correctly work', async () => {
       const { page } = setup(false);
 
       //  note: previously disabled because of:
@@ -258,9 +259,9 @@ describe('QuestTemplateAddon integration tests', () => {
           '(1234, 1, 2, 123, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0);',
       );
       page.removeNativeElement();
-    }));
+    });
 
-    xit('changing a value via QuestSelector should correctly work', waitForAsync(async () => {
+    xit('changing a value via QuestSelector should correctly work', async () => {
       const { page, fixture } = setup(false);
       const field = 'NextQuestID';
       const mysqlQueryService = TestBed.inject(MysqlQueryService);
@@ -287,6 +288,6 @@ describe('QuestTemplateAddon integration tests', () => {
           '(1234, 1, 2, 3, 4, 123, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0);',
       );
       page.removeNativeElement();
-    }));
+    });
   });
 });

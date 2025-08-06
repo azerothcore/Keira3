@@ -1,4 +1,4 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -17,7 +17,7 @@ class CreatureTemplateSpellPage extends MultiRowEditorPageObject<CreatureTemplat
 describe('CreatureTemplateSpell integration tests', () => {
   const id = 1234;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, CreatureTemplateSpellComponent, TranslateTestingModule],
       providers: [
@@ -27,7 +27,7 @@ describe('CreatureTemplateSpell integration tests', () => {
         { provide: SqliteQueryService, useValue: instance(mock(SqliteQueryService)) },
       ],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     const originalRow0 = new CreatureTemplateSpell();

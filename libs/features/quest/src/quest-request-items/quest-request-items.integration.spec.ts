@@ -1,4 +1,4 @@
-import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -12,6 +12,7 @@ import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { QuestRequestItemsComponent } from './quest-request-items.component';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
+import { tickAsync } from 'ngx-page-object-model';
 
 class QuestRequestItemsPage extends EditorPageObject<QuestRequestItemsComponent> {
   get progressText(): HTMLDivElement {
@@ -26,7 +27,7 @@ describe('QuestRequestItems integration tests', () => {
     'INSERT INTO `quest_request_items` (`ID`, `EmoteOnComplete`, `EmoteOnIncomplete`, `CompletionText`, `VerifiedBuild`) VALUES\n' +
     "(1234, 0, 0, '', 0);";
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, QuestRequestItemsComponent, TranslateTestingModule],
       providers: [
@@ -35,7 +36,7 @@ describe('QuestRequestItems integration tests', () => {
         { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
       ],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     const originalEntity = new QuestRequestItems();
@@ -106,20 +107,20 @@ describe('QuestRequestItems integration tests', () => {
       page.removeNativeElement();
     });
 
-    it('changing a property should be reflected in the quest preview', fakeAsync(() => {
+    it('changing a property should be reflected in the quest preview', async () => {
       const { page } = setup(true);
       const value = 'Fix all AzerothCore bugs';
 
       page.setInputValueById('CompletionText', value);
-      tick(1000);
+      await tickAsync();
 
       expect(page.progressText.innerText).toContain(value);
       page.removeNativeElement();
-    }));
+    });
   });
 
   describe('Editing existing', () => {
-    it('should correctly initialise', waitForAsync(async () => {
+    it('should correctly initialise', async () => {
       const { page } = setup(false);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
@@ -129,7 +130,7 @@ describe('QuestRequestItems integration tests', () => {
           "(1234, 2, 3, '4', 0);",
       );
       page.removeNativeElement();
-    }));
+    });
 
     it('changing all properties and executing the query should correctly work', () => {
       const { page, querySpy, originalEntity } = setup(false);
@@ -146,7 +147,7 @@ describe('QuestRequestItems integration tests', () => {
       page.removeNativeElement();
     });
 
-    it('changing values should correctly update the queries', waitForAsync(async () => {
+    it('changing values should correctly update the queries', async () => {
       const { page } = setup(false);
       page.setInputValueById('EmoteOnComplete', '11');
       page.expectDiffQueryToContain('UPDATE `quest_request_items` SET `EmoteOnComplete` = 11 WHERE (`ID` = 1234);');
@@ -166,9 +167,9 @@ describe('QuestRequestItems integration tests', () => {
           "(1234, 11, 22, '4', 0);\n",
       );
       page.removeNativeElement();
-    }));
+    });
 
-    xit('changing a value via SingleValueSelector should correctly work', waitForAsync(async () => {
+    xit('changing a value via SingleValueSelector should correctly work', async () => {
       const { page } = setup(false);
       const field = 'EmoteOnComplete';
       page.clickElement(page.getSelectorBtn(field));
@@ -188,6 +189,6 @@ describe('QuestRequestItems integration tests', () => {
           "(1234, 4, 3, '4', 0);\n",
       );
       page.removeNativeElement();
-    }));
+    });
   });
 });

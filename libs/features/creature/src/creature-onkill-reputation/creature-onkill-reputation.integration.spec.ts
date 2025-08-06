@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -34,7 +34,7 @@ describe('CreatureOnkillReputation integration tests', () => {
   const originalEntity = new CreatureOnkillReputation();
   originalEntity.creature_id = id;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         ToastrModule.forRoot(),
@@ -51,7 +51,7 @@ describe('CreatureOnkillReputation integration tests', () => {
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(CreatureHandlerService);
@@ -166,7 +166,7 @@ describe('CreatureOnkillReputation integration tests', () => {
       );
     });
 
-    xit('changing a value via SingleValueSelector should correctly work', waitForAsync(async () => {
+    xit('changing a value via SingleValueSelector should correctly work', async () => {
       const field = 'MaxStanding1';
       page.clickElement(page.getSelectorBtn(field));
       page.expectModalDisplayed();
@@ -186,9 +186,9 @@ describe('CreatureOnkillReputation integration tests', () => {
           '`MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`) VALUES\n' +
           '(1234, 0, 0, 7, 0, 0, 0, 0, 0, 0);',
       );
-    }));
+    });
 
-    xit('changing a value via FactionSelector should correctly work', waitForAsync(async () => {
+    xit('changing a value via FactionSelector should correctly work', async () => {
       const field = 'RewOnKillRepFaction1';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
       spyOn(sqliteQueryService, 'query').and.returnValue(of([{ m_ID: 123, m_name_lang_1: 'Mock Faction' }]));
@@ -210,6 +210,6 @@ describe('CreatureOnkillReputation integration tests', () => {
           'INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`, `RewOnKillRepFaction2`, `MaxStanding1`, `IsTeamAward1`, `RewOnKillRepValue1`, `MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`) VALUES\n' +
           '(1234, 123, 0, 0, 0, 0, 0, 0, 0, 0);',
       );
-    }));
+    });
   });
 });

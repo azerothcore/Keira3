@@ -1,5 +1,5 @@
 import { Component, viewChild, provideZonelessChangeDetection } from '@angular/core';
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { PageObject } from '@keira/shared/test-utils';
@@ -21,12 +21,12 @@ class TestHostComponent {
 class TimedActionlistPage extends PageObject<TestHostComponent> {}
 
 describe('TimedActionlistComponent', () => {
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [NgxDatatableModule, TimedActionlistComponent, TestHostComponent],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
-  }));
+  });
 
   const setup = () => {
     const fixture = TestBed.createComponent(TestHostComponent);

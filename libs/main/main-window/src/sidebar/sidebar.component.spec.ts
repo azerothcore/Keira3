@@ -1,4 +1,4 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -36,7 +36,7 @@ class SidebarComponentPage extends PageObject<SidebarComponent> {
 }
 
 describe('SidebarComponent', () => {
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [SidebarComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
@@ -59,7 +59,7 @@ describe('SidebarComponent', () => {
         SpellHandlerService,
       ],
     }).compileComponents();
-  }));
+  });
 
   const setup = () => {
     const sidebarService = TestBed.inject(SidebarService);

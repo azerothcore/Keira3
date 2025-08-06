@@ -108,7 +108,6 @@
     "test": {
       "executor": "@angular-devkit/build-angular:karma",
       "options": {
-        "polyfills": ["zone.js", "zone.js/testing"],
         "tsConfig": "apps/keira/src/tsconfig.spec.json",
         "karmaConfig": "apps/keira/src/karma.conf.js",
         "codeCoverage": true,

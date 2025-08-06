@@ -1,5 +1,5 @@
 import { Component, viewChild, provideZonelessChangeDetection } from '@angular/core';
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { PageObject } from '@keira/shared/test-utils';
@@ -28,7 +28,7 @@ class TestHostComponent {
 }
 
 describe('ReferenceViewerComponent', () => {
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [TooltipModule.forRoot(), TestHostComponent, ReferenceViewerComponent],
       providers: [
@@ -37,7 +37,7 @@ describe('ReferenceViewerComponent', () => {
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
     }).compileComponents();
-  }));
+  });
 
   const setup = () => {
     const fixture = TestBed.createComponent(TestHostComponent);

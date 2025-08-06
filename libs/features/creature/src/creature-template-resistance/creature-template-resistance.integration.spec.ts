@@ -1,4 +1,4 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { CreatureTemplateResistance } from '@keira/shared/acore-world-model';
@@ -16,7 +16,7 @@ describe('CreatureTemplateResistance integration tests', () => {
 
   const id = 1234;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureTemplateResistanceComponent, TranslateTestingModule],
       providers: [
@@ -25,7 +25,7 @@ describe('CreatureTemplateResistance integration tests', () => {
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     const originalRow0 = new CreatureTemplateResistance();

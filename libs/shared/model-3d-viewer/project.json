@@ -11,7 +11,6 @@
       "options": {
         "tsConfig": "libs/shared/model-3d-viewer/tsconfig.spec.json",
         "karmaConfig": "libs/shared/model-3d-viewer/karma.conf.js",
-        "polyfills": ["zone.js", "zone.js/testing"],
         "sourceMap": true,
         "codeCoverage": true,
         "styles": ["apps/keira/src/app/scss/main-test.scss"],

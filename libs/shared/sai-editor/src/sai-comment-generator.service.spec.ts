@@ -1,4 +1,4 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
@@ -24,14 +24,15 @@ import { instance, mock } from 'ts-mockito';
 import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
 
 describe('SaiCommentGeneratorService', () => {
-  beforeEach(waitForAsync(() =>
+  beforeEach(() =>
     TestBed.configureTestingModule({
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
-    })));
+    }),
+  );
 
   describe('Comment generation should correctly work', () => {
     const createSai = (partial: Partial<SmartScripts>) => Object.assign(new SmartScripts(), partial);
@@ -59,7 +60,7 @@ describe('SaiCommentGeneratorService', () => {
       spyOn(sqliteQueryService, 'getSpellNameById').and.callFake((i) => lastValueFrom(of(mockGetSpellNameById + i)));
     });
 
-    it('should correctly handle linked events', waitForAsync(async () => {
+    it('should correctly handle linked events', async () => {
       const rows: SmartScripts[] = [
         createSai({ id: 1, event_type: SAI_EVENTS.ACCEPTED_QUEST, link: 2 }),
         createSai({ id: 2, event_type: SAI_EVENTS.LINK, link: 3 }),
@@ -69,7 +70,7 @@ describe('SaiCommentGeneratorService', () => {
       const service: SaiCommentGeneratorService = TestBed.inject(SaiCommentGeneratorService);
 
       expect(await service.generateComment(rows, rows[2], mockName)).toEqual(expected);
-    }));
+    });
 
     const cases: { name: string; input: Partial<SmartScripts>; expected: string }[] = [
       {
@@ -1983,11 +1984,11 @@ describe('SaiCommentGeneratorService', () => {
     ];
 
     for (const { name, input, expected } of cases) {
-      it(`Case: ${name}`, waitForAsync(async () => {
+      it(`Case: ${name}`, async () => {
         const service: SaiCommentGeneratorService = TestBed.inject(SaiCommentGeneratorService);
         const sai = createSai(input);
         expect(await service.generateComment([sai], sai, mockName)).toEqual(expected);
-      }));
+      });
     }
   });
 });

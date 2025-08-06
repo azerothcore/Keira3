@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -114,7 +114,7 @@ describe('QuestPreviewComponent', () => {
     return Object.assign(new c(), partial);
   }
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), RouterTestingModule, QuestPreviewComponent, TranslateTestingModule, QuestPreviewComponent],
       providers: [
@@ -123,7 +123,7 @@ describe('QuestPreviewComponent', () => {
         { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
       ],
     }).compileComponents();
-  }));
+  });
 
   function setup() {
     const service = TestBed.inject(QuestPreviewService);
@@ -165,7 +165,7 @@ describe('QuestPreviewComponent', () => {
     page.removeNativeElement();
   });
 
-  // TODO: fix this test, broken after OnPush (probably needs tick())
+  // TODO: fix this test, broken after OnPush (probably needs await whenStable())
   xit('should show questStart and questEnd icons', () => {
     const { fixture, service, page } = setup();
     const periodicQuestSpy = spyOnProperty(service, 'periodicQuest', 'get').and.returnValue('');
@@ -199,7 +199,7 @@ describe('QuestPreviewComponent', () => {
     page.removeNativeElement();
   });
 
-  // TODO: fix this test, broken after OnPush (probably needs tick())
+  // TODO: fix this test, broken after OnPush (probably needs await whenStable())
   xit('should show showRaces', () => {
     const { fixture, service, page } = setup();
     const sideSpy = spyOnProperty(service, 'side', 'get').and.returnValue('');
@@ -228,7 +228,7 @@ describe('QuestPreviewComponent', () => {
     page.removeNativeElement();
   });
 
-  // TODO: fix this test, broken after OnPush (probably needs tick())
+  // TODO: fix this test, broken after OnPush (probably needs await whenStable())
   xit('should show required skill', async () => {
     const { fixture, service, page } = setup();
     spyOnProperty(service, 'requiredSkill$', 'get').and.returnValue(Promise.resolve('Jewelcrafting'));
@@ -312,7 +312,7 @@ describe('QuestPreviewComponent', () => {
     fixture.debugElement.nativeElement.remove();
   });
 
-  // TODO: fix this test, broken after OnPush (probably needs tick())
+  // TODO: fix this test, broken after OnPush (probably needs await whenStable())
   xit('should show npcOrGoObjectives', async () => {
     const { fixture, page, service } = setup();
     const getObjectiveCountSpy: Spy = spyOn(service, 'getObjectiveCount').and.returnValue('(1)');
@@ -417,7 +417,7 @@ describe('QuestPreviewComponent', () => {
       page.removeNativeElement();
     });
 
-    // TODO: fix this test, broken after OnPush (probably needs tick())
+    // TODO: fix this test, broken after OnPush (probably needs await whenStable())
     xit('should correctly show the required money', () => {
       const { fixture, service, page } = setup();
       const spy = spyOnProperty(service, 'rewardMoney', 'get');
@@ -439,7 +439,7 @@ describe('QuestPreviewComponent', () => {
       page.removeNativeElement();
     });
 
-    // TODO: fix this test, broken after OnPush (probably needs tick())
+    // TODO: fix this test, broken after OnPush (probably needs await whenStable())
     xit('should correctly show the reward money', () => {
       const { fixture, service, page } = setup();
       const spy = spyOnProperty(service, 'rewardMoney', 'get');
@@ -461,7 +461,7 @@ describe('QuestPreviewComponent', () => {
       page.removeNativeElement();
     });
 
-    // TODO: fix this test, broken after OnPush (probably needs tick())
+    // TODO: fix this test, broken after OnPush (probably needs await whenStable())
     xit('should correctly show the reward spell', async () => {
       const { fixture, service, page, sqliteQueryService } = setup();
       const rewardSpellSpy = spyOn(service, 'rewardSpell');
@@ -487,7 +487,7 @@ describe('QuestPreviewComponent', () => {
       page.removeNativeElement();
     });
 
-    // TODO: fix this test, broken after OnPush (probably needs tick())
+    // TODO: fix this test, broken after OnPush (probably needs await whenStable())
     xit('should correctly show the reward items', async () => {
       const { fixture, service, page, mysqlQueryService } = setup();
       const isRewardItemsSpy = spyOn(service, 'isRewardItems');
@@ -513,7 +513,7 @@ describe('QuestPreviewComponent', () => {
       page.removeNativeElement();
     });
 
-    // TODO: fix this test, broken after OnPush (probably needs tick())
+    // TODO: fix this test, broken after OnPush (probably needs await whenStable())
     xit('should correctly show the reward choice items', async () => {
       const { fixture, service, page, mysqlQueryService } = setup();
       const isRewardChoiceItemsSpy = spyOn(service, 'isRewardChoiceItems');

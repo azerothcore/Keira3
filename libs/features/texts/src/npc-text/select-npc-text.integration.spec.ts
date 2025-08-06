@@ -1,4 +1,4 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
@@ -20,12 +20,12 @@ describe(`${SelectNpcTextComponent.name} integration tests`, () => {
   const value = 1200;
   const expectedRoute = 'texts/npc-text';
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectNpcTextComponent, TranslateTestingModule],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations(), NpcTextHandlerService],
     }).compileComponents();
-  }));
+  });
 
   function setup() {
     const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
@@ -43,7 +43,7 @@ describe(`${SelectNpcTextComponent.name} integration tests`, () => {
     return { component, fixture, selectService, npc: page, queryService, querySpy, navigateSpy };
   }
 
-  it('should correctly initialise', waitForAsync(async () => {
+  it('should correctly initialise', async () => {
     const { fixture, npc, querySpy, component } = setup();
 
     await fixture.whenStable();
@@ -51,9 +51,9 @@ describe(`${SelectNpcTextComponent.name} integration tests`, () => {
     npc.expectNewEntityFree();
     expect(querySpy).toHaveBeenCalledWith('SELECT MAX(ID) AS max FROM npc_text;');
     expect(npc.queryWrapper.innerText).toContain('SELECT * FROM `npc_text` LIMIT 50');
-  }));
+  });
 
-  it('should correctly behave when inserting and selecting free entry', waitForAsync(async () => {
+  it('should correctly behave when inserting and selecting free entry', async () => {
     const { fixture, npc, querySpy, navigateSpy } = setup();
 
     await fixture.whenStable();
@@ -71,9 +71,9 @@ describe(`${SelectNpcTextComponent.name} integration tests`, () => {
     expect(navigateSpy).toHaveBeenCalledTimes(1);
     expect(navigateSpy).toHaveBeenCalledWith([expectedRoute]);
     npc.expectTopBarCreatingNew(value);
-  }));
+  });
 
-  it('should correctly behave when inserting an existing entity', waitForAsync(async () => {
+  it('should correctly behave when inserting an existing entity', async () => {
     const { fixture, npc, querySpy } = setup();
 
     await fixture.whenStable();
@@ -85,7 +85,7 @@ describe(`${SelectNpcTextComponent.name} integration tests`, () => {
     expect(querySpy).toHaveBeenCalledTimes(1);
     expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`npc_text\` WHERE (ID = ${value})`);
     npc.expectEntityAlreadyInUse();
-  }));
+  });
 
   for (const { id, entry, limit, expectedQuery } of [
     {

@@ -1,4 +1,4 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
@@ -11,7 +11,7 @@ import { LocationService } from '@keira/shared/common-services';
 import Spy = jasmine.Spy;
 
 describe('LogoutBtnComponent', () => {
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ModalModule.forRoot(), LogoutBtnComponent, ModalConfirmComponent, TranslateTestingModule],
       providers: [
@@ -23,7 +23,7 @@ describe('LogoutBtnComponent', () => {
         },
       ],
     }).compileComponents();
-  }));
+  });
 
   function setup() {
     const fixture = TestBed.createComponent(LogoutBtnComponent);

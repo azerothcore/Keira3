@@ -1,4 +1,4 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { GameTele } from '@keira/shared/acore-world-model';
@@ -35,7 +35,7 @@ describe('GameTele integration tests', () => {
   originalEntity.map = 0;
 
   // TestBed Configuration
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), TranslateTestingModule],
       declarations: [],
@@ -49,7 +49,7 @@ describe('GameTele integration tests', () => {
         },
       ],
     }).compileComponents();
-  }));
+  });
 
   // Setup Function
   function setup(creatingNew: boolean) {

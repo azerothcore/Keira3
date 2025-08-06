@@ -1,4 +1,4 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { Injectable, provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
@@ -27,7 +27,7 @@ describe('BaseQueryService', () => {
   };
 
   describe('queryValue()', () => {
-    it('should correctly work', waitForAsync(async () => {
+    it('should correctly work', async () => {
       const { service } = setup();
       const value = 'mock result value';
       spyOn(service, 'query').and.returnValue(of([{ v: value }]) as any);
@@ -35,16 +35,16 @@ describe('BaseQueryService', () => {
 
       expect(await service.queryValueToPromise(query)).toEqual(value);
       expect(service.query).toHaveBeenCalledOnceWith(query);
-    }));
+    });
 
-    it('should be safe in case of no results', waitForAsync(async () => {
+    it('should be safe in case of no results', async () => {
       const { service } = setup();
       spyOn(service, 'query').and.returnValue(of([]));
       const query = 'SELECT something AS v FROM my_table WHERE index = 123';
 
       expect(await service.queryValueToPromise(query)).toEqual(null);
       expect(service.query).toHaveBeenCalledOnceWith(query);
-    }));
+    });
   });
 
   describe('getSearchQuery()', () => {

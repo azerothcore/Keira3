@@ -1,4 +1,4 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
@@ -20,12 +20,12 @@ describe(`${SelectAcoreStringComponent.name} integration tests`, () => {
   const value = 1200;
   const expectedRoute = 'texts/acore-string';
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectAcoreStringComponent, TranslateTestingModule],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations(), AcoreStringHandlerService],
     }).compileComponents();
-  }));
+  });
 
   function setup() {
     const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
@@ -43,7 +43,7 @@ describe(`${SelectAcoreStringComponent.name} integration tests`, () => {
     return { component, fixture, selectService, acoreStrings: page, queryService, querySpy, navigateSpy };
   }
 
-  it('should correctly initialise', waitForAsync(async () => {
+  it('should correctly initialise', async () => {
     const { fixture, acoreStrings, querySpy, component } = setup();
 
     await fixture.whenStable();
@@ -51,9 +51,9 @@ describe(`${SelectAcoreStringComponent.name} integration tests`, () => {
     acoreStrings.expectNewEntityFree();
     expect(querySpy).toHaveBeenCalledWith('SELECT MAX(entry) AS max FROM acore_string;');
     expect(acoreStrings.queryWrapper.innerText).toContain('SELECT * FROM `acore_string` LIMIT 50');
-  }));
+  });
 
-  it('should correctly behave when inserting and selecting free entry', waitForAsync(async () => {
+  it('should correctly behave when inserting and selecting free entry', async () => {
     const { fixture, acoreStrings, querySpy, navigateSpy } = setup();
 
     await fixture.whenStable();
@@ -71,9 +71,9 @@ describe(`${SelectAcoreStringComponent.name} integration tests`, () => {
     expect(navigateSpy).toHaveBeenCalledTimes(1);
     expect(navigateSpy).toHaveBeenCalledWith([expectedRoute]);
     acoreStrings.expectTopBarCreatingNew(value);
-  }));
+  });
 
-  it('should correctly behave when inserting an existing entity', waitForAsync(async () => {
+  it('should correctly behave when inserting an existing entity', async () => {
     const { fixture, acoreStrings, querySpy } = setup();
 
     await fixture.whenStable();
@@ -85,7 +85,7 @@ describe(`${SelectAcoreStringComponent.name} integration tests`, () => {
     expect(querySpy).toHaveBeenCalledTimes(1);
     expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`acore_string\` WHERE (entry = ${value})`);
     acoreStrings.expectEntityAlreadyInUse();
-  }));
+  });
 
   for (const { id, entry, limit, expectedQuery } of [
     {

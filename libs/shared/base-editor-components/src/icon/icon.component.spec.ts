@@ -1,5 +1,5 @@
 import { Component, viewChild, provideZonelessChangeDetection } from '@angular/core';
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { ICON_SKILLS } from '@keira/shared/constants';
 
@@ -32,7 +32,7 @@ class IconComponentPage extends PageObject<TestHostComponent> {
 }
 
 describe('ItemIconComponent', () => {
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [IconComponent, TestHostComponent],
       providers: [
@@ -41,7 +41,7 @@ describe('ItemIconComponent', () => {
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
     }).compileComponents();
-  }));
+  });
 
   const setup = () => {
     const fixture = TestBed.createComponent(TestHostComponent);

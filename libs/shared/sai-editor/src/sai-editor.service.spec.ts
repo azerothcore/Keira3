@@ -1,4 +1,4 @@
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -123,7 +123,7 @@ describe('SAI Editor Service', () => {
   });
 
   describe('generateComments', () => {
-    it('should work correctly generating comments in all rows', fakeAsync(() => {
+    it('should work correctly generating comments in all rows', async () => {
       const mockRows: Partial<SmartScripts>[] = [
         { entryorguid: 0, source_type: 0, id: 0, link: 1, event_type: 0 },
         { entryorguid: 0, source_type: 0, id: 1, link: 0, event_type: 61 },
@@ -138,8 +138,7 @@ describe('SAI Editor Service', () => {
       const getNameSpy = spyOn<any>(handlerService, 'getName');
       const generateCommentSpy = spyOn<any>(saiCommentGeneratorService, 'generateComment');
 
-      service.generateComments(true);
-      tick(100);
+      await service.generateComments(true);
 
       expect(updateDiffQuerySpy).toHaveBeenCalledTimes(1);
       expect(updateFullQuerySpy).toHaveBeenCalledTimes(1);
@@ -147,9 +146,9 @@ describe('SAI Editor Service', () => {
       expect(isRowSelectedSpy).toHaveBeenCalledTimes(2);
       expect(getNameSpy).toHaveBeenCalledTimes(2);
       expect(generateCommentSpy).toHaveBeenCalledTimes(2);
-    }));
+    });
 
-    it('should work correctly generating only one comment', fakeAsync(() => {
+    it('should work correctly generating only one comment', async () => {
       const mockRows: Partial<SmartScripts>[] = [
         { entryorguid: 0, source_type: 0, id: 0, link: 1, event_type: 0 },
         { entryorguid: 0, source_type: 0, id: 1, link: 0, event_type: 61 },
@@ -164,8 +163,7 @@ describe('SAI Editor Service', () => {
       const getNameSpy = spyOn<any>(handlerService, 'getName');
       const generateCommentSpy = spyOn<any>(saiCommentGeneratorService, 'generateComment');
 
-      service.generateComments();
-      tick(100);
+      await service.generateComments();
 
       expect(updateDiffQuerySpy).toHaveBeenCalledTimes(1);
       expect(updateFullQuerySpy).toHaveBeenCalledTimes(1);
@@ -173,6 +171,6 @@ describe('SAI Editor Service', () => {
       expect(isRowSelectedSpy).toHaveBeenCalledTimes(1);
       expect(getNameSpy).toHaveBeenCalledTimes(1);
       expect(generateCommentSpy).toHaveBeenCalledTimes(1);
-    }));
+    });
   });
 });
