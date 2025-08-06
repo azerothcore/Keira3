@@ -104,7 +104,7 @@
     "bootstrap": "5.3.7",
     "conventional-changelog-cli": "4.1.0",
     "cross-env": "10.0.0",
-    "electron": "37.2.5",
+    "electron": "37.2.6",
     "electron-builder": "26.0.12",
     "electron-reload": "1.5.0",
     "escape-string-regexp": "5.0.0",
