@@ -78,7 +78,6 @@ describe('QuestTemplate integration tests', () => {
     const fixture = TestBed.createComponent(QuestTemplateComponent);
     const component = fixture.componentInstance;
     const page = new QuestTemplatePage(fixture);
-    fixture.autoDetectChanges(true);
     fixture.detectChanges();
 
     return { originalEntity, handlerService, queryService, querySpy, initializeServicesSpy, fixture, component, page };
