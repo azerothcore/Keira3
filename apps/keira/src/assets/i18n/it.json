@@ -34,7 +34,7 @@
   "DOWNLOAD": "Scarica",
   "NEW_VERSION": "Psst...C'è una nuova versione di Keira!",
   "LOADING": "Caricamento...",
-  "TODO": "DA FARE",
+  "TODO": "TODO",
   "ALWAYS_0": "Sempre 0",
   "UNIQUE": "Il <strong>{{ ENTITY_SECOND_ID_FIELD }}</strong> deve essere unico.",
   "UNIQUE_ID": "L'ID unico di {{ ENTITY }}",
