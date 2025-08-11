@@ -12,7 +12,7 @@ jobs:
       fix_app_name: ${{ steps.fix_app_name.outputs.FIX_APP_NAME }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - id: version
         run: |
           echo "PACKAGE_VERSION=$(npx json version -a < package.json)" >> $GITHUB_OUTPUT
@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Build project
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -76,7 +76,7 @@ jobs:
     runs-on: macos-13 # it's the most recent version still running on Intel, we keep it for retro-compatibility
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Build project
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -110,7 +110,7 @@ jobs:
     runs-on: windows-2025
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Build project
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
