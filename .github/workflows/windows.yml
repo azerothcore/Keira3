@@ -20,7 +20,7 @@ jobs:
     name: ${{ matrix.os }}-node-${{ matrix.node-version }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Fetch main branch
         if: github.ref != 'refs/heads/master'
         run: git rev-parse --verify master || git remote set-branches origin master && git fetch --depth 1 origin master && git branch master origin/master

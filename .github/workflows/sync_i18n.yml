@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0 # Ensure full Git history is fetched
           ref: ${{ github.ref }} # Checkout the branch that triggered the workflow
