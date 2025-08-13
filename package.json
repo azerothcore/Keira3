@@ -44,7 +44,7 @@
     "@ngx-translate/core": "16.0.4",
     "@ngx-translate/http-loader": "16.0.1",
     "@types/electron-settings": "4.0.2",
-    "@uiw/codemirror-theme-github": "4.24.2",
+    "@uiw/codemirror-theme-github": "4.25.1",
     "acorn": "8.15.0",
     "body-parser": "1.20.2",
     "cors": "2.8.5",
