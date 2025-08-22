@@ -94,7 +94,7 @@
     "@swc/helpers": "0.5.17",
     "@types/jasmine": "5.1.9",
     "@types/jasminewd2": "2.0.13",
-    "@types/jquery": "3.5.32",
+    "@types/jquery": "3.5.33",
     "@types/mysql": "2.15.27",
     "@types/node": "22.17.2",
     "@types/sqlite3": "5.1.0",
