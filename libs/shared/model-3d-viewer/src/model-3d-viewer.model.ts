@@ -19,23 +19,43 @@ export const enum MODEL_TYPE {
   HELMET = 2,
   SHOULDER = 4,
   NPC = 8,
+  CHARACTER = 16,
+  HUMANOIDNPC = 32,
   OBJECT = 64,
+  ARMOR = 128,
+  PATH = 256,
+  ITEMVISUAL = 512,
+  COLLECTION = 1024,
 }
 
 const enum SLOTS {
+  HEAD = 1,
   NECK = 2,
+  SHOULDERS = 3,
+  BODY = 4,
+  CHEST = 5,
+  WAIST = 6,
+  LEGS = 7,
+  FEET = 8,
+  WRISTS = 9,
+  HANDS = 10,
   FINGER1 = 11,
   FINGER2 = 12,
   TRINKET1 = 13,
   TRINKET2 = 14,
-  CHEST = 20, // Robe/Chest
-  MAIN_HAND = 21,
-  OFF_HAND = 22,
+  BACK = 15,
+  MAIN_HAND = 16,
+  OFF_HAND = 17,
+  RANGED = 18,
+  TABARD = 19,
+  ROBE = 20, // Robe/Chest
+  MAIN_HAND_NEW = 21,
+  OFF_HAND_NEW = 22,
 }
 
 export const NOT_DISPLAYED_SLOTS = [SLOTS.NECK, SLOTS.FINGER1, SLOTS.FINGER2, SLOTS.TRINKET1, SLOTS.TRINKET2];
 
-export const RACES = {
+export const RACES: Record<number, string> = {
   1: 'human',
   2: 'orc',
   3: 'dwarf',
@@ -48,7 +68,7 @@ export const RACES = {
   11: 'draenei',
 };
 
-export const CHARACTER_PART = {
+export const CHARACTER_PART: Record<string, string | undefined> = {
   Face: 'face',
   'Skin Color': 'skin',
   'Hair Style': 'hairStyle',
@@ -75,14 +95,6 @@ export const CHARACTER_PART = {
   Earring: undefined,
 };
 
-export interface WoWModel {
-  id: number | string;
-  type: number;
-  race?: number;
-  gender?: Gender;
-  items?: [];
-}
-
 export interface DisplayInfo {
   displaySlot: number;
   displayId: number;
@@ -90,8 +102,69 @@ export interface DisplayInfo {
 
 export const wotlkToShadowlandSlots = {
   5: SLOTS.CHEST,
-  11: SLOTS.MAIN_HAND,
-  16: SLOTS.MAIN_HAND,
+  11: SLOTS.MAIN_HAND_NEW,
+  16: SLOTS.MAIN_HAND_NEW,
   17: SLOTS.OFF_HAND,
   18: SLOTS.OFF_HAND,
 };
+
+export const enum InventoryType {
+  NON_EQUIP = 0,
+  HEAD = 1,
+  NECK = 2,
+  SHOULDERS = 3,
+  SHIRT = 4,
+  CHEST = 5,
+  WAIST = 6,
+  LEGS = 7,
+  FEET = 8,
+  WRISTS = 9,
+  HANDS = 10,
+  FINGER = 11,
+  TRINKET = 12,
+  WEAPON = 13,
+  SHIELD = 14,
+  RANGED = 15,
+  CLOAK = 16,
+  TWO_HANDED_WEAPON = 17,
+  BAG = 18,
+  TABARD = 19,
+  ROBE = 20,
+  WEAPON_MAIN_HAND = 21,
+  WEAPON_OFF_HAND = 22,
+  HELD_IN_OFF_HAND = 23,
+  AMMO = 24,
+  THROWN = 25,
+  RANGED_RIGHT = 26,
+  QUIVER = 27,
+  RELIC = 28,
+}
+
+export const CHAR_DISPLAYABLE_INVENTORY_TYPE = [
+  InventoryType.CHEST,
+  InventoryType.CLOAK,
+  InventoryType.FEET,
+  InventoryType.HANDS,
+  InventoryType.LEGS,
+  InventoryType.ROBE,
+  InventoryType.WAIST,
+  InventoryType.TABARD,
+  InventoryType.WRISTS,
+];
+
+// NpC, GameObject, Item
+export interface WoWModel {
+  id: number | string;
+  type: number;
+}
+
+export interface CharacterOptions {
+  face: number;
+  facialStyle: number;
+  gender: Gender;
+  hairColor: number;
+  hairStyle: number;
+  race: number;
+  skin: number;
+  items: number[][];
+}

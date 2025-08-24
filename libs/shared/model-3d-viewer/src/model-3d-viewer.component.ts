@@ -1,12 +1,21 @@
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { KEIRA_APP_CONFIG_TOKEN } from '@keira/shared/config';
 import { TableRow } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import * as jquery from 'jquery';
 import { BehaviorSubject, catchError, filter, Observable, of, Subscription } from 'rxjs';
 import { generateModels, getShadowlandDisplayId } from './helper';
-import { CONTENT_WOTLK, MODEL_TYPE, VIEWER_TYPE } from './model-3d-viewer.model';
+import {
+  CHAR_DISPLAYABLE_INVENTORY_TYPE,
+  CharacterOptions,
+  CONTENT_WOTLK,
+  InventoryType,
+  MODEL_TYPE,
+  VIEWER_TYPE,
+  WoWModel,
+} from './model-3d-viewer.model';
 
 declare const ZamModelViewer: any;
 
@@ -18,22 +27,24 @@ declare const ZamModelViewer: any;
 })
 export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   private readonly queryService = inject(MysqlQueryService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly http = inject(HttpClient);
+  private readonly KEIRA_APP_CONFIG = inject(KEIRA_APP_CONFIG_TOKEN);
+
   private readonly windowRef = window as typeof window & {
     jQuery: any;
     $: any;
     WH: any;
     models: any;
   };
-  private readonly http = inject(HttpClient);
-  private readonly KEIRA_APP_CONFIG = inject(KEIRA_APP_CONFIG_TOKEN);
 
   private static uniqueId = 0;
   protected readonly uniqueId = Model3DViewerComponent.uniqueId++;
 
-  @Input() viewerType!: VIEWER_TYPE;
-  @Input() displayId!: number;
-  @Input() itemClass?: number;
-  @Input() itemInventoryType?: number;
+  readonly viewerType = input.required<VIEWER_TYPE>();
+  readonly displayId = input.required<number>();
+  readonly itemClass = input<number>();
+  readonly itemInventoryType = input<InventoryType>();
 
   private readonly loadedViewer$ = new BehaviorSubject<boolean>(false);
   private readonly subscriptions = new Subscription();
@@ -46,19 +57,20 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    const displayId = this.displayId();
     if (
       changes['displayId']?.currentValue != changes['displayId']?.previousValue &&
-      !!this.displayId &&
-      this.displayId > 0 &&
-      this.viewerType != null
+      !!displayId &&
+      displayId > 0 &&
+      this.viewerType() != null
     ) {
       this.resetModel3dElement();
       this.show3Dmodel();
     }
   }
 
-  show3Dmodel(): void {
-    if (this.viewerType === VIEWER_TYPE.ITEM) {
+  protected show3Dmodel(): void {
+    if (this.viewerType() === VIEWER_TYPE.ITEM) {
       this.subscriptions.add(
         this.getItemData$().subscribe((data) => {
           if (data.length && 'entry' in data[0]) {
@@ -73,7 +85,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
 
   private getItemData$(): Observable<TableRow[]> {
     return this.queryService.query(
-      `SELECT entry, class AS _class, inventoryType FROM item_template WHERE displayid=${this.displayId} LIMIT 1`,
+      `SELECT entry, class AS _class, inventoryType FROM item_template WHERE displayid=${this.displayId()} LIMIT 1`,
     );
   }
 
@@ -84,6 +96,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
       this.http
         .get(this.getContentPathUrl(inventoryType))
         .pipe(
+          takeUntilDestroyed(this.destroyRef),
           catchError(
             /* istanbul ignore next */
             () => {
@@ -97,62 +110,94 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
           ),
         )
         .subscribe(() => {
-          this.generate3Dmodel(modelType, this.displayId);
+          this.generate3Dmodel(modelType, this.displayId());
         }),
     );
   }
 
   /* istanbul ignore next */ // TODO: fix coverage
   private generate3Dmodel(
-    modelType: number = this.getModelType(),
-    displayId: number = this.displayId,
+    modelType = this.getModelType(),
+    displayId: number = this.displayId(),
     contentPath: string = CONTENT_WOTLK,
   ): void {
     this.resetModel3dElement();
 
-    generateModels(
-      1,
-      `#model_3d_${this.uniqueId}`,
-      {
+    let model: WoWModel | CharacterOptions;
+
+    if (modelType === MODEL_TYPE.CHARACTER) {
+      // TODO
+      model = {
+        race: 7,
+        gender: 1,
+        skin: 4,
+        face: 0,
+        hairStyle: 5,
+        hairColor: 5,
+        facialStyle: 5,
+        items: [
+          [1, 15380],
+          [3, 4925],
+          [5, 9575],
+          [6, 25235],
+          [7, 2311],
+          [8, 21154],
+          [9, 14618],
+          [10, 9534],
+          [15, 17238],
+          [21, 20379],
+          [22, 28787],
+        ],
+      } as CharacterOptions;
+    } else {
+      model = {
         type: modelType,
         id: displayId,
-      },
-      contentPath,
-    ).then((WoWModel) => {
+      } as WoWModel;
+    }
+
+    generateModels(1, `#model_3d_${this.uniqueId}`, model, contentPath).then((WoWModel) => {
       /* istanbul ignore next */
       this.models3D.push(WoWModel);
     });
   }
 
-  private getContentPathUrl(inventoryType: number | string): string {
-    if (inventoryType === 3 || inventoryType === 4) {
-      return `${CONTENT_WOTLK}meta/armor/${inventoryType}/${this.displayId}.json`;
+  private getContentPathUrl(inventoryType: InventoryType | string): string {
+    if (inventoryType === InventoryType.SHOULDERS || inventoryType === InventoryType.SHIRT) {
+      return `${CONTENT_WOTLK}meta/armor/${inventoryType}/${this.displayId()}.json`;
     }
 
-    return `${CONTENT_WOTLK}meta/item/${this.displayId}.json`;
+    return `${CONTENT_WOTLK}meta/item/${this.displayId()}.json`;
   }
 
-  private getModelType(itemClass = this.itemClass, itemInventoryType = this.itemInventoryType): number {
-    if (this.viewerType === VIEWER_TYPE.ITEM) {
+  private getModelType(
+    itemClass = this.itemClass(),
+    itemInventoryType: InventoryType | undefined = this.itemInventoryType(),
+  ): MODEL_TYPE | -1 {
+    if (this.viewerType() === VIEWER_TYPE.ITEM) {
       const _class = itemClass;
-      if (_class == 2) {
+      if (_class === 2) {
         return MODEL_TYPE.WEAPON;
       }
 
-      if (itemInventoryType == 1) {
+      if (itemInventoryType === InventoryType.HEAD) {
         return MODEL_TYPE.HELMET;
       }
 
-      if (itemInventoryType == 3) {
+      if (itemInventoryType === InventoryType.SHOULDERS) {
         return MODEL_TYPE.SHOULDER;
+      }
+
+      if (itemInventoryType && CHAR_DISPLAYABLE_INVENTORY_TYPE.includes(itemInventoryType)) {
+        return MODEL_TYPE.CHARACTER;
       }
     }
 
-    if (this.viewerType == VIEWER_TYPE.OBJECT) {
+    if (this.viewerType() === VIEWER_TYPE.OBJECT) {
       return MODEL_TYPE.OBJECT;
     }
 
-    if (this.viewerType === VIEWER_TYPE.NPC) {
+    if (this.viewerType() === VIEWER_TYPE.NPC) {
       return MODEL_TYPE.NPC;
     }
 
