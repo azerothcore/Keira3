@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { KEIRA_APP_CONFIG_TOKEN } from '@keira/shared/config';
 import { TableRow } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
@@ -11,8 +10,10 @@ import {
   CHAR_DISPLAYABLE_INVENTORY_TYPE,
   CharacterOptions,
   CONTENT_WOTLK,
+  Gender,
   InventoryType,
   MODEL_TYPE,
+  Race,
   VIEWER_TYPE,
   WoWModel,
 } from './model-3d-viewer.model';
@@ -99,7 +100,6 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
       this.http
         .get(this.getContentPathUrl(inventoryType))
         .pipe(
-          takeUntilDestroyed(this.destroyRef),
           catchError(
             /* istanbul ignore next */
             () => {
@@ -108,11 +108,15 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
                 this.generate3Dmodel(modelType, displayInfo.displayId, CONTENT_WOTLK);
               });
               /* istanbul ignore next */
-              return of([]);
+              return of(null);
             },
           ),
         )
-        .subscribe(() => {
+        .subscribe((result) => {
+          if (result === null) {
+            return;
+          }
+
           this.generate3Dmodel(modelType, this.displayId());
         }),
     );
@@ -123,6 +127,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
     modelType = this.getModelType(),
     displayId: number = this.displayId(),
     contentPath: string = CONTENT_WOTLK,
+    inventoryType = this.itemInventoryType(),
   ): void {
     this.resetModel3dElement();
 
@@ -131,26 +136,14 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
     if (modelType === MODEL_TYPE.CHARACTER) {
       // TODO
       model = {
-        race: 7,
-        gender: 1,
-        skin: 4,
+        race: Race.NORTHREND_SKELETON,
+        gender: Gender.MALE,
+        skin: 0,
         face: 0,
-        hairStyle: 5,
-        hairColor: 5,
-        facialStyle: 5,
-        items: [
-          [1, 15380],
-          [3, 4925],
-          [5, 9575],
-          [6, 25235],
-          [7, 2311],
-          [8, 21154],
-          [9, 14618],
-          [10, 9534],
-          [15, 17238],
-          [21, 20379],
-          [22, 28787],
-        ],
+        hairStyle: 0,
+        hairColor: 0,
+        facialStyle: 0,
+        items: [[inventoryType, displayId]],
       } as CharacterOptions;
     } else {
       model = {

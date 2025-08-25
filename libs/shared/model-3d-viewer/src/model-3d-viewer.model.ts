@@ -1,3 +1,5 @@
+import { ItemTemplate } from '@keira/shared/acore-world-model';
+
 export const enum VIEWER_TYPE {
   ITEM,
   NPC,
@@ -7,11 +9,9 @@ export const enum VIEWER_TYPE {
 // use the local web server to make all the http calls about modelviewer to bypass CORS
 export const CONTENT_WOTLK = 'http://localhost:3003/modelviewer/wrath/';
 
-export type Gender = 0 | 1;
-
-export const enum GENDER {
-  MALE = 'male',
-  FEMALE = 'female',
+export const enum Gender {
+  MALE = 0,
+  FEMALE = 1,
 }
 
 export const enum MODEL_TYPE {
@@ -152,6 +152,29 @@ export const CHAR_DISPLAYABLE_INVENTORY_TYPE = [
   InventoryType.WRISTS,
 ];
 
+export const enum Race {
+  HUMAN = 1,
+  ORC = 2,
+  DWARF = 3,
+  NIGHTELF = 4,
+  UNDEAD_PLAYER = 5,
+  TAUREN = 6,
+  GNOME = 7,
+  TROLL = 8,
+  GOBLIN = 9,
+  BLOODELF = 10,
+  DRAENEI = 11,
+  FEL_ORC = 12,
+  NAGA = 13,
+  BROKEN = 14,
+  SKELETON = 15,
+  VRYKUL = 16,
+  TUSKARR = 17,
+  FOREST_TROLL = 18,
+  TAUNKA = 19,
+  NORTHREND_SKELETON = 20,
+}
+
 // NpC, GameObject, Item
 export interface WoWModel {
   id: number | string;
@@ -164,7 +187,7 @@ export interface CharacterOptions {
   gender: Gender;
   hairColor: number;
   hairStyle: number;
-  race: number;
+  race: Race;
   skin: number;
-  items: number[][];
+  items: [InventoryType, ItemTemplate['displayid']][];
 }

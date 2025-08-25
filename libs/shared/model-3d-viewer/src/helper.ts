@@ -104,8 +104,9 @@ function optionsFromModel(model: CharacterOptions & { noCharCustomization?: bool
 function getCharacterOptions(
   character: CharacterOptions,
   fullOptions: { Options: { Name: string; Id: string; Choices: { id: string; Id?: string }[] }[] },
-): any[] {
+) {
   const options = fullOptions.Options;
+  const missingChoice = [];
   const ret = [];
   for (const prop in CHARACTER_PART) {
     const part = options.find((e) => e.Name === prop);
@@ -114,15 +115,17 @@ function getCharacterOptions(
       continue;
     }
 
-    const characterPart = CHARACTER_PART[prop] as keyof CharacterOptions;
-    const choice = character[characterPart] as number;
-
     const newOption = {
       optionId: part.Id,
-      choiceId: CHARACTER_PART[prop] ? part.Choices[choice]?.id : part.Choices[0].Id,
+      // @ts-ignore
+      choiceId: CHARACTER_PART[prop] ? part.Choices[character[CHARACTER_PART[prop]]]?.Id : part.Choices[0].Id,
     };
+    if (newOption.choiceId === undefined) {
+      missingChoice.push(CHARACTER_PART[prop]);
+    }
     ret.push(newOption);
   }
+  console.warn(`In character: `, character, `the following options are missing`, missingChoice);
 
   return ret;
 }
@@ -162,6 +165,7 @@ export async function generateModels(
     hd: false,
     ...modelOptions,
   };
+
   (window as any)['models'] = models;
 
   if (typeof ZamModelViewer !== 'undefined') {
