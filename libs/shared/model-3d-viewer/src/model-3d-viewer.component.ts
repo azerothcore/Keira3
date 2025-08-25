@@ -48,7 +48,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
 
   private readonly loadedViewer$ = new BehaviorSubject<boolean>(false);
   private readonly subscriptions = new Subscription();
-  private readonly models3D: any[] = [];
+  private readonly models3D: any[] = []; // ZamModelViewer[]
 
   ngOnInit(): void {
     this.setupViewer3D();
@@ -57,6 +57,10 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (!this.windowRef.jQuery) {
+      return;
+    }
+
     const displayId = this.displayId();
     if (
       changes['displayId']?.currentValue != changes['displayId']?.previousValue &&
@@ -64,7 +68,6 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
       displayId > 0 &&
       this.viewerType() != null
     ) {
-      this.resetModel3dElement();
       this.show3Dmodel();
     }
   }
