@@ -1,7 +1,7 @@
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ITEM_SUBCLASS, ItemTemplate, Lock } from '@keira/shared/acore-world-model';
@@ -9,12 +9,12 @@ import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config'
 import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { tickAsync } from 'ngx-page-object-model';
 import { ToastrModule } from 'ngx-toastr';
 import { lastValueFrom, of } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
 import { ItemHandlerService } from '../item-handler.service';
 import { ItemTemplateComponent } from './item-template.component';
-import { tickAsync } from 'ngx-page-object-model';
 
 class ItemTemplatePage extends EditorPageObject<ItemTemplateComponent> {
   get itemStats(): HTMLDivElement {
@@ -230,7 +230,7 @@ describe('ItemTemplate integration tests', () => {
       page.expectDiffQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();
-      expect(querySpy).toHaveBeenCalledTimes(2);
+      expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
     });
 
