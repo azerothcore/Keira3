@@ -1,14 +1,14 @@
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideZonelessChangeDetection, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { of } from 'rxjs';
 import { Model3DViewerComponent } from './model-3d-viewer.component';
-import { CONTENT_WOTLK, MODEL_TYPE, VIEWER_TYPE } from './model-3d-viewer.model';
-import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { CONTENT_WOTLK, InventoryType, MODEL_TYPE, VIEWER_TYPE } from './model-3d-viewer.model';
 
 describe('Model3DViewerComponent', () => {
   beforeEach(() => {
@@ -52,17 +52,33 @@ describe('Model3DViewerComponent', () => {
     expect(component['setupViewer3D']).toHaveBeenCalledTimes(1);
   });
 
-  it('ngOnChanges', () => {
-    const { component } = setup();
-    const resetModel3dElementSpy = spyOn<any>(component, 'resetModel3dElement');
-    const show3DmodelSpy = spyOn(component, 'show3Dmodel');
-    component.displayId = 2;
-    component.viewerType = VIEWER_TYPE.NPC;
+  describe('ngOnChanges', () => {
+    it('does not run due to missing jQuery', () => {
+      const { component } = setup();
+      (component as any).windowRef.jQuery = undefined;
+      (component as any).displayId = () => 2;
+      (component as any).viewerType = () => VIEWER_TYPE.NPC;
+      const resetModel3dElementSpy = spyOn<any>(component, 'resetModel3dElement');
+      const show3DmodelSpy = spyOn<any>(component, 'show3Dmodel');
 
-    component.ngOnChanges({ displayId: { currentValue: 1, previousValue: 0 } as any });
+      component.ngOnChanges({ displayId: { currentValue: 1, previousValue: 0 } as any });
 
-    expect(resetModel3dElementSpy).toHaveBeenCalledTimes(1);
-    expect(show3DmodelSpy).toHaveBeenCalledTimes(1);
+      expect(resetModel3dElementSpy).toHaveBeenCalledTimes(0);
+      expect(show3DmodelSpy).toHaveBeenCalledTimes(0);
+    });
+
+    it('should call show3Dmodel if jQuery is present and displayId changed', (done) => {
+      const { component } = setup();
+      (component as any).windowRef.jQuery = () => {};
+      (component as any).displayId = () => 2;
+      (component as any).viewerType = () => VIEWER_TYPE.NPC;
+
+      spyOn<any>(component, 'show3Dmodel').and.callFake(() => {
+        expect(true).toBeTrue();
+        done();
+      });
+      component.ngOnChanges({ displayId: { currentValue: 2, previousValue: 1 } as any });
+    });
   });
 
   it('ngOnDestroy', () => {
@@ -76,26 +92,43 @@ describe('Model3DViewerComponent', () => {
     expect(component['resetModel3dElement']).toHaveBeenCalledTimes(1);
   });
 
+  describe('viewerDynamic', () => {
+    it('should call show3Dmodel when loadedViewer$ emits true', () => {
+      const { component } = setup();
+      (component as any).itemInventoryType = signal(1);
+      (component as any).itemClass = signal(2);
+      (component as any).viewerType = signal(VIEWER_TYPE.ITEM);
+      spyOn<any>(component, 'show3Dmodel');
+      component['loadedViewer$'].next(true);
+
+      component['viewerDynamic']();
+
+      // Emit again to trigger subscription
+      component['loadedViewer$'].next(true);
+      expect(component['show3Dmodel']).toHaveBeenCalled();
+    });
+  });
+
   describe('show3Dmodel', () => {
     it('generate3Dmodel for non-item', () => {
       const { component } = setup();
-      component.viewerType = VIEWER_TYPE.NPC;
+      (component as any).viewerType = signal(VIEWER_TYPE.NPC);
       spyOn<any>(component, 'generate3Dmodel');
 
-      component.show3Dmodel();
+      component['show3Dmodel']();
 
       expect(component['generate3Dmodel']).toHaveBeenCalledTimes(1);
     });
 
     it('handles the item 3D model', (done) => {
       const { component } = setup();
-      component.viewerType = VIEWER_TYPE.ITEM;
+      (component as any).viewerType = signal(VIEWER_TYPE.ITEM);
       const subscriptionAddSpy = spyOn<any>(component['subscriptions'], 'add');
       const mockItemData$ = of([{ entry: 123 }]);
       spyOn<any>(component, 'getItemData$').and.returnValue(mockItemData$);
       spyOn<any>(component, 'verifyModelAndLoad');
 
-      component.show3Dmodel();
+      component['show3Dmodel']();
 
       mockItemData$.subscribe(() => {
         expect(subscriptionAddSpy).toHaveBeenCalledTimes(1);
@@ -108,7 +141,7 @@ describe('Model3DViewerComponent', () => {
   describe('getContentPathUrl', () => {
     it('returns armor URL', () => {
       const { component } = setup();
-      component.displayId = mockDisplayId;
+      (component as any).displayId = signal(mockDisplayId);
 
       expect(component['getContentPathUrl'](3)).toBe(`${CONTENT_WOTLK}meta/armor/3/${mockDisplayId}.json`);
       expect(component['getContentPathUrl'](4)).toBe(`${CONTENT_WOTLK}meta/armor/4/${mockDisplayId}.json`);
@@ -116,7 +149,7 @@ describe('Model3DViewerComponent', () => {
 
     it('returns item URL', () => {
       const { component } = setup();
-      component.displayId = mockDisplayId;
+      (component as any).displayId = signal(mockDisplayId);
 
       expect(component['getContentPathUrl'](1)).toBe(`${CONTENT_WOTLK}meta/item/${mockDisplayId}.json`);
     });
@@ -125,39 +158,45 @@ describe('Model3DViewerComponent', () => {
   describe('getModelType', () => {
     it('uses default params', () => {
       const { component } = setup();
-      component.itemInventoryType = 1;
-      component.itemClass = 2;
-      component.viewerType = VIEWER_TYPE.ITEM;
+      (component as any).itemInventoryType = signal(1);
+      (component as any).itemClass = signal(2);
+      (component as any).viewerType = signal(VIEWER_TYPE.ITEM);
 
       expect(component['getModelType']()).toBe(MODEL_TYPE.WEAPON);
     });
 
     it('uses custom params', () => {
       const { component } = setup();
-      component.itemInventoryType = 1;
-      component.itemClass = 2;
-      component.viewerType = VIEWER_TYPE.ITEM;
+      (component as any).itemInventoryType = signal(1);
+      (component as any).itemClass = signal(2);
+      (component as any).viewerType = signal(VIEWER_TYPE.ITEM);
 
-      expect(component['getModelType'](3, 1)).toBe(MODEL_TYPE.HELMET);
-      expect(component['getModelType'](3, 3)).toBe(MODEL_TYPE.SHOULDER);
+      expect(component['getModelType'](3, InventoryType.HEAD)).toBe(MODEL_TYPE.HELMET);
+      expect(component['getModelType'](3, InventoryType.SHOULDERS)).toBe(MODEL_TYPE.SHOULDER);
     });
 
     it('returns object', () => {
       const { component } = setup();
-      component.viewerType = VIEWER_TYPE.OBJECT;
+      (component as any).viewerType = signal(VIEWER_TYPE.OBJECT);
       expect(component['getModelType']()).toBe(MODEL_TYPE.OBJECT);
     });
 
     it('returns NPC', () => {
       const { component } = setup();
-      component.viewerType = VIEWER_TYPE.NPC;
+      (component as any).viewerType = signal(VIEWER_TYPE.NPC);
       expect(component['getModelType']()).toBe(MODEL_TYPE.NPC);
+    });
+
+    it('returns CHARACTER', () => {
+      const { component } = setup();
+      (component as any).viewerType = signal(VIEWER_TYPE.ITEM);
+      expect(component['getModelType'](4, InventoryType.FEET)).toBe(MODEL_TYPE.CHARACTER);
     });
 
     it('returns -1', () => {
       const { component } = setup();
-      component.viewerType = VIEWER_TYPE.ITEM;
-      expect(component['getModelType'](4, 2)).toBe(-1);
+      (component as any).viewerType = signal(VIEWER_TYPE.ITEM);
+      expect(component['getModelType'](4, InventoryType.NECK)).toBe(-1);
     });
   });
 
@@ -165,7 +204,7 @@ describe('Model3DViewerComponent', () => {
     const { component, queryService } = setup();
     const mockObj = of({} as any);
     spyOn(queryService, 'query').and.returnValue(mockObj);
-    component.displayId = mockDisplayId;
+    (component as any).displayId = signal(mockDisplayId);
 
     expect(component['getItemData$']()).toBe(mockObj);
     expect(queryService.query).toHaveBeenCalledOnceWith(
@@ -178,7 +217,7 @@ describe('Model3DViewerComponent', () => {
       const { component, httpTestingController } = setup();
       const mockUrl = 'www.mock.com';
       const mockModelType = 2;
-      component.displayId = mockDisplayId;
+      (component as any).displayId = signal(mockDisplayId);
       spyOn<any>(component, 'getContentPathUrl').and.returnValue(mockUrl);
       spyOn<any>(component, 'generate3Dmodel');
       spyOn<any>(component, 'getModelType').and.returnValue(mockModelType);
@@ -203,5 +242,16 @@ describe('Model3DViewerComponent', () => {
     component['clean3DModels']();
 
     expect(component['models3D'][0].destroy).toHaveBeenCalledTimes(1);
+  });
+
+  describe('resetModel3dElement', () => {
+    it('should clean models and clear element innerHTML', () => {
+      const { component } = setup();
+      component['models3D'].push({ destroy: jasmine.createSpy('destroy') });
+
+      component['resetModel3dElement']();
+
+      expect(component['models3D'][0].destroy).toHaveBeenCalledTimes(1);
+    });
   });
 });

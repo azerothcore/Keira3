@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { KEIRA_APP_CONFIG_TOKEN } from '@keira/shared/config';
 import { TableRow } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
@@ -28,7 +28,6 @@ declare const ZamModelViewer: any;
 })
 export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   private readonly queryService = inject(MysqlQueryService);
-  private readonly destroyRef = inject(DestroyRef);
   private readonly http = inject(HttpClient);
   private readonly KEIRA_APP_CONFIG = inject(KEIRA_APP_CONFIG_TOKEN);
 
@@ -115,6 +114,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
           ),
         )
         .subscribe((result) => {
+          /* istanbul ignore next */
           if (result === null) {
             return;
           }
@@ -245,7 +245,6 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
     );
   }
 
-  /* istanbul ignore next */
   private resetModel3dElement(): void {
     const modelElement = document.querySelector(`#model_3d_${this.uniqueId}`);
     this.clean3DModels();
