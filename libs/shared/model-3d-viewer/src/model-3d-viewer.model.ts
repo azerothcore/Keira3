@@ -28,7 +28,7 @@ export const enum MODEL_TYPE {
   COLLECTION = 1024,
 }
 
-const enum SLOTS {
+export const enum SLOTS {
   HEAD = 1,
   NECK = 2,
   SHOULDERS = 3,
@@ -68,7 +68,7 @@ export const RACES: Record<number, string> = {
   11: 'draenei',
 };
 
-export const CHARACTER_PART: Record<string, string | undefined> = {
+export const CHARACTER_PART: Record<string, keyof CharacterOptions | undefined> = {
   Face: 'face',
   'Skin Color': 'skin',
   'Hair Style': 'hairStyle',

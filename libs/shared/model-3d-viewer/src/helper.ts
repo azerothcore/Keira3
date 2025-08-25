@@ -7,6 +7,7 @@ import {
   Gender,
   MODEL_TYPE,
   NOT_DISPLAYED_SLOTS,
+  SLOTS,
   WoWModel,
 } from './model-3d-viewer.model';
 
@@ -83,9 +84,7 @@ function optionsFromModel(model: CharacterOptions & { noCharCustomization?: bool
   const { race, gender } = model;
 
   // slot ids on model viewer
-  const characterItems = model.items ? model.items.filter((e) => !NOT_DISPLAYED_SLOTS.includes(e[0])) : [];
-  const options = getCharacterOptions(model, fullOptions);
-  const charCustomization = { options };
+  const characterItems = model.items ? model.items.filter((e) => !NOT_DISPLAYED_SLOTS.includes(e[0] as unknown as SLOTS)) : [];
   const ret: { items: any[]; models: { id: number; type: number }; charCustomization?: { options: any[] } } = {
     items: characterItems,
     models: {
@@ -94,6 +93,8 @@ function optionsFromModel(model: CharacterOptions & { noCharCustomization?: bool
     },
   };
 
+  const options = getCharacterOptions(model, fullOptions);
+  const charCustomization = { options };
   if (!model.noCharCustomization) {
     ret.charCustomization = charCustomization;
   }
@@ -115,14 +116,19 @@ function getCharacterOptions(
       continue;
     }
 
+    const charPart = CHARACTER_PART[prop];
+    const choice = charPart && character[charPart];
+    const choiceId = typeof choice === 'number' ? part.Choices[choice]?.Id : part.Choices[0].Id;
+
     const newOption = {
       optionId: part.Id,
-      // @ts-ignore
-      choiceId: CHARACTER_PART[prop] ? part.Choices[character[CHARACTER_PART[prop]]]?.Id : part.Choices[0].Id,
+      choiceId,
     };
+
     if (newOption.choiceId === undefined) {
       missingChoice.push(CHARACTER_PART[prop]);
     }
+
     ret.push(newOption);
   }
   console.warn(`In character: `, character, `the following options are missing`, missingChoice);
