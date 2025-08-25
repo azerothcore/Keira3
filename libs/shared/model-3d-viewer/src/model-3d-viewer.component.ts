@@ -51,6 +51,8 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   private readonly subscriptions = new Subscription();
   private readonly models3D: any[] = []; // ZamModelViewer[]
 
+  private mutex3D = false;
+
   ngOnInit(): void {
     this.setupViewer3D();
     this.resetModel3dElement();
@@ -69,7 +71,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
       displayId > 0 &&
       this.viewerType() != null
     ) {
-      this.show3Dmodel();
+      setTimeout(() => this.show3Dmodel());
     }
   }
 
@@ -129,14 +131,18 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
     contentPath: string = CONTENT_WOTLK,
     inventoryType = this.itemInventoryType(),
   ): void {
+    if (this.mutex3D) {
+      return;
+    }
+    this.mutex3D = true;
+
     this.resetModel3dElement();
 
     let model: WoWModel | CharacterOptions;
 
     if (modelType === MODEL_TYPE.CHARACTER) {
-      // TODO
       model = {
-        race: Race.NORTHREND_SKELETON,
+        race: Race.HUMAN,
         gender: Gender.MALE,
         skin: 0,
         face: 0,
@@ -155,6 +161,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
     generateModels(1, `#model_3d_${this.uniqueId}`, model, contentPath).then((WoWModel) => {
       /* istanbul ignore next */
       this.models3D.push(WoWModel);
+      this.mutex3D = false;
     });
   }
 
@@ -222,6 +229,8 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
       jquery.getScript(`https://wow.zamimg.com/modelviewer/wrath/viewer/viewer.min.js`, function () {
         loadedViewer$.next(true);
       });
+    } else {
+      loadedViewer$.next(true);
     }
   }
 
