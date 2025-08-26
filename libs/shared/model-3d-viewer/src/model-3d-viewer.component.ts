@@ -1,8 +1,11 @@
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, inject, input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, OnChanges, OnDestroy, OnInit, signal, SimpleChanges } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { CREATURE_RACE_OPTION_ICON } from '@keira/shared/acore-world-model';
 import { KEIRA_APP_CONFIG_TOKEN } from '@keira/shared/config';
-import { TableRow } from '@keira/shared/constants';
+import { Option, TableRow } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
+import { GenericOptionIconSelectorComponent } from '@keira/shared/selectors';
 import * as jquery from 'jquery';
 import { BehaviorSubject, catchError, filter, Observable, of, Subscription } from 'rxjs';
 import { generateModels, getShadowlandDisplayId } from './helper';
@@ -10,6 +13,7 @@ import {
   CHAR_DISPLAYABLE_INVENTORY_TYPE,
   CharacterOptions,
   CONTENT_WOTLK,
+  CREATURE_GENDER_OPTION_ICON,
   Gender,
   InventoryType,
   MODEL_TYPE,
@@ -24,12 +28,20 @@ declare const ZamModelViewer: any;
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-model-3d-viewer',
   templateUrl: './model-3d-viewer.component.html',
-  standalone: true,
+  imports: [GenericOptionIconSelectorComponent],
 })
 export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   private readonly queryService = inject(MysqlQueryService);
   private readonly http = inject(HttpClient);
   private readonly KEIRA_APP_CONFIG = inject(KEIRA_APP_CONFIG_TOKEN);
+
+  protected CREATURE_RACE = signal<Option[]>(CREATURE_RACE_OPTION_ICON);
+  protected readonly raceControl = new FormControl<Race>(Race.HUMAN);
+
+  protected CREATURE_GENDER = signal<Option[]>(CREATURE_GENDER_OPTION_ICON);
+  protected readonly genderControl = new FormControl<Gender>(Gender.MALE);
+
+  protected readonly MODEL_TYPE_CHARACTER = MODEL_TYPE.CHARACTER;
 
   private readonly windowRef = window as typeof window & {
     jQuery: any;
@@ -53,6 +65,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   private mutex3D = false;
 
   ngOnInit(): void {
+    this.initRaceGenderControls();
     this.setupViewer3D();
     this.resetModel3dElement();
     this.viewerDynamic();
@@ -142,8 +155,8 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
 
     if (modelType === MODEL_TYPE.CHARACTER) {
       model = {
-        race: Race.HUMAN,
-        gender: Gender.MALE,
+        race: this.raceControl.value,
+        gender: this.genderControl.value,
         skin: 0,
         face: 0,
         hairStyle: 0,
@@ -173,7 +186,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
     return `${CONTENT_WOTLK}meta/item/${this.displayId()}.json`;
   }
 
-  private getModelType(
+  protected getModelType(
     itemClass = this.itemClass(),
     itemInventoryType: InventoryType | undefined = this.itemInventoryType(),
   ): MODEL_TYPE | -1 {
@@ -242,6 +255,31 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
           this.show3Dmodel();
         },
       ),
+    );
+  }
+
+  private initRaceGenderControls(): void {
+    this.subscriptions.add(
+      this.raceControl.valueChanges.subscribe(() => {
+        this.CREATURE_GENDER.set([
+          { value: 0, name: 'Male', icon: `race/${this.raceControl.value}-0.gif` },
+          { value: 1, name: 'Female', icon: `race/${this.raceControl.value}-1.gif` },
+        ]);
+        this.show3Dmodel();
+      }),
+    );
+
+    this.subscriptions.add(
+      this.genderControl.valueChanges.subscribe(() => {
+        const prevValue = !this.genderControl.value ? 1 : 0;
+        this.CREATURE_RACE.set(
+          CREATURE_RACE_OPTION_ICON.map((option) => ({
+            ...option,
+            icon: option.icon?.replace(`-${prevValue}.gif`, `-${this.genderControl.value}.gif`),
+          })),
+        );
+        this.show3Dmodel();
+      }),
     );
   }
 

@@ -1,4 +1,5 @@
 import { ItemTemplate } from '@keira/shared/acore-world-model';
+import { Option } from '@keira/shared/constants';
 
 export const enum VIEWER_TYPE {
   ITEM,
@@ -152,27 +153,31 @@ export const CHAR_DISPLAYABLE_INVENTORY_TYPE = [
   InventoryType.WRISTS,
 ];
 
-export const enum Race {
+export enum Race {
   HUMAN = 1,
   ORC = 2,
   DWARF = 3,
   NIGHTELF = 4,
-  UNDEAD_PLAYER = 5,
+  UNDEAD = 5, // SCOURGE
   TAUREN = 6,
   GNOME = 7,
   TROLL = 8,
   GOBLIN = 9,
   BLOODELF = 10,
   DRAENEI = 11,
-  FEL_ORC = 12,
-  NAGA = 13,
-  BROKEN = 14,
-  SKELETON = 15,
-  VRYKUL = 16,
-  TUSKARR = 17,
-  FOREST_TROLL = 18,
-  TAUNKA = 19,
-  NORTHREND_SKELETON = 20,
+  // WORGEN = 22,
+  // PANDAREN = 24,
+  // NIGHTBORNE = 27,
+  // HIGHMOUNTAINTAUREN = 28,
+  // VOIDELF = 29,
+  // LIGHTFORGEDDRAENEI = 30,
+  // ZANDALARITROLL = 31,
+  // KULTIRAN = 32,
+  // DARKIRONDWARF = 34,
+  // VULPERA = 35,
+  // MAGHARORC = 36,
+  // MECHAGNOME = 37,
+  // DRACTHYR = 45,
 }
 
 // NpC, GameObject, Item
@@ -191,3 +196,8 @@ export interface CharacterOptions {
   skin: number;
   items: [InventoryType, ItemTemplate['displayid']][];
 }
+
+export const CREATURE_GENDER_OPTION_ICON: Option[] = [
+  { value: 0, name: 'Male', icon: 'race/1-0.gif' },
+  { value: 1, name: 'Female', icon: 'race/1-1.gif' },
+];
