@@ -1,10 +1,12 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MysqlQueryService } from '@keira/shared/db-layer';
-import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { FieldDefinition } from '@keira/shared/constants';
+import { MysqlQueryService } from '@keira/shared/db-layer';
+import { Model3DViewerComponent } from '@keira/shared/model-3d-viewer';
+import { TranslateTestingModule } from '@keira/shared/test-utils';
+import { MockComponent } from 'ng-mocks';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
@@ -24,6 +26,7 @@ describe('GameobjectComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ModalModule.forRoot(), ToastrModule.forRoot(), GameobjectTemplateComponent, RouterTestingModule, TranslateTestingModule],
+      declarations: [MockComponent(Model3DViewerComponent)],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations(), GameobjectHandlerService, SaiGameobjectHandlerService],
     }).compileComponents();
   });

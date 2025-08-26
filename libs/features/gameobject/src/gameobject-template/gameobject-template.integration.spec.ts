@@ -1,21 +1,23 @@
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
-import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { GameobjectTemplate } from '@keira/shared/acore-world-model';
+import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
+import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
+import { Model3DViewerComponent } from '@keira/shared/model-3d-viewer';
+import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
+import { MockComponent } from 'ng-mocks';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
+import { instance, mock } from 'ts-mockito';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { GameobjectTemplateComponent } from './gameobject-template.component';
 import Spy = jasmine.Spy;
-import { instance, mock } from 'ts-mockito';
-import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 class GameobjectTemplatePage extends EditorPageObject<GameobjectTemplateComponent> {}
 
@@ -46,6 +48,7 @@ describe('GameobjectTemplate integration tests', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), GameobjectTemplateComponent, RouterTestingModule, TranslateTestingModule],
+      declarations: [MockComponent(Model3DViewerComponent)],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),

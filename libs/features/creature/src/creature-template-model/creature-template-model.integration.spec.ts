@@ -1,12 +1,14 @@
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { CreatureTemplateModel } from '@keira/shared/acore-world-model';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
+import { Model3DViewerComponent } from '@keira/shared/model-3d-viewer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
+import { MockComponent } from 'ng-mocks';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
@@ -26,6 +28,7 @@ describe('CreatureTemplateModel integration tests', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureTemplateModelComponent, TranslateTestingModule],
+      declarations: [MockComponent(Model3DViewerComponent)],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
