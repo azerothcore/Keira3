@@ -528,12 +528,7 @@
                   <div class="col-12">
                     <label class="control-label" for="stat_value{{ i }}">value{{ i }}</label>
                     <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.STAT_VALUE' | translate"></i>
-                    <input
-                      [formControlName]="'stat_value' + i"
-                      id="stat_value{{ i }}"
-                      type="number"
-                      class="form-control form-control-sm"
-                    />
+                    <input [formControlName]="'stat_value' + i" id="stat_value{{ i }}" type="number" class="form-control form-control-sm" />
                   </div>
                 </div>
               </div>
@@ -781,12 +776,16 @@
             <div class="item-stats">
               <div [innerHTML]="itemPreview"></div>
               <br />
-              <keira-model-3d-viewer
-                [viewerType]="ITEM_VIEWER_TYPE"
-                [displayId]="editorService.form.controls.displayid.value"
-                [itemClass]="editorService.form.controls.class.value"
-                [itemInventoryType]="editorService.form.controls.InventoryType.value"
-              />
+              @if (mountDisplayId) {
+                <keira-model-3d-viewer [viewerType]="NPC_VIEWER_TYPE" [displayId]="mountDisplayId" />
+              } @else {
+                <keira-model-3d-viewer
+                  [viewerType]="ITEM_VIEWER_TYPE"
+                  [displayId]="editorService.form.controls.displayid.value"
+                  [itemClass]="editorService.form.controls.class.value"
+                  [itemInventoryType]="editorService.form.controls.InventoryType.value"
+                />
+              }
             </div>
           </div>
         </div>

@@ -1,10 +1,10 @@
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { SmartScripts } from '@keira/shared/acore-world-model';
-import { from, map, Observable, of, tap } from 'rxjs';
-import { Delete, Insert, Squel, Update } from 'squel';
+import { ConfigService } from '@keira/shared/common-services';
 import { squelConfig } from '@keira/shared/config';
 import { MaxRow, QuestReputationReward, TableRow } from '@keira/shared/constants';
-import { ConfigService } from '@keira/shared/common-services';
+import { from, map, Observable, of, tap } from 'rxjs';
+import { Delete, Insert, Squel, Update } from 'squel';
 import { MysqlService } from '../mysql.service';
 import { BaseQueryService } from './base-query.service';
 
@@ -445,5 +445,13 @@ export class MysqlQueryService extends BaseQueryService {
 
   getText1ById(id: string | number): Promise<string> {
     return this.queryValueToPromiseCached('getText1ById', String(id), `SELECT text0_1 AS v FROM npc_text WHERE ID = ${id}`);
+  }
+
+  getCreatureDisplayIdById(creatureId: string | number): Promise<number> {
+    return this.queryValueToPromiseCached(
+      'getCreatureDisplayIdById',
+      String(creatureId),
+      `SELECT CreatureDisplayID AS v FROM creature_template_model WHERE CreatureID=${creatureId}`,
+    );
   }
 }
