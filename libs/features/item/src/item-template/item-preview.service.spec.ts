@@ -1,15 +1,15 @@
-import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ITEM_FLAG, ITEM_TYPE, ITEMS_QUALITY, ItemTemplate } from '@keira/shared/acore-world-model';
+import { TableRow } from '@keira/shared/constants';
 import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
 import { ToastrService } from 'ngx-toastr';
 import { lastValueFrom, Observable, of } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
 import { ItemHandlerService } from '../item-handler.service';
 import { ItemPreviewService } from './item-preview.service';
-import { TableRow } from '@keira/shared/constants';
 
 describe('ItemPreviewService', () => {
   interface Lock extends TableRow {
@@ -413,6 +413,19 @@ describe('ItemPreviewService', () => {
     service['getItemEnchantmentConditionById'](id);
     expect(sqliteQueryService.query).toHaveBeenCalledTimes(1);
     expect(sqliteQueryService.query).toHaveBeenCalledWith(`SELECT * FROM item_enchantment_condition WHERE id = ${id}`);
+  });
+
+  it('getMountDisplayId', async () => {
+    const getCreatureEntryByMountSpellIdSpy = spyOn(sqliteQueryService, 'getCreatureEntryByMountSpellId').and.returnValue(
+      Promise.resolve(123),
+    );
+    const getCreatureDisplayIdByIdSpy = spyOn(mysqlQueryService, 'getCreatureDisplayIdById').and.returnValue(Promise.resolve(456));
+
+    const res = await service['getMountDisplayId'](id);
+
+    expect(getCreatureEntryByMountSpellIdSpy).toHaveBeenCalledOnceWith(id);
+    expect(getCreatureDisplayIdByIdSpy).toHaveBeenCalledOnceWith(123);
+    expect(res).toBe(456);
   });
 
   const cases = [

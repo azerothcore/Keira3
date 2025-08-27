@@ -14,6 +14,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { lastValueFrom, of } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
 import { ItemHandlerService } from '../item-handler.service';
+import { ItemPreviewService } from './item-preview.service';
 import { ItemTemplateComponent } from './item-template.component';
 
 class ItemTemplatePage extends EditorPageObject<ItemTemplateComponent> {
@@ -102,6 +103,7 @@ describe('ItemTemplate integration tests', () => {
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
+    const itemPreviewService = TestBed.inject(ItemPreviewService);
     const queryService = TestBed.inject(MysqlQueryService);
     const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
 
@@ -129,8 +131,9 @@ describe('ItemTemplate integration tests', () => {
     spyOn(sqliteQueryService, 'getIconByItemDisplayId').and.callFake(() => of('inv_axe_60'));
     spyOn(sqliteQueryService, 'queryValue').and.callFake(() => of('inv_axe_60' as any));
     spyOn(sqliteQueryService, 'query').and.callFake(() => of([{ name: 'test' }] as any));
+    spyOn(itemPreviewService, 'getMountDisplayId').and.callFake(() => Promise.resolve(123));
 
-    return { handlerService, queryService, querySpy, fixture, component, page, mysqlQueryService, sqliteQueryService };
+    return { handlerService, queryService, querySpy, fixture, component, page, mysqlQueryService, sqliteQueryService, itemPreviewService };
   }
 
   describe('Creating new', () => {
@@ -399,8 +402,8 @@ describe('ItemTemplate integration tests', () => {
       it('all fields', async () => {
         const { page, fixture } = setup(false);
         await tickAsync();
-        page.setInputValueById('class', 1);
-        page.setInputValueById('subclass', 2);
+        page.setInputValueById('class', 15);
+        page.setInputValueById('subclass', 5);
         page.setInputValueById('SoundOverrideSubclass', 3);
         page.setInputValueById('name', 'Helias item');
         page.setInputValueById('displayid', 4);

@@ -1,6 +1,6 @@
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideZonelessChangeDetection, signal } from '@angular/core';
+import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -39,16 +39,14 @@ describe('Model3DViewerComponent', () => {
     const fixture = TestBed.createComponent(Model3DViewerComponent);
     const component = fixture.componentInstance;
 
-    (component as any).displayId = signal(displayId);
-    (component as any).viewerType = signal(viewerType);
-    (component as any).itemClass = signal(itemClass);
-    (component as any).itemInventoryType = signal(itemInventoryType);
+    fixture.componentRef.setInput('displayId', displayId);
+    fixture.componentRef.setInput('viewerType', viewerType);
+    fixture.componentRef.setInput('itemClass', itemClass);
+    fixture.componentRef.setInput('itemInventoryType', itemInventoryType);
 
     const queryService = TestBed.inject(MysqlQueryService);
     const httpTestingController = TestBed.inject(HttpTestingController);
     const setupViewer3DSpy = spyOn<any>(component, 'setupViewer3D').and.callFake(() => {});
-
-    fixture.detectChanges();
 
     setupViewer3DSpy.calls.reset();
 
@@ -69,10 +67,11 @@ describe('Model3DViewerComponent', () => {
 
   describe('ngOnChanges', () => {
     it('does not run due to missing jQuery', () => {
-      const { component } = setup();
+      const { component, fixture } = setup();
       (component as any).windowRef.jQuery = undefined;
-      (component as any).displayId = () => 2;
-      (component as any).viewerType = () => VIEWER_TYPE.NPC;
+      fixture.componentRef.setInput('displayId', 2);
+      fixture.componentRef.setInput('viewerType', VIEWER_TYPE.NPC);
+
       const resetModel3dElementSpy = spyOn<any>(component, 'resetModel3dElement');
       const show3DmodelSpy = spyOn<any>(component, 'show3Dmodel');
 
@@ -83,10 +82,10 @@ describe('Model3DViewerComponent', () => {
     });
 
     it('should call show3Dmodel if jQuery is present and displayId changed', (done) => {
-      const { component } = setup();
+      const { component, fixture } = setup();
       (component as any).windowRef.jQuery = () => {};
-      (component as any).displayId = () => 2;
-      (component as any).viewerType = () => VIEWER_TYPE.NPC;
+      fixture.componentRef.setInput('displayId', 2);
+      fixture.componentRef.setInput('viewerType', VIEWER_TYPE.NPC);
 
       spyOn<any>(component, 'show3Dmodel').and.callFake(() => {
         expect(true).toBeTrue();
@@ -109,10 +108,10 @@ describe('Model3DViewerComponent', () => {
 
   describe('viewerDynamic', () => {
     it('should call show3Dmodel when loadedViewer$ emits true', () => {
-      const { component } = setup();
-      (component as any).itemInventoryType = signal(1);
-      (component as any).itemClass = signal(2);
-      (component as any).viewerType = signal(VIEWER_TYPE.ITEM);
+      const { component, fixture } = setup();
+      fixture.componentRef.setInput('itemInventoryType', 1);
+      fixture.componentRef.setInput('itemClass', 2);
+      fixture.componentRef.setInput('viewerType', VIEWER_TYPE.ITEM);
       spyOn<any>(component, 'show3Dmodel');
       component['loadedViewer$'].next(true);
 
@@ -126,8 +125,8 @@ describe('Model3DViewerComponent', () => {
 
   describe('show3Dmodel', () => {
     it('generate3Dmodel for non-item', () => {
-      const { component } = setup();
-      (component as any).viewerType = signal(VIEWER_TYPE.NPC);
+      const { component, fixture } = setup();
+      fixture.componentRef.setInput('viewerType', VIEWER_TYPE.NPC);
       spyOn<any>(component, 'generate3Dmodel');
 
       component['show3Dmodel']();
@@ -136,8 +135,8 @@ describe('Model3DViewerComponent', () => {
     });
 
     it('handles the item 3D model', (done) => {
-      const { component } = setup();
-      (component as any).viewerType = signal(VIEWER_TYPE.ITEM);
+      const { component, fixture } = setup();
+      fixture.componentRef.setInput('viewerType', VIEWER_TYPE.ITEM);
       const subscriptionAddSpy = spyOn<any>(component['subscriptions'], 'add');
       const mockItemData$ = of([{ entry: 123 }]);
       spyOn<any>(component, 'getItemData$').and.returnValue(mockItemData$);
@@ -155,16 +154,16 @@ describe('Model3DViewerComponent', () => {
 
   describe('getContentPathUrl', () => {
     it('returns armor URL', () => {
-      const { component } = setup();
-      (component as any).displayId = signal(mockDisplayId);
+      const { component, fixture } = setup();
+      fixture.componentRef.setInput('displayId', mockDisplayId);
 
       expect(component['getContentPathUrl'](3)).toBe(`${CONTENT_WOTLK}meta/armor/3/${mockDisplayId}.json`);
       expect(component['getContentPathUrl'](4)).toBe(`${CONTENT_WOTLK}meta/armor/4/${mockDisplayId}.json`);
     });
 
     it('returns item URL', () => {
-      const { component } = setup();
-      (component as any).displayId = signal(mockDisplayId);
+      const { component, fixture } = setup();
+      fixture.componentRef.setInput('displayId', mockDisplayId);
 
       expect(component['getContentPathUrl'](1)).toBe(`${CONTENT_WOTLK}meta/item/${mockDisplayId}.json`);
     });
@@ -172,54 +171,54 @@ describe('Model3DViewerComponent', () => {
 
   describe('getModelType', () => {
     it('uses default params', () => {
-      const { component } = setup();
-      (component as any).itemInventoryType = signal(1);
-      (component as any).itemClass = signal(2);
-      (component as any).viewerType = signal(VIEWER_TYPE.ITEM);
+      const { component, fixture } = setup();
+      fixture.componentRef.setInput('itemInventoryType', 1);
+      fixture.componentRef.setInput('itemClass', 2);
+      fixture.componentRef.setInput('viewerType', VIEWER_TYPE.ITEM);
 
       expect(component['getModelType']()).toBe(MODEL_TYPE.WEAPON);
     });
 
     it('uses custom params', () => {
-      const { component } = setup();
-      (component as any).itemInventoryType = signal(1);
-      (component as any).itemClass = signal(2);
-      (component as any).viewerType = signal(VIEWER_TYPE.ITEM);
+      const { component, fixture } = setup();
+      fixture.componentRef.setInput('itemInventoryType', 1);
+      fixture.componentRef.setInput('itemClass', 2);
+      fixture.componentRef.setInput('viewerType', VIEWER_TYPE.ITEM);
 
       expect(component['getModelType'](3, InventoryType.HEAD)).toBe(MODEL_TYPE.HELMET);
       expect(component['getModelType'](3, InventoryType.SHOULDERS)).toBe(MODEL_TYPE.SHOULDER);
     });
 
     it('returns object', () => {
-      const { component } = setup();
-      (component as any).viewerType = signal(VIEWER_TYPE.OBJECT);
+      const { component, fixture } = setup();
+      fixture.componentRef.setInput('viewerType', VIEWER_TYPE.OBJECT);
       expect(component['getModelType']()).toBe(MODEL_TYPE.OBJECT);
     });
 
     it('returns NPC', () => {
-      const { component } = setup();
-      (component as any).viewerType = signal(VIEWER_TYPE.NPC);
+      const { component, fixture } = setup();
+      fixture.componentRef.setInput('viewerType', VIEWER_TYPE.NPC);
       expect(component['getModelType']()).toBe(MODEL_TYPE.NPC);
     });
 
     it('returns CHARACTER', () => {
-      const { component } = setup();
-      (component as any).viewerType = signal(VIEWER_TYPE.ITEM);
+      const { component, fixture } = setup();
+      fixture.componentRef.setInput('viewerType', VIEWER_TYPE.ITEM);
       expect(component['getModelType'](4, InventoryType.FEET)).toBe(MODEL_TYPE.CHARACTER);
     });
 
     it('returns -1', () => {
-      const { component } = setup();
-      (component as any).viewerType = signal(VIEWER_TYPE.ITEM);
+      const { component, fixture } = setup();
+      fixture.componentRef.setInput('viewerType', VIEWER_TYPE.ITEM);
       expect(component['getModelType'](4, InventoryType.NECK)).toBe(-1);
     });
   });
 
   it('getItemData$', () => {
-    const { component, queryService } = setup();
+    const { component, queryService, fixture } = setup();
     const mockObj = of({} as any);
     spyOn(queryService, 'query').and.returnValue(mockObj);
-    (component as any).displayId = signal(mockDisplayId);
+    fixture.componentRef.setInput('displayId', mockDisplayId);
 
     expect(component['getItemData$']()).toBe(mockObj);
     expect(queryService.query).toHaveBeenCalledOnceWith(
@@ -229,10 +228,10 @@ describe('Model3DViewerComponent', () => {
 
   describe('verifyModelAndLoad', () => {
     it('succeed', () => {
-      const { component, httpTestingController } = setup();
+      const { component, httpTestingController, fixture } = setup();
       const mockUrl = 'www.mock.com';
       const mockModelType = 2;
-      (component as any).displayId = signal(mockDisplayId);
+      fixture.componentRef.setInput('displayId', mockDisplayId);
       spyOn<any>(component, 'getContentPathUrl').and.returnValue(mockUrl);
       spyOn<any>(component, 'generate3Dmodel');
       spyOn<any>(component, 'getModelType').and.returnValue(mockModelType);
@@ -278,11 +277,12 @@ describe('Model3DViewerComponent', () => {
       itemInventoryType: InventoryType.HANDS,
     };
     it('should update CREATURE_GENDER and call show3Dmodel when raceControl changes and model type is CHARACTER', () => {
-      const { component } = setup(charConf);
+      const { component, fixture } = setup(charConf);
       spyOn<any>(component, 'getModelType').and.returnValue(MODEL_TYPE.CHARACTER);
       spyOn<any>(component, 'show3Dmodel');
       const setSpy = spyOn<any>(component['CREATURE_GENDER'], 'set');
 
+      fixture.detectChanges();
       component['raceControl'].setValue(Race.ORC);
 
       expect(setSpy).toHaveBeenCalledOnceWith([
@@ -293,11 +293,12 @@ describe('Model3DViewerComponent', () => {
     });
 
     it('should update CREATURE_RACE and call show3Dmodel when genderControl changes and model type is CHARACTER', () => {
-      const { component } = setup(charConf);
+      const { component, fixture } = setup(charConf);
       spyOn<any>(component, 'getModelType').and.returnValue(MODEL_TYPE.CHARACTER);
       spyOn<any>(component, 'show3Dmodel');
       const setSpy = spyOn<any>(component['CREATURE_RACE'], 'set');
 
+      fixture.detectChanges();
       component['genderControl'].setValue(Gender.FEMALE);
 
       expect(setSpy).toHaveBeenCalled();
@@ -310,6 +311,7 @@ describe('Model3DViewerComponent', () => {
       spyOn<any>(component, 'show3Dmodel');
       const setSpy = spyOn<any>(component['CREATURE_GENDER'], 'set');
 
+      component['initRaceGenderControls']();
       component['raceControl'].setValue(Race.ORC);
 
       expect(setSpy).not.toHaveBeenCalled();
@@ -322,6 +324,7 @@ describe('Model3DViewerComponent', () => {
       spyOn<any>(component, 'show3Dmodel');
       const setSpy = spyOn<any>(component['CREATURE_RACE'], 'set');
 
+      component['initRaceGenderControls']();
       component['genderControl'].setValue(Gender.FEMALE);
 
       expect(setSpy).not.toHaveBeenCalled();

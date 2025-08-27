@@ -1,11 +1,11 @@
-import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { SqliteQueryService } from './sqlite-query.service';
 
-import { SqliteService } from '../sqlite.service';
 import { instance, mock } from 'ts-mockito';
+import { SqliteService } from '../sqlite.service';
 
 describe('SqliteQueryService', () => {
   let service: SqliteQueryService;
@@ -100,6 +100,7 @@ describe('SqliteQueryService', () => {
       { name: 'getEventNameByHolidayId', query: `SELECT name AS v FROM holiday WHERE id = ${id}` },
       { name: 'getSocketBonusById', query: `SELECT name AS v FROM item_enchantment WHERE id = ${id}` },
       { name: 'getSpellDescriptionById', query: `SELECT Description AS v FROM spells WHERE id = ${id}` },
+      { name: 'getCreatureEntryByMountSpellId', query: `SELECT EffectMiscValue_0 AS v FROM spells_effects WHERE SpellID=${id}` },
     ];
     for (const test of cases) {
       it(test.name, async () => {
