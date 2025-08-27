@@ -2,18 +2,20 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideZonelessChangeDetection, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import { MysqlQueryService } from '@keira/shared/db-layer';
+import { GenericOptionIconSelectorComponent } from '@keira/shared/selectors';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { of } from 'rxjs';
 import { Model3DViewerComponent } from './model-3d-viewer.component';
-import { CONTENT_WOTLK, InventoryType, MODEL_TYPE, VIEWER_TYPE } from './model-3d-viewer.model';
+import { CONTENT_WOTLK, Gender, InventoryType, MODEL_TYPE, Race, VIEWER_TYPE } from './model-3d-viewer.model';
 
 describe('Model3DViewerComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), Model3DViewerComponent],
+      imports: [ModalModule.forRoot(), ReactiveFormsModule, GenericOptionIconSelectorComponent, Model3DViewerComponent],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
@@ -26,9 +28,22 @@ describe('Model3DViewerComponent', () => {
 
   const mockDisplayId = 1;
 
-  function setup() {
+  function setup(
+    { displayId, viewerType, itemClass, itemInventoryType } = {
+      displayId: 2,
+      viewerType: VIEWER_TYPE.ITEM,
+      itemClass: 10,
+      itemInventoryType: InventoryType.HEAD,
+    },
+  ) {
     const fixture = TestBed.createComponent(Model3DViewerComponent);
     const component = fixture.componentInstance;
+
+    (component as any).displayId = signal(displayId);
+    (component as any).viewerType = signal(viewerType);
+    (component as any).itemClass = signal(itemClass);
+    (component as any).itemInventoryType = signal(itemInventoryType);
+
     const queryService = TestBed.inject(MysqlQueryService);
     const httpTestingController = TestBed.inject(HttpTestingController);
     const setupViewer3DSpy = spyOn<any>(component, 'setupViewer3D').and.callFake(() => {});
@@ -252,6 +267,65 @@ describe('Model3DViewerComponent', () => {
       component['resetModel3dElement']();
 
       expect(component['models3D'][0].destroy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('initRaceGenderControls', () => {
+    const charConf = {
+      displayId: 2,
+      viewerType: VIEWER_TYPE.ITEM,
+      itemClass: 10,
+      itemInventoryType: InventoryType.HANDS,
+    };
+    it('should update CREATURE_GENDER and call show3Dmodel when raceControl changes and model type is CHARACTER', () => {
+      const { component } = setup(charConf);
+      spyOn<any>(component, 'getModelType').and.returnValue(MODEL_TYPE.CHARACTER);
+      spyOn<any>(component, 'show3Dmodel');
+      const setSpy = spyOn<any>(component['CREATURE_GENDER'], 'set');
+
+      component['raceControl'].setValue(Race.ORC);
+
+      expect(setSpy).toHaveBeenCalledOnceWith([
+        { value: 0, name: 'Male', icon: `race/${Race.ORC}-0.gif` },
+        { value: 1, name: 'Female', icon: `race/${Race.ORC}-1.gif` },
+      ]);
+      expect(component['show3Dmodel']).toHaveBeenCalledTimes(1);
+    });
+
+    it('should update CREATURE_RACE and call show3Dmodel when genderControl changes and model type is CHARACTER', () => {
+      const { component } = setup(charConf);
+      spyOn<any>(component, 'getModelType').and.returnValue(MODEL_TYPE.CHARACTER);
+      spyOn<any>(component, 'show3Dmodel');
+      const setSpy = spyOn<any>(component['CREATURE_RACE'], 'set');
+
+      component['genderControl'].setValue(Gender.FEMALE);
+
+      expect(setSpy).toHaveBeenCalled();
+      expect(component['show3Dmodel']).toHaveBeenCalled();
+    });
+
+    it('should not update CREATURE_GENDER or call show3Dmodel if getModelType is not CHARACTER (raceControl)', () => {
+      const { component } = setup(charConf);
+      spyOn<any>(component, 'getModelType').and.returnValue(MODEL_TYPE.NPC);
+      spyOn<any>(component, 'show3Dmodel');
+      const setSpy = spyOn<any>(component['CREATURE_GENDER'], 'set');
+
+      component['raceControl'].setValue(Race.ORC);
+
+      expect(setSpy).not.toHaveBeenCalled();
+      expect(component['show3Dmodel']).not.toHaveBeenCalled();
+    });
+
+    it('should not update CREATURE_RACE or call show3Dmodel if getModelType is not CHARACTER (genderControl)', () => {
+      const { component } = setup(charConf);
+      spyOn<any>(component, 'getModelType').and.returnValue(MODEL_TYPE.NPC);
+      spyOn<any>(component, 'show3Dmodel');
+      const setSpy = spyOn<any>(component['CREATURE_RACE'], 'set');
+
+      component['genderControl'].setValue(Gender.FEMALE);
+
+      expect(setSpy).not.toHaveBeenCalled();
+      expect(component['show3Dmodel']).not.toHaveBeenCalled();
     });
   });
 });

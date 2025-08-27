@@ -29,6 +29,7 @@ declare const ZamModelViewer: any;
   selector: 'keira-model-3d-viewer',
   templateUrl: './model-3d-viewer.component.html',
   imports: [GenericOptionIconSelectorComponent],
+  standalone: true,
 })
 export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   private readonly queryService = inject(MysqlQueryService);
@@ -190,7 +191,8 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
     itemClass = this.itemClass(),
     itemInventoryType: InventoryType | undefined = this.itemInventoryType(),
   ): MODEL_TYPE | -1 {
-    if (this.viewerType() === VIEWER_TYPE.ITEM) {
+    const viewerType = this.viewerType();
+    if (viewerType === VIEWER_TYPE.ITEM) {
       const _class = itemClass;
       if (_class === 2) {
         return MODEL_TYPE.WEAPON;
@@ -209,11 +211,11 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
       }
     }
 
-    if (this.viewerType() === VIEWER_TYPE.OBJECT) {
+    if (viewerType === VIEWER_TYPE.OBJECT) {
       return MODEL_TYPE.OBJECT;
     }
 
-    if (this.viewerType() === VIEWER_TYPE.NPC) {
+    if (viewerType === VIEWER_TYPE.NPC) {
       return MODEL_TYPE.NPC;
     }
 
@@ -261,6 +263,10 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   private initRaceGenderControls(): void {
     this.subscriptions.add(
       this.raceControl.valueChanges.subscribe(() => {
+        if (this.getModelType() !== MODEL_TYPE.CHARACTER) {
+          return;
+        }
+
         this.CREATURE_GENDER.set([
           { value: 0, name: 'Male', icon: `race/${this.raceControl.value}-0.gif` },
           { value: 1, name: 'Female', icon: `race/${this.raceControl.value}-1.gif` },
@@ -271,6 +277,11 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
 
     this.subscriptions.add(
       this.genderControl.valueChanges.subscribe(() => {
+        if (this.getModelType() !== MODEL_TYPE.CHARACTER) {
+          return;
+        }
+
+        /* istanbul ignore next */
         const prevValue = !this.genderControl.value ? 1 : 0;
         this.CREATURE_RACE.set(
           CREATURE_RACE_OPTION_ICON.map((option) => ({

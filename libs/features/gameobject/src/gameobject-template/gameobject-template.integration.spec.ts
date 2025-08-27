@@ -2,6 +2,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { GameobjectTemplate } from '@keira/shared/acore-world-model';
@@ -47,7 +48,14 @@ describe('GameobjectTemplate integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), GameobjectTemplateComponent, RouterTestingModule, TranslateTestingModule],
+      imports: [
+        ToastrModule.forRoot(),
+        ModalModule.forRoot(),
+        GameobjectTemplateComponent,
+        RouterTestingModule,
+        TranslateTestingModule,
+        ReactiveFormsModule,
+      ],
       declarations: [MockComponent(Model3DViewerComponent)],
       providers: [
         provideZonelessChangeDetection(),

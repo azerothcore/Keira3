@@ -2,6 +2,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { CreatureTemplateModel } from '@keira/shared/acore-world-model';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
@@ -27,7 +28,7 @@ describe('CreatureTemplateModel integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureTemplateModelComponent, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureTemplateModelComponent, TranslateTestingModule, ReactiveFormsModule],
       declarations: [MockComponent(Model3DViewerComponent)],
       providers: [
         provideZonelessChangeDetection(),
