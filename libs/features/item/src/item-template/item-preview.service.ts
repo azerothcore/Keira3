@@ -1414,8 +1414,8 @@ export class ItemPreviewService {
     return tmpItemPreview;
   }
 
-  async getMountDisplayId(spellId: number): Promise<number> {
-    const creatureId = await this.sqliteQueryService.getCreatureEntryByMountSpellId(spellId);
+  async getNpcDisplayIdBySpell(spellId: number): Promise<number> {
+    const creatureId = await this.sqliteQueryService.getCreatureEntryByItemSpellId(spellId);
     const creatureDisplayId = await this.mysqlQueryService.getCreatureDisplayIdById(creatureId);
     return creatureDisplayId;
   }

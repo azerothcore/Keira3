@@ -776,8 +776,8 @@
             <div class="item-stats">
               <div [innerHTML]="itemPreview"></div>
               <br />
-              @if (mountDisplayId) {
-                <keira-model-3d-viewer [viewerType]="NPC_VIEWER_TYPE" [displayId]="mountDisplayId" />
+              @if (npcDisplayId) {
+                <keira-model-3d-viewer [viewerType]="NPC_VIEWER_TYPE" [displayId]="npcDisplayId" />
               } @else {
                 <keira-model-3d-viewer
                   [viewerType]="ITEM_VIEWER_TYPE"

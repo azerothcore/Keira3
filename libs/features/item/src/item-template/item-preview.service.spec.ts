@@ -415,15 +415,15 @@ describe('ItemPreviewService', () => {
     expect(sqliteQueryService.query).toHaveBeenCalledWith(`SELECT * FROM item_enchantment_condition WHERE id = ${id}`);
   });
 
-  it('getMountDisplayId', async () => {
-    const getCreatureEntryByMountSpellIdSpy = spyOn(sqliteQueryService, 'getCreatureEntryByMountSpellId').and.returnValue(
+  it('getCreatureEntryByItemSpellId', async () => {
+    const getCreatureEntryByItemSpellIdSpy = spyOn(sqliteQueryService, 'getCreatureEntryByItemSpellId').and.returnValue(
       Promise.resolve(123),
     );
     const getCreatureDisplayIdByIdSpy = spyOn(mysqlQueryService, 'getCreatureDisplayIdById').and.returnValue(Promise.resolve(456));
 
-    const res = await service['getMountDisplayId'](id);
+    const res = await service['getNpcDisplayIdBySpell'](id);
 
-    expect(getCreatureEntryByMountSpellIdSpy).toHaveBeenCalledOnceWith(id);
+    expect(getCreatureEntryByItemSpellIdSpy).toHaveBeenCalledOnceWith(id);
     expect(getCreatureDisplayIdByIdSpy).toHaveBeenCalledOnceWith(123);
     expect(res).toBe(456);
   });

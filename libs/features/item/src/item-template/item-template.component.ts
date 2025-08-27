@@ -109,7 +109,7 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
   readonly SPELL_TRIGGERS = SPELL_TRIGGERS;
 
   protected showItemPreview = true;
-  protected mountDisplayId: number | undefined;
+  protected npcDisplayId: number | undefined;
 
   public itemPreview: SafeHtml = this.sanitizer.bypassSecurityTrustHtml('loading...');
 
@@ -118,12 +118,12 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
       await this.itemPreviewService.calculatePreview(this.editorService.form.getRawValue()),
     );
 
-    const isMount =
+    const isNpc =
       this.editorService.form.controls.class.value === 15 &&
-      this.editorService.form.controls.subclass.value === 5 &&
+      (this.editorService.form.controls.subclass.value === 5 || this.editorService.form.controls.subclass.value === 2) &&
       this.editorService.form.controls.spellid_2.value;
-    if (isMount) {
-      this.mountDisplayId = await this.itemPreviewService.getMountDisplayId(this.editorService.form.controls.spellid_2.value);
+    if (isNpc) {
+      this.npcDisplayId = await this.itemPreviewService.getNpcDisplayIdBySpell(this.editorService.form.controls.spellid_2.value);
     }
 
     this.changeDetectorRef.markForCheck();

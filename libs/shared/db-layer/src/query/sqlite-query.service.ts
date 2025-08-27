@@ -138,9 +138,9 @@ export class SqliteQueryService extends BaseQueryService {
     );
   }
 
-  getCreatureEntryByMountSpellId(SpellID: number): Promise<number> {
+  getCreatureEntryByItemSpellId(SpellID: number): Promise<number> {
     return this.queryValueToPromiseCached<number>(
-      'getCreatureEntryByMountSpellId',
+      'getCreatureEntryByItemSpellId',
       String(SpellID),
       `SELECT EffectMiscValue_0 AS v FROM spells_effects WHERE SpellID=${SpellID}`,
     );
