@@ -8,9 +8,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { GameobjectTemplate } from '@keira/shared/acore-world-model';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
-import { Model3DViewerComponent } from '@keira/shared/model-3d-viewer';
+import { Model3DViewerService } from '@keira/shared/model-3d-viewer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
-import { MockComponent } from 'ng-mocks';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
@@ -28,6 +27,7 @@ describe('GameobjectTemplate integration tests', () => {
   let querySpy: Spy;
   let handlerService: GameobjectHandlerService;
   let page: GameobjectTemplatePage;
+  let model3DViewerService: Model3DViewerService;
 
   const id = 1234;
   const expectedFullCreateQuery =
@@ -56,7 +56,6 @@ describe('GameobjectTemplate integration tests', () => {
         TranslateTestingModule,
         ReactiveFormsModule,
       ],
-      declarations: [MockComponent(Model3DViewerComponent)],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
@@ -77,6 +76,9 @@ describe('GameobjectTemplate integration tests', () => {
 
     queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+
+    model3DViewerService = TestBed.inject(Model3DViewerService);
+    spyOn(model3DViewerService, 'generateModels').and.returnValue(new Promise((resolve) => resolve({ destroy: () => {} })));
 
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
 

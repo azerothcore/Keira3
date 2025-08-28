@@ -8,7 +8,7 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
 import { GenericOptionIconSelectorComponent } from '@keira/shared/selectors';
 import * as jquery from 'jquery';
 import { BehaviorSubject, catchError, filter, Observable, of, Subscription } from 'rxjs';
-import { generateModels, getShadowlandDisplayId } from './helper';
+import { getShadowlandDisplayId } from './helper';
 import {
   CHAR_DISPLAYABLE_INVENTORY_TYPE,
   CharacterOptions,
@@ -21,6 +21,7 @@ import {
   VIEWER_TYPE,
   WoWModel,
 } from './model-3d-viewer.model';
+import { Model3DViewerService } from './model-3d-viewer.service';
 
 declare const ZamModelViewer: any;
 
@@ -35,6 +36,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   private readonly queryService = inject(MysqlQueryService);
   private readonly http = inject(HttpClient);
   private readonly KEIRA_APP_CONFIG = inject(KEIRA_APP_CONFIG_TOKEN);
+  private readonly model3DViewerService = inject(Model3DViewerService);
 
   protected CREATURE_RACE = signal<Option[]>(CREATURE_RACE_OPTION_ICON);
   protected readonly raceControl = new FormControl<Race>(Race.HUMAN);
@@ -61,7 +63,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
 
   private readonly loadedViewer$ = new BehaviorSubject<boolean>(false);
   private readonly subscriptions = new Subscription();
-  private readonly models3D: any[] = []; // ZamModelViewer[]
+  private readonly models3D: (typeof ZamModelViewer)[] = [];
 
   private mutex3D = false;
 
@@ -172,7 +174,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
       } as WoWModel;
     }
 
-    generateModels(1, `#model_3d_${this.uniqueId}`, model, contentPath).then((WoWModel) => {
+    this.model3DViewerService.generateModels(1, `#model_3d_${this.uniqueId}`, model, contentPath).then((WoWModel) => {
       /* istanbul ignore next */
       this.models3D.push(WoWModel);
       this.mutex3D = false;
@@ -271,6 +273,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
           { value: 0, name: 'Male', icon: `race/${this.raceControl.value}-0.gif` },
           { value: 1, name: 'Female', icon: `race/${this.raceControl.value}-1.gif` },
         ]);
+
         this.show3Dmodel();
       }),
     );
@@ -289,6 +292,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
             icon: option.icon?.replace(`-${prevValue}.gif`, `-${this.genderControl.value}.gif`),
           })),
         );
+
         this.show3Dmodel();
       }),
     );

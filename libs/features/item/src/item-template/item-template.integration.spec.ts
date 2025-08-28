@@ -7,6 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ITEM_SUBCLASS, ItemTemplate, Lock } from '@keira/shared/acore-world-model';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
+import { Model3DViewerService } from '@keira/shared/model-3d-viewer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { tickAsync } from 'ngx-page-object-model';
@@ -104,14 +105,17 @@ describe('ItemTemplate integration tests', () => {
     handlerService.isNew = creatingNew;
 
     const itemPreviewService = TestBed.inject(ItemPreviewService);
+    const model3DViewerService = TestBed.inject(Model3DViewerService);
     const queryService = TestBed.inject(MysqlQueryService);
     const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
 
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
+    spyOn(model3DViewerService, 'generateModels').and.returnValue(new Promise((resolve) => resolve({ destroy: () => {} })));
 
     const fixture = TestBed.createComponent(ItemTemplateComponent);
     const component = fixture.componentInstance;
     const page = new ItemTemplatePage(fixture);
+
     fixture.detectChanges();
 
     const mysqlQueryService = TestBed.inject(MysqlQueryService);

@@ -4,9 +4,8 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FieldDefinition } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
-import { Model3DViewerComponent } from '@keira/shared/model-3d-viewer';
+import { Model3DViewerService } from '@keira/shared/model-3d-viewer';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
-import { MockComponent } from 'ng-mocks';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
@@ -22,11 +21,11 @@ describe('GameobjectComponent', () => {
   let queryService: MysqlQueryService;
   let gameobjectTemplateService: GameobjectTemplateService;
   let getFieldSpy: Spy;
+  let model3DViewerService: Model3DViewerService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ModalModule.forRoot(), ToastrModule.forRoot(), GameobjectTemplateComponent, RouterTestingModule, TranslateTestingModule],
-      declarations: [MockComponent(Model3DViewerComponent)],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations(), GameobjectHandlerService, SaiGameobjectHandlerService],
     }).compileComponents();
   });
@@ -34,6 +33,9 @@ describe('GameobjectComponent', () => {
   beforeEach(() => {
     queryService = TestBed.inject(MysqlQueryService);
     spyOn(queryService, 'query').and.returnValue(of());
+
+    model3DViewerService = TestBed.inject(Model3DViewerService);
+    spyOn(model3DViewerService, 'generateModels').and.returnValue(new Promise((resolve) => resolve({ destroy: () => {} })));
 
     fixture = TestBed.createComponent(GameobjectTemplateComponent);
     component = fixture.componentInstance;
