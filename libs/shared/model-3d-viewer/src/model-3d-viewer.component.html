@@ -1,1 +1,12 @@
-<div [id]="'model_3d_' + uniqueId"></div>
+<div [id]="`model_3d_${uniqueId}`"></div>
+
+@if (getModelType() === MODEL_TYPE_CHARACTER) {
+  <div style="height: 300px">
+    <div class="mt-3">
+      <keira-generic-option-icon-selector [control]="raceControl" [optionList]="CREATURE_RACE()" />
+    </div>
+    <div class="mt-3">
+      <keira-generic-option-icon-selector [control]="genderControl" [optionList]="CREATURE_GENDER()" />
+    </div>
+  </div>
+}

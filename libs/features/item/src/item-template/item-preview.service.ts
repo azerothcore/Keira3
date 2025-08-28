@@ -3,7 +3,7 @@
 //  - comments should be added to document what the code is actually doing
 //  - type errors should be fixed and any usage of "@ts-ignore" or "any" should be removed
 
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import {
   FACTION_RANK,
   ITEM_FLAG,
@@ -16,10 +16,10 @@ import {
 } from '@keira/shared/acore-world-model';
 import { CLASSES_TEXT, RACES_TEXT } from '@keira/shared/constants';
 import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
-import { ITEM_CONSTANTS } from './item-constants';
-import { gtCombatRatings, lvlIndepRating, MAX_LEVEL, resistanceFields } from './item-preview';
 import { PreviewHelperService } from '@keira/shared/preview';
 import { lastValueFrom } from 'rxjs';
+import { ITEM_CONSTANTS } from './item-constants';
+import { gtCombatRatings, lvlIndepRating, MAX_LEVEL, resistanceFields } from './item-preview';
 
 @Injectable({
   providedIn: 'root',
@@ -1412,5 +1412,11 @@ export class ItemPreviewService {
     }
 
     return tmpItemPreview;
+  }
+
+  async getNpcDisplayIdBySpell(spellId: number): Promise<number> {
+    const creatureId = await this.sqliteQueryService.getCreatureEntryByItemSpellId(spellId);
+    const creatureDisplayId = await this.mysqlQueryService.getCreatureDisplayIdById(creatureId);
+    return creatureDisplayId;
   }
 }

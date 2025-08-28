@@ -1,13 +1,13 @@
-import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { SmartScripts } from '@keira/shared/acore-world-model';
+import { ConfigService } from '@keira/shared/common-services';
+import { MaxRow, TableRow } from '@keira/shared/constants';
 import { lastValueFrom, of } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
-import { MaxRow, TableRow } from '@keira/shared/constants';
-import { ConfigService } from '@keira/shared/common-services';
-import { MysqlQueryService } from './mysql-query.service';
 import { MysqlService } from '../mysql.service';
+import { MysqlQueryService } from './mysql-query.service';
 
 interface MockRow extends TableRow {
   entry: number;
@@ -799,6 +799,7 @@ describe('MysqlQueryService', () => {
       { name: 'getItemNameByStartQuest', query: `SELECT name AS v FROM item_template WHERE startquest = ${id}` },
       { name: 'getText0ById', query: `SELECT text0_0 AS v FROM npc_text WHERE ID = ${id}` },
       { name: 'getText1ById', query: `SELECT text0_1 AS v FROM npc_text WHERE ID = ${id}` },
+      { name: 'getCreatureDisplayIdById', query: `SELECT CreatureDisplayID AS v FROM creature_template_model WHERE CreatureID=${id}` },
     ];
 
     for (const test of cases) {

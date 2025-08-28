@@ -1,10 +1,10 @@
-import { Injectable, inject } from '@angular/core';
-import { TableRow } from '@keira/shared/constants';
+import { inject, Injectable } from '@angular/core';
 import { ItemExtendedCost, Lock } from '@keira/shared/acore-world-model';
+import { ConfigService } from '@keira/shared/common-services';
+import { TableRow } from '@keira/shared/constants';
 import { from, Observable, of, shareReplay, tap } from 'rxjs';
 import { SqliteService } from '../sqlite.service';
 import { BaseQueryService } from './base-query.service';
-import { ConfigService } from '@keira/shared/common-services';
 
 @Injectable({
   providedIn: 'root',
@@ -135,6 +135,14 @@ export class SqliteQueryService extends BaseQueryService {
       'getItemExtendedCost',
       String(IDs.join(',')),
       `SELECT * FROM item_extended_cost WHERE id IN (${IDs.join(',')})`,
+    );
+  }
+
+  getCreatureEntryByItemSpellId(SpellID: number): Promise<number> {
+    return this.queryValueToPromiseCached<number>(
+      'getCreatureEntryByItemSpellId',
+      String(SpellID),
+      `SELECT EffectMiscValue_0 AS v FROM spells_effects WHERE SpellID=${SpellID}`,
     );
   }
 }

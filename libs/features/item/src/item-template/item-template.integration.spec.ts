@@ -1,20 +1,22 @@
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ITEM_SUBCLASS, ItemTemplate, Lock } from '@keira/shared/acore-world-model';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
+import { Model3DViewerService } from '@keira/shared/model-3d-viewer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { tickAsync } from 'ngx-page-object-model';
 import { ToastrModule } from 'ngx-toastr';
 import { lastValueFrom, of } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
 import { ItemHandlerService } from '../item-handler.service';
+import { ItemPreviewService } from './item-preview.service';
 import { ItemTemplateComponent } from './item-template.component';
-import { tickAsync } from 'ngx-page-object-model';
 
 class ItemTemplatePage extends EditorPageObject<ItemTemplateComponent> {
   get itemStats(): HTMLDivElement {
@@ -102,14 +104,18 @@ describe('ItemTemplate integration tests', () => {
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
+    const itemPreviewService = TestBed.inject(ItemPreviewService);
+    const model3DViewerService = TestBed.inject(Model3DViewerService);
     const queryService = TestBed.inject(MysqlQueryService);
     const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
 
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
+    spyOn(model3DViewerService, 'generateModels').and.returnValue(new Promise((resolve) => resolve({ destroy: () => {} })));
 
     const fixture = TestBed.createComponent(ItemTemplateComponent);
     const component = fixture.componentInstance;
     const page = new ItemTemplatePage(fixture);
+
     fixture.detectChanges();
 
     const mysqlQueryService = TestBed.inject(MysqlQueryService);
@@ -129,8 +135,9 @@ describe('ItemTemplate integration tests', () => {
     spyOn(sqliteQueryService, 'getIconByItemDisplayId').and.callFake(() => of('inv_axe_60'));
     spyOn(sqliteQueryService, 'queryValue').and.callFake(() => of('inv_axe_60' as any));
     spyOn(sqliteQueryService, 'query').and.callFake(() => of([{ name: 'test' }] as any));
+    spyOn(itemPreviewService, 'getNpcDisplayIdBySpell').and.callFake(() => Promise.resolve(123));
 
-    return { handlerService, queryService, querySpy, fixture, component, page, mysqlQueryService, sqliteQueryService };
+    return { handlerService, queryService, querySpy, fixture, component, page, mysqlQueryService, sqliteQueryService, itemPreviewService };
   }
 
   describe('Creating new', () => {
@@ -230,7 +237,7 @@ describe('ItemTemplate integration tests', () => {
       page.expectDiffQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();
-      expect(querySpy).toHaveBeenCalledTimes(2);
+      expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
     });
 
@@ -399,8 +406,8 @@ describe('ItemTemplate integration tests', () => {
       it('all fields', async () => {
         const { page, fixture } = setup(false);
         await tickAsync();
-        page.setInputValueById('class', 1);
-        page.setInputValueById('subclass', 2);
+        page.setInputValueById('class', 15);
+        page.setInputValueById('subclass', 5);
         page.setInputValueById('SoundOverrideSubclass', 3);
         page.setInputValueById('name', 'Helias item');
         page.setInputValueById('displayid', 4);
@@ -579,6 +586,22 @@ describe('ItemTemplate integration tests', () => {
           expect(itemStats).toContain('"123"');
           expect(itemStats).toContain('<Right Click To Read>');
           expect(itemStats).toContain('123 Charges');
+        });
+      });
+    });
+
+    describe('trigger npc 3d model viewer', () => {
+      it('should get the npc display id when subclass is pet (2)', async () => {
+        const { page, fixture, itemPreviewService } = setup(false);
+        await tickAsync();
+        page.setInputValueById('class', 15);
+        page.setInputValueById('subclass', 2);
+        page.setInputValueById('spellid_2', 123);
+
+        await tickAsync(400);
+
+        fixture.whenStable().then(() => {
+          expect(itemPreviewService.getNpcDisplayIdBySpell).toHaveBeenCalledOnceWith(123);
         });
       });
     });

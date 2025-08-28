@@ -29,11 +29,11 @@ import { GameobjectTemplateService } from './gameobject-template.service';
   ],
 })
 export class GameobjectTemplateComponent extends SingleRowEditorComponent<GameobjectTemplate> {
-  readonly GAMEOBJECT_TYPE = GAMEOBJECT_TYPE;
-  readonly GAMEOBJECT_ICON = GAMEOBJECT_ICON;
-  readonly OBJECT_VIEWER_TYPE = VIEWER_TYPE.OBJECT;
+  protected readonly GAMEOBJECT_TYPE = GAMEOBJECT_TYPE;
+  protected readonly GAMEOBJECT_ICON = GAMEOBJECT_ICON;
+  protected readonly OBJECT_VIEWER_TYPE = VIEWER_TYPE.OBJECT;
 
-  showGameobjectPreview = true;
+  protected showGameobjectPreview = true;
 
   protected override readonly editorService = inject(GameobjectTemplateService);
   readonly handlerService = inject(GameobjectHandlerService);

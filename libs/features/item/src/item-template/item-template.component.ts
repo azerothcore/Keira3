@@ -41,6 +41,7 @@ import {
   SkillSelectorBtnComponent,
   SpellSelectorBtnComponent,
 } from '@keira/shared/selectors';
+import { compareObjFn } from '@keira/shared/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
@@ -48,7 +49,6 @@ import { ItemHandlerService } from '../item-handler.service';
 import { SPELL_TRIGGERS } from './item-constants';
 import { ItemPreviewService } from './item-preview.service';
 import { ItemTemplateService } from './item-template.service';
-import { compareObjFn } from '@keira/shared/utils';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -105,9 +105,11 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
   readonly STAT_TYPE = STAT_TYPE;
   readonly PVP_RANK = PVP_RANK;
   readonly ITEM_VIEWER_TYPE = VIEWER_TYPE.ITEM;
+  readonly NPC_VIEWER_TYPE = VIEWER_TYPE.NPC;
   readonly SPELL_TRIGGERS = SPELL_TRIGGERS;
 
-  showItemPreview = true;
+  protected showItemPreview = true;
+  protected npcDisplayId: number | undefined;
 
   public itemPreview: SafeHtml = this.sanitizer.bypassSecurityTrustHtml('loading...');
 
@@ -115,6 +117,15 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     this.itemPreview = this.sanitizer.bypassSecurityTrustHtml(
       await this.itemPreviewService.calculatePreview(this.editorService.form.getRawValue()),
     );
+
+    const isNpc =
+      this.editorService.form.controls.class.value === 15 &&
+      (this.editorService.form.controls.subclass.value === 5 || this.editorService.form.controls.subclass.value === 2) &&
+      this.editorService.form.controls.spellid_2.value;
+    if (isNpc) {
+      this.npcDisplayId = await this.itemPreviewService.getNpcDisplayIdBySpell(this.editorService.form.controls.spellid_2.value);
+    }
+
     this.changeDetectorRef.markForCheck();
   }
 
