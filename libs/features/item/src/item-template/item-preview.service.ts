@@ -322,7 +322,7 @@ export class ItemPreviewService {
   }
 
   // todo (med): information will get lost if one vendor sells one item multiple times with different costs (e.g. for item 54637)
-  //             wowhead seems to have had the same issues
+  //             wowhead seems to have the same issues
   private async getExtendedCost(entry: number, flagsExtra: number, buyPrice: number): Promise<any[]> {
     if (!entry) {
       return [];

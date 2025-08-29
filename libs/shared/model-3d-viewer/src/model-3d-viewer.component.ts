@@ -243,7 +243,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
     const loadedViewer$ = this.loadedViewer$;
 
     if (typeof ZamModelViewer === 'undefined') {
-      jquery.getScript(`https://wow.zamimg.com/modelviewer/wrath/viewer/viewer.min.js`, function () {
+      jquery.getScript('https://wowgaming.altervista.org/modelviewer/scripts/viewer.min.js', function () {
         loadedViewer$.next(true);
       });
     } else {
