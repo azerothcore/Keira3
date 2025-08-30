@@ -7,8 +7,7 @@ export const enum VIEWER_TYPE {
   OBJECT,
 }
 
-// use the local web server to make all the http calls about modelviewer to bypass CORS
-export const CONTENT_WOTLK = 'http://localhost:3003/modelviewer/wrath/';
+export const CONTENT_WOTLK = 'https://wowgaming.altervista.org/modelviewer/data/get.php?path=';
 
 export const enum Gender {
   MALE = 0,
