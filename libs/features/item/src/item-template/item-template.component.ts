@@ -26,7 +26,7 @@ import {
 } from '@keira/shared/acore-world-model';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { IconComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
-import { Model3DViewerComponent, VIEWER_TYPE } from '@keira/shared/model-3d-viewer';
+import { InventoryType, Model3DViewerComponent, VIEWER_TYPE } from '@keira/shared/model-3d-viewer';
 import {
   AreaSelectorBtnComponent,
   FactionSelectorBtnComponent,
@@ -118,12 +118,19 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
       await this.itemPreviewService.calculatePreview(this.editorService.form.getRawValue()),
     );
 
+    const _class = this.editorService.form.controls.class.value;
+    const subclass = this.editorService.form.controls.subclass.value;
+    const inventoryType = this.editorService.form.controls.InventoryType.value;
+    const spellid_2 = this.editorService.form.controls.spellid_2.value;
+    const spellid_1 = this.editorService.form.controls.spellid_1.value;
+
     const isNpc =
-      this.editorService.form.controls.class.value === 15 &&
-      (this.editorService.form.controls.subclass.value === 5 || this.editorService.form.controls.subclass.value === 2) &&
-      this.editorService.form.controls.spellid_2.value;
+      _class === 15 &&
+      (subclass === 5 || subclass === 2 || subclass === 0) &&
+      (spellid_2 !== 0 || spellid_1 !== 0) &&
+      inventoryType === InventoryType.NON_EQUIP;
     if (isNpc) {
-      this.npcDisplayId = await this.itemPreviewService.getNpcDisplayIdBySpell(this.editorService.form.controls.spellid_2.value);
+      this.npcDisplayId = await this.itemPreviewService.getNpcDisplayIdBySpell(spellid_2 !== 0 ? spellid_2 : spellid_1);
     }
 
     this.changeDetectorRef.markForCheck();
