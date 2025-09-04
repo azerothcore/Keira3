@@ -591,12 +591,29 @@ describe('ItemTemplate integration tests', () => {
     });
 
     describe('trigger npc 3d model viewer', () => {
-      it('should get the npc display id when subclass is pet (2)', async () => {
+      for (const subclass of [2, 5, 0]) {
+        it(`should get the npc display id when subclass is ${subclass}`, async () => {
+          const { page, fixture, itemPreviewService } = setup(false);
+          await tickAsync();
+          page.setInputValueById('class', 15);
+          page.setInputValueById('subclass', subclass);
+          page.setInputValueById('spellid_2', 123);
+
+          await tickAsync(400);
+
+          fixture.whenStable().then(() => {
+            expect(itemPreviewService.getNpcDisplayIdBySpell).toHaveBeenCalledOnceWith(123);
+          });
+        });
+      }
+
+      it(`should get the npc display id when subclass is pet (2) and spellid_2 is 0 but spellid_1 is not`, async () => {
         const { page, fixture, itemPreviewService } = setup(false);
         await tickAsync();
         page.setInputValueById('class', 15);
         page.setInputValueById('subclass', 2);
-        page.setInputValueById('spellid_2', 123);
+        page.setInputValueById('spellid_2', 0);
+        page.setInputValueById('spellid_1', 123);
 
         await tickAsync(400);
 

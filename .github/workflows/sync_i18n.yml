@@ -17,7 +17,7 @@ jobs:
           ref: ${{ github.ref }} # Checkout the branch that triggered the workflow
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: '3.13'
 
