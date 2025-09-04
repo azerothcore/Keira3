@@ -130,7 +130,7 @@ describe('SaiHandlerService', () => {
         entryorguid: 123,
         name: mockName,
         returnValue: [],
-        expectedName: null as any,
+        expectedName: '',
         expectedQuery: 'SELECT name FROM creature_template WHERE entry = 123',
       },
       {
