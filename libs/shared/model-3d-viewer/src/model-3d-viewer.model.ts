@@ -140,6 +140,18 @@ export const enum InventoryType {
   RELIC = 28,
 }
 
+export const WEAPONS_INVENTORY_TYPE = [
+  InventoryType.WEAPON,
+  InventoryType.SHIELD,
+  InventoryType.RANGED,
+  InventoryType.TWO_HANDED_WEAPON,
+  InventoryType.WEAPON_MAIN_HAND,
+  InventoryType.WEAPON_OFF_HAND,
+  InventoryType.HELD_IN_OFF_HAND,
+  InventoryType.THROWN,
+  InventoryType.RANGED_RIGHT,
+];
+
 export const CHAR_DISPLAYABLE_INVENTORY_TYPE = [
   InventoryType.CHEST,
   InventoryType.CLOAK,

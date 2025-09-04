@@ -19,6 +19,7 @@ import {
   MODEL_TYPE,
   Race,
   VIEWER_TYPE,
+  WEAPONS_INVENTORY_TYPE,
   WoWModel,
 } from './model-3d-viewer.model';
 import { Model3DViewerService } from './model-3d-viewer.service';
@@ -110,8 +111,8 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
     );
   }
 
-  private verifyModelAndLoad({ entry, inventoryType, _class }: TableRow): void {
-    const modelType = this.getModelType(_class as number, inventoryType as number);
+  private verifyModelAndLoad({ entry, inventoryType }: TableRow): void {
+    const modelType = this.getModelType(inventoryType as number);
 
     this.subscriptions.add(
       this.http
@@ -189,14 +190,10 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
     return `${CONTENT_WOTLK}meta/item/${this.displayId()}.json`;
   }
 
-  protected getModelType(
-    itemClass = this.itemClass(),
-    itemInventoryType: InventoryType | undefined = this.itemInventoryType(),
-  ): MODEL_TYPE | -1 {
+  protected getModelType(itemInventoryType: InventoryType | undefined = this.itemInventoryType()): MODEL_TYPE | -1 {
     const viewerType = this.viewerType();
     if (viewerType === VIEWER_TYPE.ITEM) {
-      const _class = itemClass;
-      if (_class === 2) {
+      if (itemInventoryType && WEAPONS_INVENTORY_TYPE.includes(itemInventoryType)) {
         return MODEL_TYPE.WEAPON;
       }
 
