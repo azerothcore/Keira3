@@ -172,8 +172,7 @@ describe('Model3DViewerComponent', () => {
   describe('getModelType', () => {
     it('uses default params', () => {
       const { component, fixture } = setup();
-      fixture.componentRef.setInput('itemInventoryType', 1);
-      fixture.componentRef.setInput('itemClass', 2);
+      fixture.componentRef.setInput('itemInventoryType', 15);
       fixture.componentRef.setInput('viewerType', VIEWER_TYPE.ITEM);
 
       expect(component['getModelType']()).toBe(MODEL_TYPE.WEAPON);
@@ -185,8 +184,8 @@ describe('Model3DViewerComponent', () => {
       fixture.componentRef.setInput('itemClass', 2);
       fixture.componentRef.setInput('viewerType', VIEWER_TYPE.ITEM);
 
-      expect(component['getModelType'](3, InventoryType.HEAD)).toBe(MODEL_TYPE.HELMET);
-      expect(component['getModelType'](3, InventoryType.SHOULDERS)).toBe(MODEL_TYPE.SHOULDER);
+      expect(component['getModelType'](InventoryType.HEAD)).toBe(MODEL_TYPE.HELMET);
+      expect(component['getModelType'](InventoryType.SHOULDERS)).toBe(MODEL_TYPE.SHOULDER);
     });
 
     it('returns object', () => {
@@ -204,13 +203,13 @@ describe('Model3DViewerComponent', () => {
     it('returns CHARACTER', () => {
       const { component, fixture } = setup();
       fixture.componentRef.setInput('viewerType', VIEWER_TYPE.ITEM);
-      expect(component['getModelType'](4, InventoryType.FEET)).toBe(MODEL_TYPE.CHARACTER);
+      expect(component['getModelType'](InventoryType.FEET)).toBe(MODEL_TYPE.CHARACTER);
     });
 
     it('returns -1', () => {
       const { component, fixture } = setup();
       fixture.componentRef.setInput('viewerType', VIEWER_TYPE.ITEM);
-      expect(component['getModelType'](4, InventoryType.NECK)).toBe(-1);
+      expect(component['getModelType'](InventoryType.NECK)).toBe(-1);
     });
   });
 
@@ -236,7 +235,7 @@ describe('Model3DViewerComponent', () => {
       spyOn<any>(component, 'generate3Dmodel');
       spyOn<any>(component, 'getModelType').and.returnValue(mockModelType);
 
-      component['verifyModelAndLoad']({ entry: 1, inventoryType: 2, _class: 2 });
+      component['verifyModelAndLoad']({ entry: 1, inventoryType: 2 });
 
       const req = httpTestingController.expectOne(mockUrl);
       expect(req.request.method).toEqual('GET');
@@ -245,7 +244,7 @@ describe('Model3DViewerComponent', () => {
       httpTestingController.verify();
 
       expect(component['generate3Dmodel']).toHaveBeenCalledOnceWith(mockModelType, mockDisplayId);
-      expect(component['getModelType']).toHaveBeenCalledOnceWith(2, 2);
+      expect(component['getModelType']).toHaveBeenCalledOnceWith(2);
     });
   });
 
