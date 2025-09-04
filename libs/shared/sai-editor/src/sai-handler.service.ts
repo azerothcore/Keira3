@@ -67,7 +67,7 @@ export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
     }
   }
 
-  getName(): Observable<string | null> {
+  getName(): Observable<string> {
     const sai = this.parsedSelected as { entryorguid: number; source_type: number };
     let query: string;
 
@@ -95,7 +95,7 @@ export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
           return `${data[0].name}`;
         } else {
           console.error(`Unable to find name for source_type = ${sai.source_type}, entryorguid = ${sai.entryorguid}`);
-          return null;
+          return '';
         }
       }),
     );
