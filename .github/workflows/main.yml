@@ -67,7 +67,7 @@ jobs:
       - name: End-to-End tests
         uses: GabrielBB/xvfb-action@v1
         env:
-          ELECTRON_EXTRA_LAUNCH_ARGS: "--ozone-platform=x11"
+          ELECTRON_EXTRA_LAUNCH_ARGS: "--ozone-platform=x11 --disable-dev-shm-usage"
         with:
           run: npm run e2e
 
