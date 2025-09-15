@@ -67,6 +67,8 @@ import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
 import { EditorButtonsComponent, QueryOutputComponent } from '@keira/shared/base-editor-components';
 import { AsyncPipe } from '@angular/common';
+import { Observable } from 'rxjs';
+import { shareReplay } from 'rxjs/operators';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -90,6 +92,13 @@ import { AsyncPipe } from '@angular/common';
 export class SaiEditorComponent extends MultiRowEditorComponent<SmartScripts> implements OnInit {
   public override readonly editorService = inject(SaiEditorService);
   protected override readonly handlerService = inject(SaiHandlerService);
+
+  selectedName$!: Observable<string>;
+
+  override ngOnInit(): void {
+    super.ngOnInit();
+    this.selectedName$ = this.handlerService.getName().pipe(shareReplay(1));
+  }
 
   readonly EVENT_PHASE_MASK = EVENT_PHASE_MASK;
   readonly SMART_EVENT_FLAGS = SMART_EVENT_FLAGS;
