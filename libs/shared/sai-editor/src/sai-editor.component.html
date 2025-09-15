@@ -1,4 +1,4 @@
-<keira-sai-top-bar [isNew]="getHandler().isNew" [selected]="getHandler().selected" [selectedName]="selectedName$ | async" />
+<keira-sai-top-bar [isNew]="getHandler().isNew" [selected]="getHandler().selected" [selectedName]="getHandler().getName() | async" />
 
 <div class="container-fluid">
   @if (editorService.loading) {
