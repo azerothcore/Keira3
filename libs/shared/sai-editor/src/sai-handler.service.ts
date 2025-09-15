@@ -1,5 +1,5 @@
 import { inject, Injectable, signal, Signal } from '@angular/core';
-import { map, Observable, of } from 'rxjs';
+import { map, Observable, of, shareReplay } from 'rxjs';
 import { SAI_ID_FIELDS, SAI_TABLE, SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { ComplexKeyHandlerService } from '@keira/shared/base-abstract-classes';
 import { MysqlQueryService } from '@keira/shared/db-layer';
@@ -98,6 +98,7 @@ export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
           return '';
         }
       }),
+      shareReplay(1),
     );
   }
 }
