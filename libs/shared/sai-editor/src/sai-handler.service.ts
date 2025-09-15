@@ -1,5 +1,5 @@
 import { inject, Injectable, signal, Signal } from '@angular/core';
-import { map, Observable, of } from 'rxjs';
+import { map, Observable, of, shareReplay } from 'rxjs';
 import { SAI_ID_FIELDS, SAI_TABLE, SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { ComplexKeyHandlerService } from '@keira/shared/base-abstract-classes';
 import { MysqlQueryService } from '@keira/shared/db-layer';
@@ -11,6 +11,7 @@ export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
   protected readonly queryService = inject(MysqlQueryService);
   protected readonly mainEditorRoutePath = 'smart-ai/editors';
   protected readonly idFields = SAI_ID_FIELDS;
+  private nameQueryCache = new Map<string, Observable<string>>();
 
   get isSaiUnsaved(): Signal<boolean> {
     return this.statusMap[SAI_TABLE].asReadonly();
@@ -69,6 +70,10 @@ export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
 
   getName(): Observable<string> {
     const sai = this.parsedSelected as { entryorguid: number; source_type: number };
+    const cacheKey = `${sai.source_type}:${sai.entryorguid}`;
+    if (this.nameQueryCache.has(cacheKey)) {
+      return this.nameQueryCache.get(cacheKey)!;
+    }
     let query: string;
 
     if (sai.source_type === SAI_TYPES.SAI_TYPE_CREATURE || sai.source_type === SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST) {
@@ -88,8 +93,7 @@ export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
       console.error(`Unknown source_type`);
       return of(`Unknown source_type`);
     }
-
-    return this.queryService.query<{ name: string }>(query).pipe(
+    const observable = this.queryService.query<{ name: string }>(query).pipe(
       map((data) => {
         if (data.length > 0) {
           return `${data[0].name}`;
@@ -98,6 +102,9 @@ export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
           return '';
         }
       }),
+      shareReplay(1),
     );
+    this.nameQueryCache.set(cacheKey, observable);
+    return observable;
   }
 }
