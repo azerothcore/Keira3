@@ -75,6 +75,7 @@ export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
       return this.nameQueryCache.get(cacheKey)!;
     }
     let query: string;
+
     if (sai.source_type === SAI_TYPES.SAI_TYPE_CREATURE || sai.source_type === SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST) {
       if (sai.entryorguid < 0) {
         query = `SELECT ct.name FROM creature_template AS ct INNER JOIN creature AS c ON c.id1 = ct.entry WHERE c.guid = ${-sai.entryorguid}`;
