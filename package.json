@@ -135,7 +135,7 @@
     "ts-mockito": "2.6.1",
     "ts-node": "10.9.2",
     "typescript": "5.8.3",
-    "wait-on": "9.0.0",
+    "wait-on": "9.0.1",
     "webdriver-manager": "13.0.2"
   },
   "optionalDependencies": {
