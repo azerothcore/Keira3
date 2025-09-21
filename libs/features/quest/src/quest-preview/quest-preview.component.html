@@ -186,53 +186,13 @@
         </ul>
       }
 
-      <div id="objectives">
-        <p class="title">Objectives</p>
-
-        <div class="greyed text-sm">
-          {{ service.objectiveText }}
-        </div>
-        @if (!!service.questTemplate.AreaDescription) {
-          <p class="greyed text-sm mt-3" id="areaDescription">
-            {{ service.questTemplate.AreaDescription }}
-          </p>
-        }
-
-        <div class="mt-2" id="npcOrGoObjectives">
-          @for (i of [1, 2, 3, 4]; track i) {
-            @if (service.isNpcOrGoObj(i)) {
-              <p>
-                • <span class="colored">{{ !!service.getObjText(i) ? service.getObjText(i) : (service.getObjective$(i) | async) }}</span>
-                {{ service.getObjectiveCount(i) }}
-              </p>
-            }
-          }
-        </div>
-
-        <div class="mt-2" id="itemObjectives">
-          @for (i of [1, 2, 3, 4, 5, 6]; track i) {
-            @if (service.questTemplate['RequiredItemId' + i]; as reqItem) {
-              <p>
-                • <keira-icon [size]="'small'" [itemId]="reqItem" /> &nbsp;<span class="colored">{{
-                  service.mysqlQueryService.getItemNameById(reqItem) | async
-                }}</span>
-                {{ service.getObjItemCount(i) }}
-              </p>
-            }
-          }
-        </div>
-
-        <div class="mt-2" id="RequiredFaction">
-          @for (i of [1, 2]; track i) {
-            @if (service.questTemplate['RequiredFactionId' + i]; as reqFaction) {
-              <p>
-                • <span class="colored">{{ service.sqliteQueryService.getFactionNameById(reqFaction) | async }}</span>
-                {{ service.getFactionByValue(i) }}
-              </p>
-            }
-          }
-        </div>
-      </div>
+      <keira-quest-objectives
+        [objectiveText]="service.objectiveText"
+        [areaDescription]="service.questTemplate.AreaDescription"
+        [npcObjectives]="npcObjectivesData"
+        [itemObjectives]="itemObjectivesData"
+        [factionRequirements]="factionRequirementsData"
+      />
 
       <p class="title text-left cursor-pointer mt-3" (click)="descriptionToggle = !descriptionToggle" id="description-toggle">
         <i class="fa" [class.fa-caret-right]="descriptionToggle" [class.fa-caret-down]="!descriptionToggle"></i> Description
