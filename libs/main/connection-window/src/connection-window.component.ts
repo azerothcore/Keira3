@@ -34,6 +34,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
   error: QueryError | undefined;
   savePassword = true;
   rememberMe = true;
+  sslEnabled = false;
 
   get isRecentDropdownDisabled(): boolean {
     return !this.configs || this.configs.length === 0;
@@ -52,7 +53,11 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
 
     if (this.configs?.length > 0) {
       // get last saved config
-      this.form.setValue(this.configs[this.configs.length - 1]);
+      const lastConfig = this.configs[this.configs.length - 1];
+      this.form.setValue(lastConfig);
+
+      // Restore SSL preference if it was saved with the config
+      this.sslEnabled = !!(lastConfig as any).sslEnabled;
 
       if (!this.form.getRawValue().password) {
         this.savePassword = false;
@@ -66,6 +71,8 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
 
   loadConfig(config: Partial<ConnectionOptions>): void {
     this.form.setValue(config);
+    // Restore SSL preference if it was saved with the config
+    this.sslEnabled = !!(config as any).sslEnabled;
   }
 
   removeAllConfigs(): void {
@@ -75,13 +82,25 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
   }
 
   onConnect(): void {
+    const connectionConfig = this.form.getRawValue();
+
+    // Add SSL configuration if SSL is enabled
+    if (this.sslEnabled) {
+      connectionConfig.ssl = {
+        rejectUnauthorized: false, // Allow self-signed certificates
+      };
+    }
+
     this.subscriptions.push(
-      this.mysqlService.connect(this.form.getRawValue()).subscribe({
+      this.mysqlService.connect(connectionConfig).subscribe({
         next: () => {
           const newConfig = this.form.getRawValue();
           if (!this.savePassword) {
             newConfig.password = '';
           }
+          // Save SSL preference with the config
+          (newConfig as any).sslEnabled = this.sslEnabled;
+
           this.loginConfigService.saveRememberPreference(this.rememberMe);
           this.loginConfigService.saveNewConfig(newConfig);
           this.error = undefined;
