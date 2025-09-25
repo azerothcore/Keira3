@@ -254,6 +254,7 @@ describe('ConnectionWindowComponent', () => {
         user: 'Helias',
         password,
         database: 'helias_world',
+        sslEnabled: false,
       });
       expect(connectSpy).toHaveBeenCalledTimes(1);
       expect(connectSpy).toHaveBeenCalledWith({
@@ -262,6 +263,7 @@ describe('ConnectionWindowComponent', () => {
         user: 'Helias',
         password,
         database: 'helias_world',
+        sslEnabled: false,
       });
     });
 
