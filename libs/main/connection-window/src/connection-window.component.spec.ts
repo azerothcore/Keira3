@@ -1,15 +1,16 @@
-import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { PageObject, Spied, TranslateTestingModule } from '@keira/shared/test-utils';
-import { ConnectionOptions, QueryError } from 'mysql2';
+import { QueryError } from 'mysql2';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { of, throwError } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
 
-import { ConnectionWindowComponent } from './connection-window.component';
-import { LoginConfigService } from '@keira/shared/login-config';
 import { MysqlService } from '@keira/shared/db-layer';
+import { LoginConfigService } from '@keira/shared/login-config';
+import { ConnectionWindowComponent } from './connection-window.component';
+import { KeiraConnectionOptions } from './connection-window.model';
 
 class ConnectionWindowComponentPage extends PageObject<ConnectionWindowComponent> {
   get hostInput(): HTMLInputElement {
@@ -36,6 +37,9 @@ class ConnectionWindowComponentPage extends PageObject<ConnectionWindowComponent
   get savePasswordInput(): HTMLInputElement {
     return this.query<HTMLInputElement>('#save-password');
   }
+  get sslEnabledInput(): HTMLInputElement {
+    return this.query<HTMLInputElement>('#ssl-enabled');
+  }
   get rememberMeInput(): HTMLInputElement {
     return this.query<HTMLInputElement>('#remember-me');
   }
@@ -51,7 +55,7 @@ class ConnectionWindowComponentPage extends PageObject<ConnectionWindowComponent
 }
 
 describe('ConnectionWindowComponent', () => {
-  const mockConfigsWithPass: Partial<ConnectionOptions>[] = [
+  const mockConfigsWithPass: Partial<KeiraConnectionOptions>[] = [
     {
       host: 'localhost',
       port: 3306,
@@ -67,7 +71,7 @@ describe('ConnectionWindowComponent', () => {
       database: 'helias_world',
     },
   ];
-  const mockConfigsNoPass: Partial<ConnectionOptions>[] = [
+  const mockConfigsNoPass: Partial<KeiraConnectionOptions>[] = [
     {
       host: 'localhost',
       port: 3306,
@@ -124,6 +128,7 @@ describe('ConnectionWindowComponent', () => {
   it('clicking on the connect button without altering the default values should correctly work', () => {
     const { page, component, connectSpy } = setup();
     component.error = { code: 'some previous error', errno: 1234 } as QueryError;
+    component.sslEnabled = true;
 
     page.clickElement(page.connectBtn);
 
@@ -134,6 +139,7 @@ describe('ConnectionWindowComponent', () => {
       user: 'root',
       password: 'root',
       database: 'acore_world',
+      ssl: { rejectUnauthorized: false },
     });
     expect(component.error).toBeUndefined();
     expect(page.errorElement.innerHTML).not.toContain('error-box');
@@ -263,7 +269,6 @@ describe('ConnectionWindowComponent', () => {
         user: 'Helias',
         password,
         database: 'helias_world',
-        sslEnabled: false,
       });
     });
 
@@ -283,6 +288,7 @@ describe('ConnectionWindowComponent', () => {
         user: 'Helias',
         password: '',
         database: 'helias_world',
+        sslEnabled: false,
       });
       expect(connectSpy).toHaveBeenCalledTimes(1);
       expect(connectSpy).toHaveBeenCalledWith({

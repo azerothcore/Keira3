@@ -1,18 +1,19 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { ConnectionOptions, QueryError } from 'mysql2';
+import { QueryError } from 'mysql2';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import packageInfo from '../../../../package.json';
 
 import { TranslateModule } from '@ngx-translate/core';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
+import { QueryErrorComponent } from '@keira/shared/base-editor-components';
+import { MysqlService } from '@keira/shared/db-layer';
 import { LoginConfigService } from '@keira/shared/login-config';
 import { SwitchLanguageComponent } from '@keira/shared/switch-language';
-import { MysqlService } from '@keira/shared/db-layer';
-import { QueryErrorComponent } from '@keira/shared/base-editor-components';
 import { ModelForm, SubscriptionHandler } from '@keira/shared/utils';
+import { KeiraConnectionOptions } from './connection-window.model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -29,8 +30,8 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
   private readonly IMAGES_COUNT = 11;
   readonly RANDOM_IMAGE = Math.floor(Math.random() * this.IMAGES_COUNT) + 1;
   readonly KEIRA_VERSION = packageInfo.version;
-  configs: Partial<ConnectionOptions>[] | undefined;
-  form!: FormGroup<ModelForm<Partial<ConnectionOptions>>>;
+  configs: Partial<KeiraConnectionOptions>[] | undefined;
+  form!: FormGroup<ModelForm<Partial<KeiraConnectionOptions>>>;
   error: QueryError | undefined;
   savePassword = true;
   rememberMe = true;
@@ -41,7 +42,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
   }
 
   ngOnInit(): void {
-    this.form = new FormGroup<ModelForm<Partial<ConnectionOptions>>>({
+    this.form = new FormGroup<ModelForm<Partial<KeiraConnectionOptions>>>({
       host: new FormControl<string>('127.0.0.1') as FormControl<string>,
       port: new FormControl<number>(3306) as FormControl<number>,
       user: new FormControl<string>('root') as FormControl<string>,
@@ -57,7 +58,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
       this.form.setValue(lastConfig);
 
       // Restore SSL preference if it was saved with the config
-      this.sslEnabled = !!(lastConfig as any).sslEnabled;
+      this.sslEnabled = !!lastConfig.sslEnabled;
 
       if (!this.form.getRawValue().password) {
         this.savePassword = false;
@@ -69,10 +70,10 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
     }
   }
 
-  loadConfig(config: Partial<ConnectionOptions>): void {
+  loadConfig(config: Partial<KeiraConnectionOptions>): void {
     this.form.setValue(config);
     // Restore SSL preference if it was saved with the config
-    this.sslEnabled = !!(config as any).sslEnabled;
+    this.sslEnabled = !!config.sslEnabled;
   }
 
   removeAllConfigs(): void {
@@ -99,7 +100,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
             newConfig.password = '';
           }
           // Save SSL preference with the config
-          (newConfig as any).sslEnabled = this.sslEnabled;
+          newConfig.sslEnabled = this.sslEnabled;
 
           this.loginConfigService.saveRememberPreference(this.rememberMe);
           this.loginConfigService.saveNewConfig(newConfig);

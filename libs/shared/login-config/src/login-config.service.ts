@@ -1,8 +1,8 @@
 import { inject, Injectable } from '@angular/core';
-import { LocalStorageService } from './local-storage.service';
 import { ConnectionOptions } from 'mysql2';
+import { LocalStorageService } from './local-storage.service';
 
-declare type Config = Partial<ConnectionOptions>;
+declare type Config = Partial<ConnectionOptions> & { sslEnabled?: boolean };
 
 @Injectable({
   providedIn: 'root',
@@ -59,7 +59,7 @@ export class LoginConfigService {
       config1.port === config2.port &&
       config1.user === config2.user &&
       config1.database === config2.database &&
-      (config1 as any).sslEnabled === (config2 as any).sslEnabled
+      config1.sslEnabled === config2.sslEnabled
     );
   }
 
