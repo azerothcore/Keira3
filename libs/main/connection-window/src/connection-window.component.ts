@@ -7,6 +7,7 @@ import packageInfo from '../../../../package.json';
 
 import { TranslateModule } from '@ngx-translate/core';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 import { QueryErrorComponent } from '@keira/shared/base-editor-components';
 import { MysqlService } from '@keira/shared/db-layer';
@@ -20,7 +21,15 @@ import { KeiraConnectionOptions } from './connection-window.model';
   selector: 'keira-connection-window',
   templateUrl: './connection-window.component.html',
   styleUrls: ['./connection-window.component.scss'],
-  imports: [FormsModule, ReactiveFormsModule, BsDropdownModule, TranslateModule, QueryErrorComponent, SwitchLanguageComponent],
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    BsDropdownModule,
+    TranslateModule,
+    TooltipModule,
+    QueryErrorComponent,
+    SwitchLanguageComponent,
+  ],
 })
 export class ConnectionWindowComponent extends SubscriptionHandler implements OnInit {
   private readonly mysqlService = inject(MysqlService);

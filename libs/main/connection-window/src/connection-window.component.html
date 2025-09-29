@@ -48,7 +48,7 @@
               />
               <label class="form-check-label text-white" for="ssl-enabled">
                 <i class="fas fa-lock"></i> {{ 'CONNECTION_WINDOW.USE_SSL' | translate }}
-                {{ 'CONNECTION_WINDOW.SSL_DESCRIPTION' | translate }}
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CONNECTION_WINDOW.SSL_TOOLTIP' | translate"></i>
               </label>
             </div>
           </div>
