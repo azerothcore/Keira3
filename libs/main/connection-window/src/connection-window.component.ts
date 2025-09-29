@@ -21,15 +21,7 @@ import { KeiraConnectionOptions } from './connection-window.model';
   selector: 'keira-connection-window',
   templateUrl: './connection-window.component.html',
   styleUrls: ['./connection-window.component.scss'],
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    BsDropdownModule,
-    TranslateModule,
-    TooltipModule,
-    QueryErrorComponent,
-    SwitchLanguageComponent,
-  ],
+  imports: [FormsModule, ReactiveFormsModule, BsDropdownModule, TranslateModule, TooltipModule, QueryErrorComponent, SwitchLanguageComponent],
 })
 export class ConnectionWindowComponent extends SubscriptionHandler implements OnInit {
   private readonly mysqlService = inject(MysqlService);
