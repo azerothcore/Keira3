@@ -3,10 +3,10 @@
 @if (getModelType() === MODEL_TYPE_CHARACTER) {
   <div style="height: 300px">
     <div class="mt-3">
-      <keira-generic-option-icon-selector [control]="raceControl" [optionList]="CREATURE_RACE()" />
+      <keira-generic-option-selector [control]="raceControl" [optionList]="CREATURE_RACE()" />
     </div>
     <div class="mt-3">
-      <keira-generic-option-icon-selector [control]="genderControl" [optionList]="CREATURE_GENDER()" />
+      <keira-generic-option-selector [control]="genderControl" [optionList]="CREATURE_GENDER()" />
     </div>
   </div>
 }
