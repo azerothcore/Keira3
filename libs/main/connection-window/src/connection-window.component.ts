@@ -10,11 +10,10 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 import { QueryErrorComponent } from '@keira/shared/base-editor-components';
-import { MysqlService } from '@keira/shared/db-layer';
+import { KeiraConnectionOptions, MysqlService } from '@keira/shared/db-layer';
 import { LoginConfigService } from '@keira/shared/login-config';
 import { SwitchLanguageComponent } from '@keira/shared/switch-language';
 import { ModelForm, SubscriptionHandler } from '@keira/shared/utils';
-import { KeiraConnectionOptions } from './connection-window.model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -44,7 +43,6 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
   error: QueryError | undefined;
   savePassword = true;
   rememberMe = true;
-  sslEnabled = false;
 
   get isRecentDropdownDisabled(): boolean {
     return !this.configs || this.configs.length === 0;
@@ -57,6 +55,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
       user: new FormControl<string>('root') as FormControl<string>,
       password: new FormControl<string>('root') as FormControl<string>,
       database: new FormControl<string>('acore_world') as FormControl<string>,
+      sslEnabled: new FormControl<boolean>(false) as FormControl<boolean>,
     });
 
     this.configs = this.loginConfigService.getConfigs();
@@ -65,9 +64,6 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
       // get last saved config
       const lastConfig = this.configs[this.configs.length - 1];
       this.form.setValue(lastConfig);
-
-      // Restore SSL preference if it was saved with the config
-      this.sslEnabled = !!lastConfig.sslEnabled;
 
       if (!this.form.getRawValue().password) {
         this.savePassword = false;
@@ -81,8 +77,6 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
 
   loadConfig(config: Partial<KeiraConnectionOptions>): void {
     this.form.setValue(config);
-    // Restore SSL preference if it was saved with the config
-    this.sslEnabled = !!config.sslEnabled;
   }
 
   removeAllConfigs(): void {
@@ -95,7 +89,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
     const connectionConfig = this.form.getRawValue();
 
     // Add SSL configuration if SSL is enabled
-    if (this.sslEnabled) {
+    if (this.form.getRawValue().sslEnabled) {
       connectionConfig.ssl = {
         rejectUnauthorized: false, // Allow self-signed certificates
       };
@@ -108,8 +102,6 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
           if (!this.savePassword) {
             newConfig.password = '';
           }
-          // Save SSL preference with the config
-          newConfig.sslEnabled = this.sslEnabled;
 
           this.loginConfigService.saveRememberPreference(this.rememberMe);
           this.loginConfigService.saveNewConfig(newConfig);
