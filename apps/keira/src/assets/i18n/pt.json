@@ -58,6 +58,8 @@
     "USERNAME": "Usuário",
     "PASSWORD": "Senha",
     "DATABASE": "Database",
+    "USE_SSL": "Use SSL/TLS",
+    "SSL_TOOLTIP": "Required for servers with require_secure_transport=ON",
     "SAVE_PASSWORD": "Salvar senha",
     "REMEMBER_ME": "Remember me",
     "LOAD_RECENT": "Carregar recente",
