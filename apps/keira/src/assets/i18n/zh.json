@@ -58,6 +58,8 @@
     "USERNAME": "用户名",
     "PASSWORD": "密码",
     "DATABASE": "数据库",
+    "USE_SSL": "Use SSL/TLS",
+    "SSL_TOOLTIP": "Required for servers with require_secure_transport=ON",
     "SAVE_PASSWORD": "保存密码",
     "REMEMBER_ME": "Remember me",
     "LOAD_RECENT": "加载最近的",
