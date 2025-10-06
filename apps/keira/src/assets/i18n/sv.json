@@ -58,6 +58,8 @@
     "USERNAME": "Användarnamn",
     "PASSWORD": "Lösenord",
     "DATABASE": "Databas",
+    "USE_SSL": "Use SSL/TLS",
+    "SSL_TOOLTIP": "Required for servers with require_secure_transport=ON",
     "SAVE_PASSWORD": "Spara lösenord",
     "REMEMBER_ME": "Remember me",
     "LOAD_RECENT": "Ladda senaste",
