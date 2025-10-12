@@ -60,6 +60,7 @@
     "DATABASE": "Base de données",
     "USE_SSL": "Use SSL/TLS",
     "SSL_TOOLTIP": "Required for servers with require_secure_transport=ON",
+    "TEST": "Test",
     "SAVE_PASSWORD": "Enregistrer le mot de passe",
     "REMEMBER_ME": "Remember me",
     "LOAD_RECENT": "Charger un connexion récente",
