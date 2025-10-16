@@ -87,7 +87,7 @@
     "@swc-node/register": "1.11.1",
     "@swc/core": "1.13.5",
     "@swc/helpers": "0.5.17",
-    "@types/jasmine": "5.1.10",
+    "@types/jasmine": "5.1.11",
     "@types/jasminewd2": "2.0.13",
     "@types/jquery": "3.5.33",
     "@types/mysql": "2.15.27",
