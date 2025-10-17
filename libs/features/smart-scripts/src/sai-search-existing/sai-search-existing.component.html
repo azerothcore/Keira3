@@ -11,7 +11,7 @@
           <div class="col-sm-7 col-md-8 col-lg-9">
             <select formControlName="source_type" class="form-control form-control-sm" id="source_type">
               @for (key of SAI_SEARCH_TYPES_KEYS; track key) {
-                <option [ngValue]="key" [label]="key + ' - ' + SAI_SEARCH_TYPES[key]" [selected]="key === 0"></option>
+                <option [ngValue]="key" [label]="`${key} - ${SAI_SEARCH_TYPES[key]}`"></option>
               }
               <option [ngValue]="" [label]="'All (you need to higher Limit number, to see all Source Types)'"></option>
             </select>
