@@ -7,7 +7,7 @@
         <div class="radio-container">
           <label class="cursor-pointer" [id]="SAI_SEARCH_TYPES[key]">
             <input [value]="key" [formControlName]="'source_type'" (change)="onSelectedTypeChange()" type="radio" />
-            <span class="radio-text">{{ SAI_SEARCH_TYPES[key] }}</span>
+            <span class="radio-text">{{ key }} - {{ SAI_SEARCH_TYPES[key] }}</span>
           </label>
         </div>
       }
