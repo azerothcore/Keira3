@@ -550,14 +550,14 @@ SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.ACTIVATE_TAXI] = 'TaxiId';
 
 // SMART_ACTION_WP_START
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.WP_START] = 'Starts a waypoint using the `waypoints` table in the world database.';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.WP_START] = 'Run';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.WP_START] = 'forcedMovement';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.WP_START] = 'Waypoint';
 SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.WP_START] = 'Repeat';
 SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.WP_START] = 'QuestId';
 SAI_ACTION_PARAM5_NAMES[SAI_ACTIONS.WP_START] = 'DespawnTime';
 SAI_ACTION_PARAM6_NAMES[SAI_ACTIONS.WP_START] = 'ReactState';
 SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.WP_START] =
-  '0 = the creature will follow the path walking at a normal speed; 1 = it will be running at a higher speed';
+  'This forces the creature movement (speed) on the current waypoint: 0 = None | 1 = Walk | 2 = Run';
 SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.WP_START] = 'waypoints.entry';
 SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.WP_START] = "Repeat the path when the it's finished";
 SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.WP_START] =
