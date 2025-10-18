@@ -31,7 +31,6 @@ import {
   FactionSelectorBtnComponent,
   FlagsSelectorBtnComponent,
   GenericOptionSelectorComponent,
-  IconSelectorComponent,
   SingleValueSelectorBtnComponent,
   SpellSelectorBtnComponent,
 } from '@keira/shared/selectors';
@@ -58,7 +57,6 @@ import { CreatureTemplateService } from './creature-template.service';
     CreatureSelectorBtnComponent,
     GenericOptionSelectorComponent,
     BooleanOptionSelectorComponent,
-    IconSelectorComponent,
   ],
 })
 export class CreatureTemplateComponent extends SingleRowEditorComponent<CreatureTemplate> {
@@ -83,7 +81,6 @@ export class CreatureTemplateComponent extends SingleRowEditorComponent<Creature
   protected readonly DAMAGE_TYPE = DAMAGE_TYPE;
   protected readonly CREATURE_AI_NAME = CREATURE_AI_NAME;
 
-  protected RACE_ICON_GENDER = true;
   protected showCreaturePreview = false;
 
   protected override readonly editorService = inject(CreatureTemplateService);

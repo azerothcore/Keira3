@@ -38,10 +38,7 @@
               <input [formControlName]="'subname'" id="subname" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-              <label class="control-label" for="IconName">
-                <keira-icon-selector [src]="'assets/img/creature-icons/' + editorService.form.controls.IconName.value + '.png'" />
-                IconName</label
-              >
+              <label class="control-label" for="IconName"> IconName</label>
               <keira-generic-option-selector [control]="editorService.form.controls.IconName" id="IconName" [optionList]="CREATURE_ICON" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -245,10 +242,7 @@
                   <input [formControlName]="'trainer_spell'" id="trainer_spell" type="number" class="form-control form-control-sm" />
                 </div>
                 <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
-                  <label class="control-label" for="trainer_class">
-                    <keira-icon-selector [src]="'assets/img/class/' + editorService.form.controls.trainer_class.value + '.gif'" />
-                    trainer_class</label
-                  >
+                  <label class="control-label" for="trainer_class"> trainer_class</label>
                   <keira-generic-option-selector
                     [control]="editorService.form.controls.trainer_class"
                     id="trainer_class"
@@ -256,24 +250,12 @@
                   />
                 </div>
                 <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
-                  <label class="control-label" for="trainer_race">
-                    <keira-icon-selector
-                      [src]="
-                        'assets/img/race/' + editorService.form.controls.trainer_race.value + '-' + (RACE_ICON_GENDER ? 1 : 0) + '.gif'
-                      "
-                    />
-                    trainer_race</label
-                  >
-                  <select
-                    [formControlName]="'trainer_race'"
+                  <label class="control-label" for="trainer_race"> trainer_race</label>
+                  <keira-generic-option-selector
+                    [control]="editorService.form.controls.trainer_race"
                     id="trainer_race"
-                    class="form-control form-control-sm"
-                    (change)="RACE_ICON_GENDER = !RACE_ICON_GENDER"
-                  >
-                    @for (option of CREATURE_RACE; track option) {
-                      <option [ngValue]="option.value" [label]="option.value + ' - ' + option.name"></option>
-                    }
-                  </select>
+                    [optionList]="CREATURE_RACE"
+                  />
                 </div>
               </div>
             </div>
