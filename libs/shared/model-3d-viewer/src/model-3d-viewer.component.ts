@@ -49,7 +49,6 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   protected readonly MODEL_TYPE_CHARACTER = MODEL_TYPE.CHARACTER;
 
   protected readonly backgroundColor = new FormControl<string>('#000000');
-  protected readonly backgroundColor2 = new FormControl<string>('#000000');
 
   protected showSettings = signal(false);
 
