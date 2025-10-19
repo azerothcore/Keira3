@@ -50,7 +50,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
 
   protected readonly backgroundColor = new FormControl<string>('#000000');
 
-  protected showSettings = signal(false);
+  protected readonly showSettings = signal(false);
 
   private readonly windowRef = window as typeof window & {
     jQuery: any;
