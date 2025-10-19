@@ -13,7 +13,7 @@
               @for (key of SAI_SEARCH_TYPES_KEYS; track key) {
                 <option [ngValue]="key" [label]="`${key} - ${SAI_SEARCH_TYPES[key]}`"></option>
               }
-              <option [ngValue]="" [label]="'All'"></option>
+              <option [ngValue]="" [label]="'SAI_SEARCH_ALL' | translate"></option>
             </select>
           </div>
         </div>
