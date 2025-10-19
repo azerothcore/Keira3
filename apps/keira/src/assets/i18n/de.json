@@ -570,8 +570,6 @@
       "TEXT": "Der eigentliche Text. Die Nachricht in diesem Feld wird als Text auf einer Seite angezeigt."
     }
   },
-  "SOURCE_TYPE": "Quelltyp:",
-  "LIMIT": "Begrenzung:",
   "GOSSIP": {
     "GOSSIP_MENU": {
       "TEXT_ID_TOOLTIP": "Die npc_text.ID für das Gossip, das initial angezeigt werden soll. Außerdem sagt es dem NPC, was oben im Optionsmenü angezeigt werden soll, wenn es geöffnet wird."
@@ -593,7 +591,9 @@
     "SELECT": {
       "SOURCE_GROUP": "Quellgruppe:",
       "SOURCE_ENTRY": "Quelleintrag:",
-      "CREATE_NEW": "Neu erstellen"
+      "CREATE_NEW": "Neu erstellen",
+      "PLACEHOLDER_SOURCE_GROUP": "SourceGroup",
+      "PLACEHOLDER_ENTRY": "SourceEntry"
     },
     "EDITOR": {
       "CONDITIONS_SOURCE": "Quellenbedingung",
@@ -755,6 +755,16 @@
       "TIMED_ACTIONLISTS": "Alle smart_scripts mit source_type = 9 und entryorguid zwischen CreatureID * 100 und CreatureID * 100 + 100",
       "GENERATE_COMMENT": "Kommentar generieren",
       "GENERATE_COMMENTS_ALL": "Kommentare generieren (alle)"
+    },
+    "SEARCH_BY_EXISTING": {
+      "SOURCE_TYPE": "Source Type:",
+      "ENTRY_OR_GUID": "Entry(+) or GUID(-):",
+      "LIMIT": "Limit:",
+      "PLACEHOLDER": "Entry (as positive number) or GUID (as negative number)",
+      "ALL": "ALL"
+    },
+    "SEARCH_BY_ENTITY": {
+      "SOURCE_TYPE": "Select a Source Type"
     }
   },
   "SPELL_DBC": {
