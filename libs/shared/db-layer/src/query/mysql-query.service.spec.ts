@@ -800,6 +800,7 @@ describe('MysqlQueryService', () => {
       { name: 'getText0ById', query: `SELECT text0_0 AS v FROM npc_text WHERE ID = ${id}` },
       { name: 'getText1ById', query: `SELECT text0_1 AS v FROM npc_text WHERE ID = ${id}` },
       { name: 'getCreatureDisplayIdById', query: `SELECT CreatureDisplayID AS v FROM creature_template_model WHERE CreatureID=${id}` },
+      { name: 'getGameobjectDisplayIdById', query: `SELECT displayId AS v FROM gameobject_template WHERE entry=${id}` },
     ];
 
     for (const test of cases) {
