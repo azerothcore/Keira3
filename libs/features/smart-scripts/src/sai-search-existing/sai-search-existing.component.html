@@ -1,37 +1,37 @@
 <div class="container-fluid">
   <div class="content-block">
     <div class="wiki-link mb-2">
-      <a [href]="WIKI_BASE_URL + 'conditions'" target="_blank"> <i class="fas fa-link"></i> conditions documentation </a>
+      <a [href]="WIKI_BASE_URL + 'smart_scripts'" target="_blank"> <i class="fas fa-link"></i> smart_scripts documentation </a>
     </div>
 
     <form [formGroup]="selectService.queryForm">
       <ng-container [formGroup]="selectService.fields">
         <div class="form-group row">
-          <label class="col-sm-5 col-md-4 col-lg-3 col-form-label" for="source_type" [translate]="'SAI_SEARCH_SOURCE_TYPE'"></label>
+          <label class="col-sm-5 col-md-4 col-lg-3 col-form-label" for="source_type" [translate]="'SAI_SEARCH.SOURCE_TYPE'"></label>
           <div class="col-sm-7 col-md-8 col-lg-9">
             <select formControlName="source_type" class="form-control form-control-sm" id="source_type">
               @for (key of SAI_SEARCH_TYPES_KEYS; track key) {
                 <option [ngValue]="key" [label]="`${key} - ${SAI_SEARCH_TYPES[key]}`"></option>
               }
-              <option [ngValue]="" [label]="'SAI_SEARCH_ALL' | translate"></option>
+              <option [ngValue]="" [label]="'SAI_SEARCH.ALL' | translate"></option>
             </select>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-5 col-md-4 col-lg-3 col-form-label" for="entryorguid" [translate]="'SAI_SEARCH_ENTRY_OR_GUID'"></label>
+          <label class="col-sm-5 col-md-4 col-lg-3 col-form-label" for="entryorguid" [translate]="'SAI_SEARCH.ENTRY_OR_GUID'"></label>
           <div class="col-sm-7 col-md-8 col-lg-9">
             <input
               [formControlName]="'entryorguid'"
               type="number"
               class="form-control form-control-sm"
               id="entryorguid"
-              [placeholder]="'SAI_SEARCH_PLACEHOLDER' | translate"
+              [placeholder]="'SAI_SEARCH.PLACEHOLDER' | translate"
             />
           </div>
         </div>
       </ng-container>
       <div class="form-group row">
-        <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="limit" [translate]="'SAI_SEARCH_LIMIT'"></label>
+        <label class="col-sm-4 col-md-3 col-lg-2 col-form-label" for="limit" [translate]="'SAI_SEARCH.LIMIT'"></label>
         <div class="col-sm-4 col-md-3 col-lg-2">
           <input [formControlName]="'limit'" class="form-control form-control-sm" id="limit" placeholder="Limit" />
         </div>
