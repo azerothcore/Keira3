@@ -355,7 +355,7 @@ describe('ConnectionWindowComponent', () => {
       //  but we can't because of: https://github.com/valor-software/ngx-bootstrap/issues/4282
     });
 
-    it('clear all should correctly work', async () => {
+    it('clear all should correctly work', () => {
       const { page, component, loginConfigService } = setup();
 
       // TODO: ideally we should click the dropdown's item instead of calling the method
@@ -371,7 +371,7 @@ describe('ConnectionWindowComponent', () => {
       expect(page.databaseInput.value).toBe('');
     });
 
-    it('loadConfig should correctly work', async () => {
+    it('loadConfig should correctly work', () => {
       const { page, component } = setup();
 
       // TODO: ideally we should click the dropdown's item instead of calling the method

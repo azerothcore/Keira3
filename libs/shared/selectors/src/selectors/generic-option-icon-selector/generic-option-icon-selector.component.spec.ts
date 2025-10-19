@@ -1,7 +1,7 @@
 import { Component, provideZonelessChangeDetection, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FormControl } from '@angular/forms';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { OPTION_ICON } from '@keira/shared/acore-world-model';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { GenericOptionIconSelectorComponent } from './generic-option-icon-selector.component';
@@ -37,7 +37,7 @@ describe('GenericOptionIconSelectorComponent', () => {
     return { fixture, host, component, page };
   };
 
-  it('should display all options from optionList', async () => {
+  it('should display all options from optionList', () => {
     const { page, component } = setup();
 
     page.detectChanges();

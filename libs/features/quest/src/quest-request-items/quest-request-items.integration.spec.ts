@@ -1,18 +1,18 @@
-import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
+import { QuestRequestItems } from '@keira/shared/acore-world-model';
+import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
-import { QuestRequestItems } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { tickAsync } from 'ngx-page-object-model';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { QuestRequestItemsComponent } from './quest-request-items.component';
-import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
-import { tickAsync } from 'ngx-page-object-model';
 
 class QuestRequestItemsPage extends EditorPageObject<QuestRequestItemsComponent> {
   get progressText(): HTMLDivElement {
@@ -120,7 +120,7 @@ describe('QuestRequestItems integration tests', () => {
   });
 
   describe('Editing existing', () => {
-    it('should correctly initialise', async () => {
+    it('should correctly initialise', () => {
       const { page } = setup(false);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
@@ -147,7 +147,7 @@ describe('QuestRequestItems integration tests', () => {
       page.removeNativeElement();
     });
 
-    it('changing values should correctly update the queries', async () => {
+    it('changing values should correctly update the queries', () => {
       const { page } = setup(false);
       page.setInputValueById('EmoteOnComplete', '11');
       page.expectDiffQueryToContain('UPDATE `quest_request_items` SET `EmoteOnComplete` = 11 WHERE (`ID` = 1234);');

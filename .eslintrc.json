@@ -43,7 +43,8 @@
         "@typescript-eslint/no-empty-function": "off",
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/ban-ts-comment": "off",
-        "no-duplicate-imports": "error"
+        "no-duplicate-imports": "error",
+        "require-await": "error"
       }
     },
     {
