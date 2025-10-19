@@ -190,17 +190,17 @@ export abstract class PageObject<ComponentType> extends PageObjectModel<Componen
     ).toBe(true);
   }
 
-  setNgxSelectValueByIndex(id: string, index: number): void {
+  async setNgxSelectValueByIndex(id: string, index: number): Promise<void> {
     // trigger ngx-select dropdown to render the select options
     const ngxSelectEl = this.fixture.debugElement.nativeElement.querySelector(`#${id} ngx-select`);
     const toggle = ngxSelectEl.querySelector('.ngx-select__toggle');
     toggle.click();
 
-    this.detectChanges();
+    await this.whenStable();
 
     // select the option
     this.getAllDebugElementsByCss(`#${id} ngx-select .ngx-select.open .ngx-select__item`)[index].nativeElement.click();
 
-    this.detectChanges();
+    await this.whenStable();
   }
 }

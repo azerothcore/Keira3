@@ -115,7 +115,7 @@ describe('CreatureTemplateResistance integration tests', () => {
       page.removeNativeElement();
     });
 
-    it('adding a row and changing its values should correctly update the queries', () => {
+    it('adding a row and changing its values should correctly update the queries', async () => {
       const { page } = setup(true);
       page.addNewRow();
       page.expectDiffQueryToContain(
@@ -129,7 +129,7 @@ describe('CreatureTemplateResistance integration tests', () => {
           '(1234, 1, 0, 0);',
       );
 
-      page.setNgxSelectValueByIndex('School', 1);
+      await page.setNgxSelectValueByIndex('School', 1);
 
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234) AND (`School` IN (2));\n' +
@@ -144,11 +144,11 @@ describe('CreatureTemplateResistance integration tests', () => {
       page.removeNativeElement();
     });
 
-    it('adding a row changing its values and duplicate it should correctly update the queries', () => {
+    it('adding a row changing its values and duplicate it should correctly update the queries', async () => {
       const { page } = setup(true);
       page.addNewRow();
 
-      page.setNgxSelectValueByIndex('School', 1);
+      await page.setNgxSelectValueByIndex('School', 1);
 
       page.duplicateSelectedRow();
 
@@ -234,13 +234,13 @@ describe('CreatureTemplateResistance integration tests', () => {
       page.removeNativeElement();
     });
 
-    it('combining add, edit and delete should correctly work', () => {
+    it('combining add, edit and delete should correctly work', async () => {
       const { page } = setup(false);
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(4);
 
       page.clickRowOfDatatable(1);
-      page.setNgxSelectValueByIndex('School', 4);
+      await page.setNgxSelectValueByIndex('School', 4);
 
       expect(page.getEditorTableRowsCount()).toBe(4);
 
@@ -263,11 +263,11 @@ describe('CreatureTemplateResistance integration tests', () => {
       page.removeNativeElement();
     });
 
-    it('using the same row id for multiple rows should correctly show an error', () => {
+    it('using the same row id for multiple rows should correctly show an error', async () => {
       const { page } = setup(false);
       page.clickRowOfDatatable(2);
 
-      page.setNgxSelectValueByIndex('School', 0);
+      await page.setNgxSelectValueByIndex('School', 0);
 
       page.expectUniqueError();
       page.removeNativeElement();

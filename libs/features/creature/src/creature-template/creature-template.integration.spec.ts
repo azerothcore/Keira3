@@ -130,22 +130,22 @@ describe('CreatureTemplate integration tests', () => {
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
-    it('changing all properties and executing the query should correctly work', () => {
+    it('changing all properties and executing the query should correctly work', async () => {
       const values: (string | number)[] = [];
       for (let i = 0; i < Object.keys(originalEntity).length; i++) {
         values[i] = i;
       }
 
       // selectors
-      page.setNgxSelectValueByIndex('IconName', 1);
+      await page.setNgxSelectValueByIndex('IconName', 1);
       values[15] = 1; // exp
       values[24] = 1; // rank
       values[25] = 1; // dmgschool
-      page.setNgxSelectValueByIndex('unit_class', 1);
+      await page.setNgxSelectValueByIndex('unit_class', 1);
       values[35] = 1; // family
       values[36] = 1; // trainer_type
       values[38] = 1; // trainer_class
-      page.setNgxSelectValueByIndex('trainer_race', 1);
+      await page.setNgxSelectValueByIndex('trainer_race', 1);
       values[40] = 1; // type
       values[50] = 2; // MovementType
       values[56] = 1; // RacialLeader

@@ -115,7 +115,7 @@ describe('CreatureOnkillReputation integration tests', () => {
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
-    it('changing all properties and executing the query should correctly work', () => {
+    it('changing all properties and executing the query should correctly work', async () => {
       const expectedQuery =
         'UPDATE `creature_onkill_reputation` SET ' +
         '`RewOnKillRepFaction2` = 1, `MaxStanding1` = 1, `IsTeamAward1` = 1, `RewOnKillRepValue1` = 4, ' +
@@ -125,8 +125,8 @@ describe('CreatureOnkillReputation integration tests', () => {
       const IsTeamAward1 = page.getDebugElementByCss<HTMLSelectElement>('#IsTeamAward1 select').nativeElement;
       const IsTeamAward2 = page.getDebugElementByCss<HTMLSelectElement>('#IsTeamAward2 select').nativeElement;
       const TeamDependent = page.getDebugElementByCss<HTMLSelectElement>('#TeamDependent select').nativeElement;
-      page.setNgxSelectValueByIndex('MaxStanding1', 1);
-      page.setNgxSelectValueByIndex('MaxStanding2', 1);
+      await page.setNgxSelectValueByIndex('MaxStanding1', 1);
+      await page.setNgxSelectValueByIndex('MaxStanding2', 1);
       page.setInputValue(IsTeamAward1, '1: 1');
       page.setInputValue(IsTeamAward2, '1: 1');
       page.setInputValue(TeamDependent, '1: 1');
