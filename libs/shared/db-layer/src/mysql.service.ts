@@ -1,10 +1,10 @@
 import { Injectable, NgZone, inject } from '@angular/core';
-import * as mysql from 'mysql2';
-import { Connection, ConnectionOptions, FieldPacket as FieldInfo, QueryError } from 'mysql2';
-import { Observable, Subject, Subscriber } from 'rxjs';
-import { MysqlResult, TableRow } from '@keira/shared/constants';
 import { ElectronService } from '@keira/shared/common-services';
-
+import { MysqlResult, TableRow } from '@keira/shared/constants';
+import * as mysql from 'mysql2';
+import { Connection, FieldPacket as FieldInfo, QueryError } from 'mysql2';
+import { Observable, Subject, Subscriber } from 'rxjs';
+import { KeiraConnectionOptions } from './mysql.model';
 @Injectable({
   providedIn: 'root',
 })
@@ -15,9 +15,9 @@ export class MysqlService {
   private mysql!: typeof mysql;
   private _connection!: Connection;
 
-  private _config!: ConnectionOptions;
-  get config(): ConnectionOptions {
-    return this._config as ConnectionOptions;
+  private _config!: KeiraConnectionOptions;
+  get config(): KeiraConnectionOptions {
+    return this._config as KeiraConnectionOptions;
   }
 
   private _connectionEstablished = false;
@@ -44,7 +44,7 @@ export class MysqlService {
     return this._connection ? 'CONNECTED' : 'EMPTY';
   }
 
-  connect(config: ConnectionOptions) {
+  connect(config: KeiraConnectionOptions) {
     this._config = config;
     this._config.multipleStatements = true;
 

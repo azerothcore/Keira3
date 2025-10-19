@@ -73,7 +73,7 @@ jobs:
   build-on-mac:
     needs: get-package-version
     name: Build and upload the Mac release assets
-    runs-on: macos-15 # it's the most recent version still running on Intel, we keep it for retro-compatibility
+    runs-on: macos-15-intel # it's the most recent version still running on Intel, we keep it for retro-compatibility
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
