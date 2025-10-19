@@ -600,7 +600,9 @@
     "SELECT": {
       "SOURCE_GROUP": "Source Group:",
       "SOURCE_ENTRY": "Source Entry:",
-      "CREATE_NEW": "Create new"
+      "CREATE_NEW": "Create new",
+      "PLACEHOLDER_SOURCE_GROUP": "SourceGroup",
+      "PLACEHOLDER_ENTRY": "SourceEntry"
     },
     "EDITOR": {
       "CONDITIONS_SOURCE": "Condition source",
