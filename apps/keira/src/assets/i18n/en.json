@@ -570,8 +570,11 @@
       "TEXT": "The actual text. The message in this field will be shown as the text on a page."
     }
   },
-  "SOURCE_TYPE": "Source Type:",
-  "LIMIT": "Limit:",
+  "SAI_SEARCH_SOURCE_TYPE": "Source Type:",
+  "SAI_SEARCH_ENTRY_OR_GUID": "Entry(+) or GUID(-):",
+  "SAI_SEARCH_LIMIT": "Limit:",
+  "SAI_SEARCH_PLACEHOLDER": "Entry (as positive number) or GUID (as negative number)",
+  "SAI_SEARCH_ALL": "ALL",
   "GOSSIP": {
     "GOSSIP_MENU": {
       "TEXT_ID_TOOLTIP": "The npc_text.ID for the gossip you want to be initially displayed. Also this tells the NPC what to say at the top of the options menu when it is displayed."
