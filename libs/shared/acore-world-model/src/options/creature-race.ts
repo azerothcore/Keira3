@@ -35,4 +35,5 @@ export const CREATURE_RACE_OPTION_ICON: Option[] = [
   { value: 8, name: 'TROLL', icon: 'race/8-0.gif' },
   { value: 9, name: 'GOBLIN', icon: 'race/9-0.gif' },
   { value: 10, name: 'BLOODELF', icon: 'race/10-0.gif' },
+  { value: 11, name: 'DRAENEI', icon: 'race/11-0.gif' },
 ];

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, input, OnChanges, OnDestroy, OnInit, signal, SimpleChanges } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CREATURE_RACE_OPTION_ICON } from '@keira/shared/acore-world-model';
 import { KEIRA_APP_CONFIG_TOKEN } from '@keira/shared/config';
 import { Option, TableRow } from '@keira/shared/constants';
@@ -30,7 +30,8 @@ declare const ZamModelViewer: any;
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-model-3d-viewer',
   templateUrl: './model-3d-viewer.component.html',
-  imports: [GenericOptionIconSelectorComponent],
+  styleUrl: './model-3d-viewer.component.scss',
+  imports: [GenericOptionIconSelectorComponent, ReactiveFormsModule, FormsModule],
   standalone: true,
 })
 export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
@@ -46,6 +47,11 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   protected readonly genderControl = new FormControl<Gender>(Gender.MALE);
 
   protected readonly MODEL_TYPE_CHARACTER = MODEL_TYPE.CHARACTER;
+
+  protected readonly backgroundColor = new FormControl<string>('#000000');
+  protected readonly backgroundColor2 = new FormControl<string>('#000000');
+
+  protected showSettings = signal(false);
 
   private readonly windowRef = window as typeof window & {
     jQuery: any;
