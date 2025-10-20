@@ -1,6 +1,7 @@
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CreatureTemplate } from '@keira/shared/acore-world-model';
@@ -14,7 +15,6 @@ import { instance, mock } from 'ts-mockito';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { CreatureTemplateComponent } from './creature-template.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import Spy = jasmine.Spy;
 
 class CreatureTemplatePage extends EditorPageObject<CreatureTemplateComponent> {}
@@ -130,21 +130,22 @@ describe('CreatureTemplate integration tests', () => {
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
-    it('changing all properties and executing the query should correctly work', () => {
+    it('changing all properties and executing the query should correctly work', async () => {
       const values: (string | number)[] = [];
       for (let i = 0; i < Object.keys(originalEntity).length; i++) {
         values[i] = i;
       }
+
       // selectors
-      values[11] = '1: Directions'; // IconName
+      await page.setNgxSelectValueByIndex('IconName', 1);
       values[15] = 1; // exp
       values[24] = 1; // rank
       values[25] = 1; // dmgschool
-      values[31] = '0: 1'; // unit_class
+      await page.setNgxSelectValueByIndex('unit_class', 1);
       values[35] = 1; // family
       values[36] = 1; // trainer_type
       values[38] = 1; // trainer_class
-      values[39] = 1; // trainer_race
+      await page.setNgxSelectValueByIndex('trainer_race', 1);
       values[40] = 1; // type
       values[50] = 2; // MovementType
       values[56] = 1; // RacialLeader
@@ -153,10 +154,10 @@ describe('CreatureTemplate integration tests', () => {
       const expectedQuery =
         'UPDATE `creature_template` ' +
         'SET `difficulty_entry_2` = 1, `difficulty_entry_3` = 2, `KillCredit1` = 3, `KillCredit2` = 4,' +
-        " `name` = '5', `subname` = '6', `gossip_menu_id` = 8, `minlevel` = 9, `maxlevel` = 10, " +
+        " `name` = '5', `subname` = '6', `IconName` = 'Directions', `gossip_menu_id` = 8, `minlevel` = 9, `maxlevel` = 10, " +
         '`faction` = 12, `npcflag` = 13, `speed_walk` = 14, `speed_run` = 15, `speed_swim` = 16, ' +
         '`speed_flight` = 17, `detection_range` = 18, `scale` = 19, `DamageModifier` = 22, ' +
-        '`BaseAttackTime` = 23, `RangeAttackTime` = 24, `BaseVariance` = 25, `RangeVariance` = 26, ' +
+        '`BaseAttackTime` = 23, `RangeAttackTime` = 24, `BaseVariance` = 25, `RangeVariance` = 26, `unit_class` = 2, ' +
         '`unit_flags` = 28, `unit_flags2` = 29, `dynamicflags` = 30, `trainer_spell` = 33, ' +
         '`trainer_race` = 1, `type_flags` = 37, `lootid` = 38, `pickpocketloot` = 39, `skinloot` = 40,' +
         " `PetSpellDataId` = 41, `VehicleId` = 42, `mingold` = 43, `maxgold` = 44, `AIName` = '45', " +
