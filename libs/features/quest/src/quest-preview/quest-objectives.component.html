@@ -1,0 +1,39 @@
+<div id="objectives">
+  <p class="title">Objectives</p>
+
+  <div class="greyed text-sm">
+    {{ objectiveText() }}
+  </div>
+  @if (areaDescription()) {
+    <p class="greyed text-sm mt-3" id="areaDescription">
+      {{ areaDescription() }}
+    </p>
+  }
+
+  <div class="mt-2" id="npcOrGoObjectives">
+    @for (obj of npcObjectives(); track obj) {
+      <p>
+        • <span class="colored">{{ obj.text$ | async }}</span> {{ obj.count }}
+      </p>
+    }
+  </div>
+
+  <div class="mt-2" id="itemObjectives">
+    @for (obj of itemObjectives(); track obj) {
+      <p>
+        • <keira-icon [size]="'small'" [itemId]="obj.id" /> &nbsp;
+        <span class="colored">{{ obj.name$ | async }}</span>
+        {{ obj.count }}
+      </p>
+    }
+  </div>
+
+  <div class="mt-2" id="RequiredFaction">
+    @for (f of factionRequirements(); track f) {
+      <p>
+        • <span class="colored">{{ f.name$ | async }}</span>
+        {{ f.value }}
+      </p>
+    }
+  </div>
+</div>
