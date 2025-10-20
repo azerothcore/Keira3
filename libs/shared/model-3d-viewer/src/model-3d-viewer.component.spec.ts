@@ -6,7 +6,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import { MysqlQueryService } from '@keira/shared/db-layer';
-import { GenericOptionIconSelectorComponent } from '@keira/shared/selectors';
+import { GenericOptionSelectorComponent } from '@keira/shared/selectors';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { of } from 'rxjs';
 import { Model3DViewerComponent } from './model-3d-viewer.component';
@@ -15,7 +15,7 @@ import { CONTENT_WOTLK, Gender, InventoryType, MODEL_TYPE, Race, VIEWER_TYPE } f
 describe('Model3DViewerComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), ReactiveFormsModule, GenericOptionIconSelectorComponent, Model3DViewerComponent],
+      imports: [ModalModule.forRoot(), ReactiveFormsModule, GenericOptionSelectorComponent, Model3DViewerComponent],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),

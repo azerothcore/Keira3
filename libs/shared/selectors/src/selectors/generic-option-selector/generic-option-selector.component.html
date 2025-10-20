@@ -1,11 +1,34 @@
-<select [formControl]="control()" class="form-control form-control-sm">
-  @if (placeholder !== '') {
-    <option [ngValue]="placeholderValue()" disabled selected [label]="placeholder"></option>
-  }
-  @for (option of optionList(); track option) {
-    <option
-      [ngValue]="option.value"
-      [label]="(option.value !== undefined && option.value !== null ? option.value + ' - ' : '') + option.name"
-    ></option>
-  }
-</select>
+@let _optionList = optionList();
+
+@if (_optionList[0]['icon'] === undefined) {
+  <select [formControl]="control()" class="form-control form-control-sm">
+    @if (placeholder() !== '') {
+      <option [ngValue]="placeholderValue()" disabled selected [label]="placeholder()"></option>
+    }
+    @for (option of _optionList; track option) {
+      <option
+        [ngValue]="option.value"
+        [label]="(option.value !== undefined && option.value !== null ? option.value + ' - ' : '') + option.name"
+      ></option>
+    }
+  </select>
+} @else {
+  <ngx-select
+    [allowClear]="false"
+    [items]="_optionList"
+    optionValueField="value"
+    optionTextField="name"
+    [formControl]="control()"
+    [size]="'small'"
+  >
+    <ng-template ngx-select-option ngx-select-option-selected let-option let-text="text">
+      @if (option.data.icon) {
+        <img width="16" height="16" [src]="'assets/img/' + option.data.icon" />
+        &nbsp;
+      }
+      <span [innerHtml]="text"></span>
+    </ng-template>
+
+    <ng-template ngx-select-option-not-found let-input> "{{ input }}" not found </ng-template>
+  </ngx-select>
+}
