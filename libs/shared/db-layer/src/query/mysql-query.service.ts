@@ -454,4 +454,12 @@ export class MysqlQueryService extends BaseQueryService {
       `SELECT CreatureDisplayID AS v FROM creature_template_model WHERE CreatureID=${creatureId}`,
     );
   }
+
+  getGameobjectDisplayIdById(gameObjectId: string | number): Promise<number> {
+    return this.queryValueToPromiseCached(
+      'getGameobjectDisplayIdById',
+      String(gameObjectId),
+      `SELECT displayId AS v FROM gameobject_template WHERE entry=${gameObjectId}`,
+    );
+  }
 }
