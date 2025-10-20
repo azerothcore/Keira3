@@ -1,17 +1,20 @@
-import { TestBed } from '@angular/core/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MysqlQueryService } from '@keira/shared/db-layer';
-import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { GameobjectQuestender } from '@keira/shared/acore-world-model';
+import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
+import { MysqlQueryService } from '@keira/shared/db-layer';
+import { Model3DViewerService } from '@keira/shared/model-3d-viewer';
+import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { GameobjectQuestenderComponent } from './gameobject-questender.component';
-import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 
 class GameobjectQuestenderPage extends MultiRowEditorPageObject<GameobjectQuestenderComponent> {
   get questPreviewGoEnd() {
@@ -26,9 +29,12 @@ describe('GameobjectQuestender integration tests', () => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, GameobjectQuestenderComponent, TranslateTestingModule],
       providers: [
+        { provide: Model3DViewerService, useValue: { generateModels: () => new Promise((resolve) => resolve({ destroy: () => {} })) } },
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
         { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     }).compileComponents();
   });

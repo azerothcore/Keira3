@@ -78,22 +78,36 @@
       @if (service.creatureQueststarterList.length > 0) {
         <div id="npc-start">
           @for (q of service.creatureQueststarterList; track q) {
-            <p>
+            <p class="cursor-pointer" (click)="npcStartToggles[q.id] = !npcStartToggles[q.id]">
+              <i class="fa" [class.fa-caret-right]="npcStartToggles[q.id]" [class.fa-caret-down]="!npcStartToggles[q.id]"></i>
               <img [src]="'assets/img/quest/' + questStartIcon" id="creatureQuestStartIcon" /> NPC Start:
               <strong class="colored">{{ service.mysqlQueryService.getCreatureNameById(q.id) | async }}</strong>
               <span class="greyed"> [{{ q.id }}]</span>
             </p>
+            <div [collapse]="npcStartToggles[q.id]">
+              <keira-model-3d-viewer
+                [viewerType]="NPC_VIEWER_TYPE"
+                [displayId]="(service.mysqlQueryService.getCreatureDisplayIdById(q.id) | async)!"
+              />
+            </div>
           }
         </div>
       }
       @if (service.gameobjectQueststarterList.length > 0) {
         <div id="go-start">
           @for (q of service.gameobjectQueststarterList; track q) {
-            <p>
+            <p class="cursor-pointer" (click)="gameobjectStartToggles[q.id] = !gameobjectStartToggles[q.id]">
+              <i class="fa" [class.fa-caret-right]="gameobjectStartToggles[q.id]" [class.fa-caret-down]="!gameobjectStartToggles[q.id]"></i>
               <img [src]="'assets/img/quest/' + questStartIcon" id="gameobjectQuestStartIcon" /> GO Start:
               <strong class="colored">{{ service.mysqlQueryService.getGameObjectNameById(q.id) | async }}</strong>
               <span class="greyed"> [{{ q.id }}]</span>
             </p>
+            <div [collapse]="gameobjectStartToggles[q.id]">
+              <keira-model-3d-viewer
+                [viewerType]="OBJECT_VIEWER_TYPE"
+                [displayId]="(service.mysqlQueryService.getGameobjectDisplayIdById(q.id) | async)!"
+              />
+            </div>
           }
         </div>
       }
@@ -101,22 +115,36 @@
       @if (service.creatureQuestenderList.length > 0) {
         <div id="npc-end">
           @for (q of service.creatureQuestenderList; track q) {
-            <p>
+            <p class="cursor-pointer" (click)="npcEndToggles[q.id] = !npcEndToggles[q.id]">
+              <i class="fa" [class.fa-caret-right]="npcEndToggles[q.id]" [class.fa-caret-down]="!npcEndToggles[q.id]"></i>
               <img [src]="'assets/img/quest/' + questEndIcon" id="creatureQuestEndIcon" /> NPC End:
               <strong class="colored">{{ service.mysqlQueryService.getCreatureNameById(q.id) | async }}</strong>
               <span class="greyed"> [{{ q.id }}]</span>
             </p>
+            <div [collapse]="npcEndToggles[q.id]">
+              <keira-model-3d-viewer
+                [viewerType]="NPC_VIEWER_TYPE"
+                [displayId]="(service.mysqlQueryService.getCreatureDisplayIdById(q.id) | async)!"
+              />
+            </div>
           }
         </div>
       }
       @if (service.gameobjectQuestenderList.length > 0) {
         <div id="go-end">
           @for (q of service.gameobjectQuestenderList; track q) {
-            <p>
+            <p class="cursor-pointer" (click)="gameobjectEndToggles[q.id] = !gameobjectEndToggles[q.id]">
+              <i class="fa" [class.fa-caret-right]="gameobjectEndToggles[q.id]" [class.fa-caret-down]="!gameobjectEndToggles[q.id]"></i>
               <img [src]="'assets/img/quest/' + questEndIcon" id="gameobjectQuestEndIcon" /> GO End:
               <strong class="colored">{{ service.mysqlQueryService.getGameObjectNameById(q.id) | async }}</strong>
               <span class="greyed"> [{{ q.id }}]</span>
             </p>
+            <div [collapse]="gameobjectEndToggles[q.id]">
+              <keira-model-3d-viewer
+                [viewerType]="OBJECT_VIEWER_TYPE"
+                [displayId]="(service.mysqlQueryService.getGameobjectDisplayIdById(q.id) | async)!"
+              />
+            </div>
           }
         </div>
       }

@@ -1,19 +1,20 @@
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { IconComponent } from '@keira/shared/base-editor-components';
 import { RacesTextKey, RacesTextValue } from '@keira/shared/constants';
+import { Model3DViewerComponent, VIEWER_TYPE } from '@keira/shared/model-3d-viewer';
 import { PreviewHelperService } from '@keira/shared/preview';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { Quest } from './quest-preview.model';
 import { QuestPreviewService } from './quest-preview.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-quest-preview',
   templateUrl: './quest-preview.component.html',
   styleUrls: ['./quest-preview.component.scss'],
-  imports: [IconComponent, CollapseModule, AsyncPipe],
+  imports: [IconComponent, CollapseModule, AsyncPipe, Model3DViewerComponent],
 })
 export class QuestPreviewComponent implements OnInit {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
@@ -24,6 +25,13 @@ export class QuestPreviewComponent implements OnInit {
   descriptionToggle = true;
   progressToggle = true;
   completionToggle = true;
+
+  protected readonly npcStartToggles: { [key: number]: boolean } = {};
+  protected readonly npcEndToggles: { [key: number]: boolean } = {};
+  protected readonly gameobjectStartToggles: { [key: number]: boolean } = {};
+  protected readonly gameobjectEndToggles: { [key: number]: boolean } = {};
+  protected readonly NPC_VIEWER_TYPE = VIEWER_TYPE.NPC;
+  protected readonly OBJECT_VIEWER_TYPE = VIEWER_TYPE.OBJECT;
 
   get showMaxLevel(): boolean {
     return !!this.service.maxLevel && this.service.maxLevel !== '0';

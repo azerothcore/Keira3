@@ -32,7 +32,6 @@ declare const ZamModelViewer: any;
   templateUrl: './model-3d-viewer.component.html',
   styleUrl: './model-3d-viewer.component.scss',
   imports: [GenericOptionSelectorComponent, ReactiveFormsModule, FormsModule],
-  standalone: true,
 })
 export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   private readonly queryService = inject(MysqlQueryService);
