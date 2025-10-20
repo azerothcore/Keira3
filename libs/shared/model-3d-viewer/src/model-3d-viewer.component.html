@@ -1,23 +1,25 @@
 <div class="model-viewer" [style]="{ 'background-color': backgroundColor.value }">
   <div [id]="`model_3d_${uniqueId}`"></div>
 
-  <div class="d-flex justify-content-center align-items-center p-1 gap-2 mt-2">
-    <div class="p-1 justify-content-center align-items-center model-3d-settings-container">
-      <i class="mt-1 fa fa-gear model-3d-settings" (click)="showSettings.set(!showSettings())"></i>
+  @if (enableBgSettings()) {
+    <div class="d-flex justify-content-center align-items-center p-1 gap-2 mt-2">
+      <div class="p-1 justify-content-center align-items-center model-3d-settings-container">
+        <i class="mt-1 fa fa-gear model-3d-settings" (click)="showSettings.set(!showSettings())"></i>
+      </div>
+      <div class="mt-1 flex-1">
+        <input type="color" [formControl]="backgroundColor" class="mt-1" [hidden]="!showSettings()" />
+      </div>
+      <div class="flex-1 bg-text-input" [hidden]="!showSettings()">
+        <input
+          type="text"
+          class="form-control"
+          [ngModel]="backgroundColor.value"
+          (ngModelChange)="backgroundColor.setValue($event)"
+          [ngModelOptions]="{ standalone: true }"
+        />
+      </div>
     </div>
-    <div class="mt-1 flex-1">
-      <input type="color" [formControl]="backgroundColor" class="mt-1" [hidden]="!showSettings()" />
-    </div>
-    <div class="flex-1 bg-text-input" [hidden]="!showSettings()">
-      <input
-        type="text"
-        class="form-control"
-        [ngModel]="backgroundColor.value"
-        (ngModelChange)="backgroundColor.setValue($event)"
-        [ngModelOptions]="{ standalone: true }"
-      />
-    </div>
-  </div>
+  }
 </div>
 
 @if (getModelType() === MODEL_TYPE_CHARACTER) {

@@ -66,6 +66,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   readonly displayId = input.required<number>();
   readonly itemClass = input<number>();
   readonly itemInventoryType = input<InventoryType>();
+  readonly enableBgSettings = input<boolean>(false);
 
   private readonly loadedViewer$ = new BehaviorSubject<boolean>(false);
   private readonly subscriptions = new Subscription();
