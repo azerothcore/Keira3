@@ -5,7 +5,7 @@ import { CREATURE_RACE_OPTION_ICON } from '@keira/shared/acore-world-model';
 import { KEIRA_APP_CONFIG_TOKEN } from '@keira/shared/config';
 import { Option, TableRow } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
-import { GenericOptionIconSelectorComponent } from '@keira/shared/selectors';
+import { GenericOptionSelectorComponent } from '@keira/shared/selectors';
 import * as jquery from 'jquery';
 import { BehaviorSubject, catchError, filter, Observable, of, Subscription } from 'rxjs';
 import { getShadowlandDisplayId } from './helper';
@@ -31,7 +31,7 @@ declare const ZamModelViewer: any;
   selector: 'keira-model-3d-viewer',
   templateUrl: './model-3d-viewer.component.html',
   styleUrl: './model-3d-viewer.component.scss',
-  imports: [GenericOptionIconSelectorComponent, ReactiveFormsModule, FormsModule],
+  imports: [GenericOptionSelectorComponent, ReactiveFormsModule, FormsModule],
   standalone: true,
 })
 export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {

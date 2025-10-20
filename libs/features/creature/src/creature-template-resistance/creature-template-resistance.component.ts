@@ -10,9 +10,9 @@ import { EditorButtonsComponent, QueryOutputComponent, TopBarComponent } from '@
 import { GenericOptionSelectorComponent } from '@keira/shared/selectors';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateResistanceService } from './creature-template-resistance.service';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
