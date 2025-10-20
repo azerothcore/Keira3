@@ -8,7 +8,6 @@ import { FactionSelectorModalComponent } from './faction-selector-modal.componen
   selector: 'keira-faction-selector-btn',
   templateUrl: '../base-selector/base-selector-btn.component.html',
   styleUrls: ['../base-selector/base-selector-btn.component.scss'],
-  standalone: true,
 })
 export class FactionSelectorBtnComponent extends BaseSelectorBtnComponent {
   protected readonly modalComponentClass = FactionSelectorModalComponent;
