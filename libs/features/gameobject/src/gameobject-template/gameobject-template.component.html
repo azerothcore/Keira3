@@ -92,7 +92,11 @@
       <div class="preview-container" [class.show-preview]="showGameobjectPreview" [class.hide-preview]="!showGameobjectPreview">
         <div class="transparent perfect-scrollbar">
           <div class="gameobject-preview">
-            <keira-model-3d-viewer [viewerType]="OBJECT_VIEWER_TYPE" [displayId]="editorService.form.controls.displayId.value" />
+            <keira-model-3d-viewer
+              [viewerType]="OBJECT_VIEWER_TYPE"
+              [displayId]="editorService.form.controls.displayId.value"
+              [enableBgSettings]="true"
+            />
           </div>
         </div>
       </div>
