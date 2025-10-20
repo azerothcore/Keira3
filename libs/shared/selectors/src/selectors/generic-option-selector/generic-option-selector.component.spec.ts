@@ -70,7 +70,7 @@ describe('GenericOptionSelectorComponent', () => {
     expect(select.selectedOptions[0].label).toEqual('0 - Classic');
   });
 
-  it('should display all options from optionList', async () => {
+  it('should display all options from optionList', () => {
     const { component } = setup(OPTION_ICON);
 
     expect(component.optionList()).toEqual(OPTION_ICON);

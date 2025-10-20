@@ -122,7 +122,7 @@ describe('QuestRequestItems integration tests', () => {
   });
 
   describe('Editing existing', () => {
-    it('should correctly initialise', async () => {
+    it('should correctly initialise', () => {
       const { page } = setup(false);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
@@ -149,7 +149,7 @@ describe('QuestRequestItems integration tests', () => {
       page.removeNativeElement();
     });
 
-    it('changing values should correctly update the queries', async () => {
+    it('changing values should correctly update the queries', () => {
       const { page } = setup(false);
       page.setInputValueById('EmoteOnComplete', '11');
       page.expectDiffQueryToContain('UPDATE `quest_request_items` SET `EmoteOnComplete` = 11 WHERE (`ID` = 1234);');

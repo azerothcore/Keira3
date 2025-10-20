@@ -22,7 +22,7 @@ describe('SqliteQueryService', () => {
   });
 
   describe('queryValue()', () => {
-    it('should correctly work', async () => {
+    it('should correctly work', () => {
       const value = 'mock result value';
       spyOn(service, 'query').and.returnValue(of([{ v: value }]));
       const query = 'SELECT something AS v FROM my_table WHERE index = 123';
@@ -33,7 +33,7 @@ describe('SqliteQueryService', () => {
       expect(service.query).toHaveBeenCalledOnceWith(query);
     });
 
-    it('should be safe in case of no results', async () => {
+    it('should be safe in case of no results', () => {
       spyOn(service, 'query').and.returnValue(of(null as any));
       const query = 'SELECT something AS v FROM my_table WHERE index = 123';
 
