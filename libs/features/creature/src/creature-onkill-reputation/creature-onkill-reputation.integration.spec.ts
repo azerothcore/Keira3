@@ -1,5 +1,5 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CreatureOnkillReputation } from '@keira/shared/acore-world-model';
@@ -115,20 +115,18 @@ describe('CreatureOnkillReputation integration tests', () => {
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
-    it('changing all properties and executing the query should correctly work', () => {
+    it('changing all properties and executing the query should correctly work', async () => {
       const expectedQuery =
         'UPDATE `creature_onkill_reputation` SET ' +
         '`RewOnKillRepFaction2` = 1, `MaxStanding1` = 1, `IsTeamAward1` = 1, `RewOnKillRepValue1` = 4, ' +
         '`MaxStanding2` = 1, `IsTeamAward2` = 1, `RewOnKillRepValue2` = 7, `TeamDependent` = 1 WHERE (`creature_id` = 1234);';
       querySpy.calls.reset();
 
-      const MaxStanding1 = page.getDebugElementByCss<HTMLSelectElement>('#MaxStanding1 select').nativeElement;
-      const MaxStanding2 = page.getDebugElementByCss<HTMLSelectElement>('#MaxStanding2 select').nativeElement;
       const IsTeamAward1 = page.getDebugElementByCss<HTMLSelectElement>('#IsTeamAward1 select').nativeElement;
       const IsTeamAward2 = page.getDebugElementByCss<HTMLSelectElement>('#IsTeamAward2 select').nativeElement;
       const TeamDependent = page.getDebugElementByCss<HTMLSelectElement>('#TeamDependent select').nativeElement;
-      page.setInputValue(MaxStanding1, '1: 1');
-      page.setInputValue(MaxStanding2, '1: 1');
+      await page.setNgxSelectValueByIndex('MaxStanding1', 1);
+      await page.setNgxSelectValueByIndex('MaxStanding2', 1);
       page.setInputValue(IsTeamAward1, '1: 1');
       page.setInputValue(IsTeamAward2, '1: 1');
       page.setInputValue(TeamDependent, '1: 1');

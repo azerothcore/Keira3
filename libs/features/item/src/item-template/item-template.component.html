@@ -777,13 +777,14 @@
               <div [innerHTML]="itemPreview"></div>
               <br />
               @if (npcDisplayId) {
-                <keira-model-3d-viewer [viewerType]="NPC_VIEWER_TYPE" [displayId]="npcDisplayId" />
+                <keira-model-3d-viewer [viewerType]="NPC_VIEWER_TYPE" [displayId]="npcDisplayId" [enableBgSettings]="true" />
               } @else {
                 <keira-model-3d-viewer
                   [viewerType]="ITEM_VIEWER_TYPE"
                   [displayId]="editorService.form.controls.displayid.value"
                   [itemClass]="editorService.form.controls.class.value"
                   [itemInventoryType]="editorService.form.controls.InventoryType.value"
+                  [enableBgSettings]="true"
                 />
               }
             </div>

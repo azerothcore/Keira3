@@ -1,17 +1,20 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ChangeDetectorRef, provideZonelessChangeDetection } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
-import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { QuestOfferReward, QuestRequestItems, QuestTemplate, QuestTemplateAddon } from '@keira/shared/acore-world-model';
+import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
+import { Class } from '@keira/shared/constants';
+import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
+import { Model3DViewerService } from '@keira/shared/model-3d-viewer';
+import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ToastrModule } from 'ngx-toastr';
+import { Subject } from 'rxjs';
 import { QuestPreviewComponent } from './quest-preview.component';
 import { QUEST_FACTION_REWARD } from './quest-preview.model';
 import { QuestPreviewService } from './quest-preview.service';
-import { Class } from '@keira/shared/constants';
-import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import Spy = jasmine.Spy;
-import { Subject } from 'rxjs';
 
 class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
   get title(): HTMLHeadElement {
@@ -121,12 +124,17 @@ describe('QuestPreviewComponent', () => {
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
         { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     }).compileComponents();
   });
 
   function setup() {
     const service = TestBed.inject(QuestPreviewService);
+    const model3DViewerService = TestBed.inject(Model3DViewerService);
+    spyOn(model3DViewerService, 'generateModels').and.returnValue(new Promise((resolve) => resolve({ destroy: () => {} })));
+
     const valueChangesSubject = new Subject<void>();
     spyOn(service, 'valueChanges$').and.returnValue(valueChangesSubject.asObservable());
 
@@ -139,7 +147,17 @@ describe('QuestPreviewComponent', () => {
     const mysqlQueryService = TestBed.inject(MysqlQueryService);
     const sqliteQueryService = TestBed.inject(SqliteQueryService);
 
-    return { fixture, component, service, page, mysqlQueryService, sqliteQueryService, changeDetectorRef, valueChangesSubject };
+    return {
+      fixture,
+      component,
+      service,
+      page,
+      mysqlQueryService,
+      sqliteQueryService,
+      changeDetectorRef,
+      valueChangesSubject,
+      model3DViewerService,
+    };
   }
 
   it('ngOnInit should initialise services', async () => {

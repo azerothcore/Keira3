@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, input, OnChanges, OnDestroy, OnInit, signal, SimpleChanges } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CREATURE_RACE_OPTION_ICON } from '@keira/shared/acore-world-model';
 import { KEIRA_APP_CONFIG_TOKEN } from '@keira/shared/config';
 import { Option, TableRow } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
-import { GenericOptionIconSelectorComponent } from '@keira/shared/selectors';
+import { GenericOptionSelectorComponent } from '@keira/shared/selectors';
 import * as jquery from 'jquery';
 import { BehaviorSubject, catchError, filter, Observable, of, Subscription } from 'rxjs';
 import { getShadowlandDisplayId } from './helper';
@@ -30,8 +30,8 @@ declare const ZamModelViewer: any;
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-model-3d-viewer',
   templateUrl: './model-3d-viewer.component.html',
-  imports: [GenericOptionIconSelectorComponent],
-  standalone: true,
+  styleUrl: './model-3d-viewer.component.scss',
+  imports: [GenericOptionSelectorComponent, ReactiveFormsModule, FormsModule],
 })
 export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   private readonly queryService = inject(MysqlQueryService);
@@ -47,6 +47,10 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
 
   protected readonly MODEL_TYPE_CHARACTER = MODEL_TYPE.CHARACTER;
 
+  protected readonly backgroundColor = new FormControl<string>('#000000');
+
+  protected readonly showSettings = signal(false);
+
   private readonly windowRef = window as typeof window & {
     jQuery: any;
     $: any;
@@ -61,6 +65,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   readonly displayId = input.required<number>();
   readonly itemClass = input<number>();
   readonly itemInventoryType = input<InventoryType>();
+  readonly enableBgSettings = input<boolean>(false);
 
   private readonly loadedViewer$ = new BehaviorSubject<boolean>(false);
   private readonly subscriptions = new Subscription();

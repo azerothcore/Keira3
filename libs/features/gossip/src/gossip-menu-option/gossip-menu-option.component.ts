@@ -3,7 +3,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GossipMenuOption, OPTION_ICON, OPTION_TYPE } from '@keira/shared/acore-world-model';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { EditorButtonsComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
-import { GenericOptionIconSelectorComponent, SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
+import { GenericOptionSelectorComponent, SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
@@ -26,7 +26,7 @@ import { GossipMenuOptionService } from './gossip-menu-option.service';
     EditorButtonsComponent,
     NgxDatatableModule,
     GossipMenuOptionPreviewComponent,
-    GenericOptionIconSelectorComponent,
+    GenericOptionSelectorComponent,
   ],
 })
 export class GossipMenuOptionComponent extends MultiRowEditorComponent<GossipMenuOption> {
