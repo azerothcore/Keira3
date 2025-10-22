@@ -48,7 +48,7 @@
     "acorn": "8.15.0",
     "electron-settings": "4.0.4",
     "jquery": "3.7.1",
-    "mysql2": "3.15.2",
+    "mysql2": "3.15.3",
     "ngx-select-ex": "19.0.5",
     "ngx-toastr": "19.1.0",
     "ngx-ui-switch": "16.1.0",
