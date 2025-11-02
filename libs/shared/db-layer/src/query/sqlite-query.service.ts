@@ -21,7 +21,9 @@ export class SqliteQueryService extends BaseQueryService {
     return this.sqliteService.dbQuery<T>(queryString).pipe(
       tap((val) => {
         if (this.configService.debugMode() && !silent) {
+          // eslint-disable-next-line no-console
           console.log(`\n${queryString}`);
+          // eslint-disable-next-line no-console
           console.log(val);
         }
       }),

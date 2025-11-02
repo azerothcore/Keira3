@@ -1,6 +1,6 @@
 import { Class, TableRow } from '@keira/shared/constants';
-import { distinctUntilChanged } from 'rxjs';
 import { compareObjFn, getNumberOrString } from '@keira/shared/utils';
+import { distinctUntilChanged } from 'rxjs';
 import { EditorService } from './editor.service';
 
 export abstract class SingleRowEditorService<T extends TableRow> extends EditorService<T> {
@@ -90,8 +90,10 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
         control.setValue(this._originalValue[field]);
       } else {
         console.error(`Control '${field}' does not exist!`);
+        // eslint-disable-next-line no-console
         console.log(`----------- DEBUG CONTROL KEYS:`);
         for (const k of Object.keys(this._form.controls)) {
+          // eslint-disable-next-line no-console
           console.log(k);
         }
       }

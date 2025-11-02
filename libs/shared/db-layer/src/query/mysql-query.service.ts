@@ -25,7 +25,9 @@ export class MysqlQueryService extends BaseQueryService {
     return this.mysqlService.dbQuery<T>(queryString, values).pipe(
       tap((val) => {
         if (this.configService.debugMode()) {
+          // eslint-disable-next-line no-console
           console.log(`\n${queryString}`);
+          // eslint-disable-next-line no-console
           console.log(val);
         }
       }),

@@ -1,13 +1,13 @@
-import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { ElectronService } from '@keira/shared/common-services';
 import { Connection, ConnectionOptions, QueryError } from 'mysql2';
+import { tickAsync } from 'ngx-page-object-model';
 import { Subscriber } from 'rxjs';
 import { instance, mock, reset } from 'ts-mockito';
-import { ElectronService } from '@keira/shared/common-services';
 import { MysqlService } from './mysql.service';
 import Spy = jasmine.Spy;
-import { tickAsync } from 'ngx-page-object-model';
 
 class MockMySql {
   createConnection() {}
@@ -223,7 +223,9 @@ describe('MysqlService', () => {
     expect(service['_reconnecting']).toBe(true);
     expect(service['_connectionLostSubject'].next).toHaveBeenCalledTimes(1);
     expect(service['_connectionLostSubject'].next).toHaveBeenCalledWith(false);
+    // eslint-disable-next-line no-console
     expect(console.log).toHaveBeenCalledTimes(1);
+    // eslint-disable-next-line no-console
     expect(console.log).toHaveBeenCalledWith(`DB connection lost. Reconnecting in 500 ms...`);
 
     await tickAsync(500);
