@@ -47,7 +47,6 @@
         "require-await": "error",
         "prefer-const": "error",
         "no-console": ["error", { "allow": ["warn", "error"] }]
-        // '@typescript-eslint/no-floating-promises': 'error',
       }
     },
     {
