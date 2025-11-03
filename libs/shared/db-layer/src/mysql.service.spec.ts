@@ -223,10 +223,8 @@ describe('MysqlService', () => {
     expect(service['_reconnecting']).toBe(true);
     expect(service['_connectionLostSubject'].next).toHaveBeenCalledTimes(1);
     expect(service['_connectionLostSubject'].next).toHaveBeenCalledWith(false);
-    // eslint-disable-next-line no-console
-    expect(console.log).toHaveBeenCalledTimes(1);
-    // eslint-disable-next-line no-console
-    expect(console.log).toHaveBeenCalledWith(`DB connection lost. Reconnecting in 500 ms...`);
+    expect(console.info).toHaveBeenCalledTimes(1);
+    expect(console.info).toHaveBeenCalledWith(`DB connection lost. Reconnecting in 500 ms...`);
 
     await tickAsync(500);
     expect(service['_connection']).toEqual(mockConnection as unknown as Connection);

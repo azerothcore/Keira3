@@ -46,7 +46,7 @@
         "no-duplicate-imports": "error",
         "require-await": "error",
         "prefer-const": "error",
-        "no-console": ["error", { "allow": ["warn", "error"] }]
+        "no-console": ["error", { "allow": ["warn", "info", "error"] }]
       }
     },
     {

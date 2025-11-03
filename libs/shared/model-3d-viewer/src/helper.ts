@@ -133,8 +133,7 @@ export function getShadowlandDisplayId(
     const sqlite = window.require('sqlite3');
     const db = new sqlite.Database(sqliteItem3dPath, sqlite.OPEN_READONLY, (error: unknown) => {
       if (error) {
-        // eslint-disable-next-line no-console
-        console.log(`Error when opening sqlite database at DISPLAY ID`);
+        console.info(`Error when opening sqlite database at DISPLAY ID`);
         console.error(error);
       }
     });
@@ -149,8 +148,7 @@ export function getShadowlandDisplayId(
             if (data.length && 'ItemDisplayInfoID' in data[0]) {
               resolve({ displayId: data[0].ItemDisplayInfoID, displayType: data[0].DisplayType });
             } else {
-              // eslint-disable-next-line no-console
-              console.log('no ItemDisplayInfoID available for this item');
+              console.info('no ItemDisplayInfoID available for this item');
             }
           }
         },

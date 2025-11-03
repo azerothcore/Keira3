@@ -163,11 +163,9 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
         control.setValue(selectedRow[field]);
       } else {
         console.error(`Control '${field}' does not exist!`);
-        // eslint-disable-next-line no-console
-        console.log(`----------- DEBUG CONTROL KEYS:`);
+        console.info(`----------- DEBUG CONTROL KEYS:`);
         for (const k of Object.keys(this._form.controls)) {
-          // eslint-disable-next-line no-console
-          console.log(k);
+          console.info(k);
         }
       }
     }

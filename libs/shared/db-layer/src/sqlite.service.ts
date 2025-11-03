@@ -23,8 +23,7 @@ export class SqliteService {
       const sqlite = window.require('sqlite3');
       this.db = new sqlite.Database(KEIRA_APP_CONFIG.sqlitePath, sqlite.OPEN_READONLY, (error: unknown) => {
         if (error) {
-          // eslint-disable-next-line no-console
-          console.log(`Error when opening sqlite database at ${KEIRA_APP_CONFIG.sqlitePath}`);
+          console.info(`Error when opening sqlite database at ${KEIRA_APP_CONFIG.sqlitePath}`);
           console.error(error);
         }
       });
@@ -46,8 +45,7 @@ export class SqliteService {
     return (err: Error | null, results: T[]) => {
       this.ngZone.run(() => {
         if (err) {
-          // eslint-disable-next-line no-console
-          console.log(`Error when executing sqlite query: \n\n`);
+          console.info(`Error when executing sqlite query: \n\n`);
           console.error(err);
           subscriber.error(err);
         } else {
