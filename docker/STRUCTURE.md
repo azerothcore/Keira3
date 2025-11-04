@@ -15,8 +15,7 @@ docker/
 ├── docker-start.sh                         # Container startup script (executable)
 │
 ├── api/                                    # Database API service components
-│   ├── database-api.js                     # Main database API service (Node.js/Express)
-│   └── database-api.types.js               # JavaScript type definitions and utilities
+│   └── database-api.js                     # Main database API service (Node.js/Express)
 │
 ├── config/                                 # Docker configuration templates and files
 │   ├── docker-compose.example.yml          # Docker Compose configuration template
@@ -62,13 +61,6 @@ Core database API service featuring:
 - Request validation and sanitization
 - Health monitoring and metrics endpoints
 - Graceful shutdown handling
-
-#### `database-api.types.js`
-JavaScript type definitions and utilities:
-- JSDoc type annotations for API interfaces
-- Validation functions for request/response objects
-- Error handling utilities and constants
-- Configuration management helpers
 
 ### Environment Configuration
 

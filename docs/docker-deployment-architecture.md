@@ -53,7 +53,6 @@ COPY --from=builder /app/dist ./dist
 
 # Copy database API service
 COPY database-api.js ./
-COPY database-api.types.js ./
 
 # Create nginx configuration
 RUN apk add --no-cache nginx

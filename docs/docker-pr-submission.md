@@ -107,8 +107,7 @@ docker/
 ├── .env.example                            # Environment template
 ├── .env                                    # Environment config (gitignored)
 ├── api/                                    # Database API service
-│   ├── database-api.js                     # Express API service
-│   └── database-api.types.js               # JavaScript type utilities
+│   └── database-api.js                     # Express API service
 ├── config/                                 # Docker configuration
 │   ├── docker-compose.example.yml          # Compose configuration
 │   ├── docker-start.sh                     # Container startup script

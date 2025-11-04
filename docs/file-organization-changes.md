@@ -57,8 +57,7 @@ docker/
 ├── .env                                    # Environment variables (created from template)
 │
 ├── api/                                    # Database API service components
-│   ├── database-api.js                     # Main database API service
-│   └── database-api.types.js               # Type definitions and utilities
+│   └── database-api.js                     # Main database API service
 │
 ├── config/                                 # Docker configuration files
 │   ├── docker-compose.example.yml          # Docker Compose configuration
