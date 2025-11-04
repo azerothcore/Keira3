@@ -213,7 +213,7 @@ describe('MysqlService', () => {
   it('reconnect() should correctly work ', async () => {
     service['_reconnecting'] = false;
     spyOn(service['_connectionLostSubject'], 'next');
-    spyOn(console, 'log');
+    spyOn(console, 'info');
     (service as any).mysql = new MockMySql();
     const mockConnection = new MockConnection();
     spyOn((service as any).mysql, 'createConnection').and.returnValue(mockConnection);
