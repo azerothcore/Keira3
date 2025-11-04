@@ -81,7 +81,7 @@ export class MysqlService {
     this._reconnecting = true;
     this._connectionLostSubject.next(false);
     const RECONNECTION_TIME_MS = 500;
-    console.log(`DB connection lost. Reconnecting in ${RECONNECTION_TIME_MS} ms...`);
+    console.info(`DB connection lost. Reconnecting in ${RECONNECTION_TIME_MS} ms...`);
 
     setTimeout(() => {
       this._connection = this.mysql.createConnection(this.config);
@@ -129,7 +129,7 @@ export class MysqlService {
     return (err: QueryError | null, result?: T[], fields?: FieldInfo[]) => {
       this.ngZone.run(() => {
         if (err) {
-          console.log(`Error when executing query: \n\n${err.stack}`);
+          console.info(`Error when executing query: \n\n${err.stack}`);
           subscriber.error(err);
         } else {
           subscriber.next({ result, fields });

@@ -1,13 +1,13 @@
-import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { ElectronService } from '@keira/shared/common-services';
 import { Connection, ConnectionOptions, QueryError } from 'mysql2';
+import { tickAsync } from 'ngx-page-object-model';
 import { Subscriber } from 'rxjs';
 import { instance, mock, reset } from 'ts-mockito';
-import { ElectronService } from '@keira/shared/common-services';
 import { MysqlService } from './mysql.service';
 import Spy = jasmine.Spy;
-import { tickAsync } from 'ngx-page-object-model';
 
 class MockMySql {
   createConnection() {}
@@ -213,7 +213,7 @@ describe('MysqlService', () => {
   it('reconnect() should correctly work ', async () => {
     service['_reconnecting'] = false;
     spyOn(service['_connectionLostSubject'], 'next');
-    spyOn(console, 'log');
+    spyOn(console, 'info');
     (service as any).mysql = new MockMySql();
     const mockConnection = new MockConnection();
     spyOn((service as any).mysql, 'createConnection').and.returnValue(mockConnection);
@@ -223,8 +223,8 @@ describe('MysqlService', () => {
     expect(service['_reconnecting']).toBe(true);
     expect(service['_connectionLostSubject'].next).toHaveBeenCalledTimes(1);
     expect(service['_connectionLostSubject'].next).toHaveBeenCalledWith(false);
-    expect(console.log).toHaveBeenCalledTimes(1);
-    expect(console.log).toHaveBeenCalledWith(`DB connection lost. Reconnecting in 500 ms...`);
+    expect(console.info).toHaveBeenCalledTimes(1);
+    expect(console.info).toHaveBeenCalledWith(`DB connection lost. Reconnecting in 500 ms...`);
 
     await tickAsync(500);
     expect(service['_connection']).toEqual(mockConnection as unknown as Connection);

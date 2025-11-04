@@ -21,8 +21,8 @@ export class SqliteQueryService extends BaseQueryService {
     return this.sqliteService.dbQuery<T>(queryString).pipe(
       tap((val) => {
         if (this.configService.debugMode() && !silent) {
-          console.log(`\n${queryString}`);
-          console.log(val);
+          console.info(`\n${queryString}`);
+          console.info(val);
         }
       }),
     );
