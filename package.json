@@ -17,6 +17,7 @@
     "build": "npm run electron:serve-tsc && nx build keira",
     "build:dev": "npm run build -- -c dev",
     "build:prod": "npm run build -- -c production",
+    "build:docker": "npm run build -- -c docker",
     "ng:serve": "nx serve keira",
     "ng:serve:web": "nx serve keira -c dev-web -o",
     "electron:serve-tsc": "tsc -p tsconfig-serve.json",
