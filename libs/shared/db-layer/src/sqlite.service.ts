@@ -1,9 +1,9 @@
 import { Injectable, NgZone, inject } from '@angular/core';
 
+import { ElectronService } from '@keira/shared/common-services';
 import { KEIRA_APP_CONFIG_TOKEN, KeiraAppConfig } from '@keira/shared/config';
 import { TableRow } from '@keira/shared/constants';
 import { Observable, Subscriber } from 'rxjs';
-import { ElectronService } from '@keira/shared/common-services';
 
 /* istanbul ignore next */ // Note: will be tested in e2e
 @Injectable({
@@ -23,7 +23,7 @@ export class SqliteService {
       const sqlite = window.require('sqlite3');
       this.db = new sqlite.Database(KEIRA_APP_CONFIG.sqlitePath, sqlite.OPEN_READONLY, (error: unknown) => {
         if (error) {
-          console.log(`Error when opening sqlite database at ${KEIRA_APP_CONFIG.sqlitePath}`);
+          console.info(`Error when opening sqlite database at ${KEIRA_APP_CONFIG.sqlitePath}`);
           console.error(error);
         }
       });
@@ -45,7 +45,7 @@ export class SqliteService {
     return (err: Error | null, results: T[]) => {
       this.ngZone.run(() => {
         if (err) {
-          console.log(`Error when executing sqlite query: \n\n`);
+          console.info(`Error when executing sqlite query: \n\n`);
           console.error(err);
           subscriber.error(err);
         } else {

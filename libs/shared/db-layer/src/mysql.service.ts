@@ -1,7 +1,7 @@
 import { Injectable, NgZone, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import * as mysql from 'mysql2';
-import { Connection, ConnectionOptions, FieldPacket as FieldInfo, QueryError } from 'mysql2';
+import { Connection, FieldPacket as FieldInfo, QueryError } from 'mysql2';
 import { Observable, Subject, Subscriber } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import {
@@ -32,9 +32,9 @@ export class MysqlService {
   private _connection!: Connection;
   private isWebEnvironment = false;
 
-  private _config!: ConnectionOptions;
-  get config(): ConnectionOptions {
-    return this._config as ConnectionOptions;
+  private _config!: KeiraConnectionOptions;
+  get config(): KeiraConnectionOptions {
+    return this._config as KeiraConnectionOptions;
   }
 
   private _connectionEstablished = false;
@@ -69,7 +69,7 @@ export class MysqlService {
     return this.http.get<DatabaseStateResponse>(`${apiUrl}/state`);
   }
 
-  connect(config: ConnectionOptions) {
+  connect(config: KeiraConnectionOptions) {
     this._config = config;
     this._config.multipleStatements = true;
 
@@ -141,7 +141,7 @@ export class MysqlService {
     this._reconnecting = true;
     this._connectionLostSubject.next(false);
     const RECONNECTION_TIME_MS = 500;
-    console.log(`DB connection lost. Reconnecting in ${RECONNECTION_TIME_MS} ms...`);
+    console.info(`DB connection lost. Reconnecting in ${RECONNECTION_TIME_MS} ms...`);
 
     setTimeout(() => {
       this._connection = this.mysql.createConnection(this.config);
@@ -259,7 +259,7 @@ export class MysqlService {
     return (err: QueryError | null, result?: T[], fields?: FieldInfo[]) => {
       this.ngZone.run(() => {
         if (err) {
-          console.log(`Error when executing query: \n\n${err.stack}`);
+          console.info(`Error when executing query: \n\n${err.stack}`);
           subscriber.error(err);
         } else {
           subscriber.next({ result, fields });

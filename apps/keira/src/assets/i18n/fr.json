@@ -58,6 +58,8 @@
     "USERNAME": "Nom d'utilisateur",
     "PASSWORD": "Mot de passe",
     "DATABASE": "Base de données",
+    "USE_SSL": "Use SSL/TLS",
+    "SSL_TOOLTIP": "Required for servers with require_secure_transport=ON",
     "SAVE_PASSWORD": "Enregistrer le mot de passe",
     "REMEMBER_ME": "Remember me",
     "LOAD_RECENT": "Charger un connexion récente",
@@ -568,8 +570,6 @@
       "TEXT": "The actual text. The message in this field will be shown as the text on a page."
     }
   },
-  "SOURCE_TYPE": "Source Type:",
-  "LIMIT": "Limit:",
   "GOSSIP": {
     "GOSSIP_MENU": {
       "TEXT_ID_TOOLTIP": "The npc_text.ID for the gossip you want to be initially displayed. Also this tells the NPC what to say at the top of the options menu when it is displayed."
@@ -591,7 +591,9 @@
     "SELECT": {
       "SOURCE_GROUP": "Source Group:",
       "SOURCE_ENTRY": "Source Entry:",
-      "CREATE_NEW": "Create new"
+      "CREATE_NEW": "Create new",
+      "PLACEHOLDER_SOURCE_GROUP": "SourceGroup",
+      "PLACEHOLDER_ENTRY": "SourceEntry"
     },
     "EDITOR": {
       "CONDITIONS_SOURCE": "Condition source",
@@ -753,6 +755,16 @@
       "TIMED_ACTIONLISTS": "All smart_scripts having source_type = 9 and entryorguid between CreatureID * 100 and CreatureID * 100 + 100",
       "GENERATE_COMMENT": "Generate comment",
       "GENERATE_COMMENTS_ALL": "Generate comments (all)"
+    },
+    "SEARCH_BY_EXISTING": {
+      "SOURCE_TYPE": "Source Type:",
+      "ENTRY_OR_GUID": "Entry(+) or GUID(-):",
+      "LIMIT": "Limit:",
+      "PLACEHOLDER": "Entry (as positive number) or GUID (as negative number)",
+      "ALL": "ALL"
+    },
+    "SEARCH_BY_ENTITY": {
+      "SOURCE_TYPE": "Select a Source Type"
     }
   },
   "SPELL_DBC": {
