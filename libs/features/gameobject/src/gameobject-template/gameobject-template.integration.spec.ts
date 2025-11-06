@@ -143,7 +143,7 @@ describe('GameobjectTemplate integration tests', () => {
 
     it('changing all properties and executing the query should correctly work', () => {
       const expectedQuery =
-        "UPDATE `gameobject_template` SET `displayId` = 1, `name` = '2', `IconName` = '3', " +
+        "UPDATE `gameobject_template` SET `displayId` = 1, `name` = '2', " +
         "`castBarCaption` = '4', `unk1` = '5', `size` = 6, `Data0` = 7, `Data1` = 8, `Data2` = 9, `Data3` = 10, " +
         '`Data4` = 11, `Data5` = 12, `Data6` = 13, `Data7` = 14, `Data8` = 15, `Data9` = 16, `Data10` = 17, `Data11` = 18, ' +
         '`Data12` = 19, `Data13` = 20, `Data14` = 21, `Data15` = 22, `Data16` = 23, `Data17` = 24, `Data18` = 25, ' +
@@ -152,7 +152,11 @@ describe('GameobjectTemplate integration tests', () => {
 
       querySpy.calls.reset();
 
-      page.changeAllFields(originalEntity, ['VerifiedBuild']);
+      const values: (string | number)[] = [];
+
+      values[4] = 'Directions'; // IconName
+
+      page.changeAllFields(originalEntity, ['VerifiedBuild'], values);
       page.expectDiffQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();

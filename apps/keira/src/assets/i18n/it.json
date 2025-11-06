@@ -58,6 +58,8 @@
     "USERNAME": "Nome utente",
     "PASSWORD": "Password",
     "DATABASE": "Database",
+    "USE_SSL": "Use SSL/TLS",
+    "SSL_TOOLTIP": "Required for servers with require_secure_transport=ON",
     "SAVE_PASSWORD": "Salva password",
     "REMEMBER_ME": "Ricordami",
     "LOAD_RECENT": "Carica recenti",
@@ -568,8 +570,6 @@
       "TEXT": "Il testo effettivo. Il messaggio in questo campo verrà mostrato come testo su una pagina."
     }
   },
-  "SOURCE_TYPE": "Tipo di Sorgente:",
-  "LIMIT": "Limite:",
   "GOSSIP": {
     "GOSSIP_MENU": {
       "TEXT_ID_TOOLTIP": "Il npc_text.ID per il pettegolezzo che vuoi venga visualizzato inizialmente. Inoltre, questo dice all'NPC cosa dire in cima al menu delle opzioni quando viene visualizzato."
@@ -591,7 +591,9 @@
     "SELECT": {
       "SOURCE_GROUP": "Gruppo Sorgente:",
       "SOURCE_ENTRY": "Entrata Sorgente:",
-      "CREATE_NEW": "Crea nuovo"
+      "CREATE_NEW": "Crea nuovo",
+      "PLACEHOLDER_SOURCE_GROUP": "SourceGroup",
+      "PLACEHOLDER_ENTRY": "SourceEntry"
     },
     "EDITOR": {
       "CONDITIONS_SOURCE": "Sorgente condizione",
@@ -753,6 +755,16 @@
       "TIMED_ACTIONLISTS": "All smart_scripts having source_type = 9 and entryorguid between CreatureID * 100 and CreatureID * 100 + 100",
       "GENERATE_COMMENT": "Generate comment",
       "GENERATE_COMMENTS_ALL": "Generate comments (all)"
+    },
+    "SEARCH_BY_EXISTING": {
+      "SOURCE_TYPE": "Source Type:",
+      "ENTRY_OR_GUID": "Entry(+) or GUID(-):",
+      "LIMIT": "Limit:",
+      "PLACEHOLDER": "Entry (as positive number) or GUID (as negative number)",
+      "ALL": "ALL"
+    },
+    "SEARCH_BY_ENTITY": {
+      "SOURCE_TYPE": "Select a Source Type"
     }
   },
   "SPELL_DBC": {

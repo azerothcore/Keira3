@@ -79,6 +79,26 @@
               "with": "apps/keira/src/environments/environment.prod.ts"
             }
           ]
+        },
+        "docker": {
+          "budgets": [
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "7kb"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "aot": true,
+          "extractLicenses": true,
+          "fileReplacements": [
+            {
+              "replace": "apps/keira/src/environments/environment.ts",
+              "with": "apps/keira/src/environments/environment.docker.ts"
+            }
+          ]
         }
       }
     },

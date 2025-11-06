@@ -25,8 +25,8 @@ export class MysqlQueryService extends BaseQueryService {
     return this.mysqlService.dbQuery<T>(queryString, values).pipe(
       tap((val) => {
         if (this.configService.debugMode()) {
-          console.log(`\n${queryString}`);
-          console.log(val);
+          console.info(`\n${queryString}`);
+          console.info(val);
         }
       }),
       map((val) => val?.result),
@@ -452,6 +452,14 @@ export class MysqlQueryService extends BaseQueryService {
       'getCreatureDisplayIdById',
       String(creatureId),
       `SELECT CreatureDisplayID AS v FROM creature_template_model WHERE CreatureID=${creatureId}`,
+    );
+  }
+
+  getGameobjectDisplayIdById(gameObjectId: string | number): Promise<number> {
+    return this.queryValueToPromiseCached(
+      'getGameobjectDisplayIdById',
+      String(gameObjectId),
+      `SELECT displayId AS v FROM gameobject_template WHERE entry=${gameObjectId}`,
     );
   }
 }

@@ -1,15 +1,15 @@
 /*eslint camelcase: ["error", {properties: "never"}]*/
-import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
+import { SAI_TYPES } from '@keira/shared/acore-world-model';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 import { of } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
-import { SAI_TYPES } from '@keira/shared/acore-world-model';
 import { SaiHandlerService } from './sai-handler.service';
-import { MysqlQueryService } from '@keira/shared/db-layer';
 
 describe('SaiHandlerService', () => {
   beforeEach(() =>
@@ -27,7 +27,7 @@ describe('SaiHandlerService', () => {
     { testId: 1, sourceType: 1, entryOrGuid: 111, isNew: true },
     { testId: 2, sourceType: 2, entryOrGuid: 222, isNew: false },
   ]) {
-    it(`selectFromEntity() should correctly work [${testId}]`, async () => {
+    it(`selectFromEntity() should correctly work [${testId}]`, () => {
       const service: SaiHandlerService = TestBed.inject(SaiHandlerService);
       const queryService: MysqlQueryService = TestBed.inject(MysqlQueryService);
       const mockResults = isNew ? [] : ['some result'];
@@ -154,7 +154,7 @@ describe('SaiHandlerService', () => {
     ];
 
     for (const { testId, sourceType, entryorguid, name, returnValue, expectedName, expectedQuery } of cases) {
-      it(`${testId}`, async () => {
+      it(`${testId}`, () => {
         const service: SaiHandlerService = TestBed.inject(SaiHandlerService);
         const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
         const queryService = TestBed.inject(MysqlQueryService);
