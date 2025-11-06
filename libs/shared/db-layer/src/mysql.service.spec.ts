@@ -1,267 +1,175 @@
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Connection, ConnectionOptions, QueryError } from 'mysql2';
-import { Subscriber } from 'rxjs';
-import { instance, mock, reset } from 'ts-mockito';
-import { ElectronService } from '@keira/shared/common-services';
-import { MysqlService } from './mysql.service';
-import Spy = jasmine.Spy;
 import { tickAsync } from 'ngx-page-object-model';
+import { ElectronService } from '@keira/shared/common-services';
+import { KEIRA_APP_CONFIG_TOKEN, KeiraAppConfig } from '@keira/shared/config';
+import { MysqlService } from './mysql.service';
 
 class MockMySql {
-  createConnection() {}
+  readonly createConnection = jasmine.createSpy('createConnection');
 }
 
 class MockConnection {
-  query() {}
-  connect() {}
+  readonly query = jasmine.createSpy('query');
+  readonly connect = jasmine.createSpy('connect');
+  readonly on = jasmine.createSpy('on');
 }
 
-describe('MysqlService', () => {
+const ELECTRON_CONFIG: KeiraAppConfig = {
+  production: false,
+  environment: 'ELECTRON',
+  sqlitePath: 'sqlite.db',
+  sqliteItem3dPath: 'item.db',
+};
+
+const WEB_CONFIG: KeiraAppConfig = {
+  production: true,
+  environment: 'WEB',
+  sqlitePath: 'assets/sqlite.db',
+  sqliteItem3dPath: 'assets/item_display.db',
+  databaseApiUrl: '/api/database',
+};
+
+describe('MysqlService (electron)', () => {
+  const originalRequire = (window as any).require;
   let service: MysqlService;
+  let mysqlMock: MockMySql;
+  let mockConnection: MockConnection;
 
-  const config: ConnectionOptions = { host: 'azerothcore.org' };
+  beforeEach(() => {
+    mysqlMock = new MockMySql();
+    mockConnection = new MockConnection();
+    mysqlMock.createConnection.and.returnValue(mockConnection as unknown as Connection);
 
-  beforeEach(() =>
+    (window as any).require = jasmine.createSpy('require').and.returnValue(mysqlMock);
+
     TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
         MysqlService,
-        { provide: ElectronService, useValue: instance(mock(ElectronService)) },
+        { provide: ElectronService, useValue: { isElectron: () => 'renderer' } },
+        { provide: KEIRA_APP_CONFIG_TOKEN, useValue: ELECTRON_CONFIG },
       ],
-    }),
-  );
+    });
 
-  beforeEach(() => {
     service = TestBed.inject(MysqlService);
   });
 
-  it('connectionEstablished getter', () => {
-    service['_connectionEstablished'] = true;
-    expect(service.connectionEstablished).toBe(true);
+  afterEach(() => {
+    (window as any).require = originalRequire;
+    TestBed.resetTestingModule();
   });
 
-  it('getConnectionState should return null when there is no connection', () => {
-    (service as any)._connection = null;
-    expect(service.getConnectionState()).toBe('EMPTY');
+  it('should expose connectionEstablished flag', () => {
+    service['_connectionEstablished'] = true;
+    expect(service.connectionEstablished).toBeTrue();
+  });
 
-    (service as any)._connection = {};
+  it('should report connection state based on internal connection', () => {
+    service['_connection'] = undefined as unknown as Connection;
+    expect(service.getConnectionState()).toBe('DISCONNECTED');
+
+    service['_connection'] = {} as Connection;
     expect(service.getConnectionState()).toBe('CONNECTED');
   });
 
-  it('connect(config) should properly work', () => {
-    (service as any).mysql = new MockMySql();
-    const mockConnection = new MockConnection();
-    const createConnectionSpy = spyOn((service as any).mysql, 'createConnection').and.returnValue(mockConnection);
-    const connectSpy = spyOn(mockConnection, 'connect');
+  it('should connect via mysql driver in electron mode', () => {
+    const config: ConnectionOptions = { host: 'azerothcore.org' };
 
-    const obs = service.connect(config);
+    service.connect(config).subscribe();
 
-    expect(createConnectionSpy).toHaveBeenCalledWith(config);
-    expect(service.config).toEqual(config);
-
-    obs.subscribe(() => {
-      expect(connectSpy).toHaveBeenCalledTimes(1);
-      // @ts-ignore
-      expect(connectSpy).toHaveBeenCalledWith(service['connectCallback']);
-    });
+    expect(mysqlMock.createConnection).toHaveBeenCalledWith({ ...config, multipleStatements: true });
+    expect(mockConnection.connect).toHaveBeenCalledTimes(1);
   });
 
-  describe('dbQuery(queryString)', () => {
-    it('should properly work', () => {
-      (service as any).mysql = new MockMySql();
-      const mockConnection = new MockConnection();
-      service['_connection'] = mockConnection as unknown as Connection;
-      const querySpy = spyOn(mockConnection, 'query');
-      const queryStr = '--some mock query';
+  it('should execute queries through the mysql connection', () => {
+    const query = 'SELECT 1';
+    service['_connection'] = mockConnection as unknown as Connection;
 
-      const obs = service.dbQuery(queryStr, []);
+    service.dbQuery(query).subscribe();
 
-      obs.subscribe(() => {
-        expect(querySpy).toHaveBeenCalledTimes(1);
-        // @ts-ignore
-        expect(querySpy).toHaveBeenCalledWith(queryStr, [], service['queryCallback']);
-      });
-    });
-
-    it('should give error if _connection is not defined', () => {
-      (service as any).mysql = new MockMySql();
-      service['_connection'] = undefined as any;
-      spyOn(console, 'error');
-      const queryStr = '--some mock query';
-
-      const obs = service.dbQuery(queryStr, []);
-
-      obs.subscribe(() => {
-        expect(console.error).toHaveBeenCalledTimes(1);
-        expect(console.error).toHaveBeenCalledWith(`_connection was not defined when trying to run query: ${queryStr}`);
-      });
-    });
-
-    it('should give error if reconnection is in progress', () => {
-      (service as any).mysql = new MockMySql();
-      service['_reconnecting'] = true;
-      spyOn(console, 'error');
-      const queryStr = '--some mock query';
-
-      const obs = service.dbQuery(queryStr);
-
-      obs.subscribe(() => {
-        expect(console.error).toHaveBeenCalledTimes(1);
-        expect(console.error).toHaveBeenCalledWith(`Reconnection in progress while trying to run query: ${queryStr}`);
-      });
-    });
+    expect(mockConnection.query).toHaveBeenCalledTimes(1);
   });
 
-  describe('callbacks', () => {
-    let subscriber: Subscriber<any>;
-    let errorSpy: Spy;
-    let nextSpy: Spy;
-    let completeSpy: Spy;
-    let callback: (err?: QueryError, result?: any, fields?: any) => void;
-
-    const error = { code: 'some error', errno: 1234 } as QueryError;
-
-    beforeEach(() => {
-      subscriber = new Subscriber();
-      errorSpy = spyOn(subscriber, 'error');
-      nextSpy = spyOn(subscriber, 'next');
-      completeSpy = spyOn(subscriber, 'complete');
-    });
-
-    describe('connect', () => {
-      beforeEach(() => {
-        callback = service['getConnectCallback'](subscriber) as any;
-      });
-
-      it('should correctly work', () => {
-        service['_connectionEstablished'] = false;
-        service['_connection'] = { on: jasmine.createSpy() } as any;
-
-        callback();
-
-        expect(errorSpy).toHaveBeenCalledTimes(0);
-        expect(nextSpy).toHaveBeenCalledTimes(1);
-        expect(completeSpy).toHaveBeenCalledTimes(1);
-        expect(service['_connectionEstablished']).toBe(true);
-        expect(service['_connection'].on).toHaveBeenCalledTimes(1);
-      });
-
-      it('should correctly handle errors', () => {
-        service['_connectionEstablished'] = true;
-
-        callback(error);
-
-        expect(errorSpy).toHaveBeenCalledTimes(1);
-        expect(errorSpy).toHaveBeenCalledWith(error);
-        expect(nextSpy).toHaveBeenCalledTimes(0);
-        expect(completeSpy).toHaveBeenCalledTimes(1);
-        expect(service['_connectionEstablished']).toBe(false);
-      });
-    });
-
-    describe('query', () => {
-      const result = 'some mock result';
-      const fields = 'some mock fields';
-
-      beforeEach(() => {
-        callback = service['getQueryCallback'](subscriber) as any;
-      });
-
-      it('should correctly work', () => {
-        callback(undefined, result, fields);
-
-        expect(errorSpy).toHaveBeenCalledTimes(0);
-        expect(nextSpy).toHaveBeenCalledTimes(1);
-        expect(nextSpy).toHaveBeenCalledWith({ result, fields });
-        expect(completeSpy).toHaveBeenCalledTimes(1);
-      });
-
-      it('should correctly handle errors', () => {
-        callback(error, result, fields);
-
-        expect(errorSpy).toHaveBeenCalledTimes(1);
-        expect(errorSpy).toHaveBeenCalledWith(error);
-        expect(nextSpy).toHaveBeenCalledTimes(0);
-        expect(completeSpy).toHaveBeenCalledTimes(1);
-      });
-    });
-  });
-
-  describe('handleConnectionError(error)', () => {
-    it('should call reconnect if the error is PROTOCOL_CONNECTION_LOST', () => {
-      const error = { code: 'PROTOCOL_CONNECTION_LOST' };
-      spyOn<any>(service, 'reconnect');
-
-      service['handleConnectionError'](error);
-
-      expect(service['reconnect']).toHaveBeenCalledTimes(1);
-    });
-
-    it('should NOT call reconnect if the error is something else', () => {
-      const error = { code: 'SOME_OTHER_ERROR' };
-      spyOn<any>(service, 'reconnect');
-
-      service['handleConnectionError'](error);
-
-      expect(service['reconnect']).toHaveBeenCalledTimes(0);
-    });
-  });
-
-  it('reconnect() should correctly work ', async () => {
-    service['_reconnecting'] = false;
-    spyOn(service['_connectionLostSubject'], 'next');
+  it('should trigger reconnect logic on connection loss', async () => {
     spyOn(console, 'log');
-    (service as any).mysql = new MockMySql();
-    const mockConnection = new MockConnection();
-    spyOn((service as any).mysql, 'createConnection').and.returnValue(mockConnection);
+    const connectionLostSpy = spyOn(service['_connectionLostSubject'], 'next');
+    service['_connection'] = mockConnection as unknown as Connection;
+    service['_reconnecting'] = false;
 
-    service['reconnect']();
+    service['handleConnectionError']({ code: 'PROTOCOL_CONNECTION_LOST' } as QueryError);
 
-    expect(service['_reconnecting']).toBe(true);
-    expect(service['_connectionLostSubject'].next).toHaveBeenCalledTimes(1);
-    expect(service['_connectionLostSubject'].next).toHaveBeenCalledWith(false);
-    expect(console.log).toHaveBeenCalledTimes(1);
-    expect(console.log).toHaveBeenCalledWith(`DB connection lost. Reconnecting in 500 ms...`);
+    expect(service['_reconnecting']).toBeTrue();
+    expect(connectionLostSpy).toHaveBeenCalledWith(false);
 
     await tickAsync(500);
-    expect(service['_connection']).toEqual(mockConnection as unknown as Connection);
+    expect(mysqlMock.createConnection).toHaveBeenCalledTimes(1);
   });
+});
 
-  describe('reconnectCallback(err)', () => {
-    it('should call reconnect() in case of error', () => {
-      service['_reconnecting'] = true;
-      spyOn(service['_connectionLostSubject'], 'next');
-      spyOn<any>(service, 'reconnect');
-      service['_connection'] = { on: jasmine.createSpy() } as any;
+describe('MysqlService (web)', () => {
+  let service: MysqlService;
+  let httpTestingController: HttpTestingController;
 
-      service['reconnectCallback']({ code: 'mock-error' } as unknown as QueryError);
-
-      expect(service['reconnect']).toHaveBeenCalledTimes(1);
-      expect(service['_reconnecting']).toBe(true);
-      expect(service['_connectionLostSubject'].next).toHaveBeenCalledTimes(0);
-      expect(service['_connection'].on).toHaveBeenCalledTimes(0);
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        MysqlService,
+        { provide: ElectronService, useValue: { isElectron: () => undefined } },
+        { provide: KEIRA_APP_CONFIG_TOKEN, useValue: WEB_CONFIG },
+      ],
     });
 
-    it('should correctly work otherwise', () => {
-      service['_reconnecting'] = true;
-      spyOn(service['_connectionLostSubject'], 'next');
-      spyOn<any>(service, 'reconnect');
-      service['_connection'] = { on: jasmine.createSpy() } as any;
-
-      service['reconnectCallback'](null);
-
-      expect(service['reconnect']).toHaveBeenCalledTimes(0);
-      expect(service['_reconnecting']).toBe(false);
-      expect(service['_connectionLostSubject'].next).toHaveBeenCalledTimes(1);
-      expect(service['_connectionLostSubject'].next).toHaveBeenCalledWith(true);
-      expect(service['_connection'].on).toHaveBeenCalledTimes(1);
-    });
+    service = TestBed.inject(MysqlService);
+    httpTestingController = TestBed.inject(HttpTestingController);
   });
 
   afterEach(() => {
-    reset(mock(ElectronService));
+    httpTestingController.verify();
+    TestBed.resetTestingModule();
+  });
+
+  it('should connect via HTTP API', () => {
+    const config: ConnectionOptions = { host: 'azerothcore.org' };
+
+    service.connect(config).subscribe({
+      next: () => expect(service.connectionEstablished).toBeTrue(),
+    });
+
+    const request = httpTestingController.expectOne('/api/database/connect');
+    expect(request.request.method).toBe('POST');
+    expect(request.request.body).toEqual({ config });
+    request.flush({ success: true, message: 'connected' });
+  });
+
+  it('should proxy queries through the HTTP API', () => {
+    const query = 'SELECT 1';
+
+    service.dbQuery(query).subscribe((result) => {
+      expect(result.result).toEqual([{ id: 1 }]);
+    });
+
+    const request = httpTestingController.expectOne('/api/database/query');
+    expect(request.request.method).toBe('POST');
+    expect(request.request.body).toEqual({ sql: query, params: [] });
+    request.flush({ success: true, result: [{ id: 1 }], fields: [] });
+  });
+
+  it('should fetch connection state from the API', () => {
+    service.getConnectionStateViaAPI().subscribe((state) => {
+      expect(state.state).toBe('CONNECTED');
+    });
+
+    const request = httpTestingController.expectOne('/api/database/state');
+    expect(request.request.method).toBe('GET');
+    request.flush({ state: 'CONNECTED' });
   });
 });

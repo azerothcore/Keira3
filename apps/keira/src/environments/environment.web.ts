@@ -5,6 +5,9 @@
 import { KeiraAppConfig } from '@keira/shared/config';
 
 export const KEIRA_APP_CONFIG: KeiraAppConfig = {
-  production: false,
-  environment: 'DEV',
+  production: true,
+  environment: 'WEB',
+  sqlitePath: 'assets/sqlite.db',
+  sqliteItem3dPath: 'assets/item_display.db',
+  databaseApiUrl: '/api/database',
 };
