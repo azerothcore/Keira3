@@ -4,4 +4,5 @@ export * from './constants/preview';
 export * from './constants/quest-preview';
 
 export * from './types/general';
+export * from './types/database-api';
 export * from './types/quest-reputation-reward';
