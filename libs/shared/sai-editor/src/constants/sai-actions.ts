@@ -54,9 +54,9 @@ export enum SAI_ACTIONS {
   SUMMON_GO = 50,
   KILL_UNIT = 51,
   ACTIVATE_TAXI = 52,
-  WP_START = 53,
-  WP_PAUSE = 54,
-  WP_STOP = 55,
+  ESCORT_START = 53,
+  ESCORT_PAUSE = 54,
+  ESCORT_STOP = 55,
   ADD_ITEM = 56,
   REMOVE_ITEM = 57,
   INSTALL_AI_TEMPLATE = 58,
@@ -66,7 +66,7 @@ export enum SAI_ACTIONS {
   TELEPORT = 62,
   SET_COUNTER = 63,
   STORE_TARGET_LIST = 64,
-  WP_RESUME = 65,
+  ESCORT_RESUME = 65,
   SET_ORIENTATION = 66,
   CREATE_TIMED_EVENT = 67,
   PLAYMOVIE = 68,
@@ -172,7 +172,7 @@ export enum SAI_ACTIONS {
   PLAY_SPELL_VISUAL = 229,
   FOLLOW_GROUP = 230,
   ORIENTATION_TARGET = 231,
-  WAYPOINT_DATA_START = 232,
+  WAYPOINT_START = 232,
   WAYPOINT_DATA_RANDOM = 233,
   MOVEMENT_STOP = 234,
   MOVEMENT_PAUSE = 235,
@@ -548,40 +548,41 @@ SAI_ACTION_TOOLTIPS[SAI_ACTIONS.KILL_UNIT] = 'Kills the unit target instantly';
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.ACTIVATE_TAXI] = 'Activates a taxipath of the given id for our (player) target.';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.ACTIVATE_TAXI] = 'TaxiId';
 
-// SMART_ACTION_WP_START
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.WP_START] = 'Starts a waypoint using the `waypoints` table in the world database.';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.WP_START] = 'forcedMovement';
-SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.WP_START] = 'Waypoint';
-SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.WP_START] = 'Repeat';
-SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.WP_START] = 'QuestId';
-SAI_ACTION_PARAM5_NAMES[SAI_ACTIONS.WP_START] = 'DespawnTime';
-SAI_ACTION_PARAM6_NAMES[SAI_ACTIONS.WP_START] = 'ReactState';
-SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.WP_START] =
+// SMART_ACTION_ESCORT_START
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.ESCORT_START] = 'Starts an escort using the `escort` table in the world database.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.ESCORT_START] = 'forcedMovement';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.ESCORT_START] = 'Waypoint';
+SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.ESCORT_START] = 'Repeat';
+SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.ESCORT_START] = 'QuestId';
+SAI_ACTION_PARAM5_NAMES[SAI_ACTIONS.ESCORT_START] = 'DespawnTime';
+SAI_ACTION_PARAM6_NAMES[SAI_ACTIONS.ESCORT_START] = 'ReactState';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.ESCORT_START] =
   'This forces the creature movement (speed) on the current waypoint: 0 = None | 1 = Walk | 2 = Run';
-SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.WP_START] = 'waypoints.entry';
-SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.WP_START] = "Repeat the path when the it's finished";
-SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.WP_START] =
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.ESCORT_START] = 'waypoints.entry';
+SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.ESCORT_START] = "Repeat the path when the it's finished";
+SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.ESCORT_START] =
   'Quest entry to give credit for once the path has finished. Will use the target type and take all player entities from this list';
-SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.WP_START] =
+SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.ESCORT_START] =
   'Time in milliseconds to wait after the path ended before we despawn. 0 = will not despawn';
-SAI_ACTION_PARAM6_TOOLTIPS[SAI_ACTIONS.WP_START] = 'ReactState that is set when the waypoint starts';
+SAI_ACTION_PARAM6_TOOLTIPS[SAI_ACTIONS.ESCORT_START] = 'ReactState that is set when the waypoint starts';
 
-// SMART_ACTION_WP_PAUSE
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.WP_PAUSE] =
+// SMART_ACTION_ESCORT_PAUSE
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.ESCORT_PAUSE] =
   'Pauses the waypoint path the creature is currently following for a specific time (milliseconds).';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.WP_PAUSE] = 'Time';
-SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.WP_PAUSE] = TIME_IN_MILLISECONDS_TOOLTIP;
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.ESCORT_PAUSE] = 'Time';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.ESCORT_PAUSE] = TIME_IN_MILLISECONDS_TOOLTIP;
 
-// SMART_ACTION_WP_STOP
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.WP_STOP] =
+// SMART_ACTION_ESCORT_STOP
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.ESCORT_STOP] =
   "Stops the waypoint path the creature is currently following. Also allows you to specify a despawn time from that point on as well as which quest id should be counted as 'fail' (or not, based on the third parameter).";
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.WP_STOP] = 'DespawnTime';
-SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.WP_STOP] = 'QuestId';
-SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.WP_STOP] = 'FailQuest';
-SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.WP_STOP] = 'Time in milliseconds after which the creature despawns when the path was stopped';
-SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.WP_STOP] =
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.ESCORT_STOP] = 'DespawnTime';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.ESCORT_STOP] = 'QuestId';
+SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.ESCORT_STOP] = 'FailQuest';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.ESCORT_STOP] = 'Time in milliseconds after which the creature despawns when the path was stopped';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.ESCORT_STOP] =
   "Quest entry to count as 'failed' (based on third parameter). Does not have to be set if third parameter is set to 0.";
-SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.WP_STOP] = 'If set to 1, we will mark the quest in parameter 2 to failed for our player targets.';
+SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.ESCORT_STOP] =
+  'If set to 1, we will mark the quest in parameter 2 to failed for our player targets.';
 
 // SMART_ACTION_ADD_ITEM
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.ADD_ITEM] = 'Adds item(s) to our player target.';
@@ -635,8 +636,8 @@ SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.SET_COUNTER] = 'can be 0 or 1';
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.STORE_TARGET_LIST] = 'Stores a list of targets under a variable id so it can later be read again.';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.STORE_TARGET_LIST] = 'VarId';
 
-// SMART_ACTION_WP_RESUME
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.WP_RESUME] = 'Resumes the waypoint path the creature was previously following.';
+// SMART_ACTION_ESCORT_RESUME
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.ESCORT_RESUME] = 'Resumes the waypoint path the creature was previously following.';
 
 // SMART_ACTION_SET_ORIENTATION
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_ORIENTATION] =
@@ -1275,12 +1276,14 @@ SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.ORIENTATION_TARGET] = `Orientation Target
 3 - Use parameters to acquire facing target;`;
 SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.ORIENTATION_TARGET] = 'If using type 3, use these params to get the unit your targets will face';
 
-// SMART_ACTION_WAYPOINT_DATA_START
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.WAYPOINT_DATA_START] = 'Creature starts Waypoint Movement. Uses `waypoint_data` table to create movement.';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.WAYPOINT_DATA_START] = 'PathId';
-SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.WAYPOINT_DATA_START] = 'Repeat';
-SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.WAYPOINT_DATA_START] = 'Found in `waypoint_data`';
-SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.WAYPOINT_DATA_START] = '0: no, 1: yes';
+// SMART_ACTION_WAYPOINT_START
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.WAYPOINT_START] = 'Creature starts Waypoint Movement. Uses `waypoint_data` table to create movement.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.WAYPOINT_START] = 'PathId';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.WAYPOINT_START] = 'Repeat';
+SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.WAYPOINT_START] = 'Path Source';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.WAYPOINT_START] = 'Found in `waypoint_data`';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.WAYPOINT_START] = '0: no, 1: yes';
+SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.WAYPOINT_START] = '0: path from waypoint_data, 1: path from waypoints table';
 
 // SMART_ACTION_WAYPOINT_DATA_RANDOM
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.WAYPOINT_DATA_RANDOM] =
