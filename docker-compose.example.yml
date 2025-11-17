@@ -1,0 +1,123 @@
+# =====================================================
+# Keira3 - Docker Compose Example
+# =====================================================
+# This docker-compose file integrates Keira3 with acore-compose infrastructure.
+# It connects to the shared MySQL database and azerothcore network.
+#
+# Usage Options:
+#
+#   Option 1: Use pre-built DockerHub image (recommended)
+#     1. Comment out the 'build' section below
+#     2. Uncomment the 'image: uprightbass360/keira3:latest' line
+#     3. Run: docker-compose up -d
+#
+#   Option 2: Build locally from source
+#     1. Keep the 'build' section as-is
+#     2. Run: docker-compose up -d --build
+#
+#   3. Ensure acore-compose MySQL service is running:
+#      cd ~/src/acore-compose && docker-compose --profile db up -d
+#   4. Access Keira3 at http://localhost:4201
+#
+# Prerequisites:
+#   - acore-compose MySQL service must be running (ac-mysql container)
+#   - The 'azerothcore' network must exist
+# =====================================================
+
+name: keira3
+
+services:
+  # =====================
+  # Keira3 Application
+  # =====================
+  keira3:
+    # Option 1: Use pre-built image from DockerHub (recommended for most users)
+    # Uncomment the line below and comment out the 'build' section
+    # image: uprightbass360/keira3:latest
+
+    # Option 2: Build from local source (for development)
+    # Comment out this section if using the DockerHub image above
+    # ------------------------------------------------------------  
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: production
+    # ------------------------------------------------------------  
+    # image: uprightbass360/keira3:latest
+    image: keira3:latest
+
+    container_name: keira3-app
+    restart: unless-stopped
+
+    # Port configuration
+    # 4201: Web UI (externally accessible)
+    # 8080: nginx server (internal only)
+    # 3001: Database API (internal only)
+    ports:
+      - "4201:8080"
+
+    # Environment variables (hardcoded for clarity)
+    environment:
+      # Node.js configuration
+      NODE_ENV: production
+
+      # Keira3 internal server configuration
+      KEIRA_PORT: '8080'
+      KEIRA_HOST: 0.0.0.0
+
+      # Database connection settings
+      # Connect to azerothcore MySQL service
+      KEIRA_DATABASE_HOST: ac-mysql
+      KEIRA_DATABASE_PORT: '3306'
+      KEIRA_DATABASE_USER: root
+      KEIRA_DATABASE_PASSWORD: password
+      KEIRA_DATABASE_NAME: acore_world
+
+      # Optional: Database connection pool settings
+      KEIRA_DB_CONNECTION_LIMIT: '10'
+      KEIRA_DB_QUEUE_LIMIT: '0'
+
+      # Optional: Timezone
+      TZ: UTC
+
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+        reservations:
+          memory: 256M
+          cpus: '0.25'
+
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+    # Logging configuration
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    # Security options
+    security_opt:
+      - no-new-privileges:true
+
+    # Connect to your world server network
+    networks:
+      - azerothcore
+
+# =====================
+# Networks
+# =====================
+# This should be wired into whatever network you use
+networks:
+  azerothcore:
+    external: true
+    name: azerothcore
