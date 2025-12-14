@@ -564,7 +564,8 @@ SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.ESCORT_START] =
   'Quest entry to give credit for once the path has finished. Will use the target type and take all player entities from this list';
 SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.ESCORT_START] =
   'Time in milliseconds to wait after the path ended before we despawn. 0 = will not despawn';
-SAI_ACTION_PARAM6_TOOLTIPS[SAI_ACTIONS.ESCORT_START] = 'ReactState that is set when the waypoint starts';
+SAI_ACTION_PARAM6_TOOLTIPS[SAI_ACTIONS.ESCORT_START] =
+  'ReactState that is set when the waypoint starts (0=Passive, 1=Defensive, 2=Aggressive)';
 
 // SMART_ACTION_ESCORT_PAUSE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.ESCORT_PAUSE] =
