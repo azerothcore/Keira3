@@ -44,10 +44,6 @@ export class CreatureTemplate extends TableRow {
   unit_flags2: number = 0;
   dynamicflags: number = 0;
   family: number = 0;
-  trainer_type: number = 0;
-  trainer_spell: number = 0;
-  trainer_class: number = 0;
-  trainer_race: number = 0;
   type: number = 0;
   type_flags: number = 0;
   lootid: number = 0;

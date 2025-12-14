@@ -1,0 +1,51 @@
+<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
+
+<div class="container-fluid">
+  @if (editorService.loading) {
+    <span [translate]="'LOADING'"></span>
+  }
+
+  @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
+    <div>
+      <div class="content-block">
+        <keira-query-output
+          [docUrl]="docUrl"
+          [isNew]="editorService.isNew"
+          [diffQuery]="editorService.diffQuery"
+          [fullQuery]="editorService.fullQuery"
+          [error]="editorService.error"
+          [entityTable]="editorService.entityTable"
+          [editorService]="editorService"
+          (executeQuery)="save($event)"
+        />
+      </div>
+      <form [formGroup]="editorService.form" class="form-group edit-form">
+        <div class="content-block">
+          <span class="category-title" [translate]="'TRAINER.EDITOR'"></span>
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="Id">ID</label>
+              <input [formControlName]="'Id'" id="Id" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="Type">Type</label>
+              <keira-generic-option-selector [control]="editorService.form.controls.Type" id="Type" [optionList]="TRAINER_TYPE" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="Requirement">Requirement</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'TRAINER.REQUIREMENT_TOOLTIP' | translate"></i>
+              <input [formControlName]="'Requirement'" id="Requirement" type="number" class="form-control form-control-sm" />
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-12">
+              <label class="control-label" for="Greeting">Greeting</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'TRAINER.GREETING_TOOLTIP' | translate"></i>
+              <textarea [formControlName]="'Greeting'" id="Greeting" rows="3" class="form-control form-control-sm"></textarea>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  }
+</div>

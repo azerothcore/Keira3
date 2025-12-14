@@ -1,7 +1,7 @@
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NpcTrainer } from '@keira/shared/acore-world-model';
+import { TrainerSpell } from '@keira/shared/acore-world-model';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { EditorButtonsComponent, IconComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { SqliteQueryService } from '@keira/shared/db-layer';
@@ -9,14 +9,14 @@ import { SkillSelectorBtnComponent, SpellSelectorBtnComponent } from '@keira/sha
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { CreatureHandlerService } from '../creature-handler.service';
-import { NpcTrainerService } from './npc-trainer.service';
+import { TrainerHandlerService } from '../trainer-handler.service';
+import { TrainerSpellService } from './trainer-spell.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'keira-npc-trainer',
-  templateUrl: './npc-trainer.component.html',
-  styleUrls: ['./npc-trainer.component.scss'],
+  selector: 'keira-trainer-spell',
+  templateUrl: './trainer-spell.component.html',
+  styleUrls: ['./trainer-spell.component.scss'],
   imports: [
     TopBarComponent,
     TranslateModule,
@@ -29,11 +29,10 @@ import { NpcTrainerService } from './npc-trainer.service';
     EditorButtonsComponent,
     NgxDatatableModule,
     AsyncPipe,
-    IconComponent,
   ],
 })
-export class NpcTrainerComponent extends MultiRowEditorComponent<NpcTrainer> {
-  protected override readonly editorService = inject(NpcTrainerService);
-  readonly handlerService = inject(CreatureHandlerService);
+export class TrainerSpellComponent extends MultiRowEditorComponent<TrainerSpell> {
+  protected override readonly editorService = inject(TrainerSpellService);
+  readonly handlerService = inject(TrainerHandlerService);
   readonly sqliteQueryService = inject(SqliteQueryService);
 }

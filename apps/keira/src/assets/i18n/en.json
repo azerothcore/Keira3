@@ -86,7 +86,7 @@
       "ONKILL_REPUTATION": "Onkill Reputation",
       "EQUIP_TEMPLATE": "Equip Template",
       "VENDOR": "Vendor",
-      "TRAINER": "Trainer",
+      "DEFAULT_TRAINER": "Default Trainer",
       "QUEST_ITEM": "Quest Item",
       "CREATURE_LOOT": "Creature Loot",
       "PICKPOCKETING_LOOT": "Pickpocketing Loot",
@@ -182,6 +182,12 @@
       "SEARCH_GAME_TELE": "Search Teleport",
       "SELECT_GAME_TELE": "Game Tele Editor"
     },
+    "TRAINER": {
+      "TITLE": "Trainer",
+      "SEARCH_TRAINER": "Search Trainer",
+      "SELECT_TRAINER": "Trainer",
+      "TRAINER_SPELL": "Trainer Spell"
+    },
     "UNUSED_GUID_SEARCH": "Unused GUIDs"
   },
   "DASHBOARD": {
@@ -216,7 +222,6 @@
       "KILL_CREDITS": "KillCredits",
       "MODELS": "Models",
       "MONEY_LOOT": "Money Loot",
-      "TRAINER": "Trainer",
       "LOOTS": "Loots",
       "DIFFICULTY_ENTRIES": "Difficulty Entries",
       "DAMAGE": "Damage",
@@ -299,17 +304,15 @@
     "TEMPLATE_SPELL": {
       "INDEX": "Allowed values: 0-7"
     },
-    "NPC_TRAINER": {
-      "MONEY_COST": "The cost to pay to learn the spell represented in copper (1 gold = 100 silver = 10000 cooper)",
-      "REQ_SKILL_LINE": "The required skill the player needs to have in order to be able to learn the spell",
-      "REQ_SKILL_RANK": "The proficiency in the skill from reqskill that the player needs to meet to learn the spell",
-      "REQ_LEVEL": "The minimum level the player needs to be in order to learn the spell."
-    },
     "NPC_VENDOR": {
       "SLOT": "Position of the item in the vendor window",
       "MAXCOUNT": "The maximum number of items carried by the vendor at any time. 0 for infinite (if choosing a value of 1 or higher also requires incrtime value to work)",
       "INCRTIME": "Combined with maxcount, how often (in seconds) the vendor list is refreshed",
       "EXTENDED_COST": "Value comes from DBC and a selector for this will be implemented later in Keira3"
+    },
+    "DEFAULT_TRAINER": {
+      "TITLE": "Default Trainer",
+      "TRAINER_ID_TOOLTIP": "ID of the trainer template (trainer.Id) assigned to this creature. Use 0 for no default trainer. Examples: 1=Trainer Warrior, 3=Trainer Paladin, 7=Trainer Hunter, 9=Trainer Rogue, 11=Trainer Priest, 13=Trainer Death Knight, 14=Trainer Shaman, 16=Trainer Mage, 31=Trainer Warlock, 33=Trainer Druid, 36=Trainer Mount & Fly. See the trainer wiki for the full list."
     },
     "TEXT": {
       "GROUP_ID": "If there is more than one of the same entry (more than one text the creature says), this column is used to choose if it is a random say or an ordered list. If a creature has got more than one say text to be shown in a given order, it must be incremented for each new matching entry (ex. 0, 1, 2, 3...). If there is only one entry or only one group, this value should be 0. If there are multiple groups of texts, this value stays the same within the group while the id increments within the same group.",
@@ -901,6 +904,27 @@
   },
   "GAME_TELE": {
     "EDITOR": "Teleport Editor"
+  },
+  "TRAINER": {
+    "EDITOR": "Trainer Editor",
+    "TRAINER_ID_TOOLTIP": "References trainer.id (trainer template). Examples: 1=Trainer Warrior, 3=Trainer Paladin, 7=Trainer Hunter, 9=Trainer Rogue, 11=Trainer Priest, 13=Trainer Death Knight, 14=Trainer Shaman, 16=Trainer Mage, 31=Trainer Warlock, 33=Trainer Druid, 36=Trainer Mount & Fly. See the trainer wiki for the full list.",
+    "REQUIREMENT_TOOLTIP": "Meaning depends on Type - use 0 for none. Types: 0-Class (ChrClass ID e.g. 1=Warrior, 2=Paladin, 3=Hunter, 4=Rogue, 5=Priest, 6=Death Knight, 7=Shaman, 8=Mage, 9=Warlock, 11=Druid), 1-Mount (ChrRace ID (e.g. 1=Human, 2=Orc, 3=Dwarf, 4=Night Elf, 5=Undead, 6=Tauren, 7=Gnome, 8=Troll, 10=Blood Elf, 11=Draenei), 2-Tradeskill Spell ID (player must know this spell to learn from this trainer), 3-Pet ChrClass ID (see above). ",
+    "GREETING_TOOLTIP": "Text shown at the top of the trainer window when opened (this is not gossip). For localized greetings add entries in the \"trainer_locale\" table (Greeting_lang).",
+    "SPELL": {
+      "TRAINER_ID": "References trainer.id (trainer template linked to this entry).",
+      "SPELL_ID": "Spell ID being taught.",
+      "MONEY_COST": "Cost in copper to learn this spell from the trainer (1 gold = 100 silver = 10000 copper).",
+      "REQ_SKILL_LINE": "SkillLine ID required to learn this spell (e.g., profession ID). Use 0 if none.",
+      "REQ_SKILL_RANK": "Minimum skill rank in ReqSkillLine required to learn the spell.",
+      "REQ_ABILITY_1": "Spell ID the player is required to already know (first required ability).",
+      "REQ_ABILITY_1_TOOLTIP": "Spell ID the player must already know to be taught this spell (first prerequisite). Use 0 if none.",
+      "REQ_ABILITY_2": "Spell ID the player is required to already know (second required ability).",
+      "REQ_ABILITY_2_TOOLTIP": "Spell ID the player must already know to be taught this spell (second prerequisite). Use 0 if none.",
+      "REQ_ABILITY_3": "Spell ID the player is required to already know (third required ability).",
+      "REQ_ABILITY_3_TOOLTIP": "Spell ID the player must already know to be taught this spell (third prerequisite). Use 0 if none.",
+      "REQ_LEVEL": "Minimum player level required to learn this spell.",
+      "VERIFIED_BUILD": "Used by AzerothCore to indicate whether this entry was verified against WDB files (0 = not parsed; >0 = parsed; -1 = placeholder; -<build> = parsed with specific client build and manually edited)."
+    }
   },
   "UNUSED_GUID_SEARCH": {
     "TABLE": "Table",
