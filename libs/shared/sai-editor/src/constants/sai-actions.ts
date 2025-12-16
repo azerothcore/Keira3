@@ -348,8 +348,8 @@ SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.ALLOW_COMBAT_MOVEMENT] =
 
 // SMART_ACTION_SET_EVENT_PHASE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_EVENT_PHASE] =
-  "Set the creature's event phasemask to a new value (warning: this is NOT the creature's actual phase!)";
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_EVENT_PHASE] = 'Phasemask';
+  "Set the creature's event phase to a new value (warning: this is NOT the creature's actual phase!)";
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_EVENT_PHASE] = 'EventPhase';
 SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_EVENT_PHASE] = 'Event phase 0-12 (the actual values, no bit mask!)';
 
 // SMART_ACTION_INC_EVENT_PHASE
