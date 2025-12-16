@@ -14,6 +14,10 @@ src/**/*.js
 # dependencies
 /node_modules
 
+# Environment files with sensitive data
+.env
+docker/.env
+
 # IDEs and editors
 /.idea
 .project

@@ -1,11 +1,14 @@
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { ElectronService } from '@keira/shared/common-services';
+import { HttpClient } from '@angular/common/http';
 import { Connection, ConnectionOptions, QueryError } from 'mysql2';
 import { tickAsync } from 'ngx-page-object-model';
 import { Subscriber } from 'rxjs';
-import { instance, mock, reset } from 'ts-mockito';
+import { of, throwError } from 'rxjs';
+import { instance, mock, reset, when } from 'ts-mockito';
+import { ElectronService } from '@keira/shared/common-services';
+import { KEIRA_APP_CONFIG_TOKEN, KeiraAppConfig } from '@keira/shared/config';
 import { MysqlService } from './mysql.service';
 import Spy = jasmine.Spy;
 
@@ -20,19 +23,34 @@ class MockConnection {
 
 describe('MysqlService', () => {
   let service: MysqlService;
+  let mockElectronService: ElectronService;
+  let mockHttpClient: HttpClient;
+  let mockAppConfig: KeiraAppConfig;
 
   const config: ConnectionOptions = { host: 'azerothcore.org' };
 
-  beforeEach(() =>
+  beforeEach(() => {
+    mockElectronService = mock(ElectronService);
+    mockHttpClient = mock(HttpClient);
+    mockAppConfig = {
+      production: false,
+      environment: 'TEST',
+      sqlitePath: 'test.db',
+      sqliteItem3dPath: 'test_item.db',
+      databaseApiUrl: '/api/database',
+    };
+
     TestBed.configureTestingModule({
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
         MysqlService,
-        { provide: ElectronService, useValue: instance(mock(ElectronService)) },
+        { provide: ElectronService, useValue: instance(mockElectronService) },
+        { provide: HttpClient, useValue: instance(mockHttpClient) },
+        { provide: KEIRA_APP_CONFIG_TOKEN, useValue: mockAppConfig },
       ],
-    }),
-  );
+    });
+  });
 
   beforeEach(() => {
     service = TestBed.inject(MysqlService);
@@ -261,7 +279,243 @@ describe('MysqlService', () => {
     });
   });
 
+  describe('Environment Detection', () => {
+    it('should set isWebEnvironment to false when ElectronService.isElectron() returns electron process type', () => {
+      const electronService = instance(mockElectronService);
+      spyOn(electronService, 'isElectron').and.returnValue('renderer');
+
+      // Create new service instance to trigger constructor
+      TestBed.overrideProvider(ElectronService, { useValue: electronService });
+      const testService = TestBed.inject(MysqlService);
+
+      expect(testService['isWebEnvironment']).toBe(false);
+    });
+
+    it('should set isWebEnvironment to true when ElectronService.isElectron() returns falsy', () => {
+      const electronService = instance(mockElectronService);
+      spyOn(electronService, 'isElectron').and.returnValue(null as any);
+
+      // Create new service instance to trigger constructor
+      TestBed.overrideProvider(ElectronService, { useValue: electronService });
+      const testService = TestBed.inject(MysqlService);
+
+      expect(testService['isWebEnvironment']).toBe(true);
+    });
+  });
+
+  describe('Web Environment - HTTP API Tests', () => {
+    beforeEach(() => {
+      // Mock web environment
+      service['isWebEnvironment'] = true;
+    });
+
+    describe('connect() in web environment', () => {
+      it('should use HTTP API for connection in web environment', () => {
+        const mockResponse = { success: true, message: 'Connected to database' };
+        spyOn(service['http'], 'post').and.returnValue(of(mockResponse));
+        spyOn(service, 'connectViaAPI' as any).and.callThrough();
+
+        const result = service.connect(config);
+
+        expect(service['connectViaAPI']).toHaveBeenCalledWith(config);
+        result.subscribe(() => {
+          expect(service['_connectionEstablished']).toBe(true);
+          expect(service['_connection']).toEqual({ state: 'CONNECTED' } as any);
+        });
+      });
+
+      it('should handle connection errors in web environment', () => {
+        const mockError = { success: false, error: 'Connection failed' };
+        spyOn(service['http'], 'post').and.returnValue(of(mockError));
+
+        const result = service.connect(config);
+
+        result.subscribe({
+          error: (error) => {
+            expect(error.message).toContain('Connection failed');
+            expect(service['_connectionEstablished']).toBe(false);
+          },
+        });
+      });
+
+      it('should handle HTTP errors in web environment', () => {
+        const httpError = new Error('Network error');
+        spyOn(service['http'], 'post').and.returnValue(throwError(() => httpError));
+
+        const result = service.connect(config);
+
+        result.subscribe({
+          error: (error) => {
+            expect(error).toBe(httpError);
+            expect(service['_connectionEstablished']).toBe(false);
+          },
+        });
+      });
+    });
+
+    describe('connectViaAPI()', () => {
+      it('should make POST request to correct API endpoint', () => {
+        const mockResponse = { success: true };
+        const httpSpy = spyOn(service['http'], 'post').and.returnValue(of(mockResponse));
+
+        service['connectViaAPI'](config).subscribe();
+
+        expect(httpSpy).toHaveBeenCalledWith('/api/database/connect', { config });
+      });
+
+      it('should use custom API URL from config', () => {
+        mockAppConfig.databaseApiUrl = '/custom/api/db';
+        const mockResponse = { success: true };
+        const httpSpy = spyOn(service['http'], 'post').and.returnValue(of(mockResponse));
+
+        service['connectViaAPI'](config).subscribe();
+
+        expect(httpSpy).toHaveBeenCalledWith('/custom/api/db/connect', { config });
+      });
+
+      it('should use default API URL when config is undefined', () => {
+        mockAppConfig.databaseApiUrl = undefined;
+        const mockResponse = { success: true };
+        const httpSpy = spyOn(service['http'], 'post').and.returnValue(of(mockResponse));
+
+        service['connectViaAPI'](config).subscribe();
+
+        expect(httpSpy).toHaveBeenCalledWith('/api/database/connect', { config });
+      });
+    });
+
+    describe('dbQuery() in web environment', () => {
+      it('should use HTTP API for queries in web environment', () => {
+        const queryString = 'SELECT * FROM test';
+        const values = ['param1'];
+        const mockResponse = {
+          result: [{ id: 1, name: 'test' }],
+          fields: [],
+        };
+
+        spyOn(service, 'queryViaAPI' as any).and.returnValue(of(mockResponse));
+
+        const result = service.dbQuery(queryString, values);
+
+        expect(service['queryViaAPI']).toHaveBeenCalledWith(queryString, values);
+        result.subscribe((response) => {
+          expect(response).toEqual(mockResponse);
+        });
+      });
+    });
+
+    describe('queryViaAPI()', () => {
+      it('should make POST request with correct parameters', () => {
+        const queryString = 'SELECT * FROM test';
+        const values = ['param1'];
+        const mockResponse = { success: true, result: [], fields: [] };
+        const httpSpy = spyOn(service['http'], 'post').and.returnValue(of(mockResponse));
+
+        service['queryViaAPI'](queryString, values).subscribe();
+
+        expect(httpSpy).toHaveBeenCalledWith('/api/database/query', {
+          sql: queryString,
+          params: values,
+        });
+      });
+
+      it('should transform successful response correctly', () => {
+        const queryString = 'SELECT * FROM test';
+        const mockApiResponse = {
+          success: true,
+          result: [{ id: 1, name: 'test' }],
+          fields: [],
+        };
+        spyOn(service['http'], 'post').and.returnValue(of(mockApiResponse));
+
+        service['queryViaAPI'](queryString).subscribe((response) => {
+          expect(response).toEqual({
+            result: mockApiResponse.result,
+            fields: mockApiResponse.fields,
+          });
+        });
+      });
+
+      it('should handle query errors from API', () => {
+        const queryString = 'INVALID SQL';
+        const mockErrorResponse = { success: false, error: 'SQL syntax error' };
+        spyOn(service['http'], 'post').and.returnValue(of(mockErrorResponse));
+        spyOn(console, 'error');
+
+        service['queryViaAPI'](queryString).subscribe({
+          error: (error) => {
+            expect(error.message).toContain('SQL syntax error');
+            expect(console.error).toHaveBeenCalledWith('Database query error:', error);
+          },
+        });
+      });
+
+      it('should handle HTTP errors during query', () => {
+        const queryString = 'SELECT * FROM test';
+        const httpError = new Error('Network timeout');
+        spyOn(service['http'], 'post').and.returnValue(throwError(() => httpError));
+        spyOn(console, 'error');
+
+        service['queryViaAPI'](queryString).subscribe({
+          error: (error) => {
+            expect(error).toBe(httpError);
+            expect(console.error).toHaveBeenCalledWith('Database query error:', httpError);
+          },
+        });
+      });
+
+      it('should handle undefined values parameter', () => {
+        const queryString = 'SELECT * FROM test';
+        const mockResponse = { success: true, result: [], fields: [] };
+        const httpSpy = spyOn(service['http'], 'post').and.returnValue(of(mockResponse));
+
+        service['queryViaAPI'](queryString, undefined).subscribe();
+
+        expect(httpSpy).toHaveBeenCalledWith('/api/database/query', {
+          sql: queryString,
+          params: undefined,
+        });
+      });
+    });
+  });
+
+  describe('Electron Environment Tests', () => {
+    beforeEach(() => {
+      // Mock Electron environment
+      service['isWebEnvironment'] = false;
+      (service as any).mysql = new MockMySql();
+    });
+
+    it('should use direct mysql2 connection in Electron environment', () => {
+      const mockConnection = new MockConnection();
+      const createConnectionSpy = spyOn((service as any).mysql, 'createConnection').and.returnValue(mockConnection);
+      const connectSpy = spyOn(mockConnection, 'connect');
+
+      const result = service.connect(config);
+
+      expect(createConnectionSpy).toHaveBeenCalledWith(config);
+      result.subscribe(() => {
+        expect(connectSpy).toHaveBeenCalled();
+      });
+    });
+
+    it('should use direct mysql2 query in Electron environment', () => {
+      const mockConnection = new MockConnection();
+      service['_connection'] = mockConnection as unknown as Connection;
+      service['_reconnecting'] = false;
+      const querySpy = spyOn(mockConnection, 'query');
+      const queryString = 'SELECT * FROM test';
+
+      const result = service.dbQuery(queryString);
+
+      result.subscribe(() => {
+        expect(querySpy).toHaveBeenCalled();
+      });
+    });
+  });
+
   afterEach(() => {
-    reset(mock(ElectronService));
+    reset(mockElectronService);
+    reset(mockHttpClient);
   });
 });
