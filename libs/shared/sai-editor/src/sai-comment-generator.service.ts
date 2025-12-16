@@ -490,12 +490,12 @@ export class SaiCommentGeneratorService {
       actionLine = actionLine.replace('_getNpcFlags_', ' ' + commentNpcFlag);
     }
 
-    if (actionLine.indexOf('_startOrStopActionParamOne_') > -1) {
+    if (actionLine.indexOf('_continueOrStopActionParamOne_') > -1) {
       if (`${smartScript.action_param1}` === '0') {
-        actionLine = actionLine.replace('_startOrStopActionParamOne_', 'Stop');
+        actionLine = actionLine.replace('_continueOrStopActionParamOne_', 'Stop');
       } else {
         // ! Even if above 1 or below 0 we start attacking/allow-combat-movement
-        actionLine = actionLine.replace('_startOrStopActionParamOne_', 'Start');
+        actionLine = actionLine.replace('_continueOrStopActionParamOne_', 'Continue');
       }
     }
 

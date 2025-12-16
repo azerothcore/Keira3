@@ -336,9 +336,9 @@ SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.REMOVE_UNIT_FLAG] = SAI_ACTION_PARAM2_TOO
 
 // SMART_ACTION_AUTO_ATTACK
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.AUTO_ATTACK] = 'Stop or Continue Automatic Attack.';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.AUTO_ATTACK] = 'StartOrStop';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.AUTO_ATTACK] = 'AllowAttackState';
 SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.AUTO_ATTACK] =
-  '0 = the creature will stop attacking its current target. 1 = starts/continues to attack its target';
+  '0 = disable auto attack, the creature will stop attacking its current target. 1 = allow the creature to attack its target';
 
 // SMART_ACTION_ALLOW_COMBAT_MOVEMENT
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.ALLOW_COMBAT_MOVEMENT] = 'Allow or disallow moving while the creature is in combat';

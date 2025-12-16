@@ -676,7 +676,7 @@ describe('SaiCommentGeneratorService', () => {
           action_type: SAI_ACTIONS.AUTO_ATTACK,
           action_param1: 1,
         },
-        expected: `MockEntity - In Combat - Start Attacking`,
+        expected: `MockEntity - In Combat - Continue Attacking`,
       },
       {
         name: 'SAI_ACTIONS.ALLOW_COMBAT_MOVEMENT check action params 1 (0)',
