@@ -225,7 +225,7 @@ SAI_ACTION_COMMENTS[SAI_ACTIONS.ADD_IMMUNITY] = `Add immunity Type: _actionParam
 SAI_ACTION_COMMENTS[SAI_ACTIONS.REMOVE_IMMUNITY] =
   `Remove immunity Type: _actionParamOne_, Id: _actionParamTwo_, Value: _actionParamThree_`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.FALL] = `Fall`;
-SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_EVENT_FLAG_RESET] = `Flag reset _actionParamOne_`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_EVENT_FLAG_RESET] = `_enableDisableActionParamOne_ Phase Reset`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.STOP_MOTION] = `Stop motion (StopMoving: _actionParamOne_, MovementExpired: _actionParamTwo_)`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.NO_ENVIRONMENT_UPDATE] = `No environment update`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.ZONE_UNDER_ATTACK] = `Zone under attack`;
