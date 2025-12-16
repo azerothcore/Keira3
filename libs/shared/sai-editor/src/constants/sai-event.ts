@@ -513,6 +513,12 @@ SAI_EVENT_TOOLTIPS[SAI_EVENTS.JUST_CREATED] = 'On Gameobject just spawned/create
 
 // SMART_EVENT_GOSSIP_HELLO
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.GOSSIP_HELLO] = 'On Right-Click Creature/Gameobject that have gossip enabled.';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.GOSSIP_HELLO] = 'filter';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.GOSSIP_HELLO] =
+  'This is gossipHello.filter' +
+  '0=no filter set, always execute action. ' +
+  '1=GossipHello only filter set, skip action if reportUse. ' +
+  '2=reportUse only filter set, skip action if GossipHello.';
 
 // SMART_EVENT_FOLLOW_COMPLETED
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.FOLLOW_COMPLETED] = 'On follow completed/finished';
