@@ -1,0 +1,40 @@
+<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
+
+<div class="container-fluid">
+  @if (editorService.loading) {
+    <span [translate]="'LOADING'"></span>
+  }
+
+  @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
+    <div>
+      <div class="content-block">
+        <keira-query-output
+          [docUrl]="docUrl"
+          [isNew]="editorService.isNew"
+          [diffQuery]="editorService.diffQuery"
+          [fullQuery]="editorService.fullQuery"
+          [error]="editorService.error"
+          [entityTable]="editorService.entityTable"
+          [editorService]="editorService"
+          (executeQuery)="save($event)"
+        />
+      </div>
+      <form [formGroup]="editorService.form" class="form-group edit-form">
+        <div class="content-block">
+          <span class="category-title" [translate]="'CREATURE.DEFAULT_TRAINER.TITLE'"></span>
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="CreatureId">CreatureId</label>
+              <input [formControlName]="'CreatureId'" id="CreatureId" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="TrainerId">TrainerId</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.DEFAULT_TRAINER.TRAINER_ID_TOOLTIP' | translate"></i>
+              <input [formControlName]="'TrainerId'" id="TrainerId" type="number" class="form-control form-control-sm" />
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  }
+</div>
