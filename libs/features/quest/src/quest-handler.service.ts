@@ -18,6 +18,7 @@ import {
 })
 export class QuestHandlerService extends HandlerService<QuestTemplate> {
   protected readonly mainEditorRoutePath = 'quest/quest-template';
+  protected readonly copyRoutePath = 'quest/copy';
 
   get isQuestTemplateUnsaved(): Signal<boolean> {
     return this.statusMap[QUEST_TEMPLATE_TABLE].asReadonly();
@@ -58,4 +59,14 @@ export class QuestHandlerService extends HandlerService<QuestTemplate> {
     [GAMEOBJECT_QUESTSTARTER_TABLE]: signal(false),
     [GAMEOBJECT_QUESTENDER_TABLE]: signal(false),
   };
+
+  override select(isNew: boolean, id: string | number | Partial<QuestTemplate>, name?: string, navigate = true, sourceId?: string) {
+    // If we're creating a new entity from a copy, navigate to copy route
+    if (isNew && sourceId) {
+      super.select(isNew, id, name, false, sourceId);
+      this.router.navigate([this.copyRoutePath]);
+    } else {
+      super.select(isNew, id, name, navigate);
+    }
+  }
 }

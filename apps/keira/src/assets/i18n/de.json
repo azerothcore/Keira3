@@ -25,7 +25,12 @@
     "CREATE_A_NEW": "Erstellen Sie ein neues <strong>{{ ENTITY_TABLE }}</strong>, indem Sie ein leeres <strong>{{ ENTITY_ID_FIELD }}</strong> auswählen:",
     "FREE_ENTRY": "Das {{ ENTITY_ID_FIELD }} ist",
     "FREE": "frei",
-    "ALREADY_USE": "bereits in Gebrauch"
+    "ALREADY_USE": "bereits in Gebrauch",
+    "SOURCE_ENTRY": "The {{ ENTITY_ID_FIELD }}",
+    "EXISTS": "exists",
+    "DOES_NOT_EXIST": "does not exist",
+    "START_FROM_BLANK": "Start from blank",
+    "COPY_FROM_EXISTING": "Copy from existing"
   },
   "CONNECTED": "Verbunden",
   "SEARCH": "Suchen",
@@ -209,6 +214,19 @@
     "EXECUTE": "Ausführen (F9)",
     "LEARN_SQL": "Die SQL-Sprache lernen",
     "AFFECTED_ROWS": "Betroffene Zeilen:"
+  },
+  "COPY_OUTPUT": {
+    "TITLE": "Copy Entry SQL",
+    "DESCRIPTION": "Review and execute the SQL below to copy the entry. You can copy the query to execute it manually, or use the Execute button to run it directly.",
+    "COPY": "Copy",
+    "COPY_TOOLTIP": "Copy SQL query to clipboard",
+    "EXECUTE": "Execute",
+    "EXECUTE_TOOLTIP": "Execute the SQL query and create the new entry",
+    "EXECUTED": "Executed",
+    "CONTINUE": "Continue to Editor",
+    "CONTINUE_TOOLTIP": "Navigate to the editor for the new entry",
+    "SELECT_ALL": "Select All",
+    "SELECT_NONE": "Select None"
   },
   "CREATURE": {
     "TEMPLATE": {

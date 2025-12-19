@@ -21,13 +21,32 @@ export class CreateComponent<T extends TableRow> extends SubscriptionHandler imp
   @Input({ required: true }) customStartingId!: number;
   @Input({ required: true }) handlerService!: HandlerService<T>;
   @Input({ required: true }) queryService!: MysqlQueryService;
+  // Controls whether "copy from existing" is allowed for the current entity table.
+  // Default is false (disabled). Individual selectors can enable it by passing [allowCopy]="true".
+  private _allowCopy = false;
+  @Input()
+  set allowCopy(value: boolean) {
+    this._allowCopy = !!value;
+    if (!this._allowCopy) {
+      // Reset creation method if copy is disabled
+      this.creationMethod = 'blank';
+      this.sourceIdModel = undefined;
+      this.isSourceIdValid = false;
+    }
+  }
+  get allowCopy(): boolean {
+    return this._allowCopy;
+  }
   @Input() maxEntryValue = MAX_INT_UNSIGNED_VALUE;
 
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
   public idModel!: number;
+  public sourceIdModel?: number;
+  public creationMethod: 'blank' | 'copy' = 'blank';
   private _loading = false;
   isIdFree = false;
+  isSourceIdValid = false;
 
   get loading(): boolean {
     return this._loading;
@@ -36,6 +55,10 @@ export class CreateComponent<T extends TableRow> extends SubscriptionHandler imp
   ngOnInit() {
     if (this.queryService) {
       this.getNextId();
+    }
+
+    if (!this.allowCopy) {
+      this.creationMethod = 'blank';
     }
   }
 
@@ -79,9 +102,64 @@ export class CreateComponent<T extends TableRow> extends SubscriptionHandler imp
     if (this.idModel > MAX_INT_UNSIGNED_VALUE) {
       this.idModel = MAX_INT_UNSIGNED_VALUE;
     }
+    if (this.sourceIdModel && this.sourceIdModel > MAX_INT_UNSIGNED_VALUE) {
+      this.sourceIdModel = MAX_INT_UNSIGNED_VALUE;
+    }
   }
 
   private calculateNextId(currentMax: number): number {
     return currentMax < this.customStartingId ? this.customStartingId : currentMax + 1;
+  }
+
+  onCreationMethodChange(): void {
+    if (this.creationMethod === 'blank') {
+      this.sourceIdModel = undefined;
+      this.isSourceIdValid = false;
+    }
+    this.changeDetectorRef.markForCheck();
+  }
+
+  checkSourceId(): void {
+    if (!this.sourceIdModel) {
+      this.isSourceIdValid = false;
+      this.changeDetectorRef.markForCheck();
+      return;
+    }
+
+    this._loading = true;
+    this.subscriptions.push(
+      this.queryService.selectAll<T>(this.entityTable, this.entityIdField, this.sourceIdModel).subscribe({
+        next: (data) => {
+          // Source ID should exist (opposite of new ID check)
+          this.isSourceIdValid = data.length > 0;
+          this._loading = false;
+          this.changeDetectorRef.markForCheck();
+        },
+        error: (error: QueryError) => {
+          console.error(error);
+          this.isSourceIdValid = false;
+          this._loading = false;
+          this.changeDetectorRef.markForCheck();
+        },
+      }),
+    );
+  }
+
+  isFormValid(): boolean {
+    const isNewIdValid = !!this.idModel && this.isIdFree;
+
+    if (this.creationMethod === 'copy') {
+      return isNewIdValid && !!this.sourceIdModel && this.isSourceIdValid;
+    }
+
+    return isNewIdValid;
+  }
+
+  onCreate(): void {
+    if (this.creationMethod === 'copy') {
+      this.handlerService.select(true, this.idModel, undefined, true, this.sourceIdModel!.toString());
+    } else {
+      this.handlerService.select(true, this.idModel);
+    }
   }
 }
