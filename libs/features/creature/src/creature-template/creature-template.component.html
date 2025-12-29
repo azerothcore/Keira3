@@ -219,46 +219,6 @@
                 </div>
               </div>
             </div>
-            <div class="col-12 col-xl-8">
-              <span class="category-title" [translate]="'CREATURE.TEMPLATE.TRAINER'"></span>
-              <div class="row">
-                <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
-                  <label class="control-label" for="trainer_type">trainer_type</label>
-                  <keira-generic-option-selector
-                    [control]="editorService.form.controls.trainer_type"
-                    id="trainer_type"
-                    [optionList]="TRAINER_TYPE"
-                  />
-                </div>
-                <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
-                  <label class="control-label" for="trainer_spell">trainer_spell</label>
-                  <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.TRAINER_SPELL_TOOLTIP' | translate"></i>
-                  <keira-spell-selector-btn
-                    [control]="editorService.form.controls.trainer_spell"
-                    [disabled]="editorService.form.controls.trainer_spell.disabled"
-                    [config]="{ name: 'trainer_spell' }"
-                    [modalClass]="'modal-lg'"
-                  />
-                  <input [formControlName]="'trainer_spell'" id="trainer_spell" type="number" class="form-control form-control-sm" />
-                </div>
-                <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
-                  <label class="control-label" for="trainer_class"> trainer_class</label>
-                  <keira-generic-option-selector
-                    [control]="editorService.form.controls.trainer_class"
-                    id="trainer_class"
-                    [optionList]="CREATURE_CLASS"
-                  />
-                </div>
-                <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
-                  <label class="control-label" for="trainer_race"> trainer_race</label>
-                  <keira-generic-option-selector
-                    [control]="editorService.form.controls.trainer_race"
-                    id="trainer_race"
-                    [optionList]="CREATURE_RACE"
-                  />
-                </div>
-              </div>
-            </div>
           </div>
         </div>
         <div class="content-block">

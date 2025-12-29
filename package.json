@@ -149,6 +149,9 @@
       "@angular/core": "$@angular/core"
     }
   },
+  "resolutions": {
+    "ora": "5.4.1"
+  },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",

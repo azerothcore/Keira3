@@ -1,0 +1,24 @@
+{
+  "name": "keira-features-trainer",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/features/trainer/src",
+  "prefix": "keira",
+  "tags": ["scope:features"],
+  "projectType": "library",
+  "targets": {
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "tsConfig": "libs/features/trainer/tsconfig.spec.json",
+        "karmaConfig": "libs/features/trainer/karma.conf.js",
+        "sourceMap": true,
+        "codeCoverage": true,
+        "styles": ["apps/keira/src/app/scss/main-test.scss"],
+        "scripts": ["node_modules/squel/dist/squel.min.js"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}
