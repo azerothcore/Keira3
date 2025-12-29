@@ -336,9 +336,9 @@ SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.REMOVE_UNIT_FLAG] = SAI_ACTION_PARAM2_TOO
 
 // SMART_ACTION_AUTO_ATTACK
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.AUTO_ATTACK] = 'Stop or Continue Automatic Attack.';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.AUTO_ATTACK] = 'StartOrStop';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.AUTO_ATTACK] = 'AllowAttackState';
 SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.AUTO_ATTACK] =
-  '0 = the creature will stop attacking its current target. 1 = starts/continues to attack its target';
+  '0 = disable auto attack, the creature will stop attacking its current target. 1 = allow the creature to attack its target';
 
 // SMART_ACTION_ALLOW_COMBAT_MOVEMENT
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.ALLOW_COMBAT_MOVEMENT] = 'Allow or disallow moving while the creature is in combat';
@@ -348,8 +348,8 @@ SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.ALLOW_COMBAT_MOVEMENT] =
 
 // SMART_ACTION_SET_EVENT_PHASE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_EVENT_PHASE] =
-  "Set the creature's event phasemask to a new value (warning: this is NOT the creature's actual phase!)";
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_EVENT_PHASE] = 'Phasemask';
+  "Set the creature's event phase to a new value (warning: this is NOT the creature's actual phase!)";
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_EVENT_PHASE] = 'EventPhase';
 SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_EVENT_PHASE] = 'Event phase 0-12 (the actual values, no bit mask!)';
 
 // SMART_ACTION_INC_EVENT_PHASE
@@ -564,7 +564,8 @@ SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.ESCORT_START] =
   'Quest entry to give credit for once the path has finished. Will use the target type and take all player entities from this list';
 SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.ESCORT_START] =
   'Time in milliseconds to wait after the path ended before we despawn. 0 = will not despawn';
-SAI_ACTION_PARAM6_TOOLTIPS[SAI_ACTIONS.ESCORT_START] = 'ReactState that is set when the waypoint starts';
+SAI_ACTION_PARAM6_TOOLTIPS[SAI_ACTIONS.ESCORT_START] =
+  'ReactState that is set when the waypoint starts (0=Passive, 1=Defensive, 2=Aggressive)';
 
 // SMART_ACTION_ESCORT_PAUSE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.ESCORT_PAUSE] =
@@ -1108,8 +1109,8 @@ SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.REMOVE_IMMUNITY] = SAI_ACTION_PARAM3_NAMES[S
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.FALL] = 'FALL';
 
 // SMART_ACTION_SET_EVENT_FLAG_RESET
-// SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_EVENT_FLAG_RESET] = 'SET_EVENT_FLAG_RESET';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_EVENT_FLAG_RESET] = 'On';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_EVENT_FLAG_RESET] = 'allowPhaseReset';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_EVENT_FLAG_RESET] = '0=Disable, 1=Enable';
 
 // SMART_ACTION_STOP_MOTION
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.STOP_MOTION] = 'STOP_MOTION';
