@@ -76,11 +76,11 @@
     "@angular/platform-browser-dynamic": "20.3.10",
     "@angular/router": "20.3.10",
     "@fortawesome/fontawesome-free": "7.1.0",
-    "@nx/angular": "21.6.8",
-    "@nx/eslint": "21.6.8",
-    "@nx/eslint-plugin": "21.6.8",
-    "@nx/js": "21.6.8",
-    "@nx/workspace": "21.6.8",
+    "@nx/angular": "22.3.3",
+    "@nx/eslint": "22.3.3",
+    "@nx/eslint-plugin": "22.3.3",
+    "@nx/js": "22.3.3",
+    "@nx/workspace": "22.3.3",
     "@playwright/test": "1.56.0",
     "@schematics/angular": "20.3.9",
     "@siemens/ngx-datatable": "22.4.1",
@@ -124,7 +124,7 @@
     "ngx-highlightjs": "10.0.0",
     "ngx-page-object-model": "1.1.0",
     "npm-run-all2": "8.0.4",
-    "nx": "21.6.8",
+    "nx": "22.3.3",
     "playwright": "1.56.0",
     "prettier": "3.6.2",
     "pretty-quick": "4.2.2",
@@ -138,10 +138,10 @@
     "webdriver-manager": "13.0.2"
   },
   "optionalDependencies": {
-    "@nx/nx-darwin-arm64": "20.8.2",
-    "@nx/nx-darwin-x64": "20.8.2",
-    "@nx/nx-linux-x64-gnu": "20.8.2",
-    "@nx/nx-win32-x64-msvc": "20.8.2"
+    "@nx/nx-darwin-arm64": "22.3.3",
+    "@nx/nx-darwin-x64": "22.3.3",
+    "@nx/nx-linux-x64-gnu": "22.3.3",
+    "@nx/nx-win32-x64-msvc": "22.3.3"
   },
   "overrides": {
     "ngx-select-ex": {
