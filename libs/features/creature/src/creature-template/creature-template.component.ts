@@ -31,7 +31,6 @@ import {
   FlagsSelectorBtnComponent,
   GenericOptionSelectorComponent,
   SingleValueSelectorBtnComponent,
-  SpellSelectorBtnComponent,
 } from '@keira/shared/selectors';
 import { TranslateModule } from '@ngx-translate/core';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
