@@ -113,7 +113,7 @@
           [selectionType]="DTCFG.selectionType"
           (select)="editorService.onRowSelection($event)"
         >
-          <ngx-datatable-column prop="SpellId" name="SpellId">
+          <ngx-datatable-column prop="SpellId" name="SpellId" [minWidth]="150" [maxWidth]="200">
             <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
               @if (sqliteQueryService.getSpellNameById(value) | async; as spellName) {
                 {{ value }}: {{ spellName }}
