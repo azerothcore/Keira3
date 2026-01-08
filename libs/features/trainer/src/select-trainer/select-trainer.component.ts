@@ -25,7 +25,7 @@ import { CreateComponent, HighlightjsWrapperComponent, TopBarComponent } from '@
 export class SelectTrainerComponent extends SelectComponent<Trainer> {
   protected override readonly entityTable = TRAINER_TABLE;
   protected override readonly entityIdField = TRAINER_ID;
-  readonly customStartingId = 1000000;
+  protected readonly customStartingId = 1000000;
   protected readonly selectService = inject(SelectTrainerService);
   readonly handlerService = inject(TrainerHandlerService);
   protected readonly WIKI_BASE_URL = WIKI_BASE_URL;
