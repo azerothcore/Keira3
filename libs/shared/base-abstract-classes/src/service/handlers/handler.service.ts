@@ -12,6 +12,7 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
   selectedName!: string;
   isNew = false;
   forceReload = false;
+  sourceId?: string;
 
   protected abstract _statusMap: { [key: string]: WritableSignal<boolean> };
   protected abstract readonly mainEditorRoutePath: string;
@@ -50,9 +51,10 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
     return this._customItemScssClass;
   }
 
-  select(isNew: boolean, id: string | number | Partial<T>, name?: string, navigate = true) {
+  select(isNew: boolean, id: string | number | Partial<T>, name?: string, navigate = true, sourceId?: string) {
     this.resetStatus();
     this.isNew = isNew;
+    this.sourceId = sourceId;
 
     const currentSelected = this._selected;
 
