@@ -12,7 +12,7 @@ export * from './creature-template-resistance/creature-template-resistance.compo
 export * from './creature-template-spell/creature-template-spell.component';
 export * from './creature-template/creature-template.component';
 export * from './creature-text/creature-text.component';
-export * from './npc-trainer/npc-trainer.component';
+export * from './creature-default-trainer/creature-default-trainer.component';
 export * from './npc-vendor/npc-vendor.component';
 export * from './pickpocketing-loot-template/pickpocketing-loot-template.component';
 export * from './sai-creature-handler.service';

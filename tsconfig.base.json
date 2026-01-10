@@ -37,6 +37,7 @@
       "@keira/features/spell": ["libs/features/spell/src/index.ts"],
       "@keira/features/sql-editor": ["libs/features/sql-editor/src/index.ts"],
       "@keira/features/texts": ["libs/features/texts/src/index.ts"],
+      "@keira/features/trainer": ["libs/features/trainer/src/index.ts"],
       "@keira/features/unused-guid-search": ["libs/features/unused-guid-search/src/index.ts"],
       "@keira/main/connection-window": ["libs/main/connection-window/src/index.ts"],
       "@keira/main/main-window": ["libs/main/main-window/src/index.ts"],

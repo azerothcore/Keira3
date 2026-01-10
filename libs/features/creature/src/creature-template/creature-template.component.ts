@@ -18,7 +18,6 @@ import {
   NPC_FLAGS,
   RANK,
   SPELL_SCHOOL_MASK,
-  TRAINER_TYPE,
   UNIT_CLASS,
   UNIT_FLAGS,
   UNIT_FLAGS_2,
@@ -32,7 +31,6 @@ import {
   FlagsSelectorBtnComponent,
   GenericOptionSelectorComponent,
   SingleValueSelectorBtnComponent,
-  SpellSelectorBtnComponent,
 } from '@keira/shared/selectors';
 import { TranslateModule } from '@ngx-translate/core';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
@@ -53,7 +51,6 @@ import { CreatureTemplateService } from './creature-template.service';
     SingleValueSelectorBtnComponent,
     FactionSelectorBtnComponent,
     FlagsSelectorBtnComponent,
-    SpellSelectorBtnComponent,
     CreatureSelectorBtnComponent,
     GenericOptionSelectorComponent,
     BooleanOptionSelectorComponent,
@@ -62,7 +59,6 @@ import { CreatureTemplateService } from './creature-template.service';
 export class CreatureTemplateComponent extends SingleRowEditorComponent<CreatureTemplate> {
   protected readonly UNIT_FLAGS = UNIT_FLAGS;
   protected readonly UNIT_FLAGS_2 = UNIT_FLAGS_2;
-  protected readonly TRAINER_TYPE = TRAINER_TYPE;
   protected readonly NPC_FLAGS = NPC_FLAGS;
   protected readonly CREATURE_FAMILY = CREATURE_FAMILY;
   protected readonly CREATURE_TYPE = CREATURE_TYPE;
