@@ -156,11 +156,11 @@ describe('CreatureTemplate integration tests', () => {
         '`speed_flight` = 17, `detection_range` = 18, `scale` = 19, `DamageModifier` = 22, ' +
         '`BaseAttackTime` = 23, `RangeAttackTime` = 24, `BaseVariance` = 25, `RangeVariance` = 26, `unit_class` = 2, ' +
         '`unit_flags` = 28, `unit_flags2` = 29, `dynamicflags` = 30, ' +
-        '`type_flags` = 37, `lootid` = 38, `pickpocketloot` = 39, `skinloot` = 40,' +
-        " `PetSpellDataId` = 41, `VehicleId` = 42, `mingold` = 43, `maxgold` = 44, `AIName` = '45', " +
-        '`HoverHeight` = 47, `HealthModifier` = 48, `ManaModifier` = 49, `ArmorModifier` = 50, ' +
-        '`ExperienceModifier` = 51, `movementId` = 53, `mechanic_immune_mask` = 55, ' +
-        "`spell_school_immune_mask` = 56, `flags_extra` = 57, `ScriptName` = '58' WHERE (`entry` = 1234);";
+        '`type_flags` = 33, `lootid` = 34, `pickpocketloot` = 35, `skinloot` = 36,' +
+        " `PetSpellDataId` = 37, `VehicleId` = 38, `mingold` = 39, `maxgold` = 40, `AIName` = '41', " +
+        '`HoverHeight` = 43, `HealthModifier` = 44, `ManaModifier` = 45, `ArmorModifier` = 46, ' +
+        '`ExperienceModifier` = 47, `movementId` = 49, `mechanic_immune_mask` = 51, ' +
+        "`spell_school_immune_mask` = 52, `flags_extra` = 53, `ScriptName` = '54' WHERE (`entry` = 1234);";
 
       querySpy.calls.reset();
 
