@@ -113,10 +113,11 @@
           [selectionType]="DTCFG.selectionType"
           (select)="editorService.onRowSelection($event)"
         >
-          <ngx-datatable-column prop="SpellId" name="SpellId" [minWidth]="150" [maxWidth]="200">
+          <ngx-datatable-column prop="SpellId" name="SpellId" [minWidth]="150" [maxWidth]="200" />
+          <ngx-datatable-column prop="SpellId" name="SpellName" [minWidth]="150" [maxWidth]="200">
             <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
               @if (sqliteQueryService.getSpellNameById(value) | async; as spellName) {
-                {{ value }}: {{ spellName }}
+                <div style="text-align: left"><keira-icon size="small" [spellId]="value" /> {{ spellName }}</div>
               }
             </ng-template>
           </ngx-datatable-column>
@@ -127,7 +128,7 @@
             <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
               @if (value !== 0) {
                 @if (sqliteQueryService.getSpellNameById(value) | async; as spellName) {
-                  {{ value }}: {{ spellName }}
+                  <div style="text-align: left"><keira-icon size="small" [spellId]="value" /> {{ value }}: {{ spellName }}</div>
                 }
               }
             </ng-template>
@@ -136,7 +137,7 @@
             <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
               @if (value !== 0) {
                 @if (sqliteQueryService.getSpellNameById(value) | async; as spellName) {
-                  {{ value }}: {{ spellName }}
+                  <div style="text-align: left"><keira-icon size="small" [spellId]="value" /> {{ value }}: {{ spellName }}</div>
                 }
               }
             </ng-template>
@@ -145,7 +146,7 @@
             <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
               @if (value !== 0) {
                 @if (sqliteQueryService.getSpellNameById(value) | async; as spellName) {
-                  {{ value }}: {{ spellName }}
+                  <div style="text-align: left"><keira-icon size="small" [spellId]="value" /> {{ value }}: {{ spellName }}</div>
                 }
               }
             </ng-template>

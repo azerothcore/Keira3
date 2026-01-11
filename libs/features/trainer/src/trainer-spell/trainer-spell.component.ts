@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TrainerSpell } from '@keira/shared/acore-world-model';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
-import { EditorButtonsComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
+import { EditorButtonsComponent, IconComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { SqliteQueryService } from '@keira/shared/db-layer';
 import { SkillSelectorBtnComponent, SpellSelectorBtnComponent } from '@keira/shared/selectors';
 import { TranslateModule } from '@ngx-translate/core';
@@ -29,6 +29,7 @@ import { TrainerSpellService } from './trainer-spell.service';
     EditorButtonsComponent,
     NgxDatatableModule,
     AsyncPipe,
+    IconComponent,
   ],
 })
 export class TrainerSpellComponent extends MultiRowEditorComponent<TrainerSpell> {
