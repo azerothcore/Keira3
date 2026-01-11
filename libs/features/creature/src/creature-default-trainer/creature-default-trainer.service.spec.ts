@@ -1,16 +1,15 @@
-import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
-
 import { ToastrService } from 'ngx-toastr';
 import { instance, mock } from 'ts-mockito';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
-import { NpcTrainerService } from './npc-trainer.service';
+import { CreatureDefaultTrainerService } from './creature-default-trainer.service';
 
-describe('NpcTrainerService', () => {
+describe('CreatureDefaultTrainerService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
@@ -22,13 +21,13 @@ describe('NpcTrainerService', () => {
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
         CreatureHandlerService,
         SaiCreatureHandlerService,
-        NpcTrainerService,
+        CreatureDefaultTrainerService,
       ],
     }),
   );
 
   it('should be created', () => {
-    const service: NpcTrainerService = TestBed.inject(NpcTrainerService);
+    const service: CreatureDefaultTrainerService = TestBed.inject(CreatureDefaultTrainerService);
     expect(service).toBeTruthy();
   });
 });
