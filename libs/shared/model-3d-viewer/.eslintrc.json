@@ -4,6 +4,9 @@
   "overrides": [
     {
       "files": ["*.ts"],
+      "parserOptions": {
+        "project": ["libs/shared/model-3d-viewer/tsconfig.*?.json"]
+      },
       "extends": ["plugin:@nx/angular", "plugin:@angular-eslint/template/process-inline-templates"],
       "rules": {
         "@angular-eslint/directive-selector": [

@@ -33,7 +33,7 @@ export class Model3DViewerService {
       const { race, gender } = model;
 
       fullOptions = await findRaceGenderOptions(race, gender);
-      modelOptions = await optionsFromModel(model, fullOptions);
+      modelOptions = optionsFromModel(model, fullOptions);
     }
 
     const models = {

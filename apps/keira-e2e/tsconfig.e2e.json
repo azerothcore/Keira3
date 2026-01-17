@@ -13,5 +13,5 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["**.spec.ts"]
+  "include": ["**.spec.ts", "playwright.config.ts"]
 }
