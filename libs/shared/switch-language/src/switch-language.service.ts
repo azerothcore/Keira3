@@ -11,6 +11,6 @@ export class SwitchLanguageService {
 
   setLanguage(event: Event): void {
     this.currentLanguage = (event.target as HTMLSelectElement).value;
-    this.translateService.setDefaultLang((event.target as HTMLSelectElement).value);
+    this.translateService.setFallbackLang((event.target as HTMLSelectElement).value);
   }
 }
