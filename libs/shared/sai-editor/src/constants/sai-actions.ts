@@ -390,15 +390,15 @@ SAI_ACTION_TOOLTIPS[SAI_ACTIONS.FOLLOW] = 'Makes the creature follow the target 
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.FOLLOW] = 'Distance';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.FOLLOW] = 'Angle';
 SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.FOLLOW] = 'EndCreatureId';
-SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.FOLLOW] = 'CreditCreatureId';
+SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.FOLLOW] = 'Credit';
 SAI_ACTION_PARAM5_NAMES[SAI_ACTIONS.FOLLOW] = 'CreditType';
 SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.FOLLOW] =
   'Default is 0. When not 0, the follow will finish ONLY once the creature is within interaction distance (5 yards) of the given entry.';
 SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.FOLLOW] =
-  'The creature id that will be given as a quest credit when the follow has finished for whatever reason.';
+  'When set, grants quest credit when the follow completes. If CreditType = 0 the value is treated as a creature entry (monster kill credit) and will give kill credit to the player/group. If CreditType = 1 the value is treated as an event id and will trigger the group event for credit.';
 SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.FOLLOW] =
-  'Requires the 4th parameter to be set and valid; ' +
-  "determines whether the entry in parameter 4 is a monster kill or event happening. If you're not sure what they mean, read the `quest_template` wiki.";
+  'Determines how the value in parameter 4 is interpreted. ' +
+  '0 = monster kill credit (calls RewardPlayerAndGroupAtEvent), 1 = event credit (calls GroupEventHappens).';
 
 // SMART_ACTION_RANDOM_PHASE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.RANDOM_PHASE] = "Set the creature's event phase (note: this is NOT the creature's actual phase!)";
