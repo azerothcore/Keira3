@@ -1,19 +1,19 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
+import { CreatureLootTemplate } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
-import { CreatureLootTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
+import { instance, mock } from 'ts-mockito';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { CreatureLootTemplateComponent } from './creature-loot-template.component';
 import { CreatureLootTemplateService } from './creature-loot-template.service';
 import Spy = jasmine.Spy;
-import { instance, mock } from 'ts-mockito';
 
 class CreatureLootTemplatePage extends MultiRowEditorPageObject<CreatureLootTemplateComponent> {}
 
@@ -312,6 +312,82 @@ describe('CreatureLootTemplate integration tests', () => {
       page.setInputValueById('Item', 0);
 
       page.expectUniqueError();
+    });
+
+    describe('Item icon and selector button visibility based on Reference field', () => {
+      it('should display keira-icon when Reference is 0', () => {
+        page.addNewRow();
+        page.setInputValueById('Reference', '0');
+        page.setInputValueById('Item', '99999');
+        page.detectChanges();
+
+        const icons = page.queryAll('keira-icon');
+
+        expect(icons.length).toBeGreaterThan(0);
+      });
+
+      it('should NOT display additional keira-icon when Reference is not 0', () => {
+        const initialIconCount = page.queryAll('keira-icon').length;
+
+        page.addNewRow();
+        page.setInputValueById('Reference', '5');
+        page.setInputValueById('Item', '99999');
+        page.detectChanges();
+
+        const icons = page.queryAll('keira-icon');
+        expect(icons.length).toBe(initialIconCount);
+      });
+
+      it('should hide icon when Reference changes from 0 to non-zero', () => {
+        // Click on the first row which has Reference = 0
+        page.clickRowOfDatatable(0);
+        page.detectChanges();
+
+        const initialIconCount = page.queryAll('keira-icon').length;
+        expect(initialIconCount).toBeGreaterThan(0, 'Should have icons for rows with Reference = 0');
+
+        // Change Reference to non-zero
+        page.setInputValueById('Reference', '10');
+        page.detectChanges();
+
+        const iconsAfter = page.queryAll('keira-icon');
+        expect(iconsAfter.length).toBeLessThan(initialIconCount);
+      });
+
+      it('should show icon when Reference changes from non-zero to 0', () => {
+        // Add a new row with Reference != 0
+        page.addNewRow();
+        page.setInputValueById('Reference', '10');
+        page.setInputValueById('Item', '99999');
+        page.detectChanges();
+
+        const initialIconCount = page.queryAll('keira-icon').length;
+
+        // Change Reference to 0
+        page.setInputValueById('Reference', '0');
+        page.detectChanges();
+
+        const iconsAfter = page.queryAll('keira-icon');
+        expect(iconsAfter.length).toBeGreaterThan(initialIconCount);
+      });
+
+      it('should display keira-item-selector-btn when Reference is 0', () => {
+        page.clickRowOfDatatable(0); // Click first row which has Reference = 0
+        page.detectChanges();
+
+        const selectorBtn = page.query('keira-item-selector-btn', false);
+        expect(selectorBtn).toBeTruthy();
+      });
+
+      it('should hide keira-item-selector-btn when Reference is not 0', () => {
+        page.addNewRow();
+        page.setInputValueById('Reference', '5');
+
+        page.detectChanges();
+
+        const selectorBtn = page.query('keira-item-selector-btn', false);
+        expect(selectorBtn).toBeFalsy();
+      });
     });
   });
 
