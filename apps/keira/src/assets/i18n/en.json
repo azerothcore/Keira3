@@ -2,19 +2,8 @@
   "LANGUAGES": {
     "ENGLISH": "English",
     "SPANISH": "Spanish",
-    "ITALIAN": "Italian",
     "CHINESE": "Chinese",
-    "RUSSIAN": "Russian",
-    "DUTCH": "Dutch",
-    "FRENCH": "French",
-    "GREEK": "Greek",
-    "SWEDISH": "Swedish",
-    "GERMAN": "German",
-    "POLISH": "Polish",
-    "PORTUGUESE": "Portuguese",
-    "KOREAN": "Korean",
-    "ROMANIAN": "Romanian",
-    "SLOVAK": "Slovak"
+    "RUSSIAN": "Russian"
   },
   "MODAL": {
     "YES": "Yes",

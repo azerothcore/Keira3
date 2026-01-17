@@ -2,19 +2,8 @@
   "LANGUAGES": {
     "ENGLISH": "Английский",
     "SPANISH": "Испанский",
-    "ITALIAN": "Итальянский",
     "CHINESE": "Китайский",
-    "RUSSIAN": "Русский",
-    "DUTCH": "Голландский",
-    "FRENCH": "Французский",
-    "GREEK": "Греческий",
-    "SWEDISH": "Шведский",
-    "GERMAN": "Немецкий",
-    "POLISH": "Польский",
-    "PORTUGUESE": "Португальский",
-    "KOREAN": "Корейский",
-    "ROMANIAN": "Румынский",
-    "SLOVAK": "Словацкий"
+    "RUSSIAN": "Русский"
   },
   "MODAL": {
     "YES": "Да",
