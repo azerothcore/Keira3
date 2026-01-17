@@ -968,7 +968,7 @@ export class ItemPreviewService {
     const requiredFaction = itemTemplate.RequiredReputationFaction;
     const requiredFactionRank = itemTemplate.RequiredReputationRank;
     if (!!requiredFaction && requiredFaction > 0) {
-      let reqFaction = await this.sqliteQueryService.getFactionNameById(requiredFaction);
+      let reqFaction = await this.sqliteQueryService.getFactionNameByNameId(requiredFaction);
 
       /* istanbul ignore else */
       if (!!reqFaction) {

@@ -216,6 +216,7 @@ describe('ItemPreviewService', () => {
       lastValueFrom(of(String(i).indexOf('555') > -1 ? '' : mockGetSpellDescriptionById + i)),
     );
     spyOn(sqliteQueryService, 'getFactionNameById').and.callFake((i) => lastValueFrom(of(mockGetFactionNameById + i)));
+    spyOn(sqliteQueryService, 'getFactionNameByNameId').and.callFake((i) => lastValueFrom(of(mockGetFactionNameById + i)));
     spyOn(sqliteQueryService, 'getMapNameById').and.callFake((i) =>
       lastValueFrom(of(String(i).indexOf('123') > -1 ? '' : mockGetMapNameById + i)),
     );
