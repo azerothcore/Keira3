@@ -74,7 +74,7 @@ export class SqliteQueryService extends BaseQueryService {
     return this.queryValueToPromiseCached<string>(
       'getFactionNameById',
       String(id),
-      `SELECT m_name_lang_1 AS v FROM factions WHERE m_ID = ${id}`,
+      `SELECT m_name_lang_1 AS v FROM factions WHERE faction_name_id = ${id}`,
     );
   }
 
