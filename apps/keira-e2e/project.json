@@ -2,6 +2,10 @@
   "name": "keira-e2e",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "targets": {},
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  },
   "sourceRoot": "apps/keira-e2e/src"
 }

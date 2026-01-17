@@ -5,7 +5,8 @@
     {
       "files": ["*.ts"],
       "parserOptions": {
-        "createDefaultProgram": true
+        "createDefaultProgram": true,
+        "projectService": true
       },
       "extends": [
         "plugin:@angular-eslint/recommended",
@@ -44,7 +45,9 @@
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/ban-ts-comment": "off",
         "no-duplicate-imports": "error",
-        "require-await": "error",
+        "require-await": "off",
+        "@typescript-eslint/require-await": "error",
+        "@typescript-eslint/await-thenable": "error",
         "prefer-const": "error",
         "no-console": ["error", { "allow": ["warn", "info", "error"] }]
       }
