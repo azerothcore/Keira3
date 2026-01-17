@@ -1,5 +1,6 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CreatureOnkillReputation } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
@@ -33,19 +34,24 @@ describe('CreatureOnkillReputation integration tests', () => {
   const originalEntity = new CreatureOnkillReputation();
   originalEntity.creature_id = id;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        BrowserAnimationsModule,
         ToastrModule.forRoot(),
         ModalModule.forRoot(),
         CreatureOnkillReputationComponent,
         RouterTestingModule,
         TranslateTestingModule,
       ],
-      providers: [CreatureHandlerService, SaiCreatureHandlerService, { provide: SqliteService, useValue: instance(mock(SqliteService)) }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
+      ],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(CreatureHandlerService);
@@ -74,11 +80,11 @@ describe('CreatureOnkillReputation integration tests', () => {
 
     it('should correctly update the unsaved status', () => {
       const field = 'RewOnKillRepFaction1';
-      expect(handlerService.isCreatureOnkillReputationUnsaved).toBe(false);
+      expect(handlerService.isCreatureOnkillReputationUnsaved()).toBe(false);
       page.setInputValueById(field, 3);
-      expect(handlerService.isCreatureOnkillReputationUnsaved).toBe(true);
+      expect(handlerService.isCreatureOnkillReputationUnsaved()).toBe(true);
       page.setInputValueById(field, 0);
-      expect(handlerService.isCreatureOnkillReputationUnsaved).toBe(false);
+      expect(handlerService.isCreatureOnkillReputationUnsaved()).toBe(false);
     });
 
     it('changing a property and executing the query should correctly work', () => {
@@ -109,20 +115,18 @@ describe('CreatureOnkillReputation integration tests', () => {
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
-    it('changing all properties and executing the query should correctly work', () => {
+    it('changing all properties and executing the query should correctly work', async () => {
       const expectedQuery =
         'UPDATE `creature_onkill_reputation` SET ' +
         '`RewOnKillRepFaction2` = 1, `MaxStanding1` = 1, `IsTeamAward1` = 1, `RewOnKillRepValue1` = 4, ' +
         '`MaxStanding2` = 1, `IsTeamAward2` = 1, `RewOnKillRepValue2` = 7, `TeamDependent` = 1 WHERE (`creature_id` = 1234);';
       querySpy.calls.reset();
 
-      const MaxStanding1 = page.getDebugElementByCss<HTMLSelectElement>('#MaxStanding1 select').nativeElement;
-      const MaxStanding2 = page.getDebugElementByCss<HTMLSelectElement>('#MaxStanding2 select').nativeElement;
       const IsTeamAward1 = page.getDebugElementByCss<HTMLSelectElement>('#IsTeamAward1 select').nativeElement;
       const IsTeamAward2 = page.getDebugElementByCss<HTMLSelectElement>('#IsTeamAward2 select').nativeElement;
       const TeamDependent = page.getDebugElementByCss<HTMLSelectElement>('#TeamDependent select').nativeElement;
-      page.setInputValue(MaxStanding1, '1: 1');
-      page.setInputValue(MaxStanding2, '1: 1');
+      await page.setNgxSelectValueByIndex('MaxStanding1', 1);
+      await page.setNgxSelectValueByIndex('MaxStanding2', 1);
       page.setInputValue(IsTeamAward1, '1: 1');
       page.setInputValue(IsTeamAward2, '1: 1');
       page.setInputValue(TeamDependent, '1: 1');
@@ -160,7 +164,7 @@ describe('CreatureOnkillReputation integration tests', () => {
       );
     });
 
-    xit('changing a value via SingleValueSelector should correctly work', waitForAsync(async () => {
+    xit('changing a value via SingleValueSelector should correctly work', async () => {
       const field = 'MaxStanding1';
       page.clickElement(page.getSelectorBtn(field));
       page.expectModalDisplayed();
@@ -180,9 +184,9 @@ describe('CreatureOnkillReputation integration tests', () => {
           '`MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`) VALUES\n' +
           '(1234, 0, 0, 7, 0, 0, 0, 0, 0, 0);',
       );
-    }));
+    });
 
-    xit('changing a value via FactionSelector should correctly work', waitForAsync(async () => {
+    xit('changing a value via FactionSelector should correctly work', async () => {
       const field = 'RewOnKillRepFaction1';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
       spyOn(sqliteQueryService, 'query').and.returnValue(of([{ m_ID: 123, m_name_lang_1: 'Mock Faction' }]));
@@ -204,6 +208,6 @@ describe('CreatureOnkillReputation integration tests', () => {
           'INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`, `RewOnKillRepFaction2`, `MaxStanding1`, `IsTeamAward1`, `RewOnKillRepValue1`, `MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`) VALUES\n' +
           '(1234, 123, 0, 0, 0, 0, 0, 0, 0, 0);',
       );
-    }));
+    });
   });
 });

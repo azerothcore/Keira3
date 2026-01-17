@@ -1,6 +1,6 @@
 /* istanbul ignore file */
-import { Injectable } from '@angular/core';
-import { TableRow } from '@keira/shared/constants';
+import { Injectable, inject, signal } from '@angular/core';
+import { TableRow, StringKeys } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { Observable } from 'rxjs';
 import { MultiRowComplexKeyEditorService } from './service/editors/multi-row-complex-key-editor.service';
@@ -37,8 +37,8 @@ export class MockEntityExtra extends MockEntity {
 export class MockHandlerService extends HandlerService<MockEntity> {
   protected readonly mainEditorRoutePath = 'mock/route';
 
-  protected _statusMap!: {
-    [MOCK_TABLE]: false;
+  protected _statusMap = {
+    [MOCK_TABLE]: signal(false),
   };
 }
 
@@ -46,11 +46,15 @@ export class MockHandlerService extends HandlerService<MockEntity> {
   providedIn: 'root',
 })
 export class SelectMockService extends SelectService<MockEntity> {
-  constructor(
-    override readonly queryService: MysqlQueryService,
-    public override handlerService: MockHandlerService,
-  ) {
-    super(queryService, handlerService, MOCK_TABLE, MOCK_ID, MOCK_NAME, []);
+  override readonly queryService = inject(MysqlQueryService);
+  override handlerService = inject(MockHandlerService);
+  protected override readonly entityTable = MOCK_TABLE;
+  protected override readonly entityIdField = MOCK_ID;
+  protected override entityNameField = MOCK_NAME;
+  protected override readonly fieldList: StringKeys<MockEntity>[] = [];
+  constructor() {
+    super();
+    this.init();
   }
 }
 
@@ -58,8 +62,16 @@ export class SelectMockService extends SelectService<MockEntity> {
   providedIn: 'root',
 })
 export class MockSingleRowEditorService extends SingleRowEditorService<MockEntity> {
-  constructor(protected override handlerService: MockHandlerService) {
-    super(MockEntity, MOCK_TABLE, MOCK_ID, MOCK_NAME, true, handlerService);
+  protected override readonly handlerService = inject(MockHandlerService);
+  protected override _entityClass = MockEntity;
+  protected override _entityTable = MOCK_TABLE;
+  protected override _entityIdField = MOCK_ID;
+  protected override _entityNameField = MOCK_NAME;
+  protected override isMainEntity = true;
+
+  constructor() {
+    super();
+    this.init();
   }
 }
 
@@ -67,8 +79,16 @@ export class MockSingleRowEditorService extends SingleRowEditorService<MockEntit
   providedIn: 'root',
 })
 export class MockSingleRowComplexKeyEditorService extends SingleRowComplexKeyEditorService<MockEntity> {
-  constructor(protected override handlerService: MockHandlerService) {
-    super(MockEntity, MOCK_TABLE, [MOCK_ID, MOCK_ID_2], MOCK_NAME, true, handlerService);
+  protected override readonly handlerService = inject(MockHandlerService);
+  protected override _entityClass = MockEntity;
+  protected override _entityTable = MOCK_TABLE;
+  protected override _entityIdField = JSON.stringify([MOCK_ID, MOCK_ID_2]);
+  protected override _entityNameField = MOCK_NAME;
+  protected override isMainEntity = true;
+
+  constructor() {
+    super();
+    this.init();
   }
 }
 
@@ -76,8 +96,15 @@ export class MockSingleRowComplexKeyEditorService extends SingleRowComplexKeyEdi
   providedIn: 'root',
 })
 export class MockMultiRowEditorService extends MultiRowEditorService<MockEntity> {
-  constructor(protected override handlerService: MockHandlerService) {
-    super(MockEntity, MOCK_TABLE, MOCK_ID, MOCK_ID_2, handlerService);
+  protected override readonly handlerService = inject(MockHandlerService);
+  protected override readonly _entityClass = MockEntity;
+  protected override readonly _entityTable = MOCK_TABLE;
+  protected override readonly _entityIdField = MOCK_ID;
+  protected override readonly _entitySecondIdField = MOCK_ID_2;
+
+  constructor() {
+    super();
+    this.init();
   }
 }
 
@@ -85,8 +112,15 @@ export class MockMultiRowEditorService extends MultiRowEditorService<MockEntity>
   providedIn: 'root',
 })
 export class MockMultiRowEditorWithGuidStringService extends MultiRowEditorService<MockEntityWithGuidString> {
-  constructor(protected override handlerService: MockHandlerService) {
-    super(MockEntityWithGuidString, MOCK_TABLE, MOCK_ID, MOCK_ID_2, handlerService);
+  protected override readonly handlerService = inject(MockHandlerService);
+  protected override readonly _entityClass = MockEntityWithGuidString;
+  protected override readonly _entityTable = MOCK_TABLE;
+  protected override readonly _entityIdField = MOCK_ID;
+  protected override readonly _entitySecondIdField = MOCK_ID_2;
+
+  constructor() {
+    super();
+    this.init();
   }
 }
 
@@ -94,8 +128,16 @@ export class MockMultiRowEditorWithGuidStringService extends MultiRowEditorServi
   providedIn: 'root',
 })
 export class MockMultiRowEditorExtraService extends MultiRowEditorService<MockEntityExtra> {
-  constructor(protected override handlerService: MockHandlerService) {
-    super(MockEntityExtra, MOCK_TABLE, MOCK_ID, MOCK_ID_2, handlerService, MOCK_EXTRA_ID);
+  protected override readonly handlerService = inject(MockHandlerService);
+  protected override readonly _entityClass = MockEntityExtra;
+  protected override readonly _entityTable = MOCK_TABLE;
+  protected override readonly _entityIdField = MOCK_ID;
+  protected override readonly _entitySecondIdField = MOCK_ID_2;
+  protected override readonly _entityExtraIdField = MOCK_EXTRA_ID;
+
+  constructor() {
+    super();
+    this.init();
   }
 }
 
@@ -103,8 +145,14 @@ export class MockMultiRowEditorExtraService extends MultiRowEditorService<MockEn
   providedIn: 'root',
 })
 export class MockMultiRowExternalEditorService extends MultiRowExternalEditorService<MockEntity> {
-  constructor(protected override handlerService: MockHandlerService) {
-    super(MockEntity, MOCK_TABLE, MOCK_ID_2, handlerService);
+  protected override readonly handlerService = inject(MockHandlerService);
+  protected override _entityClass = MockEntity;
+  protected override _entityTable = MOCK_TABLE;
+  protected override _entitySecondIdField = MOCK_ID_2;
+
+  constructor() {
+    super();
+    this.init();
   }
 
   selectQuery(id: string | number) {
@@ -118,11 +166,16 @@ export class MockMultiRowExternalEditorService extends MultiRowExternalEditorSer
   providedIn: 'root',
 })
 export class MockMultiRowComplexKeyEditorService extends MultiRowComplexKeyEditorService<MockEntity> {
-  constructor(
-    protected override handlerService: MockHandlerService,
-    override readonly queryService: MysqlQueryService,
-  ) {
-    super(MockEntity, MOCK_TABLE, [MOCK_ID, MOCK_ID_2], MOCK_ID_2, handlerService);
+  protected override readonly handlerService = inject(MockHandlerService);
+  override readonly queryService = inject(MysqlQueryService);
+  protected override _entityClass = MockEntity;
+  protected override _entityTable = MOCK_TABLE;
+  protected override _entityIdField = JSON.stringify([MOCK_ID, MOCK_ID_2]);
+  protected override _entitySecondIdField = MOCK_ID_2;
+
+  constructor() {
+    super();
+    this.init();
   }
 
   protected updateFullQuery(): void {}

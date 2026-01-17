@@ -8,7 +8,16 @@
   @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
     <div>
       <div class="content-block">
-        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)" />
+        <keira-query-output
+          [docUrl]="docUrl"
+          [isNew]="editorService.isNew"
+          [diffQuery]="editorService.diffQuery"
+          [fullQuery]="editorService.fullQuery"
+          [error]="editorService.error"
+          [entityTable]="editorService.entityTable"
+          [editorService]="editorService"
+          (executeQuery)="save($event)"
+        />
       </div>
       <form [formGroup]="editorService.form" class="form-group edit-form">
         <div class="content-block">
@@ -34,13 +43,11 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="IconName">IconName</label>
-              <keira-single-value-selector-btn
+              <keira-generic-option-selector
                 [control]="editorService.form.controls.IconName"
-                [disabled]="editorService.form.controls.IconName.disabled"
-                [config]="{ options: GAMEOBJECT_ICON, name: 'IconName' }"
-                [modalClass]="'modal-md'"
+                id="IconName"
+                [optionList]="GAMEOBJECT_ICON"
               />
-              <input [formControlName]="'IconName'" id="IconName" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="size">size</label>
@@ -85,7 +92,11 @@
       <div class="preview-container" [class.show-preview]="showGameobjectPreview" [class.hide-preview]="!showGameobjectPreview">
         <div class="transparent perfect-scrollbar">
           <div class="gameobject-preview">
-            <keira-model-3d-viewer [viewerType]="OBJECT_VIEWER_TYPE" [displayId]="editorService.form.controls.displayId.value" />
+            <keira-model-3d-viewer
+              [viewerType]="OBJECT_VIEWER_TYPE"
+              [displayId]="editorService.form.controls.displayId.value"
+              [enableBgSettings]="true"
+            />
           </div>
         </div>
       </div>

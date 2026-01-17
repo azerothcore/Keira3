@@ -1,10 +1,13 @@
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { TestBed, waitForAsync } from '@angular/core/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { CreatureTemplateModel } from '@keira/shared/acore-world-model';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
+import { Model3DViewerService } from '@keira/shared/model-3d-viewer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
@@ -22,25 +25,20 @@ describe('CreatureTemplateModel integration tests', () => {
 
   const id = 1234;
 
-  beforeEach(waitForAsync(() => {
+  function setup(creatingNew: boolean) {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        CreatureTemplateModelComponent,
-        TranslateTestingModule,
-      ],
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureTemplateModelComponent, TranslateTestingModule, ReactiveFormsModule],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        { provide: Model3DViewerService, useValue: { generateModels: () => new Promise((resolve) => resolve({ destroy: () => {} })) } },
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
         { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
-  }));
 
-  function setup(creatingNew: boolean) {
     const originalRow0 = new CreatureTemplateModel();
     const originalRow1 = new CreatureTemplateModel();
     const originalRow2 = new CreatureTemplateModel();
@@ -63,6 +61,7 @@ describe('CreatureTemplateModel integration tests', () => {
     const fixture = TestBed.createComponent(CreatureTemplateModelComponent);
     const component = fixture.componentInstance;
     const page = new CreatureTemplateModelPage(fixture);
+
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
 
@@ -88,11 +87,11 @@ describe('CreatureTemplateModel integration tests', () => {
 
     it('should correctly update the unsaved status', () => {
       const { page, handlerService } = setup(true);
-      expect(handlerService.isCreatureTemplateModelUnsaved).toBe(false);
+      expect(handlerService.isCreatureTemplateModelUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isCreatureTemplateModelUnsaved).toBe(true);
+      expect(handlerService.isCreatureTemplateModelUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isCreatureTemplateModelUnsaved).toBe(false);
+      expect(handlerService.isCreatureTemplateModelUnsaved()).toBe(false);
       page.removeNativeElement();
     });
 

@@ -8,7 +8,16 @@
   @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
     <div>
       <div class="content-block">
-        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)" />
+        <keira-query-output
+          [docUrl]="docUrl"
+          [isNew]="editorService.isNew"
+          [diffQuery]="editorService.diffQuery"
+          [fullQuery]="editorService.fullQuery"
+          [error]="editorService.error"
+          [entityTable]="editorService.entityTable"
+          [editorService]="editorService"
+          (executeQuery)="save($event)"
+        />
       </div>
       <div class="content-block">
         <form [formGroup]="editorService.form" class="form-group edit-form">
@@ -34,7 +43,7 @@
                 [control]="editorService.form.controls.bytes1"
                 id="bytes1"
                 [optionList]="CREATURE_ADDON_BYTES_1"
-              ></keira-generic-option-selector>
+              />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="bytes2">bytes2</label>
@@ -42,15 +51,11 @@
                 [control]="editorService.form.controls.bytes2"
                 id="bytes2"
                 [optionList]="CREATURE_ADDON_BYTES_2"
-              ></keira-generic-option-selector>
+              />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="emote">emote</label>
-              <keira-generic-option-selector
-                [control]="editorService.form.controls.emote"
-                id="emote"
-                [optionList]="EMOTE"
-              ></keira-generic-option-selector>
+              <keira-generic-option-selector [control]="editorService.form.controls.emote" id="emote" [optionList]="EMOTE" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="visibilityDistanceType">visibilityDistanceType</label>
@@ -106,13 +111,13 @@
                   <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
                 </ng-template>
               </ngx-datatable-column>
-              <ngx-datatable-column name="guid" prop="guid" [minWidth]="80"></ngx-datatable-column>
-              <ngx-datatable-column name="path_id" prop="path_id"></ngx-datatable-column>
-              <ngx-datatable-column name="mount" prop="mount"></ngx-datatable-column>
-              <ngx-datatable-column name="bytes1" prop="bytes1"></ngx-datatable-column>
-              <ngx-datatable-column name="bytes2" prop="bytes2"></ngx-datatable-column>
-              <ngx-datatable-column name="emote" prop="emote"></ngx-datatable-column>
-              <ngx-datatable-column name="auras" prop="auras"></ngx-datatable-column>
+              <ngx-datatable-column name="guid" prop="guid" [minWidth]="80" />
+              <ngx-datatable-column name="path_id" prop="path_id" />
+              <ngx-datatable-column name="mount" prop="mount" />
+              <ngx-datatable-column name="bytes1" prop="bytes1" />
+              <ngx-datatable-column name="bytes2" prop="bytes2" />
+              <ngx-datatable-column name="emote" prop="emote" />
+              <ngx-datatable-column name="auras" prop="auras" />
             </ngx-datatable>
           </div>
         </div>

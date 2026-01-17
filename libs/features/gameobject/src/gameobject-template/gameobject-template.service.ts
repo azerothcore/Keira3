@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { SingleRowEditorService } from '@keira/shared/base-abstract-classes';
 import { FieldDefinition, GO_DATA_FIELDS } from '@keira/shared/constants';
 import {
@@ -13,9 +13,16 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
   providedIn: 'root',
 })
 export class GameobjectTemplateService extends SingleRowEditorService<GameobjectTemplate> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected override readonly handlerService: GameobjectHandlerService) {
-    super(GameobjectTemplate, GAMEOBJECT_TEMPLATE_TABLE, GAMEOBJECT_TEMPLATE_ID, GAMEOBJECT_TEMPLATE_NAME, true, handlerService);
+  protected override readonly handlerService = inject(GameobjectHandlerService);
+  protected override _entityClass = GameobjectTemplate;
+  protected override _entityTable = GAMEOBJECT_TEMPLATE_TABLE;
+  protected override _entityIdField = GAMEOBJECT_TEMPLATE_ID;
+  protected override _entityNameField = GAMEOBJECT_TEMPLATE_NAME;
+  protected override isMainEntity = true;
+
+  constructor() {
+    super();
+    this.init();
   }
 
   getFieldDefinition(type: number, dataIndex: number): FieldDefinition {

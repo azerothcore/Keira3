@@ -7,7 +7,7 @@ import { Class, StringKeys, TableRow } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { ModelForm, SubscriptionHandler } from '@keira/shared/utils';
 import { HandlerService } from '../handlers/handler.service';
-import { ChangeDetectorRef, inject } from '@angular/core';
+import { ChangeDetectorRef, inject, signal } from '@angular/core';
 
 export abstract class EditorService<T extends TableRow> extends SubscriptionHandler {
   readonly queryService = inject(MysqlQueryService);
@@ -15,7 +15,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
 
   protected _loading = false;
   protected _loadedEntityId: string | number | Partial<T> | undefined;
-  protected readonly fields: StringKeys<T>[];
+  protected fields: StringKeys<T>[] = [];
   protected _diffQuery: string | undefined;
   protected _fullQuery: string | undefined;
   protected _isNew = false;
@@ -48,13 +48,12 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
     return this._error as QueryError;
   }
 
-  protected constructor(
-    protected _entityClass: Class,
-    protected _entityTable: string,
-    protected _entityIdField: string | undefined,
-    protected handlerService: HandlerService<T>,
-  ) {
-    super();
+  protected abstract handlerService: HandlerService<T>;
+  protected abstract _entityClass: Class;
+  protected abstract _entityTable: string;
+  protected abstract _entityIdField: string | undefined;
+
+  protected init(): void {
     this.fields = this.getClassAttributes(this._entityClass);
   }
 
@@ -69,7 +68,10 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
 
   /* istanbul ignore next */ // TODO: fix coverage
   protected updateEditorStatus(): void {
-    this.handlerService.statusMap[this._entityTable] = !!this._diffQuery;
+    if (!this.handlerService.statusMap[this._entityTable]) {
+      this.handlerService.statusMap[this._entityTable] = signal(false);
+    }
+    this.handlerService.statusMap[this._entityTable].set(!!this._diffQuery);
   }
 
   private getClassAttributes(c: Class): StringKeys<T>[] {

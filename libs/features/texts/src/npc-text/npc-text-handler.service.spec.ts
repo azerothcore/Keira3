@@ -1,11 +1,13 @@
 import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { NpcTextHandlerService } from './npc-text-handler.service';
 import { NPC_TEXT_TABLE } from '@keira/shared/acore-world-model';
 
 describe(NpcTextHandlerService.name, () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      providers: [NpcTextHandlerService],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), NpcTextHandlerService],
     }),
   );
 
@@ -16,12 +18,12 @@ describe(NpcTextHandlerService.name, () => {
 
   it('isUnsaved should return the value of the statusMap for the npc_text table', () => {
     const { service } = setup();
-    expect(service.isUnsaved).toBe(false); // defaults to false
+    expect(service.isUnsaved()).toBe(false); // defaults to false
 
-    service.statusMap[NPC_TEXT_TABLE] = true;
-    expect(service.isUnsaved).toBe(true);
+    service.statusMap[NPC_TEXT_TABLE].set(true);
+    expect(service.isUnsaved()).toBe(true);
 
-    service.statusMap[NPC_TEXT_TABLE] = false;
-    expect(service.isUnsaved).toBe(false);
+    service.statusMap[NPC_TEXT_TABLE].set(false);
+    expect(service.isUnsaved()).toBe(false);
   });
 });

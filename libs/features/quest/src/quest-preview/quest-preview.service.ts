@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Injectable } from '@angular/core';
+import { ChangeDetectorRef, Injectable, inject } from '@angular/core';
 import {
   CreatureQuestender,
   CreatureQueststarter,
@@ -28,7 +28,6 @@ import {
 } from '@keira/shared/constants';
 import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
 import { PreviewHelperService } from '@keira/shared/preview';
-import { lastValueFrom, of } from 'rxjs';
 import { CreatureQuestenderService } from '../creature-questender/creature-questender.service';
 import { CreatureQueststarterService } from '../creature-queststarter/creature-queststarter.service';
 import { GameobjectQuestenderService } from '../gameobject-questender/gameobject-questender.service';
@@ -39,31 +38,31 @@ import { QuestRequestItemsService } from '../quest-request-items/quest-request-i
 import { QuestTemplateAddonService } from '../quest-template-addon/quest-template-addon.service';
 import { QuestTemplateService } from '../quest-template/quest-template.service';
 import { DifficultyLevel, Quest, QUEST_FACTION_REWARD, QuestFactionRewardKey } from './quest-preview.model';
+import { compareObjFn, UNDEFINED_PROMISE } from '@keira/shared/utils';
+import { combineLatest, debounceTime, distinctUntilChanged, map, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class QuestPreviewService {
+  private readonly helperService = inject(PreviewHelperService);
+  readonly mysqlQueryService = inject(MysqlQueryService);
+  readonly sqliteQueryService = inject(SqliteQueryService);
+  private readonly questHandlerService = inject(QuestHandlerService);
+  private readonly questTemplateService = inject(QuestTemplateService);
+  private readonly questRequestItemsService = inject(QuestRequestItemsService);
+  private readonly questTemplateAddonService = inject(QuestTemplateAddonService);
+  private readonly questOfferRewardService = inject(QuestOfferRewardService);
+  private readonly gameobjectQueststarterService = inject(GameobjectQueststarterService);
+  private readonly gameobjectQuestenderService = inject(GameobjectQuestenderService);
+  private readonly creatureQueststarterService = inject(CreatureQueststarterService);
+  private readonly creatureQuestenderService = inject(CreatureQuestenderService);
+
   showPreview = true;
 
   private prevSerieCache: Promise<Quest[]>[] = [];
   private nextSerieCache: Promise<Quest[]>[] = [];
   private nextSerieUsingPrevCache: Promise<Quest[]>[] = [];
-
-  constructor(
-    private readonly helperService: PreviewHelperService,
-    readonly mysqlQueryService: MysqlQueryService,
-    readonly sqliteQueryService: SqliteQueryService,
-    private readonly questHandlerService: QuestHandlerService,
-    private readonly questTemplateService: QuestTemplateService,
-    private readonly questRequestItemsService: QuestRequestItemsService,
-    private readonly questTemplateAddonService: QuestTemplateAddonService,
-    private readonly questOfferRewardService: QuestOfferRewardService,
-    private readonly gameobjectQueststarterService: GameobjectQueststarterService,
-    private readonly gameobjectQuestenderService: GameobjectQuestenderService,
-    private readonly creatureQueststarterService: CreatureQueststarterService,
-    private readonly creatureQuestenderService: CreatureQuestenderService,
-  ) {}
 
   readonly RACES_TEXT = RACES_TEXT;
   readonly CLASSES_TEXT = CLASSES_TEXT;
@@ -174,6 +173,20 @@ export class QuestPreviewService {
     this.initService(changeDetectorRef, this.gameobjectQuestenderService);
     this.initService(changeDetectorRef, this.creatureQueststarterService);
     this.initService(changeDetectorRef, this.creatureQuestenderService);
+  }
+
+  valueChanges$(delay: number): Observable<void> {
+    /* istanbul ignore next */ // TODO: fix coverage
+    return combineLatest([
+      this.questTemplateService.form.valueChanges.pipe(debounceTime(delay), distinctUntilChanged(compareObjFn)),
+      this.questRequestItemsService.form.valueChanges.pipe(debounceTime(delay), distinctUntilChanged(compareObjFn)),
+      this.questOfferRewardService.form.valueChanges.pipe(debounceTime(delay), distinctUntilChanged(compareObjFn)),
+      this.questTemplateAddonService.form.valueChanges.pipe(debounceTime(delay), distinctUntilChanged(compareObjFn)),
+      this.gameobjectQueststarterService.form.valueChanges.pipe(debounceTime(delay), distinctUntilChanged(compareObjFn)),
+      this.gameobjectQuestenderService.form.valueChanges.pipe(debounceTime(delay), distinctUntilChanged(compareObjFn)),
+      this.creatureQueststarterService.form.valueChanges.pipe(debounceTime(delay), distinctUntilChanged(compareObjFn)),
+      this.creatureQuestenderService.form.valueChanges.pipe(debounceTime(delay), distinctUntilChanged(compareObjFn)),
+    ]).pipe(map(() => {}));
   }
 
   private initService<T extends TableRow>(changeDetectorRef: ChangeDetectorRef, service: EditorService<T>) {
@@ -413,7 +426,7 @@ export class QuestPreviewService {
 
       return this.mysqlQueryService.getGameObjectNameById(Math.abs(RequiredNpcOrGo));
     }
-    return lastValueFrom(of(undefined));
+    return UNDEFINED_PROMISE;
   }
 
   getObjectiveCount(field: string | number): string {

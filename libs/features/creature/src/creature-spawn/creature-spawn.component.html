@@ -8,7 +8,16 @@
   @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
     <div>
       <div class="content-block">
-        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)" />
+        <keira-query-output
+          [docUrl]="docUrl"
+          [isNew]="editorService.isNew"
+          [diffQuery]="editorService.diffQuery"
+          [fullQuery]="editorService.fullQuery"
+          [error]="editorService.error"
+          [entityTable]="editorService.entityTable"
+          [editorService]="editorService"
+          (executeQuery)="save($event)"
+        />
       </div>
       <div class="content-block">
         <form [formGroup]="editorService.form" class="form-group edit-form">
@@ -108,7 +117,7 @@
                 [control]="editorService.form.controls.MovementType"
                 id="MovementType"
                 [optionList]="MOVEMENT_TYPE"
-              ></keira-generic-option-selector>
+              />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
               <label class="control-label" for="npcflag">npcflag</label>
@@ -155,7 +164,12 @@
         </form>
         <div class="row">
           <div class="col-12">
-            <keira-editor-buttons [editorService]="editorService" />
+            <keira-editor-buttons
+              [selectedRowId]="editorService.selectedRowId"
+              (deleteSelectedRow)="editorService.deleteSelectedRow()"
+              (addNewRow)="editorService.addNewRow()"
+              (duplicateRow)="editorService.addNewRow(true)"
+            />
             <ngx-datatable
               id="editor-table"
               class="bootstrap table table-striped text-center datatable-select"
@@ -173,26 +187,26 @@
                   <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
                 </ng-template>
               </ngx-datatable-column>
-              <ngx-datatable-column name="guid" prop="guid" [minWidth]="80"></ngx-datatable-column>
-              <ngx-datatable-column name="M" prop="map" [minWidth]="42"></ngx-datatable-column>
-              <ngx-datatable-column name="Z" prop="zoneId" [minWidth]="42"></ngx-datatable-column>
-              <ngx-datatable-column name="A" prop="areaId" [minWidth]="42"></ngx-datatable-column>
-              <ngx-datatable-column name="SM" prop="spawnMask" [minWidth]="42"></ngx-datatable-column>
-              <ngx-datatable-column name="PM" prop="phaseMask" [minWidth]="42"></ngx-datatable-column>
-              <ngx-datatable-column name="Equip" prop="equipment_id" [minWidth]="42"></ngx-datatable-column>
-              <ngx-datatable-column name="position_x" prop="position_x" [minWidth]="90"></ngx-datatable-column>
-              <ngx-datatable-column name="position_y" prop="position_y" [minWidth]="90"></ngx-datatable-column>
-              <ngx-datatable-column name="position_z" prop="position_z" [minWidth]="90"></ngx-datatable-column>
-              <ngx-datatable-column name="orient." prop="orientation" [minWidth]="90"></ngx-datatable-column>
-              <ngx-datatable-column name="Time" prop="spawntimesecs" [minWidth]="50"></ngx-datatable-column>
-              <ngx-datatable-column name="Dist" prop="wander_distance" [minWidth]="42"></ngx-datatable-column>
-              <ngx-datatable-column name="CW" prop="currentwaypoint" [minWidth]="42"></ngx-datatable-column>
-              <ngx-datatable-column name="Movement" prop="MovementType" [minWidth]="42"></ngx-datatable-column>
-              <ngx-datatable-column name="npcFlags" prop="npcflag" [minWidth]="42"></ngx-datatable-column>
-              <ngx-datatable-column name="unitFlags" prop="unit_flags" [minWidth]="42"></ngx-datatable-column>
-              <ngx-datatable-column name="dynFlags" prop="dynamicflags" [minWidth]="42"></ngx-datatable-column>
-              <ngx-datatable-column name="ScriptName" prop="ScriptName" [minWidth]="80"></ngx-datatable-column>
-              <ngx-datatable-column name="Comment" prop="Comment" [minWidth]="42"></ngx-datatable-column>
+              <ngx-datatable-column name="guid" prop="guid" [minWidth]="80" />
+              <ngx-datatable-column name="M" prop="map" [minWidth]="42" />
+              <ngx-datatable-column name="Z" prop="zoneId" [minWidth]="42" />
+              <ngx-datatable-column name="A" prop="areaId" [minWidth]="42" />
+              <ngx-datatable-column name="SM" prop="spawnMask" [minWidth]="42" />
+              <ngx-datatable-column name="PM" prop="phaseMask" [minWidth]="42" />
+              <ngx-datatable-column name="Equip" prop="equipment_id" [minWidth]="42" />
+              <ngx-datatable-column name="position_x" prop="position_x" [minWidth]="90" />
+              <ngx-datatable-column name="position_y" prop="position_y" [minWidth]="90" />
+              <ngx-datatable-column name="position_z" prop="position_z" [minWidth]="90" />
+              <ngx-datatable-column name="orient." prop="orientation" [minWidth]="90" />
+              <ngx-datatable-column name="Time" prop="spawntimesecs" [minWidth]="50" />
+              <ngx-datatable-column name="Dist" prop="wander_distance" [minWidth]="42" />
+              <ngx-datatable-column name="CW" prop="currentwaypoint" [minWidth]="42" />
+              <ngx-datatable-column name="Movement" prop="MovementType" [minWidth]="42" />
+              <ngx-datatable-column name="npcFlags" prop="npcflag" [minWidth]="42" />
+              <ngx-datatable-column name="unitFlags" prop="unit_flags" [minWidth]="42" />
+              <ngx-datatable-column name="dynFlags" prop="dynamicflags" [minWidth]="42" />
+              <ngx-datatable-column name="ScriptName" prop="ScriptName" [minWidth]="80" />
+              <ngx-datatable-column name="Comment" prop="Comment" [minWidth]="42" />
             </ngx-datatable>
           </div>
         </div>

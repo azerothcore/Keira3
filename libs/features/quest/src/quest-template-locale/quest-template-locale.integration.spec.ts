@@ -1,8 +1,10 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { QuestTemplateLocale } from '@keira/shared/acore-world-model';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import { MysqlQueryService } from '@keira/shared/db-layer';
+import { Model3DViewerService } from '@keira/shared/model-3d-viewer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
@@ -16,18 +18,18 @@ class QuestTemplateLocalePage extends MultiRowEditorPageObject<QuestTemplateLoca
 describe('QuestTemplateLocale integration tests', () => {
   const id = 1234;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        QuestTemplateLocaleComponent,
-        TranslateTestingModule,
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), QuestTemplateLocaleComponent, TranslateTestingModule],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        QuestHandlerService,
+        { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
+        { provide: Model3DViewerService, useValue: { generateModels: () => new Promise((resolve) => resolve({ destroy: () => {} })) } },
       ],
-      providers: [QuestHandlerService, { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG }],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     const originalRow = new QuestTemplateLocale();
@@ -78,11 +80,11 @@ describe('QuestTemplateLocale integration tests', () => {
 
     it('should correctly update the unsaved status', () => {
       const { page, handlerService } = setup(true);
-      expect(handlerService.isQuestTemplateLocaleUnsaved).toBe(false);
+      expect(handlerService.isQuestTemplateLocaleUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isQuestTemplateLocaleUnsaved).toBe(true);
+      expect(handlerService.isQuestTemplateLocaleUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isQuestTemplateLocaleUnsaved).toBe(false);
+      expect(handlerService.isQuestTemplateLocaleUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {

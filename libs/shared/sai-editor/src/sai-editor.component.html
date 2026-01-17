@@ -1,4 +1,4 @@
-<keira-sai-top-bar [handler]="getHandler()" />
+<keira-sai-top-bar [isNew]="getHandler().isNew" [selected]="getHandler().selected" [selectedName]="getHandler().getName() | async" />
 
 <div class="container-fluid">
   @if (editorService.loading) {
@@ -7,7 +7,16 @@
 
   @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
     <div class="content-block">
-      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)" />
+      <keira-query-output
+        [docUrl]="docUrl"
+        [isNew]="editorService.isNew"
+        [diffQuery]="editorService.diffQuery"
+        [fullQuery]="editorService.fullQuery"
+        [error]="editorService.error"
+        [entityTable]="editorService.entityTable"
+        [editorService]="editorService"
+        (executeQuery)="save($event)"
+      />
     </div>
     <div class="content-block">
       <form [formGroup]="editorService.form" class="edit-form mb-2">
@@ -505,7 +514,12 @@
       </div>
       <div class="row">
         <div class="col-12">
-          <keira-editor-buttons [editorService]="editorService" />
+          <keira-editor-buttons
+            [selectedRowId]="editorService.selectedRowId"
+            (deleteSelectedRow)="editorService.deleteSelectedRow()"
+            (addNewRow)="editorService.addNewRow()"
+            (duplicateRow)="editorService.addNewRow(true)"
+          />
           <button id="generate-comments-btn" class="btn btn-primary btn-sm float-end" (click)="editorService.generateComments(true)">
             Generate comments (all)
           </button>
@@ -534,20 +548,20 @@
                 <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
               </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column [minWidth]="50" [maxWidth]="60" name="id" prop="id"></ngx-datatable-column>
-            <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="event" prop="event_type"></ngx-datatable-column>
-            <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="action" prop="action_type"></ngx-datatable-column>
-            <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="target" prop="target_type"></ngx-datatable-column>
+            <ngx-datatable-column [minWidth]="50" [maxWidth]="60" name="id" prop="id" />
+            <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="event" prop="event_type" />
+            <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="action" prop="action_type" />
+            <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="target" prop="target_type" />
             @if (isTimedActionlists) {
-              <ngx-datatable-column [minWidth]="100" [maxWidth]="100" name="minTimer" prop="event_param1"></ngx-datatable-column>
-              <ngx-datatable-column [minWidth]="100" [maxWidth]="100" name="maxTimer" prop="event_param2"></ngx-datatable-column>
+              <ngx-datatable-column [minWidth]="100" [maxWidth]="100" name="minTimer" prop="event_param1" />
+              <ngx-datatable-column [minWidth]="100" [maxWidth]="100" name="maxTimer" prop="event_param2" />
             } @else {
-              <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="link" prop="link"></ngx-datatable-column>
+              <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="link" prop="link" />
             }
-            <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="phase" prop="event_phase_mask"></ngx-datatable-column>
-            <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="chance" prop="event_chance"></ngx-datatable-column>
-            <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="flags" prop="event_flags"></ngx-datatable-column>
-            <ngx-datatable-column name="comment" prop="comment"></ngx-datatable-column>
+            <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="phase" prop="event_phase_mask" />
+            <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="chance" prop="event_chance" />
+            <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="flags" prop="event_flags" />
+            <ngx-datatable-column name="comment" prop="comment" />
           </ngx-datatable>
         </div>
       </div>

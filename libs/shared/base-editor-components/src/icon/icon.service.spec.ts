@@ -1,4 +1,6 @@
 import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { of } from 'rxjs';
 import { IconService, TRADE_ENGINEERING_ICON_ID } from './icon.service';
@@ -10,7 +12,11 @@ describe('IconService', () => {
   const mockResult = 'some result';
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [{ provide: SqliteService, useValue: instance(mock(SqliteService)) }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
+      ],
     });
   });
 

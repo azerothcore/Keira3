@@ -1,8 +1,11 @@
-import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { ElectronService } from '@keira/shared/common-services';
 import { Connection, ConnectionOptions, QueryError } from 'mysql2';
+import { tickAsync } from 'ngx-page-object-model';
 import { Subscriber } from 'rxjs';
 import { instance, mock, reset } from 'ts-mockito';
-import { ElectronService } from '@keira/shared/common-services';
 import { MysqlService } from './mysql.service';
 import Spy = jasmine.Spy;
 
@@ -22,7 +25,12 @@ describe('MysqlService', () => {
 
   beforeEach(() =>
     TestBed.configureTestingModule({
-      providers: [MysqlService, { provide: ElectronService, useValue: instance(mock(ElectronService)) }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        MysqlService,
+        { provide: ElectronService, useValue: instance(mock(ElectronService)) },
+      ],
     }),
   );
 
@@ -43,7 +51,7 @@ describe('MysqlService', () => {
     expect(service.getConnectionState()).toBe('CONNECTED');
   });
 
-  it('connect(config) should properly work', waitForAsync(() => {
+  it('connect(config) should properly work', () => {
     (service as any).mysql = new MockMySql();
     const mockConnection = new MockConnection();
     const createConnectionSpy = spyOn((service as any).mysql, 'createConnection').and.returnValue(mockConnection);
@@ -59,10 +67,10 @@ describe('MysqlService', () => {
       // @ts-ignore
       expect(connectSpy).toHaveBeenCalledWith(service['connectCallback']);
     });
-  }));
+  });
 
   describe('dbQuery(queryString)', () => {
-    it('should properly work', waitForAsync(() => {
+    it('should properly work', () => {
       (service as any).mysql = new MockMySql();
       const mockConnection = new MockConnection();
       service['_connection'] = mockConnection as unknown as Connection;
@@ -76,9 +84,9 @@ describe('MysqlService', () => {
         // @ts-ignore
         expect(querySpy).toHaveBeenCalledWith(queryStr, [], service['queryCallback']);
       });
-    }));
+    });
 
-    it('should give error if _connection is not defined', waitForAsync(() => {
+    it('should give error if _connection is not defined', () => {
       (service as any).mysql = new MockMySql();
       service['_connection'] = undefined as any;
       spyOn(console, 'error');
@@ -90,9 +98,9 @@ describe('MysqlService', () => {
         expect(console.error).toHaveBeenCalledTimes(1);
         expect(console.error).toHaveBeenCalledWith(`_connection was not defined when trying to run query: ${queryStr}`);
       });
-    }));
+    });
 
-    it('should give error if reconnection is in progress', waitForAsync(() => {
+    it('should give error if reconnection is in progress', () => {
       (service as any).mysql = new MockMySql();
       service['_reconnecting'] = true;
       spyOn(console, 'error');
@@ -104,7 +112,7 @@ describe('MysqlService', () => {
         expect(console.error).toHaveBeenCalledTimes(1);
         expect(console.error).toHaveBeenCalledWith(`Reconnection in progress while trying to run query: ${queryStr}`);
       });
-    }));
+    });
   });
 
   describe('callbacks', () => {
@@ -202,10 +210,10 @@ describe('MysqlService', () => {
     });
   });
 
-  it('reconnect() should correctly work ', fakeAsync(() => {
+  it('reconnect() should correctly work ', async () => {
     service['_reconnecting'] = false;
     spyOn(service['_connectionLostSubject'], 'next');
-    spyOn(console, 'log');
+    spyOn(console, 'info');
     (service as any).mysql = new MockMySql();
     const mockConnection = new MockConnection();
     spyOn((service as any).mysql, 'createConnection').and.returnValue(mockConnection);
@@ -215,13 +223,12 @@ describe('MysqlService', () => {
     expect(service['_reconnecting']).toBe(true);
     expect(service['_connectionLostSubject'].next).toHaveBeenCalledTimes(1);
     expect(service['_connectionLostSubject'].next).toHaveBeenCalledWith(false);
-    expect(console.log).toHaveBeenCalledTimes(1);
-    expect(console.log).toHaveBeenCalledWith(`DB connection lost. Reconnecting in 500 ms...`);
+    expect(console.info).toHaveBeenCalledTimes(1);
+    expect(console.info).toHaveBeenCalledWith(`DB connection lost. Reconnecting in 500 ms...`);
 
-    tick(500);
-
+    await tickAsync(500);
     expect(service['_connection']).toEqual(mockConnection as unknown as Connection);
-  }));
+  });
 
   describe('reconnectCallback(err)', () => {
     it('should call reconnect() in case of error', () => {

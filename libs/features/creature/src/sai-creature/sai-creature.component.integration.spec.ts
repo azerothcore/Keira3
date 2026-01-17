@@ -1,11 +1,12 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
@@ -27,19 +28,18 @@ describe('SaiCreatureComponent integration tests', () => {
   originalRow1.id = 1;
   originalRow2.id = 2;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        SaiCreatureComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SaiCreatureComponent, RouterTestingModule, TranslateTestingModule],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
-      providers: [CreatureHandlerService, SaiCreatureHandlerService, { provide: SqliteService, useValue: instance(mock(SqliteService)) }],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean, hasTemplateQuery = false, st = sourceType) {
     const selected = { source_type: st, entryorguid: id };
@@ -106,11 +106,11 @@ describe('SaiCreatureComponent integration tests', () => {
     it('should correctly update the unsaved status', () => {
       const { page } = setup(true);
       const creatureHandlerService = TestBed.inject(CreatureHandlerService);
-      expect(creatureHandlerService.isCreatureSaiUnsaved).toBe(false);
+      expect(creatureHandlerService.isCreatureSaiUnsaved()).toBe(false);
       page.addNewRow();
-      expect(creatureHandlerService.isCreatureSaiUnsaved).toBe(true);
+      expect(creatureHandlerService.isCreatureSaiUnsaved()).toBe(true);
       page.deleteRow();
-      expect(creatureHandlerService.isCreatureSaiUnsaved).toBe(false);
+      expect(creatureHandlerService.isCreatureSaiUnsaved()).toBe(false);
     });
   });
 

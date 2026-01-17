@@ -1,11 +1,12 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { CreatureQuestitem } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
@@ -32,19 +33,18 @@ describe('CreatureQuestitem integration tests', () => {
   originalRow1.Idx = 1;
   originalRow2.Idx = 2;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        CreatureQuestitemComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureQuestitemComponent, RouterTestingModule, TranslateTestingModule],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
-      providers: [CreatureHandlerService, SaiCreatureHandlerService, { provide: SqliteService, useValue: instance(mock(SqliteService)) }],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(CreatureHandlerService);
@@ -77,11 +77,11 @@ describe('CreatureQuestitem integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
-      expect(handlerService.isCreatureQuestitemUnsaved).toBe(false);
+      expect(handlerService.isCreatureQuestitemUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isCreatureQuestitemUnsaved).toBe(true);
+      expect(handlerService.isCreatureQuestitemUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isCreatureQuestitemUnsaved).toBe(false);
+      expect(handlerService.isCreatureQuestitemUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {

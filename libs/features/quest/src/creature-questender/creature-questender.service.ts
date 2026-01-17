@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
 import {
   CREATURE_QUESTENDER_ID,
@@ -12,8 +12,14 @@ import { QuestHandlerService } from '../quest-handler.service';
   providedIn: 'root',
 })
 export class CreatureQuestenderService extends MultiRowEditorService<CreatureQuestender> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected override readonly handlerService: QuestHandlerService) {
-    super(CreatureQuestender, CREATURE_QUESTENDER_TABLE, CREATURE_QUESTENDER_ID, CREATURE_QUESTENDER_ID_2, handlerService);
+  protected override readonly handlerService = inject(QuestHandlerService);
+  protected override readonly _entityClass = CreatureQuestender;
+  protected override readonly _entityTable = CREATURE_QUESTENDER_TABLE;
+  protected override readonly _entityIdField = CREATURE_QUESTENDER_ID;
+  protected override readonly _entitySecondIdField = CREATURE_QUESTENDER_ID_2;
+
+  constructor() {
+    super();
+    this.init();
   }
 }

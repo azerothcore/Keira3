@@ -1,31 +1,33 @@
-import { Component, ViewChild } from '@angular/core';
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { Component, viewChild, provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FormControl } from '@angular/forms';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { BooleanOptionSelectorComponent } from './boolean-option-selector.component';
 
 @Component({
-  template: `<keira-boolean-option-selector [control]="mockFormControl" controlName="mockFormControl"></keira-boolean-option-selector>`,
+  template: `<keira-boolean-option-selector [control]="mockFormControl" controlName="mockFormControl" />`,
   imports: [BooleanOptionSelectorComponent],
 })
 class TestHostComponent {
-  @ViewChild(BooleanOptionSelectorComponent) child!: BooleanOptionSelectorComponent;
+  readonly child = viewChild.required(BooleanOptionSelectorComponent);
   mockFormControl = new FormControl();
 }
 
 describe('BooleanOptionSelectorComponent', () => {
   class BooleanOptionSelectorComponentPage extends PageObject<TestHostComponent> {}
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [BooleanOptionSelectorComponent, TestHostComponent, TranslateTestingModule],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
-  }));
+  });
 
   const setup = () => {
     const fixture = TestBed.createComponent(TestHostComponent);
     const host = fixture.componentInstance;
-    const component = host.child;
+    const component = host.child();
     const page = new BooleanOptionSelectorComponentPage(fixture);
 
     fixture.detectChanges();

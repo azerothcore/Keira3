@@ -1,14 +1,17 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { SwitchLanguageComponent } from './switch-language.component';
 
 describe('SwitchLanguageComponent', () => {
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ModalModule.forRoot(), TranslateTestingModule, SwitchLanguageComponent],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
-  }));
+  });
 
   function setup() {
     const fixture = TestBed.createComponent(SwitchLanguageComponent);

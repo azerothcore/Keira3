@@ -1,11 +1,12 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { CreatureTemplateAddon } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
@@ -37,19 +38,18 @@ describe('CreatureTemplateAddon integration tests', () => {
   originalEntity.mount = 0;
   originalEntity.path_id = 123;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        CreatureTemplateAddonComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureTemplateAddonComponent, RouterTestingModule, TranslateTestingModule],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
-      providers: [CreatureHandlerService, SaiCreatureHandlerService, { provide: SqliteService, useValue: instance(mock(SqliteService)) }],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(CreatureHandlerService);
@@ -78,11 +78,11 @@ describe('CreatureTemplateAddon integration tests', () => {
 
     it('should correctly update the unsaved status', () => {
       const field = 'path_id';
-      expect(handlerService.isCreatureTemplateAddonUnsaved).toBe(false);
+      expect(handlerService.isCreatureTemplateAddonUnsaved()).toBe(false);
       page.setInputValueById(field, 3);
-      expect(handlerService.isCreatureTemplateAddonUnsaved).toBe(true);
+      expect(handlerService.isCreatureTemplateAddonUnsaved()).toBe(true);
       page.setInputValueById(field, 0);
-      expect(handlerService.isCreatureTemplateAddonUnsaved).toBe(false);
+      expect(handlerService.isCreatureTemplateAddonUnsaved()).toBe(false);
     });
 
     it('changing a property and executing the query should correctly work', () => {
@@ -147,7 +147,7 @@ describe('CreatureTemplateAddon integration tests', () => {
       );
     });
 
-    xit('changing a value via SingleValueSelector should correctly work', waitForAsync(async () => {
+    xit('changing a value via SingleValueSelector should correctly work', async () => {
       const field = 'bytes1';
       page.clickElement(page.getSelectorBtn(field));
 
@@ -167,6 +167,6 @@ describe('CreatureTemplateAddon integration tests', () => {
           'INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `visibilityDistanceType`, `auras`) VALUES\n' +
           '(1234, 123, 0, 8, 2, 3, 0, NULL);',
       );
-    }));
+    });
   });
 });

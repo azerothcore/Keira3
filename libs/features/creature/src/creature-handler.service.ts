@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal, Signal } from '@angular/core';
 import {
   CREATURE_EQUIP_TEMPLATE_TABLE,
   CREATURE_FORMATIONS_TABLE,
@@ -15,7 +15,7 @@ import {
   CREATURE_TEMPLATE_TABLE,
   CREATURE_TEXT_TABLE,
   CreatureTemplate,
-  NPC_TRAINER_TABLE,
+  CREATURE_DEFAULT_TRAINER_TABLE,
   NPC_VENDOR_TABLE,
   PICKPOCKETING_LOOT_TEMPLATE_TABLE,
   SAI_TABLE,
@@ -31,82 +31,83 @@ export class CreatureHandlerService extends HandlerService<CreatureTemplate> {
   protected saiCreatureHandler = inject(SaiCreatureHandlerService);
   protected readonly mainEditorRoutePath = 'creature/creature-template';
 
-  get isCreatureTemplateUnsaved(): boolean {
-    return this.statusMap[CREATURE_TEMPLATE_TABLE];
+  get isCreatureTemplateUnsaved(): Signal<boolean> {
+    return this.statusMap[CREATURE_TEMPLATE_TABLE].asReadonly();
   }
-  get isCreatureTemplateModelUnsaved(): boolean {
-    return this.statusMap[CREATURE_TEMPLATE_MODEL_TABLE];
+  get isCreatureTemplateModelUnsaved(): Signal<boolean> {
+    return this.statusMap[CREATURE_TEMPLATE_MODEL_TABLE].asReadonly();
   }
-  get isCreatureTemplateAddonUnsaved(): boolean {
-    return this.statusMap[CREATURE_TEMPLATE_ADDON_TABLE];
+  get isCreatureTemplateAddonUnsaved(): Signal<boolean> {
+    return this.statusMap[CREATURE_TEMPLATE_ADDON_TABLE].asReadonly();
   }
-  get isCreatureTemplateResistanceUnsaved(): boolean {
-    return this.statusMap[CREATURE_TEMPLATE_RESISTANCE_TABLE];
+  get isCreatureTemplateResistanceUnsaved(): Signal<boolean> {
+    return this.statusMap[CREATURE_TEMPLATE_RESISTANCE_TABLE].asReadonly();
   }
-  get isCreatureTemplateSpellUnsaved(): boolean {
-    return this.statusMap[CREATURE_TEMPLATE_SPELL_TABLE];
+  get isCreatureTemplateSpellUnsaved(): Signal<boolean> {
+    return this.statusMap[CREATURE_TEMPLATE_SPELL_TABLE].asReadonly();
   }
-  get isCreatureTemplateMovementUnsaved(): boolean {
-    return this.statusMap[CREATURE_TEMPLATE_MOVEMENT_TABLE];
+  get isCreatureTemplateMovementUnsaved(): Signal<boolean> {
+    return this.statusMap[CREATURE_TEMPLATE_MOVEMENT_TABLE].asReadonly();
   }
-  get isCreatureOnkillReputationUnsaved(): boolean {
-    return this.statusMap[CREATURE_ONKLL_REPUTATION_TABLE];
+  get isCreatureOnkillReputationUnsaved(): Signal<boolean> {
+    return this.statusMap[CREATURE_ONKLL_REPUTATION_TABLE].asReadonly();
   }
-  get isCreatureEquipTemplateUnsaved(): boolean {
-    return this.statusMap[CREATURE_EQUIP_TEMPLATE_TABLE];
+  get isCreatureEquipTemplateUnsaved(): Signal<boolean> {
+    return this.statusMap[CREATURE_EQUIP_TEMPLATE_TABLE].asReadonly();
   }
-  get isNpcVendorUnsaved(): boolean {
-    return this.statusMap[NPC_VENDOR_TABLE];
+  get isNpcVendorUnsaved(): Signal<boolean> {
+    return this.statusMap[NPC_VENDOR_TABLE].asReadonly();
   }
-  get isNpcTrainerUnsaved(): boolean {
-    return this.statusMap[NPC_TRAINER_TABLE];
+  get isCreatureDefaultTrainerUnsaved(): Signal<boolean> {
+    return this.statusMap[CREATURE_DEFAULT_TRAINER_TABLE].asReadonly();
   }
-  get isCreatureQuestitemUnsaved(): boolean {
-    return this.statusMap[CREATURE_QUESTITEM_TABLE];
+  get isCreatureQuestitemUnsaved(): Signal<boolean> {
+    return this.statusMap[CREATURE_QUESTITEM_TABLE].asReadonly();
   }
-  get isCreatureLootTemplateUnsaved(): boolean {
-    return this.statusMap[CREATURE_LOOT_TEMPLATE_TABLE];
+  get isCreatureLootTemplateUnsaved(): Signal<boolean> {
+    return this.statusMap[CREATURE_LOOT_TEMPLATE_TABLE].asReadonly();
   }
-  get isPickpocketingLootTemplateUnsaved(): boolean {
-    return this.statusMap[PICKPOCKETING_LOOT_TEMPLATE_TABLE];
+  get isPickpocketingLootTemplateUnsaved(): Signal<boolean> {
+    return this.statusMap[PICKPOCKETING_LOOT_TEMPLATE_TABLE].asReadonly();
   }
-  get isSkinningLootTemplateUnsaved(): boolean {
-    return this.statusMap[SKINNING_LOOT_TEMPLATE_TABLE];
+  get isSkinningLootTemplateUnsaved(): Signal<boolean> {
+    return this.statusMap[SKINNING_LOOT_TEMPLATE_TABLE].asReadonly();
   }
-  get isCreatureSpawnUnsaved(): boolean {
-    return this.statusMap[CREATURE_SPAWN_TABLE];
+  get isCreatureSpawnUnsaved(): Signal<boolean> {
+    return this.statusMap[CREATURE_SPAWN_TABLE].asReadonly();
   }
-  get isCreatureSpawnAddonUnsaved(): boolean {
-    return this.statusMap[CREATURE_SPAWN_ADDON_TABLE];
+  get isCreatureSpawnAddonUnsaved(): Signal<boolean> {
+    return this.statusMap[CREATURE_SPAWN_ADDON_TABLE].asReadonly();
   }
-  get isCreatureSaiUnsaved(): boolean {
-    return this.saiCreatureHandler.statusMap[SAI_TABLE];
+  get isCreatureSaiUnsaved(): Signal<boolean> {
+    return this.saiCreatureHandler.statusMap[SAI_TABLE].asReadonly();
   }
-  get isCreatureTextUnsaved(): boolean {
-    return this.statusMap[CREATURE_TEXT_TABLE];
+  get isCreatureTextUnsaved(): Signal<boolean> {
+    return this.statusMap[CREATURE_TEXT_TABLE].asReadonly();
   }
-  get isCreatureFormationUnsaved(): boolean {
-    return this.statusMap[CREATURE_FORMATIONS_TABLE];
+  get isCreatureFormationUnsaved(): Signal<boolean> {
+    return this.statusMap[CREATURE_FORMATIONS_TABLE].asReadonly();
   }
 
   protected _statusMap = {
-    [CREATURE_TEMPLATE_TABLE]: false,
-    [CREATURE_TEMPLATE_ADDON_TABLE]: false,
-    [CREATURE_TEMPLATE_RESISTANCE_TABLE]: false,
-    [CREATURE_TEMPLATE_SPELL_TABLE]: false,
-    [CREATURE_TEMPLATE_MOVEMENT_TABLE]: false,
-    [CREATURE_ONKLL_REPUTATION_TABLE]: false,
-    [CREATURE_EQUIP_TEMPLATE_TABLE]: false,
-    [NPC_VENDOR_TABLE]: false,
-    [NPC_TRAINER_TABLE]: false,
-    [CREATURE_QUESTITEM_TABLE]: false,
-    [CREATURE_LOOT_TEMPLATE_TABLE]: false,
-    [PICKPOCKETING_LOOT_TEMPLATE_TABLE]: false,
-    [SKINNING_LOOT_TEMPLATE_TABLE]: false,
-    [CREATURE_SPAWN_TABLE]: false,
-    [CREATURE_SPAWN_ADDON_TABLE]: false,
-    [CREATURE_TEXT_TABLE]: false,
-    [CREATURE_FORMATIONS_TABLE]: false,
+    [CREATURE_TEMPLATE_TABLE]: signal(false),
+    [CREATURE_TEMPLATE_MODEL_TABLE]: signal(false),
+    [CREATURE_TEMPLATE_ADDON_TABLE]: signal(false),
+    [CREATURE_TEMPLATE_RESISTANCE_TABLE]: signal(false),
+    [CREATURE_TEMPLATE_SPELL_TABLE]: signal(false),
+    [CREATURE_TEMPLATE_MOVEMENT_TABLE]: signal(false),
+    [CREATURE_ONKLL_REPUTATION_TABLE]: signal(false),
+    [CREATURE_EQUIP_TEMPLATE_TABLE]: signal(false),
+    [NPC_VENDOR_TABLE]: signal(false),
+    [CREATURE_DEFAULT_TRAINER_TABLE]: signal(false),
+    [CREATURE_QUESTITEM_TABLE]: signal(false),
+    [CREATURE_LOOT_TEMPLATE_TABLE]: signal(false),
+    [PICKPOCKETING_LOOT_TEMPLATE_TABLE]: signal(false),
+    [SKINNING_LOOT_TEMPLATE_TABLE]: signal(false),
+    [CREATURE_SPAWN_TABLE]: signal(false),
+    [CREATURE_SPAWN_ADDON_TABLE]: signal(false),
+    [CREATURE_TEXT_TABLE]: signal(false),
+    [CREATURE_FORMATIONS_TABLE]: signal(false),
   };
 
   override select(isNew: boolean, id: string | number | Partial<CreatureTemplate>, name?: string) {

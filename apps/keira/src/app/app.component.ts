@@ -16,9 +16,7 @@ import { ElectronService } from '@keira/shared/common-services';
 import { SubscriptionHandler } from '@keira/shared/utils';
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
-  // TODO: currently OnPush would break the auto reconnect of the login page
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],

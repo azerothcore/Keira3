@@ -1,10 +1,11 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { SelectPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { SelectGameTeleComponent } from './select-game-tele.component';
 import { instance, mock } from 'ts-mockito';
@@ -41,11 +42,13 @@ describe('SelectConditions integration tests', () => {
    * - Declares the component in the `declarations` array.
    * - Moves `SelectGameTeleComponent` from `imports` to `declarations`.
    */
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, ToastrModule.forRoot(), ModalModule.forRoot(), TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), TranslateTestingModule],
       declarations: [],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         GameTeleHandlerService,
         {
           provide: SqliteService,
@@ -53,16 +56,16 @@ describe('SelectConditions integration tests', () => {
         },
       ],
     }).compileComponents();
-  }));
+  });
 
-  it('should correctly initialise', waitForAsync(async () => {
+  it('should correctly initialise', async () => {
     const { page, component, querySpy } = setup();
     await page.fixture.whenStable();
     expect(page.createInput.value).toEqual(`${component.customStartingId}`);
     page.expectNewEntityFree();
     expect(querySpy).toHaveBeenCalledWith('SELECT MAX(id) AS max FROM game_tele;');
     expect(page.queryWrapper.innerText).toContain('SELECT * FROM `game_tele` LIMIT 50');
-  }));
+  });
 
   for (const { id, name, limit, expectedQuery } of [
     {

@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { NgModule, provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
@@ -24,21 +25,22 @@ import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-component
     TranslateTestingModule,
     ItemSelectorModalComponent,
   ],
-  providers: [{ provide: MysqlService, useValue: instance(mock(MysqlService)) }],
+  providers: [provideZonelessChangeDetection(), provideNoopAnimations(), { provide: MysqlService, useValue: instance(mock(MysqlService)) }],
 })
 class TestModule {}
 
 describe('BaseSelectorBtnComponent', () => {
   const value = 'mock-value';
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ModalModule.forRoot(), TestModule, ItemSelectorBtnComponent],
     }).compileComponents();
-  }));
+  });
 
   const setup = () => {
     const fixture = TestBed.createComponent(ItemSelectorBtnComponent);
+    fixture.componentRef.setInput('disabled', false);
     const component = fixture.componentInstance;
     component.control = new UntypedFormControl();
     fixture.detectChanges();

@@ -66,6 +66,7 @@ import { SaiTopBarComponent } from './sai-top-bar/sai-top-bar.component';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
 import { EditorButtonsComponent, QueryOutputComponent } from '@keira/shared/base-editor-components';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -83,6 +84,7 @@ import { EditorButtonsComponent, QueryOutputComponent } from '@keira/shared/base
     EditorButtonsComponent,
     NgxDatatableModule,
     TimedActionlistComponent,
+    AsyncPipe,
   ],
 })
 export class SaiEditorComponent extends MultiRowEditorComponent<SmartScripts> implements OnInit {

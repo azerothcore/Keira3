@@ -26,7 +26,7 @@ import {
 } from '@keira/shared/acore-world-model';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { IconComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
-import { Model3DViewerComponent, VIEWER_TYPE } from '@keira/shared/model-3d-viewer';
+import { InventoryType, Model3DViewerComponent, VIEWER_TYPE } from '@keira/shared/model-3d-viewer';
 import {
   AreaSelectorBtnComponent,
   FactionSelectorBtnComponent,
@@ -41,6 +41,7 @@ import {
   SkillSelectorBtnComponent,
   SpellSelectorBtnComponent,
 } from '@keira/shared/selectors';
+import { compareObjFn } from '@keira/shared/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
@@ -50,8 +51,7 @@ import { ItemPreviewService } from './item-preview.service';
 import { ItemTemplateService } from './item-template.service';
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-item-template',
   templateUrl: './item-template.component.html',
   styleUrls: ['./item-template.component.scss'],
@@ -105,9 +105,11 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
   readonly STAT_TYPE = STAT_TYPE;
   readonly PVP_RANK = PVP_RANK;
   readonly ITEM_VIEWER_TYPE = VIEWER_TYPE.ITEM;
+  readonly NPC_VIEWER_TYPE = VIEWER_TYPE.NPC;
   readonly SPELL_TRIGGERS = SPELL_TRIGGERS;
 
-  showItemPreview = true;
+  protected showItemPreview = true;
+  protected npcDisplayId: number | undefined;
 
   public itemPreview: SafeHtml = this.sanitizer.bypassSecurityTrustHtml('loading...');
 
@@ -115,6 +117,22 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     this.itemPreview = this.sanitizer.bypassSecurityTrustHtml(
       await this.itemPreviewService.calculatePreview(this.editorService.form.getRawValue()),
     );
+
+    const _class = this.editorService.form.controls.class.value;
+    const subclass = this.editorService.form.controls.subclass.value;
+    const inventoryType = this.editorService.form.controls.InventoryType.value;
+    const spellid_2 = this.editorService.form.controls.spellid_2.value;
+    const spellid_1 = this.editorService.form.controls.spellid_1.value;
+
+    const isNpc =
+      _class === 15 &&
+      (subclass === 5 || subclass === 2 || subclass === 0) &&
+      (spellid_2 !== 0 || spellid_1 !== 0) &&
+      inventoryType === InventoryType.NON_EQUIP;
+    if (isNpc) {
+      this.npcDisplayId = await this.itemPreviewService.getNpcDisplayIdBySpell(spellid_2 !== 0 ? spellid_2 : spellid_1);
+    }
+
     this.changeDetectorRef.markForCheck();
   }
 
@@ -122,27 +140,12 @@ export class ItemTemplateComponent extends SingleRowEditorComponent<ItemTemplate
     this.subscriptions.push(
       this.editorService.form.valueChanges
         .pipe(
-          debounceTime(600),
+          debounceTime(300),
           /* TODO */
-          distinctUntilChanged(
-            /* istanbul ignore next */
-            (a, b) => JSON.stringify(a) === JSON.stringify(b),
-          ),
+          distinctUntilChanged(compareObjFn),
         )
         .subscribe(this.loadItemPreview.bind(this)),
     );
-  }
-
-  protected calculateCount(): void {
-    const countValue = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].reduce((count, i) => {
-      if (Number(this.editorService.form.controls[`stat_value${i}`].value) != 0) {
-        return count + 1;
-      }
-
-      return count;
-    }, 0);
-
-    this.editorService.form.controls.StatsCount.setValue(countValue);
   }
 
   override ngOnInit(): void {

@@ -1,5 +1,6 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, viewChild, provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FormGroup } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
@@ -22,7 +23,7 @@ describe('SpellDbcTextsComponent', () => {
     imports: [RouterTestingModule, TranslateTestingModule, SpellDbcTextsComponent],
   })
   class TestHostComponent {
-    @ViewChild(SpellDbcTextsComponent) child!: SpellDbcTextsComponent;
+    readonly child = viewChild.required(SpellDbcTextsComponent);
     form!: FormGroup<ModelForm<SpellDbc>>;
   }
 
@@ -36,7 +37,7 @@ describe('SpellDbcTextsComponent', () => {
         TestHostComponent,
         SpellDbcTextsComponent,
       ],
-      providers: [SpellHandlerService],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), SpellHandlerService],
     }).compileComponents();
   });
 
@@ -48,7 +49,7 @@ describe('SpellDbcTextsComponent', () => {
     host.form = form;
 
     fixture.detectChanges();
-    const component = host.child;
+    const component = host.child();
 
     return { fixture, component, page, form };
   };

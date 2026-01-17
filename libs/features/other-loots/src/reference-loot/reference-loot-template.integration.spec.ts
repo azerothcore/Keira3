@@ -1,11 +1,12 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ReferenceLootTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { ReferenceLootHandlerService } from './reference-loot-handler.service';
 import { ReferenceLootTemplateComponent } from './reference-loot-template.component';
@@ -24,19 +25,17 @@ describe('ReferenceLootTemplate integration tests', () => {
   originalRow1.Item = 1;
   originalRow2.Item = 2;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        ReferenceLootTemplateComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), ReferenceLootTemplateComponent, RouterTestingModule, TranslateTestingModule],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        ReferenceLootHandlerService,
+        { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
       ],
-      providers: [ReferenceLootHandlerService, { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG }],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     const handlerService = TestBed.inject(ReferenceLootHandlerService);
@@ -79,11 +78,11 @@ describe('ReferenceLootTemplate integration tests', () => {
 
     it('should correctly update the unsaved status', () => {
       const { page, handlerService } = setup(true);
-      expect(handlerService.isUnsaved).toBe(false);
+      expect(handlerService.isUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isUnsaved).toBe(true);
+      expect(handlerService.isUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isUnsaved).toBe(false);
+      expect(handlerService.isUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {

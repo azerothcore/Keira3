@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
 import {
   GOSSIP_MENU_OPTION_ID,
@@ -12,8 +12,14 @@ import { GossipHandlerService } from '../gossip-handler.service';
   providedIn: 'root',
 })
 export class GossipMenuOptionService extends MultiRowEditorService<GossipMenuOption> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected override readonly handlerService: GossipHandlerService) {
-    super(GossipMenuOption, GOSSIP_MENU_OPTION_TABLE, GOSSIP_MENU_OPTION_ID, GOSSIP_MENU_OPTION_ID_2, handlerService);
+  protected override readonly handlerService = inject(GossipHandlerService);
+  protected override readonly _entityClass = GossipMenuOption;
+  protected override readonly _entityTable = GOSSIP_MENU_OPTION_TABLE;
+  protected override readonly _entityIdField = GOSSIP_MENU_OPTION_ID;
+  protected override readonly _entitySecondIdField = GOSSIP_MENU_OPTION_ID_2;
+
+  constructor() {
+    super();
+    this.init();
   }
 }

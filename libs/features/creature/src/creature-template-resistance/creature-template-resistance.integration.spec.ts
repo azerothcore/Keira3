@@ -1,9 +1,13 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { CreatureTemplateResistance } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
+import { GenericOptionSelectorComponent } from '@keira/shared/selectors';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { NgxSelectModule } from 'ngx-select-ex';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
@@ -15,18 +19,25 @@ describe('CreatureTemplateResistance integration tests', () => {
 
   const id = 1234;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        BrowserAnimationsModule,
         ToastrModule.forRoot(),
         ModalModule.forRoot(),
+        NgxSelectModule,
         CreatureTemplateResistanceComponent,
         TranslateTestingModule,
+        GenericOptionSelectorComponent,
+        ReactiveFormsModule,
+        FormsModule,
       ],
-      providers: [{ provide: SqliteService, useValue: instance(mock(SqliteService)) }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
+      ],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     const originalRow0 = new CreatureTemplateResistance();
@@ -61,10 +72,10 @@ describe('CreatureTemplateResistance integration tests', () => {
       const { page } = setup(true);
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
+      page.expectIsNgxSelectDisabled('School');
       expect(page.formError.hidden).toBe(true);
       expect(page.addNewRowBtn.disabled).toBe(false);
       expect(page.deleteSelectedRowBtn.disabled).toBe(true);
-      expect(page.getDebugElementByCss<HTMLSelectElement>('#School select').nativeElement.disabled).toBe(true);
       expect(page.getInputById('Resistance').disabled).toBe(true);
       expect(page.getEditorTableRowsCount()).toBe(0);
       page.removeNativeElement();
@@ -72,11 +83,11 @@ describe('CreatureTemplateResistance integration tests', () => {
 
     it('should correctly update the unsaved status', () => {
       const { page, handlerService } = setup(true);
-      expect(handlerService.isCreatureTemplateResistanceUnsaved).toBe(false);
+      expect(handlerService.isCreatureTemplateResistanceUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isCreatureTemplateResistanceUnsaved).toBe(true);
+      expect(handlerService.isCreatureTemplateResistanceUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isCreatureTemplateResistanceUnsaved).toBe(false);
+      expect(handlerService.isCreatureTemplateResistanceUnsaved()).toBe(false);
       page.removeNativeElement();
     });
 
@@ -104,7 +115,7 @@ describe('CreatureTemplateResistance integration tests', () => {
       page.removeNativeElement();
     });
 
-    it('adding a row and changing its values should correctly update the queries', () => {
+    it('adding a row and changing its values should correctly update the queries', async () => {
       const { page } = setup(true);
       page.addNewRow();
       page.expectDiffQueryToContain(
@@ -118,8 +129,7 @@ describe('CreatureTemplateResistance integration tests', () => {
           '(1234, 1, 0, 0);',
       );
 
-      const select = page.getDebugElementByCss<HTMLSelectElement>('#School select').nativeElement;
-      page.setInputValue(select, '1: 2');
+      await page.setNgxSelectValueByIndex('School', 1);
 
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_template_resistance` WHERE (`CreatureID` = 1234) AND (`School` IN (2));\n' +
@@ -134,12 +144,11 @@ describe('CreatureTemplateResistance integration tests', () => {
       page.removeNativeElement();
     });
 
-    it('adding a row changing its values and duplicate it should correctly update the queries', () => {
+    it('adding a row changing its values and duplicate it should correctly update the queries', async () => {
       const { page } = setup(true);
       page.addNewRow();
 
-      const select = page.getDebugElementByCss<HTMLSelectElement>('#School select').nativeElement;
-      page.setInputValue(select, '1: 2');
+      await page.setNgxSelectValueByIndex('School', 1);
 
       page.duplicateSelectedRow();
 
@@ -225,14 +234,13 @@ describe('CreatureTemplateResistance integration tests', () => {
       page.removeNativeElement();
     });
 
-    it('combining add, edit and delete should correctly work', () => {
+    it('combining add, edit and delete should correctly work', async () => {
       const { page } = setup(false);
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(4);
 
       page.clickRowOfDatatable(1);
-      const select = page.getDebugElementByCss<HTMLSelectElement>('#School select').nativeElement;
-      page.setInputValue(select, '4: 5');
+      await page.setNgxSelectValueByIndex('School', 4);
 
       expect(page.getEditorTableRowsCount()).toBe(4);
 
@@ -255,11 +263,11 @@ describe('CreatureTemplateResistance integration tests', () => {
       page.removeNativeElement();
     });
 
-    it('using the same row id for multiple rows should correctly show an error', () => {
+    it('using the same row id for multiple rows should correctly show an error', async () => {
       const { page } = setup(false);
       page.clickRowOfDatatable(2);
-      const select = page.getDebugElementByCss<HTMLSelectElement>('#School select').nativeElement;
-      page.setInputValue(select, '1: 2');
+
+      await page.setNgxSelectValueByIndex('School', 0);
 
       page.expectUniqueError();
       page.removeNativeElement();

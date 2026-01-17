@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
 import { Skill, SKILL_SEARCH_FIELDS, SKILL_TABLE } from '@keira/shared/acore-world-model';
 import { SearchService } from '@keira/shared/base-abstract-classes';
@@ -8,8 +8,11 @@ import { SqliteQueryService } from '@keira/shared/db-layer';
   providedIn: 'root',
 })
 export class SkillSearchService extends SearchService<Skill> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected override queryService: SqliteQueryService) {
-    super(queryService, SKILL_TABLE, SKILL_SEARCH_FIELDS);
+  protected override queryService = inject(SqliteQueryService);
+  protected override readonly entityTable = SKILL_TABLE;
+  protected override readonly fieldList = SKILL_SEARCH_FIELDS;
+  constructor() {
+    super();
+    this.init();
   }
 }

@@ -23,6 +23,7 @@ import {
   AcoreStringHandlerService,
 } from '@keira/features/texts';
 import { GameTeleHandlerService } from '@keira/features/game-tele';
+import { TrainerHandlerService } from '@keira/features/trainer';
 import { LocationService } from '@keira/shared/common-services';
 import { MysqlService } from '@keira/shared/db-layer';
 import { SaiHandlerService } from '@keira/shared/sai-editor';
@@ -47,12 +48,11 @@ interface MenuStats {
   gossip: ToggleType;
   spell: ToggleType;
   gameTele: ToggleType;
+  trainer: ToggleType;
 }
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
-  // TODO: make the unsaved icons feature work with OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],
@@ -86,6 +86,7 @@ export class SidebarComponent {
     gossip: 'up',
     spell: 'up',
     gameTele: 'up',
+    trainer: 'up',
   };
   private readonly IMAGES_COUNT = 7;
   private readonly RANDOM_IMAGE = Math.floor(Math.random() * this.IMAGES_COUNT) + 1;
@@ -110,6 +111,7 @@ export class SidebarComponent {
   protected readonly npcTextHandlerService = inject(NpcTextHandlerService);
   protected readonly acoreStringHandlerService = inject(AcoreStringHandlerService);
   protected readonly gameTeleHandlerService = inject(GameTeleHandlerService);
+  protected readonly trainerHandlerService = inject(TrainerHandlerService);
   private readonly locationService = inject(LocationService);
 
   getSideBarState(): boolean {
@@ -142,9 +144,10 @@ export class SidebarComponent {
     this.menuStates.otherLoot = 'up';
     this.menuStates.smartAi = 'up';
     this.menuStates.conditions = 'up';
-    this.menuStates.texts = 'up';
     this.menuStates.gossip = 'up';
     this.menuStates.spell = 'up';
+    this.menuStates.gameTele = 'up';
+    this.menuStates.trainer = 'up';
     this.menuStates.gameTele = 'up';
   }
 

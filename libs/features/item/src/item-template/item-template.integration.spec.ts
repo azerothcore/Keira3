@@ -1,16 +1,21 @@
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ITEM_SUBCLASS, ItemTemplate, Lock } from '@keira/shared/acore-world-model';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
+import { Model3DViewerService } from '@keira/shared/model-3d-viewer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { tickAsync } from 'ngx-page-object-model';
 import { ToastrModule } from 'ngx-toastr';
 import { lastValueFrom, of } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
 import { ItemHandlerService } from '../item-handler.service';
+import { ItemPreviewService } from './item-preview.service';
 import { ItemTemplateComponent } from './item-template.component';
 
 class ItemTemplatePage extends EditorPageObject<ItemTemplateComponent> {
@@ -27,7 +32,7 @@ describe('ItemTemplate integration tests', () => {
     '`Flags`, `FlagsExtra`, `BuyCount`, `BuyPrice`, `SellPrice`, `InventoryType`, `AllowableClass`, `AllowableRace`, ' +
     '`ItemLevel`, `RequiredLevel`, `RequiredSkill`, `RequiredSkillRank`, `requiredspell`, `requiredhonorrank`, ' +
     '`RequiredCityRank`, `RequiredReputationFaction`, `RequiredReputationRank`, `maxcount`, `stackable`, `ContainerSlots`, ' +
-    '`StatsCount`, `stat_type1`, `stat_value1`, `stat_type2`, `stat_value2`, `stat_type3`, `stat_value3`, ' +
+    '`stat_type1`, `stat_value1`, `stat_type2`, `stat_value2`, `stat_type3`, `stat_value3`, ' +
     '`stat_type4`, `stat_value4`, `stat_type5`, `stat_value5`, `stat_type6`, `stat_value6`, `stat_type7`, `stat_value7`, ' +
     '`stat_type8`, `stat_value8`, `stat_type9`, `stat_value9`, `stat_type10`, `stat_value10`, `ScalingStatDistribution`, ' +
     '`ScalingStatValue`, `dmg_min1`, `dmg_max1`, `dmg_type1`, `dmg_min2`, `dmg_max2`, `dmg_type2`, `armor`, `holy_res`, ' +
@@ -43,7 +48,7 @@ describe('ItemTemplate integration tests', () => {
     '`socketContent_2`, `socketColor_3`, `socketContent_3`, `socketBonus`, `GemProperties`, `RequiredDisenchantSkill`, ' +
     '`ArmorDamageModifier`, `duration`, `ItemLimitCategory`, `HolidayId`, `ScriptName`, `DisenchantID`, `FoodType`, ' +
     '`minMoneyLoot`, `maxMoneyLoot`, `flagsCustom`, `VerifiedBuild`) VALUES\n' +
-    "(1234, 0, 0, -1, '', 0, 0, 0, 0, 1, 0, 0, 0, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, " +
+    "(1234, 0, 0, -1, '', 0, 0, 0, 0, 1, 0, 0, 0, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, " +
     '0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1000, 0, 0, 0, 0, 0, 0, -1, 0, -1, 0, 0, 0, 0, -1, ' +
     "0, -1, 0, 0, 0, 0, -1, 0, -1, 0, 0, 0, 0, -1, 0, -1, 0, 0, 0, 0, -1, 0, -1, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, " +
     "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, '', 0, 0, 0, 0, 0, 0);\n";
@@ -51,10 +56,12 @@ describe('ItemTemplate integration tests', () => {
   const originalEntity = new ItemTemplate();
   originalEntity.entry = id;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), ItemTemplateComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
         ItemHandlerService,
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
@@ -62,7 +69,7 @@ describe('ItemTemplate integration tests', () => {
         provideHttpClientTesting(),
       ],
     }).compileComponents();
-  }));
+  });
 
   const mockItemNameById = 'mockItemNameById';
   const mockGetSpellNameById = 'mockGetSpellNameById';
@@ -97,15 +104,18 @@ describe('ItemTemplate integration tests', () => {
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
+    const itemPreviewService = TestBed.inject(ItemPreviewService);
+    const model3DViewerService = TestBed.inject(Model3DViewerService);
     const queryService = TestBed.inject(MysqlQueryService);
     const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
 
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
+    spyOn(model3DViewerService, 'generateModels').and.returnValue(new Promise((resolve) => resolve({ destroy: () => {} })));
 
     const fixture = TestBed.createComponent(ItemTemplateComponent);
     const component = fixture.componentInstance;
     const page = new ItemTemplatePage(fixture);
-    fixture.autoDetectChanges(true);
+
     fixture.detectChanges();
 
     const mysqlQueryService = TestBed.inject(MysqlQueryService);
@@ -116,6 +126,7 @@ describe('ItemTemplate integration tests', () => {
     spyOn(sqliteQueryService, 'getSpellNameById').and.callFake((i) => lastValueFrom(of(mockGetSpellNameById + i)));
     spyOn(sqliteQueryService, 'getSpellDescriptionById').and.callFake((i) => lastValueFrom(of(mockGetSpellDescriptionById + i)));
     spyOn(sqliteQueryService, 'getFactionNameById').and.callFake((i) => lastValueFrom(of(mockGetFactionNameById + i)));
+    spyOn(sqliteQueryService, 'getFactionNameByNameId').and.callFake((i) => lastValueFrom(of(mockGetFactionNameById + i)));
     spyOn(sqliteQueryService, 'getMapNameById').and.callFake((i) => lastValueFrom(of(mockGetMapNameById + i)));
     spyOn(sqliteQueryService, 'getAreaNameById').and.callFake((i) => lastValueFrom(of(mockGetAreaNameById + i)));
     spyOn(sqliteQueryService, 'getEventNameByHolidayId').and.callFake((i) => lastValueFrom(of(mockGetEventNameByHolidayId + i)));
@@ -125,30 +136,34 @@ describe('ItemTemplate integration tests', () => {
     spyOn(sqliteQueryService, 'getIconByItemDisplayId').and.callFake(() => of('inv_axe_60'));
     spyOn(sqliteQueryService, 'queryValue').and.callFake(() => of('inv_axe_60' as any));
     spyOn(sqliteQueryService, 'query').and.callFake(() => of([{ name: 'test' }] as any));
+    spyOn(itemPreviewService, 'getNpcDisplayIdBySpell').and.callFake(() => Promise.resolve(123));
 
-    return { handlerService, queryService, querySpy, fixture, component, page, mysqlQueryService, sqliteQueryService };
+    return { handlerService, queryService, querySpy, fixture, component, page, mysqlQueryService, sqliteQueryService, itemPreviewService };
   }
 
   describe('Creating new', () => {
-    it('should correctly initialise', () => {
+    it('should correctly initialise', async () => {
       const { page } = setup(true);
+      await tickAsync();
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
-    it('should correctly update the unsaved status', () => {
+    it('should correctly update the unsaved status', async () => {
       const { page, handlerService } = setup(true);
+      await tickAsync();
       const field = 'Quality';
-      expect(handlerService.isItemTemplateUnsaved).toBe(false);
+      expect(handlerService.isItemTemplateUnsaved()).toBe(false);
       page.setInputValueById(field, 3);
-      expect(handlerService.isItemTemplateUnsaved).toBe(true);
+      expect(handlerService.isItemTemplateUnsaved()).toBe(true);
       page.setInputValueById(field, 0);
-      expect(handlerService.isItemTemplateUnsaved).toBe(false);
+      expect(handlerService.isItemTemplateUnsaved()).toBe(false);
     });
 
-    it('changing a property and executing the query should correctly work', () => {
+    it('changing a property and executing the query should correctly work', async () => {
       const { page, querySpy } = setup(true);
+      await tickAsync();
       querySpy.calls.reset();
 
       page.setInputValueById('name', 'Shin');
@@ -163,42 +178,44 @@ describe('ItemTemplate integration tests', () => {
   });
 
   describe('Editing existing', () => {
-    it('should correctly initialise', () => {
+    it('should correctly initialise', async () => {
       const { page } = setup(false);
+      await tickAsync();
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
-    it('changing all properties and executing the query should correctly work', () => {
+    it('changing all properties and executing the query should correctly work', async () => {
       const { page, querySpy } = setup(false);
+      await tickAsync();
       const expectedQuery =
         'UPDATE `item_template` SET ' +
         "`subclass` = 1, `SoundOverrideSubclass` = 2, `name` = '3', `displayid` = 4, `Quality` = 5, `Flags` = 6, `FlagsExtra` = 7, " +
         '`BuyCount` = 8, `BuyPrice` = 9, `SellPrice` = 10, `InventoryType` = 11, `AllowableClass` = 12, `AllowableRace` = 13, ' +
         '`ItemLevel` = 14, `RequiredLevel` = 15, `RequiredSkill` = 16, `RequiredSkillRank` = 17, `requiredspell` = 18, ' +
         '`requiredhonorrank` = 19, `RequiredCityRank` = 20, `RequiredReputationFaction` = 21, `RequiredReputationRank` = 22, ' +
-        '`maxcount` = 23, `stackable` = 24, `ContainerSlots` = 25, `StatsCount` = 10, `stat_type1` = 27, `stat_value1` = 28, ' +
-        '`stat_type2` = 29, `stat_value2` = 30, `stat_type3` = 31, `stat_value3` = 32, `stat_type4` = 33, `stat_value4` = 34, ' +
-        '`stat_type5` = 35, `stat_value5` = 36, `stat_type6` = 37, `stat_value6` = 38, `stat_type7` = 39, `stat_value7` = 40, ' +
-        '`stat_type8` = 41, `stat_value8` = 42, `stat_type9` = 43, `stat_value9` = 44, `stat_type10` = 45, `stat_value10` = 46, ' +
-        '`ScalingStatDistribution` = 47, `ScalingStatValue` = 48, `dmg_min1` = 49, `dmg_max1` = 50, `dmg_type1` = 51, ' +
-        '`dmg_min2` = 52, `dmg_max2` = 53, `dmg_type2` = 54, `armor` = 55, `holy_res` = 56, `fire_res` = 57, `nature_res` = 58, ' +
-        '`frost_res` = 59, `shadow_res` = 60, `arcane_res` = 61, `delay` = 62, `ammo_type` = 63, `RangedModRange` = 64, ' +
-        '`spellid_1` = 65, `spelltrigger_1` = 1, `spellcharges_1` = 66, `spellppmRate_1` = 67, `spellcooldown_1` = 68, ' +
-        '`spellcategory_1` = 69, `spellcategorycooldown_1` = 70, `spellid_2` = 71, `spelltrigger_2` = 2, `spellcharges_2` = 72, ' +
-        '`spellppmRate_2` = 73, `spellcooldown_2` = 74, `spellcategory_2` = 75, `spellcategorycooldown_2` = 76, `spellid_3` = 77, ' +
-        '`spelltrigger_3` = 4, `spellcharges_3` = 78, `spellppmRate_3` = 79, `spellcooldown_3` = 80, `spellcategory_3` = 81, ' +
-        '`spellcategorycooldown_3` = 82, `spellid_4` = 83, `spelltrigger_4` = 5, `spellcharges_4` = 84, `spellppmRate_4` = 85, ' +
-        '`spellcooldown_4` = 86, `spellcategory_4` = 87, `spellcategorycooldown_4` = 88, `spellid_5` = 89, `spelltrigger_5` = 6, ' +
-        '`spellcharges_5` = 90, `spellppmRate_5` = 91, `spellcooldown_5` = 92, `spellcategory_5` = 93, ' +
-        "`spellcategorycooldown_5` = 94, `bonding` = 95, `description` = '96', `PageText` = 97, `LanguageID` = 98, " +
-        '`PageMaterial` = 99, `startquest` = 100, `lockid` = 101, `Material` = 102, `sheath` = 103, `RandomProperty` = 104, ' +
-        '`RandomSuffix` = 105, `block` = 106, `itemset` = 107, `MaxDurability` = 108, `area` = 109, `Map` = 110, `BagFamily` = 111, ' +
-        '`TotemCategory` = 112, `socketColor_1` = 113, `socketContent_1` = 114, `socketColor_2` = 115, `socketContent_2` = 116, ' +
-        '`socketColor_3` = 117, `socketContent_3` = 118, `socketBonus` = 119, `GemProperties` = 120, `RequiredDisenchantSkill` = 121, ' +
-        "`ArmorDamageModifier` = 122, `duration` = 123, `ItemLimitCategory` = 124, `HolidayId` = 125, `ScriptName` = '126', " +
-        '`DisenchantID` = 127, `FoodType` = 128, `minMoneyLoot` = 129, `maxMoneyLoot` = 130, `flagsCustom` = 131 WHERE (`entry` = 1234);';
+        '`maxcount` = 23, `stackable` = 24, `ContainerSlots` = 25, `stat_type1` = 26, `stat_value1` = 27, ' +
+        '`stat_type2` = 28, `stat_value2` = 29, `stat_type3` = 30, `stat_value3` = 31, `stat_type4` = 32, `stat_value4` = 33, ' +
+        '`stat_type5` = 34, `stat_value5` = 35, `stat_type6` = 36, `stat_value6` = 37, `stat_type7` = 38, `stat_value7` = 39, ' +
+        '`stat_type8` = 40, `stat_value8` = 41, `stat_type9` = 42, `stat_value9` = 43, `stat_type10` = 44, `stat_value10` = 45, ' +
+        '`ScalingStatDistribution` = 46, `ScalingStatValue` = 47, `dmg_min1` = 48, `dmg_max1` = 49, `dmg_type1` = 50, ' +
+        '`dmg_min2` = 51, `dmg_max2` = 52, `dmg_type2` = 53, `armor` = 54, `holy_res` = 55, `fire_res` = 56, `nature_res` = 57, ' +
+        '`frost_res` = 58, `shadow_res` = 59, `arcane_res` = 60, `delay` = 61, `ammo_type` = 62, `RangedModRange` = 63, ' +
+        '`spellid_1` = 64, `spelltrigger_1` = 1, `spellcharges_1` = 65, `spellppmRate_1` = 66, `spellcooldown_1` = 67, ' +
+        '`spellcategory_1` = 68, `spellcategorycooldown_1` = 69, `spellid_2` = 70, `spelltrigger_2` = 2, `spellcharges_2` = 71, ' +
+        '`spellppmRate_2` = 72, `spellcooldown_2` = 73, `spellcategory_2` = 74, `spellcategorycooldown_2` = 75, `spellid_3` = 76, ' +
+        '`spelltrigger_3` = 4, `spellcharges_3` = 77, `spellppmRate_3` = 78, `spellcooldown_3` = 79, `spellcategory_3` = 80, ' +
+        '`spellcategorycooldown_3` = 81, `spellid_4` = 82, `spelltrigger_4` = 5, `spellcharges_4` = 83, `spellppmRate_4` = 84, ' +
+        '`spellcooldown_4` = 85, `spellcategory_4` = 86, `spellcategorycooldown_4` = 87, `spellid_5` = 88, `spelltrigger_5` = 6, ' +
+        '`spellcharges_5` = 89, `spellppmRate_5` = 90, `spellcooldown_5` = 91, `spellcategory_5` = 92, ' +
+        "`spellcategorycooldown_5` = 93, `bonding` = 94, `description` = '95', `PageText` = 96, `LanguageID` = 97, " +
+        '`PageMaterial` = 98, `startquest` = 99, `lockid` = 100, `Material` = 101, `sheath` = 102, `RandomProperty` = 103, ' +
+        '`RandomSuffix` = 104, `block` = 105, `itemset` = 106, `MaxDurability` = 107, `area` = 108, `Map` = 109, `BagFamily` = 110, ' +
+        '`TotemCategory` = 111, `socketColor_1` = 112, `socketContent_1` = 113, `socketColor_2` = 114, `socketContent_2` = 115, ' +
+        '`socketColor_3` = 116, `socketContent_3` = 117, `socketBonus` = 118, `GemProperties` = 119, `RequiredDisenchantSkill` = 120, ' +
+        "`ArmorDamageModifier` = 121, `duration` = 122, `ItemLimitCategory` = 123, `HolidayId` = 124, `ScriptName` = '125', " +
+        '`DisenchantID` = 126, `FoodType` = 127, `minMoneyLoot` = 128, `maxMoneyLoot` = 129, `flagsCustom` = 130 WHERE (`entry` = 1234);';
 
       const spelltriggers = {
         spelltrigger_1: 1,
@@ -221,12 +238,13 @@ describe('ItemTemplate integration tests', () => {
       page.expectDiffQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();
-      expect(querySpy).toHaveBeenCalledTimes(2);
+      expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
     });
 
-    it('changing values should correctly update the queries', () => {
+    it('changing values should correctly update the queries', async () => {
       const { page } = setup(false);
+      await tickAsync();
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
 
       page.setInputValueById('name', 'Shin');
@@ -239,8 +257,9 @@ describe('ItemTemplate integration tests', () => {
       page.expectFullQueryToContain('22');
     });
 
-    xit('changing a value via FlagsSelector should correctly work', waitForAsync(async () => {
+    xit('changing a value via FlagsSelector should correctly work', async () => {
       const { page } = setup(false);
+      await tickAsync();
       const field = 'Flags';
       page.clickElement(page.getSelectorBtn(field));
 
@@ -259,10 +278,11 @@ describe('ItemTemplate integration tests', () => {
 
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
       page.expectFullQueryToContain('4100');
-    }));
+    });
 
-    xit('changing a value via ItemEnchantmentSelector should correctly work', waitForAsync(async () => {
+    xit('changing a value via ItemEnchantmentSelector should correctly work', async () => {
       const { page, fixture } = setup(false);
+      await tickAsync();
       const field = 'socketBonus';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
       spyOn(sqliteQueryService, 'query').and.returnValue(of([{ id: 1248, name: 'Mock Enchantment', conditionId: 456 }]));
@@ -281,10 +301,11 @@ describe('ItemTemplate integration tests', () => {
       page.expectDiffQueryToContain('UPDATE `item_template` SET `socketBonus` = 1248 WHERE (`entry` = 1234);');
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
       page.expectFullQueryToContain('1248');
-    }));
+    });
 
-    xit('changing a value via HolidaySelector should correctly work', waitForAsync(async () => {
+    xit('changing a value via HolidaySelector should correctly work', async () => {
       const { page, fixture } = setup(false);
+      await tickAsync();
       const field = 'HolidayId';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
       spyOn(sqliteQueryService, 'query').and.returnValue(of([{ id: 1248, name: 'Mock Holiday' }]));
@@ -303,10 +324,11 @@ describe('ItemTemplate integration tests', () => {
       page.expectDiffQueryToContain('UPDATE `item_template` SET `HolidayId` = 1248 WHERE (`entry` = 1234);');
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
       page.expectFullQueryToContain('1248');
-    }));
+    });
 
-    xit('changing a value via ItemLimitCategorySelector should correctly work', waitForAsync(async () => {
+    xit('changing a value via ItemLimitCategorySelector should correctly work', async () => {
       const { page, fixture } = setup(false);
+      await tickAsync();
       const field = 'ItemLimitCategory';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
       spyOn(sqliteQueryService, 'query').and.returnValue(of([{ id: 1248, name: 'Mock ItemLimitCategory', count: 2, isGem: 1 }]));
@@ -325,10 +347,11 @@ describe('ItemTemplate integration tests', () => {
       page.expectDiffQueryToContain('UPDATE `item_template` SET `ItemLimitCategory` = 1248 WHERE (`entry` = 1234);');
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
       page.expectFullQueryToContain('1248');
-    }));
+    });
 
-    xit('changing a value via LanguageSelector should correctly work', waitForAsync(async () => {
+    xit('changing a value via LanguageSelector should correctly work', async () => {
       const { page, fixture } = setup(false);
+      await tickAsync();
       const field = 'LanguageID';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
       spyOn(sqliteQueryService, 'query').and.returnValue(of([{ id: 1248, name: 'Mock LanguageID' }]));
@@ -347,11 +370,12 @@ describe('ItemTemplate integration tests', () => {
       page.expectDiffQueryToContain('UPDATE `item_template` SET `LanguageID` = 1248 WHERE (`entry` = 1234);');
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
       page.expectFullQueryToContain('1248');
-    }));
+    });
 
     describe('the subclass field', () => {
-      it('should show the selector button only if class has a valid value', () => {
+      it('should show the selector button only if class has a valid value', async () => {
         const { page } = setup(false);
+        await tickAsync();
         page.setInputValueById('class', 100);
         expect(page.getSelectorBtn('subclass', false)).toBeFalsy();
 
@@ -368,8 +392,9 @@ describe('ItemTemplate integration tests', () => {
         expect(page.getSelectorBtn('subclass', false)).toBeFalsy();
       });
 
-      it('should show its values according to the value of class', () => {
+      it('should show its values according to the value of class', async () => {
         const { page } = setup(false);
+        await tickAsync();
         page.setInputValueById('class', 3);
         page.clickElement(page.getSelectorBtn('subclass'));
 
@@ -378,35 +403,12 @@ describe('ItemTemplate integration tests', () => {
       });
     });
 
-    describe('item stats count', () => {
-      it('calculate item stats count automatically editing stats value fields', () => {
-        const { page } = setup(false);
-
-        expect(page.getInputById('StatsCount').value).toEqual('0');
-
-        page.setInputValueById('stat_value1', 1);
-        page.setInputValueById('stat_value2', 2);
-        page.detectChanges();
-
-        expect(page.getInputById('StatsCount').value).toEqual('2');
-
-        page.setInputValueById('stat_value3', -1);
-        page.detectChanges();
-
-        expect(page.getInputById('StatsCount').value).toEqual('3');
-
-        page.setInputValueById('stat_value2', 0);
-        page.detectChanges();
-
-        expect(page.getInputById('StatsCount').value).toEqual('2');
-      });
-    });
-
     describe('item preview', () => {
-      it('all fields', fakeAsync(() => {
+      it('all fields', async () => {
         const { page, fixture } = setup(false);
-        page.setInputValueById('class', 1);
-        page.setInputValueById('subclass', 2);
+        await tickAsync();
+        page.setInputValueById('class', 15);
+        page.setInputValueById('subclass', 5);
         page.setInputValueById('SoundOverrideSubclass', 3);
         page.setInputValueById('name', 'Helias item');
         page.setInputValueById('displayid', 4);
@@ -431,7 +433,6 @@ describe('ItemTemplate integration tests', () => {
         page.setInputValueById('maxcount', 123);
         page.setInputValueById('stackable', 123);
         page.setInputValueById('ContainerSlots', 123);
-        page.setInputValueById('StatsCount', 123);
         page.setInputValueById('stat_type1', 123);
         page.setInputValueById('stat_value1', 123);
         page.setInputValueById('stat_type2', 123);
@@ -543,7 +544,7 @@ describe('ItemTemplate integration tests', () => {
         page.setInputValueById('maxMoneyLoot', 123);
         page.setInputValueById('flagsCustom', 123);
 
-        tick(700);
+        await tickAsync(400);
 
         fixture.whenStable().then(() => {
           const itemStats = page.itemStats.innerText;
@@ -587,7 +588,40 @@ describe('ItemTemplate integration tests', () => {
           expect(itemStats).toContain('<Right Click To Read>');
           expect(itemStats).toContain('123 Charges');
         });
-      }));
+      });
+    });
+
+    describe('trigger npc 3d model viewer', () => {
+      for (const subclass of [2, 5, 0]) {
+        it(`should get the npc display id when subclass is ${subclass}`, async () => {
+          const { page, fixture, itemPreviewService } = setup(false);
+          await tickAsync();
+          page.setInputValueById('class', 15);
+          page.setInputValueById('subclass', subclass);
+          page.setInputValueById('spellid_2', 123);
+
+          await tickAsync(400);
+
+          fixture.whenStable().then(() => {
+            expect(itemPreviewService.getNpcDisplayIdBySpell).toHaveBeenCalledOnceWith(123);
+          });
+        });
+      }
+
+      it(`should get the npc display id when subclass is pet (2) and spellid_2 is 0 but spellid_1 is not`, async () => {
+        const { page, fixture, itemPreviewService } = setup(false);
+        await tickAsync();
+        page.setInputValueById('class', 15);
+        page.setInputValueById('subclass', 2);
+        page.setInputValueById('spellid_2', 0);
+        page.setInputValueById('spellid_1', 123);
+
+        await tickAsync(400);
+
+        fixture.whenStable().then(() => {
+          expect(itemPreviewService.getNpcDisplayIdBySpell).toHaveBeenCalledOnceWith(123);
+        });
+      });
     });
   });
 });

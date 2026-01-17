@@ -5,7 +5,7 @@ import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { FieldDefinition } from '@keira/shared/constants';
 import { Model3DViewerComponent, VIEWER_TYPE } from '@keira/shared/model-3d-viewer';
-import { GenericOptionSelectorComponent, SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
+import { GenericOptionSelectorComponent } from '@keira/shared/selectors';
 import { TranslateModule } from '@ngx-translate/core';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
@@ -23,17 +23,16 @@ import { GameobjectTemplateService } from './gameobject-template.service';
     FormsModule,
     ReactiveFormsModule,
     TooltipModule,
-    SingleValueSelectorBtnComponent,
     Model3DViewerComponent,
     GenericOptionSelectorComponent,
   ],
 })
 export class GameobjectTemplateComponent extends SingleRowEditorComponent<GameobjectTemplate> {
-  readonly GAMEOBJECT_TYPE = GAMEOBJECT_TYPE;
-  readonly GAMEOBJECT_ICON = GAMEOBJECT_ICON;
-  readonly OBJECT_VIEWER_TYPE = VIEWER_TYPE.OBJECT;
+  protected readonly GAMEOBJECT_TYPE = GAMEOBJECT_TYPE;
+  protected readonly GAMEOBJECT_ICON = GAMEOBJECT_ICON;
+  protected readonly OBJECT_VIEWER_TYPE = VIEWER_TYPE.OBJECT;
 
-  showGameobjectPreview = true;
+  protected showGameobjectPreview = true;
 
   protected override readonly editorService = inject(GameobjectTemplateService);
   readonly handlerService = inject(GameobjectHandlerService);

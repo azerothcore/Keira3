@@ -1,8 +1,11 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MysqlQueryService } from '@keira/shared/db-layer';
-import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { FieldDefinition } from '@keira/shared/constants';
+import { MysqlQueryService } from '@keira/shared/db-layer';
+import { Model3DViewerService } from '@keira/shared/model-3d-viewer';
+import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
@@ -18,17 +21,21 @@ describe('GameobjectComponent', () => {
   let queryService: MysqlQueryService;
   let gameobjectTemplateService: GameobjectTemplateService;
   let getFieldSpy: Spy;
+  let model3DViewerService: Model3DViewerService;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ModalModule.forRoot(), ToastrModule.forRoot(), GameobjectTemplateComponent, RouterTestingModule, TranslateTestingModule],
-      providers: [GameobjectHandlerService, SaiGameobjectHandlerService],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), GameobjectHandlerService, SaiGameobjectHandlerService],
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     queryService = TestBed.inject(MysqlQueryService);
     spyOn(queryService, 'query').and.returnValue(of());
+
+    model3DViewerService = TestBed.inject(Model3DViewerService);
+    spyOn(model3DViewerService, 'generateModels').and.returnValue(new Promise((resolve) => resolve({ destroy: () => {} })));
 
     fixture = TestBed.createComponent(GameobjectTemplateComponent);
     component = fixture.componentInstance;

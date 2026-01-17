@@ -1,4 +1,6 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import {
@@ -26,12 +28,17 @@ import { QuestPreviewService } from './quest-preview.service';
 import Spy = jasmine.Spy;
 
 describe('QuestPreviewService', () => {
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), RouterTestingModule],
-      providers: [QuestTemplateService, { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        QuestTemplateService,
+        { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
+      ],
     });
-  }));
+  });
 
   const setup = () => {
     const service = TestBed.inject(QuestPreviewService);
@@ -115,7 +122,7 @@ describe('QuestPreviewService', () => {
     expect(service.sharable).toBe('Not sharable');
   });
 
-  it('start item', waitForAsync(async () => {
+  it('start item', async () => {
     const { service, questTemplateService, mysqlQueryService } = setup();
     const mockStartItem = 123456;
     const mockStartItemName = 'Sword of AzerothCore';
@@ -126,7 +133,7 @@ describe('QuestPreviewService', () => {
     expect(service.startItem).toEqual(mockStartItem);
     expect(await service.startItemName$).toEqual(mockStartItemName);
     expect(mysqlQueryService.getItemNameById).toHaveBeenCalledWith(mockStartItem);
-  }));
+  });
 
   it('handle questTemplateAddon values', () => {
     const { service, questTemplateAddonService } = setup();
@@ -307,7 +314,7 @@ describe('QuestPreviewService', () => {
   });
 
   describe('prevQuestList', () => {
-    it('should correctly work when PrevQuestID is set', waitForAsync(async () => {
+    it('should correctly work when PrevQuestID is set', async () => {
       const { service, mysqlQueryService, questTemplateService, questTemplateAddonService } = setup();
       questTemplateService.form.controls.ID.setValue(4);
       questTemplateAddonService.form.controls.PrevQuestID.setValue(3);
@@ -327,9 +334,9 @@ describe('QuestPreviewService', () => {
       expect(mysqlQueryService.getPrevQuestById).toHaveBeenCalledWith(3);
       expect(mysqlQueryService.getPrevQuestById).toHaveBeenCalledWith(2);
       expect(mysqlQueryService.getPrevQuestById).toHaveBeenCalledWith(1);
-    }));
+    });
 
-    it('should correctly work when PrevQuestID is NOT set', waitForAsync(async () => {
+    it('should correctly work when PrevQuestID is NOT set', async () => {
       const { service, mysqlQueryService, questTemplateService, questTemplateAddonService } = setup();
       questTemplateService.form.controls.ID.setValue(4);
       questTemplateAddonService.form.controls.PrevQuestID.setValue(0);
@@ -337,11 +344,11 @@ describe('QuestPreviewService', () => {
       expect(await service.prevQuestList$).toEqual([]);
       expect(await service.prevQuestList$).toEqual([]); // check cache
       expect(mysqlQueryService.getPrevQuestById).toHaveBeenCalledTimes(0);
-    }));
+    });
   });
 
   describe('nextQuestList', () => {
-    it('should correctly work when NextQuestID is set', waitForAsync(async () => {
+    it('should correctly work when NextQuestID is set', async () => {
       const { service, mysqlQueryService, questTemplateService, questTemplateAddonService } = setup();
       questTemplateService.form.controls.ID.setValue(4);
       questTemplateAddonService.form.controls.NextQuestID.setValue(5);
@@ -361,9 +368,9 @@ describe('QuestPreviewService', () => {
       expect(mysqlQueryService.getNextQuestById).toHaveBeenCalledWith(5);
       expect(mysqlQueryService.getNextQuestById).toHaveBeenCalledWith(6);
       expect(mysqlQueryService.getNextQuestById).toHaveBeenCalledWith(7);
-    }));
+    });
 
-    it('should correctly work when NextQuestID is NOT set', waitForAsync(async () => {
+    it('should correctly work when NextQuestID is NOT set', async () => {
       const { service, mysqlQueryService, questTemplateService, questTemplateAddonService } = setup();
       questTemplateService.form.controls.ID.setValue(4);
       questTemplateAddonService.form.controls.NextQuestID.setValue(0);
@@ -384,7 +391,7 @@ describe('QuestPreviewService', () => {
       expect(mysqlQueryService.getNextQuestById).toHaveBeenCalledWith(5, true);
       expect(mysqlQueryService.getNextQuestById).toHaveBeenCalledWith(6, true);
       expect(mysqlQueryService.getNextQuestById).toHaveBeenCalledWith(7, true);
-    }));
+    });
   });
 
   describe('enabledByQuestId', () => {
@@ -404,7 +411,7 @@ describe('QuestPreviewService', () => {
     });
   });
 
-  it('enabledByQuestTitle$ should return the quest name', waitForAsync(async () => {
+  it('enabledByQuestTitle$ should return the quest name', async () => {
     const id = 123;
     const { service, questTemplateAddonService, mysqlQueryService } = setup();
     questTemplateAddonService.form.controls.PrevQuestID.setValue(-id);
@@ -412,7 +419,7 @@ describe('QuestPreviewService', () => {
     expect(await service.enabledByQuestTitle$).toEqual(`Title${id}`);
     expect(mysqlQueryService.getQuestTitleById).toHaveBeenCalledTimes(1);
     expect(mysqlQueryService.getQuestTitleById).toHaveBeenCalledWith(id);
-  }));
+  });
 
   it('isRepeatable', () => {
     const { service, questTemplateService, questTemplateAddonService } = setup();

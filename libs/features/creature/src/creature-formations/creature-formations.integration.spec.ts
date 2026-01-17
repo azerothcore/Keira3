@@ -1,5 +1,6 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CreatureFormation } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
@@ -31,19 +32,24 @@ describe('CreatureFormations integration tests', () => {
   originalRow1.memberGUID = 1235;
   originalRow2.memberGUID = 1236;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        BrowserAnimationsModule,
         ToastrModule.forRoot(),
         ModalModule.forRoot(),
         CreatureFormationsComponent, // This should typically be in declarations, but as per your instruction, it's left unchanged
         RouterTestingModule,
         TranslateTestingModule,
       ],
-      providers: [CreatureHandlerService, SaiCreatureHandlerService, { provide: SqliteService, useValue: instance(mock(SqliteService)) }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
+      ],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(CreatureHandlerService);
@@ -81,11 +87,11 @@ describe('CreatureFormations integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
-      expect(handlerService.isCreatureFormationUnsaved).toBe(false);
+      expect(handlerService.isCreatureFormationUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isCreatureFormationUnsaved).toBe(true);
+      expect(handlerService.isCreatureFormationUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isCreatureFormationUnsaved).toBe(false);
+      expect(handlerService.isCreatureFormationUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {

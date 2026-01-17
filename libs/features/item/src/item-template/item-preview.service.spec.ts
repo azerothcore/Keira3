@@ -1,13 +1,15 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ITEM_FLAG, ITEM_TYPE, ITEMS_QUALITY, ItemTemplate } from '@keira/shared/acore-world-model';
+import { TableRow } from '@keira/shared/constants';
 import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
 import { ToastrService } from 'ngx-toastr';
 import { lastValueFrom, Observable, of } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
 import { ItemHandlerService } from '../item-handler.service';
 import { ItemPreviewService } from './item-preview.service';
-import { TableRow } from '@keira/shared/constants';
 
 describe('ItemPreviewService', () => {
   interface Lock extends TableRow {
@@ -33,6 +35,8 @@ describe('ItemPreviewService', () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         { provide: ToastrService, useValue: instance(mock(ToastrService)) },
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
         ItemPreviewService,
@@ -212,6 +216,7 @@ describe('ItemPreviewService', () => {
       lastValueFrom(of(String(i).indexOf('555') > -1 ? '' : mockGetSpellDescriptionById + i)),
     );
     spyOn(sqliteQueryService, 'getFactionNameById').and.callFake((i) => lastValueFrom(of(mockGetFactionNameById + i)));
+    spyOn(sqliteQueryService, 'getFactionNameByNameId').and.callFake((i) => lastValueFrom(of(mockGetFactionNameById + i)));
     spyOn(sqliteQueryService, 'getMapNameById').and.callFake((i) =>
       lastValueFrom(of(String(i).indexOf('123') > -1 ? '' : mockGetMapNameById + i)),
     );
@@ -409,6 +414,19 @@ describe('ItemPreviewService', () => {
     service['getItemEnchantmentConditionById'](id);
     expect(sqliteQueryService.query).toHaveBeenCalledTimes(1);
     expect(sqliteQueryService.query).toHaveBeenCalledWith(`SELECT * FROM item_enchantment_condition WHERE id = ${id}`);
+  });
+
+  it('getCreatureEntryByItemSpellId', async () => {
+    const getCreatureEntryByItemSpellIdSpy = spyOn(sqliteQueryService, 'getCreatureEntryByItemSpellId').and.returnValue(
+      Promise.resolve(123),
+    );
+    const getCreatureDisplayIdByIdSpy = spyOn(mysqlQueryService, 'getCreatureDisplayIdById').and.returnValue(Promise.resolve(456));
+
+    const res = await service['getNpcDisplayIdBySpell'](id);
+
+    expect(getCreatureEntryByItemSpellIdSpy).toHaveBeenCalledOnceWith(id);
+    expect(getCreatureDisplayIdByIdSpy).toHaveBeenCalledOnceWith(123);
+    expect(res).toBe(456);
   });
 
   const cases = [

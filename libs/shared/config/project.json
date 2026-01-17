@@ -5,5 +5,9 @@
   "prefix": "keira",
   "tags": ["scope:shared"],
   "projectType": "library",
-  "targets": {}
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
 }

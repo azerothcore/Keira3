@@ -1,0 +1,24 @@
+{
+  "name": "keira-features-unused-guid-search",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/features/unused-guid-search/src",
+  "prefix": "keira",
+  "projectType": "library",
+  "tags": ["scope:features"],
+  "targets": {
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "tsConfig": "libs/features/unused-guid-search/tsconfig.spec.json",
+        "karmaConfig": "libs/features/unused-guid-search/karma.conf.js",
+        "sourceMap": true,
+        "codeCoverage": true,
+        "styles": ["apps/keira/src/app/scss/main-test.scss"],
+        "scripts": ["node_modules/squel/dist/squel.min.js"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

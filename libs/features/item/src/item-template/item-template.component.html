@@ -13,7 +13,16 @@
   @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
     <div>
       <div class="content-block">
-        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)" />
+        <keira-query-output
+          [docUrl]="docUrl"
+          [isNew]="editorService.isNew"
+          [diffQuery]="editorService.diffQuery"
+          [fullQuery]="editorService.fullQuery"
+          [error]="editorService.error"
+          [entityTable]="editorService.entityTable"
+          [editorService]="editorService"
+          (executeQuery)="save($event)"
+        />
       </div>
       <form [formGroup]="editorService.form" class="form-group edit-form">
         <div class="content-block">
@@ -501,11 +510,6 @@
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.SCALING_STAT_VALUE' | translate"></i>
               <input [formControlName]="'ScalingStatValue'" id="ScalingStatValue" type="number" class="form-control form-control-sm" />
             </div>
-            <div class="form-group col-12 col-sm-6 col-lg-4 col-xl-3">
-              <label class="control-label" for="StatsCount">count</label>
-              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.STATS_COUNT' | translate"></i>
-              <input [formControlName]="'StatsCount'" id="StatsCount" type="number" class="form-control form-control-sm" />
-            </div>
           </div>
           <div class="row">
             @for (i of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; track i) {
@@ -524,13 +528,7 @@
                   <div class="col-12">
                     <label class="control-label" for="stat_value{{ i }}">value{{ i }}</label>
                     <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.STAT_VALUE' | translate"></i>
-                    <input
-                      [formControlName]="'stat_value' + i"
-                      id="stat_value{{ i }}"
-                      type="number"
-                      class="form-control form-control-sm"
-                      (change)="calculateCount()"
-                    />
+                    <input [formControlName]="'stat_value' + i" id="stat_value{{ i }}" type="number" class="form-control form-control-sm" />
                   </div>
                 </div>
               </div>
@@ -778,12 +776,17 @@
             <div class="item-stats">
               <div [innerHTML]="itemPreview"></div>
               <br />
-              <keira-model-3d-viewer
-                [viewerType]="ITEM_VIEWER_TYPE"
-                [displayId]="editorService.form.controls.displayid.value"
-                [itemClass]="editorService.form.controls.class.value"
-                [itemInventoryType]="editorService.form.controls.InventoryType.value"
-              />
+              @if (npcDisplayId) {
+                <keira-model-3d-viewer [viewerType]="NPC_VIEWER_TYPE" [displayId]="npcDisplayId" [enableBgSettings]="true" />
+              } @else {
+                <keira-model-3d-viewer
+                  [viewerType]="ITEM_VIEWER_TYPE"
+                  [displayId]="editorService.form.controls.displayid.value"
+                  [itemClass]="editorService.form.controls.class.value"
+                  [itemInventoryType]="editorService.form.controls.InventoryType.value"
+                  [enableBgSettings]="true"
+                />
+              }
             </div>
           </div>
         </div>

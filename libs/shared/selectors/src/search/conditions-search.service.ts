@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { Conditions, CONDITIONS_SEARCH_FIELDS, CONDITIONS_TABLE } from '@keira/shared/acore-world-model';
 import { SearchService } from '@keira/shared/base-abstract-classes';
@@ -7,8 +7,11 @@ import { SearchService } from '@keira/shared/base-abstract-classes';
   providedIn: 'root',
 })
 export class ConditionsSearchService extends SearchService<Conditions> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(override readonly queryService: MysqlQueryService) {
-    super(queryService, CONDITIONS_TABLE, CONDITIONS_SEARCH_FIELDS);
+  override readonly queryService = inject(MysqlQueryService);
+  protected override readonly entityTable = CONDITIONS_TABLE;
+  protected override readonly fieldList = CONDITIONS_SEARCH_FIELDS;
+  constructor() {
+    super();
+    this.init();
   }
 }

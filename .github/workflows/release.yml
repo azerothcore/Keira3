@@ -5,14 +5,14 @@ name: Release Draft
 jobs:
   get-package-version:
     name: Get Package Version
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     outputs:
       version: ${{ steps.version.outputs.PACKAGE_VERSION }}
       app_name: ${{ steps.app_name.outputs.APP_NAME }}
       fix_app_name: ${{ steps.fix_app_name.outputs.FIX_APP_NAME }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - id: version
         run: |
           echo "PACKAGE_VERSION=$(npx json version -a < package.json)" >> $GITHUB_OUTPUT
@@ -28,10 +28,10 @@ jobs:
   build-on-linux:
     needs: get-package-version
     name: Build and upload the Linux release assets
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Build project
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -73,10 +73,10 @@ jobs:
   build-on-mac:
     needs: get-package-version
     name: Build and upload the Mac release assets
-    runs-on: macos-13
+    runs-on: macos-15-intel # it's the most recent version still running on Intel, we keep it for retro-compatibility
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Build project
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -110,7 +110,7 @@ jobs:
     runs-on: windows-2025
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Build project
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

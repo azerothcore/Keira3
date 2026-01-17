@@ -1,33 +1,36 @@
-import { Component, ViewChild } from '@angular/core';
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { Component, provideZonelessChangeDetection, viewChild } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
-import { EXPANSION } from '@keira/shared/acore-world-model';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { EXPANSION, OPTION_ICON } from '@keira/shared/acore-world-model';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { GenericOptionSelectorComponent } from './generic-option-selector.component';
 
 @Component({
-  template: `<keira-generic-option-selector [control]="mockFormControl" [optionList]="EXPANSION"></keira-generic-option-selector>`,
+  template: `<keira-generic-option-selector [control]="mockFormControl" [optionList]="OPTION_LIST" />`,
   imports: [GenericOptionSelectorComponent],
 })
 class TestHostComponent {
-  @ViewChild(GenericOptionSelectorComponent) child!: GenericOptionSelectorComponent;
+  readonly child = viewChild.required(GenericOptionSelectorComponent);
   mockFormControl = new FormControl();
-  EXPANSION = EXPANSION;
+  OPTION_LIST = EXPANSION;
 }
 
 describe('GenericOptionSelectorComponent', () => {
   class GenericOptionSelectorComponentPage extends PageObject<TestHostComponent> {}
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [GenericOptionSelectorComponent, TestHostComponent, TranslateTestingModule],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
-  }));
+  });
 
-  const setup = () => {
+  const setup = (optionList = EXPANSION) => {
     const fixture = TestBed.createComponent(TestHostComponent);
     const host = fixture.componentInstance;
-    const component = host.child;
+    host.OPTION_LIST = optionList;
+    const component = host.child();
     const page = new GenericOptionSelectorComponentPage(fixture);
 
     fixture.detectChanges();
@@ -65,5 +68,11 @@ describe('GenericOptionSelectorComponent', () => {
 
     expect(host.mockFormControl.value).toEqual(0);
     expect(select.selectedOptions[0].label).toEqual('0 - Classic');
+  });
+
+  it('should display all options from optionList', () => {
+    const { component } = setup(OPTION_ICON);
+
+    expect(component.optionList()).toEqual(OPTION_ICON);
   });
 });

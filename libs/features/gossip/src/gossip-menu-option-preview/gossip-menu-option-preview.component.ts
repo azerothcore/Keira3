@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { GossipMenuOption, OPTION_IMG } from '@keira/shared/acore-world-model';
 
 @Component({
@@ -6,11 +6,10 @@ import { GossipMenuOption, OPTION_IMG } from '@keira/shared/acore-world-model';
   selector: 'keira-gossip-menu-option-preview',
   templateUrl: './gossip-menu-option-preview.component.html',
   styleUrls: ['./gossip-menu-option-preview.component.scss'],
-  standalone: true,
 })
 export class GossipMenuOptionPreviewComponent {
-  @Input({ required: true }) options!: GossipMenuOption[];
-  @Input() show = true;
+  readonly options = input.required<GossipMenuOption[]>();
+  readonly show = input(true);
 
-  readonly OPTION_IMG = OPTION_IMG;
+  protected readonly OPTION_IMG = OPTION_IMG;
 }

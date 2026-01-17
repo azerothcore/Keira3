@@ -1,4 +1,6 @@
 import { inject, TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { LocalStorageService } from './local-storage.service';
 import Spy = jasmine.Spy;
 
@@ -15,7 +17,9 @@ describe('LocalStorageService', () => {
   const value = 'myValue';
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
+    });
 
     spyClear = spyOn(Storage.prototype, 'clear');
     spyGetItem = spyOn(Storage.prototype, 'getItem');

@@ -1,11 +1,12 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { SelectPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { MailLootHandlerService } from './mail-loot-handler.service';
 import { SelectMailLootComponent } from './select-mail-loot.component';
@@ -18,19 +19,12 @@ class SelectMailLootComponentPage extends SelectPageObject<SelectMailLootCompone
 describe('SelectMailLoot integration tests', () => {
   const value = 1200;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        SelectMailLootComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
-      ],
-      providers: [MailLootHandlerService],
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectMailLootComponent, RouterTestingModule, TranslateTestingModule],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), MailLootHandlerService],
     }).compileComponents();
-  }));
+  });
 
   function setup() {
     const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
@@ -48,7 +42,7 @@ describe('SelectMailLoot integration tests', () => {
     return { component, fixture, selectService, page, queryService, querySpy, navigateSpy };
   }
 
-  it('should correctly initialise', waitForAsync(async () => {
+  it('should correctly initialise', async () => {
     const { fixture, page, querySpy, component } = setup();
 
     await fixture.whenStable();
@@ -56,9 +50,9 @@ describe('SelectMailLoot integration tests', () => {
     page.expectNewEntityFree();
     expect(querySpy).toHaveBeenCalledWith('SELECT MAX(Entry) AS max FROM mail_loot_template;');
     expect(page.queryWrapper.innerText).toContain('SELECT `Entry` FROM `mail_loot_template` GROUP BY Entry LIMIT 50');
-  }));
+  });
 
-  it('should correctly behave when inserting and selecting free entry', waitForAsync(async () => {
+  it('should correctly behave when inserting and selecting free entry', async () => {
     const { fixture, page, querySpy, navigateSpy } = setup();
 
     await fixture.whenStable();
@@ -76,9 +70,9 @@ describe('SelectMailLoot integration tests', () => {
     expect(navigateSpy).toHaveBeenCalledTimes(1);
     expect(navigateSpy).toHaveBeenCalledWith(['other-loots/mail']);
     page.expectTopBarCreatingNew(value);
-  }));
+  });
 
-  it('should correctly behave when inserting an existing entity', waitForAsync(async () => {
+  it('should correctly behave when inserting an existing entity', async () => {
     const { fixture, page, querySpy } = setup();
 
     await fixture.whenStable();
@@ -90,7 +84,7 @@ describe('SelectMailLoot integration tests', () => {
     expect(querySpy).toHaveBeenCalledTimes(1);
     expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`mail_loot_template\` WHERE (Entry = ${value})`);
     page.expectEntityAlreadyInUse();
-  }));
+  });
 
   for (const { id, entry, limit, expectedQuery } of [
     {

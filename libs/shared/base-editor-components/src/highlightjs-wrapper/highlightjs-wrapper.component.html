@@ -1,5 +1,5 @@
 @if (electronService.isElectron()) {
-  <pre><code [highlight]="code"></code></pre>
+  <pre><code [highlight]="code()"></code></pre>
 } @else {
-  <pre><code id="no-highlight-query-wrapper">{{ code }}</code></pre>
+  <pre><code id="no-highlight-query-wrapper">{{ code() }}</code></pre>
 }

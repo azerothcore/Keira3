@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal, Signal } from '@angular/core';
 import { HandlerService } from '@keira/shared/base-abstract-classes';
 import {
   GAMEOBJECT_LOOT_TEMPLATE_TABLE,
@@ -19,35 +19,35 @@ export class GameobjectHandlerService extends HandlerService<GameobjectTemplate>
   protected saiGameobjectHandler = inject(SaiGameobjectHandlerService);
   protected readonly mainEditorRoutePath = 'gameobject/gameobject-template';
 
-  get isGameobjectTemplateUnsaved(): boolean {
-    return this.statusMap[GAMEOBJECT_TEMPLATE_TABLE];
+  get isGameobjectTemplateUnsaved(): Signal<boolean> {
+    return this.statusMap[GAMEOBJECT_TEMPLATE_TABLE].asReadonly();
   }
-  get isGameobjectTemplateAddonUnsaved(): boolean {
-    return this.statusMap[GAMEOBJECT_TEMPLATE_ADDON_TABLE];
+  get isGameobjectTemplateAddonUnsaved(): Signal<boolean> {
+    return this.statusMap[GAMEOBJECT_TEMPLATE_ADDON_TABLE].asReadonly();
   }
-  get isGameobjectQuestitemUnsaved(): boolean {
-    return this.statusMap[GAMEOBJECT_QUESTITEM_TABLE];
+  get isGameobjectQuestitemUnsaved(): Signal<boolean> {
+    return this.statusMap[GAMEOBJECT_QUESTITEM_TABLE].asReadonly();
   }
-  get isGameobjectLooTemplateUnsaved(): boolean {
-    return this.statusMap[GAMEOBJECT_LOOT_TEMPLATE_TABLE];
+  get isGameobjectLooTemplateUnsaved(): Signal<boolean> {
+    return this.statusMap[GAMEOBJECT_LOOT_TEMPLATE_TABLE].asReadonly();
   }
-  get isGameobjectSpawnUnsaved(): boolean {
-    return this.statusMap[GAMEOBJECT_SPAWN_TABLE];
+  get isGameobjectSpawnUnsaved(): Signal<boolean> {
+    return this.statusMap[GAMEOBJECT_SPAWN_TABLE].asReadonly();
   }
-  get isGameobjectSpawnAddonUnsaved(): boolean {
-    return this.statusMap[GAMEOBJECT_SPAWN_ADDON_TABLE];
+  get isGameobjectSpawnAddonUnsaved(): Signal<boolean> {
+    return this.statusMap[GAMEOBJECT_SPAWN_ADDON_TABLE].asReadonly();
   }
-  get isGameobjectSaiUnsaved(): boolean {
-    return this.saiGameobjectHandler.statusMap[SAI_TABLE];
+  get isGameobjectSaiUnsaved(): Signal<boolean> {
+    return this.saiGameobjectHandler.statusMap[SAI_TABLE].asReadonly();
   }
 
   protected _statusMap = {
-    [GAMEOBJECT_TEMPLATE_TABLE]: false,
-    [GAMEOBJECT_TEMPLATE_ADDON_TABLE]: false,
-    [GAMEOBJECT_QUESTITEM_TABLE]: false,
-    [GAMEOBJECT_LOOT_TEMPLATE_TABLE]: false,
-    [GAMEOBJECT_SPAWN_TABLE]: false,
-    [GAMEOBJECT_SPAWN_ADDON_TABLE]: false,
+    [GAMEOBJECT_TEMPLATE_TABLE]: signal(false),
+    [GAMEOBJECT_TEMPLATE_ADDON_TABLE]: signal(false),
+    [GAMEOBJECT_QUESTITEM_TABLE]: signal(false),
+    [GAMEOBJECT_LOOT_TEMPLATE_TABLE]: signal(false),
+    [GAMEOBJECT_SPAWN_TABLE]: signal(false),
+    [GAMEOBJECT_SPAWN_ADDON_TABLE]: signal(false),
   };
 
   override select(isNew: boolean, id: string | number | Partial<GameobjectTemplate>, name?: string) {

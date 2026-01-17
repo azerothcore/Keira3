@@ -1,11 +1,12 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { FishingLootTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { FishingLootHandlerService } from './fishing-loot-handler.service';
 import { FishingLootTemplateComponent } from './fishing-loot-template.component';
@@ -24,19 +25,17 @@ describe('FishingLootTemplate integration tests', () => {
   originalRow1.Item = 1;
   originalRow2.Item = 2;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        FishingLootTemplateComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), FishingLootTemplateComponent, RouterTestingModule, TranslateTestingModule],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        FishingLootHandlerService,
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
-      providers: [FishingLootHandlerService, { provide: SqliteService, useValue: instance(mock(SqliteService)) }],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     const handlerService = TestBed.inject(FishingLootHandlerService);
@@ -79,11 +78,11 @@ describe('FishingLootTemplate integration tests', () => {
 
     it('should correctly update the unsaved status', () => {
       const { page, handlerService } = setup(true);
-      expect(handlerService.isUnsaved).toBe(false);
+      expect(handlerService.isUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isUnsaved).toBe(true);
+      expect(handlerService.isUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isUnsaved).toBe(false);
+      expect(handlerService.isUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {

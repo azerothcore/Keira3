@@ -1,11 +1,12 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { GameobjectSpawnAddon } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
@@ -25,23 +26,18 @@ describe('GameobjectSpawnAddon integration tests', () => {
   originalRow1.guid = 1;
   originalRow2.guid = 2;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        GameobjectSpawnAddonComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
-      ],
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), GameobjectSpawnAddonComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         GameobjectHandlerService,
         SaiGameobjectHandlerService,
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     const handlerService = TestBed.inject(GameobjectHandlerService);
@@ -76,7 +72,7 @@ describe('GameobjectSpawnAddon integration tests', () => {
       expect(page.getInputById('invisibilityType').disabled).toBe(true);
       expect(page.getInputById('invisibilityValue').disabled).toBe(true);
       expect(page.getEditorTableRowsCount()).toBe(0);
-      expect(handlerService.isGameobjectSpawnAddonUnsaved).toBe(false);
+      expect(handlerService.isGameobjectSpawnAddonUnsaved()).toBe(false);
     });
 
     // it('adding new rows and executing the query should correctly work', () => {

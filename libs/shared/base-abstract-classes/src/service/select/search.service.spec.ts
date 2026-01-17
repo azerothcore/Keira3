@@ -1,4 +1,6 @@
 import { TestBed } from '@angular/core/testing';
+import { inject, Injectable, provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
 import { MysqlQueryService } from '@keira/shared/db-layer';
@@ -7,7 +9,6 @@ import { ITEM_TEMPLATE_SEARCH_FIELDS, ITEM_TEMPLATE_TABLE, ItemTemplate } from '
 import { SearchService } from './search.service';
 
 import { mockChangeDetectorRef } from '@keira/shared/test-utils';
-import { Injectable } from '@angular/core';
 import Spy = jasmine.Spy;
 
 describe('SearchService', () => {
@@ -17,7 +18,11 @@ describe('SearchService', () => {
 
   beforeEach(() =>
     TestBed.configureTestingModule({
-      providers: [{ provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
+      ],
     }),
   );
 
@@ -25,9 +30,12 @@ describe('SearchService', () => {
     providedIn: 'root',
   })
   class TestSearchService extends SearchService<ItemTemplate> {
-    /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-    constructor(override readonly queryService: MysqlQueryService) {
-      super(queryService, ITEM_TEMPLATE_TABLE, ITEM_TEMPLATE_SEARCH_FIELDS);
+    override readonly queryService = inject(MysqlQueryService);
+    protected override readonly entityTable = ITEM_TEMPLATE_TABLE;
+    protected override readonly fieldList = ITEM_TEMPLATE_SEARCH_FIELDS;
+    constructor() {
+      super();
+      this.init();
     }
   }
 

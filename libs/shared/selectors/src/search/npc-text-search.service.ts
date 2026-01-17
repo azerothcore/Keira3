@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { NPC_TEXT_SEARCH_FIELDS, NPC_TEXT_TABLE, NpcText } from '@keira/shared/acore-world-model';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { SearchService } from '@keira/shared/base-abstract-classes';
@@ -7,8 +7,11 @@ import { SearchService } from '@keira/shared/base-abstract-classes';
   providedIn: 'root',
 })
 export class NpcTextSearchService extends SearchService<NpcText> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(override readonly queryService: MysqlQueryService) {
-    super(queryService, NPC_TEXT_TABLE, NPC_TEXT_SEARCH_FIELDS);
+  override readonly queryService = inject(MysqlQueryService);
+  protected override readonly entityTable = NPC_TEXT_TABLE;
+  protected override readonly fieldList = NPC_TEXT_SEARCH_FIELDS;
+  constructor() {
+    super();
+    this.init();
   }
 }

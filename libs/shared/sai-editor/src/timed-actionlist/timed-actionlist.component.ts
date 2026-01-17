@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, Input, OnChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnChanges, input } from '@angular/core';
 import { DTCFG } from '@keira/shared/config';
 
 import { SmartScripts } from '@keira/shared/acore-world-model';
@@ -15,7 +15,7 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
   imports: [NgxDatatableModule, AsyncPipe],
 })
 export class TimedActionlistComponent implements OnChanges {
-  @Input({ required: true }) creatureId!: string | number;
+  readonly creatureId = input.required<string | number>();
 
   private readonly queryService = inject(MysqlQueryService);
 
@@ -27,6 +27,6 @@ export class TimedActionlistComponent implements OnChanges {
   }
 
   ngOnChanges() {
-    this._timedActionLists$ = this.queryService.getTimedActionlists(this.creatureId);
+    this._timedActionLists$ = this.queryService.getTimedActionlists(this.creatureId());
   }
 }

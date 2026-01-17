@@ -1,4 +1,6 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira/shared/db-layer';
@@ -6,7 +8,6 @@ import { SelectPageObject, TranslateTestingModule } from '@keira/shared/test-uti
 import { QuestTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { QuestHandlerService } from '../quest-handler.service';
 import { SelectQuestComponent } from './select-quest.component';
@@ -26,12 +27,12 @@ describe('SelectQuest integration tests', () => {
 
   const value = 1200;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, TranslateTestingModule],
-      providers: [QuestHandlerService],
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, TranslateTestingModule],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), QuestHandlerService],
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
@@ -45,15 +46,15 @@ describe('SelectQuest integration tests', () => {
     fixture.detectChanges();
   });
 
-  it('should correctly initialise', waitForAsync(async () => {
+  it('should correctly initialise', async () => {
     await fixture.whenStable();
     expect(page.createInput.value).toEqual(`${component.customStartingId}`);
     page.expectNewEntityFree();
     expect(querySpy).toHaveBeenCalledWith('SELECT MAX(ID) AS max FROM quest_template;');
     expect(page.queryWrapper.innerText).toContain('SELECT * FROM `quest_template` LIMIT 50');
-  }));
+  });
 
-  it('should correctly behave when inserting and selecting free id', waitForAsync(async () => {
+  it('should correctly behave when inserting and selecting free id', async () => {
     await fixture.whenStable();
     querySpy.calls.reset();
     querySpy.and.returnValue(of([]));
@@ -69,9 +70,9 @@ describe('SelectQuest integration tests', () => {
     expect(navigateSpy).toHaveBeenCalledTimes(1);
     expect(navigateSpy).toHaveBeenCalledWith(['quest/quest-template']);
     page.expectTopBarCreatingNew(value);
-  }));
+  });
 
-  it('should correctly behave when inserting an existing entity', waitForAsync(async () => {
+  it('should correctly behave when inserting an existing entity', async () => {
     await fixture.whenStable();
     querySpy.calls.reset();
     querySpy.and.returnValue(of(['mock value']));
@@ -81,7 +82,7 @@ describe('SelectQuest integration tests', () => {
     expect(querySpy).toHaveBeenCalledTimes(1);
     expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`quest_template\` WHERE (ID = ${value})`);
     page.expectEntityAlreadyInUse();
-  }));
+  });
 
   for (const { testId, id, name, limit, expectedQuery } of [
     {

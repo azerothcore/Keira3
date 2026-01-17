@@ -1,7 +1,12 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
+import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
 import { lastValueFrom, of } from 'rxjs';
+import { instance, mock } from 'ts-mockito';
+import { SAI_ACTIONS } from './constants/sai-actions';
 import {
   DYNAMIC_FLAGS,
   EVENT_FLAGS,
@@ -14,18 +19,20 @@ import {
   unitStandFlags,
   unitStandStateType,
 } from './constants/sai-constants';
+import { SAI_EVENTS } from './constants/sai-event';
 import { SAI_TARGETS } from './constants/sai-targets';
 import { SaiCommentGeneratorService } from './sai-comment-generator.service';
-import { SAI_EVENTS } from './constants/sai-event';
-import { SAI_ACTIONS } from './constants/sai-actions';
-import { instance, mock } from 'ts-mockito';
-import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
 
 describe('SaiCommentGeneratorService', () => {
-  beforeEach(waitForAsync(() =>
+  beforeEach(() =>
     TestBed.configureTestingModule({
-      providers: [{ provide: SqliteService, useValue: instance(mock(SqliteService)) }],
-    })));
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
+      ],
+    }),
+  );
 
   describe('Comment generation should correctly work', () => {
     const createSai = (partial: Partial<SmartScripts>) => Object.assign(new SmartScripts(), partial);
@@ -53,7 +60,7 @@ describe('SaiCommentGeneratorService', () => {
       spyOn(sqliteQueryService, 'getSpellNameById').and.callFake((i) => lastValueFrom(of(mockGetSpellNameById + i)));
     });
 
-    it('should correctly handle linked events', waitForAsync(async () => {
+    it('should correctly handle linked events', async () => {
       const rows: SmartScripts[] = [
         createSai({ id: 1, event_type: SAI_EVENTS.ACCEPTED_QUEST, link: 2 }),
         createSai({ id: 2, event_type: SAI_EVENTS.LINK, link: 3 }),
@@ -63,7 +70,7 @@ describe('SaiCommentGeneratorService', () => {
       const service: SaiCommentGeneratorService = TestBed.inject(SaiCommentGeneratorService);
 
       expect(await service.generateComment(rows, rows[2], mockName)).toEqual(expected);
-    }));
+    });
 
     const cases: { name: string; input: Partial<SmartScripts>; expected: string }[] = [
       {
@@ -144,7 +151,7 @@ describe('SaiCommentGeneratorService', () => {
           action_param5: 55,
           action_param6: 66,
         },
-        expected: `MockEntity - In Combat - Pick Closest Waypoint 11 22 33 44 55 66`,
+        expected: `MockEntity - In Combat - Start closest Waypoint 11 - 22`,
       },
       {
         name: 'SAI_ACTIONS.FAIL_QUEST check action params 1',
@@ -669,7 +676,7 @@ describe('SaiCommentGeneratorService', () => {
           action_type: SAI_ACTIONS.AUTO_ATTACK,
           action_param1: 1,
         },
-        expected: `MockEntity - In Combat - Start Attacking`,
+        expected: `MockEntity - In Combat - Continue Attacking`,
       },
       {
         name: 'SAI_ACTIONS.ALLOW_COMBAT_MOVEMENT check action params 1 (0)',
@@ -1767,33 +1774,33 @@ describe('SaiCommentGeneratorService', () => {
         expected: `MockEntity - On Spellhit 'mockGetSpellNameById123' - Cast 'mockGetSpellNameById456'`,
       },
       {
-        name: `SAI_EVENTS.WAYPOINT_START`,
+        name: `SAI_EVENTS.ESCORT_START`,
         input: {
-          event_type: SAI_EVENTS.WAYPOINT_START,
+          event_type: SAI_EVENTS.ESCORT_START,
           event_param2: 124,
         },
         expected: `MockEntity - On Path 124 Started - No Action Type`,
       },
       {
-        name: `SAI_EVENTS.WAYPOINT_START`,
+        name: `SAI_EVENTS.ESCORT_START`,
         input: {
-          event_type: SAI_EVENTS.WAYPOINT_START,
+          event_type: SAI_EVENTS.ESCORT_START,
         },
         expected: `MockEntity - On Path Any Started - No Action Type`,
       },
       {
-        name: `SAI_EVENTS.WAYPOINT_REACHED`,
+        name: `SAI_EVENTS.ESCORT_REACHED`,
         input: {
-          event_type: SAI_EVENTS.WAYPOINT_REACHED,
+          event_type: SAI_EVENTS.ESCORT_REACHED,
           event_param1: 123,
           event_param2: 124,
         },
         expected: `MockEntity - On Point 123 of Path 124 Reached - No Action Type`,
       },
       {
-        name: `SAI_EVENTS.WAYPOINT_REACHED`,
+        name: `SAI_EVENTS.ESCORT_REACHED`,
         input: {
-          event_type: SAI_EVENTS.WAYPOINT_REACHED,
+          event_type: SAI_EVENTS.ESCORT_REACHED,
         },
         expected: `MockEntity - On Point Any of Path Any Reached - No Action Type`,
       },
@@ -1832,25 +1839,25 @@ describe('SaiCommentGeneratorService', () => {
         expected: `MockEntity - In Combat - Enable Evade`,
       },
       {
-        name: `SAI_ACTIONS.WP_START`,
+        name: `SAI_ACTIONS.ESCORT_START`,
         input: {
-          action_type: SAI_ACTIONS.WP_START,
+          action_type: SAI_ACTIONS.ESCORT_START,
           action_param3: 0,
         },
         expected: `MockEntity - In Combat - Start Waypoint Path 0`,
       },
       {
-        name: `SAI_ACTIONS.WP_START`,
+        name: `SAI_ACTIONS.ESCORT_START`,
         input: {
-          action_type: SAI_ACTIONS.WP_START,
+          action_type: SAI_ACTIONS.ESCORT_START,
           action_param3: 1,
         },
         expected: `MockEntity - In Combat - Start Patrol Path 0`,
       },
       {
-        name: `SAI_ACTIONS.WP_START`,
+        name: `SAI_ACTIONS.ESCORT_START`,
         input: {
-          action_type: SAI_ACTIONS.WP_START,
+          action_type: SAI_ACTIONS.ESCORT_START,
           action_param3: 123,
         },
         expected: `MockEntity - In Combat - Start [Unknown Value] Path 0`,
@@ -1977,11 +1984,11 @@ describe('SaiCommentGeneratorService', () => {
     ];
 
     for (const { name, input, expected } of cases) {
-      it(`Case: ${name}`, waitForAsync(async () => {
+      it(`Case: ${name}`, async () => {
         const service: SaiCommentGeneratorService = TestBed.inject(SaiCommentGeneratorService);
         const sai = createSai(input);
         expect(await service.generateComment([sai], sai, mockName)).toEqual(expected);
-      }));
+      });
     }
   });
 });

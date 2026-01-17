@@ -1,12 +1,28 @@
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, OnChanges, OnDestroy, OnInit, signal, SimpleChanges } from '@angular/core';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CREATURE_RACE_OPTION_ICON } from '@keira/shared/acore-world-model';
 import { KEIRA_APP_CONFIG_TOKEN } from '@keira/shared/config';
-import { TableRow } from '@keira/shared/constants';
+import { Option, TableRow } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
+import { GenericOptionSelectorComponent } from '@keira/shared/selectors';
 import * as jquery from 'jquery';
 import { BehaviorSubject, catchError, filter, Observable, of, Subscription } from 'rxjs';
-import { generateModels, getShadowlandDisplayId } from './helper';
-import { CONTENT_WOTLK, MODEL_TYPE, VIEWER_TYPE } from './model-3d-viewer.model';
+import { getShadowlandDisplayId } from './helper';
+import {
+  CHAR_DISPLAYABLE_INVENTORY_TYPE,
+  CharacterOptions,
+  CONTENT_WOTLK,
+  CREATURE_GENDER_OPTION_ICON,
+  Gender,
+  InventoryType,
+  MODEL_TYPE,
+  Race,
+  VIEWER_TYPE,
+  WEAPONS_INVENTORY_TYPE,
+  WoWModel,
+} from './model-3d-viewer.model';
+import { Model3DViewerService } from './model-3d-viewer.service';
 
 declare const ZamModelViewer: any;
 
@@ -14,51 +30,74 @@ declare const ZamModelViewer: any;
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-model-3d-viewer',
   templateUrl: './model-3d-viewer.component.html',
-  standalone: true,
+  styleUrl: './model-3d-viewer.component.scss',
+  imports: [GenericOptionSelectorComponent, ReactiveFormsModule, FormsModule],
 })
 export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   private readonly queryService = inject(MysqlQueryService);
+  private readonly http = inject(HttpClient);
+  private readonly KEIRA_APP_CONFIG = inject(KEIRA_APP_CONFIG_TOKEN);
+  private readonly model3DViewerService = inject(Model3DViewerService);
+
+  protected CREATURE_RACE = signal<Option[]>(CREATURE_RACE_OPTION_ICON);
+  protected readonly raceControl = new FormControl<Race>(Race.HUMAN);
+
+  protected CREATURE_GENDER = signal<Option[]>(CREATURE_GENDER_OPTION_ICON);
+  protected readonly genderControl = new FormControl<Gender>(Gender.MALE);
+
+  protected readonly MODEL_TYPE_CHARACTER = MODEL_TYPE.CHARACTER;
+
+  protected readonly backgroundColor = new FormControl<string>('#000000');
+
+  protected readonly showSettings = signal(false);
+
   private readonly windowRef = window as typeof window & {
     jQuery: any;
     $: any;
     WH: any;
     models: any;
   };
-  private readonly http = inject(HttpClient);
-  private readonly KEIRA_APP_CONFIG = inject(KEIRA_APP_CONFIG_TOKEN);
 
   private static uniqueId = 0;
   protected readonly uniqueId = Model3DViewerComponent.uniqueId++;
 
-  @Input() viewerType!: VIEWER_TYPE;
-  @Input() displayId!: number;
-  @Input() itemClass?: number;
-  @Input() itemInventoryType?: number;
+  readonly viewerType = input.required<VIEWER_TYPE>();
+  readonly displayId = input.required<number>();
+  readonly itemClass = input<number>();
+  readonly itemInventoryType = input<InventoryType>();
+  readonly enableBgSettings = input<boolean>(false);
 
   private readonly loadedViewer$ = new BehaviorSubject<boolean>(false);
   private readonly subscriptions = new Subscription();
-  private readonly models3D: any[] = [];
+  private readonly models3D: (typeof ZamModelViewer)[] = [];
+
+  private mutex3D = false;
 
   ngOnInit(): void {
+    this.initRaceGenderControls();
     this.setupViewer3D();
     this.resetModel3dElement();
     this.viewerDynamic();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (!this.windowRef.jQuery) {
+      return;
+    }
+
+    const displayId = this.displayId();
     if (
       changes['displayId']?.currentValue != changes['displayId']?.previousValue &&
-      !!this.displayId &&
-      this.displayId > 0 &&
-      this.viewerType != null
+      !!displayId &&
+      displayId > 0 &&
+      this.viewerType() != null
     ) {
-      this.resetModel3dElement();
-      this.show3Dmodel();
+      setTimeout(() => this.show3Dmodel());
     }
   }
 
-  show3Dmodel(): void {
-    if (this.viewerType === VIEWER_TYPE.ITEM) {
+  protected show3Dmodel(): void {
+    if (this.viewerType() === VIEWER_TYPE.ITEM) {
       this.subscriptions.add(
         this.getItemData$().subscribe((data) => {
           if (data.length && 'entry' in data[0]) {
@@ -73,12 +112,12 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
 
   private getItemData$(): Observable<TableRow[]> {
     return this.queryService.query(
-      `SELECT entry, class AS _class, inventoryType FROM item_template WHERE displayid=${this.displayId} LIMIT 1`,
+      `SELECT entry, class AS _class, inventoryType FROM item_template WHERE displayid=${this.displayId()} LIMIT 1`,
     );
   }
 
-  private verifyModelAndLoad({ entry, inventoryType, _class }: TableRow): void {
-    const modelType = this.getModelType(_class as number, inventoryType as number);
+  private verifyModelAndLoad({ entry, inventoryType }: TableRow): void {
+    const modelType = this.getModelType(inventoryType as number);
 
     this.subscriptions.add(
       this.http
@@ -92,67 +131,95 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
                 this.generate3Dmodel(modelType, displayInfo.displayId, CONTENT_WOTLK);
               });
               /* istanbul ignore next */
-              return of([]);
+              return of(null);
             },
           ),
         )
-        .subscribe(() => {
-          this.generate3Dmodel(modelType, this.displayId);
+        .subscribe((result) => {
+          /* istanbul ignore next */
+          if (result === null) {
+            return;
+          }
+
+          this.generate3Dmodel(modelType, this.displayId());
         }),
     );
   }
 
   /* istanbul ignore next */ // TODO: fix coverage
   private generate3Dmodel(
-    modelType: number = this.getModelType(),
-    displayId: number = this.displayId,
+    modelType = this.getModelType(),
+    displayId: number = this.displayId(),
     contentPath: string = CONTENT_WOTLK,
+    inventoryType = this.itemInventoryType(),
   ): void {
+    if (this.mutex3D) {
+      return;
+    }
+    this.mutex3D = true;
+
     this.resetModel3dElement();
 
-    generateModels(
-      1,
-      `#model_3d_${this.uniqueId}`,
-      {
+    let model: WoWModel | CharacterOptions;
+
+    if (modelType === MODEL_TYPE.CHARACTER) {
+      model = {
+        race: this.raceControl.value,
+        gender: this.genderControl.value,
+        skin: 0,
+        face: 0,
+        hairStyle: 0,
+        hairColor: 0,
+        facialStyle: 0,
+        items: [[inventoryType, displayId]],
+      } as CharacterOptions;
+    } else {
+      model = {
         type: modelType,
         id: displayId,
-      },
-      contentPath,
-    ).then((WoWModel) => {
+      } as WoWModel;
+    }
+
+    this.model3DViewerService.generateModels(1, `#model_3d_${this.uniqueId}`, model, contentPath).then((WoWModel) => {
       /* istanbul ignore next */
       this.models3D.push(WoWModel);
+      this.mutex3D = false;
     });
   }
 
-  private getContentPathUrl(inventoryType: number | string): string {
-    if (inventoryType === 3 || inventoryType === 4) {
-      return `${CONTENT_WOTLK}meta/armor/${inventoryType}/${this.displayId}.json`;
+  private getContentPathUrl(inventoryType: InventoryType | string): string {
+    if (inventoryType === InventoryType.SHOULDERS || inventoryType === InventoryType.SHIRT) {
+      return `${CONTENT_WOTLK}meta/armor/${inventoryType}/${this.displayId()}.json`;
     }
 
-    return `${CONTENT_WOTLK}meta/item/${this.displayId}.json`;
+    return `${CONTENT_WOTLK}meta/item/${this.displayId()}.json`;
   }
 
-  private getModelType(itemClass = this.itemClass, itemInventoryType = this.itemInventoryType): number {
-    if (this.viewerType === VIEWER_TYPE.ITEM) {
-      const _class = itemClass;
-      if (_class == 2) {
+  protected getModelType(itemInventoryType: InventoryType | undefined = this.itemInventoryType()): MODEL_TYPE | -1 {
+    const viewerType = this.viewerType();
+    if (viewerType === VIEWER_TYPE.ITEM) {
+      if (itemInventoryType && WEAPONS_INVENTORY_TYPE.includes(itemInventoryType)) {
         return MODEL_TYPE.WEAPON;
       }
 
-      if (itemInventoryType == 1) {
+      if (itemInventoryType === InventoryType.HEAD) {
         return MODEL_TYPE.HELMET;
       }
 
-      if (itemInventoryType == 3) {
+      if (itemInventoryType === InventoryType.SHOULDERS) {
         return MODEL_TYPE.SHOULDER;
+      }
+
+      if (itemInventoryType && CHAR_DISPLAYABLE_INVENTORY_TYPE.includes(itemInventoryType)) {
+        return MODEL_TYPE.CHARACTER;
       }
     }
 
-    if (this.viewerType == VIEWER_TYPE.OBJECT) {
+    if (viewerType === VIEWER_TYPE.OBJECT) {
       return MODEL_TYPE.OBJECT;
     }
 
-    if (this.viewerType === VIEWER_TYPE.NPC) {
+    if (viewerType === VIEWER_TYPE.NPC) {
       return MODEL_TYPE.NPC;
     }
 
@@ -172,14 +239,17 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
       this.windowRef.WH = {};
       this.windowRef.WH.debug = () => {};
       this.windowRef.WH.defaultAnimation = `Stand`;
+      this.windowRef.WH.WebP = { getImageExtension: () => '.webp' };
     }
 
     const loadedViewer$ = this.loadedViewer$;
 
     if (typeof ZamModelViewer === 'undefined') {
-      jquery.getScript(`https://wow.zamimg.com/modelviewer/wrath/viewer/viewer.min.js`, function () {
+      jquery.getScript('https://wowgaming.altervista.org/modelviewer/scripts/viewer.min.js', function () {
         loadedViewer$.next(true);
       });
+    } else {
+      loadedViewer$.next(true);
     }
   }
 
@@ -194,7 +264,42 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
     );
   }
 
-  /* istanbul ignore next */
+  private initRaceGenderControls(): void {
+    this.subscriptions.add(
+      this.raceControl.valueChanges.subscribe(() => {
+        if (this.getModelType() !== MODEL_TYPE.CHARACTER) {
+          return;
+        }
+
+        this.CREATURE_GENDER.set([
+          { value: 0, name: 'Male', icon: `race/${this.raceControl.value}-0.gif` },
+          { value: 1, name: 'Female', icon: `race/${this.raceControl.value}-1.gif` },
+        ]);
+
+        this.show3Dmodel();
+      }),
+    );
+
+    this.subscriptions.add(
+      this.genderControl.valueChanges.subscribe(() => {
+        if (this.getModelType() !== MODEL_TYPE.CHARACTER) {
+          return;
+        }
+
+        /* istanbul ignore next */
+        const prevValue = !this.genderControl.value ? 1 : 0;
+        this.CREATURE_RACE.set(
+          CREATURE_RACE_OPTION_ICON.map((option) => ({
+            ...option,
+            icon: option.icon?.replace(`-${prevValue}.gif`, `-${this.genderControl.value}.gif`),
+          })),
+        );
+
+        this.show3Dmodel();
+      }),
+    );
+  }
+
   private resetModel3dElement(): void {
     const modelElement = document.querySelector(`#model_3d_${this.uniqueId}`);
     this.clean3DModels();

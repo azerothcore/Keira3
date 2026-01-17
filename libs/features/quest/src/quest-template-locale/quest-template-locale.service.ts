@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
 import {
   QUEST_TEMPLATE_LOCALE_ID,
@@ -12,8 +12,14 @@ import { QuestHandlerService } from '../quest-handler.service';
   providedIn: 'root',
 })
 export class QuestTemplateLocaleService extends MultiRowEditorService<QuestTemplateLocale> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected override readonly handlerService: QuestHandlerService) {
-    super(QuestTemplateLocale, QUEST_TEMPLATE_LOCALE_TABLE, QUEST_TEMPLATE_LOCALE_ID, QUEST_TEMPLATE_LOCALE_ID_2, handlerService);
+  protected override readonly handlerService = inject(QuestHandlerService);
+  protected override readonly _entityClass = QuestTemplateLocale;
+  protected override readonly _entityTable = QUEST_TEMPLATE_LOCALE_TABLE;
+  protected override readonly _entityIdField = QUEST_TEMPLATE_LOCALE_ID;
+  protected override readonly _entitySecondIdField = QUEST_TEMPLATE_LOCALE_ID_2;
+
+  constructor() {
+    super();
+    this.init();
   }
 }

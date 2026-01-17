@@ -1,6 +1,6 @@
-import { BrowserContext, ElectronApplication, Page, _electron as electron } from 'playwright';
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import PATH from 'path';
+import { BrowserContext, ElectronApplication, Page, _electron as electron } from 'playwright';
 
 test.describe('Check Home Page', () => {
   let app: ElectronApplication;
@@ -15,7 +15,7 @@ test.describe('Check Home Page', () => {
   });
 
   test('Launch electron app', async () => {
-    const windowState: { isVisible: boolean; isDevToolsOpened: boolean; isCrashed: boolean } = await app.evaluate(async (process) => {
+    const windowState: { isVisible: boolean; isDevToolsOpened: boolean; isCrashed: boolean } = await app.evaluate((process) => {
       const mainWindow = process.BrowserWindow.getAllWindows()[0];
 
       const getState = () => ({

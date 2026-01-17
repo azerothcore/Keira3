@@ -2,19 +2,8 @@
   "LANGUAGES": {
     "ENGLISH": "英语",
     "SPANISH": "西班牙语",
-    "ITALIAN": "意大利语",
     "CHINESE": "简体中文",
-    "RUSSIAN": "俄语",
-    "DUTCH": "荷兰语",
-    "FRENCH": "法语",
-    "GREEK": "希腊语",
-    "SWEDEN": "瑞典语",
-    "GERMAN": "德语",
-    "POLISH": "波兰语",
-    "PORTUGUESE": "葡萄牙语",
-    "KOREAN": "韩语",
-    "ROMANIAN": "罗马尼亚语",
-    "SLOVAK": "斯洛伐克语"
+    "RUSSIAN": "俄语"
   },
   "MODAL": {
     "YES": "是",
@@ -58,6 +47,8 @@
     "USERNAME": "用户名",
     "PASSWORD": "密码",
     "DATABASE": "数据库",
+    "USE_SSL": "Use SSL/TLS",
+    "SSL_TOOLTIP": "Required for servers with require_secure_transport=ON",
     "SAVE_PASSWORD": "保存密码",
     "REMEMBER_ME": "Remember me",
     "LOAD_RECENT": "加载最近的",
@@ -84,7 +75,7 @@
       "ONKILL_REPUTATION": "声望配置",
       "EQUIP_TEMPLATE": "装备模板",
       "VENDOR": "商贩",
-      "TRAINER": "训练师",
+      "DEFAULT_TRAINER": "Default Trainer",
       "QUEST_ITEM": "任务物品",
       "CREATURE_LOOT": "生物掉落",
       "PICKPOCKETING_LOOT": "扒窃掉落",
@@ -179,7 +170,14 @@
       "TITLE": "Game Teleport",
       "SEARCH_GAME_TELE": "Search Teleport",
       "SELECT_GAME_TELE": "Game Tele Editor"
-    }
+    },
+    "TRAINER": {
+      "TITLE": "Trainer",
+      "SEARCH_TRAINER": "Search Trainer",
+      "SELECT_TRAINER": "Trainer",
+      "TRAINER_SPELL": "Trainer Spell"
+    },
+    "UNUSED_GUID_SEARCH": "Unused GUIDs"
   },
   "DASHBOARD": {
     "WELCOME": "欢迎使用Keira3",
@@ -213,7 +211,6 @@
       "KILL_CREDITS": "荣誉击杀",
       "MODELS": "模组",
       "MONEY_LOOT": "金钱掉落",
-      "TRAINER": "训练师",
       "LOOTS": "掉落",
       "DIFFICULTY_ENTRIES": "副本难度",
       "DAMAGE": "伤害",
@@ -296,17 +293,15 @@
     "TEMPLATE_SPELL": {
       "INDEX": "范围值：0-7"
     },
-    "NPC_TRAINER": {
-      "MONEY_COST": "学习该法术的金钱，用铜币表示(1金=100银=10000铜)",
-      "REQ_SKILL_LINE": "玩家学习技能所需的前置技能",
-      "REQ_SKILL_RANK": "玩家学习技能所需要的技能熟练度要求",
-      "REQ_LEVEL": "玩家学习技能锁需要的最低角色等级要求"
-    },
     "NPC_VENDOR": {
       "SLOT": "物品在商贩售卖窗口中的显示位置",
       "MAXCOUNT": "供应商在销售物品的最大数量。0表示无限制。",
       "INCRTIME": "结合供应商销售物品的最大数量，如果设置了最大数量限制，则在此处设置物品在售卖窗口的刷新时间（单位：秒）",
       "EXTENDED_COST": "值来自DBC，稍后将在Keira3中实现该值的选择器"
+    },
+    "DEFAULT_TRAINER": {
+      "TITLE": "Default Trainer",
+      "TRAINER_ID_TOOLTIP": "ID of the trainer template (trainer.Id) assigned to this creature. Use 0 for no default trainer. Examples: 1=Trainer Warrior, 3=Trainer Paladin, 7=Trainer Hunter, 9=Trainer Rogue, 11=Trainer Priest, 13=Trainer Death Knight, 14=Trainer Shaman, 16=Trainer Mage, 31=Trainer Warlock, 33=Trainer Druid, 36=Trainer Mount & Fly. See the trainer wiki for the full list."
     },
     "TEXT": {
       "GROUP_ID": "If there is more than one of the same entry (more than one text the creature says), this column is used to choose if it is a random say or an ordered list. If a creature has got more than one say text to be shown in a given order, it must be incremented for each new matching entry (ex. 0, 1, 2, 3...). If there is only one entry or only one group, this value should be 0. If there are multiple groups of texts, this value stays the same within the group while the id increments within the same group.",
@@ -448,7 +443,8 @@
       "ORIENTATION": "生物刷新的方向 (北 = 0.0; 南 = 圆周率 (3.14159))",
       "ANIMPROGRESS": "Always 100 for chests.",
       "STATE": "用于宝箱或者门。 1 = 关闭  0 = 打开",
-      "SCRIPT_NAME": "此生物使用的C++脚本的名称(如果有的话)。"
+      "SCRIPT_NAME": "此生物使用的C++脚本的名称(如果有的话)。",
+      "COMMENT": "Comment"
     },
     "SPAWN_ADDON": {
       "GUID": "链接到gameobject表的guid字段"
@@ -511,7 +507,6 @@
       "RESISTANCE_TOOLTIP": "Related resistance per type",
       "SCALING_STAT_DISTRIBUTION": "与静态属性类似，这些属性是随着用户等级(主要是传家宝升级装备)而增长的，就像静态属性。",
       "SCALING_STAT_VALUE": "缩放属性的最终值(80级)",
-      "STATS_COUNT": "When an item has entries in stat_type, this must be updated to display those entries (Unknown how this works).",
       "STAT_VALUE": "改变属性的类型的值",
       "GEM_PROPERTIES": "对应于GemProperties.dbc中的ID",
       "SOCKET_CONTENTS": "宝石的数量 SocketColor_{{idx}}",
@@ -567,8 +562,6 @@
       "TEXT": "The actual text. The message in this field will be shown as the text on a page."
     }
   },
-  "SOURCE_TYPE": "来源类型:",
-  "LIMIT": "限制:",
   "GOSSIP": {
     "GOSSIP_MENU": {
       "TEXT_ID_TOOLTIP": "来自npc_text表的ID字段，你想展示的NPC对话文本，这将告诉NPC在显示选项菜单的顶部说些什么。"
@@ -590,7 +583,9 @@
     "SELECT": {
       "SOURCE_GROUP": "源组:",
       "SOURCE_ENTRY": "源输入:",
-      "CREATE_NEW": "新建"
+      "CREATE_NEW": "新建",
+      "PLACEHOLDER_SOURCE_GROUP": "SourceGroup",
+      "PLACEHOLDER_ENTRY": "SourceEntry"
     },
     "EDITOR": {
       "CONDITIONS_SOURCE": "条件来源",
@@ -707,7 +702,8 @@
         "CONDITION_TAXI": "总是 0",
         "CONDITION_QUESTSTATE": "quest_template表的ID字段",
         "CONDITION_QUEST_OBJECTIVE_PROGRESS": "quest_template表的id字段",
-        "CONDITION_WORLD_SCRIPT": "WorldStateCondition (defined in WorldState.h)"
+        "CONDITION_WORLD_SCRIPT": "WorldStateCondition (defined in WorldState.h)",
+        "CONDITION_AI_DATA": "data index"
       },
       "VALUE2": {
         "CONDITION_NONE": "(未使用)",
@@ -728,7 +724,8 @@
         "CONDITION_STAND_STATE": "站立/坐下的状态, 10 = 站立; 1 = 坐下",
         "CONDITION_QUESTSTATE": "state_mask",
         "CONDITION_QUEST_OBJECTIVE_PROGRESS": "任务目标ID - 参见quest_template表的RequiredNpcOrGo字段",
-        "CONDITION_WORLD_SCRIPT": "state, 0 = unused"
+        "CONDITION_WORLD_SCRIPT": "state, 0 = unused",
+        "CONDITION_AI_DATA": "value (to be compared)"
       },
       "VALUE3": {
         "CONDITION_NONE": "(从未使用)",
@@ -750,6 +747,16 @@
       "TIMED_ACTIONLISTS": "All smart_scripts having source_type = 9 and entryorguid between CreatureID * 100 and CreatureID * 100 + 100",
       "GENERATE_COMMENT": "Generate comment",
       "GENERATE_COMMENTS_ALL": "Generate comments (all)"
+    },
+    "SEARCH_BY_EXISTING": {
+      "SOURCE_TYPE": "Source Type:",
+      "ENTRY_OR_GUID": "Entry(+) or GUID(-):",
+      "LIMIT": "Limit:",
+      "PLACEHOLDER": "Entry (as positive number) or GUID (as negative number)",
+      "ALL": "ALL"
+    },
+    "SEARCH_BY_ENTITY": {
+      "SOURCE_TYPE": "Select a Source Type"
     }
   },
   "SPELL_DBC": {
@@ -884,5 +891,35 @@
   },
   "GAME_TELE": {
     "EDITOR": "Teleport Editor"
+  },
+  "TRAINER": {
+    "EDITOR": "Trainer Editor",
+    "TRAINER_ID_TOOLTIP": "References trainer.id (trainer template). Examples: 1=Trainer Warrior, 3=Trainer Paladin, 7=Trainer Hunter, 9=Trainer Rogue, 11=Trainer Priest, 13=Trainer Death Knight, 14=Trainer Shaman, 16=Trainer Mage, 31=Trainer Warlock, 33=Trainer Druid, 36=Trainer Mount & Fly. See the trainer wiki for the full list.",
+    "REQUIREMENT_TOOLTIP": "Meaning depends on Type - use 0 for none. Types: 0-Class (ChrClass ID e.g. 1=Warrior, 2=Paladin, 3=Hunter, 4=Rogue, 5=Priest, 6=Death Knight, 7=Shaman, 8=Mage, 9=Warlock, 11=Druid), 1-Mount (ChrRace ID (e.g. 1=Human, 2=Orc, 3=Dwarf, 4=Night Elf, 5=Undead, 6=Tauren, 7=Gnome, 8=Troll, 10=Blood Elf, 11=Draenei), 2-Tradeskill Spell ID (player must know this spell to learn from this trainer), 3-Pet ChrClass ID (see above). ",
+    "GREETING_TOOLTIP": "Text shown at the top of the trainer window when opened (this is not gossip). For localized greetings add entries in the \"trainer_locale\" table (Greeting_lang).",
+    "SPELL": {
+      "TRAINER_ID": "References trainer.id (trainer template linked to this entry).",
+      "SPELL_ID": "Spell ID being taught.",
+      "MONEY_COST": "Cost in copper to learn this spell from the trainer (1 gold = 100 silver = 10000 copper).",
+      "REQ_SKILL_LINE": "SkillLine ID required to learn this spell (e.g., profession ID). Use 0 if none.",
+      "REQ_SKILL_RANK": "Minimum skill rank in ReqSkillLine required to learn the spell.",
+      "REQ_ABILITY_1": "Spell ID the player is required to already know (first required ability).",
+      "REQ_ABILITY_1_TOOLTIP": "Spell ID the player must already know to be taught this spell (first prerequisite). Use 0 if none.",
+      "REQ_ABILITY_2": "Spell ID the player is required to already know (second required ability).",
+      "REQ_ABILITY_2_TOOLTIP": "Spell ID the player must already know to be taught this spell (second prerequisite). Use 0 if none.",
+      "REQ_ABILITY_3": "Spell ID the player is required to already know (third required ability).",
+      "REQ_ABILITY_3_TOOLTIP": "Spell ID the player must already know to be taught this spell (third prerequisite). Use 0 if none.",
+      "REQ_LEVEL": "Minimum player level required to learn this spell.",
+      "VERIFIED_BUILD": "Used by AzerothCore to indicate whether this entry was verified against WDB files (0 = not parsed; >0 = parsed; -1 = placeholder; -<build> = parsed with specific client build and manually edited)."
+    }
+  },
+  "UNUSED_GUID_SEARCH": {
+    "TABLE": "Table",
+    "START_INDEX": "Start Index",
+    "AMOUNT": "Amount",
+    "CONSECUTIVE": "Consecutive",
+    "SEARCH": "Search",
+    "SEARCHING": "Searching...",
+    "FOUND_GUIDS": "Found unused GUIDs:"
   }
 }

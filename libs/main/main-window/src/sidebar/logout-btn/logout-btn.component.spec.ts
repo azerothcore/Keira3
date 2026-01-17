@@ -1,4 +1,6 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { Spied, TranslateTestingModule } from '@keira/shared/test-utils';
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
@@ -9,17 +11,19 @@ import { LocationService } from '@keira/shared/common-services';
 import Spy = jasmine.Spy;
 
 describe('LogoutBtnComponent', () => {
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ModalModule.forRoot(), LogoutBtnComponent, ModalConfirmComponent, TranslateTestingModule],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         {
           provide: LoginConfigService,
           useValue: jasmine.createSpyObj('LoginConfigService', ['saveRememberPreference']),
         },
       ],
     }).compileComponents();
-  }));
+  });
 
   function setup() {
     const fixture = TestBed.createComponent(LogoutBtnComponent);

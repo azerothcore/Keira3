@@ -1,4 +1,6 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
@@ -32,7 +34,7 @@ describe('PickpocketingLootTemplate integration tests', () => {
   originalRow1.Item = 1;
   originalRow2.Item = 2;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         ToastrModule.forRoot(),
@@ -41,9 +43,15 @@ describe('PickpocketingLootTemplate integration tests', () => {
         RouterTestingModule,
         TranslateTestingModule,
       ],
-      providers: [CreatureHandlerService, SaiCreatureHandlerService, { provide: SqliteService, useValue: instance(mock(SqliteService)) }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
+      ],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean, lootId = id) {
     spyOn(TestBed.inject(PickpocketingLootTemplateService), 'getLootId').and.returnValue(of([{ lootId }]));
@@ -86,11 +94,11 @@ describe('PickpocketingLootTemplate integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
-      expect(handlerService.isPickpocketingLootTemplateUnsaved).toBe(false);
+      expect(handlerService.isPickpocketingLootTemplateUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isPickpocketingLootTemplateUnsaved).toBe(true);
+      expect(handlerService.isPickpocketingLootTemplateUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isPickpocketingLootTemplateUnsaved).toBe(false);
+      expect(handlerService.isPickpocketingLootTemplateUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {

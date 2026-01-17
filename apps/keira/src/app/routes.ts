@@ -19,7 +19,7 @@ import {
   CreatureTemplateResistanceComponent,
   CreatureTemplateSpellComponent,
   CreatureTextComponent,
-  NpcTrainerComponent,
+  CreatureDefaultTrainerComponent,
   NpcVendorComponent,
   PickpocketingLootTemplateComponent,
   SaiCreatureComponent,
@@ -94,6 +94,8 @@ import {
   SelectAcoreStringComponent,
 } from 'texts';
 import { GameTeleComponent, GameTeleHandlerService, SelectGameTeleComponent } from '@keira/features/game-tele';
+import { SelectTrainerComponent, TrainerComponent, TrainerHandlerService, TrainerSpellComponent } from '@keira/features/trainer';
+import { UnusedGuidSearchComponent } from '@keira/features/unused-guid-search';
 
 export const KEIRA_ROUTES: Routes = [
   {
@@ -177,10 +179,11 @@ export const KEIRA_ROUTES: Routes = [
         canActivate: [CreatureHandlerService],
       },
       {
-        path: 'npc-trainer',
-        component: NpcTrainerComponent,
+        path: 'creature-default-trainer',
+        component: CreatureDefaultTrainerComponent,
         canActivate: [CreatureHandlerService],
       },
+
       {
         path: 'creature-spawn',
         component: CreatureSpawnComponent,
@@ -504,5 +507,28 @@ export const KEIRA_ROUTES: Routes = [
         canActivate: [GameTeleHandlerService],
       },
     ],
+  },
+  {
+    path: 'trainer',
+    children: [
+      {
+        path: 'select',
+        component: SelectTrainerComponent,
+      },
+      {
+        path: 'trainer',
+        component: TrainerComponent,
+        canActivate: [TrainerHandlerService],
+      },
+      {
+        path: 'trainer-spell',
+        component: TrainerSpellComponent,
+        canActivate: [TrainerHandlerService],
+      },
+    ],
+  },
+  {
+    path: 'unused-guid-search',
+    component: UnusedGuidSearchComponent,
   },
 ];

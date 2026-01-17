@@ -1,11 +1,12 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { SelectPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { BROADCAST_TEXT_ID } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { SelectBroadcastTextComponent } from './select-broadcast-text.component';
 import { BroadcastTextHandlerService } from './broadcast-text-handler.service';
@@ -19,18 +20,12 @@ describe(`${SelectBroadcastTextComponent.name} integration tests`, () => {
   const value = 1200;
   const expectedRoute = 'texts/broadcast-text';
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        SelectBroadcastTextComponent,
-        TranslateTestingModule,
-      ],
-      providers: [BroadcastTextHandlerService],
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectBroadcastTextComponent, TranslateTestingModule],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), BroadcastTextHandlerService],
     }).compileComponents();
-  }));
+  });
 
   function setup() {
     const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
@@ -48,7 +43,7 @@ describe(`${SelectBroadcastTextComponent.name} integration tests`, () => {
     return { component, fixture, selectService, broadcast: page, queryService, querySpy, navigateSpy };
   }
 
-  it('should correctly initialise', waitForAsync(async () => {
+  it('should correctly initialise', async () => {
     const { fixture, broadcast, querySpy, component } = setup();
 
     await fixture.whenStable();
@@ -56,9 +51,9 @@ describe(`${SelectBroadcastTextComponent.name} integration tests`, () => {
     broadcast.expectNewEntityFree();
     expect(querySpy).toHaveBeenCalledWith('SELECT MAX(ID) AS max FROM broadcast_text;');
     expect(broadcast.queryWrapper.innerText).toContain('SELECT * FROM `broadcast_text` LIMIT 50');
-  }));
+  });
 
-  it('should correctly behave when inserting and selecting free entry', waitForAsync(async () => {
+  it('should correctly behave when inserting and selecting free entry', async () => {
     const { fixture, broadcast, querySpy, navigateSpy } = setup();
 
     await fixture.whenStable();
@@ -76,9 +71,9 @@ describe(`${SelectBroadcastTextComponent.name} integration tests`, () => {
     expect(navigateSpy).toHaveBeenCalledTimes(1);
     expect(navigateSpy).toHaveBeenCalledWith([expectedRoute]);
     broadcast.expectTopBarCreatingNew(value);
-  }));
+  });
 
-  it('should correctly behave when inserting an existing entity', waitForAsync(async () => {
+  it('should correctly behave when inserting an existing entity', async () => {
     const { fixture, broadcast, querySpy } = setup();
 
     await fixture.whenStable();
@@ -90,7 +85,7 @@ describe(`${SelectBroadcastTextComponent.name} integration tests`, () => {
     expect(querySpy).toHaveBeenCalledTimes(1);
     expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`broadcast_text\` WHERE (ID = ${value})`);
     broadcast.expectEntityAlreadyInUse();
-  }));
+  });
 
   for (const { id, entry, limit, expectedQuery } of [
     {

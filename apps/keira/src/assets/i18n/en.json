@@ -2,19 +2,8 @@
   "LANGUAGES": {
     "ENGLISH": "English",
     "SPANISH": "Spanish",
-    "ITALIAN": "Italian",
     "CHINESE": "Chinese",
-    "RUSSIAN": "Russian",
-    "DUTCH": "Dutch",
-    "FRENCH": "French",
-    "GREEK": "Greek",
-    "SWEDEN": "Sweden",
-    "GERMAN": "German",
-    "POLISH": "Polish",
-    "PORTUGUESE": "Portuguese",
-    "KOREAN": "Korean",
-    "ROMANIAN": "Romanian",
-    "SLOVAK": "Slovak"
+    "RUSSIAN": "Russian"
   },
   "MODAL": {
     "YES": "Yes",
@@ -58,6 +47,8 @@
     "USERNAME": "Username",
     "PASSWORD": "Password",
     "DATABASE": "Database",
+    "USE_SSL": "Use SSL/TLS",
+    "SSL_TOOLTIP": "Required for servers with require_secure_transport=ON",
     "SAVE_PASSWORD": "Save password",
     "REMEMBER_ME": "Remember me",
     "LOAD_RECENT": "Load recent",
@@ -84,7 +75,7 @@
       "ONKILL_REPUTATION": "Onkill Reputation",
       "EQUIP_TEMPLATE": "Equip Template",
       "VENDOR": "Vendor",
-      "TRAINER": "Trainer",
+      "DEFAULT_TRAINER": "Default Trainer",
       "QUEST_ITEM": "Quest Item",
       "CREATURE_LOOT": "Creature Loot",
       "PICKPOCKETING_LOOT": "Pickpocketing Loot",
@@ -179,7 +170,14 @@
       "TITLE": "Game Teleport",
       "SEARCH_GAME_TELE": "Search Teleport",
       "SELECT_GAME_TELE": "Game Tele Editor"
-    }
+    },
+    "TRAINER": {
+      "TITLE": "Trainer",
+      "SEARCH_TRAINER": "Search Trainer",
+      "SELECT_TRAINER": "Trainer",
+      "TRAINER_SPELL": "Trainer Spell"
+    },
+    "UNUSED_GUID_SEARCH": "Unused GUIDs"
   },
   "DASHBOARD": {
     "WELCOME": "Welcome to Keira3",
@@ -213,7 +211,6 @@
       "KILL_CREDITS": "KillCredits",
       "MODELS": "Models",
       "MONEY_LOOT": "Money Loot",
-      "TRAINER": "Trainer",
       "LOOTS": "Loots",
       "DIFFICULTY_ENTRIES": "Difficulty Entries",
       "DAMAGE": "Damage",
@@ -236,9 +233,9 @@
       "LOOTID": "Link to creature_loot_template.entry",
       "PICKPOCKETLOOT": "Link to pickpocketing_loot_template.entry",
       "SKINLOOT": "Link to skinning_loot_template.entry",
-      "DIFFICULTY_ENTRY_1": "Entry of the equivalent creature in Heroic Dungeon or 25man Normal Raid",
-      "DIFFICULTY_ENTRY_2": "Entry of the equivalent creature in 10man Heroic Raid",
-      "DIFFICULTY_ENTRY_3": "Entry of the equivalent creature in 25man Heroic Raid",
+      "DIFFICULTY_ENTRY_1": "creature_template.entry for: Heroic Dungeons or 25-man Normal Raid or Battleground Level 60 - 69",
+      "DIFFICULTY_ENTRY_2": "creature_template.entry for: 10-man Heroic Raid or Battleground Level 70 - 79",
+      "DIFFICULTY_ENTRY_3": "creature_template.entry for: 25-man Heroic Raid or Battleground Level 80",
       "BASE_ATTACK_TIME": "Base time (milliseconds) that determines how long a creature must wait between melee attacks.",
       "RANGE_ATTACK_TIME": "Base time (milliseconds) that determines how long a creature must wait between ranged attacks.",
       "SCRIPT_NAME": "Overrides AIName. The name of the C++ script that this creature uses, if any.",
@@ -296,17 +293,15 @@
     "TEMPLATE_SPELL": {
       "INDEX": "Allowed values: 0-7"
     },
-    "NPC_TRAINER": {
-      "MONEY_COST": "The cost to pay to learn the spell represented in copper (1 gold = 100 silver = 10000 cooper)",
-      "REQ_SKILL_LINE": "The required skill the player needs to have in order to be able to learn the spell",
-      "REQ_SKILL_RANK": "The proficiency in the skill from reqskill that the player needs to meet to learn the spell",
-      "REQ_LEVEL": "The minimum level the player needs to be in order to learn the spell."
-    },
     "NPC_VENDOR": {
       "SLOT": "Position of the item in the vendor window",
       "MAXCOUNT": "The maximum number of items carried by the vendor at any time. 0 for infinite (if choosing a value of 1 or higher also requires incrtime value to work)",
       "INCRTIME": "Combined with maxcount, how often (in seconds) the vendor list is refreshed",
       "EXTENDED_COST": "Value comes from DBC and a selector for this will be implemented later in Keira3"
+    },
+    "DEFAULT_TRAINER": {
+      "TITLE": "Default Trainer",
+      "TRAINER_ID_TOOLTIP": "ID of the trainer template (trainer.Id) assigned to this creature. Use 0 for no default trainer. Examples: 1=Trainer Warrior, 3=Trainer Paladin, 7=Trainer Hunter, 9=Trainer Rogue, 11=Trainer Priest, 13=Trainer Death Knight, 14=Trainer Shaman, 16=Trainer Mage, 31=Trainer Warlock, 33=Trainer Druid, 36=Trainer Mount & Fly. See the trainer wiki for the full list."
     },
     "TEXT": {
       "GROUP_ID": "If there is more than one of the same entry (more than one text the creature says), this column is used to choose if it is a random say or an ordered list. If a creature has got more than one say text to be shown in a given order, it must be incremented for each new matching entry (ex. 0, 1, 2, 3...). If there is only one entry or only one group, this value should be 0. If there are multiple groups of texts, this value stays the same within the group while the id increments within the same group.",
@@ -448,7 +443,8 @@
       "ORIENTATION": "The orientation of the creatures spawn point. (North = 0.0; South = pi (3.14159))",
       "ANIMPROGRESS": "Always 100 for chests.",
       "STATE": "For chests or doors. 1 = closed  0 = open",
-      "SCRIPT_NAME": "The name of the C++ script that this creature uses, if any."
+      "SCRIPT_NAME": "The name of the C++ script that this creature uses, if any.",
+      "COMMENT": "Comment"
     },
     "SPAWN_ADDON": {
       "GUID": "Link to gameobject.guid"
@@ -511,7 +507,6 @@
       "RESISTANCE_TOOLTIP": "Related resistance per type",
       "SCALING_STAT_DISTRIBUTION": "Similar to Static Stats these are the Stats that grow along with the users level (mainly heirloom leveling gear) use like static stats.",
       "SCALING_STAT_VALUE": "Final (level 80) value of the scaling-stat",
-      "STATS_COUNT": "When an item has entries in stat_type, this must be updated to display those entries (Unknown how this works).",
       "STAT_VALUE": "The value to change the stat type to",
       "GEM_PROPERTIES": "Corresponds to the ID in GemProperties.dbc",
       "SOCKET_CONTENTS": "The amount of Gems of SocketColor_{{idx}}",
@@ -567,8 +562,7 @@
       "TEXT": "The actual text. The message in this field will be shown as the text on a page."
     }
   },
-  "SOURCE_TYPE": "Source Type:",
-  "LIMIT": "Limit:",
+
   "GOSSIP": {
     "GOSSIP_MENU": {
       "TEXT_ID_TOOLTIP": "The npc_text.ID for the gossip you want to be initially displayed. Also this tells the NPC what to say at the top of the options menu when it is displayed."
@@ -590,7 +584,9 @@
     "SELECT": {
       "SOURCE_GROUP": "Source Group:",
       "SOURCE_ENTRY": "Source Entry:",
-      "CREATE_NEW": "Create new"
+      "CREATE_NEW": "Create new",
+      "PLACEHOLDER_SOURCE_GROUP": "SourceGroup",
+      "PLACEHOLDER_ENTRY": "SourceEntry"
     },
     "EDITOR": {
       "CONDITIONS_SOURCE": "Condition source",
@@ -707,7 +703,8 @@
         "CONDITION_TAXI": "Always 0",
         "CONDITION_QUESTSTATE": "quest_template.ID",
         "CONDITION_QUEST_OBJECTIVE_PROGRESS": "quest_template.id",
-        "CONDITION_WORLD_SCRIPT": "WorldStateCondition (defined in WorldState.h)"
+        "CONDITION_WORLD_SCRIPT": "WorldStateCondition (defined in WorldState.h)",
+        "CONDITION_AI_DATA": "data index"
       },
       "VALUE2": {
         "CONDITION_NONE": "(Never used)",
@@ -728,7 +725,8 @@
         "CONDITION_STAND_STATE": "Exact stand state, or generic state (stand/sit), depending on value 10 = Standing; 1 = Sitting",
         "CONDITION_QUESTSTATE": "state_mask",
         "CONDITION_QUEST_OBJECTIVE_PROGRESS": "Quest Objective ID - see quest_template.RequiredNpcOrGo",
-        "CONDITION_WORLD_SCRIPT": "state, 0 = unused"
+        "CONDITION_WORLD_SCRIPT": "state, 0 = unused",
+        "CONDITION_AI_DATA": "value (to be compared)"
       },
       "VALUE3": {
         "CONDITION_NONE": "(Never used)",
@@ -750,8 +748,19 @@
       "TIMED_ACTIONLISTS": "All smart_scripts having source_type = 9 and entryorguid between CreatureID * 100 and CreatureID * 100 + 100",
       "GENERATE_COMMENT": "Generate comment",
       "GENERATE_COMMENTS_ALL": "Generate comments (all)"
+    },
+    "SEARCH_BY_EXISTING": {
+      "SOURCE_TYPE": "Source Type:",
+      "ENTRY_OR_GUID": "Entry(+) or GUID(-):",
+      "LIMIT": "Limit:",
+      "PLACEHOLDER": "Entry (as positive number) or GUID (as negative number)",
+      "ALL": "ALL"
+    },
+    "SEARCH_BY_ENTITY": {
+      "SOURCE_TYPE": "Select a Source Type"
     }
   },
+
   "SPELL_DBC": {
     "BASE": {
       "BASE": "Base",
@@ -884,5 +893,35 @@
   },
   "GAME_TELE": {
     "EDITOR": "Teleport Editor"
+  },
+  "TRAINER": {
+    "EDITOR": "Trainer Editor",
+    "TRAINER_ID_TOOLTIP": "References trainer.id (trainer template). Examples: 1=Trainer Warrior, 3=Trainer Paladin, 7=Trainer Hunter, 9=Trainer Rogue, 11=Trainer Priest, 13=Trainer Death Knight, 14=Trainer Shaman, 16=Trainer Mage, 31=Trainer Warlock, 33=Trainer Druid, 36=Trainer Mount & Fly. See the trainer wiki for the full list.",
+    "REQUIREMENT_TOOLTIP": "Meaning depends on Type - use 0 for none. Types: 0-Class (ChrClass ID e.g. 1=Warrior, 2=Paladin, 3=Hunter, 4=Rogue, 5=Priest, 6=Death Knight, 7=Shaman, 8=Mage, 9=Warlock, 11=Druid), 1-Mount (ChrRace ID (e.g. 1=Human, 2=Orc, 3=Dwarf, 4=Night Elf, 5=Undead, 6=Tauren, 7=Gnome, 8=Troll, 10=Blood Elf, 11=Draenei), 2-Tradeskill Spell ID (player must know this spell to learn from this trainer), 3-Pet ChrClass ID (see above). ",
+    "GREETING_TOOLTIP": "Text shown at the top of the trainer window when opened (this is not gossip). For localized greetings add entries in the \"trainer_locale\" table (Greeting_lang).",
+    "SPELL": {
+      "TRAINER_ID": "References trainer.id (trainer template linked to this entry).",
+      "SPELL_ID": "Spell ID being taught.",
+      "MONEY_COST": "Cost in copper to learn this spell from the trainer (1 gold = 100 silver = 10000 copper).",
+      "REQ_SKILL_LINE": "SkillLine ID required to learn this spell (e.g., profession ID). Use 0 if none.",
+      "REQ_SKILL_RANK": "Minimum skill rank in ReqSkillLine required to learn the spell.",
+      "REQ_ABILITY_1": "Spell ID the player is required to already know (first required ability).",
+      "REQ_ABILITY_1_TOOLTIP": "Spell ID the player must already know to be taught this spell (first prerequisite). Use 0 if none.",
+      "REQ_ABILITY_2": "Spell ID the player is required to already know (second required ability).",
+      "REQ_ABILITY_2_TOOLTIP": "Spell ID the player must already know to be taught this spell (second prerequisite). Use 0 if none.",
+      "REQ_ABILITY_3": "Spell ID the player is required to already know (third required ability).",
+      "REQ_ABILITY_3_TOOLTIP": "Spell ID the player must already know to be taught this spell (third prerequisite). Use 0 if none.",
+      "REQ_LEVEL": "Minimum player level required to learn this spell.",
+      "VERIFIED_BUILD": "Used by AzerothCore to indicate whether this entry was verified against WDB files (0 = not parsed; >0 = parsed; -1 = placeholder; -<build> = parsed with specific client build and manually edited)."
+    }
+  },
+  "UNUSED_GUID_SEARCH": {
+    "TABLE": "Table",
+    "START_INDEX": "Start Index",
+    "AMOUNT": "Amount",
+    "CONSECUTIVE": "Consecutive",
+    "SEARCH": "Search",
+    "SEARCHING": "Searching...",
+    "FOUND_GUIDS": "Found unused GUIDs:"
   }
 }

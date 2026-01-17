@@ -4,19 +4,14 @@ import { HandlerService } from '../handlers/handler.service';
 import { SearchService } from './search.service';
 
 export abstract class SelectService<T extends TableRow> extends SearchService<T> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  protected constructor(
-    override readonly queryService: MysqlQueryService,
-    public readonly handlerService: HandlerService<T>,
-    protected override readonly entityTable: string,
-    protected readonly entityIdField: string,
-    protected entityNameField: string | undefined | null,
-    protected override readonly fieldList: StringKeys<T>[],
-    protected override readonly selectFields: string[] | undefined = undefined,
-    protected override readonly groupFields: string[] | undefined = undefined,
-  ) {
-    super(queryService, entityTable, fieldList, selectFields, groupFields);
-  }
+  abstract override readonly queryService: MysqlQueryService;
+  abstract readonly handlerService: HandlerService<T>;
+  protected abstract override readonly entityTable: string;
+  protected abstract readonly entityIdField: string;
+  protected entityNameField: string | undefined | null = undefined;
+  protected abstract override readonly fieldList: StringKeys<T>[];
+  protected override readonly selectFields: string[] | undefined = undefined;
+  protected override readonly groupFields: string[] | undefined = undefined;
 
   onSelect({ selected }: { selected: { [_key: string]: string | number }[] }) {
     this.handlerService.select(

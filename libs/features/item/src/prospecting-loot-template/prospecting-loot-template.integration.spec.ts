@@ -1,11 +1,12 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ProspectingLootTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { ItemHandlerService } from '../item-handler.service';
 import { ProspectingLootTemplateComponent } from './prospecting-loot-template.component';
@@ -31,19 +32,23 @@ describe('ProspectingLootTemplate integration tests', () => {
   originalRow1.Item = 1;
   originalRow2.Item = 2;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        BrowserAnimationsModule,
         ToastrModule.forRoot(),
         ModalModule.forRoot(),
         ProspectingLootTemplateComponent,
         RouterTestingModule,
         TranslateTestingModule,
       ],
-      providers: [ItemHandlerService, { provide: SqliteService, useValue: instance(mock(SqliteService)) }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        ItemHandlerService,
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
+      ],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(ItemHandlerService);
@@ -84,11 +89,11 @@ describe('ProspectingLootTemplate integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
-      expect(handlerService.isProspectingLootTemplateUnsaved).toBe(false);
+      expect(handlerService.isProspectingLootTemplateUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isProspectingLootTemplateUnsaved).toBe(true);
+      expect(handlerService.isProspectingLootTemplateUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isProspectingLootTemplateUnsaved).toBe(false);
+      expect(handlerService.isProspectingLootTemplateUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {

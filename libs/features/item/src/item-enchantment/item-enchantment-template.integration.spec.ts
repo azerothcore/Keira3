@@ -1,4 +1,6 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
@@ -29,7 +31,7 @@ describe('ItemEnchantmentTemplate integration tests', () => {
   originalRow1.ench = 1;
   originalRow2.ench = 2;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         ToastrModule.forRoot(),
@@ -39,9 +41,9 @@ describe('ItemEnchantmentTemplate integration tests', () => {
         ModalModule.forRoot(),
         TranslateTestingModule,
       ],
-      providers: [ItemHandlerService],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), ItemHandlerService],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(ItemHandlerService);
@@ -73,11 +75,11 @@ describe('ItemEnchantmentTemplate integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
-      expect(handlerService.isItemEnchantmentUnsaved).toBe(false);
+      expect(handlerService.isItemEnchantmentUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isItemEnchantmentUnsaved).toBe(true);
+      expect(handlerService.isItemEnchantmentUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isItemEnchantmentUnsaved).toBe(false);
+      expect(handlerService.isItemEnchantmentUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {

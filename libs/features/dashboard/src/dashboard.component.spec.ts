@@ -1,4 +1,6 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { VersionDbRow, VersionRow } from '@keira/shared/constants';
 import { of, throwError } from 'rxjs';
@@ -52,12 +54,16 @@ describe('DashboardComponent', () => {
 
   const MockedMysqlQueryService = mock(MysqlQueryService);
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [DashboardComponent, TranslateTestingModule],
-      providers: [{ provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
+      ],
     }).compileComponents();
-  }));
+  });
 
   const setup = () => {
     reset(MockedMysqlQueryService);

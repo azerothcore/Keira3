@@ -1,4 +1,6 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira/shared/db-layer';
@@ -6,7 +8,6 @@ import { SelectPageObject, TranslateTestingModule } from '@keira/shared/test-uti
 import { SPELL_DBC_ID, SPELL_DBC_NAME, SpellDbc } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { SpellHandlerService } from '../spell-handler.service';
 import { SelectSpellComponent } from './select-spell.component';
@@ -24,12 +25,17 @@ class SelectSpellComponentPage extends SelectPageObject<SelectSpellComponent> {
 describe('SelectSpell integration tests', () => {
   const value = 1200;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, TranslateTestingModule],
-      providers: [SpellHandlerService, { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG }],
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, TranslateTestingModule],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        SpellHandlerService,
+        { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
+      ],
     }).compileComponents();
-  }));
+  });
 
   const setup = () => {
     const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
@@ -47,16 +53,16 @@ describe('SelectSpell integration tests', () => {
     return { navigateSpy, queryService, querySpy, selectService, fixture, page, component };
   };
 
-  it('should correctly initialise', waitForAsync(async () => {
+  it('should correctly initialise', async () => {
     const { querySpy, fixture, page, component } = setup();
     await fixture.whenStable();
     expect(page.createInput.value).toEqual(`${component.customStartingId}`);
     page.expectNewEntityFree();
     expect(querySpy).toHaveBeenCalledWith(`SELECT MAX(${SPELL_DBC_ID}) AS max FROM spell_dbc;`);
     expect(page.queryWrapper.innerText).toContain('SELECT * FROM `spell_dbc` LIMIT 50');
-  }));
+  });
 
-  it('should correctly behave when inserting and selecting free entry', waitForAsync(async () => {
+  it('should correctly behave when inserting and selecting free entry', async () => {
     const { navigateSpy, querySpy, fixture, page } = setup();
     await fixture.whenStable();
     querySpy.calls.reset();
@@ -73,9 +79,9 @@ describe('SelectSpell integration tests', () => {
     expect(navigateSpy).toHaveBeenCalledTimes(1);
     expect(navigateSpy).toHaveBeenCalledWith(['spell/spell-dbc']);
     page.expectTopBarCreatingNew(value);
-  }));
+  });
 
-  it('should correctly behave when inserting an existing entity', waitForAsync(async () => {
+  it('should correctly behave when inserting an existing entity', async () => {
     const { querySpy, fixture, page } = setup();
     await fixture.whenStable();
     querySpy.calls.reset();
@@ -86,7 +92,7 @@ describe('SelectSpell integration tests', () => {
     expect(querySpy).toHaveBeenCalledTimes(1);
     expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`spell_dbc\` WHERE (${SPELL_DBC_ID} = ${value})`);
     page.expectEntityAlreadyInUse();
-  }));
+  });
 
   for (const { id, entry, name, limit, expectedQuery } of [
     {

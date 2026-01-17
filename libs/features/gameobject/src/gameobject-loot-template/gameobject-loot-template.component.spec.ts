@@ -1,4 +1,6 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
@@ -25,7 +27,7 @@ describe('GameobjectTemplateComponent', () => {
   const lootId = 1230;
   const type = 3;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         GameobjectLootTemplateComponent,
@@ -36,13 +38,15 @@ describe('GameobjectTemplateComponent', () => {
         TranslateTestingModule,
       ],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
         GameobjectHandlerService,
         SaiGameobjectHandlerService,
       ],
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     when(MockedMysqlQueryService.query(anything(), anything())).thenReturn(of());

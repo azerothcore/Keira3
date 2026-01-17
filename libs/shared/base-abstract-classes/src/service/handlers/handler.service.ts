@@ -1,4 +1,4 @@
-import { inject } from '@angular/core';
+import { inject, WritableSignal } from '@angular/core';
 import { Router } from '@angular/router';
 import { TableRow } from '@keira/shared/constants';
 import { SubscriptionHandler } from '@keira/shared/utils';
@@ -13,11 +13,11 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
   isNew = false;
   forceReload = false;
 
-  protected abstract _statusMap: { [key: string]: boolean };
+  protected abstract _statusMap: { [key: string]: WritableSignal<boolean> };
   protected abstract readonly mainEditorRoutePath: string;
 
   /* istanbul ignore next */ // TODO: fix coverage
-  get statusMap(): { [key: string]: boolean } {
+  get statusMap(): { [key: string]: WritableSignal<boolean> } {
     return this._statusMap;
   }
 
@@ -38,7 +38,7 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
 
     /* istanbul ignore next */ // TODO: fix coverage
     for (const key of Object.keys(this._statusMap)) {
-      this._statusMap[key] = false;
+      this._statusMap[key].set(false);
     }
   }
 

@@ -1,8 +1,6 @@
 /* istanbul ignore file */
 
-import { CONTENT_WOTLK, WoWModel } from './model-3d-viewer.model';
-
-declare const ZamModelViewer: any;
+import { CHARACTER_PART, CharacterOptions, CONTENT_WOTLK, Gender, MODEL_TYPE, NOT_DISPLAYED_SLOTS, SLOTS } from './model-3d-viewer.model';
 
 /**
  * Returns a 2 dimensional list the inner list contains on first position the item slot, the second the item
@@ -25,14 +23,15 @@ declare const ZamModelViewer: any;
 //   return equipments.filter((e: any) => e.displaySlot).map((e: any) => [e.displaySlot, e.displayId]);
 // }
 
-// async function findRaceGenderOptions(race: number, gender: Gender): Promise<any> {
-//   const options = await fetch(`${CONTENT_WOTLK}meta/charactercustomization2/${race}_${gender}.json`).then((response) => response.json());
-//   if (options.data) {
-//     return options.data;
-//   }
+export async function findRaceGenderOptions(race: number, gender: Gender): Promise<any> {
+  const raceGender = race * 2 - 1 + gender;
+  const options = await fetch(`${CONTENT_WOTLK}meta/charactercustomization/${raceGender}.json`).then((response) => response.json());
+  if (options.data) {
+    return options.data;
+  }
 
-//   return options;
-// }
+  return options;
+}
 
 // async function getDisplaySlot(item: number, slot: number, displayId: number): Promise<DisplayInfo> {
 //   const displayInfo: DisplayInfo = {
@@ -65,96 +64,65 @@ declare const ZamModelViewer: any;
 // }
 
 /**
- *
- * @param model: {{}|{{id, type}}}
- * @returns {Promise<{models: {id: string, type: number}, charCustomization: {options: []}, items: (*|*[])}|{models: {id, type}}>}
+ * This function return the design choices for a character this does not work for NPC / Creature / Items
+ * @param {Object} model - The model object to generate options from.
+ * @param {{}} fullOptions - The type of the model.
+ * @returns {{models: {id: string, type: number}, charCustomization: {options: []}, items: (*|*[])}|{models: {id, type}}
  */
-async function optionsFromModel(model: WoWModel): Promise<{ models: WoWModel; charCustomization?: { options: any[] }; items?: any }> {
-  if (model.id && model.type) {
-    // NPC or item
-    const { id, type } = model;
-    return { models: { id, type } };
+export function optionsFromModel(model: CharacterOptions & { noCharCustomization?: boolean }, fullOptions: any) {
+  const { race, gender } = model;
+
+  // slot ids on model viewer
+  const characterItems = model.items ? model.items.filter((e) => !NOT_DISPLAYED_SLOTS.includes(e[0] as unknown as SLOTS)) : [];
+  const ret: { items: any[]; models: { id: number; type: number }; charCustomization?: { options: any[] } } = {
+    items: characterItems,
+    models: {
+      id: race * 2 - 1 + gender,
+      type: MODEL_TYPE.CHARACTER,
+    },
+  };
+
+  const options = getCharacterOptions(model, fullOptions);
+  const charCustomization = { options };
+  if (!model.noCharCustomization) {
+    ret.charCustomization = charCustomization;
   }
 
-  // const { race, gender } = model;
-
-  // // CHARACTER OPTIONS
-  // // This is how we describe a character properties
-  // const fullOptions = await findRaceGenderOptions(race, gender);
-
-  // // slot ids on model viewer
-  // const characterItems = model.items ? model.items.filter((e) => !NOT_DISPLAYED_SLOTS.includes(e[0])) : [];
-  // const options = getOptions(model, fullOptions);
-
-  // const retGender = gender === 1 ? GENDER.FEMALE : GENDER.MALE;
-  // const raceToModelId = RACES[race] + retGender;
-
-  return undefined as any;
-  // return {
-  //   items: characterItems,
-  //   charCustomization: {
-  //     options: options,
-  //   },
-  //   models: {
-  //     id: raceToModelId,
-  //     type: 16,
-  //   },
-  // };
+  return ret;
 }
 
-// /**
-//  *
-//  * @param character
-//  * @param {{}}fullOptions: Zaming API character options payload
-//  * @return {[]}
-//  */
-// function getOptions(character: {}, fullOptions): any[] {
-//   const options = fullOptions.Options;
-//   const ret = [];
-//   for (const prop in CHARACTER_PART) {
-//     const part = options.find((e) => e.Name === prop);
+function getCharacterOptions(
+  character: CharacterOptions,
+  fullOptions: { Options: { Name: string; Id: string; Choices: { id: string; Id?: string }[] }[] },
+) {
+  const options = fullOptions.Options;
+  const missingChoice = [];
+  const ret = [];
+  for (const prop in CHARACTER_PART) {
+    const part = options.find((e) => e.Name === prop);
 
-//     if (!part) {
-//       continue;
-//     }
+    if (!part) {
+      continue;
+    }
 
-//     const newOption = {
-//       optionId: part.Id,
-//       choiceId: CHARACTER_PART[prop] ? part.Choices[character[CHARACTER_PART[prop]]]?.id : part.Choices[0].Id,
-//     };
-//     ret.push(newOption);
-//   }
+    const charPart = CHARACTER_PART[prop];
+    const choice = charPart && character[charPart];
+    const choiceId = typeof choice === 'number' ? part.Choices[choice]?.Id : part.Choices[0].Id;
 
-//   return ret;
-// }
+    const newOption = {
+      optionId: part.Id,
+      choiceId,
+    };
 
-/**
- *
- * @param {number} aspect: Size of the character
- * @param {string} containerSelector: jQuery selector on the container
- * @param {WoWModel} model: A json representation of a character
- * @returns {Promise<WowModelViewer>}
- */
-export async function generateModels(
-  aspect: number,
-  containerSelector: string,
-  model: WoWModel,
-  contentPath = CONTENT_WOTLK,
-): Promise<any> {
-  const modelOptions = await optionsFromModel(model);
-  const models = {
-    type: 2,
-    contentPath,
-    container: jQuery(containerSelector),
-    aspect: aspect,
-    hd: false,
-    ...modelOptions,
-  };
-  (window as any)['models'] = models;
+    if (newOption.choiceId === undefined) {
+      missingChoice.push(CHARACTER_PART[prop]);
+    }
 
-  if (typeof ZamModelViewer !== 'undefined') {
-    return new ZamModelViewer(models);
+    ret.push(newOption);
   }
+  console.warn(`In character: `, character, `the following options are missing`, missingChoice);
+
+  return ret;
 }
 
 export function getShadowlandDisplayId(
@@ -165,7 +133,7 @@ export function getShadowlandDisplayId(
     const sqlite = window.require('sqlite3');
     const db = new sqlite.Database(sqliteItem3dPath, sqlite.OPEN_READONLY, (error: unknown) => {
       if (error) {
-        console.log(`Error when opening sqlite database at DISPLAY ID`);
+        console.info(`Error when opening sqlite database at DISPLAY ID`);
         console.error(error);
       }
     });
@@ -180,7 +148,7 @@ export function getShadowlandDisplayId(
             if (data.length && 'ItemDisplayInfoID' in data[0]) {
               resolve({ displayId: data[0].ItemDisplayInfoID, displayType: data[0].DisplayType });
             } else {
-              console.log('no ItemDisplayInfoID available for this item');
+              console.info('no ItemDisplayInfoID available for this item');
             }
           }
         },

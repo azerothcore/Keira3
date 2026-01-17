@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
 import { GAMEOBJECT_SPAWN_ID, GAMEOBJECT_SPAWN_ID_2, GAMEOBJECT_SPAWN_TABLE, GameobjectSpawn } from '@keira/shared/acore-world-model';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
@@ -7,8 +7,14 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
   providedIn: 'root',
 })
 export class GameobjectSpawnService extends MultiRowEditorService<GameobjectSpawn> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected override readonly handlerService: GameobjectHandlerService) {
-    super(GameobjectSpawn, GAMEOBJECT_SPAWN_TABLE, GAMEOBJECT_SPAWN_ID, GAMEOBJECT_SPAWN_ID_2, handlerService);
+  protected override readonly handlerService = inject(GameobjectHandlerService);
+  protected override readonly _entityClass = GameobjectSpawn;
+  protected override readonly _entityTable = GAMEOBJECT_SPAWN_TABLE;
+  protected override readonly _entityIdField = GAMEOBJECT_SPAWN_ID;
+  protected override readonly _entitySecondIdField = GAMEOBJECT_SPAWN_ID_2;
+
+  constructor() {
+    super();
+    this.init();
   }
 }

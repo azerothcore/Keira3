@@ -1,11 +1,12 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { NpcVendor } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
@@ -32,19 +33,18 @@ describe('NpcVendor integration tests', () => {
   originalRow1.item = 1;
   originalRow2.item = 2;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        NpcVendorComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), NpcVendorComponent, RouterTestingModule, TranslateTestingModule],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
-      providers: [CreatureHandlerService, SaiCreatureHandlerService, { provide: SqliteService, useValue: instance(mock(SqliteService)) }],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(CreatureHandlerService);
@@ -82,11 +82,11 @@ describe('NpcVendor integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
-      expect(handlerService.isNpcVendorUnsaved).toBe(false);
+      expect(handlerService.isNpcVendorUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isNpcVendorUnsaved).toBe(true);
+      expect(handlerService.isNpcVendorUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isNpcVendorUnsaved).toBe(false);
+      expect(handlerService.isNpcVendorUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {
@@ -281,7 +281,7 @@ describe('NpcVendor integration tests', () => {
       page.expectUniqueError();
     });
 
-    xit('changing a value via ItemExtendedCost should correctly work', waitForAsync(async () => {
+    xit('changing a value via ItemExtendedCost should correctly work', async () => {
       const field = 'ExtendedCost';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
       spyOn(sqliteQueryService, 'query').and.returnValue(of([{ id: 123, name: 'Mock ExtendedCost' }]));
@@ -313,6 +313,6 @@ describe('NpcVendor integration tests', () => {
           '(1234, 0, 1, 0, 0, 0, 0),\n' +
           '(1234, 0, 2, 0, 0, 0, 0);',
       );
-    }));
+    });
   });
 });

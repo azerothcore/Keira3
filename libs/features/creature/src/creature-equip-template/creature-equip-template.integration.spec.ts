@@ -1,11 +1,12 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { CreatureEquipTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
@@ -31,19 +32,18 @@ describe('CreatureEquipTemplate integration tests', () => {
   const originalEntity = new CreatureEquipTemplate();
   originalEntity.CreatureID = id;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        CreatureEquipTemplateComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureEquipTemplateComponent, RouterTestingModule, TranslateTestingModule],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
-      providers: [CreatureHandlerService, SaiCreatureHandlerService, { provide: SqliteService, useValue: instance(mock(SqliteService)) }],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(CreatureHandlerService);
@@ -73,11 +73,11 @@ describe('CreatureEquipTemplate integration tests', () => {
 
     it('should correctly update the unsaved status', () => {
       const field = 'ItemID1';
-      expect(handlerService.isCreatureEquipTemplateUnsaved).toBe(false);
+      expect(handlerService.isCreatureEquipTemplateUnsaved()).toBe(false);
       page.setInputValueById(field, 3);
-      expect(handlerService.isCreatureEquipTemplateUnsaved).toBe(true);
+      expect(handlerService.isCreatureEquipTemplateUnsaved()).toBe(true);
       page.setInputValueById(field, 0);
-      expect(handlerService.isCreatureEquipTemplateUnsaved).toBe(false);
+      expect(handlerService.isCreatureEquipTemplateUnsaved()).toBe(false);
     });
 
     it('changing a property and executing the query should correctly work', () => {
@@ -136,7 +136,7 @@ describe('CreatureEquipTemplate integration tests', () => {
       );
     });
 
-    xit('changing a value via ItemSelector should correctly work', waitForAsync(async () => {
+    xit('changing a value via ItemSelector should correctly work', async () => {
       //  note: previously disabled because of:
       //  https://stackoverflow.com/questions/57336982/how-to-make-angular-tests-wait-for-previous-async-operation-to-complete-before-e
 
@@ -160,6 +160,6 @@ describe('CreatureEquipTemplate integration tests', () => {
           'INSERT INTO `creature_equip_template` (`CreatureID`, `ID`, `ItemID1`, `ItemID2`, `ItemID3`, `VerifiedBuild`) VALUES\n' +
           '(1234, 1, 1200, 0, 0, 0);',
       );
-    }));
+    });
   });
 });

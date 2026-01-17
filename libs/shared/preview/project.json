@@ -11,7 +11,6 @@
       "options": {
         "tsConfig": "libs/shared/preview/tsconfig.spec.json",
         "karmaConfig": "libs/shared/preview/karma.conf.js",
-        "polyfills": ["zone.js", "zone.js/testing"],
         "sourceMap": true,
         "codeCoverage": true,
         "scripts": []

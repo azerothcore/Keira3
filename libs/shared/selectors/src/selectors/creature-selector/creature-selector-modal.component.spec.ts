@@ -1,4 +1,6 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { instance, mock } from 'ts-mockito';
 
@@ -12,12 +14,17 @@ describe('CreatureSelectorModalComponent', () => {
   let fixture: ComponentFixture<CreatureSelectorModalComponent>;
   let searchService: CreatureSearchService;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [CreatureSelectorModalComponent, TranslateTestingModule],
-      providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        BsModalRef,
+        { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
+      ],
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     searchService = TestBed.inject(CreatureSearchService);

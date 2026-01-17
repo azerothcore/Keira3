@@ -18,7 +18,6 @@ import {
   NPC_FLAGS,
   RANK,
   SPELL_SCHOOL_MASK,
-  TRAINER_TYPE,
   UNIT_CLASS,
   UNIT_FLAGS,
   UNIT_FLAGS_2,
@@ -31,15 +30,12 @@ import {
   FactionSelectorBtnComponent,
   FlagsSelectorBtnComponent,
   GenericOptionSelectorComponent,
-  IconSelectorComponent,
   SingleValueSelectorBtnComponent,
-  SpellSelectorBtnComponent,
 } from '@keira/shared/selectors';
 import { TranslateModule } from '@ngx-translate/core';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateService } from './creature-template.service';
-import { RouterLink } from '@angular/router';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -55,18 +51,14 @@ import { RouterLink } from '@angular/router';
     SingleValueSelectorBtnComponent,
     FactionSelectorBtnComponent,
     FlagsSelectorBtnComponent,
-    SpellSelectorBtnComponent,
     CreatureSelectorBtnComponent,
     GenericOptionSelectorComponent,
     BooleanOptionSelectorComponent,
-    IconSelectorComponent,
-    RouterLink,
   ],
 })
 export class CreatureTemplateComponent extends SingleRowEditorComponent<CreatureTemplate> {
   protected readonly UNIT_FLAGS = UNIT_FLAGS;
   protected readonly UNIT_FLAGS_2 = UNIT_FLAGS_2;
-  protected readonly TRAINER_TYPE = TRAINER_TYPE;
   protected readonly NPC_FLAGS = NPC_FLAGS;
   protected readonly CREATURE_FAMILY = CREATURE_FAMILY;
   protected readonly CREATURE_TYPE = CREATURE_TYPE;
@@ -85,7 +77,6 @@ export class CreatureTemplateComponent extends SingleRowEditorComponent<Creature
   protected readonly DAMAGE_TYPE = DAMAGE_TYPE;
   protected readonly CREATURE_AI_NAME = CREATURE_AI_NAME;
 
-  protected RACE_ICON_GENDER = true;
   protected showCreaturePreview = false;
 
   protected override readonly editorService = inject(CreatureTemplateService);

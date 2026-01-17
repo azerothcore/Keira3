@@ -8,7 +8,16 @@
   @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
     <div>
       <div class="content-block">
-        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)" />
+        <keira-query-output
+          [docUrl]="docUrl"
+          [isNew]="editorService.isNew"
+          [diffQuery]="editorService.diffQuery"
+          [fullQuery]="editorService.fullQuery"
+          [error]="editorService.error"
+          [entityTable]="editorService.entityTable"
+          [editorService]="editorService"
+          (executeQuery)="save($event)"
+        />
       </div>
       <div class="content-block">
         <form [formGroup]="editorService.form" class="form-group edit-form">
@@ -111,6 +120,11 @@
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'GAMEOBJECT.SPAWN.SCRIPT_NAME' | translate"></i>
               <input [formControlName]="'ScriptName'" id="ScriptName" class="form-control form-control-sm" />
             </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
+              <label class="control-label" for="Comment">Comment</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'GAMEOBJECT.SPAWN.COMMENT' | translate"></i>
+              <input [formControlName]="'Comment'" id="Comment" class="form-control form-control-sm" />
+            </div>
             <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
               <i class="fas fa-exclamation-triangle"></i>
               <span [innerHTML]="'UNIQUE' | translate: { ENTITY_SECOND_ID_FIELD: editorService.entitySecondIdField }"></span>
@@ -119,7 +133,12 @@
         </form>
         <div class="row">
           <div class="col-12">
-            <keira-editor-buttons [editorService]="editorService" />
+            <keira-editor-buttons
+              [selectedRowId]="editorService.selectedRowId"
+              (deleteSelectedRow)="editorService.deleteSelectedRow()"
+              (addNewRow)="editorService.addNewRow()"
+              (duplicateRow)="editorService.addNewRow(true)"
+            />
             <ngx-datatable
               id="editor-table"
               class="bootstrap table table-striped text-center datatable-select"
@@ -137,24 +156,25 @@
                   <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
                 </ng-template>
               </ngx-datatable-column>
-              <ngx-datatable-column name="guid" prop="guid" [minWidth]="80"></ngx-datatable-column>
-              <ngx-datatable-column name="M" prop="map" [minWidth]="42"></ngx-datatable-column>
-              <ngx-datatable-column name="Z" prop="zoneId" [minWidth]="42"></ngx-datatable-column>
-              <ngx-datatable-column name="A" prop="areaId" [minWidth]="42"></ngx-datatable-column>
-              <ngx-datatable-column name="SM" prop="spawnMask" [minWidth]="42"></ngx-datatable-column>
-              <ngx-datatable-column name="PM" prop="phaseMask" [minWidth]="42"></ngx-datatable-column>
-              <ngx-datatable-column name="position_x" prop="position_x" [minWidth]="90"></ngx-datatable-column>
-              <ngx-datatable-column name="position_y" prop="position_y" [minWidth]="90"></ngx-datatable-column>
-              <ngx-datatable-column name="position_z" prop="position_z" [minWidth]="90"></ngx-datatable-column>
-              <ngx-datatable-column name="orient." prop="orientation" [minWidth]="90"></ngx-datatable-column>
-              <ngx-datatable-column name="rot.0" prop="rotation0" [minWidth]="90"></ngx-datatable-column>
-              <ngx-datatable-column name="rot.1" prop="rotation1" [minWidth]="90"></ngx-datatable-column>
-              <ngx-datatable-column name="rot.2" prop="rotation2" [minWidth]="90"></ngx-datatable-column>
-              <ngx-datatable-column name="rot.3" prop="rotation3" [minWidth]="90"></ngx-datatable-column>
-              <ngx-datatable-column name="Time" prop="spawntimesecs" [minWidth]="50"></ngx-datatable-column>
-              <ngx-datatable-column name="anim" prop="animprogress" [minWidth]="90"></ngx-datatable-column>
-              <ngx-datatable-column name="state" prop="state" [minWidth]="90"></ngx-datatable-column>
-              <ngx-datatable-column name="ScriptName" prop="ScriptName" [minWidth]="80"></ngx-datatable-column>
+              <ngx-datatable-column name="guid" prop="guid" [minWidth]="80" />
+              <ngx-datatable-column name="M" prop="map" [minWidth]="42" />
+              <ngx-datatable-column name="Z" prop="zoneId" [minWidth]="42" />
+              <ngx-datatable-column name="A" prop="areaId" [minWidth]="42" />
+              <ngx-datatable-column name="SM" prop="spawnMask" [minWidth]="42" />
+              <ngx-datatable-column name="PM" prop="phaseMask" [minWidth]="42" />
+              <ngx-datatable-column name="position_x" prop="position_x" [minWidth]="90" />
+              <ngx-datatable-column name="position_y" prop="position_y" [minWidth]="90" />
+              <ngx-datatable-column name="position_z" prop="position_z" [minWidth]="90" />
+              <ngx-datatable-column name="orient." prop="orientation" [minWidth]="90" />
+              <ngx-datatable-column name="rot.0" prop="rotation0" [minWidth]="90" />
+              <ngx-datatable-column name="rot.1" prop="rotation1" [minWidth]="90" />
+              <ngx-datatable-column name="rot.2" prop="rotation2" [minWidth]="90" />
+              <ngx-datatable-column name="rot.3" prop="rotation3" [minWidth]="90" />
+              <ngx-datatable-column name="Time" prop="spawntimesecs" [minWidth]="50" />
+              <ngx-datatable-column name="anim" prop="animprogress" [minWidth]="90" />
+              <ngx-datatable-column name="state" prop="state" [minWidth]="90" />
+              <ngx-datatable-column name="ScriptName" prop="ScriptName" [minWidth]="80" />
+              <ngx-datatable-column name="Comment" prop="Comment" [minWidth]="80" />
             </ngx-datatable>
           </div>
         </div>

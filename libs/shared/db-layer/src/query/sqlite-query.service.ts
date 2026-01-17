@@ -1,32 +1,28 @@
-import { Injectable } from '@angular/core';
-import { TableRow } from '@keira/shared/constants';
+import { inject, Injectable } from '@angular/core';
 import { ItemExtendedCost, Lock } from '@keira/shared/acore-world-model';
+import { ConfigService } from '@keira/shared/common-services';
+import { TableRow } from '@keira/shared/constants';
 import { from, Observable, of, shareReplay, tap } from 'rxjs';
 import { SqliteService } from '../sqlite.service';
 import { BaseQueryService } from './base-query.service';
-import { ConfigService } from '@keira/shared/common-services';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SqliteQueryService extends BaseQueryService {
+  private readonly sqliteService = inject(SqliteService);
+  private readonly configService = inject(ConfigService);
+
   private itemDisplayIdCache: Observable<string | null>[] = [];
   private spellDisplayIdCache: Observable<string | null>[] = [];
-
-  constructor(
-    private readonly sqliteService: SqliteService,
-    private readonly configService: ConfigService,
-  ) {
-    super();
-  }
 
   /* istanbul ignore next */ // Note: will be tested in e2e
   query<T extends TableRow>(queryString: string, silent = false): Observable<T[]> {
     return this.sqliteService.dbQuery<T>(queryString).pipe(
       tap((val) => {
-        if (this.configService.debugMode && !silent) {
-          console.log(`\n${queryString}`);
-          console.log(val);
+        if (this.configService.debugMode() && !silent) {
+          console.info(`\n${queryString}`);
+          console.info(val);
         }
       }),
     );
@@ -139,6 +135,14 @@ export class SqliteQueryService extends BaseQueryService {
       'getItemExtendedCost',
       String(IDs.join(',')),
       `SELECT * FROM item_extended_cost WHERE id IN (${IDs.join(',')})`,
+    );
+  }
+
+  getCreatureEntryByItemSpellId(SpellID: number): Promise<number> {
+    return this.queryValueToPromiseCached<number>(
+      'getCreatureEntryByItemSpellId',
+      String(SpellID),
+      `SELECT EffectMiscValue_0 AS v FROM spells_effects WHERE SpellID=${SpellID}`,
     );
   }
 }

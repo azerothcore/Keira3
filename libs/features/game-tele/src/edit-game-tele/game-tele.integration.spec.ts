@@ -1,5 +1,6 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { GameTele } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
@@ -34,11 +35,13 @@ describe('GameTele integration tests', () => {
   originalEntity.map = 0;
 
   // TestBed Configuration
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, ToastrModule.forRoot(), ModalModule.forRoot(), TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), TranslateTestingModule],
       declarations: [],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         GameTeleHandlerService,
         {
           provide: SqliteService,
@@ -46,7 +49,7 @@ describe('GameTele integration tests', () => {
         },
       ],
     }).compileComponents();
-  }));
+  });
 
   // Setup Function
   function setup(creatingNew: boolean) {
@@ -87,11 +90,11 @@ describe('GameTele integration tests', () => {
 
     it('should correctly update the unsaved status', () => {
       const field = 'name';
-      expect(handlerService.isGameTeleUnsaved).toBe(false);
+      expect(handlerService.isGameTeleUnsaved()).toBe(false);
       page.setInputValueById(field, 'ABC');
-      expect(handlerService.isGameTeleUnsaved).toBe(true);
+      expect(handlerService.isGameTeleUnsaved()).toBe(true);
       page.setInputValueById(field, '');
-      expect(handlerService.isGameTeleUnsaved).toBe(false);
+      expect(handlerService.isGameTeleUnsaved()).toBe(false);
     });
 
     it('changing a property and executing the query should correctly work', () => {

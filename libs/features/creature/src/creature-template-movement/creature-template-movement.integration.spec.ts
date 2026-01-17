@@ -1,5 +1,6 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CreatureTemplateMovement } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
@@ -38,19 +39,24 @@ describe('CreatureTemplateMovement integration tests', () => {
   originalEntity.Random = 2;
   originalEntity.InteractionPauseTimer = 0;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        BrowserAnimationsModule,
         ToastrModule.forRoot(),
         ModalModule.forRoot(),
         CreatureTemplateMovementComponent,
         RouterTestingModule,
         TranslateTestingModule,
       ],
-      providers: [CreatureHandlerService, SaiCreatureHandlerService, { provide: SqliteService, useValue: instance(mock(SqliteService)) }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
+      ],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(CreatureHandlerService);
@@ -79,11 +85,11 @@ describe('CreatureTemplateMovement integration tests', () => {
 
     it('should correctly update the unsaved status', () => {
       const field = 'Ground';
-      expect(handlerService.isCreatureTemplateMovementUnsaved).toBe(false);
+      expect(handlerService.isCreatureTemplateMovementUnsaved()).toBe(false);
       page.setSelectValueById(field, 3);
-      expect(handlerService.isCreatureTemplateMovementUnsaved).toBe(true);
+      expect(handlerService.isCreatureTemplateMovementUnsaved()).toBe(true);
       page.setSelectValueById(field, 0);
-      expect(handlerService.isCreatureTemplateMovementUnsaved).toBe(false);
+      expect(handlerService.isCreatureTemplateMovementUnsaved()).toBe(false);
     });
 
     it('changing a property and executing the query should correctly work', () => {

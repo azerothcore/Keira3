@@ -1,5 +1,6 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CreatureText } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
@@ -16,19 +17,18 @@ class CreatureTextPage extends MultiRowEditorPageObject<CreatureTextComponent> {
 describe('CreatureText integration tests', () => {
   const id = 1234;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        CreatureTextComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureTextComponent, RouterTestingModule, TranslateTestingModule],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
-      providers: [CreatureHandlerService, SaiCreatureHandlerService, { provide: SqliteService, useValue: instance(mock(SqliteService)) }],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     const originalRow0 = new CreatureText();
@@ -82,11 +82,11 @@ describe('CreatureText integration tests', () => {
 
     it('should correctly update the unsaved status', () => {
       const { handlerService, page } = setup(true);
-      expect(handlerService.isCreatureTextUnsaved).toBe(false);
+      expect(handlerService.isCreatureTextUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isCreatureTextUnsaved).toBe(true);
+      expect(handlerService.isCreatureTextUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isCreatureTextUnsaved).toBe(false);
+      expect(handlerService.isCreatureTextUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {

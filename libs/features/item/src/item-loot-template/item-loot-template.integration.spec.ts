@@ -1,11 +1,12 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ItemLootTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { ItemHandlerService } from '../item-handler.service';
 import { ItemLootTemplateComponent } from './item-loot-template.component';
@@ -31,19 +32,17 @@ describe('ItemLootTemplate integration tests', () => {
   originalRow1.Item = 1;
   originalRow2.Item = 2;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        ItemLootTemplateComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), ItemLootTemplateComponent, RouterTestingModule, TranslateTestingModule],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        ItemHandlerService,
+        { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
       ],
-      providers: [ItemHandlerService, { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG }],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(ItemHandlerService);
@@ -84,11 +83,11 @@ describe('ItemLootTemplate integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
-      expect(handlerService.isItemLootTemplateUnsaved).toBe(false);
+      expect(handlerService.isItemLootTemplateUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isItemLootTemplateUnsaved).toBe(true);
+      expect(handlerService.isItemLootTemplateUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isItemLootTemplateUnsaved).toBe(false);
+      expect(handlerService.isItemLootTemplateUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {

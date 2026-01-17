@@ -1,4 +1,6 @@
 import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { ToastrService } from 'ngx-toastr';
@@ -15,6 +17,7 @@ import {
   MockMultiRowEditorService,
   MockMultiRowEditorWithGuidStringService,
 } from '../../core.mock';
+import { EditorService } from './editor.service';
 
 describe('MultiRowEditorService', () => {
   const queryResult = '-- Mock query result';
@@ -25,6 +28,8 @@ describe('MultiRowEditorService', () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
         { provide: ToastrService, useValue: instance(mock(ToastrService)) },
       ],
@@ -32,7 +37,13 @@ describe('MultiRowEditorService', () => {
   );
 
   function setup(
-    config: { loadedEntityId?: number; nextRowId?: number; newRows?: (MockEntity | MockEntityExtra)[]; extra?: boolean, withGuidString?: boolean } = {},
+    config: {
+      loadedEntityId?: number;
+      nextRowId?: number;
+      newRows?: (MockEntity | MockEntityExtra)[];
+      extra?: boolean;
+      withGuidString?: boolean;
+    } = {},
   ) {
     const service = config.extra
       ? TestBed.inject(MockMultiRowEditorExtraService)
@@ -47,7 +58,10 @@ describe('MultiRowEditorService', () => {
     const formDisableSpy = spyOn(service.form, 'disable').and.callThrough();
 
     const selected = [
-      { [service['_entitySecondIdField']]: rowId, [service['_entityExtraIdField'] as any]: extraRowId } as unknown as MockEntity,
+      {
+        [service['_entitySecondIdField' as keyof EditorService<any>] as any]: rowId,
+        [service['_entityExtraIdField' as keyof EditorService<any>] as any]: extraRowId,
+      } as unknown as MockEntity,
     ];
 
     if (config.loadedEntityId) {
@@ -118,7 +132,7 @@ describe('MultiRowEditorService', () => {
     expect(getQuerySpy).toHaveBeenCalledTimes(1);
     expect(getQuerySpy).toHaveBeenCalledWith(
       service.entityTable,
-      service['_entityIdField'],
+      service['_entityIdField' as keyof EditorService<any>] as any,
       service.entitySecondIdField,
       service['_originalRows'],
       service.newRows,
@@ -136,7 +150,11 @@ describe('MultiRowEditorService', () => {
     service['updateFullQuery']();
 
     expect(getQuerySpy).toHaveBeenCalledTimes(1);
-    expect(getQuerySpy).toHaveBeenCalledWith(service.entityTable, service.newRows, service['_entityIdField']);
+    expect(getQuerySpy).toHaveBeenCalledWith(
+      service.entityTable,
+      service.newRows,
+      service['_entityIdField' as keyof EditorService<any>] as any,
+    );
     expect(service.fullQuery).toEqual(queryResult);
   });
 
@@ -310,7 +328,7 @@ describe('MultiRowEditorService', () => {
       const onRowSelectionSpy = spyOn(service, 'onRowSelection');
       const newRow = new MockEntity();
       newRow[MOCK_ID_2] = nextRowId;
-      (service['_entityIdField'] as any) = undefined;
+      (service['_entityIdField' as keyof EditorService<any>] as any) = undefined;
 
       service.addNewRow();
 

@@ -1,19 +1,25 @@
 /*eslint camelcase: ["error", {properties: "never"}]*/
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
+import { SAI_TYPES } from '@keira/shared/acore-world-model';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 import { of } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
-import { SAI_TYPES } from '@keira/shared/acore-world-model';
 import { SaiHandlerService } from './sai-handler.service';
-import { MysqlQueryService } from '@keira/shared/db-layer';
 
 describe('SaiHandlerService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      providers: [{ provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
+      ],
     }),
   );
 
@@ -21,7 +27,7 @@ describe('SaiHandlerService', () => {
     { testId: 1, sourceType: 1, entryOrGuid: 111, isNew: true },
     { testId: 2, sourceType: 2, entryOrGuid: 222, isNew: false },
   ]) {
-    it(`selectFromEntity() should correctly work [${testId}]`, fakeAsync(() => {
+    it(`selectFromEntity() should correctly work [${testId}]`, () => {
       const service: SaiHandlerService = TestBed.inject(SaiHandlerService);
       const queryService: MysqlQueryService = TestBed.inject(MysqlQueryService);
       const mockResults = isNew ? [] : ['some result'];
@@ -29,15 +35,13 @@ describe('SaiHandlerService', () => {
       spyOn(service, 'select');
 
       service.selectFromEntity(sourceType, entryOrGuid);
-      tick();
-
       expect(queryService.query).toHaveBeenCalledTimes(1);
       expect(queryService.query).toHaveBeenCalledWith(
         `SELECT * FROM smart_scripts WHERE source_type = ${sourceType} AND entryorguid = ${entryOrGuid}`,
       );
       expect(service.select).toHaveBeenCalledTimes(1);
       expect(service.select).toHaveBeenCalledWith(isNew, { source_type: sourceType, entryorguid: entryOrGuid });
-    }));
+    });
   }
 
   const entry = 100;
@@ -126,7 +130,7 @@ describe('SaiHandlerService', () => {
         entryorguid: 123,
         name: mockName,
         returnValue: [],
-        expectedName: null as any,
+        expectedName: '',
         expectedQuery: 'SELECT name FROM creature_template WHERE entry = 123',
       },
       {
@@ -150,7 +154,7 @@ describe('SaiHandlerService', () => {
     ];
 
     for (const { testId, sourceType, entryorguid, name, returnValue, expectedName, expectedQuery } of cases) {
-      it(`${testId}`, fakeAsync(() => {
+      it(`${testId}`, () => {
         const service: SaiHandlerService = TestBed.inject(SaiHandlerService);
         const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
         const queryService = TestBed.inject(MysqlQueryService);
@@ -173,9 +177,7 @@ describe('SaiHandlerService', () => {
         service.getName().subscribe((actualName) => {
           expect(actualName).toEqual(`Unknown source_type`);
         });
-
-        tick();
-      }));
+      });
     }
   });
 });

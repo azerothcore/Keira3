@@ -8,7 +8,16 @@
   @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
     <div>
       <div class="content-block">
-        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)" />
+        <keira-query-output
+          [docUrl]="docUrl"
+          [isNew]="editorService.isNew"
+          [diffQuery]="editorService.diffQuery"
+          [fullQuery]="editorService.fullQuery"
+          [error]="editorService.error"
+          [entityTable]="editorService.entityTable"
+          [editorService]="editorService"
+          (executeQuery)="save($event)"
+        />
       </div>
       <div class="content-block">
         <form [formGroup]="editorService.form" class="form-group edit-form">
@@ -40,7 +49,12 @@
         </form>
         <div class="row">
           <div class="col-12">
-            <keira-editor-buttons [editorService]="editorService" />
+            <keira-editor-buttons
+              [selectedRowId]="editorService.selectedRowId"
+              (deleteSelectedRow)="editorService.deleteSelectedRow()"
+              (addNewRow)="editorService.addNewRow()"
+              (duplicateRow)="editorService.addNewRow(true)"
+            />
             <ngx-datatable
               id="editor-table"
               class="bootstrap table table-striped text-center datatable-select"
@@ -58,7 +72,7 @@
                   <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
                 </ng-template>
               </ngx-datatable-column>
-              <ngx-datatable-column name="Index" prop="Index" [minWidth]="80" [maxWidth]="150"></ngx-datatable-column>
+              <ngx-datatable-column name="Index" prop="Index" [minWidth]="80" [maxWidth]="150" />
               <ngx-datatable-column name="Spell" prop="Spell" [minWidth]="80" [maxWidth]="150">
                 <ng-template let-row="row" ngx-datatable-cell-template>
                   <keira-icon size="small" [spellId]="row.Spell" /> {{ row.Spell }} -

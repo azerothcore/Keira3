@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
   CREATURE_FORMATIONS_LEADER_GUID,
   CREATURE_FORMATIONS_MEMBER_GUID,
@@ -12,8 +12,14 @@ import { CreatureHandlerService } from '../creature-handler.service';
   providedIn: 'root',
 })
 export class CreatureFormationsService extends MultiRowEditorService<CreatureFormation> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected override readonly handlerService: CreatureHandlerService) {
-    super(CreatureFormation, CREATURE_FORMATIONS_TABLE, CREATURE_FORMATIONS_LEADER_GUID, CREATURE_FORMATIONS_MEMBER_GUID, handlerService);
+  protected override readonly handlerService = inject(CreatureHandlerService);
+  protected override readonly _entityClass = CreatureFormation;
+  protected override readonly _entityTable = CREATURE_FORMATIONS_TABLE;
+  protected override readonly _entityIdField = CREATURE_FORMATIONS_LEADER_GUID;
+  protected override readonly _entitySecondIdField = CREATURE_FORMATIONS_MEMBER_GUID;
+
+  constructor() {
+    super();
+    this.init();
   }
 }

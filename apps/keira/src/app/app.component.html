@@ -1,8 +1,7 @@
-@if (!mysqlService.connectionEstablished) {
-  <keira-connection-window />
-}
 @if (mysqlService.connectionEstablished) {
   <keira-main-window />
+} @else {
+  <keira-connection-window />
 }
 
 <div id="sqlite-e2e-test" [attr.e2e]="sqliteResult?.name" style="display: none"></div>
@@ -11,5 +10,6 @@
   <div class="newer-version-alert text-center">
     <span [translate]="'NEW_VERSION'"></span>
     <a class="btn btn-secondary btn-sm ms-2" [href]="KEIRA3_REPO_URL + '/releases'" target="_blank" [translate]="'DOWNLOAD'"></a>
+    <button class="btn btn-secondary btn-sm" (click)="showNewerVersionAlert = false"><i class="fas fa-xmark"></i></button>
   </div>
 }

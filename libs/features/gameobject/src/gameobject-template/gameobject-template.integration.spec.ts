@@ -1,19 +1,23 @@
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
-import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { GameobjectTemplate } from '@keira/shared/acore-world-model';
+import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
+import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
+import { Model3DViewerService } from '@keira/shared/model-3d-viewer';
+import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
+import { instance, mock } from 'ts-mockito';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { GameobjectTemplateComponent } from './gameobject-template.component';
 import Spy = jasmine.Spy;
-import { instance, mock } from 'ts-mockito';
-import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 class GameobjectTemplatePage extends EditorPageObject<GameobjectTemplateComponent> {}
 
@@ -23,6 +27,7 @@ describe('GameobjectTemplate integration tests', () => {
   let querySpy: Spy;
   let handlerService: GameobjectHandlerService;
   let page: GameobjectTemplatePage;
+  let model3DViewerService: Model3DViewerService;
 
   const id = 1234;
   const expectedFullCreateQuery =
@@ -41,10 +46,19 @@ describe('GameobjectTemplate integration tests', () => {
   const originalEntity = new GameobjectTemplate();
   originalEntity.entry = id;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), GameobjectTemplateComponent, RouterTestingModule, TranslateTestingModule],
+      imports: [
+        ToastrModule.forRoot(),
+        ModalModule.forRoot(),
+        GameobjectTemplateComponent,
+        RouterTestingModule,
+        TranslateTestingModule,
+        ReactiveFormsModule,
+      ],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         GameobjectHandlerService,
         SaiGameobjectHandlerService,
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
@@ -53,7 +67,7 @@ describe('GameobjectTemplate integration tests', () => {
         provideHttpClientTesting(),
       ],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     handlerService = TestBed.inject(GameobjectHandlerService);
@@ -62,6 +76,9 @@ describe('GameobjectTemplate integration tests', () => {
 
     queryService = TestBed.inject(MysqlQueryService);
     querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+
+    model3DViewerService = TestBed.inject(Model3DViewerService);
+    spyOn(model3DViewerService, 'generateModels').and.returnValue(new Promise((resolve) => resolve({ destroy: () => {} })));
 
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
 
@@ -82,11 +99,11 @@ describe('GameobjectTemplate integration tests', () => {
 
     it('should correctly update the unsaved status', () => {
       const field = 'Data0';
-      expect(handlerService.isGameobjectTemplateUnsaved).toBe(false);
+      expect(handlerService.isGameobjectTemplateUnsaved()).toBe(false);
       page.setInputValueById(field, 3);
-      expect(handlerService.isGameobjectTemplateUnsaved).toBe(true);
+      expect(handlerService.isGameobjectTemplateUnsaved()).toBe(true);
       page.setInputValueById(field, 0);
-      expect(handlerService.isGameobjectTemplateUnsaved).toBe(false);
+      expect(handlerService.isGameobjectTemplateUnsaved()).toBe(false);
     });
 
     it('changing a property and executing the query should correctly work', () => {
@@ -126,7 +143,7 @@ describe('GameobjectTemplate integration tests', () => {
 
     it('changing all properties and executing the query should correctly work', () => {
       const expectedQuery =
-        "UPDATE `gameobject_template` SET `displayId` = 1, `name` = '2', `IconName` = '3', " +
+        "UPDATE `gameobject_template` SET `displayId` = 1, `name` = '2', " +
         "`castBarCaption` = '4', `unk1` = '5', `size` = 6, `Data0` = 7, `Data1` = 8, `Data2` = 9, `Data3` = 10, " +
         '`Data4` = 11, `Data5` = 12, `Data6` = 13, `Data7` = 14, `Data8` = 15, `Data9` = 16, `Data10` = 17, `Data11` = 18, ' +
         '`Data12` = 19, `Data13` = 20, `Data14` = 21, `Data15` = 22, `Data16` = 23, `Data17` = 24, `Data18` = 25, ' +
@@ -135,7 +152,11 @@ describe('GameobjectTemplate integration tests', () => {
 
       querySpy.calls.reset();
 
-      page.changeAllFields(originalEntity, ['VerifiedBuild']);
+      const values: (string | number)[] = [];
+
+      values[4] = 'Directions'; // IconName
+
+      page.changeAllFields(originalEntity, ['VerifiedBuild'], values);
       page.expectDiffQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();
@@ -156,7 +177,7 @@ describe('GameobjectTemplate integration tests', () => {
       page.expectFullQueryToContain('35');
     });
 
-    xit('changing a value via SingleValueSelector should correctly work', waitForAsync(async () => {
+    xit('changing a value via SingleValueSelector should correctly work', async () => {
       const field = 'type';
       page.clickElement(page.getSelectorBtn(field));
       await page.whenReady();
@@ -182,6 +203,6 @@ describe('GameobjectTemplate integration tests', () => {
           ", 7, 0, '', '', '', '', 1, 0, 0, 0, 0, 0, 0, 0, " +
           "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', 0);",
       );
-    }));
+    });
   });
 });

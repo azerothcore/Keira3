@@ -11,7 +11,6 @@
       "options": {
         "tsConfig": "libs/features/dashboard/tsconfig.spec.json",
         "karmaConfig": "libs/features/dashboard/karma.conf.js",
-        "polyfills": ["zone.js", "zone.js/testing"],
         "sourceMap": true,
         "codeCoverage": true,
         "styles": ["apps/keira/src/app/scss/main-test.scss"],

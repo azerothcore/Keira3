@@ -8,7 +8,16 @@
   @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
     <div>
       <div class="content-block">
-        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)" />
+        <keira-query-output
+          [docUrl]="docUrl"
+          [isNew]="editorService.isNew"
+          [diffQuery]="editorService.diffQuery"
+          [fullQuery]="editorService.fullQuery"
+          [error]="editorService.error"
+          [entityTable]="editorService.entityTable"
+          [editorService]="editorService"
+          (executeQuery)="save($event)"
+        />
       </div>
       <div class="content-block">
         <form [formGroup]="editorService.form" class="form-group edit-form">
@@ -20,13 +29,11 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
               <label class="control-label" for="OptionIcon">OptionIcon</label>
-              <keira-single-value-selector-btn
+              <keira-generic-option-selector
                 [control]="editorService.form.controls.OptionIcon"
-                [disabled]="editorService.form.controls.OptionIcon.disabled"
-                [config]="{ options: OPTION_ICON, name: 'OptionIcon' }"
-                [modalClass]="'modal-md'"
+                id="OptionIcon"
+                [optionList]="OPTION_ICON"
               />
-              <input [formControlName]="'OptionIcon'" id="OptionIcon" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-xl-2">
               <label class="control-label" for="OptionText">OptionText</label>
@@ -112,7 +119,12 @@
         </form>
         <div class="row">
           <div class="col-12">
-            <keira-editor-buttons [editorService]="editorService" />
+            <keira-editor-buttons
+              [selectedRowId]="editorService.selectedRowId"
+              (deleteSelectedRow)="editorService.deleteSelectedRow()"
+              (addNewRow)="editorService.addNewRow()"
+              (duplicateRow)="editorService.addNewRow(true)"
+            />
             <ngx-datatable
               id="editor-table"
               class="bootstrap table table-striped text-center datatable-select"
@@ -130,18 +142,18 @@
                   <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
                 </ng-template>
               </ngx-datatable-column>
-              <ngx-datatable-column name="OptionID" prop="OptionID" [minWidth]="35"></ngx-datatable-column>
-              <ngx-datatable-column name="OptionIcon" prop="OptionIcon" [minWidth]="35"></ngx-datatable-column>
-              <ngx-datatable-column name="OptionText" prop="OptionText" [minWidth]="50"></ngx-datatable-column>
-              <ngx-datatable-column name="OptionBroadcastTextID" prop="OptionBroadcastTextID" [minWidth]="50"></ngx-datatable-column>
-              <ngx-datatable-column name="OptionType" prop="OptionType" [minWidth]="35"></ngx-datatable-column>
-              <ngx-datatable-column name="OptionNpcFlag" prop="OptionNpcFlag" [minWidth]="50"></ngx-datatable-column>
-              <ngx-datatable-column name="ActionMenuID" prop="ActionMenuID" [minWidth]="50"></ngx-datatable-column>
-              <ngx-datatable-column name="ActionPoiID" prop="ActionPoiID" [minWidth]="50"></ngx-datatable-column>
-              <ngx-datatable-column name="BoxCoded" prop="BoxCoded" [minWidth]="50"></ngx-datatable-column>
-              <ngx-datatable-column name="BoxMoney" prop="BoxMoney" [minWidth]="35"></ngx-datatable-column>
-              <ngx-datatable-column name="BoxText" prop="BoxText" [minWidth]="50"></ngx-datatable-column>
-              <!-- <ngx-datatable-column name="BoxBroadcastTextID"     prop="BoxBroadcastTextID"    [minWidth]="70"></ngx-datatable-column> -->
+              <ngx-datatable-column name="OptionID" prop="OptionID" [minWidth]="35" />
+              <ngx-datatable-column name="OptionIcon" prop="OptionIcon" [minWidth]="35" />
+              <ngx-datatable-column name="OptionText" prop="OptionText" [minWidth]="50" />
+              <ngx-datatable-column name="OptionBroadcastTextID" prop="OptionBroadcastTextID" [minWidth]="50" />
+              <ngx-datatable-column name="OptionType" prop="OptionType" [minWidth]="35" />
+              <ngx-datatable-column name="OptionNpcFlag" prop="OptionNpcFlag" [minWidth]="50" />
+              <ngx-datatable-column name="ActionMenuID" prop="ActionMenuID" [minWidth]="50" />
+              <ngx-datatable-column name="ActionPoiID" prop="ActionPoiID" [minWidth]="50" />
+              <ngx-datatable-column name="BoxCoded" prop="BoxCoded" [minWidth]="50" />
+              <ngx-datatable-column name="BoxMoney" prop="BoxMoney" [minWidth]="35" />
+              <ngx-datatable-column name="BoxText" prop="BoxText" [minWidth]="50" />
+              <!-- <ngx-datatable-column name="BoxBroadcastTextID"     prop="BoxBroadcastTextID"    [minWidth]="70" /> -->
             </ngx-datatable>
           </div>
         </div>

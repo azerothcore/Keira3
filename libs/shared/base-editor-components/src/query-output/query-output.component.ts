@@ -1,4 +1,15 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  computed,
+  EventEmitter,
+  inject,
+  input,
+  Input,
+  Output,
+  signal,
+} from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 import { EditorService } from '@keira/shared/base-abstract-classes';
@@ -11,10 +22,10 @@ import { filter } from 'rxjs';
 import { HighlightjsWrapperComponent } from '../highlightjs-wrapper/highlightjs-wrapper.component';
 import { ModalConfirmComponent } from '../modal-confirm/modal-confirm.component';
 import { QueryErrorComponent } from './query-error/query-error.component';
+import { QueryError } from 'mysql2';
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-query-output',
   templateUrl: './query-output.component.html',
   styleUrls: ['./query-output.component.scss'],
@@ -24,17 +35,25 @@ export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandle
   private readonly clipboardService = inject(ClipboardService);
   private readonly modalService = inject(BsModalService);
 
-  @Input() docUrl!: string;
+  // TODO convert call to editorService.reloadSameEntity to output and remove this input
   @Input() editorService!: EditorService<T>;
+  // TODO: convert to signal output
   @Output() executeQuery = new EventEmitter<string>();
-  selectedQuery: 'diff' | 'full' = 'diff';
+
+  readonly isNew = input.required<boolean>();
+  readonly diffQuery = input.required<string>();
+  readonly fullQuery = input.required<string>();
+  readonly error = input.required<QueryError>();
+  readonly entityTable = input.required<string>();
+  readonly docUrl = input<string>();
+  readonly selectedQuery = signal<'diff' | 'full'>('diff');
   private modalRef!: BsModalRef;
 
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
-  showFullQuery(): boolean {
-    return this.editorService.isNew || this.selectedQuery === 'full';
-  }
+  readonly showFullQuery = computed<boolean>(() => this.isNew() || this.selectedQuery() === 'full');
+
+  readonly getQuery = computed<string>(() => (this.showFullQuery() ? this.fullQuery() : this.diffQuery()));
 
   copy(): void {
     this.clipboardService.copyFromContent(this.getQuery());
@@ -45,7 +64,7 @@ export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandle
   }
 
   reload(): void {
-    if (!this.editorService.diffQuery) {
+    if (!this.diffQuery()) {
       // if no changes to discard, just reload without asking confirmation
       setTimeout(() => {
         // since the OnPush migration, for some reason we need to wrap this inside a setTimeout otherwise it does not work
@@ -66,9 +85,5 @@ export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandle
         this.editorService.reloadSameEntity(this.changeDetectorRef);
       }),
     );
-  }
-
-  private getQuery(): string {
-    return this.showFullQuery() ? this.editorService.fullQuery : this.editorService.diffQuery;
   }
 }

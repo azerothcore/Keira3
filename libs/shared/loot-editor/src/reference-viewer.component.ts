@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, Input, OnChanges } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, input, OnChanges } from '@angular/core';
 import { DTCFG } from '@keira/shared/config';
 
 import { AsyncPipe } from '@angular/common';
@@ -18,31 +18,46 @@ import { ReferenceViewerService } from './reference-viewer.service';
   imports: [TooltipModule, NgxDatatableModule, IconComponent, AsyncPipe],
 })
 export class ReferenceViewerComponent extends SubscriptionHandler implements OnChanges {
-  @Input({ required: true }) referenceId!: number;
+  readonly referenceId = input.required<number>();
 
-  readonly service = inject(ReferenceViewerService);
-  readonly queryService = inject(MysqlQueryService);
+  private readonly service = inject(ReferenceViewerService);
+  private readonly cdr = inject(ChangeDetectorRef);
+  protected readonly queryService = inject(MysqlQueryService);
 
-  readonly DTCFG = DTCFG;
-  referenceLootRows: ReferenceLootTemplate[] | undefined;
-  nestedReferenceIds: number[] = [];
+  protected readonly DTCFG = DTCFG;
+  protected referenceLootRows: ReferenceLootTemplate[] | undefined;
+  protected nestedReferenceIds: number[] = [];
 
   ngOnChanges(): void {
     this.referenceLootRows = undefined;
     this.nestedReferenceIds = [];
 
     this.subscriptions.push(
-      this.service.getReferenceById(this.referenceId)?.subscribe((result: ReferenceLootTemplate[]) => {
-        this.referenceLootRows = result;
+      this.service.getReferenceById(this.referenceId())?.subscribe((result: ReferenceLootTemplate[]) => {
+        this.referenceLootRows = result.map((row) => {
+          let Chance = row.Chance;
+
+          if (row.GroupId !== 0) {
+            const groupCount = result.filter((r) => r.GroupId === row.GroupId).length;
+            Chance = (row.Chance === 0 ? 100 / groupCount : row.Chance / groupCount).toFixed(2) as unknown as number;
+          }
+
+          return {
+            ...row,
+            Chance,
+          };
+        });
 
         this.nestedReferenceIds = this.referenceLootRows
           .filter((referenceLootRow) => referenceLootRow.Reference > 0)
           .map((referenceLootRow) => referenceLootRow.Reference);
+
+        this.cdr.markForCheck();
       }),
     );
   }
 
-  isReference(row: ReferenceLootTemplate): boolean {
+  protected isReference(row: ReferenceLootTemplate): boolean {
     return row.Reference !== 0;
   }
 }

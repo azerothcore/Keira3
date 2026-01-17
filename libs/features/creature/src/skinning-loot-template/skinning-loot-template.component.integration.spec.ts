@@ -1,11 +1,12 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { SkinningLootTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
@@ -33,19 +34,18 @@ describe('SkinningLootTemplate integration tests', () => {
   originalRow1.Item = 1;
   originalRow2.Item = 2;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        SkinningLootTemplateComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
+      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SkinningLootTemplateComponent, RouterTestingModule, TranslateTestingModule],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
-      providers: [CreatureHandlerService, SaiCreatureHandlerService, { provide: SqliteService, useValue: instance(mock(SqliteService)) }],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean, lootId = id) {
     spyOn(TestBed.inject(SkinningLootTemplateService), 'getLootId').and.returnValue(of([{ lootId }]));
@@ -87,11 +87,11 @@ describe('SkinningLootTemplate integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
-      expect(handlerService.isSkinningLootTemplateUnsaved).toBe(false);
+      expect(handlerService.isSkinningLootTemplateUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isSkinningLootTemplateUnsaved).toBe(true);
+      expect(handlerService.isSkinningLootTemplateUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isSkinningLootTemplateUnsaved).toBe(false);
+      expect(handlerService.isSkinningLootTemplateUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {
