@@ -2,19 +2,8 @@
   "LANGUAGES": {
     "ENGLISH": "英语",
     "SPANISH": "西班牙语",
-    "ITALIAN": "意大利语",
     "CHINESE": "简体中文",
-    "RUSSIAN": "俄语",
-    "DUTCH": "荷兰语",
-    "FRENCH": "法语",
-    "GREEK": "希腊语",
-    "SWEDISH": "瑞典语",
-    "GERMAN": "德语",
-    "POLISH": "波兰语",
-    "PORTUGUESE": "葡萄牙语",
-    "KOREAN": "韩语",
-    "ROMANIAN": "罗马尼亚语",
-    "SLOVAK": "斯洛伐克语"
+    "RUSSIAN": "俄语"
   },
   "MODAL": {
     "YES": "是",
