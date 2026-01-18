@@ -113,6 +113,11 @@
           [selectionType]="DTCFG.selectionType"
           (select)="editorService.onRowSelection($event)"
         >
+          <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
+            </ng-template>
+          </ngx-datatable-column>
           <ngx-datatable-column prop="SpellId" name="SpellId" [minWidth]="150" [maxWidth]="200" />
           <ngx-datatable-column prop="SpellId" name="SpellName" [minWidth]="150" [maxWidth]="200">
             <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
