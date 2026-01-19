@@ -180,6 +180,7 @@ export enum SAI_ACTIONS {
   WORLD_SCRIPT = 237,
   DISABLE_REWARD = 238,
   SET_ANIM_TIER = 239,
+  SET_GOSSIP_MENU = 240,
 }
 export const SAI_ACTIONS_KEYS = getEnumKeys(SAI_ACTIONS);
 export const SAI_ACTION_TOOLTIPS: Record<string, string> = {};
@@ -1213,14 +1214,14 @@ SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Minimum Spawn Timer';
 SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Maximum Spawn Timer';
 SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Respawn Delay';
 SAI_ACTION_PARAM5_NAMES[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Corpse Delay';
-SAI_ACTION_PARAM5_NAMES[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Dont Despawn';
+SAI_ACTION_PARAM6_NAMES[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Dont Despawn';
 SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SCRIPTED_SPAWN] =
   '0: Disable Respawn and await script; 1: Respawn Once; 2: Respawn and Enable Respawning';
 SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Delay in seconds until first spawn, if 0 respawn immediately';
 SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Delay in seconds until first spawn, if 0 respawn immediately';
 SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Delay in seconds to respawn after corpse is removed, if 0 use DB values';
 SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Delay in seconds until the corpse despawns, if 0 use default';
-SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.SCRIPTED_SPAWN] = 'if 1, will not despawn when state = 0';
+SAI_ACTION_PARAM6_TOOLTIPS[SAI_ACTIONS.SCRIPTED_SPAWN] = 'if 1, will not despawn when state = 0';
 
 // SMART_ACTION_SET_SCALE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_SCALE] = 'Sets the scale for the targeted creatures';
@@ -1327,3 +1328,7 @@ SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.DISABLE_REWARD] = '1 = enabled 0 = disabl
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_ANIM_TIER] = 'Allows to set animation tier for a creature.';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_ANIM_TIER] = 'Anim Tier';
 SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_ANIM_TIER] = '0 = Ground, 1 = Swim, 2 = Hover, 3 = Fly, 4 = Submerged';
+
+// SMART_ACTION_SET_GOSSIP_MENU
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_GOSSIP_MENU] = 'Modifies the gossip menu ID of the target.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_GOSSIP_MENU] = 'GossipMenuId';
