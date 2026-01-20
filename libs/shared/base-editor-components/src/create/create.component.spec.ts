@@ -1,15 +1,80 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, By } from '@angular/platform-browser';
+import { of, throwError } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
 import { MockHandlerService } from '@keira/shared/base-abstract-classes';
 import { TableRow } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
-import { of, throwError } from 'rxjs';
 import { anything, instance, mock, reset, when } from 'ts-mockito';
+
 import { CreateComponent } from './create.component';
+
+describe('CreateComponent', () => {
+  let component: CreateComponent<any>;
+  let fixture: ComponentFixture<CreateComponent<any>>;
+
+  const fakeQueryService: any = {
+    getMaxId: () => of([{ max: 5 }]),
+    selectAll: () => of([]),
+  };
+
+  const fakeHandlerService: any = {
+    select: jasmine.createSpy('select'),
+  };
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [FormsModule, TranslateModule.forRoot(), CreateComponent],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(CreateComponent);
+    component = fixture.componentInstance;
+    // Provide required inputs
+    component.entityTable = 'test';
+    component.entityIdField = 'id';
+    component.customStartingId = 1;
+    component.queryService = fakeQueryService;
+    component.handlerService = fakeHandlerService;
+    fixture.detectChanges();
+  });
+
+  it('does not render the copy option when allowCopy is false', () => {
+    // Default allowCopy is false
+    fixture.detectChanges();
+    const copyRadio = fixture.debugElement.query(By.css('#method-copy'));
+    expect(copyRadio).toBeNull();
+    expect(component.creationMethod).toBe('blank');
+  });
+
+  it('renders the copy option when allowCopy is true', () => {
+    component.allowCopy = true;
+    fixture.detectChanges();
+    const copyRadio = fixture.debugElement.query(By.css('#method-copy'));
+    expect(copyRadio).not.toBeNull();
+    // when allowed the copy radio should not be disabled
+    const copyInput = copyRadio.nativeElement as HTMLInputElement;
+    expect(copyInput.disabled).toBeFalse();
+  });
+
+  it('resets creationMethod to blank when allowCopy is set to false', () => {
+    component.allowCopy = true;
+    component.creationMethod = 'copy';
+    expect(component.creationMethod).toBe('copy');
+    component.sourceIdModel = 123;
+    component.isSourceIdValid = true;
+
+    component.allowCopy = false;
+    // creationMethod should be reset and source-related state cleared
+    expect(component.creationMethod).toBe('blank');
+    expect(component.sourceIdModel).toBeUndefined();
+    expect(component.isSourceIdValid).toBeFalse();
+  });
+});
+// (Additional tests below use the imports declared above)
 
 class CreateComponentPage extends PageObject<CreateComponent<TableRow>> {
   get idInput(): HTMLInputElement {

@@ -1,0 +1,124 @@
+<div class="container-fluid">
+  <div class="content-block">
+    <div class="row">
+      <div class="col-12">
+        <h4>{{ 'COPY_OUTPUT.TITLE' | translate }}</h4>
+        <p>{{ 'COPY_OUTPUT.DESCRIPTION' | translate }}</p>
+      </div>
+    </div>
+
+    @if (error()) {
+      <keira-query-error [error]="error()!" />
+    }
+
+    @if (relatedTableStates().length > 0) {
+      <div class="row mb-3">
+        <div class="col-12">
+          <div class="related-tables-grid mb-2 table-responsive">
+            <table class="table table-sm mb-0">
+              <thead>
+                <tr>
+                  <th>Table</th>
+                  <th style="width: 110px">
+                    <input type="checkbox" [checked]="allIncluded()" (change)="setAllIncluded($any($event.target).checked)" />
+                  </th>
+                  <th style="width: 160px">
+                    <div class="form-check form-switch">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="header-copy-mode"
+                        [checked]="allCopyModeIsRaw()"
+                        (change)="setAllCopyMode($any($event.target).checked ? 'RAW' : 'ALL')"
+                      />
+                      <label class="form-check-label ms-2" for="header-copy-mode">{{
+                        allCopyModeIsRaw() ? 'Raw INSERT' : 'Temp Table'
+                      }}</label>
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (r of relatedTableStates(); track r.tableName) {
+                  <tr>
+                    <td>
+                      <div class="fw-semibold">
+                        {{ r.tableName }} <small class="text-muted">({{ r.count }})</small>
+                      </div>
+                    </td>
+                    <td class="align-middle">
+                      <input type="checkbox" [checked]="r.included" (change)="toggleRelatedTable(r.tableName)" />
+                    </td>
+                    <td>
+                      <div class="form-check form-switch">
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          id="switch-{{ r.tableName }}"
+                          [checked]="r.copyMode === 'RAW'"
+                          (change)="setCopyModeForTable(r.tableName, $any($event.target).checked ? 'RAW' : 'ALL')"
+                          [tooltip]="
+                            r.copyMode === 'RAW'
+                              ? r.columns && r.columns.length > 0
+                                ? 'Raw INSERT (explicit columns)'
+                                : 'Raw INSERT (columns will be inferred)'
+                              : 'Temp Table (uses temporary table)'
+                          "
+                        />
+                        <label class="form-check-label ms-2" for="switch-{{ r.tableName }}">{{
+                          r.copyMode === 'RAW' ? 'Raw INSERT' : 'Temp Table'
+                        }}</label>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    }
+
+    <div class="row mb-3">
+      <div class="col-12">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <div class="fw-semibold">Generated SQL</div>
+          <div>
+            <button class="btn btn-sm btn-outline-secondary me-2" (click)="toggleSqlExpanded()" type="button">
+              @if (sqlExpanded()) {
+                Collapse
+              } @else {
+                Expand
+              }
+            </button>
+            <button class="btn btn-sm btn-outline-secondary" (click)="copy()" type="button">
+              <i class="fa fa-copy fa-sm"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="sql-output-container mb-3" [style.maxHeight]="sqlExpanded() ? 'none' : '240px'" style="overflow: auto">
+          <keira-highlightjs-wrapper [code]="copyQuery()" />
+        </div>
+
+        <div class="d-flex gap-2">
+          <button id="copy-btn" class="btn btn-secondary" (click)="copy()" type="button">
+            <i class="fa fa-copy fa-sm"></i> {{ 'COPY_OUTPUT.COPY' | translate }}
+          </button>
+
+          <button id="execute-btn" class="btn btn-primary" (click)="execute()" type="button" [disabled]="executing() || executed()">
+            <i class="fa fa-bolt fa-sm"></i>
+            @if (executing()) {
+              <i class="fas fa-spinner fa-spin"></i>
+            }
+            {{ executed() ? ('COPY_OUTPUT.EXECUTED' | translate) : ('COPY_OUTPUT.EXECUTE' | translate) }}
+          </button>
+
+          <button class="btn btn-success" (click)="continue()" type="button" [disabled]="!executed()">
+            <i class="fa fa-arrow-right fa-sm"></i> {{ 'COPY_OUTPUT.CONTINUE' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -30,6 +30,7 @@ import { SaiCreatureHandlerService } from './sai-creature-handler.service';
 export class CreatureHandlerService extends HandlerService<CreatureTemplate> {
   protected saiCreatureHandler = inject(SaiCreatureHandlerService);
   protected readonly mainEditorRoutePath = 'creature/creature-template';
+  protected readonly copyRoutePath = 'creature/copy';
 
   get isCreatureTemplateUnsaved(): Signal<boolean> {
     return this.statusMap[CREATURE_TEMPLATE_TABLE].asReadonly();
@@ -110,8 +111,15 @@ export class CreatureHandlerService extends HandlerService<CreatureTemplate> {
     [CREATURE_FORMATIONS_TABLE]: signal(false),
   };
 
-  override select(isNew: boolean, id: string | number | Partial<CreatureTemplate>, name?: string) {
+  override select(isNew: boolean, id: string | number | Partial<CreatureTemplate>, name?: string, navigate = true, sourceId?: string) {
     this.saiCreatureHandler.select(isNew, { entryorguid: +id, source_type: 0 }, null, false);
-    super.select(isNew, id, name);
+
+    // If we're creating a new entity from a copy, navigate to copy route
+    if (isNew && sourceId) {
+      super.select(isNew, id, name, false, sourceId);
+      this.router.navigate([this.copyRoutePath]);
+    } else {
+      super.select(isNew, id, name, navigate);
+    }
   }
 }
