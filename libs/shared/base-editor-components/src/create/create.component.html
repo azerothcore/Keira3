@@ -28,7 +28,7 @@
           [(ngModel)]="creationMethod"
           (change)="onCreationMethodChange()"
           [disabled]="!allowCopy"
-          [title]="allowCopy ? '' : 'Copy from existing is not available for this entity'"
+          [title]="allowCopy ? '' : ('CREATE.COPY_DISABLED' | translate)"
         />
         <label class="form-check-label" for="method-copy">
           {{ 'CREATE.COPY_FROM_EXISTING' | translate }}

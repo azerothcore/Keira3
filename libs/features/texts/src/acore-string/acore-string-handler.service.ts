@@ -7,7 +7,7 @@ import { ACORE_STRING_TABLE, AcoreString } from '@keira/shared/acore-world-model
 })
 export class AcoreStringHandlerService extends HandlerService<AcoreString> {
   protected readonly mainEditorRoutePath = 'texts/acore-string';
-  protected readonly copyRoutePath = 'texts/acore-string-copy';
+  protected override readonly copyRoutePath = 'texts/acore-string-copy';
 
   get isUnsaved(): Signal<boolean> {
     return this.statusMap[ACORE_STRING_TABLE].asReadonly();

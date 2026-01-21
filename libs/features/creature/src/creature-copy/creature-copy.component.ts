@@ -34,7 +34,6 @@ import { Router } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-creature-copy',
   templateUrl: './creature-copy.component.html',
-  standalone: true,
   imports: [CopyOutputComponent],
 })
 export class CreatureCopyComponent implements OnInit {

@@ -17,7 +17,6 @@ import { Router } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-gameobject-copy',
   templateUrl: './gameobject-copy.component.html',
-  standalone: true,
   imports: [CopyOutputComponent],
 })
 export class GameobjectCopyComponent implements OnInit {

@@ -27,7 +27,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-quest-copy',
   templateUrl: './quest-copy.component.html',
-  standalone: true,
+
   imports: [CopyOutputComponent],
 })
 export class QuestCopyComponent implements OnInit {

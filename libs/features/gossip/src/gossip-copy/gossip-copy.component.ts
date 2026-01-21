@@ -8,7 +8,6 @@ import { GOSSIP_MENU_TABLE, GOSSIP_MENU_ID, GOSSIP_MENU_OPTION_TABLE, GOSSIP_MEN
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-gossip-copy',
   templateUrl: './gossip-copy.component.html',
-  standalone: true,
   imports: [CopyOutputComponent],
 })
 export class GossipCopyComponent implements OnInit {

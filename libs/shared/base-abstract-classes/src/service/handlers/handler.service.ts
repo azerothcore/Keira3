@@ -16,6 +16,7 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
 
   protected abstract _statusMap: { [key: string]: WritableSignal<boolean> };
   protected abstract readonly mainEditorRoutePath: string;
+  protected readonly copyRoutePath?: string;
 
   /* istanbul ignore next */ // TODO: fix coverage
   get statusMap(): { [key: string]: WritableSignal<boolean> } {
@@ -72,7 +73,11 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
     this.selectedName = name as string;
 
     if (navigate) {
-      this.router.navigate([this.mainEditorRoutePath]);
+      if (this.copyRoutePath && isNew && sourceId) {
+        this.router.navigate([this.copyRoutePath]);
+      } else {
+        this.router.navigate([this.mainEditorRoutePath]);
+      }
     }
   }
 

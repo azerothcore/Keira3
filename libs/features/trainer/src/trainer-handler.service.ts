@@ -7,7 +7,7 @@ import { TRAINER_TABLE, TRAINER_SPELL_TABLE, Trainer } from '@keira/shared/acore
 })
 export class TrainerHandlerService extends HandlerService<Trainer> {
   protected readonly mainEditorRoutePath = 'trainer/trainer';
-  protected readonly copyRoutePath = 'trainer/copy';
+  protected override readonly copyRoutePath = 'trainer/copy';
 
   get isTrainerUnsaved(): Signal<boolean> {
     return this.statusMap[TRAINER_TABLE].asReadonly();

@@ -1,7 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject, Input, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal, input } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { ClipboardService } from 'ngx-clipboard';
 import { HandlerService } from '@keira/shared/base-abstract-classes';
 import { TableRow } from '@keira/shared/constants';
@@ -11,54 +10,64 @@ import { QueryError } from 'mysql2';
 import { QueryErrorComponent } from '../query-output/query-error/query-error.component';
 import { HighlightjsWrapperComponent } from '../highlightjs-wrapper/highlightjs-wrapper.component';
 
+type CopyMode = 'RAW' | 'ALL';
+
+interface RelatedTable {
+  tableName: string;
+  idField: string;
+  copyMode?: CopyMode;
+  columns?: string[];
+}
+
+interface RelatedTableState {
+  tableName: string;
+  idField: string;
+  count: number;
+  included: boolean;
+  copyMode: CopyMode;
+  columns?: string[];
+}
+
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-copy-output',
   templateUrl: './copy-output.component.html',
   styleUrls: ['./copy-output.component.scss'],
-  imports: [CommonModule, TranslateModule, TooltipModule, QueryErrorComponent, HighlightjsWrapperComponent],
+  imports: [TooltipDirective, QueryErrorComponent, HighlightjsWrapperComponent, TranslatePipe],
 })
 export class CopyOutputComponent<T extends TableRow> extends SubscriptionHandler implements OnInit {
   protected readonly clipboardService = inject(ClipboardService);
   protected readonly queryService = inject(MysqlQueryService);
 
-  @Input({ required: true }) handlerService!: HandlerService<T>;
-  @Input({ required: true }) tableName!: string;
-  @Input({ required: true }) idField!: string;
-  @Input({ required: true }) sourceId!: string | number;
-  @Input({ required: true }) newId!: string | number;
-  @Input() relatedTables?: Array<{
-    tableName: string;
-    idField: string;
-    copyMode?: 'RAW' | 'ALL'; // RAW = explicit columns, ALL = temp table
-    columns?: string[];
-  }>;
+  readonly handlerService = input<HandlerService<T> | undefined>();
+  readonly tableName = input.required<string>();
+  readonly idField = input.required<string>();
+  readonly sourceId = input.required<string | number>();
+  readonly newId = input.required<string | number>();
+  readonly relatedTables = input<RelatedTable[] | undefined>();
+  readonly mainCopyMode = input<CopyMode | undefined>();
+  readonly mainColumns = input<string[] | undefined>();
 
-  @Input() mainCopyMode?: 'RAW' | 'ALL';
-  @Input() mainColumns?: string[];
-
-  protected mainCopyModeSignal = signal<'RAW' | 'ALL'>('RAW');
+  protected mainCopyModeSignal = signal<CopyMode>('RAW');
   protected mainColumnsSignal = signal<string[] | undefined>(undefined);
 
   protected copyQuery = signal<string>('');
-  protected relatedTableStates = signal<
-    Array<{ tableName: string; idField: string; count: number; included: boolean; copyMode: 'RAW' | 'ALL'; columns?: string[] }>
-  >([]);
+  protected relatedTableStates = signal<RelatedTableState[]>([]);
   protected error = signal<QueryError | undefined>(undefined);
   protected executing = signal<boolean>(false);
   protected executed = signal<boolean>(false);
   protected sqlExpanded = signal<boolean>(false);
 
   ngOnInit(): void {
-    this.mainCopyModeSignal.set(this.mainCopyMode || 'RAW');
-    this.mainColumnsSignal.set(this.mainColumns);
+    this.mainCopyModeSignal.set(this.mainCopyMode() || 'RAW');
+    this.mainColumnsSignal.set(this.mainColumns());
     this.populateRelatedTables();
   }
 
-  protected setCopyModeForTable(tableName: string, mode: string): void {
-    const normalized: 'RAW' | 'ALL' = mode === 'RAW' ? 'RAW' : 'ALL';
+  protected setCopyModeForTable(tableName: string, mode: CopyMode): void {
+    const normalized = mode === 'RAW' ? 'RAW' : 'ALL';
 
-    if (tableName === this.tableName) {
+    if (tableName === this.tableName()) {
       this.mainCopyModeSignal.set(normalized);
 
       const states = this.relatedTableStates().map((s) => ({
@@ -97,33 +106,31 @@ export class CopyOutputComponent<T extends TableRow> extends SubscriptionHandler
   }
 
   protected populateRelatedTables(): void {
-    const inputTables: Array<{ tableName: string; idField: string; copyMode?: 'RAW' | 'ALL'; columns?: string[] }> = [];
+    const inputTables: RelatedTable[] = [];
 
     // Include main table first (default to RAW)
-    inputTables.push({ tableName: this.tableName, idField: this.idField, copyMode: this.mainCopyMode || 'RAW', columns: this.mainColumns });
+    inputTables.push({
+      tableName: this.tableName(),
+      idField: this.idField(),
+      copyMode: this.mainCopyMode() || 'RAW',
+      columns: this.mainColumns(),
+    });
 
-    if (this.relatedTables && this.relatedTables.length > 0) {
-      for (const t of this.relatedTables) {
+    if (this.relatedTables() && this.relatedTables()!.length > 0) {
+      for (const t of this.relatedTables()!) {
         inputTables.push({ tableName: t.tableName, idField: t.idField, copyMode: t.copyMode || 'RAW', columns: t.columns });
       }
     }
 
-    const states: Array<{
-      tableName: string;
-      idField: string;
-      count: number;
-      included: boolean;
-      copyMode: 'RAW' | 'ALL';
-      columns?: string[];
-    }> = [];
+    const states: RelatedTableState[] = [];
     let remaining = inputTables.length;
 
     for (const table of inputTables) {
       this.subscriptions.push(
-        this.queryService.getRowsCount(table.tableName, table.idField, this.sourceId).subscribe((count: number | null) => {
+        this.queryService.getRowsCount(table.tableName, table.idField, this.sourceId()).subscribe((count: number | null) => {
           const num = Number(count || 0);
 
-          const isMain = table.tableName === this.tableName;
+          const isMain = table.tableName === this.tableName();
 
           if (isMain || num > 0) {
             states.push({
@@ -147,13 +154,13 @@ export class CopyOutputComponent<T extends TableRow> extends SubscriptionHandler
   }
 
   protected generateCopyQuery(): void {
-    const setVars = this.queryService.getCopyVarsSet(this.sourceId, this.newId);
+    const setVars = this.queryService.getCopyVarsSet(this.sourceId(), this.newId());
 
     const selectedTables = this.relatedTableStates().filter((t) => t.included);
 
     // If no tables selected, just set main table
     if (selectedTables.length === 0) {
-      const query = setVars + this.queryService.getCopyQuery(this.tableName, this.sourceId, this.newId, this.idField, true);
+      const query = setVars + this.queryService.getCopyQuery(this.tableName(), this.sourceId(), this.newId(), this.idField(), true);
       this.copyQuery.set(query);
       return;
     }
@@ -164,7 +171,7 @@ export class CopyOutputComponent<T extends TableRow> extends SubscriptionHandler
     if (!hasAnyRaw) {
       let query = setVars;
       for (const table of selectedTables) {
-        query += '\n' + this.queryService.getCopyQuery(table.tableName, this.sourceId, this.newId, table.idField, true);
+        query += '\n' + this.queryService.getCopyQuery(table.tableName, this.sourceId(), this.newId(), table.idField, true);
       }
       this.copyQuery.set(query);
       return;
@@ -178,9 +185,9 @@ export class CopyOutputComponent<T extends TableRow> extends SubscriptionHandler
 
     for (const table of rawTables) {
       this.subscriptions.push(
-        this.queryService.selectAll(table.tableName, table.idField, this.sourceId).subscribe((rows) => {
+        this.queryService.selectAll(table.tableName, table.idField, this.sourceId()).subscribe((rows) => {
           const cols = table.columns && table.columns.length > 0 ? table.columns : rows[0] ? Object.keys(rows[0]) : [];
-          const rawQuery = this.queryService.getCopyQueryRawWithValues(table.tableName, rows, this.newId, table.idField, cols, true);
+          const rawQuery = this.queryService.getCopyQueryRawWithValues(table.tableName, rows, this.newId(), table.idField, cols, true);
           tableQueries.set(table.tableName, rawQuery);
 
           remainingRaw--;
@@ -190,7 +197,7 @@ export class CopyOutputComponent<T extends TableRow> extends SubscriptionHandler
               if (t.copyMode === 'RAW') {
                 finalQuery += '\n' + tableQueries.get(t.tableName);
               } else {
-                finalQuery += '\n' + this.queryService.getCopyQuery(t.tableName, this.sourceId, this.newId, t.idField, true);
+                finalQuery += '\n' + this.queryService.getCopyQuery(t.tableName, this.sourceId(), this.newId(), t.idField, true);
               }
             }
             this.copyQuery.set(finalQuery);
@@ -307,6 +314,6 @@ export class CopyOutputComponent<T extends TableRow> extends SubscriptionHandler
 
   protected continue(): void {
     // Navigate to the editor for the newly created entry
-    this.handlerService.select(false, this.newId);
+    this.handlerService()!.select(false, this.newId());
   }
 }

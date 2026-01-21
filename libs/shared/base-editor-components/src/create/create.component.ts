@@ -41,9 +41,9 @@ export class CreateComponent<T extends TableRow> extends SubscriptionHandler imp
 
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
-  public idModel!: number;
-  public sourceIdModel?: number;
-  public creationMethod: 'blank' | 'copy' = 'blank';
+  idModel!: number;
+  sourceIdModel?: number;
+  creationMethod: 'blank' | 'copy' = 'blank';
   private _loading = false;
   isIdFree = false;
   isSourceIdValid = false;
@@ -62,7 +62,7 @@ export class CreateComponent<T extends TableRow> extends SubscriptionHandler imp
     }
   }
 
-  checkId() {
+  protected checkId() {
     this._loading = true;
     this.subscriptions.push(
       this.queryService.selectAll<T>(this.entityTable, this.entityIdField, this.idModel).subscribe({
@@ -111,7 +111,7 @@ export class CreateComponent<T extends TableRow> extends SubscriptionHandler imp
     return currentMax < this.customStartingId ? this.customStartingId : currentMax + 1;
   }
 
-  onCreationMethodChange(): void {
+  protected onCreationMethodChange(): void {
     if (this.creationMethod === 'blank') {
       this.sourceIdModel = undefined;
       this.isSourceIdValid = false;
@@ -119,7 +119,7 @@ export class CreateComponent<T extends TableRow> extends SubscriptionHandler imp
     this.changeDetectorRef.markForCheck();
   }
 
-  checkSourceId(): void {
+  protected checkSourceId(): void {
     if (!this.sourceIdModel) {
       this.isSourceIdValid = false;
       this.changeDetectorRef.markForCheck();
@@ -145,7 +145,7 @@ export class CreateComponent<T extends TableRow> extends SubscriptionHandler imp
     );
   }
 
-  isFormValid(): boolean {
+  protected isFormValid(): boolean {
     const isNewIdValid = !!this.idModel && this.isIdFree;
 
     if (this.creationMethod === 'copy') {
@@ -155,7 +155,7 @@ export class CreateComponent<T extends TableRow> extends SubscriptionHandler imp
     return isNewIdValid;
   }
 
-  onCreate(): void {
+  protected onCreate(): void {
     if (this.creationMethod === 'copy') {
       this.handlerService.select(true, this.idModel, undefined, true, this.sourceIdModel!.toString());
     } else {

@@ -8,7 +8,6 @@ import { GAME_TELE_TABLE, GAME_TELE_ID } from '@keira/shared/acore-world-model';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-game-tele-copy',
   templateUrl: './game-tele-copy.component.html',
-  standalone: true,
   imports: [CopyOutputComponent],
 })
 export class GameTeleCopyComponent implements OnInit {

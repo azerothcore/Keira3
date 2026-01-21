@@ -8,7 +8,7 @@ import { PAGE_TEXT_TABLE, PAGE_TEXT_ID } from '@keira/shared/acore-world-model';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-page-text-copy',
   templateUrl: './page-text-copy.component.html',
-  standalone: true,
+
   imports: [CopyOutputComponent],
 })
 export class PageTextCopyComponent implements OnInit {

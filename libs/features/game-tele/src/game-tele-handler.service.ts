@@ -7,7 +7,7 @@ import { GAME_TELE_TABLE, GameTele } from '@keira/shared/acore-world-model';
 })
 export class GameTeleHandlerService extends HandlerService<GameTele> {
   protected readonly mainEditorRoutePath = 'game-tele/tele';
-  protected readonly copyRoutePath = 'game-tele/copy';
+  protected override readonly copyRoutePath = 'game-tele/copy';
 
   get isGameTeleUnsaved(): Signal<boolean> {
     return this.statusMap[GAME_TELE_TABLE].asReadonly();

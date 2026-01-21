@@ -8,7 +8,6 @@ import { FISHING_LOOT_TEMPLATE_TABLE, LOOT_TEMPLATE_ID } from '@keira/shared/aco
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-fishing-loot-copy',
   templateUrl: './fishing-loot-copy.component.html',
-  standalone: true,
   imports: [CopyOutputComponent],
 })
 export class FishingLootCopyComponent implements OnInit {

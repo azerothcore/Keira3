@@ -30,7 +30,7 @@ import { SaiCreatureHandlerService } from './sai-creature-handler.service';
 export class CreatureHandlerService extends HandlerService<CreatureTemplate> {
   protected saiCreatureHandler = inject(SaiCreatureHandlerService);
   protected readonly mainEditorRoutePath = 'creature/creature-template';
-  protected readonly copyRoutePath = 'creature/copy';
+  protected override readonly copyRoutePath = 'creature/copy';
 
   get isCreatureTemplateUnsaved(): Signal<boolean> {
     return this.statusMap[CREATURE_TEMPLATE_TABLE].asReadonly();

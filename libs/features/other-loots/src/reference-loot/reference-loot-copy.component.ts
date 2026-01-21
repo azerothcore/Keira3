@@ -8,7 +8,6 @@ import { REFERENCE_LOOT_TEMPLATE_TABLE, LOOT_TEMPLATE_ID } from '@keira/shared/a
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-reference-loot-copy',
   templateUrl: './reference-loot-copy.component.html',
-  standalone: true,
   imports: [CopyOutputComponent],
 })
 export class ReferenceLootCopyComponent implements OnInit {

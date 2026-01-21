@@ -7,7 +7,7 @@ import { GOSSIP_MENU_OPTION_TABLE, GOSSIP_MENU_TABLE, GossipMenu } from '@keira/
 })
 export class GossipHandlerService extends HandlerService<GossipMenu> {
   protected readonly mainEditorRoutePath = 'gossip/gossip-menu';
-  protected readonly copyRoutePath = 'gossip/copy';
+  protected override readonly copyRoutePath = 'gossip/copy';
 
   get isGossipMenuTableUnsaved(): Signal<boolean> {
     return this.statusMap[GOSSIP_MENU_TABLE].asReadonly();

@@ -8,7 +8,7 @@ import { NPC_TEXT_TABLE, NPC_TEXT_ID } from '@keira/shared/acore-world-model';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-npc-text-copy',
   templateUrl: './npc-text-copy.component.html',
-  standalone: true,
+
   imports: [CopyOutputComponent],
 })
 export class NpcTextCopyComponent implements OnInit {

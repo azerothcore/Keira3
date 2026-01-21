@@ -7,7 +7,7 @@ import { PageText, PAGE_TEXT_TABLE } from '@keira/shared/acore-world-model';
 })
 export class PageTextHandlerService extends HandlerService<PageText> {
   protected readonly mainEditorRoutePath = 'texts/page-text';
-  protected readonly copyRoutePath = 'texts/page-text-copy';
+  protected override readonly copyRoutePath = 'texts/page-text-copy';
 
   get isUnsaved(): Signal<boolean> {
     return this.statusMap[PAGE_TEXT_TABLE].asReadonly();

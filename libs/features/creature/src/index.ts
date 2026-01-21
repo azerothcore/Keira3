@@ -1,4 +1,4 @@
-export * from './creature-copy/creature-copy.component';
+export { CreatureCopyComponent } from './creature-copy/creature-copy.component';
 export * from './creature-equip-template/creature-equip-template.component';
 export * from './creature-handler.service';
 export * from './creature-loot-template/creature-loot-template.component';

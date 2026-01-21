@@ -8,7 +8,6 @@ import { SPELL_LOOT_TEMPLATE_TABLE, LOOT_TEMPLATE_ID } from '@keira/shared/acore
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-spell-loot-copy',
   templateUrl: './spell-loot-copy.component.html',
-  standalone: true,
   imports: [CopyOutputComponent],
 })
 export class SpellLootCopyComponent implements OnInit {

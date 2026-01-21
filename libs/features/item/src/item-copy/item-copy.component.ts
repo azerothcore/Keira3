@@ -18,7 +18,6 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-item-copy',
   templateUrl: './item-copy.component.html',
-  standalone: true,
   imports: [CopyOutputComponent],
 })
 export class ItemCopyComponent implements OnInit {

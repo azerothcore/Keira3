@@ -8,7 +8,7 @@ import { ACORE_STRING_TABLE, ACORE_STRING_ENTRY } from '@keira/shared/acore-worl
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-acore-string-copy',
   templateUrl: './acore-string-copy.component.html',
-  standalone: true,
+
   imports: [CopyOutputComponent],
 })
 export class AcoreStringCopyComponent implements OnInit {

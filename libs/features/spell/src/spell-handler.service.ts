@@ -7,7 +7,7 @@ import { SPELL_DBC_TABLE, SpellDbc } from '@keira/shared/acore-world-model';
 })
 export class SpellHandlerService extends HandlerService<SpellDbc> {
   protected readonly mainEditorRoutePath = 'spell/spell-dbc';
-  protected readonly copyRoutePath = 'spell/copy';
+  protected override readonly copyRoutePath = 'spell/copy';
 
   get isSpellDbcUnsaved(): Signal<boolean> {
     return this.statusMap[SPELL_DBC_TABLE].asReadonly();

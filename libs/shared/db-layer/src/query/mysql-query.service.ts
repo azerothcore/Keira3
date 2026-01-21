@@ -597,7 +597,7 @@ export class MysqlQueryService extends BaseQueryService {
     return this.formatQuery(query);
   }
 
-  getRowsCount(tableName: string, idField: string, idValue: string | number) {
+  getRowsCount(tableName: string, idField: string, idValue: string | number): Observable<number | null> {
     return this.queryValue<number>(`SELECT COUNT(1) AS v FROM \`${tableName}\` WHERE \`${idField}\` = ${idValue};\n`);
   }
 }

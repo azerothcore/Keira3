@@ -8,7 +8,7 @@ import { SPELL_DBC_TABLE, SPELL_DBC_ID, SPELL_LOOT_TEMPLATE_TABLE, LOOT_TEMPLATE
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-spell-copy',
   templateUrl: './spell-copy.component.html',
-  standalone: true,
+
   imports: [CopyOutputComponent],
 })
 export class SpellCopyComponent implements OnInit {

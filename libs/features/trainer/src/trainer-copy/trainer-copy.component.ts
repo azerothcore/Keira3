@@ -8,7 +8,7 @@ import { TRAINER_ID, TRAINER_SPELL_ID, TRAINER_SPELL_TABLE, TRAINER_TABLE } from
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-trainer-copy',
   templateUrl: './trainer-copy.component.html',
-  standalone: true,
+
   imports: [CopyOutputComponent],
 })
 export class TrainerCopyComponent implements OnInit {

@@ -18,7 +18,7 @@ import { SaiGameobjectHandlerService } from './sai-gameobject-handler.service';
 export class GameobjectHandlerService extends HandlerService<GameobjectTemplate> {
   protected saiGameobjectHandler = inject(SaiGameobjectHandlerService);
   protected readonly mainEditorRoutePath = 'gameobject/gameobject-template';
-  protected readonly copyRoutePath = 'gameobject/copy';
+  protected override readonly copyRoutePath = 'gameobject/copy';
 
   get isGameobjectTemplateUnsaved(): Signal<boolean> {
     return this.statusMap[GAMEOBJECT_TEMPLATE_TABLE].asReadonly();

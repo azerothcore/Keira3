@@ -8,7 +8,6 @@ import { MAIL_LOOT_TEMPLATE_TABLE, LOOT_TEMPLATE_ID } from '@keira/shared/acore-
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-mail-loot-copy',
   templateUrl: './mail-loot-copy.component.html',
-  standalone: true,
   imports: [CopyOutputComponent],
 })
 export class MailLootCopyComponent implements OnInit {
