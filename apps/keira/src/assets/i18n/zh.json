@@ -19,7 +19,8 @@
     "EXISTS": "exists",
     "DOES_NOT_EXIST": "does not exist",
     "START_FROM_BLANK": "Start from blank",
-    "COPY_FROM_EXISTING": "Copy from existing"
+    "COPY_FROM_EXISTING": "Copy from existing",
+    "COPY_DISABLED": "Copy from existing is not available for this entity"
   },
   "CONNECTED": "连接",
   "SEARCH": "搜索",
