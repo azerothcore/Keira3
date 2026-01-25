@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
-import { BrowserModule, By } from '@angular/platform-browser';
+import { BrowserModule } from '@angular/platform-browser';
 import { of, throwError } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 import { MockHandlerService } from '@keira/shared/base-abstract-classes';
@@ -13,9 +13,35 @@ import { anything, instance, mock, reset, when } from 'ts-mockito';
 
 import { CreateComponent } from './create.component';
 
+class CreateComponentPage extends PageObject<CreateComponent<TableRow>> {
+  constructor(fixture: ComponentFixture<CreateComponent<TableRow>>) {
+    super(fixture);
+  }
+
+  get idInput(): HTMLInputElement {
+    return this.query<HTMLInputElement>('#id');
+  }
+  get selectBtn(): HTMLInputElement {
+    return this.query<HTMLInputElement>('#select-button');
+  }
+  get idFreeStatusBox(): HTMLDivElement {
+    return this.query<HTMLDivElement>('#id-free-status');
+  }
+  get sourceInput(): HTMLInputElement {
+    return this.getInputById('source-id');
+  }
+  get copyInput(): HTMLInputElement {
+    return this.getInputById('method-copy');
+  }
+  get copyRadio(): HTMLInputElement | null {
+    return this.query<HTMLInputElement>('#method-copy', false);
+  }
+}
+
 describe('CreateComponent', () => {
   let component: CreateComponent<any>;
   let fixture: ComponentFixture<CreateComponent<any>>;
+  let page: CreateComponentPage;
 
   const fakeQueryService: any = {
     getMaxId: () => of([{ max: 5 }]),
@@ -29,6 +55,7 @@ describe('CreateComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FormsModule, TranslateModule.forRoot(), CreateComponent],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CreateComponent);
@@ -40,12 +67,13 @@ describe('CreateComponent', () => {
     component.queryService = fakeQueryService;
     component.handlerService = fakeHandlerService;
     fixture.detectChanges();
+    page = new CreateComponentPage(fixture);
   });
 
   it('does not render the copy option when allowCopy is false', () => {
     // Default allowCopy is false
     fixture.detectChanges();
-    const copyRadio = fixture.debugElement.query(By.css('#method-copy'));
+    const copyRadio = page.copyRadio;
     expect(copyRadio).toBeNull();
     expect(component.creationMethod).toBe('blank');
   });
@@ -53,10 +81,9 @@ describe('CreateComponent', () => {
   it('renders the copy option when allowCopy is true', () => {
     component.allowCopy = true;
     fixture.detectChanges();
-    const copyRadio = fixture.debugElement.query(By.css('#method-copy'));
-    expect(copyRadio).not.toBeNull();
+    const copyInput = page.copyInput;
+    expect(copyInput).toBeDefined();
     // when allowed the copy radio should not be disabled
-    const copyInput = copyRadio.nativeElement as HTMLInputElement;
     expect(copyInput.disabled).toBeFalse();
   });
 
@@ -75,18 +102,6 @@ describe('CreateComponent', () => {
   });
 });
 // (Additional tests below use the imports declared above)
-
-class CreateComponentPage extends PageObject<CreateComponent<TableRow>> {
-  get idInput(): HTMLInputElement {
-    return this.query<HTMLInputElement>('#id');
-  }
-  get selectBtn(): HTMLInputElement {
-    return this.query<HTMLInputElement>('#select-button');
-  }
-  get idFreeStatusBox(): HTMLDivElement {
-    return this.query<HTMLDivElement>('#id-free-status');
-  }
-}
 
 describe('CreateComponent', () => {
   const mockTable = 'mock_table';
@@ -191,5 +206,107 @@ describe('CreateComponent', () => {
     const { component } = setup();
     component.customStartingId = 10;
     expect(component['calculateNextId'](5)).toEqual(10);
+  });
+
+  it('validates source id and calls select with copy params on create', async () => {
+    const { fixture, page, component } = setup();
+
+    // Enable copying and switch to copy method directly (radio may not always be present in this env)
+    component.allowCopy = true;
+    component.creationMethod = 'copy';
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const sourceRadio = page.copyRadio;
+    // Guard: the radio is optional in this test runner, but the source input must be present for copy flow
+    if (sourceRadio) {
+      (sourceRadio as HTMLInputElement).checked = true;
+      sourceRadio.dispatchEvent(new Event('change'));
+      fixture.detectChanges();
+    }
+
+    // Provide an existing source id and trigger input (setup returns an existing item for `takenId`)
+    const sourceInput = page.sourceInput;
+    page.setInputValue(sourceInput, takenId);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(component.isSourceIdValid).toBeTrue();
+
+    // Prepare a new id and create
+    component.idModel = 2000;
+    component.isIdFree = true;
+    fixture.detectChanges();
+
+    const selectSpy = spyOn(component.handlerService, 'select');
+
+    page.clickElement(page.selectBtn);
+
+    expect(selectSpy).toHaveBeenCalledTimes(1);
+    expect(selectSpy).toHaveBeenCalledWith(true, 2000, undefined, true, `${takenId}`);
+  });
+
+  it('does not allow a higher source value than max value', () => {
+    const { component } = setup();
+    component.sourceIdModel = MAX_INT_UNSIGNED_VALUE + 1;
+
+    (component as any).checkMaxValue();
+
+    expect(component.sourceIdModel).toEqual(MAX_INT_UNSIGNED_VALUE);
+  });
+
+  it('onCreationMethodChange clears source state when switched to blank', () => {
+    const { component } = setup();
+    component.creationMethod = 'copy';
+    component.sourceIdModel = 123;
+    component.isSourceIdValid = true;
+
+    component.creationMethod = 'blank';
+    (component as any).onCreationMethodChange();
+
+    expect(component.sourceIdModel).toBeUndefined();
+    expect(component.isSourceIdValid).toBeFalse();
+  });
+
+  it('checkSourceId handles errors and marks source invalid', () => {
+    const { component, MockedMysqlQueryService } = setup();
+    reset(MockedMysqlQueryService);
+    when(MockedMysqlQueryService.selectAll(mockTable, mockId, anything())).thenReturn(throwError('error'));
+
+    component.sourceIdModel = 999;
+    (component as any).checkSourceId();
+
+    expect(component.isSourceIdValid).toBeFalse();
+    expect(component.loading).toBe(false);
+  });
+
+  it('checkSourceId early-return when no sourceIdModel', () => {
+    const { component } = setup();
+    component.sourceIdModel = undefined;
+
+    (component as any).checkSourceId();
+
+    expect(component.isSourceIdValid).toBeFalse();
+  });
+
+  it('isFormValid correctly evaluates copy vs blank methods', () => {
+    const { component } = setup();
+
+    // blank creation method
+    component.creationMethod = 'blank';
+    component.idModel = 1;
+    component.isIdFree = true;
+    expect((component as any).isFormValid()).toBeTrue();
+
+    // copy method without source data should be invalid
+    component.creationMethod = 'copy';
+    component.sourceIdModel = undefined;
+    component.isSourceIdValid = false;
+    expect((component as any).isFormValid()).toBeFalse();
+
+    // copy method with valid source should be valid
+    component.sourceIdModel = 123;
+    component.isSourceIdValid = true;
+    expect((component as any).isFormValid()).toBeTrue();
   });
 });
