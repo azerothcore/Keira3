@@ -16,13 +16,4 @@ export class PageTextHandlerService extends HandlerService<PageText> {
   protected _statusMap = {
     [PAGE_TEXT_TABLE]: signal(false),
   };
-
-  override select(isNew: boolean, id: string | number | Partial<PageText>, name?: string, navigate = true, sourceId?: string) {
-    if (isNew && sourceId) {
-      super.select(isNew, id, name, false, sourceId);
-      this.router.navigate([this.copyRoutePath]);
-    } else {
-      super.select(isNew, id, name, navigate);
-    }
-  }
 }

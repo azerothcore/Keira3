@@ -16,14 +16,4 @@ export class GameTeleHandlerService extends HandlerService<GameTele> {
   protected _statusMap = {
     [GAME_TELE_TABLE]: signal(false),
   };
-
-  override select(isNew: boolean, id: string | number | Partial<GameTele>, name?: string, navigate = true, sourceId?: string) {
-    // If we're creating a new entity from a copy, navigate to copy route
-    if (isNew && sourceId) {
-      super.select(isNew, id, name, false, sourceId);
-      this.router.navigate([this.copyRoutePath]);
-    } else {
-      super.select(isNew, id, name, navigate);
-    }
-  }
 }

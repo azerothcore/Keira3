@@ -16,13 +16,4 @@ export class AcoreStringHandlerService extends HandlerService<AcoreString> {
   protected _statusMap = {
     [ACORE_STRING_TABLE]: signal(false),
   };
-
-  override select(isNew: boolean, id: string | number | Partial<AcoreString>, name?: string, navigate = true, sourceId?: string) {
-    if (isNew && sourceId) {
-      super.select(isNew, id, name, false, sourceId);
-      this.router.navigate([this.copyRoutePath]);
-    } else {
-      super.select(isNew, id, name, navigate);
-    }
-  }
 }

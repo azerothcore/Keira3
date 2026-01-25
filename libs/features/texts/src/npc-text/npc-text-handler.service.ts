@@ -16,13 +16,4 @@ export class NpcTextHandlerService extends HandlerService<NpcText> {
   protected _statusMap = {
     [NPC_TEXT_TABLE]: signal(false),
   };
-
-  override select(isNew: boolean, id: string | number | Partial<NpcText>, name?: string, navigate = true, sourceId?: string) {
-    if (isNew && sourceId) {
-      super.select(isNew, id, name, false, sourceId);
-      this.router.navigate([this.copyRoutePath]);
-    } else {
-      super.select(isNew, id, name, navigate);
-    }
-  }
 }

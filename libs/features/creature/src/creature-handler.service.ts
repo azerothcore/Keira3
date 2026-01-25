@@ -114,12 +114,6 @@ export class CreatureHandlerService extends HandlerService<CreatureTemplate> {
   override select(isNew: boolean, id: string | number | Partial<CreatureTemplate>, name?: string, navigate = true, sourceId?: string) {
     this.saiCreatureHandler.select(isNew, { entryorguid: +id, source_type: 0 }, null, false);
 
-    // If we're creating a new entity from a copy, navigate to copy route
-    if (isNew && sourceId) {
-      super.select(isNew, id, name, false, sourceId);
-      this.router.navigate([this.copyRoutePath]);
-    } else {
-      super.select(isNew, id, name, navigate);
-    }
+    super.select(isNew, id, name, navigate, sourceId);
   }
 }

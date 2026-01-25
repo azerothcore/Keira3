@@ -16,14 +16,4 @@ export class SpellHandlerService extends HandlerService<SpellDbc> {
   protected _statusMap = {
     [SPELL_DBC_TABLE]: signal(false),
   };
-
-  override select(isNew: boolean, id: string | number | Partial<SpellDbc>, name?: string, navigate = true, sourceId?: string) {
-    // If we're creating a new entity from a copy, navigate to copy route
-    if (isNew && sourceId) {
-      super.select(isNew, id, name, false, sourceId);
-      this.router.navigate([this.copyRoutePath]);
-    } else {
-      super.select(isNew, id, name, navigate);
-    }
-  }
 }
