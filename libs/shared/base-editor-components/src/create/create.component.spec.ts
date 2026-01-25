@@ -148,7 +148,7 @@ describe('CreateComponent', () => {
     when(MockedMysqlQueryService.getMaxId(mockTable, mockId)).thenReturn(throwError('error'));
     when(MockedMysqlQueryService.selectAll(mockTable, mockId, anything())).thenReturn(throwError('error'));
 
-    component.checkId();
+    (component as any).checkId();
     component['getNextId']();
 
     expect(spyError).toHaveBeenCalledTimes(2);
