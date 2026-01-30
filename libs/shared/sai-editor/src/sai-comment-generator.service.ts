@@ -54,9 +54,9 @@ export class SaiCommentGeneratorService {
       case SAI_TARGETS.GAMEOBJECT_RANGE:
       case SAI_TARGETS.GAMEOBJECT_DISTANCE:
       case SAI_TARGETS.CLOSEST_GAMEOBJECT:
-        return `Closest Creature '${await this.queryService.getGameObjectNameById(smartScript.target_param1)}'`;
+        return `Closest Gameobject '${await this.queryService.getGameObjectNameById(smartScript.target_param1)}'`;
       case SAI_TARGETS.GAMEOBJECT_GUID:
-        return `Closest Creature '${await this.queryService.getGameObjectNameByGuid(smartScript.target_param1)}'`;
+        return `Closest Gameobject '${await this.queryService.getGameObjectNameByGuid(smartScript.target_param1)}'`;
       case SAI_TARGETS.INVOKER_PARTY:
         return "Invoker's Party";
       case SAI_TARGETS.PLAYER_RANGE:
