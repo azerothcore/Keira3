@@ -290,7 +290,7 @@ export class MysqlQueryService extends BaseQueryService {
       return '';
     }
     this.addWhereConditionsToQuery(updateQuery, currentRow, primaryKeys);
-    return updateQuery.toString();
+    return updateQuery.toString() + ';';
   }
 
   // Generates the DELETE query of ONE row using more than 2 keys
@@ -301,7 +301,7 @@ export class MysqlQueryService extends BaseQueryService {
   ) {
     const deleteQuery: Delete = squel.delete(squelConfig).from(tableName);
     this.addWhereConditionsToQuery(deleteQuery, row, primaryKeys);
-    return deleteQuery.toString();
+    return deleteQuery.toString() + ';';
   }
 
   // Generates the full DELETE/INSERT query of ONE row using more than 2 keys
@@ -312,7 +312,7 @@ export class MysqlQueryService extends BaseQueryService {
     primaryKeys: string[], // array of the primary keys
   ) {
     const insertQuery: Insert = squel.insert(squelConfig).into(tableName).setFieldsRows([newRow]);
-    let query: string = this.getDeleteMultipleKeysQuery(tableName, currentRow, primaryKeys) + ';\n';
+    let query: string = this.getDeleteMultipleKeysQuery(tableName, currentRow, primaryKeys) + '\n';
     query += insertQuery.toString() + ';\n';
     return this.formatQuery(query);
   }
