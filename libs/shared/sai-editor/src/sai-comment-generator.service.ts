@@ -91,6 +91,8 @@ export class SaiCommentGeneratorService {
         return 'Summoned Creatures';
       case SAI_TARGETS.INSTANCE_STORAGE:
         return 'Instance Storage';
+      case SAI_TARGETS.FORMATION:
+        return 'Formation';
       default:
         return '[unsupported target type]';
     }
