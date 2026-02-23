@@ -18,6 +18,7 @@ import {
 })
 export class QuestHandlerService extends HandlerService<QuestTemplate> {
   protected readonly mainEditorRoutePath = 'quest/quest-template';
+  protected override readonly copyRoutePath = 'quest/copy';
 
   get isQuestTemplateUnsaved(): Signal<boolean> {
     return this.statusMap[QUEST_TEMPLATE_TABLE].asReadonly();

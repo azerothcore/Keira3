@@ -14,7 +14,13 @@
     "CREATE_A_NEW": "新建一个 <strong>{{ ENTITY_TABLE }}</strong>，选择一个未使用的 <strong>{{ ENTITY_ID_FIELD }}</strong>:",
     "FREE_ENTRY": "{{ ENTITY_ID_FIELD }}是",
     "FREE": "可用的",
-    "ALREADY_USE": "已在使用中"
+    "ALREADY_USE": "已在使用中",
+    "SOURCE_ENTRY": "The {{ ENTITY_ID_FIELD }}",
+    "EXISTS": "exists",
+    "DOES_NOT_EXIST": "does not exist",
+    "START_FROM_BLANK": "Start from blank",
+    "COPY_FROM_EXISTING": "Copy from existing",
+    "COPY_DISABLED": "Copy from existing is not available for this entity"
   },
   "CONNECTED": "连接",
   "SEARCH": "搜索",
@@ -204,6 +210,19 @@
     "EXECUTE": "执行 (F9)",
     "LEARN_SQL": "学习SQL语言",
     "AFFECTED_ROWS": "受影响的行:"
+  },
+  "COPY_OUTPUT": {
+    "TITLE": "Copy Entry SQL",
+    "DESCRIPTION": "Review and execute the SQL below to copy the entry. You can copy the query to execute it manually, or use the Execute button to run it directly.",
+    "COPY": "Copy",
+    "COPY_TOOLTIP": "Copy SQL query to clipboard",
+    "EXECUTE": "Execute",
+    "EXECUTE_TOOLTIP": "Execute the SQL query and create the new entry",
+    "EXECUTED": "Executed",
+    "CONTINUE": "Continue to Editor",
+    "CONTINUE_TOOLTIP": "Navigate to the editor for the new entry",
+    "SELECT_ALL": "Select All",
+    "SELECT_NONE": "Select None"
   },
   "CREATURE": {
     "TEMPLATE": {

@@ -1,37 +1,103 @@
 <p class="h5" [translate]="'CREATE.CREATE_NEW'"></p>
-<label
-  class="control-label"
-  for="id"
-  [innerHTML]="'CREATE.CREATE_A_NEW' | translate: { ENTITY_TABLE: entityTable, ENTITY_ID_FIELD: entityIdField }"
->
-</label>
-<div class="row">
-  <div class="form-inline">
-    <div class="form-group col-12">
-      <input
-        type="number"
-        class="form-control form-control-sm"
-        id="id"
-        [(ngModel)]="idModel"
-        (input)="checkId()"
-        [max]="maxEntryValue"
-        (change)="checkMaxValue()"
-      />
-      <button
-        class="btn btn-success btn-sm ms-2"
-        id="select-button"
-        [disabled]="!isIdFree || !idModel"
-        (click)="handlerService.select(true, idModel)"
-      >
-        <i class="fa fa-plus"></i> {{ 'SELECT' | translate }}
-      </button>
+
+@if (allowCopy) {
+  <div class="row mb-2">
+    <div class="col-12">
+      <div class="form-check">
+        <input
+          class="form-check-input"
+          type="radio"
+          name="creationMethod"
+          id="method-blank"
+          value="blank"
+          [(ngModel)]="creationMethod"
+          (change)="onCreationMethodChange()"
+        />
+        <label class="form-check-label" for="method-blank">
+          {{ 'CREATE.START_FROM_BLANK' | translate }}
+        </label>
+      </div>
+
+      <div class="form-check">
+        <input
+          class="form-check-input"
+          type="radio"
+          name="creationMethod"
+          id="method-copy"
+          value="copy"
+          [(ngModel)]="creationMethod"
+          (change)="onCreationMethodChange()"
+          [disabled]="!allowCopy"
+          [title]="allowCopy ? '' : ('CREATE.COPY_DISABLED' | translate)"
+        />
+        <label class="form-check-label" for="method-copy">
+          {{ 'CREATE.COPY_FROM_EXISTING' | translate }}
+        </label>
+      </div>
     </div>
   </div>
-  <div class="col-12 mt-1" [hidden]="!idModel" id="id-free-status">
-    <small>
-      <i class="fas" [class.fa-check-circle]="isIdFree" [class.fa-times-circle]="!isIdFree"></i>
-      {{ 'CREATE.FREE_ENTRY' | translate: { ENTITY_ID_FIELD: entityIdField } }}
-      {{ isIdFree ? ('CREATE.FREE' | translate) : ('CREATE.ALREADY_USE' | translate) }}
-    </small>
+}
+
+<div class="row">
+  <div class="col-12">
+    <div class="row g-2">
+      <div class="form-group col-sm-6 col-md-4 col-lg-3 col-xl-2" [hidden]="creationMethod !== 'copy' || !allowCopy">
+        <label class="control-label visually-hidden" for="source-id">
+          {{ 'CREATE.SOURCE_ENTRY' | translate: { ENTITY_ID_FIELD: entityIdField } }}
+        </label>
+        <div class="input-group input-group-sm">
+          <input
+            type="number"
+            class="form-control form-control-sm"
+            id="source-id"
+            [(ngModel)]="sourceIdModel"
+            (input)="checkSourceId()"
+            [max]="maxEntryValue"
+            (change)="checkMaxValue()"
+            [disabled]="creationMethod !== 'copy'"
+            [placeholder]="'Source ' + entityIdField"
+            aria-label="Source {{ entityIdField }}"
+          />
+        </div>
+        <div class="mt-1">
+          <small>
+            <i class="fas" [class.fa-check-circle]="isSourceIdValid" [class.fa-times-circle]="!isSourceIdValid"></i>
+            {{ 'CREATE.SOURCE_ENTRY' | translate: { ENTITY_ID_FIELD: entityIdField } }}
+            {{ isSourceIdValid ? ('CREATE.EXISTS' | translate) : ('CREATE.DOES_NOT_EXIST' | translate) }}
+          </small>
+        </div>
+      </div>
+
+      <div class="form-group col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <label class="control-label visually-hidden" for="id">
+          {{ 'CREATE.NEW_ENTRY' | translate: { ENTITY_TABLE: entityTable, ENTITY_ID_FIELD: entityIdField } }}
+        </label>
+        <div class="input-group input-group-sm">
+          <input
+            type="number"
+            class="form-control form-control-sm"
+            id="id"
+            [(ngModel)]="idModel"
+            (input)="checkId()"
+            [max]="maxEntryValue"
+            (change)="checkMaxValue()"
+            [placeholder]="'New ' + entityIdField"
+          />
+        </div>
+        <div class="mt-1" [hidden]="!idModel" id="id-free-status">
+          <small>
+            <i class="fas" [class.fa-check-circle]="isIdFree" [class.fa-times-circle]="!isIdFree"></i>
+            {{ 'CREATE.FREE_ENTRY' | translate: { ENTITY_ID_FIELD: entityIdField } }}
+            {{ isIdFree ? ('CREATE.FREE' | translate) : ('CREATE.ALREADY_USE' | translate) }}
+          </small>
+        </div>
+      </div>
+
+      <div class="form-group col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <button class="btn btn-success btn-sm" id="select-button" [disabled]="!isFormValid()" (click)="onCreate()" type="button">
+          <i class="fa fa-plus"></i> {{ 'SELECT' | translate }}
+        </button>
+      </div>
+    </div>
   </div>
 </div>
