@@ -119,7 +119,7 @@
     "karma-jasmine-html-reporter": "2.1.0",
     "karma-time-stats-reporter": "0.1.0",
     "lint-staged": "16.2.6",
-    "ngx-bootstrap": "20.0.0",
+    "ngx-bootstrap": "20.0.2",
     "ngx-clipboard": "16.0.0",
     "ngx-highlightjs": "10.0.0",
     "ngx-page-object-model": "1.1.0",
