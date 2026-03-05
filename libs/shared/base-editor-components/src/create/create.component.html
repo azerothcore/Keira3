@@ -41,7 +41,7 @@
 <div class="row">
   <div class="col-12">
     <div class="row g-2">
-      <div class="form-group col-sm-6 col-md-4 col-lg-3 col-xl-2" [hidden]="creationMethod !== 'copy' || !allowCopy">
+      <div class="form-group col-sm-6 col-md-4 col-lg-3 col-xl-2" [hidden]="creationMethod() !== 'copy' || !allowCopy">
         <label class="control-label visually-hidden" for="source-id">
           {{ 'CREATE.SOURCE_ENTRY' | translate: { ENTITY_ID_FIELD: entityIdField } }}
         </label>
@@ -54,16 +54,16 @@
             (input)="checkSourceId()"
             [max]="maxEntryValue"
             (change)="checkMaxValue()"
-            [disabled]="creationMethod !== 'copy'"
+            [disabled]="creationMethod() !== 'copy'"
             [placeholder]="'Source ' + entityIdField"
             aria-label="Source {{ entityIdField }}"
           />
         </div>
         <div class="mt-1">
           <small>
-            <i class="fas" [class.fa-check-circle]="isSourceIdValid" [class.fa-times-circle]="!isSourceIdValid"></i>
+            <i class="fas" [class.fa-check-circle]="isSourceIdValid()" [class.fa-times-circle]="!isSourceIdValid()"></i>
             {{ 'CREATE.SOURCE_ENTRY' | translate: { ENTITY_ID_FIELD: entityIdField } }}
-            {{ isSourceIdValid ? ('CREATE.EXISTS' | translate) : ('CREATE.DOES_NOT_EXIST' | translate) }}
+            {{ isSourceIdValid() ? ('CREATE.EXISTS' | translate) : ('CREATE.DOES_NOT_EXIST' | translate) }}
           </small>
         </div>
       </div>
@@ -84,11 +84,11 @@
             [placeholder]="'New ' + entityIdField"
           />
         </div>
-        <div class="mt-1" [hidden]="!idModel" id="id-free-status">
+        <div class="mt-1" [hidden]="!idModel()" id="id-free-status">
           <small>
-            <i class="fas" [class.fa-check-circle]="isIdFree" [class.fa-times-circle]="!isIdFree"></i>
+            <i class="fas" [class.fa-check-circle]="isIdFree()" [class.fa-times-circle]="!isIdFree()"></i>
             {{ 'CREATE.FREE_ENTRY' | translate: { ENTITY_ID_FIELD: entityIdField } }}
-            {{ isIdFree ? ('CREATE.FREE' | translate) : ('CREATE.ALREADY_USE' | translate) }}
+            {{ isIdFree() ? ('CREATE.FREE' | translate) : ('CREATE.ALREADY_USE' | translate) }}
           </small>
         </div>
       </div>
