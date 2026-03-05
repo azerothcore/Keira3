@@ -1,5 +1,5 @@
 import { Component, viewChild, inject, provideZonelessChangeDetection } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
@@ -27,10 +27,6 @@ class TestHostComponent {
 }
 
 describe('SaiTopBarComponent', () => {
-  let fixture: ComponentFixture<TestHostComponent>;
-  let handler: SaiHandlerService;
-  let page: SaiTopBarComponentPage;
-
   const entryorguid = 1234;
   const name = 'Francesco';
 
@@ -41,22 +37,26 @@ describe('SaiTopBarComponent', () => {
     }).compileComponents();
   });
 
-  beforeEach(() => {
-    handler = TestBed.inject(SaiHandlerService);
+  function setup() {
+    const handler = TestBed.inject(SaiHandlerService);
     handler['_selected'] = JSON.stringify({ source_type: SAI_TYPES.SAI_TYPE_GAMEOBJECT, entryorguid });
     spyOn(TestBed.inject(MysqlQueryService), 'query').and.returnValue(of([]));
 
-    fixture = TestBed.createComponent(TestHostComponent);
-    page = new SaiTopBarComponentPage(fixture);
-  });
+    const fixture = TestBed.createComponent(TestHostComponent);
+    const page = new SaiTopBarComponentPage(fixture);
+
+    return { fixture, handler, page };
+  }
 
   it('should show the correct text when isNew is false', () => {
+    const { fixture, handler, page } = setup();
     handler.isNew = false;
     fixture.detectChanges();
     expect(page.mainText.innerText).toContain('Editing');
   });
 
   it('should show the correct text when isNew is true', () => {
+    const { fixture, handler, page } = setup();
     handler.isNew = true;
     fixture.detectChanges();
     expect(page.mainText.innerText).toContain('Creating new');
@@ -78,6 +78,7 @@ describe('SaiTopBarComponent', () => {
     { testId: 8, type: undefined as unknown as SAI_TYPES, positive: false, expected: `Unknown SAI Type undefined for GUID ${entryorguid}` },
   ]) {
     it(`should correctly handle different types [${testId}]`, () => {
+      const { fixture, handler, page } = setup();
       handler['_selected'] = JSON.stringify({ source_type: type, entryorguid: positive ? entryorguid : -entryorguid });
       spyOn(handler, 'getName').and.returnValue(of(name));
       // TODO: for some reasons this test cannot get the async name

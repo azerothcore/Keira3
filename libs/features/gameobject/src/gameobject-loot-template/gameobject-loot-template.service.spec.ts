@@ -13,8 +13,6 @@ import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { GameobjectLootTemplateService } from './gameobject-loot-template.service';
 
 describe('GameobjectLootTemplateService', () => {
-  let service: GameobjectLootTemplateService;
-
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
@@ -31,11 +29,13 @@ describe('GameobjectLootTemplateService', () => {
     }),
   );
 
-  beforeEach(() => {
-    service = TestBed.inject(GameobjectLootTemplateService);
-  });
+  function setup() {
+    const service = TestBed.inject(GameobjectLootTemplateService);
+    return { service };
+  }
 
   it('getType() should correctly work', () => {
+    const { service } = setup();
     const type = 3;
     const mockData: { type: number }[] = [{ type }];
     const querySpy = spyOn(TestBed.inject(MysqlQueryService), 'query').and.returnValue(of(mockData));

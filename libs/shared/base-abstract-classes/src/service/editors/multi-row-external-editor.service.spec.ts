@@ -11,8 +11,6 @@ import { MultiRowExternalEditorService } from './multi-row-external-editor.servi
 import { MockEntity, MockHandlerService, MockMultiRowExternalEditorService } from '../../core.mock';
 
 describe('MultiRowExternalEditorService', () => {
-  let service: MultiRowExternalEditorService<MockEntity>;
-
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
@@ -27,11 +25,13 @@ describe('MultiRowExternalEditorService', () => {
     }),
   );
 
-  beforeEach(() => {
-    service = TestBed.inject(MockMultiRowExternalEditorService);
-  });
+  function setup() {
+    const service: MultiRowExternalEditorService<MockEntity> = TestBed.inject(MockMultiRowExternalEditorService);
+    return { service };
+  }
 
   it('updateDiffQuery() should correctly work', () => {
+    const { service } = setup();
     service['_diffQuery'] = '';
     const queryResult = '-- Mock query result';
     const getQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getDiffDeleteInsertTwoKeysQuery').and.returnValue(queryResult);
@@ -50,6 +50,7 @@ describe('MultiRowExternalEditorService', () => {
   });
 
   xit('updateFullQuery() should correctly work', () => {
+    const { service } = setup();
     service['_fullQuery'] = '';
     const queryResult = '-- Mock query result';
     const getQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getFullDeleteInsertQuery').and.returnValue(queryResult);

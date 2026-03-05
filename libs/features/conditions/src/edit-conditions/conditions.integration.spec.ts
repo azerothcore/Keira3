@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
@@ -12,7 +12,6 @@ import { of } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
 import { ConditionsHandlerService } from '../conditions-handler.service';
 import { ConditionsComponent } from './conditions.component';
-import Spy = jasmine.Spy;
 
 class ConditionsPage extends EditorPageObject<ConditionsComponent> {
   getQuestStateFlagSelector(assert = true) {
@@ -24,12 +23,6 @@ class ConditionsPage extends EditorPageObject<ConditionsComponent> {
 }
 
 describe('Conditions integration tests', () => {
-  let fixture: ComponentFixture<ConditionsComponent>;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let handlerService: ConditionsHandlerService;
-  let page: ConditionsPage;
-
   const sourceTypeOrReferenceId = 1;
   const sourceGroup = 2;
   const sourceEntry = 3;
@@ -77,31 +70,33 @@ describe('Conditions integration tests', () => {
 
   function setup(creatingNew: boolean) {
     spyOn(TestBed.inject(Router), 'navigate');
-    handlerService = TestBed.inject(ConditionsHandlerService);
+    const handlerService = TestBed.inject(ConditionsHandlerService);
     handlerService['_selected'] = JSON.stringify(id);
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
 
     spyOn(queryService, 'selectAllMultipleKeys').and.returnValue(of(creatingNew ? [] : [originalEntity]));
 
-    fixture = TestBed.createComponent(ConditionsComponent);
-    page = new ConditionsPage(fixture);
+    const fixture = TestBed.createComponent(ConditionsComponent);
+    const page = new ConditionsPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+
+    return { page, querySpy, handlerService };
   }
 
   describe('Creating new', () => {
-    beforeEach(() => setup(true));
-
     it('should correctly initialise', () => {
+      const { page } = setup(true);
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
     it('should correctly update the unsaved status', () => {
+      const { page, handlerService } = setup(true);
       const field = 'ElseGroup';
       expect(handlerService.isConditionsUnsaved()).toBe(false);
       page.setInputValueById(field, 3);
@@ -112,6 +107,7 @@ describe('Conditions integration tests', () => {
 
     // TODO: fix this - broken with provideZonelessChangeDetection()
     xit('changing a property and executing the query should correctly work', () => {
+      const { page, querySpy } = setup(true);
       const expectedQuery =
         'DELETE FROM `conditions` WHERE (`SourceTypeOrReferenceId` = 2) AND (`SourceGroup` = 3) AND ' +
         '(`SourceEntry` = ' +
@@ -132,6 +128,7 @@ describe('Conditions integration tests', () => {
     });
 
     it('should correctly toggle flag selector according to the selected condition type', () => {
+      const { page } = setup(true);
       expect(page.getQuestStateFlagSelector(false)).toBeFalsy();
       expect(page.getRankMaskFlagSelector(false)).toBeFalsy();
 
@@ -146,15 +143,15 @@ describe('Conditions integration tests', () => {
   });
 
   describe('Editing existing', () => {
-    beforeEach(() => setup(false));
-
     it('should correctly initialise', () => {
+      const { page } = setup(false);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
     it('changing all properties and executing the query should correctly work', () => {
+      const { page, querySpy } = setup(false);
       const expectedQuery =
         'UPDATE `conditions` SET `SourceTypeOrReferenceId` = 0, `SourceGroup` = 1, `SourceEntry` = 2, `SourceId` = 3, `ElseGroup` = 4, `ConditionTypeOrReference` = 5, ' +
         "`ConditionTarget` = 6, `ConditionValue1` = 7, `ConditionValue2` = 8, `ConditionValue3` = 9, `NegativeCondition` = 10, `ErrorType` = 11, `ErrorTextId` = 12, `ScriptName` = '13', " +
@@ -171,6 +168,7 @@ describe('Conditions integration tests', () => {
     });
 
     it('changing values should correctly update the queries', () => {
+      const { page } = setup(false);
       page.setInputValueById('SourceGroup', '1');
       page.expectDiffQueryToContain(
         'UPDATE `conditions` SET `SourceGroup` = 1 WHERE (`SourceTypeOrReferenceId` = ' +

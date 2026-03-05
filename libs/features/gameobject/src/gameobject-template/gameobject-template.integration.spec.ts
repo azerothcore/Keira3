@@ -1,7 +1,7 @@
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -17,18 +17,10 @@ import { instance, mock } from 'ts-mockito';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { GameobjectTemplateComponent } from './gameobject-template.component';
-import Spy = jasmine.Spy;
 
 class GameobjectTemplatePage extends EditorPageObject<GameobjectTemplateComponent> {}
 
 describe('GameobjectTemplate integration tests', () => {
-  let fixture: ComponentFixture<GameobjectTemplateComponent>;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let handlerService: GameobjectHandlerService;
-  let page: GameobjectTemplatePage;
-  let model3DViewerService: Model3DViewerService;
-
   const id = 1234;
   const expectedFullCreateQuery =
     'DELETE FROM `gameobject_template` WHERE (`entry` = ' +
@@ -70,34 +62,35 @@ describe('GameobjectTemplate integration tests', () => {
   });
 
   function setup(creatingNew: boolean) {
-    handlerService = TestBed.inject(GameobjectHandlerService);
+    const handlerService = TestBed.inject(GameobjectHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
 
-    model3DViewerService = TestBed.inject(Model3DViewerService);
+    const model3DViewerService = TestBed.inject(Model3DViewerService);
     spyOn(model3DViewerService, 'generateModels').and.returnValue(new Promise((resolve) => resolve({ destroy: () => {} })));
 
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
 
-    fixture = TestBed.createComponent(GameobjectTemplateComponent);
-    page = new GameobjectTemplatePage(fixture);
+    const fixture = TestBed.createComponent(GameobjectTemplateComponent);
+    const page = new GameobjectTemplatePage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    return { fixture, queryService, querySpy, handlerService, page, model3DViewerService };
   }
 
   describe('Creating new', () => {
-    beforeEach(() => setup(true));
-
     it('should correctly initialise', () => {
+      const { page } = setup(true);
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
     it('should correctly update the unsaved status', () => {
+      const { handlerService, page } = setup(true);
       const field = 'Data0';
       expect(handlerService.isGameobjectTemplateUnsaved()).toBe(false);
       page.setInputValueById(field, 3);
@@ -107,6 +100,7 @@ describe('GameobjectTemplate integration tests', () => {
     });
 
     it('changing a property and executing the query should correctly work', () => {
+      const { querySpy, page } = setup(true);
       const expectedQuery =
         'DELETE FROM `gameobject_template` WHERE (`entry` = ' +
         id +
@@ -133,15 +127,15 @@ describe('GameobjectTemplate integration tests', () => {
   });
 
   describe('Editing existing', () => {
-    beforeEach(() => setup(false));
-
     it('should correctly initialise', () => {
+      const { page } = setup(false);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
     it('changing all properties and executing the query should correctly work', () => {
+      const { querySpy, page } = setup(false);
       const expectedQuery =
         "UPDATE `gameobject_template` SET `displayId` = 1, `name` = '2', " +
         "`castBarCaption` = '4', `unk1` = '5', `size` = 6, `Data0` = 7, `Data1` = 8, `Data2` = 9, `Data3` = 10, " +
@@ -165,6 +159,7 @@ describe('GameobjectTemplate integration tests', () => {
     });
 
     it('changing values should correctly update the queries', () => {
+      const { page } = setup(false);
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
 
       page.setInputValueById('name', 'Helias');
@@ -178,6 +173,7 @@ describe('GameobjectTemplate integration tests', () => {
     });
 
     xit('changing a value via SingleValueSelector should correctly work', async () => {
+      const { page } = setup(false);
       const field = 'type';
       page.clickElement(page.getSelectorBtn(field));
       await page.whenReady();

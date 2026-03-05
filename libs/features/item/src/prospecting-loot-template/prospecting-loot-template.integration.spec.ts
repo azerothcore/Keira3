@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -11,17 +11,10 @@ import { of } from 'rxjs';
 import { ItemHandlerService } from '../item-handler.service';
 import { ProspectingLootTemplateComponent } from './prospecting-loot-template.component';
 import { instance, mock } from 'ts-mockito';
-import Spy = jasmine.Spy;
 
 class ProspectingLootTemplatePage extends MultiRowEditorPageObject<ProspectingLootTemplateComponent> {}
 
 describe('ProspectingLootTemplate integration tests', () => {
-  let fixture: ComponentFixture<ProspectingLootTemplateComponent>;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let handlerService: ItemHandlerService;
-  let page: ProspectingLootTemplatePage;
-
   const id = 1234;
 
   const originalRow0 = new ProspectingLootTemplate();
@@ -51,26 +44,26 @@ describe('ProspectingLootTemplate integration tests', () => {
   });
 
   function setup(creatingNew: boolean) {
-    handlerService = TestBed.inject(ItemHandlerService);
+    const handlerService = TestBed.inject(ItemHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
     spyOn(queryService, 'queryValue').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
-    fixture = TestBed.createComponent(ProspectingLootTemplateComponent);
-    page = new ProspectingLootTemplatePage(fixture);
+    const fixture = TestBed.createComponent(ProspectingLootTemplateComponent);
+    const page = new ProspectingLootTemplatePage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    return { fixture, queryService, querySpy, handlerService, page };
   }
 
   describe('Creating new', () => {
-    beforeEach(() => setup(true));
-
     it('should correctly initialise', () => {
+      const { page } = setup(true);
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
       expect(page.formError.hidden).toBe(true);
@@ -89,6 +82,7 @@ describe('ProspectingLootTemplate integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
+      const { handlerService, page } = setup(true);
       expect(handlerService.isProspectingLootTemplateUnsaved()).toBe(false);
       page.addNewRow();
       expect(handlerService.isProspectingLootTemplateUnsaved()).toBe(true);
@@ -97,6 +91,7 @@ describe('ProspectingLootTemplate integration tests', () => {
     });
 
     it('adding new rows and executing the query should correctly work', () => {
+      const { querySpy, page } = setup(true);
       const expectedQuery =
         'DELETE FROM `prospecting_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0, 1, 2));\n' +
         'INSERT INTO `prospecting_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
@@ -120,6 +115,7 @@ describe('ProspectingLootTemplate integration tests', () => {
     });
 
     it('adding a row and changing its values should correctly update the queries', () => {
+      const { page } = setup(true);
       page.addNewRow();
       page.expectDiffQueryToContain(
         'DELETE FROM `prospecting_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0));\n' +
@@ -178,6 +174,7 @@ describe('ProspectingLootTemplate integration tests', () => {
     });
 
     it('adding a row changing its values and duplicate it should correctly update the queries', () => {
+      const { page } = setup(true);
       page.addNewRow();
       page.setInputValueById('Chance', '1');
       page.setInputValueById('QuestRequired', '2');
@@ -202,9 +199,8 @@ describe('ProspectingLootTemplate integration tests', () => {
   });
 
   describe('Editing existing', () => {
-    beforeEach(() => setup(false));
-
     it('should correctly initialise', () => {
+      const { page } = setup(false);
       expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
@@ -221,6 +217,7 @@ describe('ProspectingLootTemplate integration tests', () => {
     });
 
     it('deleting rows should correctly work', () => {
+      const { page } = setup(false);
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
       page.expectDiffQueryToContain('DELETE FROM `prospecting_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1));');
@@ -249,6 +246,7 @@ describe('ProspectingLootTemplate integration tests', () => {
     });
 
     it('editing existing rows should correctly work', () => {
+      const { page } = setup(false);
       page.clickRowOfDatatable(1);
       page.setInputValueById('LootMode', 1);
 
@@ -272,6 +270,7 @@ describe('ProspectingLootTemplate integration tests', () => {
     });
 
     it('combining add, edit and delete should correctly work', () => {
+      const { page } = setup(false);
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(4);
 
@@ -300,6 +299,7 @@ describe('ProspectingLootTemplate integration tests', () => {
     });
 
     it('using the same row id for multiple rows should correctly show an error', () => {
+      const { page } = setup(false);
       page.clickRowOfDatatable(2);
       page.setInputValueById('Item', 0);
 

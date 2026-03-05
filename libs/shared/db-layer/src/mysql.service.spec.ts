@@ -7,7 +7,6 @@ import { tickAsync } from 'ngx-page-object-model';
 import { Subscriber } from 'rxjs';
 import { instance, mock, reset } from 'ts-mockito';
 import { MysqlService } from './mysql.service';
-import Spy = jasmine.Spy;
 
 class MockMySql {
   createConnection() {}
@@ -19,8 +18,6 @@ class MockConnection {
 }
 
 describe('MysqlService', () => {
-  let service: MysqlService;
-
   const config: ConnectionOptions = { host: 'azerothcore.org' };
 
   beforeEach(() =>
@@ -34,16 +31,19 @@ describe('MysqlService', () => {
     }),
   );
 
-  beforeEach(() => {
-    service = TestBed.inject(MysqlService);
-  });
+  function setup() {
+    const service = TestBed.inject(MysqlService);
+    return { service };
+  }
 
   it('connectionEstablished getter', () => {
+    const { service } = setup();
     service['_connectionEstablished'] = true;
     expect(service.connectionEstablished).toBe(true);
   });
 
   it('getConnectionState should return null when there is no connection', () => {
+    const { service } = setup();
     (service as any)._connection = null;
     expect(service.getConnectionState()).toBe('EMPTY');
 
@@ -52,6 +52,7 @@ describe('MysqlService', () => {
   });
 
   it('connect(config) should properly work', () => {
+    const { service } = setup();
     (service as any).mysql = new MockMySql();
     const mockConnection = new MockConnection();
     const createConnectionSpy = spyOn((service as any).mysql, 'createConnection').and.returnValue(mockConnection);
@@ -71,6 +72,7 @@ describe('MysqlService', () => {
 
   describe('dbQuery(queryString)', () => {
     it('should properly work', () => {
+      const { service } = setup();
       (service as any).mysql = new MockMySql();
       const mockConnection = new MockConnection();
       service['_connection'] = mockConnection as unknown as Connection;
@@ -87,6 +89,7 @@ describe('MysqlService', () => {
     });
 
     it('should give error if _connection is not defined', () => {
+      const { service } = setup();
       (service as any).mysql = new MockMySql();
       service['_connection'] = undefined as any;
       spyOn(console, 'error');
@@ -101,6 +104,7 @@ describe('MysqlService', () => {
     });
 
     it('should give error if reconnection is in progress', () => {
+      const { service } = setup();
       (service as any).mysql = new MockMySql();
       service['_reconnecting'] = true;
       spyOn(console, 'error');
@@ -116,27 +120,26 @@ describe('MysqlService', () => {
   });
 
   describe('callbacks', () => {
-    let subscriber: Subscriber<any>;
-    let errorSpy: Spy;
-    let nextSpy: Spy;
-    let completeSpy: Spy;
-    let callback: (err?: QueryError, result?: any, fields?: any) => void;
-
     const error = { code: 'some error', errno: 1234 } as QueryError;
 
-    beforeEach(() => {
-      subscriber = new Subscriber();
-      errorSpy = spyOn(subscriber, 'error');
-      nextSpy = spyOn(subscriber, 'next');
-      completeSpy = spyOn(subscriber, 'complete');
-    });
+    function setupCallbacks() {
+      const { service } = setup();
+      const subscriber = new Subscriber();
+      const errorSpy = spyOn(subscriber, 'error');
+      const nextSpy = spyOn(subscriber, 'next');
+      const completeSpy = spyOn(subscriber, 'complete');
+      return { service, subscriber, errorSpy, nextSpy, completeSpy };
+    }
 
     describe('connect', () => {
-      beforeEach(() => {
-        callback = service['getConnectCallback'](subscriber) as any;
-      });
+      function setupConnect() {
+        const result = setupCallbacks();
+        const callback = result.service['getConnectCallback'](result.subscriber) as any;
+        return { ...result, callback };
+      }
 
       it('should correctly work', () => {
+        const { service, errorSpy, nextSpy, completeSpy, callback } = setupConnect();
         service['_connectionEstablished'] = false;
         service['_connection'] = { on: jasmine.createSpy() } as any;
 
@@ -150,6 +153,7 @@ describe('MysqlService', () => {
       });
 
       it('should correctly handle errors', () => {
+        const { service, errorSpy, nextSpy, completeSpy, callback } = setupConnect();
         service['_connectionEstablished'] = true;
 
         callback(error);
@@ -166,11 +170,14 @@ describe('MysqlService', () => {
       const result = 'some mock result';
       const fields = 'some mock fields';
 
-      beforeEach(() => {
-        callback = service['getQueryCallback'](subscriber) as any;
-      });
+      function setupQuery() {
+        const callbacksResult = setupCallbacks();
+        const callback = callbacksResult.service['getQueryCallback'](callbacksResult.subscriber) as any;
+        return { ...callbacksResult, callback };
+      }
 
       it('should correctly work', () => {
+        const { errorSpy, nextSpy, completeSpy, callback } = setupQuery();
         callback(undefined, result, fields);
 
         expect(errorSpy).toHaveBeenCalledTimes(0);
@@ -180,6 +187,7 @@ describe('MysqlService', () => {
       });
 
       it('should correctly handle errors', () => {
+        const { errorSpy, nextSpy, completeSpy, callback } = setupQuery();
         callback(error, result, fields);
 
         expect(errorSpy).toHaveBeenCalledTimes(1);
@@ -192,6 +200,7 @@ describe('MysqlService', () => {
 
   describe('handleConnectionError(error)', () => {
     it('should call reconnect if the error is PROTOCOL_CONNECTION_LOST', () => {
+      const { service } = setup();
       const error = { code: 'PROTOCOL_CONNECTION_LOST' };
       spyOn<any>(service, 'reconnect');
 
@@ -201,6 +210,7 @@ describe('MysqlService', () => {
     });
 
     it('should NOT call reconnect if the error is something else', () => {
+      const { service } = setup();
       const error = { code: 'SOME_OTHER_ERROR' };
       spyOn<any>(service, 'reconnect');
 
@@ -211,6 +221,7 @@ describe('MysqlService', () => {
   });
 
   it('reconnect() should correctly work ', async () => {
+    const { service } = setup();
     service['_reconnecting'] = false;
     spyOn(service['_connectionLostSubject'], 'next');
     spyOn(console, 'info');
@@ -232,6 +243,7 @@ describe('MysqlService', () => {
 
   describe('reconnectCallback(err)', () => {
     it('should call reconnect() in case of error', () => {
+      const { service } = setup();
       service['_reconnecting'] = true;
       spyOn(service['_connectionLostSubject'], 'next');
       spyOn<any>(service, 'reconnect');
@@ -246,6 +258,7 @@ describe('MysqlService', () => {
     });
 
     it('should correctly work otherwise', () => {
+      const { service } = setup();
       service['_reconnecting'] = true;
       spyOn(service['_connectionLostSubject'], 'next');
       spyOn<any>(service, 'reconnect');

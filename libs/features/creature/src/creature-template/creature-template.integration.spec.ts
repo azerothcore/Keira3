@@ -1,7 +1,7 @@
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CreatureTemplate } from '@keira/shared/acore-world-model';
@@ -15,17 +15,10 @@ import { instance, mock } from 'ts-mockito';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { CreatureTemplateComponent } from './creature-template.component';
-import Spy = jasmine.Spy;
 
 class CreatureTemplatePage extends EditorPageObject<CreatureTemplateComponent> {}
 
 describe('CreatureTemplate integration tests', () => {
-  let fixture: ComponentFixture<CreatureTemplateComponent>;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let handlerService: CreatureHandlerService;
-  let page: CreatureTemplatePage;
-
   const id = 1234;
   const expectedFullCreateQuery =
     'DELETE FROM `creature_template` WHERE (`entry` = 1234);\n' +
@@ -61,31 +54,32 @@ describe('CreatureTemplate integration tests', () => {
   });
 
   function setup(creatingNew: boolean) {
-    handlerService = TestBed.inject(CreatureHandlerService);
+    const handlerService = TestBed.inject(CreatureHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
 
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
 
-    fixture = TestBed.createComponent(CreatureTemplateComponent);
-    page = new CreatureTemplatePage(fixture);
+    const fixture = TestBed.createComponent(CreatureTemplateComponent);
+    const page = new CreatureTemplatePage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    return { fixture, queryService, querySpy, handlerService, page };
   }
 
   describe('Creating new', () => {
-    beforeEach(() => setup(true));
-
     it('should correctly initialise', () => {
+      const { page } = setup(true);
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
     it('changing a property and executing the query should correctly work', () => {
+      const { querySpy, page } = setup(true);
       const expectedQuery =
         'DELETE FROM `creature_template` WHERE (`entry` = 1234);\n' +
         'INSERT INTO `creature_template` (`entry`, `difficulty_entry_1`, `difficulty_entry_2`, `difficulty_entry_3`, ' +
@@ -112,6 +106,7 @@ describe('CreatureTemplate integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
+      const { handlerService, page } = setup(true);
       const field = 'difficulty_entry_1';
       expect(handlerService.isCreatureTemplateUnsaved()).toBe(false);
       page.setInputValueById(field, 3);
@@ -122,15 +117,15 @@ describe('CreatureTemplate integration tests', () => {
   });
 
   describe('Editing existing', () => {
-    beforeEach(() => setup(false));
-
     it('should correctly initialise', () => {
+      const { page } = setup(false);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
     it('changing all properties and executing the query should correctly work', async () => {
+      const { querySpy, page } = setup(false);
       const values: (string | number)[] = [];
       for (let i = 0; i < Object.keys(originalEntity).length; i++) {
         values[i] = i;
@@ -173,6 +168,7 @@ describe('CreatureTemplate integration tests', () => {
     });
 
     it('changing values should correctly update the queries', () => {
+      const { page } = setup(false);
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
 
       page.setInputValueById('name', 'Shin');
@@ -186,6 +182,7 @@ describe('CreatureTemplate integration tests', () => {
     });
 
     xit('changing a value via FlagsSelector should correctly work', async () => {
+      const { page } = setup(false);
       const field = 'unit_flags';
       page.clickElement(page.getSelectorBtn(field));
       page.expectModalDisplayed();

@@ -17,8 +17,6 @@ import { mockChangeDetectorRef } from '@keira/shared/test-utils';
 import { MOCK_NAME, MockEntity, MockHandlerService, MockSingleRowComplexKeyEditorService } from '../../core.mock';
 
 describe('SingleRowComplexKeyEditorService', () => {
-  let service: SingleRowComplexKeyEditorService<MockEntity>;
-
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
@@ -31,17 +29,20 @@ describe('SingleRowComplexKeyEditorService', () => {
     }),
   );
 
-  beforeEach(() => {
-    service = TestBed.inject(MockSingleRowComplexKeyEditorService);
+  function setup() {
+    const service: SingleRowComplexKeyEditorService<MockEntity> = TestBed.inject(MockSingleRowComplexKeyEditorService);
     spyOn(TestBed.inject(Router), 'navigate');
-  });
+    return { service };
+  }
 
   describe('check methods of class', () => {
     it('get entityIdFields() correctly', () => {
+      const { service } = setup();
       expect(service.entityIdFields).toEqual(JSON.parse(service['_entityIdField']));
     });
 
     it('selecteQuery()', () => {
+      const { service } = setup();
       const handlerService = TestBed.inject(MockHandlerService);
       // @ts-ignore
       handlerService._selected = '{}';
@@ -53,6 +54,7 @@ describe('SingleRowComplexKeyEditorService', () => {
     });
 
     it('updateDiffQuery  should correctly work', () => {
+      const { service } = setup();
       const getUpdateMultipleKeysQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getUpdateMultipleKeysQuery');
       spyOn<any>(service, 'updateEditorStatus');
 
@@ -69,6 +71,7 @@ describe('SingleRowComplexKeyEditorService', () => {
     });
 
     it('updateFullQuery()', () => {
+      const { service } = setup();
       const getFullDeleteInsertMultipleKeysQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getFullDeleteInsertMultipleKeysQuery');
 
       service['updateFullQuery']();
@@ -77,6 +80,7 @@ describe('SingleRowComplexKeyEditorService', () => {
     });
 
     it('updateFullQuery() when isNew is true', () => {
+      const { service } = setup();
       const getFullDeleteInsertMultipleKeysQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getFullDeleteInsertMultipleKeysQuery');
       const handlerService = TestBed.inject(MockHandlerService);
       // @ts-ignore
@@ -90,6 +94,7 @@ describe('SingleRowComplexKeyEditorService', () => {
     });
 
     it('reload()', () => {
+      const { service } = setup();
       const resetSpy = spyOn<any>(service, 'reset');
       const reloadEntitySpy = spyOn<any>(service, 'reloadEntity');
 
@@ -101,6 +106,7 @@ describe('SingleRowComplexKeyEditorService', () => {
     });
 
     it('reloadAfterSave()', () => {
+      const { service } = setup();
       const selectSpy = spyOn(TestBed.inject(MockHandlerService), 'select');
       const reloadSpy = spyOn(service, 'reload');
 
@@ -112,6 +118,7 @@ describe('SingleRowComplexKeyEditorService', () => {
     });
 
     it('reloadEntity()', () => {
+      const { service } = setup();
       const selectQuerySpy = spyOn<any>(service, 'selectQuery');
       const error = { code: 'mock error', errno: 1234 } as QueryError;
       selectQuerySpy.and.returnValue(of([{ [MOCK_NAME]: 'mockName' }]));
@@ -129,6 +136,7 @@ describe('SingleRowComplexKeyEditorService', () => {
     });
 
     it('onCreatingNewEntity()', () => {
+      const { service } = setup();
       const handlerService = TestBed.inject(MockHandlerService);
       spyOnProperty(service, 'entityIdFields', 'get').and.returnValue(['id', 'guid', 'test']);
       // @ts-ignore
@@ -141,6 +149,7 @@ describe('SingleRowComplexKeyEditorService', () => {
     });
 
     it('setLoadedEntity()', () => {
+      const { service } = setup();
       const selectSpy = spyOn(TestBed.inject(MockHandlerService), 'select');
 
       service['_originalValue'] = new MockEntity();
@@ -157,6 +166,7 @@ describe('SingleRowComplexKeyEditorService', () => {
     });
 
     it('onReloadSuccessful()', () => {
+      const { service } = setup();
       const onCreatingNewEntitySpy = spyOn<any>(service, 'onCreatingNewEntity');
       const updateFormAfterReloadSpy = spyOn<any>(service, 'updateFormAfterReload');
       const setLoadedEntitySpy = spyOn<any>(service, 'setLoadedEntity');

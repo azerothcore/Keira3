@@ -12,10 +12,8 @@ import { EditorService } from './editor.service';
 
 import { mockChangeDetectorRef } from '@keira/shared/test-utils';
 import { MockEntity, MockSingleRowEditorService } from '../../core.mock';
-import Spy = jasmine.Spy;
 
 describe('EditorService', () => {
-  let service: EditorService<MockEntity>;
   const error = { code: 'some error', errno: 1234 } as QueryError;
 
   beforeEach(() =>
@@ -30,34 +28,35 @@ describe('EditorService', () => {
     }),
   );
 
-  beforeEach(() => {
-    service = TestBed.inject(MockSingleRowEditorService);
-  });
+  function setup() {
+    const service: EditorService<MockEntity> = TestBed.inject(MockSingleRowEditorService);
+    return { service };
+  }
 
   it('after creating, the fields should correctly set', () => {
+    const { service } = setup();
     expect(service['fields']).toEqual(['id', 'guid', 'name']);
   });
 
   describe('reload', () => {
-    let selectAllSpy: Spy;
-    let formResetSpy: Spy;
-    let onReloadSuccessfulSpy: Spy;
-
     const id = 123456;
     const data = 'mock data result';
 
-    beforeEach(() => {
-      selectAllSpy = spyOn(TestBed.inject(MysqlQueryService), 'selectAll');
-      formResetSpy = spyOn(service.form, 'reset');
+    function setupReload() {
+      const { service } = setup();
+      const selectAllSpy = spyOn(TestBed.inject(MysqlQueryService), 'selectAll');
+      const formResetSpy = spyOn(service.form, 'reset');
       // @ts-ignore
-      onReloadSuccessfulSpy = spyOn(TestBed.inject(MockSingleRowEditorService), 'onReloadSuccessful');
-    });
+      const onReloadSuccessfulSpy = spyOn(TestBed.inject(MockSingleRowEditorService), 'onReloadSuccessful');
+      return { service, selectAllSpy, formResetSpy, onReloadSuccessfulSpy };
+    }
 
     it('should behave correctly when the query succeeds', () => {
+      const { service, selectAllSpy, formResetSpy, onReloadSuccessfulSpy } = setupReload();
       service['_error'] = { code: 'some previous error', errno: 123 } as QueryError;
       service['_fullQuery'] = '-- some previous query';
       service['_diffQuery'] = '-- some previous query';
-      selectAllSpy.and.returnValue(of(data));
+      selectAllSpy.and.returnValue(of(data as any));
       spyOn<any>(service, 'updateEditorStatus');
 
       service.reload(mockChangeDetectorRef, id);
@@ -66,13 +65,14 @@ describe('EditorService', () => {
       expect(service.error).toBe(undefined as any);
       expect(service.fullQuery).toBe('');
       expect(service.diffQuery).toBe('');
-      expect(selectAllSpy).toHaveBeenCalledWith(service.entityTable, service['_entityIdField'], id);
+      expect(selectAllSpy).toHaveBeenCalledWith(service.entityTable, service['_entityIdField'] as any, id);
       expect(formResetSpy).toHaveBeenCalledTimes(1);
-      expect(onReloadSuccessfulSpy).toHaveBeenCalledWith(data, id);
+      (expect(onReloadSuccessfulSpy) as any).toHaveBeenCalledWith(data, id);
       expect(service['updateEditorStatus']).toHaveBeenCalledTimes(1);
     });
 
     it('should behave correctly when the query errors', () => {
+      const { service, selectAllSpy, formResetSpy, onReloadSuccessfulSpy } = setupReload();
       service['_fullQuery'] = '-- some previous query';
       service['_diffQuery'] = '-- some previous query';
       selectAllSpy.and.returnValue(throwError(error));
@@ -84,7 +84,7 @@ describe('EditorService', () => {
       expect(service.error).toEqual(error);
       expect(service.fullQuery).toBe('');
       expect(service.diffQuery).toBe('');
-      expect(selectAllSpy).toHaveBeenCalledWith(service.entityTable, service['_entityIdField'], id);
+      expect(selectAllSpy).toHaveBeenCalledWith(service.entityTable, service['_entityIdField'] as any, id);
       expect(formResetSpy).toHaveBeenCalledTimes(1);
       expect(onReloadSuccessfulSpy).toHaveBeenCalledTimes(0);
       expect(service['updateEditorStatus']).toHaveBeenCalledTimes(1);
@@ -92,22 +92,20 @@ describe('EditorService', () => {
   });
 
   describe('save', () => {
-    let querySpy: Spy;
-    let reloadSpy: Spy;
-    let toastrSucessSpy: Spy;
-    let toastrErrorSpy: Spy;
-
     const query = '-- Mock Query';
 
-    beforeEach(() => {
+    function setupSave() {
+      const { service } = setup();
       const toastrService = TestBed.inject(ToastrService);
-      toastrSucessSpy = spyOn(toastrService, 'success');
-      toastrErrorSpy = spyOn(toastrService, 'error');
-      querySpy = spyOn(TestBed.inject(MysqlQueryService), 'query');
-      reloadSpy = spyOn(service, 'reload');
-    });
+      const toastrSucessSpy = spyOn(toastrService, 'success');
+      const toastrErrorSpy = spyOn(toastrService, 'error');
+      const querySpy = spyOn(TestBed.inject(MysqlQueryService), 'query');
+      const reloadSpy = spyOn(service, 'reload');
+      return { service, toastrSucessSpy, toastrErrorSpy, querySpy, reloadSpy };
+    }
 
     it('should do nothing if the query is undefined', () => {
+      const { service, querySpy, reloadSpy, toastrSucessSpy, toastrErrorSpy } = setupSave();
       service.save(mockChangeDetectorRef, undefined);
 
       expect(querySpy).toHaveBeenCalledTimes(0);
@@ -118,8 +116,9 @@ describe('EditorService', () => {
     });
 
     it('should correctly work when the query succeeds', () => {
+      const { service, querySpy, reloadSpy, toastrSucessSpy, toastrErrorSpy } = setupSave();
       service['_error'] = { code: 'some previous error', errno: 123 } as QueryError;
-      querySpy.and.returnValue(of('mock result'));
+      querySpy.and.returnValue(of('mock result' as any));
 
       service.save(mockChangeDetectorRef, query);
 
@@ -132,6 +131,7 @@ describe('EditorService', () => {
     });
 
     it('should correctly work when the query errors', () => {
+      const { service, querySpy, reloadSpy, toastrSucessSpy, toastrErrorSpy } = setupSave();
       querySpy.and.returnValue(throwError(error));
 
       service.save(mockChangeDetectorRef, query);
