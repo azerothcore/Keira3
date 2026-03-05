@@ -23,23 +23,23 @@
   "DOWNLOAD": "下载",
   "NEW_VERSION": "嗨...Keira有新版本了！",
   "LOADING": "载入中...",
-  "TODO": "TODO",
+  "TODO": "待办",
   "ALWAYS_0": "总是 0",
   "UNIQUE": "<strong>{{ ENTITY_SECOND_ID_FIELD }}</strong> 必须是唯一的。",
   "UNIQUE_ID": "唯一ID {{ ENTITY }}",
   "DELETE_SELECTED_ROW": "删除选择的行",
   "ADD_NEW_ROW": "添加新的行",
-  "DUPLICATE_SELECTED_ROW": "Duplicate selected row",
+  "DUPLICATE_SELECTED_ROW": "复制选中行",
   "EMPTY": "空",
   "UNKNOWN": "未知",
   "COPY": "复制",
   "EXECUTE": "执行",
-  "EXECUTE_AND_COPY": "Execute & copy",
+  "EXECUTE_AND_COPY": "执行并复制",
   "RELOAD": "重新加载",
   "CANCEL": "取消",
   "SELECTORS": {
-    "ENABLED": "Enabled",
-    "DISABLED": "Disabled"
+    "ENABLED": "启用",
+    "DISABLED": "禁用"
   },
   "CONNECTION_WINDOW": {
     "HOST": "主机",
@@ -47,10 +47,10 @@
     "USERNAME": "用户名",
     "PASSWORD": "密码",
     "DATABASE": "数据库",
-    "USE_SSL": "Use SSL/TLS",
-    "SSL_TOOLTIP": "Required for servers with require_secure_transport=ON",
+    "USE_SSL": "使用 SSL/TLS",
+    "SSL_TOOLTIP": "启用了 require_secure_transport=ON 的服务器需要此选项",
     "SAVE_PASSWORD": "保存密码",
-    "REMEMBER_ME": "Remember me",
+    "REMEMBER_ME": "记住我",
     "LOAD_RECENT": "加载最近的",
     "CLEAR_ALL": "全部清除",
     "CONNECT": "连接",
@@ -67,7 +67,7 @@
       "TITLE": "生物",
       "SELECT_CREATURE": "选择生物",
       "CREATURE_TEMPLATE": "生物模板",
-      "TEMPLATE_MODEL": "Template Model",
+      "TEMPLATE_MODEL": "模板模型",
       "TEMPLATE_ADDON": "模板插件",
       "TEMPLATE_RESISTANCE": "抗性模板",
       "TEMPLATE_SPELL": "技能模板",
@@ -75,7 +75,7 @@
       "ONKILL_REPUTATION": "声望配置",
       "EQUIP_TEMPLATE": "装备模板",
       "VENDOR": "商贩",
-      "DEFAULT_TRAINER": "Default Trainer",
+      "DEFAULT_TRAINER": "默认训练师",
       "QUEST_ITEM": "任务物品",
       "CREATURE_LOOT": "生物掉落",
       "PICKPOCKETING_LOOT": "扒窃掉落",
@@ -83,15 +83,15 @@
       "SPAWN": "生物刷新",
       "SPAWN_ADDON": "生物刷新插件",
       "SMARTAI": "SmartAI",
-      "TEXT": "Text",
-      "FORMATIONS": "Formations"
+      "TEXT": "文本",
+      "FORMATIONS": "编队"
     },
     "QUEST": {
       "TITLE": "任务",
       "SELECT_QUEST": "选择任务",
       "QUEST_TEMPLATE": "任务模板",
       "QUEST_TEMPLATE_ADDON": "任务模板插件",
-      "QUEST_TEMPLATE_LOCALE": "Quest Template Locale",
+      "QUEST_TEMPLATE_LOCALE": "任务模板本地化",
       "QUEST_OFFER_REWARD": "任务提供的奖励",
       "QUEST_REQUEST_ITEMS": "接取任务道具配置",
       "CREATURE_QUESTSTARTER": "接取任务NPC配置",
@@ -132,17 +132,17 @@
       "MAIL_LOOT_TEMPLATE": "邮件掉落模板"
     },
     "TEXTS": {
-      "TITLE": "Other Texts",
-      "SELECT_BROADCAST_TEXT": "Select Broadcast Text",
-      "BROADCAST_TEXT": "Broadcast Text",
-      "SELECT_CREATURE_TEXT": "Select Creature Text",
-      "CREATURE_TEXT": "Creature Text",
-      "SELECT_NPC_TEXT": "Select NPC Text",
-      "NPC_TEXT": "NPC Text",
-      "SELECT_PAGE_TEXT": "Select Page Text",
-      "PAGE_TEXT": "Page Text",
-      "ACORE_STRING_TEXT": "Acore Strings",
-      "SELECT_ACORE_STRING_TEXT": "Select Acore Strings"
+      "TITLE": "其他文本",
+      "SELECT_BROADCAST_TEXT": "选择广播文本",
+      "BROADCAST_TEXT": "广播文本",
+      "SELECT_CREATURE_TEXT": "选择生物文本",
+      "CREATURE_TEXT": "生物文本",
+      "SELECT_NPC_TEXT": "选择NPC文本",
+      "NPC_TEXT": "NPC文本",
+      "SELECT_PAGE_TEXT": "选择页面文本",
+      "PAGE_TEXT": "页面文本",
+      "ACORE_STRING_TEXT": "Acore字符串",
+      "SELECT_ACORE_STRING_TEXT": "选择Acore字符串"
     },
     "GOSSIP": {
       "TITLE": "闲聊对话",
@@ -167,17 +167,17 @@
       "SPELL_DBC_EDITOR": "技能DBC编辑"
     },
     "GAME_TELE": {
-      "TITLE": "Game Teleport",
-      "SEARCH_GAME_TELE": "Search Teleport",
-      "SELECT_GAME_TELE": "Game Tele Editor"
+      "TITLE": "游戏传送",
+      "SEARCH_GAME_TELE": "搜索传送",
+      "SELECT_GAME_TELE": "传送编辑器"
     },
     "TRAINER": {
-      "TITLE": "Trainer",
-      "SEARCH_TRAINER": "Search Trainer",
-      "SELECT_TRAINER": "Trainer",
-      "TRAINER_SPELL": "Trainer Spell"
+      "TITLE": "训练师",
+      "SEARCH_TRAINER": "搜索训练师",
+      "SELECT_TRAINER": "训练师",
+      "TRAINER_SPELL": "训练师法术"
     },
-    "UNUSED_GUID_SEARCH": "Unused GUIDs"
+    "UNUSED_GUID_SEARCH": "未使用的GUID"
   },
   "DASHBOARD": {
     "WELCOME": "欢迎使用Keira3",
@@ -244,16 +244,16 @@
       "HOVER_HEIGHT": "如果设置了MOVEMENTFLAG_DISABLE_GRAVITY，则生物悬停在地面上的距离在这里设置",
       "SCALE": "生物尺寸控制(生物模型的大小)。如果为0，则使用DBC默认模型大小。",
       "DAMAGE_MODIFIER": "伤害倍数，影响mindmg和maxdmg",
-      "ARMOR_MODIFIER_TOOLTIP": "Damage taken from physical attacks, a value of 1 is normal; Values under 1 mean it will take more damage; Values over 1 mean it will take less damage",
+      "ARMOR_MODIFIER_TOOLTIP": "来自物理攻击的伤害，值为1是正常的；值小于1意味着会受到更多伤害；值大于1意味着会受到更少伤害",
       "SPEED_RUN": "控制生物的移动速度。对于飞行载具来说，提高飞行速度。",
       "SPEED_WALK": "控制生物的奔跑速度。对于陆地载具来说，提高地面移动速度。",
       "SPEED_SWIM": "控制生物游泳的速度。",
       "SPEED_FLIGHT": "控制生物的飞行速度。",
       "DETECTION_RANGE": "控制生物感知到玩家靠近的范围。",
-      "ITEMID1": "This is the item number of the equipment used in the right hand from Item.dbc.",
-      "ITEMID2": "This is the item number of the equipment used in the left hand from Item.dbc.",
-      "ITEMID3": "This is the item number of the equipment used in the ranged slot from Item.dbc.",
-      "FACTION": "When refering to the Creature's Faction ID it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki."
+      "ITEMID1": "这是来自Item.dbc中右手使用的装备物品编号。",
+      "ITEMID2": "这是来自Item.dbc中左手使用的装备物品编号。",
+      "ITEMID3": "这是来自Item.dbc中远程栏位使用的装备物品编号。",
+      "FACTION": "当引用生物的阵营ID时，它是选择器中左侧的'ID'列，更多信息请查看wiki中的'faction'。"
     },
     "TEMPLATE_ADDON": {
       "ENTRY": "链接至creature_template表的entry字段",
@@ -271,7 +271,7 @@
     },
     "SPAWN": {
       "ORIENTATION": "生物刷新的方向。(北=0.0;南=圆周率(3.14159)",
-      "EQUIPMENT_ID_TOOLTIP": "1 = uses the info set in equipment template 0 = no weapons equipped",
+      "EQUIPMENT_ID_TOOLTIP": "1 = 使用装备模板中设置的信息 0 = 不装备武器",
       "SPAWN_DIST_TOOLTIP": "生物刷新点的刷新范围距离。如果MovementType = 1，就是生物刷新后可以走多远。",
       "SCRIPT_NAME": "此生物使用的C++脚本的名称(如果有的话)。",
       "GUID": "creature表中的guid字段",
@@ -279,7 +279,7 @@
       "MOUNT": "用于使生物显示为坐骑的坐骑的模型ID。此处的值会覆盖生物单位字段UNIT_FIELD_MOUNTDISPLAYID的值。",
       "VISIBILITY_DISTANCE_TYPE": "控制生物的可见距离。0=正常（默认90码）；1=较远（250码）",
       "AURAS": "该生物的光环技能列表，用英文逗号分割",
-      "COMMENT": "Comment"
+      "COMMENT": "注释"
     },
     "TEMPLATE_MOVEMENT": {
       "GROUND": "0 = 无; 1 = 奔跑; 2 = 巡逻",
@@ -300,18 +300,18 @@
       "EXTENDED_COST": "值来自DBC，稍后将在Keira3中实现该值的选择器"
     },
     "DEFAULT_TRAINER": {
-      "TITLE": "Default Trainer",
-      "TRAINER_ID_TOOLTIP": "ID of the trainer template (trainer.Id) assigned to this creature. Use 0 for no default trainer. Examples: 1=Trainer Warrior, 3=Trainer Paladin, 7=Trainer Hunter, 9=Trainer Rogue, 11=Trainer Priest, 13=Trainer Death Knight, 14=Trainer Shaman, 16=Trainer Mage, 31=Trainer Warlock, 33=Trainer Druid, 36=Trainer Mount & Fly. See the trainer wiki for the full list."
+      "TITLE": "默认训练师",
+      "TRAINER_ID_TOOLTIP": "分配给此生物的训练师模板ID（trainer.Id）。使用0表示没有默认训练师。示例：1=战士训练师，3=圣骑士训练师，7=猎人训练师，9=盗贼训练师，11=牧师训练师，13=死亡骑士训练师，14=萨满训练师，16=法师训练师，31=术士训练师，33=德鲁伊训练师，36=坐骑和飞行训练师。查看训练师wiki获取完整列表。"
     },
     "TEXT": {
-      "GROUP_ID": "If there is more than one of the same entry (more than one text the creature says), this column is used to choose if it is a random say or an ordered list. If a creature has got more than one say text to be shown in a given order, it must be incremented for each new matching entry (ex. 0, 1, 2, 3...). If there is only one entry or only one group, this value should be 0. If there are multiple groups of texts, this value stays the same within the group while the id increments within the same group.",
-      "ID": "Entry for each group of texts. This is the unique identifier when entry (creature) is the same and groupid is unchanged, it must be incremented (ex. 0, 1, 2, 3...). A creature say will be randomly selected from this list based on the groupid it belongs to.",
-      "LANGUAGE": "Value from Languages.dbc (+ the wiki table from the dbc file). When set to 0, the current default language will be used.",
-      "PROBABILITY": "A value from 1-100 that represents the percentage chance that this text will be executed.\n\nValue must be >=0. If the value does not meet the condition the SQL will fail on creature_text_chk_1.",
-      "EMOTE": "The emote that the creature plays when the text is executed. Value to use in this field can be obtained from the emote.dbc",
-      "DURATION": "Time in ms to see text. 0 is default and calculated by core.",
-      "SOUND": "The sound entry this creature will play at the same time the text is executed. Sounds are found in SoundEntries.dbc.",
-      "BROADCAST_TEXT_ID": "Id of the equivalent text found in broadcast_text"
+      "GROUP_ID": "如果存在多个相同的条目（生物说的文本超过一条），此列用于选择是随机对话还是有序列表。如果一个生物有多条需要按给定顺序显示的对话文本，则必须为每个新的匹配条目递增（例如0, 1, 2, 3...）。如果只有一个条目或一个组，此值应为0。如果有多个文本组，此值在组内保持不变，而id在同一组内递增。",
+      "ID": "每个文本组的条目。这是当条目（生物）相同且groupid不变时的唯一标识符，必须递增（例如0, 1, 2, 3...）。生物对话将根据其所属的groupid从此列表中随机选择。",
+      "LANGUAGE": "来自Languages.dbc的值（+ dbc文件的wiki表格）。当设置为0时，将使用当前默认语言。",
+      "PROBABILITY": "1-100的值，表示此文本被执行的百分比概率。\n\n值必须>=0。如果值不满足条件，SQL将在creature_text_chk_1上失败。",
+      "EMOTE": "生物在执行文本时播放的表情动作。此字段中使用的值可以从emote.dbc获取",
+      "DURATION": "查看文本的时间（毫秒）。0为默认值，由核心计算。",
+      "SOUND": "此生物在执行文本的同时播放的音效条目。音效可在SoundEntries.dbc中找到。",
+      "BROADCAST_TEXT_ID": "在broadcast_text中找到的等效文本的ID"
     }
   },
   "QUEST": {
@@ -351,14 +351,14 @@
       "REWARD_SPELL": "任务日志中任务完成时显示的法术。请注意，如果RewardSpell为非零，则不会施放此法术。",
       "REWARD_HONOR": "完成任务获得荣誉击杀（荣誉值）",
       "REWARD_FACTIONS_TOOLTIP": "任务增加（或减少）声望的势力ID。",
-      "REQUIRED_FACTION": "Required Faction to be able to pick up the quest, when refering to the Quest Faction ID required, it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki.",
-      "REQUIRED_CREATURE_OR_GAMEOBJECT": "Required Creature or Gameobject for the quest objective",
-      "REQUIRED_CREATURE_OR_GAMEOBJECT_COUNT": "The amount required to complete the objective.",
-      "REQUIRED_FACTION_VALUE": "The numeric value required for the specified faction."
+      "REQUIRED_FACTION": "接受任务所需的阵营，当引用任务所需的阵营ID时，它是选择器中左侧的'ID'列，更多信息请查看wiki中的'faction'。",
+      "REQUIRED_CREATURE_OR_GAMEOBJECT": "任务目标所需的生物或游戏对象",
+      "REQUIRED_CREATURE_OR_GAMEOBJECT_COUNT": "完成目标所需的数量。",
+      "REQUIRED_FACTION_VALUE": "指定阵营所需的数值。"
     },
     "TEMPLATE_ADDON": {
       "ADDON_BASE": "基础插件",
-      "ADDON_REQUIREMENTS": "Addon Requirements",
+      "ADDON_REQUIREMENTS": "附加需求",
       "ADDON_REWARDS": "奖励插件",
       "PREV_QUEST_ID": "如果 > 0: 上一个任务id; 如果 < 0 父任务id",
       "NEXT_QUEST_ID": "包含下一个任务id，以防其他任务的PrevQuestId不够用。",
@@ -405,7 +405,7 @@
       "BOOLEAN_FLAG_SPAWN": "布尔标志控制游戏对象是否会消失",
       "SPAWN_TYPE": "0=陷阱，施放后不会消失；1=陷阱在施放后消失；2=刷新时投放炸弹。",
       "REQUIRED_ACTIVE_QUEST": "需要quest_template表中有效的ID才可以正常使用",
-      "NO_USABLE_MOUNTED": "Never usable while mounted",
+      "NO_USABLE_MOUNTED": "骑乘时永远无法使用",
       "TELEPORT_ID": "areatrigger_teleport表中的ID字段",
       "LINKED_TRAP": "gameobject_template表中的entry字段",
       "ENTRY_FROM_GO_LOOT": "gameobject_loot_template表中的entry字段",
@@ -427,7 +427,7 @@
       "TIME_S": "时间（秒）",
       "RADIUS_2": "半径*2",
       "IGNORE_PATH": "忽略根据地形的路径查找",
-      "LONG_UNKNOWN_FLAG": "Long unknown flag",
+      "LONG_UNKNOWN_FLAG": "长未知标志",
       "UNKNOWN_FLAG": "未知标志",
       "LOCK_ID_FROM_DBC": "Lock.dbc中的LockId",
       "SPELL_ID_FROM_DBC": "Spell.dbc中的技能Id",
@@ -441,19 +441,19 @@
     },
     "SPAWN": {
       "ORIENTATION": "生物刷新的方向 (北 = 0.0; 南 = 圆周率 (3.14159))",
-      "ANIMPROGRESS": "Always 100 for chests.",
+      "ANIMPROGRESS": "箱子始终为100。",
       "STATE": "用于宝箱或者门。 1 = 关闭  0 = 打开",
       "SCRIPT_NAME": "此生物使用的C++脚本的名称(如果有的话)。",
-      "COMMENT": "Comment"
+      "COMMENT": "注释"
     },
     "SPAWN_ADDON": {
       "GUID": "链接到gameobject表的guid字段"
     },
     "TEMPLATE_ADDON": {
-      "FACTION": "The Gameobject's faction, when refering to the Faction ID required, it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki.",
-      "MINGOLD": "Minimum money, in copper, that the gameobject can drop when accessed / used.",
-      "MAXGOLD": "Maximum money, in copper, that the gameobject can drop when accessed / used.",
-      "ARTKIT": "Updates display if object is activated by SPELL_EFFCT_ACTIVATE_OBJECT with MiscValue 19 - 22."
+      "FACTION": "游戏对象的阵营，当引用所需的阵营ID时，它是选择器中左侧的'ID'列，更多信息请查看wiki中的'faction'。",
+      "MINGOLD": "游戏对象被访问/使用时可以掉落的最少铜币数。",
+      "MAXGOLD": "游戏对象被访问/使用时可以掉落的最多铜币数。",
+      "ARTKIT": "当对象被MiscValue 19 - 22的SPELL_EFFCT_ACTIVATE_OBJECT激活时更新显示。"
     }
   },
   "ITEM": {
@@ -504,7 +504,7 @@
       "AREA": "可以使用这个物品的区域ID",
       "HOLIDAY_ID": "可以使用这个物品的所需节日ID，请参阅Holidays DBC文件",
       "LOCKID": "这个物品(假设用作钥匙)所绑定的上锁入口的ID。该字段用于门钥匙。请参阅Lock DBC文件。",
-      "RESISTANCE_TOOLTIP": "Related resistance per type",
+      "RESISTANCE_TOOLTIP": "每种类型的相关抗性",
       "SCALING_STAT_DISTRIBUTION": "与静态属性类似，这些属性是随着用户等级(主要是传家宝升级装备)而增长的，就像静态属性。",
       "SCALING_STAT_VALUE": "缩放属性的最终值(80级)",
       "STAT_VALUE": "改变属性的类型的值",
@@ -522,10 +522,10 @@
       "SPELL_CHARGES": "物品可以施放该法术的次数。如果是0，那么可以无限使用。如果是负数，则在次数耗尽后，该物品也将被删除。如果为正数，则在所有次数都花完后，该物品不会被删除。",
       "SPELL_PPM_RATES": "控制法术触发频率的每分钟进程速率(如果#spelltrigger == 2)。",
       "SPELL_COOLDOWNS": "以毫秒为单位的特定法术冷却时间，控制该法术的使用频率。使用-1使用默认的法术冷却时间。注意:这不是道具(如带有“命中几率”效果的饰品)上常见的“内部冷却时间”。",
-      "SPELL_CATEGORIES": "The category that the spell is in",
+      "SPELL_CATEGORIES": "法术所属的类别",
       "SPELL_CATEGORY_COOLDOWNS": "冷却时间(以毫秒为单位)，该冷却时间适用于触发法术所在类别的所有其他法术。使用-1使用默认的法术冷却时间。",
-      "REQUIRED_FACTION": "Required Faction to be able to use the item, when refering to the Item Faction ID required, it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki.",
-      "REQUIRED_FACTION_RANK": "The rank value required for the specified faction."
+      "REQUIRED_FACTION": "使用物品所需的阵营，当引用物品所需的阵营ID时，它是选择器中左侧的'ID'列，更多信息请查看wiki中的'faction'。",
+      "REQUIRED_FACTION_RANK": "指定阵营所需的等级值。"
     }
   },
   "LOOT_EDITOR": {
@@ -539,27 +539,27 @@
   },
   "OTHER_TEXTS": {
     "BROADCAST_TEXT": {
-      "ID": "The unique ID for the text.",
-      "LANGUAGE_ID": "The language ID (from Languages.dbc) in which the text will be broadcast.",
-      "SOUND_ENTRIES_ID": "The sound IDs (from SoundEntries.dbc) played when the texts are broadcast.",
-      "EMOTES_ID": "An emote.",
-      "EMOTE_ID_N": "The emote ID (from Emotes.dbc) played when the texts are broadcast.",
-      "EMOTE_DELAY_N": "The delays of the broadcast emotes.",
-      "MALE_TEXT": "The text that the male creature will broadcast, or male characters can read from gossip menu.",
-      "FEMALE_TEXT": "The text that the female creature will broadcast, or female characters can read from gossip menu."
+      "ID": "文本的唯一ID。",
+      "LANGUAGE_ID": "文本将以其广播的语言ID（来自Languages.dbc）。",
+      "SOUND_ENTRIES_ID": "广播文本时播放的音效ID（来自SoundEntries.dbc）。",
+      "EMOTES_ID": "一个表情动作。",
+      "EMOTE_ID_N": "广播文本时播放的表情动作ID（来自Emotes.dbc）。",
+      "EMOTE_DELAY_N": "广播表情动作的延迟。",
+      "MALE_TEXT": "雄性生物将广播的文本，或男性角色可以从对话菜单中读取的文本。",
+      "FEMALE_TEXT": "雌性生物将广播的文本，或女性角色可以从对话菜单中读取的文本。"
     },
     "NPC_TEXT": {
-      "BROADCAST_TEXT_ID": "The ID field value for the MaleText in the broadcast_text table.",
-      "LANG": "The language ID (from Languages.dbc) of the text. If set to 0, then it doesn't require to know any specific language.",
-      "PROBABILITY": "The chance that the NPC will say either text0_0 or text0_1 (depending on the NPCs gender).",
-      "EM_N": "The ID of the emote (from Emotes.dbc) that the NPC should do when displaying the text. The emotes are played after each order in order.",
-      "TEXT_0": "This is the locale text that is displayed if the NPC is a male.",
-      "TEXT_1": "This is the locale text that is displayed if the NPC is a female."
+      "BROADCAST_TEXT_ID": "broadcast_text表中MaleText的ID字段值。",
+      "LANG": "文本的语言ID（来自Languages.dbc）。如果设置为0，则不需要知道任何特定语言。",
+      "PROBABILITY": "NPC说text0_0或text0_1的概率（取决于NPC的性别）。",
+      "EM_N": "NPC在显示文本时应执行的表情动作ID（来自Emotes.dbc）。表情动作按顺序播放。",
+      "TEXT_0": "这是NPC为雄性时显示的本地化文本。",
+      "TEXT_1": "这是NPC为雌性时显示的本地化文本。"
     },
     "PAGE_TEXT": {
-      "ID": "The ID of the text in the page. This number is unique to every text ID.",
-      "NEXT_PAGE_ID": "The ID of the next page's text ID.",
-      "TEXT": "The actual text. The message in this field will be shown as the text on a page."
+      "ID": "页面中文本的ID。此编号对每个文本ID都是唯一的。",
+      "NEXT_PAGE_ID": "下一页文本的ID。",
+      "TEXT": "实际文本。此字段中的消息将显示为页面上的文本。"
     }
   },
   "GOSSIP": {
@@ -584,8 +584,8 @@
       "SOURCE_GROUP": "源组:",
       "SOURCE_ENTRY": "源输入:",
       "CREATE_NEW": "新建",
-      "PLACEHOLDER_SOURCE_GROUP": "SourceGroup",
-      "PLACEHOLDER_ENTRY": "SourceEntry"
+      "PLACEHOLDER_SOURCE_GROUP": "源组",
+      "PLACEHOLDER_ENTRY": "源条目"
     },
     "EDITOR": {
       "CONDITIONS_SOURCE": "条件来源",
@@ -594,8 +594,8 @@
       "OTHER_PROPERTIES": "其他条件属性",
       "ELSE_GROUP": "允许构建分组条件-属于相同条件(相同SourceType, SourceGroup和SourceEntry)的所有条目在ElseGroup中使用相同的数字，进行组的定义。当它的任何组都满足时，整个条件就满足了(逻辑：或)。当组的所有条目都满足(逻辑：与)时，组就满足条件了。",
       "NEGATIVE_CONDITION": "如果设置为1，则条件将相反",
-      "ERROR_TYPE": "Id from SharedDefines.h, will be displayed for CONDITION_SOURCE_TYPE_SPELL",
-      "ERROR_TEXT_ID": "Id from SharedDefines.h, will be displayed for CONDITION_SOURCE_TYPE_SPELL",
+      "ERROR_TYPE": "来自SharedDefines.h的ID，将为CONDITION_SOURCE_TYPE_SPELL显示",
+      "ERROR_TEXT_ID": "来自SharedDefines.h的ID，将为CONDITION_SOURCE_TYPE_SPELL显示",
       "SCRIPT_NAME": "这个条件使用的ScriptName(如果有的话)。",
       "COMMENT": "对这一条件或参考的解释",
       "GROUP": {
@@ -629,7 +629,7 @@
         "SOURCE_TYPE_MILLING_LOOT_TEMPLATE": "milling_loot_template 或 reference_loot_template Item",
         "SOURCE_TYPE_PICKPOCKETING_LOOT_TEMPLATE": "pickpocketing_loot_template 或 reference_loot_template Item",
         "SOURCE_TYPE_PROSPECTING_LOOT_TEMPLATE": "prospecting_loot_template 或 reference_loot_template Item",
-        "SOURCE_TYPE_REFERENCE_LOOT_TEMPLATE": "reference_loot_template Item",
+        "SOURCE_TYPE_REFERENCE_LOOT_TEMPLATE": "reference_loot_template 物品",
         "SOURCE_TYPE_SKINNING_LOOT_TEMPLATE": "skinning_loot_template 或 reference_loot_template Item",
         "SOURCE_TYPE_SPELL_LOOT_TEMPLATE": "spell_loot_template 或 reference_loot_template Item",
         "SOURCE_TYPE_SPELL_IMPLICIT_TARGET": "技能ID(Spell Id)来自Spell.dbc",
@@ -650,8 +650,8 @@
         "SOURCE_TYPE_GOSSIP_MENU_OPTION": "0 = 玩家;  1 = 世界中的游戏对象",
         "SOURCE_TYPE_CREATURE_TEMPLATE_VEHICLE": "0 = 玩家乘坐的载具;  1 = 生物的载具",
         "SOURCE_TYPE_SPELL": "0 = 施法者;  1 =  法术目标明确的法术(仅适用于将施法者选择的对象考虑在内的法术)",
-        "SOURCE_TYPE_SPELL_CLICK_EVENT": "0 = Clicker;  1 = Spellclick target (clickee)",
-        "SOURCE_TYPE_VEHICLE_SPELL": "0 = Player for whom spell bar is shown;  1 =  Vehicle creature",
+        "SOURCE_TYPE_SPELL_CLICK_EVENT": "0 = 点击者；1 = 法术点击目标（被点击者）",
+        "SOURCE_TYPE_VEHICLE_SPELL": "0 = 显示法术条的玩家；1 = 载具生物",
         "SOURCE_TYPE_SMART_EVENT": "0 = 使用者;  1 = 对象",
         "SOURCE_TYPE_SPELL_PROC": "0 = 参与者; 1 = 动作目标"
       },
@@ -660,9 +660,9 @@
         "CONDITION_AURA": "Spell ID 来自 Spell.dbc 文件",
         "CONDITION_ITEM": "item_template表的entry字段",
         "CONDITION_ITEM_EQUIPPED": "item_template表的entry字段",
-        "CONDITION_ZONEID": "Zone ID where this condition will be true.",
+        "CONDITION_ZONEID": "此条件为真的区域ID。",
         "CONDITION_REPUTATION_RANK": "阵营模板ID来自Faction.dbc",
-        "CONDITION_TEAM": "Team id (Alliance = 469; Horde = 67)",
+        "CONDITION_TEAM": "阵营ID（联盟 = 469；部落 = 67）",
         "CONDITION_SKILL": "所需的技能。查看SkillLine.dbc文件",
         "CONDITION_QUESTREWARDED": "quest_template表的ID字段",
         "CONDITION_QUESTTAKEN": "quest_template表的ID字段",
@@ -671,39 +671,39 @@
         "CONDITION_ACTIVE_EVENT": "game_event表的eventEntry字段",
         "CONDITION_INSTANCE_INFO": "entry (有关信息，请参阅相应的源脚本文件)",
         "CONDITION_QUEST_NONE": "quest_template表的ID字段",
-        "CONDITION_CLASS": "Class mask from ChrClasses.dbc. Add flags together for all classes where condition is true",
-        "CONDITION_RACE": "Player must be this race. See ChrRaces.dbc. Add flags together for all races where condition is true.",
+        "CONDITION_CLASS": "来自ChrClasses.dbc的职业掩码。将条件为真的所有职业标志相加",
+        "CONDITION_RACE": "玩家必须是此种族。参见ChrRaces.dbc。将条件为真的所有种族标志相加。",
         "CONDITION_ACHIEVEMENT": "成就ID来自Achievement.dbc",
-        "CONDITION_TITLE": "Title ID from CharTitles.dbc\t",
-        "CONDITION_SPAWNMASK": "spawnMask fromm creature.spawnMask or gameobject.spawnMask",
+        "CONDITION_TITLE": "来自CharTitles.dbc的头衔ID",
+        "CONDITION_SPAWNMASK": "来自creature.spawnMask或gameobject.spawnMask的刷新掩码",
         "CONDITION_GENDER": "0 = 男, 1 = 女, 2 = 无",
-        "CONDITION_UNIT_STATE": "UnitState (enum from Unit.h)",
+        "CONDITION_UNIT_STATE": "UnitState（来自Unit.h的枚举）",
         "CONDITION_MAPID": "Map entry 来自 Map.dbc 文件(0=Eastern Kingdoms, 1=Kalimdor, etc..)",
         "CONDITION_AREAID": "Area ID 来自 AreaTable.dbc 文件",
-        "CONDITION_CREATURE_TYPE": "Creature type from creature_template.type (True if creature_template.type == ConditionValue1)",
+        "CONDITION_CREATURE_TYPE": "来自creature_template.type的生物类型（如果creature_template.type == ConditionValue1则为真）",
         "CONDITION_SPELL": "Spell ID 来自 Spell.dbc 文件",
         "CONDITION_PHASEMASK": "相位掩码值",
         "CONDITION_LEVEL": "玩家等级 (1-80)",
         "CONDITION_QUEST_COMPLETE": "quest_template表的ID字段",
         "CONDITION_NEAR_CREATURE": "creature_template表的entry字段",
         "CONDITION_NEAR_GAMEOBJECT": "gameobject_template.entry",
-        "CONDITION_OBJECT_ENTRY_GUID": "TypeID. 3-TYPEID_UNIT, 4-TYPEID_PLAYER, 5-TYPEID_GAMEOBJECT, 7-TYPEID_CORPSE(player corpse, after spirit release)",
-        "CONDITION_TYPE_MASK": "TypeMask - a bitmask of following object types: 0x0008 - TYPEMASK_UNIT (8) 0x0010 - TYPEMASK_PLAYER (16) 0x0020 - TYPEMASK_GAMEOBJECT (32) 0x0080 - TYPEMASK_CORPSE (player corpse after spirit release) (128)",
-        "CONDITION_TO": "Target to which relation is checked. One of the ConditionTargets available in current SourceType",
+        "CONDITION_OBJECT_ENTRY_GUID": "TypeID。3-TYPEID_UNIT，4-TYPEID_PLAYER，5-TYPEID_GAMEOBJECT，7-TYPEID_CORPSE（玩家尸体，灵魂释放后）",
+        "CONDITION_TYPE_MASK": "TypeMask - 以下对象类型的位掩码：0x0008 - TYPEMASK_UNIT (8) 0x0010 - TYPEMASK_PLAYER (16) 0x0020 - TYPEMASK_GAMEOBJECT (32) 0x0080 - TYPEMASK_CORPSE（灵魂释放后的玩家尸体）(128)",
+        "CONDITION_TO": "检查关系的目标。当前SourceType中可用的ConditionTargets之一",
         "CONDITION_ALIVE": "总是 0 (use NegativeCondition to require dead)",
         "CONDITION_HP_VAL": "HP值",
         "CONDITION_HP_PCT": "最大HP百分比",
         "CONDITION_REALM_ACHIEVEMENT": "成就ID来自Achievement.dbc",
         "CONDITION_IN_WATER": "总是 0",
-        "CONDITION_STAND_STATE": "stateType (\"exact\" or \"any\"): 0 = Exact state used in ConditionValue2;   1 = Any type of state in ConditionValue2",
+        "CONDITION_STAND_STATE": "stateType（\"精确\"或\"任意\"）：0 = 使用ConditionValue2中的精确状态；1 = ConditionValue2中的任意类型状态",
         "CONDITION_DAILY_QUEST_DONE": "quest_template表的ID字段",
         "CONDITION_CHARMED": "总是 0",
-        "CONDITION_PET_TYPE": "mask",
+        "CONDITION_PET_TYPE": "掩码",
         "CONDITION_TAXI": "总是 0",
         "CONDITION_QUESTSTATE": "quest_template表的ID字段",
         "CONDITION_QUEST_OBJECTIVE_PROGRESS": "quest_template表的id字段",
-        "CONDITION_WORLD_SCRIPT": "WorldStateCondition (defined in WorldState.h)",
-        "CONDITION_AI_DATA": "data index"
+        "CONDITION_WORLD_SCRIPT": "WorldStateCondition（定义在WorldState.h中）",
+        "CONDITION_AI_DATA": "数据索引"
       },
       "VALUE2": {
         "CONDITION_NONE": "(未使用)",
@@ -716,23 +716,23 @@
         "CONDITION_LEVEL": "可选: 0 = 级别必须相等, 1 = 级别必须更高, 2 = 级别必须更低, 3 = 级别必须更高或相等, 4 = 级别必须更低或相等。",
         "CONDITION_NEAR_CREATURE": "距离(码)",
         "CONDITION_NEAR_GAMEOBJECT": "距离(码)",
-        "CONDITION_OBJECT_ENTRY_GUID": "0 = Any object of given TypeID; if TypeID = TYPEID_UNIT => Creature entry from creature_template.entry; if TypeID = TYPEID_GAMEOBJECT => Gameobject entry from gameobject_template.entry",
+        "CONDITION_OBJECT_ENTRY_GUID": "0 = 给定TypeID的任何对象；如果TypeID = TYPEID_UNIT => 来自creature_template.entry的生物条目；如果TypeID = TYPEID_GAMEOBJECT => 来自gameobject_template.entry的游戏对象条目",
         "CONDITION_RELATION_TO": "关系类型 - defines relation of current ConditionTarget to target specified in ConditionValue1. 0 - RELATION_SELF; 1 - RELATION_IN_PARTY; 2 - RELATION_IN_RAID_OR_PARTY; 3 - RELATION_OWNED_BY (ConditionTarget is owned by ConditionValue1); 4 - RELATION_PASSENGER_OF (ConditionTarget is passenger of ConditionValue1); 5 - RELATION_CREATED_BY (ConditionTarget is summoned by ConditionValue1)",
-        "CONDITION_DISTANCE_TO": "Defines distance between current ConditionTarget and target specified in ConditionValue1",
+        "CONDITION_DISTANCE_TO": "定义当前ConditionTarget与ConditionValue1中指定目标之间的距离",
         "CONDITION_HP_VAL": "比较类型: 0 = 生命值必须相等; 1 = 生命值必须更高; 2 = 生命值必须更低; 3 = 生命值必须等于或高于; 4 = 生命值必须等于或低于",
         "CONDITION_HP_PCT": "比较类型: 0 = 最大生命值必须相等; 1 = 最大生命值的百分比必须更高; 2 = 最大生命值的百分比必须更低; 3 = 最大生命值的百分比必须等于或高于; 4 = 最大生命值的百分比必须等于或低于",
         "CONDITION_STAND_STATE": "站立/坐下的状态, 10 = 站立; 1 = 坐下",
-        "CONDITION_QUESTSTATE": "state_mask",
+        "CONDITION_QUESTSTATE": "状态掩码",
         "CONDITION_QUEST_OBJECTIVE_PROGRESS": "任务目标ID - 参见quest_template表的RequiredNpcOrGo字段",
-        "CONDITION_WORLD_SCRIPT": "state, 0 = unused",
-        "CONDITION_AI_DATA": "value (to be compared)"
+        "CONDITION_WORLD_SCRIPT": "状态，0 = 未使用",
+        "CONDITION_AI_DATA": "值（用于比较）"
       },
       "VALUE3": {
         "CONDITION_NONE": "(从未使用)",
         "CONDITION_ITEM": "0 = 不在银行中; 1 = 在银行中",
         "CONDITION_INSTANCE_INFO": "0=INSTANCE_INFO_DATA; 1=INSTANCE_INFO_GUID_DATA; 2=INSTANCE_INFO_BOSS_STATE; 3=INSTANCE_INFO_DATA64; ",
         "CONDITION_NEAR_CREATURE": "活着=0; 死亡=1",
-        "CONDITION_NEAR_GAMEOBJECT": "GoState |0 Ignore |1 Ready |2 Not Ready",
+        "CONDITION_NEAR_GAMEOBJECT": "GoState |0 忽略 |1 就绪 |2 未就绪",
         "CONDITION_OBJECT_ENTRY_GUID": "0 = 给定类型的任何对象;  1 - 500k = 生物/游戏对象GUID",
         "CONDITION_DISTANCE_TO": "比较类型: 0 = distance must be equal to ConditionValue2; 1 = distance must be higher than ConditionValue2; 2 = distance must be lower than ConditionValue2; 3 = distance must be equal to or higher than ConditionValue2; 4 = distance must be equal to or lower than ConditionValue2",
         "CONDITION_QUEST_OBJECTIVE_PROGRESS": "任务对象(目标)数"
@@ -744,19 +744,19 @@
       "UNIQUE_ID": "每行的唯一标识符（主键）",
       "PHASE": "所有阶段都使用0",
       "CHANCE": "事件发生的概率，设置数值在0-100之间（%）。例如:如果您希望事件大约发生在一半的时间，则将该值设置为50。",
-      "TIMED_ACTIONLISTS": "All smart_scripts having source_type = 9 and entryorguid between CreatureID * 100 and CreatureID * 100 + 100",
-      "GENERATE_COMMENT": "Generate comment",
-      "GENERATE_COMMENTS_ALL": "Generate comments (all)"
+      "TIMED_ACTIONLISTS": "所有source_type = 9且entryorguid在CreatureID * 100和CreatureID * 100 + 100之间的smart_scripts",
+      "GENERATE_COMMENT": "生成注释",
+      "GENERATE_COMMENTS_ALL": "生成注释（全部）"
     },
     "SEARCH_BY_EXISTING": {
-      "SOURCE_TYPE": "Source Type:",
-      "ENTRY_OR_GUID": "Entry(+) or GUID(-):",
-      "LIMIT": "Limit:",
-      "PLACEHOLDER": "Entry (as positive number) or GUID (as negative number)",
-      "ALL": "ALL"
+      "SOURCE_TYPE": "源类型：",
+      "ENTRY_OR_GUID": "条目(+)或GUID(-)：",
+      "LIMIT": "限制：",
+      "PLACEHOLDER": "条目（正数）或GUID（负数）",
+      "ALL": "全部"
     },
     "SEARCH_BY_ENTITY": {
-      "SOURCE_TYPE": "Select a Source Type"
+      "SOURCE_TYPE": "选择源类型"
     }
   },
   "SPELL_DBC": {
@@ -767,27 +767,27 @@
       "COOLDOWN_CAST_TIME": "冷却时间 / 施法时间",
       "VISUAL": "视觉",
       "CATEGORY": "法术的类别。用于分类的冷却时间。链接到SpellCategory.dbc中的entry字段",
-      "SPELL_DESCRIPTION_VARIABLE_ID": "Link to entry in SpellDescriptionVariables.dbc",
+      "SPELL_DESCRIPTION_VARIABLE_ID": "链接到SpellDescriptionVariables.dbc中的条目",
       "BASE_LEVEL": "法术的基础等级。",
       "SPELL_LEVEL": "与基础等级完全相同。",
-      "MAX_LEVEL": "Probably maximal level from which spell can gain bonuses (or minuses) which are based on formula caster level - spell level.",
-      "MIN_FACTION_ID": "ID of required reputation with a faction that is needed to cast the spell.",
-      "MIN_REPUTATION": "Probably either value or level of required reputation with a faction that is needed to cast the spell.",
-      "SPELL_DIFFICULTY_ID": "Alternative spells which get used in different Raid difficulties instead. Link to entry in SpellDifficulty.dbc",
+      "MAX_LEVEL": "可能是法术可以获得基于施法者等级-法术等级公式的加成（或减益）的最大等级。",
+      "MIN_FACTION_ID": "施放法术所需的阵营声望ID。",
+      "MIN_REPUTATION": "可能是施放法术所需的阵营声望值或等级。",
+      "SPELL_DIFFICULTY_ID": "在不同副本难度中使用的替代法术。链接到SpellDifficulty.dbc中的条目",
       "REQUIRED_AREAS_ID": "可以施法的区域。链接到AreaGroup.dbc中的entry字段",
       "SPELL_CLASS_SET": "该法术适用于哪个职业。",
       "POWER_TYPE": "法术使用的能量类型。",
-      "MANA_COST": "Base power cost of a spell. It is being summed with ManaCostPercentage. Seems to be used for other power types as well",
-      "MANA_COST_PER_LEVEL": "Likely is mana cost increased by ((caster level) - (spell level))*(this field).",
+      "MANA_COST": "法术的基础能量消耗。与ManaCostPercentage累加。似乎也用于其他能量类型",
+      "MANA_COST_PER_LEVEL": "法力消耗可能按（施法者等级）-（法术等级）*（此字段）增加。",
       "MANA_PER_SECOND": "传送法术每秒消耗的法力值。",
-      "MANA_PER_SECOND_PER_LEVEL": "For channels. Likely is mana cost per second increased by ((caster level) - (spell level))*(this field).",
-      "MANA_COST_PCT": "% of base mana cost, added to flat value in manaCost field. For NPCs is base mana = their max mana.",
-      "RUNE_COST_ID": "Rune costs for death knights. Link to entry in SpellRuneCost.dbc",
-      "MECHANIC": "Used by spells granting bonuses/immunities against certain effect types (stun, charm...).",
+      "MANA_PER_SECOND_PER_LEVEL": "用于引导法术。每秒法力消耗可能按（施法者等级）-（法术等级）*（此字段）增加。",
+      "MANA_COST_PCT": "基础法力消耗的百分比，加到manaCost字段的固定值上。对NPC来说基础法力 = 最大法力。",
+      "RUNE_COST_ID": "死亡骑士的符文消耗。链接到SpellRuneCost.dbc中的条目",
+      "MECHANIC": "被赋予特定效果类型（眩晕、魅惑...）的加成/免疫的法术使用。",
       "DEFENSE_TYPE": "似乎是用来定义什么类型的伤害? the spell is doing",
-      "PREVENTION_TYPE": "Under which conditions the spell is prevented to be cast.",
+      "PREVENTION_TYPE": "在何种条件下法术被阻止施放。",
       "DISPEL_TYPE": "用来确定哪些咒语能驱散它。",
-      "SCHOOL_MASK": "School of a spell. Used for specific the Spell's element kind.",
+      "SCHOOL_MASK": "法术的学派。用于指定法术的元素类型。",
       "RANGE_INDEX": "法术的范围。友军目标和敌方目标可能有所不同。链接到SpellRange.dbc中的entry字段",
       "MAX_TARGETS": "法术可以影响的最大目标数量。",
       "MAX_TARGET_LEVEL": "受法术影响目标的最高等级。",
@@ -795,7 +795,7 @@
       "CASTER_AURA_SPELL": "哪个光环必须激活才能施放法术",
       "TARGET_AURA_STATE": "必须满足哪些条件才能对目标施法。",
       "TARGET_AURA_SPELL": "哪个光环必须在目标身上激活才能施放该法术",
-      "REQUIRES_SPELL_FOCUS": "Whether spell focus is needed by spell to be cast. Player needs to be within range of appropriate gameobject with type=8.",
+      "REQUIRES_SPELL_FOCUS": "法术施放是否需要法术焦点。玩家需要在type=8的适当游戏对象范围内。",
       "CUMULATIVE_AURA": "对于可堆叠的法术，目标上的最大堆叠数量。对于非堆叠法术，保留0。",
       "RECOVERY_TIME": "法术冷却时间。可能与施法者级别不同。",
       "CATEGORY_RECOVERY_TIME": "法术对同一类别的所有法术施加冷却时间。链接到SpellCategory.dbc中的entry字段",
@@ -804,7 +804,7 @@
       "SPEED": "?施法速度修饰符? 如果 <= 0.0 客户端跳过HandleMissileEffects.",
       "SPELL_ICON_ID": "当法术未激活时使用的图标的ID。链接到SpellIcon.dbc中的entry字段",
       "ACTIVE_ICON_ID": "法术激活时使用的图标ID。链接到SpellIcon.dbc中的entry字段",
-      "STANCE_BAR_ORDER": "On which slot of the stance bar (e.g. Paladin Auras) the spell is displayed.",
+      "STANCE_BAR_ORDER": "法术在姿态条（例如圣骑士光环）上的显示位置。",
       "SPELL_VISUAL_ID_1": "法术的视觉效果。链接到SpellVisual.dbc中的entry字段",
       "SPELL_VISUAL_ID_2": "法术的视觉效果。链接到SpellVisual.dbc中的entry字段",
       "SPELL_MISSILE_ID": "用于创建视觉法术效果。链接到SpellMissile.dbc",
@@ -812,24 +812,24 @@
     },
     "FLAGS": {
       "GENERAL": "常规",
-      "INTERRUPT_FLAGS": "Interrupt Flags",
+      "INTERRUPT_FLAGS": "打断标志",
       "SPELL_ATTRIBUTES": "技能属性",
-      "TARGET_CREATURE_TYPE": "Mask of creature types on which is spell usable. 0 = None",
-      "SHAPESHIFT_MASK": "Shapeshifts/Stances in which the spell is castable. 0 = No shape/stance required",
-      "SHAPESHIFT_EXCLUDE": "Shapeshifts/Stances in which the spell is not castable. 0 = No restriction",
-      "FACING_CASTER_FLAGS": "If marked, forces the Caster to use the ability in front of the enemy.",
-      "INTERRUPT_FLAGS_TOOLTIP": "Mask of cases which interrupt casting of a spell. 0 = None",
-      "AURA_INTERRUPT_FLAGS": "Mask of cases which interrupt casting of a spell. 0 = None",
-      "CHANNEL_INTERRUPT_FLAGS": "Mask of cases which interrupt casting of a spell. 0 = None",
-      "ATTRIBUTES": "General miscellaneous flags. 0 = None"
+      "TARGET_CREATURE_TYPE": "可对其使用法术的生物类型掩码。0 = 无",
+      "SHAPESHIFT_MASK": "可施放法术的变形/姿态。0 = 不需要变形/姿态",
+      "SHAPESHIFT_EXCLUDE": "不可施放法术的变形/姿态。0 = 无限制",
+      "FACING_CASTER_FLAGS": "如果标记，强制施法者在敌人面前使用技能。",
+      "INTERRUPT_FLAGS_TOOLTIP": "中断施法的情况掩码。0 = 无",
+      "AURA_INTERRUPT_FLAGS": "中断施法的情况掩码。0 = 无",
+      "CHANNEL_INTERRUPT_FLAGS": "中断施法的情况掩码。0 = 无",
+      "ATTRIBUTES": "通用杂项标志。0 = 无"
     },
     "ITEMS": {
       "GENERAL": "常规",
       "NON_CONSUMABLE_ITEMS": "非消耗品",
       "CONSUMABLE_ITEMS": "消耗品",
-      "EQUIPPED_ITEM_CLASS": "item_template.class value which casters item held in hand must have",
-      "EQUIPPED_ITEM_SUBCLASS": "Mask of item_template.subclass values which caster's item held in hand must have",
-      "EQUIPPED_ITEM_INV_TYPES": "Mask of item_template.InventoryType values which targeted item must have",
+      "EQUIPPED_ITEM_CLASS": "施法者手持物品必须具有的item_template.class值",
+      "EQUIPPED_ITEM_SUBCLASS": "施法者手持物品必须具有的item_template.subclass值掩码",
+      "EQUIPPED_ITEM_INV_TYPES": "目标物品必须具有的item_template.InventoryType值掩码",
       "TOTEM_1": "施法所需的非消耗品。",
       "TOTEM_2": "施法所需的非消耗品。",
       "REQUIRED_TOTEM_CATEGORY_ID_1": "施法所需的非消耗品(如附魔棒)。",
@@ -856,11 +856,11 @@
       "MISC": "其他",
       "FIELD": {
         "EFFECT": "法术的效果类型。以下所有效果域都指向这些。",
-        "EFFECT_BASE_POINTS": "Base points added to result of according effects rolled dice. e.g. EffectDieSides=26 and EffectBasePoints=49 will make 50-75.",
+        "EFFECT_BASE_POINTS": "添加到相应效果骰子结果的基础点数。例如EffectDieSides=26且EffectBasePoints=49将产生50-75。",
         "EFFECT_REAL_POINTS_PER_LEVEL": "基准点根据施法者等级添加到EffectBasePoints中。",
         "EFFECT_RADIUS_INDEX": "根据法术效果半径。可能与施法者级别有不同的差异。链接到SpellRadius.dbc中的条目",
         "EFFECT_MULTIPLE_VALUE": "buff/debuff的堆叠数",
-        "EFFECT_MISC_VALUE": "Used for according effects special misc values, commonly entries of called or used creature/item/gameobject.",
+        "EFFECT_MISC_VALUE": "用于相应效果的特殊杂项值，通常是调用或使用的生物/物品/游戏对象的条目。",
         "EFFECT_MISC_VALUE_B": "用于根据效果的特殊杂项值，通常是调用或使用的生物/物品/游戏对象的条目。",
         "EFFECT_TRIGGER_SPELL": "在受影响的目标上触发法术。",
         "EFFECT_POINTS_PER_COMBO": "根据目标上连击点数量，获得基础值的奖励。",
@@ -870,9 +870,9 @@
         "EFFECT_MECHANIC": "根据法术效果的机制。用于对特定效果类型(晕眩，魅惑…)授予奖励/解除的法术。",
         "EFFECT_AURA": "根据效果应用的光环类型（效果或效果）。",
         "EFFECT_AURA_PERIOD": "这种效果的频率以毫秒为单位。",
-        "SPELL_CLASS_MASK": "?Mask for spells which are affected (buffed, ...) by this spell?",
-        "IMPLICIT_TARGET_A": "Type of implicit target(s) of according effect.",
-        "IMPLICIT_TARGET_B": "Type of implicit target(s) of according effect.",
+        "SPELL_CLASS_MASK": "受此法术影响（增益等）的法术掩码？",
+        "IMPLICIT_TARGET_A": "相应效果的隐含目标类型。",
+        "IMPLICIT_TARGET_B": "相应效果的隐含目标类型。",
         "EFFECT_CHAIN_TARGETS": "?用于创建连锁视觉效果（例如闪电链）?",
         "EFFECT_SPELL_CLASS_MASK_A": "输入字段值210-212作为此法术效果的十六进制值。用于效果#1",
         "EFFECT_SPELL_CLASS_MASK_B": "输入字段值210-212作为此法术效果的十六进制值。用于效果#2",
@@ -890,36 +890,36 @@
     }
   },
   "GAME_TELE": {
-    "EDITOR": "Teleport Editor"
+    "EDITOR": "传送编辑器"
   },
   "TRAINER": {
-    "EDITOR": "Trainer Editor",
-    "TRAINER_ID_TOOLTIP": "References trainer.id (trainer template). Examples: 1=Trainer Warrior, 3=Trainer Paladin, 7=Trainer Hunter, 9=Trainer Rogue, 11=Trainer Priest, 13=Trainer Death Knight, 14=Trainer Shaman, 16=Trainer Mage, 31=Trainer Warlock, 33=Trainer Druid, 36=Trainer Mount & Fly. See the trainer wiki for the full list.",
-    "REQUIREMENT_TOOLTIP": "Meaning depends on Type - use 0 for none. Types: 0-Class (ChrClass ID e.g. 1=Warrior, 2=Paladin, 3=Hunter, 4=Rogue, 5=Priest, 6=Death Knight, 7=Shaman, 8=Mage, 9=Warlock, 11=Druid), 1-Mount (ChrRace ID (e.g. 1=Human, 2=Orc, 3=Dwarf, 4=Night Elf, 5=Undead, 6=Tauren, 7=Gnome, 8=Troll, 10=Blood Elf, 11=Draenei), 2-Tradeskill Spell ID (player must know this spell to learn from this trainer), 3-Pet ChrClass ID (see above). ",
-    "GREETING_TOOLTIP": "Text shown at the top of the trainer window when opened (this is not gossip). For localized greetings add entries in the \"trainer_locale\" table (Greeting_lang).",
+    "EDITOR": "训练师编辑器",
+    "TRAINER_ID_TOOLTIP": "引用trainer.id（训练师模板）。示例：1=战士训练师，3=圣骑士训练师，7=猎人训练师，9=盗贼训练师，11=牧师训练师，13=死亡骑士训练师，14=萨满训练师，16=法师训练师，31=术士训练师，33=德鲁伊训练师，36=坐骑和飞行训练师。查看训练师wiki获取完整列表。",
+    "REQUIREMENT_TOOLTIP": "含义取决于类型 - 无则使用0。类型：0-职业（ChrClass ID，如1=战士，2=圣骑士，3=猎人，4=盗贼，5=牧师，6=死亡骑士，7=萨满，8=法师，9=术士，11=德鲁伊），1-坐骑（ChrRace ID，如1=人类，2=兽人，3=矮人，4=暗夜精灵，5=亡灵，6=牛头人，7=侏儒，8=巨魔，10=血精灵，11=德莱尼），2-商业技能法术ID（玩家必须知道此法术才能从此训练师学习），3-宠物ChrClass ID（见上文）。",
+    "GREETING_TOOLTIP": "打开训练师窗口时顶部显示的文本（这不是对话）。要添加本地化的问候语，请在\"trainer_locale\"表中添加条目（Greeting_lang）。",
     "SPELL": {
-      "TRAINER_ID": "References trainer.id (trainer template linked to this entry).",
-      "SPELL_ID": "Spell ID being taught.",
-      "MONEY_COST": "Cost in copper to learn this spell from the trainer (1 gold = 100 silver = 10000 copper).",
-      "REQ_SKILL_LINE": "SkillLine ID required to learn this spell (e.g., profession ID). Use 0 if none.",
-      "REQ_SKILL_RANK": "Minimum skill rank in ReqSkillLine required to learn the spell.",
-      "REQ_ABILITY_1": "Spell ID the player is required to already know (first required ability).",
-      "REQ_ABILITY_1_TOOLTIP": "Spell ID the player must already know to be taught this spell (first prerequisite). Use 0 if none.",
-      "REQ_ABILITY_2": "Spell ID the player is required to already know (second required ability).",
-      "REQ_ABILITY_2_TOOLTIP": "Spell ID the player must already know to be taught this spell (second prerequisite). Use 0 if none.",
-      "REQ_ABILITY_3": "Spell ID the player is required to already know (third required ability).",
-      "REQ_ABILITY_3_TOOLTIP": "Spell ID the player must already know to be taught this spell (third prerequisite). Use 0 if none.",
-      "REQ_LEVEL": "Minimum player level required to learn this spell.",
-      "VERIFIED_BUILD": "Used by AzerothCore to indicate whether this entry was verified against WDB files (0 = not parsed; >0 = parsed; -1 = placeholder; -<build> = parsed with specific client build and manually edited)."
+      "TRAINER_ID": "引用trainer.id（链接到此条目的训练师模板）。",
+      "SPELL_ID": "教授的法术ID。",
+      "MONEY_COST": "从训练师学习此法术的铜币费用（1金 = 100银 = 10000铜）。",
+      "REQ_SKILL_LINE": "学习此法术所需的技能线ID（例如专业ID）。无则使用0。",
+      "REQ_SKILL_RANK": "学习此法术所需的ReqSkillLine最低技能等级。",
+      "REQ_ABILITY_1": "玩家必须已知的法术ID（第一个必需技能）。",
+      "REQ_ABILITY_1_TOOLTIP": "玩家必须已知才能学习此法术的法术ID（第一个前置条件）。无则使用0。",
+      "REQ_ABILITY_2": "玩家必须已知的法术ID（第二个必需技能）。",
+      "REQ_ABILITY_2_TOOLTIP": "玩家必须已知才能学习此法术的法术ID（第二个前置条件）。无则使用0。",
+      "REQ_ABILITY_3": "玩家必须已知的法术ID（第三个必需技能）。",
+      "REQ_ABILITY_3_TOOLTIP": "玩家必须已知才能学习此法术的法术ID（第三个前置条件）。无则使用0。",
+      "REQ_LEVEL": "学习此法术所需的最低玩家等级。",
+      "VERIFIED_BUILD": "AzerothCore用于指示此条目是否已根据WDB文件进行验证（0 = 未解析；>0 = 已解析；-1 = 占位符；-<build> = 使用特定客户端版本解析并手动编辑）。"
     }
   },
   "UNUSED_GUID_SEARCH": {
-    "TABLE": "Table",
-    "START_INDEX": "Start Index",
-    "AMOUNT": "Amount",
-    "CONSECUTIVE": "Consecutive",
-    "SEARCH": "Search",
-    "SEARCHING": "Searching...",
-    "FOUND_GUIDS": "Found unused GUIDs:"
+    "TABLE": "表",
+    "START_INDEX": "起始索引",
+    "AMOUNT": "数量",
+    "CONSECUTIVE": "连续",
+    "SEARCH": "搜索",
+    "SEARCHING": "搜索中...",
+    "FOUND_GUIDS": "找到未使用的GUID："
   }
 }

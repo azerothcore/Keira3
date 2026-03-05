@@ -29,28 +29,28 @@
   "UNIQUE_ID": "El ID único de {{ ENTITY }}",
   "DELETE_SELECTED_ROW": "Eliminar la línea seleccionada",
   "ADD_NEW_ROW": "Agregar nueva línea",
-  "DUPLICATE_SELECTED_ROW": "Duplicate selected row",
+  "DUPLICATE_SELECTED_ROW": "Duplicar fila seleccionada",
   "EMPTY": "VACÍO",
   "UNKNOWN": "Desconocido",
   "COPY": "Copiar",
   "EXECUTE": "Ejecutar",
-  "EXECUTE_AND_COPY": "Execute & copy",
+  "EXECUTE_AND_COPY": "Ejecutar y copiar",
   "RELOAD": "Recargar",
   "CANCEL": "Cancelar",
   "SELECTORS": {
-    "ENABLED": "Enabled",
-    "DISABLED": "Disabled"
+    "ENABLED": "Habilitado",
+    "DISABLED": "Deshabilitado"
   },
   "CONNECTION_WINDOW": {
-    "HOST": "Host",
+    "HOST": "Servidor",
     "PORT": "Puerto",
     "USERNAME": "Usuario",
     "PASSWORD": "Contraseña",
     "DATABASE": "Base de Datos",
-    "USE_SSL": "Use SSL/TLS",
-    "SSL_TOOLTIP": "Required for servers with require_secure_transport=ON",
+    "USE_SSL": "Usar SSL/TLS",
+    "SSL_TOOLTIP": "Requerido para servidores con require_secure_transport=ON",
     "SAVE_PASSWORD": "Guardar Contraseña",
-    "REMEMBER_ME": "Remember me",
+    "REMEMBER_ME": "Recordarme",
     "LOAD_RECENT": "Cargar Reciente",
     "CLEAR_ALL": "Limpiar Todo",
     "CONNECT": "Conectar",
@@ -67,7 +67,7 @@
       "TITLE": "Criatura",
       "SELECT_CREATURE": "Seleccionar Criatura",
       "CREATURE_TEMPLATE": "Plantilla de Criatura",
-      "TEMPLATE_MODEL": "Template Model",
+      "TEMPLATE_MODEL": "Modelo de Plantilla",
       "TEMPLATE_ADDON": "Addon de Plantilla",
       "TEMPLATE_RESISTANCE": "Plantilla de Resistencia",
       "TEMPLATE_SPELL": "Plantilla de Hechizo",
@@ -75,7 +75,7 @@
       "ONKILL_REPUTATION": "Reputación Al Matar",
       "EQUIP_TEMPLATE": "Plantilla de Equipamiento",
       "VENDOR": "Vendedor",
-      "DEFAULT_TRAINER": "Default Trainer",
+      "DEFAULT_TRAINER": "Entrenador Predeterminado",
       "QUEST_ITEM": "Item de Misión",
       "CREATURE_LOOT": "Botín de Criatura",
       "PICKPOCKETING_LOOT": "Botín de Robo con ganzúa",
@@ -83,15 +83,15 @@
       "SPAWN": "Spawn (Aparición de Criatura)",
       "SPAWN_ADDON": "Addon de Spawn",
       "SMARTAI": "SmartAI",
-      "TEXT": "Text",
-      "FORMATIONS": "Formations"
+      "TEXT": "Texto",
+      "FORMATIONS": "Formaciones"
     },
     "QUEST": {
       "TITLE": "Misión",
       "SELECT_QUEST": "Seleccionar Misión",
       "QUEST_TEMPLATE": "Plantilla de Misión",
       "QUEST_TEMPLATE_ADDON": "Addon de Plantilla de Misión",
-      "QUEST_TEMPLATE_LOCALE": "Quest Template Locale",
+      "QUEST_TEMPLATE_LOCALE": "Traducción de Plantilla de Misión",
       "QUEST_OFFER_REWARD": "Recompensa por Ofrecimiento de la Misión",
       "QUEST_REQUEST_ITEMS": "Items Requeridos para la Misión",
       "CREATURE_QUESTSTARTER": "Criatura para Iniciar la Misión",
@@ -106,12 +106,12 @@
       "TEMPLATE_ADDON": "Addon de Plantilla",
       "QUEST_ITEMS": "Items de Misión",
       "GAMEOBJECT_LOOT": "Botín de Objeto del Juego",
-      "SPAWN": "Spawn",
+      "SPAWN": "Aparición",
       "SPAWN_ADDON": "Addon de Spawn",
       "SMART_AI": "SmartAI"
     },
     "ITEM": {
-      "TITLE": "Item",
+      "TITLE": "Objeto",
       "SELECT_ITEM": "Seleccionar Item",
       "ITEM_TEMPLATE": "Plantilla de Item",
       "ENCHANTMENT_TEMPLATE": "Plantilla de Encantamiento",
@@ -132,17 +132,17 @@
       "MAIL_LOOT_TEMPLATE": "Plantilla de Botín de Correo"
     },
     "TEXTS": {
-      "TITLE": "Other Texts",
-      "SELECT_BROADCAST_TEXT": "Select Broadcast Text",
-      "BROADCAST_TEXT": "Broadcast Text",
-      "SELECT_CREATURE_TEXT": "Select Creature Text",
-      "CREATURE_TEXT": "Creature Text",
-      "SELECT_NPC_TEXT": "Select NPC Text",
-      "NPC_TEXT": "NPC Text",
-      "SELECT_PAGE_TEXT": "Select Page Text",
-      "PAGE_TEXT": "Page Text",
-      "ACORE_STRING_TEXT": "Acore Strings",
-      "SELECT_ACORE_STRING_TEXT": "Select Acore Strings"
+      "TITLE": "Otros Textos",
+      "SELECT_BROADCAST_TEXT": "Seleccionar Texto de Difusión",
+      "BROADCAST_TEXT": "Texto de Difusión",
+      "SELECT_CREATURE_TEXT": "Seleccionar Texto de Criatura",
+      "CREATURE_TEXT": "Texto de Criatura",
+      "SELECT_NPC_TEXT": "Seleccionar Texto de NPC",
+      "NPC_TEXT": "Texto de NPC",
+      "SELECT_PAGE_TEXT": "Seleccionar Texto de Página",
+      "PAGE_TEXT": "Texto de Página",
+      "ACORE_STRING_TEXT": "Cadenas de Acore",
+      "SELECT_ACORE_STRING_TEXT": "Seleccionar Cadenas de Acore"
     },
     "GOSSIP": {
       "TITLE": "Ventana de Texto de Criatura",
@@ -167,17 +167,17 @@
       "SPELL_DBC_EDITOR": "Editor de Hechizos (Spell DBC)"
     },
     "GAME_TELE": {
-      "TITLE": "Game Teleport",
-      "SEARCH_GAME_TELE": "Search Teleport",
-      "SELECT_GAME_TELE": "Game Tele Editor"
+      "TITLE": "Teletransporte",
+      "SEARCH_GAME_TELE": "Buscar Teletransporte",
+      "SELECT_GAME_TELE": "Editor de Teletransporte"
     },
     "TRAINER": {
-      "TITLE": "Trainer",
-      "SEARCH_TRAINER": "Search Trainer",
-      "SELECT_TRAINER": "Trainer",
-      "TRAINER_SPELL": "Trainer Spell"
+      "TITLE": "Entrenador",
+      "SEARCH_TRAINER": "Buscar Entrenador",
+      "SELECT_TRAINER": "Entrenador",
+      "TRAINER_SPELL": "Hechizo de Entrenador"
     },
-    "UNUSED_GUID_SEARCH": "Unused GUIDs"
+    "UNUSED_GUID_SEARCH": "GUIDs sin Usar"
   },
   "DASHBOARD": {
     "WELCOME": "Bienvenido a Keira3",
@@ -193,7 +193,7 @@
     "KEIRA_VERSION": "Versión de Keira:",
     "KEIRA_DETAILS": "Detalles de Keira:",
     "AC_CORE_VERSION": "Versión del Núcleo de AC:",
-    "AC_COMMIT": "AC commit hash:",
+    "AC_COMMIT": "Hash del commit de AC:",
     "AC_DB_RELEASE": "Lanzamiento de AC BD:",
     "AC_DB_VERSION": "Versión de AC World BD:",
     "DEBUG_MODE": "Habilitar el modo de depuración de Keira3 (rendimiento más lento, usado sólo para desarrollo)"
@@ -244,22 +244,22 @@
       "HOVER_HEIGHT": "Distancia sobre el suelo a la que se elevará la criatura si tiene MOVEMENTFLAG_DISABLE_GRAVITY habilitado.",
       "SCALE": "Multiplicador de tamaño (qué tan grande (o pequeño) parece el modelo de criatura). Si es igual a 0, utiliza el tamaño del modelo dentro del DBC que viene por defecto.",
       "DAMAGE_MODIFIER": "Multiplicador de daño, afecta a mindmg (MínimoDaño) y maxdmg (MáximoDaño)",
-      "ARMOR_MODIFIER_TOOLTIP": "Damage taken from physical attacks, a value of 1 is normal; Values under 1 mean it will take more damage; Values over 1 mean it will take less damage",
+      "ARMOR_MODIFIER_TOOLTIP": "Daño recibido por ataques físicos, un valor de 1 es normal; Valores menores a 1 significan que recibirá más daño; Valores mayores a 1 significan que recibirá menos daño",
       "SPEED_RUN": "Controla la velocidad promedio a la que puede correr la criatura. En el caso de los vehículos, aumenta la velocidad de vuelo.",
       "SPEED_WALK": "Controla la velocidad promedio a la que puede caminar la criatura. En el caso de los vehículos, aumenta la velocidad de movimiento por tierra.",
       "SPEED_SWIM": "Controla la velocidad promedio a la que puede nadar la criatura.",
       "SPEED_FLIGHT": "Controla la velocidad promedio a la que puede volar la criatura.",
       "DETECTION_RANGE": "Controla el rango en el que las criaturas detectan y ven a los jugadores.",
-      "ITEMID1": "This is the item number of the equipment used in the right hand from Item.dbc.",
-      "ITEMID2": "This is the item number of the equipment used in the left hand from Item.dbc.",
-      "ITEMID3": "This is the item number of the equipment used in the ranged slot from Item.dbc.",
-      "FACTION": "When refering to the Creature's Faction ID it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki."
+      "ITEMID1": "Este es el número de objeto del equipamiento usado en la mano derecha de Item.dbc.",
+      "ITEMID2": "Este es el número de objeto del equipamiento usado en la mano izquierda de Item.dbc.",
+      "ITEMID3": "Este es el número de objeto del equipamiento usado en la ranura de distancia de Item.dbc.",
+      "FACTION": "Cuando se refiere al ID de Facción de la Criatura, es la columna de la izquierda 'ID' en el selector, para más información consulta 'faction' en la wiki."
     },
     "TEMPLATE_ADDON": {
       "ENTRY": "Enlazado con creature_template.entry (ID de la Criatura)",
       "PATH_ID": "En caso de que la criatura se desplace por una ruta con Waypoints, contiene la misma ID que waypoint_data para la ruta que debe seguir.",
       "MOUNT": "ID del modelo de aquella montura que será utilizada para que la criatura aparezca montada sobre algo. El valor que aquí se encuentre anularía el valor del Campo de Unidad de la Criatura, o sea UNIT_FIELD_MOUNTDISPLAYID.",
-      "VISIBILITY_DISTANCE_TYPE": "Normal = 0, 100.0f (default visible distance, 100 yards on continents); Tiny = 1, 25.0f; Small = 2, 50.0f; Large = 3, 200.0f; Gigantic = 4, 400.0f; Infinite = 5 (SIZE_OF_GRIDS max distance for visible objects)",
+      "VISIBILITY_DISTANCE_TYPE": "Normal = 0, 100.0f (distancia de visibilidad predeterminada, 100 yardas en continentes); Diminuta = 1, 25.0f; Pequeña = 2, 50.0f; Grande = 3, 200.0f; Gigantesca = 4, 400.0f; Infinita = 5 (SIZE_OF_GRIDS distancia máxima para objetos visibles)",
       "AURAS": "Una lista de auras separadas por comas que se aplicarán sobre ésta criatura en particular"
     },
     "ONKILL_REPUTATION": {
@@ -277,9 +277,9 @@
       "GUID": "Enlazado con creature.guid (Identificador Único Global de la Criatura)",
       "PATH_ID": "En tal caso de que la criatura posea un movimiento guiado por waypoints por ejemplo, este campo calmacena el waypoint_data.id del camino que debe recorrer.",
       "MOUNT": "Identificador (ID) del modelo de la montura que será utilizada para que aparezca sobre la misma al spawnear. El valor que aquí se preste sustituye al valor del Campo de Unidad de Criatura, o sea UNIT_FIELD_MOUNTDISPLAYID.",
-      "VISIBILITY_DISTANCE_TYPE": "Normal = 0, 100.0f (default visible distance, 100 yards on continents); Tiny = 1, 25.0f; Small = 2, 50.0f; Large = 3, 200.0f; Gigantic = 4, 400.0f; Infinite = 5 (SIZE_OF_GRIDS max distance for visible objects)",
+      "VISIBILITY_DISTANCE_TYPE": "Normal = 0, 100.0f (distancia de visibilidad predeterminada, 100 yardas en continentes); Diminuta = 1, 25.0f; Pequeña = 2, 50.0f; Grande = 3, 200.0f; Gigantesca = 4, 400.0f; Infinita = 5 (SIZE_OF_GRIDS distancia máxima para objetos visibles)",
       "AURAS": "Una lista de auras separadas por comas que se aplicarán sobre ésta criatura en particular",
-      "COMMENT": "Comment"
+      "COMMENT": "Comentario"
     },
     "TEMPLATE_MOVEMENT": {
       "GROUND": "0 = Ninguno; 1 = Correr; 2 = Flotar",
@@ -300,18 +300,18 @@
       "EXTENDED_COST": "El valor que aquí se encuentre almacenado proviene del mismo archivo 'DBC' del cual se presta justamente el nombre de la casilla; un selector para esto se implementará en un futuro dentro de Keira3"
     },
     "DEFAULT_TRAINER": {
-      "TITLE": "Default Trainer",
-      "TRAINER_ID_TOOLTIP": "ID of the trainer template (trainer.Id) assigned to this creature. Use 0 for no default trainer. Examples: 1=Trainer Warrior, 3=Trainer Paladin, 7=Trainer Hunter, 9=Trainer Rogue, 11=Trainer Priest, 13=Trainer Death Knight, 14=Trainer Shaman, 16=Trainer Mage, 31=Trainer Warlock, 33=Trainer Druid, 36=Trainer Mount & Fly. See the trainer wiki for the full list."
+      "TITLE": "Entrenador Predeterminado",
+      "TRAINER_ID_TOOLTIP": "ID de la plantilla de entrenador (trainer.Id) asignada a esta criatura. Usa 0 para ningún entrenador predeterminado. Ejemplos: 1=Entrenador Guerrero, 3=Entrenador Paladín, 7=Entrenador Cazador, 9=Entrenador Pícaro, 11=Entrenador Sacerdote, 13=Entrenador Caballero de la Muerte, 14=Entrenador Chamán, 16=Entrenador Mago, 31=Entrenador Brujo, 33=Entrenador Druida, 36=Entrenador Montura y Vuelo. Consulta la wiki de entrenadores para la lista completa."
     },
     "TEXT": {
-      "GROUP_ID": "If there is more than one of the same entry (more than one text the creature says), this column is used to choose if it is a random say or an ordered list. If a creature has got more than one say text to be shown in a given order, it must be incremented for each new matching entry (ex. 0, 1, 2, 3...). If there is only one entry or only one group, this value should be 0. If there are multiple groups of texts, this value stays the same within the group while the id increments within the same group.",
-      "ID": "Entry for each group of texts. This is the unique identifier when entry (creature) is the same and groupid is unchanged, it must be incremented (ex. 0, 1, 2, 3...). A creature say will be randomly selected from this list based on the groupid it belongs to.",
-      "LANGUAGE": "Value from Languages.dbc (+ the wiki table from the dbc file). When set to 0, the current default language will be used.",
-      "PROBABILITY": "A value from 1-100 that represents the percentage chance that this text will be executed.\n\nValue must be >=0. If the value does not meet the condition the SQL will fail on creature_text_chk_1.",
-      "EMOTE": "The emote that the creature plays when the text is executed. Value to use in this field can be obtained from the emote.dbc",
-      "DURATION": "Time in ms to see text. 0 is default and calculated by core.",
-      "SOUND": "The sound entry this creature will play at the same time the text is executed. Sounds are found in SoundEntries.dbc.",
-      "BROADCAST_TEXT_ID": "Id of the equivalent text found in broadcast_text"
+      "GROUP_ID": "Si hay más de una entrada igual (más de un texto que dice la criatura), esta columna se usa para elegir si es un diálogo aleatorio o una lista ordenada. Si una criatura tiene más de un texto para mostrar en un orden dado, debe incrementarse para cada nueva entrada coincidente (ej. 0, 1, 2, 3...). Si solo hay una entrada o un grupo, este valor debe ser 0. Si hay múltiples grupos de textos, este valor permanece igual dentro del grupo mientras el id se incrementa dentro del mismo grupo.",
+      "ID": "Entrada para cada grupo de textos. Es el identificador único cuando la entrada (criatura) es la misma y el groupid no cambia, debe incrementarse (ej. 0, 1, 2, 3...). Un diálogo de criatura se seleccionará aleatoriamente de esta lista según el groupid al que pertenezca.",
+      "LANGUAGE": "Valor de Languages.dbc (+ la tabla de la wiki del archivo dbc). Cuando se establece en 0, se usará el idioma predeterminado actual.",
+      "PROBABILITY": "Un valor de 1-100 que representa el porcentaje de probabilidad de que este texto se ejecute.\n\nEl valor debe ser >=0. Si el valor no cumple la condición, el SQL fallará en creature_text_chk_1.",
+      "EMOTE": "La animación que la criatura reproduce cuando se ejecuta el texto. El valor a usar en este campo se puede obtener de emote.dbc",
+      "DURATION": "Tiempo en ms para ver el texto. 0 es el valor predeterminado y es calculado por el core.",
+      "SOUND": "La entrada de sonido que esta criatura reproducirá al mismo tiempo que se ejecuta el texto. Los sonidos se encuentran en SoundEntries.dbc.",
+      "BROADCAST_TEXT_ID": "ID del texto equivalente encontrado en broadcast_text"
     }
   },
   "QUEST": {
@@ -351,13 +351,13 @@
       "REWARD_SPELL": "Hechizo que será aprendido como recompensa al completar la Misión dentro del Registro de Misiones. Tenga en cuenta que este hechizo NO se enseñará si el campo RewardSpell no es igual a cero.",
       "REWARD_HONOR": "Número de Honor recompensado por completar esta Misión",
       "REWARD_FACTIONS_TOOLTIP": "Identificador (ID) de la facción respectiva, para que al momento de completar la Misión sume (o reste) puntos de reputación.",
-      "REQUIRED_FACTION": "Required Faction to be able to pick up the quest, when refering to the Quest Faction ID required, it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki.",
-      "REQUIRED_CREATURE_OR_GAMEOBJECT": "Required Creature or Gameobject for the quest objective",
-      "REQUIRED_CREATURE_OR_GAMEOBJECT_COUNT": "The amount required to complete the objective.",
-      "REQUIRED_FACTION_VALUE": "The numeric value required for the specified faction."
+      "REQUIRED_FACTION": "Facción requerida para poder aceptar la misión, cuando se refiere al ID de Facción de la Misión requerida, es la columna de la izquierda 'ID' en el selector, para más información consulta 'faction' en la wiki.",
+      "REQUIRED_CREATURE_OR_GAMEOBJECT": "Criatura u Objeto del juego requerido para el objetivo de la misión",
+      "REQUIRED_CREATURE_OR_GAMEOBJECT_COUNT": "La cantidad requerida para completar el objetivo.",
+      "REQUIRED_FACTION_VALUE": "El valor numérico requerido para la facción especificada."
     },
     "TEMPLATE_ADDON": {
-      "ADDON_BASE": "Addon Base",
+      "ADDON_BASE": "Base del Addon",
       "ADDON_REQUIREMENTS": "Requisitos de Addon",
       "ADDON_REWARDS": "Recompensas de Addon",
       "PREV_QUEST_ID": "Sí es > (mayor que) 0 vendría a ser la ID de la Anterior Misión; Sí es < (menor que) 0 vendría a ser el Identificador de la Misión Principal",
@@ -444,16 +444,16 @@
       "ANIMPROGRESS": "Siempre 100 en el caso de los cofres.",
       "STATE": "Para puertas o cofres. 1 = cerrado,  0 = abierto",
       "SCRIPT_NAME": "El nombre en clave del script escrito en C++ que utilizará el Objeto del Juego, si existe claro está.",
-      "COMMENT": "Comment"
+      "COMMENT": "Comentario"
     },
     "SPAWN_ADDON": {
       "GUID": "Enlazado con gameobject.guid (El Identificador Único Global del Objeto)"
     },
     "TEMPLATE_ADDON": {
-      "FACTION": "The Gameobject's faction, when refering to the Faction ID required, it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki.",
-      "MINGOLD": "Minimum money, in copper, that the gameobject can drop when accessed / used.",
-      "MAXGOLD": "Maximum money, in copper, that the gameobject can drop when accessed / used.",
-      "ARTKIT": "Updates display if object is activated by SPELL_EFFCT_ACTIVATE_OBJECT with MiscValue 19 - 22."
+      "FACTION": "La facción del Objeto del juego, cuando se refiere al ID de Facción requerido, es la columna de la izquierda 'ID' en el selector, para más información consulta 'faction' en la wiki.",
+      "MINGOLD": "Cantidad mínima de dinero, en cobres, que el objeto del juego puede soltar al ser accedido / usado.",
+      "MAXGOLD": "Cantidad máxima de dinero, en cobres, que el objeto del juego puede soltar al ser accedido / usado.",
+      "ARTKIT": "Actualiza la visualización si el objeto es activado por SPELL_EFFCT_ACTIVATE_OBJECT con MiscValue 19 - 22."
     }
   },
   "ITEM": {
@@ -524,8 +524,8 @@
       "SPELL_COOLDOWNS": "El Enfriamiento (la recarga) en milisegundos para este hechizo en particular, que controla la frecuencia con la que puede ser lanzado. Utilice el valor -1 en este campo para el Tiempo de Reutilización de Hechizos que viene por defecto en el mismo. Nota: Esto no equivale al 'Enfriamiento Interno' (Internal Cooldown) de los procesos que se encuentran comúnmente en Items como Abalorios, con efectos de 'Probabilidad al Golpear' a un objetivo aleatorio por ejemplo.",
       "SPELL_CATEGORIES": "La Categoría a la que pertenece este Hechizo en particular",
       "SPELL_CATEGORY_COOLDOWNS": "El Tiempo de Enfriamiento (la recarga) en milisegundos que es aplicada a todos los demás Hechizos que caben dentro de la Categoría a la que también pertenece el Hechizo. Utilice el valor -1 en este campo para el Tiempo de Reutilización de Hechizos que viene por defecto en el mismo.",
-      "REQUIRED_FACTION": "Required Faction to be able to use the item, when refering to the Item Faction ID required, it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki.",
-      "REQUIRED_FACTION_RANK": "The rank value required for the specified faction."
+      "REQUIRED_FACTION": "Facción requerida para poder usar el objeto, cuando se refiere al ID de Facción del Objeto requerido, es la columna de la izquierda 'ID' en el selector, para más información consulta 'faction' en la wiki.",
+      "REQUIRED_FACTION_RANK": "El rango requerido para la facción especificada."
     }
   },
   "LOOT_EDITOR": {
@@ -539,27 +539,27 @@
   },
   "OTHER_TEXTS": {
     "BROADCAST_TEXT": {
-      "ID": "The unique ID for the text.",
-      "LANGUAGE_ID": "The language ID (from Languages.dbc) in which the text will be broadcast.",
-      "SOUND_ENTRIES_ID": "The sound IDs (from SoundEntries.dbc) played when the texts are broadcast.",
-      "EMOTES_ID": "An emote.",
-      "EMOTE_ID_N": "The emote ID (from Emotes.dbc) played when the texts are broadcast.",
-      "EMOTE_DELAY_N": "The delays of the broadcast emotes.",
-      "MALE_TEXT": "The text that the male creature will broadcast, or male characters can read from gossip menu.",
-      "FEMALE_TEXT": "The text that the female creature will broadcast, or female characters can read from gossip menu."
+      "ID": "El ID único para el texto.",
+      "LANGUAGE_ID": "El ID de idioma (de Languages.dbc) en el que se emitirá el texto.",
+      "SOUND_ENTRIES_ID": "Los IDs de sonido (de SoundEntries.dbc) que se reproducen cuando se emiten los textos.",
+      "EMOTES_ID": "Una animación.",
+      "EMOTE_ID_N": "El ID de animación (de Emotes.dbc) que se reproduce cuando se emiten los textos.",
+      "EMOTE_DELAY_N": "Los retrasos de las animaciones de difusión.",
+      "MALE_TEXT": "El texto que la criatura macho emitirá, o que los personajes masculinos pueden leer del menú de diálogo.",
+      "FEMALE_TEXT": "El texto que la criatura hembra emitirá, o que los personajes femeninos pueden leer del menú de diálogo."
     },
     "NPC_TEXT": {
-      "BROADCAST_TEXT_ID": "The ID field value for the MaleText in the broadcast_text table.",
-      "LANG": "The language ID (from Languages.dbc) of the text. If set to 0, then it doesn't require to know any specific language.",
-      "PROBABILITY": "The chance that the NPC will say either text0_0 or text0_1 (depending on the NPCs gender).",
-      "EM_N": "The ID of the emote (from Emotes.dbc) that the NPC should do when displaying the text. The emotes are played after each order in order.",
-      "TEXT_0": "This is the locale text that is displayed if the NPC is a male.",
-      "TEXT_1": "This is the locale text that is displayed if the NPC is a female."
+      "BROADCAST_TEXT_ID": "El valor del campo ID para el texto masculino en la tabla broadcast_text.",
+      "LANG": "El ID de idioma (de Languages.dbc) del texto. Si se establece en 0, no requiere conocer ningún idioma específico.",
+      "PROBABILITY": "La probabilidad de que el NPC diga text0_0 o text0_1 (dependiendo del género del NPC).",
+      "EM_N": "El ID de la animación (de Emotes.dbc) que el NPC debe hacer al mostrar el texto. Las animaciones se reproducen una tras otra en orden.",
+      "TEXT_0": "Este es el texto local que se muestra si el NPC es macho.",
+      "TEXT_1": "Este es el texto local que se muestra si el NPC es hembra."
     },
     "PAGE_TEXT": {
-      "ID": "The ID of the text in the page. This number is unique to every text ID.",
-      "NEXT_PAGE_ID": "The ID of the next page's text ID.",
-      "TEXT": "The actual text. The message in this field will be shown as the text on a page."
+      "ID": "El ID del texto en la página. Este número es único para cada ID de texto.",
+      "NEXT_PAGE_ID": "El ID del texto de la página siguiente.",
+      "TEXT": "El texto real. El mensaje en este campo se mostrará como texto en una página."
     }
   },
   "GOSSIP": {
@@ -584,8 +584,8 @@
       "SOURCE_GROUP": "Fuente de Grupo:",
       "SOURCE_ENTRY": "Fuente de Entrada:",
       "CREATE_NEW": "Crear nuevo",
-      "PLACEHOLDER_SOURCE_GROUP": "SourceGroup",
-      "PLACEHOLDER_ENTRY": "SourceEntry"
+      "PLACEHOLDER_SOURCE_GROUP": "GrupoOrigen",
+      "PLACEHOLDER_ENTRY": "EntradaOrigen"
     },
     "EDITOR": {
       "CONDITIONS_SOURCE": "Condición de Origen",
@@ -702,11 +702,11 @@
         "CONDITION_TAXI": "Siempre es 0",
         "CONDITION_QUESTSTATE": "Identificador de Misión extrado dentro de la tabla quest_template.ID",
         "CONDITION_QUEST_OBJECTIVE_PROGRESS": "Identificador de Misión extrado dentro de la tabla 'quest_template.id'",
-        "CONDITION_WORLD_SCRIPT": "WorldStateCondition (defined in WorldState.h)",
-        "CONDITION_AI_DATA": "data index"
+        "CONDITION_WORLD_SCRIPT": "WorldStateCondition (definido en WorldState.h)",
+        "CONDITION_AI_DATA": "índice de datos"
       },
       "VALUE2": {
-        "CONDITION_NONE": "(Never used)",
+        "CONDITION_NONE": "(Nunca usado)",
         "CONDITION_AURA": "Índice de Efecto (0-2)",
         "CONDITION_ITEM": "Número de Items",
         "RANK_MASK": "Máscara de Rango. 1 = Odiado, 2 = Hostil, 4 = Adverso, 8 = Neutral, 16 = Amigable, 32 = Honorable, 64 = Venerado , 128 = Exaltado",
@@ -724,15 +724,15 @@
         "CONDITION_STAND_STATE": "Estado exacto al estar parado, o también para un estado genérico (parado/sentado), dependiendo del valor. 10 = De pie; 1 = Sentado",
         "CONDITION_QUESTSTATE": "Máscara de Estado de Misión (state_mask)",
         "CONDITION_QUEST_OBJECTIVE_PROGRESS": "Identificador de Objetivo de Misión - Véase la tabla quest_template.RequiredNpcOrGo",
-        "CONDITION_WORLD_SCRIPT": "state, 0 = unused",
-        "CONDITION_AI_DATA": "value (to be compared)"
+        "CONDITION_WORLD_SCRIPT": "estado, 0 = no usado",
+        "CONDITION_AI_DATA": "valor (a comparar)"
       },
       "VALUE3": {
         "CONDITION_NONE": "(Nunca Usado)",
         "CONDITION_ITEM": "0 = No está en el banco; 1 = Está en el banco",
         "CONDITION_INSTANCE_INFO": "0=INSTANCE_INFO_DATA; 1=INSTANCE_INFO_GUID_DATA; 2=INSTANCE_INFO_BOSS_STATE; 3=INSTANCE_INFO_DATA64; ",
         "CONDITION_NEAR_CREATURE": "Vivo = 0; Muerto = 1",
-        "CONDITION_NEAR_GAMEOBJECT": "GoState |0 Ignore |1 Ready |2 Not Ready",
+        "CONDITION_NEAR_GAMEOBJECT": "GoState |0 Ignorar |1 Listo |2 No Listo",
         "CONDITION_OBJECT_ENTRY_GUID": "0 = Cualquier objeto del tipo dado;  1 - 500k = criatura/objeto del juego GUID",
         "CONDITION_DISTANCE_TO": "ComparisionType: 0 = la distancia debe ser igual a ConditionValue2; 1 = la distancia debe ser superior a ConditionValue2; 2 = la distancia debe ser inferior a ConditionValue2; 3 = la distancia debe ser igual o superior a ConditionValue2; 4 = la distancia debe ser igual o inferior a ConditionValue2",
         "CONDITION_QUEST_OBJECTIVE_PROGRESS": "Recuento de Objetivos de Misión"
@@ -745,18 +745,18 @@
       "PHASE": "Usar 0 para todas las fases",
       "CHANCE": "Esta es la probabilidad de que ocurra el evento como porcentaje de 0 a 100. Ejemplo: Si deseas que el evento ocurra casi la mitad de las veces, entonces coloca el valor 50.",
       "TIMED_ACTIONLISTS": "Todos los smart_scripts que tengan source_type = 9 y entryorguid entre CreatureID * 100 y CreatureID * 100 + 100",
-      "GENERATE_COMMENT": "Generate comment",
-      "GENERATE_COMMENTS_ALL": "Generate comments (all)"
+      "GENERATE_COMMENT": "Generar comentario",
+      "GENERATE_COMMENTS_ALL": "Generar comentarios (todos)"
     },
     "SEARCH_BY_EXISTING": {
-      "SOURCE_TYPE": "Source Type:",
-      "ENTRY_OR_GUID": "Entry(+) or GUID(-):",
-      "LIMIT": "Limit:",
-      "PLACEHOLDER": "Entry (as positive number) or GUID (as negative number)",
-      "ALL": "ALL"
+      "SOURCE_TYPE": "Tipo de Origen:",
+      "ENTRY_OR_GUID": "Entrada(+) o GUID(-):",
+      "LIMIT": "Límite:",
+      "PLACEHOLDER": "Entrada (como número positivo) o GUID (como número negativo)",
+      "ALL": "TODOS"
     },
     "SEARCH_BY_ENTITY": {
-      "SOURCE_TYPE": "Select a Source Type"
+      "SOURCE_TYPE": "Selecciona un Tipo de Origen"
     }
   },
   "SPELL_DBC": {
@@ -890,36 +890,36 @@
     }
   },
   "GAME_TELE": {
-    "EDITOR": "Teleport Editor"
+    "EDITOR": "Editor de Teletransporte"
   },
   "TRAINER": {
-    "EDITOR": "Trainer Editor",
-    "TRAINER_ID_TOOLTIP": "References trainer.id (trainer template). Examples: 1=Trainer Warrior, 3=Trainer Paladin, 7=Trainer Hunter, 9=Trainer Rogue, 11=Trainer Priest, 13=Trainer Death Knight, 14=Trainer Shaman, 16=Trainer Mage, 31=Trainer Warlock, 33=Trainer Druid, 36=Trainer Mount & Fly. See the trainer wiki for the full list.",
-    "REQUIREMENT_TOOLTIP": "Meaning depends on Type - use 0 for none. Types: 0-Class (ChrClass ID e.g. 1=Warrior, 2=Paladin, 3=Hunter, 4=Rogue, 5=Priest, 6=Death Knight, 7=Shaman, 8=Mage, 9=Warlock, 11=Druid), 1-Mount (ChrRace ID (e.g. 1=Human, 2=Orc, 3=Dwarf, 4=Night Elf, 5=Undead, 6=Tauren, 7=Gnome, 8=Troll, 10=Blood Elf, 11=Draenei), 2-Tradeskill Spell ID (player must know this spell to learn from this trainer), 3-Pet ChrClass ID (see above). ",
-    "GREETING_TOOLTIP": "Text shown at the top of the trainer window when opened (this is not gossip). For localized greetings add entries in the \"trainer_locale\" table (Greeting_lang).",
+    "EDITOR": "Editor de Entrenador",
+    "TRAINER_ID_TOOLTIP": "Referencia a trainer.id (plantilla de entrenador). Ejemplos: 1=Entrenador Guerrero, 3=Entrenador Paladín, 7=Entrenador Cazador, 9=Entrenador Pícaro, 11=Entrenador Sacerdote, 13=Entrenador Caballero de la Muerte, 14=Entrenador Chamán, 16=Entrenador Mago, 31=Entrenador Brujo, 33=Entrenador Druida, 36=Entrenador Montura y Vuelo. Consulta la wiki de entrenadores para la lista completa.",
+    "REQUIREMENT_TOOLTIP": "El significado depende del Tipo - usa 0 para ninguno. Tipos: 0-Clase (ChrClass ID ej. 1=Guerrero, 2=Paladín, 3=Cazador, 4=Pícaro, 5=Sacerdote, 6=Caballero de la Muerte, 7=Chamán, 8=Mago, 9=Brujo, 11=Druida), 1-Montura (ChrRace ID (ej. 1=Humano, 2=Orco, 3=Enano, 4=Elfo de la Noche, 5=No-muerto, 6=Tauren, 7=Gnomo, 8=Trol, 10=Elfo de Sangre, 11=Draenei), 2-Profesión ID de Hechizo (el jugador debe conocer este hechizo para aprender de este entrenador), 3-Mascota ChrClass ID (ver arriba). ",
+    "GREETING_TOOLTIP": "Texto mostrado en la parte superior de la ventana del entrenador al abrirla (esto no es diálogo). Para saludos traducidos agrega entradas en la tabla \"trainer_locale\" (Greeting_lang).",
     "SPELL": {
-      "TRAINER_ID": "References trainer.id (trainer template linked to this entry).",
-      "SPELL_ID": "Spell ID being taught.",
-      "MONEY_COST": "Cost in copper to learn this spell from the trainer (1 gold = 100 silver = 10000 copper).",
-      "REQ_SKILL_LINE": "SkillLine ID required to learn this spell (e.g., profession ID). Use 0 if none.",
-      "REQ_SKILL_RANK": "Minimum skill rank in ReqSkillLine required to learn the spell.",
-      "REQ_ABILITY_1": "Spell ID the player is required to already know (first required ability).",
-      "REQ_ABILITY_1_TOOLTIP": "Spell ID the player must already know to be taught this spell (first prerequisite). Use 0 if none.",
-      "REQ_ABILITY_2": "Spell ID the player is required to already know (second required ability).",
-      "REQ_ABILITY_2_TOOLTIP": "Spell ID the player must already know to be taught this spell (second prerequisite). Use 0 if none.",
-      "REQ_ABILITY_3": "Spell ID the player is required to already know (third required ability).",
-      "REQ_ABILITY_3_TOOLTIP": "Spell ID the player must already know to be taught this spell (third prerequisite). Use 0 if none.",
-      "REQ_LEVEL": "Minimum player level required to learn this spell.",
-      "VERIFIED_BUILD": "Used by AzerothCore to indicate whether this entry was verified against WDB files (0 = not parsed; >0 = parsed; -1 = placeholder; -<build> = parsed with specific client build and manually edited)."
+      "TRAINER_ID": "Referencia a trainer.id (plantilla de entrenador vinculada a esta entrada).",
+      "SPELL_ID": "ID del hechizo que se enseña.",
+      "MONEY_COST": "Coste en cobres para aprender este hechizo del entrenador (1 oro = 100 plata = 10000 cobres).",
+      "REQ_SKILL_LINE": "ID de SkillLine requerido para aprender este hechizo (ej., ID de profesión). Usa 0 si ninguno.",
+      "REQ_SKILL_RANK": "Rango mínimo de habilidad en ReqSkillLine requerido para aprender el hechizo.",
+      "REQ_ABILITY_1": "ID de hechizo que el jugador debe conocer previamente (primera habilidad requerida).",
+      "REQ_ABILITY_1_TOOLTIP": "ID de hechizo que el jugador debe conocer previamente para que se le enseñe este hechizo (primer prerrequisito). Usa 0 si ninguno.",
+      "REQ_ABILITY_2": "ID de hechizo que el jugador debe conocer previamente (segunda habilidad requerida).",
+      "REQ_ABILITY_2_TOOLTIP": "ID de hechizo que el jugador debe conocer previamente para que se le enseñe este hechizo (segundo prerrequisito). Usa 0 si ninguno.",
+      "REQ_ABILITY_3": "ID de hechizo que el jugador debe conocer previamente (tercera habilidad requerida).",
+      "REQ_ABILITY_3_TOOLTIP": "ID de hechizo que el jugador debe conocer previamente para que se le enseñe este hechizo (tercer prerrequisito). Usa 0 si ninguno.",
+      "REQ_LEVEL": "Nivel mínimo del jugador requerido para aprender este hechizo.",
+      "VERIFIED_BUILD": "Usado por AzerothCore para indicar si esta entrada fue verificada contra archivos WDB (0 = no analizado; >0 = analizado; -1 = marcador de posición; -<build> = analizado con build de cliente específico y editado manualmente)."
     }
   },
   "UNUSED_GUID_SEARCH": {
-    "TABLE": "Table",
-    "START_INDEX": "Start Index",
-    "AMOUNT": "Amount",
-    "CONSECUTIVE": "Consecutive",
-    "SEARCH": "Search",
-    "SEARCHING": "Searching...",
-    "FOUND_GUIDS": "Found unused GUIDs:"
+    "TABLE": "Tabla",
+    "START_INDEX": "Índice Inicial",
+    "AMOUNT": "Cantidad",
+    "CONSECUTIVE": "Consecutivo",
+    "SEARCH": "Buscar",
+    "SEARCHING": "Buscando...",
+    "FOUND_GUIDS": "GUIDs sin usar encontrados:"
   }
 }
