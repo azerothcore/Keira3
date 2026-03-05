@@ -14,10 +14,6 @@ import { anything, instance, mock, reset, when } from 'ts-mockito';
 import { CreateComponent } from './create.component';
 
 class CreateComponentPage extends PageObject<CreateComponent<TableRow>> {
-  constructor(fixture: ComponentFixture<CreateComponent<TableRow>>) {
-    super(fixture);
-  }
-
   get idInput(): HTMLInputElement {
     return this.query<HTMLInputElement>('#id');
   }
