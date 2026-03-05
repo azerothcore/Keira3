@@ -725,8 +725,7 @@
         "CONDITION_QUESTSTATE": "маска состояния",
         "CONDITION_QUEST_OBJECTIVE_PROGRESS": "ID цели задания — см. quest_template.RequiredNpcOrGo",
         "CONDITION_WORLD_SCRIPT": "состояние, 0 = не используется",
-        "CONDITION_AI_DATA": "значение (для сравнения)",
-        "CONDITION_REPUTATION_RANK": "Маска рангов (Ненависть = 1, Враждебность = 2, Неприязнь = 4, Нейтральность = 8, Дружелюбие = 16, Уважение = 32, Почтение = 64, Превознесение = 128)"
+        "CONDITION_AI_DATA": "значение (для сравнения)"
       },
       "VALUE3": {
         "CONDITION_NONE": "(Не используется)",
