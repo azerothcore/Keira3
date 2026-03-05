@@ -83,7 +83,7 @@
     "@nx/workspace": "22.3.3",
     "@playwright/test": "1.56.0",
     "@schematics/angular": "20.3.9",
-    "@siemens/ngx-datatable": "22.4.1",
+    "@siemens/ngx-datatable": "22.4.2",
     "@swc-node/register": "1.11.1",
     "@swc/core": "1.15.3",
     "@swc/helpers": "0.5.17",
