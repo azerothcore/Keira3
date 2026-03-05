@@ -10,6 +10,7 @@ import { QueryError } from 'mysql2';
 import { QueryErrorComponent } from '../query-output/query-error/query-error.component';
 import { HighlightjsWrapperComponent } from '../highlightjs-wrapper/highlightjs-wrapper.component';
 import { CopyMode, RelatedTable, RelatedTableState } from './copy-output.model';
+import { CopyOutputService } from './copy-output.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -21,6 +22,7 @@ import { CopyMode, RelatedTable, RelatedTableState } from './copy-output.model';
 export class CopyOutputComponent<T extends TableRow> extends SubscriptionHandler implements OnInit {
   protected readonly clipboardService = inject(ClipboardService);
   protected readonly queryService = inject(MysqlQueryService);
+  protected readonly copyOutputService = inject(CopyOutputService);
 
   readonly handlerService = input<HandlerService<T> | undefined>();
   readonly tableName = input.required<string>();
@@ -105,89 +107,22 @@ export class CopyOutputComponent<T extends TableRow> extends SubscriptionHandler
       }
     }
 
-    const states: RelatedTableState[] = [];
-    let remaining = inputTables.length;
-
-    for (const table of inputTables) {
-      this.subscriptions.push(
-        this.queryService.getRowsCount(table.tableName, table.idField, this.sourceId()).subscribe((count: number | null) => {
-          const num = Number(count || 0);
-
-          const isMain = table.tableName === this.tableName();
-
-          if (isMain || num > 0) {
-            states.push({
-              tableName: table.tableName,
-              idField: table.idField,
-              count: num,
-              included: isMain ? true : true,
-              copyMode: table.copyMode || 'RAW',
-              columns: table.columns,
-            });
-          }
-
-          remaining--;
-          if (remaining === 0) {
-            this.relatedTableStates.set(states);
-            this.generateCopyQuery();
-          }
-        }),
-      );
-    }
+    this.subscriptions.push(
+      this.copyOutputService.computeRelatedTableStates(inputTables, this.sourceId(), this.tableName()).subscribe((states) => {
+        this.relatedTableStates.set(states);
+        this.generateCopyQuery();
+      }),
+    );
   }
 
   protected generateCopyQuery(): void {
-    const setVars = this.queryService.getCopyVarsSet(this.sourceId(), this.newId());
-
-    const selectedTables = this.relatedTableStates().filter((t) => t.included);
-
-    // If no tables selected, just set main table
-    if (selectedTables.length === 0) {
-      const query = setVars + this.queryService.getCopyQuery(this.tableName(), this.sourceId(), this.newId(), this.idField(), true);
-      this.copyQuery.set(query);
-      return;
-    }
-
-    // If nothing is RAW, we can quickly generate everything using getCopyQuery
-    const hasAnyRaw = selectedTables.some((t) => t.copyMode === 'RAW');
-
-    if (!hasAnyRaw) {
-      let query = setVars;
-      for (const table of selectedTables) {
-        query += '\n' + this.queryService.getCopyQuery(table.tableName, this.sourceId(), this.newId(), table.idField, true);
-      }
-      this.copyQuery.set(query);
-      return;
-    }
-
-    // We have at least one RAW table. We'll fetch data for RAW tables and construct queries.
-    const rawTables = selectedTables.filter((t) => t.copyMode === 'RAW');
-
-    let remainingRaw = rawTables.length;
-    const tableQueries: Map<string, string> = new Map();
-
-    for (const table of rawTables) {
-      this.subscriptions.push(
-        this.queryService.selectAll(table.tableName, table.idField, this.sourceId()).subscribe((rows) => {
-          const cols = table.columns && table.columns.length > 0 ? table.columns : rows[0] ? Object.keys(rows[0]) : [];
-          const rawQuery = this.queryService.getCopyQueryRawWithValues(table.tableName, rows, this.newId(), table.idField, cols, true);
-          tableQueries.set(table.tableName, rawQuery);
-
-          remainingRaw--;
-          if (remainingRaw === 0) {
-            let finalQuery = setVars;
-            for (const t of selectedTables) {
-              if (t.copyMode === 'RAW') {
-                finalQuery += '\n' + tableQueries.get(t.tableName);
-              } else {
-                finalQuery += '\n' + this.queryService.getCopyQuery(t.tableName, this.sourceId(), this.newId(), t.idField, true);
-              }
-            }
-            this.copyQuery.set(finalQuery);
-          }
+    this.subscriptions.push(
+      this.copyOutputService
+        .generateCopyQueryForStates(this.relatedTableStates(), this.sourceId(), this.newId(), this.tableName(), this.idField())
+        .subscribe((query) => {
+          this.copyQuery.set(query);
         }),
-      );
-    }
+    );
   }
 
   protected copy(): void {
