@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HandlerService } from '@keira/shared/base-abstract-classes';
 import { TableRow } from '@keira/shared/constants';
@@ -29,9 +29,9 @@ export class CreateComponent<T extends TableRow> extends SubscriptionHandler imp
     this._allowCopy = !!value;
     if (!this._allowCopy) {
       // Reset creation method if copy is disabled
-      this.creationMethod = 'blank';
-      this.sourceIdModel = undefined;
-      this.isSourceIdValid = false;
+      this.creationMethod.set('blank');
+      this.sourceIdModel.set(undefined);
+      this.isSourceIdValid.set(false);
     }
   }
   get allowCopy(): boolean {
@@ -39,17 +39,15 @@ export class CreateComponent<T extends TableRow> extends SubscriptionHandler imp
   }
   @Input() maxEntryValue = MAX_INT_UNSIGNED_VALUE;
 
-  private readonly changeDetectorRef = inject(ChangeDetectorRef);
-
-  idModel!: number;
-  sourceIdModel?: number;
-  creationMethod: 'blank' | 'copy' = 'blank';
-  private _loading = false;
-  isIdFree = false;
-  isSourceIdValid = false;
+  idModel = signal<number | undefined>(undefined);
+  sourceIdModel = signal<number | undefined>(undefined);
+  creationMethod = signal<'blank' | 'copy'>('blank');
+  private _loading = signal<boolean>(false);
+  isIdFree = signal<boolean>(false);
+  isSourceIdValid = signal<boolean>(false);
 
   get loading(): boolean {
-    return this._loading;
+    return this._loading();
   }
 
   ngOnInit() {
@@ -58,52 +56,59 @@ export class CreateComponent<T extends TableRow> extends SubscriptionHandler imp
     }
 
     if (!this.allowCopy) {
-      this.creationMethod = 'blank';
+      this.creationMethod.set('blank');
     }
   }
 
   protected checkId() {
-    this._loading = true;
+    this._loading.set(true);
+    const id = this.idModel();
+    if (id === undefined) {
+      this.isIdFree.set(false);
+      this._loading.set(false);
+      return;
+    }
+
     this.subscriptions.push(
-      this.queryService.selectAll<T>(this.entityTable, this.entityIdField, this.idModel).subscribe({
+      this.queryService.selectAll<T>(this.entityTable, this.entityIdField, id).subscribe({
         next: (data) => {
-          this.isIdFree = data.length <= 0;
-          this._loading = false;
-          this.changeDetectorRef.markForCheck();
+          this.isIdFree.set(data.length <= 0);
+          this._loading.set(false);
         },
         error: (error: QueryError) => {
           console.error(error);
-          this._loading = false;
+          this._loading.set(false);
         },
       }),
     );
   }
 
   private getNextId(): void {
-    this._loading = true;
+    this._loading.set(true);
     this.subscriptions.push(
       this.queryService.getMaxId(this.entityTable, this.entityIdField).subscribe({
         next: (data) => {
           const currentMax = data[0].max;
-          this.idModel = this.calculateNextId(currentMax);
-          this.isIdFree = true;
-          this._loading = false;
-          this.changeDetectorRef.markForCheck();
+          this.idModel.set(this.calculateNextId(currentMax));
+          this.isIdFree.set(true);
+          this._loading.set(false);
         },
         error: (error: QueryError) => {
           console.error(error);
-          this._loading = false;
+          this._loading.set(false);
         },
       }),
     );
   }
 
   protected checkMaxValue(): void {
-    if (this.idModel > MAX_INT_UNSIGNED_VALUE) {
-      this.idModel = MAX_INT_UNSIGNED_VALUE;
+    const idVal = this.idModel();
+    if (typeof idVal === 'number' && idVal > MAX_INT_UNSIGNED_VALUE) {
+      this.idModel.set(MAX_INT_UNSIGNED_VALUE);
     }
-    if (this.sourceIdModel && this.sourceIdModel > MAX_INT_UNSIGNED_VALUE) {
-      this.sourceIdModel = MAX_INT_UNSIGNED_VALUE;
+    const srcVal = this.sourceIdModel();
+    if (typeof srcVal === 'number' && srcVal > MAX_INT_UNSIGNED_VALUE) {
+      this.sourceIdModel.set(MAX_INT_UNSIGNED_VALUE);
     }
   }
 
@@ -112,54 +117,51 @@ export class CreateComponent<T extends TableRow> extends SubscriptionHandler imp
   }
 
   protected onCreationMethodChange(): void {
-    if (this.creationMethod === 'blank') {
-      this.sourceIdModel = undefined;
-      this.isSourceIdValid = false;
+    if (this.creationMethod() === 'blank') {
+      this.sourceIdModel.set(undefined);
+      this.isSourceIdValid.set(false);
     }
-    this.changeDetectorRef.markForCheck();
   }
 
   protected checkSourceId(): void {
-    if (!this.sourceIdModel) {
-      this.isSourceIdValid = false;
-      this.changeDetectorRef.markForCheck();
+    const src = this.sourceIdModel();
+    if (src === undefined) {
+      this.isSourceIdValid.set(false);
       return;
     }
 
-    this._loading = true;
+    this._loading.set(true);
     this.subscriptions.push(
-      this.queryService.selectAll<T>(this.entityTable, this.entityIdField, this.sourceIdModel).subscribe({
+      this.queryService.selectAll<T>(this.entityTable, this.entityIdField, src).subscribe({
         next: (data) => {
           // Source ID should exist (opposite of new ID check)
-          this.isSourceIdValid = data.length > 0;
-          this._loading = false;
-          this.changeDetectorRef.markForCheck();
+          this.isSourceIdValid.set(data.length > 0);
+          this._loading.set(false);
         },
         error: (error: QueryError) => {
           console.error(error);
-          this.isSourceIdValid = false;
-          this._loading = false;
-          this.changeDetectorRef.markForCheck();
+          this.isSourceIdValid.set(false);
+          this._loading.set(false);
         },
       }),
     );
   }
 
   protected isFormValid(): boolean {
-    const isNewIdValid = !!this.idModel && this.isIdFree;
+    const isNewIdValid = !!this.idModel() && this.isIdFree();
 
-    if (this.creationMethod === 'copy') {
-      return isNewIdValid && !!this.sourceIdModel && this.isSourceIdValid;
+    if (this.creationMethod() === 'copy') {
+      return isNewIdValid && !!this.sourceIdModel() && this.isSourceIdValid();
     }
 
     return isNewIdValid;
   }
 
   protected onCreate(): void {
-    if (this.creationMethod === 'copy') {
-      this.handlerService.select(true, this.idModel, undefined, true, this.sourceIdModel!.toString());
+    if (this.creationMethod() === 'copy') {
+      this.handlerService.select(true, this.idModel()!, undefined, true, this.sourceIdModel()!.toString());
     } else {
-      this.handlerService.select(true, this.idModel);
+      this.handlerService.select(true, this.idModel()!);
     }
   }
 }
