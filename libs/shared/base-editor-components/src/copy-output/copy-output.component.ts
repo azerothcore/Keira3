@@ -9,24 +9,7 @@ import { SubscriptionHandler } from '@keira/shared/utils';
 import { QueryError } from 'mysql2';
 import { QueryErrorComponent } from '../query-output/query-error/query-error.component';
 import { HighlightjsWrapperComponent } from '../highlightjs-wrapper/highlightjs-wrapper.component';
-
-type CopyMode = 'RAW' | 'ALL';
-
-interface RelatedTable {
-  tableName: string;
-  idField: string;
-  copyMode?: CopyMode;
-  columns?: string[];
-}
-
-interface RelatedTableState {
-  tableName: string;
-  idField: string;
-  count: number;
-  included: boolean;
-  copyMode: CopyMode;
-  columns?: string[];
-}
+import { CopyMode, RelatedTable, RelatedTableState } from './copy-output.model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
