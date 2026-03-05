@@ -307,4 +307,77 @@ describe('CreateComponent', () => {
     component.isSourceIdValid.set(true);
     expect((component as any).isFormValid()).toBeTrue();
   });
+
+  it('checkId early-returns when idModel is undefined', () => {
+    const { component } = setup();
+    component.idModel.set(undefined);
+
+    (component as any).checkId();
+
+    expect(component.isIdFree()).toBeFalse();
+    expect(component.loading).toBe(false);
+  });
+
+  it('onCreate with blank method calls select without copy params', () => {
+    const { component } = setup();
+    const selectSpy = spyOn(component.handlerService, 'select');
+    component.creationMethod.set('blank');
+    component.idModel.set(500);
+
+    (component as any).onCreate();
+
+    expect(selectSpy).toHaveBeenCalledTimes(1);
+    expect(selectSpy).toHaveBeenCalledWith(true, 500);
+  });
+
+  it('onCreate with copy method calls select with copy params', () => {
+    const { component } = setup();
+    const selectSpy = spyOn(component.handlerService, 'select');
+    component.creationMethod.set('copy');
+    component.idModel.set(600);
+    component.sourceIdModel.set(700);
+
+    (component as any).onCreate();
+
+    expect(selectSpy).toHaveBeenCalledTimes(1);
+    expect(selectSpy).toHaveBeenCalledWith(true, 600, undefined, true, '700');
+  });
+
+  it('isFormValid returns false when idModel is undefined', () => {
+    const { component } = setup();
+    component.idModel.set(undefined);
+    component.isIdFree.set(true);
+
+    expect((component as any).isFormValid()).toBeFalse();
+  });
+
+  it('isFormValid returns false when isIdFree is false', () => {
+    const { component } = setup();
+    component.idModel.set(100);
+    component.isIdFree.set(false);
+
+    expect((component as any).isFormValid()).toBeFalse();
+  });
+
+  it('isFormValid with copy method returns false when sourceIdModel is undefined', () => {
+    const { component } = setup();
+    component.creationMethod.set('copy');
+    component.idModel.set(100);
+    component.isIdFree.set(true);
+    component.sourceIdModel.set(undefined);
+    component.isSourceIdValid.set(true);
+
+    expect((component as any).isFormValid()).toBeFalse();
+  });
+
+  it('isFormValid with copy method returns false when isSourceIdValid is false', () => {
+    const { component } = setup();
+    component.creationMethod.set('copy');
+    component.idModel.set(100);
+    component.isIdFree.set(true);
+    component.sourceIdModel.set(200);
+    component.isSourceIdValid.set(false);
+
+    expect((component as any).isFormValid()).toBeFalse();
+  });
 });
