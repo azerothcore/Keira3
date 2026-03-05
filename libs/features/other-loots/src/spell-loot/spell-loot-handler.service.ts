@@ -7,6 +7,7 @@ import { SPELL_LOOT_TEMPLATE_TABLE, SpellLootTemplate } from '@keira/shared/acor
 })
 export class SpellLootHandlerService extends HandlerService<SpellLootTemplate> {
   protected readonly mainEditorRoutePath = 'other-loots/spell';
+  protected override readonly copyRoutePath = 'other-loots/spell-copy';
 
   get isUnsaved(): Signal<boolean> {
     return this.statusMap[SPELL_LOOT_TEMPLATE_TABLE].asReadonly();

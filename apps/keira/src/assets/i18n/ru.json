@@ -14,7 +14,13 @@
     "CREATE_A_NEW": "Создать новый <strong>{{ ENTITY_TABLE }}</strong> выбрав пустой <strong>{{ ENTITY_ID_FIELD }}</strong>:",
     "FREE_ENTRY": "Значение {{ ENTITY_ID_FIELD }}",
     "FREE": "свободно",
-    "ALREADY_USE": "уже используется"
+    "ALREADY_USE": "уже используется",
+    "SOURCE_ENTRY": "The {{ ENTITY_ID_FIELD }}",
+    "EXISTS": "exists",
+    "DOES_NOT_EXIST": "does not exist",
+    "START_FROM_BLANK": "Start from blank",
+    "COPY_FROM_EXISTING": "Copy from existing",
+    "COPY_DISABLED": "Copy from existing is not available for this entity"
   },
   "CONNECTED": "Connected",
   "SEARCH": "Поиск",
@@ -204,6 +210,19 @@
     "EXECUTE": "Выполнить (F9)",
     "LEARN_SQL": "изучить язык SQL",
     "AFFECTED_ROWS": "Затронутые строки:"
+  },
+  "COPY_OUTPUT": {
+    "TITLE": "Copy Entry SQL",
+    "DESCRIPTION": "Review and execute the SQL below to copy the entry. You can copy the query to execute it manually, or use the Execute button to run it directly.",
+    "COPY": "Copy",
+    "COPY_TOOLTIP": "Copy SQL query to clipboard",
+    "EXECUTE": "Execute",
+    "EXECUTE_TOOLTIP": "Execute the SQL query and create the new entry",
+    "EXECUTED": "Executed",
+    "CONTINUE": "Continue to Editor",
+    "CONTINUE_TOOLTIP": "Navigate to the editor for the new entry",
+    "SELECT_ALL": "Select All",
+    "SELECT_NONE": "Select None"
   },
   "CREATURE": {
     "TEMPLATE": {

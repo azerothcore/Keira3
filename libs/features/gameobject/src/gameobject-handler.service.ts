@@ -18,6 +18,7 @@ import { SaiGameobjectHandlerService } from './sai-gameobject-handler.service';
 export class GameobjectHandlerService extends HandlerService<GameobjectTemplate> {
   protected saiGameobjectHandler = inject(SaiGameobjectHandlerService);
   protected readonly mainEditorRoutePath = 'gameobject/gameobject-template';
+  protected override readonly copyRoutePath = 'gameobject/copy';
 
   get isGameobjectTemplateUnsaved(): Signal<boolean> {
     return this.statusMap[GAMEOBJECT_TEMPLATE_TABLE].asReadonly();
@@ -50,8 +51,9 @@ export class GameobjectHandlerService extends HandlerService<GameobjectTemplate>
     [GAMEOBJECT_SPAWN_ADDON_TABLE]: signal(false),
   };
 
-  override select(isNew: boolean, id: string | number | Partial<GameobjectTemplate>, name?: string) {
+  override select(isNew: boolean, id: string | number | Partial<GameobjectTemplate>, name?: string, navigate = true, sourceId?: string) {
     this.saiGameobjectHandler.select(isNew, { entryorguid: +id, source_type: 1 }, null, false);
-    super.select(isNew, id, name);
+
+    super.select(isNew, id, name, navigate, sourceId);
   }
 }

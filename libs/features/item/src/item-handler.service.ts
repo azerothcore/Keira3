@@ -15,6 +15,7 @@ import {
 })
 export class ItemHandlerService extends HandlerService<ItemTemplate> {
   protected readonly mainEditorRoutePath = 'item/item-template';
+  protected override readonly copyRoutePath = 'item/copy';
 
   get isItemTemplateUnsaved(): Signal<boolean> {
     return this.statusMap[ITEM_TEMPLATE_TABLE].asReadonly();
