@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { BsModalRef } from 'ngx-bootstrap/modal';
@@ -10,10 +10,6 @@ import { ItemLimitCategorySearchService } from '../../search/item-limit-category
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 
 describe('ItemLimitCategorySelectorModalComponent', () => {
-  let component: ItemLimitCategorySelectorModalComponent;
-  let fixture: ComponentFixture<ItemLimitCategorySelectorModalComponent>;
-  let searchService: ItemLimitCategorySearchService;
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ItemLimitCategorySelectorModalComponent, TranslateTestingModule],
@@ -27,16 +23,19 @@ describe('ItemLimitCategorySelectorModalComponent', () => {
     }).compileComponents();
   });
 
-  beforeEach(() => {
-    searchService = TestBed.inject(ItemLimitCategorySearchService);
+  function setup() {
+    const searchService = TestBed.inject(ItemLimitCategorySearchService);
     searchService.query = '--mock query';
 
-    fixture = TestBed.createComponent(ItemLimitCategorySelectorModalComponent);
-    component = fixture.componentInstance;
+    const fixture = TestBed.createComponent(ItemLimitCategorySelectorModalComponent);
+    const component = fixture.componentInstance;
     fixture.detectChanges();
-  });
+
+    return { fixture, component };
+  }
 
   it('should create', () => {
+    const { component } = setup();
     expect(component).toBeTruthy();
   });
 });

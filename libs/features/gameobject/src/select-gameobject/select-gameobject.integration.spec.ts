@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
@@ -13,20 +13,12 @@ import { instance, mock } from 'ts-mockito';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { SelectGameobjectComponent } from './select-gameobject.component';
-import Spy = jasmine.Spy;
 
 class SelectGameobjectComponentPage extends SelectPageObject<SelectGameobjectComponent> {
   override ID_FIELD = 'entry';
 }
 
 describe('SelectGameobject integration tests', () => {
-  let component: SelectGameobjectComponent;
-  let fixture: ComponentFixture<SelectGameobjectComponent>;
-  let page: SelectGameobjectComponentPage;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let navigateSpy: Spy;
-
   const value = 1200;
 
   beforeEach(() => {
@@ -42,19 +34,22 @@ describe('SelectGameobject integration tests', () => {
     }).compileComponents();
   });
 
-  beforeEach(() => {
-    navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1, type: 0 }]));
+  function setup() {
+    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1, type: 0 }]));
 
-    fixture = TestBed.createComponent(SelectGameobjectComponent);
-    page = new SelectGameobjectComponentPage(fixture);
-    component = fixture.componentInstance;
+    const fixture = TestBed.createComponent(SelectGameobjectComponent);
+    const page = new SelectGameobjectComponentPage(fixture);
+    const component = fixture.componentInstance;
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
-  });
+
+    return { fixture, page, component, querySpy, navigateSpy };
+  }
 
   it('should correctly initialise', async () => {
+    const { fixture, page, component, querySpy } = setup();
     await fixture.whenStable();
     expect(page.createInput.value).toEqual(`${component.customStartingId}`);
     page.expectNewEntityFree();
@@ -63,6 +58,7 @@ describe('SelectGameobject integration tests', () => {
   });
 
   it('should correctly behave when inserting and selecting free id', async () => {
+    const { fixture, page, querySpy, navigateSpy } = setup();
     await fixture.whenStable();
     querySpy.calls.reset();
     querySpy.and.returnValue(of([]));
@@ -81,9 +77,10 @@ describe('SelectGameobject integration tests', () => {
   });
 
   it('should correctly behave when inserting an existing entity', async () => {
+    const { fixture, page, querySpy } = setup();
     await fixture.whenStable();
     querySpy.calls.reset();
-    querySpy.and.returnValue(of(['mock value']));
+    querySpy.and.returnValue(of(['mock value'] as any));
 
     page.setInputValue(page.createInput, value);
 
@@ -135,6 +132,7 @@ describe('SelectGameobject integration tests', () => {
     },
   ]) {
     it(`searching an existing entity should correctly work [${testId}]`, () => {
+      const { page, querySpy } = setup();
       querySpy.calls.reset();
       if (id) {
         page.setInputValue(page.searchIdInput, id);
@@ -157,13 +155,14 @@ describe('SelectGameobject integration tests', () => {
   }
 
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
+    const { page, querySpy, navigateSpy } = setup();
     const results: Partial<GameobjectTemplate>[] = [
       { id: 1, name: 'An awesome Gameobject 1', type: 0, displayId: 1 },
       { id: 2, name: 'An awesome Gameobject 2', type: 0, displayId: 2 },
       { id: 3, name: 'An awesome Gameobject 3', type: 0, displayId: 3 },
     ];
     querySpy.calls.reset();
-    querySpy.and.returnValue(of(results));
+    querySpy.and.returnValue(of(results as any));
 
     page.clickElement(page.searchBtn);
 

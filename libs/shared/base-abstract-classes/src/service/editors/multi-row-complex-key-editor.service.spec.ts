@@ -13,11 +13,8 @@ import { MultiRowComplexKeyEditorService } from './multi-row-complex-key-editor.
 
 import { mockChangeDetectorRef } from '@keira/shared/test-utils';
 import { MockEntity, MockHandlerService, MockMultiRowComplexKeyEditorService } from '../../core.mock';
-import Spy = jasmine.Spy;
 
 describe('MultiRowComplexKeyEditorService', () => {
-  let service: MultiRowComplexKeyEditorService<MockEntity>;
-
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
@@ -30,15 +27,18 @@ describe('MultiRowComplexKeyEditorService', () => {
     }),
   );
 
-  beforeEach(() => {
-    service = TestBed.inject(MockMultiRowComplexKeyEditorService);
-  });
+  function setup() {
+    const service: MultiRowComplexKeyEditorService<MockEntity> = TestBed.inject(MockMultiRowComplexKeyEditorService);
+    return { service };
+  }
 
   it('get entityIdFields() should correcty work', () => {
+    const { service } = setup();
     expect(service.entityIdFields).toEqual(JSON.parse(service['_entityIdField'] as string));
   });
 
   it('updateDiffQuery should correctly work', () => {
+    const { service } = setup();
     const queryService = TestBed.inject(MysqlQueryService);
     const getDiffDeleteInsertTwoKeysQuerySpy = spyOn(queryService, 'getDiffDeleteInsertTwoKeysQuery').and.returnValue('-- Mock Query');
     spyOn<any>(service, 'updateEditorStatus');
@@ -50,6 +50,7 @@ describe('MultiRowComplexKeyEditorService', () => {
   });
 
   it('addToNewRow should correctly work', () => {
+    const { service } = setup();
     const newRow = new MockEntity();
     const mockKeyObj: Partial<MockEntity> = { id: 123, guid: 1000 };
     service['_loadedEntityId'] = mockKeyObj;
@@ -61,8 +62,9 @@ describe('MultiRowComplexKeyEditorService', () => {
   });
 
   it('reload should correctly work', () => {
-    const resetSpy: Spy = spyOn<any>(service, 'reset');
-    const reloadEntitySpy: Spy = spyOn<any>(service, 'reloadEntity');
+    const { service } = setup();
+    const resetSpy = spyOn<any>(service, 'reset');
+    const reloadEntitySpy = spyOn<any>(service, 'reloadEntity');
 
     service.reload(mockChangeDetectorRef);
 
@@ -72,6 +74,7 @@ describe('MultiRowComplexKeyEditorService', () => {
   });
 
   it('selectQuery should correctly work', () => {
+    const { service } = setup();
     const queryService = TestBed.inject(MysqlQueryService);
     const selectAllMultipleKeysSpy = spyOn(queryService, 'selectAllMultipleKeys').and.returnValue(of([{ mock: 'data' }] as TableRow[]));
     const handlerService = TestBed.inject(MockHandlerService);
@@ -84,9 +87,10 @@ describe('MultiRowComplexKeyEditorService', () => {
   });
 
   it('reloadEntity should correctly work', () => {
+    const { service } = setup();
     spyOn<any>(service, 'onReloadSuccessful');
     const error = { code: 'mock error', errno: 1234 } as QueryError;
-    const selectQuerySpy: Spy = spyOn<any>(service, 'selectQuery').and.returnValue(of({ mock: 'data' }));
+    const selectQuerySpy = spyOn<any>(service, 'selectQuery').and.returnValue(of({ mock: 'data' }));
 
     service['reloadEntity'](mockChangeDetectorRef);
 
@@ -102,6 +106,7 @@ describe('MultiRowComplexKeyEditorService', () => {
   });
 
   it('onReloadSuccessful should correctly work', () => {
+    const { service } = setup();
     const res = [
       {
         id: 0,
@@ -111,8 +116,8 @@ describe('MultiRowComplexKeyEditorService', () => {
     ];
     const mockData: MockEntity[] = res;
     const handlerService = TestBed.inject(MockHandlerService);
-    const updateFullQuerySpy: Spy = spyOn<any>(service, 'updateFullQuery');
-    const disableFormSpy: Spy = spyOn(service['_form'], 'disable');
+    const updateFullQuerySpy = spyOn<any>(service, 'updateFullQuery');
+    const disableFormSpy = spyOn(service['_form'], 'disable');
 
     // @ts-ignore
     handlerService['_selected'] = 1;

@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -11,18 +11,11 @@ import { of } from 'rxjs';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { CreatureEquipTemplateComponent } from './creature-equip-template.component';
-import Spy = jasmine.Spy;
 import { instance, mock } from 'ts-mockito';
 
 class CreatureEquipTemplatePage extends EditorPageObject<CreatureEquipTemplateComponent> {}
 
 describe('CreatureEquipTemplate integration tests', () => {
-  let fixture: ComponentFixture<CreatureEquipTemplateComponent>;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let handlerService: CreatureHandlerService;
-  let page: CreatureEquipTemplatePage;
-
   const id = 1234;
   const expectedFullCreateQuery =
     'DELETE FROM `creature_equip_template` WHERE (`CreatureID` = 1234);\n' +
@@ -46,32 +39,33 @@ describe('CreatureEquipTemplate integration tests', () => {
   });
 
   function setup(creatingNew: boolean) {
-    handlerService = TestBed.inject(CreatureHandlerService);
+    const handlerService = TestBed.inject(CreatureHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
     spyOn(queryService, 'queryValue').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
 
-    fixture = TestBed.createComponent(CreatureEquipTemplateComponent);
-    page = new CreatureEquipTemplatePage(fixture);
+    const fixture = TestBed.createComponent(CreatureEquipTemplateComponent);
+    const page = new CreatureEquipTemplatePage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    return { fixture, queryService, querySpy, handlerService, page };
   }
 
   describe('Creating new', () => {
-    beforeEach(() => setup(true));
-
     it('should correctly initialise', () => {
+      const { page } = setup(true);
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
     it('should correctly update the unsaved status', () => {
+      const { handlerService, page } = setup(true);
       const field = 'ItemID1';
       expect(handlerService.isCreatureEquipTemplateUnsaved()).toBe(false);
       page.setInputValueById(field, 3);
@@ -81,6 +75,7 @@ describe('CreatureEquipTemplate integration tests', () => {
     });
 
     it('changing a property and executing the query should correctly work', () => {
+      const { querySpy, page } = setup(true);
       const expectedQuery =
         'DELETE FROM `creature_equip_template` WHERE (`CreatureID` = 1234);\n' +
         'INSERT INTO `creature_equip_template` (`CreatureID`, `ID`, `ItemID1`, `ItemID2`, `ItemID3`, `VerifiedBuild`) VALUES\n' +
@@ -98,15 +93,15 @@ describe('CreatureEquipTemplate integration tests', () => {
   });
 
   describe('Editing existing', () => {
-    beforeEach(() => setup(false));
-
     it('should correctly initialise', () => {
+      const { page } = setup(false);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
     it('changing all properties and executing the query should correctly work', () => {
+      const { querySpy, page } = setup(false);
       const expectedQuery = 'UPDATE `creature_equip_template` SET `ItemID2` = 1, `ItemID3` = 2 WHERE (`CreatureID` = 1234);';
       querySpy.calls.reset();
 
@@ -119,6 +114,7 @@ describe('CreatureEquipTemplate integration tests', () => {
     });
 
     it('changing values should correctly update the queries', () => {
+      const { page } = setup(false);
       page.setInputValueById('ItemID1', '1');
       page.expectDiffQueryToContain('UPDATE `creature_equip_template` SET `ItemID1` = 1 WHERE (`CreatureID` = 1234);');
       page.expectFullQueryToContain(
@@ -137,6 +133,7 @@ describe('CreatureEquipTemplate integration tests', () => {
     });
 
     xit('changing a value via ItemSelector should correctly work', async () => {
+      const { querySpy, page } = setup(false);
       //  note: previously disabled because of:
       //  https://stackoverflow.com/questions/57336982/how-to-make-angular-tests-wait-for-previous-async-operation-to-complete-before-e
 

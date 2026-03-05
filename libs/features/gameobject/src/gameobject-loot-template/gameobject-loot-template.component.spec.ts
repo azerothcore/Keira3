@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -13,15 +13,8 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { GameobjectLootTemplateComponent } from './gameobject-loot-template.component';
 import { GameobjectLootTemplateService } from './gameobject-loot-template.service';
-import Spy = jasmine.Spy;
 
 describe('GameobjectTemplateComponent', () => {
-  let component: GameobjectLootTemplateComponent;
-  let fixture: ComponentFixture<GameobjectLootTemplateComponent>;
-  let editorService: GameobjectLootTemplateService;
-  let getLootIdSpy: Spy;
-  let getTypeSpy: Spy;
-  let reloadSpy: Spy;
   const MockedMysqlQueryService = mock(MysqlQueryService);
 
   const lootId = 1230;
@@ -48,35 +41,39 @@ describe('GameobjectTemplateComponent', () => {
     }).compileComponents();
   });
 
-  beforeEach(() => {
+  function setup() {
     when(MockedMysqlQueryService.query(anything(), anything())).thenReturn(of());
-    editorService = TestBed.inject(GameobjectLootTemplateService);
-    reloadSpy = spyOn(editorService, 'reload');
+    const editorService = TestBed.inject(GameobjectLootTemplateService);
+    const reloadSpy = spyOn(editorService, 'reload');
 
-    getLootIdSpy = spyOn(editorService, 'getLootId');
+    const getLootIdSpy = spyOn(editorService, 'getLootId');
     getLootIdSpy.and.returnValue(of([{ lootId }]));
 
-    getTypeSpy = spyOn(editorService, 'getType');
+    const getTypeSpy = spyOn(editorService, 'getType');
     getTypeSpy.and.returnValue(of([{ type }]));
 
-    fixture = TestBed.createComponent(GameobjectLootTemplateComponent);
-    component = fixture.componentInstance;
+    const fixture = TestBed.createComponent(GameobjectLootTemplateComponent);
+    const component = fixture.componentInstance;
     fixture.detectChanges();
-  });
+
+    return { component, fixture, editorService, reloadSpy, getLootIdSpy, getTypeSpy };
+  }
 
   it('should correctly initialise', () => {
+    const { getLootIdSpy, getTypeSpy, reloadSpy } = setup();
     expect(getLootIdSpy).toHaveBeenCalledTimes(1);
     expect(getTypeSpy).toHaveBeenCalledTimes(1);
     expect(reloadSpy).toHaveBeenCalledTimes(1);
   });
 
   it('it should not reload if the lootId is 0', () => {
+    const { component, getLootIdSpy, getTypeSpy, reloadSpy } = setup();
     getLootIdSpy.calls.reset();
     getTypeSpy.calls.reset();
     reloadSpy.calls.reset();
 
     getLootIdSpy.and.returnValue(of([{ lootId: 0 }]));
-    getTypeSpy.and.returnValue(of([{ lootId: 0 }]));
+    getTypeSpy.and.returnValue(of([{ type: 0 }]));
 
     component.ngOnInit();
 
@@ -86,6 +83,7 @@ describe('GameobjectTemplateComponent', () => {
   });
 
   it('it should not reload if the same entity has already been loaded', () => {
+    const { component, editorService, getLootIdSpy, getTypeSpy, reloadSpy } = setup();
     getLootIdSpy.calls.reset();
     getTypeSpy.calls.reset();
     reloadSpy.calls.reset();
@@ -99,6 +97,7 @@ describe('GameobjectTemplateComponent', () => {
   });
 
   it('should properly handle error', () => {
+    const { component, getLootIdSpy, getTypeSpy } = setup();
     const errorSpy = spyOn(console, 'error');
     const error = 'some error';
     getLootIdSpy.and.returnValue(throwError(error));

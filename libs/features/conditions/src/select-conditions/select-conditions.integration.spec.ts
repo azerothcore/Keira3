@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
@@ -10,7 +10,6 @@ import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { ConditionsHandlerService } from '../conditions-handler.service';
 import { SelectConditionsComponent } from './select-conditions.component';
-import Spy = jasmine.Spy;
 import { instance, mock } from 'ts-mockito';
 
 class SelectConditionsComponentPage extends PageObject<SelectConditionsComponent> {
@@ -39,12 +38,6 @@ class SelectConditionsComponentPage extends PageObject<SelectConditionsComponent
 }
 
 describe('SelectConditions integration tests', () => {
-  let fixture: ComponentFixture<SelectConditionsComponent>;
-  let page: SelectConditionsComponentPage;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let navigateSpy: Spy;
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectConditionsComponent, RouterTestingModule, TranslateTestingModule],
@@ -57,18 +50,21 @@ describe('SelectConditions integration tests', () => {
     }).compileComponents();
   });
 
-  beforeEach(() => {
-    navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
+  function setup() {
+    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
 
-    fixture = TestBed.createComponent(SelectConditionsComponent);
-    page = new SelectConditionsComponentPage(fixture);
+    const fixture = TestBed.createComponent(SelectConditionsComponent);
+    const page = new SelectConditionsComponentPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
-  });
+
+    return { fixture, page, querySpy, navigateSpy };
+  }
 
   it('should correctly initialise', async () => {
+    const { fixture, page } = setup();
     await fixture.whenStable();
     expect(page.queryWrapper.innerText).toContain('SELECT * FROM `conditions` LIMIT 50');
   });
@@ -133,6 +129,7 @@ describe('SelectConditions integration tests', () => {
     },
   ]) {
     it(`searching an existing entity should correctly work [${testId}]`, () => {
+      const { page, querySpy } = setup();
       querySpy.calls.reset();
       if (sourceIdorRef) {
         page.setInputValue(page.searchIdSelect, sourceIdorRef + ': ' + sourceIdorRef);
@@ -155,6 +152,7 @@ describe('SelectConditions integration tests', () => {
   }
 
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
+    const { page, querySpy, navigateSpy } = setup();
     const results = [
       {
         SourceTypeOrReferenceId: 1,
@@ -229,6 +227,7 @@ describe('SelectConditions integration tests', () => {
   });
 
   it('creating new should correctly work', () => {
+    const { page, navigateSpy } = setup();
     page.setInputValue(page.searchIdSelect, 1 + ': ' + 1);
     page.setInputValue(page.searchGroupInput, 2);
     page.setInputValue(page.searchEntryInput, 3);

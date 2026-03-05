@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
@@ -12,20 +12,12 @@ import { of } from 'rxjs';
 import { ItemHandlerService } from '../item-handler.service';
 import { SelectItemComponent } from './select-item.component';
 import { instance, mock } from 'ts-mockito';
-import Spy = jasmine.Spy;
 
 class SelectItemComponentPage extends SelectPageObject<SelectItemComponent> {
   override ID_FIELD = 'entry';
 }
 
 describe('SelectItem integration tests', () => {
-  let component: SelectItemComponent;
-  let fixture: ComponentFixture<SelectItemComponent>;
-  let page: SelectItemComponentPage;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let navigateSpy: Spy;
-
   const value = 1200;
 
   beforeEach(() => {
@@ -40,19 +32,22 @@ describe('SelectItem integration tests', () => {
     }).compileComponents();
   });
 
-  beforeEach(() => {
-    navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
+  function setup() {
+    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
 
-    fixture = TestBed.createComponent(SelectItemComponent);
-    page = new SelectItemComponentPage(fixture);
-    component = fixture.componentInstance;
+    const fixture = TestBed.createComponent(SelectItemComponent);
+    const page = new SelectItemComponentPage(fixture);
+    const component = fixture.componentInstance;
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
-  });
+
+    return { fixture, page, component, querySpy, navigateSpy };
+  }
 
   it('should correctly initialise', async () => {
+    const { fixture, page, component, querySpy } = setup();
     await fixture.whenStable();
     expect(page.createInput.value).toEqual(`${component.customStartingId}`);
     page.expectNewEntityFree();
@@ -61,6 +56,7 @@ describe('SelectItem integration tests', () => {
   });
 
   it('should correctly behave when inserting and selecting free id', async () => {
+    const { fixture, page, querySpy, navigateSpy } = setup();
     await fixture.whenStable();
     querySpy.calls.reset();
     querySpy.and.returnValue(of([]));
@@ -79,9 +75,10 @@ describe('SelectItem integration tests', () => {
   });
 
   it('should correctly behave when inserting an existing entity', async () => {
+    const { fixture, page, querySpy } = setup();
     await fixture.whenStable();
     querySpy.calls.reset();
-    querySpy.and.returnValue(of(['mock value']));
+    querySpy.and.returnValue(of(['mock value'] as any));
 
     page.setInputValue(page.createInput, value);
 
@@ -121,6 +118,7 @@ describe('SelectItem integration tests', () => {
     },
   ]) {
     it(`searching an existing entity should correctly work [${testId}]`, () => {
+      const { page, querySpy } = setup();
       querySpy.calls.reset();
       if (id) {
         page.setInputValue(page.searchIdInput, id);
@@ -140,13 +138,14 @@ describe('SelectItem integration tests', () => {
   }
 
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
+    const { page, querySpy, navigateSpy } = setup();
     const results: Partial<ItemTemplate>[] = [
       { id: 1, name: 'An awesome Item 1', ItemType: 0, ItemLevel: 1, MinLevel: 10, ItemDescription: '' },
       { id: 2, name: 'An awesome Item 2', ItemType: 0, ItemLevel: 2, MinLevel: 20, ItemDescription: '' },
       { id: 3, name: 'An awesome Item 3', ItemType: 0, ItemLevel: 3, MinLevel: 30, ItemDescription: '' },
     ];
     querySpy.calls.reset();
-    querySpy.and.returnValue(of(results));
+    querySpy.and.returnValue(of(results as any));
 
     page.clickElement(page.searchBtn);
 
