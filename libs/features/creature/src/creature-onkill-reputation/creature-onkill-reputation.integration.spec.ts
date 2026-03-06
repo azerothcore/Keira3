@@ -1,5 +1,5 @@
 import { provideZonelessChangeDetection } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CreatureOnkillReputation } from '@keira/shared/acore-world-model';
@@ -12,17 +12,10 @@ import { instance, mock } from 'ts-mockito';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { CreatureOnkillReputationComponent } from './creature-onkill-reputation.component';
-import Spy = jasmine.Spy;
 
 class CreatureOnkillReputationPage extends EditorPageObject<CreatureOnkillReputationComponent> {}
 
 describe('CreatureOnkillReputation integration tests', () => {
-  let fixture: ComponentFixture<CreatureOnkillReputationComponent>;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let handlerService: CreatureHandlerService;
-  let page: CreatureOnkillReputationPage;
-
   const id = 1234;
   const expectedFullCreateQuery =
     'DELETE FROM `creature_onkill_reputation` WHERE (`creature_id` = 1234);\n' +
@@ -54,31 +47,32 @@ describe('CreatureOnkillReputation integration tests', () => {
   });
 
   function setup(creatingNew: boolean) {
-    handlerService = TestBed.inject(CreatureHandlerService);
+    const handlerService = TestBed.inject(CreatureHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
 
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
 
-    fixture = TestBed.createComponent(CreatureOnkillReputationComponent);
-    page = new CreatureOnkillReputationPage(fixture);
+    const fixture = TestBed.createComponent(CreatureOnkillReputationComponent);
+    const page = new CreatureOnkillReputationPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    return { fixture, queryService, querySpy, handlerService, page };
   }
 
   describe('Creating new', () => {
-    beforeEach(() => setup(true));
-
     it('should correctly initialise', () => {
+      const { page } = setup(true);
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
     it('should correctly update the unsaved status', () => {
+      const { handlerService, page } = setup(true);
       const field = 'RewOnKillRepFaction1';
       expect(handlerService.isCreatureOnkillReputationUnsaved()).toBe(false);
       page.setInputValueById(field, 3);
@@ -88,6 +82,7 @@ describe('CreatureOnkillReputation integration tests', () => {
     });
 
     it('changing a property and executing the query should correctly work', () => {
+      const { querySpy, page } = setup(true);
       const expectedQuery =
         'DELETE FROM `creature_onkill_reputation` WHERE (`creature_id` = 1234);\n' +
         'INSERT INTO `creature_onkill_reputation` (`creature_id`, `RewOnKillRepFaction1`,' +
@@ -107,15 +102,15 @@ describe('CreatureOnkillReputation integration tests', () => {
   });
 
   describe('Editing existing', () => {
-    beforeEach(() => setup(false));
-
     it('should correctly initialise', () => {
+      const { page } = setup(false);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
     it('changing all properties and executing the query should correctly work', async () => {
+      const { querySpy, page } = setup(false);
       const expectedQuery =
         'UPDATE `creature_onkill_reputation` SET ' +
         '`RewOnKillRepFaction2` = 1, `MaxStanding1` = 1, `IsTeamAward1` = 1, `RewOnKillRepValue1` = 4, ' +
@@ -140,6 +135,7 @@ describe('CreatureOnkillReputation integration tests', () => {
     });
 
     it('changing values should correctly update the queries', () => {
+      const { page } = setup(false);
       page.setInputValueById('RewOnKillRepFaction2', '1');
       page.expectDiffQueryToContain('UPDATE `creature_onkill_reputation` SET `RewOnKillRepFaction2` = 1 WHERE (`creature_id` = 1234);');
       page.expectFullQueryToContain(
@@ -165,6 +161,7 @@ describe('CreatureOnkillReputation integration tests', () => {
     });
 
     xit('changing a value via SingleValueSelector should correctly work', async () => {
+      const { page } = setup(false);
       const field = 'MaxStanding1';
       page.clickElement(page.getSelectorBtn(field));
       page.expectModalDisplayed();
@@ -187,6 +184,7 @@ describe('CreatureOnkillReputation integration tests', () => {
     });
 
     xit('changing a value via FactionSelector should correctly work', async () => {
+      const { fixture, page } = setup(false);
       const field = 'RewOnKillRepFaction1';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
       spyOn(sqliteQueryService, 'query').and.returnValue(of([{ m_ID: 123, m_name_lang_1: 'Mock Faction' }]));

@@ -4,16 +4,19 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { SqlEditorService } from './sql-editor.service';
 
 describe('SqlEditorService', () => {
-  let service: SqlEditorService;
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [provideZonelessChangeDetection(), provideNoopAnimations(), SqlEditorService],
     });
-    service = TestBed.inject(SqlEditorService);
   });
 
+  function setup() {
+    const service = TestBed.inject(SqlEditorService);
+    return { service };
+  }
+
   it('should be created', () => {
+    const { service } = setup();
     expect(service).toBeTruthy();
     expect(service.code).toBeTruthy();
   });

@@ -45,10 +45,6 @@ describe('ItemPreviewService', () => {
     }),
   );
 
-  let service: ItemPreviewService;
-  let sqliteQueryService: SqliteQueryService;
-  let mysqlQueryService: MysqlQueryService;
-
   const mockItemNameById = 'mockItemNameById';
   const mockGetSpellNameById = 'mockGetSpellNameById';
   const mockGetSpellDescriptionById = 'mockGetSpellDescriptionById';
@@ -176,8 +172,8 @@ describe('ItemPreviewService', () => {
 
   const id = 123;
 
-  beforeEach(() => {
-    mysqlQueryService = TestBed.inject(MysqlQueryService);
+  function setup() {
+    const mysqlQueryService = TestBed.inject(MysqlQueryService);
     spyOn(mysqlQueryService, 'getItemNameById').and.callFake((i) => lastValueFrom(of(i === 1 ? mockItemNameById + i : '')));
     spyOn(mysqlQueryService, 'query').and.callFake((i) => {
       if (i.indexOf('npc_vendor') > -1) {
@@ -210,7 +206,7 @@ describe('ItemPreviewService', () => {
       return of(null) as any;
     });
 
-    sqliteQueryService = TestBed.inject(SqliteQueryService);
+    const sqliteQueryService = TestBed.inject(SqliteQueryService);
     spyOn(sqliteQueryService, 'getSpellNameById').and.callFake((i) => lastValueFrom(of(mockGetSpellNameById + i)));
     spyOn(sqliteQueryService, 'getSpellDescriptionById').and.callFake((i) =>
       lastValueFrom(of(String(i).indexOf('555') > -1 ? '' : mockGetSpellDescriptionById + i)),
@@ -356,21 +352,25 @@ describe('ItemPreviewService', () => {
       return of(null);
     });
 
-    service = TestBed.inject(ItemPreviewService);
-  });
+    const service = TestBed.inject(ItemPreviewService);
+    return { service, mysqlQueryService, sqliteQueryService };
+  }
 
   it('getItemExtendedCostFromVendor', () => {
+    const { service, mysqlQueryService } = setup();
     service['getItemExtendedCostFromVendor'](123);
     expect(mysqlQueryService.query).toHaveBeenCalledTimes(1);
   });
 
   it('getItemsetSlotBak', () => {
+    const { service, sqliteQueryService } = setup();
     service['getItemsetSlotBak'](id);
     expect(sqliteQueryService.query).toHaveBeenCalledTimes(1);
     expect(sqliteQueryService.query).toHaveBeenCalledWith(`SELECT * FROM items WHERE itemset = ${id} ORDER BY slotBak, id`);
   });
 
   it('getItemNameByIDsASC', () => {
+    const { service, mysqlQueryService } = setup();
     const IDs = [123, 1234];
     service['getItemNameByIDsASC'](IDs);
     expect(mysqlQueryService.query).toHaveBeenCalledTimes(1);
@@ -380,30 +380,35 @@ describe('ItemPreviewService', () => {
   });
 
   it('getItemsetById', () => {
+    const { service, sqliteQueryService } = setup();
     service['getItemsetById'](id);
     expect(sqliteQueryService.query).toHaveBeenCalledTimes(1);
     expect(sqliteQueryService.query).toHaveBeenCalledWith(`SELECT * FROM itemset WHERE id = ${id}`);
   });
 
   it('getItemLimitCategoryById', () => {
+    const { service, sqliteQueryService } = setup();
     service['getItemLimitCategoryById'](id);
     expect(sqliteQueryService.query).toHaveBeenCalledTimes(1);
     expect(sqliteQueryService.query).toHaveBeenCalledWith(`SELECT * FROM item_limit_category WHERE id = ${id}`);
   });
 
   it('getGemEnchantmentIdById', () => {
+    const { service, sqliteQueryService } = setup();
     service['getGemEnchantmentIdById'](id);
     expect(sqliteQueryService.queryValue).toHaveBeenCalledTimes(1);
     expect(sqliteQueryService.queryValue).toHaveBeenCalledWith(`SELECT gemEnchantmentId AS v FROM items WHERE id = ${id};`);
   });
 
   it('getItemEnchantmentById', () => {
+    const { service, sqliteQueryService } = setup();
     service['getItemEnchantmentById'](id);
     expect(sqliteQueryService.query).toHaveBeenCalledTimes(1);
     expect(sqliteQueryService.query).toHaveBeenCalledWith(`SELECT * FROM item_enchantment WHERE id = ${id}`);
   });
 
   it('getItemExtendedCost', () => {
+    const { service, sqliteQueryService } = setup();
     const IDs = [123, 1234];
     service['getItemExtendedCost'](IDs);
     expect(sqliteQueryService.query).toHaveBeenCalledTimes(1);
@@ -411,12 +416,14 @@ describe('ItemPreviewService', () => {
   });
 
   it('getItemEnchantmentConditionById', () => {
+    const { service, sqliteQueryService } = setup();
     service['getItemEnchantmentConditionById'](id);
     expect(sqliteQueryService.query).toHaveBeenCalledTimes(1);
     expect(sqliteQueryService.query).toHaveBeenCalledWith(`SELECT * FROM item_enchantment_condition WHERE id = ${id}`);
   });
 
   it('getCreatureEntryByItemSpellId', async () => {
+    const { service, sqliteQueryService, mysqlQueryService } = setup();
     const getCreatureEntryByItemSpellIdSpy = spyOn(sqliteQueryService, 'getCreatureEntryByItemSpellId').and.returnValue(
       Promise.resolve(123),
     );
@@ -864,6 +871,7 @@ describe('ItemPreviewService', () => {
 
   for (const { name, template, output } of cases) {
     it(`Case ${name}`, async () => {
+      const { service } = setup();
       expect(await service.calculatePreview(template as unknown as ItemTemplate)).toEqual(output);
     });
   }

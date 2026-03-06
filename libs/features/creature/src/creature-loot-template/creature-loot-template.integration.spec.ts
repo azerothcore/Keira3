@@ -1,5 +1,5 @@
 import { provideZonelessChangeDetection } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CreatureLootTemplate } from '@keira/shared/acore-world-model';
@@ -13,17 +13,10 @@ import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { CreatureLootTemplateComponent } from './creature-loot-template.component';
 import { CreatureLootTemplateService } from './creature-loot-template.service';
-import Spy = jasmine.Spy;
 
 class CreatureLootTemplatePage extends MultiRowEditorPageObject<CreatureLootTemplateComponent> {}
 
 describe('CreatureLootTemplate integration tests', () => {
-  let fixture: ComponentFixture<CreatureLootTemplateComponent>;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let handlerService: CreatureHandlerService;
-  let page: CreatureLootTemplatePage;
-
   const id = 1234;
 
   const originalRow0 = new CreatureLootTemplate();
@@ -50,28 +43,29 @@ describe('CreatureLootTemplate integration tests', () => {
   function setup(creatingNew: boolean, lootId = id) {
     spyOn(TestBed.inject(CreatureLootTemplateService), 'getLootId').and.returnValue(of([{ lootId }]));
 
-    handlerService = TestBed.inject(CreatureHandlerService);
+    const handlerService = TestBed.inject(CreatureHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
     spyOn(queryService, 'queryValue').and.returnValue(of());
     const itemNamePromise = of(`MockItemName`).toPromise();
     spyOn(queryService, 'getItemNameById').and.returnValue(itemNamePromise as Promise<string>);
 
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
-    fixture = TestBed.createComponent(CreatureLootTemplateComponent);
-    page = new CreatureLootTemplatePage(fixture);
+    const fixture = TestBed.createComponent(CreatureLootTemplateComponent);
+    const page = new CreatureLootTemplatePage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+
+    return { fixture, queryService, querySpy, handlerService, page };
   }
 
   describe('Creating new', () => {
-    beforeEach(() => setup(true));
-
     it('should correctly initialise', () => {
+      const { page } = setup(true);
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
       expect(page.formError.hidden).toBe(true);
@@ -90,6 +84,7 @@ describe('CreatureLootTemplate integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
+      const { handlerService, page } = setup(true);
       expect(handlerService.isCreatureLootTemplateUnsaved()).toBe(false);
       page.addNewRow();
       expect(handlerService.isCreatureLootTemplateUnsaved()).toBe(true);
@@ -98,6 +93,7 @@ describe('CreatureLootTemplate integration tests', () => {
     });
 
     xit('should reflect the item names', async () => {
+      const { page } = setup(true);
       page.addNewRow();
       page.detectChanges();
       await page.whenReady();
@@ -105,6 +101,7 @@ describe('CreatureLootTemplate integration tests', () => {
     });
 
     it('adding new rows and executing the query should correctly work', () => {
+      const { querySpy, page } = setup(true);
       const expectedQuery =
         'DELETE FROM `creature_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0, 1, 2));\n' +
         'INSERT INTO `creature_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
@@ -128,6 +125,7 @@ describe('CreatureLootTemplate integration tests', () => {
     });
 
     it('adding a row and changing its values should correctly update the queries', () => {
+      const { page } = setup(true);
       page.addNewRow();
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0));\n' +
@@ -186,6 +184,7 @@ describe('CreatureLootTemplate integration tests', () => {
     });
 
     it('adding a row, changing its values and duplicating it should correctly update the queries', () => {
+      const { page } = setup(true);
       page.addNewRow();
       page.setInputValueById('Chance', '1');
       page.setInputValueById('QuestRequired', '2');
@@ -210,9 +209,8 @@ describe('CreatureLootTemplate integration tests', () => {
   });
 
   describe('Editing existing', () => {
-    beforeEach(() => setup(false));
-
     it('should correctly initialise', () => {
+      const { page } = setup(false);
       expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
@@ -229,6 +227,7 @@ describe('CreatureLootTemplate integration tests', () => {
     });
 
     it('deleting rows should correctly work', () => {
+      const { page } = setup(false);
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
       page.expectDiffQueryToContain('DELETE FROM `creature_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1));');
@@ -257,6 +256,7 @@ describe('CreatureLootTemplate integration tests', () => {
     });
 
     it('editing existing rows should correctly work', () => {
+      const { page } = setup(false);
       page.clickRowOfDatatable(1);
       page.setInputValueById('LootMode', 1);
 
@@ -280,6 +280,7 @@ describe('CreatureLootTemplate integration tests', () => {
     });
 
     it('combining add, edit and delete should correctly work', () => {
+      const { page } = setup(false);
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(4);
 
@@ -308,6 +309,7 @@ describe('CreatureLootTemplate integration tests', () => {
     });
 
     it('using the same row id for multiple rows should correctly show an error', () => {
+      const { page } = setup(false);
       page.clickRowOfDatatable(2);
       page.setInputValueById('Item', 0);
 
@@ -316,6 +318,7 @@ describe('CreatureLootTemplate integration tests', () => {
 
     describe('Item icon and selector button visibility based on Reference field', () => {
       it('should display keira-icon when Reference is 0', () => {
+        const { page } = setup(false);
         page.addNewRow();
         page.setInputValueById('Reference', '0');
         page.setInputValueById('Item', '99999');
@@ -327,6 +330,7 @@ describe('CreatureLootTemplate integration tests', () => {
       });
 
       it('should NOT display additional keira-icon when Reference is not 0', () => {
+        const { page } = setup(false);
         const initialIconCount = page.queryAll('keira-icon').length;
 
         page.addNewRow();
@@ -339,6 +343,7 @@ describe('CreatureLootTemplate integration tests', () => {
       });
 
       it('should hide icon when Reference changes from 0 to non-zero', () => {
+        const { page } = setup(false);
         // Click on the first row which has Reference = 0
         page.clickRowOfDatatable(0);
         page.detectChanges();
@@ -355,6 +360,7 @@ describe('CreatureLootTemplate integration tests', () => {
       });
 
       it('should show icon when Reference changes from non-zero to 0', () => {
+        const { page } = setup(false);
         // Add a new row with Reference != 0
         page.addNewRow();
         page.setInputValueById('Reference', '10');
@@ -372,6 +378,7 @@ describe('CreatureLootTemplate integration tests', () => {
       });
 
       it('should display keira-item-selector-btn when Reference is 0', () => {
+        const { page } = setup(false);
         page.clickRowOfDatatable(0); // Click first row which has Reference = 0
         page.detectChanges();
 
@@ -380,6 +387,7 @@ describe('CreatureLootTemplate integration tests', () => {
       });
 
       it('should hide keira-item-selector-btn when Reference is not 0', () => {
+        const { page } = setup(false);
         page.addNewRow();
         page.setInputValueById('Reference', '5');
 
@@ -392,7 +400,7 @@ describe('CreatureLootTemplate integration tests', () => {
   });
 
   it('should correctly show the warning if the loot id is not correctly set in the creature template', () => {
-    setup(true, 0);
+    const { page } = setup(true, 0);
 
     expect(page.query('.alert-info').innerText).toContain(
       'You have to set the field `lootid` of creature_template in order to enable this feature.',

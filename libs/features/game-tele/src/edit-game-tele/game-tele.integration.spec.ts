@@ -54,8 +54,6 @@ describe('GameTele integration tests', () => {
   // Setup Function
   function setup(creatingNew: boolean) {
     const handlerService = TestBed.inject(GameTeleHandlerService);
-    // Ideally, use a public method or setter to set '_selected'
-    // For illustration, we're setting it directly
     (handlerService as any)._selected = `${id}`;
     handlerService.isNew = creatingNew;
 
@@ -73,15 +71,8 @@ describe('GameTele integration tests', () => {
 
   // Creating New Tests
   describe('Creating new', () => {
-    let page: GameTelePage;
-    let querySpy: jasmine.Spy;
-    let handlerService: GameTeleHandlerService;
-
-    beforeEach(() => {
-      ({ page, querySpy, handlerService } = setup(true));
-    });
-
     it('should correctly initialise', () => {
+      const { page, querySpy } = setup(true);
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
       page.expectFullQueryToContain(expectedFullCreateQuery);
@@ -89,6 +80,7 @@ describe('GameTele integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
+      const { page, handlerService } = setup(true);
       const field = 'name';
       expect(handlerService.isGameTeleUnsaved()).toBe(false);
       page.setInputValueById(field, 'ABC');
@@ -98,6 +90,7 @@ describe('GameTele integration tests', () => {
     });
 
     it('changing a property and executing the query should correctly work', () => {
+      const { page, querySpy } = setup(true);
       const expectedQuery =
         'DELETE FROM `game_tele` WHERE (`id` = 1);\n' +
         'INSERT INTO `game_tele` (`id`, `position_x`, `position_y`, `position_z`, `orientation`, `map`, `name`) VALUES\n' +
@@ -117,20 +110,15 @@ describe('GameTele integration tests', () => {
 
   // Editing Existing Tests
   describe('Editing existing', () => {
-    let page: GameTelePage;
-    let querySpy: jasmine.Spy;
-
-    beforeEach(() => {
-      ({ page, querySpy } = setup(false));
-    });
-
     it('should correctly initialise', () => {
+      const { page } = setup(false);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
     it('changing all properties and executing the query should correctly work', () => {
+      const { page, querySpy } = setup(false);
       const expectedQuery =
         "UPDATE `game_tele` SET `position_x` = 1, `position_y` = 2, `position_z` = 3, `orientation` = 4, `map` = 5, `name` = '6' " +
         'WHERE (`id` = 1);';
@@ -142,8 +130,6 @@ describe('GameTele integration tests', () => {
       page.setInputValueById('orientation', 4);
       page.setInputValueById('map', 5);
       page.setInputValueById('name', '6');
-      // If you have a method to change all fields, consider using it
-      // page.changeAllFields(originalEntity, ['name'], values);
       page.expectDiffQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();
@@ -152,6 +138,7 @@ describe('GameTele integration tests', () => {
     });
 
     it('changing values should correctly update the queries', () => {
+      const { page, querySpy } = setup(false);
       page.setInputValueById('name', 'ABCD');
       page.expectDiffQueryToContain("UPDATE `game_tele` SET `name` = 'ABCD' WHERE (`id` = 1);");
       page.expectFullQueryToContain(

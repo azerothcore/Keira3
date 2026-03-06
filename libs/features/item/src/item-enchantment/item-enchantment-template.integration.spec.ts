@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -10,17 +10,10 @@ import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { ItemHandlerService } from '../item-handler.service';
 import { ItemEnchantmentTemplateComponent } from './item-enchantment-template.component';
-import Spy = jasmine.Spy;
 
 class ItemEnchantmentTemplatePage extends MultiRowEditorPageObject<ItemEnchantmentTemplateComponent> {}
 
 describe('ItemEnchantmentTemplate integration tests', () => {
-  let fixture: ComponentFixture<ItemEnchantmentTemplateComponent>;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let handlerService: ItemHandlerService;
-  let page: ItemEnchantmentTemplatePage;
-
   const id = 1234;
 
   const originalRow0 = new ItemEnchantmentTemplate();
@@ -46,25 +39,25 @@ describe('ItemEnchantmentTemplate integration tests', () => {
   });
 
   function setup(creatingNew: boolean) {
-    handlerService = TestBed.inject(ItemHandlerService);
+    const handlerService = TestBed.inject(ItemHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
 
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
-    fixture = TestBed.createComponent(ItemEnchantmentTemplateComponent);
-    page = new ItemEnchantmentTemplatePage(fixture);
+    const fixture = TestBed.createComponent(ItemEnchantmentTemplateComponent);
+    const page = new ItemEnchantmentTemplatePage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    return { fixture, queryService, querySpy, handlerService, page };
   }
 
   describe('Creating new', () => {
-    beforeEach(() => setup(true));
-
     it('should correctly initialise', () => {
+      const { page } = setup(true);
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
       expect(page.formError.hidden).toBe(true);
@@ -75,6 +68,7 @@ describe('ItemEnchantmentTemplate integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
+      const { handlerService, page } = setup(true);
       expect(handlerService.isItemEnchantmentUnsaved()).toBe(false);
       page.addNewRow();
       expect(handlerService.isItemEnchantmentUnsaved()).toBe(true);
@@ -83,6 +77,7 @@ describe('ItemEnchantmentTemplate integration tests', () => {
     });
 
     it('adding new rows and executing the query should correctly work', () => {
+      const { querySpy, page } = setup(true);
       const expectedQuery =
         'DELETE FROM `item_enchantment_template` WHERE (`entry` = 1234) AND (`ench` IN (0, 1, 2));\n' +
         'INSERT INTO `item_enchantment_template` (`entry`, `ench`, `chance`) VALUES\n' +
@@ -105,6 +100,7 @@ describe('ItemEnchantmentTemplate integration tests', () => {
     });
 
     it('adding a row and changing its values should correctly update the queries', () => {
+      const { page } = setup(true);
       page.addNewRow();
       page.expectDiffQueryToContain(
         'DELETE FROM `item_enchantment_template` WHERE (`entry` = 1234) AND (`ench` IN (0));\n' +
@@ -143,6 +139,7 @@ describe('ItemEnchantmentTemplate integration tests', () => {
     });
 
     it('adding a row changing its values and duplicate it should correctly update the queries', () => {
+      const { page } = setup(true);
       page.addNewRow();
       page.setInputValueById('chance', '11');
       page.setInputValueById('ench', '123');
@@ -164,9 +161,8 @@ describe('ItemEnchantmentTemplate integration tests', () => {
   });
 
   describe('Editing existing', () => {
-    beforeEach(() => setup(false));
-
     it('should correctly initialise', () => {
+      const { page } = setup(false);
       expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
@@ -181,6 +177,7 @@ describe('ItemEnchantmentTemplate integration tests', () => {
     });
 
     it('deleting rows should correctly work', () => {
+      const { page } = setup(false);
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
       page.expectDiffQueryToContain('DELETE FROM `item_enchantment_template` WHERE (`entry` = 1234) AND (`ench` IN (1));');
@@ -207,6 +204,7 @@ describe('ItemEnchantmentTemplate integration tests', () => {
     });
 
     it('editing existing rows should correctly work', () => {
+      const { page } = setup(false);
       page.clickRowOfDatatable(1);
       page.setInputValueById('chance', 1);
 
@@ -225,6 +223,7 @@ describe('ItemEnchantmentTemplate integration tests', () => {
     });
 
     it('combining add, edit and delete should correctly work', () => {
+      const { page } = setup(false);
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(4);
 
@@ -251,6 +250,7 @@ describe('ItemEnchantmentTemplate integration tests', () => {
     });
 
     it('using the same row id for multiple rows should correctly show an error', () => {
+      const { page } = setup(false);
       page.clickRowOfDatatable(2);
       page.setInputValueById('ench', 0);
 
