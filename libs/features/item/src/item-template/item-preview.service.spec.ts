@@ -814,6 +814,11 @@ describe('ItemPreviewService', () => {
       output: `<br>+1 Holy Resistance<br>+1 Arcane Resistance`,
     },
     {
+      name: 'Negative resistance',
+      template: { holy_res: -5 },
+      output: `<br>-5 Holy Resistance`,
+    },
+    {
       name: 'Gem Enchantment - success',
       template: { entry: 100 },
       output: `<br><span class="q1">Helias</span><br><span class="q0">Requires less than 2 meta gems;</span><br><span class="q0">Requires more yellow gems than yellow gems</span>`,
