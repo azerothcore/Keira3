@@ -16,6 +16,7 @@ import { SaiHandlerService } from './sai-handler.service';
 
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { tickAsync } from 'ngx-page-object-model';
+import { beforeEach, describe, it } from 'node:test';
 
 class SaiEditorPage extends MultiRowEditorPageObject<SaiEditorComponent> {
   get event1Name(): HTMLLabelElement {
@@ -356,7 +357,6 @@ describe('SaiEditorComponent integration tests', () => {
 
       page.clickElement(page.generateCommentsBtn);
       await tickAsync();
-      await tickAsync();
 
       expect(page.getDatatableCell(0, saiColIndex).innerText).toEqual(`${name} - On Aggro - Kill Target`);
       expect(page.getDatatableCell(1, saiColIndex).innerText).toEqual(`${name} - On Just Died - Start Attacking`);
@@ -383,7 +383,6 @@ describe('SaiEditorComponent integration tests', () => {
       component.editorService['_newRows'][2].action_type = SAI_ACTIONS.FLEE_FOR_ASSIST;
 
       page.clickElement(page.generateCommentSingleBtn);
-      await tickAsync();
       await tickAsync();
 
       expect(page.getDatatableCell(0, saiColIndex).innerText).toEqual(``);

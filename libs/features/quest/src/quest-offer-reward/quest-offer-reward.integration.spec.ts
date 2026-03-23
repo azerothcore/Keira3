@@ -10,6 +10,7 @@ import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-uti
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { tickAsync } from 'ngx-page-object-model';
 import { ToastrModule } from 'ngx-toastr';
+import { beforeEach, describe, it } from 'node:test';
 import { of } from 'rxjs';
 import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
@@ -123,7 +124,6 @@ describe('QuestOfferReward integration tests', () => {
       page.detectChanges();
 
       page.setInputValueById('RewardText', value);
-      await tickAsync();
       await tickAsync();
 
       expect(page.completionText.innerText).toContain(value);
