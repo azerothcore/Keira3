@@ -1,5 +1,5 @@
 {
-  "ignorePatterns": ["!**/*", "src/environments/*"],
+  "ignorePatterns": ["!**/*", "vitest.config.ts", "src/environments/*"],
   "overrides": [
     {
       "files": ["*.ts"],

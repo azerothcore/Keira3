@@ -1,12 +1,12 @@
-import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { VersionDbRow, VersionRow } from '@keira/shared/constants';
+import { MysqlQueryService, MysqlService } from '@keira/shared/db-layer';
+import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { of, throwError } from 'rxjs';
 import { anyString, instance, mock, reset, when } from 'ts-mockito';
 import { DashboardComponent } from './dashboard.component';
-import { MysqlQueryService, MysqlService } from '@keira/shared/db-layer';
 
 class DashboardComponentPage extends PageObject<DashboardComponent> {
   get coreVersion(): HTMLTableCellElement {

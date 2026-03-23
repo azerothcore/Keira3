@@ -106,29 +106,10 @@
       }
     },
     "test": {
-      "executor": "@angular-devkit/build-angular:karma",
+      "executor": "nx:run-commands",
       "options": {
-        "tsConfig": "apps/keira/src/tsconfig.spec.json",
-        "karmaConfig": "apps/keira/src/karma.conf.js",
-        "codeCoverage": true,
-        "codeCoverageExclude": [
-          "apps/keira/src/app/config/**/*",
-          "apps/keira/src/app/constants/**/*",
-          "apps/keira/src/app/shared/services/electron.service.ts",
-          "apps/keira/src/app/shared/types/**/*",
-          "apps/keira/src/app/shared/testing/**/*",
-          "apps/keira/src/app/shared/testing/test-helpers.ts"
-        ],
-        "scripts": ["node_modules/squel/dist/squel.min.js"],
-        "styles": ["apps/keira/src/app/scss/main-test.scss"],
-        "assets": [
-          "apps/keira/src/assets",
-          "apps/keira/src/favicon.ico",
-          "apps/keira/src/favicon.png",
-          "apps/keira/src/favicon.icns",
-          "apps/keira/src/favicon.256x256.png",
-          "apps/keira/src/favicon.512x512.png"
-        ]
+        "command": "npx vitest run",
+        "cwd": "{projectRoot}"
       }
     },
     "lint": {
