@@ -9,7 +9,7 @@
       "default",
       "!{projectRoot}/tsconfig.spec.json",
       "!{projectRoot}/**/*.spec.[jt]s",
-      "!{projectRoot}/karma.conf.js",
+      "!{projectRoot}/vitest.config.ts",
       "!{projectRoot}/.eslintrc.json",
       "!{projectRoot}/eslint.config.js"
     ]
@@ -21,7 +21,7 @@
       "cache": true
     },
     "test": {
-      "inputs": ["default", "^production", "{workspaceRoot}/karma.conf.js"],
+      "inputs": ["default", "^production", "{workspaceRoot}/vitest.base.config.ts"],
       "cache": true
     },
     "lint": {

@@ -138,6 +138,7 @@ describe('QuestTemplateAddon integration tests', () => {
 
       page.setInputValueById('MaxLevel', value);
       await tickAsync();
+      await tickAsync();
 
       expect(page.questPreviewReqLevel.innerText).toContain(`0 - ${value}`);
       page.removeNativeElement();

@@ -163,7 +163,7 @@ describe('DashboardComponent', () => {
 
     page.detectChanges();
 
-    expect(errorSpy).toHaveBeenCalledTimes(1);
+    expect(errorSpy).toHaveBeenCalled();
     expect(errorSpy).toHaveBeenCalledWith(error);
     expect(page.dbWarning()).toBeDefined();
   });

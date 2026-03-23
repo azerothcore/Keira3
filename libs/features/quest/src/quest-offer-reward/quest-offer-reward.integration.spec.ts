@@ -124,6 +124,7 @@ describe('QuestOfferReward integration tests', () => {
 
       page.setInputValueById('RewardText', value);
       await tickAsync();
+      await tickAsync();
 
       expect(page.completionText.innerText).toContain(value);
       page.removeNativeElement();

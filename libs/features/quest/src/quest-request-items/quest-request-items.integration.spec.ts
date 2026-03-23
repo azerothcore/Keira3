@@ -115,6 +115,7 @@ describe('QuestRequestItems integration tests', () => {
 
       page.setInputValueById('CompletionText', value);
       await tickAsync();
+      await tickAsync();
 
       expect(page.progressText.innerText).toContain(value);
       page.removeNativeElement();
