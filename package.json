@@ -32,7 +32,7 @@
     "format-staged": "pretty-quick --staged",
     "lint": "nx affected:lint --exclude='Keira3'",
     "test": "nx affected:test",
-    "test-ci": "nx affected:test --run-in-band",
+    "test-ci": "nx affected:test",
     "e2e": "playwright test -c apps/keira-e2e/playwright.config.ts apps/keira-e2e/",
     "e2e:show-trace": "playwright show-trace e2e/tracing/trace.zip",
     "version": "conventional-changelog -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md",
