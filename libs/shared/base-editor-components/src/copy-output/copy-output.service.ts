@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { RelatedTable, RelatedTableState } from './copy-output.model';
 import { forkJoin, of } from 'rxjs';
@@ -6,7 +6,7 @@ import { map } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class CopyOutputService {
-  constructor(private queryService: MysqlQueryService) {}
+  private readonly queryService = inject(MysqlQueryService);
 
   computeRelatedTableStates(inputTables: RelatedTable[], sourceId: string | number, mainTableName: string) {
     if (!inputTables || inputTables.length === 0) {
