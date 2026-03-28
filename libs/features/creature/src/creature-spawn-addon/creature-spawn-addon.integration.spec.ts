@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -17,11 +17,6 @@ import { CreatureSpawnAddonService } from './creature-spawn-addon.service';
 class CreatureSpawnAddonPage extends MultiRowEditorPageObject<CreatureSpawnAddonComponent> {}
 
 describe('CreatureSpawnAddon integration tests', () => {
-  let fixture: ComponentFixture<CreatureSpawnAddonComponent>;
-  let queryService: MysqlQueryService;
-  let handlerService: CreatureHandlerService;
-  let page: CreatureSpawnAddonPage;
-
   const id = 1234;
 
   const originalRow0 = new CreatureSpawnAddon();
@@ -45,28 +40,28 @@ describe('CreatureSpawnAddon integration tests', () => {
   });
 
   function setup(creatingNew: boolean) {
-    handlerService = TestBed.inject(CreatureHandlerService);
+    const handlerService = TestBed.inject(CreatureHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(MysqlQueryService);
+    const queryService = TestBed.inject(MysqlQueryService);
     spyOn(queryService, 'query').and.returnValue(of([]));
 
     spyOn(TestBed.inject(CreatureSpawnAddonService), 'selectQuery').and.returnValue(
       of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]),
     );
 
-    fixture = TestBed.createComponent(CreatureSpawnAddonComponent);
+    const fixture = TestBed.createComponent(CreatureSpawnAddonComponent);
     // component = fixture.componentInstance;
-    page = new CreatureSpawnAddonPage(fixture);
+    const page = new CreatureSpawnAddonPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    return { fixture, queryService, handlerService, page };
   }
 
   describe('Creating new', () => {
-    beforeEach(() => setup(true));
-
     it('should correctly initialise', () => {
+      const { handlerService, page } = setup(true);
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
       expect(page.formError.hidden).toBe(true);
@@ -94,9 +89,8 @@ describe('CreatureSpawnAddon integration tests', () => {
   });
 
   describe('Editing existing', () => {
-    beforeEach(() => setup(false));
-
     it('should correctly initialise', () => {
+      const { page } = setup(false);
       expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
@@ -111,6 +105,7 @@ describe('CreatureSpawnAddon integration tests', () => {
     });
 
     it('deleting rows should correctly work', () => {
+      const { page } = setup(false);
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
       page.expectDiffQueryToContain('DELETE FROM `creature_addon` WHERE (`guid` IN (1));');
@@ -137,6 +132,7 @@ describe('CreatureSpawnAddon integration tests', () => {
     });
 
     it('editing existing rows should correctly work', () => {
+      const { page } = setup(false);
       page.clickRowOfDatatable(1);
       page.setInputValueById('path_id', 1);
 
@@ -163,6 +159,7 @@ describe('CreatureSpawnAddon integration tests', () => {
     // });
 
     it('using the same row id for multiple rows should correctly show an error', () => {
+      const { page } = setup(false);
       page.clickRowOfDatatable(2);
       page.setInputValueById('guid', 0);
 

@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
@@ -10,7 +10,6 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { SaiSearchExistingComponent } from './sai-search-existing.component';
-import Spy = jasmine.Spy;
 
 class SaiSearchExistingComponentPage extends PageObject<SaiSearchExistingComponent> {
   get searchSourceTypeSelect(): HTMLInputElement {
@@ -28,12 +27,6 @@ class SaiSearchExistingComponentPage extends PageObject<SaiSearchExistingCompone
 }
 
 describe('SaiSearchExisting integration tests', () => {
-  let fixture: ComponentFixture<SaiSearchExistingComponent>;
-  let page: SaiSearchExistingComponentPage;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let navigateSpy: Spy;
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SaiSearchExistingComponent, RouterTestingModule, TranslateTestingModule],
@@ -41,18 +34,21 @@ describe('SaiSearchExisting integration tests', () => {
     }).compileComponents();
   });
 
-  beforeEach(() => {
-    navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
+  function setup() {
+    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
 
-    fixture = TestBed.createComponent(SaiSearchExistingComponent);
-    page = new SaiSearchExistingComponentPage(fixture);
+    const fixture = TestBed.createComponent(SaiSearchExistingComponent);
+    const page = new SaiSearchExistingComponentPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
-  });
+
+    return { fixture, page, querySpy, navigateSpy };
+  }
 
   it('should correctly initialise', async () => {
+    const { fixture, page } = setup();
     await fixture.whenStable();
     expect(page.queryWrapper.innerText).toContain(
       'SELECT `entryorguid`, `source_type` FROM `smart_scripts` GROUP BY entryorguid, source_type LIMIT 50',
@@ -98,6 +94,7 @@ describe('SaiSearchExisting integration tests', () => {
     },
   ]) {
     it(`searching an existing entity should correctly work [${testId}]`, () => {
+      const { page, querySpy } = setup();
       querySpy.calls.reset();
       if (source_type) {
         page.setInputValue(page.searchSourceTypeSelect, selectIndex + ': ' + source_type);
@@ -118,6 +115,7 @@ describe('SaiSearchExisting integration tests', () => {
   }
 
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
+    const { page, querySpy, navigateSpy } = setup();
     const results: Partial<SmartScripts>[] = [
       { entryorguid: 1, source_type: 2 },
       { entryorguid: 2, source_type: 3 },
@@ -126,7 +124,7 @@ describe('SaiSearchExisting integration tests', () => {
     ];
 
     querySpy.calls.reset();
-    querySpy.and.returnValue(of(results));
+    querySpy.and.returnValue(of(results as any));
 
     page.clickElement(page.searchBtn);
 

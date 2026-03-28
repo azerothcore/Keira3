@@ -1022,8 +1022,9 @@ export class ItemPreviewService {
     // magic resistances
     resistanceFields.forEach((rowName, idx) => {
       const resField = itemTemplate[rowName + '_res'];
-      if (rowName != null && resField != null && resField !== 0) {
-        magicRsistances += `<br>+${resField} ${ITEM_CONSTANTS.resistances[idx]}`;
+      if (rowName != null && resField != null && Number(resField) !== 0) {
+        const num = Number(resField);
+        magicRsistances += `<br>${num > 0 ? '+' + num : String(num)} ${ITEM_CONSTANTS.resistances[idx]}`;
       }
     });
 

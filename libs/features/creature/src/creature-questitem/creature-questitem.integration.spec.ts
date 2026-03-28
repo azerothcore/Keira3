@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -11,18 +11,11 @@ import { of } from 'rxjs';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { CreatureQuestitemComponent } from './creature-questitem.component';
-import Spy = jasmine.Spy;
 import { instance, mock } from 'ts-mockito';
 
 class CreatureQuestitemPage extends MultiRowEditorPageObject<CreatureQuestitemComponent> {}
 
 describe('CreatureQuestitem integration tests', () => {
-  let fixture: ComponentFixture<CreatureQuestitemComponent>;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let handlerService: CreatureHandlerService;
-  let page: CreatureQuestitemPage;
-
   const id = 1234;
 
   const originalRow0 = new CreatureQuestitem();
@@ -47,26 +40,26 @@ describe('CreatureQuestitem integration tests', () => {
   });
 
   function setup(creatingNew: boolean) {
-    handlerService = TestBed.inject(CreatureHandlerService);
+    const handlerService = TestBed.inject(CreatureHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
     spyOn(queryService, 'queryValue').and.returnValue(of());
 
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
-    fixture = TestBed.createComponent(CreatureQuestitemComponent);
-    page = new CreatureQuestitemPage(fixture);
+    const fixture = TestBed.createComponent(CreatureQuestitemComponent);
+    const page = new CreatureQuestitemPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    return { fixture, queryService, querySpy, handlerService, page };
   }
 
   describe('Creating new', () => {
-    beforeEach(() => setup(true));
-
     it('should correctly initialise', () => {
+      const { page } = setup(true);
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
       expect(page.formError.hidden).toBe(true);
@@ -77,6 +70,7 @@ describe('CreatureQuestitem integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
+      const { handlerService, page } = setup(true);
       expect(handlerService.isCreatureQuestitemUnsaved()).toBe(false);
       page.addNewRow();
       expect(handlerService.isCreatureQuestitemUnsaved()).toBe(true);
@@ -85,6 +79,7 @@ describe('CreatureQuestitem integration tests', () => {
     });
 
     it('adding new rows and executing the query should correctly work', () => {
+      const { querySpy, page } = setup(true);
       const expectedQuery =
         'DELETE FROM `creature_questitem` WHERE (`CreatureEntry` = 1234) AND (`Idx` IN (0, 1, 2));\n' +
         'INSERT INTO `creature_questitem` (`CreatureEntry`, `Idx`, `ItemId`, `VerifiedBuild`) VALUES\n' +
@@ -107,6 +102,7 @@ describe('CreatureQuestitem integration tests', () => {
     });
 
     it('adding a row and changing its values should correctly update the queries', () => {
+      const { page } = setup(true);
       page.addNewRow();
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_questitem` WHERE (`CreatureEntry` = 1234) AND (`Idx` IN (0));\n' +
@@ -145,6 +141,7 @@ describe('CreatureQuestitem integration tests', () => {
     });
 
     it('adding a row changing its values and duplicate it should correctly update the queries', () => {
+      const { page } = setup(true);
       page.addNewRow();
       page.setInputValueById('ItemId', '1');
       page.setInputValueById('Idx', '123');
@@ -166,9 +163,8 @@ describe('CreatureQuestitem integration tests', () => {
   });
 
   describe('Editing existing', () => {
-    beforeEach(() => setup(false));
-
     it('should correctly initialise', () => {
+      const { page } = setup(false);
       expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
@@ -183,6 +179,7 @@ describe('CreatureQuestitem integration tests', () => {
     });
 
     it('deleting rows should correctly work', () => {
+      const { page } = setup(false);
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
       page.expectDiffQueryToContain('DELETE FROM `creature_questitem` WHERE (`CreatureEntry` = 1234) AND (`Idx` IN (1));');
@@ -209,6 +206,7 @@ describe('CreatureQuestitem integration tests', () => {
     });
 
     it('editing existing rows should correctly work', () => {
+      const { page } = setup(false);
       page.clickRowOfDatatable(1);
       page.setInputValueById('ItemId', 1);
 
@@ -227,6 +225,7 @@ describe('CreatureQuestitem integration tests', () => {
     });
 
     it('combining add, edit and delete should correctly work', () => {
+      const { page } = setup(false);
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(4);
 
@@ -253,6 +252,7 @@ describe('CreatureQuestitem integration tests', () => {
     });
 
     it('using the same row id for multiple rows should correctly show an error', () => {
+      const { page } = setup(false);
       page.clickRowOfDatatable(2);
       page.setInputValueById('Idx', 0);
 

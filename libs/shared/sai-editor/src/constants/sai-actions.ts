@@ -211,10 +211,12 @@ SAI_ACTION_TOOLTIPS[SAI_ACTIONS.TALK] = 'Creature says a creature_text line';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.TALK] = 'GroupId';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.TALK] = 'Duration';
 SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.TALK] = 'Target';
+SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.TALK] = 'Delay';
 SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.TALK] = 'This is creature_text.GroupID';
 SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.TALK] = 'Duration (milliseconds) to wait before SMART_EVENT_TEXT_OVER event is triggered';
 SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.TALK] =
   '0 = Try to trigger talk of the target; ' + '1 = Set target as talk target (used for $vars in texts and whisper target)';
+SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.TALK] = 'Duration (milliseconds) to delay the Action';
 
 // SMART_ACTION_SET_FACTION
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_FACTION] = 'Set faction of target';

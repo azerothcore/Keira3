@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -11,18 +11,11 @@ import { of } from 'rxjs';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { CreatureTemplateAddonComponent } from './creature-template-addon.component';
-import Spy = jasmine.Spy;
 import { instance, mock } from 'ts-mockito';
 
 class CreatureTemplateAddonPage extends EditorPageObject<CreatureTemplateAddonComponent> {}
 
 describe('CreatureTemplateAddon integration tests', () => {
-  let fixture: ComponentFixture<CreatureTemplateAddonComponent>;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let handlerService: CreatureHandlerService;
-  let page: CreatureTemplateAddonPage;
-
   const id = 1234;
   const expectedFullCreateQuery =
     'DELETE FROM `creature_template_addon` WHERE (`entry` = 1234);\n' +
@@ -52,31 +45,32 @@ describe('CreatureTemplateAddon integration tests', () => {
   });
 
   function setup(creatingNew: boolean) {
-    handlerService = TestBed.inject(CreatureHandlerService);
+    const handlerService = TestBed.inject(CreatureHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
 
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
 
-    fixture = TestBed.createComponent(CreatureTemplateAddonComponent);
-    page = new CreatureTemplateAddonPage(fixture);
+    const fixture = TestBed.createComponent(CreatureTemplateAddonComponent);
+    const page = new CreatureTemplateAddonPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    return { fixture, queryService, querySpy, handlerService, page };
   }
 
   describe('Creating new', () => {
-    beforeEach(() => setup(true));
-
     it('should correctly initialise', () => {
+      const { page } = setup(true);
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
     it('should correctly update the unsaved status', () => {
+      const { handlerService, page } = setup(true);
       const field = 'path_id';
       expect(handlerService.isCreatureTemplateAddonUnsaved()).toBe(false);
       page.setInputValueById(field, 3);
@@ -86,6 +80,7 @@ describe('CreatureTemplateAddon integration tests', () => {
     });
 
     it('changing a property and executing the query should correctly work', () => {
+      const { querySpy, page } = setup(true);
       const expectedQuery =
         'DELETE FROM `creature_template_addon` WHERE (`entry` = 1234);\n' +
         'INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `visibilityDistanceType`, `auras`) VALUES\n' +
@@ -103,9 +98,8 @@ describe('CreatureTemplateAddon integration tests', () => {
   });
 
   describe('Editing existing', () => {
-    beforeEach(() => setup(false));
-
     it('should correctly initialise', () => {
+      const { page } = setup(false);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(
@@ -116,6 +110,7 @@ describe('CreatureTemplateAddon integration tests', () => {
     });
 
     it('changing all properties and executing the query should correctly work', () => {
+      const { querySpy, page } = setup(false);
       const expectedQuery =
         'UPDATE `creature_template_addon` SET ' +
         "`path_id` = 0, `mount` = 1, `bytes1` = 2, `bytes2` = 3, `emote` = 4, `visibilityDistanceType` = 5, `auras` = '6' WHERE (`entry` = 1234);";
@@ -130,6 +125,7 @@ describe('CreatureTemplateAddon integration tests', () => {
     });
 
     it('changing values should correctly update the queries', () => {
+      const { page } = setup(false);
       page.setInputValueById('path_id', '3');
       page.expectDiffQueryToContain('UPDATE `creature_template_addon` SET `path_id` = 3 WHERE (`entry` = 1234);');
       page.expectFullQueryToContain(
@@ -148,6 +144,7 @@ describe('CreatureTemplateAddon integration tests', () => {
     });
 
     xit('changing a value via SingleValueSelector should correctly work', async () => {
+      const { page } = setup(false);
       const field = 'bytes1';
       page.clickElement(page.getSelectorBtn(field));
 

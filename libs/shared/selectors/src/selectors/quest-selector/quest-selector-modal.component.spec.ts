@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { BsModalRef } from 'ngx-bootstrap/modal';
@@ -10,10 +10,6 @@ import { QuestSearchService } from '../../search/quest-search.service';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 
 describe('QuestSelectorModalComponent', () => {
-  let component: QuestSelectorModalComponent;
-  let fixture: ComponentFixture<QuestSelectorModalComponent>;
-  let searchService: QuestSearchService;
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [QuestSelectorModalComponent, TranslateTestingModule],
@@ -26,16 +22,19 @@ describe('QuestSelectorModalComponent', () => {
     }).compileComponents();
   });
 
-  beforeEach(() => {
-    searchService = TestBed.inject(QuestSearchService);
+  function setup() {
+    const searchService = TestBed.inject(QuestSearchService);
     searchService.query = '--mock query';
 
-    fixture = TestBed.createComponent(QuestSelectorModalComponent);
-    component = fixture.componentInstance;
+    const fixture = TestBed.createComponent(QuestSelectorModalComponent);
+    const component = fixture.componentInstance;
     fixture.detectChanges();
-  });
+
+    return { fixture, component };
+  }
 
   it('should create', () => {
+    const { component } = setup();
     expect(component).toBeTruthy();
   });
 });

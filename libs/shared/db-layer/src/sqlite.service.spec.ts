@@ -5,8 +5,6 @@ import { SqliteService } from './sqlite.service';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 
 describe('SqliteService', () => {
-  let service: SqliteService;
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
@@ -15,10 +13,15 @@ describe('SqliteService', () => {
         { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
       ],
     });
-    service = TestBed.inject(SqliteService);
   });
 
+  function setup() {
+    const service = TestBed.inject(SqliteService);
+    return { service };
+  }
+
   it('should be created', () => {
+    const { service } = setup();
     expect(service).toBeTruthy();
   });
 });

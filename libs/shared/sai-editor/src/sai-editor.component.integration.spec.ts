@@ -1,5 +1,5 @@
-import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 
@@ -652,7 +652,7 @@ describe('SaiEditorComponent integration tests', () => {
       expect(page.action1Name.innerText).toContain('GroupId');
       expect(page.action2Name.innerText).toContain('Duration');
       expect(page.action3Name.innerText).toContain('Target');
-      expect(page.action4Name.innerText).toContain('param4');
+      expect(page.action4Name.innerText).toContain('Delay');
       expect(page.action5Name.innerText).toContain('param5');
       expect(page.action6Name.innerText).toContain('param6');
 

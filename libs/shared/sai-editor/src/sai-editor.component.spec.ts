@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -9,10 +9,6 @@ import { SaiHandlerService } from './sai-handler.service';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 
 describe('SaiEditorComponent', () => {
-  let component: SaiEditorComponent;
-  let fixture: ComponentFixture<SaiEditorComponent>;
-  let handler: SaiHandlerService;
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), RouterTestingModule, TranslateTestingModule],
@@ -24,17 +20,20 @@ describe('SaiEditorComponent', () => {
     }).compileComponents();
   });
 
-  beforeEach(() => {
+  function setup() {
     const selected = { source_type: 1, entryorguid: 100 };
-    handler = TestBed.inject(SaiHandlerService);
+    const handler = TestBed.inject(SaiHandlerService);
     handler['_selected'] = JSON.stringify(selected);
 
-    fixture = TestBed.createComponent(SaiEditorComponent);
-    component = fixture.componentInstance;
+    const fixture = TestBed.createComponent(SaiEditorComponent);
+    const component = fixture.componentInstance;
     fixture.detectChanges();
-  });
+
+    return { component, fixture, handler };
+  }
 
   it('getName() should correctly work', () => {
+    const { component } = setup();
     const value = 'testValue';
     const def = 'defaultValue';
 

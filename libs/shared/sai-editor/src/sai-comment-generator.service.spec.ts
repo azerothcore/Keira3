@@ -1030,7 +1030,7 @@ describe('SaiCommentGeneratorService', () => {
           target_type: SAI_TARGETS.GAMEOBJECT_RANGE,
           target_param1: 0,
         },
-        expected: `MockEntity - In Combat - Move To Closest Creature 'mockGameobjectNameById0'`,
+        expected: `MockEntity - In Combat - Move To Closest Gameobject 'mockGameobjectNameById0'`,
       },
       {
         name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.GAMEOBJECT_DISTANCE)`,
@@ -1039,7 +1039,7 @@ describe('SaiCommentGeneratorService', () => {
           target_type: SAI_TARGETS.GAMEOBJECT_DISTANCE,
           target_param1: 0,
         },
-        expected: `MockEntity - In Combat - Move To Closest Creature 'mockGameobjectNameById0'`,
+        expected: `MockEntity - In Combat - Move To Closest Gameobject 'mockGameobjectNameById0'`,
       },
       {
         name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.CLOSEST_GAMEOBJECT)`,
@@ -1048,7 +1048,7 @@ describe('SaiCommentGeneratorService', () => {
           target_type: SAI_TARGETS.CLOSEST_GAMEOBJECT,
           target_param1: 0,
         },
-        expected: `MockEntity - In Combat - Move To Closest Creature 'mockGameobjectNameById0'`,
+        expected: `MockEntity - In Combat - Move To Closest Gameobject 'mockGameobjectNameById0'`,
       },
       {
         name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.GAMEOBJECT_GUID)`,
@@ -1057,7 +1057,7 @@ describe('SaiCommentGeneratorService', () => {
           target_type: SAI_TARGETS.GAMEOBJECT_GUID,
           target_param1: 0,
         },
-        expected: `MockEntity - In Combat - Move To Closest Creature 'mockGameobjectNameByGuid0'`,
+        expected: `MockEntity - In Combat - Move To Closest Gameobject 'mockGameobjectNameByGuid0'`,
       },
       {
         name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.INVOKER_PARTY)`,
@@ -1138,6 +1138,14 @@ describe('SaiCommentGeneratorService', () => {
           target_type: 27,
         },
         expected: `MockEntity - In Combat - Move To Loot Recipients`,
+      },
+      {
+        name: `SAI_ACTIONS.MOVE_TO_POS check target type (unsupported target type)`,
+        input: {
+          action_type: SAI_ACTIONS.MOVE_TO_POS,
+          target_type: 99999,
+        },
+        expected: `MockEntity - In Combat - Move To [unsupported target type]`,
       },
       {
         name: `SAI_ACTIONS.GO_SET_LOOT_STATE check action param 1 (0)`,
@@ -1960,6 +1968,15 @@ describe('SaiCommentGeneratorService', () => {
           target_param1: 0,
         },
         expected: `MockEntity - In Combat - Move To Instance Storage`,
+      },
+      {
+        name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.FORMATION)`,
+        input: {
+          action_type: SAI_ACTIONS.MOVE_TO_POS,
+          target_type: SAI_TARGETS.FORMATION,
+          target_param1: 0,
+        },
+        expected: `MockEntity - In Combat - Move To Formation`,
       },
       {
         name: `SAI_ACTIONS.MOVE_TO_POS check target type (unsupported target type)`,

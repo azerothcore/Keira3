@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -10,18 +10,11 @@ import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { GossipHandlerService } from '../gossip-handler.service';
 import { GossipMenuComponent } from './gossip-menu.component';
-import Spy = jasmine.Spy;
 import { instance, mock } from 'ts-mockito';
 
 class GossipMenuPage extends MultiRowEditorPageObject<GossipMenuComponent> {}
 
 describe('GossipMenu integration tests', () => {
-  let fixture: ComponentFixture<GossipMenuComponent>;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let handlerService: GossipHandlerService;
-  let page: GossipMenuPage;
-
   const id = 1234;
 
   const originalRow0 = new GossipMenu();
@@ -45,25 +38,26 @@ describe('GossipMenu integration tests', () => {
   });
 
   function setup(creatingNew: boolean) {
-    handlerService = TestBed.inject(GossipHandlerService);
+    const handlerService = TestBed.inject(GossipHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
 
     spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
-    fixture = TestBed.createComponent(GossipMenuComponent);
-    page = new GossipMenuPage(fixture);
+    const fixture = TestBed.createComponent(GossipMenuComponent);
+    const page = new GossipMenuPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+
+    return { page, querySpy, handlerService };
   }
 
   describe('Creating new', () => {
-    beforeEach(() => setup(true));
-
     it('should correctly initialise', () => {
+      const { page } = setup(true);
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
       expect(page.formError.hidden).toBe(true);
@@ -74,6 +68,7 @@ describe('GossipMenu integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
+      const { page, handlerService } = setup(true);
       expect(handlerService.isGossipMenuTableUnsaved()).toBe(false);
       page.addNewRow();
       expect(handlerService.isGossipMenuTableUnsaved()).toBe(true);
@@ -82,6 +77,7 @@ describe('GossipMenu integration tests', () => {
     });
 
     it('adding new rows and executing the query should correctly work', () => {
+      const { page, querySpy } = setup(true);
       const expectedQuery =
         'DELETE FROM `gossip_menu` WHERE (`MenuID` = 1234) AND (`TextID` IN (0, 1, 2));\n' +
         'INSERT INTO `gossip_menu` (`MenuID`, `TextID`) VALUES\n' +
@@ -104,6 +100,7 @@ describe('GossipMenu integration tests', () => {
     });
 
     it('adding a row and changing its values should correctly update the queries', () => {
+      const { page } = setup(true);
       page.addNewRow();
       page.expectDiffQueryToContain(
         'DELETE FROM `gossip_menu` WHERE (`MenuID` = 1234) AND (`TextID` IN (0));\n' +
@@ -126,6 +123,7 @@ describe('GossipMenu integration tests', () => {
     });
 
     it('adding a row changing its values and duplicate it should correctly update the queries', () => {
+      const { page } = setup(true);
       page.addNewRow();
       page.setInputValueById('TextID', '123');
       page.duplicateSelectedRow();
@@ -146,9 +144,8 @@ describe('GossipMenu integration tests', () => {
   });
 
   describe('Editing existing', () => {
-    beforeEach(() => setup(false));
-
     it('should correctly initialise', () => {
+      const { page } = setup(false);
       expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
@@ -163,6 +160,7 @@ describe('GossipMenu integration tests', () => {
     });
 
     it('deleting rows should correctly work', () => {
+      const { page } = setup(false);
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
       page.expectDiffQueryToContain('DELETE FROM `gossip_menu` WHERE (`MenuID` = 1234) AND (`TextID` IN (1));');
@@ -187,6 +185,7 @@ describe('GossipMenu integration tests', () => {
     });
 
     it('editing existing rows should correctly work', () => {
+      const { page } = setup(false);
       page.clickRowOfDatatable(1);
       page.setInputValueById('TextID', 123);
 
@@ -205,6 +204,7 @@ describe('GossipMenu integration tests', () => {
     });
 
     it('combining add, edit and delete should correctly work', () => {
+      const { page } = setup(false);
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(4);
 
@@ -231,6 +231,7 @@ describe('GossipMenu integration tests', () => {
     });
 
     it('using the same row id for multiple rows should correctly show an error', () => {
+      const { page } = setup(false);
       page.clickRowOfDatatable(2);
       page.setInputValueById('TextID', 0);
 

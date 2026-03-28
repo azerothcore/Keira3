@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
@@ -11,20 +11,12 @@ import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { QuestHandlerService } from '../quest-handler.service';
 import { SelectQuestComponent } from './select-quest.component';
-import Spy = jasmine.Spy;
 
 class SelectQuestComponentPage extends SelectPageObject<SelectQuestComponent> {
   override ID_FIELD = 'ID';
 }
 
 describe('SelectQuest integration tests', () => {
-  let component: SelectQuestComponent;
-  let fixture: ComponentFixture<SelectQuestComponent>;
-  let page: SelectQuestComponentPage;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let navigateSpy: Spy;
-
   const value = 1200;
 
   beforeEach(() => {
@@ -34,19 +26,22 @@ describe('SelectQuest integration tests', () => {
     }).compileComponents();
   });
 
-  beforeEach(() => {
-    navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
+  function setup() {
+    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
 
-    fixture = TestBed.createComponent(SelectQuestComponent);
-    page = new SelectQuestComponentPage(fixture);
-    component = fixture.componentInstance;
+    const fixture = TestBed.createComponent(SelectQuestComponent);
+    const page = new SelectQuestComponentPage(fixture);
+    const component = fixture.componentInstance;
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
-  });
+
+    return { fixture, page, component, querySpy, navigateSpy };
+  }
 
   it('should correctly initialise', async () => {
+    const { fixture, page, component, querySpy } = setup();
     await fixture.whenStable();
     expect(page.createInput.value).toEqual(`${component.customStartingId}`);
     page.expectNewEntityFree();
@@ -55,6 +50,7 @@ describe('SelectQuest integration tests', () => {
   });
 
   it('should correctly behave when inserting and selecting free id', async () => {
+    const { fixture, page, querySpy, navigateSpy } = setup();
     await fixture.whenStable();
     querySpy.calls.reset();
     querySpy.and.returnValue(of([]));
@@ -73,9 +69,10 @@ describe('SelectQuest integration tests', () => {
   });
 
   it('should correctly behave when inserting an existing entity', async () => {
+    const { fixture, page, querySpy } = setup();
     await fixture.whenStable();
     querySpy.calls.reset();
-    querySpy.and.returnValue(of(['mock value']));
+    querySpy.and.returnValue(of(['mock value'] as any));
 
     page.setInputValue(page.createInput, value);
 
@@ -108,6 +105,7 @@ describe('SelectQuest integration tests', () => {
     },
   ]) {
     it(`searching an existing entity should correctly work [${testId}]`, () => {
+      const { page, querySpy } = setup();
       querySpy.calls.reset();
       if (id) {
         page.setInputValue(page.searchIdInput, id);
@@ -127,13 +125,14 @@ describe('SelectQuest integration tests', () => {
   }
 
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
+    const { page, querySpy, navigateSpy } = setup();
     const results: Partial<QuestTemplate>[] = [
       { id: 1, LogTitle: 'An awesome Quest 1', QuestType: 0, QuestLevel: 1, MinLevel: 10, QuestDescription: '' },
       { id: 2, LogTitle: 'An awesome Quest 2', QuestType: 0, QuestLevel: 2, MinLevel: 20, QuestDescription: '' },
       { id: 3, LogTitle: 'An awesome Quest 3', QuestType: 0, QuestLevel: 3, MinLevel: 30, QuestDescription: '' },
     ];
     querySpy.calls.reset();
-    querySpy.and.returnValue(of(results));
+    querySpy.and.returnValue(of(results as any));
 
     page.clickElement(page.searchBtn);
 
