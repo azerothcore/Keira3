@@ -7,14 +7,10 @@
   "projectType": "library",
   "targets": {
     "test": {
-      "executor": "@angular-devkit/build-angular:karma",
+      "executor": "nx:run-commands",
       "options": {
-        "tsConfig": "libs/shared/loot-editor/tsconfig.spec.json",
-        "karmaConfig": "libs/shared/loot-editor/karma.conf.js",
-        "sourceMap": true,
-        "codeCoverage": true,
-        "styles": ["apps/keira/src/app/scss/main-test.scss"],
-        "scripts": []
+        "command": "npx vitest run",
+        "cwd": "{projectRoot}"
       }
     },
     "lint": {
