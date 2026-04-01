@@ -111,7 +111,7 @@
     "highlight.js": "11.11.1",
     "husky": "9.1.7",
     "jsdom": "29.0.1",
-    "jsonc-eslint-parser": "2.4.1",
+    "jsonc-eslint-parser": "2.4.2",
     "lint-staged": "16.2.6",
     "lodash.isequal": "4.5.0",
     "ngx-bootstrap": "20.0.0",
