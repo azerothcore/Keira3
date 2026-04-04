@@ -114,7 +114,7 @@
     "jsonc-eslint-parser": "2.4.2",
     "lint-staged": "16.2.6",
     "lodash.isequal": "4.5.0",
-    "ngx-bootstrap": "20.0.0",
+    "ngx-bootstrap": "20.0.2",
     "ngx-clipboard": "16.0.0",
     "ngx-highlightjs": "10.0.0",
     "ngx-page-object-model": "1.1.0",
