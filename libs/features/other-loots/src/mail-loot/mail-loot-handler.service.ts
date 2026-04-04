@@ -7,6 +7,7 @@ import { MAIL_LOOT_TEMPLATE_TABLE, MailLootTemplate } from '@keira/shared/acore-
 })
 export class MailLootHandlerService extends HandlerService<MailLootTemplate> {
   protected readonly mainEditorRoutePath = 'other-loots/mail';
+  protected override readonly copyRoutePath = 'other-loots/mail-copy';
 
   get isUnsaved(): Signal<boolean> {
     return this.statusMap[MAIL_LOOT_TEMPLATE_TABLE].asReadonly();
