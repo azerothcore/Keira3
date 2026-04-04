@@ -13,11 +13,9 @@ import {
   DYNAMIC_FLAGS,
   EXPANSION,
   FLAGS_EXTRA,
-  MECHANIC_IMMUNE_MASK,
   MOVEMENT_TYPE,
   NPC_FLAGS,
   RANK,
-  SPELL_SCHOOL_MASK,
   UNIT_CLASS,
   UNIT_FLAGS,
   UNIT_FLAGS_2,
@@ -69,8 +67,6 @@ export class CreatureTemplateComponent extends SingleRowEditorComponent<Creature
   protected readonly CREATURE_RACE = CREATURE_RACE;
   protected readonly MOVEMENT_TYPE = MOVEMENT_TYPE;
   protected readonly FLAGS_EXTRA = FLAGS_EXTRA;
-  protected readonly MECHANIC_IMMUNE_MASK = MECHANIC_IMMUNE_MASK;
-  protected readonly SPELL_SCHOOL_IMMUNE_MASK = SPELL_SCHOOL_MASK;
   protected readonly CREATURE_ICON = CREATURE_ICON;
   protected readonly EXPANSION = EXPANSION;
   protected readonly UNIT_CLASS = UNIT_CLASS;
