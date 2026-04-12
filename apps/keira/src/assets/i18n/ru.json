@@ -617,7 +617,9 @@
         "SOURCE_TYPE_SPELL_CLICK_EVENT": "npc_spellclick_spells.npc_entry",
         "SOURCE_TYPE_VEHICLE_SPELL": "Запись creature_template",
         "SOURCE_TYPE_SMART_EVENT": "ID (smart_scripts.id) + 1",
-        "SOURCE_TYPE_NPC_VENDOR": "Запись npc_vendor"
+        "SOURCE_TYPE_NPC_VENDOR": "Запись npc_vendor",
+        "SOURCE_TYPE_PLAYER_LOOT_TEMPLATE": "loot id",
+        "SOURCE_TYPE_OBJECT_VISIBILITY": "0 = Creature, 1 = GameObject"
       },
       "ENTRY": {
         "SOURCE_TYPE_CREATURE_LOOT_TEMPLATE": "Предмет creature_loot_template или reference_loot_template",
@@ -639,10 +641,14 @@
         "SOURCE_TYPE_SPELL": "ID заклинания из Spell.dbc",
         "SOURCE_TYPE_SPELL_CLICK_EVENT": "Заклинание (npc_spellclick_spells.spell_id)",
         "SOURCE_TYPE_QUEST_AVAILABLE": "ID задания",
+        "SOURCE_TYPE_GOSSIP_HELLO": "creature_template.entry",
         "SOURCE_TYPE_VEHICLE_SPELL": "ID заклинания из Spell.dbc",
         "SOURCE_TYPE_SMART_EVENT": "smart_scripts.entryorguid",
         "SOURCE_TYPE_NPC_VENDOR": "npc_vendor.item",
-        "SOURCE_TYPE_SPELL_PROC": "ID заклинания ауры, вызывающей срабатывание"
+        "SOURCE_TYPE_SPELL_PROC": "ID заклинания ауры, вызывающей срабатывание",
+        "SOURCE_TYPE_PLAYER_LOOT_TEMPLATE": "item_template.entry",
+        "SOURCE_TYPE_CREATURE_RESPAWN": "creature_template.entry",
+        "SOURCE_TYPE_OBJECT_VISIBILITY": "creature_template.entry or gameobject_template.entry"
       },
       "TARGET": {
         "SOURCE_TYPE_SPELL_IMPLICIT_TARGET": "0 = Потенциальная цель заклинания;  1 = Заклинатель",
@@ -651,6 +657,7 @@
         "SOURCE_TYPE_CREATURE_TEMPLATE_VEHICLE": "0 = Игрок на транспорте;  1 = Существо-транспорт",
         "SOURCE_TYPE_SPELL": "0 = Заклинатель;  1 = Явная цель заклинания (только для заклинаний, учитывающих выбранный заклинателем объект)",
         "SOURCE_TYPE_SPELL_CLICK_EVENT": "0 = Кликнувший;  1 = Цель клика",
+        "SOURCE_TYPE_GOSSIP_HELLO": "0 = Player;  1 = WorldObject",
         "SOURCE_TYPE_VEHICLE_SPELL": "0 = Игрок, для которого показана панель заклинаний;  1 = Существо-транспорт",
         "SOURCE_TYPE_SMART_EVENT": "0 = Инициатор;  1 = Объект",
         "SOURCE_TYPE_SPELL_PROC": "0 = Действующий; 1 = Цель действия"
