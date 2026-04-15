@@ -710,7 +710,8 @@
         "CONDITION_QUESTSTATE": "quest_template表的ID字段",
         "CONDITION_QUEST_OBJECTIVE_PROGRESS": "quest_template表的id字段",
         "CONDITION_WORLD_SCRIPT": "WorldStateCondition（定义在WorldState.h中）",
-        "CONDITION_AI_DATA": "数据索引"
+        "CONDITION_AI_DATA": "数据索引",
+        "CONDITION_RANDOM_DUNGEON": "0 = do not check difficulty; 1 = check difficulty (ConditionValue2)"
       },
       "VALUE2": {
         "CONDITION_NONE": "(未使用)",
@@ -732,7 +733,8 @@
         "CONDITION_QUESTSTATE": "状态掩码",
         "CONDITION_QUEST_OBJECTIVE_PROGRESS": "任务目标ID - 参见quest_template表的RequiredNpcOrGo字段",
         "CONDITION_WORLD_SCRIPT": "状态，0 = 未使用",
-        "CONDITION_AI_DATA": "值（用于比较）"
+        "CONDITION_AI_DATA": "值（用于比较）",
+        "CONDITION_RANDOM_DUNGEON": "If ConditionValue1 = 1, compares against the player current map difficulty. Value must be less than MAX_DIFFICULTY"
       },
       "VALUE3": {
         "CONDITION_NONE": "(从未使用)",

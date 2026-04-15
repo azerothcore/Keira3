@@ -562,7 +562,6 @@
       "TEXT": "The actual text. The message in this field will be shown as the text on a page."
     }
   },
-
   "GOSSIP": {
     "GOSSIP_MENU": {
       "TEXT_ID_TOOLTIP": "The npc_text.ID for the gossip you want to be initially displayed. Also this tells the NPC what to say at the top of the options menu when it is displayed."
@@ -711,7 +710,8 @@
         "CONDITION_QUESTSTATE": "quest_template.ID",
         "CONDITION_QUEST_OBJECTIVE_PROGRESS": "quest_template.id",
         "CONDITION_WORLD_SCRIPT": "WorldStateCondition (defined in WorldState.h)",
-        "CONDITION_AI_DATA": "data index"
+        "CONDITION_AI_DATA": "data index",
+        "CONDITION_RANDOM_DUNGEON": "0 = do not check difficulty; 1 = check difficulty (ConditionValue2)"
       },
       "VALUE2": {
         "CONDITION_NONE": "(Never used)",
@@ -733,7 +733,8 @@
         "CONDITION_QUESTSTATE": "state_mask",
         "CONDITION_QUEST_OBJECTIVE_PROGRESS": "Quest Objective ID - see quest_template.RequiredNpcOrGo",
         "CONDITION_WORLD_SCRIPT": "state, 0 = unused",
-        "CONDITION_AI_DATA": "value (to be compared)"
+        "CONDITION_AI_DATA": "value (to be compared)",
+        "CONDITION_RANDOM_DUNGEON": "If ConditionValue1 = 1, compares against the player current map difficulty. Value must be less than MAX_DIFFICULTY"
       },
       "VALUE3": {
         "CONDITION_NONE": "(Never used)",
@@ -767,7 +768,6 @@
       "SOURCE_TYPE": "Select a Source Type"
     }
   },
-
   "SPELL_DBC": {
     "BASE": {
       "BASE": "Base",
