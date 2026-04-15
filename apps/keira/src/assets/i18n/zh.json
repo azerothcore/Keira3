@@ -617,7 +617,9 @@
         "SOURCE_TYPE_SPELL_CLICK_EVENT": "npc_spellclick_spells表的npc_entry字段",
         "SOURCE_TYPE_VEHICLE_SPELL": "creature_template表的Entry字段",
         "SOURCE_TYPE_SMART_EVENT": "ID (smart_scripts表的id字段) + 1",
-        "SOURCE_TYPE_NPC_VENDOR": "npc_vendor表的Entry字段"
+        "SOURCE_TYPE_NPC_VENDOR": "npc_vendor表的Entry字段",
+        "SOURCE_TYPE_PLAYER_LOOT_TEMPLATE": "loot id",
+        "SOURCE_TYPE_OBJECT_VISIBILITY": "0 = Creature, 1 = GameObject"
       },
       "ENTRY": {
         "SOURCE_TYPE_CREATURE_LOOT_TEMPLATE": "creature_loot_template 或 reference_loot_template Item",
@@ -639,10 +641,14 @@
         "SOURCE_TYPE_SPELL": "技能ID（Spell ID）来自 Spell.dbc",
         "SOURCE_TYPE_SPELL_CLICK_EVENT": "技能 (npc_spellclick_spells表的spell_id字段)",
         "SOURCE_TYPE_QUEST_AVAILABLE": "任务ID",
+        "SOURCE_TYPE_GOSSIP_HELLO": "creature_template.entry",
         "SOURCE_TYPE_VEHICLE_SPELL": "技能ID（Spell ID）来自 Spell.dbc",
         "SOURCE_TYPE_SMART_EVENT": "smart_scripts表的entryorguid字段",
         "SOURCE_TYPE_NPC_VENDOR": "npc_vendor表的item字段",
-        "SOURCE_TYPE_SPELL_PROC": "触发光环的技能ID（Spell ID）"
+        "SOURCE_TYPE_SPELL_PROC": "触发光环的技能ID（Spell ID）",
+        "SOURCE_TYPE_PLAYER_LOOT_TEMPLATE": "item_template.entry",
+        "SOURCE_TYPE_CREATURE_RESPAWN": "creature_template.entry",
+        "SOURCE_TYPE_OBJECT_VISIBILITY": "creature_template.entry or gameobject_template.entry"
       },
       "TARGET": {
         "SOURCE_TYPE_SPELL_IMPLICIT_TARGET": "0 = 潜在法术目标;  1 = 施法者",
@@ -651,6 +657,7 @@
         "SOURCE_TYPE_CREATURE_TEMPLATE_VEHICLE": "0 = 玩家乘坐的载具;  1 = 生物的载具",
         "SOURCE_TYPE_SPELL": "0 = 施法者;  1 =  法术目标明确的法术(仅适用于将施法者选择的对象考虑在内的法术)",
         "SOURCE_TYPE_SPELL_CLICK_EVENT": "0 = 点击者；1 = 法术点击目标（被点击者）",
+        "SOURCE_TYPE_GOSSIP_HELLO": "0 = Player;  1 = WorldObject",
         "SOURCE_TYPE_VEHICLE_SPELL": "0 = 显示法术条的玩家；1 = 载具生物",
         "SOURCE_TYPE_SMART_EVENT": "0 = 使用者;  1 = 对象",
         "SOURCE_TYPE_SPELL_PROC": "0 = 参与者; 1 = 动作目标"

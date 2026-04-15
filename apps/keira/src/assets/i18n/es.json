@@ -617,7 +617,9 @@
         "SOURCE_TYPE_SPELL_CLICK_EVENT": "Identificador de la tabla npc_spellclick_spells.npc_entry",
         "SOURCE_TYPE_VEHICLE_SPELL": "Entrada de creature_template",
         "SOURCE_TYPE_SMART_EVENT": "Identificador de (smart_scripts.id) + 1",
-        "SOURCE_TYPE_NPC_VENDOR": "Entrada de npc_vendor"
+        "SOURCE_TYPE_NPC_VENDOR": "Entrada de npc_vendor",
+        "SOURCE_TYPE_PLAYER_LOOT_TEMPLATE": "loot id",
+        "SOURCE_TYPE_OBJECT_VISIBILITY": "0 = Creature, 1 = GameObject"
       },
       "ENTRY": {
         "SOURCE_TYPE_CREATURE_LOOT_TEMPLATE": "Item de creature_loot_template o reference_loot_template",
@@ -639,10 +641,14 @@
         "SOURCE_TYPE_SPELL": "Identificador de Hechizo extraído del archivo Spell.dbc",
         "SOURCE_TYPE_SPELL_CLICK_EVENT": "Hechizo de (npc_spellclick_spells.spell_id)",
         "SOURCE_TYPE_QUEST_AVAILABLE": "Identificador de Misión",
+        "SOURCE_TYPE_GOSSIP_HELLO": "creature_template.entry",
         "SOURCE_TYPE_VEHICLE_SPELL": "Identificador de Hechizo extraído del archivo Spell.dbc",
         "SOURCE_TYPE_SMART_EVENT": "Entrada o Identificador Único Global del Script Inteligente (smart_scripts) extraído de la tabla smart_scripts.entryorguid",
         "SOURCE_TYPE_NPC_VENDOR": "Valor extraído de la tabla npc_vendor.item",
-        "SOURCE_TYPE_SPELL_PROC": "Indetificador del Hechizo de Aura el cual desencadena el procedimiento"
+        "SOURCE_TYPE_SPELL_PROC": "Indetificador del Hechizo de Aura el cual desencadena el procedimiento",
+        "SOURCE_TYPE_PLAYER_LOOT_TEMPLATE": "item_template.entry",
+        "SOURCE_TYPE_CREATURE_RESPAWN": "creature_template.entry",
+        "SOURCE_TYPE_OBJECT_VISIBILITY": "creature_template.entry or gameobject_template.entry"
       },
       "TARGET": {
         "SOURCE_TYPE_SPELL_IMPLICIT_TARGET": "0 = Objetivo potencial del Hechizo;  1 = Casteador del Hechizo",
@@ -651,6 +657,7 @@
         "SOURCE_TYPE_CREATURE_TEMPLATE_VEHICLE": "0 = Vehículo montado por el jugador;  1 = Criatura del Vehículo",
         "SOURCE_TYPE_SPELL": "0 = Casteador del Hechizo;  1 =  Objetivo explícito del hechizo (sólo para aquellos Hechizos que tienen en cuenta el objeto seleccionado por el Casteador)",
         "SOURCE_TYPE_SPELL_CLICK_EVENT": "0 = Cliqueador;  1 = Objetivo del clic de Hechizo (cliqueante)",
+        "SOURCE_TYPE_GOSSIP_HELLO": "0 = Player;  1 = WorldObject",
         "SOURCE_TYPE_VEHICLE_SPELL": "0 = Jugador para el que se muestra la Barra de Hechizos;  1 =  Criatura del Vehículo",
         "SOURCE_TYPE_SMART_EVENT": "0 = Invocador;  1 = Objeto",
         "SOURCE_TYPE_SPELL_PROC": "0 = Actor; 1 = Objetivo de la Acción"
