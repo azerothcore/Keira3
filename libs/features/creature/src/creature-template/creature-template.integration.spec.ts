@@ -25,14 +25,14 @@ describe('CreatureTemplate integration tests', () => {
     'INSERT INTO `creature_template` (`entry`, `difficulty_entry_1`, `difficulty_entry_2`, `difficulty_entry_3`, ' +
     '`KillCredit1`, `KillCredit2`, `name`, `subname`, ' +
     '`IconName`, `gossip_menu_id`, `minlevel`, `maxlevel`, `exp`, `faction`, `npcflag`, `speed_walk`, `speed_run`, `speed_swim`, `speed_flight`, `detection_range`, ' +
-    '`scale`, `rank`, `dmgschool`, `DamageModifier`, `BaseAttackTime`, `RangeAttackTime`, `BaseVariance`, `RangeVariance`, ' +
+    '`rank`, `dmgschool`, `DamageModifier`, `BaseAttackTime`, `RangeAttackTime`, `BaseVariance`, `RangeVariance`, ' +
     '`unit_class`, `unit_flags`, `unit_flags2`, `dynamicflags`, `family`, ' +
     '`type`, `type_flags`, `lootid`, `pickpocketloot`, `skinloot`, `PetSpellDataId`, `VehicleId`, `mingold`, ' +
     '`maxgold`, `AIName`, `MovementType`, `HoverHeight`, `HealthModifier`, `ManaModifier`, `ArmorModifier`, `ExperienceModifier`, ' +
-    '`RacialLeader`, `movementId`, `RegenHealth`, `mechanic_immune_mask`, `spell_school_immune_mask`, ' +
+    '`RacialLeader`, `movementId`, `RegenHealth`, `CreatureImmunitiesId`, ' +
     '`flags_extra`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-    "(1234, 0, 0, 0, 0, 0, '', '', '', 0, 1, 1, 0, 0, 0, 1, 1.14286, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, " +
-    "0, 0, 0, 0, 0, 0, 0, 0, '', 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, '', 0);\n";
+    "(1234, 0, 0, 0, 0, 0, '', '', '', 0, 1, 1, 0, 0, 0, 1, 1.14286, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, " +
+    "0, 0, 0, 0, 0, 0, 0, 0, '', 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, '', 0);\n";
 
   const originalEntity = new CreatureTemplate();
   originalEntity.entry = id;
@@ -85,14 +85,14 @@ describe('CreatureTemplate integration tests', () => {
         'INSERT INTO `creature_template` (`entry`, `difficulty_entry_1`, `difficulty_entry_2`, `difficulty_entry_3`, ' +
         '`KillCredit1`, `KillCredit2`, `name`, `subname`, `IconName`, ' +
         '`gossip_menu_id`, `minlevel`, `maxlevel`, `exp`, `faction`, `npcflag`, `speed_walk`, `speed_run`, `speed_swim`, `speed_flight`, `detection_range`, ' +
-        '`scale`, `rank`, `dmgschool`, `DamageModifier`, `BaseAttackTime`, `RangeAttackTime`, `BaseVariance`, ' +
+        '`rank`, `dmgschool`, `DamageModifier`, `BaseAttackTime`, `RangeAttackTime`, `BaseVariance`, ' +
         '`RangeVariance`, `unit_class`, `unit_flags`, `unit_flags2`, `dynamicflags`, `family`, ' +
         '`type`, `type_flags`, ' +
         '`lootid`, `pickpocketloot`, `skinloot`, `PetSpellDataId`, `VehicleId`, `mingold`, `maxgold`, ' +
         '`AIName`, `MovementType`, `HoverHeight`, `HealthModifier`, `ManaModifier`, `ArmorModifier`, `ExperienceModifier`, `RacialLeader`, ' +
-        '`movementId`, `RegenHealth`, `mechanic_immune_mask`, `spell_school_immune_mask`, `flags_extra`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-        "(1234, 0, 0, 0, 0, 0, 'Shin', '', '', 0, 1, 1, 0, 0, 0, 1, 1.14286, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0," +
-        " 0, 0, 0, 0, 0, 0, 0, 0, '', 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, '', 0);";
+        '`movementId`, `RegenHealth`, `CreatureImmunitiesId`, `flags_extra`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
+        "(1234, 0, 0, 0, 0, 0, 'Shin', '', '', 0, 1, 1, 0, 0, 0, 1, 1.14286, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0," +
+        " 0, 0, 0, 0, 0, 0, 0, 0, '', 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, '', 0);";
 
       querySpy.calls.reset();
 
@@ -133,29 +133,29 @@ describe('CreatureTemplate integration tests', () => {
 
       // selectors
       await page.setNgxSelectValueByIndex('IconName', 1);
-      values[15] = 1; // exp
-      values[24] = 1; // rank
-      values[25] = 1; // dmgschool
+      values[11] = 1; // exp
+      values[19] = 1; // rank
+      values[20] = 1; // dmgschool
       await page.setNgxSelectValueByIndex('unit_class', 1);
-      values[35] = 1; // family
-      values[36] = 1; // type
-      values[46] = 2; // MovementType
-      values[52] = 1; // RacialLeader
-      values[54] = 0; // RegenHealth
+      values[30] = 1; // family
+      values[31] = 1; // type
+      values[41] = 2; // MovementType
+      values[47] = 1; // RacialLeader
+      values[49] = 0; // RegenHealth
 
       const expectedQuery =
         'UPDATE `creature_template` ' +
         'SET `difficulty_entry_2` = 1, `difficulty_entry_3` = 2, `KillCredit1` = 3, `KillCredit2` = 4,' +
         " `name` = '5', `subname` = '6', `IconName` = 'Directions', `gossip_menu_id` = 8, `minlevel` = 9, `maxlevel` = 10, " +
         '`faction` = 12, `npcflag` = 13, `speed_walk` = 14, `speed_run` = 15, `speed_swim` = 16, ' +
-        '`speed_flight` = 17, `detection_range` = 18, `scale` = 19, `DamageModifier` = 22, ' +
-        '`BaseAttackTime` = 23, `RangeAttackTime` = 24, `BaseVariance` = 25, `RangeVariance` = 26, `unit_class` = 2, ' +
-        '`unit_flags` = 28, `unit_flags2` = 29, `dynamicflags` = 30, ' +
-        '`type_flags` = 33, `lootid` = 34, `pickpocketloot` = 35, `skinloot` = 36,' +
-        " `PetSpellDataId` = 37, `VehicleId` = 38, `mingold` = 39, `maxgold` = 40, `AIName` = '41', " +
-        '`HoverHeight` = 43, `HealthModifier` = 44, `ManaModifier` = 45, `ArmorModifier` = 46, ' +
-        '`ExperienceModifier` = 47, `movementId` = 49, `mechanic_immune_mask` = 51, ' +
-        "`spell_school_immune_mask` = 52, `flags_extra` = 53, `ScriptName` = '54' WHERE (`entry` = 1234);";
+        '`speed_flight` = 17, `detection_range` = 18, `DamageModifier` = 21, ' +
+        '`BaseAttackTime` = 22, `RangeAttackTime` = 23, `BaseVariance` = 24, `RangeVariance` = 25, `unit_class` = 2, ' +
+        '`unit_flags` = 27, `unit_flags2` = 28, `dynamicflags` = 29, ' +
+        '`type_flags` = 32, `lootid` = 33, `pickpocketloot` = 34, `skinloot` = 35,' +
+        " `PetSpellDataId` = 36, `VehicleId` = 37, `mingold` = 38, `maxgold` = 39, `AIName` = '40', " +
+        '`HoverHeight` = 42, `HealthModifier` = 43, `ManaModifier` = 44, `ArmorModifier` = 45, ' +
+        '`ExperienceModifier` = 46, `movementId` = 48, `CreatureImmunitiesId` = 50, ' +
+        "`flags_extra` = 51, `ScriptName` = '52' WHERE (`entry` = 1234);";
 
       querySpy.calls.reset();
 
