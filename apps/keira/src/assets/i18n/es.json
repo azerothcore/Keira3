@@ -711,7 +711,8 @@
         "CONDITION_QUEST_OBJECTIVE_PROGRESS": "Identificador de Misión extrado dentro de la tabla 'quest_template.id'",
         "CONDITION_WORLD_SCRIPT": "WorldStateCondition (definido en WorldState.h)",
         "CONDITION_AI_DATA": "índice de datos",
-        "CONDITION_RANDOM_DUNGEON": "0 = do not check difficulty; 1 = check difficulty (ConditionValue2)"
+        "CONDITION_RANDOM_DUNGEON": "0 = do not check difficulty; 1 = check difficulty (ConditionValue2)",
+        "CONDITION_UNIT_IN_COMBAT": "Siempre es 0 (se evalúa como verdadero cuando la unidad objetivo (ConditionTarget) está en combate)"
       },
       "VALUE2": {
         "CONDITION_NONE": "(Nunca usado)",

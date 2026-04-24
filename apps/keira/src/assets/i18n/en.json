@@ -711,7 +711,8 @@
         "CONDITION_QUEST_OBJECTIVE_PROGRESS": "quest_template.id",
         "CONDITION_WORLD_SCRIPT": "WorldStateCondition (defined in WorldState.h)",
         "CONDITION_AI_DATA": "data index",
-        "CONDITION_RANDOM_DUNGEON": "0 = do not check difficulty; 1 = check difficulty (ConditionValue2)"
+        "CONDITION_RANDOM_DUNGEON": "0 = do not check difficulty; 1 = check difficulty (ConditionValue2)",
+        "CONDITION_UNIT_IN_COMBAT": "Always 0 (evaluates to true when the ConditionTarget unit is in combat)"
       },
       "VALUE2": {
         "CONDITION_NONE": "(Never used)",

@@ -711,7 +711,8 @@
         "CONDITION_QUEST_OBJECTIVE_PROGRESS": "quest_template表的id字段",
         "CONDITION_WORLD_SCRIPT": "WorldStateCondition（定义在WorldState.h中）",
         "CONDITION_AI_DATA": "数据索引",
-        "CONDITION_RANDOM_DUNGEON": "0 = do not check difficulty; 1 = check difficulty (ConditionValue2)"
+        "CONDITION_RANDOM_DUNGEON": "0 = do not check difficulty; 1 = check difficulty (ConditionValue2)",
+        "CONDITION_UNIT_IN_COMBAT": "总是 0（当 ConditionTarget 单位处于战斗状态时返回 true）"
       },
       "VALUE2": {
         "CONDITION_NONE": "(未使用)",

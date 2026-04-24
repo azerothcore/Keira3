@@ -711,7 +711,8 @@
         "CONDITION_QUEST_OBJECTIVE_PROGRESS": "quest_template.id",
         "CONDITION_WORLD_SCRIPT": "WorldStateCondition (определено в WorldState.h)",
         "CONDITION_AI_DATA": "индекс данных",
-        "CONDITION_RANDOM_DUNGEON": "0 = do not check difficulty; 1 = check difficulty (ConditionValue2)"
+        "CONDITION_RANDOM_DUNGEON": "0 = do not check difficulty; 1 = check difficulty (ConditionValue2)",
+        "CONDITION_UNIT_IN_COMBAT": "Всегда 0 (принимает значение true, когда цель (ConditionTarget) находится в бою)"
       },
       "VALUE2": {
         "CONDITION_NONE": "(Не используется)",
