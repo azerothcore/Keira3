@@ -28,6 +28,11 @@
               <i class="fa fa-circle connection-status" [class.connected]="mysqlService.getConnectionState() === 'CONNECTED'"></i>
               <span>{{ mysqlService.getConnectionState() | translate | titlecase }}</span>
             </span>
+            @if (mysqlService.sshTunnelActive) {
+              <span class="ssh-tunnel-badge" [title]="'SIDEBAR.SSH_TUNNEL_VIA' | translate: { host: mysqlService.config.sshHost }">
+                <i class="fas fa-shield-alt"></i> {{ 'SIDEBAR.SSH_TUNNEL_ACTIVE' | translate }}
+              </span>
+            }
             <span>
               <keira-switch-language />
             </span>
