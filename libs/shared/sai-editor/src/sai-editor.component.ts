@@ -1,5 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
-import { EVENT_PHASE_MASK, SAI_TYPES, SMART_EVENT_FLAGS, SmartScripts } from '@keira/shared/acore-world-model';
+import {
+  EVENT_PHASE_MASK,
+  SAI_TYPES,
+  SMART_ACTION_CAST_FLAGS,
+  SMART_ACTION_CAST_TRIGGERED_FLAGS,
+  SMART_EVENT_FLAGS,
+  SmartScripts,
+} from '@keira/shared/acore-world-model';
 import {
   SAI_ACTION_PARAM1_NAMES,
   SAI_ACTION_PARAM1_TOOLTIPS,
