@@ -272,6 +272,14 @@
               <div class="form-group col-7">
                 <label class="control-label" id="label-action-param2">
                   {{ getName('param2', ACTION_PARAM2_NAMES[selectedAction]) }}
+                  @if (selectedAction === SAI_ACTIONS.CAST) {
+                    <keira-flags-selector-btn
+                      [control]="editorService.form.controls.action_param2"
+                      [disabled]="editorService.form.controls.action_param2.disabled"
+                      [config]="{ flags: SMART_ACTION_CAST_FLAGS, name: 'action_param2' }"
+                      [modalClass]="'modal-lg'"
+                    />
+                  }
                   <i
                     class="fas fa-info-circle ms-1"
                     placement="auto"
@@ -288,6 +296,14 @@
               <div class="form-group col-7">
                 <label class="control-label" id="label-action-param3">
                   {{ getName('param3', ACTION_PARAM3_NAMES[selectedAction]) }}
+                  @if (selectedAction === SAI_ACTIONS.CAST) {
+                    <keira-flags-selector-btn
+                      [control]="editorService.form.controls.action_param3"
+                      [disabled]="editorService.form.controls.action_param3.disabled"
+                      [config]="{ flags: SMART_ACTION_CAST_TRIGGERED_FLAGS, name: 'action_param3' }"
+                      [modalClass]="'modal-lg'"
+                    />
+                  }
                   <i
                     class="fas fa-info-circle ms-1"
                     placement="auto"

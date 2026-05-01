@@ -93,6 +93,8 @@ export class SaiEditorComponent extends MultiRowEditorComponent<SmartScripts> im
 
   readonly EVENT_PHASE_MASK = EVENT_PHASE_MASK;
   readonly SMART_EVENT_FLAGS = SMART_EVENT_FLAGS;
+  readonly SMART_ACTION_CAST_FLAGS = SMART_ACTION_CAST_FLAGS;
+  readonly SMART_ACTION_CAST_TRIGGERED_FLAGS = SMART_ACTION_CAST_TRIGGERED_FLAGS;
   readonly SAI_EVENTS = SAI_EVENTS;
   readonly SAI_EVENTS_KEYS = SAI_EVENTS_KEYS;
   readonly SAI_ACTIONS = SAI_ACTIONS;
