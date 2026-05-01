@@ -54,7 +54,7 @@
     "ngx-ui-switch": "16.1.0",
     "serialize-javascript": "7.0.5",
     "sqlite3": "5.1.7",
-    "ssh2": "^1.17.0",
+    "ssh2": "1.17.0",
     "tslib": "2.8.1"
   },
   "devDependencies": {
