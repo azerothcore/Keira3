@@ -95,6 +95,8 @@ export * from './flags/spell-dbc-item-flags';
 export * from './flags/spell-school-mask';
 export * from './flags/unit-flags';
 export * from './flags/unit-flags2';
+export * from './flags/smart-action-cast-flags';
+export * from './flags/smart-action-cast-triggered-flags';
 
 export * from './options/conditions';
 export * from './options/creature-addon-bytes1';
