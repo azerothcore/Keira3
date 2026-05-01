@@ -5,7 +5,7 @@ export const SMART_ACTION_CAST_TRIGGERED_FLAGS: Flag[] = [
   { bit: 1, name: 'TRIGGERED_IGNORE_SPELL_AND_CATEGORY_CD - Will ignore Spell and Category cooldowns' },
   { bit: 2, name: 'TRIGGERED_IGNORE_POWER_AND_REAGENT_COST - Will ignore power and reagent cost' },
   { bit: 3, name: 'TRIGGERED_IGNORE_CAST_ITEM - Will not take away cast item or update related achievement criteria' },
-  { bit: 4, name: 'RIGGERED_IGNORE_AURA_SCALING - Will ignore aura scaling' },
+  { bit: 4, name: 'TRIGGERED_IGNORE_AURA_SCALING - Will ignore aura scaling' },
   { bit: 5, name: 'TRIGGERED_IGNORE_CAST_IN_PROGRESS - Will not check if a current cast is in progress' },
   { bit: 6, name: 'TRIGGERED_IGNORE_COMBO_POINTS - Will ignore combo point requirement' },
   { bit: 7, name: 'TRIGGERED_CAST_DIRECTLY - In Spell::prepare, will be cast directly without setting containers for executed spell' },
