@@ -71,7 +71,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
     if (this.configs?.length > 0) {
       // get last saved config
       const lastConfig = this.configs[this.configs.length - 1];
-      this.form.setValue(lastConfig);
+      this.form.patchValue(lastConfig);
 
       if (!this.form.getRawValue().password) {
         this.savePassword = false;
@@ -84,7 +84,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
   }
 
   loadConfig(config: Partial<KeiraConnectionOptions>): void {
-    this.form.setValue(config);
+    this.form.patchValue(config);
   }
 
   removeAllConfigs(): void {

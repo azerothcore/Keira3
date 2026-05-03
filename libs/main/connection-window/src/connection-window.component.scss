@@ -157,7 +157,7 @@ $secondary-color-green: #b7e2ad;
           border: 0 !important;
 
           i {
-            margin-right: 10px;
+            margin-right: 5px;
             margin-bottom: 2px;
           }
         }
@@ -173,6 +173,14 @@ $secondary-color-green: #b7e2ad;
         border-left: 2px solid rgba(255, 255, 255, 0.3);
         padding-left: 10px;
         margin-bottom: 4px;
+
+        .input-group-prepend {
+          width: 145px;
+
+          .input-group-text {
+            width: 145px;
+          }
+        }
       }
 
       .connect-button {

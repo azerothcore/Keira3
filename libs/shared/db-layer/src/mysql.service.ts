@@ -166,7 +166,7 @@ export class MysqlService {
     console.info(`DB connection lost. Reconnecting in ${RECONNECTION_TIME_MS} ms...`);
 
     setTimeout(() => {
-      if (this.config.sshEnabled) {
+      if (this.config?.sshEnabled) {
         this.connectViaSshTunnel(this.config).subscribe({
           next: () => this.reconnectCallback(null),
           error: () => this.reconnect(),

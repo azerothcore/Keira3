@@ -54,7 +54,7 @@
     "SSH_HOST": "SSH Host",
     "SSH_PORT": "SSH Port",
     "SSH_USER": "SSH User",
-    "SSH_PASSWORD": "SSH Password / Passphrase",
+    "SSH_PASSWORD": "SSH Password",
     "SSH_PRIVATE_KEY": "Private Key",
     "SSH_KEY_PLACEHOLDER": "Optional - browse to select key file",
     "SAVE_PASSWORD": "Save password",
