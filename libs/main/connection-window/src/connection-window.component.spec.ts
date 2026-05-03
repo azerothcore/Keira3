@@ -143,6 +143,12 @@ describe('ConnectionWindowComponent', () => {
       password: 'root',
       database: 'acore_world',
       sslEnabled: true,
+      sshEnabled: false,
+      sshHost: '',
+      sshPort: 22,
+      sshUser: '',
+      sshPassword: '',
+      sshPrivateKey: '',
       ssl: { rejectUnauthorized: false },
     });
     expect(component.error).toBeUndefined();
@@ -165,6 +171,12 @@ describe('ConnectionWindowComponent', () => {
       password: 'helias123',
       database: 'helias_world',
       sslEnabled: false,
+      sshEnabled: false,
+      sshHost: '',
+      sshPort: 22,
+      sshUser: '',
+      sshPassword: '',
+      sshPrivateKey: '',
     });
 
     expect(component.error).toBeUndefined();
@@ -188,7 +200,20 @@ describe('ConnectionWindowComponent', () => {
     page.clickElement(page.connectBtn);
 
     expect(connectSpy).toHaveBeenCalledTimes(1);
-    expect(connectSpy).toHaveBeenCalledWith({ host, port, user, password, database, sslEnabled: false });
+    expect(connectSpy).toHaveBeenCalledWith({
+      host,
+      port,
+      user,
+      password,
+      database,
+      sslEnabled: false,
+      sshEnabled: false,
+      sshHost: '',
+      sshPort: 22,
+      sshUser: '',
+      sshPassword: '',
+      sshPrivateKey: '',
+    });
     expect(component.error).toBeUndefined();
     expect(page.errorElement.innerHTML).not.toContain('error-box');
   });
@@ -266,6 +291,12 @@ describe('ConnectionWindowComponent', () => {
         password,
         database: 'helias_world',
         sslEnabled: false,
+        sshEnabled: false,
+        sshHost: '',
+        sshPort: 22,
+        sshUser: '',
+        sshPassword: '',
+        sshPrivateKey: '',
       });
       expect(connectSpy).toHaveBeenCalledTimes(1);
       expect(connectSpy).toHaveBeenCalledWith({
@@ -275,6 +306,12 @@ describe('ConnectionWindowComponent', () => {
         password,
         database: 'helias_world',
         sslEnabled: false,
+        sshEnabled: false,
+        sshHost: '',
+        sshPort: 22,
+        sshUser: '',
+        sshPassword: '',
+        sshPrivateKey: '',
       });
     });
 
@@ -295,6 +332,12 @@ describe('ConnectionWindowComponent', () => {
         password: '',
         database: 'helias_world',
         sslEnabled: false,
+        sshEnabled: false,
+        sshHost: '',
+        sshPort: 22,
+        sshUser: '',
+        sshPassword: '',
+        sshPrivateKey: '',
       });
       expect(connectSpy).toHaveBeenCalledTimes(1);
       expect(connectSpy).toHaveBeenCalledWith({
@@ -304,6 +347,12 @@ describe('ConnectionWindowComponent', () => {
         password: 'helias123',
         database: 'helias_world',
         sslEnabled: false,
+        sshEnabled: false,
+        sshHost: '',
+        sshPort: 22,
+        sshUser: '',
+        sshPassword: '',
+        sshPrivateKey: '',
       });
     });
   });

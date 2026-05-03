@@ -137,6 +137,23 @@ $img-border-color: rgba(255, 255, 255, 0.1);
             }
           }
         }
+
+        .ssh-tunnel-badge {
+          display: inline-block;
+          margin-top: 3px;
+          font-size: 10px;
+          font-weight: bold;
+          color: #5bc0de;
+          background-color: rgba(91, 192, 222, 0.12);
+          border: 1px solid rgba(91, 192, 222, 0.4);
+          border-radius: 3px;
+          padding: 1px 5px;
+
+          i {
+            font-size: 9px;
+            margin-right: 3px;
+          }
+        }
       }
     }
 
