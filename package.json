@@ -61,7 +61,7 @@
     "@analogjs/vite-plugin-angular": "2.4.10",
     "@analogjs/vitest-angular": "2.4.10",
     "@angular-builders/custom-esbuild": "20.0.0",
-    "@angular-devkit/build-angular": "20.3.24",
+    "@angular-devkit/build-angular": "20.3.25",
     "@angular-devkit/core": "20.3.24",
     "@angular-devkit/schematics": "20.3.24",
     "@angular-eslint/eslint-plugin": "20.6.0",
