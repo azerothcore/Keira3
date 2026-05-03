@@ -3,6 +3,7 @@ import { ElectronService } from '@keira/shared/common-services';
 import { MysqlResult, TableRow } from '@keira/shared/constants';
 import * as mysql from 'mysql2';
 import { Connection, FieldPacket as FieldInfo, QueryError } from 'mysql2';
+import * as ssh2 from 'ssh2';
 import { Observable, Subject, Subscriber } from 'rxjs';
 import { KeiraConnectionOptions } from './mysql.model';
 @Injectable({
@@ -13,7 +14,13 @@ export class MysqlService {
   private readonly ngZone = inject(NgZone);
 
   private mysql!: typeof mysql;
+  private ssh2!: typeof ssh2;
   private _connection!: Connection;
+  private _sshClient: ssh2.Client | null = null;
+  private _sshTunnelActive = false;
+  get sshTunnelActive(): boolean {
+    return this._sshTunnelActive;
+  }
 
   private _config!: KeiraConnectionOptions;
   get config(): KeiraConnectionOptions {
@@ -37,6 +44,7 @@ export class MysqlService {
     /* istanbul ignore next */
     if (this.electronService.isElectron()) {
       this.mysql = window.require('mysql2');
+      this.ssh2 = window.require('ssh2');
     }
   }
 
@@ -48,11 +56,85 @@ export class MysqlService {
     this._config = config;
     this._config.multipleStatements = true;
 
+    if (config.sshEnabled) {
+      return this.connectViaSshTunnel(config);
+    }
+
     this._connection = this.mysql.createConnection(this.config);
 
     return new Observable((subscriber) => {
       this._connection.connect(this.getConnectCallback(subscriber));
     });
+  }
+
+  private connectViaSshTunnel(config: KeiraConnectionOptions): Observable<void> {
+    return new Observable((subscriber) => {
+      this.closeSshTunnel();
+
+      const sshClient = new this.ssh2.Client();
+      this._sshClient = sshClient;
+
+      const sshConfig: ssh2.ConnectConfig = {
+        host: config.sshHost,
+        port: config.sshPort || 22,
+        username: config.sshUser,
+      };
+
+      if (config.sshPrivateKey) {
+        sshConfig.privateKey = config.sshPrivateKey;
+        if (config.sshPassword) {
+          sshConfig.passphrase = config.sshPassword;
+        }
+      } else {
+        sshConfig.password = config.sshPassword;
+      }
+
+      sshClient.on('ready', () => {
+        this._sshTunnelActive = true;
+
+        const dbHost = config.host || '127.0.0.1';
+        const dbPort = config.port || 3306;
+
+        sshClient.forwardOut('127.0.0.1', 0, dbHost, dbPort, (err, stream) => {
+          if (err) {
+            this.ngZone.run(() => {
+              this._sshTunnelActive = false;
+              subscriber.error(err);
+              subscriber.complete();
+            });
+            return;
+          }
+
+          const mysqlConfig = { ...this.config, stream, host: undefined, port: undefined };
+          this._connection = this.mysql.createConnection(mysqlConfig);
+          this._connection.connect(this.getConnectCallback(subscriber));
+        });
+      });
+
+      sshClient.on('close', () => {
+        this.ngZone.run(() => {
+          this._sshTunnelActive = false;
+        });
+      });
+
+      sshClient.on('error', (err) => {
+        this.ngZone.run(() => {
+          this._sshTunnelActive = false;
+          subscriber.error(err);
+          subscriber.complete();
+        });
+      });
+
+      sshClient.connect(sshConfig);
+    });
+  }
+
+  private closeSshTunnel(): void {
+    if (this._sshClient) {
+      this._sshClient.end();
+      this._sshClient = null;
+      this._sshTunnelActive = false;
+    }
   }
 
   private getConnectCallback(subscriber: Subscriber<void>) {
@@ -84,8 +166,15 @@ export class MysqlService {
     console.info(`DB connection lost. Reconnecting in ${RECONNECTION_TIME_MS} ms...`);
 
     setTimeout(() => {
-      this._connection = this.mysql.createConnection(this.config);
-      this._connection.connect(this.reconnectCallback.bind(this));
+      if (this.config.sshEnabled) {
+        this.connectViaSshTunnel(this.config).subscribe({
+          next: () => this.reconnectCallback(null),
+          error: () => this.reconnect(),
+        });
+      } else {
+        this._connection = this.mysql.createConnection(this.config);
+        this._connection.connect(this.reconnectCallback.bind(this));
+      }
     }, RECONNECTION_TIME_MS);
   }
 

@@ -169,6 +169,12 @@ $secondary-color-green: #b7e2ad;
         }
       }
 
+      .ssh-fields {
+        border-left: 2px solid rgba(255, 255, 255, 0.3);
+        padding-left: 10px;
+        margin-bottom: 4px;
+      }
+
       .connect-button {
         font-weight: bold;
         width: 70%;
