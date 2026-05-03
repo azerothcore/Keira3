@@ -5,15 +5,9 @@
     "output": "release/"
   },
   "files": ["dist/browser/**/*", "main.js", "main.js.map"],
-  "electronFuses": {
-    "enableEmbeddedAsarIntegrityValidation": false,
-    "onlyLoadAppFromAsar": false
-  },
   "win": {
     "icon": "dist/browser",
-    "target": ["portable"],
-    "signAndEditExecutable": false,
-    "verifyUpdateCodeSignature": false
+    "target": ["portable"]
   },
   "mac": {
     "icon": "dist/browser",
