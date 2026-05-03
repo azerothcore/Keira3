@@ -430,17 +430,19 @@ SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CALL_KILLEDMONSTER] = 'CreatureId';
 
 // SMART_ACTION_SET_INST_DATA
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_INST_DATA] =
-  'Sets a certain instance data field to a specific value. ' +
-  'This will be received and can be handled inside the InstanceScript of the instance we are sending this to (InstanceScripts are always written in C++).';
+  'Calls InstanceScript::SetData(field, data) or InstanceScript::SetBossState(field, EncounterState(data)) depending on type.';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_INST_DATA] = 'Field';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_INST_DATA] = 'Data';
+SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.SET_INST_DATA] = 'Type';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_INST_DATA] = 'Instance data field id';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SET_INST_DATA] = 'Value to set. If type is 1, this value is cast to `EncounterState`.';
+SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.SET_INST_DATA] = '0 = call SetData(field, data); 1 = call SetBossState(field, EncounterState(data))';
 
 // SMART_ACTION_SET_INST_DATA64
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_INST_DATA64] =
-  'Sets a certain instance data field to a specific value. ' +
-  'This will be received and can be handled inside the InstanceScript of the instance we are sending this to (InstanceScripts are always written in C++).';
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_INST_DATA64] = 'Calls SetGuidData(field, guid) using the GUID from the first action target.';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_INST_DATA64] = 'Field';
-SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_INST_DATA64] = 'Data';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_INST_DATA64] = 'Instance data field id';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SET_INST_DATA64] = 'The GUID is taken from the first action target.';
 
 // SMART_ACTION_UPDATE_TEMPLATE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.UPDATE_TEMPLATE] =

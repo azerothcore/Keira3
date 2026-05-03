@@ -946,6 +946,44 @@ export class SaiCommentGeneratorService {
       }
     }
 
+    if (actionLine.indexOf('_instanceData_') > -1) {
+      if (Number(smartScript.action_param3) === 1) {
+        actionLine = actionLine.replace('_instanceData_', 'SetBossState');
+      } else {
+        actionLine = actionLine.replace('_instanceData_', 'Set Instance Data');
+      }
+    }
+
+    if (actionLine.indexOf('_instDataParamTwo_') > -1) {
+      if (Number(smartScript.action_param3) === 1) {
+        switch (Number(smartScript.action_param2)) {
+          case 0:
+            actionLine = actionLine.replace('_instDataParamTwo_', 'NOT_STARTED');
+            break;
+          case 1:
+            actionLine = actionLine.replace('_instDataParamTwo_', 'IN_PROGRESS');
+            break;
+          case 2:
+            actionLine = actionLine.replace('_instDataParamTwo_', 'FAIL');
+            break;
+          case 3:
+            actionLine = actionLine.replace('_instDataParamTwo_', 'DONE');
+            break;
+          case 4:
+            actionLine = actionLine.replace('_instDataParamTwo_', 'SPECIAL');
+            break;
+          case 5:
+            actionLine = actionLine.replace('_instDataParamTwo_', 'TO_BE_DECIDED');
+            break;
+          default:
+            actionLine = actionLine.replace('_instDataParamTwo_', '[Unknown Encounter State]');
+            break;
+        }
+      } else {
+        actionLine = actionLine.replace('_instDataParamTwo_', smartScript.action_param2.toString());
+      }
+    }
+
     let event_phase_mask = smartScriptLink != null ? smartScriptLink.event_phase_mask : smartScript.event_phase_mask;
 
     if (event_phase_mask !== phaseMask.ALWAYS) {
