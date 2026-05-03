@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
+import { SAI_TYPES, SMART_ACTION_CAST_TRIGGERED_FLAGS, SmartScripts } from '@keira/shared/acore-world-model';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
@@ -665,6 +665,48 @@ describe('SaiEditorComponent integration tests', () => {
       expect(page.action4Name.innerText).toContain('EmoteId4');
       expect(page.action5Name.innerText).toContain('EmoteId5');
       expect(page.action6Name.innerText).toContain('EmoteId6');
+    });
+
+    it('should show flags selectors for SMART_ACTION_CAST', () => {
+      const { page } = setup(true);
+      page.addNewRow();
+
+      expect(page.getSelectorBtn('action_param2', false)).toBeFalsy();
+      expect(page.getSelectorBtn('action_param3', false)).toBeFalsy();
+
+      page.setSelectValueById('action_type', SAI_ACTIONS.CAST);
+
+      expect(page.action2Name.innerText).toContain('CastFlags');
+      expect(page.getSelectorBtn('action_param2')).toBeTruthy();
+      expect(page.action3Name.innerText).toContain('TriggerFlags');
+      expect(page.getSelectorBtn('action_param3')).toBeTruthy();
+
+      page.setSelectValueById('action_type', SAI_ACTIONS.TALK);
+
+      expect(page.getSelectorBtn('action_param2', false)).toBeFalsy();
+      expect(page.getSelectorBtn('action_param3', false)).toBeFalsy();
+    });
+
+    it('should use SMART_ACTION_CAST_TRIGGERED_FLAGS for SMART_ACTION_CAST TriggerFlags selector', async () => {
+      const { page } = setup(true);
+      page.addNewRow();
+      page.setSelectValueById('action_type', SAI_ACTIONS.CAST);
+
+      page.clickElement(page.getSelectorBtn('action_param3'));
+      await page.whenReady();
+      page.expectModalDisplayed();
+
+      const flagRows = Array.from(document.querySelectorAll<HTMLTableRowElement>('#flags-table tbody tr'));
+      expect(flagRows.length).toBe(SMART_ACTION_CAST_TRIGGERED_FLAGS.length);
+      expect(flagRows[0].innerText).toContain(SMART_ACTION_CAST_TRIGGERED_FLAGS[0].name);
+      expect(flagRows[3].innerText).toContain(SMART_ACTION_CAST_TRIGGERED_FLAGS[3].name);
+
+      page.toggleFlagInRowExternal(3); // +2^3
+      await page.whenReady();
+      page.clickModalSelect();
+      await page.whenReady();
+
+      expect(page.getInputById('action_param3').value).toEqual('8');
     });
 
     it('target param names should correctly work', () => {
