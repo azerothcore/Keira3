@@ -2,6 +2,7 @@ import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { IconComponent } from '@keira/shared/base-editor-components';
+import { FactionRequirement, ItemObjective, NpcOrGoObjective, QuestObjectivesComponent } from './quest-objectives.component';
 import { RacesTextKey, RacesTextValue } from '@keira/shared/constants';
 import { Model3DViewerComponent, VIEWER_TYPE } from '@keira/shared/model-3d-viewer';
 import { PreviewHelperService } from '@keira/shared/preview';
@@ -14,7 +15,7 @@ import { QuestPreviewService } from './quest-preview.service';
   selector: 'keira-quest-preview',
   templateUrl: './quest-preview.component.html',
   styleUrls: ['./quest-preview.component.scss'],
-  imports: [IconComponent, CollapseModule, AsyncPipe, Model3DViewerComponent],
+  imports: [IconComponent, CollapseModule, AsyncPipe, QuestObjectivesComponent, Model3DViewerComponent],
 })
 export class QuestPreviewComponent implements OnInit {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
@@ -85,5 +86,46 @@ export class QuestPreviewComponent implements OnInit {
 
   hasPrevOrNext(questLists: { prev?: Quest[] | null; next?: Quest[] | null }): boolean {
     return !!(questLists.prev && questLists.prev.length > 0) || !!(questLists.next && questLists.next.length > 0);
+  }
+
+  get npcObjectivesData(): NpcOrGoObjective[] {
+    const array: NpcOrGoObjective[] = [];
+    for (let i = 1; i <= 4; i++) {
+      if (this.service.isNpcOrGoObj(i)) {
+        const text = this.service.getObjText(i);
+        const text$ = text ? Promise.resolve(text) : this.service.getObjective$(i);
+        array.push({ text$, count: this.service.getObjectiveCount(i) });
+      }
+    }
+    return array;
+  }
+
+  get itemObjectivesData(): ItemObjective[] {
+    const array: ItemObjective[] = [];
+    for (let i = 1; i <= 6; i++) {
+      const reqItem = this.service.questTemplate['RequiredItemId' + i];
+      if (reqItem) {
+        array.push({
+          id: reqItem,
+          name$: this.service.mysqlQueryService.getItemNameById(reqItem),
+          count: this.service.getObjItemCount(i),
+        });
+      }
+    }
+    return array;
+  }
+
+  get factionRequirementsData(): FactionRequirement[] {
+    const array: FactionRequirement[] = [];
+    for (let i = 1; i <= 2; i++) {
+      const reqFaction = this.service.questTemplate['RequiredFactionId' + i];
+      if (reqFaction) {
+        array.push({
+          name$: this.service.sqliteQueryService.getFactionNameById(reqFaction),
+          value: this.service.getFactionByValue(i),
+        });
+      }
+    }
+    return array;
   }
 }
