@@ -1,27 +1,27 @@
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { IconComponent } from '@keira/shared/base-editor-components';
+import { Observable } from 'rxjs';
 
 export interface NpcOrGoObjective {
-  text$: Promise<string>;
+  text$: Observable<string | number | undefined>;
   count: string;
 }
 
 export interface ItemObjective {
-  id: number;
-  name$: Promise<string>;
+  id: number | string;
+  name$: Observable<string>;
   count: string;
 }
 
 export interface FactionRequirement {
-  name$: Promise<string>;
+  name$: Observable<string>;
   value: string;
 }
 
 @Component({
   selector: 'keira-quest-objectives',
   templateUrl: './quest-objectives.component.html',
-  styleUrls: ['./quest-objectives.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [IconComponent, AsyncPipe],

@@ -90,6 +90,9 @@ class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
   get completionText(): HTMLDivElement {
     return this.query<HTMLDivElement>('#completion-text');
   }
+  get objectiveToggle(): HTMLParagraphElement {
+    return this.query<HTMLParagraphElement>('#objective-toggle');
+  }
   get descriptionToggle(): HTMLParagraphElement {
     return this.query<HTMLParagraphElement>('#description-toggle');
   }
@@ -451,9 +454,13 @@ describe('QuestPreviewComponent', () => {
 
       fixture.detectChanges();
 
+      page.expectCollapsed(page.objectiveToggle);
       page.expectCollapsed(page.descriptionToggle);
       page.expectCollapsed(page.progressToggle);
       page.expectCollapsed(page.completionToggle);
+
+      page.clickElement(page.objectiveToggle);
+      page.expectNotCollapsed(page.objectiveToggle);
 
       page.clickElement(page.descriptionToggle);
       page.expectNotCollapsed(page.descriptionToggle);
