@@ -84,12 +84,12 @@
               <strong class="colored">{{ service.mysqlQueryService.getCreatureNameById(q.id) | async }}</strong>
               <span class="greyed"> [{{ q.id }}]</span>
             </p>
-            <div [collapse]="npcStartToggles[q.id]">
-              <keira-model-3d-viewer
-                [viewerType]="NPC_VIEWER_TYPE"
-                [displayId]="(service.mysqlQueryService.getCreatureDisplayIdById(q.id) | async)!"
-              />
-            </div>
+            @let npcDisplayId = service.mysqlQueryService.getCreatureDisplayIdById(q.id) | async;
+            @if (npcDisplayId !== null) {
+              <div [collapse]="npcStartToggles[q.id]">
+                <keira-model-3d-viewer [viewerType]="NPC_VIEWER_TYPE" [displayId]="npcDisplayId" />
+              </div>
+            }
           }
         </div>
       }
@@ -102,12 +102,12 @@
               <strong class="colored">{{ service.mysqlQueryService.getGameObjectNameById(q.id) | async }}</strong>
               <span class="greyed"> [{{ q.id }}]</span>
             </p>
-            <div [collapse]="gameobjectStartToggles[q.id]">
-              <keira-model-3d-viewer
-                [viewerType]="OBJECT_VIEWER_TYPE"
-                [displayId]="(service.mysqlQueryService.getGameobjectDisplayIdById(q.id) | async)!"
-              />
-            </div>
+            @let gameobjectDisplayId = service.mysqlQueryService.getGameobjectDisplayIdById(q.id) | async;
+            @if (gameobjectDisplayId !== null) {
+              <div [collapse]="gameobjectStartToggles[q.id]">
+                <keira-model-3d-viewer [viewerType]="OBJECT_VIEWER_TYPE" [displayId]="gameobjectDisplayId" />
+              </div>
+            }
           }
         </div>
       }
@@ -121,12 +121,12 @@
               <strong class="colored">{{ service.mysqlQueryService.getCreatureNameById(q.id) | async }}</strong>
               <span class="greyed"> [{{ q.id }}]</span>
             </p>
-            <div [collapse]="npcEndToggles[q.id]">
-              <keira-model-3d-viewer
-                [viewerType]="NPC_VIEWER_TYPE"
-                [displayId]="(service.mysqlQueryService.getCreatureDisplayIdById(q.id) | async)!"
-              />
-            </div>
+            @let creatureDisplayId = service.mysqlQueryService.getCreatureDisplayIdById(q.id) | async;
+            @if (creatureDisplayId !== null) {
+              <div [collapse]="npcEndToggles[q.id]">
+                <keira-model-3d-viewer [viewerType]="NPC_VIEWER_TYPE" [displayId]="creatureDisplayId" />
+              </div>
+            }
           }
         </div>
       }
@@ -139,12 +139,12 @@
               <strong class="colored">{{ service.mysqlQueryService.getGameObjectNameById(q.id) | async }}</strong>
               <span class="greyed"> [{{ q.id }}]</span>
             </p>
-            <div [collapse]="gameobjectEndToggles[q.id]">
-              <keira-model-3d-viewer
-                [viewerType]="OBJECT_VIEWER_TYPE"
-                [displayId]="(service.mysqlQueryService.getGameobjectDisplayIdById(q.id) | async)!"
-              />
-            </div>
+            @let gameobjectDisplayId = service.mysqlQueryService.getGameobjectDisplayIdById(q.id) | async;
+            @if (gameobjectDisplayId !== null) {
+              <div [collapse]="gameobjectEndToggles[q.id]">
+                <keira-model-3d-viewer [viewerType]="OBJECT_VIEWER_TYPE" [displayId]="gameobjectDisplayId" />
+              </div>
+            }
           }
         </div>
       }
