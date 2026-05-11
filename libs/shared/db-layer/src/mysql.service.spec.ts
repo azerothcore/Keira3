@@ -7,6 +7,7 @@ import { tickAsync } from 'ngx-page-object-model';
 import { Subscriber } from 'rxjs';
 import { instance, mock, reset } from 'ts-mockito';
 import { MysqlService } from './mysql.service';
+import { KeiraConnectionOptions } from './mysql.model';
 
 class MockMySql {
   createConnection() {}
@@ -223,6 +224,7 @@ describe('MysqlService', () => {
   it('reconnect() should correctly work ', async () => {
     const { service } = setup();
     service['_reconnecting'] = false;
+    service['_config'] = {} as KeiraConnectionOptions;
     spyOn(service['_connectionLostSubject'], 'next');
     spyOn(console, 'info');
     (service as any).mysql = new MockMySql();
