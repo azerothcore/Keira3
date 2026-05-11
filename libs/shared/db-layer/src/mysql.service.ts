@@ -3,8 +3,8 @@ import { ElectronService } from '@keira/shared/common-services';
 import { MysqlResult, TableRow } from '@keira/shared/constants';
 import * as mysql from 'mysql2';
 import { Connection, FieldPacket as FieldInfo, QueryError } from 'mysql2';
-import * as ssh2 from 'ssh2';
 import { Observable, Subject, Subscriber } from 'rxjs';
+import * as ssh2 from 'ssh2';
 import { KeiraConnectionOptions } from './mysql.model';
 @Injectable({
   providedIn: 'root',
@@ -52,6 +52,22 @@ export class MysqlService {
     return this._connection ? 'CONNECTED' : 'EMPTY';
   }
 
+  // this conversion clean the config object from ssh and ssl related properties that mysql2 does not expect when ssh is disabled
+  private toMysqlConfig(config: KeiraConnectionOptions): mysql.ConnectionOptions {
+    const {
+      sslEnabled: _sslEnabled,
+      sshEnabled: _sshEnabled,
+      sshHost: _sshHost,
+      sshPort: _sshPort,
+      sshUser: _sshUser,
+      sshPassword: _sshPassword,
+      sshPrivateKey: _sshPrivateKey,
+      ...mysqlConfig
+    } = config;
+
+    return mysqlConfig;
+  }
+
   connect(config: KeiraConnectionOptions) {
     this._config = config;
     this._config.multipleStatements = true;
@@ -60,7 +76,7 @@ export class MysqlService {
       return this.connectViaSshTunnel(config);
     }
 
-    this._connection = this.mysql.createConnection(this.config);
+    this._connection = this.mysql.createConnection(this.toMysqlConfig(this.config));
 
     return new Observable((subscriber) => {
       this._connection.connect(this.getConnectCallback(subscriber));
@@ -105,7 +121,7 @@ export class MysqlService {
             return;
           }
 
-          const mysqlConfig = { ...this.config, stream, host: undefined, port: undefined };
+          const mysqlConfig = { ...this.toMysqlConfig(this.config), stream, host: undefined, port: undefined };
           this._connection = this.mysql.createConnection(mysqlConfig);
           this._connection.connect(this.getConnectCallback(subscriber));
         });
@@ -172,7 +188,7 @@ export class MysqlService {
           error: () => this.reconnect(),
         });
       } else {
-        this._connection = this.mysql.createConnection(this.config);
+        this._connection = this.mysql.createConnection(this.toMysqlConfig(this.config));
         this._connection.connect(this.reconnectCallback.bind(this));
       }
     }, RECONNECTION_TIME_MS);
