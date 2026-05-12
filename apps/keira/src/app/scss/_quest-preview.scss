@@ -1,6 +1,5 @@
 .quest-preview {
-  .r0,
-  .red {
+  .r0 {
     color: #f00 !important;
   }
   .r1 {
@@ -12,36 +11,7 @@
   .r3 {
     color: #40bf40 !important;
   }
-  .r4,
-  .greyed {
+  .r4 {
     color: #808080 !important;
-  }
-
-  color: white;
-  padding: 0 20px;
-  white-space: pre-line;
-
-  p {
-    margin-bottom: 0.3rem;
-  }
-
-  .title {
-    margin-top: 10px;
-    margin-bottom: 6px;
-    text-align: center;
-    font-weight: bold;
-  }
-
-  ol,
-  ul {
-    padding: 0 0 0 17px;
-  }
-
-  .colored {
-    color: #ffd100;
-  }
-
-  .text-sm {
-    font-size: 0.8rem;
   }
 }

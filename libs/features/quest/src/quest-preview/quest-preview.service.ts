@@ -124,18 +124,8 @@ export class QuestPreviewService {
     return this.mysqlQueryService.getItemNameById(this.startItem);
   }
   get objectiveText(): string {
-    return this.questTemplate.LogDescription.replace(/\$B/g, '\n');
+    return this.questTemplate.LogDescription;
   }
-  get descriptionText(): string {
-    return this.questTemplate.QuestDescription.replace(/\$B/g, '\n');
-  }
-  get completionText(): string {
-    return this.questRequestItems.CompletionText.replace(/\$B/g, '\n');
-  }
-  get rewardText(): string {
-    return this.questOfferReward.RewardText.replace(/\$B/g, '\n');
-  }
-
   get rewardMoney(): number {
     return this.questTemplate.RewardMoney;
   }

@@ -15,6 +15,7 @@ import { from, Observable, of } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-quest-preview',
   templateUrl: './quest-preview.component.html',
+  styleUrls: ['./quest-preview.component.scss'],
   imports: [IconComponent, CollapseModule, AsyncPipe, QuestObjectivesComponent, Model3DViewerComponent],
 })
 export class QuestPreviewComponent implements OnInit {
