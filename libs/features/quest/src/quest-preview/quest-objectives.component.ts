@@ -1,21 +1,20 @@
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { IconComponent } from '@keira/shared/base-editor-components';
-import { Observable } from 'rxjs';
 
 export interface NpcOrGoObjective {
-  text$: Observable<string | number | undefined>;
+  text$: Promise<string>;
   count: string;
 }
 
 export interface ItemObjective {
-  id: number | string;
-  name$: Observable<string>;
+  id: number;
+  name$: Promise<string>;
   count: string;
 }
 
 export interface FactionRequirement {
-  name$: Observable<string>;
+  name$: Promise<string>;
   value: string;
 }
 

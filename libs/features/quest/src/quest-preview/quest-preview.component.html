@@ -214,18 +214,13 @@
         </ul>
       }
 
-      <p class="title text-left cursor-pointer mt-3" (click)="objectiveToggle = !objectiveToggle" id="objective-toggle">
-        <i class="fa" [class.fa-caret-right]="objectiveToggle" [class.fa-caret-down]="!objectiveToggle"></i> Objective
-      </p>
-      <div [collapse]="objectiveToggle" class="greyed text-sm" id="description-text">
-        <keira-quest-objectives
-          [objectiveText]="service.objectiveText"
-          [areaDescription]="service.questTemplate.AreaDescription"
-          [npcObjectives]="npcObjectivesData"
-          [itemObjectives]="itemObjectivesData"
-          [factionRequirements]="factionRequirementsData"
-        />
-      </div>
+      <keira-quest-objectives
+        [objectiveText]="service.objectiveText"
+        [areaDescription]="service.questTemplate.AreaDescription"
+        [npcObjectives]="npcObjectivesData"
+        [itemObjectives]="itemObjectivesData"
+        [factionRequirements]="factionRequirementsData"
+      />
 
       <p class="title text-left cursor-pointer mt-3" (click)="descriptionToggle = !descriptionToggle" id="description-toggle">
         <i class="fa" [class.fa-caret-right]="descriptionToggle" [class.fa-caret-down]="!descriptionToggle"></i> Description
