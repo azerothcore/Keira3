@@ -1,4 +1,4 @@
-import { BrowserWindow, Menu, MenuItem, app, nativeImage, shell } from 'electron';
+import { BrowserWindow, Menu, MenuItem, app, nativeImage, shell, ipcMain, dialog } from 'electron';
 import * as settings from 'electron-settings';
 import * as path from 'path';
 import * as url from 'url';
@@ -195,6 +195,44 @@ try {
     win.webContents.setWindowOpenHandler(({ url }) => {
       shell.openExternal(url);
       return { action: 'deny' };
+    });
+
+    ipcMain.handle('dialog:openFolder', async () => {
+      const result = await dialog.showOpenDialog(win, {
+        properties: ['openDirectory'],
+      });
+      if (!result.canceled && result.filePaths.length > 0) {
+        return result.filePaths[0];
+      }
+      return null;
+    });
+
+    ipcMain.handle('dialog:saveFile', async (_event, defaultName: string) => {
+      const result = await dialog.showSaveDialog(win, {
+        defaultPath: defaultName,
+        filters: [
+          { name: 'SQL Files', extensions: ['sql'] },
+          { name: 'All Files', extensions: ['*'] },
+        ],
+      });
+      if (!result.canceled && result.filePath) {
+        return result.filePath;
+      }
+      return null;
+    });
+
+    ipcMain.handle('dialog:openFile', async () => {
+      const result = await dialog.showOpenDialog(win, {
+        properties: ['openFile'],
+        filters: [
+          { name: 'SQL Files', extensions: ['sql'] },
+          { name: 'All Files', extensions: ['*'] },
+        ],
+      });
+      if (!result.canceled && result.filePaths.length > 0) {
+        return result.filePaths[0];
+      }
+      return null;
     });
   });
 

@@ -1,15 +1,17 @@
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { ElectronService } from '@keira/shared/common-services';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { QueryError } from 'mysql2';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { ClipboardService } from 'ngx-clipboard';
+
 import { of, throwError } from 'rxjs';
 import { SqlEditorComponent } from './sql-editor.component';
 import { By } from '@angular/platform-browser';
 import { CodeEditor } from '@acrodata/code-editor';
+import { instance, mock } from 'ts-mockito';
 import Spy = jasmine.Spy;
 
 export class SqlEditorPage extends PageObject<SqlEditorComponent> {
@@ -20,9 +22,6 @@ export class SqlEditorPage extends PageObject<SqlEditorComponent> {
   }
   get code(): HTMLElement {
     return this.query<HTMLElement>('code-editor');
-  }
-  get copyBtn(): HTMLButtonElement {
-    return this.query<HTMLButtonElement>('#copy-btn');
   }
   get executeBtn(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('#execute-btn');
@@ -41,7 +40,11 @@ describe('SqlEditorComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [TooltipModule.forRoot(), SqlEditorComponent, TranslateTestingModule],
-      providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        { provide: ElectronService, useValue: instance(mock(ElectronService)) },
+      ],
     }).compileComponents();
   });
 
@@ -50,12 +53,13 @@ describe('SqlEditorComponent', () => {
     const component = fixture.componentInstance;
     const page = new SqlEditorPage(fixture);
     const mysqlQueryService = TestBed.inject(MysqlQueryService);
+    spyOn(mysqlQueryService, 'getTables').and.returnValue(of([]));
     spyOn(mysqlQueryService, 'query').and.returnValue(of(mockRows));
 
-    const codeEditorDebugElement = fixture.debugElement.query(By.directive(CodeEditor));
-    const codeEditorInstance = codeEditorDebugElement.componentInstance as CodeEditor;
-
     fixture.detectChanges();
+
+    const codeEditorDebugElement = fixture.debugElement.query(By.directive(CodeEditor));
+    const codeEditorInstance = codeEditorDebugElement?.componentInstance as CodeEditor | undefined;
 
     return { page, mysqlQueryService, component, codeEditorInstance };
   };
@@ -99,7 +103,6 @@ describe('SqlEditorComponent', () => {
     page.clickElement(page.executeBtn);
 
     expect(page.errorElement.innerHTML).toContain(error?.code);
-    expect(page.errorElement.innerHTML).toContain(error?.stack as string);
     expect(page.errorElement.innerHTML).toContain(error?.sqlState as string);
     expect(page.errorElement.innerHTML).toContain(`${error.errno}`);
   });
@@ -110,7 +113,7 @@ describe('SqlEditorComponent', () => {
 
     page.clickElement(page.executeBtn);
 
-    expect(component['columns'].length).toBe(0);
+    expect(component.activeTab.result!.columns.length).toBe(0);
   });
 
   it('should display the affected rows box when necessary', () => {
@@ -157,17 +160,6 @@ describe('SqlEditorComponent', () => {
 
     page.clickElement(page.executeBtn);
 
-    expect(component['columns'].length).toBe(20);
-  });
-
-  it('clicking the copy button should copy the query', () => {
-    const { page, codeEditorInstance } = setup();
-    const spy = spyOn(TestBed.inject(ClipboardService), 'copyFromContent');
-    const customQuery = '-- some text that will be copied';
-
-    codeEditorInstance.writeValue(customQuery);
-    page.clickElement(page.copyBtn);
-
-    expect(spy).toHaveBeenCalledWith(customQuery);
+    expect(component.activeTab.result!.columns.length).toBe(20);
   });
 });

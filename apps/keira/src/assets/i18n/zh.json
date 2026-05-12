@@ -213,6 +213,7 @@
     "TOOLTIP": "运行精简的自定义SQL查询编辑器",
     "EXECUTE": "执行 (F9)",
     "LEARN_SQL": "学习SQL语言",
+    "AZEROTH_CORE_DOCS": "AzerothCore文档",
     "AFFECTED_ROWS": "受影响的行:"
   },
   "CREATURE": {

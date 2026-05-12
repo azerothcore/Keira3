@@ -213,6 +213,7 @@
     "TOOLTIP": "Un editor SQL minimalista para ejecutar consultas personalizadas",
     "EXECUTE": "Ejecutar (F9)",
     "LEARN_SQL": "Aprenda el Lenguaje SQL",
+    "AZEROTH_CORE_DOCS": "Docs. de AzerothCore",
     "AFFECTED_ROWS": "Líneas afectadas:"
   },
   "CREATURE": {

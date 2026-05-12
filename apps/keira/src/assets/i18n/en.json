@@ -213,6 +213,7 @@
     "TOOLTIP": "A minimalistic SQL Editor to run custom queries",
     "EXECUTE": "Execute (F9)",
     "LEARN_SQL": "learn the SQL language",
+    "AZEROTH_CORE_DOCS": "AzerothCore Docs",
     "AFFECTED_ROWS": "Affected rows:"
   },
   "CREATURE": {

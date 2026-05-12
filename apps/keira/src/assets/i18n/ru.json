@@ -213,6 +213,7 @@
     "TOOLTIP": "Оптимизированный SQL Редактор для выполнения пользовательских запросов",
     "EXECUTE": "Выполнить (F9)",
     "LEARN_SQL": "изучить язык SQL",
+    "AZEROTH_CORE_DOCS": "Документация AzerothCore",
     "AFFECTED_ROWS": "Затронутые строки:"
   },
   "CREATURE": {

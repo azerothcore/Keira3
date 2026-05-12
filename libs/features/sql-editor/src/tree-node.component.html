@@ -1,0 +1,53 @@
+<div class="tree-node" [style.paddingLeft.px]="8 + depth() * 12" (contextmenu)="onNodeContextMenu($event)">
+  @if (node().isDirectory) {
+    <span class="toggle-icon" (click)="toggleNode.emit(node()); $event.stopPropagation()">
+      <i class="fa fa-fw" [class.fa-caret-right]="!node().expanded" [class.fa-caret-down]="node().expanded"></i>
+    </span>
+  } @else {
+    <span class="toggle-icon spacer"></span>
+  }
+
+  <span class="node-content" [class.dirty]="isDirty(node())" (click)="node().isDirectory ? toggleNode.emit(node()) : openFile.emit(node())">
+    @if (node().isDirectory) {
+      <i class="fa fa-fw" [class.fa-folder]="!node().expanded" [class.fa-folder-open]="node().expanded"></i>
+    } @else {
+      <i class="fa fa-fw fa-file-code-o"></i>
+    }
+
+    @if (renameTarget() === node()) {
+      <input
+        class="rename-input"
+        [value]="renameValue()"
+        (keydown.enter)="submitRename.emit()"
+        (keydown.escape)="cancelRename.emit()"
+        (blur)="submitRename.emit()"
+        (input)="renameValue.set($any($event.target).value)"
+        #renameEl
+      />
+    } @else {
+      <span class="node-name">{{ node().name }}</span>
+    }
+
+    @if (isDirty(node()) && !node().isDirectory) {
+      <span class="dirty-dot ms-auto">●</span>
+    }
+  </span>
+</div>
+
+@if (node().isDirectory && node().expanded && node().children) {
+  @for (child of node().children; track child.path) {
+    <keira-tree-node
+      [node]="child"
+      [depth]="depth() + 1"
+      [dirtyFiles]="dirtyFiles()"
+      [renameTarget]="renameTarget()"
+      [(renameValue)]="renameValue"
+      (toggleNode)="toggleNode.emit($event)"
+      (openFile)="openFile.emit($event)"
+      (contextMenu)="contextMenu.emit($event)"
+      (startRename)="startRename.emit($event)"
+      (submitRename)="submitRename.emit()"
+      (cancelRename)="cancelRename.emit()"
+    />
+  }
+}

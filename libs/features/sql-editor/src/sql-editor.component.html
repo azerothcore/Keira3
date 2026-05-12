@@ -1,68 +1,93 @@
-<div class="container-fluid">
-  <div class="content-block">
-    <div class="row">
-      <div class="lead col-sm-8">
-        {{ 'SQL_EDITOR.TITLE' | translate }}
-        <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SQL_EDITOR.TOOLTIP' | translate"></i>
-      </div>
+<keira-top-bar (newTab)="newTab()" (save)="save()" (saveAs)="saveAs()" (openFolder)="fileService.addFolder()" (execute)="execute()" />
 
-      <div class="col-sm-4 text-end">
-        <div class="wiki-link">
-          <a [href]="docUrl" target="_blank"> <i class="fas fa-link"></i> {{ 'SQL_EDITOR.LEARN_SQL' | translate }} </a>
-        </div>
-      </div>
+<div class="sql-layout">
+  <div class="explorer-panel" [style.width.px]="explorerWidth">
+    <div
+      class="explorer-panel-top"
+      [style.height.px]="gitService.gitAvailable() ? explorerGitSplit : null"
+      [style.flex]="gitService.gitAvailable() ? null : '1 1 auto'"
+    >
+      <keira-file-explorer (fileOpen)="onFileOpen($event)" />
     </div>
-
-    <code-editor
-      id="code"
-      [extensions]="service.extensions()"
-      [lineWrapping]="true"
-      (keydown.f9)="execute()"
-      [languages]="service.languages()"
-      [language]="'MySQL'"
-      [setup]="'basic'"
-      [(ngModel)]="service.code"
-    />
-
-    <div class="row">
-      <div class="col-sm-7">
-        <button type="button" class="btn btn-secondary btn-sm me-2" (click)="copy()" id="copy-btn">
-          <i class="fa fa-copy fa-sm"></i> {{ 'COPY' | translate }}
-        </button>
-        <button type="button" class="btn btn-primary btn-sm" (click)="execute()" id="execute-btn">
-          <i class="fa fa-bolt fa-sm"></i> {{ 'SQL_EDITOR.EXECUTE' | translate }}
-        </button>
+    @if (gitService.gitAvailable()) {
+      <div class="splitter splitter-explorer" (mousedown)="startExplorerSplitDrag($event)"></div>
+      <div class="explorer-panel-bottom">
+        <keira-git-panel (fileOpen)="onFileOpen($event)" />
       </div>
-    </div>
-
-    <keira-query-error [error]="error" />
-
-    @if (affectedRows > -1) {
-      <p id="affected-rows-box" class="mt-2">
-        <code class="hljs"
-          >{{ 'SQL_EDITOR.AFFECTED_ROWS' | translate }} <strong>{{ affectedRows }}</strong> {{ message }}</code
-        >
-      </p>
-    } @else {
-      <hr />
-      <!--    Display: <select [(ngModel)]="displayLimit" class="select-limit">-->
-      <!--      <option *ngFor="let option of displayLimitOptions" [value]="option">{{ option }}</option>-->
-      <!--    </select>-->
-      <ngx-datatable
-        id="editor-table"
-        class="bootstrap table table-striped text-center mt-1"
-        [rows]="rows"
-        [headerHeight]="DTCFG.headerHeight"
-        [footerHeight]="DTCFG.footerHeight"
-        [columnMode]="DTCFG.columnMode"
-        [rowHeight]="DTCFG.rowHeight"
-        [limit]="20"
-        [scrollbarH]="true"
-      >
-        @for (col of columns; track col) {
-          <ngx-datatable-column [prop]="col" [minWidth]="columns.length === 1 ? 300 : 100" [resizeable]="true" />
-        }
-      </ngx-datatable>
     }
+  </div>
+  <div class="splitter splitter-col" (mousedown)="startSplitDrag($event, 'col')"></div>
+
+  <div class="editor-panel">
+    <div class="tabs-bar">
+      @for (tab of tabs; track tab.id) {
+        <div
+          class="tab"
+          [class.active]="tab.id === selectedTabId"
+          [class.dirty]="tab.dirty && !tab.isNew"
+          [class.new-tab]="tab.isNew"
+          (click)="selectedTabId = tab.id"
+          [title]="tab.title"
+        >
+          @if (tab.dirty && !tab.isNew) {
+            <span class="dirty-indicator">●</span>
+          }
+          <span class="tab-title">{{ tab.title }}</span>
+          <button type="button" class="close-btn" (click)="closeTab(tab.id); $event.stopPropagation()">×</button>
+        </div>
+      }
+      <button class="new-tab-btn" (click)="newTab()">+</button>
+    </div>
+
+    <div class="code-area" [style.height.px]="codeHeight">
+      @for (tab of [activeTab]; track tab.id) {
+        <code-editor
+          [extensions]="service.extensions()"
+          [lineWrapping]="true"
+          (keydown.f9)="execute()"
+          [languages]="service.languages()"
+          [language]="'MySQL'"
+          [setup]="'basic'"
+          [ngModel]="tab.code"
+          (ngModelChange)="onCodeChange(tab, $event)"
+        />
+      }
+    </div>
+
+    <div class="splitter splitter-row" (mousedown)="startSplitDrag($event, 'row')"></div>
+
+    <div class="bottom-panel">
+      <div class="action-bar">
+        <div class="action-bar-left"></div>
+        <div class="action-bar-right"></div>
+      </div>
+
+      <keira-query-error [error]="resultError" />
+
+      @if (resultAffectedRows > -1) {
+        <p id="affected-rows-box" class="mt-2 px-2">
+          <code class="hljs">
+            {{ 'SQL_EDITOR.AFFECTED_ROWS' | translate }} <strong>{{ resultAffectedRows }}</strong> {{ resultMessage }}
+          </code>
+        </p>
+      } @else {
+        <div class="results-area">
+          <ngx-datatable
+            id="editor-table"
+            class="bootstrap table table-striped text-center"
+            [rows]="resultRows"
+            [headerHeight]="DTCFG.headerHeight"
+            [footerHeight]="DTCFG.footerHeight"
+            [columnMode]="DTCFG.columnMode"
+            [rowHeight]="DTCFG.rowHeight"
+            [limit]="20"
+          >
+            @for (col of resultColumns; track col) {
+              <ngx-datatable-column [prop]="col" [resizeable]="true" />
+            }
+          </ngx-datatable>
+        </div>
+      }
+    </div>
   </div>
 </div>

@@ -1,0 +1,29 @@
+<div class="top-bar">
+  <div class="top-bar-left">
+    <button class="top-bar-btn" (click)="newTab.emit()" title="New (Ctrl+N)">
+      <i class="far fa-file"></i>
+    </button>
+    <button class="top-bar-btn" (click)="save.emit()" title="Save (Ctrl+S)">
+      <i class="far fa-save"></i>
+    </button>
+    <button class="top-bar-btn" (click)="saveAs.emit()" title="Save As (Ctrl+Shift+S)">
+      <i class="fas fa-save"></i>
+    </button>
+    <span class="separator"></span>
+    <button class="top-bar-btn" (click)="openFolder.emit()" title="Open Folder">
+      <i class="far fa-folder-open"></i>
+    </button>
+  </div>
+  <div class="top-bar-right">
+    <a class="top-bar-btn" href="https://www.azerothcore.org/wiki/documentation-index" target="_blank" title="AzerothCore Docs">
+      <i class="fas fa-book"></i> {{ 'SQL_EDITOR.AZEROTH_CORE_DOCS' | translate }}
+    </a>
+    <a class="top-bar-btn learn-link" href="https://www.w3schools.com/sql/sql_intro.asp" target="_blank" title="Learn SQL">
+      <i class="fas fa-link"></i> {{ 'SQL_EDITOR.LEARN_SQL' | translate }}
+    </a>
+    <span class="separator"></span>
+    <button class="top-bar-btn execute-btn" id="execute-btn" (click)="execute.emit()" title="Execute (F9)">
+      <i class="fa fa-bolt"></i> {{ 'SQL_EDITOR.EXECUTE' | translate }}
+    </button>
+  </div>
+</div>

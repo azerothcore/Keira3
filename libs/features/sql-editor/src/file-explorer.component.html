@@ -1,0 +1,102 @@
+<div class="file-explorer">
+  <div class="explorer-header">
+    <span class="explorer-title">Explorer</span>
+    <div class="explorer-actions">
+      <button class="btn-explorer-action" (click)="fileSvc.addFolder()" title="Open Folder">+</button>
+    </div>
+  </div>
+
+  @if (fileSvc.folders().length === 0) {
+    <div class="empty-state">
+      <button class="btn btn-outline-secondary btn-sm open-folder-btn" (click)="fileSvc.addFolder()">
+        <i class="fa fa-folder-open"></i> Open Folder
+      </button>
+    </div>
+  } @else {
+    <div class="folders-container">
+      @for (folder of fileSvc.folders(); track folder.path) {
+        <div class="folder-section">
+          <div
+            class="folder-root"
+            [class.active]="fileSvc.activeFolder() === folder.path"
+            (click)="onRootFolderClick(folder.path)"
+            (contextmenu)="onRootFolderContextMenu($event, folder.path)"
+          >
+            <span class="toggle-icon" (click)="$event.stopPropagation(); fileSvc.toggleFolderCollapse(folder.path)">
+              <i class="fa fa-fw" [class.fa-caret-right]="folder.collapsed" [class.fa-caret-down]="!folder.collapsed"></i>
+            </span>
+            <i class="fa fa-fw text-warning" [class.fa-folder]="folder.collapsed" [class.fa-folder-open]="!folder.collapsed"></i>
+            <span class="folder-name">{{ getFolderName(folder.path) }}</span>
+          </div>
+
+          @if (!folder.collapsed) {
+            <div class="file-tree">
+              @for (node of folder.tree; track node.path) {
+                <keira-tree-node
+                  [node]="node"
+                  [depth]="0"
+                  [renameTarget]="renameTarget"
+                  [(renameValue)]="renameValue"
+                  (toggleNode)="toggleNode($event)"
+                  (openFile)="openFile($event)"
+                  (contextMenu)="onNodeContextMenu($event)"
+                  (startRename)="startRename($event)"
+                  (submitRename)="submitRename()"
+                  (cancelRename)="cancelRename()"
+                />
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>
+
+@if (contextMenu.visible) {
+  <div class="context-menu-overlay" (click)="closeContextMenu()" (contextmenu)="$event.preventDefault(); closeContextMenu()"></div>
+  <div class="context-menu" [style.left.px]="contextMenu.x" [style.top.px]="contextMenu.y">
+    @if (contextMenu.node) {
+      @if (contextMenu.node.isDirectory) {
+        <div class="context-menu-item" (click)="createFile()">New File</div>
+        <div class="context-menu-item" (click)="createFolder()">New Folder</div>
+        <div class="context-menu-separator"></div>
+        <div class="context-menu-item" (click)="startRename(contextMenu.node)">Rename</div>
+        <div class="context-menu-item danger" (click)="deleteEntry()">Delete</div>
+        <div class="context-menu-separator"></div>
+        <div class="context-menu-item" (click)="showInExplorer()">Show in Explorer</div>
+      } @else {
+        <div class="context-menu-item" (click)="openFileFromNode()">Open</div>
+        <div class="context-menu-separator"></div>
+        <div class="context-menu-item" (click)="startRename(contextMenu.node)">Rename</div>
+        <div class="context-menu-item danger" (click)="deleteEntry()">Delete</div>
+        <div class="context-menu-separator"></div>
+        <div class="context-menu-item" (click)="showInExplorer()">Show in Explorer</div>
+      }
+    } @else {
+      @if (closeTargetFolder) {
+        <div class="context-menu-item" (click)="fileSvc.removeFolder(closeTargetFolder!); closeContextMenu()">Close</div>
+      }
+    }
+  </div>
+}
+
+@if (newItemType) {
+  <div class="modal-overlay" (click)="cancelNewItem()" (contextmenu)="$event.preventDefault(); cancelNewItem()"></div>
+  <div class="new-item-dialog" (click)="$event.stopPropagation()">
+    <div class="new-item-title">{{ newItemType === 'file' ? 'New File' : 'New Folder' }}</div>
+    <input
+      class="new-item-input"
+      #newItemInputEl
+      [value]="newItemName"
+      (input)="newItemName = $any($event.target).value"
+      (keydown.enter)="submitNewItem()"
+      (keydown.escape)="cancelNewItem()"
+      placeholder="Enter name..."
+    />
+    <div class="new-item-buttons">
+      <button type="button" class="btn btn-sm btn-primary" (click)="submitNewItem()">Create</button>
+      <button type="button" class="btn btn-sm btn-secondary" (click)="cancelNewItem()">Cancel</button>
+    </div>
+  </div>
+}
