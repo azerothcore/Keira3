@@ -1,24 +1,24 @@
 <div class="git-panel">
   @if (!repoPath()) {
-    <div class="git-empty">Open a folder to use source control</div>
+    <div class="git-empty">{{ 'SQL_EDITOR.OPEN_FOLDER' | translate }}</div>
   } @else if (!gitStatus()) {
-    <div class="git-empty">Not a git repository</div>
+    <div class="git-empty">{{ 'SQL_EDITOR.NOT_GIT_REPO' | translate }}</div>
     <div class="git-init-area">
-      <button class="btn btn-sm btn-outline-primary git-init-btn" (click)="doInit()">Initialize Repository</button>
+      <button class="btn btn-sm btn-outline-primary git-init-btn" (click)="doInit()">{{ 'SQL_EDITOR.INIT_REPO' | translate }}</button>
     </div>
   } @else {
     <div class="git-branch"><i class="fa fa-code-fork"></i> {{ gitStatus()!.branch }}</div>
 
     <div class="git-section-header" (click)="stagedCollapsed.set(!stagedCollapsed())">
       <i class="fa" [class.fa-caret-right]="stagedCollapsed()" [class.fa-caret-down]="!stagedCollapsed()"></i>
-      Staged Changes ({{ stagedChanges.length }})
+      {{ 'SQL_EDITOR.STAGED_CHANGES' | translate }} ({{ stagedChanges.length }})
       <button
         class="git-stage-all-btn"
         (click)="unstageAll(); $event.stopPropagation()"
         title="Unstage All"
         [class.hidden]="stagedChanges.length === 0"
       >
-        −
+        {{ 'SQL_EDITOR.UNSTAGE_ALL' | translate }}
       </button>
     </div>
     @if (!stagedCollapsed()) {
@@ -44,7 +44,7 @@
 
     <div class="git-section-header" (click)="unstagedCollapsed.set(!unstagedCollapsed())">
       <i class="fa" [class.fa-caret-right]="unstagedCollapsed()" [class.fa-caret-down]="!unstagedCollapsed()"></i>
-      Changes ({{ unstagedChanges.length }})
+      {{ 'SQL_EDITOR.UNSTAGED_CHANGES' | translate }} ({{ unstagedChanges.length }})
       <button
         class="git-stage-all-btn"
         (click)="stageAll(); $event.stopPropagation()"
@@ -70,7 +70,7 @@
             <button class="git-stage-btn" (click)="stageChange(change); $event.stopPropagation()" title="Stage">+</button>
           </div>
         } @empty {
-          <div class="git-no-changes">No changes</div>
+          <div class="git-no-changes">{{ 'SQL_EDITOR.NO_CHANGES' | translate }}</div>
         }
       </div>
     }
@@ -90,7 +90,7 @@
       <div class="git-output">{{ gitOutput }}</div>
     }
 
-    <div class="git-log-header">Recent Commits</div>
+    <div class="git-log-header">{{ 'SQL_EDITOR.RECENT_COMMITS' | translate }}</div>
     <div class="git-log">
       @for (commit of gitLog(); track commit.shortHash) {
         <div class="git-log-entry" title="{{ commit.message }}">
@@ -99,7 +99,7 @@
           <span class="git-log-meta">{{ commit.author }} &bull; {{ commit.date }}</span>
         </div>
       } @empty {
-        <div class="git-no-changes">No commits yet</div>
+        <div class="git-no-changes">{{ 'SQL_EDITOR.NO_COMMITS' | translate }}</div>
       }
     </div>
   }
@@ -108,10 +108,14 @@
     <div class="context-menu-overlay" (click)="closeContextMenu()" (contextmenu)="$event.preventDefault(); closeContextMenu()"></div>
     <div class="context-menu" [style.left.px]="contextMenu.x" [style.top.px]="contextMenu.y">
       @if (contextMenu.change?.staged) {
-        <div class="context-menu-item" (click)="onContextAction('unstage'); $event.stopPropagation()">Unstage</div>
+        <div class="context-menu-item" (click)="onContextAction('unstage'); $event.stopPropagation()">
+          {{ 'SQL_EDITOR.UNSTAGE' | translate }}
+        </div>
       } @else if (contextMenu.change) {
-        <div class="context-menu-item" (click)="onContextAction('stage'); $event.stopPropagation()">Stage change</div>
-        <div class="context-menu-item" (click)="onContextAction('undo'); $event.stopPropagation()">Undo</div>
+        <div class="context-menu-item" (click)="onContextAction('stage'); $event.stopPropagation()">
+          {{ 'SQL_EDITOR.STAGE' | translate }}
+        </div>
+        <div class="context-menu-item" (click)="onContextAction('undo'); $event.stopPropagation()">{{ 'SQL_EDITOR.UNDO' | translate }}</div>
       }
     </div>
   }

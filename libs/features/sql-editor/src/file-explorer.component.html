@@ -2,7 +2,7 @@
   @if (fileSvc.folders().length === 0) {
     <div class="empty-state">
       <button class="btn btn-outline-secondary btn-sm open-folder-btn" (click)="fileSvc.addFolder()">
-        <i class="fa fa-folder-open"></i> Open Folder
+        <i class="fa fa-folder-open"></i> {{ 'SQL_EDITOR.OPEN_FOLDER' | translate }}
       </button>
     </div>
   } @else {
@@ -52,27 +52,29 @@
   <div class="context-menu" [style.left.px]="contextMenu.x" [style.top.px]="contextMenu.y">
     @if (contextMenu.node) {
       @if (contextMenu.node.isDirectory) {
-        <div class="context-menu-item" (click)="createFile()">New File</div>
-        <div class="context-menu-item" (click)="createFolder()">New Folder</div>
+        <div class="context-menu-item" (click)="createFile()">{{ 'SQL_EDITOR.NEW_FILE' | translate }}</div>
+        <div class="context-menu-item" (click)="createFolder()">{{ 'SQL_EDITOR.NEW_FOLDER' | translate }}</div>
         <div class="context-menu-separator"></div>
-        <div class="context-menu-item" (click)="startRename(contextMenu.node)">Rename</div>
-        <div class="context-menu-item danger" (click)="deleteEntry()">Delete</div>
+        <div class="context-menu-item" (click)="startRename(contextMenu.node)">{{ 'SQL_EDITOR.RENAME' | translate }}</div>
+        <div class="context-menu-item danger" (click)="deleteEntry()">{{ 'SQL_EDITOR.DELETE' | translate }}</div>
         <div class="context-menu-separator"></div>
-        <div class="context-menu-item" (click)="showInExplorer()">Show in Explorer</div>
+        <div class="context-menu-item" (click)="showInExplorer()">{{ 'SQL_EDITOR.SHOW_IN_EXPLORER' | translate }}</div>
       } @else {
-        <div class="context-menu-item" (click)="openFileFromNode()">Open</div>
+        <div class="context-menu-item" (click)="openFileFromNode()">{{ 'SQL_EDITOR.OPEN' | translate }}</div>
         <div class="context-menu-separator"></div>
-        <div class="context-menu-item" (click)="startRename(contextMenu.node)">Rename</div>
-        <div class="context-menu-item danger" (click)="deleteEntry()">Delete</div>
+        <div class="context-menu-item" (click)="startRename(contextMenu.node)">{{ 'SQL_EDITOR.RENAME' | translate }}</div>
+        <div class="context-menu-item danger" (click)="deleteEntry()">{{ 'SQL_EDITOR.DELETE' | translate }}</div>
         <div class="context-menu-separator"></div>
-        <div class="context-menu-item" (click)="showInExplorer()">Show in Explorer</div>
+        <div class="context-menu-item" (click)="showInExplorer()">{{ 'SQL_EDITOR.SHOW_IN_EXPLORER' | translate }}</div>
       }
     } @else {
       @if (closeTargetFolder) {
-        <div class="context-menu-item" (click)="createFile()">New File</div>
-        <div class="context-menu-item" (click)="createFolder()">New Folder</div>
+        <div class="context-menu-item" (click)="createFile()">{{ 'SQL_EDITOR.NEW_FILE' | translate }}</div>
+        <div class="context-menu-item" (click)="createFolder()">{{ 'SQL_EDITOR.NEW_FOLDER' | translate }}</div>
         <div class="context-menu-separator"></div>
-        <div class="context-menu-item" (click)="fileSvc.removeFolder(closeTargetFolder!); closeContextMenu()">Close</div>
+        <div class="context-menu-item" (click)="fileSvc.removeFolder(closeTargetFolder!); closeContextMenu()">
+          {{ 'SQL_EDITOR.CLOSE' | translate }}
+        </div>
       }
     }
   </div>

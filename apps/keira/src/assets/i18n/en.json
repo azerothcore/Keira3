@@ -214,7 +214,24 @@
     "EXECUTE": "Execute (F9)",
     "LEARN_SQL": "learn the SQL language",
     "AZEROTH_CORE_DOCS": "AzerothCore Docs",
-    "AFFECTED_ROWS": "Affected rows:"
+    "AFFECTED_ROWS": "Affected rows:",
+    "EXPLORER": "Explorer",
+    "DATABASE": "Database",
+    "SOURCE_CONTROL": "Source Control",
+    "LOADING_DATABASES": "Loading databases...",
+    "NEW_FILE": "New File",
+    "NEW_FOLDER": "New Folder",
+    "DELETE": "Delete",
+    "RENAME": "Rename",
+    "OPEN_FOLDER": "Open Folder",
+    "SHOW_IN_EXPLORER": "Show in Explorer",
+    "OPEN": "Open",
+    "CLOSE": "Close",
+    "NOT_GIT_REPO": "Not a git repository",
+    "INIT_REPO": "Initialize Repository",
+    "RECENT_COMMITS": "Recent Commits",
+    "STAGED_CHANGES": "Staged Changes",
+    "UNSTAGED_CHANGES": "Unstaged Changes"
   },
   "CREATURE": {
     "TEMPLATE": {

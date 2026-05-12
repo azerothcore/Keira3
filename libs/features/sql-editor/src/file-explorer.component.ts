@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, HostListener, inject, input, output, ElementRef, viewChild } from '@angular/core';
 import { SqlEditorFileService, FileNode } from './sql-editor-file.service';
 import { TreeNodeComponent } from './tree-node.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface ContextMenuState {
   visible: boolean;
@@ -14,7 +15,7 @@ interface ContextMenuState {
   selector: 'keira-file-explorer',
   templateUrl: './file-explorer.component.html',
   styleUrls: ['./file-explorer.component.scss'],
-  imports: [TreeNodeComponent],
+  imports: [TreeNodeComponent, TranslateModule],
   standalone: true,
 })
 export class FileExplorerComponent {

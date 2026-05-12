@@ -5,8 +5,14 @@
     <div class="panel-section" [class.collapsed]="explorerCollapsed()" [style.flex]="explorerFlex">
       <div class="panel-section-header" (click)="toggleSection('explorer')">
         <i class="fa" [class.fa-caret-right]="explorerCollapsed()" [class.fa-caret-down]="!explorerCollapsed()"></i>
-        <span>Explorer</span>
-        <button class="panel-section-btn" (click)="fileService.addFolder(); $event.stopPropagation()" title="Open Folder">+</button>
+        <span> {{ 'SQL_EDITOR.EXPLORER' | translate }} </span>
+        <button
+          class="panel-section-btn"
+          (click)="fileService.addFolder(); $event.stopPropagation()"
+          title=" {{ 'SQL_EDITOR.OPEN_FOLDER' | translate }} "
+        >
+          +
+        </button>
       </div>
       @if (!explorerCollapsed()) {
         <div class="panel-section-content">
@@ -20,7 +26,7 @@
     <div class="panel-section" [class.collapsed]="dbCollapsed()" [style.flex]="dbFlex">
       <div class="panel-section-header" (click)="toggleSection('db')">
         <i class="fa" [class.fa-caret-right]="dbCollapsed()" [class.fa-caret-down]="!dbCollapsed()"></i>
-        <span>Database</span>
+        <span> {{ 'SQL_EDITOR.DATABASE' | translate }} </span>
       </div>
       @if (!dbCollapsed()) {
         <div class="panel-section-content">
@@ -35,7 +41,7 @@
       <div class="panel-section" [class.collapsed]="gitCollapsed()" [style.flex]="gitFlex">
         <div class="panel-section-header" (click)="toggleSection('git')">
           <i class="fa" [class.fa-caret-right]="gitCollapsed()" [class.fa-caret-down]="!gitCollapsed()"></i>
-          <span>Source Control</span>
+          <span> {{ 'SQL_EDITOR.SOURCE_CONTROL' | translate }} </span>
         </div>
         @if (!gitCollapsed()) {
           <div class="panel-section-content">

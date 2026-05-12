@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, effect, inject, output, signal, OnI
 import { FormsModule } from '@angular/forms';
 import { SqlEditorGitService, GitStatus, GitCommit, GitChange } from './sql-editor-git.service';
 import { SqlEditorFileService } from './sql-editor-file.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -9,7 +10,7 @@ import { SqlEditorFileService } from './sql-editor-file.service';
   templateUrl: './git-panel.component.html',
   styleUrls: ['./git-panel.component.scss'],
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, TranslateModule],
 })
 export class GitPanelComponent implements OnInit {
   private readonly gitService = inject(SqlEditorGitService);

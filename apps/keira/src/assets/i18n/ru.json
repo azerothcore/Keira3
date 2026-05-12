@@ -214,7 +214,24 @@
     "EXECUTE": "Выполнить (F9)",
     "LEARN_SQL": "изучить язык SQL",
     "AZEROTH_CORE_DOCS": "Документация AzerothCore",
-    "AFFECTED_ROWS": "Затронутые строки:"
+    "AFFECTED_ROWS": "Затронутые строки:",
+    "EXPLORER": "Проводник",
+    "DATABASE": "База данных",
+    "SOURCE_CONTROL": "Контроль версий",
+    "LOADING_DATABASES": "Загрузка баз данных...",
+    "NEW_FILE": "Новый файл",
+    "NEW_FOLDER": "Новая папка",
+    "DELETE": "Удалить",
+    "RENAME": "Переименовать",
+    "OPEN_FOLDER": "Открыть папку",
+    "SHOW_IN_EXPLORER": "Показать в проводнике",
+    "OPEN": "Открыть",
+    "CLOSE": "Закрыть",
+    "NOT_GIT_REPO": "Не является git репозиторием",
+    "INIT_REPO": "Инициализировать Репозиторий",
+    "RECENT_COMMITS": "Последние Коммиты",
+    "STAGED_CHANGES": "Подготовленные Изменения",
+    "UNSTAGED_CHANGES": "Неподготовленные Изменения"
   },
   "CREATURE": {
     "TEMPLATE": {

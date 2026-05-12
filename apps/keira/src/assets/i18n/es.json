@@ -214,7 +214,24 @@
     "EXECUTE": "Ejecutar (F9)",
     "LEARN_SQL": "Aprenda el Lenguaje SQL",
     "AZEROTH_CORE_DOCS": "Docs. de AzerothCore",
-    "AFFECTED_ROWS": "Líneas afectadas:"
+    "AFFECTED_ROWS": "Líneas afectadas:",
+    "EXPLORER": "Archivos",
+    "DATABASE": "Base de Datos",
+    "SOURCE_CONTROL": "Control de Versiones",
+    "LOADING_DATABASES": "Cargando bases de datos...",
+    "NEW_FILE": "Nuevo Archivo",
+    "NEW_FOLDER": "Nueva Carpeta",
+    "DELETE": "Eliminar",
+    "RENAME": "Renombrar",
+    "OPEN_FOLDER": "Abrir Carpeta",
+    "SHOW_IN_EXPLORER": "Mostrar en el Explorador de Archivos",
+    "OPEN": "Abrir",
+    "CLOSE": "Cerrar",
+    "NOT_GIT_REPO": "No es un repositorio de Git",
+    "INIT_REPO": "Inicializar Repositorio",
+    "RECENT_COMMITS": "Commits Recientes",
+    "STAGED_CHANGES": "Cambios Staged",
+    "UNSTAGED_CHANGES": "Cambios Unstaged"
   },
   "CREATURE": {
     "TEMPLATE": {

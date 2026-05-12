@@ -3,6 +3,7 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
 import { FileNode } from './sql-editor-file.service';
 import { TreeNodeComponent } from './tree-node.component';
 import { forkJoin, take } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -10,7 +11,7 @@ import { forkJoin, take } from 'rxjs';
   templateUrl: './db-explorer.component.html',
   styleUrls: ['./db-explorer.component.scss'],
   standalone: true,
-  imports: [TreeNodeComponent],
+  imports: [TreeNodeComponent, TranslateModule],
 })
 export class DbExplorerComponent {
   private readonly mysqlQueryService = inject(MysqlQueryService);

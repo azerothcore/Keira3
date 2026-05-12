@@ -1,6 +1,6 @@
 <div class="db-explorer">
   @if (dbNodes().length === 0) {
-    <div class="loading">Loading databases...</div>
+    <div class="loading">{{ 'SQL_EDITOR.LOADING_DATABASES' | translate }}</div>
   }
   @for (db of dbNodes(); track db.path) {
     <keira-tree-node [node]="db" [depth]="0" (toggleNode)="onToggleNode($event)" (openFile)="onOpenNode($event)" />

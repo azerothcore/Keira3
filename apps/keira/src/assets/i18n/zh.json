@@ -214,7 +214,24 @@
     "EXECUTE": "执行 (F9)",
     "LEARN_SQL": "学习SQL语言",
     "AZEROTH_CORE_DOCS": "AzerothCore文档",
-    "AFFECTED_ROWS": "受影响的行:"
+    "AFFECTED_ROWS": "受影响的行:",
+    "EXPLORER": "资源管理器",
+    "DATABASE": "数据库",
+    "SOURCE_CONTROL": "源码控制",
+    "LOADING_DATABASES": "正在加载数据库...",
+    "NEW_FILE": "新建文件",
+    "NEW_FOLDER": "新建文件夹",
+    "DELETE": "删除",
+    "RENAME": "重命名",
+    "OPEN_FOLDER": "打开文件夹",
+    "SHOW_IN_EXPLORER": "在资源管理器中显示",
+    "OPEN": "打开",
+    "CLOSE": "关闭",
+    "NOT_GIT_REPO": "当前目录不是一个Git仓库",
+    "INIT_REPO": "初始化仓库",
+    "RECENT_COMMITS": "最近的提交",
+    "STAGED_CHANGES": "已暂存的更改",
+    "UNSTAGED_CHANGES": "未暂存的更改"
   },
   "CREATURE": {
     "TEMPLATE": {
