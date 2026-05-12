@@ -8,6 +8,7 @@ export interface FileNode {
   isDirectory: boolean;
   children?: FileNode[];
   expanded?: boolean;
+  icon?: string;
 }
 
 export interface FolderEntry {

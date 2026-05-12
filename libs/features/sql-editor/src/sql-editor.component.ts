@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, inject, OnInit, signal } from '@angular/core';
 import { DTCFG } from '@keira/shared/config';
 import { SubscriptionHandler } from '@keira/shared/utils';
 import { TableRow } from '@keira/shared/constants';
 import { QueryError } from 'mysql2';
+import { EditorRouteService } from '@keira/shared/common-services';
 import { SqlEditorService } from './sql-editor.service';
 import { SqlEditorFileService } from './sql-editor-file.service';
 import { SqlEditorGitService } from './sql-editor-git.service';
@@ -17,6 +18,7 @@ import { SqlTab } from './sql-tab.model';
 import { TopBarComponent } from './top-bar.component';
 import { FileExplorerComponent } from './file-explorer.component';
 import { GitPanelComponent } from './git-panel.component';
+import { DbExplorerComponent } from './db-explorer.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -33,10 +35,12 @@ import { GitPanelComponent } from './git-panel.component';
     TopBarComponent,
     FileExplorerComponent,
     GitPanelComponent,
+    DbExplorerComponent,
   ],
 })
 export class SqlEditorComponent extends SubscriptionHandler implements OnInit {
   private readonly mysqlQueryService = inject(MysqlQueryService);
+  private readonly editorRouteService = inject(EditorRouteService);
   protected readonly service = inject(SqlEditorService);
   protected readonly fileService = inject(SqlEditorFileService);
   protected readonly gitService = inject(SqlEditorGitService);
@@ -45,6 +49,8 @@ export class SqlEditorComponent extends SubscriptionHandler implements OnInit {
   protected readonly DTCFG = DTCFG;
   private readonly MAX_COL_SHOWN = 20;
   private tabCounter = 0;
+  protected detectedTable = '';
+  protected selectedRows: Record<string, unknown>[] = [];
 
   private readonly initialTab: SqlTab = {
     id: crypto.randomUUID(),
@@ -61,9 +67,8 @@ export class SqlEditorComponent extends SubscriptionHandler implements OnInit {
 
   //#region Split Panels
   protected explorerWidth = 260;
-  protected explorerGitSplit = 200;
   protected codeHeight = 300;
-  private dragging: { type: 'col' | 'row' | 'explorer'; startX: number; startY: number; startSize: number } | null = null;
+  private dragging: { type: 'col' | 'row'; startX: number; startY: number; startSize: number } | null = null;
 
   protected startSplitDrag(event: MouseEvent, type: 'col' | 'row'): void {
     event.preventDefault();
@@ -76,26 +81,22 @@ export class SqlEditorComponent extends SubscriptionHandler implements OnInit {
     this.setBodyCursor(type === 'col' ? 'col-resize' : 'row-resize');
   }
 
-  protected startExplorerSplitDrag(event: MouseEvent): void {
-    event.preventDefault();
-    this.dragging = { type: 'explorer', startX: event.clientX, startY: event.clientY, startSize: this.explorerGitSplit };
-    this.setBodyCursor('row-resize');
-  }
-
   @HostListener('document:mousemove', ['$event'])
   protected onSplitDrag(event: MouseEvent): void {
-    if (!this.dragging) return;
-    if (this.dragging.type === 'col') {
-      const delta = event.clientX - this.dragging.startX;
-      this.explorerWidth = Math.max(180, Math.min(600, this.dragging.startSize + delta));
-    } else if (this.dragging.type === 'explorer') {
-      const delta = event.clientY - this.dragging.startY;
-      this.explorerGitSplit = Math.max(80, Math.min(1000, this.dragging.startSize + delta));
-    } else {
-      const delta = event.clientY - this.dragging.startY;
-      this.codeHeight = Math.max(100, Math.min(800, this.dragging.startSize + delta));
+    if (this.dragging) {
+      if (this.dragging.type === 'col') {
+        const delta = event.clientX - this.dragging.startX;
+        this.explorerWidth = Math.max(180, Math.min(600, this.dragging.startSize + delta));
+      } else {
+        const delta = event.clientY - this.dragging.startY;
+        this.codeHeight = Math.max(100, Math.min(800, this.dragging.startSize + delta));
+      }
+      this.changeDetectorRef.markForCheck();
+    } else if (this.sectionDrag) {
+      const delta = event.clientY - this.sectionDrag.startY;
+      this.sectionHeights[this.sectionDrag.target] = Math.max(80, this.sectionDrag.startHeight + delta);
+      this.changeDetectorRef.markForCheck();
     }
-    this.changeDetectorRef.markForCheck();
   }
 
   @HostListener('document:mouseup')
@@ -103,6 +104,10 @@ export class SqlEditorComponent extends SubscriptionHandler implements OnInit {
     if (this.dragging) {
       this.setBodyCursor('');
       this.dragging = null;
+    }
+    if (this.sectionDrag) {
+      this.setBodyCursor('');
+      this.sectionDrag = null;
     }
   }
 
@@ -112,11 +117,54 @@ export class SqlEditorComponent extends SubscriptionHandler implements OnInit {
   }
   //#endregion
 
+  //#region Collapsible Sections
+  protected explorerCollapsed = signal(false);
+  protected dbCollapsed = signal(false);
+  protected gitCollapsed = signal(false);
+  protected sectionHeights = { explorer: 200, db: 200 };
+
+  protected get explorerFlex(): string {
+    return this.explorerCollapsed() ? '0 0 auto' : `0 0 ${this.sectionHeights.explorer}px`;
+  }
+  protected get dbFlex(): string {
+    return this.dbCollapsed() ? '0 0 auto' : `0 0 ${this.sectionHeights.db}px`;
+  }
+  protected get gitFlex(): string {
+    return this.gitCollapsed() ? '0 0 auto' : '1 1 auto';
+  }
+
+  protected toggleSection(section: 'explorer' | 'db' | 'git'): void {
+    if (section === 'explorer') this.explorerCollapsed.update((v) => !v);
+    else if (section === 'db') this.dbCollapsed.update((v) => !v);
+    else if (section === 'git') this.gitCollapsed.update((v) => !v);
+  }
+
+  protected startSectionDrag(event: MouseEvent, target: 'explorer' | 'db'): void {
+    event.preventDefault();
+    this.sectionDrag = {
+      target,
+      startY: event.clientY,
+      startHeight: target === 'explorer' ? this.sectionHeights.explorer : this.sectionHeights.db,
+    };
+    this.setBodyCursor('row-resize');
+  }
+
+  private sectionDrag: { target: 'explorer' | 'db'; startY: number; startHeight: number } | null = null;
+
+  protected onSelectQuery(query: string): void {
+    const tab = this.activeTab;
+    tab.code = query;
+    tab.dirty = true;
+    this.changeDetectorRef.markForCheck();
+  }
+  //#endregion
+
   //#region Keyboard Shortcuts
   @HostListener('window:keydown', ['$event'])
   protected handleKeyboardEvent(event: KeyboardEvent): void {
     const ctrl = event.ctrlKey || event.metaKey;
     const key = event.key.toLowerCase();
+    const alt = event.altKey;
     if (ctrl && key === 'n') {
       event.preventDefault();
       this.newTab();
@@ -141,6 +189,37 @@ export class SqlEditorComponent extends SubscriptionHandler implements OnInit {
       event.preventDefault();
       this.fileService.addFolder();
       return;
+    }
+    if (ctrl && key === 'w') {
+      event.preventDefault();
+      this.closeTab(this.selectedTabId);
+      return;
+    }
+    if (alt && key === 'arrowleft') {
+      event.preventDefault();
+      this.selectPrevTab();
+      return;
+    }
+    if (alt && key === 'arrowright') {
+      event.preventDefault();
+      this.selectNextTab();
+      return;
+    }
+  }
+
+  private selectPrevTab(): void {
+    const idx = this.tabs.findIndex((t) => t.id === this.selectedTabId);
+    if (idx > 0) {
+      this.selectedTabId = this.tabs[idx - 1].id;
+      this.changeDetectorRef.markForCheck();
+    }
+  }
+
+  private selectNextTab(): void {
+    const idx = this.tabs.findIndex((t) => t.id === this.selectedTabId);
+    if (idx < this.tabs.length - 1) {
+      this.selectedTabId = this.tabs[idx + 1].id;
+      this.changeDetectorRef.markForCheck();
     }
   }
   //#endregion
@@ -302,11 +381,24 @@ export class SqlEditorComponent extends SubscriptionHandler implements OnInit {
   }
   //#endregion
 
+  protected onResultRowSelect(event: { selected: Record<string, unknown>[] }): void {
+    if (event.selected.length > 0 && this.detectedTable) {
+      this.editorRouteService.navigateToEditor(this.detectedTable, event.selected[0]);
+    }
+  }
+
+  private detectTableFromQuery(query: string): string {
+    const match = query.match(/\bFROM\s+[`'"]?(\w+)/i);
+    return match ? match[1] : '';
+  }
+
   //#region Button Actions
   protected execute(): void {
     const tab = this.activeTab;
     const query = tab.code;
     if (!query || !query.trim()) return;
+
+    this.detectedTable = this.detectTableFromQuery(query);
 
     this.subscriptions.push(
       this.mysqlQueryService.query(query).subscribe({

@@ -1,11 +1,4 @@
-<div class="file-explorer">
-  <div class="explorer-header">
-    <span class="explorer-title">Explorer</span>
-    <div class="explorer-actions">
-      <button class="btn-explorer-action" (click)="fileSvc.addFolder()" title="Open Folder">+</button>
-    </div>
-  </div>
-
+<div class="file-explorer" (contextmenu)="onEmptyAreaContextMenu($event)">
   @if (fileSvc.folders().length === 0) {
     <div class="empty-state">
       <button class="btn btn-outline-secondary btn-sm open-folder-btn" (click)="fileSvc.addFolder()">
@@ -35,6 +28,7 @@
                 <keira-tree-node
                   [node]="node"
                   [depth]="0"
+                  [dirtyFiles]="dirtyFiles()"
                   [renameTarget]="renameTarget"
                   [(renameValue)]="renameValue"
                   (toggleNode)="toggleNode($event)"
@@ -75,6 +69,9 @@
       }
     } @else {
       @if (closeTargetFolder) {
+        <div class="context-menu-item" (click)="createFile()">New File</div>
+        <div class="context-menu-item" (click)="createFolder()">New Folder</div>
+        <div class="context-menu-separator"></div>
         <div class="context-menu-item" (click)="fileSvc.removeFolder(closeTargetFolder!); closeContextMenu()">Close</div>
       }
     }

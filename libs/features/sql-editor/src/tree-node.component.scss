@@ -1,0 +1,51 @@
+.tree-node {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 0.15rem 0;
+  user-select: none;
+  font-size: 13px;
+}
+.tree-node:hover {
+  background: #e9ecef;
+}
+.toggle-icon {
+  width: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #999;
+}
+.toggle-icon.spacer {
+  visibility: hidden;
+}
+.node-content {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex: 1;
+  overflow: hidden;
+}
+.node-content.dirty {
+  color: #856404;
+}
+.node-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dirty-dot {
+  font-size: 10px;
+  color: #856404;
+  flex-shrink: 0;
+}
+.rename-input {
+  flex: 1;
+  font-size: 12px;
+  padding: 0.1rem 0.2rem;
+  border: 1px solid #007bff;
+  outline: none;
+  background: #fff;
+  min-width: 0;
+}

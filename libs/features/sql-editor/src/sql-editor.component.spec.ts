@@ -58,6 +58,9 @@ describe('SqlEditorComponent', () => {
 
     fixture.detectChanges();
 
+    // DbExplorerComponent queries SHOW DATABASES on creation; reset its call count
+    (mysqlQueryService.query as jasmine.Spy).calls.reset();
+
     const codeEditorDebugElement = fixture.debugElement.query(By.directive(CodeEditor));
     const codeEditorInstance = codeEditorDebugElement?.componentInstance as CodeEditor | undefined;
 

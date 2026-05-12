@@ -75,6 +75,13 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
   }
 
   canActivate(): boolean {
+    const nav = this.router.getCurrentNavigation();
+    const state = nav?.extras?.state as { id?: string } | undefined;
+    if (state?.id) {
+      this.select(false, state.id);
+      return true;
+    }
+
     if (!!this._selected) {
       return true;
     }

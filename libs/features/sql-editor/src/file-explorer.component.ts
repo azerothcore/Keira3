@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, HostListener, inject, output, ElementRef, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, inject, input, output, ElementRef, viewChild } from '@angular/core';
 import { SqlEditorFileService, FileNode } from './sql-editor-file.service';
 import { TreeNodeComponent } from './tree-node.component';
 
@@ -22,6 +22,7 @@ export class FileExplorerComponent {
   protected readonly fileSvc = this.fileService;
 
   readonly fileOpen = output<string>();
+  readonly dirtyFiles = input<Set<string>>(new Set());
 
   protected contextMenu: ContextMenuState = { visible: false, x: 0, y: 0, node: null };
   protected closeTargetFolder: string | null = null;
@@ -68,13 +69,22 @@ export class FileExplorerComponent {
 
   protected onRootFolderClick(folderPath: string): void {
     this.fileService.setActiveFolder(folderPath);
-    this.fileService.toggleFolderCollapse(folderPath);
   }
 
   protected onRootFolderContextMenu(event: MouseEvent, folderPath: string): void {
     event.preventDefault();
+    event.stopPropagation();
     this.menuOpen = true;
     this.closeTargetFolder = folderPath;
+    this.contextMenu = { visible: true, x: event.clientX, y: event.clientY, node: null };
+  }
+
+  protected onEmptyAreaContextMenu(event: MouseEvent): void {
+    event.preventDefault();
+    const targetFolder = this.fileSvc.activeFolder();
+    if (!targetFolder) return;
+    this.menuOpen = true;
+    this.closeTargetFolder = targetFolder;
     this.contextMenu = { visible: true, x: event.clientX, y: event.clientY, node: null };
   }
 
@@ -91,7 +101,7 @@ export class FileExplorerComponent {
 
   protected createFile(): void {
     const node = this.contextMenu.node;
-    const dir = node?.isDirectory ? node.path : null;
+    const dir = node?.isDirectory ? node.path : this.closeTargetFolder;
     if (!dir) {
       this.closeContextMenu();
       return;
@@ -102,7 +112,7 @@ export class FileExplorerComponent {
 
   protected createFolder(): void {
     const node = this.contextMenu.node;
-    const dir = node?.isDirectory ? node.path : null;
+    const dir = node?.isDirectory ? node.path : this.closeTargetFolder;
     if (!dir) {
       this.closeContextMenu();
       return;

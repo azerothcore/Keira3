@@ -2,17 +2,46 @@
 
 <div class="sql-layout">
   <div class="explorer-panel" [style.width.px]="explorerWidth">
-    <div
-      class="explorer-panel-top"
-      [style.height.px]="gitService.gitAvailable() ? explorerGitSplit : null"
-      [style.flex]="gitService.gitAvailable() ? null : '1 1 auto'"
-    >
-      <keira-file-explorer (fileOpen)="onFileOpen($event)" />
+    <div class="panel-section" [class.collapsed]="explorerCollapsed()" [style.flex]="explorerFlex">
+      <div class="panel-section-header" (click)="toggleSection('explorer')">
+        <i class="fa" [class.fa-caret-right]="explorerCollapsed()" [class.fa-caret-down]="!explorerCollapsed()"></i>
+        <span>Explorer</span>
+        <button class="panel-section-btn" (click)="fileService.addFolder(); $event.stopPropagation()" title="Open Folder">+</button>
+      </div>
+      @if (!explorerCollapsed()) {
+        <div class="panel-section-content">
+          <keira-file-explorer (fileOpen)="onFileOpen($event)" [dirtyFiles]="dirtyFilePaths" />
+        </div>
+      }
     </div>
+
+    <div class="splitter splitter-section" (mousedown)="startSectionDrag($event, 'explorer')"></div>
+
+    <div class="panel-section" [class.collapsed]="dbCollapsed()" [style.flex]="dbFlex">
+      <div class="panel-section-header" (click)="toggleSection('db')">
+        <i class="fa" [class.fa-caret-right]="dbCollapsed()" [class.fa-caret-down]="!dbCollapsed()"></i>
+        <span>Database</span>
+      </div>
+      @if (!dbCollapsed()) {
+        <div class="panel-section-content">
+          <keira-db-explorer (selectQuery)="onSelectQuery($event)" />
+        </div>
+      }
+    </div>
+
+    <div class="splitter splitter-section" (mousedown)="startSectionDrag($event, 'db')"></div>
+
     @if (gitService.gitAvailable()) {
-      <div class="splitter splitter-explorer" (mousedown)="startExplorerSplitDrag($event)"></div>
-      <div class="explorer-panel-bottom">
-        <keira-git-panel (fileOpen)="onFileOpen($event)" />
+      <div class="panel-section" [class.collapsed]="gitCollapsed()" [style.flex]="gitFlex">
+        <div class="panel-section-header" (click)="toggleSection('git')">
+          <i class="fa" [class.fa-caret-right]="gitCollapsed()" [class.fa-caret-down]="!gitCollapsed()"></i>
+          <span>Source Control</span>
+        </div>
+        @if (!gitCollapsed()) {
+          <div class="panel-section-content">
+            <keira-git-panel (fileOpen)="onFileOpen($event)" />
+          </div>
+        }
       </div>
     }
   </div>
@@ -81,6 +110,9 @@
             [columnMode]="DTCFG.columnMode"
             [rowHeight]="DTCFG.rowHeight"
             [limit]="20"
+            [selectionType]="DTCFG.selectionType"
+            (select)="onResultRowSelect($event)"
+            [selected]="selectedRows"
           >
             @for (col of resultColumns; track col) {
               <ngx-datatable-column [prop]="col" [resizeable]="true" />

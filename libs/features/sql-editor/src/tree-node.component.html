@@ -8,7 +8,9 @@
   }
 
   <span class="node-content" [class.dirty]="isDirty(node())" (click)="node().isDirectory ? toggleNode.emit(node()) : openFile.emit(node())">
-    @if (node().isDirectory) {
+    @if (node().icon) {
+      <i class="fa fa-fw" [ngClass]="node().icon"></i>
+    } @else if (node().isDirectory) {
       <i class="fa fa-fw" [class.fa-folder]="!node().expanded" [class.fa-folder-open]="node().expanded"></i>
     } @else {
       <i class="fa fa-fw fa-file-code-o"></i>

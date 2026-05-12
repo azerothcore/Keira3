@@ -5,40 +5,6 @@
   font-size: 13px;
 }
 
-.explorer-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.4rem 0.6rem;
-  border-bottom: 1px solid #dee2e6;
-  text-transform: uppercase;
-  font-size: 11px;
-  letter-spacing: 0.5px;
-  font-weight: 600;
-  color: #666;
-}
-
-.explorer-actions {
-  display: flex;
-  gap: 0.2rem;
-}
-
-.btn-explorer-action {
-  background: none;
-  border: none;
-  color: #666;
-  cursor: pointer;
-  padding: 0.1rem 0.3rem;
-  font-size: 14px;
-  line-height: 1;
-  border-radius: 3px;
-}
-
-.btn-explorer-action:hover {
-  background: #e9ecef;
-  color: #333;
-}
-
 .empty-state {
   display: flex;
   align-items: center;

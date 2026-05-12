@@ -17,9 +17,6 @@ export interface GitCommit {
 export interface GitStatus {
   branch: string;
   changes: GitChange[];
-  hasRemote: boolean;
-  behind: number;
-  ahead: number;
 }
 
 @Injectable({
@@ -32,8 +29,6 @@ export class SqlEditorGitService {
     return this.electronService.childProcess;
   }
 
-  readonly loading = signal(false);
-  readonly error = signal<string | null>(null);
   readonly gitAvailable = signal(true);
 
   constructor() {
@@ -56,7 +51,7 @@ export class SqlEditorGitService {
         encoding: 'utf8',
         timeout: 5000,
       });
-      return result.trim();
+      return result.replace(/\r\n/g, '\n').replace(/\r/g, '').trim();
     } catch {
       return null;
     }
@@ -68,7 +63,7 @@ export class SqlEditorGitService {
       encoding: 'utf8',
       timeout: 15000,
     });
-    return result.trim();
+    return result.replace(/\r\n/g, '\n').replace(/\r/g, '').replace(/\n+$/, '');
   }
 
   getStatus(repoPath: string): GitStatus | null {
@@ -82,39 +77,17 @@ export class SqlEditorGitService {
       branch = 'main';
     }
 
-    let hasRemote = false;
-    try {
-      const remoteOutput = this.runGit(['remote', '-v'], gitRoot);
-      hasRemote = remoteOutput.length > 0;
-    } catch {
-      hasRemote = false;
-    }
-
-    let behind = 0;
-    let ahead = 0;
-    if (hasRemote && branch !== 'HEAD') {
-      try {
-        const countOutput = this.runGit(['rev-list', '--left-right', '--count', `HEAD...${branch}@{upstream}`], gitRoot);
-        const parts = countOutput.split('\t');
-        if (parts.length === 2) {
-          ahead = parseInt(parts[0], 10) || 0;
-          behind = parseInt(parts[1], 10) || 0;
-        }
-      } catch {
-        behind = 0;
-        ahead = 0;
-      }
-    }
-
     try {
       const statusOutput = this.runGit(['status', '--porcelain'], gitRoot);
       const changes: GitChange[] = [];
       if (statusOutput) {
         for (const line of statusOutput.split('\n')) {
-          if (!line.trim()) continue;
-          const x = line[0];
-          const y = line[1];
-          const file = line.substring(3);
+          const cln = line.replace(/\r$/, '');
+          if (!cln.trim()) continue;
+          const x = cln[0];
+          const y = cln[1];
+          const pathStart = cln[2] === ' ' ? 3 : 2;
+          const file = cln.substring(pathStart);
           if (x === '?' && y === '?') {
             changes.push({ status: '??', file, staged: false });
           } else {
@@ -127,7 +100,7 @@ export class SqlEditorGitService {
           }
         }
       }
-      return { branch, changes, hasRemote, behind, ahead };
+      return { branch, changes };
     } catch {
       return null;
     }
@@ -172,6 +145,14 @@ export class SqlEditorGitService {
     } catch {}
   }
 
+  discardFile(repoPath: string, file: string): void {
+    const gitRoot = this.findGitRoot(repoPath);
+    if (!gitRoot) return;
+    try {
+      this.runGit(['checkout', '--', file], gitRoot);
+    } catch {}
+  }
+
   getHeadContent(repoPath: string, file: string): string {
     const gitRoot = this.findGitRoot(repoPath);
     if (!gitRoot) return '';
@@ -188,16 +169,6 @@ export class SqlEditorGitService {
     return gitRoot.replace(/\\/g, '/').replace(/\/$/, '') + '/' + relativeFile;
   }
 
-  fetch(repoPath: string): string | null {
-    const gitRoot = this.findGitRoot(repoPath);
-    if (!gitRoot) return null;
-    try {
-      return this.runGit(['fetch'], gitRoot);
-    } catch {
-      return null;
-    }
-  }
-
   commit(repoPath: string, message: string): boolean {
     const gitRoot = this.findGitRoot(repoPath);
     if (!gitRoot) return false;
@@ -209,44 +180,12 @@ export class SqlEditorGitService {
     }
   }
 
-  pull(repoPath: string): string | null {
-    const gitRoot = this.findGitRoot(repoPath);
-    if (!gitRoot) return null;
-    try {
-      return this.runGit(['pull'], gitRoot);
-    } catch {
-      return null;
-    }
-  }
-
-  push(repoPath: string): string | null {
-    const gitRoot = this.findGitRoot(repoPath);
-    if (!gitRoot) return null;
-    try {
-      return this.runGit(['push'], gitRoot);
-    } catch {
-      return null;
-    }
-  }
-
   init(repoPath: string): boolean {
     try {
       this.runGit(['init'], repoPath);
       return true;
     } catch {
       return false;
-    }
-  }
-
-  sync(repoPath: string): string | null {
-    const gitRoot = this.findGitRoot(repoPath);
-    if (!gitRoot) return null;
-    try {
-      const pullResult = this.runGit(['pull'], gitRoot);
-      const pushResult = this.runGit(['push'], gitRoot);
-      return `${pullResult}\n${pushResult}`;
-    } catch {
-      return null;
     }
   }
 }

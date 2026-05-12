@@ -1,0 +1,118 @@
+<div class="git-panel">
+  @if (!repoPath()) {
+    <div class="git-empty">Open a folder to use source control</div>
+  } @else if (!gitStatus()) {
+    <div class="git-empty">Not a git repository</div>
+    <div class="git-init-area">
+      <button class="btn btn-sm btn-outline-primary git-init-btn" (click)="doInit()">Initialize Repository</button>
+    </div>
+  } @else {
+    <div class="git-branch"><i class="fa fa-code-fork"></i> {{ gitStatus()!.branch }}</div>
+
+    <div class="git-section-header" (click)="stagedCollapsed.set(!stagedCollapsed())">
+      <i class="fa" [class.fa-caret-right]="stagedCollapsed()" [class.fa-caret-down]="!stagedCollapsed()"></i>
+      Staged Changes ({{ stagedChanges.length }})
+      <button
+        class="git-stage-all-btn"
+        (click)="unstageAll(); $event.stopPropagation()"
+        title="Unstage All"
+        [class.hidden]="stagedChanges.length === 0"
+      >
+        −
+      </button>
+    </div>
+    @if (!stagedCollapsed()) {
+      <div class="git-changes">
+        @for (change of stagedChanges; track change.file) {
+          <div class="git-change" (click)="onClickChange(change)" (contextmenu)="onChangeContextMenu($event, change)">
+            <span
+              class="git-change-status"
+              [class.git-added]="change.status === 'A' || change.status === '??'"
+              [class.git-modified]="change.status === 'M'"
+              [class.git-deleted]="change.status === 'D'"
+            >
+              {{ change.status === '??' ? '??' : change.status }}
+            </span>
+            <span class="git-change-file">{{ change.file }}</span>
+            <button class="git-stage-btn" (click)="unstageChange(change); $event.stopPropagation()" title="Unstage">−</button>
+          </div>
+        } @empty {
+          <div class="git-no-changes">No staged changes</div>
+        }
+      </div>
+    }
+
+    <div class="git-section-header" (click)="unstagedCollapsed.set(!unstagedCollapsed())">
+      <i class="fa" [class.fa-caret-right]="unstagedCollapsed()" [class.fa-caret-down]="!unstagedCollapsed()"></i>
+      Changes ({{ unstagedChanges.length }})
+      <button
+        class="git-stage-all-btn"
+        (click)="stageAll(); $event.stopPropagation()"
+        title="Stage All"
+        [class.hidden]="unstagedChanges.length === 0"
+      >
+        +
+      </button>
+    </div>
+    @if (!unstagedCollapsed()) {
+      <div class="git-changes">
+        @for (change of unstagedChanges; track change.file) {
+          <div class="git-change" (click)="onClickChange(change)" (contextmenu)="onChangeContextMenu($event, change)">
+            <span
+              class="git-change-status"
+              [class.git-added]="change.status === 'A' || change.status === '??'"
+              [class.git-modified]="change.status === 'M'"
+              [class.git-deleted]="change.status === 'D'"
+            >
+              {{ change.status === '??' ? '??' : change.status }}
+            </span>
+            <span class="git-change-file">{{ change.file }}</span>
+            <button class="git-stage-btn" (click)="stageChange(change); $event.stopPropagation()" title="Stage">+</button>
+          </div>
+        } @empty {
+          <div class="git-no-changes">No changes</div>
+        }
+      </div>
+    }
+
+    <div class="git-commit-area">
+      <input class="git-commit-input" [(ngModel)]="commitMessage" (keydown.enter)="doCommit()" placeholder="Commit message..." />
+      <button
+        class="btn btn-sm btn-primary git-commit-btn"
+        (click)="doCommit()"
+        [disabled]="!commitMessage.trim() || stagedChanges.length === 0"
+      >
+        Commit
+      </button>
+    </div>
+
+    @if (gitOutput) {
+      <div class="git-output">{{ gitOutput }}</div>
+    }
+
+    <div class="git-log-header">Recent Commits</div>
+    <div class="git-log">
+      @for (commit of gitLog(); track commit.shortHash) {
+        <div class="git-log-entry" title="{{ commit.message }}">
+          <span class="git-log-hash">{{ commit.shortHash }}</span>
+          <span class="git-log-msg">{{ commit.message }}</span>
+          <span class="git-log-meta">{{ commit.author }} &bull; {{ commit.date }}</span>
+        </div>
+      } @empty {
+        <div class="git-no-changes">No commits yet</div>
+      }
+    </div>
+  }
+
+  @if (contextMenu.visible) {
+    <div class="context-menu-overlay" (click)="closeContextMenu()" (contextmenu)="$event.preventDefault(); closeContextMenu()"></div>
+    <div class="context-menu" [style.left.px]="contextMenu.x" [style.top.px]="contextMenu.y">
+      @if (contextMenu.change?.staged) {
+        <div class="context-menu-item" (click)="onContextAction('unstage'); $event.stopPropagation()">Unstage</div>
+      } @else if (contextMenu.change) {
+        <div class="context-menu-item" (click)="onContextAction('stage'); $event.stopPropagation()">Stage change</div>
+        <div class="context-menu-item" (click)="onContextAction('undo'); $event.stopPropagation()">Undo</div>
+      }
+    </div>
+  }
+</div>

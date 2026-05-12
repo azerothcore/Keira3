@@ -1,12 +1,14 @@
 import { ChangeDetectionStrategy, Component, input, output, model } from '@angular/core';
+import { NgClass } from '@angular/common';
 import { FileNode } from './sql-editor-file.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-tree-node',
   templateUrl: './tree-node.component.html',
-  styleUrls: ['./file-explorer.component.scss'],
+  styleUrls: ['./tree-node.component.scss'],
   standalone: true,
+  imports: [NgClass],
 })
 export class TreeNodeComponent {
   readonly node = input.required<FileNode>();
