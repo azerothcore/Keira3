@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, output, signal } from '@ang
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { FileNode } from './sql-editor-file.service';
 import { TreeNodeComponent } from './tree-node.component';
-import { take } from 'rxjs';
+import { forkJoin, take } from 'rxjs';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,7 +20,7 @@ export class DbExplorerComponent {
   private readonly _dbNodes = signal<FileNode[]>([]);
   protected readonly dbNodes = this._dbNodes.asReadonly();
 
-  private readonly nodeMeta = new Map<string, 'database' | 'table'>();
+  private readonly nodeMeta = new Map<string, 'database' | 'table' | 'procedure' | 'function'>();
 
   constructor() {
     this.loadDatabases();
@@ -60,9 +60,13 @@ export class DbExplorerComponent {
   }
 
   protected onOpenNode(node: FileNode): void {
-    // clicked a column (leaf node) — open the parent table's SELECT query
     const parts = node.path.split('.');
-    if (parts.length === 3) {
+    const type = this.nodeMeta.get(node.path);
+    if (type === 'procedure') {
+      this.selectQuery.emit(`SHOW CREATE PROCEDURE \`${parts[0]}\`.\`${parts[1]}\``);
+    } else if (type === 'function') {
+      this.selectQuery.emit(`SHOW CREATE FUNCTION \`${parts[0]}\`.\`${parts[1]}\``);
+    } else if (parts.length === 3) {
       this.selectQuery.emit(`SELECT * FROM \`${parts[0]}\`.\`${parts[1]}\` LIMIT 100`);
     }
   }
@@ -75,22 +79,34 @@ export class DbExplorerComponent {
   }
 
   private loadTables(dbNode: FileNode): void {
-    this.mysqlQueryService
-      .query(`SHOW TABLES FROM \`${dbNode.name}\``)
-      .pipe(take(1))
-      .subscribe({
-        next: (rows) => {
-          const tableNodes: FileNode[] = rows.map((r) => {
-            const tableName = Object.values(r)[0] as string;
-            const path = `${dbNode.name}.${tableName}`;
-            this.nodeMeta.set(path, 'table');
-            return { name: tableName, path, isDirectory: true, children: [], expanded: false, icon: 'fa-table' };
-          });
-          this._dbNodes.update((nodes) =>
-            nodes.map((db) => (db.path === dbNode.path ? { ...db, expanded: true, children: tableNodes } : db)),
-          );
-        },
-      });
+    forkJoin([
+      this.mysqlQueryService.query(`SHOW TABLES FROM \`${dbNode.name}\``).pipe(take(1)),
+      this.mysqlQueryService
+        .query(`SELECT ROUTINE_NAME, ROUTINE_TYPE FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = '${dbNode.name}'`)
+        .pipe(take(1)),
+    ]).subscribe({
+      next: ([tableRows, routineRows]) => {
+        const tableNodes: FileNode[] = (tableRows as Record<string, unknown>[]).map((r) => {
+          const tableName = Object.values(r)[0] as string;
+          const path = `${dbNode.name}.${tableName}`;
+          this.nodeMeta.set(path, 'table');
+          return { name: tableName, path, isDirectory: true, children: [], expanded: false, icon: 'fa-table' };
+        });
+        const routineNodes: FileNode[] = (routineRows as { ROUTINE_NAME: string; ROUTINE_TYPE: string }[]).map((r) => {
+          const path = `${dbNode.name}.${r.ROUTINE_NAME}`;
+          const isProc = r.ROUTINE_TYPE === 'PROCEDURE';
+          this.nodeMeta.set(path, isProc ? 'procedure' : 'function');
+          return {
+            name: r.ROUTINE_NAME,
+            path,
+            isDirectory: false,
+            icon: isProc ? 'fa-cog' : 'fa-calculator',
+          };
+        });
+        const children: FileNode[] = [...tableNodes, ...routineNodes];
+        this._dbNodes.update((nodes) => nodes.map((db) => (db.path === dbNode.path ? { ...db, expanded: true, children } : db)));
+      },
+    });
   }
 
   private loadColumns(tableNode: FileNode): void {

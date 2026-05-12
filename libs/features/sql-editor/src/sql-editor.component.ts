@@ -124,10 +124,10 @@ export class SqlEditorComponent extends SubscriptionHandler implements OnInit {
   protected sectionHeights = { explorer: 200, db: 200 };
 
   protected get explorerFlex(): string {
-    return this.explorerCollapsed() ? '0 0 auto' : `0 0 ${this.sectionHeights.explorer}px`;
+    return this.explorerCollapsed() ? '0 0 auto' : '1 1 auto';
   }
   protected get dbFlex(): string {
-    return this.dbCollapsed() ? '0 0 auto' : `0 0 ${this.sectionHeights.db}px`;
+    return this.dbCollapsed() ? '0 0 auto' : '1 1 auto';
   }
   protected get gitFlex(): string {
     return this.gitCollapsed() ? '0 0 auto' : '1 1 auto';
@@ -156,6 +156,22 @@ export class SqlEditorComponent extends SubscriptionHandler implements OnInit {
     tab.code = query;
     tab.dirty = true;
     this.changeDetectorRef.markForCheck();
+  }
+  //#endregion
+
+  //#region Exit Guard
+  @HostListener('window:beforeunload', ['$event'])
+  protected onBeforeUnload(_event: BeforeUnloadEvent): void {
+    const dirtyTabs = this.tabs.filter((t) => t.dirty && t.code.trim());
+    for (const tab of dirtyTabs) {
+      if (confirm(`Save changes to "${tab.title}" before exiting?`)) {
+        if (tab.path) {
+          this.fileService.writeFile(tab.path, tab.code);
+          tab.dirty = false;
+          tab.savedCode = tab.code;
+        }
+      }
+    }
   }
   //#endregion
 
@@ -256,7 +272,7 @@ export class SqlEditorComponent extends SubscriptionHandler implements OnInit {
     if (index === -1) return;
 
     const tab = this.tabs[index];
-    if (tab.dirty) {
+    if (tab.dirty && tab.code.trim()) {
       const result = confirm(`"${tab.title}" has unsaved changes. Do you want to save before closing?`);
       if (result) {
         if (tab.path) {
