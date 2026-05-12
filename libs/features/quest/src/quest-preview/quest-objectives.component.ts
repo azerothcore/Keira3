@@ -20,10 +20,9 @@ export interface FactionRequirement {
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-quest-objectives',
   templateUrl: './quest-objectives.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [IconComponent, AsyncPipe],
 })
 export class QuestObjectivesComponent {
