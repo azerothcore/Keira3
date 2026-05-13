@@ -32,11 +32,11 @@
   position: absolute;
   width: 12px;
   height: 12px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
   border-radius: 50%;
-  background-color: rgba(0, 255, 0, 0.9);
+  background-color: rgba(0, 0, 0, 0.9);
   transform: translate(-50%, -50%);
   cursor: pointer;
-  box-shadow: 0 0 8px rgba(0, 255, 0, 0.8);
 
   &:hover .map-tooltip {
     opacity: 1;
@@ -44,35 +44,10 @@
   }
 }
 
-.direction-indicator {
-  position: absolute;
-  top: -20px;
-  left: 50%;
-  transform-origin: center bottom;
-  width: 2px;
-  pointer-events: none;
-}
-
-.arrow-head {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-bottom: 8px solid rgba(255, 200, 0, 0.8);
-}
-
-.arrow-body {
-  position: absolute;
-  top: 6px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 2px;
-  height: 10px;
-  background-color: rgba(255, 200, 0, 0.8);
+.map-point-icon {
+  display: block;
+  width: 12px;
+  height: 12px;
 }
 
 .map-tooltip {

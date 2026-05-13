@@ -27,6 +27,7 @@ import {
   TableRow,
 } from '@keira/shared/constants';
 import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
+import { MapPoint } from '@keira/shared/map-viewer';
 import { PreviewHelperService } from '@keira/shared/preview';
 import { CreatureQuestenderService } from '../creature-questender/creature-questender.service';
 import { CreatureQueststarterService } from '../creature-queststarter/creature-queststarter.service';
@@ -516,5 +517,107 @@ export class QuestPreviewService {
     }
 
     return null;
+  }
+
+  async getMapPoints(): Promise<MapPoint[]> {
+    const points: MapPoint[] = [];
+
+    for (const starter of this.creatureQueststarterList) {
+      const pos = await this.mysqlQueryService.getCreaturePositionByEntry(starter.id);
+      if (pos && pos.length > 0) {
+        const name = await this.mysqlQueryService.getCreatureNameById(starter.id);
+        points.push({
+          mapId: pos[0].mapId,
+          x: pos[0].x,
+          y: pos[0].y,
+          orientation: pos[0].orientation,
+          name: `${name} (Start)`,
+          icon: 'quest_start.gif',
+        });
+      }
+    }
+
+    for (const ender of this.creatureQuestenderList) {
+      const pos = await this.mysqlQueryService.getCreaturePositionByEntry(ender.id);
+      if (pos && pos.length > 0) {
+        const name = await this.mysqlQueryService.getCreatureNameById(ender.id);
+        points.push({
+          mapId: pos[0].mapId,
+          x: pos[0].x,
+          y: pos[0].y,
+          orientation: pos[0].orientation,
+          name: `${name} (End)`,
+          icon: 'quest_end.gif',
+        });
+      }
+    }
+
+    for (const starter of this.gameobjectQueststarterList) {
+      const pos = await this.mysqlQueryService.getGameObjectPositionByEntry(starter.id);
+      if (pos && pos.length > 0) {
+        const name = await this.mysqlQueryService.getGameObjectNameById(starter.id);
+        points.push({
+          mapId: pos[0].mapId,
+          x: pos[0].x,
+          y: pos[0].y,
+          orientation: pos[0].orientation,
+          name: `${name} (Start)`,
+          icon: 'quest_start.gif',
+        });
+      }
+    }
+
+    for (const ender of this.gameobjectQuestenderList) {
+      const pos = await this.mysqlQueryService.getGameObjectPositionByEntry(ender.id);
+      if (pos && pos.length > 0) {
+        const name = await this.mysqlQueryService.getGameObjectNameById(ender.id);
+        points.push({
+          mapId: pos[0].mapId,
+          x: pos[0].x,
+          y: pos[0].y,
+          orientation: pos[0].orientation,
+          name: `${name} (End)`,
+          icon: 'quest_end.gif',
+        });
+      }
+    }
+
+    for (let i = 1; i <= 4; i++) {
+      const requiredNpcOrGo = this.questTemplate[`RequiredNpcOrGo${i}`] as number;
+      if (requiredNpcOrGo) {
+        if (requiredNpcOrGo > 0) {
+          const pos = await this.mysqlQueryService.getCreaturePositionByEntry(requiredNpcOrGo);
+          if (pos && pos.length > 0) {
+            const name = await this.mysqlQueryService.getCreatureNameById(requiredNpcOrGo);
+            const objText = String(this.questTemplate[`ObjectiveText${i}`] ?? '');
+            points.push({
+              mapId: pos[0].mapId,
+              x: pos[0].x,
+              y: pos[0].y,
+              orientation: pos[0].orientation,
+              name: objText || name,
+              icon: 'pin-yellow.png',
+            });
+          }
+        } else {
+          const goId = Math.abs(requiredNpcOrGo);
+          const pos = await this.mysqlQueryService.getGameObjectPositionByEntry(goId);
+          if (pos && pos.length > 0) {
+            const name = await this.mysqlQueryService.getGameObjectNameById(goId);
+            const objText = String(this.questTemplate[`ObjectiveText${i}`] ?? '');
+            points.push({
+              mapId: pos[0].mapId,
+              x: pos[0].x,
+              y: pos[0].y,
+              orientation: pos[0].orientation,
+              name: objText || name,
+              icon: 'pin-yellow.png',
+            });
+          }
+        }
+      }
+    }
+
+    return points;
   }
 }

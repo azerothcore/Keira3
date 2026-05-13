@@ -467,4 +467,40 @@ export class MysqlQueryService extends BaseQueryService {
   getAllWorldMapAreas(): Promise<WorldMapArea[]> {
     return this.queryToPromiseCached<WorldMapArea>('getAllWorldMapAreas', 'all', `SELECT * FROM worldmaparea_dbc`);
   }
+
+  getCreaturePosition(guid: string | number): Promise<{ mapId: number; x: number; y: number; orientation: number } | null> {
+    return this.queryToPromiseCached<{ mapId: number; x: number; y: number; orientation: number }>(
+      'getCreaturePosition',
+      String(guid),
+      `SELECT map AS mapId, position_x AS x, position_y AS y, orientation FROM creature WHERE guid = ${guid}`,
+    ).then((result) => (result && result.length > 0 ? result[0] : null));
+  }
+
+  getCreaturePositionByEntry(
+    entry: string | number,
+  ): Promise<{ mapId: number; x: number; y: number; orientation: number; guid: number }[]> {
+    return this.queryToPromiseCached<{ mapId: number; x: number; y: number; orientation: number; guid: number }>(
+      'getCreaturePositionByEntry',
+      String(entry),
+      `SELECT map AS mapId, position_x AS x, position_y AS y, orientation, guid FROM creature WHERE id1 = ${entry} LIMIT 1`,
+    );
+  }
+
+  getGameObjectPosition(guid: string | number): Promise<{ mapId: number; x: number; y: number; orientation: number } | null> {
+    return this.queryToPromiseCached<{ mapId: number; x: number; y: number; orientation: number }>(
+      'getGameObjectPosition',
+      String(guid),
+      `SELECT map AS mapId, position_x AS x, position_y AS y, rotation0 AS orientation FROM gameobject WHERE guid = ${guid}`,
+    ).then((result) => (result && result.length > 0 ? result[0] : null));
+  }
+
+  getGameObjectPositionByEntry(
+    entry: string | number,
+  ): Promise<{ mapId: number; x: number; y: number; orientation: number; guid: number }[]> {
+    return this.queryToPromiseCached<{ mapId: number; x: number; y: number; orientation: number; guid: number }>(
+      'getGameObjectPositionByEntry',
+      String(entry),
+      `SELECT map AS mapId, position_x AS x, position_y AS y, rotation0 AS orientation, guid FROM gameobject WHERE id = ${entry} LIMIT 1`,
+    );
+  }
 }

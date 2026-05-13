@@ -148,6 +148,12 @@
           }
         </div>
       }
+      @if (mapPoints().length > 0) {
+        <div class="mt-3">
+          <p class="title">Locations</p>
+          <keira-map-viewer [points]="mapPoints()" />
+        </div>
+      }
       @if (service.isRepeatable()) {
         <p>Repeatable</p>
       }

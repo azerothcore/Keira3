@@ -48,7 +48,7 @@ export interface WorldMapArea extends TableRow {
 export interface RenderedPoint extends MapPoint {
   left: string;
   top: string;
-  rotateDeg: number;
+  icon?: string;
 }
 
 export interface MapDisplayData {

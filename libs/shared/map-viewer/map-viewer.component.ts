@@ -41,31 +41,27 @@ export class MapViewerComponent {
       const allAreas = await this.mapViewerService.getAllAreas();
 
       // Group each point under the best-matching area tile.
-      // "Best" = smallest tile whose bounds contain (x, y), so dungeon/subzone
-      // tiles win over the continent fallback that also contains the same coord.
       const areaMap = new Map<string, { area: WorldMapArea; points: MapPoint[] }>();
 
       for (const pt of pts) {
-        const candidates = allAreas.filter((a) => worldToMapPercent(pt.x, pt.y, a) !== null);
+        const candidates = allAreas.filter((a) => a.AreaID !== 0 && worldToMapPercent(pt.x, pt.y, a) !== null);
 
         if (!candidates.length) {
           console.warn(`[MapViewer] point "${pt.name}" (x=${pt.x}, y=${pt.y}): no area matched — skipping`);
           continue;
         }
 
-        // Pick the smallest area (tightest bounds = most specific tile).
-        const match = candidates.reduce((best, a) => {
-          const sizeA = (best.LocLeft - best.LocRight) * (best.LocTop - best.LocBottom);
-          const sizeB = (a.LocLeft - a.LocRight) * (a.LocTop - a.LocBottom);
-          return sizeB < sizeA ? a : best;
-        });
+        const match = this.pickBestArea(pt, candidates);
 
         const displayMapId = this.mapViewerService.resolveDisplayMapId(match);
         const uid = `${displayMapId}-${match.AreaID}`;
 
         console.log(`[MapViewer] point "${pt.name}" → area="${match.AreaName}" uid=${uid}`);
 
-        if (!areaMap.has(uid)) areaMap.set(uid, { area: match, points: [] });
+        if (!areaMap.has(uid)) {
+          areaMap.set(uid, { area: match, points: [] });
+        }
+
         areaMap.get(uid)!.points.push(pt);
       }
 
@@ -95,6 +91,45 @@ export class MapViewerComponent {
     }
   }
 
+  /**
+   * Picks the best matching area using:
+   * 1. Distance from point to area center
+   * 2. Area size as tie-breaker
+   *
+   * Lower score wins.
+   */
+  private pickBestArea(point: MapPoint, candidates: WorldMapArea[]): WorldMapArea {
+    return candidates.reduce((best, area) => {
+      const bestScore = this.getAreaScore(point, best);
+      const areaScore = this.getAreaScore(point, area);
+
+      return areaScore < bestScore ? area : best;
+    });
+  }
+
+  /**
+   * Combined score:
+   * - Prefer points closer to map center
+   * - Prefer smaller maps when distances are similar
+   */
+  private getAreaScore(point: MapPoint, area: WorldMapArea): number {
+    const centerX = (area.LocLeft + area.LocRight) / 2;
+    const centerY = (area.LocTop + area.LocBottom) / 2;
+
+    const dx = point.x - centerX;
+    const dy = point.y - centerY;
+
+    const distanceSq = dx * dx + dy * dy;
+
+    const width = Math.abs(area.LocLeft - area.LocRight);
+    const height = Math.abs(area.LocTop - area.LocBottom);
+
+    const areaSize = width * height;
+
+    // Normalize by area size so giant continent maps are penalized.
+    return distanceSq / Math.max(areaSize, 1);
+  }
+
   protected onImageError(event: Event): void {
     const img = event.target as HTMLImageElement;
     console.error(`[MapViewer] image failed to load: ${img.src}`);
@@ -103,6 +138,7 @@ export class MapViewerComponent {
 
   private project(p: MapPoint, area: WorldMapArea): RenderedPoint {
     const pct = worldToMapPercent(p.x, p.y, area)!;
+
     return {
       ...p,
       left: `${pct.left * 100}%`,

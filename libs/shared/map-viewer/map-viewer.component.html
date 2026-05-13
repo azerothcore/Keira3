@@ -1,15 +1,12 @@
 <div class="map-viewer-container">
   @for (map of maps(); track map.uid) {
     <div class="map-wrapper">
-      <div class="map-label">Map {{ map.mapId }}</div>
+      <div class="map-label">{{ map.area.AreaName }}</div>
       <div class="map-image-container">
         <img [src]="map.imageUrl" alt="Map {{ map.mapId }}" class="map-image" (error)="onImageError($event)" />
         @for (pt of map.points; track $index) {
-          <div class="map-point active" [style.left]="pt.left" [style.top]="pt.top">
-            <div class="direction-indicator" [style.transform]="'rotate(' + pt.rotateDeg + 'deg)'">
-              <div class="arrow-head"></div>
-              <div class="arrow-body"></div>
-            </div>
+          <div class="map-point" [style.left]="pt.left" [style.top]="pt.top">
+            <img [src]="'assets/img/map/' + pt.icon" class="map-point-icon" />
             @if (pt.name || pt.level != null) {
               <div class="map-tooltip">
                 @if (pt.name) {
