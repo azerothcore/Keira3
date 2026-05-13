@@ -117,7 +117,11 @@
         </div>
         <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" [for]="getFieldName('EffectItemType')">{{ getFieldName('EffectItemType') }}</label>
-          <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'TODO' | translate"></i>
+          <i
+            class="fas fa-info-circle ms-1"
+            placement="auto"
+            [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_ITEM_TYPE' | translate"
+          ></i>
           <input
             [formControlName]="getFieldName('EffectItemType')"
             type="number"

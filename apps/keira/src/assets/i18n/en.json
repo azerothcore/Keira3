@@ -887,6 +887,7 @@
         "EFFECT_MISC_VALUE": "Used for according effects special misc values, commonly entries of called or used creature/item/gameobject.",
         "EFFECT_MISC_VALUE_B": "Used for according effects special misc values, commonly entries of called or used creature/item/gameobject.",
         "EFFECT_TRIGGER_SPELL": "Entry of spell triggered on affected target by this according effect.",
+        "EFFECT_ITEM_TYPE": "Item entry, item class, or item type value used by the according effect when it creates, summons, or requires an item.",
         "EFFECT_POINTS_PER_COMBO": "Bonus to effect base value based on amount of combo points on target.",
         "EFFECT_DIE_SIDES": "Number of sides of dice which is being rolled for random value of according effect.",
         "EFFECT_CHAIN_AMPLITUDE": "Used for decreasing (or increasing) according effect value on next chained targets.",
