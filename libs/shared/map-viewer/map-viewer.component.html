@@ -6,7 +6,7 @@
         <img [src]="map.imageUrl" alt="Map {{ map.mapId }}" class="map-image" (error)="onImageError($event)" />
         @for (pt of map.points; track $index) {
           <div class="map-point" [style.left]="pt.left" [style.top]="pt.top">
-            <img [src]="'assets/img/map/' + pt.icon" class="map-point-icon" />
+            <img [src]="'assets/img/' + pt.icon" class="map-point-icon" />
             @if (pt.name || pt.level != null) {
               <div class="map-tooltip">
                 @if (pt.name) {

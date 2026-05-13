@@ -50,7 +50,7 @@ export class QuestPreviewService {
   readonly mysqlQueryService = inject(MysqlQueryService);
   readonly sqliteQueryService = inject(SqliteQueryService);
   private readonly questHandlerService = inject(QuestHandlerService);
-  private readonly questTemplateService = inject(QuestTemplateService);
+  readonly questTemplateService = inject(QuestTemplateService);
   private readonly questRequestItemsService = inject(QuestRequestItemsService);
   private readonly questTemplateAddonService = inject(QuestTemplateAddonService);
   private readonly questOfferRewardService = inject(QuestOfferRewardService);
@@ -522,6 +522,10 @@ export class QuestPreviewService {
   async getMapPoints(): Promise<MapPoint[]> {
     const points: MapPoint[] = [];
 
+    console.log(
+      `[QuestPreview] getMapPoints: ${this.creatureQueststarterList.length} starters, ${this.creatureQuestenderList.length} enders, ${this.gameobjectQueststarterList.length} go-starters, ${this.gameobjectQuestenderList.length} go-enders`,
+    );
+
     for (const starter of this.creatureQueststarterList) {
       const pos = await this.mysqlQueryService.getCreaturePositionByEntry(starter.id);
       if (pos && pos.length > 0) {
@@ -532,7 +536,7 @@ export class QuestPreviewService {
           y: pos[0].y,
           orientation: pos[0].orientation,
           name: `${name} (Start)`,
-          icon: 'quest_start.gif',
+          icon: 'quest/quest_start.gif',
         });
       }
     }
@@ -547,7 +551,7 @@ export class QuestPreviewService {
           y: pos[0].y,
           orientation: pos[0].orientation,
           name: `${name} (End)`,
-          icon: 'quest_end.gif',
+          icon: 'quest/quest_end.gif',
         });
       }
     }
@@ -562,7 +566,7 @@ export class QuestPreviewService {
           y: pos[0].y,
           orientation: pos[0].orientation,
           name: `${name} (Start)`,
-          icon: 'quest_start.gif',
+          icon: 'quest/quest_start.gif',
         });
       }
     }
@@ -577,13 +581,14 @@ export class QuestPreviewService {
           y: pos[0].y,
           orientation: pos[0].orientation,
           name: `${name} (End)`,
-          icon: 'quest_end.gif',
+          icon: 'quest/quest_end.gif',
         });
       }
     }
 
     for (let i = 1; i <= 4; i++) {
-      const requiredNpcOrGo = this.questTemplate[`RequiredNpcOrGo${i}`] as number;
+      const requiredNpcOrGo = Number(this.questTemplate[`RequiredNpcOrGo${i}`]);
+      console.log(`[QuestPreview] objective ${i}: RequiredNpcOrGo=${requiredNpcOrGo}`);
       if (requiredNpcOrGo) {
         if (requiredNpcOrGo > 0) {
           const pos = await this.mysqlQueryService.getCreaturePositionByEntry(requiredNpcOrGo);
@@ -596,7 +601,7 @@ export class QuestPreviewService {
               y: pos[0].y,
               orientation: pos[0].orientation,
               name: objText || name,
-              icon: 'pin-yellow.png',
+              icon: 'map/pin-yellow.png',
             });
           }
         } else {
@@ -611,7 +616,7 @@ export class QuestPreviewService {
               y: pos[0].y,
               orientation: pos[0].orientation,
               name: objText || name,
-              icon: 'pin-yellow.png',
+              icon: 'map/pin-yellow.png',
             });
           }
         }

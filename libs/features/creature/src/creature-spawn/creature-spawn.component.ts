@@ -69,7 +69,7 @@ export class CreatureSpawnComponent extends MultiRowEditorComponent<CreatureSpaw
       y: row.position_y,
       orientation: row.orientation,
       name: `GUID ${row.guid}`,
-      icon: 'pin-yellow.png',
+      icon: 'map/pin-yellow.png',
     }));
   });
 }
