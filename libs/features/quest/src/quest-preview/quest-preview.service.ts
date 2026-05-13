@@ -526,103 +526,106 @@ export class QuestPreviewService {
       `[QuestPreview] getMapPoints: ${this.creatureQueststarterList.length} starters, ${this.creatureQuestenderList.length} enders, ${this.gameobjectQueststarterList.length} go-starters, ${this.gameobjectQuestenderList.length} go-enders`,
     );
 
-    for (const starter of this.creatureQueststarterList) {
-      const pos = await this.mysqlQueryService.getCreaturePositionByEntry(starter.id);
-      if (pos && pos.length > 0) {
-        const name = await this.mysqlQueryService.getCreatureNameById(starter.id);
+    await this.addCreaturePoints(points, this.creatureQueststarterList, '(Start)', 'quest/quest_start.gif');
+    await this.addCreaturePoints(points, this.creatureQuestenderList, '(End)', 'quest/quest_end.gif');
+    await this.addGameobjectPoints(points, this.gameobjectQueststarterList, '(Start)', 'quest/quest_start.gif');
+    await this.addGameobjectPoints(points, this.gameobjectQuestenderList, '(End)', 'quest/quest_end.gif');
+    await this.addObjectivePoints(points);
+    await this.addPoiPoints(points);
+
+    console.log(`[QuestPreview] getMapPoints total: ${points.length}`);
+    return points;
+  }
+
+  private async addCreaturePoints(points: MapPoint[], list: { id: number }[], suffix: string, icon: string): Promise<void> {
+    for (const entry of list) {
+      const pos = await this.mysqlQueryService.getCreaturePositionByEntry(entry.id);
+      if (pos?.length) {
+        const name = await this.mysqlQueryService.getCreatureNameById(entry.id);
         points.push({
           mapId: pos[0].mapId,
           x: pos[0].x,
           y: pos[0].y,
           orientation: pos[0].orientation,
-          name: `${name} (Start)`,
-          icon: 'quest/quest_start.gif',
+          name: `${name} ${suffix}`,
+          icon,
         });
       }
     }
+  }
 
-    for (const ender of this.creatureQuestenderList) {
-      const pos = await this.mysqlQueryService.getCreaturePositionByEntry(ender.id);
-      if (pos && pos.length > 0) {
-        const name = await this.mysqlQueryService.getCreatureNameById(ender.id);
+  private async addGameobjectPoints(points: MapPoint[], list: { id: number }[], suffix: string, icon: string): Promise<void> {
+    for (const entry of list) {
+      const pos = await this.mysqlQueryService.getGameObjectPositionByEntry(entry.id);
+      if (pos?.length) {
+        const name = await this.mysqlQueryService.getGameObjectNameById(entry.id);
         points.push({
           mapId: pos[0].mapId,
           x: pos[0].x,
           y: pos[0].y,
           orientation: pos[0].orientation,
-          name: `${name} (End)`,
-          icon: 'quest/quest_end.gif',
+          name: `${name} ${suffix}`,
+          icon,
         });
       }
     }
+  }
 
-    for (const starter of this.gameobjectQueststarterList) {
-      const pos = await this.mysqlQueryService.getGameObjectPositionByEntry(starter.id);
-      if (pos && pos.length > 0) {
-        const name = await this.mysqlQueryService.getGameObjectNameById(starter.id);
-        points.push({
-          mapId: pos[0].mapId,
-          x: pos[0].x,
-          y: pos[0].y,
-          orientation: pos[0].orientation,
-          name: `${name} (Start)`,
-          icon: 'quest/quest_start.gif',
-        });
-      }
-    }
-
-    for (const ender of this.gameobjectQuestenderList) {
-      const pos = await this.mysqlQueryService.getGameObjectPositionByEntry(ender.id);
-      if (pos && pos.length > 0) {
-        const name = await this.mysqlQueryService.getGameObjectNameById(ender.id);
-        points.push({
-          mapId: pos[0].mapId,
-          x: pos[0].x,
-          y: pos[0].y,
-          orientation: pos[0].orientation,
-          name: `${name} (End)`,
-          icon: 'quest/quest_end.gif',
-        });
-      }
-    }
-
+  private async addObjectivePoints(points: MapPoint[]): Promise<void> {
     for (let i = 1; i <= 4; i++) {
       const requiredNpcOrGo = Number(this.questTemplate[`RequiredNpcOrGo${i}`]);
       console.log(`[QuestPreview] objective ${i}: RequiredNpcOrGo=${requiredNpcOrGo}`);
-      if (requiredNpcOrGo) {
-        if (requiredNpcOrGo > 0) {
-          const pos = await this.mysqlQueryService.getCreaturePositionByEntry(requiredNpcOrGo);
-          if (pos && pos.length > 0) {
-            const name = await this.mysqlQueryService.getCreatureNameById(requiredNpcOrGo);
-            const objText = String(this.questTemplate[`ObjectiveText${i}`] ?? '');
-            points.push({
-              mapId: pos[0].mapId,
-              x: pos[0].x,
-              y: pos[0].y,
-              orientation: pos[0].orientation,
-              name: objText || name,
-              icon: 'map/pin-yellow.png',
-            });
-          }
-        } else {
-          const goId = Math.abs(requiredNpcOrGo);
-          const pos = await this.mysqlQueryService.getGameObjectPositionByEntry(goId);
-          if (pos && pos.length > 0) {
-            const name = await this.mysqlQueryService.getGameObjectNameById(goId);
-            const objText = String(this.questTemplate[`ObjectiveText${i}`] ?? '');
-            points.push({
-              mapId: pos[0].mapId,
-              x: pos[0].x,
-              y: pos[0].y,
-              orientation: pos[0].orientation,
-              name: objText || name,
-              icon: 'map/pin-yellow.png',
-            });
-          }
+      if (!requiredNpcOrGo) continue;
+
+      if (requiredNpcOrGo > 0) {
+        const pos = await this.mysqlQueryService.getCreaturePositionByEntry(requiredNpcOrGo);
+        if (pos?.length) {
+          const name = await this.mysqlQueryService.getCreatureNameById(requiredNpcOrGo);
+          const objText = String(this.questTemplate[`ObjectiveText${i}`] ?? '');
+          points.push({
+            mapId: pos[0].mapId,
+            x: pos[0].x,
+            y: pos[0].y,
+            orientation: pos[0].orientation,
+            name: objText || name,
+            icon: 'map/pin-yellow.png',
+          });
+        }
+      } else {
+        const goId = Math.abs(requiredNpcOrGo);
+        const pos = await this.mysqlQueryService.getGameObjectPositionByEntry(goId);
+        if (pos?.length) {
+          const name = await this.mysqlQueryService.getGameObjectNameById(goId);
+          const objText = String(this.questTemplate[`ObjectiveText${i}`] ?? '');
+          points.push({
+            mapId: pos[0].mapId,
+            x: pos[0].x,
+            y: pos[0].y,
+            orientation: pos[0].orientation,
+            name: objText || name,
+            icon: 'map/pin-yellow.png',
+          });
         }
       }
     }
+  }
 
-    return points;
+  private async addPoiPoints(points: MapPoint[]): Promise<void> {
+    const poiPoints = await this.mysqlQueryService.getQuestPoiPoints(this.questTemplate.ID);
+    if (!poiPoints.length) return;
+
+    const allAreas = await this.mysqlQueryService.getAllWorldMapAreas();
+    const areaById = new Map(allAreas.map((a) => [a.ID, a]));
+    for (const pt of poiPoints) {
+      const area = areaById.get(pt.worldMapAreaId);
+      if (!area) {
+        console.warn(`[QuestPreview] POI: no area found for WorldMapAreaID ${pt.worldMapAreaId}`);
+        continue;
+      }
+      const worldX = area.LocTop - (pt.y / 1000) * (area.LocTop - area.LocBottom);
+      const worldY = area.LocLeft - (pt.x / 1000) * (area.LocLeft - area.LocRight);
+      console.log(`[QuestPreview] POI: ui=(${pt.x}, ${pt.y}) → world=(${worldX}, ${worldY}) area=${area.AreaName}`);
+      points.push({ mapId: pt.mapId, x: worldX, y: worldY, name: 'POI', icon: 'map/pin-yellow.png' });
+    }
   }
 }

@@ -503,4 +503,15 @@ export class MysqlQueryService extends BaseQueryService {
       `SELECT map AS mapId, position_x AS x, position_y AS y, rotation0 AS orientation, guid FROM gameobject WHERE id = ${entry} LIMIT 1`,
     );
   }
+
+  getQuestPoiPoints(questId: string | number): Promise<{ mapId: number; x: number; y: number; worldMapAreaId: number }[]> {
+    return this.queryToPromiseCached<{ mapId: number; x: number; y: number; worldMapAreaId: number }>(
+      'getQuestPoiPoints',
+      String(questId),
+      `SELECT poi.MapID AS mapId, poi.WorldMapAreaID AS worldMapAreaId, pp.X AS x, pp.Y AS y
+       FROM quest_poi_points AS pp
+       INNER JOIN quest_poi AS poi ON poi.QuestID = pp.QuestID AND poi.ID = pp.Idx1
+       WHERE pp.QuestID = ${questId}`,
+    );
+  }
 }
