@@ -1,0 +1,117 @@
+.map-viewer-container {
+  display: flex;
+  justify-content: center;
+  padding: 16px 0;
+}
+
+.map-wrapper {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.map-image-container {
+  position: relative;
+  width: 400px;
+  height: 300px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow: visible;
+  background-color: #1a1a1a;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 4px;
+  }
+}
+
+.map-point {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: rgba(0, 255, 0, 0.9);
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(0, 255, 0, 0.8);
+
+  &:hover .map-tooltip {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+.direction-indicator {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform-origin: center bottom;
+  width: 2px;
+  pointer-events: none;
+}
+
+.arrow-head {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 8px solid rgba(255, 200, 0, 0.8);
+}
+
+.arrow-body {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 10px;
+  background-color: rgba(255, 200, 0, 0.8);
+}
+
+.map-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  border-radius: 4px;
+  padding: 4px 8px;
+  white-space: nowrap;
+  font-size: 12px;
+  line-height: 1.4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  z-index: 10;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 4px solid transparent;
+    border-top-color: rgba(0, 0, 0, 0.85);
+  }
+}
+
+.tooltip-name {
+  font-weight: 600;
+}
+
+.tooltip-level {
+  color: #ffd700;
+  font-size: 11px;
+}

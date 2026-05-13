@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { SmartScripts } from '@keira/shared/acore-world-model';
 import { ConfigService } from '@keira/shared/common-services';
+import { WorldMapArea } from '@keira/shared/map-viewer';
 import { squelConfig } from '@keira/shared/config';
 import { MaxRow, QuestReputationReward, TableRow } from '@keira/shared/constants';
 import { from, map, Observable, of, tap } from 'rxjs';
@@ -461,5 +462,9 @@ export class MysqlQueryService extends BaseQueryService {
       String(gameObjectId),
       `SELECT displayId AS v FROM gameobject_template WHERE entry=${gameObjectId}`,
     );
+  }
+
+  getAllWorldMapAreas(): Promise<WorldMapArea[]> {
+    return this.queryToPromiseCached<WorldMapArea>('getAllWorldMapAreas', 'all', `SELECT * FROM worldmaparea_dbc`);
   }
 }
