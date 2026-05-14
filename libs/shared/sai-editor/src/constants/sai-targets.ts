@@ -315,7 +315,8 @@ SAI_TARGET_PARAM2_NAMES[SAI_TARGETS.INSTANCE_STORAGE] = 'Type';
 SAI_TARGET_PARAM2_TOOLTIPS[SAI_TARGETS.INSTANCE_STORAGE] = 'creature (1), gameobject (2)';
 
 // SMART_TARGET_FORMATION
-SAI_TARGET_TOOLTIPS[SAI_TARGETS.FORMATION] = 'Targets members of the creature\'s formation group (creature_formations table). Dead members are excluded.';
+SAI_TARGET_TOOLTIPS[SAI_TARGETS.FORMATION] =
+  "Targets members of the creature's formation group (creature_formations table). Dead members are excluded.";
 SAI_TARGET_PARAM1_NAMES[SAI_TARGETS.FORMATION] = 'Type';
 SAI_TARGET_PARAM2_NAMES[SAI_TARGETS.FORMATION] = 'CreatureEntry';
 SAI_TARGET_PARAM3_NAMES[SAI_TARGETS.FORMATION] = 'ExcludeSelf';
