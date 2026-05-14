@@ -10,4 +10,5 @@ import { QueryError } from 'mysql2';
 })
 export class QueryErrorComponent {
   @Input() error: QueryError | undefined;
+  showTrace = false;
 }
