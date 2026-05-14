@@ -132,7 +132,10 @@ export class QuestPreviewComponent implements OnInit {
   }
 
   get factionRequirementsData(): FactionRequirement[] {
-    if (this._factionRequirementsData) return this._factionRequirementsData;
+    if (this._factionRequirementsData) {
+      return this._factionRequirementsData;
+    }
+
     const array: FactionRequirement[] = [];
     for (let i = 1; i <= 2; i++) {
       const reqFaction = this.service.questTemplate['RequiredFactionId' + i];
