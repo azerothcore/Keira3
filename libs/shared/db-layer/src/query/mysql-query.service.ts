@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { SmartScripts } from '@keira/shared/acore-world-model';
 import { ConfigService } from '@keira/shared/common-services';
+import { WorldMapArea } from '@keira/shared/map-viewer';
 import { squelConfig } from '@keira/shared/config';
 import { MaxRow, QuestReputationReward, TableRow } from '@keira/shared/constants';
 import { from, map, Observable, of, tap } from 'rxjs';
@@ -460,6 +461,57 @@ export class MysqlQueryService extends BaseQueryService {
       'getGameobjectDisplayIdById',
       String(gameObjectId),
       `SELECT displayId AS v FROM gameobject_template WHERE entry=${gameObjectId}`,
+    );
+  }
+
+  getAllWorldMapAreas(): Promise<WorldMapArea[]> {
+    return this.queryToPromiseCached<WorldMapArea>('getAllWorldMapAreas', 'all', `SELECT * FROM worldmaparea_dbc`);
+  }
+
+  getCreaturePosition(guid: string | number): Promise<{ mapId: number; x: number; y: number; orientation: number } | null> {
+    return this.queryToPromiseCached<{ mapId: number; x: number; y: number; orientation: number }>(
+      'getCreaturePosition',
+      String(guid),
+      `SELECT map AS mapId, position_x AS x, position_y AS y, orientation FROM creature WHERE guid = ${guid}`,
+    ).then((result) => (result && result.length > 0 ? result[0] : null));
+  }
+
+  getCreaturePositionByEntry(
+    entry: string | number,
+  ): Promise<{ mapId: number; x: number; y: number; orientation: number; guid: number }[]> {
+    return this.queryToPromiseCached<{ mapId: number; x: number; y: number; orientation: number; guid: number }>(
+      'getCreaturePositionByEntry',
+      String(entry),
+      `SELECT map AS mapId, position_x AS x, position_y AS y, orientation, guid FROM creature WHERE id1 = ${entry} LIMIT 1`,
+    );
+  }
+
+  getGameObjectPosition(guid: string | number): Promise<{ mapId: number; x: number; y: number; orientation: number } | null> {
+    return this.queryToPromiseCached<{ mapId: number; x: number; y: number; orientation: number }>(
+      'getGameObjectPosition',
+      String(guid),
+      `SELECT map AS mapId, position_x AS x, position_y AS y, rotation0 AS orientation FROM gameobject WHERE guid = ${guid}`,
+    ).then((result) => (result && result.length > 0 ? result[0] : null));
+  }
+
+  getGameObjectPositionByEntry(
+    entry: string | number,
+  ): Promise<{ mapId: number; x: number; y: number; orientation: number; guid: number }[]> {
+    return this.queryToPromiseCached<{ mapId: number; x: number; y: number; orientation: number; guid: number }>(
+      'getGameObjectPositionByEntry',
+      String(entry),
+      `SELECT map AS mapId, position_x AS x, position_y AS y, rotation0 AS orientation, guid FROM gameobject WHERE id = ${entry} LIMIT 1`,
+    );
+  }
+
+  getQuestPoiPoints(questId: string | number): Promise<{ mapId: number; x: number; y: number; worldMapAreaId: number }[]> {
+    return this.queryToPromiseCached<{ mapId: number; x: number; y: number; worldMapAreaId: number }>(
+      'getQuestPoiPoints',
+      String(questId),
+      `SELECT poi.MapID AS mapId, poi.WorldMapAreaID AS worldMapAreaId, pp.X AS x, pp.Y AS y
+       FROM quest_poi_points AS pp
+       INNER JOIN quest_poi AS poi ON poi.QuestID = pp.QuestID AND poi.ID = pp.Idx1
+       WHERE pp.QuestID = ${questId}`,
     );
   }
 }

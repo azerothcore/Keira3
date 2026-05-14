@@ -1,8 +1,10 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { debounceTime } from 'rxjs';
 import { IconComponent } from '@keira/shared/base-editor-components';
 import { RacesTextKey, RacesTextValue } from '@keira/shared/constants';
+import { MapPoint, MapViewerComponent } from '@keira/shared/map-viewer';
 import { Model3DViewerComponent, VIEWER_TYPE } from '@keira/shared/model-3d-viewer';
 import { PreviewHelperService } from '@keira/shared/preview';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
@@ -14,7 +16,7 @@ import { QuestPreviewService } from './quest-preview.service';
   selector: 'keira-quest-preview',
   templateUrl: './quest-preview.component.html',
   styleUrls: ['./quest-preview.component.scss'],
-  imports: [IconComponent, CollapseModule, AsyncPipe, Model3DViewerComponent],
+  imports: [IconComponent, CollapseModule, AsyncPipe, Model3DViewerComponent, MapViewerComponent],
 })
 export class QuestPreviewComponent implements OnInit {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
@@ -25,6 +27,8 @@ export class QuestPreviewComponent implements OnInit {
   descriptionToggle = true;
   progressToggle = true;
   completionToggle = true;
+
+  protected readonly mapPoints = signal<MapPoint[]>([]);
 
   protected readonly npcStartToggles: { [key: number]: boolean } = {};
   protected readonly npcEndToggles: { [key: number]: boolean } = {};
@@ -73,10 +77,18 @@ export class QuestPreviewComponent implements OnInit {
   ngOnInit(): void {
     this.service.initializeServices(this.changeDetectorRef);
 
-    this.service
-      .valueChanges$(300)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.changeDetectorRef.markForCheck());
+    this.service.questTemplateService.form.valueChanges.pipe(debounceTime(300), takeUntilDestroyed(this.destroyRef)).subscribe(async () => {
+      this.changeDetectorRef.markForCheck();
+      await this.loadMapPoints();
+    });
+
+    setTimeout(() => this.loadMapPoints(), 800);
+  }
+
+  private async loadMapPoints(): Promise<void> {
+    const points = await this.service.getMapPoints();
+    console.log(`[QuestPreview] map points loaded: ${points.length}`);
+    this.mapPoints.set(points);
   }
 
   getRaceText(raceIndex: RacesTextKey): RacesTextValue | null {

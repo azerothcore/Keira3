@@ -1,0 +1,32 @@
+<div class="map-viewer-container">
+  @for (map of maps(); track map.uid) {
+    <div class="map-wrapper">
+      <div class="map-label">{{ map.area.AreaName }}</div>
+      <div class="map-image-container">
+        <img [src]="map.imageUrl" alt="Map {{ map.mapId }}" class="map-image" (error)="onImageError($event)" />
+        @for (pt of map.points; track $index) {
+          <div class="map-point" [style.left]="pt.left" [style.top]="pt.top">
+            <img [src]="'assets/img/' + pt.icon" class="map-point-icon" />
+            @if (pt.name || pt.level != null) {
+              <div class="map-tooltip">
+                @if (pt.name) {
+                  <span class="tooltip-name">{{ pt.name }}</span>
+                }
+                @if (pt.level != null) {
+                  <span class="tooltip-level">Lvl {{ pt.level }}</span>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+  @if (maps().length === 0) {
+    @if (loading()) {
+      <div class="no-maps-message">Loading map data…</div>
+    } @else {
+      <div class="no-maps-message">No map data available</div>
+    }
+  }
+</div>
