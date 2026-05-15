@@ -5,12 +5,13 @@ import { CreatureHandlerService } from '../creature-handler.service';
 import { PickpocketingLootTemplateService } from './pickpocketing-loot-template.service';
 import { LootEditorComponent } from '@keira/shared/loot-editor';
 import { TopBarComponent } from '@keira/shared/base-editor-components';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-pickpocketing-loot-template',
   templateUrl: '../../../../shared/base-abstract-classes/src/components/editors/loot-template/loot-template-id.component.html',
-  imports: [TopBarComponent, LootEditorComponent],
+  imports: [TopBarComponent, TranslateModule, LootEditorComponent],
 })
 export class PickpocketingLootTemplateComponent extends LootTemplateIdComponent<PickpocketingLootTemplate> {
   protected override readonly editorService = inject(PickpocketingLootTemplateService);

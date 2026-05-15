@@ -6,11 +6,13 @@ import { LootTemplate } from '@keira/shared/acore-world-model';
 import { HandlerService } from '../../../service/handlers/handler.service';
 import { LootEditorIdService } from '../../../service/editors/loot-editor-id.service';
 import { LootTemplateComponent } from './loot-template.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 // Extended only by the loot tables that require a template loot id
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: '',
+  imports: [TranslateModule],
 })
 export abstract class LootTemplateIdComponent<T extends LootTemplate> extends LootTemplateComponent<T> implements OnInit {
   protected abstract override editorService: LootEditorIdService<T>;
