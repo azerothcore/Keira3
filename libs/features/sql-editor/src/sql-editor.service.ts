@@ -51,9 +51,9 @@ export class SqlEditorService {
     this.mysqlQueryService
       .getTables()
       .pipe(
-        map((tableRows: TableRow[]) => {
-          return tableRows.map((row) => Object.values(row)[0] as string);
-        }),
+        map((tableRows: TableRow[]) => 
+          tableRows.map((row) => Object.values(row)[0] as string)
+        ),
         switchMap((tableNames: string[]) => {
           if (tableNames.length === 0) {
             return of({} as SqlSchema);
