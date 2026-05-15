@@ -63,9 +63,9 @@ export class SqlEditorService {
               tableNames.map((tableName) => [
                 tableName,
                 this.mysqlQueryService.getColumns(tableName).pipe(
-                  map((colRows: TableRow[]) => {
-                    return colRows.map((col) => col['Field'] as string).filter(Boolean);
-                  }),
+                  map((colRows: TableRow[]) => 
+                   colRows.map((col) => col['Field'] as string).filter(Boolean)
+                  ),
                 ),
               ]),
             ),
