@@ -1,10 +1,10 @@
+import { computed, inject, Injectable, signal } from '@angular/core';
+import { TableRow } from '@keira/shared/constants';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 import { LanguageDescription } from '@codemirror/language';
 import { MySQL, sql } from '@codemirror/lang-sql';
 import { forkJoin, map, of, switchMap } from 'rxjs';
 import { githubLight } from '@uiw/codemirror-theme-github';
-import { computed, inject, Injectable, signal } from '@angular/core';
-import { TableRow } from '@keira/shared/constants';
-import { MysqlQueryService } from '@keira/shared/db-layer';
 
 export type SqlSchema = Record<string, string[]>;
 

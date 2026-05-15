@@ -14,9 +14,6 @@ import { QueryErrorComponent } from '@keira/shared/base-editor-components';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 
 import { CodeEditor } from '@acrodata/code-editor';
-import { LanguageDescription } from '@codemirror/language';
-import { MySQL, sql } from '@codemirror/lang-sql';
-import { githubLight } from '@uiw/codemirror-theme-github';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,9 +31,6 @@ export class SqlEditorComponent extends SubscriptionHandler implements OnInit {
   protected readonly DTCFG = DTCFG;
   protected readonly docUrl = 'https://www.w3schools.com/sql/sql_intro.asp';
   private readonly MAX_COL_SHOWN = 20;
-
-  protected readonly languages = [LanguageDescription.of({ name: 'MySQL', support: sql({ dialect: MySQL, upperCaseKeywords: true }) })];
-  protected readonly extensions = [githubLight];
 
   private _error: QueryError | undefined;
   protected get error(): QueryError | undefined {
