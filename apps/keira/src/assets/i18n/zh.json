@@ -547,6 +547,10 @@
     "MAX_COUNT": "在一次战利品获取中可以掉落物品的最大数量。作为参考，这是EXACT计数值。",
     "COMMENT": "被内核忽略的注释"
   },
+  "LOOT_TEMPLATE": {
+    "SET_FIELD": "你必须设置 <strong>`{{ LOOT_FIELD }}`</strong> 字段在 <strong>{{ ENTITY_TABLE }}</strong> 中才能启用此功能。",
+    "SET_FIELD_GO": "你必须设置 <strong>`Data1` (lootid)</strong> 和 <strong>`type` (3 或 25)</strong> 字段在 <strong>{{ ENTITY_TABLE }}</strong> 中才能启用此功能。"
+  },
   "OTHER_TEXTS": {
     "BROADCAST_TEXT": {
       "ID": "文本的唯一ID。",

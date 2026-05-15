@@ -3,6 +3,7 @@ import { ItemLootTemplate } from '@keira/shared/acore-world-model';
 import { LootTemplateComponent } from '@keira/shared/base-abstract-classes';
 import { TopBarComponent } from '@keira/shared/base-editor-components';
 import { LootEditorComponent } from '@keira/shared/loot-editor';
+import { TranslateModule } from '@ngx-translate/core';
 import { ItemHandlerService } from '../item-handler.service';
 import { ItemLootTemplateService } from './item-loot-template.service';
 
@@ -10,7 +11,7 @@ import { ItemLootTemplateService } from './item-loot-template.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-item-loot-template',
   templateUrl: '../../../../shared/base-abstract-classes/src/components/editors/loot-template/loot-template.component.html',
-  imports: [TopBarComponent, LootEditorComponent],
+  imports: [TopBarComponent, TranslateModule, LootEditorComponent],
 })
 export class ItemLootTemplateComponent extends LootTemplateComponent<ItemLootTemplate> {
   protected override readonly editorService = inject(ItemLootTemplateService);

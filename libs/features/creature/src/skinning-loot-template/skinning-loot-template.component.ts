@@ -5,12 +5,13 @@ import { CreatureHandlerService } from '../creature-handler.service';
 import { SkinningLootTemplateService } from './skinning-loot-template.service';
 import { LootEditorComponent } from '@keira/shared/loot-editor';
 import { TopBarComponent } from '@keira/shared/base-editor-components';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-skinning-loot-template',
   templateUrl: '../../../../shared/base-abstract-classes/src/components/editors/loot-template/loot-template-id.component.html',
-  imports: [TopBarComponent, LootEditorComponent],
+  imports: [TopBarComponent, TranslateModule, LootEditorComponent],
 })
 export class SkinningLootTemplateComponent extends LootTemplateIdComponent<SkinningLootTemplate> {
   protected override readonly editorService = inject(SkinningLootTemplateService);
