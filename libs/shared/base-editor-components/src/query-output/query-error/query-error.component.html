@@ -5,7 +5,7 @@
         <td>Error:</td>
         <td>
           <button class="btn btn-primary btn-sm" (click)="showTrace = !showTrace">
-            {{ showTrace ? 'Hide trace' : 'Show trace' }}
+            {{ showTrace ? ('SQL_EDITOR.HIDE_TRACE' | translate) : ('SQL_EDITOR.SHOW_TRACE' | translate) }}
           </button>
         </td>
       </tr>

@@ -213,7 +213,9 @@
     "TOOLTIP": "A minimalistic SQL Editor to run custom queries",
     "EXECUTE": "Execute (F9)",
     "LEARN_SQL": "learn the SQL language",
-    "AFFECTED_ROWS": "Affected rows:"
+    "AFFECTED_ROWS": "Affected rows:",
+    "HIDE_TRACE": "Hide trace",
+    "SHOW_TRACE": "Show trace"
   },
   "CREATURE": {
     "TEMPLATE": {
