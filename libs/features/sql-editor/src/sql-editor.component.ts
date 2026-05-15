@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { DTCFG } from '@keira/shared/config';
 import { SubscriptionHandler } from '@keira/shared/utils';
 import { TableRow } from '@keira/shared/constants';
@@ -25,7 +25,7 @@ import { githubLight } from '@uiw/codemirror-theme-github';
   styleUrls: ['./sql-editor.component.scss'],
   imports: [CodeEditor, TooltipModule, FormsModule, QueryErrorComponent, NgxDatatableModule, TranslateModule],
 })
-export class SqlEditorComponent extends SubscriptionHandler {
+export class SqlEditorComponent extends SubscriptionHandler implements OnInit {
   private readonly mysqlQueryService = inject(MysqlQueryService);
   private readonly clipboardService = inject(ClipboardService);
   protected readonly service = inject(SqlEditorService);
@@ -61,6 +61,10 @@ export class SqlEditorComponent extends SubscriptionHandler {
   private _message!: string;
   protected get message(): string {
     return this._message;
+  }
+
+  ngOnInit(): void {
+    this.service.loadSchema();
   }
 
   protected copy(): void {
