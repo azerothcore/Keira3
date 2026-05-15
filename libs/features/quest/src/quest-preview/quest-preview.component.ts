@@ -113,7 +113,8 @@ export class QuestPreviewComponent implements OnInit {
         array.push({ text$, count: this.service.getObjectiveCount(i) });
       }
     }
-    return (this._npcObjectivesData = array);
+    this._npcObjectivesData = array;
+    return this._npcObjectivesData;
   }
 
   get itemObjectivesData(): ItemObjective[] {
