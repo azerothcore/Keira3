@@ -213,7 +213,9 @@
     "TOOLTIP": "运行精简的自定义SQL查询编辑器",
     "EXECUTE": "执行 (F9)",
     "LEARN_SQL": "学习SQL语言",
-    "AFFECTED_ROWS": "受影响的行:"
+    "AFFECTED_ROWS": "受影响的行:",
+    "HIDE_TRACE": "隐藏追踪",
+    "SHOW_TRACE": "显示追踪"
   },
   "CREATURE": {
     "TEMPLATE": {

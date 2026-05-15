@@ -15,10 +15,10 @@
 
     <code-editor
       id="code"
-      [extensions]="extensions"
+      [extensions]="service.extensions()"
       [lineWrapping]="true"
       (keydown.f9)="execute()"
-      [languages]="languages"
+      [languages]="service.languages()"
       [language]="'MySQL'"
       [setup]="'basic'"
       [(ngModel)]="service.code"

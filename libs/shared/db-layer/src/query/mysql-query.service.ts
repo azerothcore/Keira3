@@ -462,4 +462,12 @@ export class MysqlQueryService extends BaseQueryService {
       `SELECT displayId AS v FROM gameobject_template WHERE entry=${gameObjectId}`,
     );
   }
+
+  getTables(): Observable<TableRow[]> {
+    return this.query('SHOW TABLES');
+  }
+
+  getColumns(tableName: string): Observable<TableRow[]> {
+    return this.query(`SHOW COLUMNS FROM \`${tableName}\``);
+  }
 }
