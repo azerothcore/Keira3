@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { Subscription } from 'rxjs';
 import { SubscriptionHandler } from './subscription-handler';
 
@@ -18,9 +19,9 @@ describe('SubscriptionHandler', () => {
     const sub1 = new Subscription();
     const sub2 = new Subscription();
     const sub3 = new Subscription();
-    const spy1 = spyOn(sub1, 'unsubscribe');
-    const spy2 = spyOn(sub2, 'unsubscribe');
-    const spy3 = spyOn(sub3, 'unsubscribe');
+    const spy1 = vi.spyOn(sub1, 'unsubscribe').mockImplementation(() => undefined);
+    const spy2 = vi.spyOn(sub2, 'unsubscribe').mockImplementation(() => undefined);
+    const spy3 = vi.spyOn(sub3, 'unsubscribe').mockImplementation(() => undefined);
     object.addSubscription(sub1);
     object.addSubscription(sub2);
     object.addSubscription(sub3);

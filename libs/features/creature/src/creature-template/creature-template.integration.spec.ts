@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
@@ -59,9 +60,9 @@ describe('CreatureTemplate integration tests', () => {
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalEntity]));
 
     const fixture = TestBed.createComponent(CreatureTemplateComponent);
     const page = new CreatureTemplatePage(fixture);
@@ -94,7 +95,7 @@ describe('CreatureTemplate integration tests', () => {
         "(1234, 0, 0, 0, 0, 0, 'Shin', '', '', 0, 1, 1, 0, 0, 0, 1, 1.14286, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0," +
         " 0, 0, 0, 0, 0, 0, 0, 0, '', 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, '', 0);";
 
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.setInputValueById('name', 'Shin');
       page.expectFullQueryToContain(expectedQuery);
@@ -102,7 +103,7 @@ describe('CreatureTemplate integration tests', () => {
       page.clickExecuteQuery();
 
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
 
     it('should correctly update the unsaved status', () => {
@@ -157,14 +158,14 @@ describe('CreatureTemplate integration tests', () => {
         '`ExperienceModifier` = 46, `movementId` = 48, `CreatureImmunitiesId` = 50, ' +
         "`flags_extra` = 51, `ScriptName` = '52' WHERE (`entry` = 1234);";
 
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.changeAllFields(originalEntity, ['VerifiedBuild'], values);
       page.expectDiffQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
 
     it('changing values should correctly update the queries', () => {
@@ -181,7 +182,7 @@ describe('CreatureTemplate integration tests', () => {
       page.expectFullQueryToContain('AC Developer');
     });
 
-    xit('changing a value via FlagsSelector should correctly work', async () => {
+    it.skip('changing a value via FlagsSelector should correctly work', async () => {
       const { page } = setup(false);
       const field = 'unit_flags';
       page.clickElement(page.getSelectorBtn(field));

@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { Component, provideZonelessChangeDetection, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -98,7 +99,7 @@ describe('QueryOutputComponent', () => {
   it('clicking the copy button should copy the correct query', () => {
     const { page } = setup();
     page.detectChanges();
-    const spy = spyOn(TestBed.inject(ClipboardService), 'copyFromContent');
+    const spy = vi.spyOn(TestBed.inject(ClipboardService), 'copyFromContent').mockImplementation(() => undefined);
 
     page.clickElement(page.copyBtn);
     expect(spy).toHaveBeenCalledWith(diffQuery);
@@ -113,7 +114,7 @@ describe('QueryOutputComponent', () => {
     const { page, host } = setup();
     page.detectChanges();
     const component = host.child();
-    const spy = spyOn(component.executeQuery, 'emit');
+    const spy = vi.spyOn(component.executeQuery, 'emit').mockImplementation(() => undefined);
 
     page.clickElement(page.executeBtn);
     expect(spy).toHaveBeenCalledWith(diffQuery);
@@ -126,14 +127,14 @@ describe('QueryOutputComponent', () => {
 
   it('clicking the execute & copy button should copy and emit the correct query', () => {
     const { page, host } = setup();
-    const copySpy = spyOn(TestBed.inject(ClipboardService), 'copyFromContent');
+    const copySpy = vi.spyOn(TestBed.inject(ClipboardService), 'copyFromContent').mockImplementation(() => undefined);
     page.detectChanges();
     const component = host.child();
-    const executeSpy = spyOn(component.executeQuery, 'emit');
+    const executeSpy = vi.spyOn(component.executeQuery, 'emit').mockImplementation(() => undefined);
 
     page.clickElement(page.executeAndCopyBtn);
-    expect(copySpy).toHaveBeenCalledOnceWith(diffQuery);
-    expect(executeSpy).toHaveBeenCalledOnceWith(diffQuery);
+    expect(copySpy).toHaveBeenCalledExactlyOnceWith(diffQuery);
+    expect(executeSpy).toHaveBeenCalledExactlyOnceWith(diffQuery);
 
     page.clickElement(page.fullQueryInput);
 
@@ -182,7 +183,7 @@ describe('QueryOutputComponent', () => {
       const { page, host } = setup();
       host.diffQuery = '';
       page.detectChanges();
-      spyOn(host.editorService, 'reloadSameEntity');
+      vi.spyOn(host.editorService, 'reloadSameEntity').mockImplementation(() => undefined);
 
       page.clickElement(page.reloadBtn);
       await tickAsync();
@@ -193,9 +194,9 @@ describe('QueryOutputComponent', () => {
     it('should ask for confirmation if diffQuery is empty, and reset if confirmed', () => {
       const { page, host } = setup();
       host.diffQuery = '-- some query';
-      spyOn(host.editorService, 'reloadSameEntity');
+      vi.spyOn(host.editorService, 'reloadSameEntity').mockImplementation(() => undefined);
       const modalService = TestBed.inject(BsModalService);
-      spyOn(modalService, 'show').and.callThrough();
+      vi.spyOn(modalService, 'show');
       page.detectChanges();
       const component = host.child();
 
@@ -210,9 +211,9 @@ describe('QueryOutputComponent', () => {
     it('should ask for confirmation if diffQuery is empty, and not reset if not confirmed', () => {
       const { page, host } = setup();
       host.diffQuery = '-- some query';
-      spyOn(host.editorService, 'reloadSameEntity');
+      vi.spyOn(host.editorService, 'reloadSameEntity').mockImplementation(() => undefined);
       const modalService = TestBed.inject(BsModalService);
-      spyOn(modalService, 'show').and.callThrough();
+      vi.spyOn(modalService, 'show');
       page.detectChanges();
       const component = host.child();
 
