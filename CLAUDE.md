@@ -22,7 +22,7 @@ npm run electron:local             # Build production and run Electron locally
 
 ### Testing
 ```bash
-npm run test                       # Run unit tests for affected projects (Karma/Jasmine)
+npm run test                       # Run unit tests for affected projects (Vitest)
 nx test <project-name>             # Run tests for a specific library
 nx test keira-features-creature    # Example: test creature feature
 nx test keira-shared-utils         # Example: test shared utils
@@ -82,7 +82,7 @@ SQL queries are built using the **Squel** library in `MysqlQueryService`.
 
 ### Testing Patterns
 
-- **Unit tests** (`.spec.ts`): Use Jasmine + Karma with `ts-mockito` for mocking
+- **Unit tests** (`.spec.ts`): Use Vitest with the native Jest-style API (`vi.fn`, `vi.spyOn`, `expect`). `ts-mockito` is still available for class mocking where needed.
 - **Integration tests** (`.integration.spec.ts`): Use a **PageObject pattern** from `@keira/shared/test-utils`
 - **100% code coverage** is enforced (statements, lines, branches, functions)
 

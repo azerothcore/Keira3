@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -28,9 +29,9 @@ describe(`${SelectPageTextComponent.name} integration tests`, () => {
   });
 
   function setup() {
-    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate').mockImplementation(() => undefined);
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([{ max: 1 }]));
 
     const selectService = TestBed.inject(SelectPageTextService);
 
@@ -57,8 +58,8 @@ describe(`${SelectPageTextComponent.name} integration tests`, () => {
     const { fixture, page, querySpy, navigateSpy } = setup();
 
     await fixture.whenStable();
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of([]));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of([]));
 
     page.setInputValue(page.createInput, value);
 
@@ -77,8 +78,8 @@ describe(`${SelectPageTextComponent.name} integration tests`, () => {
     const { fixture, page, querySpy } = setup();
 
     await fixture.whenStable();
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of([{}]));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of([{}]));
 
     page.setInputValue(page.createInput, value);
 
@@ -98,7 +99,7 @@ describe(`${SelectPageTextComponent.name} integration tests`, () => {
     it(`searching an existing entity should correctly work [${id}]`, () => {
       const { page, querySpy } = setup();
 
-      querySpy.calls.reset();
+      querySpy.mockClear();
       if (entry) {
         page.setInputValue(page.searchIdInput, entry);
       }
@@ -117,8 +118,8 @@ describe(`${SelectPageTextComponent.name} integration tests`, () => {
     const { navigateSpy, page, querySpy } = setup();
 
     const results = [{ ID: 1 }, { ID: 2 }, { ID: 3 }];
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of(results));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of(results));
 
     page.clickElement(page.searchBtn);
 

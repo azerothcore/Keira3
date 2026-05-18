@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
@@ -53,15 +54,15 @@ describe('CreatureQuestender integration tests', () => {
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
-    spyOn(queryService, 'queryValue').and.returnValue(of());
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
+    vi.spyOn(queryService, 'queryValue').mockReturnValue(of());
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
     // by default the other editor services should not be initialised, because the selectAll would return the wrong types for them
-    const initializeServicesSpy = spyOn(TestBed.inject(QuestPreviewService), 'initializeServices');
+    const initializeServicesSpy = vi.spyOn(TestBed.inject(QuestPreviewService), 'initializeServices').mockImplementation(() => undefined);
     if (creatingNew) {
       // when creatingNew, the selectAll will return an empty array, so it's fine
-      initializeServicesSpy.and.callThrough();
+      initializeServicesSpy.mockRestore();
     }
 
     const fixture = TestBed.createComponent(CreatureQuestenderComponent);
@@ -104,7 +105,7 @@ describe('CreatureQuestender integration tests', () => {
         '(0, 1234),\n' +
         '(1, 1234),\n' +
         '(2, 1234);\n';
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(1);
@@ -116,7 +117,7 @@ describe('CreatureQuestender integration tests', () => {
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
       page.removeNativeElement();
     });
 
@@ -170,7 +171,7 @@ describe('CreatureQuestender integration tests', () => {
     });
 
     // TODO: fix this test, broken after OnPush (probably needs await whenStable())
-    xit('changing a property should be reflected in the quest preview', () => {
+    it.skip('changing a property should be reflected in the quest preview', () => {
       const { page } = setup(true);
       const value = 1234;
 

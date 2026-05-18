@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -35,7 +36,7 @@ describe('BaseSelectorModalComponent', () => {
     const component: BaseSelectorModalComponent = fixture.componentInstance;
     fixture.detectChanges();
 
-    const hideSpy = spyOn(TestBed.inject(BsModalRef), 'hide');
+    const hideSpy = vi.spyOn(TestBed.inject(BsModalRef), 'hide').mockImplementation(() => undefined);
 
     return { fixture, component, hideSpy };
   }
@@ -48,7 +49,7 @@ describe('BaseSelectorModalComponent', () => {
 
   it('onSave() should correctly emit the value and hide the modal', () => {
     const { component, hideSpy } = setup();
-    const nextSpy = spyOn(component.onValueSelected, 'next');
+    const nextSpy = vi.spyOn(component.onValueSelected, 'next').mockImplementation(() => undefined);
     component.value = value;
 
     component.onSave();
