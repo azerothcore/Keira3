@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -36,7 +37,7 @@ describe('PreviewHelperService', () => {
     ).toEqual(resRaces);
 
     const mockFaction = 'test';
-    spyOn(service, 'getFactionFromRace').and.returnValue(mockFaction);
+    vi.spyOn(service, 'getFactionFromRace').mockReturnValue(mockFaction);
     expect(service.getRaceString(RACE.MASK_HORDE)).toEqual([mockFaction]);
   });
 });

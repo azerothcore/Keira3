@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
@@ -68,8 +69,8 @@ describe('AppComponent', () => {
     it('should correctly react on connectionLost$ [connection lost]', () => {
       const { fixture, toastrService, connectionLostSubject } = setup();
       fixture.detectChanges();
-      spyOn(toastrService, 'success');
-      spyOn(toastrService, 'error');
+      vi.spyOn(toastrService, 'success').mockImplementation(() => undefined);
+      vi.spyOn(toastrService, 'error').mockImplementation(() => undefined);
 
       connectionLostSubject.next(false);
       connectionLostSubject.next(false);
@@ -83,8 +84,8 @@ describe('AppComponent', () => {
     it('should correctly react on connectionLost$ [reconnected]', () => {
       const { fixture, connectionLostSubject, toastrService } = setup();
       fixture.detectChanges();
-      spyOn(toastrService, 'success');
-      spyOn(toastrService, 'error');
+      vi.spyOn(toastrService, 'success').mockImplementation(() => undefined);
+      vi.spyOn(toastrService, 'error').mockImplementation(() => undefined);
 
       connectionLostSubject.next(true);
 
@@ -128,7 +129,7 @@ describe('AppComponent', () => {
       fixture.detectChanges();
 
       // Check if the alert is shown with the close button
-      expect(component.showNewerVersionAlert).toBeTrue();
+      expect(component.showNewerVersionAlert).toBe(true);
       const closeBtn: HTMLButtonElement | null = fixture.nativeElement.querySelector('.newer-version-alert .fa-xmark').closest('button');
       expect(closeBtn).toBeTruthy();
 
@@ -137,7 +138,7 @@ describe('AppComponent', () => {
       fixture.detectChanges();
 
       // the alert should be hidden now
-      expect(component.showNewerVersionAlert).toBeFalse();
+      expect(component.showNewerVersionAlert).toBe(false);
     });
   });
 });

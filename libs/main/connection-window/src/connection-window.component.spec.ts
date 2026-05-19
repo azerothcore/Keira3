@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -100,20 +101,20 @@ describe('ConnectionWindowComponent', () => {
         { provide: MysqlService, useValue: instance(mock(MysqlService)) },
         {
           provide: LoginConfigService,
-          useValue: jasmine.createSpyObj('LoginConfigService', [
-            'getConfigs',
-            'removeAllConfigs',
-            'saveNewConfig',
-            'isRememberMeEnabled',
-            'saveRememberPreference',
-          ]),
+          useValue: {
+            getConfigs: vi.fn(),
+            removeAllConfigs: vi.fn(),
+            saveNewConfig: vi.fn(),
+            isRememberMeEnabled: vi.fn(),
+            saveRememberPreference: vi.fn(),
+          },
         },
       ],
     }).compileComponents();
   });
 
   const setup = (detectChanges = true) => {
-    const connectSpy = spyOn(TestBed.inject(MysqlService), 'connect').and.returnValue(of({}));
+    const connectSpy = vi.spyOn(TestBed.inject(MysqlService), 'connect').mockReturnValue(of({}));
     const loginConfigService = TestBed.inject(LoginConfigService) as unknown as Spied<LoginConfigService>;
 
     const fixture = TestBed.createComponent(ConnectionWindowComponent);
@@ -157,7 +158,7 @@ describe('ConnectionWindowComponent', () => {
 
   it('the latest config should be loaded by default (if any)', () => {
     const { fixture, page, component, connectSpy, loginConfigService } = setup(false);
-    loginConfigService.getConfigs.and.returnValue(mockConfigsWithPass);
+    loginConfigService.getConfigs.mockReturnValue(mockConfigsWithPass);
     component.error = { code: 'some previous error', errno: 1234 } as QueryError;
     fixture.detectChanges();
 
@@ -226,7 +227,7 @@ describe('ConnectionWindowComponent', () => {
       stack: 'some SQL error message',
       sqlState: 'some SQL state',
     } as QueryError;
-    connectSpy.and.returnValue(throwError(error));
+    connectSpy.mockReturnValue(throwError(error));
 
     page.clickElement(page.connectBtn);
 
@@ -242,7 +243,7 @@ describe('ConnectionWindowComponent', () => {
   describe('the save checkbox', () => {
     it('should be checked by default when there is no config', async () => {
       const { page, loginConfigService } = setup(false);
-      loginConfigService.getConfigs.and.returnValue(null);
+      loginConfigService.getConfigs.mockReturnValue(null);
 
       page.detectChanges();
       await page.whenStable();
@@ -252,7 +253,7 @@ describe('ConnectionWindowComponent', () => {
 
     it('should be checked by default when the last used config has a non-empty password', async () => {
       const { page, loginConfigService } = setup(false);
-      loginConfigService.getConfigs.and.returnValue(mockConfigsWithPass);
+      loginConfigService.getConfigs.mockReturnValue(mockConfigsWithPass);
 
       page.detectChanges();
       await page.whenStable();
@@ -263,7 +264,7 @@ describe('ConnectionWindowComponent', () => {
 
     it('should be unchecked by default when the last used config has an empty password', async () => {
       const { page, loginConfigService } = setup(false);
-      loginConfigService.getConfigs.and.returnValue(mockConfigsNoPass);
+      loginConfigService.getConfigs.mockReturnValue(mockConfigsNoPass);
 
       page.detectChanges();
       await page.whenStable();
@@ -275,7 +276,7 @@ describe('ConnectionWindowComponent', () => {
     it('when selected, the password should be saved', async () => {
       const password = 'opensource';
       const { page, loginConfigService, connectSpy } = setup(false);
-      loginConfigService.getConfigs.and.returnValue(mockConfigsNoPass); // initially unselected, password empty
+      loginConfigService.getConfigs.mockReturnValue(mockConfigsNoPass); // initially unselected, password empty
       page.detectChanges();
       await page.whenStable();
 
@@ -317,7 +318,7 @@ describe('ConnectionWindowComponent', () => {
 
     it('when unselected, the password should NOT be saved', async () => {
       const { page, loginConfigService, connectSpy } = setup(false);
-      loginConfigService.getConfigs.and.returnValue(mockConfigsWithPass); // initially selected, password filled
+      loginConfigService.getConfigs.mockReturnValue(mockConfigsWithPass); // initially selected, password filled
       page.detectChanges();
       await page.whenStable();
 
@@ -360,9 +361,9 @@ describe('ConnectionWindowComponent', () => {
   describe('remember me checkbox', () => {
     it('when isRememberMeEnabled return true it should call onConnect', async () => {
       const { page, component, loginConfigService } = setup(false);
-      spyOn(component, 'onConnect');
-      loginConfigService.getConfigs.and.returnValue(mockConfigsWithPass);
-      loginConfigService.isRememberMeEnabled.and.returnValue(true);
+      vi.spyOn(component, 'onConnect').mockImplementation(() => undefined);
+      loginConfigService.getConfigs.mockReturnValue(mockConfigsWithPass);
+      loginConfigService.isRememberMeEnabled.mockReturnValue(true);
 
       page.detectChanges();
       await page.whenStable();
@@ -374,7 +375,7 @@ describe('ConnectionWindowComponent', () => {
   describe('the load recent menu', () => {
     it('should be disabled when there are no recent configs [null]', async () => {
       const { page, loginConfigService } = setup(false);
-      loginConfigService.getConfigs.and.returnValue([]);
+      loginConfigService.getConfigs.mockReturnValue([]);
 
       page.detectChanges();
       await page.whenStable();
@@ -384,7 +385,7 @@ describe('ConnectionWindowComponent', () => {
 
     it('should be disabled when there are no recent configs [empty array]', async () => {
       const { page, loginConfigService } = setup(false);
-      loginConfigService.getConfigs.and.returnValue([]);
+      loginConfigService.getConfigs.mockReturnValue([]);
 
       page.detectChanges();
       await page.whenStable();
@@ -394,7 +395,7 @@ describe('ConnectionWindowComponent', () => {
 
     it('should be enabled when there are recent configs, allowing the user to select them', async () => {
       const { page, loginConfigService } = setup(false);
-      loginConfigService.getConfigs.and.returnValue(mockConfigsWithPass);
+      loginConfigService.getConfigs.mockReturnValue(mockConfigsWithPass);
 
       page.detectChanges();
       await page.whenStable();

@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -21,9 +22,9 @@ describe('SelectConditions integration tests', () => {
   function setup() {
     // Inject Services
     const router = TestBed.inject(Router);
-    const navigateSpy = spyOn(router, 'navigate');
+    const navigateSpy = vi.spyOn(router, 'navigate').mockImplementation(() => undefined);
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([{ max: 1 }]));
 
     // Create Component Fixture and Page Object
     const fixture: ComponentFixture<SelectGameTeleComponent> = TestBed.createComponent(SelectGameTeleComponent);
@@ -89,7 +90,7 @@ describe('SelectConditions integration tests', () => {
   ]) {
     it(`searching an existing entity should correctly work [id: ${id}, name: ${name}]`, () => {
       const { page, component: _component, navigateSpy: _navigateSpy, querySpy } = setup();
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       // Set input values based on the test case
       if (id !== null) {
@@ -109,7 +110,7 @@ describe('SelectConditions integration tests', () => {
 
       // Validate the query was executed as expected
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toBe(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toBe(expectedQuery);
     });
   }
 
@@ -145,8 +146,8 @@ describe('SelectConditions integration tests', () => {
       },
     ] as GameTele[];
 
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of(results));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of(results));
 
     page.clickElement(page.searchBtn);
 

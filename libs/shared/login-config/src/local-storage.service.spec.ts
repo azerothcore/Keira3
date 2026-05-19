@@ -1,17 +1,17 @@
+import { vi, type MockInstance } from 'vitest';
 import { inject, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { LocalStorageService } from './local-storage.service';
-import Spy = jasmine.Spy;
 
 describe('LocalStorageService', () => {
   let mockStorage: any;
 
-  let spyClear: Spy;
-  let spyGetItem: Spy;
-  let spyKey: Spy;
-  let spyRemoveItem: Spy;
-  let spySetItem: Spy;
+  let spyClear: MockInstance;
+  let spyGetItem: MockInstance;
+  let spyKey: MockInstance;
+  let spyRemoveItem: MockInstance;
+  let spySetItem: MockInstance;
 
   const key = 'myKey';
   const value = 'myValue';
@@ -21,17 +21,17 @@ describe('LocalStorageService', () => {
       providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     });
 
-    spyClear = spyOn(Storage.prototype, 'clear');
-    spyGetItem = spyOn(Storage.prototype, 'getItem');
-    spyKey = spyOn(Storage.prototype, 'key');
-    spyRemoveItem = spyOn(Storage.prototype, 'removeItem');
-    spySetItem = spyOn(Storage.prototype, 'setItem');
+    spyClear = vi.spyOn(Storage.prototype, 'clear').mockImplementation(() => undefined);
+    spyGetItem = vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => undefined);
+    spyKey = vi.spyOn(Storage.prototype, 'key').mockImplementation(() => undefined);
+    spyRemoveItem = vi.spyOn(Storage.prototype, 'removeItem').mockImplementation(() => undefined);
+    spySetItem = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => undefined);
 
     // mock localStorage
     mockStorage = {};
-    spyGetItem.and.callFake((k) => mockStorage[k]);
-    spySetItem.and.callFake((k, v) => (mockStorage[k] = v));
-    spyClear.and.callFake(() => {
+    spyGetItem.mockImplementation((k) => mockStorage[k]);
+    spySetItem.mockImplementation((k, v) => (mockStorage[k] = v));
+    spyClear.mockImplementation(() => {
       mockStorage = {};
     });
   });
@@ -51,13 +51,13 @@ describe('LocalStorageService', () => {
     }));
 
     it('getItem', inject([LocalStorageService], (service: LocalStorageService) => {
-      spyGetItem.and.returnValue(value);
+      spyGetItem.mockReturnValue(value);
       expect(service.getItem(key)).toEqual(value);
       expect(spyGetItem).toHaveBeenCalledTimes(1);
     }));
 
     it('key', inject([LocalStorageService], (service: LocalStorageService) => {
-      spyKey.and.returnValue(value);
+      spyKey.mockReturnValue(value);
       expect(service.key(1)).toEqual(value);
       expect(spyKey).toHaveBeenCalledTimes(1);
     }));

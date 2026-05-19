@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -50,9 +51,9 @@ describe('CreatureFormations integration tests', () => {
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
     const fixture = TestBed.createComponent(CreatureFormationsComponent);
     const page = new CreatureFormationPage(fixture);
@@ -96,7 +97,7 @@ describe('CreatureFormations integration tests', () => {
         '(1234, 0, 0, 0, 0, 0, 0),\n' +
         '(1234, 1, 0, 0, 0, 0, 0),\n' +
         '(1234, 2, 0, 0, 0, 0, 0);';
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(1);
@@ -108,7 +109,7 @@ describe('CreatureFormations integration tests', () => {
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
 
     it('adding a row and changing its values should correctly update the queries', () => {
@@ -129,7 +130,7 @@ describe('CreatureFormations integration tests', () => {
       );
 
       // Reset the spy before making further changes
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       // Modify the memberGUID to 1235
       page.setInputValueById('leaderGUID', '1235');
@@ -242,7 +243,7 @@ describe('CreatureFormations integration tests', () => {
         `(1236, 1236, 10, 45, 1, 100, 200);`;
 
       // Reset the spy before executing the final query
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       // Ensure the final query is as expected
       page.expectDiffQueryToContain(finalExpectedQuery);
@@ -252,7 +253,7 @@ describe('CreatureFormations integration tests', () => {
 
       // Verify that the querySpy was called correctly
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(finalExpectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(finalExpectedQuery);
     });
 
     it('adding a row changing its values and duplicate it should correctly update the queries', () => {

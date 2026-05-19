@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -139,9 +140,9 @@ describe('NpcText integration tests', () => {
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalEntity]));
 
     const fixture = TestBed.createComponent(NpcTextComponent);
     const component = fixture.componentInstance;
@@ -188,7 +189,7 @@ describe('NpcText integration tests', () => {
         "(1234, 'Shin', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', 0, 0, 0, 0, 0, 0, 0, 0, " +
         "0, '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', 0, 0, 0, 0, 0, 0, 0, 0, " +
         "0, '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);";
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.setInputValueById('text0_0', 'Shin');
       page.expectFullQueryToContain(expectedQuery);
@@ -196,7 +197,7 @@ describe('NpcText integration tests', () => {
       page.clickExecuteQuery();
 
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
       page.removeNativeElement();
     });
   });
@@ -239,14 +240,14 @@ describe('NpcText integration tests', () => {
         "`Probability6` = 70, `em6_0` = 71, `em6_1` = 72, `em6_2` = 73, `em6_3` = 74, `em6_4` = 75, `em6_5` = 76, `text7_0` = '77', " +
         "`text7_1` = '78', `BroadcastTextID7` = 79, `lang7` = 80, `Probability7` = 81, `em7_0` = 82, `em7_1` = 83, `em7_2` = 84, " +
         '`em7_3` = 85, `em7_4` = 86, `em7_5` = 87 WHERE (`ID` = 1234);';
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.changeAllFields(originalEntity, ['ID', 'VerifiedBuild']);
       page.expectDiffQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
       page.removeNativeElement();
     });
 
