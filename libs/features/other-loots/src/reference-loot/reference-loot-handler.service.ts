@@ -7,6 +7,7 @@ import { REFERENCE_LOOT_TEMPLATE_TABLE, ReferenceLootTemplate } from '@keira/sha
 })
 export class ReferenceLootHandlerService extends HandlerService<ReferenceLootTemplate> {
   protected readonly mainEditorRoutePath = 'other-loots/reference';
+  protected override readonly copyRoutePath = 'other-loots/reference-copy';
 
   get isUnsaved(): Signal<boolean> {
     return this.statusMap[REFERENCE_LOOT_TEMPLATE_TABLE].asReadonly();

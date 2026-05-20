@@ -10,7 +10,7 @@ describe('HandlerService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), MockHandlerService],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), { provide: MockHandlerService, useClass: TestHandler }],
     }),
   );
 
@@ -42,6 +42,17 @@ describe('HandlerService', () => {
     expect(service.isNew).toEqual(isNew);
     expect(service.canActivate()).toBe(true);
     expect(navigateSpy).toHaveBeenCalledWith(['mock/route']);
+  });
+
+  it('should navigate to copy route when creating from a copy', () => {
+    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    const id = 'copyId';
+    const name = 'copyName';
+    const isNew = true;
+
+    service.select(isNew, id, name, true, 'source-123');
+
+    expect(navigateSpy).toHaveBeenCalledWith(['mock/copy']);
   });
 
   it('should not throw error when _statusMap is undefined in resetStatus()', () => {

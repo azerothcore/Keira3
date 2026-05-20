@@ -6,5 +6,6 @@ export * from './gameobject-template/gameobject-template.component';
 export * from './gameobject-template-addon/gameobject-template-addon.component';
 export * from './sai-gameobject/sai-gameobject.component';
 export * from './select-gameobject/select-gameobject.component';
+export { GameobjectCopyComponent } from './gameobject-copy/gameobject-copy.component';
 export * from './gameobject-handler.service';
 export * from './sai-gameobject-handler.service';
