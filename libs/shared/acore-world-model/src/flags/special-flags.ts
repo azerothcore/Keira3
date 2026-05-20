@@ -10,10 +10,10 @@ export const SPECIAL_FLAGS: Flag[] = [
   { bit: 6, name: 'Makes quest not share rewarded reputation with other allied factions' },
   {
     bit: 7,
-    name: 'Allows quest to fail in Player::FailQuest() independant of its current state, e.g. relevant for timed quests that are completed right from the beginning.',
+    name: 'Allows quest to fail in Player::FailQuest() independent of its current state, e.g. relevant for timed quests that are completed right from the beginning.',
   },
   {
     bit: 8,
-    name: "This quest shouldn't count towards the Loremaster Achivement.",
+    name: "This quest shouldn't count towards the Loremaster Achievement.",
   },
 ];

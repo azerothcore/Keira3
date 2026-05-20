@@ -92,7 +92,7 @@ import {
   AcoreStringComponent,
   AcoreStringHandlerService,
   SelectAcoreStringComponent,
-} from 'texts';
+} from '@keira/features/texts';
 import { GameTeleComponent, GameTeleHandlerService, SelectGameTeleComponent } from '@keira/features/game-tele';
 import { SelectTrainerComponent, TrainerComponent, TrainerHandlerService, TrainerSpellComponent } from '@keira/features/trainer';
 import { UnusedGuidSearchComponent } from '@keira/features/unused-guid-search';
