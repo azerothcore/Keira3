@@ -100,26 +100,26 @@ describe('EditorService', () => {
     function setupSave() {
       const { service } = setup();
       const toastrService = TestBed.inject(ToastrService);
-      const toastrSucessSpy = vi.spyOn(toastrService, 'success').mockImplementation(() => undefined);
+      const toastrSuccessSpy = vi.spyOn(toastrService, 'success').mockImplementation(() => undefined);
       const toastrErrorSpy = vi.spyOn(toastrService, 'error').mockImplementation(() => undefined);
       const querySpy = vi.spyOn(TestBed.inject(MysqlQueryService), 'query').mockImplementation(() => undefined);
       const reloadSpy = vi.spyOn(service, 'reload').mockImplementation(() => undefined);
-      return { service, toastrSucessSpy, toastrErrorSpy, querySpy, reloadSpy };
+      return { service, toastrSuccessSpy, toastrErrorSpy, querySpy, reloadSpy };
     }
 
     it('should do nothing if the query is undefined', () => {
-      const { service, querySpy, reloadSpy, toastrSucessSpy, toastrErrorSpy } = setupSave();
+      const { service, querySpy, reloadSpy, toastrSuccessSpy, toastrErrorSpy } = setupSave();
       service.save(mockChangeDetectorRef, undefined);
 
       expect(querySpy).toHaveBeenCalledTimes(0);
       expect(reloadSpy).toHaveBeenCalledTimes(0);
-      expect(toastrSucessSpy).toHaveBeenCalledTimes(0);
+      expect(toastrSuccessSpy).toHaveBeenCalledTimes(0);
       expect(toastrErrorSpy).toHaveBeenCalledTimes(0);
       expect(service.loading).toBe(false);
     });
 
     it('should correctly work when the query succeeds', () => {
-      const { service, querySpy, reloadSpy, toastrSucessSpy, toastrErrorSpy } = setupSave();
+      const { service, querySpy, reloadSpy, toastrSuccessSpy, toastrErrorSpy } = setupSave();
       service['_error'] = { code: 'some previous error', errno: 123 } as QueryError;
       querySpy.mockReturnValue(of('mock result' as any));
 
@@ -127,21 +127,21 @@ describe('EditorService', () => {
 
       expect(querySpy).toHaveBeenCalledWith(query);
       expect(reloadSpy).toHaveBeenCalledWith(mockChangeDetectorRef, service.loadedEntityId);
-      expect(toastrSucessSpy).toHaveBeenCalledTimes(1);
+      expect(toastrSuccessSpy).toHaveBeenCalledTimes(1);
       expect(toastrErrorSpy).toHaveBeenCalledTimes(0);
       expect(service.loading).toBe(false);
       expect(service.error).toBe(undefined as any);
     });
 
     it('should correctly work when the query errors', () => {
-      const { service, querySpy, reloadSpy, toastrSucessSpy, toastrErrorSpy } = setupSave();
+      const { service, querySpy, reloadSpy, toastrSuccessSpy, toastrErrorSpy } = setupSave();
       querySpy.mockReturnValue(throwError(error));
 
       service.save(mockChangeDetectorRef, query);
 
       expect(querySpy).toHaveBeenCalledWith(query);
       expect(reloadSpy).toHaveBeenCalledTimes(0);
-      expect(toastrSucessSpy).toHaveBeenCalledTimes(0);
+      expect(toastrSuccessSpy).toHaveBeenCalledTimes(0);
       expect(toastrErrorSpy).toHaveBeenCalledTimes(1);
       expect(service.loading).toBe(false);
       expect(service.error).toEqual(error);

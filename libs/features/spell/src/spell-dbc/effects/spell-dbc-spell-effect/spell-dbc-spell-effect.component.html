@@ -3,7 +3,7 @@
     <div class="content-block">
       <span class="category-title" [translate]="'SPELL_DBC.SPELL_EFFECTS.EFFECT'"></span>
       <div class="row">
-        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" [for]="getFieldName('Effect')">{{ getFieldName('Effect') }}</label>
           <keira-single-value-selector-btn
             [control]="formGroup.controls[getFieldName('Effect')]"
@@ -19,7 +19,7 @@
             class="form-control form-control-sm"
           />
         </div>
-        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" [for]="getFieldName('EffectBasePoints')">{{ getFieldName('EffectBasePoints') }}</label>
           <i
             class="fas fa-info-circle ms-1"
@@ -33,7 +33,7 @@
             class="form-control form-control-sm"
           />
         </div>
-        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" [for]="getFieldName('EffectRealPointsPerLevel')">{{
             getFieldName('EffectRealPointsPerLevel')
           }}</label>
@@ -49,7 +49,7 @@
             class="form-control form-control-sm"
           />
         </div>
-        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" [for]="getFieldName('EffectRadiusIndex')">{{ getFieldName('EffectRadiusIndex') }}</label>
           <i
             class="fas fa-info-circle ms-1"
@@ -63,7 +63,7 @@
             class="form-control form-control-sm"
           />
         </div>
-        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" [for]="getFieldName('EffectMultipleValue')">{{ getFieldName('EffectMultipleValue') }}</label>
           <i
             class="fas fa-info-circle ms-1"
@@ -77,7 +77,7 @@
             class="form-control form-control-sm"
           />
         </div>
-        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" [for]="getFieldName('EffectMiscValue')">{{ getFieldName('EffectMiscValue') }}</label>
           <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_MISC_VALUE' | translate"></i>
           <input
@@ -87,7 +87,7 @@
             class="form-control form-control-sm"
           />
         </div>
-        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" [for]="getFieldName('EffectMiscValueB')">{{ getFieldName('EffectMiscValueB') }}</label>
           <i
             class="fas fa-info-circle ms-1"
@@ -101,7 +101,7 @@
             class="form-control form-control-sm"
           />
         </div>
-        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" [for]="getFieldName('EffectTriggerSpell')">{{ getFieldName('EffectTriggerSpell') }}</label>
           <i
             class="fas fa-info-circle ms-1"
@@ -115,13 +115,9 @@
             class="form-control form-control-sm"
           />
         </div>
-        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" [for]="getFieldName('EffectItemType')">{{ getFieldName('EffectItemType') }}</label>
-          <i
-            class="fas fa-info-circle ms-1"
-            placement="auto"
-            [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_ITEM_TYPE' | translate"
-          ></i>
+          <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_ITEM_TYPE' | translate"></i>
           <input
             [formControlName]="getFieldName('EffectItemType')"
             type="number"
@@ -129,7 +125,7 @@
             class="form-control form-control-sm"
           />
         </div>
-        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" [for]="getFieldName('EffectPointsPerCombo')">{{ getFieldName('EffectPointsPerCombo') }}</label>
           <i
             class="fas fa-info-circle ms-1"
@@ -143,7 +139,7 @@
             class="form-control form-control-sm"
           />
         </div>
-        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" [for]="getFieldName('EffectDieSides')">{{ getFieldName('EffectDieSides') }}</label>
           <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_DIE_SIDES' | translate"></i>
           <input
@@ -153,7 +149,7 @@
             class="form-control form-control-sm"
           />
         </div>
-        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" [for]="getFieldName('EffectChainAmplitude')">{{ getFieldName('EffectChainAmplitude') }}</label>
           <i
             class="fas fa-info-circle ms-1"
@@ -167,7 +163,7 @@
             class="form-control form-control-sm"
           />
         </div>
-        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" [for]="getFieldName('EffectBonusMultiplier')">{{ getFieldName('EffectBonusMultiplier') }}</label>
           <i
             class="fas fa-info-circle ms-1"
@@ -186,7 +182,7 @@
     <div class="content-block">
       <span class="category-title" [translate]="'SPELL_DBC.SPELL_EFFECTS.EFFECT_MECHANIC'"></span>
       <div class="row">
-        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" [for]="getFieldName('EffectMechanic')">{{ getFieldName('EffectMechanic') }}</label>
           <keira-single-value-selector-btn
             [control]="formGroup.controls[getFieldName('EffectMechanic')]"
@@ -207,7 +203,7 @@
     <div class="content-block">
       <span class="category-title" [translate]="'SPELL_DBC.SPELL_EFFECTS.EFFECT_AURA'"></span>
       <div class="row">
-        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" [for]="getFieldName('EffectAura')">{{ getFieldName('EffectAura') }}</label>
           <keira-single-value-selector-btn
             [control]="formGroup.controls[getFieldName('EffectAura')]"
@@ -224,7 +220,7 @@
           />
         </div>
       </div>
-      <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+      <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
         <label class="control-label" [for]="getFieldName('EffectAuraPeriod')">{{ getFieldName('EffectAuraPeriod') }}</label>
         <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.EFFECT_AURA_PERIOD' | translate"></i>
         <input
@@ -238,7 +234,7 @@
     <div class="content-block">
       <span class="category-title" [translate]="'SPELL_DBC.SPELL_EFFECTS.MISC'"></span>
       <div class="row">
-        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" [for]="getFieldName('SpellClassMask')">{{ getFieldName('SpellClassMask') }}</label>
           <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.SPELL_CLASS_MASK' | translate"></i>
           <input
@@ -248,7 +244,7 @@
             class="form-control form-control-sm"
           />
         </div>
-        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" [for]="getFieldName('ImplicitTargetA')">{{ getFieldName('ImplicitTargetA') }}</label>
           <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.IMPLICIT_TARGET_A' | translate"></i>
           <input
@@ -258,7 +254,7 @@
             class="form-control form-control-sm"
           />
         </div>
-        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" [for]="getFieldName('ImplicitTargetB')">{{ getFieldName('ImplicitTargetB') }}</label>
           <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.SPELL_EFFECTS.FIELD.IMPLICIT_TARGET_B' | translate"></i>
           <input
@@ -268,7 +264,7 @@
             class="form-control form-control-sm"
           />
         </div>
-        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" [for]="getFieldName('EffectChainTargets')">{{ getFieldName('EffectChainTargets') }}</label>
           <i
             class="fas fa-info-circle ms-1"
@@ -282,7 +278,7 @@
             class="form-control form-control-sm"
           />
         </div>
-        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" [for]="getFieldName('EffectSpellClassMaskA')">{{ getFieldName('EffectSpellClassMaskA') }}</label>
           <keira-flags-selector-btn
             [control]="formGroup.controls[getFieldName('EffectSpellClassMaskA')]"
@@ -301,7 +297,7 @@
             class="form-control form-control-sm"
           />
         </div>
-        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" [for]="getFieldName('EffectSpellClassMaskB')">{{ getFieldName('EffectSpellClassMaskB') }}</label>
           <keira-flags-selector-btn
             [control]="formGroup.controls[getFieldName('EffectSpellClassMaskB')]"
@@ -320,7 +316,7 @@
             class="form-control form-control-sm"
           />
         </div>
-        <div class="form-group ol-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
           <label class="control-label" [for]="getFieldName('EffectSpellClassMaskC')">{{ getFieldName('EffectSpellClassMaskC') }}</label>
           <keira-flags-selector-btn
             [control]="formGroup.controls[getFieldName('EffectSpellClassMaskC')]"
