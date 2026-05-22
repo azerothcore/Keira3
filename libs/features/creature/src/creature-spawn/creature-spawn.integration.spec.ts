@@ -351,8 +351,8 @@ describe('CreatureSpawn integration tests', () => {
       page.expectUniqueError();
     });
 
-    it.skip('changing a value via MapSelector should correctly work', async () => {
-      const { fixture, page } = setup(false);
+    it('changing a value via MapSelector should correctly work', async () => {
+      const { page } = setup(false);
       const field = 'map';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
       vi.spyOn(sqliteQueryService, 'query').mockReturnValue(of([{ m_ID: 123, m_MapName_lang1: 'Mock Map' }]));
@@ -361,17 +361,9 @@ describe('CreatureSpawn integration tests', () => {
       page.clickRowOfDatatable(0);
       await page.whenReady();
 
-      page.clickElement(page.getSelectorBtn(field));
-      await page.whenReady();
-      page.expectModalDisplayed();
+      const result = await page.openSelectorAndPickRow(field, 0, { clickSearch: true });
 
-      page.clickSearchBtn();
-      await fixture.whenStable();
-      page.clickRowOfDatatableInModal(0);
-      await page.whenReady();
-      page.clickModalSelect();
-      await page.whenReady();
-
+      expect(result).toBe('123');
       page.expectDiffQueryToContain(
         'DELETE FROM `creature` WHERE (`id1` = 1234) AND (`guid` IN (0));\n' +
           'INSERT INTO `creature` (`guid`, `id1`, `id2`, `id3`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `wander_distance`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `ScriptName`, `Comment`, `VerifiedBuild`) VALUES\n' +
