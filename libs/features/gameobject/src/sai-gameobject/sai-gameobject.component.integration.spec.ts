@@ -112,6 +112,26 @@ describe('SaiGameobjectComponent integration tests', () => {
       page.deleteRow();
       expect(gameobjectHandlerService.isGameobjectSaiUnsaved()).toBe(false);
     });
+
+    it('SAI editor becomes dirty when its form changes; GameobjectHandler reflects it', () => {
+      const { page } = setup(true);
+      const gameobjectHandler = TestBed.inject(GameobjectHandlerService);
+      const saiHandler = TestBed.inject(SaiGameobjectHandlerService);
+
+      // 1. Select a gameobject via GameobjectHandlerService.select. This wires the SAI handler
+      //    to the matching entity via the override in gameobject-handler.service.ts.
+      gameobjectHandler.select(false, 1234, 'Mock');
+
+      // 2. Verify SaiGameobjectHandlerService received the corresponding selection with
+      //    source_type === 1 (gameobject SAI source type — distinct from creature's 0).
+      expect(saiHandler.selected).toBe(JSON.stringify({ entryorguid: 1234, source_type: 1 }));
+
+      // 3. Trigger SAI editor dirty state by adding a row.
+      page.addNewRow();
+
+      // 4. GameobjectHandler rolls up SAI dirty state via isGameobjectSaiUnsaved (signal).
+      expect(gameobjectHandler.isGameobjectSaiUnsaved()).toBe(true);
+    });
   });
 
   describe('Editing existing', () => {

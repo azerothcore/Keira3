@@ -8,7 +8,7 @@ import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/
 import { GameobjectQuestitem } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { GameobjectQuestitemComponent } from './gameobject-questitem.component';
@@ -260,6 +260,43 @@ describe('GameobjectQuestitem integration tests', () => {
       page.setInputValueById('Idx', 0);
 
       page.expectUniqueError();
+    });
+
+    it('schema sweep: every editable field flows into the diff query', async () => {
+      const { page } = setup(false);
+      page.clickRowOfDatatable(0);
+      await page.whenReady();
+
+      const written = await page.changeAllFieldsAsync(originalRow0, ['VerifiedBuild', 'GameObjectEntry', 'Idx']);
+
+      for (const field of Object.keys(written)) {
+        page.expectDiffQueryToContain('`' + field + '`');
+      }
+    });
+
+    it('shows an error toast when the save query fails', async () => {
+      const { querySpy, page } = setup(false);
+      page.clickRowOfDatatable(1);
+      page.setInputValueById('ItemId', 1);
+
+      querySpy.mockReturnValue(throwError(() => new Error('mock SQL failure')));
+      page.clickExecuteQuery();
+      await page.whenReady();
+
+      page.expectErrorToastVisible();
+    });
+
+    it('changing a value via ItemSelector should correctly work', async () => {
+      const { page, queryService } = setup(false);
+      vi.spyOn(queryService, 'query').mockReturnValue(of([{ entry: 1234, name: 'Mock Item' }]));
+
+      page.clickRowOfDatatable(0);
+      await page.whenReady();
+
+      const result = await page.openSelectorAndPickRow('ItemId', 0, { clickSearch: true });
+
+      expect(result).toBe('1234');
+      page.expectDiffQueryToContain('`ItemId`');
     });
   });
 });

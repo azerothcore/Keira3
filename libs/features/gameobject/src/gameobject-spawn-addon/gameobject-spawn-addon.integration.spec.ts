@@ -8,7 +8,7 @@ import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/
 import { GameobjectSpawnAddon } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { GameobjectSpawnAddonComponent } from './gameobject-spawn-addon.component';
@@ -161,6 +161,41 @@ describe('GameobjectSpawnAddon integration tests', () => {
       page.setInputValueById('guid', 0);
 
       page.expectUniqueError();
+    });
+
+    it('schema sweep: every editable field flows into the diff query', async () => {
+      const { page } = setup(false);
+      page.clickRowOfDatatable(0);
+      await page.whenReady();
+
+      const written = await page.changeAllFieldsAsync(originalRow0, ['guid']);
+
+      for (const field of Object.keys(written)) {
+        page.expectDiffQueryToContain('`' + field + '`');
+      }
+    });
+
+    it('shows an error toast when the save query fails', async () => {
+      const { querySpy, page } = setup(false);
+      page.clickRowOfDatatable(1);
+      page.setInputValueById('invisibilityValue', 5);
+
+      querySpy.mockReturnValue(throwError(() => new Error('mock SQL failure')));
+      page.clickExecuteQuery();
+      await page.whenReady();
+
+      page.expectErrorToastVisible();
+    });
+
+    it('changing a value via SingleValueSelector on invisibilityType should correctly work', async () => {
+      const { page } = setup(false);
+      page.clickRowOfDatatable(0);
+      await page.whenReady();
+
+      const result = await page.openSelectorAndPickRow('invisibilityType', 1);
+
+      expect(result).toBeTruthy();
+      page.expectDiffQueryToContain('`invisibilityType`');
     });
   });
 });

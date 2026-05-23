@@ -8,7 +8,7 @@ import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/
 import { GameobjectSpawn } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { GameobjectSpawnComponent } from './gameobject-spawn.component';
@@ -430,39 +430,80 @@ describe('GameobjectSpawn integration tests', () => {
       page.expectUniqueError();
     });
 
-    it.skip('changing a value via AreaSelector should correctly work', async () => {
-      const { fixture, page } = setup(false);
-      const field = 'areaId';
-      const sqliteQueryService = TestBed.inject(SqliteQueryService);
-      vi.spyOn(sqliteQueryService, 'query').mockReturnValue(of([{ m_ID: 123, m_ParentAreaID: 456, m_AreaName_lang: 'Mock Area' }]));
-
-      // because this is a multi-row editor
+    it('schema sweep: every editable field flows into the diff query', async () => {
+      const { page } = setup(false);
       page.clickRowOfDatatable(0);
       await page.whenReady();
 
-      page.clickElement(page.getSelectorBtn(field));
-      await page.whenReady();
-      page.expectModalDisplayed();
+      const written = await page.changeAllFieldsAsync(originalRow0, ['VerifiedBuild', 'id', 'guid']);
 
-      page.clickSearchBtn();
-      await fixture.whenStable();
-      page.clickRowOfDatatableInModal(0);
-      await page.whenReady();
-      page.clickModalSelect();
+      for (const field of Object.keys(written)) {
+        page.expectDiffQueryToContain('`' + field + '`');
+      }
+    });
+
+    it('shows an error toast when the save query fails', async () => {
+      const { querySpy, page } = setup(false);
+      page.clickRowOfDatatable(1);
+      page.setInputValueById('map', 1);
+
+      querySpy.mockReturnValue(throwError(() => new Error('mock SQL failure')));
+      page.clickExecuteQuery();
       await page.whenReady();
 
-      page.expectDiffQueryToContain(
-        'DELETE FROM `gameobject` WHERE (`id` = 1234) AND (`guid` IN (0));\n' +
-          'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`, `Comment`) VALUES\n' +
-          "(0, 1234, 0, 0, 123, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, '');",
-      );
-      page.expectFullQueryToContain(
-        'DELETE FROM `gameobject` WHERE (`id` = 1234);\n' +
-          'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`, `Comment`) VALUES\n' +
-          "(0, 1234, 0, 0, 123, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, ''),\n" +
-          "(1, 1234, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, ''),\n" +
-          "(2, 1234, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, '');",
-      );
+      page.expectErrorToastVisible();
+    });
+
+    it('changing a value via MapSelector should correctly work', async () => {
+      const { page } = setup(false);
+      const sqliteQueryService = TestBed.inject(SqliteQueryService);
+      vi.spyOn(sqliteQueryService, 'query').mockReturnValue(of([{ m_ID: 5, m_MapName_lang: 'Mock Map' }]));
+
+      page.clickRowOfDatatable(0);
+      await page.whenReady();
+
+      const result = await page.openSelectorAndPickRow('map', 0, { clickSearch: true });
+
+      expect(result).toBe('5');
+      page.expectDiffQueryToContain('`map`');
+    });
+
+    it('changing a value via AreaSelector should correctly work', async () => {
+      const { page } = setup(false);
+      const sqliteQueryService = TestBed.inject(SqliteQueryService);
+      vi.spyOn(sqliteQueryService, 'query').mockReturnValue(of([{ m_ID: 123, m_ParentAreaID: 456, m_AreaName_lang: 'Mock Area' }]));
+
+      page.clickRowOfDatatable(0);
+      await page.whenReady();
+
+      const result = await page.openSelectorAndPickRow('areaId', 0, { clickSearch: true });
+
+      expect(result).toBe('123');
+      page.expectDiffQueryToContain('`areaId`');
+    });
+
+    it('changing a value via FlagsSelector on spawnMask should correctly work', async () => {
+      const { page } = setup(false);
+      page.clickRowOfDatatable(0);
+      await page.whenReady();
+
+      const result = await page.openFlagsAndToggle('spawnMask', [1]);
+
+      // spawnMask defaults to 1; toggling bit 1 should produce 3.
+      expect(result).toBe(3);
+      page.expectDiffQueryToContain('`spawnMask`');
+    });
+
+    it('changing a value via FlagsSelector on phaseMask should correctly work', async () => {
+      const { page } = setup(false);
+      page.clickRowOfDatatable(0);
+      await page.whenReady();
+
+      const result = await page.openFlagsAndToggle('phaseMask', [1]);
+
+      // phaseMask defaults to 1; toggling bit 1 should produce 3.
+      expect(result).toBe(3);
+      page.expectDiffQueryToContain('`phaseMask`');
     });
   });
 });

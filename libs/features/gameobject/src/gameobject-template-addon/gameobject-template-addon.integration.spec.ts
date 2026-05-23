@@ -3,12 +3,12 @@ import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
+import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { GameobjectTemplateAddon } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { GameobjectTemplateAddonComponent } from './gameobject-template-addon.component';
@@ -141,32 +141,45 @@ describe('GameobjectTemplateAddon integration tests', () => {
       page.expectFullQueryToContain('35');
     });
 
-    it.skip('changing a value via FlagsSelector should correctly work', async () => {
+    it('schema sweep: every editable field flows into the diff query', async () => {
       const { page } = setup(false);
-      const field = 'flags';
-      page.clickElement(page.getSelectorBtn(field));
-      await page.whenReady();
-      page.expectModalDisplayed();
+      const written = await page.changeAllFieldsAsync(originalEntity, ['VerifiedBuild']);
 
-      page.toggleFlagInRowExternal(1); // +2^1
-      await page.whenReady();
-      page.toggleFlagInRowExternal(3); // +2^3
-      await page.whenReady();
-      page.clickModalSelect();
+      for (const field of Object.keys(written)) {
+        page.expectDiffQueryToContain('`' + field + '`');
+      }
+    });
+
+    it('shows an error toast when the save query fails', async () => {
+      const { querySpy, page } = setup(false);
+      page.setInputValueById('faction', '35');
+
+      querySpy.mockReturnValue(throwError(() => new Error('mock SQL failure')));
+      page.clickExecuteQuery();
       await page.whenReady();
 
-      expect(page.getInputById(field).value).toEqual('10');
+      page.expectErrorToastVisible();
+    });
+
+    it('changing a value via FactionSelector should correctly work', async () => {
+      const { page } = setup(false);
+      const sqliteQueryService = TestBed.inject(SqliteQueryService);
+      vi.spyOn(sqliteQueryService, 'query').mockReturnValue(of([{ m_ID: 42, faction_name_id: 0, m_name_lang_1: 'Mock Faction' }]));
+
+      const result = await page.openSelectorAndPickRow('faction', 0, { clickSearch: true });
+
+      expect(result).toBe('42');
+      page.expectDiffQueryToContain('`faction` = 42');
+    });
+
+    it('changing a value via FlagsSelector should correctly work', async () => {
+      const { page } = setup(false);
+
+      const result = await page.openFlagsAndToggle('flags', [1, 3]);
+
+      expect(result).toBe(10);
       page.expectDiffQueryToContain('UPDATE `gameobject_template_addon` SET `flags` = 10 WHERE (`entry` = ' + id + ');');
-
-      page.expectFullQueryToContain(
-        'DELETE FROM `gameobject_template_addon` WHERE (`entry` = ' +
-          id +
-          ');\n' +
-          'INSERT INTO `gameobject_template_addon` (`entry`, `faction`, `flags`, `mingold`, `maxgold`, `artkit0`, `artkit1`, `artkit2`, `artkit3`) VALUES\n' +
-          '(' +
-          id +
-          ', 0, 10, 0, 0, 0, 0, 0, 0);',
-      );
+      page.expectFullQueryToContain('10');
     });
   });
 });

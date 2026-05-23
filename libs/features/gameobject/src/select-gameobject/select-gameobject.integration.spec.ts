@@ -181,4 +181,19 @@ describe('SelectGameobject integration tests', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['gameobject/gameobject-template']);
     page.expectTopBarEditing(results[1].entry as number, results[1].name as string);
   });
+
+  it('clicking a result row delegates to GameobjectHandlerService.select with (false, entry, name)', () => {
+    const { page, querySpy } = setup();
+    const handlerService = TestBed.inject(GameobjectHandlerService);
+    const selectSpy = vi.spyOn(handlerService, 'select');
+    const results: Partial<GameobjectTemplate>[] = [{ entry: 42, name: 'Mock Gameobject', type: 0, displayId: 1 }];
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of(results as any));
+
+    page.clickElement(page.searchBtn);
+    page.clickElement(page.getDatatableCellExternal(0, 1));
+
+    expect(selectSpy).toHaveBeenCalledTimes(1);
+    expect(selectSpy).toHaveBeenCalledWith(false, '42', 'Mock Gameobject');
+  });
 });
