@@ -11,7 +11,7 @@ import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
@@ -127,40 +127,23 @@ describe('CreatureTemplate integration tests', () => {
 
     it('changing all properties and executing the query should correctly work', async () => {
       const { querySpy, page } = setup(false);
-      const values: (string | number)[] = [];
-      for (let i = 0; i < Object.keys(originalEntity).length; i++) {
-        values[i] = i;
-      }
-
-      // selectors
-      await page.setNgxSelectValueByIndex('IconName', 1);
-      values[11] = 1; // exp
-      values[19] = 1; // rank
-      values[20] = 1; // dmgschool
-      await page.setNgxSelectValueByIndex('unit_class', 1);
-      values[30] = 1; // family
-      values[31] = 1; // type
-      values[41] = 2; // MovementType
-      values[47] = 1; // RacialLeader
-      values[49] = 0; // RegenHealth
-
       const expectedQuery =
-        'UPDATE `creature_template` ' +
-        'SET `difficulty_entry_2` = 1, `difficulty_entry_3` = 2, `KillCredit1` = 3, `KillCredit2` = 4,' +
-        " `name` = '5', `subname` = '6', `IconName` = 'Directions', `gossip_menu_id` = 8, `minlevel` = 9, `maxlevel` = 10, " +
-        '`faction` = 12, `npcflag` = 13, `speed_walk` = 14, `speed_run` = 15, `speed_swim` = 16, ' +
-        '`speed_flight` = 17, `detection_range` = 18, `DamageModifier` = 21, ' +
+        'UPDATE `creature_template` SET ' +
+        '`difficulty_entry_1` = 1, `difficulty_entry_2` = 1, `difficulty_entry_3` = 2, `KillCredit1` = 3, `KillCredit2` = 4, ' +
+        "`name` = '5', `subname` = '6', `IconName` = 'Directions', `gossip_menu_id` = 8, `minlevel` = 9, `maxlevel` = 10, " +
+        '`exp` = 1, `faction` = 12, `npcflag` = 13, `speed_walk` = 14, `speed_run` = 15, `speed_swim` = 16, ' +
+        '`speed_flight` = 17, `detection_range` = 18, `rank` = 1, `dmgschool` = 1, `DamageModifier` = 21, ' +
         '`BaseAttackTime` = 22, `RangeAttackTime` = 23, `BaseVariance` = 24, `RangeVariance` = 25, `unit_class` = 2, ' +
-        '`unit_flags` = 27, `unit_flags2` = 28, `dynamicflags` = 29, ' +
-        '`type_flags` = 32, `lootid` = 33, `pickpocketloot` = 34, `skinloot` = 35,' +
-        " `PetSpellDataId` = 36, `VehicleId` = 37, `mingold` = 38, `maxgold` = 39, `AIName` = '40', " +
-        '`HoverHeight` = 42, `HealthModifier` = 43, `ManaModifier` = 44, `ArmorModifier` = 45, ' +
-        '`ExperienceModifier` = 46, `movementId` = 48, `CreatureImmunitiesId` = 50, ' +
+        '`unit_flags` = 27, `unit_flags2` = 28, `dynamicflags` = 29, `family` = 1, `type` = 1, ' +
+        '`type_flags` = 32, `lootid` = 33, `pickpocketloot` = 34, `skinloot` = 35, ' +
+        "`PetSpellDataId` = 36, `VehicleId` = 37, `mingold` = 38, `maxgold` = 39, `AIName` = '40', " +
+        '`MovementType` = 1, `HoverHeight` = 42, `HealthModifier` = 43, `ManaModifier` = 44, `ArmorModifier` = 45, ' +
+        '`ExperienceModifier` = 46, `RacialLeader` = 1, `movementId` = 48, `RegenHealth` = 0, `CreatureImmunitiesId` = 50, ' +
         "`flags_extra` = 51, `ScriptName` = '52' WHERE (`entry` = 1234);";
 
       querySpy.mockClear();
 
-      page.changeAllFields(originalEntity, ['VerifiedBuild'], values);
+      await page.changeAllFieldsAsync(originalEntity, ['VerifiedBuild']);
       page.expectDiffQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();
@@ -182,23 +165,33 @@ describe('CreatureTemplate integration tests', () => {
       page.expectFullQueryToContain('AC Developer');
     });
 
-    it.skip('changing a value via FlagsSelector should correctly work', async () => {
+    it('schema sweep: every editable field flows into the diff query', async () => {
+      const { page } = setup(false);
+      const written = await page.changeAllFieldsAsync(originalEntity, ['VerifiedBuild']);
+
+      for (const field of Object.keys(written)) {
+        page.expectDiffQueryToContain('`' + field + '`');
+      }
+    });
+
+    it('shows an error toast when the save query fails', async () => {
+      const { querySpy, page } = setup(false);
+      page.setInputValueById('name', 'Shin');
+
+      querySpy.mockReturnValue(throwError(() => new Error('mock SQL failure')));
+      page.clickExecuteQuery();
+      await page.whenReady();
+
+      page.expectErrorToastVisible();
+    });
+
+    it('changing a value via FlagsSelector should correctly work', async () => {
       const { page } = setup(false);
       const field = 'unit_flags';
-      page.clickElement(page.getSelectorBtn(field));
-      page.expectModalDisplayed();
-      await page.whenReady();
 
-      page.toggleFlagInRowExternal(2);
+      const result = await page.openFlagsAndToggle(field, [2, 12]);
 
-      await page.whenReady();
-      page.toggleFlagInRowExternal(12);
-
-      await page.whenReady();
-      page.clickModalSelect();
-      await page.whenReady();
-
-      expect(page.getInputById(field).value).toEqual('4100');
+      expect(result).toBe(4100);
       page.expectDiffQueryToContain('UPDATE `creature_template` SET `unit_flags` = 4100 WHERE (`entry` = 1234);');
 
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary

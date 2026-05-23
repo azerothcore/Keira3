@@ -1,10 +1,10 @@
 ---
 name: ngx-page-object-model
-description: Use this skill whenever working with Angular Component tests.
+description: MUST invoke before creating or editing any Angular component's tests (spec file). Enforces the Page Object Model pattern – tests drive components through the rendered DOM (their public contract) rather than reaching into component internals.
 license: MIT
 metadata:
   author: Francesco Borzì
-  version: '1.0'
+  version: '1.1'
 ---
 
 # ngx-page-object-model — Angular component testing

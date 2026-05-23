@@ -120,6 +120,20 @@ describe('CreatureLootTemplate integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(3);
       page.expectDiffQueryToContain(expectedQuery);
 
+      page.expectDiffQueryToDeleteInsert(
+        'creature_loot_template',
+        'Entry',
+        1234,
+        'Item',
+        [0, 1, 2],
+        ['Entry', 'Item', 'Reference', 'Chance', 'QuestRequired', 'LootMode', 'GroupId', 'MinCount', 'MaxCount', 'Comment'],
+        [
+          [1234, 0, 0, 100, 0, 1, 0, 1, 1, ''],
+          [1234, 1, 0, 100, 0, 1, 0, 1, 1, ''],
+          [1234, 2, 0, 100, 0, 1, 0, 1, 1, ''],
+        ],
+      );
+
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
