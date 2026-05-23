@@ -69,9 +69,9 @@ describe('SpellDbcEffectsComponent', () => {
 
   it('should correctly display the fields', () => {
     const { page } = setup();
-    expect(page.getTargets());
-    expect(page.getProcTypeMask());
-    expect(page.getProcChance());
-    expect(page.getProcCharges());
+    expect(page.getTargets()).toBeTruthy();
+    expect(page.getProcTypeMask()).toBeTruthy();
+    expect(page.getProcChance()).toBeTruthy();
+    expect(page.getProcCharges()).toBeTruthy();
   });
 });

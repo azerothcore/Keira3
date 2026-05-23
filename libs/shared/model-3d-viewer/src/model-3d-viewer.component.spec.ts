@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
@@ -46,17 +47,17 @@ describe('Model3DViewerComponent', () => {
 
     const queryService = TestBed.inject(MysqlQueryService);
     const httpTestingController = TestBed.inject(HttpTestingController);
-    const setupViewer3DSpy = spyOn<any>(component, 'setupViewer3D').and.callFake(() => {});
+    const setupViewer3DSpy = vi.spyOn<any>(component, 'setupViewer3D').mockImplementation(() => {});
 
-    setupViewer3DSpy.calls.reset();
+    setupViewer3DSpy.mockClear();
 
     return { fixture, component, queryService, httpTestingController };
   }
 
   it('ngOnInit', () => {
     const { component } = setup();
-    spyOn<any>(component, 'resetModel3dElement');
-    spyOn<any>(component, 'viewerDynamic');
+    vi.spyOn<any>(component, 'resetModel3dElement').mockImplementation(() => undefined);
+    vi.spyOn<any>(component, 'viewerDynamic').mockImplementation(() => undefined);
 
     component.ngOnInit();
 
@@ -72,8 +73,8 @@ describe('Model3DViewerComponent', () => {
       fixture.componentRef.setInput('displayId', 2);
       fixture.componentRef.setInput('viewerType', VIEWER_TYPE.NPC);
 
-      const resetModel3dElementSpy = spyOn<any>(component, 'resetModel3dElement');
-      const show3DmodelSpy = spyOn<any>(component, 'show3Dmodel');
+      const resetModel3dElementSpy = vi.spyOn<any>(component, 'resetModel3dElement').mockImplementation(() => undefined);
+      const show3DmodelSpy = vi.spyOn<any>(component, 'show3Dmodel').mockImplementation(() => undefined);
 
       component.ngOnChanges({ displayId: { currentValue: 1, previousValue: 0 } as any });
 
@@ -87,8 +88,8 @@ describe('Model3DViewerComponent', () => {
       fixture.componentRef.setInput('displayId', 2);
       fixture.componentRef.setInput('viewerType', VIEWER_TYPE.NPC);
 
-      spyOn<any>(component, 'show3Dmodel').and.callFake(() => {
-        expect(true).toBeTrue();
+      vi.spyOn<any>(component, 'show3Dmodel').mockImplementation(() => {
+        expect(true).toBe(true);
         done();
       });
       component.ngOnChanges({ displayId: { currentValue: 2, previousValue: 1 } as any });
@@ -97,8 +98,8 @@ describe('Model3DViewerComponent', () => {
 
   it('ngOnDestroy', () => {
     const { component } = setup();
-    const unsubscribeSpy = spyOn<any>(component['subscriptions'], 'unsubscribe');
-    spyOn<any>(component, 'resetModel3dElement');
+    const unsubscribeSpy = vi.spyOn<any>(component['subscriptions'], 'unsubscribe').mockImplementation(() => undefined);
+    vi.spyOn<any>(component, 'resetModel3dElement').mockImplementation(() => undefined);
 
     component.ngOnDestroy();
 
@@ -112,7 +113,7 @@ describe('Model3DViewerComponent', () => {
       fixture.componentRef.setInput('itemInventoryType', 1);
       fixture.componentRef.setInput('itemClass', 2);
       fixture.componentRef.setInput('viewerType', VIEWER_TYPE.ITEM);
-      spyOn<any>(component, 'show3Dmodel');
+      vi.spyOn<any>(component, 'show3Dmodel').mockImplementation(() => undefined);
       component['loadedViewer$'].next(true);
 
       component['viewerDynamic']();
@@ -127,7 +128,7 @@ describe('Model3DViewerComponent', () => {
     it('generate3Dmodel for non-item', () => {
       const { component, fixture } = setup();
       fixture.componentRef.setInput('viewerType', VIEWER_TYPE.NPC);
-      spyOn<any>(component, 'generate3Dmodel');
+      vi.spyOn<any>(component, 'generate3Dmodel').mockImplementation(() => undefined);
 
       component['show3Dmodel']();
 
@@ -137,10 +138,10 @@ describe('Model3DViewerComponent', () => {
     it('handles the item 3D model', (done) => {
       const { component, fixture } = setup();
       fixture.componentRef.setInput('viewerType', VIEWER_TYPE.ITEM);
-      const subscriptionAddSpy = spyOn<any>(component['subscriptions'], 'add');
+      const subscriptionAddSpy = vi.spyOn<any>(component['subscriptions'], 'add').mockImplementation(() => undefined);
       const mockItemData$ = of([{ entry: 123 }]);
-      spyOn<any>(component, 'getItemData$').and.returnValue(mockItemData$);
-      spyOn<any>(component, 'verifyModelAndLoad');
+      vi.spyOn<any>(component, 'getItemData$').mockReturnValue(mockItemData$);
+      vi.spyOn<any>(component, 'verifyModelAndLoad').mockImplementation(() => undefined);
 
       component['show3Dmodel']();
 
@@ -216,11 +217,11 @@ describe('Model3DViewerComponent', () => {
   it('getItemData$', () => {
     const { component, queryService, fixture } = setup();
     const mockObj = of({} as any);
-    spyOn(queryService, 'query').and.returnValue(mockObj);
+    vi.spyOn(queryService, 'query').mockReturnValue(mockObj);
     fixture.componentRef.setInput('displayId', mockDisplayId);
 
     expect(component['getItemData$']()).toBe(mockObj);
-    expect(queryService.query).toHaveBeenCalledOnceWith(
+    expect(queryService.query).toHaveBeenCalledExactlyOnceWith(
       `SELECT entry, class AS _class, inventoryType FROM item_template WHERE displayid=${mockDisplayId} LIMIT 1`,
     );
   });
@@ -231,9 +232,9 @@ describe('Model3DViewerComponent', () => {
       const mockUrl = 'www.mock.com';
       const mockModelType = 2;
       fixture.componentRef.setInput('displayId', mockDisplayId);
-      spyOn<any>(component, 'getContentPathUrl').and.returnValue(mockUrl);
-      spyOn<any>(component, 'generate3Dmodel');
-      spyOn<any>(component, 'getModelType').and.returnValue(mockModelType);
+      vi.spyOn<any>(component, 'getContentPathUrl').mockReturnValue(mockUrl);
+      vi.spyOn<any>(component, 'generate3Dmodel').mockImplementation(() => undefined);
+      vi.spyOn<any>(component, 'getModelType').mockReturnValue(mockModelType);
 
       component['verifyModelAndLoad']({ entry: 1, inventoryType: 2 });
 
@@ -243,14 +244,14 @@ describe('Model3DViewerComponent', () => {
 
       httpTestingController.verify();
 
-      expect(component['generate3Dmodel']).toHaveBeenCalledOnceWith(mockModelType, mockDisplayId);
-      expect(component['getModelType']).toHaveBeenCalledOnceWith(2);
+      expect(component['generate3Dmodel']).toHaveBeenCalledExactlyOnceWith(mockModelType, mockDisplayId);
+      expect(component['getModelType']).toHaveBeenCalledExactlyOnceWith(2);
     });
   });
 
   it('clean3DModels', () => {
     const { component } = setup();
-    component['models3D'].push({ destroy: jasmine.createSpy('destroy') });
+    component['models3D'].push({ destroy: vi.fn() });
 
     component['clean3DModels']();
 
@@ -260,7 +261,7 @@ describe('Model3DViewerComponent', () => {
   describe('resetModel3dElement', () => {
     it('should clean models and clear element innerHTML', () => {
       const { component } = setup();
-      component['models3D'].push({ destroy: jasmine.createSpy('destroy') });
+      component['models3D'].push({ destroy: vi.fn() });
 
       component['resetModel3dElement']();
 
@@ -277,14 +278,14 @@ describe('Model3DViewerComponent', () => {
     };
     it('should update CREATURE_GENDER and call show3Dmodel when raceControl changes and model type is CHARACTER', () => {
       const { component, fixture } = setup(charConf);
-      spyOn<any>(component, 'getModelType').and.returnValue(MODEL_TYPE.CHARACTER);
-      spyOn<any>(component, 'show3Dmodel');
-      const setSpy = spyOn<any>(component['CREATURE_GENDER'], 'set');
+      vi.spyOn<any>(component, 'getModelType').mockReturnValue(MODEL_TYPE.CHARACTER);
+      vi.spyOn<any>(component, 'show3Dmodel').mockImplementation(() => undefined);
+      const setSpy = vi.spyOn<any>(component['CREATURE_GENDER'], 'set').mockImplementation(() => undefined);
 
       fixture.detectChanges();
       component['raceControl'].setValue(Race.ORC);
 
-      expect(setSpy).toHaveBeenCalledOnceWith([
+      expect(setSpy).toHaveBeenCalledExactlyOnceWith([
         { value: 0, name: 'Male', icon: `race/${Race.ORC}-0.gif` },
         { value: 1, name: 'Female', icon: `race/${Race.ORC}-1.gif` },
       ]);
@@ -293,9 +294,9 @@ describe('Model3DViewerComponent', () => {
 
     it('should update CREATURE_RACE and call show3Dmodel when genderControl changes and model type is CHARACTER', () => {
       const { component, fixture } = setup(charConf);
-      spyOn<any>(component, 'getModelType').and.returnValue(MODEL_TYPE.CHARACTER);
-      spyOn<any>(component, 'show3Dmodel');
-      const setSpy = spyOn<any>(component['CREATURE_RACE'], 'set');
+      vi.spyOn<any>(component, 'getModelType').mockReturnValue(MODEL_TYPE.CHARACTER);
+      vi.spyOn<any>(component, 'show3Dmodel').mockImplementation(() => undefined);
+      const setSpy = vi.spyOn<any>(component['CREATURE_RACE'], 'set').mockImplementation(() => undefined);
 
       fixture.detectChanges();
       component['genderControl'].setValue(Gender.FEMALE);
@@ -306,9 +307,9 @@ describe('Model3DViewerComponent', () => {
 
     it('should not update CREATURE_GENDER or call show3Dmodel if getModelType is not CHARACTER (raceControl)', () => {
       const { component } = setup(charConf);
-      spyOn<any>(component, 'getModelType').and.returnValue(MODEL_TYPE.NPC);
-      spyOn<any>(component, 'show3Dmodel');
-      const setSpy = spyOn<any>(component['CREATURE_GENDER'], 'set');
+      vi.spyOn<any>(component, 'getModelType').mockReturnValue(MODEL_TYPE.NPC);
+      vi.spyOn<any>(component, 'show3Dmodel').mockImplementation(() => undefined);
+      const setSpy = vi.spyOn<any>(component['CREATURE_GENDER'], 'set').mockImplementation(() => undefined);
 
       component['initRaceGenderControls']();
       component['raceControl'].setValue(Race.ORC);
@@ -319,9 +320,9 @@ describe('Model3DViewerComponent', () => {
 
     it('should not update CREATURE_RACE or call show3Dmodel if getModelType is not CHARACTER (genderControl)', () => {
       const { component } = setup(charConf);
-      spyOn<any>(component, 'getModelType').and.returnValue(MODEL_TYPE.NPC);
-      spyOn<any>(component, 'show3Dmodel');
-      const setSpy = spyOn<any>(component['CREATURE_RACE'], 'set');
+      vi.spyOn<any>(component, 'getModelType').mockReturnValue(MODEL_TYPE.NPC);
+      vi.spyOn<any>(component, 'show3Dmodel').mockImplementation(() => undefined);
+      const setSpy = vi.spyOn<any>(component['CREATURE_RACE'], 'set').mockImplementation(() => undefined);
 
       component['initRaceGenderControls']();
       component['genderControl'].setValue(Gender.FEMALE);

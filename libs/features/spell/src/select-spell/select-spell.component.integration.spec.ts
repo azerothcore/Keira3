@@ -1,3 +1,4 @@
+import { vi, type MockInstance } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -12,7 +13,6 @@ import { of } from 'rxjs';
 import { SpellHandlerService } from '../spell-handler.service';
 import { SelectSpellComponent } from './select-spell.component';
 import { SelectSpellService } from './select-spell.service';
-import Spy = jasmine.Spy;
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 
 class SelectSpellComponentPage extends SelectPageObject<SelectSpellComponent> {
@@ -38,9 +38,9 @@ describe('SelectSpell integration tests', () => {
   });
 
   const setup = () => {
-    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate').mockImplementation(() => undefined);
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy: Spy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
+    const querySpy: MockInstance = vi.spyOn(queryService, 'query').mockReturnValue(of([{ max: 1 }]));
 
     const selectService = TestBed.inject(SelectSpellService);
 
@@ -65,8 +65,8 @@ describe('SelectSpell integration tests', () => {
   it('should correctly behave when inserting and selecting free entry', async () => {
     const { navigateSpy, querySpy, fixture, page } = setup();
     await fixture.whenStable();
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of([]));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of([]));
 
     page.setInputValue(page.createInput, value);
 
@@ -84,8 +84,8 @@ describe('SelectSpell integration tests', () => {
   it('should correctly behave when inserting an existing entity', async () => {
     const { querySpy, fixture, page } = setup();
     await fixture.whenStable();
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of(['mock value']));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of(['mock value']));
 
     page.setInputValue(page.createInput, value);
 
@@ -118,7 +118,7 @@ describe('SelectSpell integration tests', () => {
   ]) {
     it(`searching an existing entity should correctly work [${id}]`, () => {
       const { querySpy, page } = setup();
-      querySpy.calls.reset();
+      querySpy.mockClear();
       if (entry) {
         page.setInputValue(page.searchIdInput, entry);
       }
@@ -143,8 +143,8 @@ describe('SelectSpell integration tests', () => {
       { [SPELL_DBC_ID]: 2, [SPELL_DBC_NAME]: 'Fireball' },
       { [SPELL_DBC_ID]: 3, [SPELL_DBC_NAME]: 'Heal' },
     ];
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of(results));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of(results));
 
     page.clickElement(page.searchBtn);
 

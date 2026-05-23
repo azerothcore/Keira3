@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 /*eslint camelcase: ["error", {properties: "never"}]*/
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
@@ -31,8 +32,8 @@ describe('SaiHandlerService', () => {
       const service: SaiHandlerService = TestBed.inject(SaiHandlerService);
       const queryService: MysqlQueryService = TestBed.inject(MysqlQueryService);
       const mockResults = isNew ? [] : ['some result'];
-      spyOn(queryService, 'query').and.returnValue(of(mockResults as any));
-      spyOn(service, 'select');
+      vi.spyOn(queryService, 'query').mockReturnValue(of(mockResults as any));
+      vi.spyOn(service, 'select').mockImplementation(() => undefined);
 
       service.selectFromEntity(sourceType, entryOrGuid);
       expect(queryService.query).toHaveBeenCalledTimes(1);
@@ -77,7 +78,7 @@ describe('SaiHandlerService', () => {
   ]) {
     it(`when selecting, the templateQuery should be updated [${sourceType}]`, () => {
       const service: SaiHandlerService = TestBed.inject(SaiHandlerService);
-      spyOn(TestBed.inject(Router), 'navigate');
+      vi.spyOn(TestBed.inject(Router), 'navigate').mockImplementation(() => undefined);
 
       service.select(false, { source_type: sourceType, entryorguid: id });
 
@@ -87,7 +88,7 @@ describe('SaiHandlerService', () => {
 
   it('navigation should not be triggered when navigate is false', () => {
     const service: SaiHandlerService = TestBed.inject(SaiHandlerService);
-    const spy = spyOn(TestBed.inject(Router), 'navigate');
+    const spy = vi.spyOn(TestBed.inject(Router), 'navigate').mockImplementation(() => undefined);
 
     service.select(false, { source_type: 1, entryorguid: 123 }, 'Mock Name', false);
 
@@ -156,13 +157,13 @@ describe('SaiHandlerService', () => {
     for (const { testId, sourceType, entryorguid, name, returnValue, expectedName, expectedQuery } of cases) {
       it(`${testId}`, () => {
         const service: SaiHandlerService = TestBed.inject(SaiHandlerService);
-        const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+        const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate').mockImplementation(() => undefined);
         const queryService = TestBed.inject(MysqlQueryService);
-        const querySpy = spyOn(queryService, 'query');
+        const querySpy = vi.spyOn(queryService, 'query').mockImplementation(() => undefined);
 
         service.select(false, { source_type: sourceType, entryorguid }, name, false);
 
-        querySpy.and.returnValue(of(returnValue));
+        querySpy.mockReturnValue(of(returnValue));
         service.getName().subscribe((actualName) => {
           // TODO: this should not be inside subscribe
           expect(actualName).toEqual(expectedName);
@@ -173,7 +174,7 @@ describe('SaiHandlerService', () => {
 
         service.select(false, { source_type: undefined, entryorguid: -123 }, mockName, false);
 
-        querySpy.and.returnValue(of());
+        querySpy.mockReturnValue(of());
         service.getName().subscribe((actualName) => {
           expect(actualName).toEqual(`Unknown source_type`);
         });

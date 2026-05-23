@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -43,10 +44,10 @@ describe('CreatureTemplateSpell integration tests', () => {
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
-    spyOn(queryService, 'queryValue').and.returnValue(of());
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
+    vi.spyOn(queryService, 'queryValue').mockReturnValue(of());
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
     const fixture = TestBed.createComponent(CreatureTemplateSpellComponent);
     const component = fixture.componentInstance;
@@ -55,7 +56,7 @@ describe('CreatureTemplateSpell integration tests', () => {
 
     const sqliteQueryService = TestBed.inject(SqliteQueryService);
     const mockIntermediateResult = 'some result';
-    spyOn(sqliteQueryService, 'getDisplayIdBySpellId').and.returnValue(of(mockIntermediateResult));
+    vi.spyOn(sqliteQueryService, 'getDisplayIdBySpellId').mockReturnValue(of(mockIntermediateResult));
 
     return { handlerService, queryService, querySpy, fixture, component, page };
   }
@@ -92,7 +93,7 @@ describe('CreatureTemplateSpell integration tests', () => {
         '(1234, 0, 0, 0),\n' +
         '(1234, 1, 0, 0),\n' +
         '(1234, 2, 0, 0);';
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(1);
@@ -104,7 +105,7 @@ describe('CreatureTemplateSpell integration tests', () => {
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
       page.removeNativeElement();
     });
 
@@ -204,7 +205,7 @@ describe('CreatureTemplateSpell integration tests', () => {
     });
 
     // TODO: fix this - broken with provideZonelessChangeDetection()
-    xit('editing existing rows should correctly work', () => {
+    it.skip('editing existing rows should correctly work', () => {
       const { page } = setup(false);
       page.clickRowOfDatatable(1);
       page.setInputValueById('Spell', '3');

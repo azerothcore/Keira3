@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -50,9 +51,9 @@ describe('CreatureTemplateAddon integration tests', () => {
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalEntity]));
 
     const fixture = TestBed.createComponent(CreatureTemplateAddonComponent);
     const page = new CreatureTemplateAddonPage(fixture);
@@ -85,7 +86,7 @@ describe('CreatureTemplateAddon integration tests', () => {
         'DELETE FROM `creature_template_addon` WHERE (`entry` = 1234);\n' +
         'INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `visibilityDistanceType`, `auras`) VALUES\n' +
         "(1234, 3, 0, 0, 0, 0, 0, '');";
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.setInputValueById('path_id', 3);
       page.expectFullQueryToContain(expectedQuery);
@@ -93,7 +94,7 @@ describe('CreatureTemplateAddon integration tests', () => {
       page.clickExecuteQuery();
 
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
   });
 
@@ -114,14 +115,14 @@ describe('CreatureTemplateAddon integration tests', () => {
       const expectedQuery =
         'UPDATE `creature_template_addon` SET ' +
         "`path_id` = 0, `mount` = 1, `bytes1` = 2, `bytes2` = 3, `emote` = 4, `visibilityDistanceType` = 5, `auras` = '6' WHERE (`entry` = 1234);";
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.expectDiffQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
 
     it('changing values should correctly update the queries', () => {
@@ -143,7 +144,7 @@ describe('CreatureTemplateAddon integration tests', () => {
       );
     });
 
-    xit('changing a value via SingleValueSelector should correctly work', async () => {
+    it.skip('changing a value via SingleValueSelector should correctly work', async () => {
       const { page } = setup(false);
       const field = 'bytes1';
       page.clickElement(page.getSelectorBtn(field));

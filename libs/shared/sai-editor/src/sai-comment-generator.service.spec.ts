@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -48,16 +49,16 @@ describe('SaiCommentGeneratorService', () => {
 
     beforeEach(() => {
       const queryService = TestBed.inject(MysqlQueryService);
-      spyOn(queryService, 'getCreatureNameById').and.callFake((i) => lastValueFrom(of(mockCreatureNameById + i)));
-      spyOn(queryService, 'getCreatureNameByGuid').and.callFake((i) => lastValueFrom(of(mockCreatureNameByGuid + i)));
-      spyOn(queryService, 'getGameObjectNameById').and.callFake((i) => lastValueFrom(of(mockGameobjectNameById + i)));
-      spyOn(queryService, 'getGameObjectNameByGuid').and.callFake((i) => lastValueFrom(of(mockGameobjectNameByGuid + i)));
-      spyOn(queryService, 'getQuestTitleById').and.callFake((i) => lastValueFrom(of(mockQuestTitleById + i)));
-      spyOn(queryService, 'getItemNameById').and.callFake((i) => lastValueFrom(of(mockItemNameById + i)));
-      spyOn(queryService, 'getQuestTitleByCriteria').and.callFake((i) => lastValueFrom(of(mockQuestTitleByCriteria + i)));
+      vi.spyOn(queryService, 'getCreatureNameById').mockImplementation((i) => lastValueFrom(of(mockCreatureNameById + i)));
+      vi.spyOn(queryService, 'getCreatureNameByGuid').mockImplementation((i) => lastValueFrom(of(mockCreatureNameByGuid + i)));
+      vi.spyOn(queryService, 'getGameObjectNameById').mockImplementation((i) => lastValueFrom(of(mockGameobjectNameById + i)));
+      vi.spyOn(queryService, 'getGameObjectNameByGuid').mockImplementation((i) => lastValueFrom(of(mockGameobjectNameByGuid + i)));
+      vi.spyOn(queryService, 'getQuestTitleById').mockImplementation((i) => lastValueFrom(of(mockQuestTitleById + i)));
+      vi.spyOn(queryService, 'getItemNameById').mockImplementation((i) => lastValueFrom(of(mockItemNameById + i)));
+      vi.spyOn(queryService, 'getQuestTitleByCriteria').mockImplementation((i) => lastValueFrom(of(mockQuestTitleByCriteria + i)));
 
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
-      spyOn(sqliteQueryService, 'getSpellNameById').and.callFake((i) => lastValueFrom(of(mockGetSpellNameById + i)));
+      vi.spyOn(sqliteQueryService, 'getSpellNameById').mockImplementation((i) => lastValueFrom(of(mockGetSpellNameById + i)));
     });
 
     it('should correctly handle linked events', async () => {

@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -22,7 +23,7 @@ describe('SelectTrainerComponent', () => {
 
   const setup = () => {
     const queryService = TestBed.inject(MysqlQueryService);
-    spyOn(queryService, 'query').and.returnValue(of());
+    vi.spyOn(queryService, 'query').mockReturnValue(of());
 
     const fixture = TestBed.createComponent(SelectTrainerComponent);
     const component = fixture.componentInstance;

@@ -1,3 +1,4 @@
+import { vi, type MockInstance } from 'vitest';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
@@ -15,7 +16,6 @@ import { of } from 'rxjs';
 import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { CreatureQueststarterComponent } from './creature-queststarter.component';
-import Spy = jasmine.Spy;
 
 class CreatureQueststarterPage extends MultiRowEditorPageObject<CreatureQueststarterComponent> {
   get questPreviewNpcStart() {
@@ -54,15 +54,15 @@ describe('CreatureQueststarter integration tests', () => {
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
-    spyOn(queryService, 'queryValue').and.returnValue(of());
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
+    vi.spyOn(queryService, 'queryValue').mockReturnValue(of());
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
     // by default the other editor services should not be initialised, because the selectAll would return the wrong types for them
-    const initializeServicesSpy = spyOn(TestBed.inject(QuestPreviewService), 'initializeServices');
+    const initializeServicesSpy = vi.spyOn(TestBed.inject(QuestPreviewService), 'initializeServices').mockImplementation(() => undefined);
     if (creatingNew) {
       // when creatingNew, the selectAll will return an empty array, so it's fine
-      initializeServicesSpy.and.callThrough();
+      initializeServicesSpy.mockRestore();
     }
 
     const fixture = TestBed.createComponent(CreatureQueststarterComponent);
@@ -105,7 +105,7 @@ describe('CreatureQueststarter integration tests', () => {
         '(0, 1234),\n' +
         '(1, 1234),\n' +
         '(2, 1234);\n';
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(1);
@@ -117,7 +117,7 @@ describe('CreatureQueststarter integration tests', () => {
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
       page.removeNativeElement();
     });
 
@@ -171,7 +171,7 @@ describe('CreatureQueststarter integration tests', () => {
     });
 
     // TODO: fix this test, broken after OnPush (probably needs await whenStable())
-    xit('changing a property should be reflected in the quest preview', () => {
+    it.skip('changing a property should be reflected in the quest preview', () => {
       const { page } = setup(true);
       const value = 1234;
 
@@ -286,11 +286,11 @@ describe('CreatureQueststarter integration tests', () => {
       page.removeNativeElement();
     });
 
-    xit('changing a value via CreatureSelector should correctly work', async () => {
+    it.skip('changing a value via CreatureSelector should correctly work', async () => {
       const { page, fixture } = setup(false);
       const field = 'id';
       const mysqlQueryService = TestBed.inject(MysqlQueryService);
-      (mysqlQueryService.query as Spy).and.returnValue(of([{ entry: 123, name: 'Mock Creature' }]));
+      (mysqlQueryService.query as MockInstance).mockReturnValue(of([{ entry: 123, name: 'Mock Creature' }]));
 
       // because this is a multi-row editor
       page.clickRowOfDatatable(0);

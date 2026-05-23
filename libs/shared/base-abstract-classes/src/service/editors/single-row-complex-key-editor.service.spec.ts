@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -31,7 +32,7 @@ describe('SingleRowComplexKeyEditorService', () => {
 
   function setup() {
     const service: SingleRowComplexKeyEditorService<MockEntity> = TestBed.inject(MockSingleRowComplexKeyEditorService);
-    spyOn(TestBed.inject(Router), 'navigate');
+    vi.spyOn(TestBed.inject(Router), 'navigate').mockImplementation(() => undefined);
     return { service };
   }
 
@@ -46,7 +47,9 @@ describe('SingleRowComplexKeyEditorService', () => {
       const handlerService = TestBed.inject(MockHandlerService);
       // @ts-ignore
       handlerService._selected = '{}';
-      const selectAllMultipleKeysSpy = spyOn(TestBed.inject(MysqlQueryService), 'selectAllMultipleKeys');
+      const selectAllMultipleKeysSpy = vi
+        .spyOn(TestBed.inject(MysqlQueryService), 'selectAllMultipleKeys')
+        .mockImplementation(() => undefined);
 
       service['selectQuery']();
 
@@ -55,8 +58,10 @@ describe('SingleRowComplexKeyEditorService', () => {
 
     it('updateDiffQuery  should correctly work', () => {
       const { service } = setup();
-      const getUpdateMultipleKeysQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getUpdateMultipleKeysQuery');
-      spyOn<any>(service, 'updateEditorStatus');
+      const getUpdateMultipleKeysQuerySpy = vi
+        .spyOn(TestBed.inject(MysqlQueryService), 'getUpdateMultipleKeysQuery')
+        .mockImplementation(() => undefined);
+      vi.spyOn<any>(service, 'updateEditorStatus').mockImplementation(() => undefined);
 
       service['updateDiffQuery']();
 
@@ -72,7 +77,9 @@ describe('SingleRowComplexKeyEditorService', () => {
 
     it('updateFullQuery()', () => {
       const { service } = setup();
-      const getFullDeleteInsertMultipleKeysQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getFullDeleteInsertMultipleKeysQuery');
+      const getFullDeleteInsertMultipleKeysQuerySpy = vi
+        .spyOn(TestBed.inject(MysqlQueryService), 'getFullDeleteInsertMultipleKeysQuery')
+        .mockImplementation(() => undefined);
 
       service['updateFullQuery']();
 
@@ -81,7 +88,9 @@ describe('SingleRowComplexKeyEditorService', () => {
 
     it('updateFullQuery() when isNew is true', () => {
       const { service } = setup();
-      const getFullDeleteInsertMultipleKeysQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getFullDeleteInsertMultipleKeysQuery');
+      const getFullDeleteInsertMultipleKeysQuerySpy = vi
+        .spyOn(TestBed.inject(MysqlQueryService), 'getFullDeleteInsertMultipleKeysQuery')
+        .mockImplementation(() => undefined);
       const handlerService = TestBed.inject(MockHandlerService);
       // @ts-ignore
       handlerService._selected = JSON.stringify({ id: 1, guid: 2 });
@@ -95,8 +104,8 @@ describe('SingleRowComplexKeyEditorService', () => {
 
     it('reload()', () => {
       const { service } = setup();
-      const resetSpy = spyOn<any>(service, 'reset');
-      const reloadEntitySpy = spyOn<any>(service, 'reloadEntity');
+      const resetSpy = vi.spyOn<any>(service, 'reset').mockImplementation(() => undefined);
+      const reloadEntitySpy = vi.spyOn<any>(service, 'reloadEntity').mockImplementation(() => undefined);
 
       service.reload(mockChangeDetectorRef);
 
@@ -107,8 +116,8 @@ describe('SingleRowComplexKeyEditorService', () => {
 
     it('reloadAfterSave()', () => {
       const { service } = setup();
-      const selectSpy = spyOn(TestBed.inject(MockHandlerService), 'select');
-      const reloadSpy = spyOn(service, 'reload');
+      const selectSpy = vi.spyOn(TestBed.inject(MockHandlerService), 'select').mockImplementation(() => undefined);
+      const reloadSpy = vi.spyOn(service, 'reload').mockImplementation(() => undefined);
 
       service['reloadSameEntity'](mockChangeDetectorRef);
 
@@ -119,16 +128,16 @@ describe('SingleRowComplexKeyEditorService', () => {
 
     it('reloadEntity()', () => {
       const { service } = setup();
-      const selectQuerySpy = spyOn<any>(service, 'selectQuery');
+      const selectQuerySpy = vi.spyOn<any>(service, 'selectQuery').mockImplementation(() => undefined);
       const error = { code: 'mock error', errno: 1234 } as QueryError;
-      selectQuerySpy.and.returnValue(of([{ [MOCK_NAME]: 'mockName' }]));
+      selectQuerySpy.mockReturnValue(of([{ [MOCK_NAME]: 'mockName' }]));
 
       service['reloadEntity'](mockChangeDetectorRef);
 
       expect(selectQuerySpy).toHaveBeenCalled();
       expect(service['_loading']).toBe(false);
 
-      selectQuerySpy.and.returnValue(throwError(error));
+      selectQuerySpy.mockReturnValue(throwError(error));
 
       service['reloadEntity'](mockChangeDetectorRef);
 
@@ -138,7 +147,7 @@ describe('SingleRowComplexKeyEditorService', () => {
     it('onCreatingNewEntity()', () => {
       const { service } = setup();
       const handlerService = TestBed.inject(MockHandlerService);
-      spyOnProperty(service, 'entityIdFields', 'get').and.returnValue(['id', 'guid', 'test']);
+      vi.spyOn(service, 'entityIdFields', 'get').mockReturnValue(['id', 'guid', 'test']);
       // @ts-ignore
       handlerService._selected = JSON.stringify({ id: 1, guid: 2 });
 
@@ -150,7 +159,7 @@ describe('SingleRowComplexKeyEditorService', () => {
 
     it('setLoadedEntity()', () => {
       const { service } = setup();
-      const selectSpy = spyOn(TestBed.inject(MockHandlerService), 'select');
+      const selectSpy = vi.spyOn(TestBed.inject(MockHandlerService), 'select').mockImplementation(() => undefined);
 
       service['_originalValue'] = new MockEntity();
       service['_originalValue'].id = 1;
@@ -167,11 +176,11 @@ describe('SingleRowComplexKeyEditorService', () => {
 
     it('onReloadSuccessful()', () => {
       const { service } = setup();
-      const onCreatingNewEntitySpy = spyOn<any>(service, 'onCreatingNewEntity');
-      const updateFormAfterReloadSpy = spyOn<any>(service, 'updateFormAfterReload');
-      const setLoadedEntitySpy = spyOn<any>(service, 'setLoadedEntity');
-      const updateFullQuerySpy = spyOn<any>(service, 'updateFullQuery');
-      const onLoadedExistingEntitySpy = spyOn<any>(service, 'onLoadedExistingEntity');
+      const onCreatingNewEntitySpy = vi.spyOn<any>(service, 'onCreatingNewEntity').mockImplementation(() => undefined);
+      const updateFormAfterReloadSpy = vi.spyOn<any>(service, 'updateFormAfterReload').mockImplementation(() => undefined);
+      const setLoadedEntitySpy = vi.spyOn<any>(service, 'setLoadedEntity').mockImplementation(() => undefined);
+      const updateFullQuerySpy = vi.spyOn<any>(service, 'updateFullQuery').mockImplementation(() => undefined);
+      const onLoadedExistingEntitySpy = vi.spyOn<any>(service, 'onLoadedExistingEntity').mockImplementation(() => undefined);
       const data: MockEntity[] = [];
 
       service['onReloadSuccessful'](data);

@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -27,9 +28,9 @@ describe('SelectQuest integration tests', () => {
   });
 
   function setup() {
-    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate').mockImplementation(() => undefined);
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([{ max: 1 }]));
 
     const fixture = TestBed.createComponent(SelectQuestComponent);
     const page = new SelectQuestComponentPage(fixture);
@@ -52,8 +53,8 @@ describe('SelectQuest integration tests', () => {
   it('should correctly behave when inserting and selecting free id', async () => {
     const { fixture, page, querySpy, navigateSpy } = setup();
     await fixture.whenStable();
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of([]));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of([]));
 
     page.setInputValue(page.createInput, value);
 
@@ -71,8 +72,8 @@ describe('SelectQuest integration tests', () => {
   it('should correctly behave when inserting an existing entity', async () => {
     const { fixture, page, querySpy } = setup();
     await fixture.whenStable();
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of(['mock value'] as any));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of(['mock value'] as any));
 
     page.setInputValue(page.createInput, value);
 
@@ -106,7 +107,7 @@ describe('SelectQuest integration tests', () => {
   ]) {
     it(`searching an existing entity should correctly work [${testId}]`, () => {
       const { page, querySpy } = setup();
-      querySpy.calls.reset();
+      querySpy.mockClear();
       if (id) {
         page.setInputValue(page.searchIdInput, id);
       }
@@ -131,8 +132,8 @@ describe('SelectQuest integration tests', () => {
       { id: 2, LogTitle: 'An awesome Quest 2', QuestType: 0, QuestLevel: 2, MinLevel: 20, QuestDescription: '' },
       { id: 3, LogTitle: 'An awesome Quest 3', QuestType: 0, QuestLevel: 3, MinLevel: 30, QuestDescription: '' },
     ];
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of(results as any));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of(results as any));
 
     page.clickElement(page.searchBtn);
 

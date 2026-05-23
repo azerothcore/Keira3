@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -34,7 +35,7 @@ describe('MultiRowExternalEditorService', () => {
     const { service } = setup();
     service['_diffQuery'] = '';
     const queryResult = '-- Mock query result';
-    const getQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getDiffDeleteInsertTwoKeysQuery').and.returnValue(queryResult);
+    const getQuerySpy = vi.spyOn(TestBed.inject(MysqlQueryService), 'getDiffDeleteInsertTwoKeysQuery').mockReturnValue(queryResult);
 
     service['updateDiffQuery']();
 
@@ -49,11 +50,11 @@ describe('MultiRowExternalEditorService', () => {
     expect(service.diffQuery).toEqual(queryResult);
   });
 
-  xit('updateFullQuery() should correctly work', () => {
+  it.skip('updateFullQuery() should correctly work', () => {
     const { service } = setup();
     service['_fullQuery'] = '';
     const queryResult = '-- Mock query result';
-    const getQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getFullDeleteInsertQuery').and.returnValue(queryResult);
+    const getQuerySpy = vi.spyOn(TestBed.inject(MysqlQueryService), 'getFullDeleteInsertQuery').mockReturnValue(queryResult);
 
     service['updateFullQuery']();
 

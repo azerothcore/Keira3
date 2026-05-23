@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -25,7 +26,7 @@ describe('SelectService', () => {
 
   it('onSelect() should correctly work', () => {
     const service = TestBed.inject(SelectMockService);
-    const spy = spyOn(TestBed.inject(MockHandlerService), 'select');
+    const spy = vi.spyOn(TestBed.inject(MockHandlerService), 'select').mockImplementation(() => undefined);
     const selected = [{ [service['entityIdField']]: 'myId', [service['entityNameField'] as string]: 'myName' }];
 
     service.onSelect({ selected });
@@ -40,7 +41,7 @@ describe('SelectService', () => {
 
   it('onSelect() should correctly extract the Quality field if present', () => {
     const service = TestBed.inject(SelectMockService);
-    const spy = spyOn(TestBed.inject(MockHandlerService), 'select');
+    const spy = vi.spyOn(TestBed.inject(MockHandlerService), 'select').mockImplementation(() => undefined);
     const selected = [
       {
         [service['entityIdField']]: 'myId',
@@ -62,7 +63,7 @@ describe('SelectService', () => {
 
   it('onSelect() should use the table name when the entityNameField is not defined', () => {
     const service = TestBed.inject(SelectMockService);
-    const spy = spyOn(TestBed.inject(MockHandlerService), 'select');
+    const spy = vi.spyOn(TestBed.inject(MockHandlerService), 'select').mockImplementation(() => undefined);
     const selected = [{ [service['entityIdField']]: 'myId', [service['entityNameField'] as string]: 'myName' }];
     service['entityNameField'] = undefined as any;
 
