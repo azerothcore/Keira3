@@ -114,6 +114,19 @@ describe(`${SelectPageTextComponent.name} integration tests`, () => {
     });
   }
 
+  it('searching by name should generate a LIKE query against the Text field', () => {
+    const { page, querySpy } = setup();
+
+    querySpy.mockClear();
+    page.setInputValue(page.query<HTMLInputElement>('#search-text'), 'Hello');
+    page.setInputValue(page.searchLimitInput, '50');
+
+    page.clickElement(page.searchBtn);
+
+    expect(querySpy).toHaveBeenCalledTimes(1);
+    expect(querySpy.mock.calls.at(-1)?.[0]).toContain("`Text` LIKE '%Hello%'");
+  });
+
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
     const { navigateSpy, page, querySpy } = setup();
 
@@ -138,5 +151,21 @@ describe(`${SelectPageTextComponent.name} integration tests`, () => {
     // TODO: check this
     // Note: this is different than in other editors
     // expect(page.topBar.innerText).toContain(`Editing: page_text (${results[0].ID})`);
+  });
+
+  it('clicking a result row should call handlerService.select with (false, id, name)', () => {
+    const { page, querySpy } = setup();
+    const handlerService = TestBed.inject(PageTextHandlerService);
+    const selectSpy = vi.spyOn(handlerService, 'select').mockImplementation(() => undefined);
+
+    const results = [{ ID: 1, Text: 'Hello' }];
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of(results));
+
+    page.clickElement(page.searchBtn);
+    page.clickElement(page.getDatatableCell(0, 0));
+
+    expect(selectSpy).toHaveBeenCalledTimes(1);
+    expect(selectSpy).toHaveBeenCalledWith(false, '1', 'Hello');
   });
 });

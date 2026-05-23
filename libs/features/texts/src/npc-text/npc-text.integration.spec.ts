@@ -7,7 +7,7 @@ import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-uti
 import { NpcText } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import { NpcTextComponent } from './npc-text.component';
 import { NpcTextHandlerService } from './npc-text-handler.service';
@@ -290,6 +290,28 @@ describe('NpcText integration tests', () => {
           "52, 53, 54, 55, '56', '57', 58, 59, 60, 61, 62, 63, 64, 65, 66, '67', '68', 69, 70, 71, 72, 73, 74, 75, 76, 77, " +
           "'78', '79', 80, 81, 82, 83, 84, 85, 86, 87, 88, 90);",
       );
+      page.removeNativeElement();
+    });
+
+    it('schema sweep: every editable field across all 8 groups flows into the diff query', async () => {
+      const { page } = setup(false);
+      const written = await page.changeAllFieldsAsync(originalEntity, ['ID', 'VerifiedBuild']);
+
+      for (const field of Object.keys(written)) {
+        page.expectDiffQueryToContain('`' + field + '`');
+      }
+      page.removeNativeElement();
+    });
+
+    it('shows an error toast when the save query fails', async () => {
+      const { page, querySpy } = setup(false);
+      page.setInputValueById('text0_0', 'Shin');
+
+      querySpy.mockReturnValue(throwError(() => new Error('mock SQL failure')));
+      page.clickExecuteQuery();
+      await page.whenReady();
+
+      page.expectErrorToastVisible();
       page.removeNativeElement();
     });
   });

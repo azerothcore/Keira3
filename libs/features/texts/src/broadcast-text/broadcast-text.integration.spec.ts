@@ -2,12 +2,12 @@ import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { MysqlQueryService } from '@keira/shared/db-layer';
+import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { BroadcastText } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import { BroadcastTextComponent } from './broadcast-text.component';
 import { BroadcastTextHandlerService } from './broadcast-text-handler.service';
@@ -159,6 +159,73 @@ describe('BroadcastText integration tests', () => {
           'INSERT INTO `broadcast_text` (`ID`, `LanguageID`, `MaleText`, `FemaleText`, `EmoteID1`, `EmoteID2`, `EmoteID3`, `EmoteDelay1`, `EmoteDelay2`, `EmoteDelay3`, `SoundEntriesId`, `EmotesID`, `Flags`, `VerifiedBuild`) VALUES\n' +
           "(1234, 1, '22', 'Shin', 4, 5, 6, 7, 8, 9, 10, 11, 12, 13);",
       );
+      page.removeNativeElement();
+    });
+
+    it('schema sweep: every editable field flows into the diff query', async () => {
+      const { page } = setup(false);
+      const written = await page.changeAllFieldsAsync(originalEntity, ['VerifiedBuild']);
+
+      for (const field of Object.keys(written)) {
+        page.expectDiffQueryToContain('`' + field + '`');
+      }
+      page.removeNativeElement();
+    });
+
+    it('shows an error toast when the save query fails', async () => {
+      const { page, querySpy } = setup(false);
+      page.setInputValueById('MaleText', 'Shin');
+
+      querySpy.mockReturnValue(throwError(() => new Error('mock SQL failure')));
+      page.clickExecuteQuery();
+      await page.whenReady();
+
+      page.expectErrorToastVisible();
+      page.removeNativeElement();
+    });
+
+    it('changing a value via LanguageSelector (SQLite-backed) should correctly work', async () => {
+      const { page } = setup(false);
+      const sqliteQueryService = TestBed.inject(SqliteQueryService);
+      // original LanguageID is 1, so pick a different id (7) to force a diff
+      vi.spyOn(sqliteQueryService, 'query').mockReturnValue(of([{ id: 7, name: 'Common' }]));
+
+      const result = await page.openSelectorAndPickRow('LanguageID', 0, { clickSearch: true });
+
+      expect(result).toBe('7');
+      page.expectDiffQueryToContain('UPDATE `broadcast_text` SET `LanguageID` = 7 WHERE (`ID` = 1234);');
+      page.removeNativeElement();
+    });
+
+    it('changing a value via SoundEntriesSelector (SQLite-backed) should correctly work', async () => {
+      const { page } = setup(false);
+      const sqliteQueryService = TestBed.inject(SqliteQueryService);
+      vi.spyOn(sqliteQueryService, 'query').mockReturnValue(of([{ id: 42, name: 'Mock Sound' }]));
+
+      const result = await page.openSelectorAndPickRow('SoundEntriesId', 0, { clickSearch: true });
+
+      expect(result).toBe('42');
+      page.expectDiffQueryToContain('UPDATE `broadcast_text` SET `SoundEntriesId` = 42 WHERE (`ID` = 1234);');
+      page.removeNativeElement();
+    });
+
+    it('changing a value via the EMOTE single-value selector should correctly work', async () => {
+      const { page } = setup(false);
+
+      // The four EMOTE single-value selectors share `config.name = 'emote'`, so their button id is
+      // `#emote-selector-btn`. The first one in the template is bound to the `EmotesID` control.
+      // The static EMOTE options have no search bar; row index 1 corresponds to value 1 (ONESHOT_TALK).
+      page.clickElement(page.query<HTMLButtonElement>('#emote-selector-btn'));
+      await page.whenReady();
+      page.expectModalDisplayed();
+
+      page.clickRowOfDatatableInModal(1);
+      await page.whenReady();
+      page.clickModalSelect();
+      await page.whenReady();
+
+      expect(page.getInputById('EmotesID').value).toBe('1');
+      page.expectDiffQueryToContain('UPDATE `broadcast_text` SET `EmotesID` = 1 WHERE (`ID` = 1234);');
       page.removeNativeElement();
     });
   });

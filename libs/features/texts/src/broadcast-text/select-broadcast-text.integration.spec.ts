@@ -114,6 +114,19 @@ describe(`${SelectBroadcastTextComponent.name} integration tests`, () => {
     });
   }
 
+  it('searching by name should generate a LIKE query against the name field', () => {
+    const { broadcast, querySpy } = setup();
+
+    querySpy.mockClear();
+    broadcast.setInputValue(broadcast.query<HTMLInputElement>('#search-male-text'), 'Hello');
+    broadcast.setInputValue(broadcast.searchLimitInput, '50');
+
+    broadcast.clickElement(broadcast.searchBtn);
+
+    expect(querySpy).toHaveBeenCalledTimes(1);
+    expect(querySpy.mock.calls.at(-1)?.[0]).toContain("`MaleText` LIKE '%Hello%'");
+  });
+
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
     const { navigateSpy, broadcast, querySpy } = setup();
 
@@ -138,5 +151,21 @@ describe(`${SelectBroadcastTextComponent.name} integration tests`, () => {
     // TODO: check this
     // Note: this is different than in other editors
     // expect(broadcast.topBar.innerText).toContain(`Editing: broadcast_text (${results[0].ID})`);
+  });
+
+  it('clicking a result row should call handlerService.select with (false, id, name)', () => {
+    const { broadcast, querySpy } = setup();
+    const handlerService = TestBed.inject(BroadcastTextHandlerService);
+    const selectSpy = vi.spyOn(handlerService, 'select').mockImplementation(() => undefined);
+
+    const results = [{ ID: 1, MaleText: 'Hello' }];
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of(results));
+
+    broadcast.clickElement(broadcast.searchBtn);
+    broadcast.clickElement(broadcast.getDatatableCell(0, 0));
+
+    expect(selectSpy).toHaveBeenCalledTimes(1);
+    expect(selectSpy).toHaveBeenCalledWith(false, '1', 'Hello');
   });
 });

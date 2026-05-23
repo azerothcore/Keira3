@@ -53,6 +53,7 @@ describe('SelectConditions integration tests', () => {
 
   function setup() {
     const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate').mockImplementation(() => undefined);
+    const handlerService = TestBed.inject(ConditionsHandlerService);
     const queryService = TestBed.inject(MysqlQueryService);
     const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([{ max: 1 }]));
 
@@ -61,13 +62,31 @@ describe('SelectConditions integration tests', () => {
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
 
-    return { fixture, page, querySpy, navigateSpy };
+    return { fixture, page, querySpy, navigateSpy, handlerService };
   }
 
   it('should correctly initialise', async () => {
     const { fixture, page } = setup();
     await fixture.whenStable();
     expect(page.queryWrapper.innerText).toContain('SELECT * FROM `conditions` LIMIT 50');
+  });
+
+  it('clearing the limit input drops the LIMIT clause entirely', () => {
+    const { page, querySpy } = setup();
+    // default query carries LIMIT 50
+    expect(page.queryWrapper.innerText).toContain('SELECT * FROM `conditions` LIMIT 50');
+
+    querySpy.mockClear();
+    page.setInputValue(page.searchLimitInput, '');
+
+    const expectedQuery = 'SELECT * FROM `conditions`';
+    expect(page.queryWrapper.innerText).toContain(expectedQuery);
+    expect(page.queryWrapper.innerText).not.toContain('LIMIT');
+
+    page.clickElement(page.searchBtn);
+
+    expect(querySpy).toHaveBeenCalledTimes(1);
+    expect(querySpy).toHaveBeenCalledWith(expectedQuery);
   });
 
   for (const { testId, sourceIdorRef, group, entry, limit, expectedQuery } of [
@@ -153,7 +172,8 @@ describe('SelectConditions integration tests', () => {
   }
 
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
-    const { page, querySpy, navigateSpy } = setup();
+    const { page, querySpy, navigateSpy, handlerService } = setup();
+    const selectSpy = vi.spyOn(handlerService, 'select');
     const results = [
       {
         SourceTypeOrReferenceId: 1,
@@ -223,6 +243,22 @@ describe('SelectConditions integration tests', () => {
 
     page.clickElement(page.getDatatableCellExternal(1, 1));
 
+    expect(selectSpy).toHaveBeenCalledTimes(1);
+    expect(selectSpy).toHaveBeenCalledWith(
+      false,
+      expect.objectContaining({
+        SourceTypeOrReferenceId: results[1].SourceTypeOrReferenceId,
+        SourceGroup: results[1].SourceGroup,
+        SourceEntry: results[1].SourceEntry,
+        SourceId: results[1].SourceId,
+        ElseGroup: results[1].ElseGroup,
+        ConditionTypeOrReference: results[1].ConditionTypeOrReference,
+        ConditionTarget: results[1].ConditionTarget,
+        ConditionValue1: results[1].ConditionValue1,
+        ConditionValue2: results[1].ConditionValue2,
+        ConditionValue3: results[1].ConditionValue3,
+      }),
+    );
     expect(navigateSpy).toHaveBeenCalledTimes(1);
     expect(navigateSpy).toHaveBeenCalledWith(['conditions/conditions']);
   });

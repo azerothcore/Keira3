@@ -164,4 +164,59 @@ describe('SelectItem integration tests', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['item/item-template']);
     page.expectTopBarEditing(results[1].entry as number, results[1].name as string);
   });
+
+  it('searching by id should issue a WHERE clause on the entry column', () => {
+    const { page, querySpy } = setup();
+    querySpy.mockClear();
+
+    page.setInputValue(page.searchIdInput, 1200);
+    page.clickElement(page.searchBtn);
+
+    expect(querySpy).toHaveBeenCalledTimes(1);
+    const sql = querySpy.mock.calls.at(-1)?.[0] as string;
+    expect(sql).toContain('WHERE');
+    expect(sql).toContain('`entry`');
+  });
+
+  it('searching by name should issue a LIKE clause on the name field', () => {
+    const { page, querySpy } = setup();
+    querySpy.mockClear();
+
+    page.setInputValue(page.searchNameInput, 'Some Item');
+    page.clickElement(page.searchBtn);
+
+    expect(querySpy).toHaveBeenCalledTimes(1);
+    const sql = querySpy.mock.calls.at(-1)?.[0] as string;
+    expect(sql).toContain('`name` LIKE');
+  });
+
+  // NOTE: a "search by ScriptName" test is intentionally omitted: ITEM_TEMPLATE_SEARCH_FIELDS
+  // is [entry, name] only, so select-item renders no ScriptName search input (see §4.B.1 step 3).
+
+  it('the custom starting id filter is reflected in the free-id lookup query', async () => {
+    const { fixture, page, component, querySpy } = setup();
+    await fixture.whenStable();
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of([]));
+
+    // the create component checks the configured customStartingId against the entry column
+    page.setInputValue(page.createInput, component.customStartingId);
+
+    expect(querySpy).toHaveBeenCalledTimes(1);
+    expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`item_template\` WHERE (entry = ${component.customStartingId})`);
+  });
+
+  it('clicking a result row delegates to handlerService.select with (false, id, name)', () => {
+    const { page, querySpy } = setup();
+    const selectSpy = vi.spyOn(TestBed.inject(ItemHandlerService), 'select').mockImplementation(() => undefined);
+    const results: Partial<ItemTemplate>[] = [{ entry: 7, name: 'Picked Item', Quality: 3 } as Partial<ItemTemplate>];
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of(results as any));
+
+    page.clickElement(page.searchBtn);
+    page.clickElement(page.getDatatableCellExternal(0, 1));
+
+    expect(selectSpy).toHaveBeenCalledTimes(1);
+    expect(selectSpy).toHaveBeenCalledWith(false, '7', 'Picked Item');
+  });
 });

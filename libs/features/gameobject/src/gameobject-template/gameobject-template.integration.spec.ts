@@ -192,5 +192,16 @@ describe('GameobjectTemplate integration tests', () => {
 
       page.expectErrorToastVisible();
     });
+
+    it('renders the 3D model preview and toggles its visibility', () => {
+      const { page } = setup(false);
+      expect(page.query('keira-model-3d-viewer')).toBeTruthy();
+
+      const previewContainer = page.query<HTMLElement>('.preview-container');
+      expect(previewContainer.classList.contains('show-preview')).toBe(true);
+
+      page.clickElement(page.query<HTMLElement>('.toggle-preview-button'));
+      expect(previewContainer.classList.contains('hide-preview')).toBe(true);
+    });
   });
 });

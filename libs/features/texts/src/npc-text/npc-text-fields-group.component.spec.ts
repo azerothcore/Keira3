@@ -1,12 +1,16 @@
+import { vi } from 'vitest';
 import { Component, viewChild, provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FormControl, FormGroup } from '@angular/forms';
 import { NpcText } from '@keira/shared/acore-world-model';
-import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
+import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
+import { SqliteQueryService } from '@keira/shared/db-layer';
+import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModelForm } from '@keira/shared/utils';
-import { BsModalService } from 'ngx-bootstrap/modal';
-import { instance, mock } from 'ts-mockito';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { ToastrModule } from 'ngx-toastr';
+import { of } from 'rxjs';
 import { NpcTextFieldsGroupComponent } from './npc-text-fields-group.component';
 
 describe(NpcTextFieldsGroupComponent.name, () => {
@@ -22,7 +26,7 @@ describe(NpcTextFieldsGroupComponent.name, () => {
     groupId!: GroupIdType;
   }
 
-  class Page extends PageObject<TestHostNpcTextFieldsGroupComponent> {
+  class Page extends EditorPageObject<TestHostNpcTextFieldsGroupComponent> {
     text0(groupId: number) {
       return this.getInputById(`text${groupId}_0`);
     }
@@ -60,11 +64,17 @@ describe(NpcTextFieldsGroupComponent.name, () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [TestHostNpcTextFieldsGroupComponent, NpcTextFieldsGroupComponent, TranslateTestingModule],
+      imports: [
+        ToastrModule.forRoot(),
+        ModalModule.forRoot(),
+        TestHostNpcTextFieldsGroupComponent,
+        NpcTextFieldsGroupComponent,
+        TranslateTestingModule,
+      ],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
-        { provide: BsModalService, useValue: instance(mock(BsModalService)) },
+        { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
       ],
     }).compileComponents();
   });
@@ -249,5 +259,46 @@ describe(NpcTextFieldsGroupComponent.name, () => {
         expect(formGroup.controls[`em${groupId}_5`].value).toEqual(999);
       });
     }
+  });
+
+  describe('selectors (groupId=0 is a representative of the 8× repetition)', () => {
+    it('changing lang0 via the LanguageSelector (SQLite-backed) should correctly work', async () => {
+      const { page, formGroup } = setup({ groupId: 0 });
+      const sqliteQueryService = TestBed.inject(SqliteQueryService);
+      vi.spyOn(sqliteQueryService, 'query').mockReturnValue(of([{ id: 1, name: 'Common' }]));
+
+      // The language-selector button id derives from `config.name = 'LanguageID'`.
+      page.clickElement(page.query<HTMLButtonElement>('#LanguageID-selector-btn'));
+      await page.whenReady();
+      page.expectModalDisplayed();
+
+      page.clickSearchBtn();
+      await page.whenReady();
+      page.clickRowOfDatatableInModal(0);
+      await page.whenReady();
+      page.clickModalSelect();
+      await page.whenReady();
+
+      expect(page.lang(0).value).toBe('1');
+      expect(formGroup.controls['lang0'].value).toEqual(1);
+    });
+
+    it('changing em0_0 via the EMOTE single-value selector should correctly work', async () => {
+      const { page, formGroup } = setup({ groupId: 0 });
+
+      // The six EMOTE selectors share `config.name = 'emote'`; the first button is bound to em0_0.
+      // The static EMOTE options have no search bar; row index 1 corresponds to value 1 (ONESHOT_TALK).
+      page.clickElement(page.query<HTMLButtonElement>('#emote-selector-btn'));
+      await page.whenReady();
+      page.expectModalDisplayed();
+
+      page.clickRowOfDatatableInModal(1);
+      await page.whenReady();
+      page.clickModalSelect();
+      await page.whenReady();
+
+      expect(page.em0(0).value).toBe('1');
+      expect(formGroup.controls['em0_0'].value).toEqual(1);
+    });
   });
 });

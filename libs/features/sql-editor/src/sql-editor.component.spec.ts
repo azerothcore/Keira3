@@ -9,14 +9,15 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ClipboardService } from 'ngx-clipboard';
 import { of, throwError } from 'rxjs';
 import { SqlEditorComponent } from './sql-editor.component';
+import { SqlEditorService } from './sql-editor.service';
 import { By } from '@angular/platform-browser';
 import { CodeEditor } from '@acrodata/code-editor';
 
 export class SqlEditorPage extends PageObject<SqlEditorComponent> {
   readonly DT = 'ngx-datatable';
 
-  get affectedRows(): HTMLTextAreaElement {
-    return this.query<HTMLTextAreaElement>('#affected-rows-box');
+  affectedRows(assert = true): HTMLTextAreaElement {
+    return this.query<HTMLTextAreaElement>('#affected-rows-box', assert);
   }
   get code(): HTMLElement {
     return this.query<HTMLElement>('code-editor');
@@ -29,6 +30,12 @@ export class SqlEditorPage extends PageObject<SqlEditorComponent> {
   }
   get errorElement(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('keira-query-error');
+  }
+  editorTable(assert = true): HTMLElement {
+    return this.query<HTMLElement>('#editor-table', assert);
+  }
+  headerCells(): HTMLElement[] {
+    return this.queryAll<HTMLElement>('#editor-table .datatable-header-cell');
   }
 }
 
@@ -47,9 +54,9 @@ describe('SqlEditorComponent', () => {
 
   const setup = () => {
     const fixture = TestBed.createComponent(SqlEditorComponent);
-    const component = fixture.componentInstance;
     const page = new SqlEditorPage(fixture);
     const mysqlQueryService = TestBed.inject(MysqlQueryService);
+    const service = TestBed.inject(SqlEditorService);
     vi.spyOn(mysqlQueryService, 'query').mockReturnValue(of(mockRows));
 
     const codeEditorDebugElement = fixture.debugElement.query(By.directive(CodeEditor));
@@ -57,15 +64,15 @@ describe('SqlEditorComponent', () => {
 
     fixture.detectChanges();
 
-    return { page, mysqlQueryService, component, codeEditorInstance };
+    return { page, mysqlQueryService, service, codeEditorInstance };
   };
 
   it('should correctly query', () => {
-    const { page, mysqlQueryService } = setup();
+    const { page, mysqlQueryService, service } = setup();
 
     page.clickElement(page.executeBtn);
 
-    // expect(mysqlQueryService.query).toHaveBeenCalledWith(page.code.value);
+    expect(mysqlQueryService.query).toHaveBeenCalledWith(service.code);
     expect(mysqlQueryService.query).toHaveBeenCalledTimes(1);
     expect(page.getDatatableCell(0, 0).innerText).toEqual(mockRows[0].col1);
     expect(page.getDatatableCell(0, 1).innerText).toEqual(mockRows[0].col2);
@@ -73,6 +80,16 @@ describe('SqlEditorComponent', () => {
     expect(page.getDatatableCell(1, 0).innerText).toEqual(mockRows[1].col1);
     expect(page.getDatatableCell(1, 1).innerText).toEqual(mockRows[1].col2);
     expect(page.getDatatableCell(1, 2).innerText).toEqual(mockRows[1].col3);
+    expect(page.affectedRows(false)).toBeFalsy();
+  });
+
+  it('pressing F9 inside the code editor runs the query', () => {
+    const { page, mysqlQueryService } = setup();
+
+    page.code.dispatchEvent(new KeyboardEvent('keydown', { key: 'F9' }));
+    page.detectChanges();
+
+    expect(mysqlQueryService.query).toHaveBeenCalledTimes(1);
   });
 
   it('should allow the user to insert a custom query', () => {
@@ -105,12 +122,12 @@ describe('SqlEditorComponent', () => {
   });
 
   it('should have no colums if the result is an empty set', () => {
-    const { page, mysqlQueryService, component } = setup();
+    const { page, mysqlQueryService } = setup();
     (mysqlQueryService.query as MockInstance).mockReturnValue(of([]));
 
     page.clickElement(page.executeBtn);
 
-    expect(component['columns'].length).toBe(0);
+    expect(page.headerCells().length).toBe(0);
   });
 
   it('should display the affected rows box when necessary', () => {
@@ -121,12 +138,13 @@ describe('SqlEditorComponent', () => {
 
     page.clickElement(page.executeBtn);
 
-    expect(page.affectedRows.innerText).toContain(String(affectedRows));
-    expect(page.affectedRows.innerText).toContain(message);
+    expect(page.affectedRows().innerText).toContain(String(affectedRows));
+    expect(page.affectedRows().innerText).toContain(message);
+    expect(page.editorTable(false)).toBeFalsy();
   });
 
   it('should cut the columns amount when there are too many', () => {
-    const { page, mysqlQueryService, component } = setup();
+    const { page, mysqlQueryService } = setup();
     (mysqlQueryService.query as MockInstance).mockReturnValue(
       of([
         {
@@ -157,7 +175,7 @@ describe('SqlEditorComponent', () => {
 
     page.clickElement(page.executeBtn);
 
-    expect(component['columns'].length).toBe(20);
+    expect(page.headerCells().length).toBe(20);
   });
 
   it('clicking the copy button should copy the query', () => {

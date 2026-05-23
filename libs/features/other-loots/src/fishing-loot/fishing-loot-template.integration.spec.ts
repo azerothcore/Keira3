@@ -8,7 +8,7 @@ import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/
 import { FishingLootTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { FishingLootHandlerService } from './fishing-loot-handler.service';
 import { FishingLootTemplateComponent } from './fishing-loot-template.component';
 import { instance, mock } from 'ts-mockito';
@@ -46,6 +46,7 @@ describe('FishingLootTemplate integration tests', () => {
     const queryService = TestBed.inject(MysqlQueryService);
     const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
     vi.spyOn(queryService, 'queryValue').mockReturnValue(of());
+    vi.spyOn(queryService, 'getItemNameById').mockReturnValue(of('MockItemName').toPromise() as Promise<string>);
 
     vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
@@ -105,9 +106,47 @@ describe('FishingLootTemplate integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(3);
       page.expectDiffQueryToContain(expectedQuery);
 
+      // First in-feature caller of the structured DELETE+INSERT matcher (additive to the exact-string assertion above).
+      page.expectDiffQueryToDeleteInsert(
+        'fishing_loot_template',
+        'Entry',
+        1234,
+        'Item',
+        [0, 1, 2],
+        ['Entry', 'Item', 'Reference', 'Chance', 'QuestRequired', 'LootMode', 'GroupId', 'MinCount', 'MaxCount', 'Comment'],
+        [
+          [1234, 0, 0, 100, 0, 1, 0, 1, 1, ''],
+          [1234, 1, 0, 100, 0, 1, 0, 1, 1, ''],
+          [1234, 2, 0, 100, 0, 1, 0, 1, 1, ''],
+        ],
+      );
+      // First in-feature caller of the structured full-INSERT matcher (additive).
+      page.expectFullQueryToInsert(
+        'fishing_loot_template',
+        ['Entry', 'Item', 'Reference', 'Chance', 'QuestRequired', 'LootMode', 'GroupId', 'MinCount', 'MaxCount', 'Comment'],
+        [
+          [1234, 0, 0, 100, 0, 1, 0, 1, 1, ''],
+          [1234, 1, 0, 100, 0, 1, 0, 1, 1, ''],
+          [1234, 2, 0, 100, 0, 1, 0, 1, 1, ''],
+        ],
+      );
+
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
+    });
+
+    it('schema sweep: every editable field flows into the diff query', async () => {
+      const { page } = setup(true);
+      page.addNewRow();
+      await page.whenReady();
+
+      // Entry is the primary key — excluded; every other LootTemplate field is editable.
+      const written = await page.changeAllFieldsAsync(new FishingLootTemplate(), ['Entry']);
+
+      for (const field of Object.keys(written)) {
+        page.expectDiffQueryToContain('`' + field + '`');
+      }
     });
 
     it('adding a row and changing its values should correctly update the queries', () => {
@@ -300,6 +339,80 @@ describe('FishingLootTemplate integration tests', () => {
       page.setInputValueById('Item', 0);
 
       page.expectUniqueError();
+    });
+
+    it('shows an error toast when the save query fails', async () => {
+      const { page, querySpy } = setup(false);
+      page.clickRowOfDatatable(0);
+      page.setInputValueById('Chance', '5');
+
+      querySpy.mockReturnValue(throwError(() => new Error('mock SQL failure')));
+      page.clickExecuteQuery();
+      await page.whenReady();
+
+      page.expectErrorToastVisible();
+    });
+
+    it('opening the Item selector and picking a row populates Item', async () => {
+      const { page, querySpy } = setup(false);
+      page.clickRowOfDatatable(0);
+      await page.whenReady();
+
+      // The Item selector queries the world DB via MysqlQueryService.query.
+      querySpy.mockReturnValue(of([{ entry: 999, name: 'Mock Item' }]));
+
+      const value = await page.openSelectorAndPickRow('Item', 0, { clickSearch: true });
+
+      expect(value).toBe('999');
+      page.expectDiffQueryToContain('`Item`');
+      page.removeNativeElement();
+    });
+
+    it('opening the LootMode flags selector and toggling bits updates LootMode', async () => {
+      const { page } = setup(false);
+      page.clickRowOfDatatable(0);
+      await page.whenReady();
+
+      // LootMode default is 1 (bit 0); toggling bit 1 (value 2) ORs in 2 -> 3.
+      const value = await page.openFlagsAndToggle('LootMode', [1]);
+
+      expect(value).toBe(3);
+      page.expectDiffQueryToContain('`LootMode`');
+      page.removeNativeElement();
+    });
+
+    describe('Item icon and selector button visibility based on Reference field', () => {
+      it('should display keira-item-selector-btn when Reference is 0', () => {
+        const { page } = setup(false);
+        page.clickRowOfDatatable(0);
+        page.detectChanges();
+
+        expect(page.query('keira-item-selector-btn', false)).toBeTruthy();
+        expect(page.queryAll('keira-icon').length).toBeGreaterThan(0);
+      });
+
+      it('should hide keira-item-selector-btn when Reference is not 0', () => {
+        const { page } = setup(false);
+        page.addNewRow();
+        page.setInputValueById('Reference', '5');
+        page.detectChanges();
+
+        expect(page.query('keira-item-selector-btn', false)).toBeFalsy();
+      });
+
+      it('should hide the per-row icon when Reference changes from 0 to non-zero', () => {
+        const { page } = setup(false);
+        page.clickRowOfDatatable(0);
+        page.detectChanges();
+
+        const initialIconCount = page.queryAll('keira-icon').length;
+        expect(initialIconCount).toBeGreaterThan(0);
+
+        page.setInputValueById('Reference', '10');
+        page.detectChanges();
+
+        expect(page.queryAll('keira-icon').length).toBeLessThan(initialIconCount);
+      });
     });
   });
 });

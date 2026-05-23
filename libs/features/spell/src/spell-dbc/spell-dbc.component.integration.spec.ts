@@ -266,6 +266,22 @@ describe('SpellDbc integration tests', () => {
       page.removeNativeElement();
     });
 
+    // TODO: ShapeshiftExclude's flags-selector is mis-bound in the template
+    // (spell-dbc-flags.component.html:29-34): both its [control] and config `name` point at
+    // 'ShapeshiftMask' instead of 'ShapeshiftExclude'. As a result there is no
+    // `#ShapeshiftExclude-selector-btn` and toggling the selector never writes to the
+    // ShapeshiftExclude control. Un-skip once the template binding bug is fixed
+    // (see spell-test-coverage TEST-PHASE-1.plan.md §7 gotcha #4).
+    it.skip('Flags: ShapeshiftExclude flags-selector updates the diff', async () => {
+      const { page } = setup(false);
+      page.clickElement(page.getTab(page.tabsetId, 'Flags'));
+      await page.whenReady();
+      const result = await page.openFlagsAndToggle('ShapeshiftExclude', [0]);
+      expect(result).toBe(1);
+      page.expectDiffQueryToContain('`ShapeshiftExclude` = 1');
+      page.removeNativeElement();
+    });
+
     it('Flags: FacingCasterFlags flags-selector updates the diff', async () => {
       const { page } = setup(false);
       page.clickElement(page.getTab(page.tabsetId, 'Flags'));

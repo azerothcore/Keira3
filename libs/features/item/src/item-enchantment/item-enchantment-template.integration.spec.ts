@@ -8,7 +8,7 @@ import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/
 import { ItemEnchantmentTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { ItemHandlerService } from '../item-handler.service';
 import { ItemEnchantmentTemplateComponent } from './item-enchantment-template.component';
 
@@ -256,6 +256,32 @@ describe('ItemEnchantmentTemplate integration tests', () => {
       page.setInputValueById('ench', 0);
 
       page.expectUniqueError();
+    });
+
+    it('schema sweep: every editable field flows into the diff query', async () => {
+      const { page } = setup(false);
+      page.clickRowOfDatatable(0);
+      // give the secondary key (ench) a value that does not collide with the other rows,
+      // otherwise the unique-key guard suppresses the diff query.
+      page.setInputValueById('ench', 999);
+      const written = await page.changeAllFieldsAsync(new ItemEnchantmentTemplate(), ['entry', 'ench']);
+
+      page.expectDiffQueryToContain('`ench`');
+      for (const field of Object.keys(written)) {
+        page.expectDiffQueryToContain('`' + field + '`');
+      }
+    });
+
+    it('shows an error toast when the save query fails', async () => {
+      const { querySpy, page } = setup(false);
+      page.clickRowOfDatatable(0);
+      page.setInputValueById('chance', 50);
+
+      querySpy.mockReturnValue(throwError(() => new Error('mock SQL failure')));
+      page.clickExecuteQuery();
+      await page.whenReady();
+
+      page.expectErrorToastVisible();
     });
   });
 });
