@@ -1,4 +1,4 @@
-import { vi, type MockInstance } from 'vitest';
+import { vi } from 'vitest';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
@@ -12,7 +12,7 @@ import { Model3DViewerService } from '@keira/shared/model-3d-viewer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { CreatureQueststarterComponent } from './creature-queststarter.component';
@@ -170,7 +170,10 @@ describe('CreatureQueststarter integration tests', () => {
       page.removeNativeElement();
     });
 
-    // TODO: fix this test, broken after OnPush (probably needs await whenStable())
+    // TODO: zoneless CD does not propagate form mutations to the QuestPreview pane during tests.
+    // The preview pane reads from QuestPreviewService state rather than an input binding, so the
+    // OnPush component never sees a tick. Re-enable once a tick-helper exists for cross-component
+    // service-driven re-renders.
     it.skip('changing a property should be reflected in the quest preview', () => {
       const { page } = setup(true);
       const value = 1234;
@@ -286,27 +289,14 @@ describe('CreatureQueststarter integration tests', () => {
       page.removeNativeElement();
     });
 
-    it.skip('changing a value via CreatureSelector should correctly work', async () => {
-      const { page, fixture } = setup(false);
-      const field = 'id';
-      const mysqlQueryService = TestBed.inject(MysqlQueryService);
-      (mysqlQueryService.query as MockInstance).mockReturnValue(of([{ entry: 123, name: 'Mock Creature' }]));
+    it('changing a value via CreatureSelector should correctly work', async () => {
+      const { page, querySpy } = setup(false);
+      querySpy.mockReturnValue(of([{ entry: 123, name: 'Mock Creature' }]));
 
-      // because this is a multi-row editor
       page.clickRowOfDatatable(0);
       await page.whenReady();
 
-      page.clickElement(page.getSelectorBtn(field));
-      await page.whenReady();
-      page.expectModalDisplayed();
-
-      page.clickSearchBtn();
-
-      await fixture.whenStable();
-      page.clickRowOfDatatableInModal(0);
-      await page.whenReady();
-      page.clickModalSelect();
-      await page.whenReady();
+      await page.openSelectorAndPickRow('id', 0, { clickSearch: true });
 
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_queststarter` WHERE (`quest` = 1234) AND (`id` IN (0, 123));\n' +
@@ -321,6 +311,26 @@ describe('CreatureQueststarter integration tests', () => {
           '(2, 1234);',
       );
       page.removeNativeElement();
+    });
+
+    it('schema sweep: every editable field flows into the diff query', () => {
+      const { page } = setup(false);
+      page.clickRowOfDatatable(0);
+      // The only editable column per row is `id`; pick a value that doesn't collide with siblings.
+      page.setInputValueById('id', 999);
+      page.expectDiffQueryToContain('`id`');
+    });
+
+    it('shows an error toast when the save query fails', async () => {
+      const { querySpy, page } = setup(false);
+      page.clickRowOfDatatable(0);
+      page.setInputValueById('id', 555);
+
+      querySpy.mockReturnValue(throwError(() => new Error('mock SQL failure')));
+      page.clickExecuteQuery();
+      await page.whenReady();
+
+      page.expectErrorToastVisible();
     });
   });
 });

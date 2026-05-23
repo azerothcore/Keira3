@@ -11,7 +11,7 @@ import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-uti
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { tickAsync } from 'ngx-page-object-model';
 import { ToastrModule } from 'ngx-toastr';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { QuestOfferRewardComponent } from './quest-offer-reward.component';
@@ -125,6 +125,7 @@ describe('QuestOfferReward integration tests', () => {
 
       page.setInputValueById('RewardText', value);
       await tickAsync();
+      page.detectChanges();
 
       expect(page.completionText.innerText).toContain(value);
       page.removeNativeElement();
@@ -183,21 +184,13 @@ describe('QuestOfferReward integration tests', () => {
       page.removeNativeElement();
     });
 
-    it.skip('changing a value via SingleValueSelector should correctly work', async () => {
+    it('changing a value via SingleValueSelector should correctly work', async () => {
       const { page } = setup(false);
       const field = 'Emote1';
-      page.clickElement(page.getSelectorBtn(field));
 
-      await page.whenReady();
-      page.expectModalDisplayed();
+      const value = await page.openSelectorAndPickRow(field, 4);
 
-      page.clickRowOfDatatableInModal(4);
-
-      await page.whenReady();
-      page.clickModalSelect();
-      await page.whenReady();
-
-      expect(page.getInputById(field).value).toEqual('4');
+      expect(value).toEqual('4');
       page.expectDiffQueryToContain('UPDATE `quest_offer_reward` SET `Emote1` = 4 WHERE (`ID` = 1234);');
       page.expectFullQueryToContain(
         'DELETE FROM `quest_offer_reward` WHERE (`ID` = 1234);\n' +
@@ -206,6 +199,26 @@ describe('QuestOfferReward integration tests', () => {
           "(1234, 4, 3, 4, 5, 6, 7, 8, 9, '10', 0);",
       );
       page.removeNativeElement();
+    });
+
+    it('schema sweep: every editable field flows into the diff query', async () => {
+      const { page } = setup(false);
+      const written = await page.changeAllFieldsAsync(new QuestOfferReward(), ['VerifiedBuild']);
+
+      for (const field of Object.keys(written)) {
+        page.expectDiffQueryToContain('`' + field + '`');
+      }
+    });
+
+    it('shows an error toast when the save query fails', async () => {
+      const { querySpy, page } = setup(false);
+      page.setInputValueById('RewardText', 'Shin');
+
+      querySpy.mockReturnValue(throwError(() => new Error('mock SQL failure')));
+      page.clickExecuteQuery();
+      await page.whenReady();
+
+      page.expectErrorToastVisible();
     });
   });
 });

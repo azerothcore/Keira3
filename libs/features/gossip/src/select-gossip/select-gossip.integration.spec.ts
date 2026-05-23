@@ -131,6 +131,8 @@ describe('SelectGossip integration tests', () => {
 
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
     const { navigateSpy, page, querySpy } = setup();
+    const handlerService = TestBed.inject(GossipHandlerService);
+    const selectSpy = vi.spyOn(handlerService, 'select');
     const results: GossipMenu[] = [
       { MenuID: 1, TextID: 1 },
       { MenuID: 1, TextID: 2 },
@@ -153,6 +155,7 @@ describe('SelectGossip integration tests', () => {
 
     expect(navigateSpy).toHaveBeenCalledTimes(1);
     expect(navigateSpy).toHaveBeenCalledWith(['gossip/gossip-menu']);
+    expect(selectSpy).toHaveBeenCalledWith(false, `${results[1].MenuID}`, 'gossip_menu');
     // Note: this is different than in other editors
     expect(page.topBar.innerText).toContain(`Editing: gossip_menu (${results[1].MenuID})`);
   });

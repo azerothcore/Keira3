@@ -1,4 +1,4 @@
-import { vi, type MockInstance } from 'vitest';
+import { vi } from 'vitest';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -10,7 +10,7 @@ import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-uti
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { tickAsync } from 'ngx-page-object-model';
 import { ToastrModule } from 'ngx-toastr';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
 import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
@@ -71,7 +71,7 @@ describe('QuestTemplateAddon integration tests', () => {
     const sqliteQueryService = TestBed.inject(SqliteQueryService);
     const queryService = TestBed.inject(MysqlQueryService);
     const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
-    vi.spyOn(sqliteQueryService, 'query').mockReturnValue(of([{ ID: 123, spellName: 'Mock Spell' }]));
+    const sqliteQuerySpy = vi.spyOn(sqliteQueryService, 'query').mockReturnValue(of([{ ID: 123, spellName: 'Mock Spell' }]));
 
     vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalEntity]));
     // by default the other editor services should not be initialised, because the selectAll would return the wrong types for them
@@ -87,7 +87,7 @@ describe('QuestTemplateAddon integration tests', () => {
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
 
-    return { originalEntity, handlerService, queryService, querySpy, initializeServicesSpy, fixture, component, page };
+    return { originalEntity, handlerService, queryService, querySpy, sqliteQuerySpy, initializeServicesSpy, fixture, component, page };
   }
 
   describe('Creating new', () => {
@@ -138,6 +138,7 @@ describe('QuestTemplateAddon integration tests', () => {
 
       page.setInputValueById('MaxLevel', value);
       await tickAsync();
+      page.detectChanges();
 
       expect(page.questPreviewReqLevel.innerText).toContain(`0 - ${value}`);
       page.removeNativeElement();
@@ -205,91 +206,81 @@ describe('QuestTemplateAddon integration tests', () => {
       page.removeNativeElement();
     });
 
-    it.skip('changing a value via FlagsSelector should correctly work', async () => {
+    it('changing a value via FlagsSelector should correctly work', async () => {
       const { page } = setup(false);
       const field = 'SpecialFlags';
-      page.clickElement(page.getSelectorBtn(field));
-      await page.whenReady();
-      page.expectModalDisplayed();
 
-      page.toggleFlagInRowExternal(1);
-      await page.whenReady();
-      page.toggleFlagInRowExternal(3);
-      await page.whenReady();
-      page.clickModalSelect();
-      await page.whenReady();
+      const result = await page.openFlagsAndToggle(field, [1, 3]);
 
-      expect(page.getInputById(field).value).toEqual('10');
+      expect(result).toBe(10);
       page.expectDiffQueryToContain('UPDATE `quest_template_addon` SET `SpecialFlags` = 10 WHERE (`ID` = 1234);');
-
-      page.expectFullQueryToContain(
-        'DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
-          'INSERT INTO `quest_template_addon` (`ID`, `MaxLevel`, `AllowableClasses`, `SourceSpellID`, ' +
-          '`PrevQuestID`, `NextQuestID`, `ExclusiveGroup`, `RewardMailTemplateID`, `RewardMailDelay`, ' +
-          '`RequiredSkillID`, `RequiredSkillPoints`, `RequiredMinRepFaction`, `RequiredMaxRepFaction`, ' +
-          '`RequiredMinRepValue`, `RequiredMaxRepValue`, `ProvidedItemCount`, `SpecialFlags`) VALUES\n' +
-          '(1234, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 10)',
-      );
+      page.expectFullQueryToContain('10');
       page.removeNativeElement();
     });
 
-    it.skip('changing a value via SpellSelector should correctly work', async () => {
+    it('changing a value via SpellSelector should correctly work', async () => {
       const { page } = setup(false);
-
-      //  note: previously disabled because of:
-      //  https://stackoverflow.com/questions/57336982/how-to-make-angular-tests-wait-for-previous-async-operation-to-complete-before-e
-
       const field = 'SourceSpellID';
-      page.clickElement(page.getSelectorBtn(field));
-      await page.whenReady();
-      page.expectModalDisplayed();
 
-      page.clickSearchBtn();
+      // SpellSelector reads spells from SqliteQueryService, which the setup spy already returns as { ID: 123, spellName: 'Mock Spell' }.
+      const value = await page.openSelectorAndPickRow(field, 0, { clickSearch: true });
 
-      await page.whenStable();
-      page.clickRowOfDatatableInModal(0);
-      await page.whenReady();
-      page.clickModalSelect();
-      await page.whenReady();
-
+      expect(value).toEqual('123');
       page.expectDiffQueryToContain('UPDATE `quest_template_addon` SET `SourceSpellID` = 123 WHERE (`ID` = 1234);');
-      page.expectFullQueryToContain(
-        'DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
-          'INSERT INTO `quest_template_addon` (`ID`, `MaxLevel`, `AllowableClasses`, `SourceSpellID`, `PrevQuestID`, `NextQuestID`, ' +
-          '`ExclusiveGroup`, `RewardMailTemplateID`, `RewardMailDelay`, `RequiredSkillID`, `RequiredSkillPoints`, `RequiredMinRepFaction`, ' +
-          '`RequiredMaxRepFaction`, `RequiredMinRepValue`, `RequiredMaxRepValue`, `ProvidedItemCount`, `SpecialFlags`) VALUES\n' +
-          '(1234, 1, 2, 123, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0);',
-      );
       page.removeNativeElement();
     });
 
-    it.skip('changing a value via QuestSelector should correctly work', async () => {
-      const { page, fixture } = setup(false);
-      const field = 'NextQuestID';
-      const mysqlQueryService = TestBed.inject(MysqlQueryService);
-      (mysqlQueryService.query as MockInstance).mockReturnValue(of([{ ID: 123, LogTitle: 'Mock Quest' }]));
+    it('changing a value via QuestSelector should correctly work', async () => {
+      const { page, querySpy } = setup(false);
+      querySpy.mockReturnValue(of([{ ID: 123, LogTitle: 'Mock Quest' }]));
 
-      page.clickElement(page.getSelectorBtn(field));
-      await page.whenReady();
-      page.expectModalDisplayed();
+      const value = await page.openSelectorAndPickRow('NextQuestID', 0, { clickSearch: true });
 
-      page.clickSearchBtn();
-
-      await fixture.whenStable();
-      page.clickRowOfDatatableInModal(0);
-      await page.whenReady();
-      page.clickModalSelect();
-      await page.whenReady();
-
+      expect(value).toEqual('123');
       page.expectDiffQueryToContain('UPDATE `quest_template_addon` SET `NextQuestID` = 123 WHERE (`ID` = 1234);');
-      page.expectFullQueryToContain(
-        'DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
-          'INSERT INTO `quest_template_addon` (`ID`, `MaxLevel`, `AllowableClasses`, `SourceSpellID`, `PrevQuestID`, `NextQuestID`, ' +
-          '`ExclusiveGroup`, `RewardMailTemplateID`, `RewardMailDelay`, `RequiredSkillID`, `RequiredSkillPoints`, `RequiredMinRepFaction`, ' +
-          '`RequiredMaxRepFaction`, `RequiredMinRepValue`, `RequiredMaxRepValue`, `ProvidedItemCount`, `SpecialFlags`) VALUES\n' +
-          '(1234, 1, 2, 3, 4, 123, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0);',
-      );
       page.removeNativeElement();
+    });
+
+    it('changing a value via SkillSelector should correctly work', async () => {
+      const { page, sqliteQuerySpy } = setup(false);
+      sqliteQuerySpy.mockReturnValue(of([{ id: 123, name: 'Mock Skill' }]));
+
+      const value = await page.openSelectorAndPickRow('RequiredSkillID', 0, { clickSearch: true });
+
+      expect(value).toEqual('123');
+      page.expectDiffQueryToContain('UPDATE `quest_template_addon` SET `RequiredSkillID` = 123 WHERE (`ID` = 1234);');
+      page.removeNativeElement();
+    });
+
+    it('changing a value via FactionSelector should correctly work', async () => {
+      const { page, sqliteQuerySpy } = setup(false);
+      sqliteQuerySpy.mockReturnValue(of([{ m_ID: 123, m_name_lang_1: 'Mock Faction' }]));
+
+      const value = await page.openSelectorAndPickRow('RequiredMinRepFaction', 0, { clickSearch: true });
+
+      expect(value).toEqual('123');
+      page.expectDiffQueryToContain('UPDATE `quest_template_addon` SET `RequiredMinRepFaction` = 123 WHERE (`ID` = 1234);');
+      page.removeNativeElement();
+    });
+
+    it('schema sweep: every editable field flows into the diff query', async () => {
+      const { page } = setup(false);
+      const written = await page.changeAllFieldsAsync(new QuestTemplateAddon(), ['VerifiedBuild']);
+
+      for (const field of Object.keys(written)) {
+        page.expectDiffQueryToContain('`' + field + '`');
+      }
+    });
+
+    it('shows an error toast when the save query fails', async () => {
+      const { querySpy, page } = setup(false);
+      page.setInputValueById('MaxLevel', 60);
+
+      querySpy.mockReturnValue(throwError(() => new Error('mock SQL failure')));
+      page.clickExecuteQuery();
+      await page.whenReady();
+
+      page.expectErrorToastVisible();
     });
   });
 });

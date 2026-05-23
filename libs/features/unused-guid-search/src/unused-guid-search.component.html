@@ -56,7 +56,15 @@
 
     @if (results.length) {
       <div class="alert alert-success">{{ 'UNUSED_GUID_SEARCH.FOUND_GUIDS' | translate }}</div>
-      <textarea id="results" class="mb-1" [value]="results.join(', ')" rows="6" spellcheck="false" readonly></textarea>
+      <textarea
+        data-testid="results-textarea"
+        id="results"
+        class="mb-1"
+        [value]="results.join(', ')"
+        rows="6"
+        spellcheck="false"
+        readonly
+      ></textarea>
     }
   </div>
 </div>

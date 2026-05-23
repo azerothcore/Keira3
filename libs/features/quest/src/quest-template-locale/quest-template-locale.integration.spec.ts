@@ -9,7 +9,7 @@ import { Model3DViewerService } from '@keira/shared/model-3d-viewer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { QuestTemplateLocaleComponent } from './quest-template-locale.component';
@@ -197,6 +197,52 @@ describe('QuestTemplateLocale integration tests', () => {
           "(1234, 'deDE', '1', '', '', '', '2', '', '', '', '', 0),\n" +
           "(1234, '0', '1', '', '', '', '2', '', '', '', '', 0);",
       );
+    });
+  });
+
+  describe('Editing existing', () => {
+    // HTML ids in this template are kebab-case; entity columns are PascalCase.
+    // Map kept explicit so a regression (added column without matching input, or vice versa) surfaces here.
+    const inputIdToColumn: Record<string, string> = {
+      title: 'Title',
+      details: 'Details',
+      objectives: 'Objectives',
+      'end-text': 'EndText',
+      'completed-text': 'CompletedText',
+      'objective-text-1': 'ObjectiveText1',
+      'objective-text-2': 'ObjectiveText2',
+      'objective-text-3': 'ObjectiveText3',
+      'objective-text-4': 'ObjectiveText4',
+    };
+
+    it('schema sweep: every editable field flows into the diff query', () => {
+      const { page } = setup(false);
+      page.clickRowOfDatatable(0);
+
+      const locale = page.getDebugElementByCss<HTMLSelectElement>('#locale select').nativeElement;
+      page.setInputValue(locale, '0: deDE');
+
+      let i = 1;
+      for (const htmlId of Object.keys(inputIdToColumn)) {
+        page.setInputValueById(htmlId, `v${i++}`);
+      }
+
+      page.expectDiffQueryToContain('`locale`');
+      for (const column of Object.values(inputIdToColumn)) {
+        page.expectDiffQueryToContain('`' + column + '`');
+      }
+    });
+
+    it('shows an error toast when the save query fails', async () => {
+      const { querySpy, page } = setup(false);
+      page.clickRowOfDatatable(0);
+      page.setInputValueById('title', 'Shin');
+
+      querySpy.mockReturnValue(throwError(() => new Error('mock SQL failure')));
+      page.clickExecuteQuery();
+      await page.whenReady();
+
+      page.expectErrorToastVisible();
     });
   });
 });
