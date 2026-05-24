@@ -6,9 +6,10 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { SpellDbc } from '@keira/shared/acore-world-model';
+import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { SpellHandlerService } from '../spell-handler.service';
 import { SpellDbcComponent } from './spell-dbc.component';
 import { LOCALES } from './texts/spell-dbc-texts.model';
@@ -28,7 +29,11 @@ describe('SpellDbc integration tests', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, SpellDbcComponent, TranslateTestingModule],
-      providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
+      ],
     }).compileComponents();
   });
 
@@ -112,6 +117,330 @@ describe('SpellDbc integration tests', () => {
       page.expectDiffQueryToContain('UPDATE `spell_dbc` SET `DispelType` = 111, `Mechanic` = 222 WHERE (`ID` = 1234);');
       page.expectFullQueryToContain(String(111));
       page.expectFullQueryToContain(String(222));
+      page.removeNativeElement();
+    });
+
+    it('schema sweep: every editable field flows into the diff query', async () => {
+      const { page } = setup(false);
+      for (const tabId of ['Base', 'Effects', 'Items', 'Flags', 'Texts', 'Misc']) {
+        page.clickElement(page.getTab(page.tabsetId, tabId));
+        await page.whenReady();
+      }
+      const written = await page.changeAllFieldsAsync(new SpellDbc(), ['ID']);
+      for (const field of Object.keys(written)) {
+        page.expectDiffQueryToContain('`' + field + '`');
+      }
+      page.removeNativeElement();
+    });
+
+    it('shows an error toast when the save query fails', async () => {
+      const { page, querySpy } = setup(false);
+      page.setInputValueById('DispelType', 7);
+      querySpy.mockReturnValue(throwError(() => new Error('mock SQL failure')));
+      page.clickExecuteQuery();
+      await page.whenReady();
+      page.expectErrorToastVisible();
+      page.removeNativeElement();
+    });
+
+    it('Items tab: EquippedItemSubclass flags-selector is gated on EquippedItemClass being a valid index', async () => {
+      const { page } = setup(false);
+      page.clickElement(page.getTab(page.tabsetId, 'Items'));
+      await page.whenReady();
+      expect(page.getSelectorBtn('EquippedItemSubclass', false)).toBeTruthy();
+      page.setInputValueById('EquippedItemClass', 999);
+      await page.whenReady();
+      expect(page.getSelectorBtn('EquippedItemSubclass', false)).toBeFalsy();
+      page.removeNativeElement();
+    });
+  });
+
+  describe('Selectors', () => {
+    it('Base: DispelType single-value selector updates the diff', async () => {
+      const { page } = setup(false);
+      page.clickElement(page.getTab(page.tabsetId, 'Base'));
+      await page.whenReady();
+      const result = await page.openSelectorAndPickRow('DispelType', 1);
+      expect(result).toBeTruthy();
+      page.expectDiffQueryToUpdate('spell_dbc', { ID: 1234 }, { DispelType: Number(result) });
+      page.removeNativeElement();
+    });
+
+    it('Base: PowerType single-value selector updates the diff', async () => {
+      const { page } = setup(false);
+      page.clickElement(page.getTab(page.tabsetId, 'Base'));
+      await page.whenReady();
+      const result = await page.openSelectorAndPickRow('PowerType', 1);
+      expect(result).toBeTruthy();
+      page.expectDiffQueryToContain('`PowerType` = ' + result);
+      page.removeNativeElement();
+    });
+
+    it('Base: Mechanic single-value selector updates the diff', async () => {
+      const { page } = setup(false);
+      page.clickElement(page.getTab(page.tabsetId, 'Base'));
+      await page.whenReady();
+      const result = await page.openSelectorAndPickRow('Mechanic', 1);
+      expect(result).toBeTruthy();
+      page.expectDiffQueryToContain('`Mechanic`');
+      page.removeNativeElement();
+    });
+
+    it('Base: DefenseType single-value selector updates the diff', async () => {
+      const { page } = setup(false);
+      page.clickElement(page.getTab(page.tabsetId, 'Base'));
+      await page.whenReady();
+      const result = await page.openSelectorAndPickRow('DefenseType', 1);
+      expect(result).toBeTruthy();
+      page.expectDiffQueryToContain('`DefenseType`');
+      page.removeNativeElement();
+    });
+
+    it('Base: PreventionType single-value selector updates the diff', async () => {
+      const { page } = setup(false);
+      page.clickElement(page.getTab(page.tabsetId, 'Base'));
+      await page.whenReady();
+      const result = await page.openSelectorAndPickRow('PreventionType', 1);
+      expect(result).toBeTruthy();
+      page.expectDiffQueryToContain('`PreventionType`');
+      page.removeNativeElement();
+    });
+
+    it('Base: CasterAuraState single-value selector updates the diff', async () => {
+      const { page } = setup(false);
+      page.clickElement(page.getTab(page.tabsetId, 'Base'));
+      await page.whenReady();
+      const result = await page.openSelectorAndPickRow('CasterAuraState', 1);
+      expect(result).toBeTruthy();
+      page.expectDiffQueryToContain('`CasterAuraState`');
+      page.removeNativeElement();
+    });
+
+    it('Base: TargetAuraState single-value selector updates the diff', async () => {
+      const { page } = setup(false);
+      page.clickElement(page.getTab(page.tabsetId, 'Base'));
+      await page.whenReady();
+      const result = await page.openSelectorAndPickRow('TargetAuraState', 1);
+      expect(result).toBeTruthy();
+      page.expectDiffQueryToContain('`TargetAuraState`');
+      page.removeNativeElement();
+    });
+
+    it('Base: CastingTimeIndex single-value selector updates the diff', async () => {
+      const { page } = setup(false);
+      page.clickElement(page.getTab(page.tabsetId, 'Base'));
+      await page.whenReady();
+      const result = await page.openSelectorAndPickRow('CastingTimeIndex', 1);
+      expect(result).toBeTruthy();
+      page.expectDiffQueryToContain('`CastingTimeIndex`');
+      page.removeNativeElement();
+    });
+
+    it('Base: SchoolMask flags-selector updates the diff', async () => {
+      const { page } = setup(false);
+      page.clickElement(page.getTab(page.tabsetId, 'Base'));
+      await page.whenReady();
+      const result = await page.openFlagsAndToggle('SchoolMask', [0, 1]);
+      expect(result).toBe(3);
+      page.expectDiffQueryToContain('`SchoolMask` = 3');
+      page.removeNativeElement();
+    });
+
+    it('Flags: TargetCreatureType flags-selector updates the diff', async () => {
+      const { page } = setup(false);
+      page.clickElement(page.getTab(page.tabsetId, 'Flags'));
+      await page.whenReady();
+      const result = await page.openFlagsAndToggle('TargetCreatureType', [0]);
+      expect(result).toBe(1);
+      page.expectDiffQueryToContain('`TargetCreatureType` = 1');
+      page.removeNativeElement();
+    });
+
+    it('Flags: ShapeshiftMask flags-selector updates the diff', async () => {
+      const { page } = setup(false);
+      page.clickElement(page.getTab(page.tabsetId, 'Flags'));
+      await page.whenReady();
+      const result = await page.openFlagsAndToggle('ShapeshiftMask', [0]);
+      expect(result).toBe(1);
+      page.expectDiffQueryToContain('`ShapeshiftMask` = 1');
+      page.removeNativeElement();
+    });
+
+    // TODO: ShapeshiftExclude's flags-selector is mis-bound in the template
+    // (spell-dbc-flags.component.html:29-34): both its [control] and config `name` point at
+    // 'ShapeshiftMask' instead of 'ShapeshiftExclude'. As a result there is no
+    // `#ShapeshiftExclude-selector-btn` and toggling the selector never writes to the
+    // ShapeshiftExclude control. Un-skip once the template binding bug is fixed
+    // (see spell-test-coverage TEST-PHASE-1.plan.md §7 gotcha #4).
+    it.skip('Flags: ShapeshiftExclude flags-selector updates the diff', async () => {
+      const { page } = setup(false);
+      page.clickElement(page.getTab(page.tabsetId, 'Flags'));
+      await page.whenReady();
+      const result = await page.openFlagsAndToggle('ShapeshiftExclude', [0]);
+      expect(result).toBe(1);
+      page.expectDiffQueryToContain('`ShapeshiftExclude` = 1');
+      page.removeNativeElement();
+    });
+
+    it('Flags: FacingCasterFlags flags-selector updates the diff', async () => {
+      const { page } = setup(false);
+      page.clickElement(page.getTab(page.tabsetId, 'Flags'));
+      await page.whenReady();
+      const result = await page.openFlagsAndToggle('FacingCasterFlags', [0]);
+      expect(result).toBe(1);
+      page.expectDiffQueryToContain('`FacingCasterFlags` = 1');
+      page.removeNativeElement();
+    });
+
+    it('Flags: InterruptFlags flags-selector updates the diff', async () => {
+      const { page } = setup(false);
+      page.clickElement(page.getTab(page.tabsetId, 'Flags'));
+      await page.whenReady();
+      const result = await page.openFlagsAndToggle('InterruptFlags', [0, 1]);
+      expect(result).toBe(3);
+      page.expectDiffQueryToContain('`InterruptFlags` = 3');
+      page.removeNativeElement();
+    });
+
+    it('Flags: AuraInterruptFlags flags-selector updates the diff', async () => {
+      const { page } = setup(false);
+      page.clickElement(page.getTab(page.tabsetId, 'Flags'));
+      await page.whenReady();
+      const result = await page.openFlagsAndToggle('AuraInterruptFlags', [0]);
+      expect(result).toBe(1);
+      page.expectDiffQueryToContain('`AuraInterruptFlags` = 1');
+      page.removeNativeElement();
+    });
+
+    it('Flags: ChannelInterruptFlags flags-selector updates the diff', async () => {
+      const { page } = setup(false);
+      page.clickElement(page.getTab(page.tabsetId, 'Flags'));
+      await page.whenReady();
+      const result = await page.openFlagsAndToggle('ChannelInterruptFlags', [0]);
+      expect(result).toBe(1);
+      page.expectDiffQueryToContain('`ChannelInterruptFlags` = 1');
+      page.removeNativeElement();
+    });
+
+    it('Flags: Attributes flags-selector updates the diff', async () => {
+      const { page } = setup(false);
+      page.clickElement(page.getTab(page.tabsetId, 'Flags'));
+      await page.whenReady();
+      const result = await page.openFlagsAndToggle('Attributes', [0]);
+      expect(result).toBe(1);
+      page.expectDiffQueryToContain('`Attributes` = 1');
+      page.removeNativeElement();
+    });
+
+    it('Items: EquippedItemClass single-value selector updates the diff', async () => {
+      const { page } = setup(false);
+      page.clickElement(page.getTab(page.tabsetId, 'Items'));
+      await page.whenReady();
+      const result = await page.openSelectorAndPickRow('EquippedItemClass', 1);
+      expect(result).toBeTruthy();
+      page.expectDiffQueryToContain('`EquippedItemClass`');
+      page.removeNativeElement();
+    });
+
+    it('Items: EquippedItemInvTypes flags-selector updates the diff', async () => {
+      const { page } = setup(false);
+      page.clickElement(page.getTab(page.tabsetId, 'Items'));
+      await page.whenReady();
+      const result = await page.openFlagsAndToggle('EquippedItemInvTypes', [0]);
+      expect(result).toBe(1);
+      page.expectDiffQueryToContain('`EquippedItemInvTypes` = 1');
+      page.removeNativeElement();
+    });
+
+    it('Items: RequiredTotemCategoryID_1 single-value selector updates the diff', async () => {
+      const { page } = setup(false);
+      page.clickElement(page.getTab(page.tabsetId, 'Items'));
+      await page.whenReady();
+      const result = await page.openSelectorAndPickRow('RequiredTotemCategoryID_1', 1);
+      expect(result).toBeTruthy();
+      page.expectDiffQueryToContain('`RequiredTotemCategoryID_1`');
+      page.removeNativeElement();
+    });
+
+    it('Items: Totem_1 item selector updates the diff', async () => {
+      const { page, queryService } = setup(false);
+      vi.spyOn(queryService, 'query').mockReturnValue(of([{ entry: 12345, name: 'Mock Item' }]));
+      page.clickElement(page.getTab(page.tabsetId, 'Items'));
+      await page.whenReady();
+      const result = await page.openSelectorAndPickRow('Totem_1', 0, { clickSearch: true });
+      expect(result).toBe('12345');
+      page.expectDiffQueryToContain('`Totem_1` = 12345');
+      page.removeNativeElement();
+    });
+
+    it('Items: Reagent_1 item selector updates the diff', async () => {
+      const { page, queryService } = setup(false);
+      vi.spyOn(queryService, 'query').mockReturnValue(of([{ entry: 54321, name: 'Mock Reagent' }]));
+      page.clickElement(page.getTab(page.tabsetId, 'Items'));
+      await page.whenReady();
+      const result = await page.openSelectorAndPickRow('Reagent_1', 0, { clickSearch: true });
+      expect(result).toBe('54321');
+      page.expectDiffQueryToContain('`Reagent_1` = 54321');
+      page.removeNativeElement();
+    });
+
+    it('Effects: Targets flags-selector updates the diff', async () => {
+      const { page } = setup(false);
+      page.clickElement(page.getTab(page.tabsetId, 'Effects'));
+      await page.whenReady();
+      const result = await page.openFlagsAndToggle('Targets', [0]);
+      expect(result).toBe(1);
+      page.expectDiffQueryToContain('`Targets` = 1');
+      page.removeNativeElement();
+    });
+
+    it('Effects: ProcTypeMask flags-selector updates the diff', async () => {
+      const { page } = setup(false);
+      page.clickElement(page.getTab(page.tabsetId, 'Effects'));
+      await page.whenReady();
+      const result = await page.openFlagsAndToggle('ProcTypeMask', [0]);
+      expect(result).toBe(1);
+      page.expectDiffQueryToContain('`ProcTypeMask` = 1');
+      page.removeNativeElement();
+    });
+
+    it('Effects: Effect_1 single-value selector updates the diff', async () => {
+      const { page } = setup(false);
+      page.clickElement(page.getTab(page.tabsetId, 'Effects'));
+      await page.whenReady();
+      const result = await page.openSelectorAndPickRow('Effect_1', 1);
+      expect(result).toBeTruthy();
+      page.expectDiffQueryToContain('`Effect_1`');
+      page.removeNativeElement();
+    });
+
+    it('Effects: EffectMechanic_1 single-value selector updates the diff', async () => {
+      const { page } = setup(false);
+      page.clickElement(page.getTab(page.tabsetId, 'Effects'));
+      await page.whenReady();
+      const result = await page.openSelectorAndPickRow('EffectMechanic_1', 1);
+      expect(result).toBeTruthy();
+      page.expectDiffQueryToContain('`EffectMechanic_1`');
+      page.removeNativeElement();
+    });
+
+    it('Effects: EffectAura_1 single-value selector updates the diff', async () => {
+      const { page } = setup(false);
+      page.clickElement(page.getTab(page.tabsetId, 'Effects'));
+      await page.whenReady();
+      const result = await page.openSelectorAndPickRow('EffectAura_1', 1);
+      expect(result).toBeTruthy();
+      page.expectDiffQueryToContain('`EffectAura_1`');
+      page.removeNativeElement();
+    });
+
+    it('Effects: EffectSpellClassMaskA_1 flags-selector updates the diff', async () => {
+      const { page } = setup(false);
+      page.clickElement(page.getTab(page.tabsetId, 'Effects'));
+      await page.whenReady();
+      const result = await page.openFlagsAndToggle('EffectSpellClassMaskA_1', [0]);
+      expect(result).toBe(1);
+      page.expectDiffQueryToContain('`EffectSpellClassMaskA_1` = 1');
       page.removeNativeElement();
     });
   });

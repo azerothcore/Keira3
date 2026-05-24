@@ -151,4 +151,21 @@ describe('SelectQuest integration tests', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['quest/quest-template']);
     page.expectTopBarEditing(results[1].ID as number, results[1].LogTitle as string);
   });
+
+  it('clicking a result row delegates to QuestHandlerService.select with (false, ID, name)', () => {
+    const { page, querySpy } = setup();
+    const handlerService = TestBed.inject(QuestHandlerService);
+    const selectSpy = vi.spyOn(handlerService, 'select');
+    const results: Partial<QuestTemplate>[] = [
+      { ID: 42, LogTitle: 'Mock Quest', QuestType: 0, QuestLevel: 1, MinLevel: 10, QuestDescription: '' },
+    ];
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of(results as any));
+
+    page.clickElement(page.searchBtn);
+    page.clickElement(page.getDatatableCellExternal(0, 1));
+
+    expect(selectSpy).toHaveBeenCalledTimes(1);
+    expect(selectSpy).toHaveBeenCalledWith(false, '42', 'Mock Quest');
+  });
 });

@@ -5,6 +5,7 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira/shared/db-layer';
+import { SaiHandlerService } from '@keira/shared/sai-editor';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { SmartScripts } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -117,6 +118,7 @@ describe('SaiSearchExisting integration tests', () => {
 
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
     const { page, querySpy, navigateSpy } = setup();
+    const selectSpy = vi.spyOn(TestBed.inject(SaiHandlerService), 'select');
     const results: Partial<SmartScripts>[] = [
       { entryorguid: 1, source_type: 2 },
       { entryorguid: 2, source_type: 3 },
@@ -139,6 +141,8 @@ describe('SaiSearchExisting integration tests', () => {
 
     page.clickElement(page.getDatatableCellExternal(1, 1));
 
+    expect(selectSpy).toHaveBeenCalledTimes(1);
+    expect(selectSpy).toHaveBeenCalledWith(false, { entryorguid: 2, source_type: 3 });
     expect(navigateSpy).toHaveBeenCalledTimes(1);
     expect(navigateSpy).toHaveBeenCalledWith(['smart-ai/editors']);
   });

@@ -8,7 +8,7 @@ import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/
 import { GossipMenu } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { GossipHandlerService } from '../gossip-handler.service';
 import { GossipMenuComponent } from './gossip-menu.component';
 import { instance, mock } from 'ts-mockito';
@@ -94,6 +94,19 @@ describe('GossipMenu integration tests', () => {
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(3);
       page.expectDiffQueryToContain(expectedQuery);
+      page.expectDiffQueryToDeleteInsert(
+        'gossip_menu',
+        'MenuID',
+        1234,
+        'TextID',
+        [0, 1, 2],
+        ['MenuID', 'TextID'],
+        [
+          [1234, 0],
+          [1234, 1],
+          [1234, 2],
+        ],
+      );
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalled();
@@ -237,6 +250,42 @@ describe('GossipMenu integration tests', () => {
       page.setInputValueById('TextID', 0);
 
       page.expectUniqueError();
+    });
+
+    it('schema sweep: every editable field flows into the diff query', async () => {
+      // Use creating-new mode so the schema sweep doesn't collide with pre-existing rows
+      // (writing TextID = 0 would otherwise duplicate the default `originalRow0` and
+      // invalidate the form, leaving the diff empty).
+      const { page } = setup(true);
+      page.addNewRow();
+      const written = await page.changeAllFieldsAsync(new GossipMenu(), ['MenuID']);
+
+      for (const field of Object.keys(written)) {
+        page.expectDiffQueryToContain('`' + field + '`');
+      }
+    });
+
+    it('shows an error toast when the save query fails', async () => {
+      const { querySpy, page } = setup(false);
+      page.clickRowOfDatatable(1);
+      page.setInputValueById('TextID', 999);
+
+      querySpy.mockReturnValue(throwError(() => new Error('mock SQL failure')));
+      page.clickExecuteQuery();
+      await page.whenReady();
+
+      page.expectErrorToastVisible();
+    });
+
+    it('changing a value via NpcTextSelector should correctly work', async () => {
+      const { page, querySpy } = setup(false);
+      page.clickRowOfDatatable(1);
+      querySpy.mockReturnValue(of([{ ID: 7 }]));
+
+      const result = await page.openSelectorAndPickRow('TextID', 0, { clickSearch: true });
+
+      expect(result).toBe('7');
+      page.expectDiffQueryToContain('`TextID`');
     });
   });
 });

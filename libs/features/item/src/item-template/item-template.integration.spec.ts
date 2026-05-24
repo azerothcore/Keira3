@@ -13,7 +13,7 @@ import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-uti
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { tickAsync } from 'ngx-page-object-model';
 import { ToastrModule } from 'ngx-toastr';
-import { lastValueFrom, of } from 'rxjs';
+import { lastValueFrom, of, throwError } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
 import { ItemHandlerService } from '../item-handler.service';
 import { ItemPreviewService } from './item-preview.service';
@@ -258,119 +258,265 @@ describe('ItemTemplate integration tests', () => {
       page.expectFullQueryToContain('22');
     });
 
-    it.skip('changing a value via FlagsSelector should correctly work', async () => {
+    it('schema sweep: every editable field flows into the diff query', async () => {
+      const { page } = setup(false);
+      await tickAsync();
+      const written = await page.changeAllFieldsAsync(originalEntity, ['VerifiedBuild']);
+
+      for (const field of Object.keys(written)) {
+        page.expectDiffQueryToContain('`' + field + '`');
+      }
+    });
+
+    it('shows an error toast when the save query fails', async () => {
+      const { querySpy, page } = setup(false);
+      await tickAsync();
+      page.setInputValueById('name', 'Shin');
+
+      querySpy.mockReturnValue(throwError(() => new Error('mock SQL failure')));
+      page.clickExecuteQuery();
+      await page.whenReady();
+
+      page.expectErrorToastVisible();
+    });
+
+    it('changing a value via FlagsSelector should correctly work', async () => {
       const { page } = setup(false);
       await tickAsync();
       const field = 'Flags';
-      page.clickElement(page.getSelectorBtn(field));
 
-      await page.whenReady();
-      page.expectModalDisplayed();
+      // existing assertion: bits 2 and 12 produce the bitmask 4100
+      const result = await page.openFlagsAndToggle(field, [2, 12]);
 
-      page.toggleFlagInRowExternal(2);
-      await page.whenReady();
-      page.toggleFlagInRowExternal(12);
-      await page.whenReady();
-      page.clickModalSelect();
-      await page.whenReady();
-
-      expect(page.getInputById(field).value).toEqual('4100');
+      expect(result).toBe(4100);
       page.expectDiffQueryToContain('UPDATE `item_template` SET `Flags` = 4100 WHERE (`entry` = 1234);');
 
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
       page.expectFullQueryToContain('4100');
     });
 
-    it.skip('changing a value via ItemEnchantmentSelector should correctly work', async () => {
-      const { page, fixture } = setup(false);
+    it('changing a value via BagFamily FlagsSelector should correctly work', async () => {
+      const { page } = setup(false);
+      await tickAsync();
+      const field = 'BagFamily';
+
+      const result = await page.openFlagsAndToggle(field, [0, 2]);
+
+      expect(result).toBe(5);
+      page.expectDiffQueryToContain('UPDATE `item_template` SET `BagFamily` = 5 WHERE (`entry` = 1234);');
+    });
+
+    it('changing a value via AllowableClass FlagsSelector (overrideDefaultBehavior) should correctly work', async () => {
+      const { page } = setup(false);
+      await tickAsync();
+      const field = 'AllowableClass';
+
+      const result = await page.openFlagsAndToggle(field, [0]);
+
+      // overrideDefaultBehavior selectors derive their value from the toggled bits
+      page.expectDiffQueryToContain('UPDATE `item_template` SET `AllowableClass` = ' + result + ' WHERE (`entry` = 1234);');
+    });
+
+    it('changing a value via ItemEnchantmentSelector should correctly work', async () => {
+      const { page } = setup(false);
       await tickAsync();
       const field = 'socketBonus';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
       vi.spyOn(sqliteQueryService, 'query').mockReturnValue(of([{ id: 1248, name: 'Mock Enchantment', conditionId: 456 }]));
 
-      page.clickElement(page.getSelectorBtn(field));
-      await page.whenReady();
-      page.expectModalDisplayed();
+      const result = await page.openSelectorAndPickRow(field, 0, { clickSearch: true });
 
-      page.clickSearchBtn();
-      await fixture.whenStable();
-      page.clickRowOfDatatableInModal(0);
-      await page.whenReady();
-      page.clickModalSelect();
-      await page.whenReady();
-
+      expect(result).toEqual('1248');
       page.expectDiffQueryToContain('UPDATE `item_template` SET `socketBonus` = 1248 WHERE (`entry` = 1234);');
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
       page.expectFullQueryToContain('1248');
     });
 
-    it.skip('changing a value via HolidaySelector should correctly work', async () => {
-      const { page, fixture } = setup(false);
+    it('changing a value via HolidaySelector should correctly work', async () => {
+      const { page } = setup(false);
       await tickAsync();
       const field = 'HolidayId';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
       vi.spyOn(sqliteQueryService, 'query').mockReturnValue(of([{ id: 1248, name: 'Mock Holiday' }]));
 
-      page.clickElement(page.getSelectorBtn(field));
-      await page.whenReady();
-      page.expectModalDisplayed();
+      const result = await page.openSelectorAndPickRow(field, 0, { clickSearch: true });
 
-      page.clickSearchBtn();
-      await fixture.whenStable();
-      page.clickRowOfDatatableInModal(0);
-      await page.whenReady();
-      page.clickModalSelect();
-      await page.whenReady();
-
+      expect(result).toEqual('1248');
       page.expectDiffQueryToContain('UPDATE `item_template` SET `HolidayId` = 1248 WHERE (`entry` = 1234);');
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
       page.expectFullQueryToContain('1248');
     });
 
-    it.skip('changing a value via ItemLimitCategorySelector should correctly work', async () => {
-      const { page, fixture } = setup(false);
+    it('changing a value via ItemLimitCategorySelector should correctly work', async () => {
+      const { page } = setup(false);
       await tickAsync();
       const field = 'ItemLimitCategory';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
       vi.spyOn(sqliteQueryService, 'query').mockReturnValue(of([{ id: 1248, name: 'Mock ItemLimitCategory', count: 2, isGem: 1 }]));
 
-      page.clickElement(page.getSelectorBtn(field));
-      await page.whenReady();
-      page.expectModalDisplayed();
+      const result = await page.openSelectorAndPickRow(field, 0, { clickSearch: true });
 
-      page.clickSearchBtn();
-      await fixture.whenStable();
-      page.clickRowOfDatatableInModal(0);
-      await page.whenReady();
-      page.clickModalSelect();
-      await page.whenReady();
-
+      expect(result).toEqual('1248');
       page.expectDiffQueryToContain('UPDATE `item_template` SET `ItemLimitCategory` = 1248 WHERE (`entry` = 1234);');
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
       page.expectFullQueryToContain('1248');
     });
 
-    it.skip('changing a value via LanguageSelector should correctly work', async () => {
-      const { page, fixture } = setup(false);
+    it('changing a value via LanguageSelector should correctly work', async () => {
+      const { page } = setup(false);
       await tickAsync();
       const field = 'LanguageID';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
       vi.spyOn(sqliteQueryService, 'query').mockReturnValue(of([{ id: 1248, name: 'Mock LanguageID' }]));
 
-      page.clickElement(page.getSelectorBtn(field));
-      await page.whenReady();
-      page.expectModalDisplayed();
+      const result = await page.openSelectorAndPickRow(field, 0, { clickSearch: true });
 
-      page.clickSearchBtn();
-      await fixture.whenStable();
-      page.clickRowOfDatatableInModal(0);
-      await page.whenReady();
-      page.clickModalSelect();
-      await page.whenReady();
-
+      expect(result).toEqual('1248');
       page.expectDiffQueryToContain('UPDATE `item_template` SET `LanguageID` = 1248 WHERE (`entry` = 1234);');
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
       page.expectFullQueryToContain('1248');
+    });
+
+    it('changing a value via SkillSelector should correctly work', async () => {
+      const { page } = setup(false);
+      await tickAsync();
+      const field = 'RequiredSkill';
+      const sqliteQueryService = TestBed.inject(SqliteQueryService);
+      vi.spyOn(sqliteQueryService, 'query').mockReturnValue(of([{ id: 1248, name: 'Mock Skill' }]));
+
+      const result = await page.openSelectorAndPickRow(field, 0, { clickSearch: true });
+
+      expect(result).toEqual('1248');
+      page.expectDiffQueryToContain('UPDATE `item_template` SET `RequiredSkill` = 1248 WHERE (`entry` = 1234);');
+    });
+
+    it('changing a value via SpellSelector should correctly work', async () => {
+      const { page } = setup(false);
+      await tickAsync();
+      const field = 'requiredspell';
+      const sqliteQueryService = TestBed.inject(SqliteQueryService);
+      vi.spyOn(sqliteQueryService, 'query').mockReturnValue(of([{ ID: 1248, spellName: 'Mock Spell' }]));
+
+      const result = await page.openSelectorAndPickRow(field, 0, { clickSearch: true });
+
+      expect(result).toEqual('1248');
+      page.expectDiffQueryToContain('UPDATE `item_template` SET `requiredspell` = 1248 WHERE (`entry` = 1234);');
+    });
+
+    it('changing a value via FactionSelector should correctly work', async () => {
+      const { page } = setup(false);
+      await tickAsync();
+      const field = 'RequiredReputationFaction';
+      const sqliteQueryService = TestBed.inject(SqliteQueryService);
+      vi.spyOn(sqliteQueryService, 'query').mockReturnValue(of([{ m_ID: 1248, m_name_lang_1: 'Mock Faction' }]));
+
+      const result = await page.openSelectorAndPickRow(field, 0, { clickSearch: true });
+
+      expect(result).toEqual('1248');
+      page.expectDiffQueryToContain('UPDATE `item_template` SET `RequiredReputationFaction` = 1248 WHERE (`entry` = 1234);');
+    });
+
+    it('changing a value via MapSelector should correctly work', async () => {
+      const { page } = setup(false);
+      await tickAsync();
+      const field = 'Map';
+      const sqliteQueryService = TestBed.inject(SqliteQueryService);
+      vi.spyOn(sqliteQueryService, 'query').mockReturnValue(of([{ m_ID: 1248, m_MapName_lang1: 'Mock Map' }]));
+
+      const result = await page.openSelectorAndPickRow(field, 0, { clickSearch: true });
+
+      expect(result).toEqual('1248');
+      page.expectDiffQueryToContain('UPDATE `item_template` SET `Map` = 1248 WHERE (`entry` = 1234);');
+    });
+
+    it('changing a value via AreaSelector should correctly work', async () => {
+      const { page } = setup(false);
+      await tickAsync();
+      const field = 'area';
+      const sqliteQueryService = TestBed.inject(SqliteQueryService);
+      vi.spyOn(sqliteQueryService, 'query').mockReturnValue(of([{ m_ID: 1248, m_AreaName_lang: 'Mock Area' }]));
+
+      const result = await page.openSelectorAndPickRow(field, 0, { clickSearch: true });
+
+      expect(result).toEqual('1248');
+      page.expectDiffQueryToContain('UPDATE `item_template` SET `area` = 1248 WHERE (`entry` = 1234);');
+    });
+
+    it('changing a value via QuestSelector should correctly work', async () => {
+      const { page, querySpy } = setup(false);
+      await tickAsync();
+      const field = 'startquest';
+      // quest-selector is the only search-backed selector that hits MysqlQueryService
+      querySpy.mockReturnValue(of([{ ID: 1248, LogTitle: 'Mock Quest' }] as any));
+
+      const result = await page.openSelectorAndPickRow(field, 0, { clickSearch: true });
+
+      expect(result).toEqual('1248');
+      page.expectDiffQueryToContain('UPDATE `item_template` SET `startquest` = 1248 WHERE (`entry` = 1234);');
+    });
+
+    it('changing a value via the spellid SpellSelector (loop) should correctly work', async () => {
+      const { page } = setup(false);
+      await tickAsync();
+      const field = 'spellid_1';
+      const sqliteQueryService = TestBed.inject(SqliteQueryService);
+      vi.spyOn(sqliteQueryService, 'query').mockReturnValue(of([{ ID: 1248, spellName: 'Mock Spell' }]));
+
+      const result = await page.openSelectorAndPickRow(field, 0, { clickSearch: true });
+
+      expect(result).toEqual('1248');
+      page.expectDiffQueryToContain('UPDATE `item_template` SET `spellid_1` = 1248 WHERE (`entry` = 1234);');
+    });
+
+    describe('single-value selectors', () => {
+      // single-value selectors render a modal datatable of in-memory options (no search box);
+      // picking a row whose value differs from the field's current value must surface in the diff.
+      // The exact value depends on the option list, so assert via Number(result) (mirrors spell-dbc).
+      // `row` defaults to 1; ITEM_MATERIAL starts at value -1 so its option index 1 equals the
+      // default (0) and produces no diff — pick index 2 there to force a change.
+      for (const { field, column, row } of [
+        { field: 'class', column: 'class', row: 1 },
+        { field: 'Quality', column: 'Quality', row: 1 },
+        { field: 'InventoryType', column: 'InventoryType', row: 1 },
+        { field: 'Material', column: 'Material', row: 2 },
+        { field: 'TotemCategory', column: 'TotemCategory', row: 1 },
+        { field: 'FoodType', column: 'FoodType', row: 1 },
+        { field: 'bonding', column: 'bonding', row: 1 },
+        { field: 'RequiredReputationRank', column: 'RequiredReputationRank', row: 1 },
+        { field: 'sheath', column: 'sheath', row: 1 },
+        { field: 'stat_type1', column: 'stat_type1', row: 1 },
+        { field: 'dmg_type1', column: 'dmg_type1', row: 1 },
+      ]) {
+        it(`changing a value via the ${field} SingleValueSelector should correctly work`, async () => {
+          const { page } = setup(false);
+          await tickAsync();
+
+          const result = await page.openSelectorAndPickRow(field, row);
+
+          expect(result).toBeTruthy();
+          page.expectDiffQueryToContain('UPDATE `item_template` SET `' + column + '` = ' + Number(result) + ' WHERE (`entry` = 1234);');
+        });
+      }
+
+      it('changing a value via the subclass SingleValueSelector should correctly work', async () => {
+        const { page } = setup(false);
+        await tickAsync();
+        // subclass options depend on the current class value; set a valid class first
+        page.setInputValueById('class', 0);
+
+        const result = await page.openSelectorAndPickRow('subclass', 1);
+
+        expect(result).toBeTruthy();
+        page.expectDiffQueryToContain('`subclass` = ' + Number(result));
+      });
+
+      // NOTE: the requiredhonorrank single-value selector (#20) uses the human-readable
+      // config.name "PvP Honor Rank", so Angular renders its id as "PvP Honor Rank-selector-btn"
+      // (with spaces). The frozen `getSelectorBtn` helper builds the lookup as
+      // `#${name}-selector-btn`, which is an invalid CSS id selector when it contains spaces, so
+      // this selector cannot be driven through the shared helper. The single-value-selector
+      // wiring is already proven by the data-driven cases above; this slot is intentionally not
+      // exercised to avoid bypassing the helper / POM rules.
     });
 
     describe('the subclass field', () => {

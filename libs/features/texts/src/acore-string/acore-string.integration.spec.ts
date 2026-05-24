@@ -7,7 +7,7 @@ import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-uti
 import { AcoreString } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import { AcoreStringComponent } from './acore-string.component';
 import { AcoreStringHandlerService } from './acore-string-handler.service';
@@ -158,6 +158,28 @@ describe('Acore String integration tests', () => {
           ' VALUES\n' +
           "(1234, 'Hello', '1', '2', 'Hallo', '4', '5', '6', '7', '8');",
       );
+      page.removeNativeElement();
+    });
+
+    it('schema sweep: every editable field flows into the diff query', async () => {
+      const { page } = setup(false);
+      const written = await page.changeAllFieldsAsync(originalEntity, ['entry']);
+
+      for (const field of Object.keys(written)) {
+        page.expectDiffQueryToContain('`' + field + '`');
+      }
+      page.removeNativeElement();
+    });
+
+    it('shows an error toast when the save query fails', async () => {
+      const { page, querySpy } = setup(false);
+      page.setInputValueById('content_default', 'Hello');
+
+      querySpy.mockReturnValue(throwError(() => new Error('mock SQL failure')));
+      page.clickExecuteQuery();
+      await page.whenReady();
+
+      page.expectErrorToastVisible();
       page.removeNativeElement();
     });
   });

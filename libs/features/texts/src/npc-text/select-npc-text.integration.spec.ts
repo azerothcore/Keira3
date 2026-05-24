@@ -114,6 +114,19 @@ describe(`${SelectNpcTextComponent.name} integration tests`, () => {
     });
   }
 
+  it('searching by a text field should generate a LIKE query against text0_0', () => {
+    const { npc, querySpy } = setup();
+
+    querySpy.mockClear();
+    npc.setInputValue(npc.query<HTMLInputElement>('#search-text0_0'), 'Hello');
+    npc.setInputValue(npc.searchLimitInput, '50');
+
+    npc.clickElement(npc.searchBtn);
+
+    expect(querySpy).toHaveBeenCalledTimes(1);
+    expect(querySpy.mock.calls.at(-1)?.[0]).toContain("`text0_0` LIKE '%Hello%'");
+  });
+
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
     const { navigateSpy, npc, querySpy } = setup();
 
@@ -138,5 +151,21 @@ describe(`${SelectNpcTextComponent.name} integration tests`, () => {
     // TODO: check this
     // Note: this is different than in other editors
     // expect(npc.topBar.innerText).toContain(`Editing: npc_text (${results[0].ID})`);
+  });
+
+  it('clicking a result row should call handlerService.select with (false, id, table) (no name field)', () => {
+    const { npc, querySpy } = setup();
+    const handlerService = TestBed.inject(NpcTextHandlerService);
+    const selectSpy = vi.spyOn(handlerService, 'select').mockImplementation(() => undefined);
+
+    const results = [{ ID: 1 }];
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of(results));
+
+    npc.clickElement(npc.searchBtn);
+    npc.clickElement(npc.getDatatableCell(0, 0));
+
+    expect(selectSpy).toHaveBeenCalledTimes(1);
+    expect(selectSpy).toHaveBeenCalledWith(false, '1', 'npc_text');
   });
 });

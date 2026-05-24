@@ -8,7 +8,7 @@ import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/
 import { GossipMenuOption } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { GossipHandlerService } from '../gossip-handler.service';
 import { GossipMenuOptionComponent } from './gossip-menu-option.component';
 import { instance, mock } from 'ts-mockito';
@@ -112,6 +112,26 @@ describe('GossipMenu integration tests', () => {
         'DELETE FROM `gossip_menu_option` WHERE (`MenuID` = 1234);\n' +
           'INSERT INTO `gossip_menu_option` (`MenuID`, `OptionID`, `OptionIcon`, `OptionText`, `OptionBroadcastTextID`, `OptionType`, `OptionNpcFlag`, `ActionMenuID`, `ActionPoiID`, `BoxCoded`, `BoxMoney`, `BoxText`, `BoxBroadcastTextID`, `VerifiedBuild`) VALUES\n' +
           "(1234, 0, 0, '', 0, 0, 0, 0, 0, 0, 0, '', 0, 0);",
+      );
+      page.expectFullQueryToInsert(
+        'gossip_menu_option',
+        [
+          'MenuID',
+          'OptionID',
+          'OptionIcon',
+          'OptionText',
+          'OptionBroadcastTextID',
+          'OptionType',
+          'OptionNpcFlag',
+          'ActionMenuID',
+          'ActionPoiID',
+          'BoxCoded',
+          'BoxMoney',
+          'BoxText',
+          'BoxBroadcastTextID',
+          'VerifiedBuild',
+        ],
+        [[1234, 0, 0, '', 0, 0, 0, 0, 0, 0, 0, '', 0, 0]],
       );
 
       page.setInputValueById('OptionID', '123');
@@ -243,6 +263,41 @@ describe('GossipMenu integration tests', () => {
       page.setInputValueById('OptionID', 0);
 
       page.expectUniqueError();
+    });
+
+    it('schema sweep: every editable field flows into the diff query', async () => {
+      // Use creating-new mode so the schema sweep doesn't collide with pre-existing rows
+      // (writing OptionID = 0 would otherwise duplicate the default `originalRow0` and
+      // invalidate the form, leaving the diff empty).
+      const { page } = setup(true);
+      page.addNewRow();
+      const written = await page.changeAllFieldsAsync(new GossipMenuOption(), ['MenuID', 'VerifiedBuild']);
+
+      for (const field of Object.keys(written)) {
+        page.expectDiffQueryToContain('`' + field + '`');
+      }
+    });
+
+    it('shows an error toast when the save query fails', async () => {
+      const { querySpy, page } = setup(false);
+      page.clickRowOfDatatable(1);
+      page.setInputValueById('OptionText', 'mock-text');
+
+      querySpy.mockReturnValue(throwError(() => new Error('mock SQL failure')));
+      page.clickExecuteQuery();
+      await page.whenReady();
+
+      page.expectErrorToastVisible();
+    });
+
+    it('changing a value via SingleValueSelector on OptionType should correctly work', async () => {
+      const { page } = setup(false);
+      page.clickRowOfDatatable(1);
+
+      const result = await page.openSelectorAndPickRow('OptionType', 1);
+
+      expect(result).toBeTruthy();
+      page.expectDiffQueryToContain('`OptionType`');
     });
   });
 });

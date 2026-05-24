@@ -5,12 +5,13 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { QuestTemplate } from '@keira/shared/acore-world-model';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
-import { MysqlQueryService } from '@keira/shared/db-layer';
+import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
 import { Model3DViewerService } from '@keira/shared/model-3d-viewer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
+import { instance, mock } from 'ts-mockito';
 import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { QuestTemplateComponent } from './quest-template.component';
@@ -53,6 +54,7 @@ describe('QuestTemplate integration tests', () => {
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
         { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
         { provide: Model3DViewerService, useValue: { generateModels: () => new Promise((resolve) => resolve({ destroy: () => {} })) } },
       ],
     }).compileComponents();
@@ -70,6 +72,9 @@ describe('QuestTemplate integration tests', () => {
     const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
     vi.spyOn(queryService, 'queryValue').mockReturnValue(of());
 
+    const sqliteQueryService = TestBed.inject(SqliteQueryService);
+    const sqliteQuerySpy = vi.spyOn(sqliteQueryService, 'query').mockReturnValue(of([]));
+
     vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalEntity]));
     // by default the other editor services should not be initialised, because the selectAll would return the wrong types for them
     const initializeServicesSpy = vi.spyOn(TestBed.inject(QuestPreviewService), 'initializeServices').mockImplementation(() => undefined);
@@ -83,7 +88,7 @@ describe('QuestTemplate integration tests', () => {
     const page = new QuestTemplatePage(fixture);
     fixture.detectChanges();
 
-    return { originalEntity, handlerService, queryService, querySpy, initializeServicesSpy, fixture, component, page };
+    return { originalEntity, handlerService, queryService, querySpy, sqliteQuerySpy, initializeServicesSpy, fixture, component, page };
   }
 
   describe('Creating new', () => {
@@ -121,7 +126,8 @@ describe('QuestTemplate integration tests', () => {
       page.removeNativeElement();
     });
 
-    // TODO: fix this test, broken after OnPush (probably needs await whenStable())
+    // TODO: zoneless CD does not propagate form mutations to the QuestPreview pane during tests.
+    // See note on the matching test in creature-queststarter.integration.spec.ts.
     it.skip('changing a property should be reflected in the quest preview', () => {
       const { page } = setup(true);
       const value = 'Fix all AzerothCore bugs';
@@ -195,26 +201,92 @@ describe('QuestTemplate integration tests', () => {
       page.removeNativeElement();
     });
 
-    it.skip('changing a value via FlagsSelector should correctly work', async () => {
+    it('changing a value via FlagsSelector should correctly work', async () => {
       const { page } = setup(false);
       const field = 'Flags';
-      page.clickElement(page.getSelectorBtn(field));
-      await page.whenReady();
-      page.expectModalDisplayed();
 
-      page.toggleFlagInRowExternal(2);
-      await page.whenReady();
-      page.toggleFlagInRowExternal(12);
-      await page.whenReady();
-      page.clickModalSelect();
-      await page.whenReady();
+      const result = await page.openFlagsAndToggle(field, [2, 12]);
 
-      expect(page.getInputById(field).value).toEqual('4100');
+      expect(result).toBe(4100);
       page.expectDiffQueryToContain('UPDATE `quest_template` SET `Flags` = 4100 WHERE (`ID` = 1234);');
-
-      // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
+      // Note: full query check has been shortened here because the table is too big.
       page.expectFullQueryToContain('4100');
       page.removeNativeElement();
+    });
+
+    it('changing a value via SingleValueSelector (QuestType) should correctly work', async () => {
+      const { page } = setup(false);
+
+      const value = await page.openSelectorAndPickRow('QuestType', 2);
+
+      expect(value).not.toEqual('');
+      page.expectDiffQueryToContain('UPDATE `quest_template` SET `QuestType` =');
+      page.removeNativeElement();
+    });
+
+    it('changing a value via ItemSelector (StartItem) should correctly work', async () => {
+      const { page, querySpy } = setup(false);
+      querySpy.mockReturnValue(of([{ entry: 555, name: 'Mock Item' }]));
+
+      const value = await page.openSelectorAndPickRow('StartItem', 0, { clickSearch: true });
+
+      expect(value).toEqual('555');
+      page.expectDiffQueryToContain('UPDATE `quest_template` SET `StartItem` = 555 WHERE (`ID` = 1234);');
+      page.removeNativeElement();
+    });
+
+    it('changing a value via FactionSelector (RequiredFactionId1) should correctly work', async () => {
+      const { page, sqliteQuerySpy } = setup(false);
+      sqliteQuerySpy.mockReturnValue(of([{ m_ID: 777, m_name_lang_1: 'Mock Faction' }]));
+
+      const value = await page.openSelectorAndPickRow('RequiredFactionId1', 0, { clickSearch: true });
+
+      expect(value).toEqual('777');
+      page.expectDiffQueryToContain('UPDATE `quest_template` SET `RequiredFactionId1` = 777 WHERE (`ID` = 1234);');
+      page.removeNativeElement();
+    });
+
+    it('changing a value via SpellSelector (RewardSpell) should correctly work', async () => {
+      const { page, sqliteQuerySpy } = setup(false);
+      sqliteQuerySpy.mockReturnValue(of([{ ID: 888, spellName: 'Mock Spell' }]));
+
+      const value = await page.openSelectorAndPickRow('RewardSpell', 0, { clickSearch: true });
+
+      expect(value).toEqual('888');
+      page.expectDiffQueryToContain('UPDATE `quest_template` SET `RewardSpell` = 888 WHERE (`ID` = 1234);');
+      page.removeNativeElement();
+    });
+
+    it('changing a value via QuestFactionSelector (RewardFactionID1) should correctly work', async () => {
+      const { page, sqliteQuerySpy } = setup(false);
+      // QuestFactionSelectorModal uses FACTION_SEARCH_FIELDS[1] ('faction_name_id') as its entityIdField.
+      sqliteQuerySpy.mockReturnValue(of([{ m_ID: 1, faction_name_id: 999, m_name_lang_1: 'Mock Faction' }]));
+
+      const value = await page.openSelectorAndPickRow('RewardFactionID1', 0, { clickSearch: true });
+
+      expect(value).toEqual('999');
+      page.expectDiffQueryToContain('UPDATE `quest_template` SET `RewardFactionID1` = 999 WHERE (`ID` = 1234);');
+      page.removeNativeElement();
+    });
+
+    it('schema sweep: every editable field flows into the diff query', async () => {
+      const { page } = setup(false);
+      const written = await page.changeAllFieldsAsync(new QuestTemplate(), ['VerifiedBuild']);
+
+      for (const field of Object.keys(written)) {
+        page.expectDiffQueryToContain('`' + field + '`');
+      }
+    });
+
+    it('shows an error toast when the save query fails', async () => {
+      const { querySpy, page } = setup(false);
+      page.setInputValueById('LogTitle', 'Shin');
+
+      querySpy.mockReturnValue(throwError(() => new Error('mock SQL failure')));
+      page.clickExecuteQuery();
+      await page.whenReady();
+
+      page.expectErrorToastVisible();
     });
   });
 });

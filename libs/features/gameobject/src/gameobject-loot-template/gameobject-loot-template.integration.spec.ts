@@ -8,7 +8,7 @@ import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/
 import { GameobjectLootTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { GameobjectLootTemplateComponent } from './gameobject-loot-template.component';
@@ -315,6 +315,30 @@ describe('GameobjectLootTemplate integration tests', () => {
 
       page.expectUniqueError();
     });
+
+    it('schema sweep: every editable field flows into the diff query', async () => {
+      const { page } = setup(false);
+      page.clickRowOfDatatable(0);
+      await page.whenReady();
+
+      const written = await page.changeAllFieldsAsync(originalRow0, ['Entry', 'Item']);
+
+      for (const field of Object.keys(written)) {
+        page.expectDiffQueryToContain('`' + field + '`');
+      }
+    });
+
+    it('shows an error toast when the save query fails', async () => {
+      const { querySpy, page } = setup(false);
+      page.clickRowOfDatatable(1);
+      page.setInputValueById('Chance', 10);
+
+      querySpy.mockReturnValue(throwError(() => new Error('mock SQL failure')));
+      page.clickExecuteQuery();
+      await page.whenReady();
+
+      page.expectErrorToastVisible();
+    });
   });
 
   it('should correctly show the warning if the loot id and type field are not correctly set in the gameobject template', () => {
@@ -323,5 +347,20 @@ describe('GameobjectLootTemplate integration tests', () => {
     expect(page.query('.alert-info').innerText).toContain(
       'You have to set the field `Data1` (lootid) and `type` (3 or 25) of gameobject_template in order to enable this feature.',
     );
+  });
+
+  it('should show the warning when type is not 3 or 25', () => {
+    const { page } = setup(true, id, 5);
+
+    expect(page.query('.alert-info').innerText).toContain(
+      'You have to set the field `Data1` (lootid) and `type` (3 or 25) of gameobject_template in order to enable this feature.',
+    );
+  });
+
+  it('should render the loot-editor when lootId > 0 and type is 3 or 25', () => {
+    const { page } = setup(false, id, 3);
+
+    expect(page.query('keira-loot-editor', false)).toBeTruthy('Expected keira-loot-editor to render when gated on');
+    expect(page.query('.alert-info', false)).toBeFalsy('Expected the gating alert to be hidden');
   });
 });

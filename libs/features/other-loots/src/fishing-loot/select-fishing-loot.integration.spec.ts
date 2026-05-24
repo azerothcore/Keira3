@@ -33,6 +33,7 @@ describe('SelectFishingLoot integration tests', () => {
     const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([{ max: 1 }]));
 
     const selectService = TestBed.inject(SelectFishingLootService);
+    const handlerService = TestBed.inject(FishingLootHandlerService);
 
     const fixture = TestBed.createComponent(SelectFishingLootComponent);
     const page = new SelectFishingLootComponentPage(fixture);
@@ -40,14 +41,18 @@ describe('SelectFishingLoot integration tests', () => {
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
 
-    return { component, fixture, selectService, page, queryService, querySpy, navigateSpy };
+    return { component, fixture, selectService, page, queryService, querySpy, navigateSpy, handlerService };
   }
 
   it('should correctly initialise', async () => {
     const { fixture, page, querySpy, component } = setup();
 
     await fixture.whenStable();
+    // `component.customStartingId` is configuration *input* (not internal state); the create input must
+    // default to it whenever the current MAX(Entry) (mocked as 1) is below the custom starting id.
+    expect(component.customStartingId).toBe(9000);
     expect(page.createInput.value).toEqual(`${component.customStartingId}`);
+    expect(page.createInput.value).toEqual('9000');
     page.expectNewEntityFree();
     expect(querySpy).toHaveBeenCalledWith('SELECT MAX(Entry) AS max FROM fishing_loot_template;');
     expect(page.queryWrapper.innerText).toContain('SELECT `Entry` FROM `fishing_loot_template` GROUP BY Entry LIMIT 50');
@@ -113,8 +118,13 @@ describe('SelectFishingLoot integration tests', () => {
     });
   }
 
+  // Note: search-by-name and search-by-ScriptName cases are intentionally omitted for every select-*-loot spec.
+  // SelectFishingLootService.fieldList is [LOOT_TEMPLATE_ID] only and entityNameField is null — there is no
+  // name/ScriptName column to filter on (see §4.B.1/4.B.2 of the plan).
+
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
-    const { navigateSpy, page, querySpy } = setup();
+    const { navigateSpy, page, querySpy, handlerService } = setup();
+    const selectSpy = vi.spyOn(handlerService, 'select');
 
     const results = [{ Entry: 1 }, { Entry: 2 }, { Entry: 3 }];
     querySpy.mockClear();
@@ -134,6 +144,8 @@ describe('SelectFishingLoot integration tests', () => {
 
     expect(navigateSpy).toHaveBeenCalledTimes(1);
     expect(navigateSpy).toHaveBeenCalledWith(['other-loots/fishing']);
+    // entityNameField is null, so onSelect passes the table name as the third (name) argument.
+    expect(selectSpy).toHaveBeenCalledWith(false, `${results[0].Entry}`, 'fishing_loot_template');
     // Note: this is different than in other editors
     expect(page.topBar.innerText).toContain(`Editing: fishing_loot_template (${results[0].Entry})`);
   });

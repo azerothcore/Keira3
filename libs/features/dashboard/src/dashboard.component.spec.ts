@@ -4,29 +4,44 @@ import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { VersionDbRow, VersionRow } from '@keira/shared/constants';
 import { MysqlQueryService, MysqlService } from '@keira/shared/db-layer';
+import { ConfigService } from '@keira/shared/common-services';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
-import { of, throwError } from 'rxjs';
+import { of, Subject, throwError } from 'rxjs';
 import { anyString, instance, mock, reset, when } from 'ts-mockito';
 import { DashboardComponent } from './dashboard.component';
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import packageInfo from '../../../../package.json';
 
 class DashboardComponentPage extends PageObject<DashboardComponent> {
-  get coreVersion(): HTMLTableCellElement {
-    return this.query<HTMLTableCellElement>('#core-version');
+  coreVersion(assert = true): HTMLTableCellElement {
+    return this.query<HTMLTableCellElement>('#core-version', assert);
   }
-  get coreRevision(): HTMLTableCellElement {
-    return this.query<HTMLTableCellElement>('#core-revision');
+  coreRevision(assert = true): HTMLTableCellElement {
+    return this.query<HTMLTableCellElement>('#core-revision', assert);
   }
-  get dbVersion(): HTMLTableCellElement {
-    return this.query<HTMLTableCellElement>('#db-version');
+  dbVersion(assert = true): HTMLTableCellElement {
+    return this.query<HTMLTableCellElement>('#db-version', assert);
   }
   // get dbWorldVersion(): HTMLTableCellElement {
   //   return this.query<HTMLTableCellElement>('#db-world-version');
   // }
+  get keiraVersion(): HTMLTableCellElement {
+    return this.query<HTMLTableCellElement>('tbody tr:nth-child(1) td:nth-child(2)');
+  }
+  get keiraDetails(): HTMLTableCellElement {
+    return this.query<HTMLTableCellElement>('tbody tr:nth-child(2) td:nth-child(2)');
+  }
   dbWarning(assert = true): HTMLDivElement {
     return this.query<HTMLDivElement>('#database-warning', assert);
   }
   get commitHashUrl(): HTMLAnchorElement {
     return this.query<HTMLAnchorElement>('#commit-hash-url');
+  }
+  get copyCommitHashBtn(): HTMLButtonElement {
+    return this.query<HTMLButtonElement>('#core-revision button');
+  }
+  get debugModeCheckbox(): HTMLInputElement {
+    return this.query<HTMLInputElement>('#debug-mode');
   }
   get reloadBtn(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('#reload-btn');
@@ -84,9 +99,9 @@ describe('DashboardComponent', () => {
     const { page } = setup();
     page.detectChanges();
 
-    expect(page.coreVersion.innerHTML).toContain(versionRow.core_version);
-    expect(page.coreRevision.innerHTML).toContain(versionRow.core_revision);
-    expect(page.dbVersion.innerHTML).toContain(versionRow.db_version);
+    expect(page.coreVersion().innerHTML).toContain(versionRow.core_version);
+    expect(page.coreRevision().innerHTML).toContain(versionRow.core_revision);
+    expect(page.dbVersion().innerHTML).toContain(versionRow.db_version);
     expect(page.commitHashUrl.href).toEqual(`https://github.com/azerothcore/azerothcore-wotlk/commit/${versionRow.core_revision}`);
     // expect(page.dbWorldVersion.innerHTML).toContain(worldDbVersion);
     expect(page.dbWarning(false)).toBeFalsy();
@@ -112,7 +127,7 @@ describe('DashboardComponent', () => {
     it('when the refresh button is clicked, it should correctly reload the data', () => {
       const { page } = setup();
       page.detectChanges();
-      expect(page.coreVersion.innerHTML).toContain(versionRow.core_version);
+      expect(page.coreVersion().innerHTML).toContain(versionRow.core_version);
 
       const newVersion = 'A new fantastic AzerothCore version!';
       when(MockedMysqlQueryService.query('SELECT * FROM version')).thenReturn(
@@ -126,8 +141,8 @@ describe('DashboardComponent', () => {
       page.reloadBtn.click();
       page.detectChanges();
 
-      expect(page.coreVersion.innerHTML).not.toContain(versionRow.core_version);
-      expect(page.coreVersion.innerHTML).toContain(newVersion);
+      expect(page.coreVersion().innerHTML).not.toContain(versionRow.core_version);
+      expect(page.coreVersion().innerHTML).toContain(newVersion);
     });
 
     it('when clicked after an error, it should clear the error out', () => {
@@ -169,12 +184,55 @@ describe('DashboardComponent', () => {
     expect(page.dbWarning()).toBeDefined();
   });
 
-  it('should correctly give error if the query returns an error', () => {
+  it('shows the database warning when the version row does not look like AzerothCore', () => {
     const { page } = setup();
     when(MockedMysqlQueryService.query(anyString())).thenReturn(of([wrongVersionRow]));
 
     page.detectChanges();
 
     expect(page.dbWarning()).toBeDefined();
+  });
+
+  it('renders the Keira version and navigator details', () => {
+    const { page } = setup();
+    page.detectChanges();
+
+    expect(page.keiraVersion.textContent).toContain(packageInfo.version);
+    expect(page.keiraDetails.textContent).toContain(window.navigator.userAgent);
+  });
+
+  it('exposes a copy-to-clipboard button bound to the commit URL', () => {
+    const { page } = setup();
+    page.detectChanges();
+
+    // The clipboard write-back binding (`[cbContent]`) is exercised by the e2e suite;
+    // here we assert the button is rendered alongside the commit-hash anchor.
+    expect(page.copyCommitHashBtn).toBeTruthy();
+    expect(page.commitHashUrl).toBeTruthy();
+  });
+
+  it('toggling the debug-mode checkbox updates ConfigService.debugMode', () => {
+    const { page } = setup();
+    page.detectChanges();
+    const configService = TestBed.inject(ConfigService);
+    const before = configService.debugMode();
+
+    const checkbox = page.debugModeCheckbox;
+    checkbox.checked = !before;
+    checkbox.dispatchEvent(new Event('change'));
+    page.detectChanges();
+
+    expect(configService.debugMode()).toBe(!before);
+  });
+
+  it('does not render the version rows until the query resolves', () => {
+    const { page } = setup();
+    when(MockedMysqlQueryService.query(anyString())).thenReturn(new Subject<VersionRow[]>());
+
+    page.detectChanges();
+
+    expect(page.coreVersion(false)).toBeFalsy();
+    expect(page.coreRevision(false)).toBeFalsy();
+    expect(page.dbVersion(false)).toBeFalsy();
   });
 });

@@ -3,12 +3,14 @@ import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 import { SaiHandlerService } from '@keira/shared/sai-editor';
-import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
+import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { of } from 'rxjs';
 import { SaiSearchEntityComponent } from './sai-search-entity.component';
 
-class SaiSearchEntityComponentPage extends PageObject<SaiSearchEntityComponent> {
+class SaiSearchEntityComponentPage extends EditorPageObject<SaiSearchEntityComponent> {
   get entryOrGuidInput(): HTMLInputElement {
     return this.query<HTMLInputElement>('input#entryorguid', false);
   }
@@ -118,6 +120,42 @@ describe('SaiSearchEntityComponent', () => {
     );
     expect(page.creatureSelector).toBeFalsy();
     expect(page.gameobjectSelector).toBeFalsy();
+  });
+
+  it('the Edit SmartAI button is absent until a source type is chosen', () => {
+    const { page } = setup();
+    expect(page.editBtn).toBeFalsy();
+
+    page.clickElement(page.sourceTypeCreature);
+    expect(page.editBtn).toBeTruthy();
+  });
+
+  it('picking a creature from the selector modal sets entryorguid', async () => {
+    const { page } = setup();
+    const mysqlQueryService = TestBed.inject(MysqlQueryService);
+    vi.spyOn(mysqlQueryService, 'query').mockReturnValue(of([{ entry: 1234, name: 'TestCreature' }]));
+
+    page.clickElement(page.sourceTypeCreature);
+    await page.whenReady();
+
+    const picked = await page.openSelectorAndPickRow('entryorguid', 0, { clickSearch: true });
+
+    expect(picked).toBe('1234');
+    expect(page.entryOrGuidInput.value).toBe('1234');
+  });
+
+  it('picking a gameobject from the selector modal sets entryorguid', async () => {
+    const { page } = setup();
+    const mysqlQueryService = TestBed.inject(MysqlQueryService);
+    vi.spyOn(mysqlQueryService, 'query').mockReturnValue(of([{ entry: 5678, name: 'TestGo' }]));
+
+    page.clickElement(page.sourceTypeGameobject);
+    await page.whenReady();
+
+    const picked = await page.openSelectorAndPickRow('entryorguid', 0, { clickSearch: true });
+
+    expect(picked).toBe('5678');
+    expect(page.entryOrGuidInput.value).toBe('5678');
   });
 
   it('clicking the edit button should correctly trigger the service', () => {

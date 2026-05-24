@@ -92,6 +92,10 @@
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'TRAINER.SPELL.REQ_LEVEL' | translate"></i>
               <input [formControlName]="'ReqLevel'" id="ReqLevel" type="number" class="form-control form-control-sm" />
             </div>
+            <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
+              <i class="fas fa-exclamation-triangle"></i>
+              <span [innerHTML]="'UNIQUE' | translate: { ENTITY_SECOND_ID_FIELD: editorService.entitySecondIdField }"></span>
+            </div>
           </div>
         </form>
 
@@ -103,6 +107,7 @@
         />
 
         <ngx-datatable
+          id="editor-table"
           class="bootstrap table table-striped text-center"
           [rows]="editorService.newRows"
           [headerHeight]="DTCFG.headerHeight"

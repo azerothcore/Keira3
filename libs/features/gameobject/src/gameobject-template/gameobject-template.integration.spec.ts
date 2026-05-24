@@ -13,7 +13,7 @@ import { Model3DViewerService } from '@keira/shared/model-3d-viewer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
@@ -173,33 +173,35 @@ describe('GameobjectTemplate integration tests', () => {
       page.expectFullQueryToContain('35');
     });
 
-    it.skip('changing a value via SingleValueSelector should correctly work', async () => {
+    it('schema sweep: every editable field flows into the diff query', async () => {
       const { page } = setup(false);
-      const field = 'type';
-      page.clickElement(page.getSelectorBtn(field));
-      await page.whenReady();
-      page.expectModalDisplayed();
+      const written = await page.changeAllFieldsAsync(originalEntity, ['VerifiedBuild']);
 
-      page.clickRowOfDatatableInModal(7);
-      await page.whenReady();
-      page.clickModalSelect();
+      for (const field of Object.keys(written)) {
+        page.expectDiffQueryToContain('`' + field + '`');
+      }
+    });
+
+    it('shows an error toast when the save query fails', async () => {
+      const { querySpy, page } = setup(false);
+      page.setInputValueById('name', 'Helias');
+
+      querySpy.mockReturnValue(throwError(() => new Error('mock SQL failure')));
+      page.clickExecuteQuery();
       await page.whenReady();
 
-      expect(page.getInputById(field).value).toEqual('7');
-      page.expectDiffQueryToContain('UPDATE `gameobject_template` SET `type` = 7 WHERE (`entry` = ' + id + ');');
-      page.expectFullQueryToContain(
-        'DELETE FROM `gameobject_template` WHERE (`entry` = ' +
-          id +
-          ');\n' +
-          'INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `name`, `IconName`, `castBarCaption`, ' +
-          '`unk1`, `size`, `Data0`, `Data1`, `Data2`, `Data3`, `Data4`, `Data5`, `Data6`, `Data7`, `Data8`, `Data9`, ' +
-          '`Data10`, `Data11`, `Data12`, `Data13`, `Data14`, `Data15`, `Data16`, `Data17`, `Data18`, `Data19`, `Data20`, ' +
-          '`Data21`, `Data22`, `Data23`, `AIName`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-          '(' +
-          id +
-          ", 7, 0, '', '', '', '', 1, 0, 0, 0, 0, 0, 0, 0, " +
-          "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', 0);",
-      );
+      page.expectErrorToastVisible();
+    });
+
+    it('renders the 3D model preview and toggles its visibility', () => {
+      const { page } = setup(false);
+      expect(page.query('keira-model-3d-viewer')).toBeTruthy();
+
+      const previewContainer = page.query<HTMLElement>('.preview-container');
+      expect(previewContainer.classList.contains('show-preview')).toBe(true);
+
+      page.clickElement(page.query<HTMLElement>('.toggle-preview-button'));
+      expect(previewContainer.classList.contains('hide-preview')).toBe(true);
     });
   });
 });

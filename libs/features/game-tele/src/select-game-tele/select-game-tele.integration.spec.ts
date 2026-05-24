@@ -13,7 +13,7 @@ import { instance, mock } from 'ts-mockito';
 import { GameTeleHandlerService } from '../game-tele-handler.service';
 import { GameTele } from '@keira/shared/acore-world-model';
 
-describe('SelectConditions integration tests', () => {
+describe('SelectGameTele integration tests', () => {
   class SelectGameTelePage extends SelectPageObject<SelectGameTeleComponent> {}
   /**
    * Setup function to initialize the component, spies, and page object.
@@ -159,9 +159,28 @@ describe('SelectConditions integration tests', () => {
     expect(row1.innerText).toContain(results[1].name.toString());
     expect(row2.innerText).toContain(results[2].name.toString());
 
+    const handler = TestBed.inject(GameTeleHandlerService);
+    const selectSpy = vi.spyOn(handler, 'select');
+
     page.clickElement(page.getDatatableCellExternal(1, 1));
 
+    expect(selectSpy).toHaveBeenCalledWith(false, `${results[1].id}`, results[1].name);
     expect(navigateSpy).toHaveBeenCalledTimes(1);
     expect(navigateSpy).toHaveBeenCalledWith(['game-tele/tele']);
+  });
+
+  it('clicking the create button should call handlerService.select(true, id)', async () => {
+    const { page } = setup();
+    const queryService = TestBed.inject(MysqlQueryService);
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of([]));
+    const handler = TestBed.inject(GameTeleHandlerService);
+    const selectSpy = vi.spyOn(handler, 'select');
+
+    page.setInputValue(page.createInput, '42');
+    await page.fixture.whenStable();
+    page.fixture.detectChanges();
+    page.clickElement(page.selectNewBtn);
+
+    expect(selectSpy).toHaveBeenCalledWith(true, 42);
   });
 });

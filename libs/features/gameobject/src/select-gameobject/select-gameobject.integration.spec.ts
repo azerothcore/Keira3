@@ -4,7 +4,7 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { GameobjectTemplate } from '@keira/shared/acore-world-model';
+import { GAMEOBJECT_TEMPLATE_CUSTOM_STARTING_ID, GameobjectTemplate } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { SelectPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -180,5 +180,37 @@ describe('SelectGameobject integration tests', () => {
     expect(navigateSpy).toHaveBeenCalledTimes(1);
     expect(navigateSpy).toHaveBeenCalledWith(['gameobject/gameobject-template']);
     page.expectTopBarEditing(results[1].entry as number, results[1].name as string);
+  });
+
+  it('clicking a result row delegates to GameobjectHandlerService.select with (false, entry, name)', () => {
+    const { page, querySpy } = setup();
+    const handlerService = TestBed.inject(GameobjectHandlerService);
+    const selectSpy = vi.spyOn(handlerService, 'select');
+    const results: Partial<GameobjectTemplate>[] = [{ entry: 42, name: 'Mock Gameobject', type: 0, displayId: 1 }];
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of(results as any));
+
+    page.clickElement(page.searchBtn);
+    page.clickElement(page.getDatatableCellExternal(0, 1));
+
+    expect(selectSpy).toHaveBeenCalledTimes(1);
+    expect(selectSpy).toHaveBeenCalledWith(false, '42', 'Mock Gameobject');
+  });
+
+  it('defaults the new-entity id to the custom starting id and checks its availability with that id', async () => {
+    const { fixture, page, querySpy } = setup();
+    await fixture.whenStable();
+
+    // setup() mocks the table max id at 1, which is below the custom starting id,
+    // so the new-entity id defaults to the custom starting id.
+    expect(page.createInput.value).toEqual(`${GAMEOBJECT_TEMPLATE_CUSTOM_STARTING_ID}`);
+
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of([]));
+    page.setInputValue(page.createInput, GAMEOBJECT_TEMPLATE_CUSTOM_STARTING_ID);
+
+    expect(querySpy).toHaveBeenCalledWith(
+      `SELECT * FROM \`gameobject_template\` WHERE (entry = ${GAMEOBJECT_TEMPLATE_CUSTOM_STARTING_ID})`,
+    );
   });
 });

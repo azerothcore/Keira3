@@ -8,7 +8,7 @@ import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
@@ -378,6 +378,28 @@ describe('CreatureFormations integration tests', () => {
       page.setInputValueById('memberGUID', 1234); // Replaced 0 with 1234
 
       page.expectUniqueError();
+    });
+
+    it('schema sweep: every editable field flows into the diff query', async () => {
+      const { page } = setup(false);
+      page.clickRowOfDatatable(0);
+      const written = await page.changeAllFieldsAsync(new CreatureFormation(), ['leaderGUID', 'memberGUID']);
+
+      for (const field of Object.keys(written)) {
+        page.expectDiffQueryToContain('`' + field + '`');
+      }
+    });
+
+    it('shows an error toast when the save query fails', async () => {
+      const { querySpy, page } = setup(false);
+      page.clickRowOfDatatable(0);
+      page.setInputValueById('dist', '7');
+
+      querySpy.mockReturnValue(throwError(() => new Error('mock SQL failure')));
+      page.clickExecuteQuery();
+      await page.whenReady();
+
+      page.expectErrorToastVisible();
     });
   });
 });

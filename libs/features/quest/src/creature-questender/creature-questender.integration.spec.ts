@@ -12,7 +12,7 @@ import { Model3DViewerService } from '@keira/shared/model-3d-viewer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { CreatureQuestenderComponent } from './creature-questender.component';
@@ -170,7 +170,8 @@ describe('CreatureQuestender integration tests', () => {
       page.removeNativeElement();
     });
 
-    // TODO: fix this test, broken after OnPush (probably needs await whenStable())
+    // TODO: zoneless CD does not propagate form mutations to the QuestPreview pane during tests.
+    // See note on the matching test in creature-queststarter.integration.spec.ts.
     it.skip('changing a property should be reflected in the quest preview', () => {
       const { page } = setup(true);
       const value = 1234;
@@ -284,6 +285,42 @@ describe('CreatureQuestender integration tests', () => {
 
       page.expectUniqueError();
       page.removeNativeElement();
+    });
+
+    it('changing a value via CreatureSelector should correctly work', async () => {
+      const { page, querySpy } = setup(false);
+      querySpy.mockReturnValue(of([{ entry: 123, name: 'Mock Creature' }]));
+
+      page.clickRowOfDatatable(0);
+      await page.whenReady();
+
+      await page.openSelectorAndPickRow('id', 0, { clickSearch: true });
+
+      page.expectDiffQueryToContain(
+        'DELETE FROM `creature_questender` WHERE (`quest` = 1234) AND (`id` IN (0, 123));\n' +
+          'INSERT INTO `creature_questender` (`id`, `quest`) VALUES\n' +
+          '(123, 1234);',
+      );
+      page.removeNativeElement();
+    });
+
+    it('schema sweep: every editable field flows into the diff query', () => {
+      const { page } = setup(false);
+      page.clickRowOfDatatable(0);
+      page.setInputValueById('id', 999);
+      page.expectDiffQueryToContain('`id`');
+    });
+
+    it('shows an error toast when the save query fails', async () => {
+      const { querySpy, page } = setup(false);
+      page.clickRowOfDatatable(0);
+      page.setInputValueById('id', 555);
+
+      querySpy.mockReturnValue(throwError(() => new Error('mock SQL failure')));
+      page.clickExecuteQuery();
+      await page.whenReady();
+
+      page.expectErrorToastVisible();
     });
   });
 });

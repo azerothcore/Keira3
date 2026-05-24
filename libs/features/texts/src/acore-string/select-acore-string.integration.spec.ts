@@ -114,6 +114,19 @@ describe(`${SelectAcoreStringComponent.name} integration tests`, () => {
     });
   }
 
+  it('searching by name should generate a LIKE query against the content_default field', () => {
+    const { acoreStrings, querySpy } = setup();
+
+    querySpy.mockClear();
+    acoreStrings.setInputValue(acoreStrings.query<HTMLInputElement>('#search-default'), 'Hello');
+    acoreStrings.setInputValue(acoreStrings.searchLimitInput, '50');
+
+    acoreStrings.clickElement(acoreStrings.searchBtn);
+
+    expect(querySpy).toHaveBeenCalledTimes(1);
+    expect(querySpy.mock.calls.at(-1)?.[0]).toContain("`content_default` LIKE '%Hello%'");
+  });
+
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
     const { navigateSpy, acoreStrings, querySpy } = setup();
 
@@ -135,5 +148,21 @@ describe(`${SelectAcoreStringComponent.name} integration tests`, () => {
 
     expect(navigateSpy).toHaveBeenCalledTimes(1);
     expect(navigateSpy).toHaveBeenCalledWith([expectedRoute]);
+  });
+
+  it('clicking a result row should call handlerService.select with (false, entry, name)', () => {
+    const { acoreStrings, querySpy } = setup();
+    const handlerService = TestBed.inject(AcoreStringHandlerService);
+    const selectSpy = vi.spyOn(handlerService, 'select').mockImplementation(() => undefined);
+
+    const results = [{ entry: 1, content_default: 'Hello' }];
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of(results));
+
+    acoreStrings.clickElement(acoreStrings.searchBtn);
+    acoreStrings.clickElement(acoreStrings.getDatatableCell(0, 0));
+
+    expect(selectSpy).toHaveBeenCalledTimes(1);
+    expect(selectSpy).toHaveBeenCalledWith(false, '1', 'Hello');
   });
 });

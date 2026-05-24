@@ -11,7 +11,7 @@ import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-uti
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { tickAsync } from 'ngx-page-object-model';
 import { ToastrModule } from 'ngx-toastr';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { QuestRequestItemsComponent } from './quest-request-items.component';
@@ -116,6 +116,7 @@ describe('QuestRequestItems integration tests', () => {
 
       page.setInputValueById('CompletionText', value);
       await tickAsync();
+      page.detectChanges();
 
       expect(page.progressText.innerText).toContain(value);
       page.removeNativeElement();
@@ -172,19 +173,13 @@ describe('QuestRequestItems integration tests', () => {
       page.removeNativeElement();
     });
 
-    it.skip('changing a value via SingleValueSelector should correctly work', async () => {
+    it('changing a value via SingleValueSelector should correctly work', async () => {
       const { page } = setup(false);
       const field = 'EmoteOnComplete';
-      page.clickElement(page.getSelectorBtn(field));
-      await page.whenReady();
-      page.expectModalDisplayed();
 
-      page.clickRowOfDatatableInModal(4);
-      await page.whenReady();
-      page.clickModalSelect();
-      await page.whenReady();
+      const value = await page.openSelectorAndPickRow(field, 4);
 
-      expect(page.getInputById(field).value).toEqual('4');
+      expect(value).toEqual('4');
       page.expectDiffQueryToContain('UPDATE `quest_request_items` SET `EmoteOnComplete` = 4 WHERE (`ID` = 1234);');
       page.expectFullQueryToContain(
         'DELETE FROM `quest_request_items` WHERE (`ID` = 1234);\n' +
@@ -192,6 +187,26 @@ describe('QuestRequestItems integration tests', () => {
           "(1234, 4, 3, '4', 0);\n",
       );
       page.removeNativeElement();
+    });
+
+    it('schema sweep: every editable field flows into the diff query', async () => {
+      const { page } = setup(false);
+      const written = await page.changeAllFieldsAsync(new QuestRequestItems(), ['VerifiedBuild']);
+
+      for (const field of Object.keys(written)) {
+        page.expectDiffQueryToContain('`' + field + '`');
+      }
+    });
+
+    it('shows an error toast when the save query fails', async () => {
+      const { querySpy, page } = setup(false);
+      page.setInputValueById('CompletionText', 'Shin');
+
+      querySpy.mockReturnValue(throwError(() => new Error('mock SQL failure')));
+      page.clickExecuteQuery();
+      await page.whenReady();
+
+      page.expectErrorToastVisible();
     });
   });
 });
