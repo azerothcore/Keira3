@@ -123,7 +123,7 @@ describe('SaiHandlerService', () => {
         name: mockName,
         returnValue: [{ name: mockName }],
         expectedName: mockName,
-        expectedQuery: 'SELECT ct.name FROM creature_template AS ct INNER JOIN creature AS c ON c.id1 = ct.entry WHERE c.guid = 123',
+        expectedQuery: 'SELECT ct.name FROM creature_template AS ct INNER JOIN creature AS c ON c.id = ct.entry WHERE c.guid = 123',
       },
       {
         testId: 3,
@@ -141,7 +141,7 @@ describe('SaiHandlerService', () => {
         name: mockName,
         returnValue: [{ name: mockName }],
         expectedName: mockName,
-        expectedQuery: 'SELECT ct.name FROM gameobject_template AS ct INNER JOIN gameobject AS c ON c.id1 = ct.entry WHERE c.guid = 123',
+        expectedQuery: 'SELECT ct.name FROM gameobject_template AS ct INNER JOIN gameobject AS c ON c.id = ct.entry WHERE c.guid = 123',
       },
       {
         testId: 5,
