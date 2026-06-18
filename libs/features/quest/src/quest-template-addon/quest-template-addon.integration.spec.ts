@@ -13,6 +13,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
 import { QuestHandlerService } from '../quest-handler.service';
+import { QUEST_PREVIEW_DEBOUNCE_TIME } from '../quest-preview/quest-preview.component';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { QuestTemplateAddonComponent } from './quest-template-addon.component';
 
@@ -134,10 +135,10 @@ describe('QuestTemplateAddon integration tests', () => {
     it('changing a property should be reflected in the quest preview', async () => {
       const { page } = setup(true);
       const value = 80;
-      page.detectChanges();
 
       page.setInputValueById('MaxLevel', value);
-      await tickAsync();
+      await tickAsync(QUEST_PREVIEW_DEBOUNCE_TIME);
+      await page.fixture.whenStable();
 
       expect(page.questPreviewReqLevel.innerText).toContain(`0 - ${value}`);
       page.removeNativeElement();

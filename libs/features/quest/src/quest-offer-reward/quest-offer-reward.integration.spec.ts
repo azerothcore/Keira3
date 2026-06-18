@@ -13,6 +13,7 @@ import { tickAsync } from 'ngx-page-object-model';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { QuestHandlerService } from '../quest-handler.service';
+import { QUEST_PREVIEW_DEBOUNCE_TIME } from '../quest-preview/quest-preview.component';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { QuestOfferRewardComponent } from './quest-offer-reward.component';
 
@@ -121,10 +122,10 @@ describe('QuestOfferReward integration tests', () => {
     it('changing a property should be reflected in the quest preview', async () => {
       const { page } = setup(true);
       const value = 'Fix all AzerothCore bugs';
-      page.detectChanges();
 
       page.setInputValueById('RewardText', value);
-      await tickAsync();
+      await tickAsync(QUEST_PREVIEW_DEBOUNCE_TIME);
+      await page.fixture.whenStable();
 
       expect(page.completionText.innerText).toContain(value);
       page.removeNativeElement();

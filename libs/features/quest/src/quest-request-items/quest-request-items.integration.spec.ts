@@ -13,6 +13,7 @@ import { tickAsync } from 'ngx-page-object-model';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { QuestHandlerService } from '../quest-handler.service';
+import { QUEST_PREVIEW_DEBOUNCE_TIME } from '../quest-preview/quest-preview.component';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { QuestRequestItemsComponent } from './quest-request-items.component';
 
@@ -115,7 +116,8 @@ describe('QuestRequestItems integration tests', () => {
       const value = 'Fix all AzerothCore bugs';
 
       page.setInputValueById('CompletionText', value);
-      await tickAsync();
+      await tickAsync(QUEST_PREVIEW_DEBOUNCE_TIME);
+      await page.fixture.whenStable();
 
       expect(page.progressText.innerText).toContain(value);
       page.removeNativeElement();
