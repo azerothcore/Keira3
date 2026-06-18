@@ -9,6 +9,8 @@ import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { Quest } from './quest-preview.model';
 import { QuestPreviewService } from './quest-preview.service';
 
+export const QUEST_PREVIEW_DEBOUNCE_TIME = 300;
+
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-quest-preview',
@@ -74,7 +76,7 @@ export class QuestPreviewComponent implements OnInit {
     this.service.initializeServices(this.changeDetectorRef);
 
     this.service
-      .valueChanges$(300)
+      .valueChanges$(QUEST_PREVIEW_DEBOUNCE_TIME)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.changeDetectorRef.markForCheck());
   }

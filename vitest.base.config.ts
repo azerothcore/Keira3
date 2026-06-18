@@ -37,6 +37,8 @@ export function createVitestConfig(options: VitestConfigOptions) {
     test: {
       globals: true,
       pool: 'forks',
+      // Angular integration specs are heavy; the 5s vitest default times out on slow/loaded CI (e.g. Windows).
+      testTimeout: 15_000,
       environment: 'jsdom',
       include: ['**/*.spec.ts'],
       setupFiles: [resolve(rootDir, 'test-setup.ts')],
