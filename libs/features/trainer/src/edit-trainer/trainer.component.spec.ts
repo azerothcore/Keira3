@@ -23,14 +23,7 @@ describe('TrainerComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        ModalModule.forRoot(),
-        ToastrModule.forRoot(),
-        TestHostComponent,
-        TrainerComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
-      ],
+      imports: [ModalModule, ToastrModule.forRoot(), TestHostComponent, TrainerComponent, RouterTestingModule, TranslateTestingModule],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations(), TrainerHandlerService],
     }).compileComponents();
   });

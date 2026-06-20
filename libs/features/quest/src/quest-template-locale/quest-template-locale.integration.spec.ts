@@ -21,7 +21,7 @@ describe('QuestTemplateLocale integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), QuestTemplateLocaleComponent, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, QuestTemplateLocaleComponent, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),

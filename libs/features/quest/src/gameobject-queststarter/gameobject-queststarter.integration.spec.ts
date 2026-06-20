@@ -36,13 +36,7 @@ describe('GameobjectQueststarter integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        RouterTestingModule,
-        GameobjectQueststarterComponent,
-        TranslateTestingModule,
-      ],
+      imports: [ToastrModule.forRoot(), ModalModule, RouterTestingModule, GameobjectQueststarterComponent, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),

@@ -23,7 +23,7 @@ describe(`${SelectBroadcastTextComponent.name} integration tests`, () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectBroadcastTextComponent, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, SelectBroadcastTextComponent, TranslateTestingModule],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations(), BroadcastTextHandlerService],
     }).compileComponents();
   });

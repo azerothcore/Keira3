@@ -16,7 +16,7 @@ import { CONTENT_WOTLK, Gender, InventoryType, MODEL_TYPE, Race, VIEWER_TYPE } f
 describe('Model3DViewerComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), ReactiveFormsModule, GenericOptionSelectorComponent, Model3DViewerComponent],
+      imports: [ModalModule, ReactiveFormsModule, GenericOptionSelectorComponent, Model3DViewerComponent],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),

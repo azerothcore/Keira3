@@ -23,7 +23,7 @@ describe(`${SelectAcoreStringComponent.name} integration tests`, () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectAcoreStringComponent, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, SelectAcoreStringComponent, TranslateTestingModule],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations(), AcoreStringHandlerService],
     }).compileComponents();
   });

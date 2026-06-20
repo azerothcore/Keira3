@@ -41,7 +41,7 @@ describe('BroadcastText integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), BroadcastTextComponent, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, BroadcastTextComponent, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),

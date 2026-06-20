@@ -28,7 +28,7 @@ describe('CreatureTemplateModel integration tests', () => {
 
   function setup(creatingNew: boolean) {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureTemplateModelComponent, TranslateTestingModule, ReactiveFormsModule],
+      imports: [ToastrModule.forRoot(), ModalModule, CreatureTemplateModelComponent, TranslateTestingModule, ReactiveFormsModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),

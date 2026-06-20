@@ -48,7 +48,7 @@ describe('QueryOutputComponent', () => {
         BrowserModule,
         FormsModule,
         HighlightjsWrapperComponent,
-        ModalModule.forRoot(),
+        ModalModule,
         TranslateTestingModule,
         TestHostComponent,
         QueryOutputComponent,

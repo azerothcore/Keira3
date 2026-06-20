@@ -9,7 +9,7 @@ import { FactionSelectorBtnComponent } from './faction-selector-btn.component';
 describe('QuestFactionSelectorBtnComponent', () => {
   function setup() {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), FactionSelectorBtnComponent],
+      imports: [ModalModule, FactionSelectorBtnComponent],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
 

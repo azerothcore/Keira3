@@ -125,7 +125,7 @@ describe('NpcText integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), NpcTextComponent, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, NpcTextComponent, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),

@@ -23,7 +23,7 @@ describe(`${SelectNpcTextComponent.name} integration tests`, () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectNpcTextComponent, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, SelectNpcTextComponent, TranslateTestingModule],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations(), NpcTextHandlerService],
     }).compileComponents();
   });

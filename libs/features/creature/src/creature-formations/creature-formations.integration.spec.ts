@@ -30,7 +30,7 @@ describe('CreatureFormations integration tests', () => {
     TestBed.configureTestingModule({
       imports: [
         ToastrModule.forRoot(),
-        ModalModule.forRoot(),
+        ModalModule,
         CreatureFormationsComponent, // This should typically be in declarations, but as per your instruction, it's left unchanged
         RouterTestingModule,
         TranslateTestingModule,

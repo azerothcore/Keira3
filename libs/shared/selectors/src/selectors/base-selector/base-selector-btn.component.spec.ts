@@ -16,7 +16,7 @@ import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-component
 
 @NgModule({
   imports: [
-    ModalModule.forRoot(),
+    ModalModule,
     CommonModule,
     BrowserModule,
     FormsModule,
@@ -35,7 +35,7 @@ describe('BaseSelectorBtnComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), TestModule, ItemSelectorBtnComponent],
+      imports: [ModalModule, TestModule, ItemSelectorBtnComponent],
     }).compileComponents();
   });
 

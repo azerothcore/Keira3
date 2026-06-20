@@ -41,7 +41,7 @@ class SaiSearchEntityComponentPage extends PageObject<SaiSearchEntityComponent> 
 describe('SaiSearchEntityComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), SaiSearchEntityComponent, RouterTestingModule, TranslateTestingModule],
+      imports: [ModalModule, SaiSearchEntityComponent, RouterTestingModule, TranslateTestingModule],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
   });

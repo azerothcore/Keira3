@@ -31,7 +31,7 @@ class TestHostComponent {
 describe('ReferenceViewerComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [TooltipModule.forRoot(), TestHostComponent, ReferenceViewerComponent],
+      imports: [TooltipModule, TestHostComponent, ReferenceViewerComponent],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
