@@ -16,7 +16,7 @@ import { SelectTrainerService } from './select-trainer.service';
 describe('SelectTrainerComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), ToastrModule.forRoot(), SelectTrainerComponent, RouterTestingModule, TranslateTestingModule],
+      imports: [ModalModule, ToastrModule.forRoot(), SelectTrainerComponent, RouterTestingModule, TranslateTestingModule],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations(), TrainerHandlerService],
     }).compileComponents();
   });

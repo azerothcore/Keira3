@@ -8,7 +8,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 describe('SkillSelectorBtnComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), SkillSelectorBtnComponent],
+      imports: [ModalModule, SkillSelectorBtnComponent],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
   });

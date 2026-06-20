@@ -40,7 +40,7 @@ describe('SpellDbcLocaleComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         ToastrModule.forRoot(),
-        TooltipModule.forRoot(),
+        TooltipModule,
         RouterTestingModule,
         TranslateTestingModule,
         TestHostComponent,

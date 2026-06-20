@@ -10,7 +10,7 @@ import { SwitchLanguageService } from './switch-language.service';
 describe('SwitchLanguageService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), TranslateTestingModule],
+      imports: [ModalModule, TranslateTestingModule],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations(), SwitchLanguageService],
     }).compileComponents();
   });

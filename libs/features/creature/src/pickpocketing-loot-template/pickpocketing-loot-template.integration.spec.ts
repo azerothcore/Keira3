@@ -30,13 +30,7 @@ describe('PickpocketingLootTemplate integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        PickpocketingLootTemplateComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
-      ],
+      imports: [ToastrModule.forRoot(), ModalModule, PickpocketingLootTemplateComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),

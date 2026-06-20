@@ -31,13 +31,7 @@ describe('GameobjectLootTemplate integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        GameobjectLootTemplateComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
-      ],
+      imports: [ToastrModule.forRoot(), ModalModule, GameobjectLootTemplateComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),

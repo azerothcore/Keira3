@@ -36,6 +36,8 @@ export function createVitestConfig(options: VitestConfigOptions) {
     },
     test: {
       globals: true,
+      // Restore spies/mocks between tests so spy call history (e.g. console.error) doesn't bleed across specs.
+      restoreMocks: true,
       pool: 'forks',
       // Angular integration specs are heavy; the 5s vitest default times out on slow/loaded CI (e.g. Windows).
       testTimeout: 15_000,

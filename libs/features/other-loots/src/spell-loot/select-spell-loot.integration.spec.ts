@@ -22,7 +22,7 @@ describe('SelectSpellLoot integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectSpellLootComponent, RouterTestingModule, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, SelectSpellLootComponent, RouterTestingModule, TranslateTestingModule],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations(), SpellLootHandlerService],
     }).compileComponents();
   });

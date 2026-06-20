@@ -40,7 +40,7 @@ describe('CreatureTemplate integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureTemplateComponent, RouterTestingModule, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, CreatureTemplateComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),

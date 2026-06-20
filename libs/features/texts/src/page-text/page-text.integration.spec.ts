@@ -29,7 +29,7 @@ describe('PageText integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), PageTextComponent, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, PageTextComponent, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),

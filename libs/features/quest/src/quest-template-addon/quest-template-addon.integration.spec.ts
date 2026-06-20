@@ -54,7 +54,7 @@ describe('QuestTemplateAddon integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, QuestTemplateAddonComponent, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, RouterTestingModule, QuestTemplateAddonComponent, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),

@@ -28,7 +28,7 @@ describe('GossipMenu integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), GossipMenuComponent, RouterTestingModule, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, GossipMenuComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),

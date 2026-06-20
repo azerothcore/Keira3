@@ -29,10 +29,10 @@ describe('ItemEnchantmentTemplate integration tests', () => {
     TestBed.configureTestingModule({
       imports: [
         ToastrModule.forRoot(),
-        ModalModule.forRoot(),
+        ModalModule,
         ItemEnchantmentTemplateComponent,
         RouterTestingModule,
-        ModalModule.forRoot(),
+        ModalModule,
         TranslateTestingModule,
       ],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations(), ItemHandlerService],

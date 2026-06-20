@@ -28,7 +28,7 @@ describe('CreatureQueststarter integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, CreatureQueststarterComponent, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, RouterTestingModule, CreatureQueststarterComponent, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),

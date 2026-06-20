@@ -38,7 +38,7 @@ describe('GameTele integration tests', () => {
   // TestBed Configuration
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, TranslateTestingModule],
       declarations: [],
       providers: [
         provideZonelessChangeDetection(),

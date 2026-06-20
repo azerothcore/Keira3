@@ -28,13 +28,7 @@ describe('CreatureDefaultTrainer integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        CreatureDefaultTrainerComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
-      ],
+      imports: [ToastrModule.forRoot(), ModalModule, CreatureDefaultTrainerComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),

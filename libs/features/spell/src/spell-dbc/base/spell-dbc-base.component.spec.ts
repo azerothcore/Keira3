@@ -80,9 +80,9 @@ describe('SpellDbcBaseComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        ModalModule.forRoot(),
+        ModalModule,
         ToastrModule.forRoot(),
-        TooltipModule.forRoot(),
+        TooltipModule,
         RouterTestingModule,
         TranslateTestingModule,
         TestHostComponent,

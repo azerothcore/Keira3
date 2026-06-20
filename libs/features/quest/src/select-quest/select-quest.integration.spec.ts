@@ -22,7 +22,7 @@ describe('SelectQuest integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, RouterTestingModule, TranslateTestingModule],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations(), QuestHandlerService],
     }).compileComponents();
   });

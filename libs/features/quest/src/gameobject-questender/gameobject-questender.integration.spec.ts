@@ -28,7 +28,7 @@ describe('GameobjectQuestender integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, GameobjectQuestenderComponent, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, RouterTestingModule, GameobjectQuestenderComponent, TranslateTestingModule],
       providers: [
         { provide: Model3DViewerService, useValue: { generateModels: () => new Promise((resolve) => resolve({ destroy: () => {} })) } },
         provideZonelessChangeDetection(),

@@ -71,3 +71,5 @@ Thumbs.db
 .nx/cache
 .angular
 **/node_modules/*
+
+.claude/worktrees

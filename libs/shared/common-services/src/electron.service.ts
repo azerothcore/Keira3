@@ -28,6 +28,5 @@ export class ElectronService {
 
   isElectron = () => {
     return window && window.process && window.process.type;
-    // eslint-disable-next-line @typescript-eslint/semi, @typescript-eslint/member-delimiter-style
   };
 }

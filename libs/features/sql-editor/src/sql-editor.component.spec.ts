@@ -40,7 +40,7 @@ describe('SqlEditorComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [TooltipModule.forRoot(), SqlEditorComponent, TranslateTestingModule],
+      imports: [TooltipModule, SqlEditorComponent, TranslateTestingModule],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
   });

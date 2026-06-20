@@ -41,7 +41,7 @@ class SelectConditionsComponentPage extends PageObject<SelectConditionsComponent
 describe('SelectConditions integration tests', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectConditionsComponent, RouterTestingModule, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, SelectConditionsComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),

@@ -26,8 +26,8 @@ describe('GameobjectTemplateComponent', () => {
       imports: [
         GameobjectLootTemplateComponent,
         RouterTestingModule,
-        ModalModule.forRoot(),
-        TooltipModule.forRoot(),
+        ModalModule,
+        TooltipModule,
         ToastrModule.forRoot(),
         TranslateTestingModule,
       ],

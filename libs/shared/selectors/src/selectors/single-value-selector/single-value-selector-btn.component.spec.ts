@@ -8,7 +8,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 describe('SingleValueSelectorBtnComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), SingleValueSelectorBtnComponent],
+      imports: [ModalModule, SingleValueSelectorBtnComponent],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
   });

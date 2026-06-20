@@ -31,7 +31,7 @@ describe('SpellDbcTextsComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         ToastrModule.forRoot(),
-        TooltipModule.forRoot(),
+        TooltipModule,
         RouterTestingModule,
         TranslateTestingModule,
         TestHostComponent,
@@ -54,8 +54,11 @@ describe('SpellDbcTextsComponent', () => {
     return { fixture, component, page, form };
   };
 
-  it('should correctly display the locale tabs', () => {
+  it('should correctly display the locale tabs', async () => {
     const { page } = setup();
+    // ngx-bootstrap activates the first tab in a microtask; flush it before asserting.
+    await page.whenStable();
+    page.detectChanges();
 
     for (const locale of LOCALES) {
       const tab = page.getTab(page.localesTabsetId, locale);

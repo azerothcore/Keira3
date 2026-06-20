@@ -24,7 +24,7 @@ describe('CreatureTemplateResistance integration tests', () => {
     TestBed.configureTestingModule({
       imports: [
         ToastrModule.forRoot(),
-        ModalModule.forRoot(),
+        ModalModule,
         NgxSelectModule,
         CreatureTemplateResistanceComponent,
         TranslateTestingModule,

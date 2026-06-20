@@ -94,7 +94,7 @@ describe('ConnectionWindowComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [TooltipModule.forRoot(), ConnectionWindowComponent, TranslateTestingModule],
+      imports: [TooltipModule, ConnectionWindowComponent, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),

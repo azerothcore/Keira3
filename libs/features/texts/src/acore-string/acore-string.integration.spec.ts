@@ -37,7 +37,7 @@ describe('Acore String integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), AcoreStringComponent, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, AcoreStringComponent, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),

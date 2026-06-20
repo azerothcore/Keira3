@@ -22,7 +22,7 @@ describe('SelectFishingLoot integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectFishingLootComponent, RouterTestingModule, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, SelectFishingLootComponent, RouterTestingModule, TranslateTestingModule],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations(), FishingLootHandlerService],
     }).compileComponents();
   });

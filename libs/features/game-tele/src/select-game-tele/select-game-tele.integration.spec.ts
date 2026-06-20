@@ -45,7 +45,7 @@ describe('SelectConditions integration tests', () => {
    */
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, TranslateTestingModule],
       declarations: [],
       providers: [
         provideZonelessChangeDetection(),

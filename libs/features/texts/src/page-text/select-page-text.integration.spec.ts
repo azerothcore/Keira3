@@ -23,7 +23,7 @@ describe(`${SelectPageTextComponent.name} integration tests`, () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectPageTextComponent, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, SelectPageTextComponent, TranslateTestingModule],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations(), PageTextHandlerService],
     }).compileComponents();
   });

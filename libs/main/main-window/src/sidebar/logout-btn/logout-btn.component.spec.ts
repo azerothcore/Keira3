@@ -13,7 +13,7 @@ import { LocationService } from '@keira/shared/common-services';
 describe('LogoutBtnComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), LogoutBtnComponent, ModalConfirmComponent, TranslateTestingModule],
+      imports: [ModalModule, LogoutBtnComponent, ModalConfirmComponent, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),

@@ -43,7 +43,7 @@ describe('GameobjectTemplate integration tests', () => {
     TestBed.configureTestingModule({
       imports: [
         ToastrModule.forRoot(),
-        ModalModule.forRoot(),
+        ModalModule,
         GameobjectTemplateComponent,
         RouterTestingModule,
         TranslateTestingModule,
