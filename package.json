@@ -70,7 +70,7 @@
     "@angular/animations": "20.3.10",
     "@angular/build": "20.3.25",
     "@angular/common": "20.3.10",
-    "@angular/compiler": "20.3.10",
+    "@angular/compiler": "20.3.25",
     "@angular/compiler-cli": "20.3.10",
     "@angular/core": "20.3.10",
     "@angular/forms": "20.3.10",
