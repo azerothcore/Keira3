@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -22,15 +23,15 @@ describe(`${SelectBroadcastTextComponent.name} integration tests`, () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectBroadcastTextComponent, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, SelectBroadcastTextComponent, TranslateTestingModule],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations(), BroadcastTextHandlerService],
     }).compileComponents();
   });
 
   function setup() {
-    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate').mockImplementation(() => undefined);
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([{ max: 1 }]));
 
     const selectService = TestBed.inject(SelectBroadcastTextService);
 
@@ -57,8 +58,8 @@ describe(`${SelectBroadcastTextComponent.name} integration tests`, () => {
     const { fixture, broadcast, querySpy, navigateSpy } = setup();
 
     await fixture.whenStable();
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of([]));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of([]));
 
     broadcast.setInputValue(broadcast.createInput, value);
 
@@ -77,8 +78,8 @@ describe(`${SelectBroadcastTextComponent.name} integration tests`, () => {
     const { fixture, broadcast, querySpy } = setup();
 
     await fixture.whenStable();
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of([{}]));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of([{}]));
 
     broadcast.setInputValue(broadcast.createInput, value);
 
@@ -98,7 +99,7 @@ describe(`${SelectBroadcastTextComponent.name} integration tests`, () => {
     it(`searching an existing entity should correctly work [${id}]`, () => {
       const { broadcast, querySpy } = setup();
 
-      querySpy.calls.reset();
+      querySpy.mockClear();
       if (entry) {
         broadcast.setInputValue(broadcast.searchIdInput, entry);
       }
@@ -117,8 +118,8 @@ describe(`${SelectBroadcastTextComponent.name} integration tests`, () => {
     const { navigateSpy, broadcast, querySpy } = setup();
 
     const results = [{ ID: 1 }, { ID: 2 }, { ID: 3 }];
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of(results));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of(results));
 
     broadcast.clickElement(broadcast.searchBtn);
 

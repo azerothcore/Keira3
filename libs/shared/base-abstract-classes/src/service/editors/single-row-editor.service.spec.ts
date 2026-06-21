@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -31,8 +32,8 @@ describe('SingleRowEditorService', () => {
   describe('when the form value changes', () => {
     function setupFormChange() {
       const { service } = setup();
-      const updateDiffQuerySpy = spyOn<any>(service, 'updateDiffQuery');
-      const updateFullQuerySpy = spyOn<any>(service, 'updateFullQuery');
+      const updateDiffQuerySpy = vi.spyOn<any>(service, 'updateDiffQuery').mockImplementation(() => undefined);
+      const updateFullQuerySpy = vi.spyOn<any>(service, 'updateFullQuery').mockImplementation(() => undefined);
       return { service, updateDiffQuerySpy, updateFullQuerySpy };
     }
 
@@ -82,8 +83,8 @@ describe('SingleRowEditorService', () => {
     const { service } = setup();
     service['_diffQuery'] = '';
     const queryResult = '-- Mock query result';
-    const getQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getUpdateQuery').and.returnValue(queryResult);
-    spyOn<any>(service, 'updateEditorStatus');
+    const getQuerySpy = vi.spyOn(TestBed.inject(MysqlQueryService), 'getUpdateQuery').mockReturnValue(queryResult);
+    vi.spyOn<any>(service, 'updateEditorStatus').mockImplementation(() => undefined);
 
     service['updateDiffQuery']();
 
@@ -102,7 +103,7 @@ describe('SingleRowEditorService', () => {
     const { service } = setup();
     service['_fullQuery'] = '';
     const queryResult = '-- Mock query result';
-    const getQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getFullDeleteInsertQuery').and.returnValue(queryResult);
+    const getQuerySpy = vi.spyOn(TestBed.inject(MysqlQueryService), 'getFullDeleteInsertQuery').mockReturnValue(queryResult);
 
     service['updateFullQuery']();
 
@@ -116,7 +117,7 @@ describe('SingleRowEditorService', () => {
 
     function setupReload() {
       const { service } = setup();
-      const updateFullQuerySpy = spyOn<any>(service, 'updateFullQuery');
+      const updateFullQuerySpy = vi.spyOn<any>(service, 'updateFullQuery').mockImplementation(() => undefined);
       return { service, updateFullQuerySpy };
     }
 

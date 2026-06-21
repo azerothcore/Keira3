@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -27,24 +28,24 @@ describe('SqliteQueryService', () => {
     it('should correctly work', () => {
       const { service } = setup();
       const value = 'mock result value';
-      spyOn(service, 'query').and.returnValue(of([{ v: value }]));
+      vi.spyOn(service, 'query').mockReturnValue(of([{ v: value }]));
       const query = 'SELECT something AS v FROM my_table WHERE index = 123';
 
       service.queryValue(query).subscribe((result) => {
         expect(result).toEqual(value);
       });
-      expect(service.query).toHaveBeenCalledOnceWith(query);
+      expect(service.query).toHaveBeenCalledExactlyOnceWith(query);
     });
 
     it('should be safe in case of no results', () => {
       const { service } = setup();
-      spyOn(service, 'query').and.returnValue(of(null as any));
+      vi.spyOn(service, 'query').mockReturnValue(of(null as any));
       const query = 'SELECT something AS v FROM my_table WHERE index = 123';
 
       service.queryValue(query).subscribe((result) => {
         expect(result).toEqual(null);
       });
-      expect(service.query).toHaveBeenCalledOnceWith(query);
+      expect(service.query).toHaveBeenCalledExactlyOnceWith(query);
     });
   });
 
@@ -54,8 +55,8 @@ describe('SqliteQueryService', () => {
 
     function setupHelpers() {
       const { service } = setup();
-      spyOn(service, 'queryValue').and.returnValue(of(mockResult));
-      spyOn(service, 'queryValueToPromise').and.returnValue(Promise.resolve(mockResult));
+      vi.spyOn(service, 'queryValue').mockReturnValue(of(mockResult));
+      vi.spyOn(service, 'queryValueToPromise').mockReturnValue(Promise.resolve(mockResult));
       return { service };
     }
 
@@ -125,7 +126,7 @@ describe('SqliteQueryService', () => {
 
     it('getLockById', async () => {
       const { service } = setupHelpers();
-      spyOn(service, 'query').and.returnValue(of([]));
+      vi.spyOn(service, 'query').mockReturnValue(of([]));
       expect(await service.getLockById(id)).toEqual([]);
       expect(await service.getLockById(id)).toEqual([]); // check cache
       expect(service.query).toHaveBeenCalledTimes(1); // check cache
@@ -143,7 +144,7 @@ describe('SqliteQueryService', () => {
 
     it('getItemExtendedCost', async () => {
       const { service } = setupHelpers();
-      spyOn(service, 'query').and.returnValue(of([]));
+      vi.spyOn(service, 'query').mockReturnValue(of([]));
       expect(await service.getItemExtendedCost([])).toEqual([]);
       expect(await service.getItemExtendedCost([])).toEqual([]); // check cache
       expect(service.query).toHaveBeenCalledTimes(1); // check cache

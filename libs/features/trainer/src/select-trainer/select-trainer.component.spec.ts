@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -15,14 +16,14 @@ import { SelectTrainerService } from './select-trainer.service';
 describe('SelectTrainerComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), ToastrModule.forRoot(), SelectTrainerComponent, RouterTestingModule, TranslateTestingModule],
+      imports: [ModalModule, ToastrModule.forRoot(), SelectTrainerComponent, RouterTestingModule, TranslateTestingModule],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations(), TrainerHandlerService],
     }).compileComponents();
   });
 
   const setup = () => {
     const queryService = TestBed.inject(MysqlQueryService);
-    spyOn(queryService, 'query').and.returnValue(of());
+    vi.spyOn(queryService, 'query').mockReturnValue(of());
 
     const fixture = TestBed.createComponent(SelectTrainerComponent);
     const component = fixture.componentInstance;

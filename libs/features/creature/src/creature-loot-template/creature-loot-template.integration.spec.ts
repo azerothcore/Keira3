@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -29,7 +30,7 @@ describe('CreatureLootTemplate integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureLootTemplateComponent, RouterTestingModule, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, CreatureLootTemplateComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
@@ -41,19 +42,19 @@ describe('CreatureLootTemplate integration tests', () => {
   });
 
   function setup(creatingNew: boolean, lootId = id) {
-    spyOn(TestBed.inject(CreatureLootTemplateService), 'getLootId').and.returnValue(of([{ lootId }]));
+    vi.spyOn(TestBed.inject(CreatureLootTemplateService), 'getLootId').mockReturnValue(of([{ lootId }]));
 
     const handlerService = TestBed.inject(CreatureHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
-    spyOn(queryService, 'queryValue').and.returnValue(of());
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
+    vi.spyOn(queryService, 'queryValue').mockReturnValue(of());
     const itemNamePromise = of(`MockItemName`).toPromise();
-    spyOn(queryService, 'getItemNameById').and.returnValue(itemNamePromise as Promise<string>);
+    vi.spyOn(queryService, 'getItemNameById').mockReturnValue(itemNamePromise as Promise<string>);
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
     const fixture = TestBed.createComponent(CreatureLootTemplateComponent);
     const page = new CreatureLootTemplatePage(fixture);
@@ -92,7 +93,7 @@ describe('CreatureLootTemplate integration tests', () => {
       expect(handlerService.isCreatureLootTemplateUnsaved()).toBe(false);
     });
 
-    xit('should reflect the item names', async () => {
+    it.skip('should reflect the item names', async () => {
       const { page } = setup(true);
       page.addNewRow();
       page.detectChanges();
@@ -109,7 +110,7 @@ describe('CreatureLootTemplate integration tests', () => {
         "(1234, 0, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
         "(1234, 1, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
         "(1234, 2, 0, 100, 0, 1, 0, 1, 1, '');";
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(1);
@@ -119,9 +120,23 @@ describe('CreatureLootTemplate integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(3);
       page.expectDiffQueryToContain(expectedQuery);
 
+      page.expectDiffQueryToDeleteInsert(
+        'creature_loot_template',
+        'Entry',
+        1234,
+        'Item',
+        [0, 1, 2],
+        ['Entry', 'Item', 'Reference', 'Chance', 'QuestRequired', 'LootMode', 'GroupId', 'MinCount', 'MaxCount', 'Comment'],
+        [
+          [1234, 0, 0, 100, 0, 1, 0, 1, 1, ''],
+          [1234, 1, 0, 100, 0, 1, 0, 1, 1, ''],
+          [1234, 2, 0, 100, 0, 1, 0, 1, 1, ''],
+        ],
+      );
+
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
 
     it('adding a row and changing its values should correctly update the queries', () => {

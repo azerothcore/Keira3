@@ -1,3 +1,4 @@
+import { vi, type MockInstance } from 'vitest';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -9,13 +10,12 @@ import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-uti
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { tickAsync } from 'ngx-page-object-model';
 import { ToastrModule } from 'ngx-toastr';
-import { beforeEach, describe, it } from 'node:test';
 import { of } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
 import { QuestHandlerService } from '../quest-handler.service';
+import { QUEST_PREVIEW_DEBOUNCE_TIME } from '../quest-preview/quest-preview.component';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { QuestTemplateAddonComponent } from './quest-template-addon.component';
-import Spy = jasmine.Spy;
 
 class QuestTemplateAddonPage extends EditorPageObject<QuestTemplateAddonComponent> {
   get questPreviewReqLevel() {
@@ -54,7 +54,7 @@ describe('QuestTemplateAddon integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, QuestTemplateAddonComponent, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, RouterTestingModule, QuestTemplateAddonComponent, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
@@ -71,15 +71,15 @@ describe('QuestTemplateAddon integration tests', () => {
 
     const sqliteQueryService = TestBed.inject(SqliteQueryService);
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
-    spyOn(sqliteQueryService, 'query').and.returnValue(of([{ ID: 123, spellName: 'Mock Spell' }]));
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
+    vi.spyOn(sqliteQueryService, 'query').mockReturnValue(of([{ ID: 123, spellName: 'Mock Spell' }]));
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalEntity]));
     // by default the other editor services should not be initialised, because the selectAll would return the wrong types for them
-    const initializeServicesSpy = spyOn(TestBed.inject(QuestPreviewService), 'initializeServices');
+    const initializeServicesSpy = vi.spyOn(TestBed.inject(QuestPreviewService), 'initializeServices').mockImplementation(() => undefined);
     if (creatingNew) {
       // when creatingNew, the selectAll will return an empty array, so it's fine
-      initializeServicesSpy.and.callThrough();
+      initializeServicesSpy.mockRestore();
     }
 
     const fixture = TestBed.createComponent(QuestTemplateAddonComponent);
@@ -120,7 +120,7 @@ describe('QuestTemplateAddon integration tests', () => {
         ' `RequiredMinRepFaction`, `RequiredMaxRepFaction`, `RequiredMinRepValue`, `RequiredMaxRepValue`, `ProvidedItemCount`,' +
         ' `SpecialFlags`) VALUES\n' +
         '(1234, 33, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);';
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.setInputValueById('MaxLevel', 33);
       page.expectFullQueryToContain(expectedQuery);
@@ -128,17 +128,17 @@ describe('QuestTemplateAddon integration tests', () => {
       page.clickExecuteQuery();
 
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
       page.removeNativeElement();
     });
 
     it('changing a property should be reflected in the quest preview', async () => {
       const { page } = setup(true);
       const value = 80;
-      page.detectChanges();
 
       page.setInputValueById('MaxLevel', value);
-      await tickAsync();
+      await tickAsync(QUEST_PREVIEW_DEBOUNCE_TIME);
+      await page.fixture.whenStable();
 
       expect(page.questPreviewReqLevel.innerText).toContain(`0 - ${value}`);
       page.removeNativeElement();
@@ -169,14 +169,14 @@ describe('QuestTemplateAddon integration tests', () => {
         '`RewardMailTemplateID` = 6, `RewardMailDelay` = 7, `RequiredSkillID` = 8, `RequiredSkillPoints` = 9, ' +
         '`RequiredMinRepFaction` = 10, `RequiredMaxRepFaction` = 11, `RequiredMinRepValue` = 12, `RequiredMaxRepValue` = 13, ' +
         '`ProvidedItemCount` = 14, `SpecialFlags` = 15 WHERE (`ID` = 1234);';
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.expectDiffQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
       page.removeNativeElement();
     });
 
@@ -206,7 +206,7 @@ describe('QuestTemplateAddon integration tests', () => {
       page.removeNativeElement();
     });
 
-    xit('changing a value via FlagsSelector should correctly work', async () => {
+    it.skip('changing a value via FlagsSelector should correctly work', async () => {
       const { page } = setup(false);
       const field = 'SpecialFlags';
       page.clickElement(page.getSelectorBtn(field));
@@ -234,7 +234,7 @@ describe('QuestTemplateAddon integration tests', () => {
       page.removeNativeElement();
     });
 
-    xit('changing a value via SpellSelector should correctly work', async () => {
+    it.skip('changing a value via SpellSelector should correctly work', async () => {
       const { page } = setup(false);
 
       //  note: previously disabled because of:
@@ -264,11 +264,11 @@ describe('QuestTemplateAddon integration tests', () => {
       page.removeNativeElement();
     });
 
-    xit('changing a value via QuestSelector should correctly work', async () => {
+    it.skip('changing a value via QuestSelector should correctly work', async () => {
       const { page, fixture } = setup(false);
       const field = 'NextQuestID';
       const mysqlQueryService = TestBed.inject(MysqlQueryService);
-      (mysqlQueryService.query as Spy).and.returnValue(of([{ ID: 123, LogTitle: 'Mock Quest' }]));
+      (mysqlQueryService.query as MockInstance).mockReturnValue(of([{ ID: 123, LogTitle: 'Mock Quest' }]));
 
       page.clickElement(page.getSelectorBtn(field));
       await page.whenReady();

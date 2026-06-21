@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { Component, provideZonelessChangeDetection, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -30,7 +31,7 @@ class TestHostComponent {
 describe('ReferenceViewerComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [TooltipModule.forRoot(), TestHostComponent, ReferenceViewerComponent],
+      imports: [TooltipModule, TestHostComponent, ReferenceViewerComponent],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
@@ -55,7 +56,7 @@ describe('ReferenceViewerComponent', () => {
     const mockLootRows: LootTemplate[] = [new LootTemplate(), new LootTemplate(), new LootTemplate()];
     mockLootRows[0].Reference = 111;
     mockLootRows[1].Reference = 222;
-    const getReferenceByIdSpy = spyOn(service, 'getReferenceById').and.returnValues(of(mockLootRows), of([]));
+    const getReferenceByIdSpy = vi.spyOn(service, 'getReferenceById').mockReturnValueOnce(of(mockLootRows)).mockReturnValueOnce(of([]));
 
     fixture.detectChanges();
 
@@ -74,7 +75,7 @@ describe('ReferenceViewerComponent', () => {
       mockLootRows[0].GroupId = 0;
       mockLootRows[1].Chance = 75;
       mockLootRows[1].GroupId = 0;
-      spyOn(service, 'getReferenceById').and.returnValue(of(mockLootRows));
+      vi.spyOn(service, 'getReferenceById').mockReturnValue(of(mockLootRows));
 
       fixture.detectChanges();
 
@@ -94,7 +95,7 @@ describe('ReferenceViewerComponent', () => {
       mockLootRows[1].GroupId = 1;
       mockLootRows[2].Chance = 0;
       mockLootRows[2].GroupId = 1;
-      spyOn(service, 'getReferenceById').and.returnValue(of(mockLootRows));
+      vi.spyOn(service, 'getReferenceById').mockReturnValue(of(mockLootRows));
 
       fixture.detectChanges();
 
@@ -114,7 +115,7 @@ describe('ReferenceViewerComponent', () => {
       mockLootRows[0].GroupId = 2;
       mockLootRows[1].Chance = 60;
       mockLootRows[1].GroupId = 2;
-      spyOn(service, 'getReferenceById').and.returnValue(of(mockLootRows));
+      vi.spyOn(service, 'getReferenceById').mockReturnValue(of(mockLootRows));
 
       fixture.detectChanges();
 
@@ -148,7 +149,7 @@ describe('ReferenceViewerComponent', () => {
       mockLootRows[3].GroupId = 2;
       mockLootRows[4].Chance = 60;
       mockLootRows[4].GroupId = 2;
-      spyOn(service, 'getReferenceById').and.returnValue(of(mockLootRows));
+      vi.spyOn(service, 'getReferenceById').mockReturnValue(of(mockLootRows));
 
       fixture.detectChanges();
 
@@ -173,7 +174,7 @@ describe('ReferenceViewerComponent', () => {
       mockLootRows[1].GroupId = 1;
       mockLootRows[2].Chance = 0;
       mockLootRows[2].GroupId = 1;
-      spyOn(service, 'getReferenceById').and.returnValue(of(mockLootRows));
+      vi.spyOn(service, 'getReferenceById').mockReturnValue(of(mockLootRows));
 
       fixture.detectChanges();
 

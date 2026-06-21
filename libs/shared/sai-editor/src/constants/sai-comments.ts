@@ -256,3 +256,4 @@ SAI_ACTION_COMMENTS[SAI_ACTIONS.DISABLE_REWARD] =
   `Disable reward: Disable Reputation _onOffActionParamOne_, Disable Loot _onOffActionParamTwo_`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_ANIM_TIER] = `Set AnimTier _actionParamOne_`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_GOSSIP_MENU] = `Set Gossip ID _actionParamOne_`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.INC_DATA] = `Increment Field _actionParamOne_ By _actionParamTwo_`;

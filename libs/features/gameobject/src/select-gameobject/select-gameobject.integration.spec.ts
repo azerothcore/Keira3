@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -23,7 +24,7 @@ describe('SelectGameobject integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectGameobjectComponent, RouterTestingModule, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, SelectGameobjectComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
@@ -35,9 +36,9 @@ describe('SelectGameobject integration tests', () => {
   });
 
   function setup() {
-    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate').mockImplementation(() => undefined);
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1, type: 0 }]));
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([{ max: 1, type: 0 }]));
 
     const fixture = TestBed.createComponent(SelectGameobjectComponent);
     const page = new SelectGameobjectComponentPage(fixture);
@@ -60,8 +61,8 @@ describe('SelectGameobject integration tests', () => {
   it('should correctly behave when inserting and selecting free id', async () => {
     const { fixture, page, querySpy, navigateSpy } = setup();
     await fixture.whenStable();
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of([]));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of([]));
 
     page.setInputValue(page.createInput, value);
 
@@ -79,8 +80,8 @@ describe('SelectGameobject integration tests', () => {
   it('should correctly behave when inserting an existing entity', async () => {
     const { fixture, page, querySpy } = setup();
     await fixture.whenStable();
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of(['mock value'] as any));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of(['mock value'] as any));
 
     page.setInputValue(page.createInput, value);
 
@@ -133,7 +134,7 @@ describe('SelectGameobject integration tests', () => {
   ]) {
     it(`searching an existing entity should correctly work [${testId}]`, () => {
       const { page, querySpy } = setup();
-      querySpy.calls.reset();
+      querySpy.mockClear();
       if (id) {
         page.setInputValue(page.searchIdInput, id);
       }
@@ -161,8 +162,8 @@ describe('SelectGameobject integration tests', () => {
       { id: 2, name: 'An awesome Gameobject 2', type: 0, displayId: 2 },
       { id: 3, name: 'An awesome Gameobject 3', type: 0, displayId: 3 },
     ];
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of(results as any));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of(results as any));
 
     page.clickElement(page.searchBtn);
 

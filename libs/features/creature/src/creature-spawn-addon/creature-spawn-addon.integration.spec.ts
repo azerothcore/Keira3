@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -28,7 +29,7 @@ describe('CreatureSpawnAddon integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureSpawnAddonComponent, RouterTestingModule, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, CreatureSpawnAddonComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
@@ -45,9 +46,9 @@ describe('CreatureSpawnAddon integration tests', () => {
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    spyOn(queryService, 'query').and.returnValue(of([]));
+    vi.spyOn(queryService, 'query').mockReturnValue(of([]));
 
-    spyOn(TestBed.inject(CreatureSpawnAddonService), 'selectQuery').and.returnValue(
+    vi.spyOn(TestBed.inject(CreatureSpawnAddonService), 'selectQuery').mockReturnValue(
       of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]),
     );
 

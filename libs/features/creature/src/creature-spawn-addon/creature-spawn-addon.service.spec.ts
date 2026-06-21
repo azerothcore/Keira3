@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -29,13 +30,13 @@ describe('CreatureSpawnAddonService', () => {
 
   it('selectQuery should correctly work', () => {
     const service: CreatureSpawnAddonService = TestBed.inject(CreatureSpawnAddonService);
-    const querySpy = spyOn(TestBed.inject(MysqlQueryService), 'query');
+    const querySpy = vi.spyOn(TestBed.inject(MysqlQueryService), 'query').mockImplementation(() => undefined);
     const id = 123;
 
     service.selectQuery(id);
 
     expect(querySpy).toHaveBeenCalledWith(
-      `SELECT a.* FROM creature AS c INNER JOIN creature_addon AS a ON c.guid = a.guid WHERE c.id1 = ${id}`,
+      `SELECT a.* FROM creature AS c INNER JOIN creature_addon AS a ON c.guid = a.guid WHERE c.id = ${id}`,
     );
   });
 });

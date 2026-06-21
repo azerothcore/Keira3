@@ -7,7 +7,7 @@ import { AreaSelectorBtnComponent } from './area-selector-btn.component';
 describe('AreaSelectorBtnComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), AreaSelectorBtnComponent],
+      imports: [ModalModule, AreaSelectorBtnComponent],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
   });

@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "angular-developer": {
+      "source": "angular/skills",
+      "sourceType": "github",
+      "skillPath": "angular-developer/SKILL.md",
+      "computedHash": "36f7f57e1485c994de62eae5b00f54c12f81d1d16661afa6d3c214dd9bcf7269"
+    },
+    "ngx-page-object-model": {
+      "source": "FrancescoBorzi/ngx-page-object-model",
+      "sourceType": "github",
+      "skillPath": "skills/ngx-page-object-model/SKILL.md",
+      "computedHash": "64d835f2080da43b7112fd09805b5e3ed4fb3a614a7ebdab75160749a6a89158"
+    }
+  }
+}

@@ -181,6 +181,7 @@ export enum SAI_ACTIONS {
   DISABLE_REWARD = 238,
   SET_ANIM_TIER = 239,
   SET_GOSSIP_MENU = 240,
+  INC_DATA = 242,
 }
 export const SAI_ACTIONS_KEYS = getEnumKeys(SAI_ACTIONS);
 export const SAI_ACTION_TOOLTIPS: Record<string, string> = {};
@@ -1333,3 +1334,10 @@ SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_ANIM_TIER] = '0 = Ground, 1 = Swim, 2
 // SMART_ACTION_SET_GOSSIP_MENU
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_GOSSIP_MENU] = 'Modifies the gossip menu ID of the target.';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_GOSSIP_MENU] = 'GossipMenuId';
+
+// SMART_ACTION_INC_DATA
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.INC_DATA] =
+  "Increments the target's aiDataSet[field] by the given delta and fires SMART_EVENT_DATA_SET. " +
+  'Unlike SET_COUNTER, the value persists across evade and is only cleared on respawn/initialization.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.INC_DATA] = 'Field';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.INC_DATA] = 'Increment';

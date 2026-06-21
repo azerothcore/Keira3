@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -29,13 +30,7 @@ describe('CreatureOnkillReputation integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        CreatureOnkillReputationComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
-      ],
+      imports: [ToastrModule.forRoot(), ModalModule, CreatureOnkillReputationComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
@@ -52,9 +47,9 @@ describe('CreatureOnkillReputation integration tests', () => {
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalEntity]));
 
     const fixture = TestBed.createComponent(CreatureOnkillReputationComponent);
     const page = new CreatureOnkillReputationPage(fixture);
@@ -89,7 +84,7 @@ describe('CreatureOnkillReputation integration tests', () => {
         ' `RewOnKillRepFaction2`, `MaxStanding1`, `IsTeamAward1`, `RewOnKillRepValue1`, ' +
         '`MaxStanding2`, `IsTeamAward2`, `RewOnKillRepValue2`, `TeamDependent`) VALUES\n' +
         '(1234, 2, 0, 0, 0, 0, 0, 0, 0, 0);';
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.setInputValueById('RewOnKillRepFaction1', '2');
       page.expectFullQueryToContain(expectedQuery);
@@ -97,7 +92,7 @@ describe('CreatureOnkillReputation integration tests', () => {
       page.clickExecuteQuery();
 
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
   });
 
@@ -115,7 +110,7 @@ describe('CreatureOnkillReputation integration tests', () => {
         'UPDATE `creature_onkill_reputation` SET ' +
         '`RewOnKillRepFaction2` = 1, `MaxStanding1` = 1, `IsTeamAward1` = 1, `RewOnKillRepValue1` = 4, ' +
         '`MaxStanding2` = 1, `IsTeamAward2` = 1, `RewOnKillRepValue2` = 7, `TeamDependent` = 1 WHERE (`creature_id` = 1234);';
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       const IsTeamAward1 = page.getDebugElementByCss<HTMLSelectElement>('#IsTeamAward1 select').nativeElement;
       const IsTeamAward2 = page.getDebugElementByCss<HTMLSelectElement>('#IsTeamAward2 select').nativeElement;
@@ -131,7 +126,7 @@ describe('CreatureOnkillReputation integration tests', () => {
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
 
     it('changing values should correctly update the queries', () => {
@@ -160,7 +155,7 @@ describe('CreatureOnkillReputation integration tests', () => {
       );
     });
 
-    xit('changing a value via SingleValueSelector should correctly work', async () => {
+    it.skip('changing a value via SingleValueSelector should correctly work', async () => {
       const { page } = setup(false);
       const field = 'MaxStanding1';
       page.clickElement(page.getSelectorBtn(field));
@@ -183,11 +178,11 @@ describe('CreatureOnkillReputation integration tests', () => {
       );
     });
 
-    xit('changing a value via FactionSelector should correctly work', async () => {
+    it.skip('changing a value via FactionSelector should correctly work', async () => {
       const { fixture, page } = setup(false);
       const field = 'RewOnKillRepFaction1';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
-      spyOn(sqliteQueryService, 'query').and.returnValue(of([{ m_ID: 123, m_name_lang_1: 'Mock Faction' }]));
+      vi.spyOn(sqliteQueryService, 'query').mockReturnValue(of([{ m_ID: 123, m_name_lang_1: 'Mock Faction' }]));
 
       page.clickElement(page.getSelectorBtn(field));
       await page.whenReady();

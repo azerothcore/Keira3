@@ -14,7 +14,7 @@
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "skipLibCheck": true,
@@ -23,6 +23,7 @@
     "lib": ["es2017", "es2016", "es2015", "dom"],
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
     "paths": {
       "@keira/features/conditions": ["libs/features/conditions/src/index.ts"],
       "@keira/features/creature": ["libs/features/creature/src/index.ts"],
@@ -56,8 +57,7 @@
       "@keira/shared/selectors": ["libs/shared/selectors/src/index.ts"],
       "@keira/shared/switch-language": ["libs/shared/switch-language/src/index.ts"],
       "@keira/shared/test-utils": ["libs/shared/test-utils/src/index.ts"],
-      "@keira/shared/utils": ["libs/shared/utils/src/index.ts"],
-      "texts": ["libs/features/texts/src/index.ts"]
+      "@keira/shared/utils": ["libs/shared/utils/src/index.ts"]
     },
     "rootDir": "."
   },

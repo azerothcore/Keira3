@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Directive, inject, OnInit } from '@angular/core';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 import { TableRow, WIKI_BASE_URL } from '@keira/shared/constants';
@@ -6,10 +6,7 @@ import { compareObjFn, SubscriptionHandler } from '@keira/shared/utils';
 import { EditorService } from '../../service/editors/editor.service';
 import { HandlerService } from '../../service/handlers/handler.service';
 
-@Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  template: '',
-})
+@Directive()
 export abstract class EditorComponent<T extends TableRow> extends SubscriptionHandler implements OnInit {
   protected abstract readonly editorService: EditorService<T>;
   protected abstract readonly handlerService: HandlerService<T>;

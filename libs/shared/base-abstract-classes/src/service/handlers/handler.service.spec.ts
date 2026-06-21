@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -29,7 +30,7 @@ describe('HandlerService', () => {
 
   it('selection should behave correctly', () => {
     const { service } = setup();
-    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate').mockImplementation(() => undefined);
     const id = 'myId';
     const name = 'myName';
     const isNew = true;
@@ -66,11 +67,11 @@ describe('HandlerService', () => {
     const isNew = true;
 
     service['_selected'] = id;
-    expect(service.forceReload).toBeFalse();
+    expect(service.forceReload).toBe(false);
 
     service.select(isNew, id, name);
 
-    expect(service.forceReload).toBeTrue();
+    expect(service.forceReload).toBe(true);
   });
 
   it('should correctly save custom scss class', () => {
@@ -88,7 +89,7 @@ describe('HandlerService', () => {
 
   it('should not navigate when navigate is false', () => {
     const { service } = setup();
-    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate').mockImplementation(() => undefined);
     const id = 'myId';
     const name = 'myName';
 

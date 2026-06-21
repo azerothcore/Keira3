@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -28,7 +29,7 @@ describe('PageText integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), PageTextComponent, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, PageTextComponent, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
@@ -43,9 +44,9 @@ describe('PageText integration tests', () => {
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalEntity]));
 
     const fixture = TestBed.createComponent(PageTextComponent);
     const component = fixture.componentInstance;
@@ -82,7 +83,7 @@ describe('PageText integration tests', () => {
         'DELETE FROM `page_text` WHERE (`ID` = 1234);\n' +
         'INSERT INTO `page_text` (`ID`, `Text`, `NextPageID`, `VerifiedBuild`) VALUES\n' +
         "(1234, 'Shin', 0, 0);";
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.setInputValueById('Text', 'Shin');
       page.expectFullQueryToContain(expectedQuery);
@@ -90,7 +91,7 @@ describe('PageText integration tests', () => {
       page.clickExecuteQuery();
 
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
       page.removeNativeElement();
     });
   });
@@ -111,14 +112,14 @@ describe('PageText integration tests', () => {
     it('changing all properties and executing the query should correctly work', () => {
       const { page, querySpy } = setup(false);
       const expectedQuery = "UPDATE `page_text` SET `Text` = '0', `NextPageID` = 1 WHERE (`ID` = 1234);";
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.expectDiffQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
       page.removeNativeElement();
     });
 
