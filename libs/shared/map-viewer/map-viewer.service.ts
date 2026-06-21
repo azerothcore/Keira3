@@ -1,7 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { MAP_CONFIG, WorldMapArea } from './map-viewer.model';
-import { get } from 'jquery';
 
 @Injectable({
   providedIn: 'root',

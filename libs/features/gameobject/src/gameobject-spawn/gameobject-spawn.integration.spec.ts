@@ -50,6 +50,7 @@ describe('GameobjectSpawn integration tests', () => {
     const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
 
     vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
+    vi.spyOn(queryService, 'getAllWorldMapAreas').mockResolvedValue([]);
 
     const fixture = TestBed.createComponent(GameobjectSpawnComponent);
     const page = new GameobjectSpawnPage(fixture);

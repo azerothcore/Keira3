@@ -1,13 +1,11 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { MapViewerService } from './map-viewer.service';
 import { MapDisplayData, MapPoint, RenderedPoint, WorldMapArea, worldToMapPercent } from './map-viewer.model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-map-viewer',
-  standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './map-viewer.component.html',
   styleUrl: './map-viewer.component.scss',
 })
@@ -21,11 +19,7 @@ export class MapViewerComponent {
   readonly points = input<MapPoint[]>([]);
 
   constructor() {
-    effect(() => {
-      const pts = this.points();
-      console.log(`[MapViewer] points changed — ${pts.length} points`);
-      void this.resolveMaps(pts);
-    });
+    effect(() => void this.resolveMaps(this.points()));
   }
 
   private async resolveMaps(pts: MapPoint[]): Promise<void> {
@@ -55,8 +49,6 @@ export class MapViewerComponent {
 
         const displayMapId = this.mapViewerService.resolveDisplayMapId(match);
         const uid = `${displayMapId}-${match.AreaID}`;
-
-        console.log(`[MapViewer] point "${pt.name}" → area="${match.AreaName}" uid=${uid}`);
 
         if (!areaMap.has(uid)) {
           areaMap.set(uid, { area: match, points: [] });

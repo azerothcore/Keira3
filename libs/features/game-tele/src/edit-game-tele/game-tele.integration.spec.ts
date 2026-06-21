@@ -62,6 +62,7 @@ describe('GameTele integration tests', () => {
     const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
 
     vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalEntity]));
+    vi.spyOn(queryService, 'getAllWorldMapAreas').mockResolvedValue([]);
 
     const _fixture = TestBed.createComponent(GameTeleComponent);
     const page = new GameTelePage(_fixture);

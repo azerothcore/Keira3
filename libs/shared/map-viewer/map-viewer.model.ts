@@ -1,7 +1,7 @@
 import { TableRow } from '@keira/shared/constants';
 
 export const MAP_CONFIG = {
-  baseUrl: 'https://cdn.wowclassicdb.com/maps/',
+  baseUrl: 'https://wow.zamimg.com/images/wow/wrath/maps/enus/normal/',
   format: 'jpg' as const,
 };
 

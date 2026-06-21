@@ -522,10 +522,6 @@ export class QuestPreviewService {
   async getMapPoints(): Promise<MapPoint[]> {
     const points: MapPoint[] = [];
 
-    console.log(
-      `[QuestPreview] getMapPoints: ${this.creatureQueststarterList.length} starters, ${this.creatureQuestenderList.length} enders, ${this.gameobjectQueststarterList.length} go-starters, ${this.gameobjectQuestenderList.length} go-enders`,
-    );
-
     await this.addCreaturePoints(points, this.creatureQueststarterList, '(Start)', 'quest/quest_start.gif');
     await this.addCreaturePoints(points, this.creatureQuestenderList, '(End)', 'quest/quest_end.gif');
     await this.addGameobjectPoints(points, this.gameobjectQueststarterList, '(Start)', 'quest/quest_start.gif');
@@ -533,7 +529,6 @@ export class QuestPreviewService {
     await this.addObjectivePoints(points);
     await this.addPoiPoints(points);
 
-    console.log(`[QuestPreview] getMapPoints total: ${points.length}`);
     return points;
   }
 
@@ -574,7 +569,6 @@ export class QuestPreviewService {
   private async addObjectivePoints(points: MapPoint[]): Promise<void> {
     for (let i = 1; i <= 4; i++) {
       const requiredNpcOrGo = Number(this.questTemplate[`RequiredNpcOrGo${i}`]);
-      console.log(`[QuestPreview] objective ${i}: RequiredNpcOrGo=${requiredNpcOrGo}`);
       if (!requiredNpcOrGo) continue;
 
       if (requiredNpcOrGo > 0) {
@@ -624,7 +618,6 @@ export class QuestPreviewService {
       }
       const worldX = area.LocTop - (pt.y / 1000) * (area.LocTop - area.LocBottom);
       const worldY = area.LocLeft - (pt.x / 1000) * (area.LocLeft - area.LocRight);
-      console.log(`[QuestPreview] POI: ui=(${pt.x}, ${pt.y}) → world=(${worldX}, ${worldY}) area=${area.AreaName}`);
       points.push({ mapId: pt.mapId, x: worldX, y: worldY, name: 'POI', icon: 'map/pin-yellow.png' });
     }
   }
