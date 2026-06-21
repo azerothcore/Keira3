@@ -1,8 +1,9 @@
+import { vi, type MockInstance } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { ChangeDetectorRef } from '@angular/core';
 
-export const mockChangeDetectorRef = { markForCheck: jasmine.createSpy() } as unknown as ChangeDetectorRef;
+export const mockChangeDetectorRef = { markForCheck: vi.fn() } as unknown as ChangeDetectorRef;
 
 export function closeModalsAfterEach() {
   afterEach(() => {
@@ -12,5 +13,5 @@ export function closeModalsAfterEach() {
 }
 
 export type Spied<T> = {
-  [Method in keyof T]: jasmine.Spy;
+  [Method in keyof T]: MockInstance;
 };

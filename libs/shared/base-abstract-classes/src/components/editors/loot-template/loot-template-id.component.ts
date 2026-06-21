@@ -1,19 +1,14 @@
 /* istanbul ignore file */ // TODO: fix coverage
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { Directive, OnInit } from '@angular/core';
 import { QueryError } from 'mysql2';
 
 import { LootTemplate } from '@keira/shared/acore-world-model';
 import { HandlerService } from '../../../service/handlers/handler.service';
 import { LootEditorIdService } from '../../../service/editors/loot-editor-id.service';
 import { LootTemplateComponent } from './loot-template.component';
-import { TranslateModule } from '@ngx-translate/core';
 
 // Extended only by the loot tables that require a template loot id
-@Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  template: '',
-  imports: [TranslateModule],
-})
+@Directive()
 export abstract class LootTemplateIdComponent<T extends LootTemplate> extends LootTemplateComponent<T> implements OnInit {
   protected abstract override editorService: LootEditorIdService<T>;
   protected abstract override handlerService: HandlerService<T>;

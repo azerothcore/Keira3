@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -77,7 +78,7 @@ describe('SAI Editor Service', () => {
 
     it('updateFullQuery should correctly work', () => {
       const { service, queryService } = setupNullTemplate();
-      const spy = spyOn(queryService, 'getFullDeleteInsertQuery').and.returnValue(mockQuery);
+      const spy = vi.spyOn(queryService, 'getFullDeleteInsertQuery').mockReturnValue(mockQuery);
 
       service['updateFullQuery']();
 
@@ -87,7 +88,7 @@ describe('SAI Editor Service', () => {
 
     it('updateDiffQuery should correctly work', () => {
       const { service, queryService } = setupNullTemplate();
-      const spy = spyOn(queryService, 'getDiffDeleteInsertTwoKeysQuery').and.returnValue(mockQuery);
+      const spy = vi.spyOn(queryService, 'getDiffDeleteInsertTwoKeysQuery').mockReturnValue(mockQuery);
 
       service['updateDiffQuery']();
 
@@ -108,7 +109,7 @@ describe('SAI Editor Service', () => {
 
     it('updateFullQuery should correctly work', () => {
       const { service, queryService } = setupDefinedTemplate();
-      const spy = spyOn(queryService, 'getFullDeleteInsertQuery').and.returnValue(mockQuery);
+      const spy = vi.spyOn(queryService, 'getFullDeleteInsertQuery').mockReturnValue(mockQuery);
 
       service['updateFullQuery']();
 
@@ -118,7 +119,7 @@ describe('SAI Editor Service', () => {
 
     it('updateDiffQuery should correctly work', () => {
       const { service, queryService } = setupDefinedTemplate();
-      const spy = spyOn(queryService, 'getDiffDeleteInsertTwoKeysQuery').and.returnValue(mockQuery);
+      const spy = vi.spyOn(queryService, 'getDiffDeleteInsertTwoKeysQuery').mockReturnValue(mockQuery);
 
       service['updateDiffQuery']();
 
@@ -137,12 +138,12 @@ describe('SAI Editor Service', () => {
 
       service['_newRows'] = mockRows as SmartScripts[];
 
-      const updateDiffQuerySpy = spyOn<any>(service, 'updateDiffQuery');
-      const updateFullQuerySpy = spyOn<any>(service, 'updateFullQuery');
-      const refreshDatatableSpy = spyOn(service, 'refreshDatatable');
-      const isRowSelectedSpy = spyOn(service, 'isRowSelected').and.returnValue(true);
-      const getNameSpy = spyOn<any>(handlerService, 'getName');
-      const generateCommentSpy = spyOn<any>(saiCommentGeneratorService, 'generateComment');
+      const updateDiffQuerySpy = vi.spyOn<any>(service, 'updateDiffQuery').mockImplementation(() => undefined);
+      const updateFullQuerySpy = vi.spyOn<any>(service, 'updateFullQuery').mockImplementation(() => undefined);
+      const refreshDatatableSpy = vi.spyOn(service, 'refreshDatatable').mockImplementation(() => undefined);
+      const isRowSelectedSpy = vi.spyOn(service, 'isRowSelected').mockReturnValue(true);
+      const getNameSpy = vi.spyOn<any>(handlerService, 'getName').mockImplementation(() => undefined);
+      const generateCommentSpy = vi.spyOn<any>(saiCommentGeneratorService, 'generateComment').mockImplementation(() => undefined);
 
       await service.generateComments(true);
 
@@ -163,12 +164,12 @@ describe('SAI Editor Service', () => {
 
       service['_newRows'] = mockRows as SmartScripts[];
 
-      const updateDiffQuerySpy = spyOn<any>(service, 'updateDiffQuery');
-      const updateFullQuerySpy = spyOn<any>(service, 'updateFullQuery');
-      const refreshDatatableSpy = spyOn(service, 'refreshDatatable');
-      const isRowSelectedSpy = spyOn(service, 'isRowSelected').and.returnValue(true);
-      const getNameSpy = spyOn<any>(handlerService, 'getName');
-      const generateCommentSpy = spyOn<any>(saiCommentGeneratorService, 'generateComment');
+      const updateDiffQuerySpy = vi.spyOn<any>(service, 'updateDiffQuery').mockImplementation(() => undefined);
+      const updateFullQuerySpy = vi.spyOn<any>(service, 'updateFullQuery').mockImplementation(() => undefined);
+      const refreshDatatableSpy = vi.spyOn(service, 'refreshDatatable').mockImplementation(() => undefined);
+      const isRowSelectedSpy = vi.spyOn(service, 'isRowSelected').mockReturnValue(true);
+      const getNameSpy = vi.spyOn<any>(handlerService, 'getName').mockImplementation(() => undefined);
+      const generateCommentSpy = vi.spyOn<any>(saiCommentGeneratorService, 'generateComment').mockImplementation(() => undefined);
 
       await service.generateComments();
 

@@ -1,3 +1,4 @@
+import { vi, type MockInstance } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -10,7 +11,6 @@ import { of, throwError } from 'rxjs';
 import { SqlEditorComponent } from './sql-editor.component';
 import { By } from '@angular/platform-browser';
 import { CodeEditor } from '@acrodata/code-editor';
-import Spy = jasmine.Spy;
 
 export class SqlEditorPage extends PageObject<SqlEditorComponent> {
   readonly DT = 'ngx-datatable';
@@ -40,7 +40,7 @@ describe('SqlEditorComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [TooltipModule.forRoot(), SqlEditorComponent, TranslateTestingModule],
+      imports: [TooltipModule, SqlEditorComponent, TranslateTestingModule],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
   });
@@ -50,7 +50,7 @@ describe('SqlEditorComponent', () => {
     const component = fixture.componentInstance;
     const page = new SqlEditorPage(fixture);
     const mysqlQueryService = TestBed.inject(MysqlQueryService);
-    spyOn(mysqlQueryService, 'query').and.returnValue(of(mockRows));
+    vi.spyOn(mysqlQueryService, 'query').mockReturnValue(of(mockRows));
 
     const codeEditorDebugElement = fixture.debugElement.query(By.directive(CodeEditor));
     const codeEditorInstance = codeEditorDebugElement.componentInstance as CodeEditor;
@@ -94,7 +94,7 @@ describe('SqlEditorComponent', () => {
       stack: 'some SQL error message',
       sqlState: 'some SQL state',
     } as QueryError;
-    (mysqlQueryService.query as Spy).and.returnValue(throwError(error));
+    (mysqlQueryService.query as MockInstance).mockReturnValue(throwError(error));
 
     page.clickElement(page.executeBtn);
 
@@ -106,7 +106,7 @@ describe('SqlEditorComponent', () => {
 
   it('should have no colums if the result is an empty set', () => {
     const { page, mysqlQueryService, component } = setup();
-    (mysqlQueryService.query as Spy).and.returnValue(of([]));
+    (mysqlQueryService.query as MockInstance).mockReturnValue(of([]));
 
     page.clickElement(page.executeBtn);
 
@@ -117,7 +117,7 @@ describe('SqlEditorComponent', () => {
     const { page, mysqlQueryService } = setup();
     const affectedRows = 12012;
     const message = '- Some message';
-    (mysqlQueryService.query as Spy).and.returnValue(of({ affectedRows, message }));
+    (mysqlQueryService.query as MockInstance).mockReturnValue(of({ affectedRows, message }));
 
     page.clickElement(page.executeBtn);
 
@@ -127,7 +127,7 @@ describe('SqlEditorComponent', () => {
 
   it('should cut the columns amount when there are too many', () => {
     const { page, mysqlQueryService, component } = setup();
-    (mysqlQueryService.query as Spy).and.returnValue(
+    (mysqlQueryService.query as MockInstance).mockReturnValue(
       of([
         {
           a: 1,
@@ -162,7 +162,7 @@ describe('SqlEditorComponent', () => {
 
   it('clicking the copy button should copy the query', () => {
     const { page, codeEditorInstance } = setup();
-    const spy = spyOn(TestBed.inject(ClipboardService), 'copyFromContent');
+    const spy = vi.spyOn(TestBed.inject(ClipboardService), 'copyFromContent').mockImplementation(() => undefined);
     const customQuery = '-- some text that will be copied';
 
     codeEditorInstance.writeValue(customQuery);

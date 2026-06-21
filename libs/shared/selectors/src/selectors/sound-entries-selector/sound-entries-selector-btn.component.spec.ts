@@ -7,7 +7,7 @@ import { SoundEntriesSelectorBtnComponent } from './sound-entries-selector-btn.c
 describe('SoundEntriesSelectorBtnComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), SoundEntriesSelectorBtnComponent],
+      imports: [ModalModule, SoundEntriesSelectorBtnComponent],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
   });

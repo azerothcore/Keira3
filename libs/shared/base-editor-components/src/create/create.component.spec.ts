@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -38,7 +39,7 @@ describe('CreateComponent', () => {
   });
 
   function setup() {
-    const spyError = spyOn(console, 'error');
+    const spyError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
     const MockedMysqlQueryService = mock(MysqlQueryService);
     when(MockedMysqlQueryService.getMaxId(mockTable, mockId)).thenReturn(of([{ max: maxId }]));
@@ -92,7 +93,7 @@ describe('CreateComponent', () => {
 
   it('if queryService param is not passed, should not call getNextId', () => {
     const { component } = setup();
-    const spyGetNextId = spyOn<any>(component, 'getNextId');
+    const spyGetNextId = vi.spyOn<any>(component, 'getNextId').mockImplementation(() => undefined);
     component.queryService = undefined as any;
 
     component.ngOnInit();
@@ -102,7 +103,7 @@ describe('CreateComponent', () => {
 
   it('clicking the button should correctly trigger the selection', () => {
     const { page, component } = setup();
-    const selectSpy = spyOn(component.handlerService, 'select');
+    const selectSpy = vi.spyOn(component.handlerService, 'select').mockImplementation(() => undefined);
     const id = 1234;
     page.setInputValue(page.idInput, id);
 

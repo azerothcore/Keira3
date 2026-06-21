@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -29,7 +30,7 @@ describe('GameobjectSpawnAddonService', () => {
 
   it('selectQuery should correctly work', () => {
     const service: GameobjectSpawnAddonService = TestBed.inject(GameobjectSpawnAddonService);
-    const querySpy = spyOn(TestBed.inject(MysqlQueryService), 'query');
+    const querySpy = vi.spyOn(TestBed.inject(MysqlQueryService), 'query').mockImplementation(() => undefined);
     const id = 123;
 
     service.selectQuery(id);

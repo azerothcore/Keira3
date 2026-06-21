@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -27,7 +28,7 @@ describe('CreatureEquipTemplate integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureEquipTemplateComponent, RouterTestingModule, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, CreatureEquipTemplateComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
@@ -44,10 +45,10 @@ describe('CreatureEquipTemplate integration tests', () => {
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
-    spyOn(queryService, 'queryValue').and.returnValue(of());
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
+    vi.spyOn(queryService, 'queryValue').mockReturnValue(of());
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalEntity]));
 
     const fixture = TestBed.createComponent(CreatureEquipTemplateComponent);
     const page = new CreatureEquipTemplatePage(fixture);
@@ -80,7 +81,7 @@ describe('CreatureEquipTemplate integration tests', () => {
         'DELETE FROM `creature_equip_template` WHERE (`CreatureID` = 1234);\n' +
         'INSERT INTO `creature_equip_template` (`CreatureID`, `ID`, `ItemID1`, `ItemID2`, `ItemID3`, `VerifiedBuild`) VALUES\n' +
         '(1234, 1, 0, 2, 0, 0);';
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.setInputValueById('ItemID2', '2');
       page.expectFullQueryToContain(expectedQuery);
@@ -88,7 +89,7 @@ describe('CreatureEquipTemplate integration tests', () => {
       page.clickExecuteQuery();
 
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
   });
 
@@ -103,14 +104,14 @@ describe('CreatureEquipTemplate integration tests', () => {
     it('changing all properties and executing the query should correctly work', () => {
       const { querySpy, page } = setup(false);
       const expectedQuery = 'UPDATE `creature_equip_template` SET `ItemID2` = 1, `ItemID3` = 2 WHERE (`CreatureID` = 1234);';
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.changeAllFields(originalEntity, ['ID', 'VerifiedBuild']);
       page.expectDiffQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
 
     it('changing values should correctly update the queries', () => {
@@ -132,13 +133,13 @@ describe('CreatureEquipTemplate integration tests', () => {
       );
     });
 
-    xit('changing a value via ItemSelector should correctly work', async () => {
+    it.skip('changing a value via ItemSelector should correctly work', async () => {
       const { querySpy, page } = setup(false);
       //  note: previously disabled because of:
       //  https://stackoverflow.com/questions/57336982/how-to-make-angular-tests-wait-for-previous-async-operation-to-complete-before-e
 
       const itemEntry = 1200;
-      querySpy.and.returnValue(of([{ entry: itemEntry, name: 'Mock Item' }]));
+      querySpy.mockReturnValue(of([{ entry: itemEntry, name: 'Mock Item' }]));
       const field = 'ItemID1';
       page.clickElement(page.getSelectorBtn(field));
       page.expectModalDisplayed();

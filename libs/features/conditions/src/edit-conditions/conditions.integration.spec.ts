@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -58,7 +59,7 @@ describe('Conditions integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), ConditionsComponent, RouterTestingModule, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, ConditionsComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
@@ -69,15 +70,15 @@ describe('Conditions integration tests', () => {
   });
 
   function setup(creatingNew: boolean) {
-    spyOn(TestBed.inject(Router), 'navigate');
+    vi.spyOn(TestBed.inject(Router), 'navigate').mockImplementation(() => undefined);
     const handlerService = TestBed.inject(ConditionsHandlerService);
     handlerService['_selected'] = JSON.stringify(id);
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
 
-    spyOn(queryService, 'selectAllMultipleKeys').and.returnValue(of(creatingNew ? [] : [originalEntity]));
+    vi.spyOn(queryService, 'selectAllMultipleKeys').mockReturnValue(of(creatingNew ? [] : [originalEntity]));
 
     const fixture = TestBed.createComponent(ConditionsComponent);
     const page = new ConditionsPage(fixture);
@@ -106,7 +107,7 @@ describe('Conditions integration tests', () => {
     });
 
     // TODO: fix this - broken with provideZonelessChangeDetection()
-    xit('changing a property and executing the query should correctly work', () => {
+    it.skip('changing a property and executing the query should correctly work', () => {
       const { page, querySpy } = setup(true);
       const expectedQuery =
         'DELETE FROM `conditions` WHERE (`SourceTypeOrReferenceId` = 2) AND (`SourceGroup` = 3) AND ' +
@@ -115,7 +116,7 @@ describe('Conditions integration tests', () => {
         ') AND (`SourceId` = 0) AND (`ElseGroup` = 0) AND (`ConditionTypeOrReference` = 0) AND (`ConditionTarget` = 0) AND (`ConditionValue1` = 0) AND (`ConditionValue2` = 0) AND (`ConditionValue3` = 0);\n' +
         'INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES\n' +
         "(2, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '');";
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.setSelectValueById('SourceTypeOrReferenceId', 2);
       page.setInputValueById('SourceGroup', 3);
@@ -124,7 +125,7 @@ describe('Conditions integration tests', () => {
       page.clickExecuteQuery();
 
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
 
     it('should correctly toggle flag selector according to the selected condition type', () => {
@@ -157,14 +158,14 @@ describe('Conditions integration tests', () => {
         "`ConditionTarget` = 6, `ConditionValue1` = 7, `ConditionValue2` = 8, `ConditionValue3` = 9, `NegativeCondition` = 10, `ErrorType` = 11, `ErrorTextId` = 12, `ScriptName` = '13', " +
         "`Comment` = '14' WHERE (`SourceTypeOrReferenceId` = 1) AND (`SourceGroup` = 2) AND (`SourceEntry` = 3) AND (`SourceId` = 0) AND (`ElseGroup` = 0) " +
         'AND (`ConditionTypeOrReference` = 0) AND (`ConditionTarget` = 0) AND (`ConditionValue1` = 0) AND (`ConditionValue2` = 0) AND (`ConditionValue3` = 0)';
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.changeAllFields(originalEntity, []);
       page.expectDiffQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
 
     it('changing values should correctly update the queries', () => {

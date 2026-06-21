@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -28,10 +29,10 @@ describe('ItemEnchantmentTemplate integration tests', () => {
     TestBed.configureTestingModule({
       imports: [
         ToastrModule.forRoot(),
-        ModalModule.forRoot(),
+        ModalModule,
         ItemEnchantmentTemplateComponent,
         RouterTestingModule,
-        ModalModule.forRoot(),
+        ModalModule,
         TranslateTestingModule,
       ],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations(), ItemHandlerService],
@@ -44,9 +45,9 @@ describe('ItemEnchantmentTemplate integration tests', () => {
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
     const fixture = TestBed.createComponent(ItemEnchantmentTemplateComponent);
     const page = new ItemEnchantmentTemplatePage(fixture);
@@ -84,7 +85,7 @@ describe('ItemEnchantmentTemplate integration tests', () => {
         '(1234, 0, 0),\n' +
         '(1234, 1, 0),\n' +
         '(1234, 2, 0);';
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(1);
@@ -96,7 +97,7 @@ describe('ItemEnchantmentTemplate integration tests', () => {
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
 
     it('adding a row and changing its values should correctly update the queries', () => {

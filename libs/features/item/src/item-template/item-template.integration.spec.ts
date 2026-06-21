@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
@@ -58,7 +59,7 @@ describe('ItemTemplate integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), ItemTemplateComponent, RouterTestingModule, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, ItemTemplateComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
@@ -107,10 +108,10 @@ describe('ItemTemplate integration tests', () => {
     const itemPreviewService = TestBed.inject(ItemPreviewService);
     const model3DViewerService = TestBed.inject(Model3DViewerService);
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
-    spyOn(model3DViewerService, 'generateModels').and.returnValue(new Promise((resolve) => resolve({ destroy: () => {} })));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalEntity]));
+    vi.spyOn(model3DViewerService, 'generateModels').mockReturnValue(new Promise((resolve) => resolve({ destroy: () => {} })));
 
     const fixture = TestBed.createComponent(ItemTemplateComponent);
     const component = fixture.componentInstance;
@@ -119,24 +120,24 @@ describe('ItemTemplate integration tests', () => {
     fixture.detectChanges();
 
     const mysqlQueryService = TestBed.inject(MysqlQueryService);
-    spyOn(mysqlQueryService, 'getItemNameById').and.callFake(() => lastValueFrom(of(mockItemNameById)));
-    spyOn(mysqlQueryService, 'queryValue').and.callFake(() => of([234] as any));
+    vi.spyOn(mysqlQueryService, 'getItemNameById').mockImplementation(() => lastValueFrom(of(mockItemNameById)));
+    vi.spyOn(mysqlQueryService, 'queryValue').mockImplementation(() => of([234] as any));
 
     const sqliteQueryService = TestBed.inject(SqliteQueryService);
-    spyOn(sqliteQueryService, 'getSpellNameById').and.callFake((i) => lastValueFrom(of(mockGetSpellNameById + i)));
-    spyOn(sqliteQueryService, 'getSpellDescriptionById').and.callFake((i) => lastValueFrom(of(mockGetSpellDescriptionById + i)));
-    spyOn(sqliteQueryService, 'getFactionNameById').and.callFake((i) => lastValueFrom(of(mockGetFactionNameById + i)));
-    spyOn(sqliteQueryService, 'getFactionNameByNameId').and.callFake((i) => lastValueFrom(of(mockGetFactionNameById + i)));
-    spyOn(sqliteQueryService, 'getMapNameById').and.callFake((i) => lastValueFrom(of(mockGetMapNameById + i)));
-    spyOn(sqliteQueryService, 'getAreaNameById').and.callFake((i) => lastValueFrom(of(mockGetAreaNameById + i)));
-    spyOn(sqliteQueryService, 'getEventNameByHolidayId').and.callFake((i) => lastValueFrom(of(mockGetEventNameByHolidayId + i)));
-    spyOn(sqliteQueryService, 'getSocketBonusById').and.callFake((i) => lastValueFrom(of(mockGetSocketBonusById + i)));
-    spyOn(sqliteQueryService, 'getLockById').and.callFake(() => lastValueFrom(of([lockData])));
-    spyOn(sqliteQueryService, 'getSkillNameById').and.callFake(() => lastValueFrom(of('profession')));
-    spyOn(sqliteQueryService, 'getIconByItemDisplayId').and.callFake(() => of('inv_axe_60'));
-    spyOn(sqliteQueryService, 'queryValue').and.callFake(() => of('inv_axe_60' as any));
-    spyOn(sqliteQueryService, 'query').and.callFake(() => of([{ name: 'test' }] as any));
-    spyOn(itemPreviewService, 'getNpcDisplayIdBySpell').and.callFake(() => Promise.resolve(123));
+    vi.spyOn(sqliteQueryService, 'getSpellNameById').mockImplementation((i) => lastValueFrom(of(mockGetSpellNameById + i)));
+    vi.spyOn(sqliteQueryService, 'getSpellDescriptionById').mockImplementation((i) => lastValueFrom(of(mockGetSpellDescriptionById + i)));
+    vi.spyOn(sqliteQueryService, 'getFactionNameById').mockImplementation((i) => lastValueFrom(of(mockGetFactionNameById + i)));
+    vi.spyOn(sqliteQueryService, 'getFactionNameByNameId').mockImplementation((i) => lastValueFrom(of(mockGetFactionNameById + i)));
+    vi.spyOn(sqliteQueryService, 'getMapNameById').mockImplementation((i) => lastValueFrom(of(mockGetMapNameById + i)));
+    vi.spyOn(sqliteQueryService, 'getAreaNameById').mockImplementation((i) => lastValueFrom(of(mockGetAreaNameById + i)));
+    vi.spyOn(sqliteQueryService, 'getEventNameByHolidayId').mockImplementation((i) => lastValueFrom(of(mockGetEventNameByHolidayId + i)));
+    vi.spyOn(sqliteQueryService, 'getSocketBonusById').mockImplementation((i) => lastValueFrom(of(mockGetSocketBonusById + i)));
+    vi.spyOn(sqliteQueryService, 'getLockById').mockImplementation(() => lastValueFrom(of([lockData])));
+    vi.spyOn(sqliteQueryService, 'getSkillNameById').mockImplementation(() => lastValueFrom(of('profession')));
+    vi.spyOn(sqliteQueryService, 'getIconByItemDisplayId').mockImplementation(() => of('inv_axe_60'));
+    vi.spyOn(sqliteQueryService, 'queryValue').mockImplementation(() => of('inv_axe_60' as any));
+    vi.spyOn(sqliteQueryService, 'query').mockImplementation(() => of([{ name: 'test' }] as any));
+    vi.spyOn(itemPreviewService, 'getNpcDisplayIdBySpell').mockImplementation(() => Promise.resolve(123));
 
     return { handlerService, queryService, querySpy, fixture, component, page, mysqlQueryService, sqliteQueryService, itemPreviewService };
   }
@@ -164,7 +165,7 @@ describe('ItemTemplate integration tests', () => {
     it('changing a property and executing the query should correctly work', async () => {
       const { page, querySpy } = setup(true);
       await tickAsync();
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.setInputValueById('name', 'Shin');
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
@@ -173,7 +174,7 @@ describe('ItemTemplate integration tests', () => {
       page.clickExecuteQuery();
 
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain('Shin');
+      expect(querySpy.mock.calls.at(-1)[0]).toContain('Shin');
     });
   });
 
@@ -225,7 +226,7 @@ describe('ItemTemplate integration tests', () => {
         spelltrigger_5: 6,
       };
 
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.changeAllFields(originalEntity, [...Object.keys(spelltriggers), 'VerifiedBuild']);
 
@@ -239,7 +240,7 @@ describe('ItemTemplate integration tests', () => {
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
 
     it('changing values should correctly update the queries', async () => {
@@ -257,7 +258,7 @@ describe('ItemTemplate integration tests', () => {
       page.expectFullQueryToContain('22');
     });
 
-    xit('changing a value via FlagsSelector should correctly work', async () => {
+    it.skip('changing a value via FlagsSelector should correctly work', async () => {
       const { page } = setup(false);
       await tickAsync();
       const field = 'Flags';
@@ -280,12 +281,12 @@ describe('ItemTemplate integration tests', () => {
       page.expectFullQueryToContain('4100');
     });
 
-    xit('changing a value via ItemEnchantmentSelector should correctly work', async () => {
+    it.skip('changing a value via ItemEnchantmentSelector should correctly work', async () => {
       const { page, fixture } = setup(false);
       await tickAsync();
       const field = 'socketBonus';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
-      spyOn(sqliteQueryService, 'query').and.returnValue(of([{ id: 1248, name: 'Mock Enchantment', conditionId: 456 }]));
+      vi.spyOn(sqliteQueryService, 'query').mockReturnValue(of([{ id: 1248, name: 'Mock Enchantment', conditionId: 456 }]));
 
       page.clickElement(page.getSelectorBtn(field));
       await page.whenReady();
@@ -303,12 +304,12 @@ describe('ItemTemplate integration tests', () => {
       page.expectFullQueryToContain('1248');
     });
 
-    xit('changing a value via HolidaySelector should correctly work', async () => {
+    it.skip('changing a value via HolidaySelector should correctly work', async () => {
       const { page, fixture } = setup(false);
       await tickAsync();
       const field = 'HolidayId';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
-      spyOn(sqliteQueryService, 'query').and.returnValue(of([{ id: 1248, name: 'Mock Holiday' }]));
+      vi.spyOn(sqliteQueryService, 'query').mockReturnValue(of([{ id: 1248, name: 'Mock Holiday' }]));
 
       page.clickElement(page.getSelectorBtn(field));
       await page.whenReady();
@@ -326,12 +327,12 @@ describe('ItemTemplate integration tests', () => {
       page.expectFullQueryToContain('1248');
     });
 
-    xit('changing a value via ItemLimitCategorySelector should correctly work', async () => {
+    it.skip('changing a value via ItemLimitCategorySelector should correctly work', async () => {
       const { page, fixture } = setup(false);
       await tickAsync();
       const field = 'ItemLimitCategory';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
-      spyOn(sqliteQueryService, 'query').and.returnValue(of([{ id: 1248, name: 'Mock ItemLimitCategory', count: 2, isGem: 1 }]));
+      vi.spyOn(sqliteQueryService, 'query').mockReturnValue(of([{ id: 1248, name: 'Mock ItemLimitCategory', count: 2, isGem: 1 }]));
 
       page.clickElement(page.getSelectorBtn(field));
       await page.whenReady();
@@ -349,12 +350,12 @@ describe('ItemTemplate integration tests', () => {
       page.expectFullQueryToContain('1248');
     });
 
-    xit('changing a value via LanguageSelector should correctly work', async () => {
+    it.skip('changing a value via LanguageSelector should correctly work', async () => {
       const { page, fixture } = setup(false);
       await tickAsync();
       const field = 'LanguageID';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
-      spyOn(sqliteQueryService, 'query').and.returnValue(of([{ id: 1248, name: 'Mock LanguageID' }]));
+      vi.spyOn(sqliteQueryService, 'query').mockReturnValue(of([{ id: 1248, name: 'Mock LanguageID' }]));
 
       page.clickElement(page.getSelectorBtn(field));
       await page.whenReady();
@@ -603,7 +604,7 @@ describe('ItemTemplate integration tests', () => {
           await tickAsync(400);
 
           fixture.whenStable().then(() => {
-            expect(itemPreviewService.getNpcDisplayIdBySpell).toHaveBeenCalledOnceWith(123);
+            expect(itemPreviewService.getNpcDisplayIdBySpell).toHaveBeenCalledExactlyOnceWith(123);
           });
         });
       }
@@ -619,7 +620,7 @@ describe('ItemTemplate integration tests', () => {
         await tickAsync(400);
 
         fixture.whenStable().then(() => {
-          expect(itemPreviewService.getNpcDisplayIdBySpell).toHaveBeenCalledOnceWith(123);
+          expect(itemPreviewService.getNpcDisplayIdBySpell).toHaveBeenCalledExactlyOnceWith(123);
         });
       });
     });

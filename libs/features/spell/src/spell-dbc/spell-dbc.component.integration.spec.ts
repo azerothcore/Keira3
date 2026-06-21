@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -26,7 +27,7 @@ describe('SpellDbc integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, SpellDbcComponent, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, RouterTestingModule, SpellDbcComponent, TranslateTestingModule],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
   });
@@ -40,10 +41,10 @@ describe('SpellDbc integration tests', () => {
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
-    spyOn(queryService, 'queryValue').and.returnValue(of());
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
+    vi.spyOn(queryService, 'queryValue').mockReturnValue(of());
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalEntity]));
 
     const fixture = TestBed.createComponent(SpellDbcComponent);
     const component = fixture.componentInstance;
@@ -75,7 +76,7 @@ describe('SpellDbc integration tests', () => {
 
     it('changing a property and executing the query should correctly work', () => {
       const { page, querySpy } = setup(true);
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       const value = 12135;
       page.setInputValueById('Category', value);
@@ -85,7 +86,7 @@ describe('SpellDbc integration tests', () => {
       page.clickExecuteQuery();
 
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(String(value));
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(String(value));
       page.removeNativeElement();
     });
   });
@@ -123,8 +124,11 @@ describe('SpellDbc integration tests', () => {
     const textsTabId = 'Texts';
     const allTabIds = [baseTabId, effectsTabId, itemsTabId, flagsTabId, textsTabId];
 
-    it('should correctly initialise', () => {
+    it('should correctly initialise', async () => {
       const { page } = setup(false);
+      // ngx-bootstrap activates the first tab in a microtask; flush it before asserting.
+      await page.whenStable();
+      page.detectChanges();
       const baseTab = page.getTab(page.tabsetId, baseTabId);
       const effectsTab = page.getTab(page.tabsetId, effectsTabId);
       const itemsTab = page.getTab(page.tabsetId, itemsTabId);

@@ -7,7 +7,7 @@ import { LanguageSelectorBtnComponent } from './language-selector-btn.component'
 describe('LanguageSelectorBtnComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), LanguageSelectorBtnComponent],
+      imports: [ModalModule, LanguageSelectorBtnComponent],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
   });

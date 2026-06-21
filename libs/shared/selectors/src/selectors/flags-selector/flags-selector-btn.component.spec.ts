@@ -7,7 +7,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 describe('FlagsSelectorBtnComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), FlagsSelectorBtnComponent],
+      imports: [ModalModule, FlagsSelectorBtnComponent],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
   });

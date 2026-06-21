@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -37,7 +38,7 @@ describe('GameTele integration tests', () => {
   // TestBed Configuration
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, TranslateTestingModule],
       declarations: [],
       providers: [
         provideZonelessChangeDetection(),
@@ -58,9 +59,9 @@ describe('GameTele integration tests', () => {
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalEntity]));
 
     const _fixture = TestBed.createComponent(GameTeleComponent);
     const page = new GameTelePage(_fixture);
@@ -76,7 +77,7 @@ describe('GameTele integration tests', () => {
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
       page.expectFullQueryToContain(expectedFullCreateQuery);
-      querySpy.calls.reset();
+      querySpy.mockClear();
     });
 
     it('should correctly update the unsaved status', () => {
@@ -96,7 +97,7 @@ describe('GameTele integration tests', () => {
         'INSERT INTO `game_tele` (`id`, `position_x`, `position_y`, `position_z`, `orientation`, `map`, `name`) VALUES\n' +
         "(1, 0, 0, 0, 0, 0, 'ABC');\n";
 
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.setInputValueById('name', 'ABC');
       page.expectFullQueryToContain(expectedQuery);
@@ -104,7 +105,7 @@ describe('GameTele integration tests', () => {
       page.clickExecuteQuery();
 
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
   });
 
@@ -122,7 +123,7 @@ describe('GameTele integration tests', () => {
       const expectedQuery =
         "UPDATE `game_tele` SET `position_x` = 1, `position_y` = 2, `position_z` = 3, `orientation` = 4, `map` = 5, `name` = '6' " +
         'WHERE (`id` = 1);';
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.setInputValueById('position_x', 1);
       page.setInputValueById('position_y', 2);
@@ -134,7 +135,7 @@ describe('GameTele integration tests', () => {
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
 
     it('changing values should correctly update the queries', () => {
@@ -155,7 +156,7 @@ describe('GameTele integration tests', () => {
           "(1, 1.234, 0, 0, 0, 0, 'ABCD');\n",
       );
 
-      querySpy.calls.reset();
+      querySpy.mockClear();
     });
   });
 });

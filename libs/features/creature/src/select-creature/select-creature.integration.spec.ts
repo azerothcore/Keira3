@@ -1,3 +1,4 @@
+import { vi, type MockInstance } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -13,7 +14,6 @@ import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { SelectCreatureComponent } from './select-creature.component';
 import { SelectCreatureService } from './select-creature.service';
-import Spy = jasmine.Spy;
 import { instance, mock } from 'ts-mockito';
 
 class SelectCreatureComponentPage extends SelectPageObject<SelectCreatureComponent> {
@@ -31,7 +31,7 @@ describe('SelectCreature integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectCreatureComponent, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, SelectCreatureComponent, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
@@ -43,9 +43,9 @@ describe('SelectCreature integration tests', () => {
   });
 
   const setup = () => {
-    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate').mockImplementation(() => undefined);
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy: Spy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
+    const querySpy: MockInstance = vi.spyOn(queryService, 'query').mockReturnValue(of([{ max: 1 }]));
 
     const selectService = TestBed.inject(SelectCreatureService);
 
@@ -70,8 +70,8 @@ describe('SelectCreature integration tests', () => {
   it('should correctly behave when inserting and selecting free entry', async () => {
     const { navigateSpy, querySpy, fixture, page } = setup();
     await fixture.whenStable();
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of([]));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of([]));
 
     page.setInputValue(page.createInput, value);
 
@@ -89,8 +89,8 @@ describe('SelectCreature integration tests', () => {
   it('should correctly behave when inserting an existing entity', async () => {
     const { querySpy, fixture, page } = setup();
     await fixture.whenStable();
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of(['mock value']));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of(['mock value']));
 
     page.setInputValue(page.createInput, value);
 
@@ -150,7 +150,7 @@ describe('SelectCreature integration tests', () => {
   ]) {
     it(`searching an existing entity should correctly work [${id}]`, () => {
       const { querySpy, page } = setup();
-      querySpy.calls.reset();
+      querySpy.mockClear();
       if (entry) {
         page.setInputValue(page.searchIdInput, entry);
       }
@@ -197,8 +197,8 @@ describe('SelectCreature integration tests', () => {
         ScriptName: 'Kalhac.cpp',
       },
     ];
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of(results));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of(results));
 
     page.clickElement(page.searchBtn);
 
