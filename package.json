@@ -124,7 +124,7 @@
     "nx": "23.0.0",
     "patch-package": "8.0.1",
     "playwright": "1.56.0",
-    "prettier": "3.6.2",
+    "prettier": "3.8.4",
     "pretty-quick": "4.2.2",
     "rxjs": "7.8.2",
     "sqlstring": "2.3.3",
