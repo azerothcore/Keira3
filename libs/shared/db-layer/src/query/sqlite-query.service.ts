@@ -1,5 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { ItemExtendedCost, Lock } from '@keira/shared/acore-world-model';
+import { WorldMapArea } from '@keira/shared/map-viewer';
 import { ConfigService } from '@keira/shared/common-services';
 import { TableRow } from '@keira/shared/constants';
 import { from, Observable, of, shareReplay, tap } from 'rxjs';
@@ -144,5 +145,9 @@ export class SqliteQueryService extends BaseQueryService {
       String(SpellID),
       `SELECT EffectMiscValue_0 AS v FROM spells_effects WHERE SpellID=${SpellID}`,
     );
+  }
+
+  getAllWorldMapAreas(): Promise<WorldMapArea[]> {
+    return this.queryToPromiseCached<WorldMapArea>('getAllWorldMapAreas', 'all', `SELECT * FROM worldmaparea_dbc`);
   }
 }

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, signal } from '@angular/core';
 import { TranslateDirective } from '@ngx-translate/core';
-import { MapViewerService } from './map-viewer.service';
 import { MapDisplayData, MapPoint, RenderedPoint, WorldMapArea, worldToMapPercent } from './map-viewer.model';
+import { MapViewerService } from './map-viewer.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

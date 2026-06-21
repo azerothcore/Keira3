@@ -618,7 +618,7 @@ export class QuestPreviewService {
     const poiPoints = await this.mysqlQueryService.getQuestPoiPoints(this.questTemplate.ID);
     if (!poiPoints.length) return;
 
-    const allAreas = await this.mysqlQueryService.getAllWorldMapAreas();
+    const allAreas = await this.sqliteQueryService.getAllWorldMapAreas();
     const areaById = new Map(allAreas.map((a) => [a.ID, a]));
     for (const pt of poiPoints) {
       const area = areaById.get(pt.worldMapAreaId);

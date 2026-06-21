@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { GameTele } from '@keira/shared/acore-world-model';
-import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
+import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
@@ -62,7 +62,7 @@ describe('GameTele integration tests', () => {
     const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
 
     vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalEntity]));
-    vi.spyOn(queryService, 'getAllWorldMapAreas').mockResolvedValue([]);
+    vi.spyOn(TestBed.inject(SqliteQueryService), 'getAllWorldMapAreas').mockResolvedValue([]);
 
     const _fixture = TestBed.createComponent(GameTeleComponent);
     const page = new GameTelePage(_fixture);

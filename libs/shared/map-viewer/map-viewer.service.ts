@@ -1,10 +1,10 @@
 import { inject, Service } from '@angular/core';
-import { MysqlQueryService } from '@keira/shared/db-layer';
+import { SqliteQueryService } from '@keira/shared/db-layer';
 import { MAP_CONFIG, WorldMapArea } from './map-viewer.model';
 
 @Service()
 export class MapViewerService {
-  private readonly mysqlQueryService = inject(MysqlQueryService);
+  private readonly sqliteQueryService = inject(SqliteQueryService);
 
   getMapImage(mapId: number): string {
     return this.getMapImageLocal(mapId) || this.getMapImageUrl(mapId);
@@ -19,7 +19,7 @@ export class MapViewerService {
   }
 
   getAllAreas(): Promise<WorldMapArea[]> {
-    return this.mysqlQueryService.getAllWorldMapAreas();
+    return this.sqliteQueryService.getAllWorldMapAreas();
   }
 
   resolveDisplayMapId(area: WorldMapArea): number {

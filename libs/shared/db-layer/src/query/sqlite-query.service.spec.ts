@@ -150,5 +150,14 @@ describe('SqliteQueryService', () => {
       expect(service.query).toHaveBeenCalledTimes(1); // check cache
       expect(service.query).toHaveBeenCalledWith(`SELECT * FROM item_extended_cost WHERE id IN ()`);
     });
+
+    it('getAllWorldMapAreas', async () => {
+      const { service } = setupHelpers();
+      vi.spyOn(service, 'query').mockReturnValue(of([]));
+      expect(await service.getAllWorldMapAreas()).toEqual([]);
+      expect(await service.getAllWorldMapAreas()).toEqual([]); // check cache
+      expect(service.query).toHaveBeenCalledTimes(1); // check cache
+      expect(service.query).toHaveBeenCalledWith(`SELECT * FROM worldmaparea_dbc`);
+    });
   });
 });
