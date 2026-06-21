@@ -5,7 +5,6 @@ import { MapDisplayData, MapPoint, RenderedPoint, WorldMapArea, worldToMapPercen
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-map-viewer',
-  imports: [],
   templateUrl: './map-viewer.component.html',
   styleUrl: './map-viewer.component.scss',
 })

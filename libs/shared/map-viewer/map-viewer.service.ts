@@ -1,10 +1,8 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { MAP_CONFIG, WorldMapArea } from './map-viewer.model';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class MapViewerService {
   private readonly mysqlQueryService = inject(MysqlQueryService);
 
