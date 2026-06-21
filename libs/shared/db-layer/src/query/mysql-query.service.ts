@@ -514,4 +514,12 @@ export class MysqlQueryService extends BaseQueryService {
        WHERE pp.QuestID = ${questId}`,
     );
   }
+
+  getTables(): Observable<TableRow[]> {
+    return this.query('SHOW TABLES');
+  }
+
+  getColumns(tableName: string): Observable<TableRow[]> {
+    return this.query(`SHOW COLUMNS FROM \`${tableName}\``);
+  }
 }

@@ -51,6 +51,7 @@ describe('SqlEditorComponent', () => {
     const page = new SqlEditorPage(fixture);
     const mysqlQueryService = TestBed.inject(MysqlQueryService);
     vi.spyOn(mysqlQueryService, 'query').mockReturnValue(of(mockRows));
+    vi.spyOn(mysqlQueryService, 'getTables').mockReturnValue(of([]));
 
     const codeEditorDebugElement = fixture.debugElement.query(By.directive(CodeEditor));
     const codeEditorInstance = codeEditorDebugElement.componentInstance as CodeEditor;
@@ -91,7 +92,8 @@ describe('SqlEditorComponent', () => {
     const error = {
       code: 'some error happened',
       errno: 1000,
-      stack: 'some SQL error message',
+      message: 'some SQL error message',
+      stack: 'some SQL stack trace',
       sqlState: 'some SQL state',
     } as QueryError;
     (mysqlQueryService.query as MockInstance).mockReturnValue(throwError(error));
@@ -99,9 +101,17 @@ describe('SqlEditorComponent', () => {
     page.clickElement(page.executeBtn);
 
     expect(page.errorElement.innerHTML).toContain(error?.code);
-    expect(page.errorElement.innerHTML).toContain(error?.stack as string);
+    expect(page.errorElement.innerHTML).toContain(error?.message as string);
     expect(page.errorElement.innerHTML).toContain(error?.sqlState as string);
     expect(page.errorElement.innerHTML).toContain(`${error.errno}`);
+
+    // by default the stack trace is hidden behind the trace toggle
+    expect(page.errorElement.innerHTML).not.toContain(error?.stack as string);
+
+    page.clickElement(page.query<HTMLButtonElement>('keira-query-error button'));
+
+    expect(page.errorElement.innerHTML).toContain(error?.stack as string);
+    expect(page.errorElement.innerHTML).not.toContain(error?.message as string);
   });
 
   it('should have no colums if the result is an empty set', () => {

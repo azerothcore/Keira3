@@ -213,7 +213,9 @@
     "TOOLTIP": "Un editor SQL minimalista para ejecutar consultas personalizadas",
     "EXECUTE": "Ejecutar (F9)",
     "LEARN_SQL": "Aprenda el Lenguaje SQL",
-    "AFFECTED_ROWS": "Líneas afectadas:"
+    "AFFECTED_ROWS": "Líneas afectadas:",
+    "HIDE_TRACE": "Ocultar traza",
+    "SHOW_TRACE": "Mostrar traza"
   },
   "CREATURE": {
     "TEMPLATE": {
