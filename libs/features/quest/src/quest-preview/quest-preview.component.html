@@ -214,10 +214,10 @@
         </ul>
       }
 
-      <p class="title text-left cursor-pointer mt-3" (click)="objectiveToggle = !objectiveToggle" id="objective-toggle">
-        <i class="fa" [class.fa-caret-right]="objectiveToggle" [class.fa-caret-down]="!objectiveToggle"></i> Objective
+      <p class="title text-left cursor-pointer mt-3" (click)="objectiveToggle.set(!objectiveToggle())" id="objective-toggle">
+        <i class="fa" [class.fa-caret-right]="objectiveToggle()" [class.fa-caret-down]="!objectiveToggle()"></i> Objective
       </p>
-      <div [collapse]="objectiveToggle" class="greyed text-sm" id="description-text">
+      <div [collapse]="objectiveToggle()" class="greyed text-sm" id="objective-text">
         <keira-quest-objectives
           [objectiveText]="service.objectiveText"
           [areaDescription]="service.questTemplate.AreaDescription"
@@ -227,24 +227,24 @@
         />
       </div>
 
-      <p class="title text-left cursor-pointer mt-3" (click)="descriptionToggle = !descriptionToggle" id="description-toggle">
-        <i class="fa" [class.fa-caret-right]="descriptionToggle" [class.fa-caret-down]="!descriptionToggle"></i> Description
+      <p class="title text-left cursor-pointer mt-3" (click)="descriptionToggle.set(!descriptionToggle())" id="description-toggle">
+        <i class="fa" [class.fa-caret-right]="descriptionToggle()" [class.fa-caret-down]="!descriptionToggle()"></i> Description
       </p>
-      <div [collapse]="descriptionToggle" class="greyed text-sm" id="description-text">
+      <div [collapse]="descriptionToggle()" class="greyed text-sm" id="description-text">
         {{ service.descriptionText }}
       </div>
 
-      <p class="title text-left cursor-pointer" (click)="progressToggle = !progressToggle" id="progress-toggle">
-        <i class="fa" [class.fa-caret-right]="progressToggle" [class.fa-caret-down]="!progressToggle"></i> Progress (CompletionText)
+      <p class="title text-left cursor-pointer" (click)="progressToggle.set(!progressToggle())" id="progress-toggle">
+        <i class="fa" [class.fa-caret-right]="progressToggle()" [class.fa-caret-down]="!progressToggle()"></i> Progress (CompletionText)
       </p>
-      <div [collapse]="progressToggle" class="greyed text-sm" id="progress-text">
+      <div [collapse]="progressToggle()" class="greyed text-sm" id="progress-text">
         {{ service.completionText }}
       </div>
 
-      <p class="title text-left cursor-pointer" (click)="completionToggle = !completionToggle" id="completion-toggle">
-        <i class="fa" [class.fa-caret-right]="completionToggle" [class.fa-caret-down]="!completionToggle"></i> Completion (RewardText)
+      <p class="title text-left cursor-pointer" (click)="completionToggle.set(!completionToggle())" id="completion-toggle">
+        <i class="fa" [class.fa-caret-right]="completionToggle()" [class.fa-caret-down]="!completionToggle()"></i> Completion (RewardText)
       </p>
-      <div [collapse]="completionToggle" class="greyed text-sm" id="completion-text">
+      <div [collapse]="completionToggle()" class="greyed text-sm" id="completion-text">
         {{ service.rewardText }}
       </div>
 

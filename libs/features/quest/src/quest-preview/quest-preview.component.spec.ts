@@ -391,6 +391,19 @@ describe('QuestPreviewComponent', () => {
     fixture.debugElement.nativeElement.remove();
   });
 
+  it('should show npcOrGoObjectives from the async objective when there is no objective text', async () => {
+    const { fixture, page, service } = setup();
+    vi.spyOn(service, 'getObjectiveCount').mockReturnValue('(1)');
+    vi.spyOn(service, 'getObjText').mockReturnValue('');
+    vi.spyOn(service, 'getObjective$').mockReturnValue(Promise.resolve('Riverpaw Gnoll'));
+    vi.spyOn(service, 'isNpcOrGoObj').mockReturnValue(true);
+
+    await fixture.whenStable();
+
+    expect(page.npcOrGoObjectives.innerText).toContain('Riverpaw Gnoll (1)');
+    fixture.debugElement.nativeElement.remove();
+  });
+
   it('should show itemObjectives', async () => {
     const { fixture, page, service, mysqlQueryService } = setup();
     const getObjItemCountSpy: MockInstance = vi.spyOn(service, 'getObjItemCount').mockReturnValue('(2)');

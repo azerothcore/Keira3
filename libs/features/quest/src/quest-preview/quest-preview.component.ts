@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { IconComponent } from '@keira/shared/base-editor-components';
 import { QuestObjectivesComponent } from './quest-objectives.component';
@@ -26,10 +26,10 @@ export class QuestPreviewComponent implements OnInit {
   readonly service: QuestPreviewService = inject(QuestPreviewService);
   protected readonly helper: PreviewHelperService = inject(PreviewHelperService);
 
-  objectiveToggle = true;
-  descriptionToggle = true;
-  progressToggle = true;
-  completionToggle = true;
+  readonly objectiveToggle = signal(true);
+  readonly descriptionToggle = signal(true);
+  readonly progressToggle = signal(true);
+  readonly completionToggle = signal(true);
 
   protected readonly npcStartToggles: { [key: number]: boolean } = {};
   protected readonly npcEndToggles: { [key: number]: boolean } = {};
@@ -106,33 +106,42 @@ export class QuestPreviewComponent implements OnInit {
   }
 
   get npcObjectivesData(): NpcOrGoObjective[] {
-    if (this._npcObjectivesData) return this._npcObjectivesData;
-    const array: NpcOrGoObjective[] = [];
+    if (this._npcObjectivesData) {
+      return this._npcObjectivesData;
+    }
+
+    const npcObjectives: NpcOrGoObjective[] = [];
     for (let i = 1; i <= 4; i++) {
       if (this.service.isNpcOrGoObj(i)) {
         const text = this.service.getObjText(i);
         const text$: Observable<string | number | undefined> = text ? of(text) : from(this.service.getObjective$(i));
-        array.push({ text$, count: this.service.getObjectiveCount(i) });
+        npcObjectives.push({ text$, count: this.service.getObjectiveCount(i) });
       }
     }
-    this._npcObjectivesData = array;
+
+    this._npcObjectivesData = npcObjectives;
     return this._npcObjectivesData;
   }
 
   get itemObjectivesData(): ItemObjective[] {
-    if (this._itemObjectivesData) return this._itemObjectivesData;
-    const array: ItemObjective[] = [];
+    if (this._itemObjectivesData) {
+      return this._itemObjectivesData;
+    }
+
+    const itemObjectives: ItemObjective[] = [];
     for (let i = 1; i <= 6; i++) {
       const reqItem = this.service.questTemplate['RequiredItemId' + i];
       if (reqItem) {
-        array.push({
+        itemObjectives.push({
           id: reqItem,
           name$: from(this.service.mysqlQueryService.getItemNameById(reqItem)),
           count: this.service.getObjItemCount(i),
         });
       }
     }
-    return (this._itemObjectivesData = array);
+
+    this._itemObjectivesData = itemObjectives;
+    return this._itemObjectivesData;
   }
 
   get factionRequirementsData(): FactionRequirement[] {
@@ -140,16 +149,18 @@ export class QuestPreviewComponent implements OnInit {
       return this._factionRequirementsData;
     }
 
-    const array: FactionRequirement[] = [];
+    const factionRequirements: FactionRequirement[] = [];
     for (let i = 1; i <= 2; i++) {
       const reqFaction = this.service.questTemplate['RequiredFactionId' + i];
       if (reqFaction) {
-        array.push({
+        factionRequirements.push({
           name$: from(this.service.sqliteQueryService.getFactionNameById(reqFaction)),
           value: this.service.getFactionByValue(i),
         });
       }
     }
-    return (this._factionRequirementsData = array);
+
+    this._factionRequirementsData = factionRequirements;
+    return this._factionRequirementsData;
   }
 }
