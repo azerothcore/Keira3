@@ -309,8 +309,6 @@ describe('DisenchantLootTemplate integration tests', () => {
   it('should correctly show the warning if the loot id is not correctly set in the item template', () => {
     const { page } = setup(true, 0);
 
-    expect(page.query('.alert-info').innerText).toContain(
-      'You have to set the field `DisenchantID` of item_template in order to enable this feature.',
-    );
+    expect(page.query('.alert-info').innerText).toContain('LOOT_TEMPLATE.SET_FIELD');
   });
 });

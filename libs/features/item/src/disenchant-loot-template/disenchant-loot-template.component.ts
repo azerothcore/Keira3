@@ -5,13 +5,13 @@ import { ItemHandlerService } from '../item-handler.service';
 import { DisenchantLootTemplateService } from './disenchant-loot-template.service';
 import { LootEditorComponent } from '@keira/shared/loot-editor';
 import { TopBarComponent } from '@keira/shared/base-editor-components';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-disenchant-loot-template',
   templateUrl: '../../../../shared/base-abstract-classes/src/components/editors/loot-template/loot-template-id.component.html',
-  imports: [TopBarComponent, TranslateModule, LootEditorComponent],
+  imports: [TopBarComponent, TranslatePipe, TranslateDirective, LootEditorComponent],
 })
 export class DisenchantLootTemplateComponent extends LootTemplateIdComponent<DisenchantLootTemplate> {
   override readonly editorService = inject(DisenchantLootTemplateService);
