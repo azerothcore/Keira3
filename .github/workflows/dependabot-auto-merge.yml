@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Fetch metadata
         id: meta
-        uses: dependabot/fetch-metadata@v2
+        uses: dependabot/fetch-metadata@v3
       - name: Enable auto-merge
         if: steps.meta.outputs.update-type != 'version-update:semver-major'
         run: gh pr merge --auto --squash "${{ github.event.pull_request.html_url }}"
