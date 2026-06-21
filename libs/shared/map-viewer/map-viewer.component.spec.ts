@@ -9,7 +9,7 @@ describe('MapViewerComponent', () => {
 
   beforeEach(async () => {
     mockService = jasmine.createSpyObj('MapViewerService', ['getMapImageUrl', 'getAllAreas']);
-    mockService.getMapImageUrl.and.callFake((mapId: number) => `https://cdn.wowclassicdb.com/maps/${mapId}.jpg`);
+    mockService.getMapImageUrl.and.callFake((mapId: number) => `https://wow.zamimg.com/images/wow/wrath/maps/enus/normal/${mapId}.jpg`);
     mockService.getAllAreas.and.returnValue(Promise.resolve([]));
 
     await TestBed.configureTestingModule({
