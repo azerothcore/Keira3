@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -31,13 +32,7 @@ describe('GameobjectTemplateAddon integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        GameobjectTemplateAddonComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
-      ],
+      imports: [ToastrModule.forRoot(), ModalModule, GameobjectTemplateAddonComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
@@ -54,9 +49,9 @@ describe('GameobjectTemplateAddon integration tests', () => {
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalEntity]));
 
     const fixture = TestBed.createComponent(GameobjectTemplateAddonComponent);
     const page = new GameobjectTemplateAddonPage(fixture);
@@ -95,7 +90,7 @@ describe('GameobjectTemplateAddon integration tests', () => {
         id +
         ', 35, 0, 0, 0, 0, 0, 0, 0);';
 
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.setInputValueById('faction', '35');
       page.expectFullQueryToContain(expectedQuery);
@@ -103,7 +98,7 @@ describe('GameobjectTemplateAddon integration tests', () => {
       page.clickExecuteQuery();
 
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
   });
 
@@ -123,14 +118,14 @@ describe('GameobjectTemplateAddon integration tests', () => {
         id +
         ');';
 
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.expectDiffQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
 
     it('changing values should correctly update the queries', () => {
@@ -140,7 +135,7 @@ describe('GameobjectTemplateAddon integration tests', () => {
       page.expectFullQueryToContain('35');
     });
 
-    xit('changing a value via FlagsSelector should correctly work', async () => {
+    it.skip('changing a value via FlagsSelector should correctly work', async () => {
       const { page } = setup(false);
       const field = 'flags';
       page.clickElement(page.getSelectorBtn(field));

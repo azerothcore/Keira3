@@ -8,7 +8,7 @@ import { SwitchLanguageComponent } from './switch-language.component';
 describe('SwitchLanguageComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), TranslateTestingModule, SwitchLanguageComponent],
+      imports: [ModalModule, TranslateTestingModule, SwitchLanguageComponent],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
   });

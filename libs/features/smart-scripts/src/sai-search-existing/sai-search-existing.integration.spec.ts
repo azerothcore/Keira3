@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -29,15 +30,15 @@ class SaiSearchExistingComponentPage extends PageObject<SaiSearchExistingCompone
 describe('SaiSearchExisting integration tests', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SaiSearchExistingComponent, RouterTestingModule, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, SaiSearchExistingComponent, RouterTestingModule, TranslateTestingModule],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
   });
 
   function setup() {
-    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate').mockImplementation(() => undefined);
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([{ max: 1 }]));
 
     const fixture = TestBed.createComponent(SaiSearchExistingComponent);
     const page = new SaiSearchExistingComponentPage(fixture);
@@ -95,7 +96,7 @@ describe('SaiSearchExisting integration tests', () => {
   ]) {
     it(`searching an existing entity should correctly work [${testId}]`, () => {
       const { page, querySpy } = setup();
-      querySpy.calls.reset();
+      querySpy.mockClear();
       if (source_type) {
         page.setInputValue(page.searchSourceTypeSelect, selectIndex + ': ' + source_type);
       }
@@ -123,8 +124,8 @@ describe('SaiSearchExisting integration tests', () => {
       { entryorguid: 4, source_type: 5 },
     ];
 
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of(results as any));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of(results as any));
 
     page.clickElement(page.searchBtn);
 

@@ -4,10 +4,6 @@
   "overrides": [
     {
       "files": ["*.ts"],
-      "parserOptions": {
-        "createDefaultProgram": true,
-        "projectService": true
-      },
       "extends": [
         "plugin:@angular-eslint/recommended",
         "plugin:@angular-eslint/template/process-inline-templates",
@@ -49,7 +45,12 @@
         "@typescript-eslint/require-await": "error",
         "@typescript-eslint/await-thenable": "error",
         "prefer-const": "error",
-        "no-console": ["error", { "allow": ["warn", "info", "error"] }]
+        "no-console": [
+          "error",
+          {
+            "allow": ["warn", "info", "error"]
+          }
+        ]
       }
     },
     {

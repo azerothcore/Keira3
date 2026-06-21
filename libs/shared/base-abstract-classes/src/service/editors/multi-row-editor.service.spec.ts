@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -51,11 +52,11 @@ describe('MultiRowEditorService', () => {
         ? TestBed.inject(MockMultiRowEditorWithGuidStringService)
         : TestBed.inject(MockMultiRowEditorService);
 
-    const updateDiffQuerySpy = spyOn<any>(service, 'updateDiffQuery');
-    const updateFullQuerySpy = spyOn<any>(service, 'updateFullQuery');
-    const formResetSpy = spyOn(service.form, 'reset').and.callThrough();
-    const formEnableSpy = spyOn(service.form, 'enable').and.callThrough();
-    const formDisableSpy = spyOn(service.form, 'disable').and.callThrough();
+    const updateDiffQuerySpy = vi.spyOn<any>(service, 'updateDiffQuery').mockImplementation(() => undefined);
+    const updateFullQuerySpy = vi.spyOn<any>(service, 'updateFullQuery').mockImplementation(() => undefined);
+    const formResetSpy = vi.spyOn(service.form, 'reset');
+    const formEnableSpy = vi.spyOn(service.form, 'enable');
+    const formDisableSpy = vi.spyOn(service.form, 'disable');
 
     const selected = [
       {
@@ -90,7 +91,7 @@ describe('MultiRowEditorService', () => {
 
     it('when isFormIdUnique() is false, should do nothing', () => {
       const { service, updateDiffQuerySpy, updateFullQuerySpy } = setup();
-      spyOn(service, 'isFormIdUnique').and.returnValue(false);
+      vi.spyOn(service, 'isFormIdUnique').mockReturnValue(false);
 
       service.form.controls.id.setValue(123);
 
@@ -122,10 +123,10 @@ describe('MultiRowEditorService', () => {
 
   it('updateDiffQuery() should correctly work', () => {
     const { service, updateDiffQuerySpy } = setup();
-    updateDiffQuerySpy.and.callThrough();
+    updateDiffQuerySpy.mockRestore();
     service['_diffQuery'] = '';
-    const getQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getDiffDeleteInsertTwoKeysQuery').and.returnValue(queryResult);
-    spyOn<any>(service, 'updateEditorStatus');
+    const getQuerySpy = vi.spyOn(TestBed.inject(MysqlQueryService), 'getDiffDeleteInsertTwoKeysQuery').mockReturnValue(queryResult);
+    vi.spyOn<any>(service, 'updateEditorStatus').mockImplementation(() => undefined);
 
     service['updateDiffQuery']();
 
@@ -143,9 +144,9 @@ describe('MultiRowEditorService', () => {
 
   it('updateFullQuery() should correctly work', () => {
     const { service, updateFullQuerySpy } = setup();
-    updateFullQuerySpy.and.callThrough();
+    updateFullQuerySpy.mockRestore();
     service['_fullQuery'] = '';
-    const getQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getFullDeleteInsertQuery').and.returnValue(queryResult);
+    const getQuerySpy = vi.spyOn(TestBed.inject(MysqlQueryService), 'getFullDeleteInsertQuery').mockReturnValue(queryResult);
 
     service['updateFullQuery']();
 
@@ -175,7 +176,7 @@ describe('MultiRowEditorService', () => {
 
     it('should give error if the index is not found', () => {
       const { service } = setup({ newRows });
-      const errorSpy = spyOn(console, 'error');
+      const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
       service['getRowIndex'](133);
 
@@ -187,7 +188,7 @@ describe('MultiRowEditorService', () => {
     const { service } = setup();
     const selectedRowId = 100;
     const rowIndex = 3;
-    const getRowIndexSpy = spyOn<any>(service, 'getRowIndex').and.returnValue(rowIndex);
+    const getRowIndexSpy = vi.spyOn<any>(service, 'getRowIndex').mockReturnValue(rowIndex);
     service['_selectedRowId'] = selectedRowId;
 
     expect(service['getSelectedRowIndex']()).toEqual(rowIndex);
@@ -229,7 +230,7 @@ describe('MultiRowEditorService', () => {
       const { service, formEnableSpy, formResetSpy, selected } = setup();
       const rows = [{ [MOCK_ID]: 123, [MOCK_ID_2]: 3, [MOCK_NAME]: 'some name' }];
       service['_newRows'] = rows;
-      spyOn<any>(service, 'getSelectedRowIndex').and.returnValue(0);
+      vi.spyOn<any>(service, 'getSelectedRowIndex').mockReturnValue(0);
 
       service.onRowSelection({ selected });
 
@@ -267,7 +268,7 @@ describe('MultiRowEditorService', () => {
       const { service, formDisableSpy, formResetSpy, updateDiffQuerySpy, updateFullQuerySpy } = setup();
       service['_newRows'] = [{ [MOCK_ID]: 1, [MOCK_ID_2]: 11111, [MOCK_NAME]: '' }];
       service['_selectedRowId'] = 0;
-      spyOn<any>(service, 'getSelectedRowIndex').and.returnValue(0);
+      vi.spyOn<any>(service, 'getSelectedRowIndex').mockReturnValue(0);
 
       service.deleteSelectedRow();
 
@@ -294,7 +295,7 @@ describe('MultiRowEditorService', () => {
       const expectedNewRow = { ...currentlySelectedRow, [MOCK_ID_2]: 5 };
       const { service, updateDiffQuerySpy, updateFullQuerySpy } = setup({ newRows, loadedEntityId, nextRowId });
       service.onRowSelection({ selected: [currentlySelectedRow] });
-      const onRowSelectionSpy = spyOn(service, 'onRowSelection');
+      const onRowSelectionSpy = vi.spyOn(service, 'onRowSelection').mockImplementation(() => undefined);
 
       service.addNewRow(true);
 
@@ -308,7 +309,7 @@ describe('MultiRowEditorService', () => {
 
     it('it should correctly work [with main entityIdField]', () => {
       const { service, updateDiffQuerySpy, updateFullQuerySpy } = setup({ loadedEntityId, nextRowId, newRows: [] });
-      const onRowSelectionSpy = spyOn(service, 'onRowSelection');
+      const onRowSelectionSpy = vi.spyOn(service, 'onRowSelection').mockImplementation(() => undefined);
       const newRow = new MockEntity();
       newRow[MOCK_ID_2] = nextRowId;
       newRow[MOCK_ID] = loadedEntityId;
@@ -325,7 +326,7 @@ describe('MultiRowEditorService', () => {
 
     it('it should correctly work [without main entityIdField]', () => {
       const { service, updateDiffQuerySpy, updateFullQuerySpy } = setup({ loadedEntityId, nextRowId, newRows: [] });
-      const onRowSelectionSpy = spyOn(service, 'onRowSelection');
+      const onRowSelectionSpy = vi.spyOn(service, 'onRowSelection').mockImplementation(() => undefined);
       const newRow = new MockEntity();
       newRow[MOCK_ID_2] = nextRowId;
       (service['_entityIdField' as keyof EditorService<any>] as any) = undefined;
@@ -342,7 +343,7 @@ describe('MultiRowEditorService', () => {
 
     it('it should correctly assign the new row id', () => {
       const { service } = setup({ loadedEntityId, nextRowId, newRows: [] });
-      spyOn(service, 'onRowSelection');
+      vi.spyOn(service, 'onRowSelection').mockImplementation(() => undefined);
       const newRow = new MockEntity();
       newRow[MOCK_ID_2] = nextRowId;
       newRow[MOCK_ID] = loadedEntityId;

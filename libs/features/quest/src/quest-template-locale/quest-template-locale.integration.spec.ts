@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -20,7 +21,7 @@ describe('QuestTemplateLocale integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), QuestTemplateLocaleComponent, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, QuestTemplateLocaleComponent, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
@@ -40,13 +41,13 @@ describe('QuestTemplateLocale integration tests', () => {
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
-    spyOn(queryService, 'queryValue').and.returnValue(of());
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
+    vi.spyOn(queryService, 'queryValue').mockReturnValue(of());
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow]));
-    const initializeServicesSpy = spyOn(TestBed.inject(QuestPreviewService), 'initializeServices');
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalRow]));
+    const initializeServicesSpy = vi.spyOn(TestBed.inject(QuestPreviewService), 'initializeServices').mockImplementation(() => undefined);
     if (creatingNew) {
-      initializeServicesSpy.and.callThrough();
+      initializeServicesSpy.mockRestore();
     }
 
     const fixture = TestBed.createComponent(QuestTemplateLocaleComponent);
@@ -96,7 +97,7 @@ describe('QuestTemplateLocale integration tests', () => {
         "(1234, '0', '', '', '', '', '', '', '', '', '', 0),\n" +
         "(1234, '1', '', '', '', '', '', '', '', '', '', 0),\n" +
         "(1234, '2', '', '', '', '', '', '', '', '', '', 0);";
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(1);
@@ -108,7 +109,7 @@ describe('QuestTemplateLocale integration tests', () => {
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
 
     it('adding a row and changing its values should correctly update the queries', () => {

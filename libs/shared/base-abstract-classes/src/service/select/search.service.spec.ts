@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { inject, Injectable, provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -44,7 +45,7 @@ describe('SearchService', () => {
   describe('when queryForm value is changed', () => {
     function setupQueryFormChanged() {
       const parent = setup();
-      const spy = spyOn(TestBed.inject(MysqlQueryService), 'getSearchQuery').and.returnValue(newQuery);
+      const spy = vi.spyOn(TestBed.inject(MysqlQueryService), 'getSearchQuery').mockReturnValue(newQuery);
       parent.service.query = undefined as any;
       return { ...parent, spy };
     }
@@ -71,7 +72,7 @@ describe('SearchService', () => {
   it('onSearch() should execute the query and update the rows with the result', () => {
     const { service } = setup();
     const newRows = [{ entry: 1 }, { entry: 2 }] as ItemTemplate[];
-    const spy = spyOn(TestBed.inject(MysqlQueryService), 'query').and.returnValue(of(newRows));
+    const spy = vi.spyOn(TestBed.inject(MysqlQueryService), 'query').mockReturnValue(of(newRows));
     service.rows = undefined;
     service.query = newQuery;
 

@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -28,13 +29,7 @@ describe('DisenchantLootTemplate integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        DisenchantLootTemplateComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
-      ],
+      imports: [ToastrModule.forRoot(), ModalModule, DisenchantLootTemplateComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
@@ -45,17 +40,17 @@ describe('DisenchantLootTemplate integration tests', () => {
   });
 
   function setup(creatingNew: boolean, lootId = id) {
-    spyOn(TestBed.inject(DisenchantLootTemplateService), 'getLootId').and.returnValue(of([{ lootId }]));
+    vi.spyOn(TestBed.inject(DisenchantLootTemplateService), 'getLootId').mockReturnValue(of([{ lootId }]));
 
     const handlerService = TestBed.inject(ItemHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
-    spyOn(queryService, 'queryValue').and.returnValue(of());
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
+    vi.spyOn(queryService, 'queryValue').mockReturnValue(of());
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
     const fixture = TestBed.createComponent(DisenchantLootTemplateComponent);
     const page = new DisenchantLootTemplatePage(fixture);
@@ -103,7 +98,7 @@ describe('DisenchantLootTemplate integration tests', () => {
         "(1234, 0, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
         "(1234, 1, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
         "(1234, 2, 0, 100, 0, 1, 0, 1, 1, '');";
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(1);
@@ -115,7 +110,7 @@ describe('DisenchantLootTemplate integration tests', () => {
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
 
     it('adding a row and changing its values should correctly update the queries', () => {

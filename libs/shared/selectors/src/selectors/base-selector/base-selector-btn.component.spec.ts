@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { CommonModule } from '@angular/common';
 import { NgModule, provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
@@ -15,7 +16,7 @@ import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-component
 
 @NgModule({
   imports: [
-    ModalModule.forRoot(),
+    ModalModule,
     CommonModule,
     BrowserModule,
     FormsModule,
@@ -34,7 +35,7 @@ describe('BaseSelectorBtnComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), TestModule, ItemSelectorBtnComponent],
+      imports: [ModalModule, TestModule, ItemSelectorBtnComponent],
     }).compileComponents();
   });
 
@@ -50,15 +51,15 @@ describe('BaseSelectorBtnComponent', () => {
 
   it('onClick() should create a modal that correctly reacts to changes', () => {
     const { component } = setup();
-    const showSpy = spyOn(TestBed.inject(BsModalService), 'show').and.callThrough();
+    const showSpy = vi.spyOn(TestBed.inject(BsModalService), 'show');
 
     // TODO: use dom testing instead
     component.onClick();
 
     expect(showSpy).toHaveBeenCalledTimes(1);
 
-    const markAsDirtySpy = spyOn(component.control, 'markAsDirty');
-    const setValueSpy = spyOn(component.control, 'setValue');
+    const markAsDirtySpy = vi.spyOn(component.control, 'markAsDirty').mockImplementation(() => undefined);
+    const setValueSpy = vi.spyOn(component.control, 'setValue').mockImplementation(() => undefined);
 
     component['modalRef'].content.value = value;
     component['modalRef'].content.onSave();

@@ -8,7 +8,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 describe('CreatureSelectorBtnComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), CreatureSelectorBtnComponent],
+      imports: [ModalModule, CreatureSelectorBtnComponent],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
   });

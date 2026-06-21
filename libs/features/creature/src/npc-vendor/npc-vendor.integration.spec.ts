@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -28,7 +29,7 @@ describe('NpcVendor integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), NpcVendorComponent, RouterTestingModule, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, NpcVendorComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
@@ -45,10 +46,10 @@ describe('NpcVendor integration tests', () => {
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
-    spyOn(queryService, 'queryValue').and.returnValue(of());
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
+    vi.spyOn(queryService, 'queryValue').mockReturnValue(of());
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
     const fixture = TestBed.createComponent(NpcVendorComponent);
     const page = new NpcVendorPage(fixture);
@@ -91,7 +92,7 @@ describe('NpcVendor integration tests', () => {
         '(1234, 0, 0, 0, 0, 0, 0),\n' +
         '(1234, 0, 1, 0, 0, 0, 0),\n' +
         '(1234, 0, 2, 0, 0, 0, 0);';
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(1);
@@ -103,7 +104,7 @@ describe('NpcVendor integration tests', () => {
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
 
     it('adding a row and changing its values should correctly update the queries', () => {
@@ -281,11 +282,11 @@ describe('NpcVendor integration tests', () => {
       page.expectUniqueError();
     });
 
-    xit('changing a value via ItemExtendedCost should correctly work', async () => {
+    it.skip('changing a value via ItemExtendedCost should correctly work', async () => {
       const { fixture, page } = setup(false);
       const field = 'ExtendedCost';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
-      spyOn(sqliteQueryService, 'query').and.returnValue(of([{ id: 123, name: 'Mock ExtendedCost' }]));
+      vi.spyOn(sqliteQueryService, 'query').mockReturnValue(of([{ id: 123, name: 'Mock ExtendedCost' }]));
 
       // because this is a multi-row editor
       page.clickRowOfDatatable(0);

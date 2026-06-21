@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -28,7 +29,7 @@ describe('GameobjectSpawnAddon integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), GameobjectSpawnAddonComponent, RouterTestingModule, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, GameobjectSpawnAddonComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
@@ -45,9 +46,9 @@ describe('GameobjectSpawnAddon integration tests', () => {
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
 
-    spyOn(TestBed.inject(GameobjectSpawnAddonService), 'selectQuery').and.returnValue(
+    vi.spyOn(TestBed.inject(GameobjectSpawnAddonService), 'selectQuery').mockReturnValue(
       of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]),
     );
 

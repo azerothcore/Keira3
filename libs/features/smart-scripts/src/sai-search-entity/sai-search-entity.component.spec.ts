@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -40,7 +41,7 @@ class SaiSearchEntityComponentPage extends PageObject<SaiSearchEntityComponent> 
 describe('SaiSearchEntityComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), SaiSearchEntityComponent, RouterTestingModule, TranslateTestingModule],
+      imports: [ModalModule, SaiSearchEntityComponent, RouterTestingModule, TranslateTestingModule],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
   });
@@ -122,7 +123,7 @@ describe('SaiSearchEntityComponent', () => {
   it('clicking the edit button should correctly trigger the service', () => {
     const { page } = setup();
     const entry = 123;
-    const selectFromEntitySpy = spyOn(TestBed.inject(SaiHandlerService), 'selectFromEntity');
+    const selectFromEntitySpy = vi.spyOn(TestBed.inject(SaiHandlerService), 'selectFromEntity').mockImplementation(() => undefined);
 
     page.clickElement(page.sourceTypeCreature);
     page.setInputValue(page.entryOrGuidInput, entry);

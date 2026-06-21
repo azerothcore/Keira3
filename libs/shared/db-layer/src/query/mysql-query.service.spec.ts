@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -53,9 +54,9 @@ describe('MysqlQueryService', () => {
 
   it('query() should call mysqlService.dbQuery() and output query and results if debug mode is enabled', () => {
     const { service, configService } = setup();
-    const infoSpy = spyOn(console, 'info');
+    const infoSpy = vi.spyOn(console, 'info').mockImplementation(() => undefined);
     configService.debugMode.set(true);
-    const querySpy = spyOn(TestBed.inject(MysqlService), 'dbQuery').and.returnValue(of({ id: 'mock value' } as TableRow));
+    const querySpy = vi.spyOn(TestBed.inject(MysqlService), 'dbQuery').mockReturnValue(of({ id: 'mock value' } as TableRow));
     const myQuery = 'SELECT azerothcore FROM projects;';
 
     service.query(myQuery).subscribe(() => {
@@ -67,9 +68,9 @@ describe('MysqlQueryService', () => {
 
   it('query() should call mysqlService.dbQuery() and not output anything if debug mode is disabled', () => {
     const { service, configService } = setup();
-    const logSpy = spyOn(console, 'log');
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
     configService.debugMode.set(false);
-    const querySpy = spyOn(TestBed.inject(MysqlService), 'dbQuery').and.returnValue(of(undefined as any));
+    const querySpy = vi.spyOn(TestBed.inject(MysqlService), 'dbQuery').mockReturnValue(of(undefined as any));
     const myQuery = 'SELECT azerothcore FROM projects;';
 
     service.query(myQuery).subscribe(() => {
@@ -82,7 +83,7 @@ describe('MysqlQueryService', () => {
   it('selectAll() should correctly work', () => {
     const { service } = setup();
     const data: TableRow[] = [{ key: 'value' }];
-    const querySpy = spyOn(service, 'query').and.returnValue(of(data));
+    const querySpy = vi.spyOn(service, 'query').mockReturnValue(of(data));
 
     service.selectAll('my_ac', 'param', 'value').subscribe((res) => {
       expect(res).toEqual(data);
@@ -94,7 +95,7 @@ describe('MysqlQueryService', () => {
   it('selectAllMultipleKeys() should correctly work', () => {
     const { service } = setup();
     const data: TableRow[] = [{ key: 'value' }];
-    const querySpy = spyOn(service, 'query').and.returnValue(of(data));
+    const querySpy = vi.spyOn(service, 'query').mockReturnValue(of(data));
     const row: TableRow = { k1: 1, k2: 2 };
 
     service.selectAllMultipleKeys('my_ac', row).subscribe((res) => {
@@ -107,7 +108,7 @@ describe('MysqlQueryService', () => {
   it('getMaxId() should correctly work', () => {
     const { service } = setup();
     const data: MaxRow[] = [{ max: 123 }];
-    const querySpy = spyOn(service, 'query').and.returnValue(of());
+    const querySpy = vi.spyOn(service, 'query').mockReturnValue(of());
 
     service.getMaxId('my_ac', 'param').subscribe((res) => {
       expect(res).toEqual(data);
@@ -120,7 +121,7 @@ describe('MysqlQueryService', () => {
     const { service } = setup();
     const id = 1234;
     const data: SmartScripts[] = [{ entryorguid: 1111 } as SmartScripts];
-    const querySpy = spyOn(service, 'query').and.returnValue(of(data));
+    const querySpy = vi.spyOn(service, 'query').mockReturnValue(of(data));
 
     service.getTimedActionlists(id).subscribe((res) => {
       expect(res).toEqual(data);
@@ -810,8 +811,8 @@ describe('MysqlQueryService', () => {
 
     function setupHelpers() {
       const { service } = setup();
-      spyOn(service, 'queryValue').and.returnValue(resultToObs);
-      spyOn(service, 'queryValueToPromise').and.returnValue(resultToPromise);
+      vi.spyOn(service, 'queryValue').mockReturnValue(resultToObs);
+      vi.spyOn(service, 'queryValueToPromise').mockReturnValue(resultToPromise);
       return { service };
     }
 
@@ -829,7 +830,7 @@ describe('MysqlQueryService', () => {
       { name: 'getCreatureNameById', query: `SELECT name AS v FROM creature_template WHERE entry = ${id}` },
       {
         name: 'getCreatureNameByGuid',
-        query: `SELECT name AS v FROM creature_template AS ct INNER JOIN creature AS c ON ct.entry = c.id1 WHERE c.guid = ${guid}`,
+        query: `SELECT name AS v FROM creature_template AS ct INNER JOIN creature AS c ON ct.entry = c.id WHERE c.guid = ${guid}`,
       },
       { name: 'getGameObjectNameById', query: `SELECT name AS v FROM gameobject_template WHERE entry = ${id}` },
       {
@@ -911,7 +912,7 @@ describe('MysqlQueryService', () => {
 
     it('getReputationRewardByFaction (usingPrev)', async () => {
       const { service } = setupHelpers();
-      spyOn(service, 'query').and.returnValue(of([]));
+      vi.spyOn(service, 'query').mockReturnValue(of([]));
       expect(await service.getReputationRewardByFaction(id)).toEqual([]);
       expect(await service.getReputationRewardByFaction(id)).toEqual([]);
       expect(service.query).toHaveBeenCalledTimes(1);

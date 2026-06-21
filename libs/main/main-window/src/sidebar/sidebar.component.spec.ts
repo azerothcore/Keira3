@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -116,7 +117,7 @@ describe('SidebarComponent', () => {
 
   it('reload the app on logout', () => {
     const { page, component } = setup();
-    const reloadSpy = spyOn(TestBed.inject(LocationService), 'reload');
+    const reloadSpy = vi.spyOn(TestBed.inject(LocationService), 'reload').mockImplementation(() => undefined);
 
     component.logout();
 

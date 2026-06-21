@@ -7,7 +7,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 describe('GameTeleSelectorBtnComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), GameTeleSelectorBtnComponent],
+      imports: [ModalModule, GameTeleSelectorBtnComponent],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
   });

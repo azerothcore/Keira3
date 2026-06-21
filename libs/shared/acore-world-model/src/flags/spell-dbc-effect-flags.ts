@@ -46,10 +46,10 @@ export const SPELL_DBC_PROC_FLAGS: Flag[] = [
   { bit: 18, name: 'PROC_FLAG_DONE_PERIODIC - On periodic effect done (Damage/Heal)' },
   { bit: 19, name: 'PROC_FLAG_TAKEN_PERIODIC - On periodic effect taken (Damage/Heal)' },
   { bit: 20, name: 'PROC_FLAG_TAKEN_DAMAGE - On any damage taken' },
-  { bit: 20, name: 'PROC_FLAG_DONE_TRAP_ACTIVATION - On trap trigger' },
-  { bit: 20, name: 'PROC_FLAG_DONE_MAINHAND_ATTACK - On main hand auto attack hit' },
-  { bit: 20, name: 'PROC_FLAG_DONE_OFFHAND_ATTACK - On offhand auto attack hit' },
-  { bit: 20, name: 'PROC_FLAG_DEATH - On death' },
+  { bit: 21, name: 'PROC_FLAG_DONE_TRAP_ACTIVATION - On trap trigger' },
+  { bit: 22, name: 'PROC_FLAG_DONE_MAINHAND_ATTACK - On main hand auto attack hit' },
+  { bit: 23, name: 'PROC_FLAG_DONE_OFFHAND_ATTACK - On offhand auto attack hit' },
+  { bit: 24, name: 'PROC_FLAG_DEATH - On death' },
 ];
 
 export const SPELL_DBC_CLASS_MASK_FLAGS: Flag[] = [

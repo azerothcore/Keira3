@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -40,7 +41,7 @@ describe('BroadcastText integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), BroadcastTextComponent, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, BroadcastTextComponent, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
@@ -55,9 +56,9 @@ describe('BroadcastText integration tests', () => {
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalEntity]));
 
     const fixture = TestBed.createComponent(BroadcastTextComponent);
     const component = fixture.componentInstance;
@@ -95,7 +96,7 @@ describe('BroadcastText integration tests', () => {
         'INSERT INTO `broadcast_text` (`ID`, `LanguageID`, `MaleText`, `FemaleText`, `EmoteID1`, `EmoteID2`, `EmoteID3`, ' +
         '`EmoteDelay1`, `EmoteDelay2`, `EmoteDelay3`, `SoundEntriesId`, `EmotesID`, `Flags`, `VerifiedBuild`) VALUES\n' +
         "(1234, 0, 'Shin', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);";
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.setInputValueById('MaleText', 'Shin');
       page.expectFullQueryToContain(expectedQuery);
@@ -103,7 +104,7 @@ describe('BroadcastText integration tests', () => {
       page.clickExecuteQuery();
 
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
       page.removeNativeElement();
     });
   });
@@ -129,14 +130,14 @@ describe('BroadcastText integration tests', () => {
         "`MaleText` = '1', `FemaleText` = '2', `EmoteID1` = 3, `EmoteID2` = 4, `EmoteID3` = 5, " +
         '`EmoteDelay1` = 6, `EmoteDelay2` = 7, `EmoteDelay3` = 8, `SoundEntriesId` = 9, `EmotesID` = 10, `Flags` = 11 ' +
         'WHERE (`ID` = 1234);';
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.expectDiffQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
       page.removeNativeElement();
     });
 
