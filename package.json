@@ -88,7 +88,7 @@
     "@schematics/angular": "22.0.3",
     "@siemens/ngx-datatable": "22.4.2",
     "@swc-node/register": "1.11.1",
-    "@swc/core": "1.15.33",
+    "@swc/core": "1.15.41",
     "@swc/helpers": "0.5.23",
     "@types/jquery": "3.5.34",
     "@types/jsdom": "28.0.3",
