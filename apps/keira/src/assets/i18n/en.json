@@ -946,5 +946,9 @@
     "SEARCH": "Search",
     "SEARCHING": "Searching...",
     "FOUND_GUIDS": "Found unused GUIDs:"
+  },
+  "MAP_VIEWER": {
+    "LOADING": "Loading map data…",
+    "NO_DATA": "No map data available"
   }
 }

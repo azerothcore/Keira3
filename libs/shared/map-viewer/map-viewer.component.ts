@@ -1,10 +1,12 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, signal } from '@angular/core';
+import { TranslateDirective } from '@ngx-translate/core';
 import { MapViewerService } from './map-viewer.service';
 import { MapDisplayData, MapPoint, RenderedPoint, WorldMapArea, worldToMapPercent } from './map-viewer.model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-map-viewer',
+  imports: [TranslateDirective],
   templateUrl: './map-viewer.component.html',
   styleUrl: './map-viewer.component.scss',
 })

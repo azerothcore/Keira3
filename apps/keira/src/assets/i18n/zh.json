@@ -946,5 +946,9 @@
     "SEARCH": "搜索",
     "SEARCHING": "搜索中...",
     "FOUND_GUIDS": "找到未使用的GUID："
+  },
+  "MAP_VIEWER": {
+    "LOADING": "正在加载地图数据…",
+    "NO_DATA": "没有可用的地图数据"
   }
 }

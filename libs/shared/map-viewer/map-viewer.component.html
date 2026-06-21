@@ -24,9 +24,9 @@
   }
   @if (maps().length === 0) {
     @if (loading()) {
-      <div class="no-maps-message">Loading map data…</div>
+      <div class="no-maps-message" [translate]="'MAP_VIEWER.LOADING'"></div>
     } @else {
-      <div class="no-maps-message">No map data available</div>
+      <div class="no-maps-message" [translate]="'MAP_VIEWER.NO_DATA'"></div>
     }
   }
 </div>
