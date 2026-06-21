@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { Component, viewChild, inject, provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -40,7 +41,7 @@ describe('SaiTopBarComponent', () => {
   function setup() {
     const handler = TestBed.inject(SaiHandlerService);
     handler['_selected'] = JSON.stringify({ source_type: SAI_TYPES.SAI_TYPE_GAMEOBJECT, entryorguid });
-    spyOn(TestBed.inject(MysqlQueryService), 'query').and.returnValue(of([]));
+    vi.spyOn(TestBed.inject(MysqlQueryService), 'query').mockReturnValue(of([]));
 
     const fixture = TestBed.createComponent(TestHostComponent);
     const page = new SaiTopBarComponentPage(fixture);
@@ -80,7 +81,7 @@ describe('SaiTopBarComponent', () => {
     it(`should correctly handle different types [${testId}]`, () => {
       const { fixture, handler, page } = setup();
       handler['_selected'] = JSON.stringify({ source_type: type, entryorguid: positive ? entryorguid : -entryorguid });
-      spyOn(handler, 'getName').and.returnValue(of(name));
+      vi.spyOn(handler, 'getName').mockReturnValue(of(name));
       // TODO: for some reasons this test cannot get the async name
 
       fixture.detectChanges();

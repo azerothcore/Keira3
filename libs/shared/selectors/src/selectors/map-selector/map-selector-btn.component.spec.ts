@@ -8,7 +8,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 describe('MapSelectorBtnComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), MapSelectorBtnComponent],
+      imports: [ModalModule, MapSelectorBtnComponent],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
   });

@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
@@ -42,7 +43,7 @@ describe('GameobjectTemplate integration tests', () => {
     TestBed.configureTestingModule({
       imports: [
         ToastrModule.forRoot(),
-        ModalModule.forRoot(),
+        ModalModule,
         GameobjectTemplateComponent,
         RouterTestingModule,
         TranslateTestingModule,
@@ -67,12 +68,12 @@ describe('GameobjectTemplate integration tests', () => {
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
 
     const model3DViewerService = TestBed.inject(Model3DViewerService);
-    spyOn(model3DViewerService, 'generateModels').and.returnValue(new Promise((resolve) => resolve({ destroy: () => {} })));
+    vi.spyOn(model3DViewerService, 'generateModels').mockReturnValue(new Promise((resolve) => resolve({ destroy: () => {} })));
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalEntity]));
 
     const fixture = TestBed.createComponent(GameobjectTemplateComponent);
     const page = new GameobjectTemplatePage(fixture);
@@ -114,7 +115,7 @@ describe('GameobjectTemplate integration tests', () => {
         ", 0, 0, 'Helias', '', '', '', 1, 0, 0, 0, 0, 0, 0, 0, " +
         "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', 0);";
 
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.setInputValueById('name', 'Helias');
       page.expectFullQueryToContain(expectedQuery);
@@ -122,7 +123,7 @@ describe('GameobjectTemplate integration tests', () => {
       page.clickExecuteQuery();
 
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
   });
 
@@ -144,7 +145,7 @@ describe('GameobjectTemplate integration tests', () => {
         "`Data19` = 26, `Data20` = 27, `Data21` = 28, `Data22` = 29, `Data23` = 30, `AIName` = '31', " +
         "`ScriptName` = '32' WHERE (`entry` = 1234);";
 
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       const values: (string | number)[] = [];
 
@@ -155,7 +156,7 @@ describe('GameobjectTemplate integration tests', () => {
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
 
     it('changing values should correctly update the queries', () => {
@@ -172,7 +173,7 @@ describe('GameobjectTemplate integration tests', () => {
       page.expectFullQueryToContain('35');
     });
 
-    xit('changing a value via SingleValueSelector should correctly work', async () => {
+    it.skip('changing a value via SingleValueSelector should correctly work', async () => {
       const { page } = setup(false);
       const field = 'type';
       page.clickElement(page.getSelectorBtn(field));

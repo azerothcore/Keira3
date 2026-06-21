@@ -8,7 +8,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 describe('NpcTextSelectorBtnComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), NpcTextSelectorBtnComponent],
+      imports: [ModalModule, NpcTextSelectorBtnComponent],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
   });

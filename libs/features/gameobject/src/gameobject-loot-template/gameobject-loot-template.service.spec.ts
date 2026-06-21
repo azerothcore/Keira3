@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -38,7 +39,7 @@ describe('GameobjectLootTemplateService', () => {
     const { service } = setup();
     const type = 3;
     const mockData: { type: number }[] = [{ type }];
-    const querySpy = spyOn(TestBed.inject(MysqlQueryService), 'query').and.returnValue(of(mockData));
+    const querySpy = vi.spyOn(TestBed.inject(MysqlQueryService), 'query').mockReturnValue(of(mockData));
 
     service.getType().subscribe((data) => {
       expect(data).toEqual(mockData);

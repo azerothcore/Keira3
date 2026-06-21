@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -40,7 +41,7 @@ class SelectConditionsComponentPage extends PageObject<SelectConditionsComponent
 describe('SelectConditions integration tests', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), SelectConditionsComponent, RouterTestingModule, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, SelectConditionsComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
@@ -51,9 +52,9 @@ describe('SelectConditions integration tests', () => {
   });
 
   function setup() {
-    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate').mockImplementation(() => undefined);
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([{ max: 1 }]));
 
     const fixture = TestBed.createComponent(SelectConditionsComponent);
     const page = new SelectConditionsComponentPage(fixture);
@@ -130,7 +131,7 @@ describe('SelectConditions integration tests', () => {
   ]) {
     it(`searching an existing entity should correctly work [${testId}]`, () => {
       const { page, querySpy } = setup();
-      querySpy.calls.reset();
+      querySpy.mockClear();
       if (sourceIdorRef) {
         page.setInputValue(page.searchIdSelect, sourceIdorRef + ': ' + sourceIdorRef);
       }
@@ -207,8 +208,8 @@ describe('SelectConditions integration tests', () => {
       },
     ];
 
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of(results));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of(results));
 
     page.clickElement(page.searchBtn);
 

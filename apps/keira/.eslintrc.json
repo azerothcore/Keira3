@@ -4,9 +4,7 @@
     {
       "files": ["*.ts"],
       "parserOptions": {
-        "project": ["apps/keira/src/tsconfig.*?.json"],
-        "createDefaultProgram": true,
-        "projectService": true
+        "project": ["apps/keira/src/tsconfig.*?.json"]
       },
       "extends": [
         "plugin:@angular-eslint/recommended",

@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -17,17 +18,17 @@ import { GameobjectTemplateService } from './gameobject-template.service';
 describe('GameobjectComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), ToastrModule.forRoot(), GameobjectTemplateComponent, RouterTestingModule, TranslateTestingModule],
+      imports: [ModalModule, ToastrModule.forRoot(), GameobjectTemplateComponent, RouterTestingModule, TranslateTestingModule],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations(), GameobjectHandlerService, SaiGameobjectHandlerService],
     }).compileComponents();
   });
 
   function setup() {
     const queryService = TestBed.inject(MysqlQueryService);
-    spyOn(queryService, 'query').and.returnValue(of());
+    vi.spyOn(queryService, 'query').mockReturnValue(of());
 
     const model3DViewerService = TestBed.inject(Model3DViewerService);
-    spyOn(model3DViewerService, 'generateModels').and.returnValue(new Promise((resolve) => resolve({ destroy: () => {} })));
+    vi.spyOn(model3DViewerService, 'generateModels').mockReturnValue(new Promise((resolve) => resolve({ destroy: () => {} })));
 
     const fixture = TestBed.createComponent(GameobjectTemplateComponent);
     const component = fixture.componentInstance;
@@ -43,7 +44,7 @@ describe('GameobjectComponent', () => {
     const index = 3;
     const gameobjectTemplateService = TestBed.inject(GameobjectTemplateService);
     gameobjectTemplateService.form.controls.type.setValue(mockType);
-    const getFieldSpy = spyOn(gameobjectTemplateService, 'getFieldDefinition').and.returnValue(mockValue);
+    const getFieldSpy = vi.spyOn(gameobjectTemplateService, 'getFieldDefinition').mockReturnValue(mockValue);
 
     expect(component.dataFieldDefinition(index)).toEqual(mockValue);
     expect(getFieldSpy).toHaveBeenCalledTimes(1);

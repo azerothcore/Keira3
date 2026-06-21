@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -47,7 +48,7 @@ describe('ConditionsHandlerService', () => {
     const res = service['getIdObject'](input);
     expect(res).toEqual(output);
 
-    spyOn(TestBed.inject(Router), 'navigate');
+    vi.spyOn(TestBed.inject(Router), 'navigate').mockImplementation(() => undefined);
 
     service.select(true, input);
     expect(service.selected).toBe(JSON.stringify(res));

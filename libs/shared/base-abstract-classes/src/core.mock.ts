@@ -157,7 +157,7 @@ export class MockMultiRowExternalEditorService extends MultiRowExternalEditorSer
 
   selectQuery(id: string | number) {
     return this.queryService.query(
-      `SELECT a.* FROM creature AS c INNER JOIN creature_addon AS a ON c.guid = a.guid WHERE c.id1 = ${id}`,
+      `SELECT a.* FROM creature AS c INNER JOIN creature_addon AS a ON c.guid = a.guid WHERE c.id = ${id}`,
     ) as Observable<MockEntity[]>;
   }
 }

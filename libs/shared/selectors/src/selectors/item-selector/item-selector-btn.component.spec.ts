@@ -7,7 +7,7 @@ import { ItemSelectorBtnComponent } from './item-selector-btn.component';
 describe('ItemSelectorBtnComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), ItemSelectorBtnComponent],
+      imports: [ModalModule, ItemSelectorBtnComponent],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
   });

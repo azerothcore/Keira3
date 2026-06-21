@@ -333,7 +333,7 @@ export class MysqlQueryService extends BaseQueryService {
     return this.queryValueToPromiseCached(
       'getCreatureNameByGuid',
       String(guid),
-      `SELECT name AS v FROM creature_template AS ct INNER JOIN creature AS c ON ct.entry = c.id1 WHERE c.guid = ${guid}`,
+      `SELECT name AS v FROM creature_template AS ct INNER JOIN creature AS c ON ct.entry = c.id WHERE c.guid = ${guid}`,
     );
   }
 

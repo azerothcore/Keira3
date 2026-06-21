@@ -1,7 +1,6 @@
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { debounceTime } from 'rxjs';
 import { IconComponent } from '@keira/shared/base-editor-components';
 import { RacesTextKey, RacesTextValue } from '@keira/shared/constants';
 import { MapPoint, MapViewerComponent } from '@keira/shared/map-viewer';
@@ -10,6 +9,8 @@ import { PreviewHelperService } from '@keira/shared/preview';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { Quest } from './quest-preview.model';
 import { QuestPreviewService } from './quest-preview.service';
+
+export const QUEST_PREVIEW_DEBOUNCE_TIME = 300;
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -77,18 +78,19 @@ export class QuestPreviewComponent implements OnInit {
   ngOnInit(): void {
     this.service.initializeServices(this.changeDetectorRef);
 
-    this.service.questTemplateService.form.valueChanges.pipe(debounceTime(300), takeUntilDestroyed(this.destroyRef)).subscribe(async () => {
-      this.changeDetectorRef.markForCheck();
-      await this.loadMapPoints();
-    });
+    this.service
+      .valueChanges$(QUEST_PREVIEW_DEBOUNCE_TIME)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.changeDetectorRef.markForCheck();
+        void this.loadMapPoints();
+      });
 
-    setTimeout(() => this.loadMapPoints(), 800);
+    void this.loadMapPoints();
   }
 
   private async loadMapPoints(): Promise<void> {
-    const points = await this.service.getMapPoints();
-    console.log(`[QuestPreview] map points loaded: ${points.length}`);
-    this.mapPoints.set(points);
+    this.mapPoints.set(await this.service.getMapPoints());
   }
 
   getRaceText(raceIndex: RacesTextKey): RacesTextValue | null {

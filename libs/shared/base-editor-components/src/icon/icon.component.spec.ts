@@ -1,3 +1,4 @@
+import { vi, type MockInstance } from 'vitest';
 import { Component, viewChild, provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -10,7 +11,6 @@ import { IconService } from './icon.service';
 
 import { instance, mock } from 'ts-mockito';
 import { SqliteService } from '@keira/shared/db-layer';
-import Spy = jasmine.Spy;
 
 @Component({
   template: `<keira-icon [size]="size" [itemId]="itemId" [itemDisplayId]="itemDisplayId" [skillId]="skillId" [spellId]="spellId" />`,
@@ -50,9 +50,9 @@ describe('ItemIconComponent', () => {
     const page = new IconComponentPage(fixture);
     const service = TestBed.inject(IconService);
 
-    spyOn(service, 'getIconByItemId').and.callFake((id) => of(`getIconByItemId-${id}`));
-    spyOn(service, 'getIconByItemDisplayId').and.callFake((id) => of(`getIconByItemDisplayId-${id}`));
-    spyOn(service, 'getIconBySpellId').and.callFake((id) => of(`getIconBySpellId-${id}`));
+    vi.spyOn(service, 'getIconByItemId').mockImplementation((id) => of(`getIconByItemId-${id}`));
+    vi.spyOn(service, 'getIconByItemDisplayId').mockImplementation((id) => of(`getIconByItemDisplayId-${id}`));
+    vi.spyOn(service, 'getIconBySpellId').mockImplementation((id) => of(`getIconBySpellId-${id}`));
 
     return { fixture, host, component, page, service };
   };
@@ -104,7 +104,7 @@ describe('ItemIconComponent', () => {
       const { page, host, service } = setup();
       host.size = 'medium';
       host.itemId = 'whatever';
-      (service.getIconByItemId as Spy).and.returnValue(of(null));
+      (service.getIconByItemId as MockInstance).mockReturnValue(of(null));
 
       page.detectChanges();
 

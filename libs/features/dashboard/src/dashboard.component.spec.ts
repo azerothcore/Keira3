@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -147,7 +148,7 @@ describe('DashboardComponent', () => {
   it('should correctly give error if the query does not return the data in the expected format', () => {
     const { page } = setup();
     when(MockedMysqlQueryService.query(anyString())).thenReturn(of([]));
-    const errorSpy = spyOn(console, 'error');
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
     page.detectChanges();
 
@@ -159,7 +160,7 @@ describe('DashboardComponent', () => {
     const { page } = setup();
     const error = 'some error';
     when(MockedMysqlQueryService.query(anyString())).thenReturn(throwError(error));
-    const errorSpy = spyOn(console, 'error');
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
     page.detectChanges();
 

@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -47,7 +48,7 @@ describe('QuestTemplate integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, QuestTemplateComponent, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, RouterTestingModule, QuestTemplateComponent, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
@@ -66,15 +67,15 @@ describe('QuestTemplate integration tests', () => {
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
-    spyOn(queryService, 'queryValue').and.returnValue(of());
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
+    vi.spyOn(queryService, 'queryValue').mockReturnValue(of());
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalEntity]));
     // by default the other editor services should not be initialised, because the selectAll would return the wrong types for them
-    const initializeServicesSpy = spyOn(TestBed.inject(QuestPreviewService), 'initializeServices');
+    const initializeServicesSpy = vi.spyOn(TestBed.inject(QuestPreviewService), 'initializeServices').mockImplementation(() => undefined);
     if (creatingNew) {
       // when creatingNew, the selectAll will return an empty array, so it's fine
-      initializeServicesSpy.and.callThrough();
+      initializeServicesSpy.mockRestore();
     }
 
     const fixture = TestBed.createComponent(QuestTemplateComponent);
@@ -107,7 +108,7 @@ describe('QuestTemplate integration tests', () => {
 
     it('changing a property and executing the query should correctly work', () => {
       const { page, querySpy } = setup(true);
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.setInputValueById('LogTitle', 'Shin');
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
@@ -116,12 +117,12 @@ describe('QuestTemplate integration tests', () => {
       page.clickExecuteQuery();
 
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain('Shin');
+      expect(querySpy.mock.calls.at(-1)[0]).toContain('Shin');
       page.removeNativeElement();
     });
 
     // TODO: fix this test, broken after OnPush (probably needs await whenStable())
-    xit('changing a property should be reflected in the quest preview', () => {
+    it.skip('changing a property should be reflected in the quest preview', () => {
       const { page } = setup(true);
       const value = 'Fix all AzerothCore bugs';
       page.detectChanges();
@@ -168,14 +169,14 @@ describe('QuestTemplate integration tests', () => {
         '`RequiredItemId5` = 90, `RequiredItemId6` = 91, `RequiredItemCount1` = 92, `RequiredItemCount2` = 93, `RequiredItemCount3` = 94,' +
         " `RequiredItemCount4` = 95, `RequiredItemCount5` = 96, `RequiredItemCount6` = 97, `Unknown0` = 98, `ObjectiveText1` = '99', " +
         "`ObjectiveText2` = '100', `ObjectiveText3` = '101', `ObjectiveText4` = '102' WHERE (`ID` = 1234);";
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.expectDiffQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
       page.removeNativeElement();
     });
 
@@ -194,7 +195,7 @@ describe('QuestTemplate integration tests', () => {
       page.removeNativeElement();
     });
 
-    xit('changing a value via FlagsSelector should correctly work', async () => {
+    it.skip('changing a value via FlagsSelector should correctly work', async () => {
       const { page } = setup(false);
       const field = 'Flags';
       page.clickElement(page.getSelectorBtn(field));
