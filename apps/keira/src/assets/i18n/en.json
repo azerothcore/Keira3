@@ -213,7 +213,9 @@
     "TOOLTIP": "A minimalistic SQL Editor to run custom queries",
     "EXECUTE": "Execute (F9)",
     "LEARN_SQL": "learn the SQL language",
-    "AFFECTED_ROWS": "Affected rows:"
+    "AFFECTED_ROWS": "Affected rows:",
+    "HIDE_TRACE": "Hide trace",
+    "SHOW_TRACE": "Show trace"
   },
   "CREATURE": {
     "TEMPLATE": {
@@ -546,6 +548,10 @@
     "MIN_COUNT": "The minimum number of copies of the item that can drop in a single loot. For references, this is ignored.",
     "MAX_COUNT": "The maximum number of copies of the item that can drop in a single loot. For references, this is the EXACT count value.",
     "COMMENT": "A comment that is ignored by the core"
+  },
+  "LOOT_TEMPLATE": {
+    "SET_FIELD": "You have to set the field <strong>`{{ LOOT_FIELD }}`</strong> of <strong>{{ ENTITY_TABLE }}</strong> in order to enable this feature.",
+    "SET_FIELD_GO": "You have to set the field <strong>`Data1` (lootid)</strong> and <strong>`type` (3 or 25)</strong> of <strong>{{ ENTITY_TABLE }}</strong> in order to enable this feature."
   },
   "OTHER_TEXTS": {
     "BROADCAST_TEXT": {

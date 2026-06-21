@@ -213,7 +213,9 @@
     "TOOLTIP": "Un editor SQL minimalista para ejecutar consultas personalizadas",
     "EXECUTE": "Ejecutar (F9)",
     "LEARN_SQL": "Aprenda el Lenguaje SQL",
-    "AFFECTED_ROWS": "Líneas afectadas:"
+    "AFFECTED_ROWS": "Líneas afectadas:",
+    "HIDE_TRACE": "Ocultar traza",
+    "SHOW_TRACE": "Mostrar traza"
   },
   "CREATURE": {
     "TEMPLATE": {
@@ -546,6 +548,10 @@
     "MIN_COUNT": "El Número Mínimo de copias del Item que pueden aparecer en un sólo Botín individual. En el caso de las Referencias de Botín, este campo es ignorado directamente.",
     "MAX_COUNT": "El Número Máximo de copias del Item que pueden aparecer en un sólo Botín individual. En el caso de las Referencias de Botín, este campo es el valor del recuento EXACTO.",
     "COMMENT": "Un comentario el cual ignora el emulador (usado para dejar anotaciones al respecto)"
+  },
+  "LOOT_TEMPLATE": {
+    "SET_FIELD": "Debes establecer el campo <strong>`{{ LOOT_FIELD }}`</strong> de <strong>{{ ENTITY_TABLE }}</strong> para poder habilitar esta funcionalidad.",
+    "SET_FIELD_GO": "Debes establecer el campo <strong>`Data1` (lootid)</strong> y <strong>`type` (3 o 25)</strong> de <strong>{{ ENTITY_TABLE }}</strong> para poder habilitar esta funcionalidad."
   },
   "OTHER_TEXTS": {
     "BROADCAST_TEXT": {
