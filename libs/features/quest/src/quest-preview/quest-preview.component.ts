@@ -19,8 +19,7 @@ export const QUEST_PREVIEW_DEBOUNCE_TIME = 300;
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-quest-preview',
   templateUrl: './quest-preview.component.html',
-  styleUrls: ['./quest-preview.component.scss'],
-  imports: [IconComponent, CollapseModule, AsyncPipe, QuestObjectivesComponent, Model3DViewerComponent],
+  imports: [IconComponent, CollapseModule, AsyncPipe, QuestObjectivesComponent, Model3DViewerComponent, MapViewerComponent],
 })
 export class QuestPreviewComponent implements OnInit {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
