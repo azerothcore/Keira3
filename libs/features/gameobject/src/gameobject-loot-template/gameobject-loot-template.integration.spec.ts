@@ -314,8 +314,6 @@ describe('GameobjectLootTemplate integration tests', () => {
   it('should correctly show the warning if the loot id and type field are not correctly set in the gameobject template', () => {
     const { page } = setup(true, 0);
 
-    expect(page.query('.alert-info').innerText).toContain(
-      'You have to set the field `Data1` (lootid) and `type` (3 or 25) of gameobject_template in order to enable this feature.',
-    );
+    expect(page.query('.alert-info').innerText).toContain('LOOT_TEMPLATE.SET_FIELD_GO');
   });
 });
