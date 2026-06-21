@@ -465,5 +465,19 @@ describe('GameobjectSpawn integration tests', () => {
           "(2, 1234, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, '');",
       );
     });
+
+    it('clicking a map pin should select the matching spawn row', () => {
+      const { fixture } = setup(false);
+      const component = fixture.componentInstance;
+      const selectSpy = vi.spyOn(component['editorService'], 'onRowSelection');
+
+      component.onMapPinClick({ mapId: 0, x: 0, y: 0, guid: 2 });
+      expect(selectSpy).toHaveBeenCalledTimes(1);
+      expect(component['editorService'].selectedRowId).toBe(2);
+
+      selectSpy.mockClear();
+      component.onMapPinClick({ mapId: 0, x: 0, y: 0, guid: 999 });
+      expect(selectSpy).not.toHaveBeenCalled();
+    });
   });
 });

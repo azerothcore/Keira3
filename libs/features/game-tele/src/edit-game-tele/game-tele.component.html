@@ -17,6 +17,9 @@
           (executeQuery)="save($event)"
         />
       </div>
+      <div class="content-block">
+        <keira-map-viewer [points]="mapPoints()" />
+      </div>
       <form [formGroup]="editorService.form" class="form-group edit-form">
         <div class="content-block">
           <span class="category-title" [translate]="'GAME_TELE.EDITOR'"></span>
@@ -59,9 +62,6 @@
           </div>
         </div>
       </form>
-      <div class="content-block">
-        <keira-map-viewer [points]="mapPoints()" />
-      </div>
     </div>
   }
 </div>

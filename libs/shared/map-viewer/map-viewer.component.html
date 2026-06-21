@@ -1,25 +1,35 @@
 <div class="map-viewer-container">
   @for (map of maps(); track map.uid) {
     <div class="map-wrapper">
-      <div class="map-label">{{ map.area.AreaName }}</div>
-      <div class="map-image-container">
-        <img [src]="map.imageUrl" alt="Map {{ map.mapId }}" class="map-image" (error)="onImageError($event)" />
-        @for (pt of map.points; track $index) {
-          <div class="map-point" [style.left]="pt.left" [style.top]="pt.top">
-            <img [src]="'assets/img/' + pt.icon" class="map-point-icon" />
-            @if (pt.name || pt.level != null) {
-              <div class="map-tooltip">
-                @if (pt.name) {
-                  <span class="tooltip-name">{{ pt.name }}</span>
-                }
-                @if (pt.level != null) {
-                  <span class="tooltip-level">Lvl {{ pt.level }}</span>
-                }
-              </div>
-            }
-          </div>
-        }
+      <div class="map-header">
+        <h3 class="map-label">{{ map.area.AreaName }}</h3>
+        <button
+          type="button"
+          class="map-toggle-btn"
+          (click)="toggleVisible(map.uid)"
+          [translate]="isVisible(map.uid) ? 'MAP_VIEWER.HIDE' : 'MAP_VIEWER.SHOW'"
+        ></button>
       </div>
+      @if (isVisible(map.uid)) {
+        <div class="map-image-container" [class.expanded]="isExpanded(map.uid)" (click)="toggleExpand(map.uid)">
+          <img [src]="map.imageUrl" alt="Map {{ map.mapId }}" class="map-image" (error)="onImageError($event)" />
+          @for (pt of map.points; track $index) {
+            <div class="map-point" [style.left]="pt.left" [style.top]="pt.top" (click)="onPinClick(pt, $event)">
+              <img [src]="'assets/img/' + pt.icon" class="map-point-icon" />
+              @if (pt.name || pt.level != null) {
+                <div class="map-tooltip">
+                  @if (pt.name) {
+                    <span class="tooltip-name">{{ pt.name }}</span>
+                  }
+                  @if (pt.level != null) {
+                    <span class="tooltip-level">Lvl {{ pt.level }}</span>
+                  }
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
     </div>
   }
 

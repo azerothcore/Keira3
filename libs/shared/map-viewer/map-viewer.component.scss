@@ -1,29 +1,57 @@
 .map-viewer-container {
+  // Lay multiple maps out in rows, wrapping to the next row when they don't fit.
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 16px 0;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 24px;
+  padding: 5px 0px 16px 0px;
   width: 100%;
 }
 
 .map-wrapper {
-  width: 100%;
-  max-width: 320px;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
+.map-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.map-label {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  text-align: center;
+}
+
 .map-image-container {
   position: relative;
-  width: 100%;
-  aspect-ratio: 4 / 3;
+  // Reduced by default (half of the full 1024x683); clicking the map expands it.
+  width: 512px;
+  height: 341.5px;
   border: 1px solid #ccc;
   border-radius: 4px;
   overflow: visible;
   background-color: #1a1a1a;
+  cursor: pointer;
+  transition:
+    width 0.2s ease,
+    height 0.2s ease;
 
-  img {
+  &.expanded {
+    width: 1024px;
+    height: 683px;
+  }
+
+  .map-image {
     width: 100%;
     height: 100%;
     object-fit: contain;
@@ -45,12 +73,32 @@
     opacity: 1;
     pointer-events: auto;
   }
+
+  // Recolor the (yellow) pin icon to red on hover. The brightness(0) flattens the
+  // source to a black silhouette first, then the chain tints it red.
+  &:hover .map-point-icon {
+    filter: brightness(0) saturate(100%) invert(13%) sepia(96%) saturate(7466%) hue-rotate(5deg) brightness(98%) contrast(118%);
+  }
 }
 
 .map-point-icon {
   display: block;
   width: 12px;
   height: 12px;
+}
+
+.map-toggle-btn {
+  flex-shrink: 0;
+  padding: 2px 10px;
+  font-size: 13px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f5f5f5;
+
+  &:hover {
+    background-color: #e8e8e8;
+  }
 }
 
 .map-tooltip {

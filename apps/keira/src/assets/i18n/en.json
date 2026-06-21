@@ -955,6 +955,8 @@
   },
   "MAP_VIEWER": {
     "LOADING": "Loading map data…",
-    "NO_DATA": "No map data available"
+    "NO_DATA": "No map data available",
+    "SHOW": "Show map",
+    "HIDE": "Hide map"
   }
 }

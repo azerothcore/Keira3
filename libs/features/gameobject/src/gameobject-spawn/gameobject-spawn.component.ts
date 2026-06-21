@@ -46,6 +46,7 @@ export class GameobjectSpawnComponent extends MultiRowEditorComponent<Gameobject
   readonly mapPoints = computed<MapPoint[]>(() => {
     this._formChange();
     return this.editorService.newRows.map((row) => ({
+      guid: row.guid,
       mapId: row.map,
       x: row.position_x,
       y: row.position_y,
@@ -54,4 +55,11 @@ export class GameobjectSpawnComponent extends MultiRowEditorComponent<Gameobject
       icon: 'map/pin-yellow.png',
     }));
   });
+
+  onMapPinClick(point: MapPoint): void {
+    const row = this.editorService.newRows.find((newRow) => newRow.guid === point['guid']);
+    if (row) {
+      this.editorService.onRowSelection({ selected: [row] });
+    }
+  }
 }

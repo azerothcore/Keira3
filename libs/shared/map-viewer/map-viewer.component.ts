@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, output, signal } from '@angular/core';
 import { TranslateDirective } from '@ngx-translate/core';
 import { MapDisplayData, MapPoint, RenderedPoint, WorldMapArea, worldToMapPercent } from './map-viewer.model';
 import { MapViewerService } from './map-viewer.service';
@@ -16,11 +16,46 @@ export class MapViewerComponent {
   protected readonly loading = signal(false);
   protected readonly loadError = signal<string | null>(null);
   protected readonly maps = signal<MapDisplayData[]>([]);
+  private readonly hidden = signal<Set<string>>(new Set());
+  private readonly expanded = signal<Set<string>>(new Set());
 
   readonly points = input<MapPoint[]>([]);
+  readonly pinClick = output<MapPoint>();
 
   constructor() {
     effect(() => void this.resolveMaps(this.points()));
+  }
+
+  protected isVisible(uid: string): boolean {
+    return !this.hidden().has(uid);
+  }
+
+  protected isExpanded(uid: string): boolean {
+    return this.expanded().has(uid);
+  }
+
+  protected toggleVisible(uid: string): void {
+    this.hidden.update((set) => this.toggled(set, uid));
+  }
+
+  protected toggleExpand(uid: string): void {
+    this.expanded.update((set) => this.toggled(set, uid));
+  }
+
+  private toggled(set: Set<string>, uid: string): Set<string> {
+    const next = new Set(set);
+    if (next.has(uid)) {
+      next.delete(uid);
+    } else {
+      next.add(uid);
+    }
+    return next;
+  }
+
+  protected onPinClick(point: RenderedPoint, event: Event): void {
+    // Stop the click from bubbling to the map container, which would toggle expand/reduce.
+    event.stopPropagation();
+    this.pinClick.emit(point);
   }
 
   private async resolveMaps(pts: MapPoint[]): Promise<void> {
