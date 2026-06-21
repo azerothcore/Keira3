@@ -6,9 +6,9 @@ import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { EditorButtonsComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { AreaSelectorBtnComponent, FlagsSelectorBtnComponent, MapSelectorBtnComponent } from '@keira/shared/selectors';
 import { MapViewerComponent, MapPoint } from '@keira/shared/map-viewer';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { GameobjectSpawnService } from './gameobject-spawn.service';
 
@@ -18,14 +18,15 @@ import { GameobjectSpawnService } from './gameobject-spawn.service';
   templateUrl: './gameobject-spawn.component.html',
   imports: [
     TopBarComponent,
-    TranslateModule,
+    TranslatePipe,
+    TranslateDirective,
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,
     MapSelectorBtnComponent,
     AreaSelectorBtnComponent,
     FlagsSelectorBtnComponent,
-    TooltipModule,
+    TooltipDirective,
     EditorButtonsComponent,
     NgxDatatableModule,
     MapViewerComponent,

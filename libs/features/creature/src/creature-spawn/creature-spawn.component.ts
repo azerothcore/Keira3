@@ -18,9 +18,9 @@ import {
   GenericOptionSelectorComponent,
   MapSelectorBtnComponent,
 } from '@keira/shared/selectors';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureSpawnService } from './creature-spawn.service';
 import { MapViewerComponent, MapPoint } from '@keira/shared/map-viewer';
@@ -32,14 +32,15 @@ import { MapViewerComponent, MapPoint } from '@keira/shared/map-viewer';
   styleUrls: ['./creature-spawn.component.scss'],
   imports: [
     TopBarComponent,
-    TranslateModule,
+    TranslatePipe,
+    TranslateDirective,
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,
     MapSelectorBtnComponent,
     AreaSelectorBtnComponent,
     FlagsSelectorBtnComponent,
-    TooltipModule,
+    TooltipDirective,
     EditorButtonsComponent,
     NgxDatatableModule,
     GenericOptionSelectorComponent,
