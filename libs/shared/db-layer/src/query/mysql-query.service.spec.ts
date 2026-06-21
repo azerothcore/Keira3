@@ -132,6 +132,30 @@ describe('MysqlQueryService', () => {
     );
   });
 
+  it('getTables() should correctly work', () => {
+    const { service } = setup();
+    const data: TableRow[] = [{ Tables_in_acore_world: 'creature_template' }];
+    const querySpy = vi.spyOn(service, 'query').mockReturnValue(of(data));
+
+    service.getTables().subscribe((res) => {
+      expect(res).toEqual(data);
+    });
+
+    expect(querySpy).toHaveBeenCalledWith('SHOW TABLES');
+  });
+
+  it('getColumns() should correctly work', () => {
+    const { service } = setup();
+    const data: TableRow[] = [{ Field: 'entry' }];
+    const querySpy = vi.spyOn(service, 'query').mockReturnValue(of(data));
+
+    service.getColumns('creature_template').subscribe((res) => {
+      expect(res).toEqual(data);
+    });
+
+    expect(querySpy).toHaveBeenCalledWith('SHOW COLUMNS FROM `creature_template`');
+  });
+
   describe('Query builders', () => {
     const tableName = 'my_table';
 

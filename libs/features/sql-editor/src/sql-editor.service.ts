@@ -3,7 +3,7 @@ import { TableRow } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { LanguageDescription } from '@codemirror/language';
 import { MySQL, sql } from '@codemirror/lang-sql';
-import { forkJoin, map, of, switchMap } from 'rxjs';
+import { finalize, forkJoin, map, of, switchMap } from 'rxjs';
 import { githubLight } from '@uiw/codemirror-theme-github';
 
 export type SqlSchema = Record<string, string[]>;
@@ -51,9 +51,7 @@ export class SqlEditorService {
     this.mysqlQueryService
       .getTables()
       .pipe(
-        map((tableRows: TableRow[]) => 
-          tableRows.map((row) => Object.values(row)[0] as string)
-        ),
+        map((tableRows: TableRow[]) => tableRows.map((row) => Object.values(row)[0] as string)),
         switchMap((tableNames: string[]) => {
           if (tableNames.length === 0) {
             return of({} as SqlSchema);
@@ -62,23 +60,18 @@ export class SqlEditorService {
             Object.fromEntries(
               tableNames.map((tableName) => [
                 tableName,
-                this.mysqlQueryService.getColumns(tableName).pipe(
-                  map((colRows: TableRow[]) => 
-                   colRows.map((col) => col['Field'] as string).filter(Boolean)
-                  ),
-                ),
+                this.mysqlQueryService
+                  .getColumns(tableName)
+                  .pipe(map((colRows: TableRow[]) => colRows.map((col) => col['Field'] as string).filter(Boolean))),
               ]),
             ),
           );
         }),
+        finalize(() => this.schemaLoading.set(false)),
       )
       .subscribe({
         next: (schemaMap) => {
           this.schema.set(schemaMap as SqlSchema);
-          this.schemaLoading.set(false);
-        },
-        error: () => {
-          this.schemaLoading.set(false);
         },
       });
   }
