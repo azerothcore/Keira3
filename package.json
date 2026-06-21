@@ -114,7 +114,7 @@
     "husky": "9.1.7",
     "jsdom": "29.0.1",
     "jsonc-eslint-parser": "2.4.2",
-    "lint-staged": "16.2.6",
+    "lint-staged": "16.4.0",
     "lodash.isequal": "4.5.0",
     "ngx-bootstrap": "21.2.0",
     "ngx-clipboard": "16.0.0",
