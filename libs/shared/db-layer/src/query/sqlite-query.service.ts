@@ -150,4 +150,12 @@ export class SqliteQueryService extends BaseQueryService {
   getAllWorldMapAreas(): Promise<WorldMapArea[]> {
     return this.queryToPromiseCached<WorldMapArea>('getAllWorldMapAreas', 'all', `SELECT * FROM worldmaparea_dbc`);
   }
+
+  getItemDisplayInfoByItemId(itemId: string | number): Promise<{ ItemDisplayInfoID: number; DisplayType: number }[]> {
+    return this.queryToPromiseCached<{ ItemDisplayInfoID: number; DisplayType: number }>(
+      'getItemDisplayInfoByItemId',
+      String(itemId),
+      `SELECT ItemDisplayInfoID, DisplayType FROM item_appearance WHERE ID = (SELECT ItemAppearanceID FROM item_modified_appearance WHERE ItemID = ${itemId})`,
+    );
+  }
 }

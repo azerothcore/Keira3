@@ -124,39 +124,3 @@ function getCharacterOptions(
 
   return ret;
 }
-
-export function getShadowlandDisplayId(
-  sqliteItem3dPath: string,
-  wotlkDisplayId: number,
-): Promise<{ displayId: number; displayType: number }> {
-  return new Promise(function (resolve, reject) {
-    const sqlite = window.require('sqlite3');
-    const db = new sqlite.Database(sqliteItem3dPath, sqlite.OPEN_READONLY, (error: unknown) => {
-      if (error) {
-        console.info(`Error when opening sqlite database at DISPLAY ID`);
-        console.error(error);
-      }
-    });
-
-    if (db) {
-      return db.all(
-        `SELECT ItemDisplayInfoID, DisplayType FROM item_appearance WHERE ID = (SELECT ItemAppearanceID FROM item_modified_appearance WHERE ItemID = ${wotlkDisplayId})`,
-        function (err: unknown, data: { ItemDisplayInfoID: number; DisplayType: number }[]) {
-          if (err) {
-            reject(err);
-          } else {
-            if (data.length && 'ItemDisplayInfoID' in data[0]) {
-              resolve({ displayId: data[0].ItemDisplayInfoID, displayType: data[0].DisplayType });
-            } else {
-              console.info('no ItemDisplayInfoID available for this item');
-            }
-          }
-        },
-      );
-      /* istanbul ignore else */
-    }
-    // /* istanbul ignore next */ else if (this.electronService.isElectron()) {
-    //   console.error(`sqite db was not defined when trying to get the shadow lands display id`);
-    // }
-  });
-}
