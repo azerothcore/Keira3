@@ -14,13 +14,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [22]
+        node-version: [24]
         os: [windows-2022, windows-2025]
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }}-node-${{ matrix.node-version }}
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Fetch main branch
         if: github.ref != 'refs/heads/master'
         run: git rev-parse --verify master || git remote set-branches origin master && git fetch --depth 1 origin master && git branch master origin/master
@@ -29,7 +29,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Cache Node.js modules
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           # npm cache files are stored in `~/.npm` on Linux/macOS
           path: ~/.npm
@@ -43,7 +43,7 @@ jobs:
       - name: Lint
         run: npm run lint
       - name: Unit and Integration tests
-        uses: nick-invision/retry@v3
+        uses: nick-invision/retry@v4
         with:
           max_attempts: 3
           command: npm run test-ci
