@@ -547,6 +547,10 @@
     "MAX_COUNT": "Максимальное количество копий предмета за один лут. Для ссылок это ТОЧНОЕ значение.",
     "COMMENT": "Комментарий, игнорируемый ядром"
   },
+  "LOOT_TEMPLATE": {
+    "SET_FIELD": "Необходимо установить поле <strong>`{{ LOOT_FIELD }}`</strong> в <strong>{{ ENTITY_TABLE }}</strong>, чтобы включить эту функцию.",
+    "SET_FIELD_GO": "Необходимо установить поля <strong>`Data1` (lootid)</strong> и <strong>`type` (3 или 25)</strong> в <strong>{{ ENTITY_TABLE }}</strong>, чтобы включить эту функцию."
+  },
   "OTHER_TEXTS": {
     "BROADCAST_TEXT": {
       "ID": "Уникальный ID текста.",
