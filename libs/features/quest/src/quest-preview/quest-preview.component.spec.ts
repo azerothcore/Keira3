@@ -90,6 +90,9 @@ class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
   get completionText(): HTMLDivElement {
     return this.query<HTMLDivElement>('#completion-text');
   }
+  get objectiveToggle(): HTMLParagraphElement {
+    return this.query<HTMLParagraphElement>('#objective-toggle');
+  }
   get descriptionToggle(): HTMLParagraphElement {
     return this.query<HTMLParagraphElement>('#description-toggle');
   }
@@ -388,6 +391,19 @@ describe('QuestPreviewComponent', () => {
     fixture.debugElement.nativeElement.remove();
   });
 
+  it('should show npcOrGoObjectives from the async objective when there is no objective text', async () => {
+    const { fixture, page, service } = setup();
+    vi.spyOn(service, 'getObjectiveCount').mockReturnValue('(1)');
+    vi.spyOn(service, 'getObjText').mockReturnValue('');
+    vi.spyOn(service, 'getObjective$').mockReturnValue(Promise.resolve('Riverpaw Gnoll'));
+    vi.spyOn(service, 'isNpcOrGoObj').mockReturnValue(true);
+
+    await fixture.whenStable();
+
+    expect(page.npcOrGoObjectives.innerText).toContain('Riverpaw Gnoll (1)');
+    fixture.debugElement.nativeElement.remove();
+  });
+
   it('should show itemObjectives', async () => {
     const { fixture, page, service, mysqlQueryService } = setup();
     const getObjItemCountSpy: MockInstance = vi.spyOn(service, 'getObjItemCount').mockReturnValue('(2)');
@@ -451,9 +467,13 @@ describe('QuestPreviewComponent', () => {
 
       fixture.detectChanges();
 
+      page.expectCollapsed(page.objectiveToggle);
       page.expectCollapsed(page.descriptionToggle);
       page.expectCollapsed(page.progressToggle);
       page.expectCollapsed(page.completionToggle);
+
+      page.clickElement(page.objectiveToggle);
+      page.expectNotCollapsed(page.objectiveToggle);
 
       page.clickElement(page.descriptionToggle);
       page.expectNotCollapsed(page.descriptionToggle);
