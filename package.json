@@ -128,7 +128,7 @@
     "pretty-quick": "4.2.2",
     "rxjs": "7.8.2",
     "sqlstring": "2.3.3",
-    "squel": "5.13.0",
+    "squel": "6.3.1",
     "ts-mockito": "2.6.1",
     "ts-node": "10.9.2",
     "typescript": "6.0.3",
