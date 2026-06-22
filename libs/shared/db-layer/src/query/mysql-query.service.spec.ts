@@ -132,6 +132,78 @@ describe('MysqlQueryService', () => {
     );
   });
 
+  it('getCreatureSpawnsByEntry() should correctly work', () => {
+    const { service } = setup();
+    const data = [{ mapId: 0, x: 1, y: 2, orientation: 0, guid: 5 }];
+    const querySpy = vi.spyOn(service, 'query').mockReturnValue(of(data));
+
+    service.getCreatureSpawnsByEntry(123).then((res) => {
+      expect(res).toEqual(data);
+    });
+
+    expect(querySpy).toHaveBeenCalledWith(
+      'SELECT map AS mapId, position_x AS x, position_y AS y, orientation, guid FROM creature WHERE id = 123',
+    );
+  });
+
+  it('getGameObjectSpawnsByEntry() should correctly work', () => {
+    const { service } = setup();
+    const data = [{ mapId: 0, x: 1, y: 2, orientation: 0, guid: 5 }];
+    const querySpy = vi.spyOn(service, 'query').mockReturnValue(of(data));
+
+    service.getGameObjectSpawnsByEntry(123).then((res) => {
+      expect(res).toEqual(data);
+    });
+
+    expect(querySpy).toHaveBeenCalledWith(
+      'SELECT map AS mapId, position_x AS x, position_y AS y, rotation0 AS orientation, guid FROM gameobject WHERE id = 123',
+    );
+  });
+
+  it('getCreaturesDroppingItem() should correctly work', () => {
+    const { service } = setup();
+    const data = [{ entry: 456 }];
+    const querySpy = vi.spyOn(service, 'query').mockReturnValue(of(data));
+
+    service.getCreaturesDroppingItem(789).then((res) => {
+      expect(res).toEqual(data);
+    });
+
+    expect(querySpy).toHaveBeenCalledWith(
+      `SELECT DISTINCT ct.entry AS entry FROM creature_template AS ct
+       INNER JOIN creature_loot_template AS clt ON clt.Entry = ct.lootid
+       WHERE ct.lootid > 0 AND clt.Item = 789 LIMIT 2`,
+    );
+  });
+
+  it('getGameObjectsDroppingItem() should correctly work', () => {
+    const { service } = setup();
+    const data = [{ entry: 456 }];
+    const querySpy = vi.spyOn(service, 'query').mockReturnValue(of(data));
+
+    service.getGameObjectsDroppingItem(789).then((res) => {
+      expect(res).toEqual(data);
+    });
+
+    expect(querySpy).toHaveBeenCalledWith(
+      `SELECT DISTINCT gt.entry AS entry FROM gameobject_template AS gt
+       INNER JOIN gameobject_loot_template AS glt ON glt.Entry = gt.Data1
+       WHERE gt.Data1 > 0 AND glt.Item = 789 LIMIT 2`,
+    );
+  });
+
+  it('getQuestRelationEntries() should correctly work', () => {
+    const { service } = setup();
+    const data = [{ id: 123 }];
+    const querySpy = vi.spyOn(service, 'query').mockReturnValue(of(data));
+
+    service.getQuestRelationEntries('creature_queststarter', 456).then((res) => {
+      expect(res).toEqual(data);
+    });
+
+    expect(querySpy).toHaveBeenCalledWith('SELECT id FROM creature_queststarter WHERE quest = 456');
+  });
+
   it('getTables() should correctly work', () => {
     const { service } = setup();
     const data: TableRow[] = [{ Tables_in_acore_world: 'creature_template' }];

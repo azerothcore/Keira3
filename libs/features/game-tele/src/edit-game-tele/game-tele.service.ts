@@ -1,11 +1,9 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { SingleRowEditorService } from '@keira/shared/base-abstract-classes';
 import { GAME_TELE_ID, GAME_TELE_NAME, GAME_TELE_TABLE, GameTele } from '@keira/shared/acore-world-model';
 import { GameTeleHandlerService } from '../game-tele-handler.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class GameTeleService extends SingleRowEditorService<GameTele> {
   protected override readonly handlerService = inject(GameTeleHandlerService);
   protected override _entityClass = GameTele;

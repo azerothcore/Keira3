@@ -1,4 +1,4 @@
-import { inject, Injectable, signal, Signal } from '@angular/core';
+import { inject, Service, signal, Signal } from '@angular/core';
 import {
   CREATURE_EQUIP_TEMPLATE_TABLE,
   CREATURE_FORMATIONS_TABLE,
@@ -24,9 +24,7 @@ import {
 import { HandlerService } from '@keira/shared/base-abstract-classes';
 import { SaiCreatureHandlerService } from './sai-creature-handler.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class CreatureHandlerService extends HandlerService<CreatureTemplate> {
   protected saiCreatureHandler = inject(SaiCreatureHandlerService);
   protected readonly mainEditorRoutePath = 'creature/creature-template';

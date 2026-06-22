@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 
 import { SAI_ID_2, SAI_ID_FIELDS, SAI_TABLE, SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { MultiRowComplexKeyEditorService } from '@keira/shared/base-abstract-classes';
@@ -6,9 +6,7 @@ import { SaiCommentGeneratorService } from './sai-comment-generator.service';
 import { SaiHandlerService } from './sai-handler.service';
 import { lastValueFrom, Observable } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScripts> {
   protected override readonly handlerService = inject(SaiHandlerService);
 

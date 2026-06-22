@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Service, signal } from '@angular/core';
 import { TableRow } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { LanguageDescription } from '@codemirror/language';
@@ -8,9 +8,7 @@ import { githubLight } from '@uiw/codemirror-theme-github';
 
 export type SqlSchema = Record<string, string[]>;
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class SqlEditorService {
   private readonly mysqlQueryService = inject(MysqlQueryService);
 

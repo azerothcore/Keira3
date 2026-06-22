@@ -1,4 +1,4 @@
-import { Injectable, NgZone, inject } from '@angular/core';
+import { Service, NgZone, inject } from '@angular/core';
 
 import { ElectronService } from '@keira/shared/common-services';
 import { KEIRA_APP_CONFIG_TOKEN, KeiraAppConfig } from '@keira/shared/config';
@@ -6,9 +6,7 @@ import { TableRow } from '@keira/shared/constants';
 import { Observable, Subscriber } from 'rxjs';
 
 /* istanbul ignore next */ // Note: will be tested in e2e
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class SqliteService {
   private electronService = inject(ElectronService);
   private ngZone = inject(NgZone);

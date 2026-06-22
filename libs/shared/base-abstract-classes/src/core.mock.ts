@@ -1,5 +1,5 @@
 /* istanbul ignore file */
-import { Injectable, inject, signal } from '@angular/core';
+import { Service, inject, signal } from '@angular/core';
 import { TableRow, StringKeys } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { Observable } from 'rxjs';
@@ -31,9 +31,7 @@ export class MockEntityExtra extends MockEntity {
   extra_id?: any = 0;
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class MockHandlerService extends HandlerService<MockEntity> {
   protected readonly mainEditorRoutePath = 'mock/route';
 
@@ -42,9 +40,7 @@ export class MockHandlerService extends HandlerService<MockEntity> {
   };
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class SelectMockService extends SelectService<MockEntity> {
   override readonly queryService = inject(MysqlQueryService);
   override handlerService = inject(MockHandlerService);
@@ -58,9 +54,7 @@ export class SelectMockService extends SelectService<MockEntity> {
   }
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class MockSingleRowEditorService extends SingleRowEditorService<MockEntity> {
   protected override readonly handlerService = inject(MockHandlerService);
   protected override _entityClass = MockEntity;
@@ -75,9 +69,7 @@ export class MockSingleRowEditorService extends SingleRowEditorService<MockEntit
   }
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class MockSingleRowComplexKeyEditorService extends SingleRowComplexKeyEditorService<MockEntity> {
   protected override readonly handlerService = inject(MockHandlerService);
   protected override _entityClass = MockEntity;
@@ -92,9 +84,7 @@ export class MockSingleRowComplexKeyEditorService extends SingleRowComplexKeyEdi
   }
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class MockMultiRowEditorService extends MultiRowEditorService<MockEntity> {
   protected override readonly handlerService = inject(MockHandlerService);
   protected override readonly _entityClass = MockEntity;
@@ -108,9 +98,7 @@ export class MockMultiRowEditorService extends MultiRowEditorService<MockEntity>
   }
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class MockMultiRowEditorWithGuidStringService extends MultiRowEditorService<MockEntityWithGuidString> {
   protected override readonly handlerService = inject(MockHandlerService);
   protected override readonly _entityClass = MockEntityWithGuidString;
@@ -124,9 +112,7 @@ export class MockMultiRowEditorWithGuidStringService extends MultiRowEditorServi
   }
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class MockMultiRowEditorExtraService extends MultiRowEditorService<MockEntityExtra> {
   protected override readonly handlerService = inject(MockHandlerService);
   protected override readonly _entityClass = MockEntityExtra;
@@ -141,9 +127,7 @@ export class MockMultiRowEditorExtraService extends MultiRowEditorService<MockEn
   }
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class MockMultiRowExternalEditorService extends MultiRowExternalEditorService<MockEntity> {
   protected override readonly handlerService = inject(MockHandlerService);
   protected override _entityClass = MockEntity;
@@ -162,9 +146,7 @@ export class MockMultiRowExternalEditorService extends MultiRowExternalEditorSer
   }
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class MockMultiRowComplexKeyEditorService extends MultiRowComplexKeyEditorService<MockEntity> {
   protected override readonly handlerService = inject(MockHandlerService);
   override readonly queryService = inject(MysqlQueryService);

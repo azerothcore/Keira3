@@ -1,12 +1,10 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { SelectService } from '@keira/shared/base-abstract-classes';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { LOOT_TEMPLATE_ID, MAIL_LOOT_TEMPLATE_TABLE, MailLootTemplate } from '@keira/shared/acore-world-model';
 import { MailLootHandlerService } from './mail-loot-handler.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class SelectMailLootService extends SelectService<MailLootTemplate> {
   override readonly queryService = inject(MysqlQueryService);
   override readonly handlerService = inject(MailLootHandlerService);

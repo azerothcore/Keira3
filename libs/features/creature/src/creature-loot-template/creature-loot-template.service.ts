@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { LootEditorIdService } from '@keira/shared/base-abstract-classes';
 import {
   CREATURE_LOOT_TEMPLATE_TABLE,
@@ -9,9 +9,7 @@ import {
 } from '@keira/shared/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class CreatureLootTemplateService extends LootEditorIdService<CreatureLootTemplate> {
   protected override readonly handlerService = inject(CreatureHandlerService);
   protected override _entityClass = CreatureLootTemplate;

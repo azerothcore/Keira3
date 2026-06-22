@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import {
   CREATURE_TEMPLATE_MODEL_ID,
   CREATURE_TEMPLATE_MODEL_ID_2,
@@ -8,9 +8,7 @@ import {
 import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
 import { CreatureHandlerService } from '../creature-handler.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class CreatureTemplateModelService extends MultiRowEditorService<CreatureTemplateModel> {
   protected override readonly handlerService = inject(CreatureHandlerService);
   protected override readonly _entityClass = CreatureTemplateModel;

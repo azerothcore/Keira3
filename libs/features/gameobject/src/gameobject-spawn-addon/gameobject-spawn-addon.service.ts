@@ -1,11 +1,9 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { GAMEOBJECT_SPAWN_ADDON_ID_2, GAMEOBJECT_SPAWN_ADDON_TABLE, GameobjectSpawnAddon } from '@keira/shared/acore-world-model';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { MultiRowExternalEditorService } from '@keira/shared/base-abstract-classes';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class GameobjectSpawnAddonService extends MultiRowExternalEditorService<GameobjectSpawnAddon> {
   protected override readonly handlerService = inject(GameobjectHandlerService);
   protected override _entityClass = GameobjectSpawnAddon;

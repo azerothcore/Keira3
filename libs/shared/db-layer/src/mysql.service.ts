@@ -1,4 +1,4 @@
-import { Injectable, NgZone, inject } from '@angular/core';
+import { Service, NgZone, inject } from '@angular/core';
 import { ElectronService } from '@keira/shared/common-services';
 import { MysqlResult, TableRow } from '@keira/shared/constants';
 import * as mysql from 'mysql2';
@@ -6,9 +6,7 @@ import { Connection, FieldPacket as FieldInfo, QueryError } from 'mysql2';
 import { Observable, Subject, Subscriber } from 'rxjs';
 import * as ssh2 from 'ssh2';
 import { KeiraConnectionOptions } from './mysql.model';
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class MysqlService {
   private readonly electronService = inject(ElectronService);
   private readonly ngZone = inject(NgZone);

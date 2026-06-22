@@ -1,15 +1,13 @@
 import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-import { Injectable, provideZonelessChangeDetection } from '@angular/core';
+import { Service, provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { QueryForm } from '@keira/shared/constants';
 import { BaseQueryService } from './base-query.service';
 
 describe('BaseQueryService', () => {
-  @Injectable({
-    providedIn: 'root',
-  })
+  @Service()
   class TestQueryService extends BaseQueryService {
     query(_queryString: string) {
       return of([]);

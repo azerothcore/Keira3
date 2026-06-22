@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { ConnectionOptions } from 'mysql2';
 import { LocalStorageService } from './local-storage.service';
 
@@ -12,9 +12,7 @@ declare type Config = Partial<ConnectionOptions> & {
   sshPrivateKey?: string;
 };
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class LoginConfigService {
   private readonly localStorageService = inject(LocalStorageService);
 

@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
 import {
   LOOT_TEMPLATE_ID,
@@ -8,9 +8,7 @@ import {
 } from '@keira/shared/acore-world-model';
 import { ItemHandlerService } from '../item-handler.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class ProspectingLootTemplateService extends MultiRowEditorService<ProspectingLootTemplate> {
   protected override readonly handlerService = inject(ItemHandlerService);
   protected override readonly _entityClass = ProspectingLootTemplate;

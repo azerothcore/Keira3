@@ -1,11 +1,9 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { SingleRowEditorService } from '@keira/shared/base-abstract-classes';
 import { QUEST_REQUEST_ITEMS_ID, QUEST_REQUEST_ITEMS_TABLE, QuestRequestItems } from '@keira/shared/acore-world-model';
 import { QuestHandlerService } from '../quest-handler.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class QuestRequestItemsService extends SingleRowEditorService<QuestRequestItems> {
   protected override readonly handlerService = inject(QuestHandlerService);
   protected override _entityClass = QuestRequestItems;
