@@ -1,10 +1,7 @@
 import '@angular/compiler';
 import { setupTestBed } from '@analogjs/vitest-angular/setup-testbed';
-import * as squelModule from 'squel';
 
 setupTestBed();
-
-(globalThis as unknown as { squel: typeof squelModule }).squel = squelModule;
 
 if (typeof HTMLElement !== 'undefined') {
   const BLK = '\x01';
