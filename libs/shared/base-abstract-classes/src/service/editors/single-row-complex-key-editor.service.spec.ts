@@ -45,8 +45,7 @@ describe('SingleRowComplexKeyEditorService', () => {
     it('selecteQuery()', () => {
       const { service } = setup();
       const handlerService = TestBed.inject(MockHandlerService);
-      // @ts-ignore
-      handlerService._selected = '{}';
+      handlerService['_selected'] = '{}';
       const selectAllMultipleKeysSpy = vi
         .spyOn(TestBed.inject(MysqlQueryService), 'selectAllMultipleKeys')
         .mockImplementation(() => undefined);
@@ -92,9 +91,7 @@ describe('SingleRowComplexKeyEditorService', () => {
         .spyOn(TestBed.inject(MysqlQueryService), 'getFullDeleteInsertMultipleKeysQuery')
         .mockImplementation(() => undefined);
       const handlerService = TestBed.inject(MockHandlerService);
-      // @ts-ignore
-      handlerService._selected = JSON.stringify({ id: 1, guid: 2 });
-      // service['_entityIdFields'] = ['id', 'guid'];
+      handlerService['_selected'] = JSON.stringify({ id: 1, guid: 2 });
 
       service['onCreatingNewEntity']();
       service['updateFullQuery']();
@@ -148,8 +145,7 @@ describe('SingleRowComplexKeyEditorService', () => {
       const { service } = setup();
       const handlerService = TestBed.inject(MockHandlerService);
       vi.spyOn(service, 'entityIdFields', 'get').mockReturnValue(['id', 'guid', 'test']);
-      // @ts-ignore
-      handlerService._selected = JSON.stringify({ id: 1, guid: 2 });
+      handlerService['_selected'] = JSON.stringify({ id: 1, guid: 2 });
 
       service['onCreatingNewEntity']();
 
@@ -164,13 +160,10 @@ describe('SingleRowComplexKeyEditorService', () => {
       service['_originalValue'] = new MockEntity();
       service['_originalValue'].id = 1;
       service['_originalValue'].guid = 0;
-      // @ts-ignore // TODO: there is something broken with this test as '_entityIdFields' with final s does not exist
-      service['_entityIdFields'] = ['id', 'guid'];
 
       service['setLoadedEntity']();
 
-      // @ts-ignore // TODO: there is something broken with this test as '_entityIdFields' with final s does not exist
-      expect(service['_loadedEntityId']).toEqual(JSON.stringify(getPartial(service['_originalValue'], service['_entityIdFields'])));
+      expect(service['_loadedEntityId']).toEqual(JSON.stringify(getPartial(service['_originalValue'], service.entityIdFields)));
       expect(selectSpy).toHaveBeenCalled();
     });
 
