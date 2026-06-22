@@ -1,12 +1,14 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, computed } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { GameobjectSpawn, PHASE_MASK, SPAWN_MASK } from '@keira/shared/acore-world-model';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { EditorButtonsComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { AreaSelectorBtnComponent, FlagsSelectorBtnComponent, MapSelectorBtnComponent } from '@keira/shared/selectors';
-import { TranslateModule } from '@ngx-translate/core';
+import { MapViewerComponent, MapPoint } from '@keira/shared/map-viewer';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { GameobjectSpawnService } from './gameobject-spawn.service';
 
@@ -16,16 +18,18 @@ import { GameobjectSpawnService } from './gameobject-spawn.service';
   templateUrl: './gameobject-spawn.component.html',
   imports: [
     TopBarComponent,
-    TranslateModule,
+    TranslatePipe,
+    TranslateDirective,
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,
     MapSelectorBtnComponent,
     AreaSelectorBtnComponent,
     FlagsSelectorBtnComponent,
-    TooltipModule,
+    TooltipDirective,
     EditorButtonsComponent,
     NgxDatatableModule,
+    MapViewerComponent,
   ],
 })
 export class GameobjectSpawnComponent extends MultiRowEditorComponent<GameobjectSpawn> {
@@ -34,4 +38,28 @@ export class GameobjectSpawnComponent extends MultiRowEditorComponent<Gameobject
 
   protected override readonly editorService = inject(GameobjectSpawnService);
   protected readonly handlerService = inject(GameobjectHandlerService);
+
+  private readonly _formChange = toSignal(this.editorService.form.valueChanges, {
+    initialValue: null,
+  });
+
+  readonly mapPoints = computed<MapPoint[]>(() => {
+    this._formChange();
+    return this.editorService.newRows.map((row) => ({
+      guid: row.guid,
+      mapId: row.map,
+      x: row.position_x,
+      y: row.position_y,
+      orientation: row.orientation,
+      name: `GUID ${row.guid}`,
+      icon: 'map/pin-yellow.png',
+    }));
+  });
+
+  onMapPinClick(point: MapPoint): void {
+    const row = this.editorService.newRows.find((newRow) => newRow.guid === point['guid']);
+    if (row) {
+      this.editorService.onRowSelection({ selected: [row] });
+    }
+  }
 }

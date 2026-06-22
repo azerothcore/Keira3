@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, computed } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { toSignal } from '@angular/core/rxjs-interop';
 import {
   CreatureSpawn,
   DYNAMIC_FLAGS,
@@ -17,11 +18,12 @@ import {
   GenericOptionSelectorComponent,
   MapSelectorBtnComponent,
 } from '@keira/shared/selectors';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureSpawnService } from './creature-spawn.service';
+import { MapViewerComponent, MapPoint } from '@keira/shared/map-viewer';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,17 +32,19 @@ import { CreatureSpawnService } from './creature-spawn.service';
   styleUrls: ['./creature-spawn.component.scss'],
   imports: [
     TopBarComponent,
-    TranslateModule,
+    TranslatePipe,
+    TranslateDirective,
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,
     MapSelectorBtnComponent,
     AreaSelectorBtnComponent,
     FlagsSelectorBtnComponent,
-    TooltipModule,
+    TooltipDirective,
     EditorButtonsComponent,
     NgxDatatableModule,
     GenericOptionSelectorComponent,
+    MapViewerComponent,
   ],
 })
 export class CreatureSpawnComponent extends MultiRowEditorComponent<CreatureSpawn> {
@@ -53,4 +57,28 @@ export class CreatureSpawnComponent extends MultiRowEditorComponent<CreatureSpaw
 
   protected override readonly editorService = inject(CreatureSpawnService);
   readonly handlerService = inject(CreatureHandlerService);
+
+  private readonly _formChange = toSignal(this.editorService.form.valueChanges, {
+    initialValue: null,
+  });
+
+  readonly mapPoints = computed<MapPoint[]>(() => {
+    this._formChange();
+    return this.editorService.newRows.map((row) => ({
+      guid: row.guid,
+      mapId: row.map,
+      x: row.position_x,
+      y: row.position_y,
+      orientation: row.orientation,
+      name: `GUID ${row.guid}`,
+      icon: 'map/pin-yellow.png',
+    }));
+  });
+
+  onMapPinClick(point: MapPoint): void {
+    const row = this.editorService.newRows.find((newRow) => newRow.guid === point['guid']);
+    if (row) {
+      this.editorService.onRowSelection({ selected: [row] });
+    }
+  }
 }

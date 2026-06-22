@@ -51,5 +51,6 @@
   "useLegacyCache": true,
   "tui": {
     "enabled": false
-  }
+  },
+  "analytics": true
 }

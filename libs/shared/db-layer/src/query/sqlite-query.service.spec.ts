@@ -150,5 +150,36 @@ describe('SqliteQueryService', () => {
       expect(service.query).toHaveBeenCalledTimes(1); // check cache
       expect(service.query).toHaveBeenCalledWith(`SELECT * FROM item_extended_cost WHERE id IN ()`);
     });
+
+    it('getAllWorldMapAreas', async () => {
+      const { service } = setupHelpers();
+      vi.spyOn(service, 'query').mockReturnValue(of([]));
+      expect(await service.getAllWorldMapAreas()).toEqual([]);
+      expect(await service.getAllWorldMapAreas()).toEqual([]); // check cache
+      expect(service.query).toHaveBeenCalledTimes(1); // check cache
+      expect(service.query).toHaveBeenCalledWith(`SELECT * FROM worldmaparea_dbc`);
+    });
+
+    it('getAllWorldMapOverlays', async () => {
+      const { service } = setupHelpers();
+      vi.spyOn(service, 'query').mockReturnValue(of([]));
+      expect(await service.getAllWorldMapOverlays()).toEqual([]);
+      expect(await service.getAllWorldMapOverlays()).toEqual([]); // check cache
+      expect(service.query).toHaveBeenCalledTimes(1); // check cache
+      expect(service.query).toHaveBeenCalledWith(
+        `SELECT MapAreaID AS mapAreaId, OffsetX AS x, OffsetY AS y, TextureWidth AS w, TextureHeight AS h FROM worldmapoverlay_dbc`,
+      );
+    });
+
+    it('getItemDisplayInfoByItemId', async () => {
+      const { service } = setupHelpers();
+      vi.spyOn(service, 'query').mockReturnValue(of([]));
+      expect(await service.getItemDisplayInfoByItemId(id)).toEqual([]);
+      expect(await service.getItemDisplayInfoByItemId(id)).toEqual([]); // check cache
+      expect(service.query).toHaveBeenCalledTimes(1); // check cache
+      expect(service.query).toHaveBeenCalledWith(
+        `SELECT ItemDisplayInfoID, DisplayType FROM item_appearance WHERE ID = (SELECT ItemAppearanceID FROM item_modified_appearance WHERE ItemID = ${id})`,
+      );
+    });
   });
 });

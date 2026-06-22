@@ -461,6 +461,89 @@ export class MysqlQueryService extends BaseQueryService {
     );
   }
 
+  getCreaturePosition(guid: string | number): Promise<{ mapId: number; x: number; y: number; orientation: number } | null> {
+    return this.queryToPromiseCached<{ mapId: number; x: number; y: number; orientation: number }>(
+      'getCreaturePosition',
+      String(guid),
+      `SELECT map AS mapId, position_x AS x, position_y AS y, orientation FROM creature WHERE guid = ${guid}`,
+    ).then((result) => (result && result.length > 0 ? result[0] : null));
+  }
+
+  getCreaturePositionByEntry(
+    entry: string | number,
+  ): Promise<{ mapId: number; x: number; y: number; orientation: number; guid: number }[]> {
+    return this.queryToPromiseCached<{ mapId: number; x: number; y: number; orientation: number; guid: number }>(
+      'getCreaturePositionByEntry',
+      String(entry),
+      `SELECT map AS mapId, position_x AS x, position_y AS y, orientation, guid FROM creature WHERE id = ${entry} LIMIT 1`,
+    );
+  }
+
+  getGameObjectPosition(guid: string | number): Promise<{ mapId: number; x: number; y: number; orientation: number } | null> {
+    return this.queryToPromiseCached<{ mapId: number; x: number; y: number; orientation: number }>(
+      'getGameObjectPosition',
+      String(guid),
+      `SELECT map AS mapId, position_x AS x, position_y AS y, rotation0 AS orientation FROM gameobject WHERE guid = ${guid}`,
+    ).then((result) => (result && result.length > 0 ? result[0] : null));
+  }
+
+  getGameObjectPositionByEntry(
+    entry: string | number,
+  ): Promise<{ mapId: number; x: number; y: number; orientation: number; guid: number }[]> {
+    return this.queryToPromiseCached<{ mapId: number; x: number; y: number; orientation: number; guid: number }>(
+      'getGameObjectPositionByEntry',
+      String(entry),
+      `SELECT map AS mapId, position_x AS x, position_y AS y, rotation0 AS orientation, guid FROM gameobject WHERE id = ${entry} LIMIT 1`,
+    );
+  }
+
+  getCreatureSpawnsByEntry(entry: string | number): Promise<{ mapId: number; x: number; y: number; orientation: number; guid: number }[]> {
+    return this.queryToPromiseCached<{ mapId: number; x: number; y: number; orientation: number; guid: number }>(
+      'getCreatureSpawnsByEntry',
+      String(entry),
+      `SELECT map AS mapId, position_x AS x, position_y AS y, orientation, guid FROM creature WHERE id = ${entry}`,
+    );
+  }
+
+  getGameObjectSpawnsByEntry(
+    entry: string | number,
+  ): Promise<{ mapId: number; x: number; y: number; orientation: number; guid: number }[]> {
+    return this.queryToPromiseCached<{ mapId: number; x: number; y: number; orientation: number; guid: number }>(
+      'getGameObjectSpawnsByEntry',
+      String(entry),
+      `SELECT map AS mapId, position_x AS x, position_y AS y, rotation0 AS orientation, guid FROM gameobject WHERE id = ${entry}`,
+    );
+  }
+
+  // Capped at 2 rows: callers only need to distinguish "exactly one dropper" from "more than one".
+  getCreaturesDroppingItem(itemId: string | number): Promise<{ entry: number }[]> {
+    return this.queryToPromiseCached<{ entry: number }>(
+      'getCreaturesDroppingItem',
+      String(itemId),
+      `SELECT DISTINCT ct.entry AS entry FROM creature_template AS ct
+       INNER JOIN creature_loot_template AS clt ON clt.Entry = ct.lootid
+       WHERE ct.lootid > 0 AND clt.Item = ${itemId} LIMIT 2`,
+    );
+  }
+
+  getGameObjectsDroppingItem(itemId: string | number): Promise<{ entry: number }[]> {
+    return this.queryToPromiseCached<{ entry: number }>(
+      'getGameObjectsDroppingItem',
+      String(itemId),
+      `SELECT DISTINCT gt.entry AS entry FROM gameobject_template AS gt
+       INNER JOIN gameobject_loot_template AS glt ON glt.Entry = gt.Data1
+       WHERE gt.Data1 > 0 AND glt.Item = ${itemId} LIMIT 2`,
+    );
+  }
+
+  getQuestRelationEntries(table: string, questId: string | number): Promise<{ id: number }[]> {
+    return this.queryToPromiseCached<{ id: number }>(
+      'getQuestRelationEntries',
+      `${table}:${questId}`,
+      `SELECT id FROM ${table} WHERE quest = ${questId}`,
+    );
+  }
+
   getTables(): Observable<TableRow[]> {
     return this.query('SHOW TABLES');
   }

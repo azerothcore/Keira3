@@ -51,6 +51,7 @@
       "@keira/shared/db-layer": ["libs/shared/db-layer/src/index.ts"],
       "@keira/shared/login-config": ["libs/shared/login-config/src/index.ts"],
       "@keira/shared/loot-editor": ["libs/shared/loot-editor/src/index.ts"],
+      "@keira/shared/map-viewer": ["libs/shared/map-viewer/index.ts"],
       "@keira/shared/model-3d-viewer": ["libs/shared/model-3d-viewer/src/index.ts"],
       "@keira/shared/preview": ["libs/shared/preview/src/index.ts"],
       "@keira/shared/sai-editor": ["libs/shared/sai-editor/src/index.ts"],
