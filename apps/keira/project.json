@@ -23,7 +23,7 @@
           "apps/keira/src/favicon.512x512.png"
         ],
         "styles": ["apps/keira/src/app/scss/main.scss"],
-        "scripts": ["node_modules/squel/dist/squel.min.js", "node_modules/jquery/dist/jquery.min.js"]
+        "scripts": ["node_modules/jquery/dist/jquery.min.js"]
       },
       "configurations": {
         "dev": {
