@@ -49,7 +49,9 @@ describe('CreatureSpawn integration tests', () => {
     const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
 
     vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
-    vi.spyOn(TestBed.inject(SqliteQueryService), 'getAllWorldMapAreas').mockResolvedValue([]);
+    const sqliteQueryService = TestBed.inject(SqliteQueryService);
+    vi.spyOn(sqliteQueryService, 'getAllWorldMapAreas').mockResolvedValue([]);
+    vi.spyOn(sqliteQueryService, 'getAllWorldMapOverlays').mockResolvedValue([]);
 
     const fixture = TestBed.createComponent(CreatureSpawnComponent);
     const page = new CreatureSpawnPage(fixture);

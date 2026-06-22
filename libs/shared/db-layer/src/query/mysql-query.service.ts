@@ -477,7 +477,7 @@ export class MysqlQueryService extends BaseQueryService {
     return this.queryToPromiseCached<{ mapId: number; x: number; y: number; orientation: number; guid: number }>(
       'getCreaturePositionByEntry',
       String(entry),
-      `SELECT map AS mapId, position_x AS x, position_y AS y, orientation, guid FROM creature WHERE id1 = ${entry} LIMIT 1`,
+      `SELECT map AS mapId, position_x AS x, position_y AS y, orientation, guid FROM creature WHERE id = ${entry} LIMIT 1`,
     );
   }
 
@@ -499,14 +499,50 @@ export class MysqlQueryService extends BaseQueryService {
     );
   }
 
-  getQuestPoiPoints(questId: string | number): Promise<{ mapId: number; x: number; y: number; worldMapAreaId: number }[]> {
-    return this.queryToPromiseCached<{ mapId: number; x: number; y: number; worldMapAreaId: number }>(
-      'getQuestPoiPoints',
-      String(questId),
-      `SELECT poi.MapID AS mapId, poi.WorldMapAreaID AS worldMapAreaId, pp.X AS x, pp.Y AS y
-       FROM quest_poi_points AS pp
-       INNER JOIN quest_poi AS poi ON poi.QuestID = pp.QuestID AND poi.ID = pp.Idx1
-       WHERE pp.QuestID = ${questId}`,
+  getCreatureSpawnsByEntry(entry: string | number): Promise<{ mapId: number; x: number; y: number; orientation: number; guid: number }[]> {
+    return this.queryToPromiseCached<{ mapId: number; x: number; y: number; orientation: number; guid: number }>(
+      'getCreatureSpawnsByEntry',
+      String(entry),
+      `SELECT map AS mapId, position_x AS x, position_y AS y, orientation, guid FROM creature WHERE id = ${entry}`,
+    );
+  }
+
+  getGameObjectSpawnsByEntry(
+    entry: string | number,
+  ): Promise<{ mapId: number; x: number; y: number; orientation: number; guid: number }[]> {
+    return this.queryToPromiseCached<{ mapId: number; x: number; y: number; orientation: number; guid: number }>(
+      'getGameObjectSpawnsByEntry',
+      String(entry),
+      `SELECT map AS mapId, position_x AS x, position_y AS y, rotation0 AS orientation, guid FROM gameobject WHERE id = ${entry}`,
+    );
+  }
+
+  // Capped at 2 rows: callers only need to distinguish "exactly one dropper" from "more than one".
+  getCreaturesDroppingItem(itemId: string | number): Promise<{ entry: number }[]> {
+    return this.queryToPromiseCached<{ entry: number }>(
+      'getCreaturesDroppingItem',
+      String(itemId),
+      `SELECT DISTINCT ct.entry AS entry FROM creature_template AS ct
+       INNER JOIN creature_loot_template AS clt ON clt.Entry = ct.lootid
+       WHERE ct.lootid > 0 AND clt.Item = ${itemId} LIMIT 2`,
+    );
+  }
+
+  getGameObjectsDroppingItem(itemId: string | number): Promise<{ entry: number }[]> {
+    return this.queryToPromiseCached<{ entry: number }>(
+      'getGameObjectsDroppingItem',
+      String(itemId),
+      `SELECT DISTINCT gt.entry AS entry FROM gameobject_template AS gt
+       INNER JOIN gameobject_loot_template AS glt ON glt.Entry = gt.Data1
+       WHERE gt.Data1 > 0 AND glt.Item = ${itemId} LIMIT 2`,
+    );
+  }
+
+  getQuestRelationEntries(table: string, questId: string | number): Promise<{ id: number }[]> {
+    return this.queryToPromiseCached<{ id: number }>(
+      'getQuestRelationEntries',
+      `${table}:${questId}`,
+      `SELECT id FROM ${table} WHERE quest = ${questId}`,
     );
   }
 

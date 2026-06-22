@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { ItemExtendedCost, Lock } from '@keira/shared/acore-world-model';
-import { WorldMapArea } from '@keira/shared/map-viewer';
+import { WorldMapArea, WorldMapOverlay } from '@keira/shared/map-viewer';
 import { ConfigService } from '@keira/shared/common-services';
 import { TableRow } from '@keira/shared/constants';
 import { from, Observable, of, shareReplay, tap } from 'rxjs';
@@ -149,6 +149,15 @@ export class SqliteQueryService extends BaseQueryService {
 
   getAllWorldMapAreas(): Promise<WorldMapArea[]> {
     return this.queryToPromiseCached<WorldMapArea>('getAllWorldMapAreas', 'all', `SELECT * FROM worldmaparea_dbc`);
+  }
+
+  getAllWorldMapOverlays(): Promise<WorldMapOverlay[]> {
+    // Placement is OffsetX/OffsetY + TextureWidth/Height; the MapPointX/Y columns are unused (always 0).
+    return this.queryToPromiseCached<WorldMapOverlay>(
+      'getAllWorldMapOverlays',
+      'all',
+      `SELECT MapAreaID AS mapAreaId, OffsetX AS x, OffsetY AS y, TextureWidth AS w, TextureHeight AS h FROM worldmapoverlay_dbc`,
+    );
   }
 
   getItemDisplayInfoByItemId(itemId: string | number): Promise<{ ItemDisplayInfoID: number; DisplayType: number }[]> {

@@ -32,12 +32,18 @@ export class QuestPreviewComponent implements OnInit {
   readonly progressToggle = signal(true);
   readonly completionToggle = signal(true);
 
-  protected readonly mapPoints = signal<MapPoint[]>([]);
+  protected readonly startEndMapPoints = signal<MapPoint[]>([]);
+  protected readonly objectiveMapPoints = signal<{ index: number; points: MapPoint[] }[]>([]);
+  protected readonly itemMapData = signal<
+    { index: number; itemId: number; dropperId: number; dropperName: string; isGameobject: boolean; points: MapPoint[] }[]
+  >([]);
 
   protected readonly npcStartToggles: { [key: number]: boolean } = {};
   protected readonly npcEndToggles: { [key: number]: boolean } = {};
   protected readonly gameobjectStartToggles: { [key: number]: boolean } = {};
   protected readonly gameobjectEndToggles: { [key: number]: boolean } = {};
+  protected readonly objectiveToggles: { [key: number]: boolean } = {};
+  protected readonly itemToggles: { [key: number]: boolean } = {};
   protected readonly NPC_VIEWER_TYPE = VIEWER_TYPE.NPC;
   protected readonly OBJECT_VIEWER_TYPE = VIEWER_TYPE.OBJECT;
 
@@ -67,6 +73,18 @@ export class QuestPreviewComponent implements OnInit {
     return this.service.periodicQuest ? 'quest_end_daily.gif' : 'quest_end.gif';
   }
 
+  // RequiredNpcOrGo objectives: positive = NPC (creature), negative = gameobject; 0 = unused.
+  get reqNpcOrGoObjectives(): { index: number; id: number; isGameobject: boolean }[] {
+    const objectives: { index: number; id: number; isGameobject: boolean }[] = [];
+    for (let i = 1; i <= 4; i++) {
+      const req = Number(this.service.questTemplate[`RequiredNpcOrGo${i}`]);
+      if (req !== 0) {
+        objectives.push({ index: i, id: Math.abs(req), isGameobject: req < 0 });
+      }
+    }
+    return objectives;
+  }
+
   get reqSkillPoint() {
     return !!this.service.questTemplateAddon.RequiredSkillPoints && this.service.questTemplateAddon.RequiredSkillPoints > 1
       ? `(${this.service.questTemplateAddon.RequiredSkillPoints})`
@@ -87,14 +105,36 @@ export class QuestPreviewComponent implements OnInit {
       .subscribe(() => {
         this.invalidateObjectivesCache();
         this.changeDetectorRef.markForCheck();
-        void this.loadMapPoints();
+        void this.loadMapData();
       });
 
-    void this.loadMapPoints();
+    void this.loadMapData();
   }
 
-  private async loadMapPoints(): Promise<void> {
-    this.mapPoints.set(await this.service.getMapPoints());
+  private mapDataRequestId = 0;
+
+  private async loadMapData(): Promise<void> {
+    const requestId = ++this.mapDataRequestId;
+    const { startEnd, objectives, items } = await this.service.getMapData();
+    // Discard results from a superseded load (e.g. quick quest switching) so the latest selection wins.
+    if (requestId === this.mapDataRequestId) {
+      this.startEndMapPoints.set(startEnd);
+      this.objectiveMapPoints.set(objectives);
+      this.itemMapData.set(items);
+    }
+  }
+
+  get hasStartEndModels(): boolean {
+    return (
+      this.service.creatureQueststarterList.length > 0 ||
+      this.service.gameobjectQueststarterList.length > 0 ||
+      this.service.creatureQuestenderList.length > 0 ||
+      this.service.gameobjectQuestenderList.length > 0
+    );
+  }
+
+  objectivePointsFor(index: number): MapPoint[] {
+    return this.objectiveMapPoints().find((o) => o.index === index)?.points ?? [];
   }
 
   getRaceText(raceIndex: RacesTextKey): RacesTextValue | null {

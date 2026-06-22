@@ -1,7 +1,11 @@
 import { ChangeDetectorRef, Injectable, inject } from '@angular/core';
 import {
+  CREATURE_QUESTENDER_TABLE,
+  CREATURE_QUESTSTARTER_TABLE,
   CreatureQuestender,
   CreatureQueststarter,
+  GAMEOBJECT_QUESTENDER_TABLE,
+  GAMEOBJECT_QUESTSTARTER_TABLE,
   GameobjectQuestender,
   GameobjectQueststarter,
   QUEST_FLAG_SHARABLE,
@@ -529,20 +533,132 @@ export class QuestPreviewService {
     return null;
   }
 
-  async getMapPoints(): Promise<MapPoint[]> {
-    const points: MapPoint[] = [];
+  async getMapData(): Promise<{
+    startEnd: MapPoint[];
+    objectives: { index: number; points: MapPoint[] }[];
+    items: { index: number; itemId: number; dropperId: number; dropperName: string; isGameobject: boolean; points: MapPoint[] }[];
+  }> {
+    const startEnd: MapPoint[] = [];
+    const objectives: { index: number; points: MapPoint[] }[] = [];
+    const items: { index: number; itemId: number; dropperId: number; dropperName: string; isGameobject: boolean; points: MapPoint[] }[] =
+      [];
+    const questId = this.id;
 
-    await this.addCreaturePoints(points, this.creatureQueststarterList, '(Start)', 'quest/quest_start.gif');
-    await this.addCreaturePoints(points, this.creatureQuestenderList, '(End)', 'quest/quest_end.gif');
-    await this.addGameobjectPoints(points, this.gameobjectQueststarterList, '(Start)', 'quest/quest_start.gif');
-    await this.addGameobjectPoints(points, this.gameobjectQuestenderList, '(End)', 'quest/quest_end.gif');
-    await this.addObjectivePoints(points);
-    await this.addPoiPoints(points);
+    if (!questId) {
+      return { startEnd, objectives, items };
+    }
 
-    return points;
+    // Read starters/enders straight from the DB by quest id rather than the editor services' newRows:
+    // those reload asynchronously and independently, so a snapshot taken here can still hold the
+    // previously selected quest's rows. Querying by the freshly loaded quest id is always current.
+    // Each source is isolated so a single failing/absent table can't blank the rest of the map.
+    // The four queries are independent, so run them concurrently; each writes to its own array so the
+    // final order stays deterministic (all starters before enders) for the start-left/end-right pin offset.
+    const creatureStart: MapPoint[] = [];
+    const creatureEnd: MapPoint[] = [];
+    const gameobjectStart: MapPoint[] = [];
+    const gameobjectEnd: MapPoint[] = [];
+    await Promise.all([
+      this.safelyAdd(async () =>
+        this.addCreaturePoints(
+          creatureStart,
+          await this.mysqlQueryService.getQuestRelationEntries(CREATURE_QUESTSTARTER_TABLE, questId),
+          'quest/quest_start.gif',
+        ),
+      ),
+      this.safelyAdd(async () =>
+        this.addCreaturePoints(
+          creatureEnd,
+          await this.mysqlQueryService.getQuestRelationEntries(CREATURE_QUESTENDER_TABLE, questId),
+          'quest/quest_end.gif',
+        ),
+      ),
+      this.safelyAdd(async () =>
+        this.addGameobjectPoints(
+          gameobjectStart,
+          await this.mysqlQueryService.getQuestRelationEntries(GAMEOBJECT_QUESTSTARTER_TABLE, questId),
+          'quest/quest_start.gif',
+        ),
+      ),
+      this.safelyAdd(async () =>
+        this.addGameobjectPoints(
+          gameobjectEnd,
+          await this.mysqlQueryService.getQuestRelationEntries(GAMEOBJECT_QUESTENDER_TABLE, questId),
+          'quest/quest_end.gif',
+        ),
+      ),
+    ]);
+    startEnd.push(...creatureStart, ...creatureEnd, ...gameobjectStart, ...gameobjectEnd);
+
+    // One map per objective so each Req.NpcOrGo can sit next to its own 3D model.
+    for (let i = 1; i <= 4; i++) {
+      const points: MapPoint[] = [];
+      await this.safelyAdd(() => this.addObjectivePoint(points, i));
+      if (points.length) {
+        objectives.push({ index: i, points });
+      }
+    }
+
+    // For each required item, locate the first creature/gameobject that drops it and map all its spawns.
+    for (let i = 1; i <= 6; i++) {
+      const itemId = Number(this.questTemplate[`RequiredItemId${i}`]);
+      if (!itemId) continue;
+
+      await this.safelyAdd(async () => {
+        const drop = await this.getRequiredItemDrop(itemId);
+        if (drop) {
+          items.push({ index: i, itemId, ...drop });
+        }
+      });
+    }
+
+    return { startEnd, objectives, items };
   }
 
-  private async addCreaturePoints(points: MapPoint[], list: { id: number }[], suffix: string, icon: string): Promise<void> {
+  private async getRequiredItemDrop(
+    itemId: number,
+  ): Promise<{ dropperId: number; dropperName: string; isGameobject: boolean; points: MapPoint[] } | null> {
+    const creatures = await this.mysqlQueryService.getCreaturesDroppingItem(itemId);
+    const gameobjects = await this.mysqlQueryService.getGameObjectsDroppingItem(itemId);
+
+    // Only show the dropper when it is unambiguous: exactly one creature/gameobject drops the item.
+    if (creatures.length + gameobjects.length !== 1) {
+      return null;
+    }
+
+    if (creatures.length === 1) {
+      const entry = creatures[0].entry;
+      const name = await this.mysqlQueryService.getCreatureNameById(entry);
+      const spawns = await this.mysqlQueryService.getCreatureSpawnsByEntry(entry);
+      return { dropperId: entry, dropperName: name, isGameobject: false, points: this.spawnsToPoints(spawns, name) };
+    }
+
+    const entry = gameobjects[0].entry;
+    const name = await this.mysqlQueryService.getGameObjectNameById(entry);
+    const spawns = await this.mysqlQueryService.getGameObjectSpawnsByEntry(entry);
+    return { dropperId: entry, dropperName: name, isGameobject: true, points: this.spawnsToPoints(spawns, name) };
+  }
+
+  private spawnsToPoints(spawns: { mapId: number; x: number; y: number; orientation: number }[], name: string): MapPoint[] {
+    return spawns.map((spawn) => ({
+      mapId: spawn.mapId,
+      x: spawn.x,
+      y: spawn.y,
+      orientation: spawn.orientation,
+      name,
+      icon: 'map/pin-yellow.png',
+    }));
+  }
+
+  private async safelyAdd(load: () => Promise<void>): Promise<void> {
+    try {
+      await load();
+    } catch (err: unknown) {
+      console.warn('[QuestPreview] failed to load some map data:', err);
+    }
+  }
+
+  private async addCreaturePoints(points: MapPoint[], list: { id: number }[], icon: string): Promise<void> {
     for (const entry of list) {
       const pos = await this.mysqlQueryService.getCreaturePositionByEntry(entry.id);
       if (pos?.length) {
@@ -552,14 +668,14 @@ export class QuestPreviewService {
           x: pos[0].x,
           y: pos[0].y,
           orientation: pos[0].orientation,
-          name: `${name} ${suffix}`,
+          name,
           icon,
         });
       }
     }
   }
 
-  private async addGameobjectPoints(points: MapPoint[], list: { id: number }[], suffix: string, icon: string): Promise<void> {
+  private async addGameobjectPoints(points: MapPoint[], list: { id: number }[], icon: string): Promise<void> {
     for (const entry of list) {
       const pos = await this.mysqlQueryService.getGameObjectPositionByEntry(entry.id);
       if (pos?.length) {
@@ -569,66 +685,30 @@ export class QuestPreviewService {
           x: pos[0].x,
           y: pos[0].y,
           orientation: pos[0].orientation,
-          name: `${name} ${suffix}`,
+          name,
           icon,
         });
       }
     }
   }
 
-  private async addObjectivePoints(points: MapPoint[]): Promise<void> {
-    for (let i = 1; i <= 4; i++) {
-      const requiredNpcOrGo = Number(this.questTemplate[`RequiredNpcOrGo${i}`]);
-      if (!requiredNpcOrGo) continue;
+  private async addObjectivePoint(points: MapPoint[], index: number): Promise<void> {
+    const requiredNpcOrGo = Number(this.questTemplate[`RequiredNpcOrGo${index}`]);
+    if (!requiredNpcOrGo) return;
 
-      if (requiredNpcOrGo > 0) {
-        const pos = await this.mysqlQueryService.getCreaturePositionByEntry(requiredNpcOrGo);
-        if (pos?.length) {
-          const name = await this.mysqlQueryService.getCreatureNameById(requiredNpcOrGo);
-          const objText = String(this.questTemplate[`ObjectiveText${i}`] ?? '');
-          points.push({
-            mapId: pos[0].mapId,
-            x: pos[0].x,
-            y: pos[0].y,
-            orientation: pos[0].orientation,
-            name: objText || name,
-            icon: 'map/pin-yellow.png',
-          });
-        }
-      } else {
-        const goId = Math.abs(requiredNpcOrGo);
-        const pos = await this.mysqlQueryService.getGameObjectPositionByEntry(goId);
-        if (pos?.length) {
-          const name = await this.mysqlQueryService.getGameObjectNameById(goId);
-          const objText = String(this.questTemplate[`ObjectiveText${i}`] ?? '');
-          points.push({
-            mapId: pos[0].mapId,
-            x: pos[0].x,
-            y: pos[0].y,
-            orientation: pos[0].orientation,
-            name: objText || name,
-            icon: 'map/pin-yellow.png',
-          });
-        }
-      }
-    }
-  }
+    const objText = String(this.questTemplate[`ObjectiveText${index}`] ?? '');
 
-  private async addPoiPoints(points: MapPoint[]): Promise<void> {
-    const poiPoints = await this.mysqlQueryService.getQuestPoiPoints(this.questTemplate.ID);
-    if (!poiPoints.length) return;
-
-    const allAreas = await this.sqliteQueryService.getAllWorldMapAreas();
-    const areaById = new Map(allAreas.map((a) => [a.ID, a]));
-    for (const pt of poiPoints) {
-      const area = areaById.get(pt.worldMapAreaId);
-      if (!area) {
-        console.warn(`[QuestPreview] POI: no area found for WorldMapAreaID ${pt.worldMapAreaId}`);
-        continue;
-      }
-      const worldX = area.LocTop - (pt.y / 1000) * (area.LocTop - area.LocBottom);
-      const worldY = area.LocLeft - (pt.x / 1000) * (area.LocLeft - area.LocRight);
-      points.push({ mapId: pt.mapId, x: worldX, y: worldY, name: 'POI', icon: 'map/pin-yellow.png' });
+    if (requiredNpcOrGo > 0) {
+      const spawns = await this.mysqlQueryService.getCreatureSpawnsByEntry(requiredNpcOrGo);
+      if (!spawns.length) return;
+      const name = await this.mysqlQueryService.getCreatureNameById(requiredNpcOrGo);
+      points.push(...this.spawnsToPoints(spawns, objText || name));
+    } else {
+      const goId = Math.abs(requiredNpcOrGo);
+      const spawns = await this.mysqlQueryService.getGameObjectSpawnsByEntry(goId);
+      if (!spawns.length) return;
+      const name = await this.mysqlQueryService.getGameObjectNameById(goId);
+      points.push(...this.spawnsToPoints(spawns, objText || name));
     }
   }
 }

@@ -62,7 +62,9 @@ describe('GameTele integration tests', () => {
     const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
 
     vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalEntity]));
-    vi.spyOn(TestBed.inject(SqliteQueryService), 'getAllWorldMapAreas').mockResolvedValue([]);
+    const sqliteQueryService = TestBed.inject(SqliteQueryService);
+    vi.spyOn(sqliteQueryService, 'getAllWorldMapAreas').mockResolvedValue([]);
+    vi.spyOn(sqliteQueryService, 'getAllWorldMapOverlays').mockResolvedValue([]);
 
     const _fixture = TestBed.createComponent(GameTeleComponent);
     const page = new GameTelePage(_fixture);

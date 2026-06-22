@@ -1,12 +1,24 @@
-import { ChangeDetectionStrategy, Component, effect, inject, input, output, signal } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
+import { ChangeDetectionStrategy, Component, effect, inject, input, output, signal, viewChild } from '@angular/core';
 import { TranslateDirective } from '@ngx-translate/core';
-import { MapDisplayData, MapPoint, RenderedPoint, WorldMapArea, worldToMapPercent } from './map-viewer.model';
+import { ModalDirective, ModalModule } from 'ngx-bootstrap/modal';
+import {
+  CAPITAL_AREA_IDS,
+  MAP_CANVAS_H,
+  MAP_CANVAS_W,
+  MapDisplayData,
+  MapPoint,
+  RenderedPoint,
+  WorldMapArea,
+  WorldMapOverlay,
+  worldToMapPercent,
+} from './map-viewer.model';
 import { MapViewerService } from './map-viewer.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-map-viewer',
-  imports: [TranslateDirective],
+  imports: [TranslateDirective, NgTemplateOutlet, ModalModule],
   templateUrl: './map-viewer.component.html',
   styleUrl: './map-viewer.component.scss',
 })
@@ -17,29 +29,32 @@ export class MapViewerComponent {
   protected readonly loadError = signal<string | null>(null);
   protected readonly maps = signal<MapDisplayData[]>([]);
   private readonly hidden = signal<Set<string>>(new Set());
-  private readonly expanded = signal<Set<string>>(new Set());
+  protected readonly modalMap = signal<MapDisplayData | null>(null);
+  private readonly fullMapModal = viewChild<ModalDirective>('fullMapModal');
 
   readonly points = input<MapPoint[]>([]);
+  readonly compact = input<boolean>(false);
   readonly pinClick = output<MapPoint>();
 
   constructor() {
     effect(() => void this.resolveMaps(this.points()));
   }
 
+  protected onMapClick(map: MapDisplayData): void {
+    this.modalMap.set(map);
+    this.fullMapModal()?.show();
+  }
+
+  protected closeModal(): void {
+    this.fullMapModal()?.hide();
+  }
+
   protected isVisible(uid: string): boolean {
     return !this.hidden().has(uid);
   }
 
-  protected isExpanded(uid: string): boolean {
-    return this.expanded().has(uid);
-  }
-
   protected toggleVisible(uid: string): void {
     this.hidden.update((set) => this.toggled(set, uid));
-  }
-
-  protected toggleExpand(uid: string): void {
-    this.expanded.update((set) => this.toggled(set, uid));
   }
 
   private toggled(set: Set<string>, uid: string): Set<string> {
@@ -58,7 +73,12 @@ export class MapViewerComponent {
     this.pinClick.emit(point);
   }
 
+  private resolveGeneration = 0;
+
   private async resolveMaps(pts: MapPoint[]): Promise<void> {
+    // Drop results from a superseded call (points() can change while a previous resolve is awaiting).
+    const generation = ++this.resolveGeneration;
+
     if (!pts.length) {
       this.maps.set([]);
       return;
@@ -68,100 +88,136 @@ export class MapViewerComponent {
     this.loadError.set(null);
 
     try {
-      const allAreas = await this.mapViewerService.getAllAreas();
+      // Both indexes are built once and cached in the (singleton) service, shared across instances.
+      const areasByMapId = await this.mapViewerService.getAreasByMapId();
+      const overlaysByArea = await this.mapViewerService.getOverlaysByArea();
 
-      // Group each point under the best-matching area tile.
-      const areaMap = new Map<string, { area: WorldMapArea; points: MapPoint[] }>();
+      // Each tile holds the points matched geometrically to one area.
+      const tiles = new Map<string, { area: WorldMapArea; points: MapPoint[] }>();
+
+      const tileFor = (area: WorldMapArea) => {
+        const uid = `${area.MapID}-${area.AreaID}`;
+        let tile = tiles.get(uid);
+        if (!tile) {
+          tile = { area, points: [] };
+          tiles.set(uid, tile);
+        }
+        return tile;
+      };
 
       for (const pt of pts) {
-        const candidates = allAreas.filter((a) => a.AreaID !== 0 && worldToMapPercent(pt.x, pt.y, a) !== null);
+        // Only zones on the spawn's own map: different continents (map 0 vs map 1) reuse overlapping
+        // x/y ranges, so an Elwynn point (map 0) must not be tested against Tanaris (map 1).
+        const candidates = (areasByMapId.get(pt.mapId) ?? []).filter((a) => worldToMapPercent(pt.x, pt.y, a) !== null);
 
         if (!candidates.length) {
           console.warn(`[MapViewer] point "${pt.name}" (x=${pt.x}, y=${pt.y}): no area matched — skipping`);
           continue;
         }
 
-        const match = this.pickBestArea(pt, candidates);
-
-        const displayMapId = this.mapViewerService.resolveDisplayMapId(match);
-        const uid = `${displayMapId}-${match.AreaID}`;
-
-        if (!areaMap.has(uid)) {
-          areaMap.set(uid, { area: match, points: [] });
-        }
-
-        areaMap.get(uid)!.points.push(pt);
+        tileFor(this.selectArea(pt, candidates, overlaysByArea)).points.push(pt);
       }
 
-      // Build final display data.
       const result: MapDisplayData[] = [];
 
-      for (const [uid, { area, points: areaPoints }] of areaMap) {
-        const displayMapId = this.mapViewerService.resolveDisplayMapId(area);
+      for (const [uid, { area, points }] of tiles) {
+        const imageMapId = this.mapViewerService.resolveMapImageId(area);
+
+        const projected = points.map((p) => this.project(p, area));
+        this.spreadCoincidentPoints(projected);
 
         result.push({
           uid,
-          mapId: displayMapId,
-          imageUrl: this.mapViewerService.getMapImageUrl(displayMapId),
+          mapId: imageMapId,
+          imageUrl: this.mapViewerService.getMapImageUrl(imageMapId),
           area,
-          points: areaPoints.map((p) => this.project(p, area)),
+          points: projected,
         });
       }
 
-      this.maps.set(result);
+      if (generation === this.resolveGeneration) {
+        this.maps.set(result);
+      }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : String(err);
       console.error('[MapViewer] resolveMaps failed:', err);
-      this.loadError.set(message);
-      this.maps.set([]);
+      if (generation === this.resolveGeneration) {
+        this.loadError.set(message);
+        this.maps.set([]);
+      }
     } finally {
-      this.loading.set(false);
+      if (generation === this.resolveGeneration) {
+        this.loading.set(false);
+      }
     }
   }
 
   /**
-   * Picks the best matching area using:
-   * 1. Distance from point to area center
-   * 2. Area size as tie-breaker
-   *
-   * Lower score wins.
+   * Resolves which zone an in-bounds spawn belongs to:
+   * 1. A capital city wins outright (it sits inside its surrounding zone's box).
+   * 2. Otherwise keep zones whose WorldMapOverlay rectangles actually cover the point — this carves
+   *    out the bounding-box "bleed" where one zone's box overlaps a neighbour's (Westfall vs
+   *    Stranglethorn). Falls back to all candidates when none qualify (zones without overlay data).
+   * 3. Among the survivors, the most central zone (smallest projected distance to centre) wins.
    */
-  private pickBestArea(point: MapPoint, candidates: WorldMapArea[]): WorldMapArea {
-    return candidates.reduce((best, area) => {
-      const bestScore = this.getAreaScore(point, best);
-      const areaScore = this.getAreaScore(point, area);
+  private selectArea(point: MapPoint, candidates: WorldMapArea[], overlaysByArea: ReadonlyMap<number, WorldMapOverlay[]>): WorldMapArea {
+    const capitals = candidates.filter((a) => CAPITAL_AREA_IDS.has(a.AreaID));
+    if (capitals.length) {
+      return this.closestToCentre(point, capitals);
+    }
 
-      return areaScore < bestScore ? area : best;
-    });
+    const covered = candidates.filter((a) => this.pointInOverlays(point, a, overlaysByArea.get(a.ID)));
+    return this.closestToCentre(point, covered.length ? covered : candidates);
   }
 
-  /**
-   * Combined score:
-   * - Prefer points closer to map center
-   * - Prefer smaller maps when distances are similar
-   */
+  private closestToCentre(point: MapPoint, areas: WorldMapArea[]): WorldMapArea {
+    return areas.reduce((best, area) => (this.getAreaScore(point, area) < this.getAreaScore(point, best) ? area : best));
+  }
+
+  private pointInOverlays(point: MapPoint, area: WorldMapArea, overlays?: WorldMapOverlay[]): boolean {
+    if (!overlays?.length) return false;
+
+    const pct = worldToMapPercent(point.x, point.y, area)!; // candidate => guaranteed in-bounds
+    const px = pct.left * MAP_CANVAS_W;
+    const py = pct.top * MAP_CANVAS_H;
+
+    return overlays.some((o) => px >= o.x && px <= o.x + o.w && py >= o.y && py <= o.y + o.h);
+  }
+
+  // Squared distance from the projected point to the map centre (0.5, 0.5), in 0..1 map space.
+  // Projected space is inherently scale-normalised and uses the correct axes (cf. aowow worldPosToZonePos).
   private getAreaScore(point: MapPoint, area: WorldMapArea): number {
-    const centerX = (area.LocLeft + area.LocRight) / 2;
-    const centerY = (area.LocTop + area.LocBottom) / 2;
-
-    const dx = point.x - centerX;
-    const dy = point.y - centerY;
-
-    const distanceSq = dx * dx + dy * dy;
-
-    const width = Math.abs(area.LocLeft - area.LocRight);
-    const height = Math.abs(area.LocTop - area.LocBottom);
-
-    const areaSize = width * height;
-
-    // Normalize by area size so giant continent maps are penalized.
-    return distanceSq / Math.max(areaSize, 1);
+    const pct = worldToMapPercent(point.x, point.y, area)!; // candidate => guaranteed in-bounds
+    const dx = pct.left - 0.5;
+    const dy = pct.top - 0.5;
+    return dx * dx + dy * dy;
   }
 
   protected onImageError(event: Event): void {
     const img = event.target as HTMLImageElement;
     console.error(`[MapViewer] image failed to load: ${img.src}`);
     img.style.visibility = 'hidden';
+  }
+
+  // Pins that project to the exact same spot (e.g. an NPC that is both quest starter and ender)
+  // are nudged apart horizontally so each icon stays visible instead of stacking on top of the others.
+  private spreadCoincidentPoints(points: RenderedPoint[]): void {
+    const SPREAD_PX = 14;
+    const groups = new Map<string, RenderedPoint[]>();
+
+    for (const point of points) {
+      const key = `${point.left}|${point.top}`;
+      const group = groups.get(key) ?? [];
+      group.push(point);
+      groups.set(key, group);
+    }
+
+    for (const group of groups.values()) {
+      if (group.length < 2) continue;
+
+      const start = -((group.length - 1) / 2) * SPREAD_PX;
+      group.forEach((point, i) => (point.offsetX = start + i * SPREAD_PX));
+    }
   }
 
   private project(p: MapPoint, area: WorldMapArea): RenderedPoint {

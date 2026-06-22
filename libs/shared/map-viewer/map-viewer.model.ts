@@ -49,7 +49,53 @@ export interface RenderedPoint extends MapPoint {
   left: string;
   top: string;
   icon?: string;
+  // Horizontal pixel nudge so multiple pins sharing the exact same coordinate don't fully overlap.
+  offsetX?: number;
 }
+
+/**
+ * A WorldMapOverlay sub-area highlight, used to approximate a zone's real (irregular) footprint:
+ * its placement rectangle on the parent zone's map covers actual land, not the empty "bleed" corners
+ * of the rectangular map tile. Coordinates are pixels on the fixed MAP_CANVAS_W x MAP_CANVAS_H canvas.
+ */
+export interface WorldMapOverlay extends TableRow {
+  mapAreaId: number; // -> WorldMapArea.ID (the parent zone map this overlay sits on)
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
+// Fixed pixel size of a WoW zone-map canvas that WorldMapOverlay placement coords are relative to.
+export const MAP_CANVAS_W = 1002;
+export const MAP_CANVAS_H = 668;
+
+// Capital-city AreaIDs. A capital takes precedence over its surrounding zone when matching spawns.
+export enum CapitalCity {
+  Undercity = 1497,
+  Orgrimmar = 1637,
+  ThunderBluff = 1638,
+  SilvermoonCity = 3487,
+  StormwindCity = 1519,
+  Ironforge = 1537,
+  Darnassus = 1657,
+  TheExodar = 3557,
+  ShattrathCity = 3703,
+  Dalaran = 4395,
+}
+
+export const CAPITAL_AREA_IDS = new Set<number>([
+  CapitalCity.Undercity,
+  CapitalCity.Orgrimmar,
+  CapitalCity.ThunderBluff,
+  CapitalCity.SilvermoonCity,
+  CapitalCity.StormwindCity,
+  CapitalCity.Ironforge,
+  CapitalCity.Darnassus,
+  CapitalCity.TheExodar,
+  CapitalCity.ShattrathCity,
+  CapitalCity.Dalaran,
+]);
 
 export interface MapDisplayData {
   uid: string;
@@ -71,7 +117,10 @@ export function worldToMapPercent(x: number, y: number, area: WorldMapArea): { l
   const left = (area.LocLeft - y) / (area.LocLeft - area.LocRight);
   const top = (area.LocTop - x) / (area.LocTop - area.LocBottom);
 
-  if (left < 0 || left > 1 || top < 0 || top > 1) return null;
+  // Small margin (aowow uses 0.1/99.9 on a 0-100 scale): points essentially on a shared box edge are
+  // ambiguous between adjacent zones, so don't count them as in-bounds.
+  const EPS = 0.001;
+  if (left < EPS || left > 1 - EPS || top < EPS || top > 1 - EPS) return null;
 
   return { left, top };
 }

@@ -160,6 +160,17 @@ describe('SqliteQueryService', () => {
       expect(service.query).toHaveBeenCalledWith(`SELECT * FROM worldmaparea_dbc`);
     });
 
+    it('getAllWorldMapOverlays', async () => {
+      const { service } = setupHelpers();
+      vi.spyOn(service, 'query').mockReturnValue(of([]));
+      expect(await service.getAllWorldMapOverlays()).toEqual([]);
+      expect(await service.getAllWorldMapOverlays()).toEqual([]); // check cache
+      expect(service.query).toHaveBeenCalledTimes(1); // check cache
+      expect(service.query).toHaveBeenCalledWith(
+        `SELECT MapAreaID AS mapAreaId, OffsetX AS x, OffsetY AS y, TextureWidth AS w, TextureHeight AS h FROM worldmapoverlay_dbc`,
+      );
+    });
+
     it('getItemDisplayInfoByItemId', async () => {
       const { service } = setupHelpers();
       vi.spyOn(service, 'query').mockReturnValue(of([]));

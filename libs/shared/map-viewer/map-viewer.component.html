@@ -3,31 +3,18 @@
     <div class="map-wrapper">
       <div class="map-header">
         <h3 class="map-label">{{ map.area.AreaName }}</h3>
-        <button
-          type="button"
-          class="map-toggle-btn"
-          (click)="toggleVisible(map.uid)"
-          [translate]="isVisible(map.uid) ? 'MAP_VIEWER.HIDE' : 'MAP_VIEWER.SHOW'"
-        ></button>
+        @if (!compact()) {
+          <button
+            type="button"
+            class="map-toggle-btn"
+            (click)="toggleVisible(map.uid)"
+            [translate]="isVisible(map.uid) ? 'MAP_VIEWER.HIDE' : 'MAP_VIEWER.SHOW'"
+          ></button>
+        }
       </div>
       @if (isVisible(map.uid)) {
-        <div class="map-image-container" [class.expanded]="isExpanded(map.uid)" (click)="toggleExpand(map.uid)">
-          <img [src]="map.imageUrl" alt="Map {{ map.mapId }}" class="map-image" (error)="onImageError($event)" />
-          @for (pt of map.points; track $index) {
-            <div class="map-point" [style.left]="pt.left" [style.top]="pt.top" (click)="onPinClick(pt, $event)">
-              <img [src]="'assets/img/' + pt.icon" class="map-point-icon" />
-              @if (pt.name || pt.level != null) {
-                <div class="map-tooltip">
-                  @if (pt.name) {
-                    <span class="tooltip-name">{{ pt.name }}</span>
-                  }
-                  @if (pt.level != null) {
-                    <span class="tooltip-level">Lvl {{ pt.level }}</span>
-                  }
-                </div>
-              }
-            </div>
-          }
+        <div class="map-image-container" [class.compact]="compact()" (click)="onMapClick(map)">
+          <ng-container [ngTemplateOutlet]="mapTile" [ngTemplateOutletContext]="{ $implicit: map }" />
         </div>
       }
     </div>
@@ -41,3 +28,40 @@
     }
   }
 </div>
+
+<div bsModal #fullMapModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" [config]="{ backdrop: false }">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ modalMap()?.area?.AreaName }}</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()"></button>
+      </div>
+      <div class="modal-body map-modal-body">
+        @if (modalMap(); as m) {
+          <div class="map-image-container">
+            <ng-container [ngTemplateOutlet]="mapTile" [ngTemplateOutletContext]="{ $implicit: m }" />
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #mapTile let-map>
+  <img [src]="map.imageUrl" alt="Map {{ map.mapId }}" class="map-image" (error)="onImageError($event)" />
+  @for (pt of map.points; track $index) {
+    <div class="map-point" [style.left]="pt.left" [style.top]="pt.top" [style.margin-left.px]="pt.offsetX" (click)="onPinClick(pt, $event)">
+      <img [src]="'assets/img/' + pt.icon" class="map-point-icon" />
+      @if (pt.name || pt.level != null) {
+        <div class="map-tooltip">
+          @if (pt.name) {
+            <span class="tooltip-name">{{ pt.name }}</span>
+          }
+          @if (pt.level != null) {
+            <span class="tooltip-level">Lvl {{ pt.level }}</span>
+          }
+        </div>
+      }
+    </div>
+  }
+</ng-template>

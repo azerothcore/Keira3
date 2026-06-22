@@ -34,7 +34,7 @@
 
 .map-image-container {
   position: relative;
-  // Reduced by default (half of the full 1024x683); clicking the map expands it.
+  // Inline preview size; clicking opens the full map in a dialog.
   width: 512px;
   height: 341.5px;
   border: 1px solid #ccc;
@@ -42,13 +42,10 @@
   overflow: visible;
   background-color: #1a1a1a;
   cursor: pointer;
-  transition:
-    width 0.2s ease,
-    height 0.2s ease;
 
-  &.expanded {
-    width: 1024px;
-    height: 683px;
+  &.compact {
+    width: 200px;
+    height: 133.4px;
   }
 
   .map-image {
@@ -56,6 +53,17 @@
     height: 100%;
     object-fit: contain;
     border-radius: 4px;
+  }
+}
+
+.map-modal-body {
+  display: flex;
+  justify-content: center;
+
+  .map-image-container {
+    width: 1024px;
+    height: 683px;
+    cursor: default;
   }
 }
 
