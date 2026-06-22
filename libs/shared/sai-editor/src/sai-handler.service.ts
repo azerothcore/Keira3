@@ -1,12 +1,10 @@
-import { inject, Injectable, signal, Signal } from '@angular/core';
+import { inject, Service, signal, Signal } from '@angular/core';
 import { map, Observable, of, shareReplay } from 'rxjs';
 import { SAI_ID_FIELDS, SAI_TABLE, SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { ComplexKeyHandlerService } from '@keira/shared/base-abstract-classes';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
   protected readonly queryService = inject(MysqlQueryService);
   protected readonly mainEditorRoutePath = 'smart-ai/editors';

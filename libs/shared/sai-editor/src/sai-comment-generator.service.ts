@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
 import { SAI_ACTION_COMMENTS, SAI_EVENT_COMMENTS } from './constants/sai-comments';
@@ -18,9 +18,7 @@ import {
 import { SAI_EVENTS } from './constants/sai-event';
 import { SAI_TARGETS } from './constants/sai-targets';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class SaiCommentGeneratorService {
   private queryService = inject(MysqlQueryService);
   private sqliteQueryService = inject(SqliteQueryService);

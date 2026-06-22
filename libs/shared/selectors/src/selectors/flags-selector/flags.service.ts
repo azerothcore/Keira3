@@ -1,9 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { Flag } from '@keira/shared/constants';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class FlagsService {
   getBitsFromValue(value: number, bitsCount: number): boolean[] {
     const bits = new Array<boolean>(bitsCount);

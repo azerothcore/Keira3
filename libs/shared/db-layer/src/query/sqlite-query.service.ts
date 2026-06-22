@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { ItemExtendedCost, Lock } from '@keira/shared/acore-world-model';
 import { ConfigService } from '@keira/shared/common-services';
 import { TableRow } from '@keira/shared/constants';
@@ -6,9 +6,7 @@ import { from, Observable, of, shareReplay, tap } from 'rxjs';
 import { SqliteService } from '../sqlite.service';
 import { BaseQueryService } from './base-query.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class SqliteQueryService extends BaseQueryService {
   private readonly sqliteService = inject(SqliteService);
   private readonly configService = inject(ConfigService);

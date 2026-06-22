@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { SmartScripts } from '@keira/shared/acore-world-model';
 import { ConfigService } from '@keira/shared/common-services';
 import { squelConfig } from '@keira/shared/config';
@@ -10,9 +10,7 @@ import { BaseQueryService } from './base-query.service';
 
 declare const squel: Squel & { flavour: null };
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class MysqlQueryService extends BaseQueryService {
   private mysqlService = inject(MysqlService);
   private configService = inject(ConfigService);

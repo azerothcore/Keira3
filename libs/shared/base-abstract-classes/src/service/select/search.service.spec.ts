@@ -1,6 +1,6 @@
 import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-import { inject, Injectable, provideZonelessChangeDetection } from '@angular/core';
+import { inject, Service, provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
@@ -24,9 +24,7 @@ describe('SearchService', () => {
     }),
   );
 
-  @Injectable({
-    providedIn: 'root',
-  })
+  @Service()
   class TestSearchService extends SearchService<ItemTemplate> {
     override readonly queryService = inject(MysqlQueryService);
     protected override readonly entityTable = ITEM_TEMPLATE_TABLE;

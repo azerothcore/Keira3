@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
 import {
   GAMEOBJECT_QUESTITEM_ID,
@@ -8,9 +8,7 @@ import {
 } from '@keira/shared/acore-world-model';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class GameobjectQuestitemService extends MultiRowEditorService<GameobjectQuestitem> {
   protected override readonly handlerService = inject(GameobjectHandlerService);
   protected override readonly _entityClass = GameobjectQuestitem;

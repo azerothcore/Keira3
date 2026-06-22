@@ -1,11 +1,9 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
 import { TRAINER_SPELL_ID, TRAINER_SPELL_ID_2, TRAINER_SPELL_TABLE, TrainerSpell } from '@keira/shared/acore-world-model';
 import { TrainerHandlerService } from '../trainer-handler.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class TrainerSpellService extends MultiRowEditorService<TrainerSpell> {
   protected override readonly handlerService = inject(TrainerHandlerService);
   protected override readonly _entityClass = TrainerSpell;

@@ -3,7 +3,7 @@
 //  - comments should be added to document what the code is actually doing
 //  - type errors should be fixed and any usage of "@ts-ignore" or "any" should be removed
 
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import {
   FACTION_RANK,
   ITEM_FLAG,
@@ -21,9 +21,7 @@ import { lastValueFrom } from 'rxjs';
 import { ITEM_CONSTANTS } from './item-constants';
 import { gtCombatRatings, lvlIndepRating, MAX_LEVEL, resistanceFields } from './item-preview';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class ItemPreviewService {
   private readonly sqliteQueryService = inject(SqliteQueryService);
   private readonly mysqlQueryService = inject(MysqlQueryService);

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { RACES_TEXT } from '@keira/shared/constants';
 
 export const enum RACE {
@@ -31,7 +31,7 @@ export const enum CLASSES {
   MASK_ALL = 0x5ff,
 }
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class PreviewHelperService {
   /* istanbul ignore next */ // TODO: fix coverage
   formatMoney(qty: number): string {

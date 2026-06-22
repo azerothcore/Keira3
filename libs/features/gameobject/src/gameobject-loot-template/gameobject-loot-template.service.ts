@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { LootEditorIdService } from '@keira/shared/base-abstract-classes';
 import {
   GAMEOBJECT_LOOT_TEMPLATE_TABLE,
@@ -11,9 +11,7 @@ import {
 import { Observable } from 'rxjs';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class GameobjectLootTemplateService extends LootEditorIdService<GameobjectLootTemplate> {
   protected override readonly handlerService = inject(GameobjectHandlerService);
 

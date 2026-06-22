@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Injectable, inject } from '@angular/core';
+import { ChangeDetectorRef, Service, inject } from '@angular/core';
 import {
   CreatureQuestender,
   CreatureQueststarter,
@@ -41,9 +41,7 @@ import { DifficultyLevel, Quest, QUEST_FACTION_REWARD, QuestFactionRewardKey } f
 import { compareObjFn, UNDEFINED_PROMISE } from '@keira/shared/utils';
 import { combineLatest, debounceTime, distinctUntilChanged, map, Observable } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class QuestPreviewService {
   private readonly helperService = inject(PreviewHelperService);
   readonly mysqlQueryService = inject(MysqlQueryService);
