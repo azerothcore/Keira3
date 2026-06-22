@@ -29,12 +29,7 @@ describe('PreviewHelperService', () => {
 
     const mockRaces = 123;
     const resRaces = ['Human', 'Orc', 'Night Elf', 'Undead', 'Tauren', 'Gnome'];
-    expect(
-      service.getRaceString(mockRaces)?.map(
-        // @ts-ignore // TODO: fix ts error in strict mode
-        (e) => RACES_TEXT[e],
-      ),
-    ).toEqual(resRaces);
+    expect(service.getRaceString(mockRaces)?.map((e: string | number) => RACES_TEXT[e as keyof typeof RACES_TEXT])).toEqual(resRaces);
 
     const mockFaction = 'test';
     vi.spyOn(service, 'getFactionFromRace').mockReturnValue(mockFaction);
