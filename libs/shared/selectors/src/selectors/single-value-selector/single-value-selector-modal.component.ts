@@ -29,7 +29,7 @@ export class SingleValueSelectorModalComponent extends BaseSelectorModalComponen
     }
   }
 
-  onSelect({ selected }: { selected: { value: string | number }[] }) {
-    this.value = selected[0].value;
+  onSelect({ selected }: { selected: Option[] }) {
+    this.value = selected[0].value as string | number;
   }
 }
