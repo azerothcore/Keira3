@@ -394,6 +394,7 @@ SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.FOLLOW] = 'Angle';
 SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.FOLLOW] = 'EndCreatureId';
 SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.FOLLOW] = 'Credit';
 SAI_ACTION_PARAM5_NAMES[SAI_ACTIONS.FOLLOW] = 'CreditType';
+SAI_ACTION_PARAM6_NAMES[SAI_ACTIONS.FOLLOW] = 'AliveState';
 SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.FOLLOW] =
   'Default is 0. When not 0, the follow will finish ONLY once the creature is within interaction distance (5 yards) of the given entry.';
 SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.FOLLOW] =
@@ -401,6 +402,9 @@ SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.FOLLOW] =
 SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.FOLLOW] =
   'Determines how the value in parameter 4 is interpreted. ' +
   '0 = monster kill credit (calls RewardPlayerAndGroupAtEvent), 1 = event credit (calls GroupEventHappens).';
+SAI_ACTION_PARAM6_TOOLTIPS[SAI_ACTIONS.FOLLOW] =
+  'Controls whether the creature must be alive to count as arrived. ' +
+  '0 = creature must be alive, 1 = creature can be dead and still count as arrived.';
 
 // SMART_ACTION_RANDOM_PHASE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.RANDOM_PHASE] = "Set the creature's event phase (note: this is NOT the creature's actual phase!)";
