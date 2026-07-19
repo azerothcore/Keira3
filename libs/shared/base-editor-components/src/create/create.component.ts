@@ -13,7 +13,6 @@ const MAX_INT_UNSIGNED_VALUE = 4294967295;
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-create',
   templateUrl: './create.component.html',
-  standalone: true,
   imports: [TranslateModule, FormsModule],
 })
 export class CreateComponent<T extends TableRow> extends SubscriptionHandler implements OnInit {

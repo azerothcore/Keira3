@@ -1,6 +1,8 @@
+import { vi } from 'vitest';
 import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { NgModule, provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
@@ -14,7 +16,7 @@ import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-component
 
 @NgModule({
   imports: [
-    ModalModule.forRoot(),
+    ModalModule,
     CommonModule,
     BrowserModule,
     FormsModule,
@@ -24,21 +26,22 @@ import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-component
     TranslateTestingModule,
     ItemSelectorModalComponent,
   ],
-  providers: [{ provide: MysqlService, useValue: instance(mock(MysqlService)) }],
+  providers: [provideZonelessChangeDetection(), provideNoopAnimations(), { provide: MysqlService, useValue: instance(mock(MysqlService)) }],
 })
 class TestModule {}
 
 describe('BaseSelectorBtnComponent', () => {
   const value = 'mock-value';
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), TestModule, ItemSelectorBtnComponent],
+      imports: [ModalModule, TestModule, ItemSelectorBtnComponent],
     }).compileComponents();
-  }));
+  });
 
   const setup = () => {
     const fixture = TestBed.createComponent(ItemSelectorBtnComponent);
+    fixture.componentRef.setInput('disabled', false);
     const component = fixture.componentInstance;
     component.control = new UntypedFormControl();
     fixture.detectChanges();
@@ -48,15 +51,15 @@ describe('BaseSelectorBtnComponent', () => {
 
   it('onClick() should create a modal that correctly reacts to changes', () => {
     const { component } = setup();
-    const showSpy = spyOn(TestBed.inject(BsModalService), 'show').and.callThrough();
+    const showSpy = vi.spyOn(TestBed.inject(BsModalService), 'show');
 
     // TODO: use dom testing instead
     component.onClick();
 
     expect(showSpy).toHaveBeenCalledTimes(1);
 
-    const markAsDirtySpy = spyOn(component.control, 'markAsDirty');
-    const setValueSpy = spyOn(component.control, 'setValue');
+    const markAsDirtySpy = vi.spyOn(component.control, 'markAsDirty').mockImplementation(() => undefined);
+    const setValueSpy = vi.spyOn(component.control, 'setValue').mockImplementation(() => undefined);
 
     component['modalRef'].content.value = value;
     component['modalRef'].content.onSave();

@@ -1,11 +1,10 @@
 <div class="top-bar">
-  @if (handler && handler.selected) {
+  @if (selected()) {
     <span class="main-text">
-      @if (!handler.isNew) {
-        Editing {{ selectedText }}
-      }
-      @if (handler.isNew) {
-        Creating new {{ selectedText }}
+      @if (isNew()) {
+        Creating new {{ selectedText() }}
+      } @else {
+        Editing {{ selectedText() }}
       }
     </span>
   }

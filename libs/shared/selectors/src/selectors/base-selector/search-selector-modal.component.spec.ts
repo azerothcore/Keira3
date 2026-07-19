@@ -1,4 +1,7 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { vi } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { instance, mock } from 'ts-mockito';
 
@@ -9,12 +12,17 @@ import { ItemSearchService } from '../../search/item-search.service';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 
 describe('SearchSelectorModalComponent', () => {
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ItemSelectorModalComponent, TranslateTestingModule],
-      providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        BsModalRef,
+        { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
+      ],
     }).compileComponents();
-  }));
+  });
 
   const setup = () => {
     const searchService = TestBed.inject(ItemSearchService);
@@ -40,7 +48,7 @@ describe('SearchSelectorModalComponent', () => {
 
   it('onSearch() should call searchService.onSearch()', () => {
     const { searchService, component } = setup();
-    spyOn(searchService, 'onSearch');
+    vi.spyOn(searchService, 'onSearch').mockImplementation(() => undefined);
 
     component.onSearch();
 

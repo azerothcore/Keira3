@@ -1,4 +1,7 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { vi, type MockInstance } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { Spied, TranslateTestingModule } from '@keira/shared/test-utils';
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
@@ -6,20 +9,21 @@ import { LogoutBtnComponent } from './logout-btn.component';
 import { LoginConfigService } from '@keira/shared/login-config';
 import { ModalConfirmComponent } from '@keira/shared/base-editor-components';
 import { LocationService } from '@keira/shared/common-services';
-import Spy = jasmine.Spy;
 
 describe('LogoutBtnComponent', () => {
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), LogoutBtnComponent, ModalConfirmComponent, TranslateTestingModule],
+      imports: [ModalModule, LogoutBtnComponent, ModalConfirmComponent, TranslateTestingModule],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         {
           provide: LoginConfigService,
-          useValue: jasmine.createSpyObj('LoginConfigService', ['saveRememberPreference']),
+          useValue: { saveRememberPreference: vi.fn() },
         },
       ],
     }).compileComponents();
-  }));
+  });
 
   function setup() {
     const fixture = TestBed.createComponent(LogoutBtnComponent);
@@ -32,8 +36,8 @@ describe('LogoutBtnComponent', () => {
 
   it('openModalConfirm() should correctly work', () => {
     const { component } = setup();
-    const showSpy = spyOn(TestBed.inject(BsModalService), 'show').and.callThrough();
-    const logoutSpy = spyOn(component, 'logout');
+    const showSpy = vi.spyOn(TestBed.inject(BsModalService), 'show');
+    const logoutSpy = vi.spyOn(component, 'logout').mockImplementation(() => undefined);
 
     component.openModalConfirm();
     expect(showSpy).toHaveBeenCalledTimes(1);
@@ -47,12 +51,12 @@ describe('LogoutBtnComponent', () => {
 
   it('logout() should correctly work', () => {
     const { component, loginConfigService } = setup();
-    const locationServiceSpy: Spy = spyOn(TestBed.inject(LocationService), 'reload');
+    const locationServiceSpy: MockInstance = vi.spyOn(TestBed.inject(LocationService), 'reload').mockImplementation(() => undefined);
 
     component.logout();
 
     expect(locationServiceSpy).toHaveBeenCalledTimes(1);
-    expect(loginConfigService.saveRememberPreference).toHaveBeenCalledOnceWith(false);
+    expect(loginConfigService.saveRememberPreference).toHaveBeenCalledExactlyOnceWith(false);
   });
 
   // closeModalsAfterEach();

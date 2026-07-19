@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -7,8 +7,7 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'keira-boolean-option-selector',
   templateUrl: './boolean-option-selector.component.html',
   imports: [ReactiveFormsModule, TranslateModule],
-  standalone: true,
 })
 export class BooleanOptionSelectorComponent {
-  @Input({ required: true }) control!: FormControl;
+  readonly control = input.required<FormControl>();
 }

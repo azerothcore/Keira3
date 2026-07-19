@@ -1,25 +1,27 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { SingleValueSelectorBtnComponent } from './single-value-selector-btn.component';
 import { ModalModule } from 'ngx-bootstrap/modal';
 
 describe('SingleValueSelectorBtnComponent', () => {
-  let component: SingleValueSelectorBtnComponent;
-  let fixture: ComponentFixture<SingleValueSelectorBtnComponent>;
-
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), SingleValueSelectorBtnComponent],
-    }).compileComponents();
-  }));
-
   beforeEach(() => {
-    fixture = TestBed.createComponent(SingleValueSelectorBtnComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    TestBed.configureTestingModule({
+      imports: [ModalModule, SingleValueSelectorBtnComponent],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
+    }).compileComponents();
   });
 
+  function setup() {
+    const fixture = TestBed.createComponent(SingleValueSelectorBtnComponent);
+    const component = fixture.componentInstance;
+    fixture.detectChanges();
+    return { fixture, component };
+  }
+
   it('should create', () => {
+    const { component } = setup();
     expect(component).toBeTruthy();
   });
 });

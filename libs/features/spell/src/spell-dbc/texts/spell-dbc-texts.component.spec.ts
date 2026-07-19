@@ -1,5 +1,6 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, viewChild, provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FormGroup } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
@@ -19,11 +20,10 @@ describe('SpellDbcTextsComponent', () => {
 
   @Component({
     template: '<keira-spell-dbc-texts [formGroup]="form" />',
-    standalone: true,
     imports: [RouterTestingModule, TranslateTestingModule, SpellDbcTextsComponent],
   })
   class TestHostComponent {
-    @ViewChild(SpellDbcTextsComponent) child!: SpellDbcTextsComponent;
+    readonly child = viewChild.required(SpellDbcTextsComponent);
     form!: FormGroup<ModelForm<SpellDbc>>;
   }
 
@@ -31,13 +31,13 @@ describe('SpellDbcTextsComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         ToastrModule.forRoot(),
-        TooltipModule.forRoot(),
+        TooltipModule,
         RouterTestingModule,
         TranslateTestingModule,
         TestHostComponent,
         SpellDbcTextsComponent,
       ],
-      providers: [SpellHandlerService],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), SpellHandlerService],
     }).compileComponents();
   });
 
@@ -49,13 +49,16 @@ describe('SpellDbcTextsComponent', () => {
     host.form = form;
 
     fixture.detectChanges();
-    const component = host.child;
+    const component = host.child();
 
     return { fixture, component, page, form };
   };
 
-  it('should correctly display the locale tabs', () => {
+  it('should correctly display the locale tabs', async () => {
     const { page } = setup();
+    // ngx-bootstrap activates the first tab in a microtask; flush it before asserting.
+    await page.whenStable();
+    page.detectChanges();
 
     for (const locale of LOCALES) {
       const tab = page.getTab(page.localesTabsetId, locale);

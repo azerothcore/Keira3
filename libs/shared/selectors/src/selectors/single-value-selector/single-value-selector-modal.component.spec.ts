@@ -1,33 +1,36 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 
 import { SingleValueSelectorModalComponent } from './single-value-selector-modal.component';
 
 describe('SingleValueSelectorModalComponent', () => {
-  let component: SingleValueSelectorModalComponent;
-  let fixture: ComponentFixture<SingleValueSelectorModalComponent>;
-
   const value = 'myValue';
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [SingleValueSelectorModalComponent, TranslateTestingModule],
-      providers: [BsModalRef],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), BsModalRef],
     }).compileComponents();
-  }));
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(SingleValueSelectorModalComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
+  function setup() {
+    const fixture = TestBed.createComponent(SingleValueSelectorModalComponent);
+    const component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    return { fixture, component };
+  }
+
   it('should safely create without config', () => {
+    const { component } = setup();
     expect(component).toBeTruthy();
   });
 
   it('should properly handle config (if any)', () => {
+    const { component } = setup();
     component.value = value;
     component.config = {
       name: 'Mock Modal Name',
@@ -44,6 +47,7 @@ describe('SingleValueSelectorModalComponent', () => {
   });
 
   it('onSelect() should properly set the value', () => {
+    const { component } = setup();
     component.onSelect({ selected: [{ value }] });
     expect(component.value).toEqual(value);
   });

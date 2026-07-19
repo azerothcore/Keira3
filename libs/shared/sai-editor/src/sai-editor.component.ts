@@ -1,5 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
-import { EVENT_PHASE_MASK, SAI_TYPES, SMART_EVENT_FLAGS, SmartScripts } from '@keira/shared/acore-world-model';
+import {
+  EVENT_PHASE_MASK,
+  SAI_TYPES,
+  SMART_ACTION_CAST_FLAGS,
+  SMART_ACTION_CAST_TRIGGERED_FLAGS,
+  SMART_EVENT_FLAGS,
+  SmartScripts,
+} from '@keira/shared/acore-world-model';
 import {
   SAI_ACTION_PARAM1_NAMES,
   SAI_ACTION_PARAM1_TOOLTIPS,
@@ -66,13 +73,13 @@ import { SaiTopBarComponent } from './sai-top-bar/sai-top-bar.component';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
 import { EditorButtonsComponent, QueryOutputComponent } from '@keira/shared/base-editor-components';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-sai-editor',
   templateUrl: './sai-editor.component.html',
   styleUrls: ['./sai-editor.component.scss'],
-  standalone: true,
   imports: [
     SaiTopBarComponent,
     TranslateModule,
@@ -84,6 +91,7 @@ import { EditorButtonsComponent, QueryOutputComponent } from '@keira/shared/base
     EditorButtonsComponent,
     NgxDatatableModule,
     TimedActionlistComponent,
+    AsyncPipe,
   ],
 })
 export class SaiEditorComponent extends MultiRowEditorComponent<SmartScripts> implements OnInit {
@@ -92,6 +100,8 @@ export class SaiEditorComponent extends MultiRowEditorComponent<SmartScripts> im
 
   readonly EVENT_PHASE_MASK = EVENT_PHASE_MASK;
   readonly SMART_EVENT_FLAGS = SMART_EVENT_FLAGS;
+  readonly SMART_ACTION_CAST_FLAGS = SMART_ACTION_CAST_FLAGS;
+  readonly SMART_ACTION_CAST_TRIGGERED_FLAGS = SMART_ACTION_CAST_TRIGGERED_FLAGS;
   readonly SAI_EVENTS = SAI_EVENTS;
   readonly SAI_EVENTS_KEYS = SAI_EVENTS_KEYS;
   readonly SAI_ACTIONS = SAI_ACTIONS;

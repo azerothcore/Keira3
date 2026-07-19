@@ -12,7 +12,6 @@ import { ModalConfirmComponent } from '@keira/shared/base-editor-components';
   selector: 'keira-logout-btn',
   templateUrl: './logout-btn.component.html',
   styleUrls: ['./logout-btn.component.scss'],
-  standalone: true,
   imports: [TranslateModule],
 })
 export class LogoutBtnComponent extends SubscriptionHandler {

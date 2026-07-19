@@ -5,14 +5,14 @@ name: Release Draft
 jobs:
   get-package-version:
     name: Get Package Version
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     outputs:
       version: ${{ steps.version.outputs.PACKAGE_VERSION }}
       app_name: ${{ steps.app_name.outputs.APP_NAME }}
       fix_app_name: ${{ steps.fix_app_name.outputs.FIX_APP_NAME }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - id: version
         run: |
           echo "PACKAGE_VERSION=$(npx json version -a < package.json)" >> $GITHUB_OUTPUT
@@ -28,10 +28,10 @@ jobs:
   build-on-linux:
     needs: get-package-version
     name: Build and upload the Linux release assets
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Build project
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -57,7 +57,7 @@ jobs:
           rm -rf release/*.snap
       - name: Create Release
         id: create_release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -73,10 +73,10 @@ jobs:
   build-on-mac:
     needs: get-package-version
     name: Build and upload the Mac release assets
-    runs-on: macos-13
+    runs-on: macos-26-intel # it's the most recent version still running on Intel, we keep it for retro-compatibility
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Build project
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -94,7 +94,7 @@ jobs:
           rm -rf release/*.dmg
       - name: Create Release
         id: create_release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -107,10 +107,10 @@ jobs:
   build-on-windows:
     needs: get-package-version
     name: Build and upload the Windows release assets
-    runs-on: windows-2022
+    runs-on: windows-2025
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Build project
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -125,7 +125,7 @@ jobs:
         shell: bash
       - name: Create Release
         id: create_release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:

@@ -5,13 +5,13 @@ import { ItemHandlerService } from '../item-handler.service';
 import { MillingLootTemplateService } from './milling-loot-template.service';
 import { LootEditorComponent } from '@keira/shared/loot-editor';
 import { TopBarComponent } from '@keira/shared/base-editor-components';
+import { TranslateDirective } from '@ngx-translate/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-milling-loot-template',
   templateUrl: '../../../../shared/base-abstract-classes/src/components/editors/loot-template/loot-template.component.html',
-  standalone: true,
-  imports: [TopBarComponent, LootEditorComponent],
+  imports: [TopBarComponent, TranslateDirective, LootEditorComponent],
 })
 export class MillingLootTemplateComponent extends LootTemplateComponent<MillingLootTemplate> {
   protected override readonly editorService = inject(MillingLootTemplateService);

@@ -1,24 +1,26 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { AreaSelectorBtnComponent } from './area-selector-btn.component';
 
 describe('AreaSelectorBtnComponent', () => {
-  let component: AreaSelectorBtnComponent;
-  let fixture: ComponentFixture<AreaSelectorBtnComponent>;
-
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), AreaSelectorBtnComponent],
-    }).compileComponents();
-  }));
-
   beforeEach(() => {
-    fixture = TestBed.createComponent(AreaSelectorBtnComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    TestBed.configureTestingModule({
+      imports: [ModalModule, AreaSelectorBtnComponent],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
+    }).compileComponents();
   });
 
+  function setup() {
+    const fixture = TestBed.createComponent(AreaSelectorBtnComponent);
+    const component = fixture.componentInstance;
+    fixture.detectChanges();
+    return { fixture, component };
+  }
+
   it('should create', () => {
+    const { component } = setup();
     expect(component).toBeTruthy();
   });
 });

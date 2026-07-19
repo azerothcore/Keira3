@@ -1,7 +1,9 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { vi } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { GameTele } from '@keira/shared/acore-world-model';
-import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
+import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
@@ -34,11 +36,13 @@ describe('GameTele integration tests', () => {
   originalEntity.map = 0;
 
   // TestBed Configuration
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, ToastrModule.forRoot(), ModalModule.forRoot(), TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, TranslateTestingModule],
       declarations: [],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         GameTeleHandlerService,
         {
           provide: SqliteService,
@@ -46,20 +50,21 @@ describe('GameTele integration tests', () => {
         },
       ],
     }).compileComponents();
-  }));
+  });
 
   // Setup Function
   function setup(creatingNew: boolean) {
     const handlerService = TestBed.inject(GameTeleHandlerService);
-    // Ideally, use a public method or setter to set '_selected'
-    // For illustration, we're setting it directly
     (handlerService as any)._selected = `${id}`;
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalEntity]));
+    const sqliteQueryService = TestBed.inject(SqliteQueryService);
+    vi.spyOn(sqliteQueryService, 'getAllWorldMapAreas').mockResolvedValue([]);
+    vi.spyOn(sqliteQueryService, 'getAllWorldMapOverlays').mockResolvedValue([]);
 
     const _fixture = TestBed.createComponent(GameTeleComponent);
     const page = new GameTelePage(_fixture);
@@ -70,37 +75,32 @@ describe('GameTele integration tests', () => {
 
   // Creating New Tests
   describe('Creating new', () => {
-    let page: GameTelePage;
-    let querySpy: jasmine.Spy;
-    let handlerService: GameTeleHandlerService;
-
-    beforeEach(() => {
-      ({ page, querySpy, handlerService } = setup(true));
-    });
-
     it('should correctly initialise', () => {
+      const { page, querySpy } = setup(true);
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
       page.expectFullQueryToContain(expectedFullCreateQuery);
-      querySpy.calls.reset();
+      querySpy.mockClear();
     });
 
     it('should correctly update the unsaved status', () => {
+      const { page, handlerService } = setup(true);
       const field = 'name';
-      expect(handlerService.isGameTeleUnsaved).toBe(false);
+      expect(handlerService.isGameTeleUnsaved()).toBe(false);
       page.setInputValueById(field, 'ABC');
-      expect(handlerService.isGameTeleUnsaved).toBe(true);
+      expect(handlerService.isGameTeleUnsaved()).toBe(true);
       page.setInputValueById(field, '');
-      expect(handlerService.isGameTeleUnsaved).toBe(false);
+      expect(handlerService.isGameTeleUnsaved()).toBe(false);
     });
 
     it('changing a property and executing the query should correctly work', () => {
+      const { page, querySpy } = setup(true);
       const expectedQuery =
         'DELETE FROM `game_tele` WHERE (`id` = 1);\n' +
         'INSERT INTO `game_tele` (`id`, `position_x`, `position_y`, `position_z`, `orientation`, `map`, `name`) VALUES\n' +
         "(1, 0, 0, 0, 0, 0, 'ABC');\n";
 
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.setInputValueById('name', 'ABC');
       page.expectFullQueryToContain(expectedQuery);
@@ -108,30 +108,25 @@ describe('GameTele integration tests', () => {
       page.clickExecuteQuery();
 
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
   });
 
   // Editing Existing Tests
   describe('Editing existing', () => {
-    let page: GameTelePage;
-    let querySpy: jasmine.Spy;
-
-    beforeEach(() => {
-      ({ page, querySpy } = setup(false));
-    });
-
     it('should correctly initialise', () => {
+      const { page } = setup(false);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
     it('changing all properties and executing the query should correctly work', () => {
+      const { page, querySpy } = setup(false);
       const expectedQuery =
         "UPDATE `game_tele` SET `position_x` = 1, `position_y` = 2, `position_z` = 3, `orientation` = 4, `map` = 5, `name` = '6' " +
         'WHERE (`id` = 1);';
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.setInputValueById('position_x', 1);
       page.setInputValueById('position_y', 2);
@@ -139,16 +134,15 @@ describe('GameTele integration tests', () => {
       page.setInputValueById('orientation', 4);
       page.setInputValueById('map', 5);
       page.setInputValueById('name', '6');
-      // If you have a method to change all fields, consider using it
-      // page.changeAllFields(originalEntity, ['name'], values);
       page.expectDiffQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
 
     it('changing values should correctly update the queries', () => {
+      const { page, querySpy } = setup(false);
       page.setInputValueById('name', 'ABCD');
       page.expectDiffQueryToContain("UPDATE `game_tele` SET `name` = 'ABCD' WHERE (`id` = 1);");
       page.expectFullQueryToContain(
@@ -165,7 +159,7 @@ describe('GameTele integration tests', () => {
           "(1, 1.234, 0, 0, 0, 0, 'ABCD');\n",
       );
 
-      querySpy.calls.reset();
+      querySpy.mockClear();
     });
   });
 });

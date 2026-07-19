@@ -40,7 +40,6 @@ import { ConditionsService } from './conditions.service';
   selector: 'keira-conditions',
   templateUrl: './conditions.component.html',
   styleUrls: ['./conditions.component.scss'],
-  standalone: true,
   imports: [
     TranslateModule,
     QueryOutputComponent,

@@ -1,25 +1,27 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { MapSelectorBtnComponent } from './map-selector-btn.component';
 import { ModalModule } from 'ngx-bootstrap/modal';
 
 describe('MapSelectorBtnComponent', () => {
-  let component: MapSelectorBtnComponent;
-  let fixture: ComponentFixture<MapSelectorBtnComponent>;
-
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), MapSelectorBtnComponent],
-    }).compileComponents();
-  }));
-
   beforeEach(() => {
-    fixture = TestBed.createComponent(MapSelectorBtnComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    TestBed.configureTestingModule({
+      imports: [ModalModule, MapSelectorBtnComponent],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
+    }).compileComponents();
   });
 
+  function setup() {
+    const fixture = TestBed.createComponent(MapSelectorBtnComponent);
+    const component = fixture.componentInstance;
+    fixture.detectChanges();
+    return { fixture, component };
+  }
+
   it('should create', () => {
+    const { component } = setup();
     expect(component).toBeTruthy();
   });
 });

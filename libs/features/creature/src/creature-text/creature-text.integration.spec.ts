@@ -1,5 +1,7 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { vi } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CreatureText } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
@@ -16,19 +18,18 @@ class CreatureTextPage extends MultiRowEditorPageObject<CreatureTextComponent> {
 describe('CreatureText integration tests', () => {
   const id = 1234;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        CreatureTextComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
+      imports: [ToastrModule.forRoot(), ModalModule, CreatureTextComponent, RouterTestingModule, TranslateTestingModule],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
-      providers: [CreatureHandlerService, SaiCreatureHandlerService, { provide: SqliteService, useValue: instance(mock(SqliteService)) }],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     const originalRow0 = new CreatureText();
@@ -44,10 +45,10 @@ describe('CreatureText integration tests', () => {
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
-    spyOn(queryService, 'queryValue').and.returnValue(of());
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
+    vi.spyOn(queryService, 'queryValue').mockReturnValue(of());
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
     const fixture = TestBed.createComponent(CreatureTextComponent);
     const component = fixture.componentInstance;
@@ -82,11 +83,11 @@ describe('CreatureText integration tests', () => {
 
     it('should correctly update the unsaved status', () => {
       const { handlerService, page } = setup(true);
-      expect(handlerService.isCreatureTextUnsaved).toBe(false);
+      expect(handlerService.isCreatureTextUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isCreatureTextUnsaved).toBe(true);
+      expect(handlerService.isCreatureTextUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isCreatureTextUnsaved).toBe(false);
+      expect(handlerService.isCreatureTextUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {
@@ -97,7 +98,7 @@ describe('CreatureText integration tests', () => {
         "(1234, 0, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, ''),\n" +
         "(1234, 1, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, ''),\n" +
         "(1234, 2, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, '');";
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(1);
@@ -109,7 +110,7 @@ describe('CreatureText integration tests', () => {
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
 
     it('adding a row and changing its values should correctly update the queries', () => {

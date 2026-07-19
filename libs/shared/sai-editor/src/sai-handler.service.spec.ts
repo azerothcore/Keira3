@@ -1,19 +1,26 @@
+import { vi } from 'vitest';
 /*eslint camelcase: ["error", {properties: "never"}]*/
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
+import { SAI_TYPES } from '@keira/shared/acore-world-model';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 import { of } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
-import { SAI_TYPES } from '@keira/shared/acore-world-model';
 import { SaiHandlerService } from './sai-handler.service';
-import { MysqlQueryService } from '@keira/shared/db-layer';
 
 describe('SaiHandlerService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      providers: [{ provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
+      ],
     }),
   );
 
@@ -21,23 +28,21 @@ describe('SaiHandlerService', () => {
     { testId: 1, sourceType: 1, entryOrGuid: 111, isNew: true },
     { testId: 2, sourceType: 2, entryOrGuid: 222, isNew: false },
   ]) {
-    it(`selectFromEntity() should correctly work [${testId}]`, fakeAsync(() => {
+    it(`selectFromEntity() should correctly work [${testId}]`, () => {
       const service: SaiHandlerService = TestBed.inject(SaiHandlerService);
       const queryService: MysqlQueryService = TestBed.inject(MysqlQueryService);
       const mockResults = isNew ? [] : ['some result'];
-      spyOn(queryService, 'query').and.returnValue(of(mockResults as any));
-      spyOn(service, 'select');
+      vi.spyOn(queryService, 'query').mockReturnValue(of(mockResults as any));
+      vi.spyOn(service, 'select').mockImplementation(() => undefined);
 
       service.selectFromEntity(sourceType, entryOrGuid);
-      tick();
-
       expect(queryService.query).toHaveBeenCalledTimes(1);
       expect(queryService.query).toHaveBeenCalledWith(
         `SELECT * FROM smart_scripts WHERE source_type = ${sourceType} AND entryorguid = ${entryOrGuid}`,
       );
       expect(service.select).toHaveBeenCalledTimes(1);
       expect(service.select).toHaveBeenCalledWith(isNew, { source_type: sourceType, entryorguid: entryOrGuid });
-    }));
+    });
   }
 
   const entry = 100;
@@ -73,7 +78,7 @@ describe('SaiHandlerService', () => {
   ]) {
     it(`when selecting, the templateQuery should be updated [${sourceType}]`, () => {
       const service: SaiHandlerService = TestBed.inject(SaiHandlerService);
-      spyOn(TestBed.inject(Router), 'navigate');
+      vi.spyOn(TestBed.inject(Router), 'navigate').mockImplementation(() => undefined);
 
       service.select(false, { source_type: sourceType, entryorguid: id });
 
@@ -83,7 +88,7 @@ describe('SaiHandlerService', () => {
 
   it('navigation should not be triggered when navigate is false', () => {
     const service: SaiHandlerService = TestBed.inject(SaiHandlerService);
-    const spy = spyOn(TestBed.inject(Router), 'navigate');
+    const spy = vi.spyOn(TestBed.inject(Router), 'navigate').mockImplementation(() => undefined);
 
     service.select(false, { source_type: 1, entryorguid: 123 }, 'Mock Name', false);
 
@@ -118,7 +123,7 @@ describe('SaiHandlerService', () => {
         name: mockName,
         returnValue: [{ name: mockName }],
         expectedName: mockName,
-        expectedQuery: 'SELECT ct.name FROM creature_template AS ct INNER JOIN creature AS c ON c.id1 = ct.entry WHERE c.guid = 123',
+        expectedQuery: 'SELECT ct.name FROM creature_template AS ct INNER JOIN creature AS c ON c.id = ct.entry WHERE c.guid = 123',
       },
       {
         testId: 3,
@@ -126,7 +131,7 @@ describe('SaiHandlerService', () => {
         entryorguid: 123,
         name: mockName,
         returnValue: [],
-        expectedName: null as any,
+        expectedName: '',
         expectedQuery: 'SELECT name FROM creature_template WHERE entry = 123',
       },
       {
@@ -136,7 +141,7 @@ describe('SaiHandlerService', () => {
         name: mockName,
         returnValue: [{ name: mockName }],
         expectedName: mockName,
-        expectedQuery: 'SELECT ct.name FROM gameobject_template AS ct INNER JOIN gameobject AS c ON c.id1 = ct.entry WHERE c.guid = 123',
+        expectedQuery: 'SELECT ct.name FROM gameobject_template AS ct INNER JOIN gameobject AS c ON c.id = ct.entry WHERE c.guid = 123',
       },
       {
         testId: 5,
@@ -150,15 +155,15 @@ describe('SaiHandlerService', () => {
     ];
 
     for (const { testId, sourceType, entryorguid, name, returnValue, expectedName, expectedQuery } of cases) {
-      it(`${testId}`, fakeAsync(() => {
+      it(`${testId}`, () => {
         const service: SaiHandlerService = TestBed.inject(SaiHandlerService);
-        const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+        const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate').mockImplementation(() => undefined);
         const queryService = TestBed.inject(MysqlQueryService);
-        const querySpy = spyOn(queryService, 'query');
+        const querySpy = vi.spyOn(queryService, 'query').mockImplementation(() => undefined);
 
         service.select(false, { source_type: sourceType, entryorguid }, name, false);
 
-        querySpy.and.returnValue(of(returnValue));
+        querySpy.mockReturnValue(of(returnValue));
         service.getName().subscribe((actualName) => {
           // TODO: this should not be inside subscribe
           expect(actualName).toEqual(expectedName);
@@ -169,13 +174,11 @@ describe('SaiHandlerService', () => {
 
         service.select(false, { source_type: undefined, entryorguid: -123 }, mockName, false);
 
-        querySpy.and.returnValue(of());
+        querySpy.mockReturnValue(of());
         service.getName().subscribe((actualName) => {
           expect(actualName).toEqual(`Unknown source_type`);
         });
-
-        tick();
-      }));
+      });
     }
   });
 });

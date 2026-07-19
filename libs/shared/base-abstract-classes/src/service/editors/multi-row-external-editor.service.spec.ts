@@ -1,4 +1,7 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { ToastrService } from 'ngx-toastr';
@@ -9,12 +12,12 @@ import { MultiRowExternalEditorService } from './multi-row-external-editor.servi
 import { MockEntity, MockHandlerService, MockMultiRowExternalEditorService } from '../../core.mock';
 
 describe('MultiRowExternalEditorService', () => {
-  let service: MultiRowExternalEditorService<MockEntity>;
-
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
         { provide: ToastrService, useValue: instance(mock(ToastrService)) },
         MockHandlerService,
@@ -23,14 +26,16 @@ describe('MultiRowExternalEditorService', () => {
     }),
   );
 
-  beforeEach(() => {
-    service = TestBed.inject(MockMultiRowExternalEditorService);
-  });
+  function setup() {
+    const service: MultiRowExternalEditorService<MockEntity> = TestBed.inject(MockMultiRowExternalEditorService);
+    return { service };
+  }
 
   it('updateDiffQuery() should correctly work', () => {
+    const { service } = setup();
     service['_diffQuery'] = '';
     const queryResult = '-- Mock query result';
-    const getQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getDiffDeleteInsertTwoKeysQuery').and.returnValue(queryResult);
+    const getQuerySpy = vi.spyOn(TestBed.inject(MysqlQueryService), 'getDiffDeleteInsertTwoKeysQuery').mockReturnValue(queryResult);
 
     service['updateDiffQuery']();
 
@@ -45,10 +50,11 @@ describe('MultiRowExternalEditorService', () => {
     expect(service.diffQuery).toEqual(queryResult);
   });
 
-  xit('updateFullQuery() should correctly work', () => {
+  it.skip('updateFullQuery() should correctly work', () => {
+    const { service } = setup();
     service['_fullQuery'] = '';
     const queryResult = '-- Mock query result';
-    const getQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getFullDeleteInsertQuery').and.returnValue(queryResult);
+    const getQuerySpy = vi.spyOn(TestBed.inject(MysqlQueryService), 'getFullDeleteInsertQuery').mockReturnValue(queryResult);
 
     service['updateFullQuery']();
 

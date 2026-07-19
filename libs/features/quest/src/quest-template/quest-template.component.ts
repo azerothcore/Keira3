@@ -23,7 +23,6 @@ import { QuestTemplateService } from './quest-template.service';
   selector: 'keira-quest-template',
   templateUrl: './quest-template.component.html',
   styleUrls: ['./quest-template.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,

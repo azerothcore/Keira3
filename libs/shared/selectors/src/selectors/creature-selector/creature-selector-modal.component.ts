@@ -13,7 +13,6 @@ import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-component
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-creature-selector-modal',
   templateUrl: './creature-selector-modal.component.html',
-  standalone: true,
   imports: [FormsModule, ReactiveFormsModule, HighlightjsWrapperComponent, NgxDatatableModule, TranslateModule],
 })
 export class CreatureSelectorModalComponent extends SearchSelectorModalComponent<CreatureTemplate> {

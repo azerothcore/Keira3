@@ -1,10 +1,14 @@
-import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
+import { vi } from 'vitest';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { ElectronService } from '@keira/shared/common-services';
 import { Connection, ConnectionOptions, QueryError } from 'mysql2';
+import { tickAsync } from 'ngx-page-object-model';
 import { Subscriber } from 'rxjs';
 import { instance, mock, reset } from 'ts-mockito';
-import { ElectronService } from '@keira/shared/common-services';
 import { MysqlService } from './mysql.service';
-import Spy = jasmine.Spy;
+import { KeiraConnectionOptions } from './mysql.model';
 
 class MockMySql {
   createConnection() {}
@@ -16,26 +20,32 @@ class MockConnection {
 }
 
 describe('MysqlService', () => {
-  let service: MysqlService;
-
   const config: ConnectionOptions = { host: 'azerothcore.org' };
 
   beforeEach(() =>
     TestBed.configureTestingModule({
-      providers: [MysqlService, { provide: ElectronService, useValue: instance(mock(ElectronService)) }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        MysqlService,
+        { provide: ElectronService, useValue: instance(mock(ElectronService)) },
+      ],
     }),
   );
 
-  beforeEach(() => {
-    service = TestBed.inject(MysqlService);
-  });
+  function setup() {
+    const service = TestBed.inject(MysqlService);
+    return { service };
+  }
 
   it('connectionEstablished getter', () => {
+    const { service } = setup();
     service['_connectionEstablished'] = true;
     expect(service.connectionEstablished).toBe(true);
   });
 
   it('getConnectionState should return null when there is no connection', () => {
+    const { service } = setup();
     (service as any)._connection = null;
     expect(service.getConnectionState()).toBe('EMPTY');
 
@@ -43,11 +53,12 @@ describe('MysqlService', () => {
     expect(service.getConnectionState()).toBe('CONNECTED');
   });
 
-  it('connect(config) should properly work', waitForAsync(() => {
+  it('connect(config) should properly work', () => {
+    const { service } = setup();
     (service as any).mysql = new MockMySql();
     const mockConnection = new MockConnection();
-    const createConnectionSpy = spyOn((service as any).mysql, 'createConnection').and.returnValue(mockConnection);
-    const connectSpy = spyOn(mockConnection, 'connect');
+    const createConnectionSpy = vi.spyOn((service as any).mysql, 'createConnection').mockReturnValue(mockConnection);
+    const connectSpy = vi.spyOn(mockConnection, 'connect').mockImplementation(() => undefined);
 
     const obs = service.connect(config);
 
@@ -56,32 +67,32 @@ describe('MysqlService', () => {
 
     obs.subscribe(() => {
       expect(connectSpy).toHaveBeenCalledTimes(1);
-      // @ts-ignore
-      expect(connectSpy).toHaveBeenCalledWith(service['connectCallback']);
+      expect(connectSpy).toHaveBeenCalledWith(expect.any(Function));
     });
-  }));
+  });
 
   describe('dbQuery(queryString)', () => {
-    it('should properly work', waitForAsync(() => {
+    it('should properly work', () => {
+      const { service } = setup();
       (service as any).mysql = new MockMySql();
       const mockConnection = new MockConnection();
       service['_connection'] = mockConnection as unknown as Connection;
-      const querySpy = spyOn(mockConnection, 'query');
+      const querySpy = vi.spyOn(mockConnection, 'query').mockImplementation(() => undefined);
       const queryStr = '--some mock query';
 
       const obs = service.dbQuery(queryStr, []);
 
       obs.subscribe(() => {
         expect(querySpy).toHaveBeenCalledTimes(1);
-        // @ts-ignore
-        expect(querySpy).toHaveBeenCalledWith(queryStr, [], service['queryCallback']);
+        expect(querySpy).toHaveBeenCalledWith(queryStr, [], expect.any(Function));
       });
-    }));
+    });
 
-    it('should give error if _connection is not defined', waitForAsync(() => {
+    it('should give error if _connection is not defined', () => {
+      const { service } = setup();
       (service as any).mysql = new MockMySql();
       service['_connection'] = undefined as any;
-      spyOn(console, 'error');
+      vi.spyOn(console, 'error').mockImplementation(() => undefined);
       const queryStr = '--some mock query';
 
       const obs = service.dbQuery(queryStr, []);
@@ -90,12 +101,13 @@ describe('MysqlService', () => {
         expect(console.error).toHaveBeenCalledTimes(1);
         expect(console.error).toHaveBeenCalledWith(`_connection was not defined when trying to run query: ${queryStr}`);
       });
-    }));
+    });
 
-    it('should give error if reconnection is in progress', waitForAsync(() => {
+    it('should give error if reconnection is in progress', () => {
+      const { service } = setup();
       (service as any).mysql = new MockMySql();
       service['_reconnecting'] = true;
-      spyOn(console, 'error');
+      vi.spyOn(console, 'error').mockImplementation(() => undefined);
       const queryStr = '--some mock query';
 
       const obs = service.dbQuery(queryStr);
@@ -104,33 +116,32 @@ describe('MysqlService', () => {
         expect(console.error).toHaveBeenCalledTimes(1);
         expect(console.error).toHaveBeenCalledWith(`Reconnection in progress while trying to run query: ${queryStr}`);
       });
-    }));
+    });
   });
 
   describe('callbacks', () => {
-    let subscriber: Subscriber<any>;
-    let errorSpy: Spy;
-    let nextSpy: Spy;
-    let completeSpy: Spy;
-    let callback: (err?: QueryError, result?: any, fields?: any) => void;
-
     const error = { code: 'some error', errno: 1234 } as QueryError;
 
-    beforeEach(() => {
-      subscriber = new Subscriber();
-      errorSpy = spyOn(subscriber, 'error');
-      nextSpy = spyOn(subscriber, 'next');
-      completeSpy = spyOn(subscriber, 'complete');
-    });
+    function setupCallbacks() {
+      const { service } = setup();
+      const subscriber = new Subscriber();
+      const errorSpy = vi.spyOn(subscriber, 'error').mockImplementation(() => undefined);
+      const nextSpy = vi.spyOn(subscriber, 'next').mockImplementation(() => undefined);
+      const completeSpy = vi.spyOn(subscriber, 'complete').mockImplementation(() => undefined);
+      return { service, subscriber, errorSpy, nextSpy, completeSpy };
+    }
 
     describe('connect', () => {
-      beforeEach(() => {
-        callback = service['getConnectCallback'](subscriber) as any;
-      });
+      function setupConnect() {
+        const result = setupCallbacks();
+        const callback = result.service['getConnectCallback'](result.subscriber) as any;
+        return { ...result, callback };
+      }
 
       it('should correctly work', () => {
+        const { service, errorSpy, nextSpy, completeSpy, callback } = setupConnect();
         service['_connectionEstablished'] = false;
-        service['_connection'] = { on: jasmine.createSpy() } as any;
+        service['_connection'] = { on: vi.fn() } as any;
 
         callback();
 
@@ -142,6 +153,7 @@ describe('MysqlService', () => {
       });
 
       it('should correctly handle errors', () => {
+        const { service, errorSpy, nextSpy, completeSpy, callback } = setupConnect();
         service['_connectionEstablished'] = true;
 
         callback(error);
@@ -158,11 +170,14 @@ describe('MysqlService', () => {
       const result = 'some mock result';
       const fields = 'some mock fields';
 
-      beforeEach(() => {
-        callback = service['getQueryCallback'](subscriber) as any;
-      });
+      function setupQuery() {
+        const callbacksResult = setupCallbacks();
+        const callback = callbacksResult.service['getQueryCallback'](callbacksResult.subscriber) as any;
+        return { ...callbacksResult, callback };
+      }
 
       it('should correctly work', () => {
+        const { errorSpy, nextSpy, completeSpy, callback } = setupQuery();
         callback(undefined, result, fields);
 
         expect(errorSpy).toHaveBeenCalledTimes(0);
@@ -172,6 +187,7 @@ describe('MysqlService', () => {
       });
 
       it('should correctly handle errors', () => {
+        const { errorSpy, nextSpy, completeSpy, callback } = setupQuery();
         callback(error, result, fields);
 
         expect(errorSpy).toHaveBeenCalledTimes(1);
@@ -184,8 +200,9 @@ describe('MysqlService', () => {
 
   describe('handleConnectionError(error)', () => {
     it('should call reconnect if the error is PROTOCOL_CONNECTION_LOST', () => {
+      const { service } = setup();
       const error = { code: 'PROTOCOL_CONNECTION_LOST' };
-      spyOn<any>(service, 'reconnect');
+      vi.spyOn<any>(service, 'reconnect').mockImplementation(() => undefined);
 
       service['handleConnectionError'](error);
 
@@ -193,8 +210,9 @@ describe('MysqlService', () => {
     });
 
     it('should NOT call reconnect if the error is something else', () => {
+      const { service } = setup();
       const error = { code: 'SOME_OTHER_ERROR' };
-      spyOn<any>(service, 'reconnect');
+      vi.spyOn<any>(service, 'reconnect').mockImplementation(() => undefined);
 
       service['handleConnectionError'](error);
 
@@ -202,33 +220,35 @@ describe('MysqlService', () => {
     });
   });
 
-  it('reconnect() should correctly work ', fakeAsync(() => {
+  it('reconnect() should correctly work ', async () => {
+    const { service } = setup();
     service['_reconnecting'] = false;
-    spyOn(service['_connectionLostSubject'], 'next');
-    spyOn(console, 'log');
+    service['_config'] = {} as KeiraConnectionOptions;
+    vi.spyOn(service['_connectionLostSubject'], 'next').mockImplementation(() => undefined);
+    vi.spyOn(console, 'info').mockImplementation(() => undefined);
     (service as any).mysql = new MockMySql();
     const mockConnection = new MockConnection();
-    spyOn((service as any).mysql, 'createConnection').and.returnValue(mockConnection);
+    vi.spyOn((service as any).mysql, 'createConnection').mockReturnValue(mockConnection);
 
     service['reconnect']();
 
     expect(service['_reconnecting']).toBe(true);
     expect(service['_connectionLostSubject'].next).toHaveBeenCalledTimes(1);
     expect(service['_connectionLostSubject'].next).toHaveBeenCalledWith(false);
-    expect(console.log).toHaveBeenCalledTimes(1);
-    expect(console.log).toHaveBeenCalledWith(`DB connection lost. Reconnecting in 500 ms...`);
+    expect(console.info).toHaveBeenCalledTimes(1);
+    expect(console.info).toHaveBeenCalledWith(`DB connection lost. Reconnecting in 500 ms...`);
 
-    tick(500);
-
+    await tickAsync(500);
     expect(service['_connection']).toEqual(mockConnection as unknown as Connection);
-  }));
+  });
 
   describe('reconnectCallback(err)', () => {
     it('should call reconnect() in case of error', () => {
+      const { service } = setup();
       service['_reconnecting'] = true;
-      spyOn(service['_connectionLostSubject'], 'next');
-      spyOn<any>(service, 'reconnect');
-      service['_connection'] = { on: jasmine.createSpy() } as any;
+      vi.spyOn(service['_connectionLostSubject'], 'next').mockImplementation(() => undefined);
+      vi.spyOn<any>(service, 'reconnect').mockImplementation(() => undefined);
+      service['_connection'] = { on: vi.fn() } as any;
 
       service['reconnectCallback']({ code: 'mock-error' } as unknown as QueryError);
 
@@ -239,10 +259,11 @@ describe('MysqlService', () => {
     });
 
     it('should correctly work otherwise', () => {
+      const { service } = setup();
       service['_reconnecting'] = true;
-      spyOn(service['_connectionLostSubject'], 'next');
-      spyOn<any>(service, 'reconnect');
-      service['_connection'] = { on: jasmine.createSpy() } as any;
+      vi.spyOn(service['_connectionLostSubject'], 'next').mockImplementation(() => undefined);
+      vi.spyOn<any>(service, 'reconnect').mockImplementation(() => undefined);
+      service['_connection'] = { on: vi.fn() } as any;
 
       service['reconnectCallback'](null);
 

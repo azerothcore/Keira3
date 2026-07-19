@@ -1,17 +1,23 @@
-import { Component, ViewChild } from '@angular/core';
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { vi } from 'vitest';
+import { Component, viewChild, provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { EditorButtonsComponent } from './editor-buttons.component';
 import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
 import { TableRow } from '@keira/shared/constants';
 
 @Component({
-  template: `<keira-editor-buttons [editorService]="editorService" />`,
-  standalone: true,
+  template: `<keira-editor-buttons
+    [selectedRowId]="editorService.selectedRowId"
+    (deleteSelectedRow)="editorService.deleteSelectedRow()"
+    (addNewRow)="editorService.addNewRow()"
+    (duplicateRow)="editorService.addNewRow(true)"
+  />`,
   imports: [TranslateTestingModule, EditorButtonsComponent],
 })
 class TestHostComponent {
-  @ViewChild(EditorButtonsComponent) child!: EditorButtonsComponent<TableRow>;
+  readonly child = viewChild.required(EditorButtonsComponent);
   editorService!: MultiRowEditorService<TableRow>;
 }
 
@@ -28,41 +34,40 @@ class EditorButtonsPage extends PageObject<TestHostComponent> {
 }
 
 describe('EditorButtonsComponent', () => {
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [TranslateTestingModule, EditorButtonsComponent, TestHostComponent],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
-  }));
+  });
 
   const setup = () => {
     const editorService = {
       selectedRowId: 0, // intentionally set to 0, a falsy non-null value
-      deleteSelectedRow: jasmine.createSpy('deleteSelectedRow'),
-      addNewRow: jasmine.createSpy('addNewRow'),
+      deleteSelectedRow: vi.fn(),
+      addNewRow: vi.fn(),
     };
     const fixture = TestBed.createComponent(TestHostComponent);
     const page = new EditorButtonsPage(fixture);
     const host = fixture.componentInstance;
     host.editorService = editorService as unknown as MultiRowEditorService<TableRow>;
-    fixture.detectChanges();
-    const component = host.child;
-    return { fixture, host, component, editorService, page };
+
+    return { fixture, host, editorService, page };
   };
 
   describe('the delete button', () => {
-    it('should be enabled only when there is a selected row', () => {
+    it('should be disabled when the selected row is undefined', () => {
       const { editorService, page, fixture } = setup();
       editorService.selectedRowId = undefined as any;
       fixture.detectChanges();
       expect(page.deleteBtn.disabled).toBe(true);
+    });
 
+    it('should be enabled when there is a selected row', () => {
+      const { editorService, page, fixture } = setup();
       editorService.selectedRowId = 123;
       fixture.detectChanges();
       expect(page.deleteBtn.disabled).toBe(false);
-
-      editorService.selectedRowId = undefined as any;
-      fixture.detectChanges();
-      expect(page.deleteBtn.disabled).toBe(true);
     });
 
     it('when clicked, should call editorService.deleteSelectedRow()', () => {
@@ -77,31 +82,30 @@ describe('EditorButtonsComponent', () => {
     it('when clicked, should call editorService.addNewRow()', () => {
       const { editorService, page } = setup();
       page.clickElement(page.addBtn);
-      expect(editorService.addNewRow).toHaveBeenCalledOnceWith();
+      expect(editorService.addNewRow).toHaveBeenCalledExactlyOnceWith();
       expect(editorService.deleteSelectedRow).toHaveBeenCalledTimes(0);
     });
   });
 
   describe('the duplicate button', () => {
-    it('should be enabled only when there is a selected row', () => {
+    it('should be disabled when the selected row is undefiend', () => {
       const { editorService, page, fixture } = setup();
-      editorService.selectedRowId = undefined as any;
-      fixture.detectChanges();
-      expect(page.duplicateBtn.disabled).toBe(true);
-
-      editorService.selectedRowId = 123;
-      fixture.detectChanges();
-      expect(page.duplicateBtn.disabled).toBe(false);
-
       editorService.selectedRowId = undefined as any;
       fixture.detectChanges();
       expect(page.duplicateBtn.disabled).toBe(true);
     });
 
+    it('should be enabled when there is a selected row', () => {
+      const { editorService, page, fixture } = setup();
+      editorService.selectedRowId = 123;
+      fixture.detectChanges();
+      expect(page.duplicateBtn.disabled).toBe(false);
+    });
+
     it('when clicked, should call editorService.addNewRow(true)', () => {
       const { editorService, page } = setup();
       page.clickElement(page.duplicateBtn);
-      expect(editorService.addNewRow).toHaveBeenCalledOnceWith(true);
+      expect(editorService.addNewRow).toHaveBeenCalledExactlyOnceWith(true);
       expect(editorService.deleteSelectedRow).toHaveBeenCalledTimes(0);
     });
   });

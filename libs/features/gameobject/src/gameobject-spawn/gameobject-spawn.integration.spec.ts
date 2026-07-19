@@ -1,27 +1,22 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { vi } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { GameobjectSpawn } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { GameobjectSpawnComponent } from './gameobject-spawn.component';
-import Spy = jasmine.Spy;
 import { instance, mock } from 'ts-mockito';
 
 class GameobjectSpawnPage extends MultiRowEditorPageObject<GameobjectSpawnComponent> {}
 
 describe('GameobjectSpawn integration tests', () => {
-  let fixture: ComponentFixture<GameobjectSpawnComponent>;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let handlerService: GameobjectHandlerService;
-  let page: GameobjectSpawnPage;
-
   const id = 1234;
 
   const originalRow0 = new GameobjectSpawn();
@@ -32,45 +27,43 @@ describe('GameobjectSpawn integration tests', () => {
   originalRow1.guid = 1;
   originalRow2.guid = 2;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        GameobjectSpawnComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
-      ],
+      imports: [ToastrModule.forRoot(), ModalModule, GameobjectSpawnComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         GameobjectHandlerService,
         SaiGameobjectHandlerService,
         TranslateTestingModule,
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
-    handlerService = TestBed.inject(GameobjectHandlerService);
+    const handlerService = TestBed.inject(GameobjectHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
+    const sqliteQueryService = TestBed.inject(SqliteQueryService);
+    vi.spyOn(sqliteQueryService, 'getAllWorldMapAreas').mockResolvedValue([]);
+    vi.spyOn(sqliteQueryService, 'getAllWorldMapOverlays').mockResolvedValue([]);
 
-    fixture = TestBed.createComponent(GameobjectSpawnComponent);
-    page = new GameobjectSpawnPage(fixture);
+    const fixture = TestBed.createComponent(GameobjectSpawnComponent);
+    const page = new GameobjectSpawnPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    return { fixture, queryService, querySpy, handlerService, page };
   }
 
   describe('Creating new', () => {
-    beforeEach(() => setup(true));
-
     it('should correctly initialise', () => {
+      const { page } = setup(true);
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
       expect(page.formError.hidden).toBe(true);
@@ -98,32 +91,34 @@ describe('GameobjectSpawn integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
-      expect(handlerService.isGameobjectSpawnUnsaved).toBe(false);
+      const { handlerService, page } = setup(true);
+      expect(handlerService.isGameobjectSpawnUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isGameobjectSpawnUnsaved).toBe(true);
+      expect(handlerService.isGameobjectSpawnUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isGameobjectSpawnUnsaved).toBe(false);
+      expect(handlerService.isGameobjectSpawnUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {
+      const { querySpy, page } = setup(true);
       const expectedQuery =
         'DELETE FROM `gameobject` WHERE (`id` = ' +
         id +
         ') AND (`guid` IN (0, 1, 2));\n' +
         'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
         '`position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, ' +
-        '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
+        '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`, `Comment`) VALUES\n' +
         '(0, ' +
         id +
-        ", 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0),\n" +
+        ", 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, ''),\n" +
         '(1, ' +
         id +
-        ", 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0),\n" +
+        ", 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, ''),\n" +
         '(2, ' +
         id +
-        ", 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0);\n";
+        ", 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, '');\n";
 
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(1);
@@ -135,10 +130,11 @@ describe('GameobjectSpawn integration tests', () => {
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
 
     it('adding a row and changing its values should correctly update the queries', () => {
+      const { page } = setup(true);
       page.addNewRow();
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject` WHERE (`id` = ' +
@@ -146,10 +142,10 @@ describe('GameobjectSpawn integration tests', () => {
           ') AND (`guid` IN (0));\n' +
           'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
           '`position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, ' +
-          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
+          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`, `Comment`) VALUES\n' +
           '(0, ' +
           id +
-          ", 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0);\n",
+          ", 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, '');\n",
       );
 
       page.expectFullQueryToContain(
@@ -158,10 +154,10 @@ describe('GameobjectSpawn integration tests', () => {
           ');\n' +
           'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
           '`position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, ' +
-          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
+          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`, `Comment`) VALUES\n' +
           '(0, ' +
           id +
-          ", 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0);\n",
+          ", 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, '');\n",
       );
 
       page.setInputValueById('map', '1');
@@ -171,10 +167,10 @@ describe('GameobjectSpawn integration tests', () => {
           ') AND (`guid` IN (0));\n' +
           'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
           '`position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, ' +
-          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
+          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`, `Comment`) VALUES\n' +
           '(0, ' +
           id +
-          ", 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0);\n",
+          ", 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, '');\n",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `gameobject` WHERE (`id` = ' +
@@ -182,10 +178,10 @@ describe('GameobjectSpawn integration tests', () => {
           ');\n' +
           'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
           '`position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, ' +
-          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
+          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`, `Comment`) VALUES\n' +
           '(0, ' +
           id +
-          ", 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0);\n",
+          ", 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, '');\n",
       );
 
       page.setInputValueById('zoneId', '2');
@@ -195,10 +191,10 @@ describe('GameobjectSpawn integration tests', () => {
           ') AND (`guid` IN (0));\n' +
           'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
           '`position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, ' +
-          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
+          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`, `Comment`) VALUES\n' +
           '(0, ' +
           id +
-          ", 1, 2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0);\n",
+          ", 1, 2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, '');\n",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `gameobject` WHERE (`id` = ' +
@@ -206,10 +202,10 @@ describe('GameobjectSpawn integration tests', () => {
           ');\n' +
           'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
           '`position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, ' +
-          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
+          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`, `Comment`) VALUES\n' +
           '(0, ' +
           id +
-          ", 1, 2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0);\n",
+          ", 1, 2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, '');\n",
       );
 
       page.setInputValueById('guid', '123');
@@ -219,10 +215,10 @@ describe('GameobjectSpawn integration tests', () => {
           ') AND (`guid` IN (123));\n' +
           'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
           '`position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, ' +
-          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
+          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`, `Comment`) VALUES\n' +
           '(123, ' +
           id +
-          ", 1, 2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0);\n",
+          ", 1, 2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, '');\n",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `gameobject` WHERE (`id` = ' +
@@ -230,14 +226,15 @@ describe('GameobjectSpawn integration tests', () => {
           ');\n' +
           'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
           '`position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, ' +
-          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
+          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`, `Comment`) VALUES\n' +
           '(123, ' +
           id +
-          ", 1, 2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0);\n",
+          ", 1, 2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, '');\n",
       );
     });
 
     it('adding a row changing its values and duplicate it should correctly update the queries', () => {
+      const { page } = setup(true);
       page.addNewRow();
       page.setInputValueById('map', '1');
       page.setInputValueById('zoneId', '2');
@@ -250,13 +247,13 @@ describe('GameobjectSpawn integration tests', () => {
           ') AND (`guid` IN (123, 0));\n' +
           'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
           '`position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, ' +
-          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
+          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`, `Comment`) VALUES\n' +
           '(123, ' +
           id +
-          ", 1, 2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0),\n" +
+          ", 1, 2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, ''),\n" +
           '(0, ' +
           id +
-          ", 1, 2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0);\n",
+          ", 1, 2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, '');\n",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `gameobject` WHERE (`id` = ' +
@@ -264,21 +261,20 @@ describe('GameobjectSpawn integration tests', () => {
           ');\n' +
           'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
           '`position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, ' +
-          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
+          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`, `Comment`) VALUES\n' +
           '(123, ' +
           id +
-          ", 1, 2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0),\n" +
+          ", 1, 2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, ''),\n" +
           '(0, ' +
           id +
-          ", 1, 2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0);\n",
+          ", 1, 2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, '');\n",
       );
     });
   });
 
   describe('Editing existing', () => {
-    beforeEach(() => setup(false));
-
     it('should correctly initialise', () => {
+      const { page } = setup(false);
       expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
@@ -288,21 +284,22 @@ describe('GameobjectSpawn integration tests', () => {
           ');\n' +
           'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
           '`position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, ' +
-          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
+          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`, `Comment`) VALUES\n' +
           '(0, ' +
           id +
-          ", 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0),\n" +
+          ", 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, ''),\n" +
           '(1, ' +
           id +
-          ", 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0),\n" +
+          ", 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, ''),\n" +
           '(2, ' +
           id +
-          ", 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0);\n",
+          ", 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, '');\n",
       );
       expect(page.getEditorTableRowsCount()).toBe(3);
     });
 
     it('deleting rows should correctly work', () => {
+      const { page } = setup(false);
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
       page.expectDiffQueryToContain('DELETE FROM `gameobject` WHERE (`id` = ' + id + ') AND (`guid` IN (1));');
@@ -312,13 +309,13 @@ describe('GameobjectSpawn integration tests', () => {
           ');\n' +
           'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
           '`position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, ' +
-          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
+          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`, `Comment`) VALUES\n' +
           '(0, ' +
           id +
-          ", 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0),\n" +
+          ", 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, ''),\n" +
           '(2, ' +
           id +
-          ", 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0);\n",
+          ", 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, '');\n",
       );
 
       page.deleteRow(1);
@@ -330,10 +327,10 @@ describe('GameobjectSpawn integration tests', () => {
           ');\n' +
           'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
           '`position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, ' +
-          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
+          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`, `Comment`) VALUES\n' +
           '(0, ' +
           id +
-          ", 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0);\n",
+          ", 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, '');\n",
       );
 
       page.deleteRow(0);
@@ -343,6 +340,7 @@ describe('GameobjectSpawn integration tests', () => {
     });
 
     it('editing existing rows should correctly work', () => {
+      const { page } = setup(false);
       page.clickRowOfDatatable(1);
       page.setInputValueById('map', 1);
 
@@ -355,13 +353,13 @@ describe('GameobjectSpawn integration tests', () => {
           ') AND (`guid` IN (1, 2));\n' +
           'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
           '`position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, ' +
-          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
+          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`, `Comment`) VALUES\n' +
           '(1, ' +
           id +
-          ", 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0),\n" +
+          ", 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, ''),\n" +
           '(2, ' +
           id +
-          ", 0, 2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0);\n",
+          ", 0, 2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, '');\n",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `gameobject` WHERE (`id` = ' +
@@ -369,20 +367,21 @@ describe('GameobjectSpawn integration tests', () => {
           ');\n' +
           'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
           '`position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, ' +
-          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
+          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`, `Comment`) VALUES\n' +
           '(0, ' +
           id +
-          ", 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0),\n" +
+          ", 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, ''),\n" +
           '(1, ' +
           id +
-          ", 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0),\n" +
+          ", 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, ''),\n" +
           '(2, ' +
           id +
-          ", 0, 2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0);\n",
+          ", 0, 2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, '');\n",
       );
     });
 
     it('combining add, edit and delete should correctly work', () => {
+      const { page } = setup(false);
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(4);
 
@@ -399,13 +398,13 @@ describe('GameobjectSpawn integration tests', () => {
           ') AND (`guid` IN (1, 2, 3));\n' +
           'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
           '`position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, ' +
-          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
+          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`, `Comment`) VALUES\n' +
           '(1, ' +
           id +
-          ", 0, 10, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0),\n" +
+          ", 0, 10, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, ''),\n" +
           '(3, ' +
           id +
-          ", 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0);\n",
+          ", 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, '');\n",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `gameobject` WHERE (`id` = ' +
@@ -413,30 +412,32 @@ describe('GameobjectSpawn integration tests', () => {
           ');\n' +
           'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, ' +
           '`position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, ' +
-          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
+          '`spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`, `Comment`) VALUES\n' +
           '(0, ' +
           id +
-          ", 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0),\n" +
+          ", 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, ''),\n" +
           '(1, ' +
           id +
-          ", 0, 10, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0),\n" +
+          ", 0, 10, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, ''),\n" +
           '(3, ' +
           id +
-          ", 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0);\n",
+          ", 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, '');\n",
       );
     });
 
     it('using the same row id for multiple rows should correctly show an error', () => {
+      const { page } = setup(false);
       page.clickRowOfDatatable(2);
       page.setInputValueById('guid', 0);
 
       page.expectUniqueError();
     });
 
-    xit('changing a value via AreaSelector should correctly work', waitForAsync(async () => {
+    it.skip('changing a value via AreaSelector should correctly work', async () => {
+      const { fixture, page } = setup(false);
       const field = 'areaId';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
-      spyOn(sqliteQueryService, 'query').and.returnValue(of([{ m_ID: 123, m_ParentAreaID: 456, m_AreaName_lang: 'Mock Area' }]));
+      vi.spyOn(sqliteQueryService, 'query').mockReturnValue(of([{ m_ID: 123, m_ParentAreaID: 456, m_AreaName_lang: 'Mock Area' }]));
 
       // because this is a multi-row editor
       page.clickRowOfDatatable(0);
@@ -455,16 +456,30 @@ describe('GameobjectSpawn integration tests', () => {
 
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject` WHERE (`id` = 1234) AND (`guid` IN (0));\n' +
-          'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-          "(0, 1234, 0, 0, 123, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0);",
+          'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`, `Comment`) VALUES\n' +
+          "(0, 1234, 0, 0, 123, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, '');",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `gameobject` WHERE (`id` = 1234);\n' +
-          'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`) VALUES\n' +
-          "(0, 1234, 0, 0, 123, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0),\n" +
-          "(1, 1234, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0),\n" +
-          "(2, 1234, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0);",
+          'INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`, `Comment`) VALUES\n' +
+          "(0, 1234, 0, 0, 123, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, ''),\n" +
+          "(1, 1234, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, ''),\n" +
+          "(2, 1234, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, '');",
       );
-    }));
+    });
+
+    it('clicking a map pin should select the matching spawn row', () => {
+      const { fixture } = setup(false);
+      const component = fixture.componentInstance;
+      const selectSpy = vi.spyOn(component['editorService'], 'onRowSelection');
+
+      component.onMapPinClick({ mapId: 0, x: 0, y: 0, guid: 2 });
+      expect(selectSpy).toHaveBeenCalledTimes(1);
+      expect(component['editorService'].selectedRowId).toBe(2);
+
+      selectSpy.mockClear();
+      component.onMapPinClick({ mapId: 0, x: 0, y: 0, guid: 999 });
+      expect(selectSpy).not.toHaveBeenCalled();
+    });
   });
 });

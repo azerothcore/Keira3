@@ -1,4 +1,7 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { vi } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira/shared/db-layer';
@@ -6,57 +9,52 @@ import { SelectPageObject, TranslateTestingModule } from '@keira/shared/test-uti
 import { QuestTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { QuestHandlerService } from '../quest-handler.service';
 import { SelectQuestComponent } from './select-quest.component';
-import Spy = jasmine.Spy;
 
 class SelectQuestComponentPage extends SelectPageObject<SelectQuestComponent> {
   override ID_FIELD = 'ID';
 }
 
 describe('SelectQuest integration tests', () => {
-  let component: SelectQuestComponent;
-  let fixture: ComponentFixture<SelectQuestComponent>;
-  let page: SelectQuestComponentPage;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let navigateSpy: Spy;
-
   const value = 1200;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, TranslateTestingModule],
-      providers: [QuestHandlerService],
-    }).compileComponents();
-  }));
-
   beforeEach(() => {
-    navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
-
-    fixture = TestBed.createComponent(SelectQuestComponent);
-    page = new SelectQuestComponentPage(fixture);
-    component = fixture.componentInstance;
-    fixture.autoDetectChanges(true);
-    fixture.detectChanges();
+    TestBed.configureTestingModule({
+      imports: [ToastrModule.forRoot(), ModalModule, RouterTestingModule, TranslateTestingModule],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), QuestHandlerService],
+    }).compileComponents();
   });
 
-  it('should correctly initialise', waitForAsync(async () => {
+  function setup() {
+    const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate').mockImplementation(() => undefined);
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([{ max: 1 }]));
+
+    const fixture = TestBed.createComponent(SelectQuestComponent);
+    const page = new SelectQuestComponentPage(fixture);
+    const component = fixture.componentInstance;
+    fixture.autoDetectChanges(true);
+    fixture.detectChanges();
+
+    return { fixture, page, component, querySpy, navigateSpy };
+  }
+
+  it('should correctly initialise', async () => {
+    const { fixture, page, component, querySpy } = setup();
     await fixture.whenStable();
     expect(page.createInput.value).toEqual(`${component.customStartingId}`);
     page.expectNewEntityFree();
     expect(querySpy).toHaveBeenCalledWith('SELECT MAX(ID) AS max FROM quest_template;');
     expect(page.queryWrapper.innerText).toContain('SELECT * FROM `quest_template` LIMIT 50');
-  }));
+  });
 
-  it('should correctly behave when inserting and selecting free id', waitForAsync(async () => {
+  it('should correctly behave when inserting and selecting free id', async () => {
+    const { fixture, page, querySpy, navigateSpy } = setup();
     await fixture.whenStable();
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of([]));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of([]));
 
     page.setInputValue(page.createInput, value);
 
@@ -69,19 +67,20 @@ describe('SelectQuest integration tests', () => {
     expect(navigateSpy).toHaveBeenCalledTimes(1);
     expect(navigateSpy).toHaveBeenCalledWith(['quest/quest-template']);
     page.expectTopBarCreatingNew(value);
-  }));
+  });
 
-  it('should correctly behave when inserting an existing entity', waitForAsync(async () => {
+  it('should correctly behave when inserting an existing entity', async () => {
+    const { fixture, page, querySpy } = setup();
     await fixture.whenStable();
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of(['mock value']));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of(['mock value'] as any));
 
     page.setInputValue(page.createInput, value);
 
     expect(querySpy).toHaveBeenCalledTimes(1);
     expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`quest_template\` WHERE (ID = ${value})`);
     page.expectEntityAlreadyInUse();
-  }));
+  });
 
   for (const { testId, id, name, limit, expectedQuery } of [
     {
@@ -107,7 +106,8 @@ describe('SelectQuest integration tests', () => {
     },
   ]) {
     it(`searching an existing entity should correctly work [${testId}]`, () => {
-      querySpy.calls.reset();
+      const { page, querySpy } = setup();
+      querySpy.mockClear();
       if (id) {
         page.setInputValue(page.searchIdInput, id);
       }
@@ -126,13 +126,14 @@ describe('SelectQuest integration tests', () => {
   }
 
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
+    const { page, querySpy, navigateSpy } = setup();
     const results: Partial<QuestTemplate>[] = [
       { id: 1, LogTitle: 'An awesome Quest 1', QuestType: 0, QuestLevel: 1, MinLevel: 10, QuestDescription: '' },
       { id: 2, LogTitle: 'An awesome Quest 2', QuestType: 0, QuestLevel: 2, MinLevel: 20, QuestDescription: '' },
       { id: 3, LogTitle: 'An awesome Quest 3', QuestType: 0, QuestLevel: 3, MinLevel: 30, QuestDescription: '' },
     ];
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of(results));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of(results as any));
 
     page.clickElement(page.searchBtn);
 

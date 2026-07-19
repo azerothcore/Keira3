@@ -16,7 +16,6 @@ import { CreatureTemplateSpellService } from './creature-template-spell.service'
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-creature-template-spell',
   templateUrl: './creature-template-spell.component.html',
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,

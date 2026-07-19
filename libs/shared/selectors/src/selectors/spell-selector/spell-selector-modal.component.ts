@@ -13,7 +13,6 @@ import { HighlightjsWrapperComponent, IconComponent } from '@keira/shared/base-e
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-spell-selector-modal',
   templateUrl: './spell-selector-modal.component.html',
-  standalone: true,
   imports: [FormsModule, ReactiveFormsModule, HighlightjsWrapperComponent, NgxDatatableModule, TranslateModule, IconComponent],
 })
 export class SpellSelectorModalComponent extends SearchSelectorModalComponent<Spell> {

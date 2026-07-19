@@ -1,38 +1,43 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { RouterTestingModule } from '@angular/router/testing';
+
 import { ToastrService } from 'ngx-toastr';
 import { instance, mock } from 'ts-mockito';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { SingleRowEditorService } from './single-row-editor.service';
 
 import { MockEntity, MockHandlerService, MockSingleRowEditorService } from '../../core.mock';
-import Spy = jasmine.Spy;
 
 describe('SingleRowEditorService', () => {
-  let service: SingleRowEditorService<MockEntity>;
-
   beforeEach(() =>
     TestBed.configureTestingModule({
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
         { provide: ToastrService, useValue: instance(mock(ToastrService)) },
       ],
     }),
   );
 
-  beforeEach(() => {
-    service = TestBed.inject(MockSingleRowEditorService);
-  });
+  function setup() {
+    const service: SingleRowEditorService<MockEntity> = TestBed.inject(MockSingleRowEditorService);
+    return { service };
+  }
 
   describe('when the form value changes', () => {
-    let updateDiffQuerySpy: Spy;
-    let updateFullQuerySpy: Spy;
-
-    beforeEach(() => {
-      updateDiffQuerySpy = spyOn<any>(service, 'updateDiffQuery');
-      updateFullQuerySpy = spyOn<any>(service, 'updateFullQuery');
-    });
+    function setupFormChange() {
+      const { service } = setup();
+      const updateDiffQuerySpy = vi.spyOn<any>(service, 'updateDiffQuery').mockImplementation(() => undefined);
+      const updateFullQuerySpy = vi.spyOn<any>(service, 'updateFullQuery').mockImplementation(() => undefined);
+      return { service, updateDiffQuerySpy, updateFullQuerySpy };
+    }
 
     it('when loading is true, should do nothing', () => {
+      const { service, updateDiffQuerySpy, updateFullQuerySpy } = setupFormChange();
       service['_loading'] = true;
 
       service.form.controls.id.setValue(123);
@@ -42,6 +47,7 @@ describe('SingleRowEditorService', () => {
     });
 
     it('when loading is false and the form is not dirty, should update only the full query', () => {
+      const { service, updateDiffQuerySpy, updateFullQuerySpy } = setupFormChange();
       service.form.markAsPristine();
 
       service.form.controls.id.setValue(123);
@@ -51,6 +57,7 @@ describe('SingleRowEditorService', () => {
     });
 
     it('when loading is false and the form dirty, should update both the queries', () => {
+      const { service, updateDiffQuerySpy, updateFullQuerySpy } = setupFormChange();
       service.form.markAsDirty();
 
       service.form.controls.id.setValue(123);
@@ -60,6 +67,7 @@ describe('SingleRowEditorService', () => {
     });
 
     it('modifying the form twice with the same value should not have effect', () => {
+      const { service, updateDiffQuerySpy, updateFullQuerySpy } = setupFormChange();
       service.form.markAsDirty();
 
       service.form.controls.id.setValue(123);
@@ -71,10 +79,11 @@ describe('SingleRowEditorService', () => {
   });
 
   it('updateDiffQuery should correctly work', () => {
+    const { service } = setup();
     service['_diffQuery'] = '';
     const queryResult = '-- Mock query result';
-    const getQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getUpdateQuery').and.returnValue(queryResult);
-    spyOn<any>(service, 'updateEditorStatus');
+    const getQuerySpy = vi.spyOn(TestBed.inject(MysqlQueryService), 'getUpdateQuery').mockReturnValue(queryResult);
+    vi.spyOn<any>(service, 'updateEditorStatus').mockImplementation(() => undefined);
 
     service['updateDiffQuery']();
 
@@ -90,9 +99,10 @@ describe('SingleRowEditorService', () => {
   });
 
   it('updateFullQuery() should correctly work', () => {
+    const { service } = setup();
     service['_fullQuery'] = '';
     const queryResult = '-- Mock query result';
-    const getQuerySpy = spyOn(TestBed.inject(MysqlQueryService), 'getFullDeleteInsertQuery').and.returnValue(queryResult);
+    const getQuerySpy = vi.spyOn(TestBed.inject(MysqlQueryService), 'getFullDeleteInsertQuery').mockReturnValue(queryResult);
 
     service['updateFullQuery']();
 
@@ -103,13 +113,15 @@ describe('SingleRowEditorService', () => {
 
   describe('onReloadSuccessful()', () => {
     const id = 123456;
-    let updateFullQuerySpy: Spy;
 
-    beforeEach(() => {
-      updateFullQuerySpy = spyOn<any>(service, 'updateFullQuery');
-    });
+    function setupReload() {
+      const { service } = setup();
+      const updateFullQuerySpy = vi.spyOn<any>(service, 'updateFullQuery').mockImplementation(() => undefined);
+      return { service, updateFullQuerySpy };
+    }
 
     it('should correctly work when loading an existing entity [as main entity]', () => {
+      const { service, updateFullQuerySpy } = setupReload();
       const handlerService = TestBed.inject(MockHandlerService);
       const entity: MockEntity = { id, guid: 12345, name: 'myName' };
       const data = [entity];
@@ -129,6 +141,7 @@ describe('SingleRowEditorService', () => {
     });
 
     it('should correctly work when loading an existing entity [as non-main entity]', () => {
+      const { service, updateFullQuerySpy } = setupReload();
       const handlerService = TestBed.inject(MockHandlerService);
       const entity: MockEntity = { id, guid: 12345, name: 'myName' };
       const data = [entity];
@@ -149,6 +162,7 @@ describe('SingleRowEditorService', () => {
     });
 
     it('should correctly work when creating a new entity', () => {
+      const { service, updateFullQuerySpy } = setupReload();
       const data: MockEntity[] = [];
 
       service['onReloadSuccessful'](data, id);

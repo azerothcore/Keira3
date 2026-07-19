@@ -1,4 +1,4 @@
-@if (formGroup && locale) {
+@if (formGroup && locale()) {
   <form [formGroup]="formGroup" class="form-group edit-form">
     <div class="row">
       @for (field of FIELDS; track field) {

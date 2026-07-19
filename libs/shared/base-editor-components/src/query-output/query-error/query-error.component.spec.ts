@@ -1,23 +1,25 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { QueryErrorComponent } from './query-error.component';
 
 describe('QueryErrorComponent', () => {
-  let component: QueryErrorComponent;
-  let fixture: ComponentFixture<QueryErrorComponent>;
-
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [QueryErrorComponent],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
-  }));
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(QueryErrorComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
+  function setup() {
+    const fixture = TestBed.createComponent(QueryErrorComponent);
+    const component = fixture.componentInstance;
+    fixture.detectChanges();
+    return { fixture, component };
+  }
+
   it('should create', () => {
+    const { component } = setup();
     expect(component).toBeTruthy();
   });
 });

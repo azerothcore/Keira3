@@ -1,5 +1,7 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { vi } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CreatureFormation } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
@@ -11,17 +13,10 @@ import { instance, mock } from 'ts-mockito';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { CreatureFormationsComponent } from './creature-formations.component';
-import Spy = jasmine.Spy;
 
 class CreatureFormationPage extends MultiRowEditorPageObject<CreatureFormationsComponent> {}
 
 describe('CreatureFormations integration tests', () => {
-  let fixture: ComponentFixture<CreatureFormationsComponent>;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let handlerService: CreatureHandlerService;
-  let page: CreatureFormationPage;
-
   const memberGUID = 1234;
 
   const originalRow0 = new CreatureFormation();
@@ -31,40 +26,45 @@ describe('CreatureFormations integration tests', () => {
   originalRow1.memberGUID = 1235;
   originalRow2.memberGUID = 1236;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        BrowserAnimationsModule,
         ToastrModule.forRoot(),
-        ModalModule.forRoot(),
+        ModalModule,
         CreatureFormationsComponent, // This should typically be in declarations, but as per your instruction, it's left unchanged
         RouterTestingModule,
         TranslateTestingModule,
       ],
-      providers: [CreatureHandlerService, SaiCreatureHandlerService, { provide: SqliteService, useValue: instance(mock(SqliteService)) }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
+      ],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
-    handlerService = TestBed.inject(CreatureHandlerService);
+    const handlerService = TestBed.inject(CreatureHandlerService);
     handlerService['_selected'] = `${memberGUID}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
-    fixture = TestBed.createComponent(CreatureFormationsComponent);
-    page = new CreatureFormationPage(fixture);
+    const fixture = TestBed.createComponent(CreatureFormationsComponent);
+    const page = new CreatureFormationPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    return { fixture, queryService, querySpy, handlerService, page };
   }
 
   describe('Creating new', () => {
-    beforeEach(() => setup(true));
-
     it('should correctly initialise', () => {
+      const { page } = setup(true);
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
       expect(page.formError.hidden).toBe(true);
@@ -81,21 +81,23 @@ describe('CreatureFormations integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
-      expect(handlerService.isCreatureFormationUnsaved).toBe(false);
+      const { handlerService, page } = setup(true);
+      expect(handlerService.isCreatureFormationUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isCreatureFormationUnsaved).toBe(true);
+      expect(handlerService.isCreatureFormationUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isCreatureFormationUnsaved).toBe(false);
+      expect(handlerService.isCreatureFormationUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {
+      const { querySpy, page } = setup(true);
       const expectedQuery =
         'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 1234) AND (`memberGUID` IN (0, 1, 2));\n' +
         'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
         '(1234, 0, 0, 0, 0, 0, 0),\n' +
         '(1234, 1, 0, 0, 0, 0, 0),\n' +
         '(1234, 2, 0, 0, 0, 0, 0);';
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(1);
@@ -107,10 +109,11 @@ describe('CreatureFormations integration tests', () => {
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
 
     it('adding a row and changing its values should correctly update the queries', () => {
+      const { querySpy, page } = setup(true);
       // Add a new row
       page.addNewRow();
 
@@ -127,7 +130,7 @@ describe('CreatureFormations integration tests', () => {
       );
 
       // Reset the spy before making further changes
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       // Modify the memberGUID to 1235
       page.setInputValueById('leaderGUID', '1235');
@@ -240,7 +243,7 @@ describe('CreatureFormations integration tests', () => {
         `(1236, 1236, 10, 45, 1, 100, 200);`;
 
       // Reset the spy before executing the final query
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       // Ensure the final query is as expected
       page.expectDiffQueryToContain(finalExpectedQuery);
@@ -250,10 +253,11 @@ describe('CreatureFormations integration tests', () => {
 
       // Verify that the querySpy was called correctly
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(finalExpectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(finalExpectedQuery);
     });
 
     it('adding a row changing its values and duplicate it should correctly update the queries', () => {
+      const { page } = setup(true);
       page.addNewRow();
       page.setInputValueById('point_1', '1');
       page.setInputValueById('point_2', '2');
@@ -276,9 +280,8 @@ describe('CreatureFormations integration tests', () => {
   });
 
   describe('Editing existing', () => {
-    beforeEach(() => setup(false));
-
     it('should correctly initialise', () => {
+      const { page } = setup(false);
       expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
@@ -293,6 +296,7 @@ describe('CreatureFormations integration tests', () => {
     });
 
     it('deleting rows should correctly work', () => {
+      const { page } = setup(false);
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
       page.expectDiffQueryToContain('DELETE FROM `creature_formations` WHERE (`leaderGUID` = 0) AND (`memberGUID` IN (1235))');
@@ -319,6 +323,7 @@ describe('CreatureFormations integration tests', () => {
     });
 
     it('editing existing rows should correctly work', () => {
+      const { page } = setup(false);
       page.clickRowOfDatatable(1);
       page.setInputValueById('dist', 1);
 
@@ -341,6 +346,7 @@ describe('CreatureFormations integration tests', () => {
     });
 
     it('combining add, edit and delete should correctly work', () => {
+      const { page } = setup(false);
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(4);
 
@@ -367,6 +373,7 @@ describe('CreatureFormations integration tests', () => {
     });
 
     it('using the same row id for multiple rows should correctly show an error', () => {
+      const { page } = setup(false);
       page.clickRowOfDatatable(2);
       page.setInputValueById('memberGUID', 1234); // Replaced 0 with 1234
 

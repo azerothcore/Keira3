@@ -11,7 +11,6 @@ import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-component
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-game-tele-selector-modal',
   templateUrl: './game-tele-selector-modal.component.html',
-  standalone: true,
   imports: [FormsModule, ReactiveFormsModule, NgxDatatableModule, TranslateModule, HighlightjsWrapperComponent],
 })
 export class GameTeleSelectorModalComponent extends SearchSelectorModalComponent<GameTele> {

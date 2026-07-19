@@ -1,12 +1,18 @@
-import { inject, Injectable } from '@angular/core';
-import { LocalStorageService } from './local-storage.service';
+import { inject, Service } from '@angular/core';
 import { ConnectionOptions } from 'mysql2';
+import { LocalStorageService } from './local-storage.service';
 
-declare type Config = Partial<ConnectionOptions>;
+declare type Config = Partial<ConnectionOptions> & {
+  sslEnabled?: boolean;
+  sshEnabled?: boolean;
+  sshHost?: string;
+  sshPort?: number;
+  sshUser?: string;
+  sshPassword?: string;
+  sshPrivateKey?: string;
+};
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class LoginConfigService {
   private readonly localStorageService = inject(LocalStorageService);
 
@@ -40,6 +46,9 @@ export class LoginConfigService {
 
     for (const config of configs) {
       config.password = atob(config.password);
+      if (config.sshPassword) {
+        config.sshPassword = atob(config.sshPassword);
+      }
     }
 
     return configs;
@@ -58,13 +67,21 @@ export class LoginConfigService {
       config1.host === config2.host &&
       config1.port === config2.port &&
       config1.user === config2.user &&
-      config1.database === config2.database
+      config1.database === config2.database &&
+      config1.sslEnabled === config2.sslEnabled &&
+      config1.sshEnabled === config2.sshEnabled &&
+      config1.sshHost === config2.sshHost &&
+      config1.sshPort === config2.sshPort &&
+      config1.sshUser === config2.sshUser
     );
   }
 
   private setConfigsToStorage(configs: Config[]): void {
     for (const config of configs) {
       config.password = btoa(config.password as string);
+      if (config.sshPassword) {
+        config.sshPassword = btoa(config.sshPassword);
+      }
     }
 
     this.localStorageService.setItem(this.KEY, JSON.stringify(configs));

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { LootEditorIdService } from '@keira/shared/base-abstract-classes';
 import {
   CREATURE_LOOT_TEMPLATE_TABLE,
@@ -9,19 +9,17 @@ import {
 } from '@keira/shared/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class CreatureLootTemplateService extends LootEditorIdService<CreatureLootTemplate> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected override readonly handlerService: CreatureHandlerService) {
-    super(
-      CreatureLootTemplate,
-      CREATURE_LOOT_TEMPLATE_TABLE,
-      CREATURE_TEMPLATE_TABLE,
-      CREATURE_TEMPLATE_ID,
-      CREATURE_TEMPLATE_LOOT_ID,
-      handlerService,
-    );
+  protected override readonly handlerService = inject(CreatureHandlerService);
+  protected override _entityClass = CreatureLootTemplate;
+  protected override _entityTable = CREATURE_LOOT_TEMPLATE_TABLE;
+  protected override _entityTemplateTable = CREATURE_TEMPLATE_TABLE;
+  protected override _entityTemplateIdField = CREATURE_TEMPLATE_ID;
+  protected override _entityTemplateLootField = CREATURE_TEMPLATE_LOOT_ID;
+
+  constructor() {
+    super();
+    this.init();
   }
 }

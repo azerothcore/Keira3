@@ -17,7 +17,6 @@ import { CreateComponent, HighlightjsWrapperComponent, TopBarComponent } from '@
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: '../select-loot.component.html',
-  standalone: true,
   imports: [
     TopBarComponent,
     CreateComponent,

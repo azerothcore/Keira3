@@ -1,4 +1,7 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { of } from 'rxjs';
 import { IconService, TRADE_ENGINEERING_ICON_ID } from './icon.service';
@@ -10,14 +13,18 @@ describe('IconService', () => {
   const mockResult = 'some result';
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [{ provide: SqliteService, useValue: instance(mock(SqliteService)) }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
+      ],
     });
   });
 
   it('getIconByItemDisplayId() should correctly work', () => {
     const service = TestBed.inject(IconService);
     const sqliteQueryService = TestBed.inject(SqliteQueryService);
-    spyOn(sqliteQueryService, 'getIconByItemDisplayId').and.returnValue(of(mockResult));
+    vi.spyOn(sqliteQueryService, 'getIconByItemDisplayId').mockReturnValue(of(mockResult));
 
     service.getIconByItemDisplayId(mockArgument).subscribe((result) => {
       expect(result).toEqual(mockResult);
@@ -33,7 +40,7 @@ describe('IconService', () => {
     const tgaIcon = 'icon.tga';
     const icon = 'icon';
 
-    spyOn(sqliteQueryService, 'getIconByItemDisplayId').and.returnValue(of(tgaIcon));
+    vi.spyOn(sqliteQueryService, 'getIconByItemDisplayId').mockReturnValue(of(tgaIcon));
 
     service.getIconByItemDisplayId(mockArgument).subscribe((result) => {
       expect(result).toEqual(icon);
@@ -46,8 +53,8 @@ describe('IconService', () => {
     const service = TestBed.inject(IconService);
     const mysqlQueryService = TestBed.inject(MysqlQueryService);
     const mockIntermediateResult = 'some intermediate result';
-    spyOn(mysqlQueryService, 'getDisplayIdByItemId').and.returnValue(of(mockIntermediateResult));
-    spyOn(service, 'getIconByItemDisplayId').and.returnValue(of(mockResult));
+    vi.spyOn(mysqlQueryService, 'getDisplayIdByItemId').mockReturnValue(of(mockIntermediateResult));
+    vi.spyOn(service, 'getIconByItemDisplayId').mockReturnValue(of(mockResult));
 
     service.getIconByItemId(mockArgument).subscribe((result) => {
       expect(result).toEqual(mockResult);
@@ -61,8 +68,8 @@ describe('IconService', () => {
   it('getIconByItemId() should correctly work [case mysqlQuery return null]', () => {
     const service = TestBed.inject(IconService);
     const mysqlQueryService = TestBed.inject(MysqlQueryService);
-    spyOn(mysqlQueryService, 'getDisplayIdByItemId').and.returnValue(of(undefined));
-    spyOn(service, 'getIconByItemDisplayId');
+    vi.spyOn(mysqlQueryService, 'getDisplayIdByItemId').mockReturnValue(of(undefined));
+    vi.spyOn(service, 'getIconByItemDisplayId').mockImplementation(() => undefined);
 
     service.getIconByItemId(mockArgument).subscribe((result) => {
       expect(result).toEqual(null as any);
@@ -76,8 +83,8 @@ describe('IconService', () => {
     const service = TestBed.inject(IconService);
     const sqliteQueryService = TestBed.inject(SqliteQueryService);
     const mockIntermediateResult = 'some result';
-    spyOn(sqliteQueryService, 'getDisplayIdBySpellId').and.returnValue(of(mockIntermediateResult));
-    spyOn(sqliteQueryService, 'getIconBySpellDisplayId').and.callFake((displayId) => of(String(displayId)));
+    vi.spyOn(sqliteQueryService, 'getDisplayIdBySpellId').mockReturnValue(of(mockIntermediateResult));
+    vi.spyOn(sqliteQueryService, 'getIconBySpellDisplayId').mockImplementation((displayId) => of(String(displayId)));
 
     service.getIconBySpellId(mockArgument).subscribe((result) => {
       expect(result).toEqual(mockResult);
@@ -90,8 +97,8 @@ describe('IconService', () => {
   it('getIconBySpellId() should correctly work [case sqliteQuery return null]', (done) => {
     const service = TestBed.inject(IconService);
     const sqliteQueryService = TestBed.inject(SqliteQueryService);
-    spyOn(sqliteQueryService, 'getDisplayIdBySpellId').and.returnValue(of(undefined));
-    spyOn(sqliteQueryService, 'getIconBySpellDisplayId').and.callFake((displayId) => of(String(displayId)));
+    vi.spyOn(sqliteQueryService, 'getDisplayIdBySpellId').mockReturnValue(of(undefined));
+    vi.spyOn(sqliteQueryService, 'getIconBySpellDisplayId').mockImplementation((displayId) => of(String(displayId)));
 
     service.getIconBySpellId(mockArgument).subscribe((result) => {
       expect(result).toEqual(String(TRADE_ENGINEERING_ICON_ID));

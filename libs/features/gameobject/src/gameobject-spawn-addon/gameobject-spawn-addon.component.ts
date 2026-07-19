@@ -14,7 +14,6 @@ import { GameobjectSpawnAddonService } from './gameobject-spawn-addon.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-gameobject-spawn-addon',
   templateUrl: './gameobject-spawn-addon.component.html',
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,

@@ -1,5 +1,6 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, viewChild, provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FormGroup } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
@@ -27,11 +28,10 @@ describe('SpellDbcLocaleComponent', () => {
 
   @Component({
     template: '<keira-spell-dbc-locale [formGroup]="form" [locale]="locale" />',
-    standalone: true,
     imports: [RouterTestingModule, TranslateTestingModule, SpellDbcLocaleComponent],
   })
   class TestHostComponent {
-    @ViewChild(SpellDbcLocaleComponent) child!: SpellDbcLocaleComponent;
+    readonly child = viewChild.required(SpellDbcLocaleComponent);
     form!: FormGroup<ModelForm<SpellDbc>>;
     locale!: Locale;
   }
@@ -40,13 +40,13 @@ describe('SpellDbcLocaleComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         ToastrModule.forRoot(),
-        TooltipModule.forRoot(),
+        TooltipModule,
         RouterTestingModule,
         TranslateTestingModule,
         TestHostComponent,
         SpellDbcLocaleComponent,
       ],
-      providers: [SpellHandlerService],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), SpellHandlerService],
     }).compileComponents();
   });
 
@@ -57,10 +57,7 @@ describe('SpellDbcLocaleComponent', () => {
     const page = new SpellDbcLocaleComponentPage(fixture);
     host.form = form;
 
-    fixture.detectChanges();
-    const component = host.child;
-
-    return { fixture, component, page, host, form };
+    return { fixture, page, host, form };
   };
 
   const testLocale: Locale = 'esES';

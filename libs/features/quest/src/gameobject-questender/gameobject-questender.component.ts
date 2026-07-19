@@ -18,7 +18,6 @@ import { GameobjectQuestenderService } from './gameobject-questender.service';
   selector: 'keira-gameobject-questender',
   templateUrl: './gameobject-questender.component.html',
   styleUrls: ['./gameobject-questender.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,

@@ -1,11 +1,13 @@
 import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { PageTextHandlerService } from './page-text-handler.service';
 import { PAGE_TEXT_TABLE } from '@keira/shared/acore-world-model';
 
 describe(PageTextHandlerService.name, () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      providers: [PageTextHandlerService],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), PageTextHandlerService],
     }),
   );
 
@@ -16,12 +18,12 @@ describe(PageTextHandlerService.name, () => {
 
   it('isUnsaved should return the value of the statusMap for the page_text table', () => {
     const { service } = setup();
-    expect(service.isUnsaved).toBe(false); // defaults to false
+    expect(service.isUnsaved()).toBe(false); // defaults to false
 
-    service.statusMap[PAGE_TEXT_TABLE] = true;
-    expect(service.isUnsaved).toBe(true);
+    service.statusMap[PAGE_TEXT_TABLE].set(true);
+    expect(service.isUnsaved()).toBe(true);
 
-    service.statusMap[PAGE_TEXT_TABLE] = false;
-    expect(service.isUnsaved).toBe(false);
+    service.statusMap[PAGE_TEXT_TABLE].set(false);
+    expect(service.isUnsaved()).toBe(false);
   });
 });

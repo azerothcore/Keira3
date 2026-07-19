@@ -1,4 +1,7 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { vi } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ItemExtendedCost } from '@keira/shared/acore-world-model';
 
@@ -16,6 +19,8 @@ describe('NpcVendorService', () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
         { provide: ToastrService, useValue: instance(mock(ToastrService)) },
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
@@ -26,19 +31,19 @@ describe('NpcVendorService', () => {
     }),
   );
 
-  it('should call extendedCostCache', waitForAsync(async () => {
+  it('should call extendedCostCache', async () => {
     const service: NpcVendorService = TestBed.inject(NpcVendorService);
-    const extendedCostCacheSpy = spyOn<any>(service, 'extendedCostCache').and.returnValue(Promise.resolve('mockValue'));
+    const extendedCostCacheSpy = vi.spyOn<any>(service, 'extendedCostCache').mockReturnValue(Promise.resolve('mockValue'));
     expect(extendedCostCacheSpy).not.toHaveBeenCalled();
 
     await service.getItemExtendedCost(1);
 
     expect(extendedCostCacheSpy).toHaveBeenCalledTimes(1);
-  }));
+  });
 
-  it('should cache properly the extendedCost', waitForAsync(async () => {
+  it('should cache properly the extendedCost', async () => {
     const service: NpcVendorService = TestBed.inject(NpcVendorService);
-    const getItemExtendedCostReadableSpy = spyOn<any>(service, 'getItemExtendedCostReadable').and.returnValue(Promise.resolve('mock'));
+    const getItemExtendedCostReadableSpy = vi.spyOn<any>(service, 'getItemExtendedCostReadable').mockReturnValue(Promise.resolve('mock'));
 
     expect(service['cache']).toEqual([]);
 
@@ -48,13 +53,13 @@ describe('NpcVendorService', () => {
     expect(extCost).toBe('mock');
     expect(await service['cache'][1]).toBe('mock');
 
-    getItemExtendedCostReadableSpy.calls.reset();
+    getItemExtendedCostReadableSpy.mockClear();
 
     await service['extendedCostCache'](1);
     expect(getItemExtendedCostReadableSpy).not.toHaveBeenCalled();
-  }));
+  });
 
-  it('should parse the ExtendedCost', waitForAsync(async () => {
+  it('should parse the ExtendedCost', async () => {
     const mockItemExtendedCost = {
       id: 1,
       reqHonorPoints: 2,
@@ -83,19 +88,19 @@ describe('NpcVendorService', () => {
     const service: NpcVendorService = TestBed.inject(NpcVendorService);
     const sqliteQueryService = TestBed.inject(SqliteQueryService);
     const iconService = TestBed.inject(IconService);
-    const getItemExtendedCostSpy = spyOn(sqliteQueryService, 'getItemExtendedCost').and.returnValue(
-      Promise.resolve([mockItemExtendedCost]),
-    );
-    const getIconByItemIdSpy = spyOn<any>(iconService, 'getIconByItemId').and.returnValue(of('inv_gorehowl'));
+    const getItemExtendedCostSpy = vi
+      .spyOn(sqliteQueryService, 'getItemExtendedCost')
+      .mockReturnValue(Promise.resolve([mockItemExtendedCost]));
+    const getIconByItemIdSpy = vi.spyOn<any>(iconService, 'getIconByItemId').mockReturnValue(of('inv_gorehowl'));
 
     const resultText = await service['getItemExtendedCostReadable'](1);
 
     expect(mockResult.replace(/ /g, '')).toBe(resultText.replace(/ /g, ''));
     expect(getItemExtendedCostSpy).toHaveBeenCalledTimes(1);
     expect(getIconByItemIdSpy).toHaveBeenCalledTimes(5);
-  }));
+  });
 
-  it('should parse the ExtendedCost with partial values', waitForAsync(async () => {
+  it('should parse the ExtendedCost with partial values', async () => {
     const mockItemExtendedCost = {
       id: 1,
       reqHonorPoints: 0,
@@ -117,30 +122,30 @@ describe('NpcVendorService', () => {
     const service: NpcVendorService = TestBed.inject(NpcVendorService);
     const sqliteQueryService = TestBed.inject(SqliteQueryService);
     const iconService = TestBed.inject(IconService);
-    const getItemExtendedCostSpy = spyOn(sqliteQueryService, 'getItemExtendedCost').and.returnValue(
-      Promise.resolve([mockItemExtendedCost]),
-    );
-    const getIconByItemIdSpy = spyOn<any>(iconService, 'getIconByItemId').and.returnValue(of(''));
+    const getItemExtendedCostSpy = vi
+      .spyOn(sqliteQueryService, 'getItemExtendedCost')
+      .mockReturnValue(Promise.resolve([mockItemExtendedCost]));
+    const getIconByItemIdSpy = vi.spyOn<any>(iconService, 'getIconByItemId').mockReturnValue(of(''));
 
     const resultText = await service['getItemExtendedCostReadable'](1);
 
     expect(mockResult.replace(/ /g, '')).toBe(resultText.replace(/ /g, ''));
     expect(getItemExtendedCostSpy).toHaveBeenCalledTimes(1);
     expect(getIconByItemIdSpy).toHaveBeenCalledTimes(1);
-  }));
+  });
 
-  it('should parse the ExtendedCost with empty values', waitForAsync(async () => {
+  it('should parse the ExtendedCost with empty values', async () => {
     const mockResult = `<div class="item-extended-cost"></div>`;
     const service: NpcVendorService = TestBed.inject(NpcVendorService);
     const sqliteQueryService = TestBed.inject(SqliteQueryService);
     const iconService = TestBed.inject(IconService);
-    const getItemExtendedCostSpy = spyOn(sqliteQueryService, 'getItemExtendedCost').and.returnValue(Promise.resolve([]));
-    const getIconByItemIdSpy = spyOn<any>(iconService, 'getIconByItemId').and.returnValue(of(null));
+    const getItemExtendedCostSpy = vi.spyOn(sqliteQueryService, 'getItemExtendedCost').mockReturnValue(Promise.resolve([]));
+    const getIconByItemIdSpy = vi.spyOn<any>(iconService, 'getIconByItemId').mockReturnValue(of(null));
 
     const resultText = await service['getItemExtendedCostReadable'](2);
 
     expect(mockResult).toBe(resultText);
     expect(getItemExtendedCostSpy).toHaveBeenCalledTimes(1);
     expect(getIconByItemIdSpy).not.toHaveBeenCalled();
-  }));
+  });
 });

@@ -1,28 +1,23 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { vi } from 'vitest';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
+import { CreatureLootTemplate } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
-import { CreatureLootTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
+import { instance, mock } from 'ts-mockito';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { CreatureLootTemplateComponent } from './creature-loot-template.component';
 import { CreatureLootTemplateService } from './creature-loot-template.service';
-import Spy = jasmine.Spy;
-import { instance, mock } from 'ts-mockito';
 
 class CreatureLootTemplatePage extends MultiRowEditorPageObject<CreatureLootTemplateComponent> {}
 
 describe('CreatureLootTemplate integration tests', () => {
-  let fixture: ComponentFixture<CreatureLootTemplateComponent>;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let handlerService: CreatureHandlerService;
-  let page: CreatureLootTemplatePage;
-
   const id = 1234;
 
   const originalRow0 = new CreatureLootTemplate();
@@ -33,45 +28,45 @@ describe('CreatureLootTemplate integration tests', () => {
   originalRow1.Item = 1;
   originalRow2.Item = 2;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        CreatureLootTemplateComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
+      imports: [ToastrModule.forRoot(), ModalModule, CreatureLootTemplateComponent, RouterTestingModule, TranslateTestingModule],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
-      providers: [CreatureHandlerService, SaiCreatureHandlerService, { provide: SqliteService, useValue: instance(mock(SqliteService)) }],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean, lootId = id) {
-    spyOn(TestBed.inject(CreatureLootTemplateService), 'getLootId').and.returnValue(of([{ lootId }]));
+    vi.spyOn(TestBed.inject(CreatureLootTemplateService), 'getLootId').mockReturnValue(of([{ lootId }]));
 
-    handlerService = TestBed.inject(CreatureHandlerService);
+    const handlerService = TestBed.inject(CreatureHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
-    spyOn(queryService, 'queryValue').and.returnValue(of());
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
+    vi.spyOn(queryService, 'queryValue').mockReturnValue(of());
     const itemNamePromise = of(`MockItemName`).toPromise();
-    spyOn(queryService, 'getItemNameById').and.returnValue(itemNamePromise as Promise<string>);
+    vi.spyOn(queryService, 'getItemNameById').mockReturnValue(itemNamePromise as Promise<string>);
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
-    fixture = TestBed.createComponent(CreatureLootTemplateComponent);
-    page = new CreatureLootTemplatePage(fixture);
+    const fixture = TestBed.createComponent(CreatureLootTemplateComponent);
+    const page = new CreatureLootTemplatePage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+
+    return { fixture, queryService, querySpy, handlerService, page };
   }
 
   describe('Creating new', () => {
-    beforeEach(() => setup(true));
-
     it('should correctly initialise', () => {
+      const { page } = setup(true);
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
       expect(page.formError.hidden).toBe(true);
@@ -90,21 +85,24 @@ describe('CreatureLootTemplate integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
-      expect(handlerService.isCreatureLootTemplateUnsaved).toBe(false);
+      const { handlerService, page } = setup(true);
+      expect(handlerService.isCreatureLootTemplateUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isCreatureLootTemplateUnsaved).toBe(true);
+      expect(handlerService.isCreatureLootTemplateUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isCreatureLootTemplateUnsaved).toBe(false);
+      expect(handlerService.isCreatureLootTemplateUnsaved()).toBe(false);
     });
 
-    xit('should reflect the item names', waitForAsync(async () => {
+    it.skip('should reflect the item names', async () => {
+      const { page } = setup(true);
       page.addNewRow();
       page.detectChanges();
       await page.whenReady();
       expect(page.getDatatableCell(0, 3).innerText).toContain('MockItemName');
-    }));
+    });
 
     it('adding new rows and executing the query should correctly work', () => {
+      const { querySpy, page } = setup(true);
       const expectedQuery =
         'DELETE FROM `creature_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0, 1, 2));\n' +
         'INSERT INTO `creature_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
@@ -112,7 +110,7 @@ describe('CreatureLootTemplate integration tests', () => {
         "(1234, 0, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
         "(1234, 1, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
         "(1234, 2, 0, 100, 0, 1, 0, 1, 1, '');";
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(1);
@@ -122,12 +120,27 @@ describe('CreatureLootTemplate integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(3);
       page.expectDiffQueryToContain(expectedQuery);
 
+      page.expectDiffQueryToDeleteInsert(
+        'creature_loot_template',
+        'Entry',
+        1234,
+        'Item',
+        [0, 1, 2],
+        ['Entry', 'Item', 'Reference', 'Chance', 'QuestRequired', 'LootMode', 'GroupId', 'MinCount', 'MaxCount', 'Comment'],
+        [
+          [1234, 0, 0, 100, 0, 1, 0, 1, 1, ''],
+          [1234, 1, 0, 100, 0, 1, 0, 1, 1, ''],
+          [1234, 2, 0, 100, 0, 1, 0, 1, 1, ''],
+        ],
+      );
+
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
 
     it('adding a row and changing its values should correctly update the queries', () => {
+      const { page } = setup(true);
       page.addNewRow();
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0));\n' +
@@ -186,6 +199,7 @@ describe('CreatureLootTemplate integration tests', () => {
     });
 
     it('adding a row, changing its values and duplicating it should correctly update the queries', () => {
+      const { page } = setup(true);
       page.addNewRow();
       page.setInputValueById('Chance', '1');
       page.setInputValueById('QuestRequired', '2');
@@ -210,9 +224,8 @@ describe('CreatureLootTemplate integration tests', () => {
   });
 
   describe('Editing existing', () => {
-    beforeEach(() => setup(false));
-
     it('should correctly initialise', () => {
+      const { page } = setup(false);
       expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
@@ -229,6 +242,7 @@ describe('CreatureLootTemplate integration tests', () => {
     });
 
     it('deleting rows should correctly work', () => {
+      const { page } = setup(false);
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
       page.expectDiffQueryToContain('DELETE FROM `creature_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1));');
@@ -257,6 +271,7 @@ describe('CreatureLootTemplate integration tests', () => {
     });
 
     it('editing existing rows should correctly work', () => {
+      const { page } = setup(false);
       page.clickRowOfDatatable(1);
       page.setInputValueById('LootMode', 1);
 
@@ -280,6 +295,7 @@ describe('CreatureLootTemplate integration tests', () => {
     });
 
     it('combining add, edit and delete should correctly work', () => {
+      const { page } = setup(false);
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(4);
 
@@ -308,18 +324,99 @@ describe('CreatureLootTemplate integration tests', () => {
     });
 
     it('using the same row id for multiple rows should correctly show an error', () => {
+      const { page } = setup(false);
       page.clickRowOfDatatable(2);
       page.setInputValueById('Item', 0);
 
       page.expectUniqueError();
     });
+
+    describe('Item icon and selector button visibility based on Reference field', () => {
+      it('should display keira-icon when Reference is 0', () => {
+        const { page } = setup(false);
+        page.addNewRow();
+        page.setInputValueById('Reference', '0');
+        page.setInputValueById('Item', '99999');
+        page.detectChanges();
+
+        const icons = page.queryAll('keira-icon');
+
+        expect(icons.length).toBeGreaterThan(0);
+      });
+
+      it('should NOT display additional keira-icon when Reference is not 0', () => {
+        const { page } = setup(false);
+        const initialIconCount = page.queryAll('keira-icon').length;
+
+        page.addNewRow();
+        page.setInputValueById('Reference', '5');
+        page.setInputValueById('Item', '99999');
+        page.detectChanges();
+
+        const icons = page.queryAll('keira-icon');
+        expect(icons.length).toBe(initialIconCount);
+      });
+
+      it('should hide icon when Reference changes from 0 to non-zero', () => {
+        const { page } = setup(false);
+        // Click on the first row which has Reference = 0
+        page.clickRowOfDatatable(0);
+        page.detectChanges();
+
+        const initialIconCount = page.queryAll('keira-icon').length;
+        expect(initialIconCount).toBeGreaterThan(0, 'Should have icons for rows with Reference = 0');
+
+        // Change Reference to non-zero
+        page.setInputValueById('Reference', '10');
+        page.detectChanges();
+
+        const iconsAfter = page.queryAll('keira-icon');
+        expect(iconsAfter.length).toBeLessThan(initialIconCount);
+      });
+
+      it('should show icon when Reference changes from non-zero to 0', () => {
+        const { page } = setup(false);
+        // Add a new row with Reference != 0
+        page.addNewRow();
+        page.setInputValueById('Reference', '10');
+        page.setInputValueById('Item', '99999');
+        page.detectChanges();
+
+        const initialIconCount = page.queryAll('keira-icon').length;
+
+        // Change Reference to 0
+        page.setInputValueById('Reference', '0');
+        page.detectChanges();
+
+        const iconsAfter = page.queryAll('keira-icon');
+        expect(iconsAfter.length).toBeGreaterThan(initialIconCount);
+      });
+
+      it('should display keira-item-selector-btn when Reference is 0', () => {
+        const { page } = setup(false);
+        page.clickRowOfDatatable(0); // Click first row which has Reference = 0
+        page.detectChanges();
+
+        const selectorBtn = page.query('keira-item-selector-btn', false);
+        expect(selectorBtn).toBeTruthy();
+      });
+
+      it('should hide keira-item-selector-btn when Reference is not 0', () => {
+        const { page } = setup(false);
+        page.addNewRow();
+        page.setInputValueById('Reference', '5');
+
+        page.detectChanges();
+
+        const selectorBtn = page.query('keira-item-selector-btn', false);
+        expect(selectorBtn).toBeFalsy();
+      });
+    });
   });
 
   it('should correctly show the warning if the loot id is not correctly set in the creature template', () => {
-    setup(true, 0);
+    const { page } = setup(true, 0);
 
-    expect(page.query('.alert-info').innerText).toContain(
-      'You have to set the field `lootid` of creature_template in order to enable this feature.',
-    );
+    expect(page.query('.alert-info').innerText).toContain('LOOT_TEMPLATE.SET_FIELD');
   });
 });

@@ -1,11 +1,13 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { vi } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { SpellLootTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { SpellLootHandlerService } from './spell-loot-handler.service';
 import { SpellLootTemplateComponent } from './spell-loot-template.component';
@@ -24,19 +26,17 @@ describe('SpellLootTemplate integration tests', () => {
   originalRow1.Item = 1;
   originalRow2.Item = 2;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        SpellLootTemplateComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
+      imports: [ToastrModule.forRoot(), ModalModule, SpellLootTemplateComponent, RouterTestingModule, TranslateTestingModule],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        SpellLootHandlerService,
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
-      providers: [SpellLootHandlerService, { provide: SqliteService, useValue: instance(mock(SqliteService)) }],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     const handlerService = TestBed.inject(SpellLootHandlerService);
@@ -44,10 +44,10 @@ describe('SpellLootTemplate integration tests', () => {
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
-    spyOn(queryService, 'queryValue').and.returnValue(of());
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
+    vi.spyOn(queryService, 'queryValue').mockReturnValue(of());
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
     const fixture = TestBed.createComponent(SpellLootTemplateComponent);
     const page = new SpellLootTemplatePage(fixture);
@@ -79,11 +79,11 @@ describe('SpellLootTemplate integration tests', () => {
 
     it('should correctly update the unsaved status', () => {
       const { page, handlerService } = setup(true);
-      expect(handlerService.isUnsaved).toBe(false);
+      expect(handlerService.isUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isUnsaved).toBe(true);
+      expect(handlerService.isUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isUnsaved).toBe(false);
+      expect(handlerService.isUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {
@@ -95,7 +95,7 @@ describe('SpellLootTemplate integration tests', () => {
         "(1234, 0, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
         "(1234, 1, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
         "(1234, 2, 0, 100, 0, 1, 0, 1, 1, '');";
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(1);
@@ -107,7 +107,7 @@ describe('SpellLootTemplate integration tests', () => {
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
 
     it('adding a row and changing its values should correctly update the queries', () => {

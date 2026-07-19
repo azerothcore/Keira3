@@ -1,28 +1,23 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { vi } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { GameobjectLootTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { GameobjectLootTemplateComponent } from './gameobject-loot-template.component';
 import { GameobjectLootTemplateService } from './gameobject-loot-template.service';
-import Spy = jasmine.Spy;
 import { instance, mock } from 'ts-mockito';
 
 class GameobjectLootTemplatePage extends MultiRowEditorPageObject<GameobjectLootTemplateComponent> {}
 
 describe('GameobjectLootTemplate integration tests', () => {
-  let fixture: ComponentFixture<GameobjectLootTemplateComponent>;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let handlerService: GameobjectHandlerService;
-  let page: GameobjectLootTemplatePage;
-
   const id = 1234; // Data1
   const _type = 3; // could be 3 or 25
 
@@ -34,49 +29,45 @@ describe('GameobjectLootTemplate integration tests', () => {
   originalRow1.Item = 1;
   originalRow2.Item = 2;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        GameobjectLootTemplateComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
-      ],
+      imports: [ToastrModule.forRoot(), ModalModule, GameobjectLootTemplateComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         GameobjectHandlerService,
         SaiGameobjectHandlerService,
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean, lootId = id, type = _type) {
-    spyOn(TestBed.inject(GameobjectLootTemplateService), 'getLootId').and.returnValue(of([{ lootId }]));
+    vi.spyOn(TestBed.inject(GameobjectLootTemplateService), 'getLootId').mockReturnValue(of([{ lootId }]));
 
-    spyOn(TestBed.inject(GameobjectLootTemplateService), 'getType').and.returnValue(of([{ type }]));
+    vi.spyOn(TestBed.inject(GameobjectLootTemplateService), 'getType').mockReturnValue(of([{ type }]));
 
-    handlerService = TestBed.inject(GameobjectHandlerService);
+    const handlerService = TestBed.inject(GameobjectHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
-    spyOn(queryService, 'queryValue').and.returnValue(of());
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
+    vi.spyOn(queryService, 'queryValue').mockReturnValue(of());
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
-    fixture = TestBed.createComponent(GameobjectLootTemplateComponent);
-    page = new GameobjectLootTemplatePage(fixture);
+    const fixture = TestBed.createComponent(GameobjectLootTemplateComponent);
+    const page = new GameobjectLootTemplatePage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+
+    return { fixture, queryService, querySpy, handlerService, page };
   }
 
   describe('Creating new', () => {
-    beforeEach(() => setup(true));
-
     it('should correctly initialise', () => {
+      const { page } = setup(true);
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
       expect(page.formError.hidden).toBe(true);
@@ -95,14 +86,16 @@ describe('GameobjectLootTemplate integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
-      expect(handlerService.isGameobjectLooTemplateUnsaved).toBe(false);
+      const { handlerService, page } = setup(true);
+      expect(handlerService.isGameobjectLooTemplateUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isGameobjectLooTemplateUnsaved).toBe(true);
+      expect(handlerService.isGameobjectLooTemplateUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isGameobjectLooTemplateUnsaved).toBe(false);
+      expect(handlerService.isGameobjectLooTemplateUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {
+      const { querySpy, page } = setup(true);
       const expectedQuery =
         'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0, 1, 2));\n' +
         'INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
@@ -110,7 +103,7 @@ describe('GameobjectLootTemplate integration tests', () => {
         "(1234, 0, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
         "(1234, 1, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
         "(1234, 2, 0, 100, 0, 1, 0, 1, 1, '');";
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(1);
@@ -122,10 +115,11 @@ describe('GameobjectLootTemplate integration tests', () => {
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
 
     it('adding a row and changing its values should correctly update the queries', () => {
+      const { page } = setup(true);
       page.addNewRow();
       page.expectDiffQueryToContain(
         'DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0));\n' +
@@ -184,6 +178,7 @@ describe('GameobjectLootTemplate integration tests', () => {
     });
 
     it('adding a row changing its values and duplicate it should correctly update the queries', () => {
+      const { page } = setup(true);
       page.addNewRow();
       page.setInputValueById('Chance', '1');
       page.setInputValueById('QuestRequired', '2');
@@ -208,9 +203,8 @@ describe('GameobjectLootTemplate integration tests', () => {
   });
 
   describe('Editing existing', () => {
-    beforeEach(() => setup(false));
-
     it('should correctly initialise', () => {
+      const { page } = setup(false);
       expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
@@ -227,6 +221,7 @@ describe('GameobjectLootTemplate integration tests', () => {
     });
 
     it('deleting rows should correctly work', () => {
+      const { page } = setup(false);
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
       page.expectDiffQueryToContain('DELETE FROM `gameobject_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1));');
@@ -255,6 +250,7 @@ describe('GameobjectLootTemplate integration tests', () => {
     });
 
     it('editing existing rows should correctly work', () => {
+      const { page } = setup(false);
       page.clickRowOfDatatable(1);
       page.setInputValueById('LootMode', 1);
 
@@ -278,6 +274,7 @@ describe('GameobjectLootTemplate integration tests', () => {
     });
 
     it('combining add, edit and delete should correctly work', () => {
+      const { page } = setup(false);
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(4);
 
@@ -306,6 +303,7 @@ describe('GameobjectLootTemplate integration tests', () => {
     });
 
     it('using the same row id for multiple rows should correctly show an error', () => {
+      const { page } = setup(false);
       page.clickRowOfDatatable(2);
       page.setInputValueById('Item', 0);
 
@@ -314,10 +312,8 @@ describe('GameobjectLootTemplate integration tests', () => {
   });
 
   it('should correctly show the warning if the loot id and type field are not correctly set in the gameobject template', () => {
-    setup(true, 0);
+    const { page } = setup(true, 0);
 
-    expect(page.query('.alert-info').innerText).toContain(
-      'You have to set the field `Data1` (lootid) and `type` (3 or 25) of gameobject_template in order to enable this feature.',
-    );
+    expect(page.query('.alert-info').innerText).toContain('LOOT_TEMPLATE.SET_FIELD_GO');
   });
 });

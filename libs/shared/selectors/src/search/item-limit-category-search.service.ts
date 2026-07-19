@@ -1,15 +1,16 @@
-import { Injectable } from '@angular/core';
+import { Service, inject } from '@angular/core';
 
 import { ITEM_LIMIT_CATEGORY_SEARCH_FIELDS, ITEM_LIMIT_CATEGORY_TABLE, ItemLimitCategory } from '@keira/shared/acore-world-model';
 import { SearchService } from '@keira/shared/base-abstract-classes';
 import { SqliteQueryService } from '@keira/shared/db-layer';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class ItemLimitCategorySearchService extends SearchService<ItemLimitCategory> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected override queryService: SqliteQueryService) {
-    super(queryService, ITEM_LIMIT_CATEGORY_TABLE, ITEM_LIMIT_CATEGORY_SEARCH_FIELDS);
+  protected override queryService = inject(SqliteQueryService);
+  protected override readonly entityTable = ITEM_LIMIT_CATEGORY_TABLE;
+  protected override readonly fieldList = ITEM_LIMIT_CATEGORY_SEARCH_FIELDS;
+  constructor() {
+    super();
+    this.init();
   }
 }

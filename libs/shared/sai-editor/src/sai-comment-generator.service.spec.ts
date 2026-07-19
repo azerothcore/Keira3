@@ -1,7 +1,13 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { vi } from 'vitest';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
+import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
 import { lastValueFrom, of } from 'rxjs';
+import { instance, mock } from 'ts-mockito';
+import { SAI_ACTIONS } from './constants/sai-actions';
 import {
   DYNAMIC_FLAGS,
   EVENT_FLAGS,
@@ -14,18 +20,20 @@ import {
   unitStandFlags,
   unitStandStateType,
 } from './constants/sai-constants';
+import { SAI_EVENTS } from './constants/sai-event';
 import { SAI_TARGETS } from './constants/sai-targets';
 import { SaiCommentGeneratorService } from './sai-comment-generator.service';
-import { SAI_EVENTS } from './constants/sai-event';
-import { SAI_ACTIONS } from './constants/sai-actions';
-import { instance, mock } from 'ts-mockito';
-import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
 
 describe('SaiCommentGeneratorService', () => {
-  beforeEach(waitForAsync(() =>
+  beforeEach(() =>
     TestBed.configureTestingModule({
-      providers: [{ provide: SqliteService, useValue: instance(mock(SqliteService)) }],
-    })));
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
+      ],
+    }),
+  );
 
   describe('Comment generation should correctly work', () => {
     const createSai = (partial: Partial<SmartScripts>) => Object.assign(new SmartScripts(), partial);
@@ -41,19 +49,19 @@ describe('SaiCommentGeneratorService', () => {
 
     beforeEach(() => {
       const queryService = TestBed.inject(MysqlQueryService);
-      spyOn(queryService, 'getCreatureNameById').and.callFake((i) => lastValueFrom(of(mockCreatureNameById + i)));
-      spyOn(queryService, 'getCreatureNameByGuid').and.callFake((i) => lastValueFrom(of(mockCreatureNameByGuid + i)));
-      spyOn(queryService, 'getGameObjectNameById').and.callFake((i) => lastValueFrom(of(mockGameobjectNameById + i)));
-      spyOn(queryService, 'getGameObjectNameByGuid').and.callFake((i) => lastValueFrom(of(mockGameobjectNameByGuid + i)));
-      spyOn(queryService, 'getQuestTitleById').and.callFake((i) => lastValueFrom(of(mockQuestTitleById + i)));
-      spyOn(queryService, 'getItemNameById').and.callFake((i) => lastValueFrom(of(mockItemNameById + i)));
-      spyOn(queryService, 'getQuestTitleByCriteria').and.callFake((i) => lastValueFrom(of(mockQuestTitleByCriteria + i)));
+      vi.spyOn(queryService, 'getCreatureNameById').mockImplementation((i) => lastValueFrom(of(mockCreatureNameById + i)));
+      vi.spyOn(queryService, 'getCreatureNameByGuid').mockImplementation((i) => lastValueFrom(of(mockCreatureNameByGuid + i)));
+      vi.spyOn(queryService, 'getGameObjectNameById').mockImplementation((i) => lastValueFrom(of(mockGameobjectNameById + i)));
+      vi.spyOn(queryService, 'getGameObjectNameByGuid').mockImplementation((i) => lastValueFrom(of(mockGameobjectNameByGuid + i)));
+      vi.spyOn(queryService, 'getQuestTitleById').mockImplementation((i) => lastValueFrom(of(mockQuestTitleById + i)));
+      vi.spyOn(queryService, 'getItemNameById').mockImplementation((i) => lastValueFrom(of(mockItemNameById + i)));
+      vi.spyOn(queryService, 'getQuestTitleByCriteria').mockImplementation((i) => lastValueFrom(of(mockQuestTitleByCriteria + i)));
 
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
-      spyOn(sqliteQueryService, 'getSpellNameById').and.callFake((i) => lastValueFrom(of(mockGetSpellNameById + i)));
+      vi.spyOn(sqliteQueryService, 'getSpellNameById').mockImplementation((i) => lastValueFrom(of(mockGetSpellNameById + i)));
     });
 
-    it('should correctly handle linked events', waitForAsync(async () => {
+    it('should correctly handle linked events', async () => {
       const rows: SmartScripts[] = [
         createSai({ id: 1, event_type: SAI_EVENTS.ACCEPTED_QUEST, link: 2 }),
         createSai({ id: 2, event_type: SAI_EVENTS.LINK, link: 3 }),
@@ -63,7 +71,7 @@ describe('SaiCommentGeneratorService', () => {
       const service: SaiCommentGeneratorService = TestBed.inject(SaiCommentGeneratorService);
 
       expect(await service.generateComment(rows, rows[2], mockName)).toEqual(expected);
-    }));
+    });
 
     const cases: { name: string; input: Partial<SmartScripts>; expected: string }[] = [
       {
@@ -144,7 +152,7 @@ describe('SaiCommentGeneratorService', () => {
           action_param5: 55,
           action_param6: 66,
         },
-        expected: `MockEntity - In Combat - Pick Closest Waypoint 11 22 33 44 55 66`,
+        expected: `MockEntity - In Combat - Start closest Waypoint 11 - 22`,
       },
       {
         name: 'SAI_ACTIONS.FAIL_QUEST check action params 1',
@@ -669,7 +677,7 @@ describe('SaiCommentGeneratorService', () => {
           action_type: SAI_ACTIONS.AUTO_ATTACK,
           action_param1: 1,
         },
-        expected: `MockEntity - In Combat - Start Attacking`,
+        expected: `MockEntity - In Combat - Continue Attacking`,
       },
       {
         name: 'SAI_ACTIONS.ALLOW_COMBAT_MOVEMENT check action params 1 (0)',
@@ -1023,7 +1031,7 @@ describe('SaiCommentGeneratorService', () => {
           target_type: SAI_TARGETS.GAMEOBJECT_RANGE,
           target_param1: 0,
         },
-        expected: `MockEntity - In Combat - Move To Closest Creature 'mockGameobjectNameById0'`,
+        expected: `MockEntity - In Combat - Move To Closest Gameobject 'mockGameobjectNameById0'`,
       },
       {
         name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.GAMEOBJECT_DISTANCE)`,
@@ -1032,7 +1040,7 @@ describe('SaiCommentGeneratorService', () => {
           target_type: SAI_TARGETS.GAMEOBJECT_DISTANCE,
           target_param1: 0,
         },
-        expected: `MockEntity - In Combat - Move To Closest Creature 'mockGameobjectNameById0'`,
+        expected: `MockEntity - In Combat - Move To Closest Gameobject 'mockGameobjectNameById0'`,
       },
       {
         name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.CLOSEST_GAMEOBJECT)`,
@@ -1041,7 +1049,7 @@ describe('SaiCommentGeneratorService', () => {
           target_type: SAI_TARGETS.CLOSEST_GAMEOBJECT,
           target_param1: 0,
         },
-        expected: `MockEntity - In Combat - Move To Closest Creature 'mockGameobjectNameById0'`,
+        expected: `MockEntity - In Combat - Move To Closest Gameobject 'mockGameobjectNameById0'`,
       },
       {
         name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.GAMEOBJECT_GUID)`,
@@ -1050,7 +1058,7 @@ describe('SaiCommentGeneratorService', () => {
           target_type: SAI_TARGETS.GAMEOBJECT_GUID,
           target_param1: 0,
         },
-        expected: `MockEntity - In Combat - Move To Closest Creature 'mockGameobjectNameByGuid0'`,
+        expected: `MockEntity - In Combat - Move To Closest Gameobject 'mockGameobjectNameByGuid0'`,
       },
       {
         name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.INVOKER_PARTY)`,
@@ -1131,6 +1139,14 @@ describe('SaiCommentGeneratorService', () => {
           target_type: 27,
         },
         expected: `MockEntity - In Combat - Move To Loot Recipients`,
+      },
+      {
+        name: `SAI_ACTIONS.MOVE_TO_POS check target type (unsupported target type)`,
+        input: {
+          action_type: SAI_ACTIONS.MOVE_TO_POS,
+          target_type: 99999,
+        },
+        expected: `MockEntity - In Combat - Move To [unsupported target type]`,
       },
       {
         name: `SAI_ACTIONS.GO_SET_LOOT_STATE check action param 1 (0)`,
@@ -1767,33 +1783,33 @@ describe('SaiCommentGeneratorService', () => {
         expected: `MockEntity - On Spellhit 'mockGetSpellNameById123' - Cast 'mockGetSpellNameById456'`,
       },
       {
-        name: `SAI_EVENTS.WAYPOINT_START`,
+        name: `SAI_EVENTS.ESCORT_START`,
         input: {
-          event_type: SAI_EVENTS.WAYPOINT_START,
+          event_type: SAI_EVENTS.ESCORT_START,
           event_param2: 124,
         },
         expected: `MockEntity - On Path 124 Started - No Action Type`,
       },
       {
-        name: `SAI_EVENTS.WAYPOINT_START`,
+        name: `SAI_EVENTS.ESCORT_START`,
         input: {
-          event_type: SAI_EVENTS.WAYPOINT_START,
+          event_type: SAI_EVENTS.ESCORT_START,
         },
         expected: `MockEntity - On Path Any Started - No Action Type`,
       },
       {
-        name: `SAI_EVENTS.WAYPOINT_REACHED`,
+        name: `SAI_EVENTS.ESCORT_REACHED`,
         input: {
-          event_type: SAI_EVENTS.WAYPOINT_REACHED,
+          event_type: SAI_EVENTS.ESCORT_REACHED,
           event_param1: 123,
           event_param2: 124,
         },
         expected: `MockEntity - On Point 123 of Path 124 Reached - No Action Type`,
       },
       {
-        name: `SAI_EVENTS.WAYPOINT_REACHED`,
+        name: `SAI_EVENTS.ESCORT_REACHED`,
         input: {
-          event_type: SAI_EVENTS.WAYPOINT_REACHED,
+          event_type: SAI_EVENTS.ESCORT_REACHED,
         },
         expected: `MockEntity - On Point Any of Path Any Reached - No Action Type`,
       },
@@ -1832,25 +1848,25 @@ describe('SaiCommentGeneratorService', () => {
         expected: `MockEntity - In Combat - Enable Evade`,
       },
       {
-        name: `SAI_ACTIONS.WP_START`,
+        name: `SAI_ACTIONS.ESCORT_START`,
         input: {
-          action_type: SAI_ACTIONS.WP_START,
+          action_type: SAI_ACTIONS.ESCORT_START,
           action_param3: 0,
         },
         expected: `MockEntity - In Combat - Start Waypoint Path 0`,
       },
       {
-        name: `SAI_ACTIONS.WP_START`,
+        name: `SAI_ACTIONS.ESCORT_START`,
         input: {
-          action_type: SAI_ACTIONS.WP_START,
+          action_type: SAI_ACTIONS.ESCORT_START,
           action_param3: 1,
         },
         expected: `MockEntity - In Combat - Start Patrol Path 0`,
       },
       {
-        name: `SAI_ACTIONS.WP_START`,
+        name: `SAI_ACTIONS.ESCORT_START`,
         input: {
-          action_type: SAI_ACTIONS.WP_START,
+          action_type: SAI_ACTIONS.ESCORT_START,
           action_param3: 123,
         },
         expected: `MockEntity - In Combat - Start [Unknown Value] Path 0`,
@@ -1955,6 +1971,15 @@ describe('SaiCommentGeneratorService', () => {
         expected: `MockEntity - In Combat - Move To Instance Storage`,
       },
       {
+        name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.FORMATION)`,
+        input: {
+          action_type: SAI_ACTIONS.MOVE_TO_POS,
+          target_type: SAI_TARGETS.FORMATION,
+          target_param1: 0,
+        },
+        expected: `MockEntity - In Combat - Move To Formation`,
+      },
+      {
         name: `SAI_ACTIONS.MOVE_TO_POS check target type (unsupported target type)`,
         input: {
           action_type: SAI_ACTIONS.MOVE_TO_POS,
@@ -1963,14 +1988,25 @@ describe('SaiCommentGeneratorService', () => {
         },
         expected: `MockEntity - In Combat - Move To [unsupported target type]`,
       },
+      ...[
+        { action_param2: 0, comment: 'Off' },
+        { action_param2: 1, comment: 'On' },
+      ].map(({ action_param2, comment }) => ({
+        name: `SAI_ACTIONS.DISABLE_REWARD _onOffActionParamTwo_ ${comment}`,
+        input: {
+          action_type: SAI_ACTIONS.DISABLE_REWARD,
+          action_param2,
+        },
+        expected: `MockEntity - In Combat - Disable reward: Disable Reputation Off, Disable Loot ${comment}`,
+      })),
     ];
 
     for (const { name, input, expected } of cases) {
-      it(`Case: ${name}`, waitForAsync(async () => {
+      it(`Case: ${name}`, async () => {
         const service: SaiCommentGeneratorService = TestBed.inject(SaiCommentGeneratorService);
         const sai = createSai(input);
         expect(await service.generateComment([sai], sai, mockName)).toEqual(expected);
-      }));
+      });
     }
   });
 });

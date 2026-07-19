@@ -1,4 +1,7 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { TableRow } from '@keira/shared/constants';
 import { ReferenceLootTemplate } from '@keira/shared/acore-world-model';
@@ -12,7 +15,11 @@ describe('ReferenceViewerService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
-      providers: [{ provide: SqliteService, useValue: instance(mock(SqliteService)) }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
+      ],
     });
   });
 
@@ -26,8 +33,8 @@ describe('ReferenceViewerService', () => {
     const mockReferenceLoot: ReferenceLootTemplate[] = [new ReferenceLootTemplate()];
     const referenceId = 1234;
     const { service, queryService } = setup();
-    const querySpy = spyOn(queryService, 'query');
-    querySpy.and.returnValue(of(mockReferenceLoot as TableRow[]));
+    const querySpy = vi.spyOn(queryService, 'query').mockImplementation(() => undefined);
+    querySpy.mockReturnValue(of(mockReferenceLoot as TableRow[]));
 
     service.getReferenceById(referenceId).subscribe((result) => {
       expect(result).toEqual(mockReferenceLoot);

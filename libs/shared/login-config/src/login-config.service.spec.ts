@@ -1,4 +1,7 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { ConnectionOptions } from 'mysql2';
 import { LoginConfigService } from './login-config.service';
@@ -14,9 +17,13 @@ describe(LoginConfigService.name, () => {
   Object.freeze(currentConfig);
 
   const setup = () => {
-    const localStorageService = jasmine.createSpyObj('LocalStorageService', ['removeItem', 'getItem', 'setItem']);
+    const localStorageService = { removeItem: vi.fn(), getItem: vi.fn(), setItem: vi.fn() };
     TestBed.configureTestingModule({
-      providers: [{ provide: LocalStorageService, useValue: localStorageService }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        { provide: LocalStorageService, useValue: localStorageService },
+      ],
     });
     const service = TestBed.inject(LoginConfigService);
 
@@ -33,23 +40,23 @@ describe(LoginConfigService.name, () => {
   it('saveRememberPreference', () => {
     const { service, localStorageService } = setup();
     service.saveRememberPreference(true);
-    expect(localStorageService.setItem).toHaveBeenCalledOnceWith('rememberMe', String(true));
+    expect(localStorageService.setItem).toHaveBeenCalledExactlyOnceWith('rememberMe', String(true));
   });
 
   it('isRememberMeEnabled', () => {
     const { service, localStorageService } = setup();
-    localStorageService.getItem.and.returnValue('true');
+    localStorageService.getItem.mockReturnValue('true');
 
     const res = service.isRememberMeEnabled();
 
-    expect(localStorageService.getItem).toHaveBeenCalledOnceWith('rememberMe');
-    expect(res).toBeTrue();
+    expect(localStorageService.getItem).toHaveBeenCalledExactlyOnceWith('rememberMe');
+    expect(res).toBe(true);
   });
 
   describe('saveNewConfig(newConfig)', () => {
     it('saving an existing config should correctly update its password', () => {
       const { service, localStorageService } = setup();
-      localStorageService.getItem.and.returnValue(JSON.stringify(currentConfig));
+      localStorageService.getItem.mockReturnValue(JSON.stringify(currentConfig));
       const newPassword = 'shin123';
 
       service.saveNewConfig({
@@ -68,7 +75,7 @@ describe(LoginConfigService.name, () => {
 
     it('saving an existing config should put it at the end of the config array', () => {
       const { service, localStorageService } = setup();
-      localStorageService.getItem.and.returnValue(JSON.stringify(currentConfig));
+      localStorageService.getItem.mockReturnValue(JSON.stringify(currentConfig));
 
       service.saveNewConfig(currentConfig[0]);
 
@@ -79,7 +86,7 @@ describe(LoginConfigService.name, () => {
 
     it('saving a new config should correctly work', () => {
       const { service, localStorageService } = setup();
-      localStorageService.getItem.and.returnValue(JSON.stringify(currentConfig));
+      localStorageService.getItem.mockReturnValue(JSON.stringify(currentConfig));
       const newPassword = 'shin123';
       const newConfig = {
         host: '192.168.1.100',
@@ -101,7 +108,7 @@ describe(LoginConfigService.name, () => {
   describe('getConfigs()', () => {
     it('should correctly return the current config', () => {
       const { service, localStorageService } = setup();
-      localStorageService.getItem.and.returnValue(JSON.stringify(currentConfig));
+      localStorageService.getItem.mockReturnValue(JSON.stringify(currentConfig));
 
       const expectedNewConfig = [{ ...currentConfig[0] }, { ...currentConfig[1] }];
       expectedNewConfig[0].password = atob(expectedNewConfig[0].password as string);
@@ -111,7 +118,7 @@ describe(LoginConfigService.name, () => {
 
     it('should return an empty array if there is no config', () => {
       const { service, localStorageService } = setup();
-      localStorageService.getItem.and.returnValue(null);
+      localStorageService.getItem.mockReturnValue(null);
 
       expect(service.getConfigs()).toEqual([]);
     });

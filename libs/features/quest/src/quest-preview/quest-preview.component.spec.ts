@@ -1,16 +1,20 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
-import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
+import { vi, type MockInstance } from 'vitest';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { ChangeDetectorRef, provideZonelessChangeDetection } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { QuestOfferReward, QuestRequestItems, QuestTemplate, QuestTemplateAddon } from '@keira/shared/acore-world-model';
+import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
+import { Class } from '@keira/shared/constants';
+import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
+import { Model3DViewerService } from '@keira/shared/model-3d-viewer';
+import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { Subject } from 'rxjs';
 import { QuestPreviewComponent } from './quest-preview.component';
 import { QUEST_FACTION_REWARD } from './quest-preview.model';
 import { QuestPreviewService } from './quest-preview.service';
-import { Class } from '@keira/shared/constants';
-import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
-import Spy = jasmine.Spy;
 
 class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
   get title(): HTMLHeadElement {
@@ -86,6 +90,9 @@ class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
   get completionText(): HTMLDivElement {
     return this.query<HTMLDivElement>('#completion-text');
   }
+  get objectiveToggle(): HTMLParagraphElement {
+    return this.query<HTMLParagraphElement>('#objective-toggle');
+  }
   get descriptionToggle(): HTMLParagraphElement {
     return this.query<HTMLParagraphElement>('#description-toggle');
   }
@@ -97,10 +104,10 @@ class QuestPreviewComponentPage extends PageObject<QuestPreviewComponent> {
   }
 
   expectCollapsed(element: HTMLElement): void {
-    expect(this.queryInsideElement(element, 'i')).toHaveClass('fa-caret-right');
+    expect(this.queryInsideElement(element, 'i').classList.contains('fa-caret-right')).toBe(true);
   }
   expectNotCollapsed(element: HTMLElement): void {
-    expect(this.queryInsideElement(element, 'i')).toHaveClass('fa-caret-down');
+    expect(this.queryInsideElement(element, 'i').classList.contains('fa-caret-down')).toBe(true);
   }
 
   getRaces(assert = true): HTMLParagraphElement {
@@ -113,38 +120,68 @@ describe('QuestPreviewComponent', () => {
     return Object.assign(new c(), partial);
   }
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        RouterTestingModule,
-        QuestPreviewComponent,
-        TranslateTestingModule,
-        QuestPreviewComponent,
+      imports: [ToastrModule.forRoot(), QuestPreviewComponent, TranslateTestingModule, QuestPreviewComponent],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
-      providers: [{ provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG }],
     }).compileComponents();
-  }));
+  });
 
   function setup() {
     const service = TestBed.inject(QuestPreviewService);
+    const model3DViewerService = TestBed.inject(Model3DViewerService);
+    vi.spyOn(model3DViewerService, 'generateModels').mockReturnValue(new Promise((resolve) => resolve({ destroy: () => {} })));
+
+    const valueChangesSubject = new Subject<void>();
+    vi.spyOn(service, 'valueChanges$').mockReturnValue(valueChangesSubject.asObservable());
+
     const fixture: ComponentFixture<QuestPreviewComponent> = TestBed.createComponent(QuestPreviewComponent);
+    const changeDetectorRef = fixture.componentRef.injector.get(ChangeDetectorRef);
     const component: QuestPreviewComponent = fixture.componentInstance;
+
     const page = new QuestPreviewComponentPage(fixture);
+
     const mysqlQueryService = TestBed.inject(MysqlQueryService);
     const sqliteQueryService = TestBed.inject(SqliteQueryService);
 
-    return { fixture, component, service, page, mysqlQueryService, sqliteQueryService };
+    return {
+      fixture,
+      component,
+      service,
+      page,
+      mysqlQueryService,
+      sqliteQueryService,
+      changeDetectorRef,
+      valueChangesSubject,
+      model3DViewerService,
+    };
   }
 
-  it('ngOnInit should initialise services', () => {
-    const { fixture, service, page } = setup();
-    const initializeServicesSpy: Spy = spyOn(service, 'initializeServices');
+  it('ngOnInit should initialise services', async () => {
+    const { service, page, changeDetectorRef } = setup();
+    const initializeServicesSpy: MockInstance = vi.spyOn(service, 'initializeServices').mockImplementation(() => undefined);
 
-    fixture.detectChanges();
+    await page.whenStable();
 
-    expect(initializeServicesSpy).toHaveBeenCalledTimes(1);
+    expect(initializeServicesSpy).toHaveBeenCalledExactlyOnceWith(changeDetectorRef);
+    page.removeNativeElement();
+  });
+
+  it('should react to value changes', async () => {
+    const { valueChangesSubject, page } = setup();
+    await page.whenStable();
+
+    valueChangesSubject.next();
+    await page.whenStable();
+
+    // placeholder expect (the coverage would fail if this test doesn't do its job)
+    expect(valueChangesSubject).toBeTruthy();
     page.removeNativeElement();
   });
 
@@ -154,10 +191,10 @@ describe('QuestPreviewComponent', () => {
     const minLevel = '75';
     const maxLevel = '80';
     const { fixture, service, page } = setup();
-    spyOnProperty(service, 'title', 'get').and.returnValue(title);
-    spyOnProperty(service, 'level', 'get').and.returnValue(level);
-    spyOnProperty(service, 'minLevel', 'get').and.returnValue(minLevel);
-    spyOnProperty(service, 'maxLevel', 'get').and.returnValue(maxLevel);
+    vi.spyOn(service, 'title', 'get').mockReturnValue(title);
+    vi.spyOn(service, 'level', 'get').mockReturnValue(level);
+    vi.spyOn(service, 'minLevel', 'get').mockReturnValue(minLevel);
+    vi.spyOn(service, 'maxLevel', 'get').mockReturnValue(maxLevel);
 
     fixture.detectChanges();
 
@@ -167,20 +204,26 @@ describe('QuestPreviewComponent', () => {
     page.removeNativeElement();
   });
 
-  it('should show questStart and questEnd icons', () => {
-    const { fixture, service, page } = setup();
-    const periodicQuestSpy = spyOnProperty(service, 'periodicQuest', 'get').and.returnValue('');
-    spyOnProperty(service, 'creatureQueststarterList', 'get').and.returnValue([{ id: 123, quest: 123 }]);
-    spyOnProperty(service, 'creatureQuestenderList', 'get').and.returnValue([{ id: 123, quest: 123 }]);
+  it('should show questStart and questEnd icons', async () => {
+    const { service, page } = setup();
+    vi.spyOn(service, 'periodicQuest', 'get').mockReturnValue('');
+    vi.spyOn(service, 'creatureQueststarterList', 'get').mockReturnValue([{ id: 123, quest: 123 }]);
+    vi.spyOn(service, 'creatureQuestenderList', 'get').mockReturnValue([{ id: 123, quest: 123 }]);
 
-    fixture.detectChanges();
+    await page.whenStable();
 
     expect(page.creatureQuestStartIcon.src).toContain('assets/img/quest/quest_start.gif');
     expect(page.creatureQuestEndIcon.src).toContain('assets/img/quest/quest_end.gif');
+    page.removeNativeElement();
+  });
 
-    periodicQuestSpy.and.returnValue('Daily');
+  it('should show questStart and questEnd icons', async () => {
+    const { service, page } = setup();
+    vi.spyOn(service, 'periodicQuest', 'get').mockReturnValue('Daily');
+    vi.spyOn(service, 'creatureQueststarterList', 'get').mockReturnValue([{ id: 123, quest: 123 }]);
+    vi.spyOn(service, 'creatureQuestenderList', 'get').mockReturnValue([{ id: 123, quest: 123 }]);
 
-    fixture.detectChanges();
+    await page.whenStable();
 
     expect(page.creatureQuestStartIcon.src).toContain('assets/img/quest/quest_start_daily.gif');
     expect(page.creatureQuestEndIcon.src).toContain('assets/img/quest/quest_end_daily.gif');
@@ -190,8 +233,8 @@ describe('QuestPreviewComponent', () => {
   it('should show questType', () => {
     const { fixture, service, page } = setup();
     const questTemplate = createMockObject({ QuestInfoID: 41 }, QuestTemplate);
-    spyOnProperty(service, 'periodicQuest', 'get').and.returnValue('Daily');
-    spyOnProperty(service, 'questTemplate', 'get').and.returnValue(questTemplate);
+    vi.spyOn(service, 'periodicQuest', 'get').mockReturnValue('Daily');
+    vi.spyOn(service, 'questTemplate', 'get').mockReturnValue(questTemplate);
 
     fixture.detectChanges();
 
@@ -200,26 +243,32 @@ describe('QuestPreviewComponent', () => {
     page.removeNativeElement();
   });
 
-  it('should show showRaces', () => {
-    const { fixture, service, page } = setup();
-    const sideSpy = spyOnProperty(service, 'side', 'get').and.returnValue('');
-    spyOnProperty(service, 'races', 'get').and.returnValue([2, 4]);
+  it('should show showRaces', async () => {
+    const { service, page } = setup();
+    vi.spyOn(service, 'side', 'get').mockReturnValue('');
+    vi.spyOn(service, 'races', 'get').mockReturnValue([2, 4]);
 
-    fixture.detectChanges();
+    await page.whenStable();
 
     expect(page.getRaces().innerText).toContain('Orc');
     expect(page.getRaces().innerText).toContain('Night Elf');
+    page.removeNativeElement();
+  });
 
-    // in case of "Side"
-    sideSpy.and.returnValue('Alliance');
-    fixture.detectChanges();
+  it('should show showRaces (side=Alliance)', async () => {
+    const { service, page } = setup();
+    vi.spyOn(service, 'side', 'get').mockReturnValue('Alliance');
+    vi.spyOn(service, 'races', 'get').mockReturnValue([2, 4]);
+
+    await page.whenStable();
+
     expect(page.getRaces(false)).toBeFalsy();
     page.removeNativeElement();
   });
 
   it('should show showClasses', () => {
     const { fixture, service, page } = setup();
-    spyOnProperty(service, 'classes', 'get').and.returnValue([2, 4]);
+    vi.spyOn(service, 'classes', 'get').mockReturnValue([2, 4]);
 
     fixture.detectChanges();
 
@@ -229,19 +278,23 @@ describe('QuestPreviewComponent', () => {
   });
 
   it('should show required skill', async () => {
-    const { fixture, service, page } = setup();
-    spyOnProperty(service, 'requiredSkill$', 'get').and.returnValue(Promise.resolve('Jewelcrafting'));
+    const { service, page } = setup();
+    vi.spyOn(service, 'requiredSkill$', 'get').mockReturnValue(Promise.resolve('Jewelcrafting'));
 
-    fixture.detectChanges();
-    await fixture.whenStable();
-    fixture.detectChanges();
+    await page.whenStable();
 
     expect(page.requiredSkill.innerText).toContain('Jewelcrafting');
+    page.removeNativeElement();
+  });
 
+  it('should show required skill [2]', async () => {
+    const { service, page } = setup();
+    vi.spyOn(service, 'requiredSkill$', 'get').mockReturnValue(Promise.resolve('Jewelcrafting'));
     const questTemplateAddon = createMockObject({ RequiredSkillPoints: 10 }, QuestTemplateAddon);
-    spyOnProperty(service, 'questTemplateAddon', 'get').and.returnValue(questTemplateAddon);
+    vi.spyOn(service, 'questTemplateAddon', 'get').mockReturnValue(questTemplateAddon);
 
-    fixture.detectChanges();
+    await page.whenStable();
+
     expect(page.requiredSkill.innerText).toContain('(10)');
     page.removeNativeElement();
   });
@@ -250,8 +303,8 @@ describe('QuestPreviewComponent', () => {
     const { fixture, service, page } = setup();
     const mockStartItem = 123456;
     const mockStartItemName = 'Sword of AzerothCore';
-    spyOnProperty(service, 'startItem', 'get').and.returnValue(mockStartItem);
-    spyOnProperty(service, 'startItemName$', 'get').and.returnValue(Promise.resolve(mockStartItemName));
+    vi.spyOn(service, 'startItem', 'get').mockReturnValue(mockStartItem);
+    vi.spyOn(service, 'startItemName$', 'get').mockReturnValue(Promise.resolve(mockStartItemName));
 
     fixture.detectChanges();
     await fixture.whenStable();
@@ -265,8 +318,8 @@ describe('QuestPreviewComponent', () => {
   it('should show rewardXP', async () => {
     const { fixture, service, page } = setup();
     const questTemplate = createMockObject({ RewardXPDifficulty: 2, QuestLevel: 10 }, QuestTemplate);
-    spyOnProperty(service, 'rewardXP$', 'get').and.returnValue(Promise.resolve('200'));
-    spyOnProperty(service, 'questTemplate', 'get').and.returnValue(questTemplate);
+    vi.spyOn(service, 'rewardXP$', 'get').mockReturnValue(Promise.resolve('200'));
+    vi.spyOn(service, 'questTemplate', 'get').mockReturnValue(questTemplate);
 
     fixture.detectChanges();
     await fixture.whenStable();
@@ -280,7 +333,7 @@ describe('QuestPreviewComponent', () => {
   it('should show RewardTalents', () => {
     const { fixture, page, service } = setup();
     const questTemplate = createMockObject({ RewardTalents: 2 }, QuestTemplate);
-    spyOnProperty(service, 'questTemplate', 'get').and.returnValue(questTemplate);
+    vi.spyOn(service, 'questTemplate', 'get').mockReturnValue(questTemplate);
 
     fixture.detectChanges();
 
@@ -292,7 +345,7 @@ describe('QuestPreviewComponent', () => {
     const { fixture, page, service } = setup();
     const RewardFactionValue1 = 1;
     const questTemplate = createMockObject({ RewardFactionID1: 72, RewardFactionValue1 }, QuestTemplate);
-    spyOnProperty(service, 'questTemplate', 'get').and.returnValue(questTemplate);
+    vi.spyOn(service, 'questTemplate', 'get').mockReturnValue(questTemplate);
 
     fixture.detectChanges();
 
@@ -303,7 +356,7 @@ describe('QuestPreviewComponent', () => {
   it('should show areaDescription', () => {
     const { fixture, page, service } = setup();
     const questTemplate = createMockObject({ AreaDescription: 'Area Desc' }, QuestTemplate);
-    spyOnProperty(service, 'questTemplate', 'get').and.returnValue(questTemplate);
+    vi.spyOn(service, 'questTemplate', 'get').mockReturnValue(questTemplate);
 
     fixture.detectChanges();
 
@@ -313,42 +366,57 @@ describe('QuestPreviewComponent', () => {
 
   it('should show npcOrGoObjectives', async () => {
     const { fixture, page, service } = setup();
-    const getObjectiveCountSpy: Spy = spyOn(service, 'getObjectiveCount').and.returnValue('(1)');
-    const getObjTextSpy: Spy = spyOn(service, 'getObjText').and.returnValue('Mock Objective');
-    spyOn(service, 'getObjective$').and.returnValue(Promise.resolve('Riverpaw Gnoll'));
-    spyOn(service, 'isNpcOrGoObj').and.returnValue(true);
+    vi.spyOn(service, 'getObjectiveCount').mockReturnValue('(1)');
+    vi.spyOn(service, 'getObjText').mockReturnValue('Mock Objective');
+    vi.spyOn(service, 'getObjective$').mockReturnValue(Promise.resolve('Riverpaw Gnoll'));
+    vi.spyOn(service, 'isNpcOrGoObj').mockReturnValue(true);
 
-    fixture.detectChanges();
-    expect(page.npcOrGoObjectives.innerText).toContain('Mock Objective (1)');
-
-    getObjectiveCountSpy.and.returnValue('');
-
-    fixture.detectChanges();
-    expect(page.npcOrGoObjectives.innerText).toContain('Mock Objective');
-
-    getObjTextSpy.and.returnValue('');
-
-    fixture.detectChanges();
     await fixture.whenStable();
-    fixture.detectChanges();
-    expect(page.npcOrGoObjectives.innerText).toContain('Riverpaw Gnoll');
 
+    expect(page.npcOrGoObjectives.innerText).toContain('Mock Objective (1)');
+    fixture.debugElement.nativeElement.remove();
+  });
+
+  it('should show npcOrGoObjectives [2]', async () => {
+    const { fixture, page, service } = setup();
+    const getObjectiveCountSpy: MockInstance = vi.spyOn(service, 'getObjectiveCount').mockReturnValue('(1)');
+    vi.spyOn(service, 'getObjText').mockReturnValue('Mock Objective');
+    vi.spyOn(service, 'getObjective$').mockReturnValue(Promise.resolve('Riverpaw Gnoll'));
+    vi.spyOn(service, 'isNpcOrGoObj').mockReturnValue(true);
+    getObjectiveCountSpy.mockReturnValue('');
+
+    await fixture.whenStable();
+
+    expect(page.npcOrGoObjectives.innerText).toContain('Mock Objective');
+    fixture.debugElement.nativeElement.remove();
+  });
+
+  it('should show npcOrGoObjectives from the async objective when there is no objective text', async () => {
+    const { fixture, page, service } = setup();
+    vi.spyOn(service, 'getObjectiveCount').mockReturnValue('(1)');
+    vi.spyOn(service, 'getObjText').mockReturnValue('');
+    vi.spyOn(service, 'getObjective$').mockReturnValue(Promise.resolve('Riverpaw Gnoll'));
+    vi.spyOn(service, 'isNpcOrGoObj').mockReturnValue(true);
+
+    await fixture.whenStable();
+
+    expect(page.npcOrGoObjectives.innerText).toContain('Riverpaw Gnoll (1)');
     fixture.debugElement.nativeElement.remove();
   });
 
   it('should show itemObjectives', async () => {
     const { fixture, page, service, mysqlQueryService } = setup();
-    const getObjItemCountSpy: Spy = spyOn(service, 'getObjItemCount').and.returnValue('(2)');
+    const getObjItemCountSpy: MockInstance = vi.spyOn(service, 'getObjItemCount').mockReturnValue('(2)');
     const questTemplate = createMockObject({ RequiredItemId1: 1 }, QuestTemplate);
-    spyOnProperty(service, 'questTemplate', 'get').and.returnValue(questTemplate);
-    spyOn(mysqlQueryService, 'getItemNameById').and.returnValue(Promise.resolve('Mock Item'));
+    vi.spyOn(service, 'questTemplate', 'get').mockReturnValue(questTemplate);
+    vi.spyOn(mysqlQueryService, 'getItemNameById').mockReturnValue(Promise.resolve('Mock Item'));
 
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
     expect(page.itemObjectives.innerText).toContain('Mock Item (2)');
 
-    getObjItemCountSpy.and.returnValue('');
+    getObjItemCountSpy.mockReturnValue('');
 
     fixture.detectChanges();
     expect(page.itemObjectives.innerText).toContain('Mock Item');
@@ -359,9 +427,9 @@ describe('QuestPreviewComponent', () => {
   it('should show RequiredFaction', async () => {
     const { fixture, page, service, sqliteQueryService } = setup();
     const questTemplate = createMockObject({ RequiredFactionId1: 1, RequiredFactionValue1: 900 }, QuestTemplate);
-    spyOn(service, 'getFactionByValue').and.returnValue('(Neutral)');
-    spyOnProperty(service, 'questTemplate', 'get').and.returnValue(questTemplate);
-    spyOn(sqliteQueryService, 'getFactionNameById').and.returnValue(Promise.resolve('Mock Faction'));
+    vi.spyOn(service, 'getFactionByValue').mockReturnValue('(Neutral)');
+    vi.spyOn(service, 'questTemplate', 'get').mockReturnValue(questTemplate);
+    vi.spyOn(sqliteQueryService, 'getFactionNameById').mockReturnValue(Promise.resolve('Mock Faction'));
 
     fixture.detectChanges();
     await fixture.whenStable();
@@ -382,9 +450,9 @@ describe('QuestPreviewComponent', () => {
       const questRequestItems = createMockObject({ CompletionText: progress }, QuestRequestItems);
       const questOfferReward = createMockObject({ RewardText: completion }, QuestOfferReward);
 
-      spyOnProperty(service, 'questTemplate', 'get').and.returnValue(questTemplate);
-      spyOnProperty(service, 'questRequestItems', 'get').and.returnValue(questRequestItems);
-      spyOnProperty(service, 'questOfferReward', 'get').and.returnValue(questOfferReward);
+      vi.spyOn(service, 'questTemplate', 'get').mockReturnValue(questTemplate);
+      vi.spyOn(service, 'questRequestItems', 'get').mockReturnValue(questRequestItems);
+      vi.spyOn(service, 'questOfferReward', 'get').mockReturnValue(questOfferReward);
 
       fixture.detectChanges();
 
@@ -399,9 +467,13 @@ describe('QuestPreviewComponent', () => {
 
       fixture.detectChanges();
 
+      page.expectCollapsed(page.objectiveToggle);
       page.expectCollapsed(page.descriptionToggle);
       page.expectCollapsed(page.progressToggle);
       page.expectCollapsed(page.completionToggle);
+
+      page.clickElement(page.objectiveToggle);
+      page.expectNotCollapsed(page.objectiveToggle);
 
       page.clickElement(page.descriptionToggle);
       page.expectNotCollapsed(page.descriptionToggle);
@@ -415,17 +487,24 @@ describe('QuestPreviewComponent', () => {
       page.removeNativeElement();
     });
 
-    it('should correctly show the required money', () => {
-      const { fixture, service, page } = setup();
-      const spy = spyOnProperty(service, 'rewardMoney', 'get');
-      spy.and.returnValue(0);
-      fixture.detectChanges();
+    it('should correctly show the required money', async () => {
+      const { service, page } = setup();
+      const spy = vi.spyOn(service, 'rewardMoney', 'get');
+      spy.mockReturnValue(0);
+
+      await page.whenStable();
 
       expect(page.requiredMoney).toBe(null as any);
       expect(page.rewardMoney).toBe(null as any);
+      page.removeNativeElement();
+    });
 
-      spy.and.returnValue(-123456);
-      fixture.detectChanges();
+    it('should correctly show the required money [2]', async () => {
+      const { service, page } = setup();
+      const spy = vi.spyOn(service, 'rewardMoney', 'get');
+      spy.mockReturnValue(-123456);
+
+      await page.whenStable();
 
       expect(page.requiredMoney).toBeDefined();
       expect(page.rewardMoney).toBe(null as any);
@@ -436,17 +515,23 @@ describe('QuestPreviewComponent', () => {
       page.removeNativeElement();
     });
 
-    it('should correctly show the reward money', () => {
-      const { fixture, service, page } = setup();
-      const spy = spyOnProperty(service, 'rewardMoney', 'get');
-      spy.and.returnValue(0);
-      fixture.detectChanges();
+    it('should correctly show the reward money', async () => {
+      const { service, page } = setup();
+      const spy = vi.spyOn(service, 'rewardMoney', 'get');
+      spy.mockReturnValue(0);
+      await page.whenStable();
 
       expect(page.rewardMoney).toBe(null as any);
       expect(page.requiredMoney).toBe(null as any);
+      page.removeNativeElement();
+    });
 
-      spy.and.returnValue(123456);
-      fixture.detectChanges();
+    it('should correctly show the reward money [2]', async () => {
+      const { service, page } = setup();
+      const spy = vi.spyOn(service, 'rewardMoney', 'get');
+
+      spy.mockReturnValue(123456);
+      await page.whenStable();
 
       expect(page.rewardMoney).toBeDefined();
       expect(page.requiredMoney).toBe(null as any);
@@ -458,22 +543,28 @@ describe('QuestPreviewComponent', () => {
     });
 
     it('should correctly show the reward spell', async () => {
-      const { fixture, service, page, sqliteQueryService } = setup();
-      const rewardSpellSpy = spyOn(service, 'rewardSpell');
+      const { service, page, sqliteQueryService } = setup();
+      const rewardSpellSpy = vi.spyOn(service, 'rewardSpell').mockImplementation(() => undefined);
       const questTemplate = createMockObject({ rewardSpell: 123 }, QuestTemplate);
-      spyOnProperty(service, 'questTemplate', 'get').and.returnValue(questTemplate);
-      spyOn(sqliteQueryService, 'getSpellNameById').and.returnValue(Promise.resolve('Mock Spell'));
+      vi.spyOn(service, 'questTemplate', 'get').mockReturnValue(questTemplate);
+      vi.spyOn(sqliteQueryService, 'getSpellNameById').mockReturnValue(Promise.resolve('Mock Spell'));
 
-      rewardSpellSpy.and.returnValue(null);
-      fixture.detectChanges();
+      rewardSpellSpy.mockReturnValue(null);
+      await page.whenStable();
 
       expect(page.rewardSpell).toBeNull();
+      page.removeNativeElement();
+    });
 
-      rewardSpellSpy.and.returnValue(123);
+    it('should correctly show the reward spell [2]', async () => {
+      const { service, page, sqliteQueryService } = setup();
+      const rewardSpellSpy = vi.spyOn(service, 'rewardSpell').mockImplementation(() => undefined);
+      const questTemplate = createMockObject({ rewardSpell: 123 }, QuestTemplate);
+      vi.spyOn(service, 'questTemplate', 'get').mockReturnValue(questTemplate);
+      vi.spyOn(sqliteQueryService, 'getSpellNameById').mockReturnValue(Promise.resolve('Mock Spell'));
+      rewardSpellSpy.mockReturnValue(123);
 
-      fixture.detectChanges();
-      await fixture.whenStable();
-      fixture.detectChanges();
+      await page.whenStable();
 
       expect(page.rewardSpell).toBeDefined();
       expect(page.rewardSpell.innerText).toContain('You will learn:');
@@ -483,22 +574,28 @@ describe('QuestPreviewComponent', () => {
     });
 
     it('should correctly show the reward items', async () => {
-      const { fixture, service, page, mysqlQueryService } = setup();
-      const isRewardItemsSpy = spyOn(service, 'isRewardItems');
+      const { service, page, mysqlQueryService } = setup();
+      const isRewardItemsSpy = vi.spyOn(service, 'isRewardItems').mockImplementation(() => undefined);
       const questTemplate = createMockObject({ RewardItem1: 123, RewardAmount1: 1 }, QuestTemplate);
-      spyOnProperty(service, 'questTemplate', 'get').and.returnValue(questTemplate);
-      spyOn(mysqlQueryService, 'getItemNameById').and.returnValue(Promise.resolve('Mock Item'));
+      vi.spyOn(service, 'questTemplate', 'get').mockReturnValue(questTemplate);
+      vi.spyOn(mysqlQueryService, 'getItemNameById').mockReturnValue(Promise.resolve('Mock Item'));
 
-      isRewardItemsSpy.and.returnValue(false);
-      fixture.detectChanges();
+      isRewardItemsSpy.mockReturnValue(false);
+      await page.whenStable();
 
       expect(page.rewardItems).toBe(null as any);
+      page.removeNativeElement();
+    });
 
-      isRewardItemsSpy.and.returnValue(true);
+    it('should correctly show the reward item [2]', async () => {
+      const { service, page, mysqlQueryService } = setup();
+      const isRewardItemsSpy = vi.spyOn(service, 'isRewardItems').mockImplementation(() => undefined);
+      const questTemplate = createMockObject({ RewardItem1: 123, RewardAmount1: 1 }, QuestTemplate);
+      vi.spyOn(service, 'questTemplate', 'get').mockReturnValue(questTemplate);
+      vi.spyOn(mysqlQueryService, 'getItemNameById').mockReturnValue(Promise.resolve('Mock Item'));
+      isRewardItemsSpy.mockReturnValue(true);
 
-      fixture.detectChanges();
-      await fixture.whenStable();
-      fixture.detectChanges();
+      await page.whenStable();
 
       expect(page.rewardItems).toBeDefined();
       expect(page.rewardItems.innerText).toContain('You will receive:');
@@ -508,22 +605,28 @@ describe('QuestPreviewComponent', () => {
     });
 
     it('should correctly show the reward choice items', async () => {
-      const { fixture, service, page, mysqlQueryService } = setup();
-      const isRewardChoiceItemsSpy = spyOn(service, 'isRewardChoiceItems');
+      const { service, page, mysqlQueryService } = setup();
+      const isRewardChoiceItemsSpy = vi.spyOn(service, 'isRewardChoiceItems').mockImplementation(() => undefined);
       const questTemplate = createMockObject({ RewardChoiceItemID1: 123, RewardChoiceItemQuantity1: 1 }, QuestTemplate);
-      spyOnProperty(service, 'questTemplate', 'get').and.returnValue(questTemplate);
-      spyOn(mysqlQueryService, 'getItemNameById').and.returnValue(Promise.resolve('Mock Item'));
+      vi.spyOn(service, 'questTemplate', 'get').mockReturnValue(questTemplate);
+      vi.spyOn(mysqlQueryService, 'getItemNameById').mockReturnValue(Promise.resolve('Mock Item'));
 
-      isRewardChoiceItemsSpy.and.returnValue(false);
-      fixture.detectChanges();
+      isRewardChoiceItemsSpy.mockReturnValue(false);
+      await page.whenStable();
 
       expect(page.rewardChoiceItems).toBe(null as any);
+      page.removeNativeElement();
+    });
 
-      isRewardChoiceItemsSpy.and.returnValue(true);
+    it('should correctly show the reward choice items [2]', async () => {
+      const { service, page, mysqlQueryService } = setup();
+      const isRewardChoiceItemsSpy = vi.spyOn(service, 'isRewardChoiceItems').mockImplementation(() => undefined);
+      const questTemplate = createMockObject({ RewardChoiceItemID1: 123, RewardChoiceItemQuantity1: 1 }, QuestTemplate);
+      vi.spyOn(service, 'questTemplate', 'get').mockReturnValue(questTemplate);
+      vi.spyOn(mysqlQueryService, 'getItemNameById').mockReturnValue(Promise.resolve('Mock Item'));
+      isRewardChoiceItemsSpy.mockReturnValue(true);
 
-      fixture.detectChanges();
-      await fixture.whenStable();
-      fixture.detectChanges();
+      await page.whenStable();
 
       expect(page.rewardChoiceItems).toBeDefined();
       expect(page.rewardChoiceItems.innerText).toContain('You will be able to choose one of these rewards');

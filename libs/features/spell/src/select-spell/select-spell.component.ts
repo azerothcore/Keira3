@@ -20,7 +20,6 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './select-spell.component.html',
-  standalone: true,
   imports: [
     TopBarComponent,
     CreateComponent,

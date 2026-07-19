@@ -1,16 +1,21 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { vi } from 'vitest';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MysqlQueryService } from '@keira/shared/db-layer';
-import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { QuestOfferReward } from '@keira/shared/acore-world-model';
+import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
+import { MysqlQueryService } from '@keira/shared/db-layer';
+import { Model3DViewerService } from '@keira/shared/model-3d-viewer';
+import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { tickAsync } from 'ngx-page-object-model';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { QuestHandlerService } from '../quest-handler.service';
+import { QUEST_PREVIEW_DEBOUNCE_TIME } from '../quest-preview/quest-preview.component';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { QuestOfferRewardComponent } from './quest-offer-reward.component';
-import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 
 class QuestOfferRewardPage extends EditorPageObject<QuestOfferRewardComponent> {
   get completionText(): HTMLDivElement {
@@ -38,19 +43,17 @@ describe('QuestOfferReward integration tests', () => {
   originalEntity.EmoteDelay4 = 9;
   originalEntity.RewardText = '10';
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        RouterTestingModule,
-        QuestOfferRewardComponent,
-        TranslateTestingModule,
+      imports: [ToastrModule.forRoot(), ModalModule, RouterTestingModule, QuestOfferRewardComponent, TranslateTestingModule],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
+        { provide: Model3DViewerService, useValue: { generateModels: () => new Promise((resolve) => resolve({ destroy: () => {} })) } },
       ],
-      providers: [{ provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG }],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     const handlerService = TestBed.inject(QuestHandlerService);
@@ -58,14 +61,14 @@ describe('QuestOfferReward integration tests', () => {
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalEntity]));
     // by default the other editor services should not be initialised, because the selectAll would return the wrong types for them
-    const initializeServicesSpy = spyOn(TestBed.inject(QuestPreviewService), 'initializeServices');
+    const initializeServicesSpy = vi.spyOn(TestBed.inject(QuestPreviewService), 'initializeServices').mockImplementation(() => undefined);
     if (creatingNew) {
       // when creatingNew, the selectAll will return an empty array, so it's fine
-      initializeServicesSpy.and.callThrough();
+      initializeServicesSpy.mockRestore();
     }
 
     const fixture = TestBed.createComponent(QuestOfferRewardComponent);
@@ -89,11 +92,11 @@ describe('QuestOfferReward integration tests', () => {
     it('should correctly update the unsaved status', () => {
       const { page, handlerService } = setup(true);
       const field = 'Emote1';
-      expect(handlerService.isQuestOfferRewardUnsaved).toBe(false);
+      expect(handlerService.isQuestOfferRewardUnsaved()).toBe(false);
       page.setInputValueById(field, 3);
-      expect(handlerService.isQuestOfferRewardUnsaved).toBe(true);
+      expect(handlerService.isQuestOfferRewardUnsaved()).toBe(true);
       page.setInputValueById(field, 0);
-      expect(handlerService.isQuestOfferRewardUnsaved).toBe(false);
+      expect(handlerService.isQuestOfferRewardUnsaved()).toBe(false);
       page.removeNativeElement();
     });
 
@@ -104,7 +107,7 @@ describe('QuestOfferReward integration tests', () => {
         'INSERT INTO `quest_offer_reward` (`ID`, `Emote1`, `Emote2`, `Emote3`, `Emote4`, ' +
         '`EmoteDelay1`, `EmoteDelay2`, `EmoteDelay3`, `EmoteDelay4`, `RewardText`, `VerifiedBuild`) VALUES\n' +
         "(1234, 33, 0, 0, 0, 0, 0, 0, 0, '', 0);";
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.setInputValueById('Emote1', 33);
       page.expectFullQueryToContain(expectedQuery);
@@ -112,15 +115,17 @@ describe('QuestOfferReward integration tests', () => {
       page.clickExecuteQuery();
 
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
       page.removeNativeElement();
     });
 
-    it('changing a property should be reflected in the quest preview', () => {
+    it('changing a property should be reflected in the quest preview', async () => {
       const { page } = setup(true);
       const value = 'Fix all AzerothCore bugs';
 
       page.setInputValueById('RewardText', value);
+      await tickAsync(QUEST_PREVIEW_DEBOUNCE_TIME);
+      await page.fixture.whenStable();
 
       expect(page.completionText.innerText).toContain(value);
       page.removeNativeElement();
@@ -146,14 +151,14 @@ describe('QuestOfferReward integration tests', () => {
       const expectedQuery =
         'UPDATE `quest_offer_reward` SET `Emote1` = 0, `Emote2` = 1, `Emote3` = 2, `Emote4` = 3, ' +
         "`EmoteDelay1` = 4, `EmoteDelay2` = 5, `EmoteDelay3` = 6, `EmoteDelay4` = 7, `RewardText` = '8' WHERE (`ID` = 1234);";
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.expectDiffQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
       page.removeNativeElement();
     });
 
@@ -179,7 +184,7 @@ describe('QuestOfferReward integration tests', () => {
       page.removeNativeElement();
     });
 
-    xit('changing a value via SingleValueSelector should correctly work', waitForAsync(async () => {
+    it.skip('changing a value via SingleValueSelector should correctly work', async () => {
       const { page } = setup(false);
       const field = 'Emote1';
       page.clickElement(page.getSelectorBtn(field));
@@ -202,6 +207,6 @@ describe('QuestOfferReward integration tests', () => {
           "(1234, 4, 3, 4, 5, 6, 7, 8, 9, '10', 0);",
       );
       page.removeNativeElement();
-    }));
+    });
   });
 });

@@ -6,7 +6,16 @@
   @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
     <div>
       <div class="content-block">
-        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)" />
+        <keira-query-output
+          [docUrl]="docUrl"
+          [isNew]="editorService.isNew"
+          [diffQuery]="editorService.diffQuery"
+          [fullQuery]="editorService.fullQuery"
+          [error]="editorService.error"
+          [entityTable]="editorService.entityTable"
+          [editorService]="editorService"
+          (executeQuery)="save($event)"
+        />
       </div>
       <form [formGroup]="editorService.form" class="form-group edit-form">
         <div class="content-block">
@@ -40,7 +49,9 @@
                 [tooltip]="
                   selectedSourceType === CONDITION_SOURCE_TYPES.SOURCE_TYPE_SMART_EVENT
                     ? 'smart_scripts.source_type'
-                    : ('ALWAYS_0' | translate)
+                    : selectedSourceType === CONDITION_SOURCE_TYPES.SOURCE_TYPE_OBJECT_VISIBILITY
+                      ? 'creature.guid or gameobject.guid'
+                      : ('ALWAYS_0' | translate)
                 "
               ></i>
               <input [formControlName]="'SourceId'" id="SourceId" type="number" class="form-control form-control-sm" />

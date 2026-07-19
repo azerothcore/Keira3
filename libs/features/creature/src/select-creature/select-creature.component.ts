@@ -19,7 +19,6 @@ import { CreateComponent, HighlightjsWrapperComponent, TopBarComponent } from '@
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './select-creature.component.html',
   styleUrls: ['./select-creature.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     CreateComponent,

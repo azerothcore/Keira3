@@ -7,7 +7,16 @@
 
   <div [hidden]="!editorService.form || !editorService.loadedEntityId || editorService.loading">
     <div class="content-block">
-      <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)" />
+      <keira-query-output
+        [docUrl]="docUrl"
+        [isNew]="editorService.isNew"
+        [diffQuery]="editorService.diffQuery"
+        [fullQuery]="editorService.fullQuery"
+        [error]="editorService.error"
+        [entityTable]="editorService.entityTable"
+        [editorService]="editorService"
+        (executeQuery)="save($event)"
+      />
     </div>
 
     <div class="content-block">

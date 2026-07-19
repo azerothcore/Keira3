@@ -1,6 +1,6 @@
 <div class="preview-container" [class.show-preview]="service.showPreview" [class.hide-preview]="!service.showPreview">
   <div class="transparent perfect-scrollbar">
-    <div class="preview-content quest-preview">
+    <div class="quest-preview">
       @if (!!service.title) {
         <h5 id="title">{{ service.title }}</h5>
       }
@@ -75,48 +75,172 @@
           <strong class="colored"> {{ service.questStarterItem$ | async }}</strong> <span class="greyed"> [{{ qitem }}]</span>
         </p>
       }
-      @if (service.creatureQueststarterList.length > 0) {
-        <div id="npc-start">
-          @for (q of service.creatureQueststarterList; track q) {
-            <p>
-              <img [src]="'assets/img/quest/' + questStartIcon" id="creatureQuestStartIcon" /> NPC Start:
-              <strong class="colored">{{ service.mysqlQueryService.getCreatureNameById(q.id) | async }}</strong>
-              <span class="greyed"> [{{ q.id }}]</span>
-            </p>
+      @if (hasStartEndModels || startEndMapPoints().length > 0) {
+        <div class="location-section d-flex flex-wrap gap-3 align-items-start mt-3">
+          <div class="location-models">
+            @if (service.creatureQueststarterList.length > 0) {
+              <div id="npc-start">
+                @for (q of service.creatureQueststarterList; track q) {
+                  <p class="cursor-pointer" (click)="npcStartToggles[q.id] = !npcStartToggles[q.id]">
+                    <i class="fa" [class.fa-caret-right]="npcStartToggles[q.id]" [class.fa-caret-down]="!npcStartToggles[q.id]"></i>
+                    <img [src]="'assets/img/quest/' + questStartIcon" id="creatureQuestStartIcon" /> NPC Start:
+                    <strong class="colored">{{ service.mysqlQueryService.getCreatureNameById(q.id) | async }}</strong>
+                    <span class="greyed"> [{{ q.id }}]</span>
+                  </p>
+                  @let npcDisplayId = service.mysqlQueryService.getCreatureDisplayIdById(q.id) | async;
+                  @if (npcDisplayId !== null) {
+                    <div [collapse]="npcStartToggles[q.id]">
+                      <keira-model-3d-viewer [viewerType]="NPC_VIEWER_TYPE" [displayId]="npcDisplayId" />
+                    </div>
+                  }
+                }
+              </div>
+            }
+            @if (service.gameobjectQueststarterList.length > 0) {
+              <div id="go-start">
+                @for (q of service.gameobjectQueststarterList; track q) {
+                  <p class="cursor-pointer" (click)="gameobjectStartToggles[q.id] = !gameobjectStartToggles[q.id]">
+                    <i
+                      class="fa"
+                      [class.fa-caret-right]="gameobjectStartToggles[q.id]"
+                      [class.fa-caret-down]="!gameobjectStartToggles[q.id]"
+                    ></i>
+                    <img [src]="'assets/img/quest/' + questStartIcon" id="gameobjectQuestStartIcon" /> GO Start:
+                    <strong class="colored">{{ service.mysqlQueryService.getGameObjectNameById(q.id) | async }}</strong>
+                    <span class="greyed"> [{{ q.id }}]</span>
+                  </p>
+                  @let gameobjectDisplayId = service.mysqlQueryService.getGameobjectDisplayIdById(q.id) | async;
+                  @if (gameobjectDisplayId !== null) {
+                    <div [collapse]="gameobjectStartToggles[q.id]">
+                      <keira-model-3d-viewer [viewerType]="OBJECT_VIEWER_TYPE" [displayId]="gameobjectDisplayId" />
+                    </div>
+                  }
+                }
+              </div>
+            }
+            <!-- Quest ender -->
+            @if (service.creatureQuestenderList.length > 0) {
+              <div id="npc-end">
+                @for (q of service.creatureQuestenderList; track q) {
+                  <p class="cursor-pointer" (click)="npcEndToggles[q.id] = !npcEndToggles[q.id]">
+                    <i class="fa" [class.fa-caret-right]="npcEndToggles[q.id]" [class.fa-caret-down]="!npcEndToggles[q.id]"></i>
+                    <img [src]="'assets/img/quest/' + questEndIcon" id="creatureQuestEndIcon" /> NPC End:
+                    <strong class="colored">{{ service.mysqlQueryService.getCreatureNameById(q.id) | async }}</strong>
+                    <span class="greyed"> [{{ q.id }}]</span>
+                  </p>
+                  @let creatureDisplayId = service.mysqlQueryService.getCreatureDisplayIdById(q.id) | async;
+                  @if (creatureDisplayId !== null) {
+                    <div [collapse]="npcEndToggles[q.id]">
+                      <keira-model-3d-viewer [viewerType]="NPC_VIEWER_TYPE" [displayId]="creatureDisplayId" />
+                    </div>
+                  }
+                }
+              </div>
+            }
+            @if (service.gameobjectQuestenderList.length > 0) {
+              <div id="go-end">
+                @for (q of service.gameobjectQuestenderList; track q) {
+                  <p class="cursor-pointer" (click)="gameobjectEndToggles[q.id] = !gameobjectEndToggles[q.id]">
+                    <i
+                      class="fa"
+                      [class.fa-caret-right]="gameobjectEndToggles[q.id]"
+                      [class.fa-caret-down]="!gameobjectEndToggles[q.id]"
+                    ></i>
+                    <img [src]="'assets/img/quest/' + questEndIcon" id="gameobjectQuestEndIcon" /> GO End:
+                    <strong class="colored">{{ service.mysqlQueryService.getGameObjectNameById(q.id) | async }}</strong>
+                    <span class="greyed"> [{{ q.id }}]</span>
+                  </p>
+                  @let gameobjectDisplayId = service.mysqlQueryService.getGameobjectDisplayIdById(q.id) | async;
+                  @if (gameobjectDisplayId !== null) {
+                    <div [collapse]="gameobjectEndToggles[q.id]">
+                      <keira-model-3d-viewer [viewerType]="OBJECT_VIEWER_TYPE" [displayId]="gameobjectDisplayId" />
+                    </div>
+                  }
+                }
+              </div>
+            }
+          </div>
+          @if (startEndMapPoints().length > 0) {
+            <div class="location-map">
+              <p class="title">Locations</p>
+              <keira-map-viewer [points]="startEndMapPoints()" [compact]="true" />
+            </div>
           }
         </div>
       }
-      @if (service.gameobjectQueststarterList.length > 0) {
-        <div id="go-start">
-          @for (q of service.gameobjectQueststarterList; track q) {
-            <p>
-              <img [src]="'assets/img/quest/' + questStartIcon" id="gameobjectQuestStartIcon" /> GO Start:
-              <strong class="colored">{{ service.mysqlQueryService.getGameObjectNameById(q.id) | async }}</strong>
-              <span class="greyed"> [{{ q.id }}]</span>
-            </p>
+      @for (obj of reqNpcOrGoObjectives; track obj.index) {
+        @let objPoints = objectivePointsFor(obj.index);
+        <div class="location-section d-flex flex-wrap gap-3 align-items-start mt-3">
+          <div class="location-models">
+            @if (obj.isGameobject) {
+              @let goDisplayId = service.mysqlQueryService.getGameobjectDisplayIdById(obj.id) | async;
+              <p class="cursor-pointer" (click)="objectiveToggles[obj.index] = !objectiveToggles[obj.index]">
+                <i class="fa" [class.fa-caret-right]="objectiveToggles[obj.index]" [class.fa-caret-down]="!objectiveToggles[obj.index]"></i>
+                Req. GO {{ obj.index }}:
+                <strong class="colored">{{ service.mysqlQueryService.getGameObjectNameById(obj.id) | async }}</strong>
+                <span class="greyed"> [{{ obj.id }}]</span>
+              </p>
+              @if (goDisplayId !== null) {
+                <div [collapse]="objectiveToggles[obj.index]">
+                  <keira-model-3d-viewer [viewerType]="OBJECT_VIEWER_TYPE" [displayId]="goDisplayId" />
+                </div>
+              }
+            } @else {
+              @let npcDisplayId = service.mysqlQueryService.getCreatureDisplayIdById(obj.id) | async;
+              <p class="cursor-pointer" (click)="objectiveToggles[obj.index] = !objectiveToggles[obj.index]">
+                <i class="fa" [class.fa-caret-right]="objectiveToggles[obj.index]" [class.fa-caret-down]="!objectiveToggles[obj.index]"></i>
+                Req. NPC {{ obj.index }}:
+                <strong class="colored">{{ service.mysqlQueryService.getCreatureNameById(obj.id) | async }}</strong>
+                <span class="greyed"> [{{ obj.id }}]</span>
+              </p>
+              @if (npcDisplayId !== null) {
+                <div [collapse]="objectiveToggles[obj.index]">
+                  <keira-model-3d-viewer [viewerType]="NPC_VIEWER_TYPE" [displayId]="npcDisplayId" />
+                </div>
+              }
+            }
+          </div>
+          @if (objPoints.length > 0) {
+            <div class="location-map">
+              <p class="title">Location</p>
+              <keira-map-viewer [points]="objPoints" [compact]="true" />
+            </div>
           }
         </div>
       }
-      <!-- Quest ender -->
-      @if (service.creatureQuestenderList.length > 0) {
-        <div id="npc-end">
-          @for (q of service.creatureQuestenderList; track q) {
-            <p>
-              <img [src]="'assets/img/quest/' + questEndIcon" id="creatureQuestEndIcon" /> NPC End:
-              <strong class="colored">{{ service.mysqlQueryService.getCreatureNameById(q.id) | async }}</strong>
-              <span class="greyed"> [{{ q.id }}]</span>
+      @for (item of itemMapData(); track item.index) {
+        <div class="location-section d-flex flex-wrap gap-3 align-items-start mt-3">
+          <div class="location-models">
+            <p class="cursor-pointer" (click)="itemToggles[item.index] = !itemToggles[item.index]">
+              <i class="fa" [class.fa-caret-right]="itemToggles[item.index]" [class.fa-caret-down]="!itemToggles[item.index]"></i>
+              <strong class="colored">{{ service.mysqlQueryService.getItemNameById(item.itemId) | async }}</strong>
+              <span class="greyed"> [{{ item.itemId }}]</span>
+              <keira-icon [size]="'small'" [itemId]="item.itemId" />
+              , dropped by:
+              <strong class="colored">{{ item.dropperName }}</strong>
+              <span class="greyed"> [{{ item.dropperId }}]</span>
             </p>
-          }
-        </div>
-      }
-      @if (service.gameobjectQuestenderList.length > 0) {
-        <div id="go-end">
-          @for (q of service.gameobjectQuestenderList; track q) {
-            <p>
-              <img [src]="'assets/img/quest/' + questEndIcon" id="gameobjectQuestEndIcon" /> GO End:
-              <strong class="colored">{{ service.mysqlQueryService.getGameObjectNameById(q.id) | async }}</strong>
-              <span class="greyed"> [{{ q.id }}]</span>
-            </p>
+            @if (item.isGameobject) {
+              @let goDropperDisplayId = service.mysqlQueryService.getGameobjectDisplayIdById(item.dropperId) | async;
+              @if (goDropperDisplayId !== null) {
+                <div [collapse]="itemToggles[item.index]">
+                  <keira-model-3d-viewer [viewerType]="OBJECT_VIEWER_TYPE" [displayId]="goDropperDisplayId" />
+                </div>
+              }
+            } @else {
+              @let npcDropperDisplayId = service.mysqlQueryService.getCreatureDisplayIdById(item.dropperId) | async;
+              @if (npcDropperDisplayId !== null) {
+                <div [collapse]="itemToggles[item.index]">
+                  <keira-model-3d-viewer [viewerType]="NPC_VIEWER_TYPE" [displayId]="npcDropperDisplayId" />
+                </div>
+              }
+            }
+          </div>
+          @if (item.points.length > 0) {
+            <div class="location-map">
+              <p class="title">Location</p>
+              <keira-map-viewer [points]="item.points" [compact]="true" />
+            </div>
           }
         </div>
       }
@@ -186,73 +310,38 @@
         </ul>
       }
 
-      <div id="objectives">
-        <p class="title">Objectives</p>
-
-        <div class="greyed text-sm">
-          {{ service.objectiveText }}
-        </div>
-        @if (!!service.questTemplate.AreaDescription) {
-          <p class="greyed text-sm mt-3" id="areaDescription">
-            {{ service.questTemplate.AreaDescription }}
-          </p>
-        }
-
-        <div class="mt-2" id="npcOrGoObjectives">
-          @for (i of [1, 2, 3, 4]; track i) {
-            @if (service.isNpcOrGoObj(i)) {
-              <p>
-                • <span class="colored">{{ !!service.getObjText(i) ? service.getObjText(i) : (service.getObjective$(i) | async) }}</span>
-                {{ service.getObjectiveCount(i) }}
-              </p>
-            }
-          }
-        </div>
-
-        <div class="mt-2" id="itemObjectives">
-          @for (i of [1, 2, 3, 4, 5, 6]; track i) {
-            @if (service.questTemplate['RequiredItemId' + i]; as reqItem) {
-              <p>
-                • <keira-icon [size]="'small'" [itemId]="reqItem" /> &nbsp;<span class="colored">{{
-                  service.mysqlQueryService.getItemNameById(reqItem) | async
-                }}</span>
-                {{ service.getObjItemCount(i) }}
-              </p>
-            }
-          }
-        </div>
-
-        <div class="mt-2" id="RequiredFaction">
-          @for (i of [1, 2]; track i) {
-            @if (service.questTemplate['RequiredFactionId' + i]; as reqFaction) {
-              <p>
-                • <span class="colored">{{ service.sqliteQueryService.getFactionNameById(reqFaction) | async }}</span>
-                {{ service.getFactionByValue(i) }}
-              </p>
-            }
-          }
-        </div>
+      <p class="title text-left cursor-pointer mt-3" (click)="objectiveToggle.set(!objectiveToggle())" id="objective-toggle">
+        <i class="fa" [class.fa-caret-right]="objectiveToggle()" [class.fa-caret-down]="!objectiveToggle()"></i> Objective
+      </p>
+      <div [collapse]="objectiveToggle()" class="greyed text-sm" id="objective-text">
+        <keira-quest-objectives
+          [objectiveText]="service.objectiveText"
+          [areaDescription]="service.questTemplate.AreaDescription"
+          [npcObjectives]="npcObjectivesData"
+          [itemObjectives]="itemObjectivesData"
+          [factionRequirements]="factionRequirementsData"
+        />
       </div>
 
-      <p class="title text-left cursor-pointer mt-3" (click)="descriptionToggle = !descriptionToggle" id="description-toggle">
-        <i class="fa" [class.fa-caret-right]="descriptionToggle" [class.fa-caret-down]="!descriptionToggle"></i> Description
+      <p class="title text-left cursor-pointer mt-3" (click)="descriptionToggle.set(!descriptionToggle())" id="description-toggle">
+        <i class="fa" [class.fa-caret-right]="descriptionToggle()" [class.fa-caret-down]="!descriptionToggle()"></i> Description
       </p>
-      <div [collapse]="descriptionToggle" class="greyed text-sm" id="description-text">
-        {{ service.questTemplate.QuestDescription }}
+      <div [collapse]="descriptionToggle()" class="greyed text-sm" id="description-text">
+        {{ service.descriptionText }}
       </div>
 
-      <p class="title text-left cursor-pointer" (click)="progressToggle = !progressToggle" id="progress-toggle">
-        <i class="fa" [class.fa-caret-right]="progressToggle" [class.fa-caret-down]="!progressToggle"></i> Progress (CompletionText)
+      <p class="title text-left cursor-pointer" (click)="progressToggle.set(!progressToggle())" id="progress-toggle">
+        <i class="fa" [class.fa-caret-right]="progressToggle()" [class.fa-caret-down]="!progressToggle()"></i> Progress (CompletionText)
       </p>
-      <div [collapse]="progressToggle" class="greyed text-sm" id="progress-text">
-        {{ service.questRequestItems.CompletionText }}
+      <div [collapse]="progressToggle()" class="greyed text-sm" id="progress-text">
+        {{ service.completionText }}
       </div>
 
-      <p class="title text-left cursor-pointer" (click)="completionToggle = !completionToggle" id="completion-toggle">
-        <i class="fa" [class.fa-caret-right]="completionToggle" [class.fa-caret-down]="!completionToggle"></i> Completion (RewardText)
+      <p class="title text-left cursor-pointer" (click)="completionToggle.set(!completionToggle())" id="completion-toggle">
+        <i class="fa" [class.fa-caret-right]="completionToggle()" [class.fa-caret-down]="!completionToggle()"></i> Completion (RewardText)
       </p>
-      <div [collapse]="completionToggle" class="greyed text-sm" id="completion-text">
-        {{ service.questOfferReward.RewardText }}
+      <div [collapse]="completionToggle()" class="greyed text-sm" id="completion-text">
+        {{ service.rewardText }}
       </div>
 
       @if (service.isReward()) {

@@ -1,5 +1,6 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, viewChild, provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FormGroup } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
@@ -31,26 +32,25 @@ describe('SpellDbcEffectsComponent', () => {
 
   @Component({
     template: '<keira-spell-dbc-effects [formGroup]="form" />',
-    standalone: true,
     imports: [RouterTestingModule, TranslateTestingModule, SpellDbcEffectsComponent],
   })
   class TestHostComponent {
-    @ViewChild(SpellDbcEffectsComponent) child!: SpellDbcEffectsComponent;
+    readonly child = viewChild.required(SpellDbcEffectsComponent);
     form!: FormGroup<ModelForm<SpellDbc>>;
   }
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        ModalModule.forRoot(),
+        ModalModule,
         ToastrModule.forRoot(),
-        TooltipModule.forRoot(),
+        TooltipModule,
         RouterTestingModule,
         TranslateTestingModule,
         TestHostComponent,
         SpellDbcEffectsComponent,
       ],
-      providers: [SpellHandlerService],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), SpellHandlerService],
     }).compileComponents();
   });
 
@@ -62,16 +62,16 @@ describe('SpellDbcEffectsComponent', () => {
     host.form = form;
 
     fixture.detectChanges();
-    const component = host.child;
+    const component = host.child();
 
     return { fixture, component, page, form };
   };
 
   it('should correctly display the fields', () => {
     const { page } = setup();
-    expect(page.getTargets());
-    expect(page.getProcTypeMask());
-    expect(page.getProcChance());
-    expect(page.getProcCharges());
+    expect(page.getTargets()).toBeTruthy();
+    expect(page.getProcTypeMask()).toBeTruthy();
+    expect(page.getProcChance()).toBeTruthy();
+    expect(page.getProcCharges()).toBeTruthy();
   });
 });

@@ -5,7 +5,7 @@ export const INVENTORY_TYPE: Option[] = [
   { value: 1, name: 'HEAD' },
   { value: 2, name: 'NECK' },
   { value: 3, name: 'SHOULDERS' },
-  { value: 4, name: 'BODY' },
+  { value: 4, name: 'SHIRT' },
   { value: 5, name: 'CHEST' },
   { value: 6, name: 'WAIST' },
   { value: 7, name: 'LEGS' },

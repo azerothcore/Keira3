@@ -1,4 +1,6 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { instance, mock } from 'ts-mockito';
 import { GameTeleSelectorModalComponent } from './game-tele-selector-modal.component';
@@ -7,27 +9,31 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
 import { GameTeleSearchService } from '../../search/game-tele-search.service';
 
 describe('GameTeleSelectorModalComponent', () => {
-  let component: GameTeleSelectorModalComponent;
-  let fixture: ComponentFixture<GameTeleSelectorModalComponent>;
-  let searchService: GameTeleSearchService;
-
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [GameTeleSelectorModalComponent, TranslateTestingModule],
-      providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        BsModalRef,
+        { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
+      ],
     }).compileComponents();
-  }));
-
-  beforeEach(() => {
-    searchService = TestBed.inject(GameTeleSearchService);
-    searchService.query = '--mock query';
-
-    fixture = TestBed.createComponent(GameTeleSelectorModalComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
+  function setup() {
+    const searchService = TestBed.inject(GameTeleSearchService);
+    searchService.query = '--mock query';
+
+    const fixture = TestBed.createComponent(GameTeleSelectorModalComponent);
+    const component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    return { fixture, component };
+  }
+
   it('should create', () => {
+    const { component } = setup();
     expect(component).toBeTruthy();
   });
 });

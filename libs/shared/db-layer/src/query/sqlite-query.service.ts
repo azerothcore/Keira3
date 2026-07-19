@@ -1,32 +1,27 @@
-import { Injectable } from '@angular/core';
-import { TableRow } from '@keira/shared/constants';
+import { inject, Service } from '@angular/core';
 import { ItemExtendedCost, Lock } from '@keira/shared/acore-world-model';
+import { WorldMapArea, WorldMapOverlay } from '@keira/shared/map-viewer';
+import { ConfigService } from '@keira/shared/common-services';
+import { TableRow } from '@keira/shared/constants';
 import { from, Observable, of, shareReplay, tap } from 'rxjs';
 import { SqliteService } from '../sqlite.service';
 import { BaseQueryService } from './base-query.service';
-import { ConfigService } from '@keira/shared/common-services';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class SqliteQueryService extends BaseQueryService {
+  private readonly sqliteService = inject(SqliteService);
+  private readonly configService = inject(ConfigService);
+
   private itemDisplayIdCache: Observable<string | null>[] = [];
   private spellDisplayIdCache: Observable<string | null>[] = [];
-
-  constructor(
-    private readonly sqliteService: SqliteService,
-    private readonly configService: ConfigService,
-  ) {
-    super();
-  }
 
   /* istanbul ignore next */ // Note: will be tested in e2e
   query<T extends TableRow>(queryString: string, silent = false): Observable<T[]> {
     return this.sqliteService.dbQuery<T>(queryString).pipe(
       tap((val) => {
-        if (this.configService.debugMode && !silent) {
-          console.log(`\n${queryString}`);
-          console.log(val);
+        if (this.configService.debugMode() && !silent) {
+          console.info(`\n${queryString}`);
+          console.info(val);
         }
       }),
     );
@@ -139,6 +134,35 @@ export class SqliteQueryService extends BaseQueryService {
       'getItemExtendedCost',
       String(IDs.join(',')),
       `SELECT * FROM item_extended_cost WHERE id IN (${IDs.join(',')})`,
+    );
+  }
+
+  getCreatureEntryByItemSpellId(SpellID: number): Promise<number> {
+    return this.queryValueToPromiseCached<number>(
+      'getCreatureEntryByItemSpellId',
+      String(SpellID),
+      `SELECT EffectMiscValue_0 AS v FROM spells_effects WHERE SpellID=${SpellID}`,
+    );
+  }
+
+  getAllWorldMapAreas(): Promise<WorldMapArea[]> {
+    return this.queryToPromiseCached<WorldMapArea>('getAllWorldMapAreas', 'all', `SELECT * FROM worldmaparea_dbc`);
+  }
+
+  getAllWorldMapOverlays(): Promise<WorldMapOverlay[]> {
+    // Placement is OffsetX/OffsetY + TextureWidth/Height; the MapPointX/Y columns are unused (always 0).
+    return this.queryToPromiseCached<WorldMapOverlay>(
+      'getAllWorldMapOverlays',
+      'all',
+      `SELECT MapAreaID AS mapAreaId, OffsetX AS x, OffsetY AS y, TextureWidth AS w, TextureHeight AS h FROM worldmapoverlay_dbc`,
+    );
+  }
+
+  getItemDisplayInfoByItemId(itemId: string | number): Promise<{ ItemDisplayInfoID: number; DisplayType: number }[]> {
+    return this.queryToPromiseCached<{ ItemDisplayInfoID: number; DisplayType: number }>(
+      'getItemDisplayInfoByItemId',
+      String(itemId),
+      `SELECT ItemDisplayInfoID, DisplayType FROM item_appearance WHERE ID = (SELECT ItemAppearanceID FROM item_modified_appearance WHERE ItemID = ${itemId})`,
     );
   }
 }

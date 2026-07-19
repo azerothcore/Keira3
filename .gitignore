@@ -12,7 +12,7 @@ src/**/*.js
 *.js.map
 
 # dependencies
-/node_modules
+node_modules/
 
 # IDEs and editors
 /.idea
@@ -29,6 +29,18 @@ src/**/*.js
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# Claude
+.claude/worktrees/**
+.claude/settings.local.json
+.claude/plans/**
+CLAUDE.local.md
+# Override of other skills
+.agents/skills/angular-developer/references/cli.md
+.agents/skills/angular-developer/references/component-harnesses.md
+.agents/skills/angular-developer/references/e2e-testing.md
+.agents/skills/angular-developer/references/router-testing.md
+.agents/skills/angular-developer/references/testing-fundamentals.md
 
 # misc
 .nx/
@@ -57,5 +69,7 @@ Thumbs.db
 
 
 .nx/cache
-
 .angular
+**/node_modules/*
+
+.claude/worktrees

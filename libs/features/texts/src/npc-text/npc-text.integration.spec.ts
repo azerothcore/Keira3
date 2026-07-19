@@ -1,10 +1,12 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { vi } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { NpcText } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import { NpcTextComponent } from './npc-text.component';
@@ -121,12 +123,16 @@ describe('NpcText integration tests', () => {
   originalEntity.em7_5 = 88;
   originalEntity.VerifiedBuild = 90;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, ToastrModule.forRoot(), ModalModule.forRoot(), NpcTextComponent, TranslateTestingModule],
-      providers: [{ provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG }],
+      imports: [ToastrModule.forRoot(), ModalModule, NpcTextComponent, TranslateTestingModule],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
+      ],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     const handlerService = TestBed.inject(NpcTextHandlerService);
@@ -134,9 +140,9 @@ describe('NpcText integration tests', () => {
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalEntity]));
 
     const fixture = TestBed.createComponent(NpcTextComponent);
     const component = fixture.componentInstance;
@@ -159,11 +165,11 @@ describe('NpcText integration tests', () => {
     it('should correctly update the unsaved status', () => {
       const { page, handlerService } = setup(true);
       const field = 'lang0';
-      expect(handlerService.isUnsaved).toBe(false);
+      expect(handlerService.isUnsaved()).toBe(false);
       page.setInputValueById(field, 3);
-      expect(handlerService.isUnsaved).toBe(true);
+      expect(handlerService.isUnsaved()).toBe(true);
       page.setInputValueById(field, 0);
-      expect(handlerService.isUnsaved).toBe(false);
+      expect(handlerService.isUnsaved()).toBe(false);
       page.removeNativeElement();
     });
 
@@ -183,7 +189,7 @@ describe('NpcText integration tests', () => {
         "(1234, 'Shin', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', 0, 0, 0, 0, 0, 0, 0, 0, " +
         "0, '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', 0, 0, 0, 0, 0, 0, 0, 0, " +
         "0, '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);";
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.setInputValueById('text0_0', 'Shin');
       page.expectFullQueryToContain(expectedQuery);
@@ -191,7 +197,7 @@ describe('NpcText integration tests', () => {
       page.clickExecuteQuery();
 
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
       page.removeNativeElement();
     });
   });
@@ -234,14 +240,14 @@ describe('NpcText integration tests', () => {
         "`Probability6` = 70, `em6_0` = 71, `em6_1` = 72, `em6_2` = 73, `em6_3` = 74, `em6_4` = 75, `em6_5` = 76, `text7_0` = '77', " +
         "`text7_1` = '78', `BroadcastTextID7` = 79, `lang7` = 80, `Probability7` = 81, `em7_0` = 82, `em7_1` = 83, `em7_2` = 84, " +
         '`em7_3` = 85, `em7_4` = 86, `em7_5` = 87 WHERE (`ID` = 1234);';
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.changeAllFields(originalEntity, ['ID', 'VerifiedBuild']);
       page.expectDiffQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
       page.removeNativeElement();
     });
 

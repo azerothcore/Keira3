@@ -39,6 +39,7 @@ def sync_keys(translations_dir: Path, en_file: Path) -> None:
             # Save the synchronized file
             with open(file_path, 'w', encoding='utf-8') as f:
                 json.dump(synced_data, f, ensure_ascii=False, indent=2)
+                f.write('\n')
 
             print(f"Synced {file}")
 

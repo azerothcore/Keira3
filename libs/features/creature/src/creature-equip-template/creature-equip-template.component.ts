@@ -14,7 +14,6 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
   selector: 'keira-creature-equip-template',
   templateUrl: './creature-equip-template.component.html',
   styleUrls: ['./creature-equip-template.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,

@@ -5,7 +5,7 @@ import { BaseQueryService } from '@keira/shared/db-layer';
 import { ModelForm, ModelNestedForm, SubscriptionHandler } from '@keira/shared/utils';
 
 export abstract class SearchService<T extends TableRow> extends SubscriptionHandler {
-  query: string;
+  query: string = '';
   rows: T[] | undefined;
   pageOffset = 0; // Initialize to the first page
   fields: FormGroup<ModelForm<T>> = new FormGroup({} as any);
@@ -14,15 +14,13 @@ export abstract class SearchService<T extends TableRow> extends SubscriptionHand
     fields: this.fields as any, // TODO: fix typing
   });
 
-  protected constructor(
-    protected readonly queryService: BaseQueryService,
-    protected readonly entityTable: string,
-    protected readonly fieldList: StringKeys<T>[],
-    protected readonly selectFields: string[] | undefined = undefined,
-    protected readonly groupFields: string[] | undefined = undefined,
-  ) {
-    super();
+  protected abstract readonly queryService: BaseQueryService;
+  protected abstract readonly entityTable: string;
+  protected abstract readonly fieldList: StringKeys<T>[];
+  protected readonly selectFields: string[] | undefined = undefined;
+  protected readonly groupFields: string[] | undefined = undefined;
 
+  protected init(): void {
     for (const field of this.fieldList) {
       this.fields.addControl(field, new FormControl());
     }

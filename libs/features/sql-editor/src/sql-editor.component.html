@@ -13,7 +13,16 @@
       </div>
     </div>
 
-    <textarea id="code" class="mb-1" [(ngModel)]="service.code" (keydown.f9)="execute()" rows="6" spellcheck="false"></textarea>
+    <code-editor
+      id="code"
+      [extensions]="service.extensions()"
+      [lineWrapping]="true"
+      (keydown.f9)="execute()"
+      [languages]="service.languages()"
+      [language]="'MySQL'"
+      [setup]="'basic'"
+      [(ngModel)]="service.code"
+    />
 
     <div class="row">
       <div class="col-sm-7">
@@ -51,7 +60,7 @@
         [scrollbarH]="true"
       >
         @for (col of columns; track col) {
-          <ngx-datatable-column [prop]="col" [minWidth]="columns.length === 1 ? 300 : 100" [resizeable]="true"></ngx-datatable-column>
+          <ngx-datatable-column [prop]="col" [minWidth]="columns.length === 1 ? 300 : 100" [resizeable]="true" />
         }
       </ngx-datatable>
     }

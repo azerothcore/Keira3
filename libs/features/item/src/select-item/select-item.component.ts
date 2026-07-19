@@ -12,7 +12,6 @@ import { SelectItemService } from './select-item.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './select-item.component.html',
   styleUrls: ['./select-item.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     CreateComponent,

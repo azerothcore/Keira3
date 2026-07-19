@@ -1,0 +1,111 @@
+diff --git a/node_modules/ngx-bootstrap/component-loader/fesm2022/ngx-bootstrap-component-loader.mjs b/node_modules/ngx-bootstrap/component-loader/fesm2022/ngx-bootstrap-component-loader.mjs
+index 67a1de9..9fe2ba7 100644
+--- a/node_modules/ngx-bootstrap/component-loader/fesm2022/ngx-bootstrap-component-loader.mjs
++++ b/node_modules/ngx-bootstrap/component-loader/fesm2022/ngx-bootstrap-component-loader.mjs
+@@ -61,8 +61,7 @@ class ComponentLoader {
+         return !!this._componentRef;
+     }
+     attach(compType) {
+-        this._componentFactory = this._componentFactoryResolver
+-            .resolveComponentFactory(compType);
++        this._componentType = compType;
+         return this;
+     }
+     // todo: add behaviour: to target element, `body`, custom element
+@@ -93,10 +92,14 @@ class ComponentLoader {
+                 providers: this._providers,
+                 parent: this._injector
+             });
+-            if (!this._componentFactory) {
++            if (!this._componentType) {
+                 return;
+             }
+-            this._componentRef = this._componentFactory.create(injector, this._contentRef.nodes);
++            this._componentRef = i0.createComponent(this._componentType, {
++                environmentInjector: this._injector.get(i0.EnvironmentInjector),
++                elementInjector: injector,
++                projectableNodes: this._contentRef.nodes,
++            });
+             this._applicationRef.attachView(this._componentRef.hostView);
+             // this._componentRef = this._viewContainerRef
+             //   .createComponent(this._componentFactory, 0, injector, this._contentRef.nodes);
+@@ -297,12 +300,14 @@ class ComponentLoader {
+             return new ContentRef([viewRef.rootNodes], viewRef);
+         }
+         if (typeof content === 'function') {
+-            const contentCmptFactory = this._componentFactoryResolver.resolveComponentFactory(content);
+             const modalContentInjector = Injector.create({
+                 providers: this._providers,
+                 parent: this._injector
+             });
+-            const componentRef = contentCmptFactory.create(modalContentInjector);
++            const componentRef = i0.createComponent(content, {
++                environmentInjector: this._injector.get(i0.EnvironmentInjector),
++                elementInjector: modalContentInjector,
++            });
+             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+             // @ts-ignore
+             Object.assign(componentRef.instance, initialState);
+@@ -333,13 +338,13 @@ class ComponentLoaderFactory {
+     createLoader(_elementRef, _viewContainerRef, _renderer) {
+         return new ComponentLoader(_viewContainerRef, _renderer, _elementRef, this._injector, this._componentFactoryResolver, this._applicationRef, this._posService, this._document);
+     }
+-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.0", ngImport: i0, type: ComponentLoaderFactory, deps: [{ token: i0.ComponentFactoryResolver }, { token: i0.Injector }, { token: i1.PositioningService }, { token: i0.ApplicationRef }, { token: DOCUMENT }], target: i0.ɵɵFactoryTarget.Injectable }); }
++    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.0", ngImport: i0, type: ComponentLoaderFactory, deps: [{ token: i0.Injector }, { token: i0.Injector }, { token: i1.PositioningService }, { token: i0.ApplicationRef }, { token: DOCUMENT }], target: i0.ɵɵFactoryTarget.Injectable }); }
+     static { this.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "21.2.0", ngImport: i0, type: ComponentLoaderFactory, providedIn: 'root' }); }
+ }
+ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.0", ngImport: i0, type: ComponentLoaderFactory, decorators: [{
+             type: Injectable,
+             args: [{ providedIn: 'root' }]
+-        }], ctorParameters: () => [{ type: i0.ComponentFactoryResolver }, { type: i0.Injector }, { type: i1.PositioningService }, { type: i0.ApplicationRef }, { type: Document, decorators: [{
++        }], ctorParameters: () => [{ type: i0.Injector }, { type: i0.Injector }, { type: i1.PositioningService }, { type: i0.ApplicationRef }, { type: Document, decorators: [{
+                     type: Inject,
+                     args: [DOCUMENT]
+                 }] }] });
+diff --git a/node_modules/ngx-bootstrap/tabs/fesm2022/ngx-bootstrap-tabs.mjs b/node_modules/ngx-bootstrap/tabs/fesm2022/ngx-bootstrap-tabs.mjs
+index d588a93..f6b5fc0 100644
+--- a/node_modules/ngx-bootstrap/tabs/fesm2022/ngx-bootstrap-tabs.mjs
++++ b/node_modules/ngx-bootstrap/tabs/fesm2022/ngx-bootstrap-tabs.mjs
+@@ -54,10 +54,11 @@ class TabsetComponent {
+     set isKeysAllowed(value) {
+         this._isKeysAllowed = value;
+     }
+-    constructor(_config, renderer, elementRef) {
++    constructor(_config, renderer, elementRef, cdr) {
+         this._config = _config;
+         this.renderer = renderer;
+         this.elementRef = elementRef;
++        this.cdr = cdr;
+         /** if true tabs will be placed vertically */
+         this.vertical = input(false, ...(ngDevMode ? [{ debugName: "vertical" }] : []));
+         /** if true tabs fill the container and have a consistent width */
+@@ -279,13 +280,13 @@ class TabsetComponent {
+             [`nav-${this.type()}`]: true
+         };
+     }
+-    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.0", ngImport: i0, type: TabsetComponent, deps: [{ token: TabsetConfig }, { token: i0.Renderer2 }, { token: i0.ElementRef }], target: i0.ɵɵFactoryTarget.Component }); }
++    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.0", ngImport: i0, type: TabsetComponent, deps: [{ token: TabsetConfig }, { token: i0.Renderer2 }, { token: i0.ElementRef }, { token: i0.ChangeDetectorRef }], target: i0.ɵɵFactoryTarget.Component }); }
+     static { this.ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.0", type: TabsetComponent, isStandalone: true, selector: "tabset", inputs: { vertical: { classPropertyName: "vertical", publicName: "vertical", isSignal: true, isRequired: false, transformFunction: null }, justified: { classPropertyName: "justified", publicName: "justified", isSignal: true, isRequired: false, transformFunction: null }, type: { classPropertyName: "type", publicName: "type", isSignal: true, isRequired: false, transformFunction: null } }, host: { properties: { "class.tab-container": "this.clazz" } }, ngImport: i0, template: "<ul class=\"nav\" [ngClass]=\"classMap\"\n    (click)=\"$event.preventDefault()\"\n    [attr.aria-label]=\"ariaLabel\"\n    role=\"tablist\">\n  @for (tabz of tabs; track tabz; let i = $index) {\n    <li [ngClass]=\"['nav-item', tabz._customClass || '']\"\n      [class.active]=\"tabz.active\" [class.disabled]=\"tabz.disabled\" (keydown)=\"keyNavActions($event, i)\">\n      <a href=\"javascript:void(0);\" class=\"nav-link\" role=\"tab\"\n        [attr.aria-controls]=\"tabz.id ? tabz.id : ''\"\n        [attr.aria-selected]=\"!!tabz.active\"\n        [attr.id]=\"tabz.id ? tabz.id + '-link' : ''\"\n        [class.active]=\"tabz.active\" [class.disabled]=\"tabz.disabled\"\n        (click)=\"tabz.active = true\">\n        <span [ngTransclude]=\"tabz.headingRef\">{{ tabz.heading() }}</span>\n        @if (tabz.removable) {\n          <span (click)=\"$event.preventDefault(); removeTab(tabz);\" class=\"bs-remove-tab\"> &#10060;</span>\n        }\n      </a>\n    </li>\n  }\n</ul>\n<div class=\"tab-content\">\n  <ng-content></ng-content>\n</div>\n", styles: [":host .nav-tabs .nav-item.disabled a.disabled{cursor:default}\n"], dependencies: [{ kind: "directive", type: NgClass, selector: "[ngClass]", inputs: ["class", "ngClass"] }, { kind: "directive", type: NgTranscludeDirective, selector: "[ngTransclude]", inputs: ["ngTransclude"] }] }); }
+ }
+ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.0", ngImport: i0, type: TabsetComponent, decorators: [{
+             type: Component,
+             args: [{ selector: 'tabset', standalone: true, imports: [NgClass, NgTranscludeDirective], template: "<ul class=\"nav\" [ngClass]=\"classMap\"\n    (click)=\"$event.preventDefault()\"\n    [attr.aria-label]=\"ariaLabel\"\n    role=\"tablist\">\n  @for (tabz of tabs; track tabz; let i = $index) {\n    <li [ngClass]=\"['nav-item', tabz._customClass || '']\"\n      [class.active]=\"tabz.active\" [class.disabled]=\"tabz.disabled\" (keydown)=\"keyNavActions($event, i)\">\n      <a href=\"javascript:void(0);\" class=\"nav-link\" role=\"tab\"\n        [attr.aria-controls]=\"tabz.id ? tabz.id : ''\"\n        [attr.aria-selected]=\"!!tabz.active\"\n        [attr.id]=\"tabz.id ? tabz.id + '-link' : ''\"\n        [class.active]=\"tabz.active\" [class.disabled]=\"tabz.disabled\"\n        (click)=\"tabz.active = true\">\n        <span [ngTransclude]=\"tabz.headingRef\">{{ tabz.heading() }}</span>\n        @if (tabz.removable) {\n          <span (click)=\"$event.preventDefault(); removeTab(tabz);\" class=\"bs-remove-tab\"> &#10060;</span>\n        }\n      </a>\n    </li>\n  }\n</ul>\n<div class=\"tab-content\">\n  <ng-content></ng-content>\n</div>\n", styles: [":host .nav-tabs .nav-item.disabled a.disabled{cursor:default}\n"] }]
+-        }], ctorParameters: () => [{ type: TabsetConfig }, { type: i0.Renderer2 }, { type: i0.ElementRef }], propDecorators: { vertical: [{ type: i0.Input, args: [{ isSignal: true, alias: "vertical", required: false }] }], justified: [{ type: i0.Input, args: [{ isSignal: true, alias: "justified", required: false }] }], type: [{ type: i0.Input, args: [{ isSignal: true, alias: "type", required: false }] }], clazz: [{
++        }], ctorParameters: () => [{ type: TabsetConfig }, { type: i0.Renderer2 }, { type: i0.ElementRef }, { type: i0.ChangeDetectorRef }], propDecorators: { vertical: [{ type: i0.Input, args: [{ isSignal: true, alias: "vertical", required: false }] }], justified: [{ type: i0.Input, args: [{ isSignal: true, alias: "justified", required: false }] }], type: [{ type: i0.Input, args: [{ isSignal: true, alias: "type", required: false }] }], clazz: [{
+                 type: HostBinding,
+                 args: ['class.tab-container']
+             }] } });
+@@ -304,11 +305,13 @@ class TabDirective {
+                 this.deselect.emit(this);
+                 this._active = active;
+                 this._cdr.markForCheck();
++                this.tabset.cdr.markForCheck();
+             }
+             return;
+         }
+         this._active = active;
+         this._cdr.markForCheck();
++        this.tabset.cdr.markForCheck();
+         this.selectTab.emit(this);
+         this.tabset.tabs.forEach((tab) => {
+             if (tab !== this) {

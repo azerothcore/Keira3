@@ -43,7 +43,7 @@
         </ngx-datatable-column>
         <ngx-datatable-column name="spellName" prop="spellName">
           <ng-template let-row="row" ngx-datatable-cell-template>
-            <keira-icon size="small" [spellId]="row.ID" /> {{ row.spellName }}
+            <div style="text-align: left"><keira-icon size="small" [spellId]="row.ID" /> {{ row.spellName }}</div>
           </ng-template>
         </ngx-datatable-column>
       </ngx-datatable>

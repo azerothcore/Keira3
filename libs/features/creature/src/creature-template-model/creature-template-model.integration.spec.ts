@@ -1,10 +1,14 @@
+import { vi } from 'vitest';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { TestBed, waitForAsync } from '@angular/core/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { CreatureTemplateModel } from '@keira/shared/acore-world-model';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
+import { Model3DViewerService } from '@keira/shared/model-3d-viewer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
@@ -22,25 +26,20 @@ describe('CreatureTemplateModel integration tests', () => {
 
   const id = 1234;
 
-  beforeEach(waitForAsync(() => {
+  function setup(creatingNew: boolean) {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        CreatureTemplateModelComponent,
-        TranslateTestingModule,
-      ],
+      imports: [ToastrModule.forRoot(), ModalModule, CreatureTemplateModelComponent, TranslateTestingModule, ReactiveFormsModule],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        { provide: Model3DViewerService, useValue: { generateModels: () => new Promise((resolve) => resolve({ destroy: () => {} })) } },
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
         { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
-  }));
 
-  function setup(creatingNew: boolean) {
     const originalRow0 = new CreatureTemplateModel();
     const originalRow1 = new CreatureTemplateModel();
     const originalRow2 = new CreatureTemplateModel();
@@ -55,14 +54,15 @@ describe('CreatureTemplateModel integration tests', () => {
 
     const httpTestingController = TestBed.inject(HttpTestingController);
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
-    spyOn(queryService, 'queryValue').and.returnValue(of());
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
+    vi.spyOn(queryService, 'queryValue').mockReturnValue(of());
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
     const fixture = TestBed.createComponent(CreatureTemplateModelComponent);
     const component = fixture.componentInstance;
     const page = new CreatureTemplateModelPage(fixture);
+
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
 
@@ -88,11 +88,11 @@ describe('CreatureTemplateModel integration tests', () => {
 
     it('should correctly update the unsaved status', () => {
       const { page, handlerService } = setup(true);
-      expect(handlerService.isCreatureTemplateModelUnsaved).toBe(false);
+      expect(handlerService.isCreatureTemplateModelUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isCreatureTemplateModelUnsaved).toBe(true);
+      expect(handlerService.isCreatureTemplateModelUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isCreatureTemplateModelUnsaved).toBe(false);
+      expect(handlerService.isCreatureTemplateModelUnsaved()).toBe(false);
       page.removeNativeElement();
     });
 
@@ -104,7 +104,7 @@ describe('CreatureTemplateModel integration tests', () => {
         '(1234, 0, 0, 1, 1, 0),\n' +
         '(1234, 1, 0, 1, 1, 0),\n' +
         '(1234, 2, 0, 1, 1, 0);';
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(1);
@@ -117,7 +117,7 @@ describe('CreatureTemplateModel integration tests', () => {
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
       page.removeNativeElement();
     });
 

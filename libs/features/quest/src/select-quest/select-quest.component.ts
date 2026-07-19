@@ -13,7 +13,6 @@ import { TranslateModule } from '@ngx-translate/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './select-quest.component.html',
   styleUrls: ['./select-quest.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     CreateComponent,

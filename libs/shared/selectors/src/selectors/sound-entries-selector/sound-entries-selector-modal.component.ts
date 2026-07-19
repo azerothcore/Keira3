@@ -12,7 +12,6 @@ import { SoundEntriesSearchService } from '../../search/sound-entries-search.ser
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-sound-entries-selector-modal',
   templateUrl: './sound-entries-selector-modal.component.html',
-  standalone: true,
   imports: [FormsModule, ReactiveFormsModule, HighlightjsWrapperComponent, NgxDatatableModule, TranslateModule],
 })
 export class SoundEntriesSelectorModalComponent extends SearchSelectorModalComponent<SoundEntries> {

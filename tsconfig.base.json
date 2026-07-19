@@ -14,7 +14,7 @@
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "skipLibCheck": true,
@@ -23,12 +23,13 @@
     "lib": ["es2017", "es2016", "es2015", "dom"],
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
     "paths": {
       "@keira/features/conditions": ["libs/features/conditions/src/index.ts"],
       "@keira/features/creature": ["libs/features/creature/src/index.ts"],
       "@keira/features/dashboard": ["libs/features/dashboard/src/index.ts"],
-      "@keira/features/gameobject": ["libs/features/gameobject/src/index.ts"],
       "@keira/features/game-tele": ["libs/features/game-tele/src/index.ts"],
+      "@keira/features/gameobject": ["libs/features/gameobject/src/index.ts"],
       "@keira/features/gossip": ["libs/features/gossip/src/index.ts"],
       "@keira/features/item": ["libs/features/item/src/index.ts"],
       "@keira/features/other-loots": ["libs/features/other-loots/src/index.ts"],
@@ -37,6 +38,8 @@
       "@keira/features/spell": ["libs/features/spell/src/index.ts"],
       "@keira/features/sql-editor": ["libs/features/sql-editor/src/index.ts"],
       "@keira/features/texts": ["libs/features/texts/src/index.ts"],
+      "@keira/features/trainer": ["libs/features/trainer/src/index.ts"],
+      "@keira/features/unused-guid-search": ["libs/features/unused-guid-search/src/index.ts"],
       "@keira/main/connection-window": ["libs/main/connection-window/src/index.ts"],
       "@keira/main/main-window": ["libs/main/main-window/src/index.ts"],
       "@keira/shared/acore-world-model": ["libs/shared/acore-world-model/src/index.ts"],
@@ -48,6 +51,7 @@
       "@keira/shared/db-layer": ["libs/shared/db-layer/src/index.ts"],
       "@keira/shared/login-config": ["libs/shared/login-config/src/index.ts"],
       "@keira/shared/loot-editor": ["libs/shared/loot-editor/src/index.ts"],
+      "@keira/shared/map-viewer": ["libs/shared/map-viewer/index.ts"],
       "@keira/shared/model-3d-viewer": ["libs/shared/model-3d-viewer/src/index.ts"],
       "@keira/shared/preview": ["libs/shared/preview/src/index.ts"],
       "@keira/shared/sai-editor": ["libs/shared/sai-editor/src/index.ts"],
@@ -65,6 +69,9 @@
   "exclude": ["node_modules", "tmp"],
   "angularCompilerOptions": {
     "strictTemplates": true,
-    "strictInjectionParameters": true
+    "strictInjectionParameters": true,
+    "extendedDiagnostics": {
+      "defaultCategory": "error"
+    }
   }
 }

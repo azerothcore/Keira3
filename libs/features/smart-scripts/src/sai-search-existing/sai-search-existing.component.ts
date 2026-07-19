@@ -15,7 +15,6 @@ import { getEnumKeys } from '@keira/shared/utils';
   selector: 'keira-sai-search-existing',
   templateUrl: './sai-search-existing.component.html',
   styleUrls: ['./sai-search-existing.component.scss'],
-  standalone: true,
   imports: [FormsModule, ReactiveFormsModule, TranslateModule, HighlightjsWrapperComponent, NgxDatatableModule],
 })
 export class SaiSearchExistingComponent extends SelectComplexKeyComponent<SmartScripts> {

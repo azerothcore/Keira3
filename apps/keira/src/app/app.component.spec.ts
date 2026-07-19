@@ -1,13 +1,15 @@
+import { vi } from 'vitest';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { LATEST_RELEASE_API_URL } from '@keira/shared/constants';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
-import { Subject } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
+import { Observable, Subject } from 'rxjs';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import packageInfo from '../../../../package.json';
 
@@ -23,14 +25,13 @@ import { MysqlService } from '@keira/shared/db-layer';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('AppComponent', () => {
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         BsDropdownModule,
         FormsModule,
         ReactiveFormsModule,
         RouterTestingModule,
-        BrowserAnimationsModule,
         ModalConfirmComponent,
         ToastrModule.forRoot(),
         TranslateTestingModule,
@@ -40,6 +41,8 @@ describe('AppComponent', () => {
         AppComponent,
       ],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         { provide: ElectronService, useValue: instance(mock(ElectronService)) },
         { provide: MysqlService, useValue: instance(mock(MysqlService)) },
         { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
@@ -47,7 +50,7 @@ describe('AppComponent', () => {
         provideHttpClientTesting(),
       ],
     }).compileComponents();
-  }));
+  });
 
   const setup = () => {
     const fixture = TestBed.createComponent(AppComponent);
@@ -56,8 +59,7 @@ describe('AppComponent', () => {
     const httpTestingController = TestBed.inject(HttpTestingController);
 
     const connectionLostSubject = new Subject<boolean>();
-    // @ts-ignore
-    TestBed.inject(MysqlService)['connectionLost$'] = connectionLostSubject.asObservable();
+    (TestBed.inject(MysqlService) as { connectionLost$: Observable<boolean> }).connectionLost$ = connectionLostSubject.asObservable();
 
     return { fixture, component, connectionLostSubject, toastrService, httpTestingController };
   };
@@ -66,8 +68,8 @@ describe('AppComponent', () => {
     it('should correctly react on connectionLost$ [connection lost]', () => {
       const { fixture, toastrService, connectionLostSubject } = setup();
       fixture.detectChanges();
-      spyOn(toastrService, 'success');
-      spyOn(toastrService, 'error');
+      vi.spyOn(toastrService, 'success').mockImplementation(() => undefined);
+      vi.spyOn(toastrService, 'error').mockImplementation(() => undefined);
 
       connectionLostSubject.next(false);
       connectionLostSubject.next(false);
@@ -81,8 +83,8 @@ describe('AppComponent', () => {
     it('should correctly react on connectionLost$ [reconnected]', () => {
       const { fixture, connectionLostSubject, toastrService } = setup();
       fixture.detectChanges();
-      spyOn(toastrService, 'success');
-      spyOn(toastrService, 'error');
+      vi.spyOn(toastrService, 'success').mockImplementation(() => undefined);
+      vi.spyOn(toastrService, 'error').mockImplementation(() => undefined);
 
       connectionLostSubject.next(true);
 
@@ -115,6 +117,27 @@ describe('AppComponent', () => {
       req.flush({ tag_name: `v${packageInfo.version}` });
 
       httpTestingController.verify();
+    });
+
+    it('should set showNewerVersionAlert to false when the fa-xmark button is clicked', async () => {
+      const { fixture, httpTestingController, component } = setup();
+      fixture.detectChanges();
+      const req = httpTestingController.expectOne(LATEST_RELEASE_API_URL);
+      req.flush({ tag_name: 'some newer version' });
+      await fixture.whenStable();
+      fixture.detectChanges();
+
+      // Check if the alert is shown with the close button
+      expect(component.showNewerVersionAlert).toBe(true);
+      const closeBtn: HTMLButtonElement | null = fixture.nativeElement.querySelector('.newer-version-alert .fa-xmark').closest('button');
+      expect(closeBtn).toBeTruthy();
+
+      // click the close button
+      closeBtn!.click();
+      fixture.detectChanges();
+
+      // the alert should be hidden now
+      expect(component.showNewerVersionAlert).toBe(false);
     });
   });
 });

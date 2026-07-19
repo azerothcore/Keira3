@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SPELL_DBC_PROC_FLAGS, SPELL_DBC_TARGETS, SpellDbc } from '@keira/shared/acore-world-model';
 import { ModelForm } from '@keira/shared/utils';
@@ -12,7 +12,6 @@ import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-spell-dbc-effects',
   templateUrl: './spell-dbc-effects.component.html',
-  standalone: true,
   imports: [
     FormsModule,
     ReactiveFormsModule,
@@ -27,5 +26,5 @@ export class SpellDbcEffectsComponent {
   readonly SPELL_DBC_TARGETS = SPELL_DBC_TARGETS;
   readonly SPELL_DBC_PROC_FLAGS = SPELL_DBC_PROC_FLAGS;
 
-  @Input({ required: true }) formGroup!: FormGroup<ModelForm<SpellDbc>>;
+  readonly formGroup = input.required<FormGroup<ModelForm<SpellDbc>>>();
 }

@@ -1,53 +1,67 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { vi } from 'vitest';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { SqliteQueryService } from './sqlite-query.service';
 
-import { SqliteService } from '../sqlite.service';
 import { instance, mock } from 'ts-mockito';
+import { SqliteService } from '../sqlite.service';
 
 describe('SqliteQueryService', () => {
-  let service: SqliteQueryService;
-
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [{ provide: SqliteService, useValue: instance(mock(SqliteService)) }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
+      ],
     });
-    service = TestBed.inject(SqliteQueryService);
-  }));
+  });
+
+  function setup() {
+    const service = TestBed.inject(SqliteQueryService);
+    return { service };
+  }
 
   describe('queryValue()', () => {
-    it('should correctly work', waitForAsync(async () => {
+    it('should correctly work', () => {
+      const { service } = setup();
       const value = 'mock result value';
-      spyOn(service, 'query').and.returnValue(of([{ v: value }]));
+      vi.spyOn(service, 'query').mockReturnValue(of([{ v: value }]));
       const query = 'SELECT something AS v FROM my_table WHERE index = 123';
 
       service.queryValue(query).subscribe((result) => {
         expect(result).toEqual(value);
       });
-      expect(service.query).toHaveBeenCalledOnceWith(query);
-    }));
+      expect(service.query).toHaveBeenCalledExactlyOnceWith(query);
+    });
 
-    it('should be safe in case of no results', waitForAsync(async () => {
-      spyOn(service, 'query').and.returnValue(of(null as any));
+    it('should be safe in case of no results', () => {
+      const { service } = setup();
+      vi.spyOn(service, 'query').mockReturnValue(of(null as any));
       const query = 'SELECT something AS v FROM my_table WHERE index = 123';
 
       service.queryValue(query).subscribe((result) => {
         expect(result).toEqual(null);
       });
-      expect(service.query).toHaveBeenCalledOnceWith(query);
-    }));
+      expect(service.query).toHaveBeenCalledExactlyOnceWith(query);
+    });
   });
 
   describe('get helpers', () => {
     const mockResult = 'mock result';
     const id = '123';
 
-    beforeEach(() => {
-      spyOn(service, 'queryValue').and.returnValue(of(mockResult));
-      spyOn(service, 'queryValueToPromise').and.returnValue(Promise.resolve(mockResult));
-    });
+    function setupHelpers() {
+      const { service } = setup();
+      vi.spyOn(service, 'queryValue').mockReturnValue(of(mockResult));
+      vi.spyOn(service, 'queryValueToPromise').mockReturnValue(Promise.resolve(mockResult));
+      return { service };
+    }
 
     it('getItemDisplayIdIcon', () => {
+      const { service } = setupHelpers();
       service.getIconByItemDisplayId(id).subscribe((res) => {
         expect(res).toEqual(mockResult);
       });
@@ -59,6 +73,7 @@ describe('SqliteQueryService', () => {
     });
 
     it('getSpellDisplayIcon', () => {
+      const { service } = setupHelpers();
       service.getIconBySpellDisplayId(id).subscribe((res) => {
         expect(res).toEqual(mockResult);
       });
@@ -70,6 +85,7 @@ describe('SqliteQueryService', () => {
     });
 
     it('getDisplayIdBySpellId (case non-null)', () => {
+      const { service } = setupHelpers();
       service.getDisplayIdBySpellId(id).subscribe((res) => {
         expect(res).toEqual(mockResult);
       });
@@ -78,6 +94,7 @@ describe('SqliteQueryService', () => {
     });
 
     it('getDisplayIdBySpellId (case null)', () => {
+      const { service } = setupHelpers();
       service.getDisplayIdBySpellId(undefined).subscribe((res) => {
         expect(res).toEqual(undefined);
       });
@@ -94,42 +111,75 @@ describe('SqliteQueryService', () => {
       { name: 'getEventNameByHolidayId', query: `SELECT name AS v FROM holiday WHERE id = ${id}` },
       { name: 'getSocketBonusById', query: `SELECT name AS v FROM item_enchantment WHERE id = ${id}` },
       { name: 'getSpellDescriptionById', query: `SELECT Description AS v FROM spells WHERE id = ${id}` },
+      { name: 'getCreatureEntryByItemSpellId', query: `SELECT EffectMiscValue_0 AS v FROM spells_effects WHERE SpellID=${id}` },
     ];
     for (const test of cases) {
-      it(
-        test.name,
-        waitForAsync(async () => {
-          expect(await (service[test.name] as (arg: any) => Promise<string>)(id)).toEqual(mockResult);
-          expect(await (service[test.name] as (arg: any) => Promise<string>)(id)).toEqual(mockResult); // check cache
-          expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
-          expect(service.queryValue).toHaveBeenCalledWith(test.query);
-          expect(service['cache'].size).toBe(1);
-        }),
-      );
+      it(test.name, async () => {
+        const { service } = setupHelpers();
+        expect(await (service[test.name] as (arg: any) => Promise<string>)(id)).toEqual(mockResult);
+        expect(await (service[test.name] as (arg: any) => Promise<string>)(id)).toEqual(mockResult); // check cache
+        expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
+        expect(service.queryValue).toHaveBeenCalledWith(test.query);
+        expect(service['cache'].size).toBe(1);
+      });
     }
 
-    it('getLockById', waitForAsync(async () => {
-      spyOn(service, 'query').and.returnValue(of([]));
+    it('getLockById', async () => {
+      const { service } = setupHelpers();
+      vi.spyOn(service, 'query').mockReturnValue(of([]));
       expect(await service.getLockById(id)).toEqual([]);
       expect(await service.getLockById(id)).toEqual([]); // check cache
       expect(service.query).toHaveBeenCalledTimes(1); // check cache
       expect(service.query).toHaveBeenCalledWith(`SELECT * FROM lock WHERE id = ${id}`);
-    }));
+    });
 
-    it('getRewardXP', waitForAsync(async () => {
+    it('getRewardXP', async () => {
+      const { service } = setupHelpers();
       expect(await service.getRewardXP(id, 2)).toEqual(mockResult);
       expect(await service.getRewardXP(id, 2)).toEqual(mockResult); // check cache
       expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
       expect(service.queryValue).toHaveBeenCalledWith(`SELECT field${Number(id) + 1} AS v FROM questxp WHERE id = 2`);
       expect(service['cache'].size).toBe(1);
-    }));
+    });
 
-    it('getItemExtendedCost', waitForAsync(async () => {
-      spyOn(service, 'query').and.returnValue(of([]));
+    it('getItemExtendedCost', async () => {
+      const { service } = setupHelpers();
+      vi.spyOn(service, 'query').mockReturnValue(of([]));
       expect(await service.getItemExtendedCost([])).toEqual([]);
       expect(await service.getItemExtendedCost([])).toEqual([]); // check cache
       expect(service.query).toHaveBeenCalledTimes(1); // check cache
       expect(service.query).toHaveBeenCalledWith(`SELECT * FROM item_extended_cost WHERE id IN ()`);
-    }));
+    });
+
+    it('getAllWorldMapAreas', async () => {
+      const { service } = setupHelpers();
+      vi.spyOn(service, 'query').mockReturnValue(of([]));
+      expect(await service.getAllWorldMapAreas()).toEqual([]);
+      expect(await service.getAllWorldMapAreas()).toEqual([]); // check cache
+      expect(service.query).toHaveBeenCalledTimes(1); // check cache
+      expect(service.query).toHaveBeenCalledWith(`SELECT * FROM worldmaparea_dbc`);
+    });
+
+    it('getAllWorldMapOverlays', async () => {
+      const { service } = setupHelpers();
+      vi.spyOn(service, 'query').mockReturnValue(of([]));
+      expect(await service.getAllWorldMapOverlays()).toEqual([]);
+      expect(await service.getAllWorldMapOverlays()).toEqual([]); // check cache
+      expect(service.query).toHaveBeenCalledTimes(1); // check cache
+      expect(service.query).toHaveBeenCalledWith(
+        `SELECT MapAreaID AS mapAreaId, OffsetX AS x, OffsetY AS y, TextureWidth AS w, TextureHeight AS h FROM worldmapoverlay_dbc`,
+      );
+    });
+
+    it('getItemDisplayInfoByItemId', async () => {
+      const { service } = setupHelpers();
+      vi.spyOn(service, 'query').mockReturnValue(of([]));
+      expect(await service.getItemDisplayInfoByItemId(id)).toEqual([]);
+      expect(await service.getItemDisplayInfoByItemId(id)).toEqual([]); // check cache
+      expect(service.query).toHaveBeenCalledTimes(1); // check cache
+      expect(service.query).toHaveBeenCalledWith(
+        `SELECT ItemDisplayInfoID, DisplayType FROM item_appearance WHERE ID = (SELECT ItemAppearanceID FROM item_modified_appearance WHERE ItemID = ${id})`,
+      );
+    });
   });
 });

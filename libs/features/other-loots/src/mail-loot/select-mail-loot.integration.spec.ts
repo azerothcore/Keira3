@@ -1,11 +1,13 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { vi } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { SelectPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { MailLootHandlerService } from './mail-loot-handler.service';
 import { SelectMailLootComponent } from './select-mail-loot.component';
@@ -18,24 +20,17 @@ class SelectMailLootComponentPage extends SelectPageObject<SelectMailLootCompone
 describe('SelectMailLoot integration tests', () => {
   const value = 1200;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        SelectMailLootComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
-      ],
-      providers: [MailLootHandlerService],
+      imports: [ToastrModule.forRoot(), ModalModule, SelectMailLootComponent, RouterTestingModule, TranslateTestingModule],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), MailLootHandlerService],
     }).compileComponents();
-  }));
+  });
 
   function setup() {
-    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate').mockImplementation(() => undefined);
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([{ max: 1 }]));
 
     const selectService = TestBed.inject(SelectMailLootService);
 
@@ -48,7 +43,7 @@ describe('SelectMailLoot integration tests', () => {
     return { component, fixture, selectService, page, queryService, querySpy, navigateSpy };
   }
 
-  it('should correctly initialise', waitForAsync(async () => {
+  it('should correctly initialise', async () => {
     const { fixture, page, querySpy, component } = setup();
 
     await fixture.whenStable();
@@ -56,14 +51,14 @@ describe('SelectMailLoot integration tests', () => {
     page.expectNewEntityFree();
     expect(querySpy).toHaveBeenCalledWith('SELECT MAX(Entry) AS max FROM mail_loot_template;');
     expect(page.queryWrapper.innerText).toContain('SELECT `Entry` FROM `mail_loot_template` GROUP BY Entry LIMIT 50');
-  }));
+  });
 
-  it('should correctly behave when inserting and selecting free entry', waitForAsync(async () => {
+  it('should correctly behave when inserting and selecting free entry', async () => {
     const { fixture, page, querySpy, navigateSpy } = setup();
 
     await fixture.whenStable();
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of([]));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of([]));
 
     page.setInputValue(page.createInput, value);
 
@@ -76,21 +71,21 @@ describe('SelectMailLoot integration tests', () => {
     expect(navigateSpy).toHaveBeenCalledTimes(1);
     expect(navigateSpy).toHaveBeenCalledWith(['other-loots/mail']);
     page.expectTopBarCreatingNew(value);
-  }));
+  });
 
-  it('should correctly behave when inserting an existing entity', waitForAsync(async () => {
+  it('should correctly behave when inserting an existing entity', async () => {
     const { fixture, page, querySpy } = setup();
 
     await fixture.whenStable();
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of([{}]));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of([{}]));
 
     page.setInputValue(page.createInput, value);
 
     expect(querySpy).toHaveBeenCalledTimes(1);
     expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`mail_loot_template\` WHERE (Entry = ${value})`);
     page.expectEntityAlreadyInUse();
-  }));
+  });
 
   for (const { id, entry, limit, expectedQuery } of [
     {
@@ -103,7 +98,7 @@ describe('SelectMailLoot integration tests', () => {
     it(`searching an existing entity should correctly work [${id}]`, () => {
       const { page, querySpy } = setup();
 
-      querySpy.calls.reset();
+      querySpy.mockClear();
       if (entry) {
         page.setInputValue(page.searchIdInput, entry);
       }
@@ -122,8 +117,8 @@ describe('SelectMailLoot integration tests', () => {
     const { navigateSpy, page, querySpy } = setup();
 
     const results = [{ Entry: 1 }, { Entry: 2 }, { Entry: 3 }];
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of(results));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of(results));
 
     page.clickElement(page.searchBtn);
 

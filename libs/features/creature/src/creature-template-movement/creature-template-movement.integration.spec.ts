@@ -1,5 +1,7 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { vi } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CreatureTemplateMovement } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
@@ -11,17 +13,10 @@ import { instance, mock } from 'ts-mockito';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { CreatureTemplateMovementComponent } from './creature-template-movement.component';
-import Spy = jasmine.Spy;
 
 class CreatureTemplateMovementPage extends EditorPageObject<CreatureTemplateMovementComponent> {}
 
 describe('CreatureTemplateMovement integration tests', () => {
-  let fixture: ComponentFixture<CreatureTemplateMovementComponent>;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let handlerService: CreatureHandlerService;
-  let page: CreatureTemplateMovementPage;
-
   const id = 1234;
   const expectedFullCreateQuery =
     'DELETE FROM `creature_template_movement` WHERE (`CreatureId` = 1234);\n' +
@@ -38,60 +33,61 @@ describe('CreatureTemplateMovement integration tests', () => {
   originalEntity.Random = 2;
   originalEntity.InteractionPauseTimer = 0;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        CreatureTemplateMovementComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
+      imports: [ToastrModule.forRoot(), ModalModule, CreatureTemplateMovementComponent, RouterTestingModule, TranslateTestingModule],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
-      providers: [CreatureHandlerService, SaiCreatureHandlerService, { provide: SqliteService, useValue: instance(mock(SqliteService)) }],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
-    handlerService = TestBed.inject(CreatureHandlerService);
+    const handlerService = TestBed.inject(CreatureHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalEntity]));
 
-    fixture = TestBed.createComponent(CreatureTemplateMovementComponent);
-    page = new CreatureTemplateMovementPage(fixture);
+    const fixture = TestBed.createComponent(CreatureTemplateMovementComponent);
+    const page = new CreatureTemplateMovementPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    return { fixture, queryService, querySpy, handlerService, page };
   }
 
   describe('Creating new', () => {
-    beforeEach(() => setup(true));
-
     it('should correctly initialise', () => {
+      const { page } = setup(true);
       page.expectQuerySwitchToBeHidden();
       page.expectFullQueryToBeShown();
       page.expectFullQueryToContain(expectedFullCreateQuery);
     });
 
     it('should correctly update the unsaved status', () => {
+      const { handlerService, page } = setup(true);
       const field = 'Ground';
-      expect(handlerService.isCreatureTemplateMovementUnsaved).toBe(false);
+      expect(handlerService.isCreatureTemplateMovementUnsaved()).toBe(false);
       page.setSelectValueById(field, 3);
-      expect(handlerService.isCreatureTemplateMovementUnsaved).toBe(true);
+      expect(handlerService.isCreatureTemplateMovementUnsaved()).toBe(true);
       page.setSelectValueById(field, 0);
-      expect(handlerService.isCreatureTemplateMovementUnsaved).toBe(false);
+      expect(handlerService.isCreatureTemplateMovementUnsaved()).toBe(false);
     });
 
     it('changing a property and executing the query should correctly work', () => {
+      const { querySpy, page } = setup(true);
       const expectedQuery =
         'DELETE FROM `creature_template_movement` WHERE (`CreatureId` = 1234);\n' +
         'INSERT INTO `creature_template_movement` (`CreatureId`, `Ground`, `Swim`, `Flight`, `Rooted`, `Chase`, `Random`, `InteractionPauseTimer`) VALUES\n' +
         '(1234, 1, 0, 0, 0, 0, 0, 0);';
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.setSelectValueById('Ground', 1);
       page.expectFullQueryToContain(expectedQuery);
@@ -99,14 +95,13 @@ describe('CreatureTemplateMovement integration tests', () => {
       page.clickExecuteQuery();
 
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
   });
 
   describe('Editing existing', () => {
-    beforeEach(() => setup(false));
-
     it('should correctly initialise', () => {
+      const { page } = setup(false);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(
@@ -117,19 +112,21 @@ describe('CreatureTemplateMovement integration tests', () => {
     });
 
     it('changing all properties and executing the query should correctly work', () => {
+      const { querySpy, page } = setup(false);
       const expectedQuery =
         'UPDATE `creature_template_movement` SET `Ground` = 1, `Swim` = 0, `Flight` = 1, `Rooted` = 0, `Chase` = 1, `Random` = 1, `InteractionPauseTimer` = 6 WHERE (`CreatureId` = 1234);';
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.changeAllFields(originalEntity, ['CreatureId'], [1, 0, 1, 0, 1, 1, 1]);
       page.expectDiffQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
 
     it('changing values should correctly update the queries', () => {
+      const { page } = setup(false);
       page.setSelectValueById('Ground', 1);
       page.expectDiffQueryToContain('UPDATE `creature_template_movement` SET `Ground` = 1 WHERE (`CreatureId` = 1234);');
       page.expectFullQueryToContain(

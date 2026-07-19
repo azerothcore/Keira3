@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
 import {
   CREATURE_QUESTITEM_ID,
@@ -8,12 +8,16 @@ import {
 } from '@keira/shared/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class CreatureQuestitemService extends MultiRowEditorService<CreatureQuestitem> {
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected override readonly handlerService: CreatureHandlerService) {
-    super(CreatureQuestitem, CREATURE_QUESTITEM_TABLE, CREATURE_QUESTITEM_ID, CREATURE_QUESTITEM_ID_2, handlerService);
+  protected override readonly handlerService = inject(CreatureHandlerService);
+  protected override readonly _entityClass = CreatureQuestitem;
+  protected override readonly _entityTable = CREATURE_QUESTITEM_TABLE;
+  protected override readonly _entityIdField = CREATURE_QUESTITEM_ID;
+  protected override readonly _entitySecondIdField = CREATURE_QUESTITEM_ID_2;
+
+  constructor() {
+    super();
+    this.init();
   }
 }

@@ -1,4 +1,6 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { instance, mock } from 'ts-mockito';
 
@@ -8,31 +10,31 @@ import { FactionSearchService } from '../../search/faction-search.service';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 
 describe('FactionSelectorModalComponent', () => {
-  let component: FactionSelectorModalComponent;
-  let fixture: ComponentFixture<FactionSelectorModalComponent>;
-  let searchService: FactionSearchService;
-
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [FactionSelectorModalComponent, TranslateTestingModule],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         BsModalRef,
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
         { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
       ],
     }).compileComponents();
-  }));
-
-  beforeEach(() => {
-    searchService = TestBed.inject(FactionSearchService);
-    searchService.query = '--mock query';
-
-    fixture = TestBed.createComponent(FactionSelectorModalComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
+  function setup() {
+    const searchService = TestBed.inject(FactionSearchService);
+    searchService.query = '--mock query';
+
+    const fixture = TestBed.createComponent(FactionSelectorModalComponent);
+    const component = fixture.componentInstance;
+    fixture.detectChanges();
+    return { searchService, fixture, component };
+  }
+
   it('should create', () => {
+    const { component } = setup();
     expect(component).toBeTruthy();
   });
 });

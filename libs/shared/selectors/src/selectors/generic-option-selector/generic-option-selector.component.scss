@@ -1,0 +1,13 @@
+.ngx-select {
+  max-height: 30px;
+}
+
+ngx-select {
+  span {
+    text-wrap-mode: nowrap;
+  }
+}
+
+::ng-deep ul.ngx-select__choices {
+  overflow-x: auto !important;
+}

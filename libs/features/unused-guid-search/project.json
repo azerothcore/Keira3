@@ -1,0 +1,20 @@
+{
+  "name": "keira-features-unused-guid-search",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/features/unused-guid-search/src",
+  "prefix": "keira",
+  "projectType": "library",
+  "tags": ["scope:features"],
+  "targets": {
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx vitest run",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

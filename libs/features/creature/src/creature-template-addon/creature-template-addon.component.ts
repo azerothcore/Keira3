@@ -20,7 +20,6 @@ import { CreatureTemplateAddonService } from './creature-template-addon.service'
   selector: 'keira-creature-template-addon',
   templateUrl: './creature-template-addon.component.html',
   styleUrls: ['./creature-template-addon.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,

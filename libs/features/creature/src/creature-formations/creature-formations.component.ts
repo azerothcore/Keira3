@@ -13,7 +13,6 @@ import { CreatureFormationsService } from './creature-formations.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-creature-formations',
   templateUrl: './creature-formations.component.html',
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,

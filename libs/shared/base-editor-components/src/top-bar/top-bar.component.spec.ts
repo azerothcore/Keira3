@@ -1,16 +1,16 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, viewChild, provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { PageObject } from '@keira/shared/test-utils';
 import { TopBarComponent } from './top-bar.component';
 
 describe(TopBarComponent.name, () => {
   @Component({
     template: ` <keira-top-bar [selected]="selected" [selectedName]="selectedName" [isNew]="isNew" [customScssClass]="customScssClass" /> `,
-    standalone: true,
     imports: [TopBarComponent],
   })
   class TestHostComponent {
-    @ViewChild(TopBarComponent) child!: TopBarComponent;
+    readonly child = viewChild.required(TopBarComponent);
     selected: string | undefined;
     selectedName: string | undefined;
     isNew: boolean = false;
@@ -30,6 +30,7 @@ describe(TopBarComponent.name, () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [TopBarComponent, TestHostComponent],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
   });
 

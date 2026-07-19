@@ -3,12 +3,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CreatureText, EMOTE, TEXT_RANGE, TEXT_TYPE } from '@keira/shared/acore-world-model';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { EditorButtonsComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
-import {
-  GenericOptionSelectorComponent,
-  LanguageSelectorBtnComponent,
-  SingleValueSelectorBtnComponent,
-  SoundEntriesSelectorBtnComponent,
-} from '@keira/shared/selectors';
+import { GenericOptionSelectorComponent, LanguageSelectorBtnComponent, SoundEntriesSelectorBtnComponent } from '@keira/shared/selectors';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
@@ -19,7 +14,6 @@ import { CreatureTextService } from './creature-text.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-creature-text',
   templateUrl: './creature-text.component.html',
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,
@@ -29,7 +23,6 @@ import { CreatureTextService } from './creature-text.service';
     ReactiveFormsModule,
     EditorButtonsComponent,
     NgxDatatableModule,
-    SingleValueSelectorBtnComponent,
     LanguageSelectorBtnComponent,
     SoundEntriesSelectorBtnComponent,
     GenericOptionSelectorComponent,

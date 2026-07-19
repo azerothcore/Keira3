@@ -1,27 +1,22 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { vi } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { NpcVendor } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { NpcVendorComponent } from './npc-vendor.component';
-import Spy = jasmine.Spy;
 import { instance, mock } from 'ts-mockito';
 
 class NpcVendorPage extends MultiRowEditorPageObject<NpcVendorComponent> {}
 
 describe('NpcVendor integration tests', () => {
-  let fixture: ComponentFixture<NpcVendorComponent>;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let handlerService: CreatureHandlerService;
-  let page: NpcVendorPage;
-
   const id = 1234;
 
   const originalRow0 = new NpcVendor();
@@ -32,41 +27,40 @@ describe('NpcVendor integration tests', () => {
   originalRow1.item = 1;
   originalRow2.item = 2;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        NpcVendorComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
+      imports: [ToastrModule.forRoot(), ModalModule, NpcVendorComponent, RouterTestingModule, TranslateTestingModule],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
-      providers: [CreatureHandlerService, SaiCreatureHandlerService, { provide: SqliteService, useValue: instance(mock(SqliteService)) }],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
-    handlerService = TestBed.inject(CreatureHandlerService);
+    const handlerService = TestBed.inject(CreatureHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
-    spyOn(queryService, 'queryValue').and.returnValue(of());
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
+    vi.spyOn(queryService, 'queryValue').mockReturnValue(of());
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
-    fixture = TestBed.createComponent(NpcVendorComponent);
-    page = new NpcVendorPage(fixture);
+    const fixture = TestBed.createComponent(NpcVendorComponent);
+    const page = new NpcVendorPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+    return { fixture, queryService, querySpy, handlerService, page };
   }
 
   describe('Creating new', () => {
-    beforeEach(() => setup(true));
-
     it('should correctly initialise', () => {
+      const { page } = setup(true);
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
       expect(page.formError.hidden).toBe(true);
@@ -82,21 +76,23 @@ describe('NpcVendor integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
-      expect(handlerService.isNpcVendorUnsaved).toBe(false);
+      const { handlerService, page } = setup(true);
+      expect(handlerService.isNpcVendorUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isNpcVendorUnsaved).toBe(true);
+      expect(handlerService.isNpcVendorUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isNpcVendorUnsaved).toBe(false);
+      expect(handlerService.isNpcVendorUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {
+      const { querySpy, page } = setup(true);
       const expectedQuery =
         'DELETE FROM `npc_vendor` WHERE (`entry` = 1234) AND (`item` IN (0, 1, 2));\n' +
         'INSERT INTO `npc_vendor` (`entry`, `slot`, `item`, `maxcount`, `incrtime`, `ExtendedCost`, `VerifiedBuild`) VALUES\n' +
         '(1234, 0, 0, 0, 0, 0, 0),\n' +
         '(1234, 0, 1, 0, 0, 0, 0),\n' +
         '(1234, 0, 2, 0, 0, 0, 0);';
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(1);
@@ -108,10 +104,11 @@ describe('NpcVendor integration tests', () => {
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
 
     it('adding a row and changing its values should correctly update the queries', () => {
+      const { page } = setup(true);
       page.addNewRow();
       page.expectDiffQueryToContain(
         'DELETE FROM `npc_vendor` WHERE (`entry` = 1234) AND (`item` IN (0));\n' +
@@ -162,6 +159,7 @@ describe('NpcVendor integration tests', () => {
     });
 
     it('adding a row changing its values and duplicate it should correctly update the queries', () => {
+      const { page } = setup(true);
       page.addNewRow();
       page.setInputValueById('slot', '1');
       page.setInputValueById('maxcount', '2');
@@ -184,9 +182,8 @@ describe('NpcVendor integration tests', () => {
   });
 
   describe('Editing existing', () => {
-    beforeEach(() => setup(false));
-
     it('should correctly initialise', () => {
+      const { page } = setup(false);
       expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
@@ -201,6 +198,7 @@ describe('NpcVendor integration tests', () => {
     });
 
     it('deleting rows should correctly work', () => {
+      const { page } = setup(false);
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
       page.expectDiffQueryToContain('DELETE FROM `npc_vendor` WHERE (`entry` = 1234) AND (`item` IN (1));');
@@ -227,6 +225,7 @@ describe('NpcVendor integration tests', () => {
     });
 
     it('editing existing rows should correctly work', () => {
+      const { page } = setup(false);
       page.clickRowOfDatatable(1);
       page.setInputValueById('slot', 1);
 
@@ -249,6 +248,7 @@ describe('NpcVendor integration tests', () => {
     });
 
     it('combining add, edit and delete should correctly work', () => {
+      const { page } = setup(false);
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(4);
 
@@ -275,16 +275,18 @@ describe('NpcVendor integration tests', () => {
     });
 
     it('using the same row id for multiple rows should correctly show an error', () => {
+      const { page } = setup(false);
       page.clickRowOfDatatable(2);
       page.setInputValueById('item', 0);
 
       page.expectUniqueError();
     });
 
-    xit('changing a value via ItemExtendedCost should correctly work', waitForAsync(async () => {
+    it.skip('changing a value via ItemExtendedCost should correctly work', async () => {
+      const { fixture, page } = setup(false);
       const field = 'ExtendedCost';
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
-      spyOn(sqliteQueryService, 'query').and.returnValue(of([{ id: 123, name: 'Mock ExtendedCost' }]));
+      vi.spyOn(sqliteQueryService, 'query').mockReturnValue(of([{ id: 123, name: 'Mock ExtendedCost' }]));
 
       // because this is a multi-row editor
       page.clickRowOfDatatable(0);
@@ -313,6 +315,6 @@ describe('NpcVendor integration tests', () => {
           '(1234, 0, 1, 0, 0, 0, 0),\n' +
           '(1234, 0, 2, 0, 0, 0, 0);',
       );
-    }));
+    });
   });
 });

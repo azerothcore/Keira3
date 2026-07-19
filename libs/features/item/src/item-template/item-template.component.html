@@ -13,7 +13,16 @@
   @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
     <div>
       <div class="content-block">
-        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)" />
+        <keira-query-output
+          [docUrl]="docUrl"
+          [isNew]="editorService.isNew"
+          [diffQuery]="editorService.diffQuery"
+          [fullQuery]="editorService.fullQuery"
+          [error]="editorService.error"
+          [entityTable]="editorService.entityTable"
+          [editorService]="editorService"
+          (executeQuery)="save($event)"
+        />
       </div>
       <form [formGroup]="editorService.form" class="form-group edit-form">
         <div class="content-block">
@@ -27,7 +36,11 @@
             <div class="form-group col-12 col-sm-8 col-md-8 col-lg-4 col-xl-3">
               <label class="control-label" for="name">name</label>
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.NAME' | translate"></i>
-              <input [formControlName]="'name'" id="name" [class]="handlerService.itemQualityScssClass" />
+              <input
+                [formControlName]="'name'"
+                id="name"
+                [class]="'form-control form-control-sm item-quality-q' + (editorService.form.controls.Quality.value || '0')"
+              />
             </div>
             <div class="form-group col-12 col-sm-7 col-md-7 col-lg-5 col-xl-4">
               <label class="control-label" for="description">description</label>
@@ -176,11 +189,11 @@
               <input [formControlName]="'ContainerSlots'" id="ContainerSlots" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-              <label class="control-label" for="TotemCategory">TotemCategory</label>
+              <label class="control-label" for="TotemCategory">Tools Category</label>
               <keira-single-value-selector-btn
                 [control]="editorService.form.controls.TotemCategory"
                 [disabled]="editorService.form.controls.TotemCategory.disabled"
-                [config]="{ options: TOTEM_CATEGORY, name: 'TotemCategory' }"
+                [config]="{ options: TOTEM_CATEGORY, name: 'Tools Category' }"
                 [modalClass]="'modal-md'"
               />
               <input [formControlName]="'TotemCategory'" id="TotemCategory" type="number" class="form-control form-control-sm" />
@@ -389,6 +402,7 @@
                 [control]="editorService.form.controls.RequiredReputationFaction"
                 [disabled]="editorService.form.controls.RequiredReputationFaction.disabled"
               />
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.REQUIRED_FACTION' | translate"></i>
               <input
                 [formControlName]="'RequiredReputationFaction'"
                 id="RequiredReputationFaction"
@@ -404,6 +418,7 @@
                 [config]="{ options: FACTION_RANK, name: 'RequiredReputationRank' }"
                 [modalClass]="'modal-md'"
               />
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.REQUIRED_FACTION_RANK' | translate"></i>
               <input
                 [formControlName]="'RequiredReputationRank'"
                 id="RequiredReputationRank"
@@ -495,11 +510,6 @@
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.SCALING_STAT_VALUE' | translate"></i>
               <input [formControlName]="'ScalingStatValue'" id="ScalingStatValue" type="number" class="form-control form-control-sm" />
             </div>
-            <div class="form-group col-12 col-sm-6 col-lg-4 col-xl-3">
-              <label class="control-label" for="StatsCount">count</label>
-              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.STATS_COUNT' | translate"></i>
-              <input [formControlName]="'StatsCount'" id="StatsCount" type="number" class="form-control form-control-sm" />
-            </div>
           </div>
           <div class="row">
             @for (i of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; track i) {
@@ -518,13 +528,7 @@
                   <div class="col-12">
                     <label class="control-label" for="stat_value{{ i }}">value{{ i }}</label>
                     <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.STAT_VALUE' | translate"></i>
-                    <input
-                      [formControlName]="'stat_value' + i"
-                      id="stat_value{{ i }}"
-                      type="number"
-                      class="form-control form-control-sm"
-                      (change)="calculateCount()"
-                    />
+                    <input [formControlName]="'stat_value' + i" id="stat_value{{ i }}" type="number" class="form-control form-control-sm" />
                   </div>
                 </div>
               </div>
@@ -772,12 +776,17 @@
             <div class="item-stats">
               <div [innerHTML]="itemPreview"></div>
               <br />
-              <keira-model-3d-viewer
-                [viewerType]="ITEM_VIEWER_TYPE"
-                [displayId]="editorService.form.controls.displayid.value"
-                [itemClass]="editorService.form.controls.class.value"
-                [itemInventoryType]="editorService.form.controls.InventoryType.value"
-              />
+              @if (npcDisplayId) {
+                <keira-model-3d-viewer [viewerType]="NPC_VIEWER_TYPE" [displayId]="npcDisplayId" [enableBgSettings]="true" />
+              } @else {
+                <keira-model-3d-viewer
+                  [viewerType]="ITEM_VIEWER_TYPE"
+                  [displayId]="editorService.form.controls.displayid.value"
+                  [itemClass]="editorService.form.controls.class.value"
+                  [itemInventoryType]="editorService.form.controls.InventoryType.value"
+                  [enableBgSettings]="true"
+                />
+              }
             </div>
           </div>
         </div>

@@ -8,17 +8,26 @@
   @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
     <div>
       <div class="content-block">
-        <keira-query-output [docUrl]="docUrl" [editorService]="editorService" (executeQuery)="save($event)" />
+        <keira-query-output
+          [docUrl]="docUrl"
+          [isNew]="editorService.isNew"
+          [diffQuery]="editorService.diffQuery"
+          [fullQuery]="editorService.fullQuery"
+          [error]="editorService.error"
+          [entityTable]="editorService.entityTable"
+          [editorService]="editorService"
+          (executeQuery)="save($event)"
+        />
       </div>
       <div class="form-group edit-form">
-        <keira-npc-text-fields-group [formGroup]="editorService.form" [groupId]="0"></keira-npc-text-fields-group>
-        <keira-npc-text-fields-group [formGroup]="editorService.form" [groupId]="1"></keira-npc-text-fields-group>
-        <keira-npc-text-fields-group [formGroup]="editorService.form" [groupId]="2"></keira-npc-text-fields-group>
-        <keira-npc-text-fields-group [formGroup]="editorService.form" [groupId]="3"></keira-npc-text-fields-group>
-        <keira-npc-text-fields-group [formGroup]="editorService.form" [groupId]="4"></keira-npc-text-fields-group>
-        <keira-npc-text-fields-group [formGroup]="editorService.form" [groupId]="5"></keira-npc-text-fields-group>
-        <keira-npc-text-fields-group [formGroup]="editorService.form" [groupId]="6"></keira-npc-text-fields-group>
-        <keira-npc-text-fields-group [formGroup]="editorService.form" [groupId]="7"></keira-npc-text-fields-group>
+        <keira-npc-text-fields-group [formGroup]="editorService.form" [groupId]="0" />
+        <keira-npc-text-fields-group [formGroup]="editorService.form" [groupId]="1" />
+        <keira-npc-text-fields-group [formGroup]="editorService.form" [groupId]="2" />
+        <keira-npc-text-fields-group [formGroup]="editorService.form" [groupId]="3" />
+        <keira-npc-text-fields-group [formGroup]="editorService.form" [groupId]="4" />
+        <keira-npc-text-fields-group [formGroup]="editorService.form" [groupId]="5" />
+        <keira-npc-text-fields-group [formGroup]="editorService.form" [groupId]="6" />
+        <keira-npc-text-fields-group [formGroup]="editorService.form" [groupId]="7" />
       </div>
     </div>
   }

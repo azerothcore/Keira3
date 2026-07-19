@@ -11,10 +11,16 @@
   <div class="content-block">
     <p class="h5 mb-3">HEADS UP: this is how the spell_dbc table works</p>
 
-    <p>The <i>spell_dbc</i> table contains mostly overrides of the spells located in the Client DBC files.</p>
     <p>
-      <strong>IMPORTANT:</strong> only a subset of the spells from the DBC are present in the <i>spell_dbc</i> table, if you want to add new
-      overrides, follow <a target="_blank" href="https://www.azerothcore.org/wiki/importing-spell-dbc">THIS HOW-TO</a>.
+      The <i>spell_dbc</i> table contains server-side-only spell entries. It has been cleaned to no longer contain client-side spell data.
+      Patches for client-side spells are done via <code>SpellInfoCorrections</code>. For the up-to-date table documentation see
+      <a target="_blank" href="https://www.azerothcore.org/wiki/spell_dbc">spell_dbc</a>.
+    </p>
+    <p>
+      <strong>IMPORTANT:</strong> Although <i>spell_dbc</i> entries are loaded after the client DBC (load order: <code>spell.dbc</code> ->
+      <code>spell_dbc</code> -> <code>SpellInfoCorrections</code>), it's <strong>not recommended</strong> to use <code>spell_dbc</code> to
+      overwrite client-side spell data. If you do want to add new overrides, follow
+      <a target="_blank" href="https://www.azerothcore.org/wiki/importing-spell-dbc"> THIS HOW-TO</a>.
     </p>
   </div>
   <div class="content-block">
@@ -76,9 +82,9 @@
               <keira-icon size="small" [spellId]="row[SPELL_DBC_ID]" /> {{ row[SPELL_DBC_ID] }}
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column [name]="SPELL_DBC_NAME" [prop]="SPELL_DBC_NAME" [minWidth]="250"></ngx-datatable-column>
-          <ngx-datatable-column name="NameSubtext_Lang_enUS(Ranks)" [prop]="SPELL_DBC_NAMESUBTEXT" [minWidth]="250"></ngx-datatable-column>
-          <ngx-datatable-column [name]="SPELL_DBC_DESCRIPTION" [prop]="SPELL_DBC_DESCRIPTION" [minWidth]="900"></ngx-datatable-column>
+          <ngx-datatable-column [name]="SPELL_DBC_NAME" [prop]="SPELL_DBC_NAME" [minWidth]="250" />
+          <ngx-datatable-column name="NameSubtext_Lang_enUS(Ranks)" [prop]="SPELL_DBC_NAMESUBTEXT" [minWidth]="250" />
+          <ngx-datatable-column [name]="SPELL_DBC_DESCRIPTION" [prop]="SPELL_DBC_DESCRIPTION" [minWidth]="900" />
         </ngx-datatable>
       </div>
     }

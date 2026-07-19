@@ -1,10 +1,12 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { vi } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { BroadcastText } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import { BroadcastTextComponent } from './broadcast-text.component';
@@ -37,12 +39,16 @@ describe('BroadcastText integration tests', () => {
   originalEntity.Flags = 12;
   originalEntity.VerifiedBuild = 13;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, ToastrModule.forRoot(), ModalModule.forRoot(), BroadcastTextComponent, TranslateTestingModule],
-      providers: [{ provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG }],
+      imports: [ToastrModule.forRoot(), ModalModule, BroadcastTextComponent, TranslateTestingModule],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },
+      ],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     const handlerService = TestBed.inject(BroadcastTextHandlerService);
@@ -50,9 +56,9 @@ describe('BroadcastText integration tests', () => {
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalEntity]));
 
     const fixture = TestBed.createComponent(BroadcastTextComponent);
     const component = fixture.componentInstance;
@@ -75,11 +81,11 @@ describe('BroadcastText integration tests', () => {
     it('should correctly update the unsaved status', () => {
       const { page, handlerService } = setup(true);
       const field = 'LanguageID';
-      expect(handlerService.isUnsaved).toBe(false);
+      expect(handlerService.isUnsaved()).toBe(false);
       page.setInputValueById(field, 3);
-      expect(handlerService.isUnsaved).toBe(true);
+      expect(handlerService.isUnsaved()).toBe(true);
       page.setInputValueById(field, 0);
-      expect(handlerService.isUnsaved).toBe(false);
+      expect(handlerService.isUnsaved()).toBe(false);
       page.removeNativeElement();
     });
 
@@ -90,7 +96,7 @@ describe('BroadcastText integration tests', () => {
         'INSERT INTO `broadcast_text` (`ID`, `LanguageID`, `MaleText`, `FemaleText`, `EmoteID1`, `EmoteID2`, `EmoteID3`, ' +
         '`EmoteDelay1`, `EmoteDelay2`, `EmoteDelay3`, `SoundEntriesId`, `EmotesID`, `Flags`, `VerifiedBuild`) VALUES\n' +
         "(1234, 0, 'Shin', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);";
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.setInputValueById('MaleText', 'Shin');
       page.expectFullQueryToContain(expectedQuery);
@@ -98,7 +104,7 @@ describe('BroadcastText integration tests', () => {
       page.clickExecuteQuery();
 
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
       page.removeNativeElement();
     });
   });
@@ -124,14 +130,14 @@ describe('BroadcastText integration tests', () => {
         "`MaleText` = '1', `FemaleText` = '2', `EmoteID1` = 3, `EmoteID2` = 4, `EmoteID3` = 5, " +
         '`EmoteDelay1` = 6, `EmoteDelay2` = 7, `EmoteDelay3` = 8, `SoundEntriesId` = 9, `EmotesID` = 10, `Flags` = 11 ' +
         'WHERE (`ID` = 1234);';
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.expectDiffQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
       page.removeNativeElement();
     });
 

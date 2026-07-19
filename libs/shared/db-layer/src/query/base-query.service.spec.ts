@@ -1,20 +1,24 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { vi } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { Service, provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { QueryForm } from '@keira/shared/constants';
-import { Injectable } from '@angular/core';
 import { BaseQueryService } from './base-query.service';
 
 describe('BaseQueryService', () => {
-  @Injectable({
-    providedIn: 'root',
-  })
+  @Service()
   class TestQueryService extends BaseQueryService {
     query(_queryString: string) {
       return of([]);
     }
   }
 
-  beforeEach(() => TestBed.configureTestingModule({}));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
+    }),
+  );
 
   const setup = () => {
     const service = TestBed.inject(TestQueryService);
@@ -22,24 +26,24 @@ describe('BaseQueryService', () => {
   };
 
   describe('queryValue()', () => {
-    it('should correctly work', waitForAsync(async () => {
+    it('should correctly work', async () => {
       const { service } = setup();
       const value = 'mock result value';
-      spyOn(service, 'query').and.returnValue(of([{ v: value }]) as any);
+      vi.spyOn(service, 'query').mockReturnValue(of([{ v: value }]) as any);
       const query = 'SELECT something AS v FROM my_table WHERE index = 123';
 
       expect(await service.queryValueToPromise(query)).toEqual(value);
-      expect(service.query).toHaveBeenCalledOnceWith(query);
-    }));
+      expect(service.query).toHaveBeenCalledExactlyOnceWith(query);
+    });
 
-    it('should be safe in case of no results', waitForAsync(async () => {
+    it('should be safe in case of no results', async () => {
       const { service } = setup();
-      spyOn(service, 'query').and.returnValue(of([]));
+      vi.spyOn(service, 'query').mockReturnValue(of([]));
       const query = 'SELECT something AS v FROM my_table WHERE index = 123';
 
       expect(await service.queryValueToPromise(query)).toEqual(null);
-      expect(service.query).toHaveBeenCalledOnceWith(query);
-    }));
+      expect(service.query).toHaveBeenCalledExactlyOnceWith(query);
+    });
   });
 
   describe('getSearchQuery()', () => {

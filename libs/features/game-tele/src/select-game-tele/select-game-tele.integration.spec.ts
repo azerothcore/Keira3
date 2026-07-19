@@ -1,10 +1,12 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { vi } from 'vitest';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { SelectPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { SelectGameTeleComponent } from './select-game-tele.component';
 import { instance, mock } from 'ts-mockito';
@@ -20,9 +22,9 @@ describe('SelectConditions integration tests', () => {
   function setup() {
     // Inject Services
     const router = TestBed.inject(Router);
-    const navigateSpy = spyOn(router, 'navigate');
+    const navigateSpy = vi.spyOn(router, 'navigate').mockImplementation(() => undefined);
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([{ max: 1 }]));
 
     // Create Component Fixture and Page Object
     const fixture: ComponentFixture<SelectGameTeleComponent> = TestBed.createComponent(SelectGameTeleComponent);
@@ -41,11 +43,13 @@ describe('SelectConditions integration tests', () => {
    * - Declares the component in the `declarations` array.
    * - Moves `SelectGameTeleComponent` from `imports` to `declarations`.
    */
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, ToastrModule.forRoot(), ModalModule.forRoot(), TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalModule, TranslateTestingModule],
       declarations: [],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         GameTeleHandlerService,
         {
           provide: SqliteService,
@@ -53,16 +57,16 @@ describe('SelectConditions integration tests', () => {
         },
       ],
     }).compileComponents();
-  }));
+  });
 
-  it('should correctly initialise', waitForAsync(async () => {
+  it('should correctly initialise', async () => {
     const { page, component, querySpy } = setup();
     await page.fixture.whenStable();
     expect(page.createInput.value).toEqual(`${component.customStartingId}`);
     page.expectNewEntityFree();
     expect(querySpy).toHaveBeenCalledWith('SELECT MAX(id) AS max FROM game_tele;');
     expect(page.queryWrapper.innerText).toContain('SELECT * FROM `game_tele` LIMIT 50');
-  }));
+  });
 
   for (const { id, name, limit, expectedQuery } of [
     {
@@ -86,7 +90,7 @@ describe('SelectConditions integration tests', () => {
   ]) {
     it(`searching an existing entity should correctly work [id: ${id}, name: ${name}]`, () => {
       const { page, component: _component, navigateSpy: _navigateSpy, querySpy } = setup();
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       // Set input values based on the test case
       if (id !== null) {
@@ -106,7 +110,7 @@ describe('SelectConditions integration tests', () => {
 
       // Validate the query was executed as expected
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toBe(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toBe(expectedQuery);
     });
   }
 
@@ -142,8 +146,8 @@ describe('SelectConditions integration tests', () => {
       },
     ] as GameTele[];
 
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of(results));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of(results));
 
     page.clickElement(page.searchBtn);
 

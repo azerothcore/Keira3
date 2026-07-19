@@ -13,7 +13,6 @@ import { HighlightjsWrapperComponent, IconComponent } from '@keira/shared/base-e
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-item-extended-cost-selector-modal',
   templateUrl: './item-extended-cost-selector-modal.component.html',
-  standalone: true,
   imports: [FormsModule, ReactiveFormsModule, HighlightjsWrapperComponent, NgxDatatableModule, TranslateModule, IconComponent],
 })
 export class ItemExtendedCostSelectorModalComponent extends SearchSelectorModalComponent<ItemExtendedCost> {

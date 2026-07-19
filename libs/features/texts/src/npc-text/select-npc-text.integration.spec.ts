@@ -1,11 +1,13 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { vi } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { SelectPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { NPC_TEXT_ID } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { SelectNpcTextComponent } from './select-npc-text.component';
 import { NpcTextHandlerService } from './npc-text-handler.service';
@@ -19,17 +21,17 @@ describe(`${SelectNpcTextComponent.name} integration tests`, () => {
   const value = 1200;
   const expectedRoute = 'texts/npc-text';
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, ToastrModule.forRoot(), ModalModule.forRoot(), SelectNpcTextComponent, TranslateTestingModule],
-      providers: [NpcTextHandlerService],
+      imports: [ToastrModule.forRoot(), ModalModule, SelectNpcTextComponent, TranslateTestingModule],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), NpcTextHandlerService],
     }).compileComponents();
-  }));
+  });
 
   function setup() {
-    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate').mockImplementation(() => undefined);
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([{ max: 1 }]));
 
     const selectService = TestBed.inject(SelectNpcTextService);
 
@@ -42,7 +44,7 @@ describe(`${SelectNpcTextComponent.name} integration tests`, () => {
     return { component, fixture, selectService, npc: page, queryService, querySpy, navigateSpy };
   }
 
-  it('should correctly initialise', waitForAsync(async () => {
+  it('should correctly initialise', async () => {
     const { fixture, npc, querySpy, component } = setup();
 
     await fixture.whenStable();
@@ -50,14 +52,14 @@ describe(`${SelectNpcTextComponent.name} integration tests`, () => {
     npc.expectNewEntityFree();
     expect(querySpy).toHaveBeenCalledWith('SELECT MAX(ID) AS max FROM npc_text;');
     expect(npc.queryWrapper.innerText).toContain('SELECT * FROM `npc_text` LIMIT 50');
-  }));
+  });
 
-  it('should correctly behave when inserting and selecting free entry', waitForAsync(async () => {
+  it('should correctly behave when inserting and selecting free entry', async () => {
     const { fixture, npc, querySpy, navigateSpy } = setup();
 
     await fixture.whenStable();
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of([]));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of([]));
 
     npc.setInputValue(npc.createInput, value);
 
@@ -70,21 +72,21 @@ describe(`${SelectNpcTextComponent.name} integration tests`, () => {
     expect(navigateSpy).toHaveBeenCalledTimes(1);
     expect(navigateSpy).toHaveBeenCalledWith([expectedRoute]);
     npc.expectTopBarCreatingNew(value);
-  }));
+  });
 
-  it('should correctly behave when inserting an existing entity', waitForAsync(async () => {
+  it('should correctly behave when inserting an existing entity', async () => {
     const { fixture, npc, querySpy } = setup();
 
     await fixture.whenStable();
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of([{}]));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of([{}]));
 
     npc.setInputValue(npc.createInput, value);
 
     expect(querySpy).toHaveBeenCalledTimes(1);
     expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`npc_text\` WHERE (ID = ${value})`);
     npc.expectEntityAlreadyInUse();
-  }));
+  });
 
   for (const { id, entry, limit, expectedQuery } of [
     {
@@ -97,7 +99,7 @@ describe(`${SelectNpcTextComponent.name} integration tests`, () => {
     it(`searching an existing entity should correctly work [${id}]`, () => {
       const { npc, querySpy } = setup();
 
-      querySpy.calls.reset();
+      querySpy.mockClear();
       if (entry) {
         npc.setInputValue(npc.searchIdInput, entry);
       }
@@ -116,8 +118,8 @@ describe(`${SelectNpcTextComponent.name} integration tests`, () => {
     const { navigateSpy, npc, querySpy } = setup();
 
     const results = [{ ID: 1 }, { ID: 2 }, { ID: 3 }];
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of(results));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of(results));
 
     npc.clickElement(npc.searchBtn);
 

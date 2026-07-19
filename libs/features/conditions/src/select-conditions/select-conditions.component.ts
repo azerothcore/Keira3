@@ -14,7 +14,6 @@ import { getEnumKeys } from '@keira/shared/utils';
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './select-conditions.component.html',
   styleUrls: ['./select-conditions.component.scss'],
-  standalone: true,
   imports: [FormsModule, ReactiveFormsModule, TranslateModule, HighlightjsWrapperComponent, NgxDatatableModule],
 })
 export class SelectConditionsComponent extends SelectComplexKeyComponent<Conditions> {

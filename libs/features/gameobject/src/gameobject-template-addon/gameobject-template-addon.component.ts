@@ -14,7 +14,6 @@ import { GameobjectTemplateAddonService } from './gameobject-template-addon.serv
   selector: 'keira-gameobject-template-addon',
   templateUrl: './gameobject-template-addon.component.html',
   styleUrls: ['./gameobject-template-addon.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,

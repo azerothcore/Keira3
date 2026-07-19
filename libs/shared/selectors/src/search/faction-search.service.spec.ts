@@ -1,4 +1,6 @@
 import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { instance, mock } from 'ts-mockito';
 
@@ -8,7 +10,11 @@ import { SqliteQueryService } from '@keira/shared/db-layer';
 describe('FactionSearchService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      providers: [{ provide: SqliteQueryService, useValue: instance(mock(SqliteQueryService)) }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        { provide: SqliteQueryService, useValue: instance(mock(SqliteQueryService)) },
+      ],
     }),
   );
 

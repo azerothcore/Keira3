@@ -2,7 +2,6 @@ import { FormGroup } from '@angular/forms';
 import { Class, TableRow } from '@keira/shared/constants';
 import { compareObjFn, ModelForm } from '@keira/shared/utils';
 import { distinctUntilChanged } from 'rxjs';
-import { HandlerService } from '../handlers/handler.service';
 import { EditorService } from './editor.service';
 
 export abstract class MultiRowEditorService<T extends TableRow> extends EditorService<T> {
@@ -31,16 +30,14 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     return this._errors;
   }
 
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  protected constructor(
-    protected override readonly _entityClass: Class,
-    protected override readonly _entityTable: string,
-    protected override readonly _entityIdField: string | undefined,
-    protected readonly _entitySecondIdField: string,
-    protected override readonly handlerService: HandlerService<T>,
-    protected readonly _entityExtraIdField: string | undefined = undefined,
-  ) {
-    super(_entityClass, _entityTable, _entityIdField, handlerService);
+  protected abstract override readonly _entityClass: Class;
+  protected abstract override readonly _entityTable: string;
+  protected abstract override readonly _entityIdField: string | undefined;
+  protected abstract readonly _entitySecondIdField: string;
+  protected readonly _entityExtraIdField: string | undefined = undefined;
+
+  protected override init(): void {
+    super.init();
     this.initForm();
   }
 
@@ -166,9 +163,9 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
         control.setValue(selectedRow[field]);
       } else {
         console.error(`Control '${field}' does not exist!`);
-        console.log(`----------- DEBUG CONTROL KEYS:`);
+        console.info(`----------- DEBUG CONTROL KEYS:`);
         for (const k of Object.keys(this._form.controls)) {
-          console.log(k);
+          console.info(k);
         }
       }
     }
@@ -226,9 +223,8 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
       this.addIdToNewRow(newRow);
     }
     const nextId = this.getNextFreeRowId();
-    newRow[this._entitySecondIdField as keyof T] = typeof newRow[this._entitySecondIdField as keyof T] === 'string'
-      ? String(nextId) as T[keyof T]
-      : nextId as T[keyof T];
+    newRow[this._entitySecondIdField as keyof T] =
+      typeof newRow[this._entitySecondIdField as keyof T] === 'string' ? (String(nextId) as T[keyof T]) : (nextId as T[keyof T]);
     this._newRows = [...this._newRows, { ...newRow }];
 
     this.updateDiffQuery();

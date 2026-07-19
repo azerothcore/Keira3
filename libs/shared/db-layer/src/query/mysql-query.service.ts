@@ -1,25 +1,17 @@
-import { Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { SmartScripts } from '@keira/shared/acore-world-model';
-import { from, map, Observable, of, tap } from 'rxjs';
-import { Delete, Insert, Squel, Update } from 'squel';
+import { ConfigService } from '@keira/shared/common-services';
 import { squelConfig } from '@keira/shared/config';
 import { MaxRow, QuestReputationReward, TableRow } from '@keira/shared/constants';
-import { ConfigService } from '@keira/shared/common-services';
+import { from, map, Observable, of, tap } from 'rxjs';
+import squel, { Delete, Insert, Update } from 'squel';
 import { MysqlService } from '../mysql.service';
 import { BaseQueryService } from './base-query.service';
 
-declare const squel: Squel & { flavour: null };
-
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class MysqlQueryService extends BaseQueryService {
-  constructor(
-    private mysqlService: MysqlService,
-    private configService: ConfigService,
-  ) {
-    super();
-  }
+  private mysqlService = inject(MysqlService);
+  private configService = inject(ConfigService);
 
   clearCache(): void {
     this.cache.clear();
@@ -28,9 +20,9 @@ export class MysqlQueryService extends BaseQueryService {
   query<T extends TableRow>(queryString: string, values?: string[]): Observable<T[]> {
     return this.mysqlService.dbQuery<T>(queryString, values).pipe(
       tap((val) => {
-        if (this.configService.debugMode) {
-          console.log(`\n${queryString}`);
-          console.log(val);
+        if (this.configService.debugMode()) {
+          console.info(`\n${queryString}`);
+          console.info(val);
         }
       }),
       map((val) => val?.result),
@@ -294,7 +286,7 @@ export class MysqlQueryService extends BaseQueryService {
       return '';
     }
     this.addWhereConditionsToQuery(updateQuery, currentRow, primaryKeys);
-    return updateQuery.toString();
+    return updateQuery.toString() + ';';
   }
 
   // Generates the DELETE query of ONE row using more than 2 keys
@@ -305,7 +297,7 @@ export class MysqlQueryService extends BaseQueryService {
   ) {
     const deleteQuery: Delete = squel.delete(squelConfig).from(tableName);
     this.addWhereConditionsToQuery(deleteQuery, row, primaryKeys);
-    return deleteQuery.toString();
+    return deleteQuery.toString() + ';';
   }
 
   // Generates the full DELETE/INSERT query of ONE row using more than 2 keys
@@ -316,7 +308,7 @@ export class MysqlQueryService extends BaseQueryService {
     primaryKeys: string[], // array of the primary keys
   ) {
     const insertQuery: Insert = squel.insert(squelConfig).into(tableName).setFieldsRows([newRow]);
-    let query: string = this.getDeleteMultipleKeysQuery(tableName, currentRow, primaryKeys) + ';\n';
+    let query: string = this.getDeleteMultipleKeysQuery(tableName, currentRow, primaryKeys) + '\n';
     query += insertQuery.toString() + ';\n';
     return this.formatQuery(query);
   }
@@ -336,7 +328,7 @@ export class MysqlQueryService extends BaseQueryService {
     return this.queryValueToPromiseCached(
       'getCreatureNameByGuid',
       String(guid),
-      `SELECT name AS v FROM creature_template AS ct INNER JOIN creature AS c ON ct.entry = c.id1 WHERE c.guid = ${guid}`,
+      `SELECT name AS v FROM creature_template AS ct INNER JOIN creature AS c ON ct.entry = c.id WHERE c.guid = ${guid}`,
     );
   }
 
@@ -449,5 +441,112 @@ export class MysqlQueryService extends BaseQueryService {
 
   getText1ById(id: string | number): Promise<string> {
     return this.queryValueToPromiseCached('getText1ById', String(id), `SELECT text0_1 AS v FROM npc_text WHERE ID = ${id}`);
+  }
+
+  getCreatureDisplayIdById(creatureId: string | number): Promise<number> {
+    return this.queryValueToPromiseCached(
+      'getCreatureDisplayIdById',
+      String(creatureId),
+      `SELECT CreatureDisplayID AS v FROM creature_template_model WHERE CreatureID=${creatureId}`,
+    );
+  }
+
+  getGameobjectDisplayIdById(gameObjectId: string | number): Promise<number> {
+    return this.queryValueToPromiseCached(
+      'getGameobjectDisplayIdById',
+      String(gameObjectId),
+      `SELECT displayId AS v FROM gameobject_template WHERE entry=${gameObjectId}`,
+    );
+  }
+
+  getCreaturePosition(guid: string | number): Promise<{ mapId: number; x: number; y: number; orientation: number } | null> {
+    return this.queryToPromiseCached<{ mapId: number; x: number; y: number; orientation: number }>(
+      'getCreaturePosition',
+      String(guid),
+      `SELECT map AS mapId, position_x AS x, position_y AS y, orientation FROM creature WHERE guid = ${guid}`,
+    ).then((result) => (result && result.length > 0 ? result[0] : null));
+  }
+
+  getCreaturePositionByEntry(
+    entry: string | number,
+  ): Promise<{ mapId: number; x: number; y: number; orientation: number; guid: number }[]> {
+    return this.queryToPromiseCached<{ mapId: number; x: number; y: number; orientation: number; guid: number }>(
+      'getCreaturePositionByEntry',
+      String(entry),
+      `SELECT map AS mapId, position_x AS x, position_y AS y, orientation, guid FROM creature WHERE id = ${entry} LIMIT 1`,
+    );
+  }
+
+  getGameObjectPosition(guid: string | number): Promise<{ mapId: number; x: number; y: number; orientation: number } | null> {
+    return this.queryToPromiseCached<{ mapId: number; x: number; y: number; orientation: number }>(
+      'getGameObjectPosition',
+      String(guid),
+      `SELECT map AS mapId, position_x AS x, position_y AS y, rotation0 AS orientation FROM gameobject WHERE guid = ${guid}`,
+    ).then((result) => (result && result.length > 0 ? result[0] : null));
+  }
+
+  getGameObjectPositionByEntry(
+    entry: string | number,
+  ): Promise<{ mapId: number; x: number; y: number; orientation: number; guid: number }[]> {
+    return this.queryToPromiseCached<{ mapId: number; x: number; y: number; orientation: number; guid: number }>(
+      'getGameObjectPositionByEntry',
+      String(entry),
+      `SELECT map AS mapId, position_x AS x, position_y AS y, rotation0 AS orientation, guid FROM gameobject WHERE id = ${entry} LIMIT 1`,
+    );
+  }
+
+  getCreatureSpawnsByEntry(entry: string | number): Promise<{ mapId: number; x: number; y: number; orientation: number; guid: number }[]> {
+    return this.queryToPromiseCached<{ mapId: number; x: number; y: number; orientation: number; guid: number }>(
+      'getCreatureSpawnsByEntry',
+      String(entry),
+      `SELECT map AS mapId, position_x AS x, position_y AS y, orientation, guid FROM creature WHERE id = ${entry}`,
+    );
+  }
+
+  getGameObjectSpawnsByEntry(
+    entry: string | number,
+  ): Promise<{ mapId: number; x: number; y: number; orientation: number; guid: number }[]> {
+    return this.queryToPromiseCached<{ mapId: number; x: number; y: number; orientation: number; guid: number }>(
+      'getGameObjectSpawnsByEntry',
+      String(entry),
+      `SELECT map AS mapId, position_x AS x, position_y AS y, rotation0 AS orientation, guid FROM gameobject WHERE id = ${entry}`,
+    );
+  }
+
+  // Capped at 2 rows: callers only need to distinguish "exactly one dropper" from "more than one".
+  getCreaturesDroppingItem(itemId: string | number): Promise<{ entry: number }[]> {
+    return this.queryToPromiseCached<{ entry: number }>(
+      'getCreaturesDroppingItem',
+      String(itemId),
+      `SELECT DISTINCT ct.entry AS entry FROM creature_template AS ct
+       INNER JOIN creature_loot_template AS clt ON clt.Entry = ct.lootid
+       WHERE ct.lootid > 0 AND clt.Item = ${itemId} LIMIT 2`,
+    );
+  }
+
+  getGameObjectsDroppingItem(itemId: string | number): Promise<{ entry: number }[]> {
+    return this.queryToPromiseCached<{ entry: number }>(
+      'getGameObjectsDroppingItem',
+      String(itemId),
+      `SELECT DISTINCT gt.entry AS entry FROM gameobject_template AS gt
+       INNER JOIN gameobject_loot_template AS glt ON glt.Entry = gt.Data1
+       WHERE gt.Data1 > 0 AND glt.Item = ${itemId} LIMIT 2`,
+    );
+  }
+
+  getQuestRelationEntries(table: string, questId: string | number): Promise<{ id: number }[]> {
+    return this.queryToPromiseCached<{ id: number }>(
+      'getQuestRelationEntries',
+      `${table}:${questId}`,
+      `SELECT id FROM ${table} WHERE quest = ${questId}`,
+    );
+  }
+
+  getTables(): Observable<TableRow[]> {
+    return this.query('SHOW TABLES');
+  }
+
+  getColumns(tableName: string): Observable<TableRow[]> {
+    return this.query(`SHOW COLUMNS FROM \`${tableName}\``);
   }
 }

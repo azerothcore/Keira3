@@ -1,75 +1,68 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { vi } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { GameobjectTemplate } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { SelectPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
-import { GameobjectTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
+import { instance, mock } from 'ts-mockito';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { SelectGameobjectComponent } from './select-gameobject.component';
-import Spy = jasmine.Spy;
-import { instance, mock } from 'ts-mockito';
 
 class SelectGameobjectComponentPage extends SelectPageObject<SelectGameobjectComponent> {
   override ID_FIELD = 'entry';
 }
 
 describe('SelectGameobject integration tests', () => {
-  let component: SelectGameobjectComponent;
-  let fixture: ComponentFixture<SelectGameobjectComponent>;
-  let page: SelectGameobjectComponentPage;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let navigateSpy: Spy;
-
   const value = 1200;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        SelectGameobjectComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
-      ],
+      imports: [ToastrModule.forRoot(), ModalModule, SelectGameobjectComponent, RouterTestingModule, TranslateTestingModule],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         GameobjectHandlerService,
         SaiGameobjectHandlerService,
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
     }).compileComponents();
-  }));
-
-  beforeEach(() => {
-    navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
-
-    fixture = TestBed.createComponent(SelectGameobjectComponent);
-    page = new SelectGameobjectComponentPage(fixture);
-    component = fixture.componentInstance;
-    fixture.autoDetectChanges(true);
-    fixture.detectChanges();
   });
 
-  it('should correctly initialise', waitForAsync(async () => {
+  function setup() {
+    const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate').mockImplementation(() => undefined);
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([{ max: 1, type: 0 }]));
+
+    const fixture = TestBed.createComponent(SelectGameobjectComponent);
+    const page = new SelectGameobjectComponentPage(fixture);
+    const component = fixture.componentInstance;
+    fixture.autoDetectChanges(true);
+    fixture.detectChanges();
+
+    return { fixture, page, component, querySpy, navigateSpy };
+  }
+
+  it('should correctly initialise', async () => {
+    const { fixture, page, component, querySpy } = setup();
     await fixture.whenStable();
     expect(page.createInput.value).toEqual(`${component.customStartingId}`);
     page.expectNewEntityFree();
     expect(querySpy).toHaveBeenCalledWith('SELECT MAX(entry) AS max FROM gameobject_template;');
     expect(page.queryWrapper.innerText).toContain('SELECT * FROM `gameobject_template` LIMIT 50');
-  }));
+  });
 
-  it('should correctly behave when inserting and selecting free id', waitForAsync(async () => {
+  it('should correctly behave when inserting and selecting free id', async () => {
+    const { fixture, page, querySpy, navigateSpy } = setup();
     await fixture.whenStable();
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of([]));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of([]));
 
     page.setInputValue(page.createInput, value);
 
@@ -82,19 +75,20 @@ describe('SelectGameobject integration tests', () => {
     expect(navigateSpy).toHaveBeenCalledTimes(1);
     expect(navigateSpy).toHaveBeenCalledWith(['gameobject/gameobject-template']);
     page.expectTopBarCreatingNew(value);
-  }));
+  });
 
-  it('should correctly behave when inserting an existing entity', waitForAsync(async () => {
+  it('should correctly behave when inserting an existing entity', async () => {
+    const { fixture, page, querySpy } = setup();
     await fixture.whenStable();
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of(['mock value']));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of(['mock value'] as any));
 
     page.setInputValue(page.createInput, value);
 
     expect(querySpy).toHaveBeenCalledTimes(1);
     expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`gameobject_template\` WHERE (entry = ${value})`);
     page.expectEntityAlreadyInUse();
-  }));
+  });
 
   for (const { testId, id, name, scriptName, limit, expectedQuery } of [
     {
@@ -139,7 +133,8 @@ describe('SelectGameobject integration tests', () => {
     },
   ]) {
     it(`searching an existing entity should correctly work [${testId}]`, () => {
-      querySpy.calls.reset();
+      const { page, querySpy } = setup();
+      querySpy.mockClear();
       if (id) {
         page.setInputValue(page.searchIdInput, id);
       }
@@ -161,13 +156,14 @@ describe('SelectGameobject integration tests', () => {
   }
 
   it('searching and selecting an existing entity from the datatable should correctly work', () => {
+    const { page, querySpy, navigateSpy } = setup();
     const results: Partial<GameobjectTemplate>[] = [
-      { id: 1, name: 'An awesome Gameobject 1', GameobjectType: 0, GameobjectDisplayId: 1 },
-      { id: 2, name: 'An awesome Gameobject 2', GameobjectType: 0, GameobjectDisplayId: 2 },
-      { id: 3, name: 'An awesome Gameobject 3', GameobjectType: 0, GameobjectDisplayId: 3 },
+      { id: 1, name: 'An awesome Gameobject 1', type: 0, displayId: 1 },
+      { id: 2, name: 'An awesome Gameobject 2', type: 0, displayId: 2 },
+      { id: 3, name: 'An awesome Gameobject 3', type: 0, displayId: 3 },
     ];
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of(results));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of(results as any));
 
     page.clickElement(page.searchBtn);
 

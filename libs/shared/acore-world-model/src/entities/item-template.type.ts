@@ -36,7 +36,6 @@ export class ItemTemplate extends TableRow {
   maxcount: number = 0;
   stackable: number = 1;
   ContainerSlots: number = 0;
-  StatsCount: number = 0;
   stat_type1: number = 0;
   stat_value1: number = 0;
   stat_type2: number = 0;

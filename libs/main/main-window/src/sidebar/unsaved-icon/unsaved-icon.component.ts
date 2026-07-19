@@ -7,7 +7,6 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
   selector: 'keira-unsaved-icon',
   templateUrl: './unsaved-icon.component.html',
   styleUrls: ['./unsaved-icon.component.scss'],
-  standalone: true,
   imports: [TooltipModule, TranslateModule],
 })
 export class UnsavedIconComponent {}

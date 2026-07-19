@@ -1,4 +1,6 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { instance, mock } from 'ts-mockito';
 
@@ -8,27 +10,31 @@ import { GameobjectSearchService } from '../../search/gameobject-search.service'
 import { MysqlQueryService } from '@keira/shared/db-layer';
 
 describe('GameobjectSelectorModalComponent', () => {
-  let component: GameobjectSelectorModalComponent;
-  let fixture: ComponentFixture<GameobjectSelectorModalComponent>;
-  let searchService: GameobjectSearchService;
-
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [GameobjectSelectorModalComponent, TranslateTestingModule],
-      providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        BsModalRef,
+        { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
+      ],
     }).compileComponents();
-  }));
-
-  beforeEach(() => {
-    searchService = TestBed.inject(GameobjectSearchService);
-    searchService.query = '--mock query';
-
-    fixture = TestBed.createComponent(GameobjectSelectorModalComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
+  function setup() {
+    const searchService = TestBed.inject(GameobjectSearchService);
+    searchService.query = '--mock query';
+
+    const fixture = TestBed.createComponent(GameobjectSelectorModalComponent);
+    const component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    return { fixture, component };
+  }
+
   it('should create', () => {
+    const { component } = setup();
     expect(component).toBeTruthy();
   });
 });

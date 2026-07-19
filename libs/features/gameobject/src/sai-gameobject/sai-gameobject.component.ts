@@ -8,13 +8,13 @@ import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { SaiGameobjectEditorService } from './sai-gameobject-editor.service';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-sai-gameobject',
   templateUrl: '../../../../../libs/shared/sai-editor/src/sai-editor.component.html',
   styleUrls: ['../../../../../libs/shared/sai-editor/src/sai-editor.component.scss'],
-  standalone: true,
   imports: [
     SaiTopBarComponent,
     TranslateModule,
@@ -26,6 +26,7 @@ import { SaiGameobjectEditorService } from './sai-gameobject-editor.service';
     EditorButtonsComponent,
     NgxDatatableModule,
     TimedActionlistComponent,
+    AsyncPipe,
   ],
 })
 export class SaiGameobjectComponent extends SaiEditorComponent {

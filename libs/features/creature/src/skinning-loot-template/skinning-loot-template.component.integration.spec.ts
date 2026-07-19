@@ -1,28 +1,23 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { vi } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { SkinningLootTemplate } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { SkinningLootTemplateComponent } from './skinning-loot-template.component';
 import { SkinningLootTemplateService } from './skinning-loot-template.service';
-import Spy = jasmine.Spy;
 import { instance, mock } from 'ts-mockito';
 
 class SkinningLootTemplatePage extends MultiRowEditorPageObject<SkinningLootTemplateComponent> {}
 
 describe('SkinningLootTemplate integration tests', () => {
-  let fixture: ComponentFixture<SkinningLootTemplateComponent>;
-  let queryService: MysqlQueryService;
-  let querySpy: Spy;
-  let handlerService: CreatureHandlerService;
-  let page: SkinningLootTemplatePage;
-
   const id = 1234;
 
   const originalRow0 = new SkinningLootTemplate();
@@ -33,42 +28,42 @@ describe('SkinningLootTemplate integration tests', () => {
   originalRow1.Item = 1;
   originalRow2.Item = 2;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        SkinningLootTemplateComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
+      imports: [ToastrModule.forRoot(), ModalModule, SkinningLootTemplateComponent, RouterTestingModule, TranslateTestingModule],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
-      providers: [CreatureHandlerService, SaiCreatureHandlerService, { provide: SqliteService, useValue: instance(mock(SqliteService)) }],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean, lootId = id) {
-    spyOn(TestBed.inject(SkinningLootTemplateService), 'getLootId').and.returnValue(of([{ lootId }]));
+    vi.spyOn(TestBed.inject(SkinningLootTemplateService), 'getLootId').mockReturnValue(of([{ lootId }]));
 
-    handlerService = TestBed.inject(CreatureHandlerService);
+    const handlerService = TestBed.inject(CreatureHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
-    queryService = TestBed.inject(MysqlQueryService);
-    querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
-    spyOn(queryService, 'queryValue').and.returnValue(of());
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
+    const queryService = TestBed.inject(MysqlQueryService);
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
+    vi.spyOn(queryService, 'queryValue').mockReturnValue(of());
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
-    fixture = TestBed.createComponent(SkinningLootTemplateComponent);
-    page = new SkinningLootTemplatePage(fixture);
+    const fixture = TestBed.createComponent(SkinningLootTemplateComponent);
+    const page = new SkinningLootTemplatePage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
+
+    return { fixture, queryService, querySpy, handlerService, page };
   }
 
   describe('Creating new', () => {
-    beforeEach(() => setup(true));
-
     it('should correctly initialise', () => {
+      const { page } = setup(true);
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToBeEmpty();
       expect(page.formError.hidden).toBe(true);
@@ -87,14 +82,16 @@ describe('SkinningLootTemplate integration tests', () => {
     });
 
     it('should correctly update the unsaved status', () => {
-      expect(handlerService.isSkinningLootTemplateUnsaved).toBe(false);
+      const { handlerService, page } = setup(true);
+      expect(handlerService.isSkinningLootTemplateUnsaved()).toBe(false);
       page.addNewRow();
-      expect(handlerService.isSkinningLootTemplateUnsaved).toBe(true);
+      expect(handlerService.isSkinningLootTemplateUnsaved()).toBe(true);
       page.deleteRow();
-      expect(handlerService.isSkinningLootTemplateUnsaved).toBe(false);
+      expect(handlerService.isSkinningLootTemplateUnsaved()).toBe(false);
     });
 
     it('adding new rows and executing the query should correctly work', () => {
+      const { querySpy, page } = setup(true);
       const expectedQuery =
         'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0, 1, 2));\n' +
         'INSERT INTO `skinning_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
@@ -102,7 +99,7 @@ describe('SkinningLootTemplate integration tests', () => {
         "(1234, 0, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
         "(1234, 1, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
         "(1234, 2, 0, 100, 0, 1, 0, 1, 1, '');";
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(1);
@@ -114,10 +111,11 @@ describe('SkinningLootTemplate integration tests', () => {
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
 
     it('adding a row and changing its values should correctly update the queries', () => {
+      const { page } = setup(true);
       page.addNewRow();
       page.expectDiffQueryToContain(
         'DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0));\n' +
@@ -176,6 +174,7 @@ describe('SkinningLootTemplate integration tests', () => {
     });
 
     it('adding a row changing its values and duplicate it should correctly update the queries', () => {
+      const { page } = setup(true);
       page.addNewRow();
       page.setInputValueById('Chance', '1');
       page.setInputValueById('QuestRequired', '2');
@@ -200,9 +199,8 @@ describe('SkinningLootTemplate integration tests', () => {
   });
 
   describe('Editing existing', () => {
-    beforeEach(() => setup(false));
-
     it('should correctly initialise', () => {
+      const { page } = setup(false);
       expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
@@ -219,6 +217,7 @@ describe('SkinningLootTemplate integration tests', () => {
     });
 
     it('deleting rows should correctly work', () => {
+      const { page } = setup(false);
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
       page.expectDiffQueryToContain('DELETE FROM `skinning_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1));');
@@ -247,6 +246,7 @@ describe('SkinningLootTemplate integration tests', () => {
     });
 
     it('editing existing rows should correctly work', () => {
+      const { page } = setup(false);
       page.clickRowOfDatatable(1);
       page.setInputValueById('LootMode', 1);
 
@@ -270,6 +270,7 @@ describe('SkinningLootTemplate integration tests', () => {
     });
 
     it('combining add, edit and delete should correctly work', () => {
+      const { page } = setup(false);
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(4);
 
@@ -298,6 +299,7 @@ describe('SkinningLootTemplate integration tests', () => {
     });
 
     it('using the same row id for multiple rows should correctly show an error', () => {
+      const { page } = setup(false);
       page.clickRowOfDatatable(2);
       page.setInputValueById('Item', 0);
 
@@ -306,10 +308,8 @@ describe('SkinningLootTemplate integration tests', () => {
   });
 
   it('should correctly show the warning if the loot id is not correctly set in the creature template', () => {
-    setup(true, 0);
+    const { page } = setup(true, 0);
 
-    expect(page.query('.alert-info').innerText).toContain(
-      'You have to set the field `skinloot` of creature_template in order to enable this feature.',
-    );
+    expect(page.query('.alert-info').innerText).toContain('LOOT_TEMPLATE.SET_FIELD');
   });
 });

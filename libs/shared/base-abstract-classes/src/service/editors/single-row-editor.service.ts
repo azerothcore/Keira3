@@ -1,22 +1,19 @@
 import { Class, TableRow } from '@keira/shared/constants';
-import { distinctUntilChanged } from 'rxjs';
 import { compareObjFn, getNumberOrString } from '@keira/shared/utils';
-import { HandlerService } from '../handlers/handler.service';
+import { distinctUntilChanged } from 'rxjs';
 import { EditorService } from './editor.service';
 
 export abstract class SingleRowEditorService<T extends TableRow> extends EditorService<T> {
   protected _originalValue!: T;
 
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  protected constructor(
-    protected override _entityClass: Class,
-    protected override _entityTable: string,
-    protected override _entityIdField: string,
-    protected _entityNameField: string | undefined | null,
-    protected isMainEntity: boolean,
-    protected override handlerService: HandlerService<T>,
-  ) {
-    super(_entityClass, _entityTable, _entityIdField, handlerService);
+  protected abstract override _entityClass: Class;
+  protected abstract override _entityTable: string;
+  protected abstract override _entityIdField: string;
+  protected _entityNameField: string | undefined | null = undefined;
+  protected isMainEntity = false;
+
+  protected override init(): void {
+    super.init();
     this.initForm();
   }
 
@@ -88,13 +85,13 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
     this._loading = true;
 
     for (const field of this.fields) {
-      // Ensure `field` is of type `string`
       if (typeof field === 'string') {
         const control = this._form.controls[field];
-
+        /* istanbul ignore else */
         if (control) {
-          const value = this._originalValue[field as keyof T]; // Ensure type safety here
-          control.setValue(value as T[typeof field]);
+          control.setValue(this._originalValue[field]);
+        } else {
+          console.error(`Control '${field}' does not exist!`);
         }
       } else {
         console.warn(`Field '${String(field)}' is not a valid string key.`);

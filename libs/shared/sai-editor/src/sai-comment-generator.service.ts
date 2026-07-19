@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
 import { SAI_ACTION_COMMENTS, SAI_EVENT_COMMENTS } from './constants/sai-comments';
@@ -18,14 +18,10 @@ import {
 import { SAI_EVENTS } from './constants/sai-event';
 import { SAI_TARGETS } from './constants/sai-targets';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class SaiCommentGeneratorService {
-  constructor(
-    private queryService: MysqlQueryService,
-    private sqliteQueryService: SqliteQueryService,
-  ) {}
+  private queryService = inject(MysqlQueryService);
+  private sqliteQueryService = inject(SqliteQueryService);
 
   private async getStringByTargetType(smartScript: SmartScripts): Promise<string> {
     switch (Number(smartScript.target_type)) {
@@ -56,9 +52,9 @@ export class SaiCommentGeneratorService {
       case SAI_TARGETS.GAMEOBJECT_RANGE:
       case SAI_TARGETS.GAMEOBJECT_DISTANCE:
       case SAI_TARGETS.CLOSEST_GAMEOBJECT:
-        return `Closest Creature '${await this.queryService.getGameObjectNameById(smartScript.target_param1)}'`;
+        return `Closest Gameobject '${await this.queryService.getGameObjectNameById(smartScript.target_param1)}'`;
       case SAI_TARGETS.GAMEOBJECT_GUID:
-        return `Closest Creature '${await this.queryService.getGameObjectNameByGuid(smartScript.target_param1)}'`;
+        return `Closest Gameobject '${await this.queryService.getGameObjectNameByGuid(smartScript.target_param1)}'`;
       case SAI_TARGETS.INVOKER_PARTY:
         return "Invoker's Party";
       case SAI_TARGETS.PLAYER_RANGE:
@@ -93,6 +89,8 @@ export class SaiCommentGeneratorService {
         return 'Summoned Creatures';
       case SAI_TARGETS.INSTANCE_STORAGE:
         return 'Instance Storage';
+      case SAI_TARGETS.FORMATION:
+        return 'Formation';
       default:
         return '[unsupported target type]';
     }
@@ -492,12 +490,12 @@ export class SaiCommentGeneratorService {
       actionLine = actionLine.replace('_getNpcFlags_', ' ' + commentNpcFlag);
     }
 
-    if (actionLine.indexOf('_startOrStopActionParamOne_') > -1) {
+    if (actionLine.indexOf('_continueOrStopActionParamOne_') > -1) {
       if (`${smartScript.action_param1}` === '0') {
-        actionLine = actionLine.replace('_startOrStopActionParamOne_', 'Stop');
+        actionLine = actionLine.replace('_continueOrStopActionParamOne_', 'Stop');
       } else {
         // ! Even if above 1 or below 0 we start attacking/allow-combat-movement
-        actionLine = actionLine.replace('_startOrStopActionParamOne_', 'Start');
+        actionLine = actionLine.replace('_continueOrStopActionParamOne_', 'Continue');
       }
     }
 
@@ -623,6 +621,10 @@ export class SaiCommentGeneratorService {
       } else {
         actionLine = actionLine.replace('_onOffActionParamOne_', 'Off');
       }
+    }
+
+    if (actionLine.indexOf('_onOffActionParamTwo_') > -1) {
+      actionLine = actionLine.replace('_onOffActionParamTwo_', smartScript.action_param2 === 1 ? 'On' : 'Off');
     }
 
     if (actionLine.indexOf('_gameobjectNameActionParamOne_') > -1) {
@@ -939,6 +941,44 @@ export class SaiCommentGeneratorService {
         actionLine = actionLine.replace('_mountToEntryOrModelActionParams_', 'Mount To Model ' + smartScript.action_param2);
       } else {
         actionLine = actionLine.replace('_mountToEntryOrModelActionParams_', 'Dismount');
+      }
+    }
+
+    if (actionLine.indexOf('_instanceData_') > -1) {
+      if (Number(smartScript.action_param3) === 1) {
+        actionLine = actionLine.replace('_instanceData_', 'SetBossState');
+      } else {
+        actionLine = actionLine.replace('_instanceData_', 'Set Instance Data');
+      }
+    }
+
+    if (actionLine.indexOf('_instDataParamTwo_') > -1) {
+      if (Number(smartScript.action_param3) === 1) {
+        switch (Number(smartScript.action_param2)) {
+          case 0:
+            actionLine = actionLine.replace('_instDataParamTwo_', 'NOT_STARTED');
+            break;
+          case 1:
+            actionLine = actionLine.replace('_instDataParamTwo_', 'IN_PROGRESS');
+            break;
+          case 2:
+            actionLine = actionLine.replace('_instDataParamTwo_', 'FAIL');
+            break;
+          case 3:
+            actionLine = actionLine.replace('_instDataParamTwo_', 'DONE');
+            break;
+          case 4:
+            actionLine = actionLine.replace('_instDataParamTwo_', 'SPECIAL');
+            break;
+          case 5:
+            actionLine = actionLine.replace('_instDataParamTwo_', 'TO_BE_DECIDED');
+            break;
+          default:
+            actionLine = actionLine.replace('_instDataParamTwo_', '[Unknown Encounter State]');
+            break;
+        }
+      } else {
+        actionLine = actionLine.replace('_instDataParamTwo_', smartScript.action_param2.toString());
       }
     }
 

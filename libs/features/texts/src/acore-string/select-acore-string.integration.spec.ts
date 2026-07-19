@@ -1,11 +1,13 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { vi } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { SelectPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ACORE_STRING_ENTRY } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { SelectAcoreStringComponent } from './select-acore-string.component';
 import { AcoreStringHandlerService } from './acore-string-handler.service';
@@ -19,17 +21,17 @@ describe(`${SelectAcoreStringComponent.name} integration tests`, () => {
   const value = 1200;
   const expectedRoute = 'texts/acore-string';
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, ToastrModule.forRoot(), ModalModule.forRoot(), SelectAcoreStringComponent, TranslateTestingModule],
-      providers: [AcoreStringHandlerService],
+      imports: [ToastrModule.forRoot(), ModalModule, SelectAcoreStringComponent, TranslateTestingModule],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), AcoreStringHandlerService],
     }).compileComponents();
-  }));
+  });
 
   function setup() {
-    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate').mockImplementation(() => undefined);
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([{ max: 1 }]));
 
     const selectService = TestBed.inject(SelectAcoreStringService);
 
@@ -42,7 +44,7 @@ describe(`${SelectAcoreStringComponent.name} integration tests`, () => {
     return { component, fixture, selectService, acoreStrings: page, queryService, querySpy, navigateSpy };
   }
 
-  it('should correctly initialise', waitForAsync(async () => {
+  it('should correctly initialise', async () => {
     const { fixture, acoreStrings, querySpy, component } = setup();
 
     await fixture.whenStable();
@@ -50,14 +52,14 @@ describe(`${SelectAcoreStringComponent.name} integration tests`, () => {
     acoreStrings.expectNewEntityFree();
     expect(querySpy).toHaveBeenCalledWith('SELECT MAX(entry) AS max FROM acore_string;');
     expect(acoreStrings.queryWrapper.innerText).toContain('SELECT * FROM `acore_string` LIMIT 50');
-  }));
+  });
 
-  it('should correctly behave when inserting and selecting free entry', waitForAsync(async () => {
+  it('should correctly behave when inserting and selecting free entry', async () => {
     const { fixture, acoreStrings, querySpy, navigateSpy } = setup();
 
     await fixture.whenStable();
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of([]));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of([]));
 
     acoreStrings.setInputValue(acoreStrings.createInput, value);
 
@@ -70,21 +72,21 @@ describe(`${SelectAcoreStringComponent.name} integration tests`, () => {
     expect(navigateSpy).toHaveBeenCalledTimes(1);
     expect(navigateSpy).toHaveBeenCalledWith([expectedRoute]);
     acoreStrings.expectTopBarCreatingNew(value);
-  }));
+  });
 
-  it('should correctly behave when inserting an existing entity', waitForAsync(async () => {
+  it('should correctly behave when inserting an existing entity', async () => {
     const { fixture, acoreStrings, querySpy } = setup();
 
     await fixture.whenStable();
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of([{}]));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of([{}]));
 
     acoreStrings.setInputValue(acoreStrings.createInput, value);
 
     expect(querySpy).toHaveBeenCalledTimes(1);
     expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`acore_string\` WHERE (entry = ${value})`);
     acoreStrings.expectEntityAlreadyInUse();
-  }));
+  });
 
   for (const { id, entry, limit, expectedQuery } of [
     {
@@ -97,7 +99,7 @@ describe(`${SelectAcoreStringComponent.name} integration tests`, () => {
     it(`searching an existing entity should correctly work [${id}]`, () => {
       const { acoreStrings, querySpy } = setup();
 
-      querySpy.calls.reset();
+      querySpy.mockClear();
       if (entry) {
         acoreStrings.setInputValue(acoreStrings.searchIdInput, entry);
       }
@@ -116,8 +118,8 @@ describe(`${SelectAcoreStringComponent.name} integration tests`, () => {
     const { navigateSpy, acoreStrings, querySpy } = setup();
 
     const results = [{ entry: 1 }, { entry: 2 }, { entry: 3 }];
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of(results));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of(results));
 
     acoreStrings.clickElement(acoreStrings.searchBtn);
 

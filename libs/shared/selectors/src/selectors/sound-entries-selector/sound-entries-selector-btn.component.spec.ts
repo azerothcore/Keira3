@@ -1,24 +1,26 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { SoundEntriesSelectorBtnComponent } from './sound-entries-selector-btn.component';
 
 describe('SoundEntriesSelectorBtnComponent', () => {
-  let component: SoundEntriesSelectorBtnComponent;
-  let fixture: ComponentFixture<SoundEntriesSelectorBtnComponent>;
-
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), SoundEntriesSelectorBtnComponent],
-    }).compileComponents();
-  }));
-
   beforeEach(() => {
-    fixture = TestBed.createComponent(SoundEntriesSelectorBtnComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    TestBed.configureTestingModule({
+      imports: [ModalModule, SoundEntriesSelectorBtnComponent],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
+    }).compileComponents();
   });
 
+  function setup() {
+    const fixture = TestBed.createComponent(SoundEntriesSelectorBtnComponent);
+    const component = fixture.componentInstance;
+    fixture.detectChanges();
+    return { fixture, component };
+  }
+
   it('should create', () => {
+    const { component } = setup();
     expect(component).toBeTruthy();
   });
 });

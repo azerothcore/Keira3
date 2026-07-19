@@ -18,7 +18,6 @@ import { GameobjectQueststarterService } from './gameobject-queststarter.service
   selector: 'keira-gameobject-queststarter',
   templateUrl: './gameobject-queststarter.component.html',
   styleUrls: ['./gameobject-queststarter.component.scss'],
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,

@@ -8,13 +8,13 @@ import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { SaiCreatureEditorService } from './sai-creature-editor.service';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-sai-creature',
   templateUrl: '../../../../../libs/shared/sai-editor/src/sai-editor.component.html',
   styleUrls: ['../../../../../libs/shared/sai-editor/src/sai-editor.component.scss'],
-  standalone: true,
   imports: [
     SaiTopBarComponent,
     TranslateModule,
@@ -26,6 +26,7 @@ import { SaiCreatureEditorService } from './sai-creature-editor.service';
     EditorButtonsComponent,
     NgxDatatableModule,
     TimedActionlistComponent,
+    AsyncPipe,
   ],
 })
 export class SaiCreatureComponent extends SaiEditorComponent {

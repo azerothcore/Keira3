@@ -11,7 +11,6 @@ import { CreateComponent, HighlightjsWrapperComponent, TopBarComponent } from '@
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './select-acore-string.component.html',
-  standalone: true,
   imports: [
     TranslateModule,
     FormsModule,

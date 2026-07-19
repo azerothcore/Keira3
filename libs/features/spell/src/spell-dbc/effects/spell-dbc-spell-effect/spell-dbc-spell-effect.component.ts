@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, input } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   SPELL_DBC_APPLY_AURA_NAME,
@@ -17,12 +17,11 @@ import { TranslateModule } from '@ngx-translate/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-spell-dbc-spell-effect',
   templateUrl: './spell-dbc-spell-effect.component.html',
-  standalone: true,
   imports: [FormsModule, ReactiveFormsModule, TranslateModule, SingleValueSelectorBtnComponent, TooltipModule, FlagsSelectorBtnComponent],
 })
 export class SpellDbcSpellEffectComponent {
   @Input({ required: true }) formGroup!: FormGroup<ModelForm<SpellDbc>>;
-  @Input({ required: true }) index!: number;
+  readonly index = input.required<number>();
 
   readonly SPELL_MECHANIC = SPELL_MECHANIC;
   readonly SPELL_DBC_EFFECT = SPELL_DBC_EFFECT;
@@ -30,6 +29,6 @@ export class SpellDbcSpellEffectComponent {
   readonly SPELL_DBC_CLASS_MASK_FLAGS = SPELL_DBC_CLASS_MASK_FLAGS;
 
   getFieldName(field: SpellDbcSpellEffectFieldPrefix): string {
-    return `${field}_${this.index}`; // example: EffectSpellClassMaskA_3
+    return `${field}_${this.index()}`; // example: EffectSpellClassMaskA_3
   }
 }

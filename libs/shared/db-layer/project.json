@@ -7,14 +7,10 @@
   "projectType": "library",
   "targets": {
     "test": {
-      "executor": "@angular-devkit/build-angular:karma",
+      "executor": "nx:run-commands",
       "options": {
-        "tsConfig": "libs/shared/db-layer/tsconfig.spec.json",
-        "karmaConfig": "libs/shared/db-layer/karma.conf.js",
-        "polyfills": ["zone.js", "zone.js/testing"],
-        "sourceMap": true,
-        "codeCoverage": true,
-        "scripts": ["node_modules/squel/dist/squel.min.js"]
+        "command": "npx vitest run",
+        "cwd": "{projectRoot}"
       }
     },
     "lint": {

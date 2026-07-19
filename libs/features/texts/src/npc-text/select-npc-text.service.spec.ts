@@ -1,4 +1,6 @@
 import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 
 import { instance, mock } from 'ts-mockito';
@@ -8,7 +10,13 @@ import { NpcTextHandlerService } from './npc-text-handler.service';
 describe(SelectNpcTextService.name, () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      providers: [{ provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) }, SelectNpcTextService, NpcTextHandlerService],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
+        SelectNpcTextService,
+        NpcTextHandlerService,
+      ],
     }),
   );
 

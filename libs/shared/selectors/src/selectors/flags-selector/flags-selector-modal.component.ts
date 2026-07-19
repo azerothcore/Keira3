@@ -11,7 +11,6 @@ import { UiSwitchModule } from 'ngx-ui-switch';
   selector: 'keira-flags-selector-modal',
   templateUrl: './flags-selector-modal.component.html',
   styleUrls: ['./flags-selector-modal.component.scss'],
-  standalone: true,
   imports: [UiSwitchModule, TranslateModule],
 })
 export class FlagsSelectorModalComponent extends BaseSelectorModalComponent<FlagsModalConfig> implements OnInit {

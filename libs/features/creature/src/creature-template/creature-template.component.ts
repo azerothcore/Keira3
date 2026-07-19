@@ -13,12 +13,9 @@ import {
   DYNAMIC_FLAGS,
   EXPANSION,
   FLAGS_EXTRA,
-  MECHANIC_IMMUNE_MASK,
   MOVEMENT_TYPE,
   NPC_FLAGS,
   RANK,
-  SPELL_SCHOOL_MASK,
-  TRAINER_TYPE,
   UNIT_CLASS,
   UNIT_FLAGS,
   UNIT_FLAGS_2,
@@ -31,9 +28,7 @@ import {
   FactionSelectorBtnComponent,
   FlagsSelectorBtnComponent,
   GenericOptionSelectorComponent,
-  IconSelectorComponent,
   SingleValueSelectorBtnComponent,
-  SpellSelectorBtnComponent,
 } from '@keira/shared/selectors';
 import { TranslateModule } from '@ngx-translate/core';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
@@ -42,12 +37,12 @@ import { CreatureTemplateService } from './creature-template.service';
 import { RouterLink } from '@angular/router';
 import { InputValidationDirective } from '@keira/shared/directives';
 import { ValidationService } from '@keira/shared/common-services';
+import { IconSelectorComponent } from '@keira/shared/selectors';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-creature-template',
   templateUrl: './creature-template.component.html',
-  standalone: true,
   imports: [
     TopBarComponent,
     TranslateModule,
@@ -58,7 +53,6 @@ import { ValidationService } from '@keira/shared/common-services';
     SingleValueSelectorBtnComponent,
     FactionSelectorBtnComponent,
     FlagsSelectorBtnComponent,
-    SpellSelectorBtnComponent,
     CreatureSelectorBtnComponent,
     GenericOptionSelectorComponent,
     BooleanOptionSelectorComponent,
@@ -71,7 +65,6 @@ import { ValidationService } from '@keira/shared/common-services';
 export class CreatureTemplateComponent extends SingleRowEditorComponent<CreatureTemplate> {
   protected readonly UNIT_FLAGS = UNIT_FLAGS;
   protected readonly UNIT_FLAGS_2 = UNIT_FLAGS_2;
-  protected readonly TRAINER_TYPE = TRAINER_TYPE;
   protected readonly NPC_FLAGS = NPC_FLAGS;
   protected readonly CREATURE_FAMILY = CREATURE_FAMILY;
   protected readonly CREATURE_TYPE = CREATURE_TYPE;
@@ -82,15 +75,12 @@ export class CreatureTemplateComponent extends SingleRowEditorComponent<Creature
   protected readonly CREATURE_RACE = CREATURE_RACE;
   protected readonly MOVEMENT_TYPE = MOVEMENT_TYPE;
   protected readonly FLAGS_EXTRA = FLAGS_EXTRA;
-  protected readonly MECHANIC_IMMUNE_MASK = MECHANIC_IMMUNE_MASK;
-  protected readonly SPELL_SCHOOL_IMMUNE_MASK = SPELL_SCHOOL_MASK;
   protected readonly CREATURE_ICON = CREATURE_ICON;
   protected readonly EXPANSION = EXPANSION;
   protected readonly UNIT_CLASS = UNIT_CLASS;
   protected readonly DAMAGE_TYPE = DAMAGE_TYPE;
   protected readonly CREATURE_AI_NAME = CREATURE_AI_NAME;
 
-  protected RACE_ICON_GENDER = true;
   protected showCreaturePreview = false;
 
   protected override readonly editorService = inject(CreatureTemplateService);

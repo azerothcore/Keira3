@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 
 import { SAI_ID_2, SAI_ID_FIELDS, SAI_TABLE, SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { MultiRowComplexKeyEditorService } from '@keira/shared/base-abstract-classes';
@@ -6,10 +6,10 @@ import { SaiCommentGeneratorService } from './sai-comment-generator.service';
 import { SaiHandlerService } from './sai-handler.service';
 import { lastValueFrom, Observable } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScripts> {
+  protected override readonly handlerService = inject(SaiHandlerService);
+
   protected saiCommentGeneratorService = inject(SaiCommentGeneratorService);
 
   protected _errorLinkedEvent = false;
@@ -17,9 +17,14 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
     return this._errorLinkedEvent;
   }
 
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  constructor(protected override readonly handlerService: SaiHandlerService) {
-    super(SmartScripts, SAI_TABLE, SAI_ID_FIELDS, SAI_ID_2, handlerService);
+  protected override _entityClass = SmartScripts;
+  protected override _entityTable = SAI_TABLE;
+  protected override _entityIdField = JSON.stringify(SAI_ID_FIELDS);
+  protected override _entitySecondIdField = SAI_ID_2;
+
+  constructor() {
+    super();
+    this.init();
   }
 
   protected updateFullQuery(): void {

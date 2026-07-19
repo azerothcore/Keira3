@@ -1,0 +1,62 @@
+<div class="container-fluid">
+  <div class="content-block">
+    <form data-testid="unused-guid-search-form" [formGroup]="form" (ngSubmit)="onSearch()" class="mb-3">
+      <div class="form-group row">
+        <label class="col-sm-2 col-form-label">
+          {{ 'UNUSED_GUID_SEARCH.TABLE' | translate }}
+        </label>
+        <div class="col-sm-4">
+          <select class="form-control" formControlName="selectedDb" required>
+            @for (db of dbOptions; track db) {
+              <option [ngValue]="db" [label]="db.label"></option>
+            }
+          </select>
+        </div>
+      </div>
+      <div class="form-group row mt-2">
+        <label class="col-sm-2 col-form-label">
+          {{ 'UNUSED_GUID_SEARCH.START_INDEX' | translate }}
+        </label>
+        <div class="col-sm-4">
+          <input type="number" class="form-control" formControlName="startIndex" min="1" [max]="MAX_INT_UNSIGNED_VALUE" required />
+        </div>
+      </div>
+      <div class="form-group row mt-2">
+        <label class="col-sm-2 col-form-label">
+          {{ 'UNUSED_GUID_SEARCH.AMOUNT' | translate }}
+        </label>
+        <div class="col-sm-4">
+          <input type="number" class="form-control" formControlName="amount" min="1" [max]="MAX_INT_UNSIGNED_VALUE" required />
+        </div>
+      </div>
+      <div class="form-group row mt-2">
+        <label class="col-sm-2 col-form-label">
+          {{ 'UNUSED_GUID_SEARCH.CONSECUTIVE' | translate }}
+        </label>
+        <div class="col-sm-4 d-flex align-items-center">
+          <input type="checkbox" formControlName="consecutive" />
+        </div>
+      </div>
+      <div class="form-group row mt-3">
+        <div class="col-sm-6">
+          <button data-testid="search" class="btn btn-primary" type="submit" [disabled]="loading()">
+            {{ 'UNUSED_GUID_SEARCH.SEARCH' | translate }}
+          </button>
+        </div>
+      </div>
+    </form>
+
+    @if (loading()) {
+      <div data-testid="loading" class="alert alert-info">{{ 'UNUSED_GUID_SEARCH.SEARCHING' | translate }}</div>
+    }
+
+    @if (error()) {
+      <div data-testid="errors" id="errors" class="alert alert-danger">{{ error() }}</div>
+    }
+
+    @if (results.length) {
+      <div class="alert alert-success">{{ 'UNUSED_GUID_SEARCH.FOUND_GUIDS' | translate }}</div>
+      <textarea id="results" class="mb-1" [value]="results.join(', ')" rows="6" spellcheck="false" readonly></textarea>
+    }
+  </div>
+</div>

@@ -14,22 +14,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [20]
-        os: [ubuntu-20.04, ubuntu-22.04, macos-13, macos-14]
+        node-version: [24]
+        os: [ubuntu-22.04, ubuntu-24.04, macos-14, macos-15]
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }}-node-${{ matrix.node-version }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Fetch main branch
         if: github.ref != 'refs/heads/master'
         run: git rev-parse --verify master || git remote set-branches origin master && git fetch --depth 1 origin master && git branch master origin/master
       - name: Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
       - name: Cache Node.js modules
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           # npm cache files are stored in `~/.npm` on Linux/macOS
           path: ~/.npm
@@ -37,19 +37,33 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
+
+      # because of https://github.com/actions/runner/issues/2958
+      - name: macos-13 dependencies fix
+        if: matrix.os == 'macos-13'
+        run: |
+          sudo -H pip install setuptools
+      - name: macos-14 dependencies fix
+        if: matrix.os == 'macos-14'
+        run: |
+          brew install python-setuptools
+
       - name: Install dependencies
         run: npm ci --include=optional
 
       - name: Lint
         run: npm run lint
       - name: Unit and Integration tests
-        uses: nick-invision/retry@v3
+        uses: nick-invision/retry@v4
         with:
           max_attempts: 5
           command: npm run test-ci
           timeout_minutes: 20
       - name: Build
         run: npm run build:prod
+      - name: Allow unprivileged user namespaces
+        if: matrix.os == 'ubuntu-24.04'
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       - name: End-to-End tests
         uses: GabrielBB/xvfb-action@v1
         with:

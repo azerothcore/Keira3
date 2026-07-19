@@ -13,7 +13,6 @@ import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-component
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-npc-text-selector-modal',
   templateUrl: './npc-text-selector-modal.component.html',
-  standalone: true,
   imports: [FormsModule, ReactiveFormsModule, HighlightjsWrapperComponent, NgxDatatableModule, TranslateModule],
 })
 export class NpcTextSelectorModalComponent extends SearchSelectorModalComponent<NpcText> {

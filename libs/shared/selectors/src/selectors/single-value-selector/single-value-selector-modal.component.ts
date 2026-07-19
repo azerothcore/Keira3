@@ -12,7 +12,6 @@ import { NgxDatatableModule } from '@siemens/ngx-datatable';
   selector: 'keira-single-value-selector-modal',
   templateUrl: './single-value-selector-modal.component.html',
   styleUrls: ['./single-value-selector-modal.component.scss'],
-  standalone: true,
   imports: [NgxDatatableModule, TranslateModule],
 })
 export class SingleValueSelectorModalComponent extends BaseSelectorModalComponent<SingleValueModalConfig> implements OnInit {

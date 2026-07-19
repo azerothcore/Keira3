@@ -1,4 +1,6 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { instance, mock } from 'ts-mockito';
 
@@ -8,27 +10,31 @@ import { QuestSearchService } from '../../search/quest-search.service';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 
 describe('QuestSelectorModalComponent', () => {
-  let component: QuestSelectorModalComponent;
-  let fixture: ComponentFixture<QuestSelectorModalComponent>;
-  let searchService: QuestSearchService;
-
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [QuestSelectorModalComponent, TranslateTestingModule],
-      providers: [BsModalRef, { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        BsModalRef,
+        { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
+      ],
     }).compileComponents();
-  }));
-
-  beforeEach(() => {
-    searchService = TestBed.inject(QuestSearchService);
-    searchService.query = '--mock query';
-
-    fixture = TestBed.createComponent(QuestSelectorModalComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
+  function setup() {
+    const searchService = TestBed.inject(QuestSearchService);
+    searchService.query = '--mock query';
+
+    const fixture = TestBed.createComponent(QuestSelectorModalComponent);
+    const component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    return { fixture, component };
+  }
+
   it('should create', () => {
+    const { component } = setup();
     expect(component).toBeTruthy();
   });
 });

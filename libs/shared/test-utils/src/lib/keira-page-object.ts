@@ -173,14 +173,34 @@ export abstract class PageObject<ComponentType> extends PageObjectModel<Componen
   }
 
   expectTabActive(tab: HTMLElement): void {
-    expect(tab).toHaveClass('active');
+    expect(tab.classList.contains('active')).toBe(true);
   }
 
   expectTabInactive(tab: HTMLElement): void {
-    expect(tab).not.toHaveClass('active');
+    expect(tab.classList.contains('active')).not.toBe(true);
   }
 
   expectTabHeadToContain(tab: HTMLElement, text: string): void {
     expect(tab.innerText).toContain(text);
+  }
+
+  expectIsNgxSelectDisabled(id: string): void {
+    expect(
+      this.getDebugElementByCss<HTMLElement>(`#${id} ngx-select div div`).nativeElement.className.includes('ngx-select__disabled'),
+    ).toBe(true);
+  }
+
+  async setNgxSelectValueByIndex(id: string, index: number): Promise<void> {
+    // trigger ngx-select dropdown to render the select options
+    const ngxSelectEl = this.fixture.debugElement.nativeElement.querySelector(`#${id} ngx-select`);
+    const toggle = ngxSelectEl.querySelector('.ngx-select__toggle');
+    toggle.click();
+
+    await this.whenStable();
+
+    // select the option
+    this.getAllDebugElementsByCss(`#${id} ngx-select .ngx-select.open .ngx-select__item`)[index].nativeElement.click();
+
+    await this.whenStable();
   }
 }

@@ -37,6 +37,72 @@
             </div>
             <input [formControlName]="'database'" class="form-control" id="database" />
           </div>
+          <div class="form-group">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="ssl-enabled" [formControlName]="'sslEnabled'" />
+              <label class="form-check-label text-white" for="ssl-enabled">
+                <i class="fas fa-lock"></i> {{ 'CONNECTION_WINDOW.USE_SSL' | translate }}
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CONNECTION_WINDOW.SSL_TOOLTIP' | translate"></i>
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="ssh-enabled" [formControlName]="'sshEnabled'" />
+              <label class="form-check-label text-white" for="ssh-enabled">
+                <i class="fas fa-terminal"></i> {{ 'CONNECTION_WINDOW.USE_SSH_TUNNEL' | translate }}
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CONNECTION_WINDOW.SSH_TOOLTIP' | translate"></i>
+              </label>
+            </div>
+          </div>
+          @if (form.get('sshEnabled')?.value) {
+            <div class="ssh-fields">
+              <div class="form-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-server"></i>{{ 'CONNECTION_WINDOW.SSH_HOST' | translate }}</span>
+                </div>
+                <input [formControlName]="'sshHost'" class="form-control" id="ssh-host" />
+              </div>
+              <div class="form-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-network-wired"></i>{{ 'CONNECTION_WINDOW.SSH_PORT' | translate }}</span>
+                </div>
+                <input [formControlName]="'sshPort'" type="number" class="form-control" id="ssh-port" />
+              </div>
+              <div class="form-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-user"></i>{{ 'CONNECTION_WINDOW.SSH_USER' | translate }}</span>
+                </div>
+                <input [formControlName]="'sshUser'" class="form-control" id="ssh-user" />
+              </div>
+              <div class="form-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text text-wrap"
+                    ><i class="fas fa-key"></i>{{ 'CONNECTION_WINDOW.SSH_PASSWORD' | translate }}</span
+                  >
+                </div>
+                <input [formControlName]="'sshPassword'" type="password" class="form-control" id="ssh-password" />
+              </div>
+              <div class="form-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-file-alt"></i>{{ 'CONNECTION_WINDOW.SSH_PRIVATE_KEY' | translate }}</span>
+                </div>
+                <div class="d-flex">
+                  <input
+                    [formControlName]="'sshPrivateKey'"
+                    class="form-control"
+                    id="ssh-private-key"
+                    readonly
+                    [placeholder]="'CONNECTION_WINDOW.SSH_KEY_PLACEHOLDER' | translate"
+                  />
+                  <label class="btn btn-sm btn-secondary ms-1 mb-0" for="ssh-key-file">
+                    <i class="fas fa-folder-open"></i>
+                  </label>
+                  <input type="file" id="ssh-key-file" class="d-none" (change)="onPrivateKeyFileSelected($event)" />
+                </div>
+              </div>
+            </div>
+          }
           <div class="recent-container">
             <div class="row">
               <div class="col">

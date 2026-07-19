@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { DTCFG } from '@keira/shared/config';
 import { SubscriptionHandler } from '@keira/shared/utils';
 import { TableRow } from '@keira/shared/constants';
@@ -13,59 +13,59 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { QueryErrorComponent } from '@keira/shared/base-editor-components';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 
+import { CodeEditor } from '@acrodata/code-editor';
+
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-sql-editor',
   templateUrl: './sql-editor.component.html',
   styleUrls: ['./sql-editor.component.scss'],
-  standalone: true,
-  imports: [TooltipModule, FormsModule, QueryErrorComponent, NgxDatatableModule, TranslateModule],
+  imports: [CodeEditor, TooltipModule, FormsModule, QueryErrorComponent, NgxDatatableModule, TranslateModule],
 })
-export class SqlEditorComponent extends SubscriptionHandler {
+export class SqlEditorComponent extends SubscriptionHandler implements OnInit {
   private readonly mysqlQueryService = inject(MysqlQueryService);
   private readonly clipboardService = inject(ClipboardService);
-  readonly service = inject(SqlEditorService);
+  protected readonly service = inject(SqlEditorService);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
-  readonly DTCFG = DTCFG;
-  readonly docUrl = 'https://www.w3schools.com/sql/sql_intro.asp';
+  protected readonly DTCFG = DTCFG;
+  protected readonly docUrl = 'https://www.w3schools.com/sql/sql_intro.asp';
   private readonly MAX_COL_SHOWN = 20;
 
-  // displayLimit = 10;
-  // get displayLimitOptions() {
-  //   return [10, 20, 50, 100, 200, 500, 1000];
-  // }
-
   private _error: QueryError | undefined;
-  get error(): QueryError | undefined {
+  protected get error(): QueryError | undefined {
     return this._error;
   }
 
   private _rows: TableRow[] = [];
-  get rows(): TableRow[] {
+  protected get rows(): TableRow[] {
     return this._rows;
   }
 
   private _columns!: string[];
-  get columns(): string[] {
+  protected get columns(): string[] {
     return this._columns;
   }
 
   private _affectedRows!: number;
-  get affectedRows(): number {
+  protected get affectedRows(): number {
     return this._affectedRows;
   }
 
   private _message!: string;
-  get message(): string {
+  protected get message(): string {
     return this._message;
   }
 
-  copy(): void {
+  ngOnInit(): void {
+    this.service.loadSchema();
+  }
+
+  protected copy(): void {
     this.clipboardService.copyFromContent(this.service.code);
   }
 
-  execute(): void {
+  protected execute(): void {
     this.subscriptions.push(
       this.mysqlQueryService.query(this.service.code).subscribe({
         next: (rows: TableRow[] | { affectedRows: number; message: string }) => {

@@ -32,7 +32,7 @@
           @for (flag of config.flags; track flag) {
             <tr>
               <td>
-                <ui-switch [checked]="flagValues[flag.bit]" (change)="toggleBit(flag.bit)" [id]="'switch-bit-' + flag.bit"></ui-switch>
+                <ui-switch [checked]="flagValues[flag.bit]" (change)="toggleBit(flag.bit)" [id]="'switch-bit-' + flag.bit" />
               </td>
               <td class="text-center">{{ flag.bit }}</td>
               <td class="text-center">{{ flagValues[flag.bit] ? '+' + pow(2, flag.bit) : '' }}</td>

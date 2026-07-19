@@ -1,7 +1,6 @@
 import { Class, TableRow } from '@keira/shared/constants';
 import { QueryError } from 'mysql2';
 import { Observable } from 'rxjs';
-import { HandlerService } from '../handlers/handler.service';
 import { MultiRowEditorService } from './multi-row-editor.service';
 import { ChangeDetectorRef } from '@angular/core';
 
@@ -10,16 +9,10 @@ export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extend
     return JSON.parse(this._entityIdField as string);
   }
 
-  /* istanbul ignore next */ // because of: https://github.com/gotwarlost/istanbul/issues/690
-  protected constructor(
-    protected override _entityClass: Class,
-    protected override _entityTable: string,
-    _entityIdField: string[],
-    protected override _entitySecondIdField: string,
-    protected override handlerService: HandlerService<T>,
-  ) {
-    super(_entityClass, _entityTable, JSON.stringify(_entityIdField), _entitySecondIdField, handlerService);
-  }
+  protected abstract override _entityClass: Class;
+  protected abstract override _entityTable: string;
+  protected abstract override _entityIdField: string;
+  protected abstract override _entitySecondIdField: string;
 
   protected override disableEntityIdField() {}
 

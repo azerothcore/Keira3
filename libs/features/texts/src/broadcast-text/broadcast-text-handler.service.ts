@@ -1,18 +1,16 @@
-import { Injectable } from '@angular/core';
+import { Service, signal, Signal } from '@angular/core';
 import { HandlerService } from '@keira/shared/base-abstract-classes';
 import { BroadcastText, BROADCAST_TEXT_TABLE } from '@keira/shared/acore-world-model';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class BroadcastTextHandlerService extends HandlerService<BroadcastText> {
   protected readonly mainEditorRoutePath = 'texts/broadcast-text';
 
-  get isUnsaved(): boolean {
-    return this.statusMap[BROADCAST_TEXT_TABLE];
+  get isUnsaved(): Signal<boolean> {
+    return this.statusMap[BROADCAST_TEXT_TABLE].asReadonly();
   }
 
   protected _statusMap = {
-    [BROADCAST_TEXT_TABLE]: false,
+    [BROADCAST_TEXT_TABLE]: signal(false),
   };
 }

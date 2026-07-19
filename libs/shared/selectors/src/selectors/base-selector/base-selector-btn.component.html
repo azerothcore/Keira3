@@ -1,10 +1,10 @@
 @if (control) {
   <button
     type="button"
-    [id]="config?.name + '-selector-btn'"
+    [id]="config()?.name + '-selector-btn'"
     class="btn btn-secondary btn-sm ms-1"
     (click)="onClick()"
-    [disabled]="disabled"
+    [disabled]="disabled()"
   >
     ...
   </button>

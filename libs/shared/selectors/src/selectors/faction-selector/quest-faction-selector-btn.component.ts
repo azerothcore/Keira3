@@ -8,7 +8,6 @@ import { QuestFactionSelectorModalComponent } from './quest-faction-selector-mod
   selector: 'keira-quest-faction-selector-btn',
   templateUrl: '../base-selector/base-selector-btn.component.html',
   styleUrls: ['../base-selector/base-selector-btn.component.scss'],
-  standalone: true,
 })
 export class QuestFactionSelectorBtnComponent extends BaseSelectorBtnComponent {
   protected readonly modalComponentClass = QuestFactionSelectorModalComponent;

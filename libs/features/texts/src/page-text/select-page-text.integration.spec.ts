@@ -1,11 +1,13 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { vi } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { SelectPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { PAGE_TEXT_ID } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { SelectPageTextComponent } from './select-page-text.component';
 import { PageTextHandlerService } from './page-text-handler.service';
@@ -19,17 +21,17 @@ describe(`${SelectPageTextComponent.name} integration tests`, () => {
   const value = 1200;
   const expectedRoute = 'texts/page-text';
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, ToastrModule.forRoot(), ModalModule.forRoot(), SelectPageTextComponent, TranslateTestingModule],
-      providers: [PageTextHandlerService],
+      imports: [ToastrModule.forRoot(), ModalModule, SelectPageTextComponent, TranslateTestingModule],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), PageTextHandlerService],
     }).compileComponents();
-  }));
+  });
 
   function setup() {
-    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate').mockImplementation(() => undefined);
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([{ max: 1 }]));
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([{ max: 1 }]));
 
     const selectService = TestBed.inject(SelectPageTextService);
 
@@ -42,7 +44,7 @@ describe(`${SelectPageTextComponent.name} integration tests`, () => {
     return { component, fixture, selectService, page, queryService, querySpy, navigateSpy };
   }
 
-  it('should correctly initialise', waitForAsync(async () => {
+  it('should correctly initialise', async () => {
     const { fixture, page, querySpy, component } = setup();
 
     await fixture.whenStable();
@@ -50,14 +52,14 @@ describe(`${SelectPageTextComponent.name} integration tests`, () => {
     page.expectNewEntityFree();
     expect(querySpy).toHaveBeenCalledWith('SELECT MAX(ID) AS max FROM page_text;');
     expect(page.queryWrapper.innerText).toContain('SELECT * FROM `page_text` LIMIT 50');
-  }));
+  });
 
-  it('should correctly behave when inserting and selecting free entry', waitForAsync(async () => {
+  it('should correctly behave when inserting and selecting free entry', async () => {
     const { fixture, page, querySpy, navigateSpy } = setup();
 
     await fixture.whenStable();
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of([]));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of([]));
 
     page.setInputValue(page.createInput, value);
 
@@ -70,21 +72,21 @@ describe(`${SelectPageTextComponent.name} integration tests`, () => {
     expect(navigateSpy).toHaveBeenCalledTimes(1);
     expect(navigateSpy).toHaveBeenCalledWith([expectedRoute]);
     page.expectTopBarCreatingNew(value);
-  }));
+  });
 
-  it('should correctly behave when inserting an existing entity', waitForAsync(async () => {
+  it('should correctly behave when inserting an existing entity', async () => {
     const { fixture, page, querySpy } = setup();
 
     await fixture.whenStable();
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of([{}]));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of([{}]));
 
     page.setInputValue(page.createInput, value);
 
     expect(querySpy).toHaveBeenCalledTimes(1);
     expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM \`page_text\` WHERE (ID = ${value})`);
     page.expectEntityAlreadyInUse();
-  }));
+  });
 
   for (const { id, entry, limit, expectedQuery } of [
     {
@@ -97,7 +99,7 @@ describe(`${SelectPageTextComponent.name} integration tests`, () => {
     it(`searching an existing entity should correctly work [${id}]`, () => {
       const { page, querySpy } = setup();
 
-      querySpy.calls.reset();
+      querySpy.mockClear();
       if (entry) {
         page.setInputValue(page.searchIdInput, entry);
       }
@@ -116,8 +118,8 @@ describe(`${SelectPageTextComponent.name} integration tests`, () => {
     const { navigateSpy, page, querySpy } = setup();
 
     const results = [{ ID: 1 }, { ID: 2 }, { ID: 3 }];
-    querySpy.calls.reset();
-    querySpy.and.returnValue(of(results));
+    querySpy.mockClear();
+    querySpy.mockReturnValue(of(results));
 
     page.clickElement(page.searchBtn);
 

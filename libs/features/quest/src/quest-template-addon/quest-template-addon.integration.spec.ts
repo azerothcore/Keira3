@@ -1,17 +1,21 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { vi, type MockInstance } from 'vitest';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
-import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { QuestTemplateAddon } from '@keira/shared/acore-world-model';
+import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
+import { Model3DViewerService } from '@keira/shared/model-3d-viewer';
+import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { tickAsync } from 'ngx-page-object-model';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
 import { QuestHandlerService } from '../quest-handler.service';
+import { QUEST_PREVIEW_DEBOUNCE_TIME } from '../quest-preview/quest-preview.component';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { QuestTemplateAddonComponent } from './quest-template-addon.component';
-import Spy = jasmine.Spy;
 
 class QuestTemplateAddonPage extends EditorPageObject<QuestTemplateAddonComponent> {
   get questPreviewReqLevel() {
@@ -48,19 +52,17 @@ describe('QuestTemplateAddon integration tests', () => {
   originalEntity.ProvidedItemCount = 15;
   originalEntity.SpecialFlags = 0;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        ModalModule.forRoot(),
-        RouterTestingModule,
-        QuestTemplateAddonComponent,
-        TranslateTestingModule,
+      imports: [ToastrModule.forRoot(), ModalModule, RouterTestingModule, QuestTemplateAddonComponent, TranslateTestingModule],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
+        { provide: Model3DViewerService, useValue: { generateModels: () => new Promise((resolve) => resolve({ destroy: () => {} })) } },
       ],
-      providers: [{ provide: SqliteService, useValue: instance(mock(SqliteService)) }],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     const handlerService = TestBed.inject(QuestHandlerService);
@@ -69,15 +71,15 @@ describe('QuestTemplateAddon integration tests', () => {
 
     const sqliteQueryService = TestBed.inject(SqliteQueryService);
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
-    spyOn(sqliteQueryService, 'query').and.returnValue(of([{ ID: 123, spellName: 'Mock Spell' }]));
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
+    vi.spyOn(sqliteQueryService, 'query').mockReturnValue(of([{ ID: 123, spellName: 'Mock Spell' }]));
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalEntity]));
     // by default the other editor services should not be initialised, because the selectAll would return the wrong types for them
-    const initializeServicesSpy = spyOn(TestBed.inject(QuestPreviewService), 'initializeServices');
+    const initializeServicesSpy = vi.spyOn(TestBed.inject(QuestPreviewService), 'initializeServices').mockImplementation(() => undefined);
     if (creatingNew) {
       // when creatingNew, the selectAll will return an empty array, so it's fine
-      initializeServicesSpy.and.callThrough();
+      initializeServicesSpy.mockRestore();
     }
 
     const fixture = TestBed.createComponent(QuestTemplateAddonComponent);
@@ -101,11 +103,11 @@ describe('QuestTemplateAddon integration tests', () => {
     it('should correctly update the unsaved status', () => {
       const { page, handlerService } = setup(true);
       const field = 'NextQuestID';
-      expect(handlerService.isQuestTemplateAddonUnsaved).toBe(false);
+      expect(handlerService.isQuestTemplateAddonUnsaved()).toBe(false);
       page.setInputValueById(field, 3);
-      expect(handlerService.isQuestTemplateAddonUnsaved).toBe(true);
+      expect(handlerService.isQuestTemplateAddonUnsaved()).toBe(true);
       page.setInputValueById(field, 0);
-      expect(handlerService.isQuestTemplateAddonUnsaved).toBe(false);
+      expect(handlerService.isQuestTemplateAddonUnsaved()).toBe(false);
       page.removeNativeElement();
     });
 
@@ -118,7 +120,7 @@ describe('QuestTemplateAddon integration tests', () => {
         ' `RequiredMinRepFaction`, `RequiredMaxRepFaction`, `RequiredMinRepValue`, `RequiredMaxRepValue`, `ProvidedItemCount`,' +
         ' `SpecialFlags`) VALUES\n' +
         '(1234, 33, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);';
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.setInputValueById('MaxLevel', 33);
       page.expectFullQueryToContain(expectedQuery);
@@ -126,15 +128,17 @@ describe('QuestTemplateAddon integration tests', () => {
       page.clickExecuteQuery();
 
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
       page.removeNativeElement();
     });
 
-    it('changing a property should be reflected in the quest preview', () => {
+    it('changing a property should be reflected in the quest preview', async () => {
       const { page } = setup(true);
       const value = 80;
 
       page.setInputValueById('MaxLevel', value);
+      await tickAsync(QUEST_PREVIEW_DEBOUNCE_TIME);
+      await page.fixture.whenStable();
 
       expect(page.questPreviewReqLevel.innerText).toContain(`0 - ${value}`);
       page.removeNativeElement();
@@ -165,14 +169,14 @@ describe('QuestTemplateAddon integration tests', () => {
         '`RewardMailTemplateID` = 6, `RewardMailDelay` = 7, `RequiredSkillID` = 8, `RequiredSkillPoints` = 9, ' +
         '`RequiredMinRepFaction` = 10, `RequiredMaxRepFaction` = 11, `RequiredMinRepValue` = 12, `RequiredMaxRepValue` = 13, ' +
         '`ProvidedItemCount` = 14, `SpecialFlags` = 15 WHERE (`ID` = 1234);';
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.expectDiffQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();
-      expect(querySpy).toHaveBeenCalledTimes(2); // 2 because the preview also calls it
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy).toHaveBeenCalledTimes(1);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
       page.removeNativeElement();
     });
 
@@ -202,7 +206,7 @@ describe('QuestTemplateAddon integration tests', () => {
       page.removeNativeElement();
     });
 
-    xit('changing a value via FlagsSelector should correctly work', waitForAsync(async () => {
+    it.skip('changing a value via FlagsSelector should correctly work', async () => {
       const { page } = setup(false);
       const field = 'SpecialFlags';
       page.clickElement(page.getSelectorBtn(field));
@@ -228,9 +232,9 @@ describe('QuestTemplateAddon integration tests', () => {
           '(1234, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 10)',
       );
       page.removeNativeElement();
-    }));
+    });
 
-    xit('changing a value via SpellSelector should correctly work', waitForAsync(async () => {
+    it.skip('changing a value via SpellSelector should correctly work', async () => {
       const { page } = setup(false);
 
       //  note: previously disabled because of:
@@ -258,13 +262,13 @@ describe('QuestTemplateAddon integration tests', () => {
           '(1234, 1, 2, 123, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0);',
       );
       page.removeNativeElement();
-    }));
+    });
 
-    xit('changing a value via QuestSelector should correctly work', waitForAsync(async () => {
+    it.skip('changing a value via QuestSelector should correctly work', async () => {
       const { page, fixture } = setup(false);
       const field = 'NextQuestID';
       const mysqlQueryService = TestBed.inject(MysqlQueryService);
-      (mysqlQueryService.query as Spy).and.returnValue(of([{ ID: 123, LogTitle: 'Mock Quest' }]));
+      (mysqlQueryService.query as MockInstance).mockReturnValue(of([{ ID: 123, LogTitle: 'Mock Quest' }]));
 
       page.clickElement(page.getSelectorBtn(field));
       await page.whenReady();
@@ -287,6 +291,6 @@ describe('QuestTemplateAddon integration tests', () => {
           '(1234, 1, 2, 3, 4, 123, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0);',
       );
       page.removeNativeElement();
-    }));
+    });
   });
 });
