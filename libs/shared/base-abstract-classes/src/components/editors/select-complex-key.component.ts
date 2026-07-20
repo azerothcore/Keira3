@@ -1,7 +1,8 @@
 import { ComplexKeyHandlerService } from '../../service/handlers/complex-key.handler.service';
-import { DataTablePageEvent, TableRow, WIKI_BASE_URL } from '@keira/shared/constants';
+import { TableRow, WIKI_BASE_URL } from '@keira/shared/constants';
 import { DTCFG } from '@keira/shared/config';
 import { ChangeDetectorRef, inject } from '@angular/core';
+import { PageEvent } from '@siemens/ngx-datatable';
 import { SearchService } from '../../service/select/search.service';
 
 /* istanbul ignore next */ // TODO: fix coverage
@@ -26,7 +27,7 @@ export abstract class SelectComplexKeyComponent<T extends TableRow> {
     this.selectService.onSearch(this.changeDetectorRef);
   }
 
-  onPage(event: DataTablePageEvent): void {
+  onPage(event: PageEvent): void {
     this.selectService.pageOffset = event.offset;
   }
 }
