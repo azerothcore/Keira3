@@ -12,6 +12,14 @@ import { SqlEditorComponent } from './sql-editor.component';
 import { By } from '@angular/platform-browser';
 import { CodeEditor } from '@acrodata/code-editor';
 
+// Simulate a user edit: dispatch a doc change without the `External` annotation
+// that `writeValue`/`setValue` use, so the editor propagates it through ngModel.
+const typeInEditor = (editor: CodeEditor, value: string): void => {
+  editor.view.dispatch({
+    changes: { from: 0, to: editor.view.state.doc.length, insert: value },
+  });
+};
+
 export class SqlEditorPage extends PageObject<SqlEditorComponent> {
   readonly DT = 'ngx-datatable';
 
@@ -80,7 +88,7 @@ describe('SqlEditorComponent', () => {
     const { page, mysqlQueryService, codeEditorInstance } = setup();
     const customQuery = 'SELECT col FROM table WHERE col > 10';
 
-    codeEditorInstance.writeValue(customQuery);
+    typeInEditor(codeEditorInstance, customQuery);
     page.clickElement(page.executeBtn);
 
     expect(mysqlQueryService.query).toHaveBeenCalledWith(customQuery);
@@ -175,7 +183,7 @@ describe('SqlEditorComponent', () => {
     const spy = vi.spyOn(TestBed.inject(ClipboardService), 'copyFromContent').mockImplementation(() => undefined);
     const customQuery = '-- some text that will be copied';
 
-    codeEditorInstance.writeValue(customQuery);
+    typeInEditor(codeEditorInstance, customQuery);
     page.clickElement(page.copyBtn);
 
     expect(spy).toHaveBeenCalledWith(customQuery);

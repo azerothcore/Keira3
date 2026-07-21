@@ -39,7 +39,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@acrodata/code-editor": "0.5.1",
+    "@acrodata/code-editor": "0.6.1",
     "@codemirror/lang-sql": "6.10.0",
     "@ngx-translate/core": "17.0.0",
     "@ngx-translate/http-loader": "17.0.0",
