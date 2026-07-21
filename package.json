@@ -132,7 +132,7 @@
     "squel": "6.3.1",
     "ts-mockito": "2.6.1",
     "ts-node": "10.9.2",
-    "typescript": "6.0.3",
+    "typescript": "7.0.2",
     "vite-tsconfig-paths": "6.1.1",
     "vitest": "4.1.9",
     "wait-on": "9.0.10",
