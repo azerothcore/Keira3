@@ -37,5 +37,5 @@ jobs:
       - name: Install dependencies
         run: npm ci --include=optional
 
-      - name: electron:windows
-        run: npm run electron:windows
+      - name: electron:windows:ci
+        run: npm run electron:windows:ci
