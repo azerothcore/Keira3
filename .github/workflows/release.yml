@@ -4,7 +4,7 @@ on:
 name: Release Draft
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: ${{ github.workflow }}
@@ -159,6 +159,8 @@ jobs:
     needs: [get-package-version, build-on-linux, build-on-mac, build-on-windows]
     name: Create the release draft
     runs-on: ubuntu-24.04
+    permissions:
+      contents: write
     steps:
       - name: Download assets
         uses: actions/download-artifact@v8
