@@ -2,7 +2,7 @@ import { squelConfig } from '@keira/shared/config';
 import { QueryForm, TableRow } from '@keira/shared/constants';
 import { lastValueFrom, map, Observable } from 'rxjs';
 import { escape } from 'sqlstring';
-import * as squel from 'squel';
+import squel from 'squel';
 
 export abstract class BaseQueryService {
   protected cache = new Map<string, Map<string, Promise<unknown>>>();

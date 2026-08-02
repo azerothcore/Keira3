@@ -2,135 +2,181 @@ on:
   workflow_dispatch:
 
 name: Release Draft
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
 jobs:
   get-package-version:
     name: Get Package Version
     runs-on: ubuntu-24.04
     outputs:
-      version: ${{ steps.version.outputs.PACKAGE_VERSION }}
-      app_name: ${{ steps.app_name.outputs.APP_NAME }}
-      fix_app_name: ${{ steps.fix_app_name.outputs.FIX_APP_NAME }}
+      version: ${{ steps.info.outputs.PACKAGE_VERSION }}
+      app_name: ${{ steps.info.outputs.APP_NAME }}
+      fix_app_name: ${{ steps.info.outputs.FIX_APP_NAME }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
-      - id: version
+      - id: info
         run: |
-          echo "PACKAGE_VERSION=$(npx json version -a < package.json)" >> $GITHUB_OUTPUT
-      - id: app_name
+          VERSION=$(node -p "require('./package.json').version")
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::package.json version is '$VERSION' — releases must be built from a stable x.y.z version"
+            exit 1
+          fi
+          APP_NAME=$(node -p "require('./package.json').name")
+          echo "PACKAGE_VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "APP_NAME=$APP_NAME" >> $GITHUB_OUTPUT
+          # remove 3 from "Keira3"
+          echo "FIX_APP_NAME=${APP_NAME//3/}" >> $GITHUB_OUTPUT
+      - name: Check the release is not already published
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.info.outputs.PACKAGE_VERSION }}
         run: |
-          echo "APP_NAME=$(npx json name -a < package.json)" >> $GITHUB_OUTPUT
-      - id: fix_app_name
-        # remove 3 from "Keira3"
-        run: |
-          FIX_APP_NAME=$(echo "$(npx json name -a < package.json)" | sed s/3//g)
-          echo "FIX_APP_NAME=$FIX_APP_NAME" >> $GITHUB_OUTPUT
+          IS_DRAFT=$(gh release view "v${VERSION}" --repo "${{ github.repository }}" --json isDraft --jq .isDraft 2>/dev/null || echo "missing")
+          if [[ "$IS_DRAFT" == "false" ]]; then
+            echo "::error::Release v${VERSION} already exists and is published — refusing to overwrite its assets"
+            exit 1
+          fi
 
   build-on-linux:
     needs: get-package-version
-    name: Build and upload the Linux release assets
+    name: Build the Linux release assets
     runs-on: ubuntu-24.04
+    env:
+      APP_NAME: ${{ needs.get-package-version.outputs.app_name }}
+      VERSION: ${{ needs.get-package-version.outputs.version }}
+      ASSET_BASE: ${{ needs.get-package-version.outputs.fix_app_name }}-${{ needs.get-package-version.outputs.version }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
-      - name: Build project
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          npm install
-          npm run electron:linux
-          mv "release/${{needs.get-package-version.outputs.app_name}}-${{needs.get-package-version.outputs.version}}.AppImage" ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.AppImage
-          mv "release/${{needs.get-package-version.outputs.app_name}}-${{needs.get-package-version.outputs.version}}.x86_64.rpm" ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.rpm
-          mv "release/${{needs.get-package-version.outputs.app_name}}_${{needs.get-package-version.outputs.version}}_amd64.deb" ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.deb
-          mv "release/${{needs.get-package-version.outputs.app_name}}_${{needs.get-package-version.outputs.version}}_amd64.snap" ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.snap
-          zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.AppImage.zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.AppImage
-          zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.rpm.zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.rpm
-          zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.deb.zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.deb
-          zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.snap.zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.snap
-          rm -rf release
-          rm -rf *.deb
-          rm -rf *.rpm
-          rm -rf *.AppImage
-          rm -rf *.snap
-          rm -rf release/*.deb
-          rm -rf release/*.rpm
-          rm -rf release/*.AppImage
-          rm -rf release/*.snap
-      - name: Create Release
-        id: create_release
-        uses: softprops/action-gh-release@v3
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Use Node.js
+        uses: actions/setup-node@v7
         with:
-          tag_name: v${{needs.get-package-version.outputs.version}}
-          release_name: ${{needs.get-package-version.outputs.version}}
-          draft: true
-          prerelease: false
-          files: |
-            ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.AppImage.zip
-            ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.rpm.zip
-            ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.deb.zip
-            ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.LINUX.snap.zip
+          node-version: 24
+          cache: npm
+      - name: Install dependencies
+        run: npm ci --include=optional
+      - name: Build project
+        run: npm run electron:linux:ci
+      - name: Prepare release assets
+        run: |
+          mv "release/${APP_NAME}-${VERSION}.AppImage" "${ASSET_BASE}.LINUX.AppImage"
+          mv "release/${APP_NAME}-${VERSION}.x86_64.rpm" "${ASSET_BASE}.LINUX.rpm"
+          mv "release/${APP_NAME}_${VERSION}_amd64.deb" "${ASSET_BASE}.LINUX.deb"
+          mv "release/${APP_NAME}_${VERSION}_amd64.snap" "${ASSET_BASE}.LINUX.snap"
+          for ext in AppImage rpm deb snap; do
+            zip "${ASSET_BASE}.LINUX.${ext}.zip" "${ASSET_BASE}.LINUX.${ext}"
+          done
+      - name: Upload assets
+        uses: actions/upload-artifact@v7
+        with:
+          name: linux-assets
+          path: '*.LINUX.*.zip'
+          if-no-files-found: error
+
   build-on-mac:
     needs: get-package-version
-    name: Build and upload the Mac release assets
-    runs-on: macos-26-intel # it's the most recent version still running on Intel, we keep it for retro-compatibility
+    name: Build the Mac ${{ matrix.arch }} release assets
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-26-intel # it's the most recent version still running on Intel, we keep it for retro-compatibility
+            arch: x64
+            dmg_suffix: ''
+            asset_suffix: MAC
+          - os: macos-15
+            arch: arm64
+            dmg_suffix: '-arm64'
+            asset_suffix: MAC.arm64
+    env:
+      APP_NAME: ${{ needs.get-package-version.outputs.app_name }}
+      VERSION: ${{ needs.get-package-version.outputs.version }}
+      ASSET_BASE: ${{ needs.get-package-version.outputs.fix_app_name }}-${{ needs.get-package-version.outputs.version }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
-      - name: Build project
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          npm install
-          npm run electron:mac
-          mv "release/${{needs.get-package-version.outputs.app_name}}-${{needs.get-package-version.outputs.version}}.dmg" ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.MAC.dmg
-          zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.MAC.dmg.zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.MAC.dmg
-          rm -rf release
-          rm -rf *.yml
-          rm -rf *.blockmap
-          rm -rf *.dmg
-          rm -rf release/*.yml
-          rm -rf release/*.blockmap
-          rm -rf release/*.dmg
-      - name: Create Release
-        id: create_release
-        uses: softprops/action-gh-release@v3
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Use Node.js
+        uses: actions/setup-node@v7
         with:
-          tag_name: v${{needs.get-package-version.outputs.version}}
-          release_name: ${{needs.get-package-version.outputs.version}}
-          draft: true
-          prerelease: false
-          files: ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.MAC.dmg.zip
+          node-version: 24
+          cache: npm
+      - name: Install dependencies
+        run: npm ci --include=optional
+      - name: Build project
+        run: npm run electron:mac:ci
+      - name: Prepare release assets
+        run: |
+          mv "release/${APP_NAME}-${VERSION}${{ matrix.dmg_suffix }}.dmg" "${ASSET_BASE}.${{ matrix.asset_suffix }}.dmg"
+          zip "${ASSET_BASE}.${{ matrix.asset_suffix }}.dmg.zip" "${ASSET_BASE}.${{ matrix.asset_suffix }}.dmg"
+      - name: Upload assets
+        uses: actions/upload-artifact@v7
+        with:
+          name: mac-${{ matrix.arch }}-assets
+          path: '*.dmg.zip'
+          if-no-files-found: error
 
   build-on-windows:
     needs: get-package-version
-    name: Build and upload the Windows release assets
+    name: Build the Windows release assets
     runs-on: windows-2025
+    env:
+      APP_NAME: ${{ needs.get-package-version.outputs.app_name }}
+      VERSION: ${{ needs.get-package-version.outputs.version }}
+      ASSET_BASE: ${{ needs.get-package-version.outputs.fix_app_name }}-${{ needs.get-package-version.outputs.version }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
-      - name: Build project
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          npm install;
-          npm run electron:windows
-          mv "release/${{needs.get-package-version.outputs.app_name}} ${{needs.get-package-version.outputs.version}}.exe" ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.WINDOWS.exe
-          7z a ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.WINDOWS.exe.zip ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.WINDOWS.exe
-          rm -rf release
-          rm -rf *.exe
-          rm -rf release/*.exe
-        shell: bash
-      - name: Create Release
-        id: create_release
-        uses: softprops/action-gh-release@v3
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Use Node.js
+        uses: actions/setup-node@v7
         with:
-          tag_name: v${{needs.get-package-version.outputs.version}}
-          release_name: ${{needs.get-package-version.outputs.version}}
+          node-version: 24
+          cache: npm
+      - name: Install dependencies
+        run: npm ci --include=optional
+      - name: Build project
+        run: npm run electron:windows:ci
+      - name: Prepare release assets
+        run: |
+          mv "release/${APP_NAME} ${VERSION}.exe" "${ASSET_BASE}.WINDOWS.exe"
+          7z a "${ASSET_BASE}.WINDOWS.exe.zip" "${ASSET_BASE}.WINDOWS.exe"
+        shell: bash
+      - name: Upload assets
+        uses: actions/upload-artifact@v7
+        with:
+          name: windows-assets
+          path: '*.WINDOWS.exe.zip'
+          if-no-files-found: error
+
+  release:
+    needs: [get-package-version, build-on-linux, build-on-mac, build-on-windows]
+    name: Create the release draft
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - name: Download assets
+        uses: actions/download-artifact@v8
+        with:
+          path: assets
+          merge-multiple: true
+      - name: Generate checksums
+        working-directory: assets
+        run: sha256sum *.zip > SHA256SUMS.txt
+      - name: Create Release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: v${{ needs.get-package-version.outputs.version }}
+          name: ${{ needs.get-package-version.outputs.version }}
           draft: true
           prerelease: false
-          files: ${{needs.get-package-version.outputs.fix_app_name}}-${{needs.get-package-version.outputs.version}}.WINDOWS.exe.zip
+          generate_release_notes: true
+          fail_on_unmatched_files: true
+          files: assets/*

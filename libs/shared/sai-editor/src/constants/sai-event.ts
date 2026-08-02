@@ -366,8 +366,11 @@ SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.DAMAGED] = 'MinDamage';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.DAMAGED] = 'MaxDamage';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.DAMAGED] = 'RepeatMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.DAMAGED] = 'RepeatMax';
+SAI_EVENT_PARAM5_NAMES[SAI_EVENTS.DAMAGED] = 'HpPct';
 SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.DAMAGED] = 'Minimum amount of damage required to trigger this event';
 SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.DAMAGED] = 'Maximum allowed damage to make this event be able to trigger';
+SAI_EVENT_PARAM5_TOOLTIPS[SAI_EVENTS.DAMAGED] =
+  'Health percentage (1-100). When set, the event switches to health check mode: it fires once when incoming damage drops health below this threshold (MinDamage/MaxDamage/Repeat are ignored). Leave 0 for the normal damage-amount mode.';
 
 // SMART_EVENT_DAMAGED_TARGET
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.DAMAGED_TARGET] = 'On target damaged for a certain amount';
