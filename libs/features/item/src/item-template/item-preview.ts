@@ -14,7 +14,7 @@ export const lvlIndepRating = [
   ITEM_MOD.BLOCK_VALUE,
 ];
 
-export const gtCombatRatings = {
+export const gtCombatRatings: Record<number, number> = {
   12: 1.5,
   13: 13.8,
   14: 13.8,

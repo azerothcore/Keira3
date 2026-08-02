@@ -79,8 +79,7 @@ describe('MultiRowComplexKeyEditorService', () => {
     const queryService = TestBed.inject(MysqlQueryService);
     const selectAllMultipleKeysSpy = vi.spyOn(queryService, 'selectAllMultipleKeys').mockReturnValue(of([{ mock: 'data' }] as TableRow[]));
     const handlerService = TestBed.inject(MockHandlerService);
-    // @ts-ignore
-    handlerService['_selected'] = 1;
+    handlerService['_selected'] = '1';
 
     service['selectQuery']();
 
@@ -120,8 +119,7 @@ describe('MultiRowComplexKeyEditorService', () => {
     const updateFullQuerySpy = vi.spyOn<any>(service, 'updateFullQuery').mockImplementation(() => undefined);
     const disableFormSpy = vi.spyOn(service['_form'], 'disable').mockImplementation(() => undefined);
 
-    // @ts-ignore
-    handlerService['_selected'] = 1;
+    handlerService['_selected'] = JSON.stringify({ id: 1, guid: 2 });
 
     service['onReloadSuccessful'](mockData);
 
@@ -129,7 +127,7 @@ describe('MultiRowComplexKeyEditorService', () => {
     expect(service['_newRows']).toEqual([...res]);
     expect(service['_selectedRowId']).toBe(undefined);
     expect(disableFormSpy).toHaveBeenCalledTimes(1);
-    expect(service['_loadedEntityId']).toEqual(handlerService.selected);
+    expect(service['_loadedEntityId']).toEqual(JSON.parse(handlerService.selected));
     expect(service['_nextRowId']).toBe(0);
     expect(updateFullQuerySpy).toHaveBeenCalledTimes(1);
   });

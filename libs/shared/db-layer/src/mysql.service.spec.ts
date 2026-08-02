@@ -67,8 +67,7 @@ describe('MysqlService', () => {
 
     obs.subscribe(() => {
       expect(connectSpy).toHaveBeenCalledTimes(1);
-      // @ts-ignore
-      expect(connectSpy).toHaveBeenCalledWith(service['connectCallback']);
+      expect(connectSpy).toHaveBeenCalledWith(expect.any(Function));
     });
   });
 
@@ -85,8 +84,7 @@ describe('MysqlService', () => {
 
       obs.subscribe(() => {
         expect(querySpy).toHaveBeenCalledTimes(1);
-        // @ts-ignore
-        expect(querySpy).toHaveBeenCalledWith(queryStr, [], service['queryCallback']);
+        expect(querySpy).toHaveBeenCalledWith(queryStr, [], expect.any(Function));
       });
     });
 

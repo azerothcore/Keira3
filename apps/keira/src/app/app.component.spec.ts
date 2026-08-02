@@ -8,8 +8,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { LATEST_RELEASE_API_URL } from '@keira/shared/constants';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
-import { Subject } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
+import { Observable, Subject } from 'rxjs';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import packageInfo from '../../../../package.json';
 
@@ -59,8 +59,7 @@ describe('AppComponent', () => {
     const httpTestingController = TestBed.inject(HttpTestingController);
 
     const connectionLostSubject = new Subject<boolean>();
-    // @ts-ignore
-    TestBed.inject(MysqlService)['connectionLost$'] = connectionLostSubject.asObservable();
+    (TestBed.inject(MysqlService) as { connectionLost$: Observable<boolean> }).connectionLost$ = connectionLostSubject.asObservable();
 
     return { fixture, component, connectionLostSubject, toastrService, httpTestingController };
   };

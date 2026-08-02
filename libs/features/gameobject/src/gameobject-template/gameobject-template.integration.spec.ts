@@ -173,6 +173,16 @@ describe('GameobjectTemplate integration tests', () => {
       page.expectFullQueryToContain('35');
     });
 
+    it('should only render the info tooltip icon for data fields with a non-empty tooltip', () => {
+      const { fixture } = setup(false);
+      const getDataFieldIcon = (index: number) =>
+        fixture.nativeElement.querySelector(`#Data${index}`).closest('.form-group').querySelector('i.fa-info-circle');
+
+      // type 0: Data0 (startOpen) has a real tooltip, Data4 (openTextID) maps to the empty 'EMPTY' tooltip
+      expect(getDataFieldIcon(0)).toBeTruthy();
+      expect(getDataFieldIcon(4)).toBeFalsy();
+    });
+
     it.skip('changing a value via SingleValueSelector should correctly work', async () => {
       const { page } = setup(false);
       const field = 'type';

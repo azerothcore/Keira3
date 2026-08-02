@@ -47,9 +47,8 @@ describe('EditorService', () => {
       const { service } = setup();
       const selectAllSpy = vi.spyOn(TestBed.inject(MysqlQueryService), 'selectAll').mockImplementation(() => undefined);
       const formResetSpy = vi.spyOn(service.form, 'reset').mockImplementation(() => undefined);
-      // @ts-ignore
       const onReloadSuccessfulSpy = vi
-        .spyOn(TestBed.inject(MockSingleRowEditorService), 'onReloadSuccessful')
+        .spyOn<any>(TestBed.inject(MockSingleRowEditorService), 'onReloadSuccessful')
         .mockImplementation(() => undefined);
       return { service, selectAllSpy, formResetSpy, onReloadSuccessfulSpy };
     }

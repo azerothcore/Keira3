@@ -92,8 +92,7 @@ export class QuestPreviewComponent implements OnInit {
   }
 
   get hasIconSkills(): boolean {
-    // @ts-ignore // TODO: fix typing and remove @ts-ignore
-    return this.service.ICON_SKILLS[this.service.questTemplateAddon.RequiredSkillID];
+    return !!(this.service.ICON_SKILLS as Record<number, string>)[this.service.questTemplateAddon.RequiredSkillID];
   }
 
   ngOnInit(): void {

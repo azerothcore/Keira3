@@ -18,8 +18,8 @@ export function getPartial<T>(input: T | Partial<T>, fields: string[]): Partial<
   const output: Partial<T> = {};
 
   for (const key of fields) {
-    // @ts-ignore // TODO: fix typing here (gives error in strict mode)
-    output[`${key}`] = input[`${key}`];
+    const typedKey = key as keyof T;
+    output[typedKey] = (input as T)[typedKey];
   }
 
   return output;

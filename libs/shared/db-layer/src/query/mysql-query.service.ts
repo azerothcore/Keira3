@@ -4,11 +4,9 @@ import { ConfigService } from '@keira/shared/common-services';
 import { squelConfig } from '@keira/shared/config';
 import { MaxRow, QuestReputationReward, TableRow } from '@keira/shared/constants';
 import { from, map, Observable, of, tap } from 'rxjs';
-import { Delete, Insert, Squel, Update } from 'squel';
+import squel, { Delete, Insert, Update } from 'squel';
 import { MysqlService } from '../mysql.service';
 import { BaseQueryService } from './base-query.service';
-
-declare const squel: Squel & { flavour: null };
 
 @Service()
 export class MysqlQueryService extends BaseQueryService {
