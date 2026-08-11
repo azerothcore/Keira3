@@ -219,6 +219,14 @@ describe('QuestChainService', () => {
     expect((await service.buildGraph()).edges.map((edge) => edge.kind)).toEqual(['condition-any', 'condition-any']);
   });
 
+  it('should not restate a link that quest_template_addon already draws', async () => {
+    // 13125 -> 13139 is stated twice: once as NextQuestID, and again as a condition on 13139. Drawing both
+    // would stack a condition edge on top of the chain edge and repaint a structural link as a conditional one.
+    const { service } = setup(13139, [row({ ID: 13125, NextQuestID: 13139 })], undefined, [prerequisite(13139, 13125)]);
+
+    expect((await service.buildGraph()).edges.map((edge) => [edge.from, edge.to, edge.kind])).toEqual([[13125, 13139, 'chain']]);
+  });
+
   it('should draw one edge for a prerequisite repeated across else groups', async () => {
     const { service } = setup(13161, [], undefined, [prerequisite(13161, 13146, 0), prerequisite(13161, 13146, 1)]);
 

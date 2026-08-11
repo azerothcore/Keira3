@@ -111,7 +111,8 @@ export class QuestChainService {
       conditionCount: conditionsById.get(id) ?? 0,
     }));
 
-    const edges = [...this.buildEdges(relations), ...this.buildConditionEdges([...prerequisites.values()])];
+    const relationEdges = this.buildEdges(relations);
+    const edges = [...relationEdges, ...this.buildConditionEdges([...prerequisites.values()], relationEdges)];
 
     return buildQuestChainGraph(entries, edges, rootId, truncated);
   }
@@ -158,8 +159,11 @@ export class QuestChainService {
    * Rows sharing an `ElseGroup` must all hold; separate groups are alternatives. Rather than render that boolean
    * structure, a quest whose prerequisites span more than one group has all of its incoming edges marked as
    * alternatives, which says "any one of these is a way in" without claiming which combination.
+   *
+   * A link the addon table already states is skipped: plenty of quests say the same thing both ways, and the
+   * structural statement is the more precise of the two.
    */
-  private buildConditionEdges(rows: QuestConditionPrerequisiteRow[]): QuestChainEdge[] {
+  private buildConditionEdges(rows: QuestConditionPrerequisiteRow[], existing: QuestChainEdge[]): QuestChainEdge[] {
     const groupsPerQuest = new Map<number, Set<number>>();
 
     for (const row of rows) {
@@ -174,20 +178,20 @@ export class QuestChainService {
     }
 
     const edges: QuestChainEdge[] = [];
-    const seen = new Set<string>();
+    // Kind is left out of the key: it depends only on the target, so one pair can never want two of them.
+    const seen = new Set(existing.map((edge) => `${edge.from}|${edge.to}`));
 
     for (const row of rows) {
       const to = Number(row.SourceEntry);
       const from = Number(row.ConditionValue1);
       // Every row seeded the map above under its own `SourceEntry`, so this always hits.
       const groups = groupsPerQuest.get(to) as Set<number>;
-      const kind: QuestChainEdge['kind'] = groups.size > 1 ? 'condition-any' : 'condition';
-      const key = `${from}|${to}|${kind}`;
+      const key = `${from}|${to}`;
 
       // A quest listed in two else-groups yields the same edge twice; it is still one link.
       if (from > 0 && from !== to && !seen.has(key)) {
         seen.add(key);
-        edges.push({ from, to, kind });
+        edges.push({ from, to, kind: groups.size > 1 ? 'condition-any' : 'condition' });
       }
     }
 
