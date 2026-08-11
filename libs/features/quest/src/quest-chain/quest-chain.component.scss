@@ -16,6 +16,8 @@ $qc-node-border: #7183b8;
 $qc-chain: #c8ccd4;
 $qc-enabled-by: #9382c9;
 $qc-breadcrumb: #68ccef;
+// Condition-driven links share the yellow already used for the condition badge and the exclusive bands.
+$qc-condition: #ffd100;
 
 .quest-chain {
   &__header {
@@ -62,6 +64,16 @@ $qc-breadcrumb: #68ccef;
         border-top-style: dotted;
         border-top-color: $qc-breadcrumb;
       }
+
+      &--condition {
+        border-top-color: $qc-condition;
+      }
+
+      &--condition-any {
+        border-top-style: dashed;
+        border-top-color: $qc-condition;
+        opacity: 0.65;
+      }
     }
 
     .legend-box {
@@ -107,6 +119,16 @@ $qc-breadcrumb: #68ccef;
   &--breadcrumb {
     stroke: $qc-breadcrumb;
     stroke-dasharray: 2 4;
+  }
+
+  &--condition {
+    stroke: $qc-condition;
+  }
+
+  // One of several alternative ways in, so it is drawn as a weaker claim than a hard prerequisite.
+  &--condition-any {
+    stroke-dasharray: 7 5;
+    opacity: 0.65;
   }
 }
 

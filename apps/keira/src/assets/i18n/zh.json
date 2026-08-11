@@ -404,6 +404,8 @@
       "LEGEND_CHAIN": "必须先完成",
       "LEGEND_ENABLED_BY": "必须可接取（由其开启）",
       "LEGEND_BREADCRUMB": "指引任务",
+      "LEGEND_CONDITION": "由条件要求",
+      "LEGEND_CONDITION_ANY": "条件替代项（任选其一）",
       "LEGEND_MISSING": "quest_template 中缺失",
       "LEGEND_CONDITIONS": "存在可接取条件（点击查看）",
       "BAND_ANY": "其中之一（{{group}}）",

@@ -26,6 +26,8 @@
           <span><i class="legend-line legend-line--chain"></i> <span [translate]="'QUEST.CHAIN.LEGEND_CHAIN'"></span></span>
           <span><i class="legend-line legend-line--enabled-by"></i> <span [translate]="'QUEST.CHAIN.LEGEND_ENABLED_BY'"></span></span>
           <span><i class="legend-line legend-line--breadcrumb"></i> <span [translate]="'QUEST.CHAIN.LEGEND_BREADCRUMB'"></span></span>
+          <span><i class="legend-line legend-line--condition"></i> <span [translate]="'QUEST.CHAIN.LEGEND_CONDITION'"></span></span>
+          <span><i class="legend-line legend-line--condition-any"></i> <span [translate]="'QUEST.CHAIN.LEGEND_CONDITION_ANY'"></span></span>
           <span><i class="legend-box legend-box--missing"></i> <span [translate]="'QUEST.CHAIN.LEGEND_MISSING'"></span></span>
           <span><i class="legend-box legend-box--conditions"></i> <span [translate]="'QUEST.CHAIN.LEGEND_CONDITIONS'"></span></span>
         </div>
@@ -52,6 +54,8 @@
                 class="qc-edge"
                 [class.qc-edge--enabled-by]="edge.kind === 'enabled-by'"
                 [class.qc-edge--breadcrumb]="edge.kind === 'breadcrumb'"
+                [class.qc-edge--condition]="edge.kind === 'condition' || edge.kind === 'condition-any'"
+                [class.qc-edge--condition-any]="edge.kind === 'condition-any'"
                 [attr.d]="edge.path"
                 marker-end="url(#qc-arrow)"
               />

@@ -18,6 +18,19 @@ export interface QuestTitleRow extends TableRow {
   LogTitle: string;
 }
 
+/**
+ * A `conditions` row that makes one quest's availability depend on another quest, which is the second way the
+ * core expresses a chain link - `quest_template_addon` columns being the first.
+ */
+export interface QuestConditionPrerequisiteRow extends TableRow {
+  /** The gated quest. */
+  SourceEntry: number;
+  /** Rows sharing an `ElseGroup` must all hold; separate groups are alternatives. */
+  ElseGroup: number;
+  /** The quest that must have been done first. */
+  ConditionValue1: number;
+}
+
 /** Number of `conditions` rows gating one quest's availability. */
 export interface QuestConditionCountRow extends TableRow {
   SourceEntry: number;

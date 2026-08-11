@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
-import { QuestChainRelationRow, QuestTitleRow } from '@keira/shared/constants';
+import { QuestChainRelationRow, QuestConditionPrerequisiteRow, QuestTitleRow } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { ToastrModule } from 'ngx-toastr';
 import { vi } from 'vitest';
@@ -18,6 +18,12 @@ const row = (values: Partial<QuestChainRelationRow> & { ID: number }): QuestChai
   ...values,
 });
 
+const prerequisite = (gatedQuest: number, requiredQuest: number, elseGroup = 0): QuestConditionPrerequisiteRow => ({
+  SourceEntry: gatedQuest,
+  ElseGroup: elseGroup,
+  ConditionValue1: requiredQuest,
+});
+
 describe('QuestChainService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -30,7 +36,12 @@ describe('QuestChainService', () => {
     });
   });
 
-  const setup = (selected: string | number, relations: QuestChainRelationRow[] | QuestChainRelationRow[][], titles?: QuestTitleRow[]) => {
+  const setup = (
+    selected: string | number,
+    relations: QuestChainRelationRow[] | QuestChainRelationRow[][],
+    titles?: QuestTitleRow[],
+    prerequisites: QuestConditionPrerequisiteRow[] = [],
+  ) => {
     const service = TestBed.inject(QuestChainService);
     const handlerService = TestBed.inject(QuestHandlerService);
     const mysqlQueryService = TestBed.inject(MysqlQueryService);
@@ -51,8 +62,9 @@ describe('QuestChainService', () => {
       .mockImplementation(() => Promise.resolve(titles ?? flat.map((relation) => ({ ID: relation.ID, LogTitle: `Quest ${relation.ID}` }))));
 
     const conditionsSpy = vi.spyOn(mysqlQueryService, 'getQuestConditionCounts').mockResolvedValue([]);
+    const prerequisitesSpy = vi.spyOn(mysqlQueryService, 'getQuestConditionPrerequisites').mockResolvedValue(prerequisites);
 
-    return { service, handlerService, mysqlQueryService, relationsSpy, titlesSpy, conditionsSpy };
+    return { service, handlerService, mysqlQueryService, relationsSpy, titlesSpy, conditionsSpy, prerequisitesSpy };
   };
 
   it('should be created', () => {
@@ -182,6 +194,63 @@ describe('QuestChainService', () => {
     const graph = await service.buildGraph();
 
     expect(graph.nodes.find((node) => node.id === 2)?.exclusiveGroup).toBe(0);
+  });
+
+  it('should pull in quests that are linked only by conditions', async () => {
+    // 13139 has no quest_template_addon links at all - all three of its prerequisites live in `conditions`,
+    // so without reading them the quest looks like it stands alone.
+    const { service } = setup(13139, [], undefined, [prerequisite(13139, 13125), prerequisite(13139, 13130), prerequisite(13139, 13135)]);
+    const graph = await service.buildGraph();
+
+    expect(graph.nodes.map((node) => node.id).sort((a, b) => a - b)).toEqual([13125, 13130, 13135, 13139]);
+    expect(graph.edges.map((edge) => [edge.from, edge.to, edge.kind])).toEqual([
+      [13125, 13139, 'condition'],
+      [13130, 13139, 'condition'],
+      [13135, 13139, 'condition'],
+    ]);
+  });
+
+  it('should mark prerequisites as alternatives when they sit in different else groups', async () => {
+    // 13122 is offered after 13104 or 13105, so neither of them is required on its own.
+    const { service } = setup(13122, [], undefined, [prerequisite(13122, 13104, 0), prerequisite(13122, 13105, 1)]);
+
+    expect((await service.buildGraph()).edges.map((edge) => edge.kind)).toEqual(['condition-any', 'condition-any']);
+  });
+
+  it('should draw one edge for a prerequisite repeated across else groups', async () => {
+    const { service } = setup(13139, [], undefined, [prerequisite(13139, 13125, 0), prerequisite(13139, 13125, 1)]);
+
+    expect((await service.buildGraph()).edges.length).toBe(1);
+  });
+
+  it('should ignore a prerequisite that names no quest, or names its own quest', async () => {
+    const { service } = setup(13139, [], undefined, [prerequisite(13139, 0), prerequisite(13139, 13139)]);
+    const graph = await service.buildGraph();
+
+    expect(graph.edges).toEqual([]);
+    expect(graph.nodes.map((node) => node.id)).toEqual([13139]);
+  });
+
+  it('should keep walking outwards from a quest discovered through a condition', async () => {
+    const { service, mysqlQueryService, relationsSpy } = setup(13139, [[], []]);
+    let round = 0;
+
+    vi.spyOn(mysqlQueryService, 'getQuestConditionPrerequisites').mockImplementation(() =>
+      Promise.resolve(round++ === 0 ? [prerequisite(13139, 13125)] : []),
+    );
+
+    await service.buildGraph();
+
+    // 13125 was reachable only through the condition; the walk still has to expand from it.
+    expect(relationsSpy).toHaveBeenNthCalledWith(2, [13125], []);
+  });
+
+  it('should ask for the prerequisites of the current frontier', async () => {
+    const { service, prerequisitesSpy } = setup(13139, [row({ ID: 13139 })]);
+
+    await service.buildGraph();
+
+    expect(prerequisitesSpy).toHaveBeenNthCalledWith(1, [13139]);
   });
 
   it('should stop and flag truncation once the node budget is exceeded', async () => {

@@ -404,6 +404,8 @@
       "LEGEND_CHAIN": "Must be completed first",
       "LEGEND_ENABLED_BY": "Must be available (enabled by)",
       "LEGEND_BREADCRUMB": "Breadcrumb pointing to",
+      "LEGEND_CONDITION": "Required by a condition",
+      "LEGEND_CONDITION_ANY": "Condition alternative (any one of them)",
       "LEGEND_MISSING": "Missing from quest_template",
       "LEGEND_CONDITIONS": "Has availability conditions (click to open)",
       "BAND_ANY": "One of these ({{group}})",
