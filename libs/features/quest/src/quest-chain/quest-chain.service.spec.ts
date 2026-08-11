@@ -197,60 +197,62 @@ describe('QuestChainService', () => {
   });
 
   it('should pull in quests that are linked only by conditions', async () => {
-    // 13139 has no quest_template_addon links at all - all three of its prerequisites live in `conditions`,
-    // so without reading them the quest looks like it stands alone.
-    const { service } = setup(13139, [], undefined, [prerequisite(13139, 13125), prerequisite(13139, 13130), prerequisite(13139, 13135)]);
+    // 13161 needs 13146, 13147 and 13160 rewarded, and says so only in `conditions`: none of the four names
+    // another in quest_template_addon, so without reading conditions 13161 looks like it stands alone.
+    const { service } = setup(13161, [], undefined, [prerequisite(13161, 13146), prerequisite(13161, 13147), prerequisite(13161, 13160)]);
     const graph = await service.buildGraph();
 
-    expect(graph.nodes.map((node) => node.id).sort((a, b) => a - b)).toEqual([13125, 13130, 13135, 13139]);
+    expect(graph.nodes.map((node) => node.id).sort((a, b) => a - b)).toEqual([13146, 13147, 13160, 13161]);
+    // All three sit in the same else group, so each one is genuinely required.
     expect(graph.edges.map((edge) => [edge.from, edge.to, edge.kind])).toEqual([
-      [13125, 13139, 'condition'],
-      [13130, 13139, 'condition'],
-      [13135, 13139, 'condition'],
+      [13146, 13161, 'condition'],
+      [13147, 13161, 'condition'],
+      [13160, 13161, 'condition'],
     ]);
   });
 
   it('should mark prerequisites as alternatives when they sit in different else groups', async () => {
-    // 13122 is offered after 13104 or 13105, so neither of them is required on its own.
+    // 13122 is offered after 13104 or 13105, so neither of them is required on its own. Again the link exists
+    // nowhere else: 13122 has no PrevQuestID, and neither 13104 nor 13105 points at it.
     const { service } = setup(13122, [], undefined, [prerequisite(13122, 13104, 0), prerequisite(13122, 13105, 1)]);
 
     expect((await service.buildGraph()).edges.map((edge) => edge.kind)).toEqual(['condition-any', 'condition-any']);
   });
 
   it('should draw one edge for a prerequisite repeated across else groups', async () => {
-    const { service } = setup(13139, [], undefined, [prerequisite(13139, 13125, 0), prerequisite(13139, 13125, 1)]);
+    const { service } = setup(13161, [], undefined, [prerequisite(13161, 13146, 0), prerequisite(13161, 13146, 1)]);
 
     expect((await service.buildGraph()).edges.length).toBe(1);
   });
 
   it('should ignore a prerequisite that names no quest, or names its own quest', async () => {
-    const { service } = setup(13139, [], undefined, [prerequisite(13139, 0), prerequisite(13139, 13139)]);
+    const { service } = setup(13161, [], undefined, [prerequisite(13161, 0), prerequisite(13161, 13161)]);
     const graph = await service.buildGraph();
 
     expect(graph.edges).toEqual([]);
-    expect(graph.nodes.map((node) => node.id)).toEqual([13139]);
+    expect(graph.nodes.map((node) => node.id)).toEqual([13161]);
   });
 
   it('should keep walking outwards from a quest discovered through a condition', async () => {
-    const { service, mysqlQueryService, relationsSpy } = setup(13139, [[], []]);
+    const { service, mysqlQueryService, relationsSpy } = setup(13161, [[], []]);
     let round = 0;
 
     vi.spyOn(mysqlQueryService, 'getQuestConditionPrerequisites').mockImplementation(() =>
-      Promise.resolve(round++ === 0 ? [prerequisite(13139, 13125)] : []),
+      Promise.resolve(round++ === 0 ? [prerequisite(13161, 13146)] : []),
     );
 
     await service.buildGraph();
 
-    // 13125 was reachable only through the condition; the walk still has to expand from it.
-    expect(relationsSpy).toHaveBeenNthCalledWith(2, [13125], []);
+    // 13146 was reachable only through the condition; the walk still has to expand from it.
+    expect(relationsSpy).toHaveBeenNthCalledWith(2, [13146], []);
   });
 
   it('should ask for the prerequisites of the current frontier', async () => {
-    const { service, prerequisitesSpy } = setup(13139, [row({ ID: 13139 })]);
+    const { service, prerequisitesSpy } = setup(13161, [row({ ID: 13161 })]);
 
     await service.buildGraph();
 
-    expect(prerequisitesSpy).toHaveBeenNthCalledWith(1, [13139]);
+    expect(prerequisitesSpy).toHaveBeenNthCalledWith(1, [13161]);
   });
 
   it('should stop and flag truncation once the node budget is exceeded', async () => {
