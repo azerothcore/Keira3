@@ -91,6 +91,8 @@ export class SaiCommentGeneratorService {
         return 'Instance Storage';
       case SAI_TARGETS.FORMATION:
         return 'Formation';
+      case SAI_TARGETS.SHARED_OWNER_ENTITIES:
+        return 'Shared Owner Entities';
       default:
         return '[unsupported target type]';
     }
