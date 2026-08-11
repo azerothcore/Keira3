@@ -122,7 +122,7 @@
     "ngx-highlightjs": "10.0.0",
     "ngx-page-object-model": "1.2.0",
     "npm-run-all2": "9.0.2",
-    "nx": "23.0.2",
+    "nx": "23.1.0",
     "patch-package": "8.0.1",
     "playwright": "1.61.0",
     "prettier": "3.8.4",
