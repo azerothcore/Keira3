@@ -179,5 +179,20 @@
       "npm run format-staged",
       "git add"
     ]
+  },
+  "allowScripts": {
+    "cpu-features": true,
+    "electron": true,
+    "electron-winstaller": true,
+    "esbuild": true,
+    "lmdb": true,
+    "msgpackr-extract": true,
+    "nx": true,
+    "sqlite3": true,
+    "ssh2": true,
+    "@parcel/watcher": true,
+    "@swc/core": true,
+    "less": true,
+    "fsevents": true
   }
 }
