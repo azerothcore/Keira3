@@ -25,6 +25,8 @@ jobs:
         uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node-version }}
+      - name: Update npm
+        run: npm install -g npm@latest
       - name: Cache Node.js modules
         uses: actions/cache@v6
         with:
