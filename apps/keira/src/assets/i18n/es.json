@@ -407,6 +407,8 @@
       "LEGEND_BREADCRUMB": "Misión guía que conduce a",
       "LEGEND_MISSING": "Ausente en quest_template",
       "LEGEND_CONDITIONS": "Tiene condiciones de disponibilidad (clic para abrir)",
+      "BAND_ANY": "Una de estas ({{group}})",
+      "BAND_ALL": "Todas estas ({{group}})",
       "CONDITIONS_TOOLTIP": "{{count}} condición(es) de disponibilidad — clic para abrirlas en el editor de Condiciones"
     }
   },

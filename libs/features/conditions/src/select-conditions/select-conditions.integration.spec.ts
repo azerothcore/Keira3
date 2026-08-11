@@ -5,6 +5,7 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
+import { ConditionsSearchService } from '@keira/shared/selectors';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
@@ -180,6 +181,22 @@ describe('SelectConditions integration tests', () => {
 
       // Only the initial max-id lookup, no search triggered.
       expect(querySpy).not.toHaveBeenCalledWith(expect.stringContaining('SourceEntry` LIKE'));
+    });
+
+    it('should drop the keys a previous link left behind', async () => {
+      // The search form outlives this screen, so a SmartAI link (which sets SourceGroup and SourceId)
+      // followed by a quest-chain link (which sets neither) must not keep filtering on the SmartAI key.
+      TestBed.overrideProvider(ActivatedRoute, { useValue: { snapshot: { queryParams: { sourceType: '19', sourceEntry: '13117' } } } });
+      TestBed.inject(ConditionsSearchService).fields.patchValue({ SourceGroup: 4, SourceId: 1 });
+
+      const { fixture, page, querySpy } = setup();
+      await fixture.whenStable();
+
+      expect(page.searchGroupInput.value).toBe('');
+      expect(page.searchSourceIdInput.value).toBe('');
+      expect(querySpy).toHaveBeenCalledWith(
+        "SELECT * FROM `conditions` WHERE (`SourceTypeOrReferenceId` LIKE '%19%') AND (`SourceEntry` LIKE '%13117%') LIMIT 50",
+      );
     });
   });
 

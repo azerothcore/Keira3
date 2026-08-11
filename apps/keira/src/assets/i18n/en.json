@@ -407,6 +407,8 @@
       "LEGEND_BREADCRUMB": "Breadcrumb pointing to",
       "LEGEND_MISSING": "Missing from quest_template",
       "LEGEND_CONDITIONS": "Has availability conditions (click to open)",
+      "BAND_ANY": "One of these ({{group}})",
+      "BAND_ALL": "All of these ({{group}})",
       "CONDITIONS_TOOLTIP": "{{count}} availability condition(s) — click to open them in the Conditions editor"
     }
   },

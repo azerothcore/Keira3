@@ -33,6 +33,9 @@ export class SelectConditionsComponent extends SelectComplexKeyComponent<Conditi
       return;
     }
 
+    // The search form is an app-lifetime singleton, so a previous link's keys are still in it and
+    // patching alone would keep filtering on keys this caller never asked about.
+    this.selectService.fields.reset();
     this.selectService.fields.patchValue({
       ...(sourceType !== undefined && { SourceTypeOrReferenceId: Number(sourceType) }),
       ...(sourceEntry !== undefined && { SourceEntry: Number(sourceEntry) }),

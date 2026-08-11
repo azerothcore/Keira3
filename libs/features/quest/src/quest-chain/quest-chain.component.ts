@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { TopBarComponent } from '@keira/shared/base-editor-components';
-import { CONDITION_SOURCE_TYPE_QUEST_AVAILABLE } from '@keira/shared/constants';
+import { CONDITION_SOURCE_TYPES } from '@keira/shared/acore-world-model';
 import { TranslateModule } from '@ngx-translate/core';
 import { QuestHandlerService } from '../quest-handler.service';
 import { NODE_HEIGHT, NODE_WIDTH } from './quest-chain.layout';
@@ -76,7 +76,7 @@ export class QuestChainComponent implements OnInit {
     event.stopPropagation();
 
     void this.router.navigate(['conditions/select'], {
-      queryParams: { sourceType: CONDITION_SOURCE_TYPE_QUEST_AVAILABLE, sourceEntry: node.id },
+      queryParams: { sourceType: CONDITION_SOURCE_TYPES.SOURCE_TYPE_QUEST_AVAILABLE, sourceEntry: node.id },
     });
   }
 }

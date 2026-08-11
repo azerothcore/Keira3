@@ -407,6 +407,8 @@
       "LEGEND_BREADCRUMB": "Указующее задание",
       "LEGEND_MISSING": "Отсутствует в quest_template",
       "LEGEND_CONDITIONS": "Есть условия доступности (нажмите, чтобы открыть)",
+      "BAND_ANY": "Одно из этих ({{group}})",
+      "BAND_ALL": "Все эти ({{group}})",
       "CONDITIONS_TOOLTIP": "Условий доступности: {{count}} — нажмите, чтобы открыть их в редакторе условий"
     }
   },

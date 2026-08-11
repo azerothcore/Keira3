@@ -44,8 +44,8 @@ export interface QuestChainRenderEdge extends QuestChainEdge {
 /** A box drawn around the members of one `ExclusiveGroup`, instead of one edge per member pair. */
 export interface QuestChainGroupBand {
   group: number;
+  /** The caption is built from this in the template, so it goes through i18n like every other string. */
   kind: QuestChainGroupKind;
-  label: string;
   x: number;
   y: number;
   width: number;

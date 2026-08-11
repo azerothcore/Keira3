@@ -191,6 +191,9 @@ describe('QuestChainService', () => {
 
     expect(graph.truncated).toBe(true);
     expect(relationsSpy).toHaveBeenCalledTimes(1);
+    // One round can take the walk past the budget, so the budget has to be applied to what is drawn:
+    // laying out every one of these would be quadratic on exactly the data the cap exists for.
+    expect(graph.nodes.length).toBe(MAX_QUEST_CHAIN_NODES);
   });
 
   it('should stop expanding after the round limit on data that keeps growing', async () => {
@@ -202,16 +205,46 @@ describe('QuestChainService', () => {
       return Promise.resolve([row({ ID: current, NextQuestID: current + 1 })]);
     });
 
-    await service.buildGraph();
+    const graph = await service.buildGraph();
 
     expect(mysqlQueryService.getQuestChainRelations).toHaveBeenCalledTimes(MAX_QUEST_CHAIN_ROUNDS);
+    // Stopping on the round limit leaves quests unwalked just as the node budget does, and the view
+    // has to say so - otherwise a cut-off chain reads as one that genuinely ends there.
+    expect(graph.truncated).toBe(true);
+  });
+
+  it('should flag truncation when the round limit is hit while only groups are left to expand', async () => {
+    const { service, mysqlQueryService } = setup(1, []);
+    let group = 1;
+
+    // The quest never changes, but it keeps naming a new exclusive group, so the id frontier stays
+    // empty while the group frontier never drains.
+    vi.spyOn(mysqlQueryService, 'getQuestChainRelations').mockImplementation(() =>
+      Promise.resolve([row({ ID: 1, ExclusiveGroup: group++ })]),
+    );
+
+    const graph = await service.buildGraph();
+
+    expect(mysqlQueryService.getQuestChainRelations).toHaveBeenCalledTimes(MAX_QUEST_CHAIN_ROUNDS);
+    expect(graph.truncated).toBe(true);
   });
 
   it('should stop as soon as the frontier is empty', async () => {
     const { service, relationsSpy } = setup(1, [[row({ ID: 1 })], []]);
+    const graph = await service.buildGraph();
+
+    expect(relationsSpy).toHaveBeenCalledTimes(1);
+    // A walk that drained its frontier saw the whole chain: nothing to warn about.
+    expect(graph.truncated).toBe(false);
+  });
+
+  it('should clear the query cache so a reload actually re-reads the database', async () => {
+    const { service, mysqlQueryService } = setup(1, [row({ ID: 1 })]);
+    const clearCacheSpy = vi.spyOn(mysqlQueryService, 'clearCache');
 
     await service.buildGraph();
 
-    expect(relationsSpy).toHaveBeenCalledTimes(1);
+    // Every query below is cached, so without this the Reload button would only redraw stale data.
+    expect(clearCacheSpy).toHaveBeenCalledTimes(1);
   });
 });

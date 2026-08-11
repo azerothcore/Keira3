@@ -1,10 +1,8 @@
 import { inject, Service } from '@angular/core';
-import { SmartScripts } from '@keira/shared/acore-world-model';
+import { CONDITION_SOURCE_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { ConfigService } from '@keira/shared/common-services';
 import { squelConfig } from '@keira/shared/config';
 import {
-  CONDITION_SOURCE_TYPE_QUEST_AVAILABLE,
-  CONDITION_SOURCE_TYPE_SMART_EVENT,
   MaxRow,
   QuestChainRelationRow,
   QuestConditionCountRow,
@@ -438,7 +436,7 @@ export class MysqlQueryService extends BaseQueryService {
   }
 
   /**
-   * How many `CONDITION_SOURCE_TYPE_QUEST_AVAILABLE` (19) rows gate each of the given quests.
+   * How many `SOURCE_TYPE_QUEST_AVAILABLE` (19) rows gate each of the given quests.
    * Quests absent from the result have no such conditions.
    */
   getQuestConditionCounts(ids: number[]): Promise<QuestConditionCountRow[]> {
@@ -448,12 +446,12 @@ export class MysqlQueryService extends BaseQueryService {
       'getQuestConditionCounts',
       idList,
       `SELECT SourceEntry, COUNT(*) AS conditionCount FROM conditions
-       WHERE SourceTypeOrReferenceId = ${CONDITION_SOURCE_TYPE_QUEST_AVAILABLE} AND SourceEntry IN (${idList}) GROUP BY SourceEntry`,
+       WHERE SourceTypeOrReferenceId = ${CONDITION_SOURCE_TYPES.SOURCE_TYPE_QUEST_AVAILABLE} AND SourceEntry IN (${idList}) GROUP BY SourceEntry`,
     );
   }
 
   /**
-   * How many `CONDITION_SOURCE_TYPE_SMART_EVENT` (22) rows gate each event of one smart script.
+   * How many `SOURCE_TYPE_SMART_EVENT` (22) rows gate each event of one smart script.
    * Returned `SourceGroup` is the `smart_scripts.id` **plus one** — the core's own off-by-one, not a bug here.
    */
   getSmartEventConditionCounts(entryOrGuid: string | number, sourceType: string | number): Promise<SmartEventConditionCountRow[]> {
@@ -464,7 +462,7 @@ export class MysqlQueryService extends BaseQueryService {
       'getSmartEventConditionCounts',
       `${entry}:${type}`,
       `SELECT SourceGroup, COUNT(*) AS conditionCount FROM conditions
-       WHERE SourceTypeOrReferenceId = ${CONDITION_SOURCE_TYPE_SMART_EVENT} AND SourceEntry = ${entry} AND SourceId = ${type}
+       WHERE SourceTypeOrReferenceId = ${CONDITION_SOURCE_TYPES.SOURCE_TYPE_SMART_EVENT} AND SourceEntry = ${entry} AND SourceId = ${type}
        GROUP BY SourceGroup`,
     );
   }

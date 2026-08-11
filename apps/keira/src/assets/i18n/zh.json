@@ -407,6 +407,8 @@
       "LEGEND_BREADCRUMB": "指引任务",
       "LEGEND_MISSING": "quest_template 中缺失",
       "LEGEND_CONDITIONS": "存在可接取条件（点击查看）",
+      "BAND_ANY": "其中之一（{{group}}）",
+      "BAND_ALL": "全部这些（{{group}}）",
       "CONDITIONS_TOOLTIP": "{{count}} 条可接取条件 — 点击在条件编辑器中打开"
     }
   },

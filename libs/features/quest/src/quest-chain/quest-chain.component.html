@@ -40,7 +40,9 @@
           @for (band of graph().bands; track band.group) {
             <g class="qc-band" [class.qc-band--all]="band.kind === 'all'">
               <rect [attr.x]="band.x" [attr.y]="band.y" [attr.width]="band.width" [attr.height]="band.height" rx="8" />
-              <text [attr.x]="band.x + 8" [attr.y]="band.y + 12">{{ band.label }}</text>
+              <text [attr.x]="band.x + 8" [attr.y]="band.y + 12">
+                {{ (band.kind === 'any' ? 'QUEST.CHAIN.BAND_ANY' : 'QUEST.CHAIN.BAND_ALL') | translate: { group: band.group } }}
+              </text>
             </g>
           }
 

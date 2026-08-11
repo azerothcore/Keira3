@@ -153,14 +153,15 @@ describe('quest-chain layout', () => {
       expect(backward?.path.startsWith(`M ${source.x + NODE_WIDTH / 2} ${source.y + NODE_HEIGHT}`)).toBe(true);
     });
 
-    it('should box an exclusive group and label it by sign', () => {
+    it('should box an exclusive group and classify it by sign', () => {
       const entries = [entry(1), entry(2, 40), entry(3, 40), entry(4, -50), entry(5, -50)];
       const edges = [chain(1, 2), chain(1, 3), chain(1, 4), chain(1, 5)];
       const graph = buildQuestChainGraph(entries, edges, 1);
 
-      expect(graph.bands.map((band) => [band.group, band.kind, band.label])).toEqual([
-        [-50, 'all', 'All of these (-50)'],
-        [40, 'any', 'One of these (40)'],
+      // The caption itself is built in the template so that it goes through i18n.
+      expect(graph.bands.map((band) => [band.group, band.kind])).toEqual([
+        [-50, 'all'],
+        [40, 'any'],
       ]);
     });
 

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import {
+  CONDITION_SOURCE_TYPES,
   EVENT_PHASE_MASK,
   SAI_TYPES,
   SMART_ACTION_CAST_FLAGS,
@@ -74,7 +75,7 @@ import { SaiTopBarComponent } from './sai-top-bar/sai-top-bar.component';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
 import { EditorButtonsComponent, QueryOutputComponent } from '@keira/shared/base-editor-components';
-import { CONDITION_SOURCE_TYPE_SMART_EVENT, SMART_EVENT_CONDITION_GROUP_OFFSET } from '@keira/shared/constants';
+import { SMART_EVENT_CONDITION_GROUP_OFFSET } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { AsyncPipe } from '@angular/common';
 
@@ -228,7 +229,7 @@ export class SaiEditorComponent extends MultiRowEditorComponent<SmartScripts> im
     const { entryorguid, source_type } = this.handlerService.parsedSelected;
 
     return {
-      sourceType: CONDITION_SOURCE_TYPE_SMART_EVENT,
+      sourceType: CONDITION_SOURCE_TYPES.SOURCE_TYPE_SMART_EVENT,
       sourceEntry: entryorguid,
       sourceGroup: Number(eventId) + SMART_EVENT_CONDITION_GROUP_OFFSET,
       // The core keys smart event conditions on (SourceEntry, SourceId), so SourceId must carry the

@@ -32,11 +32,14 @@ export class QuestChainService {
       return { ...EMPTY_QUEST_CHAIN_GRAPH };
     }
 
+    // Every query below is cached by the db layer, so without this the Reload button would only redraw
+    // the graph it already has. Editors do the same on entry.
+    this.mysqlQueryService.clearCache();
+
     const relations = new Map<number, QuestChainRelationRow>();
     const known = new Set<number>([rootId]);
     const requestedIds = new Set<number>();
     const requestedGroups = new Set<number>();
-    let truncated = false;
 
     let frontierIds: number[] = [rootId];
     let frontierGroups: number[] = [];
@@ -64,7 +67,6 @@ export class QuestChainService {
       }
 
       if (known.size > MAX_QUEST_CHAIN_NODES) {
-        truncated = true;
         break;
       }
 
@@ -76,7 +78,13 @@ export class QuestChainService {
       frontierGroups = [...new Set(frontierGroups)];
     }
 
-    const ids = [...known];
+    // A single round can take `known` well past the budget, so cap what actually gets laid out - the
+    // layout is O(nodes x edges) and would otherwise freeze the view on exactly the data the cap names.
+    // `known` is in walk order, so this keeps the selected quest and its closest neighbours.
+    const ids = [...known].slice(0, MAX_QUEST_CHAIN_NODES);
+    // Either cap can stop the walk early, and so can the round limit with a frontier still queued.
+    const truncated = ids.length < known.size || frontierIds.length > 0 || frontierGroups.length > 0;
+
     const [titles, conditionCounts] = await Promise.all([
       this.mysqlQueryService.getQuestTitlesByIds(ids),
       this.mysqlQueryService.getQuestConditionCounts(ids),

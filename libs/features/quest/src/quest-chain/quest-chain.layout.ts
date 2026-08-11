@@ -186,7 +186,6 @@ function buildBands(nodes: QuestChainNode[], groups: Map<number, number[]>): Que
     bands.push({
       group,
       kind: group > 0 ? 'any' : 'all',
-      label: group > 0 ? `One of these (${group})` : `All of these (${group})`,
       x: left,
       y: top,
       width: right - left,
