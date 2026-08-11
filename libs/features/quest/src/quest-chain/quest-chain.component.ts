@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { TopBarComponent } from '@keira/shared/base-editor-components';
 import { CONDITION_SOURCE_TYPES } from '@keira/shared/acore-world-model';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { QuestHandlerService } from '../quest-handler.service';
 import { NODE_HEIGHT, NODE_WIDTH } from './quest-chain.layout';
 import { EMPTY_QUEST_CHAIN_GRAPH, QuestChainGraph, QuestChainNode } from './quest-chain.model';
@@ -13,13 +13,12 @@ import { QuestChainService } from './quest-chain.service';
   selector: 'keira-quest-chain',
   templateUrl: './quest-chain.component.html',
   styleUrls: ['./quest-chain.component.scss'],
-  imports: [TopBarComponent, TranslateModule],
+  imports: [TopBarComponent, TranslateDirective, TranslatePipe],
 })
 export class QuestChainComponent implements OnInit {
   private readonly questChainService = inject(QuestChainService);
-  private readonly changeDetectorRef = inject(ChangeDetectorRef);
   private readonly router = inject(Router);
-  readonly handlerService = inject(QuestHandlerService);
+  protected readonly handlerService = inject(QuestHandlerService);
 
   protected readonly NODE_WIDTH = NODE_WIDTH;
   protected readonly NODE_HEIGHT = NODE_HEIGHT;
@@ -44,8 +43,6 @@ export class QuestChainComponent implements OnInit {
     }
 
     this.loading.set(false);
-    // Zoneless app: nothing else marks the view dirty after this await.
-    this.changeDetectorRef.markForCheck();
   }
 
   protected label(node: QuestChainNode): string {

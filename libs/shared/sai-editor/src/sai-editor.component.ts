@@ -215,7 +215,6 @@ export class SaiEditorComponent extends MultiRowEditorComponent<SmartScripts> im
     }
 
     this.conditionCounts.set(counts);
-    this.changeDetectorRef.markForCheck();
   }
 
   protected readonly conditionCounts = signal<Record<number, number>>({});
