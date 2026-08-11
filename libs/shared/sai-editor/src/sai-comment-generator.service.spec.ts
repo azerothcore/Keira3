@@ -1980,6 +1980,15 @@ describe('SaiCommentGeneratorService', () => {
         expected: `MockEntity - In Combat - Move To Formation`,
       },
       {
+        name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.SHARED_OWNER_ENTITIES)`,
+        input: {
+          action_type: SAI_ACTIONS.MOVE_TO_POS,
+          target_type: SAI_TARGETS.SHARED_OWNER_ENTITIES,
+          target_param1: 0,
+        },
+        expected: `MockEntity - In Combat - Move To Shared Owner Entities`,
+      },
+      {
         name: `SAI_ACTIONS.MOVE_TO_POS check target type (unsupported target type)`,
         input: {
           action_type: SAI_ACTIONS.MOVE_TO_POS,
