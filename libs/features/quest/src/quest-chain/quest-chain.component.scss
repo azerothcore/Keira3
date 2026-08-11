@@ -1,0 +1,179 @@
+.quest-chain {
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  &__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-bottom: 12px;
+    font-size: 12px;
+    color: #555;
+
+    .legend-line {
+      display: inline-block;
+      width: 22px;
+      height: 0;
+      vertical-align: middle;
+      border-top: 2px solid #6c757d;
+
+      &--enabled-by {
+        border-top-style: dashed;
+        border-top-color: #9b59b6;
+      }
+
+      &--breadcrumb {
+        border-top-style: dotted;
+        border-top-color: #17a2b8;
+      }
+    }
+
+    .legend-box {
+      display: inline-block;
+      width: 14px;
+      height: 12px;
+      vertical-align: middle;
+      border-radius: 3px;
+
+      &--missing {
+        border: 1px dashed #c0392b;
+        background-color: #fdecea;
+      }
+
+      &--conditions {
+        border: 1px solid #b7950b;
+        background-color: #f3e5a9;
+      }
+    }
+  }
+
+  // The graph is as wide as the chain is long; let it scroll rather than squash the boxes.
+  &__canvas {
+    overflow: auto;
+    max-height: 70vh;
+    border: 1px solid #e3e3e3;
+    border-radius: 4px;
+    background-color: #fff;
+  }
+}
+
+.qc-arrow-head {
+  fill: #6c757d;
+}
+
+.qc-edge {
+  fill: none;
+  stroke: #6c757d;
+  stroke-width: 2;
+
+  &--enabled-by {
+    stroke: #9b59b6;
+    stroke-dasharray: 6 4;
+  }
+
+  &--breadcrumb {
+    stroke: #17a2b8;
+    stroke-dasharray: 2 4;
+  }
+}
+
+.qc-band {
+  rect {
+    fill: rgba(241, 196, 15, 0.09);
+    stroke: #d4ac0d;
+    stroke-dasharray: 5 4;
+    stroke-width: 1;
+  }
+
+  text {
+    fill: #9a7d0a;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  // Negative groups mean "all of these", a different rule from the exclusive "one of these".
+  &--all {
+    rect {
+      fill: rgba(52, 152, 219, 0.09);
+      stroke: #2e86c1;
+    }
+
+    text {
+      fill: #21618c;
+    }
+  }
+}
+
+// Marks a quest whose availability is gated by `conditions` rows; clicking opens them.
+.qc-cond {
+  cursor: pointer;
+
+  rect {
+    fill: #f3e5a9;
+    stroke: #b7950b;
+    stroke-width: 1;
+  }
+
+  text {
+    font-size: 10px;
+    font-weight: 600;
+    fill: #7d6608;
+    text-anchor: middle;
+  }
+
+  &:hover rect {
+    fill: #e8d47a;
+  }
+}
+
+.qc-node {
+  cursor: pointer;
+
+  rect {
+    fill: #f7f9fa;
+    stroke: #adb5bd;
+    stroke-width: 1.5;
+  }
+
+  &:hover rect {
+    stroke: #495057;
+  }
+
+  &__title {
+    font-size: 13px;
+    fill: #212529;
+  }
+
+  &__id {
+    font-size: 11px;
+    fill: #6c757d;
+  }
+
+  &--current {
+    cursor: default;
+
+    rect {
+      fill: #e8f4fd;
+      stroke: #1f78b4;
+      stroke-width: 2.5;
+    }
+  }
+
+  &--missing {
+    cursor: not-allowed;
+
+    rect {
+      fill: #fdecea;
+      stroke: #c0392b;
+      stroke-dasharray: 5 4;
+    }
+
+    .qc-node__title {
+      fill: #c0392b;
+    }
+  }
+}

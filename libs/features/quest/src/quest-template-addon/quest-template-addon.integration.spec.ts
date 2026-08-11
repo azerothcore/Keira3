@@ -28,10 +28,10 @@ describe('QuestTemplateAddon integration tests', () => {
   const expectedFullCreateQuery =
     'DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
     'INSERT INTO `quest_template_addon` (`ID`, `MaxLevel`, `AllowableClasses`, `SourceSpellID`, `PrevQuestID`, `NextQuestID`, ' +
-    '`ExclusiveGroup`, `RewardMailTemplateID`, `RewardMailDelay`, `RequiredSkillID`, `RequiredSkillPoints`,' +
+    '`ExclusiveGroup`, `BreadcrumbForQuestId`, `RewardMailTemplateID`, `RewardMailDelay`, `RequiredSkillID`, `RequiredSkillPoints`,' +
     ' `RequiredMinRepFaction`, `RequiredMaxRepFaction`, `RequiredMinRepValue`, `RequiredMaxRepValue`, `ProvidedItemCount`, ' +
     '`SpecialFlags`) VALUES\n' +
-    '(1234, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);';
+    '(1234, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);';
 
   const originalEntity = new QuestTemplateAddon();
   originalEntity.ID = id;
@@ -41,15 +41,16 @@ describe('QuestTemplateAddon integration tests', () => {
   originalEntity.PrevQuestID = 4;
   originalEntity.NextQuestID = 5;
   originalEntity.ExclusiveGroup = 6;
-  originalEntity.RewardMailTemplateID = 7;
-  originalEntity.RewardMailDelay = 8;
-  originalEntity.RequiredSkillID = 9;
-  originalEntity.RequiredSkillPoints = 10;
-  originalEntity.RequiredMinRepFaction = 11;
-  originalEntity.RequiredMaxRepFaction = 12;
-  originalEntity.RequiredMinRepValue = 13;
-  originalEntity.RequiredMaxRepValue = 14;
-  originalEntity.ProvidedItemCount = 15;
+  originalEntity.BreadcrumbForQuestId = 7;
+  originalEntity.RewardMailTemplateID = 8;
+  originalEntity.RewardMailDelay = 9;
+  originalEntity.RequiredSkillID = 10;
+  originalEntity.RequiredSkillPoints = 11;
+  originalEntity.RequiredMinRepFaction = 12;
+  originalEntity.RequiredMaxRepFaction = 13;
+  originalEntity.RequiredMinRepValue = 14;
+  originalEntity.RequiredMaxRepValue = 15;
+  originalEntity.ProvidedItemCount = 16;
   originalEntity.SpecialFlags = 0;
 
   beforeEach(() => {
@@ -116,10 +117,10 @@ describe('QuestTemplateAddon integration tests', () => {
       const expectedQuery =
         'DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
         'INSERT INTO `quest_template_addon` (`ID`, `MaxLevel`, `AllowableClasses`, `SourceSpellID`, `PrevQuestID`, `NextQuestID`,' +
-        ' `ExclusiveGroup`, `RewardMailTemplateID`, `RewardMailDelay`, `RequiredSkillID`, `RequiredSkillPoints`,' +
+        ' `ExclusiveGroup`, `BreadcrumbForQuestId`, `RewardMailTemplateID`, `RewardMailDelay`, `RequiredSkillID`, `RequiredSkillPoints`,' +
         ' `RequiredMinRepFaction`, `RequiredMaxRepFaction`, `RequiredMinRepValue`, `RequiredMaxRepValue`, `ProvidedItemCount`,' +
         ' `SpecialFlags`) VALUES\n' +
-        '(1234, 33, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);';
+        '(1234, 33, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);';
       querySpy.mockClear();
 
       page.setInputValueById('MaxLevel', 33);
@@ -153,10 +154,10 @@ describe('QuestTemplateAddon integration tests', () => {
       page.expectFullQueryToContain(
         'DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
           'INSERT INTO `quest_template_addon` (`ID`, `MaxLevel`, `AllowableClasses`, `SourceSpellID`, `PrevQuestID`, `NextQuestID`,' +
-          ' `ExclusiveGroup`, `RewardMailTemplateID`, `RewardMailDelay`, `RequiredSkillID`, `RequiredSkillPoints`,' +
+          ' `ExclusiveGroup`, `BreadcrumbForQuestId`, `RewardMailTemplateID`, `RewardMailDelay`, `RequiredSkillID`, `RequiredSkillPoints`,' +
           ' `RequiredMinRepFaction`, `RequiredMaxRepFaction`, `RequiredMinRepValue`, `RequiredMaxRepValue`, `ProvidedItemCount`,' +
           ' `SpecialFlags`) VALUES\n' +
-          '(1234, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0);',
+          '(1234, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0);',
       );
       page.removeNativeElement();
     });
@@ -166,9 +167,9 @@ describe('QuestTemplateAddon integration tests', () => {
       const expectedQuery =
         'UPDATE `quest_template_addon` SET ' +
         '`MaxLevel` = 0, `AllowableClasses` = 1, `SourceSpellID` = 2, `PrevQuestID` = 3, `NextQuestID` = 4, `ExclusiveGroup` = 5, ' +
-        '`RewardMailTemplateID` = 6, `RewardMailDelay` = 7, `RequiredSkillID` = 8, `RequiredSkillPoints` = 9, ' +
-        '`RequiredMinRepFaction` = 10, `RequiredMaxRepFaction` = 11, `RequiredMinRepValue` = 12, `RequiredMaxRepValue` = 13, ' +
-        '`ProvidedItemCount` = 14, `SpecialFlags` = 15 WHERE (`ID` = 1234);';
+        '`BreadcrumbForQuestId` = 6, `RewardMailTemplateID` = 7, `RewardMailDelay` = 8, `RequiredSkillID` = 9, ' +
+        '`RequiredSkillPoints` = 10, `RequiredMinRepFaction` = 11, `RequiredMaxRepFaction` = 12, `RequiredMinRepValue` = 13, ' +
+        '`RequiredMaxRepValue` = 14, `ProvidedItemCount` = 15, `SpecialFlags` = 16 WHERE (`ID` = 1234);';
       querySpy.mockClear();
 
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
@@ -187,10 +188,10 @@ describe('QuestTemplateAddon integration tests', () => {
       page.expectFullQueryToContain(
         'DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
           'INSERT INTO `quest_template_addon` (`ID`, `MaxLevel`, `AllowableClasses`, ' +
-          '`SourceSpellID`, `PrevQuestID`, `NextQuestID`, `ExclusiveGroup`, `RewardMailTemplateID`,' +
+          '`SourceSpellID`, `PrevQuestID`, `NextQuestID`, `ExclusiveGroup`, `BreadcrumbForQuestId`, `RewardMailTemplateID`,' +
           ' `RewardMailDelay`, `RequiredSkillID`, `RequiredSkillPoints`, `RequiredMinRepFaction`, ' +
           '`RequiredMaxRepFaction`, `RequiredMinRepValue`, `RequiredMaxRepValue`, `ProvidedItemCount`, `SpecialFlags`) VALUES\n' +
-          '(1234, 1, 2, 3, 11, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0);',
+          '(1234, 1, 2, 3, 11, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0);',
       );
 
       page.setInputValueById('NextQuestID', '22');
@@ -198,10 +199,10 @@ describe('QuestTemplateAddon integration tests', () => {
       page.expectFullQueryToContain(
         'DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
           'INSERT INTO `quest_template_addon` (`ID`, `MaxLevel`, `AllowableClasses`, `SourceSpellID`, ' +
-          '`PrevQuestID`, `NextQuestID`, `ExclusiveGroup`, `RewardMailTemplateID`, `RewardMailDelay`, ' +
+          '`PrevQuestID`, `NextQuestID`, `ExclusiveGroup`, `BreadcrumbForQuestId`, `RewardMailTemplateID`, `RewardMailDelay`, ' +
           '`RequiredSkillID`, `RequiredSkillPoints`, `RequiredMinRepFaction`, `RequiredMaxRepFaction`, ' +
           '`RequiredMinRepValue`, `RequiredMaxRepValue`, `ProvidedItemCount`, `SpecialFlags`) VALUES\n' +
-          '(1234, 1, 2, 3, 11, 22, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0);',
+          '(1234, 1, 2, 3, 11, 22, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0);',
       );
       page.removeNativeElement();
     });
@@ -226,10 +227,10 @@ describe('QuestTemplateAddon integration tests', () => {
       page.expectFullQueryToContain(
         'DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
           'INSERT INTO `quest_template_addon` (`ID`, `MaxLevel`, `AllowableClasses`, `SourceSpellID`, ' +
-          '`PrevQuestID`, `NextQuestID`, `ExclusiveGroup`, `RewardMailTemplateID`, `RewardMailDelay`, ' +
+          '`PrevQuestID`, `NextQuestID`, `ExclusiveGroup`, `BreadcrumbForQuestId`, `RewardMailTemplateID`, `RewardMailDelay`, ' +
           '`RequiredSkillID`, `RequiredSkillPoints`, `RequiredMinRepFaction`, `RequiredMaxRepFaction`, ' +
           '`RequiredMinRepValue`, `RequiredMaxRepValue`, `ProvidedItemCount`, `SpecialFlags`) VALUES\n' +
-          '(1234, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 10)',
+          '(1234, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 10)',
       );
       page.removeNativeElement();
     });
@@ -257,9 +258,10 @@ describe('QuestTemplateAddon integration tests', () => {
       page.expectFullQueryToContain(
         'DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
           'INSERT INTO `quest_template_addon` (`ID`, `MaxLevel`, `AllowableClasses`, `SourceSpellID`, `PrevQuestID`, `NextQuestID`, ' +
-          '`ExclusiveGroup`, `RewardMailTemplateID`, `RewardMailDelay`, `RequiredSkillID`, `RequiredSkillPoints`, `RequiredMinRepFaction`, ' +
+          '`ExclusiveGroup`, `BreadcrumbForQuestId`, `RewardMailTemplateID`, `RewardMailDelay`, `RequiredSkillID`, ' +
+          '`RequiredSkillPoints`, `RequiredMinRepFaction`, ' +
           '`RequiredMaxRepFaction`, `RequiredMinRepValue`, `RequiredMaxRepValue`, `ProvidedItemCount`, `SpecialFlags`) VALUES\n' +
-          '(1234, 1, 2, 123, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0);',
+          '(1234, 1, 2, 123, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0);',
       );
       page.removeNativeElement();
     });
@@ -286,9 +288,10 @@ describe('QuestTemplateAddon integration tests', () => {
       page.expectFullQueryToContain(
         'DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
           'INSERT INTO `quest_template_addon` (`ID`, `MaxLevel`, `AllowableClasses`, `SourceSpellID`, `PrevQuestID`, `NextQuestID`, ' +
-          '`ExclusiveGroup`, `RewardMailTemplateID`, `RewardMailDelay`, `RequiredSkillID`, `RequiredSkillPoints`, `RequiredMinRepFaction`, ' +
+          '`ExclusiveGroup`, `BreadcrumbForQuestId`, `RewardMailTemplateID`, `RewardMailDelay`, `RequiredSkillID`, ' +
+          '`RequiredSkillPoints`, `RequiredMinRepFaction`, ' +
           '`RequiredMaxRepFaction`, `RequiredMinRepValue`, `RequiredMaxRepValue`, `ProvidedItemCount`, `SpecialFlags`) VALUES\n' +
-          '(1234, 1, 2, 3, 4, 123, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0);',
+          '(1234, 1, 2, 3, 4, 123, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0);',
       );
       page.removeNativeElement();
     });

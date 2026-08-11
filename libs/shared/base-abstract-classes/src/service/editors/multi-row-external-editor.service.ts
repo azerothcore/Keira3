@@ -26,6 +26,7 @@ export abstract class MultiRowExternalEditorService<T extends TableRow> extends 
       this._entitySecondIdField,
       this._originalRows,
       this._newRows,
+      this._entityExtraIdField,
     );
   }
 

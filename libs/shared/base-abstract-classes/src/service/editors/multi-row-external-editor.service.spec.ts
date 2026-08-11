@@ -46,6 +46,7 @@ describe('MultiRowExternalEditorService', () => {
       service.entitySecondIdField,
       service['_originalRows'],
       service.newRows,
+      undefined,
     );
     expect(service.diffQuery).toEqual(queryResult);
   });

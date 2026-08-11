@@ -23,6 +23,7 @@ export abstract class MultiRowComplexKeyEditorService<T extends TableRow> extend
       this._entitySecondIdField,
       this._originalRows,
       this._newRows,
+      this._entityExtraIdField,
     );
 
     this.updateEditorStatus();

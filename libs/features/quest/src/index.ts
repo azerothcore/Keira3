@@ -2,6 +2,7 @@ export * from './creature-questender/creature-questender.component';
 export * from './creature-queststarter/creature-queststarter.component';
 export * from './gameobject-questender/gameobject-questender.component';
 export * from './gameobject-queststarter/gameobject-queststarter.component';
+export * from './quest-chain/quest-chain.component';
 export * from './quest-offer-reward/quest-offer-reward.component';
 export * from './quest-preview/quest-preview.component';
 export * from './quest-preview/quest-objectives.component';
