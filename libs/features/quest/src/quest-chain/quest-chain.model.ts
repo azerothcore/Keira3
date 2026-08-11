@@ -5,7 +5,11 @@ export type QuestChainEdgeKind =
   /** `PrevQuestID` < 0: the source must merely be *available* for the target to appear. */
   | 'enabled-by'
   /** `BreadcrumbForQuestId`: the source is an optional quest that points the player toward the target. */
-  | 'breadcrumb';
+  | 'breadcrumb'
+  /** A `conditions` row requires the source quest before the target is offered at all. */
+  | 'condition'
+  /** Same, except the target lists alternative condition groups, so this quest is only one of the ways in. */
+  | 'condition-any';
 
 /** Semantics of an `ExclusiveGroup` value. */
 export type QuestChainGroupKind =

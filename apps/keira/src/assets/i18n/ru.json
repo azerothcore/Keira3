@@ -404,6 +404,8 @@
       "LEGEND_CHAIN": "Сначала нужно выполнить",
       "LEGEND_ENABLED_BY": "Должно быть доступно (открывает)",
       "LEGEND_BREADCRUMB": "Указующее задание",
+      "LEGEND_CONDITION": "Требуется по условию",
+      "LEGEND_CONDITION_ANY": "Альтернатива условия (любая из них)",
       "LEGEND_MISSING": "Отсутствует в quest_template",
       "LEGEND_CONDITIONS": "Есть условия доступности (нажмите, чтобы открыть)",
       "BAND_ANY": "Одно из этих ({{group}})",

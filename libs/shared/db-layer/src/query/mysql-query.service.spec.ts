@@ -250,6 +250,32 @@ describe('MysqlQueryService', () => {
     });
   });
 
+  describe('getQuestConditionPrerequisites()', () => {
+    it('should match quest prerequisites in both directions, ignoring negated and non-quest conditions', async () => {
+      const { service } = setup();
+      const data = [{ SourceEntry: 13139, ElseGroup: 0, ConditionValue1: 13125 }];
+      const querySpy = vi.spyOn(service, 'query').mockReturnValue(of(data));
+
+      expect(await service.getQuestConditionPrerequisites([13139])).toEqual(data);
+      expect(querySpy).toHaveBeenCalledWith(
+        `SELECT SourceEntry, ElseGroup, ConditionValue1 FROM conditions
+       WHERE SourceTypeOrReferenceId = 19
+       AND ConditionTypeOrReference IN (8,9,28)
+       AND NegativeCondition = 0 AND ConditionValue1 > 0
+       AND (SourceEntry IN (13139) OR ConditionValue1 IN (13139))`,
+      );
+    });
+
+    it('should render an empty id list as NULL so the query stays valid', () => {
+      const { service } = setup();
+      const querySpy = vi.spyOn(service, 'query').mockReturnValue(of([]));
+
+      service.getQuestConditionPrerequisites([]);
+
+      expect(querySpy.mock.calls[0][0]).toContain('SourceEntry IN (NULL)');
+    });
+  });
+
   it('getQuestConditionCounts() should count only quest-availability conditions', async () => {
     const { service } = setup();
     const data = [{ SourceEntry: 13117, conditionCount: 2 }];

@@ -404,6 +404,8 @@
       "LEGEND_CHAIN": "Debe completarse primero",
       "LEGEND_ENABLED_BY": "Debe estar disponible (habilitada por)",
       "LEGEND_BREADCRUMB": "Misión guía que conduce a",
+      "LEGEND_CONDITION": "Requerido por una condición",
+      "LEGEND_CONDITION_ANY": "Alternativa de condición (cualquiera de ellas)",
       "LEGEND_MISSING": "Ausente en quest_template",
       "LEGEND_CONDITIONS": "Tiene condiciones de disponibilidad (clic para abrir)",
       "BAND_ANY": "Una de estas ({{group}})",

@@ -1,5 +1,5 @@
 import { inject, Service } from '@angular/core';
-import { QuestChainRelationRow } from '@keira/shared/constants';
+import { QuestChainRelationRow, QuestConditionPrerequisiteRow } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { QuestHandlerService } from '../quest-handler.service';
 import { buildQuestChainGraph } from './quest-chain.layout';
@@ -37,6 +37,8 @@ export class QuestChainService {
     this.mysqlQueryService.clearCache();
 
     const relations = new Map<number, QuestChainRelationRow>();
+    // Keyed on the row itself rather than on a quest: one quest can be gated by several prerequisites.
+    const prerequisites = new Map<string, QuestConditionPrerequisiteRow>();
     const known = new Set<number>([rootId]);
     const requestedIds = new Set<number>();
     const requestedGroups = new Set<number>();
@@ -56,13 +58,21 @@ export class QuestChainService {
         requestedGroups.add(group);
       }
 
-      const rows = await this.mysqlQueryService.getQuestChainRelations(frontierIds, frontierGroups);
+      // The two ways the core states a prerequisite are independent, so both are walked at every level.
+      const [rows, conditionRows] = await Promise.all([
+        this.mysqlQueryService.getQuestChainRelations(frontierIds, frontierGroups),
+        this.mysqlQueryService.getQuestConditionPrerequisites(frontierIds),
+      ]);
 
       for (const row of rows) {
         relations.set(Number(row.ID), row);
       }
 
-      for (const id of this.collectReferencedIds(rows)) {
+      for (const row of conditionRows) {
+        prerequisites.set(`${row.SourceEntry}|${row.ElseGroup}|${row.ConditionValue1}`, row);
+      }
+
+      for (const id of [...this.collectReferencedIds(rows), ...this.collectConditionIds(conditionRows)]) {
         known.add(id);
       }
 
@@ -101,7 +111,9 @@ export class QuestChainService {
       conditionCount: conditionsById.get(id) ?? 0,
     }));
 
-    return buildQuestChainGraph(entries, this.buildEdges(relations), rootId, truncated);
+    const edges = [...this.buildEdges(relations), ...this.buildConditionEdges([...prerequisites.values()])];
+
+    return buildQuestChainGraph(entries, edges, rootId, truncated);
   }
 
   /** Every quest id mentioned by a batch of addon rows, including the rows' own ids. */
@@ -120,6 +132,66 @@ export class QuestChainService {
     }
 
     return ids;
+  }
+
+  /** Both quests named by a prerequisite row: the gated one and the one it depends on. */
+  private collectConditionIds(rows: QuestConditionPrerequisiteRow[]): number[] {
+    const ids: number[] = [];
+
+    for (const row of rows) {
+      for (const value of [row.SourceEntry, row.ConditionValue1]) {
+        const id = Number(value);
+
+        if (id > 0) {
+          ids.push(id);
+        }
+      }
+    }
+
+    return ids;
+  }
+
+  /**
+   * Prerequisites stated as `conditions`, which `quest_template_addon` knows nothing about - without these a
+   * quest gated purely by conditions looks like it stands alone.
+   *
+   * Rows sharing an `ElseGroup` must all hold; separate groups are alternatives. Rather than render that boolean
+   * structure, a quest whose prerequisites span more than one group has all of its incoming edges marked as
+   * alternatives, which says "any one of these is a way in" without claiming which combination.
+   */
+  private buildConditionEdges(rows: QuestConditionPrerequisiteRow[]): QuestChainEdge[] {
+    const groupsPerQuest = new Map<number, Set<number>>();
+
+    for (const row of rows) {
+      const quest = Number(row.SourceEntry);
+      const groups = groupsPerQuest.get(quest);
+
+      if (groups) {
+        groups.add(Number(row.ElseGroup));
+      } else {
+        groupsPerQuest.set(quest, new Set([Number(row.ElseGroup)]));
+      }
+    }
+
+    const edges: QuestChainEdge[] = [];
+    const seen = new Set<string>();
+
+    for (const row of rows) {
+      const to = Number(row.SourceEntry);
+      const from = Number(row.ConditionValue1);
+      // Every row seeded the map above under its own `SourceEntry`, so this always hits.
+      const groups = groupsPerQuest.get(to) as Set<number>;
+      const kind: QuestChainEdge['kind'] = groups.size > 1 ? 'condition-any' : 'condition';
+      const key = `${from}|${to}|${kind}`;
+
+      // A quest listed in two else-groups yields the same edge twice; it is still one link.
+      if (from > 0 && from !== to && !seen.has(key)) {
+        seen.add(key);
+        edges.push({ from, to, kind });
+      }
+    }
+
+    return edges;
   }
 
   private buildEdges(relations: Map<number, QuestChainRelationRow>): QuestChainEdge[] {

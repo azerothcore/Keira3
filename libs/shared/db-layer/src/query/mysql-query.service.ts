@@ -1,11 +1,12 @@
 import { inject, Service } from '@angular/core';
-import { CONDITION_SOURCE_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
+import { CONDITION_SOURCE_TYPES, QUEST_PREREQUISITE_CONDITION_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { ConfigService } from '@keira/shared/common-services';
 import { squelConfig } from '@keira/shared/config';
 import {
   MaxRow,
   QuestChainRelationRow,
   QuestConditionCountRow,
+  QuestConditionPrerequisiteRow,
   QuestReputationReward,
   QuestTitleRow,
   SmartEventConditionCountRow,
@@ -432,6 +433,28 @@ export class MysqlQueryService extends BaseQueryService {
       `${idList}|${groupList}`,
       `SELECT ID, PrevQuestID, NextQuestID, ExclusiveGroup, BreadcrumbForQuestId
        FROM quest_template_addon WHERE ${conditions.join(' OR ')}`,
+    );
+  }
+
+  /**
+   * One frontier expansion over quest prerequisites expressed as `conditions` instead of as
+   * `quest_template_addon` columns. Matched in both directions, like the addon query, so the walk finds both what
+   * gates a quest and what that quest gates.
+   *
+   * Restricted to the plainly "must have done quest X" types and to positive rows: a negated condition means the
+   * opposite of a prerequisite, and drawing it as one would be worse than not drawing it at all.
+   */
+  getQuestConditionPrerequisites(ids: number[]): Promise<QuestConditionPrerequisiteRow[]> {
+    const idList = this.toIdList(ids);
+
+    return this.queryToPromiseCached<QuestConditionPrerequisiteRow>(
+      'getQuestConditionPrerequisites',
+      idList,
+      `SELECT SourceEntry, ElseGroup, ConditionValue1 FROM conditions
+       WHERE SourceTypeOrReferenceId = ${CONDITION_SOURCE_TYPES.SOURCE_TYPE_QUEST_AVAILABLE}
+       AND ConditionTypeOrReference IN (${QUEST_PREREQUISITE_CONDITION_TYPES.join(',')})
+       AND NegativeCondition = 0 AND ConditionValue1 > 0
+       AND (SourceEntry IN (${idList}) OR ConditionValue1 IN (${idList}))`,
     );
   }
 
