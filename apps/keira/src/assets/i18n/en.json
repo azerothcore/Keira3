@@ -399,7 +399,6 @@
     },
     "CHAIN": {
       "TITLE": "Quest Chain",
-      "RELOAD": "Reload",
       "STANDALONE": "This quest is not linked to any other quest.",
       "TRUNCATED": "This chain is too large to display in full; only part of it is shown.",
       "LEGEND_CHAIN": "Must be completed first",

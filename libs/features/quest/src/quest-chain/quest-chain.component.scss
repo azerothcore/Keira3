@@ -1,3 +1,22 @@
+// Same palette as the quest preview panel (apps/keira/src/app/scss/_preview.scss, _quest-preview.scss),
+// so the chain reads like the tooltips shown next to the editors.
+$qc-bg: #080d22;
+$qc-text: #fff;
+$qc-colored: #ffd100;
+// Lighter than the preview's #808080 / #f00: on the dark panel those sit around 4.5:1, too dim for
+// 11px SVG labels, so the secondary text and the "missing" red are raised to ~7:1.
+$qc-greyed: #a8afc2;
+$qc-legend-text: #dde2ee;
+$qc-red: #ff5c5c;
+$qc-panel-border: #39436e;
+$qc-node-bg: #202a54;
+$qc-node-border: #7183b8;
+
+// Edge colours reuse the class palette of _preview.scss to stay within the app's hues.
+$qc-chain: #c8ccd4;
+$qc-enabled-by: #9382c9;
+$qc-breadcrumb: #68ccef;
+
 .quest-chain {
   &__header {
     display: flex;
@@ -6,47 +25,60 @@
     margin-bottom: 12px;
   }
 
+  &__panel {
+    padding: 12px 16px 16px;
+    border: 1px solid $qc-panel-border;
+    border-radius: 4px;
+    background-color: $qc-bg;
+    color: $qc-text;
+  }
+
   &__legend {
     display: flex;
     flex-wrap: wrap;
-    gap: 18px;
-    margin-bottom: 12px;
-    font-size: 12px;
-    color: #555;
+    gap: 10px 22px;
+    margin-bottom: 14px;
+    font-size: 0.95rem;
+    color: $qc-legend-text;
+
+    .legend-line,
+    .legend-box {
+      margin-right: 9px;
+    }
 
     .legend-line {
       display: inline-block;
-      width: 22px;
+      width: 34px;
       height: 0;
       vertical-align: middle;
-      border-top: 2px solid #6c757d;
+      border-top: 3px solid $qc-chain;
 
       &--enabled-by {
         border-top-style: dashed;
-        border-top-color: #9b59b6;
+        border-top-color: $qc-enabled-by;
       }
 
       &--breadcrumb {
         border-top-style: dotted;
-        border-top-color: #17a2b8;
+        border-top-color: $qc-breadcrumb;
       }
     }
 
     .legend-box {
       display: inline-block;
-      width: 14px;
-      height: 12px;
+      width: 20px;
+      height: 17px;
       vertical-align: middle;
       border-radius: 3px;
 
       &--missing {
-        border: 1px dashed #c0392b;
-        background-color: #fdecea;
+        border: 1px dashed $qc-red;
+        background-color: rgba(255, 92, 92, 0.28);
       }
 
       &--conditions {
-        border: 1px solid #b7950b;
-        background-color: #f3e5a9;
+        border: 1px solid $qc-colored;
+        background-color: rgba(255, 209, 0, 0.28);
       }
     }
   }
@@ -55,42 +87,39 @@
   &__canvas {
     overflow: auto;
     max-height: 70vh;
-    border: 1px solid #e3e3e3;
-    border-radius: 4px;
-    background-color: #fff;
   }
 }
 
 .qc-arrow-head {
-  fill: #6c757d;
+  fill: $qc-chain;
 }
 
 .qc-edge {
   fill: none;
-  stroke: #6c757d;
+  stroke: $qc-chain;
   stroke-width: 2;
 
   &--enabled-by {
-    stroke: #9b59b6;
+    stroke: $qc-enabled-by;
     stroke-dasharray: 6 4;
   }
 
   &--breadcrumb {
-    stroke: #17a2b8;
+    stroke: $qc-breadcrumb;
     stroke-dasharray: 2 4;
   }
 }
 
 .qc-band {
   rect {
-    fill: rgba(241, 196, 15, 0.09);
-    stroke: #d4ac0d;
+    fill: rgba(255, 209, 0, 0.1);
+    stroke: rgba(255, 209, 0, 0.75);
     stroke-dasharray: 5 4;
     stroke-width: 1;
   }
 
   text {
-    fill: #9a7d0a;
+    fill: $qc-colored;
     font-size: 11px;
     font-weight: 600;
   }
@@ -98,12 +127,12 @@
   // Negative groups mean "all of these", a different rule from the exclusive "one of these".
   &--all {
     rect {
-      fill: rgba(52, 152, 219, 0.09);
-      stroke: #2e86c1;
+      fill: rgba(104, 204, 239, 0.1);
+      stroke: rgba(104, 204, 239, 0.75);
     }
 
     text {
-      fill: #21618c;
+      fill: $qc-breadcrumb;
     }
   }
 }
@@ -113,20 +142,20 @@
   cursor: pointer;
 
   rect {
-    fill: #f3e5a9;
-    stroke: #b7950b;
+    fill: rgba(255, 209, 0, 0.32);
+    stroke: $qc-colored;
     stroke-width: 1;
   }
 
   text {
     font-size: 10px;
     font-weight: 600;
-    fill: #7d6608;
+    fill: $qc-colored;
     text-anchor: middle;
   }
 
   &:hover rect {
-    fill: #e8d47a;
+    fill: rgba(255, 209, 0, 0.55);
   }
 }
 
@@ -134,32 +163,37 @@
   cursor: pointer;
 
   rect {
-    fill: #f7f9fa;
-    stroke: #adb5bd;
+    fill: $qc-node-bg;
+    stroke: $qc-node-border;
     stroke-width: 1.5;
   }
 
   &:hover rect {
-    stroke: #495057;
+    stroke: $qc-text;
   }
 
   &__title {
     font-size: 13px;
-    fill: #212529;
+    fill: $qc-colored;
   }
 
   &__id {
     font-size: 11px;
-    fill: #6c757d;
+    fill: $qc-greyed;
   }
 
   &--current {
     cursor: default;
 
     rect {
-      fill: #e8f4fd;
-      stroke: #1f78b4;
+      fill: #33417d;
+      stroke: $qc-text;
       stroke-width: 2.5;
+    }
+
+    .qc-node__title {
+      fill: $qc-text;
+      font-weight: bold;
     }
   }
 
@@ -167,13 +201,13 @@
     cursor: not-allowed;
 
     rect {
-      fill: #fdecea;
-      stroke: #c0392b;
+      fill: rgba(255, 92, 92, 0.22);
+      stroke: $qc-red;
       stroke-dasharray: 5 4;
     }
 
     .qc-node__title {
-      fill: #c0392b;
+      fill: $qc-red;
     }
   }
 }

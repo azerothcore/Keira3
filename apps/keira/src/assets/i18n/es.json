@@ -399,7 +399,6 @@
     },
     "CHAIN": {
       "TITLE": "Cadena de Misiones",
-      "RELOAD": "Recargar",
       "STANDALONE": "Esta misión no está vinculada a ninguna otra misión.",
       "TRUNCATED": "Esta cadena es demasiado grande para mostrarse por completo; solo se muestra una parte.",
       "LEGEND_CHAIN": "Debe completarse primero",

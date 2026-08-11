@@ -399,7 +399,6 @@
     },
     "CHAIN": {
       "TITLE": "任务链",
-      "RELOAD": "重新加载",
       "STANDALONE": "此任务未与其他任务关联。",
       "TRUNCATED": "此任务链过大，无法完整显示，仅显示部分内容。",
       "LEGEND_CHAIN": "必须先完成",
