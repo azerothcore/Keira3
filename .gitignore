@@ -34,7 +34,12 @@ node_modules/
 .claude/worktrees/**
 .claude/settings.local.json
 .claude/plans/**
+.claude/__pycache__
 CLAUDE.local.md
+
+# Agents (shared)
+.agents/plans/**
+
 # Override of other skills
 .agents/skills/angular-developer/references/cli.md
 .agents/skills/angular-developer/references/component-harnesses.md
@@ -71,5 +76,3 @@ Thumbs.db
 .nx/cache
 .angular
 **/node_modules/*
-
-.claude/worktrees
