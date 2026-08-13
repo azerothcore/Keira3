@@ -10,9 +10,11 @@ export class CreatureText extends TableRow {
   GroupID: number = 0;
   ID: number = 0;
   Text: string = '';
-  Type: number = 0;
+  // 12 = Say: 0 is not a valid chat type, see TEXT_TYPE
+  Type: number = 12;
   Language: number = 0;
-  Probability: number = 0;
+  // the core uses this as a weighted-random weight, so 0 would make the text unreachable
+  Probability: number = 100;
   Emote: number = 0;
   Duration: number = 0;
   Sound: number = 0;

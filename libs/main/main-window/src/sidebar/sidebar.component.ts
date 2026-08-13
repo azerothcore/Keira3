@@ -1,8 +1,10 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { TitleCasePipe } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { filter } from 'rxjs';
 import { ConditionsHandlerService } from '@keira/features/conditions';
 import { CreatureHandlerService } from '@keira/features/creature';
 import { GameobjectHandlerService } from '@keira/features/gameobject';
@@ -30,26 +32,11 @@ import { SaiHandlerService } from '@keira/shared/sai-editor';
 import { SwitchLanguageComponent } from '@keira/shared/switch-language';
 import { TranslateModule } from '@ngx-translate/core';
 import { LogoutBtnComponent } from './logout-btn/logout-btn.component';
+import { MenuStats, ROUTE_MENUS } from './sidebar.model';
 import { SidebarService } from './sidebar.service';
 import { UnsavedIconComponent } from './unsaved-icon/unsaved-icon.component';
 
 const animationTime = 200;
-
-type ToggleType = 'up' | 'down';
-interface MenuStats {
-  creature: ToggleType;
-  quest: ToggleType;
-  gameobject: ToggleType;
-  item: ToggleType;
-  otherLoot: ToggleType;
-  smartAi: ToggleType;
-  conditions: ToggleType;
-  texts: ToggleType;
-  gossip: ToggleType;
-  spell: ToggleType;
-  gameTele: ToggleType;
-  trainer: ToggleType;
-}
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -113,6 +100,31 @@ export class SidebarComponent {
   protected readonly gameTeleHandlerService = inject(GameTeleHandlerService);
   protected readonly trainerHandlerService = inject(TrainerHandlerService);
   private readonly locationService = inject(LocationService);
+  private readonly router = inject(Router);
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
+
+  constructor() {
+    this.expandMenuOf(this.router.url);
+
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntilDestroyed(),
+      )
+      .subscribe(({ urlAfterRedirects }) => {
+        this.expandMenuOf(urlAfterRedirects);
+        this.changeDetectorRef.markForCheck();
+      });
+  }
+
+  private expandMenuOf(url: string): void {
+    const [firstSegment] = url.split('?')[0].split('/').filter(Boolean);
+    const menu = ROUTE_MENUS[firstSegment];
+
+    if (menu) {
+      this.menuStates[menu] = 'down';
+    }
+  }
 
   getSideBarState(): boolean {
     return this.sidebarService.getSidebarState();

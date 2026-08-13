@@ -74,9 +74,7 @@
                 <i
                   class="fas fa-info-circle ms-1"
                   placement="auto"
-                  [tooltip]="
-                    'Event linking. Example: if id = 0 and link = 1; id 1 will only be able to occur if id = 0 was triggered (id 1 has to use event_type SMART_EVENT_LINK)'
-                  "
+                  [tooltip]="'Event linking. Example: if id = 0 and link = 1; id 1 will only be able to occur if id = 0 was triggered (id 1 has to use event_type SMART_EVENT_LINK)'"
                 ></i>
               </div>
               <div class="form-group col">
@@ -536,6 +534,15 @@
             (addNewRow)="editorService.addNewRow()"
             (duplicateRow)="editorService.addNewRow(true)"
           />
+          <button
+            id="add-new-condition-btn"
+            class="btn btn-warning btn-sm ms-2"
+            (click)="createConditionForSelectedRow()"
+            [disabled]="editorService.selectedRowId !== 0 && !editorService.selectedRowId"
+            [tooltip]="'SMARTAI.EDITOR.CONDITIONS_ADD_TOOLTIP' | translate"
+          >
+            <i class="fa fa-filter fa-sm"></i> {{ 'SMARTAI.EDITOR.ADD_NEW_CONDITION' | translate }}
+          </button>
           <button id="generate-comments-btn" class="btn btn-primary btn-sm float-end" (click)="editorService.generateComments(true)">
             Generate comments (all)
           </button>
@@ -577,6 +584,19 @@
             <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="phase" prop="event_phase_mask" />
             <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="chance" prop="event_chance" />
             <ngx-datatable-column [minWidth]="50" [maxWidth]="70" name="flags" prop="event_flags" />
+            <ngx-datatable-column [minWidth]="45" [maxWidth]="55" name="cond" [sortable]="false">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                @if (conditionCountFor(row) > 0) {
+                  <span
+                    class="sai-cond-badge"
+                    [tooltip]="'SMARTAI.EDITOR.CONDITIONS_TOOLTIP' | translate: { count: conditionCountFor(row) }"
+                    (click)="openConditions(row, $event)"
+                  >
+                    {{ conditionCountFor(row) }} <i class="fas fa-filter"></i>
+                  </span>
+                }
+              </ng-template>
+            </ngx-datatable-column>
             <ngx-datatable-column name="comment" prop="comment" />
           </ngx-datatable>
         </div>

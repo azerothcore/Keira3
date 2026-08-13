@@ -59,6 +59,34 @@ describe('CreatureText integration tests', () => {
     return { handlerService, queryService, querySpy, fixture, component, page };
   }
 
+  /** Loads an existing creature whose texts are given as [GroupID, ID] pairs. */
+  function setupWithVariants(pairs: [number, number][]) {
+    const rows = pairs.map(([GroupID, ID]) => {
+      const row = new CreatureText();
+      row.CreatureID = id;
+      row.GroupID = GroupID;
+      row.ID = ID;
+      row.Text = `g${GroupID}v${ID}`;
+      return row;
+    });
+
+    const handlerService: CreatureHandlerService = TestBed.inject(CreatureHandlerService);
+    handlerService['_selected'] = `${id}`;
+    handlerService.isNew = false;
+
+    const queryService = TestBed.inject(MysqlQueryService);
+    vi.spyOn(queryService, 'query').mockReturnValue(of([]));
+    vi.spyOn(queryService, 'queryValue').mockReturnValue(of());
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(rows));
+
+    const fixture = TestBed.createComponent(CreatureTextComponent);
+    const page = new CreatureTextPage(fixture);
+    fixture.autoDetectChanges(true);
+    fixture.detectChanges();
+
+    return { page };
+  }
+
   describe('Creating new', () => {
     it('should correctly initialise', () => {
       const { page } = setup(true);
@@ -95,9 +123,9 @@ describe('CreatureText integration tests', () => {
       const expectedQuery =
         'DELETE FROM `creature_text` WHERE (`CreatureID` = 1234) AND (`GroupID` IN (0, 1, 2));\n' +
         'INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `TextRange`, `comment`) VALUES\n' +
-        "(1234, 0, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, ''),\n" +
-        "(1234, 1, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, ''),\n" +
-        "(1234, 2, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, '');";
+        "(1234, 0, 0, '', 12, 0, 100, 0, 0, 0, 0, 0, ''),\n" +
+        "(1234, 1, 0, '', 12, 0, 100, 0, 0, 0, 0, 0, ''),\n" +
+        "(1234, 2, 0, '', 12, 0, 100, 0, 0, 0, 0, 0, '');";
       querySpy.mockClear();
 
       page.addNewRow();
@@ -119,48 +147,67 @@ describe('CreatureText integration tests', () => {
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_text` WHERE (`CreatureID` = 1234) AND (`GroupID` IN (0));\n' +
           'INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `TextRange`, `comment`) VALUES\n' +
-          "(1234, 0, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, '');",
+          "(1234, 0, 0, '', 12, 0, 100, 0, 0, 0, 0, 0, '');",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_text` WHERE (`CreatureID` = 1234);\n' +
           'INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `TextRange`, `comment`) VALUES\n' +
-          "(1234, 0, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, '');",
+          "(1234, 0, 0, '', 12, 0, 100, 0, 0, 0, 0, 0, '');",
       );
 
       page.setInputValueById('Probability', '1');
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_text` WHERE (`CreatureID` = 1234) AND (`GroupID` IN (0));\n' +
           'INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `TextRange`, `comment`) VALUES\n' +
-          "(1234, 0, 0, '', 0, 0, 1, 0, 0, 0, 0, 0, '');",
+          "(1234, 0, 0, '', 12, 0, 1, 0, 0, 0, 0, 0, '');",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_text` WHERE (`CreatureID` = 1234);\n' +
           'INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `TextRange`, `comment`) VALUES\n' +
-          "(1234, 0, 0, '', 0, 0, 1, 0, 0, 0, 0, 0, '');",
+          "(1234, 0, 0, '', 12, 0, 1, 0, 0, 0, 0, 0, '');",
       );
 
       page.setInputValueById('Text', 'newText');
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_text` WHERE (`CreatureID` = 1234) AND (`GroupID` IN (0));\n' +
           'INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `TextRange`, `comment`) VALUES\n' +
-          "(1234, 0, 0, 'newText', 0, 0, 1, 0, 0, 0, 0, 0, '');",
+          "(1234, 0, 0, 'newText', 12, 0, 1, 0, 0, 0, 0, 0, '');",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_text` WHERE (`CreatureID` = 1234);\n' +
           'INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `TextRange`, `comment`) VALUES\n' +
-          "(1234, 0, 0, 'newText', 0, 0, 1, 0, 0, 0, 0, 0, '');",
+          "(1234, 0, 0, 'newText', 12, 0, 1, 0, 0, 0, 0, 0, '');",
       );
 
       page.setInputValueById('ID', '123');
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_text` WHERE (`CreatureID` = 1234) AND (`GroupID` IN (0));\n' +
           'INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `TextRange`, `comment`) VALUES\n' +
-          "(1234, 0, 123, 'newText', 0, 0, 1, 0, 0, 0, 0, 0, '');",
+          "(1234, 0, 123, 'newText', 12, 0, 1, 0, 0, 0, 0, 0, '');",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_text` WHERE (`CreatureID` = 1234);\n' +
           'INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `TextRange`, `comment`) VALUES\n' +
-          "(1234, 0, 123, 'newText', 0, 0, 1, 0, 0, 0, 0, 0, '');",
+          "(1234, 0, 123, 'newText', 12, 0, 1, 0, 0, 0, 0, 0, '');",
+      );
+    });
+
+    it('a new row should default to Type 12 (Say) and Probability 100', () => {
+      const { page } = setup(true);
+      page.addNewRow();
+
+      expect(page.getDebugElementByCss<HTMLSelectElement>('#Type select').nativeElement.value).toContain('12');
+      expect(page.getInputById('Probability').value).toBe('100');
+    });
+
+    it('adding new rows should move the GroupID on and leave the ID alone', () => {
+      const { page } = setup(true);
+      page.addNewRow();
+      page.addNewRow();
+
+      // GroupID 0 then 1, both keeping ID 0: each new row starts its own text group.
+      page.expectFullQueryToContain(
+        "(1234, 0, 0, '', 12, 0, 100, 0, 0, 0, 0, 0, ''),\n" + "(1234, 1, 0, '', 12, 0, 100, 0, 0, 0, 0, 0, '');",
       );
     });
 
@@ -172,18 +219,133 @@ describe('CreatureText integration tests', () => {
       page.setInputValueById('ID', '123');
       page.duplicateSelectedRow();
 
-      page.expectDiffQueryToContain(
-        'DELETE FROM `creature_text` WHERE (`CreatureID` = 1234) AND (`GroupID` IN (0, 1));\n' +
-          'INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `TextRange`, `comment`) VALUES\n' +
-          "(1234, 0, 123, 'newText', 0, 0, 1, 0, 0, 0, 0, 0, ''),\n" +
-          "(1234, 1, 123, 'newText', 0, 0, 1, 0, 0, 0, 0, 0, '');",
-      );
+      // The duplicate is another variant of the same line: same GroupID, next ID of that group.
       page.expectFullQueryToContain(
         'DELETE FROM `creature_text` WHERE (`CreatureID` = 1234);\n' +
           'INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `TextRange`, `comment`) VALUES\n' +
-          "(1234, 0, 123, 'newText', 0, 0, 1, 0, 0, 0, 0, 0, ''),\n" +
-          "(1234, 1, 123, 'newText', 0, 0, 1, 0, 0, 0, 0, 0, '');",
+          "(1234, 0, 123, 'newText', 12, 0, 1, 0, 0, 0, 0, 0, ''),\n" +
+          "(1234, 0, 124, 'newText', 12, 0, 1, 0, 0, 0, 0, 0, '');",
       );
+    });
+
+    it('duplicating repeatedly should keep filling the same group', () => {
+      const { page } = setup(true);
+      page.addNewRow();
+      page.duplicateSelectedRow();
+      page.duplicateSelectedRow();
+
+      page.expectFullQueryToContain(
+        "(1234, 0, 0, '', 12, 0, 100, 0, 0, 0, 0, 0, ''),\n" +
+          "(1234, 0, 1, '', 12, 0, 100, 0, 0, 0, 0, 0, ''),\n" +
+          "(1234, 0, 2, '', 12, 0, 100, 0, 0, 0, 0, 0, '');",
+      );
+    });
+
+    it('duplicating should only advance the ID within its own group', () => {
+      const { page } = setup(true);
+      page.addNewRow(); // GroupID 0
+      page.addNewRow(); // GroupID 1, now selected
+      page.duplicateSelectedRow();
+
+      // Group 1 gets ID 1; group 0 is untouched and keeps its single ID 0.
+      page.expectFullQueryToContain(
+        "(1234, 0, 0, '', 12, 0, 100, 0, 0, 0, 0, 0, ''),\n" +
+          "(1234, 1, 0, '', 12, 0, 100, 0, 0, 0, 0, 0, ''),\n" +
+          "(1234, 1, 1, '', 12, 0, 100, 0, 0, 0, 0, 0, '');",
+      );
+    });
+  });
+
+  describe('Editing a group that holds several ID variants', () => {
+    const INSERT =
+      'INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `TextRange`, `comment`) VALUES\n';
+
+    it('should rewrite the whole group when one variant is edited, keeping its siblings', () => {
+      const { page } = setupWithVariants([
+        [0, 0],
+        [0, 1],
+        [0, 2],
+      ]);
+
+      page.clickRowOfDatatable(2);
+      page.setInputValueById('Text', 'EDITED');
+
+      // The group is listed once and comes back complete: the edit sticks and no variant is dropped.
+      page.expectDiffQueryToContain(
+        'DELETE FROM `creature_text` WHERE (`CreatureID` = 1234) AND (`GroupID` IN (0));\n' +
+          INSERT +
+          "(1234, 0, 0, 'g0v0', 12, 0, 100, 0, 0, 0, 0, 0, ''),\n" +
+          "(1234, 0, 1, 'g0v1', 12, 0, 100, 0, 0, 0, 0, 0, ''),\n" +
+          "(1234, 0, 2, 'EDITED', 12, 0, 100, 0, 0, 0, 0, 0, '');",
+      );
+    });
+
+    it('should not touch the groups that did not change', () => {
+      const { page } = setupWithVariants([
+        [0, 0],
+        [0, 1],
+        [1, 0],
+        [1, 1],
+      ]);
+
+      page.clickRowOfDatatable(3);
+      page.setInputValueById('Text', 'EDITED');
+
+      page.expectDiffQueryToContain(
+        'DELETE FROM `creature_text` WHERE (`CreatureID` = 1234) AND (`GroupID` IN (1));\n' +
+          INSERT +
+          "(1234, 1, 0, 'g1v0', 12, 0, 100, 0, 0, 0, 0, 0, ''),\n" +
+          "(1234, 1, 1, 'EDITED', 12, 0, 100, 0, 0, 0, 0, 0, '');",
+      );
+    });
+
+    it('should keep the surviving variants when one of them is deleted', () => {
+      const { page } = setupWithVariants([
+        [0, 0],
+        [0, 1],
+        [0, 2],
+      ]);
+
+      page.deleteRow(1);
+
+      page.expectDiffQueryToContain(
+        'DELETE FROM `creature_text` WHERE (`CreatureID` = 1234) AND (`GroupID` IN (0));\n' +
+          INSERT +
+          "(1234, 0, 0, 'g0v0', 12, 0, 100, 0, 0, 0, 0, 0, ''),\n" +
+          "(1234, 0, 2, 'g0v2', 12, 0, 100, 0, 0, 0, 0, 0, '');",
+      );
+    });
+
+    it('should rewrite the group when Duplicate adds a variant to it', () => {
+      const { page } = setupWithVariants([
+        [0, 0],
+        [0, 1],
+      ]);
+
+      page.clickRowOfDatatable(1);
+      page.duplicateSelectedRow();
+
+      page.expectDiffQueryToContain(
+        'DELETE FROM `creature_text` WHERE (`CreatureID` = 1234) AND (`GroupID` IN (0));\n' +
+          INSERT +
+          "(1234, 0, 0, 'g0v0', 12, 0, 100, 0, 0, 0, 0, 0, ''),\n" +
+          "(1234, 0, 1, 'g0v1', 12, 0, 100, 0, 0, 0, 0, 0, ''),\n" +
+          "(1234, 0, 2, 'g0v1', 12, 0, 100, 0, 0, 0, 0, 0, '');",
+      );
+    });
+
+    it('should emit only a DELETE when every variant of a group is removed', () => {
+      const { page } = setupWithVariants([
+        [0, 0],
+        [0, 1],
+        [1, 0],
+      ]);
+
+      page.deleteRow(0);
+      page.deleteRow(0);
+
+      page.expectDiffQueryToContain('DELETE FROM `creature_text` WHERE (`CreatureID` = 1234) AND (`GroupID` IN (0));');
+      expect(page.getEditorTableRowsCount()).toBe(1);
     });
   });
 
@@ -195,9 +357,9 @@ describe('CreatureText integration tests', () => {
       page.expectFullQueryToContain(
         'DELETE FROM `creature_text` WHERE (`CreatureID` = 1234);\n' +
           'INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `TextRange`, `comment`) VALUES\n' +
-          "(1234, 0, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, ''),\n" +
-          "(1234, 1, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, ''),\n" +
-          "(1234, 2, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, '');",
+          "(1234, 0, 0, '', 12, 0, 100, 0, 0, 0, 0, 0, ''),\n" +
+          "(1234, 1, 0, '', 12, 0, 100, 0, 0, 0, 0, 0, ''),\n" +
+          "(1234, 2, 0, '', 12, 0, 100, 0, 0, 0, 0, 0, '');",
       );
       expect(page.getEditorTableRowsCount()).toBe(3);
     });
@@ -210,8 +372,8 @@ describe('CreatureText integration tests', () => {
       page.expectFullQueryToContain(
         'DELETE FROM `creature_text` WHERE (`CreatureID` = 1234);\n' +
           'INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `TextRange`, `comment`) VALUES\n' +
-          "(1234, 0, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, ''),\n" +
-          "(1234, 2, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, '');",
+          "(1234, 0, 0, '', 12, 0, 100, 0, 0, 0, 0, 0, ''),\n" +
+          "(1234, 2, 0, '', 12, 0, 100, 0, 0, 0, 0, 0, '');",
       );
 
       page.deleteRow(1);
@@ -220,7 +382,7 @@ describe('CreatureText integration tests', () => {
       page.expectFullQueryToContain(
         'DELETE FROM `creature_text` WHERE (`CreatureID` = 1234);\n' +
           'INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `TextRange`, `comment`) VALUES\n' +
-          "(1234, 0, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, '');",
+          "(1234, 0, 0, '', 12, 0, 100, 0, 0, 0, 0, 0, '');",
       );
 
       page.deleteRow(0);
@@ -240,15 +402,15 @@ describe('CreatureText integration tests', () => {
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_text` WHERE (`CreatureID` = 1234) AND (`GroupID` IN (1, 2));\n' +
           'INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `TextRange`, `comment`) VALUES\n' +
-          "(1234, 1, 0, 'newText', 0, 0, 0, 0, 0, 0, 0, 0, ''),\n" +
-          "(1234, 2, 2, '', 0, 0, 0, 0, 0, 0, 0, 0, '');",
+          "(1234, 1, 0, 'newText', 12, 0, 100, 0, 0, 0, 0, 0, ''),\n" +
+          "(1234, 2, 2, '', 12, 0, 100, 0, 0, 0, 0, 0, '');",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_text` WHERE (`CreatureID` = 1234);\n' +
           'INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `TextRange`, `comment`) VALUES\n' +
-          "(1234, 0, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, ''),\n" +
-          "(1234, 1, 0, 'newText', 0, 0, 0, 0, 0, 0, 0, 0, ''),\n" +
-          "(1234, 2, 2, '', 0, 0, 0, 0, 0, 0, 0, 0, '');",
+          "(1234, 0, 0, '', 12, 0, 100, 0, 0, 0, 0, 0, ''),\n" +
+          "(1234, 1, 0, 'newText', 12, 0, 100, 0, 0, 0, 0, 0, ''),\n" +
+          "(1234, 2, 2, '', 12, 0, 100, 0, 0, 0, 0, 0, '');",
       );
     });
 
@@ -267,15 +429,15 @@ describe('CreatureText integration tests', () => {
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_text` WHERE (`CreatureID` = 1234) AND (`GroupID` IN (1, 2, 3));\n' +
           'INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `TextRange`, `comment`) VALUES\n' +
-          "(1234, 1, 0, '', 0, 0, 10, 0, 0, 0, 0, 0, ''),\n" +
-          "(1234, 3, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, '');\n",
+          "(1234, 1, 0, '', 12, 0, 10, 0, 0, 0, 0, 0, ''),\n" +
+          "(1234, 3, 0, '', 12, 0, 100, 0, 0, 0, 0, 0, '');\n",
       );
       page.expectFullQueryToContain(
         'DELETE FROM `creature_text` WHERE (`CreatureID` = 1234);\n' +
           'INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `TextRange`, `comment`) VALUES\n' +
-          "(1234, 0, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, ''),\n" +
-          "(1234, 1, 0, '', 0, 0, 10, 0, 0, 0, 0, 0, ''),\n" +
-          "(1234, 3, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, '');",
+          "(1234, 0, 0, '', 12, 0, 100, 0, 0, 0, 0, 0, ''),\n" +
+          "(1234, 1, 0, '', 12, 0, 10, 0, 0, 0, 0, 0, ''),\n" +
+          "(1234, 3, 0, '', 12, 0, 100, 0, 0, 0, 0, 0, '');",
       );
     });
   });

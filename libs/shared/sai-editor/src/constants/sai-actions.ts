@@ -181,6 +181,7 @@ export enum SAI_ACTIONS {
   DISABLE_REWARD = 238,
   SET_ANIM_TIER = 239,
   SET_GOSSIP_MENU = 240,
+  SUMMON_GAMEOBJECT_GROUP = 241,
   INC_DATA = 242,
 }
 export const SAI_ACTIONS_KEYS = getEnumKeys(SAI_ACTIONS);
@@ -1338,6 +1339,13 @@ SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_ANIM_TIER] = '0 = Ground, 1 = Swim, 2
 // SMART_ACTION_SET_GOSSIP_MENU
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_GOSSIP_MENU] = 'Modifies the gossip menu ID of the target.';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_GOSSIP_MENU] = 'GossipMenuId';
+
+// SMART_ACTION_SUMMON_GAMEOBJECT_GROUP
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SUMMON_GAMEOBJECT_GROUP] =
+  'Summons the gameobjects of the given group, as defined in `gameobject_summon_groups` for this summoner ' +
+  '(matched on summonerId and summonerType). Requires a base object, so it does nothing when the script has none.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SUMMON_GAMEOBJECT_GROUP] = 'Group';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SUMMON_GAMEOBJECT_GROUP] = 'gameobject_summon_groups.groupId';
 
 // SMART_ACTION_INC_DATA
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.INC_DATA] =

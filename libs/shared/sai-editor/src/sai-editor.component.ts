@@ -1,5 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import {
+  CONDITION_SOURCE_TYPES,
   EVENT_PHASE_MASK,
   SAI_TYPES,
   SMART_ACTION_CAST_FLAGS,
@@ -73,6 +75,8 @@ import { SaiTopBarComponent } from './sai-top-bar/sai-top-bar.component';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
 import { EditorButtonsComponent, QueryOutputComponent } from '@keira/shared/base-editor-components';
+import { SMART_EVENT_CONDITION_GROUP_OFFSET } from '@keira/shared/constants';
+import { MysqlQueryService } from '@keira/shared/db-layer';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
@@ -97,6 +101,8 @@ import { AsyncPipe } from '@angular/common';
 export class SaiEditorComponent extends MultiRowEditorComponent<SmartScripts> implements OnInit {
   public override readonly editorService = inject(SaiEditorService);
   protected override readonly handlerService = inject(SaiHandlerService);
+  private readonly mysqlQueryService = inject(MysqlQueryService);
+  private readonly router = inject(Router);
 
   readonly EVENT_PHASE_MASK = EVENT_PHASE_MASK;
   readonly SMART_EVENT_FLAGS = SMART_EVENT_FLAGS;
@@ -184,5 +190,65 @@ export class SaiEditorComponent extends MultiRowEditorComponent<SmartScripts> im
 
   getHandler(): SaiHandlerService {
     return this.handlerService;
+  }
+
+  override ngOnInit(): void {
+    super.ngOnInit();
+    void this.loadConditionCounts();
+  }
+
+  /** One query per script rather than per row: the whole script's condition counts, keyed by `smart_scripts.id`. */
+  private async loadConditionCounts(): Promise<void> {
+    const { entryorguid, source_type } = this.handlerService.parsedSelected;
+    const counts: Record<number, number> = {};
+
+    try {
+      const rows = await this.mysqlQueryService.getSmartEventConditionCounts(entryorguid, source_type);
+
+      for (const row of rows) {
+        // conditions.SourceGroup is the event id shifted by one; shift it back to match smart_scripts.id.
+        counts[Number(row.SourceGroup) - SMART_EVENT_CONDITION_GROUP_OFFSET] = Number(row.conditionCount);
+      }
+    } catch (error) {
+      // A supplementary marker must never take the editor down with it; just show no markers.
+      console.warn('Could not load SmartAI condition counts', error);
+    }
+
+    this.conditionCounts.set(counts);
+  }
+
+  protected readonly conditionCounts = signal<Record<number, number>>({});
+
+  conditionCountFor(row: SmartScripts): number {
+    return this.conditionCounts()[Number(row.id)] ?? 0;
+  }
+
+  /** The `conditions` key that addresses the given SmartAI event. */
+  private conditionQueryParams(eventId: string | number): Record<string, number> {
+    const { entryorguid, source_type } = this.handlerService.parsedSelected;
+
+    return {
+      sourceType: CONDITION_SOURCE_TYPES.SOURCE_TYPE_SMART_EVENT,
+      sourceEntry: entryorguid,
+      sourceGroup: Number(eventId) + SMART_EVENT_CONDITION_GROUP_OFFSET,
+      // The core keys smart event conditions on (SourceEntry, SourceId), so SourceId must carry the
+      // script's source_type - otherwise a gameobject script would address the creature one.
+      sourceId: source_type,
+    };
+  }
+
+  /** Opens the Conditions search prefilled with the conditions attached to this SmartAI event. */
+  openConditions(row: SmartScripts, event: Event): void {
+    // Otherwise the datatable would also treat this as a row selection.
+    event.stopPropagation();
+
+    void this.router.navigate(['conditions/select'], { queryParams: this.conditionQueryParams(row.id) });
+  }
+
+  /** Opens the Conditions editor in "new" mode for the selected event, with its key already filled in. */
+  createConditionForSelectedRow(): void {
+    void this.router.navigate(['conditions/select'], {
+      queryParams: { ...this.conditionQueryParams(this.editorService.selectedRowId as string | number), create: true },
+    });
   }
 }

@@ -11,6 +11,7 @@ export class QuestTemplateAddon extends TableRow {
   PrevQuestID: number = 0;
   NextQuestID: number = 0;
   ExclusiveGroup: number = 0;
+  BreadcrumbForQuestId: number = 0;
   RewardMailTemplateID: number = 0;
   RewardMailDelay: number = 0;
   RequiredSkillID: number = 0;

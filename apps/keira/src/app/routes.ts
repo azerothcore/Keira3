@@ -67,6 +67,7 @@ import {
   CreatureQueststarterComponent,
   GameobjectQuestenderComponent,
   GameobjectQueststarterComponent,
+  QuestChainComponent,
   QuestHandlerService,
   QuestOfferRewardComponent,
   QuestRequestItemsComponent,
@@ -261,6 +262,11 @@ export const KEIRA_ROUTES: Routes = [
       {
         path: 'gameobject-questender',
         component: GameobjectQuestenderComponent,
+        canActivate: [QuestHandlerService],
+      },
+      {
+        path: 'quest-chain',
+        component: QuestChainComponent,
         canActivate: [QuestHandlerService],
       },
     ],

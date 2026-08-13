@@ -107,7 +107,8 @@
       "CREATURE_QUESTSTARTER": "接取任务NPC配置",
       "CREATURE_QUESTENDER": "完成任务NPC配置",
       "GAMEOBJECT_QUESTSTARTER": "接取任务的游戏对象配置",
-      "GAMEOBJECT_QUESTENDER": "完成任务游戏对象配置"
+      "GAMEOBJECT_QUESTENDER": "完成任务游戏对象配置",
+      "QUEST_CHAIN": "任务链"
     },
     "GAME_OBJECT": {
       "TITLE": "游戏对象",
@@ -378,6 +379,7 @@
       "ALLOWABLE_CLASSES": "0 = 允许所有分类",
       "SOURCE_SPELL_ID": "开始任务时施放在玩家身上的技能ID。",
       "EXCLUSIVE_GROUP": "如果 > 0: 一组任务，其中只有一个可以选择与完成; 如果 < 0  所有任务都必须完成并获得奖励才能开始下一个任务",
+      "BREADCRUMB_FOR_QUEST_ID": "此任务是可选的引导任务，指引玩家前往指定的任务。引导任务可以串联，但不得形成循环，也不得同时设置 NextQuestID 或 ExclusiveGroup。",
       "PROVIDED_ITEM_COUNT": "接受任务时给予玩家的道具数量(直接发放到玩家的包裹中)。",
       "REQ_SKILL_ID": "接受任务所需的技能。0表示不需要拥有某个技能就可以接任务。",
       "REQ_SKILL_POINTS": "接受任务所需的技能熟练度。",
@@ -394,6 +396,21 @@
       "COMPLETION_TEXT": "当完成一个需要任务物品的任务时，任务闲谈文本会显示最后的对话窗口中。",
       "EMOTE_ON_COMPLETE": "当所有任务目标完成时，由任务结束NPC进行。",
       "EMOTE_ON_INCOMPLETE": "如果任何任务目标未完成，则由任务结束者NPC进行。"
+    },
+    "CHAIN": {
+      "TITLE": "任务链",
+      "STANDALONE": "此任务未与其他任务关联。",
+      "TRUNCATED": "此任务链过大，无法完整显示，仅显示部分内容。",
+      "LEGEND_CHAIN": "必须先完成",
+      "LEGEND_ENABLED_BY": "必须可接取（由其开启）",
+      "LEGEND_BREADCRUMB": "指引任务",
+      "LEGEND_CONDITION": "由条件要求",
+      "LEGEND_CONDITION_ANY": "条件替代项（任选其一）",
+      "LEGEND_MISSING": "quest_template 中缺失",
+      "LEGEND_CONDITIONS": "存在可接取条件（点击查看）",
+      "BAND_ANY": "其中之一（{{group}}）",
+      "BAND_ALL": "全部这些（{{group}}）",
+      "CONDITIONS_TOOLTIP": "{{count}} 条可接取条件 — 点击在条件编辑器中打开"
     }
   },
   "GAMEOBJECT": {
@@ -601,7 +618,9 @@
       "SOURCE_ENTRY": "源输入:",
       "CREATE_NEW": "新建",
       "PLACEHOLDER_SOURCE_GROUP": "源组",
-      "PLACEHOLDER_ENTRY": "源条目"
+      "PLACEHOLDER_ENTRY": "源条目",
+      "SOURCE_ID": "源 Id：",
+      "PLACEHOLDER_SOURCE_ID": "源Id"
     },
     "EDITOR": {
       "CONDITIONS_SOURCE": "条件来源",
@@ -772,7 +791,10 @@
       "CHANCE": "事件发生的概率，设置数值在0-100之间（%）。例如:如果您希望事件大约发生在一半的时间，则将该值设置为50。",
       "TIMED_ACTIONLISTS": "所有source_type = 9且entryorguid在CreatureID * 100和CreatureID * 100 + 100之间的smart_scripts",
       "GENERATE_COMMENT": "生成注释",
-      "GENERATE_COMMENTS_ALL": "生成注释（全部）"
+      "GENERATE_COMMENTS_ALL": "生成注释（全部）",
+      "CONDITIONS_TOOLTIP": "此事件附加了 {{count}} 条条件 — 点击在条件编辑器中打开",
+      "ADD_NEW_CONDITION": "添加条件",
+      "CONDITIONS_ADD_TOOLTIP": "在条件编辑器中为选中的事件创建条件"
     },
     "SEARCH_BY_EXISTING": {
       "SOURCE_TYPE": "源类型：",

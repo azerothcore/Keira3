@@ -26,6 +26,14 @@ interface MockTwoKeysRow extends TableRow {
   attribute2: number;
 }
 
+// Mirrors creature_text: `pk2` groups several rows that are told apart by `pk3`.
+interface MockThreeKeysRow extends TableRow {
+  pk1: number;
+  pk2: number;
+  pk3: number;
+  name: string;
+}
+
 interface MockTwoKeysComplexRow extends TableRow {
   pk11: number;
   pk12: number;
@@ -190,6 +198,116 @@ describe('MysqlQueryService', () => {
        INNER JOIN gameobject_loot_template AS glt ON glt.Entry = gt.Data1
        WHERE gt.Data1 > 0 AND glt.Item = 789 LIMIT 2`,
     );
+  });
+
+  describe('getQuestChainRelations()', () => {
+    it('should match a quest by id, by either sign of PrevQuestID, and by breadcrumb', () => {
+      const { service } = setup();
+      const querySpy = vi.spyOn(service, 'query').mockReturnValue(of([]));
+
+      service.getQuestChainRelations([1, 2]);
+
+      expect(querySpy).toHaveBeenCalledWith(
+        `SELECT ID, PrevQuestID, NextQuestID, ExclusiveGroup, BreadcrumbForQuestId
+       FROM quest_template_addon WHERE ID IN (1,2) OR PrevQuestID IN (1,2,-1,-2) OR NextQuestID IN (1,2) OR BreadcrumbForQuestId IN (1,2)`,
+      );
+    });
+
+    it('should add the exclusive group condition only when groups are given', () => {
+      const { service } = setup();
+      const querySpy = vi.spyOn(service, 'query').mockReturnValue(of([]));
+
+      service.getQuestChainRelations([1], [77]);
+
+      expect(querySpy.mock.calls[0][0]).toContain('OR ExclusiveGroup IN (77)');
+    });
+
+    it('should render an empty id list as NULL so the query stays valid', () => {
+      const { service } = setup();
+      const querySpy = vi.spyOn(service, 'query').mockReturnValue(of([]));
+
+      service.getQuestChainRelations([], [5]);
+
+      expect(querySpy.mock.calls[0][0]).toContain('ID IN (NULL)');
+    });
+
+    it('should drop values that are not numbers', () => {
+      const { service } = setup();
+      const querySpy = vi.spyOn(service, 'query').mockReturnValue(of([]));
+
+      service.getQuestChainRelations([1, 'oops' as unknown as number]);
+
+      expect(querySpy.mock.calls[0][0]).toContain('ID IN (1)');
+    });
+
+    it('should cache by id and group list', async () => {
+      const { service } = setup();
+      vi.spyOn(service, 'query').mockReturnValue(of([]));
+
+      expect(await service.getQuestChainRelations([1])).toEqual([]);
+      expect(await service.getQuestChainRelations([1])).toEqual([]);
+      expect(service.query).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('getQuestConditionPrerequisites()', () => {
+    it('should match quest prerequisites in both directions, ignoring negated and non-quest conditions', async () => {
+      const { service } = setup();
+      const data = [{ SourceEntry: 13139, ElseGroup: 0, ConditionValue1: 13125 }];
+      const querySpy = vi.spyOn(service, 'query').mockReturnValue(of(data));
+
+      expect(await service.getQuestConditionPrerequisites([13139])).toEqual(data);
+      expect(querySpy).toHaveBeenCalledWith(
+        `SELECT SourceEntry, ElseGroup, ConditionValue1 FROM conditions
+       WHERE SourceTypeOrReferenceId = 19
+       AND ConditionTypeOrReference IN (8,9,28)
+       AND NegativeCondition = 0 AND ConditionValue1 > 0
+       AND (SourceEntry IN (13139) OR ConditionValue1 IN (13139))`,
+      );
+    });
+
+    it('should render an empty id list as NULL so the query stays valid', () => {
+      const { service } = setup();
+      const querySpy = vi.spyOn(service, 'query').mockReturnValue(of([]));
+
+      service.getQuestConditionPrerequisites([]);
+
+      expect(querySpy.mock.calls[0][0]).toContain('SourceEntry IN (NULL)');
+    });
+  });
+
+  it('getQuestConditionCounts() should count only quest-availability conditions', async () => {
+    const { service } = setup();
+    const data = [{ SourceEntry: 13117, conditionCount: 2 }];
+    const querySpy = vi.spyOn(service, 'query').mockReturnValue(of(data));
+
+    expect(await service.getQuestConditionCounts([13117, 13119])).toEqual(data);
+    expect(querySpy).toHaveBeenCalledWith(
+      `SELECT SourceEntry, COUNT(*) AS conditionCount FROM conditions
+       WHERE SourceTypeOrReferenceId = 19 AND SourceEntry IN (13117,13119) GROUP BY SourceEntry`,
+    );
+  });
+
+  it('getSmartEventConditionCounts() should scope to the script and its source type', async () => {
+    const { service } = setup();
+    const data = [{ SourceGroup: 3, conditionCount: 1 }];
+    const querySpy = vi.spyOn(service, 'query').mockReturnValue(of(data));
+
+    expect(await service.getSmartEventConditionCounts(-141234, 0)).toEqual(data);
+    expect(querySpy).toHaveBeenCalledWith(
+      `SELECT SourceGroup, COUNT(*) AS conditionCount FROM conditions
+       WHERE SourceTypeOrReferenceId = 22 AND SourceEntry = -141234 AND SourceId = 0
+       GROUP BY SourceGroup`,
+    );
+  });
+
+  it('getQuestTitlesByIds() should correctly work', async () => {
+    const { service } = setup();
+    const data = [{ ID: 1, LogTitle: 'Quest 1' }];
+    const querySpy = vi.spyOn(service, 'query').mockReturnValue(of(data));
+
+    expect(await service.getQuestTitlesByIds([1, 2])).toEqual(data);
+    expect(querySpy).toHaveBeenCalledWith('SELECT ID, LogTitle FROM quest_template WHERE ID IN (1,2)');
   });
 
   it('getQuestRelationEntries() should correctly work', () => {
@@ -362,6 +480,119 @@ describe('MysqlQueryService', () => {
               ' INTO `my_table` (`pk1`, `pk2`, `name`, `attribute1`, `attribute2`) VALUES\n' +
               "(1234, 3, 'Kalhac2', 12, 4),\n" +
               "(1234, 4, 'Yehonal', 99, 0);\n",
+          );
+        });
+      });
+
+      describe('using an extra id field (the secondary key groups several rows)', () => {
+        const primaryKey3 = 'pk3';
+
+        // Two groups of two rows each.
+        const groupedRows: MockThreeKeysRow[] = [
+          { pk1: 1234, pk2: 0, pk3: 0, name: 'g0v0' },
+          { pk1: 1234, pk2: 0, pk3: 1, name: 'g0v1' },
+          { pk1: 1234, pk2: 1, pk3: 0, name: 'g1v0' },
+          { pk1: 1234, pk2: 1, pk3: 1, name: 'g1v1' },
+        ];
+
+        it('should not report a change when nothing changed', () => {
+          const { service } = setup();
+          expect(
+            service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryKey1, primaryKey2, groupedRows, groupedRows, primaryKey3),
+          ).toEqual('');
+        });
+
+        it('should rewrite the whole group when one of its rows is edited', () => {
+          const { service } = setup();
+          const newRows = groupedRows.map((row) => ({ ...row }));
+          newRows[1].name = 'EDITED';
+
+          // Only group 0 is listed, once, and both of its rows come back - not just the edited one.
+          expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryKey1, primaryKey2, groupedRows, newRows, primaryKey3)).toEqual(
+            'DELETE FROM `my_table` WHERE (`pk1` = 1234) AND (`pk2` IN (0));\n' +
+              'INSERT INTO `my_table` (`pk1`, `pk2`, `pk3`, `name`) VALUES\n' +
+              "(1234, 0, 0, 'g0v0'),\n" +
+              "(1234, 0, 1, 'EDITED');\n",
+          );
+        });
+
+        it('should leave the other groups alone', () => {
+          const { service } = setup();
+          const newRows = groupedRows.map((row) => ({ ...row }));
+          newRows[3].name = 'EDITED';
+
+          expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryKey1, primaryKey2, groupedRows, newRows, primaryKey3)).toEqual(
+            'DELETE FROM `my_table` WHERE (`pk1` = 1234) AND (`pk2` IN (1));\n' +
+              'INSERT INTO `my_table` (`pk1`, `pk2`, `pk3`, `name`) VALUES\n' +
+              "(1234, 1, 0, 'g1v0'),\n" +
+              "(1234, 1, 1, 'EDITED');\n",
+          );
+        });
+
+        it('should keep the surviving rows when one row of a group is deleted', () => {
+          const { service } = setup();
+          const newRows = [groupedRows[0], groupedRows[2], groupedRows[3]].map((row) => ({ ...row }));
+
+          expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryKey1, primaryKey2, groupedRows, newRows, primaryKey3)).toEqual(
+            'DELETE FROM `my_table` WHERE (`pk1` = 1234) AND (`pk2` IN (0));\n' +
+              'INSERT INTO `my_table` (`pk1`, `pk2`, `pk3`, `name`) VALUES\n' +
+              "(1234, 0, 0, 'g0v0');\n",
+          );
+        });
+
+        it('should only emit a DELETE when a whole group is removed', () => {
+          const { service } = setup();
+          const newRows = [groupedRows[2], groupedRows[3]].map((row) => ({ ...row }));
+
+          expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryKey1, primaryKey2, groupedRows, newRows, primaryKey3)).toEqual(
+            'DELETE FROM `my_table` WHERE (`pk1` = 1234) AND (`pk2` IN (0));\n',
+          );
+        });
+
+        it('should rewrite the group when a row is added to it', () => {
+          const { service } = setup();
+          const newRows = groupedRows.map((row) => ({ ...row }));
+          newRows.push({ pk1: 1234, pk2: 0, pk3: 2, name: 'g0v2' });
+
+          expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryKey1, primaryKey2, groupedRows, newRows, primaryKey3)).toEqual(
+            'DELETE FROM `my_table` WHERE (`pk1` = 1234) AND (`pk2` IN (0));\n' +
+              'INSERT INTO `my_table` (`pk1`, `pk2`, `pk3`, `name`) VALUES\n' +
+              "(1234, 0, 0, 'g0v0'),\n" +
+              "(1234, 0, 1, 'g0v1'),\n" +
+              "(1234, 0, 2, 'g0v2');\n",
+          );
+        });
+
+        it('should handle an edit, a deletion and an addition across groups at once', () => {
+          const { service } = setup();
+          // group 0: row pk3=1 deleted; group 1: row pk3=0 edited and a new pk3=2 added.
+          const newRows: MockThreeKeysRow[] = [
+            { ...groupedRows[0] },
+            { ...groupedRows[2], name: 'EDITED' },
+            { ...groupedRows[3] },
+            { pk1: 1234, pk2: 1, pk3: 2, name: 'g1v2' },
+          ];
+
+          expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryKey1, primaryKey2, groupedRows, newRows, primaryKey3)).toEqual(
+            'DELETE FROM `my_table` WHERE (`pk1` = 1234) AND (`pk2` IN (0, 1));\n' +
+              'INSERT INTO `my_table` (`pk1`, `pk2`, `pk3`, `name`) VALUES\n' +
+              "(1234, 0, 0, 'g0v0'),\n" +
+              "(1234, 1, 0, 'EDITED'),\n" +
+              "(1234, 1, 1, 'g1v1'),\n" +
+              "(1234, 1, 2, 'g1v2');\n",
+          );
+        });
+
+        it('should tell apart rows that share a secondary key but differ by the extra key', () => {
+          const { service } = setup();
+          // Same pk2, different pk3: without the extra key these would be matched against each other.
+          const currentRows: MockThreeKeysRow[] = [{ pk1: 1234, pk2: 0, pk3: 0, name: 'first' }];
+          const newRows: MockThreeKeysRow[] = [{ pk1: 1234, pk2: 0, pk3: 1, name: 'first' }];
+
+          expect(service.getDiffDeleteInsertTwoKeysQuery(tableName, primaryKey1, primaryKey2, currentRows, newRows, primaryKey3)).toEqual(
+            'DELETE FROM `my_table` WHERE (`pk1` = 1234) AND (`pk2` IN (0));\n' +
+              'INSERT INTO `my_table` (`pk1`, `pk2`, `pk3`, `name`) VALUES\n' +
+              "(1234, 0, 1, 'first');\n",
           );
         });
       });

@@ -16,4 +16,25 @@ export class CreatureTextService extends MultiRowEditorService<CreatureText> {
     super();
     this.init();
   }
+
+  /**
+   * A creature_text GroupID is one "line" the creature can say, and the IDs inside it are the
+   * interchangeable variants of that line. Duplicating therefore adds another variant to the same
+   * group, while adding a brand new row (see `assignNewRowIds`) starts a new group instead.
+   */
+  protected override assignDuplicatedRowIds(newRow: CreatureText): void {
+    newRow.ID = this.getNextIdOfGroup(newRow.GroupID);
+  }
+
+  private getNextIdOfGroup(groupId: number): number {
+    let maxId = -1;
+
+    for (const row of this._newRows) {
+      if (Number(row.GroupID) === Number(groupId)) {
+        maxId = Math.max(maxId, Number(row.ID));
+      }
+    }
+
+    return maxId + 1;
+  }
 }

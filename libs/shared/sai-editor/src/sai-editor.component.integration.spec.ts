@@ -2,6 +2,7 @@ import { vi } from 'vitest';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { SAI_TYPES, SMART_ACTION_CAST_TRIGGERED_FLAGS, SmartScripts } from '@keira/shared/acore-world-model';
@@ -87,6 +88,9 @@ class SaiEditorPage extends MultiRowEditorPageObject<SaiEditorComponent> {
   }
   get generateCommentSingleBtn(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('#generate-comments-btn-single');
+  }
+  get addNewConditionBtn(): HTMLButtonElement {
+    return this.query<HTMLButtonElement>('#add-new-condition-btn');
   }
 }
 
@@ -401,6 +405,37 @@ describe('SaiEditorComponent integration tests', () => {
 
       page.addNewRow();
       expect(page.generateCommentSingleBtn.disabled).toBe(false);
+    });
+
+    it('the add new condition button should be disabled until a row is selected', () => {
+      const { page } = setup(true);
+
+      // A condition is addressed by its event id, so there is nothing to create without a selected row.
+      expect(page.addNewConditionBtn.disabled).toBe(true);
+
+      page.addNewRow();
+      expect(page.addNewConditionBtn.disabled).toBe(false);
+    });
+
+    it('the add new condition button should open the Conditions editor for the selected event', () => {
+      const { page, component } = setup(true);
+      page.addNewRow();
+      const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+
+      page.clickElement(page.addNewConditionBtn);
+
+      const { entryorguid, source_type } = component.editorService['handlerService'].parsedSelected;
+
+      expect(navigateSpy).toHaveBeenCalledWith(['conditions/select'], {
+        queryParams: {
+          sourceType: 22,
+          sourceEntry: entryorguid,
+          sourceGroup: Number(component.editorService.selectedRowId) + 1,
+          // Must match the script's source_type, or the condition would address a different script.
+          sourceId: source_type,
+          create: true,
+        },
+      });
     });
   });
 

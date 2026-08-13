@@ -137,8 +137,28 @@ describe('MultiRowEditorService', () => {
       service.entitySecondIdField,
       service['_originalRows'],
       service.newRows,
+      undefined,
     );
     expect(service.diffQuery).toEqual(queryResult);
+  });
+
+  it('updateDiffQuery() should forward the extra id field when the service declares one', () => {
+    const { service, updateDiffQuerySpy } = setup({ extra: true });
+    updateDiffQuerySpy.mockRestore();
+    const getQuerySpy = vi.spyOn(TestBed.inject(MysqlQueryService), 'getDiffDeleteInsertTwoKeysQuery').mockReturnValue(queryResult);
+    vi.spyOn<any>(service, 'updateEditorStatus').mockImplementation(() => undefined);
+
+    service['updateDiffQuery']();
+
+    // Without it the diff would match rows on the secondary key alone and drop the other rows of the group.
+    expect(getQuerySpy).toHaveBeenCalledWith(
+      service.entityTable,
+      service['_entityIdField' as keyof EditorService<any>] as any,
+      service.entitySecondIdField,
+      service['_originalRows'],
+      service.newRows,
+      MOCK_EXTRA_ID,
+    );
     expect(service['updateEditorStatus']).toHaveBeenCalledTimes(1);
   });
 

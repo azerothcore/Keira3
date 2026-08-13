@@ -107,7 +107,8 @@
       "CREATURE_QUESTSTARTER": "Creature Queststarter",
       "CREATURE_QUESTENDER": "Creature Questender",
       "GAMEOBJECT_QUESTSTARTER": "Gameobject Queststarter",
-      "GAMEOBJECT_QUESTENDER": "Gameobject Questender"
+      "GAMEOBJECT_QUESTENDER": "Gameobject Questender",
+      "QUEST_CHAIN": "Quest Chain"
     },
     "GAME_OBJECT": {
       "TITLE": "GameObject",
@@ -378,6 +379,7 @@
       "ALLOWABLE_CLASSES": "Use 0 to allow all classes",
       "SOURCE_SPELL_ID": "The spell ID cast on player upon starting the quest.",
       "EXCLUSIVE_GROUP": "If > 0: group of quests of which only one may be chosen and completed; if < 0  group of quests of which all must be completed and rewarded to start next quest",
+      "BREADCRUMB_FOR_QUEST_ID": "This quest is an optional breadcrumb pointing the player towards the given quest id. Breadcrumbs may chain, but must not form a loop and must not also set NextQuestID or ExclusiveGroup.",
       "PROVIDED_ITEM_COUNT": "Number of items given to the player (inserted in the player’s bags) upon accepting the quest.",
       "REQ_SKILL_ID": "Skill required to know to accept the quest. Use 0 for no skill required.",
       "REQ_SKILL_POINTS": "Skill points required to have in order to accept the quest.",
@@ -394,6 +396,21 @@
       "COMPLETION_TEXT": "Quest gossip text shown in the final gossip dialogue window when turning in an item delivery quest.",
       "EMOTE_ON_COMPLETE": "Played by the quest ender NPC when all quest objectives are completed.",
       "EMOTE_ON_INCOMPLETE": "Played by the quest ender NPC if any of the quest objectives are incomplete."
+    },
+    "CHAIN": {
+      "TITLE": "Quest Chain",
+      "STANDALONE": "This quest is not linked to any other quest.",
+      "TRUNCATED": "This chain is too large to display in full; only part of it is shown.",
+      "LEGEND_CHAIN": "Must be completed first",
+      "LEGEND_ENABLED_BY": "Must be available (enabled by)",
+      "LEGEND_BREADCRUMB": "Breadcrumb pointing to",
+      "LEGEND_CONDITION": "Required by a condition",
+      "LEGEND_CONDITION_ANY": "Condition alternative (any one of them)",
+      "LEGEND_MISSING": "Missing from quest_template",
+      "LEGEND_CONDITIONS": "Has availability conditions (click to open)",
+      "BAND_ANY": "One of these ({{group}})",
+      "BAND_ALL": "All of these ({{group}})",
+      "CONDITIONS_TOOLTIP": "{{count}} availability condition(s) — click to open them in the Conditions editor"
     }
   },
   "GAMEOBJECT": {
@@ -601,7 +618,9 @@
       "SOURCE_ENTRY": "Source Entry:",
       "CREATE_NEW": "Create new",
       "PLACEHOLDER_SOURCE_GROUP": "SourceGroup",
-      "PLACEHOLDER_ENTRY": "SourceEntry"
+      "PLACEHOLDER_ENTRY": "SourceEntry",
+      "SOURCE_ID": "Source Id:",
+      "PLACEHOLDER_SOURCE_ID": "SourceId"
     },
     "EDITOR": {
       "CONDITIONS_SOURCE": "Condition source",
@@ -772,7 +791,10 @@
       "CHANCE": "This is the probability of the event to occur as a percentage from 0-100. Example: if you want the event to occur roughly half of the time, then set this to 50.",
       "TIMED_ACTIONLISTS": "All smart_scripts having source_type = 9 and entryorguid between CreatureID * 100 and CreatureID * 100 + 100",
       "GENERATE_COMMENT": "Generate comment",
-      "GENERATE_COMMENTS_ALL": "Generate comments (all)"
+      "GENERATE_COMMENTS_ALL": "Generate comments (all)",
+      "CONDITIONS_TOOLTIP": "{{count}} condition(s) attached to this event — click to open them in the Conditions editor",
+      "ADD_NEW_CONDITION": "Add new condition",
+      "CONDITIONS_ADD_TOOLTIP": "Create a condition for the selected event in the Conditions editor"
     },
     "SEARCH_BY_EXISTING": {
       "SOURCE_TYPE": "Source Type:",
