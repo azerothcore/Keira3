@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { LANGUAGE_ID, Language } from '@keira/shared/acore-world-model';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { LanguageSearchService } from '../../search/language-search.service';
 import { SearchSelectorModalComponent } from '../base-selector/search-selector-modal.component';
@@ -12,7 +12,7 @@ import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-component
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-language-selector-modal',
   templateUrl: './language-selector-modal.component.html',
-  imports: [FormsModule, ReactiveFormsModule, HighlightjsWrapperComponent, NgxDatatableModule, TranslateModule],
+  imports: [FormsModule, ReactiveFormsModule, HighlightjsWrapperComponent, NgxDatatableModule, TranslateDirective, TranslatePipe],
 })
 export class LanguageSelectorModalComponent extends SearchSelectorModalComponent<Language> {
   protected entityIdField = LANGUAGE_ID;

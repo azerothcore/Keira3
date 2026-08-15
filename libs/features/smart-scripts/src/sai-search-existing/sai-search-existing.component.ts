@@ -4,7 +4,7 @@ import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-components';
 
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SaiHandlerService } from '@keira/shared/sai-editor';
 import { SaiSearchService } from '@keira/shared/selectors';
@@ -15,7 +15,7 @@ import { getEnumKeys } from '@keira/shared/utils';
   selector: 'keira-sai-search-existing',
   templateUrl: './sai-search-existing.component.html',
   styleUrls: ['./sai-search-existing.component.scss'],
-  imports: [FormsModule, ReactiveFormsModule, TranslateModule, HighlightjsWrapperComponent, NgxDatatableModule],
+  imports: [FormsModule, ReactiveFormsModule, TranslateDirective, TranslatePipe, HighlightjsWrapperComponent, NgxDatatableModule],
 })
 export class SaiSearchExistingComponent extends SelectComplexKeyComponent<SmartScripts> {
   readonly SAI_SEARCH_TYPES = SAI_TYPES;

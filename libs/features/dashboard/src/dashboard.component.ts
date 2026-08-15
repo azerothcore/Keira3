@@ -6,7 +6,7 @@ import packageInfo from '../../../../package.json';
 import { FormsModule } from '@angular/forms';
 import { ClipboardModule } from 'ngx-clipboard';
 
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { SubscriptionHandler } from '@keira/shared/utils';
 import { MysqlQueryService, MysqlService } from '@keira/shared/db-layer';
 import { ConfigService } from '@keira/shared/common-services';
@@ -16,7 +16,7 @@ import { ConfigService } from '@keira/shared/common-services';
   selector: 'keira-home',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
-  imports: [TranslateModule, ClipboardModule, FormsModule],
+  imports: [TranslateDirective, TranslatePipe, ClipboardModule, FormsModule],
 })
 export class DashboardComponent extends SubscriptionHandler implements OnInit {
   protected coreVersions!: VersionRow;

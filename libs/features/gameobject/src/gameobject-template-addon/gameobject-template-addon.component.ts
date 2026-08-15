@@ -4,7 +4,7 @@ import { GAMEOBJECT_FLAGS, GameobjectTemplateAddon } from '@keira/shared/acore-w
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { FactionSelectorBtnComponent, FlagsSelectorBtnComponent } from '@keira/shared/selectors';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { GameobjectTemplateAddonService } from './gameobject-template-addon.service';
@@ -16,7 +16,8 @@ import { GameobjectTemplateAddonService } from './gameobject-template-addon.serv
   styleUrls: ['./gameobject-template-addon.component.scss'],
   imports: [
     TopBarComponent,
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,

@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-editor-buttons',
   templateUrl: './editor-buttons.component.html',
-  imports: [TranslateModule],
+  imports: [TranslatePipe],
 })
 export class EditorButtonsComponent {
   readonly selectedRowId = input.required<string | number | undefined>();

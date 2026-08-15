@@ -6,7 +6,7 @@ import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { EditorButtonsComponent, IconComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { SqliteQueryService } from '@keira/shared/db-layer';
 import { SkillSelectorBtnComponent, SpellSelectorBtnComponent } from '@keira/shared/selectors';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TrainerHandlerService } from '../trainer-handler.service';
@@ -19,7 +19,8 @@ import { TrainerSpellService } from './trainer-spell.service';
   styleUrls: ['./trainer-spell.component.scss'],
   imports: [
     TopBarComponent,
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,

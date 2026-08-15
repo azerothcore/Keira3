@@ -22,7 +22,7 @@ import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { QueryOutputComponent } from '@keira/shared/base-editor-components';
 import { FlagsSelectorBtnComponent, SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 import { getEnumKeys } from '@keira/shared/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ConditionsHandlerService } from '../conditions-handler.service';
 import {
@@ -41,7 +41,8 @@ import { ConditionsService } from './conditions.service';
   templateUrl: './conditions.component.html',
   styleUrls: ['./conditions.component.scss'],
   imports: [
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,

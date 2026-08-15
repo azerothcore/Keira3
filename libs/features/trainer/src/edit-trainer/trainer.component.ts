@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TRAINER_TYPE, Trainer } from '@keira/shared/acore-world-model';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TrainerService } from './trainer.service';
 import { TrainerHandlerService } from '../trainer-handler.service';
@@ -15,7 +15,8 @@ import { GenericOptionSelectorComponent } from '@keira/shared/selectors';
   templateUrl: './trainer.component.html',
   imports: [
     TopBarComponent,
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     FormsModule,
     ReactiveFormsModule,
     TooltipModule,

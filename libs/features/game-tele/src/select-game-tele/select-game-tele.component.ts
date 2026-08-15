@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SelectComponent } from '@keira/shared/base-abstract-classes';
 import { GAME_TELE_CUSTOM_STARTING_ID, GAME_TELE_ID, GAME_TELE_TABLE, GameTele } from '@keira/shared/acore-world-model';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GameTeleHandlerService } from '../game-tele-handler.service';
 import { SelectGameTeleService } from './select-game-tele.service';
@@ -15,7 +15,8 @@ import { CreateComponent, HighlightjsWrapperComponent, TopBarComponent } from '@
   imports: [
     FormsModule,
     ReactiveFormsModule,
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     NgxDatatableModule,
     CreateComponent,
     HighlightjsWrapperComponent,

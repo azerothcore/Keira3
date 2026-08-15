@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SelectComponent } from '@keira/shared/base-abstract-classes';
 import { TRAINER_ID, TRAINER_TABLE, Trainer } from '@keira/shared/acore-world-model';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TrainerHandlerService } from '../trainer-handler.service';
 import { SelectTrainerService } from './select-trainer.service';
@@ -15,7 +15,8 @@ import { CreateComponent, HighlightjsWrapperComponent, TopBarComponent } from '@
   imports: [
     FormsModule,
     ReactiveFormsModule,
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     NgxDatatableModule,
     CreateComponent,
     HighlightjsWrapperComponent,

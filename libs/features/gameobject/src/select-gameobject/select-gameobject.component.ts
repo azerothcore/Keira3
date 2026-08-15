@@ -14,7 +14,7 @@ import { SelectGameobjectService } from './select-gameobject.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CreateComponent, HighlightjsWrapperComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { GenericOptionSelectorComponent } from '@keira/shared/selectors';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,7 +22,8 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [
     TopBarComponent,
     CreateComponent,
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     FormsModule,
     ReactiveFormsModule,
     HighlightjsWrapperComponent,

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 @Component({
@@ -7,6 +7,6 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
   selector: 'keira-unsaved-icon',
   templateUrl: './unsaved-icon.component.html',
   styleUrls: ['./unsaved-icon.component.scss'],
-  imports: [TooltipModule, TranslateModule],
+  imports: [TooltipModule, TranslatePipe],
 })
 export class UnsavedIconComponent {}

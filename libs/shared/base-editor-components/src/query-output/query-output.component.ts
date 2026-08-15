@@ -15,7 +15,7 @@ import { FormsModule } from '@angular/forms';
 import { EditorService } from '@keira/shared/base-abstract-classes';
 import { TableRow } from '@keira/shared/constants';
 import { SubscriptionHandler } from '@keira/shared/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ClipboardService } from 'ngx-clipboard';
 import { filter } from 'rxjs';
@@ -29,7 +29,7 @@ import { QueryError } from 'mysql2';
   selector: 'keira-query-output',
   templateUrl: './query-output.component.html',
   styleUrls: ['./query-output.component.scss'],
-  imports: [FormsModule, HighlightjsWrapperComponent, QueryErrorComponent, TranslateModule],
+  imports: [FormsModule, HighlightjsWrapperComponent, QueryErrorComponent, TranslatePipe],
 })
 export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandler {
   private readonly clipboardService = inject(ClipboardService);
