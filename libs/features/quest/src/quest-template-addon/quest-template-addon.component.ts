@@ -10,7 +10,7 @@ import {
   SkillSelectorBtnComponent,
   SpellSelectorBtnComponent,
 } from '@keira/shared/selectors';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewComponent } from '../quest-preview/quest-preview.component';
@@ -24,7 +24,8 @@ import { QuestTemplateAddonService } from './quest-template-addon.service';
   styleUrls: ['./quest-template-addon.component.scss'],
   imports: [
     TopBarComponent,
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,

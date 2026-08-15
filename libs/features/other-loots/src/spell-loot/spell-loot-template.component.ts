@@ -3,7 +3,7 @@ import { LootTemplateComponent } from '@keira/shared/base-abstract-classes';
 import { SpellLootTemplate } from '@keira/shared/acore-world-model';
 import { SpellLootHandlerService } from './spell-loot-handler.service';
 import { SpellLootTemplateService } from './spell-loot-template.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective } from '@ngx-translate/core';
 import { TopBarComponent } from '@keira/shared/base-editor-components';
 import { LootEditorComponent } from '@keira/shared/loot-editor';
 
@@ -11,7 +11,7 @@ import { LootEditorComponent } from '@keira/shared/loot-editor';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-spell-loot-template',
   templateUrl: '../../../../shared/base-abstract-classes/src/components/editors/loot-template/loot-template.component.html',
-  imports: [TopBarComponent, TranslateModule, LootEditorComponent],
+  imports: [TopBarComponent, TranslateDirective, LootEditorComponent],
 })
 export class SpellLootTemplateComponent extends LootTemplateComponent<SpellLootTemplate> {
   protected override readonly editorService = inject(SpellLootTemplateService);

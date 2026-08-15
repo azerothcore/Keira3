@@ -10,7 +10,7 @@ import { SelectSpellLootService } from './select-spell-loot.service';
 import { SpellLootHandlerService } from './spell-loot-handler.service';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { CreateComponent, HighlightjsWrapperComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
@@ -19,7 +19,8 @@ import { CreateComponent, HighlightjsWrapperComponent, TopBarComponent } from '@
   imports: [
     TopBarComponent,
     CreateComponent,
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     FormsModule,
     ReactiveFormsModule,
     HighlightjsWrapperComponent,

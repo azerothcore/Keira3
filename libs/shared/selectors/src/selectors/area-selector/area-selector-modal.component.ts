@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { AREA_ID, Area } from '@keira/shared/acore-world-model';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { AreaSearchService } from '../../search/area-search.service';
 import { SearchSelectorModalComponent } from '../base-selector/search-selector-modal.component';
@@ -12,7 +12,7 @@ import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-component
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-area-selector-modal',
   templateUrl: './area-selector-modal.component.html',
-  imports: [FormsModule, ReactiveFormsModule, HighlightjsWrapperComponent, NgxDatatableModule, TranslateModule],
+  imports: [FormsModule, ReactiveFormsModule, HighlightjsWrapperComponent, NgxDatatableModule, TranslateDirective, TranslatePipe],
 })
 export class AreaSelectorModalComponent extends SearchSelectorModalComponent<Area> {
   protected entityIdField = AREA_ID;

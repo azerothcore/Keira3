@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { WIKI_BASE_URL } from '@keira/shared/constants';
 import { CreatureSelectorBtnComponent, GameobjectSelectorBtnComponent } from '@keira/shared/selectors';
@@ -13,7 +13,7 @@ import { getEnumKeys, ModelForm } from '@keira/shared/utils';
   selector: 'keira-sai-search-entity',
   templateUrl: './sai-search-entity.component.html',
   styleUrls: ['./sai-search-entity.component.scss'],
-  imports: [FormsModule, ReactiveFormsModule, TranslateModule, CreatureSelectorBtnComponent, GameobjectSelectorBtnComponent],
+  imports: [FormsModule, ReactiveFormsModule, TranslatePipe, CreatureSelectorBtnComponent, GameobjectSelectorBtnComponent],
 })
 export class SaiSearchEntityComponent {
   private readonly handlerService = inject(SaiHandlerService);

@@ -10,7 +10,7 @@ import {
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateAddonService } from './creature-template-addon.service';
@@ -22,7 +22,8 @@ import { CreatureTemplateAddonService } from './creature-template-addon.service'
   styleUrls: ['./creature-template-addon.component.scss'],
   imports: [
     TopBarComponent,
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,

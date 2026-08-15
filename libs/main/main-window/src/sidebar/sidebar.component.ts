@@ -30,7 +30,7 @@ import { LocationService } from '@keira/shared/common-services';
 import { MysqlService } from '@keira/shared/db-layer';
 import { SaiHandlerService } from '@keira/shared/sai-editor';
 import { SwitchLanguageComponent } from '@keira/shared/switch-language';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { LogoutBtnComponent } from './logout-btn/logout-btn.component';
 import { MenuStats, ROUTE_MENUS } from './sidebar.model';
 import { SidebarService } from './sidebar.service';
@@ -54,7 +54,8 @@ const animationTime = 200;
     SwitchLanguageComponent,
     LogoutBtnComponent,
     RouterLink,
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     RouterLinkActive,
     UnsavedIconComponent,
     TitleCasePipe,

@@ -20,14 +20,14 @@ import {
   ACORE_STRING_ENTRY,
 } from '@keira/shared/acore-world-model';
 import { UnusedGuidService, DbOptions, MAX_INT_UNSIGNED_VALUE } from './unused-guid-search.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-features-unused-guid-search',
   templateUrl: './unused-guid-search.component.html',
   styleUrl: './unused-guid-search.component.scss',
-  imports: [FormsModule, ReactiveFormsModule, TranslateModule],
+  imports: [FormsModule, ReactiveFormsModule, TranslatePipe],
 })
 export class UnusedGuidSearchComponent {
   private readonly destroyRef = inject(DestroyRef);

@@ -3,7 +3,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ITEM_TEMPLATE_CUSTOM_STARTING_ID, ITEM_TEMPLATE_ID, ITEM_TEMPLATE_TABLE, ItemTemplate } from '@keira/shared/acore-world-model';
 import { SelectComponent } from '@keira/shared/base-abstract-classes';
 import { CreateComponent, HighlightjsWrapperComponent, IconComponent, TopBarComponent } from '@keira/shared/base-editor-components';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { ItemHandlerService } from '../item-handler.service';
 import { SelectItemService } from './select-item.service';
@@ -15,7 +15,8 @@ import { SelectItemService } from './select-item.service';
   imports: [
     TopBarComponent,
     CreateComponent,
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     FormsModule,
     ReactiveFormsModule,
     HighlightjsWrapperComponent,

@@ -4,7 +4,7 @@ import { QUEST_LOCALE, QuestTemplateLocale } from '@keira/shared/acore-world-mod
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { EditorButtonsComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { GenericOptionSelectorComponent } from '@keira/shared/selectors';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { QuestHandlerService } from '../quest-handler.service';
@@ -18,7 +18,8 @@ import { QuestTemplateLocaleService } from './quest-template-locale.service';
   templateUrl: './quest-template-locale.component.html',
   imports: [
     TopBarComponent,
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,

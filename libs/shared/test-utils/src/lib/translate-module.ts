@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 
 @NgModule({
-  imports: [TranslateModule.forRoot()],
-  exports: [TranslateModule],
+  imports: [TranslateDirective, TranslatePipe],
+  exports: [TranslateDirective, TranslatePipe],
+  providers: [provideTranslateService()],
 })
 export class TranslateTestingModule {}

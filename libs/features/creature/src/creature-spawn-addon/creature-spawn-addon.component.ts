@@ -4,7 +4,7 @@ import { CREATURE_ADDON_BYTES_1, CREATURE_ADDON_BYTES_2, CreatureSpawnAddon, EMO
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { GenericOptionSelectorComponent } from '@keira/shared/selectors';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
@@ -17,7 +17,8 @@ import { CreatureSpawnAddonService } from './creature-spawn-addon.service';
   styleUrls: ['./creature-spawn-addon.component.scss'],
   imports: [
     TopBarComponent,
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,

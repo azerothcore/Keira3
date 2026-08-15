@@ -4,7 +4,7 @@ import { ITEM_CLASS, SPELL_DBC_INVENTORY_TYPE, SPELL_DBC_ITEM_SUBCLASS, SpellDbc
 import { ModelForm } from '@keira/shared/utils';
 
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { FlagsSelectorBtnComponent, ItemSelectorBtnComponent, SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 
 @Component({
@@ -14,7 +14,8 @@ import { FlagsSelectorBtnComponent, ItemSelectorBtnComponent, SingleValueSelecto
   imports: [
     FormsModule,
     ReactiveFormsModule,
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     SingleValueSelectorBtnComponent,
     TooltipModule,
     FlagsSelectorBtnComponent,

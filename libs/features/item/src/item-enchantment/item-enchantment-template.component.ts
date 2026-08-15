@@ -6,7 +6,7 @@ import { ItemEnchantmentTemplateService } from './item-enchantment-template.serv
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { EditorButtonsComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -15,7 +15,8 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrls: ['./item-enchantment-template.component.scss'],
   imports: [
     TopBarComponent,
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,

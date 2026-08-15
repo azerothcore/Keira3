@@ -4,7 +4,7 @@ import { CreatureTemplateModel } from '@keira/shared/acore-world-model';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { EditorButtonsComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { Model3DViewerComponent, VIEWER_TYPE } from '@keira/shared/model-3d-viewer';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
@@ -17,7 +17,8 @@ import { CreatureTemplateModelService } from './creature-template-model.service'
   styleUrls: ['./creature-template-model.component.scss'],
   imports: [
     TopBarComponent,
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,

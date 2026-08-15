@@ -1,5 +1,4 @@
 import { vi } from 'vitest';
-import { CommonModule } from '@angular/common';
 import { NgModule, provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -17,7 +16,6 @@ import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-component
 @NgModule({
   imports: [
     ModalModule,
-    CommonModule,
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,

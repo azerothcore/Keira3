@@ -7,7 +7,7 @@ import { distinctUntilChanged } from 'rxjs';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import packageInfo from '../../../../package.json';
 
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective } from '@ngx-translate/core';
 
 import { ConnectionWindowComponent } from '@keira/main/connection-window';
 import { MainWindowComponent } from '@keira/main/main-window';
@@ -20,7 +20,7 @@ import { SubscriptionHandler } from '@keira/shared/utils';
   selector: 'keira-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  imports: [ConnectionWindowComponent, MainWindowComponent, TranslateModule],
+  imports: [ConnectionWindowComponent, MainWindowComponent, TranslateDirective],
 })
 export class AppComponent extends SubscriptionHandler implements OnInit {
   readonly KEIRA3_REPO_URL = KEIRA3_REPO_URL;

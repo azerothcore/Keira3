@@ -42,7 +42,7 @@ import {
   SpellSelectorBtnComponent,
 } from '@keira/shared/selectors';
 import { compareObjFn } from '@keira/shared/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { ItemHandlerService } from '../item-handler.service';
@@ -57,7 +57,8 @@ import { ItemTemplateService } from './item-template.service';
   styleUrls: ['./item-template.component.scss'],
   imports: [
     TopBarComponent,
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,

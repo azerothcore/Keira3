@@ -6,7 +6,7 @@ import { ConditionsHandlerService } from '../conditions-handler.service';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-components';
 
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ConditionsSearchService } from '@keira/shared/selectors';
 import { getEnumKeys } from '@keira/shared/utils';
@@ -15,7 +15,7 @@ import { getEnumKeys } from '@keira/shared/utils';
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './select-conditions.component.html',
   styleUrls: ['./select-conditions.component.scss'],
-  imports: [FormsModule, ReactiveFormsModule, TranslateModule, HighlightjsWrapperComponent, NgxDatatableModule],
+  imports: [FormsModule, ReactiveFormsModule, TranslateDirective, TranslatePipe, HighlightjsWrapperComponent, NgxDatatableModule],
 })
 export class SelectConditionsComponent extends SelectComplexKeyComponent<Conditions> implements OnInit {
   readonly CONDITION_SOURCE_TYPES = CONDITION_SOURCE_TYPES;

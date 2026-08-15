@@ -30,7 +30,7 @@ import {
   GenericOptionSelectorComponent,
   SingleValueSelectorBtnComponent,
 } from '@keira/shared/selectors';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateService } from './creature-template.service';
@@ -41,7 +41,8 @@ import { CreatureTemplateService } from './creature-template.service';
   templateUrl: './creature-template.component.html',
   imports: [
     TopBarComponent,
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,
