@@ -5,7 +5,7 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { LootTemplate } from '@keira/shared/acore-world-model';
 import { PageObject } from '@keira/shared/test-utils';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { of } from 'rxjs';
 import { ReferenceViewerComponent } from './reference-viewer.component';
 import { ReferenceViewerService } from './reference-viewer.service';
@@ -31,7 +31,7 @@ class TestHostComponent {
 describe('ReferenceViewerComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [TooltipModule, TestHostComponent, ReferenceViewerComponent],
+      imports: [TooltipDirective, TestHostComponent, ReferenceViewerComponent],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),

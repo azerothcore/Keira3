@@ -8,7 +8,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { EditorService } from '@keira/shared/base-abstract-classes';
 import { TableRow } from '@keira/shared/constants';
 import { QueryOutputComponentPage, TranslateTestingModule } from '@keira/shared/test-utils';
-import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
+import { BsModalService, ModalDirective } from 'ngx-bootstrap/modal';
 import { ClipboardService } from 'ngx-clipboard';
 import { HighlightjsWrapperComponent } from '../highlightjs-wrapper/highlightjs-wrapper.component';
 import { QueryErrorComponent } from './query-error/query-error.component';
@@ -48,7 +48,7 @@ describe('QueryOutputComponent', () => {
         BrowserModule,
         FormsModule,
         HighlightjsWrapperComponent,
-        ModalModule,
+        ModalDirective,
         TranslateTestingModule,
         TestHostComponent,
         QueryOutputComponent,

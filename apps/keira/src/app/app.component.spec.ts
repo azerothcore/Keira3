@@ -15,7 +15,7 @@ import packageInfo from '../../../../package.json';
 
 import { AppComponent } from './app.component';
 
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { BsDropdownDirective, BsDropdownMenuDirective, BsDropdownToggleDirective } from 'ngx-bootstrap/dropdown';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import { MainWindowComponent } from '@keira/main/main-window';
 import { ConnectionWindowComponent } from '@keira/main/connection-window';
@@ -28,7 +28,9 @@ describe('AppComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        BsDropdownModule,
+        BsDropdownDirective,
+        BsDropdownToggleDirective,
+        BsDropdownMenuDirective,
         FormsModule,
         ReactiveFormsModule,
         RouterTestingModule,

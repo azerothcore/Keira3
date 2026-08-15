@@ -6,7 +6,7 @@ import { FormsModule, ReactiveFormsModule, UntypedFormControl } from '@angular/f
 import { BrowserModule } from '@angular/platform-browser';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
+import { BsModalService, ModalDirective } from 'ngx-bootstrap/modal';
 import { instance, mock } from 'ts-mockito';
 import { ItemSelectorBtnComponent } from '../item-selector/item-selector-btn.component';
 import { ItemSelectorModalComponent } from '../item-selector/item-selector-modal.component';
@@ -15,7 +15,7 @@ import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-component
 
 @NgModule({
   imports: [
-    ModalModule,
+    ModalDirective,
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
@@ -33,7 +33,7 @@ describe('BaseSelectorBtnComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule, TestModule, ItemSelectorBtnComponent],
+      imports: [ModalDirective, TestModule, ItemSelectorBtnComponent],
     }).compileComponents();
   });
 

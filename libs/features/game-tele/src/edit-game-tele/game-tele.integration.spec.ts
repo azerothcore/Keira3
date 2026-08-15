@@ -5,7 +5,7 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { GameTele } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
-import { ModalModule } from 'ngx-bootstrap/modal';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
@@ -38,7 +38,7 @@ describe('GameTele integration tests', () => {
   // TestBed Configuration
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalDirective, TranslateTestingModule],
       declarations: [],
       providers: [
         provideZonelessChangeDetection(),

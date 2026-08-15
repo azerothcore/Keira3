@@ -31,7 +31,7 @@ import {
   SingleValueSelectorBtnComponent,
 } from '@keira/shared/selectors';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateService } from './creature-template.service';
 
@@ -46,7 +46,7 @@ import { CreatureTemplateService } from './creature-template.service';
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,
-    TooltipModule,
+    TooltipDirective,
     SingleValueSelectorBtnComponent,
     FactionSelectorBtnComponent,
     FlagsSelectorBtnComponent,

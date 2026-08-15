@@ -3,12 +3,12 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { GameobjectSelectorBtnComponent } from './gameobject-selector-btn.component';
-import { ModalModule } from 'ngx-bootstrap/modal';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 
 describe('GameobjectSelectorBtnComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule, GameobjectSelectorBtnComponent],
+      imports: [ModalDirective, GameobjectSelectorBtnComponent],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
   });

@@ -3,12 +3,12 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { ItemExtendedCostSelectorBtnComponent } from './item-extended-cost-selector-btn.component';
-import { ModalModule } from 'ngx-bootstrap/modal';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 
 describe('ItemExtendedCostSelectorBtnComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule, ItemExtendedCostSelectorBtnComponent],
+      imports: [ModalDirective, ItemExtendedCostSelectorBtnComponent],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
   });

@@ -4,7 +4,7 @@ import { CREATURE_TEMPLATE_MOVEMENT_TABLE, CreatureTemplateMovement } from '@kei
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateMovementService } from './creature-template-movement.service';
 
@@ -12,7 +12,7 @@ import { CreatureTemplateMovementService } from './creature-template-movement.se
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-creature-template-movement',
   templateUrl: './creature-template-movement.component.html',
-  imports: [TopBarComponent, TranslateDirective, TranslatePipe, QueryOutputComponent, FormsModule, ReactiveFormsModule, TooltipModule],
+  imports: [TopBarComponent, TranslateDirective, TranslatePipe, QueryOutputComponent, FormsModule, ReactiveFormsModule, TooltipDirective],
 })
 export class CreatureTemplateMovementComponent extends SingleRowEditorComponent<CreatureTemplateMovement> {
   protected override get docUrl(): string {

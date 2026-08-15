@@ -6,7 +6,7 @@ import { EditorButtonsComponent, QueryOutputComponent, TopBarComponent } from '@
 import { GenericOptionSelectorComponent, LanguageSelectorBtnComponent, SoundEntriesSelectorBtnComponent } from '@keira/shared/selectors';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTextService } from './creature-text.service';
 
@@ -18,7 +18,7 @@ import { CreatureTextService } from './creature-text.service';
     TopBarComponent,
     TranslateDirective,
     TranslatePipe,
-    TooltipModule,
+    TooltipDirective,
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,

@@ -5,8 +5,8 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
-import { ModalModule } from 'ngx-bootstrap/modal';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { ModalDirective } from 'ngx-bootstrap/modal';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
 import { of, throwError } from 'rxjs';
 import { anything, instance, mock, when } from 'ts-mockito';
@@ -26,8 +26,8 @@ describe('GameobjectTemplateComponent', () => {
       imports: [
         GameobjectLootTemplateComponent,
         RouterTestingModule,
-        ModalModule,
-        TooltipModule,
+        ModalDirective,
+        TooltipDirective,
         ToastrModule.forRoot(),
         TranslateTestingModule,
       ],

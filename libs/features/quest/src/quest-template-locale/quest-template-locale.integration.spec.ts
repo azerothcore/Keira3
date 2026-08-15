@@ -7,7 +7,7 @@ import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config'
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { Model3DViewerService } from '@keira/shared/model-3d-viewer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
-import { ModalModule } from 'ngx-bootstrap/modal';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { QuestHandlerService } from '../quest-handler.service';
@@ -21,7 +21,7 @@ describe('QuestTemplateLocale integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule, QuestTemplateLocaleComponent, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalDirective, QuestTemplateLocaleComponent, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),

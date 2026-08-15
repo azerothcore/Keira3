@@ -12,7 +12,7 @@ import {
   SpellSelectorBtnComponent,
 } from '@keira/shared/selectors';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewComponent } from '../quest-preview/quest-preview.component';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
@@ -30,7 +30,7 @@ import { QuestTemplateService } from './quest-template.service';
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,
-    TooltipModule,
+    TooltipDirective,
     SingleValueSelectorBtnComponent,
     IconComponent,
     ItemSelectorBtnComponent,

@@ -4,7 +4,7 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { Spied, TranslateTestingModule } from '@keira/shared/test-utils';
-import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
+import { BsModalService, ModalDirective } from 'ngx-bootstrap/modal';
 import { LogoutBtnComponent } from './logout-btn.component';
 import { LoginConfigService } from '@keira/shared/login-config';
 import { ModalConfirmComponent } from '@keira/shared/base-editor-components';
@@ -13,7 +13,7 @@ import { LocationService } from '@keira/shared/common-services';
 describe('LogoutBtnComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule, LogoutBtnComponent, ModalConfirmComponent, TranslateTestingModule],
+      imports: [ModalDirective, LogoutBtnComponent, ModalConfirmComponent, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),

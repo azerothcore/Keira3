@@ -5,7 +5,7 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SaiHandlerService } from '@keira/shared/sai-editor';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
-import { ModalModule } from 'ngx-bootstrap/modal';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { SaiSearchEntityComponent } from './sai-search-entity.component';
 
 class SaiSearchEntityComponentPage extends PageObject<SaiSearchEntityComponent> {
@@ -41,7 +41,7 @@ class SaiSearchEntityComponentPage extends PageObject<SaiSearchEntityComponent> 
 describe('SaiSearchEntityComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule, SaiSearchEntityComponent, RouterTestingModule, TranslateTestingModule],
+      imports: [ModalDirective, SaiSearchEntityComponent, RouterTestingModule, TranslateTestingModule],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
   });

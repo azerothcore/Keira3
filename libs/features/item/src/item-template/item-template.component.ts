@@ -43,7 +43,7 @@ import {
 } from '@keira/shared/selectors';
 import { compareObjFn } from '@keira/shared/utils';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { ItemHandlerService } from '../item-handler.service';
 import { SPELL_TRIGGERS } from './item-constants';
@@ -62,7 +62,7 @@ import { ItemTemplateService } from './item-template.service';
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,
-    TooltipModule,
+    TooltipDirective,
     SingleValueSelectorBtnComponent,
     QuestSelectorBtnComponent,
     FlagsSelectorBtnComponent,

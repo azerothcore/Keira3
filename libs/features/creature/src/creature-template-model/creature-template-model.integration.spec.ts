@@ -10,7 +10,7 @@ import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config'
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { Model3DViewerService } from '@keira/shared/model-3d-viewer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
-import { ModalModule } from 'ngx-bootstrap/modal';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
@@ -28,7 +28,7 @@ describe('CreatureTemplateModel integration tests', () => {
 
   function setup(creatingNew: boolean) {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule, CreatureTemplateModelComponent, TranslateTestingModule, ReactiveFormsModule],
+      imports: [ToastrModule.forRoot(), ModalDirective, CreatureTemplateModelComponent, TranslateTestingModule, ReactiveFormsModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),

@@ -6,7 +6,7 @@ import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor
 import { GenericOptionSelectorComponent } from '@keira/shared/selectors';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureSpawnAddonService } from './creature-spawn-addon.service';
 
@@ -22,7 +22,7 @@ import { CreatureSpawnAddonService } from './creature-spawn-addon.service';
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,
-    TooltipModule,
+    TooltipDirective,
     NgxDatatableModule,
     GenericOptionSelectorComponent,
   ],

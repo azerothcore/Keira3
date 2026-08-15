@@ -9,7 +9,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 
 import { FormsModule } from '@angular/forms';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { QueryErrorComponent } from '@keira/shared/base-editor-components';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 
@@ -20,7 +20,7 @@ import { CodeEditor } from '@acrodata/code-editor';
   selector: 'keira-sql-editor',
   templateUrl: './sql-editor.component.html',
   styleUrls: ['./sql-editor.component.scss'],
-  imports: [CodeEditor, TooltipModule, FormsModule, QueryErrorComponent, NgxDatatableModule, TranslatePipe],
+  imports: [CodeEditor, TooltipDirective, FormsModule, QueryErrorComponent, NgxDatatableModule, TranslatePipe],
 })
 export class SqlEditorComponent extends SubscriptionHandler implements OnInit {
   private readonly mysqlQueryService = inject(MysqlQueryService);

@@ -7,7 +7,7 @@ import { EditorButtonsComponent, QueryOutputComponent, TopBarComponent } from '@
 import { GameobjectSelectorBtnComponent } from '@keira/shared/selectors';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewComponent } from '../quest-preview/quest-preview.component';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
@@ -26,7 +26,7 @@ import { GameobjectQueststarterService } from './gameobject-queststarter.service
     FormsModule,
     ReactiveFormsModule,
     GameobjectSelectorBtnComponent,
-    TooltipModule,
+    TooltipDirective,
     EditorButtonsComponent,
     NgxDatatableModule,
     QuestPreviewComponent,

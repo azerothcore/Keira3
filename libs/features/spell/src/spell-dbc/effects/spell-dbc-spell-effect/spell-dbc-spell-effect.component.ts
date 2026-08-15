@@ -10,7 +10,7 @@ import {
 import { ModelForm } from '@keira/shared/utils';
 import { SpellDbcSpellEffectFieldPrefix } from './spell-dbc-spell-effect.model';
 import { FlagsSelectorBtnComponent, SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 
 @Component({
@@ -23,7 +23,7 @@ import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
     TranslateDirective,
     TranslatePipe,
     SingleValueSelectorBtnComponent,
-    TooltipModule,
+    TooltipDirective,
     FlagsSelectorBtnComponent,
   ],
 })

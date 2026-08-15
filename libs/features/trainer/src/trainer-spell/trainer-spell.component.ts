@@ -8,7 +8,7 @@ import { SqliteQueryService } from '@keira/shared/db-layer';
 import { SkillSelectorBtnComponent, SpellSelectorBtnComponent } from '@keira/shared/selectors';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { TrainerHandlerService } from '../trainer-handler.service';
 import { TrainerSpellService } from './trainer-spell.service';
 
@@ -25,7 +25,7 @@ import { TrainerSpellService } from './trainer-spell.service';
     FormsModule,
     ReactiveFormsModule,
     SpellSelectorBtnComponent,
-    TooltipModule,
+    TooltipDirective,
     SkillSelectorBtnComponent,
     EditorButtonsComponent,
     NgxDatatableModule,

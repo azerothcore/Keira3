@@ -5,13 +5,13 @@ import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor
 import { PageTextService } from './page-text.service';
 import { PageTextHandlerService } from './page-text-handler.service';
 import { ReactiveFormsModule } from '@angular/forms';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { PageText } from '@keira/shared/acore-world-model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './page-text.component.html',
-  imports: [TopBarComponent, TranslateDirective, TranslatePipe, QueryOutputComponent, ReactiveFormsModule, TooltipModule],
+  imports: [TopBarComponent, TranslateDirective, TranslatePipe, QueryOutputComponent, ReactiveFormsModule, TooltipDirective],
 })
 export class PageTextComponent extends SingleRowEditorComponent<PageText> {
   protected override readonly editorService = inject(PageTextService);

@@ -3,7 +3,7 @@ import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ITEM_CLASS, SPELL_DBC_INVENTORY_TYPE, SPELL_DBC_ITEM_SUBCLASS, SpellDbc, TOTEM_CATEGORY } from '@keira/shared/acore-world-model';
 import { ModelForm } from '@keira/shared/utils';
 
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { FlagsSelectorBtnComponent, ItemSelectorBtnComponent, SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 
@@ -17,7 +17,7 @@ import { FlagsSelectorBtnComponent, ItemSelectorBtnComponent, SingleValueSelecto
     TranslateDirective,
     TranslatePipe,
     SingleValueSelectorBtnComponent,
-    TooltipModule,
+    TooltipDirective,
     FlagsSelectorBtnComponent,
     ItemSelectorBtnComponent,
   ],

@@ -4,8 +4,8 @@ import { SPELL_DBC_PROC_FLAGS, SPELL_DBC_TARGETS, SpellDbc } from '@keira/shared
 import { ModelForm } from '@keira/shared/utils';
 import { TranslatePipe } from '@ngx-translate/core';
 import { SpellDbcSpellEffectComponent } from './spell-dbc-spell-effect/spell-dbc-spell-effect.component';
-import { TabsModule } from 'ngx-bootstrap/tabs';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TabDirective, TabsetComponent } from 'ngx-bootstrap/tabs';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
 
 @Component({
@@ -16,8 +16,9 @@ import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
     FormsModule,
     ReactiveFormsModule,
     FlagsSelectorBtnComponent,
-    TooltipModule,
-    TabsModule,
+    TooltipDirective,
+    TabsetComponent,
+    TabDirective,
     SpellDbcSpellEffectComponent,
     TranslatePipe,
   ],

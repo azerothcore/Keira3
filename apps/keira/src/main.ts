@@ -8,10 +8,6 @@ import { provideRouter, withHashLocation } from '@angular/router';
 import { KEIRA_APP_CONFIG_TOKEN, highlightOptions, toastrConfig, uiSwitchConfig } from '@keira/shared/config';
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import { ModalModule } from 'ngx-bootstrap/modal';
-import { TabsModule } from 'ngx-bootstrap/tabs';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { ToastrModule } from 'ngx-toastr';
 import { UiSwitchModule } from 'ngx-ui-switch';
@@ -33,10 +29,6 @@ bootstrapApplication(AppComponent, {
       ReactiveFormsModule,
       FormsModule,
       /* External Libraries */
-      BsDropdownModule,
-      ModalModule,
-      TabsModule,
-      TooltipModule,
       ToastrModule.forRoot(toastrConfig),
       UiSwitchModule.forRoot(uiSwitchConfig),
     ),

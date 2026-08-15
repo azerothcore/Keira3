@@ -3,7 +3,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TRAINER_TYPE, Trainer } from '@keira/shared/acore-world-model';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { TrainerService } from './trainer.service';
 import { TrainerHandlerService } from '../trainer-handler.service';
 import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
@@ -19,7 +19,7 @@ import { GenericOptionSelectorComponent } from '@keira/shared/selectors';
     TranslatePipe,
     FormsModule,
     ReactiveFormsModule,
-    TooltipModule,
+    TooltipDirective,
     QueryOutputComponent,
     GenericOptionSelectorComponent,
   ],

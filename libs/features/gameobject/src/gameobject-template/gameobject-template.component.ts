@@ -7,7 +7,7 @@ import { FieldDefinition } from '@keira/shared/constants';
 import { Model3DViewerComponent, VIEWER_TYPE } from '@keira/shared/model-3d-viewer';
 import { GenericOptionSelectorComponent } from '@keira/shared/selectors';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { GameobjectTemplateService } from './gameobject-template.service';
 
@@ -23,7 +23,7 @@ import { GameobjectTemplateService } from './gameobject-template.service';
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,
-    TooltipModule,
+    TooltipDirective,
     Model3DViewerComponent,
     GenericOptionSelectorComponent,
   ],

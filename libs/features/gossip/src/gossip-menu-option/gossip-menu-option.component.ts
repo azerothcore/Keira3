@@ -6,7 +6,7 @@ import { EditorButtonsComponent, QueryOutputComponent, TopBarComponent } from '@
 import { GenericOptionSelectorComponent, SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { GossipHandlerService } from '../gossip-handler.service';
 import { GossipMenuOptionPreviewComponent } from '../gossip-menu-option-preview/gossip-menu-option-preview.component';
 import { GossipMenuOptionService } from './gossip-menu-option.service';
@@ -22,7 +22,7 @@ import { GossipMenuOptionService } from './gossip-menu-option.service';
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,
-    TooltipModule,
+    TooltipDirective,
     SingleValueSelectorBtnComponent,
     EditorButtonsComponent,
     NgxDatatableModule,
