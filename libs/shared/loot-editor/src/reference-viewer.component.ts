@@ -7,7 +7,7 @@ import { IconComponent } from '@keira/shared/base-editor-components';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { SubscriptionHandler } from '@keira/shared/utils';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { ReferenceViewerService } from './reference-viewer.service';
 
 @Component({
@@ -15,7 +15,7 @@ import { ReferenceViewerService } from './reference-viewer.service';
   selector: 'keira-reference-viewer',
   templateUrl: './reference-viewer.component.html',
   styleUrls: ['./loot-editor.component.scss'],
-  imports: [TooltipModule, NgxDatatableModule, IconComponent, AsyncPipe],
+  imports: [TooltipDirective, NgxDatatableModule, IconComponent, AsyncPipe],
 })
 export class ReferenceViewerComponent extends SubscriptionHandler implements OnChanges {
   readonly referenceId = input.required<number>();

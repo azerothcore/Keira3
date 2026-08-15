@@ -6,7 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModelForm } from '@keira/shared/utils';
 import { SpellDbc } from '@keira/shared/acore-world-model';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
 import { SpellHandlerService } from '../../../spell-handler.service';
 import { SpellDbcService } from '../../spell-dbc.service';
@@ -40,7 +40,7 @@ describe('SpellDbcLocaleComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         ToastrModule.forRoot(),
-        TooltipModule,
+        TooltipDirective,
         RouterTestingModule,
         TranslateTestingModule,
         TestHostComponent,

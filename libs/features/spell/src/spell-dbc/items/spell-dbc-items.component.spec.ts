@@ -6,8 +6,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { SpellDbc } from '@keira/shared/acore-world-model';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModelForm } from '@keira/shared/utils';
-import { ModalModule } from 'ngx-bootstrap/modal';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { ModalDirective } from 'ngx-bootstrap/modal';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
 import { SpellHandlerService } from '../../spell-handler.service';
 
@@ -54,9 +54,9 @@ describe('SpellDbcItemsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        ModalModule,
+        ModalDirective,
         ToastrModule.forRoot(),
-        TooltipModule,
+        TooltipDirective,
         RouterTestingModule,
         TranslateTestingModule,
         TestHostComponent,

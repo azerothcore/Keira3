@@ -8,7 +8,7 @@ import { RacesTextKey, RacesTextValue } from '@keira/shared/constants';
 import { MapPoint, MapViewerComponent } from '@keira/shared/map-viewer';
 import { Model3DViewerComponent, VIEWER_TYPE } from '@keira/shared/model-3d-viewer';
 import { PreviewHelperService } from '@keira/shared/preview';
-import { CollapseModule } from 'ngx-bootstrap/collapse';
+import { CollapseDirective } from 'ngx-bootstrap/collapse';
 import { Quest } from './quest-preview.model';
 import { QuestPreviewService } from './quest-preview.service';
 import { from, Observable, of } from 'rxjs';
@@ -19,7 +19,7 @@ export const QUEST_PREVIEW_DEBOUNCE_TIME = 300;
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-quest-preview',
   templateUrl: './quest-preview.component.html',
-  imports: [IconComponent, CollapseModule, AsyncPipe, QuestObjectivesComponent, Model3DViewerComponent, MapViewerComponent],
+  imports: [IconComponent, CollapseDirective, AsyncPipe, QuestObjectivesComponent, Model3DViewerComponent, MapViewerComponent],
 })
 export class QuestPreviewComponent implements OnInit {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);

@@ -10,7 +10,6 @@ import { EditorButtonsComponent, QueryOutputComponent, TopBarComponent } from '@
 import { GenericOptionSelectorComponent } from '@keira/shared/selectors';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateResistanceService } from './creature-template-resistance.service';
 
@@ -28,7 +27,6 @@ import { CreatureTemplateResistanceService } from './creature-template-resistanc
     EditorButtonsComponent,
     NgxDatatableModule,
     GenericOptionSelectorComponent,
-    TooltipModule,
   ],
 })
 export class CreatureTemplateResistanceComponent extends MultiRowEditorComponent<CreatureTemplateResistance> {

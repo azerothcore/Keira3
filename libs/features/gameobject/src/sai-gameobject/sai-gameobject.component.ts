@@ -5,7 +5,7 @@ import { SaiEditorComponent, SaiTopBarComponent, TimedActionlistComponent } from
 import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { SaiGameobjectEditorService } from './sai-gameobject-editor.service';
 import { AsyncPipe } from '@angular/common';
@@ -22,7 +22,7 @@ import { AsyncPipe } from '@angular/common';
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,
-    TooltipModule,
+    TooltipDirective,
     FlagsSelectorBtnComponent,
     EditorButtonsComponent,
     NgxDatatableModule,

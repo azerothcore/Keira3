@@ -7,7 +7,7 @@ import { CreatureTemplateResistance } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { GenericOptionSelectorComponent } from '@keira/shared/selectors';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
-import { ModalModule } from 'ngx-bootstrap/modal';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { NgxSelectModule } from 'ngx-select-ex';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
@@ -24,7 +24,7 @@ describe('CreatureTemplateResistance integration tests', () => {
     TestBed.configureTestingModule({
       imports: [
         ToastrModule.forRoot(),
-        ModalModule,
+        ModalDirective,
         NgxSelectModule,
         CreatureTemplateResistanceComponent,
         TranslateTestingModule,

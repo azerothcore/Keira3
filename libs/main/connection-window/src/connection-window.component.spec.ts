@@ -4,7 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { PageObject, Spied, TranslateTestingModule } from '@keira/shared/test-utils';
 import { QueryError } from 'mysql2';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { of, throwError } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
 
@@ -94,7 +94,7 @@ describe('ConnectionWindowComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [TooltipModule, ConnectionWindowComponent, TranslateTestingModule],
+      imports: [TooltipDirective, ConnectionWindowComponent, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),

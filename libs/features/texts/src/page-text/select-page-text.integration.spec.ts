@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { SelectPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { PAGE_TEXT_ID } from '@keira/shared/acore-world-model';
-import { ModalModule } from 'ngx-bootstrap/modal';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { SelectPageTextComponent } from './select-page-text.component';
@@ -23,7 +23,7 @@ describe(`${SelectPageTextComponent.name} integration tests`, () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule, SelectPageTextComponent, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalDirective, SelectPageTextComponent, TranslateTestingModule],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations(), PageTextHandlerService],
     }).compileComponents();
   });

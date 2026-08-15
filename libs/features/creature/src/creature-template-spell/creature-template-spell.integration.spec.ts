@@ -6,7 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { CreatureTemplateSpell } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
-import { ModalModule } from 'ngx-bootstrap/modal';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
@@ -20,7 +20,7 @@ describe('CreatureTemplateSpell integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule, RouterTestingModule, CreatureTemplateSpellComponent, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalDirective, RouterTestingModule, CreatureTemplateSpellComponent, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),

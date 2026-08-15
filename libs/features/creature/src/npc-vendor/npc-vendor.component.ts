@@ -7,7 +7,7 @@ import { EditorButtonsComponent, IconComponent, QueryOutputComponent, TopBarComp
 import { ItemExtendedCostSelectorBtnComponent, ItemSelectorBtnComponent } from '@keira/shared/selectors';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { NpcVendorService } from './npc-vendor.service';
 
@@ -25,7 +25,7 @@ import { NpcVendorService } from './npc-vendor.service';
     ReactiveFormsModule,
     IconComponent,
     ItemSelectorBtnComponent,
-    TooltipModule,
+    TooltipDirective,
     ItemExtendedCostSelectorBtnComponent,
     EditorButtonsComponent,
     NgxDatatableModule,

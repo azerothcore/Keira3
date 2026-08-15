@@ -68,7 +68,7 @@ import { SaiEditorService } from './sai-editor.service';
 import { SaiHandlerService } from './sai-handler.service';
 import { TimedActionlistComponent } from './timed-actionlist/timed-actionlist.component';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { SaiTopBarComponent } from './sai-top-bar/sai-top-bar.component';
@@ -91,7 +91,7 @@ import { AsyncPipe } from '@angular/common';
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,
-    TooltipModule,
+    TooltipDirective,
     FlagsSelectorBtnComponent,
     EditorButtonsComponent,
     NgxDatatableModule,

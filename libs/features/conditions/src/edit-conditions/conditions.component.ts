@@ -23,7 +23,7 @@ import { QueryOutputComponent } from '@keira/shared/base-editor-components';
 import { FlagsSelectorBtnComponent, SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 import { getEnumKeys } from '@keira/shared/utils';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { ConditionsHandlerService } from '../conditions-handler.service';
 import {
   CONDITION_TARGET_TOOLTIPS,
@@ -46,7 +46,7 @@ import { ConditionsService } from './conditions.service';
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,
-    TooltipModule,
+    TooltipDirective,
     FlagsSelectorBtnComponent,
     SingleValueSelectorBtnComponent,
   ],

@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { SelectPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { BROADCAST_TEXT_ID } from '@keira/shared/acore-world-model';
-import { ModalModule } from 'ngx-bootstrap/modal';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { SelectBroadcastTextComponent } from './select-broadcast-text.component';
@@ -23,7 +23,7 @@ describe(`${SelectBroadcastTextComponent.name} integration tests`, () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule, SelectBroadcastTextComponent, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalDirective, SelectBroadcastTextComponent, TranslateTestingModule],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations(), BroadcastTextHandlerService],
     }).compileComponents();
   });

@@ -5,7 +5,7 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { SelectPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
-import { ModalModule } from 'ngx-bootstrap/modal';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { SelectGameTeleComponent } from './select-game-tele.component';
@@ -45,7 +45,7 @@ describe('SelectConditions integration tests', () => {
    */
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalDirective, TranslateTestingModule],
       declarations: [],
       providers: [
         provideZonelessChangeDetection(),

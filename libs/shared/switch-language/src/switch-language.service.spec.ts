@@ -4,13 +4,13 @@ import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { TranslateService } from '@ngx-translate/core';
-import { ModalModule } from 'ngx-bootstrap/modal';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { SwitchLanguageService } from './switch-language.service';
 
 describe('SwitchLanguageService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule, TranslateTestingModule],
+      imports: [ModalDirective, TranslateTestingModule],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations(), SwitchLanguageService],
     }).compileComponents();
   });

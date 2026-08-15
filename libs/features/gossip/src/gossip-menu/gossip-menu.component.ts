@@ -8,7 +8,7 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
 import { NpcTextSelectorBtnComponent } from '@keira/shared/selectors';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { GossipHandlerService } from '../gossip-handler.service';
 import { GossipMenuService } from './gossip-menu.service';
 
@@ -25,7 +25,7 @@ import { GossipMenuService } from './gossip-menu.service';
     FormsModule,
     ReactiveFormsModule,
     NpcTextSelectorBtnComponent,
-    TooltipModule,
+    TooltipDirective,
     EditorButtonsComponent,
     NgxDatatableModule,
     AsyncPipe,

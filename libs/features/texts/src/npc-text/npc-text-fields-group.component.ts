@@ -4,13 +4,13 @@ import { EMOTE, NpcText } from '@keira/shared/acore-world-model';
 import { LanguageSelectorBtnComponent, SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 import { ModelForm } from '@keira/shared/utils';
 import { TranslatePipe } from '@ngx-translate/core';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './npc-text-fields-group.component.html',
   selector: 'keira-npc-text-fields-group',
-  imports: [TranslatePipe, ReactiveFormsModule, SingleValueSelectorBtnComponent, TooltipModule, LanguageSelectorBtnComponent],
+  imports: [TranslatePipe, ReactiveFormsModule, SingleValueSelectorBtnComponent, TooltipDirective, LanguageSelectorBtnComponent],
 })
 export class NpcTextFieldsGroupComponent {
   formGroup = input.required<FormGroup<ModelForm<NpcText>>>();

@@ -6,7 +6,7 @@ import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor
 import { SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { GameobjectSpawnAddonService } from './gameobject-spawn-addon.service';
 
@@ -21,7 +21,7 @@ import { GameobjectSpawnAddonService } from './gameobject-spawn-addon.service';
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,
-    TooltipModule,
+    TooltipDirective,
     SingleValueSelectorBtnComponent,
     NgxDatatableModule,
   ],

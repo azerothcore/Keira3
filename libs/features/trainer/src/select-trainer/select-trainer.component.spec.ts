@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
-import { ModalModule } from 'ngx-bootstrap/modal';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { TrainerHandlerService } from '../trainer-handler.service';
@@ -16,7 +16,7 @@ import { SelectTrainerService } from './select-trainer.service';
 describe('SelectTrainerComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule, ToastrModule.forRoot(), SelectTrainerComponent, RouterTestingModule, TranslateTestingModule],
+      imports: [ModalDirective, ToastrModule.forRoot(), SelectTrainerComponent, RouterTestingModule, TranslateTestingModule],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations(), TrainerHandlerService],
     }).compileComponents();
   });

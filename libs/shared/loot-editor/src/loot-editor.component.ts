@@ -13,7 +13,7 @@ import { FlagsSelectorBtnComponent, ItemSelectorBtnComponent } from '@keira/shar
 import { compareObjFn, SubscriptionHandler } from '@keira/shared/utils';
 import { TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { ReferenceViewerComponent } from './reference-viewer.component';
 
 @Component({
@@ -27,7 +27,7 @@ import { ReferenceViewerComponent } from './reference-viewer.component';
     ReactiveFormsModule,
     IconComponent,
     ItemSelectorBtnComponent,
-    TooltipModule,
+    TooltipDirective,
     FlagsSelectorBtnComponent,
     EditorButtonsComponent,
     NgxDatatableModule,
