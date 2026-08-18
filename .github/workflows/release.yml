@@ -70,14 +70,11 @@ jobs:
           mv "release/${APP_NAME}-${VERSION}.x86_64.rpm" "${ASSET_BASE}.LINUX.rpm"
           mv "release/${APP_NAME}_${VERSION}_amd64.deb" "${ASSET_BASE}.LINUX.deb"
           mv "release/${APP_NAME}_${VERSION}_amd64.snap" "${ASSET_BASE}.LINUX.snap"
-          for ext in AppImage rpm deb snap; do
-            zip "${ASSET_BASE}.LINUX.${ext}.zip" "${ASSET_BASE}.LINUX.${ext}"
-          done
       - name: Upload assets
         uses: actions/upload-artifact@v7
         with:
           name: linux-assets
-          path: '*.LINUX.*.zip'
+          path: '*.LINUX.*'
           if-no-files-found: error
 
   build-on-mac:
@@ -115,12 +112,11 @@ jobs:
       - name: Prepare release assets
         run: |
           mv "release/${APP_NAME}-${VERSION}${{ matrix.dmg_suffix }}.dmg" "${ASSET_BASE}.${{ matrix.asset_suffix }}.dmg"
-          zip "${ASSET_BASE}.${{ matrix.asset_suffix }}.dmg.zip" "${ASSET_BASE}.${{ matrix.asset_suffix }}.dmg"
       - name: Upload assets
         uses: actions/upload-artifact@v7
         with:
           name: mac-${{ matrix.arch }}-assets
-          path: '*.dmg.zip'
+          path: '*.dmg'
           if-no-files-found: error
 
   build-on-windows:
@@ -146,13 +142,12 @@ jobs:
       - name: Prepare release assets
         run: |
           mv "release/${APP_NAME} ${VERSION}.exe" "${ASSET_BASE}.WINDOWS.exe"
-          7z a "${ASSET_BASE}.WINDOWS.exe.zip" "${ASSET_BASE}.WINDOWS.exe"
         shell: bash
       - name: Upload assets
         uses: actions/upload-artifact@v7
         with:
           name: windows-assets
-          path: '*.WINDOWS.exe.zip'
+          path: '*.WINDOWS.exe'
           if-no-files-found: error
 
   release:
@@ -169,7 +164,7 @@ jobs:
           merge-multiple: true
       - name: Generate checksums
         working-directory: assets
-        run: sha256sum *.zip > SHA256SUMS.txt
+        run: sha256sum -- * > "${RUNNER_TEMP}/SHA256SUMS.txt" && mv "${RUNNER_TEMP}/SHA256SUMS.txt" .
       - name: Create Release
         uses: softprops/action-gh-release@v3
         with:
