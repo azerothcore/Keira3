@@ -363,6 +363,15 @@ describe('MysqlQueryService', () => {
       );
     });
 
+    it('should keep a question mark intact', () => {
+      const { service } = setup();
+
+      // squel reads a bare `?` in a raw condition as a placeholder, and NPC dialogue is full of them.
+      expect(service.getBroadcastTextSearchQuery('Who dares?', 50)).toBe(
+        "SELECT * FROM `broadcast_text` WHERE (`MaleText` LIKE '%Who dares?%' OR `FemaleText` LIKE '%Who dares?%') LIMIT 50",
+      );
+    });
+
     it('should leave the result unlimited when no limit is given', () => {
       const { service } = setup();
 

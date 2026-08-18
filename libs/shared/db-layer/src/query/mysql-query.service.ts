@@ -19,7 +19,6 @@ import {
 } from '@keira/shared/constants';
 import { from, map, Observable, of, tap } from 'rxjs';
 import squel, { Delete, Insert, Update } from 'squel';
-import { escape } from 'sqlstring';
 import { MysqlService } from '../mysql.service';
 import { BaseQueryService } from './base-query.service';
 
@@ -586,8 +585,10 @@ export class MysqlQueryService extends BaseQueryService {
 
   /** Searches `broadcast_text` for `text`, matching either of the two gendered wordings. */
   getBroadcastTextSearchQuery(text: string, limit: number | undefined): string {
-    const value = escape(`%${text}%`);
-    const query = squel.select(squelConfig).from(BROADCAST_TEXT_TABLE).where(`\`MaleText\` LIKE ${value} OR \`FemaleText\` LIKE ${value}`);
+    // Bound as a parameter rather than interpolated: squel reads a bare `?` in a raw condition as a
+    // placeholder, and the dialogue this searches is full of question marks.
+    const like = `%${text}%`;
+    const query = squel.select(squelConfig).from(BROADCAST_TEXT_TABLE).where('`MaleText` LIKE ? OR `FemaleText` LIKE ?', like, like);
 
     if (limit) {
       query.limit(Number(limit));

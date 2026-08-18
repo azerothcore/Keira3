@@ -16,7 +16,11 @@ export class BroadcastTextBrowserService extends SubscriptionHandler {
 
   query = '';
   rows: BroadcastTextRow[] | undefined;
-  selectedRow: BroadcastTextRow | undefined;
+  /**
+   * Bound straight to the datatable so the row the user sees highlighted and the row the copy
+   * button acts on can never drift apart: this service outlives the component, the datatable does not.
+   */
+  selectedRows: BroadcastTextRow[] = [];
   /** Set only when a search hit a single row and the table therefore also lists its neighbours. */
   matchedId: number | undefined;
 
@@ -43,8 +47,12 @@ export class BroadcastTextBrowserService extends SubscriptionHandler {
     );
   }
 
+  get selectedRow(): BroadcastTextRow | undefined {
+    return this.selectedRows[0];
+  }
+
   onSelect({ selected }: { selected: BroadcastTextRow[] }): void {
-    this.selectedRow = selected[0];
+    this.selectedRows = [...selected];
   }
 
   isMatchedRow(row: BroadcastTextRow): boolean {
@@ -72,6 +80,6 @@ export class BroadcastTextBrowserService extends SubscriptionHandler {
   private setRows(rows: BroadcastTextRow[], matchedId: number | undefined): void {
     this.rows = rows;
     this.matchedId = matchedId;
-    this.selectedRow = undefined;
+    this.selectedRows = [];
   }
 }

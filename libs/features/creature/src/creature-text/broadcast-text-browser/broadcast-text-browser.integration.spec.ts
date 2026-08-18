@@ -32,6 +32,9 @@ describe(`${BroadcastTextBrowserComponent.name} integration tests`, () => {
     get copyBtn(): HTMLButtonElement {
       return this.query<HTMLButtonElement>('#copy-to-creature-text-btn');
     }
+    getActiveRowsCount(): number {
+      return this.query<HTMLElement>('#broadcast-text-table').querySelectorAll('.datatable-body-row.active').length;
+    }
     getRowsCount(): number {
       return this.query<HTMLElement>('#broadcast-text-table').querySelectorAll('datatable-row-wrapper').length;
     }
@@ -131,6 +134,24 @@ describe(`${BroadcastTextBrowserComponent.name} integration tests`, () => {
       page.clickElement(page.copyBtn);
 
       expect(host.copied).toEqual(expect.objectContaining({ ID: 11, LanguageID: 7, Text: 'she says hi' }));
+    });
+
+    // The browser service outlives the component, so a selection made before leaving the tab is still
+    // live when the user comes back. It must stay visible, or the button would act on an unseen row.
+    it('should still show the row it would copy after the component is re-created', () => {
+      const { fixture, page, querySpy } = setup();
+      querySpy.mockReturnValue(of([broadcastText(10), broadcastText(11)]));
+      page.clickElement(page.searchBtn);
+      page.clickRowOfDatatable(1);
+      expect(page.getActiveRowsCount()).toBe(1);
+      fixture.destroy();
+
+      const { host: newHost, page: newPage } = setup();
+      newHost.targetRowSelected.set(true);
+      newPage.detectChanges();
+
+      expect(newPage.copyBtn.disabled).toBe(false);
+      expect(newPage.getActiveRowsCount()).toBe(1);
     });
   });
 });

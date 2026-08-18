@@ -40,6 +40,7 @@
     [rowHeight]="DTCFG.rowHeight"
     [limit]="DTCFG.limit"
     [selectionType]="DTCFG.selectionType"
+    [selected]="browserService.selectedRows"
     (select)="browserService.onSelect($event)"
   >
     <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
