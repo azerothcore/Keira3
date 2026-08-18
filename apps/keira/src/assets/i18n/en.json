@@ -324,7 +324,10 @@
       "EMOTE": "The emote that the creature plays when the text is executed. Value to use in this field can be obtained from the emote.dbc",
       "DURATION": "Time in ms to see text. 0 is default and calculated by core.",
       "SOUND": "The sound entry this creature will play at the same time the text is executed. Sounds are found in SoundEntries.dbc.",
-      "BROADCAST_TEXT_ID": "Id of the equivalent text found in broadcast_text"
+      "BROADCAST_TEXT_ID": "Id of the equivalent text found in broadcast_text",
+      "SEARCH_BROADCAST_TEXT": "Search MaleText or FemaleText",
+      "COPY_TO_ROW": "Copy to Selected Row",
+      "MATCHED_ROW": "The row your search matched"
     }
   },
   "QUEST": {
