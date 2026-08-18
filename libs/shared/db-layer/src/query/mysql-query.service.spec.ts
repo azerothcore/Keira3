@@ -346,6 +346,40 @@ describe('MysqlQueryService', () => {
     expect(querySpy).toHaveBeenCalledWith('SHOW COLUMNS FROM `creature_template`');
   });
 
+  describe('getBroadcastTextSearchQuery()', () => {
+    it('should match the text against both gendered wordings', () => {
+      const { service } = setup();
+
+      expect(service.getBroadcastTextSearchQuery('hello', 50)).toBe(
+        "SELECT * FROM `broadcast_text` WHERE (`MaleText` LIKE '%hello%' OR `FemaleText` LIKE '%hello%') LIMIT 50",
+      );
+    });
+
+    it('should escape the searched text', () => {
+      const { service } = setup();
+
+      expect(service.getBroadcastTextSearchQuery("it's", 50)).toBe(
+        "SELECT * FROM `broadcast_text` WHERE (`MaleText` LIKE '%it\\'s%' OR `FemaleText` LIKE '%it\\'s%') LIMIT 50",
+      );
+    });
+
+    it('should leave the result unlimited when no limit is given', () => {
+      const { service } = setup();
+
+      expect(service.getBroadcastTextSearchQuery('hello', undefined)).toBe(
+        "SELECT * FROM `broadcast_text` WHERE (`MaleText` LIKE '%hello%' OR `FemaleText` LIKE '%hello%')",
+      );
+    });
+  });
+
+  it('getBroadcastTextAdjacentQuery() should span the ids on both sides of the given one', () => {
+    const { service } = setup();
+
+    expect(service.getBroadcastTextAdjacentQuery(25, 5)).toBe(
+      'SELECT * FROM `broadcast_text` WHERE (`ID` BETWEEN 20 AND 30) ORDER BY ID ASC',
+    );
+  });
+
   describe('Query builders', () => {
     const tableName = 'my_table';
 

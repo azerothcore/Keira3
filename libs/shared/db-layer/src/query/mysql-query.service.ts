@@ -1,5 +1,10 @@
 import { inject, Service } from '@angular/core';
-import { CONDITION_SOURCE_TYPES, QUEST_PREREQUISITE_CONDITION_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
+import {
+  BROADCAST_TEXT_TABLE,
+  CONDITION_SOURCE_TYPES,
+  QUEST_PREREQUISITE_CONDITION_TYPES,
+  SmartScripts,
+} from '@keira/shared/acore-world-model';
 import { ConfigService } from '@keira/shared/common-services';
 import { squelConfig } from '@keira/shared/config';
 import {
@@ -14,6 +19,7 @@ import {
 } from '@keira/shared/constants';
 import { from, map, Observable, of, tap } from 'rxjs';
 import squel, { Delete, Insert, Update } from 'squel';
+import { escape } from 'sqlstring';
 import { MysqlService } from '../mysql.service';
 import { BaseQueryService } from './base-query.service';
 
@@ -576,6 +582,28 @@ export class MysqlQueryService extends BaseQueryService {
 
   getText1ById(id: string | number): Promise<string> {
     return this.queryValueToPromiseCached('getText1ById', String(id), `SELECT text0_1 AS v FROM npc_text WHERE ID = ${id}`);
+  }
+
+  /** Searches `broadcast_text` for `text`, matching either of the two gendered wordings. */
+  getBroadcastTextSearchQuery(text: string, limit: number | undefined): string {
+    const value = escape(`%${text}%`);
+    const query = squel.select(squelConfig).from(BROADCAST_TEXT_TABLE).where(`\`MaleText\` LIKE ${value} OR \`FemaleText\` LIKE ${value}`);
+
+    if (limit) {
+      query.limit(Number(limit));
+    }
+
+    return query.toString();
+  }
+
+  /** Selects the `broadcast_text` rows lying within `range` ids of `id`, `id` itself included. */
+  getBroadcastTextAdjacentQuery(id: number, range: number): string {
+    return squel
+      .select(squelConfig)
+      .from(BROADCAST_TEXT_TABLE)
+      .where(`\`ID\` BETWEEN ${id - range} AND ${id + range}`)
+      .order('ID')
+      .toString();
   }
 
   getCreatureDisplayIdById(creatureId: string | number): Promise<number> {
