@@ -1,5 +1,4 @@
-$fa-font-path: '@fortawesome/fontawesome-free/webfonts';
-@import './imports';
+@use 'imports';
 
 // TODO: remove this when ngx-select-ex is fixed https://github.com/optimistex/ngx-select-ex/pull/209
 .ngx-select__choices {

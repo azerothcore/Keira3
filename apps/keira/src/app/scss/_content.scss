@@ -1,4 +1,4 @@
-@import 'variables';
+@use 'variables' as *;
 
 .modal-content {
   background-color: $content-block-bg-color;
