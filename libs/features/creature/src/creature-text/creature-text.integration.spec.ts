@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { CreatureText } from '@keira/shared/acore-world-model';
+import { BroadcastText, CreatureText } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalDirective } from 'ngx-bootstrap/modal';
@@ -13,7 +13,19 @@ import { instance, mock } from 'ts-mockito';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { CreatureTextComponent } from './creature-text.component';
-class CreatureTextPage extends MultiRowEditorPageObject<CreatureTextComponent> {}
+class CreatureTextPage extends MultiRowEditorPageObject<CreatureTextComponent> {
+  readonly BROADCAST_DT_SELECTOR = '#broadcast-text-table';
+
+  searchBroadcastText(): void {
+    this.clickElement(this.query<HTMLButtonElement>('#broadcast-text-search-btn'));
+  }
+  clickBroadcastTextRow(rowIndex: number): void {
+    this.clickElement(this.getDatatableCell(rowIndex, 0, true, this.BROADCAST_DT_SELECTOR));
+  }
+  copyBroadcastTextToRow(): void {
+    this.clickElement(this.query<HTMLButtonElement>('#copy-to-creature-text-btn'));
+  }
+}
 
 describe('CreatureText integration tests', () => {
   const id = 1234;
@@ -346,6 +358,39 @@ describe('CreatureText integration tests', () => {
 
       page.expectDiffQueryToContain('DELETE FROM `creature_text` WHERE (`CreatureID` = 1234) AND (`GroupID` IN (0));');
       expect(page.getEditorTableRowsCount()).toBe(1);
+    });
+  });
+
+  describe('The broadcast_text browser', () => {
+    const broadcastText = { ...new BroadcastText(), ID: 25, LanguageID: 7, MaleText: 'Archers at the ready!' };
+
+    it('should copy the id, the language and the text into the selected row', () => {
+      const { page, querySpy } = setup(false);
+      querySpy.mockReturnValue(of([broadcastText]));
+
+      page.clickRowOfDatatable(0);
+      page.searchBroadcastText();
+      page.clickBroadcastTextRow(0);
+      page.copyBroadcastTextToRow();
+
+      expect(page.getInputById('BroadcastTextId').value).toBe('25');
+      expect(page.getInputById('Language').value).toBe('7');
+      expect(page.getInputById('Text').value).toBe('Archers at the ready!');
+      page.expectDiffQueryToContain(
+        'DELETE FROM `creature_text` WHERE (`CreatureID` = 1234) AND (`GroupID` IN (0));\n' +
+          'INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `TextRange`, `comment`) VALUES\n' +
+          "(1234, 0, 0, 'Archers at the ready!', 12, 7, 100, 0, 0, 0, 25, 0, '');",
+      );
+    });
+
+    it('should keep the copy button disabled while no creature_text row is selected', () => {
+      const { page, querySpy } = setup(false);
+      querySpy.mockReturnValue(of([broadcastText]));
+
+      page.searchBroadcastText();
+      page.clickBroadcastTextRow(0);
+
+      expect(page.query<HTMLButtonElement>('#copy-to-creature-text-btn').disabled).toBe(true);
     });
   });
 

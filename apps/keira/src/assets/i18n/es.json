@@ -324,7 +324,10 @@
       "EMOTE": "La animación que la criatura reproduce cuando se ejecuta el texto. El valor a usar en este campo se puede obtener de emote.dbc",
       "DURATION": "Tiempo en ms para ver el texto. 0 es el valor predeterminado y es calculado por el core.",
       "SOUND": "La entrada de sonido que esta criatura reproducirá al mismo tiempo que se ejecuta el texto. Los sonidos se encuentran en SoundEntries.dbc.",
-      "BROADCAST_TEXT_ID": "ID del texto equivalente encontrado en broadcast_text"
+      "BROADCAST_TEXT_ID": "ID del texto equivalente encontrado en broadcast_text",
+      "SEARCH_BROADCAST_TEXT": "Buscar en MaleText o FemaleText",
+      "COPY_TO_ROW": "Copiar a la fila seleccionada",
+      "MATCHED_ROW": "La fila que coincidió con tu búsqueda"
     }
   },
   "QUEST": {
