@@ -24,14 +24,42 @@
           "apps/keira/src/favicon.512x512.png"
         ],
         "styles": ["apps/keira/src/app/scss/main.scss"],
-        "scripts": ["node_modules/jquery/dist/jquery.min.js"]
+        "scripts": ["node_modules/jquery/dist/jquery.min.js"],
+        "stylePreprocessorOptions": {
+          "sass": {
+            "fatalDeprecations": [
+              "abs-percent",
+              "bogus-combinators",
+              "call-string",
+              "color-4-api",
+              "color-functions",
+              "color-module-compat",
+              "duplicate-var-flags",
+              "elseif",
+              "feature-exists",
+              "function-name",
+              "function-units",
+              "global-builtin",
+              "if-function",
+              "import",
+              "misplaced-rest",
+              "moz-document",
+              "new-global",
+              "null-alpha",
+              "relative-canonical",
+              "slash-div",
+              "strict-unary",
+              "with-private"
+            ]
+          }
+        }
       },
       "configurations": {
         "dev": {
           "budgets": [
             {
               "type": "anyComponentStyle",
-              "maximumWarning": "7kb"
+              "maximumError": "7kb"
             }
           ],
           "optimization": false,
@@ -65,7 +93,7 @@
           "budgets": [
             {
               "type": "anyComponentStyle",
-              "maximumWarning": "7kb"
+              "maximumError": "7kb"
             }
           ],
           "optimization": true,
