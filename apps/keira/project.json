@@ -10,6 +10,7 @@
       "options": {
         "plugins": ["./esbuild/plugin.js"],
         "aot": true,
+        "allowedCommonJsDependencies": ["jquery", "lodash.isequal", "sqlstring"],
         "outputPath": "dist",
         "index": "apps/keira/src/index.html",
         "browser": "apps/keira/src/main.ts",
