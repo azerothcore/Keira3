@@ -8,6 +8,7 @@ import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
+import { BroadcastTextBrowserComponent } from './broadcast-text-browser/broadcast-text-browser.component';
 import { CreatureTextService } from './creature-text.service';
 
 @Component({
@@ -27,6 +28,7 @@ import { CreatureTextService } from './creature-text.service';
     LanguageSelectorBtnComponent,
     SoundEntriesSelectorBtnComponent,
     GenericOptionSelectorComponent,
+    BroadcastTextBrowserComponent,
   ],
 })
 export class CreatureTextComponent extends MultiRowEditorComponent<CreatureText> {

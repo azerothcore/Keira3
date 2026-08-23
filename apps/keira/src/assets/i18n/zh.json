@@ -324,7 +324,10 @@
       "EMOTE": "生物在执行文本时播放的表情动作。此字段中使用的值可以从emote.dbc获取",
       "DURATION": "查看文本的时间（毫秒）。0为默认值，由核心计算。",
       "SOUND": "此生物在执行文本的同时播放的音效条目。音效可在SoundEntries.dbc中找到。",
-      "BROADCAST_TEXT_ID": "在broadcast_text中找到的等效文本的ID"
+      "BROADCAST_TEXT_ID": "在broadcast_text中找到的等效文本的ID",
+      "SEARCH_BROADCAST_TEXT": "搜索 MaleText 或 FemaleText",
+      "COPY_TO_ROW": "复制到选中的行",
+      "MATCHED_ROW": "与搜索匹配的行"
     }
   },
   "QUEST": {
