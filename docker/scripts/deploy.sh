@@ -213,14 +213,51 @@ validate_files() {
     log_success "File validation passed"
 }
 
+# Safely load KEY=VALUE pairs from an env file without executing it as shell code.
+# Rejects command substitution / shell metacharacters in values and skips comments/blank lines.
+load_env_file() {
+    local env_file="$1"
+    local line key value
+
+    while IFS= read -r line || [[ -n "$line" ]]; do
+        # Strip leading/trailing whitespace
+        line="${line#"${line%%[![:space:]]*}"}"
+        line="${line%"${line##*[![:space:]]}"}"
+
+        # Skip blank lines and comments
+        [[ -z "$line" || "$line" == \#* ]] && continue
+
+        # Only accept simple KEY=VALUE lines (optionally prefixed with "export ")
+        if [[ "$line" =~ ^(export[[:space:]]+)?([A-Za-z_][A-Za-z0-9_]*)=(.*)$ ]]; then
+            key="${BASH_REMATCH[2]}"
+            value="${BASH_REMATCH[3]}"
+
+            # Strip a single layer of matching quotes
+            if [[ "$value" =~ ^\"(.*)\"$ ]]; then
+                value="${BASH_REMATCH[1]}"
+            elif [[ "$value" =~ ^\'(.*)\'$ ]]; then
+                value="${BASH_REMATCH[1]}"
+            fi
+
+            # Reject values containing shell metacharacters / command substitution
+            if [[ "$value" == *'$('* || "$value" == *'`'* ]]; then
+                log_error "Refusing to load $ENV_FILE: value for $key contains disallowed shell syntax"
+                exit 1
+            fi
+
+            export "$key=$value"
+        else
+            log_warning "Ignoring unrecognized line in $ENV_FILE: $line"
+        fi
+    done < "$env_file"
+}
+
 validate_environment_config() {
     log_info "Validating environment configuration..."
 
-    # Load environment file if it exists
+    # Load environment file if it exists (safe KEY=VALUE parsing, not shell execution)
     if [[ -f "$ENV_FILE" ]]; then
-        set -a
-        source "$ENV_FILE"
-        set +a
+        load_env_file "$ENV_FILE"
     fi
 
     # Check required environment variables
@@ -312,8 +349,12 @@ wait_for_health() {
     local attempt=1
 
     while [[ $attempt -le $max_attempts ]]; do
-        if docker-compose -f "$COMPOSE_FILE" exec -T "$SERVICE_NAME" curl -f http://localhost:8080/health &> /dev/null; then
-            log_success "Application is healthy"
+        # nginx's /health proxies to the database API's /health, so a 200 here
+        # reflects API readiness too; also probe the API port directly as a
+        # defense-in-depth check in case nginx and the API disagree.
+        if docker-compose -f "$COMPOSE_FILE" exec -T "$SERVICE_NAME" curl -f http://localhost:8080/health &> /dev/null && \
+           docker-compose -f "$COMPOSE_FILE" exec -T "$SERVICE_NAME" curl -f http://localhost:3001/health &> /dev/null; then
+            log_success "Application is healthy (web and database API)"
             return 0
         fi
 
