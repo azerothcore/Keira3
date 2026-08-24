@@ -190,6 +190,8 @@ jobs:
             -e KEIRA_DATABASE_NAME=test_db \
             -e DB_API_PORT=3001 \
             -e KEIRA_PORT=8080 \
+            -e KEIRA_AUTH_USER=ci \
+            -e KEIRA_AUTH_PASSWORD=ci-smoke-test \
             keira3:test
 
       - name: Wait for container startup
@@ -249,12 +251,24 @@ jobs:
             exit 1
           }
 
-          # Test API endpoints
-          docker exec keira3-test curl -f http://127.0.0.1:3001/api/database/state
+          # API must refuse unauthenticated requests (fail-closed auth)
+          echo "Testing that the API requires a session..."
+          STATUS=$(docker exec keira3-test curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:3001/api/database/state)
+          [ "$STATUS" = "401" ] || { echo "Expected 401 without a session, got $STATUS"; docker logs keira3-test; exit 1; }
+
+          # Login and access the API with the session cookie
+          echo "Testing login and authenticated state probe..."
+          docker exec keira3-test sh -c "
+            curl -sf -D /tmp/login-headers -X POST -H 'Content-Type: application/json' \
+              -d '{\"username\":\"ci\",\"password\":\"ci-smoke-test\"}' \
+              http://127.0.0.1:3001/api/auth/login &&
+            COOKIE=\$(grep -i '^set-cookie' /tmp/login-headers | sed 's/^[Ss]et-[Cc]ookie: //' | cut -d';' -f1) &&
+            curl -sf -H \"Cookie: \$COOKIE\" http://127.0.0.1:3001/api/database/state
+          " || { echo "Authenticated API access failed"; docker logs keira3-test; exit 1; }
 
       - name: Test database connectivity
         run: |
-          # Test database connection through API
+          # Test database connection through API (unauthenticated: expects 401 by design)
           docker exec keira3-test curl -X POST \
             -H "Content-Type: application/json" \
             -d '{"config":{"host":"localhost","port":3306,"user":"test_user","password":"test_password","database":"test_db"}}' \
