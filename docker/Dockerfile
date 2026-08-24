@@ -46,6 +46,7 @@ COPY --from=builder --chown=keira:keira /app/dist/browser /usr/share/nginx/html
 
 # Copy database API service from new location
 COPY --from=builder --chown=keira:keira /app/docker/api/database-api.js /app/database-api.js
+COPY --from=builder --chown=keira:keira /app/docker/api/auth.js /app/auth.js
 COPY --from=builder --chown=keira:keira /app/node_modules /app/node_modules
 
 # Copy nginx configuration and startup script
