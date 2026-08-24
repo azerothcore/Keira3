@@ -541,6 +541,51 @@ describe('MysqlService', () => {
     });
   });
 
+  describe('connectWeb() / disconnectWeb()', () => {
+    it('connectWeb should establish the connection when state is CONNECTED', async () => {
+      const { service } = setup();
+      (service as any).http = { get: vi.fn().mockReturnValue(of({ state: 'CONNECTED' })) };
+
+      const result = await new Promise((resolve) => service.connectWeb().subscribe(resolve));
+
+      expect(result).toBe(true);
+      expect(service.connectionEstablished).toBe(true);
+      expect((service as any).http.get).toHaveBeenCalledWith('/api/database/state');
+    });
+
+    it('connectWeb should emit false and stay disconnected on non-CONNECTED state', async () => {
+      const { service } = setup();
+      (service as any).http = { get: vi.fn().mockReturnValue(of({ state: 'DISCONNECTED' })) };
+
+      const result = await new Promise((resolve) => service.connectWeb().subscribe(resolve));
+
+      expect(result).toBe(false);
+      expect(service.connectionEstablished).toBe(false);
+    });
+
+    it('connectWeb should emit false instead of erroring on HTTP failure', async () => {
+      const { service } = setup();
+      (service as any).http = { get: vi.fn().mockReturnValue(throwError(() => new Error('401'))) };
+
+      const result = await new Promise((resolve) => service.connectWeb().subscribe(resolve));
+
+      expect(result).toBe(false);
+      expect(service.connectionEstablished).toBe(false);
+    });
+
+    it('disconnectWeb should clear the connection and emit webSessionExpired$', () => {
+      const { service } = setup();
+      service['_connectionEstablished'] = true;
+      const expired = vi.fn();
+      service.webSessionExpired$.subscribe(expired);
+
+      service.disconnectWeb();
+
+      expect(service.connectionEstablished).toBe(false);
+      expect(expired).toHaveBeenCalledTimes(1);
+    });
+  });
+
   afterEach(() => {
     reset(mockElectronService);
     reset(mockHttpClient);
