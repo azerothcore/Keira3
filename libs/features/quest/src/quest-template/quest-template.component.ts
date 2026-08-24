@@ -11,8 +11,8 @@ import {
   SingleValueSelectorBtnComponent,
   SpellSelectorBtnComponent,
 } from '@keira/shared/selectors';
-import { TranslateModule } from '@ngx-translate/core';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewComponent } from '../quest-preview/quest-preview.component';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
@@ -25,11 +25,12 @@ import { QuestTemplateService } from './quest-template.service';
   styleUrls: ['./quest-template.component.scss'],
   imports: [
     TopBarComponent,
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,
-    TooltipModule,
+    TooltipDirective,
     SingleValueSelectorBtnComponent,
     IconComponent,
     ItemSelectorBtnComponent,

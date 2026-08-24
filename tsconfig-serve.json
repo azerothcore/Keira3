@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
+    "noImplicitAny": false,
     "resolveJsonModule": true,
     "sourceMap": true,
     "declaration": false,

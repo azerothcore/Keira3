@@ -1,3 +1,4 @@
+import { vi, type MockInstance } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -25,7 +26,6 @@ import { QuestTemplateAddonService } from '../quest-template-addon/quest-templat
 import { QuestTemplateService } from '../quest-template/quest-template.service';
 import { DifficultyLevel, QUEST_FACTION_REWARD, QuestFactionRewardKey } from './quest-preview.model';
 import { QuestPreviewService } from './quest-preview.service';
-import Spy = jasmine.Spy;
 
 describe('QuestPreviewService', () => {
   beforeEach(() => {
@@ -53,11 +53,13 @@ describe('QuestPreviewService', () => {
     const creatureQuestenderService = TestBed.inject(CreatureQuestenderService);
     const MAX_NEXT_QUEST_ID = 7;
 
-    spyOn(mysqlQueryService, 'getQuestTitleById').and.callFake((i) => Promise.resolve('Title' + i));
-    spyOn(mysqlQueryService, 'getPrevQuestById').and.callFake((id: number) => Promise.resolve(String(id > 0 ? id - 1 : 0)));
-    spyOn(mysqlQueryService, 'getNextQuestById').and.callFake((id: number) => Promise.resolve(String(id < MAX_NEXT_QUEST_ID ? id + 1 : 0)));
-    spyOn(mysqlQueryService, 'getGameObjectNameById').and.callFake(() => Promise.resolve('Helias Gameobject'));
-    spyOn(mysqlQueryService, 'getCreatureNameById').and.callFake(() => Promise.resolve('Helias Creature'));
+    vi.spyOn(mysqlQueryService, 'getQuestTitleById').mockImplementation((i) => Promise.resolve('Title' + i));
+    vi.spyOn(mysqlQueryService, 'getPrevQuestById').mockImplementation((id: number) => Promise.resolve(String(id > 0 ? id - 1 : 0)));
+    vi.spyOn(mysqlQueryService, 'getNextQuestById').mockImplementation((id: number) =>
+      Promise.resolve(String(id < MAX_NEXT_QUEST_ID ? id + 1 : 0)),
+    );
+    vi.spyOn(mysqlQueryService, 'getGameObjectNameById').mockImplementation(() => Promise.resolve('Helias Gameobject'));
+    vi.spyOn(mysqlQueryService, 'getCreatureNameById').mockImplementation(() => Promise.resolve('Helias Creature'));
 
     return {
       service,
@@ -126,7 +128,7 @@ describe('QuestPreviewService', () => {
     const { service, questTemplateService, mysqlQueryService } = setup();
     const mockStartItem = 123456;
     const mockStartItemName = 'Sword of AzerothCore';
-    spyOn(mysqlQueryService, 'getItemNameById').and.callFake(() => Promise.resolve(mockStartItemName));
+    vi.spyOn(mysqlQueryService, 'getItemNameById').mockImplementation(() => Promise.resolve(mockStartItemName));
 
     questTemplateService.form.controls.StartItem.setValue(mockStartItem);
 
@@ -162,9 +164,9 @@ describe('QuestPreviewService', () => {
       spell_rate: 1,
     };
 
-    spyOn(mysqlQueryService, 'getItemByStartQuest').and.callFake(() => Promise.resolve(mockItem));
-    spyOn(mysqlQueryService, 'getItemNameByStartQuest').and.callFake(() => Promise.resolve(mockItemName));
-    spyOn(mysqlQueryService, 'getReputationRewardByFaction').and.callFake(() => Promise.resolve([mockQuestReputationReward]));
+    vi.spyOn(mysqlQueryService, 'getItemByStartQuest').mockImplementation(() => Promise.resolve(mockItem));
+    vi.spyOn(mysqlQueryService, 'getItemNameByStartQuest').mockImplementation(() => Promise.resolve(mockItemName));
+    vi.spyOn(mysqlQueryService, 'getReputationRewardByFaction').mockImplementation(() => Promise.resolve([mockQuestReputationReward]));
     questTemplateService.form.controls.ID.setValue(mockID);
 
     expect(await service.questGivenByItem$).toBe(mockItem);
@@ -190,8 +192,8 @@ describe('QuestPreviewService', () => {
     questTemplateService.form.controls.RewardXPDifficulty.setValue(mockDifficulty);
     questTemplateService.form.controls.QuestLevel.setValue(mockQuestLevel);
 
-    spyOn(sqliteQueryService, 'getSkillNameById').and.callFake(() => Promise.resolve(mockSkillName));
-    spyOn(sqliteQueryService, 'getRewardXP').and.callFake(() => Promise.resolve(mockRewardXP));
+    vi.spyOn(sqliteQueryService, 'getSkillNameById').mockImplementation(() => Promise.resolve(mockSkillName));
+    vi.spyOn(sqliteQueryService, 'getRewardXP').mockImplementation(() => Promise.resolve(mockRewardXP));
 
     expect(await service.requiredSkill$).toBe(mockSkillName);
     expect(await service.rewardXP$).toBe(mockRewardXP);
@@ -269,15 +271,31 @@ describe('QuestPreviewService', () => {
 
   it('initializeService', () => {
     const { service, questTemplateService } = setup();
-    const initServiceSpy: Spy = spyOn<any>(service, 'initService').and.callThrough();
-    const questTemplateLoadReloadSpy: Spy = spyOn(TestBed.inject(QuestTemplateService), 'reload');
-    const questRequestItemLoadReloadSpy: Spy = spyOn(TestBed.inject(QuestRequestItemsService), 'reload');
-    const questTemplateAddonLoadReloadSpy: Spy = spyOn(TestBed.inject(QuestTemplateAddonService), 'reload');
-    const gameObjectQueststarterLoadReloadSpy: Spy = spyOn(TestBed.inject(GameobjectQueststarterService), 'reload');
-    const gameObjectQuestenderLoadReloadSpy: Spy = spyOn(TestBed.inject(GameobjectQuestenderService), 'reload');
-    const creatureQueststarterLoadReloadSpy: Spy = spyOn(TestBed.inject(CreatureQueststarterService), 'reload');
-    const creatureQuestenderLoadReloadSpy: Spy = spyOn(TestBed.inject(CreatureQuestenderService), 'reload');
-    const questOfferRewardServiceLoadReloadSpy: Spy = spyOn(TestBed.inject(QuestOfferRewardService), 'reload');
+    const initServiceSpy: MockInstance = vi.spyOn<any>(service, 'initService');
+    const questTemplateLoadReloadSpy: MockInstance = vi
+      .spyOn(TestBed.inject(QuestTemplateService), 'reload')
+      .mockImplementation(() => undefined);
+    const questRequestItemLoadReloadSpy: MockInstance = vi
+      .spyOn(TestBed.inject(QuestRequestItemsService), 'reload')
+      .mockImplementation(() => undefined);
+    const questTemplateAddonLoadReloadSpy: MockInstance = vi
+      .spyOn(TestBed.inject(QuestTemplateAddonService), 'reload')
+      .mockImplementation(() => undefined);
+    const gameObjectQueststarterLoadReloadSpy: MockInstance = vi
+      .spyOn(TestBed.inject(GameobjectQueststarterService), 'reload')
+      .mockImplementation(() => undefined);
+    const gameObjectQuestenderLoadReloadSpy: MockInstance = vi
+      .spyOn(TestBed.inject(GameobjectQuestenderService), 'reload')
+      .mockImplementation(() => undefined);
+    const creatureQueststarterLoadReloadSpy: MockInstance = vi
+      .spyOn(TestBed.inject(CreatureQueststarterService), 'reload')
+      .mockImplementation(() => undefined);
+    const creatureQuestenderLoadReloadSpy: MockInstance = vi
+      .spyOn(TestBed.inject(CreatureQuestenderService), 'reload')
+      .mockImplementation(() => undefined);
+    const questOfferRewardServiceLoadReloadSpy: MockInstance = vi
+      .spyOn(TestBed.inject(QuestOfferRewardService), 'reload')
+      .mockImplementation(() => undefined);
     const mockEntity = '123';
 
     questTemplateService['_loadedEntityId'] = mockEntity;
@@ -487,30 +505,30 @@ describe('QuestPreviewService', () => {
 
     it('all dailyType and normal quest_rate', () => {
       const { service, questTemplateService } = setup();
-      const getPeriodicQuestSpy: Spy = spyOn<any>(service, 'getPeriodicQuest');
+      const getPeriodicQuestSpy: MockInstance = vi.spyOn<any>(service, 'getPeriodicQuest').mockImplementation(() => undefined);
       questTemplateService.form.controls.RewardFactionID1.setValue(mockRepFaction);
       questTemplateService.form.controls.RewardFactionValue1.setValue(mockRepValue);
 
       let mockOutput = QUEST_FACTION_REWARD[(mockRepValue * (dailyRate - 1)) as QuestFactionRewardKey];
-      getPeriodicQuestSpy.and.returnValue(QUEST_PERIOD.DAILY);
+      getPeriodicQuestSpy.mockReturnValue(QUEST_PERIOD.DAILY);
       expect(service.getRewardReputation(1, [mockQuestReputationReward2])).toBe(mockOutput);
 
       mockOutput = QUEST_FACTION_REWARD[(mockRepValue * (weeklyRate - 1)) as QuestFactionRewardKey];
-      getPeriodicQuestSpy.and.returnValue(QUEST_PERIOD.WEEKLY);
+      getPeriodicQuestSpy.mockReturnValue(QUEST_PERIOD.WEEKLY);
       expect(service.getRewardReputation(1, [mockQuestReputationReward2])).toBe(mockOutput);
 
       mockOutput = QUEST_FACTION_REWARD[(mockRepValue * (monthlyRate - 1)) as QuestFactionRewardKey];
-      getPeriodicQuestSpy.and.returnValue(QUEST_PERIOD.MONTHLY);
+      getPeriodicQuestSpy.mockReturnValue(QUEST_PERIOD.MONTHLY);
       expect(service.getRewardReputation(1, [mockQuestReputationReward2])).toBe(mockOutput);
 
       mockOutput = QUEST_FACTION_REWARD[(mockRepValue * (questRate - 1)) as QuestFactionRewardKey];
-      getPeriodicQuestSpy.and.returnValue('mockPeriod');
+      getPeriodicQuestSpy.mockReturnValue('mockPeriod');
       expect(service.getRewardReputation(1, [mockQuestReputationReward2])).toBe(mockOutput);
     });
 
     it('in case of repeatable quest', () => {
       const { service, questTemplateService } = setup();
-      spyOn(service, 'isRepeatable').and.returnValue(true);
+      vi.spyOn(service, 'isRepeatable').mockReturnValue(true);
       questTemplateService.form.controls.RewardFactionID1.setValue(mockRepFaction);
       questTemplateService.form.controls.RewardFactionValue1.setValue(mockRepValue);
       const mockOutput = QUEST_FACTION_REWARD[(mockRepValue * (repeatableRate - 1)) as QuestFactionRewardKey];
@@ -549,10 +567,10 @@ describe('QuestPreviewService', () => {
       const { service, questTemplateService } = setup();
 
       questTemplateService.form.controls.RequiredNpcOrGoCount1.setValue(0);
-      expect(service.isNpcOrGoObj(1)).toBeFalse();
+      expect(service.isNpcOrGoObj(1)).toBe(false);
 
       questTemplateService.form.controls.RequiredNpcOrGoCount1.setValue(1);
-      expect(service.isNpcOrGoObj(1)).toBeTrue();
+      expect(service.isNpcOrGoObj(1)).toBe(true);
     });
 
     it('getObjItemCount', () => {
@@ -607,46 +625,46 @@ describe('QuestPreviewService', () => {
     it('isFieldAvailable', () => {
       const { service, questTemplateService } = setup();
 
-      expect(service.isFieldAvailable('RewardFactionID', 'RewardFactionValue', 1)).toBeFalse();
+      expect(service.isFieldAvailable('RewardFactionID', 'RewardFactionValue', 1)).toBe(false);
 
       questTemplateService.form.controls.RewardFactionID1.setValue(123);
       questTemplateService.form.controls.RewardFactionValue1.setValue(10);
 
-      expect(service.isFieldAvailable('RewardFactionID', 'RewardFactionValue', 1)).toBeTrue();
+      expect(service.isFieldAvailable('RewardFactionID', 'RewardFactionValue', 1)).toBe(true);
     });
 
     it('isRewardReputation', () => {
       const { service } = setup();
-      const isFieldAvailableSpy = spyOn(service, 'isFieldAvailable').and.returnValue(false);
+      const isFieldAvailableSpy = vi.spyOn(service, 'isFieldAvailable').mockReturnValue(false);
 
-      expect(service.isRewardReputation()).toBeFalse();
+      expect(service.isRewardReputation()).toBe(false);
 
-      isFieldAvailableSpy.and.callFake((f1, f2, idx) => idx === 5); // return true in the last condition
-      expect(service.isRewardReputation()).toBeTrue();
+      isFieldAvailableSpy.mockImplementation((f1, f2, idx) => idx === 5); // return true in the last condition
+      expect(service.isRewardReputation()).toBe(true);
 
       expect(isFieldAvailableSpy).toHaveBeenCalledTimes(10);
     });
 
     it('isRewardItems', () => {
       const { service } = setup();
-      const isFieldAvailableSpy = spyOn(service, 'isFieldAvailable').and.returnValue(false);
+      const isFieldAvailableSpy = vi.spyOn(service, 'isFieldAvailable').mockReturnValue(false);
 
-      expect(service.isRewardItems()).toBeFalse();
+      expect(service.isRewardItems()).toBe(false);
 
-      isFieldAvailableSpy.and.callFake((f1, f2, idx) => idx === 4); // return true in the last condition
-      expect(service.isRewardItems()).toBeTrue();
+      isFieldAvailableSpy.mockImplementation((f1, f2, idx) => idx === 4); // return true in the last condition
+      expect(service.isRewardItems()).toBe(true);
 
       expect(isFieldAvailableSpy).toHaveBeenCalledTimes(8);
     });
 
     it('isRewardChoiceItems', () => {
       const { service } = setup();
-      const isFieldAvailableSpy = spyOn(service, 'isFieldAvailable').and.returnValue(false);
+      const isFieldAvailableSpy = vi.spyOn(service, 'isFieldAvailable').mockReturnValue(false);
 
-      expect(service.isRewardChoiceItems()).toBeFalse();
+      expect(service.isRewardChoiceItems()).toBe(false);
 
-      isFieldAvailableSpy.and.callFake((f1, f2, idx) => idx === 4); // return true in the last condition
-      expect(service.isRewardChoiceItems()).toBeTrue();
+      isFieldAvailableSpy.mockImplementation((f1, f2, idx) => idx === 4); // return true in the last condition
+      expect(service.isRewardChoiceItems()).toBe(true);
 
       expect(isFieldAvailableSpy).toHaveBeenCalledTimes(8);
     });
@@ -654,30 +672,30 @@ describe('QuestPreviewService', () => {
     it('isGains', () => {
       const { service, questTemplateService } = setup();
 
-      expect(service.isGains()).toBeFalse();
+      expect(service.isGains()).toBe(false);
 
       questTemplateService.form.controls.RewardXPDifficulty.setValue(1);
-      expect(service.isGains()).toBeTrue();
+      expect(service.isGains()).toBe(true);
 
       questTemplateService.form.controls.RewardXPDifficulty.setValue(0);
       questTemplateService.form.controls.RewardTalents.setValue(1);
-      expect(service.isGains()).toBeTrue();
+      expect(service.isGains()).toBe(true);
 
       questTemplateService.form.controls.RewardTalents.setValue(0);
-      spyOn(service, 'isRewardReputation').and.returnValue(true);
-      expect(service.isGains()).toBeTrue();
+      vi.spyOn(service, 'isRewardReputation').mockReturnValue(true);
+      expect(service.isGains()).toBe(true);
     });
 
     it('isReward', () => {
       const { service } = setup();
-      spyOn(service, 'isRewardItems').and.returnValue(false);
-      spyOn(service, 'isRewardChoiceItems').and.returnValue(false);
-      const rewardSpellSpy = spyOn(service, 'rewardSpell').and.returnValue(0);
+      vi.spyOn(service, 'isRewardItems').mockReturnValue(false);
+      vi.spyOn(service, 'isRewardChoiceItems').mockReturnValue(false);
+      const rewardSpellSpy = vi.spyOn(service, 'rewardSpell').mockReturnValue(0);
 
-      expect(service.isReward()).toBeFalse();
+      expect(service.isReward()).toBe(false);
 
-      rewardSpellSpy.and.returnValue(1);
-      expect(service.isReward()).toBeTrue();
+      rewardSpellSpy.mockReturnValue(1);
+      expect(service.isReward()).toBe(true);
 
       expect(service.isRewardItems).toHaveBeenCalledTimes(2);
       expect(service.isRewardChoiceItems).toHaveBeenCalledTimes(2);
@@ -701,16 +719,16 @@ describe('QuestPreviewService', () => {
       const UNAVAILABLE = 0x04000;
 
       questTemplateService.form.controls.Flags.setValue(0);
-      expect(service.isUnavailable()).toBeFalse();
+      expect(service.isUnavailable()).toBe(false);
 
       questTemplateService.form.controls.Flags.setValue(UNAVAILABLE);
-      expect(service.isUnavailable()).toBeTrue();
+      expect(service.isUnavailable()).toBe(true);
 
       questTemplateService.form.controls.Flags.setValue(UNAVAILABLE + 2);
-      expect(service.isUnavailable()).toBeTrue();
+      expect(service.isUnavailable()).toBe(true);
 
       questTemplateService.form.controls.Flags.setValue(UNAVAILABLE - 2);
-      expect(service.isUnavailable()).toBeFalse();
+      expect(service.isUnavailable()).toBe(false);
     });
   });
 });

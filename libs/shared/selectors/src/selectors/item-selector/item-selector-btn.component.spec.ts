@@ -1,27 +1,26 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { ModalModule } from 'ngx-bootstrap/modal';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { ItemSelectorBtnComponent } from './item-selector-btn.component';
 
 describe('ItemSelectorBtnComponent', () => {
-  let component: ItemSelectorBtnComponent;
-  let fixture: ComponentFixture<ItemSelectorBtnComponent>;
-
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), ItemSelectorBtnComponent],
+      imports: [ModalDirective, ItemSelectorBtnComponent],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
   });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ItemSelectorBtnComponent);
-    component = fixture.componentInstance;
+  function setup() {
+    const fixture = TestBed.createComponent(ItemSelectorBtnComponent);
+    const component = fixture.componentInstance;
     fixture.detectChanges();
-  });
+    return { fixture, component };
+  }
 
   it('should create', () => {
+    const { component } = setup();
     expect(component).toBeTruthy();
   });
 });

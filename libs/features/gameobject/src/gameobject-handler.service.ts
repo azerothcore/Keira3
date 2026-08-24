@@ -1,4 +1,4 @@
-import { inject, Injectable, signal, Signal } from '@angular/core';
+import { inject, Service, signal, Signal } from '@angular/core';
 import { HandlerService } from '@keira/shared/base-abstract-classes';
 import {
   GAMEOBJECT_LOOT_TEMPLATE_TABLE,
@@ -12,9 +12,7 @@ import {
 } from '@keira/shared/acore-world-model';
 import { SaiGameobjectHandlerService } from './sai-gameobject-handler.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class GameobjectHandlerService extends HandlerService<GameobjectTemplate> {
   protected saiGameobjectHandler = inject(SaiGameobjectHandlerService);
   protected readonly mainEditorRoutePath = 'gameobject/gameobject-template';

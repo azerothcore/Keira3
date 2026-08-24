@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
@@ -7,14 +8,14 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { LATEST_RELEASE_API_URL } from '@keira/shared/constants';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
-import { Subject } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
+import { Observable, Subject } from 'rxjs';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import packageInfo from '../../../../package.json';
 
 import { AppComponent } from './app.component';
 
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { BsDropdownDirective, BsDropdownMenuDirective, BsDropdownToggleDirective } from 'ngx-bootstrap/dropdown';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import { MainWindowComponent } from '@keira/main/main-window';
 import { ConnectionWindowComponent } from '@keira/main/connection-window';
@@ -27,7 +28,9 @@ describe('AppComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        BsDropdownModule,
+        BsDropdownDirective,
+        BsDropdownToggleDirective,
+        BsDropdownMenuDirective,
         FormsModule,
         ReactiveFormsModule,
         RouterTestingModule,
@@ -58,8 +61,7 @@ describe('AppComponent', () => {
     const httpTestingController = TestBed.inject(HttpTestingController);
 
     const connectionLostSubject = new Subject<boolean>();
-    // @ts-ignore
-    TestBed.inject(MysqlService)['connectionLost$'] = connectionLostSubject.asObservable();
+    (TestBed.inject(MysqlService) as { connectionLost$: Observable<boolean> }).connectionLost$ = connectionLostSubject.asObservable();
 
     return { fixture, component, connectionLostSubject, toastrService, httpTestingController };
   };
@@ -68,8 +70,8 @@ describe('AppComponent', () => {
     it('should correctly react on connectionLost$ [connection lost]', () => {
       const { fixture, toastrService, connectionLostSubject } = setup();
       fixture.detectChanges();
-      spyOn(toastrService, 'success');
-      spyOn(toastrService, 'error');
+      vi.spyOn(toastrService, 'success').mockImplementation(() => undefined);
+      vi.spyOn(toastrService, 'error').mockImplementation(() => undefined);
 
       connectionLostSubject.next(false);
       connectionLostSubject.next(false);
@@ -83,8 +85,8 @@ describe('AppComponent', () => {
     it('should correctly react on connectionLost$ [reconnected]', () => {
       const { fixture, connectionLostSubject, toastrService } = setup();
       fixture.detectChanges();
-      spyOn(toastrService, 'success');
-      spyOn(toastrService, 'error');
+      vi.spyOn(toastrService, 'success').mockImplementation(() => undefined);
+      vi.spyOn(toastrService, 'error').mockImplementation(() => undefined);
 
       connectionLostSubject.next(true);
 
@@ -128,7 +130,7 @@ describe('AppComponent', () => {
       fixture.detectChanges();
 
       // Check if the alert is shown with the close button
-      expect(component.showNewerVersionAlert).toBeTrue();
+      expect(component.showNewerVersionAlert).toBe(true);
       const closeBtn: HTMLButtonElement | null = fixture.nativeElement.querySelector('.newer-version-alert .fa-xmark').closest('button');
       expect(closeBtn).toBeTruthy();
 
@@ -137,7 +139,7 @@ describe('AppComponent', () => {
       fixture.detectChanges();
 
       // the alert should be hidden now
-      expect(component.showNewerVersionAlert).toBeFalse();
+      expect(component.showNewerVersionAlert).toBe(false);
     });
   });
 });

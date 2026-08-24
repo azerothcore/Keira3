@@ -1,5 +1,6 @@
-import { Injectable, NgZone, inject } from '@angular/core';
+import { Service, NgZone, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { ElectronService } from '@keira/shared/common-services';
 import * as mysql from 'mysql2';
 import { Connection, ConnectionOptions, FieldPacket as FieldInfo, QueryError } from 'mysql2';
 import { Observable, Subject, Subscriber } from 'rxjs';
@@ -16,12 +17,10 @@ import {
   isDatabaseSuccessResponse,
   isDatabaseErrorResponse,
 } from '@keira/shared/constants';
-import { ElectronService } from '@keira/shared/common-services';
-import { KEIRA_APP_CONFIG_TOKEN, KeiraAppConfig } from '@keira/shared/config';
+import { KEIRA_APP_CONFIG_TOKEN } from '@keira/shared/config';
+import * as ssh2 from 'ssh2';
 import { KeiraConnectionOptions } from './mysql.model';
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class MysqlService {
   private readonly electronService = inject(ElectronService);
   private readonly ngZone = inject(NgZone);
@@ -29,8 +28,14 @@ export class MysqlService {
   private readonly appConfig = inject(KEIRA_APP_CONFIG_TOKEN);
 
   private mysql!: typeof mysql;
+  private ssh2!: typeof ssh2;
   private _connection!: Connection;
   private isWebEnvironment = false;
+  private _sshClient: ssh2.Client | null = null;
+  private _sshTunnelActive = false;
+  get sshTunnelActive(): boolean {
+    return this._sshTunnelActive;
+  }
 
   private _config!: KeiraConnectionOptions;
   get config(): KeiraConnectionOptions {
@@ -54,6 +59,7 @@ export class MysqlService {
     /* istanbul ignore next */
     if (this.electronService.isElectron()) {
       this.mysql = window.require('mysql2');
+      this.ssh2 = window.require('ssh2');
       this.isWebEnvironment = false;
     } else {
       // Web environment - use HTTP API
@@ -71,6 +77,22 @@ export class MysqlService {
     return this.http.get<DatabaseStateResponse>(`${apiUrl}/state`);
   }
 
+  // this conversion clean the config object from ssh and ssl related properties that mysql2 does not expect when ssh is disabled
+  private toMysqlConfig(config: KeiraConnectionOptions): mysql.ConnectionOptions {
+    const {
+      sslEnabled: _sslEnabled,
+      sshEnabled: _sshEnabled,
+      sshHost: _sshHost,
+      sshPort: _sshPort,
+      sshUser: _sshUser,
+      sshPassword: _sshPassword,
+      sshPrivateKey: _sshPrivateKey,
+      ...mysqlConfig
+    } = config;
+
+    return mysqlConfig;
+  }
+
   connect(config: KeiraConnectionOptions) {
     this._config = config;
     this._config.multipleStatements = true;
@@ -78,13 +100,18 @@ export class MysqlService {
     if (this.isWebEnvironment) {
       // Use HTTP API for web environment
       return this.connectViaAPI(config);
-    } else {
-      // Use direct mysql2 connection for Electron
-      this._connection = this.mysql.createConnection(this.config);
-      return new Observable((subscriber) => {
-        this._connection.connect(this.getConnectCallback(subscriber));
-      });
     }
+
+    if (config.sshEnabled) {
+      return this.connectViaSshTunnel(config);
+    }
+
+    // Use direct mysql2 connection for Electron
+    this._connection = this.mysql.createConnection(this.toMysqlConfig(this.config));
+
+    return new Observable((subscriber) => {
+      this._connection.connect(this.getConnectCallback(subscriber));
+    });
   }
 
   private connectViaAPI(config: ConnectionOptions): Observable<void> {
@@ -122,6 +149,76 @@ export class MysqlService {
     );
   }
 
+  private connectViaSshTunnel(config: KeiraConnectionOptions): Observable<void> {
+    return new Observable((subscriber) => {
+      this.closeSshTunnel();
+
+      const sshClient = new this.ssh2.Client();
+      this._sshClient = sshClient;
+
+      const sshConfig: ssh2.ConnectConfig = {
+        host: config.sshHost,
+        port: config.sshPort || 22,
+        username: config.sshUser,
+      };
+
+      if (config.sshPrivateKey) {
+        sshConfig.privateKey = config.sshPrivateKey;
+        if (config.sshPassword) {
+          sshConfig.passphrase = config.sshPassword;
+        }
+      } else {
+        sshConfig.password = config.sshPassword;
+      }
+
+      sshClient.on('ready', () => {
+        this._sshTunnelActive = true;
+
+        const dbHost = config.host || '127.0.0.1';
+        const dbPort = config.port || 3306;
+
+        sshClient.forwardOut('127.0.0.1', 0, dbHost, dbPort, (err, stream) => {
+          if (err) {
+            this.ngZone.run(() => {
+              this._sshTunnelActive = false;
+              subscriber.error(err);
+              subscriber.complete();
+            });
+            return;
+          }
+
+          const mysqlConfig = { ...this.toMysqlConfig(this.config), stream, host: undefined, port: undefined };
+          this._connection = this.mysql.createConnection(mysqlConfig);
+          this._connection.connect(this.getConnectCallback(subscriber));
+        });
+      });
+
+      sshClient.on('close', () => {
+        this.ngZone.run(() => {
+          this._sshTunnelActive = false;
+        });
+      });
+
+      sshClient.on('error', (err) => {
+        this.ngZone.run(() => {
+          this._sshTunnelActive = false;
+          subscriber.error(err);
+          subscriber.complete();
+        });
+      });
+
+      sshClient.connect(sshConfig);
+    });
+  }
+
+  private closeSshTunnel(): void {
+    if (this._sshClient) {
+      this._sshClient.end();
+      this._sshClient = null;
+      this._sshTunnelActive = false;
+    }
+  }
+
   private getConnectCallback(subscriber: Subscriber<void>) {
     return (err: QueryError | null) => {
       this.ngZone.run(() => {
@@ -151,8 +248,15 @@ export class MysqlService {
     console.info(`DB connection lost. Reconnecting in ${RECONNECTION_TIME_MS} ms...`);
 
     setTimeout(() => {
-      this._connection = this.mysql.createConnection(this.config);
-      this._connection.connect(this.reconnectCallback.bind(this));
+      if (this.config?.sshEnabled) {
+        this.connectViaSshTunnel(this.config).subscribe({
+          next: () => this.reconnectCallback(null),
+          error: () => this.reconnect(),
+        });
+      } else {
+        this._connection = this.mysql.createConnection(this.toMysqlConfig(this.config));
+        this._connection.connect(this.reconnectCallback.bind(this));
+      }
     }, RECONNECTION_TIME_MS);
   }
 

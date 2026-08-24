@@ -4,7 +4,7 @@ import { HandlerService } from '@keira/shared/base-abstract-classes';
 import { TableRow } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { SubscriptionHandler } from '@keira/shared/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { QueryError } from 'mysql2';
 
 const MAX_INT_UNSIGNED_VALUE = 4294967295;
@@ -13,7 +13,7 @@ const MAX_INT_UNSIGNED_VALUE = 4294967295;
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-create',
   templateUrl: './create.component.html',
-  imports: [TranslateModule, FormsModule],
+  imports: [TranslateDirective, TranslatePipe, FormsModule],
 })
 export class CreateComponent<T extends TableRow> extends SubscriptionHandler implements OnInit {
   @Input({ required: true }) entityTable!: string;

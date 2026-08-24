@@ -14,7 +14,7 @@ export const FLAGS_EXTRA: Flag[] = [
   { bit: 10, name: `GHOST_VISIBILITY - creature will be only visible for dead players` },
   { bit: 11, name: `USE_OFFHAND_ATTACK` },
   { bit: 12, name: `NO_SELL_VENDOR - players can't sell items to this vendor` },
-  { bit: 13, name: `CREATURE_FLAG_EXTRA_IGNORE_COMBAT` },
+  { bit: 13, name: `CANNOT_ENTER_COMBAT - creature cannot enter combat (will not attack or be attacked)` },
   { bit: 14, name: `WORLDEVENT - custom flag for world event creatures (left room for merging)` },
   { bit: 15, name: `GUARD - Creature is guard` },
   { bit: 16, name: `IGNORE_FEIGN_DEATH - Creature ignores feign death` },

@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -27,13 +28,13 @@ describe('ModalConfirmComponent', () => {
     const component = fixture.componentInstance;
     fixture.detectChanges();
     const page = new ModalConfirmComponentPage(fixture);
-    const hideSpy = spyOn(TestBed.inject(BsModalRef), 'hide');
+    const hideSpy = vi.spyOn(TestBed.inject(BsModalRef), 'hide').mockImplementation(() => undefined);
     return { fixture, component, page, hideSpy };
   }
 
   it('onConfirm() should correctly hide the modal', () => {
     const { component, page, hideSpy } = setup();
-    const nextSpy = spyOn(component.onClose, 'next');
+    const nextSpy = vi.spyOn(component.onClose, 'next').mockImplementation(() => undefined);
 
     page.yesBtn.click();
 
@@ -44,7 +45,7 @@ describe('ModalConfirmComponent', () => {
 
   it('onCancel() should correctly hide the modal', () => {
     const { component, page, hideSpy } = setup();
-    const nextSpy = spyOn(component.onClose, 'next');
+    const nextSpy = vi.spyOn(component.onClose, 'next').mockImplementation(() => undefined);
 
     page.noBtn.click();
 

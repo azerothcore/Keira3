@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { GAME_TELE_ID, GameTele } from '@keira/shared/acore-world-model';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { SearchSelectorModalComponent } from '../base-selector/search-selector-modal.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -11,7 +11,7 @@ import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-component
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-game-tele-selector-modal',
   templateUrl: './game-tele-selector-modal.component.html',
-  imports: [FormsModule, ReactiveFormsModule, NgxDatatableModule, TranslateModule, HighlightjsWrapperComponent],
+  imports: [FormsModule, ReactiveFormsModule, NgxDatatableModule, TranslateDirective, TranslatePipe, HighlightjsWrapperComponent],
 })
 export class GameTeleSelectorModalComponent extends SearchSelectorModalComponent<GameTele> {
   protected entityIdField = GAME_TELE_ID;

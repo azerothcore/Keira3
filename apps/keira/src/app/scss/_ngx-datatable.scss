@@ -1,4 +1,4 @@
-@import 'variables';
+@use 'variables' as *;
 
 .ngx-datatable.bootstrap {
   background-color: $content-block-bg-color;

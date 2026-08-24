@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -7,11 +8,12 @@ import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config'
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { Model3DViewerService } from '@keira/shared/model-3d-viewer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
-import { ModalModule } from 'ngx-bootstrap/modal';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { tickAsync } from 'ngx-page-object-model';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { QuestHandlerService } from '../quest-handler.service';
+import { QUEST_PREVIEW_DEBOUNCE_TIME } from '../quest-preview/quest-preview.component';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { QuestRequestItemsComponent } from './quest-request-items.component';
 
@@ -30,7 +32,7 @@ describe('QuestRequestItems integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, QuestRequestItemsComponent, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalDirective, RouterTestingModule, QuestRequestItemsComponent, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
@@ -52,14 +54,14 @@ describe('QuestRequestItems integration tests', () => {
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalEntity]));
     // by default the other editor services should not be initialised, because the selectAll would return the wrong types for them
-    const initializeServicesSpy = spyOn(TestBed.inject(QuestPreviewService), 'initializeServices');
+    const initializeServicesSpy = vi.spyOn(TestBed.inject(QuestPreviewService), 'initializeServices').mockImplementation(() => undefined);
     if (creatingNew) {
       // when creatingNew, the selectAll will return an empty array, so it's fine
-      initializeServicesSpy.and.callThrough();
+      initializeServicesSpy.mockRestore();
     }
 
     const fixture = TestBed.createComponent(QuestRequestItemsComponent);
@@ -97,7 +99,7 @@ describe('QuestRequestItems integration tests', () => {
         'DELETE FROM `quest_request_items` WHERE (`ID` = 1234);\n' +
         'INSERT INTO `quest_request_items` (`ID`, `EmoteOnComplete`, `EmoteOnIncomplete`, `CompletionText`, `VerifiedBuild`) VALUES\n' +
         "(1234, 33, 0, '', 0);";
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.setInputValueById('EmoteOnComplete', 33);
       page.expectFullQueryToContain(expectedQuery);
@@ -105,7 +107,7 @@ describe('QuestRequestItems integration tests', () => {
       page.clickExecuteQuery();
 
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
       page.removeNativeElement();
     });
 
@@ -114,7 +116,8 @@ describe('QuestRequestItems integration tests', () => {
       const value = 'Fix all AzerothCore bugs';
 
       page.setInputValueById('CompletionText', value);
-      await tickAsync();
+      await tickAsync(QUEST_PREVIEW_DEBOUNCE_TIME);
+      await page.fixture.whenStable();
 
       expect(page.progressText.innerText).toContain(value);
       page.removeNativeElement();
@@ -138,14 +141,14 @@ describe('QuestRequestItems integration tests', () => {
       const { page, querySpy, originalEntity } = setup(false);
       const expectedQuery =
         'UPDATE `quest_request_items` SET ' + "`EmoteOnComplete` = 0, `EmoteOnIncomplete` = 1, `CompletionText` = '2' WHERE (`ID` = 1234);";
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.expectDiffQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
       page.removeNativeElement();
     });
 
@@ -171,7 +174,7 @@ describe('QuestRequestItems integration tests', () => {
       page.removeNativeElement();
     });
 
-    xit('changing a value via SingleValueSelector should correctly work', async () => {
+    it.skip('changing a value via SingleValueSelector should correctly work', async () => {
       const { page } = setup(false);
       const field = 'EmoteOnComplete';
       page.clickElement(page.getSelectorBtn(field));

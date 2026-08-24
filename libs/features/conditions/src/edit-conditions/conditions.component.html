@@ -49,7 +49,9 @@
                 [tooltip]="
                   selectedSourceType === CONDITION_SOURCE_TYPES.SOURCE_TYPE_SMART_EVENT
                     ? 'smart_scripts.source_type'
-                    : ('ALWAYS_0' | translate)
+                    : selectedSourceType === CONDITION_SOURCE_TYPES.SOURCE_TYPE_OBJECT_VISIBILITY
+                      ? 'creature.guid or gameobject.guid'
+                      : ('ALWAYS_0' | translate)
                 "
               ></i>
               <input [formControlName]="'SourceId'" id="SourceId" type="number" class="form-control form-control-sm" />

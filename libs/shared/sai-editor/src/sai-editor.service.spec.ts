@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -12,11 +13,6 @@ import { SaiEditorService } from './sai-editor.service';
 import { SaiHandlerService } from './sai-handler.service';
 
 describe('SAI Editor Service', () => {
-  let service: SaiEditorService;
-  let handlerService: SaiHandlerService;
-  let queryService: MysqlQueryService;
-  let saiCommentGeneratorService: SaiCommentGeneratorService;
-
   const mockQuery = '-- Mock Query result';
 
   beforeEach(() =>
@@ -33,14 +29,16 @@ describe('SAI Editor Service', () => {
     }),
   );
 
-  beforeEach(() => {
-    service = TestBed.inject(SaiEditorService);
-    handlerService = TestBed.inject(SaiHandlerService);
-    queryService = TestBed.inject(MysqlQueryService);
-    saiCommentGeneratorService = TestBed.inject(SaiCommentGeneratorService);
-  });
+  function setup() {
+    const service = TestBed.inject(SaiEditorService);
+    const handlerService = TestBed.inject(SaiHandlerService);
+    const queryService = TestBed.inject(MysqlQueryService);
+    const saiCommentGeneratorService = TestBed.inject(SaiCommentGeneratorService);
+    return { service, handlerService, queryService, saiCommentGeneratorService };
+  }
 
   it('checks linked event', () => {
+    const { service } = setup();
     const mockRows: Partial<SmartScripts>[] = [
       { entryorguid: 0, source_type: 0, id: 0, link: 1, event_type: 0 },
       { entryorguid: 0, source_type: 0, id: 1, link: 0, event_type: 61 },
@@ -72,12 +70,15 @@ describe('SAI Editor Service', () => {
   });
 
   describe('when templateQuery is null', () => {
-    beforeEach(() => {
-      handlerService['_templateQuery'] = null as any;
-    });
+    function setupNullTemplate() {
+      const parent = setup();
+      parent.handlerService['_templateQuery'] = null as any;
+      return parent;
+    }
 
     it('updateFullQuery should correctly work', () => {
-      const spy = spyOn(queryService, 'getFullDeleteInsertQuery').and.returnValue(mockQuery);
+      const { service, queryService } = setupNullTemplate();
+      const spy = vi.spyOn(queryService, 'getFullDeleteInsertQuery').mockReturnValue(mockQuery);
 
       service['updateFullQuery']();
 
@@ -86,7 +87,8 @@ describe('SAI Editor Service', () => {
     });
 
     it('updateDiffQuery should correctly work', () => {
-      const spy = spyOn(queryService, 'getDiffDeleteInsertTwoKeysQuery').and.returnValue(mockQuery);
+      const { service, queryService } = setupNullTemplate();
+      const spy = vi.spyOn(queryService, 'getDiffDeleteInsertTwoKeysQuery').mockReturnValue(mockQuery);
 
       service['updateDiffQuery']();
 
@@ -99,12 +101,15 @@ describe('SAI Editor Service', () => {
     const mockTemplateQuery = '-- Mock Template Query result';
     const expectedQuery = `${mockTemplateQuery}\n\n${mockQuery}`;
 
-    beforeEach(() => {
-      handlerService['_templateQuery'] = mockTemplateQuery;
-    });
+    function setupDefinedTemplate() {
+      const parent = setup();
+      parent.handlerService['_templateQuery'] = mockTemplateQuery;
+      return parent;
+    }
 
     it('updateFullQuery should correctly work', () => {
-      const spy = spyOn(queryService, 'getFullDeleteInsertQuery').and.returnValue(mockQuery);
+      const { service, queryService } = setupDefinedTemplate();
+      const spy = vi.spyOn(queryService, 'getFullDeleteInsertQuery').mockReturnValue(mockQuery);
 
       service['updateFullQuery']();
 
@@ -113,7 +118,8 @@ describe('SAI Editor Service', () => {
     });
 
     it('updateDiffQuery should correctly work', () => {
-      const spy = spyOn(queryService, 'getDiffDeleteInsertTwoKeysQuery').and.returnValue(mockQuery);
+      const { service, queryService } = setupDefinedTemplate();
+      const spy = vi.spyOn(queryService, 'getDiffDeleteInsertTwoKeysQuery').mockReturnValue(mockQuery);
 
       service['updateDiffQuery']();
 
@@ -124,6 +130,7 @@ describe('SAI Editor Service', () => {
 
   describe('generateComments', () => {
     it('should work correctly generating comments in all rows', async () => {
+      const { service, handlerService, saiCommentGeneratorService } = setup();
       const mockRows: Partial<SmartScripts>[] = [
         { entryorguid: 0, source_type: 0, id: 0, link: 1, event_type: 0 },
         { entryorguid: 0, source_type: 0, id: 1, link: 0, event_type: 61 },
@@ -131,12 +138,12 @@ describe('SAI Editor Service', () => {
 
       service['_newRows'] = mockRows as SmartScripts[];
 
-      const updateDiffQuerySpy = spyOn<any>(service, 'updateDiffQuery');
-      const updateFullQuerySpy = spyOn<any>(service, 'updateFullQuery');
-      const refreshDatatableSpy = spyOn(service, 'refreshDatatable');
-      const isRowSelectedSpy = spyOn(service, 'isRowSelected').and.returnValue(true);
-      const getNameSpy = spyOn<any>(handlerService, 'getName');
-      const generateCommentSpy = spyOn<any>(saiCommentGeneratorService, 'generateComment');
+      const updateDiffQuerySpy = vi.spyOn<any>(service, 'updateDiffQuery').mockImplementation(() => undefined);
+      const updateFullQuerySpy = vi.spyOn<any>(service, 'updateFullQuery').mockImplementation(() => undefined);
+      const refreshDatatableSpy = vi.spyOn(service, 'refreshDatatable').mockImplementation(() => undefined);
+      const isRowSelectedSpy = vi.spyOn(service, 'isRowSelected').mockReturnValue(true);
+      const getNameSpy = vi.spyOn<any>(handlerService, 'getName').mockImplementation(() => undefined);
+      const generateCommentSpy = vi.spyOn<any>(saiCommentGeneratorService, 'generateComment').mockImplementation(() => undefined);
 
       await service.generateComments(true);
 
@@ -149,6 +156,7 @@ describe('SAI Editor Service', () => {
     });
 
     it('should work correctly generating only one comment', async () => {
+      const { service, handlerService, saiCommentGeneratorService } = setup();
       const mockRows: Partial<SmartScripts>[] = [
         { entryorguid: 0, source_type: 0, id: 0, link: 1, event_type: 0 },
         { entryorguid: 0, source_type: 0, id: 1, link: 0, event_type: 61 },
@@ -156,12 +164,12 @@ describe('SAI Editor Service', () => {
 
       service['_newRows'] = mockRows as SmartScripts[];
 
-      const updateDiffQuerySpy = spyOn<any>(service, 'updateDiffQuery');
-      const updateFullQuerySpy = spyOn<any>(service, 'updateFullQuery');
-      const refreshDatatableSpy = spyOn(service, 'refreshDatatable');
-      const isRowSelectedSpy = spyOn(service, 'isRowSelected').and.returnValue(true);
-      const getNameSpy = spyOn<any>(handlerService, 'getName');
-      const generateCommentSpy = spyOn<any>(saiCommentGeneratorService, 'generateComment');
+      const updateDiffQuerySpy = vi.spyOn<any>(service, 'updateDiffQuery').mockImplementation(() => undefined);
+      const updateFullQuerySpy = vi.spyOn<any>(service, 'updateFullQuery').mockImplementation(() => undefined);
+      const refreshDatatableSpy = vi.spyOn(service, 'refreshDatatable').mockImplementation(() => undefined);
+      const isRowSelectedSpy = vi.spyOn(service, 'isRowSelected').mockReturnValue(true);
+      const getNameSpy = vi.spyOn<any>(handlerService, 'getName').mockImplementation(() => undefined);
+      const generateCommentSpy = vi.spyOn<any>(saiCommentGeneratorService, 'generateComment').mockImplementation(() => undefined);
 
       await service.generateComments();
 

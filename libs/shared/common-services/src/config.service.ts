@@ -1,8 +1,6 @@
-import { Injectable, isDevMode, signal } from '@angular/core';
+import { Service, isDevMode, signal } from '@angular/core';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class ConfigService {
   readonly debugMode = signal<boolean>(isDevMode());
   readonly darkMode = signal<boolean>(false);

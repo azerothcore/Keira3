@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -36,7 +37,7 @@ describe('FlagsSelectorModalComponent', () => {
     const value = 123;
     component.value = value;
     component.config = { name: 'Mock Modal Name', flags };
-    const getBitsArraySpy = spyOn(flagsService, 'getBitsArray').and.returnValue(bits);
+    const getBitsArraySpy = vi.spyOn(flagsService, 'getBitsArray').mockReturnValue(bits);
 
     component.ngOnInit();
 
@@ -48,7 +49,7 @@ describe('FlagsSelectorModalComponent', () => {
   it('toogleBit() should properly work', () => {
     const { component, flagsService } = setup();
     const value = 123456;
-    const spyGetValueFromBits = spyOn(flagsService, 'getValueFromBits').and.returnValue(value);
+    const spyGetValueFromBits = vi.spyOn(flagsService, 'getValueFromBits').mockReturnValue(value);
     component.flagValues = [true, false, true];
 
     component.toggleBit(1);
@@ -71,7 +72,7 @@ describe('FlagsSelectorModalComponent', () => {
     component.config = { name: 'Mock Modal Name', flags, overrideDefaultBehavior };
     component.flagValues = [...initialFlagValues];
 
-    const spyGetValueFromBits = spyOn(flagsService, 'getValueFromBits').and.returnValue(updatedValue);
+    const spyGetValueFromBits = vi.spyOn(flagsService, 'getValueFromBits').mockReturnValue(updatedValue);
 
     component.toggleBit(1);
 

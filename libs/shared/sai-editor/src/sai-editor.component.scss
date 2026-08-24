@@ -47,3 +47,21 @@
     }
   }
 }
+
+// Marks a SmartAI event that has `conditions` rows attached; clicking opens them.
+.sai-cond-badge {
+  display: inline-block;
+  padding: 1px 6px;
+  border: 1px solid #b7950b;
+  border-radius: 9px;
+  background-color: #f3e5a9;
+  color: #7d6608;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: #e8d47a;
+  }
+}

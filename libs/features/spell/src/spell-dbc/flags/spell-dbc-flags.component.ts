@@ -12,15 +12,15 @@ import {
 } from '@keira/shared/acore-world-model';
 import { ModelForm } from '@keira/shared/utils';
 
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { TranslateModule } from '@ngx-translate/core';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-spell-dbc-flags',
   templateUrl: './spell-dbc-flags.component.html',
-  imports: [FormsModule, ReactiveFormsModule, TranslateModule, FlagsSelectorBtnComponent, TooltipModule],
+  imports: [FormsModule, ReactiveFormsModule, TranslateDirective, TranslatePipe, FlagsSelectorBtnComponent, TooltipDirective],
 })
 export class SpellDbcFlagsComponent {
   readonly SPELL_DBC_ATTRIBUTES_FLAGS = SPELL_DBC_ATTRIBUTES_FLAGS;

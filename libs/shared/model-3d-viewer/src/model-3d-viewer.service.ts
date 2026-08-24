@@ -1,12 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { findRaceGenderOptions, optionsFromModel } from './helper';
 import { CharacterOptions, CONTENT_WOTLK, WoWModel } from './model-3d-viewer.model';
 
 declare const ZamModelViewer: any;
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class Model3DViewerService {
   /**
    *
@@ -33,7 +31,7 @@ export class Model3DViewerService {
       const { race, gender } = model;
 
       fullOptions = await findRaceGenderOptions(race, gender);
-      modelOptions = await optionsFromModel(model, fullOptions);
+      modelOptions = optionsFromModel(model, fullOptions);
     }
 
     const models = {

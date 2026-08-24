@@ -14,14 +14,22 @@ import {
 } from '@keira/shared/acore-world-model';
 import { FlagsSelectorBtnComponent, SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 import { ModelForm } from '@keira/shared/utils';
-import { TranslateModule } from '@ngx-translate/core';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-spell-dbc-base',
   templateUrl: './spell-dbc-base.component.html',
-  imports: [FormsModule, ReactiveFormsModule, TranslateModule, TooltipModule, SingleValueSelectorBtnComponent, FlagsSelectorBtnComponent],
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    TranslateDirective,
+    TranslatePipe,
+    TooltipDirective,
+    SingleValueSelectorBtnComponent,
+    FlagsSelectorBtnComponent,
+  ],
 })
 export class SpellDbcBaseComponent {
   readonly SPELL_DBC_SCHOOL_OPTIONS = SPELL_SCHOOL_MASK;

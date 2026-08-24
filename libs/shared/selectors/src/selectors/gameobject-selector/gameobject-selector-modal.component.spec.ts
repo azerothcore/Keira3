@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { BsModalRef } from 'ngx-bootstrap/modal';
@@ -10,10 +10,6 @@ import { GameobjectSearchService } from '../../search/gameobject-search.service'
 import { MysqlQueryService } from '@keira/shared/db-layer';
 
 describe('GameobjectSelectorModalComponent', () => {
-  let component: GameobjectSelectorModalComponent;
-  let fixture: ComponentFixture<GameobjectSelectorModalComponent>;
-  let searchService: GameobjectSearchService;
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [GameobjectSelectorModalComponent, TranslateTestingModule],
@@ -26,16 +22,19 @@ describe('GameobjectSelectorModalComponent', () => {
     }).compileComponents();
   });
 
-  beforeEach(() => {
-    searchService = TestBed.inject(GameobjectSearchService);
+  function setup() {
+    const searchService = TestBed.inject(GameobjectSearchService);
     searchService.query = '--mock query';
 
-    fixture = TestBed.createComponent(GameobjectSelectorModalComponent);
-    component = fixture.componentInstance;
+    const fixture = TestBed.createComponent(GameobjectSelectorModalComponent);
+    const component = fixture.componentInstance;
     fixture.detectChanges();
-  });
+
+    return { fixture, component };
+  }
 
   it('should create', () => {
+    const { component } = setup();
     expect(component).toBeTruthy();
   });
 });

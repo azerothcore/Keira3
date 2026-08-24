@@ -4,10 +4,10 @@
   <div class="container-fluid">
     @if (lootId === 0 || (type !== 3 && type !== 25)) {
       <div class="content-block">
-        <div class="alert alert-info mt-2">
-          You have to set the field <strong>`Data1` (lootid)</strong> and <strong>`type` (3 or 25)</strong> of
-          <strong>{{ editorService.entityTemplateTable }}</strong> in order to enable this feature.
-        </div>
+        <div
+          class="alert alert-info mt-2"
+          [innerHTML]="'LOOT_TEMPLATE.SET_FIELD_GO' | translate: { ENTITY_TABLE: editorService.entityTemplateTable }"
+        ></div>
       </div>
     }
     @if (editorService.loading) {

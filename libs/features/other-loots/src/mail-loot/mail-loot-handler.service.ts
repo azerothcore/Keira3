@@ -1,10 +1,8 @@
-import { Injectable, signal, Signal } from '@angular/core';
+import { Service, signal, Signal } from '@angular/core';
 import { HandlerService } from '@keira/shared/base-abstract-classes';
 import { MAIL_LOOT_TEMPLATE_TABLE, MailLootTemplate } from '@keira/shared/acore-world-model';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class MailLootHandlerService extends HandlerService<MailLootTemplate> {
   protected readonly mainEditorRoutePath = 'other-loots/mail';
 

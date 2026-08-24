@@ -93,6 +93,7 @@
           @for (row of editorService.newRows; track row.Idx) {
             <div class="col">
               <div class="creature-preview">
+                Idx {{ row.Idx }}
                 <keira-model-3d-viewer [viewerType]="NPC_VIEWER_TYPE" [displayId]="row.CreatureDisplayID" [enableBgSettings]="true" />
               </div>
             </div>

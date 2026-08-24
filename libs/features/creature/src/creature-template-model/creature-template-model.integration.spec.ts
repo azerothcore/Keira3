@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
@@ -9,7 +10,7 @@ import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config'
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { Model3DViewerService } from '@keira/shared/model-3d-viewer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
-import { ModalModule } from 'ngx-bootstrap/modal';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
@@ -27,7 +28,7 @@ describe('CreatureTemplateModel integration tests', () => {
 
   function setup(creatingNew: boolean) {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), CreatureTemplateModelComponent, TranslateTestingModule, ReactiveFormsModule],
+      imports: [ToastrModule.forRoot(), ModalDirective, CreatureTemplateModelComponent, TranslateTestingModule, ReactiveFormsModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
@@ -53,10 +54,10 @@ describe('CreatureTemplateModel integration tests', () => {
 
     const httpTestingController = TestBed.inject(HttpTestingController);
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
-    spyOn(queryService, 'queryValue').and.returnValue(of());
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
+    vi.spyOn(queryService, 'queryValue').mockReturnValue(of());
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
     const fixture = TestBed.createComponent(CreatureTemplateModelComponent);
     const component = fixture.componentInstance;
@@ -103,7 +104,7 @@ describe('CreatureTemplateModel integration tests', () => {
         '(1234, 0, 0, 1, 1, 0),\n' +
         '(1234, 1, 0, 1, 1, 0),\n' +
         '(1234, 2, 0, 1, 1, 0);';
-      querySpy.calls.reset();
+      querySpy.mockClear();
 
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(1);
@@ -116,7 +117,7 @@ describe('CreatureTemplateModel integration tests', () => {
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
       page.removeNativeElement();
     });
 

@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { SelectService } from '@keira/shared/base-abstract-classes';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import {
@@ -10,9 +10,7 @@ import {
 } from '@keira/shared/acore-world-model';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class SelectGameobjectService extends SelectService<GameobjectTemplate> {
   override readonly queryService = inject(MysqlQueryService);
   override readonly handlerService = inject(GameobjectHandlerService);

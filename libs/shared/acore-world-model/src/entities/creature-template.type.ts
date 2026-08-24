@@ -31,7 +31,6 @@ export class CreatureTemplate extends TableRow {
   speed_swim: number = 1;
   speed_flight: number = 1;
   detection_range: number = 1;
-  scale: number = 1;
   rank: number = 0;
   dmgschool: number = 0;
   DamageModifier: number = 1;
@@ -44,10 +43,6 @@ export class CreatureTemplate extends TableRow {
   unit_flags2: number = 0;
   dynamicflags: number = 0;
   family: number = 0;
-  trainer_type: number = 0;
-  trainer_spell: number = 0;
-  trainer_class: number = 0;
-  trainer_race: number = 0;
   type: number = 0;
   type_flags: number = 0;
   lootid: number = 0;
@@ -67,8 +62,7 @@ export class CreatureTemplate extends TableRow {
   RacialLeader: number = 0;
   movementId: number = 0;
   RegenHealth: number = 1;
-  mechanic_immune_mask: number = 0;
-  spell_school_immune_mask: number = 0;
+  CreatureImmunitiesId: number = 0;
   flags_extra: number = 0;
   ScriptName: string = '';
   VerifiedBuild: number = 0;

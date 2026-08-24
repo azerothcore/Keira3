@@ -1,10 +1,11 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { vi } from 'vitest';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SaiHandlerService } from '@keira/shared/sai-editor';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
-import { ModalModule } from 'ngx-bootstrap/modal';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { SaiSearchEntityComponent } from './sai-search-entity.component';
 
 class SaiSearchEntityComponentPage extends PageObject<SaiSearchEntityComponent> {
@@ -38,24 +39,24 @@ class SaiSearchEntityComponentPage extends PageObject<SaiSearchEntityComponent> 
 }
 
 describe('SaiSearchEntityComponent', () => {
-  let fixture: ComponentFixture<SaiSearchEntityComponent>;
-  let page: SaiSearchEntityComponentPage;
-
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), SaiSearchEntityComponent, RouterTestingModule, TranslateTestingModule],
+      imports: [ModalDirective, SaiSearchEntityComponent, RouterTestingModule, TranslateTestingModule],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
   });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(SaiSearchEntityComponent);
+  function setup() {
+    const fixture = TestBed.createComponent(SaiSearchEntityComponent);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
-    page = new SaiSearchEntityComponentPage(fixture);
-  });
+    const page = new SaiSearchEntityComponentPage(fixture);
+
+    return { fixture, page };
+  }
 
   it('initially should only display the sourceType', () => {
+    const { page } = setup();
     expect(page.sourceTypeCreature).toBeTruthy();
     expect(page.sourceTypeGameobject).toBeTruthy();
     expect(page.sourceTypeAreatrigger).toBeTruthy();
@@ -66,6 +67,7 @@ describe('SaiSearchEntityComponent', () => {
   });
 
   it('selecting a sourceType should show everything else', () => {
+    const { page } = setup();
     page.clickElement(page.sourceTypeCreature);
 
     expect(page.entryOrGuidInput).toBeTruthy();
@@ -74,6 +76,7 @@ describe('SaiSearchEntityComponent', () => {
   });
 
   it('the btn should be disabled when entryOrGuid has an invalid value', () => {
+    const { page } = setup();
     page.clickElement(page.sourceTypeCreature);
     expect(page.editBtn.disabled).toBe(true);
 
@@ -85,6 +88,7 @@ describe('SaiSearchEntityComponent', () => {
   });
 
   it('changing sourceType should update the displayed label and selector', () => {
+    const { page } = setup();
     page.clickElement(page.sourceTypeCreature);
 
     expect(page.entryOrGuidLabel.innerText).toContain(
@@ -117,8 +121,9 @@ describe('SaiSearchEntityComponent', () => {
   });
 
   it('clicking the edit button should correctly trigger the service', () => {
+    const { page } = setup();
     const entry = 123;
-    const selectFromEntitySpy = spyOn(TestBed.inject(SaiHandlerService), 'selectFromEntity');
+    const selectFromEntitySpy = vi.spyOn(TestBed.inject(SaiHandlerService), 'selectFromEntity').mockImplementation(() => undefined);
 
     page.clickElement(page.sourceTypeCreature);
     page.setInputValue(page.entryOrGuidInput, entry);

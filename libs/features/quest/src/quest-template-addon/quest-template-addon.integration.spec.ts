@@ -1,3 +1,4 @@
+import { vi, type MockInstance } from 'vitest';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -6,15 +7,15 @@ import { QuestTemplateAddon } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
 import { Model3DViewerService } from '@keira/shared/model-3d-viewer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
-import { ModalModule } from 'ngx-bootstrap/modal';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { tickAsync } from 'ngx-page-object-model';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
 import { QuestHandlerService } from '../quest-handler.service';
+import { QUEST_PREVIEW_DEBOUNCE_TIME } from '../quest-preview/quest-preview.component';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { QuestTemplateAddonComponent } from './quest-template-addon.component';
-import Spy = jasmine.Spy;
 
 class QuestTemplateAddonPage extends EditorPageObject<QuestTemplateAddonComponent> {
   get questPreviewReqLevel() {
@@ -27,10 +28,10 @@ describe('QuestTemplateAddon integration tests', () => {
   const expectedFullCreateQuery =
     'DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
     'INSERT INTO `quest_template_addon` (`ID`, `MaxLevel`, `AllowableClasses`, `SourceSpellID`, `PrevQuestID`, `NextQuestID`, ' +
-    '`ExclusiveGroup`, `RewardMailTemplateID`, `RewardMailDelay`, `RequiredSkillID`, `RequiredSkillPoints`,' +
+    '`ExclusiveGroup`, `BreadcrumbForQuestId`, `RewardMailTemplateID`, `RewardMailDelay`, `RequiredSkillID`, `RequiredSkillPoints`,' +
     ' `RequiredMinRepFaction`, `RequiredMaxRepFaction`, `RequiredMinRepValue`, `RequiredMaxRepValue`, `ProvidedItemCount`, ' +
     '`SpecialFlags`) VALUES\n' +
-    '(1234, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);';
+    '(1234, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);';
 
   const originalEntity = new QuestTemplateAddon();
   originalEntity.ID = id;
@@ -40,20 +41,21 @@ describe('QuestTemplateAddon integration tests', () => {
   originalEntity.PrevQuestID = 4;
   originalEntity.NextQuestID = 5;
   originalEntity.ExclusiveGroup = 6;
-  originalEntity.RewardMailTemplateID = 7;
-  originalEntity.RewardMailDelay = 8;
-  originalEntity.RequiredSkillID = 9;
-  originalEntity.RequiredSkillPoints = 10;
-  originalEntity.RequiredMinRepFaction = 11;
-  originalEntity.RequiredMaxRepFaction = 12;
-  originalEntity.RequiredMinRepValue = 13;
-  originalEntity.RequiredMaxRepValue = 14;
-  originalEntity.ProvidedItemCount = 15;
+  originalEntity.BreadcrumbForQuestId = 7;
+  originalEntity.RewardMailTemplateID = 8;
+  originalEntity.RewardMailDelay = 9;
+  originalEntity.RequiredSkillID = 10;
+  originalEntity.RequiredSkillPoints = 11;
+  originalEntity.RequiredMinRepFaction = 12;
+  originalEntity.RequiredMaxRepFaction = 13;
+  originalEntity.RequiredMinRepValue = 14;
+  originalEntity.RequiredMaxRepValue = 15;
+  originalEntity.ProvidedItemCount = 16;
   originalEntity.SpecialFlags = 0;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalModule.forRoot(), RouterTestingModule, QuestTemplateAddonComponent, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalDirective, RouterTestingModule, QuestTemplateAddonComponent, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
@@ -70,15 +72,15 @@ describe('QuestTemplateAddon integration tests', () => {
 
     const sqliteQueryService = TestBed.inject(SqliteQueryService);
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = spyOn(queryService, 'query').and.returnValue(of([]));
-    spyOn(sqliteQueryService, 'query').and.returnValue(of([{ ID: 123, spellName: 'Mock Spell' }]));
+    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
+    vi.spyOn(sqliteQueryService, 'query').mockReturnValue(of([{ ID: 123, spellName: 'Mock Spell' }]));
 
-    spyOn(queryService, 'selectAll').and.returnValue(of(creatingNew ? [] : [originalEntity]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalEntity]));
     // by default the other editor services should not be initialised, because the selectAll would return the wrong types for them
-    const initializeServicesSpy = spyOn(TestBed.inject(QuestPreviewService), 'initializeServices');
+    const initializeServicesSpy = vi.spyOn(TestBed.inject(QuestPreviewService), 'initializeServices').mockImplementation(() => undefined);
     if (creatingNew) {
       // when creatingNew, the selectAll will return an empty array, so it's fine
-      initializeServicesSpy.and.callThrough();
+      initializeServicesSpy.mockRestore();
     }
 
     const fixture = TestBed.createComponent(QuestTemplateAddonComponent);
@@ -115,11 +117,11 @@ describe('QuestTemplateAddon integration tests', () => {
       const expectedQuery =
         'DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
         'INSERT INTO `quest_template_addon` (`ID`, `MaxLevel`, `AllowableClasses`, `SourceSpellID`, `PrevQuestID`, `NextQuestID`,' +
-        ' `ExclusiveGroup`, `RewardMailTemplateID`, `RewardMailDelay`, `RequiredSkillID`, `RequiredSkillPoints`,' +
+        ' `ExclusiveGroup`, `BreadcrumbForQuestId`, `RewardMailTemplateID`, `RewardMailDelay`, `RequiredSkillID`, `RequiredSkillPoints`,' +
         ' `RequiredMinRepFaction`, `RequiredMaxRepFaction`, `RequiredMinRepValue`, `RequiredMaxRepValue`, `ProvidedItemCount`,' +
         ' `SpecialFlags`) VALUES\n' +
-        '(1234, 33, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);';
-      querySpy.calls.reset();
+        '(1234, 33, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);';
+      querySpy.mockClear();
 
       page.setInputValueById('MaxLevel', 33);
       page.expectFullQueryToContain(expectedQuery);
@@ -127,17 +129,17 @@ describe('QuestTemplateAddon integration tests', () => {
       page.clickExecuteQuery();
 
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
       page.removeNativeElement();
     });
 
     it('changing a property should be reflected in the quest preview', async () => {
       const { page } = setup(true);
       const value = 80;
-      page.detectChanges();
 
       page.setInputValueById('MaxLevel', value);
-      await tickAsync();
+      await tickAsync(QUEST_PREVIEW_DEBOUNCE_TIME);
+      await page.fixture.whenStable();
 
       expect(page.questPreviewReqLevel.innerText).toContain(`0 - ${value}`);
       page.removeNativeElement();
@@ -152,10 +154,10 @@ describe('QuestTemplateAddon integration tests', () => {
       page.expectFullQueryToContain(
         'DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
           'INSERT INTO `quest_template_addon` (`ID`, `MaxLevel`, `AllowableClasses`, `SourceSpellID`, `PrevQuestID`, `NextQuestID`,' +
-          ' `ExclusiveGroup`, `RewardMailTemplateID`, `RewardMailDelay`, `RequiredSkillID`, `RequiredSkillPoints`,' +
+          ' `ExclusiveGroup`, `BreadcrumbForQuestId`, `RewardMailTemplateID`, `RewardMailDelay`, `RequiredSkillID`, `RequiredSkillPoints`,' +
           ' `RequiredMinRepFaction`, `RequiredMaxRepFaction`, `RequiredMinRepValue`, `RequiredMaxRepValue`, `ProvidedItemCount`,' +
           ' `SpecialFlags`) VALUES\n' +
-          '(1234, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0);',
+          '(1234, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0);',
       );
       page.removeNativeElement();
     });
@@ -165,17 +167,17 @@ describe('QuestTemplateAddon integration tests', () => {
       const expectedQuery =
         'UPDATE `quest_template_addon` SET ' +
         '`MaxLevel` = 0, `AllowableClasses` = 1, `SourceSpellID` = 2, `PrevQuestID` = 3, `NextQuestID` = 4, `ExclusiveGroup` = 5, ' +
-        '`RewardMailTemplateID` = 6, `RewardMailDelay` = 7, `RequiredSkillID` = 8, `RequiredSkillPoints` = 9, ' +
-        '`RequiredMinRepFaction` = 10, `RequiredMaxRepFaction` = 11, `RequiredMinRepValue` = 12, `RequiredMaxRepValue` = 13, ' +
-        '`ProvidedItemCount` = 14, `SpecialFlags` = 15 WHERE (`ID` = 1234);';
-      querySpy.calls.reset();
+        '`BreadcrumbForQuestId` = 6, `RewardMailTemplateID` = 7, `RewardMailDelay` = 8, `RequiredSkillID` = 9, ' +
+        '`RequiredSkillPoints` = 10, `RequiredMinRepFaction` = 11, `RequiredMaxRepFaction` = 12, `RequiredMinRepValue` = 13, ' +
+        '`RequiredMaxRepValue` = 14, `ProvidedItemCount` = 15, `SpecialFlags` = 16 WHERE (`ID` = 1234);';
+      querySpy.mockClear();
 
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
       page.expectDiffQueryToContain(expectedQuery);
 
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.calls.mostRecent().args[0]).toContain(expectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
       page.removeNativeElement();
     });
 
@@ -186,10 +188,10 @@ describe('QuestTemplateAddon integration tests', () => {
       page.expectFullQueryToContain(
         'DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
           'INSERT INTO `quest_template_addon` (`ID`, `MaxLevel`, `AllowableClasses`, ' +
-          '`SourceSpellID`, `PrevQuestID`, `NextQuestID`, `ExclusiveGroup`, `RewardMailTemplateID`,' +
+          '`SourceSpellID`, `PrevQuestID`, `NextQuestID`, `ExclusiveGroup`, `BreadcrumbForQuestId`, `RewardMailTemplateID`,' +
           ' `RewardMailDelay`, `RequiredSkillID`, `RequiredSkillPoints`, `RequiredMinRepFaction`, ' +
           '`RequiredMaxRepFaction`, `RequiredMinRepValue`, `RequiredMaxRepValue`, `ProvidedItemCount`, `SpecialFlags`) VALUES\n' +
-          '(1234, 1, 2, 3, 11, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0);',
+          '(1234, 1, 2, 3, 11, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0);',
       );
 
       page.setInputValueById('NextQuestID', '22');
@@ -197,15 +199,15 @@ describe('QuestTemplateAddon integration tests', () => {
       page.expectFullQueryToContain(
         'DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
           'INSERT INTO `quest_template_addon` (`ID`, `MaxLevel`, `AllowableClasses`, `SourceSpellID`, ' +
-          '`PrevQuestID`, `NextQuestID`, `ExclusiveGroup`, `RewardMailTemplateID`, `RewardMailDelay`, ' +
+          '`PrevQuestID`, `NextQuestID`, `ExclusiveGroup`, `BreadcrumbForQuestId`, `RewardMailTemplateID`, `RewardMailDelay`, ' +
           '`RequiredSkillID`, `RequiredSkillPoints`, `RequiredMinRepFaction`, `RequiredMaxRepFaction`, ' +
           '`RequiredMinRepValue`, `RequiredMaxRepValue`, `ProvidedItemCount`, `SpecialFlags`) VALUES\n' +
-          '(1234, 1, 2, 3, 11, 22, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0);',
+          '(1234, 1, 2, 3, 11, 22, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0);',
       );
       page.removeNativeElement();
     });
 
-    xit('changing a value via FlagsSelector should correctly work', async () => {
+    it.skip('changing a value via FlagsSelector should correctly work', async () => {
       const { page } = setup(false);
       const field = 'SpecialFlags';
       page.clickElement(page.getSelectorBtn(field));
@@ -225,15 +227,15 @@ describe('QuestTemplateAddon integration tests', () => {
       page.expectFullQueryToContain(
         'DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
           'INSERT INTO `quest_template_addon` (`ID`, `MaxLevel`, `AllowableClasses`, `SourceSpellID`, ' +
-          '`PrevQuestID`, `NextQuestID`, `ExclusiveGroup`, `RewardMailTemplateID`, `RewardMailDelay`, ' +
+          '`PrevQuestID`, `NextQuestID`, `ExclusiveGroup`, `BreadcrumbForQuestId`, `RewardMailTemplateID`, `RewardMailDelay`, ' +
           '`RequiredSkillID`, `RequiredSkillPoints`, `RequiredMinRepFaction`, `RequiredMaxRepFaction`, ' +
           '`RequiredMinRepValue`, `RequiredMaxRepValue`, `ProvidedItemCount`, `SpecialFlags`) VALUES\n' +
-          '(1234, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 10)',
+          '(1234, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 10)',
       );
       page.removeNativeElement();
     });
 
-    xit('changing a value via SpellSelector should correctly work', async () => {
+    it.skip('changing a value via SpellSelector should correctly work', async () => {
       const { page } = setup(false);
 
       //  note: previously disabled because of:
@@ -256,18 +258,19 @@ describe('QuestTemplateAddon integration tests', () => {
       page.expectFullQueryToContain(
         'DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
           'INSERT INTO `quest_template_addon` (`ID`, `MaxLevel`, `AllowableClasses`, `SourceSpellID`, `PrevQuestID`, `NextQuestID`, ' +
-          '`ExclusiveGroup`, `RewardMailTemplateID`, `RewardMailDelay`, `RequiredSkillID`, `RequiredSkillPoints`, `RequiredMinRepFaction`, ' +
+          '`ExclusiveGroup`, `BreadcrumbForQuestId`, `RewardMailTemplateID`, `RewardMailDelay`, `RequiredSkillID`, ' +
+          '`RequiredSkillPoints`, `RequiredMinRepFaction`, ' +
           '`RequiredMaxRepFaction`, `RequiredMinRepValue`, `RequiredMaxRepValue`, `ProvidedItemCount`, `SpecialFlags`) VALUES\n' +
-          '(1234, 1, 2, 123, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0);',
+          '(1234, 1, 2, 123, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0);',
       );
       page.removeNativeElement();
     });
 
-    xit('changing a value via QuestSelector should correctly work', async () => {
+    it.skip('changing a value via QuestSelector should correctly work', async () => {
       const { page, fixture } = setup(false);
       const field = 'NextQuestID';
       const mysqlQueryService = TestBed.inject(MysqlQueryService);
-      (mysqlQueryService.query as Spy).and.returnValue(of([{ ID: 123, LogTitle: 'Mock Quest' }]));
+      (mysqlQueryService.query as MockInstance).mockReturnValue(of([{ ID: 123, LogTitle: 'Mock Quest' }]));
 
       page.clickElement(page.getSelectorBtn(field));
       await page.whenReady();
@@ -285,9 +288,10 @@ describe('QuestTemplateAddon integration tests', () => {
       page.expectFullQueryToContain(
         'DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +
           'INSERT INTO `quest_template_addon` (`ID`, `MaxLevel`, `AllowableClasses`, `SourceSpellID`, `PrevQuestID`, `NextQuestID`, ' +
-          '`ExclusiveGroup`, `RewardMailTemplateID`, `RewardMailDelay`, `RequiredSkillID`, `RequiredSkillPoints`, `RequiredMinRepFaction`, ' +
+          '`ExclusiveGroup`, `BreadcrumbForQuestId`, `RewardMailTemplateID`, `RewardMailDelay`, `RequiredSkillID`, ' +
+          '`RequiredSkillPoints`, `RequiredMinRepFaction`, ' +
           '`RequiredMaxRepFaction`, `RequiredMinRepValue`, `RequiredMaxRepValue`, `ProvidedItemCount`, `SpecialFlags`) VALUES\n' +
-          '(1234, 1, 2, 3, 4, 123, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0);',
+          '(1234, 1, 2, 3, 4, 123, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0);',
       );
       page.removeNativeElement();
     });

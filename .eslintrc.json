@@ -4,9 +4,6 @@
   "overrides": [
     {
       "files": ["*.ts"],
-      "parserOptions": {
-        "createDefaultProgram": true
-      },
       "extends": [
         "plugin:@angular-eslint/recommended",
         "plugin:@angular-eslint/template/process-inline-templates",
@@ -44,9 +41,16 @@
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/ban-ts-comment": "off",
         "no-duplicate-imports": "error",
-        "require-await": "error",
+        "require-await": "off",
+        "@typescript-eslint/require-await": "error",
+        "@typescript-eslint/await-thenable": "error",
         "prefer-const": "error",
-        "no-console": ["error", { "allow": ["warn", "info", "error"] }]
+        "no-console": [
+          "error",
+          {
+            "allow": ["warn", "info", "error"]
+          }
+        ]
       }
     },
     {

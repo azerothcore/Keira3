@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { Observable, catchError, map, throwError } from 'rxjs';
 
@@ -10,9 +10,7 @@ export type DbOptions = {
   label: string;
 };
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class UnusedGuidService {
   private readonly mysql = inject(MysqlQueryService);
 

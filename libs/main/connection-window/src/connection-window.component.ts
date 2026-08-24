@@ -5,11 +5,12 @@ import { QueryError } from 'mysql2';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import packageInfo from '../../../../package.json';
 
-import { TranslateModule } from '@ngx-translate/core';
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { BsDropdownDirective, BsDropdownMenuDirective, BsDropdownToggleDirective } from 'ngx-bootstrap/dropdown';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 
 import { QueryErrorComponent } from '@keira/shared/base-editor-components';
+import { ElectronService } from '@keira/shared/common-services';
 import { KeiraConnectionOptions, MysqlService } from '@keira/shared/db-layer';
 import { LoginConfigService } from '@keira/shared/login-config';
 import { SwitchLanguageComponent } from '@keira/shared/switch-language';
@@ -23,9 +24,12 @@ import { ModelForm, SubscriptionHandler } from '@keira/shared/utils';
   imports: [
     FormsModule,
     ReactiveFormsModule,
-    BsDropdownModule,
-    TranslateModule,
-    TooltipModule,
+    BsDropdownDirective,
+    BsDropdownToggleDirective,
+    BsDropdownMenuDirective,
+    TranslateDirective,
+    TranslatePipe,
+    TooltipDirective,
     QueryErrorComponent,
     SwitchLanguageComponent,
   ],
@@ -34,6 +38,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
   private readonly mysqlService = inject(MysqlService);
   private readonly loginConfigService = inject(LoginConfigService);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
+  private readonly electronService = inject(ElectronService);
 
   private readonly IMAGES_COUNT = 11;
   readonly RANDOM_IMAGE = Math.floor(Math.random() * this.IMAGES_COUNT) + 1;
@@ -56,6 +61,12 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
       password: new FormControl<string>('root') as FormControl<string>,
       database: new FormControl<string>('acore_world') as FormControl<string>,
       sslEnabled: new FormControl<boolean>(false) as FormControl<boolean>,
+      sshEnabled: new FormControl<boolean>(false) as FormControl<boolean>,
+      sshHost: new FormControl<string>('') as FormControl<string>,
+      sshPort: new FormControl<number>(22) as FormControl<number>,
+      sshUser: new FormControl<string>('') as FormControl<string>,
+      sshPassword: new FormControl<string>('') as FormControl<string>,
+      sshPrivateKey: new FormControl<string>('') as FormControl<string>,
     });
 
     this.configs = this.loginConfigService.getConfigs();
@@ -63,7 +74,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
     if (this.configs?.length > 0) {
       // get last saved config
       const lastConfig = this.configs[this.configs.length - 1];
-      this.form.setValue(lastConfig);
+      this.form.patchValue(lastConfig);
 
       if (!this.form.getRawValue().password) {
         this.savePassword = false;
@@ -76,13 +87,22 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
   }
 
   loadConfig(config: Partial<KeiraConnectionOptions>): void {
-    this.form.setValue(config);
+    this.form.patchValue(config);
   }
 
   removeAllConfigs(): void {
     this.loginConfigService.removeAllConfigs();
     this.configs = [];
     this.form.reset();
+  }
+
+  onPrivateKeyFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (file) {
+      const keyContent = this.electronService.fs.readFileSync((file as any).path, 'utf8');
+      this.form.get('sshPrivateKey')?.setValue(keyContent);
+    }
   }
 
   onConnect(): void {

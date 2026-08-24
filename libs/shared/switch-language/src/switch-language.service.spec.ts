@@ -1,15 +1,16 @@
-import { TestBed } from '@angular/core/testing';
+import { vi } from 'vitest';
 import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { TranslateService } from '@ngx-translate/core';
-import { ModalModule } from 'ngx-bootstrap/modal';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { SwitchLanguageService } from './switch-language.service';
 
 describe('SwitchLanguageService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), TranslateTestingModule],
+      imports: [ModalDirective, TranslateTestingModule],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations(), SwitchLanguageService],
     }).compileComponents();
   });
@@ -23,13 +24,13 @@ describe('SwitchLanguageService', () => {
 
   it('change the default language', () => {
     const { service, translateService } = setup();
-    const spy = spyOn(translateService, 'setDefaultLang');
+    const spy = vi.spyOn(translateService, 'setFallbackLang').mockImplementation(() => undefined);
     const mockLang = 'it';
     const mockEvent = { target: { value: mockLang } };
 
     // TODO: fix typing
     service.setLanguage(mockEvent as unknown as Event);
 
-    expect(spy).toHaveBeenCalledOnceWith(mockLang);
+    expect(spy).toHaveBeenCalledExactlyOnceWith(mockLang);
   });
 });

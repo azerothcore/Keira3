@@ -1,11 +1,9 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { SingleRowEditorService } from '@keira/shared/base-abstract-classes';
 import { NPC_TEXT_ID, NPC_TEXT_TABLE, NpcText } from '@keira/shared/acore-world-model';
 import { NpcTextHandlerService } from './npc-text-handler.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class NpcTextService extends SingleRowEditorService<NpcText> {
   protected override readonly handlerService = inject(NpcTextHandlerService);
   protected override _entityClass = NpcText;

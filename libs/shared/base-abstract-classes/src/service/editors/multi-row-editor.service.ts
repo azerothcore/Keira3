@@ -114,6 +114,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
       this._entitySecondIdField,
       this._originalRows,
       this._newRows,
+      this._entityExtraIdField,
     );
 
     this.updateEditorStatus();
@@ -218,19 +219,35 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
   }
 
   addNewRow(copySelectedRow = false): void {
-    const newRow: T = copySelectedRow && this.hasSelectedRow() ? { ...this.getSelectedRow() } : new this._entityClass();
+    const copiedFromSelectedRow = copySelectedRow && this.hasSelectedRow();
+    const newRow: T = copiedFromSelectedRow ? { ...this.getSelectedRow() } : new this._entityClass();
     if (this._entityIdField) {
       this.addIdToNewRow(newRow);
     }
-    const nextId = this.getNextFreeRowId();
-    newRow[this._entitySecondIdField as keyof T] =
-      typeof newRow[this._entitySecondIdField as keyof T] === 'string' ? (String(nextId) as T[keyof T]) : (nextId as T[keyof T]);
+
+    if (copiedFromSelectedRow) {
+      this.assignDuplicatedRowIds(newRow);
+    } else {
+      this.assignNewRowIds(newRow);
+    }
+
     this._newRows = [...this._newRows, { ...newRow }];
 
     this.updateDiffQuery();
     this.updateFullQuery();
 
     this.onRowSelection({ selected: [newRow] });
+  }
+
+  protected assignNewRowIds(newRow: T): void {
+    const nextId = this.getNextFreeRowId();
+    newRow[this._entitySecondIdField as keyof T] =
+      typeof newRow[this._entitySecondIdField as keyof T] === 'string' ? (String(nextId) as T[keyof T]) : (nextId as T[keyof T]);
+  }
+
+  /** By default a duplicated row is given a brand new id, just like a freshly added one. */
+  protected assignDuplicatedRowIds(newRow: T): void {
+    this.assignNewRowIds(newRow);
   }
 
   isFormIdUnique(): boolean {

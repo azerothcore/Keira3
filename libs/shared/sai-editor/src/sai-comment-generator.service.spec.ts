@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -48,16 +49,16 @@ describe('SaiCommentGeneratorService', () => {
 
     beforeEach(() => {
       const queryService = TestBed.inject(MysqlQueryService);
-      spyOn(queryService, 'getCreatureNameById').and.callFake((i) => lastValueFrom(of(mockCreatureNameById + i)));
-      spyOn(queryService, 'getCreatureNameByGuid').and.callFake((i) => lastValueFrom(of(mockCreatureNameByGuid + i)));
-      spyOn(queryService, 'getGameObjectNameById').and.callFake((i) => lastValueFrom(of(mockGameobjectNameById + i)));
-      spyOn(queryService, 'getGameObjectNameByGuid').and.callFake((i) => lastValueFrom(of(mockGameobjectNameByGuid + i)));
-      spyOn(queryService, 'getQuestTitleById').and.callFake((i) => lastValueFrom(of(mockQuestTitleById + i)));
-      spyOn(queryService, 'getItemNameById').and.callFake((i) => lastValueFrom(of(mockItemNameById + i)));
-      spyOn(queryService, 'getQuestTitleByCriteria').and.callFake((i) => lastValueFrom(of(mockQuestTitleByCriteria + i)));
+      vi.spyOn(queryService, 'getCreatureNameById').mockImplementation((i) => lastValueFrom(of(mockCreatureNameById + i)));
+      vi.spyOn(queryService, 'getCreatureNameByGuid').mockImplementation((i) => lastValueFrom(of(mockCreatureNameByGuid + i)));
+      vi.spyOn(queryService, 'getGameObjectNameById').mockImplementation((i) => lastValueFrom(of(mockGameobjectNameById + i)));
+      vi.spyOn(queryService, 'getGameObjectNameByGuid').mockImplementation((i) => lastValueFrom(of(mockGameobjectNameByGuid + i)));
+      vi.spyOn(queryService, 'getQuestTitleById').mockImplementation((i) => lastValueFrom(of(mockQuestTitleById + i)));
+      vi.spyOn(queryService, 'getItemNameById').mockImplementation((i) => lastValueFrom(of(mockItemNameById + i)));
+      vi.spyOn(queryService, 'getQuestTitleByCriteria').mockImplementation((i) => lastValueFrom(of(mockQuestTitleByCriteria + i)));
 
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
-      spyOn(sqliteQueryService, 'getSpellNameById').and.callFake((i) => lastValueFrom(of(mockGetSpellNameById + i)));
+      vi.spyOn(sqliteQueryService, 'getSpellNameById').mockImplementation((i) => lastValueFrom(of(mockGetSpellNameById + i)));
     });
 
     it('should correctly handle linked events', async () => {
@@ -676,7 +677,7 @@ describe('SaiCommentGeneratorService', () => {
           action_type: SAI_ACTIONS.AUTO_ATTACK,
           action_param1: 1,
         },
-        expected: `MockEntity - In Combat - Start Attacking`,
+        expected: `MockEntity - In Combat - Continue Attacking`,
       },
       {
         name: 'SAI_ACTIONS.ALLOW_COMBAT_MOVEMENT check action params 1 (0)',
@@ -1030,7 +1031,7 @@ describe('SaiCommentGeneratorService', () => {
           target_type: SAI_TARGETS.GAMEOBJECT_RANGE,
           target_param1: 0,
         },
-        expected: `MockEntity - In Combat - Move To Closest Creature 'mockGameobjectNameById0'`,
+        expected: `MockEntity - In Combat - Move To Closest Gameobject 'mockGameobjectNameById0'`,
       },
       {
         name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.GAMEOBJECT_DISTANCE)`,
@@ -1039,7 +1040,7 @@ describe('SaiCommentGeneratorService', () => {
           target_type: SAI_TARGETS.GAMEOBJECT_DISTANCE,
           target_param1: 0,
         },
-        expected: `MockEntity - In Combat - Move To Closest Creature 'mockGameobjectNameById0'`,
+        expected: `MockEntity - In Combat - Move To Closest Gameobject 'mockGameobjectNameById0'`,
       },
       {
         name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.CLOSEST_GAMEOBJECT)`,
@@ -1048,7 +1049,7 @@ describe('SaiCommentGeneratorService', () => {
           target_type: SAI_TARGETS.CLOSEST_GAMEOBJECT,
           target_param1: 0,
         },
-        expected: `MockEntity - In Combat - Move To Closest Creature 'mockGameobjectNameById0'`,
+        expected: `MockEntity - In Combat - Move To Closest Gameobject 'mockGameobjectNameById0'`,
       },
       {
         name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.GAMEOBJECT_GUID)`,
@@ -1057,7 +1058,7 @@ describe('SaiCommentGeneratorService', () => {
           target_type: SAI_TARGETS.GAMEOBJECT_GUID,
           target_param1: 0,
         },
-        expected: `MockEntity - In Combat - Move To Closest Creature 'mockGameobjectNameByGuid0'`,
+        expected: `MockEntity - In Combat - Move To Closest Gameobject 'mockGameobjectNameByGuid0'`,
       },
       {
         name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.INVOKER_PARTY)`,
@@ -1138,6 +1139,14 @@ describe('SaiCommentGeneratorService', () => {
           target_type: 27,
         },
         expected: `MockEntity - In Combat - Move To Loot Recipients`,
+      },
+      {
+        name: `SAI_ACTIONS.MOVE_TO_POS check target type (unsupported target type)`,
+        input: {
+          action_type: SAI_ACTIONS.MOVE_TO_POS,
+          target_type: 99999,
+        },
+        expected: `MockEntity - In Combat - Move To [unsupported target type]`,
       },
       {
         name: `SAI_ACTIONS.GO_SET_LOOT_STATE check action param 1 (0)`,
@@ -1960,6 +1969,24 @@ describe('SaiCommentGeneratorService', () => {
           target_param1: 0,
         },
         expected: `MockEntity - In Combat - Move To Instance Storage`,
+      },
+      {
+        name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.FORMATION)`,
+        input: {
+          action_type: SAI_ACTIONS.MOVE_TO_POS,
+          target_type: SAI_TARGETS.FORMATION,
+          target_param1: 0,
+        },
+        expected: `MockEntity - In Combat - Move To Formation`,
+      },
+      {
+        name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.SHARED_OWNER_ENTITIES)`,
+        input: {
+          action_type: SAI_ACTIONS.MOVE_TO_POS,
+          target_type: SAI_TARGETS.SHARED_OWNER_ENTITIES,
+          target_param1: 0,
+        },
+        expected: `MockEntity - In Combat - Move To Shared Owner Entities`,
       },
       {
         name: `SAI_ACTIONS.MOVE_TO_POS check target type (unsupported target type)`,

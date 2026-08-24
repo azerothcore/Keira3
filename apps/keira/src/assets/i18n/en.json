@@ -2,19 +2,8 @@
   "LANGUAGES": {
     "ENGLISH": "English",
     "SPANISH": "Spanish",
-    "ITALIAN": "Italian",
     "CHINESE": "Chinese",
-    "RUSSIAN": "Russian",
-    "DUTCH": "Dutch",
-    "FRENCH": "French",
-    "GREEK": "Greek",
-    "SWEDEN": "Sweden",
-    "GERMAN": "German",
-    "POLISH": "Polish",
-    "PORTUGUESE": "Portuguese",
-    "KOREAN": "Korean",
-    "ROMANIAN": "Romanian",
-    "SLOVAK": "Slovak"
+    "RUSSIAN": "Russian"
   },
   "MODAL": {
     "YES": "Yes",
@@ -60,6 +49,14 @@
     "DATABASE": "Database",
     "USE_SSL": "Use SSL/TLS",
     "SSL_TOOLTIP": "Required for servers with require_secure_transport=ON",
+    "USE_SSH_TUNNEL": "SSH Tunnel",
+    "SSH_TOOLTIP": "Connect to MySQL through an SSH tunnel",
+    "SSH_HOST": "SSH Host",
+    "SSH_PORT": "SSH Port",
+    "SSH_USER": "SSH User",
+    "SSH_PASSWORD": "SSH Password / Passphrase",
+    "SSH_PRIVATE_KEY": "Private Key",
+    "SSH_KEY_PLACEHOLDER": "Optional - browse to select key file",
     "SAVE_PASSWORD": "Save password",
     "REMEMBER_ME": "Remember me",
     "LOAD_RECENT": "Load recent",
@@ -74,6 +71,8 @@
     "UNSAVED_CHANGES": "Unsaved changes",
     "DISCONNECT": "Disconnect",
     "MODAL_DISCONNECT": "Are you sure you want to disconnect?",
+    "SSH_TUNNEL_ACTIVE": "SSH Tunnel",
+    "SSH_TUNNEL_VIA": "Connected via SSH tunnel through {{ host }}",
     "CREATURE": {
       "TITLE": "Creature",
       "SELECT_CREATURE": "Select Creature",
@@ -86,7 +85,7 @@
       "ONKILL_REPUTATION": "Onkill Reputation",
       "EQUIP_TEMPLATE": "Equip Template",
       "VENDOR": "Vendor",
-      "TRAINER": "Trainer",
+      "DEFAULT_TRAINER": "Default Trainer",
       "QUEST_ITEM": "Quest Item",
       "CREATURE_LOOT": "Creature Loot",
       "PICKPOCKETING_LOOT": "Pickpocketing Loot",
@@ -108,7 +107,8 @@
       "CREATURE_QUESTSTARTER": "Creature Queststarter",
       "CREATURE_QUESTENDER": "Creature Questender",
       "GAMEOBJECT_QUESTSTARTER": "Gameobject Queststarter",
-      "GAMEOBJECT_QUESTENDER": "Gameobject Questender"
+      "GAMEOBJECT_QUESTENDER": "Gameobject Questender",
+      "QUEST_CHAIN": "Quest Chain"
     },
     "GAME_OBJECT": {
       "TITLE": "GameObject",
@@ -182,6 +182,12 @@
       "SEARCH_GAME_TELE": "Search Teleport",
       "SELECT_GAME_TELE": "Game Tele Editor"
     },
+    "TRAINER": {
+      "TITLE": "Trainer",
+      "SEARCH_TRAINER": "Search Trainer",
+      "SELECT_TRAINER": "Trainer",
+      "TRAINER_SPELL": "Trainer Spell"
+    },
     "UNUSED_GUID_SEARCH": "Unused GUIDs"
   },
   "DASHBOARD": {
@@ -208,7 +214,9 @@
     "TOOLTIP": "A minimalistic SQL Editor to run custom queries",
     "EXECUTE": "Execute (F9)",
     "LEARN_SQL": "learn the SQL language",
-    "AFFECTED_ROWS": "Affected rows:"
+    "AFFECTED_ROWS": "Affected rows:",
+    "HIDE_TRACE": "Hide trace",
+    "SHOW_TRACE": "Show trace"
   },
   "CREATURE": {
     "TEMPLATE": {
@@ -216,7 +224,6 @@
       "KILL_CREDITS": "KillCredits",
       "MODELS": "Models",
       "MONEY_LOOT": "Money Loot",
-      "TRAINER": "Trainer",
       "LOOTS": "Loots",
       "DIFFICULTY_ENTRIES": "Difficulty Entries",
       "DAMAGE": "Damage",
@@ -299,17 +306,15 @@
     "TEMPLATE_SPELL": {
       "INDEX": "Allowed values: 0-7"
     },
-    "NPC_TRAINER": {
-      "MONEY_COST": "The cost to pay to learn the spell represented in copper (1 gold = 100 silver = 10000 cooper)",
-      "REQ_SKILL_LINE": "The required skill the player needs to have in order to be able to learn the spell",
-      "REQ_SKILL_RANK": "The proficiency in the skill from reqskill that the player needs to meet to learn the spell",
-      "REQ_LEVEL": "The minimum level the player needs to be in order to learn the spell."
-    },
     "NPC_VENDOR": {
       "SLOT": "Position of the item in the vendor window",
       "MAXCOUNT": "The maximum number of items carried by the vendor at any time. 0 for infinite (if choosing a value of 1 or higher also requires incrtime value to work)",
       "INCRTIME": "Combined with maxcount, how often (in seconds) the vendor list is refreshed",
       "EXTENDED_COST": "Value comes from DBC and a selector for this will be implemented later in Keira3"
+    },
+    "DEFAULT_TRAINER": {
+      "TITLE": "Default Trainer",
+      "TRAINER_ID_TOOLTIP": "ID of the trainer template (trainer.Id) assigned to this creature. Use 0 for no default trainer. Examples: 1=Trainer Warrior, 3=Trainer Paladin, 7=Trainer Hunter, 9=Trainer Rogue, 11=Trainer Priest, 13=Trainer Death Knight, 14=Trainer Shaman, 16=Trainer Mage, 31=Trainer Warlock, 33=Trainer Druid, 36=Trainer Mount & Fly. See the trainer wiki for the full list."
     },
     "TEXT": {
       "GROUP_ID": "If there is more than one of the same entry (more than one text the creature says), this column is used to choose if it is a random say or an ordered list. If a creature has got more than one say text to be shown in a given order, it must be incremented for each new matching entry (ex. 0, 1, 2, 3...). If there is only one entry or only one group, this value should be 0. If there are multiple groups of texts, this value stays the same within the group while the id increments within the same group.",
@@ -319,7 +324,10 @@
       "EMOTE": "The emote that the creature plays when the text is executed. Value to use in this field can be obtained from the emote.dbc",
       "DURATION": "Time in ms to see text. 0 is default and calculated by core.",
       "SOUND": "The sound entry this creature will play at the same time the text is executed. Sounds are found in SoundEntries.dbc.",
-      "BROADCAST_TEXT_ID": "Id of the equivalent text found in broadcast_text"
+      "BROADCAST_TEXT_ID": "Id of the equivalent text found in broadcast_text",
+      "SEARCH_BROADCAST_TEXT": "Search MaleText or FemaleText",
+      "COPY_TO_ROW": "Copy to Selected Row",
+      "MATCHED_ROW": "The row your search matched"
     }
   },
   "QUEST": {
@@ -374,6 +382,7 @@
       "ALLOWABLE_CLASSES": "Use 0 to allow all classes",
       "SOURCE_SPELL_ID": "The spell ID cast on player upon starting the quest.",
       "EXCLUSIVE_GROUP": "If > 0: group of quests of which only one may be chosen and completed; if < 0  group of quests of which all must be completed and rewarded to start next quest",
+      "BREADCRUMB_FOR_QUEST_ID": "This quest is an optional breadcrumb pointing the player towards the given quest id. Breadcrumbs may chain, but must not form a loop and must not also set NextQuestID or ExclusiveGroup.",
       "PROVIDED_ITEM_COUNT": "Number of items given to the player (inserted in the player’s bags) upon accepting the quest.",
       "REQ_SKILL_ID": "Skill required to know to accept the quest. Use 0 for no skill required.",
       "REQ_SKILL_POINTS": "Skill points required to have in order to accept the quest.",
@@ -390,6 +399,21 @@
       "COMPLETION_TEXT": "Quest gossip text shown in the final gossip dialogue window when turning in an item delivery quest.",
       "EMOTE_ON_COMPLETE": "Played by the quest ender NPC when all quest objectives are completed.",
       "EMOTE_ON_INCOMPLETE": "Played by the quest ender NPC if any of the quest objectives are incomplete."
+    },
+    "CHAIN": {
+      "TITLE": "Quest Chain",
+      "STANDALONE": "This quest is not linked to any other quest.",
+      "TRUNCATED": "This chain is too large to display in full; only part of it is shown.",
+      "LEGEND_CHAIN": "Must be completed first",
+      "LEGEND_ENABLED_BY": "Must be available (enabled by)",
+      "LEGEND_BREADCRUMB": "Breadcrumb pointing to",
+      "LEGEND_CONDITION": "Required by a condition",
+      "LEGEND_CONDITION_ANY": "Condition alternative (any one of them)",
+      "LEGEND_MISSING": "Missing from quest_template",
+      "LEGEND_CONDITIONS": "Has availability conditions (click to open)",
+      "BAND_ANY": "One of these ({{group}})",
+      "BAND_ALL": "All of these ({{group}})",
+      "CONDITIONS_TOOLTIP": "{{count}} availability condition(s) — click to open them in the Conditions editor"
     }
   },
   "GAMEOBJECT": {
@@ -545,6 +569,10 @@
     "MAX_COUNT": "The maximum number of copies of the item that can drop in a single loot. For references, this is the EXACT count value.",
     "COMMENT": "A comment that is ignored by the core"
   },
+  "LOOT_TEMPLATE": {
+    "SET_FIELD": "You have to set the field <strong>`{{ LOOT_FIELD }}`</strong> of <strong>{{ ENTITY_TABLE }}</strong> in order to enable this feature.",
+    "SET_FIELD_GO": "You have to set the field <strong>`Data1` (lootid)</strong> and <strong>`type` (3 or 25)</strong> of <strong>{{ ENTITY_TABLE }}</strong> in order to enable this feature."
+  },
   "OTHER_TEXTS": {
     "BROADCAST_TEXT": {
       "ID": "The unique ID for the text.",
@@ -570,7 +598,6 @@
       "TEXT": "The actual text. The message in this field will be shown as the text on a page."
     }
   },
-
   "GOSSIP": {
     "GOSSIP_MENU": {
       "TEXT_ID_TOOLTIP": "The npc_text.ID for the gossip you want to be initially displayed. Also this tells the NPC what to say at the top of the options menu when it is displayed."
@@ -594,7 +621,9 @@
       "SOURCE_ENTRY": "Source Entry:",
       "CREATE_NEW": "Create new",
       "PLACEHOLDER_SOURCE_GROUP": "SourceGroup",
-      "PLACEHOLDER_ENTRY": "SourceEntry"
+      "PLACEHOLDER_ENTRY": "SourceEntry",
+      "SOURCE_ID": "Source Id:",
+      "PLACEHOLDER_SOURCE_ID": "SourceId"
     },
     "EDITOR": {
       "CONDITIONS_SOURCE": "Condition source",
@@ -626,7 +655,9 @@
         "SOURCE_TYPE_SPELL_CLICK_EVENT": "npc_spellclick_spells.npc_entry",
         "SOURCE_TYPE_VEHICLE_SPELL": "creature_template Entry",
         "SOURCE_TYPE_SMART_EVENT": "ID (smart_scripts.id) + 1",
-        "SOURCE_TYPE_NPC_VENDOR": "npc_vendor Entry"
+        "SOURCE_TYPE_NPC_VENDOR": "npc_vendor Entry",
+        "SOURCE_TYPE_PLAYER_LOOT_TEMPLATE": "loot id",
+        "SOURCE_TYPE_OBJECT_VISIBILITY": "0 = Creature, 1 = GameObject"
       },
       "ENTRY": {
         "SOURCE_TYPE_CREATURE_LOOT_TEMPLATE": "creature_loot_template or reference_loot_template Item",
@@ -648,10 +679,14 @@
         "SOURCE_TYPE_SPELL": "Spell ID from Spell.dbc",
         "SOURCE_TYPE_SPELL_CLICK_EVENT": "Spell (npc_spellclick_spells.spell_id)",
         "SOURCE_TYPE_QUEST_AVAILABLE": "Quest ID",
+        "SOURCE_TYPE_GOSSIP_HELLO": "creature_template.entry",
         "SOURCE_TYPE_VEHICLE_SPELL": "Spell ID from Spell.dbc",
         "SOURCE_TYPE_SMART_EVENT": "smart_scripts.entryorguid",
         "SOURCE_TYPE_NPC_VENDOR": "npc_vendor.item",
-        "SOURCE_TYPE_SPELL_PROC": "Spell ID of aura which triggers the proc"
+        "SOURCE_TYPE_SPELL_PROC": "Spell ID of aura which triggers the proc",
+        "SOURCE_TYPE_PLAYER_LOOT_TEMPLATE": "item_template.entry",
+        "SOURCE_TYPE_CREATURE_RESPAWN": "creature_template.entry",
+        "SOURCE_TYPE_OBJECT_VISIBILITY": "creature_template.entry or gameobject_template.entry"
       },
       "TARGET": {
         "SOURCE_TYPE_SPELL_IMPLICIT_TARGET": "0 = Potential spell Target;  1 = spell Caster",
@@ -660,6 +695,7 @@
         "SOURCE_TYPE_CREATURE_TEMPLATE_VEHICLE": "0 = Player riding vehicle;  1 = Vehicle creature",
         "SOURCE_TYPE_SPELL": "0 = spell Caster;  1 =  Explicit Target of the spell (only for spells which take the object selected by caster into account)",
         "SOURCE_TYPE_SPELL_CLICK_EVENT": "0 = Clicker;  1 = Spellclick target (clickee)",
+        "SOURCE_TYPE_GOSSIP_HELLO": "0 = Player;  1 = WorldObject",
         "SOURCE_TYPE_VEHICLE_SPELL": "0 = Player for whom spell bar is shown;  1 =  Vehicle creature",
         "SOURCE_TYPE_SMART_EVENT": "0 = Invoker;  1 = Object",
         "SOURCE_TYPE_SPELL_PROC": "0 = Actor; 1 = ActionTarget"
@@ -712,7 +748,9 @@
         "CONDITION_QUESTSTATE": "quest_template.ID",
         "CONDITION_QUEST_OBJECTIVE_PROGRESS": "quest_template.id",
         "CONDITION_WORLD_SCRIPT": "WorldStateCondition (defined in WorldState.h)",
-        "CONDITION_AI_DATA": "data index"
+        "CONDITION_AI_DATA": "data index",
+        "CONDITION_RANDOM_DUNGEON": "0 = do not check difficulty; 1 = check difficulty (ConditionValue2)",
+        "CONDITION_UNIT_IN_COMBAT": "Always 0 (evaluates to true when the ConditionTarget unit is in combat)"
       },
       "VALUE2": {
         "CONDITION_NONE": "(Never used)",
@@ -734,7 +772,8 @@
         "CONDITION_QUESTSTATE": "state_mask",
         "CONDITION_QUEST_OBJECTIVE_PROGRESS": "Quest Objective ID - see quest_template.RequiredNpcOrGo",
         "CONDITION_WORLD_SCRIPT": "state, 0 = unused",
-        "CONDITION_AI_DATA": "value (to be compared)"
+        "CONDITION_AI_DATA": "value (to be compared)",
+        "CONDITION_RANDOM_DUNGEON": "If ConditionValue1 = 1, compares against the player current map difficulty. Value must be less than MAX_DIFFICULTY"
       },
       "VALUE3": {
         "CONDITION_NONE": "(Never used)",
@@ -755,7 +794,10 @@
       "CHANCE": "This is the probability of the event to occur as a percentage from 0-100. Example: if you want the event to occur roughly half of the time, then set this to 50.",
       "TIMED_ACTIONLISTS": "All smart_scripts having source_type = 9 and entryorguid between CreatureID * 100 and CreatureID * 100 + 100",
       "GENERATE_COMMENT": "Generate comment",
-      "GENERATE_COMMENTS_ALL": "Generate comments (all)"
+      "GENERATE_COMMENTS_ALL": "Generate comments (all)",
+      "CONDITIONS_TOOLTIP": "{{count}} condition(s) attached to this event — click to open them in the Conditions editor",
+      "ADD_NEW_CONDITION": "Add new condition",
+      "CONDITIONS_ADD_TOOLTIP": "Create a condition for the selected event in the Conditions editor"
     },
     "SEARCH_BY_EXISTING": {
       "SOURCE_TYPE": "Source Type:",
@@ -768,7 +810,6 @@
       "SOURCE_TYPE": "Select a Source Type"
     }
   },
-
   "SPELL_DBC": {
     "BASE": {
       "BASE": "Base",
@@ -802,9 +843,13 @@
       "MAX_TARGETS": "Maximum number of targets the spell can affect.",
       "MAX_TARGET_LEVEL": "The maximum level of target which can be affected by spell.",
       "CASTER_AURA_STATE": "Which condition has to be fulfilled to cast the spell",
+      "EXCLUDE_CASTER_AURA_STATE": "Which caster aura state prevents the spell from being cast",
       "CASTER_AURA_SPELL": "Which Aura has to be active to be able to cast the spell",
+      "EXCLUDE_CASTER_AURA_SPELL": "Which Aura must not be active to be able to cast the spell",
       "TARGET_AURA_STATE": "Which condition has to be fulfilled to cast the spell on a target.",
+      "EXCLUDE_TARGET_AURA_STATE": "Which target aura state prevents the spell from being cast on the target",
       "TARGET_AURA_SPELL": "Which Aura has to be active on the target to be able to cast the spell",
+      "EXCLUDE_TARGET_AURA_SPELL": "Which Aura must not be active on the target to be able to cast the spell",
       "REQUIRES_SPELL_FOCUS": "Whether spell focus is needed by spell to be cast. Player needs to be within range of appropriate gameobject with type=8.",
       "CUMULATIVE_AURA": "For stackable spells, maximal amount of stacks on target. For non-stackable spells leave 0.",
       "RECOVERY_TIME": "Cooldown of a spell. May differ with caster level.",
@@ -873,6 +918,7 @@
         "EFFECT_MISC_VALUE": "Used for according effects special misc values, commonly entries of called or used creature/item/gameobject.",
         "EFFECT_MISC_VALUE_B": "Used for according effects special misc values, commonly entries of called or used creature/item/gameobject.",
         "EFFECT_TRIGGER_SPELL": "Entry of spell triggered on affected target by this according effect.",
+        "EFFECT_ITEM_TYPE": "Item entry, item class, or item type value used by the according effect when it creates, summons, or requires an item.",
         "EFFECT_POINTS_PER_COMBO": "Bonus to effect base value based on amount of combo points on target.",
         "EFFECT_DIE_SIDES": "Number of sides of dice which is being rolled for random value of according effect.",
         "EFFECT_CHAIN_AMPLITUDE": "Used for decreasing (or increasing) according effect value on next chained targets.",
@@ -902,6 +948,27 @@
   "GAME_TELE": {
     "EDITOR": "Teleport Editor"
   },
+  "TRAINER": {
+    "EDITOR": "Trainer Editor",
+    "TRAINER_ID_TOOLTIP": "References trainer.id (trainer template). Examples: 1=Trainer Warrior, 3=Trainer Paladin, 7=Trainer Hunter, 9=Trainer Rogue, 11=Trainer Priest, 13=Trainer Death Knight, 14=Trainer Shaman, 16=Trainer Mage, 31=Trainer Warlock, 33=Trainer Druid, 36=Trainer Mount & Fly. See the trainer wiki for the full list.",
+    "REQUIREMENT_TOOLTIP": "Meaning depends on Type - use 0 for none. Types: 0-Class (ChrClass ID e.g. 1=Warrior, 2=Paladin, 3=Hunter, 4=Rogue, 5=Priest, 6=Death Knight, 7=Shaman, 8=Mage, 9=Warlock, 11=Druid), 1-Mount (ChrRace ID (e.g. 1=Human, 2=Orc, 3=Dwarf, 4=Night Elf, 5=Undead, 6=Tauren, 7=Gnome, 8=Troll, 10=Blood Elf, 11=Draenei), 2-Tradeskill Spell ID (player must know this spell to learn from this trainer), 3-Pet ChrClass ID (see above). ",
+    "GREETING_TOOLTIP": "Text shown at the top of the trainer window when opened (this is not gossip). For localized greetings add entries in the \"trainer_locale\" table (Greeting_lang).",
+    "SPELL": {
+      "TRAINER_ID": "References trainer.id (trainer template linked to this entry).",
+      "SPELL_ID": "Spell ID being taught.",
+      "MONEY_COST": "Cost in copper to learn this spell from the trainer (1 gold = 100 silver = 10000 copper).",
+      "REQ_SKILL_LINE": "SkillLine ID required to learn this spell (e.g., profession ID). Use 0 if none.",
+      "REQ_SKILL_RANK": "Minimum skill rank in ReqSkillLine required to learn the spell.",
+      "REQ_ABILITY_1": "Spell ID the player is required to already know (first required ability).",
+      "REQ_ABILITY_1_TOOLTIP": "Spell ID the player must already know to be taught this spell (first prerequisite). Use 0 if none.",
+      "REQ_ABILITY_2": "Spell ID the player is required to already know (second required ability).",
+      "REQ_ABILITY_2_TOOLTIP": "Spell ID the player must already know to be taught this spell (second prerequisite). Use 0 if none.",
+      "REQ_ABILITY_3": "Spell ID the player is required to already know (third required ability).",
+      "REQ_ABILITY_3_TOOLTIP": "Spell ID the player must already know to be taught this spell (third prerequisite). Use 0 if none.",
+      "REQ_LEVEL": "Minimum player level required to learn this spell.",
+      "VERIFIED_BUILD": "Used by AzerothCore to indicate whether this entry was verified against WDB files (0 = not parsed; >0 = parsed; -1 = placeholder; -<build> = parsed with specific client build and manually edited)."
+    }
+  },
   "UNUSED_GUID_SEARCH": {
     "TABLE": "Table",
     "START_INDEX": "Start Index",
@@ -910,5 +977,11 @@
     "SEARCH": "Search",
     "SEARCHING": "Searching...",
     "FOUND_GUIDS": "Found unused GUIDs:"
+  },
+  "MAP_VIEWER": {
+    "LOADING": "Loading map data…",
+    "NO_DATA": "No map data available",
+    "SHOW": "Show map",
+    "HIDE": "Hide map"
   }
 }

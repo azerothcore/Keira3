@@ -1,7 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { SaiHandlerService } from '@keira/shared/sai-editor';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class SaiGameobjectHandlerService extends SaiHandlerService {}

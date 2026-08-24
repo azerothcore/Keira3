@@ -4,10 +4,11 @@ import { CreatureText, EMOTE, TEXT_RANGE, TEXT_TYPE } from '@keira/shared/acore-
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { EditorButtonsComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { GenericOptionSelectorComponent, LanguageSelectorBtnComponent, SoundEntriesSelectorBtnComponent } from '@keira/shared/selectors';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
+import { BroadcastTextBrowserComponent } from './broadcast-text-browser/broadcast-text-browser.component';
 import { CreatureTextService } from './creature-text.service';
 
 @Component({
@@ -16,8 +17,9 @@ import { CreatureTextService } from './creature-text.service';
   templateUrl: './creature-text.component.html',
   imports: [
     TopBarComponent,
-    TranslateModule,
-    TooltipModule,
+    TranslateDirective,
+    TranslatePipe,
+    TooltipDirective,
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,
@@ -26,6 +28,7 @@ import { CreatureTextService } from './creature-text.service';
     LanguageSelectorBtnComponent,
     SoundEntriesSelectorBtnComponent,
     GenericOptionSelectorComponent,
+    BroadcastTextBrowserComponent,
   ],
 })
 export class CreatureTextComponent extends MultiRowEditorComponent<CreatureText> {

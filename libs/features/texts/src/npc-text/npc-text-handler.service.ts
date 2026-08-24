@@ -1,10 +1,8 @@
-import { Injectable, signal, Signal } from '@angular/core';
+import { Service, signal, Signal } from '@angular/core';
 import { HandlerService } from '@keira/shared/base-abstract-classes';
 import { NpcText, NPC_TEXT_TABLE } from '@keira/shared/acore-world-model';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class NpcTextHandlerService extends HandlerService<NpcText> {
   protected readonly mainEditorRoutePath = 'texts/npc-text';
 

@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { BsModalRef } from 'ngx-bootstrap/modal';
@@ -10,10 +10,6 @@ import { SpellSearchService } from '../../search/spell-search.service';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 
 describe('SpellSelectorModalComponent', () => {
-  let component: SpellSelectorModalComponent;
-  let fixture: ComponentFixture<SpellSelectorModalComponent>;
-  let searchService: SpellSearchService;
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [SpellSelectorModalComponent, TranslateTestingModule],
@@ -27,16 +23,19 @@ describe('SpellSelectorModalComponent', () => {
     }).compileComponents();
   });
 
-  beforeEach(() => {
-    searchService = TestBed.inject(SpellSearchService);
+  function setup() {
+    const searchService = TestBed.inject(SpellSearchService);
     searchService.query = '--mock query';
 
-    fixture = TestBed.createComponent(SpellSelectorModalComponent);
-    component = fixture.componentInstance;
+    const fixture = TestBed.createComponent(SpellSelectorModalComponent);
+    const component = fixture.componentInstance;
     fixture.detectChanges();
-  });
+
+    return { fixture, component };
+  }
 
   it('should create', () => {
+    const { component } = setup();
     expect(component).toBeTruthy();
   });
 });

@@ -5,9 +5,9 @@ import { NpcVendor } from '@keira/shared/acore-world-model';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { EditorButtonsComponent, IconComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { ItemExtendedCostSelectorBtnComponent, ItemSelectorBtnComponent } from '@keira/shared/selectors';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { NpcVendorService } from './npc-vendor.service';
 
@@ -18,13 +18,14 @@ import { NpcVendorService } from './npc-vendor.service';
   styleUrls: ['./npc-vendor.component.scss'],
   imports: [
     TopBarComponent,
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,
     IconComponent,
     ItemSelectorBtnComponent,
-    TooltipModule,
+    TooltipDirective,
     ItemExtendedCostSelectorBtnComponent,
     EditorButtonsComponent,
     NgxDatatableModule,

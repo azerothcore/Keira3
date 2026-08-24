@@ -1,0 +1,25 @@
+import { Flag } from '@keira/shared/constants';
+
+export const SMART_ACTION_CAST_TRIGGERED_FLAGS: Flag[] = [
+  { bit: 0, name: 'TRIGGERED_IGNORE_GCD - Will ignore GCD' },
+  { bit: 1, name: 'TRIGGERED_IGNORE_SPELL_AND_CATEGORY_CD - Will ignore Spell and Category cooldowns' },
+  { bit: 2, name: 'TRIGGERED_IGNORE_POWER_AND_REAGENT_COST - Will ignore power and reagent cost' },
+  { bit: 3, name: 'TRIGGERED_IGNORE_CAST_ITEM - Will not take away cast item or update related achievement criteria' },
+  { bit: 4, name: 'TRIGGERED_IGNORE_AURA_SCALING - Will ignore aura scaling' },
+  { bit: 5, name: 'TRIGGERED_IGNORE_CAST_IN_PROGRESS - Will not check if a current cast is in progress' },
+  { bit: 6, name: 'TRIGGERED_IGNORE_COMBO_POINTS - Will ignore combo point requirement' },
+  { bit: 7, name: 'TRIGGERED_CAST_DIRECTLY - In Spell::prepare, will be cast directly without setting containers for executed spell' },
+  { bit: 8, name: "TRIGGERED_IGNORE_AURA_INTERRUPT_FLAGS - Will ignore interruptible aura's at cast" },
+  { bit: 9, name: 'TRIGGERED_IGNORE_SET_FACING - Will not adjust facing to target (if any)' },
+  { bit: 10, name: 'TRIGGERED_IGNORE_SHAPESHIFT - Will ignore shapeshift checks' },
+  { bit: 11, name: 'TRIGGERED_IGNORE_CASTER_AURASTATE - Will ignore caster aura states including combat requirements and death state' },
+  { bit: 12, name: 'TRIGGERED_IGNORE_CASTER_MOUNTED_OR_ON_VEHICLE - Will ignore mounted/on vehicle restrictions' },
+  { bit: 13, name: 'TRIGGERED_IGNORE_CASTER_AURAS - Will ignore caster aura restrictions or requirements' },
+  { bit: 14, name: 'TRIGGERED_DISALLOW_PROC_EVENTS - Disallows proc events from triggered spell (default)' },
+  { bit: 15, name: 'TRIGGERED_DONT_REPORT_CAST_ERROR - Will return SPELL_FAILED_DONT_REPORT in CheckCast functions' },
+  { bit: 16, name: 'TRIGGERED_FULL_MASK - All triggered flags' },
+  { bit: 17, name: 'TRIGGERED_IGNORE_EQUIPPED_ITEM_REQUIREMENT - Will ignore equipped item requirements' },
+  { bit: 18, name: 'TRIGGERED_NO_PERIODIC_RESET - Periodic aura tick wont be reset on override' },
+  { bit: 19, name: 'TRIGGERED_IGNORE_EFFECTS - Ignore spell effects - used for ritual portals' },
+  { bit: 20, name: 'TRIGGERED_FULL_DEBUG_MASK' },
+];

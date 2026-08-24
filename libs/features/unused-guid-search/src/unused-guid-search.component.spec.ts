@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -50,7 +51,7 @@ describe('UnusedGuidSearchComponent', () => {
     fixture.detectChanges();
     expect(page.searchButton).not.toBeNull();
     if (mockGuids) {
-      spyOn(queryService, 'query').and.returnValue(of(mockGuids));
+      vi.spyOn(queryService, 'query').mockReturnValue(of(mockGuids));
     }
     return { fixture, component, queryService, page };
   }
@@ -113,7 +114,7 @@ describe('UnusedGuidSearchComponent', () => {
 
   it('should handle query errors and set the error message', () => {
     const { component, queryService, page } = setupTest();
-    spyOn(queryService, 'query').and.returnValue(throwError(() => new Error('db failure')));
+    vi.spyOn(queryService, 'query').mockReturnValue(throwError(() => new Error('db failure')));
     page.form.patchValue({
       selectedDb: component['dbOptions'][0],
       startIndex: 1,

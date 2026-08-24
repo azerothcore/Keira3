@@ -11,9 +11,9 @@ import { DTCFG } from '@keira/shared/config';
 import { WIKI_BASE_URL } from '@keira/shared/constants';
 import { FlagsSelectorBtnComponent, ItemSelectorBtnComponent } from '@keira/shared/selectors';
 import { compareObjFn, SubscriptionHandler } from '@keira/shared/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { ReferenceViewerComponent } from './reference-viewer.component';
 
 @Component({
@@ -27,13 +27,13 @@ import { ReferenceViewerComponent } from './reference-viewer.component';
     ReactiveFormsModule,
     IconComponent,
     ItemSelectorBtnComponent,
-    TooltipModule,
+    TooltipDirective,
     FlagsSelectorBtnComponent,
     EditorButtonsComponent,
     NgxDatatableModule,
     ReferenceViewerComponent,
     AsyncPipe,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class LootEditorComponent<T extends LootTemplate> extends SubscriptionHandler implements OnInit {

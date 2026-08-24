@@ -3,9 +3,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EditorButtonsComponent, QueryOutputComponent } from '@keira/shared/base-editor-components';
 import { SaiEditorComponent, SaiTopBarComponent, TimedActionlistComponent } from '@keira/shared/sai-editor';
 import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { SaiCreatureEditorService } from './sai-creature-editor.service';
 import { AsyncPipe } from '@angular/common';
@@ -17,11 +17,12 @@ import { AsyncPipe } from '@angular/common';
   styleUrls: ['../../../../../libs/shared/sai-editor/src/sai-editor.component.scss'],
   imports: [
     SaiTopBarComponent,
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,
-    TooltipModule,
+    TooltipDirective,
     FlagsSelectorBtnComponent,
     EditorButtonsComponent,
     NgxDatatableModule,

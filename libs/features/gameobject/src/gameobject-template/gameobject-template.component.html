@@ -78,10 +78,11 @@
           </span>
           <div class="row">
             @for (item of [].constructor(24); track item; let i = $index) {
+              @let fieldDefinition = dataFieldDefinition(i);
               <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-                <label class="control-label" for="Data{{ i }}">{{ dataFieldDefinition(i).name }}</label>
-                @if (!!dataFieldDefinition(i).tooltip) {
-                  <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="dataFieldDefinition(i).tooltip | translate"></i>
+                <label class="control-label" for="Data{{ i }}">{{ fieldDefinition.name }}</label>
+                @if (fieldDefinition.tooltip && fieldDefinition.tooltip !== 'EMPTY') {
+                  <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="fieldDefinition.tooltip | translate"></i>
                 }
                 <input [formControlName]="'Data' + i" id="Data{{ i }}" type="number" class="form-control form-control-sm" />
               </div>

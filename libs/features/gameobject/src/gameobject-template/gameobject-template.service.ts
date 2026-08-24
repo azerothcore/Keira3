@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { SingleRowEditorService } from '@keira/shared/base-abstract-classes';
 import { FieldDefinition, GO_DATA_FIELDS } from '@keira/shared/constants';
 import {
@@ -9,9 +9,7 @@ import {
 } from '@keira/shared/acore-world-model';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class GameobjectTemplateService extends SingleRowEditorService<GameobjectTemplate> {
   protected override readonly handlerService = inject(GameobjectHandlerService);
   protected override _entityClass = GameobjectTemplate;

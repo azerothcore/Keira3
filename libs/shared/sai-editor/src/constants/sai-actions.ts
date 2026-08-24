@@ -179,6 +179,10 @@ export enum SAI_ACTIONS {
   MOVEMENT_RESUME = 236,
   WORLD_SCRIPT = 237,
   DISABLE_REWARD = 238,
+  SET_ANIM_TIER = 239,
+  SET_GOSSIP_MENU = 240,
+  SUMMON_GAMEOBJECT_GROUP = 241,
+  INC_DATA = 242,
 }
 export const SAI_ACTIONS_KEYS = getEnumKeys(SAI_ACTIONS);
 export const SAI_ACTION_TOOLTIPS: Record<string, string> = {};
@@ -209,10 +213,12 @@ SAI_ACTION_TOOLTIPS[SAI_ACTIONS.TALK] = 'Creature says a creature_text line';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.TALK] = 'GroupId';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.TALK] = 'Duration';
 SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.TALK] = 'Target';
+SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.TALK] = 'Delay';
 SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.TALK] = 'This is creature_text.GroupID';
 SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.TALK] = 'Duration (milliseconds) to wait before SMART_EVENT_TEXT_OVER event is triggered';
 SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.TALK] =
   '0 = Try to trigger talk of the target; ' + '1 = Set target as talk target (used for $vars in texts and whisper target)';
+SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.TALK] = 'Duration (milliseconds) to delay the Action';
 
 // SMART_ACTION_SET_FACTION
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_FACTION] = 'Set faction of target';
@@ -270,11 +276,8 @@ SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CAST] = 'SpellId';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.CAST] = 'CastFlags';
 SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.CAST] = 'TriggerFlags';
 SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.CAST] = 'LimitTargets';
-SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.CAST] = `1 - Interrupt any spell casting;
-2 - Triggered (this makes spell cost zero mana and have no cast time);
-32 - Only casts the spell if the target does not have an aura from the spell;
-64 - Prevent combat movement on cast, allow on fail range, mana, LOS;
-128 - Only cast if the source's threatlist is higher than one. This includes pets`;
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.CAST] = 'Cannot be 0';
+SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.CAST] = '0 = Not triggered';
 SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.CAST] = '0 = all targets';
 
 // SMART_ACTION_SUMMON_CREATURE
@@ -336,9 +339,9 @@ SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.REMOVE_UNIT_FLAG] = SAI_ACTION_PARAM2_TOO
 
 // SMART_ACTION_AUTO_ATTACK
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.AUTO_ATTACK] = 'Stop or Continue Automatic Attack.';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.AUTO_ATTACK] = 'StartOrStop';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.AUTO_ATTACK] = 'AllowAttackState';
 SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.AUTO_ATTACK] =
-  '0 = the creature will stop attacking its current target. 1 = starts/continues to attack its target';
+  '0 = disable auto attack, the creature will stop attacking its current target. 1 = allow the creature to attack its target';
 
 // SMART_ACTION_ALLOW_COMBAT_MOVEMENT
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.ALLOW_COMBAT_MOVEMENT] = 'Allow or disallow moving while the creature is in combat';
@@ -348,8 +351,8 @@ SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.ALLOW_COMBAT_MOVEMENT] =
 
 // SMART_ACTION_SET_EVENT_PHASE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_EVENT_PHASE] =
-  "Set the creature's event phasemask to a new value (warning: this is NOT the creature's actual phase!)";
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_EVENT_PHASE] = 'Phasemask';
+  "Set the creature's event phase to a new value (warning: this is NOT the creature's actual phase!)";
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_EVENT_PHASE] = 'EventPhase';
 SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_EVENT_PHASE] = 'Event phase 0-12 (the actual values, no bit mask!)';
 
 // SMART_ACTION_INC_EVENT_PHASE
@@ -390,15 +393,19 @@ SAI_ACTION_TOOLTIPS[SAI_ACTIONS.FOLLOW] = 'Makes the creature follow the target 
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.FOLLOW] = 'Distance';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.FOLLOW] = 'Angle';
 SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.FOLLOW] = 'EndCreatureId';
-SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.FOLLOW] = 'CreditCreatureId';
+SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.FOLLOW] = 'Credit';
 SAI_ACTION_PARAM5_NAMES[SAI_ACTIONS.FOLLOW] = 'CreditType';
+SAI_ACTION_PARAM6_NAMES[SAI_ACTIONS.FOLLOW] = 'AliveState';
 SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.FOLLOW] =
   'Default is 0. When not 0, the follow will finish ONLY once the creature is within interaction distance (5 yards) of the given entry.';
 SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.FOLLOW] =
-  'The creature id that will be given as a quest credit when the follow has finished for whatever reason.';
+  'When set, grants quest credit when the follow completes. If CreditType = 0 the value is treated as a creature entry (monster kill credit) and will give kill credit to the player/group. If CreditType = 1 the value is treated as an event id and will trigger the group event for credit.';
 SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.FOLLOW] =
-  'Requires the 4th parameter to be set and valid; ' +
-  "determines whether the entry in parameter 4 is a monster kill or event happening. If you're not sure what they mean, read the `quest_template` wiki.";
+  'Determines how the value in parameter 4 is interpreted. ' +
+  '0 = monster kill credit (calls RewardPlayerAndGroupAtEvent), 1 = event credit (calls GroupEventHappens).';
+SAI_ACTION_PARAM6_TOOLTIPS[SAI_ACTIONS.FOLLOW] =
+  'Controls whether the creature must be alive to count as arrived. ' +
+  '0 = creature must be alive, 1 = creature can be dead and still count as arrived.';
 
 // SMART_ACTION_RANDOM_PHASE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.RANDOM_PHASE] = "Set the creature's event phase (note: this is NOT the creature's actual phase!)";
@@ -426,17 +433,19 @@ SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CALL_KILLEDMONSTER] = 'CreatureId';
 
 // SMART_ACTION_SET_INST_DATA
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_INST_DATA] =
-  'Sets a certain instance data field to a specific value. ' +
-  'This will be received and can be handled inside the InstanceScript of the instance we are sending this to (InstanceScripts are always written in C++).';
+  'Calls InstanceScript::SetData(field, data) or InstanceScript::SetBossState(field, EncounterState(data)) depending on type.';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_INST_DATA] = 'Field';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_INST_DATA] = 'Data';
+SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.SET_INST_DATA] = 'Type';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_INST_DATA] = 'Instance data field id';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SET_INST_DATA] = 'Value to set. If type is 1, this value is cast to `EncounterState`.';
+SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.SET_INST_DATA] = '0 = call SetData(field, data); 1 = call SetBossState(field, EncounterState(data))';
 
 // SMART_ACTION_SET_INST_DATA64
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_INST_DATA64] =
-  'Sets a certain instance data field to a specific value. ' +
-  'This will be received and can be handled inside the InstanceScript of the instance we are sending this to (InstanceScripts are always written in C++).';
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_INST_DATA64] = 'Calls SetGuidData(field, guid) using the GUID from the first action target.';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_INST_DATA64] = 'Field';
-SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_INST_DATA64] = 'Data';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_INST_DATA64] = 'Instance data field id';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SET_INST_DATA64] = 'The GUID is taken from the first action target.';
 
 // SMART_ACTION_UPDATE_TEMPLATE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.UPDATE_TEMPLATE] =
@@ -564,7 +573,8 @@ SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.ESCORT_START] =
   'Quest entry to give credit for once the path has finished. Will use the target type and take all player entities from this list';
 SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.ESCORT_START] =
   'Time in milliseconds to wait after the path ended before we despawn. 0 = will not despawn';
-SAI_ACTION_PARAM6_TOOLTIPS[SAI_ACTIONS.ESCORT_START] = 'ReactState that is set when the waypoint starts';
+SAI_ACTION_PARAM6_TOOLTIPS[SAI_ACTIONS.ESCORT_START] =
+  'ReactState that is set when the waypoint starts (0=Passive, 1=Defensive, 2=Aggressive)';
 
 // SMART_ACTION_ESCORT_PAUSE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.ESCORT_PAUSE] =
@@ -1108,8 +1118,8 @@ SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.REMOVE_IMMUNITY] = SAI_ACTION_PARAM3_NAMES[S
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.FALL] = 'FALL';
 
 // SMART_ACTION_SET_EVENT_FLAG_RESET
-// SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_EVENT_FLAG_RESET] = 'SET_EVENT_FLAG_RESET';
-SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_EVENT_FLAG_RESET] = 'On';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_EVENT_FLAG_RESET] = 'allowPhaseReset';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_EVENT_FLAG_RESET] = '0=Disable, 1=Enable';
 
 // SMART_ACTION_STOP_MOTION
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.STOP_MOTION] = 'STOP_MOTION';
@@ -1123,7 +1133,7 @@ SAI_ACTION_TOOLTIPS[SAI_ACTIONS.NO_ENVIRONMENT_UPDATE] = 'NO_ENVIRONMENT_UPDATE'
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.ZONE_UNDER_ATTACK] = 'ZONE_UNDER_ATTACK';
 
 // SMART_ACTION_LOAD_GRID
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.LOAD_GRID] = 'LOAD_GRID';
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.LOAD_GRID] = 'Loads the grid at the target coordinates. Works for both creatures and game objects.';
 
 // SMART_ACTION_MUSIC
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.MUSIC] = 'MUSIC';
@@ -1211,14 +1221,14 @@ SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Minimum Spawn Timer';
 SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Maximum Spawn Timer';
 SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Respawn Delay';
 SAI_ACTION_PARAM5_NAMES[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Corpse Delay';
-SAI_ACTION_PARAM5_NAMES[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Dont Despawn';
+SAI_ACTION_PARAM6_NAMES[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Dont Despawn';
 SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SCRIPTED_SPAWN] =
   '0: Disable Respawn and await script; 1: Respawn Once; 2: Respawn and Enable Respawning';
 SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Delay in seconds until first spawn, if 0 respawn immediately';
 SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Delay in seconds until first spawn, if 0 respawn immediately';
 SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Delay in seconds to respawn after corpse is removed, if 0 use DB values';
 SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.SCRIPTED_SPAWN] = 'Delay in seconds until the corpse despawns, if 0 use default';
-SAI_ACTION_PARAM5_TOOLTIPS[SAI_ACTIONS.SCRIPTED_SPAWN] = 'if 1, will not despawn when state = 0';
+SAI_ACTION_PARAM6_TOOLTIPS[SAI_ACTIONS.SCRIPTED_SPAWN] = 'if 1, will not despawn when state = 0';
 
 // SMART_ACTION_SET_SCALE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_SCALE] = 'Sets the scale for the targeted creatures';
@@ -1320,3 +1330,26 @@ SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.DISABLE_REWARD] = 'Disable Reputation';
 SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.DISABLE_REWARD] = '1 = enabled 0 = disabled';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.DISABLE_REWARD] = 'Disable Loot';
 SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.DISABLE_REWARD] = '1 = enabled 0 = disabled';
+
+// SMART_ACTION_SET_ANIM_TIER
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_ANIM_TIER] = 'Allows to set animation tier for a creature.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_ANIM_TIER] = 'Anim Tier';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_ANIM_TIER] = '0 = Ground, 1 = Swim, 2 = Hover, 3 = Fly, 4 = Submerged';
+
+// SMART_ACTION_SET_GOSSIP_MENU
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_GOSSIP_MENU] = 'Modifies the gossip menu ID of the target.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_GOSSIP_MENU] = 'GossipMenuId';
+
+// SMART_ACTION_SUMMON_GAMEOBJECT_GROUP
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SUMMON_GAMEOBJECT_GROUP] =
+  'Summons the gameobjects of the given group, as defined in `gameobject_summon_groups` for this summoner ' +
+  '(matched on summonerId and summonerType). Requires a base object, so it does nothing when the script has none.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SUMMON_GAMEOBJECT_GROUP] = 'Group';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SUMMON_GAMEOBJECT_GROUP] = 'gameobject_summon_groups.groupId';
+
+// SMART_ACTION_INC_DATA
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.INC_DATA] =
+  "Increments the target's aiDataSet[field] by the given delta and fires SMART_EVENT_DATA_SET. " +
+  'Unlike SET_COUNTER, the value persists across evade and is only cleared on respawn/initialization.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.INC_DATA] = 'Field';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.INC_DATA] = 'Increment';

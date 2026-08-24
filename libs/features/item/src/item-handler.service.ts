@@ -1,4 +1,4 @@
-import { Injectable, signal, Signal } from '@angular/core';
+import { Service, signal, Signal } from '@angular/core';
 import { HandlerService } from '@keira/shared/base-abstract-classes';
 import {
   DISENCHANT_LOOT_TEMPLATE_TABLE,
@@ -10,9 +10,7 @@ import {
   PROSPECTING_LOOT_TEMPLATE_TABLE,
 } from '@keira/shared/acore-world-model';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class ItemHandlerService extends HandlerService<ItemTemplate> {
   protected readonly mainEditorRoutePath = 'item/item-template';
 

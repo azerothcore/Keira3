@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -8,8 +9,6 @@ import { instance, mock } from 'ts-mockito';
 import { SqliteService } from '../sqlite.service';
 
 describe('SqliteQueryService', () => {
-  let service: SqliteQueryService;
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
@@ -18,29 +17,35 @@ describe('SqliteQueryService', () => {
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
     });
-    service = TestBed.inject(SqliteQueryService);
   });
+
+  function setup() {
+    const service = TestBed.inject(SqliteQueryService);
+    return { service };
+  }
 
   describe('queryValue()', () => {
     it('should correctly work', () => {
+      const { service } = setup();
       const value = 'mock result value';
-      spyOn(service, 'query').and.returnValue(of([{ v: value }]));
+      vi.spyOn(service, 'query').mockReturnValue(of([{ v: value }]));
       const query = 'SELECT something AS v FROM my_table WHERE index = 123';
 
       service.queryValue(query).subscribe((result) => {
         expect(result).toEqual(value);
       });
-      expect(service.query).toHaveBeenCalledOnceWith(query);
+      expect(service.query).toHaveBeenCalledExactlyOnceWith(query);
     });
 
     it('should be safe in case of no results', () => {
-      spyOn(service, 'query').and.returnValue(of(null as any));
+      const { service } = setup();
+      vi.spyOn(service, 'query').mockReturnValue(of(null as any));
       const query = 'SELECT something AS v FROM my_table WHERE index = 123';
 
       service.queryValue(query).subscribe((result) => {
         expect(result).toEqual(null);
       });
-      expect(service.query).toHaveBeenCalledOnceWith(query);
+      expect(service.query).toHaveBeenCalledExactlyOnceWith(query);
     });
   });
 
@@ -48,12 +53,15 @@ describe('SqliteQueryService', () => {
     const mockResult = 'mock result';
     const id = '123';
 
-    beforeEach(() => {
-      spyOn(service, 'queryValue').and.returnValue(of(mockResult));
-      spyOn(service, 'queryValueToPromise').and.returnValue(Promise.resolve(mockResult));
-    });
+    function setupHelpers() {
+      const { service } = setup();
+      vi.spyOn(service, 'queryValue').mockReturnValue(of(mockResult));
+      vi.spyOn(service, 'queryValueToPromise').mockReturnValue(Promise.resolve(mockResult));
+      return { service };
+    }
 
     it('getItemDisplayIdIcon', () => {
+      const { service } = setupHelpers();
       service.getIconByItemDisplayId(id).subscribe((res) => {
         expect(res).toEqual(mockResult);
       });
@@ -65,6 +73,7 @@ describe('SqliteQueryService', () => {
     });
 
     it('getSpellDisplayIcon', () => {
+      const { service } = setupHelpers();
       service.getIconBySpellDisplayId(id).subscribe((res) => {
         expect(res).toEqual(mockResult);
       });
@@ -76,6 +85,7 @@ describe('SqliteQueryService', () => {
     });
 
     it('getDisplayIdBySpellId (case non-null)', () => {
+      const { service } = setupHelpers();
       service.getDisplayIdBySpellId(id).subscribe((res) => {
         expect(res).toEqual(mockResult);
       });
@@ -84,6 +94,7 @@ describe('SqliteQueryService', () => {
     });
 
     it('getDisplayIdBySpellId (case null)', () => {
+      const { service } = setupHelpers();
       service.getDisplayIdBySpellId(undefined).subscribe((res) => {
         expect(res).toEqual(undefined);
       });
@@ -104,6 +115,7 @@ describe('SqliteQueryService', () => {
     ];
     for (const test of cases) {
       it(test.name, async () => {
+        const { service } = setupHelpers();
         expect(await (service[test.name] as (arg: any) => Promise<string>)(id)).toEqual(mockResult);
         expect(await (service[test.name] as (arg: any) => Promise<string>)(id)).toEqual(mockResult); // check cache
         expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
@@ -113,7 +125,8 @@ describe('SqliteQueryService', () => {
     }
 
     it('getLockById', async () => {
-      spyOn(service, 'query').and.returnValue(of([]));
+      const { service } = setupHelpers();
+      vi.spyOn(service, 'query').mockReturnValue(of([]));
       expect(await service.getLockById(id)).toEqual([]);
       expect(await service.getLockById(id)).toEqual([]); // check cache
       expect(service.query).toHaveBeenCalledTimes(1); // check cache
@@ -121,6 +134,7 @@ describe('SqliteQueryService', () => {
     });
 
     it('getRewardXP', async () => {
+      const { service } = setupHelpers();
       expect(await service.getRewardXP(id, 2)).toEqual(mockResult);
       expect(await service.getRewardXP(id, 2)).toEqual(mockResult); // check cache
       expect(service.queryValue).toHaveBeenCalledTimes(1); // check cache
@@ -129,11 +143,43 @@ describe('SqliteQueryService', () => {
     });
 
     it('getItemExtendedCost', async () => {
-      spyOn(service, 'query').and.returnValue(of([]));
+      const { service } = setupHelpers();
+      vi.spyOn(service, 'query').mockReturnValue(of([]));
       expect(await service.getItemExtendedCost([])).toEqual([]);
       expect(await service.getItemExtendedCost([])).toEqual([]); // check cache
       expect(service.query).toHaveBeenCalledTimes(1); // check cache
       expect(service.query).toHaveBeenCalledWith(`SELECT * FROM item_extended_cost WHERE id IN ()`);
+    });
+
+    it('getAllWorldMapAreas', async () => {
+      const { service } = setupHelpers();
+      vi.spyOn(service, 'query').mockReturnValue(of([]));
+      expect(await service.getAllWorldMapAreas()).toEqual([]);
+      expect(await service.getAllWorldMapAreas()).toEqual([]); // check cache
+      expect(service.query).toHaveBeenCalledTimes(1); // check cache
+      expect(service.query).toHaveBeenCalledWith(`SELECT * FROM worldmaparea_dbc`);
+    });
+
+    it('getAllWorldMapOverlays', async () => {
+      const { service } = setupHelpers();
+      vi.spyOn(service, 'query').mockReturnValue(of([]));
+      expect(await service.getAllWorldMapOverlays()).toEqual([]);
+      expect(await service.getAllWorldMapOverlays()).toEqual([]); // check cache
+      expect(service.query).toHaveBeenCalledTimes(1); // check cache
+      expect(service.query).toHaveBeenCalledWith(
+        `SELECT MapAreaID AS mapAreaId, OffsetX AS x, OffsetY AS y, TextureWidth AS w, TextureHeight AS h FROM worldmapoverlay_dbc`,
+      );
+    });
+
+    it('getItemDisplayInfoByItemId', async () => {
+      const { service } = setupHelpers();
+      vi.spyOn(service, 'query').mockReturnValue(of([]));
+      expect(await service.getItemDisplayInfoByItemId(id)).toEqual([]);
+      expect(await service.getItemDisplayInfoByItemId(id)).toEqual([]); // check cache
+      expect(service.query).toHaveBeenCalledTimes(1); // check cache
+      expect(service.query).toHaveBeenCalledWith(
+        `SELECT ItemDisplayInfoID, DisplayType FROM item_appearance WHERE ID = (SELECT ItemAppearanceID FROM item_modified_appearance WHERE ItemID = ${id})`,
+      );
     });
   });
 });

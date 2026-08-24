@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -62,7 +63,7 @@ describe('FlagsService', () => {
     const mockResult = [true, false, true];
     const value = 123;
     const flags: Flag[] = [{ bit: 1, name: 'test' }];
-    const getBitsFromValueSpy = spyOn(service, 'getBitsFromValue').and.returnValue(mockResult);
+    const getBitsFromValueSpy = vi.spyOn(service, 'getBitsFromValue').mockReturnValue(mockResult);
 
     expect(service.getBitsArray(flags, value)).toEqual(mockResult);
     expect(getBitsFromValueSpy).toHaveBeenCalledWith(value, flags[0].bit + 1);

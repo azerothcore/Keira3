@@ -4,7 +4,7 @@ import { BaseSelectorModalComponent } from '../base-selector/base-selector-modal
 import { DTCFG } from '@keira/shared/config';
 import { Option } from '@keira/shared/constants';
 import { SingleValueModalConfig } from './single-value-selector.model';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 
 @Component({
@@ -12,7 +12,7 @@ import { NgxDatatableModule } from '@siemens/ngx-datatable';
   selector: 'keira-single-value-selector-modal',
   templateUrl: './single-value-selector-modal.component.html',
   styleUrls: ['./single-value-selector-modal.component.scss'],
-  imports: [NgxDatatableModule, TranslateModule],
+  imports: [NgxDatatableModule, TranslateDirective],
 })
 export class SingleValueSelectorModalComponent extends BaseSelectorModalComponent<SingleValueModalConfig> implements OnInit {
   readonly DTCFG = DTCFG;

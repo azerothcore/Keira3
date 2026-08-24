@@ -13,12 +13,9 @@ import {
   DYNAMIC_FLAGS,
   EXPANSION,
   FLAGS_EXTRA,
-  MECHANIC_IMMUNE_MASK,
   MOVEMENT_TYPE,
   NPC_FLAGS,
   RANK,
-  SPELL_SCHOOL_MASK,
-  TRAINER_TYPE,
   UNIT_CLASS,
   UNIT_FLAGS,
   UNIT_FLAGS_2,
@@ -32,10 +29,9 @@ import {
   FlagsSelectorBtnComponent,
   GenericOptionSelectorComponent,
   SingleValueSelectorBtnComponent,
-  SpellSelectorBtnComponent,
 } from '@keira/shared/selectors';
-import { TranslateModule } from '@ngx-translate/core';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateService } from './creature-template.service';
 
@@ -45,15 +41,15 @@ import { CreatureTemplateService } from './creature-template.service';
   templateUrl: './creature-template.component.html',
   imports: [
     TopBarComponent,
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,
-    TooltipModule,
+    TooltipDirective,
     SingleValueSelectorBtnComponent,
     FactionSelectorBtnComponent,
     FlagsSelectorBtnComponent,
-    SpellSelectorBtnComponent,
     CreatureSelectorBtnComponent,
     GenericOptionSelectorComponent,
     BooleanOptionSelectorComponent,
@@ -62,7 +58,6 @@ import { CreatureTemplateService } from './creature-template.service';
 export class CreatureTemplateComponent extends SingleRowEditorComponent<CreatureTemplate> {
   protected readonly UNIT_FLAGS = UNIT_FLAGS;
   protected readonly UNIT_FLAGS_2 = UNIT_FLAGS_2;
-  protected readonly TRAINER_TYPE = TRAINER_TYPE;
   protected readonly NPC_FLAGS = NPC_FLAGS;
   protected readonly CREATURE_FAMILY = CREATURE_FAMILY;
   protected readonly CREATURE_TYPE = CREATURE_TYPE;
@@ -73,8 +68,6 @@ export class CreatureTemplateComponent extends SingleRowEditorComponent<Creature
   protected readonly CREATURE_RACE = CREATURE_RACE;
   protected readonly MOVEMENT_TYPE = MOVEMENT_TYPE;
   protected readonly FLAGS_EXTRA = FLAGS_EXTRA;
-  protected readonly MECHANIC_IMMUNE_MASK = MECHANIC_IMMUNE_MASK;
-  protected readonly SPELL_SCHOOL_IMMUNE_MASK = SPELL_SCHOOL_MASK;
   protected readonly CREATURE_ICON = CREATURE_ICON;
   protected readonly EXPANSION = EXPANSION;
   protected readonly UNIT_CLASS = UNIT_CLASS;

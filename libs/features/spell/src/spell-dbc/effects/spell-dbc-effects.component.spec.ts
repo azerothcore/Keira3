@@ -6,8 +6,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModelForm } from '@keira/shared/utils';
 import { SpellDbc } from '@keira/shared/acore-world-model';
-import { ModalModule } from 'ngx-bootstrap/modal';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { ModalDirective } from 'ngx-bootstrap/modal';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
 import { SpellHandlerService } from '../../spell-handler.service';
 
@@ -42,9 +42,9 @@ describe('SpellDbcEffectsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        ModalModule.forRoot(),
+        ModalDirective,
         ToastrModule.forRoot(),
-        TooltipModule.forRoot(),
+        TooltipDirective,
         RouterTestingModule,
         TranslateTestingModule,
         TestHostComponent,
@@ -69,9 +69,9 @@ describe('SpellDbcEffectsComponent', () => {
 
   it('should correctly display the fields', () => {
     const { page } = setup();
-    expect(page.getTargets());
-    expect(page.getProcTypeMask());
-    expect(page.getProcChance());
-    expect(page.getProcCharges());
+    expect(page.getTargets()).toBeTruthy();
+    expect(page.getProcTypeMask()).toBeTruthy();
+    expect(page.getProcChance()).toBeTruthy();
+    expect(page.getProcCharges()).toBeTruthy();
   });
 });

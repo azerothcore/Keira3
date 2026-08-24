@@ -1,5 +1,12 @@
 {
   "extends": ["../../../.eslintrc.json"],
-  "ignorePatterns": ["!**/*"],
-  "overrides": []
+  "ignorePatterns": ["!**/*", "vitest.config.ts"],
+  "overrides": [
+    {
+      "files": ["*.ts"],
+      "parserOptions": {
+        "project": ["libs/shared/base-abstract-classes/tsconfig.*?.json"]
+      }
+    }
+  ]
 }

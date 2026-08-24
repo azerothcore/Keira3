@@ -1,10 +1,8 @@
-import { Injectable, signal, Signal } from '@angular/core';
+import { Service, signal, Signal } from '@angular/core';
 import { HandlerService } from '@keira/shared/base-abstract-classes';
 import { FISHING_LOOT_TEMPLATE_TABLE, FishingLootTemplate } from '@keira/shared/acore-world-model';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class FishingLootHandlerService extends HandlerService<FishingLootTemplate> {
   protected readonly mainEditorRoutePath = 'other-loots/fishing';
 

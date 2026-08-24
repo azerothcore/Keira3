@@ -366,8 +366,11 @@ SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.DAMAGED] = 'MinDamage';
 SAI_EVENT_PARAM2_NAMES[SAI_EVENTS.DAMAGED] = 'MaxDamage';
 SAI_EVENT_PARAM3_NAMES[SAI_EVENTS.DAMAGED] = 'RepeatMin';
 SAI_EVENT_PARAM4_NAMES[SAI_EVENTS.DAMAGED] = 'RepeatMax';
+SAI_EVENT_PARAM5_NAMES[SAI_EVENTS.DAMAGED] = 'HpPct';
 SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.DAMAGED] = 'Minimum amount of damage required to trigger this event';
 SAI_EVENT_PARAM2_TOOLTIPS[SAI_EVENTS.DAMAGED] = 'Maximum allowed damage to make this event be able to trigger';
+SAI_EVENT_PARAM5_TOOLTIPS[SAI_EVENTS.DAMAGED] =
+  'Health percentage (1-100). When set, the event switches to health check mode: it fires once when incoming damage drops health below this threshold (MinDamage/MaxDamage/Repeat are ignored). Leave 0 for the normal damage-amount mode.';
 
 // SMART_EVENT_DAMAGED_TARGET
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.DAMAGED_TARGET] = 'On target damaged for a certain amount';
@@ -513,6 +516,12 @@ SAI_EVENT_TOOLTIPS[SAI_EVENTS.JUST_CREATED] = 'On Gameobject just spawned/create
 
 // SMART_EVENT_GOSSIP_HELLO
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.GOSSIP_HELLO] = 'On Right-Click Creature/Gameobject that have gossip enabled.';
+SAI_EVENT_PARAM1_NAMES[SAI_EVENTS.GOSSIP_HELLO] = 'filter';
+SAI_EVENT_PARAM1_TOOLTIPS[SAI_EVENTS.GOSSIP_HELLO] =
+  'This is gossipHello.filter' +
+  '0=no filter set, always execute action. ' +
+  '1=GossipHello only filter set, skip action if reportUse. ' +
+  '2=reportUse only filter set, skip action if GossipHello.';
 
 // SMART_EVENT_FOLLOW_COMPLETED
 SAI_EVENT_TOOLTIPS[SAI_EVENTS.FOLLOW_COMPLETED] = 'On follow completed/finished';

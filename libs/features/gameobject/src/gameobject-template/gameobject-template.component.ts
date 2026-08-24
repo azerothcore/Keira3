@@ -6,8 +6,8 @@ import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor
 import { FieldDefinition } from '@keira/shared/constants';
 import { Model3DViewerComponent, VIEWER_TYPE } from '@keira/shared/model-3d-viewer';
 import { GenericOptionSelectorComponent } from '@keira/shared/selectors';
-import { TranslateModule } from '@ngx-translate/core';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { GameobjectTemplateService } from './gameobject-template.service';
 
@@ -18,11 +18,12 @@ import { GameobjectTemplateService } from './gameobject-template.service';
   styleUrls: ['./gameobject-template.component.scss'],
   imports: [
     TopBarComponent,
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,
-    TooltipModule,
+    TooltipDirective,
     Model3DViewerComponent,
     GenericOptionSelectorComponent,
   ],

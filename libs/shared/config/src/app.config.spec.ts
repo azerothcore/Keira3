@@ -9,14 +9,12 @@ describe('KeiraAppConfig', () => {
         production: false,
         environment: 'test',
         sqlitePath: 'test.db',
-        sqliteItem3dPath: 'test_item.db',
       };
 
       expect(config).toBeDefined();
       expect(config.production).toBeDefined();
       expect(config.environment).toBeDefined();
       expect(config.sqlitePath).toBeDefined();
-      expect(config.sqliteItem3dPath).toBeDefined();
     });
 
     it('should allow optional databaseApiUrl property', () => {
@@ -24,14 +22,12 @@ describe('KeiraAppConfig', () => {
         production: false,
         environment: 'test',
         sqlitePath: 'test.db',
-        sqliteItem3dPath: 'test_item.db',
       };
 
       const configWithApi: KeiraAppConfig = {
         production: true,
         environment: 'docker',
         sqlitePath: 'assets/sqlite.db',
-        sqliteItem3dPath: 'assets/item_display.db',
         databaseApiUrl: '/api/database',
       };
 
@@ -46,14 +42,12 @@ describe('KeiraAppConfig', () => {
         production: true,
         environment: 'production',
         sqlitePath: 'prod.db',
-        sqliteItem3dPath: 'prod_item.db',
         databaseApiUrl: '/api/database',
       };
 
       expect(typeof config.production).toBe('boolean');
       expect(typeof config.environment).toBe('string');
       expect(typeof config.sqlitePath).toBe('string');
-      expect(typeof config.sqliteItem3dPath).toBe('string');
       expect(typeof config.databaseApiUrl).toBe('string');
     });
   });
@@ -65,7 +59,6 @@ describe('KeiraAppConfig', () => {
         production: false,
         environment: 'test',
         sqlitePath: 'test.db',
-        sqliteItem3dPath: 'test_item.db',
       };
 
       expect(minimalConfig).toBeDefined();
@@ -78,21 +71,18 @@ describe('KeiraAppConfig', () => {
           production: true,
           environment: 'docker',
           sqlitePath: 'docker.db',
-          sqliteItem3dPath: 'docker_item.db',
           databaseApiUrl: '/api/database',
         },
         {
           production: false,
           environment: 'dev',
           sqlitePath: 'dev.db',
-          sqliteItem3dPath: 'dev_item.db',
           databaseApiUrl: '/custom/api/db',
         },
         {
           production: true,
           environment: 'prod',
           sqlitePath: 'prod.db',
-          sqliteItem3dPath: 'prod_item.db',
           databaseApiUrl: 'http://external-api.com/database',
         },
       ];
@@ -119,7 +109,6 @@ describe('KeiraAppConfig', () => {
           production: false,
           environment: 'test',
           sqlitePath: 'test.db',
-          sqliteItem3dPath: 'test_item.db',
           databaseApiUrl: url,
         };
 
@@ -135,7 +124,6 @@ describe('KeiraAppConfig', () => {
         production: false,
         environment: 'ELECTRON',
         sqlitePath: 'local/sqlite.db',
-        sqliteItem3dPath: 'local/item_display.db',
         // No databaseApiUrl for Electron
       };
 
@@ -148,7 +136,6 @@ describe('KeiraAppConfig', () => {
         production: true,
         environment: 'DOCKER',
         sqlitePath: 'assets/sqlite.db',
-        sqliteItem3dPath: 'assets/item_display.db',
         databaseApiUrl: '/api/database',
       };
 
@@ -162,7 +149,6 @@ describe('KeiraAppConfig', () => {
         production: false,
         environment: 'DEV_WEB',
         sqlitePath: 'dev/sqlite.db',
-        sqliteItem3dPath: 'dev/item_display.db',
         databaseApiUrl: 'http://localhost:3001/api/database',
       };
 
@@ -194,7 +180,6 @@ describe('KEIRA_APP_CONFIG_TOKEN', () => {
         production: false,
         environment: 'test',
         sqlitePath: 'test.db',
-        sqliteItem3dPath: 'test_item.db',
         databaseApiUrl: '/api/test',
       };
 

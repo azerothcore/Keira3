@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { SelectService } from '@keira/shared/base-abstract-classes';
 import {
   QUEST_TEMPLATE_ID,
@@ -10,9 +10,7 @@ import {
 import { QuestHandlerService } from '../quest-handler.service';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class SelectQuestService extends SelectService<QuestTemplate> {
   override readonly queryService = inject(MysqlQueryService);
   override readonly handlerService = inject(QuestHandlerService);

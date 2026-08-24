@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -13,8 +14,6 @@ import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
 import { GameobjectLootTemplateService } from './gameobject-loot-template.service';
 
 describe('GameobjectLootTemplateService', () => {
-  let service: GameobjectLootTemplateService;
-
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
@@ -31,14 +30,16 @@ describe('GameobjectLootTemplateService', () => {
     }),
   );
 
-  beforeEach(() => {
-    service = TestBed.inject(GameobjectLootTemplateService);
-  });
+  function setup() {
+    const service = TestBed.inject(GameobjectLootTemplateService);
+    return { service };
+  }
 
   it('getType() should correctly work', () => {
+    const { service } = setup();
     const type = 3;
     const mockData: { type: number }[] = [{ type }];
-    const querySpy = spyOn(TestBed.inject(MysqlQueryService), 'query').and.returnValue(of(mockData));
+    const querySpy = vi.spyOn(TestBed.inject(MysqlQueryService), 'query').mockReturnValue(of(mockData));
 
     service.getType().subscribe((data) => {
       expect(data).toEqual(mockData);

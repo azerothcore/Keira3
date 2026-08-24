@@ -28,6 +28,11 @@
               <i class="fa fa-circle connection-status" [class.connected]="mysqlService.getConnectionState() === 'CONNECTED'"></i>
               <span>{{ mysqlService.getConnectionState() | translate | titlecase }}</span>
             </span>
+            @if (mysqlService.sshTunnelActive) {
+              <span class="ssh-tunnel-badge" [title]="'SIDEBAR.SSH_TUNNEL_VIA' | translate: { host: mysqlService.config.sshHost }">
+                <i class="fas fa-shield-alt"></i> {{ 'SIDEBAR.SSH_TUNNEL_ACTIVE' | translate }}
+              </span>
+            }
             <span>
               <keira-switch-language />
             </span>
@@ -146,13 +151,14 @@
                       </a>
                     </li>
                     <li>
-                      <a href="#" routerLinkActive="active" [routerLink]="'creature/npc-trainer'">
-                        {{ 'SIDEBAR.CREATURE.TRAINER' | translate }}
-                        @if (creatureHandlerService.isNpcTrainerUnsaved()) {
+                      <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-default-trainer'">
+                        {{ 'SIDEBAR.CREATURE.DEFAULT_TRAINER' | translate }}
+                        @if (creatureHandlerService.isCreatureDefaultTrainerUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
                     </li>
+
                     <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-questitem'">
                         {{ 'SIDEBAR.CREATURE.QUEST_ITEM' | translate }}
@@ -314,6 +320,11 @@
                         @if (questHandlerService.isGameobjectQuestenderUnsaved()) {
                           <keira-unsaved-icon />
                         }
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'quest/quest-chain'">
+                        {{ 'SIDEBAR.QUEST.QUEST_CHAIN' | translate }}
                       </a>
                     </li>
                   }
@@ -754,6 +765,41 @@
                     <a href="#" routerLinkActive="active" [routerLink]="'game-tele/tele'">
                       {{ 'SIDEBAR.GAME_TELE.SELECT_GAME_TELE' | translate }}
                       @if (gameTeleHandlerService.isGameTeleUnsaved()) {
+                        <keira-unsaved-icon />
+                      }
+                    </a>
+                  </li>
+                }
+              </ul>
+            </div>
+          </li>
+
+          <li class="sidebar-dropdown" [class.active]="menuStates['trainer'] === 'down'">
+            <a (click)="toggleState('trainer')">
+              <i class="fa fa-graduation-cap"></i>
+              <span [translate]="'SIDEBAR.TRAINER.TITLE'"></span>
+            </a>
+
+            <div class="sidebar-submenu" [@slide]="menuStates['trainer']">
+              <ul>
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'trainer/select'">
+                    {{ 'SIDEBAR.TRAINER.SEARCH_TRAINER' | translate }}
+                  </a>
+                </li>
+                @if (trainerHandlerService.selected) {
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'trainer/trainer'">
+                      {{ 'SIDEBAR.TRAINER.SELECT_TRAINER' | translate }}
+                      @if (trainerHandlerService.isTrainerUnsaved()) {
+                        <keira-unsaved-icon />
+                      }
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'trainer/trainer-spell'">
+                      {{ 'SIDEBAR.TRAINER.TRAINER_SPELL' | translate }}
+                      @if (trainerHandlerService.isTrainerSpellUnsaved()) {
                         <keira-unsaved-icon />
                       }
                     </a>

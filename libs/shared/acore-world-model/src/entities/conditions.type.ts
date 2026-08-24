@@ -13,7 +13,7 @@ export const CONDITIONS_ID_FIELDS = [
   'ConditionValue2',
   'ConditionValue3',
 ];
-export const CONDITIONS_SEARCH_FIELDS = ['SourceTypeOrReferenceId', 'SourceGroup', 'SourceEntry'];
+export const CONDITIONS_SEARCH_FIELDS = ['SourceTypeOrReferenceId', 'SourceGroup', 'SourceEntry', 'SourceId'];
 
 export class Conditions extends TableRow {
   SourceTypeOrReferenceId: number = 0;
@@ -54,11 +54,17 @@ export enum CONDITION_SOURCE_TYPES {
   SOURCE_TYPE_SPELL,
   SOURCE_TYPE_SPELL_CLICK_EVENT,
   SOURCE_TYPE_QUEST_AVAILABLE,
-  SOURCE_TYPE_UNUSED_20,
+  SOURCE_TYPE_GOSSIP_HELLO,
   SOURCE_TYPE_VEHICLE_SPELL,
   SOURCE_TYPE_SMART_EVENT,
   SOURCE_TYPE_NPC_VENDOR,
   SOURCE_TYPE_SPELL_PROC,
+  SOURCE_TYPE_UNUSED_25,
+  SOURCE_TYPE_UNUSED_26,
+  SOURCE_TYPE_UNUSED_27,
+  SOURCE_TYPE_PLAYER_LOOT_TEMPLATE,
+  SOURCE_TYPE_CREATURE_RESPAWN,
+  SOURCE_TYPE_OBJECT_VISIBILITY,
 }
 
 export enum CONDITION_TYPES {
@@ -116,4 +122,20 @@ export enum CONDITION_TYPES {
   CONDITION_HAS_AURA_TYPE,
   CONDITION_WORLD_SCRIPT,
   CONDITION_AI_DATA,
+  CONDITION_RANDOM_DUNGEON,
+  CONDITION_UNIT_IN_COMBAT,
 }
+
+/**
+ * The condition types that plainly mean "the player must have done quest `ConditionValue1`", and so express a
+ * quest-to-quest prerequisite the same way `quest_template_addon.PrevQuestID` does.
+ *
+ * Deliberately excludes the other quest-referencing types: `CONDITION_QUEST_NONE` states the opposite,
+ * `CONDITION_QUESTSTATE` carries a state mask in `ConditionValue2` that a plain prerequisite would flatten, and
+ * `CONDITION_QUEST_SATISFY_EXCLUSIVE` is about exclusive groups rather than about one quest leading to another.
+ */
+export const QUEST_PREREQUISITE_CONDITION_TYPES = [
+  CONDITION_TYPES.CONDITION_QUESTREWARDED,
+  CONDITION_TYPES.CONDITION_QUESTTAKEN,
+  CONDITION_TYPES.CONDITION_QUEST_COMPLETE,
+];

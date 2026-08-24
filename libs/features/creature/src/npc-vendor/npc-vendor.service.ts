@@ -1,13 +1,11 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
 import { ItemExtendedCost, NPC_VENDOR_ID, NPC_VENDOR_ID_2, NPC_VENDOR_TABLE, NpcVendor } from '@keira/shared/acore-world-model';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { IconService } from '@keira/shared/base-editor-components';
 import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class NpcVendorService extends MultiRowEditorService<NpcVendor> {
   protected override readonly handlerService = inject(CreatureHandlerService);
   override readonly queryService = inject(MysqlQueryService);

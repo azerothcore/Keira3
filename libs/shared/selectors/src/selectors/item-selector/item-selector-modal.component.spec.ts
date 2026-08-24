@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
@@ -9,10 +9,6 @@ import { ItemSelectorModalComponent } from './item-selector-modal.component';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 
 describe('ItemSelectorModalComponent', () => {
-  let component: ItemSelectorModalComponent;
-  let fixture: ComponentFixture<ItemSelectorModalComponent>;
-  let searchService: ItemSearchService;
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ItemSelectorModalComponent, TranslateTestingModule],
@@ -25,16 +21,19 @@ describe('ItemSelectorModalComponent', () => {
     }).compileComponents();
   });
 
-  beforeEach(() => {
-    searchService = TestBed.inject(ItemSearchService);
+  function setup() {
+    const searchService = TestBed.inject(ItemSearchService);
     searchService.query = '--mock query';
 
-    fixture = TestBed.createComponent(ItemSelectorModalComponent);
-    component = fixture.componentInstance;
+    const fixture = TestBed.createComponent(ItemSelectorModalComponent);
+    const component = fixture.componentInstance;
     fixture.detectChanges();
-  });
+
+    return { fixture, component };
+  }
 
   it('should create', () => {
+    const { component } = setup();
     expect(component).toBeTruthy();
   });
 });

@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
 import {
   GOSSIP_MENU_OPTION_ID,
@@ -8,9 +8,7 @@ import {
 } from '@keira/shared/acore-world-model';
 import { GossipHandlerService } from '../gossip-handler.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class GossipMenuOptionService extends MultiRowEditorService<GossipMenuOption> {
   protected override readonly handlerService = inject(GossipHandlerService);
   protected override readonly _entityClass = GossipMenuOption;

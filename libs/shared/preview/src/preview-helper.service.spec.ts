@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -28,15 +29,10 @@ describe('PreviewHelperService', () => {
 
     const mockRaces = 123;
     const resRaces = ['Human', 'Orc', 'Night Elf', 'Undead', 'Tauren', 'Gnome'];
-    expect(
-      service.getRaceString(mockRaces)?.map(
-        // @ts-ignore // TODO: fix ts error in strict mode
-        (e) => RACES_TEXT[e],
-      ),
-    ).toEqual(resRaces);
+    expect(service.getRaceString(mockRaces)?.map((e: string | number) => RACES_TEXT[e as keyof typeof RACES_TEXT])).toEqual(resRaces);
 
     const mockFaction = 'test';
-    spyOn(service, 'getFactionFromRace').and.returnValue(mockFaction);
+    vi.spyOn(service, 'getFactionFromRace').mockReturnValue(mockFaction);
     expect(service.getRaceString(RACE.MASK_HORDE)).toEqual([mockFaction]);
   });
 });

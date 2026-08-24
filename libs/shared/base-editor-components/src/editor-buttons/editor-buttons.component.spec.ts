@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { Component, viewChild, provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -43,8 +44,8 @@ describe('EditorButtonsComponent', () => {
   const setup = () => {
     const editorService = {
       selectedRowId: 0, // intentionally set to 0, a falsy non-null value
-      deleteSelectedRow: jasmine.createSpy('deleteSelectedRow'),
-      addNewRow: jasmine.createSpy('addNewRow'),
+      deleteSelectedRow: vi.fn(),
+      addNewRow: vi.fn(),
     };
     const fixture = TestBed.createComponent(TestHostComponent);
     const page = new EditorButtonsPage(fixture);
@@ -81,7 +82,7 @@ describe('EditorButtonsComponent', () => {
     it('when clicked, should call editorService.addNewRow()', () => {
       const { editorService, page } = setup();
       page.clickElement(page.addBtn);
-      expect(editorService.addNewRow).toHaveBeenCalledOnceWith();
+      expect(editorService.addNewRow).toHaveBeenCalledExactlyOnceWith();
       expect(editorService.deleteSelectedRow).toHaveBeenCalledTimes(0);
     });
   });
@@ -104,7 +105,7 @@ describe('EditorButtonsComponent', () => {
     it('when clicked, should call editorService.addNewRow(true)', () => {
       const { editorService, page } = setup();
       page.clickElement(page.duplicateBtn);
-      expect(editorService.addNewRow).toHaveBeenCalledOnceWith(true);
+      expect(editorService.addNewRow).toHaveBeenCalledExactlyOnceWith(true);
       expect(editorService.deleteSelectedRow).toHaveBeenCalledTimes(0);
     });
   });

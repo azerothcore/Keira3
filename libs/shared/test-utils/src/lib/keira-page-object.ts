@@ -173,11 +173,11 @@ export abstract class PageObject<ComponentType> extends PageObjectModel<Componen
   }
 
   expectTabActive(tab: HTMLElement): void {
-    expect(tab).toHaveClass('active');
+    expect(tab.classList.contains('active')).toBe(true);
   }
 
   expectTabInactive(tab: HTMLElement): void {
-    expect(tab).not.toHaveClass('active');
+    expect(tab.classList.contains('active')).not.toBe(true);
   }
 
   expectTabHeadToContain(tab: HTMLElement, text: string): void {

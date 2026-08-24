@@ -142,3 +142,8 @@ More commands:
 ### Learn
 
 - An overview of Keira3 internals is available [here](https://www.azerothcore.org/wiki/keira3-internals)
+
+## Working with AI coding agents
+
+Agent instructions live in [AGENTS.md](AGENTS.md); see [.agents/docs/agent-setup.md](.agents/docs/agent-setup.md)
+for the layout and how to hook up your agent.

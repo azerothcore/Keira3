@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -47,7 +48,7 @@ describe('SearchSelectorModalComponent', () => {
 
   it('onSearch() should call searchService.onSearch()', () => {
     const { searchService, component } = setup();
-    spyOn(searchService, 'onSearch');
+    vi.spyOn(searchService, 'onSearch').mockImplementation(() => undefined);
 
     component.onSearch();
 

@@ -5,8 +5,7 @@
     {
       "files": ["*.ts"],
       "parserOptions": {
-        "project": ["apps/keira-e2e/tsconfig.*?.json"],
-        "createDefaultProgram": true
+        "project": ["apps/keira-e2e/tsconfig.*?.json"]
       }
     }
   ]

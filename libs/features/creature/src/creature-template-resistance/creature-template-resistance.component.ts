@@ -8,9 +8,8 @@ import {
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { EditorButtonsComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { GenericOptionSelectorComponent } from '@keira/shared/selectors';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateResistanceService } from './creature-template-resistance.service';
 
@@ -20,14 +19,14 @@ import { CreatureTemplateResistanceService } from './creature-template-resistanc
   templateUrl: './creature-template-resistance.component.html',
   imports: [
     TopBarComponent,
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,
     EditorButtonsComponent,
     NgxDatatableModule,
     GenericOptionSelectorComponent,
-    TooltipModule,
   ],
 })
 export class CreatureTemplateResistanceComponent extends MultiRowEditorComponent<CreatureTemplateResistance> {

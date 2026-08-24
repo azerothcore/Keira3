@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { SubscriptionHandler } from '@keira/shared/utils';
 import { LoginConfigService } from '@keira/shared/login-config';
@@ -12,7 +12,7 @@ import { ModalConfirmComponent } from '@keira/shared/base-editor-components';
   selector: 'keira-logout-btn',
   templateUrl: './logout-btn.component.html',
   styleUrls: ['./logout-btn.component.scss'],
-  imports: [TranslateModule],
+  imports: [TranslatePipe],
 })
 export class LogoutBtnComponent extends SubscriptionHandler {
   public modalRef!: BsModalRef;

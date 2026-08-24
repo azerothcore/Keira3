@@ -4,13 +4,12 @@ import { InjectionToken } from '@angular/core';
  * Strict type definitions for Keira3 application configuration
  */
 
-export type KeiraEnvironment = 'ELECTRON' | 'WEB' | 'DOCKER' | 'DEV_WEB' | 'PROD' | 'test' | 'production';
+export type KeiraEnvironment = 'ELECTRON' | 'WEB' | 'DOCKER' | 'DEV_WEB' | 'LOCAL' | 'DEV' | 'PROD' | 'test' | 'production';
 
 export interface KeiraAppConfig {
   readonly production: boolean;
   readonly environment: KeiraEnvironment;
   readonly sqlitePath: string;
-  readonly sqliteItem3dPath: string;
   readonly databaseApiUrl?: string;
 }
 

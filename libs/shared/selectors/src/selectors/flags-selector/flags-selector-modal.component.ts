@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/cor
 import { BaseSelectorModalComponent } from '../base-selector/base-selector-modal.component';
 import { FlagsService } from './flags.service';
 import { FlagsModalConfig } from './flags-selector.model';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective } from '@ngx-translate/core';
 import { UiSwitchModule } from 'ngx-ui-switch';
 
 @Component({
@@ -11,7 +11,7 @@ import { UiSwitchModule } from 'ngx-ui-switch';
   selector: 'keira-flags-selector-modal',
   templateUrl: './flags-selector-modal.component.html',
   styleUrls: ['./flags-selector-modal.component.scss'],
-  imports: [UiSwitchModule, TranslateModule],
+  imports: [UiSwitchModule, TranslateDirective],
 })
 export class FlagsSelectorModalComponent extends BaseSelectorModalComponent<FlagsModalConfig> implements OnInit {
   readonly pow = Math.pow;

@@ -1,12 +1,10 @@
-import { inject, Injectable, signal, Signal } from '@angular/core';
+import { inject, Service, signal, Signal } from '@angular/core';
 import { map, Observable, of, shareReplay } from 'rxjs';
 import { SAI_ID_FIELDS, SAI_TABLE, SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { ComplexKeyHandlerService } from '@keira/shared/base-abstract-classes';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
   protected readonly queryService = inject(MysqlQueryService);
   protected readonly mainEditorRoutePath = 'smart-ai/editors';
@@ -78,14 +76,14 @@ export class SaiHandlerService extends ComplexKeyHandlerService<SmartScripts> {
 
     if (sai.source_type === SAI_TYPES.SAI_TYPE_CREATURE || sai.source_type === SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST) {
       if (sai.entryorguid < 0) {
-        query = `SELECT ct.name FROM creature_template AS ct INNER JOIN creature AS c ON c.id1 = ct.entry WHERE c.guid = ${-sai.entryorguid}`;
+        query = `SELECT ct.name FROM creature_template AS ct INNER JOIN creature AS c ON c.id = ct.entry WHERE c.guid = ${-sai.entryorguid}`;
       } else {
         const entry = sai.source_type === SAI_TYPES.SAI_TYPE_TIMED_ACTIONLIST ? Math.trunc(sai.entryorguid / 100) : sai.entryorguid;
         query = `SELECT name FROM creature_template WHERE entry = ${entry}`;
       }
     } else if (sai.source_type === SAI_TYPES.SAI_TYPE_GAMEOBJECT) {
       if (sai.entryorguid < 0) {
-        query = `SELECT ct.name FROM gameobject_template AS ct INNER JOIN gameobject AS c ON c.id1 = ct.entry WHERE c.guid = ${-sai.entryorguid}`;
+        query = `SELECT ct.name FROM gameobject_template AS ct INNER JOIN gameobject AS c ON c.id = ct.entry WHERE c.guid = ${-sai.entryorguid}`;
       } else {
         query = `SELECT name FROM gameobject_template WHERE entry = ${sai.entryorguid}`;
       }

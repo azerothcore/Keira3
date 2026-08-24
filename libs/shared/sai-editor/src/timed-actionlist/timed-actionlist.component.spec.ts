@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { Component, viewChild, provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -44,7 +45,7 @@ describe('TimedActionlistComponent', () => {
     timedActionlists[0].id = 1;
     timedActionlists[1].entryorguid = 222;
     timedActionlists[1].id = 2;
-    spyOn(queryService, 'getTimedActionlists').and.returnValue(of(timedActionlists));
+    vi.spyOn(queryService, 'getTimedActionlists').mockReturnValue(of(timedActionlists));
 
     host.creatureId = id;
     page.detectChanges();

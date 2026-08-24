@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { LootEditorIdService } from '@keira/shared/base-abstract-classes';
 import {
   DISENCHANT_LOOT_TEMPLATE_TABLE,
@@ -9,9 +9,7 @@ import {
 } from '@keira/shared/acore-world-model';
 import { ItemHandlerService } from '../item-handler.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class DisenchantLootTemplateService extends LootEditorIdService<DisenchantLootTemplate> {
   protected override readonly handlerService = inject(ItemHandlerService);
   protected override _entityClass = DisenchantLootTemplate;

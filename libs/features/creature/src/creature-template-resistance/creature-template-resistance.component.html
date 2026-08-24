@@ -65,7 +65,15 @@
                   <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
                 </ng-template>
               </ngx-datatable-column>
-              <ngx-datatable-column name="School" prop="School" [minWidth]="80" [maxWidth]="150" />
+              <ngx-datatable-column name="School" prop="School" [minWidth]="80" [maxWidth]="150">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                  <div style="text-align: left">
+                    {{ row.School }} -
+                    <img [src]="'assets/img/' + CREATURE_TEMPLATE_RESISTANCE_SCHOOL[row.School - 1].icon" [width]="24" [height]="24" />
+                    {{ CREATURE_TEMPLATE_RESISTANCE_SCHOOL[row.School - 1].name.replace('SPELL_SCHOOL_', '') }}
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
               <ngx-datatable-column name="Resistance" prop="Resistance" [minWidth]="80" [maxWidth]="150" />
             </ngx-datatable>
           </div>

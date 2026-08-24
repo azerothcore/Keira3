@@ -1,18 +1,28 @@
-import { inject, Injectable } from '@angular/core';
-import { SmartScripts } from '@keira/shared/acore-world-model';
+import { inject, Service } from '@angular/core';
+import {
+  BROADCAST_TEXT_TABLE,
+  CONDITION_SOURCE_TYPES,
+  QUEST_PREREQUISITE_CONDITION_TYPES,
+  SmartScripts,
+} from '@keira/shared/acore-world-model';
 import { ConfigService } from '@keira/shared/common-services';
 import { squelConfig } from '@keira/shared/config';
-import { MaxRow, QuestReputationReward, TableRow } from '@keira/shared/constants';
+import {
+  MaxRow,
+  QuestChainRelationRow,
+  QuestConditionCountRow,
+  QuestConditionPrerequisiteRow,
+  QuestReputationReward,
+  QuestTitleRow,
+  SmartEventConditionCountRow,
+  TableRow,
+} from '@keira/shared/constants';
 import { from, map, Observable, of, tap } from 'rxjs';
-import { Delete, Insert, Squel, Update } from 'squel';
+import squel, { Delete, Insert, Update } from 'squel';
 import { MysqlService } from '../mysql.service';
 import { BaseQueryService } from './base-query.service';
 
-declare const squel: Squel & { flavour: null };
-
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class MysqlQueryService extends BaseQueryService {
   private mysqlService = inject(MysqlService);
   private configService = inject(ConfigService);
@@ -87,14 +97,31 @@ export class MysqlQueryService extends BaseQueryService {
     return `${query.toString()};`;
   }
 
-  private getRow<T extends TableRow>(key: string, object: T, array: T[]): T | undefined {
+  private hasSameRowKey<T extends TableRow>(rowA: T, rowB: T, key: string, extraKey: string | undefined): boolean {
+    if (rowA[key] !== rowB[key]) {
+      return false;
+    }
+
+    // Without an extra key, `key` alone identifies the row.
+    return !extraKey || rowA[extraKey] === rowB[extraKey];
+  }
+
+  private getRow<T extends TableRow>(key: string, object: T, array: T[], extraKey?: string): T | undefined {
     for (let i = 0; i < array.length; i++) {
-      if (array[i][key] === object[key]) {
+      if (this.hasSameRowKey(array[i], object, key, extraKey)) {
         return array[i];
       }
     }
 
     return undefined;
+  }
+
+  // Several rows can share the same `key` when an extra key is in play, so the same id must not be
+  // listed twice in the DELETE.
+  private addInvolvedRow(involvedRows: (string | number)[], id: string | number): void {
+    if (!involvedRows.includes(id)) {
+      involvedRows.push(id);
+    }
   }
 
   private findEditedAndDeletedRows<T extends TableRow>(
@@ -103,15 +130,16 @@ export class MysqlQueryService extends BaseQueryService {
     newRows: T[],
     involvedRows: (string | number)[],
     addedOrEditedRows: T[],
+    extraKey?: string,
   ): void {
     for (let i = 0; i < currentRows.length; i++) {
-      const row = this.getRow(key, currentRows[i], newRows);
+      const row = this.getRow(key, currentRows[i], newRows, extraKey);
       if (!row) {
         // the row has been deleted
-        involvedRows.push(currentRows[i][key]);
+        this.addInvolvedRow(involvedRows, currentRows[i][key]);
       } else if (JSON.stringify(row) !== JSON.stringify(currentRows[i])) {
         // the row has been edited
-        involvedRows.push(row[key]);
+        this.addInvolvedRow(involvedRows, row[key]);
         addedOrEditedRows.push(row);
       }
     }
@@ -123,10 +151,11 @@ export class MysqlQueryService extends BaseQueryService {
     newRows: T[],
     involvedRows: (string | number)[],
     addedOrEditedRows: T[],
+    extraKey?: string,
   ): void {
     for (let i = 0; i < newRows.length; i++) {
-      if (!this.getRow(key, newRows[i], currentRows)) {
-        involvedRows.push(newRows[i][key]);
+      if (!this.getRow(key, newRows[i], currentRows, extraKey)) {
+        this.addInvolvedRow(involvedRows, newRows[i][key]);
         addedOrEditedRows.push(newRows[i]);
       }
     }
@@ -155,6 +184,7 @@ export class MysqlQueryService extends BaseQueryService {
     primaryKey2: string, // second primary key (example: 'Item')
     currentRows: T[] | undefined, // object of the original rows
     newRows: T[] | undefined, // array of the new rows
+    extraIdField?: string, // third primary key, when `primaryKey2` alone is not unique (example: creature_text 'ID')
   ): string {
     if (!newRows || !currentRows) {
       return '';
@@ -178,12 +208,18 @@ export class MysqlQueryService extends BaseQueryService {
     const involvedRows: (string | number)[] = []; // -> needed for DELETE query
     const addedOrEditedRows: T[] = []; // -> needed for INSERT query
 
-    this.findEditedAndDeletedRows(primaryKey2, currentRows, newRows, involvedRows, addedOrEditedRows);
-    this.findAddedRows(primaryKey2, currentRows, newRows, involvedRows, addedOrEditedRows);
+    this.findEditedAndDeletedRows(primaryKey2, currentRows, newRows, involvedRows, addedOrEditedRows, extraIdField);
+    this.findAddedRows(primaryKey2, currentRows, newRows, involvedRows, addedOrEditedRows, extraIdField);
 
     if (involvedRows.length === 0) {
       return '';
     }
+
+    // With an extra key, one `primaryKey2` covers a whole group of rows and the DELETE wipes the
+    // group as a unit, so every row the group should still hold must be inserted back - not only
+    // the ones that changed, otherwise the untouched siblings would be dropped.
+    const rowsToInsert: T[] = extraIdField ? newRows.filter((row) => involvedRows.includes(row[primaryKey2])) : addedOrEditedRows;
+
     const insertQuery: Insert = squel.insert(squelConfig).into(tableName);
 
     if (primaryKey1) {
@@ -195,9 +231,9 @@ export class MysqlQueryService extends BaseQueryService {
     }
     deleteQuery.where('`' + primaryKey2 + '` IN ?', involvedRows);
 
-    insertQuery.setFieldsRows(addedOrEditedRows);
+    insertQuery.setFieldsRows(rowsToInsert);
 
-    return this.getFinalDiffDeleteInsertQuery(addedOrEditedRows, deleteQuery, insertQuery);
+    return this.getFinalDiffDeleteInsertQuery(rowsToInsert, deleteQuery, insertQuery);
   }
 
   // Tracks difference between two groups of rows (with ONE key) and generate DELETE/INSERT query
@@ -290,7 +326,7 @@ export class MysqlQueryService extends BaseQueryService {
       return '';
     }
     this.addWhereConditionsToQuery(updateQuery, currentRow, primaryKeys);
-    return updateQuery.toString();
+    return updateQuery.toString() + ';';
   }
 
   // Generates the DELETE query of ONE row using more than 2 keys
@@ -301,7 +337,7 @@ export class MysqlQueryService extends BaseQueryService {
   ) {
     const deleteQuery: Delete = squel.delete(squelConfig).from(tableName);
     this.addWhereConditionsToQuery(deleteQuery, row, primaryKeys);
-    return deleteQuery.toString();
+    return deleteQuery.toString() + ';';
   }
 
   // Generates the full DELETE/INSERT query of ONE row using more than 2 keys
@@ -312,7 +348,7 @@ export class MysqlQueryService extends BaseQueryService {
     primaryKeys: string[], // array of the primary keys
   ) {
     const insertQuery: Insert = squel.insert(squelConfig).into(tableName).setFieldsRows([newRow]);
-    let query: string = this.getDeleteMultipleKeysQuery(tableName, currentRow, primaryKeys) + ';\n';
+    let query: string = this.getDeleteMultipleKeysQuery(tableName, currentRow, primaryKeys) + '\n';
     query += insertQuery.toString() + ';\n';
     return this.formatQuery(query);
   }
@@ -332,7 +368,7 @@ export class MysqlQueryService extends BaseQueryService {
     return this.queryValueToPromiseCached(
       'getCreatureNameByGuid',
       String(guid),
-      `SELECT name AS v FROM creature_template AS ct INNER JOIN creature AS c ON ct.entry = c.id1 WHERE c.guid = ${guid}`,
+      `SELECT name AS v FROM creature_template AS ct INNER JOIN creature AS c ON ct.entry = c.id WHERE c.guid = ${guid}`,
     );
   }
 
@@ -368,6 +404,106 @@ export class MysqlQueryService extends BaseQueryService {
     return usingPrev
       ? this.queryValueToPromiseCached('getNextQuest1', String(id), `SELECT id AS v FROM quest_template_addon WHERE PrevQuestID = ${id}`)
       : this.queryValueToPromiseCached('getNextQuest2', String(id), `SELECT NextQuestID AS v FROM quest_template_addon WHERE id = ${id}`);
+  }
+
+  /** Renders ids as a SQL `IN (...)` list. An empty list becomes `NULL`, which is valid SQL that matches nothing. */
+  private toIdList(ids: number[]): string {
+    const sanitised = ids.map((id) => Math.trunc(Number(id))).filter((id) => Number.isFinite(id));
+    return sanitised.length > 0 ? sanitised.join(',') : 'NULL';
+  }
+
+  /**
+   * One frontier expansion of a quest chain: every `quest_template_addon` row that is either one of `ids`, or is linked
+   * to one of `ids` in any direction, or shares one of `exclusiveGroups`. One query per BFS level rather than per node.
+   */
+  getQuestChainRelations(ids: number[], exclusiveGroups: number[] = []): Promise<QuestChainRelationRow[]> {
+    const idList = this.toIdList(ids);
+    // PrevQuestID is negated when it means "enabled by", so match both signs to catch either kind of parent link.
+    const prevList = this.toIdList([...ids, ...ids.map((id) => -id)]);
+    const groupList = this.toIdList(exclusiveGroups);
+
+    const conditions = [
+      `ID IN (${idList})`,
+      `PrevQuestID IN (${prevList})`,
+      `NextQuestID IN (${idList})`,
+      `BreadcrumbForQuestId IN (${idList})`,
+    ];
+
+    if (exclusiveGroups.length > 0) {
+      conditions.push(`ExclusiveGroup IN (${groupList})`);
+    }
+
+    return this.queryToPromiseCached<QuestChainRelationRow>(
+      'getQuestChainRelations',
+      `${idList}|${groupList}`,
+      `SELECT ID, PrevQuestID, NextQuestID, ExclusiveGroup, BreadcrumbForQuestId
+       FROM quest_template_addon WHERE ${conditions.join(' OR ')}`,
+    );
+  }
+
+  /**
+   * One frontier expansion over quest prerequisites expressed as `conditions` instead of as
+   * `quest_template_addon` columns. Matched in both directions, like the addon query, so the walk finds both what
+   * gates a quest and what that quest gates.
+   *
+   * Restricted to the plainly "must have done quest X" types and to positive rows: a negated condition means the
+   * opposite of a prerequisite, and drawing it as one would be worse than not drawing it at all.
+   */
+  getQuestConditionPrerequisites(ids: number[]): Promise<QuestConditionPrerequisiteRow[]> {
+    const idList = this.toIdList(ids);
+
+    return this.queryToPromiseCached<QuestConditionPrerequisiteRow>(
+      'getQuestConditionPrerequisites',
+      idList,
+      `SELECT SourceEntry, ElseGroup, ConditionValue1 FROM conditions
+       WHERE SourceTypeOrReferenceId = ${CONDITION_SOURCE_TYPES.SOURCE_TYPE_QUEST_AVAILABLE}
+       AND ConditionTypeOrReference IN (${QUEST_PREREQUISITE_CONDITION_TYPES.join(',')})
+       AND NegativeCondition = 0 AND ConditionValue1 > 0
+       AND (SourceEntry IN (${idList}) OR ConditionValue1 IN (${idList}))`,
+    );
+  }
+
+  /**
+   * How many `SOURCE_TYPE_QUEST_AVAILABLE` (19) rows gate each of the given quests.
+   * Quests absent from the result have no such conditions.
+   */
+  getQuestConditionCounts(ids: number[]): Promise<QuestConditionCountRow[]> {
+    const idList = this.toIdList(ids);
+
+    return this.queryToPromiseCached<QuestConditionCountRow>(
+      'getQuestConditionCounts',
+      idList,
+      `SELECT SourceEntry, COUNT(*) AS conditionCount FROM conditions
+       WHERE SourceTypeOrReferenceId = ${CONDITION_SOURCE_TYPES.SOURCE_TYPE_QUEST_AVAILABLE} AND SourceEntry IN (${idList}) GROUP BY SourceEntry`,
+    );
+  }
+
+  /**
+   * How many `SOURCE_TYPE_SMART_EVENT` (22) rows gate each event of one smart script.
+   * Returned `SourceGroup` is the `smart_scripts.id` **plus one** — the core's own off-by-one, not a bug here.
+   */
+  getSmartEventConditionCounts(entryOrGuid: string | number, sourceType: string | number): Promise<SmartEventConditionCountRow[]> {
+    const entry = Math.trunc(Number(entryOrGuid));
+    const type = Math.trunc(Number(sourceType));
+
+    return this.queryToPromiseCached<SmartEventConditionCountRow>(
+      'getSmartEventConditionCounts',
+      `${entry}:${type}`,
+      `SELECT SourceGroup, COUNT(*) AS conditionCount FROM conditions
+       WHERE SourceTypeOrReferenceId = ${CONDITION_SOURCE_TYPES.SOURCE_TYPE_SMART_EVENT} AND SourceEntry = ${entry} AND SourceId = ${type}
+       GROUP BY SourceGroup`,
+    );
+  }
+
+  /** Titles for the given quest ids. Ids missing from the result do not exist in `quest_template`. */
+  getQuestTitlesByIds(ids: number[]): Promise<QuestTitleRow[]> {
+    const idList = this.toIdList(ids);
+
+    return this.queryToPromiseCached<QuestTitleRow>(
+      'getQuestTitlesByIds',
+      idList,
+      `SELECT ID, LogTitle FROM quest_template WHERE ID IN (${idList})`,
+    );
   }
 
   getItemByStartQuest(id: string | number): Promise<string> {
@@ -447,6 +583,30 @@ export class MysqlQueryService extends BaseQueryService {
     return this.queryValueToPromiseCached('getText1ById', String(id), `SELECT text0_1 AS v FROM npc_text WHERE ID = ${id}`);
   }
 
+  /** Searches `broadcast_text` for `text`, matching either of the two gendered wordings. */
+  getBroadcastTextSearchQuery(text: string, limit: number | undefined): string {
+    // Bound as a parameter rather than interpolated: squel reads a bare `?` in a raw condition as a
+    // placeholder, and the dialogue this searches is full of question marks.
+    const like = `%${text}%`;
+    const query = squel.select(squelConfig).from(BROADCAST_TEXT_TABLE).where('`MaleText` LIKE ? OR `FemaleText` LIKE ?', like, like);
+
+    if (limit) {
+      query.limit(Number(limit));
+    }
+
+    return query.toString();
+  }
+
+  /** Selects the `broadcast_text` rows lying within `range` ids of `id`, `id` itself included. */
+  getBroadcastTextAdjacentQuery(id: number, range: number): string {
+    return squel
+      .select(squelConfig)
+      .from(BROADCAST_TEXT_TABLE)
+      .where(`\`ID\` BETWEEN ${id - range} AND ${id + range}`)
+      .order('ID')
+      .toString();
+  }
+
   getCreatureDisplayIdById(creatureId: string | number): Promise<number> {
     return this.queryValueToPromiseCached(
       'getCreatureDisplayIdById',
@@ -461,5 +621,96 @@ export class MysqlQueryService extends BaseQueryService {
       String(gameObjectId),
       `SELECT displayId AS v FROM gameobject_template WHERE entry=${gameObjectId}`,
     );
+  }
+
+  getCreaturePosition(guid: string | number): Promise<{ mapId: number; x: number; y: number; orientation: number } | null> {
+    return this.queryToPromiseCached<{ mapId: number; x: number; y: number; orientation: number }>(
+      'getCreaturePosition',
+      String(guid),
+      `SELECT map AS mapId, position_x AS x, position_y AS y, orientation FROM creature WHERE guid = ${guid}`,
+    ).then((result) => (result && result.length > 0 ? result[0] : null));
+  }
+
+  getCreaturePositionByEntry(
+    entry: string | number,
+  ): Promise<{ mapId: number; x: number; y: number; orientation: number; guid: number }[]> {
+    return this.queryToPromiseCached<{ mapId: number; x: number; y: number; orientation: number; guid: number }>(
+      'getCreaturePositionByEntry',
+      String(entry),
+      `SELECT map AS mapId, position_x AS x, position_y AS y, orientation, guid FROM creature WHERE id = ${entry} LIMIT 1`,
+    );
+  }
+
+  getGameObjectPosition(guid: string | number): Promise<{ mapId: number; x: number; y: number; orientation: number } | null> {
+    return this.queryToPromiseCached<{ mapId: number; x: number; y: number; orientation: number }>(
+      'getGameObjectPosition',
+      String(guid),
+      `SELECT map AS mapId, position_x AS x, position_y AS y, rotation0 AS orientation FROM gameobject WHERE guid = ${guid}`,
+    ).then((result) => (result && result.length > 0 ? result[0] : null));
+  }
+
+  getGameObjectPositionByEntry(
+    entry: string | number,
+  ): Promise<{ mapId: number; x: number; y: number; orientation: number; guid: number }[]> {
+    return this.queryToPromiseCached<{ mapId: number; x: number; y: number; orientation: number; guid: number }>(
+      'getGameObjectPositionByEntry',
+      String(entry),
+      `SELECT map AS mapId, position_x AS x, position_y AS y, rotation0 AS orientation, guid FROM gameobject WHERE id = ${entry} LIMIT 1`,
+    );
+  }
+
+  getCreatureSpawnsByEntry(entry: string | number): Promise<{ mapId: number; x: number; y: number; orientation: number; guid: number }[]> {
+    return this.queryToPromiseCached<{ mapId: number; x: number; y: number; orientation: number; guid: number }>(
+      'getCreatureSpawnsByEntry',
+      String(entry),
+      `SELECT map AS mapId, position_x AS x, position_y AS y, orientation, guid FROM creature WHERE id = ${entry}`,
+    );
+  }
+
+  getGameObjectSpawnsByEntry(
+    entry: string | number,
+  ): Promise<{ mapId: number; x: number; y: number; orientation: number; guid: number }[]> {
+    return this.queryToPromiseCached<{ mapId: number; x: number; y: number; orientation: number; guid: number }>(
+      'getGameObjectSpawnsByEntry',
+      String(entry),
+      `SELECT map AS mapId, position_x AS x, position_y AS y, rotation0 AS orientation, guid FROM gameobject WHERE id = ${entry}`,
+    );
+  }
+
+  // Capped at 2 rows: callers only need to distinguish "exactly one dropper" from "more than one".
+  getCreaturesDroppingItem(itemId: string | number): Promise<{ entry: number }[]> {
+    return this.queryToPromiseCached<{ entry: number }>(
+      'getCreaturesDroppingItem',
+      String(itemId),
+      `SELECT DISTINCT ct.entry AS entry FROM creature_template AS ct
+       INNER JOIN creature_loot_template AS clt ON clt.Entry = ct.lootid
+       WHERE ct.lootid > 0 AND clt.Item = ${itemId} LIMIT 2`,
+    );
+  }
+
+  getGameObjectsDroppingItem(itemId: string | number): Promise<{ entry: number }[]> {
+    return this.queryToPromiseCached<{ entry: number }>(
+      'getGameObjectsDroppingItem',
+      String(itemId),
+      `SELECT DISTINCT gt.entry AS entry FROM gameobject_template AS gt
+       INNER JOIN gameobject_loot_template AS glt ON glt.Entry = gt.Data1
+       WHERE gt.Data1 > 0 AND glt.Item = ${itemId} LIMIT 2`,
+    );
+  }
+
+  getQuestRelationEntries(table: string, questId: string | number): Promise<{ id: number }[]> {
+    return this.queryToPromiseCached<{ id: number }>(
+      'getQuestRelationEntries',
+      `${table}:${questId}`,
+      `SELECT id FROM ${table} WHERE quest = ${questId}`,
+    );
+  }
+
+  getTables(): Observable<TableRow[]> {
+    return this.query('SHOW TABLES');
+  }
+
+  getColumns(tableName: string): Observable<TableRow[]> {
+    return this.query(`SHOW COLUMNS FROM \`${tableName}\``);
   }
 }

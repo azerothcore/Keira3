@@ -189,11 +189,11 @@
               <input [formControlName]="'ContainerSlots'" id="ContainerSlots" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-              <label class="control-label" for="TotemCategory">TotemCategory</label>
+              <label class="control-label" for="TotemCategory">Tools Category</label>
               <keira-single-value-selector-btn
                 [control]="editorService.form.controls.TotemCategory"
                 [disabled]="editorService.form.controls.TotemCategory.disabled"
-                [config]="{ options: TOTEM_CATEGORY, name: 'TotemCategory' }"
+                [config]="{ options: TOTEM_CATEGORY, name: 'Tools Category' }"
                 [modalClass]="'modal-md'"
               />
               <input [formControlName]="'TotemCategory'" id="TotemCategory" type="number" class="form-control form-control-sm" />

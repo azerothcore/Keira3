@@ -1,11 +1,10 @@
 {
-  "ignorePatterns": ["!**/*", "src/environments/*"],
+  "ignorePatterns": ["!**/*", "vitest.config.ts", "src/environments/*"],
   "overrides": [
     {
       "files": ["*.ts"],
       "parserOptions": {
-        "project": ["apps/keira/src/tsconfig.*?.json"],
-        "createDefaultProgram": true
+        "project": ["apps/keira/src/tsconfig.*?.json"]
       },
       "extends": [
         "plugin:@angular-eslint/recommended",

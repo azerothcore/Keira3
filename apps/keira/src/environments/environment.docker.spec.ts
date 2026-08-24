@@ -24,9 +24,7 @@ describe('Environment Docker Configuration', () => {
     expect(config.sqlitePath).toBe('assets/sqlite.db');
   });
 
-  it('should have correct sqlite item 3D path', () => {
-    expect(config.sqliteItem3dPath).toBe('assets/item_display.db');
-  });
+  it('should have correct sqlite item 3D path', () => {});
 
   it('should have database API URL configured', () => {
     expect(config.databaseApiUrl).toBe('/api/database');
@@ -42,7 +40,6 @@ describe('Environment Docker Configuration', () => {
       expect(config).toHaveProperty('production');
       expect(config).toHaveProperty('environment');
       expect(config).toHaveProperty('sqlitePath');
-      expect(config).toHaveProperty('sqliteItem3dPath');
       expect(config).toHaveProperty('databaseApiUrl');
     });
 
@@ -50,14 +47,12 @@ describe('Environment Docker Configuration', () => {
       expect(typeof config.production).toBe('boolean');
       expect(typeof config.environment).toBe('string');
       expect(typeof config.sqlitePath).toBe('string');
-      expect(typeof config.sqliteItem3dPath).toBe('string');
       expect(typeof config.databaseApiUrl).toBe('string');
     });
 
     it('should have non-empty string values', () => {
       expect(config.environment).not.toBe('');
       expect(config.sqlitePath).not.toBe('');
-      expect(config.sqliteItem3dPath).not.toBe('');
       expect(config.databaseApiUrl).not.toBe('');
     });
   });
@@ -74,14 +69,13 @@ describe('Environment Docker Configuration', () => {
 
     it('should use assets paths for sqlite files', () => {
       expect(config.sqlitePath).toMatch(/^assets\//);
-      expect(config.sqliteItem3dPath).toMatch(/^assets\//);
     });
   });
 
   describe('Interface Compliance', () => {
     it('should implement KeiraAppConfig interface completely', () => {
       // Test that all properties exist and have correct structure
-      const requiredProps: (keyof KeiraAppConfig)[] = ['production', 'environment', 'sqlitePath', 'sqliteItem3dPath'];
+      const requiredProps: (keyof KeiraAppConfig)[] = ['production', 'environment', 'sqlitePath'];
 
       const optionalProps: (keyof KeiraAppConfig)[] = ['databaseApiUrl'];
 

@@ -1,14 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { UnsavedIconComponent } from './unsaved-icon.component';
 
 describe('UnsavedIconComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [TranslateTestingModule, TooltipModule, UnsavedIconComponent],
+      imports: [TranslateTestingModule, TooltipDirective, UnsavedIconComponent],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
   });

@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { BsModalRef } from 'ngx-bootstrap/modal';
@@ -10,10 +10,6 @@ import { ItemExtendedCostSearchService } from '../../search/item-extended-cost-s
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 
 describe('ItemExtendedCostSelectorModalComponent', () => {
-  let component: ItemExtendedCostSelectorModalComponent;
-  let fixture: ComponentFixture<ItemExtendedCostSelectorModalComponent>;
-  let searchService: ItemExtendedCostSearchService;
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ItemExtendedCostSelectorModalComponent, TranslateTestingModule],
@@ -27,16 +23,19 @@ describe('ItemExtendedCostSelectorModalComponent', () => {
     }).compileComponents();
   });
 
-  beforeEach(() => {
-    searchService = TestBed.inject(ItemExtendedCostSearchService);
+  function setup() {
+    const searchService = TestBed.inject(ItemExtendedCostSearchService);
     searchService.query = '--mock query';
 
-    fixture = TestBed.createComponent(ItemExtendedCostSelectorModalComponent);
-    component = fixture.componentInstance;
+    const fixture = TestBed.createComponent(ItemExtendedCostSelectorModalComponent);
+    const component = fixture.componentInstance;
     fixture.detectChanges();
-  });
+
+    return { fixture, component };
+  }
 
   it('should create', () => {
+    const { component } = setup();
     expect(component).toBeTruthy();
   });
 });

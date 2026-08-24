@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnChanges, input } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, input, OnChanges } from '@angular/core';
 import { DTCFG } from '@keira/shared/config';
 
 import { AsyncPipe } from '@angular/common';
@@ -7,7 +7,7 @@ import { IconComponent } from '@keira/shared/base-editor-components';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { SubscriptionHandler } from '@keira/shared/utils';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { ReferenceViewerService } from './reference-viewer.service';
 
 @Component({
@@ -15,17 +15,18 @@ import { ReferenceViewerService } from './reference-viewer.service';
   selector: 'keira-reference-viewer',
   templateUrl: './reference-viewer.component.html',
   styleUrls: ['./loot-editor.component.scss'],
-  imports: [TooltipModule, NgxDatatableModule, IconComponent, AsyncPipe],
+  imports: [TooltipDirective, NgxDatatableModule, IconComponent, AsyncPipe],
 })
 export class ReferenceViewerComponent extends SubscriptionHandler implements OnChanges {
   readonly referenceId = input.required<number>();
 
-  readonly service = inject(ReferenceViewerService);
-  readonly queryService = inject(MysqlQueryService);
+  private readonly service = inject(ReferenceViewerService);
+  private readonly cdr = inject(ChangeDetectorRef);
+  protected readonly queryService = inject(MysqlQueryService);
 
-  readonly DTCFG = DTCFG;
-  referenceLootRows: ReferenceLootTemplate[] | undefined;
-  nestedReferenceIds: number[] = [];
+  protected readonly DTCFG = DTCFG;
+  protected referenceLootRows: ReferenceLootTemplate[] | undefined;
+  protected nestedReferenceIds: number[] = [];
 
   ngOnChanges(): void {
     this.referenceLootRows = undefined;
@@ -33,16 +34,30 @@ export class ReferenceViewerComponent extends SubscriptionHandler implements OnC
 
     this.subscriptions.push(
       this.service.getReferenceById(this.referenceId())?.subscribe((result: ReferenceLootTemplate[]) => {
-        this.referenceLootRows = result;
+        this.referenceLootRows = result.map((row) => {
+          let Chance = row.Chance;
+
+          if (row.GroupId !== 0) {
+            const groupCount = result.filter((r) => r.GroupId === row.GroupId).length;
+            Chance = (row.Chance === 0 ? 100 / groupCount : row.Chance / groupCount).toFixed(2) as unknown as number;
+          }
+
+          return {
+            ...row,
+            Chance,
+          };
+        });
 
         this.nestedReferenceIds = this.referenceLootRows
           .filter((referenceLootRow) => referenceLootRow.Reference > 0)
           .map((referenceLootRow) => referenceLootRow.Reference);
+
+        this.cdr.markForCheck();
       }),
     );
   }
 
-  isReference(row: ReferenceLootTemplate): boolean {
+  protected isReference(row: ReferenceLootTemplate): boolean {
     return row.Reference !== 0;
   }
 }

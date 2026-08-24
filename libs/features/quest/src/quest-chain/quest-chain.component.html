@@ -1,0 +1,90 @@
+<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
+
+<div class="container-fluid">
+  <div class="content-block quest-chain">
+    <div class="quest-chain__header">
+      <span class="category-title" [translate]="'QUEST.CHAIN.TITLE'"></span>
+
+      <button type="button" class="btn btn-primary btn-sm" id="reload-btn" [disabled]="loading()" (click)="load()">
+        <i class="fa fa-sync fa-sm"></i> {{ 'RELOAD' | translate }}
+      </button>
+    </div>
+
+    @if (loading()) {
+      <span [translate]="'LOADING'"></span>
+    } @else if (error()) {
+      <div class="alert alert-danger">{{ error() }}</div>
+    } @else if (graph().nodes.length <= 1) {
+      <div class="alert alert-info" [translate]="'QUEST.CHAIN.STANDALONE'"></div>
+    } @else {
+      @if (graph().truncated) {
+        <div class="alert alert-warning" [translate]="'QUEST.CHAIN.TRUNCATED'"></div>
+      }
+
+      <div class="quest-chain__panel">
+        <div class="quest-chain__legend">
+          <span><i class="legend-line legend-line--chain"></i> <span [translate]="'QUEST.CHAIN.LEGEND_CHAIN'"></span></span>
+          <span><i class="legend-line legend-line--enabled-by"></i> <span [translate]="'QUEST.CHAIN.LEGEND_ENABLED_BY'"></span></span>
+          <span><i class="legend-line legend-line--breadcrumb"></i> <span [translate]="'QUEST.CHAIN.LEGEND_BREADCRUMB'"></span></span>
+          <span><i class="legend-line legend-line--condition"></i> <span [translate]="'QUEST.CHAIN.LEGEND_CONDITION'"></span></span>
+          <span><i class="legend-line legend-line--condition-any"></i> <span [translate]="'QUEST.CHAIN.LEGEND_CONDITION_ANY'"></span></span>
+          <span><i class="legend-box legend-box--missing"></i> <span [translate]="'QUEST.CHAIN.LEGEND_MISSING'"></span></span>
+          <span><i class="legend-box legend-box--conditions"></i> <span [translate]="'QUEST.CHAIN.LEGEND_CONDITIONS'"></span></span>
+        </div>
+
+        <div class="quest-chain__canvas">
+          <svg [attr.width]="graph().width" [attr.height]="graph().height" [attr.viewBox]="'0 0 ' + graph().width + ' ' + graph().height">
+            <defs>
+              <marker id="qc-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" class="qc-arrow-head" />
+              </marker>
+            </defs>
+
+            @for (band of graph().bands; track band.group) {
+              <g class="qc-band" [class.qc-band--all]="band.kind === 'all'">
+                <rect [attr.x]="band.x" [attr.y]="band.y" [attr.width]="band.width" [attr.height]="band.height" rx="8" />
+                <text [attr.x]="band.x + 8" [attr.y]="band.y + 12">
+                  {{ (band.kind === 'any' ? 'QUEST.CHAIN.BAND_ANY' : 'QUEST.CHAIN.BAND_ALL') | translate: { group: band.group } }}
+                </text>
+              </g>
+            }
+
+            @for (edge of graph().edges; track edge.from + '|' + edge.to + '|' + edge.kind) {
+              <path
+                class="qc-edge"
+                [class.qc-edge--enabled-by]="edge.kind === 'enabled-by'"
+                [class.qc-edge--breadcrumb]="edge.kind === 'breadcrumb'"
+                [class.qc-edge--condition]="edge.kind === 'condition' || edge.kind === 'condition-any'"
+                [class.qc-edge--condition-any]="edge.kind === 'condition-any'"
+                [attr.d]="edge.path"
+                marker-end="url(#qc-arrow)"
+              />
+            }
+
+            @for (node of graph().nodes; track node.id) {
+              <g
+                class="qc-node"
+                [class.qc-node--current]="node.isCurrent"
+                [class.qc-node--missing]="node.missing"
+                [attr.transform]="'translate(' + node.x + ',' + node.y + ')'"
+                (click)="open(node)"
+              >
+                <rect [attr.width]="NODE_WIDTH" [attr.height]="NODE_HEIGHT" rx="6" />
+                <text class="qc-node__title" x="10" y="22">{{ shortLabel(node) }}</text>
+                <text class="qc-node__id" x="10" y="40">[{{ node.id }}]</text>
+
+                @if (node.conditionCount > 0) {
+                  <g class="qc-cond" [attr.transform]="'translate(' + (NODE_WIDTH - 34) + ',30)'" (click)="openConditions(node, $event)">
+                    <title>{{ 'QUEST.CHAIN.CONDITIONS_TOOLTIP' | translate: { count: node.conditionCount } }}</title>
+                    <rect width="26" height="15" rx="7" />
+                    <text x="13" y="11">{{ node.conditionCount }} ⚙</text>
+                  </g>
+                }
+              </g>
+            }
+          </svg>
+        </div>
+      </div>
+    }
+  </div>
+</div>

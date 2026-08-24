@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { BsModalRef } from 'ngx-bootstrap/modal';
@@ -10,10 +10,6 @@ import { CreatureSearchService } from '../../search/creature-search.service';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 
 describe('CreatureSelectorModalComponent', () => {
-  let component: CreatureSelectorModalComponent;
-  let fixture: ComponentFixture<CreatureSelectorModalComponent>;
-  let searchService: CreatureSearchService;
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [CreatureSelectorModalComponent, TranslateTestingModule],
@@ -26,16 +22,19 @@ describe('CreatureSelectorModalComponent', () => {
     }).compileComponents();
   });
 
-  beforeEach(() => {
-    searchService = TestBed.inject(CreatureSearchService);
+  function setup() {
+    const searchService = TestBed.inject(CreatureSearchService);
     searchService.query = '--mock query';
 
-    fixture = TestBed.createComponent(CreatureSelectorModalComponent);
-    component = fixture.componentInstance;
+    const fixture = TestBed.createComponent(CreatureSelectorModalComponent);
+    const component = fixture.componentInstance;
     fixture.detectChanges();
-  });
+
+    return { fixture, component };
+  }
 
   it('should create', () => {
+    const { component } = setup();
     expect(component).toBeTruthy();
   });
 });

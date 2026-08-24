@@ -133,29 +133,10 @@
               <keira-boolean-option-selector [control]="editorService.form.controls.RegenHealth" id="RegenHealth" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-              <label class="control-label" for="mechanic_immune_mask">mechanic_I_M</label>
-              <keira-flags-selector-btn
-                [control]="editorService.form.controls.mechanic_immune_mask"
-                [disabled]="editorService.form.controls.mechanic_immune_mask.disabled"
-                [config]="{ flags: MECHANIC_IMMUNE_MASK, name: 'mechanic_immune_mask' }"
-              />
+              <label class="control-label" for="CreatureImmunitiesId">CreatureImmunitiesId</label>
               <input
-                [formControlName]="'mechanic_immune_mask'"
-                id="mechanic_immune_mask"
-                type="number"
-                class="form-control form-control-sm"
-              />
-            </div>
-            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-              <label class="control-label" for="spell_school_immune_mask">spell_school_I_M</label>
-              <keira-flags-selector-btn
-                [control]="editorService.form.controls.spell_school_immune_mask"
-                [disabled]="editorService.form.controls.spell_school_immune_mask.disabled"
-                [config]="{ flags: SPELL_SCHOOL_IMMUNE_MASK, name: 'spell_school_immune_mask' }"
-              />
-              <input
-                [formControlName]="'spell_school_immune_mask'"
-                id="spell_school_immune_mask"
+                [formControlName]="'CreatureImmunitiesId'"
+                id="CreatureImmunitiesId"
                 type="number"
                 class="form-control form-control-sm"
               />
@@ -216,46 +197,6 @@
                   <label class="control-label" for="maxgold">maxgold</label>
                   <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.MAXGOLD' | translate"></i>
                   <input [formControlName]="'maxgold'" id="maxgold" type="number" class="form-control form-control-sm" />
-                </div>
-              </div>
-            </div>
-            <div class="col-12 col-xl-8">
-              <span class="category-title" [translate]="'CREATURE.TEMPLATE.TRAINER'"></span>
-              <div class="row">
-                <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
-                  <label class="control-label" for="trainer_type">trainer_type</label>
-                  <keira-generic-option-selector
-                    [control]="editorService.form.controls.trainer_type"
-                    id="trainer_type"
-                    [optionList]="TRAINER_TYPE"
-                  />
-                </div>
-                <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
-                  <label class="control-label" for="trainer_spell">trainer_spell</label>
-                  <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.TRAINER_SPELL_TOOLTIP' | translate"></i>
-                  <keira-spell-selector-btn
-                    [control]="editorService.form.controls.trainer_spell"
-                    [disabled]="editorService.form.controls.trainer_spell.disabled"
-                    [config]="{ name: 'trainer_spell' }"
-                    [modalClass]="'modal-lg'"
-                  />
-                  <input [formControlName]="'trainer_spell'" id="trainer_spell" type="number" class="form-control form-control-sm" />
-                </div>
-                <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
-                  <label class="control-label" for="trainer_class"> trainer_class</label>
-                  <keira-generic-option-selector
-                    [control]="editorService.form.controls.trainer_class"
-                    id="trainer_class"
-                    [optionList]="CREATURE_CLASS"
-                  />
-                </div>
-                <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3">
-                  <label class="control-label" for="trainer_race"> trainer_race</label>
-                  <keira-generic-option-selector
-                    [control]="editorService.form.controls.trainer_race"
-                    id="trainer_race"
-                    [optionList]="CREATURE_RACE"
-                  />
                 </div>
               </div>
             </div>
@@ -410,11 +351,6 @@
         <div class="content-block">
           <span class="category-title" [translate]="'CREATURE.TEMPLATE.MODIFIERS'"></span>
           <div class="row">
-            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-              <label class="control-label" for="scale">scale</label>
-              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.SCALE' | translate"></i>
-              <input [formControlName]="'scale'" id="scale" type="number" class="form-control form-control-sm" />
-            </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="DamageModifier">DamageModifier</label>
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.DAMAGE_MODIFIER' | translate"></i>

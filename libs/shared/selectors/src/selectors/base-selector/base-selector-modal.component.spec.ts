@@ -1,4 +1,5 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { vi } from 'vitest';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { BsModalRef } from 'ngx-bootstrap/modal';
@@ -11,14 +12,8 @@ import { SearchService } from '@keira/shared/base-abstract-classes';
 import { ItemTemplate } from '@keira/shared/acore-world-model';
 import { ItemSearchService } from '../../search/item-search.service';
 import { MysqlQueryService } from '@keira/shared/db-layer';
-import Spy = jasmine.Spy;
 
 describe('BaseSelectorModalComponent', () => {
-  let component: BaseSelectorModalComponent;
-  let fixture: ComponentFixture<ItemSelectorModalComponent>;
-  let searchService: SearchService<ItemTemplate>;
-  let hideSpy: Spy;
-
   const value = 'mock-value';
 
   beforeEach(() => {
@@ -33,24 +28,28 @@ describe('BaseSelectorModalComponent', () => {
     }).compileComponents();
   });
 
-  beforeEach(() => {
-    searchService = TestBed.inject(ItemSearchService);
+  function setup() {
+    const searchService: SearchService<ItemTemplate> = TestBed.inject(ItemSearchService);
     searchService.query = '--mock query';
 
-    fixture = TestBed.createComponent(ItemSelectorModalComponent);
-    component = fixture.componentInstance;
+    const fixture = TestBed.createComponent(ItemSelectorModalComponent);
+    const component: BaseSelectorModalComponent = fixture.componentInstance;
     fixture.detectChanges();
 
-    hideSpy = spyOn(TestBed.inject(BsModalRef), 'hide');
-  });
+    const hideSpy = vi.spyOn(TestBed.inject(BsModalRef), 'hide').mockImplementation(() => undefined);
+
+    return { fixture, component, hideSpy };
+  }
 
   it('onCancel() should correctly hide the modal', () => {
+    const { component, hideSpy } = setup();
     component.onCancel();
     expect(hideSpy).toHaveBeenCalledTimes(1);
   });
 
   it('onSave() should correctly emit the value and hide the modal', () => {
-    const nextSpy = spyOn(component.onValueSelected, 'next');
+    const { component, hideSpy } = setup();
+    const nextSpy = vi.spyOn(component.onValueSelected, 'next').mockImplementation(() => undefined);
     component.value = value;
 
     component.onSave();

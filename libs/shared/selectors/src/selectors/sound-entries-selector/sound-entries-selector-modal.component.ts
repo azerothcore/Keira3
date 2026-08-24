@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SOUND_ENTRIES_ID, SoundEntries } from '@keira/shared/acore-world-model';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { SearchSelectorModalComponent } from '../base-selector/search-selector-modal.component';
 
@@ -12,7 +12,7 @@ import { SoundEntriesSearchService } from '../../search/sound-entries-search.ser
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-sound-entries-selector-modal',
   templateUrl: './sound-entries-selector-modal.component.html',
-  imports: [FormsModule, ReactiveFormsModule, HighlightjsWrapperComponent, NgxDatatableModule, TranslateModule],
+  imports: [FormsModule, ReactiveFormsModule, HighlightjsWrapperComponent, NgxDatatableModule, TranslateDirective, TranslatePipe],
 })
 export class SoundEntriesSelectorModalComponent extends SearchSelectorModalComponent<SoundEntries> {
   protected entityIdField = SOUND_ENTRIES_ID;

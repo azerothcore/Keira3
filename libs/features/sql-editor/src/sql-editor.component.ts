@@ -1,31 +1,28 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { DTCFG } from '@keira/shared/config';
 import { SubscriptionHandler } from '@keira/shared/utils';
 import { TableRow } from '@keira/shared/constants';
 import { QueryError } from 'mysql2';
 import { ClipboardService } from 'ngx-clipboard';
 import { SqlEditorService } from './sql-editor.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 
 import { FormsModule } from '@angular/forms';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { QueryErrorComponent } from '@keira/shared/base-editor-components';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 
 import { CodeEditor } from '@acrodata/code-editor';
-import { LanguageDescription } from '@codemirror/language';
-import { MySQL, sql } from '@codemirror/lang-sql';
-import { githubLight } from '@uiw/codemirror-theme-github';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-sql-editor',
   templateUrl: './sql-editor.component.html',
   styleUrls: ['./sql-editor.component.scss'],
-  imports: [CodeEditor, TooltipModule, FormsModule, QueryErrorComponent, NgxDatatableModule, TranslateModule],
+  imports: [CodeEditor, TooltipDirective, FormsModule, QueryErrorComponent, NgxDatatableModule, TranslatePipe],
 })
-export class SqlEditorComponent extends SubscriptionHandler {
+export class SqlEditorComponent extends SubscriptionHandler implements OnInit {
   private readonly mysqlQueryService = inject(MysqlQueryService);
   private readonly clipboardService = inject(ClipboardService);
   protected readonly service = inject(SqlEditorService);
@@ -34,9 +31,6 @@ export class SqlEditorComponent extends SubscriptionHandler {
   protected readonly DTCFG = DTCFG;
   protected readonly docUrl = 'https://www.w3schools.com/sql/sql_intro.asp';
   private readonly MAX_COL_SHOWN = 20;
-
-  protected readonly languages = [LanguageDescription.of({ name: 'MySQL', support: sql({ dialect: MySQL, upperCaseKeywords: true }) })];
-  protected readonly extensions = [githubLight];
 
   private _error: QueryError | undefined;
   protected get error(): QueryError | undefined {
@@ -61,6 +55,10 @@ export class SqlEditorComponent extends SubscriptionHandler {
   private _message!: string;
   protected get message(): string {
     return this._message;
+  }
+
+  ngOnInit(): void {
+    this.service.loadSchema();
   }
 
   protected copy(): void {

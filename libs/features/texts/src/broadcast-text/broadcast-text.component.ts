@@ -4,8 +4,8 @@ import { BroadcastText, EMOTE } from '@keira/shared/acore-world-model';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { LanguageSelectorBtnComponent, SingleValueSelectorBtnComponent, SoundEntriesSelectorBtnComponent } from '@keira/shared/selectors';
-import { TranslateModule } from '@ngx-translate/core';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { BroadcastTextHandlerService } from './broadcast-text-handler.service';
 import { BroadcastTextService } from './broadcast-text.service';
 
@@ -14,11 +14,12 @@ import { BroadcastTextService } from './broadcast-text.service';
   templateUrl: './broadcast-text.component.html',
   imports: [
     TopBarComponent,
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     QueryOutputComponent,
     ReactiveFormsModule,
     SingleValueSelectorBtnComponent,
-    TooltipModule,
+    TooltipDirective,
     LanguageSelectorBtnComponent,
     SoundEntriesSelectorBtnComponent,
   ],

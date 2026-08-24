@@ -1,4 +1,4 @@
-import { inject, Injectable, signal, Signal } from '@angular/core';
+import { inject, Service, signal, Signal } from '@angular/core';
 import {
   CREATURE_EQUIP_TEMPLATE_TABLE,
   CREATURE_FORMATIONS_TABLE,
@@ -15,7 +15,7 @@ import {
   CREATURE_TEMPLATE_TABLE,
   CREATURE_TEXT_TABLE,
   CreatureTemplate,
-  NPC_TRAINER_TABLE,
+  CREATURE_DEFAULT_TRAINER_TABLE,
   NPC_VENDOR_TABLE,
   PICKPOCKETING_LOOT_TEMPLATE_TABLE,
   SAI_TABLE,
@@ -24,9 +24,7 @@ import {
 import { HandlerService } from '@keira/shared/base-abstract-classes';
 import { SaiCreatureHandlerService } from './sai-creature-handler.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class CreatureHandlerService extends HandlerService<CreatureTemplate> {
   protected saiCreatureHandler = inject(SaiCreatureHandlerService);
   protected readonly mainEditorRoutePath = 'creature/creature-template';
@@ -58,8 +56,8 @@ export class CreatureHandlerService extends HandlerService<CreatureTemplate> {
   get isNpcVendorUnsaved(): Signal<boolean> {
     return this.statusMap[NPC_VENDOR_TABLE].asReadonly();
   }
-  get isNpcTrainerUnsaved(): Signal<boolean> {
-    return this.statusMap[NPC_TRAINER_TABLE].asReadonly();
+  get isCreatureDefaultTrainerUnsaved(): Signal<boolean> {
+    return this.statusMap[CREATURE_DEFAULT_TRAINER_TABLE].asReadonly();
   }
   get isCreatureQuestitemUnsaved(): Signal<boolean> {
     return this.statusMap[CREATURE_QUESTITEM_TABLE].asReadonly();
@@ -99,7 +97,7 @@ export class CreatureHandlerService extends HandlerService<CreatureTemplate> {
     [CREATURE_ONKLL_REPUTATION_TABLE]: signal(false),
     [CREATURE_EQUIP_TEMPLATE_TABLE]: signal(false),
     [NPC_VENDOR_TABLE]: signal(false),
-    [NPC_TRAINER_TABLE]: signal(false),
+    [CREATURE_DEFAULT_TRAINER_TABLE]: signal(false),
     [CREATURE_QUESTITEM_TABLE]: signal(false),
     [CREATURE_LOOT_TEMPLATE_TABLE]: signal(false),
     [PICKPOCKETING_LOOT_TEMPLATE_TABLE]: signal(false),

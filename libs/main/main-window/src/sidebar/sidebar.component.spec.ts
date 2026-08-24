@@ -1,7 +1,9 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideLocationMocks } from '@angular/common/testing';
+import { provideRouter, Router } from '@angular/router';
 
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { instance, mock } from 'ts-mockito';
@@ -38,10 +40,16 @@ class SidebarComponentPage extends PageObject<SidebarComponent> {
 describe('SidebarComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [SidebarComponent, RouterTestingModule, TranslateTestingModule],
+      imports: [SidebarComponent, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
+        provideRouter([
+          { path: 'conditions/select', children: [] },
+          { path: 'creature/select', children: [] },
+          { path: 'sql-editor', children: [] },
+        ]),
+        provideLocationMocks(),
         { provide: ElectronService, useValue: instance(mock(ElectronService)) },
         { provide: MysqlService, useValue: instance(mock(MysqlService)) },
         CreatureHandlerService,
@@ -107,8 +115,38 @@ describe('SidebarComponent', () => {
     page.clickElement(page.collapseAll);
 
     for (const key of Object.keys(component.menuStates)) {
-      // @ts-ignore
-      expect(component.menuStates[key]).toEqual('up');
+      expect(component.menuStates[key as keyof typeof component.menuStates]).toEqual('up');
+    }
+
+    page.removeNativeElement();
+  });
+
+  it('navigating to an editor should expand the menu listing it', async () => {
+    const { page, component, fixture } = setup();
+    const router = TestBed.inject(Router);
+    expect(component.menuStates['conditions']).toBe('up');
+
+    await router.navigateByUrl('/conditions/select?sourceType=19&sourceEntry=42');
+    await fixture.whenStable();
+
+    expect(component.menuStates['conditions']).toBe('down');
+
+    await router.navigateByUrl('/creature/select');
+    await fixture.whenStable();
+
+    expect(component.menuStates['creature']).toBe('down');
+
+    page.removeNativeElement();
+  });
+
+  it('navigating to a route without a menu should leave the sections alone', async () => {
+    const { page, component, fixture } = setup();
+
+    await TestBed.inject(Router).navigateByUrl('/sql-editor');
+    await fixture.whenStable();
+
+    for (const key of Object.keys(component.menuStates)) {
+      expect(component.menuStates[key as keyof typeof component.menuStates]).toEqual('up');
     }
 
     page.removeNativeElement();
@@ -116,7 +154,7 @@ describe('SidebarComponent', () => {
 
   it('reload the app on logout', () => {
     const { page, component } = setup();
-    const reloadSpy = spyOn(TestBed.inject(LocationService), 'reload');
+    const reloadSpy = vi.spyOn(TestBed.inject(LocationService), 'reload').mockImplementation(() => undefined);
 
     component.logout();
 

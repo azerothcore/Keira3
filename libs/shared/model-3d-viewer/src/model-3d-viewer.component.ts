@@ -2,13 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, input, OnChanges, OnDestroy, OnInit, signal, SimpleChanges } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CREATURE_RACE_OPTION_ICON } from '@keira/shared/acore-world-model';
-import { KEIRA_APP_CONFIG_TOKEN } from '@keira/shared/config';
 import { Option, TableRow } from '@keira/shared/constants';
-import { MysqlQueryService } from '@keira/shared/db-layer';
+import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
 import { GenericOptionSelectorComponent } from '@keira/shared/selectors';
 import * as jquery from 'jquery';
 import { BehaviorSubject, catchError, filter, Observable, of, Subscription } from 'rxjs';
-import { getShadowlandDisplayId } from './helper';
 import {
   CHAR_DISPLAYABLE_INVENTORY_TYPE,
   CharacterOptions,
@@ -35,8 +33,8 @@ declare const ZamModelViewer: any;
 })
 export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   private readonly queryService = inject(MysqlQueryService);
+  private readonly sqliteQueryService = inject(SqliteQueryService);
   private readonly http = inject(HttpClient);
-  private readonly KEIRA_APP_CONFIG = inject(KEIRA_APP_CONFIG_TOKEN);
   private readonly model3DViewerService = inject(Model3DViewerService);
 
   protected CREATURE_RACE = signal<Option[]>(CREATURE_RACE_OPTION_ICON);
@@ -127,8 +125,10 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
             /* istanbul ignore next */
             () => {
               /* istanbul ignore next */
-              getShadowlandDisplayId(this.KEIRA_APP_CONFIG.sqliteItem3dPath, entry as number).then((displayInfo) => {
-                this.generate3Dmodel(modelType, displayInfo.displayId, CONTENT_WOTLK);
+              this.sqliteQueryService.getItemDisplayInfoByItemId(entry as number).then((rows) => {
+                if (rows.length) {
+                  this.generate3Dmodel(modelType, rows[0].ItemDisplayInfoID, CONTENT_WOTLK);
+                }
               });
               /* istanbul ignore next */
               return of(null);

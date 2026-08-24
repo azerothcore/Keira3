@@ -1,10 +1,8 @@
-import { Injectable, signal, Signal } from '@angular/core';
+import { Service, signal, Signal } from '@angular/core';
 import { HandlerService } from '@keira/shared/base-abstract-classes';
 import { GAME_TELE_TABLE, GameTele } from '@keira/shared/acore-world-model';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class GameTeleHandlerService extends HandlerService<GameTele> {
   protected readonly mainEditorRoutePath = 'game-tele/tele';
 

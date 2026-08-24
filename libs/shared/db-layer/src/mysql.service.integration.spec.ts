@@ -19,7 +19,6 @@ describe('MysqlService Integration Tests', () => {
     production: true,
     environment: 'DOCKER',
     sqlitePath: 'assets/sqlite.db',
-    sqliteItem3dPath: 'assets/item_display.db',
     databaseApiUrl: '/api/database',
   };
 
@@ -319,7 +318,6 @@ describe('MysqlService Integration Tests', () => {
           production: false,
           environment: 'test',
           sqlitePath: 'test.db',
-          sqliteItem3dPath: 'test_item.db',
         };
 
         TestBed.resetTestingModule();

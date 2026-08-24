@@ -1,0 +1,151 @@
+.map-viewer-container {
+  // Lay multiple maps out in rows, wrapping to the next row when they don't fit.
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 24px;
+  padding: 5px 0px 16px 0px;
+  width: 100%;
+}
+
+.map-wrapper {
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.map-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.map-label {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.map-image-container {
+  position: relative;
+  // Inline preview size; clicking opens the full map in a dialog.
+  width: 512px;
+  height: 341.5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow: visible;
+  background-color: #1a1a1a;
+  cursor: pointer;
+
+  &.compact {
+    width: 200px;
+    height: 133.4px;
+  }
+
+  .map-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 4px;
+  }
+}
+
+.map-modal-body {
+  display: flex;
+  justify-content: center;
+
+  .map-image-container {
+    width: 1024px;
+    height: 683px;
+    cursor: default;
+  }
+}
+
+.map-point {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.9);
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+
+  &:hover .map-tooltip {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  // Recolor the (yellow) pin icon to red on hover. The brightness(0) flattens the
+  // source to a black silhouette first, then the chain tints it red.
+  &:hover .map-point-icon {
+    filter: brightness(0) saturate(100%) invert(13%) sepia(96%) saturate(7466%) hue-rotate(5deg) brightness(98%) contrast(118%);
+  }
+}
+
+.map-point-icon {
+  display: block;
+  width: 12px;
+  height: 12px;
+}
+
+.map-toggle-btn {
+  flex-shrink: 0;
+  padding: 2px 10px;
+  font-size: 13px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f5f5f5;
+
+  &:hover {
+    background-color: #e8e8e8;
+  }
+}
+
+.map-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  border-radius: 4px;
+  padding: 4px 8px;
+  white-space: nowrap;
+  font-size: 12px;
+  line-height: 1.4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  z-index: 10;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 4px solid transparent;
+    border-top-color: rgba(0, 0, 0, 0.85);
+  }
+}
+
+.tooltip-name {
+  font-weight: 600;
+}
+
+.tooltip-level {
+  color: #ffd700;
+  font-size: 11px;
+}

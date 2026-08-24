@@ -11,7 +11,7 @@ export const ITEM_CLASS: Option[] = [
   { value: 7, name: 'Trade Goods' },
   { value: 8, name: 'Generic', comment: 'OBSOLETE' },
   { value: 9, name: 'Recipe' },
-  { value: 0, name: 'Money', comment: 'OBSOLETE' },
+  { value: 10, name: 'Money', comment: 'OBSOLETE' },
   { value: 11, name: 'Quiver' },
   { value: 12, name: 'Quest' },
   { value: 13, name: 'Key' },

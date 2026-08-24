@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -44,10 +45,6 @@ describe('ItemPreviewService', () => {
       ],
     }),
   );
-
-  let service: ItemPreviewService;
-  let sqliteQueryService: SqliteQueryService;
-  let mysqlQueryService: MysqlQueryService;
 
   const mockItemNameById = 'mockItemNameById';
   const mockGetSpellNameById = 'mockGetSpellNameById';
@@ -176,10 +173,10 @@ describe('ItemPreviewService', () => {
 
   const id = 123;
 
-  beforeEach(() => {
-    mysqlQueryService = TestBed.inject(MysqlQueryService);
-    spyOn(mysqlQueryService, 'getItemNameById').and.callFake((i) => lastValueFrom(of(i === 1 ? mockItemNameById + i : '')));
-    spyOn(mysqlQueryService, 'query').and.callFake((i) => {
+  function setup() {
+    const mysqlQueryService = TestBed.inject(MysqlQueryService);
+    vi.spyOn(mysqlQueryService, 'getItemNameById').mockImplementation((i) => lastValueFrom(of(i === 1 ? mockItemNameById + i : '')));
+    vi.spyOn(mysqlQueryService, 'query').mockImplementation((i) => {
       if (i.indexOf('npc_vendor') > -1) {
         if (i.indexOf('600') > -1) {
           return of(npcVendor1) as any;
@@ -210,23 +207,24 @@ describe('ItemPreviewService', () => {
       return of(null) as any;
     });
 
-    sqliteQueryService = TestBed.inject(SqliteQueryService);
-    spyOn(sqliteQueryService, 'getSpellNameById').and.callFake((i) => lastValueFrom(of(mockGetSpellNameById + i)));
-    spyOn(sqliteQueryService, 'getSpellDescriptionById').and.callFake((i) =>
+    const sqliteQueryService = TestBed.inject(SqliteQueryService);
+    vi.spyOn(sqliteQueryService, 'getSpellNameById').mockImplementation((i) => lastValueFrom(of(mockGetSpellNameById + i)));
+    vi.spyOn(sqliteQueryService, 'getSpellDescriptionById').mockImplementation((i) =>
       lastValueFrom(of(String(i).indexOf('555') > -1 ? '' : mockGetSpellDescriptionById + i)),
     );
-    spyOn(sqliteQueryService, 'getFactionNameById').and.callFake((i) => lastValueFrom(of(mockGetFactionNameById + i)));
-    spyOn(sqliteQueryService, 'getMapNameById').and.callFake((i) =>
+    vi.spyOn(sqliteQueryService, 'getFactionNameById').mockImplementation((i) => lastValueFrom(of(mockGetFactionNameById + i)));
+    vi.spyOn(sqliteQueryService, 'getFactionNameByNameId').mockImplementation((i) => lastValueFrom(of(mockGetFactionNameById + i)));
+    vi.spyOn(sqliteQueryService, 'getMapNameById').mockImplementation((i) =>
       lastValueFrom(of(String(i).indexOf('123') > -1 ? '' : mockGetMapNameById + i)),
     );
-    spyOn(sqliteQueryService, 'getAreaNameById').and.callFake((i) =>
+    vi.spyOn(sqliteQueryService, 'getAreaNameById').mockImplementation((i) =>
       lastValueFrom(of(String(i).indexOf('123') > -1 ? '' : mockGetAreaNameById + i)),
     );
-    spyOn(sqliteQueryService, 'getEventNameByHolidayId').and.callFake((i) => lastValueFrom(of(mockGetEventNameByHolidayId + i)));
-    spyOn(sqliteQueryService, 'getSocketBonusById').and.callFake((i) => lastValueFrom(of(mockGetSocketBonusById + i)));
-    spyOn(sqliteQueryService, 'getLockById').and.callFake((i) => lastValueFrom(of(locksData[i as number])) as Promise<Lock[]>);
-    spyOn(sqliteQueryService, 'getSkillNameById').and.callFake((i) => lastValueFrom(of(i === 1 ? 'profession' : '')));
-    spyOn(sqliteQueryService, 'query').and.callFake(((i) => {
+    vi.spyOn(sqliteQueryService, 'getEventNameByHolidayId').mockImplementation((i) => lastValueFrom(of(mockGetEventNameByHolidayId + i)));
+    vi.spyOn(sqliteQueryService, 'getSocketBonusById').mockImplementation((i) => lastValueFrom(of(mockGetSocketBonusById + i)));
+    vi.spyOn(sqliteQueryService, 'getLockById').mockImplementation((i) => lastValueFrom(of(locksData[i as number])) as Promise<Lock[]>);
+    vi.spyOn(sqliteQueryService, 'getSkillNameById').mockImplementation((i) => lastValueFrom(of(i === 1 ? 'profession' : '')));
+    vi.spyOn(sqliteQueryService, 'query').mockImplementation(((i) => {
       if (i.indexOf('item_extended_cost') > -1) {
         if (i.indexOf('600') > -1) {
           return of(mockItemEtendedCost1);
@@ -330,7 +328,7 @@ describe('ItemPreviewService', () => {
 
       return of(null);
     }) as <T extends TableRow>(queryString: string, silent?: boolean) => Observable<T[]>);
-    spyOn(sqliteQueryService, 'queryValue').and.callFake((i) => {
+    vi.spyOn(sqliteQueryService, 'queryValue').mockImplementation((i) => {
       if (i.indexOf('SELECT gemEnchantmentId AS v') > -1) {
         if (i.indexOf('id = 100') > -1) {
           return of(100) as any;
@@ -355,21 +353,25 @@ describe('ItemPreviewService', () => {
       return of(null);
     });
 
-    service = TestBed.inject(ItemPreviewService);
-  });
+    const service = TestBed.inject(ItemPreviewService);
+    return { service, mysqlQueryService, sqliteQueryService };
+  }
 
   it('getItemExtendedCostFromVendor', () => {
+    const { service, mysqlQueryService } = setup();
     service['getItemExtendedCostFromVendor'](123);
     expect(mysqlQueryService.query).toHaveBeenCalledTimes(1);
   });
 
   it('getItemsetSlotBak', () => {
+    const { service, sqliteQueryService } = setup();
     service['getItemsetSlotBak'](id);
     expect(sqliteQueryService.query).toHaveBeenCalledTimes(1);
     expect(sqliteQueryService.query).toHaveBeenCalledWith(`SELECT * FROM items WHERE itemset = ${id} ORDER BY slotBak, id`);
   });
 
   it('getItemNameByIDsASC', () => {
+    const { service, mysqlQueryService } = setup();
     const IDs = [123, 1234];
     service['getItemNameByIDsASC'](IDs);
     expect(mysqlQueryService.query).toHaveBeenCalledTimes(1);
@@ -379,30 +381,35 @@ describe('ItemPreviewService', () => {
   });
 
   it('getItemsetById', () => {
+    const { service, sqliteQueryService } = setup();
     service['getItemsetById'](id);
     expect(sqliteQueryService.query).toHaveBeenCalledTimes(1);
     expect(sqliteQueryService.query).toHaveBeenCalledWith(`SELECT * FROM itemset WHERE id = ${id}`);
   });
 
   it('getItemLimitCategoryById', () => {
+    const { service, sqliteQueryService } = setup();
     service['getItemLimitCategoryById'](id);
     expect(sqliteQueryService.query).toHaveBeenCalledTimes(1);
     expect(sqliteQueryService.query).toHaveBeenCalledWith(`SELECT * FROM item_limit_category WHERE id = ${id}`);
   });
 
   it('getGemEnchantmentIdById', () => {
+    const { service, sqliteQueryService } = setup();
     service['getGemEnchantmentIdById'](id);
     expect(sqliteQueryService.queryValue).toHaveBeenCalledTimes(1);
     expect(sqliteQueryService.queryValue).toHaveBeenCalledWith(`SELECT gemEnchantmentId AS v FROM items WHERE id = ${id};`);
   });
 
   it('getItemEnchantmentById', () => {
+    const { service, sqliteQueryService } = setup();
     service['getItemEnchantmentById'](id);
     expect(sqliteQueryService.query).toHaveBeenCalledTimes(1);
     expect(sqliteQueryService.query).toHaveBeenCalledWith(`SELECT * FROM item_enchantment WHERE id = ${id}`);
   });
 
   it('getItemExtendedCost', () => {
+    const { service, sqliteQueryService } = setup();
     const IDs = [123, 1234];
     service['getItemExtendedCost'](IDs);
     expect(sqliteQueryService.query).toHaveBeenCalledTimes(1);
@@ -410,21 +417,23 @@ describe('ItemPreviewService', () => {
   });
 
   it('getItemEnchantmentConditionById', () => {
+    const { service, sqliteQueryService } = setup();
     service['getItemEnchantmentConditionById'](id);
     expect(sqliteQueryService.query).toHaveBeenCalledTimes(1);
     expect(sqliteQueryService.query).toHaveBeenCalledWith(`SELECT * FROM item_enchantment_condition WHERE id = ${id}`);
   });
 
   it('getCreatureEntryByItemSpellId', async () => {
-    const getCreatureEntryByItemSpellIdSpy = spyOn(sqliteQueryService, 'getCreatureEntryByItemSpellId').and.returnValue(
-      Promise.resolve(123),
-    );
-    const getCreatureDisplayIdByIdSpy = spyOn(mysqlQueryService, 'getCreatureDisplayIdById').and.returnValue(Promise.resolve(456));
+    const { service, sqliteQueryService, mysqlQueryService } = setup();
+    const getCreatureEntryByItemSpellIdSpy = vi
+      .spyOn(sqliteQueryService, 'getCreatureEntryByItemSpellId')
+      .mockReturnValue(Promise.resolve(123));
+    const getCreatureDisplayIdByIdSpy = vi.spyOn(mysqlQueryService, 'getCreatureDisplayIdById').mockReturnValue(Promise.resolve(456));
 
     const res = await service['getNpcDisplayIdBySpell'](id);
 
-    expect(getCreatureEntryByItemSpellIdSpy).toHaveBeenCalledOnceWith(id);
-    expect(getCreatureDisplayIdByIdSpy).toHaveBeenCalledOnceWith(123);
+    expect(getCreatureEntryByItemSpellIdSpy).toHaveBeenCalledExactlyOnceWith(id);
+    expect(getCreatureDisplayIdByIdSpy).toHaveBeenCalledExactlyOnceWith(123);
     expect(res).toBe(456);
   });
 
@@ -806,6 +815,11 @@ describe('ItemPreviewService', () => {
       output: `<br>+1 Holy Resistance<br>+1 Arcane Resistance`,
     },
     {
+      name: 'Negative resistance',
+      template: { holy_res: -5 },
+      output: `<br>-5 Holy Resistance`,
+    },
+    {
       name: 'Gem Enchantment - success',
       template: { entry: 100 },
       output: `<br><span class="q1">Helias</span><br><span class="q0">Requires less than 2 meta gems;</span><br><span class="q0">Requires more yellow gems than yellow gems</span>`,
@@ -863,6 +877,7 @@ describe('ItemPreviewService', () => {
 
   for (const { name, template, output } of cases) {
     it(`Case ${name}`, async () => {
+      const { service } = setup();
       expect(await service.calculatePreview(template as unknown as ItemTemplate)).toEqual(output);
     });
   }

@@ -8,10 +8,13 @@
 @if (lootId !== null) {
   <div class="container-fluid">
     @if (lootId === 0) {
-      <div class="alert alert-info mt-2">
-        You have to set the field <strong>`{{ editorService.entityTemplateLootField }}`</strong> of
-        <strong>{{ editorService.entityTemplateTable }}</strong> in order to enable this feature.
-      </div>
+      <div
+        class="alert alert-info mt-2"
+        [innerHTML]="
+          'LOOT_TEMPLATE.SET_FIELD'
+            | translate: { LOOT_FIELD: editorService.entityTemplateLootField, ENTITY_TABLE: editorService.entityTemplateTable }
+        "
+      ></div>
     }
     @if (editorService.loading) {
       <span [translate]="'LOADING'"></span>

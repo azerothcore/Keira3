@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
@@ -9,10 +9,6 @@ import { SoundEntriesSearchService } from '../../search/sound-entries-search.ser
 import { SoundEntriesSelectorModalComponent } from './sound-entries-selector-modal.component';
 
 describe('SoundEntriesSelectorModalComponent', () => {
-  let component: SoundEntriesSelectorModalComponent;
-  let fixture: ComponentFixture<SoundEntriesSelectorModalComponent>;
-  let searchService: SoundEntriesSearchService;
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [SoundEntriesSelectorModalComponent, TranslateTestingModule],
@@ -26,16 +22,19 @@ describe('SoundEntriesSelectorModalComponent', () => {
     }).compileComponents();
   });
 
-  beforeEach(() => {
-    searchService = TestBed.inject(SoundEntriesSearchService);
+  function setup() {
+    const searchService = TestBed.inject(SoundEntriesSearchService);
     searchService.query = '--mock query';
 
-    fixture = TestBed.createComponent(SoundEntriesSelectorModalComponent);
-    component = fixture.componentInstance;
+    const fixture = TestBed.createComponent(SoundEntriesSelectorModalComponent);
+    const component = fixture.componentInstance;
     fixture.detectChanges();
-  });
+
+    return { fixture, component };
+  }
 
   it('should create', () => {
+    const { component } = setup();
     expect(component).toBeTruthy();
   });
 });

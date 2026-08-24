@@ -4,8 +4,8 @@ import { CreatureOnkillReputation, FACTION_RANK } from '@keira/shared/acore-worl
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { BooleanOptionSelectorComponent, FactionSelectorBtnComponent, GenericOptionSelectorComponent } from '@keira/shared/selectors';
-import { TranslateModule } from '@ngx-translate/core';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureOnkillReputationService } from './creature-onkill-reputation.service';
 
@@ -16,12 +16,13 @@ import { CreatureOnkillReputationService } from './creature-onkill-reputation.se
   styleUrls: ['./creature-onkill-reputation.component.scss'],
   imports: [
     TopBarComponent,
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,
     FactionSelectorBtnComponent,
-    TooltipModule,
+    TooltipDirective,
     BooleanOptionSelectorComponent,
     GenericOptionSelectorComponent,
   ],

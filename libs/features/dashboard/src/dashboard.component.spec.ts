@@ -1,12 +1,13 @@
-import { TestBed } from '@angular/core/testing';
+import { vi } from 'vitest';
 import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { VersionDbRow, VersionRow } from '@keira/shared/constants';
+import { MysqlQueryService, MysqlService } from '@keira/shared/db-layer';
+import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { of, throwError } from 'rxjs';
 import { anyString, instance, mock, reset, when } from 'ts-mockito';
 import { DashboardComponent } from './dashboard.component';
-import { MysqlQueryService, MysqlService } from '@keira/shared/db-layer';
 
 class DashboardComponentPage extends PageObject<DashboardComponent> {
   get coreVersion(): HTMLTableCellElement {
@@ -147,7 +148,7 @@ describe('DashboardComponent', () => {
   it('should correctly give error if the query does not return the data in the expected format', () => {
     const { page } = setup();
     when(MockedMysqlQueryService.query(anyString())).thenReturn(of([]));
-    const errorSpy = spyOn(console, 'error');
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
     page.detectChanges();
 
@@ -159,7 +160,7 @@ describe('DashboardComponent', () => {
     const { page } = setup();
     const error = 'some error';
     when(MockedMysqlQueryService.query(anyString())).thenReturn(throwError(error));
-    const errorSpy = spyOn(console, 'error');
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
     page.detectChanges();
 
