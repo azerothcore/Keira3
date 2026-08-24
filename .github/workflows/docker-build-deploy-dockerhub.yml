@@ -111,7 +111,7 @@ jobs:
           NODE_ENV: test
 
       - name: Upload test coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v7
         with:
           files: coverage/docker/lcov.info
           flags: docker-tests
@@ -159,23 +159,13 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Start MySQL for testing
+      - name: Wait for MySQL service to be ready
         run: |
-          # Start MySQL container for testing
-          docker run -d \
-            --name mysql-test \
-            --network host \
-            -e MYSQL_ROOT_PASSWORD=test_password \
-            -e MYSQL_DATABASE=test_db \
-            -e MYSQL_USER=test_user \
-            -e MYSQL_PASSWORD=test_password \
-            -p 3306:3306 \
-            mysql:8.0 \
-            --bind-address=0.0.0.0
-
-          # Wait for MySQL to be ready
-          echo "Waiting for MySQL to be ready..."
-          timeout 60s bash -c 'until docker exec mysql-test mysqladmin ping -h localhost --silent; do sleep 2; done'
+          # The job-level "mysql" service (mapped to host port 3306) already has
+          # its own healthcheck; just confirm it is reachable before the test
+          # container tries to connect to it on localhost:3306.
+          echo "Waiting for MySQL service to be ready..."
+          timeout 60s bash -c 'until docker run --rm --network host mysql:8.0 mysqladmin ping -h 127.0.0.1 -P 3306 -u root -ptest_password --silent; do sleep 2; done'
 
       - name: Test image startup
         run: |
@@ -287,8 +277,6 @@ jobs:
         run: |
           docker stop keira3-test || true
           docker rm keira3-test || true
-          docker stop mysql-test || true
-          docker rm mysql-test || true
 
   build-and-push:
     name: Build and Push Docker Image
@@ -318,7 +306,10 @@ jobs:
       - name: Check DockerHub configuration
         id: dockerhub-check
         run: |
-          if [ -n "${{ secrets.DOCKERHUB_USERNAME }}" ] && [ -n "${{ secrets.DOCKERHUB_TOKEN }}" ]; then
+          if [ "${{ github.event_name == 'workflow_dispatch' && inputs.push_to_dockerhub == false }}" == "true" ]; then
+            echo "DockerHub push disabled via workflow_dispatch input"
+            echo "pushed=false" >> $GITHUB_OUTPUT
+          elif [ -n "${{ secrets.DOCKERHUB_USERNAME }}" ] && [ -n "${{ secrets.DOCKERHUB_TOKEN }}" ]; then
             echo "DockerHub credentials available"
             echo "pushed=true" >> $GITHUB_OUTPUT
           else
@@ -355,6 +346,7 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=sha,prefix={{branch}}-
             type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=${{ inputs.image_tag }},enable=${{ github.event_name == 'workflow_dispatch' }}
 
       - name: Build Docker image (no push)
         id: build
@@ -391,8 +383,14 @@ jobs:
         run: |
           echo "::notice title=GitHub Container Registry::Successfully pushed to ghcr.io/${{ env.IMAGE_NAME }}"
 
+          if [ "${{ github.event_name == 'workflow_dispatch' }}" == "true" ]; then
+            echo "::notice title=Manual dispatch::environment=${{ inputs.environment }} image_tag=${{ inputs.image_tag }} push_to_dockerhub=${{ inputs.push_to_dockerhub }}"
+          fi
+
           if [ "${{ steps.dockerhub-check.outputs.pushed }}" == "true" ]; then
             echo "::notice title=DockerHub::Successfully pushed to docker.io/${{ secrets.DOCKERHUB_USERNAME }}/keira3"
+          elif [ "${{ github.event_name == 'workflow_dispatch' && inputs.push_to_dockerhub == false }}" == "true" ]; then
+            echo "::notice title=DockerHub::Skipped - disabled via workflow_dispatch push_to_dockerhub input"
           else
             echo "::warning title=DockerHub::Skipped - DockerHub credentials not configured"
           fi

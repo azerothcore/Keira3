@@ -96,7 +96,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "8080:8080"  # Traefik dashboard
+      - "8081:8080"  # Traefik dashboard (8080 is already used by the keira3 web interface)
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - traefik-acme:/acme.json

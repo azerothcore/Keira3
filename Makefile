@@ -8,7 +8,7 @@ IMAGE_NAME ?= keira3
 IMAGE_TAG ?= latest
 REGISTRY ?=
 ENVIRONMENT ?= development
-COMPOSE_FILE ?= docker/config/docker-compose.example.yml
+COMPOSE_FILE ?= docker/docker-compose.yml
 ENV_FILE ?= docker/.env
 
 # Docker build variables

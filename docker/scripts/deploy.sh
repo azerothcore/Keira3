@@ -9,7 +9,7 @@ set -euo pipefail
 ENVIRONMENT="${ENVIRONMENT:-development}"
 IMAGE_NAME="${IMAGE_NAME:-keira3}"
 IMAGE_TAG="${IMAGE_TAG:-latest}"
-COMPOSE_FILE="${COMPOSE_FILE:-docker/config/docker-compose.example.yml}"
+COMPOSE_FILE="${COMPOSE_FILE:-docker/docker-compose.yml}"
 ENV_FILE="${ENV_FILE:-docker/.env}"
 SERVICE_NAME="${SERVICE_NAME:-keira3}"
 

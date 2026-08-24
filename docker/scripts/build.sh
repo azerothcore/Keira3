@@ -180,12 +180,10 @@ echo "  Push: $PUSH"
 echo "  No Cache: ${NO_CACHE:-false}"
 echo "  Run Tests: ${RUN_TESTS:-false}"
 
-# Setup Docker Buildx if needed for multi-platform builds
-if [[ "$PLATFORM" == *","* ]]; then
-    log_info "Setting up Docker Buildx for multi-platform build..."
-    docker buildx create --use --name keira3-builder 2>/dev/null || true
-    docker buildx inspect --bootstrap
-fi
+# Setup Docker Buildx (used for both single- and multi-platform builds)
+log_info "Setting up Docker Buildx..."
+docker buildx create --use --name keira3-builder 2>/dev/null || true
+docker buildx inspect --bootstrap
 
 # Build the image
 log_info "Building Docker image..."
@@ -201,10 +199,19 @@ if [[ "$PUSH" == "true" && "$PLATFORM" == *","* ]]; then
         $NO_CACHE \
         "$BUILD_CONTEXT"
 else
-    # Single platform build or local build
-    docker build \
+    # Single-platform local build (no push): load into the local Docker
+    # image store so it can be tested/tagged/pushed by later steps.
+    if [[ "$PLATFORM" == *","* ]]; then
+        log_error "Multi-platform local builds are not supported without --push."
+        log_error "Pass a single platform (e.g. --platform linux/amd64) or add --push."
+        exit 1
+    fi
+
+    docker buildx build \
+        --platform "$PLATFORM" \
         --file "$DOCKERFILE_PATH" \
         --tag "$FULL_IMAGE_NAME" \
+        --load \
         $NO_CACHE \
         "$BUILD_CONTEXT"
 fi
@@ -272,10 +279,8 @@ if [[ "$PUSH" == "true" && "$PLATFORM" != *","* ]]; then
 fi
 
 # Cleanup
-if [[ "$PLATFORM" == *","* ]]; then
-    log_info "Cleaning up Buildx builder..."
-    docker buildx rm keira3-builder 2>/dev/null || true
-fi
+log_info "Cleaning up Buildx builder..."
+docker buildx rm keira3-builder 2>/dev/null || true
 
 log_success "Build completed successfully!"
 echo ""
