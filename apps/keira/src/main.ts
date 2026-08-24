@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter, withHashLocation } from '@angular/router';
-import { KEIRA_APP_CONFIG_TOKEN, highlightOptions, toastrConfig, uiSwitchConfig } from '@keira/shared/config';
+import { KEIRA_APP_CONFIG_TOKEN, highlightOptions, isWebLikeEnvironment, toastrConfig, uiSwitchConfig } from '@keira/shared/config';
 import { webAuth401Interceptor } from '@keira/shared/login-config';
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -44,6 +44,6 @@ bootstrapApplication(AppComponent, {
       provide: HIGHLIGHT_OPTIONS,
       useValue: highlightOptions,
     },
-    provideHttpClient(withInterceptorsFromDi(), withInterceptors([webAuth401Interceptor])),
+    provideHttpClient(withInterceptorsFromDi(), withInterceptors(isWebLikeEnvironment(KEIRA_APP_CONFIG) ? [webAuth401Interceptor] : [])),
   ],
 }).catch((err) => console.error(err));
