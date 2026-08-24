@@ -363,7 +363,9 @@ jobs:
         with:
           context: .
           file: docker/Dockerfile
-          platforms: linux/amd64,linux/arm64
+          # arm64 dropped: npm under buildx qemu emulation crashes (SIGILL) with
+          # current Node; restore via native arm runners if arm images are needed
+          platforms: linux/amd64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
