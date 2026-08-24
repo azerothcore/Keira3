@@ -71,6 +71,8 @@
     "UNSAVED_CHANGES": "Cambios sin guardar",
     "DISCONNECT": "Desconectar",
     "MODAL_DISCONNECT": "¿Estás seguro de que deseas desconectarte?",
+    "LOGOUT": "Cerrar sesión",
+    "MODAL_LOGOUT": "¿Seguro que quieres cerrar la sesión?",
     "SSH_TUNNEL_ACTIVE": "Túnel SSH",
     "SSH_TUNNEL_VIA": "Conectado vía túnel SSH a través de {{ host }}",
     "CREATURE": {

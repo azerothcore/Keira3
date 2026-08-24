@@ -25,10 +25,13 @@ export class LogoutBtnComponent extends SubscriptionHandler {
   private readonly webAuthService = inject(WebAuthService);
   private readonly appConfig = inject(KEIRA_APP_CONFIG_TOKEN, { optional: true });
 
+  // Web sessions are "logged out", desktop DB connections are "disconnected"
+  readonly isWebEnvironment = isWebLikeEnvironment(this.appConfig);
+
   openModalConfirm(): void {
     const initialState = {
-      title: this.translateService.instant('SIDEBAR.DISCONNECT'),
-      content: this.translateService.instant('SIDEBAR.MODAL_DISCONNECT'),
+      title: this.translateService.instant(this.isWebEnvironment ? 'SIDEBAR.LOGOUT' : 'SIDEBAR.DISCONNECT'),
+      content: this.translateService.instant(this.isWebEnvironment ? 'SIDEBAR.MODAL_LOGOUT' : 'SIDEBAR.MODAL_DISCONNECT'),
     };
 
     this.modalRef = this.modalService.show(ModalConfirmComponent, { initialState });

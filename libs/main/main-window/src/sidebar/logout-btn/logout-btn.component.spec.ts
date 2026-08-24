@@ -43,6 +43,16 @@ describe('LogoutBtnComponent', () => {
     return { fixture, component, loginConfigService, webAuthService, locationService, reloadSpy };
   }
 
+  it('labels the button Logout in web environments and Disconnect on desktop', () => {
+    const { fixture } = setup('DOCKER');
+    expect((fixture.nativeElement as HTMLElement).querySelector('button')!.textContent).toContain('SIDEBAR.LOGOUT');
+  });
+
+  it('keeps the Disconnect label on desktop', () => {
+    const { fixture } = setup('LOCAL');
+    expect((fixture.nativeElement as HTMLElement).querySelector('button')!.textContent).toContain('SIDEBAR.DISCONNECT');
+  });
+
   it('openModalConfirm() should correctly work', () => {
     const { component } = setup();
     const showSpy = vi.spyOn(TestBed.inject(BsModalService), 'show');

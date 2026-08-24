@@ -71,6 +71,8 @@
     "UNSAVED_CHANGES": "Несохраненные изменения",
     "DISCONNECT": "Отсоединить",
     "MODAL_DISCONNECT": "Вы уверены, что хотите отсоединиться?",
+    "LOGOUT": "Выйти",
+    "MODAL_LOGOUT": "Вы уверены, что хотите выйти?",
     "SSH_TUNNEL_ACTIVE": "SSH Туннель",
     "SSH_TUNNEL_VIA": "Подключено через SSH туннель ({{ host }})",
     "CREATURE": {

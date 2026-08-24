@@ -71,6 +71,8 @@
     "UNSAVED_CHANGES": "未保存的更改",
     "DISCONNECT": "断开",
     "MODAL_DISCONNECT": "是否确实要断开连接？",
+    "LOGOUT": "登出",
+    "MODAL_LOGOUT": "确定要登出吗？",
     "SSH_TUNNEL_ACTIVE": "SSH 隧道",
     "SSH_TUNNEL_VIA": "通过 SSH 隧道连接 ({{ host }})",
     "CREATURE": {
