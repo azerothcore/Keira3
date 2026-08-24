@@ -36,6 +36,16 @@ All error responses follow a consistent structure:
 }
 ```
 
+**Production redaction**: when `NODE_ENV=production`, `errno`, `sqlState`, and `sqlMessage`
+are never included in the client-facing response, and `error` is replaced with a generic
+message ("An unexpected error occurred") for any error whose MySQL code is not in the
+known `MYSQL_ERROR_MAPPING` table. This prevents raw SQL text, schema metadata, and
+connection details from leaking to API clients. The `code`/`category` fields (a bounded,
+non-sensitive enum) are still returned so clients can branch on error type. The full
+error — including `stack` and `sqlMessage` — is always logged server-side via
+`console.error` in the Express error-handling middleware, so operators retain complete
+diagnostic detail.
+
 ### 3. Error Categories
 
 The system categorizes errors into logical groups:

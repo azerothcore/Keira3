@@ -53,6 +53,13 @@ const MYSQL_ERROR_MAPPING = {
   ECONNRESET: { status: HTTP_STATUS.SERVICE_UNAVAILABLE, category: ERROR_CATEGORIES.CONNECTION },
 };
 
+// In production, raw database error text (error.message, sqlMessage, sqlState) can leak
+// SQL text, schema metadata, and connection details to API clients. Redact those fields
+// in the client-facing response; the full error is always logged server-side (see errorHandler).
+function isProduction() {
+  return process.env.NODE_ENV === 'production';
+}
+
 /**
  * Enhanced error response creator with proper HTTP status codes
  * @param {Error} error - The original error
@@ -66,18 +73,38 @@ function createEnhancedErrorResponse(error, message) {
     category: ERROR_CATEGORIES.INTERNAL,
   };
 
+  const redact = isProduction();
+  // A mapped MySQL error code is a known, bounded category (e.g. duplicate entry,
+  // access denied) - error.message for those is safe to surface. Unmapped/unknown
+  // errors get a generic message so unexpected internals never reach the client.
+  const isMappedError = Boolean(MYSQL_ERROR_MAPPING[errorCode]);
+
+  let clientMessage;
+  if (message) {
+    clientMessage = message;
+  } else if (!redact) {
+    clientMessage = error.message || 'An unexpected error occurred';
+  } else if (isMappedError) {
+    clientMessage = error.message || 'An unexpected error occurred';
+  } else {
+    clientMessage = 'An unexpected error occurred';
+  }
+
   const response = {
     success: false,
-    error: message || error.message || 'An unexpected error occurred',
+    error: clientMessage,
     category: mapping.category,
     timestamp: new Date().toISOString(),
   };
 
-  // Add MySQL-specific error details when available
+  // Add MySQL-specific error details when available; omit low-level DB internals
+  // (errno/sqlState/sqlMessage) from client responses in production.
   if (error.code) response.code = error.code;
-  if (error.errno) response.errno = error.errno;
-  if (error.sqlState) response.sqlState = error.sqlState;
-  if (error.sqlMessage) response.sqlMessage = error.sqlMessage;
+  if (!redact) {
+    if (error.errno) response.errno = error.errno;
+    if (error.sqlState) response.sqlState = error.sqlState;
+    if (error.sqlMessage) response.sqlMessage = error.sqlMessage;
+  }
 
   return {
     status: mapping.status,
@@ -335,10 +362,12 @@ app.get('/api/database/state', async (req, res, next) => {
       });
     }
   } catch (error) {
-    // For state endpoint, we want to return state info rather than throw
+    // For state endpoint, we want to return state info rather than throw.
+    // Log the full error server-side; keep the client-facing message generic in production.
+    console.error('Database state probe error:', { message: error.message, code: error.code, stack: error.stack });
     res.json({
       state: 'ERROR',
-      error: error.message,
+      error: isProduction() ? 'Database connection error' : error.message,
       code: error.code,
       timestamp: new Date().toISOString(),
     });

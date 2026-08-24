@@ -325,6 +325,96 @@ describe('Database API Configuration', () => {
       });
     });
   });
+
+  describe('Production error redaction', () => {
+    // Mirrors createEnhancedErrorResponse()'s redaction contract in docker/api/database-api.js:
+    // in production, unmapped errors get a generic message and errno/sqlState/sqlMessage are
+    // stripped from the client-facing response; mapped (known) MySQL errors still surface their
+    // human-readable message and `code`/`category` so clients can branch on error type.
+    const MAPPED_CODES = new Set([
+      'ER_ACCESS_DENIED_ERROR',
+      'ER_DBACCESS_DENIED_ERROR',
+      'ER_BAD_DB_ERROR',
+      'ER_NO_SUCH_TABLE',
+      'ER_BAD_FIELD_ERROR',
+      'ER_PARSE_ERROR',
+      'ER_SYNTAX_ERROR',
+      'ER_DUP_ENTRY',
+      'ER_ROW_IS_REFERENCED',
+      'ER_ROW_IS_REFERENCED_2',
+      'ER_NO_REFERENCED_ROW',
+      'ER_NO_REFERENCED_ROW_2',
+      'PROTOCOL_CONNECTION_LOST',
+      'ECONNREFUSED',
+      'ENOTFOUND',
+      'ETIMEDOUT',
+      'ECONNRESET',
+    ]);
+
+    function buildClientResponse(error, { production }) {
+      const isMappedError = MAPPED_CODES.has(error.code);
+      const clientMessage = !production || isMappedError ? error.message || 'An unexpected error occurred' : 'An unexpected error occurred';
+
+      const response = {
+        success: false,
+        error: clientMessage,
+      };
+      if (error.code) response.code = error.code;
+      if (!production) {
+        if (error.errno) response.errno = error.errno;
+        if (error.sqlState) response.sqlState = error.sqlState;
+        if (error.sqlMessage) response.sqlMessage = error.sqlMessage;
+      }
+      return response;
+    }
+
+    const dbError = {
+      code: 'ER_ACCESS_DENIED_ERROR',
+      message: "Access denied for user 'root'@'%' (using password: YES)",
+      errno: 1045,
+      sqlState: '28000',
+      sqlMessage: "Access denied for user 'root'@'%'",
+    };
+
+    const internalError = {
+      code: 'SOME_UNMAPPED_DRIVER_ERROR',
+      message: 'unexpected internal detail leaking schema info',
+    };
+
+    it('includes sqlMessage/sqlState/errno for a mapped error in non-production', () => {
+      const response = buildClientResponse(dbError, { production: false });
+
+      expect(response.error).toBe(dbError.message);
+      expect(response.sqlMessage).toBe(dbError.sqlMessage);
+      expect(response.sqlState).toBe(dbError.sqlState);
+      expect(response.errno).toBe(dbError.errno);
+      expect(response.code).toBe(dbError.code);
+    });
+
+    it('strips sqlMessage/sqlState/errno in production but keeps message for a mapped error', () => {
+      const response = buildClientResponse(dbError, { production: true });
+
+      expect(response.error).toBe(dbError.message);
+      expect(response.code).toBe(dbError.code);
+      expect(response).not.toHaveProperty('sqlMessage');
+      expect(response).not.toHaveProperty('sqlState');
+      expect(response).not.toHaveProperty('errno');
+    });
+
+    it('replaces the message with a generic string in production for an unmapped error', () => {
+      const response = buildClientResponse(internalError, { production: true });
+
+      expect(response.error).toBe('An unexpected error occurred');
+      expect(response.error).not.toContain('leaking schema info');
+      expect(response.code).toBe(internalError.code);
+    });
+
+    it('surfaces the raw message for an unmapped error outside production', () => {
+      const response = buildClientResponse(internalError, { production: false });
+
+      expect(response.error).toBe(internalError.message);
+    });
+  });
 });
 
 describe('Server Configuration', () => {
