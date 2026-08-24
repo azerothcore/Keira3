@@ -9,6 +9,7 @@ import { Subscriber, of, throwError } from 'rxjs';
 import { instance, mock, reset, when } from 'ts-mockito';
 import { ElectronService } from '@keira/shared/common-services';
 import { KEIRA_APP_CONFIG_TOKEN, KeiraAppConfig } from '@keira/shared/config';
+import { DatabaseConnectionState } from '@keira/shared/constants';
 import { MysqlService } from './mysql.service';
 import { KeiraConnectionOptions } from './mysql.model';
 
@@ -373,6 +374,25 @@ describe('MysqlService', () => {
           error: (error) => {
             expect(error).toBe(httpError);
             expect(service['_connectionEstablished']).toBe(false);
+          },
+        });
+      });
+
+      it('should clear a stale _connection when a subsequent connect attempt fails', () => {
+        // Simulate a previously-established web connection
+        (service as any)._connectionEstablished = true;
+        (service as any)._connection = { state: 'CONNECTED' };
+
+        const httpError = new Error('Network error');
+        postSpy.mockReturnValue(throwError(() => httpError));
+
+        const result = service.connect(config);
+
+        result.subscribe({
+          error: () => {
+            expect(service['_connectionEstablished']).toBe(false);
+            expect(service['_connection']).toBeUndefined();
+            expect(service.getConnectionState()).toBe(DatabaseConnectionState.DISCONNECTED);
           },
         });
       });

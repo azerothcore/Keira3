@@ -167,6 +167,8 @@ export class MysqlService {
       catchError((httpError: unknown) => {
         this.ngZone.run(() => {
           this._connectionEstablished = false;
+          // Clear any stale connection sentinel so getConnectionState() doesn't report CONNECTED
+          this._connection = undefined as unknown as Connection;
         });
 
         // Enhanced error handling for HTTP errors
