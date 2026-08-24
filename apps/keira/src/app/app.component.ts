@@ -40,7 +40,12 @@ export class AppComponent extends SubscriptionHandler implements OnInit {
   ngOnInit(): void {
     this.handleConnectionLostAlerts();
     this.handleSqliteTest();
-    this.handleNewerVersionAlert();
+
+    // The release check compares the exact version tag, which a fork's -dev version never matches,
+    // and a web deployment is updated server-side anyway — only the desktop app can act on it.
+    if (!this.isWebEnvironment) {
+      this.handleNewerVersionAlert();
+    }
 
     if (this.isWebEnvironment) {
       this.subscriptions.push(

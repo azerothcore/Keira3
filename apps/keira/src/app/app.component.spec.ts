@@ -228,5 +228,18 @@ describe('AppComponent', () => {
       fixture.detectChanges();
       expect((fixture.nativeElement as HTMLElement).querySelector('keira-connection-window')).toBeTruthy();
     });
+
+    it('does not run the newer-version release check in web environments', () => {
+      // The fork's -dev version never equals the latest release tag, so in a
+      // server-managed web deployment the banner would always show and never be actionable.
+      const { mysqlService } = setupWebEnvironment();
+      mysqlService.connectWeb.mockReturnValue(of(false));
+
+      const fixture = TestBed.createComponent(AppComponent);
+      fixture.detectChanges();
+
+      TestBed.inject(HttpTestingController).expectNone(LATEST_RELEASE_API_URL);
+      expect(fixture.componentInstance.showNewerVersionAlert).toBe(false);
+    });
   });
 });
