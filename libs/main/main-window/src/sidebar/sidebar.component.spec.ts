@@ -20,6 +20,7 @@ import {
 } from '@keira/features/other-loots';
 import { QuestHandlerService } from '@keira/features/quest';
 import { SpellHandlerService } from '@keira/features/spell';
+import { provideHttpClient } from '@angular/common/http';
 import { SidebarComponent } from './sidebar.component';
 import { SidebarService } from './sidebar.service';
 import { MysqlService } from '@keira/shared/db-layer';
@@ -44,6 +45,7 @@ describe('SidebarComponent', () => {
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
+        provideHttpClient(),
         provideRouter([
           { path: 'conditions/select', children: [] },
           { path: 'creature/select', children: [] },
@@ -80,6 +82,14 @@ describe('SidebarComponent', () => {
 
     return { sidebarService, fixture, page, component };
   };
+
+  it('shows the logout button even when no mysql config is present (web mode)', () => {
+    const { fixture, page } = setup();
+
+    expect(fixture.nativeElement.querySelector('keira-logout-btn')).toBeTruthy();
+
+    page.removeNativeElement();
+  });
 
   it('clicking the toggle button should correctly change the toggled status', () => {
     const { sidebarService, page } = setup();

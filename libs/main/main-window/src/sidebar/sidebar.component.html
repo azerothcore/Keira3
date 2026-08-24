@@ -40,6 +40,16 @@
               <keira-logout-btn />
             </span>
           </div>
+        } @else {
+          <!-- Web mode: connectWeb() never sets mysqlService.config, but language switch and logout must stay reachable -->
+          <div class="user-info">
+            <span>
+              <keira-switch-language />
+            </span>
+            <span>
+              <keira-logout-btn />
+            </span>
+          </div>
         }
       </div>
 
