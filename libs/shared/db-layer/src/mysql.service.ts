@@ -96,9 +96,12 @@ export class MysqlService {
 
   /** Web mode: drop the session-backed connection (e.g. after a 401). */
   disconnectWeb(): void {
+    const wasEstablished = this._connectionEstablished;
     this._connectionEstablished = false;
     this._connection = undefined as unknown as Connection;
-    this._webSessionExpiredSubject.next();
+    if (wasEstablished) {
+      this._webSessionExpiredSubject.next();
+    }
   }
 
   // this conversion clean the config object from ssh and ssl related properties that mysql2 does not expect when ssh is disabled

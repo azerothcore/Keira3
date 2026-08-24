@@ -584,6 +584,18 @@ describe('MysqlService', () => {
       expect(service.connectionEstablished).toBe(false);
       expect(expired).toHaveBeenCalledTimes(1);
     });
+
+    it('disconnectWeb should NOT emit webSessionExpired$ when not established', () => {
+      const { service } = setup();
+      service['_connectionEstablished'] = false;
+      const expired = vi.fn();
+      service.webSessionExpired$.subscribe(expired);
+
+      service.disconnectWeb();
+
+      expect(service.connectionEstablished).toBe(false);
+      expect(expired).toHaveBeenCalledTimes(0);
+    });
   });
 
   afterEach(() => {
