@@ -17,7 +17,7 @@ import {
   isDatabaseSuccessResponse,
   isDatabaseErrorResponse,
 } from '@keira/shared/constants';
-import { KEIRA_APP_CONFIG_TOKEN } from '@keira/shared/config';
+import { KEIRA_APP_CONFIG_TOKEN, isWebLikeEnvironment } from '@keira/shared/config';
 import * as ssh2 from 'ssh2';
 import { KeiraConnectionOptions } from './mysql.model';
 @Service()
@@ -61,12 +61,7 @@ export class MysqlService {
       this.mysql = window.require('mysql2');
       this.ssh2 = window.require('ssh2');
       this.isWebEnvironment = false;
-    } else if (
-      this.appConfig?.environment === 'WEB' ||
-      this.appConfig?.environment === 'DOCKER' ||
-      this.appConfig?.environment === 'DEV_WEB' ||
-      !!this.appConfig?.databaseApiUrl
-    ) {
+    } else if (isWebLikeEnvironment(this.appConfig)) {
       // Web environment - use HTTP API
       this.isWebEnvironment = true;
     }
