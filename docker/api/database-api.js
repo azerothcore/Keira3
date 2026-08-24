@@ -139,6 +139,18 @@ app.use('/api/database', (req, res, next) => {
   next();
 });
 
+// App-level authentication (see docker/api/auth.js)
+const auth = require('./auth');
+const authConfig = auth.getAuthConfig();
+if (authConfig.enabled) {
+  console.log('API authentication: ENABLED (user from KEIRA_AUTH_USER)');
+} else {
+  console.warn('WARNING: KEIRA_AUTH_USER / KEIRA_AUTH_PASSWORD not set — API authentication is DISABLED');
+}
+app.post('/api/auth/login', auth.createLoginHandler(authConfig));
+app.post('/api/auth/logout', auth.createLogoutHandler());
+app.use('/api/database', auth.createAuthMiddleware(authConfig));
+
 // Global connection pool
 let connectionPool = null;
 

@@ -76,3 +76,115 @@ describe('cookies', () => {
     expect(auth.buildClearCookie()).toContain('Max-Age=0');
   });
 });
+
+function mockRes() {
+  const res = {
+    statusCode: 200,
+    headers: {},
+    body: undefined,
+    status(code) {
+      this.statusCode = code;
+      return this;
+    },
+    json(payload) {
+      this.body = payload;
+      return this;
+    },
+    setHeader(name, value) {
+      this.headers[name] = value;
+    },
+  };
+  return res;
+}
+
+describe('createAuthMiddleware', () => {
+  const config = { ...auth.getAuthConfig({ KEIRA_AUTH_USER: 'admin', KEIRA_AUTH_PASSWORD: 'pw' }), secret: 's' };
+
+  it('passes through when auth is disabled', () => {
+    const next = jest.fn();
+    auth.createAuthMiddleware({ ...config, enabled: false })({ headers: {} }, mockRes(), next);
+    expect(next).toHaveBeenCalled();
+  });
+
+  it('rejects requests without a valid cookie', () => {
+    const next = jest.fn();
+    const res = mockRes();
+    auth.createAuthMiddleware(config)({ headers: {} }, res, next);
+    expect(next).not.toHaveBeenCalled();
+    expect(res.statusCode).toBe(401);
+    expect(res.body).toEqual({ success: false, error: 'Authentication required' });
+  });
+
+  it('passes through with a valid session cookie', () => {
+    const token = auth.createSessionToken('s', Date.now() + 60000);
+    const next = jest.fn();
+    const req = { headers: { cookie: `keira_session=${encodeURIComponent(token)}` } };
+    auth.createAuthMiddleware(config)(req, mockRes(), next);
+    expect(next).toHaveBeenCalled();
+  });
+
+  it('rejects an expired cookie', () => {
+    const token = auth.createSessionToken('s', Date.now() - 1000);
+    const next = jest.fn();
+    const res = mockRes();
+    auth.createAuthMiddleware(config)({ headers: { cookie: `keira_session=${token}` } }, res, next);
+    expect(next).not.toHaveBeenCalled();
+    expect(res.statusCode).toBe(401);
+  });
+});
+
+describe('createLoginHandler', () => {
+  const config = { ...auth.getAuthConfig({ KEIRA_AUTH_USER: 'admin', KEIRA_AUTH_PASSWORD: 'pw' }), secret: 's' };
+  const noDelay = { delay: jest.fn(() => Promise.resolve()) };
+
+  it('sets a session cookie on valid credentials', async () => {
+    const res = mockRes();
+    await auth.createLoginHandler(config, noDelay)({ body: { username: 'admin', password: 'pw' } }, res);
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toEqual({ success: true });
+    expect(res.headers['Set-Cookie']).toContain('keira_session=');
+    expect(res.headers['Set-Cookie']).toContain('HttpOnly');
+  });
+
+  it('401s and delays on invalid credentials', async () => {
+    const delay = jest.fn(() => Promise.resolve());
+    const res = mockRes();
+    await auth.createLoginHandler(config, { delay })({ body: { username: 'admin', password: 'nope' } }, res);
+    expect(res.statusCode).toBe(401);
+    expect(res.body).toEqual({ success: false, error: 'Invalid credentials' });
+    expect(delay).toHaveBeenCalledWith(config.failureDelayMs);
+    expect(res.headers['Set-Cookie']).toBeUndefined();
+  });
+
+  it('applies a real delay by default on invalid credentials', async () => {
+    const res = mockRes();
+    const start = Date.now();
+    await auth.createLoginHandler(config)({ body: { username: 'admin', password: 'nope' } }, res);
+    expect(Date.now() - start).toBeGreaterThanOrEqual(400);
+    expect(res.statusCode).toBe(401);
+  });
+
+  it('400s on missing fields', async () => {
+    const res = mockRes();
+    await auth.createLoginHandler(config, noDelay)({ body: { username: 'admin' } }, res);
+    expect(res.statusCode).toBe(400);
+    expect(res.body.success).toBe(false);
+  });
+
+  it('succeeds without a cookie when auth is disabled', async () => {
+    const res = mockRes();
+    await auth.createLoginHandler({ ...config, enabled: false }, noDelay)({ body: { username: 'x', password: 'y' } }, res);
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toEqual({ success: true });
+    expect(res.headers['Set-Cookie']).toBeUndefined();
+  });
+});
+
+describe('createLogoutHandler', () => {
+  it('clears the cookie', () => {
+    const res = mockRes();
+    auth.createLogoutHandler()({ headers: {} }, res);
+    expect(res.statusCode).toBe(200);
+    expect(res.headers['Set-Cookie']).toContain('Max-Age=0');
+  });
+});

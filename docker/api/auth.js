@@ -68,6 +68,45 @@ function buildClearCookie() {
   return `${SESSION_COOKIE}=; Max-Age=0; Path=/; HttpOnly; SameSite=Lax`;
 }
 
+function isAuthenticated(config, req) {
+  const token = parseCookies(req.headers && req.headers.cookie)[SESSION_COOKIE];
+  return verifySessionToken(config.secret, token);
+}
+
+function createAuthMiddleware(config) {
+  return (req, res, next) => {
+    if (!config.enabled || isAuthenticated(config, req)) return next();
+    res.status(401).json({ success: false, error: 'Authentication required' });
+  };
+}
+
+function createLoginHandler(config, deps = {}) {
+  const delay = deps.delay || ((ms) => new Promise((resolve) => setTimeout(resolve, ms)));
+  return async (req, res) => {
+    const { username, password } = req.body || {};
+    if (typeof username !== 'string' || typeof password !== 'string') {
+      return res.status(400).json({ success: false, error: 'username and password are required' });
+    }
+    if (!config.enabled) {
+      return res.json({ success: true });
+    }
+    if (!verifyCredentials(config, username, password)) {
+      await delay(config.failureDelayMs);
+      return res.status(401).json({ success: false, error: 'Invalid credentials' });
+    }
+    const expiresAtMs = Date.now() + config.ttlSeconds * 1000;
+    res.setHeader('Set-Cookie', buildSessionCookie(createSessionToken(config.secret, expiresAtMs), config.ttlSeconds));
+    return res.json({ success: true });
+  };
+}
+
+function createLogoutHandler() {
+  return (req, res) => {
+    res.setHeader('Set-Cookie', buildClearCookie());
+    return res.json({ success: true });
+  };
+}
+
 module.exports = {
   SESSION_COOKIE,
   getAuthConfig,
@@ -77,4 +116,7 @@ module.exports = {
   parseCookies,
   buildSessionCookie,
   buildClearCookie,
+  createAuthMiddleware,
+  createLoginHandler,
+  createLogoutHandler,
 };
