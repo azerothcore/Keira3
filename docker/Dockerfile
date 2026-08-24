@@ -75,7 +75,7 @@ ENV KEIRA_HOST=0.0.0.0
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://127.0.0.1:8080/health || exit 1
+    CMD ["curl", "-f", "http://127.0.0.1:8080/health"]
 
 # Keep running as root for simplified deployment
 # USER keira
