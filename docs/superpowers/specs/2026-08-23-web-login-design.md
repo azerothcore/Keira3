@@ -41,7 +41,8 @@ proxied paths).
 
 ### 1. Angular client
 
-**New lib `libs/main/login-window`** — `LoginWindowComponent`:
+**`LoginWindowComponent`** — lives in the existing `libs/main/connection-window`
+lib, under `src/login-window/` (exported from `@keira/main/connection-window`):
 
 - Username + password fields, submit button, inline error display, pending
   state. Reuses the connection window's branding/backdrop styling.
@@ -187,3 +188,6 @@ form.
 - Any change to the Electron connection window or its SSL/SSH features.
 - Removing `LoginConfigService`'s now-inert web branches.
 - Rate limiting beyond the fixed failure delay.
+- Server-side session invalidation on logout — the HMAC token is stateless, so
+  a captured cookie remains valid until its expiry; logout clears the browser
+  cookie only.

@@ -54,4 +54,8 @@ export function requiresDatabaseApi(config: KeiraAppConfig): boolean {
   return !isElectronConfig(config);
 }
 
+export function isWebLikeEnvironment(config: KeiraAppConfig | null | undefined): boolean {
+  return config?.environment === 'WEB' || config?.environment === 'DOCKER' || config?.environment === 'DEV_WEB' || !!config?.databaseApiUrl;
+}
+
 export const KEIRA_APP_CONFIG_TOKEN = new InjectionToken<KeiraAppConfig>('KEIRA_APP_CONFIG');

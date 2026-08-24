@@ -1,5 +1,5 @@
 import { InjectionToken } from '@angular/core';
-import { KeiraAppConfig, KEIRA_APP_CONFIG_TOKEN } from './app.config';
+import { KeiraAppConfig, KEIRA_APP_CONFIG_TOKEN, isWebLikeEnvironment } from './app.config';
 
 describe('KeiraAppConfig', () => {
   describe('Interface Definition', () => {
@@ -192,5 +192,26 @@ describe('KEIRA_APP_CONFIG_TOKEN', () => {
       expect(providerConfig.provide).toBe(KEIRA_APP_CONFIG_TOKEN);
       expect(providerConfig.useValue).toBe(mockConfig);
     });
+  });
+});
+
+describe('isWebLikeEnvironment', () => {
+  const base = { production: true, sqlitePath: 'assets/sqlite.db' };
+
+  it('should return true for WEB, DOCKER and DEV_WEB environments', () => {
+    expect(isWebLikeEnvironment({ ...base, environment: 'WEB' })).toBe(true);
+    expect(isWebLikeEnvironment({ ...base, environment: 'DOCKER' })).toBe(true);
+    expect(isWebLikeEnvironment({ ...base, environment: 'DEV_WEB' })).toBe(true);
+  });
+
+  it('should return true when databaseApiUrl is set', () => {
+    expect(isWebLikeEnvironment({ ...base, environment: 'LOCAL', databaseApiUrl: '/api/database' })).toBe(true);
+  });
+
+  it('should return false for desktop-like environments and missing config', () => {
+    expect(isWebLikeEnvironment({ ...base, environment: 'LOCAL' })).toBe(false);
+    expect(isWebLikeEnvironment({ ...base, environment: 'PROD' })).toBe(false);
+    expect(isWebLikeEnvironment(null)).toBe(false);
+    expect(isWebLikeEnvironment(undefined)).toBe(false);
   });
 });

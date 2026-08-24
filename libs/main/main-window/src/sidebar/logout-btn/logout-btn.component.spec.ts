@@ -1,37 +1,46 @@
-import { vi, type MockInstance } from 'vitest';
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { provideHttpClient } from '@angular/common/http';
+import { of } from 'rxjs';
 
 import { Spied, TranslateTestingModule } from '@keira/shared/test-utils';
 import { BsModalService, ModalDirective } from 'ngx-bootstrap/modal';
 import { LogoutBtnComponent } from './logout-btn.component';
-import { LoginConfigService } from '@keira/shared/login-config';
+import { LoginConfigService, WebAuthService } from '@keira/shared/login-config';
 import { ModalConfirmComponent } from '@keira/shared/base-editor-components';
 import { LocationService } from '@keira/shared/common-services';
+import { KEIRA_APP_CONFIG_TOKEN } from '@keira/shared/config';
 
 describe('LogoutBtnComponent', () => {
-  beforeEach(() => {
+  function setup(environment: string = 'LOCAL') {
     TestBed.configureTestingModule({
       imports: [ModalDirective, LogoutBtnComponent, ModalConfirmComponent, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
+        provideHttpClient(),
         {
           provide: LoginConfigService,
           useValue: { saveRememberPreference: vi.fn() },
         },
+        {
+          provide: KEIRA_APP_CONFIG_TOKEN,
+          useValue: { production: true, environment, sqlitePath: 'assets/sqlite.db' },
+        },
       ],
     }).compileComponents();
-  });
 
-  function setup() {
     const fixture = TestBed.createComponent(LogoutBtnComponent);
     const component = fixture.componentInstance;
     const loginConfigService = TestBed.inject(LoginConfigService) as unknown as Spied<LoginConfigService>;
+    const webAuthService = TestBed.inject(WebAuthService);
+    const locationService = TestBed.inject(LocationService);
+    const reloadSpy = vi.spyOn(locationService, 'reload').mockImplementation(() => undefined);
     fixture.detectChanges();
 
-    return { fixture, component, loginConfigService };
+    return { fixture, component, loginConfigService, webAuthService, locationService, reloadSpy };
   }
 
   it('openModalConfirm() should correctly work', () => {
@@ -49,14 +58,33 @@ describe('LogoutBtnComponent', () => {
     expect(logoutSpy).toHaveBeenCalledTimes(1);
   });
 
-  it('logout() should correctly work', () => {
-    const { component, loginConfigService } = setup();
-    const locationServiceSpy: MockInstance = vi.spyOn(TestBed.inject(LocationService), 'reload').mockImplementation(() => undefined);
+  it('logout() should correctly work (desktop environment)', () => {
+    const { component, loginConfigService, reloadSpy } = setup('LOCAL');
 
     component.logout();
 
-    expect(locationServiceSpy).toHaveBeenCalledTimes(1);
+    expect(reloadSpy).toHaveBeenCalledTimes(1);
     expect(loginConfigService.saveRememberPreference).toHaveBeenCalledExactlyOnceWith(false);
+  });
+
+  it('calls the auth logout endpoint before reloading in web environments', () => {
+    const { component, webAuthService, reloadSpy } = setup('DOCKER');
+    const logoutSpy = vi.spyOn(webAuthService, 'logout').mockReturnValue(of({ success: true }));
+
+    component.logout();
+
+    expect(logoutSpy).toHaveBeenCalled();
+    expect(reloadSpy).toHaveBeenCalled();
+  });
+
+  it('just reloads in desktop environments', () => {
+    const { component, webAuthService, reloadSpy } = setup('LOCAL');
+    const logoutSpy = vi.spyOn(webAuthService, 'logout');
+
+    component.logout();
+
+    expect(logoutSpy).not.toHaveBeenCalled();
+    expect(reloadSpy).toHaveBeenCalled();
   });
 
   // closeModalsAfterEach();

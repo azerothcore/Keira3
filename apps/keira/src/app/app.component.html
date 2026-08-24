@@ -1,5 +1,7 @@
 @if (mysqlService.connectionEstablished) {
   <keira-main-window />
+} @else if (isWebEnvironment) {
+  <keira-login-window />
 } @else {
   <keira-connection-window />
 }

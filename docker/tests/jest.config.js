@@ -6,7 +6,9 @@ module.exports = {
   displayName: 'Docker Database API Tests',
   testEnvironment: 'node',
   testMatch: ['<rootDir>/**/*.spec.js', '<rootDir>/**/*.test.js'],
-  collectCoverageFrom: ['../api/**/*.js', '!../api/**/*.test.js', '!../api/**/*.spec.js'],
+  // database-api.js is exercised by spawned-process integration tests, not by
+  // required-in unit tests; including it would zero out global coverage.
+  collectCoverageFrom: ['../api/auth.js'],
   coverageDirectory: 'coverage/docker',
   coverageReporters: ['text', 'text-summary', 'html', 'lcov'],
   setupFilesAfterEnv: ['<rootDir>/setup.js'],

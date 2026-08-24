@@ -3,8 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { ElectronService } from '@keira/shared/common-services';
 import * as mysql from 'mysql2';
 import { Connection, ConnectionOptions, FieldPacket as FieldInfo, QueryError } from 'mysql2';
-import { Observable, Subject, Subscriber } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { Observable, Subject, Subscriber, of } from 'rxjs';
+import { map, catchError, tap } from 'rxjs/operators';
 import {
   MysqlResult,
   TableRow,
@@ -17,7 +17,7 @@ import {
   isDatabaseSuccessResponse,
   isDatabaseErrorResponse,
 } from '@keira/shared/constants';
-import { KEIRA_APP_CONFIG_TOKEN } from '@keira/shared/config';
+import { KEIRA_APP_CONFIG_TOKEN, isWebLikeEnvironment } from '@keira/shared/config';
 import * as ssh2 from 'ssh2';
 import { KeiraConnectionOptions } from './mysql.model';
 @Service()
@@ -50,6 +50,9 @@ export class MysqlService {
   private _connectionLostSubject = new Subject<boolean>();
   readonly connectionLost$ = this._connectionLostSubject.asObservable();
 
+  private _webSessionExpiredSubject = new Subject<void>();
+  readonly webSessionExpired$ = this._webSessionExpiredSubject.asObservable();
+
   private _reconnecting = false;
   get reconnecting(): boolean {
     return this._reconnecting;
@@ -61,12 +64,7 @@ export class MysqlService {
       this.mysql = window.require('mysql2');
       this.ssh2 = window.require('ssh2');
       this.isWebEnvironment = false;
-    } else if (
-      this.appConfig?.environment === 'WEB' ||
-      this.appConfig?.environment === 'DOCKER' ||
-      this.appConfig?.environment === 'DEV_WEB' ||
-      !!this.appConfig?.databaseApiUrl
-    ) {
+    } else if (isWebLikeEnvironment(this.appConfig)) {
       // Web environment - use HTTP API
       this.isWebEnvironment = true;
     }
@@ -80,6 +78,30 @@ export class MysqlService {
     const apiUrl: string = this.appConfig?.databaseApiUrl || '/api/database';
 
     return this.http.get<DatabaseStateResponse>(`${apiUrl}/state`);
+  }
+
+  /** Web mode: probe the server-side pool state; no credentials involved. */
+  connectWeb(): Observable<boolean> {
+    return this.getConnectionStateViaAPI().pipe(
+      map((response) => response.state === DatabaseConnectionState.CONNECTED),
+      tap((connected) => {
+        if (connected) {
+          this._connectionEstablished = true;
+          this._connection = { state: DatabaseConnectionState.CONNECTED } as unknown as Connection;
+        }
+      }),
+      catchError(() => of(false)),
+    );
+  }
+
+  /** Web mode: drop the session-backed connection (e.g. after a 401). */
+  disconnectWeb(): void {
+    const wasEstablished = this._connectionEstablished;
+    this._connectionEstablished = false;
+    this._connection = undefined as unknown as Connection;
+    if (wasEstablished) {
+      this._webSessionExpiredSubject.next();
+    }
   }
 
   // this conversion clean the config object from ssh and ssl related properties that mysql2 does not expect when ssh is disabled

@@ -15,6 +15,18 @@ describe('Database API Integration Tests', () => {
   let mockPool;
   let mockConnection;
 
+  describe('Authentication defaults', () => {
+    it('serves /api/database/state without a session when auth env vars are unset', (done) => {
+      const req = http.request({ hostname: 'localhost', port: apiPort, path: '/api/database/state', method: 'GET' }, (res) => {
+        expect(res.statusCode).not.toBe(401);
+        res.resume();
+        res.on('end', done);
+      });
+      req.on('error', done); // requires the live test server, like the rest of this file
+      req.end();
+    });
+  });
+
   beforeAll((done) => {
     // Set up test environment variables
     process.env.DB_API_PORT = apiPort.toString();

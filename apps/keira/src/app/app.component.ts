@@ -9,10 +9,11 @@ import packageInfo from '../../../../package.json';
 
 import { TranslateDirective } from '@ngx-translate/core';
 
-import { ConnectionWindowComponent } from '@keira/main/connection-window';
+import { ConnectionWindowComponent, LoginWindowComponent } from '@keira/main/connection-window';
 import { MainWindowComponent } from '@keira/main/main-window';
 import { MysqlService, SqliteQueryService } from '@keira/shared/db-layer';
 import { ElectronService } from '@keira/shared/common-services';
+import { KEIRA_APP_CONFIG_TOKEN, isWebLikeEnvironment } from '@keira/shared/config';
 import { SubscriptionHandler } from '@keira/shared/utils';
 
 @Component({
@@ -20,7 +21,7 @@ import { SubscriptionHandler } from '@keira/shared/utils';
   selector: 'keira-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  imports: [ConnectionWindowComponent, MainWindowComponent, TranslateDirective],
+  imports: [ConnectionWindowComponent, LoginWindowComponent, MainWindowComponent, TranslateDirective],
 })
 export class AppComponent extends SubscriptionHandler implements OnInit {
   readonly KEIRA3_REPO_URL = KEIRA3_REPO_URL;
@@ -34,10 +35,22 @@ export class AppComponent extends SubscriptionHandler implements OnInit {
   private readonly http = inject(HttpClient);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
+  readonly isWebEnvironment = isWebLikeEnvironment(inject(KEIRA_APP_CONFIG_TOKEN, { optional: true }));
+
   ngOnInit(): void {
     this.handleConnectionLostAlerts();
     this.handleSqliteTest();
     this.handleNewerVersionAlert();
+
+    if (this.isWebEnvironment) {
+      this.subscriptions.push(
+        this.mysqlService.connectWeb().subscribe(() => this.changeDetectorRef.markForCheck()),
+        this.mysqlService.webSessionExpired$.subscribe(() => {
+          this.toastrService.error('Session expired, please log in again');
+          this.changeDetectorRef.markForCheck();
+        }),
+      );
+    }
   }
 
   private handleSqliteTest(): void {
