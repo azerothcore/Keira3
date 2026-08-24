@@ -8,31 +8,37 @@ The Keira3 CI/CD pipeline supports multiple container registries and deployment 
 
 ## Current Configuration Analysis
 
-### Default Configuration (GitHub Container Registry)
+### Multi-Registry Support
 
-The current workflow is configured to use **GitHub Container Registry (ghcr.io)** by default:
+The current workflow is configured to support **both GitHub Container Registry (ghcr.io) and DockerHub**:
 
 ```yaml
 env:
-  REGISTRY: ghcr.io
+  GHCR_REGISTRY: ghcr.io
+  DOCKERHUB_REGISTRY: docker.io
   IMAGE_NAME: ${{ github.repository }}
 ```
 
-**Required Secrets:** ✅ **NONE** - Uses built-in `GITHUB_TOKEN`
+**Default Behavior:**
+- ✅ Always pushes to GitHub Container Registry (ghcr.io) using built-in `GITHUB_TOKEN`
+- ✅ Automatically pushes to DockerHub when `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` secrets are configured
+- ✅ No workflow modification needed
 
-The workflow uses the automatically provided `GITHUB_TOKEN` for authentication:
+The workflow automatically detects DockerHub credentials:
 ```yaml
-- name: Log in to Container Registry
+# Login to DockerHub only if secrets are configured
+- name: Log in to DockerHub
+  if: ${{ secrets.DOCKERHUB_USERNAME }}
   uses: docker/login-action@v3
   with:
-    registry: ${{ env.REGISTRY }}
-    username: ${{ github.actor }}
-    password: ${{ secrets.GITHUB_TOKEN }}
+    registry: ${{ env.DOCKERHUB_REGISTRY }}
+    username: ${{ secrets.DOCKERHUB_USERNAME }}
+    password: ${{ secrets.DOCKERHUB_TOKEN }}
 ```
 
 ## DockerHub Configuration
 
-To push to DockerHub instead of (or in addition to) GitHub Container Registry, you need to modify the workflow and add secrets.
+To enable pushing to DockerHub (optional), add the secrets listed below. The workflow will automatically push to DockerHub when both secrets are present.
 
 ### Required Secrets for DockerHub
 
@@ -60,7 +66,7 @@ To push to DockerHub instead of (or in addition to) GitHub Container Registry, y
    - Go to Account Settings → Security
    - Click "New Access Token"
    - Name: `Keira3-GitHub-Actions`
-   - Permissions: `Read, Write, Delete`
+   - Permissions: `Read, Write`
    - Copy the generated token (starts with `dckr_pat_`)
 
 ### Step 2: Add Secrets to GitHub Repository
@@ -71,7 +77,7 @@ To push to DockerHub instead of (or in addition to) GitHub Container Registry, y
    - Click "Secrets and variables" → "Actions"
 
 2. **Add DockerHub Secrets**
-   ```
+   ```text
    Name: DOCKERHUB_USERNAME
    Value: your-dockerhub-username
 
@@ -79,95 +85,7 @@ To push to DockerHub instead of (or in addition to) GitHub Container Registry, y
    Value: dckr_pat_xxxxxxxxxxxxxxxxxx
    ```
 
-3. **Optional: Override Default Configuration**
-   ```
-   Name: DOCKER_REGISTRY
-   Value: docker.io
-
-   Name: DOCKER_IMAGE_NAME
-   Value: your-dockerhub-username/keira3
-   ```
-
-## Modified Workflow for DockerHub Support
-
-Here's how to modify the workflow to support both GitHub Container Registry and DockerHub:
-
-### Option 1: DockerHub Only
-
-```yaml
-env:
-  REGISTRY: docker.io
-  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/keira3
-
-jobs:
-  build-and-push:
-    steps:
-      - name: Log in to DockerHub
-        uses: docker/login-action@v3
-        with:
-          registry: docker.io
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-```
-
-### Option 2: Multi-Registry Support
-
-```yaml
-env:
-  GHCR_REGISTRY: ghcr.io
-  DOCKERHUB_REGISTRY: docker.io
-  IMAGE_NAME: ${{ github.repository }}
-
-jobs:
-  build-and-push:
-    steps:
-      # Login to GitHub Container Registry
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.GHCR_REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      # Login to DockerHub
-      - name: Log in to DockerHub
-        if: ${{ secrets.DOCKERHUB_USERNAME }}
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.DOCKERHUB_REGISTRY }}
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      # Extract metadata for multiple registries
-      - name: Extract metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: |
-            ${{ env.GHCR_REGISTRY }}/${{ env.IMAGE_NAME }}
-            ${{ env.DOCKERHUB_REGISTRY }}/${{ secrets.DOCKERHUB_USERNAME }}/keira3
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=sha,prefix={{branch}}-
-            type=raw,value=latest,enable={{is_default_branch}}
-
-      # Build and push to both registries
-      - name: Build and push Docker image
-        id: build
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: docker/Dockerfile
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-```
+That's all you need! The workflow automatically detects these secrets and will push to DockerHub when both are configured.
 
 ## Deployment Environment Secrets
 
@@ -274,19 +192,19 @@ jobs:
 ### Common Issues
 
 #### 1. DockerHub Authentication Failed
-```
+```text
 Error: denied: requested access to the resource is denied
 ```
 **Solution:** Verify `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` are correctly set
 
 #### 2. Database Connection Failed
-```
+```text
 Error: Access denied for user 'staging_user'@'x.x.x.x'
 ```
 **Solution:** Verify database credentials and user permissions
 
 #### 3. Registry Push Failed
-```
+```text
 Error: failed to push to registry
 ```
 **Solution:** Check repository exists and token has write permissions

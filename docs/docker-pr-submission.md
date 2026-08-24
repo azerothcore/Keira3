@@ -22,7 +22,7 @@ This document serves as a comprehensive guide for submitting the Docker integrat
 - **Database API Service**: Node.js Express service with connection pooling and comprehensive error handling
 - **Multi-Platform Support**: Docker images built for linux/amd64 and linux/arm64
 - **Security**: Vulnerability scanning, non-root user, minimal attack surface
-- **Testing**: Jest integration tests, Karma unit tests, 100% code coverage requirement met
+- **Testing**: Vitest for Angular unit tests, Jest for Docker API integration tests, 100% code coverage requirement met
 
 ## Files Added/Modified
 - `docker/` - Complete Docker deployment infrastructure (25+ files)
@@ -99,7 +99,7 @@ None - 100% backward compatibility maintained
 ## File Organization Summary
 
 ### New Directory Structure
-```
+```text
 docker/
 ├── Dockerfile                              # Multi-stage Docker build
 ├── README.md                               # Quick start guide

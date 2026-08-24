@@ -70,7 +70,7 @@ docker-compose up -d
 #### 5. Access Keira3
 
 Open your browser and navigate to:
-```
+```text
 http://localhost:4201
 ```
 
@@ -118,7 +118,7 @@ docker-compose up -d --build
 #### 5. Access Keira3
 
 Open your browser and navigate to:
-```
+```text
 http://localhost:4201
 ```
 
@@ -160,7 +160,7 @@ All configuration is done via hardcoded environment variables in the docker-comp
 
 ## Network Architecture
 
-```
+```text
 ┌─────────────────────────────────────────────────────┐
 │                 azerothcore network                  │
 │                  (172.28.0.0/16)                     │

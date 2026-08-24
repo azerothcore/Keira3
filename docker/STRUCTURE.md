@@ -4,7 +4,7 @@ This document describes the organized file structure for Keira3's Docker deploym
 
 ## Directory Overview
 
-```
+```text
 docker/
 ├── Dockerfile                              # Multi-stage Docker build configuration
 ├── README.md                               # Docker deployment quick start guide
@@ -146,10 +146,10 @@ Test environment initialization:
 1. **Local Development**:
    ```bash
    # Copy environment template
-   cp docker/config/.env.example docker/config/.env
+   cp docker/.env.example docker/.env
 
    # Edit configuration
-   vim docker/config/.env
+   vim docker/.env
 
    # Run tests
    npm test -- --config docker/tests/jest.config.js

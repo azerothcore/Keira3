@@ -8,7 +8,7 @@ The Keira3 CI/CD pipeline is designed to ensure code quality, security, and reli
 
 ## Pipeline Architecture
 
-```
+```text
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │   Code Commit   │    │  Automated      │    │   Build &       │    │   Deployment    │
 │   (Git Push)    │───►│  Testing        │───►│   Security      │───►│   (Multi-Env)   │

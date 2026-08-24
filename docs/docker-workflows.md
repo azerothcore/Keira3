@@ -16,11 +16,12 @@ The Keira3 Docker implementation provides multiple workflow options:
 ### Workflow Triggers
 
 The pipeline is triggered on:
-- **Push to `master`** - Full pipeline with production deployment on releases
-- **Push to `develop`** - Full pipeline with staging deployment
-- **Pull Requests** - Testing and validation only
-- **Releases** - Production deployment with security scanning
+- **Push to `master`** - Full CI/CD pipeline
+- **Push to `develop`** - Full CI/CD pipeline
+- **Pull Requests** - Testing and validation only (no push to registries)
+- **Releases** - Full CI/CD pipeline with semantic versioning
 - **Feature branches** (`feature/docker-*`) - Testing and validation
+- **Workflow dispatch** - Manual trigger with customizable environment and tag options
 
 ### Pipeline Stages
 
@@ -36,35 +37,21 @@ The pipeline is triggered on:
 #### 2. Build and Test Image
 ```yaml
 - Set up Docker Buildx for multi-platform builds
-- Build Docker image with layer caching
+- Build Docker image with layer caching for both linux/amd64 and linux/arm64
 - Start test MySQL database service
 - Test container startup and health endpoints
 - Validate database connectivity through API
 - Cleanup test resources
 ```
 
-#### 3. Build and Push (non-PR only)
+#### 3. Build and Push Images (non-PR only)
 ```yaml
 - Build multi-platform images (linux/amd64, linux/arm64)
-- Push to GitHub Container Registry (ghcr.io)
+- Push to GitHub Container Registry (ghcr.io) using built-in GITHUB_TOKEN
+- Optionally push to DockerHub when DOCKERHUB_USERNAME and DOCKERHUB_TOKEN secrets are configured
 - Generate semantic tags based on branch/version
 - Create Software Bill of Materials (SBOM)
 - Upload build artifacts
-```
-
-#### 4. Security Scanning
-```yaml
-- Run Trivy vulnerability scanner
-- Upload security scan results to GitHub Security tab
-- Fail pipeline on critical vulnerabilities (optional)
-```
-
-#### 5. Environment Deployments
-```yaml
-- Deploy to staging environment (develop branch)
-- Deploy to production environment (releases only)
-- Run comprehensive health checks
-- Send deployment notifications
 ```
 
 ### Environment Variables
@@ -100,7 +87,7 @@ make setup
 
 # Edit configuration files
 vim docker/.env
-vim docker-compose.yml
+vim docker/docker-compose.yml
 
 # Build and deploy locally
 make dev

@@ -17,7 +17,7 @@ Keira3 implements a hybrid architecture that supports multiple deployment enviro
 
 ### Components
 
-```
+```text
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
 │   Angular App   │    │  Database API    │    │  External MySQL │
 │    (Frontend)   │◄──►│   Service        │◄──►│    Database     │
@@ -33,40 +33,42 @@ The Docker implementation uses a multi-stage build process optimized for product
 
 ```dockerfile
 # Stage 1: Build Angular application
-FROM node:18-alpine AS builder
+FROM node:22-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci --only=production
+COPY patches ./patches
+RUN npm ci --ignore-scripts && npx patch-package
 COPY . .
-RUN npm run build:docker
+RUN npm run build -- -c docker
 
 # Stage 2: Production runtime
-FROM node:18-alpine AS production
+FROM nginx:alpine AS production
 WORKDIR /app
 
-# Install production dependencies for database API
-COPY package*.json ./
-RUN npm ci --only=production
+# Install Node.js and required tools
+RUN apk add --no-cache nodejs npm bash netcat-openbsd curl net-tools
 
 # Copy built Angular application
-COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/dist/browser /usr/share/nginx/html
 
 # Copy database API service
-COPY database-api.js ./
+COPY --from=builder /app/docker/api/database-api.js /app/database-api.js
+COPY --from=builder /app/docker/api/auth.js /app/auth.js
+COPY --from=builder /app/node_modules /app/node_modules
 
-# Create nginx configuration
-RUN apk add --no-cache nginx
-COPY docker/nginx.conf /etc/nginx/nginx.conf
+# Copy nginx and startup configuration
+COPY docker/config/nginx.conf /etc/nginx/nginx.conf
+COPY docker/config/docker-start.sh /usr/local/bin/docker-start.sh
 
 # Expose ports
-EXPOSE 80 3001
+EXPOSE 8080 3001
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:3001/health || exit 1
+  CMD curl -f http://127.0.0.1:8080/health || exit 1
 
-# Start both nginx and database API
-CMD ["sh", "-c", "nginx && node database-api.js"]
+# Start nginx and database API
+CMD ["/bin/sh", "/usr/local/bin/docker-start.sh"]
 ```
 
 ### Environment Configuration
@@ -82,6 +84,10 @@ KEIRA_DATABASE_PORT=3306
 KEIRA_DATABASE_USER=your-username
 KEIRA_DATABASE_PASSWORD=your-password
 KEIRA_DATABASE_NAME=acore_world
+
+# Authentication Configuration (required - API returns 503 if not set)
+KEIRA_AUTH_USER=your-username
+KEIRA_AUTH_PASSWORD=your-secure-password
 
 # API Configuration
 DB_API_PORT=3001
@@ -119,7 +125,7 @@ services:
       KEIRA_DATABASE_HOST: mysql-server
       KEIRA_DATABASE_PORT: 3306
       KEIRA_DATABASE_USER: acore
-      KEIRA_DATABASE_PASSWORD: azerothcore123
+      KEIRA_DATABASE_PASSWORD: ${KEIRA_DATABASE_PASSWORD}
       KEIRA_DATABASE_NAME: acore_world
       DB_API_PORT: 3001
     depends_on:
@@ -135,7 +141,7 @@ services:
   mysql-server:
     image: mysql:8.0
     environment:
-      MYSQL_ROOT_PASSWORD: azerothcore123
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: acore_world
     volumes:
       - mysql_data:/var/lib/mysql
@@ -157,7 +163,7 @@ networks:
 The containerized application exposes a RESTful API for database operations:
 
 #### Base URL
-```
+```text
 http://localhost:3001/api/database
 ```
 
@@ -319,7 +325,7 @@ export const KEIRA_APP_CONFIG = {
 
 ### Internal Container Communication
 
-```
+```text
 ┌─────────────────┐ Port 80  ┌─────────────────┐ Port 3001 ┌─────────────────┐
 │     nginx       │◄────────►│   Angular App   │◄─────────►│ Database API    │
 │  (Reverse Proxy)│          │   (Static Files)│           │ (Node.js/Express)│

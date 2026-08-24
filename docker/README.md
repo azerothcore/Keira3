@@ -11,7 +11,7 @@ The implementation uses a **hybrid architecture** that supports both environment
 
 ## 🏗️ Architecture
 
-```
+```text
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │   Angular App   │    │  Database API   │    │  External       │
 │   (Frontend)    │◄──►│   (Node.js)     │◄──►│  MySQL Database │
@@ -103,10 +103,10 @@ docker build -t keira3:latest .
 ### Deploy with External Database
 ```bash
 # Set your database credentials
-export DATABASE_HOST=your-mysql-host.com
-export DATABASE_USER=acore
-export DATABASE_PASSWORD=your-secure-password
-export DATABASE_NAME=acore_world
+export KEIRA_DATABASE_HOST=your-mysql-host.com
+export KEIRA_DATABASE_USER=acore
+export KEIRA_DATABASE_PASSWORD=your-secure-password
+export KEIRA_DATABASE_NAME=acore_world
 
 # Deploy with docker-compose
 docker-compose up -d
@@ -166,7 +166,7 @@ The application will automatically:
 docker-compose logs keira3
 
 # Verify database connectivity
-docker exec -it keira3-app nc -z $DATABASE_HOST $DATABASE_PORT
+docker exec -it keira3-app nc -z $KEIRA_DATABASE_HOST $KEIRA_DATABASE_PORT
 ```
 
 ### API Service Status
