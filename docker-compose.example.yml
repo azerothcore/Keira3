@@ -56,7 +56,10 @@ services:
     ports:
       - "4201:8080"
 
-    # Environment variables (hardcoded for clarity)
+    # Environment variables
+    # Database credentials are required and must be supplied via the environment or an
+    # .env file - no default credential is baked into this file. Use a dedicated
+    # least-privilege database account; do not use the MySQL root account here.
     environment:
       # Node.js configuration
       NODE_ENV: production
@@ -67,11 +70,11 @@ services:
 
       # Database connection settings
       # Connect to azerothcore MySQL service
-      KEIRA_DATABASE_HOST: ac-mysql
-      KEIRA_DATABASE_PORT: '3306'
-      KEIRA_DATABASE_USER: root
-      KEIRA_DATABASE_PASSWORD: password
-      KEIRA_DATABASE_NAME: acore_world
+      KEIRA_DATABASE_HOST: ${KEIRA_DATABASE_HOST:?KEIRA_DATABASE_HOST is required}
+      KEIRA_DATABASE_PORT: ${KEIRA_DATABASE_PORT:-3306}
+      KEIRA_DATABASE_USER: ${KEIRA_DATABASE_USER:?KEIRA_DATABASE_USER is required - use a dedicated least-privilege account, not root}
+      KEIRA_DATABASE_PASSWORD: ${KEIRA_DATABASE_PASSWORD:?KEIRA_DATABASE_PASSWORD is required}
+      KEIRA_DATABASE_NAME: ${KEIRA_DATABASE_NAME:-acore_world}
 
       # Optional: Database connection pool settings
       KEIRA_DB_CONNECTION_LIMIT: '10'
