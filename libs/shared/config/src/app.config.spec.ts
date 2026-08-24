@@ -26,7 +26,7 @@ describe('KeiraAppConfig', () => {
 
       const configWithApi: KeiraAppConfig = {
         production: true,
-        environment: 'docker',
+        environment: 'DOCKER',
         sqlitePath: 'assets/sqlite.db',
         databaseApiUrl: '/api/database',
       };
@@ -69,19 +69,19 @@ describe('KeiraAppConfig', () => {
       const configs: KeiraAppConfig[] = [
         {
           production: true,
-          environment: 'docker',
+          environment: 'DOCKER',
           sqlitePath: 'docker.db',
           databaseApiUrl: '/api/database',
         },
         {
           production: false,
-          environment: 'dev',
+          environment: 'DEV',
           sqlitePath: 'dev.db',
           databaseApiUrl: '/custom/api/db',
         },
         {
           production: true,
-          environment: 'prod',
+          environment: 'PROD',
           sqlitePath: 'prod.db',
           databaseApiUrl: 'http://external-api.com/database',
         },

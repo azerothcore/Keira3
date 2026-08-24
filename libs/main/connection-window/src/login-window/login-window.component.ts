@@ -47,10 +47,13 @@ export class LoginWindowComponent extends SubscriptionHandler {
         },
         error: (err: unknown) => {
           this.loading = false;
-          this.error =
-            err instanceof HttpErrorResponse && err.status === 401
-              ? 'Invalid username or password.'
-              : 'Unable to reach the server. Please try again.';
+          if (err instanceof HttpErrorResponse && err.status === 401) {
+            this.error = 'Invalid username or password.';
+          } else if (err instanceof HttpErrorResponse && err.status === 503) {
+            this.error = 'Login is not configured on the server (set KEIRA_AUTH_USER and KEIRA_AUTH_PASSWORD).';
+          } else {
+            this.error = 'Unable to reach the server. Please try again.';
+          }
           this.changeDetectorRef.markForCheck();
         },
       }),

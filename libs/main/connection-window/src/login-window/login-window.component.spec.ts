@@ -63,6 +63,17 @@ describe('LoginWindowComponent', () => {
     expect(component.error).toBe('Unable to reach the server. Please try again.');
   });
 
+  it('explains when login is not configured on the server (503)', () => {
+    const { component, webAuthService } = setup();
+    vi.spyOn(webAuthService, 'login').mockReturnValue(
+      throwError(() => new HttpErrorResponse({ status: 503, statusText: 'Service Unavailable' })),
+    );
+
+    component.onLogin();
+
+    expect(component.error).toBe('Login is not configured on the server (set KEIRA_AUTH_USER and KEIRA_AUTH_PASSWORD).');
+  });
+
   it('reports a database problem when login succeeds but the pool is down', () => {
     const { component, webAuthService, mysqlService } = setup();
     vi.spyOn(webAuthService, 'login').mockReturnValue(of({ success: true }));

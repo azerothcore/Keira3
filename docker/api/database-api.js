@@ -145,7 +145,9 @@ const authConfig = auth.getAuthConfig();
 if (authConfig.enabled) {
   console.log('API authentication: ENABLED (user from KEIRA_AUTH_USER)');
 } else {
-  console.warn('WARNING: KEIRA_AUTH_USER / KEIRA_AUTH_PASSWORD not set — API authentication is DISABLED');
+  console.error(
+    'ERROR: KEIRA_AUTH_USER / KEIRA_AUTH_PASSWORD not set — the database API will refuse all requests (fail closed) until both are configured',
+  );
 }
 app.post('/api/auth/login', auth.createLoginHandler(authConfig));
 app.post('/api/auth/logout', auth.createLogoutHandler());

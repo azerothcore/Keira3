@@ -4,6 +4,7 @@
  */
 
 const http = require('http');
+const path = require('path');
 const mysql = require('mysql2');
 const { spawn } = require('child_process');
 
@@ -16,9 +17,9 @@ describe('Database API Integration Tests', () => {
   let mockConnection;
 
   describe('Authentication defaults', () => {
-    it('serves /api/database/state without a session when auth env vars are unset', (done) => {
+    it('fails closed (503) on /api/database/state when auth env vars are unset', (done) => {
       const req = http.request({ hostname: 'localhost', port: apiPort, path: '/api/database/state', method: 'GET' }, (res) => {
-        expect(res.statusCode).not.toBe(401);
+        expect(res.statusCode).toBe(503);
         res.resume();
         res.on('end', done);
       });
@@ -37,9 +38,13 @@ describe('Database API Integration Tests', () => {
     process.env.KEIRA_DATABASE_NAME = 'test_database';
 
     // Start API server in background
-    apiServer = spawn('node', ['database-api.js'], {
+    apiServer = spawn('node', [path.join(__dirname, '..', 'api', 'database-api.js')], {
       env: { ...process.env },
       stdio: 'pipe',
+    });
+    apiServer.stderr.on('data', (chunk) => console.error(`[database-api] ${chunk}`));
+    apiServer.on('exit', (code) => {
+      if (code !== null && code !== 0) console.error(`[database-api] exited early with code ${code}`);
     });
 
     // Wait for server to start

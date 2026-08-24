@@ -75,8 +75,14 @@ function parseCookies(header) {
   return cookies;
 }
 
-function buildSessionCookie(token, maxAgeSeconds) {
-  return `${SESSION_COOKIE}=${encodeURIComponent(token)}; Max-Age=${maxAgeSeconds}; Path=/; HttpOnly; SameSite=Lax`;
+function buildSessionCookie(token, maxAgeSeconds, secure = false) {
+  const base = `${SESSION_COOKIE}=${encodeURIComponent(token)}; Max-Age=${maxAgeSeconds}; Path=/; HttpOnly; SameSite=Lax`;
+  return secure ? `${base}; Secure` : base;
+}
+
+// True when the client connection is TLS-terminated here or at a proxy in front of us.
+function isSecureRequest(req) {
+  return Boolean(req.secure) || (req.headers && req.headers['x-forwarded-proto'] === 'https');
 }
 
 function buildClearCookie() {
@@ -88,9 +94,15 @@ function isAuthenticated(config, req) {
   return verifySessionToken(config.secret, token);
 }
 
+// Fail closed: with no credentials configured, the API refuses requests instead of serving openly.
 function createAuthMiddleware(config) {
   return (req, res, next) => {
-    if (!config.enabled || isAuthenticated(config, req)) return next();
+    if (!config.enabled) {
+      return res
+        .status(503)
+        .json({ success: false, error: 'Authentication is not configured (set KEIRA_AUTH_USER and KEIRA_AUTH_PASSWORD)' });
+    }
+    if (isAuthenticated(config, req)) return next();
     res.status(401).json({ success: false, error: 'Authentication required' });
   };
 }
@@ -98,19 +110,24 @@ function createAuthMiddleware(config) {
 function createLoginHandler(config, deps = {}) {
   const delay = deps.delay || ((ms) => new Promise((resolve) => setTimeout(resolve, ms)));
   return async (req, res) => {
+    if (!config.enabled) {
+      return res
+        .status(503)
+        .json({ success: false, error: 'Authentication is not configured (set KEIRA_AUTH_USER and KEIRA_AUTH_PASSWORD)' });
+    }
     const { username, password } = req.body || {};
     if (typeof username !== 'string' || typeof password !== 'string') {
       return res.status(400).json({ success: false, error: 'username and password are required' });
-    }
-    if (!config.enabled) {
-      return res.json({ success: true });
     }
     if (!verifyCredentials(config, username, password)) {
       await delay(config.failureDelayMs);
       return res.status(401).json({ success: false, error: 'Invalid credentials' });
     }
     const expiresAtMs = Date.now() + config.ttlSeconds * 1000;
-    res.setHeader('Set-Cookie', buildSessionCookie(createSessionToken(config.secret, expiresAtMs), config.ttlSeconds));
+    res.setHeader(
+      'Set-Cookie',
+      buildSessionCookie(createSessionToken(config.secret, expiresAtMs), config.ttlSeconds, isSecureRequest(req)),
+    );
     return res.json({ success: true });
   };
 }
@@ -131,6 +148,7 @@ module.exports = {
   parseCookies,
   buildSessionCookie,
   buildClearCookie,
+  isSecureRequest,
   createAuthMiddleware,
   createLoginHandler,
   createLogoutHandler,

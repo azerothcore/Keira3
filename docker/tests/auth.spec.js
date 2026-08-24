@@ -114,10 +114,13 @@ function mockRes() {
 describe('createAuthMiddleware', () => {
   const config = { ...auth.getAuthConfig({ KEIRA_AUTH_USER: 'admin', KEIRA_AUTH_PASSWORD: 'pw' }), secret: 's' };
 
-  it('passes through when auth is disabled', () => {
+  it('fails closed with 503 when auth is not configured', () => {
     const next = jest.fn();
-    auth.createAuthMiddleware({ ...config, enabled: false })({ headers: {} }, mockRes(), next);
-    expect(next).toHaveBeenCalled();
+    const res = mockRes();
+    auth.createAuthMiddleware({ ...config, enabled: false })({ headers: {} }, res, next);
+    expect(next).not.toHaveBeenCalled();
+    expect(res.statusCode).toBe(503);
+    expect(res.body.success).toBe(false);
   });
 
   it('rejects requests without a valid cookie', () => {
@@ -185,12 +188,28 @@ describe('createLoginHandler', () => {
     expect(res.body.success).toBe(false);
   });
 
-  it('succeeds without a cookie when auth is disabled', async () => {
+  it('fails closed with 503 when auth is not configured', async () => {
     const res = mockRes();
     await auth.createLoginHandler({ ...config, enabled: false }, noDelay)({ body: { username: 'x', password: 'y' } }, res);
-    expect(res.statusCode).toBe(200);
-    expect(res.body).toEqual({ success: true });
+    expect(res.statusCode).toBe(503);
+    expect(res.body.success).toBe(false);
     expect(res.headers['Set-Cookie']).toBeUndefined();
+  });
+
+  it('marks the session cookie Secure for TLS-fronted requests', async () => {
+    const res = mockRes();
+    await auth.createLoginHandler(config, noDelay)(
+      { body: { username: 'admin', password: 'pw' }, headers: { 'x-forwarded-proto': 'https' } },
+      res,
+    );
+    expect(res.statusCode).toBe(200);
+    expect(res.headers['Set-Cookie']).toContain('; Secure');
+  });
+
+  it('omits Secure for plain-HTTP requests', async () => {
+    const res = mockRes();
+    await auth.createLoginHandler(config, noDelay)({ body: { username: 'admin', password: 'pw' }, headers: {} }, res);
+    expect(res.headers['Set-Cookie']).not.toContain('Secure');
   });
 });
 

@@ -54,7 +54,7 @@ lib, under `src/login-window/` (exported from `@keira/main/connection-window`):
 
 **Window selection** (`apps/keira/src/app/app.component.html`):
 
-```
+```text
 connectionEstablished        → MainWindowComponent        (unchanged)
 else, web-like environment   → LoginWindowComponent       (new)
 else                         → ConnectionWindowComponent  (unchanged, Electron)
@@ -105,10 +105,11 @@ there. No migration needed.
 | `KEIRA_SESSION_TTL` | session lifetime, seconds | `86400` (24 h) |
 
 Auth is **enforced when both `KEIRA_AUTH_USER` and `KEIRA_AUTH_PASSWORD` are
-set**. When either is missing, auth is disabled and the server logs a loud
-startup warning — preserving current behavior for existing deployments.
-(Considered fail-closed; rejected to avoid silently breaking existing users of
-the image. RealmMaster will set both.)
+set**. When either is missing, the API **fails closed**: every `/api/database/*`
+and `/api/auth/login` request is refused with 503 and a message naming the
+missing configuration, and the server logs a startup error. (An earlier
+fail-open draft was rejected in upstream review — an unconfigured deployment
+must not expose database queries.)
 
 **Endpoints:**
 
@@ -151,12 +152,10 @@ mirroring the existing `/api/database/` proxy to `127.0.0.1:3001`.
 | Session expires mid-use | next API call 401s → interceptor returns user to login |
 | API server down at login | login form shows generic connection error, stays usable |
 | DB pool down after login | `connectWeb()` state check fails → error surfaced on login screen |
-| Auth env vars unset | auth disabled, loud server log warning, login screen skipped entirely (client sees state endpoint succeed without a session — treated as connected) |
+| Auth env vars unset | fail closed: API answers 503, startup error logged, login screen shows 'Login is not configured on the server' |
 
-Note the last row: when auth is disabled the guard middleware admits requests
-with no cookie, so the startup `connectWeb()` probe succeeds and the user
-lands straight in the editor — the pre-change behavior, minus the theater
-form.
+Note the last row: an unconfigured deployment serves the login page but no
+data — the operator must set both auth variables before the web editor works.
 
 ### 5. Testing
 

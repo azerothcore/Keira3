@@ -84,13 +84,17 @@ export class MysqlService {
   connectWeb(): Observable<boolean> {
     return this.getConnectionStateViaAPI().pipe(
       map((response) => response.state === DatabaseConnectionState.CONNECTED),
+      catchError(() => of(false)),
       tap((connected) => {
         if (connected) {
           this._connectionEstablished = true;
           this._connection = { state: DatabaseConnectionState.CONNECTED } as unknown as Connection;
+        } else {
+          // A non-CONNECTED probe (or probe failure) must not leave stale connection state behind
+          this._connectionEstablished = false;
+          this._connection = undefined as unknown as Connection;
         }
       }),
-      catchError(() => of(false)),
     );
   }
 

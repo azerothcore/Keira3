@@ -563,6 +563,19 @@ describe('MysqlService', () => {
       expect(service.connectionEstablished).toBe(false);
     });
 
+    it('connectWeb should clear stale connection state when a later probe is not CONNECTED', async () => {
+      const { service } = setup();
+      service['_connectionEstablished'] = true;
+      (service as any)._connection = { state: 'CONNECTED' };
+      (service as any).http = { get: vi.fn().mockReturnValue(of({ state: 'DISCONNECTED' })) };
+
+      const result = await new Promise((resolve) => service.connectWeb().subscribe(resolve));
+
+      expect(result).toBe(false);
+      expect(service.connectionEstablished).toBe(false);
+      expect((service as any)._connection).toBeUndefined();
+    });
+
     it('connectWeb should emit false instead of erroring on HTTP failure', async () => {
       const { service } = setup();
       (service as any).http = { get: vi.fn().mockReturnValue(throwError(() => new Error('401'))) };
