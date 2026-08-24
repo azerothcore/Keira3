@@ -59,6 +59,7 @@ apps/keira/coverage
 /.sass-cache
 /connect.lock
 /coverage
+docker/tests/coverage
 /libpeerconnection.log
 npm-debug.log
 testem.log
