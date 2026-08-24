@@ -14,11 +14,15 @@ RUN apk add --no-cache \
     sqlite \
     sqlite-dev
 
-# Copy package files
+# Copy package files and patch-package patches
 COPY package*.json ./
+COPY patches ./patches
 
-# Install all dependencies and Docker-specific runtime dependencies
+# Install all dependencies and Docker-specific runtime dependencies.
+# --ignore-scripts skips the electron postinstall, so patch-package must run explicitly
+# (it normally runs via postinstall and fixes ngx-bootstrap for the current Angular).
 RUN npm ci --ignore-scripts && \
+    npx patch-package && \
     npm install express@4.21.2
 
 # Copy source code
