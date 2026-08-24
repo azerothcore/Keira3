@@ -21,9 +21,9 @@ COPY patches ./patches
 # Install all dependencies and Docker-specific runtime dependencies.
 # --ignore-scripts skips the electron postinstall, so patch-package must run explicitly
 # (it normally runs via postinstall and fixes ngx-bootstrap for the current Angular).
+# express is a direct dependency in package.json/package-lock.json, so npm ci installs it.
 RUN npm ci --ignore-scripts && \
-    npx patch-package && \
-    npm install express@4.21.2
+    npx patch-package
 
 # Copy source code
 COPY . .
@@ -77,8 +77,10 @@ ENV KEIRA_HOST=0.0.0.0
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD ["curl", "-f", "http://127.0.0.1:8080/health"]
 
-# Keep running as root for simplified deployment
-# USER keira
+# Run nginx and the database API as the unprivileged keira user.
+# Listen ports (8080, 3001) are unprivileged (>1024) and all paths nginx needs
+# (pid, logs, cache, /etc/nginx) are chowned to keira above.
+USER keira
 
 # Start nginx using the startup script
 CMD ["/bin/sh", "/usr/local/bin/docker-start.sh"]

@@ -67,6 +67,7 @@
     "acorn": "8.17.0",
     "cors": "2.8.5",
     "electron-settings": "4.0.4",
+    "express": "4.21.2",
     "jquery": "3.7.1",
     "mysql2": "3.22.5",
     "ngx-select-ex": "19.0.5",
