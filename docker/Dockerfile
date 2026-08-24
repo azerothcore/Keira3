@@ -80,7 +80,7 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 # Run nginx and the database API as the unprivileged keira user.
 # Listen ports (8080, 3001) are unprivileged (>1024) and all paths nginx needs
 # (pid, logs, cache, /etc/nginx) are chowned to keira above.
-USER keira
+USER 1001:1001
 
 # Start nginx using the startup script
 CMD ["/bin/sh", "/usr/local/bin/docker-start.sh"]
