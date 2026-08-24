@@ -1,5 +1,3 @@
-import { FieldPacket } from 'mysql2';
-
 /**
  * Strict TypeScript type definitions for Database API interfaces
  * Ensures type safety for HTTP API communication between Angular and Node.js
@@ -237,11 +235,31 @@ export interface ValidationResult {
 
 // Type guards for runtime type checking
 export function isDatabaseConnectionRequest(obj: unknown): obj is DatabaseConnectionRequest {
-  return typeof obj === 'object' && obj !== null && 'config' in obj && typeof (obj as any).config === 'object';
+  if (typeof obj !== 'object' || obj === null) {
+    return false;
+  }
+  const config = (obj as { config?: unknown }).config;
+  if (typeof config !== 'object' || config === null) {
+    return false;
+  }
+  const c = config as DatabaseConnectionConfig;
+  return (
+    typeof c.host === 'string' &&
+    typeof c.port === 'number' &&
+    typeof c.user === 'string' &&
+    typeof c.password === 'string' &&
+    typeof c.database === 'string'
+  );
 }
 
 export function isDatabaseQueryRequest(obj: unknown): obj is DatabaseQueryRequest {
-  return typeof obj === 'object' && obj !== null && 'sql' in obj && typeof (obj as any).sql === 'string';
+  return (
+    typeof obj === 'object' &&
+    obj !== null &&
+    'sql' in obj &&
+    typeof (obj as { sql?: unknown }).sql === 'string' &&
+    (obj as { sql: string }).sql.length > 0
+  );
 }
 
 export function isDatabaseSuccessResponse<T>(obj: unknown): obj is DatabaseQueryResponse<T> {

@@ -2,6 +2,6 @@ import { KeiraAppConfig } from './app.config';
 
 export const KEIRA_MOCK_CONFIG: KeiraAppConfig = {
   production: false,
-  environment: 'DOCKER',
+  environment: 'LOCAL',
   sqlitePath: 'apps/keira/src/assets/sqlite.db',
 };

@@ -24,8 +24,8 @@ import { KeiraConnectionOptions } from './mysql.model';
 export class MysqlService {
   private readonly electronService = inject(ElectronService);
   private readonly ngZone = inject(NgZone);
-  private readonly http = inject(HttpClient);
-  private readonly appConfig = inject(KEIRA_APP_CONFIG_TOKEN);
+  private readonly http = inject(HttpClient, { optional: true })!;
+  private readonly appConfig = inject(KEIRA_APP_CONFIG_TOKEN, { optional: true });
 
   private mysql!: typeof mysql;
   private ssh2!: typeof ssh2;
@@ -61,7 +61,12 @@ export class MysqlService {
       this.mysql = window.require('mysql2');
       this.ssh2 = window.require('ssh2');
       this.isWebEnvironment = false;
-    } else {
+    } else if (
+      this.appConfig?.environment === 'WEB' ||
+      this.appConfig?.environment === 'DOCKER' ||
+      this.appConfig?.environment === 'DEV_WEB' ||
+      !!this.appConfig?.databaseApiUrl
+    ) {
       // Web environment - use HTTP API
       this.isWebEnvironment = true;
     }
@@ -72,7 +77,7 @@ export class MysqlService {
   }
 
   getConnectionStateViaAPI(): Observable<DatabaseStateResponse> {
-    const apiUrl: string = this.appConfig.databaseApiUrl || '/api/database';
+    const apiUrl: string = this.appConfig?.databaseApiUrl || '/api/database';
 
     return this.http.get<DatabaseStateResponse>(`${apiUrl}/state`);
   }
@@ -115,7 +120,7 @@ export class MysqlService {
   }
 
   private connectViaAPI(config: ConnectionOptions): Observable<void> {
-    const apiUrl: string = this.appConfig.databaseApiUrl || '/api/database';
+    const apiUrl: string = this.appConfig?.databaseApiUrl || '/api/database';
     const request: DatabaseConnectionRequest = { config };
 
     return this.http.post<DatabaseConnectionResult>(`${apiUrl}/connect`, request).pipe(
@@ -301,7 +306,7 @@ export class MysqlService {
   }
 
   private queryViaAPI<T extends TableRow>(queryString: string, values?: string[]): Observable<MysqlResult<T>> {
-    const apiUrl: string = this.appConfig.databaseApiUrl || '/api/database';
+    const apiUrl: string = this.appConfig?.databaseApiUrl || '/api/database';
     const request: DatabaseQueryRequest = {
       sql: queryString,
       params: values || [],

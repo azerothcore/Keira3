@@ -5,8 +5,7 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { HttpClient } from '@angular/common/http';
 import { Connection, ConnectionOptions, QueryError } from 'mysql2';
 import { tickAsync } from 'ngx-page-object-model';
-import { Subscriber } from 'rxjs';
-import { of, throwError } from 'rxjs';
+import { Subscriber, of, throwError } from 'rxjs';
 import { instance, mock, reset, when } from 'ts-mockito';
 import { ElectronService } from '@keira/shared/common-services';
 import { KEIRA_APP_CONFIG_TOKEN, KeiraAppConfig } from '@keira/shared/config';
@@ -25,7 +24,7 @@ class MockConnection {
 describe('MysqlService', () => {
   let mockElectronService: ElectronService;
   let mockHttpClient: HttpClient;
-  let mockAppConfig: KeiraAppConfig;
+  let mockAppConfig: { -readonly [K in keyof KeiraAppConfig]: KeiraAppConfig[K] };
 
   const config: ConnectionOptions = { host: 'azerothcore.org' };
 
@@ -73,6 +72,7 @@ describe('MysqlService', () => {
 
   it('connect(config) should properly work', () => {
     const { service } = setup();
+    service['isWebEnvironment'] = false;
     (service as any).mysql = new MockMySql();
     const mockConnection = new MockConnection();
     const createConnectionSpy = vi.spyOn((service as any).mysql, 'createConnection').mockReturnValue(mockConnection);
@@ -92,6 +92,7 @@ describe('MysqlService', () => {
   describe('dbQuery(queryString)', () => {
     it('should properly work', () => {
       const { service } = setup();
+      service['isWebEnvironment'] = false;
       (service as any).mysql = new MockMySql();
       const mockConnection = new MockConnection();
       service['_connection'] = mockConnection as unknown as Connection;
@@ -108,6 +109,7 @@ describe('MysqlService', () => {
 
     it('should give error if _connection is not defined', () => {
       const { service } = setup();
+      service['isWebEnvironment'] = false;
       (service as any).mysql = new MockMySql();
       service['_connection'] = undefined as any;
       vi.spyOn(console, 'error').mockImplementation(() => undefined);
@@ -123,6 +125,7 @@ describe('MysqlService', () => {
 
     it('should give error if reconnection is in progress', () => {
       const { service } = setup();
+      service['isWebEnvironment'] = false;
       (service as any).mysql = new MockMySql();
       service['_reconnecting'] = true;
       vi.spyOn(console, 'error').mockImplementation(() => undefined);
@@ -294,44 +297,52 @@ describe('MysqlService', () => {
   });
 
   describe('Environment Detection', () => {
+    afterEach(() => {
+      delete (window as any).require;
+    });
+
     it('should set isWebEnvironment to false when ElectronService.isElectron() returns electron process type', () => {
-      const electronService = instance(mockElectronService);
-      spyOn(electronService, 'isElectron').and.returnValue('renderer');
+      // the Electron constructor path calls window.require('mysql2') / window.require('ssh2')
+      (window as any).require = vi.fn().mockReturnValue({});
+      when(mockElectronService.isElectron()).thenReturn('renderer' as any);
 
       // Create new service instance to trigger constructor
-      TestBed.overrideProvider(ElectronService, { useValue: electronService });
-      const testService = TestBed.inject(MysqlService);
+      const { service } = setup();
 
-      expect(testService['isWebEnvironment']).toBe(false);
+      expect(service['isWebEnvironment']).toBe(false);
     });
 
     it('should set isWebEnvironment to true when ElectronService.isElectron() returns falsy', () => {
-      const electronService = instance(mockElectronService);
-      spyOn(electronService, 'isElectron').and.returnValue(null as any);
+      when(mockElectronService.isElectron()).thenReturn(null as any);
 
       // Create new service instance to trigger constructor
-      TestBed.overrideProvider(ElectronService, { useValue: electronService });
-      const testService = TestBed.inject(MysqlService);
+      const { service } = setup();
 
-      expect(testService['isWebEnvironment']).toBe(true);
+      expect(service['isWebEnvironment']).toBe(true);
     });
   });
 
   describe('Web Environment - HTTP API Tests', () => {
+    let service: MysqlService;
+    let postSpy: ReturnType<typeof vi.fn>;
+
     beforeEach(() => {
+      service = setup().service;
       // Mock web environment
       service['isWebEnvironment'] = true;
+      postSpy = vi.fn();
+      (service as any).http = { post: postSpy };
     });
 
     describe('connect() in web environment', () => {
       it('should use HTTP API for connection in web environment', () => {
         const mockResponse = { success: true, message: 'Connected to database' };
-        spyOn(service['http'], 'post').and.returnValue(of(mockResponse));
-        spyOn(service, 'connectViaAPI' as any).and.callThrough();
+        postSpy.mockReturnValue(of(mockResponse));
+        const connectViaAPISpy = vi.spyOn(service as any, 'connectViaAPI');
 
         const result = service.connect(config);
 
-        expect(service['connectViaAPI']).toHaveBeenCalledWith(config);
+        expect(connectViaAPISpy).toHaveBeenCalledWith(config);
         result.subscribe(() => {
           expect(service['_connectionEstablished']).toBe(true);
           expect(service['_connection']).toEqual({ state: 'CONNECTED' } as any);
@@ -340,7 +351,7 @@ describe('MysqlService', () => {
 
       it('should handle connection errors in web environment', () => {
         const mockError = { success: false, error: 'Connection failed' };
-        spyOn(service['http'], 'post').and.returnValue(of(mockError));
+        postSpy.mockReturnValue(of(mockError));
 
         const result = service.connect(config);
 
@@ -354,7 +365,7 @@ describe('MysqlService', () => {
 
       it('should handle HTTP errors in web environment', () => {
         const httpError = new Error('Network error');
-        spyOn(service['http'], 'post').and.returnValue(throwError(() => httpError));
+        postSpy.mockReturnValue(throwError(() => httpError));
 
         const result = service.connect(config);
 
@@ -370,31 +381,31 @@ describe('MysqlService', () => {
     describe('connectViaAPI()', () => {
       it('should make POST request to correct API endpoint', () => {
         const mockResponse = { success: true };
-        const httpSpy = spyOn(service['http'], 'post').and.returnValue(of(mockResponse));
+        postSpy.mockReturnValue(of(mockResponse));
 
         service['connectViaAPI'](config).subscribe();
 
-        expect(httpSpy).toHaveBeenCalledWith('/api/database/connect', { config });
+        expect(postSpy).toHaveBeenCalledWith('/api/database/connect', { config });
       });
 
       it('should use custom API URL from config', () => {
         mockAppConfig.databaseApiUrl = '/custom/api/db';
         const mockResponse = { success: true };
-        const httpSpy = spyOn(service['http'], 'post').and.returnValue(of(mockResponse));
+        postSpy.mockReturnValue(of(mockResponse));
 
         service['connectViaAPI'](config).subscribe();
 
-        expect(httpSpy).toHaveBeenCalledWith('/custom/api/db/connect', { config });
+        expect(postSpy).toHaveBeenCalledWith('/custom/api/db/connect', { config });
       });
 
       it('should use default API URL when config is undefined', () => {
         mockAppConfig.databaseApiUrl = undefined;
         const mockResponse = { success: true };
-        const httpSpy = spyOn(service['http'], 'post').and.returnValue(of(mockResponse));
+        postSpy.mockReturnValue(of(mockResponse));
 
         service['connectViaAPI'](config).subscribe();
 
-        expect(httpSpy).toHaveBeenCalledWith('/api/database/connect', { config });
+        expect(postSpy).toHaveBeenCalledWith('/api/database/connect', { config });
       });
     });
 
@@ -407,11 +418,11 @@ describe('MysqlService', () => {
           fields: [],
         };
 
-        spyOn(service, 'queryViaAPI' as any).and.returnValue(of(mockResponse));
+        const queryViaAPISpy = vi.spyOn(service as any, 'queryViaAPI').mockReturnValue(of(mockResponse));
 
         const result = service.dbQuery(queryString, values);
 
-        expect(service['queryViaAPI']).toHaveBeenCalledWith(queryString, values);
+        expect(queryViaAPISpy).toHaveBeenCalledWith(queryString, values);
         result.subscribe((response) => {
           expect(response).toEqual(mockResponse);
         });
@@ -423,11 +434,11 @@ describe('MysqlService', () => {
         const queryString = 'SELECT * FROM test';
         const values = ['param1'];
         const mockResponse = { success: true, result: [], fields: [] };
-        const httpSpy = spyOn(service['http'], 'post').and.returnValue(of(mockResponse));
+        postSpy.mockReturnValue(of(mockResponse));
 
         service['queryViaAPI'](queryString, values).subscribe();
 
-        expect(httpSpy).toHaveBeenCalledWith('/api/database/query', {
+        expect(postSpy).toHaveBeenCalledWith('/api/database/query', {
           sql: queryString,
           params: values,
         });
@@ -440,7 +451,7 @@ describe('MysqlService', () => {
           result: [{ id: 1, name: 'test' }],
           fields: [],
         };
-        spyOn(service['http'], 'post').and.returnValue(of(mockApiResponse));
+        postSpy.mockReturnValue(of(mockApiResponse));
 
         service['queryViaAPI'](queryString).subscribe((response) => {
           expect(response).toEqual({
@@ -453,8 +464,8 @@ describe('MysqlService', () => {
       it('should handle query errors from API', () => {
         const queryString = 'INVALID SQL';
         const mockErrorResponse = { success: false, error: 'SQL syntax error' };
-        spyOn(service['http'], 'post').and.returnValue(of(mockErrorResponse));
-        spyOn(console, 'error');
+        postSpy.mockReturnValue(of(mockErrorResponse));
+        vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
         service['queryViaAPI'](queryString).subscribe({
           error: (error) => {
@@ -467,8 +478,8 @@ describe('MysqlService', () => {
       it('should handle HTTP errors during query', () => {
         const queryString = 'SELECT * FROM test';
         const httpError = new Error('Network timeout');
-        spyOn(service['http'], 'post').and.returnValue(throwError(() => httpError));
-        spyOn(console, 'error');
+        postSpy.mockReturnValue(throwError(() => httpError));
+        vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
         service['queryViaAPI'](queryString).subscribe({
           error: (error) => {
@@ -478,23 +489,26 @@ describe('MysqlService', () => {
         });
       });
 
-      it('should handle undefined values parameter', () => {
+      it('should default to an empty params array when values is undefined', () => {
         const queryString = 'SELECT * FROM test';
         const mockResponse = { success: true, result: [], fields: [] };
-        const httpSpy = spyOn(service['http'], 'post').and.returnValue(of(mockResponse));
+        postSpy.mockReturnValue(of(mockResponse));
 
         service['queryViaAPI'](queryString, undefined).subscribe();
 
-        expect(httpSpy).toHaveBeenCalledWith('/api/database/query', {
+        expect(postSpy).toHaveBeenCalledWith('/api/database/query', {
           sql: queryString,
-          params: undefined,
+          params: [],
         });
       });
     });
   });
 
   describe('Electron Environment Tests', () => {
+    let service: MysqlService;
+
     beforeEach(() => {
+      service = setup().service;
       // Mock Electron environment
       service['isWebEnvironment'] = false;
       (service as any).mysql = new MockMySql();
@@ -502,29 +516,28 @@ describe('MysqlService', () => {
 
     it('should use direct mysql2 connection in Electron environment', () => {
       const mockConnection = new MockConnection();
-      const createConnectionSpy = spyOn((service as any).mysql, 'createConnection').and.returnValue(mockConnection);
-      const connectSpy = spyOn(mockConnection, 'connect');
+      const createConnectionSpy = vi.spyOn((service as any).mysql, 'createConnection').mockReturnValue(mockConnection);
+      const connectSpy = vi.spyOn(mockConnection, 'connect').mockImplementation(() => undefined);
 
       const result = service.connect(config);
 
       expect(createConnectionSpy).toHaveBeenCalledWith(config);
-      result.subscribe(() => {
-        expect(connectSpy).toHaveBeenCalled();
-      });
+
+      result.subscribe();
+      expect(connectSpy).toHaveBeenCalled();
     });
 
     it('should use direct mysql2 query in Electron environment', () => {
       const mockConnection = new MockConnection();
       service['_connection'] = mockConnection as unknown as Connection;
       service['_reconnecting'] = false;
-      const querySpy = spyOn(mockConnection, 'query');
+      const querySpy = vi.spyOn(mockConnection, 'query').mockImplementation(() => undefined);
       const queryString = 'SELECT * FROM test';
 
       const result = service.dbQuery(queryString);
 
-      result.subscribe(() => {
-        expect(querySpy).toHaveBeenCalled();
-      });
+      result.subscribe();
+      expect(querySpy).toHaveBeenCalled();
     });
   });
 

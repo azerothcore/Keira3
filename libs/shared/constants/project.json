@@ -6,6 +6,13 @@
   "tags": ["scope:shared"],
   "projectType": "library",
   "targets": {
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx vitest run",
+        "cwd": "{projectRoot}"
+      }
+    },
     "lint": {
       "executor": "@nx/eslint:lint"
     }

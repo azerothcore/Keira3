@@ -1,6 +1,5 @@
 import {
   DatabaseConnectionConfig,
-  DatabaseConnectionRequest,
   DatabaseConnectionResult,
   DatabaseQueryRequest,
   DatabaseQueryResult,

@@ -87,7 +87,7 @@ describe('KeiraAppConfig', () => {
         },
       ];
 
-      configs.forEach((config, index) => {
+      configs.forEach((config) => {
         expect(config.databaseApiUrl).toBeDefined();
         expect(typeof config.databaseApiUrl).toBe('string');
         expect(config.databaseApiUrl).not.toBe('');
