@@ -314,13 +314,15 @@ app.get('/api/database/state', async (req, res, next) => {
       await connection.ping();
       connection.release();
 
+      // mysql2's pool internals vary across versions; never let introspection break the state probe
+      const pool = connectionPool.pool || {};
       res.json({
         state: 'CONNECTED',
         timestamp: new Date().toISOString(),
         poolInfo: {
-          totalConnections: connectionPool.pool._allConnections.length || 0,
-          freeConnections: connectionPool.pool._freeConnections.length || 0,
-          acquiringConnections: connectionPool.pool._acquiringConnections.length || 0,
+          totalConnections: pool._allConnections?.length ?? 0,
+          freeConnections: pool._freeConnections?.length ?? 0,
+          acquiringConnections: pool._acquiringConnections?.length ?? 0,
         },
       });
     } else {
