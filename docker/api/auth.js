@@ -7,15 +7,22 @@ const crypto = require('crypto');
 
 const SESSION_COOKIE = 'keira_session';
 
+const DEFAULT_TTL_SECONDS = 86400;
+
 function getAuthConfig(env = process.env) {
   const user = env.KEIRA_AUTH_USER || '';
   const password = env.KEIRA_AUTH_PASSWORD || '';
+  const parsedTtl = parseInt(env.KEIRA_SESSION_TTL || String(DEFAULT_TTL_SECONDS), 10);
+  const ttlSeconds = Number.isFinite(parsedTtl) && parsedTtl > 0 ? parsedTtl : DEFAULT_TTL_SECONDS;
+  if (env.KEIRA_SESSION_TTL !== undefined && ttlSeconds !== parsedTtl) {
+    console.warn(`Invalid KEIRA_SESSION_TTL "${env.KEIRA_SESSION_TTL}"; falling back to ${DEFAULT_TTL_SECONDS} seconds.`);
+  }
   return {
     enabled: Boolean(user && password),
     user,
     password,
     secret: env.KEIRA_SESSION_SECRET || crypto.randomBytes(32).toString('hex'),
-    ttlSeconds: parseInt(env.KEIRA_SESSION_TTL || '86400', 10),
+    ttlSeconds,
     failureDelayMs: 500,
   };
 }
@@ -55,7 +62,15 @@ function parseCookies(header) {
   if (!header) return cookies;
   for (const part of header.split(';')) {
     const eq = part.indexOf('=');
-    if (eq > 0) cookies[part.slice(0, eq).trim()] = decodeURIComponent(part.slice(eq + 1).trim());
+    if (eq > 0) {
+      const name = part.slice(0, eq).trim();
+      const rawValue = part.slice(eq + 1).trim();
+      try {
+        cookies[name] = decodeURIComponent(rawValue);
+      } catch {
+        // Malformed percent-encoding (e.g. "%zz") - skip this pair rather than throwing.
+      }
+    }
   }
   return cookies;
 }

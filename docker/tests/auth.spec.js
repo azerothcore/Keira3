@@ -24,6 +24,16 @@ describe('getAuthConfig', () => {
     expect(config.secret).toBe('s3cret');
     expect(config.ttlSeconds).toBe(3600);
   });
+
+  it('falls back to the default TTL when KEIRA_SESSION_TTL is not a valid positive number', () => {
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+
+    expect(auth.getAuthConfig({ KEIRA_SESSION_TTL: 'abc' }).ttlSeconds).toBe(86400);
+    expect(auth.getAuthConfig({ KEIRA_SESSION_TTL: '-5' }).ttlSeconds).toBe(86400);
+    expect(warnSpy).toHaveBeenCalled();
+
+    warnSpy.mockRestore();
+  });
 });
 
 describe('verifyCredentials', () => {
@@ -64,6 +74,10 @@ describe('cookies', () => {
   it('parses a cookie header', () => {
     expect(auth.parseCookies('a=1; keira_session=abc.def; b=2')).toEqual({ a: '1', keira_session: 'abc.def', b: '2' });
     expect(auth.parseCookies(undefined)).toEqual({});
+  });
+
+  it('skips a pair with malformed percent-encoding instead of throwing', () => {
+    expect(auth.parseCookies('foo=%zz; keira_session=ok')).toEqual({ keira_session: 'ok' });
   });
 
   it('builds session and clear cookies with the required flags', () => {
