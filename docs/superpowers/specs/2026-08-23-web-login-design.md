@@ -83,8 +83,10 @@ and `MysqlService` consumes the helper instead of duplicating the check.
   itself) → reset `connectionEstablished` to false, which drops the user back
   to the login window. Expired sessions therefore fail safe mid-use.
 
-**Logout** — a button in the main window's toolbar, rendered only in web-like
-environments: `POST /api/auth/logout`, then reset `connectionEstablished`.
+**Logout** — the existing sidebar disconnect button (`LogoutBtnComponent`)
+gains web behavior: in web-like environments it calls `POST /api/auth/logout`
+before its existing page reload (the reload lands on the login window since
+the cookie is gone). Desktop behavior is unchanged.
 
 **LoginConfigService / recent configs** — untouched. The connection window
 simply stops rendering in web mode; its localStorage features become inert
