@@ -15,6 +15,8 @@ import { UiSwitchModule } from 'ngx-ui-switch';
 import { AppComponent } from './app/app.component';
 import { KEIRA_ROUTES } from './app/routes';
 import { KEIRA_APP_CONFIG } from './environments/environment';
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import packageInfo from '../../../package.json';
 
 if (KEIRA_APP_CONFIG.production) {
   enableProdMode();
@@ -34,7 +36,8 @@ bootstrapApplication(AppComponent, {
       UiSwitchModule.forRoot(uiSwitchConfig),
     ),
     provideTranslateService({
-      loader: provideTranslateHttpLoader({ prefix: './assets/i18n/', suffix: '.json' }),
+      // Version query busts translation files cached before nginx sent Cache-Control
+      loader: provideTranslateHttpLoader({ prefix: './assets/i18n/', suffix: `.json?v=${packageInfo.version}` }),
       fallbackLang: 'en',
     }),
     /* Config */
