@@ -400,7 +400,7 @@ describe('MysqlService', () => {
 
     describe('connectViaAPI()', () => {
       it('should make POST request to correct API endpoint', () => {
-        const mockResponse = { success: true };
+        const mockResponse = { success: true, message: 'Connected to database' };
         postSpy.mockReturnValue(of(mockResponse));
 
         service['connectViaAPI'](config).subscribe();
@@ -410,7 +410,7 @@ describe('MysqlService', () => {
 
       it('should use custom API URL from config', () => {
         mockAppConfig.databaseApiUrl = '/custom/api/db';
-        const mockResponse = { success: true };
+        const mockResponse = { success: true, message: 'Connected to database' };
         postSpy.mockReturnValue(of(mockResponse));
 
         service['connectViaAPI'](config).subscribe();
@@ -420,7 +420,7 @@ describe('MysqlService', () => {
 
       it('should use default API URL when config is undefined', () => {
         mockAppConfig.databaseApiUrl = undefined;
-        const mockResponse = { success: true };
+        const mockResponse = { success: true, message: 'Connected to database' };
         postSpy.mockReturnValue(of(mockResponse));
 
         service['connectViaAPI'](config).subscribe();

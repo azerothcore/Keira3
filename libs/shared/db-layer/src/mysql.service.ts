@@ -15,6 +15,7 @@ import {
   DatabaseStateResponse,
   DatabaseConnectionState,
   isDatabaseSuccessResponse,
+  isDatabaseConnectionSuccessResponse,
   isDatabaseErrorResponse,
 } from '@keira/shared/constants';
 import { KEIRA_APP_CONFIG_TOKEN, isWebLikeEnvironment } from '@keira/shared/config';
@@ -152,7 +153,7 @@ export class MysqlService {
     return this.http.post<DatabaseConnectionResult>(`${apiUrl}/connect`, request).pipe(
       map((response: DatabaseConnectionResult) => {
         this.ngZone.run(() => {
-          if (isDatabaseSuccessResponse(response)) {
+          if (isDatabaseConnectionSuccessResponse(response)) {
             this._connectionEstablished = true;
             // Set a dummy connection state for web environment
             this._connection = { state: DatabaseConnectionState.CONNECTED } as unknown as Connection;

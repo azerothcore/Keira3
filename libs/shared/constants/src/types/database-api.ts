@@ -252,18 +252,38 @@ export function isDatabaseConnectionRequest(obj: unknown): obj is DatabaseConnec
   );
 }
 
+function isValidQueryParams(params: unknown): params is ReadonlyArray<string | number | null> {
+  if (params === undefined) {
+    return true;
+  }
+  return Array.isArray(params) && params.every((item) => typeof item === 'string' || typeof item === 'number' || item === null);
+}
+
 export function isDatabaseQueryRequest(obj: unknown): obj is DatabaseQueryRequest {
-  return (
-    typeof obj === 'object' &&
-    obj !== null &&
-    'sql' in obj &&
-    typeof (obj as { sql?: unknown }).sql === 'string' &&
-    (obj as { sql: string }).sql.length > 0
-  );
+  if (typeof obj !== 'object' || obj === null || !('sql' in obj)) {
+    return false;
+  }
+  const sql = (obj as { sql?: unknown }).sql;
+  if (typeof sql !== 'string' || sql.length === 0) {
+    return false;
+  }
+  return isValidQueryParams((obj as { params?: unknown }).params);
 }
 
 export function isDatabaseSuccessResponse<T>(obj: unknown): obj is DatabaseQueryResponse<T> {
-  return typeof obj === 'object' && obj !== null && 'success' in obj && (obj as any).success === true;
+  if (typeof obj !== 'object' || obj === null) {
+    return false;
+  }
+  const r = obj as { success?: unknown; result?: unknown; fields?: unknown };
+  return r.success === true && r.result !== undefined && Array.isArray(r.fields);
+}
+
+export function isDatabaseConnectionSuccessResponse(obj: unknown): obj is DatabaseConnectionResponse {
+  if (typeof obj !== 'object' || obj === null) {
+    return false;
+  }
+  const r = obj as { success?: unknown; message?: unknown };
+  return r.success === true && typeof r.message === 'string';
 }
 
 export function isDatabaseErrorResponse(obj: unknown): obj is DatabaseQueryError {

@@ -29,24 +29,9 @@ jest.mock('mysql2/promise', () => ({
   })),
 }));
 
-// Mock express for API tests
-jest.mock('express', () => {
-  const mockApp = {
-    use: jest.fn(),
-    get: jest.fn(),
-    post: jest.fn(),
-    listen: jest.fn((port, host, callback) => {
-      if (callback) callback();
-      return { close: jest.fn() };
-    }),
-  };
-
-  const express = jest.fn(() => mockApp);
-  express.json = jest.fn(() => jest.fn());
-  express.static = jest.fn(() => jest.fn());
-
-  return express;
-});
+// express is intentionally NOT mocked here: database-api.spec.js requires the real
+// docker/api/database-api.js module and drives its real Express `app` (via an ephemeral
+// http listener) to get genuine route coverage instead of asserting on a fake.
 
 // Global test utilities
 global.testUtils = {

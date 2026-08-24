@@ -8,4 +8,5 @@ export const KEIRA_APP_CONFIG: KeiraAppConfig = {
   production: true,
   environment: 'WEB',
   sqlitePath: 'assets/sqlite.db',
+  databaseApiUrl: '/api/database',
 };

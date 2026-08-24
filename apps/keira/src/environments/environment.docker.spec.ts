@@ -24,8 +24,6 @@ describe('Environment Docker Configuration', () => {
     expect(config.sqlitePath).toBe('assets/sqlite.db');
   });
 
-  it('should have correct sqlite item 3D path', () => {});
-
   it('should have database API URL configured', () => {
     expect(config.databaseApiUrl).toBe('/api/database');
   });

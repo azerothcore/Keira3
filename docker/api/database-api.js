@@ -426,7 +426,23 @@ async function startServer() {
   }, 1000);
 }
 
-startServer().catch((error) => {
-  console.error('Failed to start server:', error);
-  process.exit(1);
-});
+// Only bind ports / run the startup sequence when executed directly (`node database-api.js`),
+// e.g. by docker-start.sh. Requiring this module from tests must not have side effects.
+if (require.main === module) {
+  startServer().catch((error) => {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  });
+}
+
+module.exports = {
+  app,
+  getDatabaseConfig,
+  createEnhancedErrorResponse,
+  createValidationError,
+  initializeDatabase,
+  startServer,
+  HTTP_STATUS,
+  ERROR_CATEGORIES,
+  MYSQL_ERROR_MAPPING,
+};

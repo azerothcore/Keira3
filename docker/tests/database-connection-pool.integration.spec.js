@@ -1,67 +1,29 @@
 /**
  * Integration Tests for Database Connection Pool and Error Handling
  * Tests the database connection pooling logic and error recovery mechanisms
+ *
+ * Only the tests under "Connection Pool Resource Management" (below) actually need a
+ * reachable MySQL instance to exercise real connection lifecycles; they are gated behind
+ * KEIRA_LIVE_DB=1 and are the only tests in this file that create a real mysql2 pool.
+ * Every other test here works on local values / the real getDatabaseConfig() and must not
+ * pay for pool creation or teardown.
  */
 
 const mysql = require('mysql2');
+const { getDatabaseConfig } = require('../api/database-api');
+
+const LIVE = process.env.KEIRA_LIVE_DB === '1';
+const describeLive = LIVE ? describe : describe.skip;
 
 describe('Database Connection Pool Integration Tests', () => {
-  let testPool;
-
-  // Mock database configuration for testing
-  const testConfig = {
-    host: 'localhost',
-    port: 3306,
-    user: 'test_user',
-    password: 'test_password',
-    database: 'test_database',
-    connectionLimit: 10,
-    multipleStatements: true,
-  };
-
-  beforeEach(() => {
-    // Create a test connection pool
-    testPool = mysql.createPool(testConfig);
-  });
-
-  afterEach((done) => {
-    if (testPool) {
-      testPool.end(() => {
-        done();
-      });
-    } else {
-      done();
-    }
-  });
-
   describe('Connection Pool Configuration', () => {
-    it('should create pool with correct configuration parameters', () => {
-      const poolConfig = testPool.config;
+    const ORIGINAL_ENV = { ...process.env };
 
-      // Test that pool was created with our configuration
-      expect(poolConfig).toBeDefined();
-      expect(typeof poolConfig).toBe('object');
-      expect(poolConfig.connectionLimit).toBe(10);
-
-      // Test that pool has expected methods and properties
-      expect(typeof testPool.getConnection).toBe('function');
-      expect(typeof testPool.end).toBe('function');
-      expect(typeof testPool.query).toBe('function');
+    afterEach(() => {
+      process.env = { ...ORIGINAL_ENV };
     });
 
     it('should handle default configuration values correctly', () => {
-      const getDatabaseConfig = () => ({
-        host: process.env.KEIRA_DATABASE_HOST || 'localhost',
-        port: parseInt(process.env.KEIRA_DATABASE_PORT || '3306'),
-        user: process.env.KEIRA_DATABASE_USER || 'root',
-        password: process.env.KEIRA_DATABASE_PASSWORD || '',
-        database: process.env.KEIRA_DATABASE_NAME || 'acore_world',
-        connectionLimit: 10,
-        multipleStatements: true,
-      });
-
-      // Clear environment variables
-      const originalEnv = { ...process.env };
       delete process.env.KEIRA_DATABASE_HOST;
       delete process.env.KEIRA_DATABASE_PORT;
       delete process.env.KEIRA_DATABASE_USER;
@@ -75,27 +37,14 @@ describe('Database Connection Pool Integration Tests', () => {
       expect(config.user).toBe('root');
       expect(config.password).toBe('');
       expect(config.database).toBe('acore_world');
-
-      // Restore environment
-      process.env = originalEnv;
     });
 
     it('should override defaults with environment variables', () => {
-      const originalEnv = { ...process.env };
-
       process.env.KEIRA_DATABASE_HOST = 'custom-host';
       process.env.KEIRA_DATABASE_PORT = '3307';
       process.env.KEIRA_DATABASE_USER = 'custom_user';
       process.env.KEIRA_DATABASE_PASSWORD = 'custom_password';
       process.env.KEIRA_DATABASE_NAME = 'custom_database';
-
-      const getDatabaseConfig = () => ({
-        host: process.env.KEIRA_DATABASE_HOST || 'localhost',
-        port: parseInt(process.env.KEIRA_DATABASE_PORT || '3306'),
-        user: process.env.KEIRA_DATABASE_USER || 'root',
-        password: process.env.KEIRA_DATABASE_PASSWORD || '',
-        database: process.env.KEIRA_DATABASE_NAME || 'acore_world',
-      });
 
       const config = getDatabaseConfig();
 
@@ -104,9 +53,6 @@ describe('Database Connection Pool Integration Tests', () => {
       expect(config.user).toBe('custom_user');
       expect(config.password).toBe('custom_password');
       expect(config.database).toBe('custom_database');
-
-      // Restore environment
-      process.env = originalEnv;
     });
   });
 
@@ -215,7 +161,47 @@ describe('Database Connection Pool Integration Tests', () => {
     });
   });
 
-  describe('Connection Pool Resource Management', () => {
+  // These tests need a real, reachable MySQL instance to exercise actual connection
+  // lifecycles (getConnection/release, pool exhaustion, and post-release reuse). They are
+  // the only tests in this file that create a real mysql2 pool, and only within the test
+  // (or its own beforeEach/afterEach), not globally for the whole file.
+  describeLive('Connection Pool Resource Management', () => {
+    const testConfig = {
+      host: process.env.KEIRA_DATABASE_HOST || 'localhost',
+      port: parseInt(process.env.KEIRA_DATABASE_PORT || '3306'),
+      user: process.env.KEIRA_DATABASE_USER || 'test_user',
+      password: process.env.KEIRA_DATABASE_PASSWORD || 'test_password',
+      database: process.env.KEIRA_DATABASE_NAME || 'test_database',
+      connectionLimit: 10,
+      multipleStatements: true,
+    };
+
+    let testPool;
+
+    beforeEach(() => {
+      testPool = mysql.createPool(testConfig);
+    });
+
+    afterEach((done) => {
+      if (testPool) {
+        testPool.end(() => done());
+      } else {
+        done();
+      }
+    });
+
+    it('should create pool with correct configuration parameters', () => {
+      const poolConfig = testPool.config;
+
+      expect(poolConfig).toBeDefined();
+      expect(typeof poolConfig).toBe('object');
+      expect(poolConfig.connectionLimit).toBe(10);
+
+      expect(typeof testPool.getConnection).toBe('function');
+      expect(typeof testPool.end).toBe('function');
+      expect(typeof testPool.query).toBe('function');
+    });
+
     it('should manage connection lifecycle correctly', (done) => {
       let connectionCount = 0;
       const maxConnections = 3;
@@ -256,49 +242,28 @@ describe('Database Connection Pool Integration Tests', () => {
     });
 
     it('should handle connection pool limits correctly', () => {
-      const poolConfig = {
-        host: 'localhost',
-        port: 3306,
-        user: 'test_user',
-        password: 'test_password',
-        database: 'test_database',
-        connectionLimit: 5,
-      };
-
+      const poolConfig = { ...testConfig, connectionLimit: 5 };
       const limitedPool = mysql.createPool(poolConfig);
 
       expect(limitedPool.config.connectionLimit).toBe(5);
 
       limitedPool.end();
     });
+  });
 
-    it('should validate connection pool parameters', () => {
-      const testConfigs = [
-        {
-          config: { connectionLimit: 10 },
-          valid: true,
-          description: 'Valid standard configuration',
-        },
-        {
-          config: { connectionLimit: 1 },
-          valid: true,
-          description: 'Minimum viable configuration',
-        },
-        {
-          config: { connectionLimit: 100 },
-          valid: true,
-          description: 'High-performance configuration',
-        },
-      ];
+  describe('Connection Pool Parameter Validation', () => {
+    it('should reject non-positive connection limits', () => {
+      // Exercises the actual validation rule (connectionLimit > 0), rather than asserting
+      // on a `valid` flag the test itself declared (which was always true and never
+      // exercised the false branch).
+      const isValidConnectionLimit = (connectionLimit) => typeof connectionLimit === 'number' && connectionLimit > 0;
 
-      testConfigs.forEach(({ config, valid, description }) => {
-        expect(config.connectionLimit).toBeDefined();
-        expect(typeof config.connectionLimit).toBe('number');
-
-        if (valid) {
-          expect(config.connectionLimit).toBeGreaterThan(0);
-        }
-      });
+      expect(isValidConnectionLimit(10)).toBe(true);
+      expect(isValidConnectionLimit(1)).toBe(true);
+      expect(isValidConnectionLimit(100)).toBe(true);
+      expect(isValidConnectionLimit(0)).toBe(false);
+      expect(isValidConnectionLimit(-1)).toBe(false);
+      expect(isValidConnectionLimit('10')).toBe(false);
     });
   });
 
@@ -368,17 +333,15 @@ describe('Database Connection Pool Integration Tests', () => {
     });
 
     it('should validate connection state response structure', () => {
-      const stateResponses = [
-        { state: 'CONNECTED' },
-        { state: 'DISCONNECTED' },
-        { state: 'ERROR', error: 'Connection timeout' },
-        { state: 'CONNECTING' },
-      ];
+      // docker/api/database-api.js's /api/database/state only ever returns CONNECTED,
+      // DISCONNECTED, or ERROR (see libs/shared/constants/src/types/database-api.ts and
+      // docker/tests/database-api.spec.js) - CONNECTING is not a state the API can return.
+      const stateResponses = [{ state: 'CONNECTED' }, { state: 'DISCONNECTED' }, { state: 'ERROR', error: 'Connection timeout' }];
 
       stateResponses.forEach((response) => {
         expect(response).toHaveProperty('state');
         expect(typeof response.state).toBe('string');
-        expect(['CONNECTED', 'DISCONNECTED', 'ERROR', 'CONNECTING']).toContain(response.state);
+        expect(['CONNECTED', 'DISCONNECTED', 'ERROR']).toContain(response.state);
 
         if (response.state === 'ERROR') {
           expect(response).toHaveProperty('error');

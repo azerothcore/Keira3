@@ -104,9 +104,7 @@ jobs:
           fi
 
       - name: Run Docker-specific tests
-        run: |
-          # Run unit tests for database API
-          npm test -- --config docker/tests/jest.config.js --coverage
+        run: npm run docker:test:coverage
         env:
           NODE_ENV: test
 

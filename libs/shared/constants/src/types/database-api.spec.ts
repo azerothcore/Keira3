@@ -9,6 +9,7 @@ import {
   isDatabaseConnectionRequest,
   isDatabaseQueryRequest,
   isDatabaseSuccessResponse,
+  isDatabaseConnectionSuccessResponse,
   isDatabaseErrorResponse,
   DatabaseFieldInfo,
   QueryResultMeta,
@@ -66,6 +67,14 @@ describe('Database API Type Definitions', () => {
       expect(isDatabaseQueryRequest(invalidRequest3)).toBe(false);
     });
 
+    it('should reject a DatabaseQueryRequest with malformed params', () => {
+      expect(isDatabaseQueryRequest({ sql: 'SELECT 1', params: {} })).toBe(false);
+      expect(isDatabaseQueryRequest({ sql: 'SELECT 1', params: 'nope' })).toBe(false);
+      expect(isDatabaseQueryRequest({ sql: 'SELECT 1', params: [1, 'two', null] })).toBe(true);
+      expect(isDatabaseQueryRequest({ sql: 'SELECT 1', params: [{}] })).toBe(false);
+      expect(isDatabaseQueryRequest({ sql: 'SELECT 1', params: [undefined] })).toBe(false);
+    });
+
     it('should validate DatabaseSuccessResponse correctly', () => {
       const successResponse = {
         success: true,
@@ -86,6 +95,23 @@ describe('Database API Type Definitions', () => {
       expect(isDatabaseSuccessResponse(successResponse)).toBe(true);
       expect(isDatabaseSuccessResponse(errorResponse)).toBe(false);
       expect(isDatabaseSuccessResponse(invalidResponse)).toBe(false);
+    });
+
+    it('should reject a DatabaseSuccessResponse missing result or fields', () => {
+      expect(isDatabaseSuccessResponse({ success: true })).toBe(false);
+      expect(isDatabaseSuccessResponse({ success: true, result: [] })).toBe(false);
+      expect(isDatabaseSuccessResponse({ success: true, fields: [] })).toBe(false);
+      expect(isDatabaseSuccessResponse({ success: true, result: [], fields: 'nope' })).toBe(false);
+      expect(isDatabaseSuccessResponse({ success: true, result: [], fields: [] })).toBe(true);
+    });
+
+    it('should validate DatabaseConnectionSuccessResponse correctly', () => {
+      expect(isDatabaseConnectionSuccessResponse({ success: true, message: 'Connected' })).toBe(true);
+      expect(isDatabaseConnectionSuccessResponse({ success: true })).toBe(false);
+      expect(isDatabaseConnectionSuccessResponse({ success: true, message: 42 })).toBe(false);
+      expect(isDatabaseConnectionSuccessResponse({ success: false, error: 'nope' })).toBe(false);
+      // Query success responses (result/fields, no message) must not satisfy the connection guard
+      expect(isDatabaseConnectionSuccessResponse({ success: true, result: [], fields: [] })).toBe(false);
     });
 
     it('should validate DatabaseErrorResponse correctly', () => {

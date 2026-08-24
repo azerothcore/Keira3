@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { ElectronService } from '@keira/shared/common-services';
 import { KeiraAppConfig, KEIRA_APP_CONFIG_TOKEN } from '@keira/shared/config';
@@ -35,9 +36,10 @@ describe('MysqlService E2E Integration Tests', () => {
     electronService = instance(electronServiceMock);
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
       providers: [
         provideZonelessChangeDetection(),
+        provideHttpClient(),
+        provideHttpClientTesting(),
         MysqlService,
         { provide: ElectronService, useValue: electronService },
         { provide: KEIRA_APP_CONFIG_TOKEN, useValue: mockConfig },
@@ -47,7 +49,9 @@ describe('MysqlService E2E Integration Tests', () => {
     service = TestBed.inject(MysqlService);
     httpMock = TestBed.inject(HttpTestingController);
 
-    service['isWebEnvironment'] = true;
+    // mockConfig (environment: 'DOCKER', databaseApiUrl set) already makes the constructor
+    // select web mode via isWebLikeEnvironment() - see the dedicated constructor test below -
+    // so isWebEnvironment is not force-set here.
 
     // Silence the service's intentional console.error logging on query errors
     vi.spyOn(console, 'error').mockImplementation(() => undefined);
@@ -55,6 +59,12 @@ describe('MysqlService E2E Integration Tests', () => {
 
   afterEach(() => {
     httpMock.verify();
+  });
+
+  it('constructor selects web mode from a DOCKER/WEB-like config without a forced override', () => {
+    // Exercises the actual constructor branch (isWebLikeEnvironment(appConfig)) instead of
+    // asserting on a directly-overwritten private field.
+    expect(service['isWebEnvironment']).toBe(true);
   });
 
   describe('Connection Pool Integration', () => {
@@ -150,8 +160,12 @@ describe('MysqlService E2E Integration Tests', () => {
       });
     });
 
-    it('should handle connection pool exhaustion gracefully', async () => {
+    it('should handle concurrent queries where the pool rejects some with 503', async () => {
+      // Simulates real pool exhaustion: some of the concurrent requests are flushed with a
+      // 503 (pool exhausted) response instead of success, and the test asserts on the actual
+      // split rather than a tautological successful+errors===total count.
       const simultaneousQueries = 10;
+      const exhaustedCount = 4;
       const longRunningQuery = 'SELECT SLEEP(1)'; // Simulates slow query
 
       const queryPromises: Promise<any>[] = [];
@@ -169,19 +183,22 @@ describe('MysqlService E2E Integration Tests', () => {
       // Mock responses for all queries
       const requests = httpMock.match('/api/database/query');
       expect(requests.length).toBe(simultaneousQueries);
-      for (const req of requests) {
-        req.flush({ success: true, result: [{ sleep: 1 }], fields: [] });
-      }
+      requests.forEach((req, i) => {
+        if (i < exhaustedCount) {
+          req.flush({ success: false, error: 'Too many connections' }, { status: 503, statusText: 'Service Unavailable' });
+        } else {
+          req.flush({ success: true, result: [{ sleep: 1 }], fields: [] });
+        }
+      });
 
       const results = await Promise.all(queryPromises);
       expect(results.length).toBe(simultaneousQueries);
 
-      // Some queries should succeed, others may timeout or error due to pool limits
       const successful = results.filter((r) => r && !r.error);
       const errors = results.filter((r) => r && r.error);
 
-      // At least some queries should process
-      expect(successful.length + errors.length).toBe(simultaneousQueries);
+      expect(successful.length).toBe(simultaneousQueries - exhaustedCount);
+      expect(errors.length).toBe(exhaustedCount);
     }, 15000);
   });
 
@@ -404,9 +421,10 @@ describe('MysqlService E2E Integration Tests', () => {
       // Create service with custom config
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({
-        imports: [HttpClientTestingModule],
         providers: [
           provideZonelessChangeDetection(),
+          provideHttpClient(),
+          provideHttpClientTesting(),
           MysqlService,
           { provide: ElectronService, useValue: electronService },
           { provide: KEIRA_APP_CONFIG_TOKEN, useValue: customConfig },
@@ -416,7 +434,8 @@ describe('MysqlService E2E Integration Tests', () => {
       const customService = TestBed.inject(MysqlService);
       const customHttpMock = TestBed.inject(HttpTestingController);
 
-      customService['isWebEnvironment'] = true;
+      // customConfig keeps environment: 'DOCKER', so the constructor already selects web
+      // mode via isWebLikeEnvironment() - no forced override needed here.
 
       const resultPromise = firstValueFrom(customService.dbQuery('SELECT 1'));
 
@@ -439,9 +458,10 @@ describe('MysqlService E2E Integration Tests', () => {
 
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({
-        imports: [HttpClientTestingModule],
         providers: [
           provideZonelessChangeDetection(),
+          provideHttpClient(),
+          provideHttpClientTesting(),
           MysqlService,
           { provide: ElectronService, useValue: electronService },
           { provide: KEIRA_APP_CONFIG_TOKEN, useValue: configWithoutApiUrl },
