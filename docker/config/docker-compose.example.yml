@@ -1,0 +1,124 @@
+version: '3.8'
+
+services:
+  keira3:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: keira3
+    ports:
+      - "8080:8080"  # Web interface
+      - "3001:3001"  # API service (optional, for direct API access)
+    environment:
+      # Database Configuration (Required)
+      KEIRA_DATABASE_HOST: mysql-server
+      KEIRA_DATABASE_PORT: 3306
+      KEIRA_DATABASE_USER: acore
+      KEIRA_DATABASE_PASSWORD: azerothcore123
+      KEIRA_DATABASE_NAME: acore_world
+
+      # API Configuration (Optional)
+      DB_API_PORT: 3001
+      DB_API_HOST: 0.0.0.0
+      NODE_ENV: production
+
+      # Connection Pool Settings (Optional)
+      DB_CONNECTION_LIMIT: 10
+      DB_ACQUIRE_TIMEOUT: 60000
+
+      # Application Settings (Optional)
+      KEIRA_PORT: 8080
+      KEIRA_HOST: 0.0.0.0
+      LOG_LEVEL: info
+    depends_on:
+      mysql-server:
+        condition: service_healthy
+    networks:
+      - keira-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "--quiet", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    volumes:
+      # Optional: Mount logs directory for external access
+      - keira-logs:/var/log/nginx
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.keira.rule=Host(`keira.localhost`)"
+      - "traefik.http.services.keira.loadbalancer.server.port=8080"
+
+  # Example MySQL server configuration
+  mysql-server:
+    image: mysql:8.0
+    container_name: keira3-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: azerothcore123
+      MYSQL_DATABASE: acore_world
+      MYSQL_USER: acore
+      MYSQL_PASSWORD: azerothcore123
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      # Optional: Mount SQL initialization scripts
+      # - ./sql-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - keira-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$MYSQL_ROOT_PASSWORD"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --sql-mode=STRICT_TRANS_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO
+      --max-connections=200
+      --innodb-buffer-pool-size=256M
+
+  # Optional: Reverse proxy for SSL termination and load balancing
+  traefik:
+    image: traefik:v2.10
+    container_name: keira3-traefik
+    command:
+      - "--api.dashboard=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.letsencrypt.acme.email=your-email@example.com"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/acme.json"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"  # Traefik dashboard
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik-acme:/acme.json
+    networks:
+      - keira-network
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.rule=Host(`traefik.localhost`)"
+      - "traefik.http.routers.dashboard.service=api@internal"
+
+volumes:
+  mysql-data:
+    driver: local
+  keira-logs:
+    driver: local
+  traefik-acme:
+    driver: local
+
+networks:
+  keira-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

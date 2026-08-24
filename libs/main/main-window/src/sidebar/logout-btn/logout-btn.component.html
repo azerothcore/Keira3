@@ -1,4 +1,4 @@
 <button class="btn btn-sm btn-secondary" (click)="openModalConfirm()">
-  {{ 'SIDEBAR.DISCONNECT' | translate }}
+  {{ (isWebEnvironment ? 'SIDEBAR.LOGOUT' : 'SIDEBAR.DISCONNECT') | translate }}
   <i class="fas fa-power-off"></i>
 </button>

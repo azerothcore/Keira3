@@ -71,6 +71,8 @@
     "UNSAVED_CHANGES": "Unsaved changes",
     "DISCONNECT": "Disconnect",
     "MODAL_DISCONNECT": "Are you sure you want to disconnect?",
+    "LOGOUT": "Logout",
+    "MODAL_LOGOUT": "Are you sure you want to log out?",
     "SSH_TUNNEL_ACTIVE": "SSH Tunnel",
     "SSH_TUNNEL_VIA": "Connected via SSH tunnel through {{ host }}",
     "CREATURE": {

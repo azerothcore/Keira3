@@ -14,6 +14,10 @@ src/**/*.js
 # dependencies
 node_modules/
 
+# Environment files with sensitive data
+.env
+docker/.env
+
 # IDEs and editors
 /.idea
 .project
@@ -55,6 +59,7 @@ apps/keira/coverage
 /.sass-cache
 /connect.lock
 /coverage
+docker/tests/coverage
 /libpeerconnection.log
 npm-debug.log
 testem.log

@@ -1,11 +1,12 @@
 import { enableProdMode, importProvidersFrom, provideZonelessChangeDetection } from '@angular/core';
 
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withInterceptors } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter, withHashLocation } from '@angular/router';
-import { KEIRA_APP_CONFIG_TOKEN, highlightOptions, toastrConfig, uiSwitchConfig } from '@keira/shared/config';
+import { KEIRA_APP_CONFIG_TOKEN, highlightOptions, isWebLikeEnvironment, toastrConfig, uiSwitchConfig } from '@keira/shared/config';
+import { webAuth401Interceptor } from '@keira/shared/login-config';
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
@@ -14,6 +15,8 @@ import { UiSwitchModule } from 'ngx-ui-switch';
 import { AppComponent } from './app/app.component';
 import { KEIRA_ROUTES } from './app/routes';
 import { KEIRA_APP_CONFIG } from './environments/environment';
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import packageInfo from '../../../package.json';
 
 if (KEIRA_APP_CONFIG.production) {
   enableProdMode();
@@ -33,7 +36,8 @@ bootstrapApplication(AppComponent, {
       UiSwitchModule.forRoot(uiSwitchConfig),
     ),
     provideTranslateService({
-      loader: provideTranslateHttpLoader({ prefix: './assets/i18n/', suffix: '.json' }),
+      // Version query busts translation files cached before nginx sent Cache-Control
+      loader: provideTranslateHttpLoader({ prefix: './assets/i18n/', suffix: `.json?v=${packageInfo.version}` }),
       fallbackLang: 'en',
     }),
     /* Config */
@@ -43,6 +47,6 @@ bootstrapApplication(AppComponent, {
       provide: HIGHLIGHT_OPTIONS,
       useValue: highlightOptions,
     },
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(withInterceptorsFromDi(), withInterceptors(isWebLikeEnvironment(KEIRA_APP_CONFIG) ? [webAuth401Interceptor] : [])),
   ],
 }).catch((err) => console.error(err));

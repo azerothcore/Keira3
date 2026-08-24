@@ -1,0 +1,28 @@
+<div class="login-window d-flex align-items-center justify-content-center">
+  <form class="login-card card p-4" [formGroup]="form" (ngSubmit)="onLogin()">
+    <h4 class="card-title text-center mb-1">Keira3</h4>
+    <div class="text-center text-muted small mb-3">v{{ KEIRA_VERSION }} — web edition</div>
+
+    <div class="mb-3">
+      <label class="form-label" for="login-username">Username</label>
+      <input id="login-username" class="form-control" type="text" formControlName="username" autocomplete="username" />
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" for="login-password">Password</label>
+      <input id="login-password" class="form-control" type="password" formControlName="password" autocomplete="current-password" />
+    </div>
+
+    @if (error) {
+      <div class="alert alert-danger py-2" id="login-error">{{ error }}</div>
+    }
+
+    <button class="btn btn-primary w-100" type="submit" [disabled]="loading" id="login-submit">
+      @if (loading) {
+        Signing in…
+      } @else {
+        Sign in
+      }
+    </button>
+  </form>
+</div>

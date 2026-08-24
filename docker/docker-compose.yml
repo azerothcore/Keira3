@@ -1,0 +1,142 @@
+version: '3.8'
+
+services:
+  keira3:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    image: keira3:latest
+    container_name: keira3-app
+    restart: unless-stopped
+
+    # Port configuration
+    ports:
+      - "${KEIRA_PORT:-4201}:8080"
+
+    # Environment variables
+    environment:
+      - NODE_ENV=production
+      - KEIRA_PORT=8080
+      - KEIRA_HOST=0.0.0.0
+      - KEIRA_DATABASE_HOST=${DATABASE_HOST:-ac-mysql}
+      - KEIRA_DATABASE_PORT=${DATABASE_PORT:-3306}
+      - KEIRA_DATABASE_USER=${DATABASE_USER:-root}
+      - KEIRA_DATABASE_PASSWORD=${DATABASE_PASSWORD:-password}
+      - KEIRA_DATABASE_NAME=${DATABASE_NAME:-acore_world}
+
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+        reservations:
+          memory: 256M
+          cpus: '0.25'
+
+    # Health check
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+    # Logging configuration
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    # Security options (simplified for integration)
+    security_opt:
+      - no-new-privileges:true
+
+    # Networks
+    networks:
+      - keira-network
+
+    # Dependencies (optional - uncomment if using with database)
+    # depends_on:
+    #   mysql:
+    #     condition: service_healthy
+
+  # Optional: MySQL database service
+  # Uncomment this section if you want to deploy with a database
+  # mysql:
+  #   image: mysql:8.0
+  #   container_name: keira3-mysql
+  #   restart: unless-stopped
+  #
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+  #     MYSQL_DATABASE: ${DATABASE_NAME:-acore_world}
+  #     MYSQL_USER: ${DATABASE_USER:-acore}
+  #     MYSQL_PASSWORD: ${DATABASE_PASSWORD}
+  #
+  #   ports:
+  #     - "${DATABASE_PORT:-3306}:3306"
+  #
+  #   volumes:
+  #     - mysql_data:/var/lib/mysql
+  #     - ./mysql-init:/docker-entrypoint-initdb.d:ro
+  #
+  #   command: --default-authentication-plugin=mysql_native_password
+  #
+  #   healthcheck:
+  #     test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+  #     timeout: 20s
+  #     retries: 10
+  #     interval: 10s
+  #     start_period: 60s
+  #
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         memory: 1G
+  #         cpus: '1.0'
+  #       reservations:
+  #         memory: 512M
+  #         cpus: '0.5'
+  #
+  #   logging:
+  #     driver: json-file
+  #     options:
+  #       max-size: "10m"
+  #       max-file: "3"
+  #
+  #   networks:
+  #     - keira-network
+
+  # Optional: Reverse proxy with SSL termination
+  # Uncomment this section for production deployment with HTTPS
+  # nginx-proxy:
+  #   image: nginx:alpine
+  #   container_name: keira3-proxy
+  #   restart: unless-stopped
+  #
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #
+  #   volumes:
+  #     - ./nginx-proxy.conf:/etc/nginx/nginx.conf:ro
+  #     - ./ssl:/etc/nginx/ssl:ro
+  #
+  #   depends_on:
+  #     - keira3
+  #
+  #   networks:
+  #     - keira-network
+
+networks:
+  keira-network:
+    external: true
+    name: azerothcore
+
+# Uncomment if using MySQL
+# volumes:
+#   mysql_data:
+#     driver: local
