@@ -53,7 +53,7 @@
     "ngx-toastr": "20.0.5",
     "ngx-ui-switch": "16.1.0",
     "serialize-javascript": "7.0.6",
-    "sqlite3": "5.1.7",
+    "sqlite3": "6.0.1",
     "ssh2": "1.17.0",
     "tslib": "2.8.1"
   },
