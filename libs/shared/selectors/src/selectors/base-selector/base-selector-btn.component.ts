@@ -7,7 +7,6 @@ import { SubscriptionHandler } from '@keira/shared/utils';
 import { BaseModalConfig } from './base-selector.model';
 
 @Directive()
-// eslint-disable-next-line @angular-eslint/directive-class-suffix
 export abstract class BaseSelectorBtnComponent<ModalConfigType extends BaseModalConfig = BaseModalConfig> extends SubscriptionHandler {
   @Input({ required: true }) control!: AbstractControl;
   readonly config = input<ModalConfigType>();
