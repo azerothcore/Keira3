@@ -7,3 +7,6 @@ updates:
     groups:
       dev-dependencies:
         dependency-type: development
+    ignore:
+      # patched via patch-package, bump by hand (see patches/README.md)
+      - dependency-name: ngx-bootstrap
