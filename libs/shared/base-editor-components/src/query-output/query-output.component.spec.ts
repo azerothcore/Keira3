@@ -65,7 +65,6 @@ describe('QueryOutputComponent', () => {
     const host = fixture.componentInstance;
 
     host.editorService = {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       reloadSameEntity(_changeDetectorRef: any) {},
     } as unknown as EditorService<TableRow>;
 
