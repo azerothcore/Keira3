@@ -43,9 +43,8 @@ test.describe('Check Home Page', () => {
     await sleep(500);
     const selector = '#sqlite-e2e-test';
     const expectedText = 'Tricks and Treats of Azeroth';
-    const element = await firstWindow.$(selector);
-    const text = await element.getAttribute('e2e');
-    expect(text).toEqual(expectedText);
+    const element = firstWindow.locator(selector);
+    await expect(element).toHaveAttribute('e2e', expectedText);
   });
 
   test.afterAll(async () => {
