@@ -29,6 +29,7 @@ describe('CreateComponent', () => {
   const mockId = 'mockId';
   const takenId = 100;
   const maxId = 12;
+  const minId = -430;
   const MAX_INT_UNSIGNED_VALUE = 4294967295;
 
   beforeEach(() => {
@@ -43,6 +44,7 @@ describe('CreateComponent', () => {
 
     const MockedMysqlQueryService = mock(MysqlQueryService);
     when(MockedMysqlQueryService.getMaxId(mockTable, mockId)).thenReturn(of([{ max: maxId }]));
+    when(MockedMysqlQueryService.getMinId(mockTable, mockId)).thenReturn(of([{ min: minId }]));
     when(MockedMysqlQueryService.selectAll(mockTable, mockId, anything())).thenReturn(of([]));
     when(MockedMysqlQueryService.selectAll(mockTable, mockId, takenId)).thenReturn(of([{}]));
 
@@ -127,5 +129,38 @@ describe('CreateComponent', () => {
     const { component } = setup();
     component.customStartingId = 10;
     expect(component['calculateNextId'](5)).toEqual(10);
+  });
+
+  it('in max mode the customStartId should be preferred when the table is empty', () => {
+    const { component, MockedMysqlQueryService } = setup();
+    reset(MockedMysqlQueryService);
+    when(MockedMysqlQueryService.getMaxId(mockTable, mockId)).thenReturn(of([{ max: null as any }]));
+    component.customStartingId = 100;
+
+    component['getNextId']();
+
+    expect(component.idModel).toEqual(100);
+  });
+
+  it('in min mode it should propose the lowest id minus one', () => {
+    const { component } = setup();
+    component.nextIdFrom = 'min';
+
+    component['getNextId']();
+
+    expect(component.idModel).toEqual(-431);
+    expect(component.loading).toBe(false);
+  });
+
+  it('in min mode the customStartId should be preferred when the table is empty', () => {
+    const { component, MockedMysqlQueryService } = setup();
+    reset(MockedMysqlQueryService);
+    when(MockedMysqlQueryService.getMinId(mockTable, mockId)).thenReturn(of([{ min: null as any }]));
+    component.nextIdFrom = 'min';
+    component.customStartingId = -1;
+
+    component['getNextId']();
+
+    expect(component.idModel).toEqual(-1);
   });
 });

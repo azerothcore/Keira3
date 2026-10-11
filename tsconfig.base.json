@@ -27,6 +27,7 @@
     "paths": {
       "@keira/features/conditions": ["libs/features/conditions/src/index.ts"],
       "@keira/features/creature": ["libs/features/creature/src/index.ts"],
+      "@keira/features/creature-immunities": ["libs/features/creature-immunities/src/index.ts"],
       "@keira/features/dashboard": ["libs/features/dashboard/src/index.ts"],
       "@keira/features/game-tele": ["libs/features/game-tele/src/index.ts"],
       "@keira/features/gameobject": ["libs/features/gameobject/src/index.ts"],

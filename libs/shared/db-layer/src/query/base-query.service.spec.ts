@@ -137,5 +137,46 @@ describe('BaseQueryService', () => {
           'GROUP BY sel1, sel2, sel3 LIMIT 20',
       );
     });
+
+    it('should properly work when using orderFields', () => {
+      const { service } = setup();
+      const queryForm: QueryForm<any> = {
+        fields: {
+          param: null,
+        },
+        limit: 50,
+      };
+
+      expect(service.getSearchQuery(table, queryForm, null, null, ['myField'])).toEqual(
+        'SELECT * ' + 'FROM `my_keira3` ORDER BY myField ASC LIMIT 50',
+      );
+    });
+
+    it('should properly work when using multiple orderFields', () => {
+      const { service } = setup();
+      const queryForm: QueryForm<any> = {
+        fields: {
+          param: null,
+        },
+      };
+
+      expect(service.getSearchQuery(table, queryForm, null, null, ['myField1', 'myField2'])).toEqual(
+        'SELECT * ' + 'FROM `my_keira3` ORDER BY myField1 ASC, myField2 ASC',
+      );
+    });
+
+    it('should append the ascending ORDER BY before the LIMIT', () => {
+      const { service } = setup();
+      const queryForm: QueryForm<any> = {
+        fields: {
+          ID: null,
+        },
+        limit: 50,
+      };
+
+      expect(service.getSearchQuery('creature_immunities', queryForm, null, null, ['ID'])).toEqual(
+        'SELECT * FROM `creature_immunities` ORDER BY ID ASC LIMIT 50',
+      );
+    });
   });
 });

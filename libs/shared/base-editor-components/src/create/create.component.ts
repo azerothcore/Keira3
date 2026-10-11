@@ -6,6 +6,7 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
 import { SubscriptionHandler } from '@keira/shared/utils';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { QueryError } from 'mysql2';
+import { map, Observable } from 'rxjs';
 
 const MAX_INT_UNSIGNED_VALUE = 4294967295;
 
@@ -22,6 +23,7 @@ export class CreateComponent<T extends TableRow> extends SubscriptionHandler imp
   @Input({ required: true }) handlerService!: HandlerService<T>;
   @Input({ required: true }) queryService!: MysqlQueryService;
   @Input() maxEntryValue = MAX_INT_UNSIGNED_VALUE;
+  @Input() nextIdFrom: 'max' | 'min' = 'max';
 
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
@@ -58,11 +60,15 @@ export class CreateComponent<T extends TableRow> extends SubscriptionHandler imp
 
   private getNextId(): void {
     this._loading = true;
+    const currentId$: Observable<number | null> =
+      this.nextIdFrom === 'min'
+        ? this.queryService.getMinId(this.entityTable, this.entityIdField).pipe(map((rows) => rows[0].min))
+        : this.queryService.getMaxId(this.entityTable, this.entityIdField).pipe(map((rows) => rows[0].max));
+
     this.subscriptions.push(
-      this.queryService.getMaxId(this.entityTable, this.entityIdField).subscribe({
-        next: (data) => {
-          const currentMax = data[0].max;
-          this.idModel = this.calculateNextId(currentMax);
+      currentId$.subscribe({
+        next: (currentId) => {
+          this.idModel = this.calculateNextId(currentId);
           this.isIdFree = true;
           this._loading = false;
           this.changeDetectorRef.markForCheck();
@@ -81,7 +87,10 @@ export class CreateComponent<T extends TableRow> extends SubscriptionHandler imp
     }
   }
 
-  private calculateNextId(currentMax: number): number {
-    return currentMax < this.customStartingId ? this.customStartingId : currentMax + 1;
+  private calculateNextId(currentId: number | null): number {
+    if (this.nextIdFrom === 'min') {
+      return currentId === null ? this.customStartingId : currentId - 1;
+    }
+    return currentId === null || currentId < this.customStartingId ? this.customStartingId : currentId + 1;
   }
 }

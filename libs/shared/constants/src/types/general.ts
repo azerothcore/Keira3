@@ -22,6 +22,10 @@ export interface MaxRow extends TableRow {
   max: number;
 }
 
+export interface MinRow extends TableRow {
+  min: number;
+}
+
 export interface VersionRow extends TableRow {
   core_version: string;
   core_revision: string;

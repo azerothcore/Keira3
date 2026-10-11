@@ -19,13 +19,20 @@ export abstract class SearchService<T extends TableRow> extends SubscriptionHand
   protected abstract readonly fieldList: StringKeys<T>[];
   protected readonly selectFields: string[] | undefined = undefined;
   protected readonly groupFields: string[] | undefined = undefined;
+  protected readonly orderFields: string[] | undefined = undefined;
 
   protected init(): void {
     for (const field of this.fieldList) {
       this.fields.addControl(field, new FormControl());
     }
 
-    this.query = this.queryService.getSearchQuery(this.entityTable, this.queryForm.getRawValue(), this.selectFields, this.groupFields);
+    this.query = this.queryService.getSearchQuery(
+      this.entityTable,
+      this.queryForm.getRawValue(),
+      this.selectFields,
+      this.groupFields,
+      this.orderFields,
+    );
 
     this.subscriptions.push(
       this.queryForm.valueChanges.subscribe(() => {
@@ -35,6 +42,7 @@ export abstract class SearchService<T extends TableRow> extends SubscriptionHand
             this.queryForm.getRawValue(),
             this.selectFields,
             this.groupFields,
+            this.orderFields,
           );
         }
       }),
