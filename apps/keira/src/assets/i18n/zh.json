@@ -182,6 +182,11 @@
       "SEARCH_GAME_TELE": "搜索传送",
       "SELECT_GAME_TELE": "传送编辑器"
     },
+    "CREATURE_IMMUNITIES": {
+      "TITLE": "Creature Immunities",
+      "SEARCH": "Search Creature Immunities",
+      "EDITOR": "Creature Immunities"
+    },
     "TRAINER": {
       "TITLE": "训练师",
       "SEARCH_TRAINER": "搜索训练师",
@@ -266,7 +271,8 @@
       "ITEMID1": "这是来自Item.dbc中右手使用的装备物品编号。",
       "ITEMID2": "这是来自Item.dbc中左手使用的装备物品编号。",
       "ITEMID3": "这是来自Item.dbc中远程栏位使用的装备物品编号。",
-      "FACTION": "当引用生物的阵营ID时，它是选择器中左侧的'ID'列，更多信息请查看wiki中的'faction'。"
+      "FACTION": "当引用生物的阵营ID时，它是选择器中左侧的'ID'列，更多信息请查看wiki中的'faction'。",
+      "IMMUNITIES": "Entry here refers to the ID in creature_immunities"
     },
     "TEMPLATE_ADDON": {
       "ENTRY": "链接至creature_template表的entry字段",
@@ -944,6 +950,19 @@
       "SPELL_PRIORITY": "未知...某些法术的唯一使用的值是50。",
       "REQUIRED_AURA_VISION": "未知...只有16个法术使用，其他均为0，可以用于视觉效果。"
     }
+  },
+  "CREATURE_IMMUNITIES": {
+    "EDITOR": "Creature Immunities Editor",
+    "GENERATE_COMMENT": "Generate Comment",
+    "ID_TOOLTIP": "Positive references come from spells confirming presence of an immunity. (Aura Id 147 SPELL_AURA_MECHANIC_IMMUNITY_MASK) Negative values are custom immunities.",
+    "SCHOOL_MASK_TOOLTIP": "Spell school immunity",
+    "DISPEL_TYPE_MASK_TOOLTIP": "Bitmask of the dispel types",
+    "MECHANICS_MASK_TOOLTIP": "Bitmask of mechanics the creature is immune to.",
+    "EFFECTS_TOOLTIP": "Comma-separated list of spell effect ids",
+    "AURAS_TOOLTIP": "Comma-separated list of aura ids",
+    "IMMUNE_AOE_TOOLTIP": "1 makes the creature immune to area-of-effect spells, 0 leaves it vulnerable.",
+    "IMMUNE_CHAIN_TOOLTIP": "1 makes the creature immune to chain spells such as Chain Lightning, 0 leaves it vulnerable.",
+    "COMMENT_TOOLTIP": "Free text. Generate Comment rebuilds it from the mask and CSV columns above; it can also be typed by hand."
   },
   "GAME_TELE": {
     "EDITOR": "传送编辑器"

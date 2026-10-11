@@ -182,6 +182,11 @@
       "SEARCH_GAME_TELE": "Buscar Teletransporte",
       "SELECT_GAME_TELE": "Editor de Teletransporte"
     },
+    "CREATURE_IMMUNITIES": {
+      "TITLE": "Creature Immunities",
+      "SEARCH": "Search Creature Immunities",
+      "EDITOR": "Creature Immunities"
+    },
     "TRAINER": {
       "TITLE": "Entrenador",
       "SEARCH_TRAINER": "Buscar Entrenador",
@@ -266,7 +271,8 @@
       "ITEMID1": "Este es el número de objeto del equipamiento usado en la mano derecha de Item.dbc.",
       "ITEMID2": "Este es el número de objeto del equipamiento usado en la mano izquierda de Item.dbc.",
       "ITEMID3": "Este es el número de objeto del equipamiento usado en la ranura de distancia de Item.dbc.",
-      "FACTION": "Cuando se refiere al ID de Facción de la Criatura, es la columna de la izquierda 'ID' en el selector, para más información consulta 'faction' en la wiki."
+      "FACTION": "Cuando se refiere al ID de Facción de la Criatura, es la columna de la izquierda 'ID' en el selector, para más información consulta 'faction' en la wiki.",
+      "IMMUNITIES": "Entry here refers to the ID in creature_immunities"
     },
     "TEMPLATE_ADDON": {
       "ENTRY": "Enlazado con creature_template.entry (ID de la Criatura)",
@@ -944,6 +950,19 @@
       "SPELL_PRIORITY": "Desconocido. Sólo se usa el valor 50 para algunos hechizos.",
       "REQUIRED_AURA_VISION": "Desconocido. Sólo 16 hechizos usan otro valor como 0. Podría ser usado para efectos visuales."
     }
+  },
+  "CREATURE_IMMUNITIES": {
+    "EDITOR": "Creature Immunities Editor",
+    "GENERATE_COMMENT": "Generate Comment",
+    "ID_TOOLTIP": "Positive references come from spells confirming presence of an immunity. (Aura Id 147 SPELL_AURA_MECHANIC_IMMUNITY_MASK) Negative values are custom immunities.",
+    "SCHOOL_MASK_TOOLTIP": "Spell school immunity",
+    "DISPEL_TYPE_MASK_TOOLTIP": "Bitmask of the dispel types",
+    "MECHANICS_MASK_TOOLTIP": "Bitmask of mechanics the creature is immune to.",
+    "EFFECTS_TOOLTIP": "Comma-separated list of spell effect ids",
+    "AURAS_TOOLTIP": "Comma-separated list of aura ids",
+    "IMMUNE_AOE_TOOLTIP": "1 makes the creature immune to area-of-effect spells, 0 leaves it vulnerable.",
+    "IMMUNE_CHAIN_TOOLTIP": "1 makes the creature immune to chain spells such as Chain Lightning, 0 leaves it vulnerable.",
+    "COMMENT_TOOLTIP": "Free text. Generate Comment rebuilds it from the mask and CSV columns above; it can also be typed by hand."
   },
   "GAME_TELE": {
     "EDITOR": "Editor de Teletransporte"
