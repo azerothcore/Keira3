@@ -1,10 +1,10 @@
+import { provideRouter } from '@angular/router';
 import { vi } from 'vitest';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
 import { LATEST_RELEASE_API_URL } from '@keira/shared/constants';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
@@ -33,7 +33,6 @@ describe('AppComponent', () => {
         BsDropdownMenuDirective,
         FormsModule,
         ReactiveFormsModule,
-        RouterTestingModule,
         ModalConfirmComponent,
         ToastrModule.forRoot(),
         TranslateTestingModule,
@@ -43,6 +42,7 @@ describe('AppComponent', () => {
         AppComponent,
       ],
       providers: [
+        provideRouter([]),
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
         { provide: ElectronService, useValue: instance(mock(ElectronService)) },

@@ -1,14 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideRouter } from '@angular/router';
 import { ReferenceLootHandlerService } from './reference-loot-handler.service';
 
 describe('ReferenceLootHandlerService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), ReferenceLootHandlerService],
+      providers: [provideRouter([]), provideZonelessChangeDetection(), provideNoopAnimations(), ReferenceLootHandlerService],
     }),
   );
 

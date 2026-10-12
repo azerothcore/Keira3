@@ -2,16 +2,14 @@ import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideRouter, Router } from '@angular/router';
 import { Conditions } from '@keira/shared/acore-world-model';
 import { ConditionsHandlerService } from './conditions-handler.service';
 
 describe('ConditionsHandlerService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), ConditionsHandlerService],
+      providers: [provideRouter([]), provideZonelessChangeDetection(), provideNoopAnimations(), ConditionsHandlerService],
     }),
   );
 

@@ -2,8 +2,7 @@ import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { ActivatedRoute, Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
+import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { ConditionsSearchService } from '@keira/shared/selectors';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
@@ -45,8 +44,9 @@ class SelectConditionsComponentPage extends PageObject<SelectConditionsComponent
 describe('SelectConditions integration tests', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalDirective, SelectConditionsComponent, RouterTestingModule, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalDirective, SelectConditionsComponent, TranslateTestingModule],
       providers: [
+        provideRouter([]),
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
         ConditionsHandlerService,

@@ -1,8 +1,8 @@
+import { provideRouter } from '@angular/router';
 import { vi, type MockInstance } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import {
   QUEST_FLAG_DAILY,
@@ -30,8 +30,9 @@ import { QuestPreviewService } from './quest-preview.service';
 describe('QuestPreviewService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), RouterTestingModule],
+      imports: [ToastrModule.forRoot()],
       providers: [
+        provideRouter([]),
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
         QuestTemplateService,
