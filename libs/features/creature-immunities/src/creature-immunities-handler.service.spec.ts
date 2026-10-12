@@ -1,14 +1,13 @@
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideRouter } from '@angular/router';
 import { CreatureImmunitiesHandlerService } from './creature-immunities-handler.service';
 
 describe('CreatureImmunitiesHandlerService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), CreatureImmunitiesHandlerService],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), provideRouter([]), CreatureImmunitiesHandlerService],
     });
   });
 

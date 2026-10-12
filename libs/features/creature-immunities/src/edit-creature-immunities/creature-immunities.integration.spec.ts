@@ -14,8 +14,8 @@ import { CreatureImmunitiesComponent } from './creature-immunities.component';
 
 describe('CreatureImmunities integration tests', () => {
   class CreatureImmunitiesPage extends EditorPageObject<CreatureImmunitiesComponent> {
-    getCheckbox(id: string): HTMLInputElement {
-      return this.query<HTMLInputElement>(`#${id}`);
+    getBooleanSelect(id: string): HTMLSelectElement {
+      return this.getDebugElementByCss<HTMLSelectElement>(`#${id} select`).nativeElement;
     }
 
     getModalRows(tableSelector: string): HTMLTableRowElement[] {
@@ -140,8 +140,8 @@ describe('CreatureImmunities integration tests', () => {
       expect(page.getInputById('MechanicsMask').value).toBe('32');
       expect(page.getInputById('Effects').value).toBe('');
       expect(page.getInputById('Auras').value).toBe('');
-      expect(page.getCheckbox('ImmuneAoE').checked).toBe(true);
-      expect(page.getCheckbox('ImmuneChain').checked).toBe(false);
+      expect(page.getBooleanSelect('ImmuneAoE').value).toBe('1: 1');
+      expect(page.getBooleanSelect('ImmuneChain').value).toBe('0: 0');
       expect(page.getInputById('Comment').value).toBe('Immune to Fear');
     });
 
@@ -304,28 +304,28 @@ describe('CreatureImmunities integration tests', () => {
     it('should toggle a checked boolean flag to 0', () => {
       const { page } = setup(false, entity95);
 
-      page.clickElement(page.getCheckbox('ImmuneAoE'));
+      page.setInputValue(page.getBooleanSelect('ImmuneAoE'), '0: 0');
 
-      expect(page.getCheckbox('ImmuneAoE').checked).toBe(false);
+      expect(page.getBooleanSelect('ImmuneAoE').value).toBe('0: 0');
       page.expectDiffQueryToContain(`UPDATE \`creature_immunities\` SET \`ImmuneAoE\` = 0 WHERE (\`ID\` = ${ID_95});`);
     });
 
     it('should toggle an unchecked boolean flag to 1', () => {
       const { page } = setup(false, entity95);
 
-      page.clickElement(page.getCheckbox('ImmuneChain'));
+      page.setInputValue(page.getBooleanSelect('ImmuneChain'), '1: 1');
 
-      expect(page.getCheckbox('ImmuneChain').checked).toBe(true);
+      expect(page.getBooleanSelect('ImmuneChain').value).toBe('1: 1');
       page.expectDiffQueryToContain(`UPDATE \`creature_immunities\` SET \`ImmuneChain\` = 1 WHERE (\`ID\` = ${ID_95});`);
     });
 
     it('should have an empty diff query when a flag is toggled back', () => {
       const { page } = setup(false, entity95);
 
-      page.clickElement(page.getCheckbox('ImmuneAoE'));
-      page.clickElement(page.getCheckbox('ImmuneAoE'));
+      page.setInputValue(page.getBooleanSelect('ImmuneAoE'), '0: 0');
+      page.setInputValue(page.getBooleanSelect('ImmuneAoE'), '1: 1');
 
-      expect(page.getCheckbox('ImmuneAoE').checked).toBe(true);
+      expect(page.getBooleanSelect('ImmuneAoE').value).toBe('1: 1');
       page.expectDiffQueryToBeEmpty();
     });
   });
@@ -400,7 +400,7 @@ describe('CreatureImmunities integration tests', () => {
       page.setInputValueById('MechanicsMask', 4096);
       page.setInputValueById('Effects', '98,145');
       page.setInputValueById('Auras', '11');
-      page.clickElement(page.getCheckbox('ImmuneAoE'));
+      page.setInputValue(page.getBooleanSelect('ImmuneAoE'), '1: 1');
       page.setInputValueById('Comment', 'my comment');
 
       page.expectFullQueryToContain(expectedQuery);

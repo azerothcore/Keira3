@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import {
   CreatureImmunities,
   DISPEL_TYPE_MASK,
@@ -10,7 +10,7 @@ import {
 } from '@keira/shared/acore-world-model';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
-import { FlagsSelectorBtnComponent, OptionsSelectorBtnComponent } from '@keira/shared/selectors';
+import { BooleanOptionSelectorComponent, FlagsSelectorBtnComponent, OptionsSelectorBtnComponent } from '@keira/shared/selectors';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { CreatureImmunitiesHandlerService } from '../creature-immunities-handler.service';
@@ -25,12 +25,12 @@ import { CreatureImmunitiesService } from './creature-immunities.service';
     TopBarComponent,
     TranslateDirective,
     TranslatePipe,
-    FormsModule,
     ReactiveFormsModule,
     TooltipDirective,
     QueryOutputComponent,
     FlagsSelectorBtnComponent,
     OptionsSelectorBtnComponent,
+    BooleanOptionSelectorComponent,
   ],
 })
 export class CreatureImmunitiesComponent extends SingleRowEditorComponent<CreatureImmunities> {
@@ -46,13 +46,7 @@ export class CreatureImmunitiesComponent extends SingleRowEditorComponent<Creatu
   protected readonly EFFECTS_OPTIONS = SPELL_DBC_EFFECT.filter((option) => option.value !== 0);
   protected readonly AURAS_OPTIONS = SPELL_DBC_APPLY_AURA_NAME.filter((option) => option.value !== 0);
 
-  setBooleanFlag(field: 'ImmuneAoE' | 'ImmuneChain', event: Event): void {
-    const control = this.editorService.form.controls[field];
-    control.markAsDirty(); // BEFORE setValue: the base class only recomputes the diff while the form is dirty
-    control.setValue((event.target as HTMLInputElement).checked ? 1 : 0);
-  }
-
-  generateComment(): void {
+  protected generateComment(): void {
     const control = this.editorService.form.controls.Comment;
     control.markAsDirty();
     control.setValue(this.commentService.generate(this.editorService.form.getRawValue() as CreatureImmunities));
