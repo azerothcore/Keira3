@@ -1,8 +1,8 @@
+import { provideRouter } from '@angular/router';
 import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { NpcVendor } from '@keira/shared/acore-world-model';
@@ -29,8 +29,9 @@ describe('NpcVendor integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalDirective, NpcVendorComponent, RouterTestingModule, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalDirective, NpcVendorComponent, TranslateTestingModule],
       providers: [
+        provideRouter([]),
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
         CreatureHandlerService,

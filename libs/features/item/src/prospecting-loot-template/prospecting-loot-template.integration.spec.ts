@@ -1,8 +1,8 @@
+import { provideRouter } from '@angular/router';
 import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ProspectingLootTemplate } from '@keira/shared/acore-world-model';
@@ -28,8 +28,9 @@ describe('ProspectingLootTemplate integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalDirective, ProspectingLootTemplateComponent, RouterTestingModule, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalDirective, ProspectingLootTemplateComponent, TranslateTestingModule],
       providers: [
+        provideRouter([]),
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
         ItemHandlerService,

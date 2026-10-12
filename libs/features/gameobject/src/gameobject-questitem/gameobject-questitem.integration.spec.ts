@@ -1,8 +1,8 @@
+import { provideRouter } from '@angular/router';
 import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { GameobjectQuestitem } from '@keira/shared/acore-world-model';
@@ -29,8 +29,9 @@ describe('GameobjectQuestitem integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalDirective, GameobjectQuestitemComponent, RouterTestingModule, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalDirective, GameobjectQuestitemComponent, TranslateTestingModule],
       providers: [
+        provideRouter([]),
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
         GameobjectHandlerService,

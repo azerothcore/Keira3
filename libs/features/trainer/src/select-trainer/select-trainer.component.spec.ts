@@ -2,8 +2,7 @@ import { vi } from 'vitest';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideRouter, Router } from '@angular/router';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalDirective } from 'ngx-bootstrap/modal';
@@ -16,8 +15,8 @@ import { SelectTrainerService } from './select-trainer.service';
 describe('SelectTrainerComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalDirective, ToastrModule.forRoot(), SelectTrainerComponent, RouterTestingModule, TranslateTestingModule],
-      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), TrainerHandlerService],
+      imports: [ModalDirective, ToastrModule.forRoot(), SelectTrainerComponent, TranslateTestingModule],
+      providers: [provideRouter([]), provideZonelessChangeDetection(), provideNoopAnimations(), TrainerHandlerService],
     }).compileComponents();
   });
 

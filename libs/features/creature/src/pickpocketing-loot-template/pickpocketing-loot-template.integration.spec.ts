@@ -1,8 +1,8 @@
+import { provideRouter } from '@angular/router';
 import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { PickpocketingLootTemplate } from '@keira/shared/acore-world-model';
@@ -30,8 +30,9 @@ describe('PickpocketingLootTemplate integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalDirective, PickpocketingLootTemplateComponent, RouterTestingModule, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalDirective, PickpocketingLootTemplateComponent, TranslateTestingModule],
       providers: [
+        provideRouter([]),
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
         CreatureHandlerService,

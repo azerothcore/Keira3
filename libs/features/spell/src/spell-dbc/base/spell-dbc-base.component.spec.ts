@@ -2,7 +2,7 @@ import { Component, provideZonelessChangeDetection, viewChild } from '@angular/c
 import { TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideRouter } from '@angular/router';
 import { SpellDbc } from '@keira/shared/acore-world-model';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModelForm } from '@keira/shared/utils';
@@ -19,7 +19,7 @@ describe('SpellDbcBaseComponent', () => {
 
   @Component({
     template: '<keira-spell-dbc-base [formGroup]="form" />',
-    imports: [RouterTestingModule, TranslateTestingModule, SpellDbcBaseComponent],
+    imports: [TranslateTestingModule, SpellDbcBaseComponent],
   })
   class TestHostComponent {
     readonly child = viewChild.required(SpellDbcBaseComponent);
@@ -79,16 +79,8 @@ describe('SpellDbcBaseComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        ModalDirective,
-        ToastrModule.forRoot(),
-        TooltipDirective,
-        RouterTestingModule,
-        TranslateTestingModule,
-        TestHostComponent,
-        SpellDbcBaseComponent,
-      ],
-      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), SpellHandlerService],
+      imports: [ModalDirective, ToastrModule.forRoot(), TooltipDirective, TranslateTestingModule, TestHostComponent, SpellDbcBaseComponent],
+      providers: [provideRouter([]), provideZonelessChangeDetection(), provideNoopAnimations(), SpellHandlerService],
     }).compileComponents();
   });
 

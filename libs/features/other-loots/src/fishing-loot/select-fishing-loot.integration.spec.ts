@@ -2,8 +2,7 @@ import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideRouter, Router } from '@angular/router';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { SelectPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalDirective } from 'ngx-bootstrap/modal';
@@ -22,8 +21,8 @@ describe('SelectFishingLoot integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalDirective, SelectFishingLootComponent, RouterTestingModule, TranslateTestingModule],
-      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), FishingLootHandlerService],
+      imports: [ToastrModule.forRoot(), ModalDirective, SelectFishingLootComponent, TranslateTestingModule],
+      providers: [provideRouter([]), provideZonelessChangeDetection(), provideNoopAnimations(), FishingLootHandlerService],
     }).compileComponents();
   });
 

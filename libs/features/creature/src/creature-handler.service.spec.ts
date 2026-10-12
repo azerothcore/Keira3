@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideRouter } from '@angular/router';
 import {
   CREATURE_EQUIP_TEMPLATE_TABLE,
   CREATURE_FORMATIONS_TABLE,
@@ -30,8 +30,13 @@ import { SaiCreatureHandlerService } from './sai-creature-handler.service';
 describe('CreatureHandlerService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), CreatureHandlerService, SaiCreatureHandlerService],
+      providers: [
+        provideRouter([]),
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        CreatureHandlerService,
+        SaiCreatureHandlerService,
+      ],
     }),
   );
 

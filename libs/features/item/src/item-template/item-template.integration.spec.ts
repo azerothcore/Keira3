@@ -1,10 +1,10 @@
+import { provideRouter } from '@angular/router';
 import { vi } from 'vitest';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
 import { ITEM_SUBCLASS, ItemTemplate, Lock } from '@keira/shared/acore-world-model';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
@@ -59,8 +59,9 @@ describe('ItemTemplate integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalDirective, ItemTemplateComponent, RouterTestingModule, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalDirective, ItemTemplateComponent, TranslateTestingModule],
       providers: [
+        provideRouter([]),
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
         { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },

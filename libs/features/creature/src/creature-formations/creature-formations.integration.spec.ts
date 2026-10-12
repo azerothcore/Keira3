@@ -1,8 +1,8 @@
+import { provideRouter } from '@angular/router';
 import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
 import { CreatureFormation } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
@@ -32,10 +32,10 @@ describe('CreatureFormations integration tests', () => {
         ToastrModule.forRoot(),
         ModalDirective,
         CreatureFormationsComponent, // This should typically be in declarations, but as per your instruction, it's left unchanged
-        RouterTestingModule,
         TranslateTestingModule,
       ],
       providers: [
+        provideRouter([]),
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
         CreatureHandlerService,

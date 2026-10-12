@@ -2,8 +2,7 @@ import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideRouter, Router } from '@angular/router';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { SmartScripts } from '@keira/shared/acore-world-model';
@@ -30,8 +29,8 @@ class SaiSearchExistingComponentPage extends PageObject<SaiSearchExistingCompone
 describe('SaiSearchExisting integration tests', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalDirective, SaiSearchExistingComponent, RouterTestingModule, TranslateTestingModule],
-      providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
+      imports: [ToastrModule.forRoot(), ModalDirective, SaiSearchExistingComponent, TranslateTestingModule],
+      providers: [provideRouter([]), provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
   });
 

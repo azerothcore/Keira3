@@ -1,8 +1,8 @@
+import { provideRouter } from '@angular/router';
 import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { SpellDbc } from '@keira/shared/acore-world-model';
@@ -27,8 +27,8 @@ describe('SpellDbc integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalDirective, RouterTestingModule, SpellDbcComponent, TranslateTestingModule],
-      providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
+      imports: [ToastrModule.forRoot(), ModalDirective, SpellDbcComponent, TranslateTestingModule],
+      providers: [provideRouter([]), provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
   });
 

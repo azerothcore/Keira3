@@ -2,8 +2,7 @@ import { vi, type MockInstance } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideRouter, Router } from '@angular/router';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { SelectPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { SPELL_DBC_ID, SPELL_DBC_NAME, SpellDbc } from '@keira/shared/acore-world-model';
@@ -27,8 +26,9 @@ describe('SelectSpell integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalDirective, RouterTestingModule, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalDirective, TranslateTestingModule],
       providers: [
+        provideRouter([]),
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
         SpellHandlerService,

@@ -2,8 +2,7 @@ import { vi } from 'vitest';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideRouter, Router } from '@angular/router';
 
 import { SAI_TYPES, SMART_ACTION_CAST_TRIGGERED_FLAGS, SmartScripts } from '@keira/shared/acore-world-model';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
@@ -109,8 +108,9 @@ describe('SaiEditorComponent integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalDirective, RouterTestingModule, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalDirective, TranslateTestingModule],
       providers: [
+        provideRouter([]),
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },

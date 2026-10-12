@@ -1,8 +1,8 @@
+import { provideRouter } from '@angular/router';
 import { vi, type MockInstance } from 'vitest';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
 import { QuestTemplateAddon } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
 import { Model3DViewerService } from '@keira/shared/model-3d-viewer';
@@ -55,8 +55,9 @@ describe('QuestTemplateAddon integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), ModalDirective, RouterTestingModule, QuestTemplateAddonComponent, TranslateTestingModule],
+      imports: [ToastrModule.forRoot(), ModalDirective, QuestTemplateAddonComponent, TranslateTestingModule],
       providers: [
+        provideRouter([]),
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },

@@ -1,3 +1,4 @@
+import { provideRouter } from '@angular/router';
 import { vi } from 'vitest';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
@@ -5,7 +6,6 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
 import { GameobjectTemplate } from '@keira/shared/acore-world-model';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
@@ -41,15 +41,9 @@ describe('GameobjectTemplate integration tests', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        ToastrModule.forRoot(),
-        ModalDirective,
-        GameobjectTemplateComponent,
-        RouterTestingModule,
-        TranslateTestingModule,
-        ReactiveFormsModule,
-      ],
+      imports: [ToastrModule.forRoot(), ModalDirective, GameobjectTemplateComponent, TranslateTestingModule, ReactiveFormsModule],
       providers: [
+        provideRouter([]),
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
         GameobjectHandlerService,

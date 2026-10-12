@@ -2,15 +2,13 @@ import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideRouter, Router } from '@angular/router';
 import { MockHandlerService } from '../../core.mock';
 
 describe('HandlerService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), MockHandlerService],
+      providers: [provideRouter([]), provideZonelessChangeDetection(), provideNoopAnimations(), MockHandlerService],
     }),
   );
 

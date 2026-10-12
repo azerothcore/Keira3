@@ -1,7 +1,7 @@
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideRouter } from '@angular/router';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { ToastrModule } from 'ngx-toastr';
 import { instance, mock } from 'ts-mockito';
@@ -11,8 +11,9 @@ import { TrainerSpellService } from './trainer-spell.service';
 describe('TrainerSpellService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), RouterTestingModule],
+      imports: [ToastrModule.forRoot()],
       providers: [
+        provideRouter([]),
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
         { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },

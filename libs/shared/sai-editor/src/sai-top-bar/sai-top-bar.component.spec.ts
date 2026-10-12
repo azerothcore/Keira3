@@ -1,8 +1,8 @@
+import { provideRouter } from '@angular/router';
 import { vi } from 'vitest';
 import { Component, viewChild, inject, provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { SAI_TYPES } from '@keira/shared/acore-world-model';
 import { of } from 'rxjs';
@@ -33,8 +33,8 @@ describe('SaiTopBarComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, TranslateTestingModule, TestHostComponent],
-      providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
+      imports: [TranslateTestingModule, TestHostComponent],
+      providers: [provideRouter([]), provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
   });
 

@@ -1,8 +1,8 @@
+import { provideRouter } from '@angular/router';
 import { vi } from 'vitest';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
 import { FieldDefinition } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { Model3DViewerService } from '@keira/shared/model-3d-viewer';
@@ -18,8 +18,14 @@ import { GameobjectTemplateService } from './gameobject-template.service';
 describe('GameobjectComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalDirective, ToastrModule.forRoot(), GameobjectTemplateComponent, RouterTestingModule, TranslateTestingModule],
-      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), GameobjectHandlerService, SaiGameobjectHandlerService],
+      imports: [ModalDirective, ToastrModule.forRoot(), GameobjectTemplateComponent, TranslateTestingModule],
+      providers: [
+        provideRouter([]),
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        GameobjectHandlerService,
+        SaiGameobjectHandlerService,
+      ],
     }).compileComponents();
   });
 

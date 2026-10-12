@@ -1,14 +1,13 @@
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideRouter } from '@angular/router';
 import { TrainerHandlerService } from './trainer-handler.service';
 
 describe('TrainerHandlerService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), TrainerHandlerService],
+      providers: [provideRouter([]), provideZonelessChangeDetection(), provideNoopAnimations(), TrainerHandlerService],
     });
   });
 

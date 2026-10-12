@@ -1,8 +1,7 @@
 import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideRouter, Router } from '@angular/router';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ToastrModule } from 'ngx-toastr';
@@ -51,8 +50,9 @@ const entry = (id: number, exclusiveGroup = 0, missing = false, title = `Quest $
 describe('QuestChainComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [QuestChainComponent, ToastrModule.forRoot(), RouterTestingModule, TranslateTestingModule],
+      imports: [QuestChainComponent, ToastrModule.forRoot(), TranslateTestingModule],
       providers: [
+        provideRouter([]),
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
         { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },

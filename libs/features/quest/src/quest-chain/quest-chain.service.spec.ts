@@ -1,7 +1,7 @@
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideRouter } from '@angular/router';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import { QuestChainRelationRow, QuestConditionPrerequisiteRow, QuestTitleRow } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
@@ -27,8 +27,9 @@ const prerequisite = (gatedQuest: number, requiredQuest: number, elseGroup = 0):
 describe('QuestChainService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ToastrModule.forRoot(), RouterTestingModule],
+      imports: [ToastrModule.forRoot()],
       providers: [
+        provideRouter([]),
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
         { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_MOCK_CONFIG },

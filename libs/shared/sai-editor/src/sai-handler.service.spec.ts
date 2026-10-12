@@ -3,8 +3,7 @@ import { vi } from 'vitest';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideRouter, Router } from '@angular/router';
 
 import { SAI_TYPES } from '@keira/shared/acore-world-model';
 import { MysqlQueryService } from '@keira/shared/db-layer';
@@ -15,8 +14,8 @@ import { SaiHandlerService } from './sai-handler.service';
 describe('SaiHandlerService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
       providers: [
+        provideRouter([]),
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
         { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
