@@ -13,6 +13,7 @@ export interface MenuStats {
   spell: ToggleType;
   gameTele: ToggleType;
   trainer: ToggleType;
+  creatureImmunities: ToggleType;
 }
 
 /**
@@ -32,4 +33,5 @@ export const ROUTE_MENUS: Record<string, keyof MenuStats> = {
   spell: 'spell',
   'game-tele': 'gameTele',
   trainer: 'trainer',
+  'creature-immunities': 'creatureImmunities',
 };

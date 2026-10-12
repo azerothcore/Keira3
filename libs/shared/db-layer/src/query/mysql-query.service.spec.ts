@@ -4,7 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { SmartScripts } from '@keira/shared/acore-world-model';
 import { ConfigService } from '@keira/shared/common-services';
-import { MaxRow, TableRow } from '@keira/shared/constants';
+import { MaxRow, MinRow, TableRow } from '@keira/shared/constants';
 import { lastValueFrom, of } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
 import { MysqlService } from '../mysql.service';
@@ -123,6 +123,18 @@ describe('MysqlQueryService', () => {
     });
 
     expect(querySpy).toHaveBeenCalledWith('SELECT MAX(param) AS max ' + 'FROM my_ac;');
+  });
+
+  it('getMinId() should correctly work', () => {
+    const { service } = setup();
+    const data: MinRow[] = [{ min: -430 }];
+    const querySpy = vi.spyOn(service, 'query').mockReturnValue(of());
+
+    service.getMinId('my_ac', 'param').subscribe((res) => {
+      expect(res).toEqual(data);
+    });
+
+    expect(querySpy).toHaveBeenCalledWith('SELECT MIN(param) AS min ' + 'FROM my_ac;');
   });
 
   it('getTimedActionlists() should correctly work', () => {

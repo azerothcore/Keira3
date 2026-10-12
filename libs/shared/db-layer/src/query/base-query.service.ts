@@ -53,6 +53,7 @@ export abstract class BaseQueryService {
     queryForm: QueryForm<T>,
     selectFields: string[] | null = null,
     groupFields: string[] | null = null,
+    orderFields: string[] | null = null,
   ): string {
     const query = squel.select(squelConfig).from(table);
 
@@ -74,6 +75,12 @@ export abstract class BaseQueryService {
     if (groupFields) {
       for (const groupField of groupFields) {
         query.group(groupField);
+      }
+    }
+
+    if (orderFields) {
+      for (const orderField of orderFields) {
+        query.order(orderField);
       }
     }
 

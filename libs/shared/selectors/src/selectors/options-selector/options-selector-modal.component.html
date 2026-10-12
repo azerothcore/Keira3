@@ -1,0 +1,43 @@
+@if (config && config.options) {
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-12">
+        <p class="lead text-center mb-1">
+          Options selection: <strong>{{ config.name }}</strong>
+        </p>
+      </div>
+      <div class="col-12">
+        <p>
+          Current value: <strong>{{ value }}</strong>
+        </p>
+      </div>
+    </div>
+    <div class="table-wrapper">
+      <table class="table table-striped table-bordered table-sm" id="options-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Value</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (option of config.options; track option) {
+            <tr>
+              <td>
+                <ui-switch [checked]="isSelected(option.value)" (change)="toggleOption(option.value)" [id]="'switch-opt-' + option.value" />
+              </td>
+              <td class="text-center">{{ option.value }}</td>
+              <td>{{ option.name }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+}
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-danger" id="modal-cancel-btn" (click)="onCancel()" [translate]="'CANCEL'"></button>
+  <button type="button" class="btn btn-success" id="modal-select-btn" (click)="onSave()" [translate]="'SELECT'"></button>
+</div>

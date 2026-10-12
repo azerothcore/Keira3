@@ -1,0 +1,116 @@
+<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
+
+<div class="container-fluid">
+  @if (editorService.loading) {
+    <span [translate]="'LOADING'"></span>
+  }
+
+  @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
+    <div>
+      <div class="content-block">
+        <keira-query-output
+          [docUrl]="docUrl"
+          [isNew]="editorService.isNew"
+          [diffQuery]="editorService.diffQuery"
+          [fullQuery]="editorService.fullQuery"
+          [error]="editorService.error"
+          [entityTable]="editorService.entityTable"
+          [editorService]="editorService"
+          (executeQuery)="save($event)"
+        />
+      </div>
+      <form [formGroup]="editorService.form" class="form-group edit-form">
+        <div class="content-block">
+          <span class="category-title" [translate]="'CREATURE_IMMUNITIES.EDITOR'"></span>
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="ID">ID</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE_IMMUNITIES.ID_TOOLTIP' | translate"></i>
+              <input [formControlName]="'ID'" id="ID" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="SchoolMask">SchoolMask</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE_IMMUNITIES.SCHOOL_MASK_TOOLTIP' | translate"></i>
+              <keira-flags-selector-btn
+                [control]="editorService.form.controls.SchoolMask"
+                [disabled]="editorService.form.controls.SchoolMask.disabled"
+                [config]="{ flags: SPELL_SCHOOL_MASK, name: 'SchoolMask' }"
+              />
+              <input [formControlName]="'SchoolMask'" id="SchoolMask" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="DispelTypeMask">DispelTypeMask</label>
+              <i
+                class="fas fa-info-circle ms-1"
+                placement="auto"
+                [tooltip]="'CREATURE_IMMUNITIES.DISPEL_TYPE_MASK_TOOLTIP' | translate"
+              ></i>
+              <keira-flags-selector-btn
+                [control]="editorService.form.controls.DispelTypeMask"
+                [disabled]="editorService.form.controls.DispelTypeMask.disabled"
+                [config]="{ flags: DISPEL_TYPE_MASK, name: 'DispelTypeMask' }"
+              />
+              <input [formControlName]="'DispelTypeMask'" id="DispelTypeMask" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="MechanicsMask">MechanicsMask</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE_IMMUNITIES.MECHANICS_MASK_TOOLTIP' | translate"></i>
+              <keira-flags-selector-btn
+                [control]="editorService.form.controls.MechanicsMask"
+                [disabled]="editorService.form.controls.MechanicsMask.disabled"
+                [config]="{ flags: MECHANIC_IMMUNITIES_MASK, name: 'MechanicsMask' }"
+              />
+              <input [formControlName]="'MechanicsMask'" id="MechanicsMask" type="number" class="form-control form-control-sm" />
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="Effects">Effects</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE_IMMUNITIES.EFFECTS_TOOLTIP' | translate"></i>
+              <keira-options-selector-btn
+                [control]="editorService.form.controls.Effects"
+                [disabled]="editorService.form.controls.Effects.disabled"
+                [config]="{ options: EFFECTS_OPTIONS, name: 'Effects' }"
+              />
+              <input [formControlName]="'Effects'" id="Effects" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="Auras">Auras</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE_IMMUNITIES.AURAS_TOOLTIP' | translate"></i>
+              <keira-options-selector-btn
+                [control]="editorService.form.controls.Auras"
+                [disabled]="editorService.form.controls.Auras.disabled"
+                [config]="{ options: AURAS_OPTIONS, name: 'Auras' }"
+              />
+              <input [formControlName]="'Auras'" id="Auras" class="form-control form-control-sm" />
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="ImmuneAoE">ImmuneAoE</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE_IMMUNITIES.IMMUNE_AOE_TOOLTIP' | translate"></i>
+              <keira-boolean-option-selector [control]="editorService.form.controls.ImmuneAoE" id="ImmuneAoE" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+              <label class="control-label" for="ImmuneChain">ImmuneChain</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE_IMMUNITIES.IMMUNE_CHAIN_TOOLTIP' | translate"></i>
+              <keira-boolean-option-selector [control]="editorService.form.controls.ImmuneChain" id="ImmuneChain" />
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-12">
+              <label class="control-label" for="Comment">Comment</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE_IMMUNITIES.COMMENT_TOOLTIP' | translate"></i>
+              <div class="d-flex">
+                <textarea [formControlName]="'Comment'" id="Comment" rows="3" class="form-control form-control-sm"></textarea>
+                <button id="generate-comment-btn" type="button" class="btn btn-secondary btn-sm ms-2" (click)="generateComment()">
+                  {{ 'CREATURE_IMMUNITIES.GENERATE_COMMENT' | translate }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  }
+</div>

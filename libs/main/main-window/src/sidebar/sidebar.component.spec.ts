@@ -20,6 +20,7 @@ import {
 } from '@keira/features/other-loots';
 import { QuestHandlerService } from '@keira/features/quest';
 import { SpellHandlerService } from '@keira/features/spell';
+import { CreatureImmunitiesHandlerService } from '@keira/features/creature-immunities';
 import { SidebarComponent } from './sidebar.component';
 import { SidebarService } from './sidebar.service';
 import { MysqlService } from '@keira/shared/db-layer';
@@ -65,6 +66,7 @@ describe('SidebarComponent', () => {
         FishingLootHandlerService,
         MailLootHandlerService,
         SpellHandlerService,
+        CreatureImmunitiesHandlerService,
       ],
     }).compileComponents();
   });
@@ -148,6 +150,28 @@ describe('SidebarComponent', () => {
     for (const key of Object.keys(component.menuStates)) {
       expect(component.menuStates[key as keyof typeof component.menuStates]).toEqual('up');
     }
+
+    page.removeNativeElement();
+  });
+
+  it('creature immunities section should list the search page and hide the editor link while nothing is selected', () => {
+    const { page } = setup();
+
+    const searchLink = page.query<HTMLAnchorElement>('a[href="/creature-immunities/select"]');
+    expect(searchLink.innerText).toContain('SIDEBAR.CREATURE_IMMUNITIES.SEARCH');
+
+    expect(page.query('a[href="/creature-immunities/creature-immunities"]', false)).toBeFalsy();
+
+    page.removeNativeElement();
+  });
+
+  it('creature immunities section should list the editor link once an entry is selected', () => {
+    TestBed.inject(CreatureImmunitiesHandlerService).select(false, -430, 'creature_immunities', false);
+
+    const { page } = setup();
+
+    const editorLink = page.query<HTMLAnchorElement>('a[href="/creature-immunities/creature-immunities"]');
+    expect(editorLink.innerText).toContain('SIDEBAR.CREATURE_IMMUNITIES.EDITOR');
 
     page.removeNativeElement();
   });

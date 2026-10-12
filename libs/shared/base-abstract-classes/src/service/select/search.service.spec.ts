@@ -52,7 +52,7 @@ describe('SearchService', () => {
       const { service, spy } = setupQueryFormChanged();
       service.queryForm.controls.limit?.setValue(123);
 
-      expect(spy).toHaveBeenCalledWith(service['entityTable'], service.queryForm.getRawValue(), undefined, undefined);
+      expect(spy).toHaveBeenCalledWith(service['entityTable'], service.queryForm.getRawValue(), undefined, undefined, undefined);
       expect(service.query).toEqual(newQuery);
     });
 
@@ -78,5 +78,28 @@ describe('SearchService', () => {
 
     expect(spy).toHaveBeenCalledWith(newQuery);
     expect(service.rows).toEqual(newRows as any);
+  });
+
+  describe('when the sub-class supplies orderFields', () => {
+    @Service()
+    class TestOrderedSearchService extends SearchService<ItemTemplate> {
+      override readonly queryService = inject(MysqlQueryService);
+      protected override readonly entityTable = ITEM_TEMPLATE_TABLE;
+      protected override readonly fieldList = ITEM_TEMPLATE_SEARCH_FIELDS;
+      protected override readonly orderFields = ['entry'];
+      constructor() {
+        super();
+        this.init();
+      }
+    }
+
+    it('should pass them to the query builder', () => {
+      const spy = vi.spyOn(TestBed.inject(MysqlQueryService), 'getSearchQuery').mockReturnValue(newQuery);
+
+      const service = TestBed.inject(TestOrderedSearchService);
+
+      expect(spy).toHaveBeenCalledWith(service['entityTable'], service.queryForm.getRawValue(), undefined, undefined, ['entry']);
+      expect(service.query).toEqual(newQuery);
+    });
   });
 });

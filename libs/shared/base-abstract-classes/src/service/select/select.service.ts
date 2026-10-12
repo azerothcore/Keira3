@@ -12,6 +12,7 @@ export abstract class SelectService<T extends TableRow> extends SearchService<T>
   protected abstract override readonly fieldList: StringKeys<T>[];
   protected override readonly selectFields: string[] | undefined = undefined;
   protected override readonly groupFields: string[] | undefined = undefined;
+  protected override readonly orderFields: string[] | undefined = undefined;
 
   onSelect({ selected }: { selected: { [_key: string]: string | number }[] }) {
     this.handlerService.select(

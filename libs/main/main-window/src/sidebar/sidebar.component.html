@@ -774,6 +774,33 @@
             </div>
           </li>
 
+          <li class="sidebar-dropdown" [class.active]="menuStates['creatureImmunities'] === 'down'">
+            <a (click)="toggleState('creatureImmunities')">
+              <i class="fa fa-shield-halved"></i>
+              <span [translate]="'SIDEBAR.CREATURE_IMMUNITIES.TITLE'"></span>
+            </a>
+
+            <div class="sidebar-submenu" [@slide]="menuStates['creatureImmunities']">
+              <ul>
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'creature-immunities/select'">
+                    {{ 'SIDEBAR.CREATURE_IMMUNITIES.SEARCH' | translate }}
+                  </a>
+                </li>
+                @if (creatureImmunitiesHandlerService.selected) {
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'creature-immunities/creature-immunities'">
+                      {{ 'SIDEBAR.CREATURE_IMMUNITIES.EDITOR' | translate }}
+                      @if (creatureImmunitiesHandlerService.isCreatureImmunitiesUnsaved()) {
+                        <keira-unsaved-icon />
+                      }
+                    </a>
+                  </li>
+                }
+              </ul>
+            </div>
+          </li>
+
           <li class="sidebar-dropdown" [class.active]="menuStates['trainer'] === 'down'">
             <a (click)="toggleState('trainer')">
               <i class="fa fa-graduation-cap"></i>

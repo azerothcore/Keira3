@@ -1,6 +1,6 @@
 # Lib map
 
-`libs/features/<name>/` — one lib per editor domain: `creature`, `quest`, `item`, `gameobject`, `spell`, `smart-scripts`, `conditions`, `gossip`, `trainer`, `texts`, `other-loots`, `dashboard`, `sql-editor`, `game-tele`, `unused-guid-search`.
+`libs/features/<name>/` — one lib per editor domain: `creature`, `quest`, `item`, `gameobject`, `spell`, `smart-scripts`, `conditions`, `gossip`, `trainer`, `texts`, `other-loots`, `dashboard`, `sql-editor`, `game-tele`, `creature-immunities`, `unused-guid-search`.
 
 `libs/main/{connection-window,main-window}/` — shell. Sidebar entries: `libs/main/main-window/src/sidebar/`.
 

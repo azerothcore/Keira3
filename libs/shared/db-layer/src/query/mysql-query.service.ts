@@ -9,6 +9,7 @@ import { ConfigService } from '@keira/shared/common-services';
 import { squelConfig } from '@keira/shared/config';
 import {
   MaxRow,
+  MinRow,
   QuestChainRelationRow,
   QuestConditionCountRow,
   QuestConditionPrerequisiteRow,
@@ -59,6 +60,10 @@ export class MysqlQueryService extends BaseQueryService {
 
   getMaxId(table: string, idField: string): Observable<MaxRow[]> {
     return this.query<MaxRow>(`SELECT MAX(${idField}) AS max FROM ${table};`);
+  }
+
+  getMinId(table: string, idField: string): Observable<MinRow[]> {
+    return this.query<MinRow>(`SELECT MIN(${idField}) AS min FROM ${table};`);
   }
 
   // UPDATE query without WHERE
