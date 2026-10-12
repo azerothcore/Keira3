@@ -57,8 +57,8 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
     this.form = new FormGroup<ModelForm<Partial<KeiraConnectionOptions>>>({
       host: new FormControl<string>('127.0.0.1') as FormControl<string>,
       port: new FormControl<number>(3306) as FormControl<number>,
-      user: new FormControl<string>('root') as FormControl<string>,
-      password: new FormControl<string>('root') as FormControl<string>,
+      user: new FormControl<string>('acore') as FormControl<string>,
+      password: new FormControl<string>('acore') as FormControl<string>,
       database: new FormControl<string>('acore_world') as FormControl<string>,
       sslEnabled: new FormControl<boolean>(false) as FormControl<boolean>,
       sshEnabled: new FormControl<boolean>(false) as FormControl<boolean>,
