@@ -13,7 +13,7 @@ concurrency:
 jobs:
   get-package-version:
     name: Get Package Version
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     outputs:
       version: ${{ steps.info.outputs.PACKAGE_VERSION }}
       app_name: ${{ steps.info.outputs.APP_NAME }}
@@ -47,7 +47,7 @@ jobs:
   build-on-linux:
     needs: get-package-version
     name: Build the Linux release assets
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     env:
       APP_NAME: ${{ needs.get-package-version.outputs.app_name }}
       VERSION: ${{ needs.get-package-version.outputs.version }}
@@ -153,7 +153,7 @@ jobs:
   release:
     needs: [get-package-version, build-on-linux, build-on-mac, build-on-windows]
     name: Create the release draft
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: write
     steps:
