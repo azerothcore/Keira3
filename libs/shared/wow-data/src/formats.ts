@@ -25,6 +25,8 @@ export function parseAdtChunks(bytes: Uint8Array, layerSplatDepth: LayerSplatDep
     position: chunk.position,
     vertexHeights: chunk.vertexHeights,
     holes: chunk.holes,
+    vertexNormals: chunk.vertexNormals,
+    layers: chunk.layers.map((layer) => ({ texture: layer.texture, splat: layer.splat })),
   }));
 }
 

@@ -1,7 +1,14 @@
 import { decodeBlp, parseAdtChunks, parseWdt, toArrayBuffer } from './formats';
 
 const mocks = vi.hoisted(() => ({
-  chunks: [] as { position: number[]; vertexHeights: Float32Array; holes: number; areaId: number }[],
+  chunks: [] as {
+    position: number[];
+    vertexHeights: Float32Array;
+    vertexNormals: Int8Array;
+    holes: number;
+    areaId: number;
+    layers: { texture: string; splat: Uint8Array | null; effectId: number }[];
+  }[],
   available: new Uint8Array(64 * 64),
   image: { width: 2, height: 1, data: [1, 2, 3, 4, 5, 6, 7, 8] },
   getImage: vi.fn(),
@@ -33,8 +40,33 @@ vi.mock('@wowserhq/format', () => ({
 describe('formats', () => {
   it('extracts terrain chunks from an ADT', () => {
     const heights = new Float32Array(145);
-    mocks.chunks = [{ position: [1, 2, 3], vertexHeights: heights, holes: 4, areaId: 12 }];
-    expect(parseAdtChunks(new Uint8Array(), 4)).toEqual([{ position: [1, 2, 3], vertexHeights: heights, holes: 4 }]);
+    const normals = new Int8Array(145 * 3);
+    const splat = new Uint8Array(4096);
+    mocks.chunks = [
+      {
+        position: [1, 2, 3],
+        vertexHeights: heights,
+        vertexNormals: normals,
+        holes: 4,
+        areaId: 12,
+        layers: [
+          { texture: 'Tileset\\A.blp', splat: null, effectId: 0 },
+          { texture: 'Tileset\\B.blp', splat, effectId: 3 },
+        ],
+      },
+    ];
+    expect(parseAdtChunks(new Uint8Array(), 4)).toEqual([
+      {
+        position: [1, 2, 3],
+        vertexHeights: heights,
+        vertexNormals: normals,
+        holes: 4,
+        layers: [
+          { texture: 'Tileset\\A.blp', splat: null },
+          { texture: 'Tileset\\B.blp', splat },
+        ],
+      },
+    ]);
     expect(mocks.depth).toBe(4);
   });
 

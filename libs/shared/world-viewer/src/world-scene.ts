@@ -8,12 +8,14 @@ import {
   CylinderGeometry,
   DataTexture,
   DirectionalLight,
+  DoubleSide,
   Fog,
   Group,
   HemisphereLight,
   Intersection,
   Line,
   LineBasicMaterial,
+  LinearFilter,
   LinearMipmapLinearFilter,
   Material,
   Mesh,
@@ -25,6 +27,7 @@ import {
   RGBAFormat,
   Scene,
   SphereGeometry,
+  ShaderMaterial,
   SRGBColorSpace,
   Texture,
   Vector2,
@@ -32,15 +35,21 @@ import {
 } from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import {
+  LiquidKind,
+  LiquidMesh,
   orientationToSceneYaw,
   RgbaImage,
   sceneToWorld,
   sceneYawToOrientation,
+  SPLAT_SIZE,
+  TerrainChunkMesh,
   TerrainMeshData,
+  TileCoord,
   tileKey,
   WorldPosition,
   worldToScene,
 } from '@keira/shared/wow-data';
+import { createTerrainLighting, createTerrainMaterial } from './terrain-material';
 import { PickResult, SpawnKind, WaypointPath, waypointKey, WorldSpawn } from './world-viewer.model';
 
 type MarkerState = 'normal' | 'pending' | 'selected';
@@ -68,6 +77,8 @@ const COLORS = {
 };
 const PATH_COLORS = [0xe63946, 0xb5179e, 0x7209b7, 0x06d6a0, 0x4361ee, 0xff006e, 0x8ac926, 0xffffff];
 const WAYPOINT_LIFT = 0.4;
+/** Render layer of liquid surfaces: seen by the camera, ignored by picking (raycaster uses layer 0). */
+const LIQUID_LAYER = 1;
 /** Markers keep a readable on-screen size: real size up close, scaled up with camera distance. */
 const MARKER_SCALE_DISTANCE = 120;
 const MARKER_MAX_SCALE = 8;
@@ -94,7 +105,10 @@ export class WorldScene {
   private readonly waypointGroup = new Group();
   private readonly raycaster = new Raycaster();
 
-  private readonly terrainTiles = new Map<string, Mesh>();
+  private readonly terrainTiles = new Map<string, Object3D>();
+  /** Sun and ambient light of the textured terrain (updated by zone lighting). */
+  readonly terrainLighting = createTerrainLighting();
+  private readonly liquidMaterials = new Map<LiquidKind, MeshLambertMaterial>();
   private readonly objects = new Map<string, Object3D>();
   private selectedKey?: string;
 
@@ -116,6 +130,7 @@ export class WorldScene {
     this.spawnGroup.name = 'spawns';
     this.waypointGroup.name = 'waypoints';
     this.scene.add(this.terrainGroup, this.spawnGroup, this.waypointGroup);
+    this.camera.layers.enable(LIQUID_LAYER);
 
     const sun = new DirectionalLight(0xffffff, 1.6);
     sun.position.set(300, 600, 200);
@@ -159,11 +174,82 @@ export class WorldScene {
     this.terrainGroup.add(mesh);
   }
 
+  /**
+   * Textured terrain: one mesh per chunk, blending its tileset textures (`layers[i]` are the loaded textures of
+   * `chunks[i].textures`). Shared tileset textures are not disposed with the tile; alpha maps are.
+   */
+  setTerrainTileDetailed(
+    tile: TileCoord,
+    chunks: { mesh: TerrainChunkMesh; layers: Texture[] }[],
+    fallback: Texture,
+    liquids: LiquidMesh[] = [],
+  ): void {
+    const key = tileKey(tile);
+    this.removeTerrainTile(key);
+    const group = new Group();
+    group.name = `tile:${key}`;
+    for (const { mesh, layers } of chunks) {
+      const geometry = new BufferGeometry();
+      geometry.setAttribute('position', new BufferAttribute(mesh.positions, 3));
+      geometry.setAttribute('normal', new BufferAttribute(mesh.normals, 3));
+      geometry.setAttribute('layerUv', new BufferAttribute(mesh.layerUvs, 2));
+      geometry.setAttribute('splatUv', new BufferAttribute(mesh.splatUvs, 2));
+      geometry.setIndex(new BufferAttribute(mesh.indices, 1));
+      geometry.computeBoundingSphere();
+      const splat = mesh.splat ? createSplatTexture(mesh.splat) : undefined;
+      group.add(new Mesh(geometry, createTerrainMaterial(layers, splat, this.terrainLighting, fallback)));
+    }
+    for (const liquid of liquids) {
+      const geometry = new BufferGeometry();
+      geometry.setAttribute('position', new BufferAttribute(liquid.positions, 3));
+      geometry.setIndex(new BufferAttribute(liquid.indices, 1));
+      geometry.computeVertexNormals();
+      const surface = new Mesh(geometry, this.liquidMaterial(liquid.kind));
+      surface.name = 'liquid';
+      surface.renderOrder = 1;
+      // Drawn but not picked: placing and snapping use the ground under the water.
+      surface.layers.set(LIQUID_LAYER);
+      group.add(surface);
+    }
+    this.terrainTiles.set(key, group);
+    this.terrainGroup.add(group);
+  }
+
+  /** Shared translucent material per liquid kind (not disposed with tiles). */
+  private liquidMaterial(kind: LiquidKind): MeshLambertMaterial {
+    let material = this.liquidMaterials.get(kind);
+    if (!material) {
+      const look: Record<LiquidKind, [number, number]> = {
+        water: [0x2a6b9c, 0.65],
+        ocean: [0x1d4f7a, 0.75],
+        magma: [0xff5a1f, 0.95],
+        slime: [0x5fbf3a, 0.85],
+      };
+      const [color, opacity] = look[kind];
+      material = new MeshLambertMaterial({
+        color,
+        transparent: true,
+        opacity,
+        depthWrite: false,
+        side: DoubleSide,
+        emissive: kind === 'magma' ? 0xff3300 : 0x000000,
+        emissiveIntensity: kind === 'magma' ? 0.8 : 0,
+      });
+      material.userData['shared'] = true;
+      this.liquidMaterials.set(kind, material);
+    }
+    return material;
+  }
+
   removeTerrainTile(key: string): void {
-    const mesh = this.terrainTiles.get(key);
-    if (mesh) {
-      this.terrainGroup.remove(mesh);
-      disposeMesh(mesh);
+    const tile = this.terrainTiles.get(key);
+    if (tile) {
+      this.terrainGroup.remove(tile);
+      tile.traverse((object) => {
+        if (object instanceof Mesh) {
+          disposeTerrainMesh(object);
+        }
+      });
       this.terrainTiles.delete(key);
     }
   }
@@ -373,6 +459,7 @@ export class WorldScene {
     this.waypointGeometry.dispose();
     this.arrowGeometry.dispose();
     this.markerMaterials.forEach((material) => material.dispose());
+    this.liquidMaterials.forEach((material) => material.dispose());
     this.markerMaterials.clear();
   }
 
@@ -449,9 +536,29 @@ function isPickableHit(hit: Intersection): boolean {
   return typeof (hit.object.userData as Partial<PickableData>).key === 'string';
 }
 
-function disposeMesh(mesh: Mesh): void {
+/** Disposes a terrain mesh with its own textures (minimap or alpha map), keeping shared tileset textures. */
+function disposeTerrainMesh(mesh: Mesh): void {
   mesh.geometry.dispose();
-  const material = mesh.material as MeshLambertMaterial;
-  (material.map as Texture | null)?.dispose();
+  const material = mesh.material as MeshLambertMaterial | ShaderMaterial;
+  if (material.userData['shared']) {
+    return;
+  }
+  if (material instanceof ShaderMaterial) {
+    const splat = material.uniforms['splat'].value as Texture;
+    if (splat.userData['ownedByChunk']) {
+      splat.dispose();
+    }
+  } else {
+    (material.map as Texture | null)?.dispose();
+  }
   material.dispose();
+}
+
+function createSplatTexture(data: Uint8Array): DataTexture {
+  const texture = new DataTexture(data, SPLAT_SIZE, SPLAT_SIZE, RGBAFormat);
+  texture.magFilter = LinearFilter;
+  texture.minFilter = LinearFilter;
+  texture.userData['ownedByChunk'] = true;
+  texture.needsUpdate = true;
+  return texture;
 }

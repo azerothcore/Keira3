@@ -4,10 +4,11 @@ import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { tileCenter, WowClientService, WorldPosition, worldToScene } from '@keira/shared/wow-data';
 import { DebugHtmlElement, PageObjectModel } from 'ngx-page-object-model';
 import { EventDispatcher, Object3D, Vector3 } from 'three';
+import { DEFAULT_WORLD_RENDER_SETTINGS, WorldRenderSettings } from './world-render-settings';
 import { WORLD_RENDERER_FACTORY, WorldRenderer } from './world-renderer';
 import { WorldViewerComponent } from './world-viewer.component';
 import { GizmoMode, ObjectMoved, PickResult, WaypointPath, WorldSpawn } from './world-viewer.model';
-import { flatTile } from './world-viewer.mock';
+import { flatDetail, flatTile } from './world-viewer.mock';
 
 // ------------------------------------------------------------------ Three.js controls fakes (jsdom has no WebGL)
 
@@ -96,6 +97,7 @@ interface FakeTransformControls extends EventDispatcher<{ 'dragging-changed': { 
       [gizmoMode]="mode()"
       [snapToGround]="snap()"
       [groundOnly]="groundOnly()"
+      [renderSettings]="render()"
       [focus]="focus()"
       (picked)="picks.push($event)"
       (objectMoved)="moves.push($event)"
@@ -112,6 +114,7 @@ class HostComponent {
   readonly mode = signal<GizmoMode>('translate');
   readonly snap = signal(true);
   readonly groundOnly = signal(false);
+  readonly render = signal<WorldRenderSettings>(DEFAULT_WORLD_RENDER_SETTINGS);
   readonly focus = signal<WorldPosition | undefined>(undefined);
   readonly picks: PickResult[] = [];
   readonly moves: ObjectMoved[] = [];
@@ -181,6 +184,8 @@ describe(WorldViewerComponent.name, () => {
     getMapTiles: vi.fn(),
     getTerrain: vi.fn(),
     getMinimap: vi.fn(),
+    getTerrainDetail: vi.fn(),
+    getTexture: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -194,6 +199,8 @@ describe(WorldViewerComponent.name, () => {
     client.getMapTiles.mockResolvedValue([{ tx: 32, ty: 48 }]);
     client.getTerrain.mockImplementation(() => Promise.resolve(flatTile(GROUND)));
     client.getMinimap.mockResolvedValue(undefined);
+    client.getTerrainDetail.mockImplementation(() => Promise.resolve(flatDetail(GROUND)));
+    client.getTexture.mockResolvedValue(undefined);
 
     await TestBed.configureTestingModule({
       imports: [HostComponent, TranslateTestingModule],
@@ -262,8 +269,20 @@ describe(WorldViewerComponent.name, () => {
     });
     await settle(fixture);
     expect(client.getMapTiles).toHaveBeenCalledWith('Azeroth');
-    expect(client.getTerrain).toHaveBeenCalledWith('Azeroth', { tx: 32, ty: 48 });
+    expect(client.getTerrainDetail).toHaveBeenCalledWith('Azeroth', { tx: 32, ty: 48 });
+    expect(client.getTexture).toHaveBeenCalledWith('base.blp');
     expect(host.centers.at(-1)?.x).toBeCloseTo(CENTER.x);
+  });
+
+  it('switches to low-poly minimap terrain when asked', async () => {
+    const { host, fixture, update } = await setup((h) => {
+      h.focus.set(at(0, 0));
+      h.map.set('Azeroth');
+    });
+    await settle(fixture);
+    await update(() => host.render.set({ ...DEFAULT_WORLD_RENDER_SETTINGS, lowDetailTerrain: true }));
+    await settle(fixture);
+    expect(client.getTerrain).toHaveBeenCalledWith('Azeroth', { tx: 32, ty: 48 });
   });
 
   it('shows a loading indicator while the map loads, then hides it', async () => {

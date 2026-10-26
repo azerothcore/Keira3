@@ -2,6 +2,7 @@ export * from './coords';
 export * from './dbc';
 export * from './folder-archive';
 export * from './formats';
+export * from './liquid';
 export * from './minimap';
 export * from './mpq-order';
 export * from './terrain-mesh';

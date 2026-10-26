@@ -2,7 +2,16 @@ import { Component, input, output } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
-import { GizmoMode, ObjectMoved, PickResult, WaypointPath, WorldSpawn, WorldViewerComponent } from '@keira/shared/world-viewer';
+import {
+  DEFAULT_WORLD_RENDER_SETTINGS,
+  GizmoMode,
+  ObjectMoved,
+  PickResult,
+  WaypointPath,
+  WorldRenderSettings,
+  WorldSpawn,
+  WorldViewerComponent,
+} from '@keira/shared/world-viewer';
 import { tileCenter, WOW_DATA_SETTINGS_KEY, WowClientService, WorldPosition } from '@keira/shared/wow-data';
 import { DebugHtmlElement, PageObjectModel, typeInElement } from 'ngx-page-object-model';
 import { ClipboardService } from 'ngx-clipboard';
@@ -22,6 +31,7 @@ class FakeWorldViewerComponent {
   readonly gizmoMode = input<GizmoMode>('translate');
   readonly snapToGround = input<boolean>(true);
   readonly groundOnly = input<boolean>(false);
+  readonly renderSettings = input<WorldRenderSettings>(DEFAULT_WORLD_RENDER_SETTINGS);
   readonly focus = input<WorldPosition | undefined>(undefined);
   readonly picked = output<PickResult>();
   readonly objectMoved = output<ObjectMoved>();
@@ -189,6 +199,25 @@ describe(WorldEditorComponent.name, () => {
       page.click('settings-toggle');
       page.fixture.detectChanges();
       expect(page.byId('settings')).toBeTruthy();
+    });
+
+    it('changes and remembers the view settings', async () => {
+      const { page } = await setup();
+      expect(page.byId('view-settings', false)).toBeFalsy();
+      page.click('view-toggle');
+      page.fixture.detectChanges();
+
+      const lowDetail = page.byId<HTMLInputElement>('view-low-detail').nativeElement;
+      lowDetail.checked = true;
+      lowDetail.dispatchEvent(new Event('change'));
+      const radius = page.byId<HTMLSelectElement>('view-terrain-radius').nativeElement;
+      radius.value = '2';
+      radius.dispatchEvent(new Event('change'));
+      page.fixture.detectChanges();
+
+      expect(page.viewer().renderSettings()).toEqual({ ...DEFAULT_WORLD_RENDER_SETTINGS, lowDetailTerrain: true, terrainRadius: 2 });
+      expect(radius.options[1].textContent?.trim()).toBe('25 WORLD_EDITOR.TILES');
+      expect(JSON.parse(localStorage.getItem('keira3.worldEditor.render') as string).terrainRadius).toBe(2);
     });
 
     it('does not read game data outside the desktop app', async () => {

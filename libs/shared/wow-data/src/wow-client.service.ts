@@ -2,12 +2,19 @@ import { inject, Service } from '@angular/core';
 import { TileCoord } from './coords';
 import { DbcFile, parseMapDbc, WowMap } from './dbc';
 import { FolderArchive } from './folder-archive';
-import { decodeBlp, parseAdtChunks, parseWdt, RgbaImage, WdtInfo } from './formats';
+import { decodeBlp, LayerSplatDepth, parseAdtChunks, parseWdt, RgbaImage, WdtInfo } from './formats';
 import { MD5_TRANSLATE_PATH, MINIMAP_ROOT, minimapKey, parseMd5Translate } from './minimap';
 import { parseConfigWtfLocale, pickLocale, sortMpqArchives } from './mpq-order';
-import { buildTerrainMesh, TerrainMeshData } from './terrain-mesh';
+import { LiquidMesh, parseLiquids } from './liquid';
+import { buildTerrainChunkMeshes, buildTerrainMesh, TerrainChunkMesh, TerrainMeshData } from './terrain-mesh';
 import { WowDataSettingsService } from './wow-data-settings.service';
 import { StormArchive, WOW_NATIVE_API, WowNativeApi } from './wow-native-api';
+
+/** Everything drawn for a tile in detailed mode. */
+export interface TerrainDetail {
+  chunks: TerrainChunkMesh[];
+  liquids: LiquidMesh[];
+}
 
 interface OpenClient {
   clientPath: string;
@@ -69,13 +76,37 @@ export class WowClientService {
     return (await this.getWdt(directory))?.tiles ?? [];
   }
 
+  /** Low-detail terrain of a tile: one mesh for the whole tile, textured with its minimap. */
   async getTerrain(directory: string, tile: TileCoord): Promise<TerrainMeshData | undefined> {
-    const adt = await this.readFile(`World\\Maps\\${directory}\\${directory}_${tile.tx}_${tile.ty}.adt`);
+    const adt = await this.readAdt(directory, tile);
+    return adt ? buildTerrainMesh(tile, parseAdtChunks(adt.bytes, adt.layerSplatDepth)) : undefined;
+  }
+
+  /** Textured terrain of a tile: one mesh per chunk with its texture layers, plus its liquid surfaces. */
+  async getTerrainDetail(directory: string, tile: TileCoord): Promise<TerrainDetail | undefined> {
+    const adt = await this.readAdt(directory, tile);
     if (!adt) {
       return undefined;
     }
-    const layerSplatDepth = (await this.getWdt(directory))?.layerSplatDepth ?? 4;
-    return buildTerrainMesh(tile, parseAdtChunks(adt, layerSplatDepth));
+    const chunks = parseAdtChunks(adt.bytes, adt.layerSplatDepth);
+    return {
+      chunks: buildTerrainChunkMeshes(chunks),
+      liquids: parseLiquids(
+        adt.bytes,
+        chunks.map((chunk) => chunk.position),
+      ),
+    };
+  }
+
+  /** Decodes a BLP texture from the archives (e.g. a terrain tileset texture). */
+  async getTexture(path: string): Promise<RgbaImage | undefined> {
+    const blp = await this.readFile(path);
+    return blp ? decodeBlp(blp) : undefined;
+  }
+
+  private async readAdt(directory: string, tile: TileCoord): Promise<{ bytes: Uint8Array; layerSplatDepth: LayerSplatDepth } | undefined> {
+    const bytes = await this.readFile(`World\\Maps\\${directory}\\${directory}_${tile.tx}_${tile.ty}.adt`);
+    return bytes ? { bytes, layerSplatDepth: (await this.getWdt(directory))?.layerSplatDepth ?? 4 } : undefined;
   }
 
   private getWdt(directory: string): Promise<WdtInfo | undefined> {

@@ -9,6 +9,7 @@ import {
   PickResult,
   WaypointPath,
   waypointKey,
+  WorldRenderSettingsService,
   WorldSpawn,
   WorldViewerComponent,
 } from '@keira/shared/world-viewer';
@@ -46,6 +47,7 @@ export class WorldEditorComponent implements OnInit {
   private readonly service = inject(WorldEditorService);
   private readonly client = inject(WowClientService);
   private readonly settings = inject(WowDataSettingsService);
+  protected readonly renderSettings = inject(WorldRenderSettingsService);
   private readonly toastr = inject(ToastrService);
   private readonly clipboard = inject(ClipboardService);
   private readonly route = inject(ActivatedRoute);
@@ -66,6 +68,7 @@ export class WorldEditorComponent implements OnInit {
   protected readonly snapToGround = signal(true);
   protected readonly selectedKey = signal<string | undefined>(undefined);
   protected readonly showSettings = signal(!this.settings.isConfigured());
+  protected readonly showView = signal(false);
   protected readonly loadingSpawns = signal(false);
   protected readonly teleResults = signal<TeleRow[]>([]);
   protected readonly placeEntryName = signal('');
@@ -209,6 +212,18 @@ export class WorldEditorComponent implements OnInit {
   }
 
   // ---------------------------------------------------------------- settings & navigation
+
+  protected toggleView(): void {
+    this.showView.update((shown) => !shown);
+  }
+
+  protected setLowDetailTerrain(event: Event): void {
+    this.renderSettings.update({ lowDetailTerrain: (event.target as HTMLInputElement).checked });
+  }
+
+  protected setTerrainRadius(event: Event): void {
+    this.renderSettings.update({ terrainRadius: Number((event.target as HTMLSelectElement).value) });
+  }
 
   protected toggleSettings(): void {
     this.showSettings.update((shown) => !shown);

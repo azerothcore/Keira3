@@ -56,7 +56,10 @@
       </button>
     </div>
 
-    <button type="button" class="btn btn-sm btn-outline-secondary ms-auto" data-testid="settings-toggle" (click)="toggleSettings()">
+    <button type="button" class="btn btn-sm btn-outline-secondary ms-auto" data-testid="view-toggle" (click)="toggleView()">
+      <i class="fa fa-eye"></i> {{ 'WORLD_EDITOR.VIEW' | translate }}
+    </button>
+    <button type="button" class="btn btn-sm btn-outline-secondary" data-testid="settings-toggle" (click)="toggleSettings()">
       <i class="fa fa-cog"></i> {{ 'WORLD_EDITOR.SETTINGS' | translate }}
     </button>
   </div>
@@ -73,6 +76,37 @@
           {{ tele.name }} <small class="text-muted">(map {{ tele.map }})</small>
         </button>
       }
+    </div>
+  }
+
+  @if (showView()) {
+    <div class="card card-body mb-2 world-editor-view-settings d-flex flex-row flex-wrap gap-4 py-2" data-testid="view-settings">
+      <div class="form-check form-switch mb-0">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="world-editor-low-detail"
+          data-testid="view-low-detail"
+          [checked]="renderSettings.settings().lowDetailTerrain"
+          (change)="setLowDetailTerrain($event)"
+        />
+        <label class="form-check-label" for="world-editor-low-detail">{{ 'WORLD_EDITOR.LOW_DETAIL_TERRAIN' | translate }}</label>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <label for="world-editor-terrain-radius" class="mb-0">{{ 'WORLD_EDITOR.TERRAIN_RANGE' | translate }}</label>
+        <select
+          id="world-editor-terrain-radius"
+          class="form-select form-select-sm w-auto"
+          data-testid="view-terrain-radius"
+          (change)="setTerrainRadius($event)"
+        >
+          @for (radius of [1, 2, 3]; track radius) {
+            <option [value]="radius" [selected]="radius === renderSettings.settings().terrainRadius">
+              {{ (radius * 2 + 1) * (radius * 2 + 1) }} {{ 'WORLD_EDITOR.TILES' | translate }}
+            </option>
+          }
+        </select>
+      </div>
     </div>
   }
 
@@ -117,6 +151,7 @@
         [gizmoMode]="gizmoMode()"
         [snapToGround]="snapToGround()"
         [groundOnly]="tool() !== 'select'"
+        [renderSettings]="renderSettings.settings()"
         [focus]="focus()"
         (picked)="onPicked($event)"
         (objectMoved)="onObjectMoved($event)"

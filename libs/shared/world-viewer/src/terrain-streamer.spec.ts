@@ -1,5 +1,7 @@
 import { TerrainMeshData, TileCoord, tileCenter } from '@keira/shared/wow-data';
 import { TerrainSource, TerrainStreamer } from './terrain-streamer';
+import { TextureCache } from './texture-cache';
+import { flatDetail } from './world-viewer.mock';
 import { WorldScene } from './world-scene';
 
 const mesh = (tile: TileCoord): TerrainMeshData => ({
@@ -27,10 +29,12 @@ describe('TerrainStreamer', () => {
       getMapTiles: vi.fn().mockResolvedValue(tiles),
       getTerrain: vi.fn().mockImplementation((_d: string, tile: TileCoord) => Promise.resolve(mesh(tile))),
       getMinimap: vi.fn().mockResolvedValue(undefined),
+      getTerrainDetail: vi.fn().mockImplementation((_d: string, tile: TileCoord) => Promise.resolve(flatDetail(50, tile))),
     };
     const scene = new WorldScene();
     const onTileLoaded = vi.fn();
-    const streamer = new TerrainStreamer(source, scene, onTileLoaded);
+    const textures = new TextureCache(() => Promise.resolve({ width: 1, height: 1, data: new Uint8Array(4) }));
+    const streamer = new TerrainStreamer(source, scene, textures, onTileLoaded);
     return { source, scene, onTileLoaded, streamer };
   };
 
@@ -137,5 +141,43 @@ describe('TerrainStreamer', () => {
     expect(scene.terrainKeys).toEqual([]);
     expect(streamer.mapDirectory).toBeUndefined();
     expect(streamer.pendingCount).toBe(0);
+  });
+
+  describe('textured mode', () => {
+    it('loads textured tiles with their tileset textures, sharing each texture', async () => {
+      const { streamer, scene, source } = setup([{ tx: 32, ty: 48 }]);
+      streamer.configure({ detailed: true, radius: 1 });
+      await streamer.setMap('Azeroth');
+      await streamer.update(tileCenter({ tx: 32, ty: 48 }));
+      expect(source.getTerrainDetail).toHaveBeenCalledWith('Azeroth', { tx: 32, ty: 48 });
+      expect(source.getTerrain).not.toHaveBeenCalled();
+      expect(scene.terrainKeys).toEqual(['32_48']);
+      expect(scene.scene.getObjectByName('tile:32_48')?.children.length).toBe(256);
+    });
+
+    it('skips tiles without ADT', async () => {
+      const { streamer, scene, source } = setup([{ tx: 32, ty: 48 }]);
+      vi.mocked(source.getTerrainDetail).mockResolvedValue(undefined);
+      streamer.configure({ detailed: true, radius: 1 });
+      await streamer.setMap('Azeroth');
+      await streamer.update(tileCenter({ tx: 32, ty: 48 }));
+      expect(scene.terrainKeys).toEqual([]);
+    });
+
+    it('reloads with new options and ignores unchanged ones', async () => {
+      const { streamer, scene, source } = setup();
+      await streamer.setMap('Azeroth');
+      await streamer.update(tileCenter({ tx: 32, ty: 48 }));
+      expect(scene.terrainKeys.length).toBe(9);
+
+      streamer.configure({ detailed: false, radius: 1 });
+      expect(scene.terrainKeys.length).toBe(9);
+
+      streamer.configure({ detailed: false, radius: 2 });
+      expect(scene.terrainKeys).toEqual([]);
+      await streamer.update(tileCenter({ tx: 32, ty: 48 }));
+      expect(scene.terrainKeys.length).toBe(25);
+      expect(source.getTerrain).toHaveBeenCalledTimes(9 + 25);
+    });
   });
 });

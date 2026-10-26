@@ -189,6 +189,26 @@ describe('WowClientService', () => {
       expect(formats.parseAdtChunks.mock.calls[1][1]).toBe(4);
     });
 
+    it('builds textured terrain and liquids from ADTs', async () => {
+      const { service } = setup({
+        mpqs: { 'common.MPQ': { files: { 'World\\Maps\\Azeroth\\Azeroth_32_48.adt': [1, 2, 3, 4, 0, 0, 0, 0] } } },
+      });
+      formats.parseWdt.mockReturnValue({ tiles: [], layerSplatDepth: 4 });
+      formats.parseAdtChunks.mockReturnValue([{ position: [0, 0, 0], vertexHeights: [], holes: 0, layers: [{ texture: 'a.blp' }] }]);
+      const detail = await service.getTerrainDetail('Azeroth', { tx: 32, ty: 48 });
+      expect(detail?.chunks[0].textures).toEqual(['a.blp']);
+      expect(detail?.liquids).toEqual([]);
+      expect(await service.getTerrainDetail('Azeroth', { tx: 1, ty: 1 })).toBeUndefined();
+    });
+
+    it('decodes textures', async () => {
+      const { service } = setup({ mpqs: { 'common.MPQ': { files: { 'Tileset\\Grass.blp': [7] } } } });
+      const image = { width: 1, height: 1, data: new Uint8Array(4) };
+      formats.decodeBlp.mockReturnValue(image);
+      expect(await service.getTexture('tileset\\grass.blp')).toBe(image);
+      expect(await service.getTexture('missing.blp')).toBeUndefined();
+    });
+
     it('forgets a WDT that failed to load', async () => {
       const { service } = setup({ mpqs: { 'common.MPQ': { files: { 'World\\Maps\\Azeroth\\Azeroth.wdt': [9] } } } });
       formats.parseWdt.mockImplementationOnce(() => {

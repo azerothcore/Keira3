@@ -18,6 +18,8 @@ import { Vector3 } from 'three';
 import { MapControls } from 'three/addons/controls/MapControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { TerrainStreamer } from './terrain-streamer';
+import { TextureCache } from './texture-cache';
+import { DEFAULT_WORLD_RENDER_SETTINGS, WorldRenderSettings } from './world-render-settings';
 import { WORLD_RENDERER_FACTORY, WorldRenderer } from './world-renderer';
 import { PickOptions, WorldScene } from './world-scene';
 import { GizmoMode, ObjectMoved, parseWaypointKey, PickResult, WaypointPath, WorldSpawn } from './world-viewer.model';
@@ -59,6 +61,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   readonly groundOnly = input<boolean>(false);
   /** Moves the camera to look at this position whenever it changes. */
   readonly focus = input<WorldPosition | undefined>(undefined);
+  /** Quality and range of what is drawn. */
+  readonly renderSettings = input<WorldRenderSettings>(DEFAULT_WORLD_RENDER_SETTINGS);
 
   readonly picked = output<PickResult>();
   readonly objectMoved = output<ObjectMoved>();
@@ -73,7 +77,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private readonly canvasRef = viewChild.required<ElementRef<HTMLCanvasElement>>('canvas');
 
   private readonly world = new WorldScene();
-  private readonly streamer = new TerrainStreamer(this.client, this.world, () => this.onTileLoaded());
+  private readonly textures = new TextureCache((path) => this.client.getTexture(path));
+  private readonly streamer = new TerrainStreamer(this.client, this.world, this.textures, () => this.onTileLoaded());
   private renderer?: WorldRenderer;
   // Created in ngAfterViewInit; effects may run before that, hence the guards in syncGizmo/lookAt.
   private controls?: MapControls;
@@ -87,6 +92,14 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private readonly target = new Vector3();
 
   constructor() {
+    effect(() => {
+      const settings = this.renderSettings();
+      untracked(() => {
+        this.streamer.configure({ detailed: !settings.lowDetailTerrain, radius: settings.terrainRadius });
+        void this.streamer.update(this.center);
+        this.requestRender();
+      });
+    });
     effect(() => void this.loadMap(this.mapDirectory()));
     effect(() => {
       this.world.setSpawns(this.spawns());
@@ -148,6 +161,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     this.controls?.dispose();
     this.renderer?.dispose();
     this.world.dispose();
+    this.textures.dispose();
     this.renderer = undefined;
   }
 

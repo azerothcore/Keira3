@@ -1043,6 +1043,10 @@
     "LOADING_SPAWNS": "正在加载刷新点…",
     "ERROR_DESKTOP_ONLY": "3D世界编辑器需要 Keira3 桌面应用来读取你的 WoW 客户端文件。",
     "CONTROLS_HELP": "左键拖动：平移 · 右键拖动：旋转 · 滚轮：缩放 · R：移动/旋转 · Del：删除 · Esc：取消",
-    "WALKED_BY": "使用者"
+    "WALKED_BY": "使用者",
+    "VIEW": "视图",
+    "LOW_DETAIL_TERRAIN": "低模地形（小地图配色，更快）",
+    "TERRAIN_RANGE": "地形范围",
+    "TILES": "块"
   }
 }

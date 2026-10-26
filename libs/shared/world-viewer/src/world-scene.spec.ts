@@ -1,6 +1,6 @@
 import { tileCenter, worldToScene, WorldPosition } from '@keira/shared/wow-data';
-import { BufferGeometry, Group, Line, Mesh, MeshLambertMaterial, Vector3 } from 'three';
-import { flatTile } from './world-viewer.mock';
+import { BufferGeometry, Group, Line, Mesh, MeshLambertMaterial, ShaderMaterial, Texture, Vector3 } from 'three';
+import { flatDetail, flatTile } from './world-viewer.mock';
 import { pathColor, WorldScene } from './world-scene';
 import { WaypointPath, WorldSpawn } from './world-viewer.model';
 
@@ -50,6 +50,40 @@ describe('WorldScene', () => {
       world.removeTerrainTile('nope');
       world.clearTerrain();
       expect(world.terrainKeys).toEqual([]);
+    });
+
+    it('builds textured tiles with liquids, and disposes owned textures only', () => {
+      const world = new WorldScene();
+      const fallback = new Texture();
+      const shared = new Texture();
+      const liquid = {
+        type: 1,
+        kind: 'water' as const,
+        positions: new Float32Array([0, 50, 0, 1, 50, 0, 0, 50, 1]),
+        indices: new Uint16Array([0, 2, 1]),
+      };
+      const magma = { ...liquid, kind: 'magma' as const };
+      const detail = flatDetail(42);
+      world.setTerrainTileDetailed(
+        { tx: 32, ty: 48 },
+        detail.chunks.map((mesh, i) => ({ mesh: i === 0 ? { ...mesh, splat: undefined } : mesh, layers: [shared, shared] })),
+        fallback,
+        [liquid, magma, liquid],
+      );
+      const tile = world.scene.getObjectByName('tile:32_48') as Group;
+      expect(tile.children.length).toBe(256 + 3);
+      expect(world.groundHeightAt(CENTER.x, CENTER.y)).toBeCloseTo(42);
+      const water = tile.children.filter((c) => c.name === 'liquid') as Mesh[];
+      expect(water[0].material).toBe(water[2].material);
+      expect(water[0].material).not.toBe(water[1].material);
+
+      const sharedDispose = vi.spyOn(shared, 'dispose');
+      const splat = ((tile.children[1] as Mesh).material as ShaderMaterial).uniforms['splat'].value as Texture;
+      const splatDispose = vi.spyOn(splat, 'dispose');
+      world.setTerrainTileDetailed({ tx: 32, ty: 48 }, [], fallback);
+      expect(splatDispose).toHaveBeenCalled();
+      expect(sharedDispose).not.toHaveBeenCalled();
+      world.dispose();
     });
 
     it('reports the ground height under a position', () => {
