@@ -1,6 +1,9 @@
 import { Color, IUniform, ShaderMaterial, Texture, UniformsLib, UniformsUtils, Vector3 } from 'three';
 
-/** Lighting shared by every terrain material, so a zone light change updates all chunks at once. */
+/**
+ * Lighting shared by every terrain material, so a zone light change updates all chunks at once. Like the client, the
+ * colours are gamma-space (sRGB) values summed as `ambient + sun × N·L`, converted to linear light afterwards.
+ */
 export interface TerrainLighting {
   sunDirection: IUniform<Vector3>;
   sunColor: IUniform<Color>;
@@ -10,8 +13,9 @@ export interface TerrainLighting {
 export function createTerrainLighting(): TerrainLighting {
   return {
     sunDirection: { value: new Vector3(0.3, 0.8, 0.5).normalize() },
-    sunColor: { value: new Color(0.75, 0.72, 0.68) },
-    ambientColor: { value: new Color(0.45, 0.47, 0.5) },
+    // a neutral light: about 1.2× at full sun, 0.45× in the shade
+    sunColor: { value: new Color(0.39, 0.37, 0.35) },
+    ambientColor: { value: new Color(0.7, 0.71, 0.73) },
   };
 }
 
@@ -59,7 +63,7 @@ void main() {
     color = mix(color, texture2D(layer3, vLayerUv).rgb, blend.b);
   #endif
   float light = clamp(dot(normalize(vNormal), sunDirection), 0.0, 1.0);
-  gl_FragColor = vec4(color * (sunColor * light + ambientColor), 1.0);
+  gl_FragColor = vec4(color * pow(sunColor * light + ambientColor, vec3(2.2)), 1.0);
   #include <colorspace_fragment>
   #include <fog_fragment>
 }

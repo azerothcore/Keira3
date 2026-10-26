@@ -35,6 +35,7 @@ import {
 } from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import {
+  LightSample,
   LiquidKind,
   LiquidMesh,
   orientationToSceneYaw,
@@ -49,6 +50,7 @@ import {
   WorldPosition,
   worldToScene,
 } from '@keira/shared/wow-data';
+import { createSkyDome, setSkyColors } from './sky';
 import { createTerrainLighting, createTerrainMaterial } from './terrain-material';
 import { PickResult, SpawnKind, WaypointPath, waypointKey, WorldSpawn } from './world-viewer.model';
 
@@ -76,6 +78,21 @@ interface SpawnMarkerData {
 }
 
 const SPAWN_MODEL_NAME = 'model';
+/** Default colour and opacity of each liquid. */
+const LIQUID_LOOK: Record<LiquidKind, [number, number]> = {
+  water: [0x2a6b9c, 0.65],
+  ocean: [0x1d4f7a, 0.75],
+  magma: [0xff5a1f, 0.95],
+  slime: [0x5fbf3a, 0.85],
+};
+const POINTER_NAME = 'pointer';
+const DEFAULT_LIGHTS = { sun: 1.6, hemisphere: 1.2, ambient: 0.35 };
+const ZONE_LIGHTS = { sun: 1.8, ambient: 1.6 };
+const DEFAULT_FOG = { near: 600, far: 1600 };
+/** Zone fog never closes in nearer than this (yards), so the editor can still see around. */
+const MIN_FOG_END = 400;
+/** How far above an object snapping still looks for ground (yards): enough for a stair step or a small ledge. */
+const GROUND_STEP = 2;
 
 const COLORS = {
   sky: 0x9cc3e6,
@@ -122,6 +139,8 @@ export class WorldScene {
   /** Sun and ambient light of the textured terrain (updated by zone lighting). */
   readonly terrainLighting = createTerrainLighting();
   private readonly liquidMaterials = new Map<LiquidKind, MeshLambertMaterial>();
+  /** Zone colours of water and sea, when zone lighting is on. */
+  private liquidLight?: { water: Color; ocean: Color };
   private readonly objects = new Map<string, Object3D>();
   private selectedKey?: string;
 
@@ -133,14 +152,20 @@ export class WorldScene {
   private readonly gameobjectGeometry = new BoxGeometry(1.2, 1.2, 1.2).translate(0, 0.6, 0);
   private readonly waypointGeometry = new SphereGeometry(0.5, 12, 8);
   private readonly arrowGeometry = new ConeGeometry(0.4, 1.2, 8);
+  /** Nose on a waypoint ball, pointing to the next point (along +y before rotation, starting at the ball's surface). */
+  private readonly pointerGeometry = new ConeGeometry(0.3, 0.8, 8).translate(0, 0.85, 0);
   private readonly arrows = new Set<Object3D>();
   private readonly markerMaterials = new Map<string, MeshLambertMaterial>();
+  private readonly sun = new DirectionalLight(0xffffff, DEFAULT_LIGHTS.sun);
+  private readonly hemisphere = new HemisphereLight(0xdbeeff, 0x4a3b2a, DEFAULT_LIGHTS.hemisphere);
+  private readonly ambient = new AmbientLight(0xffffff, DEFAULT_LIGHTS.ambient);
+  private readonly sky = createSkyDome();
   /** Pins of spawns drawn with their real model: not rendered, but still picked (so small models stay clickable). */
   private readonly hiddenMarkerMaterial = new MeshBasicMaterial({ visible: false });
 
   constructor() {
     this.scene.background = new Color(COLORS.sky);
-    this.scene.fog = new Fog(COLORS.sky, 600, 1600);
+    this.scene.fog = new Fog(COLORS.sky, DEFAULT_FOG.near, DEFAULT_FOG.far);
     this.terrainGroup.name = 'terrain';
     this.buildingGroup.name = 'buildings';
     this.doodadGroup.name = 'doodads';
@@ -149,9 +174,59 @@ export class WorldScene {
     this.scene.add(this.terrainGroup, this.buildingGroup, this.doodadGroup, this.spawnGroup, this.waypointGroup);
     this.camera.layers.enable(LIQUID_LAYER);
 
-    const sun = new DirectionalLight(0xffffff, 1.6);
-    sun.position.set(300, 600, 200);
-    this.scene.add(new HemisphereLight(0xdbeeff, 0x4a3b2a, 1.2), new AmbientLight(0xffffff, 0.35), sun);
+    this.sun.position.set(300, 600, 200);
+    this.scene.add(this.hemisphere, this.ambient, this.sun, this.sky);
+  }
+
+  // ---------------------------------------------------------------- lighting
+
+  /** Lights the world like the zone (sun, ambient, fog and sky), or with the neutral default light (`undefined`). */
+  applyLighting(sample: LightSample | undefined): void {
+    const fog = this.scene.fog as Fog;
+    const terrain = this.terrainLighting;
+    if (!sample) {
+      const defaults = createTerrainLighting();
+      terrain.sunColor.value.copy(defaults.sunColor.value);
+      terrain.ambientColor.value.copy(defaults.ambientColor.value);
+      this.sun.color.set(0xffffff);
+      this.sun.intensity = DEFAULT_LIGHTS.sun;
+      this.ambient.color.set(0xffffff);
+      this.ambient.intensity = DEFAULT_LIGHTS.ambient;
+      this.hemisphere.intensity = DEFAULT_LIGHTS.hemisphere;
+      (this.scene.background as Color).set(COLORS.sky);
+      fog.color.set(COLORS.sky);
+      fog.near = DEFAULT_FOG.near;
+      fog.far = DEFAULT_FOG.far;
+      this.sky.visible = false;
+      this.liquidLight = undefined;
+      this.liquidMaterials.forEach((material, kind) => this.styleLiquid(kind, material));
+      return;
+    }
+    const color = (rgb: number[]) => new Color().setRGB(rgb[0], rgb[1], rgb[2], SRGBColorSpace);
+    // the terrain shader sums them in gamma space, like the client
+    terrain.sunColor.value.setRGB(...sample.diffuse);
+    terrain.ambientColor.value.setRGB(...sample.ambient);
+    // buildings, props and models: the zone's sun and ambient replace the neutral sky light
+    this.sun.color.copy(color(sample.diffuse));
+    this.sun.intensity = ZONE_LIGHTS.sun;
+    this.ambient.color.copy(color(sample.ambient));
+    this.ambient.intensity = ZONE_LIGHTS.ambient;
+    this.hemisphere.intensity = 0;
+    const fogColor = color(sample.fog);
+    (this.scene.background as Color).copy(fogColor);
+    fog.color.copy(fogColor);
+    // an editor looks farther than a player: keep a minimum view, but the zone's fog feel
+    fog.far = Math.max(sample.fogEnd, MIN_FOG_END);
+    fog.near = Math.min(Math.max(sample.fogStart, 0), fog.far * 0.9);
+    setSkyColors(this.sky, {
+      top: color(sample.skyTop),
+      middle: color(sample.skyMiddle),
+      horizon: color(sample.skyHorizon),
+      ground: fogColor,
+    });
+    this.sky.visible = true;
+    this.liquidLight = { water: color(sample.water), ocean: color(sample.ocean) };
+    this.liquidMaterials.forEach((material, kind) => this.styleLiquid(kind, material));
   }
 
   // ---------------------------------------------------------------- terrain
@@ -236,26 +311,26 @@ export class WorldScene {
   private liquidMaterial(kind: LiquidKind): MeshLambertMaterial {
     let material = this.liquidMaterials.get(kind);
     if (!material) {
-      const look: Record<LiquidKind, [number, number]> = {
-        water: [0x2a6b9c, 0.65],
-        ocean: [0x1d4f7a, 0.75],
-        magma: [0xff5a1f, 0.95],
-        slime: [0x5fbf3a, 0.85],
-      };
-      const [color, opacity] = look[kind];
-      material = new MeshLambertMaterial({
-        color,
-        transparent: true,
-        opacity,
-        depthWrite: false,
-        side: DoubleSide,
-        emissive: kind === 'magma' ? 0xff3300 : 0x000000,
-        emissiveIntensity: kind === 'magma' ? 0.8 : 0,
-      });
+      material = new MeshLambertMaterial({ transparent: true, opacity: LIQUID_LOOK[kind][1], depthWrite: false, side: DoubleSide });
       material.userData['shared'] = true;
+      this.styleLiquid(kind, material);
       this.liquidMaterials.set(kind, material);
     }
     return material;
+  }
+
+  /** Water and sea take the zone's colours (glowing a little, like the client's); magma and slime keep theirs. */
+  private styleLiquid(kind: LiquidKind, material: MeshLambertMaterial): void {
+    const zone = this.liquidLight && (kind === 'water' ? this.liquidLight.water : kind === 'ocean' ? this.liquidLight.ocean : undefined);
+    if (zone) {
+      material.color.copy(zone);
+      material.emissive.copy(zone);
+      material.emissiveIntensity = 0.6;
+    } else {
+      material.color.set(LIQUID_LOOK[kind][0]);
+      material.emissive.set(kind === 'magma' ? 0xff3300 : 0x000000);
+      material.emissiveIntensity = kind === 'magma' ? 0.8 : 0;
+    }
   }
 
   removeTerrainTile(key: string): void {
@@ -353,6 +428,7 @@ export class WorldScene {
         this.objects.set(key, sphere);
         group.add(sphere);
       }
+      this.orientPointers(group, path.closed === true && path.points.length > 2);
       this.waypointGroup.add(group);
     }
     this.applySelection();
@@ -365,12 +441,12 @@ export class WorldScene {
       return;
     }
     const group = line.parent as Group;
-    const points = group.children
-      .filter((child) => (child.userData as Partial<PickableData>).kind === 'waypoint')
-      .map((child) => child.position.clone());
-    if (line.geometry.getAttribute('position').count === points.length + 1) {
+    const points = this.waypointsOf(group).map((child) => child.position.clone());
+    const closed = line.geometry.getAttribute('position').count === points.length + 1;
+    if (closed) {
       points.push(points[0].clone());
     }
+    this.orientPointers(group, closed);
     line.geometry.dispose();
     line.geometry = new BufferGeometry().setFromPoints(points);
 
@@ -378,6 +454,38 @@ export class WorldScene {
     this.disposeArrows(oldArrows);
     group.remove(oldArrows);
     group.add(this.buildArrows(pathKey, points, pathColor(pathKey)));
+  }
+
+  private waypointsOf(group: Group): Object3D[] {
+    return group.children.filter((child) => (child.userData as Partial<PickableData>).kind === 'waypoint');
+  }
+
+  /**
+   * Gives each waypoint ball a pointer towards the next point (the last one of an open path keeps the direction it
+   * was reached from). The ball's own rotation stays the waypoint orientation, so the pointer counter-rotates.
+   */
+  private orientPointers(group: Group, closed: boolean): void {
+    const waypoints = this.waypointsOf(group);
+    const up = new Vector3(0, 1, 0);
+    waypoints.forEach((waypoint, i) => {
+      const old = waypoint.getObjectByName(POINTER_NAME);
+      if (old) {
+        waypoint.remove(old);
+      }
+      const next = waypoints[i + 1] ?? (closed ? waypoints[0] : undefined);
+      const direction = next
+        ? next.position.clone().sub(waypoint.position)
+        : waypoint.position.clone().sub(waypoints[i - 1]?.position ?? waypoint.position);
+      if (direction.lengthSq() === 0) {
+        return;
+      }
+      const pointer = new Mesh(this.pointerGeometry, (waypoint as Mesh).material);
+      pointer.name = POINTER_NAME;
+      pointer.userData = waypoint.userData;
+      const local = direction.normalize().applyQuaternion(waypoint.quaternion.clone().invert());
+      pointer.quaternion.setFromUnitVectors(up, local);
+      waypoint.add(pointer);
+    });
   }
 
   /** One arrow per segment, at its middle, pointing towards the next point (the direction the creature walks). */
@@ -433,6 +541,8 @@ export class WorldScene {
   /** Scales markers with their distance to the camera; call before rendering. */
   updateMarkerScale(): void {
     const cameraPosition = this.camera.position;
+    this.sky.position.copy(cameraPosition);
+    this.sky.scale.setScalar(this.camera.far * 0.9);
     for (const object of [...this.objects.values(), ...this.arrows]) {
       const distance = object.position.distanceTo(cameraPosition);
       const scale = Math.min(MARKER_MAX_SCALE, Math.max(1, distance / MARKER_SCALE_DISTANCE));
@@ -491,9 +601,18 @@ export class WorldScene {
     return best;
   }
 
-  /** Terrain height under a server x/y, if that tile is loaded. */
-  groundHeightAt(x: number, y: number): number | undefined {
-    const from = worldToScene({ x, y, z: 10_000 });
+  /**
+   * Height of the ground (terrain or building floor) under a server x/y, if loaded. With `fromZ`, the first surface
+   * below that height (plus a step, so stairs can be climbed) wins: inside a building that's the floor, not the roof.
+   * Without one, or with nothing below, the highest surface.
+   */
+  groundHeightAt(x: number, y: number, fromZ?: number): number | undefined {
+    const below = fromZ === undefined ? undefined : this.firstGroundBelow(x, y, fromZ + GROUND_STEP);
+    return below ?? this.firstGroundBelow(x, y, 10_000);
+  }
+
+  private firstGroundBelow(x: number, y: number, z: number): number | undefined {
+    const from = worldToScene({ x, y, z });
     this.raycaster.set(new Vector3(from.x, from.y, from.z), new Vector3(0, -1, 0));
     const hit = this.raycaster.intersectObjects([this.terrainGroup, this.buildingGroup], true)[0];
     return hit ? hit.point.y : undefined;
@@ -507,8 +626,11 @@ export class WorldScene {
     this.gameobjectGeometry.dispose();
     this.waypointGeometry.dispose();
     this.arrowGeometry.dispose();
+    this.pointerGeometry.dispose();
     this.markerMaterials.forEach((material) => material.dispose());
     this.hiddenMarkerMaterial.dispose();
+    this.sky.geometry.dispose();
+    this.sky.material.dispose();
     this.liquidMaterials.forEach((material) => material.dispose());
     this.markerMaterials.clear();
   }
@@ -565,6 +687,10 @@ export class WorldScene {
       const selected = key === this.selectedKey;
       if (data.kind === 'waypoint') {
         mesh.material = this.waypointMaterial(pathColor(data.pathKey as string), selected);
+        const pointer = object.getObjectByName(POINTER_NAME) as Mesh | undefined;
+        if (pointer) {
+          pointer.material = mesh.material;
+        }
       } else if (data.modelScale !== undefined && !selected) {
         mesh.material = this.hiddenMarkerMaterial;
       } else {

@@ -190,6 +190,7 @@ describe(WorldViewerComponent.name, () => {
     getWmo: vi.fn(),
     getM2: vi.fn(),
     getCreatureDisplay: vi.fn(),
+    getZoneLights: vi.fn(),
     getGameObjectDisplay: vi.fn(),
   };
 
@@ -209,6 +210,7 @@ describe(WorldViewerComponent.name, () => {
     client.getTilePlacements.mockResolvedValue({ wmos: [], doodads: [] });
     client.getWmo.mockResolvedValue(undefined);
     client.getM2.mockResolvedValue(undefined);
+    client.getZoneLights.mockResolvedValue([]);
 
     await TestBed.configureTestingModule({
       imports: [HostComponent, TranslateTestingModule],

@@ -6,6 +6,7 @@ import { decodeBlp, parseAdt, ParsedAdt, parseWdt, RgbaImage, WdtInfo } from './
 import { MD5_TRANSLATE_PATH, MINIMAP_ROOT, minimapKey, parseMd5Translate } from './minimap';
 import { parseConfigWtfLocale, pickLocale, sortMpqArchives } from './mpq-order';
 import { LiquidMesh, parseLiquids } from './liquid';
+import { parseZoneLights, ZoneLight } from './light';
 import { M2Mesh, m2Path, m2SkinPath, parseM2 } from './m2';
 import { buildTerrainChunkMeshes, buildTerrainMesh, TerrainChunkMesh, TerrainMeshData } from './terrain-mesh';
 import { ModelPlacement, parseWmoGroup, parseWmoRoot, WmoModel, wmoGroupPath } from './wmo';
@@ -41,6 +42,7 @@ export class WowClientService {
   private maps?: Promise<WowMap[]>;
   private creatureDisplays?: Promise<Map<number, CreatureDisplay>>;
   private gameobjectDisplays?: Promise<Map<number, string>>;
+  private zoneLights?: Promise<Map<number, ZoneLight[]>>;
   private readonly wdts = new Map<string, Promise<WdtInfo | undefined>>();
   private readonly adts = new Map<string, Promise<CachedAdt | undefined>>();
   private mountCounter = 0;
@@ -99,6 +101,16 @@ export class WowClientService {
         throw error;
       });
     return (await this.gameobjectDisplays).get(displayId);
+  }
+
+  /** Zone lights (Light.dbc) of a map, by its directory; empty when the map or the light DBCs are unknown. */
+  async getZoneLights(directory: string): Promise<ZoneLight[]> {
+    const lights = (this.zoneLights ??= this.loadZoneLights().catch((error) => {
+      this.zoneLights = undefined;
+      throw error;
+    }));
+    const map = (await this.getMaps()).find((m) => m.directory.toLowerCase() === directory.toLowerCase());
+    return (map && (await lights).get(map.id)) ?? [];
   }
 
   async getMapTiles(directory: string): Promise<TileCoord[]> {
@@ -211,6 +223,7 @@ export class WowClientService {
     this.maps = undefined;
     this.creatureDisplays = undefined;
     this.gameobjectDisplays = undefined;
+    this.zoneLights = undefined;
     this.wdts.clear();
     this.adts.clear();
     if (!client) {
@@ -317,6 +330,13 @@ export class WowClientService {
       ),
     );
     return displays && models ? parseCreatureDisplays({ displays, models, extras, hairGeosets, charSections }) : new Map();
+  }
+
+  private async loadZoneLights(): Promise<Map<number, ZoneLight[]>> {
+    const [lights, intBands, floatBands] = await Promise.all(
+      ['Light', 'LightIntBand', 'LightFloatBand'].map((name) => this.readDbc(`${name}.dbc`)),
+    );
+    return lights && intBands && floatBands ? parseZoneLights(lights, intBands, floatBands) : new Map();
   }
 
   /** A DBC from the server's DataDir when configured (it may hold custom rows), otherwise from the client. */

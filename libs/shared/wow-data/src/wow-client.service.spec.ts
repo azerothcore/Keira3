@@ -212,6 +212,33 @@ describe('WowClientService', () => {
       expect(await service.getGameObjectDisplay(6)).toBeUndefined();
     });
 
+    it('reads the zone lights of a map by its directory', async () => {
+      const row = (id: number, map: number) => [id, map, 0, 0, 0, 0, 0, 1];
+      const { service } = setup({
+        mpqs: displayMpqs({
+          'DBFilesClient\\Map.dbc': mapDbc('Azeroth'),
+          'DBFilesClient\\Light.dbc': dbc([row(1, 1), row(2, 5)]),
+          'DBFilesClient\\LightIntBand.dbc': dbc([[1, 0]], 34),
+          'DBFilesClient\\LightFloatBand.dbc': dbc([[1, 0]], 34),
+        }),
+      });
+      expect((await service.getZoneLights('azeroth')).map((light) => light.id)).toEqual([1]);
+      expect(await service.getZoneLights('Unknown')).toEqual([]);
+    });
+
+    it('has no zone lights without their DBCs, and retries after a failure', async () => {
+      const { service } = setup({
+        mpqs: displayMpqs({ 'DBFilesClient\\Map.dbc': mapDbc('Azeroth'), 'DBFilesClient\\LightIntBand.dbc': [1, 2, 3, 4] }),
+      });
+      await expect(service.getZoneLights('Azeroth')).rejects.toThrowError(/WDBC/);
+      await expect(service.getZoneLights('Azeroth')).rejects.toThrowError(/WDBC/);
+    });
+
+    it('has no zone lights for a map without lights', async () => {
+      const { service } = setup({ mpqs: displayMpqs({ 'DBFilesClient\\Map.dbc': mapDbc('Azeroth') }) });
+      expect(await service.getZoneLights('Azeroth')).toEqual([]);
+    });
+
     it('retries gameobject displays after a failure', async () => {
       const { service } = setup({ mpqs: displayMpqs({ 'DBFilesClient\\GameObjectDisplayInfo.dbc': [1, 2, 3, 4] }) });
       await expect(service.getGameObjectDisplay(5)).rejects.toThrowError(/WDBC/);

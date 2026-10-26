@@ -221,7 +221,7 @@ describe(WorldEditorComponent.name, () => {
       const drawDistance = page.byId<HTMLSelectElement>('view-draw-distance').nativeElement;
       drawDistance.value = '500';
       drawDistance.dispatchEvent(new Event('change'));
-      for (const id of ['view-doodads', 'view-models']) {
+      for (const id of ['view-doodads', 'view-models', 'view-zone-lighting']) {
         const toggle = page.byId<HTMLInputElement>(id).nativeElement;
         toggle.checked = false;
         toggle.dispatchEvent(new Event('change'));
@@ -250,6 +250,7 @@ describe(WorldEditorComponent.name, () => {
         terrainRadius: 2,
         showDoodads: false,
         showModels: false,
+        zoneLighting: false,
         drawDistance: 500,
         advancedDistances: true,
         smallDoodadDistance: 0,

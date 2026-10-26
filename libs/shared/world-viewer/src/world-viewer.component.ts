@@ -21,6 +21,7 @@ import { TerrainStreamer } from './terrain-streamer';
 import { TextureCache } from './texture-cache';
 import { SpawnModels } from './spawn-models';
 import { WorldDoodads } from './world-doodads';
+import { ZoneLighting } from './zone-lighting';
 import { WorldObjects } from './world-objects';
 import { DEFAULT_WORLD_RENDER_SETTINGS, drawDistances, WorldRenderSettings } from './world-render-settings';
 import { WORLD_RENDERER_FACTORY, WorldRenderer } from './world-renderer';
@@ -85,6 +86,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private readonly objects = new WorldObjects(this.client, this.world.buildingGroup, this.textures, () => this.requestRender());
   private readonly doodads = new WorldDoodads(this.client, this.world.doodadGroup, this.textures, () => this.requestRender());
   private readonly spawnModels = new SpawnModels(this.client, this.world, this.textures, () => this.requestRender());
+  private readonly zoneLighting = new ZoneLighting(this.client, this.world, () => this.requestRender());
   private renderer?: WorldRenderer;
   // Created in ngAfterViewInit; effects may run before that, hence the guards in syncGizmo/lookAt.
   private controls?: MapControls;
@@ -110,6 +112,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
           creatureDistance: distances.creatures,
           gameobjectDistance: distances.gameobjects,
         });
+        this.zoneLighting.configure(settings.zoneLighting);
         void this.streamer.update(this.center);
         void this.objects.update(this.center);
         void this.doodads.update(this.center);
@@ -314,7 +317,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     const waypoint = parseWaypointKey(key);
     if (this.snapToGround() && this.gizmoMode() === 'translate') {
       const state = this.world.getObjectState(key) as { position: WorldPosition };
-      const ground = this.world.groundHeightAt(state.position.x, state.position.y);
+      const ground = this.world.groundHeightAt(state.position.x, state.position.y, state.position.z);
       if (ground !== undefined) {
         object.position.y = ground + (waypoint ? 0.4 : 0);
       }
@@ -331,6 +334,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     this.error.set(undefined);
     this.objects.setMap(directory);
     this.doodads.setMap(directory);
+    void this.zoneLighting.setMap(this.client.isSupported() ? directory : undefined);
     if (!directory) {
       await this.streamer.setMap(undefined);
       this.requestRender();
@@ -376,6 +380,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     void this.objects.update(center);
     void this.doodads.update(center);
     this.spawnModels.update(center);
+    this.zoneLighting.update(center);
   }
 
   private resize(): void {

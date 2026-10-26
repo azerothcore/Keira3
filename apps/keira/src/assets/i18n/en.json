@@ -1053,6 +1053,7 @@
     "DRAW_DISTANCE": "Draw distance",
     "YARDS": "yards",
     "MODELS": "NPC & object models",
+    "ZONE_LIGHTING": "Zone lighting & sky",
     "ADVANCED": "Per group",
     "GROUP": "Group",
     "LARGE_DOODADS": "Trees & large props",

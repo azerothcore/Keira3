@@ -1,5 +1,19 @@
 import { tileCenter, worldToScene, WorldPosition } from '@keira/shared/wow-data';
-import { BoxGeometry, BufferGeometry, Group, Line, Mesh, MeshLambertMaterial, ShaderMaterial, Texture, Vector3 } from 'three';
+import {
+  BoxGeometry,
+  BufferGeometry,
+  Color,
+  Fog,
+  Group,
+  Line,
+  Mesh,
+  MeshLambertMaterial,
+  Quaternion,
+  ShaderMaterial,
+  SRGBColorSpace,
+  Texture,
+  Vector3,
+} from 'three';
 import { flatDetail, flatTile } from './world-viewer.mock';
 import { pathColor, WorldScene } from './world-scene';
 import { WaypointPath, WorldSpawn } from './world-viewer.model';
@@ -100,6 +114,13 @@ describe('WorldScene', () => {
       expect(world.groundHeightAt(CENTER.x, CENTER.y)).toBeCloseTo(30);
       lookDownAt(world, { ...CENTER, z: 30 });
       expect(world.pick(0, 0)?.position.z).toBeCloseTo(30);
+
+      // from inside the building (under the roof) the floor below wins; from above it, the roof
+      expect(world.groundHeightAt(CENTER.x, CENTER.y, 15)).toBeCloseTo(10);
+      expect(world.groundHeightAt(CENTER.x, CENTER.y, 29)).toBeCloseTo(30);
+      expect(world.groundHeightAt(CENTER.x, CENTER.y, 50)).toBeCloseTo(30);
+      // below everything: the highest surface
+      expect(world.groundHeightAt(CENTER.x, CENTER.y, -100)).toBeCloseTo(30);
     });
 
     it('reports the ground height under a position', () => {
@@ -271,6 +292,45 @@ describe('WorldScene', () => {
       new WorldScene().refreshPathLine('unknown');
     });
 
+    it('points each waypoint ball at the next point', () => {
+      const pointerDirection = (world: WorldScene, point: number): Vector3 | undefined => {
+        const pointer = world.getObject(`path:1#${point}`)?.getObjectByName('pointer');
+        if (!pointer) {
+          return undefined;
+        }
+        pointer.updateWorldMatrix(true, false);
+        return new Vector3(0, 1, 0).applyQuaternion(pointer.getWorldQuaternion(new Quaternion())).round();
+      };
+      // points 10 yards apart going north (server +x = scene −z)
+      const north = new Vector3(0, 0, -1);
+      for (const closed of [false, true]) {
+        const world = new WorldScene();
+        world.setWaypointPaths([path(closed)]);
+        expect(pointerDirection(world, 1)?.equals(north)).toBe(true);
+        expect(pointerDirection(world, 2)?.equals(north)).toBe(true);
+        // the last point of an open path keeps going; of a loop, heads back to the first
+        expect(pointerDirection(world, 3)?.equals(closed ? new Vector3(0, 0, 1) : north)).toBe(true);
+      }
+
+      // after point 3 moved east, point 2 points east and point 3 keeps the direction it is reached from
+      const world = new WorldScene();
+      world.setWaypointPaths([path(false)]);
+      const second = world.getObject('path:1#2') as Mesh;
+      world.getObject('path:1#3')?.position.set(second.position.x + 10, second.position.y, second.position.z);
+      world.refreshPathLine('path:1');
+      expect(pointerDirection(world, 2)?.equals(new Vector3(1, 0, 0))).toBe(true);
+      expect(pointerDirection(world, 3)?.equals(new Vector3(1, 0, 0))).toBe(true);
+
+      // the pointer is highlighted with its ball
+      world.setSelection('path:1#2');
+      expect((second.getObjectByName('pointer') as Mesh).material).toBe(second.material);
+
+      // single or stacked points have no direction
+      const single = new WorldScene();
+      single.setWaypointPaths([{ key: 'path:1', label: 'Path 1', points: [{ point: 1, position: at(0, 0) }] }]);
+      expect(pointerDirection(single, 1)).toBeUndefined();
+    });
+
     it('highlights a selected waypoint', () => {
       const world = new WorldScene();
       world.setWaypointPaths([path(false)]);
@@ -341,6 +401,86 @@ describe('WorldScene', () => {
       world.camera.position.set(0, 1000, 0);
       world.camera.lookAt(0, 2000, 0);
       expect(world.pick(0, 0)).toBeUndefined();
+    });
+  });
+
+  describe('lighting', () => {
+    const sample = {
+      diffuse: [1, 0.5, 0] as [number, number, number],
+      ambient: [0.2, 0.3, 0.4] as [number, number, number],
+      skyTop: [0, 0, 1] as [number, number, number],
+      skyMiddle: [0, 0.5, 1] as [number, number, number],
+      skyHorizon: [1, 1, 1] as [number, number, number],
+      fog: [0.5, 0.5, 0.5] as [number, number, number],
+      water: [0, 1, 0] as [number, number, number],
+      ocean: [0, 0, 1] as [number, number, number],
+      fogStart: 100,
+      fogEnd: 600,
+    };
+    const sky = (world: WorldScene) => world.scene.getObjectByName('sky') as Mesh<BufferGeometry, ShaderMaterial>;
+
+    it('lights the world like the zone, with its fog and sky', () => {
+      const world = new WorldScene();
+      world.applyLighting(sample);
+      const fog = world.scene.fog as Fog;
+      expect(fog.near).toBe(100);
+      expect(fog.far).toBe(600);
+      expect(fog.color.getHexString(SRGBColorSpace)).toBe('808080');
+      expect((world.scene.background as Color).getHexString(SRGBColorSpace)).toBe('808080');
+      expect(world.terrainLighting.sunColor.value.toArray()).toEqual([1, 0.5, 0]);
+      expect(sky(world).visible).toBe(true);
+      expect((sky(world).material.uniforms['top'].value as Color).getHexString(SRGBColorSpace)).toBe('0000ff');
+
+      // the sky follows the camera, inside its far plane
+      world.camera.position.set(10, 20, 30);
+      world.updateMarkerScale();
+      expect(sky(world).position.toArray()).toEqual([10, 20, 30]);
+      expect(sky(world).scale.x).toBeLessThan(world.camera.far);
+    });
+
+    it('keeps a minimum view distance in thick fog', () => {
+      const world = new WorldScene();
+      world.applyLighting({ ...sample, fogStart: 500, fogEnd: 100 });
+      const fog = world.scene.fog as Fog;
+      expect(fog.far).toBe(400);
+      expect(fog.near).toBe(360);
+      world.applyLighting({ ...sample, fogStart: -5 });
+      expect(fog.near).toBe(0);
+    });
+
+    it('colours water and sea like the zone, before and after they are drawn', () => {
+      const liquid = (kind: 'water' | 'ocean' | 'magma') => ({
+        type: 1,
+        kind,
+        positions: new Float32Array([0, 50, 0, 1, 50, 0, 0, 50, 1]),
+        indices: new Uint16Array([0, 2, 1]),
+      });
+      const colorOf = (world: WorldScene, i: number) =>
+        (
+          (world.scene.getObjectByName('tile:32_48') as Group).children.filter((c) => c.name === 'liquid')[i] as Mesh<
+            BufferGeometry,
+            MeshLambertMaterial
+          >
+        ).material.color.getHexString(SRGBColorSpace);
+      const world = new WorldScene();
+      world.setTerrainTileDetailed({ tx: 32, ty: 48 }, [], new Texture(), [liquid('water')]);
+      world.applyLighting(sample);
+      world.setTerrainTileDetailed({ tx: 32, ty: 48 }, [], new Texture(), [liquid('water'), liquid('ocean'), liquid('magma')]);
+      expect([colorOf(world, 0), colorOf(world, 1), colorOf(world, 2)]).toEqual(['00ff00', '0000ff', 'ff5a1f']);
+      world.applyLighting(undefined);
+      expect(colorOf(world, 0)).toBe('2a6b9c');
+    });
+
+    it('goes back to the neutral light', () => {
+      const world = new WorldScene();
+      const fog = world.scene.fog as Fog;
+      const neutral = { near: fog.near, far: fog.far, sun: world.terrainLighting.sunColor.value.clone() };
+      world.applyLighting(sample);
+      world.applyLighting(undefined);
+      expect(fog.near).toBe(neutral.near);
+      expect(fog.far).toBe(neutral.far);
+      expect(world.terrainLighting.sunColor.value.equals(neutral.sun)).toBe(true);
+      expect(sky(world).visible).toBe(false);
     });
   });
 

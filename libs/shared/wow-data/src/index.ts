@@ -2,6 +2,7 @@ export * from './coords';
 export * from './dbc';
 export * from './folder-archive';
 export * from './formats';
+export * from './light';
 export * from './liquid';
 export * from './m2';
 export * from './minimap';

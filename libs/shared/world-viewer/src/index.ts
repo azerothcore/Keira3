@@ -11,3 +11,5 @@ export * from './world-objects';
 export * from './m2-object';
 export * from './world-doodads';
 export * from './spawn-models';
+export * from './sky';
+export * from './zone-lighting';
