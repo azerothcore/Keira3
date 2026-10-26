@@ -230,6 +230,10 @@
             <div class="mb-1" data-testid="selected-title">
               <strong>Path {{ waypoint.pathId }}</strong> <span class="text-muted">· point {{ waypoint.point }}</span>
             </div>
+            <div class="small mb-1" data-testid="selected-path-owners">
+              {{ 'WORLD_EDITOR.WALKED_BY' | translate }}:
+              {{ pathOwners().get(waypoint.pathId)?.join(', ') }}
+            </div>
           } @else {
             <small class="text-muted" data-testid="nothing-selected">{{ 'WORLD_EDITOR.NOTHING_SELECTED' | translate }}</small>
           }

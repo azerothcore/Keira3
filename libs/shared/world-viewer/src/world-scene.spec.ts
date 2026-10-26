@@ -1,5 +1,5 @@
 import { tileCenter, worldToScene, WorldPosition } from '@keira/shared/wow-data';
-import { BufferGeometry, Line, Mesh, MeshLambertMaterial } from 'three';
+import { BufferGeometry, Group, Line, Mesh, MeshLambertMaterial, Vector3 } from 'three';
 import { flatTile } from './world-viewer.mock';
 import { pathColor, WorldScene } from './world-scene';
 import { WaypointPath, WorldSpawn } from './world-viewer.model';
@@ -128,6 +128,29 @@ describe('WorldScene', () => {
       const state = world.getObjectState('path:1#2');
       expect(state?.position.x).toBeCloseTo(at(10, 0).x);
       expect(state?.position.z).toBeCloseTo(50);
+    });
+
+    it('draws an arrow per segment pointing to the next point, and keeps them in sync', () => {
+      const world = new WorldScene();
+      const arrowsOf = (): Mesh[] => (world.scene.getObjectByName('path:1:arrows') as Group).children as Mesh[];
+      const p = path(true);
+      p.points.push({ point: 9, position: at(20, 0) });
+      world.setWaypointPaths([p]);
+      // 1→2, 2→3, 3→9 (same spot: skipped), 9→1
+      expect(arrowsOf().length).toBe(3);
+      const forward = new Vector3(0, 1, 0).applyQuaternion(arrowsOf()[0].quaternion);
+      // points 1 → 2 go north (x increasing), i.e. towards scene −z
+      expect(forward.z).toBeCloseTo(-1);
+
+      world.getObject('path:1#2')?.position.set(1, 2, 3);
+      world.refreshPathLine('path:1');
+      expect(arrowsOf().length).toBe(3);
+
+      world.camera.position.set(1e6, 0, 0);
+      world.updateMarkerScale();
+      expect(arrowsOf()[0].scale.x).toBe(8);
+      world.setWaypointPaths([]);
+      expect(world.scene.getObjectByName('path:1:arrows')).toBeUndefined();
     });
 
     it('closes looping paths with more than two points', () => {

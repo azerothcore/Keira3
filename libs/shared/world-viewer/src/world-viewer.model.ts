@@ -29,6 +29,8 @@ export interface WaypointPath {
   points: WorldWaypoint[];
   /** Draws a segment from the last point back to the first. */
   closed?: boolean;
+  /** Who walks this path (e.g. creature names), shown when hovering its points. */
+  owners?: string[];
 }
 
 export type PickResult =

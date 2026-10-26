@@ -1042,6 +1042,7 @@
     "LOADING_TERRAIN": "Cargando terreno…",
     "LOADING_SPAWNS": "Cargando spawns…",
     "ERROR_DESKTOP_ONLY": "El editor de mundo 3D necesita la aplicación de escritorio de Keira3 para leer los archivos de tu cliente de WoW.",
-    "CONTROLS_HELP": "Arrastrar izq.: desplazar · Arrastrar der.: rotar · Rueda: zoom · R: mover/rotar · Supr: eliminar · Esc: cancelar"
+    "CONTROLS_HELP": "Arrastrar izq.: desplazar · Arrastrar der.: rotar · Rueda: zoom · R: mover/rotar · Supr: eliminar · Esc: cancelar",
+    "WALKED_BY": "Recorrida por"
   }
 }

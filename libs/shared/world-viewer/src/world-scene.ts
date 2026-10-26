@@ -17,6 +17,7 @@ import {
   LinearMipmapLinearFilter,
   Material,
   Mesh,
+  MeshBasicMaterial,
   MeshLambertMaterial,
   Object3D,
   PerspectiveCamera,
@@ -104,6 +105,8 @@ export class WorldScene {
   ]);
   private readonly gameobjectGeometry = new BoxGeometry(1.2, 1.2, 1.2).translate(0, 0.6, 0);
   private readonly waypointGeometry = new SphereGeometry(0.5, 12, 8);
+  private readonly arrowGeometry = new ConeGeometry(0.4, 1.2, 8);
+  private readonly arrows = new Set<Object3D>();
   private readonly markerMaterials = new Map<string, MeshLambertMaterial>();
 
   constructor() {
@@ -210,7 +213,7 @@ export class WorldScene {
       );
       line.renderOrder = 1;
       line.name = `${path.key}:line`;
-      group.add(line);
+      group.add(line, this.buildArrows(path.key, linePoints, color));
 
       for (const waypoint of path.points) {
         const key = waypointKey(path.key, waypoint.point);
@@ -226,18 +229,56 @@ export class WorldScene {
     this.applySelection();
   }
 
-  /** Redraws the line of a path after one of its points was moved interactively. */
+  /** Redraws the line and direction arrows of a path after one of its points was moved interactively. */
   refreshPathLine(pathKey: string): void {
     const line = this.waypointGroup.getObjectByName(`${pathKey}:line`) as Line | undefined;
     if (!line) {
       return;
     }
-    const points = (line.parent as Group).children.filter((child) => child !== line).map((child) => child.position.clone());
+    const group = line.parent as Group;
+    const points = group.children
+      .filter((child) => (child.userData as Partial<PickableData>).kind === 'waypoint')
+      .map((child) => child.position.clone());
     if (line.geometry.getAttribute('position').count === points.length + 1) {
       points.push(points[0].clone());
     }
     line.geometry.dispose();
     line.geometry = new BufferGeometry().setFromPoints(points);
+
+    const oldArrows = group.getObjectByName(`${pathKey}:arrows`) as Group;
+    this.disposeArrows(oldArrows);
+    group.remove(oldArrows);
+    group.add(this.buildArrows(pathKey, points, pathColor(pathKey)));
+  }
+
+  /** One arrow per segment, at its middle, pointing towards the next point (the direction the creature walks). */
+  private buildArrows(pathKey: string, points: Vector3[], color: number): Group {
+    const arrows = new Group();
+    arrows.name = `${pathKey}:arrows`;
+    const material = new MeshBasicMaterial({ color, depthTest: false, transparent: true, opacity: 0.9 });
+    const up = new Vector3(0, 1, 0);
+    for (let i = 0; i + 1 < points.length; i++) {
+      const direction = points[i + 1].clone().sub(points[i]);
+      if (direction.lengthSq() === 0) {
+        continue;
+      }
+      const arrow = new Mesh(this.arrowGeometry, material);
+      arrow.position
+        .copy(points[i])
+        .add(points[i + 1])
+        .multiplyScalar(0.5);
+      arrow.quaternion.setFromUnitVectors(up, direction.normalize());
+      arrow.renderOrder = 2;
+      arrows.add(arrow);
+      this.arrows.add(arrow);
+    }
+    arrows.userData = { arrowMaterial: material };
+    return arrows;
+  }
+
+  private disposeArrows(arrows: Group): void {
+    arrows.children.forEach((arrow) => this.arrows.delete(arrow));
+    (arrows.userData as { arrowMaterial: Material }).arrowMaterial.dispose();
   }
 
   setSelection(key: string | undefined): void {
@@ -263,10 +304,10 @@ export class WorldScene {
   /** Scales markers with their distance to the camera; call before rendering. */
   updateMarkerScale(): void {
     const cameraPosition = this.camera.position;
-    this.objects.forEach((object) => {
+    for (const object of [...this.objects.values(), ...this.arrows]) {
       const distance = object.position.distanceTo(cameraPosition);
       object.scale.setScalar(Math.min(MARKER_MAX_SCALE, Math.max(1, distance / MARKER_SCALE_DISTANCE)));
-    });
+    }
   }
 
   // ---------------------------------------------------------------- picking
@@ -330,6 +371,7 @@ export class WorldScene {
     this.creatureGeometry.dispose();
     this.gameobjectGeometry.dispose();
     this.waypointGeometry.dispose();
+    this.arrowGeometry.dispose();
     this.markerMaterials.forEach((material) => material.dispose());
     this.markerMaterials.clear();
   }
@@ -350,6 +392,9 @@ export class WorldScene {
       if (object instanceof Line) {
         object.geometry.dispose();
         (object.material as Material).dispose();
+      }
+      if (object.name.endsWith(':arrows')) {
+        this.disposeArrows(object as Group);
       }
     });
     group.clear();

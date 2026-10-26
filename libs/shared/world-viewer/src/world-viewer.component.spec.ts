@@ -300,7 +300,7 @@ describe(WorldViewerComponent.name, () => {
       setup((h) => {
         h.map.set('Azeroth');
         h.spawns.set([spawn('creature:7', at(0, 0), 'Deputy Willem')]);
-        h.paths.set([{ key: 'path:1', label: 'Path 1', points: [{ point: 3, position: at(300, 300) }] }]);
+        h.paths.set([{ key: 'path:1', label: 'Path 1', owners: ['Guard (7)'], points: [{ point: 3, position: at(300, 300) }] }]);
         h.focus.set(at(0, 0));
       });
 
@@ -370,6 +370,9 @@ describe(WorldViewerComponent.name, () => {
       expect(page.label(false)).toBeFalsy();
 
       await update(() => host.focus.set(at(300, 300)));
+      hover(50, 50);
+      expect(page.label().nativeElement.textContent?.trim()).toBe('Path 1 · #3 — Guard (7)');
+      await update(() => host.paths.set([{ key: 'path:1', label: 'Path 1', points: [{ point: 3, position: at(300, 300) }] }]));
       hover(50, 50);
       expect(page.label().nativeElement.textContent?.trim()).toBe('Path 1 · #3');
 

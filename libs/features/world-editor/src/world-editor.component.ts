@@ -107,7 +107,7 @@ export class WorldEditorComponent implements OnInit {
         kind: s.type,
         guid: s.guid,
         entry: s.entry,
-        label: `${s.name || s.entry} · ${s.type} ${s.guid}`,
+        label: `${s.name || s.entry} · ${s.type} ${s.guid}${s.pathId ? ` · path ${s.pathId}` : ''}`,
         position: { x: s.x, y: s.y, z: s.z },
         orientation: s.o,
         pending: this.changes.isNewSpawn(spawnKey(s.type, s.guid)),
@@ -122,12 +122,25 @@ export class WorldEditorComponent implements OnInit {
     for (const waypoint of this.waypoints()) {
       byPath.set(waypoint.pathId, [...(byPath.get(waypoint.pathId) ?? []), waypoint]);
     }
+    const owners = this.pathOwners();
     return [...byPath].map(([pathId, points]) => ({
       key: pathKey(pathId),
       label: `Path ${pathId}`,
+      owners: owners.get(pathId) ?? [],
       closed: true,
       points: points.map((p) => ({ point: p.point, position: { x: p.x, y: p.y, z: p.z }, delay: p.delay })),
     }));
+  });
+
+  /** Creatures walking each loaded path ("Name (guid)"). */
+  protected readonly pathOwners = computed(() => {
+    const owners = new Map<number, string[]>();
+    for (const spawn of this.spawns()) {
+      if (spawn.pathId) {
+        owners.set(spawn.pathId, [...(owners.get(spawn.pathId) ?? []), `${spawn.name || spawn.entry} (${spawn.guid})`]);
+      }
+    }
+    return owners;
   });
 
   protected readonly selectedSpawn = computed(() => this.findSpawn(this.selectedKey() ?? ''));

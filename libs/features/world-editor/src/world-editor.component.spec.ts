@@ -300,11 +300,12 @@ describe(WorldEditorComponent.name, () => {
           .viewer()
           .spawns()
           .map((s) => s.label),
-      ).toEqual(['Deputy Willem · creature 1', '102 · creature 2', 'Mailbox · gameobject 3']);
+      ).toEqual(['Deputy Willem · creature 1 · path 10', '102 · creature 2', 'Mailbox · gameobject 3']);
       expect(page.viewer().paths()).toEqual([
         {
           key: 'path:10',
           label: 'Path 10',
+          owners: ['Deputy Willem (1)'],
           closed: true,
           points: [
             { point: 1, position: { x: -8901, y: -101, z: 80 }, delay: 0 },
@@ -385,6 +386,7 @@ describe(WorldEditorComponent.name, () => {
       page.viewer().picked.emit({ type: 'waypoint', key: 'path:10#2', pathKey: 'path:10', point: 2, position: { x: 0, y: 0, z: 0 } });
       await settle(page);
       expect(page.text('selected-title')).toContain('Path 10');
+      expect(page.text('selected-path-owners')).toBe('WORLD_EDITOR.WALKED_BY: Deputy Willem (1)');
       expect(page.placementValue('z')).toBe(81);
 
       page.viewer().picked.emit({ type: 'ground', position: { x: 0, y: 0, z: 0 } });

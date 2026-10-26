@@ -234,7 +234,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     // Every other pickable object is a waypoint of one of the paths.
     const { pathKey, point } = parseWaypointKey(key) as { pathKey: string; point: number };
     const path = this.paths().find((p) => p.key === pathKey) as WaypointPath;
-    return `${path.label} · #${point}`;
+    const owners = path.owners?.length ? ` — ${path.owners.join(', ')}` : '';
+    return `${path.label} · #${point}${owners}`;
   }
 
   // ---------------------------------------------------------------- gizmo

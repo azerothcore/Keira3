@@ -1042,6 +1042,7 @@
     "LOADING_TERRAIN": "Loading terrain…",
     "LOADING_SPAWNS": "Loading spawns…",
     "ERROR_DESKTOP_ONLY": "The 3D world editor needs the Keira3 desktop app to read your WoW client files.",
-    "CONTROLS_HELP": "Left-drag: pan · Right-drag: rotate · Wheel: zoom · R: move/rotate · Del: delete · Esc: cancel"
+    "CONTROLS_HELP": "Left-drag: pan · Right-drag: rotate · Wheel: zoom · R: move/rotate · Del: delete · Esc: cancel",
+    "WALKED_BY": "Walked by"
   }
 }
