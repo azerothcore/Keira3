@@ -6,11 +6,20 @@ import { WOW_NATIVE_API } from './wow-native-api';
 import { createFakeNative, FakeMpq, FakeNative } from './wow-native-api.mock';
 
 const formats = vi.hoisted(() => ({
-  parseAdtChunks: vi.fn(),
+  parseAdt: vi.fn(),
   parseWdt: vi.fn(),
   decodeBlp: vi.fn(),
 }));
 vi.mock('./formats', () => formats);
+
+const wmo = vi.hoisted(() => ({
+  parseWmoRoot: vi.fn(),
+  parseWmoGroup: vi.fn(),
+  wmoGroupPath: (root: string, i: number) => `${root.replace(/\.wmo$/i, '')}_${String(i).padStart(3, '0')}.wmo`,
+}));
+vi.mock('./wmo', () => wmo);
+
+const adtOf = (chunks: unknown[] = [], wmos: unknown[] = [], doodads: unknown[] = []) => ({ chunks, wmos, doodads });
 
 const mapDbc = (directory: string): number[] => {
   const row: (number | string)[] = new Array(22).fill(0);
@@ -179,14 +188,14 @@ describe('WowClientService', () => {
         },
       });
       formats.parseWdt.mockReturnValue({ tiles: [], layerSplatDepth: 8 });
-      formats.parseAdtChunks.mockReturnValue([]);
+      formats.parseAdt.mockReturnValue(adtOf());
       const mesh = await service.getTerrain('Azeroth', { tx: 32, ty: 48 });
       expect(mesh?.tile).toEqual({ tx: 32, ty: 48 });
-      expect(formats.parseAdtChunks.mock.calls[0][1]).toBe(8);
+      expect(formats.parseAdt.mock.calls[0][1]).toBe(8);
       expect(await service.getTerrain('Azeroth', { tx: 1, ty: 1 })).toBeUndefined();
 
       await service.getTerrain('NoWdt', { tx: 1, ty: 1 });
-      expect(formats.parseAdtChunks.mock.calls[1][1]).toBe(4);
+      expect(formats.parseAdt.mock.calls[1][1]).toBe(4);
     });
 
     it('builds textured terrain and liquids from ADTs', async () => {
@@ -194,11 +203,69 @@ describe('WowClientService', () => {
         mpqs: { 'common.MPQ': { files: { 'World\\Maps\\Azeroth\\Azeroth_32_48.adt': [1, 2, 3, 4, 0, 0, 0, 0] } } },
       });
       formats.parseWdt.mockReturnValue({ tiles: [], layerSplatDepth: 4 });
-      formats.parseAdtChunks.mockReturnValue([{ position: [0, 0, 0], vertexHeights: [], holes: 0, layers: [{ texture: 'a.blp' }] }]);
+      formats.parseAdt.mockReturnValue(adtOf([{ position: [0, 0, 0], vertexHeights: [], holes: 0, layers: [{ texture: 'a.blp' }] }]));
       const detail = await service.getTerrainDetail('Azeroth', { tx: 32, ty: 48 });
       expect(detail?.chunks[0].textures).toEqual(['a.blp']);
       expect(detail?.liquids).toEqual([]);
       expect(await service.getTerrainDetail('Azeroth', { tx: 1, ty: 1 })).toBeUndefined();
+    });
+
+    it('lists placements and shares one ADT parse between terrain, liquids and placements', async () => {
+      const { service } = setup({
+        mpqs: { 'common.MPQ': { files: { 'World\\Maps\\Azeroth\\Azeroth_32_48.adt': [1, 2, 3, 4, 0, 0, 0, 0] } } },
+      });
+      formats.parseWdt.mockReturnValue({ tiles: [], layerSplatDepth: 4 });
+      formats.parseAdt.mockReturnValue(adtOf([], [{ uniqueId: 1 }], [{ uniqueId: 2 }]));
+      const tile = { tx: 32, ty: 48 };
+      expect(await service.getTilePlacements('Azeroth', tile)).toEqual({ wmos: [{ uniqueId: 1 }], doodads: [{ uniqueId: 2 }] });
+      await service.getTerrain('Azeroth', tile);
+      await service.getTerrainDetail('azeroth', tile);
+      expect(formats.parseAdt).toHaveBeenCalledTimes(1);
+      expect(await service.getTilePlacements('Azeroth', { tx: 1, ty: 1 })).toBeUndefined();
+    });
+
+    it('keeps only the most recent parsed ADTs, and retries failed ones', async () => {
+      const files: Record<string, number[]> = {};
+      for (let i = 0; i < 34; i++) {
+        files[`World\\Maps\\M\\M_${i}_0.adt`] = [0, 0, 0, 0, 0, 0, 0, 0];
+      }
+      const { service } = setup({ mpqs: { 'common.MPQ': { files } } });
+      formats.parseWdt.mockReturnValue(undefined);
+      formats.parseAdt.mockReturnValue(adtOf());
+      for (let i = 0; i < 34; i++) {
+        await service.getTilePlacements('M', { tx: i, ty: 0 });
+      }
+      await service.getTilePlacements('M', { tx: 33, ty: 0 });
+      expect(formats.parseAdt).toHaveBeenCalledTimes(34);
+      await service.getTilePlacements('M', { tx: 0, ty: 0 });
+      expect(formats.parseAdt).toHaveBeenCalledTimes(35);
+
+      formats.parseAdt.mockImplementationOnce(() => {
+        throw new Error('bad adt');
+      });
+      await expect(service.getTilePlacements('M', { tx: 1, ty: 0 })).rejects.toThrowError('bad adt');
+      await service.getTilePlacements('M', { tx: 1, ty: 0 });
+      expect(formats.parseAdt).toHaveBeenCalledTimes(37);
+    });
+
+    it('loads buildings with their existing groups', async () => {
+      const { service } = setup({
+        mpqs: { 'common.MPQ': { files: { 'World\\wmo\\A.wmo': [1], 'World\\wmo\\A_000.wmo': [2], 'World\\wmo\\A_002.wmo': [3] } } },
+      });
+      wmo.parseWmoRoot.mockReturnValue({
+        flags: 4,
+        materials: [{ texture: 't.blp' }],
+        groups: [{ indoor: true }, { indoor: false }, { indoor: false }],
+      });
+      wmo.parseWmoGroup.mockImplementation((_b: Uint8Array, flags: number, indoor: boolean) => ({ flags, indoor }));
+      expect(await service.getWmo('World\\wmo\\A.wmo')).toEqual({
+        materials: [{ texture: 't.blp' }],
+        groups: [
+          { flags: 4, indoor: true },
+          { flags: 4, indoor: false },
+        ],
+      });
+      expect(await service.getWmo('missing.wmo')).toBeUndefined();
     });
 
     it('decodes textures', async () => {

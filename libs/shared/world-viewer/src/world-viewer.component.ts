@@ -19,6 +19,7 @@ import { MapControls } from 'three/addons/controls/MapControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { TerrainStreamer } from './terrain-streamer';
 import { TextureCache } from './texture-cache';
+import { WorldObjects } from './world-objects';
 import { DEFAULT_WORLD_RENDER_SETTINGS, WorldRenderSettings } from './world-render-settings';
 import { WORLD_RENDERER_FACTORY, WorldRenderer } from './world-renderer';
 import { PickOptions, WorldScene } from './world-scene';
@@ -79,6 +80,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private readonly world = new WorldScene();
   private readonly textures = new TextureCache((path) => this.client.getTexture(path));
   private readonly streamer = new TerrainStreamer(this.client, this.world, this.textures, () => this.onTileLoaded());
+  private readonly objects = new WorldObjects(this.client, this.world.buildingGroup, this.textures, () => this.requestRender());
   private renderer?: WorldRenderer;
   // Created in ngAfterViewInit; effects may run before that, hence the guards in syncGizmo/lookAt.
   private controls?: MapControls;
@@ -96,7 +98,9 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       const settings = this.renderSettings();
       untracked(() => {
         this.streamer.configure({ detailed: !settings.lowDetailTerrain, radius: settings.terrainRadius });
+        this.objects.configure({ showBuildings: settings.showBuildings, radius: settings.terrainRadius });
         void this.streamer.update(this.center);
+        void this.objects.update(this.center);
         this.requestRender();
       });
     });
@@ -155,6 +159,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.streamer.dispose();
+    this.objects.dispose();
     this.resizeObserver?.disconnect();
     this.gizmo.detach();
     this.gizmo.dispose();
@@ -308,6 +313,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
 
   private async loadMap(directory: string | undefined): Promise<void> {
     this.error.set(undefined);
+    this.objects.setMap(directory);
     if (!directory) {
       await this.streamer.setMap(undefined);
       this.requestRender();
@@ -321,6 +327,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     try {
       await this.streamer.setMap(directory);
       await this.streamer.update(this.center);
+      void this.objects.update(this.center);
     } catch (error) {
       this.error.set((error as Error).message);
     } finally {
@@ -348,6 +355,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     this.centerChanged.emit(center);
     // update() reports tile failures itself and never rejects.
     void this.streamer.update(center);
+    void this.objects.update(center);
   }
 
   private resize(): void {

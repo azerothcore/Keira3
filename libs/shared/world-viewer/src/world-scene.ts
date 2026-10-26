@@ -101,6 +101,8 @@ export class WorldScene {
   readonly camera = new PerspectiveCamera(60, 1, 0.5, 4000);
 
   private readonly terrainGroup = new Group();
+  /** Buildings (WMO), streamed by `WorldObjects`; they count as ground for picking and snapping. */
+  readonly buildingGroup = new Group();
   private readonly spawnGroup = new Group();
   private readonly waypointGroup = new Group();
   private readonly raycaster = new Raycaster();
@@ -127,9 +129,10 @@ export class WorldScene {
     this.scene.background = new Color(COLORS.sky);
     this.scene.fog = new Fog(COLORS.sky, 600, 1600);
     this.terrainGroup.name = 'terrain';
+    this.buildingGroup.name = 'buildings';
     this.spawnGroup.name = 'spawns';
     this.waypointGroup.name = 'waypoints';
-    this.scene.add(this.terrainGroup, this.spawnGroup, this.waypointGroup);
+    this.scene.add(this.terrainGroup, this.buildingGroup, this.spawnGroup, this.waypointGroup);
     this.camera.layers.enable(LIQUID_LAYER);
 
     const sun = new DirectionalLight(0xffffff, 1.6);
@@ -422,7 +425,7 @@ export class WorldScene {
         : { type: 'spawn', key: data.key, position: state.position };
     }
 
-    const groundHit = markersOnly ? undefined : this.raycaster.intersectObject(this.terrainGroup, true)[0];
+    const groundHit = markersOnly ? undefined : this.raycaster.intersectObjects([this.terrainGroup, this.buildingGroup], true)[0];
     return groundHit ? { type: 'ground', position: sceneToWorld(groundHit.point) } : undefined;
   }
 
@@ -446,7 +449,7 @@ export class WorldScene {
   groundHeightAt(x: number, y: number): number | undefined {
     const from = worldToScene({ x, y, z: 10_000 });
     this.raycaster.set(new Vector3(from.x, from.y, from.z), new Vector3(0, -1, 0));
-    const hit = this.raycaster.intersectObject(this.terrainGroup, true)[0];
+    const hit = this.raycaster.intersectObjects([this.terrainGroup, this.buildingGroup], true)[0];
     return hit ? hit.point.y : undefined;
   }
 

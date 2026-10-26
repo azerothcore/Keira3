@@ -2,11 +2,12 @@ import { inject, Service } from '@angular/core';
 import { TileCoord } from './coords';
 import { DbcFile, parseMapDbc, WowMap } from './dbc';
 import { FolderArchive } from './folder-archive';
-import { decodeBlp, LayerSplatDepth, parseAdtChunks, parseWdt, RgbaImage, WdtInfo } from './formats';
+import { decodeBlp, parseAdt, ParsedAdt, parseWdt, RgbaImage, WdtInfo } from './formats';
 import { MD5_TRANSLATE_PATH, MINIMAP_ROOT, minimapKey, parseMd5Translate } from './minimap';
 import { parseConfigWtfLocale, pickLocale, sortMpqArchives } from './mpq-order';
 import { LiquidMesh, parseLiquids } from './liquid';
 import { buildTerrainChunkMeshes, buildTerrainMesh, TerrainChunkMesh, TerrainMeshData } from './terrain-mesh';
+import { ModelPlacement, parseWmoGroup, parseWmoRoot, WmoModel, wmoGroupPath } from './wmo';
 import { WowDataSettingsService } from './wow-data-settings.service';
 import { StormArchive, WOW_NATIVE_API, WowNativeApi } from './wow-native-api';
 
@@ -15,6 +16,10 @@ export interface TerrainDetail {
   chunks: TerrainChunkMesh[];
   liquids: LiquidMesh[];
 }
+
+type CachedAdt = ParsedAdt & { liquids: LiquidMesh[] };
+
+const ADT_CACHE_SIZE = 32;
 
 interface OpenClient {
   clientPath: string;
@@ -34,6 +39,7 @@ export class WowClientService {
   private minimapIndex?: Promise<Map<string, string>>;
   private maps?: Promise<WowMap[]>;
   private readonly wdts = new Map<string, Promise<WdtInfo | undefined>>();
+  private readonly adts = new Map<string, Promise<CachedAdt | undefined>>();
   private mountCounter = 0;
 
   /** False in the browser build: reading local game files needs Electron. */
@@ -78,24 +84,37 @@ export class WowClientService {
 
   /** Low-detail terrain of a tile: one mesh for the whole tile, textured with its minimap. */
   async getTerrain(directory: string, tile: TileCoord): Promise<TerrainMeshData | undefined> {
-    const adt = await this.readAdt(directory, tile);
-    return adt ? buildTerrainMesh(tile, parseAdtChunks(adt.bytes, adt.layerSplatDepth)) : undefined;
+    const adt = await this.getAdt(directory, tile);
+    return adt && buildTerrainMesh(tile, adt.chunks);
   }
 
   /** Textured terrain of a tile: one mesh per chunk with its texture layers, plus its liquid surfaces. */
   async getTerrainDetail(directory: string, tile: TileCoord): Promise<TerrainDetail | undefined> {
-    const adt = await this.readAdt(directory, tile);
-    if (!adt) {
+    const adt = await this.getAdt(directory, tile);
+    return adt && { chunks: buildTerrainChunkMeshes(adt.chunks), liquids: adt.liquids };
+  }
+
+  /** Buildings and doodads placed by a tile. */
+  async getTilePlacements(directory: string, tile: TileCoord): Promise<{ wmos: ModelPlacement[]; doodads: ModelPlacement[] } | undefined> {
+    const adt = await this.getAdt(directory, tile);
+    return adt && { wmos: adt.wmos, doodads: adt.doodads };
+  }
+
+  /** A building (WMO root and all its groups). */
+  async getWmo(path: string): Promise<WmoModel | undefined> {
+    const rootBytes = await this.readFile(path);
+    if (!rootBytes) {
       return undefined;
     }
-    const chunks = parseAdtChunks(adt.bytes, adt.layerSplatDepth);
-    return {
-      chunks: buildTerrainChunkMeshes(chunks),
-      liquids: parseLiquids(
-        adt.bytes,
-        chunks.map((chunk) => chunk.position),
-      ),
-    };
+    const root = parseWmoRoot(rootBytes);
+    const groups: WmoModel['groups'] = [];
+    for (const [index, info] of root.groups.entries()) {
+      const bytes = await this.readFile(wmoGroupPath(path, index));
+      if (bytes) {
+        groups.push(parseWmoGroup(bytes, root.flags, info.indoor));
+      }
+    }
+    return { materials: root.materials, groups };
   }
 
   /** Decodes a BLP texture from the archives (e.g. a terrain tileset texture). */
@@ -104,9 +123,37 @@ export class WowClientService {
     return blp ? decodeBlp(blp) : undefined;
   }
 
-  private async readAdt(directory: string, tile: TileCoord): Promise<{ bytes: Uint8Array; layerSplatDepth: LayerSplatDepth } | undefined> {
+  /** Parsed ADTs are kept for the few most recent tiles: terrain, liquids and placements share one parse. */
+  private getAdt(directory: string, tile: TileCoord): Promise<CachedAdt | undefined> {
+    const key = `${directory}_${tile.tx}_${tile.ty}`.toLowerCase();
+    let adt = this.adts.get(key);
+    if (adt) {
+      // refresh its position in the LRU order
+      this.adts.delete(key);
+    } else {
+      adt = this.loadAdt(directory, tile);
+      adt.catch(() => this.adts.delete(key));
+    }
+    this.adts.set(key, adt);
+    while (this.adts.size > ADT_CACHE_SIZE) {
+      this.adts.delete(this.adts.keys().next().value as string);
+    }
+    return adt;
+  }
+
+  private async loadAdt(directory: string, tile: TileCoord): Promise<CachedAdt | undefined> {
     const bytes = await this.readFile(`World\\Maps\\${directory}\\${directory}_${tile.tx}_${tile.ty}.adt`);
-    return bytes ? { bytes, layerSplatDepth: (await this.getWdt(directory))?.layerSplatDepth ?? 4 } : undefined;
+    if (!bytes) {
+      return undefined;
+    }
+    const parsed = parseAdt(bytes, (await this.getWdt(directory))?.layerSplatDepth ?? 4);
+    return {
+      ...parsed,
+      liquids: parseLiquids(
+        bytes,
+        parsed.chunks.map((chunk) => chunk.position),
+      ),
+    };
   }
 
   private getWdt(directory: string): Promise<WdtInfo | undefined> {
@@ -133,6 +180,7 @@ export class WowClientService {
     this.minimapIndex = undefined;
     this.maps = undefined;
     this.wdts.clear();
+    this.adts.clear();
     if (!client) {
       return;
     }

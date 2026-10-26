@@ -1047,6 +1047,7 @@
     "VIEW": "View",
     "LOW_DETAIL_TERRAIN": "Low-poly terrain (minimap colours, faster)",
     "TERRAIN_RANGE": "Terrain range",
-    "TILES": "tiles"
+    "TILES": "tiles",
+    "BUILDINGS": "Buildings"
   }
 }

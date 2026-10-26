@@ -1,0 +1,77 @@
+import { WmoModel, worldToScene } from '@keira/shared/wow-data';
+import { DoubleSide, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, Texture, Vector3 } from 'three';
+import { applyPlacement, buildWmoObject, disposeWmoObject, serverQuaternionToScene } from './wmo-object';
+
+const group = (indoor: boolean, colors = indoor) => ({
+  positions: new Float32Array([0, 0, 0, 1, 0, 0, 0, 0, 1]),
+  normals: new Float32Array(9),
+  uvs: new Float32Array(6),
+  colors: colors ? new Float32Array(9) : undefined,
+  indices: new Uint16Array([0, 1, 2, 0, 2, 1]),
+  batches: [
+    { start: 0, count: 3, material: 0 },
+    { start: 3, count: 3, material: 1 },
+  ],
+  indoor,
+});
+
+describe('wmo-object', () => {
+  it('converts server rotations to scene rotations', () => {
+    // a quarter turn around server z (up) turns north (+x) into west (+y)
+    const q = serverQuaternionToScene([0, 0, Math.sin(Math.PI / 4), Math.cos(Math.PI / 4)]);
+    const north = worldToScene({ x: 1, y: 0, z: 0 });
+    const west = worldToScene({ x: 0, y: 1, z: 0 });
+    const turned = new Vector3(north.x, north.y, north.z).applyQuaternion(q);
+    expect(turned.x).toBeCloseTo(west.x);
+    expect(turned.y).toBeCloseTo(west.y);
+    expect(turned.z).toBeCloseTo(west.z);
+  });
+
+  it('places objects', () => {
+    const object = new Group();
+    applyPlacement(object, { uniqueId: 1, path: 'a', position: [1, 2, 3], rotation: [0, 0, 0, 1], scale: 2 });
+    expect(object.position.toArray()).toEqual([-2, 3, -1]);
+    expect(object.scale.x).toBe(2);
+  });
+
+  it('builds a template with lit outdoor, vertex-lit indoor and unlit materials, shared between batches', () => {
+    const textures = [new Texture()];
+    const fallback = new Texture();
+    const model: WmoModel = {
+      materials: [
+        { texture: 'a.blp', twoSided: true, unlit: false },
+        { texture: undefined, twoSided: false, unlit: true },
+      ],
+      groups: [group(false), group(true), group(true, false), { ...group(false), indices: new Uint16Array(0) }],
+    };
+    const template = buildWmoObject(model, textures, fallback);
+    expect(template.children.length).toBe(3);
+
+    const [outdoor, indoor, indoorWithoutColors] = template.children as Mesh[];
+    const outdoorMaterials = outdoor.material as (MeshLambertMaterial | MeshBasicMaterial)[];
+    expect(outdoorMaterials[0]).toBeInstanceOf(MeshLambertMaterial);
+    expect(outdoorMaterials[0].side).toBe(DoubleSide);
+    expect(outdoorMaterials[0].map).toBe(textures[0]);
+    expect(outdoorMaterials[1]).toBeInstanceOf(MeshBasicMaterial);
+    expect(outdoorMaterials[1].map).toBe(fallback);
+    expect(outdoor.geometry.groups.length).toBe(2);
+
+    const indoorMaterial = (indoor.material as MeshBasicMaterial[])[0];
+    expect(indoorMaterial.vertexColors).toBe(true);
+    expect((indoorWithoutColors.material as MeshLambertMaterial[])[0]).toBe(outdoorMaterials[0]);
+
+    const clone = template.clone();
+    expect((clone.children[0] as Mesh).geometry).toBe(outdoor.geometry);
+
+    const dispose = vi.spyOn(outdoor.geometry, 'dispose');
+    const disposeMaterial = vi.spyOn(indoorMaterial, 'dispose');
+    disposeWmoObject(template);
+    expect(dispose).toHaveBeenCalled();
+    expect(disposeMaterial).toHaveBeenCalled();
+  });
+
+  it('copes with materials missing from the root', () => {
+    const template = buildWmoObject({ materials: [], groups: [group(false)] }, [], new Texture());
+    expect(((template.children[0] as Mesh).material as MeshLambertMaterial[])[0]).toBeInstanceOf(MeshLambertMaterial);
+  });
+});

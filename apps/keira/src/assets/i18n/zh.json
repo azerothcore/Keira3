@@ -1047,6 +1047,7 @@
     "VIEW": "视图",
     "LOW_DETAIL_TERRAIN": "低模地形（小地图配色，更快）",
     "TERRAIN_RANGE": "地形范围",
-    "TILES": "块"
+    "TILES": "块",
+    "BUILDINGS": "建筑"
   }
 }

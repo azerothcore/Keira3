@@ -221,6 +221,10 @@ export class WorldEditorComponent implements OnInit {
     this.renderSettings.update({ lowDetailTerrain: (event.target as HTMLInputElement).checked });
   }
 
+  protected setRenderFlag(key: 'showBuildings' | 'showDoodads' | 'showModels' | 'zoneLighting', event: Event): void {
+    this.renderSettings.update({ [key]: (event.target as HTMLInputElement).checked });
+  }
+
   protected setTerrainRadius(event: Event): void {
     this.renderSettings.update({ terrainRadius: Number((event.target as HTMLSelectElement).value) });
   }

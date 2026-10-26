@@ -1,6 +1,7 @@
 import { Blp, BLP_IMAGE_FORMAT, Map as WdtMap, MapArea } from '@wowserhq/format';
 import { TILE_COUNT, TileCoord } from './coords';
 import { TerrainChunk } from './terrain-mesh';
+import { ModelPlacement } from './wmo';
 
 /** Thin adapters over `@wowserhq/format`, so the rest of the code only deals with plain data. */
 
@@ -19,15 +20,41 @@ export function toArrayBuffer(bytes: Uint8Array): ArrayBuffer {
 
 export type LayerSplatDepth = 4 | 8;
 
+export interface ParsedAdt {
+  chunks: TerrainChunk[];
+  /** Buildings (MODF). */
+  wmos: ModelPlacement[];
+  /** Trees, rocks and other props (MDDF). */
+  doodads: ModelPlacement[];
+}
+
+/** MDDF scale is fixed point: 1024 = 1.0. */
+const DOODAD_SCALE_UNIT = 1024;
+
 /** `layerSplatDepth` must come from the map's WDT: parsing alpha maps with the wrong depth fails. */
+export function parseAdt(bytes: Uint8Array, layerSplatDepth: LayerSplatDepth): ParsedAdt {
+  const area = new MapArea(layerSplatDepth).load(toArrayBuffer(bytes));
+  return {
+    chunks: area.chunks.map((chunk) => ({
+      position: chunk.position,
+      vertexHeights: chunk.vertexHeights,
+      holes: chunk.holes,
+      vertexNormals: chunk.vertexNormals,
+      layers: chunk.layers.map((layer) => ({ texture: layer.texture, splat: layer.splat })),
+    })),
+    wmos: area.objDefs.map((def) => ({ uniqueId: def.id, path: def.name, position: def.position, rotation: def.rotation, scale: 1 })),
+    doodads: area.doodadDefs.map((def) => ({
+      uniqueId: def.id,
+      path: def.name,
+      position: def.position,
+      rotation: def.rotation,
+      scale: def.scale / DOODAD_SCALE_UNIT,
+    })),
+  };
+}
+
 export function parseAdtChunks(bytes: Uint8Array, layerSplatDepth: LayerSplatDepth): TerrainChunk[] {
-  return new MapArea(layerSplatDepth).load(toArrayBuffer(bytes)).chunks.map((chunk) => ({
-    position: chunk.position,
-    vertexHeights: chunk.vertexHeights,
-    holes: chunk.holes,
-    vertexNormals: chunk.vertexNormals,
-    layers: chunk.layers.map((layer) => ({ texture: layer.texture, splat: layer.splat })),
-  }));
+  return parseAdt(bytes, layerSplatDepth).chunks;
 }
 
 export interface WdtInfo {

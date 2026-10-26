@@ -86,6 +86,22 @@ describe('WorldScene', () => {
       world.dispose();
     });
 
+    it('treats buildings as ground', () => {
+      const world = new WorldScene();
+      world.setTerrainTile(flatTile(10));
+      const roof = new Mesh(
+        new BufferGeometry().setFromPoints([new Vector3(-1000, 0, -1000), new Vector3(1000, 0, -1000), new Vector3(0, 0, 1000)]),
+      );
+      roof.geometry.setIndex([0, 2, 1]);
+      const p = worldToScene({ ...CENTER, z: 30 });
+      roof.position.set(p.x, 30, p.z);
+      world.buildingGroup.add(roof);
+      roof.updateMatrixWorld();
+      expect(world.groundHeightAt(CENTER.x, CENTER.y)).toBeCloseTo(30);
+      lookDownAt(world, { ...CENTER, z: 30 });
+      expect(world.pick(0, 0)?.position.z).toBeCloseTo(30);
+    });
+
     it('reports the ground height under a position', () => {
       const world = new WorldScene();
       world.setTerrainTile(flatTile(42));

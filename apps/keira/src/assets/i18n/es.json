@@ -1047,6 +1047,7 @@
     "VIEW": "Vista",
     "LOW_DETAIL_TERRAIN": "Terreno simplificado (colores del minimapa, más rápido)",
     "TERRAIN_RANGE": "Alcance del terreno",
-    "TILES": "casillas"
+    "TILES": "casillas",
+    "BUILDINGS": "Edificios"
   }
 }

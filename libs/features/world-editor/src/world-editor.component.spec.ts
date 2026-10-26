@@ -210,12 +210,20 @@ describe(WorldEditorComponent.name, () => {
       const lowDetail = page.byId<HTMLInputElement>('view-low-detail').nativeElement;
       lowDetail.checked = true;
       lowDetail.dispatchEvent(new Event('change'));
+      const buildings = page.byId<HTMLInputElement>('view-buildings').nativeElement;
+      buildings.checked = false;
+      buildings.dispatchEvent(new Event('change'));
       const radius = page.byId<HTMLSelectElement>('view-terrain-radius').nativeElement;
       radius.value = '2';
       radius.dispatchEvent(new Event('change'));
       page.fixture.detectChanges();
 
-      expect(page.viewer().renderSettings()).toEqual({ ...DEFAULT_WORLD_RENDER_SETTINGS, lowDetailTerrain: true, terrainRadius: 2 });
+      expect(page.viewer().renderSettings()).toEqual({
+        ...DEFAULT_WORLD_RENDER_SETTINGS,
+        lowDetailTerrain: true,
+        showBuildings: false,
+        terrainRadius: 2,
+      });
       expect(radius.options[1].textContent?.trim()).toBe('25 WORLD_EDITOR.TILES');
       expect(JSON.parse(localStorage.getItem('keira3.worldEditor.render') as string).terrainRadius).toBe(2);
     });

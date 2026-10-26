@@ -1,4 +1,4 @@
-import { decodeBlp, parseAdtChunks, parseWdt, toArrayBuffer } from './formats';
+import { decodeBlp, parseAdt, parseAdtChunks, parseWdt, toArrayBuffer } from './formats';
 
 const mocks = vi.hoisted(() => ({
   chunks: [] as {
@@ -13,6 +13,8 @@ const mocks = vi.hoisted(() => ({
   image: { width: 2, height: 1, data: [1, 2, 3, 4, 5, 6, 7, 8] },
   getImage: vi.fn(),
   depth: 0,
+  objDefs: [] as unknown[],
+  doodadDefs: [] as unknown[],
 }));
 
 vi.mock('@wowserhq/format', () => ({
@@ -21,8 +23,8 @@ vi.mock('@wowserhq/format', () => ({
     constructor(readonly depth: number) {
       mocks.depth = depth;
     }
-    load(): { chunks: typeof mocks.chunks } {
-      return { chunks: mocks.chunks };
+    load(): { chunks: typeof mocks.chunks; objDefs: unknown[]; doodadDefs: unknown[] } {
+      return { chunks: mocks.chunks, objDefs: mocks.objDefs, doodadDefs: mocks.doodadDefs };
     }
   },
   Map: class {
@@ -68,6 +70,19 @@ describe('formats', () => {
       },
     ]);
     expect(mocks.depth).toBe(4);
+  });
+
+  it('lists the buildings and doodads placed by an ADT', () => {
+    mocks.chunks = [];
+    mocks.objDefs = [{ id: 7, name: 'Abbey.wmo', position: [1, 2, 3], rotation: [0, 0, 0, 1] }];
+    mocks.doodadDefs = [{ id: 8, name: 'Tree.mdx', position: [4, 5, 6], rotation: [0, 0, 0, 1], scale: 2048 }];
+    expect(parseAdt(new Uint8Array(), 8)).toEqual({
+      chunks: [],
+      wmos: [{ uniqueId: 7, path: 'Abbey.wmo', position: [1, 2, 3], rotation: [0, 0, 0, 1], scale: 1 }],
+      doodads: [{ uniqueId: 8, path: 'Tree.mdx', position: [4, 5, 6], rotation: [0, 0, 0, 1], scale: 2 }],
+    });
+    mocks.objDefs = [];
+    mocks.doodadDefs = [];
   });
 
   it('lists the tiles flagged in a WDT and its alpha map depth', () => {

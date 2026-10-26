@@ -6,3 +6,5 @@ export * from './world-viewer.model';
 export * from './terrain-material';
 export * from './texture-cache';
 export * from './world-render-settings';
+export * from './wmo-object';
+export * from './world-objects';

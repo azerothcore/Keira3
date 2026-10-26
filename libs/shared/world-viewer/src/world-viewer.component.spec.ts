@@ -186,6 +186,8 @@ describe(WorldViewerComponent.name, () => {
     getMinimap: vi.fn(),
     getTerrainDetail: vi.fn(),
     getTexture: vi.fn(),
+    getTilePlacements: vi.fn(),
+    getWmo: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -201,6 +203,8 @@ describe(WorldViewerComponent.name, () => {
     client.getMinimap.mockResolvedValue(undefined);
     client.getTerrainDetail.mockImplementation(() => Promise.resolve(flatDetail(GROUND)));
     client.getTexture.mockResolvedValue(undefined);
+    client.getTilePlacements.mockResolvedValue({ wmos: [], doodads: [] });
+    client.getWmo.mockResolvedValue(undefined);
 
     await TestBed.configureTestingModule({
       imports: [HostComponent, TranslateTestingModule],
@@ -271,6 +275,7 @@ describe(WorldViewerComponent.name, () => {
     expect(client.getMapTiles).toHaveBeenCalledWith('Azeroth');
     expect(client.getTerrainDetail).toHaveBeenCalledWith('Azeroth', { tx: 32, ty: 48 });
     expect(client.getTexture).toHaveBeenCalledWith('base.blp');
+    expect(client.getTilePlacements).toHaveBeenCalledWith('Azeroth', { tx: 32, ty: 48 });
     expect(host.centers.at(-1)?.x).toBeCloseTo(CENTER.x);
   });
 
