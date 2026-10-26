@@ -19,6 +19,7 @@ import { MapControls } from 'three/addons/controls/MapControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { TerrainStreamer } from './terrain-streamer';
 import { TextureCache } from './texture-cache';
+import { WorldDoodads } from './world-doodads';
 import { WorldObjects } from './world-objects';
 import { DEFAULT_WORLD_RENDER_SETTINGS, WorldRenderSettings } from './world-render-settings';
 import { WORLD_RENDERER_FACTORY, WorldRenderer } from './world-renderer';
@@ -81,6 +82,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private readonly textures = new TextureCache((path) => this.client.getTexture(path));
   private readonly streamer = new TerrainStreamer(this.client, this.world, this.textures, () => this.onTileLoaded());
   private readonly objects = new WorldObjects(this.client, this.world.buildingGroup, this.textures, () => this.requestRender());
+  private readonly doodads = new WorldDoodads(this.client, this.world.doodadGroup, this.textures, () => this.requestRender());
   private renderer?: WorldRenderer;
   // Created in ngAfterViewInit; effects may run before that, hence the guards in syncGizmo/lookAt.
   private controls?: MapControls;
@@ -99,8 +101,10 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       untracked(() => {
         this.streamer.configure({ detailed: !settings.lowDetailTerrain, radius: settings.terrainRadius });
         this.objects.configure({ showBuildings: settings.showBuildings, radius: settings.terrainRadius });
+        this.doodads.configure({ show: settings.showDoodads, distance: settings.doodadDistance });
         void this.streamer.update(this.center);
         void this.objects.update(this.center);
+        void this.doodads.update(this.center);
         this.requestRender();
       });
     });
@@ -160,6 +164,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.streamer.dispose();
     this.objects.dispose();
+    this.doodads.dispose();
     this.resizeObserver?.disconnect();
     this.gizmo.detach();
     this.gizmo.dispose();
@@ -314,6 +319,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private async loadMap(directory: string | undefined): Promise<void> {
     this.error.set(undefined);
     this.objects.setMap(directory);
+    this.doodads.setMap(directory);
     if (!directory) {
       await this.streamer.setMap(undefined);
       this.requestRender();
@@ -328,6 +334,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       await this.streamer.setMap(directory);
       await this.streamer.update(this.center);
       void this.objects.update(this.center);
+      void this.doodads.update(this.center);
     } catch (error) {
       this.error.set((error as Error).message);
     } finally {
@@ -356,6 +363,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     // update() reports tile failures itself and never rejects.
     void this.streamer.update(center);
     void this.objects.update(center);
+    void this.doodads.update(center);
   }
 
   private resize(): void {

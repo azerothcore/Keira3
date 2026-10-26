@@ -6,6 +6,7 @@ import { decodeBlp, parseAdt, ParsedAdt, parseWdt, RgbaImage, WdtInfo } from './
 import { MD5_TRANSLATE_PATH, MINIMAP_ROOT, minimapKey, parseMd5Translate } from './minimap';
 import { parseConfigWtfLocale, pickLocale, sortMpqArchives } from './mpq-order';
 import { LiquidMesh, parseLiquids } from './liquid';
+import { M2Mesh, m2Path, m2SkinPath, parseM2 } from './m2';
 import { buildTerrainChunkMeshes, buildTerrainMesh, TerrainChunkMesh, TerrainMeshData } from './terrain-mesh';
 import { ModelPlacement, parseWmoGroup, parseWmoRoot, WmoModel, wmoGroupPath } from './wmo';
 import { WowDataSettingsService } from './wow-data-settings.service';
@@ -115,6 +116,13 @@ export class WowClientService {
       }
     }
     return { materials: root.materials, groups };
+  }
+
+  /** A model (doodad, creature, gameobject): `.mdx`/`.mdl` names are read as `.m2`. */
+  async getM2(path: string): Promise<M2Mesh | undefined> {
+    const model = await this.readFile(m2Path(path));
+    const skin = model && (await this.readFile(m2SkinPath(path)));
+    return model && skin ? parseM2(model, skin) : undefined;
   }
 
   /** Decodes a BLP texture from the archives (e.g. a terrain tileset texture). */

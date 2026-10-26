@@ -103,6 +103,8 @@ export class WorldScene {
   private readonly terrainGroup = new Group();
   /** Buildings (WMO), streamed by `WorldObjects`; they count as ground for picking and snapping. */
   readonly buildingGroup = new Group();
+  /** Trees, rocks and props (M2), streamed by `WorldDoodads`; never picked, so they don't catch clicks meant for the ground. */
+  readonly doodadGroup = new Group();
   private readonly spawnGroup = new Group();
   private readonly waypointGroup = new Group();
   private readonly raycaster = new Raycaster();
@@ -130,9 +132,10 @@ export class WorldScene {
     this.scene.fog = new Fog(COLORS.sky, 600, 1600);
     this.terrainGroup.name = 'terrain';
     this.buildingGroup.name = 'buildings';
+    this.doodadGroup.name = 'doodads';
     this.spawnGroup.name = 'spawns';
     this.waypointGroup.name = 'waypoints';
-    this.scene.add(this.terrainGroup, this.buildingGroup, this.spawnGroup, this.waypointGroup);
+    this.scene.add(this.terrainGroup, this.buildingGroup, this.doodadGroup, this.spawnGroup, this.waypointGroup);
     this.camera.layers.enable(LIQUID_LAYER);
 
     const sun = new DirectionalLight(0xffffff, 1.6);

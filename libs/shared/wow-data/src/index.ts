@@ -3,6 +3,7 @@ export * from './dbc';
 export * from './folder-archive';
 export * from './formats';
 export * from './liquid';
+export * from './m2';
 export * from './minimap';
 export * from './mpq-order';
 export * from './terrain-mesh';

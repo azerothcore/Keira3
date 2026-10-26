@@ -188,6 +188,7 @@ describe(WorldViewerComponent.name, () => {
     getTexture: vi.fn(),
     getTilePlacements: vi.fn(),
     getWmo: vi.fn(),
+    getM2: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -205,6 +206,7 @@ describe(WorldViewerComponent.name, () => {
     client.getTexture.mockResolvedValue(undefined);
     client.getTilePlacements.mockResolvedValue({ wmos: [], doodads: [] });
     client.getWmo.mockResolvedValue(undefined);
+    client.getM2.mockResolvedValue(undefined);
 
     await TestBed.configureTestingModule({
       imports: [HostComponent, TranslateTestingModule],

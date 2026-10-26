@@ -19,6 +19,13 @@ const wmo = vi.hoisted(() => ({
 }));
 vi.mock('./wmo', () => wmo);
 
+const m2 = vi.hoisted(() => ({
+  parseM2: vi.fn(),
+  m2Path: (path: string) => path.replace(/\.mdx$/i, '.m2'),
+  m2SkinPath: (path: string) => path.replace(/\.(mdx|m2)$/i, '00.skin'),
+}));
+vi.mock('./m2', () => m2);
+
 const adtOf = (chunks: unknown[] = [], wmos: unknown[] = [], doodads: unknown[] = []) => ({ chunks, wmos, doodads });
 
 const mapDbc = (directory: string): number[] => {
@@ -266,6 +273,16 @@ describe('WowClientService', () => {
         ],
       });
       expect(await service.getWmo('missing.wmo')).toBeUndefined();
+    });
+
+    it('loads models with their skin, reading .mdx names as .m2', async () => {
+      const { service } = setup({
+        mpqs: { 'common.MPQ': { files: { 'World\\Tree.m2': [1], 'World\\Tree00.skin': [2], 'World\\NoSkin.m2': [3] } } },
+      });
+      m2.parseM2.mockImplementation((model: Uint8Array, skin: Uint8Array) => ({ model: model[0], skin: skin[0] }));
+      expect(await service.getM2('World\\Tree.mdx')).toEqual({ model: 1, skin: 2 });
+      expect(await service.getM2('World\\NoSkin.m2')).toBeUndefined();
+      expect(await service.getM2('World\\Missing.m2')).toBeUndefined();
     });
 
     it('decodes textures', async () => {

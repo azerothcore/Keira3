@@ -69,6 +69,8 @@ export class WorldEditorComponent implements OnInit {
   protected readonly selectedKey = signal<string | undefined>(undefined);
   protected readonly showSettings = signal(!this.settings.isConfigured());
   protected readonly showView = signal(false);
+  /** Draw distances offered for doodads and models, in yards. */
+  protected readonly drawDistances = [100, 250, 500];
   protected readonly loadingSpawns = signal(false);
   protected readonly teleResults = signal<TeleRow[]>([]);
   protected readonly placeEntryName = signal('');
@@ -223,6 +225,10 @@ export class WorldEditorComponent implements OnInit {
 
   protected setRenderFlag(key: 'showBuildings' | 'showDoodads' | 'showModels' | 'zoneLighting', event: Event): void {
     this.renderSettings.update({ [key]: (event.target as HTMLInputElement).checked });
+  }
+
+  protected setRenderDistance(key: 'doodadDistance' | 'modelDistance', event: Event): void {
+    this.renderSettings.update({ [key]: Number((event.target as HTMLSelectElement).value) });
   }
 
   protected setTerrainRadius(event: Event): void {

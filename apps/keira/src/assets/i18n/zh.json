@@ -1048,6 +1048,9 @@
     "LOW_DETAIL_TERRAIN": "低模地形（小地图配色，更快）",
     "TERRAIN_RANGE": "地形范围",
     "TILES": "块",
-    "BUILDINGS": "建筑"
+    "BUILDINGS": "建筑",
+    "DOODADS": "树木和道具",
+    "DRAW_DISTANCE": "绘制距离",
+    "YARDS": "码"
   }
 }

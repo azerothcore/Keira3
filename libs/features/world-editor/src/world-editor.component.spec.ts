@@ -216,14 +216,26 @@ describe(WorldEditorComponent.name, () => {
       const radius = page.byId<HTMLSelectElement>('view-terrain-radius').nativeElement;
       radius.value = '2';
       radius.dispatchEvent(new Event('change'));
+      const doodadDistance = page.byId<HTMLSelectElement>('view-doodad-distance').nativeElement;
+      doodadDistance.value = '500';
+      doodadDistance.dispatchEvent(new Event('change'));
       page.fixture.detectChanges();
+      expect(doodadDistance.disabled).toBe(false);
+      const doodads = page.byId<HTMLInputElement>('view-doodads').nativeElement;
+      doodads.checked = false;
+      doodads.dispatchEvent(new Event('change'));
+      page.fixture.detectChanges();
+      expect(doodadDistance.disabled).toBe(true);
 
       expect(page.viewer().renderSettings()).toEqual({
         ...DEFAULT_WORLD_RENDER_SETTINGS,
         lowDetailTerrain: true,
         showBuildings: false,
         terrainRadius: 2,
+        showDoodads: false,
+        doodadDistance: 500,
       });
+      expect(doodadDistance.options[2].textContent?.trim()).toBe('500 WORLD_EDITOR.YARDS');
       expect(radius.options[1].textContent?.trim()).toBe('25 WORLD_EDITOR.TILES');
       expect(JSON.parse(localStorage.getItem('keira3.worldEditor.render') as string).terrainRadius).toBe(2);
     });

@@ -1048,6 +1048,9 @@
     "LOW_DETAIL_TERRAIN": "Terreno simplificado (colores del minimapa, más rápido)",
     "TERRAIN_RANGE": "Alcance del terreno",
     "TILES": "casillas",
-    "BUILDINGS": "Edificios"
+    "BUILDINGS": "Edificios",
+    "DOODADS": "Árboles y objetos",
+    "DRAW_DISTANCE": "Distancia de dibujado",
+    "YARDS": "yardas"
   }
 }

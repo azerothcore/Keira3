@@ -1048,6 +1048,9 @@
     "LOW_DETAIL_TERRAIN": "Low-poly terrain (minimap colours, faster)",
     "TERRAIN_RANGE": "Terrain range",
     "TILES": "tiles",
-    "BUILDINGS": "Buildings"
+    "BUILDINGS": "Buildings",
+    "DOODADS": "Trees & props",
+    "DRAW_DISTANCE": "Draw distance",
+    "YARDS": "yards"
   }
 }

@@ -1,0 +1,247 @@
+import {
+  M2Mesh,
+  m2Path,
+  ModelPlacement,
+  TILE_SIZE,
+  TileCoord,
+  tileKey,
+  tilesAround,
+  WorldPosition,
+  worldToTile,
+} from '@keira/shared/wow-data';
+import { Group, InstancedMesh, Object3D } from 'three';
+import { buildM2Template, disposeM2Template, M2Template } from './m2-object';
+import { TextureCache } from './texture-cache';
+import { applyPlacement } from './wmo-object';
+
+/** What the doodad streamer needs from `WowClientService`. */
+export interface DoodadSource {
+  getTilePlacements(directory: string, tile: TileCoord): Promise<{ wmos: ModelPlacement[]; doodads: ModelPlacement[] } | undefined>;
+  getM2(path: string): Promise<M2Mesh | undefined>;
+}
+
+export interface WorldDoodadsOptions {
+  show: boolean;
+  /** Doodads farther than this from the camera target (in yards) aren't drawn. */
+  distance: number;
+}
+
+/**
+ * Draws the doodads (trees, rocks, fences, props…) placed by the ADT tiles near the camera target, up to a distance.
+ * Each model is drawn as one instanced mesh, so a forest of the same tree costs a single draw call per material.
+ */
+export class WorldDoodads {
+  private directory?: string;
+  private generation = 0;
+  private center?: WorldPosition;
+  private centerTile: TileCoord = { tx: 32, ty: 32 };
+  private options: WorldDoodadsOptions = { show: true, distance: 250 };
+  private readonly tiles = new Map<string, ModelPlacement[]>();
+  private readonly loading = new Set<string>();
+  /** Model templates by lower-case `.m2` path; undefined once loaded means the model is missing or unreadable. */
+  private readonly templates = new Map<string, Promise<M2Template | undefined>>();
+  private readonly ready = new Map<string, M2Template | undefined>();
+  private readonly meshes = new Map<string, InstancedMesh>();
+  private readonly dummy = new Object3D();
+
+  constructor(
+    private readonly source: DoodadSource,
+    private readonly group: Group,
+    private readonly textures: TextureCache,
+    private readonly onChange: () => void,
+  ) {}
+
+  /** Number of doodads currently drawn. */
+  get drawnCount(): number {
+    let count = 0;
+    this.meshes.forEach((mesh) => (count += mesh.count));
+    return count;
+  }
+
+  get loadedTiles(): string[] {
+    return [...this.tiles.keys()];
+  }
+
+  setMap(directory: string | undefined): void {
+    this.directory = directory;
+    this.clear();
+  }
+
+  configure(options: WorldDoodadsOptions): void {
+    if (options.show === this.options.show && options.distance === this.options.distance) {
+      return;
+    }
+    this.options = { ...options };
+    if (options.show) {
+      this.refresh();
+    } else {
+      this.clear();
+    }
+  }
+
+  async update(center: WorldPosition): Promise<void> {
+    const directory = this.directory;
+    if (!directory || !this.options.show) {
+      return;
+    }
+    const generation = this.generation;
+    this.center = center;
+    this.centerTile = worldToTile(center.x, center.y);
+    for (const key of [...this.tiles.keys()]) {
+      if (!this.isNear(key)) {
+        this.tiles.delete(key);
+      }
+    }
+    this.refresh();
+
+    for (const tile of tilesAround(this.centerTile, this.tileRadius)) {
+      const key = tileKey(tile);
+      if (this.tiles.has(key) || this.loading.has(key)) {
+        continue;
+      }
+      this.loading.add(key);
+      try {
+        const placements = (await this.source.getTilePlacements(directory, tile))?.doodads ?? [];
+        if (generation !== this.generation) {
+          return;
+        }
+        if (this.isNear(key)) {
+          this.tiles.set(key, placements);
+          this.refresh();
+        }
+      } catch (error) {
+        console.warn(`[World Editor] Could not load the doodads of ${directory}_${key}: ${(error as Error).message}`);
+      } finally {
+        this.loading.delete(key);
+      }
+    }
+  }
+
+  dispose(): void {
+    this.directory = undefined;
+    this.clear();
+    this.templates.forEach((template) => void template.then((t) => t && disposeM2Template(t)));
+    this.templates.clear();
+    this.ready.clear();
+  }
+
+  /** Tiles that can hold doodads within the draw distance. */
+  private get tileRadius(): number {
+    return Math.ceil(this.options.distance / TILE_SIZE);
+  }
+
+  /** Rebuilds the instances from the loaded tiles: what's within the distance, grouped by model. */
+  private refresh(): void {
+    const center = this.center;
+    if (!center) {
+      return;
+    }
+    const maxDistanceSq = this.options.distance * this.options.distance;
+    const byModel = new Map<string, ModelPlacement[]>();
+    const seen = new Set<number>();
+    for (const placements of this.tiles.values()) {
+      for (const placement of placements) {
+        const dx = placement.position[0] - center.x;
+        const dy = placement.position[1] - center.y;
+        if (seen.has(placement.uniqueId) || dx * dx + dy * dy > maxDistanceSq) {
+          continue;
+        }
+        seen.add(placement.uniqueId);
+        const key = m2Path(placement.path).toLowerCase();
+        const list = byModel.get(key) ?? [];
+        list.push(placement);
+        byModel.set(key, list);
+      }
+    }
+
+    for (const [key, mesh] of [...this.meshes]) {
+      if (!byModel.has(key)) {
+        this.removeMesh(key, mesh);
+      }
+    }
+    for (const [key, placements] of byModel) {
+      if (!this.ready.has(key)) {
+        this.loadTemplate(key, placements[0].path);
+        continue;
+      }
+      const template = this.ready.get(key);
+      if (template) {
+        this.placeInstances(key, template, placements);
+      }
+    }
+    this.onChange();
+  }
+
+  private placeInstances(key: string, template: M2Template, placements: ModelPlacement[]): void {
+    let mesh = this.meshes.get(key);
+    if (!mesh || mesh.instanceMatrix.count < placements.length) {
+      if (mesh) {
+        this.removeMesh(key, mesh);
+      }
+      // room to grow, so walking around doesn't recreate the mesh at every step
+      mesh = new InstancedMesh(template.geometry, template.materials, Math.ceil(placements.length * 1.5));
+      mesh.name = `doodad:${key}`;
+      this.group.add(mesh);
+      this.meshes.set(key, mesh);
+    }
+    placements.forEach((placement, i) => {
+      applyPlacement(this.dummy, placement);
+      this.dummy.updateMatrix();
+      (mesh as InstancedMesh).setMatrixAt(i, this.dummy.matrix);
+    });
+    mesh.count = placements.length;
+    mesh.instanceMatrix.needsUpdate = true;
+    mesh.computeBoundingSphere();
+  }
+
+  private loadTemplate(key: string, path: string): void {
+    if (this.templates.has(key)) {
+      return;
+    }
+    const template = this.source
+      .getM2(path)
+      .then(async (model) => {
+        if (!model) {
+          return undefined;
+        }
+        const textures = await Promise.all(
+          model.batches.map((batch) => (batch.texture ? this.textures.get(batch.texture) : Promise.resolve(this.textures.fallback))),
+        );
+        return buildM2Template(model, textures, this.textures.fallback);
+      })
+      .catch((error) => {
+        console.warn(`[World Editor] Could not load the model ${path}: ${(error as Error).message}`);
+        return undefined;
+      });
+    this.templates.set(key, template);
+    void template.then((loaded) => {
+      // dispose() may have run meanwhile: only a template still listed is used
+      if (this.templates.get(key) === template) {
+        this.ready.set(key, loaded);
+        this.refresh();
+      } else if (loaded) {
+        disposeM2Template(loaded);
+      }
+    });
+  }
+
+  private removeMesh(key: string, mesh: InstancedMesh): void {
+    this.group.remove(mesh);
+    mesh.dispose();
+    this.meshes.delete(key);
+  }
+
+  private clear(): void {
+    this.generation++;
+    this.loading.clear();
+    this.tiles.clear();
+    this.center = undefined;
+    this.meshes.forEach((mesh, key) => this.removeMesh(key, mesh));
+    this.onChange();
+  }
+
+  private isNear(key: string): boolean {
+    const [tx, ty] = key.split('_').map(Number);
+    return Math.max(Math.abs(tx - this.centerTile.tx), Math.abs(ty - this.centerTile.ty)) <= this.tileRadius + 1;
+  }
+}

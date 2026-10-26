@@ -8,3 +8,5 @@ export * from './texture-cache';
 export * from './world-render-settings';
 export * from './wmo-object';
 export * from './world-objects';
+export * from './m2-object';
+export * from './world-doodads';
