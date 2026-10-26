@@ -90,6 +90,8 @@ describe('WowClientService', () => {
     expect(await service.getArchiveNames()).toEqual(['common.MPQ', 'patch.MPQ', 'enUS/locale-enUS.MPQ', 'enUS/patch-enUS-y.mpq']);
     expect(warn).toHaveBeenCalledTimes(1);
     expect(Array.from((await service.readFile('a.txt')) as Uint8Array)).toEqual([3]);
+    // the archive's buffer is released on close; the returned bytes must survive that
+    expect(Array.from((await service.readFile('World\\Maps\\Azeroth\\Azeroth.wdt')) as Uint8Array)).toEqual([9]);
     expect(await service.readFile('missing')).toBeUndefined();
   });
 

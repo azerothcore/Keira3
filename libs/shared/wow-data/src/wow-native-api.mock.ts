@@ -29,9 +29,10 @@ export class FakeStormArchive implements StormArchive {
     return this.find(name) !== undefined;
   }
 
+  /** Like StormJS, read() returns a buffer that close() releases (simulated by zeroing it). */
   openFile(name: string): { read: () => Uint8Array; close: () => void } {
-    const data = this.find(name) as number[];
-    return { read: () => Uint8Array.from(data), close: () => undefined };
+    const buffer = Uint8Array.from(this.find(name) as number[]);
+    return { read: () => buffer, close: () => buffer.fill(0) };
   }
 
   close(): void {

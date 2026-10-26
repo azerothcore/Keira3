@@ -46,7 +46,8 @@ export class WowClientService {
       if (archive.hasFile(path)) {
         const file = archive.openFile(path);
         try {
-          return file.read();
+          // StormJS returns a view into WebAssembly memory that close() frees and later reads reuse: copy it.
+          return file.read().slice();
         } finally {
           file.close();
         }
