@@ -234,6 +234,31 @@ describe('WowClientService', () => {
       await expect(service.getZoneLights('Azeroth')).rejects.toThrowError(/WDBC/);
     });
 
+    it('lists the zones of a map', async () => {
+      const float = (value: number) => new Uint32Array(new Float32Array([value]).buffer)[0];
+      const { service } = setup({
+        mpqs: displayMpqs({
+          'DBFilesClient\\WorldMapArea.dbc': dbc([
+            [30, 0, 12, 'Elwynn', float(1), float(0), float(1), float(0)],
+            [31, 1, 14, 'Durotar', float(1), float(0), float(1), float(0)],
+          ]),
+        }),
+      });
+      expect((await service.getZones(0)).map((zone) => zone.name)).toEqual(['Elwynn']);
+      expect((await service.getZones(1)).map((zone) => zone.name)).toEqual(['Durotar']);
+    });
+
+    it('has no zones without the world map DBC, and retries after a failure', async () => {
+      const { service } = setup({ mpqs: displayMpqs({ 'DBFilesClient\\AreaTable.dbc': [1, 2, 3, 4] }) });
+      await expect(service.getZones(0)).rejects.toThrowError(/WDBC/);
+      await expect(service.getZones(0)).rejects.toThrowError(/WDBC/);
+    });
+
+    it('has no zones when the world map DBC is missing', async () => {
+      const { service } = setup({ mpqs: displayMpqs({}) });
+      expect(await service.getZones(0)).toEqual([]);
+    });
+
     it('has no zone lights for a map without lights', async () => {
       const { service } = setup({ mpqs: displayMpqs({ 'DBFilesClient\\Map.dbc': mapDbc('Azeroth') }) });
       expect(await service.getZoneLights('Azeroth')).toEqual([]);

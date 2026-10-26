@@ -1054,6 +1054,8 @@
     "YARDS": "yards",
     "MODELS": "NPC & object models",
     "ZONE_LIGHTING": "Zone lighting & sky",
+    "ZONE": "Zone",
+    "LOAD_WHOLE_ZONE": "Load the whole zone",
     "ADVANCED": "Per group",
     "GROUP": "Group",
     "LARGE_DOODADS": "Trees & large props",

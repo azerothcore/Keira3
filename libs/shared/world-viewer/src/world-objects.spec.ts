@@ -77,6 +77,20 @@ describe('WorldObjects', () => {
     expect(objects.placedCount).toBe(0);
   });
 
+  it('keeps the buildings of a whole region', async () => {
+    const { objects, source } = setup({ '32_48': [placement(1)], '32_52': [placement(2)] });
+    objects.setMap('Azeroth');
+    const far = tileCenter({ tx: 32, ty: 52 });
+    objects.setRegion({ minX: far.x, maxX: far.x, minY: far.y, maxY: far.y });
+    await objects.update(tileCenter({ tx: 32, ty: 48 }));
+    expect(objects.placedCount).toBe(2);
+    expect(source.getTilePlacements).toHaveBeenCalledWith('Azeroth', { tx: 32, ty: 52 });
+
+    objects.setRegion(undefined);
+    await objects.update(tileCenter({ tx: 32, ty: 48 }));
+    expect(objects.placedCount).toBe(1);
+  });
+
   it('does nothing without a map or with buildings hidden', async () => {
     const { objects, source } = setup({ '32_48': [placement(1)] });
     await objects.update(tileCenter({ tx: 32, ty: 48 }));

@@ -180,4 +180,28 @@ describe('TerrainStreamer', () => {
       expect(source.getTerrain).toHaveBeenCalledTimes(9 + 25);
     });
   });
+
+  it('loads a whole region, with the real textures only near the camera', async () => {
+    const { streamer, scene, source } = setup(grid(32, 48, 6));
+    streamer.configure({ detailed: true, radius: 0 });
+    await streamer.setMap('Azeroth');
+    const from = tileCenter({ tx: 32, ty: 48 });
+    const to = tileCenter({ tx: 32, ty: 51 });
+    streamer.setRegion({ minX: to.x, maxX: from.x, minY: from.y, maxY: from.y });
+    await streamer.update(from);
+    expect(scene.terrainKeys.sort()).toEqual(['32_48', '32_49', '32_50', '32_51']);
+    expect(source.getTerrainDetail).toHaveBeenCalledTimes(1);
+    expect(source.getTerrain).toHaveBeenCalledTimes(3);
+
+    // walking to the far end swaps which tile is detailed
+    await streamer.update(to);
+    expect(source.getTerrainDetail).toHaveBeenLastCalledWith('Azeroth', { tx: 32, ty: 51 });
+    expect(source.getTerrain).toHaveBeenLastCalledWith('Azeroth', { tx: 32, ty: 48 });
+    expect(scene.terrainKeys).toHaveLength(4);
+
+    // leaving the region drops it
+    streamer.setRegion(undefined);
+    await streamer.update(tileCenter({ tx: 32, ty: 54 }));
+    expect(scene.terrainKeys).toEqual(['32_54']);
+  });
 });

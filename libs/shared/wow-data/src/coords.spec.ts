@@ -7,6 +7,7 @@ import {
   tileKey,
   tileOrigin,
   tilesAround,
+  tilesInBounds,
   TILE_SIZE,
   worldToScene,
   worldToTile,
@@ -59,5 +60,14 @@ describe('coords', () => {
   it('converts orientation to scene yaw and back', () => {
     expect(orientationToSceneYaw(1.5)).toBe(1.5);
     expect(sceneYawToOrientation(-0.5)).toBeCloseTo(Math.PI * 2 - 0.5);
+  });
+
+  it('lists the tiles covering an area, nearest first', () => {
+    const elwynn = { minX: -9900, maxX: -8800, minY: -1200, maxY: 600 };
+    const tiles = tilesInBounds(elwynn, { tx: 32, ty: 48 });
+    expect(tiles[0]).toEqual({ tx: 32, ty: 48 });
+    expect(tiles).toHaveLength(5 * 3);
+    expect(tiles).toContainEqual(worldToTile(-9900, -1200));
+    expect(tiles).toContainEqual(worldToTile(-8800, 600));
   });
 });

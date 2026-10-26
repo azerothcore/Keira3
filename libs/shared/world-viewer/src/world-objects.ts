@@ -1,4 +1,14 @@
-import { ModelPlacement, TileCoord, tileKey, tilesAround, WmoModel, WorldPosition, worldToTile } from '@keira/shared/wow-data';
+import {
+  ModelPlacement,
+  TileCoord,
+  tileKey,
+  tilesAround,
+  tilesInBounds,
+  WmoModel,
+  WorldBounds,
+  WorldPosition,
+  worldToTile,
+} from '@keira/shared/wow-data';
 import { Group, Object3D } from 'three';
 import { TextureCache } from './texture-cache';
 import { applyPlacement, buildWmoObject, disposeWmoObject } from './wmo-object';
@@ -32,6 +42,9 @@ export class WorldObjects {
   private readonly loading = new Set<string>();
   private readonly placed = new Map<number, Placed>();
   private readonly templates = new Map<string, Promise<Group | undefined>>();
+  /** An area whose buildings are all loaded (e.g. the selected zone). */
+  private region?: WorldBounds;
+  private regionKeys = new Set<string>();
 
   constructor(
     private readonly source: ObjectSource,
@@ -61,6 +74,11 @@ export class WorldObjects {
     this.clear();
   }
 
+  /** Also keeps the buildings of every tile of `bounds` (until set to undefined); takes effect at the next update(). */
+  setRegion(bounds: WorldBounds | undefined): void {
+    this.region = bounds;
+  }
+
   async update(center: WorldPosition): Promise<void> {
     const directory = this.directory;
     if (!directory || !this.options.showBuildings) {
@@ -68,13 +86,15 @@ export class WorldObjects {
     }
     const generation = this.generation;
     this.centerTile = worldToTile(center.x, center.y);
+    const regionTiles = this.region ? tilesInBounds(this.region, this.centerTile) : [];
+    this.regionKeys = new Set(regionTiles.map(tileKey));
 
     for (const key of [...this.tiles.keys()]) {
       if (!this.isNear(key)) {
         this.removeTile(key);
       }
     }
-    for (const tile of tilesAround(this.centerTile, this.options.radius)) {
+    for (const tile of [...tilesAround(this.centerTile, this.options.radius), ...regionTiles]) {
       const key = tileKey(tile);
       if (this.tiles.has(key) || this.loading.has(key)) {
         continue;
@@ -174,6 +194,7 @@ export class WorldObjects {
 
   private isNear(key: string): boolean {
     const [tx, ty] = key.split('_').map(Number);
-    return Math.max(Math.abs(tx - this.centerTile.tx), Math.abs(ty - this.centerTile.ty)) <= this.options.radius + 1;
+    const near = Math.max(Math.abs(tx - this.centerTile.tx), Math.abs(ty - this.centerTile.ty)) <= this.options.radius + 1;
+    return near || this.regionKeys.has(key);
   }
 }

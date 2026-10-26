@@ -12,7 +12,7 @@ import {
   WorldSpawn,
   WorldViewerComponent,
 } from '@keira/shared/world-viewer';
-import { tileCenter, WOW_DATA_SETTINGS_KEY, WowClientService, WorldPosition } from '@keira/shared/wow-data';
+import { tileCenter, WOW_DATA_SETTINGS_KEY, WowClientService, WorldBounds, WorldPosition } from '@keira/shared/wow-data';
 import { DebugHtmlElement, PageObjectModel, typeInElement } from 'ngx-page-object-model';
 import { ClipboardService } from 'ngx-clipboard';
 import { ToastrService } from 'ngx-toastr';
@@ -33,6 +33,7 @@ class FakeWorldViewerComponent {
   readonly groundOnly = input<boolean>(false);
   readonly renderSettings = input<WorldRenderSettings>(DEFAULT_WORLD_RENDER_SETTINGS);
   readonly focus = input<WorldPosition | undefined>(undefined);
+  readonly region = input<WorldBounds | undefined>(undefined);
   readonly picked = output<PickResult>();
   readonly objectMoved = output<ObjectMoved>();
   readonly centerChanged = output<WorldPosition>();
@@ -90,6 +91,10 @@ const spawn = (type: 'creature' | 'gameobject', guid: number, extra: Partial<Spa
   pathId: 0,
   ...extra,
 });
+const ZONES = [
+  { areaId: 12, mapId: 0, name: 'Elwynn Forest', bounds: { minX: -10000, maxX: -8000, minY: -1000, maxY: 1000 } },
+  { areaId: 40, mapId: 0, name: 'Westfall', bounds: { minX: -12000, maxX: -10000, minY: 0, maxY: 2000 } },
+];
 const SPAWNS = [
   spawn('creature', 1, { pathId: 10, name: 'Deputy Willem' }),
   spawn('creature', 2, { name: '' }),
@@ -103,7 +108,7 @@ const CENTER = { x: -8913, y: -137, z: 82 };
 
 describe(WorldEditorComponent.name, () => {
   const mocks = {
-    client: { isSupported: vi.fn(), getMaps: vi.fn(), getMapTiles: vi.fn(), close: vi.fn() },
+    client: { isSupported: vi.fn(), getMaps: vi.fn(), getMapTiles: vi.fn(), getZones: vi.fn(), close: vi.fn() },
     service: {
       loadSpawns: vi.fn(),
       loadWaypoints: vi.fn(),
@@ -118,8 +123,11 @@ describe(WorldEditorComponent.name, () => {
     clipboard: { copyFromContent: vi.fn() },
   };
 
-  const setup = async (opts: { params?: Record<string, string>; configured?: boolean } = {}) => {
+  const setup = async (opts: { params?: Record<string, string>; configured?: boolean; lastView?: string } = {}) => {
     localStorage.clear();
+    if (opts.lastView) {
+      localStorage.setItem('keira3.worldEditor.lastView', opts.lastView);
+    }
     if (opts.configured !== false) {
       localStorage.setItem(WOW_DATA_SETTINGS_KEY, JSON.stringify({ clientPath: '/wow', serverDataPath: '' }));
     }
@@ -165,6 +173,7 @@ describe(WorldEditorComponent.name, () => {
       { tx: 32, ty: 48 },
     ]);
     mocks.client.close.mockResolvedValue(undefined);
+    mocks.client.getZones.mockImplementation((map: number) => Promise.resolve(map === 0 ? ZONES : []));
     mocks.service.loadSpawns.mockResolvedValue(SPAWNS);
     mocks.service.loadWaypoints.mockResolvedValue(WAYPOINTS);
     mocks.service.getMaxGuid.mockResolvedValue(1000);
@@ -292,6 +301,68 @@ describe(WorldEditorComponent.name, () => {
       TestBed.resetTestingModule();
       const third = await setup({ params: { x: '1', y: '2', z: 'abc' } });
       expect(third.page.viewer().focus()).toEqual({ x: 1, y: 2, z: 0 });
+    });
+
+    it('reopens where the user left off, ignoring a damaged memory', async () => {
+      const { page } = await setup();
+      page.viewer().centerChanged.emit({ x: 5, y: 6, z: 7 });
+      await settle(page);
+      const saved = localStorage.getItem('keira3.worldEditor.lastView') as string;
+      expect(JSON.parse(saved)).toEqual({ mapId: 0, x: 5, y: 6, z: 7 });
+
+      TestBed.resetTestingModule();
+      const reopened = await setup({ lastView: JSON.stringify({ mapId: 1, x: 5, y: 6, z: 7 }) });
+      expect(reopened.page.viewer().mapDirectory()).toBe('Kalimdor');
+      expect(reopened.page.viewer().focus()).toEqual({ x: 5, y: 6, z: 7 });
+
+      // a link wins over the memory
+      TestBed.resetTestingModule();
+      const linked = await setup({ lastView: saved, params: { map: '1' } });
+      expect(linked.page.viewer().mapDirectory()).toBe('Kalimdor');
+
+      for (const damaged of ['{nope', JSON.stringify({ mapId: 0, x: 'a', y: 1, z: 1 }), 'null']) {
+        TestBed.resetTestingModule();
+        const fresh = await setup({ lastView: damaged });
+        expect(fresh.page.viewer().focus()).toEqual(tileCenter({ tx: 32, ty: 48 }));
+      }
+    });
+
+    it('jumps to a zone, and loads it whole when asked', async () => {
+      const { page } = await setup();
+      const select = page.byId<HTMLSelectElement>('zone-select').nativeElement;
+      expect(Array.from(select.options).map((o) => o.textContent?.trim())).toEqual(['WORLD_EDITOR.ZONE…', 'Elwynn Forest', 'Westfall']);
+      select.value = '40';
+      select.dispatchEvent(new Event('change'));
+      await settle(page);
+      expect(page.viewer().focus()).toEqual({ x: -11000, y: 1000, z: 0 });
+      expect(page.viewer().region()).toBeUndefined();
+
+      page.click('view-toggle');
+      page.fixture.detectChanges();
+      const whole = page.byId<HTMLInputElement>('view-whole-zone').nativeElement;
+      whole.checked = true;
+      whole.dispatchEvent(new Event('change'));
+      await settle(page);
+      expect(page.viewer().region()).toEqual(ZONES[1].bounds);
+
+      select.value = '0';
+      select.dispatchEvent(new Event('change'));
+      await settle(page);
+      expect(page.viewer().region()).toBeUndefined();
+
+      // other maps have their own zones
+      const maps = page.byId<HTMLSelectElement>('map-select').nativeElement;
+      maps.value = '1';
+      maps.dispatchEvent(new Event('change'));
+      await settle(page);
+      expect(select.disabled).toBe(true);
+    });
+
+    it('reports errors while loading zones', async () => {
+      mocks.client.getZones.mockRejectedValue(new Error('bad WorldMapArea.dbc'));
+      const { page } = await setup();
+      expect(mocks.toastr.error).toHaveBeenCalledWith('bad WorldMapArea.dbc', 'World Editor');
+      expect(page.byId<HTMLSelectElement>('zone-select').nativeElement.disabled).toBe(true);
     });
 
     it('falls back to the origin for maps missing from Map.dbc', async () => {

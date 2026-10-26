@@ -5,6 +5,8 @@ import {
   TileCoord,
   tileKey,
   tilesAround,
+  tilesInBounds,
+  WorldBounds,
   WorldPosition,
   worldToTile,
 } from '@keira/shared/wow-data';
@@ -37,6 +39,11 @@ export class TerrainStreamer {
   private generation = 0;
   private centerTile: TileCoord = { tx: 32, ty: 32 };
   private options: TerrainStreamerOptions = { detailed: false, radius: 1 };
+  /** An area loaded whole (e.g. the selected zone), on top of the tiles around the camera. */
+  private region?: WorldBounds;
+  private regionKeys = new Set<string>();
+  /** Detail level each tile in the scene was loaded with. */
+  private readonly loadedDetail = new Map<string, boolean>();
 
   constructor(
     private readonly source: TerrainSource,
@@ -65,7 +72,13 @@ export class TerrainStreamer {
     this.options = { ...options };
     this.generation++;
     this.loading.clear();
+    this.loadedDetail.clear();
     this.scene.clearTerrain();
+  }
+
+  /** Also keeps every tile of `bounds` loaded (until set to undefined); takes effect at the next update(). */
+  setRegion(bounds: WorldBounds | undefined): void {
+    this.region = bounds;
   }
 
   /** Stops adding tiles that are still loading (e.g. when the view is destroyed). */
@@ -79,6 +92,7 @@ export class TerrainStreamer {
     const generation = ++this.generation;
     this.scene.clearTerrain();
     this.loading.clear();
+    this.loadedDetail.clear();
     this.available.clear();
     this.directory = directory;
     if (!directory) {
@@ -98,25 +112,30 @@ export class TerrainStreamer {
     const generation = this.generation;
     const centerTile = worldToTile(center.x, center.y);
     this.centerTile = centerTile;
+    const regionTiles = this.region ? tilesInBounds(this.region, centerTile) : [];
+    this.regionKeys = new Set(regionTiles.map(tileKey));
 
     for (const key of this.scene.terrainKeys) {
       const [tx, ty] = key.split('_').map(Number);
       if (!this.isNear({ tx, ty })) {
         this.scene.removeTerrainTile(key);
+        this.loadedDetail.delete(key);
       }
     }
 
-    for (const tile of tilesAround(centerTile, this.options.radius)) {
+    for (const tile of [...tilesAround(centerTile, this.options.radius), ...regionTiles]) {
       const key = tileKey(tile);
-      if (!this.available.has(key) || this.loading.has(key) || this.scene.hasTerrainTile(key)) {
+      const detailed = this.wantsDetail(tile);
+      if (!this.available.has(key) || this.loading.has(key) || this.loadedDetail.get(key) === detailed) {
         continue;
       }
       this.loading.add(key);
       try {
-        const add = await (this.options.detailed ? this.loadDetailed(directory, tile) : this.loadLowDetail(directory, tile));
+        const add = await (detailed ? this.loadDetailed(directory, tile) : this.loadLowDetail(directory, tile));
         const stillWanted = generation === this.generation && this.isNear(tile);
         if (add && stillWanted) {
           add();
+          this.loadedDetail.set(key, detailed);
           this.onTileLoaded();
         }
       } catch (error) {
@@ -146,8 +165,18 @@ export class TerrainStreamer {
     return () => this.scene.setTerrainTileDetailed(tile, withTextures, this.textures.fallback, detail.liquids);
   }
 
-  /** Within `radius + 1` tiles of the latest centre (a tile that finished loading after the camera left is dropped). */
+  /**
+   * Tiles around the camera use the chosen quality; the rest of a region uses the cheap low-poly terrain, so a big
+   * zone (The Barrens covers ~280 tiles) stays light. They get the real textures when the camera comes close.
+   */
+  private wantsDetail(tile: TileCoord): boolean {
+    const near = Math.max(Math.abs(tile.tx - this.centerTile.tx), Math.abs(tile.ty - this.centerTile.ty)) <= this.options.radius;
+    return this.options.detailed && near;
+  }
+
+  /** Within `radius + 1` tiles of the latest centre, or in the region (a tile loaded after the camera left is dropped). */
   private isNear(tile: TileCoord): boolean {
-    return Math.max(Math.abs(tile.tx - this.centerTile.tx), Math.abs(tile.ty - this.centerTile.ty)) <= this.options.radius + 1;
+    const near = Math.max(Math.abs(tile.tx - this.centerTile.tx), Math.abs(tile.ty - this.centerTile.ty)) <= this.options.radius + 1;
+    return near || this.regionKeys.has(tileKey(tile));
   }
 }

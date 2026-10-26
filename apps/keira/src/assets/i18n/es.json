@@ -1054,6 +1054,8 @@
     "YARDS": "yardas",
     "MODELS": "Modelos de PNJ y objetos",
     "ZONE_LIGHTING": "Iluminación y cielo de la zona",
+    "ZONE": "Zona",
+    "LOAD_WHOLE_ZONE": "Cargar toda la zona",
     "ADVANCED": "Por grupo",
     "GROUP": "Grupo",
     "LARGE_DOODADS": "Árboles y objetos grandes",

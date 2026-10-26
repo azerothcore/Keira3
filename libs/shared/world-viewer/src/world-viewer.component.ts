@@ -13,7 +13,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
-import { WowClientService, WorldPosition, worldToScene, sceneToWorld } from '@keira/shared/wow-data';
+import { WowClientService, WorldBounds, WorldPosition, worldToScene, sceneToWorld } from '@keira/shared/wow-data';
 import { Vector3 } from 'three';
 import { MapControls } from 'three/addons/controls/MapControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
@@ -67,6 +67,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   readonly focus = input<WorldPosition | undefined>(undefined);
   /** Quality and range of what is drawn. */
   readonly renderSettings = input<WorldRenderSettings>(DEFAULT_WORLD_RENDER_SETTINGS);
+  /** An area (e.g. a zone) whose terrain and buildings are loaded whole, on top of what's around the camera. */
+  readonly region = input<WorldBounds | undefined>(undefined);
 
   readonly picked = output<PickResult>();
   readonly objectMoved = output<ObjectMoved>();
@@ -118,6 +120,15 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
         void this.doodads.update(this.center);
         this.spawnModels.update(this.center);
         this.requestRender();
+      });
+    });
+    effect(() => {
+      const region = this.region();
+      untracked(() => {
+        this.streamer.setRegion(region);
+        this.objects.setRegion(region);
+        void this.streamer.update(this.center);
+        void this.objects.update(this.center);
       });
     });
     effect(() => void this.loadMap(this.mapDirectory()));

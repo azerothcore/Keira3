@@ -1,4 +1,4 @@
-import { DbcFile, isDefaultCharacterGeoset, parseCreatureDisplays, parseGameObjectDisplays, parseMapDbc } from './dbc';
+import { DbcFile, isDefaultCharacterGeoset, parseZones, parseCreatureDisplays, parseGameObjectDisplays, parseMapDbc } from './dbc';
 import { buildDbc } from './dbc.mock';
 
 describe('DbcFile', () => {
@@ -152,5 +152,24 @@ describe('isDefaultCharacterGeoset', () => {
     expect(isDefaultCharacterGeoset(3, 5)).toBe(false);
     expect(isDefaultCharacterGeoset(401, 5)).toBe(true);
     expect(isDefaultCharacterGeoset(402, 5)).toBe(false);
+  });
+});
+
+describe('parseZones', () => {
+  it('lists the zones of the world map with their bounds and names', () => {
+    const zone = (id: number, map: number, area: number, name: string, bounds: number[]) => [id, map, area, name, ...bounds.map(float)];
+    const areas = dbcOf([
+      zone(14, 0, 0, 'Azeroth', [18172, -22569, 11176, -15973]),
+      zone(30, 0, 12, 'Elwynn', [1535, -1110, -7856, -10213]),
+      zone(31, 0, 40, 'Westfall', [500, -2000, -9000, -12000]),
+      zone(32, 1, 99, 'Nowhere', [1, 0, 1, 0]),
+    ]);
+    const names = dbcOf([[12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'Elwynn Forest']], 27);
+    expect(parseZones(areas, names)).toEqual([
+      { areaId: 12, mapId: 0, name: 'Elwynn Forest', bounds: { minX: -10213, maxX: -7856, minY: -1110, maxY: 1535 } },
+      { areaId: 99, mapId: 1, name: 'Nowhere', bounds: { minX: 0, maxX: 1, minY: 0, maxY: 1 } },
+      { areaId: 40, mapId: 0, name: 'Westfall', bounds: { minX: -12000, maxX: -9000, minY: -2000, maxY: 500 } },
+    ]);
+    expect(parseZones(areas).map((z) => z.name)).toEqual(['Elwynn', 'Nowhere', 'Westfall']);
   });
 });

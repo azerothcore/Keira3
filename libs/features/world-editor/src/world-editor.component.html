@@ -6,6 +6,19 @@
       }
     </select>
 
+    <select
+      class="form-select form-select-sm zone-select"
+      data-testid="zone-select"
+      [attr.aria-label]="'WORLD_EDITOR.ZONE' | translate"
+      [disabled]="zones().length === 0"
+      (change)="onZoneChange($event)"
+    >
+      <option value="0" [selected]="zoneId() === 0">{{ 'WORLD_EDITOR.ZONE' | translate }}…</option>
+      @for (zone of zones(); track zone.areaId) {
+        <option [value]="zone.areaId" [selected]="zone.areaId === zoneId()">{{ zone.name }}</option>
+      }
+    </select>
+
     <form class="d-flex gap-1" (submit)="$event.preventDefault(); searchTele()">
       <input
         class="form-control form-control-sm"
@@ -151,6 +164,17 @@
           }
         </select>
       </div>
+      <div class="form-check form-switch mb-0">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="world-editor-whole-zone"
+          data-testid="view-whole-zone"
+          [checked]="renderSettings.settings().loadWholeZone"
+          (change)="setRenderFlag('loadWholeZone', $event)"
+        />
+        <label class="form-check-label" for="world-editor-whole-zone">{{ 'WORLD_EDITOR.LOAD_WHOLE_ZONE' | translate }}</label>
+      </div>
       <div class="d-flex align-items-center gap-2">
         <label for="world-editor-draw-distance" class="mb-0">{{ 'WORLD_EDITOR.DRAW_DISTANCE' | translate }}</label>
         <select
@@ -258,6 +282,7 @@
         [snapToGround]="snapToGround()"
         [groundOnly]="tool() !== 'select'"
         [renderSettings]="renderSettings.settings()"
+        [region]="region()"
         [focus]="focus()"
         (picked)="onPicked($event)"
         (objectMoved)="onObjectMoved($event)"

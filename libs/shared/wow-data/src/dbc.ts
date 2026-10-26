@@ -1,3 +1,5 @@
+import { WorldBounds } from './coords';
+
 /** Minimal reader for WotLK `WDBC` client database files (fixed 4-byte fields + string block). */
 export class DbcFile {
   readonly recordCount: number;
@@ -182,4 +184,44 @@ export function isDefaultCharacterGeoset(geoset: number, hairGeoset: number): bo
     return true;
   }
   return geoset < 100 ? geoset === hairGeoset : geoset % 100 === 1;
+}
+
+/** A zone (Elwynn Forest, Durotar…) of a map, with the bounds of its world map. */
+export interface WowZone {
+  areaId: number;
+  mapId: number;
+  name: string;
+  bounds: WorldBounds;
+}
+
+/**
+ * WorldMapArea.dbc (0 ID, 1 Map, 2 AreaID, 3 internal name, 4 LocLeft = max y, 5 LocRight = min y, 6 LocTop = max x,
+ * 7 LocBottom = min x), named from AreaTable.dbc (0 ID, 11..26 AreaName_lang) when given. Continent maps (area 0)
+ * are left out; zones are sorted by name.
+ */
+export function parseZones(worldMapAreas: DbcFile, areaTable?: DbcFile): WowZone[] {
+  const names = new Map<number, string>();
+  for (let r = 0; r < (areaTable?.recordCount ?? 0); r++) {
+    const dbc = areaTable as DbcFile;
+    let name = '';
+    for (let field = 11; field <= 26 && !name; field++) {
+      name = dbc.getString(r, field);
+    }
+    names.set(dbc.getUint(r, 0), name);
+  }
+  const zones: WowZone[] = [];
+  for (let r = 0; r < worldMapAreas.recordCount; r++) {
+    const areaId = worldMapAreas.getUint(r, 2);
+    if (areaId === 0) {
+      continue;
+    }
+    const [maxY, minY, maxX, minX] = [4, 5, 6, 7].map((field) => worldMapAreas.getFloat(r, field));
+    zones.push({
+      areaId,
+      mapId: worldMapAreas.getUint(r, 1),
+      name: names.get(areaId) || worldMapAreas.getString(r, 3),
+      bounds: { minX, maxX, minY, maxY },
+    });
+  }
+  return zones.sort((a, b) => a.name.localeCompare(b.name));
 }

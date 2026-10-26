@@ -6,6 +6,8 @@ export interface WorldRenderSettings {
   lowDetailTerrain: boolean;
   /** Terrain tiles (533 yards each) loaded around the camera in each direction. */
   terrainRadius: number;
+  /** Load every tile of the selected zone, not only the ones around the camera. */
+  loadWholeZone: boolean;
   /** Buildings, caves and bridges (WMO). */
   showBuildings: boolean;
   /** Trees, rocks, fences and other props placed by the map (M2 doodads). */
@@ -50,6 +52,7 @@ export function drawDistances(settings: WorldRenderSettings): DrawDistances {
 export const DEFAULT_WORLD_RENDER_SETTINGS: WorldRenderSettings = {
   lowDetailTerrain: false,
   terrainRadius: 1,
+  loadWholeZone: false,
   showBuildings: true,
   showDoodads: true,
   showModels: true,

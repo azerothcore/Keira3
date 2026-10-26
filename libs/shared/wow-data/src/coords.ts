@@ -74,6 +74,28 @@ export function tilesAround(center: TileCoord, radius: number): TileCoord[] {
   return tiles.sort((a, b) => distance(a) - distance(b));
 }
 
+/** An area of a map in server coordinates (e.g. a zone's bounds). */
+export interface WorldBounds {
+  minX: number;
+  maxX: number;
+  minY: number;
+  maxY: number;
+}
+
+/** Tiles covering `bounds`, nearest to `center` first. */
+export function tilesInBounds(bounds: WorldBounds, center: TileCoord): TileCoord[] {
+  const from = worldToTile(bounds.maxX, bounds.maxY);
+  const to = worldToTile(bounds.minX, bounds.minY);
+  const tiles: TileCoord[] = [];
+  for (let tx = from.tx; tx <= to.tx; tx++) {
+    for (let ty = from.ty; ty <= to.ty; ty++) {
+      tiles.push({ tx, ty });
+    }
+  }
+  const distance = (t: TileCoord): number => Math.max(Math.abs(t.tx - center.tx), Math.abs(t.ty - center.ty));
+  return tiles.sort((a, b) => distance(a) - distance(b));
+}
+
 export function worldToScene(p: WorldPosition): ScenePosition {
   return { x: -p.y, y: p.z, z: -p.x };
 }

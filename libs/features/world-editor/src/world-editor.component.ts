@@ -13,7 +13,7 @@ import {
   WorldSpawn,
   WorldViewerComponent,
 } from '@keira/shared/world-viewer';
-import { tileCenter, WowClientService, WowDataSettingsService, WowMap, WorldPosition } from '@keira/shared/wow-data';
+import { tileCenter, WowClientService, WowDataSettingsService, WowMap, WowZone, WorldPosition } from '@keira/shared/wow-data';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ClipboardService } from 'ngx-clipboard';
 import { ToastrService } from 'ngx-toastr';
@@ -31,6 +31,28 @@ import {
 } from './world-editor.model';
 import { WorldEditorService } from './world-editor.service';
 
+const LAST_VIEW_KEY = 'keira3.worldEditor.lastView';
+
+interface LastView extends WorldPosition {
+  mapId: number;
+}
+
+/** Map and camera position the editor was last looking at, saved on this computer. */
+function loadLastView(): LastView | undefined {
+  try {
+    const view = JSON.parse(localStorage.getItem(LAST_VIEW_KEY) ?? 'null') as Partial<LastView> | null;
+    const valid = view && [view.mapId, view.x, view.y, view.z].every((value) => typeof value === 'number' && Number.isFinite(value));
+    return valid ? (view as LastView) : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function saveLastView(view: LastView): void {
+  localStorage.setItem(LAST_VIEW_KEY, JSON.stringify(view));
+}
+
+type RenderFlagKey = 'showBuildings' | 'showDoodads' | 'showModels' | 'zoneLighting' | 'advancedDistances' | 'loadWholeZone';
 type RenderDistanceKey = 'drawDistance' | 'largeDoodadDistance' | 'smallDoodadDistance' | 'creatureDistance' | 'gameobjectDistance';
 
 /**
@@ -64,6 +86,12 @@ export class WorldEditorComponent implements OnInit {
   protected readonly mapId = signal(0);
   protected readonly mapDirectory = computed(() => this.maps().find((m) => m.id === this.mapId())?.directory);
   protected readonly focus = signal<WorldPosition | undefined>(undefined);
+  protected readonly zones = signal<WowZone[]>([]);
+  protected readonly zoneId = signal(0);
+  /** The selected zone, loaded whole when the View panel asks for it. */
+  protected readonly region = computed(() =>
+    this.renderSettings.settings().loadWholeZone ? this.zones().find((zone) => zone.areaId === this.zoneId())?.bounds : undefined,
+  );
   protected readonly layers = signal<LayerVisibility>({ creatures: true, gameobjects: true, waypoints: true });
   protected readonly tool = signal<EditorTool>('select');
   protected readonly gizmoMode = signal<GizmoMode>('translate');
@@ -217,6 +245,13 @@ export class WorldEditorComponent implements OnInit {
     const [x, y, z] = ['x', 'y', 'z'].map((name) => Number(params.get(name)));
     if (params.has('x') && params.has('y') && Number.isFinite(x) && Number.isFinite(y)) {
       this.focus.set({ x, y, z: Number.isFinite(z) ? z : 0 });
+    } else if (!params.has('map')) {
+      // reopen where the user left off
+      const last = loadLastView();
+      if (last) {
+        this.mapId.set(last.mapId);
+        this.focus.set({ x: last.x, y: last.y, z: last.z });
+      }
     }
     const select = params.get('select');
     if (select) {
@@ -235,7 +270,7 @@ export class WorldEditorComponent implements OnInit {
     this.renderSettings.update({ lowDetailTerrain: (event.target as HTMLInputElement).checked });
   }
 
-  protected setRenderFlag(key: 'showBuildings' | 'showDoodads' | 'showModels' | 'zoneLighting' | 'advancedDistances', event: Event): void {
+  protected setRenderFlag(key: RenderFlagKey, event: Event): void {
     this.renderSettings.update({ [key]: (event.target as HTMLInputElement).checked });
   }
 
@@ -267,6 +302,7 @@ export class WorldEditorComponent implements OnInit {
       if (!this.focus()) {
         await this.focusMapCenter();
       }
+      await this.loadZones();
     } catch (error) {
       this.toastr.error((error as Error).message, 'World Editor');
     }
@@ -278,6 +314,27 @@ export class WorldEditorComponent implements OnInit {
     this.loadedSpawns.set([]);
     this.loadedWaypoints.set([]);
     await this.focusMapCenter();
+    await this.loadZones();
+  }
+
+  private async loadZones(): Promise<void> {
+    this.zoneId.set(0);
+    try {
+      this.zones.set(await this.client.getZones(this.mapId()));
+    } catch (error) {
+      this.zones.set([]);
+      this.toastr.error((error as Error).message, 'World Editor');
+    }
+  }
+
+  /** Looks at the middle of the chosen zone. */
+  protected onZoneChange(event: Event): void {
+    const zone = this.zones().find((z) => z.areaId === Number((event.target as HTMLSelectElement).value));
+    this.zoneId.set(zone?.areaId ?? 0);
+    if (zone) {
+      const { minX, maxX, minY, maxY } = zone.bounds;
+      this.focus.set({ x: (minX + maxX) / 2, y: (minY + maxY) / 2, z: 0 });
+    }
   }
 
   /** Looks at the middle of the map's terrain tiles (maps rarely have anything at 0,0). */
@@ -303,9 +360,13 @@ export class WorldEditorComponent implements OnInit {
       this.loadedSpawns.set([]);
       this.loadedWaypoints.set([]);
     }
+    const changedMap = Number(tele.map) !== this.mapId();
     this.mapId.set(Number(tele.map));
     this.focus.set({ x: Number(tele.x), y: Number(tele.y), z: Number(tele.z) });
     this.teleResults.set([]);
+    if (changedMap) {
+      void this.loadZones();
+    }
   }
 
   protected goToCoordinates(): void {
@@ -324,6 +385,7 @@ export class WorldEditorComponent implements OnInit {
 
   protected async onCenterChanged(center: WorldPosition): Promise<void> {
     this.center = center;
+    saveLastView({ mapId: this.mapId(), ...center });
     await this.reloadSpawns();
   }
 

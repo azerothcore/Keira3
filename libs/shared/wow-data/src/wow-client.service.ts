@@ -1,6 +1,6 @@
 import { inject, Service } from '@angular/core';
 import { TileCoord } from './coords';
-import { CreatureDisplay, DbcFile, parseCreatureDisplays, parseGameObjectDisplays, parseMapDbc, WowMap } from './dbc';
+import { CreatureDisplay, DbcFile, parseCreatureDisplays, parseGameObjectDisplays, parseMapDbc, parseZones, WowMap, WowZone } from './dbc';
 import { FolderArchive } from './folder-archive';
 import { decodeBlp, parseAdt, ParsedAdt, parseWdt, RgbaImage, WdtInfo } from './formats';
 import { MD5_TRANSLATE_PATH, MINIMAP_ROOT, minimapKey, parseMd5Translate } from './minimap';
@@ -43,6 +43,7 @@ export class WowClientService {
   private creatureDisplays?: Promise<Map<number, CreatureDisplay>>;
   private gameobjectDisplays?: Promise<Map<number, string>>;
   private zoneLights?: Promise<Map<number, ZoneLight[]>>;
+  private zones?: Promise<WowZone[]>;
   private readonly wdts = new Map<string, Promise<WdtInfo | undefined>>();
   private readonly adts = new Map<string, Promise<CachedAdt | undefined>>();
   private mountCounter = 0;
@@ -101,6 +102,17 @@ export class WowClientService {
         throw error;
       });
     return (await this.gameobjectDisplays).get(displayId);
+  }
+
+  /** Zones of a map (from the world map's DBCs), by name. */
+  async getZones(mapId: number): Promise<WowZone[]> {
+    const zones = (this.zones ??= Promise.all([this.readDbc('WorldMapArea.dbc'), this.readDbc('AreaTable.dbc')])
+      .then(([areas, names]) => (areas ? parseZones(areas, names) : []))
+      .catch((error) => {
+        this.zones = undefined;
+        throw error;
+      }));
+    return (await zones).filter((zone) => zone.mapId === mapId);
   }
 
   /** Zone lights (Light.dbc) of a map, by its directory; empty when the map or the light DBCs are unknown. */
@@ -224,6 +236,7 @@ export class WowClientService {
     this.creatureDisplays = undefined;
     this.gameobjectDisplays = undefined;
     this.zoneLights = undefined;
+    this.zones = undefined;
     this.wdts.clear();
     this.adts.clear();
     if (!client) {

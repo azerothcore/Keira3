@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
-import { tileCenter, WowClientService, WorldPosition, worldToScene } from '@keira/shared/wow-data';
+import { tileCenter, WowClientService, WorldBounds, WorldPosition, worldToScene } from '@keira/shared/wow-data';
 import { DebugHtmlElement, PageObjectModel } from 'ngx-page-object-model';
 import { EventDispatcher, Object3D, Vector3 } from 'three';
 import { DEFAULT_WORLD_RENDER_SETTINGS, WorldRenderSettings } from './world-render-settings';
@@ -99,6 +99,7 @@ interface FakeTransformControls extends EventDispatcher<{ 'dragging-changed': { 
       [groundOnly]="groundOnly()"
       [renderSettings]="render()"
       [focus]="focus()"
+      [region]="region()"
       (picked)="picks.push($event)"
       (objectMoved)="moves.push($event)"
       (centerChanged)="centers.push($event)"
@@ -116,6 +117,7 @@ class HostComponent {
   readonly groundOnly = signal(false);
   readonly render = signal<WorldRenderSettings>(DEFAULT_WORLD_RENDER_SETTINGS);
   readonly focus = signal<WorldPosition | undefined>(undefined);
+  readonly region = signal<WorldBounds | undefined>(undefined);
   readonly picks: PickResult[] = [];
   readonly moves: ObjectMoved[] = [];
   readonly centers: WorldPosition[] = [];
@@ -305,6 +307,25 @@ describe(WorldViewerComponent.name, () => {
     expect(client.getTexture).toHaveBeenCalledWith('base.blp');
     expect(client.getTilePlacements).toHaveBeenCalledWith('Azeroth', { tx: 32, ty: 48 });
     expect(host.centers.at(-1)?.x).toBeCloseTo(CENTER.x);
+  });
+
+  it('loads a whole region on top of the tiles around the camera', async () => {
+    client.getMapTiles.mockResolvedValue([
+      { tx: 32, ty: 48 },
+      { tx: 32, ty: 52 },
+    ]);
+    const { fixture, host, update } = await setup((h) => {
+      h.focus.set(at(0, 0));
+      h.map.set('Azeroth');
+    });
+    await settle(fixture);
+    expect(client.getTerrainDetail).not.toHaveBeenCalledWith('Azeroth', { tx: 32, ty: 52 });
+    const far = tileCenter({ tx: 32, ty: 52 });
+    await update(() => host.region.set({ minX: far.x - 10, maxX: far.x + 10, minY: far.y - 10, maxY: far.y + 10 }));
+    await settle(fixture);
+    // far from the camera, the region is drawn with the cheap terrain
+    expect(client.getTerrain).toHaveBeenCalledWith('Azeroth', { tx: 32, ty: 52 });
+    expect(client.getTilePlacements).toHaveBeenCalledWith('Azeroth', { tx: 32, ty: 52 });
   });
 
   it('switches to low-poly minimap terrain when asked', async () => {

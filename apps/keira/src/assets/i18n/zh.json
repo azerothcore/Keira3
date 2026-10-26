@@ -1054,6 +1054,8 @@
     "YARDS": "码",
     "MODELS": "NPC 和物体模型",
     "ZONE_LIGHTING": "区域光照和天空",
+    "ZONE": "区域",
+    "LOAD_WHOLE_ZONE": "加载整个区域",
     "ADVANCED": "按分组",
     "GROUP": "分组",
     "LARGE_DOODADS": "树木和大型道具",
