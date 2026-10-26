@@ -10,12 +10,41 @@ export interface WorldRenderSettings {
   showBuildings: boolean;
   /** Trees, rocks, fences and other props placed by the map (M2 doodads). */
   showDoodads: boolean;
-  doodadDistance: number;
-  /** Real creature/gameobject models instead of pins (pins are always used beyond the distance). */
+  /** Real creature/gameobject models instead of pins (pins are always used beyond the draw distance). */
   showModels: boolean;
-  modelDistance: number;
   /** Zone lighting, fog and sky colours (otherwise a fixed neutral light). */
   zoneLighting: boolean;
+  /** How far from the camera target (yards) doodads and models are drawn. */
+  drawDistance: number;
+  /** Use the per-group distances below instead of `drawDistance` (0 = don't draw that group). */
+  advancedDistances: boolean;
+  /** Trees, big rocks and other large props. */
+  largeDoodadDistance: number;
+  /** Bushes, grass tufts, barrels and other small props. */
+  smallDoodadDistance: number;
+  creatureDistance: number;
+  gameobjectDistance: number;
+}
+
+/** Draw distance of each group, in yards (0 = not drawn). */
+export interface DrawDistances {
+  largeDoodads: number;
+  smallDoodads: number;
+  creatures: number;
+  gameobjects: number;
+}
+
+export function drawDistances(settings: WorldRenderSettings): DrawDistances {
+  if (!settings.advancedDistances) {
+    const all = settings.drawDistance;
+    return { largeDoodads: all, smallDoodads: all, creatures: all, gameobjects: all };
+  }
+  return {
+    largeDoodads: settings.largeDoodadDistance,
+    smallDoodads: settings.smallDoodadDistance,
+    creatures: settings.creatureDistance,
+    gameobjects: settings.gameobjectDistance,
+  };
 }
 
 export const DEFAULT_WORLD_RENDER_SETTINGS: WorldRenderSettings = {
@@ -23,10 +52,14 @@ export const DEFAULT_WORLD_RENDER_SETTINGS: WorldRenderSettings = {
   terrainRadius: 1,
   showBuildings: true,
   showDoodads: true,
-  doodadDistance: 250,
   showModels: true,
-  modelDistance: 150,
   zoneLighting: true,
+  drawDistance: 250,
+  advancedDistances: false,
+  largeDoodadDistance: 500,
+  smallDoodadDistance: 150,
+  creatureDistance: 250,
+  gameobjectDistance: 250,
 };
 
 export const WORLD_RENDER_SETTINGS_KEY = 'keira3.worldEditor.render';

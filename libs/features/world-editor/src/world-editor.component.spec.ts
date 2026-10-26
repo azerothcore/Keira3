@@ -110,6 +110,7 @@ describe(WorldEditorComponent.name, () => {
       getMaxGuid: vi.fn(),
       getFreePathId: vi.fn(),
       getEntryName: vi.fn(),
+      getEntryDisplay: vi.fn(),
       searchTele: vi.fn(),
       execute: vi.fn(),
     },
@@ -169,6 +170,7 @@ describe(WorldEditorComponent.name, () => {
     mocks.service.getMaxGuid.mockResolvedValue(1000);
     mocks.service.getFreePathId.mockResolvedValue(20);
     mocks.service.getEntryName.mockResolvedValue('Marshal McBride');
+    mocks.service.getEntryDisplay.mockResolvedValue({ displayId: 1, scale: 1 });
     mocks.service.searchTele.mockResolvedValue([{ id: 7, name: 'Northshire', map: 1, x: 1, y: 2, z: 3 }]);
     mocks.service.execute.mockResolvedValue(undefined);
   });
@@ -216,16 +218,30 @@ describe(WorldEditorComponent.name, () => {
       const radius = page.byId<HTMLSelectElement>('view-terrain-radius').nativeElement;
       radius.value = '2';
       radius.dispatchEvent(new Event('change'));
-      const doodadDistance = page.byId<HTMLSelectElement>('view-doodad-distance').nativeElement;
-      doodadDistance.value = '500';
-      doodadDistance.dispatchEvent(new Event('change'));
+      const drawDistance = page.byId<HTMLSelectElement>('view-draw-distance').nativeElement;
+      drawDistance.value = '500';
+      drawDistance.dispatchEvent(new Event('change'));
+      for (const id of ['view-doodads', 'view-models']) {
+        const toggle = page.byId<HTMLInputElement>(id).nativeElement;
+        toggle.checked = false;
+        toggle.dispatchEvent(new Event('change'));
+      }
       page.fixture.detectChanges();
-      expect(doodadDistance.disabled).toBe(false);
-      const doodads = page.byId<HTMLInputElement>('view-doodads').nativeElement;
-      doodads.checked = false;
-      doodads.dispatchEvent(new Event('change'));
+      expect(drawDistance.disabled).toBe(false);
+      expect(page.byId('view-distances', false)).toBeFalsy();
+
+      // per-group distances, in a table
+      const advanced = page.byId<HTMLInputElement>('view-advanced').nativeElement;
+      advanced.checked = true;
+      advanced.dispatchEvent(new Event('change'));
       page.fixture.detectChanges();
-      expect(doodadDistance.disabled).toBe(true);
+      expect(drawDistance.disabled).toBe(true);
+      const small = page.byId<HTMLSelectElement>('view-distance-smallDoodadDistance').nativeElement;
+      expect(small.options[0].textContent?.trim()).toBe('WORLD_EDITOR.OFF');
+      expect(small.options[2].textContent?.trim()).toBe('100 WORLD_EDITOR.YARDS');
+      small.value = '0';
+      small.dispatchEvent(new Event('change'));
+      page.fixture.detectChanges();
 
       expect(page.viewer().renderSettings()).toEqual({
         ...DEFAULT_WORLD_RENDER_SETTINGS,
@@ -233,9 +249,11 @@ describe(WorldEditorComponent.name, () => {
         showBuildings: false,
         terrainRadius: 2,
         showDoodads: false,
-        doodadDistance: 500,
+        showModels: false,
+        drawDistance: 500,
+        advancedDistances: true,
+        smallDoodadDistance: 0,
       });
-      expect(doodadDistance.options[2].textContent?.trim()).toBe('500 WORLD_EDITOR.YARDS');
       expect(radius.options[1].textContent?.trim()).toBe('25 WORLD_EDITOR.TILES');
       expect(JSON.parse(localStorage.getItem('keira3.worldEditor.render') as string).terrainRadius).toBe(2);
     });
@@ -521,8 +539,9 @@ describe(WorldEditorComponent.name, () => {
         page
           .viewer()
           .spawns()
-          .find((s) => s.key === 'creature:1002')?.pending,
-      ).toBe(true);
+          .find((s) => s.key === 'creature:1002'),
+      ).toEqual(expect.objectContaining({ pending: true, displayId: 1, scale: 1 }));
+      expect(mocks.service.getEntryDisplay).toHaveBeenCalledWith('creature', 197);
       expect(page.text('selected-title')).toContain('creature 1002');
 
       page.viewer().objectMoved.emit({ key: 'creature:1002', position: { x: 7, y: 8, z: 9 }, orientation: 0 });

@@ -10,3 +10,4 @@ export * from './wmo-object';
 export * from './world-objects';
 export * from './m2-object';
 export * from './world-doodads';
+export * from './spawn-models';

@@ -19,9 +19,10 @@ import { MapControls } from 'three/addons/controls/MapControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { TerrainStreamer } from './terrain-streamer';
 import { TextureCache } from './texture-cache';
+import { SpawnModels } from './spawn-models';
 import { WorldDoodads } from './world-doodads';
 import { WorldObjects } from './world-objects';
-import { DEFAULT_WORLD_RENDER_SETTINGS, WorldRenderSettings } from './world-render-settings';
+import { DEFAULT_WORLD_RENDER_SETTINGS, drawDistances, WorldRenderSettings } from './world-render-settings';
 import { WORLD_RENDERER_FACTORY, WorldRenderer } from './world-renderer';
 import { PickOptions, WorldScene } from './world-scene';
 import { GizmoMode, ObjectMoved, parseWaypointKey, PickResult, WaypointPath, WorldSpawn } from './world-viewer.model';
@@ -83,6 +84,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private readonly streamer = new TerrainStreamer(this.client, this.world, this.textures, () => this.onTileLoaded());
   private readonly objects = new WorldObjects(this.client, this.world.buildingGroup, this.textures, () => this.requestRender());
   private readonly doodads = new WorldDoodads(this.client, this.world.doodadGroup, this.textures, () => this.requestRender());
+  private readonly spawnModels = new SpawnModels(this.client, this.world, this.textures, () => this.requestRender());
   private renderer?: WorldRenderer;
   // Created in ngAfterViewInit; effects may run before that, hence the guards in syncGizmo/lookAt.
   private controls?: MapControls;
@@ -101,16 +103,24 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       untracked(() => {
         this.streamer.configure({ detailed: !settings.lowDetailTerrain, radius: settings.terrainRadius });
         this.objects.configure({ showBuildings: settings.showBuildings, radius: settings.terrainRadius });
-        this.doodads.configure({ show: settings.showDoodads, distance: settings.doodadDistance });
+        const distances = drawDistances(settings);
+        this.doodads.configure({ show: settings.showDoodads, distance: distances.largeDoodads, smallDistance: distances.smallDoodads });
+        this.spawnModels.configure({
+          show: settings.showModels,
+          creatureDistance: distances.creatures,
+          gameobjectDistance: distances.gameobjects,
+        });
         void this.streamer.update(this.center);
         void this.objects.update(this.center);
         void this.doodads.update(this.center);
+        this.spawnModels.update(this.center);
         this.requestRender();
       });
     });
     effect(() => void this.loadMap(this.mapDirectory()));
     effect(() => {
       this.world.setSpawns(this.spawns());
+      this.spawnModels.setSpawns(this.spawns());
       this.world.setWaypointPaths(this.paths());
       untracked(() => this.syncGizmo());
       this.requestRender();
@@ -165,6 +175,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     this.streamer.dispose();
     this.objects.dispose();
     this.doodads.dispose();
+    this.spawnModels.dispose();
     this.resizeObserver?.disconnect();
     this.gizmo.detach();
     this.gizmo.dispose();
@@ -364,6 +375,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     void this.streamer.update(center);
     void this.objects.update(center);
     void this.doodads.update(center);
+    this.spawnModels.update(center);
   }
 
   private resize(): void {

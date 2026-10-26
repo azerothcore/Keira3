@@ -40,6 +40,8 @@ describe('WorldEditorService', () => {
                 rotation1: 0,
                 rotation2: 0,
                 rotation3: 0.99,
+                displayId: '45',
+                scale: '1.5',
               },
             ],
       ),
@@ -48,9 +50,37 @@ describe('WorldEditorService', () => {
     const spawns = await service.loadSpawns(0, { x: -8913.4567, y: -137, z: 80 }, 100);
 
     expect(spawns).toEqual([
-      { type: 'creature', guid: 1, entry: 197, name: 'Marshal', map: 0, x: 1, y: 2, z: 3, o: 0.5, pathId: 10 },
-      { type: 'creature', guid: 9, entry: 197, name: 'Marshal', map: 0, x: 1, y: 2, z: 3, o: 0.5, pathId: 70, pathFromTemplate: true },
-      { type: 'gameobject', guid: 2, entry: 3, name: '', map: 0, x: 4, y: 5, z: 6, o: 0, pathId: 0, rotation: [0.1, 0, 0, 0.99] },
+      { type: 'creature', guid: 1, entry: 197, name: 'Marshal', map: 0, x: 1, y: 2, z: 3, o: 0.5, pathId: 10, displayId: 0, scale: 1 },
+      {
+        type: 'creature',
+        guid: 9,
+        entry: 197,
+        name: 'Marshal',
+        map: 0,
+        x: 1,
+        y: 2,
+        z: 3,
+        o: 0.5,
+        pathId: 70,
+        pathFromTemplate: true,
+        displayId: 0,
+        scale: 1,
+      },
+      {
+        type: 'gameobject',
+        guid: 2,
+        entry: 3,
+        name: '',
+        map: 0,
+        x: 4,
+        y: 5,
+        z: 6,
+        o: 0,
+        pathId: 0,
+        rotation: [0.1, 0, 0, 0.99],
+        displayId: 45,
+        scale: 1.5,
+      },
     ]);
     const creatureSql = queryService.query.mock.calls[0][0] as string;
     expect(creatureSql).toContain('c.map = 0 AND c.position_x BETWEEN -9013.46 AND -8813.46 AND c.position_y BETWEEN -237 AND -37');
@@ -58,6 +88,8 @@ describe('WorldEditorService', () => {
     expect(creatureSql).toContain('IF(ca.guid IS NOT NULL, ca.path_id, IFNULL(cta.path_id, 0)) AS pathId');
     expect(queryService.query.mock.calls[1][0]).toContain('g.rotation0, g.rotation1, g.rotation2, g.rotation3');
     expect(creatureSql).toContain('LIMIT 3000');
+    expect(creatureSql).toContain('LEFT JOIN creature_template_model ctm ON ctm.CreatureID = c.id AND ctm.Idx = 0');
+    expect(queryService.query.mock.calls[1][0]).toContain('IFNULL(gt.displayId, 0) AS displayId, IFNULL(gt.size, 1) AS scale');
   });
 
   it('treats missing results as empty', async () => {
@@ -91,6 +123,20 @@ describe('WorldEditorService', () => {
     const { service } = setup();
     expect(await service.getEntryName('creature', 197)).toBe('Marshal McBride');
     expect(await service.getEntryName('gameobject', 1)).toBe('Mailbox');
+  });
+
+  it('resolves the display of an entry', async () => {
+    const { service, queryService } = setup();
+    queryService.query.mockReturnValueOnce(of([{ displayId: '30', scale: '0.5' }]));
+    expect(await service.getEntryDisplay('creature', 197.9)).toEqual({ displayId: 30, scale: 0.5 });
+    expect(queryService.query).toHaveBeenLastCalledWith(
+      'SELECT CreatureDisplayID AS displayId, DisplayScale AS scale FROM creature_template_model WHERE CreatureID = 197 AND Idx = 0',
+    );
+    queryService.query.mockReturnValueOnce(of([]));
+    expect(await service.getEntryDisplay('gameobject', 5)).toEqual({ displayId: 0, scale: 1 });
+    expect(queryService.query).toHaveBeenLastCalledWith('SELECT displayId, size AS scale FROM gameobject_template WHERE entry = 5');
+    queryService.query.mockReturnValueOnce(of(undefined));
+    expect(await service.getEntryDisplay('gameobject', 5)).toEqual({ displayId: 0, scale: 1 });
   });
 
   it('searches game_tele with a bound parameter', async () => {

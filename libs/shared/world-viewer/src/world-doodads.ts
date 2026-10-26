@@ -22,9 +22,14 @@ export interface DoodadSource {
 
 export interface WorldDoodadsOptions {
   show: boolean;
-  /** Doodads farther than this from the camera target (in yards) aren't drawn. */
+  /** Large doodads (trees, big rocks…) farther than this from the camera target (in yards) aren't drawn. */
   distance: number;
+  /** Same for small doodads (bushes, grass tufts, barrels…). */
+  smallDistance: number;
 }
+
+/** Doodads whose placed bounding radius is below this many yards count as small. */
+export const SMALL_DOODAD_RADIUS = 4;
 
 /**
  * Draws the doodads (trees, rocks, fences, props…) placed by the ADT tiles near the camera target, up to a distance.
@@ -35,7 +40,7 @@ export class WorldDoodads {
   private generation = 0;
   private center?: WorldPosition;
   private centerTile: TileCoord = { tx: 32, ty: 32 };
-  private options: WorldDoodadsOptions = { show: true, distance: 250 };
+  private options: WorldDoodadsOptions = { show: true, distance: 250, smallDistance: 250 };
   private readonly tiles = new Map<string, ModelPlacement[]>();
   private readonly loading = new Set<string>();
   /** Model templates by lower-case `.m2` path; undefined once loaded means the model is missing or unreadable. */
@@ -68,11 +73,15 @@ export class WorldDoodads {
   }
 
   configure(options: WorldDoodadsOptions): void {
-    if (options.show === this.options.show && options.distance === this.options.distance) {
+    if (
+      options.show === this.options.show &&
+      options.distance === this.options.distance &&
+      options.smallDistance === this.options.smallDistance
+    ) {
       return;
     }
     this.options = { ...options };
-    if (options.show) {
+    if (this.enabled) {
       this.refresh();
     } else {
       this.clear();
@@ -81,7 +90,7 @@ export class WorldDoodads {
 
   async update(center: WorldPosition): Promise<void> {
     const directory = this.directory;
-    if (!directory || !this.options.show) {
+    if (!directory || !this.enabled) {
       return;
     }
     const generation = this.generation;
@@ -125,9 +134,18 @@ export class WorldDoodads {
     this.ready.clear();
   }
 
+  private get enabled(): boolean {
+    return this.options.show && this.reach > 0;
+  }
+
+  /** The farthest any doodad is drawn. */
+  private get reach(): number {
+    return Math.max(this.options.distance, this.options.smallDistance);
+  }
+
   /** Tiles that can hold doodads within the draw distance. */
   private get tileRadius(): number {
-    return Math.ceil(this.options.distance / TILE_SIZE);
+    return Math.ceil(this.reach / TILE_SIZE);
   }
 
   /** Rebuilds the instances from the loaded tiles: what's within the distance, grouped by model. */
@@ -136,18 +154,15 @@ export class WorldDoodads {
     if (!center) {
       return;
     }
-    const maxDistanceSq = this.options.distance * this.options.distance;
     const byModel = new Map<string, ModelPlacement[]>();
     const seen = new Set<number>();
     for (const placements of this.tiles.values()) {
       for (const placement of placements) {
-        const dx = placement.position[0] - center.x;
-        const dy = placement.position[1] - center.y;
-        if (seen.has(placement.uniqueId) || dx * dx + dy * dy > maxDistanceSq) {
+        const key = m2Path(placement.path).toLowerCase();
+        if (seen.has(placement.uniqueId) || !this.inRange(placement, center, this.ready.get(key))) {
           continue;
         }
         seen.add(placement.uniqueId);
-        const key = m2Path(placement.path).toLowerCase();
         const list = byModel.get(key) ?? [];
         list.push(placement);
         byModel.set(key, list);
@@ -170,6 +185,15 @@ export class WorldDoodads {
       }
     }
     this.onChange();
+  }
+
+  /** Within the distance of its size group; models not loaded yet use the farthest distance, to get loaded. */
+  private inRange(placement: ModelPlacement, center: WorldPosition, template: M2Template | undefined): boolean {
+    const dx = placement.position[0] - center.x;
+    const dy = placement.position[1] - center.y;
+    const radius = template ? template.radius * placement.scale : undefined;
+    const limit = radius === undefined ? this.reach : radius < SMALL_DOODAD_RADIUS ? this.options.smallDistance : this.options.distance;
+    return dx * dx + dy * dy <= limit * limit;
   }
 
   private placeInstances(key: string, template: M2Template, placements: ModelPlacement[]): void {

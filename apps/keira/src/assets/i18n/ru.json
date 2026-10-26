@@ -1051,6 +1051,14 @@
     "BUILDINGS": "Здания",
     "DOODADS": "Деревья и предметы",
     "DRAW_DISTANCE": "Дальность прорисовки",
-    "YARDS": "ярдов"
+    "YARDS": "ярдов",
+    "MODELS": "Модели NPC и объектов",
+    "ADVANCED": "По группам",
+    "GROUP": "Группа",
+    "LARGE_DOODADS": "Деревья и крупные предметы",
+    "SMALL_DOODADS": "Мелкие предметы",
+    "CREATURE_MODELS": "NPC",
+    "GAMEOBJECT_MODELS": "Объекты",
+    "OFF": "Выкл."
   }
 }

@@ -103,31 +103,27 @@
         />
         <label class="form-check-label" for="world-editor-buildings">{{ 'WORLD_EDITOR.BUILDINGS' | translate }}</label>
       </div>
-      <div class="d-flex align-items-center gap-2">
-        <div class="form-check form-switch mb-0">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="world-editor-doodads"
-            data-testid="view-doodads"
-            [checked]="renderSettings.settings().showDoodads"
-            (change)="setRenderFlag('showDoodads', $event)"
-          />
-          <label class="form-check-label" for="world-editor-doodads">{{ 'WORLD_EDITOR.DOODADS' | translate }}</label>
-        </div>
-        <select
-          class="form-select form-select-sm w-auto"
-          data-testid="view-doodad-distance"
-          [attr.aria-label]="'WORLD_EDITOR.DRAW_DISTANCE' | translate"
-          [disabled]="!renderSettings.settings().showDoodads"
-          (change)="setRenderDistance('doodadDistance', $event)"
-        >
-          @for (distance of drawDistances; track distance) {
-            <option [value]="distance" [selected]="distance === renderSettings.settings().doodadDistance">
-              {{ distance }} {{ 'WORLD_EDITOR.YARDS' | translate }}
-            </option>
-          }
-        </select>
+      <div class="form-check form-switch mb-0">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="world-editor-doodads"
+          data-testid="view-doodads"
+          [checked]="renderSettings.settings().showDoodads"
+          (change)="setRenderFlag('showDoodads', $event)"
+        />
+        <label class="form-check-label" for="world-editor-doodads">{{ 'WORLD_EDITOR.DOODADS' | translate }}</label>
+      </div>
+      <div class="form-check form-switch mb-0">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="world-editor-models"
+          data-testid="view-models"
+          [checked]="renderSettings.settings().showModels"
+          (change)="setRenderFlag('showModels', $event)"
+        />
+        <label class="form-check-label" for="world-editor-models">{{ 'WORLD_EDITOR.MODELS' | translate }}</label>
       </div>
       <div class="d-flex align-items-center gap-2">
         <label for="world-editor-terrain-radius" class="mb-0">{{ 'WORLD_EDITOR.TERRAIN_RANGE' | translate }}</label>
@@ -144,6 +140,68 @@
           }
         </select>
       </div>
+      <div class="d-flex align-items-center gap-2">
+        <label for="world-editor-draw-distance" class="mb-0">{{ 'WORLD_EDITOR.DRAW_DISTANCE' | translate }}</label>
+        <select
+          id="world-editor-draw-distance"
+          class="form-select form-select-sm w-auto"
+          data-testid="view-draw-distance"
+          [disabled]="renderSettings.settings().advancedDistances"
+          (change)="setRenderDistance('drawDistance', $event)"
+        >
+          @for (distance of drawDistances; track distance) {
+            <option [value]="distance" [selected]="distance === renderSettings.settings().drawDistance">
+              {{ distance }} {{ 'WORLD_EDITOR.YARDS' | translate }}
+            </option>
+          }
+        </select>
+      </div>
+      <div class="form-check form-switch mb-0">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="world-editor-advanced-distances"
+          data-testid="view-advanced"
+          [checked]="renderSettings.settings().advancedDistances"
+          (change)="setRenderFlag('advancedDistances', $event)"
+        />
+        <label class="form-check-label" for="world-editor-advanced-distances">{{ 'WORLD_EDITOR.ADVANCED' | translate }}</label>
+      </div>
+      @if (renderSettings.settings().advancedDistances) {
+        <table class="table table-sm table-borderless align-middle mb-0 world-editor-distances" data-testid="view-distances">
+          <thead>
+            <tr>
+              <th scope="col">{{ 'WORLD_EDITOR.GROUP' | translate }}</th>
+              <th scope="col">{{ 'WORLD_EDITOR.DRAW_DISTANCE' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (group of distanceGroups; track group.key) {
+              <tr>
+                <td>{{ group.label | translate }}</td>
+                <td>
+                  <select
+                    class="form-select form-select-sm"
+                    [attr.data-testid]="'view-distance-' + group.key"
+                    [attr.aria-label]="group.label | translate"
+                    (change)="setRenderDistance(group.key, $event)"
+                  >
+                    @for (distance of groupDistances; track distance) {
+                      <option [value]="distance" [selected]="distance === renderSettings.settings()[group.key]">
+                        @if (distance) {
+                          {{ distance }} {{ 'WORLD_EDITOR.YARDS' | translate }}
+                        } @else {
+                          {{ 'WORLD_EDITOR.OFF' | translate }}
+                        }
+                      </option>
+                    }
+                  </select>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
     </div>
   }
 

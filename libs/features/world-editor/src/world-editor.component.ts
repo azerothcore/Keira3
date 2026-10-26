@@ -31,6 +31,8 @@ import {
 } from './world-editor.model';
 import { WorldEditorService } from './world-editor.service';
 
+type RenderDistanceKey = 'drawDistance' | 'largeDoodadDistance' | 'smallDoodadDistance' | 'creatureDistance' | 'gameobjectDistance';
+
 /**
  * 3D world editor: shows the terrain of a map with its creature/gameobject spawns and waypoint paths, and turns
  * placing, moving, rotating and deleting them into SQL that the user reviews before executing.
@@ -69,8 +71,16 @@ export class WorldEditorComponent implements OnInit {
   protected readonly selectedKey = signal<string | undefined>(undefined);
   protected readonly showSettings = signal(!this.settings.isConfigured());
   protected readonly showView = signal(false);
-  /** Draw distances offered for doodads and models, in yards. */
-  protected readonly drawDistances = [100, 250, 500];
+  /** Draw distances offered, in yards (0 = off, per group in advanced mode only). */
+  protected readonly drawDistances = [50, 100, 250, 500, 1000];
+  protected readonly groupDistances = [0, ...this.drawDistances];
+  /** The advanced per-group distances, as rows of the View panel's table. */
+  protected readonly distanceGroups: { key: RenderDistanceKey; label: string }[] = [
+    { key: 'largeDoodadDistance', label: 'WORLD_EDITOR.LARGE_DOODADS' },
+    { key: 'smallDoodadDistance', label: 'WORLD_EDITOR.SMALL_DOODADS' },
+    { key: 'creatureDistance', label: 'WORLD_EDITOR.CREATURE_MODELS' },
+    { key: 'gameobjectDistance', label: 'WORLD_EDITOR.GAMEOBJECT_MODELS' },
+  ];
   protected readonly loadingSpawns = signal(false);
   protected readonly teleResults = signal<TeleRow[]>([]);
   protected readonly placeEntryName = signal('');
@@ -116,6 +126,8 @@ export class WorldEditorComponent implements OnInit {
         position: { x: s.x, y: s.y, z: s.z },
         orientation: s.o,
         pending: this.changes.isNewSpawn(spawnKey(s.type, s.guid)),
+        displayId: s.displayId,
+        scale: s.scale,
       }));
   });
 
@@ -223,11 +235,11 @@ export class WorldEditorComponent implements OnInit {
     this.renderSettings.update({ lowDetailTerrain: (event.target as HTMLInputElement).checked });
   }
 
-  protected setRenderFlag(key: 'showBuildings' | 'showDoodads' | 'showModels' | 'zoneLighting', event: Event): void {
+  protected setRenderFlag(key: 'showBuildings' | 'showDoodads' | 'showModels' | 'zoneLighting' | 'advancedDistances', event: Event): void {
     this.renderSettings.update({ [key]: (event.target as HTMLInputElement).checked });
   }
 
-  protected setRenderDistance(key: 'doodadDistance' | 'modelDistance', event: Event): void {
+  protected setRenderDistance(key: RenderDistanceKey, event: Event): void {
     this.renderSettings.update({ [key]: Number((event.target as HTMLSelectElement).value) });
   }
 
@@ -402,8 +414,8 @@ export class WorldEditorComponent implements OnInit {
     const next = (this.nextGuids.get(type) ?? this.service.getMaxGuid(type)).then((last) => last + 1);
     this.nextGuids.set(type, next);
     const guid = await next;
-    const name = await this.service.getEntryName(type, entry);
-    this.changes.placeSpawn({ type, guid, entry, name, map: this.mapId(), ...position, o: 0, pathId: 0 });
+    const [name, display] = await Promise.all([this.service.getEntryName(type, entry), this.service.getEntryDisplay(type, entry)]);
+    this.changes.placeSpawn({ type, guid, entry, name, map: this.mapId(), ...position, o: 0, pathId: 0, ...display });
     this.bump();
     this.select(spawnKey(type, guid));
   }

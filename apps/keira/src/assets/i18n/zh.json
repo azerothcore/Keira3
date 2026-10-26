@@ -1051,6 +1051,14 @@
     "BUILDINGS": "建筑",
     "DOODADS": "树木和道具",
     "DRAW_DISTANCE": "绘制距离",
-    "YARDS": "码"
+    "YARDS": "码",
+    "MODELS": "NPC 和物体模型",
+    "ADVANCED": "按分组",
+    "GROUP": "分组",
+    "LARGE_DOODADS": "树木和大型道具",
+    "SMALL_DOODADS": "小型道具",
+    "CREATURE_MODELS": "NPC",
+    "GAMEOBJECT_MODELS": "物体",
+    "OFF": "关闭"
   }
 }

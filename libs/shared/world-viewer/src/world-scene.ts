@@ -68,6 +68,15 @@ interface PickableData {
   point?: number;
 }
 
+/** Extra data of spawn pins. */
+interface SpawnMarkerData {
+  pending?: boolean;
+  /** Set while the spawn is drawn with its model. */
+  modelScale?: number;
+}
+
+const SPAWN_MODEL_NAME = 'model';
+
 const COLORS = {
   sky: 0x9cc3e6,
   creature: 0xff9f1c,
@@ -126,6 +135,8 @@ export class WorldScene {
   private readonly arrowGeometry = new ConeGeometry(0.4, 1.2, 8);
   private readonly arrows = new Set<Object3D>();
   private readonly markerMaterials = new Map<string, MeshLambertMaterial>();
+  /** Pins of spawns drawn with their real model: not rendered, but still picked (so small models stay clickable). */
+  private readonly hiddenMarkerMaterial = new MeshBasicMaterial({ visible: false });
 
   constructor() {
     this.scene.background = new Color(COLORS.sky);
@@ -287,6 +298,32 @@ export class WorldScene {
     this.applySelection();
   }
 
+  /**
+   * Draws a spawn with its real model (`scale` = the model's own size) instead of its pin, or puts the pin back
+   * (`model` undefined). The pin stays pickable and keeps following the gizmo; the model rides along as its child.
+   * Returns false when the spawn isn't in the scene.
+   */
+  setSpawnModel(key: string, model: Object3D | undefined, scale = 1): boolean {
+    const marker = this.objects.get(key);
+    const data = marker?.userData as (PickableData & SpawnMarkerData) | undefined;
+    if (!marker || !data || data.kind === 'waypoint') {
+      return false;
+    }
+    const current = marker.getObjectByName(SPAWN_MODEL_NAME);
+    if (current && current !== model) {
+      marker.remove(current);
+    }
+    if (model) {
+      model.name = SPAWN_MODEL_NAME;
+      // hits on the model pick the spawn
+      model.traverse((object) => (object.userData = data));
+      marker.add(model);
+    }
+    data.modelScale = model ? scale : undefined;
+    this.applySelection();
+    return true;
+  }
+
   setWaypointPaths(paths: WaypointPath[]): void {
     this.clearGroup(this.waypointGroup);
     for (const path of paths) {
@@ -398,7 +435,13 @@ export class WorldScene {
     const cameraPosition = this.camera.position;
     for (const object of [...this.objects.values(), ...this.arrows]) {
       const distance = object.position.distanceTo(cameraPosition);
-      object.scale.setScalar(Math.min(MARKER_MAX_SCALE, Math.max(1, distance / MARKER_SCALE_DISTANCE)));
+      const scale = Math.min(MARKER_MAX_SCALE, Math.max(1, distance / MARKER_SCALE_DISTANCE));
+      object.scale.setScalar(scale);
+      // a model keeps its real size whatever the pin's on-screen scaling
+      const modelScale = (object.userData as SpawnMarkerData).modelScale;
+      if (modelScale !== undefined) {
+        object.getObjectByName(SPAWN_MODEL_NAME)?.scale.setScalar(modelScale / scale);
+      }
     }
   }
 
@@ -465,6 +508,7 @@ export class WorldScene {
     this.waypointGeometry.dispose();
     this.arrowGeometry.dispose();
     this.markerMaterials.forEach((material) => material.dispose());
+    this.hiddenMarkerMaterial.dispose();
     this.liquidMaterials.forEach((material) => material.dispose());
     this.markerMaterials.clear();
   }
@@ -517,10 +561,12 @@ export class WorldScene {
   private applySelection(): void {
     this.objects.forEach((object, key) => {
       const mesh = object as Mesh;
-      const data = object.userData as PickableData & { pending?: boolean };
+      const data = object.userData as PickableData & SpawnMarkerData;
       const selected = key === this.selectedKey;
       if (data.kind === 'waypoint') {
         mesh.material = this.waypointMaterial(pathColor(data.pathKey as string), selected);
+      } else if (data.modelScale !== undefined && !selected) {
+        mesh.material = this.hiddenMarkerMaterial;
       } else {
         mesh.material = this.markerMaterial(data.kind, selected ? 'selected' : data.pending ? 'pending' : 'normal');
       }

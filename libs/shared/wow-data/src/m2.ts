@@ -21,6 +21,8 @@ export interface M2BatchInfo {
   /** M2_TEXTURE_COMPONENT: 0 for a hardcoded file, otherwise the replaceable slot (e.g. 11..13 = creature skins). */
   textureType: number;
   blend: M2Blend;
+  /** Skin section id: on character models, the geoset (hair style, ears, sleeves…) the batch belongs to. */
+  geoset: number;
   twoSided: boolean;
   unlit: boolean;
 }
@@ -84,6 +86,7 @@ export function parseM2(modelBytes: Uint8Array, skinBytes: Uint8Array): M2Mesh {
         texture: texture?.component === 0 && texture.filename ? texture.filename : undefined,
         textureType: texture?.component ?? 0,
         blend: batch.material.blend as number as M2Blend,
+        geoset: batch.skinSection.id,
         twoSided: (batch.material.flags & MATERIAL_TWO_SIDED) !== 0,
         unlit: (batch.material.flags & MATERIAL_UNLIT) !== 0,
       };

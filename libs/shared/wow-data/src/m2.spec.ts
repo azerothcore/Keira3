@@ -36,7 +36,7 @@ function vertexBuffer(vertices: { pos: number[]; normal: number[]; uv: number[] 
 
 const batch = (overrides: Record<string, unknown> = {}) => ({
   vertexShader: 0,
-  skinSection: { indexStart: 0, indexCount: 3 },
+  skinSection: { id: 0, indexStart: 0, indexCount: 3 },
   textures: [{ component: 0, filename: 'World\\Tree.blp' }],
   material: { blend: 1, flags: 0x4 },
   ...overrides,
@@ -63,7 +63,7 @@ describe('m2', () => {
         batch({ textures: [{ component: 11, filename: '' }], material: { blend: 0, flags: 0x1 } }),
         batch({ textures: [] }),
         batch({ vertexShader: 2 }),
-        batch({ skinSection: { indexStart: 3, indexCount: 0 } }),
+        batch({ skinSection: { id: 5, indexStart: 3, indexCount: 0 } }),
       ],
     };
     const mesh = parseM2(new Uint8Array(1), new Uint8Array(1));
@@ -73,9 +73,9 @@ describe('m2', () => {
     expect(Array.from(mesh.uvs)).toEqual([0.25, 0.75, 0, 0]);
     expect(Array.from(mesh.indices)).toEqual([0, 1, 0]);
     expect(mesh.batches).toEqual([
-      { start: 0, count: 3, texture: 'World\\Tree.blp', textureType: 0, blend: M2Blend.AlphaKey, twoSided: true, unlit: false },
-      { start: 0, count: 3, texture: undefined, textureType: 11, blend: M2Blend.Opaque, twoSided: false, unlit: true },
-      { start: 0, count: 3, texture: undefined, textureType: 0, blend: M2Blend.AlphaKey, twoSided: true, unlit: false },
+      { start: 0, count: 3, texture: 'World\\Tree.blp', textureType: 0, blend: M2Blend.AlphaKey, geoset: 0, twoSided: true, unlit: false },
+      { start: 0, count: 3, texture: undefined, textureType: 11, blend: M2Blend.Opaque, geoset: 0, twoSided: false, unlit: true },
+      { start: 0, count: 3, texture: undefined, textureType: 0, blend: M2Blend.AlphaKey, geoset: 0, twoSided: true, unlit: false },
     ]);
   });
 });

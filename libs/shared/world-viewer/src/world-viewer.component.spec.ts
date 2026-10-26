@@ -189,6 +189,8 @@ describe(WorldViewerComponent.name, () => {
     getTilePlacements: vi.fn(),
     getWmo: vi.fn(),
     getM2: vi.fn(),
+    getCreatureDisplay: vi.fn(),
+    getGameObjectDisplay: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -266,6 +268,28 @@ describe(WorldViewerComponent.name, () => {
     await fixture.whenStable();
     flushFrames();
     expect(renderer.render).toHaveBeenCalledTimes(1);
+  });
+
+  it('draws nearby spawns with their real model', async () => {
+    client.getCreatureDisplay.mockResolvedValue({ model: 'Creature\\Wolf\\Wolf.mdx', scale: 1, textures: {} });
+    client.getM2.mockResolvedValue({
+      positions: new Float32Array(9),
+      normals: new Float32Array(9),
+      uvs: new Float32Array(6),
+      indices: new Uint16Array([0, 1, 2]),
+      batches: [],
+    });
+    const { fixture } = await setup((h) => {
+      h.focus.set(at(0, 0));
+      h.spawns.set([{ ...spawn('creature:1', at(0, 0)), displayId: 5 }]);
+    });
+    await new Promise((resolve) => setTimeout(resolve));
+    renderer.render.mockClear();
+    await fixture.whenStable();
+    flushFrames();
+    expect(client.getCreatureDisplay).toHaveBeenCalledWith(5);
+    expect(client.getM2).toHaveBeenCalledWith('Creature\\Wolf\\Wolf.mdx');
+    expect(renderer.render).toHaveBeenCalled();
   });
 
   it('streams terrain around the focus of the selected map', async () => {

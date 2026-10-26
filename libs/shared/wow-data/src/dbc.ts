@@ -74,3 +74,112 @@ export function parseMapDbc(dbc: DbcFile): WowMap[] {
   }
   return maps.sort((a, b) => a.id - b.id);
 }
+
+/** How a creature display id is drawn: its model, size and the textures for the model's replaceable slots. */
+export interface CreatureDisplay {
+  model: string;
+  scale: number;
+  /** Texture per replaceable slot (M2 texture component): 11..13 creature skins, 1 baked NPC skin, 6 hair. */
+  textures: Record<number, string>;
+  /** Character models (humanoid NPCs) only: the hair geoset to show; other optional geosets use their default. */
+  hairGeoset?: number;
+}
+
+/** The DBCs `parseCreatureDisplays` reads; the character ones are optional (humanoids then use bare models). */
+export interface CreatureDisplayDbcs {
+  displays: DbcFile;
+  models: DbcFile;
+  extras?: DbcFile;
+  hairGeosets?: DbcFile;
+  charSections?: DbcFile;
+}
+
+const CHAR_SECTION_HAIR = 3;
+
+/**
+ * CreatureDisplayInfo.dbc (0 ID, 1 ModelID, 3 ExtendedDisplayInfoID, 4 CreatureModelScale, 6..8 TextureVariation),
+ * CreatureModelData.dbc (0 ID, 2 ModelName, 4 ModelScale) and, for humanoids, CreatureDisplayInfoExtra.dbc
+ * (1 Race, 2 Sex, 5 HairStyle, 6 HairColor, 20 BakeName), CharHairGeosets.dbc (1 Race, 2 Sex, 3 Variation, 4 Geoset)
+ * and CharSections.dbc (1 Race, 2 Sex, 3 Section, 4 Texture, 8 Variation, 9 Color).
+ */
+export function parseCreatureDisplays(dbcs: CreatureDisplayDbcs): Map<number, CreatureDisplay> {
+  const models = new Map<number, { path: string; scale: number }>();
+  for (let r = 0; r < dbcs.models.recordCount; r++) {
+    models.set(dbcs.models.getUint(r, 0), { path: dbcs.models.getString(r, 2), scale: dbcs.models.getFloat(r, 4) || 1 });
+  }
+  const extras = new Map<number, number>();
+  for (let r = 0; r < (dbcs.extras?.recordCount ?? 0); r++) {
+    extras.set((dbcs.extras as DbcFile).getUint(r, 0), r);
+  }
+  const hairGeosets = new Map<string, number>();
+  for (let r = 0; r < (dbcs.hairGeosets?.recordCount ?? 0); r++) {
+    const dbc = dbcs.hairGeosets as DbcFile;
+    hairGeosets.set(`${dbc.getUint(r, 1)}:${dbc.getUint(r, 2)}:${dbc.getUint(r, 3)}`, dbc.getUint(r, 4));
+  }
+  const hairTextures = new Map<string, string>();
+  for (let r = 0; r < (dbcs.charSections?.recordCount ?? 0); r++) {
+    const dbc = dbcs.charSections as DbcFile;
+    const key = `${dbc.getUint(r, 1)}:${dbc.getUint(r, 2)}:${dbc.getUint(r, 8)}:${dbc.getUint(r, 9)}`;
+    const texture = dbc.getString(r, 4);
+    if (dbc.getUint(r, 3) === CHAR_SECTION_HAIR && texture && !hairTextures.has(key)) {
+      hairTextures.set(key, texture);
+    }
+  }
+
+  const displays = new Map<number, CreatureDisplay>();
+  const dbc = dbcs.displays;
+  for (let r = 0; r < dbc.recordCount; r++) {
+    const model = models.get(dbc.getUint(r, 1));
+    if (!model?.path) {
+      continue;
+    }
+    const directory = model.path.slice(0, model.path.lastIndexOf('\\') + 1);
+    const textures: Record<number, string> = {};
+    [6, 7, 8].forEach((field, i) => {
+      const variation = dbc.getString(r, field);
+      if (variation) {
+        textures[11 + i] = `${directory}${variation}.blp`;
+      }
+    });
+    const display: CreatureDisplay = { model: model.path, scale: (dbc.getFloat(r, 4) || 1) * model.scale, textures };
+    const extraRecord = extras.get(dbc.getUint(r, 3));
+    if (extraRecord !== undefined) {
+      const extra = dbcs.extras as DbcFile;
+      const [race, sex, style, color] = [1, 2, 5, 6].map((field) => extra.getUint(extraRecord, field));
+      const bake = extra.getString(extraRecord, 20);
+      if (bake) {
+        textures[1] = `Textures\\BakedNpcTextures\\${bake}`;
+      }
+      const hair = hairTextures.get(`${race}:${sex}:${style}:${color}`);
+      if (hair) {
+        textures[6] = hair;
+      }
+      display.hairGeoset = hairGeosets.get(`${race}:${sex}:${style}`) ?? 1;
+    }
+    displays.set(dbc.getUint(r, 0), display);
+  }
+  return displays;
+}
+
+/** GameObjectDisplayInfo.dbc: 0 ID, 1 ModelName → model path by display id. */
+export function parseGameObjectDisplays(dbc: DbcFile): Map<number, string> {
+  const displays = new Map<number, string>();
+  for (let r = 0; r < dbc.recordCount; r++) {
+    const model = dbc.getString(r, 1);
+    if (model) {
+      displays.set(dbc.getUint(r, 0), model);
+    }
+  }
+  return displays;
+}
+
+/**
+ * Which geosets of a character model are drawn: the body (0), the NPC's hair style, and the first (default) geoset
+ * of every other group (facial hair, ears, sleeves, legs…); the rest are alternatives for gear and customisation.
+ */
+export function isDefaultCharacterGeoset(geoset: number, hairGeoset: number): boolean {
+  if (geoset === 0) {
+    return true;
+  }
+  return geoset < 100 ? geoset === hairGeoset : geoset % 100 === 1;
+}

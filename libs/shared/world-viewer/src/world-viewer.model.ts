@@ -13,6 +13,10 @@ export interface WorldSpawn {
   orientation: number;
   /** Spawn not saved to the database yet (drawn translucent). */
   pending?: boolean;
+  /** Display id (CreatureDisplayInfo / GameObjectDisplayInfo) to draw the real model; pin only when missing. */
+  displayId?: number;
+  /** The spawn's own scale (creature_template_model.DisplayScale, gameobject_template.size). */
+  scale?: number;
 }
 
 export interface WorldWaypoint {

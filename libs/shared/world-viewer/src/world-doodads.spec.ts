@@ -9,8 +9,8 @@ const model: M2Mesh = {
   uvs: new Float32Array(6),
   indices: new Uint16Array([0, 1, 2]),
   batches: [
-    { start: 0, count: 3, texture: 'tree.blp', textureType: 0, blend: M2Blend.AlphaKey, twoSided: true, unlit: false },
-    { start: 0, count: 3, textureType: 11, blend: M2Blend.Opaque, twoSided: false, unlit: false },
+    { start: 0, count: 3, texture: 'tree.blp', textureType: 0, blend: M2Blend.AlphaKey, geoset: 0, twoSided: true, unlit: false },
+    { start: 0, count: 3, textureType: 11, blend: M2Blend.Opaque, geoset: 0, twoSided: false, unlit: false },
   ],
 };
 const CENTER = tileCenter({ tx: 32, ty: 48 });
@@ -37,7 +37,7 @@ describe('WorldDoodads', () => {
     const textures = new TextureCache(() => Promise.resolve(undefined));
     const onChange = vi.fn();
     const doodads = new WorldDoodads(source, group, textures, onChange);
-    doodads.configure({ show: true, distance: 100 });
+    doodads.configure({ show: true, distance: 100, smallDistance: 100 });
     return { source, group, doodads, onChange };
   };
   const meshes = (group: Group) => group.children as InstancedMesh[];
@@ -72,19 +72,19 @@ describe('WorldDoodads', () => {
   it('follows the distance, growing the instanced meshes when more doodads come into range', async () => {
     const { doodads, group } = setup({ '32_48': [doodad(1, 0), doodad(2, 60), doodad(3, 80), doodad(4, 90)] });
     doodads.setMap('Azeroth');
-    doodads.configure({ show: true, distance: 10 });
+    doodads.configure({ show: true, distance: 10, smallDistance: 10 });
     await doodads.update(CENTER);
     await flush();
     const small = meshes(group)[0];
     expect(small.count).toBe(1);
 
-    doodads.configure({ show: true, distance: 10 });
-    doodads.configure({ show: true, distance: 85 });
+    doodads.configure({ show: true, distance: 10, smallDistance: 10 });
+    doodads.configure({ show: true, distance: 85, smallDistance: 85 });
     expect(meshes(group)[0]).not.toBe(small);
     expect(meshes(group)[0].count).toBe(3);
 
     const grown = meshes(group)[0];
-    doodads.configure({ show: true, distance: 100 });
+    doodads.configure({ show: true, distance: 100, smallDistance: 100 });
     expect(meshes(group)[0]).toBe(grown);
     expect(doodads.drawnCount).toBe(4);
   });
@@ -96,12 +96,12 @@ describe('WorldDoodads', () => {
     await flush();
     expect(doodads.drawnCount).toBe(1);
 
-    doodads.configure({ show: false, distance: 100 });
+    doodads.configure({ show: false, distance: 100, smallDistance: 100 });
     expect(group.children).toHaveLength(0);
     await doodads.update(CENTER);
     expect(doodads.loadedTiles).toEqual([]);
 
-    doodads.configure({ show: true, distance: 100 });
+    doodads.configure({ show: true, distance: 100, smallDistance: 100 });
     await doodads.update(CENTER);
     expect(doodads.drawnCount).toBe(1);
     expect(source.getM2).toHaveBeenCalledTimes(1);
@@ -117,6 +117,25 @@ describe('WorldDoodads', () => {
     await doodads.update(tileCenter({ tx: 32, ty: 52 }));
     expect(doodads.loadedTiles).not.toContain('32_48');
     expect(group.children).toHaveLength(0);
+  });
+
+  it('gives small and large doodads their own distance', async () => {
+    const big: M2Mesh = { ...model, positions: new Float32Array([0, 0, 0, 20, 0, 0, 0, 20, 0]) };
+    const { doodads, source } = setup({
+      '32_48': [doodad(1, 50), doodad(2, 50, 'World\\Big.m2'), doodad(3, 150, 'World\\Big.m2')],
+    });
+    source.getM2.mockImplementation((path: string) => Promise.resolve(path.includes('Big') ? big : model));
+    doodads.setMap('Azeroth');
+    doodads.configure({ show: true, distance: 200, smallDistance: 20 });
+    await doodads.update(CENTER);
+    await flush();
+    // the small tree at 50 yards is beyond its 20-yard distance; both big ones are within 200
+    expect(doodads.drawnCount).toBe(2);
+
+    doodads.configure({ show: true, distance: 0, smallDistance: 0 });
+    expect(doodads.drawnCount).toBe(0);
+    await doodads.update(CENTER);
+    expect(source.getTilePlacements).toHaveBeenCalledTimes(9);
   });
 
   it('does nothing without a map', async () => {

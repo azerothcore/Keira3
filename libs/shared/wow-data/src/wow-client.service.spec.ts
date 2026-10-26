@@ -171,6 +171,54 @@ describe('WowClientService', () => {
     });
   });
 
+  describe('displays', () => {
+    const dbc = (rows: (number | string)[][], fieldCount?: number) => Array.from(buildDbc(rows, fieldCount));
+    const displayMpqs = (files: Record<string, number[]>): Record<string, FakeMpq> => ({ 'common.MPQ': { files } });
+
+    it('resolves creature displays from the client, with the server DBCs taking precedence', async () => {
+      const { service } = setup({
+        files: { '/srv/dbc/CreatureModelData.dbc': dbc([[1, 0, 'Creature\\Wolf\\Wolf.mdx', 0, 0]]) },
+        mpqs: displayMpqs({
+          'DBFilesClient\\CreatureDisplayInfo.dbc': dbc([[10, 1, 0, 0, 0, 0, 'WolfGrey', '', '']], 9),
+          'DBFilesClient\\CreatureModelData.dbc': dbc([[1, 0, 'Creature\\Wrong.mdx', 0, 0]]),
+        }),
+        serverDataPath: '/srv',
+      });
+      expect(await service.getCreatureDisplay(10)).toEqual({
+        model: 'Creature\\Wolf\\Wolf.mdx',
+        scale: 1,
+        textures: { 11: 'Creature\\Wolf\\WolfGrey.blp' },
+      });
+      expect(await service.getCreatureDisplay(11)).toBeUndefined();
+    });
+
+    it('retries creature displays after a failure', async () => {
+      const { service } = setup({ mpqs: displayMpqs({ 'DBFilesClient\\CreatureDisplayInfo.dbc': [1, 2, 3, 4] }) });
+      await expect(service.getCreatureDisplay(10)).rejects.toThrowError(/WDBC/);
+      await expect(service.getCreatureDisplay(10)).rejects.toThrowError(/WDBC/);
+    });
+
+    it('has no displays without their DBCs', async () => {
+      const { service } = setup({ mpqs: displayMpqs({}) });
+      expect(await service.getCreatureDisplay(10)).toBeUndefined();
+      expect(await service.getGameObjectDisplay(5)).toBeUndefined();
+    });
+
+    it('resolves gameobject displays', async () => {
+      const { service } = setup({
+        mpqs: displayMpqs({ 'DBFilesClient\\GameObjectDisplayInfo.dbc': dbc([[5, 'World\\Generic\\Mailbox.mdx']]) }),
+      });
+      expect(await service.getGameObjectDisplay(5)).toBe('World\\Generic\\Mailbox.mdx');
+      expect(await service.getGameObjectDisplay(6)).toBeUndefined();
+    });
+
+    it('retries gameobject displays after a failure', async () => {
+      const { service } = setup({ mpqs: displayMpqs({ 'DBFilesClient\\GameObjectDisplayInfo.dbc': [1, 2, 3, 4] }) });
+      await expect(service.getGameObjectDisplay(5)).rejects.toThrowError(/WDBC/);
+      await expect(service.getGameObjectDisplay(5)).rejects.toThrowError(/WDBC/);
+    });
+  });
+
   describe('terrain', () => {
     it('lists map tiles from the WDT', async () => {
       const { service } = setup({ mpqs: standardMpqs() });

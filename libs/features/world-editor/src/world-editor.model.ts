@@ -19,6 +19,10 @@ export interface SpawnRecord {
   pathFromTemplate?: boolean;
   /** gameobject.rotation0..3 (x, y, z, w quaternion; all 0 = derived from orientation). */
   rotation?: Quaternion;
+  /** Model shown in the 3D view (creature_template_model / gameobject_template.displayId), 0 = pin only. */
+  displayId?: number;
+  /** creature_template_model.DisplayScale or gameobject_template.size. */
+  scale?: number;
 }
 
 export type Quaternion = [number, number, number, number];
@@ -63,6 +67,8 @@ export interface SpawnRow extends TableRow {
   rotation1: number;
   rotation2: number;
   rotation3: number;
+  displayId: number;
+  scale: number;
 }
 
 export interface WaypointRow extends TableRow {

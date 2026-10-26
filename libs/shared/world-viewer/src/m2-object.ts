@@ -8,6 +8,7 @@ import {
   Material,
   MeshBasicMaterial,
   MeshLambertMaterial,
+  Sphere,
   Texture,
 } from 'three';
 
@@ -15,6 +16,8 @@ import {
 export interface M2Template {
   geometry: BufferGeometry;
   materials: Material[];
+  /** Bounding sphere radius of the model at scale 1. */
+  radius: number;
 }
 
 /** One material per batch, following the batch's blend mode: cut-out leaves, glowing additive parts, glass… */
@@ -47,7 +50,7 @@ export function buildM2Template(mesh: M2Mesh, textures: Texture[], fallback: Tex
     return createM2Material(batch, textures[i] ?? fallback);
   });
   geometry.computeBoundingSphere();
-  return { geometry, materials };
+  return { geometry, materials, radius: (geometry.boundingSphere as Sphere).radius };
 }
 
 /** Disposes a template's geometry and materials (not its shared textures). */

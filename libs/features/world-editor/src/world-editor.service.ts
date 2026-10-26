@@ -34,16 +34,20 @@ export class WorldEditorService {
       // Like Creature::GetCreatureAddon: an addon row (even with path_id 0) wins over the template addon as a whole.
       'IF(ca.guid IS NOT NULL, ca.path_id, IFNULL(cta.path_id, 0)) AS pathId, ' +
       '(ca.guid IS NULL AND IFNULL(cta.path_id, 0) <> 0) AS pathFromTemplate, ' +
-      '0 AS rotation0, 0 AS rotation1, 0 AS rotation2, 0 AS rotation3 ' +
+      '0 AS rotation0, 0 AS rotation1, 0 AS rotation2, 0 AS rotation3, ' +
+      // the first template model, as the server picks when it has a single one
+      'IFNULL(ctm.CreatureDisplayID, 0) AS displayId, IFNULL(ctm.DisplayScale, 1) AS scale ' +
       'FROM creature c ' +
       'LEFT JOIN creature_template ct ON ct.entry = c.id ' +
+      'LEFT JOIN creature_template_model ctm ON ctm.CreatureID = c.id AND ctm.Idx = 0 ' +
       'LEFT JOIN creature_addon ca ON ca.guid = c.guid ' +
       'LEFT JOIN creature_template_addon cta ON cta.entry = c.id ' +
       `WHERE ${area('c')} LIMIT ${SPAWN_LOAD_LIMIT}`;
 
     const gameobjects =
       "SELECT g.guid, g.id AS entry, IFNULL(gt.name, '') AS name, g.map, g.position_x AS x, g.position_y AS y, g.position_z AS z, g.orientation AS o, " +
-      '0 AS pathId, 0 AS pathFromTemplate, g.rotation0, g.rotation1, g.rotation2, g.rotation3 ' +
+      '0 AS pathId, 0 AS pathFromTemplate, g.rotation0, g.rotation1, g.rotation2, g.rotation3, ' +
+      'IFNULL(gt.displayId, 0) AS displayId, IFNULL(gt.size, 1) AS scale ' +
       'FROM gameobject g ' +
       'LEFT JOIN gameobject_template gt ON gt.entry = g.id ' +
       `WHERE ${area('g')} LIMIT ${SPAWN_LOAD_LIMIT}`;
@@ -99,6 +103,16 @@ export class WorldEditorService {
     return type === 'creature' ? this.queryService.getCreatureNameById(entry) : this.queryService.getGameObjectNameById(entry);
   }
 
+  /** Display id and scale of an entry, so a newly placed spawn shows its model. */
+  async getEntryDisplay(type: SpawnType, entry: number): Promise<{ displayId: number; scale: number }> {
+    const sql =
+      type === 'creature'
+        ? `SELECT CreatureDisplayID AS displayId, DisplayScale AS scale FROM creature_template_model WHERE CreatureID = ${Math.trunc(entry)} AND Idx = 0`
+        : `SELECT displayId, size AS scale FROM gameobject_template WHERE entry = ${Math.trunc(entry)}`;
+    const [row] = (await firstValueFrom(this.queryService.query<{ displayId: number; scale: number }>(sql))) ?? [];
+    return { displayId: Number(row?.displayId ?? 0), scale: Number(row?.scale ?? 1) };
+  }
+
   async searchTele(text: string): Promise<TeleRow[]> {
     const rows = await firstValueFrom(
       this.queryService.query<TeleRow>(
@@ -130,5 +144,7 @@ function toSpawns(type: SpawnType, rows: SpawnRow[] | undefined): SpawnRecord[] 
     z: Number(row.z),
     o: Number(row.o),
     pathId: Number(row.pathId),
+    displayId: Number(row.displayId ?? 0),
+    scale: Number(row.scale ?? 1),
   }));
 }

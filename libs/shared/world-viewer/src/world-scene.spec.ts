@@ -1,5 +1,5 @@
 import { tileCenter, worldToScene, WorldPosition } from '@keira/shared/wow-data';
-import { BufferGeometry, Group, Line, Mesh, MeshLambertMaterial, ShaderMaterial, Texture, Vector3 } from 'three';
+import { BoxGeometry, BufferGeometry, Group, Line, Mesh, MeshLambertMaterial, ShaderMaterial, Texture, Vector3 } from 'three';
 import { flatDetail, flatTile } from './world-viewer.mock';
 import { pathColor, WorldScene } from './world-scene';
 import { WaypointPath, WorldSpawn } from './world-viewer.model';
@@ -147,6 +147,53 @@ describe('WorldScene', () => {
       world.setSelection('creature:2');
       expect(((world.getObject('creature:1') as Mesh).material as MeshLambertMaterial).emissiveIntensity).toBe(0);
       expect(((world.getObject('creature:2') as Mesh).material as MeshLambertMaterial).emissiveIntensity).toBeGreaterThan(0);
+    });
+
+    it('draws a spawn with its model instead of its pin, at the model size', () => {
+      const world = new WorldScene();
+      world.setSpawns([spawn('creature:1', 'creature', at(0, 0)), spawn('creature:2', 'creature', at(5000, 0))]);
+      world.setWaypointPaths([{ key: 'path:1', label: 'Path 1', points: [{ point: 1, position: at(9, 9) }] }]);
+      const model = new Mesh(new BoxGeometry(2, 2, 2), new MeshLambertMaterial());
+      const far = new Group();
+      far.add(new Mesh(new BoxGeometry(), new MeshLambertMaterial()));
+      expect(world.setSpawnModel('creature:1', model, 1.5)).toBe(true);
+      expect(world.setSpawnModel('creature:2', far, 2)).toBe(true);
+      expect(world.setSpawnModel('nope', model)).toBe(false);
+      expect(world.setSpawnModel(world.objectKeys.find((k) => k.startsWith('path')) as string, model)).toBe(false);
+
+      const marker = world.getObject('creature:1') as Mesh;
+      expect(model.parent).toBe(marker);
+      expect((marker.material as MeshLambertMaterial).visible).toBe(false);
+      expect((far.children[0].userData as { key: string }).key).toBe('creature:2');
+
+      // the model keeps its size while the pin scales with distance
+      lookDownAt(world, at(0, 0), 10);
+      world.updateMarkerScale();
+      expect(model.scale.x).toBe(1.5);
+      expect(far.scale.x).toBe(2 / 8);
+
+      // selected: the pin is shown highlighted with the model
+      world.setSelection('creature:1');
+      expect((marker.material as MeshLambertMaterial).visible).toBe(true);
+
+      // replacing and removing the model
+      const other = new Mesh(new BoxGeometry(), new MeshLambertMaterial());
+      world.setSpawnModel('creature:1', other);
+      expect(model.parent).toBeNull();
+      world.setSpawnModel('creature:1', other);
+      expect(other.parent).toBe(marker);
+      world.setSelection(undefined);
+      world.setSpawnModel('creature:1', undefined);
+      expect(other.parent).toBeNull();
+      expect((marker.material as MeshLambertMaterial).visible).toBe(true);
+    });
+
+    it('picks a spawn by its model', () => {
+      const world = new WorldScene();
+      world.setSpawns([spawn('creature:1', 'creature', at(0, 0))]);
+      world.setSpawnModel('creature:1', new Mesh(new BoxGeometry(30, 1, 30), new MeshLambertMaterial()));
+      lookDownAt(world, at(12, 0));
+      expect(world.pick(0, 0, { tolerance: 0 })).toEqual(expect.objectContaining({ type: 'spawn', key: 'creature:1' }));
     });
 
     it('scales markers with camera distance', () => {

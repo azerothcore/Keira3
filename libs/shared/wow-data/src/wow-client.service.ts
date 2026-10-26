@@ -1,6 +1,6 @@
 import { inject, Service } from '@angular/core';
 import { TileCoord } from './coords';
-import { DbcFile, parseMapDbc, WowMap } from './dbc';
+import { CreatureDisplay, DbcFile, parseCreatureDisplays, parseGameObjectDisplays, parseMapDbc, WowMap } from './dbc';
 import { FolderArchive } from './folder-archive';
 import { decodeBlp, parseAdt, ParsedAdt, parseWdt, RgbaImage, WdtInfo } from './formats';
 import { MD5_TRANSLATE_PATH, MINIMAP_ROOT, minimapKey, parseMd5Translate } from './minimap';
@@ -39,6 +39,8 @@ export class WowClientService {
   private client?: Promise<OpenClient>;
   private minimapIndex?: Promise<Map<string, string>>;
   private maps?: Promise<WowMap[]>;
+  private creatureDisplays?: Promise<Map<number, CreatureDisplay>>;
+  private gameobjectDisplays?: Promise<Map<number, string>>;
   private readonly wdts = new Map<string, Promise<WdtInfo | undefined>>();
   private readonly adts = new Map<string, Promise<CachedAdt | undefined>>();
   private mountCounter = 0;
@@ -77,6 +79,26 @@ export class WowClientService {
       throw error;
     });
     return this.maps;
+  }
+
+  /** How a creature display id is drawn (model, size, textures), from the server's DBCs when configured. */
+  async getCreatureDisplay(displayId: number): Promise<CreatureDisplay | undefined> {
+    this.creatureDisplays ??= this.loadCreatureDisplays().catch((error) => {
+      this.creatureDisplays = undefined;
+      throw error;
+    });
+    return (await this.creatureDisplays).get(displayId);
+  }
+
+  /** Model path of a gameobject display id. */
+  async getGameObjectDisplay(displayId: number): Promise<string | undefined> {
+    this.gameobjectDisplays ??= this.readDbc('GameObjectDisplayInfo.dbc')
+      .then((dbc) => (dbc ? parseGameObjectDisplays(dbc) : new Map<number, string>()))
+      .catch((error) => {
+        this.gameobjectDisplays = undefined;
+        throw error;
+      });
+    return (await this.gameobjectDisplays).get(displayId);
   }
 
   async getMapTiles(directory: string): Promise<TileCoord[]> {
@@ -187,6 +209,8 @@ export class WowClientService {
     this.client = undefined;
     this.minimapIndex = undefined;
     this.maps = undefined;
+    this.creatureDisplays = undefined;
+    this.gameobjectDisplays = undefined;
     this.wdts.clear();
     this.adts.clear();
     if (!client) {
@@ -279,15 +303,28 @@ export class WowClientService {
   }
 
   private async loadMaps(): Promise<WowMap[]> {
-    const native = this.requireNative();
-    const serverMapDbc = `${this.settings.paths().serverDataPath}/dbc/Map.dbc`;
-    const bytes =
-      this.settings.paths().serverDataPath && native.exists(serverMapDbc)
-        ? native.readFile(serverMapDbc)
-        : await this.readFile('DBFilesClient\\Map.dbc');
-    if (!bytes) {
+    const dbc = await this.readDbc('Map.dbc');
+    if (!dbc) {
       throw new Error('Map.dbc not found in the client or server data.');
     }
-    return parseMapDbc(new DbcFile(bytes));
+    return parseMapDbc(dbc);
+  }
+
+  private async loadCreatureDisplays(): Promise<Map<number, CreatureDisplay>> {
+    const [displays, models, extras, hairGeosets, charSections] = await Promise.all(
+      ['CreatureDisplayInfo', 'CreatureModelData', 'CreatureDisplayInfoExtra', 'CharHairGeosets', 'CharSections'].map((name) =>
+        this.readDbc(`${name}.dbc`),
+      ),
+    );
+    return displays && models ? parseCreatureDisplays({ displays, models, extras, hairGeosets, charSections }) : new Map();
+  }
+
+  /** A DBC from the server's DataDir when configured (it may hold custom rows), otherwise from the client. */
+  private async readDbc(name: string): Promise<DbcFile | undefined> {
+    const native = this.requireNative();
+    const serverDataPath = this.settings.paths().serverDataPath;
+    const serverDbc = `${serverDataPath}/dbc/${name}`;
+    const bytes = serverDataPath && native.exists(serverDbc) ? native.readFile(serverDbc) : await this.readFile(`DBFilesClient\\${name}`);
+    return bytes ? new DbcFile(bytes) : undefined;
   }
 }

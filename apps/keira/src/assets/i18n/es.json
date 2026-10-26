@@ -1051,6 +1051,14 @@
     "BUILDINGS": "Edificios",
     "DOODADS": "Árboles y objetos",
     "DRAW_DISTANCE": "Distancia de dibujado",
-    "YARDS": "yardas"
+    "YARDS": "yardas",
+    "MODELS": "Modelos de PNJ y objetos",
+    "ADVANCED": "Por grupo",
+    "GROUP": "Grupo",
+    "LARGE_DOODADS": "Árboles y objetos grandes",
+    "SMALL_DOODADS": "Objetos pequeños",
+    "CREATURE_MODELS": "PNJ",
+    "GAMEOBJECT_MODELS": "Objetos",
+    "OFF": "No"
   }
 }

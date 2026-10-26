@@ -1051,6 +1051,14 @@
     "BUILDINGS": "Buildings",
     "DOODADS": "Trees & props",
     "DRAW_DISTANCE": "Draw distance",
-    "YARDS": "yards"
+    "YARDS": "yards",
+    "MODELS": "NPC & object models",
+    "ADVANCED": "Per group",
+    "GROUP": "Group",
+    "LARGE_DOODADS": "Trees & large props",
+    "SMALL_DOODADS": "Small props",
+    "CREATURE_MODELS": "NPCs",
+    "GAMEOBJECT_MODELS": "Objects",
+    "OFF": "Off"
   }
 }

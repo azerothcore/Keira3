@@ -6,6 +6,7 @@ const batch = (blend: M2Blend, overrides: Partial<M2Mesh['batches'][number]> = {
   start: 0,
   count: 3,
   textureType: 0,
+  geoset: 0,
   blend,
   twoSided: false,
   unlit: false,
