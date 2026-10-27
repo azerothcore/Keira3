@@ -440,7 +440,17 @@ describe(WorldEditorComponent.name, () => {
       mocks.client.preload.mockResolvedValueOnce(false);
       page.click('preload-all');
       await settle(page);
-      expect(mocks.toastr.warning).toHaveBeenCalledWith('The cache reached its maximum size: preloading stopped.', 'World Editor');
+      // offers to double the maximum and go on
+      expect(page.byId('cache-full')).toBeTruthy();
+      mocks.client.preload.mockResolvedValueOnce(false);
+      const calls = mocks.client.preload.mock.calls.length;
+      page.click('cache-raise');
+      await settle(page);
+      expect(JSON.parse(localStorage.getItem('keira3.worldEditor.cache') as string).maxBytes).toBe(20_000_000_000);
+      expect(mocks.client.preload.mock.calls.length).toBeGreaterThan(calls);
+      page.click('cache-full-dismiss');
+      page.fixture.detectChanges();
+      expect(page.byId('cache-full', false)).toBeFalsy();
 
       mocks.client.preload.mockRejectedValueOnce(new Error('disk full'));
       page.click('preload-map');

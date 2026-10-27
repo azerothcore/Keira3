@@ -796,6 +796,17 @@
               >
                 {{ 'WORLD_EDITOR.PRELOAD_ALL' | translate }}
               </button>
+              @if (cacheFull(); as full) {
+                <div class="alert alert-warning py-1 px-2 mb-0 d-flex align-items-center gap-2 w-100" data-testid="cache-full">
+                  {{ 'WORLD_EDITOR.CACHE_FULL' | translate: { gb: full.maxGb } }}
+                  <button type="button" class="btn btn-sm btn-warning" data-testid="cache-raise" (click)="raiseCacheAndPreload()">
+                    {{ 'WORLD_EDITOR.CACHE_RAISE' | translate: { gb: full.maxGb * 2 || 2 } }}
+                  </button>
+                  <button type="button" class="btn btn-sm btn-link" data-testid="cache-full-dismiss" (click)="cacheFull.set(undefined)">
+                    {{ 'WORLD_EDITOR.CLOSE' | translate }}
+                  </button>
+                </div>
+              }
               @if (preloading(); as progress) {
                 <span class="text-muted" data-testid="preload-label">{{ progress.label }}</span>
                 <div class="flex-grow-1">

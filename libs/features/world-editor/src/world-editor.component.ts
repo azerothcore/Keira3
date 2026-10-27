@@ -1020,8 +1020,19 @@ export class WorldEditorComponent implements OnInit {
   }
 
   /** Processes the selected zone, the whole map, or every map into the disk cache. */
+  /** The cache got full while preloading: offers to double its maximum and go on. */
+  protected readonly cacheFull = signal<{ scope: 'zone' | 'map' | 'all'; maxGb: number } | undefined>(undefined);
+
+  protected raiseCacheAndPreload(): void {
+    const full = this.cacheFull() as { scope: 'zone' | 'map' | 'all'; maxGb: number };
+    this.cacheFull.set(undefined);
+    this.cache.setMaxBytes(Math.max(1, full.maxGb) * 2 * 1_000_000_000);
+    void this.preload(full.scope);
+  }
+
   protected async preload(scope: 'zone' | 'map' | 'all'): Promise<void> {
     this.preloadCancelled = false;
+    this.cacheFull.set(undefined);
     this.preloading.set({ label: '', directory: '', done: 0, total: 0, map: 0, maps: 0 });
     let tileCount = 0;
     try {
@@ -1042,7 +1053,8 @@ export class WorldEditorComponent implements OnInit {
         );
         await this.refreshCacheUsage();
         if (!completed) {
-          this.toastr.warning('The cache reached its maximum size: preloading stopped.', 'World Editor');
+          // ask to make room and go on (what's cached already is skipped quickly)
+          this.cacheFull.set({ scope, maxGb: this.cache.maxBytes() / 1_000_000_000 });
           return;
         }
         tileCount += job.tiles.length;

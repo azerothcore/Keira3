@@ -1046,6 +1046,8 @@
     "ERROR_DESKTOP_ONLY": "3D世界编辑器需要 Keira3 桌面应用来读取你的 WoW 客户端文件。",
     "WALKED_BY": "使用者",
     "VIEW": "视图",
+    "CACHE_FULL": "缓存已达上限（{{gb}} GB）：预加载已暂停。",
+    "CACHE_RAISE": "提高到 {{gb}} GB 并继续",
     "MAP_SEARCH": "地图：名称或 ID",
     "NO_RESULTS": "未找到",
     "BOSS_BOUNDARIES": "首领边界",

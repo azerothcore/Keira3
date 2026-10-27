@@ -1046,6 +1046,8 @@
     "ERROR_DESKTOP_ONLY": "The 3D world editor needs the Keira3 desktop app to read your WoW client files.",
     "WALKED_BY": "Walked by",
     "VIEW": "View",
+    "CACHE_FULL": "The cache reached its maximum ({{gb}} GB): preloading paused.",
+    "CACHE_RAISE": "Raise to {{gb}} GB and go on",
     "MAP_SEARCH": "Map: name or id",
     "NO_RESULTS": "Nothing found",
     "BOSS_BOUNDARIES": "Boss boundaries",
