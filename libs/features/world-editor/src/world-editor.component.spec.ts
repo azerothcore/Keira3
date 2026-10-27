@@ -381,6 +381,39 @@ describe(WorldEditorComponent.name, () => {
       expect(mocks.toastr.error).not.toHaveBeenCalled();
     });
 
+    it('shows which map it is looking at while finding the tiles, skips unreadable maps, and can be cancelled meanwhile', async () => {
+      const { page } = await setup();
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+      let finishScan: () => void = () => undefined;
+      mocks.client.getMapTiles.mockImplementation((directory: string) =>
+        directory === 'Azeroth'
+          ? new Promise((resolve, reject) => (finishScan = () => reject(new Error('bad WDT'))))
+          : Promise.resolve([{ tx: 1, ty: 1 }]),
+      );
+      mocks.client.preload.mockResolvedValue(true);
+      page.click('settings-toggle');
+      page.fixture.detectChanges();
+      page.click('preload-all');
+      await settle(page);
+      expect(page.text('preload-label')).toBe('Eastern Kingdoms…');
+      expect(page.text('preload-progress')).toBe('0 / 2');
+      finishScan();
+      await settle(page);
+      expect(warn).toHaveBeenCalledWith('[World Editor] Could not read the tiles of Azeroth: bad WDT');
+      expect(mocks.client.preload).toHaveBeenCalledTimes(1);
+      expect(mocks.client.preload.mock.calls[0][0]).toBe('Kalimdor');
+
+      // cancelled while finding the tiles: nothing is preloaded
+      mocks.client.preload.mockClear();
+      page.click('preload-all');
+      await settle(page);
+      page.click('preload-cancel');
+      finishScan();
+      await settle(page);
+      expect(mocks.client.preload).not.toHaveBeenCalled();
+      warn.mockRestore();
+    });
+
     it('shows what each map takes in the cache', async () => {
       mocks.client.cacheUsage.mockResolvedValue({
         maps: [

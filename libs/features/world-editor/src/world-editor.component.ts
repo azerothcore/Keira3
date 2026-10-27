@@ -489,8 +489,16 @@ export class WorldEditorComponent implements OnInit {
   private async preloadJobs(scope: 'zone' | 'map' | 'all'): Promise<{ directory: string; name: string; tiles: TileCoord[] }[]> {
     const maps = scope === 'all' ? this.maps() : this.maps().filter((map) => map.id === this.mapId());
     const jobs = [];
-    for (const map of maps) {
-      let tiles = await this.client.getMapTiles(map.directory);
+    for (const [index, map] of maps.entries()) {
+      if (this.preloadCancelled) {
+        break;
+      }
+      this.preloading.set({ label: `${map.name}…`, directory: '', done: index, total: maps.length });
+      // one unreadable map shouldn't stop the others
+      let tiles = await this.client.getMapTiles(map.directory).catch((error: Error) => {
+        console.warn(`[World Editor] Could not read the tiles of ${map.directory}: ${error.message}`);
+        return [];
+      });
       const zone = this.zones().find((z) => z.areaId === this.zoneId());
       if (scope === 'zone' && zone) {
         const inZone = new Set(tilesInBounds(zone.bounds, { tx: 32, ty: 32 }).map(tileKey));
