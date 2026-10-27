@@ -19,6 +19,10 @@ export interface WorldSpawn {
   scale?: number;
   /** Draws a circle of this radius (yards) around the spawn: how far a wandering creature roams. */
   wanderRadius?: number;
+  /** More lines shown under the label on hover (event, phase, quests…). */
+  details?: string[];
+  /** The lines shown instead while Alt is held (e.g. every quest instead of the first one). */
+  allDetails?: string[];
 }
 
 export interface WorldWaypoint {

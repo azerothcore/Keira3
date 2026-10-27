@@ -30,7 +30,8 @@
   background: rgba(0, 0, 0, 0.75);
   color: #fff;
   font-size: 12px;
-  white-space: nowrap;
+  // one line per detail
+  white-space: pre;
 }
 
 .world-viewer-status {

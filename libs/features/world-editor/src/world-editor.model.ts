@@ -33,6 +33,15 @@ export interface SpawnRecord {
   phaseMask?: number;
 }
 
+/** A quest a creature or gameobject entry starts or ends (creature_queststarter / _questender, gameobject_…). */
+export interface SpawnQuest {
+  type: SpawnType;
+  entry: number;
+  quest: number;
+  role: 'starts' | 'ends';
+  title: string;
+}
+
 export type Quaternion = [number, number, number, number];
 
 export interface WaypointRecord {

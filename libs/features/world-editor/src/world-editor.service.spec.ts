@@ -131,6 +131,35 @@ describe('WorldEditorService', () => {
     expect(queryService.query.mock.calls[1][0]).toContain('FROM game_event_gameobject e WHERE e.guid = g.guid');
   });
 
+  it('loads the quests that creatures and gameobjects start or end', async () => {
+    const { service, queryService } = setup();
+    expect(await service.loadQuests([])).toEqual([]);
+    expect(queryService.query).not.toHaveBeenCalled();
+    queryService.query.mockReturnValueOnce(
+      of([
+        { type: 'creature', entry: '197', quest: '54', role: 'starter', title: 'Report to Goldshire' },
+        { type: 'gameobject', entry: '3', quest: '60', role: 'ender', title: null },
+      ]),
+    );
+    expect(
+      await service.loadQuests([
+        { type: 'creature', entry: 197 },
+        { type: 'creature', entry: 197 },
+        { type: 'gameobject', entry: 3 },
+      ]),
+    ).toEqual([
+      { type: 'creature', entry: 197, quest: 54, role: 'starts', title: 'Report to Goldshire' },
+      { type: 'gameobject', entry: 3, quest: 60, role: 'ends', title: '' },
+    ]);
+    const sql = queryService.query.mock.calls[0][0] as string;
+    expect(sql).toContain('FROM creature_queststarter q LEFT JOIN quest_template qt ON qt.ID = q.quest WHERE q.id IN (197)');
+    expect(sql).toContain('FROM gameobject_questender q');
+    expect(sql.split('UNION ALL')).toHaveLength(4);
+    queryService.query.mockReturnValueOnce(of(undefined));
+    expect(await service.loadQuests([{ type: 'creature', entry: 1 }])).toEqual([]);
+    expect((queryService.query.mock.calls[1][0] as string).split('UNION ALL')).toHaveLength(2);
+  });
+
   it('loads the descriptions of game events', async () => {
     const { service, queryService } = setup();
     expect((await service.loadEventNames([0, -3])).size).toBe(0);

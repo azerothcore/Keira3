@@ -548,6 +548,50 @@ describe(WorldViewerComponent.name, () => {
       expect(host.picks).toEqual([]);
     });
 
+    it('shows the details of a hovered spawn, and all of them while Alt is held', async () => {
+      const { page, host, fixture, update } = await pickSetup();
+      await settle(fixture);
+      await update(() =>
+        host.spawns.set([
+          {
+            ...spawn('creature:7', at(0, 0), 'Deputy Willem'),
+            details: ['Phase 2', 'Quest 1 (A) +1 (Alt)'],
+            allDetails: ['Phase 2', 'Quest 1 (A)', 'Quest 2 (B)'],
+          },
+        ]),
+      );
+      const canvas = page.canvas().nativeElement;
+      const label = () => page.label().nativeElement.textContent?.trim();
+      page.pointer('pointermove', 50, 50);
+      flushFrames();
+      fixture.detectChanges();
+      expect(label()).toBe('Deputy Willem\nPhase 2\nQuest 1 (A) +1 (Alt)');
+
+      canvas.dispatchEvent(new KeyboardEvent('keydown', { key: 'Alt' }));
+      // a second key event before the frame doesn't queue another update
+      canvas.dispatchEvent(new KeyboardEvent('keydown', { key: 'Alt' }));
+      flushFrames();
+      fixture.detectChanges();
+      expect(label()).toBe('Deputy Willem\nPhase 2\nQuest 1 (A)\nQuest 2 (B)');
+      canvas.dispatchEvent(new KeyboardEvent('keyup', { key: 'Alt' }));
+      flushFrames();
+      fixture.detectChanges();
+      expect(label()).toContain('+1 (Alt)');
+
+      // a spawn without the long version keeps its details; one without details shows only its name
+      await update(() => host.spawns.set([{ ...spawn('creature:7', at(0, 0), 'Deputy Willem'), details: ['Phase 2'] }]));
+      page.pointer('pointermove', 50, 50, 0, true);
+      flushFrames();
+      fixture.detectChanges();
+      expect(label()).toBe('Deputy Willem\nPhase 2');
+      // after leaving the view, Alt does nothing
+      page.pointer('pointerleave', 50, 50);
+      canvas.dispatchEvent(new KeyboardEvent('keydown', { key: 'Alt' }));
+      flushFrames();
+      fixture.detectChanges();
+      expect(page.label(false)).toBeFalsy();
+    });
+
     it('shows the name of the hovered spawn or waypoint, at most once per frame', async () => {
       const { page, host, fixture, update } = await pickSetup();
       await settle(fixture);

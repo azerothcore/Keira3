@@ -120,6 +120,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private frameRequested = false;
   private pointerDown?: { x: number; y: number };
   private lastEmittedCenter?: WorldPosition;
+  /** Alt held during the last hover: labels show all their details. */
+  private altHeld = false;
   /** Where the cursor last was over the view, for Space. */
   private lastPointer?: PointerEvent;
   private hoverEvent?: PointerEvent;
@@ -313,6 +315,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private updateHover(): void {
     const event = this.hoverEvent as PointerEvent;
     this.hoverEvent = undefined;
+    this.altHeld = event.altKey;
     const result = this.pickAt(event, { markersOnly: true, segments: true });
     const text =
       result?.type === 'segment' ? this.segmentLabel(result) : result ? this.labelFor((result as { key: string }).key) : undefined;
@@ -322,6 +325,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
 
   protected onPointerLeave(): void {
     this.hoverEvent = undefined;
+    this.lastPointer = undefined;
     this.hoverLabel.set(undefined);
   }
 
@@ -344,7 +348,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private labelFor(key: string): string {
     const spawn = this.spawns().find((s) => s.key === key);
     if (spawn) {
-      return spawn.label;
+      const details = (this.altHeld && spawn.allDetails) || spawn.details || [];
+      return [spawn.label, ...details].join('\n');
     }
     // Every other pickable object is a waypoint of one of the paths.
     const { pathKey, point } = parseWaypointKey(key) as { pathKey: string; point: number };
@@ -357,6 +362,9 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   // ---------------------------------------------------------------- keyboard navigation
 
   protected onKeyDown(event: KeyboardEvent): void {
+    if (event.key === 'Alt') {
+      this.setAltHeld(true);
+    }
     if (event.code === 'Space') {
       event.preventDefault();
       this.recenterOnCursor();
@@ -375,7 +383,22 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     }
   }
 
+  /** Alt pressed or released while hovering: shows the label with all or with the short details. */
+  private setAltHeld(held: boolean): void {
+    if (this.lastPointer && !this.hoverEvent) {
+      this.hoverEvent = new MouseEvent('pointermove', {
+        clientX: this.lastPointer.clientX,
+        clientY: this.lastPointer.clientY,
+        altKey: held,
+      }) as PointerEvent;
+      requestAnimationFrame(() => this.updateHover());
+    }
+  }
+
   protected onKeyUp(event: KeyboardEvent): void {
+    if (event.key === 'Alt') {
+      this.setAltHeld(false);
+    }
     const action = this.navigationAction(event.code);
     if (action) {
       this.pressed.delete(action);

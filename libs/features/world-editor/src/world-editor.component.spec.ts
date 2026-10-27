@@ -130,6 +130,7 @@ describe(WorldEditorComponent.name, () => {
       loadWaypointScripts: vi.fn(),
       loadWaypointSai: vi.fn(),
       loadEventNames: vi.fn(),
+      loadQuests: vi.fn(),
       getMaxGuid: vi.fn(),
       getFreePathId: vi.fn(),
       getEntryName: vi.fn(),
@@ -201,6 +202,7 @@ describe(WorldEditorComponent.name, () => {
     mocks.service.loadWaypointScripts.mockResolvedValue(new Map([[50, [{ id: 50, delay: 0, command: 0 }]]]));
     mocks.service.loadWaypointSai.mockResolvedValue([{ entryorguid: -1, point: 2, pathId: 10, actionType: 1, comment: 'Willem - Say' }]);
     mocks.service.loadEventNames.mockResolvedValue(new Map());
+    mocks.service.loadQuests.mockResolvedValue([]);
     mocks.service.getMaxGuid.mockResolvedValue(1000);
     mocks.service.getFreePathId.mockResolvedValue(20);
     mocks.service.getEntryName.mockResolvedValue('Marshal McBride');
@@ -829,6 +831,59 @@ describe(WorldEditorComponent.name, () => {
       expect(wander()).toEqual([undefined, 8, undefined]);
     });
 
+    it('shows the event, phase and quests of spawns on hover, the first quest only unless Alt is held', async () => {
+      mocks.service.loadSpawns.mockResolvedValue([
+        spawn('creature', 1, { event: 12, phaseMask: 3, name: 'Headless Horseman' }),
+        spawn('creature', 2, { event: 99, phaseMask: 1 }),
+        spawn('gameobject', 3, { name: 'Wanted Poster' }),
+        spawn('gameobject', 4),
+      ]);
+      mocks.service.loadEventNames.mockResolvedValue(new Map([[12, "Hallow's End"]]));
+      mocks.service.loadQuests.mockResolvedValue([
+        { type: 'gameobject', entry: 103, quest: 176, role: 'starts', title: 'Wanted: "Hogger"' },
+        { type: 'gameobject', entry: 103, quest: 177, role: 'ends', title: '' },
+        { type: 'gameobject', entry: 103, quest: 178, role: 'starts', title: 'Third' },
+        { type: 'creature', entry: 102, quest: 7, role: 'ends', title: 'Seven' },
+      ]);
+      const { page } = await setup();
+      page.click('filters-toggle');
+      page.fixture.detectChanges();
+      await loadArea(page);
+      for (const id of ['event-12', 'event-99']) {
+        const box = page.byId<HTMLInputElement>(id).nativeElement;
+        box.checked = true;
+        box.dispatchEvent(new Event('change'));
+      }
+      page.fixture.detectChanges();
+      expect(mocks.service.loadQuests).toHaveBeenCalled();
+      const details = (key: string) =>
+        page
+          .viewer()
+          .spawns()
+          .find((s) => s.key === key);
+      expect(details('creature:1')?.details).toEqual(["Event 12 (Hallow's End)", 'Phase mask 3']);
+      expect(details('creature:2')?.details).toEqual(['Event 99 (?)', 'Ends quest 7 (Seven)']);
+      expect(details('gameobject:3')?.details).toEqual(['Starts quest 176 (Wanted: "Hogger")', '+2 more (hold Alt)']);
+      expect(details('gameobject:3')?.allDetails).toEqual([
+        'Starts quest 176 (Wanted: "Hogger")',
+        'Ends quest 177 (?)',
+        'Starts quest 178 (Third)',
+      ]);
+      expect(details('gameobject:4')?.details).toBeUndefined();
+    });
+
+    it('loads the spawns around the view once the maps are known, when the view reported its position first', async () => {
+      let resolveMaps: (maps: typeof MAPS) => void = () => undefined;
+      mocks.client.getMaps.mockReturnValue(new Promise((resolve) => (resolveMaps = resolve)));
+      const { page } = await setup({ lastView: JSON.stringify({ mapId: 0, ...CENTER }) });
+      page.viewer().centerChanged.emit(CENTER);
+      await settle(page);
+      expect(mocks.service.loadSpawns).not.toHaveBeenCalled();
+      resolveMaps(MAPS);
+      await settle(page);
+      expect(mocks.service.loadSpawns).toHaveBeenCalledWith(0, CENTER);
+    });
+
     it('filters layers', async () => {
       const { page } = await setup();
       await loadArea(page);
@@ -903,12 +958,12 @@ describe(WorldEditorComponent.name, () => {
       page.type('filter-search', '');
       page.fixture.detectChanges();
 
-      expect(
-        page
-          .viewer()
-          .spawns()
-          .find((s) => s.key === 'gameobject:7')?.label,
-      ).toBe('Spawn 7 - GameObject (GUID: 7, Entry: 107) · phaseMask 2');
+      const gameobject = page
+        .viewer()
+        .spawns()
+        .find((s) => s.key === 'gameobject:7');
+      expect(gameobject?.label).toBe('Spawn 7 - GameObject (GUID: 7, Entry: 107)');
+      expect(gameobject?.details).toEqual(['Phase mask 2']);
       check('filter-triggers', true);
       expect(keys()).toContain('creature:6');
       check('filter-phases', false);

@@ -41,6 +41,7 @@ import {
   LayerVisibility,
   parseSpawnKey,
   pathKey,
+  SpawnQuest,
   SpawnRecord,
   spawnKey,
   SpawnType,
@@ -69,10 +70,8 @@ function pathOwners(spawns: SpawnRecord[]): Map<number, string[]> {
   return owners;
 }
 
-/** " · phaseMask 2" for spawns not in phase 1 (the one players start in), shown on hover. */
-function phaseNote(spawn: SpawnRecord): string {
-  return spawn.phaseMask === undefined || spawn.phaseMask === 1 ? '' : ` · phaseMask ${spawn.phaseMask}`;
-}
+/** Quests shown on hover before "+N more": the rest while Alt is held. */
+const HOVER_QUESTS = 1;
 
 /** "3175.5 MB (3.18 GB)". */
 export function formatSize(bytes: number): string {
@@ -237,6 +236,8 @@ export class WorldEditorComponent implements OnInit {
   private readonly loadedWaypoints = signal<WaypointRecord[]>([]);
   private readonly waypointScripts = signal(new Map<number, WaypointScriptStep[]>());
   private readonly waypointSai = signal<WaypointSaiRow[]>([]);
+  /** Quests started or ended by the loaded entries, by `type:entry`. */
+  private readonly quests = signal(new Map<string, SpawnQuest[]>());
   private center?: WorldPosition;
   private spawnRequest = 0;
   /** Last guid handed out per type, chained so quick consecutive placements never get the same guid. */
@@ -278,7 +279,8 @@ export class WorldEditorComponent implements OnInit {
         kind: s.type,
         guid: s.guid,
         entry: s.entry,
-        label: `${spawnTitle(s)}${s.pathId ? ` · path ${s.pathId}` : ''}${phaseNote(s)}`,
+        label: `${spawnTitle(s)}${s.pathId ? ` · path ${s.pathId}` : ''}`,
+        ...this.spawnDetails(s),
         position: { x: s.x, y: s.y, z: s.z },
         orientation: s.o,
         pending: this.changes.isNewSpawn(spawnKey(s.type, s.guid)),
@@ -314,6 +316,28 @@ export class WorldEditorComponent implements OnInit {
 
   /** What happens at a waypoint (wait, move type, script, SmartAI of the creatures walking the path). */
   protected readonly spawnTitle = spawnTitle;
+
+  /** Hover lines of a spawn: its event, its phase when not 1, and its quests (all of them with Alt). */
+  private spawnDetails(spawn: SpawnRecord): { details?: string[]; allDetails?: string[] } {
+    const lines: string[] = [];
+    if (spawn.event) {
+      lines.push(`Event ${spawn.event} (${this.eventNames().get(spawn.event) || '?'})`);
+    }
+    if (spawn.phaseMask !== undefined && spawn.phaseMask !== 1) {
+      lines.push(`Phase mask ${spawn.phaseMask}`);
+    }
+    const quests = (this.quests().get(`${spawn.type}:${spawn.entry}`) ?? []).map(
+      (q) => `${q.role === 'starts' ? 'Starts' : 'Ends'} quest ${q.quest} (${q.title || '?'})`,
+    );
+    if (lines.length === 0 && quests.length === 0) {
+      return {};
+    }
+    const more = quests.length - HOVER_QUESTS;
+    return {
+      details: [...lines, ...quests.slice(0, HOVER_QUESTS), ...(more > 0 ? [`+${more} more (hold Alt)`] : [])],
+      allDetails: [...lines, ...quests],
+    };
+  }
 
   protected waypointInfo(waypoint: WaypointRecord): string[] {
     const walkers = this.spawns().filter((s) => s.type === 'creature' && s.pathId === waypoint.pathId);
@@ -557,6 +581,8 @@ export class WorldEditorComponent implements OnInit {
       if (!this.focus()) {
         await this.focusMapCenter();
       }
+      // the view may have reported where it looks before the maps were known (e.g. when coming back to the editor)
+      void this.reloadSpawns();
       await this.loadZones();
     } catch (error) {
       this.toastr.error((error as Error).message, 'World Editor');
@@ -715,15 +741,22 @@ export class WorldEditorComponent implements OnInit {
       }
       this.loadedWaypoints.set(waypoints);
       const walkers = spawns.filter((s) => s.type === 'creature' && s.pathId);
-      const [scripts, sai, eventNames] = await Promise.all([
+      const [scripts, sai, eventNames, quests] = await Promise.all([
         this.service.loadWaypointScripts(waypoints.map((w) => w.action ?? 0)),
         this.service.loadWaypointSai(walkers),
         this.service.loadEventNames(spawns.map((s) => s.event ?? 0)),
+        this.service.loadQuests(spawns),
       ]);
       if (request === this.spawnRequest) {
         this.waypointScripts.set(scripts);
         this.waypointSai.set(sai);
         this.eventNames.set(eventNames);
+        const byEntry = new Map<string, SpawnQuest[]>();
+        for (const quest of quests) {
+          const key = `${quest.type}:${quest.entry}`;
+          byEntry.set(key, [...(byEntry.get(key) ?? []), quest]);
+        }
+        this.quests.set(byEntry);
       }
     } catch (error) {
       this.toastr.error((error as Error).message, 'World Editor');

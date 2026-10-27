@@ -10,6 +10,7 @@ import {
   Quaternion,
   SpawnRecord,
   SpawnRow,
+  SpawnQuest,
   SpawnType,
   TeleRow,
   WaypointRecord,
@@ -137,6 +138,34 @@ export class WorldEditorService {
       pathId: Number(row['pathId']),
       actionType: Number(row['actionType']),
       comment: String(row['comment'] ?? ''),
+    }));
+  }
+
+  /** Quests the given creatures and gameobjects start or end (by entry), with their titles. */
+  async loadQuests(entries: { type: SpawnType; entry: number }[]): Promise<SpawnQuest[]> {
+    const ids = (type: SpawnType): number[] => [...new Set(entries.filter((e) => e.type === type).map((e) => Math.trunc(e.entry)))];
+    const parts: string[] = [];
+    for (const type of ['creature', 'gameobject'] as SpawnType[]) {
+      const list = ids(type);
+      for (const role of ['starter', 'ender']) {
+        if (list.length) {
+          parts.push(
+            `SELECT '${type}' AS type, q.id AS entry, q.quest, '${role}' AS role, IFNULL(qt.LogTitle, '') AS title ` +
+              `FROM ${type}_quest${role} q LEFT JOIN quest_template qt ON qt.ID = q.quest WHERE q.id IN (${list.join(', ')})`,
+          );
+        }
+      }
+    }
+    if (parts.length === 0) {
+      return [];
+    }
+    const rows = await firstValueFrom(this.queryService.query<TableRow>(`${parts.join(' UNION ALL ')} ORDER BY quest`));
+    return (rows ?? []).map((row) => ({
+      type: row['type'] as SpawnType,
+      entry: Number(row['entry']),
+      quest: Number(row['quest']),
+      role: row['role'] === 'ender' ? 'ends' : 'starts',
+      title: String(row['title'] ?? ''),
     }));
   }
 
