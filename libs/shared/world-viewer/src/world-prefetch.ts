@@ -42,6 +42,8 @@ export class WorldPrefetch {
   private readonly done = new Set<string>();
   private generation = 0;
   private running = false;
+  /** Which way the camera looks (server x/y): tiles in front are read first. */
+  facing?: { x: number; y: number };
 
   constructor(
     private readonly source: PrefetchSource,
@@ -97,7 +99,10 @@ export class WorldPrefetch {
         }
       }
     }
-    this.queue = ring.sort((a, b) => a.distance - b.distance).map(({ tile }) => tile);
+    const facing = this.facing ?? { x: 0, y: 0 };
+    // tiles go west as tx grows and south as ty grows: their offset in server x/y is (−dty, −dtx)
+    const ahead = (t: TileCoord) => -(t.ty - at.ty) * facing.x - (t.tx - at.tx) * facing.y;
+    this.queue = ring.sort((a, b) => a.distance - b.distance || ahead(b.tile) - ahead(a.tile)).map(({ tile }) => tile);
     void this.run();
   }
 

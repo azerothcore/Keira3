@@ -34,6 +34,8 @@ interface Placed {
  * tiles is placed once and kept while any of them is loaded; each WMO file is loaded once and cloned per placement.
  */
 export class WorldObjects {
+  /** Which way the camera looks (server x/y): tiles in front load first. */
+  facing?: { x: number; y: number };
   private directory?: string;
   private generation = 0;
   private centerTile: TileCoord = { tx: 32, ty: 32 };
@@ -99,7 +101,7 @@ export class WorldObjects {
         this.removeTile(key);
       }
     }
-    for (const tile of [...tilesAround(this.centerTile, this.options.radius), ...regionTiles]) {
+    for (const tile of [...tilesAround(this.centerTile, this.options.radius, this.facing), ...regionTiles]) {
       const key = tileKey(tile);
       if (this.tiles.has(key) || this.loading.has(key)) {
         continue;

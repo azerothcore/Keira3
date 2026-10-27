@@ -60,8 +60,11 @@ export function tileKey(tile: TileCoord): string {
   return `${tile.tx}_${tile.ty}`;
 }
 
-/** Tiles in a square of the given radius around `center`, nearest first, clipped to the map grid. */
-export function tilesAround(center: TileCoord, radius: number): TileCoord[] {
+/**
+ * Tiles in a square of the given radius around `center`, nearest first, clipped to the map grid; with `facing` (a
+ * server x/y direction), those in front come first in each ring.
+ */
+export function tilesAround(center: TileCoord, radius: number, facing?: { x: number; y: number }): TileCoord[] {
   const tiles: TileCoord[] = [];
   for (let tx = center.tx - radius; tx <= center.tx + radius; tx++) {
     for (let ty = center.ty - radius; ty <= center.ty + radius; ty++) {
@@ -71,7 +74,9 @@ export function tilesAround(center: TileCoord, radius: number): TileCoord[] {
     }
   }
   const distance = (t: TileCoord): number => Math.max(Math.abs(t.tx - center.tx), Math.abs(t.ty - center.ty));
-  return tiles.sort((a, b) => distance(a) - distance(b));
+  // tiles go west as tx grows and south as ty grows: their offset in server x/y is (−dty, −dtx)
+  const ahead = (t: TileCoord): number => (facing ? -(t.ty - center.ty) * facing.x - (t.tx - center.tx) * facing.y : 0);
+  return tiles.sort((a, b) => distance(a) - distance(b) || ahead(b) - ahead(a));
 }
 
 /** An area of a map in server coordinates (e.g. a zone's bounds). */

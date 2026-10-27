@@ -42,6 +42,16 @@ describe('coords', () => {
     expect(tiles.length).toBe(9);
     expect(tiles[0]).toEqual({ tx: 10, ty: 10 });
     expect(tilesAround({ tx: 0, ty: 63 }, 1).length).toBe(4);
+    // looking north (+x: towards lower ty), the northern tiles of each ring come first
+    const north = tilesAround({ tx: 10, ty: 10 }, 1, { x: 1, y: 0 });
+    expect(north[0]).toEqual({ tx: 10, ty: 10 });
+    expect(north.slice(1, 4).every((t) => t.ty === 9)).toBe(true);
+    // looking west (+y: towards lower tx)
+    expect(
+      tilesAround({ tx: 10, ty: 10 }, 1, { x: 0, y: 1 })
+        .slice(1, 4)
+        .every((t) => t.tx === 9),
+    ).toBe(true);
   });
 
   it('converts between world and scene coordinates', () => {

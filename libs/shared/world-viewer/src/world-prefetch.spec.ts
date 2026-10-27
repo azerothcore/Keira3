@@ -46,6 +46,8 @@ describe('WorldPrefetch', () => {
     const { source, targets, prefetch } = setup(row);
     await prefetch.setMap('Azeroth');
     prefetch.configure({ rings: 2, radius: 1, detailed: true });
+    // looking east (−y): towards higher tx
+    prefetch.facing = { x: 0, y: -1 };
     prefetch.update(tileCenter({ tx: 32, ty: 48 }));
     await flush();
     // 32 and 33 are drawn; 34 and 35 are read ahead; 36 is too far
@@ -58,6 +60,20 @@ describe('WorldPrefetch', () => {
     prefetch.update(tileCenter({ tx: 32, ty: 48 }));
     await flush();
     expect(source.getTerrainDetail).toHaveBeenCalledTimes(2);
+  });
+
+  it('reads the tiles in front of the camera first', async () => {
+    const { source, prefetch } = setup([
+      { tx: 30, ty: 48 },
+      { tx: 34, ty: 48 },
+    ]);
+    await prefetch.setMap('Azeroth');
+    prefetch.configure({ rings: 1, radius: 1, detailed: false });
+    // looking east (−y): towards higher tx
+    prefetch.facing = { x: 0, y: -1 };
+    prefetch.update(tileCenter({ tx: 32, ty: 48 }));
+    await flush();
+    expect(source.getTerrain.mock.calls.map((call) => key(call[1]))).toEqual(['34_48', '30_48']);
   });
 
   it('reads the low-poly terrain when that is drawn, and again the other kind when it changes', async () => {

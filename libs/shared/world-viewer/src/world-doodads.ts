@@ -40,6 +40,8 @@ export const SMALL_DOODAD_RADIUS = 4;
  * Each model is drawn as one instanced mesh, so a forest of the same tree costs a single draw call per material.
  */
 export class WorldDoodads {
+  /** Which way the camera looks (server x/y): tiles in front load first. */
+  facing?: { x: number; y: number };
   private directory?: string;
   private generation = 0;
   private center?: WorldPosition;
@@ -127,7 +129,7 @@ export class WorldDoodads {
     }
     this.refresh();
 
-    for (const tile of [...tilesAround(this.centerTile, this.tileRadius), ...regionTiles]) {
+    for (const tile of [...tilesAround(this.centerTile, this.tileRadius, this.facing), ...regionTiles]) {
       const key = tileKey(tile);
       if (this.tiles.has(key) || this.loading.has(key)) {
         continue;

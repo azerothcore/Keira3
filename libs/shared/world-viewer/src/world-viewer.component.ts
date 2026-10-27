@@ -1137,6 +1137,13 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     }
     this.lastEmittedCenter = center;
     this.centerChanged.emit(center);
+    // load what's in front first
+    const look = new Vector3();
+    this.world.camera.getWorldDirection(look);
+    const facing = { x: -look.z, y: -look.x };
+    for (const streamer of [this.streamer, this.objects, this.doodads, this.navMesh, this.prefetch]) {
+      streamer.facing = facing;
+    }
     // update() reports tile failures itself and never rejects.
     void this.streamer.update(center);
     void this.objects.update(center);

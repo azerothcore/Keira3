@@ -26,6 +26,8 @@ export interface WorldNavMeshOptions {
  * see-through over the ground with its triangle edges.
  */
 export class WorldNavMesh {
+  /** Which way the camera looks (server x/y): tiles in front load first. */
+  facing?: { x: number; y: number };
   private directory?: string;
   private generation = 0;
   private options: WorldNavMeshOptions = { show: false, radius: 1 };
@@ -121,7 +123,7 @@ export class WorldNavMesh {
         this.read.delete(key);
       }
     }
-    for (const tile of [...tilesAround(centerTile, this.options.radius), ...regionTiles]) {
+    for (const tile of [...tilesAround(centerTile, this.options.radius, this.facing), ...regionTiles]) {
       const key = tileKey(tile);
       if (this.read.has(key) || this.loading.has(key)) {
         continue;

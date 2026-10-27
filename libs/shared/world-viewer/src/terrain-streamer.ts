@@ -33,6 +33,8 @@ export interface TerrainStreamerOptions {
  * tiles further than `radius + 1` are dropped. Switching map or options cancels pending loads.
  */
 export class TerrainStreamer {
+  /** Which way the camera looks (server x/y): tiles in front load first. */
+  facing?: { x: number; y: number };
   private directory?: string;
   private available = new Map<string, TileCoord>();
   private readonly loading = new Set<string>();
@@ -123,7 +125,7 @@ export class TerrainStreamer {
       }
     }
 
-    for (const tile of [...tilesAround(centerTile, this.options.radius), ...regionTiles]) {
+    for (const tile of [...tilesAround(centerTile, this.options.radius, this.facing), ...regionTiles]) {
       const key = tileKey(tile);
       const detailed = this.wantsDetail(tile);
       if (!this.available.has(key) || this.loading.has(key) || this.loadedDetail.get(key) === detailed) {
