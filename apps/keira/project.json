@@ -15,6 +15,7 @@
         "index": "apps/keira/src/index.html",
         "browser": "apps/keira/src/main.ts",
         "tsConfig": "apps/keira/src/tsconfig.app.json",
+        "webWorkerTsConfig": "apps/keira/src/tsconfig.worker.json",
         "assets": [
           "apps/keira/src/assets",
           "apps/keira/src/favicon.ico",

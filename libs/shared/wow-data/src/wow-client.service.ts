@@ -21,30 +21,21 @@ import {
 } from './dbc';
 import { BossBoundary, parseBossScripts, parseInstanceBoundaries, parseMapConstants } from './boss-boundaries';
 import { FolderArchive } from './folder-archive';
-import { decodeBlp, decodeBlpForGpu, GpuTexture, parseAdt, ParsedAdt, parseWdt, RgbaImage, WdtInfo } from './formats';
+import { GpuTexture, ParsedAdt, parseWdt, RgbaImage, WdtInfo } from './formats';
 import { MD5_TRANSLATE_PATH, MINIMAP_ROOT, minimapKey, parseMd5Translate } from './minimap';
 import { parseConfigWtfLocale, pickLocale, sortMpqArchives } from './mpq-order';
-import { LiquidMesh, parseLiquids } from './liquid';
+import { LiquidMesh } from './liquid';
 import { parseZoneLights, ZoneLight } from './light';
-import { M2Mesh, m2Path, m2SkinPath, parseM2 } from './m2';
-import { buildTerrainChunkMeshes, buildTerrainMesh, TerrainChunkMesh, TerrainMeshData } from './terrain-mesh';
-import {
-  ModelPlacement,
-  parseWmoDoodads,
-  parseWmoGroup,
-  parseWmoRoot,
-  WmoDoodads,
-  wmoDoodadPlacements,
-  WmoModel,
-  wmoGroupPath,
-} from './wmo';
-import { parseWmoGroupCollision } from './collision';
+import { M2Mesh, m2Path, m2SkinPath } from './m2';
+import { TerrainChunkMesh, TerrainMeshData } from './terrain-mesh';
+import { ModelPlacement, WmoDoodads, wmoDoodadPlacements, WmoModel, wmoGroupPath } from './wmo';
 import { mmtileName, NavMeshTile, parseMmtile } from './navmesh';
 import { parseServerMap, serverMapName, ServerMapTile } from './server-map';
 import { parseVmapModel, parseVmapTile, VmapGroup, vmapTileName, VmapSpawn } from './vmap';
 import { clientIdentity, WowDataCacheService } from './wow-data-cache.service';
 import { WowDataSettingsService } from './wow-data-settings.service';
 import { StormArchive, WOW_NATIVE_API, WowNativeApi } from './wow-native-api';
+import { WOW_PARSER } from './wow-parser';
 
 /** Disk space used by the cache of this client: per map (by lower-case directory), for buildings, and in total. */
 export interface CacheUsage {
@@ -92,6 +83,8 @@ const SERVER_MAP_CACHE = 9;
 export class WowClientService {
   private readonly native = inject(WOW_NATIVE_API);
   private readonly settings = inject(WowDataSettingsService);
+  /** Parses game files in a background worker (on the main thread outside the desktop app). */
+  private readonly parser = inject(WOW_PARSER);
   private readonly cache = inject(WowDataCacheService);
 
   private client?: Promise<OpenClient>;
@@ -417,14 +410,14 @@ export class WowClientService {
   async getTerrain(directory: string, tile: TileCoord): Promise<TerrainMeshData | undefined> {
     await nextFrame();
     const adt = await this.getAdt(directory, tile);
-    return adt && buildTerrainMesh(tile, adt.chunks);
+    return adt && this.parser.run({ kind: 'terrain', tile, chunks: adt.chunks });
   }
 
   /** Textured terrain of a tile: one mesh per chunk with its texture layers, plus its liquid surfaces. */
   async getTerrainDetail(directory: string, tile: TileCoord): Promise<TerrainDetail | undefined> {
     await nextFrame();
     const adt = await this.getAdt(directory, tile);
-    return adt && { chunks: buildTerrainChunkMeshes(adt.chunks), liquids: adt.liquids };
+    return adt && { chunks: await this.parser.run({ kind: 'terrainDetail', chunks: adt.chunks }), liquids: adt.liquids };
   }
 
   /** Buildings and doodads placed by a tile; the doodads include those inside its buildings (furniture, barrels…). */
@@ -465,7 +458,7 @@ export class WowClientService {
       return cached;
     }
     const bytes = await this.readFile(path);
-    const doodads = bytes && parseWmoDoodads(bytes);
+    const doodads = bytes && (await this.parser.run({ kind: 'wmoDoodads', bytes }));
     if (doodads) {
       this.cache.write(identity, 'wmo-doodads', path, doodads);
     }
@@ -585,12 +578,12 @@ export class WowClientService {
     if (!rootBytes) {
       return undefined;
     }
-    const root = parseWmoRoot(rootBytes);
+    const root = await this.parser.run({ kind: 'wmoRoot', bytes: rootBytes });
     const groups: WmoModel['groups'] = [];
     for (const [index, info] of root.groups.entries()) {
       const bytes = await this.readFile(wmoGroupPath(path, index));
       if (bytes) {
-        groups.push({ ...parseWmoGroup(bytes, root.flags, info.indoor), collision: parseWmoGroupCollision(bytes) });
+        groups.push(await this.parser.run({ kind: 'wmoGroup', bytes, rootFlags: root.flags, indoor: info.indoor }));
       }
     }
     return { materials: root.materials, groups };
@@ -607,7 +600,7 @@ export class WowClientService {
     }
     const model = await this.readFile(key);
     const skin = model && (await this.readFile(m2SkinPath(path)));
-    const mesh = model && skin ? parseM2(model, skin) : undefined;
+    const mesh = model && skin ? await this.parser.run({ kind: 'm2', model, skin }) : undefined;
     if (mesh) {
       this.cache.write(identity, 'm2', key, mesh);
     }
@@ -617,7 +610,7 @@ export class WowClientService {
   /** Decodes a BLP texture from the archives (e.g. a terrain tileset texture). */
   async getTexture(path: string): Promise<RgbaImage | undefined> {
     const blp = await this.readFile(path);
-    return blp ? decodeBlp(blp) : undefined;
+    return blp ? this.parser.run({ kind: 'blp', bytes: blp }) : undefined;
   }
 
   /** A texture as the graphics card takes it (DXT mip levels as they are), from the disk cache when there. */
@@ -629,7 +622,7 @@ export class WowClientService {
       return cached;
     }
     const blp = await this.readFile(path);
-    const texture = blp && decodeBlpForGpu(blp);
+    const texture = blp && (await this.parser.run({ kind: 'blpGpu', bytes: blp }));
     if (texture) {
       this.cache.write(identity, 'texture', key, texture);
     }
@@ -669,14 +662,7 @@ export class WowClientService {
     if (!bytes) {
       return undefined;
     }
-    const parsed = parseAdt(bytes, (await this.getWdt(directory))?.layerSplatDepth ?? 4);
-    const adt = {
-      ...parsed,
-      liquids: parseLiquids(
-        bytes,
-        parsed.chunks.map((chunk) => chunk.position),
-      ),
-    };
+    const adt = await this.parser.run({ kind: 'adt', bytes, depth: (await this.getWdt(directory))?.layerSplatDepth ?? 4 });
     this.cache.write(identity, 'adt', key, adt);
     return adt;
   }
@@ -695,7 +681,7 @@ export class WowClientService {
   async getMinimap(directory: string, tile: TileCoord): Promise<RgbaImage | undefined> {
     const hashed = (await this.getMinimapIndex()).get(minimapKey(directory, tile));
     const blp = hashed ? await this.readFile(`${MINIMAP_ROOT}${hashed}`) : undefined;
-    return blp ? decodeBlp(blp) : undefined;
+    return blp ? this.parser.run({ kind: 'blp', bytes: blp }) : undefined;
   }
 
   /** Closes the archives; the next read reopens them (e.g. after the client path changed). */
