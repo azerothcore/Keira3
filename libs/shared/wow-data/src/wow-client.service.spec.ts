@@ -491,7 +491,7 @@ describe('WowClientService', () => {
       expect(wmo.parseWmoRoot).not.toHaveBeenCalled();
     });
 
-    it('preloads tiles and their buildings, reporting progress, and can be cancelled', async () => {
+    it('preloads tiles, their buildings with what is inside, and the doodad models, reporting progress', async () => {
       const { service } = setup({
         mpqs: {
           'common.MPQ': {
@@ -501,6 +501,8 @@ describe('WowClientService', () => {
               'World\\Maps\\M\\M_1_3.adt': [1],
               'World\\wmo\\A.wmo': [1],
               'World\\wmo\\B.wmo': [1],
+              'World\\Tree.m2': [1],
+              'World\\Tree00.skin': [1],
             },
           },
         },
@@ -512,19 +514,25 @@ describe('WowClientService', () => {
           adtOf(
             [],
             [
-              { uniqueId: 1, path: 'World\\wmo\\A.wmo' },
-              { uniqueId: 2, path: 'World\\wmo\\B.wmo' },
+              { uniqueId: 1, path: 'World\\wmo\\A.wmo', doodadSet: 0 },
+              { uniqueId: 2, path: 'World\\wmo\\B.wmo', doodadSet: 0 },
             ],
+            [{ uniqueId: 3, path: 'World\\Tree.mdx' }],
           ),
         )
         .mockImplementationOnce(() => {
           throw new Error('bad adt');
         })
-        .mockReturnValue(adtOf([], [{ uniqueId: 1, path: 'world\\WMO\\a.wmo' }]));
+        .mockReturnValue(adtOf([], [{ uniqueId: 1, path: 'world\\WMO\\a.wmo', doodadSet: 0 }]));
       wmo.parseWmoRoot.mockImplementationOnce(() => {
         throw new Error('bad wmo');
       });
       wmo.parseWmoRoot.mockReturnValue({ flags: 0, materials: [], groups: [] });
+      wmo.parseWmoDoodads.mockImplementationOnce(() => {
+        throw new Error('bad doodads');
+      });
+      wmo.parseWmoDoodads.mockReturnValue({ sets: [], doodads: [{ path: 'World\\Barrel.mdx' }, { path: 'world\\tree.m2' }] });
+      m2.parseM2.mockReturnValue({ batches: [] });
       const progress: [number, number][] = [];
       const tiles = [1, 2, 3, 4].map((ty) => ({ tx: 1, ty }));
       expect(await service.preload('M', tiles, (done, total) => progress.push([done, total]))).toBe(true);
@@ -535,31 +543,57 @@ describe('WowClientService', () => {
         [4, 4],
         [5, 6],
         [6, 6],
+        [7, 8],
+        [8, 8],
       ]);
       expect(warn).toHaveBeenCalledWith(expect.stringContaining('bad adt'));
       expect(warn).toHaveBeenCalledWith(expect.stringContaining('bad wmo'));
+      expect(warn).toHaveBeenCalledWith(expect.stringContaining('bad doodads'));
+      expect(m2.parseM2).toHaveBeenCalledTimes(1);
 
-      // cancelled before the buildings, and before the first tile
-      let calls = 0;
-      await service.preload('M', tiles.slice(0, 1), undefined, () => calls++ > 0);
-      await service.preload(
-        'M',
-        tiles,
-        () => undefined,
-        () => true,
+      // again: everything is cached, only the cheap steps remain
+      progress.length = 0;
+      await service.preload('M', tiles.slice(0, 1), (done, total) => progress.push([done, total]));
+      expect(progress).toEqual([
+        [1, 1],
+        [2, 3],
+        [3, 3],
+        [4, 4],
+      ]);
+      expect(m2.parseM2).toHaveBeenCalledTimes(1);
+      warn.mockRestore();
+    });
+
+    it('stops preloading when cancelled or when the cache is full, at any step', async () => {
+      const { service } = setup({
+        mpqs: { 'common.MPQ': { files: { 'World\\Maps\\M\\M_1_1.adt': [1], 'World\\wmo\\C.wmo': [1] } } },
+      });
+      formats.parseWdt.mockReturnValue(undefined);
+      formats.parseAdt.mockReturnValue(
+        adtOf([], [{ uniqueId: 9, path: 'World\\wmo\\C.wmo', doodadSet: 0 }], [{ uniqueId: 3, path: 'Rock.m2' }]),
       );
+      wmo.parseWmoRoot.mockReturnValue({ flags: 0, materials: [], groups: [] });
+      wmo.parseWmoDoodads.mockReturnValue({ sets: [], doodads: [] });
+      const tile = [{ tx: 1, ty: 1 }];
+      const after = (steps: number) => {
+        let calls = 0;
+        return () => calls++ >= steps;
+      };
+      // cancelled before the first tile, before the buildings, before the models
+      for (const steps of [0, 1, 2]) {
+        const progress = vi.fn();
+        expect(await service.preload('M', tile, progress, after(steps))).toBe(true);
+        expect(progress).toHaveBeenCalledTimes(steps);
+      }
       await service.preload('M', []);
 
-      // a full cache stops the preload, before tiles or before buildings
+      // a full cache stops it, before the tiles, the buildings or the models
       const cache = TestBed.inject(WowDataCacheService);
-      cache.setMaxBytes(0);
-      expect(await service.preload('M', tiles)).toBe(false);
-      const isFull = vi.spyOn(cache, 'isFull').mockReturnValueOnce(false).mockReturnValue(true);
-      cache.clear();
-      cache.setMaxBytes(10_000);
-      formats.parseAdt.mockReturnValue(adtOf([], [{ uniqueId: 9, path: 'World\\wmo\\C.wmo' }]));
-      expect(await service.preload('M', tiles.slice(0, 1))).toBe(false);
-      isFull.mockRestore();
+      for (const steps of [0, 1, 2]) {
+        const isFull = vi.spyOn(cache, 'isFull').mockImplementation(after(steps));
+        expect(await service.preload('M', tile)).toBe(false);
+        isFull.mockRestore();
+      }
     });
 
     it('decodes textures', async () => {

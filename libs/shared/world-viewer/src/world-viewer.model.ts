@@ -48,6 +48,13 @@ export type PickResult =
   | { type: 'segment'; pathKey: string; from: number; to: number; position: WorldPosition }
   | { type: 'ground'; position: WorldPosition };
 
+/** A right-click (without dragging) on a spawn or waypoint; `x`/`y` are in pixels from the view's top-left corner. */
+export interface ContextRequest {
+  key: string;
+  x: number;
+  y: number;
+}
+
 export interface ObjectMoved {
   key: string;
   position: WorldPosition;

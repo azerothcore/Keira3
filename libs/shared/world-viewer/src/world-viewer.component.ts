@@ -27,12 +27,13 @@ import { WorldObjects } from './world-objects';
 import { DEFAULT_WORLD_RENDER_SETTINGS, drawDistances, WorldRenderSettings } from './world-render-settings';
 import { WORLD_RENDERER_FACTORY, WorldRenderer } from './world-renderer';
 import { PickOptions, WorldScene } from './world-scene';
-import { GizmoMode, ObjectMoved, parseWaypointKey, PickResult, WaypointPath, WorldSpawn } from './world-viewer.model';
+import { ContextRequest, GizmoMode, ObjectMoved, parseWaypointKey, PickResult, WaypointPath, WorldSpawn } from './world-viewer.model';
 
 const CLICK_TOLERANCE_PX = 4;
 const CENTER_EMIT_DISTANCE = 60;
 /** How far the camera stands from a place it was sent to (close enough to see an NPC there). */
 const FOCUS_DISTANCE = 40;
+const RIGHT_BUTTON = 2;
 /** Keyboard movement speed (yards per second) when the camera is close; it grows with the camera distance. */
 const KEY_MIN_SPEED = 20;
 /** While something loads, how often (ms) the loading bar is refreshed. */
@@ -81,6 +82,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   readonly region = input<WorldBounds | undefined>(undefined);
 
   readonly picked = output<PickResult>();
+  /** Right-click on a spawn or waypoint, for a context menu. */
+  readonly contextRequested = output<ContextRequest>();
   readonly objectMoved = output<ObjectMoved>();
   /** Camera target, emitted after it moved more than ~60 yards (use it to load nearby spawns). */
   readonly centerChanged = output<WorldPosition>();
@@ -264,15 +267,28 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     }
     const start = this.pointerDown;
     this.pointerDown = undefined;
-    if (!start || event.button !== 0 || this.gizmo.dragging) {
+    if (!start || this.gizmo.dragging || Math.hypot(event.clientX - start.x, event.clientY - start.y) > CLICK_TOLERANCE_PX) {
       return;
     }
-    if (Math.hypot(event.clientX - start.x, event.clientY - start.y) > CLICK_TOLERANCE_PX) {
+    if (event.button === RIGHT_BUTTON) {
+      this.requestContext(event);
+      return;
+    }
+    if (event.button !== 0) {
       return;
     }
     const result = this.pickAt(event, { groundOnly: this.groundOnly() });
     if (result) {
       this.picked.emit(result);
+    }
+  }
+
+  /** A right-click that didn't rotate the view: a context menu for the spawn or waypoint under the cursor. */
+  private requestContext(event: PointerEvent): void {
+    const result = this.pickAt(event, { markersOnly: true });
+    if (result?.type === 'spawn' || result?.type === 'waypoint') {
+      const rect = this.host().nativeElement.getBoundingClientRect();
+      this.contextRequested.emit({ key: result.key, x: event.clientX - rect.left, y: event.clientY - rect.top });
     }
   }
 

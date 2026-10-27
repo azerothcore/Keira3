@@ -257,35 +257,51 @@ export class WowClientService {
   ): Promise<boolean> {
     const { identity } = await this.getClient();
     const buildings = new Set<string>();
+    const models = new Set<string>();
     let done = 0;
-    for (const tile of tiles) {
-      if (this.cache.isFull()) {
-        return false;
+    let total = tiles.length;
+    /** Runs the steps one by one; false when the cache got full, true otherwise (also when cancelled). */
+    const run = async <T>(items: T[], step: (item: T) => Promise<unknown>): Promise<boolean | undefined> => {
+      for (const item of items) {
+        if (this.cache.isFull()) {
+          return false;
+        }
+        if (cancelled()) {
+          return true;
+        }
+        await step(item);
+        onProgress(++done, total);
+        await nextFrame();
       }
-      if (cancelled()) {
-        return true;
-      }
-      const adt = await this.loadAdt(directory, tile).catch((error: Error) => {
-        console.warn(`[World Editor] Could not preload ${directory}_${tile.tx}_${tile.ty}: ${error.message}`);
-        return undefined;
-      });
+      return undefined;
+    };
+    const warn = (what: string) => (error: Error) => console.warn(`[World Editor] Could not preload ${what}: ${error.message}`);
+
+    // the tiles, listing their buildings and doodads
+    const tilesEnd = await run(tiles, async (tile) => {
+      const adt = await this.loadAdt(directory, tile).catch(warn(`${directory}_${tile.tx}_${tile.ty}`));
       adt?.wmos.forEach((wmo) => buildings.add(wmo.path.toLowerCase()));
-      onProgress(++done, tiles.length);
-      await nextFrame();
+      adt?.doodads.forEach((doodad) => models.add(m2Path(doodad.path).toLowerCase()));
+    });
+    if (tilesEnd !== undefined) {
+      return tilesEnd;
     }
-    const missing = [...buildings].filter((path) => !this.cache.has(identity, 'wmo', path));
-    for (const path of missing) {
-      if (this.cache.isFull()) {
-        return false;
+    // the buildings and the list of what's inside them
+    total += buildings.size;
+    const buildingsEnd = await run([...buildings], async (path) => {
+      if (!this.cache.has(identity, 'wmo', path)) {
+        await this.getWmo(path).catch(warn(path));
       }
-      if (cancelled()) {
-        return true;
-      }
-      await this.getWmo(path).catch((error: Error) => console.warn(`[World Editor] Could not preload ${path}: ${error.message}`));
-      onProgress(++done, tiles.length + missing.length);
-      await nextFrame();
+      const inside = await this.getWmoDoodads(path).catch(warn(path));
+      inside?.doodads.forEach((doodad) => models.add(m2Path(doodad.path).toLowerCase()));
+    });
+    if (buildingsEnd !== undefined) {
+      return buildingsEnd;
     }
-    return true;
+    // the models of the doodads (trees, rocks, furniture…) not cached yet
+    const missing = [...models].filter((path) => !this.cache.has(identity, 'm2', path));
+    total += missing.length;
+    return (await run(missing, (path) => this.getM2(path).catch(warn(path)))) ?? true;
   }
 
   private async loadWmo(path: string): Promise<WmoModel | undefined> {

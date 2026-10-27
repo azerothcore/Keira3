@@ -1,5 +1,5 @@
 <div class="world-editor container-fluid">
-  <div class="world-editor-toolbar d-flex flex-wrap align-items-center gap-2 mb-2">
+  <div class="world-editor-toolbar d-flex align-items-center gap-2 mb-1">
     <select class="form-select form-select-sm map-select" data-testid="map-select" [value]="mapId()" (change)="onMapChange($event)">
       @for (map of maps(); track map.id) {
         <option [value]="map.id" [selected]="map.id === mapId()">{{ map.id }} – {{ map.name }}</option>
@@ -18,18 +18,6 @@
         <option [value]="zone.areaId" [selected]="zone.areaId === zoneId()">{{ zone.name }}</option>
       }
     </select>
-
-    <form class="d-flex gap-1" (submit)="$event.preventDefault(); searchTele()">
-      <input
-        class="form-control form-control-sm"
-        data-testid="tele-search"
-        (paste)="onPasteLocation($event)"
-        [formControl]="teleSearch"
-        [placeholder]="'WORLD_EDITOR.TELEPORT_PLACEHOLDER' | translate"
-        [title]="'WORLD_EDITOR.TELEPORT_HELP' | translate"
-      />
-      <button type="submit" class="btn btn-sm btn-secondary" data-testid="tele-search-btn"><i class="fa fa-search"></i></button>
-    </form>
 
     <form class="d-flex gap-1 goto-form" [formGroup]="goToForm" (ngSubmit)="goToCoordinates()">
       <input
@@ -59,7 +47,7 @@
       <button type="submit" class="btn btn-sm btn-secondary" data-testid="goto-btn">{{ 'WORLD_EDITOR.GO_TO' | translate }}</button>
     </form>
 
-    <div class="btn-group btn-group-sm ms-auto" role="group">
+    <div class="btn-group btn-group-sm" role="group">
       <button
         type="button"
         class="btn"
@@ -91,11 +79,24 @@
         {{ 'WORLD_EDITOR.WAYPOINTS' | translate }}
       </button>
     </div>
+  </div>
+  <div class="world-editor-toolbar d-flex align-items-center gap-2 mb-2">
+    <form class="d-flex gap-1 tele-form" (submit)="$event.preventDefault(); searchTele()">
+      <input
+        class="form-control form-control-sm"
+        data-testid="tele-search"
+        (paste)="onPasteLocation($event)"
+        [formControl]="teleSearch"
+        [placeholder]="'WORLD_EDITOR.TELEPORT_PLACEHOLDER' | translate"
+        [title]="'WORLD_EDITOR.TELEPORT_HELP' | translate"
+      />
+      <button type="submit" class="btn btn-sm btn-secondary" data-testid="tele-search-btn"><i class="fa fa-search"></i></button>
+    </form>
 
-    <button type="button" class="btn btn-sm btn-outline-secondary" data-testid="filters-toggle" (click)="toggleFilters()">
+    <button type="button" class="btn btn-sm btn-outline-secondary ms-auto" data-testid="filters-toggle" (click)="toggleFilters()">
       <i class="fa fa-filter"></i> {{ 'WORLD_EDITOR.FILTERS' | translate }}
       @if (hiddenCount()) {
-        <span class="badge bg-secondary" data-testid="hidden-count">{{ hiddenCount() }}</span>
+        <span class="badge bg-secondary world-editor-hidden-count" data-testid="hidden-count">{{ hiddenCount() }}</span>
       }
     </button>
     <button type="button" class="btn btn-sm btn-outline-secondary" data-testid="view-toggle" (click)="toggleView()">
@@ -476,16 +477,23 @@
           <label class="form-check-label" for="world-editor-cache-enabled">{{ 'WORLD_EDITOR.CACHE_ENABLED' | translate }}</label>
         </div>
         <span class="text-muted" data-testid="cache-size">{{ cacheSizeText() }}</span>
-        <div
-          class="progress world-editor-cache-fill"
-          data-testid="cache-fill"
-          role="progressbar"
-          [attr.aria-valuenow]="cacheFill().toFixed(0)"
-          aria-valuemin="0"
-          aria-valuemax="100"
-          [title]="cacheFill().toFixed(1) + '%'"
-        >
-          <div [class]="'progress-bar fill-' + cacheFillLevel()" [style.width.%]="cacheFill()"></div>
+        <div class="world-editor-cache-meter">
+          <span class="world-editor-cache-percent" data-testid="cache-percent">{{ cacheFill().toFixed(0) }}%</span>
+          <div
+            class="progress world-editor-cache-fill"
+            data-testid="cache-fill"
+            role="progressbar"
+            [attr.aria-valuenow]="cacheFill().toFixed(0)"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            [title]="cacheFill().toFixed(1) + '%'"
+          >
+            <div [class]="'progress-bar fill-' + cacheFillLevel()" [style.width.%]="cacheFill()"></div>
+          </div>
+          <!-- where the colour changes: yellow, orange, red -->
+          @for (mark of [50, 75, 90]; track mark) {
+            <span class="world-editor-cache-mark" [style.left.%]="mark"></span>
+          }
         </div>
         <label class="d-flex align-items-center gap-1 mb-0">
           {{ 'WORLD_EDITOR.CACHE_MAX' | translate }}
@@ -539,10 +547,18 @@
         </button>
         @if (preloading(); as progress) {
           <span class="text-muted" data-testid="preload-label">{{ progress.label }}</span>
-          <div class="progress flex-grow-1 world-editor-preload" data-testid="preload-progress">
-            <div class="progress-bar" role="progressbar" [style.width.%]="progress.total ? (100 * progress.done) / progress.total : 0">
-              {{ progress.done }} / {{ progress.total }}
+          <div class="flex-grow-1">
+            <div class="progress world-editor-preload" data-testid="preload-progress">
+              <div class="progress-bar" role="progressbar" [style.width.%]="percent(progress.done, progress.total)"></div>
+              <span class="world-editor-preload-text"
+                >{{ progress.done }} / {{ progress.total }} ({{ percent(progress.done, progress.total) }}%)</span
+              >
             </div>
+            @if (progress.maps > 1) {
+              <div class="progress world-editor-preload-maps" data-testid="preload-maps" [title]="progress.map + ' / ' + progress.maps">
+                <div class="progress-bar bg-success" [style.width.%]="percent(progress.map, progress.maps)"></div>
+              </div>
+            }
           </div>
           <button type="button" class="btn btn-sm btn-outline-secondary" data-testid="preload-cancel" (click)="cancelPreload()">
             {{ 'CANCEL' | translate }}
@@ -606,7 +622,47 @@
         (picked)="onPicked($event)"
         (objectMoved)="onObjectMoved($event)"
         (centerChanged)="onCenterChanged($event)"
+        (contextRequested)="onContextRequested($event)"
       />
+      @if (contextMenu(); as menu) {
+        <div class="dropdown-menu show world-editor-context" data-testid="context-menu" [style.left.px]="menu.x" [style.top.px]="menu.y">
+          @if (contextSpawn(); as spawn) {
+            <h6 class="dropdown-header">{{ spawnTitle(spawn) }}</h6>
+            @if (spawn.type === 'creature') {
+              <button
+                type="button"
+                class="dropdown-item"
+                data-testid="context-creature"
+                [disabled]="!links"
+                (click)="openContextEntry('creature')"
+              >
+                <i class="fa fa-paw"></i> {{ 'WORLD_EDITOR.OPEN_CREATURE' | translate }}
+              </button>
+              <button type="button" class="dropdown-item" data-testid="context-sai" [disabled]="!links" (click)="openContextEntry('sai')">
+                <i class="fa fa-code"></i> {{ 'WORLD_EDITOR.OPEN_SAI' | translate }}
+              </button>
+            } @else {
+              <button
+                type="button"
+                class="dropdown-item"
+                data-testid="context-gameobject"
+                [disabled]="!links"
+                (click)="openContextEntry('gameobject')"
+              >
+                <i class="fa fa-cube"></i> {{ 'WORLD_EDITOR.OPEN_GAMEOBJECT' | translate }}
+              </button>
+            }
+            <button type="button" class="dropdown-item" data-testid="context-copy-guid" (click)="copyContextGuid()">
+              <i class="fa fa-copy"></i> {{ 'WORLD_EDITOR.COPY_GUID' | translate }}
+            </button>
+          } @else if (contextWaypoint(); as waypoint) {
+            <h6 class="dropdown-header">{{ 'WORLD_EDITOR.PATH' | translate }} {{ waypoint.pathId }} · #{{ waypoint.point }}</h6>
+            <button type="button" class="dropdown-item" data-testid="context-waypoints" disabled>
+              <i class="fa fa-map-signs"></i> {{ 'WORLD_EDITOR.OPEN_WAYPOINTS' | translate }}
+            </button>
+          }
+        </div>
+      }
       @if (loadingSpawns()) {
         <span class="badge bg-dark world-editor-loading" data-testid="loading-spawns">{{ 'WORLD_EDITOR.LOADING_SPAWNS' | translate }}</span>
       }

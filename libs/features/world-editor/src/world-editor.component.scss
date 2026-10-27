@@ -8,6 +8,33 @@
   flex-direction: column;
   height: calc(100vh - 40px);
   padding-top: 8px;
+  // the panels scroll inside: the page itself never gets a scrollbar that would shift the toolbar
+  overflow: hidden;
+}
+
+.world-editor-filters,
+.world-editor-view-settings,
+.world-editor-settings {
+  flex-shrink: 0;
+  max-height: 45vh;
+  overflow-y: auto;
+}
+
+// a fixed width, so the buttons beside it don't move when the number changes
+.world-editor-hidden-count {
+  display: inline-block;
+  min-width: 3.2em;
+}
+
+.world-editor-preload-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--bs-body-color);
+  font-size: 0.75rem;
+  pointer-events: none;
 }
 
 .map-select,
@@ -18,6 +45,16 @@
 
 .goto-form input {
   width: 90px;
+}
+
+.tele-form input {
+  width: 320px;
+}
+
+// two fixed rows: nothing wraps, so no button moves when another one changes
+.world-editor-toolbar {
+  flex-wrap: nowrap;
+  white-space: nowrap;
 }
 
 .tele-results {
@@ -98,12 +135,42 @@
 }
 
 .world-editor-preload {
+  position: relative;
   min-width: 240px;
   height: 1.25rem;
 }
 
+.world-editor-preload-maps {
+  height: 0.35rem;
+  margin-top: 2px;
+}
+
+.world-editor-cache-meter {
+  position: relative;
+  width: 140px;
+  padding-top: 0.9rem;
+}
+
+.world-editor-cache-percent {
+  position: absolute;
+  top: -0.2rem;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 0.7rem;
+  line-height: 1;
+}
+
+.world-editor-cache-mark {
+  position: absolute;
+  bottom: -2px;
+  width: 2px;
+  height: calc(0.75rem + 4px);
+  background: var(--bs-body-color);
+  opacity: 0.45;
+}
+
 .world-editor-cache-fill {
-  width: 120px;
   height: 0.75rem;
 
   .fill-low {
@@ -118,4 +185,9 @@
   .fill-full {
     background-color: var(--bs-danger);
   }
+}
+
+.world-editor-context {
+  position: absolute;
+  z-index: 10;
 }

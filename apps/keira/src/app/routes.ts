@@ -102,6 +102,8 @@ import {
 } from '@keira/features/creature-immunities';
 import { SelectTrainerComponent, TrainerComponent, TrainerHandlerService, TrainerSpellComponent } from '@keira/features/trainer';
 import { UnusedGuidSearchComponent } from '@keira/features/unused-guid-search';
+import { WORLD_EDITOR_LINKS } from '@keira/shared/constants';
+import { worldEditorLinks } from './world-editor-links';
 
 export const KEIRA_ROUTES: Routes = [
   {
@@ -560,5 +562,6 @@ export const KEIRA_ROUTES: Routes = [
     path: 'world-editor',
     // Lazy: keeps Three.js and the game-data parsers out of the startup bundle.
     loadComponent: () => import('@keira/features/world-editor').then((m) => m.WorldEditorComponent),
+    providers: [{ provide: WORLD_EDITOR_LINKS, useFactory: worldEditorLinks }],
   },
 ];

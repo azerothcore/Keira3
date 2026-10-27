@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import {
+  ContextRequest,
   DEFAULT_WORLD_CONTROLS_SETTINGS,
   DEFAULT_WORLD_RENDER_SETTINGS,
   WorldControlsSettings,
@@ -21,6 +22,7 @@ import { ToastrService } from 'ngx-toastr';
 import { WorldEditorComponent } from './world-editor.component';
 import { SpawnRecord, WaypointRecord } from './world-editor.model';
 import { WorldEditorService } from './world-editor.service';
+import { WORLD_EDITOR_LINKS } from '@keira/shared/constants';
 
 /** Stands in for the WebGL viewer: exposes what the editor passes in, and lets tests emit viewer events. */
 @Component({ selector: 'keira-world-viewer', template: '' })
@@ -41,6 +43,7 @@ class FakeWorldViewerComponent {
   readonly picked = output<PickResult>();
   readonly objectMoved = output<ObjectMoved>();
   readonly centerChanged = output<WorldPosition>();
+  readonly contextRequested = output<ContextRequest>();
 }
 
 class Page extends PageObjectModel<WorldEditorComponent> {
@@ -138,7 +141,9 @@ describe(WorldEditorComponent.name, () => {
     clipboard: { copyFromContent: vi.fn() },
   };
 
-  const setup = async (opts: { params?: Record<string, string>; configured?: boolean; lastView?: string } = {}) => {
+  const links = { openCreature: vi.fn(), openCreatureSai: vi.fn(), openGameObject: vi.fn() };
+
+  const setup = async (opts: { params?: Record<string, string>; configured?: boolean; lastView?: string; links?: boolean } = {}) => {
     localStorage.clear();
     if (opts.lastView) {
       localStorage.setItem('keira3.worldEditor.lastView', opts.lastView);
@@ -153,6 +158,7 @@ describe(WorldEditorComponent.name, () => {
         { provide: WorldEditorService, useValue: mocks.service },
         { provide: ToastrService, useValue: mocks.toastr },
         { provide: ClipboardService, useValue: mocks.clipboard },
+        ...(opts.links === false ? [] : [{ provide: WORLD_EDITOR_LINKS, useValue: links }]),
         { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: convertToParamMap(opts.params ?? {}) } } },
       ],
     });
@@ -281,10 +287,11 @@ describe(WorldEditorComponent.name, () => {
       await settle(page);
       expect(mocks.client.preload).toHaveBeenCalledWith('Azeroth', [{ tx: 32, ty: 48 }], expect.any(Function), expect.any(Function));
       expect(page.text('preload-label')).toBe('Elwynn Forest');
-      expect(page.text('preload-progress')).toBe('0 / 1');
+      expect(page.text('preload-progress')).toBe('0 / 1 (0%)');
+      expect(page.byId('preload-maps', false)).toBeFalsy();
       report(1, 3);
       page.fixture.detectChanges();
-      expect(page.text('preload-progress')).toBe('1 / 3');
+      expect(page.text('preload-progress')).toBe('1 / 3 (33%)');
       finish();
       await settle(page);
       expect(page.byId('preload-progress', false)).toBeFalsy();
@@ -344,6 +351,7 @@ describe(WorldEditorComponent.name, () => {
       page.click('preload-all');
       await settle(page);
       expect(page.text('preload-label')).toBe('1/2 Eastern Kingdoms');
+      expect(page.byId('preload-maps').nativeElement.getAttribute('title')).toBe('0 / 2');
       finishFirst();
       await settle(page);
       expect(mocks.client.preload).toHaveBeenCalledTimes(2);
@@ -396,7 +404,7 @@ describe(WorldEditorComponent.name, () => {
       page.click('preload-all');
       await settle(page);
       expect(page.text('preload-label')).toBe('Eastern Kingdoms…');
-      expect(page.text('preload-progress')).toBe('0 / 2');
+      expect(page.text('preload-progress')).toBe('0 / 2 (0%)');
       finishScan();
       await settle(page);
       expect(warn).toHaveBeenCalledWith('[World Editor] Could not read the tiles of Azeroth: bad WDT');
@@ -455,6 +463,7 @@ describe(WorldEditorComponent.name, () => {
       expect(fill('0.02')).toBe('fill-high progress-bar 78%');
       expect(fill('0.017')).toMatch(/^fill-full progress-bar 91\.76/);
       expect(fill('0')).toBe('fill-full progress-bar 100%');
+      expect(page.text('cache-percent')).toBe('100%');
 
       // a client that can't be opened only shows the total
       mocks.client.cacheUsage.mockRejectedValue(new Error('no client'));
@@ -936,6 +945,72 @@ describe(WorldEditorComponent.name, () => {
       const { page } = await setup();
       await loadArea(page);
       expect(mocks.toastr.error).toHaveBeenCalledWith('Table missing', 'World Editor');
+    });
+  });
+
+  describe('context menu', () => {
+    const rightClick = async (page: Page, key: string): Promise<void> => {
+      page.viewer().contextRequested.emit({ key, x: 120, y: 80 });
+      await settle(page);
+    };
+
+    it('opens the creature, its SAI or the gameobject from a right-click, and copies the GUID', async () => {
+      const { page } = await setup();
+      await loadArea(page);
+      await rightClick(page, 'creature:1');
+      const menu = page.byId('context-menu').nativeElement as HTMLElement;
+      expect(menu.style.left).toBe('120px');
+      expect(menu.textContent).toContain('Deputy Willem - Creature (GUID: 1, Entry: 101)');
+      expect(page.viewer().selectedKey()).toBe('creature:1');
+      expect(page.byId('context-gameobject', false)).toBeFalsy();
+      page.click('context-creature');
+      expect(links.openCreature).toHaveBeenCalledWith(101, 'Deputy Willem');
+      page.fixture.detectChanges();
+      expect(page.byId('context-menu', false)).toBeFalsy();
+
+      await rightClick(page, 'creature:1');
+      page.click('context-sai');
+      expect(links.openCreatureSai).toHaveBeenCalledWith(101, 'Deputy Willem');
+
+      await rightClick(page, 'gameobject:3');
+      expect(page.byId('context-sai', false)).toBeFalsy();
+      page.click('context-gameobject');
+      expect(links.openGameObject).toHaveBeenCalledWith(103, 'Mailbox');
+
+      await rightClick(page, 'gameobject:3');
+      page.click('context-copy-guid');
+      expect(mocks.clipboard.copyFromContent).toHaveBeenCalledWith('3');
+    });
+
+    it('offers the (future) waypoint editor for waypoints, and closes on a press elsewhere or Escape', async () => {
+      const { page } = await setup();
+      await loadArea(page);
+      await rightClick(page, 'path:10#2');
+      expect(page.text('context-menu')).toContain('WORLD_EDITOR.PATH 10 · #2');
+      expect(page.byId<HTMLButtonElement>('context-waypoints').nativeElement.disabled).toBe(true);
+      // pressing inside the menu keeps it
+      page.byId('context-waypoints').nativeElement.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true }));
+      page.fixture.detectChanges();
+      expect(page.byId('context-menu', false)).toBeTruthy();
+      document.body.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true }));
+      page.fixture.detectChanges();
+      expect(page.byId('context-menu', false)).toBeFalsy();
+
+      await rightClick(page, 'creature:2');
+      page.key('Escape');
+      page.fixture.detectChanges();
+      expect(page.byId('context-menu', false)).toBeFalsy();
+      // something that vanished meanwhile: an empty menu
+      await rightClick(page, 'creature:404');
+      expect(page.byId('context-copy-guid', false)).toBeFalsy();
+    });
+
+    it('cannot open other editors when the app provides no links', async () => {
+      const { page } = await setup({ links: false });
+      await loadArea(page);
+      await rightClick(page, 'creature:1');
+      expect(page.byId<HTMLButtonElement>('context-creature').nativeElement.disabled).toBe(true);
+      expect(page.byId<HTMLButtonElement>('context-sai').nativeElement.disabled).toBe(true);
     });
   });
 

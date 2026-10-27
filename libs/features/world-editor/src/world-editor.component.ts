@@ -3,6 +3,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-components';
 import {
+  ContextRequest,
   GizmoMode,
   keyLabel,
   NAVIGATION_ACTIONS,
@@ -34,6 +35,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { ClipboardService } from 'ngx-clipboard';
 import { ToastrService } from 'ngx-toastr';
 import { ChangesSnapshot, WorldEditorChanges } from './world-editor-changes';
+import { WORLD_EDITOR_LINKS } from '@keira/shared/constants';
 import {
   EditorTool,
   LayerVisibility,
@@ -123,7 +125,7 @@ type RenderDistanceKey = 'drawDistance' | 'largeDoodadDistance' | 'smallDoodadDi
   templateUrl: './world-editor.component.html',
   styleUrl: './world-editor.component.scss',
   imports: [ReactiveFormsModule, TranslatePipe, WorldViewerComponent, HighlightjsWrapperComponent],
-  host: { '(keydown)': 'onKeydown($event)' },
+  host: { '(keydown)': 'onKeydown($event)', '(document:pointerdown)': 'onDocumentPointerDown($event)' },
 })
 export class WorldEditorComponent implements OnInit {
   private readonly service = inject(WorldEditorService);
@@ -139,6 +141,7 @@ export class WorldEditorComponent implements OnInit {
   private readonly toastr = inject(ToastrService);
   private readonly clipboard = inject(ClipboardService);
   private readonly route = inject(ActivatedRoute);
+  protected readonly links = inject(WORLD_EDITOR_LINKS, { optional: true });
 
   private readonly changes = new WorldEditorChanges();
   /** Bumped on every pending edit, so the computed views below recompute. */
@@ -169,7 +172,15 @@ export class WorldEditorComponent implements OnInit {
     const fill = this.cacheFill();
     return fill >= 90 ? 'full' : fill >= 75 ? 'high' : fill >= 50 ? 'half' : 'low';
   });
-  protected readonly preloading = signal<{ label: string; directory: string; done: number; total: number } | undefined>(undefined);
+  /** The preload running: the current map's steps, and which of how many maps it is on. */
+  protected readonly preloading = signal<
+    { label: string; directory: string; done: number; total: number; map: number; maps: number } | undefined
+  >(undefined);
+
+  /** Whole percent of `done` out of `total` (0 when nothing is known yet). */
+  protected percent(done: number, total: number): number {
+    return total ? Math.floor((100 * done) / total) : 0;
+  }
   protected readonly cacheUsage = signal<CacheUsage | undefined>(undefined);
   /** What each map takes in the cache, biggest first, for the settings panel. */
   protected cacheRows(cache: CacheUsage): { directory: string; name: string; tiles: number; bytes: number }[] {
@@ -314,6 +325,11 @@ export class WorldEditorComponent implements OnInit {
   /** Creatures walking each loaded path ("Name (guid)"). */
   protected readonly pathOwners = computed(() => pathOwners(this.spawns()));
 
+  /** The right-click menu: what it is about and where (pixels in the 3D view). */
+  protected readonly contextMenu = signal<ContextRequest | undefined>(undefined);
+  // (only read while the menu is open)
+  protected readonly contextSpawn = computed(() => this.findSpawn((this.contextMenu() as ContextRequest).key));
+  protected readonly contextWaypoint = computed(() => this.findWaypoint((this.contextMenu() as ContextRequest).key));
   protected readonly selectedSpawn = computed(() => this.findSpawn(this.selectedKey() ?? ''));
   protected readonly selectedWaypoint = computed(() => this.findWaypoint(this.selectedKey() ?? ''));
 
@@ -466,7 +482,7 @@ export class WorldEditorComponent implements OnInit {
   /** Processes the selected zone, the whole map, or every map into the disk cache. */
   protected async preload(scope: 'zone' | 'map' | 'all'): Promise<void> {
     this.preloadCancelled = false;
-    this.preloading.set({ label: '', directory: '', done: 0, total: 0 });
+    this.preloading.set({ label: '', directory: '', done: 0, total: 0, map: 0, maps: 0 });
     let tileCount = 0;
     try {
       const jobs = await this.preloadJobs(scope);
@@ -476,11 +492,12 @@ export class WorldEditorComponent implements OnInit {
         }
         const label = jobs.length > 1 ? `${index + 1}/${jobs.length} ${job.name}` : job.name;
         const directory = job.directory.toLowerCase();
-        this.preloading.set({ label, directory, done: 0, total: job.tiles.length });
+        const maps = jobs.length;
+        this.preloading.set({ label, directory, done: 0, total: job.tiles.length, map: index, maps });
         const completed = await this.client.preload(
           job.directory,
           job.tiles,
-          (done, total) => this.preloading.set({ label, directory, done, total }),
+          (done, total) => this.preloading.set({ label, directory, done, total, map: index, maps }),
           () => this.preloadCancelled,
         );
         await this.refreshCacheUsage();
@@ -509,7 +526,7 @@ export class WorldEditorComponent implements OnInit {
       if (this.preloadCancelled) {
         break;
       }
-      this.preloading.set({ label: `${map.name}…`, directory: '', done: index, total: maps.length });
+      this.preloading.set({ label: `${map.name}…`, directory: '', done: index, total: maps.length, map: 0, maps: 0 });
       // one unreadable map shouldn't stop the others
       let tiles = await this.client.getMapTiles(map.directory).catch((error: Error) => {
         console.warn(`[World Editor] Could not read the tiles of ${map.directory}: ${error.message}`);
@@ -907,6 +924,36 @@ export class WorldEditorComponent implements OnInit {
     }
   }
 
+  protected onContextRequested(request: ContextRequest): void {
+    this.select(request.key);
+    this.contextMenu.set(request);
+  }
+
+  /** A press anywhere but on the menu closes it. */
+  protected onDocumentPointerDown(event: PointerEvent): void {
+    if (!(event.target as HTMLElement).closest('[data-testid="context-menu"]')) {
+      this.contextMenu.set(undefined);
+    }
+  }
+
+  protected openContextEntry(target: 'creature' | 'sai' | 'gameobject'): void {
+    const spawn = this.contextSpawn() as SpawnRecord;
+    const links = this.links as NonNullable<typeof this.links>;
+    this.contextMenu.set(undefined);
+    if (target === 'creature') {
+      links.openCreature(spawn.entry, spawn.name);
+    } else if (target === 'sai') {
+      links.openCreatureSai(spawn.entry, spawn.name);
+    } else {
+      links.openGameObject(spawn.entry, spawn.name);
+    }
+  }
+
+  protected copyContextGuid(): void {
+    this.clipboard.copyFromContent(String((this.contextSpawn() as SpawnRecord).guid));
+    this.contextMenu.set(undefined);
+  }
+
   protected onKeydown(event: KeyboardEvent): void {
     const rebinding = this.rebinding();
     if (rebinding) {
@@ -931,6 +978,7 @@ export class WorldEditorComponent implements OnInit {
     } else if (event.key === 'Delete') {
       this.deleteSelected();
     } else if (event.key === 'Escape') {
+      this.contextMenu.set(undefined);
       this.tool.set('select');
       this.selectedKey.set(undefined);
     } else if (event.key === 'r' || event.key === 'R') {

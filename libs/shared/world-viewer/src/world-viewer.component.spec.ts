@@ -8,7 +8,7 @@ import { DEFAULT_WORLD_CONTROLS_SETTINGS, WorldControlsSettings } from './world-
 import { DEFAULT_WORLD_RENDER_SETTINGS, WorldRenderSettings } from './world-render-settings';
 import { WORLD_RENDERER_FACTORY, WorldRenderer } from './world-renderer';
 import { WorldViewerComponent } from './world-viewer.component';
-import { GizmoMode, ObjectMoved, PickResult, WaypointPath, WorldSpawn } from './world-viewer.model';
+import { ContextRequest, GizmoMode, ObjectMoved, PickResult, WaypointPath, WorldSpawn } from './world-viewer.model';
 import { flatDetail, flatTile } from './world-viewer.mock';
 
 // ------------------------------------------------------------------ Three.js controls fakes (jsdom has no WebGL)
@@ -104,6 +104,7 @@ interface FakeTransformControls extends EventDispatcher<{ 'dragging-changed': { 
       [region]="region()"
       [navigation]="navigation()"
       (picked)="picks.push($event)"
+      (contextRequested)="contexts.push($event)"
       (objectMoved)="moves.push($event)"
       (centerChanged)="centers.push($event)"
     />
@@ -124,6 +125,7 @@ class HostComponent {
   readonly region = signal<WorldBounds | undefined>(undefined);
   readonly navigation = signal<WorldControlsSettings>(DEFAULT_WORLD_CONTROLS_SETTINGS);
   readonly picks: PickResult[] = [];
+  readonly contexts: ContextRequest[] = [];
   readonly moves: ObjectMoved[] = [];
   readonly centers: WorldPosition[] = [];
 }
@@ -482,6 +484,30 @@ describe(WorldViewerComponent.name, () => {
       await settle(fixture);
       page.click();
       expect(host.picks).toEqual([expect.objectContaining({ type: 'spawn', key: 'creature:7' })]);
+    });
+
+    it('asks for a context menu on right-clicks on spawns and waypoints, not on the ground or after rotating', async () => {
+      const { page, host, fixture, update } = await pickSetup();
+      await settle(fixture);
+      page.pointer('pointerdown', 50, 50, 2);
+      page.pointer('pointerup', 50, 50, 2);
+      expect(host.contexts).toEqual([{ key: 'creature:7', x: 50, y: 50 }]);
+      expect(host.picks).toEqual([]);
+      // dragged with the right button: the view was rotated
+      page.pointer('pointerdown', 50, 50, 2);
+      page.pointer('pointerup', 80, 80, 2);
+      await update(() => host.focus.set(at(300, 300)));
+      page.pointer('pointerdown', 50, 50, 2);
+      page.pointer('pointerup', 50, 50, 2);
+      expect(host.contexts[1]).toEqual({ key: 'path:1#3', x: 50, y: 50 });
+      await update(() => host.focus.set(at(-100, -100)));
+      page.pointer('pointerdown', 50, 50, 2);
+      page.pointer('pointerup', 50, 50, 2);
+      // the middle button does nothing
+      page.pointer('pointerdown', 50, 50, 1);
+      page.pointer('pointerup', 50, 50, 1);
+      expect(host.contexts).toHaveLength(2);
+      expect(host.picks).toEqual([]);
     });
 
     it('reports the ground under spawns when placing', async () => {
