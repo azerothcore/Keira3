@@ -1124,6 +1124,64 @@ describe(WorldEditorComponent.name, () => {
   });
 
   describe('deleting & keyboard', () => {
+    it('undoes and redoes pending changes with the buttons and Ctrl+Z / Ctrl+Y', async () => {
+      const { page } = await setup();
+      await loadArea(page);
+      page.click('tool-place-creature');
+      await settle(page);
+      page.type('place-entry', '197');
+      page.byId('place-entry').nativeElement.dispatchEvent(new Event('change'));
+      await settle(page);
+      for (const x of [1, 2]) {
+        page.viewer().picked.emit({ type: 'ground', position: { x, y: 2, z: 3 } });
+        await settle(page);
+      }
+      const shortcut = (key: string, extra: KeyboardEventInit = {}, target: HTMLElement = page.fixture.nativeElement as HTMLElement) =>
+        target.dispatchEvent(new KeyboardEvent('keydown', { key, ctrlKey: true, bubbles: true, cancelable: true, ...extra }));
+      const count = () => page.text('pending-count');
+      expect(count()).toBe('2');
+      expect(page.byId<HTMLButtonElement>('redo').nativeElement.disabled).toBe(true);
+
+      page.click('undo');
+      page.fixture.detectChanges();
+      expect(count()).toBe('1');
+      shortcut('z');
+      page.fixture.detectChanges();
+      expect(count()).toBe('0');
+      expect(page.byId<HTMLButtonElement>('undo').nativeElement.disabled).toBe(true);
+      shortcut('Z', { ctrlKey: false, metaKey: true });
+      page.fixture.detectChanges();
+      expect(count()).toBe('0');
+
+      shortcut('y');
+      page.fixture.detectChanges();
+      expect(count()).toBe('1');
+      shortcut('Z', { shiftKey: true });
+      page.fixture.detectChanges();
+      expect(count()).toBe('2');
+      shortcut('Y');
+      page.click('redo');
+      page.fixture.detectChanges();
+      expect(count()).toBe('2');
+
+      // in a text field, Ctrl+Z is the field's own undo
+      shortcut('z', {}, page.byId('place-entry').nativeElement);
+      page.fixture.detectChanges();
+      expect(count()).toBe('2');
+
+      // a new change after undoing drops what could be redone
+      page.click('undo');
+      page.viewer().picked.emit({ type: 'ground', position: { x: 9, y: 2, z: 3 } });
+      await settle(page);
+      expect(page.byId<HTMLButtonElement>('redo').nativeElement.disabled).toBe(true);
+      expect(count()).toBe('2');
+
+      // discarding starts a new history
+      page.click('discard-changes');
+      page.fixture.detectChanges();
+      expect(page.byId<HTMLButtonElement>('undo').nativeElement.disabled).toBe(true);
+    });
+
     it('deletes the selected spawn or waypoint', async () => {
       const { page } = await setup();
       await loadArea(page);

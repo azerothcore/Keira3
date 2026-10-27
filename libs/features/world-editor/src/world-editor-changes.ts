@@ -80,6 +80,17 @@ const samePlacement = (a: Placement, b: Placement): boolean =>
  * Edits made in the 3D world editor that are not saved yet. Edits on the same object merge: moving a spawn placed in
  * this session changes its INSERT, deleting it drops the INSERT, moving a spawn back to where it was drops the UPDATE.
  */
+/** Every pending change, as plain data (see `WorldEditorChanges.snapshot`). */
+export interface ChangesSnapshot {
+  insertedSpawns: [string, SpawnRecord][];
+  movedSpawns: [string, { original: SpawnRecord; current: Placement }][];
+  deletedSpawns: [string, SpawnRecord][];
+  insertedWaypoints: [string, WaypointRecord][];
+  movedWaypoints: [string, { original: WaypointRecord; current: WaypointRecord }][];
+  deletedWaypoints: [string, WaypointRecord][];
+  createdPaths: [number, number][];
+}
+
 export class WorldEditorChanges {
   private readonly insertedSpawns = new Map<string, SpawnRecord>();
   private readonly movedSpawns = new Map<string, { original: SpawnRecord; current: Placement }>();
@@ -99,6 +110,31 @@ export class WorldEditorChanges {
       this.deletedWaypoints.size +
       this.createdPaths.size
     );
+  }
+
+  /** A copy of every pending change, to come back to later (undo/redo). */
+  snapshot(): ChangesSnapshot {
+    return structuredClone({
+      insertedSpawns: [...this.insertedSpawns],
+      movedSpawns: [...this.movedSpawns],
+      deletedSpawns: [...this.deletedSpawns],
+      insertedWaypoints: [...this.insertedWaypoints],
+      movedWaypoints: [...this.movedWaypoints],
+      deletedWaypoints: [...this.deletedWaypoints],
+      createdPaths: [...this.createdPaths],
+    });
+  }
+
+  restore(snapshot: ChangesSnapshot): void {
+    const copy = structuredClone(snapshot);
+    this.clear();
+    copy.insertedSpawns.forEach(([key, value]) => this.insertedSpawns.set(key, value));
+    copy.movedSpawns.forEach(([key, value]) => this.movedSpawns.set(key, value));
+    copy.deletedSpawns.forEach(([key, value]) => this.deletedSpawns.set(key, value));
+    copy.insertedWaypoints.forEach(([key, value]) => this.insertedWaypoints.set(key, value));
+    copy.movedWaypoints.forEach(([key, value]) => this.movedWaypoints.set(key, value));
+    copy.deletedWaypoints.forEach(([key, value]) => this.deletedWaypoints.set(key, value));
+    copy.createdPaths.forEach(([key, value]) => this.createdPaths.set(key, value));
   }
 
   clear(): void {

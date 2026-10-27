@@ -680,6 +680,28 @@
         <div class="card-header py-1">
           {{ 'WORLD_EDITOR.PENDING_CHANGES' | translate }}
           <span class="badge bg-secondary" data-testid="pending-count">{{ pendingDescriptions().length }}</span>
+          <span class="float-end btn-group btn-group-sm">
+            <button
+              type="button"
+              class="btn btn-link btn-sm py-0"
+              data-testid="undo"
+              [title]="'WORLD_EDITOR.UNDO' | translate"
+              [disabled]="!canUndo()"
+              (click)="undo()"
+            >
+              <i class="fa fa-undo"></i>
+            </button>
+            <button
+              type="button"
+              class="btn btn-link btn-sm py-0"
+              data-testid="redo"
+              [title]="'WORLD_EDITOR.REDO' | translate"
+              [disabled]="!canRedo()"
+              (click)="redo()"
+            >
+              <i class="fa fa-redo"></i>
+            </button>
+          </span>
         </div>
         <div class="card-body p-2">
           @if (pendingDescriptions().length) {

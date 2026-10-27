@@ -33,7 +33,7 @@ import {
 import { TranslatePipe } from '@ngx-translate/core';
 import { ClipboardService } from 'ngx-clipboard';
 import { ToastrService } from 'ngx-toastr';
-import { WorldEditorChanges } from './world-editor-changes';
+import { ChangesSnapshot, WorldEditorChanges } from './world-editor-changes';
 import {
   EditorTool,
   LayerVisibility,
@@ -76,6 +76,9 @@ function saveLastView(view: LastView): void {
   localStorage.setItem(LAST_VIEW_KEY, JSON.stringify(view));
 }
 
+/** How many steps can be undone. */
+const HISTORY_SIZE = 100;
+
 type RenderFlagKey = 'showRoofs' | 'showBuildings' | 'showDoodads' | 'showModels' | 'zoneLighting' | 'advancedDistances' | 'loadWholeZone';
 type RenderDistanceKey = 'drawDistance' | 'largeDoodadDistance' | 'smallDoodadDistance' | 'creatureDistance' | 'gameobjectDistance';
 
@@ -109,6 +112,11 @@ export class WorldEditorComponent implements OnInit {
   private readonly changes = new WorldEditorChanges();
   /** Bumped on every pending edit, so the computed views below recompute. */
   private readonly revision = signal(0);
+  /** Snapshots of the pending changes for undo/redo; `historyIndex` is the current one. */
+  private history: ChangesSnapshot[] = [this.changes.snapshot()];
+  private historyIndex = 0;
+  protected readonly canUndo = computed(() => (this.revision(), this.historyIndex > 0));
+  protected readonly canRedo = computed(() => (this.revision(), this.historyIndex < this.history.length - 1));
 
   // ---------------------------------------------------------------- state
 
@@ -792,7 +800,25 @@ export class WorldEditorComponent implements OnInit {
     this.changes.clear();
     this.nextGuids.clear();
     this.reservedPathIds = [];
-    this.bump();
+    this.history = [this.changes.snapshot()];
+    this.historyIndex = 0;
+    this.revision.update((r) => r + 1);
+  }
+
+  // ---------------------------------------------------------------- undo / redo
+
+  protected undo(): void {
+    if (this.canUndo()) {
+      this.changes.restore(this.history[--this.historyIndex]);
+      this.revision.update((r) => r + 1);
+    }
+  }
+
+  protected redo(): void {
+    if (this.canRedo()) {
+      this.changes.restore(this.history[++this.historyIndex]);
+      this.revision.update((r) => r + 1);
+    }
   }
 
   protected onKeydown(event: KeyboardEvent): void {
@@ -809,7 +835,14 @@ export class WorldEditorComponent implements OnInit {
     if (['INPUT', 'SELECT', 'TEXTAREA'].includes(target.tagName)) {
       return;
     }
-    if (event.key === 'Delete') {
+    const shortcut = event.ctrlKey || event.metaKey;
+    if (shortcut && (event.key === 'y' || event.key === 'Y' || (event.shiftKey && (event.key === 'z' || event.key === 'Z')))) {
+      event.preventDefault();
+      this.redo();
+    } else if (shortcut && (event.key === 'z' || event.key === 'Z')) {
+      event.preventDefault();
+      this.undo();
+    } else if (event.key === 'Delete') {
       this.deleteSelected();
     } else if (event.key === 'Escape') {
       this.tool.set('select');
@@ -826,7 +859,10 @@ export class WorldEditorComponent implements OnInit {
     this.placementForm.setValue({ x: round(p.x), y: round(p.y), z: round(p.z), o: round(p.o) });
   }
 
+  /** After every change: remembers the new state for undo (dropping what could be redone). */
   private bump(): void {
+    this.history = [...this.history.slice(0, this.historyIndex + 1), this.changes.snapshot()].slice(-HISTORY_SIZE);
+    this.historyIndex = this.history.length - 1;
     this.revision.update((r) => r + 1);
   }
 

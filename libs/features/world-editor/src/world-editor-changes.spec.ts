@@ -57,6 +57,30 @@ describe('rotateGameobject', () => {
 });
 
 describe('WorldEditorChanges', () => {
+  it('takes snapshots of every change and comes back to them', () => {
+    const changes = new WorldEditorChanges();
+    const empty = changes.snapshot();
+    changes.placeSpawn(creature(1));
+    changes.moveSpawn(creature(2), { x: 11, y: 22, z: 33, o: 1 });
+    changes.deleteSpawn(gameobject(3));
+    changes.createPath(1, 10);
+    changes.addWaypoint(waypoint(10, 1));
+    changes.moveWaypoint(waypoint(20, 1), { x: 5, y: 6, z: 7 });
+    changes.deleteWaypoint(waypoint(20, 2));
+    const full = changes.snapshot();
+    const sql = changes.toSql();
+
+    changes.restore(empty);
+    expect(changes.count).toBe(0);
+    changes.restore(full);
+    expect(changes.count).toBe(7);
+    expect(changes.toSql()).toBe(sql);
+    // snapshots are copies: changing the state later doesn't alter them
+    changes.clear();
+    changes.restore(full);
+    expect(changes.toSql()).toBe(sql);
+  });
+
   it('starts empty', () => {
     const changes = new WorldEditorChanges();
     expect(changes.count).toBe(0);
