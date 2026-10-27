@@ -354,6 +354,31 @@ describe('WorldScene', () => {
       expect(world.pick(0, 0)).toEqual({ type: 'spawn', key: 'creature:1', position: expect.objectContaining({ z: 50 }) });
     });
 
+    it('picks the direction arrows of paths only when asked', () => {
+      const world = new WorldScene();
+      world.setWaypointPaths([
+        {
+          key: 'path:2',
+          label: 'Path 2',
+          closed: true,
+          points: [
+            { point: 1, position: at(0, -100) },
+            { point: 2, position: at(0, 100) },
+            { point: 3, position: at(200, 0) },
+          ],
+        },
+      ]);
+      lookDownAt(world, at(0, 0), 30);
+      expect(world.pick(0, 0, { tolerance: 0, segments: true })).toEqual(
+        expect.objectContaining({ type: 'segment', pathKey: 'path:2', from: 1, to: 2 }),
+      );
+      expect(world.pick(0, 0, { tolerance: 0 })?.type).not.toBe('segment');
+      // after a move, the arrows keep their point numbers (the loop closes back to #1)
+      world.refreshPathLine('path:2');
+      lookDownAt(world, at(100, -50), 30);
+      expect(world.pick(0, 0, { tolerance: 0, segments: true })).toEqual(expect.objectContaining({ type: 'segment', from: 3, to: 1 }));
+    });
+
     it('picks waypoints', () => {
       const world = setup();
       lookDownAt(world, at(100, 100));

@@ -9,7 +9,7 @@ export interface ZoneLightSource {
 /** Lights the scene like the zone the camera looks at (Light.dbc at noon), or neutrally when turned off. */
 export class ZoneLighting {
   private lights: ZoneLight[] = [];
-  private enabled = true;
+  private enabled = false;
   private center?: WorldPosition;
   private generation = 0;
 

@@ -458,6 +458,41 @@ describe(WorldViewerComponent.name, () => {
       hover(50, 50);
       expect(page.label(false)).toBeFalsy();
     });
+
+    it('names the path, its points and who walks it when hovering a direction arrow', async () => {
+      const { page, host, fixture, update } = await pickSetup();
+      // the camera looks at the focus: the arrow (drawn 0.4 above the points) sits right on it
+      const focus = at(500, 500);
+      const path = (owners?: string[]): WaypointPath => ({
+        key: 'path:2',
+        label: 'Path 2',
+        owners,
+        points: [
+          { point: 4, position: at(500, 400, GROUND - 0.4) },
+          { point: 5, position: at(500, 600, GROUND - 0.4) },
+        ],
+      });
+      await update(() => {
+        host.paths.set([path(['Guard (7)'])]);
+        host.focus.set(focus);
+      });
+      await settle(fixture);
+      page.pointer('pointermove', 50, 50);
+      flushFrames();
+      fixture.detectChanges();
+      expect(page.label().nativeElement.textContent?.trim()).toBe('Path 2 · #4 → #5 — Guard (7)');
+
+      await update(() => host.paths.set([path()]));
+      page.pointer('pointermove', 50, 50);
+      flushFrames();
+      fixture.detectChanges();
+      expect(page.label().nativeElement.textContent?.trim()).toBe('Path 2 · #4 → #5');
+
+      // clicking an arrow selects nothing
+      page.pointer('pointerdown', 50, 50);
+      page.pointer('pointerup', 50, 50);
+      expect(host.picks.at(-1)?.type).not.toBe('segment');
+    });
   });
 
   it('reports the camera centre after it moved far enough', async () => {

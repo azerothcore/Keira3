@@ -1062,6 +1062,8 @@
     "CACHE_CLEAR": "清除缓存",
     "PRELOAD_ZONE": "预加载区域",
     "PRELOAD_MAP": "预加载整张地图",
+    "PRELOAD_ALL": "预加载所有地图",
+    "PRELOAD_ALL_HELP": "所有带地形的地图：可能耗时较长并占用数 GB 磁盘空间。可随时取消，已完成的部分会保留在缓存中。",
     "ADVANCED": "按分组",
     "GROUP": "分组",
     "LARGE_DOODADS": "树木和大型道具",

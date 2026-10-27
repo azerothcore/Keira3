@@ -40,6 +40,8 @@ export interface WaypointPath {
 export type PickResult =
   | { type: 'spawn'; key: string; position: WorldPosition }
   | { type: 'waypoint'; key: string; pathKey: string; point: number; position: WorldPosition }
+  /** A path's direction arrow, between two of its points (only with `PickOptions.segments`). */
+  | { type: 'segment'; pathKey: string; from: number; to: number; position: WorldPosition }
   | { type: 'ground'; position: WorldPosition };
 
 export interface ObjectMoved {

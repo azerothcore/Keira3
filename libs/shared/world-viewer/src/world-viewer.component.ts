@@ -254,8 +254,9 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private updateHover(): void {
     const event = this.hoverEvent as PointerEvent;
     this.hoverEvent = undefined;
-    const result = this.pickAt(event, { markersOnly: true });
-    const text = result ? this.labelFor((result as { key: string }).key) : undefined;
+    const result = this.pickAt(event, { markersOnly: true, segments: true });
+    const text =
+      result?.type === 'segment' ? this.segmentLabel(result) : result ? this.labelFor((result as { key: string }).key) : undefined;
     const rect = this.host().nativeElement.getBoundingClientRect();
     this.hoverLabel.set(text ? { text, x: event.clientX - rect.left + 14, y: event.clientY - rect.top + 14 } : undefined);
   }
@@ -273,6 +274,12 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
     return this.world.pick(x, y, options);
+  }
+
+  private segmentLabel(segment: { pathKey: string; from: number; to: number }): string {
+    const path = this.paths().find((p) => p.key === segment.pathKey) as WaypointPath;
+    const owners = path.owners?.length ? ` — ${path.owners.join(', ')}` : '';
+    return `${path.label} · #${segment.from} → #${segment.to}${owners}`;
   }
 
   private labelFor(key: string): string {

@@ -18,7 +18,9 @@ describe('ZoneLighting', () => {
     const source = { getZoneLights: vi.fn().mockResolvedValue([LIGHT]) } satisfies ZoneLightSource;
     const world = new WorldScene();
     const onChange = vi.fn();
-    return { source, world, onChange, lighting: new ZoneLighting(source, world, onChange) };
+    const lighting = new ZoneLighting(source, world, onChange);
+    lighting.configure(true);
+    return { source, world, onChange, lighting };
   };
   const fogEnd = (world: WorldScene) => (world.scene.fog as Fog).far;
 

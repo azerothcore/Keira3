@@ -251,6 +251,7 @@ describe(WorldEditorComponent.name, () => {
       page.click('preload-zone');
       await settle(page);
       expect(mocks.client.preload).toHaveBeenCalledWith('Azeroth', [{ tx: 32, ty: 48 }], expect.any(Function), expect.any(Function));
+      expect(page.text('preload-label')).toBe('Elwynn Forest');
       expect(page.text('preload-progress')).toBe('0 / 1');
       report(1, 3);
       page.fixture.detectChanges();
@@ -285,6 +286,64 @@ describe(WorldEditorComponent.name, () => {
       page.click('preload-map');
       await settle(page);
       expect(mocks.toastr.error).toHaveBeenCalledWith('disk full', 'World Editor');
+    });
+
+    it('preloads every map with terrain, one after the other, and stops when cancelled', async () => {
+      const { page } = await setup();
+      mocks.client.getMapTiles.mockImplementation((directory: string) =>
+        Promise.resolve(
+          directory === 'Azeroth'
+            ? [{ tx: 32, ty: 48 }]
+            : [
+                { tx: 1, ty: 1 },
+                { tx: 1, ty: 2 },
+              ],
+        ),
+      );
+      let finishFirst: () => void = () => undefined;
+      mocks.client.preload
+        .mockImplementationOnce(() => new Promise<void>((resolve) => (finishFirst = resolve)))
+        .mockResolvedValue(undefined);
+      page.click('settings-toggle');
+      page.fixture.detectChanges();
+      page.click('preload-all');
+      await settle(page);
+      expect(page.text('preload-label')).toBe('1/2 Eastern Kingdoms');
+      finishFirst();
+      await settle(page);
+      expect(mocks.client.preload).toHaveBeenCalledTimes(2);
+      expect(mocks.client.preload).toHaveBeenLastCalledWith(
+        'Kalimdor',
+        [
+          { tx: 1, ty: 1 },
+          { tx: 1, ty: 2 },
+        ],
+        expect.any(Function),
+        expect.any(Function),
+      );
+      expect(mocks.toastr.success).toHaveBeenCalledWith('Preloaded 3 tiles.', 'World Editor');
+
+      // maps without terrain are skipped; cancelling stops before the next map
+      mocks.client.preload.mockClear();
+      mocks.client.getMapTiles.mockImplementation((directory: string) =>
+        Promise.resolve(directory === 'Azeroth' ? [] : [{ tx: 1, ty: 1 }]),
+      );
+      page.click('preload-all');
+      await settle(page);
+      expect(mocks.client.preload).toHaveBeenCalledTimes(1);
+
+      mocks.client.preload.mockClear();
+      mocks.client.getMapTiles.mockResolvedValue([{ tx: 1, ty: 1 }]);
+      mocks.client.preload.mockImplementation(() => {
+        page.fixture.detectChanges();
+        page.click('preload-cancel');
+        return Promise.resolve();
+      });
+      mocks.toastr.error.mockClear();
+      page.click('preload-all');
+      await settle(page);
+      expect(mocks.client.preload).toHaveBeenCalledTimes(1);
+      expect(mocks.toastr.error).not.toHaveBeenCalled();
     });
 
     it('toggles the settings panel', async () => {
@@ -615,6 +674,9 @@ describe(WorldEditorComponent.name, () => {
       await settle(page);
       expect(page.byId('nothing-selected')).toBeTruthy();
       expect(page.viewer().editableKey()).toBeUndefined();
+      page.viewer().picked.emit({ type: 'segment', pathKey: 'path:10', from: 1, to: 2, position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      expect(page.viewer().selectedKey()).toBeUndefined();
     });
 
     it('turns gizmo moves into pending updates', async () => {

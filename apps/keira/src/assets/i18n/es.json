@@ -1062,6 +1062,8 @@
     "CACHE_CLEAR": "Vaciar caché",
     "PRELOAD_ZONE": "Precargar zona",
     "PRELOAD_MAP": "Precargar todo el mapa",
+    "PRELOAD_ALL": "Precargar todos los mapas",
+    "PRELOAD_ALL_HELP": "Todos los mapas con terreno: puede tardar mucho y ocupar varios GB. Se puede cancelar; lo hecho queda en caché.",
     "ADVANCED": "Por grupo",
     "GROUP": "Grupo",
     "LARGE_DOODADS": "Árboles y objetos grandes",

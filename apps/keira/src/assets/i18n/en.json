@@ -1062,6 +1062,8 @@
     "CACHE_CLEAR": "Clear cache",
     "PRELOAD_ZONE": "Preload zone",
     "PRELOAD_MAP": "Preload whole map",
+    "PRELOAD_ALL": "Preload all maps",
+    "PRELOAD_ALL_HELP": "Every map with terrain: can take a long time and several GB of disk space. Cancel at any point; what's done stays cached.",
     "ADVANCED": "Per group",
     "GROUP": "Group",
     "LARGE_DOODADS": "Trees & large props",

@@ -61,6 +61,12 @@ export interface PickOptions {
   tolerance?: number;
   groundOnly?: boolean;
   markersOnly?: boolean;
+  /** Also pick the direction arrows of paths (hover labels), as `segment` results. */
+  segments?: boolean;
+}
+
+interface SegmentData {
+  segment: { pathKey: string; from: number; to: number };
 }
 
 interface PickableData {
@@ -407,8 +413,10 @@ export class WorldScene {
       group.name = path.key;
 
       const linePoints = path.points.map((p) => scenePoint(p.position, WAYPOINT_LIFT));
+      const numbers = path.points.map((p) => p.point);
       if (path.closed && linePoints.length > 2) {
         linePoints.push(linePoints[0].clone());
+        numbers.push(numbers[0]);
       }
       // Drawn over the terrain so a path stays readable where it crosses a hill between two points.
       const line = new Line(
@@ -417,7 +425,7 @@ export class WorldScene {
       );
       line.renderOrder = 1;
       line.name = `${path.key}:line`;
-      group.add(line, this.buildArrows(path.key, linePoints, color));
+      group.add(line, this.buildArrows(path.key, linePoints, numbers, color));
 
       for (const waypoint of path.points) {
         const key = waypointKey(path.key, waypoint.point);
@@ -441,10 +449,13 @@ export class WorldScene {
       return;
     }
     const group = line.parent as Group;
-    const points = this.waypointsOf(group).map((child) => child.position.clone());
+    const waypoints = this.waypointsOf(group);
+    const points = waypoints.map((child) => child.position.clone());
+    const numbers = waypoints.map((child) => (child.userData as PickableData).point as number);
     const closed = line.geometry.getAttribute('position').count === points.length + 1;
     if (closed) {
       points.push(points[0].clone());
+      numbers.push(numbers[0]);
     }
     this.orientPointers(group, closed);
     line.geometry.dispose();
@@ -453,7 +464,7 @@ export class WorldScene {
     const oldArrows = group.getObjectByName(`${pathKey}:arrows`) as Group;
     this.disposeArrows(oldArrows);
     group.remove(oldArrows);
-    group.add(this.buildArrows(pathKey, points, pathColor(pathKey)));
+    group.add(this.buildArrows(pathKey, points, numbers, pathColor(pathKey)));
   }
 
   private waypointsOf(group: Group): Object3D[] {
@@ -489,7 +500,7 @@ export class WorldScene {
   }
 
   /** One arrow per segment, at its middle, pointing towards the next point (the direction the creature walks). */
-  private buildArrows(pathKey: string, points: Vector3[], color: number): Group {
+  private buildArrows(pathKey: string, points: Vector3[], numbers: number[], color: number): Group {
     const arrows = new Group();
     arrows.name = `${pathKey}:arrows`;
     const material = new MeshBasicMaterial({ color, depthTest: false, transparent: true, opacity: 0.9 });
@@ -506,6 +517,7 @@ export class WorldScene {
         .multiplyScalar(0.5);
       arrow.quaternion.setFromUnitVectors(up, direction.normalize());
       arrow.renderOrder = 2;
+      arrow.userData = { segment: { pathKey, from: numbers[i], to: numbers[i + 1] } } satisfies SegmentData;
       arrows.add(arrow);
       this.arrows.add(arrow);
     }
@@ -563,15 +575,19 @@ export class WorldScene {
    * `groundOnly` ignores markers (placing things on the terrain); `markersOnly` skips the terrain (hover labels).
    */
   pick(ndcX: number, ndcY: number, options: PickOptions = {}): PickResult | undefined {
-    const { tolerance = 0.03, groundOnly = false, markersOnly = false } = options;
+    const { tolerance = 0.03, groundOnly = false, markersOnly = false, segments = false } = options;
     this.camera.updateMatrixWorld();
     this.updateMarkerScale();
     this.scene.updateMatrixWorld();
     this.raycaster.setFromCamera(new Vector2(ndcX, ndcY), this.camera);
 
-    const markerHit = groundOnly
-      ? undefined
-      : this.raycaster.intersectObjects([this.spawnGroup, this.waypointGroup], true).find(isPickableHit);
+    const hits = groundOnly ? [] : this.raycaster.intersectObjects([this.spawnGroup, this.waypointGroup], true);
+    const markerHit = hits.find(isPickableHit);
+    const segmentHit = segments && !markerHit ? hits.find((hit) => 'segment' in hit.object.userData) : undefined;
+    if (segmentHit) {
+      const { pathKey, from, to } = (segmentHit.object.userData as SegmentData).segment;
+      return { type: 'segment', pathKey, from, to, position: sceneToWorld(segmentHit.point) };
+    }
     const marker = groundOnly ? undefined : (markerHit?.object ?? this.nearestMarker(ndcX, ndcY, tolerance));
     if (marker) {
       const data = marker.userData as PickableData;

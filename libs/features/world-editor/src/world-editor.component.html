@@ -319,7 +319,18 @@
         >
           {{ 'WORLD_EDITOR.PRELOAD_MAP' | translate }}
         </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary"
+          data-testid="preload-all"
+          [title]="'WORLD_EDITOR.PRELOAD_ALL_HELP' | translate"
+          [disabled]="!cache.enabled() || !!preloading() || maps().length === 0"
+          (click)="preload('all')"
+        >
+          {{ 'WORLD_EDITOR.PRELOAD_ALL' | translate }}
+        </button>
         @if (preloading(); as progress) {
+          <span class="text-muted" data-testid="preload-label">{{ progress.label }}</span>
           <div class="progress flex-grow-1 world-editor-preload" data-testid="preload-progress">
             <div class="progress-bar" role="progressbar" [style.width.%]="progress.total ? (100 * progress.done) / progress.total : 0">
               {{ progress.done }} / {{ progress.total }}

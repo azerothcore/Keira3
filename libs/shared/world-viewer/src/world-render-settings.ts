@@ -56,7 +56,7 @@ export const DEFAULT_WORLD_RENDER_SETTINGS: WorldRenderSettings = {
   showBuildings: true,
   showDoodads: true,
   showModels: true,
-  zoneLighting: true,
+  zoneLighting: false,
   drawDistance: 250,
   advancedDistances: false,
   largeDoodadDistance: 500,

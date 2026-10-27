@@ -15,6 +15,7 @@ import {
 } from '@keira/shared/world-viewer';
 import {
   tileCenter,
+  TileCoord,
   tileKey,
   tilesInBounds,
   WowClientService,
@@ -100,7 +101,7 @@ export class WorldEditorComponent implements OnInit {
   protected readonly cacheSize = signal(0);
   /** Megabytes, for the settings panel. */
   protected readonly cacheSizeMb = computed(() => (this.cacheSize() / 1_000_000).toFixed(1));
-  protected readonly preloading = signal<{ done: number; total: number } | undefined>(undefined);
+  protected readonly preloading = signal<{ label: string; done: number; total: number } | undefined>(undefined);
   private preloadCancelled = false;
   protected readonly zones = signal<WowZone[]>([]);
   protected readonly zoneId = signal(0);
@@ -325,26 +326,29 @@ export class WorldEditorComponent implements OnInit {
     this.cacheSize.set(this.cache.size());
   }
 
-  /** Processes the selected zone, or the whole map, into the disk cache. */
-  protected async preload(scope: 'zone' | 'map'): Promise<void> {
-    const directory = this.mapDirectory() as string;
-    const zone = this.zones().find((z) => z.areaId === this.zoneId());
-    let tiles = await this.client.getMapTiles(directory);
-    if (zone && scope === 'zone') {
-      const inZone = new Set(tilesInBounds(zone.bounds, { tx: 32, ty: 32 }).map(tileKey));
-      tiles = tiles.filter((tile) => inZone.has(tileKey(tile)));
-    }
+  /** Processes the selected zone, the whole map, or every map into the disk cache. */
+  protected async preload(scope: 'zone' | 'map' | 'all'): Promise<void> {
     this.preloadCancelled = false;
-    this.preloading.set({ done: 0, total: tiles.length });
+    this.preloading.set({ label: '', done: 0, total: 0 });
+    let tileCount = 0;
     try {
-      await this.client.preload(
-        directory,
-        tiles,
-        (done, total) => this.preloading.set({ done, total }),
-        () => this.preloadCancelled,
-      );
+      const jobs = await this.preloadJobs(scope);
+      for (const [index, job] of jobs.entries()) {
+        if (this.preloadCancelled) {
+          break;
+        }
+        const label = jobs.length > 1 ? `${index + 1}/${jobs.length} ${job.name}` : job.name;
+        this.preloading.set({ label, done: 0, total: job.tiles.length });
+        await this.client.preload(
+          job.directory,
+          job.tiles,
+          (done, total) => this.preloading.set({ label, done, total }),
+          () => this.preloadCancelled,
+        );
+        tileCount += job.tiles.length;
+      }
       if (!this.preloadCancelled) {
-        this.toastr.success(`Preloaded ${tiles.length} tiles.`, 'World Editor');
+        this.toastr.success(`Preloaded ${tileCount} tiles.`, 'World Editor');
       }
     } catch (error) {
       this.toastr.error((error as Error).message, 'World Editor');
@@ -352,6 +356,24 @@ export class WorldEditorComponent implements OnInit {
       this.preloading.set(undefined);
       this.cacheSize.set(this.cache.size());
     }
+  }
+
+  /** The maps and tiles a preload covers (maps without terrain, like most dungeons, have no tiles to preload). */
+  private async preloadJobs(scope: 'zone' | 'map' | 'all'): Promise<{ directory: string; name: string; tiles: TileCoord[] }[]> {
+    const maps = scope === 'all' ? this.maps() : this.maps().filter((map) => map.id === this.mapId());
+    const jobs = [];
+    for (const map of maps) {
+      let tiles = await this.client.getMapTiles(map.directory);
+      const zone = this.zones().find((z) => z.areaId === this.zoneId());
+      if (scope === 'zone' && zone) {
+        const inZone = new Set(tilesInBounds(zone.bounds, { tx: 32, ty: 32 }).map(tileKey));
+        tiles = tiles.filter((tile) => inZone.has(tileKey(tile)));
+      }
+      if (tiles.length > 0) {
+        jobs.push({ directory: map.directory, name: scope === 'zone' && zone ? zone.name : map.name, tiles });
+      }
+    }
+    return jobs;
   }
 
   protected cancelPreload(): void {
@@ -483,7 +505,7 @@ export class WorldEditorComponent implements OnInit {
   protected async onPicked(result: PickResult): Promise<void> {
     const tool = this.tool();
     if (tool === 'select') {
-      this.select(result.type === 'ground' ? undefined : result.key);
+      this.select(result.type === 'spawn' || result.type === 'waypoint' ? result.key : undefined);
       return;
     }
     if (result.type !== 'ground') {
