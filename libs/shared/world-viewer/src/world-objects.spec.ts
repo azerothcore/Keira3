@@ -5,8 +5,8 @@ import { ObjectSource, WorldObjects } from './world-objects';
 
 const model: WmoModel = {
   materials: [
-    { texture: 'a.blp', twoSided: false, unlit: false },
-    { twoSided: false, unlit: false },
+    { texture: 'a.blp', twoSided: false, unlit: false, blend: 0 },
+    { twoSided: false, unlit: false, blend: 0 },
   ],
   groups: [
     {

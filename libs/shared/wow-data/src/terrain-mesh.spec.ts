@@ -19,14 +19,14 @@ describe('terrain-mesh', () => {
     holes,
   });
 
-  it('detects holes per 2x2 block of cells, column-major', () => {
+  it('detects holes per 2x2 block of cells, row by row', () => {
     expect(isHole(0b1, 0, 0)).toBe(true);
     expect(isHole(0b1, 1, 1)).toBe(true);
     expect(isHole(0b1, 0, 2)).toBe(false);
     expect(isHole(1 << 5, 2, 2)).toBe(true);
-    // bit 1 = second block of rows in the first block of columns
-    expect(isHole(0b10, 2, 0)).toBe(true);
-    expect(isHole(0b10, 0, 2)).toBe(false);
+    // bit 1 = second block of columns in the first block of rows (east of the NW block)
+    expect(isHole(0b10, 0, 2)).toBe(true);
+    expect(isHole(0b10, 2, 0)).toBe(false);
   });
 
   it('merges the alpha maps of layers 2..4 into RGB channels', () => {

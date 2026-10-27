@@ -1,6 +1,6 @@
 import { WmoModel, worldToScene } from '@keira/shared/wow-data';
 import { DoubleSide, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, Texture, Vector3 } from 'three';
-import { applyPlacement, buildWmoObject, disposeWmoObject, serverQuaternionToScene } from './wmo-object';
+import { applyPlacement, buildWmoObject, disposeWmoObject, isRoofTexture, ROOF_LAYER, serverQuaternionToScene } from './wmo-object';
 
 const group = (indoor: boolean, colors = indoor) => ({
   positions: new Float32Array([0, 0, 0, 1, 0, 0, 0, 0, 1]),
@@ -39,8 +39,8 @@ describe('wmo-object', () => {
     const fallback = new Texture();
     const model: WmoModel = {
       materials: [
-        { texture: 'a.blp', twoSided: true, unlit: false },
-        { texture: undefined, twoSided: false, unlit: true },
+        { texture: 'a.blp', twoSided: true, unlit: false, blend: 0 },
+        { texture: undefined, twoSided: false, unlit: true, blend: 1 },
       ],
       groups: [group(false), group(true), group(true, false), { ...group(false), indices: new Uint16Array(0) }],
     };
@@ -54,6 +54,9 @@ describe('wmo-object', () => {
     expect(outdoorMaterials[0].map).toBe(textures[0]);
     expect(outdoorMaterials[1]).toBeInstanceOf(MeshBasicMaterial);
     expect(outdoorMaterials[1].map).toBe(fallback);
+    // only alpha-keyed materials are cut out by their texture's alpha (an opaque roof's alpha means something else)
+    expect(outdoorMaterials[0].alphaTest).toBe(0);
+    expect(outdoorMaterials[1].alphaTest).toBe(0.5);
     expect(outdoor.geometry.groups.length).toBe(2);
 
     const indoorMaterial = (indoor.material as MeshBasicMaterial[])[0];
@@ -68,6 +71,42 @@ describe('wmo-object', () => {
     disposeWmoObject(template);
     expect(dispose).toHaveBeenCalled();
     expect(disposeMaterial).toHaveBeenCalled();
+  });
+
+  it('puts the roofs of outdoor groups on their own layer', () => {
+    const model: WmoModel = {
+      materials: [
+        { texture: 'Dungeons\\Textures\\Walls\\Wall.blp', twoSided: false, unlit: false, blend: 0 },
+        { texture: 'Dungeons\\Textures\\Roof\\MM_ROOF_01.blp', twoSided: false, unlit: false, blend: 0 },
+      ],
+      groups: [
+        {
+          ...group(false),
+          batches: [
+            { start: 0, count: 3, material: 0 },
+            { start: 0, count: 3, material: 1 },
+          ],
+        },
+        { ...group(false), batches: [{ start: 0, count: 3, material: 1 }] },
+        { ...group(true), batches: [{ start: 0, count: 3, material: 1 }] },
+      ],
+    };
+    const template = buildWmoObject(model, [], new Texture());
+    const roofs = template.children.filter((child) => child.name === 'roof') as Mesh[];
+    expect(roofs).toHaveLength(2);
+    expect(roofs.every((roof) => roof.layers.isEnabled(ROOF_LAYER) && !roof.layers.isEnabled(0))).toBe(true);
+    // a roof shares its group's vertices
+    expect(roofs[0].geometry.getAttribute('position')).toBe((template.children[0] as Mesh).geometry.getAttribute('position'));
+    // indoor ceilings stay with the rest
+    expect(template.children).toHaveLength(4);
+    expect(isRoofTexture(undefined)).toBe(false);
+  });
+
+  it('blends glass-like materials', () => {
+    const model: WmoModel = { materials: [{ twoSided: false, unlit: false, blend: 2 }], groups: [group(false)] };
+    const glass = ((buildWmoObject(model, [], new Texture()).children[0] as Mesh).material as MeshLambertMaterial[])[0];
+    expect(glass.transparent).toBe(true);
+    expect(glass.depthWrite).toBe(false);
   });
 
   it('copes with materials missing from the root', () => {

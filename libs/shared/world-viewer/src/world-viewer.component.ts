@@ -115,6 +115,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
           gameobjectDistance: distances.gameobjects,
         });
         this.zoneLighting.configure(settings.zoneLighting);
+        this.world.setRoofsVisible(settings.showRoofs);
         void this.streamer.update(this.center);
         void this.objects.update(this.center);
         void this.doodads.update(this.center);

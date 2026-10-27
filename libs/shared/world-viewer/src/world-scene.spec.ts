@@ -123,6 +123,25 @@ describe('WorldScene', () => {
       expect(world.groundHeightAt(CENTER.x, CENTER.y, -100)).toBeCloseTo(30);
     });
 
+    it('hides roofs from view and from picking when asked', () => {
+      const world = new WorldScene();
+      world.setTerrainTile(flatTile(10));
+      const roof = new Mesh(
+        new BufferGeometry().setFromPoints([new Vector3(-1000, 0, -1000), new Vector3(1000, 0, -1000), new Vector3(0, 0, 1000)]),
+      );
+      roof.geometry.setIndex([0, 2, 1]);
+      roof.layers.set(2);
+      const p = worldToScene({ ...CENTER, z: 30 });
+      roof.position.set(p.x, 30, p.z);
+      world.buildingGroup.add(roof);
+      roof.updateMatrixWorld();
+      expect(world.groundHeightAt(CENTER.x, CENTER.y)).toBeCloseTo(30);
+      expect(world.camera.layers.isEnabled(2)).toBe(true);
+      world.setRoofsVisible(false);
+      expect(world.camera.layers.isEnabled(2)).toBe(false);
+      expect(world.groundHeightAt(CENTER.x, CENTER.y)).toBeCloseTo(10);
+    });
+
     it('reports the ground height under a position', () => {
       const world = new WorldScene();
       world.setTerrainTile(flatTile(42));

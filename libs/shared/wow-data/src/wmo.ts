@@ -1,5 +1,6 @@
 import { MapObj, MapObjGroup } from '@wowserhq/format';
 import { toArrayBuffer } from './formats';
+import { findChunk } from './liquid';
 
 /** A model placed by an ADT (MODF for buildings, MDDF for doodads), in server space. */
 export interface ModelPlacement {
@@ -17,6 +18,8 @@ export interface WmoMaterialInfo {
   texture?: string;
   twoSided: boolean;
   unlit: boolean;
+  /** MOMT blend mode: 0 opaque, 1 alpha-keyed (cut-out), 2 alpha blended, 3+ additive/modulated. */
+  blend: number;
 }
 
 /** A WMO group's geometry in local scene axes (x = −y, y = z, z = −x), ready to be placed. */
@@ -56,14 +59,31 @@ export function toSceneAxes(values: ArrayLike<number>): Float32Array {
   return out;
 }
 
+/** Size of a MOMT entry; its blend mode is the third uint32. */
+const MOMT_ENTRY_SIZE = 64;
+const MOMT_BLEND_OFFSET = 8;
+
+/** Blend modes of the root's materials, read from MOMT (@wowserhq/format doesn't expose them). */
+function materialBlendModes(bytes: Uint8Array): number[] {
+  const chunk = findChunk(bytes, 'MOMT');
+  if (!chunk) {
+    return [];
+  }
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const count = Math.floor(chunk.size / MOMT_ENTRY_SIZE);
+  return Array.from({ length: count }, (_, i) => view.getUint32(chunk.offset + i * MOMT_ENTRY_SIZE + MOMT_BLEND_OFFSET, true));
+}
+
 export function parseWmoRoot(bytes: Uint8Array): { materials: WmoMaterialInfo[]; groups: { indoor: boolean }[]; flags: number } {
   const root = new MapObj().load(toArrayBuffer(bytes));
+  const blends = materialBlendModes(bytes);
   return {
     flags: root.flags,
-    materials: root.materials.map((material) => ({
+    materials: root.materials.map((material, i) => ({
       texture: material.textures[0],
       twoSided: (material.flags & MATERIAL_TWO_SIDED) !== 0,
       unlit: (material.flags & MATERIAL_UNLIT) !== 0,
+      blend: blends[i] ?? 0,
     })),
     groups: root.groupInfo.map((info) => ({ indoor: (info.flags & GROUP_INDOOR) !== 0 })),
   };

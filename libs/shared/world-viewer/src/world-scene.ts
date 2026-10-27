@@ -51,6 +51,7 @@ import {
   worldToScene,
 } from '@keira/shared/wow-data';
 import { createSkyDome, setSkyColors } from './sky';
+import { ROOF_LAYER } from './wmo-object';
 import { createTerrainLighting, createTerrainMaterial } from './terrain-material';
 import { PickResult, SpawnKind, WaypointPath, waypointKey, WorldSpawn } from './world-viewer.model';
 
@@ -179,9 +180,21 @@ export class WorldScene {
     this.waypointGroup.name = 'waypoints';
     this.scene.add(this.terrainGroup, this.buildingGroup, this.doodadGroup, this.spawnGroup, this.waypointGroup);
     this.camera.layers.enable(LIQUID_LAYER);
+    this.setRoofsVisible(true);
 
     this.sun.position.set(300, 600, 200);
     this.scene.add(this.hemisphere, this.ambient, this.sun, this.sky);
+  }
+
+  /** Shows building roofs, or hides them to look inside (hidden roofs are not picked either, so clicks reach the floor). */
+  setRoofsVisible(visible: boolean): void {
+    for (const layers of [this.camera.layers, this.raycaster.layers]) {
+      if (visible) {
+        layers.enable(ROOF_LAYER);
+      } else {
+        layers.disable(ROOF_LAYER);
+      }
+    }
   }
 
   // ---------------------------------------------------------------- lighting

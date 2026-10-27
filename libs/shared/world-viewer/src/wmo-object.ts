@@ -15,6 +15,17 @@ import {
   Texture,
 } from 'three';
 
+/** Render layer of building roofs: the camera shows it unless roofs are hidden; picking (layer 0) never sees it. */
+export const ROOF_LAYER = 2;
+
+/** Roof textures live in DUNGEONS\TEXTURES\ROOF (and are named …ROOF…). */
+export function isRoofTexture(texture: string | undefined): boolean {
+  return !!texture && /roof/i.test(texture);
+}
+
+const WMO_BLEND_ALPHA_KEY = 1;
+const WMO_BLEND_ALPHA = 2;
+
 /** Rotation taking server axes (x north, y west, z up) to scene axes (x = −y, y = z, z = −x). */
 const SERVER_TO_SCENE = new Quaternion().setFromRotationMatrix(new Matrix4().set(0, -1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0, 0, 0, 1));
 const SCENE_TO_SERVER = SERVER_TO_SCENE.clone().invert();
@@ -45,9 +56,14 @@ export function buildWmoObject(model: WmoModel, textures: Texture[], fallback: T
     const key = `${index}:${indoor}`;
     let result = cache.get(key);
     if (!result) {
+      // Only alpha-keyed materials (leaves, fences, windows) are cut out by their alpha: on opaque ones (most walls
+      // and roofs) the alpha channel holds other data and would make them see-through.
+      const blend = info?.blend ?? 0;
       const options = {
         map: textures[index] ?? fallback,
-        alphaTest: 0.5,
+        alphaTest: blend === WMO_BLEND_ALPHA_KEY ? 0.5 : 0,
+        transparent: blend >= WMO_BLEND_ALPHA,
+        depthWrite: blend < WMO_BLEND_ALPHA,
         side: info?.twoSided ? DoubleSide : FrontSide,
       };
       result = indoor || info?.unlit ? new MeshBasicMaterial({ ...options, vertexColors: indoor }) : new MeshLambertMaterial(options);
@@ -69,13 +85,31 @@ export function buildWmoObject(model: WmoModel, textures: Texture[], fallback: T
     }
     geometry.setIndex(new BufferAttribute(group.indices, 1));
     const indoor = group.indoor && !!group.colors;
+    // roofs get their own mesh on ROOF_LAYER, so they can be hidden to look (and click) inside
+    const roof = new BufferGeometry();
+    for (const name of Object.keys(geometry.attributes)) {
+      roof.setAttribute(name, geometry.getAttribute(name));
+    }
+    roof.setIndex(geometry.getIndex());
     const materials: Material[] = [];
-    group.batches.forEach((batch, i) => {
-      geometry.addGroup(batch.start, batch.count, i);
-      materials.push(material(batch.material, indoor));
+    const roofMaterials: Material[] = [];
+    group.batches.forEach((batch) => {
+      const isRoof = !group.indoor && isRoofTexture(model.materials[batch.material]?.texture);
+      const [target, list] = isRoof ? [roof, roofMaterials] : [geometry, materials];
+      target.addGroup(batch.start, batch.count, list.length);
+      list.push(material(batch.material, indoor));
     });
-    geometry.computeBoundingSphere();
-    template.add(new Mesh(geometry, materials));
+    if (materials.length > 0) {
+      geometry.computeBoundingSphere();
+      template.add(new Mesh(geometry, materials));
+    }
+    if (roofMaterials.length > 0) {
+      roof.computeBoundingSphere();
+      const mesh = new Mesh(roof, roofMaterials);
+      mesh.name = 'roof';
+      mesh.layers.set(ROOF_LAYER);
+      template.add(mesh);
+    }
   }
   template.userData['materials'] = [...cache.values()];
   return template;

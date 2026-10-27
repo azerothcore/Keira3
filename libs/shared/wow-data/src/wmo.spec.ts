@@ -53,11 +53,28 @@ describe('wmo', () => {
     expect(parseWmoRoot(new Uint8Array(4))).toEqual({
       flags: 1,
       materials: [
-        { texture: 'a.blp', twoSided: true, unlit: true },
-        { texture: undefined, twoSided: false, unlit: false },
+        { texture: 'a.blp', twoSided: true, unlit: true, blend: 0 },
+        { texture: undefined, twoSided: false, unlit: false, blend: 0 },
       ],
       groups: [{ indoor: true }, { indoor: false }],
     });
+
+    // blend modes come from the MOMT chunk itself (here after a MVER chunk)
+    const bytes = new Uint8Array(12 + 8 + 2 * 64);
+    const view = new DataView(bytes.buffer);
+    bytes.set(
+      [...'REVM'].map((c) => c.charCodeAt(0)),
+      0,
+    );
+    view.setUint32(4, 4, true);
+    bytes.set(
+      [...'TMOM'].map((c) => c.charCodeAt(0)),
+      12,
+    );
+    view.setUint32(16, 128, true);
+    view.setUint32(20 + 8, 1, true);
+    view.setUint32(20 + 64 + 8, 2, true);
+    expect(parseWmoRoot(bytes).materials.map((m) => m.blend)).toEqual([1, 2]);
   });
 
   it('reads group geometry in scene axes, with BGRA vertex colours for indoor groups', () => {

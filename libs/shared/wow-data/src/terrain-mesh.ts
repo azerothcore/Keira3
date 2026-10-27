@@ -52,9 +52,9 @@ export const CHUNK_VERTEX_COUNT = OUTER * OUTER + INNER * INNER;
 const outerIndex = (row: number, col: number): number => row * ROW_STRIDE + col;
 const innerIndex = (row: number, col: number): number => row * ROW_STRIDE + OUTER + col;
 
-/** Low-resolution MCNK holes: 16 bits, one per 2 × 2 block of the chunk's 8 × 8 cells, column-major. */
+/** Low-resolution MCNK holes: 16 bits, one per 2 × 2 block of the chunk's 8 × 8 cells, row by row (bit 0 = NW block). */
 export function isHole(holes: number, row: number, col: number): boolean {
-  return (holes & (1 << ((col >> 1) * 4 + (row >> 1)))) !== 0;
+  return (holes & (1 << ((row >> 1) * 4 + (col >> 1)))) !== 0;
 }
 
 /** Vertex `i` of a chunk: its row/column offsets (in cells) from the chunk's north-west corner. */

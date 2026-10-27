@@ -65,7 +65,7 @@ function saveLastView(view: LastView): void {
   localStorage.setItem(LAST_VIEW_KEY, JSON.stringify(view));
 }
 
-type RenderFlagKey = 'showBuildings' | 'showDoodads' | 'showModels' | 'zoneLighting' | 'advancedDistances' | 'loadWholeZone';
+type RenderFlagKey = 'showRoofs' | 'showBuildings' | 'showDoodads' | 'showModels' | 'zoneLighting' | 'advancedDistances' | 'loadWholeZone';
 type RenderDistanceKey = 'drawDistance' | 'largeDoodadDistance' | 'smallDoodadDistance' | 'creatureDistance' | 'gameobjectDistance';
 
 /**

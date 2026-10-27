@@ -10,6 +10,8 @@ export interface WorldRenderSettings {
   loadWholeZone: boolean;
   /** Buildings, caves and bridges (WMO). */
   showBuildings: boolean;
+  /** Building roofs (hide them to look and click inside). */
+  showRoofs: boolean;
   /** Trees, rocks, fences and other props placed by the map (M2 doodads). */
   showDoodads: boolean;
   /** Real creature/gameobject models instead of pins (pins are always used beyond the draw distance). */
@@ -54,6 +56,7 @@ export const DEFAULT_WORLD_RENDER_SETTINGS: WorldRenderSettings = {
   terrainRadius: 1,
   loadWholeZone: false,
   showBuildings: true,
+  showRoofs: true,
   showDoodads: true,
   showModels: true,
   zoneLighting: false,

@@ -448,6 +448,11 @@ describe(WorldViewerComponent.name, () => {
       await update(() => host.paths.set([{ key: 'path:1', label: 'Path 1', points: [{ point: 3, position: at(300, 300) }] }]));
       hover(50, 50);
       expect(page.label().nativeElement.textContent?.trim()).toBe('Path 1 · #3');
+      await update(() =>
+        host.paths.set([{ key: 'path:1', label: 'Path 1', points: [{ point: 3, position: at(300, 300), info: ['wait 5 s', 'run'] }] }]),
+      );
+      hover(50, 50);
+      expect(page.label().nativeElement.textContent?.trim()).toBe('Path 1 · #3 · wait 5 s · run');
 
       page.pointer('pointerdown', 50, 50);
       hover(52, 52);

@@ -142,6 +142,17 @@
         <input
           class="form-check-input"
           type="checkbox"
+          id="world-editor-roofs"
+          data-testid="view-roofs"
+          [checked]="renderSettings.settings().showRoofs"
+          (change)="setRenderFlag('showRoofs', $event)"
+        />
+        <label class="form-check-label" for="world-editor-roofs">{{ 'WORLD_EDITOR.ROOFS' | translate }}</label>
+      </div>
+      <div class="form-check form-switch mb-0">
+        <input
+          class="form-check-input"
+          type="checkbox"
           id="world-editor-doodads"
           data-testid="view-doodads"
           [checked]="renderSettings.settings().showDoodads"
