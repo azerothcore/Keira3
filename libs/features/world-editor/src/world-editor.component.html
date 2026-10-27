@@ -26,6 +26,7 @@
         (paste)="onPasteLocation($event)"
         [formControl]="teleSearch"
         [placeholder]="'WORLD_EDITOR.TELEPORT_PLACEHOLDER' | translate"
+        [title]="'WORLD_EDITOR.TELEPORT_HELP' | translate"
       />
       <button type="submit" class="btn btn-sm btn-secondary" data-testid="tele-search-btn"><i class="fa fa-search"></i></button>
     </form>
@@ -58,7 +59,7 @@
       <button type="submit" class="btn btn-sm btn-secondary" data-testid="goto-btn">{{ 'WORLD_EDITOR.GO_TO' | translate }}</button>
     </form>
 
-    <div class="btn-group btn-group-sm" role="group">
+    <div class="btn-group btn-group-sm ms-auto" role="group">
       <button
         type="button"
         class="btn"
@@ -91,7 +92,7 @@
       </button>
     </div>
 
-    <button type="button" class="btn btn-sm btn-outline-secondary ms-auto" data-testid="filters-toggle" (click)="toggleFilters()">
+    <button type="button" class="btn btn-sm btn-outline-secondary" data-testid="filters-toggle" (click)="toggleFilters()">
       <i class="fa fa-filter"></i> {{ 'WORLD_EDITOR.FILTERS' | translate }}
       @if (hiddenCount()) {
         <span class="badge bg-secondary" data-testid="hidden-count">{{ hiddenCount() }}</span>
@@ -475,6 +476,17 @@
           <label class="form-check-label" for="world-editor-cache-enabled">{{ 'WORLD_EDITOR.CACHE_ENABLED' | translate }}</label>
         </div>
         <span class="text-muted" data-testid="cache-size">{{ cacheSizeText() }}</span>
+        <div
+          class="progress world-editor-cache-fill"
+          data-testid="cache-fill"
+          role="progressbar"
+          [attr.aria-valuenow]="cacheFill().toFixed(0)"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          [title]="cacheFill().toFixed(1) + '%'"
+        >
+          <div [class]="'progress-bar fill-' + cacheFillLevel()" [style.width.%]="cacheFill()"></div>
+        </div>
         <label class="d-flex align-items-center gap-1 mb-0">
           {{ 'WORLD_EDITOR.CACHE_MAX' | translate }}
           <input
@@ -563,6 +575,11 @@
               <td>{{ 'WORLD_EDITOR.BUILDINGS' | translate }}</td>
               <td></td>
               <td>{{ formatSize(usage.buildingBytes) }}</td>
+            </tr>
+            <tr class="text-muted" data-testid="cache-models">
+              <td>{{ 'WORLD_EDITOR.MODELS' | translate }}</td>
+              <td></td>
+              <td>{{ formatSize(usage.modelBytes) }}</td>
             </tr>
           </tbody>
         </table>

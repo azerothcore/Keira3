@@ -16,6 +16,8 @@ vi.mock('./formats', () => formats);
 const wmo = vi.hoisted(() => ({
   parseWmoRoot: vi.fn(),
   parseWmoGroup: vi.fn(),
+  parseWmoDoodads: vi.fn(),
+  wmoDoodadPlacements: vi.fn(),
   wmoGroupPath: (root: string, i: number) => `${root.replace(/\.wmo$/i, '')}_${String(i).padStart(3, '0')}.wmo`,
 }));
 vi.mock('./wmo', () => wmo);
@@ -323,9 +325,12 @@ describe('WowClientService', () => {
         mpqs: { 'common.MPQ': { files: { 'World\\Maps\\Azeroth\\Azeroth_32_48.adt': [1, 2, 3, 4, 0, 0, 0, 0] } } },
       });
       formats.parseWdt.mockReturnValue({ tiles: [], layerSplatDepth: 4 });
-      formats.parseAdt.mockReturnValue(adtOf([], [{ uniqueId: 1 }], [{ uniqueId: 2 }]));
+      formats.parseAdt.mockReturnValue(adtOf([], [{ uniqueId: 1, path: 'Inn.wmo' }], [{ uniqueId: 2 }]));
       const tile = { tx: 32, ty: 48 };
-      expect(await service.getTilePlacements('Azeroth', tile)).toEqual({ wmos: [{ uniqueId: 1 }], doodads: [{ uniqueId: 2 }] });
+      expect(await service.getTilePlacements('Azeroth', tile)).toEqual({
+        wmos: [{ uniqueId: 1, path: 'Inn.wmo' }],
+        doodads: [{ uniqueId: 2 }],
+      });
       await service.getTerrain('Azeroth', tile);
       await service.getTerrainDetail('azeroth', tile);
       expect(formats.parseAdt).toHaveBeenCalledTimes(1);
@@ -388,6 +393,72 @@ describe('WowClientService', () => {
       expect(await service.getM2('World\\Missing.m2')).toBeUndefined();
     });
 
+    it('keeps parsed models in the disk cache', async () => {
+      const { service } = setup({
+        mpqs: { 'common.MPQ': { files: { 'World\\Tree.m2': [1], 'World\\Tree00.skin': [2] } } },
+      });
+      m2.parseM2.mockImplementation((model: Uint8Array, skin: Uint8Array) => ({ model: model[0], skin: skin[0] }));
+      await service.getM2('World\\Tree.mdx');
+      expect((await service.cacheUsage()).modelBytes).toBeGreaterThan(0);
+      await service.close();
+      m2.parseM2.mockClear();
+      expect(await service.getM2('World\\Tree.mdx')).toEqual({ model: 1, skin: 2 });
+      expect(m2.parseM2).not.toHaveBeenCalled();
+    });
+
+    it('adds the doodads inside the buildings of a tile to its doodads, reading each building once', async () => {
+      const { service } = setup({
+        mpqs: { 'common.MPQ': { files: { 'World\\Maps\\M\\M_1_1.adt': [1], 'Inn.wmo': [1] } } },
+      });
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+      formats.parseWdt.mockReturnValue(undefined);
+      formats.parseAdt.mockReturnValue(
+        adtOf(
+          [],
+          [
+            { uniqueId: 1, path: 'Inn.wmo', doodadSet: 0 },
+            { uniqueId: 2, path: 'INN.wmo', doodadSet: 1 },
+            { uniqueId: 3, path: 'Missing.wmo', doodadSet: 0 },
+            { uniqueId: 4, path: 'Broken.wmo', doodadSet: 0 },
+          ],
+          [{ uniqueId: 9 }],
+        ),
+      );
+      const info = { sets: [{ start: 0, count: 1 }], doodads: [{ path: 'Barrel.mdx' }] };
+      wmo.parseWmoDoodads.mockReturnValueOnce(info);
+      wmo.wmoDoodadPlacements.mockImplementation((building: { uniqueId: number }) => [{ uniqueId: -building.uniqueId }]);
+      const read = vi.spyOn(service, 'readFile');
+      read.mockImplementation((path: string) =>
+        path === 'Broken.wmo'
+          ? Promise.reject(new Error('bad archive'))
+          : Promise.resolve(path === 'Missing.wmo' ? undefined : new Uint8Array([1])),
+      );
+
+      const placements = await service.getTilePlacements('M', { tx: 1, ty: 1 });
+      expect(placements?.doodads).toEqual([{ uniqueId: 9 }, { uniqueId: -1 }, { uniqueId: -2 }]);
+      expect(wmo.parseWmoDoodads).toHaveBeenCalledTimes(1);
+      expect(warn).toHaveBeenCalledWith('[World Editor] Could not read the doodads of Broken.wmo: bad archive');
+
+      // from the disk cache after a restart; a failed building is tried again
+      await service.close();
+      wmo.parseWmoDoodads.mockClear();
+      await service.getTilePlacements('M', { tx: 1, ty: 1 });
+      expect(wmo.parseWmoDoodads).not.toHaveBeenCalled();
+      expect(warn).toHaveBeenCalledTimes(2);
+      warn.mockRestore();
+    });
+
+    it('parses again tiles cached before buildings kept their doodad set', async () => {
+      const { service } = setup({ mpqs: { 'common.MPQ': { files: { 'World\\Maps\\M\\M_1_1.adt': [1] } } } });
+      formats.parseWdt.mockReturnValue(undefined);
+      formats.parseAdt.mockReturnValue(adtOf([], [{ uniqueId: 1, path: 'Inn.wmo' }]));
+      await service.getTerrain('M', { tx: 1, ty: 1 });
+      await service.close();
+      formats.parseAdt.mockClear();
+      await service.getTerrain('M', { tx: 1, ty: 1 });
+      expect(formats.parseAdt).toHaveBeenCalledTimes(1);
+    });
+
     it('keeps parsed tiles and buildings in the disk cache, per client', async () => {
       const { service, native } = setup({
         mpqs: {
@@ -397,7 +468,7 @@ describe('WowClientService', () => {
         },
       });
       formats.parseWdt.mockReturnValue(undefined);
-      formats.parseAdt.mockReturnValue(adtOf([], [{ uniqueId: 1, path: 'World\\wmo\\A.wmo' }]));
+      formats.parseAdt.mockReturnValue(adtOf([], [{ uniqueId: 1, path: 'World\\wmo\\A.wmo', doodadSet: 0 }]));
       wmo.parseWmoRoot.mockReturnValue({ flags: 0, materials: [], groups: [{ indoor: false }] });
       wmo.parseWmoGroup.mockReturnValue({ indoor: false });
 
@@ -408,7 +479,7 @@ describe('WowClientService', () => {
       const usage = await service.cacheUsage();
       expect(usage.maps).toEqual([{ directory: 'm', tiles: 1, bytes: expect.any(Number) }]);
       expect(usage.buildingBytes).toBeGreaterThan(0);
-      expect(usage.totalBytes).toBe(usage.maps[0].bytes + usage.buildingBytes);
+      expect(usage.totalBytes).toBe(usage.maps[0].bytes + usage.buildingBytes + usage.modelBytes);
 
       // after a restart, nothing is parsed again
       await service.close();

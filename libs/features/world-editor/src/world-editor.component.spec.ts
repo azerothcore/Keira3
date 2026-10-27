@@ -188,7 +188,7 @@ describe(WorldEditorComponent.name, () => {
       { tx: 32, ty: 48 },
     ]);
     mocks.client.close.mockResolvedValue(undefined);
-    mocks.client.cacheUsage.mockResolvedValue({ maps: [], buildingBytes: 0, totalBytes: 0 });
+    mocks.client.cacheUsage.mockResolvedValue({ maps: [], buildingBytes: 0, modelBytes: 0, totalBytes: 0 });
     mocks.client.getZones.mockImplementation((map: number) => Promise.resolve(map === 0 ? ZONES : []));
     mocks.service.loadSpawns.mockResolvedValue(SPAWNS);
     mocks.service.loadWaypoints.mockResolvedValue(WAYPOINTS);
@@ -422,7 +422,8 @@ describe(WorldEditorComponent.name, () => {
           { directory: 'custommap', tiles: 1, bytes: 100_000 },
         ],
         buildingBytes: 2_000_000,
-        totalBytes: 14_600_000,
+        modelBytes: 1_000_000,
+        totalBytes: 15_600_000,
       });
       const { page } = await setup();
       page.click('settings-toggle');
@@ -431,13 +432,29 @@ describe(WorldEditorComponent.name, () => {
         Array.from(tr.querySelectorAll('td')).map((td) => td.textContent?.trim()),
       );
       expect(rows).toEqual([
-        ['WORLD_EDITOR.TOTAL', '', '14.6 MB (0.01 GB)'],
+        ['WORLD_EDITOR.TOTAL', '', '15.6 MB (0.02 GB)'],
         ['Kalimdor', '9', '9.5 MB (0.01 GB)'],
         ['Eastern Kingdoms', '3', '3.0 MB (0.00 GB)'],
         ['custommap', '1', '0.1 MB (0.00 GB)'],
         ['WORLD_EDITOR.BUILDINGS', '', '2.0 MB (0.00 GB)'],
+        ['WORLD_EDITOR.MODELS', '', '1.0 MB (0.00 GB)'],
       ]);
-      expect(page.text('cache-size')).toBe('14.6 MB (0.01 GB)');
+      expect(page.text('cache-size')).toBe('15.6 MB (0.02 GB)');
+
+      // the fill bar turns yellow from 50%, orange from 75% and red from 90% of the maximum size
+      const fill = (maxGb: string): string => {
+        const max = page.byId<HTMLInputElement>('cache-max').nativeElement;
+        max.value = maxGb;
+        max.dispatchEvent(new Event('change'));
+        page.fixture.detectChanges();
+        const bar = (page.byId('cache-fill').nativeElement as HTMLElement).firstElementChild as HTMLElement;
+        return `${[...bar.classList].sort().join(' ')} ${bar.style.width}`;
+      };
+      expect(fill('10')).toBe('fill-low progress-bar 0.156%');
+      expect(fill('0.03')).toBe('fill-half progress-bar 52%');
+      expect(fill('0.02')).toBe('fill-high progress-bar 78%');
+      expect(fill('0.017')).toMatch(/^fill-full progress-bar 91\.76/);
+      expect(fill('0')).toBe('fill-full progress-bar 100%');
 
       // a client that can't be opened only shows the total
       mocks.client.cacheUsage.mockRejectedValue(new Error('no client'));

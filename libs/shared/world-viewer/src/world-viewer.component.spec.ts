@@ -723,6 +723,39 @@ describe(WorldViewerComponent.name, () => {
       expect(mapControls().enabled).toBe(true);
     });
 
+    it('moves the camera target to the ground under the cursor with Space', async () => {
+      const { page, host, fixture, update } = await setup((h) => {
+        h.map.set('Azeroth');
+        h.focus.set(at(0, 0));
+      });
+      await settle(fixture);
+      await update(() => host.focus.set(at(-100, -100)));
+      await settle(fixture);
+      const canvas = page.canvas().nativeElement;
+      const space = (): KeyboardEvent => {
+        const event = new KeyboardEvent('keydown', { code: 'Space', cancelable: true });
+        canvas.dispatchEvent(event);
+        flushFrames();
+        fixture.detectChanges();
+        return event;
+      };
+      const target = () => page.target().nativeElement.textContent?.trim();
+      flushFrames();
+      fixture.detectChanges();
+      const start = target();
+      // before the cursor was ever over the view, nothing happens
+      expect(space().defaultPrevented).toBe(true);
+      expect(target()).toBe(start);
+      page.pointer('pointermove', 80, 20);
+      space();
+      expect(target()).not.toBe(start);
+      // nowhere to land (a view without size): it stays
+      const moved = target();
+      vi.mocked(HTMLElement.prototype.getBoundingClientRect).mockReturnValueOnce(new DOMRect(0, 0, 0, 0));
+      space();
+      expect(target()).toBe(moved);
+    });
+
     it('snaps moved objects against the nearest wall, facing away from it', async () => {
       // a building made of one wall, 3 yards east of the creature, facing west
       const east = CENTER.y - 3;

@@ -78,9 +78,17 @@ describe('formats', () => {
     mocks.doodadDefs = [{ id: 8, name: 'Tree.mdx', position: [4, 5, 6], rotation: [0, 0, 0, 1], scale: 2048 }];
     expect(parseAdt(new Uint8Array(), 8)).toEqual({
       chunks: [],
-      wmos: [{ uniqueId: 7, path: 'Abbey.wmo', position: [1, 2, 3], rotation: [0, 0, 0, 1], scale: 1 }],
+      wmos: [{ uniqueId: 7, path: 'Abbey.wmo', position: [1, 2, 3], rotation: [0, 0, 0, 1], scale: 1, doodadSet: 0 }],
       doodads: [{ uniqueId: 8, path: 'Tree.mdx', position: [4, 5, 6], rotation: [0, 0, 0, 1], scale: 2 }],
     });
+    // the doodad set comes from the raw MODF entry of the building
+    const modf = new Uint8Array(8 + 64);
+    const view = new DataView(modf.buffer);
+    modf.set([...'FDOM'].map((c) => c.charCodeAt(0)));
+    view.setUint32(4, 64, true);
+    view.setUint32(8 + 4, 7, true);
+    view.setUint16(8 + 58, 3, true);
+    expect(parseAdt(modf, 8).wmos[0].doodadSet).toBe(3);
     mocks.objDefs = [];
     mocks.doodadDefs = [];
   });

@@ -159,6 +159,16 @@ export class WorldEditorComponent implements OnInit {
   /** Megabytes, for the settings panel. */
   protected readonly cacheSizeText = computed(() => formatSize(this.cacheSize()));
   protected readonly formatSize = formatSize;
+  /** How full the cache is, in % of its maximum size. */
+  protected readonly cacheFill = computed(() => {
+    const max = this.cache.maxBytes();
+    return max > 0 ? Math.min(100, (100 * this.cacheSize()) / max) : 100;
+  });
+  /** Green, then yellow from 50%, orange from 75% and red from 90%. */
+  protected readonly cacheFillLevel = computed(() => {
+    const fill = this.cacheFill();
+    return fill >= 90 ? 'full' : fill >= 75 ? 'high' : fill >= 50 ? 'half' : 'low';
+  });
   protected readonly preloading = signal<{ label: string; directory: string; done: number; total: number } | undefined>(undefined);
   protected readonly cacheUsage = signal<CacheUsage | undefined>(undefined);
   /** What each map takes in the cache, biggest first, for the settings panel. */

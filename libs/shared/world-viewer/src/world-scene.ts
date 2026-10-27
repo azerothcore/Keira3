@@ -173,7 +173,11 @@ export class WorldScene {
     new CylinderGeometry(0.03, 0.03, 0.7, 6).rotateX(Math.PI / 2).translate(0, 0, -0.35),
     new ConeGeometry(0.09, 0.3, 8).rotateX(-Math.PI / 2).translate(0, 0, -0.85),
   ]);
-  private readonly facingArrowMaterial = new MeshBasicMaterial({ color: 0x00e5ff, depthTest: false, transparent: true, opacity: 0.9 });
+  /** Facing arrows in the colour of their kind's pins: creatures amber, gameobjects cyan. */
+  private readonly facingArrowMaterials = {
+    creature: new MeshBasicMaterial({ color: COLORS.creature, depthTest: false, transparent: true, opacity: 0.9 }),
+    gameobject: new MeshBasicMaterial({ color: COLORS.gameobject, depthTest: false, transparent: true, opacity: 0.9 }),
+  };
   private facingArrowsVisible = true;
   private readonly beacon = createBeacon();
   /** Unit circle on the ground (scaled to each creature's wander distance). */
@@ -439,7 +443,7 @@ export class WorldScene {
     if (model) {
       model.name = SPAWN_MODEL_NAME;
       if (!model.getObjectByName(FACING_ARROW_NAME)) {
-        model.add(this.facingArrowFor(model));
+        model.add(this.facingArrowFor(model, data.kind));
       }
       // hits on the model pick the spawn
       model.traverse((object) => (object.userData = data));
@@ -475,10 +479,10 @@ export class WorldScene {
    * An arrow through the centre of a model (half its height, middle of its footprint), sized to it and pointing to
    * its front (−z, like the pins' nose): shows the orientation of creatures and objects even when they're round.
    */
-  private facingArrowFor(model: Object3D): Mesh {
+  private facingArrowFor(model: Object3D, kind: SpawnKind): Mesh {
     const box = new Box3().setFromObject(model);
     const size = box.getSize(new Vector3());
-    const arrow = new Mesh(this.facingArrowGeometry, this.facingArrowMaterial);
+    const arrow = new Mesh(this.facingArrowGeometry, this.facingArrowMaterials[kind]);
     arrow.name = FACING_ARROW_NAME;
     box.getCenter(arrow.position);
     arrow.scale.setScalar(Math.max(size.x, size.z, 0.5));
@@ -767,7 +771,7 @@ export class WorldScene {
     this.ringGeometry.dispose();
     this.wanderMaterial.dispose();
     this.facingArrowGeometry.dispose();
-    this.facingArrowMaterial.dispose();
+    Object.values(this.facingArrowMaterials).forEach((material) => material.dispose());
     this.beacon.traverse((object) => {
       if (object instanceof Mesh) {
         object.geometry.dispose();

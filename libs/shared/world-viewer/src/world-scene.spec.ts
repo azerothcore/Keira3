@@ -7,6 +7,7 @@ import {
   Group,
   Line,
   Mesh,
+  MeshBasicMaterial,
   MeshLambertMaterial,
   Quaternion,
   ShaderMaterial,
@@ -277,6 +278,18 @@ describe('WorldScene', () => {
       world.setSpawnModel('creature:2', later);
       expect((later.getObjectByName('facing') as Mesh).visible).toBe(false);
       expect((later.getObjectByName('facing') as Mesh).scale.x).toBe(0.5);
+    });
+
+    it('colours the facing arrows like the pins of their kind', () => {
+      const world = new WorldScene();
+      world.setSpawns([spawn('creature:1', 'creature', at(0, 0)), spawn('gameobject:2', 'gameobject', at(5, 0))]);
+      const creature = new Mesh(new BoxGeometry(1, 1, 1), new MeshLambertMaterial());
+      const gameobject = new Mesh(new BoxGeometry(1, 1, 1), new MeshLambertMaterial());
+      world.setSpawnModel('creature:1', creature);
+      world.setSpawnModel('gameobject:2', gameobject);
+      const color = (model: Mesh): number => ((model.getObjectByName('facing') as Mesh).material as MeshBasicMaterial).color.getHex();
+      expect(color(creature)).toBe(0xff9f1c);
+      expect(color(gameobject)).toBe(0x2ec4f1);
     });
 
     it('picks a spawn by its model', () => {

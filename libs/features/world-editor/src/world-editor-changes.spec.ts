@@ -96,7 +96,8 @@ describe('WorldEditorChanges', () => {
       expect(changes.count).toBe(1);
       expect(changes.describe()).toEqual(['Place creature 100 (Marshal McBride)']);
       expect(changes.toSql()).toBe(
-        'INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, `equipment_id`, `position_x`, `position_y`, ' +
+        'DELETE FROM `creature` WHERE (`guid` = 100);\n' +
+          'INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, `equipment_id`, `position_x`, `position_y`, ' +
           '`position_z`, `orientation`, `spawntimesecs`, `wander_distance`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, ' +
           "`unit_flags`, `dynamicflags`, `ScriptName`, `Comment`, `VerifiedBuild`) VALUES (100, 197, 0, 0, 0, 1, 1, 0, -8913.1235, -137.5, 82.25, 1.5, 300, 0, 0, 1, 0, 0, 0, 0, 0, '', '', 0);",
       );
@@ -207,7 +208,8 @@ describe('WorldEditorChanges', () => {
       changes.moveWaypoint(waypoint(70, 1), { x: 1, y: 2, z: 3 });
       expect(changes.describe()).toEqual(['Add waypoint 70 #1']);
       expect(changes.toSql()).toBe(
-        'INSERT INTO `waypoint_data` (`id`, `point`, `position_x`, `position_y`, `position_z`, `delay`) VALUES (70, 1, 1, 2, 3, 0);',
+        'DELETE FROM `waypoint_data` WHERE (`id` = 70) AND (`point` = 1);\n' +
+          'INSERT INTO `waypoint_data` (`id`, `point`, `position_x`, `position_y`, `position_z`, `delay`) VALUES (70, 1, 1, 2, 3, 0);',
       );
     });
 
@@ -273,10 +275,12 @@ describe('WorldEditorChanges', () => {
       'DELETE FROM `creature_multispawn`',
       'DELETE FROM `game_event_creature`',
       'DELETE FROM `game_event_model_equip`',
+      'DELETE FROM `creature`',
       'INSERT INTO `creature`',
       'UPDATE `creature` SET',
       'INSERT INTO `creature_addon`',
       'UPDATE `creature` SET',
+      'DELETE FROM `waypoint_data`',
       'DELETE FROM `waypoint_data`',
       'INSERT INTO `waypoint_data`',
       'UPDATE `waypoint_data` SET',

@@ -117,6 +117,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private frameRequested = false;
   private pointerDown?: { x: number; y: number };
   private lastEmittedCenter?: WorldPosition;
+  /** Where the cursor last was over the view, for Space. */
+  private lastPointer?: PointerEvent;
   private hoverEvent?: PointerEvent;
   /** Camera target in scene space, shared with the map controls. */
   private readonly target = new Vector3();
@@ -275,6 +277,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   }
 
   protected onPointerMove(event: PointerEvent): void {
+    this.lastPointer = event;
     if (this.altDragging) {
       this.altDragTo(event);
       return;
@@ -338,6 +341,11 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   // ---------------------------------------------------------------- keyboard navigation
 
   protected onKeyDown(event: KeyboardEvent): void {
+    if (event.code === 'Space') {
+      event.preventDefault();
+      this.recenterOnCursor();
+      return;
+    }
     const action = this.navigationAction(event.code);
     if (!action) {
       return;
@@ -361,6 +369,21 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
 
   protected onBlur(): void {
     this.pressed.clear();
+  }
+
+  /** Space: moves the camera target (and its marker) to the ground under the cursor, keeping the view's angle and zoom. */
+  private recenterOnCursor(): void {
+    const ground = this.lastPointer && this.pickAt(this.lastPointer, { groundOnly: true });
+    if (ground?.type !== 'ground') {
+      return;
+    }
+    const point = worldToScene(ground.position);
+    const offset = new Vector3(point.x, point.y, point.z).sub(this.target);
+    this.world.camera.position.add(offset);
+    this.target.add(offset);
+    (this.controls as MapControls).update();
+    this.world.setBeacon(ground.position);
+    this.onCameraChange();
   }
 
   private navigationAction(code: string): NavigationAction | undefined {

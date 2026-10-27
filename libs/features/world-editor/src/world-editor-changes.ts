@@ -299,7 +299,9 @@ export class WorldEditorChanges {
         statements.push(this.deleteQuery(table, { [field]: spawn.guid }));
       }
     }
+    // like Keira's other editors, every INSERT comes after a DELETE of the same key, so the script can be run again
     for (const spawn of this.insertedSpawns.values()) {
+      statements.push(this.deleteQuery(tableOf(spawn.type), { guid: spawn.guid }));
       statements.push(this.insertSpawnQuery(spawn));
     }
     for (const { original, current } of this.movedSpawns.values()) {
@@ -323,6 +325,7 @@ export class WorldEditorChanges {
         position_z: round(waypoint.z),
         delay: waypoint.delay,
       };
+      statements.push(this.deleteQuery(WAYPOINT_DATA_TABLE, { id: waypoint.pathId, point: waypoint.point }));
       statements.push(`${squel.insert(squelConfig).into(WAYPOINT_DATA_TABLE).setFields(fields).toString()};`);
     }
     for (const { original, current } of this.movedWaypoints.values()) {

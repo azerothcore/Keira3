@@ -9,7 +9,16 @@ import { LiquidMesh, parseLiquids } from './liquid';
 import { parseZoneLights, ZoneLight } from './light';
 import { M2Mesh, m2Path, m2SkinPath, parseM2 } from './m2';
 import { buildTerrainChunkMeshes, buildTerrainMesh, TerrainChunkMesh, TerrainMeshData } from './terrain-mesh';
-import { ModelPlacement, parseWmoGroup, parseWmoRoot, WmoModel, wmoGroupPath } from './wmo';
+import {
+  ModelPlacement,
+  parseWmoDoodads,
+  parseWmoGroup,
+  parseWmoRoot,
+  WmoDoodads,
+  wmoDoodadPlacements,
+  WmoModel,
+  wmoGroupPath,
+} from './wmo';
 import { clientIdentity, WowDataCacheService } from './wow-data-cache.service';
 import { WowDataSettingsService } from './wow-data-settings.service';
 import { StormArchive, WOW_NATIVE_API, WowNativeApi } from './wow-native-api';
@@ -18,6 +27,8 @@ import { StormArchive, WOW_NATIVE_API, WowNativeApi } from './wow-native-api';
 export interface CacheUsage {
   maps: { directory: string; tiles: number; bytes: number }[];
   buildingBytes: number;
+  /** Creature, gameobject and doodad models, and what's inside buildings. */
+  modelBytes: number;
   totalBytes: number;
 }
 
@@ -57,6 +68,7 @@ export class WowClientService {
   private zones?: Promise<WowZone[]>;
   private readonly wdts = new Map<string, Promise<WdtInfo | undefined>>();
   private readonly adts = new Map<string, Promise<CachedAdt | undefined>>();
+  private readonly wmoDoodads = new Map<string, Promise<WmoDoodads | undefined>>();
   private mountCounter = 0;
 
   /** False in the browser build: reading local game files needs Electron. */
@@ -142,24 +154,65 @@ export class WowClientService {
 
   /** Low-detail terrain of a tile: one mesh for the whole tile, textured with its minimap. */
   async getTerrain(directory: string, tile: TileCoord): Promise<TerrainMeshData | undefined> {
+    await nextFrame();
     const adt = await this.getAdt(directory, tile);
     return adt && buildTerrainMesh(tile, adt.chunks);
   }
 
   /** Textured terrain of a tile: one mesh per chunk with its texture layers, plus its liquid surfaces. */
   async getTerrainDetail(directory: string, tile: TileCoord): Promise<TerrainDetail | undefined> {
+    await nextFrame();
     const adt = await this.getAdt(directory, tile);
     return adt && { chunks: buildTerrainChunkMeshes(adt.chunks), liquids: adt.liquids };
   }
 
-  /** Buildings and doodads placed by a tile. */
+  /** Buildings and doodads placed by a tile; the doodads include those inside its buildings (furniture, barrels…). */
   async getTilePlacements(directory: string, tile: TileCoord): Promise<{ wmos: ModelPlacement[]; doodads: ModelPlacement[] } | undefined> {
     const adt = await this.getAdt(directory, tile);
-    return adt && { wmos: adt.wmos, doodads: adt.doodads };
+    if (!adt) {
+      return undefined;
+    }
+    const inside = await Promise.all(
+      adt.wmos.map(async (wmo) => {
+        const info = await this.getWmoDoodads(wmo.path).catch((error: Error) => {
+          console.warn(`[World Editor] Could not read the doodads of ${wmo.path}: ${error.message}`);
+          return undefined;
+        });
+        return info ? wmoDoodadPlacements(wmo, info) : [];
+      }),
+    );
+    return { wmos: adt.wmos, doodads: [...adt.doodads, ...inside.flat()] };
+  }
+
+  /** The doodads and doodad sets of a building, read from its root file only. */
+  private getWmoDoodads(path: string): Promise<WmoDoodads | undefined> {
+    const key = path.toLowerCase();
+    let doodads = this.wmoDoodads.get(key);
+    if (!doodads) {
+      doodads = this.loadWmoDoodads(path);
+      doodads.catch(() => this.wmoDoodads.delete(key));
+      this.wmoDoodads.set(key, doodads);
+    }
+    return doodads;
+  }
+
+  private async loadWmoDoodads(path: string): Promise<WmoDoodads | undefined> {
+    const { identity } = await this.getClient();
+    const cached = this.cache.read<WmoDoodads>(identity, 'wmo-doodads', path);
+    if (cached) {
+      return cached;
+    }
+    const bytes = await this.readFile(path);
+    const doodads = bytes && parseWmoDoodads(bytes);
+    if (doodads) {
+      this.cache.write(identity, 'wmo-doodads', path, doodads);
+    }
+    return doodads;
   }
 
   /** A building (WMO root and all its groups). */
   async getWmo(path: string): Promise<WmoModel | undefined> {
+    await nextFrame();
     const { identity } = await this.getClient();
     const cached = this.cache.read<WmoModel>(identity, 'wmo', path);
     if (cached) {
@@ -182,8 +235,13 @@ export class WowClientService {
       usage.bytes += bytes;
       maps.set(directory, usage);
     }
-    const buildingBytes = Object.values(this.cache.entries(identity, 'wmo')).reduce((total, bytes) => total + bytes, 0);
-    return { maps: [...maps.values()], buildingBytes, totalBytes: this.cache.size() };
+    const sum = (kind: string): number => Object.values(this.cache.entries(identity, kind)).reduce((total, bytes) => total + bytes, 0);
+    return {
+      maps: [...maps.values()],
+      buildingBytes: sum('wmo'),
+      modelBytes: sum('m2') + sum('wmo-doodads'),
+      totalBytes: this.cache.size(),
+    };
   }
 
   /**
@@ -248,9 +306,20 @@ export class WowClientService {
 
   /** A model (doodad, creature, gameobject): `.mdx`/`.mdl` names are read as `.m2`. */
   async getM2(path: string): Promise<M2Mesh | undefined> {
-    const model = await this.readFile(m2Path(path));
+    await nextFrame();
+    const { identity } = await this.getClient();
+    const key = m2Path(path);
+    const cached = this.cache.read<M2Mesh>(identity, 'm2', key);
+    if (cached) {
+      return cached;
+    }
+    const model = await this.readFile(key);
     const skin = model && (await this.readFile(m2SkinPath(path)));
-    return model && skin ? parseM2(model, skin) : undefined;
+    const mesh = model && skin ? parseM2(model, skin) : undefined;
+    if (mesh) {
+      this.cache.write(identity, 'm2', key, mesh);
+    }
+    return mesh;
   }
 
   /** Decodes a BLP texture from the archives (e.g. a terrain tileset texture). */
@@ -281,8 +350,11 @@ export class WowClientService {
   private async loadAdt(directory: string, tile: TileCoord): Promise<CachedAdt | undefined> {
     const { identity } = await this.getClient();
     const key = `${directory}_${tile.tx}_${tile.ty}`;
+    // reading and parsing a tile is synchronous: one at a time, so the window keeps drawing in between
+    await nextFrame();
     const cached = this.cache.read<CachedAdt>(identity, 'adt', key);
-    if (cached) {
+    // tiles cached before buildings kept their doodad set are parsed again
+    if (cached && cached.wmos.every((wmo) => wmo.doodadSet !== undefined)) {
       return cached;
     }
     const bytes = await this.readFile(`World\\Maps\\${directory}\\${key}.adt`);
@@ -330,6 +402,7 @@ export class WowClientService {
     this.zones = undefined;
     this.wdts.clear();
     this.adts.clear();
+    this.wmoDoodads.clear();
     if (!client) {
       return;
     }
@@ -453,7 +526,7 @@ export class WowClientService {
   }
 }
 
-/** Lets the window repaint (progress bars, clicks on Cancel) between pieces of long, mostly synchronous work. */
+/** Lets the window repaint (3D view, progress bars, clicks on Cancel) between pieces of long, mostly synchronous work. */
 function nextFrame(): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve));
 }

@@ -12,6 +12,23 @@ export interface ModelPlacement {
   /** Rotation quaternion [x, y, z, w] in server axes. */
   rotation: number[];
   scale: number;
+  /** Buildings (MODF): which of its doodad sets (furniture variants) the building shows besides the default set 0. */
+  doodadSet?: number;
+}
+
+/** A model placed inside a building (MODD), in the building's own axes (server-like: x north, y west, z up). */
+export interface WmoDoodad {
+  path: string;
+  position: number[];
+  /** Quaternion [x, y, z, w]. */
+  rotation: number[];
+  scale: number;
+}
+
+/** A building's doodads (barrels, tables, lamps…) and its doodad sets: ranges of them shown together (MODS). */
+export interface WmoDoodads {
+  sets: { start: number; count: number }[];
+  doodads: WmoDoodad[];
 }
 
 export interface WmoMaterialInfo {
@@ -124,4 +141,92 @@ export function parseWmoGroup(bytes: Uint8Array, rootFlags: number, indoor: bool
     batches: group.batches.map((batch) => ({ start: batch.indexStart, count: batch.indexCount, material: batch.materialIndex })),
     indoor,
   };
+}
+
+const MODS_ENTRY_SIZE = 32;
+const MODS_START_OFFSET = 20;
+const MODD_ENTRY_SIZE = 40;
+const MODD_NAME_MASK = 0xffffff;
+
+/** Reads the doodad sets (MODS), names (MODN) and placements (MODD) of a WMO root file. */
+export function parseWmoDoodads(bytes: Uint8Array): WmoDoodads {
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const sets: WmoDoodads['sets'] = [];
+  const mods = findChunk(bytes, 'MODS');
+  for (let i = 0; mods && i < Math.floor(mods.size / MODS_ENTRY_SIZE); i++) {
+    const at = mods.offset + i * MODS_ENTRY_SIZE + MODS_START_OFFSET;
+    sets.push({ start: view.getUint32(at, true), count: view.getUint32(at + 4, true) });
+  }
+  const modn = findChunk(bytes, 'MODN');
+  const name = (offset: number): string => {
+    if (!modn || offset >= modn.size) {
+      return '';
+    }
+    const start = modn.offset + offset;
+    let end = start;
+    while (end < modn.offset + modn.size && bytes[end] !== 0) {
+      end++;
+    }
+    return String.fromCharCode(...bytes.subarray(start, end));
+  };
+  const doodads: WmoDoodad[] = [];
+  const modd = findChunk(bytes, 'MODD');
+  for (let i = 0; modd && i < Math.floor(modd.size / MODD_ENTRY_SIZE); i++) {
+    const at = modd.offset + i * MODD_ENTRY_SIZE;
+    const float = (index: number): number => view.getFloat32(at + 4 + index * 4, true);
+    doodads.push({
+      path: name(view.getUint32(at, true) & MODD_NAME_MASK),
+      position: [float(0), float(1), float(2)],
+      rotation: [float(3), float(4), float(5), float(6)],
+      scale: float(7),
+    });
+  }
+  return { sets, doodads };
+}
+
+/** Hamilton product a × b of [x, y, z, w] quaternions. */
+function multiplyQuaternions(a: number[], b: number[]): number[] {
+  const [ax, ay, az, aw] = a;
+  const [bx, by, bz, bw] = b;
+  return [
+    aw * bx + ax * bw + ay * bz - az * by,
+    aw * by - ax * bz + ay * bw + az * bx,
+    aw * bz + ax * by - ay * bx + az * bw,
+    aw * bw - ax * bx - ay * by - az * bz,
+  ];
+}
+
+function rotateVector(q: number[], v: number[]): number[] {
+  const [x, y, z, w] = q;
+  // t = 2 (q × v); v' = v + w t + q × t
+  const tx = 2 * (y * v[2] - z * v[1]);
+  const ty = 2 * (z * v[0] - x * v[2]);
+  const tz = 2 * (x * v[1] - y * v[0]);
+  return [v[0] + w * tx + (y * tz - z * ty), v[1] + w * ty + (z * tx - x * tz), v[2] + w * tz + (x * ty - y * tx)];
+}
+
+/**
+ * The doodads a placed building shows (its default set 0 and its chosen set), placed in the world. Their unique ids
+ * are negative, derived from the building's, so they never clash with the ADT's own doodads.
+ */
+export function wmoDoodadPlacements(building: ModelPlacement, info: WmoDoodads): ModelPlacement[] {
+  const chosen = [...new Set([0, building.doodadSet ?? 0])].map((index) => info.sets[index]).filter((set) => !!set);
+  const placements: ModelPlacement[] = [];
+  for (const set of chosen) {
+    for (let i = set.start; i < Math.min(set.start + set.count, info.doodads.length); i++) {
+      const doodad = info.doodads[i];
+      const offset = rotateVector(
+        building.rotation,
+        doodad.position.map((value) => value * building.scale),
+      );
+      placements.push({
+        uniqueId: -(building.uniqueId * 100000 + i + 1),
+        path: doodad.path,
+        position: building.position.map((value, axis) => value + offset[axis]),
+        rotation: multiplyQuaternions(building.rotation, doodad.rotation),
+        scale: building.scale * doodad.scale,
+      });
+    }
+  }
+  return placements;
 }

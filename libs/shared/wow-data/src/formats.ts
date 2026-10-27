@@ -1,6 +1,7 @@
 import { Blp, BLP_IMAGE_FORMAT, Map as WdtMap, MapArea } from '@wowserhq/format';
 import { TILE_COUNT, TileCoord } from './coords';
 import { TerrainChunk } from './terrain-mesh';
+import { findChunk } from './liquid';
 import { ModelPlacement } from './wmo';
 
 /** Thin adapters over `@wowserhq/format`, so the rest of the code only deals with plain data. */
@@ -34,6 +35,7 @@ const DOODAD_SCALE_UNIT = 1024;
 /** `layerSplatDepth` must come from the map's WDT: parsing alpha maps with the wrong depth fails. */
 export function parseAdt(bytes: Uint8Array, layerSplatDepth: LayerSplatDepth): ParsedAdt {
   const area = new MapArea(layerSplatDepth).load(toArrayBuffer(bytes));
+  const doodadSets = buildingDoodadSets(bytes);
   return {
     chunks: area.chunks.map((chunk) => ({
       position: chunk.position,
@@ -42,7 +44,14 @@ export function parseAdt(bytes: Uint8Array, layerSplatDepth: LayerSplatDepth): P
       vertexNormals: chunk.vertexNormals,
       layers: chunk.layers.map((layer) => ({ texture: layer.texture, splat: layer.splat })),
     })),
-    wmos: area.objDefs.map((def) => ({ uniqueId: def.id, path: def.name, position: def.position, rotation: def.rotation, scale: 1 })),
+    wmos: area.objDefs.map((def) => ({
+      uniqueId: def.id,
+      path: def.name,
+      position: def.position,
+      rotation: def.rotation,
+      scale: 1,
+      doodadSet: doodadSets.get(def.id) ?? 0,
+    })),
     doodads: area.doodadDefs.map((def) => ({
       uniqueId: def.id,
       path: def.name,
@@ -51,6 +60,24 @@ export function parseAdt(bytes: Uint8Array, layerSplatDepth: LayerSplatDepth): P
       scale: def.scale / DOODAD_SCALE_UNIT,
     })),
   };
+}
+
+const MODF_ENTRY_SIZE = 64;
+const MODF_UNIQUE_ID_OFFSET = 4;
+const MODF_DOODAD_SET_OFFSET = 58;
+
+/** Doodad set of each building (MODF), by unique id: read here as @wowserhq/format doesn't expose it. */
+function buildingDoodadSets(bytes: Uint8Array): Map<number, number> {
+  const sets = new Map<number, number>();
+  const chunk = findChunk(bytes, 'MODF');
+  if (chunk) {
+    const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+    for (let i = 0; i < Math.floor(chunk.size / MODF_ENTRY_SIZE); i++) {
+      const at = chunk.offset + i * MODF_ENTRY_SIZE;
+      sets.set(view.getUint32(at + MODF_UNIQUE_ID_OFFSET, true), view.getUint16(at + MODF_DOODAD_SET_OFFSET, true));
+    }
+  }
+  return sets;
 }
 
 export function parseAdtChunks(bytes: Uint8Array, layerSplatDepth: LayerSplatDepth): TerrainChunk[] {

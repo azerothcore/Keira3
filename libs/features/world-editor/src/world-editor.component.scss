@@ -101,3 +101,21 @@
   min-width: 240px;
   height: 1.25rem;
 }
+
+.world-editor-cache-fill {
+  width: 120px;
+  height: 0.75rem;
+
+  .fill-low {
+    background-color: var(--bs-success);
+  }
+  .fill-half {
+    background-color: var(--bs-warning);
+  }
+  .fill-high {
+    background-color: #fd7e14;
+  }
+  .fill-full {
+    background-color: var(--bs-danger);
+  }
+}
