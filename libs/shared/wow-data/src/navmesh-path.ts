@@ -111,6 +111,22 @@ export class NavGraph {
     return best;
   }
 
+  /** Height of the walkable surface right above or below a point (the nearest within a few yards), if any. */
+  surfaceAt(point: WorldPosition): number | undefined {
+    let best: number | undefined;
+    for (let t = 0; t < this.triangleCount; t++) {
+      const z = this.heightOn(t, point);
+      if (
+        z !== undefined &&
+        Math.abs(z - point.z) <= MAX_HEIGHT_GAP &&
+        (best === undefined || Math.abs(z - point.z) < Math.abs(best - point.z))
+      ) {
+        best = z;
+      }
+    }
+    return best;
+  }
+
   /** The shortest walkable path between two points, from start to end; undefined when one can't reach the other. */
   findPath(from: WorldPosition, to: WorldPosition): WorldPosition[] | undefined {
     const start = this.locate(from);

@@ -54,6 +54,29 @@ export interface WaypointPath {
   owners?: string[];
 }
 
+/** Where a waypoint is: on the ground, in the air (a few yards above the floor), or in a liquid (swimming). */
+export type WaypointPlace = 'ground' | 'air' | 'water';
+
+/** "Check path": checks the points of a path (every time they change while it's set). */
+export interface WaypointCheckRequest {
+  pathKey: string;
+  points: { point: number; position: WorldPosition }[];
+}
+
+/** ok: walkable and reachable; warn: may cause issues (off the mesh, inside something, a long detour); bad: not walkable or not reachable. */
+export type WaypointCheckStatus = 'ok' | 'warn' | 'bad';
+
+export interface WaypointCheck {
+  /** Waypoint key (`waypointKey(pathKey, point)`). */
+  key: string;
+  point: number;
+  place: WaypointPlace;
+  status: WaypointCheckStatus;
+  /** Translation key of the (worst) finding, and its parameters. */
+  reason: string;
+  params?: Record<string, number>;
+}
+
 export type PickResult =
   | { type: 'spawn'; key: string; position: WorldPosition }
   | { type: 'waypoint'; key: string; pathKey: string; point: number; position: WorldPosition }

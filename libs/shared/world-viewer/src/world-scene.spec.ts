@@ -6,6 +6,7 @@ import {
   Fog,
   Group,
   Line,
+  LineSegments,
   Mesh,
   MeshBasicMaterial,
   MeshLambertMaterial,
@@ -519,6 +520,98 @@ describe('WorldScene', () => {
       const single = new WorldScene();
       single.setWaypointPaths([{ key: 'path:1', label: 'Path 1', points: [{ point: 1, position: at(0, 0) }] }]);
       expect(pointerDirection(single, 1)).toBeUndefined();
+    });
+
+    describe('places and checks', () => {
+      /** Ground at 10 everywhere, a lake (surface at 20) 20..60 yards west of the centre. */
+      const lakeWorld = () => {
+        const world = new WorldScene();
+        const corner = (dx: number, dy: number) => {
+          const p = worldToScene({ x: CENTER.x + dx, y: CENTER.y + dy, z: 20 });
+          return [p.x, p.y, p.z];
+        };
+        const lake = {
+          type: 1,
+          kind: 'water' as const,
+          positions: Float32Array.from([...corner(-20, 20), ...corner(20, 20), ...corner(20, 60), ...corner(-20, 60)]),
+          indices: Uint16Array.from([0, 1, 2, 0, 2, 3]),
+        };
+        world.setTerrainTileDetailed(
+          { tx: 32, ty: 48 },
+          flatDetail(10).chunks.map((mesh) => ({ mesh, layers: [] })),
+          new Texture(),
+          [lake],
+        );
+        world.scene.updateMatrixWorld();
+        return world;
+      };
+
+      it('tells ground, air and water points apart', () => {
+        const world = lakeWorld();
+        expect(world.waypointPlace(at(0, 0, 10.5))).toBe('ground');
+        expect(world.waypointPlace(at(0, 0, 20))).toBe('air');
+        expect(world.waypointPlace(at(0, 40, 15))).toBe('water');
+        expect(world.waypointPlace(at(0, 40, 20.3))).toBe('water');
+        expect(world.waypointPlace(at(0, 40, 22))).toBe('ground');
+        expect(world.waypointPlace(at(0, 40, 25))).toBe('air');
+        // nothing loaded there: ground
+        expect(world.waypointPlace(at(5000, 0, 500))).toBe('ground');
+        // a cave under the lake: a roof between the point and the surface
+        const roof = new Mesh(new BoxGeometry(10, 1, 10), new MeshBasicMaterial());
+        const p = worldToScene(at(0, 40, 17));
+        roof.position.set(p.x, p.y, p.z);
+        world.buildingGroup.add(roof);
+        world.scene.updateMatrixWorld();
+        expect(world.waypointPlace(at(0, 40, 15))).toBe('air');
+      });
+
+      it('draws ground points as balls, air points as cubes with a line to the floor, water points as pyramids', () => {
+        const world = lakeWorld();
+        world.setWaypointPaths([
+          {
+            key: 'path:1',
+            label: 'Path 1',
+            points: [
+              { point: 1, position: at(0, 0, 10.5) },
+              { point: 2, position: at(5, 0, 25) },
+              { point: 3, position: at(0, 40, 15) },
+            ],
+          },
+        ]);
+        const geometry = (key: string) => (world.getObject(key) as Mesh).geometry.type;
+        expect([geometry('path:1#1'), geometry('path:1#2'), geometry('path:1#3')]).toEqual([
+          'SphereGeometry',
+          'BoxGeometry',
+          'TetrahedronGeometry',
+        ]);
+        expect(world.waypointPlaceOf('path:1#2')).toBe('air');
+        const drops = world.scene.getObjectByName('path:1:drops') as LineSegments;
+        // the drop line and the 4 sides of the square on the floor
+        expect(drops.geometry.getAttribute('position').count).toBe(10);
+        expect(drops.raycast(undefined as never, [])).toBeUndefined();
+        // moved down to the ground: a ball, no drop line
+        const second = world.getObject('path:1#2') as Mesh;
+        second.position.y = worldToScene(at(5, 0, 10.5)).y + 0.4;
+        world.refreshPathLine('path:1');
+        expect(geometry('path:1#2')).toBe('SphereGeometry');
+        expect(world.scene.getObjectByName('path:1:drops')).toBeUndefined();
+      });
+
+      it('marks checked points with a coloured "!", kept when the paths are drawn again', () => {
+        const world = lakeWorld();
+        const paths: WaypointPath[] = [{ key: 'path:1', label: 'Path 1', points: [{ point: 1, position: at(0, 0, 10.5) }] }];
+        world.setWaypointPaths(paths);
+        const check = { key: 'path:1#1', point: 1, place: 'ground' as const, status: 'warn' as const, reason: 'x' };
+        world.setWaypointChecks([check, { ...check, key: 'path:1#9' }]);
+        const mark = () => world.getObject('path:1#1')?.getObjectByName('check');
+        const bar = mark()?.children[0] as Mesh;
+        expect((bar.material as MeshBasicMaterial).color.getHex()).toBe(0xf1c40f);
+        expect(bar.raycast(undefined as never, [])).toBeUndefined();
+        world.setWaypointPaths(paths);
+        expect(mark()).toBeDefined();
+        world.setWaypointChecks([]);
+        expect(mark()).toBeUndefined();
+      });
     });
 
     it('highlights a selected waypoint', () => {

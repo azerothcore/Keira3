@@ -88,4 +88,62 @@ describe('PathProber', () => {
     await prober.probe('Azeroth', { from: at(10), to: at(50), range: 5, height: 2 });
     expect(source.getNavMeshTile).toHaveBeenCalledTimes(9);
   });
+
+  describe('checking waypoint paths', () => {
+    /** Navigation mesh rectangles (north and west ranges, yards from the centre) at height 10, in one tile. */
+    const rects = (...list: [number, number, number, number][]): NavMeshTile => {
+      const positions: number[] = [];
+      for (const [n0, n1, w0, w1] of list) {
+        const corners = [at(n0, w0), at(n1, w0), at(n1, w1), at(n0, w1)].map(worldToScene);
+        positions.push(...[0, 1, 2, 0, 2, 3].flatMap((k) => [corners[k].x, corners[k].y, corners[k].z]));
+      }
+      return { positions: Float32Array.from(positions), colors: new Float32Array(positions.length) };
+    };
+    const check = (prober: PathProber, points: WorldPosition[]) =>
+      prober.checkPath('Azeroth', { pathKey: 'path:1', points: points.map((position, i) => ({ point: i + 1, position })) });
+    const summary = (checks: Awaited<ReturnType<typeof check>>) =>
+      checks.map((c) => `${c.place} ${c.status} ${c.reason.replace('WORLD_EDITOR.CHECK_', '')}`);
+
+    it('passes points on the navigation mesh that reach each other', async () => {
+      const { prober } = setup();
+      const checks = await check(prober, [at(0), at(20)]);
+      expect(checks[1]).toEqual({ key: 'path:1#2', point: 2, place: 'ground', status: 'ok', reason: 'WORLD_EDITOR.CHECK_OK' });
+      expect(summary(checks)).toEqual(['ground ok OK', 'ground ok OK']);
+    });
+
+    it('warns off the mesh, inside something or on a detour, and fails where nothing is walkable or reachable', async () => {
+      // two strips joined far north, and an island
+      const { world, prober } = setup({
+        '32_48': rects([0, 96, -2, 2], [0, 96, 8, 12], [96, 100, -2, 2], [96, 100, 2, 8], [96, 100, 8, 12], [-50, -40, -50, -40]),
+      });
+      // 2.8 yards over the mesh: off it, snapped back down
+      expect(summary(await check(prober, [at(50), at(50, 0, 12.8)]))).toEqual(['ground ok OK', 'ground warn OFF_MESH']);
+      expect(summary(await check(prober, [at(0), at(0, 10)]))[1]).toBe('ground warn DETOUR');
+      expect((await check(prober, [at(0), at(0, 10)]))[1].params).toEqual({ from: 1, walked: expect.any(Number), straight: 10 });
+      expect(summary(await check(prober, [at(0), at(-45, -45)]))[1]).toBe('ground bad UNREACHABLE');
+      expect(summary(await check(prober, [at(0), at(0, 30)]))[1]).toBe('ground bad NOT_WALKABLE');
+      // a low ceiling right over the point
+      const slab = new Mesh(new BoxGeometry(4, 0.2, 4), new MeshBasicMaterial());
+      const p = worldToScene(at(20, 0, 11));
+      slab.position.set(p.x, p.y, p.z);
+      slab.layers.set(COLLISION_LAYER);
+      world.buildingGroup.add(slab);
+      expect(summary(await check(prober, [at(20)]))).toEqual(['ground warn INSIDE']);
+    });
+
+    it('checks flying points by their line from the previous point, and cannot check without a navigation mesh', async () => {
+      const { world, prober } = setup();
+      expect(summary(await check(prober, [at(0, 0, 30), at(40, 0, 30), at(60)]))).toEqual([
+        'air ok OK_FLYING',
+        'air ok OK_FLYING',
+        'ground ok OK',
+      ]);
+      wall(world, 20);
+      expect(summary(await check(prober, [at(0), at(40, 0, 15)]))[1]).toBe('air bad BLOCKED');
+
+      const empty = setup({});
+      expect(summary(await check(empty.prober, [at(0)]))).toEqual(['ground warn NO_NAVMESH']);
+      expect(summary(await check(empty.prober, [at(0), at(5000)]))[1]).toBe('ground warn NO_NAVMESH');
+    });
+  });
 });

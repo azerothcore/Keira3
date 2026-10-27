@@ -32,6 +32,7 @@ import {
   RGBAFormat,
   Scene,
   SphereGeometry,
+  TetrahedronGeometry,
   ShaderMaterial,
   SRGBColorSpace,
   Texture,
@@ -59,7 +60,17 @@ import { createSkyDome, setSkyColors } from './sky';
 import { ROOF_LAYER } from './wmo-object';
 import { COLLISION_LAYER } from './collision-object';
 import { createTerrainLighting, createTerrainMaterial } from './terrain-material';
-import { PickResult, SpawnKind, WaypointPath, waypointKey, WorldAreaTrigger, WorldSpawn } from './world-viewer.model';
+import {
+  PickResult,
+  SpawnKind,
+  WaypointCheck,
+  WaypointCheckStatus,
+  WaypointPath,
+  WaypointPlace,
+  waypointKey,
+  WorldAreaTrigger,
+  WorldSpawn,
+} from './world-viewer.model';
 
 type MarkerState = 'normal' | 'pending' | 'selected';
 
@@ -110,6 +121,11 @@ const DEFAULT_FOG = { near: 600, far: 1600 };
 const MIN_FOG_END = 400;
 /** How far above an object snapping still looks for ground (yards): enough for a stair step or a small ledge. */
 const GROUND_STEP = 2;
+/** Waypoints more than this (yards) above the floor or liquid below them are in the air (flying creatures). */
+export const AIR_WAYPOINT_HEIGHT = 3;
+/** Colours of the "Check path" marks over waypoints. */
+export const WAYPOINT_CHECK_COLORS: Record<WaypointCheckStatus, number> = { ok: 0x2ecc71, warn: 0xf1c40f, bad: 0xe74c3c };
+const CHECK_MARK_NAME = 'check';
 /** Snap to wall looks this far around (yards), in this many directions, and leaves this gap. */
 const WALL_SNAP_DISTANCE = 6;
 const WALL_SNAP_DIRECTIONS = 16;
@@ -195,7 +211,24 @@ export class WorldScene {
     new ConeGeometry(0.35, 1.1, 8).rotateX(-Math.PI / 2).translate(0, 1.7, -0.9),
   ]);
   private readonly gameobjectGeometry = new BoxGeometry(1.2, 1.2, 1.2).translate(0, 0.6, 0);
-  private readonly waypointGeometry = new SphereGeometry(0.5, 12, 8);
+  /** Waypoint markers by place: a ball on the ground, a cube in the air, a pyramid (tetrahedron) in water. */
+  private readonly waypointGeometries: Record<WaypointPlace, BufferGeometry> = {
+    ground: new SphereGeometry(0.5, 12, 8),
+    air: new BoxGeometry(0.8, 0.8, 0.8),
+    water: new TetrahedronGeometry(0.7),
+  };
+  private readonly waypointPlaces = new Map<string, WaypointPlace>();
+  /** "Check path" marks: an exclamation mark (bar and dot) over the point, in its status colour. */
+  private readonly checkBarGeometry = new CylinderGeometry(0.12, 0.08, 0.8, 8).translate(0, 1.75, 0);
+  private readonly checkDotGeometry = new SphereGeometry(0.12, 8, 6).translate(0, 1.15, 0);
+  private readonly checkMaterials = Object.fromEntries(
+    Object.entries(WAYPOINT_CHECK_COLORS).map(([status, color]) => [
+      status,
+      new MeshBasicMaterial({ color, depthTest: false, transparent: true }),
+    ]),
+  ) as Record<WaypointCheckStatus, MeshBasicMaterial>;
+  private waypointChecks: WaypointCheck[] = [];
+  private readonly liquidRaycaster = new Raycaster();
   private readonly arrowGeometry = new ConeGeometry(0.4, 1.2, 8);
   /** Unit-length arrow along −z from the origin (shaft and head), scaled to each model. */
   private readonly facingArrowGeometry = mergeGeometries([
@@ -674,7 +707,7 @@ export class WorldScene {
 
       for (const waypoint of path.points) {
         const key = waypointKey(path.key, waypoint.point);
-        const sphere = new Mesh(this.waypointGeometry, this.waypointMaterial(color));
+        const sphere = new Mesh(this.waypointGeometries.ground, this.waypointMaterial(color));
         sphere.name = key;
         sphere.userData = { key, kind: 'waypoint', pathKey: path.key, point: waypoint.point } satisfies PickableData;
         placeObject(sphere, waypoint.position, waypoint.orientation ?? 0, WAYPOINT_LIFT);
@@ -684,7 +717,120 @@ export class WorldScene {
       this.orientPointers(group, path.closed === true && path.points.length > 2);
       this.waypointGroup.add(group);
     }
+    this.waypointPlaces.clear();
+    this.classifyWaypoints();
+    this.setWaypointChecks(this.waypointChecks);
     this.applySelection();
+  }
+
+  /**
+   * Where a point is: in a liquid (at or under its surface, with no ceiling in between), in the air (more than
+   * `AIR_WAYPOINT_HEIGHT` above the floor or liquid below), or on the ground. Uses what's loaded around the camera.
+   */
+  waypointPlace(position: WorldPosition): WaypointPlace {
+    const floor = this.firstGroundBelow(position.x, position.y, position.z + 0.5);
+    const liquid = this.liquidHeightAt(position.x, position.y);
+    // a liquid over the floor, not hidden from the point by a ceiling (a cave under a lake)
+    const liquidOver =
+      liquid !== undefined && (floor === undefined || liquid > floor) && !this.ceilingBetween(position, liquid) ? liquid : undefined;
+    if (liquidOver !== undefined && position.z <= liquidOver + 0.5) {
+      return 'water';
+    }
+    // nothing loaded under it: taken as ground
+    const base = Math.max(floor ?? position.z, liquidOver ?? -Infinity);
+    return position.z - base > AIR_WAYPOINT_HEIGHT ? 'air' : 'ground';
+  }
+
+  /** The place each waypoint was last drawn for. */
+  waypointPlaceOf(key: string): WaypointPlace | undefined {
+    return this.waypointPlaces.get(key);
+  }
+
+  /**
+   * Gives each waypoint the marker of its place (ball, cube or pyramid), with a line down to the floor under the
+   * points in the air. Call again when terrain or buildings around them loaded.
+   */
+  classifyWaypoints(): void {
+    this.scene.updateMatrixWorld();
+    for (const group of this.waypointGroup.children) {
+      const drops: Vector3[] = [];
+      for (const waypoint of this.waypointsOf(group as Group)) {
+        const key = (waypoint.userData as PickableData).key;
+        const position = (this.getObjectState(key) as { position: WorldPosition }).position;
+        const place = this.waypointPlace(position);
+        this.waypointPlaces.set(key, place);
+        (waypoint as Mesh).geometry = this.waypointGeometries[place];
+        const floor = place === 'air' ? this.firstGroundBelow(position.x, position.y, position.z) : undefined;
+        if (floor !== undefined) {
+          const top = scenePoint(position, WAYPOINT_LIFT);
+          const bottom = scenePoint({ ...position, z: floor }, 0.05);
+          drops.push(top, bottom);
+          // a small square on the floor under it
+          const corners = [-0.4, 0.4].flatMap((dx) => [-0.4, 0.4].map((dz) => bottom.clone().add(new Vector3(dx, 0, dz))));
+          drops.push(corners[0], corners[1], corners[1], corners[3], corners[3], corners[2], corners[2], corners[0]);
+        }
+      }
+      const old = group.getObjectByName(`${group.name}:drops`) as LineSegments | undefined;
+      if (old) {
+        group.remove(old);
+        old.geometry.dispose();
+        (old.material as Material).dispose();
+      }
+      if (drops.length > 0) {
+        const lines = new LineSegments(
+          new BufferGeometry().setFromPoints(drops),
+          new LineBasicMaterial({ color: pathColor(group.name), transparent: true, opacity: 0.7, depthTest: false }),
+        );
+        lines.name = `${group.name}:drops`;
+        lines.renderOrder = 1;
+        lines.raycast = () => undefined;
+        group.add(lines);
+      }
+    }
+  }
+
+  /** Draws the "Check path" marks (green, yellow or red "!") over the checked waypoints; an empty list removes them. */
+  setWaypointChecks(checks: WaypointCheck[]): void {
+    this.waypointChecks = checks;
+    const marks: Object3D[] = [];
+    this.waypointGroup.traverse((object) => object.name === CHECK_MARK_NAME && marks.push(object));
+    marks.forEach((mark) => mark.removeFromParent());
+    for (const check of checks) {
+      const waypoint = this.objects.get(check.key);
+      if (!waypoint) {
+        continue;
+      }
+      const mark = new Group();
+      mark.name = CHECK_MARK_NAME;
+      for (const geometry of [this.checkBarGeometry, this.checkDotGeometry]) {
+        const mesh = new Mesh(geometry, this.checkMaterials[check.status]);
+        mesh.renderOrder = 3;
+        mesh.raycast = () => undefined;
+        mark.add(mesh);
+      }
+      waypoint.add(mark);
+    }
+  }
+
+  /** Height of the highest liquid surface at a server x/y, if loaded. */
+  private liquidHeightAt(x: number, y: number): number | undefined {
+    const from = worldToScene({ x, y, z: 10_000 });
+    this.liquidRaycaster.layers.set(LIQUID_LAYER);
+    this.liquidRaycaster.set(new Vector3(from.x, from.y, from.z), new Vector3(0, -1, 0));
+    return this.liquidRaycaster.intersectObjects([this.terrainGroup], true)[0]?.point.y;
+  }
+
+  /** Terrain or a building between a point and a height above it (a cave under a lake). */
+  private ceilingBetween(position: WorldPosition, height: number): boolean {
+    if (height <= position.z) {
+      return false;
+    }
+    const from = scenePoint(position);
+    this.raycaster.set(from, new Vector3(0, 1, 0));
+    this.raycaster.far = height - position.z;
+    const hit = this.raycaster.intersectObjects([this.terrainGroup, this.buildingGroup], true)[0];
+    this.raycaster.far = Infinity;
+    return hit !== undefined;
   }
 
   /** Redraws the line and direction arrows of a path after one of its points was moved interactively. */
@@ -703,6 +849,7 @@ export class WorldScene {
       numbers.push(numbers[0]);
     }
     this.orientPointers(group, closed);
+    this.classifyWaypoints();
     line.geometry.dispose();
     line.geometry = new BufferGeometry().setFromPoints(points);
 
@@ -927,7 +1074,10 @@ export class WorldScene {
     this.clearGroup(this.waypointGroup);
     this.creatureGeometry.dispose();
     this.gameobjectGeometry.dispose();
-    this.waypointGeometry.dispose();
+    Object.values(this.waypointGeometries).forEach((geometry) => geometry.dispose());
+    this.checkBarGeometry.dispose();
+    this.checkDotGeometry.dispose();
+    Object.values(this.checkMaterials).forEach((material) => material.dispose());
     this.arrowGeometry.dispose();
     this.pointerGeometry.dispose();
     this.ringGeometry.dispose();

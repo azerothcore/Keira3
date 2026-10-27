@@ -11,6 +11,8 @@ import {
   NavMeshRebuildRequest,
   NavMeshRebuildState,
   NavMeshTileInfo,
+  WaypointCheck,
+  WaypointCheckRequest,
   ObjectMoved,
   PathProbeRequest,
   PathProbeResult,
@@ -54,6 +56,8 @@ class FakeWorldViewerComponent {
   readonly navMeshRebuild = input<NavMeshRebuildRequest | undefined>(undefined);
   readonly hideRealNavMesh = input<boolean>(false);
   readonly navMeshRebuilt = output<NavMeshRebuildState>();
+  readonly waypointCheck = input<WaypointCheckRequest | undefined>(undefined);
+  readonly waypointsChecked = output<WaypointCheck[]>();
   readonly picked = output<PickResult>();
   readonly objectMoved = output<ObjectMoved>();
   readonly centerChanged = output<WorldPosition>();
@@ -1628,6 +1632,47 @@ describe(WorldEditorComponent.name, () => {
       page.byId('place-entry').nativeElement.dispatchEvent(new Event('change'));
       await settle(page);
       expect(mocks.service.getEntryName).toHaveBeenCalledWith('gameobject', 5);
+    });
+  });
+
+  describe('checking paths', () => {
+    it('checks the active path, lists what was found at each point, and stops', async () => {
+      const { page } = await setup();
+      await loadArea(page);
+      expect(page.byId('check-path', false)).toBeFalsy();
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:1', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      page.click('check-path');
+      await settle(page);
+      expect(page.viewer().waypointCheck()).toEqual({
+        pathKey: 'path:10',
+        points: [
+          { point: 1, position: { x: -8901, y: -101, z: 80 } },
+          { point: 2, position: { x: -8902, y: -102, z: 81 } },
+        ],
+      });
+      expect(page.byId('path-checks', false)).toBeFalsy();
+      page.viewer().waypointsChecked.emit([
+        { key: 'path:10#1', point: 1, place: 'ground', status: 'ok', reason: 'WORLD_EDITOR.CHECK_OK' },
+        { key: 'path:10#2', point: 2, place: 'air', status: 'bad', reason: 'WORLD_EDITOR.CHECK_BLOCKED', params: { from: 1 } },
+      ]);
+      await settle(page);
+      expect(page.text('path-check-2')).toContain('#2');
+      expect(page.text('path-check-2')).toContain('WORLD_EDITOR.PLACE_AIR');
+      expect(page.text('path-check-2')).toContain('WORLD_EDITOR.CHECK_BLOCKED');
+      expect((page.byId('path-check-2').nativeElement.querySelector('strong') as HTMLElement).style.color).toBe('rgb(231, 76, 60)');
+
+      // still checked from one of its points; moving it asks again
+      page.viewer().picked.emit({ type: 'waypoint', key: 'path:10#2', pathKey: 'path:10', point: 2, position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      expect(page.byId('path-checks')).toBeTruthy();
+      page.viewer().objectMoved.emit({ key: 'path:10#2', position: { x: 1, y: 2, z: 3 }, orientation: 0 });
+      await settle(page);
+      expect(page.viewer().waypointCheck()?.points[1].position).toEqual({ x: 1, y: 2, z: 3 });
+
+      page.click('check-path');
+      await settle(page);
+      expect(page.viewer().waypointCheck()).toBeUndefined();
     });
   });
 

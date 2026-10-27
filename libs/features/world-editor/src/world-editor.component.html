@@ -698,6 +698,8 @@
         [navMeshRebuild]="navMeshRebuild()"
         [hideRealNavMesh]="hideRealNavMesh()"
         (navMeshRebuilt)="navMeshRebuildState.set($event)"
+        [waypointCheck]="waypointCheckRequest()"
+        (waypointsChecked)="waypointChecks.set($event)"
         [probe]="probeRequest()"
         [areaTriggers]="worldAreaTriggers()"
       />
@@ -996,6 +998,33 @@
                   </button>
                 }
               </div>
+              @if (activePathId()) {
+                <div class="mt-1">
+                  <button
+                    type="button"
+                    class="btn btn-sm"
+                    data-testid="check-path"
+                    [class.btn-success]="checkedPathId() === activePathId()"
+                    [class.btn-outline-success]="checkedPathId() !== activePathId()"
+                    [title]="'WORLD_EDITOR.CHECK_PATH_HINT' | translate"
+                    (click)="toggleCheckPath()"
+                  >
+                    <i class="fa fa-check-circle"></i> {{ 'WORLD_EDITOR.CHECK_PATH' | translate }} ({{ activePathId() }})
+                  </button>
+                  @if (checkedPathId() === activePathId() && waypointChecks().length) {
+                    <ul class="list-unstyled small mb-0 mt-1 world-editor-checks" data-testid="path-checks">
+                      @for (check of waypointChecks(); track check.key) {
+                        <li [attr.data-testid]="'path-check-' + check.point">
+                          <strong [style.color]="'#' + checkColors[check.status].toString(16).padStart(6, '0')">!</strong>
+                          #{{ check.point }}
+                          <span class="text-muted">({{ 'WORLD_EDITOR.PLACE_' + check.place.toUpperCase() | translate }})</span>
+                          {{ check.reason | translate: check.params }}
+                        </li>
+                      }
+                    </ul>
+                  }
+                </div>
+              }
               @if (selectedSpawn()) {
                 <div class="world-editor-stack mt-1" data-testid="stack" [title]="'WORLD_EDITOR.STACK_HINT' | translate">
                   <span class="small text-muted">{{ 'WORLD_EDITOR.STACK' | translate }}</span>
@@ -1223,6 +1252,7 @@
               }
             </tbody>
           </table>
+          <small class="text-muted d-block mt-1" data-testid="waypoint-shapes">{{ 'WORLD_EDITOR.WAYPOINT_SHAPES' | translate }}</small>
         </div>
       </div>
     </div>

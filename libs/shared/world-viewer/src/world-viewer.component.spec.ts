@@ -27,10 +27,12 @@ import {
   WorldSpawn,
   NavMeshRebuildRequest,
   NavMeshRebuildState,
+  WaypointCheck,
+  WaypointCheckRequest,
 } from './world-viewer.model';
 import { flatDetail, flatTile } from './world-viewer.mock';
 import { WorldScene } from './world-scene';
-import { PathProbeRequest, PathProbeResult } from './path-probe';
+import { PathProber, PathProbeRequest, PathProbeResult } from './path-probe';
 import { WorldNavMesh } from './world-navmesh';
 
 // ------------------------------------------------------------------ Three.js controls fakes (jsdom has no WebGL)
@@ -130,6 +132,8 @@ interface FakeTransformControls extends EventDispatcher<{ 'dragging-changed': { 
       [areaTriggers]="triggers()"
       [probe]="probe()"
       [navMeshRebuild]="rebuild()"
+      [waypointCheck]="check()"
+      (waypointsChecked)="checks.push($event)"
       [hideRealNavMesh]="hideReal()"
       (navMeshRebuilt)="rebuilds.push($event)"
       (probed)="probes.push($event)"
@@ -160,6 +164,8 @@ class HostComponent {
   readonly probe = signal<PathProbeRequest | undefined>(undefined);
   readonly probes: PathProbeResult[] = [];
   readonly rebuild = signal<NavMeshRebuildRequest | undefined>(undefined);
+  readonly check = signal<WaypointCheckRequest | undefined>(undefined);
+  readonly checks: WaypointCheck[][] = [];
   readonly hideReal = signal(false);
   readonly rebuilds: NavMeshRebuildState[] = [];
   readonly speeds: number[] = [];
@@ -759,6 +765,35 @@ describe(WorldViewerComponent.name, () => {
       const count = host.probes.length;
       await update(() => host.probe.set(undefined));
       expect(host.probes).toHaveLength(count);
+    });
+
+    it('checks a path, marks its points, drops answers a newer check replaced, and checks again after loading', async () => {
+      const ok: WaypointCheck = { key: 'path:1#3', point: 3, place: 'ground', status: 'ok', reason: 'WORLD_EDITOR.CHECK_OK' };
+      let finishFirst: (checks: WaypointCheck[]) => void = () => undefined;
+      const checkPath = vi
+        .spyOn(PathProber.prototype, 'checkPath')
+        .mockReturnValueOnce(new Promise((resolve) => (finishFirst = resolve)))
+        .mockResolvedValue([ok]);
+      const marks = vi.spyOn(WorldScene.prototype, 'setWaypointChecks');
+      const { host, fixture, update } = await pickSetup();
+      const request: WaypointCheckRequest = { pathKey: 'path:1', points: [{ point: 3, position: at(300, 300) }] };
+      await update(() => host.check.set(request));
+      await update(() => host.check.set({ ...request }));
+      await settle(fixture);
+      finishFirst([{ ...ok, status: 'bad' }]);
+      await settle(fixture);
+      expect(host.checks).toEqual([[ok]]);
+      expect(marks).toHaveBeenLastCalledWith([ok]);
+      expect(checkPath).toHaveBeenCalledWith('Azeroth', request);
+
+      // terrain loaded under the points: checked again a moment later
+      await update(() => host.focus.set(at(1200, 0)));
+      await settle(fixture);
+      await new Promise((resolve) => setTimeout(resolve, 600));
+      expect(host.checks.length).toBeGreaterThan(1);
+
+      await update(() => host.check.set(undefined));
+      expect(marks).toHaveBeenLastCalledWith([]);
     });
 
     describe('navigation mesh rebuild', () => {

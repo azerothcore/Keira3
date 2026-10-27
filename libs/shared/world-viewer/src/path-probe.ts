@@ -1,6 +1,7 @@
 import { NavGraph, pathLength, tileKey, worldToTile, WorldPosition } from '@keira/shared/wow-data';
 import { NavMeshSource } from './world-navmesh';
 import { WorldScene } from './world-scene';
+import { WaypointCheck, WaypointCheckRequest, WaypointCheckStatus, waypointKey } from './world-viewer.model';
 
 /** The Path / LOS tool's question: from A to C, with an attack range and the eye height of both. */
 export interface PathProbeRequest {
@@ -35,6 +36,13 @@ export interface PathProbeResult {
 export const MAX_PROBE_TILES = 49;
 /** Step (yards) of the search for an attack position along the path. */
 const ATTACK_STEP = 1;
+/** A ground waypoint this close (yards, in height) to the navigation mesh stands on it. */
+const ON_MESH_HEIGHT = 2;
+/** Clear space a creature needs above a waypoint (yards): less means it's inside or under something. */
+const HEAD_ROOM = 2;
+/** A walk this many times longer than the straight line (and 10+ yards longer) is a detour worth flagging. */
+const DETOUR_RATIO = 2.5;
+const SEVERITY: Record<WaypointCheckStatus, number> = { ok: 0, warn: 1, bad: 2 };
 
 const distance = (a: WorldPosition, b: WorldPosition): number => Math.hypot(a.x - b.x, a.y - b.y, a.z - b.z);
 
@@ -85,8 +93,83 @@ export class PathProber {
     return result;
   }
 
+  /**
+   * Checks the points of a waypoint path, each against the previous one. On the ground: standing on the navigation
+   * mesh (else off it, or not walkable at all), with room above it, and reachable from the previous point without a big
+   * detour. In the air or in water (flying, swimming): a clear line from the previous point.
+   */
+  async checkPath(directory: string, request: WaypointCheckRequest): Promise<WaypointCheck[]> {
+    const checks: WaypointCheck[] = [];
+    for (let i = 0; i < request.points.length; i++) {
+      const { point, position } = request.points[i];
+      const previous = request.points[i - 1];
+      const place = this.world.waypointPlace(position);
+      const findings: { status: WaypointCheckStatus; reason: string; params?: Record<string, number> }[] = [];
+      if (place === 'ground') {
+        const graph = await this.graphFor(directory, previous?.position ?? position, position);
+        if (!graph || graph === 'tooFar') {
+          findings.push({ status: 'warn', reason: 'WORLD_EDITOR.CHECK_NO_NAVMESH' });
+        } else {
+          const surface = graph.surfaceAt(position);
+          if (surface === undefined || Math.abs(surface - position.z) > ON_MESH_HEIGHT) {
+            findings.push(
+              graph.locate(position) === undefined
+                ? { status: 'bad', reason: 'WORLD_EDITOR.CHECK_NOT_WALKABLE' }
+                : { status: 'warn', reason: 'WORLD_EDITOR.CHECK_OFF_MESH' },
+            );
+          }
+          if (previous && this.world.waypointPlace(previous.position) === 'ground') {
+            const path = graph.findPath(previous.position, position);
+            const straight = distance(previous.position, position);
+            if (!path) {
+              findings.push({ status: 'bad', reason: 'WORLD_EDITOR.CHECK_UNREACHABLE', params: { from: previous.point } });
+            } else {
+              const walked = pathLength(path);
+              if (walked > straight * DETOUR_RATIO && walked - straight > 10) {
+                findings.push({
+                  status: 'warn',
+                  reason: 'WORLD_EDITOR.CHECK_DETOUR',
+                  params: { from: previous.point, walked: Math.round(walked), straight: Math.round(straight) },
+                });
+              }
+            }
+          }
+        }
+        if (this.world.lineOfSightBlock({ ...position, z: position.z + 0.3 }, { ...position, z: position.z + HEAD_ROOM })) {
+          findings.push({ status: 'warn', reason: 'WORLD_EDITOR.CHECK_INSIDE' });
+        }
+      } else if (previous && this.world.lineOfSightBlock(previous.position, position)) {
+        findings.push({ status: 'bad', reason: 'WORLD_EDITOR.CHECK_BLOCKED', params: { from: previous.point } });
+      }
+      const worst = findings.reduce<(typeof findings)[number] | undefined>(
+        (current, finding) => (!current || SEVERITY[finding.status] > SEVERITY[current.status] ? finding : current),
+        undefined,
+      );
+      checks.push({
+        key: waypointKey(request.pathKey, point),
+        point,
+        place,
+        ...(worst ?? { status: 'ok', reason: place === 'ground' ? 'WORLD_EDITOR.CHECK_OK' : 'WORLD_EDITOR.CHECK_OK_FLYING' }),
+      });
+    }
+    return checks;
+  }
+
   /** The walking path from A to C, loading the navigation mesh tiles around and between them. */
   private async walk(directory: string, from: WorldPosition, to: WorldPosition): Promise<Partial<PathProbeResult>> {
+    const graph = await this.graphFor(directory, from, to);
+    if (graph === 'tooFar') {
+      return { tooFar: true };
+    }
+    if (!graph) {
+      return { noNavMesh: true };
+    }
+    const path = graph.findPath(from, to);
+    return path ? { path, length: pathLength(path) } : {};
+  }
+
+  /** The navigation mesh around and between two points (kept for the next question on the same tiles). */
+  private async graphFor(directory: string, from: WorldPosition, to: WorldPosition): Promise<NavGraph | 'tooFar' | undefined> {
     const [a, b] = [worldToTile(from.x, from.y), worldToTile(to.x, to.y)];
     const tiles = [];
     for (let tx = Math.min(a.tx, b.tx) - 1; tx <= Math.max(a.tx, b.tx) + 1; tx++) {
@@ -95,17 +178,16 @@ export class PathProber {
       }
     }
     if (tiles.length > MAX_PROBE_TILES) {
-      return { tooFar: true };
+      return 'tooFar';
     }
     const key = `${directory}:${tiles.map(tileKey).join(',')}`;
     if (this.graph?.key !== key) {
       const loaded = (await Promise.all(tiles.map((tile) => this.source.getNavMeshTile(directory, tile)))).filter((tile) => !!tile);
       if (loaded.length === 0) {
-        return { noNavMesh: true };
+        return undefined;
       }
       this.graph = { key, graph: new NavGraph(loaded) };
     }
-    const path = this.graph.graph.findPath(from, to);
-    return path ? { path, length: pathLength(path) } : {};
+    return this.graph.graph;
   }
 }

@@ -27,6 +27,9 @@ import {
   WorldSpawn,
   WorldViewerComponent,
   spawnModelBox,
+  WAYPOINT_CHECK_COLORS,
+  WaypointCheck,
+  WaypointCheckRequest,
 } from '@keira/shared/world-viewer';
 import {
   CacheUsage,
@@ -201,6 +204,24 @@ export class WorldEditorComponent implements OnInit {
   protected readonly navMeshRebuildState = signal<NavMeshRebuildState | undefined>(undefined);
   protected readonly hideRealNavMesh = signal(false);
   protected readonly stackSides = STACK_SIDES;
+  protected readonly checkedPathId = this.session.checkedPathId;
+  /** "Check path": the points of the checked path, sorted; equal points don't ask the viewer again. */
+  protected readonly waypointCheckRequest = computed<WaypointCheckRequest | undefined>(
+    () => {
+      const pathId = this.checkedPathId();
+      if (pathId === undefined) {
+        return undefined;
+      }
+      const points = this.waypoints()
+        .filter((w) => w.pathId === pathId)
+        .sort((a, b) => a.point - b.point)
+        .map((w) => ({ point: w.point, position: { x: w.x, y: w.y, z: w.z } }));
+      return { pathKey: pathKey(pathId), points };
+    },
+    { equal: (a, b) => JSON.stringify(a) === JSON.stringify(b) },
+  );
+  protected readonly waypointChecks = signal<WaypointCheck[]>([]);
+  protected readonly checkColors = WAYPOINT_CHECK_COLORS;
   protected readonly isRangePreset = computed(() => this.rangePresets.some((preset) => preset.range === this.probeRange()));
   protected readonly probeRequest = computed<PathProbeRequest | undefined>(() => {
     const from = this.probeFrom();
@@ -1136,6 +1157,13 @@ export class WorldEditorComponent implements OnInit {
     }
     this.selectedKey.set(undefined);
     this.bump();
+  }
+
+  /** Turns "Check path" on for the active path (the selected creature's or waypoint's), or off. */
+  protected toggleCheckPath(): void {
+    const pathId = this.activePathId();
+    this.waypointChecks.set([]);
+    this.checkedPathId.set(this.checkedPathId() === pathId ? undefined : pathId);
   }
 
   /** Only offered for a selected creature without a path. */

@@ -118,6 +118,14 @@ describe('NavGraph', () => {
     expect(graph.findPath({ x: 0.5, y: 0.5, z: 0 }, { x: 20.5, y: 20.5, z: 0 })).toBeUndefined();
   });
 
+  it('knows the walkable surface right above or below a point', () => {
+    const graph = new NavGraph([tile([[0, 0]], 0), tile([[0, 0]], 3)]);
+    expect(graph.surfaceAt({ x: 0.5, y: 0.5, z: 1 })).toBe(0);
+    expect(graph.surfaceAt({ x: 0.5, y: 0.5, z: 2.6 })).toBe(3);
+    expect(graph.surfaceAt({ x: 0.5, y: 0.5, z: 20 })).toBeUndefined();
+    expect(graph.surfaceAt({ x: 5, y: 5, z: 0 })).toBeUndefined();
+  });
+
   it('ignores degenerate triangles', () => {
     const flat: NavMeshTile = { positions: new Float32Array([0, 0, 0, 0, 0, 0, -1, 0, -1]), colors: new Float32Array(9) };
     const line: NavMeshTile = { positions: new Float32Array([0, 0, 0, -1, 0, -1, -2, 0, -2]), colors: new Float32Array(9) };

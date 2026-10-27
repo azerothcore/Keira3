@@ -31,6 +31,9 @@ export class WorldEditorSessionService {
   readonly showView = signal(false);
   readonly showControls = signal(false);
 
+  /** The path "Check path" is on (its points are checked again whenever they change). */
+  readonly checkedPathId = signal<number | undefined>(undefined);
+
   readonly probeFrom = signal<WorldPosition | undefined>(undefined);
   readonly probeTo = signal<WorldPosition | undefined>(undefined);
   readonly probeRange = signal(30);

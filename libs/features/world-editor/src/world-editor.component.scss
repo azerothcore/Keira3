@@ -284,3 +284,14 @@
     grid-row: span 2;
   }
 }
+
+.world-editor-checks {
+  max-height: 10rem;
+  overflow-y: auto;
+
+  strong {
+    display: inline-block;
+    width: 0.75rem;
+    text-align: center;
+  }
+}

@@ -53,6 +53,8 @@ import {
   NavMeshRebuildRequest,
   NavMeshRebuildState,
   NavMeshTileInfo,
+  WaypointCheck,
+  WaypointCheckRequest,
   ObjectMoved,
   parseWaypointKey,
   PickResult,
@@ -71,6 +73,8 @@ const SPEED_STEP = 1.25;
 /** Keyboard movement speed (yards per second) when the camera is close; it grows with the camera distance. */
 const KEY_MIN_SPEED = 20;
 /** While something loads, how often (ms) the loading bar is refreshed. */
+/** Wait (ms) after terrain or buildings loaded before checking the checked path again. */
+const RECHECK_DELAY = 500;
 const ACTIVITY_POLL = 250;
 
 interface HoverLabel {
@@ -117,6 +121,10 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
 
   /** The Path / LOS tool's question (A, C, range, eye height); undefined clears it. */
   readonly probe = input<PathProbeRequest | undefined>(undefined);
+  /** "Check path": the points of a path to check (again whenever they change); undefined clears the marks. */
+  readonly waypointCheck = input<WaypointCheckRequest | undefined>(undefined);
+  /** The answer to `waypointCheck`, one per point. */
+  readonly waypointsChecked = output<WaypointCheck[]>();
   /** A navigation mesh tile to rebuild with other settings and draw over the real one; undefined clears it. */
   readonly navMeshRebuild = input<NavMeshRebuildRequest | undefined>(undefined);
   /** Hides the real navigation mesh tile under the rebuilt one. */
@@ -158,12 +166,14 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private readonly world = new WorldScene();
   private readonly textures = new TextureCache((path) => this.client.getTexture(path));
   private readonly streamer = new TerrainStreamer(this.client, this.world, this.textures, () => this.onTileLoaded());
-  private readonly objects = new WorldObjects(this.client, this.world.buildingGroup, this.textures, () => this.requestRender());
+  private readonly objects = new WorldObjects(this.client, this.world.buildingGroup, this.textures, () => this.onTileLoaded());
   private readonly doodads = new WorldDoodads(this.client, this.world.doodadGroup, this.textures, () => this.requestRender());
   private readonly navMesh = new WorldNavMesh(this.client, this.world.navMeshGroup, () => this.requestRender());
   private readonly prober = new PathProber(this.client, this.world);
   private probeRequest = 0;
   private rebuildRequest = 0;
+  private checkRequest = 0;
+  private recheckTimer?: ReturnType<typeof setTimeout>;
   /** Id of the shown map (for mmtile names), once known. */
   private mapId?: number;
   protected readonly navMeshInfo = signal<NavMeshTileInfo | undefined>(undefined);
@@ -242,6 +252,13 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     });
     effect(() => this.navMesh.setRealHidden(this.hideRealNavMesh()));
     effect(() => {
+      const request = this.waypointCheck();
+      const directory = this.mapDirectory();
+      // the paths drawn first, so the marks land on their points
+      this.paths();
+      untracked(() => void this.runWaypointCheck(directory, request));
+    });
+    effect(() => {
       this.world.setAreaTriggers(this.areaTriggers());
       this.requestRender();
     });
@@ -298,6 +315,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     clearTimeout(this.activityTimer);
+    clearTimeout(this.recheckTimer);
     if (this.moveFrame !== undefined) {
       cancelAnimationFrame(this.moveFrame);
     }
@@ -521,6 +539,23 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     });
     this.requestRender();
     this.probed.emit(result);
+  }
+
+  /** Checks a path's points and marks them; a newer request makes an older answer be dropped. */
+  private async runWaypointCheck(directory: string | undefined, request: WaypointCheckRequest | undefined): Promise<void> {
+    const id = ++this.checkRequest;
+    if (!directory || !request) {
+      this.world.setWaypointChecks([]);
+      this.requestRender();
+      return;
+    }
+    const checks = await this.prober.checkPath(directory, request);
+    if (id !== this.checkRequest) {
+      return;
+    }
+    this.world.setWaypointChecks(checks);
+    this.requestRender();
+    this.waypointsChecked.emit(checks);
   }
 
   /** Rebuilds a navigation mesh tile from the client files and draws it over the real one; a newer request cancels it. */
@@ -782,6 +817,12 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   }
 
   private onTileLoaded(): void {
+    this.world.classifyWaypoints();
+    // what's under the checked points may have changed: check them again once loading calms down
+    if (this.waypointCheck()) {
+      clearTimeout(this.recheckTimer);
+      this.recheckTimer = setTimeout(() => void this.runWaypointCheck(this.mapDirectory(), this.waypointCheck()), RECHECK_DELAY);
+    }
     this.requestRender();
   }
 
