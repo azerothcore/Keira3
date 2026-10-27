@@ -693,7 +693,7 @@ describe(WorldViewerComponent.name, () => {
       await settle(fixture);
       flushFrames();
       fixture.detectChanges();
-      expect(page.getDebugElementByTestId('world-viewer-mmtile').nativeElement.textContent.trim()).toBe('mmtile 0004832.mmtile');
+      expect(page.getDebugElementByTestId('world-viewer-mmtile').nativeElement.textContent.trim()).toBe('0004832.mmtile');
       expect(host.navMeshTiles.at(-1)).toEqual({ file: '0004832.mmtile', mapId: 0, tile: { tx: 32, ty: 48 }, config, missing: false });
 
       // a tile without a file

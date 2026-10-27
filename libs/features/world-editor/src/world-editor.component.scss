@@ -16,7 +16,10 @@
 .world-editor-view-settings,
 .world-editor-settings,
 .world-editor-controls {
-  flex-shrink: 1;
+  // .card-body would make them grow into the editor's free height
+  flex: 0 1 auto;
+  align-content: flex-start;
+  align-items: center;
   min-height: 0;
   max-height: 45vh;
   overflow-y: auto;
@@ -192,25 +195,6 @@
   z-index: 10;
 }
 
-// area triggers: the purple of their volumes in the 3D view
-$trigger-color: #c77dff;
-
-.btn-trigger {
-  background-color: $trigger-color;
-  border-color: $trigger-color;
-  color: #fff;
-}
-
-.btn-outline-trigger {
-  border-color: $trigger-color;
-  color: $trigger-color;
-
-  &:hover {
-    background-color: $trigger-color;
-    color: #fff;
-  }
-}
-
 .world-editor-controls {
   .world-editor-control-group {
     padding-top: 0.5rem;
@@ -244,4 +228,27 @@ $trigger-color: #c77dff;
   padding: 4px 6px;
   border-radius: 3px;
   background: rgba(0, 0, 0, 0.06);
+}
+
+// the layer switches, each in the colour of what it shows
+.world-editor-layers {
+  .form-check-input {
+    cursor: pointer;
+  }
+  .layer-creatures:checked {
+    background-color: #ffc107;
+    border-color: #ffc107;
+  }
+  .layer-gameobjects:checked {
+    background-color: #0dcaf0;
+    border-color: #0dcaf0;
+  }
+  .layer-waypoints:checked {
+    background-color: #dc3545;
+    border-color: #dc3545;
+  }
+  .layer-area-triggers:checked {
+    background-color: #c77dff;
+    border-color: #c77dff;
+  }
 }

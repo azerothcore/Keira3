@@ -47,47 +47,51 @@
       <button type="submit" class="btn btn-sm btn-secondary" data-testid="goto-btn">{{ 'WORLD_EDITOR.GO_TO' | translate }}</button>
     </form>
 
-    <div class="btn-group btn-group-sm" role="group">
-      <button
-        type="button"
-        class="btn"
-        data-testid="layer-creatures"
-        [class.btn-warning]="layers().creatures"
-        [class.btn-outline-warning]="!layers().creatures"
-        (click)="toggleLayer('creatures')"
-      >
-        {{ 'WORLD_EDITOR.CREATURES' | translate }}
-      </button>
-      <button
-        type="button"
-        class="btn"
-        data-testid="layer-gameobjects"
-        [class.btn-info]="layers().gameobjects"
-        [class.btn-outline-info]="!layers().gameobjects"
-        (click)="toggleLayer('gameobjects')"
-      >
-        {{ 'WORLD_EDITOR.GAMEOBJECTS' | translate }}
-      </button>
-      <button
-        type="button"
-        class="btn"
-        data-testid="layer-waypoints"
-        [class.btn-danger]="layers().waypoints"
-        [class.btn-outline-danger]="!layers().waypoints"
-        (click)="toggleLayer('waypoints')"
-      >
-        {{ 'WORLD_EDITOR.WAYPOINTS' | translate }}
-      </button>
-      <button
-        type="button"
-        class="btn"
-        data-testid="layer-area-triggers"
-        [class.btn-trigger]="layers().areaTriggers"
-        [class.btn-outline-trigger]="!layers().areaTriggers"
-        (click)="toggleLayer('areaTriggers')"
-      >
-        {{ 'WORLD_EDITOR.AREA_TRIGGERS' | translate }}
-      </button>
+    <div class="d-flex align-items-center gap-3 world-editor-layers">
+      <div class="form-check form-switch mb-0">
+        <input
+          class="form-check-input layer-creatures"
+          type="checkbox"
+          id="world-editor-layer-creatures"
+          data-testid="layer-creatures"
+          [checked]="layers().creatures"
+          (change)="toggleLayer('creatures')"
+        />
+        <label class="form-check-label" for="world-editor-layer-creatures">{{ 'WORLD_EDITOR.CREATURES' | translate }}</label>
+      </div>
+      <div class="form-check form-switch mb-0">
+        <input
+          class="form-check-input layer-gameobjects"
+          type="checkbox"
+          id="world-editor-layer-gameobjects"
+          data-testid="layer-gameobjects"
+          [checked]="layers().gameobjects"
+          (change)="toggleLayer('gameobjects')"
+        />
+        <label class="form-check-label" for="world-editor-layer-gameobjects">{{ 'WORLD_EDITOR.GAMEOBJECTS' | translate }}</label>
+      </div>
+      <div class="form-check form-switch mb-0">
+        <input
+          class="form-check-input layer-waypoints"
+          type="checkbox"
+          id="world-editor-layer-waypoints"
+          data-testid="layer-waypoints"
+          [checked]="layers().waypoints"
+          (change)="toggleLayer('waypoints')"
+        />
+        <label class="form-check-label" for="world-editor-layer-waypoints">{{ 'WORLD_EDITOR.WAYPOINTS' | translate }}</label>
+      </div>
+      <div class="form-check form-switch mb-0">
+        <input
+          class="form-check-input layer-area-triggers"
+          type="checkbox"
+          id="world-editor-layer-area-triggers"
+          data-testid="layer-area-triggers"
+          [checked]="layers().areaTriggers"
+          (change)="toggleLayer('areaTriggers')"
+        />
+        <label class="form-check-label" for="world-editor-layer-area-triggers">{{ 'WORLD_EDITOR.AREA_TRIGGERS' | translate }}</label>
+      </div>
     </div>
   </div>
   <div class="world-editor-toolbar d-flex align-items-center gap-2 mb-2">
@@ -742,8 +746,22 @@
       <div class="card mb-2">
         <div class="card-header py-1">{{ 'WORLD_EDITOR.TOOLS' | translate }}</div>
         <div class="card-body p-2">
-          <div class="btn-group btn-group-sm w-100 mb-2" role="group">
-            @for (option of ['select', 'place-creature', 'place-gameobject', 'add-waypoint', 'probe']; track option) {
+          <div class="btn-group btn-group-sm w-100 mb-1" role="group">
+            @for (option of ['select', 'probe']; track option) {
+              <button
+                type="button"
+                class="btn"
+                [attr.data-testid]="'tool-' + option"
+                [class.btn-primary]="tool() === option"
+                [class.btn-outline-primary]="tool() !== option"
+                (click)="setTool($any(option))"
+              >
+                {{ 'WORLD_EDITOR.TOOL.' + option | translate }}
+              </button>
+            }
+          </div>
+          <div class="btn-group btn-group-sm w-100 mb-1" role="group">
+            @for (option of ['place-creature', 'place-gameobject', 'add-waypoint']; track option) {
               <button
                 type="button"
                 class="btn"
@@ -1040,7 +1058,7 @@
 
       @if (navMeshTile(); as info) {
         <div class="card mb-2" data-testid="mmap-tile">
-          <div class="card-header py-1">mmtile {{ info.file }}</div>
+          <div class="card-header py-1">{{ info.file }}</div>
           <div class="card-body p-2">
             @if (info.config; as config) {
               <table class="table table-sm table-borderless align-middle small mb-1">
@@ -1061,8 +1079,7 @@
                           type="number"
                           class="form-control form-control-sm"
                           [attr.data-testid]="'mmap-' + key"
-                          [placeholder]="config[key]"
-                          [value]="mmapChanges()[key] ?? ''"
+                          [value]="mmapChanges()[key] ?? config[key]"
                           (change)="setMmapValue(key, $event)"
                         />
                       </td>

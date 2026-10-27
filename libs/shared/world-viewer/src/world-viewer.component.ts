@@ -783,8 +783,9 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   /** Which mmtile the camera target is on (while the navigation mesh is shown), reported when it changes. */
   private updateNavMeshInfo(center: WorldPosition): void {
     let info: NavMeshTileInfo | undefined;
+    const tile = worldToTile(center.x, center.y);
+    this.navMesh.setCurrent(tileKey(tile));
     if (this.renderSettings().showNavMesh && this.mapId !== undefined) {
-      const tile = worldToTile(center.x, center.y);
       const read = this.navMesh.tileAt(tileKey(tile));
       info = { file: mmtileName(this.mapId, tile), mapId: this.mapId, tile, config: read?.config, missing: read === null };
     }

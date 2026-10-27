@@ -1222,7 +1222,7 @@ describe(WorldEditorComponent.name, () => {
       await settle(again);
       expect(again.pendingLines()).toHaveLength(1);
       expect(again.byId<HTMLButtonElement>('undo').nativeElement.disabled).toBe(false);
-      expect(again.byId('layer-gameobjects').nativeElement.classList).toContain('btn-outline-info');
+      expect(again.byId<HTMLInputElement>('layer-gameobjects').nativeElement.checked).toBe(false);
       expect(again.byId('filters', false)).toBeTruthy();
       expect(again.byId('tool-probe').nativeElement.classList).toContain('btn-primary');
       expect(again.viewer().probe()).toEqual(expect.objectContaining({ from: { x: 5, y: 5, z: 5 } }));
@@ -1339,8 +1339,8 @@ describe(WorldEditorComponent.name, () => {
       expect(page.byId('mmap-tile', false)).toBeFalsy();
       page.viewer().navMeshTileChanged.emit(tile());
       page.fixture.detectChanges();
-      expect(page.text('mmap-tile')).toContain('mmtile 0004832.mmtile');
-      expect(page.byId<HTMLInputElement>('mmap-walkableClimb').nativeElement.placeholder).toBe('6');
+      expect(page.text('mmap-tile')).toContain('0004832.mmtile');
+      expect(page.byId<HTMLInputElement>('mmap-walkableClimb').nativeElement.value).toBe('6');
       expect(page.text('mmap-hint')).toBe('WORLD_EDITOR.MMAP_EDIT_HINT');
 
       const set = (key: string, value: string) => {
@@ -1378,6 +1378,7 @@ describe(WorldEditorComponent.name, () => {
       // clearing a field, resetting, and moving to another tile forget the changes
       set('walkableClimb', '');
       expect(page.byId('mmap-yaml', false)).toBeFalsy();
+      expect(page.byId<HTMLInputElement>('mmap-walkableClimb').nativeElement.value).toBe('6');
       set('walkableRadius', '3');
       page.click('mmap-reset');
       page.fixture.detectChanges();

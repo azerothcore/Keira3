@@ -36,6 +36,9 @@ export class WorldNavMesh {
     polygonOffsetUnits: -2,
   });
   private readonly edges = new MeshBasicMaterial({ vertexColors: true, wireframe: true, transparent: true, opacity: 0.5 });
+  /** The edges of the tile the camera is on. */
+  private readonly currentEdges = new MeshBasicMaterial({ color: 0xfff35c, wireframe: true, transparent: true, opacity: 0.9 });
+  private currentKey?: string;
 
   constructor(
     private readonly source: NavMeshSource,
@@ -113,10 +116,21 @@ export class WorldNavMesh {
     return this.read.get(key);
   }
 
+  /** Draws the edges of the tile at `key` (`tx_ty`) in their own colour: the tile the camera is on. */
+  setCurrent(key: string | undefined): void {
+    if (key === this.currentKey) {
+      return;
+    }
+    this.currentKey = key;
+    this.tiles.forEach((tile, tileKey) => this.paint(tileKey, tile));
+    this.onChange();
+  }
+
   dispose(): void {
     this.clear();
     this.fill.dispose();
     this.edges.dispose();
+    this.currentEdges.dispose();
   }
 
   private add(key: string, tile: NavMeshTile): void {
@@ -132,9 +146,14 @@ export class WorldNavMesh {
       mesh.raycast = () => undefined;
       group.add(mesh);
     }
+    this.paint(key, group);
     this.group.add(group);
     this.tiles.set(key, group);
     this.onChange();
+  }
+
+  private paint(key: string, tile: Group): void {
+    (tile.children[1] as Mesh).material = key === this.currentKey ? this.currentEdges : this.edges;
   }
 
   private remove(key: string, tile: Group): void {

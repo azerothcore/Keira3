@@ -41,6 +41,24 @@ describe('WorldNavMesh', () => {
     expect(navMesh.tileAt('10_10')).toBeUndefined();
   });
 
+  it('draws the edges of the tile the camera is on in their own colour', async () => {
+    const { group, navMesh, onChange } = setup();
+    navMesh.configure({ show: true, radius: 1 });
+    navMesh.setMap('Azeroth');
+    navMesh.setCurrent('32_48');
+    await navMesh.update(CENTER);
+    const edges = (key: string) => (group.getObjectByName(`navmesh:${key}`)?.children[1] as Mesh).material as MeshBasicMaterial;
+    expect(edges('32_48').color.getHex()).toBe(0xfff35c);
+    expect(edges('33_48').vertexColors).toBe(true);
+    onChange.mockClear();
+    navMesh.setCurrent('32_48');
+    expect(onChange).not.toHaveBeenCalled();
+    navMesh.setCurrent('33_48');
+    expect(edges('33_48').color.getHex()).toBe(0xfff35c);
+    expect(edges('32_48').vertexColors).toBe(true);
+    expect(onChange).toHaveBeenCalled();
+  });
+
   it('drops tiles out of range, and everything when turned off or the map changes', async () => {
     const { group, navMesh } = setup();
     navMesh.configure({ show: true, radius: 0 });

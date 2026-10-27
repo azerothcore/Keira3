@@ -557,13 +557,19 @@ export class WorldEditorComponent implements OnInit {
     this.navMeshTile.set(info);
   }
 
-  /** A setting typed for the tile; empty, or the tile's own value, means unchanged. */
+  /** A setting typed for the tile; empty, invalid or the tile's own value puts the tile's value back. */
   protected setMmapValue(key: keyof MmapRecastConfig, event: Event): void {
-    const text = (event.target as HTMLInputElement).value;
-    const value = Number(text);
+    const input = event.target as HTMLInputElement;
+    const value = Number(input.value);
     const { [key]: _, ...others } = this.mmapChanges();
     const original = (this.navMeshTile() as NavMeshTileInfo).config?.[key];
-    this.mmapChanges.set(text === '' || !Number.isFinite(value) || value === original ? others : { ...others, [key]: value });
+    if (input.value === '' || !Number.isFinite(value) || value === original) {
+      // back to the tile's own value
+      input.value = String(original);
+      this.mmapChanges.set(others);
+    } else {
+      this.mmapChanges.set({ ...others, [key]: value });
+    }
   }
 
   protected setMmapScope(event: Event): void {
