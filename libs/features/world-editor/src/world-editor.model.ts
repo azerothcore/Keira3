@@ -25,6 +25,12 @@ export interface SpawnRecord {
   scale?: number;
   /** Creatures that wander (MovementType 1): how far from the spawn point (creature.wander_distance). */
   wanderDistance?: number;
+  /** Game event the spawn belongs to (game_event_creature / game_event_gameobject with a positive eventEntry). */
+  event?: number;
+  /** Invisible trigger or "[DND]" helper (CREATURE_FLAG_EXTRA_TRIGGER, or "Trigger" / "Bunny" / "DND" in its name). */
+  trigger?: boolean;
+  /** creature.phaseMask / gameobject.phaseMask. */
+  phaseMask?: number;
 }
 
 export type Quaternion = [number, number, number, number];
@@ -78,6 +84,9 @@ export interface SpawnRow extends TableRow {
   scale: number;
   wanderDistance: number;
   movementType: number;
+  eventEntry: number;
+  isTrigger: number;
+  phaseMask: number;
 }
 
 export interface WaypointRow extends TableRow {

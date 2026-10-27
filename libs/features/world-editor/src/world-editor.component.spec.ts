@@ -126,6 +126,7 @@ describe(WorldEditorComponent.name, () => {
       loadWaypoints: vi.fn(),
       loadWaypointScripts: vi.fn(),
       loadWaypointSai: vi.fn(),
+      loadEventNames: vi.fn(),
       getMaxGuid: vi.fn(),
       getFreePathId: vi.fn(),
       getEntryName: vi.fn(),
@@ -193,6 +194,7 @@ describe(WorldEditorComponent.name, () => {
     mocks.service.loadWaypoints.mockResolvedValue(WAYPOINTS);
     mocks.service.loadWaypointScripts.mockResolvedValue(new Map([[50, [{ id: 50, delay: 0, command: 0 }]]]));
     mocks.service.loadWaypointSai.mockResolvedValue([{ entryorguid: -1, point: 2, pathId: 10, actionType: 1, comment: 'Willem - Say' }]);
+    mocks.service.loadEventNames.mockResolvedValue(new Map());
     mocks.service.getMaxGuid.mockResolvedValue(1000);
     mocks.service.getFreePathId.mockResolvedValue(20);
     mocks.service.getEntryName.mockResolvedValue('Marshal McBride');
@@ -790,6 +792,62 @@ describe(WorldEditorComponent.name, () => {
           .map((s) => s.key),
       ).toEqual(['creature:1', 'creature:2']);
       expect(page.viewer().paths()).toEqual([]);
+    });
+
+    it('hides event spawns, triggers and other phases with the filters, along with the paths they walk', async () => {
+      mocks.service.loadSpawns.mockResolvedValue([
+        ...SPAWNS,
+        spawn('creature', 4, { event: 12, pathId: 10, name: 'Headless Horseman' }),
+        spawn('creature', 5, { event: 1, name: 'Flame Keeper' }),
+        spawn('creature', 6, { trigger: true, name: '[DND] Bunny' }),
+        spawn('gameobject', 7, { phaseMask: 2 }),
+      ]);
+      mocks.service.loadEventNames.mockResolvedValue(new Map([[12, "Hallow's End"]]));
+      const { page } = await setup();
+      const keys = (): string[] =>
+        page
+          .viewer()
+          .spawns()
+          .map((s) => s.key);
+      page.click('filters-toggle');
+      page.fixture.detectChanges();
+      expect(page.text('no-events')).toBe('WORLD_EDITOR.NO_EVENTS');
+      await loadArea(page);
+
+      expect(mocks.service.loadEventNames).toHaveBeenCalledWith([0, 0, 0, 12, 1, 0, 0]);
+      expect(keys()).toEqual(['creature:1', 'creature:2', 'gameobject:3', 'gameobject:7']);
+      expect(page.text('hidden-count')).toBe('3');
+      expect(page.text('events')).toContain('Event 1');
+      expect(page.text('events')).toContain("Hallow's End");
+
+      const check = (id: string, checked: boolean): void => {
+        const box = page.byId<HTMLInputElement>(id).nativeElement;
+        box.checked = checked;
+        box.dispatchEvent(new Event('change'));
+        page.fixture.detectChanges();
+      };
+      check('event-12', true);
+      expect(keys()).toContain('creature:4');
+      check('event-12', false);
+      expect(keys()).not.toContain('creature:4');
+      page.click('events-all');
+      page.fixture.detectChanges();
+      expect(keys()).toEqual(expect.arrayContaining(['creature:4', 'creature:5']));
+      expect(JSON.parse(localStorage.getItem('keira3.worldEditor.filters') as string).events).toEqual([1, 12]);
+
+      // path 10 is still walked by creature 1 when the event is hidden; hiding both hides the path
+      page.click('events-none');
+      page.type('filter-search', 'horseman');
+      page.fixture.detectChanges();
+      expect(keys()).toEqual([]);
+      expect(page.viewer().paths()).toEqual([]);
+      page.type('filter-search', '');
+
+      check('filter-triggers', true);
+      expect(keys()).toContain('creature:6');
+      check('filter-phases', false);
+      expect(keys()).not.toContain('gameobject:7');
+      expect(page.text('hidden-count')).toBe('3');
     });
 
     it('waits for the maps before loading spawns', async () => {

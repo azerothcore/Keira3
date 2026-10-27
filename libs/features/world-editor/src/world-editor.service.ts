@@ -22,6 +22,13 @@ const num = (value: number): number => Math.round(value * 100) / 100;
 const RANDOM_MOVEMENT = 1;
 /** SMART_EVENT_WAYPOINT_DATA_REACHED: a creature on a `waypoint_data` path reached a point. */
 const SAI_EVENT_WAYPOINT_DATA_REACHED = 108;
+/** CREATURE_FLAG_EXTRA_TRIGGER: an invisible creature used by scripts. */
+const FLAG_EXTRA_TRIGGER = 128;
+/** Names of helper spawns players never see. */
+const helperName = (column: string): string => `(${column} LIKE '%Trigger%' OR ${column} LIKE '%Bunny%' OR ${column} LIKE '%DND%')`;
+/** The event a spawn belongs to; a negative eventEntry means it is removed during the event, so it isn't an event spawn. */
+const eventOf = (table: string, guid: string): string =>
+  `IFNULL((SELECT MAX(e.eventEntry) FROM ${table} e WHERE e.guid = ${guid} AND e.eventEntry > 0), 0) AS eventEntry`;
 
 /** Database access of the world editor (reads only; writes go through the generated SQL). */
 @Service()
@@ -43,7 +50,9 @@ export class WorldEditorService {
       '0 AS rotation0, 0 AS rotation1, 0 AS rotation2, 0 AS rotation3, ' +
       // the first template model, as the server picks when it has a single one
       'IFNULL(ctm.CreatureDisplayID, 0) AS displayId, IFNULL(ctm.DisplayScale, 1) AS scale, ' +
-      'c.wander_distance AS wanderDistance, c.MovementType AS movementType ' +
+      'c.wander_distance AS wanderDistance, c.MovementType AS movementType, c.phaseMask, ' +
+      `${eventOf('game_event_creature', 'c.guid')}, ` +
+      `((IFNULL(ct.flags_extra, 0) & ${FLAG_EXTRA_TRIGGER}) <> 0 OR ${helperName('ct.name')}) AS isTrigger ` +
       'FROM creature c ' +
       'LEFT JOIN creature_template ct ON ct.entry = c.id ' +
       'LEFT JOIN creature_template_model ctm ON ctm.CreatureID = c.id AND ctm.Idx = 0 ' +
@@ -54,7 +63,8 @@ export class WorldEditorService {
     const gameobjects =
       "SELECT g.guid, g.id AS entry, IFNULL(gt.name, '') AS name, g.map, g.position_x AS x, g.position_y AS y, g.position_z AS z, g.orientation AS o, " +
       '0 AS pathId, 0 AS pathFromTemplate, g.rotation0, g.rotation1, g.rotation2, g.rotation3, ' +
-      'IFNULL(gt.displayId, 0) AS displayId, IFNULL(gt.size, 1) AS scale, 0 AS wanderDistance, 0 AS movementType ' +
+      'IFNULL(gt.displayId, 0) AS displayId, IFNULL(gt.size, 1) AS scale, 0 AS wanderDistance, 0 AS movementType, g.phaseMask, ' +
+      `${eventOf('game_event_gameobject', 'g.guid')}, IFNULL(${helperName('gt.name')}, 0) AS isTrigger ` +
       'FROM gameobject g ' +
       'LEFT JOIN gameobject_template gt ON gt.entry = g.id ' +
       `WHERE ${area('g')} LIMIT ${SPAWN_LOAD_LIMIT}`;
@@ -130,6 +140,22 @@ export class WorldEditorService {
     }));
   }
 
+  /** Descriptions of game events, by id. */
+  async loadEventNames(ids: number[]): Promise<Map<number, string>> {
+    const unique = [...new Set(ids.map(Math.trunc).filter((id) => id > 0))];
+    const names = new Map<number, string>();
+    if (unique.length === 0) {
+      return names;
+    }
+    const rows = await firstValueFrom(
+      this.queryService.query<TableRow>(`SELECT eventEntry, description FROM game_event WHERE eventEntry IN (${unique.join(', ')})`),
+    );
+    for (const row of rows ?? []) {
+      names.set(Number(row['eventEntry']), String(row['description'] ?? ''));
+    }
+    return names;
+  }
+
   /**
    * Id for a new path of a creature: `guid * 10` (AzerothCore's convention) when unused, otherwise the highest path id
    * + 1 (what `.wp add` does). `reserved` are ids already handed out in this session but not saved yet.
@@ -198,5 +224,8 @@ function toSpawns(type: SpawnType, rows: SpawnRow[] | undefined): SpawnRecord[] 
     displayId: Number(row.displayId ?? 0),
     scale: Number(row.scale ?? 1),
     ...(Number(row.movementType) === RANDOM_MOVEMENT ? { wanderDistance: Number(row.wanderDistance) } : {}),
+    ...(Number(row.eventEntry) > 0 ? { event: Number(row.eventEntry) } : {}),
+    ...(Number(row.isTrigger) ? { trigger: true } : {}),
+    phaseMask: Number(row.phaseMask ?? 1),
   }));
 }

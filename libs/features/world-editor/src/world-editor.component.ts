@@ -48,11 +48,23 @@ import {
 import { WorldEditorService } from './world-editor.service';
 import { GpsLocation, parseGpsOutput } from './gps';
 import { describeWaypoint, WaypointSaiRow, WaypointScriptStep } from './waypoint-info';
+import { isSpawnVisible, loadSpawnFilters, saveSpawnFilters, SpawnFilters, spawnEvents } from './spawn-filters';
 
 /** "Marshal McBride - Creature (GUID: 1, Entry: 197)", as shown on hover and in the selection panel. */
 export function spawnTitle(spawn: { type: SpawnType; name: string; guid: number; entry: number }): string {
   const type = spawn.type === 'creature' ? 'Creature' : 'GameObject';
   return `${spawn.name || spawn.entry} - ${type} (GUID: ${spawn.guid}, Entry: ${spawn.entry})`;
+}
+
+/** Creatures walking each path ("Name (guid)"), by path id. */
+function pathOwners(spawns: SpawnRecord[]): Map<number, string[]> {
+  const owners = new Map<number, string[]>();
+  for (const spawn of spawns) {
+    if (spawn.pathId) {
+      owners.set(spawn.pathId, [...(owners.get(spawn.pathId) ?? []), `${spawn.name || spawn.entry} (${spawn.guid})`]);
+    }
+  }
+  return owners;
 }
 
 const LAST_VIEW_KEY = 'keira3.worldEditor.lastView';
@@ -149,6 +161,13 @@ export class WorldEditorComponent implements OnInit {
     this.renderSettings.settings().loadWholeZone ? this.zones().find((zone) => zone.areaId === this.zoneId())?.bounds : undefined,
   );
   protected readonly layers = signal<LayerVisibility>({ creatures: true, gameobjects: true, waypoints: true });
+  protected readonly filters = signal<SpawnFilters>(loadSpawnFilters());
+  protected readonly showFilters = signal(false);
+  private readonly eventNames = signal(new Map<number, string>());
+  /** Game events with spawns around, for the Filters panel. */
+  protected readonly events = computed(() => spawnEvents(this.spawns(), this.eventNames()));
+  /** How many of the loaded spawns the filters hide. */
+  protected readonly hiddenCount = computed(() => this.spawns().length - this.visibleSpawns().length);
   protected readonly tool = signal<EditorTool>('select');
   protected readonly gizmoMode = signal<GizmoMode>('translate');
   /** Where moved objects snap: nowhere, onto the ground/floor below, or against the nearest wall. */
@@ -202,10 +221,16 @@ export class WorldEditorComponent implements OnInit {
     return this.changes.applyToWaypoints(this.loadedWaypoints(), this.pathIds());
   });
 
+  /** Spawns the filters let through; the paths they walk are the only ones drawn. */
+  private readonly visibleSpawns = computed(() => {
+    const filters = this.filters();
+    return this.spawns().filter((s) => isSpawnVisible(s, filters));
+  });
+
   protected readonly worldSpawns = computed<WorldSpawn[]>(() => {
     const layers = this.layers();
     const showWander = this.renderSettings.settings().showWanderRadius;
-    return this.spawns()
+    return this.visibleSpawns()
       .filter((s) => (s.type === 'creature' ? layers.creatures : layers.gameobjects))
       .map((s) => ({
         key: spawnKey(s.type, s.guid),
@@ -226,15 +251,16 @@ export class WorldEditorComponent implements OnInit {
     if (!this.layers().waypoints) {
       return [];
     }
+    // only the paths walked by a creature the filters show
+    const owners = pathOwners(this.visibleSpawns());
     const byPath = new Map<number, WaypointRecord[]>();
-    for (const waypoint of this.waypoints()) {
+    for (const waypoint of this.waypoints().filter((w) => owners.has(w.pathId))) {
       byPath.set(waypoint.pathId, [...(byPath.get(waypoint.pathId) ?? []), waypoint]);
     }
-    const owners = this.pathOwners();
     return [...byPath].map(([pathId, points]) => ({
       key: pathKey(pathId),
       label: `Path ${pathId}`,
-      owners: owners.get(pathId) ?? [],
+      owners: owners.get(pathId) as string[],
       closed: true,
       points: points.map((p) => ({
         point: p.point,
@@ -256,15 +282,7 @@ export class WorldEditorComponent implements OnInit {
   }
 
   /** Creatures walking each loaded path ("Name (guid)"). */
-  protected readonly pathOwners = computed(() => {
-    const owners = new Map<number, string[]>();
-    for (const spawn of this.spawns()) {
-      if (spawn.pathId) {
-        owners.set(spawn.pathId, [...(owners.get(spawn.pathId) ?? []), `${spawn.name || spawn.entry} (${spawn.guid})`]);
-      }
-    }
-    return owners;
-  });
+  protected readonly pathOwners = computed(() => pathOwners(this.spawns()));
 
   protected readonly selectedSpawn = computed(() => this.findSpawn(this.selectedKey() ?? ''));
   protected readonly selectedWaypoint = computed(() => this.findWaypoint(this.selectedKey() ?? ''));
@@ -583,6 +601,34 @@ export class WorldEditorComponent implements OnInit {
     this.focus.set({ x, y, z: z ?? 0 });
   }
 
+  protected toggleFilters(): void {
+    this.showFilters.update((shown) => !shown);
+  }
+
+  protected setFilters(changes: Partial<SpawnFilters>): void {
+    const filters = { ...this.filters(), ...changes };
+    this.filters.set(filters);
+    saveSpawnFilters(filters);
+  }
+
+  protected setFilterFlag(key: 'showTriggers' | 'showOtherPhases', event: Event): void {
+    this.setFilters({ [key]: (event.target as HTMLInputElement).checked });
+  }
+
+  protected setFilterSearch(event: Event): void {
+    this.setFilters({ search: (event.target as HTMLInputElement).value });
+  }
+
+  protected toggleEvent(id: number, event: Event): void {
+    const others = this.filters().events.filter((shown) => shown !== id);
+    this.setFilters({ events: (event.target as HTMLInputElement).checked ? [...others, id] : others });
+  }
+
+  /** Shows the spawns of every listed event, or of none. */
+  protected setAllEvents(shown: boolean): void {
+    this.setFilters({ events: shown ? this.events().map((e) => e.id) : [] });
+  }
+
   protected toggleLayer(layer: keyof LayerVisibility): void {
     this.layers.update((layers) => ({ ...layers, [layer]: !layers[layer] }));
   }
@@ -614,13 +660,15 @@ export class WorldEditorComponent implements OnInit {
       }
       this.loadedWaypoints.set(waypoints);
       const walkers = spawns.filter((s) => s.type === 'creature' && s.pathId);
-      const [scripts, sai] = await Promise.all([
+      const [scripts, sai, eventNames] = await Promise.all([
         this.service.loadWaypointScripts(waypoints.map((w) => w.action ?? 0)),
         this.service.loadWaypointSai(walkers),
+        this.service.loadEventNames(spawns.map((s) => s.event ?? 0)),
       ]);
       if (request === this.spawnRequest) {
         this.waypointScripts.set(scripts);
         this.waypointSai.set(sai);
+        this.eventNames.set(eventNames);
       }
     } catch (error) {
       this.toastr.error((error as Error).message, 'World Editor');

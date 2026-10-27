@@ -35,6 +35,9 @@ describe('WorldEditorService', () => {
                 pathFromTemplate: 1,
                 movementType: '1',
                 wanderDistance: '5',
+                phaseMask: '2',
+                eventEntry: '12',
+                isTrigger: '1',
               },
             ]
           : [
@@ -63,7 +66,21 @@ describe('WorldEditorService', () => {
     const spawns = await service.loadSpawns(0, { x: -8913.4567, y: -137, z: 80 }, 100);
 
     expect(spawns).toEqual([
-      { type: 'creature', guid: 1, entry: 197, name: 'Marshal', map: 0, x: 1, y: 2, z: 3, o: 0.5, pathId: 10, displayId: 0, scale: 1 },
+      {
+        type: 'creature',
+        guid: 1,
+        entry: 197,
+        name: 'Marshal',
+        map: 0,
+        x: 1,
+        y: 2,
+        z: 3,
+        o: 0.5,
+        pathId: 10,
+        displayId: 0,
+        scale: 1,
+        phaseMask: 1,
+      },
       {
         type: 'creature',
         guid: 9,
@@ -79,6 +96,9 @@ describe('WorldEditorService', () => {
         displayId: 0,
         scale: 1,
         wanderDistance: 5,
+        event: 12,
+        trigger: true,
+        phaseMask: 2,
       },
       {
         type: 'gameobject',
@@ -94,6 +114,7 @@ describe('WorldEditorService', () => {
         rotation: [0.1, 0, 0, 0.99],
         displayId: 45,
         scale: 1.5,
+        phaseMask: 1,
       },
     ]);
     const creatureSql = queryService.query.mock.calls[0][0] as string;
@@ -105,6 +126,29 @@ describe('WorldEditorService', () => {
     expect(creatureSql).toContain('LEFT JOIN creature_template_model ctm ON ctm.CreatureID = c.id AND ctm.Idx = 0');
     expect(creatureSql).toContain('c.wander_distance AS wanderDistance, c.MovementType AS movementType');
     expect(queryService.query.mock.calls[1][0]).toContain('IFNULL(gt.displayId, 0) AS displayId, IFNULL(gt.size, 1) AS scale');
+    expect(creatureSql).toContain('FROM game_event_creature e WHERE e.guid = c.guid AND e.eventEntry > 0');
+    expect(creatureSql).toContain("(IFNULL(ct.flags_extra, 0) & 128) <> 0 OR (ct.name LIKE '%Trigger%'");
+    expect(queryService.query.mock.calls[1][0]).toContain('FROM game_event_gameobject e WHERE e.guid = g.guid');
+  });
+
+  it('loads the descriptions of game events', async () => {
+    const { service, queryService } = setup();
+    expect((await service.loadEventNames([0, -3])).size).toBe(0);
+    expect(queryService.query).not.toHaveBeenCalled();
+    queryService.query.mockReturnValueOnce(
+      of([
+        { eventEntry: '12', description: "Hallow's End" },
+        { eventEntry: '1', description: null },
+      ]),
+    );
+    const names = await service.loadEventNames([12, 1, 12]);
+    expect([...names]).toEqual([
+      [12, "Hallow's End"],
+      [1, ''],
+    ]);
+    expect(queryService.query).toHaveBeenLastCalledWith('SELECT eventEntry, description FROM game_event WHERE eventEntry IN (12, 1)');
+    queryService.query.mockReturnValueOnce(of(undefined));
+    expect((await service.loadEventNames([5])).size).toBe(0);
   });
 
   it('treats missing results as empty', async () => {
