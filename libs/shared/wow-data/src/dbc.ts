@@ -163,6 +163,56 @@ export function parseCreatureDisplays(dbcs: CreatureDisplayDbcs): Map<number, Cr
   return displays;
 }
 
+/** The playable races (ChrRaces ids) and the folder of their character models. */
+export const PLAYER_RACES: { id: number; name: string; folder: string }[] = [
+  { id: 1, name: 'Human', folder: 'Human' },
+  { id: 2, name: 'Orc', folder: 'Orc' },
+  { id: 3, name: 'Dwarf', folder: 'Dwarf' },
+  { id: 4, name: 'Night Elf', folder: 'NightElf' },
+  { id: 5, name: 'Undead', folder: 'Scourge' },
+  { id: 6, name: 'Tauren', folder: 'Tauren' },
+  { id: 7, name: 'Gnome', folder: 'Gnome' },
+  { id: 8, name: 'Troll', folder: 'Troll' },
+  { id: 10, name: 'Blood Elf', folder: 'BloodElf' },
+  { id: 11, name: 'Draenei', folder: 'Draenei' },
+];
+
+const CHAR_SECTION_SKIN = 0;
+
+/**
+ * A player character as a display: the race's model for the sex (0 male, 1 female) with the first skin colour, hair
+ * style and hair colour of CharSections.dbc / CharHairGeosets.dbc (no clothes); undefined for a race not playable.
+ */
+export function playerDisplay(race: number, sex: number, charSections?: DbcFile, hairGeosets?: DbcFile): CreatureDisplay | undefined {
+  const folder = PLAYER_RACES.find((r) => r.id === race)?.folder;
+  if (!folder) {
+    return undefined;
+  }
+  const gender = sex === 1 ? 'Female' : 'Male';
+  const textures: Record<number, string> = {};
+  for (let r = 0; r < (charSections?.recordCount ?? 0); r++) {
+    const dbc = charSections as DbcFile;
+    const section = dbc.getUint(r, 3);
+    const first = dbc.getUint(r, 8) === 0 && dbc.getUint(r, 9) === 0;
+    if (dbc.getUint(r, 1) !== race || dbc.getUint(r, 2) !== sex || !first) {
+      continue;
+    }
+    const slot = section === CHAR_SECTION_SKIN ? 1 : section === CHAR_SECTION_HAIR ? 6 : undefined;
+    const texture = dbc.getString(r, 4);
+    if (slot !== undefined && texture && !textures[slot]) {
+      textures[slot] = texture;
+    }
+  }
+  let hairGeoset = 1;
+  for (let r = 0; r < (hairGeosets?.recordCount ?? 0); r++) {
+    const dbc = hairGeosets as DbcFile;
+    if (dbc.getUint(r, 1) === race && dbc.getUint(r, 2) === sex && dbc.getUint(r, 3) === 0) {
+      hairGeoset = dbc.getUint(r, 4) || 1;
+    }
+  }
+  return { model: `Character\\${folder}\\${gender}\\${folder}${gender}.m2`, scale: 1, textures, hairGeoset };
+}
+
 /** An area trigger of AreaTrigger.dbc: a sphere of `radius`, or a box when its length, width and height are set. */
 export interface AreaTriggerInfo {
   id: number;

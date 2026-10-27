@@ -18,6 +18,7 @@ import { WorldMapComponent, WorldMapDot } from './world-map.component';
       [coverage]="coverage()"
       (goTo)="goTos.push($event)"
       (regionSelected)="regions.push($event)"
+      (closed)="closes = closes + 1"
     />
   `,
 })
@@ -34,6 +35,7 @@ class HostComponent {
   readonly coverage = signal<Map<string, ServerTileCoverage> | undefined>(undefined);
   readonly goTos: WorldPosition[] = [];
   readonly regions: WorldBounds[] = [];
+  closes = 0;
 }
 
 class Page extends PageObjectModel<HostComponent> {
@@ -131,9 +133,16 @@ describe(WorldMapComponent.name, () => {
       page.wheel(50, 50, 100);
     }
     expect(width()).toBe('4px');
-    page.getDebugElementByTestId('world-map-fit').nativeElement.click();
+    // pressing its buttons is not a click on the map
+    const fit = page.getDebugElementByTestId('world-map-fit').nativeElement as HTMLElement;
+    fit.dispatchEvent(new MouseEvent('pointerdown', { clientX: 190, clientY: 10, button: 0, bubbles: true }));
+    fit.dispatchEvent(new MouseEvent('pointerup', { clientX: 190, clientY: 10, button: 0, bubbles: true }));
+    fit.click();
     fixture.detectChanges();
+    expect(host.goTos).toEqual([]);
     expect(width()).toBe('100px');
+    page.getDebugElementByTestId('world-map-close').nativeElement.click();
+    expect(host.closes).toBe(1);
 
     page.getDebugElementByTestId('world-map-camera-btn').nativeElement.click();
     host.camera.set({ x: (32 - 49.5) * TILE_SIZE, y: (32 - 32.5) * TILE_SIZE, z: 0 });

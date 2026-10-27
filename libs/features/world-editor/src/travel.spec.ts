@@ -56,6 +56,7 @@ describe('travel overlays', () => {
     ]);
     expect(links.map((l) => l.key)).toEqual(['flight:10', 'teleport:46']);
     expect(links[0].via).toEqual([{ x: 50, y: 0, z: 0 }]);
+    expect(links[0].label).toBe('Flight path 10: Stormwind → node 4');
     // no camera yet: no flight paths
     expect(travelOverlays(data, triggers, new Map(), undefined).links.map((l) => l.key)).toEqual(['teleport:46']);
   });

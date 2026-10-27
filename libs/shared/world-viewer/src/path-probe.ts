@@ -138,6 +138,8 @@ export class PathProber {
         if (this.world.lineOfSightBlock({ ...position, z: position.z + 0.3 }, { ...position, z: position.z + HEAD_ROOM })) {
           findings.push({ status: 'warn', reason: 'WORLD_EDITOR.CHECK_INSIDE' });
         }
+      } else if (place === 'under') {
+        findings.push({ status: 'bad', reason: 'WORLD_EDITOR.CHECK_UNDER_MAP' });
       } else if (previous && this.world.lineOfSightBlock(previous.position, position)) {
         findings.push({ status: 'bad', reason: 'WORLD_EDITOR.CHECK_BLOCKED', params: { from: previous.point } });
       }

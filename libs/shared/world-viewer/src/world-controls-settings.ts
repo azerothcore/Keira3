@@ -22,13 +22,15 @@ export type ControlAction =
   | 'toggleGizmo'
   | 'cancel'
   | 'copy'
-  | 'paste';
+  | 'paste'
+  // panels
+  | 'worldMap';
 
 /** The camera moves held down: along the ground relative to the view, and up/down. Shift makes them faster. */
 export type NavigationAction = Extract<ControlAction, 'forward' | 'back' | 'left' | 'right' | 'up' | 'down'>;
 export const NAVIGATION_ACTIONS: NavigationAction[] = ['forward', 'back', 'left', 'right', 'up', 'down'];
 
-export type ControlGroup = 'camera' | 'marker' | 'editing';
+export type ControlGroup = 'camera' | 'marker' | 'editing' | 'panels';
 
 /** Every action, in the order of the settings panel, with its group. */
 export const CONTROL_ACTIONS: { action: ControlAction; group: ControlGroup }[] = [
@@ -42,17 +44,18 @@ export const CONTROL_ACTIONS: { action: ControlAction; group: ControlGroup }[] =
   { action: 'cancel', group: 'editing' },
   { action: 'copy', group: 'editing' },
   { action: 'paste', group: 'editing' },
+  { action: 'worldMap', group: 'panels' },
 ];
 
-export const CONTROL_GROUPS: ControlGroup[] = ['camera', 'marker', 'editing'];
+export const CONTROL_GROUPS: ControlGroup[] = ['camera', 'marker', 'editing', 'panels'];
 
 export const DEFAULT_CONTROL_BINDINGS: Record<ControlAction, string[]> = {
   forward: ['KeyW', 'ArrowUp'],
   back: ['KeyS', 'ArrowDown'],
   left: ['KeyA', 'ArrowLeft'],
   right: ['KeyD', 'ArrowRight'],
-  up: ['KeyE', 'PageUp'],
-  down: ['KeyQ', 'PageDown'],
+  up: ['KeyQ', 'PageUp'],
+  down: ['KeyE', 'PageDown'],
   markerToCursor: ['Space'],
   cameraToMarker: ['Home'],
   undo: ['Ctrl+KeyZ'],
@@ -62,7 +65,13 @@ export const DEFAULT_CONTROL_BINDINGS: Record<ControlAction, string[]> = {
   cancel: ['Escape'],
   copy: ['Ctrl+KeyC'],
   paste: ['Ctrl+KeyV'],
+  worldMap: ['KeyM'],
 };
+
+/** The defaults before Q and E were swapped (Q now goes up): saved settings still on them get the new ones. */
+const OLD_UP = ['KeyE', 'PageUp'];
+const OLD_DOWN = ['KeyQ', 'PageDown'];
+const same = (a: unknown, b: string[]): boolean => Array.isArray(a) && a.length === b.length && a.every((v, i) => v === b[i]);
 
 export interface WorldControlsSettings {
   keyboardNavigation: boolean;
@@ -187,8 +196,12 @@ export class WorldControlsSettingsService {
         keys?: Record<string, unknown>;
       };
       const bindings = { ...DEFAULT_CONTROL_BINDINGS };
+      const saved: Record<string, unknown> = { ...stored.keys, ...stored.bindings };
+      if (same(saved['up'], OLD_UP) && same(saved['down'], OLD_DOWN)) {
+        [saved['up'], saved['down']] = [DEFAULT_CONTROL_BINDINGS.up, DEFAULT_CONTROL_BINDINGS.down];
+      }
       for (const { action } of CONTROL_ACTIONS) {
-        const inputs = stored.bindings?.[action] ?? stored.keys?.[action];
+        const inputs = saved[action];
         if (Array.isArray(inputs) && inputs.every((input) => typeof input === 'string')) {
           bindings[action] = inputs.filter(Boolean);
         }

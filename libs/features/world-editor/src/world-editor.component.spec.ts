@@ -72,6 +72,7 @@ class FakeWorldViewerComponent {
   readonly objectMoved = output<ObjectMoved>();
   readonly centerChanged = output<WorldPosition>();
   readonly contextRequested = output<ContextRequest>();
+  readonly probeMoved = output<{ which: 'from' | 'to'; position: WorldPosition }>();
 }
 
 const keyCode = (key: string): string => (/^[a-z]$/i.test(key) ? `Key${key.toUpperCase()}` : key);
@@ -228,6 +229,7 @@ describe(WorldEditorComponent.name, () => {
 
   const settle = async (page: Page): Promise<void> => {
     await new Promise((resolve) => setTimeout(resolve));
+    await new Promise((resolve) => setTimeout(resolve));
     page.fixture.detectChanges();
     await page.fixture.whenStable();
     page.fixture.detectChanges();
@@ -239,8 +241,12 @@ describe(WorldEditorComponent.name, () => {
     await settle(page);
   };
 
+  afterEach(() => vi.unstubAllGlobals());
+
   beforeEach(() => {
     vi.clearAllMocks();
+    // the next frame comes right away
+    vi.stubGlobal('requestAnimationFrame', (callback: () => void) => setTimeout(callback));
     mocks.client.isSupported.mockReturnValue(true);
     mocks.client.getMaps.mockResolvedValue(MAPS);
     mocks.client.getMapTiles.mockResolvedValue([
@@ -1688,16 +1694,30 @@ describe(WorldEditorComponent.name, () => {
       mocks.service.loadGraveyards.mockResolvedValue([{ id: 1, x: -8900, y: -100, z: 80, comment: 'Northshire' }]);
       mocks.service.loadTeleports.mockResolvedValue([{ id: 46, name: 'Inside', map: 0, x: -9400, y: 40, z: 60 }]);
       mocks.client.getTaxiNodes.mockResolvedValue([{ id: 2, mapId: 0, x: -8900, y: -100, z: 80, name: 'Stormwind' }]);
+      mocks.client.getTaxiPaths.mockResolvedValue([
+        {
+          id: 10,
+          from: 2,
+          to: 3,
+          points: [
+            { x: -8900, y: -100, z: 80 },
+            { x: -8800, y: -100, z: 90 },
+          ],
+        },
+      ]);
       const { page } = await setup();
       await loadArea(page);
       const viewer = page.viewer();
-      expect(viewer.links().map((link) => link.key)).toEqual(['formation:1:2', 'pool:7:gameobject:3', 'teleport:46']);
+      expect(viewer.links().map((link) => link.key)).toEqual(['formation:1:2', 'pool:7:gameobject:3', 'flight:10', 'teleport:46']);
       expect(viewer.markers().map((marker) => marker.key)).toEqual(['pool:7', 'graveyard:1', 'taxi:2', 'teleport-to:46']);
       // the formation places of the selected creature's formation
       viewer.picked.emit({ type: 'spawn', key: 'creature:2', position: { x: 0, y: 0, z: 0 } });
       await settle(page);
       expect(viewer.markers().map((marker) => marker.key)).toContain('formation-slot:2');
-      for (const layer of ['formations', 'pools', 'travel']) {
+      // their switches are in the View panel; flight masters have their own
+      page.click('view-toggle');
+      page.fixture.detectChanges();
+      for (const layer of ['formations', 'pools', 'flight-paths', 'travel']) {
         page.click('layer-' + layer);
       }
       await settle(page);
@@ -2161,6 +2181,150 @@ describe(WorldEditorComponent.name, () => {
       page.click('array-place');
       await settle(page);
       expect(mocks.toastr.warning).toHaveBeenLastCalledWith('The model of Bench could not be read: give the spacing.', 'World Editor');
+    });
+  });
+
+  describe('panels, legend, view and menus', () => {
+    it('opens one panel at a time (also the world map, with M), lit while open', async () => {
+      const { page } = await setup();
+      await loadArea(page);
+      page.click('view-toggle');
+      page.fixture.detectChanges();
+      expect(page.byId('view-toggle').nativeElement.classList).toContain('btn-secondary');
+      page.click('filters-toggle');
+      page.fixture.detectChanges();
+      expect(page.byId('view-settings', false)).toBeFalsy();
+      expect(page.byId('filters')).toBeTruthy();
+      page.click('legend-toggle');
+      page.fixture.detectChanges();
+      expect(page.byId('filters', false)).toBeFalsy();
+      expect(page.byId('legend').nativeElement.textContent).toContain('WORLD_EDITOR.LEGEND_WP_AIR');
+      page.key('m');
+      await settle(page);
+      expect(page.byId('legend', false)).toBeFalsy();
+      expect(page.getDebugElementByTestId('world-map')).toBeTruthy();
+      // its close button
+      (
+        page.fixture.debugElement.query((el) => el.name === 'keira-world-map').componentInstance as { closed: { emit: () => void } }
+      ).closed.emit();
+      await settle(page);
+      expect(page.getDebugElementByTestId('world-map', false)).toBeFalsy();
+      page.click('legend-toggle');
+      page.click('legend-toggle');
+      page.fixture.detectChanges();
+      expect(page.byId('legend', false)).toBeFalsy();
+    });
+
+    it('goes full screen and back', async () => {
+      const { page } = await setup();
+      const root = page.fixture.nativeElement.querySelector('.world-editor') as HTMLElement;
+      let current: Element | null = null;
+      Object.defineProperty(document, 'fullscreenElement', { configurable: true, get: () => current });
+      root.requestFullscreen = vi.fn().mockImplementation(() => {
+        current = root;
+        document.dispatchEvent(new Event('fullscreenchange'));
+        return Promise.resolve();
+      });
+      document.exitFullscreen = vi.fn().mockImplementation(() => {
+        current = null;
+        document.dispatchEvent(new Event('fullscreenchange'));
+        return Promise.resolve();
+      });
+      page.click('fullscreen-toggle');
+      await settle(page);
+      expect(root.classList).toContain('fullscreen');
+      page.click('fullscreen-toggle');
+      await settle(page);
+      expect(document.exitFullscreen).toHaveBeenCalled();
+      expect(root.classList).not.toContain('fullscreen');
+    });
+
+    it('sets the resolution from the view, and the marker model', async () => {
+      const { page } = await setup();
+      page.click('resolution-50');
+      page.fixture.detectChanges();
+      expect(page.viewer().renderSettings().renderScale).toBe(0.5);
+      expect(page.byId('resolution-50').nativeElement.classList).toContain('btn-light');
+      page.click('view-toggle');
+      page.fixture.detectChanges();
+      const marker = page.byId<HTMLSelectElement>('view-marker-model').nativeElement;
+      marker.value = '11:1';
+      marker.dispatchEvent(new Event('change'));
+      page.fixture.detectChanges();
+      expect(page.viewer().renderSettings().markerModel).toBe('11:1');
+      page.click('resolution-100');
+    });
+
+    it("draws creatures' bounding radius and combat reach, and names them on hover", async () => {
+      mocks.service.loadSpawns.mockResolvedValue([
+        spawn('creature', 1, { name: 'Ogre', boundingRadius: 0.5, combatReach: 1.5, scale: 2 }),
+        spawn('creature', 2, { name: 'Imp', boundingRadius: 1, combatReach: 2 }),
+        spawn('creature', 3, { name: 'Wisp' }),
+      ]);
+      const { page } = await setup();
+      await loadArea(page);
+      page.click('view-toggle');
+      page.fixture.detectChanges();
+      const toggle = page.byId<HTMLInputElement>('view-bounds').nativeElement;
+      toggle.checked = true;
+      toggle.dispatchEvent(new Event('change'));
+      await settle(page);
+      const spawns = page.viewer().spawns();
+      expect(spawns.map((s) => s.bounds)).toEqual([{ radius: 1, reach: 3 }, { radius: 1, reach: 2 }, undefined]);
+      expect(spawns[0].details).toContain('Bounding radius 1.00 yd · combat reach 3.00 yd · melee range 5.83 yd');
+      expect(spawns[1].details).toContain('Bounding radius 1.00 yd · combat reach 2.00 yd · melee range 5.00 yd');
+      toggle.checked = false;
+      toggle.dispatchEvent(new Event('change'));
+    });
+
+    it('copies what was right-clicked, and a .go xyz to it', async () => {
+      const { page } = await setup();
+      await loadArea(page);
+      page.viewer().contextRequested.emit({ key: 'flight:1', x: 5, y: 5, label: 'Flight path 1', position: { x: 1.5, y: -2, z: 3 } });
+      await settle(page);
+      expect(page.text('context-label')).toBe('Flight path 1');
+      page.click('context-copy');
+      expect(mocks.clipboard.copyFromContent).toHaveBeenLastCalledWith('Flight path 1\n1.5000 -2.0000 3.0000');
+      page.viewer().contextRequested.emit({ key: 'flight:1', x: 5, y: 5, label: 'Flight path 1', position: { x: 1.5, y: -2, z: 3 } });
+      await settle(page);
+      page.click('context-copy-go');
+      expect(mocks.clipboard.copyFromContent).toHaveBeenLastCalledWith('.go xyz 1.5000 -2.0000 3.0000 0');
+      page.fixture.detectChanges();
+      expect(page.byId('context-menu', false)).toBeFalsy();
+      // nothing more known: its key, no .go
+      page.viewer().contextRequested.emit({ key: 'path:10:1-2', x: 5, y: 5 });
+      await settle(page);
+      expect(page.byId('context-copy-go', false)).toBeFalsy();
+      page.click('context-copy');
+      expect(mocks.clipboard.copyFromContent).toHaveBeenLastCalledWith('path:10:1-2');
+    });
+
+    it('moves the Path / LOS points where they were dragged', async () => {
+      const { page } = await setup();
+      await loadArea(page);
+      page.click('tool-probe');
+      page.viewer().picked.emit({ type: 'ground', position: { x: 1, y: 1, z: 1 } });
+      page.viewer().picked.emit({ type: 'ground', position: { x: 9, y: 9, z: 1 } });
+      await settle(page);
+      page.viewer().probeMoved.emit({ which: 'to', position: { x: 20, y: 20, z: 2 } });
+      page.viewer().probeMoved.emit({ which: 'from', position: { x: 2, y: 2, z: 2 } });
+      await settle(page);
+      expect(page.viewer().probe()).toEqual(expect.objectContaining({ from: { x: 2, y: 2, z: 2 }, to: { x: 20, y: 20, z: 2 } }));
+    });
+
+    it('loads the spawns of an area chosen on the world map', async () => {
+      const { page } = await setup();
+      await loadArea(page);
+      page.click('map-toggle');
+      await settle(page);
+      const bounds = { minX: -9100, maxX: -9000, minY: 0, maxY: 100 };
+      (
+        page.fixture.debugElement.query((el) => el.name === 'keira-world-map').componentInstance as {
+          regionSelected: { emit: (b: WorldBounds) => void };
+        }
+      ).regionSelected.emit(bounds);
+      await settle(page);
+      expect(mocks.service.loadSpawns).toHaveBeenCalledWith(0, expect.anything(), 450, bounds);
     });
   });
 

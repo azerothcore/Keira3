@@ -34,7 +34,6 @@ import {
   RGBAFormat,
   Scene,
   SphereGeometry,
-  TetrahedronGeometry,
   ShaderMaterial,
   SRGBColorSpace,
   Texture,
@@ -232,12 +231,18 @@ export class WorldScene {
     new ConeGeometry(0.35, 1.1, 8).rotateX(-Math.PI / 2).translate(0, 1.7, -0.9),
   ]);
   private readonly gameobjectGeometry = new BoxGeometry(1.2, 1.2, 1.2).translate(0, 0.6, 0);
-  /** Waypoint markers by place: a ball on the ground, a cube in the air, a pyramid (tetrahedron) in water. */
+  /**
+   * Waypoint markers by place: a cone on the ground, a square pyramid in the air, a pentagonal pyramid in water or
+   * under the map (flight paths use triangular pyramids).
+   */
   private readonly waypointGeometries: Record<WaypointPlace, BufferGeometry> = {
-    ground: new SphereGeometry(0.5, 12, 8),
-    air: new BoxGeometry(0.8, 0.8, 0.8),
-    water: new TetrahedronGeometry(0.7),
+    ground: new ConeGeometry(0.45, 1, 16),
+    air: new ConeGeometry(0.6, 1, 4).rotateY(Math.PI / 4),
+    water: new ConeGeometry(0.55, 1, 5),
+    under: new ConeGeometry(0.55, 1, 5),
   };
+  /** Arrow heads of flight paths: triangular pyramids. */
+  private readonly flightArrowGeometry = new ConeGeometry(0.7, 1.6, 3);
   private readonly waypointPlaces = new Map<string, WaypointPlace>();
   /** "Check path" marks: an exclamation mark (bar and dot) over the point, in its status colour. */
   private readonly checkBarGeometry = new CylinderGeometry(0.12, 0.08, 0.8, 8).translate(0, 1.75, 0);
@@ -265,6 +270,7 @@ export class WorldScene {
   private readonly beacon = createBeacon();
   /** The Path / LOS tool's drawing: the path, the line of sight and the points. */
   readonly probeGroup = new Group();
+  private readonly probeHandles = new Map<'from' | 'to', Group>();
   private readonly losRaycaster = new Raycaster();
   /** Unit circle on the ground (scaled to each creature's wander distance). */
   private readonly ringGeometry = new BufferGeometry().setFromPoints(
@@ -281,6 +287,8 @@ export class WorldScene {
   });
   private readonly triggerEdgeMaterial = new LineBasicMaterial({ color: COLORS.areaTrigger });
   private readonly wanderMaterial = new LineBasicMaterial({ color: 0xffd166, transparent: true, opacity: 0.8 });
+  private readonly boundingMaterial = new LineBasicMaterial({ color: 0x4ade80, transparent: true, opacity: 0.9 });
+  private readonly reachMaterial = new LineBasicMaterial({ color: 0xf87171, transparent: true, opacity: 0.9 });
   /** Nose on a waypoint ball, pointing to the next point (along +y before rotation, starting at the ball's surface). */
   private readonly pointerGeometry = new ConeGeometry(0.3, 0.8, 8).translate(0, 0.85, 0);
   private readonly arrows = new Set<Object3D>();
@@ -360,6 +368,7 @@ export class WorldScene {
     });
     this.probeGroup.clear();
     if (!probe) {
+      this.probeHandles.clear();
       return;
     }
     const line = (points: WorldPosition[], color: number, lift = 0.3) => {
@@ -385,9 +394,10 @@ export class WorldScene {
         dot(blockedAt, PROBE_COLORS.blocked, 0.35);
       }
     }
-    dot(probe.from, PROBE_COLORS.from);
+    this.probeHandles.clear();
+    this.probeGroup.add(this.probeHandle('from', probe.from, PROBE_COLORS.from, probe.to));
     if (probe.to) {
-      dot(probe.to, PROBE_COLORS.to);
+      this.probeGroup.add(this.probeHandle('to', probe.to, PROBE_COLORS.to));
     }
     if (probe.attackFrom) {
       dot(probe.attackFrom, PROBE_COLORS.attack, 0.8);
@@ -395,6 +405,59 @@ export class WorldScene {
         line([probe.attackFrom, probe.to], PROBE_COLORS.attack, 1);
       }
     }
+  }
+
+  /**
+   * A, the start (blue), or C, the end (red), of the Path / LOS tool: a ball on a pin under a cone pointing down at it,
+   * and at A a cone on the ground pointing towards C. Picked and dragged with `pickProbeHandle` / `moveProbeHandle`.
+   */
+  private probeHandle(which: 'from' | 'to', position: WorldPosition, color: number, towards?: WorldPosition): Group {
+    const material = () => new MeshBasicMaterial({ color, depthTest: false, transparent: true });
+    const handle = new Group();
+    handle.name = `probe-${which}`;
+    handle.position.copy(scenePoint(position, 0.3));
+    const ball = new Mesh(new SphereGeometry(0.6, 12, 8), material());
+    const pin = new Mesh(new CylinderGeometry(0.06, 0.06, 4, 6).translate(0, 2, 0), material());
+    const head = new Mesh(new ConeGeometry(0.5, 1.2, 12).rotateX(Math.PI).translate(0, 4.6, 0), material());
+    const parts: Mesh[] = [ball, pin, head];
+    if (towards) {
+      const flat = scenePoint(towards, 0.3).sub(handle.position).setY(0);
+      if (flat.lengthSq() > 0) {
+        const arrow = new Mesh(new ConeGeometry(0.4, 1.4, 12).rotateX(-Math.PI / 2).translate(0, 0, -1.6), material());
+        arrow.rotation.y = Math.atan2(-flat.x, -flat.z);
+        parts.push(arrow);
+      }
+    }
+    for (const part of parts) {
+      part.renderOrder = 6;
+      part.userData = { probeHandle: which };
+      handle.add(part);
+    }
+    this.probeHandles.set(which, handle);
+    return handle;
+  }
+
+  /** The Path / LOS tool's A or C under the cursor (normalised device coordinates), if any. */
+  pickProbeHandle(ndcX: number, ndcY: number): 'from' | 'to' | undefined {
+    this.camera.updateMatrixWorld();
+    this.scene.updateMatrixWorld();
+    this.raycaster.setFromCamera(new Vector2(ndcX, ndcY), this.camera);
+    const hit = this.raycaster.intersectObjects([...this.probeHandles.values()], true)[0];
+    return hit?.object.userData['probeHandle'] as 'from' | 'to' | undefined;
+  }
+
+  /** Moves A or C while it's dragged (the tool is asked again once it's dropped). */
+  moveProbeHandle(which: 'from' | 'to', position: WorldPosition): void {
+    // (only dragged while drawn)
+    (this.probeHandles.get(which) as Group).position.copy(scenePoint(position, 0.3));
+  }
+
+  /** Where A and C are drawn now. */
+  probeHandlePositions(): { which: 'from' | 'to'; position: WorldPosition }[] {
+    return [...this.probeHandles].map(([which, handle]) => {
+      const p = sceneToWorld(handle.position);
+      return { which, position: { ...p, z: p.z - 0.3 } };
+    });
   }
 
   /** Shows the collision meshes of buildings and models (the server's hitboxes) as a wireframe. */
@@ -613,12 +676,19 @@ export class WorldScene {
       marker.name = spawn.key;
       marker.userData = { key: spawn.key, kind: spawn.kind, pending: !!spawn.pending } satisfies PickableData & { pending: boolean };
       placeObject(marker, spawn.position, spawn.orientation);
-      if (spawn.wanderRadius) {
-        const ring = new LineLoop(this.ringGeometry, this.wanderMaterial);
-        ring.name = WANDER_RING_NAME;
-        ring.userData = { radius: spawn.wanderRadius };
-        ring.raycast = () => undefined;
-        marker.add(ring);
+      const rings: [string, number | undefined, LineBasicMaterial][] = [
+        [WANDER_RING_NAME, spawn.wanderRadius, this.wanderMaterial],
+        ['bounding-radius', spawn.bounds?.radius, this.boundingMaterial],
+        ['combat-reach', spawn.bounds?.reach, this.reachMaterial],
+      ];
+      for (const [name, radius, material] of rings) {
+        if (radius) {
+          const ring = new LineLoop(this.ringGeometry, material);
+          ring.name = name;
+          ring.userData = { radius };
+          ring.raycast = () => undefined;
+          marker.add(ring);
+        }
       }
       this.addObject(this.spawnGroup, spawn.key, marker);
     }
@@ -665,6 +735,19 @@ export class WorldScene {
     }
   }
 
+  /** Puts a model (a player character) on the marker, facing north; undefined removes it. */
+  setBeaconModel(model: Object3D | undefined): void {
+    const old = this.beacon.getObjectByName('beacon-model');
+    if (old) {
+      this.beacon.remove(old);
+    }
+    if (model) {
+      model.name = 'beacon-model';
+      model.rotation.y = orientationToSceneYaw(0);
+      this.beacon.add(model);
+    }
+  }
+
   /** Shows or hides the arrows through the middle of models that tell which way they face. */
   setFacingArrowsVisible(visible: boolean): void {
     this.facingArrowsVisible = visible;
@@ -692,7 +775,6 @@ export class WorldScene {
     return arrow;
   }
 
-  /** Draws area triggers (replacing the previous ones). */
   /**
    * Draws lines between places (drawn over the terrain, with an optional arrow head) and labelled markers (diamonds on a
    * stick, picked with `PickOptions.overlays`); replaces what was drawn before.
@@ -721,8 +803,11 @@ export class WorldScene {
       line.renderOrder = 1;
       line.raycast = () => undefined;
       this.overlayGroup.add(line);
+      if (link.label) {
+        this.addLinkArrows(link, points);
+      }
       const direction = to.clone().sub(from);
-      if (link.arrow && direction.lengthSq() > 0) {
+      if (link.arrow && !link.label && direction.lengthSq() > 0) {
         const head = new Mesh(this.arrowGeometry, new MeshBasicMaterial({ color: link.color, depthTest: false, transparent: true }));
         head.position.copy(to).addScaledVector(direction.normalize(), -0.6);
         head.quaternion.setFromUnitVectors(up, direction);
@@ -819,6 +904,14 @@ export class WorldScene {
       liquid !== undefined && (floor === undefined || liquid > floor) && !this.ceilingBetween(position, liquid) ? liquid : undefined;
     if (liquidOver !== undefined && position.z <= liquidOver + 0.5) {
       return 'water';
+    }
+    // no floor under it but ground above: under the map
+    if (
+      floor === undefined &&
+      liquidOver === undefined &&
+      (this.firstGroundBelow(position.x, position.y, 10_000) ?? -Infinity) > position.z
+    ) {
+      return 'under';
     }
     // nothing loaded under it: taken as ground
     const base = Math.max(floor ?? position.z, liquidOver ?? -Infinity);
@@ -1028,7 +1121,7 @@ export class WorldScene {
       return false;
     }
     const ghost = source.clone(true);
-    ghost.getObjectByName(WANDER_RING_NAME)?.removeFromParent();
+    ghost.children.filter((child) => child instanceof LineLoop).forEach((ring) => ring.removeFromParent());
     ghost.traverse((object) => {
       object.raycast = () => undefined;
     });
@@ -1059,6 +1152,32 @@ export class WorldScene {
     return { position, orientation: sceneYawToOrientation(object.rotation.y) };
   }
 
+  /** One pickable arrow in the middle of each stretch of a labelled link, pointing the way it goes. */
+  private addLinkArrows(link: WorldLink, points: Vector3[]): void {
+    const up = new Vector3(0, 1, 0);
+    const geometry = link.via ? this.flightArrowGeometry : this.arrowGeometry;
+    const material = new MeshBasicMaterial({ color: link.color, depthTest: false, transparent: true });
+    const stops = [link.from, ...(link.via ?? []), link.to];
+    for (let i = 0; i + 1 < points.length; i++) {
+      const direction = points[i + 1].clone().sub(points[i]);
+      if (direction.lengthSq() === 0) {
+        continue;
+      }
+      const arrow = new Mesh(geometry, material);
+      arrow.name = `${link.key}:arrow`;
+      arrow.position
+        .copy(points[i])
+        .add(points[i + 1])
+        .multiplyScalar(0.5);
+      arrow.quaternion.setFromUnitVectors(up, direction.normalize());
+      arrow.renderOrder = 2;
+      const [a, b] = [stops[i], stops[i + 1]];
+      arrow.userData = { overlay: link.key, direction: Math.atan2(b.y - a.y, b.x - a.x) };
+      this.overlayGroup.add(arrow);
+      this.overlayMarkers.push(arrow);
+    }
+  }
+
   /** Scales markers with their distance to the camera; call before rendering. */
   updateMarkerScale(): void {
     const cameraPosition = this.camera.position;
@@ -1073,9 +1192,10 @@ export class WorldScene {
       if (modelScale !== undefined) {
         object.getObjectByName(SPAWN_MODEL_NAME)?.scale.setScalar(modelScale / scale);
       }
-      const ring = object.getObjectByName(WANDER_RING_NAME);
-      if (ring) {
-        ring.scale.setScalar((ring.userData as { radius: number }).radius / scale);
+      for (const ring of object.children) {
+        if (ring instanceof LineLoop) {
+          ring.scale.setScalar((ring.userData as { radius: number }).radius / scale);
+        }
       }
     }
   }
@@ -1112,7 +1232,8 @@ export class WorldScene {
 
     const overlayHit = options.overlays ? this.raycaster.intersectObjects(this.overlayMarkers, false)[0] : undefined;
     if (overlayHit) {
-      return { type: 'overlay', key: overlayHit.object.userData['overlay'] as string, position: sceneToWorld(overlayHit.point) };
+      const { overlay, direction } = overlayHit.object.userData as { overlay: string; direction?: number };
+      return { type: 'overlay', key: overlay, position: sceneToWorld(overlayHit.point), ...(direction === undefined ? {} : { direction }) };
     }
     const triggerHit = options.areaTriggers ? this.raycaster.intersectObject(this.triggerGroup, true)[0] : undefined;
     if (triggerHit) {
@@ -1200,9 +1321,12 @@ export class WorldScene {
     this.checkDotGeometry.dispose();
     Object.values(this.checkMaterials).forEach((material) => material.dispose());
     this.arrowGeometry.dispose();
+    this.flightArrowGeometry.dispose();
     this.pointerGeometry.dispose();
     this.ringGeometry.dispose();
     this.wanderMaterial.dispose();
+    this.boundingMaterial.dispose();
+    this.reachMaterial.dispose();
     this.facingArrowGeometry.dispose();
     Object.values(this.facingArrowMaterials).forEach((material) => material.dispose());
     this.setAreaTriggers([]);
@@ -1237,7 +1361,8 @@ export class WorldScene {
       if (key) {
         this.objects.delete(key);
       }
-      if (object instanceof Line && object.name !== WANDER_RING_NAME) {
+      // the rings around spawns share their geometry and materials
+      if (object instanceof Line && object.geometry !== this.ringGeometry) {
         object.geometry.dispose();
         (object.material as Material).dispose();
       }

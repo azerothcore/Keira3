@@ -22,6 +22,9 @@ export interface SpawnRecord {
   /** creature_template.speed_walk / speed_run (× 2.5 and × 7 yards per second). */
   speedWalk?: number;
   speedRun?: number;
+  /** creature_model_info of its model: the size the server gives it, and how far it reaches in melee (yards). */
+  boundingRadius?: number;
+  combatReach?: number;
   /** The path comes from creature_template_addon, so it is shared by every creature of this entry. */
   pathFromTemplate?: boolean;
   /** gameobject.rotation0..3 (x, y, z, w quaternion; all 0 = derived from orientation). */
@@ -85,18 +88,27 @@ export interface LayerVisibility {
   formations: boolean;
   /** Pools: their spawns linked to a label. */
   pools: boolean;
-  /** Teleports, graveyards and flight paths. */
+  /** Flight masters and flight paths. */
+  flightPaths: boolean;
+  /** Teleports and graveyards. */
   travel: boolean;
 }
 
+export type LayerSwitch = { key: keyof LayerVisibility; id: string; label: string };
+
 /** The layer switches of the toolbar, in order. */
-export const LAYER_SWITCHES: { key: keyof LayerVisibility; id: string; label: string }[] = [
+export const LAYER_SWITCHES: LayerSwitch[] = [
   { key: 'creatures', id: 'creatures', label: 'WORLD_EDITOR.CREATURES' },
   { key: 'gameobjects', id: 'gameobjects', label: 'WORLD_EDITOR.GAMEOBJECTS' },
   { key: 'waypoints', id: 'waypoints', label: 'WORLD_EDITOR.WAYPOINTS' },
   { key: 'areaTriggers', id: 'area-triggers', label: 'WORLD_EDITOR.AREA_TRIGGERS' },
+];
+
+/** The overlay switches of the View panel, in order. */
+export const OVERLAY_SWITCHES: LayerSwitch[] = [
   { key: 'formations', id: 'formations', label: 'WORLD_EDITOR.FORMATIONS' },
   { key: 'pools', id: 'pools', label: 'WORLD_EDITOR.POOLS' },
+  { key: 'flightPaths', id: 'flight-paths', label: 'WORLD_EDITOR.FLIGHT_PATHS' },
   { key: 'travel', id: 'travel', label: 'WORLD_EDITOR.TRAVEL' },
 ];
 

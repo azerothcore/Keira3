@@ -43,9 +43,11 @@ export function travelOverlays(
     markers.push({ key: `taxi:${node.id}`, position: node, color: FLIGHT_COLOR, label: `Flight master: ${node.name} (node ${node.id})` });
   }
   const near = (p: WorldPosition) => !!center && Math.hypot(p.x - center.x, p.y - center.y) <= FLIGHT_PATH_RANGE;
+  const nodeName = (id: number) => data.taxiNodes.find((node) => node.id === id)?.name ?? `node ${id}`;
   for (const path of data.taxiPaths) {
     if (path.points.length > 1 && path.points.some(near)) {
       links.push({
+        label: `Flight path ${path.id}: ${nodeName(path.from)} → ${nodeName(path.to)}`,
         key: `flight:${path.id}`,
         from: path.points[0],
         to: path.points[path.points.length - 1],

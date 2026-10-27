@@ -19,6 +19,8 @@ export interface WorldSpawn {
   scale?: number;
   /** Draws a circle of this radius (yards) around the spawn: how far a wandering creature roams. */
   wanderRadius?: number;
+  /** Draws its bounding radius (green) and combat reach (red) as circles (yards). */
+  bounds?: { radius: number; reach: number };
   /** More lines shown under the label on hover (event, phase, quests…). */
   details?: string[];
   /** The lines shown instead while Alt is held (e.g. every quest instead of the first one). */
@@ -86,6 +88,11 @@ export interface WorldLink {
   dashed?: boolean;
   /** Points the line goes through between `from` and `to` (a flight path). */
   via?: WorldPosition[];
+  /**
+   * Named on hover: then each stretch gets an arrow in the middle (triangular pyramids for lines with `via`, the
+   * flight paths) that tells which way it goes.
+   */
+  label?: string;
 }
 
 /** A labelled place (graveyard, flight master, pool label…): a diamond on a stick, named on hover. */
@@ -96,8 +103,11 @@ export interface WorldMarker {
   label: string;
 }
 
-/** Where a waypoint is: on the ground, in the air (a few yards above the floor), or in a liquid (swimming). */
-export type WaypointPlace = 'ground' | 'air' | 'water';
+/**
+ * Where a waypoint is: on the ground, in the air (a few yards above the floor), in a liquid (swimming), or under the
+ * map (no floor below it, only ground above).
+ */
+export type WaypointPlace = 'ground' | 'air' | 'water' | 'under';
 
 /** "Check path": checks the points of a path (every time they change while it's set). */
 export interface WaypointCheckRequest {
@@ -127,8 +137,8 @@ export type PickTarget =
   | { type: 'waypoint'; key: string; pathKey: string; point: number; position: WorldPosition }
   /** A path's direction arrow, between two of its points (only with `PickOptions.segments`). */
   | { type: 'segment'; pathKey: string; from: number; to: number; position: WorldPosition }
-  /** A marker (only with `PickOptions.overlays`). */
-  | { type: 'overlay'; key: string; position: WorldPosition }
+  /** A marker, or an arrow of a labelled link with the way it points (only with `PickOptions.overlays`). */
+  | { type: 'overlay'; key: string; position: WorldPosition; direction?: number }
   /** An area trigger's volume (only with `PickOptions.areaTriggers`). */
   | { type: 'areatrigger'; key: string; position: WorldPosition }
   | { type: 'ground'; position: WorldPosition };
@@ -163,9 +173,13 @@ export interface NavMeshRebuildState {
 
 /** A right-click (without dragging) on a spawn or waypoint; `x`/`y` are in pixels from the view's top-left corner. */
 export interface ContextRequest {
+  /** What was right-clicked: a spawn or waypoint key, or a path stretch, area trigger, marker or link. */
   key: string;
   x: number;
   y: number;
+  /** Its hover text, and where it was clicked. */
+  label?: string;
+  position?: WorldPosition;
 }
 
 export interface ObjectMoved {

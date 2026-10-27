@@ -77,6 +77,17 @@ describe('world controls', () => {
     expect(TestBed.inject(WorldControlsSettingsService).settings()).toEqual(DEFAULT_WORLD_CONTROLS_SETTINGS);
   });
 
+  it('moves settings saved with the old up / down keys to the new ones (Q up, E down), keeping changed ones', () => {
+    localStorage.setItem(WORLD_CONTROLS_SETTINGS_KEY, JSON.stringify({ bindings: { up: ['KeyE', 'PageUp'], down: ['KeyQ', 'PageDown'] } }));
+    const settings = TestBed.inject(WorldControlsSettingsService).settings();
+    expect(settings.bindings.up).toEqual(['KeyQ', 'PageUp']);
+    expect(settings.bindings.down).toEqual(['KeyE', 'PageDown']);
+
+    TestBed.resetTestingModule();
+    localStorage.setItem(WORLD_CONTROLS_SETTINGS_KEY, JSON.stringify({ bindings: { up: ['KeyE'], down: ['KeyQ', 'PageDown'] } }));
+    expect(TestBed.inject(WorldControlsSettingsService).settings().bindings.up).toEqual(['KeyE']);
+  });
+
   it('writes key presses as bindings, and bindings as labels', () => {
     expect(inputOf(key('KeyZ', { ctrlKey: true, shiftKey: true }))).toBe('Ctrl+Shift+KeyZ');
     expect(inputOf(key('KeyZ', { metaKey: true, altKey: true }))).toBe('Ctrl+Alt+KeyZ');

@@ -1,4 +1,16 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, OnInit, signal, untracked } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  ElementRef,
+  inject,
+  OnInit,
+  signal,
+  untracked,
+  viewChild,
+  WritableSignal,
+} from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-components';
@@ -35,6 +47,7 @@ import {
   MovementSimulation,
   WorldMapComponent,
   WorldMapDot,
+  RENDER_SCALES,
 } from '@keira/shared/world-viewer';
 import {
   CacheUsage,
@@ -57,11 +70,13 @@ import {
   WorldBounds,
   worldToTile,
   TaxiPath,
+  PLAYER_RACES,
 } from '@keira/shared/wow-data';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ClipboardService } from 'ngx-clipboard';
 import { ToastrService } from 'ngx-toastr';
 import { ChangesSnapshot } from './world-editor-changes';
+import { LEGEND } from './legend';
 import { WorldEditorSessionService } from './world-editor-session.service';
 import { WORLD_EDITOR_LINKS } from '@keira/shared/constants';
 import {
@@ -74,6 +89,8 @@ import {
   Graveyard,
   SPAWN_FIELDS,
   LAYER_SWITCHES,
+  SPAWN_LOAD_RADIUS,
+  OVERLAY_SWITCHES,
   Teleport,
   PoolMember,
   SpawnQuest,
@@ -164,6 +181,7 @@ type RenderFlagKey =
   | 'showModels'
   | 'showFacingArrows'
   | 'showWanderRadius'
+  | 'showBounds'
   | 'showCollision'
   | 'showNavMesh'
   | 'zoneLighting'
@@ -177,6 +195,19 @@ type RenderDistanceKey = 'drawDistance' | 'largeDoodadDistance' | 'smallDoodadDi
  */
 /** The array tool places at most this many copies at once. */
 const MAX_ARRAY = 50;
+/** The panels under the toolbar: one open at a time. */
+type Panel = 'map' | 'filters' | 'view' | 'controls' | 'settings' | 'legend';
+/** A player's combat reach, and the shortest melee range the server uses (NOMINAL_MELEE_RANGE). */
+const PLAYER_COMBAT_REACH = 1.5;
+const MIN_MELEE_RANGE = 5;
+/** A creature's bounding radius and combat reach (creature_model_info), at its scale. */
+const spawnBounds = (spawn: SpawnRecord): { radius: number; reach: number } | undefined =>
+  spawn.boundingRadius
+    ? // (the service reads both together)
+      { radius: spawn.boundingRadius * (spawn.scale ?? 1), reach: (spawn.combatReach as number) * (spawn.scale ?? 1) }
+    : undefined;
+/** Flight masters and flight paths (their own layer) among the travel overlays. */
+const isFlight = (key: string): boolean => key.startsWith('flight:') || key.startsWith('taxi:');
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -192,7 +223,11 @@ const MAX_ARRAY = 50;
     WaypointPanelComponent,
     SpawnPanelComponent,
   ],
-  host: { '(keydown)': 'onKeydown($event)', '(document:pointerdown)': 'onDocumentPointerDown($event)' },
+  host: {
+    '(keydown)': 'onKeydown($event)',
+    '(document:pointerdown)': 'onDocumentPointerDown($event)',
+    '(document:fullscreenchange)': 'onFullscreenChange()',
+  },
 })
 export class WorldEditorComponent implements OnInit {
   /** What the editor is in the middle of, kept across visits. */
@@ -259,6 +294,11 @@ export class WorldEditorComponent implements OnInit {
     const spawn = this.selectedSpawn() as SpawnRecord;
     return this.changes.spawnFields(spawn.type, spawn.guid);
   });
+  /** Another region to load whole: its spawns are loaded too. */
+  private readonly reloadForRegion = effect(() => {
+    const region = this.region();
+    untracked(() => region && void this.reloadSpawns());
+  });
   /** The world map's tiles, for the map shown (also when coming back with the world map open). */
   private readonly loadWorldMapTiles = effect(() => {
     const directory = this.showMap() ? this.mapDirectory() : undefined;
@@ -298,6 +338,7 @@ export class WorldEditorComponent implements OnInit {
     return { straight: Math.hypot(flat, to.z - from.z), flat, height: to.z - from.z };
   });
   protected readonly layerSwitches = LAYER_SWITCHES;
+  protected readonly overlaySwitches = OVERLAY_SWITCHES;
   /** Lines drawn in the view: formation members to their leader, pools to their spawns. */
   protected readonly worldLinks = computed<WorldLink[]>(() => {
     const layers = this.layers();
@@ -305,7 +346,7 @@ export class WorldEditorComponent implements OnInit {
     return [
       ...(layers.formations ? formationLinks(spawns, this.formations()) : []),
       ...(layers.pools ? poolOverlays(spawns, this.pools()).links : []),
-      ...(layers.travel ? this.travelOverlays().links : []),
+      ...this.travelOverlays().links.filter((link) => (isFlight(link.key) ? layers.flightPaths : layers.travel)),
     ];
   });
   /** Labelled markers: pools, and the formation places of the selected creature's formation. */
@@ -315,7 +356,7 @@ export class WorldEditorComponent implements OnInit {
     return [
       ...(layers.pools ? poolOverlays(spawns, this.pools()).markers : []),
       ...(layers.formations ? formationSlots(spawns, this.formations(), this.selectedSpawn()) : []),
-      ...(layers.travel ? this.travelOverlays().markers : []),
+      ...this.travelOverlays().markers.filter((marker) => (isFlight(marker.key) ? layers.flightPaths : layers.travel)),
     ];
   });
   private readonly travelOverlays = computed(() =>
@@ -483,6 +524,12 @@ export class WorldEditorComponent implements OnInit {
   protected readonly snapToWall = computed(() => this.snapMode() === 'wall');
   protected readonly selectedKey = this.session.selectedKey;
   protected readonly showSettings = signal(!this.settings.isConfigured());
+  protected readonly showLegend = this.session.showLegend;
+  protected readonly legend = LEGEND;
+  protected readonly fullscreen = signal(false);
+  private readonly root = viewChild.required<ElementRef<HTMLElement>>('root');
+  protected readonly renderScales = RENDER_SCALES;
+  protected readonly playerRaces = PLAYER_RACES;
   protected readonly showView = this.session.showView;
   /** Draw distances offered, in yards (0 = off, per group in advanced mode only). */
   protected readonly drawDistances = [50, 100, 250, 500, 1000];
@@ -540,7 +587,7 @@ export class WorldEditorComponent implements OnInit {
 
   protected readonly worldSpawns = computed<WorldSpawn[]>(() => {
     const layers = this.layers();
-    const showWander = this.renderSettings.settings().showWanderRadius;
+    const { showWanderRadius: showWander, showBounds } = this.renderSettings.settings();
     return this.visibleSpawns()
       .filter((s) => (s.type === 'creature' ? layers.creatures : layers.gameobjects))
       .map((s) => ({
@@ -556,6 +603,7 @@ export class WorldEditorComponent implements OnInit {
         displayId: s.displayId,
         scale: s.scale,
         wanderRadius: showWander ? s.wanderDistance : undefined,
+        bounds: showBounds ? spawnBounds(s) : undefined,
       }));
   });
 
@@ -596,6 +644,14 @@ export class WorldEditorComponent implements OnInit {
     }
     if (spawn.phaseMask !== undefined && spawn.phaseMask !== 1) {
       lines.push(`Phase mask ${spawn.phaseMask}`);
+    }
+    const bounds = this.renderSettings.settings().showBounds ? spawnBounds(spawn) : undefined;
+    if (bounds) {
+      // the server's melee range against a player (combat reach 1.5): both reaches + 4/3, at least 5 yards
+      const melee = Math.max(MIN_MELEE_RANGE, bounds.reach + PLAYER_COMBAT_REACH + 4 / 3);
+      lines.push(
+        `Bounding radius ${bounds.radius.toFixed(2)} yd · combat reach ${bounds.reach.toFixed(2)} yd · melee range ${melee.toFixed(2)} yd`,
+      );
     }
     lines.push(...groupDetails(spawn, this.formations(), this.pools()));
     const quests = (this.quests().get(`${spawn.type}:${spawn.entry}`) ?? []).map(
@@ -705,7 +761,50 @@ export class WorldEditorComponent implements OnInit {
   // ---------------------------------------------------------------- settings & navigation
 
   protected toggleView(): void {
-    this.showView.update((shown) => !shown);
+    this.togglePanel('view');
+  }
+
+  /**
+   * Opens a panel (closing the others: one at a time, floating over the 3D view so it never gets resized), or closes
+   * it when it's the one open.
+   */
+  private togglePanel(panel: Panel): void {
+    const panels: Record<Panel, WritableSignal<boolean>> = {
+      map: this.showMap,
+      filters: this.showFilters,
+      view: this.showView,
+      controls: this.showControls,
+      settings: this.showSettings,
+      legend: this.showLegend,
+    };
+    const open = !panels[panel]();
+    for (const [name, shown] of Object.entries(panels)) {
+      shown.set(open && name === panel);
+    }
+  }
+
+  protected toggleLegend(): void {
+    this.togglePanel('legend');
+  }
+
+  protected async toggleFullscreen(): Promise<void> {
+    if (document.fullscreenElement) {
+      await document.exitFullscreen();
+    } else {
+      await this.root().nativeElement.requestFullscreen();
+    }
+  }
+
+  protected onFullscreenChange(): void {
+    this.fullscreen.set(document.fullscreenElement === this.root().nativeElement);
+  }
+
+  protected setRenderScale(scale: number): void {
+    this.renderSettings.update({ renderScale: scale });
+  }
+
+  protected setMarkerModel(event: Event): void {
+    this.renderSettings.update({ markerModel: (event.target as HTMLSelectElement).value });
   }
 
   protected setLowDetailTerrain(event: Event): void {
@@ -805,7 +904,7 @@ export class WorldEditorComponent implements OnInit {
   }
 
   protected toggleControls(): void {
-    this.showControls.update((shown) => !shown);
+    this.togglePanel('controls');
   }
 
   protected setRenderFlag(key: RenderFlagKey, event: Event): void {
@@ -821,8 +920,11 @@ export class WorldEditorComponent implements OnInit {
   }
 
   protected toggleSettings(): void {
-    this.showSettings.update((shown) => !shown);
-    void this.refreshCacheUsage();
+    this.togglePanel('settings');
+    if (this.showSettings()) {
+      // counting the cache folder takes a moment: the panel shows first
+      requestAnimationFrame(() => setTimeout(() => void this.refreshCacheUsage()));
+    }
   }
 
   protected async saveSettings(): Promise<void> {
@@ -1083,7 +1185,7 @@ export class WorldEditorComponent implements OnInit {
   }
 
   protected toggleFilters(): void {
-    this.showFilters.update((shown) => !shown);
+    this.togglePanel('filters');
   }
 
   protected setFilters(changes: Partial<SpawnFilters>): void {
@@ -1131,7 +1233,11 @@ export class WorldEditorComponent implements OnInit {
     const request = ++this.spawnRequest;
     this.loadingSpawns.set(true);
     try {
-      const loaded = await this.service.loadSpawns(this.mapId(), center);
+      // with a region (Load the whole zone, an area of the world map), its spawns too
+      const region = this.region();
+      const loaded = await (region
+        ? this.service.loadSpawns(this.mapId(), center, SPAWN_LOAD_RADIUS, region)
+        : this.service.loadSpawns(this.mapId(), center));
       const saiPaths = await this.service.loadSaiPaths(loaded.filter((s) => s.type === 'creature'));
       if (request !== this.spawnRequest) {
         return;
@@ -1517,7 +1623,7 @@ export class WorldEditorComponent implements OnInit {
   }
 
   protected toggleMap(): void {
-    this.showMap.update((shown) => !shown);
+    this.togglePanel('map');
   }
 
   private async loadMapTiles(directory: string): Promise<void> {
@@ -1688,6 +1794,26 @@ export class WorldEditorComponent implements OnInit {
     }
   }
 
+  /** Copies what was right-clicked: its hover text and where it is. */
+  protected copyContextInfo(): void {
+    const menu = this.contextMenu() as ContextRequest;
+    const where = menu.position ? `\n${menu.position.x.toFixed(4)} ${menu.position.y.toFixed(4)} ${menu.position.z.toFixed(4)}` : '';
+    this.clipboard.copyFromContent(`${menu.label ?? menu.key}${where}`);
+    this.contextMenu.set(undefined);
+  }
+
+  /** Copies a `.go xyz` command to where was right-clicked. */
+  protected copyContextGo(): void {
+    const { x, y, z } = (this.contextMenu() as ContextRequest).position as WorldPosition;
+    this.clipboard.copyFromContent(`.go xyz ${x.toFixed(4)} ${y.toFixed(4)} ${z.toFixed(4)} ${this.mapId()}`);
+    this.contextMenu.set(undefined);
+  }
+
+  /** A or C of the Path / LOS tool dragged somewhere else. */
+  protected onProbeMoved(moved: { which: 'from' | 'to'; position: WorldPosition }): void {
+    (moved.which === 'from' ? this.probeFrom : this.probeTo).set(moved.position);
+  }
+
   protected copyContextGuid(): void {
     this.clipboard.copyFromContent(String((this.contextSpawn() as SpawnRecord).guid));
     this.contextMenu.set(undefined);
@@ -1711,7 +1837,11 @@ export class WorldEditorComponent implements OnInit {
     if (['INPUT', 'SELECT', 'TEXTAREA'].includes(target.tagName)) {
       return;
     }
-    const action = controlFor(this.controls.settings(), ['undo', 'redo', 'delete', 'toggleGizmo', 'cancel', 'copy', 'paste'], event);
+    const action = controlFor(
+      this.controls.settings(),
+      ['undo', 'redo', 'delete', 'toggleGizmo', 'cancel', 'copy', 'paste', 'worldMap'],
+      event,
+    );
     if (action === 'redo') {
       event.preventDefault();
       this.redo();
@@ -1731,6 +1861,8 @@ export class WorldEditorComponent implements OnInit {
       this.copySelection();
     } else if (action === 'paste') {
       void this.pasteCopied();
+    } else if (action === 'worldMap') {
+      this.toggleMap();
     }
   }
 

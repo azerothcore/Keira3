@@ -1,4 +1,13 @@
-import { NavMeshTile, TileCoord, tileKey, tilesAround, WorldPosition, worldToTile } from '@keira/shared/wow-data';
+import {
+  NavMeshTile,
+  TileCoord,
+  tileKey,
+  tilesAround,
+  tilesInBounds,
+  WorldBounds,
+  WorldPosition,
+  worldToTile,
+} from '@keira/shared/wow-data';
 import { BufferAttribute, BufferGeometry, DoubleSide, Group, Mesh, MeshBasicMaterial } from 'three';
 
 /** What the navigation mesh layer needs from `WowClientService`. */
@@ -21,6 +30,8 @@ export class WorldNavMesh {
   private generation = 0;
   private options: WorldNavMeshOptions = { show: false, radius: 1 };
   private centerTile?: TileCoord;
+  private region?: WorldBounds;
+  private regionKeys = new Set<string>();
   private readonly tiles = new Map<string, Group>();
   /** What was read for each tile around: its mesh, or null when there's no mmtile there. */
   private readonly read = new Map<string, NavMeshTile | null>();
@@ -85,6 +96,11 @@ export class WorldNavMesh {
     }
   }
 
+  /** Also keeps every tile of `bounds` loaded (Load the whole zone); takes effect at the next update(). */
+  setRegion(bounds: WorldBounds | undefined): void {
+    this.region = bounds;
+  }
+
   async update(center: WorldPosition): Promise<void> {
     const directory = this.directory;
     if (!directory || !this.options.show) {
@@ -93,6 +109,8 @@ export class WorldNavMesh {
     const generation = this.generation;
     const centerTile = worldToTile(center.x, center.y);
     this.centerTile = centerTile;
+    const regionTiles = this.region ? tilesInBounds(this.region, centerTile) : [];
+    this.regionKeys = new Set(regionTiles.map(tileKey));
     for (const [key, tile] of [...this.tiles]) {
       if (!this.isNear(key)) {
         this.remove(key, tile);
@@ -103,7 +121,7 @@ export class WorldNavMesh {
         this.read.delete(key);
       }
     }
-    for (const tile of tilesAround(centerTile, this.options.radius)) {
+    for (const tile of [...tilesAround(centerTile, this.options.radius), ...regionTiles]) {
       const key = tileKey(tile);
       if (this.read.has(key) || this.loading.has(key)) {
         continue;
@@ -220,6 +238,6 @@ export class WorldNavMesh {
   private isNear(key: string): boolean {
     const [tx, ty] = key.split('_').map(Number);
     const center = this.centerTile as TileCoord;
-    return Math.max(Math.abs(tx - center.tx), Math.abs(ty - center.ty)) <= this.options.radius;
+    return Math.max(Math.abs(tx - center.tx), Math.abs(ty - center.ty)) <= this.options.radius || this.regionKeys.has(key);
   }
 }

@@ -12,6 +12,7 @@ import {
   TaxiNode,
   TaxiPath,
   parseCreatureDisplays,
+  playerDisplay,
   parseGameObjectDisplays,
   parseMapDbc,
   parseZones,
@@ -95,6 +96,7 @@ export class WowClientService {
   private maps?: Promise<WowMap[]>;
   private creatureDisplays?: Promise<Map<number, CreatureDisplay>>;
   private gameobjectDisplays?: Promise<Map<number, string>>;
+  private characterDbcs?: Promise<(DbcFile | undefined)[]>;
   private zoneLights?: Promise<Map<number, ZoneLight[]>>;
   private zones?: Promise<WowZone[]>;
   private areaTriggers?: Promise<AreaTriggerInfo[]>;
@@ -150,6 +152,16 @@ export class WowClientService {
       throw error;
     });
     return (await this.creatureDisplays).get(displayId);
+  }
+
+  /** A playable race's character (sex 0 male, 1 female) as a display: model, first skin and hair; no clothes. */
+  async getPlayerDisplay(race: number, sex: number): Promise<CreatureDisplay | undefined> {
+    this.characterDbcs ??= Promise.all([this.readDbc('CharSections.dbc'), this.readDbc('CharHairGeosets.dbc')]).catch(() => {
+      this.characterDbcs = undefined;
+      return [undefined, undefined];
+    });
+    const [charSections, hairGeosets] = await this.characterDbcs;
+    return playerDisplay(race, sex, charSections, hairGeosets);
   }
 
   /** Model path of a gameobject display id. */

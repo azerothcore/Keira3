@@ -2,6 +2,7 @@ import { tileCenter, worldToScene, WorldPosition } from '@keira/shared/wow-data'
 import {
   BoxGeometry,
   BufferGeometry,
+  ConeGeometry,
   Color,
   Fog,
   Group,
@@ -404,6 +405,29 @@ describe('WorldScene', () => {
       expect(overlays().children).toHaveLength(0);
     });
 
+    it('gives labelled links a pickable arrow on each stretch, telling the way (triangular pyramids for flight paths)', () => {
+      const world = new WorldScene();
+      world.setOverlays(
+        [
+          { key: 'flight:1', from: at(0, 0), via: [at(20, 0), at(20, 0)], to: at(20, 20), color: 0xf0c419, arrow: true, label: 'Flight' },
+          { key: 'teleport:1', from: at(0, 40), to: at(10, 40), color: 0x74b9ff, label: 'Teleport' },
+        ],
+        [],
+      );
+      const arrows = (key: string) =>
+        (world.scene.getObjectByName('overlays') as Group).children.filter((c) => c.name === `${key}:arrow`) as Mesh[];
+      // the stretch of no length gets none
+      expect(arrows('flight:1')).toHaveLength(2);
+      expect((arrows('flight:1')[0].geometry as ConeGeometry).parameters.radialSegments).toBe(3);
+      expect((arrows('teleport:1')[0].geometry as ConeGeometry).parameters.radialSegments).toBe(8);
+      // the second stretch goes west (+y)
+      const middle = { x: CENTER.x + 20, y: CENTER.y + 10, z: 50 };
+      lookDownAt(world, { ...middle, z: middle.z + 0.4 }, 30);
+      const hit = world.pick(0, 0, { markersOnly: true, overlays: true });
+      expect(hit).toEqual(expect.objectContaining({ type: 'overlay', key: 'flight:1' }));
+      expect((hit as { direction: number }).direction).toBeCloseTo(Math.PI / 2);
+    });
+
     it('draws the Path / LOS probe and clears it', () => {
       const world = new WorldScene();
       const p = (dx: number) => at(dx, 0);
@@ -424,6 +448,29 @@ describe('WorldScene', () => {
       expect(world.probeGroup.children).toHaveLength(2);
       world.setProbe(undefined);
       expect(world.probeGroup.children).toHaveLength(0);
+    });
+
+    it('draws A and C as pins, A with a cone towards C, picked and moved while dragged', () => {
+      const world = new WorldScene();
+      world.setProbe({ from: at(0, 0), to: at(10, 0) });
+      const from = world.scene.getObjectByName('probe-from') as Group;
+      // ball, pin, cone over it, cone towards C
+      expect(from.children).toHaveLength(4);
+      expect((world.scene.getObjectByName('probe-to') as Group).children).toHaveLength(3);
+      lookDownAt(world, { ...at(0, 0), z: 50.3 }, 30);
+      expect(world.pickProbeHandle(0, 0)).toBe('from');
+      expect(world.pickProbeHandle(0.9, 0.9)).toBeUndefined();
+      world.moveProbeHandle('to', at(20, 0));
+      expect(world.probeHandlePositions()).toEqual([
+        { which: 'from', position: expect.objectContaining({ x: CENTER.x }) },
+        { which: 'to', position: expect.objectContaining({ x: CENTER.x + 20 }) },
+      ]);
+      expect(world.probeHandlePositions()[1].position.z).toBeCloseTo(50);
+      // C on A: no cone towards it
+      world.setProbe({ from: at(0, 0), to: at(0, 0) });
+      expect((world.scene.getObjectByName('probe-from') as Group).children).toHaveLength(3);
+      world.setProbe(undefined);
+      expect(world.probeHandlePositions()).toEqual([]);
     });
 
     it('shows the collision layer only when asked', () => {
@@ -645,6 +692,8 @@ describe('WorldScene', () => {
         expect(world.waypointPlace(at(0, 40, 25))).toBe('air');
         // nothing loaded there: ground
         expect(world.waypointPlace(at(5000, 0, 500))).toBe('ground');
+        // under the terrain, nothing below
+        expect(world.waypointPlace(at(0, 0, 5))).toBe('under');
         // a cave under the lake: a roof between the point and the surface
         const roof = new Mesh(new BoxGeometry(10, 1, 10), new MeshBasicMaterial());
         const p = worldToScene(at(0, 40, 17));
@@ -654,7 +703,7 @@ describe('WorldScene', () => {
         expect(world.waypointPlace(at(0, 40, 15))).toBe('air');
       });
 
-      it('draws ground points as balls, air points as cubes with a line to the floor, water points as pyramids', () => {
+      it('draws ground points as cones, air points as square pyramids with a line to the floor, water points as pentagonal pyramids', () => {
         const world = lakeWorld();
         world.setWaypointPaths([
           {
@@ -667,22 +716,19 @@ describe('WorldScene', () => {
             ],
           },
         ]);
-        const geometry = (key: string) => (world.getObject(key) as Mesh).geometry.type;
-        expect([geometry('path:1#1'), geometry('path:1#2'), geometry('path:1#3')]).toEqual([
-          'SphereGeometry',
-          'BoxGeometry',
-          'TetrahedronGeometry',
-        ]);
+        // the number of sides of each cone / pyramid
+        const geometry = (key: string) => ((world.getObject(key) as Mesh).geometry as ConeGeometry).parameters.radialSegments;
+        expect([geometry('path:1#1'), geometry('path:1#2'), geometry('path:1#3')]).toEqual([16, 4, 5]);
         expect(world.waypointPlaceOf('path:1#2')).toBe('air');
         const drops = world.scene.getObjectByName('path:1:drops') as LineSegments;
         // the drop line and the 4 sides of the square on the floor
         expect(drops.geometry.getAttribute('position').count).toBe(10);
         expect(drops.raycast(undefined as never, [])).toBeUndefined();
-        // moved down to the ground: a ball, no drop line
+        // moved down to the ground: a cone, no drop line
         const second = world.getObject('path:1#2') as Mesh;
         second.position.y = worldToScene(at(5, 0, 10.5)).y + 0.4;
         world.refreshPathLine('path:1');
-        expect(geometry('path:1#2')).toBe('SphereGeometry');
+        expect(geometry('path:1#2')).toBe(16);
         expect(world.scene.getObjectByName('path:1:drops')).toBeUndefined();
       });
 
@@ -890,6 +936,13 @@ describe('WorldScene', () => {
     expect(beacon.position.y).toBe(30);
     world.setBeacon(undefined);
     expect(beacon.visible).toBe(false);
+    // a player character on it, replaced or removed
+    const model = new Group();
+    world.setBeaconModel(model);
+    world.setBeaconModel(new Group());
+    expect(beacon.children.filter((child) => child.name === 'beacon-model')).toHaveLength(1);
+    world.setBeaconModel(undefined);
+    expect(beacon.getObjectByName('beacon-model')).toBeUndefined();
   });
 
   it('disposes everything', () => {

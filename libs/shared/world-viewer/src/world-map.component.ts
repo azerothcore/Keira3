@@ -76,6 +76,8 @@ export class WorldMapComponent implements OnDestroy {
   readonly coverage = input<Map<string, ServerTileCoverage> | undefined>(undefined);
   readonly goTo = output<WorldPosition>();
   readonly regionSelected = output<WorldBounds>();
+  /** The close button. */
+  readonly closed = output<void>();
 
   private readonly viewport = viewChild.required<ElementRef<HTMLDivElement>>('viewport');
   protected readonly zoom = signal(16);

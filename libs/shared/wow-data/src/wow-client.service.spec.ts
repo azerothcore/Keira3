@@ -199,6 +199,27 @@ describe('WowClientService', () => {
       expect(await service.getCreatureDisplay(11)).toBeUndefined();
     });
 
+    it('dresses player characters from the character DBCs, read once (again after a failure)', async () => {
+      const { service } = setup({
+        mpqs: displayMpqs({
+          'DBFilesClient\\CharSections.dbc': dbc([[1, 3, 0, 0, 'Character\\Dwarf\\Skin.blp', '', '', 0, 0, 0]], 10),
+        }),
+      });
+      expect(await service.getPlayerDisplay(3, 0)).toEqual({
+        model: 'Character\\Dwarf\\Male\\DwarfMale.m2',
+        scale: 1,
+        textures: { 1: 'Character\\Dwarf\\Skin.blp' },
+        hairGeoset: 1,
+      });
+      expect((await service.getPlayerDisplay(3, 1))?.model).toBe('Character\\Dwarf\\Female\\DwarfFemale.m2');
+    });
+
+    it('has a bare player character when the character DBCs are broken', async () => {
+      const { service } = setup({ mpqs: displayMpqs({ 'DBFilesClient\\CharSections.dbc': [1, 2, 3, 4] }) });
+      expect((await service.getPlayerDisplay(1, 0))?.textures).toEqual({});
+      expect((await service.getPlayerDisplay(1, 0))?.textures).toEqual({});
+    });
+
     it('retries creature displays after a failure', async () => {
       const { service } = setup({ mpqs: displayMpqs({ 'DBFilesClient\\CreatureDisplayInfo.dbc': [1, 2, 3, 4] }) });
       await expect(service.getCreatureDisplay(10)).rejects.toThrowError(/WDBC/);

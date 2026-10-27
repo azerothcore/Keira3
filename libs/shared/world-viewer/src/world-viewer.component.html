@@ -24,6 +24,18 @@
     </div>
   }
 
+  @for (label of probeLabels(); track label.which) {
+    <div
+      class="world-viewer-probe-label"
+      [class.end]="label.which === 'to'"
+      [attr.data-testid]="'world-viewer-probe-' + label.which"
+      [style.left.px]="label.x"
+      [style.top.px]="label.y"
+    >
+      {{ (label.which === 'from' ? 'WORLD_EDITOR.PROBE_START' : 'WORLD_EDITOR.PROBE_END') | translate }}
+    </div>
+  }
+
   <div class="world-viewer-crosshair" aria-hidden="true"></div>
   @if (snapToGround() || snapToWall()) {
     <div class="world-viewer-snap" data-testid="world-viewer-snap">

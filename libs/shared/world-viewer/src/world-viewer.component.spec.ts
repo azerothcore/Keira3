@@ -2,6 +2,8 @@ import { Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import {
+  EMPTY_COLLISION,
+  M2Blend,
   MmapRecastConfig,
   NavMeshTile,
   tileCenter,
@@ -147,6 +149,7 @@ interface FakeTransformControls extends EventDispatcher<{ 'dragging-changed': { 
       [hideRealNavMesh]="hideReal()"
       (navMeshRebuilt)="rebuilds.push($event)"
       (probed)="probes.push($event)"
+      (probeMoved)="probeMoves.push($event)"
       (speedChanged)="speeds.push($event)"
       (navMeshTileChanged)="navMeshTiles.push($event)"
       (picked)="picks.push($event)"
@@ -179,6 +182,7 @@ class HostComponent {
   readonly markers = signal<WorldMarker[]>([]);
   readonly probe = signal<PathProbeRequest | undefined>(undefined);
   readonly probes: PathProbeResult[] = [];
+  readonly probeMoves: { which: 'from' | 'to'; position: WorldPosition }[] = [];
   readonly rebuild = signal<NavMeshRebuildRequest | undefined>(undefined);
   readonly check = signal<WaypointCheckRequest | undefined>(undefined);
   readonly checks: WaypointCheck[][] = [];
@@ -279,6 +283,7 @@ describe(WorldViewerComponent.name, () => {
     getVmapTile: vi.fn(),
     getVmapModel: vi.fn(),
     getAreaNames: vi.fn(),
+    getPlayerDisplay: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -465,12 +470,12 @@ describe(WorldViewerComponent.name, () => {
     const moved = target();
     expect(moved).not.toBe(start);
 
-    // up (E) changes the height; Shift goes faster; keys released stop the camera
+    // up (Q) changes the height; Shift goes faster; keys released stop the camera
     key('keyup', 'KeyW');
-    key('keydown', 'KeyE', true);
+    key('keydown', 'KeyQ', true);
     frameAt(200);
     expect(target()).not.toBe(moved);
-    key('keyup', 'KeyE');
+    key('keyup', 'KeyQ');
     frameAt(300);
     const stopped = target();
     frameAt(400);
@@ -700,7 +705,7 @@ describe(WorldViewerComponent.name, () => {
       await settle(fixture);
       page.pointer('pointerdown', 50, 50, 2);
       page.pointer('pointerup', 50, 50, 2);
-      expect(host.contexts).toEqual([{ key: 'creature:7', x: 50, y: 50 }]);
+      expect(host.contexts).toEqual([expect.objectContaining({ key: 'creature:7', x: 50, y: 50, label: expect.any(String) })]);
       expect(host.picks).toEqual([]);
       // dragged with the right button: the view was rotated
       page.pointer('pointerdown', 50, 50, 2);
@@ -708,7 +713,7 @@ describe(WorldViewerComponent.name, () => {
       await update(() => host.focus.set(at(300, 300)));
       page.pointer('pointerdown', 50, 50, 2);
       page.pointer('pointerup', 50, 50, 2);
-      expect(host.contexts[1]).toEqual({ key: 'path:1#3', x: 50, y: 50 });
+      expect(host.contexts[1]).toEqual(expect.objectContaining({ key: 'path:1#3', x: 50, y: 50 }));
       await update(() => host.focus.set(at(-100, -100)));
       page.pointer('pointerdown', 50, 50, 2);
       page.pointer('pointerup', 50, 50, 2);
@@ -1085,6 +1090,33 @@ describe(WorldViewerComponent.name, () => {
       expect(page.label(false)).toBeFalsy();
     });
 
+    it('names a hovered flight path arrow with its way, and offers a menu for it', async () => {
+      const { page, host, fixture, update } = await pickSetup();
+      await settle(fixture);
+      const focus = at(800, -800);
+      await update(() => {
+        host.focus.set(focus);
+        // the arrow of the stretch sits in its middle, right on the focus
+        host.links.set([
+          {
+            key: 'flight:1',
+            label: 'Flight path 1',
+            from: at(790, -800, GROUND - 0.4),
+            via: [],
+            to: at(810, -800, GROUND - 0.4),
+            color: 0xf0c419,
+          },
+        ]);
+      });
+      page.pointer('pointermove', 50, 50);
+      flushFrames();
+      fixture.detectChanges();
+      expect(page.label().nativeElement.textContent?.trim()).toBe('Flight path 1\n→ N (0.00)');
+      page.pointer('pointerdown', 50, 50, 2);
+      page.pointer('pointerup', 50, 50, 2);
+      expect(host.contexts.at(-1)).toEqual(expect.objectContaining({ key: 'flight:1', label: 'Flight path 1\n→ N (0.00)' }));
+    });
+
     it('names the hovered area trigger', async () => {
       const { page, host, fixture, update } = await pickSetup();
       await settle(fixture);
@@ -1126,13 +1158,18 @@ describe(WorldViewerComponent.name, () => {
       page.pointer('pointermove', 50, 50);
       flushFrames();
       fixture.detectChanges();
-      expect(page.label().nativeElement.textContent?.trim()).toBe('Path 2 · #4 → #5 — Guard (7)');
+      expect(page.label().nativeElement.textContent?.trim()).toBe('Path 2 · #4 → #5 — Guard (7)\n→ W (1.57), 200.0 yd');
 
       await update(() => host.paths.set([path()]));
       page.pointer('pointermove', 50, 50);
       flushFrames();
       fixture.detectChanges();
-      expect(page.label().nativeElement.textContent?.trim()).toBe('Path 2 · #4 → #5');
+      expect(page.label().nativeElement.textContent?.trim()).toBe('Path 2 · #4 → #5\n→ W (1.57), 200.0 yd');
+
+      // right-clicking an arrow: a menu for that stretch
+      page.pointer('pointerdown', 50, 50, 2);
+      page.pointer('pointerup', 50, 50, 2);
+      expect(host.contexts.at(-1)).toEqual(expect.objectContaining({ key: 'path:2:4-5' }));
 
       // clicking an arrow selects nothing
       page.pointer('pointerdown', 50, 50);
@@ -1153,6 +1190,89 @@ describe(WorldViewerComponent.name, () => {
     mapControls().dispatchEvent({ type: 'change' });
     expect(host.centers.length).toBe(count + 1);
     expect(host.centers.at(-1)?.x).toBeCloseTo(CENTER.x);
+  });
+
+  describe('Path / LOS handles, resolution and marker model', () => {
+    it('labels A and C, drags them along the ground and reports where they were dropped', async () => {
+      const { page, host, fixture, update } = await setup((h) => {
+        h.map.set('Azeroth');
+        h.focus.set(at(0, 0));
+      });
+      client.getNavMeshTile.mockResolvedValue(undefined);
+      // C far behind the camera: no label for it
+      await update(() => host.probe.set({ from: at(0, 0), to: at(-200, 200), range: 30, height: 2 }));
+      await settle(fixture);
+      flushFrames();
+      fixture.detectChanges();
+      expect(page.getDebugElementByTestId('world-viewer-probe-from').nativeElement.textContent?.trim()).toBe('WORLD_EDITOR.PROBE_START');
+      expect(page.getDebugElementByTestId('world-viewer-probe-to', false)).toBeFalsy();
+
+      // pressing next to the handles, or with another button, drags nothing
+      page.pointer('pointerdown', 2, 2);
+      page.pointer('pointerup', 2, 2);
+      page.pointer('pointerdown', 50, 50, 2);
+      page.pointer('pointerup', 50, 50, 2);
+      expect(host.probeMoves).toEqual([]);
+      page.pointer('pointerdown', 50, 50);
+      page.pointer('pointermove', 60, 60);
+      // off the ground: it stays where it was
+      vi.spyOn(WorldScene.prototype, 'pick').mockReturnValueOnce(undefined);
+      page.pointer('pointermove', 70, 70);
+      page.pointer('pointerup', 60, 60);
+      expect(host.probeMoves).toEqual([{ which: 'from', position: expect.objectContaining({ z: expect.any(Number) }) }]);
+      expect(host.probeMoves[0].position.x).not.toBeCloseTo(CENTER.x, 1);
+      // only the click next to the handles picked something; the drag didn't
+      expect(host.picks).toHaveLength(1);
+
+      await update(() => host.probe.set(undefined));
+      flushFrames();
+      fixture.detectChanges();
+      expect(page.getDebugElementByTestId('world-viewer-probe-from', false)).toBeFalsy();
+    });
+
+    it('draws a share of the resolution', async () => {
+      const { host, update } = await setup();
+      renderer.setPixelRatio.mockClear();
+      await update(() => host.render.set({ ...DEFAULT_WORLD_RENDER_SETTINGS, renderScale: 0.5 }));
+      expect(renderer.setPixelRatio).toHaveBeenCalledWith(window.devicePixelRatio * 0.5);
+      await update(() => host.render.set({ ...DEFAULT_WORLD_RENDER_SETTINGS, renderScale: 0.5, showRoofs: false }));
+      expect(renderer.setPixelRatio).toHaveBeenCalledTimes(1);
+    });
+
+    it('puts a player character on the marker, or the beam alone', async () => {
+      const beacon = vi.spyOn(WorldScene.prototype, 'setBeaconModel');
+      client.getPlayerDisplay.mockImplementation((race: number) =>
+        Promise.resolve(race === 1 ? { model: 'Character\\Human\\Male\\HumanMale.m2', scale: 1, textures: {}, hairGeoset: 1 } : undefined),
+      );
+      client.getM2.mockResolvedValue({
+        positions: new Float32Array(9),
+        normals: new Float32Array(9),
+        uvs: new Float32Array(6),
+        indices: new Uint16Array([0, 1, 2]),
+        batches: [{ start: 0, count: 3, textureType: 1, blend: M2Blend.Opaque, geoset: 0, twoSided: false, unlit: false }],
+        collision: EMPTY_COLLISION,
+      });
+      const { host, fixture, update } = await setup();
+      const marker = async (markerModel: string) => {
+        await update(() => host.render.set({ ...DEFAULT_WORLD_RENDER_SETTINGS, markerModel }));
+        await settle(fixture);
+      };
+      await marker('1:0');
+      expect(client.getPlayerDisplay).toHaveBeenCalledWith(1, 0);
+      expect(beacon.mock.lastCall?.[0]).toBeInstanceOf(Object3D);
+      // not a playable race, or unreadable: the beam alone
+      await marker('9:0');
+      expect(beacon).toHaveBeenLastCalledWith(undefined);
+      client.getPlayerDisplay.mockRejectedValueOnce(new Error('broken'));
+      await marker('2:1');
+      expect(beacon).toHaveBeenLastCalledWith(undefined);
+      // changed again while loading: only the last choice is shown
+      beacon.mockClear();
+      host.render.set({ ...DEFAULT_WORLD_RENDER_SETTINGS, markerModel: '1:1' });
+      fixture.detectChanges();
+      await marker('');
+      expect(beacon.mock.calls).toEqual([[undefined]]);
+    });
   });
 
   describe('gizmo', () => {

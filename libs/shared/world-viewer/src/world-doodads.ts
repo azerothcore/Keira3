@@ -6,10 +6,13 @@ import {
   TileCoord,
   tileKey,
   tilesAround,
+  tilesInBounds,
+  WorldBounds,
   WorldPosition,
   worldToTile,
 } from '@keira/shared/wow-data';
 import { Group, InstancedMesh, Object3D } from 'three';
+import { insideBounds } from './bounds';
 import { COLLISION_LAYER, COLLISION_MATERIAL } from './collision-object';
 import { buildM2Template, disposeM2Template, M2Template } from './m2-object';
 import { TextureCache } from './texture-cache';
@@ -51,6 +54,12 @@ export class WorldDoodads {
   /** The collision of the models that have one, instanced like the models. */
   private readonly collisions = new Map<string, InstancedMesh>();
   private readonly dummy = new Object3D();
+  /** The instances last placed per model (unique ids), so an unchanged model isn't placed again. */
+  private readonly placedIds = new Map<string, string>();
+  /** Also draw every doodad inside this area (Load the whole zone), whatever the distance. */
+  private region?: WorldBounds;
+  private regionKeys = new Set<string>();
+  private refreshQueued = false;
 
   constructor(
     private readonly source: DoodadSource,
@@ -80,6 +89,11 @@ export class WorldDoodads {
     this.clear();
   }
 
+  /** Also loads and draws every doodad of `bounds` (until set to undefined); takes effect at the next update(). */
+  setRegion(bounds: WorldBounds | undefined): void {
+    this.region = bounds;
+  }
+
   configure(options: WorldDoodadsOptions): void {
     if (
       options.show === this.options.show &&
@@ -104,6 +118,8 @@ export class WorldDoodads {
     const generation = this.generation;
     this.center = center;
     this.centerTile = worldToTile(center.x, center.y);
+    const regionTiles = this.region ? tilesInBounds(this.region, this.centerTile) : [];
+    this.regionKeys = new Set(regionTiles.map(tileKey));
     for (const key of [...this.tiles.keys()]) {
       if (!this.isNear(key)) {
         this.tiles.delete(key);
@@ -111,7 +127,7 @@ export class WorldDoodads {
     }
     this.refresh();
 
-    for (const tile of tilesAround(this.centerTile, this.tileRadius)) {
+    for (const tile of [...tilesAround(this.centerTile, this.tileRadius), ...regionTiles]) {
       const key = tileKey(tile);
       if (this.tiles.has(key) || this.loading.has(key)) {
         continue;
@@ -124,7 +140,7 @@ export class WorldDoodads {
         }
         if (this.isNear(key)) {
           this.tiles.set(key, placements);
-          this.refresh();
+          this.queueRefresh();
         }
       } catch (error) {
         console.warn(`[World Editor] Could not load the doodads of ${directory}_${key}: ${(error as Error).message}`);
@@ -154,6 +170,21 @@ export class WorldDoodads {
   /** Tiles that can hold doodads within the draw distance. */
   private get tileRadius(): number {
     return Math.ceil(this.reach / TILE_SIZE);
+  }
+
+  /**
+   * Many tiles and models finish loading in a row: the instances are rebuilt once for all of them, on the next frame,
+   * instead of once each (which made loading stutter).
+   */
+  private queueRefresh(): void {
+    if (this.refreshQueued) {
+      return;
+    }
+    this.refreshQueued = true;
+    requestAnimationFrame(() => {
+      this.refreshQueued = false;
+      this.refresh();
+    });
   }
 
   /** Rebuilds the instances from the loaded tiles: what's within the distance, grouped by model. */
@@ -197,6 +228,9 @@ export class WorldDoodads {
 
   /** Within the distance of its size group; models not loaded yet use the farthest distance, to get loaded. */
   private inRange(placement: ModelPlacement, center: WorldPosition, template: M2Template | undefined): boolean {
+    if (insideBounds(this.region, placement.position[0], placement.position[1])) {
+      return true;
+    }
     const dx = placement.position[0] - center.x;
     const dy = placement.position[1] - center.y;
     const radius = template ? template.radius * placement.scale : undefined;
@@ -205,7 +239,12 @@ export class WorldDoodads {
   }
 
   private placeInstances(key: string, template: M2Template, placements: ModelPlacement[]): void {
+    const ids = placements.map((p) => p.uniqueId).join(',');
     let mesh = this.meshes.get(key);
+    if (mesh && this.placedIds.get(key) === ids) {
+      return;
+    }
+    this.placedIds.set(key, ids);
     if (!mesh || mesh.instanceMatrix.count < placements.length) {
       if (mesh) {
         this.removeMesh(key, mesh);
@@ -260,7 +299,7 @@ export class WorldDoodads {
       // dispose() may have run meanwhile: only a template still listed is used
       if (this.templates.get(key) === template) {
         this.ready.set(key, loaded);
-        this.refresh();
+        this.queueRefresh();
       } else if (loaded) {
         disposeM2Template(loaded);
       }
@@ -271,6 +310,7 @@ export class WorldDoodads {
     this.group.remove(mesh);
     mesh.dispose();
     this.meshes.delete(key);
+    this.placedIds.delete(key);
     const collision = this.collisions.get(key);
     if (collision) {
       this.group.remove(collision);
@@ -290,6 +330,8 @@ export class WorldDoodads {
 
   private isNear(key: string): boolean {
     const [tx, ty] = key.split('_').map(Number);
-    return Math.max(Math.abs(tx - this.centerTile.tx), Math.abs(ty - this.centerTile.ty)) <= this.tileRadius + 1;
+    return (
+      Math.max(Math.abs(tx - this.centerTile.tx), Math.abs(ty - this.centerTile.ty)) <= this.tileRadius + 1 || this.regionKeys.has(key)
+    );
   }
 }

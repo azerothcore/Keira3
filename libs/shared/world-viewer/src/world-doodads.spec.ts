@@ -24,9 +24,18 @@ const doodad = (uniqueId: number, east: number, path = 'World\\Tree.mdx'): Model
   rotation: [0, 0, 0, 1],
   scale: 1,
 });
-const flush = () => new Promise((resolve) => setTimeout(resolve));
+/** Loads finish, then the refresh they queued for the next frame runs. */
+const flush = async () => {
+  for (let i = 0; i < 3; i++) {
+    await new Promise((resolve) => setTimeout(resolve));
+  }
+};
 
 describe('WorldDoodads', () => {
+  // the next frame comes right away
+  beforeEach(() => vi.stubGlobal('requestAnimationFrame', (callback: () => void) => setTimeout(callback)));
+  afterEach(() => vi.unstubAllGlobals());
+
   const setup = (placementsByTile: Record<string, ModelPlacement[]> = {}) => {
     const source = {
       getTilePlacements: vi.fn().mockImplementation((_d: string, tile: TileCoord) => {
@@ -91,6 +100,31 @@ describe('WorldDoodads', () => {
     expect(doodads.drawnCount).toBe(4);
   });
 
+  it('loads and draws every doodad of the region, whatever the distance, placing unchanged models once', async () => {
+    const far = tileCenter({ tx: 40, ty: 40 });
+    const farDoodad = { ...doodad(9, 0), position: [far.x, far.y, 0] as [number, number, number] };
+    const { doodads, group, source } = setup({ '32_48': [doodad(1, 0)], '40_40': [farDoodad] });
+    // the tree arrives after both tiles: asked for once
+    let release: () => void = () => undefined;
+    source.getM2.mockImplementation(() => new Promise((resolve) => (release = () => resolve(model))));
+    doodads.setMap('Azeroth');
+    doodads.setRegion({ minX: far.x - 1, maxX: far.x + 1, minY: far.y - 1, maxY: far.y + 1 });
+    await doodads.update(CENTER);
+    await flush();
+    await doodads.update(CENTER);
+    await flush();
+    release();
+    await flush();
+    expect(source.getM2).toHaveBeenCalledTimes(1);
+    expect(doodads.drawnCount).toBe(2);
+    const mesh = meshes(group)[0];
+    const setMatrixAt = vi.spyOn(mesh, 'setMatrixAt');
+    await doodads.update(CENTER);
+    await flush();
+    expect(setMatrixAt).not.toHaveBeenCalled();
+    expect(doodads.loadedTiles).toContain('40_40');
+  });
+
   it('hides everything when turned off and reloads when turned back on', async () => {
     const { doodads, group, source } = setup({ '32_48': [doodad(1, 0)] });
     doodads.setMap('Azeroth');
@@ -105,6 +139,7 @@ describe('WorldDoodads', () => {
 
     doodads.configure({ show: true, distance: 100, smallDistance: 100 });
     await doodads.update(CENTER);
+    await flush();
     expect(doodads.drawnCount).toBe(1);
     expect(source.getM2).toHaveBeenCalledTimes(1);
   });
@@ -214,6 +249,7 @@ describe('WorldDoodads', () => {
     );
     late.doodads.setMap('Azeroth');
     await late.doodads.update(CENTER);
+    await flush();
     late.doodads.dispose();
     pending.forEach((resolve) => resolve());
     await flush();

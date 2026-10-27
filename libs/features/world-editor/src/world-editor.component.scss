@@ -326,3 +326,75 @@
   max-height: 12rem;
   overflow-y: auto;
 }
+
+// the panels float over the 3D view (one at a time), so opening one never resizes it
+.world-editor-panels {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 8;
+
+  > .card {
+    margin: 0 0 0 0;
+    max-height: 70vh;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  }
+}
+
+.world-editor-settings {
+  // labels and inputs use the whole width
+  align-items: stretch;
+}
+
+.world-editor-resolution {
+  position: absolute;
+  top: 22px;
+  left: 8px;
+  z-index: 3;
+  opacity: 0.85;
+
+  .btn {
+    padding: 0 6px;
+    font-size: 0.75rem;
+  }
+}
+
+.world-editor.fullscreen {
+  height: 100vh;
+  background: var(--bs-body-bg, #fff);
+}
+
+.world-editor-context-label {
+  white-space: pre-line;
+  max-width: 420px;
+}
+
+.world-editor-legend {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  overflow-y: auto;
+  max-height: 70vh;
+}
+
+.world-editor-legend-section {
+  min-width: 220px;
+
+  strong {
+    display: block;
+    margin-bottom: 4px;
+  }
+}
+
+.world-editor-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+
+  svg {
+    flex-shrink: 0;
+  }
+}

@@ -26,12 +26,12 @@ import {
   CHUNK_SIZE,
   serverAreaAt,
 } from '@keira/shared/wow-data';
-import { Object3D, Vector3 } from 'three';
+import { Mesh, Object3D, Vector3 } from 'three';
 import { MapControls } from 'three/addons/controls/MapControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { TerrainStreamer } from './terrain-streamer';
 import { TextureCache } from './texture-cache';
-import { SpawnModels } from './spawn-models';
+import { DisplayModel, displayModel, SpawnModels } from './spawn-models';
 import { WorldDoodads } from './world-doodads';
 import { ZoneLighting } from './zone-lighting';
 import {
@@ -49,6 +49,7 @@ import { sampleTimeline, simulationTimeline } from './simulation';
 import { collectTileGeometry, loadRecast, rebuildNavMeshTile } from './navmesh-rebuild';
 import { PathProber, PathProbeRequest, PathProbeResult } from './path-probe';
 import { WorldObjects } from './world-objects';
+import { headingText, stretchText } from './heading';
 import { DEFAULT_WORLD_RENDER_SETTINGS, drawDistances, WorldRenderSettings } from './world-render-settings';
 import { WORLD_RENDERER_FACTORY, WorldRenderer } from './world-renderer';
 import { PickOptions, WorldScene } from './world-scene';
@@ -74,6 +75,8 @@ import {
 
 const CLICK_TOLERANCE_PX = 4;
 const CENTER_EMIT_DISTANCE = 60;
+/** What hover labels and the context menu look at. */
+const HOVER_PICK = { markersOnly: true, segments: true, areaTriggers: true, overlays: true };
 /** How far the camera stands from a place it was sent to (close enough to see an NPC there). */
 const FOCUS_DISTANCE = 40;
 const RIGHT_BUTTON = 2;
@@ -163,6 +166,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   readonly speedChanged = output<number>();
   /** The answer to `probe`. */
   readonly probed = output<PathProbeResult>();
+  /** The Path / LOS tool's A ('from') or C ('to') dragged somewhere else. */
+  readonly probeMoved = output<{ which: 'from' | 'to'; position: WorldPosition }>();
   /** Right-click on a spawn or waypoint, for a context menu. */
   readonly contextRequested = output<ContextRequest>();
   readonly objectMoved = output<ObjectMoved>();
@@ -170,6 +175,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   readonly centerChanged = output<WorldPosition>();
 
   protected readonly hoverLabel = signal<HoverLabel | undefined>(undefined);
+  /** "Start" and "End" over the Path / LOS tool's A and C, where they are on screen. */
+  protected readonly probeLabels = signal<{ which: 'from' | 'to'; x: number; y: number }[]>([]);
   protected readonly error = signal<string | undefined>(undefined);
   protected readonly loading = signal(false);
   /** What's still loading in the background (undefined when idle). */
@@ -219,6 +226,10 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private resizeObserver?: ResizeObserver;
   private frameRequested = false;
   private pointerDown?: { x: number; y: number };
+  private renderScale = 1;
+  private markerModel = '';
+  /** A or C of the Path / LOS tool being dragged. */
+  private probeDragging?: 'from' | 'to';
   private lastEmittedCenter?: WorldPosition;
   /** The marker (the beam): where the last "go to" landed, or where Space put it; Home brings the camera there. */
   private marker?: WorldPosition;
@@ -245,6 +256,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
         });
         this.zoneLighting.configure(settings.zoneLighting);
         this.navMesh.configure({ show: settings.showNavMesh, radius: settings.terrainRadius });
+        this.applyRenderScale(settings.renderScale);
+        void this.loadMarkerModel(settings.markerModel);
         this.world.setRoofsVisible(settings.showRoofs);
         this.world.setCollisionVisible(settings.showCollision);
         this.world.setFacingArrowsVisible(settings.showFacingArrows);
@@ -261,8 +274,13 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       untracked(() => {
         this.streamer.setRegion(region);
         this.objects.setRegion(region);
+        this.doodads.setRegion(region);
+        this.navMesh.setRegion(region);
+        this.spawnModels.setRegion(region);
         void this.streamer.update(this.center);
         void this.objects.update(this.center);
+        void this.doodads.update(this.center);
+        void this.navMesh.update(this.center);
       });
     });
     effect(() => void this.loadMap(this.mapDirectory()));
@@ -350,7 +368,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     const canvas = this.canvasRef().nativeElement;
     this.renderer = this.rendererFactory(canvas);
-    this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderScale = this.renderSettings().renderScale;
+    this.renderer.setPixelRatio(window.devicePixelRatio * this.renderScale);
 
     // Shift + wheel changes the camera speed instead of zooming (listened to before the map controls get the event)
     this.host().nativeElement.addEventListener('wheel', this.onSpeedWheel, { capture: true, passive: false });
@@ -425,7 +444,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   // ---------------------------------------------------------------- pointer handling
 
   protected onPointerDown(event: PointerEvent): void {
-    if (this.startAltDrag(event)) {
+    if (this.startAltDrag(event) || this.startProbeDrag(event)) {
       return;
     }
     this.pointerDown = { x: event.clientX, y: event.clientY };
@@ -434,6 +453,10 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   protected onPointerUp(event: PointerEvent): void {
     if (this.altDragging) {
       this.endAltDrag();
+      return;
+    }
+    if (this.probeDragging) {
+      this.endProbeDrag();
       return;
     }
     const start = this.pointerDown;
@@ -454,19 +477,29 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  /** A right-click that didn't rotate the view: a context menu for the spawn or waypoint under the cursor. */
+  /**
+   * A right-click that didn't rotate the view: a context menu for what's under the cursor (a spawn, waypoint, path
+   * stretch, area trigger, marker or link), with its hover text.
+   */
   private requestContext(event: PointerEvent): void {
-    const result = this.pickAt(event, { markersOnly: true });
-    if (result?.type === 'spawn' || result?.type === 'waypoint') {
-      const rect = this.host().nativeElement.getBoundingClientRect();
-      this.contextRequested.emit({ key: result.key, x: event.clientX - rect.left, y: event.clientY - rect.top });
+    const result = this.pickAt(event, HOVER_PICK);
+    const label = result && this.textOf(result);
+    if (!label) {
+      return;
     }
+    const key = result.type === 'segment' ? `${result.pathKey}:${result.from}-${result.to}` : (result as { key: string }).key;
+    const rect = this.host().nativeElement.getBoundingClientRect();
+    this.contextRequested.emit({ key, x: event.clientX - rect.left, y: event.clientY - rect.top, label, position: result.position });
   }
 
   protected onPointerMove(event: PointerEvent): void {
     this.lastPointer = event;
     if (this.altDragging) {
       this.altDragTo(event);
+      return;
+    }
+    if (this.probeDragging) {
+      this.probeDragTo(event);
       return;
     }
     if (this.pointerDown || this.gizmo.dragging) {
@@ -485,17 +518,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     const event = this.hoverEvent as PointerEvent;
     this.hoverEvent = undefined;
     this.altHeld = event.altKey;
-    const result = this.pickAt(event, { markersOnly: true, segments: true, areaTriggers: true, overlays: true });
-    const text =
-      result?.type === 'segment'
-        ? this.segmentLabel(result)
-        : result?.type === 'areatrigger'
-          ? this.areaTriggers().find((trigger) => trigger.key === result.key)?.label
-          : result?.type === 'overlay'
-            ? this.markers().find((marker) => marker.key === result.key)?.label
-            : result
-              ? this.labelFor((result as { key: string }).key)
-              : undefined;
+    const result = this.pickAt(event, HOVER_PICK);
+    const text = result && this.textOf(result);
     const rect = this.host().nativeElement.getBoundingClientRect();
     this.hoverLabel.set(text ? { text, x: event.clientX - rect.left + 14, y: event.clientY - rect.top + 14 } : undefined);
   }
@@ -516,10 +540,33 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     return this.world.pick(x, y, options);
   }
 
+  /** The hover text of what's under the cursor (also the title of its context menu). */
+  private textOf(result: PickResult): string | undefined {
+    switch (result.type) {
+      case 'segment':
+        return this.segmentLabel(result);
+      case 'areatrigger':
+        return this.areaTriggers().find((trigger) => trigger.key === result.key)?.label;
+      case 'overlay': {
+        // a marker, or the arrow of a labelled link (with the way it points)
+        const overlay = this.markers().find((marker) => marker.key === result.key) ?? this.links().find((link) => link.key === result.key);
+        const label = (overlay as { label: string }).label;
+        return result.direction === undefined ? label : `${label}\n→ ${headingText(result.direction)}`;
+      }
+      default:
+        // (hover picks skip the ground)
+        return this.labelFor((result as { key: string }).key);
+    }
+  }
+
   private segmentLabel(segment: { pathKey: string; from: number; to: number }): string {
     const path = this.paths().find((p) => p.key === segment.pathKey) as WaypointPath;
     const owners = path.owners?.length ? ` — ${path.owners.join(', ')}` : '';
-    return `${path.label} · #${segment.from} → #${segment.to}${owners}`;
+    // (the arrow is drawn between two of its points)
+    const [from, to] = [segment.from, segment.to].map(
+      (point) => (path.points.find((p) => p.point === point) as { position: WorldPosition }).position,
+    );
+    return `${path.label} · #${segment.from} → #${segment.to}${owners}\n${stretchText(from, to)}`;
   }
 
   private labelFor(key: string): string {
@@ -827,6 +874,88 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     }
   }
 
+  // ---------------------------------------------------------------- dragging the Path / LOS tool's A and C
+
+  private startProbeDrag(event: PointerEvent): boolean {
+    if (event.button !== 0 || !this.probe()) {
+      return false;
+    }
+    const rect = this.canvasRef().nativeElement.getBoundingClientRect();
+    const which = this.world.pickProbeHandle(
+      ((event.clientX - rect.left) / rect.width) * 2 - 1,
+      -((event.clientY - rect.top) / rect.height) * 2 + 1,
+    );
+    if (!which) {
+      return false;
+    }
+    this.probeDragging = which;
+    (this.controls as MapControls).enabled = false;
+    return true;
+  }
+
+  private probeDragTo(event: PointerEvent): void {
+    const ground = this.pickAt(event, { groundOnly: true });
+    if (ground?.type === 'ground') {
+      this.world.moveProbeHandle(this.probeDragging as 'from' | 'to', ground.position);
+      this.requestRender();
+    }
+  }
+
+  private endProbeDrag(): void {
+    const which = this.probeDragging as 'from' | 'to';
+    this.probeDragging = undefined;
+    (this.controls as MapControls).enabled = true;
+    // (the handle is drawn while it's dragged)
+    const moved = this.world.probeHandlePositions().find((handle) => handle.which === which) as { position: WorldPosition };
+    this.probeMoved.emit({ which, position: moved.position });
+  }
+
+  /** Draws fewer pixels (a share of the screen's resolution): much faster on big or high-DPI screens. */
+  private applyRenderScale(scale: number): void {
+    if (!this.renderer || scale === this.renderScale) {
+      return;
+    }
+    this.renderScale = scale;
+    this.renderer.setPixelRatio(window.devicePixelRatio * scale);
+    this.resize();
+  }
+
+  /** The marker as a player character (`race:sex`), or the beam alone (''). */
+  private async loadMarkerModel(choice: string): Promise<void> {
+    if (choice === this.markerModel) {
+      return;
+    }
+    this.markerModel = choice;
+    const model = choice ? await this.playerModel(choice).catch(() => undefined) : undefined;
+    if (choice !== this.markerModel) {
+      return;
+    }
+    this.world.setBeaconModel(model && new Mesh(model.template.geometry, model.template.materials));
+    this.requestRender();
+  }
+
+  private async playerModel(choice: string): Promise<DisplayModel | undefined> {
+    const [race, sex] = choice.split(':').map(Number);
+    const display = await this.client.getPlayerDisplay(race, sex);
+    return display && displayModel(display, this.client, this.textures);
+  }
+
+  /** Puts "Start" and "End" over A and C after each frame. */
+  private updateProbeLabels(): void {
+    const handles = this.world.probeHandlePositions();
+    if (handles.length === 0 && this.probeLabels().length === 0) {
+      return;
+    }
+    const canvas = this.canvasRef().nativeElement;
+    const [width, height] = [canvas.clientWidth, canvas.clientHeight];
+    const labels = handles.flatMap(({ which, position }) => {
+      const p = worldToScene({ ...position, z: position.z + 5.6 });
+      const screen = new Vector3(p.x, p.y, p.z).project(this.world.camera);
+      return screen.z < 1 ? [{ which, x: ((screen.x + 1) / 2) * width, y: ((1 - screen.y) / 2) * height }] : [];
+    });
+    this.probeLabels.set(labels);
+  }
+
   // ---------------------------------------------------------------- Alt+click / Alt+drag
 
   /** Alt+click puts the editable object under the cursor; holding the button drags it along. */
@@ -1006,6 +1135,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       this.world.updateMarkerScale();
       this.renderer?.render(this.world.scene, this.world.camera);
       this.updateStatus();
+      this.updateProbeLabels();
     });
   }
 

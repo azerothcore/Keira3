@@ -34,6 +34,22 @@
   white-space: pre;
 }
 
+.world-viewer-probe-label {
+  position: absolute;
+  pointer-events: none;
+  transform: translate(-50%, -100%);
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: #3b82f6;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+
+  &.end {
+    background: #ef4444;
+  }
+}
+
 .world-viewer-status {
   position: absolute;
   top: 8px;

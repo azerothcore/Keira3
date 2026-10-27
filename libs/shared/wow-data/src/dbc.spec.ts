@@ -3,6 +3,7 @@ import {
   isDefaultCharacterGeoset,
   parseAreaNames,
   parseCreatureDisplays,
+  playerDisplay,
   parseGameObjectDisplays,
   parseMapDbc,
   parseTaxiNodes,
@@ -80,6 +81,37 @@ const float = (value: number): number => {
   return view.getUint32(0, true);
 };
 const dbcOf = (rows: (number | string)[][], fieldCount?: number) => new DbcFile(buildDbc(rows, fieldCount));
+
+describe('playerDisplay', () => {
+  it('dresses a playable race with its first skin and hair', () => {
+    const charSections = dbcOf(
+      [
+        [1, 1, 1, 0, 'Character\\Human\\Female\\Skin00_00.blp', '', '', 0, 0, 0],
+        [2, 1, 1, 0, 'Character\\Human\\Female\\Skin00_01.blp', '', '', 0, 0, 1],
+        [3, 1, 1, 3, 'Character\\Human\\Hair00_00.blp', '', '', 0, 0, 0],
+        [4, 1, 1, 3, 'Character\\Human\\Other.blp', '', '', 0, 0, 0],
+        [5, 1, 1, 1, 'Character\\Human\\Face.blp', '', '', 0, 0, 0],
+        [6, 1, 1, 0, '', '', '', 0, 0, 0],
+        [7, 2, 1, 0, 'Character\\Orc\\Skin.blp', '', '', 0, 0, 0],
+      ],
+      10,
+    );
+    const hairGeosets = dbcOf([
+      [1, 1, 1, 0, 3],
+      [2, 1, 1, 1, 4],
+      [3, 1, 0, 0, 5],
+    ]);
+    expect(playerDisplay(1, 1, charSections, hairGeosets)).toEqual({
+      model: 'Character\\Human\\Female\\HumanFemale.m2',
+      scale: 1,
+      textures: { 1: 'Character\\Human\\Female\\Skin00_00.blp', 6: 'Character\\Human\\Hair00_00.blp' },
+      hairGeoset: 3,
+    });
+    expect(playerDisplay(5, 0)).toEqual({ model: 'Character\\Scourge\\Male\\ScourgeMale.m2', scale: 1, textures: {}, hairGeoset: 1 });
+    expect(playerDisplay(9, 0)).toBeUndefined();
+    expect(playerDisplay(1, 0, undefined, dbcOf([[1, 1, 0, 0, 0]])).hairGeoset).toBe(1);
+  });
+});
 
 describe('parseCreatureDisplays', () => {
   const models = dbcOf([

@@ -41,6 +41,17 @@ describe('WorldNavMesh', () => {
     expect(navMesh.tileAt('10_10')).toBeUndefined();
   });
 
+  it('also reads every tile of the region', async () => {
+    const { source, navMesh } = setup();
+    navMesh.setMap('Azeroth');
+    navMesh.configure({ show: true, radius: 0 });
+    const far = tileCenter({ tx: 40, ty: 40 });
+    navMesh.setRegion({ minX: far.x - 1, maxX: far.x + 1, minY: far.y - 1, maxY: far.y + 1 });
+    await navMesh.update(CENTER);
+    expect(source.getNavMeshTile).toHaveBeenCalledWith('Azeroth', { tx: 40, ty: 40 });
+    expect(navMesh.tileAt('40_40')).toBeNull();
+  });
+
   it('draws the edges of the tile the camera is on in their own colour', async () => {
     const { group, navMesh, onChange } = setup();
     navMesh.configure({ show: true, radius: 1 });

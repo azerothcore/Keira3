@@ -62,12 +62,33 @@
       }
     </div>
   }
-  <div class="world-map-buttons">
-    <button type="button" class="btn btn-sm btn-light" data-testid="world-map-camera-btn" (click)="centerOnCamera()">
+  <div class="world-map-buttons" (pointerdown)="$event.stopPropagation()" (pointerup)="$event.stopPropagation()">
+    <button
+      type="button"
+      class="btn btn-sm btn-light"
+      data-testid="world-map-camera-btn"
+      [title]="'WORLD_EDITOR.MAP_CENTER_CAMERA' | translate"
+      (click)="centerOnCamera()"
+    >
       <i class="fa fa-crosshairs"></i>
     </button>
-    <button type="button" class="btn btn-sm btn-light" data-testid="world-map-fit" (click)="fitAll()">
-      <i class="fa fa-expand"></i>
+    <button
+      type="button"
+      class="btn btn-sm btn-light"
+      data-testid="world-map-fit"
+      [title]="'WORLD_EDITOR.MAP_FIT' | translate"
+      (click)="fitAll()"
+    >
+      <i class="fa fa-globe"></i>
+    </button>
+    <button
+      type="button"
+      class="btn btn-sm btn-light"
+      data-testid="world-map-close"
+      [title]="'WORLD_EDITOR.CLOSE' | translate"
+      (click)="closed.emit()"
+    >
+      <i class="fa fa-times"></i>
     </button>
   </div>
   <div class="world-map-hint">{{ 'WORLD_EDITOR.MAP_HINT' | translate }}</div>

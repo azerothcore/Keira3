@@ -1,7 +1,7 @@
 import { inject, Service } from '@angular/core';
 import { TableRow } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
-import { WorldPosition } from '@keira/shared/wow-data';
+import { WorldBounds, WorldPosition } from '@keira/shared/wow-data';
 import { firstValueFrom } from 'rxjs';
 import {
   FormationMember,
@@ -52,11 +52,14 @@ export class WorldEditorService {
   private readonly queryService = inject(MysqlQueryService);
 
   /** Creatures and gameobjects of `map` in a square of `radius` yards around `center`. */
-  async loadSpawns(map: number, center: WorldPosition, radius = SPAWN_LOAD_RADIUS): Promise<SpawnRecord[]> {
+  /** Spawns around `center`, and also everywhere in `region` when given (Load the whole zone, an area of the world map). */
+  async loadSpawns(map: number, center: WorldPosition, radius = SPAWN_LOAD_RADIUS, region?: WorldBounds): Promise<SpawnRecord[]> {
+    const [minX, maxX] = [Math.min(center.x - radius, region?.minX ?? Infinity), Math.max(center.x + radius, region?.maxX ?? -Infinity)];
+    const [minY, maxY] = [Math.min(center.y - radius, region?.minY ?? Infinity), Math.max(center.y + radius, region?.maxY ?? -Infinity)];
     const area = (alias: string): string =>
       `${alias}.map = ${map}` +
-      ` AND ${alias}.position_x BETWEEN ${num(center.x - radius)} AND ${num(center.x + radius)}` +
-      ` AND ${alias}.position_y BETWEEN ${num(center.y - radius)} AND ${num(center.y + radius)}`;
+      ` AND ${alias}.position_x BETWEEN ${num(minX)} AND ${num(maxX)}` +
+      ` AND ${alias}.position_y BETWEEN ${num(minY)} AND ${num(maxY)}`;
 
     const creatures =
       "SELECT c.guid, c.id AS entry, IFNULL(ct.name, '') AS name, c.map, c.position_x AS x, c.position_y AS y, c.position_z AS z, c.orientation AS o, " +
@@ -68,11 +71,13 @@ export class WorldEditorService {
       'IFNULL(ctm.CreatureDisplayID, 0) AS displayId, IFNULL(ctm.DisplayScale, 1) AS scale, ' +
       'c.wander_distance AS wanderDistance, c.MovementType AS movementType, c.phaseMask, ' +
       'IFNULL(ct.speed_walk, 1) AS speedWalk, IFNULL(ct.speed_run, 1) AS speedRun, ' +
+      'IFNULL(cmi.BoundingRadius, 0) AS boundingRadius, IFNULL(cmi.CombatReach, 0) AS combatReach, ' +
       `${eventOf('game_event_creature', 'c.guid')}, ` +
       `((IFNULL(ct.flags_extra, 0) & ${FLAG_EXTRA_TRIGGER}) <> 0 OR ${helperName('ct.name')}) AS isTrigger ` +
       'FROM creature c ' +
       'LEFT JOIN creature_template ct ON ct.entry = c.id ' +
       'LEFT JOIN creature_template_model ctm ON ctm.CreatureID = c.id AND ctm.Idx = 0 ' +
+      'LEFT JOIN creature_model_info cmi ON cmi.DisplayID = ctm.CreatureDisplayID ' +
       'LEFT JOIN creature_addon ca ON ca.guid = c.guid ' +
       'LEFT JOIN creature_template_addon cta ON cta.entry = c.id ' +
       `WHERE ${area('c')} LIMIT ${SPAWN_LOAD_LIMIT}`;
@@ -472,6 +477,9 @@ function toSpawns(type: SpawnType, rows: SpawnRow[] | undefined): SpawnRecord[] 
     ...(Number(row.eventEntry) > 0 ? { event: Number(row.eventEntry) } : {}),
     ...(Number(row.isTrigger) ? { trigger: true } : {}),
     ...(type === 'creature' ? { speedWalk: Number(row.speedWalk), speedRun: Number(row.speedRun) } : {}),
+    ...(Number(row['boundingRadius']) > 0
+      ? { boundingRadius: Number(row['boundingRadius']), combatReach: Number(row['combatReach']) }
+      : {}),
     phaseMask: Number(row.phaseMask ?? 1),
   }));
 }

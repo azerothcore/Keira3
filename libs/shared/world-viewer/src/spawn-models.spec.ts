@@ -37,7 +37,12 @@ const spawn = (key: string, kind: WorldSpawn['kind'], east: number, displayId?: 
   displayId,
   scale,
 });
-const flush = () => new Promise((resolve) => setTimeout(resolve));
+/** Loads finish, then the refresh they queued for the next frame runs. */
+const flush = async () => {
+  for (let i = 0; i < 3; i++) {
+    await new Promise((resolve) => setTimeout(resolve));
+  }
+};
 
 const DISPLAYS: Record<number, CreatureDisplay> = {
   1: { model: 'Creature\\Wolf\\Wolf.mdx', scale: 2, textures: { 11: 'Creature\\Wolf\\WolfGrey.blp' } },
@@ -46,6 +51,10 @@ const DISPLAYS: Record<number, CreatureDisplay> = {
 };
 
 describe('SpawnModels', () => {
+  // the next frame comes right away
+  beforeEach(() => vi.stubGlobal('requestAnimationFrame', (callback: () => void) => setTimeout(callback)));
+  afterEach(() => vi.unstubAllGlobals());
+
   const setup = () => {
     const source = {
       getCreatureDisplay: vi.fn().mockImplementation((id: number) => Promise.resolve(DISPLAYS[id])),
@@ -151,6 +160,18 @@ describe('SpawnModels', () => {
     expect(onChange).toHaveBeenCalledTimes(1);
     models.configure({ show: false, creatureDistance: 0, gameobjectDistance: 50 });
     expect(onChange).toHaveBeenCalledTimes(1);
+  });
+
+  it('shows the models of every spawn inside the region, whatever the distance', async () => {
+    const { models, world } = setup();
+    await show(models, world, [spawn('creature:1', 'creature', 500, 1)]);
+    expect(models.shownCount).toBe(0);
+    const far = at(500);
+    models.setRegion({ minX: far.x - 10, maxX: far.x + 10, minY: far.y - 10, maxY: far.y + 10 });
+    await flush();
+    expect(models.shownCount).toBe(1);
+    models.setRegion(undefined);
+    expect(models.shownCount).toBe(0);
   });
 
   it('re-attaches models after the pins were recreated', async () => {

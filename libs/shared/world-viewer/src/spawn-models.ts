@@ -1,5 +1,6 @@
-import { CreatureDisplay, isDefaultCharacterGeoset, M2Mesh, WorldPosition } from '@keira/shared/wow-data';
+import { CreatureDisplay, isDefaultCharacterGeoset, M2Mesh, WorldBounds, WorldPosition } from '@keira/shared/wow-data';
 import { Mesh } from 'three';
+import { insideBounds } from './bounds';
 import { collisionMesh } from './collision-object';
 import { buildM2Template, disposeM2Template, M2Template } from './m2-object';
 import { TextureCache } from './texture-cache';
@@ -21,7 +22,7 @@ export interface SpawnModelsOptions {
 }
 
 /** A display's model, ready to be placed: geometry and materials shared by every spawn using it. */
-interface DisplayModel {
+export interface DisplayModel {
   template: M2Template;
   /** Size of the model itself (CreatureDisplayInfo × CreatureModelData scales); the spawn's own scale multiplies it. */
   scale: number;
@@ -39,6 +40,9 @@ export class SpawnModels {
   private readonly ready = new Map<string, DisplayModel | undefined>();
   /** Spawns drawn with a model: spawn key → display key. */
   private readonly shown = new Map<string, string>();
+  /** Also show the models of every spawn inside this area (Load the whole zone), whatever the distance. */
+  private region?: WorldBounds;
+  private refreshQueued = false;
 
   constructor(
     private readonly source: SpawnModelSource,
@@ -65,6 +69,11 @@ export class SpawnModels {
       return;
     }
     this.options = { ...options };
+    this.refresh();
+  }
+
+  setRegion(bounds: WorldBounds | undefined): void {
+    this.region = bounds;
     this.refresh();
   }
 
@@ -121,7 +130,22 @@ export class SpawnModels {
     }
   }
 
+  /** Models finishing in a row: placed once for all of them, on the next frame. */
+  private queueRefresh(): void {
+    if (this.refreshQueued) {
+      return;
+    }
+    this.refreshQueued = true;
+    requestAnimationFrame(() => {
+      this.refreshQueued = false;
+      this.refresh();
+    });
+  }
+
   private inRange(spawn: WorldSpawn, center: WorldPosition): boolean {
+    if (this.options.show && insideBounds(this.region, spawn.position.x, spawn.position.y)) {
+      return true;
+    }
     const distance = spawn.kind === 'creature' ? this.options.creatureDistance : this.options.gameobjectDistance;
     const dx = spawn.position.x - center.x;
     const dy = spawn.position.y - center.y;
@@ -149,7 +173,7 @@ export class SpawnModels {
     void model.then((loaded) => {
       if (this.models.get(displayKey) === model) {
         this.ready.set(displayKey, loaded);
-        this.refresh();
+        this.queueRefresh();
       } else if (loaded) {
         disposeM2Template(loaded.template);
       }
@@ -162,18 +186,30 @@ export class SpawnModels {
       spawn.kind === 'creature'
         ? await this.source.getCreatureDisplay(displayId)
         : await this.source.getGameObjectDisplay(displayId).then((model) => (model ? { model, scale: 1, textures: {} } : undefined));
-    const mesh = display && (await this.source.getM2(display.model));
-    if (!display || !mesh) {
-      return undefined;
-    }
-    const hairGeoset = display.hairGeoset;
-    const batches = hairGeoset === undefined ? mesh.batches : mesh.batches.filter((b) => isDefaultCharacterGeoset(b.geoset, hairGeoset));
-    const textures = await Promise.all(
-      batches.map((batch) => {
-        const path = batch.texture ?? display.textures[batch.textureType];
-        return path ? this.textures.get(path) : Promise.resolve(this.textures.fallback);
-      }),
-    );
-    return { template: buildM2Template({ ...mesh, batches }, textures, this.textures.fallback), scale: display.scale };
+    return display && displayModel(display, this.source, this.textures);
   }
+}
+
+/**
+ * The model of a creature display (or a player character), ready to place: its mesh with the display's textures in the
+ * replaceable slots and, for character models, only the default geosets with its hair. Undefined when not readable.
+ */
+export async function displayModel(
+  display: CreatureDisplay,
+  source: Pick<SpawnModelSource, 'getM2'>,
+  textures: TextureCache,
+): Promise<DisplayModel | undefined> {
+  const mesh = await source.getM2(display.model);
+  if (!mesh) {
+    return undefined;
+  }
+  const hairGeoset = display.hairGeoset;
+  const batches = hairGeoset === undefined ? mesh.batches : mesh.batches.filter((b) => isDefaultCharacterGeoset(b.geoset, hairGeoset));
+  const images = await Promise.all(
+    batches.map((batch) => {
+      const path = batch.texture ?? display.textures[batch.textureType];
+      return path ? textures.get(path) : Promise.resolve(textures.fallback);
+    }),
+  );
+  return { template: buildM2Template({ ...mesh, batches }, images, textures.fallback), scale: display.scale };
 }

@@ -20,6 +20,8 @@ export interface WorldRenderSettings {
   showFacingArrows: boolean;
   /** A circle around wandering creatures showing how far they roam. */
   showWanderRadius: boolean;
+  /** Circles around creatures: their bounding radius and combat reach (creature_model_info). */
+  showBounds: boolean;
   /** What the server collides with (buildings' and models' collision, what vmaps are made of), as a red wireframe. */
   showCollision: boolean;
   /** The server's navigation mesh (mmaps from the server data folder): where creatures can walk. */
@@ -36,7 +38,16 @@ export interface WorldRenderSettings {
   smallDoodadDistance: number;
   creatureDistance: number;
   gameobjectDistance: number;
+  /**
+   * Share of the screen's resolution drawn (1 = full, 0.5 = half): lower is much faster on big or high-DPI screens,
+   * a bit blurrier.
+   */
+  renderScale: number;
+  /** The marker (Space) as a player character, `race:sex` (e.g. `1:0` human male); '' = the beam only. */
+  markerModel: string;
 }
+
+export const RENDER_SCALES = [1, 0.75, 0.5];
 
 /** Draw distance of each group, in yards (0 = not drawn). */
 export interface DrawDistances {
@@ -69,6 +80,7 @@ export const DEFAULT_WORLD_RENDER_SETTINGS: WorldRenderSettings = {
   showModels: true,
   showFacingArrows: true,
   showWanderRadius: false,
+  showBounds: false,
   showCollision: false,
   showNavMesh: false,
   zoneLighting: false,
@@ -78,6 +90,8 @@ export const DEFAULT_WORLD_RENDER_SETTINGS: WorldRenderSettings = {
   smallDoodadDistance: 150,
   creatureDistance: 250,
   gameobjectDistance: 250,
+  renderScale: 1,
+  markerModel: '',
 };
 
 export const WORLD_RENDER_SETTINGS_KEY = 'keira3.worldEditor.render';

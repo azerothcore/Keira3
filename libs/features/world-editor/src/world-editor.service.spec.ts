@@ -34,6 +34,8 @@ describe('WorldEditorService', () => {
                 pathFromTemplate: 0,
                 speedWalk: '1',
                 speedRun: '1.14',
+                boundingRadius: '0.306',
+                combatReach: '1.5',
               },
               {
                 guid: '9',
@@ -97,6 +99,8 @@ describe('WorldEditorService', () => {
         phaseMask: 1,
         speedWalk: 1,
         speedRun: 1.14,
+        boundingRadius: 0.306,
+        combatReach: 1.5,
       },
       {
         type: 'creature',

@@ -21,5 +21,6 @@ export * from './model-bounds';
 export * from './server-geometry';
 export * from './world-vmaps';
 export * from './simulation';
+export * from './heading';
 export * from './world-map.component';
 export * from './minimap-image';

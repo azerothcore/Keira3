@@ -28,6 +28,7 @@ export class WorldEditorSessionService {
     areaTriggers: true,
     formations: true,
     pools: true,
+    flightPaths: true,
     travel: true,
   });
   readonly tool = signal<EditorTool>('select');
@@ -45,6 +46,7 @@ export class WorldEditorSessionService {
   readonly showControls = signal(false);
   /** The 2D world map is open over the 3D view. */
   readonly showMap = signal(false);
+  readonly showLegend = signal(false);
   /** An area picked on the world map (Shift + drag), loaded whole. */
   readonly mapRegion = signal<WorldBounds | undefined>(undefined);
 

@@ -140,6 +140,8 @@ describe('PathProber', () => {
       ]);
       wall(world, 20);
       expect(summary(await check(prober, [at(0), at(40, 0, 15)]))[1]).toBe('air bad BLOCKED');
+      // under the terrain
+      expect(summary(await check(prober, [at(0, 0, 4)]))).toEqual(['under bad UNDER_MAP']);
 
       const empty = setup({});
       expect(summary(await check(empty.prober, [at(0)]))).toEqual(['ground warn NO_NAVMESH']);
