@@ -17,6 +17,8 @@ export interface WorldSpawn {
   displayId?: number;
   /** The spawn's own scale (creature_template_model.DisplayScale, gameobject_template.size). */
   scale?: number;
+  /** Draws a circle of this radius (yards) around the spawn: how far a wandering creature roams. */
+  wanderRadius?: number;
 }
 
 export interface WorldWaypoint {

@@ -18,6 +18,8 @@ import {
 import { WaypointSaiRow, WaypointScriptStep } from './waypoint-info';
 
 const num = (value: number): number => Math.round(value * 100) / 100;
+/** creature.MovementType of creatures wandering around their spawn point (within wander_distance). */
+const RANDOM_MOVEMENT = 1;
 /** SMART_EVENT_WAYPOINT_DATA_REACHED: a creature on a `waypoint_data` path reached a point. */
 const SAI_EVENT_WAYPOINT_DATA_REACHED = 108;
 
@@ -40,7 +42,8 @@ export class WorldEditorService {
       '(ca.guid IS NULL AND IFNULL(cta.path_id, 0) <> 0) AS pathFromTemplate, ' +
       '0 AS rotation0, 0 AS rotation1, 0 AS rotation2, 0 AS rotation3, ' +
       // the first template model, as the server picks when it has a single one
-      'IFNULL(ctm.CreatureDisplayID, 0) AS displayId, IFNULL(ctm.DisplayScale, 1) AS scale ' +
+      'IFNULL(ctm.CreatureDisplayID, 0) AS displayId, IFNULL(ctm.DisplayScale, 1) AS scale, ' +
+      'c.wander_distance AS wanderDistance, c.MovementType AS movementType ' +
       'FROM creature c ' +
       'LEFT JOIN creature_template ct ON ct.entry = c.id ' +
       'LEFT JOIN creature_template_model ctm ON ctm.CreatureID = c.id AND ctm.Idx = 0 ' +
@@ -51,7 +54,7 @@ export class WorldEditorService {
     const gameobjects =
       "SELECT g.guid, g.id AS entry, IFNULL(gt.name, '') AS name, g.map, g.position_x AS x, g.position_y AS y, g.position_z AS z, g.orientation AS o, " +
       '0 AS pathId, 0 AS pathFromTemplate, g.rotation0, g.rotation1, g.rotation2, g.rotation3, ' +
-      'IFNULL(gt.displayId, 0) AS displayId, IFNULL(gt.size, 1) AS scale ' +
+      'IFNULL(gt.displayId, 0) AS displayId, IFNULL(gt.size, 1) AS scale, 0 AS wanderDistance, 0 AS movementType ' +
       'FROM gameobject g ' +
       'LEFT JOIN gameobject_template gt ON gt.entry = g.id ' +
       `WHERE ${area('g')} LIMIT ${SPAWN_LOAD_LIMIT}`;
@@ -194,5 +197,6 @@ function toSpawns(type: SpawnType, rows: SpawnRow[] | undefined): SpawnRecord[] 
     pathId: Number(row.pathId),
     displayId: Number(row.displayId ?? 0),
     scale: Number(row.scale ?? 1),
+    ...(Number(row.movementType) === RANDOM_MOVEMENT ? { wanderDistance: Number(row.wanderDistance) } : {}),
   }));
 }

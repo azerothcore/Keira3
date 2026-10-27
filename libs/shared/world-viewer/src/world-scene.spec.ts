@@ -236,6 +236,24 @@ describe('WorldScene', () => {
       expect(world.pick(0, 0, { tolerance: 0 })).toEqual(expect.objectContaining({ type: 'spawn', key: 'creature:1' }));
     });
 
+    it('circles wandering creatures with their wander distance, at real size', () => {
+      const world = new WorldScene();
+      world.setSpawns([spawn('creature:1', 'creature', at(0, 0), { wanderRadius: 10 }), spawn('creature:2', 'creature', at(5000, 0))]);
+      const ring = world.getObject('creature:1')?.getObjectByName('wander') as Line;
+      expect(ring).toBeDefined();
+      expect(world.getObject('creature:2')?.getObjectByName('wander')).toBeUndefined();
+      world.camera.position.set(0, 0, 0);
+      world.updateMarkerScale();
+      const marker = world.getObject('creature:1') as Mesh;
+      expect(ring.scale.x * marker.scale.x).toBeCloseTo(10);
+      // not clickable, and shared between spawns (not disposed with them)
+      lookDownAt(world, at(9, 0));
+      expect(world.pick(0, 0, { tolerance: 0 })).toBeUndefined();
+      const dispose = vi.spyOn(ring.geometry, 'dispose');
+      world.setSpawns([]);
+      expect(dispose).not.toHaveBeenCalled();
+    });
+
     it('scales markers with camera distance', () => {
       const world = new WorldScene();
       world.setSpawns([spawn('creature:1', 'creature', at(0, 0)), spawn('creature:2', 'creature', at(5000, 0))]);

@@ -97,7 +97,7 @@ const ZONES = [
 ];
 const SPAWNS = [
   spawn('creature', 1, { pathId: 10, name: 'Deputy Willem' }),
-  spawn('creature', 2, { name: '' }),
+  spawn('creature', 2, { name: '', wanderDistance: 8 }),
   spawn('gameobject', 3, { name: 'Mailbox' }),
 ];
 const WAYPOINTS: WaypointRecord[] = [
@@ -667,7 +667,11 @@ describe(WorldEditorComponent.name, () => {
           .viewer()
           .spawns()
           .map((s) => s.label),
-      ).toEqual(['Deputy Willem · creature 1 · path 10', '102 · creature 2', 'Mailbox · gameobject 3']);
+      ).toEqual([
+        'Deputy Willem - Creature (GUID: 1, Entry: 101) · path 10',
+        '102 - Creature (GUID: 2, Entry: 102)',
+        'Mailbox - GameObject (GUID: 3, Entry: 103)',
+      ]);
       expect(page.viewer().paths()).toEqual([
         {
           key: 'path:10',
@@ -685,6 +689,24 @@ describe(WorldEditorComponent.name, () => {
           ],
         },
       ]);
+    });
+
+    it('circles wandering creatures when asked', async () => {
+      const { page } = await setup();
+      await loadArea(page);
+      const wander = () =>
+        page
+          .viewer()
+          .spawns()
+          .map((s) => s.wanderRadius);
+      expect(wander()).toEqual([undefined, undefined, undefined]);
+      page.click('view-toggle');
+      page.fixture.detectChanges();
+      const toggle = page.byId<HTMLInputElement>('view-wander').nativeElement;
+      toggle.checked = true;
+      toggle.dispatchEvent(new Event('change'));
+      page.fixture.detectChanges();
+      expect(wander()).toEqual([undefined, 8, undefined]);
     });
 
     it('filters layers', async () => {
@@ -856,7 +878,7 @@ describe(WorldEditorComponent.name, () => {
           .find((s) => s.key === 'creature:1002'),
       ).toEqual(expect.objectContaining({ pending: true, displayId: 1, scale: 1 }));
       expect(mocks.service.getEntryDisplay).toHaveBeenCalledWith('creature', 197);
-      expect(page.text('selected-title')).toContain('creature 1002');
+      expect(page.text('selected-title')).toContain('Creature (GUID: 1002, Entry: 197)');
 
       page.viewer().objectMoved.emit({ key: 'creature:1002', position: { x: 7, y: 8, z: 9 }, orientation: 0 });
       await settle(page);

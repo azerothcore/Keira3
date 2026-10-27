@@ -16,6 +16,8 @@ export interface WorldRenderSettings {
   showDoodads: boolean;
   /** Real creature/gameobject models instead of pins (pins are always used beyond the draw distance). */
   showModels: boolean;
+  /** A circle around wandering creatures showing how far they roam. */
+  showWanderRadius: boolean;
   /** Zone lighting, fog and sky colours (otherwise a fixed neutral light). */
   zoneLighting: boolean;
   /** How far from the camera target (yards) doodads and models are drawn. */
@@ -59,6 +61,7 @@ export const DEFAULT_WORLD_RENDER_SETTINGS: WorldRenderSettings = {
   showRoofs: true,
   showDoodads: true,
   showModels: true,
+  showWanderRadius: false,
   zoneLighting: false,
   drawDistance: 250,
   advancedDistances: false,

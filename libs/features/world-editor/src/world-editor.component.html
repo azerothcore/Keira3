@@ -175,6 +175,17 @@
         <input
           class="form-check-input"
           type="checkbox"
+          id="world-editor-wander"
+          data-testid="view-wander"
+          [checked]="renderSettings.settings().showWanderRadius"
+          (change)="setRenderFlag('showWanderRadius', $event)"
+        />
+        <label class="form-check-label" for="world-editor-wander">{{ 'WORLD_EDITOR.WANDER_RADIUS' | translate }}</label>
+      </div>
+      <div class="form-check form-switch mb-0">
+        <input
+          class="form-check-input"
+          type="checkbox"
           id="world-editor-zone-lighting"
           data-testid="view-zone-lighting"
           [checked]="renderSettings.settings().zoneLighting"
@@ -521,8 +532,7 @@
         <div class="card-body p-2" data-testid="selection">
           @if (selectedSpawn(); as spawn) {
             <div class="mb-1" data-testid="selected-title">
-              <strong>{{ spawn.name || spawn.entry }}</strong>
-              <span class="text-muted"> · {{ spawn.type }} {{ spawn.guid }} · entry {{ spawn.entry }}</span>
+              <strong>{{ spawnTitle(spawn) }}</strong>
               @if (spawn.pathId) {
                 <span class="badge bg-danger ms-1" data-testid="selected-path"
                   >path {{ spawn.pathId }}{{ spawn.pathFromTemplate ? ' (template)' : '' }}</span

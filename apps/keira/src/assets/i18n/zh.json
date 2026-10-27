@@ -1050,6 +1050,7 @@
     "TILES": "块",
     "BUILDINGS": "建筑",
     "ROOFS": "屋顶",
+    "WANDER_RADIUS": "游荡范围",
     "DOODADS": "树木和道具",
     "DRAW_DISTANCE": "绘制距离",
     "YARDS": "码",

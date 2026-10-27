@@ -45,6 +45,12 @@ import { WorldEditorService } from './world-editor.service';
 import { GpsLocation, parseGpsOutput } from './gps';
 import { describeWaypoint, WaypointSaiRow, WaypointScriptStep } from './waypoint-info';
 
+/** "Marshal McBride - Creature (GUID: 1, Entry: 197)", as shown on hover and in the selection panel. */
+export function spawnTitle(spawn: { type: SpawnType; name: string; guid: number; entry: number }): string {
+  const type = spawn.type === 'creature' ? 'Creature' : 'GameObject';
+  return `${spawn.name || spawn.entry} - ${type} (GUID: ${spawn.guid}, Entry: ${spawn.entry})`;
+}
+
 const LAST_VIEW_KEY = 'keira3.worldEditor.lastView';
 
 interface LastView extends WorldPosition {
@@ -178,6 +184,7 @@ export class WorldEditorComponent implements OnInit {
 
   protected readonly worldSpawns = computed<WorldSpawn[]>(() => {
     const layers = this.layers();
+    const showWander = this.renderSettings.settings().showWanderRadius;
     return this.spawns()
       .filter((s) => (s.type === 'creature' ? layers.creatures : layers.gameobjects))
       .map((s) => ({
@@ -185,12 +192,13 @@ export class WorldEditorComponent implements OnInit {
         kind: s.type,
         guid: s.guid,
         entry: s.entry,
-        label: `${s.name || s.entry} · ${s.type} ${s.guid}${s.pathId ? ` · path ${s.pathId}` : ''}`,
+        label: `${spawnTitle(s)}${s.pathId ? ` · path ${s.pathId}` : ''}`,
         position: { x: s.x, y: s.y, z: s.z },
         orientation: s.o,
         pending: this.changes.isNewSpawn(spawnKey(s.type, s.guid)),
         displayId: s.displayId,
         scale: s.scale,
+        wanderRadius: showWander ? s.wanderDistance : undefined,
       }));
   });
 
@@ -218,6 +226,8 @@ export class WorldEditorComponent implements OnInit {
   });
 
   /** What happens at a waypoint (wait, move type, script, SmartAI of the creatures walking the path). */
+  protected readonly spawnTitle = spawnTitle;
+
   protected waypointInfo(waypoint: WaypointRecord): string[] {
     const walkers = this.spawns().filter((s) => s.type === 'creature' && s.pathId === waypoint.pathId);
     const ids = new Set(walkers.flatMap((s) => [s.entry, -s.guid]));

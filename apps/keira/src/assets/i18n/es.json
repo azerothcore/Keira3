@@ -1050,6 +1050,7 @@
     "TILES": "casillas",
     "BUILDINGS": "Edificios",
     "ROOFS": "Tejados",
+    "WANDER_RADIUS": "Radio de deambulación",
     "DOODADS": "Árboles y objetos",
     "DRAW_DISTANCE": "Distancia de dibujado",
     "YARDS": "yardas",

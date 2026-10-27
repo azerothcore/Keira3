@@ -22,7 +22,20 @@ describe('WorldEditorService', () => {
         sql.includes('FROM creature c')
           ? [
               { guid: '1', entry: 197, name: 'Marshal', map: 0, x: 1, y: 2, z: 3, o: 0.5, pathId: 10, pathFromTemplate: 0 },
-              { guid: '9', entry: 197, name: 'Marshal', map: 0, x: 1, y: 2, z: 3, o: 0.5, pathId: 70, pathFromTemplate: 1 },
+              {
+                guid: '9',
+                entry: 197,
+                name: 'Marshal',
+                map: 0,
+                x: 1,
+                y: 2,
+                z: 3,
+                o: 0.5,
+                pathId: 70,
+                pathFromTemplate: 1,
+                movementType: '1',
+                wanderDistance: '5',
+              },
             ]
           : [
               {
@@ -65,6 +78,7 @@ describe('WorldEditorService', () => {
         pathFromTemplate: true,
         displayId: 0,
         scale: 1,
+        wanderDistance: 5,
       },
       {
         type: 'gameobject',
@@ -89,6 +103,7 @@ describe('WorldEditorService', () => {
     expect(queryService.query.mock.calls[1][0]).toContain('g.rotation0, g.rotation1, g.rotation2, g.rotation3');
     expect(creatureSql).toContain('LIMIT 3000');
     expect(creatureSql).toContain('LEFT JOIN creature_template_model ctm ON ctm.CreatureID = c.id AND ctm.Idx = 0');
+    expect(creatureSql).toContain('c.wander_distance AS wanderDistance, c.MovementType AS movementType');
     expect(queryService.query.mock.calls[1][0]).toContain('IFNULL(gt.displayId, 0) AS displayId, IFNULL(gt.size, 1) AS scale');
   });
 

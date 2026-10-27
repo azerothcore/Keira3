@@ -23,6 +23,8 @@ export interface SpawnRecord {
   displayId?: number;
   /** creature_template_model.DisplayScale or gameobject_template.size. */
   scale?: number;
+  /** Creatures that wander (MovementType 1): how far from the spawn point (creature.wander_distance). */
+  wanderDistance?: number;
 }
 
 export type Quaternion = [number, number, number, number];
@@ -74,6 +76,8 @@ export interface SpawnRow extends TableRow {
   rotation3: number;
   displayId: number;
   scale: number;
+  wanderDistance: number;
+  movementType: number;
 }
 
 export interface WaypointRow extends TableRow {

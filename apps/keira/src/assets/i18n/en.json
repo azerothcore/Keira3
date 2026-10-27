@@ -1050,6 +1050,7 @@
     "TILES": "tiles",
     "BUILDINGS": "Buildings",
     "ROOFS": "Roofs",
+    "WANDER_RADIUS": "Wander radius",
     "DOODADS": "Trees & props",
     "DRAW_DISTANCE": "Draw distance",
     "YARDS": "yards",

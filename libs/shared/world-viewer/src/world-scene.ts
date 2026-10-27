@@ -15,6 +15,7 @@ import {
   Intersection,
   Line,
   LineBasicMaterial,
+  LineLoop,
   LinearFilter,
   LinearMipmapLinearFilter,
   Material,
@@ -85,6 +86,7 @@ interface SpawnMarkerData {
 }
 
 const SPAWN_MODEL_NAME = 'model';
+const WANDER_RING_NAME = 'wander';
 /** Default colour and opacity of each liquid. */
 const LIQUID_LOOK: Record<LiquidKind, [number, number]> = {
   water: [0x2a6b9c, 0.65],
@@ -159,6 +161,11 @@ export class WorldScene {
   private readonly gameobjectGeometry = new BoxGeometry(1.2, 1.2, 1.2).translate(0, 0.6, 0);
   private readonly waypointGeometry = new SphereGeometry(0.5, 12, 8);
   private readonly arrowGeometry = new ConeGeometry(0.4, 1.2, 8);
+  /** Unit circle on the ground (scaled to each creature's wander distance). */
+  private readonly ringGeometry = new BufferGeometry().setFromPoints(
+    Array.from({ length: 64 }, (_, i) => new Vector3(Math.cos((i / 64) * Math.PI * 2), 0.3, Math.sin((i / 64) * Math.PI * 2))),
+  );
+  private readonly wanderMaterial = new LineBasicMaterial({ color: 0xffd166, transparent: true, opacity: 0.8 });
   /** Nose on a waypoint ball, pointing to the next point (along +y before rotation, starting at the ball's surface). */
   private readonly pointerGeometry = new ConeGeometry(0.3, 0.8, 8).translate(0, 0.85, 0);
   private readonly arrows = new Set<Object3D>();
@@ -387,6 +394,13 @@ export class WorldScene {
       marker.name = spawn.key;
       marker.userData = { key: spawn.key, kind: spawn.kind, pending: !!spawn.pending } satisfies PickableData & { pending: boolean };
       placeObject(marker, spawn.position, spawn.orientation);
+      if (spawn.wanderRadius) {
+        const ring = new LineLoop(this.ringGeometry, this.wanderMaterial);
+        ring.name = WANDER_RING_NAME;
+        ring.userData = { radius: spawn.wanderRadius };
+        ring.raycast = () => undefined;
+        marker.add(ring);
+      }
       this.addObject(this.spawnGroup, spawn.key, marker);
     }
     this.applySelection();
@@ -572,10 +586,14 @@ export class WorldScene {
       const distance = object.position.distanceTo(cameraPosition);
       const scale = Math.min(MARKER_MAX_SCALE, Math.max(1, distance / MARKER_SCALE_DISTANCE));
       object.scale.setScalar(scale);
-      // a model keeps its real size whatever the pin's on-screen scaling
+      // a model and a wander circle keep their real size whatever the pin's on-screen scaling
       const modelScale = (object.userData as SpawnMarkerData).modelScale;
       if (modelScale !== undefined) {
         object.getObjectByName(SPAWN_MODEL_NAME)?.scale.setScalar(modelScale / scale);
+      }
+      const ring = object.getObjectByName(WANDER_RING_NAME);
+      if (ring) {
+        ring.scale.setScalar((ring.userData as { radius: number }).radius / scale);
       }
     }
   }
@@ -656,6 +674,8 @@ export class WorldScene {
     this.waypointGeometry.dispose();
     this.arrowGeometry.dispose();
     this.pointerGeometry.dispose();
+    this.ringGeometry.dispose();
+    this.wanderMaterial.dispose();
     this.markerMaterials.forEach((material) => material.dispose());
     this.hiddenMarkerMaterial.dispose();
     this.sky.geometry.dispose();
@@ -677,7 +697,7 @@ export class WorldScene {
       if (key) {
         this.objects.delete(key);
       }
-      if (object instanceof Line) {
+      if (object instanceof Line && object.name !== WANDER_RING_NAME) {
         object.geometry.dispose();
         (object.material as Material).dispose();
       }
