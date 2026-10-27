@@ -213,6 +213,7 @@ export class WowClientService {
       });
       adt?.wmos.forEach((wmo) => buildings.add(wmo.path.toLowerCase()));
       onProgress(++done, tiles.length);
+      await nextFrame();
     }
     const missing = [...buildings].filter((path) => !this.cache.has(identity, 'wmo', path));
     for (const path of missing) {
@@ -224,6 +225,7 @@ export class WowClientService {
       }
       await this.getWmo(path).catch((error: Error) => console.warn(`[World Editor] Could not preload ${path}: ${error.message}`));
       onProgress(++done, tiles.length + missing.length);
+      await nextFrame();
     }
     return true;
   }
@@ -449,4 +451,9 @@ export class WowClientService {
     const bytes = serverDataPath && native.exists(serverDbc) ? native.readFile(serverDbc) : await this.readFile(`DBFilesClient\\${name}`);
     return bytes ? new DbcFile(bytes) : undefined;
   }
+}
+
+/** Lets the window repaint (progress bars, clicks on Cancel) between pieces of long, mostly synchronous work. */
+function nextFrame(): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve));
 }
