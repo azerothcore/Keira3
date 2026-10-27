@@ -799,7 +799,7 @@ describe(WorldEditorComponent.name, () => {
         ...SPAWNS,
         spawn('creature', 4, { event: 12, pathId: 10, name: 'Headless Horseman' }),
         spawn('creature', 5, { event: 1, name: 'Flame Keeper' }),
-        spawn('creature', 6, { trigger: true, name: '[DND] Bunny' }),
+        spawn('creature', 6, { trigger: true, name: '[DND] Bunny', phaseMask: 1 }),
         spawn('gameobject', 7, { phaseMask: 2 }),
       ]);
       mocks.service.loadEventNames.mockResolvedValue(new Map([[12, "Hallow's End"]]));
@@ -842,7 +842,14 @@ describe(WorldEditorComponent.name, () => {
       expect(keys()).toEqual([]);
       expect(page.viewer().paths()).toEqual([]);
       page.type('filter-search', '');
+      page.fixture.detectChanges();
 
+      expect(
+        page
+          .viewer()
+          .spawns()
+          .find((s) => s.key === 'gameobject:7')?.label,
+      ).toBe('Spawn 7 - GameObject (GUID: 7, Entry: 107) · phaseMask 2');
       check('filter-triggers', true);
       expect(keys()).toContain('creature:6');
       check('filter-phases', false);

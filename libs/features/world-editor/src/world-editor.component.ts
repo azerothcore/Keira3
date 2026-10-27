@@ -67,6 +67,11 @@ function pathOwners(spawns: SpawnRecord[]): Map<number, string[]> {
   return owners;
 }
 
+/** " · phaseMask 2" for spawns not in phase 1 (the one players start in), shown on hover. */
+function phaseNote(spawn: SpawnRecord): string {
+  return spawn.phaseMask === undefined || spawn.phaseMask === 1 ? '' : ` · phaseMask ${spawn.phaseMask}`;
+}
+
 const LAST_VIEW_KEY = 'keira3.worldEditor.lastView';
 
 interface LastView extends WorldPosition {
@@ -91,7 +96,16 @@ function saveLastView(view: LastView): void {
 /** How many steps can be undone. */
 const HISTORY_SIZE = 100;
 
-type RenderFlagKey = 'showRoofs' | 'showBuildings' | 'showDoodads' | 'showModels' | 'zoneLighting' | 'advancedDistances' | 'loadWholeZone';
+type RenderFlagKey =
+  | 'showRoofs'
+  | 'showBuildings'
+  | 'showDoodads'
+  | 'showModels'
+  | 'showFacingArrows'
+  | 'showWanderRadius'
+  | 'zoneLighting'
+  | 'advancedDistances'
+  | 'loadWholeZone';
 type RenderDistanceKey = 'drawDistance' | 'largeDoodadDistance' | 'smallDoodadDistance' | 'creatureDistance' | 'gameobjectDistance';
 
 /**
@@ -237,7 +251,7 @@ export class WorldEditorComponent implements OnInit {
         kind: s.type,
         guid: s.guid,
         entry: s.entry,
-        label: `${spawnTitle(s)}${s.pathId ? ` · path ${s.pathId}` : ''}`,
+        label: `${spawnTitle(s)}${s.pathId ? ` · path ${s.pathId}` : ''}${phaseNote(s)}`,
         position: { x: s.x, y: s.y, z: s.z },
         orientation: s.o,
         pending: this.changes.isNewSpawn(spawnKey(s.type, s.guid)),
