@@ -94,6 +94,7 @@ import {
   SPAWN_FIELDS,
   LAYER_SWITCHES,
   SPAWN_LOAD_RADIUS,
+  SPAWN_RELOAD_DISTANCE,
   OVERLAY_SWITCHES,
   Teleport,
   PoolMember,
@@ -609,6 +610,8 @@ export class WorldEditorComponent implements OnInit {
   private readonly quests = signal(new Map<string, SpawnQuest[]>());
   private center?: WorldPosition;
   private spawnRequest = 0;
+  /** Where the spawns were last loaded around. */
+  private spawnLoadCenter?: { mapId: number; x: number; y: number };
   private readonly nextGuids = this.session.nextGuids;
   private get reservedPathIds(): number[] {
     return this.session.reservedPathIds;
@@ -1344,6 +1347,18 @@ export class WorldEditorComponent implements OnInit {
     this.center = center;
     this.cameraCenter.set(center);
     saveLastView({ mapId: this.mapId(), ...center });
+    // the spawns are loaded well beyond what's in sight: they're loaded again only once the camera went some way
+    const last = this.spawnLoadCenter;
+    if (last && last.mapId === this.mapId() && Math.hypot(center.x - last.x, center.y - last.y) < SPAWN_RELOAD_DISTANCE) {
+      return;
+    }
+    await this.reloadSpawns();
+  }
+
+  /** Loads everything again: the spawns around the camera (and their paths, scripts…), the zones and boss boundaries. */
+  protected async refresh(): Promise<void> {
+    void this.loadBossBoundaries(this.mapId());
+    void this.loadZones(true);
     await this.reloadSpawns();
   }
 
@@ -1353,6 +1368,7 @@ export class WorldEditorComponent implements OnInit {
       return;
     }
     const request = ++this.spawnRequest;
+    this.spawnLoadCenter = { mapId: this.mapId(), x: center.x, y: center.y };
     this.loadingSpawns.set(true);
     try {
       // with a region (Load the whole zone, an area of the world map), its spawns too
@@ -1368,17 +1384,10 @@ export class WorldEditorComponent implements OnInit {
         const paths = s.type === 'creature' ? [...new Set([...(saiPaths.get(s.entry) ?? []), ...(saiPaths.get(-s.guid) ?? [])])] : [];
         return paths.length ? { ...s, saiPaths: paths } : s;
       });
-      this.loadedSpawns.set(spawns);
-      if (this.pendingSelect && this.findSpawn(this.pendingSelect)) {
-        this.groupKeys.set([]);
-        this.select(this.pendingSelect);
-        this.pendingSelect = undefined;
-      }
-      const waypoints = await this.service.loadWaypoints(this.pathIds());
+      const waypoints = await this.service.loadWaypoints([...new Set(this.changes.applyToSpawns(spawns, this.mapId()).flatMap(pathsOf))]);
       if (request !== this.spawnRequest) {
         return;
       }
-      this.loadedWaypoints.set(waypoints);
       const walkers = spawns.filter((s) => s.type === 'creature' && pathsOf(s).length);
       const [scripts, sai, eventNames, quests, formations, pools] = await Promise.all([
         this.service.loadWaypointScripts(waypoints.map((w) => w.action ?? 0)),
@@ -1389,6 +1398,9 @@ export class WorldEditorComponent implements OnInit {
         this.service.loadPools(spawns),
       ]);
       if (request === this.spawnRequest) {
+        // all at once: the view redraws once
+        this.loadedSpawns.set(spawns);
+        this.loadedWaypoints.set(waypoints);
         this.waypointScripts.set(scripts);
         this.waypointSai.set(sai);
         this.formations.set(formations);
@@ -1400,8 +1412,15 @@ export class WorldEditorComponent implements OnInit {
           byEntry.set(key, [...(byEntry.get(key) ?? []), quest]);
         }
         this.quests.set(byEntry);
+        if (this.pendingSelect && this.findSpawn(this.pendingSelect)) {
+          this.groupKeys.set([]);
+          this.select(this.pendingSelect);
+          this.pendingSelect = undefined;
+        }
       }
     } catch (error) {
+      // tried again on the next move
+      this.spawnLoadCenter = undefined;
       this.toastr.error((error as Error).message, 'World Editor');
     } finally {
       if (request === this.spawnRequest) {

@@ -201,6 +201,26 @@ describe('WorldScene', () => {
       expect(emissive('creature:2')).toBe(0);
     });
 
+    it('keeps the pins (and models) of spawns that did not change, and redraws the others', () => {
+      const world = new WorldScene();
+      const first = [spawn('creature:1', 'creature', at(0, 0)), spawn('creature:2', 'creature', at(5, 0))];
+      expect([...world.setSpawns(first)]).toEqual([]);
+      const pin = world.getObject('creature:1');
+      const model = new Object3D();
+      world.setSpawnModel('creature:1', model);
+      expect([...world.setSpawns([first[0], spawn('creature:2', 'creature', at(6, 0))])]).toEqual(['creature:1']);
+      expect(world.getObject('creature:1')).toBe(pin);
+      expect(model.parent).toBe(pin);
+      // dragged and not saved: put back
+      pin?.position.set(100, 0, 0);
+      expect([...world.setSpawns(first)]).toEqual([]);
+      expect(world.getObject('creature:1')).not.toBe(pin);
+      expect(world.getObject('creature:1')?.position.x).toBeCloseTo(worldToScene(at(0, 0)).x);
+      // gone
+      world.setSpawns([]);
+      expect(world.objectKeys).toEqual([]);
+    });
+
     it('moves a copy of a spawn on its own (the movement simulation), without its wander circle', () => {
       const world = new WorldScene();
       world.setSpawns([spawn('creature:1', 'creature', at(0, 0), { wanderRadius: 5 })]);
@@ -701,6 +721,20 @@ describe('WorldScene', () => {
       expect(arrowsOf()[0].scale.x).toBe(8);
       world.setWaypointPaths([]);
       expect(world.scene.getObjectByName('path:1:arrows')).toBeUndefined();
+    });
+
+    it('keeps the paths that did not change, and draws again those dragged without saving', () => {
+      const world = new WorldScene();
+      const other: WaypointPath = { key: 'path:2', label: 'Path 2', points: [{ point: 1, position: at(50, 50) }] };
+      world.setWaypointPaths([path(false), other]);
+      const line = lineOf(world);
+      world.setWaypointPaths([path(false), { ...other, label: 'Renamed' }]);
+      expect(lineOf(world)).toBe(line);
+      world.getObject('path:1#2')?.position.set(1, 2, 3);
+      world.setWaypointPaths([path(false), { ...other, label: 'Renamed' }]);
+      expect(lineOf(world)).not.toBe(line);
+      expect(world.getObjectState('path:1#2')?.position.x).toBeCloseTo(at(10, 0).x);
+      expect(world.objectKeys).toContain('path:2#1');
     });
 
     it('closes looping paths with more than two points', () => {

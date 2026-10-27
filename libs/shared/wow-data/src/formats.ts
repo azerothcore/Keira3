@@ -125,7 +125,13 @@ function globalWmo(bytes: Uint8Array): { wmo: ModelPlacement; wmoBounds: WorldBo
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   const at = placement.offset;
   const float = (i: number) => view.getFloat32(at + 8 + i * 4, true);
-  const [px, py, pz, rx, ry, rz, minX, minY, minZ, maxX, maxY, maxZ] = Array.from({ length: 12 }, (_, i) => float(i));
+  const values = Array.from({ length: 12 }, (_, i) => float(i));
+  // like the client (and the server's vmap extractor): a building placed at 0, 0 sits in the middle of the map, so
+  // it and its extents are moved there
+  const shift = values[0] === 0 && values[2] === 0 ? MAP_CORNER : 0;
+  const [px, py, pz, rx, ry, rz, minX, minY, minZ, maxX, maxY, maxZ] = values.map((value, i) =>
+    [0, 2, 6, 8, 9, 11].includes(i) ? value + shift : value,
+  );
   return {
     wmo: {
       uniqueId: view.getUint32(at + MODF_UNIQUE_ID_OFFSET, true),

@@ -169,6 +169,16 @@
     <button
       type="button"
       class="btn btn-sm btn-outline-secondary"
+      data-testid="refresh"
+      [title]="'WORLD_EDITOR.REFRESH_HELP' | translate"
+      [disabled]="loadingSpawns()"
+      (click)="refresh()"
+    >
+      <i class="fa fa-sync" [class.fa-spin]="loadingSpawns()"></i> {{ 'WORLD_EDITOR.REFRESH' | translate }}
+    </button>
+    <button
+      type="button"
+      class="btn btn-sm btn-outline-secondary"
       data-testid="fullscreen-toggle"
       [title]="'WORLD_EDITOR.FULLSCREEN' | translate"
       (click)="toggleFullscreen()"

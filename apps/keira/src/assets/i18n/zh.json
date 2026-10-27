@@ -1046,6 +1046,8 @@
     "ERROR_DESKTOP_ONLY": "3D世界编辑器需要 Keira3 桌面应用来读取你的 WoW 客户端文件。",
     "WALKED_BY": "使用者",
     "VIEW": "视图",
+    "REFRESH": "刷新",
+    "REFRESH_HELP": "重新加载镜头周围的刷新点及其路径和脚本、区域和首领边界",
     "TEXTURES": "纹理",
     "LOAD_AHEAD": "提前加载",
     "LOAD_AHEAD_HELP": "在视野内没有加载时，读取已绘制范围之外的地块（地形、纹理、建筑、物件），到达时即可就绪。",

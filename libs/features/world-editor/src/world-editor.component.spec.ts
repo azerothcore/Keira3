@@ -2191,7 +2191,8 @@ describe(WorldEditorComponent.name, () => {
       page.click('search-result-creature-99');
       await settle(page);
       expect(page.viewer().focus()).toEqual({ x: -5000, y: -100, z: 80 });
-      await loadArea(page);
+      page.click('refresh');
+      await settle(page);
       expect(page.text('selected-title')).toContain('Far one');
       // results are dots on the world map
       page.click('map-toggle');
@@ -2721,11 +2722,33 @@ describe(WorldEditorComponent.name, () => {
       mocks.service.loadWaypointScripts.mockReturnValueOnce(new Promise((r) => (resolveScripts = r))).mockResolvedValueOnce(new Map());
       page.viewer().centerChanged.emit(CENTER);
       await settle(page);
-      page.viewer().centerChanged.emit(CENTER);
+      // far enough to load again
+      page.viewer().centerChanged.emit({ ...CENTER, x: CENTER.x + 500 });
       await settle(page);
       resolveScripts(new Map([[50, [{ id: 50, delay: 0, command: 1 }]]]));
       await settle(page);
       expect(page.viewer().paths()[0].points[1].info).toContain('script 50');
+    });
+
+    it('loads the spawns again only once the camera went some way, or when asked to', async () => {
+      const { page } = await setup();
+      await loadArea(page);
+      page.viewer().centerChanged.emit({ ...CENTER, x: CENTER.x + 50 });
+      await settle(page);
+      expect(mocks.service.loadSpawns).toHaveBeenCalledTimes(1);
+      page.viewer().centerChanged.emit({ ...CENTER, x: CENTER.x + 200 });
+      await settle(page);
+      expect(mocks.service.loadSpawns).toHaveBeenCalledTimes(2);
+      page.click('refresh');
+      await settle(page);
+      expect(mocks.service.loadSpawns).toHaveBeenCalledTimes(3);
+      // a failed load is tried again on the next move
+      mocks.service.loadSpawns.mockRejectedValueOnce(new Error('gone'));
+      page.click('refresh');
+      await settle(page);
+      page.viewer().centerChanged.emit({ ...CENTER, x: CENTER.x + 210 });
+      await settle(page);
+      expect(mocks.service.loadSpawns).toHaveBeenCalledTimes(5);
     });
 
     it('ignores waypoints of an older camera position', async () => {

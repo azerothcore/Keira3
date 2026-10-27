@@ -134,6 +134,13 @@ describe('formats', () => {
       doodadSet: 2,
     });
     expect(wdt.wmoBounds).toEqual({ minX: corner - 210, maxX: corner - 190, minY: corner - 110, maxY: corner - 90, minZ: 10, maxZ: 60 });
+    // placed at 0, 0 (as dungeons are): in the middle of the map, with its extents
+    const centred = new Uint8Array(64);
+    const centredView = new DataView(centred.buffer);
+    [0, 0, 0, 0, 0, 0, -115, -140, -570, 1150, 890, 380].forEach((value, i) => centredView.setFloat32(8 + i * 4, value, true));
+    const dungeon = parseWdt(Uint8Array.from([...chunk('MWMO', name), ...chunk('MODF', Array.from(centred))]));
+    expect(dungeon.wmo?.position).toEqual([0, 0, 0]);
+    expect(dungeon.wmoBounds).toEqual({ minX: -380, maxX: 570, minY: -1150, maxY: 115, minZ: -140, maxZ: 890 });
     // a name without its ending zero; no placement, or an empty name: no building
     expect(parseWdt(Uint8Array.from([...chunk('MWMO', [65]), ...chunk('MODF', Array.from(modf))])).wmo?.path).toBe('A');
     expect(parseWdt(Uint8Array.from(chunk('MWMO', name))).wmo).toBeUndefined();

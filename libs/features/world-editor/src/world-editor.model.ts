@@ -186,6 +186,8 @@ export const preferredPathId = (guid: number): number => guid * 10;
 
 /** Half-size of the square (in yards) around the camera whose spawns are loaded. */
 export const SPAWN_LOAD_RADIUS = 450;
+/** How far (yards) the camera goes from where the spawns were last loaded before they're loaded again. */
+export const SPAWN_RELOAD_DISTANCE = 150;
 export const SPAWN_LOAD_LIMIT = 3000;
 
 /** A `creature_formations` row: `member` follows `leader` at `dist` yards and `angle` degrees from its facing. */

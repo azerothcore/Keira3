@@ -77,10 +77,10 @@ export class SpawnModels {
     this.refresh();
   }
 
-  /** Call after `WorldScene.setSpawns` (which recreates the pins). */
-  setSpawns(spawns: WorldSpawn[]): void {
+  /** Call after `WorldScene.setSpawns`, with the keys of the pins it kept (those keep their model). */
+  setSpawns(spawns: WorldSpawn[], kept: ReadonlySet<string> = new Set()): void {
     this.spawns = spawns;
-    this.shown.clear();
+    [...this.shown.keys()].filter((key) => !kept.has(key)).forEach((key) => this.shown.delete(key));
     this.refresh();
   }
 

@@ -77,6 +77,7 @@ import {
   WorldLink,
   WorldMarker,
   WorldSpawn,
+  WorldWaypoint,
 } from './world-viewer.model';
 
 type MarkerState = 'normal' | 'pending' | 'selected';
@@ -108,8 +109,24 @@ interface PickableData {
 /** Extra data of spawn pins. */
 interface SpawnMarkerData {
   pending?: boolean;
+  /** What the pin was drawn from (see `spawnSignature`): an unchanged spawn keeps its pin. */
+  signature?: string;
   /** Set while the spawn is drawn with its model. */
   modelScale?: number;
+}
+
+/** What a spawn's pin is drawn from: two spawns with the same signature have the same pin. */
+function spawnSignature(spawn: WorldSpawn): string {
+  return JSON.stringify([
+    spawn.kind,
+    !!spawn.pending,
+    spawn.position,
+    spawn.orientation,
+    spawn.wanderRadius,
+    spawn.bounds,
+    spawn.displayId,
+    spawn.scale,
+  ]);
 }
 
 const SPAWN_MODEL_NAME = 'model';
@@ -711,13 +728,37 @@ export class WorldScene {
     return [...this.objects.keys()];
   }
 
-  setSpawns(spawns: WorldSpawn[]): void {
-    this.clearGroup(this.spawnGroup);
+  /**
+   * Draws the spawns' pins. Pins of spawns that didn't change are kept as they are (with their model), so reloading the
+   * spawns around the camera only redraws those that came, went or changed. Returns the keys of the pins kept.
+   */
+  setSpawns(spawns: WorldSpawn[]): Set<string> {
+    const wanted = new Map(spawns.map((spawn) => [spawn.key, spawn]));
+    const kept = new Set<string>();
+    for (const marker of [...this.spawnGroup.children]) {
+      const data = marker.userData as PickableData & SpawnMarkerData;
+      const spawn = wanted.get(data.key);
+      // (a pin dragged without saving is put back)
+      if (spawn && !kept.has(data.key) && data.signature === spawnSignature(spawn) && placedAt(marker, spawn.position, spawn.orientation)) {
+        kept.add(data.key);
+      } else {
+        this.forget(marker);
+        marker.removeFromParent();
+      }
+    }
     for (const spawn of spawns) {
+      if (kept.has(spawn.key)) {
+        continue;
+      }
       const geometry = spawn.kind === 'creature' ? this.creatureGeometry : this.gameobjectGeometry;
       const marker = new Mesh(geometry, this.markerMaterial(spawn.kind, spawn.pending ? 'pending' : 'normal'));
       marker.name = spawn.key;
-      marker.userData = { key: spawn.key, kind: spawn.kind, pending: !!spawn.pending } satisfies PickableData & { pending: boolean };
+      marker.userData = {
+        key: spawn.key,
+        kind: spawn.kind,
+        pending: !!spawn.pending,
+        signature: spawnSignature(spawn),
+      } satisfies PickableData & SpawnMarkerData;
       placeObject(marker, spawn.position, spawn.orientation);
       const rings: [string, number | undefined, LineBasicMaterial][] = [
         [WANDER_RING_NAME, spawn.wanderRadius, this.wanderMaterial],
@@ -736,6 +777,7 @@ export class WorldScene {
       this.addObject(this.spawnGroup, spawn.key, marker);
     }
     this.applySelection();
+    return kept;
   }
 
   /**
@@ -901,12 +943,36 @@ export class WorldScene {
     }
   }
 
+  /** Draws the waypoint paths; paths that didn't change are kept as they are (only new or changed ones are redrawn). */
   setWaypointPaths(paths: WaypointPath[]): void {
-    this.clearGroup(this.waypointGroup);
+    const wanted = new Map(paths.map((path) => [path.key, JSON.stringify(path)]));
+    const byKey = new Map(paths.map((path) => [path.key, path]));
+    // (a path with a point dragged without saving is drawn again)
+    const inPlace = (group: Object3D) =>
+      this.waypointsOf(group as Group).every((waypoint) => {
+        // (same signature: the same points)
+        const point = (byKey.get(group.name) as WaypointPath).points.find((p) => p.point === waypoint.userData['point']) as WorldWaypoint;
+        return placedAt(waypoint, point.position, point.orientation ?? 0, WAYPOINT_LIFT);
+      });
+    const kept = new Set<string>();
+    for (const group of [...this.waypointGroup.children]) {
+      if (wanted.get(group.name) === group.userData['signature'] && !kept.has(group.name) && inPlace(group)) {
+        kept.add(group.name);
+      } else {
+        this.forget(group);
+        group.removeFromParent();
+      }
+    }
+    const added: Group[] = [];
     for (const path of paths) {
+      if (kept.has(path.key)) {
+        continue;
+      }
       const color = pathColor(path.key);
       const group = new Group();
       group.name = path.key;
+      group.userData = { signature: wanted.get(path.key) };
+      added.push(group);
 
       const linePoints = path.points.map((p) => scenePoint(p.position, WAYPOINT_LIFT));
       const numbers = path.points.map((p) => p.point);
@@ -937,8 +1003,7 @@ export class WorldScene {
       this.orientPointers(group, path.closed === true && path.points.length > 2);
       this.waypointGroup.add(group);
     }
-    this.waypointPlaces.clear();
-    this.classifyWaypoints();
+    this.classifyWaypoints(added);
     this.setWaypointChecks(this.waypointChecks);
     this.applySelection();
   }
@@ -978,9 +1043,9 @@ export class WorldScene {
    * Gives each waypoint the marker of its place (ball, cube or pyramid), with a line down to the floor under the
    * points in the air. Call again when terrain or buildings around them loaded.
    */
-  classifyWaypoints(): void {
+  classifyWaypoints(groups: Object3D[] = this.waypointGroup.children): void {
     this.scene.updateMatrixWorld();
-    for (const group of this.waypointGroup.children) {
+    for (const group of groups) {
       const drops: Vector3[] = [];
       for (const waypoint of this.waypointsOf(group as Group)) {
         const key = (waypoint.userData as PickableData).key;
@@ -1507,10 +1572,17 @@ export class WorldScene {
   }
 
   private clearGroup(group: Group): void {
-    group.traverse((object) => {
+    this.forget(group);
+    group.clear();
+  }
+
+  /** Drops what's under `root` from the pickable objects, and frees its own lines (before it's removed). */
+  private forget(root: Object3D): void {
+    root.traverse((object) => {
       const key = (object.userData as Partial<PickableData>).key;
       if (key) {
         this.objects.delete(key);
+        this.waypointPlaces.delete(key);
       }
       if (object instanceof Line) {
         this.pathLines.delete(object);
@@ -1524,7 +1596,6 @@ export class WorldScene {
         this.disposeArrows(object as Group);
       }
     });
-    group.clear();
   }
 
   private markerMaterial(kind: SpawnKind | 'waypoint', state: MarkerState, color?: number): MeshLambertMaterial {
@@ -1604,6 +1675,13 @@ function scenePoint(position: WorldPosition, lift = 0): Vector3 {
 function placeObject(object: Object3D, position: WorldPosition, orientation: number, lift = 0): void {
   object.position.copy(scenePoint(position, lift));
   object.rotation.set(0, orientationToSceneYaw(orientation), 0);
+}
+
+/** Whether an object still stands where `placeObject` put it (it may have been dragged since). */
+function placedAt(object: Object3D, position: WorldPosition, orientation: number, lift = 0): boolean {
+  const expected = new Object3D();
+  placeObject(expected, position, orientation, lift);
+  return object.position.distanceToSquared(expected.position) < 1e-6 && Math.abs(object.rotation.y - expected.rotation.y) < 1e-6;
 }
 
 function isPickableHit(hit: Intersection): boolean {

@@ -313,8 +313,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     });
     effect(() => void this.loadMap(this.mapDirectory()));
     effect(() => {
-      this.world.setSpawns(this.spawns());
-      this.spawnModels.setSpawns(this.spawns());
+      const kept = this.world.setSpawns(this.spawns());
+      this.spawnModels.setSpawns(this.spawns(), kept);
       this.world.setWaypointPaths(this.paths());
       untracked(() => this.syncGizmo());
       this.requestRender();
