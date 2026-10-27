@@ -273,3 +273,14 @@
 .world-editor-preview-done {
   color: #ff40ff;
 }
+
+.world-editor-stack {
+  display: grid;
+  grid-template-columns: auto repeat(3, 1fr);
+  gap: 0.25rem;
+  align-items: center;
+
+  span {
+    grid-row: span 2;
+  }
+}

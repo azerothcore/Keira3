@@ -112,6 +112,23 @@ describe('WorldEditorChanges', () => {
       expect(changes.toSql()).toContain('3.1416, 0, 0, 1, 0, 300, 0, 1,');
     });
 
+    it('keeps the tilt of a copied gameobject, also when it is turned', () => {
+      const changes = new WorldEditorChanges();
+      const tilted = gameobject(5, { o: 0, rotation: [0.5, 0, 0, 0.8660254] });
+      changes.placeSpawn(tilted);
+      expect(changes.toSql()).toContain('0, 0.5, 0, 0, 0.8660254, 300');
+      changes.moveSpawn(tilted, { x: 1, y: 2, z: 3, o: 0 });
+      expect(changes.toSql()).toContain('0, 0.5, 0, 0, 0.8660254, 300');
+      changes.moveSpawn(tilted, { x: 1, y: 2, z: 3, o: Math.PI });
+      expect(changes.toSql()).not.toContain('0, 0.5, 0, 0, 0.8660254, 300');
+      expect(changes.applyToSpawns([], 0)[0].rotation).toEqual([
+        expect.any(Number),
+        expect.any(Number),
+        expect.any(Number),
+        expect.any(Number),
+      ]);
+    });
+
     it('updates the insert when a new spawn is moved, and drops it when deleted', () => {
       const changes = new WorldEditorChanges();
       changes.placeSpawn(creature(100));

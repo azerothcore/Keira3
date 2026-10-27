@@ -26,6 +26,7 @@ import {
   WorldAreaTrigger,
   WorldSpawn,
   WorldViewerComponent,
+  spawnModelBox,
 } from '@keira/shared/world-viewer';
 import {
   CacheUsage,
@@ -65,6 +66,7 @@ import {
 import { WorldEditorService } from './world-editor.service';
 import { GpsLocation, parseGpsOutput } from './gps';
 import { describeWaypoint, WaypointSaiRow, WaypointScriptStep } from './waypoint-info';
+import { STACK_SIDES, StackSide, stackPosition } from './stack';
 import { isSpawnVisible, loadSpawnFilters, saveSpawnFilters, SpawnFilters, spawnEvents } from './spawn-filters';
 
 /** "Marshal McBride - Creature (GUID: 1, Entry: 197)", as shown on hover and in the selection panel. */
@@ -198,6 +200,7 @@ export class WorldEditorComponent implements OnInit {
   protected readonly navMeshRebuild = signal<NavMeshRebuildRequest | undefined>(undefined);
   protected readonly navMeshRebuildState = signal<NavMeshRebuildState | undefined>(undefined);
   protected readonly hideRealNavMesh = signal(false);
+  protected readonly stackSides = STACK_SIDES;
   protected readonly isRangePreset = computed(() => this.rangePresets.some((preset) => preset.range === this.probeRange()));
   protected readonly probeRequest = computed<PathProbeRequest | undefined>(() => {
     const from = this.probeFrom();
@@ -1042,13 +1045,39 @@ export class WorldEditorComponent implements OnInit {
       this.toastr.warning(`Enter the ${type} entry to place first.`, 'World Editor');
       return;
     }
-    const next = (this.nextGuids.get(type) ?? this.service.getMaxGuid(type)).then((last) => last + 1);
-    this.nextGuids.set(type, next);
-    const guid = await next;
+    const guid = await this.newGuid(type);
     const [name, display] = await Promise.all([this.service.getEntryName(type, entry), this.service.getEntryDisplay(type, entry)]);
     this.changes.placeSpawn({ type, guid, entry, name, map: this.mapId(), ...position, o: 0, pathId: 0, ...display });
     this.bump();
     this.select(spawnKey(type, guid));
+  }
+
+  /** The next free guid of a type, chained so quick consecutive placements never get the same one. */
+  private newGuid(type: SpawnType): Promise<number> {
+    const next = (this.nextGuids.get(type) ?? this.service.getMaxGuid(type)).then((last) => last + 1);
+    this.nextGuids.set(type, next);
+    return next;
+  }
+
+  /**
+   * Stack: places a copy of the selected spawn right against it on that side, where their collision boxes meet (the
+   * box of the model's collision, or of its mesh), turned the same way, and selects it to stack further.
+   */
+  protected async stackSelected(side: StackSide): Promise<void> {
+    const spawn = this.selectedSpawn() as SpawnRecord;
+    const box = spawn.displayId
+      ? await spawnModelBox(this.client, spawn.type, spawn.displayId, spawn.scale).catch(() => undefined)
+      : undefined;
+    if (!box) {
+      this.toastr.warning(`The model of ${spawn.name} could not be read, so its size is unknown.`, 'World Editor');
+      return;
+    }
+    const guid = await this.newGuid(spawn.type);
+    // a new spawn: no path, not in the original's game event
+    const { pathFromTemplate: _, event: __, ...copy } = spawn;
+    this.changes.placeSpawn({ ...copy, guid, pathId: 0, ...stackPosition(spawn, box, side) });
+    this.bump();
+    this.select(spawnKey(spawn.type, guid));
   }
 
   private addWaypointAt(position: WorldPosition): void {

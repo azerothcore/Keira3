@@ -162,7 +162,14 @@ export class WorldEditorChanges {
     const key = spawnKey(original.type, original.guid);
     const inserted = this.insertedSpawns.get(key);
     if (inserted) {
-      this.insertedSpawns.set(key, { ...inserted, ...placement });
+      // a copy of a tilted gameobject (Stack) keeps its tilt when turned
+      const turned = inserted.rotation?.some((v) => v !== 0) && round(inserted.o) !== round(placement.o);
+      const rotation = turned ? rotateGameobject(inserted.rotation, inserted.o, placement.o) : undefined;
+      this.insertedSpawns.set(key, {
+        ...inserted,
+        ...placement,
+        ...(rotation && { rotation: [rotation['rotation0'], rotation['rotation1'], rotation['rotation2'], rotation['rotation3']] }),
+      });
       return;
     }
     const base = this.movedSpawns.get(key)?.original ?? original;
@@ -336,7 +343,12 @@ export class WorldEditorChanges {
   }
 
   private insertSpawnQuery(spawn: SpawnRecord): string {
-    const placement = placementFields(spawn.type, spawn);
+    const [x, y, z, w] = spawn.rotation ?? [0, 0, 0, 0];
+    const placement = {
+      ...placementFields(spawn.type, spawn),
+      // a copy of a tilted gameobject (Stack) keeps its tilt
+      ...(spawn.type === 'gameobject' && (x || y || z || w) && { rotation0: x, rotation1: y, rotation2: z, rotation3: w }),
+    };
     const row =
       spawn.type === 'creature'
         ? Object.assign(

@@ -996,6 +996,21 @@
                   </button>
                 }
               </div>
+              @if (selectedSpawn()) {
+                <div class="world-editor-stack mt-1" data-testid="stack" [title]="'WORLD_EDITOR.STACK_HINT' | translate">
+                  <span class="small text-muted">{{ 'WORLD_EDITOR.STACK' | translate }}</span>
+                  @for (option of stackSides; track option.side) {
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-secondary"
+                      [attr.data-testid]="'stack-' + option.side"
+                      (click)="stackSelected(option.side)"
+                    >
+                      <i class="fa {{ option.icon }}"></i> {{ option.label | translate }}
+                    </button>
+                  }
+                </div>
+              }
             </form>
           }
         </div>

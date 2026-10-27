@@ -146,6 +146,9 @@ describe(WorldEditorComponent.name, () => {
       preload: vi.fn(),
       cacheUsage: vi.fn(),
       close: vi.fn(),
+      getCreatureDisplay: vi.fn(),
+      getGameObjectDisplay: vi.fn(),
+      getM2: vi.fn(),
     },
     service: {
       loadSpawns: vi.fn(),
@@ -1625,6 +1628,52 @@ describe(WorldEditorComponent.name, () => {
       page.byId('place-entry').nativeElement.dispatchEvent(new Event('change'));
       await settle(page);
       expect(mocks.service.getEntryName).toHaveBeenCalledWith('gameobject', 5);
+    });
+  });
+
+  describe('stacking', () => {
+    // a 2 × 1 × 3 yard box (scene axes (−y, z, −x))
+    const box = { positions: Float32Array.from([-0.5, 0, -1, 0.5, 3, 1]), collision: { positions: new Float32Array(0) } };
+
+    it('places a copy against the selected spawn on the chosen side, selected to stack further', async () => {
+      mocks.service.loadSpawns.mockResolvedValue([
+        ...SPAWNS,
+        spawn('gameobject', 4, { name: 'Guild Vault', displayId: 9, scale: 1, event: 3 }),
+      ]);
+      mocks.client.getGameObjectDisplay.mockResolvedValue('vault.m2');
+      mocks.client.getM2.mockResolvedValue(box);
+      const { page } = await setup();
+      await loadArea(page);
+      page.viewer().picked.emit({ type: 'spawn', key: 'gameobject:4', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      expect(page.byId('stack').nativeElement.querySelectorAll('button')).toHaveLength(6);
+
+      page.click('stack-above');
+      await settle(page);
+      expect(page.pendingLines()).toEqual(['Place gameobject 1001 (Guild Vault)']);
+      expect(page.text('selected-title')).toContain('1001');
+      expect(page.placementValue('z')).toBe(83);
+      page.click('stack-front');
+      await settle(page);
+      expect(page.pendingLines()).toEqual(['Place gameobject 1001 (Guild Vault)', 'Place gameobject 1002 (Guild Vault)']);
+      expect(page.placementValue('x')).toBe(-8902);
+      expect(page.placementValue('z')).toBe(83);
+      expect(mocks.client.getGameObjectDisplay).toHaveBeenCalledWith(9);
+    });
+
+    it('says when the size of the model is unknown', async () => {
+      mocks.service.loadSpawns.mockResolvedValue([...SPAWNS, spawn('creature', 5, { name: 'Bear', displayId: 8 })]);
+      mocks.client.getCreatureDisplay.mockRejectedValue(new Error('no dbc'));
+      const { page } = await setup();
+      await loadArea(page);
+      for (const key of ['creature:2', 'creature:5']) {
+        page.viewer().picked.emit({ type: 'spawn', key, position: { x: 0, y: 0, z: 0 } });
+        await settle(page);
+        page.click('stack-left');
+        await settle(page);
+      }
+      expect(mocks.toastr.warning).toHaveBeenCalledTimes(2);
+      expect(page.pendingLines()).toEqual([]);
     });
   });
 
