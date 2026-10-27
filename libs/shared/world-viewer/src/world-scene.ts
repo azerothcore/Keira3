@@ -58,7 +58,7 @@ import {
 } from '@keira/shared/wow-data';
 import { createSkyDome, setSkyColors } from './sky';
 import { ROOF_LAYER } from './wmo-object';
-import { COLLISION_LAYER } from './collision-object';
+import { COLLISION_LAYER, SERVER_COLLISION_LAYER } from './collision-object';
 import { createTerrainLighting, createTerrainMaterial } from './terrain-material';
 import {
   PickResult,
@@ -192,6 +192,9 @@ export class WorldScene {
   readonly doodadGroup = new Group();
   /** The server's navigation mesh (mmaps), when shown. */
   readonly navMeshGroup = new Group();
+  /** The server's collision (vmaps) around the camera, see `WorldVmaps`. */
+  readonly serverCollisionGroup = new Group();
+  private useServerCollision = false;
   private readonly spawnGroup = new Group();
   private readonly waypointGroup = new Group();
   private readonly raycaster = new Raycaster();
@@ -287,7 +290,9 @@ export class WorldScene {
       this.waypointGroup,
       this.triggerGroup,
       this.navMeshGroup,
+      this.serverCollisionGroup,
     );
+    this.serverCollisionGroup.name = 'server-collision';
     this.camera.layers.enable(LIQUID_LAYER);
     this.setRoofsVisible(true);
 
@@ -295,10 +300,10 @@ export class WorldScene {
     this.scene.add(this.hemisphere, this.ambient, this.sun, this.sky, this.beacon, this.probeGroup);
   }
 
-  /** Shows building roofs, or hides them to look inside (hidden roofs are not picked either, so clicks reach the floor). */
   /**
    * Line of sight between two points, like the server's vmaps: blocked by the terrain and by the collision of buildings
-   * and models (only those loaded around the camera). Returns where the line is first blocked, if it is.
+   * and models (only those loaded around the camera): the server's own (vmaps) once loaded, the client's until then.
+   * Returns where the line is first blocked, if it is.
    */
   lineOfSightBlock(from: WorldPosition, to: WorldPosition): WorldPosition | undefined {
     const start = scenePoint(from);
@@ -309,9 +314,10 @@ export class WorldScene {
     }
     this.scene.updateMatrixWorld();
     const blockers: Object3D[] = [...this.terrainGroup.children];
-    for (const group of [this.buildingGroup, this.doodadGroup, this.spawnGroup]) {
+    const worldGroups = this.useServerCollision ? [this.serverCollisionGroup] : [this.buildingGroup, this.doodadGroup];
+    for (const group of [...worldGroups, this.spawnGroup]) {
       group.traverse((object) => {
-        if (object.layers.isEnabled(COLLISION_LAYER)) {
+        if (object.layers.isEnabled(COLLISION_LAYER) || object.layers.isEnabled(SERVER_COLLISION_LAYER)) {
           blockers.push(object);
         }
       });
@@ -372,11 +378,18 @@ export class WorldScene {
 
   /** Shows the collision meshes of buildings and models (the server's hitboxes) as a wireframe. */
   setCollisionVisible(visible: boolean): void {
-    if (visible) {
-      this.camera.layers.enable(COLLISION_LAYER);
-    } else {
-      this.camera.layers.disable(COLLISION_LAYER);
+    for (const layer of [COLLISION_LAYER, SERVER_COLLISION_LAYER]) {
+      if (visible) {
+        this.camera.layers.enable(layer);
+      } else {
+        this.camera.layers.disable(layer);
+      }
     }
+  }
+
+  /** Line of sight against the server's collision (vmaps, in `serverCollisionGroup`) instead of the client's. */
+  setServerCollision(active: boolean): void {
+    this.useServerCollision = active;
   }
 
   setRoofsVisible(visible: boolean): void {

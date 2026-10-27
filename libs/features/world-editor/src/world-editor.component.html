@@ -378,6 +378,11 @@
         <label class="form-check-label" for="world-editor-collision" [title]="'WORLD_EDITOR.COLLISION_HELP' | translate">{{
           'WORLD_EDITOR.COLLISION' | translate
         }}</label>
+        @if (collisionSource(); as source) {
+          <small class="d-block text-muted" data-testid="collision-source">{{
+            (source === 'server' ? 'WORLD_EDITOR.COLLISION_SERVER' : 'WORLD_EDITOR.COLLISION_CLIENT') | translate
+          }}</small>
+        }
       </div>
       <div class="form-check form-switch mb-0">
         <input
@@ -700,6 +705,7 @@
         (navMeshRebuilt)="navMeshRebuildState.set($event)"
         [waypointCheck]="waypointCheckRequest()"
         (waypointsChecked)="waypointChecks.set($event)"
+        (collisionSourceChanged)="collisionSource.set($event)"
         [probe]="probeRequest()"
         [areaTriggers]="worldAreaTriggers()"
       />
@@ -1180,7 +1186,10 @@
                     }
                     @case ('done') {
                       <span class="world-editor-preview-done">
-                        {{ 'WORLD_EDITOR.MMAP_PREVIEW_DONE' | translate: { triangles: state.triangles } }}
+                        {{
+                          (state.source === 'server' ? 'WORLD_EDITOR.MMAP_PREVIEW_DONE_SERVER' : 'WORLD_EDITOR.MMAP_PREVIEW_DONE')
+                            | translate: { triangles: state.triangles }
+                        }}
                       </span>
                       <div class="form-check form-switch mb-0">
                         <input

@@ -16,3 +16,5 @@ export * from './wow-native-api';
 export * from './collision';
 export * from './navmesh';
 export * from './navmesh-path';
+export * from './server-map';
+export * from './vmap';

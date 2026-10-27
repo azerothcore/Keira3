@@ -32,6 +32,8 @@ import {
 } from './wmo';
 import { parseWmoGroupCollision } from './collision';
 import { mmtileName, NavMeshTile, parseMmtile } from './navmesh';
+import { parseServerMap, serverMapName, ServerMapTile } from './server-map';
+import { parseVmapModel, parseVmapTile, VmapGroup, vmapTileName, VmapSpawn } from './vmap';
 import { clientIdentity, WowDataCacheService } from './wow-data-cache.service';
 import { WowDataSettingsService } from './wow-data-settings.service';
 import { StormArchive, WOW_NATIVE_API, WowNativeApi } from './wow-native-api';
@@ -83,6 +85,7 @@ export class WowClientService {
   private readonly wdts = new Map<string, Promise<WdtInfo | undefined>>();
   private readonly adts = new Map<string, Promise<CachedAdt | undefined>>();
   private readonly wmoDoodads = new Map<string, Promise<WmoDoodads | undefined>>();
+  private readonly vmapModels = new Map<string, Promise<VmapGroup[] | undefined>>();
   private mountCounter = 0;
 
   /** False in the browser build: reading local game files needs Electron. */
@@ -177,6 +180,45 @@ export class WowClientService {
     }
     try {
       return parseMmtile(native.readFile(path));
+    } catch (error) {
+      console.warn(`[World Editor] Could not read ${path}: ${(error as Error).message}`);
+      return undefined;
+    }
+  }
+
+  /** A tile of the server's terrain and liquids (`<server data>/maps`); undefined without a server data folder or that file. */
+  getServerMap(mapId: number, tile: TileCoord): Promise<ServerMapTile | undefined> {
+    return new Promise((resolve) => resolve(this.readServerFile(`maps/${serverMapName(mapId, tile)}`, parseServerMap)));
+  }
+
+  /** The models placed in a tile of the server's vmaps (`<server data>/vmaps`); undefined without that file. */
+  getVmapTile(mapId: number, tile: TileCoord): Promise<VmapSpawn[] | undefined> {
+    return new Promise((resolve) => resolve(this.readServerFile(`vmaps/${vmapTileName(mapId, tile)}`, parseVmapTile)));
+  }
+
+  /** A model of the server's vmaps (kept in memory: the same few models are placed many times). */
+  getVmapModel(name: string): Promise<VmapGroup[] | undefined> {
+    let model = this.vmapModels.get(name);
+    if (!model) {
+      model = new Promise((resolve) => resolve(this.readServerFile(`vmaps/${name}.vmo`, parseVmapModel)));
+      this.vmapModels.set(name, model);
+    }
+    return model;
+  }
+
+  /** Reads and parses a file of the server data folder; undefined without the folder, the file, or when unreadable. */
+  private readServerFile<T>(relative: string, parse: (bytes: Uint8Array) => T): T | undefined {
+    const serverDataPath = this.settings.paths().serverDataPath;
+    if (!serverDataPath) {
+      return undefined;
+    }
+    const native = this.requireNative();
+    const path = `${serverDataPath}/${relative}`;
+    if (!native.exists(path)) {
+      return undefined;
+    }
+    try {
+      return parse(native.readFile(path));
     } catch (error) {
       console.warn(`[World Editor] Could not read ${path}: ${(error as Error).message}`);
       return undefined;
@@ -466,6 +508,7 @@ export class WowClientService {
     this.wdts.clear();
     this.adts.clear();
     this.wmoDoodads.clear();
+    this.vmapModels.clear();
     if (!client) {
       return;
     }

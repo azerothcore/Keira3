@@ -18,7 +18,7 @@ import {
   Vector3,
 } from 'three';
 import { flatDetail, flatTile } from './world-viewer.mock';
-import { COLLISION_LAYER } from './collision-object';
+import { COLLISION_LAYER, SERVER_COLLISION_LAYER } from './collision-object';
 import { pathColor, WorldScene } from './world-scene';
 import { WaypointPath, WorldSpawn } from './world-viewer.model';
 
@@ -313,6 +313,30 @@ describe('WorldScene', () => {
       collision.layers.set(COLLISION_LAYER);
       wall.add(collision);
       expect(world.lineOfSightBlock(at2(0, 12), at2(20, 12))?.x).toBeCloseTo(CENTER.x + 9.5);
+    });
+
+    it("checks the line of sight against the server's collision instead of the client's once it's there", () => {
+      const world = new WorldScene();
+      world.setTerrainTile(flatTile(10));
+      const at2 = (dx: number, z: number) => ({ x: CENTER.x + dx, y: CENTER.y, z });
+      const wall = (layer: number) => {
+        const mesh = new Mesh(new BoxGeometry(10, 20, 1), new MeshBasicMaterial());
+        const p = worldToScene(at2(10, 0));
+        mesh.position.set(p.x, 10, p.z);
+        mesh.layers.set(layer);
+        return mesh;
+      };
+      world.buildingGroup.add(wall(COLLISION_LAYER));
+      expect(world.lineOfSightBlock(at2(0, 12), at2(20, 12))).toBeDefined();
+      world.setServerCollision(true);
+      expect(world.lineOfSightBlock(at2(0, 12), at2(20, 12))).toBeUndefined();
+      world.serverCollisionGroup.add(wall(SERVER_COLLISION_LAYER));
+      expect(world.lineOfSightBlock(at2(0, 12), at2(20, 12))?.x).toBeCloseTo(CENTER.x + 9.5);
+      // drawn with the hitboxes
+      world.setCollisionVisible(true);
+      expect(world.camera.layers.isEnabled(SERVER_COLLISION_LAYER)).toBe(true);
+      world.setCollisionVisible(false);
+      expect(world.camera.layers.isEnabled(SERVER_COLLISION_LAYER)).toBe(false);
     });
 
     it('draws the Path / LOS probe and clears it', () => {

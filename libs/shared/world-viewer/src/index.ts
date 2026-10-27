@@ -18,3 +18,5 @@ export * from './world-navmesh';
 export * from './path-probe';
 export * from './navmesh-rebuild';
 export * from './model-bounds';
+export * from './server-geometry';
+export * from './world-vmaps';

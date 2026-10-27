@@ -221,6 +221,8 @@ export class WorldEditorComponent implements OnInit {
     { equal: (a, b) => JSON.stringify(a) === JSON.stringify(b) },
   );
   protected readonly waypointChecks = signal<WaypointCheck[]>([]);
+  /** What the line of sight (and the hitboxes) use, as the viewer reports it. */
+  protected readonly collisionSource = signal<'server' | 'client' | undefined>(undefined);
   protected readonly checkColors = WAYPOINT_CHECK_COLORS;
   protected readonly isRangePreset = computed(() => this.rangePresets.some((preset) => preset.range === this.probeRange()));
   protected readonly probeRequest = computed<PathProbeRequest | undefined>(() => {

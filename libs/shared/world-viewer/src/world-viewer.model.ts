@@ -110,6 +110,8 @@ export interface NavMeshRebuildState {
   total: number;
   /** Triangles of the rebuilt tile, once done. */
   triangles: number;
+  /** What it was rebuilt from, once done: the server's maps and vmaps, or the client's files. */
+  source?: 'server' | 'client';
 }
 
 /** A right-click (without dragging) on a spawn or waypoint; `x`/`y` are in pixels from the view's top-left corner. */

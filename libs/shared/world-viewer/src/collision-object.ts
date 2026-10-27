@@ -3,6 +3,8 @@ import { BufferAttribute, BufferGeometry, Mesh, MeshBasicMaterial } from 'three'
 
 /** Collision meshes live on this layer: the camera sees it only when hitboxes are shown, and clicks never hit it (only line-of-sight rays). */
 export const COLLISION_LAYER = 3;
+/** The server's collision (vmaps, see `WorldVmaps`): drawn with the hitboxes, never picked, hit by line-of-sight rays. */
+export const SERVER_COLLISION_LAYER = 4;
 
 /** One see-through wireframe for every collision mesh (never disposed: shared by all of them). */
 export const COLLISION_MATERIAL = new MeshBasicMaterial({ color: 0xff3b5c, wireframe: true, transparent: true, opacity: 0.7 });

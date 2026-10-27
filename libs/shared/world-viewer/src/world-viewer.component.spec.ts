@@ -134,6 +134,7 @@ interface FakeTransformControls extends EventDispatcher<{ 'dragging-changed': { 
       [navMeshRebuild]="rebuild()"
       [waypointCheck]="check()"
       (waypointsChecked)="checks.push($event)"
+      (collisionSourceChanged)="collisionSources.push($event)"
       [hideRealNavMesh]="hideReal()"
       (navMeshRebuilt)="rebuilds.push($event)"
       (probed)="probes.push($event)"
@@ -166,6 +167,7 @@ class HostComponent {
   readonly rebuild = signal<NavMeshRebuildRequest | undefined>(undefined);
   readonly check = signal<WaypointCheckRequest | undefined>(undefined);
   readonly checks: WaypointCheck[][] = [];
+  readonly collisionSources: string[] = [];
   readonly hideReal = signal(false);
   readonly rebuilds: NavMeshRebuildState[] = [];
   readonly speeds: number[] = [];
@@ -258,6 +260,9 @@ describe(WorldViewerComponent.name, () => {
     getCreatureDisplay: vi.fn(),
     getZoneLights: vi.fn(),
     getGameObjectDisplay: vi.fn(),
+    getServerMap: vi.fn(),
+    getVmapTile: vi.fn(),
+    getVmapModel: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -278,6 +283,9 @@ describe(WorldViewerComponent.name, () => {
     client.getWmo.mockResolvedValue(undefined);
     client.getM2.mockResolvedValue(undefined);
     client.getZoneLights.mockResolvedValue([]);
+    client.getServerMap.mockResolvedValue(undefined);
+    client.getVmapTile.mockResolvedValue(undefined);
+    client.getVmapModel.mockResolvedValue(undefined);
 
     await TestBed.configureTestingModule({
       imports: [HostComponent, TranslateTestingModule],
@@ -796,12 +804,43 @@ describe(WorldViewerComponent.name, () => {
       expect(marks).toHaveBeenLastCalledWith([]);
     });
 
+    it("uses the server's collision while it's needed, and works the Path / LOS answer out again as it loads", async () => {
+      client.getVmapTile.mockImplementation((_m: number, tile: { tx: number }) =>
+        Promise.resolve(
+          tile.tx === 32 ? [{ flags: 0, id: 1, position: [0, 0, 0], rotation: [0, 0, 0], scale: 1, name: 'Bank.wmo' }] : undefined,
+        ),
+      );
+      client.getVmapModel.mockResolvedValue([
+        { vertices: Float32Array.from([0, 0, 0, 1, 0, 0, 0, 1, 0]), indices: Uint32Array.from([0, 1, 2]) },
+      ]);
+      client.getNavMeshTile.mockResolvedValue(undefined);
+      client.getVmapTile.mockClear();
+      const { host, fixture, update } = await pickSetup();
+      await settle(fixture);
+      expect(host.collisionSources).toEqual(['client']);
+      expect(client.getVmapTile).not.toHaveBeenCalled();
+      await update(() => host.render.set({ ...DEFAULT_WORLD_RENDER_SETTINGS, showCollision: true }));
+      await settle(fixture);
+      expect(host.collisionSources).toEqual(['client', 'server']);
+      // a probe, then another vmap tile coming in: answered again
+      await update(() => host.probe.set({ from: at(0, 0), to: at(10, 0), range: 30, height: 2 }));
+      await settle(fixture);
+      const answers = host.probes.length;
+      client.getVmapTile.mockResolvedValue([{ flags: 0, id: 2, position: [0, 0, 0], rotation: [0, 0, 0], scale: 1, name: 'Bank.wmo' }]);
+      await update(() => host.focus.set(at(1200, 0)));
+      await settle(fixture);
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      await settle(fixture);
+      expect(host.probes.length).toBeGreaterThan(answers);
+    });
+
     describe('navigation mesh rebuild', () => {
       const config = { cellSizeHorizontal: 0.5 } as MmapRecastConfig;
       const built: NavMeshTile = { positions: new Float32Array(18), colors: new Float32Array(18) };
       const request = (): NavMeshRebuildRequest => ({ tile: { tx: 32, ty: 48 }, config });
 
       beforeEach(() => {
+        Object.values(rebuild).forEach((fn) => fn.mockClear());
         rebuild.loadRecast.mockResolvedValue('recast');
         rebuild.collectTileGeometry.mockResolvedValue('geometry');
         rebuild.rebuildNavMeshTile.mockImplementation((_r, _g, _t, _c, onProgress: (done: number, total: number) => void) => {
@@ -828,7 +867,7 @@ describe(WorldViewerComponent.name, () => {
         expect(host.rebuilds).toEqual([
           { status: 'reading', done: 0, total: 0, triangles: 0 },
           { status: 'building', done: 1, total: 4, triangles: 0 },
-          { status: 'done', done: 0, total: 0, triangles: 2 },
+          { status: 'done', done: 0, total: 0, triangles: 2, source: 'client' },
         ]);
         expect(setPreview).toHaveBeenLastCalledWith('32_48', built);
         await update(() => host.hideReal.set(true));
@@ -836,6 +875,34 @@ describe(WorldViewerComponent.name, () => {
         await update(() => host.rebuild.set(undefined));
         expect(setPreview).toHaveBeenLastCalledWith(undefined);
         expect(host.rebuilds).toHaveLength(3);
+      });
+
+      it("rebuilds from the server's maps and vmaps when it has them", async () => {
+        // a tile of water only
+        const liquid = { types: new Uint8Array(256).fill(1), offsetX: 0, offsetY: 0, width: 129, height: 129, level: 10 };
+        client.getServerMap.mockImplementation((_m: number, tile: { tx: number }) =>
+          Promise.resolve(tile.tx === 32 ? { liquid } : undefined),
+        );
+        const { host, fixture, update } = await pickSetup();
+        await settle(fixture);
+        await update(() => host.rebuild.set(request()));
+        await settle(fixture);
+        await new Promise((resolve) => setTimeout(resolve, 50));
+        await settle(fixture);
+        expect(client.getServerMap).toHaveBeenCalledWith(0, { tx: 32, ty: 48 });
+        expect(rebuild.collectTileGeometry).not.toHaveBeenCalled();
+        expect(rebuild.rebuildNavMeshTile.mock.calls[0][1].areas[0]).toBe(8);
+        expect(host.rebuilds.at(-1)?.source).toBe('server');
+      });
+
+      it('rebuilds from the client files when the map id is unknown', async () => {
+        client.getMaps.mockRejectedValue(new Error('no Map.dbc'));
+        client.getServerMap.mockClear();
+        const { host, fixture, update } = await pickSetup();
+        await update(() => host.rebuild.set(request()));
+        await settle(fixture);
+        expect(client.getServerMap).not.toHaveBeenCalled();
+        expect(rebuild.collectTileGeometry).toHaveBeenCalled();
       });
 
       it('drops a rebuild a newer one replaced, and says when it fails', async () => {

@@ -58,6 +58,7 @@ class FakeWorldViewerComponent {
   readonly navMeshRebuilt = output<NavMeshRebuildState>();
   readonly waypointCheck = input<WaypointCheckRequest | undefined>(undefined);
   readonly waypointsChecked = output<WaypointCheck[]>();
+  readonly collisionSourceChanged = output<'server' | 'client'>();
   readonly picked = output<PickResult>();
   readonly objectMoved = output<ObjectMoved>();
   readonly centerChanged = output<WorldPosition>();
@@ -1438,8 +1439,12 @@ describe(WorldEditorComponent.name, () => {
       page.fixture.detectChanges();
       expect(page.text('mmap-preview-state')).toBe('4 / 16');
       expect(page.byId('mmap-preview-state').nativeElement.querySelector<HTMLElement>('.progress-bar')?.style.width).toBe('25%');
-      viewer.navMeshRebuilt.emit({ status: 'done', done: 0, total: 0, triangles: 1234 });
+      viewer.navMeshRebuilt.emit({ status: 'done', done: 0, total: 0, triangles: 1234, source: 'server' });
       page.fixture.detectChanges();
+      expect(page.text('mmap-preview-state')).toContain('WORLD_EDITOR.MMAP_PREVIEW_DONE_SERVER');
+      viewer.navMeshRebuilt.emit({ status: 'done', done: 0, total: 0, triangles: 1234, source: 'client' });
+      page.fixture.detectChanges();
+      expect(page.text('mmap-preview-state')).not.toContain('WORLD_EDITOR.MMAP_PREVIEW_DONE_SERVER');
       expect(page.text('mmap-preview-state')).toContain('WORLD_EDITOR.MMAP_PREVIEW_DONE');
       expect(page.byId<HTMLButtonElement>('mmap-preview').nativeElement.disabled).toBe(false);
       page.click('mmap-hide-real');
@@ -1632,6 +1637,21 @@ describe(WorldEditorComponent.name, () => {
       page.byId('place-entry').nativeElement.dispatchEvent(new Event('change'));
       await settle(page);
       expect(mocks.service.getEntryName).toHaveBeenCalledWith('gameobject', 5);
+    });
+  });
+
+  describe('collision source', () => {
+    it("says whether the line of sight uses the server's vmaps or the client's models", async () => {
+      const { page } = await setup();
+      page.click('view-toggle');
+      page.fixture.detectChanges();
+      expect(page.byId('collision-source', false)).toBeFalsy();
+      page.viewer().collisionSourceChanged.emit('server');
+      page.fixture.detectChanges();
+      expect(page.text('collision-source')).toBe('WORLD_EDITOR.COLLISION_SERVER');
+      page.viewer().collisionSourceChanged.emit('client');
+      page.fixture.detectChanges();
+      expect(page.text('collision-source')).toBe('WORLD_EDITOR.COLLISION_CLIENT');
     });
   });
 

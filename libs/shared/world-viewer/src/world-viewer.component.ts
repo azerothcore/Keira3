@@ -41,6 +41,8 @@ import {
   WorldControlsSettings,
 } from './world-controls-settings';
 import { WorldNavMesh } from './world-navmesh';
+import { WorldVmaps } from './world-vmaps';
+import { collectServerTileGeometry } from './server-geometry';
 import { collectTileGeometry, loadRecast, rebuildNavMeshTile } from './navmesh-rebuild';
 import { PathProber, PathProbeRequest, PathProbeResult } from './path-probe';
 import { WorldObjects } from './world-objects';
@@ -123,6 +125,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   readonly probe = input<PathProbeRequest | undefined>(undefined);
   /** "Check path": the points of a path to check (again whenever they change); undefined clears the marks. */
   readonly waypointCheck = input<WaypointCheckRequest | undefined>(undefined);
+  /** Which collision the line of sight uses: the server's vmaps (once loaded) or the client's models. */
+  readonly collisionSourceChanged = output<'server' | 'client'>();
   /** The answer to `waypointCheck`, one per point. */
   readonly waypointsChecked = output<WaypointCheck[]>();
   /** A navigation mesh tile to rebuild with other settings and draw over the real one; undefined clears it. */
@@ -170,6 +174,9 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private readonly doodads = new WorldDoodads(this.client, this.world.doodadGroup, this.textures, () => this.requestRender());
   private readonly navMesh = new WorldNavMesh(this.client, this.world.navMeshGroup, () => this.requestRender());
   private readonly prober = new PathProber(this.client, this.world);
+  /** The server's collision (vmaps), loaded while it's needed: hitboxes shown, Path / LOS or Check path in use. */
+  private readonly vmaps = new WorldVmaps(this.client, this.world.serverCollisionGroup, () => this.onCollisionLoaded());
+  private collisionSource?: 'server' | 'client';
   private probeRequest = 0;
   private rebuildRequest = 0;
   private checkRequest = 0;
@@ -252,6 +259,13 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     });
     effect(() => this.navMesh.setRealHidden(this.hideRealNavMesh()));
     effect(() => {
+      const enabled = this.renderSettings().showCollision || !!this.probe() || !!this.waypointCheck();
+      untracked(() => {
+        this.vmaps.configure({ enabled: enabled && this.client.isSupported(), radius: 1 });
+        void this.vmaps.update(this.center);
+      });
+    });
+    effect(() => {
       const request = this.waypointCheck();
       const directory = this.mapDirectory();
       // the paths drawn first, so the marks land on their points
@@ -323,6 +337,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     this.objects.dispose();
     this.doodads.dispose();
     this.navMesh.dispose();
+    this.vmaps.dispose();
     this.spawnModels.dispose();
     this.resizeObserver?.disconnect();
     this.host().nativeElement.removeEventListener('wheel', this.onSpeedWheel, { capture: true });
@@ -573,7 +588,9 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     };
     report({ status: 'reading', done: 0, total: 0, triangles: 0 });
     try {
-      const [recast, geometry] = await Promise.all([loadRecast(), collectTileGeometry(this.client, directory, request.tile)]);
+      // the server's own maps and vmaps when it has them, like the mmaps generator; the client's files otherwise
+      const server = this.mapId === undefined ? undefined : await collectServerTileGeometry(this.client, this.mapId, request.tile);
+      const [recast, geometry] = await Promise.all([loadRecast(), server ?? collectTileGeometry(this.client, directory, request.tile)]);
       const tile = await rebuildNavMeshTile(
         recast,
         geometry,
@@ -584,7 +601,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       );
       if (tile && current()) {
         this.navMesh.setPreview(tileKey(request.tile), tile);
-        report({ status: 'done', done: 0, total: 0, triangles: tile.positions.length / 9 });
+        report({ status: 'done', done: 0, total: 0, triangles: tile.positions.length / 9, source: server ? 'server' : 'client' });
       }
     } catch (error) {
       console.warn(`[World Editor] Could not rebuild the navigation mesh tile: ${(error as Error).message}`);
@@ -779,11 +796,14 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private async loadMap(directory: string | undefined): Promise<void> {
     this.error.set(undefined);
     this.mapId = undefined;
+    this.vmaps.setMap(undefined);
     if (directory && this.client.isSupported()) {
       void this.client
         .getMaps()
         .then((maps) => {
           this.mapId = maps.find((map) => map.directory.toLowerCase() === directory.toLowerCase())?.id;
+          this.vmaps.setMap(this.mapId);
+          void this.vmaps.update(this.center);
           this.requestRender();
         })
         .catch(() => undefined);
@@ -816,10 +836,29 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     }
   }
 
+  /** The server's collision changed: the line of sight uses it once there is some, and answers are worked out again. */
+  private onCollisionLoaded(): void {
+    // also called from effects (map changes): not something they depend on
+    untracked(() => {
+      this.world.setServerCollision(this.vmaps.active);
+      const source = this.vmaps.active ? 'server' : 'client';
+      const changed = source !== this.collisionSource;
+      if (changed) {
+        this.collisionSource = source;
+        this.collisionSourceChanged.emit(source);
+      }
+      // the server's collision came in or changed: the Path / LOS answer may be another one
+      if ((changed || this.vmaps.active) && this.probe()) {
+        void this.runProbe(this.mapDirectory(), this.probe());
+      }
+      this.onTileLoaded();
+    });
+  }
+
   private onTileLoaded(): void {
     this.world.classifyWaypoints();
     // what's under the checked points may have changed: check them again once loading calms down
-    if (this.waypointCheck()) {
+    if (untracked(() => this.waypointCheck())) {
       clearTimeout(this.recheckTimer);
       this.recheckTimer = setTimeout(() => void this.runWaypointCheck(this.mapDirectory(), this.waypointCheck()), RECHECK_DELAY);
     }
@@ -844,6 +883,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     void this.objects.update(center);
     void this.doodads.update(center);
     void this.navMesh.update(center);
+    void this.vmaps.update(center);
     this.spawnModels.update(center);
     this.zoneLighting.update(center);
   }

@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { buildDbc } from './dbc.mock';
 import { EMPTY_COLLISION } from './collision';
 import { buildMmtile } from './navmesh.mock';
+import { buildServerMap, buildVmapModel, buildVmapTile } from './server-data.mock';
 import { WowClientService } from './wow-client.service';
 import { WowDataCacheService } from './wow-data-cache.service';
 import { WowDataSettingsService } from './wow-data-settings.service';
@@ -275,6 +276,43 @@ describe('WowClientService', () => {
       expect(await service.getNavMeshTile('ServerMap', { tx: 32, ty: 48 })).toBeUndefined();
       expect(warn).toHaveBeenCalledWith('[World Editor] Could not read /srv/mmaps/0014832.mmtile: locked');
       warn.mockRestore();
+    });
+
+    it("reads the server's terrain and vmaps, keeping vmap models in memory", async () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+      const { service, native } = setup({
+        files: {
+          '/srv/maps/0004931.map': Array.from(buildServerMap()),
+          '/srv/vmaps/000_31_49.vmtile': Array.from(buildVmapTile([{ name: 'Crate.m2' }])),
+          '/srv/vmaps/Crate.m2.vmo': Array.from(buildVmapModel([{ vertices: [0, 0, 0, 1, 0, 0, 0, 1, 0], indices: [0, 1, 2] }])),
+          '/srv/vmaps/Broken.wmo.vmo': [1, 2],
+        },
+        mpqs: standardMpqs(),
+        serverDataPath: '/srv',
+      });
+      expect((await service.getServerMap(0, { tx: 31, ty: 49 }))?.v9).toHaveLength(129 * 129);
+      expect(await service.getServerMap(0, { tx: 1, ty: 1 })).toBeUndefined();
+      expect((await service.getVmapTile(0, { tx: 31, ty: 49 }))?.[0].name).toBe('Crate.m2');
+      const read = vi.spyOn(native, 'readFile');
+      expect(await service.getVmapModel('Crate.m2')).toHaveLength(1);
+      expect(await service.getVmapModel('Crate.m2')).toHaveLength(1);
+      expect(read).toHaveBeenCalledTimes(1);
+      expect(await service.getVmapModel('Broken.wmo')).toEqual([]);
+      read.mockImplementationOnce(() => {
+        throw new Error('locked');
+      });
+      expect(await service.getVmapTile(0, { tx: 31, ty: 49 })).toBeUndefined();
+      expect(warn).toHaveBeenCalledWith('[World Editor] Could not read /srv/vmaps/000_31_49.vmtile: locked');
+      await service.close();
+      expect(await service.getVmapModel('Crate.m2')).toHaveLength(1);
+      expect(read).toHaveBeenCalledTimes(4);
+      warn.mockRestore();
+    });
+
+    it('has no server terrain or vmaps without a server data folder', async () => {
+      const { service } = setup({ mpqs: standardMpqs() });
+      expect(await service.getServerMap(0, { tx: 31, ty: 49 })).toBeUndefined();
+      expect(await service.getVmapModel('Crate.m2')).toBeUndefined();
     });
 
     it('has no navigation mesh without a server data folder', async () => {
