@@ -8,7 +8,7 @@ describe('WowDataSettingsService', () => {
 
   it('starts empty when nothing is stored', () => {
     const service = create();
-    expect(service.paths()).toEqual({ clientPath: '', serverDataPath: '' });
+    expect(service.paths()).toEqual({ clientPath: '', serverDataPath: '', sourcePath: '' });
     expect(service.isConfigured()).toBe(false);
   });
 
@@ -17,6 +17,7 @@ describe('WowDataSettingsService', () => {
     expect(JSON.parse(localStorage.getItem(WOW_DATA_SETTINGS_KEY) as string)).toEqual({
       clientPath: 'C:\\Games\\WoW',
       serverDataPath: 'C:/Server/Data',
+      sourcePath: '',
     });
 
     TestBed.resetTestingModule();
@@ -25,14 +26,20 @@ describe('WowDataSettingsService', () => {
     expect(restored.isConfigured()).toBe(true);
   });
 
+  it('keeps the AzerothCore source folder', () => {
+    create().save({ clientPath: 'C:\\WoW', serverDataPath: '', sourcePath: 'C:\\Source\\azerothcore-wotlk\\' });
+    TestBed.resetTestingModule();
+    expect(create().paths().sourcePath).toBe('C:\\Source\\azerothcore-wotlk');
+  });
+
   it('ignores invalid stored values', () => {
     localStorage.setItem(WOW_DATA_SETTINGS_KEY, JSON.stringify({ clientPath: 3 }));
-    expect(create().paths()).toEqual({ clientPath: '', serverDataPath: '' });
+    expect(create().paths()).toEqual({ clientPath: '', serverDataPath: '', sourcePath: '' });
   });
 
   it('ignores corrupted storage', () => {
     localStorage.setItem(WOW_DATA_SETTINGS_KEY, '{oops');
-    expect(create().paths()).toEqual({ clientPath: '', serverDataPath: '' });
+    expect(create().paths()).toEqual({ clientPath: '', serverDataPath: '', sourcePath: '' });
   });
 
   it('trims paths', () => {

@@ -1,4 +1,4 @@
-import { MmapRecastConfig, TileCoord, WorldPosition } from '@keira/shared/wow-data';
+import { BoundaryShape, MmapRecastConfig, TileCoord, WorldPosition } from '@keira/shared/wow-data';
 
 export type SpawnKind = 'creature' | 'gameobject';
 
@@ -93,6 +93,19 @@ export interface WorldLink {
    * flight paths) that tells which way it goes.
    */
   label?: string;
+}
+
+/**
+ * A boss boundary (AreaBoundary shapes of the instance scripts): its flat shapes drawn on the ground as outlines with a
+ * see-through fill (red and dashed for the shapes that keep the boss out), at `z` or at the heights of its height
+ * ranges; named on hover.
+ */
+export interface WorldBoundary {
+  key: string;
+  label: string;
+  color: number;
+  z: number;
+  shapes: BoundaryShape[];
 }
 
 /** A labelled place (graveyard, flight master, pool label…): a diamond on a stick, named on hover. */

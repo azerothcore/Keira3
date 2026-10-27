@@ -32,6 +32,7 @@ import {
   WaypointCheck,
   WaypointCheckRequest,
   WorldLink,
+  WorldBoundary,
   WorldMarker,
   MovementSimulation,
 } from './world-viewer.model';
@@ -149,6 +150,7 @@ interface FakeTransformControls extends EventDispatcher<{ 'dragging-changed': { 
       [hideRealNavMesh]="hideReal()"
       (navMeshRebuilt)="rebuilds.push($event)"
       (probed)="probes.push($event)"
+      [boundaries]="boundaries()"
       (probeMoved)="probeMoves.push($event)"
       (speedChanged)="speeds.push($event)"
       (navMeshTileChanged)="navMeshTiles.push($event)"
@@ -180,6 +182,7 @@ class HostComponent {
   readonly ground = signal<{ key: string; position: WorldPosition }[] | undefined>(undefined);
   readonly heights: Record<string, number | null>[] = [];
   readonly markers = signal<WorldMarker[]>([]);
+  readonly boundaries = signal<WorldBoundary[]>([]);
   readonly probe = signal<PathProbeRequest | undefined>(undefined);
   readonly probes: PathProbeResult[] = [];
   readonly probeMoves: { which: 'from' | 'to'; position: WorldPosition }[] = [];
@@ -1115,6 +1118,28 @@ describe(WorldViewerComponent.name, () => {
       page.pointer('pointerdown', 50, 50, 2);
       page.pointer('pointerup', 50, 50, 2);
       expect(host.contexts.at(-1)).toEqual(expect.objectContaining({ key: 'flight:1', label: 'Flight path 1\n→ N (0.00)' }));
+    });
+
+    it('names the hovered boss boundary', async () => {
+      const { page, host, fixture, update } = await pickSetup();
+      await settle(fixture);
+      const focus = at(800, 800);
+      await update(() => {
+        host.focus.set(focus);
+        host.boundaries.set([
+          {
+            key: 'boundary:1',
+            label: 'Patchwerk',
+            color: 0xff00ff,
+            z: GROUND - 0.3,
+            shapes: [{ type: 'circle', center: { x: focus.x, y: focus.y }, radius: 30, inverted: false }],
+          },
+        ]);
+      });
+      page.pointer('pointermove', 50, 50);
+      flushFrames();
+      fixture.detectChanges();
+      expect(page.label().nativeElement.textContent?.trim()).toBe('Patchwerk');
     });
 
     it('names the hovered area trigger', async () => {

@@ -42,6 +42,9 @@ import {
 } from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import {
+  BoundaryPoint,
+  boundaryOutline,
+  BoundaryShape,
   LightSample,
   LiquidKind,
   LiquidMesh,
@@ -70,6 +73,7 @@ import {
   WaypointPlace,
   waypointKey,
   WorldAreaTrigger,
+  WorldBoundary,
   WorldLink,
   WorldMarker,
   WorldSpawn,
@@ -270,6 +274,9 @@ export class WorldScene {
   private readonly beacon = createBeacon();
   /** The Path / LOS tool's drawing: the path, the line of sight and the points. */
   readonly probeGroup = new Group();
+  /** Boss boundaries: outlines and see-through fills (the fills are picked for their hover label). */
+  private readonly boundaryGroup = new Group();
+  private readonly boundaryFills: Mesh[] = [];
   private readonly probeHandles = new Map<'from' | 'to', Group>();
   private readonly losRaycaster = new Raycaster();
   /** Unit circle on the ground (scaled to each creature's wander distance). */
@@ -318,8 +325,10 @@ export class WorldScene {
       this.navMeshGroup,
       this.serverCollisionGroup,
       this.overlayGroup,
+      this.boundaryGroup,
       this.ghostGroup,
     );
+    this.boundaryGroup.name = 'boundaries';
     this.overlayGroup.name = 'overlays';
     this.serverCollisionGroup.name = 'server-collision';
     this.camera.layers.enable(LIQUID_LAYER);
@@ -1152,6 +1161,53 @@ export class WorldScene {
     return { position, orientation: sceneYawToOrientation(object.rotation.y) };
   }
 
+  /**
+   * Draws boss boundaries (replacing the previous ones): each flat shape as an outline and a see-through fill at the
+   * boundary's height, or at both heights of its height ranges; shapes keeping the boss out in red, dashed.
+   */
+  setBoundaries(boundaries: WorldBoundary[]): void {
+    this.boundaryGroup.traverse((object) => {
+      if (object instanceof Line || object instanceof Mesh) {
+        object.geometry.dispose();
+        (object.material as Material).dispose();
+      }
+    });
+    this.boundaryGroup.clear();
+    this.boundaryFills.length = 0;
+    for (const boundary of boundaries) {
+      const flat = flatShapes(boundary.shapes);
+      const ranges = flatShapes(boundary.shapes, true) as Extract<BoundaryShape, { type: 'zrange' }>[];
+      const heights = ranges.length ? ranges.flatMap((range) => [range.minZ, range.maxZ]) : [boundary.z];
+      for (const shape of flat) {
+        const outline = boundaryOutline(shape) as BoundaryPoint[];
+        const color = shape.inverted ? BOUNDARY_OUT_COLOR : boundary.color;
+        for (const z of heights) {
+          const points = outline.map((p) => scenePoint({ x: p.x, y: p.y, z }, 0.3));
+          const lineMaterial = shape.inverted
+            ? new LineDashedMaterial({ color, dashSize: 2, gapSize: 1.5, depthTest: false, transparent: true })
+            : new LineBasicMaterial({ color, depthTest: false, transparent: true });
+          const line = new LineLoop(new BufferGeometry().setFromPoints(points), lineMaterial);
+          line.computeLineDistances();
+          line.renderOrder = 1;
+          line.raycast = () => undefined;
+          this.boundaryGroup.add(line);
+          // a fan from the middle: every shape is convex
+          const middle = points.reduce((sum, p) => sum.add(p), new Vector3()).divideScalar(points.length);
+          const fan = points.flatMap((p, i) => [middle, p, points[(i + 1) % points.length]]);
+          const fill = new Mesh(
+            new BufferGeometry().setFromPoints(fan),
+            new MeshBasicMaterial({ color, transparent: true, opacity: 0.12, depthWrite: false, side: DoubleSide }),
+          );
+          fill.name = `${boundary.key}:fill`;
+          fill.renderOrder = 1;
+          fill.userData = { overlay: boundary.key };
+          this.boundaryGroup.add(fill);
+          this.boundaryFills.push(fill);
+        }
+      }
+    }
+  }
+
   /** One pickable arrow in the middle of each stretch of a labelled link, pointing the way it goes. */
   private addLinkArrows(link: WorldLink, points: Vector3[]): void {
     const up = new Vector3(0, 1, 0);
@@ -1234,6 +1290,10 @@ export class WorldScene {
     if (overlayHit) {
       const { overlay, direction } = overlayHit.object.userData as { overlay: string; direction?: number };
       return { type: 'overlay', key: overlay, position: sceneToWorld(overlayHit.point), ...(direction === undefined ? {} : { direction }) };
+    }
+    const boundaryHit = options.overlays ? this.raycaster.intersectObjects(this.boundaryFills, false)[0] : undefined;
+    if (boundaryHit) {
+      return { type: 'overlay', key: boundaryHit.object.userData['overlay'] as string, position: sceneToWorld(boundaryHit.point) };
     }
     const triggerHit = options.areaTriggers ? this.raycaster.intersectObject(this.triggerGroup, true)[0] : undefined;
     if (triggerHit) {
@@ -1412,6 +1472,20 @@ export class WorldScene {
       }
     });
   }
+}
+
+/** Boss boundary shapes keeping the boss out. */
+const BOUNDARY_OUT_COLOR = 0xff4757;
+
+/** The flat shapes of a boundary (or with `ranges`, its height ranges), unions and intersections opened up. */
+function flatShapes(shapes: BoundaryShape[], ranges = false): BoundaryShape[] {
+  return shapes.flatMap((shape) =>
+    shape.type === 'union' || shape.type === 'intersect'
+      ? flatShapes(shape.shapes, ranges)
+      : (shape.type === 'zrange') === ranges
+        ? [shape]
+        : [],
+  );
 }
 
 function createBeacon(): Group {

@@ -203,6 +203,7 @@
         [markers]="worldMarkers()"
         [probe]="probeRequest()"
         [areaTriggers]="worldAreaTriggers()"
+        [boundaries]="worldBoundaries()"
         (probeMoved)="onProbeMoved($event)"
       />
       <div class="btn-group btn-group-sm world-editor-resolution" role="group" [title]="'WORLD_EDITOR.RESOLUTION_HELP' | translate">
@@ -659,6 +660,17 @@
                 placeholder="C:\AzerothCore\bin\Data"
               />
               <small class="form-text text-muted">{{ 'WORLD_EDITOR.SERVER_DATA_PATH_HELP' | translate }}</small>
+            </div>
+            <div class="mb-2">
+              <label class="form-label" for="world-editor-source-path">{{ 'WORLD_EDITOR.SOURCE_PATH' | translate }}</label>
+              <input
+                id="world-editor-source-path"
+                class="form-control form-control-sm"
+                data-testid="source-path"
+                formControlName="sourcePath"
+                placeholder="C:\AzerothCore\azerothcore-wotlk"
+              />
+              <small class="form-text text-muted">{{ 'WORLD_EDITOR.SOURCE_PATH_HELP' | translate }}</small>
             </div>
             <div class="mb-2">
               <label class="form-label" for="world-editor-cache-folder">{{ 'WORLD_EDITOR.CACHE_FOLDER' | translate }}</label>

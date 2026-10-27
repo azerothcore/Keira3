@@ -44,6 +44,8 @@ export const LEGEND: LegendSection[] = [
       { shape: 'diamond', color: '#f0c419', label: 'WORLD_EDITOR.LEGEND_FLIGHT_MASTER' },
       { shape: 'diamond', color: '#dfe6e9', label: 'WORLD_EDITOR.LEGEND_GRAVEYARD' },
       { shape: 'dashed', color: '#74b9ff', label: 'WORLD_EDITOR.LEGEND_TELEPORT' },
+      { shape: 'tile', color: '#ff9ff3', label: 'WORLD_EDITOR.LEGEND_BOUNDARY' },
+      { shape: 'dashed', color: '#ff4757', label: 'WORLD_EDITOR.LEGEND_BOUNDARY_OUT' },
     ],
   },
   {

@@ -220,6 +220,26 @@ export class WorldEditorService {
     return Object.fromEntries(columns.map((column) => [column, Number(row?.[column] ?? 0)]));
   }
 
+  /** Creature entries by `ScriptName`, for the given script names. */
+  async loadScriptEntries(scriptNames: string[]): Promise<Map<string, number[]>> {
+    const names = [...new Set(scriptNames)];
+    const entries = new Map<string, number[]>();
+    if (names.length === 0) {
+      return entries;
+    }
+    const rows = await firstValueFrom(
+      this.queryService.query<TableRow>(
+        `SELECT entry, ScriptName AS scriptName FROM creature_template WHERE ScriptName IN (${names.map(() => '?').join(', ')})`,
+        names,
+      ),
+    );
+    for (const row of rows ?? []) {
+      const name = String(row['scriptName']);
+      entries.set(name, [...(entries.get(name) ?? []), Number(row['entry'])]);
+    }
+    return entries;
+  }
+
   /**
    * Spawns of a map by GUID, entry or name (creatures and gameobjects, at most `SEARCH_LIMIT` of each): a number looks
    * for that GUID or entry, text for names containing it.

@@ -1,5 +1,6 @@
 export * from './coords';
 export * from './dbc';
+export * from './boss-boundaries';
 export * from './folder-archive';
 export * from './formats';
 export * from './light';

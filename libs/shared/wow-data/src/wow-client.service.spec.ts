@@ -68,6 +68,77 @@ describe('WowClientService', () => {
 
   afterEach(() => vi.clearAllMocks());
 
+  describe('boss boundaries', () => {
+    const bytes = (text: string) => Array.from(new TextEncoder().encode(text));
+    const scripts = '/ac/src/server/scripts/Northrend/Naxx';
+    const files = {
+      '/ac/src/server/game/Maps/AreaDefines.h': bytes('MAP_NAXXRAMAS = 533,'),
+      [`${scripts}/instance_naxxramas.cpp`]: bytes(
+        'BossBoundaryData const boundaries = { { BOSS_PATCHWERK, new CircleBoundary(Position(1, 2), 30.0f) }, ' +
+          '{ BOSS_PATCHWERK, new ZRangeBoundary(1, 9) }, { BOSS_LONELY, new ZRangeBoundary(1, 2) } }; ' +
+          'RegisterInstanceScript(instance_naxxramas, MAP_NAXXRAMAS);',
+      ),
+      [`${scripts}/boss_patchwerk.cpp`]: bytes('boss_patchwerkAI(Creature* c) : BossAI(c, BOSS_PATCHWERK) { }'),
+      [`${scripts}/sub/boss_adds.cpp`]: bytes(
+        'npc_addAI(Creature* c) : BossAI(c, BOSS_PATCHWERK) { } boss_patchwerkAI(Creature* c) : BossAI(c, BOSS_PATCHWERK) {}',
+      ),
+      '/ac/src/server/scripts/Other/instance_plain.cpp': bytes('InstanceMapScript("instance_plain", 1)'),
+      '/ac/src/server/scripts/Other/instance_custom.cpp': bytes(
+        'InstanceMapScript("instance_custom", MAP_UNKNOWN) BossBoundaryData const b = { { DATA_A, new ZRangeBoundary(1, 2) } };',
+      ),
+      '/ac/src/server/scripts/Other/instance_numbered.cpp': bytes(
+        'InstanceMapScript("instance_numbered", 999) BossBoundaryData const b = { { DATA_B, new ZRangeBoundary(1, 2) } };',
+      ),
+      '/ac/src/server/scripts/Other/readme.txt': bytes('instance_fake.cpp'),
+    };
+
+    it("reads them from the source folder's instance scripts, with the creatures using them, once", async () => {
+      const { service, settings, native } = setup({ files });
+      expect(await service.getBossBoundaries(533)).toEqual([]);
+      settings.save({ ...settings.paths(), sourcePath: '/ac/' });
+      expect(await service.getBossBoundaries(533)).toEqual([
+        {
+          mapId: 533,
+          instance: 'instance_naxxramas',
+          boss: 'BOSS_PATCHWERK',
+          shapes: [
+            { type: 'circle', center: { x: 1, y: 2 }, radius: 30, inverted: false },
+            { type: 'zrange', minZ: 1, maxZ: 9, inverted: false },
+          ],
+          scriptNames: ['boss_patchwerk', 'npc_add'],
+        },
+        { mapId: 533, instance: 'instance_naxxramas', boss: 'BOSS_LONELY', shapes: [expect.any(Object)], scriptNames: [] },
+      ]);
+      // a map named by a constant that isn't known is skipped; a number is fine
+      expect(await service.getBossBoundaries(999)).toHaveLength(1);
+      const reads = vi.spyOn(native, 'readFile');
+      await service.getBossBoundaries(533);
+      expect(reads).not.toHaveBeenCalled();
+    });
+
+    it('takes the src folder too, has none without scripts or outside the desktop app', async () => {
+      const { service, settings } = setup({ files });
+      settings.save({ ...settings.paths(), sourcePath: '/ac/src' });
+      expect(await service.getBossBoundaries(533)).toHaveLength(2);
+      settings.save({ ...settings.paths(), sourcePath: '/nowhere' });
+      expect(await service.getBossBoundaries(533)).toEqual([]);
+    });
+
+    it('reads boundaries without the map constants file', async () => {
+      const withoutDefines = Object.fromEntries(Object.entries(files).filter(([path]) => !path.endsWith('AreaDefines.h')));
+      const { service, settings } = setup({ files: withoutDefines });
+      settings.save({ ...settings.paths(), sourcePath: '/ac' });
+      expect(await service.getBossBoundaries(533)).toEqual([]);
+      expect(await service.getBossBoundaries(999)).toHaveLength(1);
+    });
+
+    it('has none outside the desktop app', async () => {
+      const { service, settings } = setup({ native: false });
+      settings.save({ ...settings.paths(), sourcePath: '/ac' });
+      expect(await service.getBossBoundaries(533)).toEqual([]);
+    });
+  });
+
   it('is not supported outside Electron', async () => {
     const { service } = setup({ native: false });
     expect(service.isSupported()).toBe(false);

@@ -1,6 +1,7 @@
 import { tileCenter, worldToScene, WorldPosition } from '@keira/shared/wow-data';
 import {
   BoxGeometry,
+  BufferAttribute,
   BufferGeometry,
   ConeGeometry,
   Color,
@@ -448,6 +449,58 @@ describe('WorldScene', () => {
       expect(world.probeGroup.children).toHaveLength(2);
       world.setProbe(undefined);
       expect(world.probeGroup.children).toHaveLength(0);
+    });
+
+    it('draws boss boundaries: outlines and fills at their height or at both heights of their height ranges, picked for hover', () => {
+      const world = new WorldScene();
+      const group = () => world.scene.getObjectByName('boundaries') as Group;
+      const c = at(0, 0);
+      world.setBoundaries([
+        {
+          key: 'boundary:1',
+          label: 'Patchwerk',
+          color: 0xff00ff,
+          z: 50,
+          shapes: [
+            { type: 'circle', center: { x: c.x, y: c.y }, radius: 20, inverted: false },
+            { type: 'rectangle', minX: c.x + 5, maxX: c.x + 8, minY: c.y + 5, maxY: c.y + 8, inverted: true },
+          ],
+        },
+        {
+          key: 'boundary:2',
+          label: 'Pit',
+          color: 0x00ffff,
+          z: 0,
+          shapes: [
+            {
+              type: 'intersect',
+              shapes: [
+                { type: 'rectangle', minX: c.x + 100, maxX: c.x + 110, minY: c.y, maxY: c.y + 10, inverted: false },
+                { type: 'zrange', minZ: 40, maxZ: 60, inverted: false },
+              ],
+              inverted: false,
+            },
+          ],
+        },
+        // only a height range: nothing to draw
+        { key: 'boundary:3', label: 'Height', color: 0, z: 0, shapes: [{ type: 'zrange', minZ: 1, maxZ: 2, inverted: false }] },
+      ]);
+      // 2 shapes at one height + 1 shape at two heights, each an outline and a fill
+      expect(group().children).toHaveLength(8);
+      const dashed = group().children.find((child) => child instanceof Line && child.material instanceof LineDashedMaterial) as Line;
+      expect((dashed.material as LineDashedMaterial).color.getHex()).toBe(0xff4757);
+      expect(dashed.raycast(undefined as never, [])).toBeUndefined();
+      const fills = group().children.filter((child) => child.name === 'boundary:2:fill');
+      expect(fills.map((fill) => Math.round(((fill as Mesh).geometry.getAttribute('position') as BufferAttribute).getY(1)))).toEqual(
+        [40, 60].map((z) => Math.round(z + 0.3)),
+      );
+      lookDownAt(world, { ...c, z: 50.3 }, 30);
+      expect(world.pick(0, 0, { markersOnly: true, overlays: true })).toEqual(
+        expect.objectContaining({ type: 'overlay', key: 'boundary:1' }),
+      );
+      expect(world.pick(0, 0, { markersOnly: true })).toBeUndefined();
+      world.setBoundaries([]);
+      expect(group().children).toHaveLength(0);
     });
 
     it('draws A and C as pins, A with a cone towards C, picked and moved while dragged', () => {

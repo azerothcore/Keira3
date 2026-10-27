@@ -407,6 +407,31 @@ describe('WorldEditorService', () => {
     expect(queryService.query.mock.calls[2][1]).toEqual(['%x%', '%x%']);
   });
 
+  it('finds the creature entries of script names', async () => {
+    const { service, queryService } = setup();
+    expect(await service.loadScriptEntries([])).toEqual(new Map());
+    queryService.query
+      .mockReturnValueOnce(
+        of([
+          { entry: '16028', scriptName: 'boss_patchwerk' },
+          { entry: '29324', scriptName: 'boss_patchwerk' },
+          { entry: '15931', scriptName: 'boss_grobbulus' },
+        ]),
+      )
+      .mockReturnValueOnce(of(undefined));
+    expect(await service.loadScriptEntries(['boss_patchwerk', 'boss_grobbulus', 'boss_patchwerk'])).toEqual(
+      new Map([
+        ['boss_patchwerk', [16028, 29324]],
+        ['boss_grobbulus', [15931]],
+      ]),
+    );
+    expect(queryService.query).toHaveBeenLastCalledWith(
+      'SELECT entry, ScriptName AS scriptName FROM creature_template WHERE ScriptName IN (?, ?)',
+      ['boss_patchwerk', 'boss_grobbulus'],
+    );
+    expect(await service.loadScriptEntries(['x'])).toEqual(new Map());
+  });
+
   it('reads the highest guid', async () => {
     const { service, queryService } = setup();
     queryService.getMaxId.mockReturnValueOnce(of([{ max: 5300678 }])).mockReturnValueOnce(of([]));

@@ -19,6 +19,7 @@ import {
   WowMap,
   WowZone,
 } from './dbc';
+import { BossBoundary, parseBossScripts, parseInstanceBoundaries, parseMapConstants } from './boss-boundaries';
 import { FolderArchive } from './folder-archive';
 import { decodeBlp, parseAdt, ParsedAdt, parseWdt, RgbaImage, WdtInfo } from './formats';
 import { MD5_TRANSLATE_PATH, MINIMAP_ROOT, minimapKey, parseMd5Translate } from './minimap';
@@ -97,6 +98,7 @@ export class WowClientService {
   private creatureDisplays?: Promise<Map<number, CreatureDisplay>>;
   private gameobjectDisplays?: Promise<Map<number, string>>;
   private characterDbcs?: Promise<(DbcFile | undefined)[]>;
+  private bossBoundaries?: { source: string; all: Promise<BossBoundary[]> };
   private zoneLights?: Promise<Map<number, ZoneLight[]>>;
   private zones?: Promise<WowZone[]>;
   private areaTriggers?: Promise<AreaTriggerInfo[]>;
@@ -152,6 +154,62 @@ export class WowClientService {
       throw error;
     });
     return (await this.creatureDisplays).get(displayId);
+  }
+
+  /**
+   * Boss boundaries of a map, read from the instance scripts of the AzerothCore source folder (empty without one, or
+   * outside the desktop app). The scripts are read once.
+   */
+  async getBossBoundaries(mapId: number): Promise<BossBoundary[]> {
+    const source = this.settings.paths().sourcePath;
+    if (!source || !this.native) {
+      return [];
+    }
+    if (this.bossBoundaries?.source !== source) {
+      this.bossBoundaries = { source, all: this.readBossBoundaries(this.native, source) };
+    }
+    return (await this.bossBoundaries.all).filter((boundary) => boundary.mapId === mapId);
+  }
+
+  private async readBossBoundaries(native: WowNativeApi, source: string): Promise<BossBoundary[]> {
+    // the clone of azerothcore-wotlk, or its src folder
+    const base = [`${source}/src/server`, `${source}/server`].find((path) => native.isDirectory(`${path}/scripts`));
+    if (!base) {
+      return [];
+    }
+    const text = (path: string) => new TextDecoder().decode(native.readFile(path));
+    const defines = `${base}/game/Maps/AreaDefines.h`;
+    const maps = native.exists(defines) ? parseMapConstants(text(defines)) : new Map<string, number>();
+    const walk = (dir: string): string[] =>
+      native.readdir(dir).flatMap((name) => (native.isDirectory(`${dir}/${name}`) ? walk(`${dir}/${name}`) : [`${dir}/${name}`]));
+    const files = walk(`${base}/scripts`).filter((path) => path.endsWith('.cpp'));
+    const boundaries: BossBoundary[] = [];
+    for (const file of files.filter((path) => /\/instance_\w+\.cpp$/.test(path))) {
+      const parsed = parseInstanceBoundaries(text(file));
+      const mapId = parsed && (maps.get(parsed.map) ?? Number(parsed.map));
+      if (!parsed || !Number.isInteger(mapId)) {
+        continue;
+      }
+      // the creatures using each boss's boundary, from the scripts of the instance's folder
+      await nextFrame();
+      const folder = file.slice(0, file.lastIndexOf('/'));
+      const scripts = new Map<string, string[]>();
+      for (const other of files.filter((path) => path.startsWith(`${folder}/`))) {
+        for (const [boss, names] of parseBossScripts(text(other))) {
+          scripts.set(boss, [...new Set([...(scripts.get(boss) ?? []), ...names])]);
+        }
+      }
+      const instance = (file.split('/').pop() as string).replace(/\.cpp$/, '');
+      for (const { boss, shape } of parsed.entries) {
+        const existing = boundaries.find((b) => b.mapId === mapId && b.boss === boss);
+        if (existing) {
+          existing.shapes.push(shape);
+        } else {
+          boundaries.push({ mapId: mapId as number, instance, boss, shapes: [shape], scriptNames: scripts.get(boss) ?? [] });
+        }
+      }
+    }
+    return boundaries;
   }
 
   /** A playable race's character (sex 0 male, 1 female) as a display: model, first skin and hair; no clothes. */

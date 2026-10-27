@@ -64,6 +64,7 @@ import {
   WaypointCheck,
   WaypointCheckRequest,
   WorldLink,
+  WorldBoundary,
   WorldMarker,
   ObjectMoved,
   parseWaypointKey,
@@ -157,6 +158,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   readonly links = input<WorldLink[]>([]);
   /** Labelled markers (graveyards, flight masters, pools…), named on hover. */
   readonly markers = input<WorldMarker[]>([]);
+  /** Boss boundaries, drawn on the ground and named on hover. */
+  readonly boundaries = input<WorldBoundary[]>([]);
   /** Area trigger volumes to draw (empty = none). */
   readonly areaTriggers = input<WorldAreaTrigger[]>([]);
   readonly picked = output<PickResult>();
@@ -339,6 +342,10 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     });
     effect(() => {
       this.world.setOverlays(this.links(), this.markers());
+      this.requestRender();
+    });
+    effect(() => {
+      this.world.setBoundaries(this.boundaries());
       this.requestRender();
     });
     effect(() => {
@@ -549,7 +556,10 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
         return this.areaTriggers().find((trigger) => trigger.key === result.key)?.label;
       case 'overlay': {
         // a marker, or the arrow of a labelled link (with the way it points)
-        const overlay = this.markers().find((marker) => marker.key === result.key) ?? this.links().find((link) => link.key === result.key);
+        const overlay =
+          this.markers().find((marker) => marker.key === result.key) ??
+          this.links().find((link) => link.key === result.key) ??
+          this.boundaries().find((boundary) => boundary.key === result.key);
         const label = (overlay as { label: string }).label;
         return result.direction === undefined ? label : `${label}\n→ ${headingText(result.direction)}`;
       }

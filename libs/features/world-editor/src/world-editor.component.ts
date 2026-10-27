@@ -48,6 +48,7 @@ import {
   WorldMapComponent,
   WorldMapDot,
   RENDER_SCALES,
+  WorldBoundary,
 } from '@keira/shared/world-viewer';
 import {
   CacheUsage,
@@ -71,6 +72,8 @@ import {
   worldToTile,
   TaxiPath,
   PLAYER_RACES,
+  BossBoundary,
+  describeBoundary,
 } from '@keira/shared/wow-data';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ClipboardService } from 'ngx-clipboard';
@@ -207,6 +210,8 @@ const spawnBounds = (spawn: SpawnRecord): { radius: number; reach: number } | un
       { radius: spawn.boundingRadius * (spawn.scale ?? 1), reach: (spawn.combatReach as number) * (spawn.scale ?? 1) }
     : undefined;
 /** Flight masters and flight paths (their own layer) among the travel overlays. */
+/** Colours of the boss boundaries, one per boss. */
+const BOUNDARY_COLORS = [0xff9ff3, 0x48dbfb, 0xfeca57, 0x1dd1a1, 0x5f27cd, 0xff6b6b];
 const isFlight = (key: string): boolean => key.startsWith('flight:') || key.startsWith('taxi:');
 
 @Component({
@@ -552,6 +557,32 @@ export class WorldEditorComponent implements OnInit {
   private readonly waypointSai = signal<WaypointSaiRow[]>([]);
   private readonly formations = signal<FormationMember[]>([]);
   private readonly travel = signal<TravelData>(EMPTY_TRAVEL);
+  /** Boss boundaries of the current map (from the AzerothCore source folder), with the entries of their creatures. */
+  private readonly bossBoundaries = signal<(BossBoundary & { entries: number[] })[]>([]);
+  /** Boss boundaries drawn in the view: at the height of a loaded boss (or of the camera), named with their bosses. */
+  protected readonly worldBoundaries = computed<WorldBoundary[]>(() => {
+    if (!this.layers().bossBoundaries) {
+      return [];
+    }
+    const spawns = this.spawns();
+    const camera = this.cameraCenter();
+    return this.bossBoundaries().map((boundary, i) => {
+      const bosses = spawns.filter((s) => s.type === 'creature' && boundary.entries.includes(s.entry));
+      const names = [...new Set(bosses.map((s) => s.name || s.entry))].join(', ');
+      const shapes = boundary.shapes.map((shape) => `· ${describeBoundary(shape)}`);
+      return {
+        key: `boundary:${boundary.boss}`,
+        label: [
+          `Boss boundary ${boundary.boss} (${boundary.instance})${names ? ` — ${names}` : ''}`,
+          ...(shapes.length > 1 ? ['must stay inside all of:'] : []),
+          ...shapes,
+        ].join('\n'),
+        color: BOUNDARY_COLORS[i % BOUNDARY_COLORS.length],
+        z: bosses[0]?.z ?? camera?.z ?? 0,
+        shapes: boundary.shapes,
+      };
+    });
+  });
   /** Where the camera looks (the last reported centre), for what's drawn near it. */
   private readonly cameraCenter = signal<WorldPosition | undefined>(undefined);
   private readonly pools = signal<PoolMember[]>([]);
@@ -720,6 +751,7 @@ export class WorldEditorComponent implements OnInit {
   protected readonly settingsForm = new FormGroup({
     clientPath: new FormControl(this.settings.paths().clientPath, { nonNullable: true }),
     serverDataPath: new FormControl(this.settings.paths().serverDataPath, { nonNullable: true }),
+    sourcePath: new FormControl(this.settings.paths().sourcePath, { nonNullable: true }),
     cacheFolder: new FormControl(this.cache.folder(), { nonNullable: true }),
   });
   protected readonly placeEntry = new FormControl<number | null>(null);
@@ -928,8 +960,8 @@ export class WorldEditorComponent implements OnInit {
   }
 
   protected async saveSettings(): Promise<void> {
-    const { clientPath, serverDataPath, cacheFolder } = this.settingsForm.getRawValue();
-    this.settings.save({ clientPath, serverDataPath });
+    const { clientPath, serverDataPath, sourcePath, cacheFolder } = this.settingsForm.getRawValue();
+    this.settings.save({ clientPath, serverDataPath, sourcePath });
     this.cache.setFolder(cacheFolder);
     await this.client.close();
     void this.refreshCacheUsage();
@@ -1074,6 +1106,7 @@ export class WorldEditorComponent implements OnInit {
         this.areaTriggerList.set(triggers);
         this.areaTriggerInfo.set(info);
       }
+      void this.loadBossBoundaries(mapId);
       await this.loadTravel(mapId, triggers);
     } catch (error) {
       this.areaTriggerList.set([]);
@@ -1092,6 +1125,19 @@ export class WorldEditorComponent implements OnInit {
     ]);
     if (mapId === this.mapId()) {
       this.travel.set({ mapId, graveyards, teleports, taxiNodes, taxiPaths });
+    }
+  }
+
+  /** The boss boundaries of a map, and the creatures they apply to (none when the scripts or the database can't tell). */
+  private async loadBossBoundaries(mapId: number): Promise<void> {
+    const boundaries = await this.client.getBossBoundaries(mapId).catch((): BossBoundary[] => []);
+    const entries = await this.service
+      .loadScriptEntries(boundaries.flatMap((boundary) => boundary.scriptNames))
+      .catch(() => new Map<string, number[]>());
+    if (mapId === this.mapId()) {
+      this.bossBoundaries.set(
+        boundaries.map((boundary) => ({ ...boundary, entries: boundary.scriptNames.flatMap((name) => entries.get(name) ?? []) })),
+      );
     }
   }
 

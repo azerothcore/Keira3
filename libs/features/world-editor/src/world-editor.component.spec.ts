@@ -14,6 +14,7 @@ import {
   WaypointCheck,
   WaypointCheckRequest,
   WorldLink,
+  WorldBoundary,
   WorldMarker,
   MovementSimulation,
   ObjectMoved,
@@ -53,6 +54,7 @@ class FakeWorldViewerComponent {
   readonly navigation = input<WorldControlsSettings>(DEFAULT_WORLD_CONTROLS_SETTINGS);
   readonly areaTriggers = input<WorldAreaTrigger[]>([]);
   readonly probe = input<PathProbeRequest | undefined>(undefined);
+  readonly boundaries = input<WorldBoundary[]>([]);
   readonly probed = output<PathProbeResult>();
   readonly speedChanged = output<number>();
   readonly navMeshTileChanged = output<NavMeshTileInfo | undefined>();
@@ -166,6 +168,7 @@ describe(WorldEditorComponent.name, () => {
       getM2: vi.fn(),
       getTaxiNodes: vi.fn(),
       getTaxiPaths: vi.fn(),
+      getBossBoundaries: vi.fn(),
       getServerCoverage: vi.fn(),
       getServerMap: vi.fn(),
       getMinimap: vi.fn(),
@@ -180,6 +183,7 @@ describe(WorldEditorComponent.name, () => {
       loadPools: vi.fn(),
       loadGraveyards: vi.fn(),
       loadTeleports: vi.fn(),
+      loadScriptEntries: vi.fn(),
       loadWaypointScripts: vi.fn(),
       loadWaypointSai: vi.fn(),
       loadEventNames: vi.fn(),
@@ -277,6 +281,8 @@ describe(WorldEditorComponent.name, () => {
     mocks.service.loadTeleports.mockResolvedValue([]);
     mocks.client.getTaxiNodes.mockResolvedValue([]);
     mocks.client.getTaxiPaths.mockResolvedValue([]);
+    mocks.client.getBossBoundaries.mockResolvedValue([]);
+    mocks.service.loadScriptEntries.mockResolvedValue(new Map());
     mocks.service.loadWaypointScripts.mockResolvedValue(new Map([[50, [{ id: 50, delay: 0, command: 0 }]]]));
     mocks.service.loadWaypointSai.mockResolvedValue([{ entryorguid: -1, point: 2, pathId: 10, actionType: 1, comment: 'Willem - Say' }]);
     mocks.service.loadEventNames.mockResolvedValue(new Map());
@@ -314,6 +320,7 @@ describe(WorldEditorComponent.name, () => {
       expect(JSON.parse(localStorage.getItem(WOW_DATA_SETTINGS_KEY) as string)).toEqual({
         clientPath: 'C:\\WoW',
         serverDataPath: 'C:\\Server\\Data',
+        sourcePath: '',
       });
       expect(mocks.client.close).toHaveBeenCalled();
       expect(page.byId('settings', false)).toBeFalsy();
@@ -2310,6 +2317,65 @@ describe(WorldEditorComponent.name, () => {
       page.viewer().probeMoved.emit({ which: 'from', position: { x: 2, y: 2, z: 2 } });
       await settle(page);
       expect(page.viewer().probe()).toEqual(expect.objectContaining({ from: { x: 2, y: 2, z: 2 }, to: { x: 20, y: 20, z: 2 } }));
+    });
+
+    it('draws boss boundaries at the height of their boss, named with it, with their own switch', async () => {
+      mocks.client.getBossBoundaries.mockResolvedValue([
+        {
+          mapId: 0,
+          instance: 'instance_naxxramas',
+          boss: 'BOSS_PATCHWERK',
+          shapes: [
+            { type: 'circle', center: { x: -8900, y: -100 }, radius: 30, inverted: false },
+            { type: 'zrange', minZ: 70, maxZ: 90, inverted: false },
+          ],
+          scriptNames: ['boss_patchwerk', 'boss_unknown'],
+        },
+        {
+          mapId: 0,
+          instance: 'instance_naxxramas',
+          boss: 'BOSS_GLUTH',
+          shapes: [{ type: 'zrange', minZ: 1, maxZ: 2, inverted: false }],
+          scriptNames: [],
+        },
+      ]);
+      mocks.service.loadScriptEntries.mockResolvedValue(new Map([['boss_patchwerk', [101, 102]]]));
+      const { page } = await setup();
+      await loadArea(page);
+      expect(mocks.service.loadScriptEntries).toHaveBeenCalledWith(['boss_patchwerk', 'boss_unknown']);
+      const [patchwerk, gluth] = page.viewer().boundaries();
+      // creatures 1 and 2 (no name) have entries 101 and 102
+      expect(patchwerk.label).toBe(
+        'Boss boundary BOSS_PATCHWERK (instance_naxxramas) — Deputy Willem, 102\nmust stay inside all of:\n· circle r 30.0 at (-8900.0, -100.0)\n· height 70..90',
+      );
+      expect(patchwerk.z).toBe(80);
+      expect(gluth.label).toBe('Boss boundary BOSS_GLUTH (instance_naxxramas)\n· height 1..2');
+      expect(gluth.z).toBe(CENTER.z);
+      expect(gluth.color).not.toBe(patchwerk.color);
+      page.click('view-toggle');
+      page.fixture.detectChanges();
+      page.click('layer-boss-boundaries');
+      page.fixture.detectChanges();
+      expect(page.viewer().boundaries()).toEqual([]);
+    });
+
+    it('has no boss boundaries when they or their creatures can not be read, and keeps the source folder setting', async () => {
+      mocks.client.getBossBoundaries.mockRejectedValue(new Error('no source'));
+      const { page } = await setup();
+      await loadArea(page);
+      expect(page.viewer().boundaries()).toEqual([]);
+      mocks.client.getBossBoundaries.mockResolvedValue([
+        { mapId: 0, instance: 'i', boss: 'B', shapes: [{ type: 'zrange', minZ: 1, maxZ: 2, inverted: false }], scriptNames: ['x'] },
+      ]);
+      mocks.service.loadScriptEntries.mockRejectedValue(new Error('no table'));
+      page.click('settings-toggle');
+      page.fixture.detectChanges();
+      page.type('source-path', 'C:\\Source\\azerothcore-wotlk');
+      page.submit('settings-save');
+      await settle(page);
+      await settle(page);
+      expect(JSON.parse(localStorage.getItem(WOW_DATA_SETTINGS_KEY) as string).sourcePath).toBe('C:\\Source\\azerothcore-wotlk');
+      expect(page.viewer().boundaries()).toHaveLength(1);
     });
 
     it('loads the spawns of an area chosen on the world map', async () => {

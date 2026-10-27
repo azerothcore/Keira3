@@ -92,6 +92,8 @@ export interface LayerVisibility {
   flightPaths: boolean;
   /** Teleports and graveyards. */
   travel: boolean;
+  /** Boss boundaries (from the AzerothCore source folder). */
+  bossBoundaries: boolean;
 }
 
 export type LayerSwitch = { key: keyof LayerVisibility; id: string; label: string };
@@ -110,6 +112,7 @@ export const OVERLAY_SWITCHES: LayerSwitch[] = [
   { key: 'pools', id: 'pools', label: 'WORLD_EDITOR.POOLS' },
   { key: 'flightPaths', id: 'flight-paths', label: 'WORLD_EDITOR.FLIGHT_PATHS' },
   { key: 'travel', id: 'travel', label: 'WORLD_EDITOR.TRAVEL' },
+  { key: 'bossBoundaries', id: 'boss-boundaries', label: 'WORLD_EDITOR.BOSS_BOUNDARIES' },
 ];
 
 /** Rows as returned by the spawn and waypoint queries. */

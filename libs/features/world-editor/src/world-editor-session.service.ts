@@ -30,6 +30,7 @@ export class WorldEditorSessionService {
     pools: true,
     flightPaths: true,
     travel: true,
+    bossBoundaries: true,
   });
   readonly tool = signal<EditorTool>('select');
   readonly gizmoMode = signal<GizmoMode>('translate');
