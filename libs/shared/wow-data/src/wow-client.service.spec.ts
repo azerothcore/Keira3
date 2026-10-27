@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { buildDbc } from './dbc.mock';
 import { EMPTY_COLLISION } from './collision';
+import { buildMmtile } from './navmesh.mock';
 import { WowClientService } from './wow-client.service';
 import { WowDataCacheService } from './wow-data-cache.service';
 import { WowDataSettingsService } from './wow-data-settings.service';
@@ -250,6 +251,35 @@ describe('WowClientService', () => {
       });
       expect((await service.getZones(0)).map((zone) => zone.name)).toEqual(['Elwynn']);
       expect((await service.getZones(1)).map((zone) => zone.name)).toEqual(['Durotar']);
+    });
+
+    it("reads tiles of the server's navigation mesh for a map", async () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+      const { service, native } = setup({
+        files: {
+          '/srv/dbc/Map.dbc': mapDbc('ServerMap'),
+          '/srv/mmaps/0014832.mmtile': Array.from(buildMmtile([{ flags: 1 }])),
+          '/srv/mmaps/0014833.mmtile': [1, 2, 3],
+        },
+        mpqs: standardMpqs(),
+        serverDataPath: '/srv',
+      });
+      expect((await service.getNavMeshTile('servermap', { tx: 32, ty: 48 }))?.positions).toHaveLength(18);
+      // no tile there, an unknown map, a broken file
+      expect(await service.getNavMeshTile('ServerMap', { tx: 1, ty: 1 })).toBeUndefined();
+      expect(await service.getNavMeshTile('Nowhere', { tx: 32, ty: 48 })).toBeUndefined();
+      expect(await service.getNavMeshTile('ServerMap', { tx: 33, ty: 48 })).toBeUndefined();
+      vi.spyOn(native, 'readFile').mockImplementationOnce(() => {
+        throw new Error('locked');
+      });
+      expect(await service.getNavMeshTile('ServerMap', { tx: 32, ty: 48 })).toBeUndefined();
+      expect(warn).toHaveBeenCalledWith('[World Editor] Could not read /srv/mmaps/0014832.mmtile: locked');
+      warn.mockRestore();
+    });
+
+    it('has no navigation mesh without a server data folder', async () => {
+      const { service } = setup({ mpqs: standardMpqs() });
+      expect(await service.getNavMeshTile('ClientMap', { tx: 32, ty: 48 })).toBeUndefined();
     });
 
     it('lists the area triggers of a map', async () => {

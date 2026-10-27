@@ -1046,6 +1046,8 @@
     "CONTROLS_HELP": "Left-drag: pan · Right-drag: rotate · Wheel: zoom · W A S D / arrows: move · Space: marker to cursor · Home: camera to marker · Alt+click/drag: move selection · R: move/rotate · Del: delete · Ctrl+Z / Ctrl+Y: undo/redo · Esc: cancel",
     "WALKED_BY": "Walked by",
     "VIEW": "View",
+    "NAVMESH": "Navigation mesh (mmaps)",
+    "NAVMESH_HELP": "Where creatures can walk, from the mmaps in the server data folder: green ground, blue water, orange magma, purple slime",
     "COLLISION": "Hitboxes (collision)",
     "COLLISION_HELP": "What the server collides with: building and model collision, what vmaps (line of sight, height) are made of",
     "CONTROLS": "Controls",

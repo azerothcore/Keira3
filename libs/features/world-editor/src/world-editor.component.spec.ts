@@ -544,6 +544,13 @@ describe(WorldEditorComponent.name, () => {
       collision.dispatchEvent(new Event('change'));
       page.fixture.detectChanges();
       expect(page.viewer().renderSettings().showCollision).toBe(true);
+      const navMesh = page.byId<HTMLInputElement>('view-navmesh').nativeElement;
+      navMesh.checked = true;
+      navMesh.dispatchEvent(new Event('change'));
+      page.fixture.detectChanges();
+      expect(page.viewer().renderSettings().showNavMesh).toBe(true);
+      navMesh.checked = false;
+      navMesh.dispatchEvent(new Event('change'));
       collision.checked = false;
       collision.dispatchEvent(new Event('change'));
       page.fixture.detectChanges();

@@ -31,6 +31,7 @@ import {
   wmoGroupPath,
 } from './wmo';
 import { parseWmoGroupCollision } from './collision';
+import { mmtileName, NavMeshTile, parseMmtile } from './navmesh';
 import { clientIdentity, WowDataCacheService } from './wow-data-cache.service';
 import { WowDataSettingsService } from './wow-data-settings.service';
 import { StormArchive, WOW_NATIVE_API, WowNativeApi } from './wow-native-api';
@@ -160,6 +161,26 @@ export class WowClientService {
         throw error;
       }));
     return (await triggers).filter((trigger) => trigger.mapId === mapId);
+  }
+
+  /**
+   * A tile of the server's navigation mesh (`<server data>/mmaps`), for the map with that directory; undefined without
+   * a server data folder, or when the tile has no mmtile (or an unreadable one).
+   */
+  async getNavMeshTile(directory: string, tile: TileCoord): Promise<NavMeshTile | undefined> {
+    const native = this.requireNative();
+    const serverDataPath = this.settings.paths().serverDataPath;
+    const map = (await this.getMaps()).find((m) => m.directory.toLowerCase() === directory.toLowerCase());
+    const path = map && serverDataPath ? `${serverDataPath}/mmaps/${mmtileName(map.id, tile)}` : undefined;
+    if (!path || !native.exists(path)) {
+      return undefined;
+    }
+    try {
+      return parseMmtile(native.readFile(path));
+    } catch (error) {
+      console.warn(`[World Editor] Could not read ${path}: ${(error as Error).message}`);
+      return undefined;
+    }
   }
 
   /** Zone lights (Light.dbc) of a map, by its directory; empty when the map or the light DBCs are unknown. */

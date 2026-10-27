@@ -22,6 +22,8 @@ export interface WorldRenderSettings {
   showWanderRadius: boolean;
   /** What the server collides with (buildings' and models' collision, what vmaps are made of), as a red wireframe. */
   showCollision: boolean;
+  /** The server's navigation mesh (mmaps from the server data folder): where creatures can walk. */
+  showNavMesh: boolean;
   /** Zone lighting, fog and sky colours (otherwise a fixed neutral light). */
   zoneLighting: boolean;
   /** How far from the camera target (yards) doodads and models are drawn. */
@@ -68,6 +70,7 @@ export const DEFAULT_WORLD_RENDER_SETTINGS: WorldRenderSettings = {
   showFacingArrows: true,
   showWanderRadius: false,
   showCollision: false,
+  showNavMesh: false,
   zoneLighting: false,
   drawDistance: 250,
   advancedDistances: false,

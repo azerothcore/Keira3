@@ -29,6 +29,7 @@ import {
   NavigationAction,
   WorldControlsSettings,
 } from './world-controls-settings';
+import { WorldNavMesh } from './world-navmesh';
 import { WorldObjects } from './world-objects';
 import { DEFAULT_WORLD_RENDER_SETTINGS, drawDistances, WorldRenderSettings } from './world-render-settings';
 import { WORLD_RENDERER_FACTORY, WorldRenderer } from './world-renderer';
@@ -127,6 +128,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private readonly streamer = new TerrainStreamer(this.client, this.world, this.textures, () => this.onTileLoaded());
   private readonly objects = new WorldObjects(this.client, this.world.buildingGroup, this.textures, () => this.requestRender());
   private readonly doodads = new WorldDoodads(this.client, this.world.doodadGroup, this.textures, () => this.requestRender());
+  private readonly navMesh = new WorldNavMesh(this.client, this.world.navMeshGroup, () => this.requestRender());
   private readonly spawnModels = new SpawnModels(this.client, this.world, this.textures, () => this.requestRender());
   private readonly zoneLighting = new ZoneLighting(this.client, this.world, () => this.requestRender());
   private renderer?: WorldRenderer;
@@ -161,12 +163,14 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
           gameobjectDistance: distances.gameobjects,
         });
         this.zoneLighting.configure(settings.zoneLighting);
+        this.navMesh.configure({ show: settings.showNavMesh, radius: settings.terrainRadius });
         this.world.setRoofsVisible(settings.showRoofs);
         this.world.setCollisionVisible(settings.showCollision);
         this.world.setFacingArrowsVisible(settings.showFacingArrows);
         void this.streamer.update(this.center);
         void this.objects.update(this.center);
         void this.doodads.update(this.center);
+        void this.navMesh.update(this.center);
         this.spawnModels.update(this.center);
         this.requestRender();
       });
@@ -249,6 +253,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     this.streamer.dispose();
     this.objects.dispose();
     this.doodads.dispose();
+    this.navMesh.dispose();
     this.spawnModels.dispose();
     this.resizeObserver?.disconnect();
     this.gizmo.detach();
@@ -619,6 +624,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     this.error.set(undefined);
     this.objects.setMap(directory);
     this.doodads.setMap(directory);
+    this.navMesh.setMap(directory);
     void this.zoneLighting.setMap(this.client.isSupported() ? directory : undefined);
     if (!directory) {
       await this.streamer.setMap(undefined);
@@ -635,6 +641,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       await this.streamer.update(this.center);
       void this.objects.update(this.center);
       void this.doodads.update(this.center);
+      void this.navMesh.update(this.center);
     } catch (error) {
       this.error.set((error as Error).message);
     } finally {
@@ -664,6 +671,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     void this.streamer.update(center);
     void this.objects.update(center);
     void this.doodads.update(center);
+    void this.navMesh.update(center);
     this.spawnModels.update(center);
     this.zoneLighting.update(center);
   }

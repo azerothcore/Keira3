@@ -379,6 +379,19 @@
         <input
           class="form-check-input"
           type="checkbox"
+          id="world-editor-navmesh"
+          data-testid="view-navmesh"
+          [checked]="renderSettings.settings().showNavMesh"
+          (change)="setRenderFlag('showNavMesh', $event)"
+        />
+        <label class="form-check-label" for="world-editor-navmesh" [title]="'WORLD_EDITOR.NAVMESH_HELP' | translate">{{
+          'WORLD_EDITOR.NAVMESH' | translate
+        }}</label>
+      </div>
+      <div class="form-check form-switch mb-0">
+        <input
+          class="form-check-input"
+          type="checkbox"
           id="world-editor-zone-lighting"
           data-testid="view-zone-lighting"
           [checked]="renderSettings.settings().zoneLighting"

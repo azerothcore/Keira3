@@ -155,6 +155,8 @@ export class WorldScene {
   readonly buildingGroup = new Group();
   /** Trees, rocks and props (M2), streamed by `WorldDoodads`; never picked, so they don't catch clicks meant for the ground. */
   readonly doodadGroup = new Group();
+  /** The server's navigation mesh (mmaps), when shown. */
+  readonly navMeshGroup = new Group();
   private readonly spawnGroup = new Group();
   private readonly waypointGroup = new Group();
   private readonly raycaster = new Raycaster();
@@ -222,7 +224,15 @@ export class WorldScene {
     this.doodadGroup.name = 'doodads';
     this.spawnGroup.name = 'spawns';
     this.waypointGroup.name = 'waypoints';
-    this.scene.add(this.terrainGroup, this.buildingGroup, this.doodadGroup, this.spawnGroup, this.waypointGroup, this.triggerGroup);
+    this.scene.add(
+      this.terrainGroup,
+      this.buildingGroup,
+      this.doodadGroup,
+      this.spawnGroup,
+      this.waypointGroup,
+      this.triggerGroup,
+      this.navMeshGroup,
+    );
     this.camera.layers.enable(LIQUID_LAYER);
     this.setRoofsVisible(true);
 

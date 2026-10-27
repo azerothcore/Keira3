@@ -1046,6 +1046,8 @@
     "CONTROLS_HELP": "Arrastrar izq.: desplazar · Arrastrar der.: rotar · Rueda: zoom · W A S D / flechas: moverse · Espacio: marcador al cursor · Inicio: cámara al marcador · Alt+clic/arrastrar: mover selección · R: mover/rotar · Supr: eliminar · Ctrl+Z / Ctrl+Y: deshacer/rehacer · Esc: cancelar",
     "WALKED_BY": "Recorrida por",
     "VIEW": "Vista",
+    "NAVMESH": "Malla de navegación (mmaps)",
+    "NAVMESH_HELP": "Por dónde pueden caminar las criaturas, de los mmaps de la carpeta de datos del servidor: verde suelo, azul agua, naranja magma, morado limo",
     "COLLISION": "Hitboxes (colisión)",
     "COLLISION_HELP": "Con lo que colisiona el servidor: la colisión de edificios y modelos, de la que se hacen los vmaps (línea de visión, altura)",
     "CONTROLS": "Controles",
