@@ -2036,6 +2036,33 @@ describe(WorldEditorComponent.name, () => {
       expect(mocks.client.getServerCoverage).toHaveBeenLastCalledWith(0, []);
     });
 
+    it('loads the tiles of the map shown, also when it changes or the editor opens again', async () => {
+      const resolvers = new Map<string, (tiles: { tx: number; ty: number }[]) => void>();
+      const { page, fixture } = await setup();
+      await loadArea(page);
+      mocks.client.getMapTiles.mockImplementation((directory: string) => new Promise((resolve) => resolvers.set(directory, resolve)));
+      page.click('map-toggle');
+      await settle(page);
+      const maps = page.byId<HTMLSelectElement>('map-select').nativeElement;
+      maps.value = '1';
+      maps.dispatchEvent(new Event('change'));
+      await settle(page);
+      expect(mocks.client.getMapTiles).toHaveBeenLastCalledWith('Kalimdor');
+      // Kalimdor's tiles, then the late Azeroth ones: Kalimdor's stay
+      resolvers.get('Kalimdor')?.([{ tx: 40, ty: 30 }]);
+      await settle(page);
+      resolvers.get('Azeroth')?.([{ tx: 31, ty: 48 }]);
+      await settle(page);
+      expect(mocks.client.getServerCoverage).toHaveBeenLastCalledWith(1, [{ tx: 40, ty: 30 }]);
+      fixture.destroy();
+
+      mocks.client.getMapTiles.mockClear();
+      const again = new Page(TestBed.createComponent(WorldEditorComponent));
+      await settle(again);
+      expect(again.getDebugElementByTestId('world-map')).toBeTruthy();
+      expect(mocks.client.getMapTiles).toHaveBeenCalled();
+    });
+
     it('finds spawns, flies to them and selects them once loaded', async () => {
       const far = { ...spawn('creature', 99, { name: 'Far one' }), x: -5000 };
       mocks.service.searchSpawns.mockResolvedValue([SPAWNS[0], far]);

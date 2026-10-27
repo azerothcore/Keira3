@@ -259,6 +259,11 @@ export class WorldEditorComponent implements OnInit {
     const spawn = this.selectedSpawn() as SpawnRecord;
     return this.changes.spawnFields(spawn.type, spawn.guid);
   });
+  /** The world map's tiles, for the map shown (also when coming back with the world map open). */
+  private readonly loadWorldMapTiles = effect(() => {
+    const directory = this.showMap() ? this.mapDirectory() : undefined;
+    untracked(() => directory && void this.loadMapTiles(directory));
+  });
   private readonly loadStoredFields = effect(() => {
     const spawn = this.selectedSpawn();
     const key = spawn && spawnKey(spawn.type, spawn.guid);
@@ -1513,16 +1518,13 @@ export class WorldEditorComponent implements OnInit {
 
   protected toggleMap(): void {
     this.showMap.update((shown) => !shown);
-    if (this.showMap()) {
-      void this.loadMapTiles();
-    }
   }
 
-  private async loadMapTiles(): Promise<void> {
-    const directory = this.mapDirectory();
-    // (the world map only opens with a map shown)
-    const tiles = await this.client.getMapTiles(directory as string).catch((): TileCoord[] => []);
-    this.mapTiles.set(tiles);
+  private async loadMapTiles(directory: string): Promise<void> {
+    this.mapTiles.set([]);
+    const tiles = await this.client.getMapTiles(directory).catch((): TileCoord[] => []);
+    // another map chosen meanwhile: its own tiles are on the way
+    this.mapTiles.update((current) => (directory === this.mapDirectory() ? tiles : current));
   }
 
   /** A click on the world map: the camera goes there (at the server's terrain height when known). */
