@@ -1,4 +1,4 @@
-import { Blp, BLP_IMAGE_FORMAT, Map as WdtMap, MapArea } from '@wowserhq/format';
+import { Blp, BLP_COLOR_FORMAT, BLP_IMAGE_FORMAT, Map as WdtMap, MapArea } from '@wowserhq/format';
 import { TILE_COUNT, TileCoord, WorldBounds } from './coords';
 import { TerrainChunk } from './terrain-mesh';
 import { findChunk } from './liquid';
@@ -152,6 +152,35 @@ function eulerQuaternion(x: number, y: number, z: number): number[] {
   const half = Math.PI / 360;
   const [sx, cx, sy, cy, sz, cz] = [x, y, z].flatMap((angle) => [Math.sin(angle * half), Math.cos(angle * half)]);
   return [sx * cy * cz - cx * sy * sz, cx * sy * cz + sx * cy * sz, cx * cy * sz - sx * sy * cz, cx * cy * cz + sx * sy * sz];
+}
+
+/**
+ * A texture as the graphics card takes it: DXT-compressed BLPs keep their compressed mip levels (no decoding at all,
+ * and a quarter to an eighth of the memory), the others are decoded to RGBA (their top level).
+ */
+export type GpuTexture =
+  | { format: 'rgba'; width: number; height: number; data: Uint8Array }
+  | {
+      format: 'dxt1' | 'dxt1a' | 'dxt3' | 'dxt5';
+      width: number;
+      height: number;
+      mips: { width: number; height: number; data: Uint8Array }[];
+    };
+
+export function decodeBlpForGpu(bytes: Uint8Array): GpuTexture {
+  const blp = new Blp().load(toArrayBuffer(bytes));
+  if (blp.colorFormat !== BLP_COLOR_FORMAT.COLOR_DXT) {
+    const image = blp.getImage(0, BLP_IMAGE_FORMAT.IMAGE_ABGR8888);
+    return { format: 'rgba', width: image.width, height: image.height, data: new Uint8Array(image.data) };
+  }
+  const mips = blp
+    .getImages(0)
+    .filter((image) => image.width > 0 && image.height > 0)
+    .map((image) => ({ width: image.width, height: image.height, data: new Uint8Array(image.data) }));
+  const kind = blp.getImage(0).format;
+  const format =
+    kind === BLP_IMAGE_FORMAT.IMAGE_DXT3 ? 'dxt3' : kind === BLP_IMAGE_FORMAT.IMAGE_DXT5 ? 'dxt5' : blp.alphaSize > 0 ? 'dxt1a' : 'dxt1';
+  return { format, width: blp.width, height: blp.height, mips };
 }
 
 /** Decodes the top mip level of a BLP texture. ABGR8888 is laid out in memory as R, G, B, A bytes. */

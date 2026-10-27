@@ -209,7 +209,11 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private readonly canvasRef = viewChild.required<ElementRef<HTMLCanvasElement>>('canvas');
 
   private readonly world = new WorldScene();
-  private readonly textures = new TextureCache((path) => this.client.getTexture(path));
+  /** Whether the graphics card takes DXT textures as they are (then they're neither decoded nor converted). */
+  private compressedTextures = false;
+  private readonly textures = new TextureCache((path) =>
+    this.compressedTextures ? this.client.getGpuTexture(path) : this.client.getTexture(path),
+  );
   private readonly streamer = new TerrainStreamer(this.client, this.world, this.textures, () => this.onTileLoaded());
   private readonly objects = new WorldObjects(this.client, this.world.buildingGroup, this.textures, () => this.onTileLoaded());
   private readonly doodads = new WorldDoodads(this.client, this.world.doodadGroup, this.textures, () => this.requestRender());
@@ -396,6 +400,9 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     const canvas = this.canvasRef().nativeElement;
     this.renderer = this.rendererFactory(canvas);
+    this.compressedTextures = ['WEBGL_compressed_texture_s3tc', 'WEBGL_compressed_texture_s3tc_srgb'].every(
+      (name) => !!this.renderer?.extensions?.has(name),
+    );
     this.renderScale = this.renderSettings().renderScale;
     this.renderer.setPixelRatio(window.devicePixelRatio * this.renderScale);
 

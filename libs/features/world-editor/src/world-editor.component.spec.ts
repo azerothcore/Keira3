@@ -270,7 +270,7 @@ describe(WorldEditorComponent.name, () => {
       { tx: 32, ty: 48 },
     ]);
     mocks.client.close.mockResolvedValue(undefined);
-    mocks.client.cacheUsage.mockResolvedValue({ maps: [], buildingBytes: 0, modelBytes: 0, totalBytes: 0 });
+    mocks.client.cacheUsage.mockResolvedValue({ maps: [], buildingBytes: 0, modelBytes: 0, textureBytes: 0, totalBytes: 0 });
     mocks.client.getZones.mockImplementation((map: number) => Promise.resolve(map === 0 ? ZONES : []));
     mocks.service.loadSpawns.mockResolvedValue(SPAWNS);
     mocks.service.loadWaypoints.mockResolvedValue(WAYPOINTS);
@@ -559,6 +559,7 @@ describe(WorldEditorComponent.name, () => {
         ],
         buildingBytes: 2_000_000,
         modelBytes: 1_000_000,
+        textureBytes: 500_000,
         totalBytes: 15_600_000,
       });
       const { page } = await setup();
@@ -573,6 +574,7 @@ describe(WorldEditorComponent.name, () => {
         ['Eastern Kingdoms', '3', '3.0 MB (0.00 GB)'],
         ['custommap', '1', '0.1 MB (0.00 GB)'],
         ['WORLD_EDITOR.BUILDINGS', '', '2.0 MB (0.00 GB)'],
+        ['WORLD_EDITOR.TEXTURES', '', '0.5 MB (0.00 GB)'],
         ['WORLD_EDITOR.MODELS', '', '1.0 MB (0.00 GB)'],
       ]);
       expect(page.text('cache-size')).toBe('15.6 MB (0.02 GB)');

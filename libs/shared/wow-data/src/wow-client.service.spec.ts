@@ -13,6 +13,7 @@ const formats = vi.hoisted(() => ({
   parseAdt: vi.fn(),
   parseWdt: vi.fn(),
   decodeBlp: vi.fn(),
+  decodeBlpForGpu: vi.fn(),
 }));
 vi.mock('./formats', () => formats);
 
@@ -838,7 +839,7 @@ describe('WowClientService', () => {
         throw new Error('bad doodads');
       });
       wmo.parseWmoDoodads.mockReturnValue({ sets: [], doodads: [{ path: 'World\\Barrel.mdx' }, { path: 'world\\tree.m2' }] });
-      m2.parseM2.mockReturnValue({ batches: [] });
+      m2.parseM2.mockReturnValue({ batches: [], collision: { positions: [], indices: [] } });
       const progress: [number, number][] = [];
       const tiles = [1, 2, 3, 4].map((ty) => ({ tx: 1, ty }));
       expect(await service.preload('M', tiles, (done, total) => progress.push([done, total]))).toBe(true);
@@ -860,11 +861,13 @@ describe('WowClientService', () => {
       // again: everything is cached, only the cheap steps remain
       progress.length = 0;
       await service.preload('M', tiles.slice(0, 1), (done, total) => progress.push([done, total]));
+      // (the models are read from the cache, to list their textures)
       expect(progress).toEqual([
         [1, 1],
         [2, 3],
         [3, 3],
-        [4, 4],
+        [4, 5],
+        [5, 5],
       ]);
       expect(m2.parseM2).toHaveBeenCalledTimes(1);
       warn.mockRestore();
@@ -900,6 +903,49 @@ describe('WowClientService', () => {
         expect(await service.preload('M', tile)).toBe(false);
         isFull.mockRestore();
       }
+    });
+
+    it('preloads the textures of the tiles, buildings and models, as the graphics card takes them, once', async () => {
+      const { service } = setup({
+        mpqs: {
+          'common.MPQ': {
+            files: {
+              'World\\Maps\\M\\M_1_1.adt': [1],
+              'World\\wmo\\A.wmo': [1],
+              'World\\Tree.m2': [1],
+              'World\\Tree00.skin': [1],
+              'Tileset\\Grass.blp': [1],
+              'Wall.blp': [1],
+              'Bark.blp': [1],
+            },
+          },
+        },
+      });
+      formats.parseWdt.mockReturnValue(undefined);
+      formats.parseAdt.mockReturnValue(
+        adtOf(
+          [{ position: [0, 0, 0], layers: [{ texture: 'Tileset\\Grass.blp' }] }, { position: [0, 0, 0] }],
+          [{ uniqueId: 1, path: 'World\\wmo\\A.wmo', doodadSet: 0 }],
+          [{ uniqueId: 2, path: 'World\\Tree.mdx' }],
+        ),
+      );
+      wmo.parseWmoRoot.mockReturnValue({ flags: 0, materials: [{ texture: 'Wall.blp' }, {}], groups: [] });
+      wmo.parseWmoDoodads.mockReturnValue({ sets: [], doodads: [] });
+      m2.parseM2.mockReturnValue({ batches: [{ texture: 'Bark.blp' }, {}] });
+      formats.decodeBlpForGpu.mockReturnValue({
+        format: 'dxt1',
+        width: 4,
+        height: 4,
+        mips: [{ width: 4, height: 4, data: new Uint8Array(8) }],
+      });
+      expect(await service.preload('M', [{ tx: 1, ty: 1 }])).toBe(true);
+      expect(formats.decodeBlpForGpu).toHaveBeenCalledTimes(3);
+      // cached: not decoded again
+      expect(await service.getGpuTexture('wall.blp')).toEqual(expect.objectContaining({ format: 'dxt1' }));
+      expect(formats.decodeBlpForGpu).toHaveBeenCalledTimes(3);
+      expect(await service.preload('M', [{ tx: 1, ty: 1 }])).toBe(true);
+      expect(formats.decodeBlpForGpu).toHaveBeenCalledTimes(3);
+      expect(await service.getGpuTexture('missing.blp')).toBeUndefined();
     });
 
     it('decodes textures', async () => {

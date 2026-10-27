@@ -287,6 +287,7 @@ describe(WorldViewerComponent.name, () => {
     getVmapModel: vi.fn(),
     getAreaNames: vi.fn(),
     getPlayerDisplay: vi.fn(),
+    getGpuTexture: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -1217,6 +1218,32 @@ describe(WorldViewerComponent.name, () => {
     mapControls().dispatchEvent({ type: 'change' });
     expect(host.centers.length).toBe(count + 1);
     expect(host.centers.at(-1)?.x).toBeCloseTo(CENTER.x);
+  });
+
+  describe('compressed textures', () => {
+    it('takes DXT textures as they are when the graphics card can', async () => {
+      const extensions = { has: vi.fn().mockReturnValue(true) };
+      Object.assign(renderer, { extensions });
+      try {
+        client.getGpuTexture.mockResolvedValue(undefined);
+        client.getTerrainDetail.mockImplementation(() =>
+          Promise.resolve({ ...flatDetail(GROUND), chunks: [{ ...flatDetail(GROUND).chunks[0], textures: ['grass.blp'] }] }),
+        );
+        const { fixture } = await setup((h) => {
+          h.map.set('Azeroth');
+          h.focus.set(at(0, 0));
+        });
+        for (let i = 0; i < 6; i++) {
+          await settle(fixture);
+          flushFrames();
+        }
+        expect(extensions.has).toHaveBeenCalledWith('WEBGL_compressed_texture_s3tc_srgb');
+        expect(client.getGpuTexture).toHaveBeenCalledWith('grass.blp');
+        expect(client.getTexture).not.toHaveBeenCalledWith('grass.blp');
+      } finally {
+        delete (renderer as { extensions?: unknown }).extensions;
+      }
+    });
   });
 
   describe('reading ahead', () => {

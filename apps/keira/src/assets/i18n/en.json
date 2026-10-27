@@ -1046,6 +1046,7 @@
     "ERROR_DESKTOP_ONLY": "The 3D world editor needs the Keira3 desktop app to read your WoW client files.",
     "WALKED_BY": "Walked by",
     "VIEW": "View",
+    "TEXTURES": "Textures",
     "LOAD_AHEAD": "Load ahead",
     "LOAD_AHEAD_HELP": "Reads the tiles beyond those drawn (terrain, textures, buildings, props) while nothing in sight is loading, so they're ready when you get there.",
     "CACHE_FULL": "The cache reached its maximum ({{gb}} GB): preloading paused.",

@@ -21,7 +21,7 @@ import {
 } from './dbc';
 import { BossBoundary, parseBossScripts, parseInstanceBoundaries, parseMapConstants } from './boss-boundaries';
 import { FolderArchive } from './folder-archive';
-import { decodeBlp, parseAdt, ParsedAdt, parseWdt, RgbaImage, WdtInfo } from './formats';
+import { decodeBlp, decodeBlpForGpu, GpuTexture, parseAdt, ParsedAdt, parseWdt, RgbaImage, WdtInfo } from './formats';
 import { MD5_TRANSLATE_PATH, MINIMAP_ROOT, minimapKey, parseMd5Translate } from './minimap';
 import { parseConfigWtfLocale, pickLocale, sortMpqArchives } from './mpq-order';
 import { LiquidMesh, parseLiquids } from './liquid';
@@ -52,6 +52,8 @@ export interface CacheUsage {
   buildingBytes: number;
   /** Creature, gameobject and doodad models, and what's inside buildings. */
   modelBytes: number;
+  /** Textures, as the graphics card takes them. */
+  textureBytes: number;
   totalBytes: number;
 }
 
@@ -501,6 +503,7 @@ export class WowClientService {
       maps: [...maps.values()],
       buildingBytes: sum('wmo'),
       modelBytes: sum('m2') + sum('wmo-doodads'),
+      textureBytes: sum('texture'),
       totalBytes: this.cache.size(),
     };
   }
@@ -519,6 +522,8 @@ export class WowClientService {
     const { identity } = await this.getClient();
     const buildings = new Set<string>();
     const models = new Set<string>();
+    const textures = new Set<string>();
+    const addTexture = (path: string | undefined) => path && textures.add(path.toLowerCase());
     let done = 0;
     let total = tiles.length;
     /** Runs the steps one by one; false when the cache got full, true otherwise (also when cancelled). */
@@ -543,6 +548,7 @@ export class WowClientService {
       const adt = await this.loadAdt(directory, tile).catch(warn(`${directory}_${tile.tx}_${tile.ty}`));
       (await this.tileWmos(directory, tile, adt ?? undefined)).forEach((wmo) => buildings.add(wmo.path.toLowerCase()));
       adt?.doodads.forEach((doodad) => models.add(m2Path(doodad.path).toLowerCase()));
+      adt?.chunks.forEach((chunk) => (chunk.layers ?? []).forEach((layer) => addTexture(layer.texture)));
     });
     if (tilesEnd !== undefined) {
       return tilesEnd;
@@ -550,19 +556,28 @@ export class WowClientService {
     // the buildings and the list of what's inside them
     total += buildings.size;
     const buildingsEnd = await run([...buildings], async (path) => {
-      if (!this.cache.has(identity, 'wmo', path)) {
-        await this.getWmo(path).catch(warn(path));
-      }
+      // (from the cache when there: its textures are listed too)
+      const building = await this.getWmo(path).catch(warn(path));
+      building?.materials.forEach((material) => addTexture(material.texture));
       const inside = await this.getWmoDoodads(path).catch(warn(path));
       inside?.doodads.forEach((doodad) => models.add(m2Path(doodad.path).toLowerCase()));
     });
     if (buildingsEnd !== undefined) {
       return buildingsEnd;
     }
-    // the models of the doodads (trees, rocks, furniture…) not cached yet
-    const missing = [...models].filter((path) => !this.cache.has(identity, 'm2', path));
+    // the models of the doodads (trees, rocks, furniture…), and their textures
+    total += models.size;
+    const modelsEnd = await run([...models], async (path) => {
+      const model = await this.getM2(path).catch(warn(path));
+      model?.batches.forEach((batch) => addTexture(batch.texture));
+    });
+    if (modelsEnd !== undefined) {
+      return modelsEnd;
+    }
+    // every texture of all that, as the graphics card takes them
+    const missing = [...textures].filter((path) => !this.cache.has(identity, 'texture', path));
     total += missing.length;
-    return (await run(missing, (path) => this.getM2(path).catch(warn(path)))) ?? true;
+    return (await run(missing, (path) => this.getGpuTexture(path).catch(warn(path)))) ?? true;
   }
 
   private async loadWmo(path: string): Promise<WmoModel | undefined> {
@@ -603,6 +618,22 @@ export class WowClientService {
   async getTexture(path: string): Promise<RgbaImage | undefined> {
     const blp = await this.readFile(path);
     return blp ? decodeBlp(blp) : undefined;
+  }
+
+  /** A texture as the graphics card takes it (DXT mip levels as they are), from the disk cache when there. */
+  async getGpuTexture(path: string): Promise<GpuTexture | undefined> {
+    const { identity } = await this.getClient();
+    const key = path.toLowerCase();
+    const cached = this.cache.read<GpuTexture>(identity, 'texture', key);
+    if (cached) {
+      return cached;
+    }
+    const blp = await this.readFile(path);
+    const texture = blp && decodeBlpForGpu(blp);
+    if (texture) {
+      this.cache.write(identity, 'texture', key, texture);
+    }
+    return texture;
   }
 
   /** Parsed ADTs are kept for the few most recent tiles: terrain, liquids and placements share one parse. */

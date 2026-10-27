@@ -7,6 +7,8 @@ export interface WorldRenderer {
   setSize(width: number, height: number, updateStyle?: boolean): void;
   render(scene: Scene, camera: Camera): void;
   dispose(): void;
+  /** The WebGL extensions available (to use compressed textures). */
+  extensions?: { has(name: string): boolean };
 }
 
 export type WorldRendererFactory = (canvas: HTMLCanvasElement) => WorldRenderer;

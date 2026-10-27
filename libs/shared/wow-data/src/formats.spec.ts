@@ -1,4 +1,4 @@
-import { decodeBlp, parseAdt, parseAdtChunks, parseWdt, toArrayBuffer } from './formats';
+import { decodeBlp, decodeBlpForGpu, parseAdt, parseAdtChunks, parseWdt, toArrayBuffer } from './formats';
 
 const mocks = vi.hoisted(() => ({
   chunks: [] as {
@@ -12,13 +12,16 @@ const mocks = vi.hoisted(() => ({
   available: new Uint8Array(64 * 64),
   image: { width: 2, height: 1, data: [1, 2, 3, 4, 5, 6, 7, 8] },
   getImage: vi.fn(),
+  getImages: vi.fn(),
+  blp: { colorFormat: 2, alphaSize: 0, width: 8, height: 4 },
   depth: 0,
   objDefs: [] as unknown[],
   doodadDefs: [] as unknown[],
 }));
 
 vi.mock('@wowserhq/format', () => ({
-  BLP_IMAGE_FORMAT: { IMAGE_ABGR8888: 2 },
+  BLP_IMAGE_FORMAT: { IMAGE_ABGR8888: 2, IMAGE_DXT1: 4, IMAGE_DXT3: 5, IMAGE_DXT5: 6 },
+  BLP_COLOR_FORMAT: { COLOR_PAL: 1, COLOR_DXT: 2 },
   MapArea: class {
     constructor(readonly depth: number) {
       mocks.depth = depth;
@@ -33,8 +36,8 @@ vi.mock('@wowserhq/format', () => ({
     }
   },
   Blp: class {
-    load(): { getImage: typeof mocks.getImage } {
-      return { getImage: mocks.getImage };
+    load(): object {
+      return { getImage: mocks.getImage, getImages: mocks.getImages, ...mocks.blp };
     }
   },
 }));
@@ -136,6 +139,33 @@ describe('formats', () => {
     expect(parseWdt(Uint8Array.from(chunk('MWMO', name))).wmo).toBeUndefined();
     expect(parseWdt(Uint8Array.from([...chunk('MWMO', []), ...chunk('MODF', Array.from(modf))])).wmo).toBeUndefined();
     expect(parseWdt(Uint8Array.from([...chunk('MWMO', name), ...chunk('MODF', [1, 2])])).wmo).toBeUndefined();
+  });
+
+  it('keeps the DXT mip levels of a BLP as they are, and decodes the others', () => {
+    const level = (width: number, height: number, format: number) => ({ width, height, format, data: [1, 2] });
+    mocks.getImages.mockReturnValue([level(8, 4, 4), level(4, 2, 4), level(0, 0, 4)]);
+    const dxt = (format: number, alphaSize = 0) => {
+      mocks.getImage.mockReturnValue(level(8, 4, format));
+      mocks.blp = { colorFormat: 2, alphaSize, width: 8, height: 4 };
+      return decodeBlpForGpu(new Uint8Array());
+    };
+    expect(dxt(4)).toEqual({
+      format: 'dxt1',
+      width: 8,
+      height: 4,
+      mips: [
+        { width: 8, height: 4, data: Uint8Array.from([1, 2]) },
+        { width: 4, height: 2, data: Uint8Array.from([1, 2]) },
+      ],
+    });
+    expect(dxt(4, 1).format).toBe('dxt1a');
+    expect(dxt(5).format).toBe('dxt3');
+    expect(dxt(6).format).toBe('dxt5');
+    // a palette: decoded
+    mocks.blp = { colorFormat: 1, alphaSize: 8, width: 2, height: 1 };
+    mocks.getImage.mockReturnValue(mocks.image);
+    expect(decodeBlpForGpu(new Uint8Array())).toEqual({ format: 'rgba', width: 2, height: 1, data: Uint8Array.from(mocks.image.data) });
+    expect(mocks.getImage).toHaveBeenLastCalledWith(0, 2);
   });
 
   it('decodes the top mip level of a BLP as RGBA', () => {
