@@ -13,3 +13,4 @@ export * from './world-doodads';
 export * from './spawn-models';
 export * from './sky';
 export * from './zone-lighting';
+export * from './world-controls-settings';

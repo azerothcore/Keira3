@@ -22,6 +22,7 @@ import { TextureCache } from './texture-cache';
 import { SpawnModels } from './spawn-models';
 import { WorldDoodads } from './world-doodads';
 import { ZoneLighting } from './zone-lighting';
+import { DEFAULT_WORLD_CONTROLS_SETTINGS, NAVIGATION_ACTIONS, NavigationAction, WorldControlsSettings } from './world-controls-settings';
 import { WorldObjects } from './world-objects';
 import { DEFAULT_WORLD_RENDER_SETTINGS, drawDistances, WorldRenderSettings } from './world-render-settings';
 import { WORLD_RENDERER_FACTORY, WorldRenderer } from './world-renderer';
@@ -32,6 +33,8 @@ const CLICK_TOLERANCE_PX = 4;
 const CENTER_EMIT_DISTANCE = 60;
 /** How far the camera stands from a place it was sent to (close enough to see an NPC there). */
 const FOCUS_DISTANCE = 40;
+/** Keyboard movement speed (yards per second) when the camera is close; it grows with the camera distance. */
+const KEY_MIN_SPEED = 20;
 /** While something loads, how often (ms) the loading bar is refreshed. */
 const ACTIVITY_POLL = 250;
 
@@ -70,6 +73,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   readonly focus = input<WorldPosition | undefined>(undefined);
   /** Quality and range of what is drawn. */
   readonly renderSettings = input<WorldRenderSettings>(DEFAULT_WORLD_RENDER_SETTINGS);
+  /** Keyboard navigation (keys moving the camera while the view has the focus). */
+  readonly navigation = input<WorldControlsSettings>(DEFAULT_WORLD_CONTROLS_SETTINGS);
   /** An area (e.g. a zone) whose terrain and buildings are loaded whole, on top of what's around the camera. */
   readonly region = input<WorldBounds | undefined>(undefined);
 
@@ -86,6 +91,10 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   /** Server position the camera looks at, for the readout in the corner. */
   protected readonly cameraTarget = signal<WorldPosition | undefined>(undefined);
   private activityTimer?: ReturnType<typeof setTimeout>;
+  private readonly pressed = new Set<NavigationAction>();
+  private fast = false;
+  private moveFrame?: number;
+  private lastMoveTime = 0;
 
   private readonly host = viewChild.required<ElementRef<HTMLDivElement>>('host');
   private readonly canvasRef = viewChild.required<ElementRef<HTMLCanvasElement>>('canvas');
@@ -200,6 +209,9 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     clearTimeout(this.activityTimer);
+    if (this.moveFrame !== undefined) {
+      cancelAnimationFrame(this.moveFrame);
+    }
     this.streamer.dispose();
     this.objects.dispose();
     this.doodads.dispose();
@@ -307,6 +319,69 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     const owners = path.owners?.length ? ` — ${path.owners.join(', ')}` : '';
     const info = path.points.find((p) => p.point === point)?.info ?? [];
     return `${path.label} · #${point}${info.map((line) => ` · ${line}`).join('')}${owners}`;
+  }
+
+  // ---------------------------------------------------------------- keyboard navigation
+
+  protected onKeyDown(event: KeyboardEvent): void {
+    const action = this.navigationAction(event.code);
+    if (!action) {
+      return;
+    }
+    event.preventDefault();
+    this.pressed.add(action);
+    this.fast = event.shiftKey;
+    if (this.moveFrame === undefined) {
+      this.lastMoveTime = performance.now();
+      this.moveFrame = requestAnimationFrame((time) => this.moveStep(time));
+    }
+  }
+
+  protected onKeyUp(event: KeyboardEvent): void {
+    const action = this.navigationAction(event.code);
+    if (action) {
+      this.pressed.delete(action);
+    }
+    this.fast = event.shiftKey;
+  }
+
+  protected onBlur(): void {
+    this.pressed.clear();
+  }
+
+  private navigationAction(code: string): NavigationAction | undefined {
+    const navigation = this.navigation();
+    return navigation.keyboardNavigation ? NAVIGATION_ACTIONS.find((action) => navigation.keys[action].includes(code)) : undefined;
+  }
+
+  /** Moves the camera and its target together, along the ground as seen from the camera, faster when zoomed out. */
+  private moveStep(time: number): void {
+    this.moveFrame = undefined;
+    const controls = this.controls;
+    if (this.pressed.size === 0 || !controls) {
+      return;
+    }
+    const seconds = Math.min(0.1, Math.max(0, (time - this.lastMoveTime) / 1000));
+    this.lastMoveTime = time;
+    const camera = this.world.camera;
+    // the view's forward on the ground: where it looks (−z), plus its "up" for when it looks straight down
+    const forward = new Vector3(0, 1, -1).applyQuaternion(camera.quaternion).setY(0).normalize();
+    const right = new Vector3().crossVectors(forward, new Vector3(0, 1, 0));
+    const speed = Math.max(KEY_MIN_SPEED, camera.position.distanceTo(this.target)) * (this.fast ? 3 : 1) * seconds;
+    const move = new Vector3();
+    const sign = (positive: NavigationAction, negative: NavigationAction) =>
+      Number(this.pressed.has(positive)) - Number(this.pressed.has(negative));
+    move.addScaledVector(forward, sign('forward', 'back'));
+    move.addScaledVector(right, sign('right', 'left'));
+    move.y += sign('up', 'down');
+    if (move.lengthSq() > 0) {
+      move.normalize().multiplyScalar(speed);
+      camera.position.add(move);
+      this.target.add(move);
+      controls.update();
+      this.onCameraChange();
+    }
+    this.moveFrame = requestAnimationFrame((next) => this.moveStep(next));
   }
 
   // ---------------------------------------------------------------- gizmo

@@ -8,7 +8,15 @@
   (pointerleave)="onPointerLeave()"
   (contextmenu)="$event.preventDefault()"
 >
-  <canvas #canvas class="world-viewer-canvas" data-testid="world-viewer-canvas" tabindex="0"></canvas>
+  <canvas
+    #canvas
+    class="world-viewer-canvas"
+    data-testid="world-viewer-canvas"
+    tabindex="0"
+    (keydown)="onKeyDown($event)"
+    (keyup)="onKeyUp($event)"
+    (blur)="onBlur()"
+  ></canvas>
 
   @if (hoverLabel(); as label) {
     <div class="world-viewer-label" data-testid="world-viewer-label" [style.left.px]="label.x" [style.top.px]="label.y">

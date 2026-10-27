@@ -3,7 +3,9 @@ import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import {
+  DEFAULT_WORLD_CONTROLS_SETTINGS,
   DEFAULT_WORLD_RENDER_SETTINGS,
+  WorldControlsSettings,
   GizmoMode,
   ObjectMoved,
   PickResult,
@@ -34,6 +36,7 @@ class FakeWorldViewerComponent {
   readonly renderSettings = input<WorldRenderSettings>(DEFAULT_WORLD_RENDER_SETTINGS);
   readonly focus = input<WorldPosition | undefined>(undefined);
   readonly region = input<WorldBounds | undefined>(undefined);
+  readonly navigation = input<WorldControlsSettings>(DEFAULT_WORLD_CONTROLS_SETTINGS);
   readonly picked = output<PickResult>();
   readonly objectMoved = output<ObjectMoved>();
   readonly centerChanged = output<WorldPosition>();
@@ -56,8 +59,8 @@ class Page extends PageObjectModel<WorldEditorComponent> {
     const form = this.byId(id).nativeElement.closest('form') as HTMLFormElement;
     form.dispatchEvent(new Event('submit'));
   }
-  key(key: string, target: HTMLElement = this.fixture.nativeElement as HTMLElement): void {
-    target.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true }));
+  key(key: string, target: HTMLElement = this.fixture.nativeElement as HTMLElement, code = ''): void {
+    target.dispatchEvent(new KeyboardEvent('keydown', { key, code, bubbles: true }));
   }
   viewer(): FakeWorldViewerComponent {
     return this.getDebugElementByDirective(FakeWorldViewerComponent).componentInstance as FakeWorldViewerComponent;
@@ -466,6 +469,44 @@ describe(WorldEditorComponent.name, () => {
       });
       expect(radius.options[1].textContent?.trim()).toBe('25 WORLD_EDITOR.TILES');
       expect(JSON.parse(localStorage.getItem('keira3.worldEditor.render') as string).terrainRadius).toBe(2);
+    });
+
+    it('lets the user turn keyboard navigation off and pick its keys', async () => {
+      const { page } = await setup();
+      page.click('view-toggle');
+      page.fixture.detectChanges();
+      expect(page.viewer().navigation().keys.forward).toEqual(['KeyW', 'ArrowUp']);
+      expect(page.text('key-forward-0')).toBe('W');
+      expect(page.text('key-left-1')).toBe('←');
+
+      page.click('key-forward-1');
+      page.fixture.detectChanges();
+      expect(page.text('key-forward-1')).toBe('WORLD_EDITOR.PRESS_A_KEY');
+      page.key('i', page.byId('key-forward-1').nativeElement, 'KeyI');
+      page.fixture.detectChanges();
+      expect(page.text('key-forward-1')).toBe('I');
+      expect(page.viewer().navigation().keys.forward).toEqual(['KeyW', 'KeyI']);
+
+      // Escape cancels; a key taken from another action leaves that slot empty
+      page.click('key-back-0');
+      page.key('Escape', undefined, 'Escape');
+      page.fixture.detectChanges();
+      expect(page.text('key-back-0')).toBe('S');
+      page.click('key-up-0');
+      page.key('w', undefined, 'KeyW');
+      page.fixture.detectChanges();
+      expect(page.text('key-forward-0')).toBe('—');
+
+      page.click('keys-reset');
+      page.fixture.detectChanges();
+      expect(page.text('key-forward-0')).toBe('W');
+
+      const toggle = page.byId<HTMLInputElement>('view-keyboard').nativeElement;
+      toggle.checked = false;
+      toggle.dispatchEvent(new Event('change'));
+      page.fixture.detectChanges();
+      expect(page.viewer().navigation().keyboardNavigation).toBe(false);
+      expect(page.byId('key-forward-0', false)).toBeFalsy();
     });
 
     it('does not read game data outside the desktop app', async () => {

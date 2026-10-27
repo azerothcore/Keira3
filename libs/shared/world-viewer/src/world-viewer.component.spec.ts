@@ -4,6 +4,7 @@ import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { tileCenter, WowClientService, WorldBounds, WorldPosition, worldToScene } from '@keira/shared/wow-data';
 import { DebugHtmlElement, PageObjectModel } from 'ngx-page-object-model';
 import { EventDispatcher, Object3D, Vector3 } from 'three';
+import { DEFAULT_WORLD_CONTROLS_SETTINGS, WorldControlsSettings } from './world-controls-settings';
 import { DEFAULT_WORLD_RENDER_SETTINGS, WorldRenderSettings } from './world-render-settings';
 import { WORLD_RENDERER_FACTORY, WorldRenderer } from './world-renderer';
 import { WorldViewerComponent } from './world-viewer.component';
@@ -100,6 +101,7 @@ interface FakeTransformControls extends EventDispatcher<{ 'dragging-changed': { 
       [renderSettings]="render()"
       [focus]="focus()"
       [region]="region()"
+      [navigation]="navigation()"
       (picked)="picks.push($event)"
       (objectMoved)="moves.push($event)"
       (centerChanged)="centers.push($event)"
@@ -118,6 +120,7 @@ class HostComponent {
   readonly render = signal<WorldRenderSettings>(DEFAULT_WORLD_RENDER_SETTINGS);
   readonly focus = signal<WorldPosition | undefined>(undefined);
   readonly region = signal<WorldBounds | undefined>(undefined);
+  readonly navigation = signal<WorldControlsSettings>(DEFAULT_WORLD_CONTROLS_SETTINGS);
   readonly picks: PickResult[] = [];
   readonly moves: ObjectMoved[] = [];
   readonly centers: WorldPosition[] = [];
@@ -135,6 +138,9 @@ class Page extends PageObjectModel<HostComponent> {
   }
   error(assert = true): DebugHtmlElement<HTMLDivElement> {
     return this.getDebugElementByTestId('world-viewer-error', assert);
+  }
+  canvas(): DebugHtmlElement<HTMLCanvasElement> {
+    return this.getDebugElementByTestId('world-viewer-canvas');
   }
   activity(assert = true): DebugHtmlElement<HTMLDivElement> {
     return this.getDebugElementByTestId('world-viewer-activity', assert);
@@ -329,6 +335,63 @@ describe(WorldViewerComponent.name, () => {
     fixture.detectChanges();
     expect(page.activity(false)).toBeFalsy();
     vi.useRealTimers();
+  });
+
+  it('moves the camera with the navigation keys while the view has the focus', async () => {
+    vi.spyOn(performance, 'now').mockReturnValue(0);
+    const { page, host, fixture, update } = await setup((h) => h.focus.set(at(0, 0)));
+    const canvas = page.canvas().nativeElement;
+    const key = (type: 'keydown' | 'keyup', code: string, shiftKey = false): KeyboardEvent => {
+      const event = new KeyboardEvent(type, { code, shiftKey, cancelable: true });
+      canvas.dispatchEvent(event);
+      return event;
+    };
+    // a movement frame, then (at the same time, so without moving further) the render frame it asked for
+    const frameAt = (time: number): void => {
+      for (let i = 0; i < 2; i++) {
+        const pending = frames;
+        frames = [];
+        pending.forEach((frame) => frame(time));
+      }
+      fixture.detectChanges();
+    };
+    const target = () => page.target().nativeElement.textContent?.trim();
+    flushFrames();
+    fixture.detectChanges();
+    const start = target();
+
+    expect(key('keydown', 'KeyW').defaultPrevented).toBe(true);
+    key('keydown', 'KeyW');
+    frameAt(100);
+    const moved = target();
+    expect(moved).not.toBe(start);
+
+    // up (E) changes the height; Shift goes faster; keys released stop the camera
+    key('keyup', 'KeyW');
+    key('keydown', 'KeyE', true);
+    frameAt(200);
+    expect(target()).not.toBe(moved);
+    key('keyup', 'KeyE');
+    frameAt(300);
+    const stopped = target();
+    frameAt(400);
+    expect(target()).toBe(stopped);
+
+    // other keys pass through; losing the focus releases held keys
+    expect(key('keydown', 'KeyP').defaultPrevented).toBe(false);
+    key('keyup', 'KeyP');
+    key('keydown', 'ArrowLeft');
+    canvas.dispatchEvent(new FocusEvent('blur'));
+    frameAt(500);
+    expect(target()).toBe(stopped);
+
+    // turned off
+    await update(() => host.navigation.set({ ...DEFAULT_WORLD_CONTROLS_SETTINGS, keyboardNavigation: true }));
+    key('keydown', 'KeyD');
+    await update(() => host.navigation.set({ ...DEFAULT_WORLD_CONTROLS_SETTINGS, keyboardNavigation: false }));
+    expect(key('keydown', 'KeyW').defaultPrevented).toBe(false);
+    // closing the view while a key is held stops the movement
+    fixture.destroy();
   });
 
   it('streams terrain around the focus of the selected map', async () => {

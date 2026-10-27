@@ -257,6 +257,57 @@
         />
         <label class="form-check-label" for="world-editor-advanced-distances">{{ 'WORLD_EDITOR.ADVANCED' | translate }}</label>
       </div>
+      <div class="d-flex flex-wrap align-items-start gap-2 world-editor-keys" data-testid="view-keys">
+        <div class="form-check form-switch mb-0">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="world-editor-keyboard"
+            data-testid="view-keyboard"
+            [checked]="controls.settings().keyboardNavigation"
+            (change)="setKeyboardNavigation($event)"
+          />
+          <label class="form-check-label" for="world-editor-keyboard">{{ 'WORLD_EDITOR.KEYBOARD_NAVIGATION' | translate }}</label>
+        </div>
+        @if (controls.settings().keyboardNavigation) {
+          <table class="table table-sm table-borderless align-middle mb-0 world-editor-distances">
+            <thead>
+              <tr>
+                <th scope="col">{{ 'WORLD_EDITOR.ACTION' | translate }}</th>
+                <th scope="col">{{ 'WORLD_EDITOR.KEY' | translate }}</th>
+                <th scope="col">{{ 'WORLD_EDITOR.ALT_KEY' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (action of navigationActions; track action) {
+                <tr>
+                  <td>{{ 'WORLD_EDITOR.MOVE_' + action.toUpperCase() | translate }}</td>
+                  @for (slot of [0, 1]; track slot) {
+                    <td>
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-secondary world-editor-key"
+                        [attr.data-testid]="'key-' + action + '-' + slot"
+                        [class.active]="rebinding()?.action === action && rebinding()?.slot === slot"
+                        (click)="startRebinding(action, slot === 0 ? 0 : 1)"
+                      >
+                        @if (rebinding()?.action === action && rebinding()?.slot === slot) {
+                          {{ 'WORLD_EDITOR.PRESS_A_KEY' | translate }}
+                        } @else {
+                          {{ keyLabel(controls.settings().keys[action][slot]) || '—' }}
+                        }
+                      </button>
+                    </td>
+                  }
+                </tr>
+              }
+            </tbody>
+          </table>
+          <button type="button" class="btn btn-sm btn-link" data-testid="keys-reset" (click)="controls.reset()">
+            {{ 'WORLD_EDITOR.RESET_KEYS' | translate }}
+          </button>
+        }
+      </div>
       @if (renderSettings.settings().advancedDistances) {
         <table class="table table-sm table-borderless align-middle mb-0 world-editor-distances" data-testid="view-distances">
           <thead>
@@ -441,6 +492,7 @@
         [snapToGround]="snapToGround()"
         [groundOnly]="tool() !== 'select'"
         [renderSettings]="renderSettings.settings()"
+        [navigation]="controls.settings()"
         [region]="region()"
         [focus]="focus()"
         (picked)="onPicked($event)"

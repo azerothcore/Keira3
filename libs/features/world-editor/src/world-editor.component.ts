@@ -4,11 +4,15 @@ import { ActivatedRoute } from '@angular/router';
 import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-components';
 import {
   GizmoMode,
+  keyLabel,
+  NAVIGATION_ACTIONS,
+  NavigationAction,
   ObjectMoved,
   parseWaypointKey,
   PickResult,
-  WaypointPath,
   waypointKey,
+  WaypointPath,
+  WorldControlsSettingsService,
   WorldRenderSettingsService,
   WorldSpawn,
   WorldViewerComponent,
@@ -93,6 +97,11 @@ export class WorldEditorComponent implements OnInit {
   private readonly settings = inject(WowDataSettingsService);
   protected readonly renderSettings = inject(WorldRenderSettingsService);
   protected readonly cache = inject(WowDataCacheService);
+  protected readonly controls = inject(WorldControlsSettingsService);
+  protected readonly navigationActions = NAVIGATION_ACTIONS;
+  protected readonly keyLabel = keyLabel;
+  /** The key slot waiting for a key press to be rebound. */
+  protected readonly rebinding = signal<{ action: NavigationAction; slot: 0 | 1 } | undefined>(undefined);
   private readonly toastr = inject(ToastrService);
   private readonly clipboard = inject(ClipboardService);
   private readonly route = inject(ActivatedRoute);
@@ -327,6 +336,14 @@ export class WorldEditorComponent implements OnInit {
 
   protected setLowDetailTerrain(event: Event): void {
     this.renderSettings.update({ lowDetailTerrain: (event.target as HTMLInputElement).checked });
+  }
+
+  protected setKeyboardNavigation(event: Event): void {
+    this.controls.setKeyboardNavigation((event.target as HTMLInputElement).checked);
+  }
+
+  protected startRebinding(action: NavigationAction, slot: 0 | 1): void {
+    this.rebinding.set({ action, slot });
   }
 
   protected setRenderFlag(key: RenderFlagKey, event: Event): void {
@@ -768,6 +785,15 @@ export class WorldEditorComponent implements OnInit {
   }
 
   protected onKeydown(event: KeyboardEvent): void {
+    const rebinding = this.rebinding();
+    if (rebinding) {
+      event.preventDefault();
+      if (event.code !== 'Escape') {
+        this.controls.bind(rebinding.action, rebinding.slot, event.code);
+      }
+      this.rebinding.set(undefined);
+      return;
+    }
     const target = event.target as HTMLElement;
     if (['INPUT', 'SELECT', 'TEXTAREA'].includes(target.tagName)) {
       return;
