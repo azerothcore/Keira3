@@ -11,6 +11,8 @@ import {
   controlFor,
   inputLabel,
   inputOf,
+  NavMeshRebuildRequest,
+  NavMeshRebuildState,
   NavMeshTileInfo,
   ObjectMoved,
   parseWaypointKey,
@@ -192,6 +194,10 @@ export class WorldEditorComponent implements OnInit {
     const info = this.navMeshTile() as NavMeshTileInfo;
     return mmapOverrideYaml(info.mapId, this.mmapScope() === 'tile' ? info.tile : undefined, this.mmapChanges());
   });
+  /** The tile rebuilt with the new values and drawn over the real one (the "Preview" button), and how it's going. */
+  protected readonly navMeshRebuild = signal<NavMeshRebuildRequest | undefined>(undefined);
+  protected readonly navMeshRebuildState = signal<NavMeshRebuildState | undefined>(undefined);
+  protected readonly hideRealNavMesh = signal(false);
   protected readonly isRangePreset = computed(() => this.rangePresets.some((preset) => preset.range === this.probeRange()));
   protected readonly probeRequest = computed<PathProbeRequest | undefined>(() => {
     const from = this.probeFrom();
@@ -554,7 +560,25 @@ export class WorldEditorComponent implements OnInit {
     if (info?.file !== this.navMeshTile()?.file) {
       this.mmapChanges.set({});
     }
+    if (!info) {
+      // navigation mesh hidden: the preview goes too
+      this.clearMmapPreview();
+    }
     this.navMeshTile.set(info);
+  }
+
+  /** Rebuilds the tile from the client files with its settings and the new values, drawn over the real one. */
+  protected previewMmap(): void {
+    const info = this.navMeshTile() as NavMeshTileInfo;
+    const config = { ...(info.config as MmapRecastConfig), ...this.mmapChanges() };
+    this.navMeshRebuildState.set({ status: 'reading', done: 0, total: 0, triangles: 0 });
+    this.navMeshRebuild.set({ tile: info.tile, config });
+  }
+
+  protected clearMmapPreview(): void {
+    this.navMeshRebuild.set(undefined);
+    this.navMeshRebuildState.set(undefined);
+    this.hideRealNavMesh.set(false);
   }
 
   /** A setting typed for the tile; empty, invalid or the tile's own value puts the tile's value back. */

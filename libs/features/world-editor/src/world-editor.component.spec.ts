@@ -8,6 +8,8 @@ import {
   DEFAULT_WORLD_RENDER_SETTINGS,
   WorldControlsSettings,
   GizmoMode,
+  NavMeshRebuildRequest,
+  NavMeshRebuildState,
   NavMeshTileInfo,
   ObjectMoved,
   PathProbeRequest,
@@ -49,6 +51,9 @@ class FakeWorldViewerComponent {
   readonly probed = output<PathProbeResult>();
   readonly speedChanged = output<number>();
   readonly navMeshTileChanged = output<NavMeshTileInfo | undefined>();
+  readonly navMeshRebuild = input<NavMeshRebuildRequest | undefined>(undefined);
+  readonly hideRealNavMesh = input<boolean>(false);
+  readonly navMeshRebuilt = output<NavMeshRebuildState>();
   readonly picked = output<PickResult>();
   readonly objectMoved = output<ObjectMoved>();
   readonly centerChanged = output<WorldPosition>();
@@ -1403,6 +1408,52 @@ describe(WorldEditorComponent.name, () => {
       page.viewer().navMeshTileChanged.emit(undefined);
       page.fixture.detectChanges();
       expect(page.byId('mmap-tile', false)).toBeFalsy();
+    });
+
+    it('rebuilds the tile with the new values over the real one, shows how it goes, and clears it', async () => {
+      const { page } = await setup();
+      const viewer = page.viewer();
+      viewer.navMeshTileChanged.emit(tile());
+      page.fixture.detectChanges();
+      expect(page.byId('mmap-preview-state', false)).toBeFalsy();
+      expect(page.byId('mmap-preview-clear', false)).toBeFalsy();
+      const input = page.byId<HTMLInputElement>('mmap-walkableClimb').nativeElement;
+      input.value = '4';
+      input.dispatchEvent(new Event('change'));
+      page.fixture.detectChanges();
+
+      page.click('mmap-preview');
+      page.fixture.detectChanges();
+      expect(viewer.navMeshRebuild()).toEqual({ tile: { tx: 32, ty: 48 }, config: { ...config, walkableClimb: 4 } });
+      expect(page.text('mmap-preview-state')).toBe('WORLD_EDITOR.MMAP_PREVIEW_READING');
+      expect(page.byId<HTMLButtonElement>('mmap-preview').nativeElement.disabled).toBe(true);
+      viewer.navMeshRebuilt.emit({ status: 'building', done: 4, total: 16, triangles: 0 });
+      page.fixture.detectChanges();
+      expect(page.text('mmap-preview-state')).toBe('4 / 16');
+      expect(page.byId('mmap-preview-state').nativeElement.querySelector<HTMLElement>('.progress-bar')?.style.width).toBe('25%');
+      viewer.navMeshRebuilt.emit({ status: 'done', done: 0, total: 0, triangles: 1234 });
+      page.fixture.detectChanges();
+      expect(page.text('mmap-preview-state')).toContain('WORLD_EDITOR.MMAP_PREVIEW_DONE');
+      expect(page.byId<HTMLButtonElement>('mmap-preview').nativeElement.disabled).toBe(false);
+      page.click('mmap-hide-real');
+      page.fixture.detectChanges();
+      expect(viewer.hideRealNavMesh()).toBe(true);
+      viewer.navMeshRebuilt.emit({ status: 'failed', done: 0, total: 0, triangles: 0 });
+      page.fixture.detectChanges();
+      expect(page.text('mmap-preview-state')).toBe('WORLD_EDITOR.MMAP_PREVIEW_FAILED');
+
+      page.click('mmap-preview-clear');
+      page.fixture.detectChanges();
+      expect(viewer.navMeshRebuild()).toBeUndefined();
+      expect(viewer.hideRealNavMesh()).toBe(false);
+      expect(page.byId('mmap-preview-state', false)).toBeFalsy();
+
+      // hiding the navigation mesh drops the preview too
+      page.click('mmap-preview');
+      page.fixture.detectChanges();
+      viewer.navMeshTileChanged.emit(undefined);
+      page.fixture.detectChanges();
+      expect(viewer.navMeshRebuild()).toBeUndefined();
     });
   });
 

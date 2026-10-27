@@ -16,3 +16,4 @@ export * from './zone-lighting';
 export * from './world-controls-settings';
 export * from './world-navmesh';
 export * from './path-probe';
+export * from './navmesh-rebuild';

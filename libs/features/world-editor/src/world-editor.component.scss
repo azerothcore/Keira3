@@ -252,3 +252,24 @@
     border-color: #c77dff;
   }
 }
+
+.world-editor-preview-progress {
+  position: relative;
+  height: 1.1rem;
+  min-width: 10rem;
+
+  span {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    color: var(--bs-body-color);
+    text-shadow: 0 0 2px var(--bs-body-bg);
+  }
+}
+
+.world-editor-preview-done {
+  color: #ff40ff;
+}

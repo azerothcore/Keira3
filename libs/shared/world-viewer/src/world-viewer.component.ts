@@ -41,6 +41,7 @@ import {
   WorldControlsSettings,
 } from './world-controls-settings';
 import { WorldNavMesh } from './world-navmesh';
+import { collectTileGeometry, loadRecast, rebuildNavMeshTile } from './navmesh-rebuild';
 import { PathProber, PathProbeRequest, PathProbeResult } from './path-probe';
 import { WorldObjects } from './world-objects';
 import { DEFAULT_WORLD_RENDER_SETTINGS, drawDistances, WorldRenderSettings } from './world-render-settings';
@@ -49,6 +50,8 @@ import { PickOptions, WorldScene } from './world-scene';
 import {
   ContextRequest,
   GizmoMode,
+  NavMeshRebuildRequest,
+  NavMeshRebuildState,
   NavMeshTileInfo,
   ObjectMoved,
   parseWaypointKey,
@@ -114,6 +117,12 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
 
   /** The Path / LOS tool's question (A, C, range, eye height); undefined clears it. */
   readonly probe = input<PathProbeRequest | undefined>(undefined);
+  /** A navigation mesh tile to rebuild with other settings and draw over the real one; undefined clears it. */
+  readonly navMeshRebuild = input<NavMeshRebuildRequest | undefined>(undefined);
+  /** Hides the real navigation mesh tile under the rebuilt one. */
+  readonly hideRealNavMesh = input<boolean>(false);
+  /** How the `navMeshRebuild` is going. */
+  readonly navMeshRebuilt = output<NavMeshRebuildState>();
   /** Area trigger volumes to draw (empty = none). */
   readonly areaTriggers = input<WorldAreaTrigger[]>([]);
   readonly picked = output<PickResult>();
@@ -154,6 +163,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private readonly navMesh = new WorldNavMesh(this.client, this.world.navMeshGroup, () => this.requestRender());
   private readonly prober = new PathProber(this.client, this.world);
   private probeRequest = 0;
+  private rebuildRequest = 0;
   /** Id of the shown map (for mmtile names), once known. */
   private mapId?: number;
   protected readonly navMeshInfo = signal<NavMeshTileInfo | undefined>(undefined);
@@ -225,6 +235,12 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       const directory = this.mapDirectory();
       untracked(() => void this.runProbe(directory, request));
     });
+    effect(() => {
+      const request = this.navMeshRebuild();
+      const directory = this.mapDirectory();
+      untracked(() => void this.runRebuild(directory, request));
+    });
+    effect(() => this.navMesh.setRealHidden(this.hideRealNavMesh()));
     effect(() => {
       this.world.setAreaTriggers(this.areaTriggers());
       this.requestRender();
@@ -486,7 +502,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     this.pressed.clear();
   }
 
-  /** Space: moves the camera target (and its marker) to the ground under the cursor, keeping the view's angle and zoom. */
+  /** Answers the Path / LOS tool; a newer request makes an older answer be dropped. */
   private async runProbe(directory: string | undefined, request: PathProbeRequest | undefined): Promise<void> {
     const id = ++this.probeRequest;
     if (!directory || !request) {
@@ -505,6 +521,40 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     });
     this.requestRender();
     this.probed.emit(result);
+  }
+
+  /** Rebuilds a navigation mesh tile from the client files and draws it over the real one; a newer request cancels it. */
+  private async runRebuild(directory: string | undefined, request: NavMeshRebuildRequest | undefined): Promise<void> {
+    const id = ++this.rebuildRequest;
+    const current = () => id === this.rebuildRequest;
+    this.navMesh.setPreview(undefined);
+    if (!directory || !request) {
+      return;
+    }
+    const report = (state: NavMeshRebuildState) => {
+      if (current()) {
+        this.navMeshRebuilt.emit(state);
+      }
+    };
+    report({ status: 'reading', done: 0, total: 0, triangles: 0 });
+    try {
+      const [recast, geometry] = await Promise.all([loadRecast(), collectTileGeometry(this.client, directory, request.tile)]);
+      const tile = await rebuildNavMeshTile(
+        recast,
+        geometry,
+        request.tile,
+        request.config,
+        (done, total) => report({ status: 'building', done, total, triangles: 0 }),
+        () => !current(),
+      );
+      if (tile && current()) {
+        this.navMesh.setPreview(tileKey(request.tile), tile);
+        report({ status: 'done', done: 0, total: 0, triangles: tile.positions.length / 9 });
+      }
+    } catch (error) {
+      console.warn(`[World Editor] Could not rebuild the navigation mesh tile: ${(error as Error).message}`);
+      report({ status: 'failed', done: 0, total: 0, triangles: 0 });
+    }
   }
 
   /** Puts the marker on the ground under the crosshair (the "+" in the middle of the view). */

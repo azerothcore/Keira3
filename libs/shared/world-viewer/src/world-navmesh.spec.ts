@@ -97,4 +97,44 @@ describe('WorldNavMesh', () => {
     expect(navMesh.loadedTiles).toEqual([]);
     navMesh.dispose();
   });
+
+  it('draws a rebuilt tile over the real one with its own edges, can hide the real one, and replaces or removes it', async () => {
+    const { group, navMesh, onChange } = setup();
+    navMesh.configure({ show: true, radius: 1 });
+    navMesh.setMap('Azeroth');
+    await navMesh.update(CENTER);
+    const real = () => group.getObjectByName('navmesh:32_48') as Group;
+    const preview = () => group.getObjectByName('navmesh-preview:32_48') as Group | undefined;
+
+    onChange.mockClear();
+    navMesh.setPreview('32_48', TILE);
+    expect(onChange).toHaveBeenCalled();
+    const [fill, edges] = (preview() as Group).children as Mesh[];
+    expect((edges.material as MeshBasicMaterial).color.getHex()).toBe(0xff40ff);
+    expect(fill.renderOrder).toBe(2);
+    expect(fill.raycast(undefined as never, [])).toBeUndefined();
+    expect(real().visible).toBe(true);
+
+    navMesh.setRealHidden(true);
+    expect(real().visible).toBe(false);
+    expect((group.getObjectByName('navmesh:33_48') as Group).visible).toBe(true);
+    navMesh.setRealHidden(false);
+    expect(real().visible).toBe(true);
+
+    navMesh.setRealHidden(true);
+    navMesh.setPreview('33_48', TILE);
+    expect(preview()).toBeUndefined();
+    expect(real().visible).toBe(true);
+    expect((group.getObjectByName('navmesh:33_48') as Group).visible).toBe(false);
+    navMesh.setPreview(undefined);
+    expect(group.getObjectByName('navmesh-preview:33_48')).toBeUndefined();
+
+    // another map drops it; dispose too
+    navMesh.setPreview('32_48', TILE);
+    navMesh.setMap('Kalimdor');
+    expect(preview()).toBeUndefined();
+    navMesh.setPreview('32_48', TILE);
+    navMesh.dispose();
+    expect(group.children).toHaveLength(0);
+  });
 });

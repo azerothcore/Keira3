@@ -695,6 +695,9 @@
         (speedChanged)="controls.setSpeed($event)"
         (probed)="probeResult.set($event)"
         (navMeshTileChanged)="onNavMeshTile($event)"
+        [navMeshRebuild]="navMeshRebuild()"
+        [hideRealNavMesh]="hideRealNavMesh()"
+        (navMeshRebuilt)="navMeshRebuildState.set($event)"
         [probe]="probeRequest()"
         [areaTriggers]="worldAreaTriggers()"
       />
@@ -1098,6 +1101,61 @@
                   </option>
                 </select>
               </div>
+              <div class="d-flex gap-1 align-items-center mb-1">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-primary"
+                  data-testid="mmap-preview"
+                  [disabled]="navMeshRebuildState()?.status === 'reading' || navMeshRebuildState()?.status === 'building'"
+                  (click)="previewMmap()"
+                >
+                  <i class="fa fa-cubes"></i> {{ 'WORLD_EDITOR.MMAP_PREVIEW' | translate }}
+                </button>
+                @if (navMeshRebuildState()) {
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-secondary"
+                    data-testid="mmap-preview-clear"
+                    (click)="clearMmapPreview()"
+                  >
+                    {{ 'WORLD_EDITOR.CLEAR' | translate }}
+                  </button>
+                }
+              </div>
+              @if (navMeshRebuildState(); as state) {
+                <div class="mb-1 small" data-testid="mmap-preview-state">
+                  @switch (state.status) {
+                    @case ('reading') {
+                      <span class="text-muted">{{ 'WORLD_EDITOR.MMAP_PREVIEW_READING' | translate }}</span>
+                    }
+                    @case ('building') {
+                      <div class="progress world-editor-preview-progress" role="progressbar">
+                        <div class="progress-bar" [style.width.%]="(state.done / state.total) * 100"></div>
+                        <span>{{ state.done }} / {{ state.total }}</span>
+                      </div>
+                    }
+                    @case ('done') {
+                      <span class="world-editor-preview-done">
+                        {{ 'WORLD_EDITOR.MMAP_PREVIEW_DONE' | translate: { triangles: state.triangles } }}
+                      </span>
+                      <div class="form-check form-switch mb-0">
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          id="mmap-hide-real"
+                          data-testid="mmap-hide-real"
+                          [checked]="hideRealNavMesh()"
+                          (change)="hideRealNavMesh.set($any($event.target).checked)"
+                        />
+                        <label class="form-check-label" for="mmap-hide-real">{{ 'WORLD_EDITOR.MMAP_HIDE_REAL' | translate }}</label>
+                      </div>
+                    }
+                    @default {
+                      <span class="text-danger">{{ 'WORLD_EDITOR.MMAP_PREVIEW_FAILED' | translate }}</span>
+                    }
+                  }
+                </div>
+              }
               @if (mmapChanged()) {
                 <pre class="small mb-1 world-editor-yaml" data-testid="mmap-yaml">{{ mmapYaml() }}</pre>
                 <div class="d-flex gap-1">

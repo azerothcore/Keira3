@@ -96,7 +96,8 @@ const COLORS = {
   slime: [0.7, 0.3, 0.9],
 };
 
-function colorOf(flags: number): number[] {
+/** NavTerrain flags of a polygon (1 ground, 2 magma, 4 slime, 8 water) → its colour (RGB 0..1). */
+export function navTerrainColor(flags: number): number[] {
   if (flags & NAV_WATER) {
     return COLORS.water;
   }
@@ -138,7 +139,7 @@ export function parseMmtile(bytes: Uint8Array): NavMeshTile | undefined {
       continue;
     }
     const polyVerts = bytes[poly + 30];
-    const color = colorOf(view.getUint16(poly + 28, true));
+    const color = navTerrainColor(view.getUint16(poly + 28, true));
     const detail = detailMeshesAt + p * POLY_DETAIL_SIZE;
     const vertBase = view.getUint32(detail, true);
     const triBase = view.getUint32(detail + 4, true);

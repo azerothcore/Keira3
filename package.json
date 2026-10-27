@@ -44,6 +44,7 @@
     "@codemirror/lang-sql": "6.10.0",
     "@ngx-translate/core": "18.0.0",
     "@ngx-translate/http-loader": "18.0.0",
+    "@recast-navigation/core": "0.43.1",
     "@uiw/codemirror-theme-github": "4.25.12",
     "@wowserhq/format": "0.28.0",
     "@wowserhq/stormjs": "0.4.1",

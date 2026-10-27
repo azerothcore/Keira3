@@ -74,6 +74,21 @@ export interface NavMeshTileInfo {
   missing: boolean;
 }
 
+/** A navigation mesh tile to rebuild from the client files with other settings, drawn over the real one. */
+export interface NavMeshRebuildRequest {
+  tile: TileCoord;
+  config: MmapRecastConfig;
+}
+
+/** How a rebuild is going: reading the client files, building (sub-tiles done of all), done or failed. */
+export interface NavMeshRebuildState {
+  status: 'reading' | 'building' | 'done' | 'failed';
+  done: number;
+  total: number;
+  /** Triangles of the rebuilt tile, once done. */
+  triangles: number;
+}
+
 /** A right-click (without dragging) on a spawn or waypoint; `x`/`y` are in pixels from the view's top-left corner. */
 export interface ContextRequest {
   key: string;

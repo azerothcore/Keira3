@@ -39,6 +39,20 @@ export class WorldNavMesh {
   /** The edges of the tile the camera is on. */
   private readonly currentEdges = new MeshBasicMaterial({ color: 0xfff35c, wireframe: true, transparent: true, opacity: 0.9 });
   private currentKey?: string;
+  /** A tile rebuilt with other settings, drawn over the real one with its own edges. */
+  private preview?: { key: string; group: Group };
+  private realHidden = false;
+  private readonly previewFill = new MeshBasicMaterial({
+    vertexColors: true,
+    transparent: true,
+    opacity: 0.45,
+    depthWrite: false,
+    side: DoubleSide,
+    polygonOffset: true,
+    polygonOffsetFactor: -4,
+    polygonOffsetUnits: -4,
+  });
+  private readonly previewEdges = new MeshBasicMaterial({ color: 0xff40ff, wireframe: true, transparent: true, opacity: 0.9 });
 
   constructor(
     private readonly source: NavMeshSource,
@@ -58,6 +72,7 @@ export class WorldNavMesh {
   setMap(directory: string | undefined): void {
     this.directory = directory;
     this.clear();
+    this.setPreview(undefined);
   }
 
   configure(options: WorldNavMeshOptions): void {
@@ -126,34 +141,64 @@ export class WorldNavMesh {
     this.onChange();
   }
 
+  /** Draws a rebuilt tile (`tx_ty`) over the real one, replacing the previous preview; undefined removes it. */
+  setPreview(key: string | undefined, tile?: NavMeshTile): void {
+    if (this.preview) {
+      this.group.remove(this.preview.group);
+      (this.preview.group.children[0] as Mesh).geometry.dispose();
+      this.preview = undefined;
+    }
+    if (key && tile) {
+      const group = this.build(`navmesh-preview:${key}`, tile, this.previewFill, this.previewEdges, 2);
+      this.group.add(group);
+      this.preview = { key, group };
+    }
+    this.tiles.forEach((real, realKey) => this.paint(realKey, real));
+    this.onChange();
+  }
+
+  /** Hides the real tile under the preview, to see the preview alone. */
+  setRealHidden(hidden: boolean): void {
+    this.realHidden = hidden;
+    this.tiles.forEach((tile, key) => this.paint(key, tile));
+    this.onChange();
+  }
+
   dispose(): void {
     this.clear();
-    this.fill.dispose();
-    this.edges.dispose();
-    this.currentEdges.dispose();
+    this.setPreview(undefined);
+    for (const material of [this.fill, this.edges, this.currentEdges, this.previewFill, this.previewEdges]) {
+      material.dispose();
+    }
   }
 
   private add(key: string, tile: NavMeshTile): void {
-    const geometry = new BufferGeometry();
-    geometry.setAttribute('position', new BufferAttribute(tile.positions, 3));
-    geometry.setAttribute('color', new BufferAttribute(tile.colors, 3));
-    geometry.computeBoundingSphere();
-    const group = new Group();
-    group.name = `navmesh:${key}`;
-    for (const material of [this.fill, this.edges]) {
-      const mesh = new Mesh(geometry, material);
-      mesh.renderOrder = 1;
-      mesh.raycast = () => undefined;
-      group.add(mesh);
-    }
+    const group = this.build(`navmesh:${key}`, tile, this.fill, this.edges, 1);
     this.paint(key, group);
     this.group.add(group);
     this.tiles.set(key, group);
     this.onChange();
   }
 
+  private build(name: string, tile: NavMeshTile, fill: MeshBasicMaterial, edges: MeshBasicMaterial, renderOrder: number): Group {
+    const geometry = new BufferGeometry();
+    geometry.setAttribute('position', new BufferAttribute(tile.positions, 3));
+    geometry.setAttribute('color', new BufferAttribute(tile.colors, 3));
+    geometry.computeBoundingSphere();
+    const group = new Group();
+    group.name = name;
+    for (const material of [fill, edges]) {
+      const mesh = new Mesh(geometry, material);
+      mesh.renderOrder = renderOrder;
+      mesh.raycast = () => undefined;
+      group.add(mesh);
+    }
+    return group;
+  }
+
   private paint(key: string, tile: Group): void {
     (tile.children[1] as Mesh).material = key === this.currentKey ? this.currentEdges : this.edges;
+    tile.visible = !(this.realHidden && key === this.preview?.key);
   }
 
   private remove(key: string, tile: Group): void {
@@ -163,6 +208,7 @@ export class WorldNavMesh {
     this.read.delete(key);
   }
 
+  /** Removes the tiles read so far (not the preview, which is set and cleared on its own). */
   private clear(): void {
     this.generation++;
     this.loading.clear();

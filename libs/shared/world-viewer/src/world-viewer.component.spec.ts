@@ -1,7 +1,15 @@
 import { Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
-import { tileCenter, WowClientService, WorldBounds, WorldPosition, worldToScene } from '@keira/shared/wow-data';
+import {
+  MmapRecastConfig,
+  NavMeshTile,
+  tileCenter,
+  WowClientService,
+  WorldBounds,
+  WorldPosition,
+  worldToScene,
+} from '@keira/shared/wow-data';
 import { DebugHtmlElement, PageObjectModel } from 'ngx-page-object-model';
 import { EventDispatcher, Object3D, Vector3 } from 'three';
 import { DEFAULT_WORLD_CONTROLS_SETTINGS, WorldControlsSettings } from './world-controls-settings';
@@ -17,13 +25,18 @@ import {
   WaypointPath,
   WorldAreaTrigger,
   WorldSpawn,
+  NavMeshRebuildRequest,
+  NavMeshRebuildState,
 } from './world-viewer.model';
 import { flatDetail, flatTile } from './world-viewer.mock';
 import { WorldScene } from './world-scene';
 import { PathProbeRequest, PathProbeResult } from './path-probe';
+import { WorldNavMesh } from './world-navmesh';
 
 // ------------------------------------------------------------------ Three.js controls fakes (jsdom has no WebGL)
 
+const rebuild = vi.hoisted(() => ({ loadRecast: vi.fn(), collectTileGeometry: vi.fn(), rebuildNavMeshTile: vi.fn() }));
+vi.mock('./navmesh-rebuild', () => rebuild);
 const controlsRegistry = vi.hoisted(() => ({ map: [] as unknown[], transform: [] as unknown[] }));
 
 vi.mock('three/addons/controls/MapControls.js', async () => {
@@ -116,6 +129,9 @@ interface FakeTransformControls extends EventDispatcher<{ 'dragging-changed': { 
       [navigation]="navigation()"
       [areaTriggers]="triggers()"
       [probe]="probe()"
+      [navMeshRebuild]="rebuild()"
+      [hideRealNavMesh]="hideReal()"
+      (navMeshRebuilt)="rebuilds.push($event)"
       (probed)="probes.push($event)"
       (speedChanged)="speeds.push($event)"
       (navMeshTileChanged)="navMeshTiles.push($event)"
@@ -143,6 +159,9 @@ class HostComponent {
   readonly triggers = signal<WorldAreaTrigger[]>([]);
   readonly probe = signal<PathProbeRequest | undefined>(undefined);
   readonly probes: PathProbeResult[] = [];
+  readonly rebuild = signal<NavMeshRebuildRequest | undefined>(undefined);
+  readonly hideReal = signal(false);
+  readonly rebuilds: NavMeshRebuildState[] = [];
   readonly speeds: number[] = [];
   readonly navMeshTiles: (NavMeshTileInfo | undefined)[] = [];
   readonly picks: PickResult[] = [];
@@ -740,6 +759,74 @@ describe(WorldViewerComponent.name, () => {
       const count = host.probes.length;
       await update(() => host.probe.set(undefined));
       expect(host.probes).toHaveLength(count);
+    });
+
+    describe('navigation mesh rebuild', () => {
+      const config = { cellSizeHorizontal: 0.5 } as MmapRecastConfig;
+      const built: NavMeshTile = { positions: new Float32Array(18), colors: new Float32Array(18) };
+      const request = (): NavMeshRebuildRequest => ({ tile: { tx: 32, ty: 48 }, config });
+
+      beforeEach(() => {
+        rebuild.loadRecast.mockResolvedValue('recast');
+        rebuild.collectTileGeometry.mockResolvedValue('geometry');
+        rebuild.rebuildNavMeshTile.mockImplementation((_r, _g, _t, _c, onProgress: (done: number, total: number) => void) => {
+          onProgress(1, 4);
+          return Promise.resolve(built);
+        });
+      });
+
+      it('rebuilds the tile from the client files, draws it over the real one and reports how it goes', async () => {
+        const setPreview = vi.spyOn(WorldNavMesh.prototype, 'setPreview');
+        const setRealHidden = vi.spyOn(WorldNavMesh.prototype, 'setRealHidden');
+        const { host, fixture, update } = await pickSetup();
+        await update(() => host.rebuild.set(request()));
+        await settle(fixture);
+        expect(rebuild.collectTileGeometry).toHaveBeenCalledWith(client, 'Azeroth', { tx: 32, ty: 48 });
+        expect(rebuild.rebuildNavMeshTile).toHaveBeenCalledWith(
+          'recast',
+          'geometry',
+          { tx: 32, ty: 48 },
+          config,
+          expect.any(Function),
+          expect.any(Function),
+        );
+        expect(host.rebuilds).toEqual([
+          { status: 'reading', done: 0, total: 0, triangles: 0 },
+          { status: 'building', done: 1, total: 4, triangles: 0 },
+          { status: 'done', done: 0, total: 0, triangles: 2 },
+        ]);
+        expect(setPreview).toHaveBeenLastCalledWith('32_48', built);
+        await update(() => host.hideReal.set(true));
+        expect(setRealHidden).toHaveBeenLastCalledWith(true);
+        await update(() => host.rebuild.set(undefined));
+        expect(setPreview).toHaveBeenLastCalledWith(undefined);
+        expect(host.rebuilds).toHaveLength(3);
+      });
+
+      it('drops a rebuild a newer one replaced, and says when it fails', async () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        let finish: (tile: NavMeshTile | undefined) => void = () => undefined;
+        let cancelled: () => boolean = () => false;
+        let progress: (done: number, total: number) => void = () => undefined;
+        rebuild.rebuildNavMeshTile.mockImplementationOnce((_r, _g, _t, _c, onProgress, isCancelled: () => boolean) => {
+          cancelled = isCancelled;
+          progress = onProgress;
+          return new Promise((resolve) => (finish = resolve));
+        });
+        const { host, fixture, update } = await pickSetup();
+        await update(() => host.rebuild.set(request()));
+        await settle(fixture);
+        expect(cancelled()).toBe(false);
+        rebuild.collectTileGeometry.mockRejectedValueOnce(new Error('no ADT'));
+        await update(() => host.rebuild.set(request()));
+        await settle(fixture);
+        expect(cancelled()).toBe(true);
+        progress(2, 4);
+        finish(built);
+        await settle(fixture);
+        expect(host.rebuilds.map((state) => state.status)).toEqual(['reading', 'reading', 'failed']);
+        expect(warn).toHaveBeenCalledWith(expect.stringContaining('no ADT'));
+      });
     });
 
     it('names the hovered area trigger', async () => {
