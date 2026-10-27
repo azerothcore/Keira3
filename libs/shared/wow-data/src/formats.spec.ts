@@ -106,6 +106,37 @@ describe('formats', () => {
     });
   });
 
+  it('reads the one building of a WDT (dungeons), placed in server axes', () => {
+    mocks.available.fill(0);
+    const chunk = (magic: string, body: number[]) => {
+      const header = new Uint8Array(8);
+      header.set(Array.from(magic.split('').reverse().join(''), (c) => c.charCodeAt(0)));
+      new DataView(header.buffer).setUint32(4, body.length, true);
+      return [...header, ...body];
+    };
+    const name = Array.from('World\\wmo\\Dungeon.wmo\0', (c) => c.charCodeAt(0));
+    const modf = new Uint8Array(64);
+    const view = new DataView(modf.buffer);
+    view.setUint32(4, 99, true);
+    [100, 50, 200, 0, 0, 0].forEach((value, i) => view.setFloat32(8 + i * 4, value, true));
+    view.setUint16(58, 2, true);
+    const wdt = parseWdt(Uint8Array.from([...chunk('MWMO', name), ...chunk('MODF', Array.from(modf))]));
+    const corner = 32 * (1600 / 3);
+    expect(wdt.wmo).toEqual({
+      uniqueId: 99,
+      path: 'World\\wmo\\Dungeon.wmo',
+      position: [corner - 200, corner - 100, 50],
+      rotation: [0, 0, expect.closeTo(1), expect.closeTo(0)],
+      scale: 1,
+      doodadSet: 2,
+    });
+    // a name without its ending zero; no placement, or an empty name: no building
+    expect(parseWdt(Uint8Array.from([...chunk('MWMO', [65]), ...chunk('MODF', Array.from(modf))])).wmo?.path).toBe('A');
+    expect(parseWdt(Uint8Array.from(chunk('MWMO', name))).wmo).toBeUndefined();
+    expect(parseWdt(Uint8Array.from([...chunk('MWMO', []), ...chunk('MODF', Array.from(modf))])).wmo).toBeUndefined();
+    expect(parseWdt(Uint8Array.from([...chunk('MWMO', name), ...chunk('MODF', [1, 2])])).wmo).toBeUndefined();
+  });
+
   it('decodes the top mip level of a BLP as RGBA', () => {
     mocks.getImage.mockReturnValue(mocks.image);
     const image = decodeBlp(new Uint8Array());

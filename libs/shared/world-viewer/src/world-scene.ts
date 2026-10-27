@@ -151,7 +151,6 @@ const PROBE_COLORS = {
   path: 0x22d3ee,
   clear: 0x4ade80,
   blocked: 0xef4444,
-  hidden: 0x6b7280,
   from: 0x3b82f6,
   to: 0xef4444,
   attack: 0xfacc15,
@@ -207,6 +206,10 @@ export class WorldScene {
   /** Lines and labelled markers, see `setOverlays`. */
   private readonly overlayGroup = new Group();
   private readonly overlayMarkers: Mesh[] = [];
+  /** Lines of labelled links (flight paths), picked on screen for hover labels. */
+  private readonly linkLines: Line[] = [];
+  /** The lines of the waypoint paths, picked on screen for hover labels. */
+  private readonly pathLines = new Set<Line>();
   /** A diamond on a thin stick, standing on its position. */
   private readonly overlayMarkerGeometry = mergeGeometries([
     new OctahedronGeometry(0.6).translate(0, 2.4, 0),
@@ -394,13 +397,22 @@ export class WorldScene {
     };
     if (probe.path) {
       line(probe.path, PROBE_COLORS.path);
+      this.addProbePathArrows(probe.path);
     }
     if (probe.sight) {
+      // in sight: a green line; blocked: a red dashed one, with a dot where it's blocked
       const { from, to, blockedAt } = probe.sight;
-      line(blockedAt ? [from, blockedAt] : [from, to], blockedAt ? PROBE_COLORS.blocked : PROBE_COLORS.clear, 0);
       if (blockedAt) {
-        line([blockedAt, to], PROBE_COLORS.hidden, 0);
+        const dashed = new Line(
+          new BufferGeometry().setFromPoints([from, to].map((p) => scenePoint(p))),
+          new LineDashedMaterial({ color: PROBE_COLORS.blocked, dashSize: 1, gapSize: 0.7, depthTest: false, transparent: true }),
+        );
+        dashed.computeLineDistances();
+        dashed.renderOrder = 5;
+        this.probeGroup.add(dashed);
         dot(blockedAt, PROBE_COLORS.blocked, 0.35);
+      } else {
+        line([from, to], PROBE_COLORS.clear, 0);
       }
     }
     this.probeHandles.clear();
@@ -413,6 +425,28 @@ export class WorldScene {
       if (probe.to) {
         line([probe.attackFrom, probe.to], PROBE_COLORS.attack, 1);
       }
+    }
+  }
+
+  /** Cones along the walking path, pointing the way it goes (one per stretch of 2 yards or more). */
+  private addProbePathArrows(path: WorldPosition[]): void {
+    const up = new Vector3(0, 1, 0);
+    for (let i = 0; i + 1 < path.length; i++) {
+      const [a, b] = [scenePoint(path[i], 0.3), scenePoint(path[i + 1], 0.3)];
+      const direction = b.clone().sub(a);
+      if (direction.length() < 2) {
+        continue;
+      }
+      const arrow = new Mesh(
+        new ConeGeometry(0.35, 1, 8),
+        new MeshBasicMaterial({ color: PROBE_COLORS.path, depthTest: false, transparent: true }),
+      );
+      arrow.name = 'probe-path-arrow';
+      arrow.position.copy(a).add(b).multiplyScalar(0.5);
+      arrow.quaternion.setFromUnitVectors(up, direction.normalize());
+      arrow.renderOrder = 6;
+      arrow.raycast = () => undefined;
+      this.probeGroup.add(arrow);
     }
   }
 
@@ -799,6 +833,7 @@ export class WorldScene {
     });
     this.overlayGroup.clear();
     this.overlayMarkers.length = 0;
+    this.linkLines.length = 0;
     const up = new Vector3(0, 1, 0);
     for (const link of links) {
       const points = [link.from, ...(link.via ?? []), link.to].map((p) => scenePoint(p, WAYPOINT_LIFT));
@@ -812,6 +847,11 @@ export class WorldScene {
       line.renderOrder = 1;
       line.raycast = () => undefined;
       this.overlayGroup.add(line);
+      if (link.label) {
+        // hovering the line itself names it too
+        line.userData = { overlay: link.key, stops: [link.from, ...(link.via ?? []), link.to] };
+        this.linkLines.push(line);
+      }
       if (link.label) {
         this.addLinkArrows(link, points);
       }
@@ -881,6 +921,8 @@ export class WorldScene {
       );
       line.renderOrder = 1;
       line.name = `${path.key}:line`;
+      line.userData = { pathKey: path.key, numbers };
+      this.pathLines.add(line);
       group.add(line, this.buildArrows(path.key, linePoints, numbers, color));
 
       for (const waypoint of path.points) {
@@ -1038,6 +1080,7 @@ export class WorldScene {
     this.classifyWaypoints();
     line.geometry.dispose();
     line.geometry = new BufferGeometry().setFromPoints(points);
+    line.userData = { pathKey, numbers };
 
     const oldArrows = group.getObjectByName(`${pathKey}:arrows`) as Group;
     this.disposeArrows(oldArrows);
@@ -1291,6 +1334,23 @@ export class WorldScene {
       const { overlay, direction } = overlayHit.object.userData as { overlay: string; direction?: number };
       return { type: 'overlay', key: overlay, position: sceneToWorld(overlayHit.point), ...(direction === undefined ? {} : { direction }) };
     }
+    const lineHit = this.nearestLine(
+      ndcX,
+      ndcY,
+      [...(segments ? this.pathLines : []), ...(options.overlays ? this.linkLines : [])],
+      tolerance / 2,
+    );
+    if (lineHit) {
+      const { line, index, point } = lineHit;
+      const position = sceneToWorld(point);
+      const data = line.userData as { pathKey?: string; numbers?: number[]; overlay?: string; stops?: WorldPosition[] };
+      if (data.pathKey) {
+        const numbers = data.numbers as number[];
+        return { type: 'segment', pathKey: data.pathKey, from: numbers[index], to: numbers[index + 1], position };
+      }
+      const [a, b] = [(data.stops as WorldPosition[])[index], (data.stops as WorldPosition[])[index + 1]];
+      return { type: 'overlay', key: data.overlay as string, position, direction: Math.atan2(b.y - a.y, b.x - a.x) };
+    }
     const boundaryHit = options.overlays ? this.raycaster.intersectObjects(this.boundaryFills, false)[0] : undefined;
     if (boundaryHit) {
       return { type: 'overlay', key: boundaryHit.object.userData['overlay'] as string, position: sceneToWorld(boundaryHit.point) };
@@ -1304,6 +1364,37 @@ export class WorldScene {
   }
 
   /** Marker whose on-screen position is nearest to the cursor, if within `tolerance` and in front of the camera. */
+  /** The stretch of a line passing nearest to the cursor on screen, if within `tolerance` (NDC) and in front. */
+  private nearestLine(
+    ndcX: number,
+    ndcY: number,
+    lines: Line[],
+    tolerance: number,
+  ): { line: Line; index: number; point: Vector3 } | undefined {
+    let best: { line: Line; index: number; point: Vector3 } | undefined;
+    let bestDistance = tolerance;
+    const [a, b] = [new Vector3(), new Vector3()];
+    for (const line of lines) {
+      const positions = line.geometry.getAttribute('position');
+      for (let i = 0; i + 1 < positions.count; i++) {
+        const [worldA, worldB] = [new Vector3().fromBufferAttribute(positions, i), new Vector3().fromBufferAttribute(positions, i + 1)];
+        a.copy(worldA).project(this.camera);
+        b.copy(worldB).project(this.camera);
+        if (a.z > 1 || b.z > 1) {
+          continue;
+        }
+        const [dx, dy] = [b.x - a.x, b.y - a.y];
+        const t = Math.min(1, Math.max(0, ((ndcX - a.x) * dx + (ndcY - a.y) * dy) / (dx * dx + dy * dy || 1)));
+        const distance = Math.hypot(a.x + dx * t - ndcX, a.y + dy * t - ndcY);
+        if (distance <= bestDistance) {
+          bestDistance = distance;
+          best = { line, index: i, point: worldA.lerp(worldB, t) };
+        }
+      }
+    }
+    return best;
+  }
+
   private nearestMarker(ndcX: number, ndcY: number, tolerance: number): Object3D | undefined {
     let best: Object3D | undefined;
     let bestDistance = tolerance;
@@ -1420,6 +1511,9 @@ export class WorldScene {
       const key = (object.userData as Partial<PickableData>).key;
       if (key) {
         this.objects.delete(key);
+      }
+      if (object instanceof Line) {
+        this.pathLines.delete(object);
       }
       // the rings around spawns share their geometry and materials
       if (object instanceof Line && object.geometry !== this.ringGeometry) {

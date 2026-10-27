@@ -1,5 +1,5 @@
 import { inject, Service } from '@angular/core';
-import { TileCoord, tileKey } from './coords';
+import { TileCoord, tileKey, worldToTile } from './coords';
 import {
   AreaTriggerInfo,
   CreatureDisplay,
@@ -383,8 +383,20 @@ export class WowClientService {
     return (map && (await lights).get(map.id)) ?? [];
   }
 
+  /** The map's tiles; a map made of one building (a dungeon) has the tile under it, which holds the building. */
   async getMapTiles(directory: string): Promise<TileCoord[]> {
-    return (await this.getWdt(directory))?.tiles ?? [];
+    const wdt = await this.getWdt(directory);
+    const wmoTile = wdt?.wmo && worldToTile(wdt.wmo.position[0], wdt.wmo.position[1]);
+    return wdt?.tiles.length ? wdt.tiles : wmoTile ? [wmoTile] : [];
+  }
+
+  /** The buildings of a tile: those its ADT places, or the map's one building for its tile (dungeons have no ADTs). */
+  private async tileWmos(directory: string, tile: TileCoord, adt: CachedAdt | undefined): Promise<ModelPlacement[]> {
+    if (adt) {
+      return adt.wmos;
+    }
+    const wmo = (await this.getWdt(directory))?.wmo;
+    return wmo && tileKey(worldToTile(wmo.position[0], wmo.position[1])) === tileKey(tile) ? [wmo] : [];
   }
 
   /** Low-detail terrain of a tile: one mesh for the whole tile, textured with its minimap. */
@@ -404,11 +416,12 @@ export class WowClientService {
   /** Buildings and doodads placed by a tile; the doodads include those inside its buildings (furniture, barrels…). */
   async getTilePlacements(directory: string, tile: TileCoord): Promise<{ wmos: ModelPlacement[]; doodads: ModelPlacement[] } | undefined> {
     const adt = await this.getAdt(directory, tile);
-    if (!adt) {
+    const wmos = await this.tileWmos(directory, tile, adt);
+    if (!adt && wmos.length === 0) {
       return undefined;
     }
     const inside = await Promise.all(
-      adt.wmos.map(async (wmo) => {
+      wmos.map(async (wmo) => {
         const info = await this.getWmoDoodads(wmo.path).catch((error: Error) => {
           console.warn(`[World Editor] Could not read the doodads of ${wmo.path}: ${error.message}`);
           return undefined;
@@ -416,7 +429,7 @@ export class WowClientService {
         return info ? wmoDoodadPlacements(wmo, info) : [];
       }),
     );
-    return { wmos: adt.wmos, doodads: [...adt.doodads, ...inside.flat()] };
+    return { wmos, doodads: [...(adt?.doodads ?? []), ...inside.flat()] };
   }
 
   /** The doodads and doodad sets of a building, read from its root file only. */
@@ -516,7 +529,7 @@ export class WowClientService {
     // the tiles, listing their buildings and doodads
     const tilesEnd = await run(tiles, async (tile) => {
       const adt = await this.loadAdt(directory, tile).catch(warn(`${directory}_${tile.tx}_${tile.ty}`));
-      adt?.wmos.forEach((wmo) => buildings.add(wmo.path.toLowerCase()));
+      (await this.tileWmos(directory, tile, adt ?? undefined)).forEach((wmo) => buildings.add(wmo.path.toLowerCase()));
       adt?.doodads.forEach((doodad) => models.add(m2Path(doodad.path).toLowerCase()));
     });
     if (tilesEnd !== undefined) {

@@ -831,15 +831,15 @@ describe(WorldViewerComponent.name, () => {
 
       await update(() => host.focus.set(at(300, 300)));
       hover(50, 50);
-      expect(page.label().nativeElement.textContent?.trim()).toBe('Path 1 · #3 — Guard (7)');
+      expect(page.label().nativeElement.textContent?.trim()).toBe('Path 1 · #3 · on the ground — Guard (7)');
       await update(() => host.paths.set([{ key: 'path:1', label: 'Path 1', points: [{ point: 3, position: at(300, 300) }] }]));
       hover(50, 50);
-      expect(page.label().nativeElement.textContent?.trim()).toBe('Path 1 · #3');
+      expect(page.label().nativeElement.textContent?.trim()).toBe('Path 1 · #3 · on the ground');
       await update(() =>
         host.paths.set([{ key: 'path:1', label: 'Path 1', points: [{ point: 3, position: at(300, 300), info: ['wait 5 s', 'run'] }] }]),
       );
       hover(50, 50);
-      expect(page.label().nativeElement.textContent?.trim()).toBe('Path 1 · #3 · wait 5 s · run');
+      expect(page.label().nativeElement.textContent?.trim()).toBe('Path 1 · #3 · on the ground · wait 5 s · run');
 
       page.pointer('pointerdown', 50, 50);
       hover(52, 52);
@@ -1183,13 +1183,15 @@ describe(WorldViewerComponent.name, () => {
       page.pointer('pointermove', 50, 50);
       flushFrames();
       fixture.detectChanges();
-      expect(page.label().nativeElement.textContent?.trim()).toBe('Path 2 · #4 → #5 — Guard (7)\n→ W (1.57), 200.0 yd');
+      expect(page.label().nativeElement.textContent?.trim()).toBe(
+        'Path 2 · #4 (on the ground) → #5 (on the ground) — Guard (7)\n→ W (1.57), 200.0 yd',
+      );
 
       await update(() => host.paths.set([path()]));
       page.pointer('pointermove', 50, 50);
       flushFrames();
       fixture.detectChanges();
-      expect(page.label().nativeElement.textContent?.trim()).toBe('Path 2 · #4 → #5\n→ W (1.57), 200.0 yd');
+      expect(page.label().nativeElement.textContent?.trim()).toBe('Path 2 · #4 (on the ground) → #5 (on the ground)\n→ W (1.57), 200.0 yd');
 
       // right-clicking an arrow: a menu for that stretch
       page.pointer('pointerdown', 50, 50, 2);

@@ -1,10 +1,36 @@
 <div #root class="world-editor container-fluid" [class.fullscreen]="fullscreen()">
   <div class="world-editor-toolbar d-flex align-items-center gap-2 mb-1">
-    <select class="form-select form-select-sm map-select" data-testid="map-select" [value]="mapId()" (change)="onMapChange($event)">
-      @for (map of maps(); track map.id) {
-        <option [value]="map.id" [selected]="map.id === mapId()">{{ map.id }} – {{ map.name }}</option>
+    <div class="map-picker">
+      <input
+        #mapInput
+        class="form-control form-control-sm map-select"
+        data-testid="map-search"
+        [value]="mapSearch() ?? currentMapLabel()"
+        [placeholder]="'WORLD_EDITOR.MAP_SEARCH' | translate"
+        (focus)="mapSearch.set('')"
+        (input)="mapSearch.set($any($event.target).value)"
+        (keydown.enter)="pickFirstMap(); mapInput.blur()"
+        (keydown.escape)="mapSearch.set(undefined); $any($event.target).blur()"
+        (blur)="mapSearch.set(undefined)"
+      />
+      @if (mapSearch() !== undefined) {
+        <div class="list-group map-picker-list" data-testid="map-options">
+          @for (map of filteredMaps(); track map.id) {
+            <button
+              type="button"
+              class="list-group-item list-group-item-action py-1"
+              [class.active]="map.id === mapId()"
+              [attr.data-testid]="'map-option-' + map.id"
+              (mousedown)="$event.preventDefault(); pickMap(map.id); mapInput.blur()"
+            >
+              {{ map.id }} – {{ map.name }}
+            </button>
+          } @empty {
+            <div class="list-group-item py-1 text-muted">{{ 'WORLD_EDITOR.NO_RESULTS' | translate }}</div>
+          }
+        </div>
       }
-    </select>
+    </div>
 
     <select
       class="form-select form-select-sm zone-select"

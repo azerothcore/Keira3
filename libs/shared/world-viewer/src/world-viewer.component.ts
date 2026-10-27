@@ -68,6 +68,8 @@ import {
   WorldMarker,
   ObjectMoved,
   parseWaypointKey,
+  waypointKey,
+  WaypointPlace,
   PickResult,
   WaypointPath,
   WorldAreaTrigger,
@@ -76,6 +78,13 @@ import {
 
 const CLICK_TOLERANCE_PX = 4;
 const CENTER_EMIT_DISTANCE = 60;
+/** What kind of waypoint a point is, in its hover label. */
+const PLACE_NAMES: Record<WaypointPlace, string> = {
+  ground: 'on the ground',
+  air: 'flying',
+  water: 'in water (swimming)',
+  under: 'under the map',
+};
 /** What hover labels and the context menu look at. */
 const HOVER_PICK = { markersOnly: true, segments: true, areaTriggers: true, overlays: true };
 /** How far the camera stands from a place it was sent to (close enough to see an NPC there). */
@@ -576,7 +585,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     const [from, to] = [segment.from, segment.to].map(
       (point) => (path.points.find((p) => p.point === point) as { position: WorldPosition }).position,
     );
-    return `${path.label} · #${segment.from} → #${segment.to}${owners}\n${stretchText(from, to)}`;
+    const place = (point: number) => PLACE_NAMES[this.world.waypointPlaceOf(waypointKey(segment.pathKey, point)) as WaypointPlace];
+    return `${path.label} · #${segment.from} (${place(segment.from)}) → #${segment.to} (${place(segment.to)})${owners}\n${stretchText(from, to)}`;
   }
 
   private labelFor(key: string): string {
@@ -590,7 +600,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     const path = this.paths().find((p) => p.key === pathKey) as WaypointPath;
     const owners = path.owners?.length ? ` — ${path.owners.join(', ')}` : '';
     const info = path.points.find((p) => p.point === point)?.info ?? [];
-    return `${path.label} · #${point}${info.map((line) => ` · ${line}`).join('')}${owners}`;
+    const place = PLACE_NAMES[this.world.waypointPlaceOf(key) as WaypointPlace];
+    return `${path.label} · #${point} · ${place}${info.map((line) => ` · ${line}`).join('')}${owners}`;
   }
 
   // ---------------------------------------------------------------- keyboard navigation

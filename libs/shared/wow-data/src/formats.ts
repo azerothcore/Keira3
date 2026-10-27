@@ -88,6 +88,8 @@ export interface WdtInfo {
   /** Tiles flagged as present (MAIN chunk is stored row by row: index = ty * 64 + tx). */
   tiles: TileCoord[];
   layerSplatDepth: LayerSplatDepth;
+  /** The map's one building, for maps made of a single WMO instead of terrain (most dungeons and raids). */
+  wmo?: ModelPlacement;
 }
 
 export function parseWdt(bytes: Uint8Array): WdtInfo {
@@ -98,7 +100,45 @@ export function parseWdt(bytes: Uint8Array): WdtInfo {
       tiles.push({ tx: index % TILE_COUNT, ty: Math.floor(index / TILE_COUNT) });
     }
   });
-  return { tiles, layerSplatDepth: wdt.layerSplatDepth };
+  const wmo = globalWmo(bytes);
+  return { tiles, layerSplatDepth: wdt.layerSplatDepth, ...(wmo ? { wmo } : {}) };
+}
+
+/** Half the size of the world: where placements' own axes start. */
+const MAP_CORNER = 32 * (1600 / 3);
+
+/**
+ * The WDT's MWMO (its building's file name) and MODF (where it's placed), turned to server axes the way
+ * `@wowserhq/format` turns the placements of ADTs (it doesn't read these two chunks of WDTs).
+ */
+function globalWmo(bytes: Uint8Array): ModelPlacement | undefined {
+  const name = findChunk(bytes, 'MWMO');
+  const placement = findChunk(bytes, 'MODF');
+  if (!name || !placement || name.size === 0 || placement.size < MODF_ENTRY_SIZE) {
+    return undefined;
+  }
+  const raw = bytes.subarray(name.offset, name.offset + name.size);
+  const end = raw.indexOf(0);
+  const path = String.fromCharCode(...raw.subarray(0, end < 0 ? raw.length : end));
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const at = placement.offset;
+  const float = (i: number) => view.getFloat32(at + 8 + i * 4, true);
+  const [px, py, pz, rx, ry, rz] = [0, 1, 2, 3, 4, 5].map(float);
+  return {
+    uniqueId: view.getUint32(at + MODF_UNIQUE_ID_OFFSET, true),
+    path,
+    position: [MAP_CORNER - pz, MAP_CORNER - px, py],
+    rotation: eulerQuaternion(rz, rx, ry + 180),
+    scale: 1,
+    doodadSet: view.getUint16(at + MODF_DOODAD_SET_OFFSET, true),
+  };
+}
+
+/** gl-matrix's `quat.fromEuler` (degrees, z-y-x order), as used for ADT placements. */
+function eulerQuaternion(x: number, y: number, z: number): number[] {
+  const half = Math.PI / 360;
+  const [sx, cx, sy, cy, sz, cz] = [x, y, z].flatMap((angle) => [Math.sin(angle * half), Math.cos(angle * half)]);
+  return [sx * cy * cz - cx * sy * sz, cx * sy * cz + sx * cy * sz, cx * cy * sz - sx * sy * cz, cx * cy * cz + sx * sy * sz];
 }
 
 /** Decodes the top mip level of a BLP texture. ABGR8888 is laid out in memory as R, G, B, A bytes. */

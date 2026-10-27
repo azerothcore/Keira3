@@ -1096,8 +1096,29 @@ export class WorldEditorComponent implements OnInit {
     }
   }
 
-  protected async onMapChange(event: Event): Promise<void> {
-    this.mapId.set(Number((event.target as HTMLSelectElement).value));
+  /** What's typed in the map picker (undefined: closed, showing the current map). */
+  protected readonly mapSearch = signal<string | undefined>(undefined);
+  protected readonly currentMapLabel = computed(() => {
+    const map = this.maps().find((m) => m.id === this.mapId());
+    return map ? `${map.id} – ${map.name}` : '';
+  });
+  /** Maps whose id or name (or folder) contain what's typed. */
+  protected readonly filteredMaps = computed(() => {
+    // (only read while the picker is open)
+    const text = (this.mapSearch() as string).trim().toLowerCase();
+    return this.maps().filter((map) => !text || `${map.id} ${map.name} ${map.directory}`.toLowerCase().includes(text));
+  });
+
+  protected pickFirstMap(): void {
+    const first = this.filteredMaps()[0];
+    if (first) {
+      void this.pickMap(first.id);
+    }
+  }
+
+  protected async pickMap(id: number): Promise<void> {
+    this.mapSearch.set(undefined);
+    this.mapId.set(id);
     this.selectedKey.set(undefined);
     this.loadedSpawns.set([]);
     this.loadedWaypoints.set([]);

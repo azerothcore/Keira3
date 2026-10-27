@@ -437,12 +437,18 @@ describe('WorldScene', () => {
       world.setProbe({
         from: p(0),
         to: p(10),
-        path: [p(0), p(5), p(10)],
+        path: [p(0), p(5), p(5.5), p(10)],
         sight: { from: p(0), to: p(10), blockedAt: p(4) },
         attackFrom: p(6),
       });
-      // path, sight up to the block, hidden rest, block dot, A, C, attack dot, attack line
-      expect(world.probeGroup.children).toHaveLength(8);
+      // path, 2 arrows along it (none on the short stretch), the dashed red sight line, block dot, A, C, attack dot and line
+      expect(world.probeGroup.children).toHaveLength(9);
+      expect(world.probeGroup.children.filter((child) => child.name === 'probe-path-arrow')).toHaveLength(2);
+      const sight = world.probeGroup.children.find(
+        (child) => child instanceof Line && child.material instanceof LineDashedMaterial,
+      ) as Line;
+      expect((sight.material as LineDashedMaterial).color.getHex()).toBe(0xef4444);
+      expect((world.probeGroup.getObjectByName('probe-path-arrow') as Mesh).raycast(undefined as never, [])).toBeUndefined();
       world.setProbe({ from: p(0), to: p(10), sight: { from: p(0), to: p(10) } });
       expect(world.probeGroup.children).toHaveLength(3);
       world.setProbe({ from: p(0), attackFrom: p(0) });
@@ -501,6 +507,52 @@ describe('WorldScene', () => {
       expect(world.pick(0, 0, { markersOnly: true })).toBeUndefined();
       world.setBoundaries([]);
       expect(group().children).toHaveLength(0);
+    });
+
+    it('names the line under the cursor: a stretch of a waypoint path, or of a labelled link with its way', () => {
+      const world = new WorldScene();
+      world.setWaypointPaths([
+        {
+          key: 'path:1',
+          label: 'Path 1',
+          points: [
+            { point: 1, position: at(0, 0) },
+            { point: 2, position: at(0, 40) },
+          ],
+        },
+        // behind the camera: never picked
+        {
+          key: 'path:2',
+          label: 'Path 2',
+          points: [
+            { point: 1, position: at(0, 0, 900) },
+            { point: 2, position: at(5, 40, 900) },
+          ],
+        },
+      ]);
+      world.setOverlays(
+        [
+          { key: 'flight:1', label: 'Flight', from: at(100, 0), via: [at(100, 40)], to: at(140, 40), color: 0xf0c419 },
+          // a stretch of no length
+          { key: 'flight:2', label: 'Still', from: at(300, 300), to: at(300, 300), color: 0xf0c419 },
+        ],
+        [],
+      );
+      // a quarter along the path: away from its points and from its arrow
+      lookDownAt(world, { ...at(0, 10), z: 50.4 }, 30);
+      expect(world.pick(0, 0, { markersOnly: true, segments: true })).toEqual(
+        expect.objectContaining({ type: 'segment', pathKey: 'path:1', from: 1, to: 2 }),
+      );
+      // without asking for segments, nothing
+      expect(world.pick(0, 0, { markersOnly: true })).toBeUndefined();
+      lookDownAt(world, { ...at(100, 10), z: 50.4 }, 30);
+      const flight = world.pick(0, 0, { markersOnly: true, overlays: true });
+      expect(flight).toEqual(expect.objectContaining({ type: 'overlay', key: 'flight:1' }));
+      expect((flight as { direction: number }).direction).toBeCloseTo(Math.PI / 2);
+      // the paths drawn again: the old lines are forgotten
+      world.setWaypointPaths([]);
+      lookDownAt(world, { ...at(0, 10), z: 50.4 }, 30);
+      expect(world.pick(0, 0, { markersOnly: true, segments: true })).toBeUndefined();
     });
 
     it('draws A and C as pins, A with a cone towards C, picked and moved while dragged', () => {

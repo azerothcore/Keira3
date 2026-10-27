@@ -1046,6 +1046,8 @@
     "ERROR_DESKTOP_ONLY": "El editor de mundo 3D necesita la aplicación de escritorio de Keira3 para leer los archivos de tu cliente de WoW.",
     "WALKED_BY": "Recorrida por",
     "VIEW": "Vista",
+    "MAP_SEARCH": "Mapa: nombre o id",
+    "NO_RESULTS": "Nada encontrado",
     "BOSS_BOUNDARIES": "Límites de jefes",
     "SOURCE_PATH": "Carpeta del código de AzerothCore (opcional)",
     "SOURCE_PATH_HELP": "El clon de azerothcore-wotlk. De sus scripts de instancia se leen los límites de los jefes (lo que muestra .debug boundary).",

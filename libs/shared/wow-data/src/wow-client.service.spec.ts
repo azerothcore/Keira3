@@ -542,6 +542,29 @@ describe('WowClientService', () => {
       expect(await service.getMapTiles('Nowhere')).toEqual([]);
     });
 
+    it("gives a map made of one building (a dungeon) the tile under it, holding the building and what's inside", async () => {
+      const { service } = setup({
+        mpqs: { 'common.MPQ': { files: { 'World\\Maps\\Dungeon\\Dungeon.wdt': [9], 'World\\wmo\\Dungeon.wmo': [1] } } },
+      });
+      const building = {
+        uniqueId: 7,
+        path: 'World\\wmo\\Dungeon.wmo',
+        position: [0, 0, 0],
+        rotation: [0, 0, 0, 1],
+        scale: 1,
+        doodadSet: 0,
+      };
+      formats.parseWdt.mockReturnValue({ tiles: [], layerSplatDepth: 4, wmo: building });
+      wmo.parseWmoDoodads.mockReturnValue({ sets: [], doodads: [] });
+      expect(await service.getMapTiles('Dungeon')).toEqual([{ tx: 32, ty: 32 }]);
+      expect((await service.getTilePlacements('Dungeon', { tx: 32, ty: 32 }))?.wmos).toEqual([building]);
+      expect(await service.getTilePlacements('Dungeon', { tx: 31, ty: 32 })).toBeUndefined();
+      // preloading it caches the building
+      const getWmo = vi.spyOn(service, 'getWmo');
+      expect(await service.preload('Dungeon', [{ tx: 32, ty: 32 }])).toBe(true);
+      expect(getWmo).toHaveBeenCalledWith('world\\wmo\\dungeon.wmo');
+    });
+
     it('builds terrain meshes from ADTs with the alpha depth of the WDT', async () => {
       const { service } = setup({
         mpqs: {

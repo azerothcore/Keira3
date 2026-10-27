@@ -1046,6 +1046,8 @@
     "ERROR_DESKTOP_ONLY": "The 3D world editor needs the Keira3 desktop app to read your WoW client files.",
     "WALKED_BY": "Walked by",
     "VIEW": "View",
+    "MAP_SEARCH": "Map: name or id",
+    "NO_RESULTS": "Nothing found",
     "BOSS_BOUNDARIES": "Boss boundaries",
     "SOURCE_PATH": "AzerothCore source folder (optional)",
     "SOURCE_PATH_HELP": "The azerothcore-wotlk clone. The boss boundaries of the instance scripts (what .debug boundary shows) are read from it.",

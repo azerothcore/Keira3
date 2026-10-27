@@ -90,6 +90,14 @@ class Page extends PageObjectModel<WorldEditorComponent> {
   click(id: string): void {
     this.byId(id).nativeElement.click();
   }
+  /** Opens the map picker and picks a map. */
+  chooseMap(id: number): void {
+    const search = this.byId<HTMLInputElement>('map-search').nativeElement;
+    search.dispatchEvent(new Event('focus'));
+    this.fixture.detectChanges();
+    this.byId(`map-option-${id}`).nativeElement.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true }));
+    this.fixture.detectChanges();
+  }
   type(id: string, value: string): void {
     typeInElement(value, this.byId<HTMLInputElement>(id).nativeElement);
   }
@@ -327,7 +335,9 @@ describe(WorldEditorComponent.name, () => {
       });
       expect(mocks.client.close).toHaveBeenCalled();
       expect(page.byId('settings', false)).toBeFalsy();
-      expect(page.byId<HTMLSelectElement>('map-select').nativeElement.options.length).toBe(2);
+      page.byId('map-search').nativeElement.dispatchEvent(new Event('focus'));
+      page.fixture.detectChanges();
+      expect(page.byId('map-options').nativeElement.querySelectorAll('button').length).toBe(2);
     });
 
     it('keeps the cache where the user wants it, and manages it', async () => {
@@ -807,9 +817,7 @@ describe(WorldEditorComponent.name, () => {
       expect(page.viewer().region()).toBeUndefined();
 
       // other maps have their own zones
-      const maps = page.byId<HTMLSelectElement>('map-select').nativeElement;
-      maps.value = '1';
-      maps.dispatchEvent(new Event('change'));
+      page.chooseMap(1);
       await settle(page);
       expect(select.disabled).toBe(true);
     });
@@ -828,12 +836,36 @@ describe(WorldEditorComponent.name, () => {
       expect(mocks.client.getMapTiles).not.toHaveBeenCalled();
     });
 
+    it('finds maps by name, id or folder, picks one with Enter or a click, and closes on Escape', async () => {
+      const { page } = await setup();
+      const search = page.byId<HTMLInputElement>('map-search').nativeElement;
+      expect(search.value).toBe('0 – Eastern Kingdoms');
+      search.dispatchEvent(new Event('focus'));
+      page.type('map-search', 'kalim');
+      page.fixture.detectChanges();
+      expect(page.byId('map-options').nativeElement.textContent).toContain('1 – Kalimdor');
+      expect(page.byId('map-option-0', false)).toBeFalsy();
+      search.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+      await settle(page);
+      expect(page.viewer().mapDirectory()).toBe('Kalimdor');
+      expect(page.byId('map-options', false)).toBeFalsy();
+      // nothing matches: Enter does nothing
+      search.dispatchEvent(new Event('focus'));
+      page.type('map-search', 'zzz');
+      page.fixture.detectChanges();
+      expect(page.byId('map-options').nativeElement.textContent).toContain('WORLD_EDITOR.NO_RESULTS');
+      search.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+      search.dispatchEvent(new Event('focus'));
+      search.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+      page.fixture.detectChanges();
+      expect(page.byId('map-options', false)).toBeFalsy();
+      expect(search.value).toBe('1 – Kalimdor');
+    });
+
     it('switches maps', async () => {
       const { page } = await setup();
-      const select = page.byId<HTMLSelectElement>('map-select').nativeElement;
       mocks.client.getMapTiles.mockResolvedValue([]);
-      select.value = '1';
-      select.dispatchEvent(new Event('change'));
+      page.chooseMap(1);
       await settle(page);
       expect(page.viewer().mapDirectory()).toBe('Kalimdor');
       expect(page.viewer().focus()).toEqual({ x: 0, y: 0, z: 0 });
@@ -1046,13 +1078,10 @@ describe(WorldEditorComponent.name, () => {
       expect(page.viewer().areaTriggers()).toEqual([]);
 
       // another map; a failure shows an error and no triggers
-      const select = page.byId<HTMLSelectElement>('map-select').nativeElement;
-      select.value = '1';
-      select.dispatchEvent(new Event('change'));
+      page.chooseMap(1);
       await settle(page);
       mocks.client.getAreaTriggers.mockRejectedValueOnce(new Error('bad dbc'));
-      select.value = '0';
-      select.dispatchEvent(new Event('change'));
+      page.chooseMap(0);
       await settle(page);
       expect(mocks.toastr.error).toHaveBeenCalledWith('bad dbc', 'World Editor');
     });
@@ -1069,12 +1098,9 @@ describe(WorldEditorComponent.name, () => {
       await settle(page);
       let resolveFirst: (value: unknown[]) => void = () => undefined;
       mocks.client.getAreaTriggers.mockReturnValueOnce(new Promise((resolve) => (resolveFirst = resolve)));
-      const select = page.byId<HTMLSelectElement>('map-select').nativeElement;
-      select.value = '1';
-      select.dispatchEvent(new Event('change'));
+      page.chooseMap(1);
       await settle(page);
-      select.value = '0';
-      select.dispatchEvent(new Event('change'));
+      page.chooseMap(0);
       await settle(page);
       resolveFirst([{ id: 99, mapId: 1, x: 0, y: 0, z: 0, radius: 1 }]);
       await settle(page);
@@ -2078,9 +2104,7 @@ describe(WorldEditorComponent.name, () => {
       mocks.client.getMapTiles.mockImplementation((directory: string) => new Promise((resolve) => resolvers.set(directory, resolve)));
       page.click('map-toggle');
       await settle(page);
-      const maps = page.byId<HTMLSelectElement>('map-select').nativeElement;
-      maps.value = '1';
-      maps.dispatchEvent(new Event('change'));
+      page.chooseMap(1);
       await settle(page);
       expect(mocks.client.getMapTiles).toHaveBeenLastCalledWith('Kalimdor');
       // Kalimdor's tiles, then the late Azeroth ones: Kalimdor's stay

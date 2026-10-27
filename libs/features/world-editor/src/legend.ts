@@ -56,7 +56,7 @@ export const LEGEND: LegendSection[] = [
       { shape: 'pin', color: '#ef4444', label: 'WORLD_EDITOR.LEGEND_PROBE_END' },
       { shape: 'line', color: '#22d3ee', label: 'WORLD_EDITOR.LEGEND_PROBE_PATH' },
       { shape: 'line', color: '#4ade80', label: 'WORLD_EDITOR.LEGEND_PROBE_SIGHT' },
-      { shape: 'line', color: '#ef4444', label: 'WORLD_EDITOR.LEGEND_PROBE_BLOCKED' },
+      { shape: 'dashed', color: '#ef4444', label: 'WORLD_EDITOR.LEGEND_PROBE_BLOCKED' },
       { shape: 'pin', color: '#facc15', label: 'WORLD_EDITOR.LEGEND_PROBE_ATTACK' },
     ],
   },

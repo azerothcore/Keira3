@@ -1046,6 +1046,8 @@
     "ERROR_DESKTOP_ONLY": "Для чтения файлов клиента WoW 3D-редактору мира нужно настольное приложение Keira3.",
     "WALKED_BY": "Используют",
     "VIEW": "Вид",
+    "MAP_SEARCH": "Карта: название или id",
+    "NO_RESULTS": "Ничего не найдено",
     "BOSS_BOUNDARIES": "Границы боссов",
     "SOURCE_PATH": "Папка исходников AzerothCore (необязательно)",
     "SOURCE_PATH_HELP": "Клон azerothcore-wotlk. Из скриптов подземелий читаются границы боссов (то, что показывает .debug boundary).",
