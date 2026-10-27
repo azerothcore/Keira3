@@ -227,7 +227,7 @@ describe(WorldEditorComponent.name, () => {
       const { page } = await setup();
       page.click('settings-toggle');
       page.fixture.detectChanges();
-      expect(page.text('cache-size')).toBe('0.0 MB');
+      expect(page.text('cache-size')).toBe('0.0 MB (0.00 GB)');
       page.type('cache-folder', 'D:\\Cache');
       page.submit('settings-save');
       await settle(page);
@@ -246,7 +246,7 @@ describe(WorldEditorComponent.name, () => {
       expect(JSON.parse(localStorage.getItem('keira3.worldEditor.cache') as string).enabled).toBe(false);
       expect(page.byId<HTMLButtonElement>('preload-map').nativeElement.disabled).toBe(true);
       page.click('cache-clear');
-      expect(page.text('cache-size')).toBe('0.0 MB');
+      expect(page.text('cache-size')).toBe('0.0 MB (0.00 GB)');
 
       const max = page.byId<HTMLInputElement>('cache-max').nativeElement;
       expect(max.value).toBe('10');
@@ -431,13 +431,13 @@ describe(WorldEditorComponent.name, () => {
         Array.from(tr.querySelectorAll('td')).map((td) => td.textContent?.trim()),
       );
       expect(rows).toEqual([
-        ['Kalimdor', '9', '9.5 MB'],
-        ['Eastern Kingdoms', '3', '3.0 MB'],
-        ['custommap', '1', '0.1 MB'],
-        ['WORLD_EDITOR.BUILDINGS', '', '2.0 MB'],
-        ['WORLD_EDITOR.TOTAL', '', '14.6 MB'],
+        ['WORLD_EDITOR.TOTAL', '', '14.6 MB (0.01 GB)'],
+        ['Kalimdor', '9', '9.5 MB (0.01 GB)'],
+        ['Eastern Kingdoms', '3', '3.0 MB (0.00 GB)'],
+        ['custommap', '1', '0.1 MB (0.00 GB)'],
+        ['WORLD_EDITOR.BUILDINGS', '', '2.0 MB (0.00 GB)'],
       ]);
-      expect(page.text('cache-size')).toBe('14.6 MB');
+      expect(page.text('cache-size')).toBe('14.6 MB (0.01 GB)');
 
       // a client that can't be opened only shows the total
       mocks.client.cacheUsage.mockRejectedValue(new Error('no client'));

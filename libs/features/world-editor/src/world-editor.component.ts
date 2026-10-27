@@ -72,6 +72,11 @@ function phaseNote(spawn: SpawnRecord): string {
   return spawn.phaseMask === undefined || spawn.phaseMask === 1 ? '' : ` · phaseMask ${spawn.phaseMask}`;
 }
 
+/** "3175.5 MB (3.18 GB)". */
+export function formatSize(bytes: number): string {
+  return `${(bytes / 1_000_000).toFixed(1)} MB (${(bytes / 1_000_000_000).toFixed(2)} GB)`;
+}
+
 const LAST_VIEW_KEY = 'keira3.worldEditor.lastView';
 
 interface LastView extends WorldPosition {
@@ -152,20 +157,21 @@ export class WorldEditorComponent implements OnInit {
   protected readonly focus = signal<WorldPosition | undefined>(undefined);
   protected readonly cacheSize = signal(0);
   /** Megabytes, for the settings panel. */
-  protected readonly cacheSizeMb = computed(() => (this.cacheSize() / 1_000_000).toFixed(1));
+  protected readonly cacheSizeText = computed(() => formatSize(this.cacheSize()));
+  protected readonly formatSize = formatSize;
   protected readonly preloading = signal<{ label: string; directory: string; done: number; total: number } | undefined>(undefined);
   protected readonly cacheUsage = signal<CacheUsage | undefined>(undefined);
   /** What each map takes in the cache, biggest first, for the settings panel. */
-  protected cacheRows(cache: CacheUsage): { directory: string; name: string; tiles: number; mb: string }[] {
+  protected cacheRows(cache: CacheUsage): { directory: string; name: string; tiles: number; bytes: number }[] {
     const maps = this.maps();
     return cache.maps
       .map((usage) => ({
         directory: usage.directory,
         name: maps.find((map) => map.directory.toLowerCase() === usage.directory)?.name ?? usage.directory,
         tiles: usage.tiles,
-        mb: (usage.bytes / 1_000_000).toFixed(1),
+        bytes: usage.bytes,
       }))
-      .sort((a, b) => Number(b.mb) - Number(a.mb));
+      .sort((a, b) => b.bytes - a.bytes);
   }
   private preloadCancelled = false;
   protected readonly zones = signal<WowZone[]>([]);
