@@ -136,6 +136,8 @@ interface FakeTransformControls extends EventDispatcher<{ 'dragging-changed': { 
       [links]="links()"
       [groupKeys]="group()"
       [simulation]="simulation()"
+      [groundQuery]="ground()"
+      (groundHeights)="heights.push($event)"
       [markers]="markers()"
       [probe]="probe()"
       [navMeshRebuild]="rebuild()"
@@ -172,6 +174,8 @@ class HostComponent {
   readonly links = signal<WorldLink[]>([]);
   readonly group = signal<string[]>([]);
   readonly simulation = signal<MovementSimulation | undefined>(undefined);
+  readonly ground = signal<{ key: string; position: WorldPosition }[] | undefined>(undefined);
+  readonly heights: Record<string, number | null>[] = [];
   readonly markers = signal<WorldMarker[]>([]);
   readonly probe = signal<PathProbeRequest | undefined>(undefined);
   readonly probes: PathProbeResult[] = [];
@@ -576,6 +580,21 @@ describe(WorldViewerComponent.name, () => {
       page.pointer('pointerdown', 50, 50, 0, false, true);
       page.pointer('pointerup', 50, 50, 0, false, true);
       expect(host.picks).toEqual([expect.objectContaining({ type: 'spawn', key: 'creature:7', additive: true })]);
+    });
+
+    it('tells the ground under positions', async () => {
+      const { host, fixture, update } = await pickSetup();
+      for (let i = 0; i < 4; i++) {
+        await settle(fixture);
+      }
+      await update(() =>
+        host.ground.set([
+          { key: 'creature:7', position: at(0, 0, GROUND + 5) },
+          { key: 'far', position: { x: 0, y: 0, z: 0 } },
+        ]),
+      );
+      expect(host.heights.at(-1)?.['creature:7']).toBeCloseTo(GROUND);
+      expect(host.heights.at(-1)?.['far']).toBeNull();
     });
 
     it('highlights the spawns selected along with the main one', async () => {

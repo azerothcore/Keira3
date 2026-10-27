@@ -137,3 +137,15 @@ export function serverAreaAt(tile: ServerMapTile, x: number, y: number): number 
   const ly = Math.floor(16 * (32 - y / TILE_SIZE)) & 15;
   return tile.areas[lx * 16 + ly];
 }
+
+/** The terrain height at a server position of a tile (the nearest grid corner); undefined without terrain. */
+export function serverHeightAt(tile: ServerMapTile, coord: TileCoord, x: number, y: number): number | undefined {
+  if (!tile.v9) {
+    return undefined;
+  }
+  const part = TILE_SIZE / (V9_SIZE - 1);
+  const clamp = (value: number) => Math.min(V9_SIZE - 1, Math.max(0, Math.round(value)));
+  const col = clamp(((32 - coord.tx) * TILE_SIZE - y) / part);
+  const row = clamp(((32 - coord.ty) * TILE_SIZE - x) / part);
+  return tile.v9[row * V9_SIZE + col];
+}

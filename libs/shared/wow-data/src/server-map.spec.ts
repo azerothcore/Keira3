@@ -1,5 +1,5 @@
 import { buildServerMap } from './server-data.mock';
-import { parseServerMap, serverAreaAt, serverMapName } from './server-map';
+import { parseServerMap, serverAreaAt, serverHeightAt, serverMapName } from './server-map';
 
 describe('server maps', () => {
   it('names files like the mmtiles: map, grid y, grid x', () => {
@@ -40,5 +40,13 @@ describe('server maps', () => {
     expect(serverAreaAt(tile, -9110, 530)).toBe(16);
     expect(serverAreaAt(parseServerMap(buildServerMap({ areas: 'one' })) as NonNullable<ReturnType<typeof parseServerMap>>, 0, 0)).toBe(87);
     expect(serverAreaAt(parseServerMap(buildServerMap()) as NonNullable<ReturnType<typeof parseServerMap>>, 0, 0)).toBe(0);
+  });
+
+  it('tells the terrain height at a position (the nearest grid corner)', () => {
+    const tile = parseServerMap(buildServerMap({ height: 42 })) as NonNullable<ReturnType<typeof parseServerMap>>;
+    expect(serverHeightAt(tile, { tx: 31, ty: 49 }, -9300, 200)).toBe(42);
+    // outside the tile: the nearest edge
+    expect(serverHeightAt(tile, { tx: 31, ty: 49 }, 0, 0)).toBe(42);
+    expect(serverHeightAt({}, { tx: 31, ty: 49 }, 0, 0)).toBeUndefined();
   });
 });

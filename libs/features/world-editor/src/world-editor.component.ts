@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, OnInit, signal, untracked } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-components';
@@ -33,6 +33,8 @@ import {
   WorldLink,
   WorldMarker,
   MovementSimulation,
+  WorldMapComponent,
+  WorldMapDot,
 } from '@keira/shared/world-viewer';
 import {
   CacheUsage,
@@ -50,7 +52,10 @@ import {
   MMAP_CONFIG_KEYS,
   mmapOverrideYaml,
   MmapRecastConfig,
+  serverHeightAt,
   TaxiNode,
+  WorldBounds,
+  worldToTile,
   TaxiPath,
 } from '@keira/shared/wow-data';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -67,6 +72,7 @@ import {
   pathLabel,
   FormationMember,
   Graveyard,
+  SPAWN_FIELDS,
   LAYER_SWITCHES,
   Teleport,
   PoolMember,
@@ -80,9 +86,12 @@ import {
 import { WorldEditorService } from './world-editor.service';
 import { GpsLocation, parseGpsOutput } from './gps';
 import { describeWaypoint, WaypointSaiRow, WaypointScriptStep } from './waypoint-info';
-import { STACK_SIDES, StackSide, stackPosition } from './stack';
+import { arrayPositions, boxExtent, STACK_SIDES, StackSide, stackPosition } from './stack';
 import { EMPTY_TRAVEL, TravelData, travelOverlays } from './travel';
 import { copySpawns, followPlacement, pastedSpawn } from './group-edit';
+import { WaypointEdits, WaypointPanelComponent } from './waypoint-panel.component';
+import { SpawnPanelComponent } from './spawn-panel.component';
+import { findSpawnProblems, SpawnProblem } from './spawn-problems';
 import { pathSimulation, wanderSimulation } from './simulation-plan';
 import { formationLinks, formationSlots, groupDetails, poolOverlays } from './spawn-groups';
 import { isSpawnVisible, loadSpawnFilters, saveSpawnFilters, SpawnFilters, spawnEvents } from './spawn-filters';
@@ -166,12 +175,23 @@ type RenderDistanceKey = 'drawDistance' | 'largeDoodadDistance' | 'smallDoodadDi
  * 3D world editor: shows the terrain of a map with its creature/gameobject spawns and waypoint paths, and turns
  * placing, moving, rotating and deleting them into SQL that the user reviews before executing.
  */
+/** The array tool places at most this many copies at once. */
+const MAX_ARRAY = 50;
+
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-world-editor',
   templateUrl: './world-editor.component.html',
   styleUrl: './world-editor.component.scss',
-  imports: [ReactiveFormsModule, TranslatePipe, WorldViewerComponent, HighlightjsWrapperComponent],
+  imports: [
+    ReactiveFormsModule,
+    TranslatePipe,
+    WorldViewerComponent,
+    WorldMapComponent,
+    HighlightjsWrapperComponent,
+    WaypointPanelComponent,
+    SpawnPanelComponent,
+  ],
   host: { '(keydown)': 'onKeydown($event)', '(document:pointerdown)': 'onDocumentPointerDown($event)' },
 })
 export class WorldEditorComponent implements OnInit {
@@ -224,6 +244,32 @@ export class WorldEditorComponent implements OnInit {
   protected readonly navMeshRebuildState = signal<NavMeshRebuildState | undefined>(undefined);
   protected readonly hideRealNavMesh = signal(false);
   protected readonly stackSides = STACK_SIDES;
+  /** The array tool: how many copies, towards which side, how far apart (empty: touching, by the model's size). */
+  protected readonly arrayForm = new FormGroup({
+    count: new FormControl<number | null>(3),
+    side: new FormControl<StackSide>('front', { nonNullable: true }),
+    spacing: new FormControl<number | null>(null),
+  });
+  /** The selected spawn's columns as stored (or a new spawn's defaults), for the properties panel. */
+  protected readonly spawnStored = signal<{ key: string; values: Record<string, number> } | undefined>(undefined);
+  /** The columns changed for the selected spawn. */
+  protected readonly spawnEdits = computed(() => {
+    this.revision();
+    // (only read while a spawn is selected)
+    const spawn = this.selectedSpawn() as SpawnRecord;
+    return this.changes.spawnFields(spawn.type, spawn.guid);
+  });
+  private readonly loadStoredFields = effect(() => {
+    const spawn = this.selectedSpawn();
+    const key = spawn && spawnKey(spawn.type, spawn.guid);
+    untracked(() => {
+      if (!spawn || !key) {
+        this.spawnStored.set(undefined);
+      } else if (key !== this.spawnStored()?.key) {
+        void this.loadSpawnFields(spawn, key);
+      }
+    });
+  });
   protected readonly groupKeys = this.session.groupKeys;
   protected readonly copied = this.session.copied;
   /** The spawns selected along with the main one. */
@@ -366,9 +412,40 @@ export class WorldEditorComponent implements OnInit {
   protected readonly zones = signal<WowZone[]>([]);
   protected readonly zoneId = this.session.zoneId;
   /** The selected zone, loaded whole when the View panel asks for it. */
-  protected readonly region = computed(() =>
-    this.renderSettings.settings().loadWholeZone ? this.zones().find((zone) => zone.areaId === this.zoneId())?.bounds : undefined,
+  protected readonly region = computed(
+    () =>
+      this.mapRegion() ??
+      (this.renderSettings.settings().loadWholeZone ? this.zones().find((zone) => zone.areaId === this.zoneId())?.bounds : undefined),
   );
+  protected readonly showMap = this.session.showMap;
+  /** The spawn problems report: the positions asked to the view, and what was found. */
+  protected readonly groundQuery = signal<{ key: string; position: WorldPosition }[] | undefined>(undefined);
+  protected readonly spawnProblems = signal<SpawnProblem[] | undefined>(undefined);
+  protected readonly searchForm = new FormControl('', { nonNullable: true });
+  protected readonly searchResults = signal<SpawnRecord[]>([]);
+  protected readonly searching = signal(false);
+  /** A spawn to select once it's loaded (after flying to a search result). */
+  private pendingSelect?: string;
+  protected readonly mapRegion = this.session.mapRegion;
+  /** The tiles of the current map (for the world map). */
+  protected readonly mapTiles = signal<TileCoord[]>([]);
+  /** Spawns (and search results) as dots on the world map. */
+  protected readonly mapDots = computed<WorldMapDot[]>(() => [
+    ...this.visibleSpawns().map((s) => ({
+      key: spawnKey(s.type, s.guid),
+      position: s,
+      color: s.type === 'creature' ? '#ffc107' : '#0dcaf0',
+      title: spawnTitle(s),
+    })),
+    ...this.searchResults().map((r) => ({
+      key: `search:${spawnKey(r.type, r.guid)}`,
+      position: r,
+      color: '#ff4d6d',
+      title: spawnTitle(r),
+    })),
+  ]);
+  /** Which server files each tile of the map has (only read while the world map is open). */
+  protected readonly mapCoverage = computed(() => this.client.getServerCoverage(this.mapId(), this.mapTiles()));
   protected readonly layers = this.session.layers;
   /** Area triggers of the current map, with what the database does with them. */
   private readonly areaTriggerList = signal<AreaTriggerInfo[]>([]);
@@ -495,6 +572,7 @@ export class WorldEditorComponent implements OnInit {
       points: points.map((p) => ({
         point: p.point,
         position: { x: p.x, y: p.y, z: p.z },
+        orientation: p.orientation ?? null,
         delay: p.delay,
         info: this.waypointInfo(p),
       })),
@@ -1058,6 +1136,11 @@ export class WorldEditorComponent implements OnInit {
         return paths.length ? { ...s, saiPaths: paths } : s;
       });
       this.loadedSpawns.set(spawns);
+      if (this.pendingSelect && this.findSpawn(this.pendingSelect)) {
+        this.groupKeys.set([]);
+        this.select(this.pendingSelect);
+        this.pendingSelect = undefined;
+      }
       const waypoints = await this.service.loadWaypoints(this.pathIds());
       if (request !== this.spawnRequest) {
         return;
@@ -1203,6 +1286,33 @@ export class WorldEditorComponent implements OnInit {
     this.select(spawnKey(spawn.type, guid));
   }
 
+  /** Places a row of copies of the selected spawn (the array tool) and selects them along with it. */
+  protected async arraySelected(): Promise<void> {
+    const spawn = this.selectedSpawn() as SpawnRecord;
+    const { count, side, spacing } = this.arrayForm.getRawValue();
+    const copies = Math.min(MAX_ARRAY, Math.max(1, Math.round(Number(count) || 1)));
+    let distance = spacing !== null && spacing > 0 ? spacing : undefined;
+    if (distance === undefined) {
+      const box = spawn.displayId
+        ? await spawnModelBox(this.client, spawn.type, spawn.displayId, spawn.scale).catch((): undefined => undefined)
+        : undefined;
+      if (!box) {
+        this.toastr.warning(`The model of ${spawn.name} could not be read: give the spacing.`, 'World Editor');
+        return;
+      }
+      distance = boxExtent(box, side);
+    }
+    const keys: string[] = [];
+    for (const position of arrayPositions(spawn, side, distance, copies)) {
+      const guid = await this.newGuid(spawn.type);
+      const { pathFromTemplate: _, event: __, saiPaths: ___, ...copy } = spawn;
+      this.changes.placeSpawn({ ...copy, guid, pathId: 0, ...position });
+      keys.push(spawnKey(spawn.type, guid));
+    }
+    this.bump();
+    this.groupKeys.set(keys);
+  }
+
   private addWaypointAt(position: WorldPosition): void {
     const pathId = this.activePathId();
     if (!pathId) {
@@ -1336,6 +1446,154 @@ export class WorldEditorComponent implements OnInit {
     if (simulation) {
       this.simulation.set({ ...simulation, rate: this.simulationRate() });
     }
+  }
+
+  private async loadSpawnFields(spawn: SpawnRecord, key: string): Promise<void> {
+    this.spawnStored.set(undefined);
+    const values = this.changes.isNewSpawn(key)
+      ? Object.fromEntries(SPAWN_FIELDS[spawn.type].map((field) => [field.column, field.default]))
+      : await this.service.loadSpawnFields(spawn.type, spawn.guid).catch(() => undefined);
+    // still the spawn selected?
+    const selected = this.selectedSpawn();
+    const current = values && selected && spawnKey(selected.type, selected.guid) === key;
+    this.spawnStored.update((stored) => (current ? { key, values } : stored));
+  }
+
+  /** A column changed in the properties panel. */
+  protected editSpawn(fields: Record<string, number>): void {
+    const spawn = this.selectedSpawn() as SpawnRecord;
+    this.changes.editSpawnFields(spawn, (this.spawnStored() as { values: Record<string, number> }).values, fields);
+    this.bump();
+  }
+
+  /** Checks the spawns shown for problems: the view tells the ground under them first. */
+  protected checkSpawns(): void {
+    this.groundQuery.set(this.visibleSpawns().map((s) => ({ key: spawnKey(s.type, s.guid), position: { x: s.x, y: s.y, z: s.z } })));
+  }
+
+  protected onGroundHeights(heights: Record<string, number | null>): void {
+    this.groundQuery.set(undefined);
+    this.spawnProblems.set(findSpawnProblems(this.visibleSpawns(), heights, this.waypoints()));
+  }
+
+  protected goToProblem(problem: SpawnProblem): void {
+    this.groupKeys.set([]);
+    this.select(problem.key);
+    this.focus.set({ x: problem.spawn.x, y: problem.spawn.y, z: problem.spawn.z });
+  }
+
+  /** Finds spawns of the map by GUID, entry or name. */
+  protected async searchSpawns(): Promise<void> {
+    this.searching.set(true);
+    try {
+      this.searchResults.set(await this.service.searchSpawns(this.mapId(), this.searchForm.value));
+    } catch (error) {
+      this.toastr.error((error as Error).message, 'World Editor');
+    } finally {
+      this.searching.set(false);
+    }
+  }
+
+  /** Flies to a search result and selects it once it's loaded. */
+  protected goToResult(result: SpawnRecord): void {
+    const key = spawnKey(result.type, result.guid);
+    if (this.findSpawn(key)) {
+      this.groupKeys.set([]);
+      this.select(key);
+    } else {
+      this.pendingSelect = key;
+    }
+    this.focus.set({ x: result.x, y: result.y, z: result.z });
+  }
+
+  protected clearSearch(): void {
+    this.searchResults.set([]);
+    this.searchForm.setValue('');
+  }
+
+  protected toggleMap(): void {
+    this.showMap.update((shown) => !shown);
+    if (this.showMap()) {
+      void this.loadMapTiles();
+    }
+  }
+
+  private async loadMapTiles(): Promise<void> {
+    const directory = this.mapDirectory();
+    // (the world map only opens with a map shown)
+    const tiles = await this.client.getMapTiles(directory as string).catch((): TileCoord[] => []);
+    this.mapTiles.set(tiles);
+  }
+
+  /** A click on the world map: the camera goes there (at the server's terrain height when known). */
+  protected async onMapGoTo(position: WorldPosition): Promise<void> {
+    const tile = worldToTile(position.x, position.y);
+    const map = await this.client.getServerMap(this.mapId(), tile).catch(() => undefined);
+    const z = (map && serverHeightAt(map, tile, position.x, position.y)) ?? position.z;
+    this.focus.set({ x: position.x, y: position.y, z });
+    this.showMap.set(false);
+  }
+
+  /** Shift + drag on the world map: that area is loaded whole, and the camera goes to its middle. */
+  protected onMapRegion(bounds: WorldBounds): void {
+    this.mapRegion.set(bounds);
+    void this.onMapGoTo({ x: (bounds.minX + bounds.maxX) / 2, y: (bounds.minY + bounds.maxY) / 2, z: 0 });
+  }
+
+  /** The waypoint panel's settings for the selected point. */
+  protected editSelectedWaypoint(edits: WaypointEdits): void {
+    const waypoint = this.selectedWaypoint() as WaypointRecord;
+    const original = this.loadedWaypoints().find((w) => w.pathId === waypoint.pathId && w.point === waypoint.point) ?? waypoint;
+    this.changes.editWaypoint(original, edits);
+    this.bump();
+  }
+
+  /** Inserts a point after the selected one, halfway to the next (or 5 yards on), renumbering the points after it. */
+  protected insertWaypointAfter(): void {
+    const waypoint = this.selectedWaypoint() as WaypointRecord;
+    const points = this.pathPoints(waypoint.pathId);
+    const next = points.find((w) => w.point > waypoint.point);
+    const previous = [...points].reverse().find((w) => w.point < waypoint.point);
+    const ahead = next ?? {
+      x: waypoint.x + (previous ? waypoint.x - previous.x : 5),
+      y: waypoint.y + (previous ? waypoint.y - previous.y : 0),
+      z: waypoint.z,
+    };
+    const inserted: WaypointRecord = {
+      pathId: waypoint.pathId,
+      point: waypoint.point + 1,
+      x: (waypoint.x + ahead.x) / 2,
+      y: (waypoint.y + ahead.y) / 2,
+      z: (waypoint.z + ahead.z) / 2,
+      delay: 0,
+    };
+    const target = [
+      ...points.filter((w) => w.point <= waypoint.point),
+      inserted,
+      ...points.filter((w) => w.point > waypoint.point).map((w) => ({ ...w, point: w.point + 1 })),
+    ];
+    this.changes.setPathPoints(points, target);
+    this.bump();
+    this.select(waypointKey(pathKey(waypoint.pathId), inserted.point));
+  }
+
+  /** Numbers the selected point's path 1, 2, 3… again (after points were deleted). */
+  protected renumberPath(): void {
+    const waypoint = this.selectedWaypoint() as WaypointRecord;
+    const points = this.pathPoints(waypoint.pathId);
+    const index = points.findIndex((w) => w.point === waypoint.point);
+    this.changes.setPathPoints(
+      points,
+      points.map((w, i) => ({ ...w, point: i + 1 })),
+    );
+    this.bump();
+    this.select(waypointKey(pathKey(waypoint.pathId), index + 1));
+  }
+
+  private pathPoints(pathId: number): WaypointRecord[] {
+    return this.waypoints()
+      .filter((w) => w.pathId === pathId)
+      .sort((a, b) => a.point - b.point);
   }
 
   /** Only offered for a selected creature without a path. */

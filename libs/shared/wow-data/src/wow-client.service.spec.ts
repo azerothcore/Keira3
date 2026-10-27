@@ -73,6 +73,7 @@ describe('WowClientService', () => {
     expect(service.isSupported()).toBe(false);
     await expect(service.readFile('x')).rejects.toThrowError(/only available in the Keira3 desktop app/);
     await expect(service.getMaps()).rejects.toThrowError(/only available in the Keira3 desktop app/);
+    expect(service.getServerCoverage(0, [{ tx: 1, ty: 1 }]).size).toBe(0);
   });
 
   it('requires a client path', async () => {
@@ -358,6 +359,25 @@ describe('WowClientService', () => {
       // the first one was dropped to keep 9
       await service.getServerMap(0, { tx: 31, ty: 40 });
       expect(read).toHaveBeenCalledTimes(11);
+    });
+
+    it('tells which server files each tile has', () => {
+      const { service } = setup({
+        files: { '/srv/maps/0004931.map': [1], '/srv/mmaps/0004931.mmtile': [1], '/srv/vmaps/000_32_49.vmtile': [1] },
+        mpqs: standardMpqs(),
+        serverDataPath: '/srv',
+      });
+      const coverage = service.getServerCoverage(0, [
+        { tx: 31, ty: 49 },
+        { tx: 32, ty: 49 },
+      ]);
+      expect(coverage.get('31_49')).toEqual({ map: true, vmap: false, mmap: true });
+      expect(coverage.get('32_49')).toEqual({ map: false, vmap: true, mmap: false });
+    });
+
+    it('knows no server files without a server data folder', () => {
+      const { service } = setup({ mpqs: standardMpqs() });
+      expect(service.getServerCoverage(0, [{ tx: 31, ty: 49 }]).size).toBe(0);
     });
 
     it('has no server terrain or vmaps without a server data folder', async () => {

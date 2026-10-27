@@ -85,6 +85,53 @@ function placementFields(type: SpawnType, p: Placement, original?: SpawnRecord):
   return round(original.o) === round(p.o) ? fields : { ...fields, ...rotateGameobject(original.rotation, original.o, p.o) };
 }
 
+/** The columns of a waypoint that differ between `original` and `current` (SmartAI paths only have place, wait, orientation). */
+function waypointUpdates(original: WaypointRecord, current: WaypointRecord): Record<string, number | null> {
+  const fields: Record<string, number | null> = {};
+  for (const [key, column] of [
+    ['x', 'position_x'],
+    ['y', 'position_y'],
+    ['z', 'position_z'],
+  ] as const) {
+    if (round(original[key]) !== round(current[key])) {
+      fields[column] = round(current[key]);
+    }
+  }
+  if (original.delay !== current.delay) {
+    fields['delay'] = current.delay;
+  }
+  if ((original.orientation ?? null) !== (current.orientation ?? null)) {
+    fields['orientation'] = current.orientation == null ? null : round(current.orientation);
+  }
+  if (!isSaiPath(original.pathId)) {
+    for (const [key, column, fallback] of [
+      ['moveType', 'move_type', 0],
+      ['action', 'action', 0],
+      ['actionChance', 'action_chance', 100],
+    ] as const) {
+      if ((original[key] ?? fallback) !== (current[key] ?? fallback)) {
+        fields[column] = current[key] ?? fallback;
+      }
+    }
+  }
+  return fields;
+}
+
+/** A spawn as drawn with its edited columns: wandering (wander_distance with MovementType 1) and phase. */
+function withFields(spawn: SpawnRecord, fields: Record<string, number> | undefined): SpawnRecord {
+  if (!fields || spawn.type !== 'creature') {
+    return fields?.['phaseMask'] !== undefined ? { ...spawn, phaseMask: fields['phaseMask'] } : spawn;
+  }
+  const wanders = (fields['MovementType'] ?? (spawn.wanderDistance !== undefined ? 1 : 0)) === 1;
+  const distance = fields['wander_distance'] ?? spawn.wanderDistance ?? 0;
+  const { wanderDistance: _, ...rest } = spawn;
+  return {
+    ...rest,
+    ...(wanders ? { wanderDistance: distance } : {}),
+    ...(fields['phaseMask'] !== undefined ? { phaseMask: fields['phaseMask'] } : {}),
+  };
+}
+
 const samePlacement = (a: Placement, b: Placement): boolean =>
   round(a.x) === round(b.x) && round(a.y) === round(b.y) && round(a.z) === round(b.z) && round(a.o) === round(b.o);
 
@@ -101,6 +148,7 @@ export interface ChangesSnapshot {
   movedWaypoints: [string, { original: WaypointRecord; current: WaypointRecord }][];
   deletedWaypoints: [string, WaypointRecord][];
   createdPaths: [number, number][];
+  editedSpawns?: [string, { spawn: SpawnRecord; fields: Record<string, number> }][];
 }
 
 export class WorldEditorChanges {
@@ -111,6 +159,8 @@ export class WorldEditorChanges {
   private readonly movedWaypoints = new Map<string, { original: WaypointRecord; current: WaypointRecord }>();
   private readonly deletedWaypoints = new Map<string, WaypointRecord>();
   private readonly createdPaths = new Map<number, number>();
+  /** Spawn columns changed in the properties panel (respawn time, wander distance…), by spawn. */
+  private readonly editedSpawns = new Map<string, { spawn: SpawnRecord; fields: Record<string, number> }>();
 
   get count(): number {
     return (
@@ -120,7 +170,8 @@ export class WorldEditorChanges {
       this.insertedWaypoints.size +
       this.movedWaypoints.size +
       this.deletedWaypoints.size +
-      this.createdPaths.size
+      this.createdPaths.size +
+      this.editedSpawns.size
     );
   }
 
@@ -134,6 +185,7 @@ export class WorldEditorChanges {
       movedWaypoints: [...this.movedWaypoints],
       deletedWaypoints: [...this.deletedWaypoints],
       createdPaths: [...this.createdPaths],
+      editedSpawns: [...this.editedSpawns],
     });
   }
 
@@ -147,6 +199,7 @@ export class WorldEditorChanges {
     copy.movedWaypoints.forEach(([key, value]) => this.movedWaypoints.set(key, value));
     copy.deletedWaypoints.forEach(([key, value]) => this.deletedWaypoints.set(key, value));
     copy.createdPaths.forEach(([key, value]) => this.createdPaths.set(key, value));
+    (copy.editedSpawns ?? []).forEach(([key, value]) => this.editedSpawns.set(key, value));
   }
 
   clear(): void {
@@ -157,6 +210,37 @@ export class WorldEditorChanges {
     this.movedWaypoints.clear();
     this.deletedWaypoints.clear();
     this.createdPaths.clear();
+    this.editedSpawns.clear();
+  }
+
+  /**
+   * Changes columns of a spawn (`creature.spawntimesecs`, `wander_distance`…). `original` holds their values in the
+   * database; columns put back to them drop out of the edit. A spawn placed in this session gets them in its INSERT.
+   */
+  editSpawnFields(spawn: SpawnRecord, original: Record<string, number>, edits: Record<string, number>): void {
+    const key = spawnKey(spawn.type, spawn.guid);
+    const inserted = this.insertedSpawns.get(key);
+    if (inserted) {
+      this.insertedSpawns.set(key, { ...inserted, fields: { ...inserted.fields, ...edits } });
+      return;
+    }
+    const fields = { ...this.editedSpawns.get(key)?.fields, ...edits };
+    for (const [column, value] of Object.entries(fields)) {
+      if (original[column] === value) {
+        delete fields[column];
+      }
+    }
+    if (Object.keys(fields).length === 0) {
+      this.editedSpawns.delete(key);
+    } else {
+      this.editedSpawns.set(key, { spawn, fields });
+    }
+  }
+
+  /** The columns changed for a spawn (in the properties panel), or set for a spawn placed in this session. */
+  spawnFields(type: SpawnType, guid: number): Record<string, number> {
+    const key = spawnKey(type, guid);
+    return { ...(this.insertedSpawns.get(key)?.fields ?? this.editedSpawns.get(key)?.fields) };
   }
 
   // ---------------------------------------------------------------- spawns
@@ -204,6 +288,7 @@ export class WorldEditorChanges {
         }
       }
     }
+    this.editedSpawns.delete(key);
     if (this.insertedSpawns.delete(key)) {
       return;
     }
@@ -222,11 +307,12 @@ export class WorldEditorChanges {
       }
       const moved = this.movedSpawns.get(key);
       const pathId = this.createdPaths.get(spawn.guid) ?? spawn.pathId;
-      result.push(moved ? { ...spawn, ...moved.current, pathId } : { ...spawn, pathId });
+      const fields = this.editedSpawns.get(key)?.fields;
+      result.push(withFields({ ...spawn, ...moved?.current, pathId }, fields));
     }
     for (const spawn of this.insertedSpawns.values()) {
       if (spawn.map === map) {
-        result.push({ ...spawn, pathId: this.createdPaths.get(spawn.guid) ?? spawn.pathId });
+        result.push(withFields({ ...spawn, pathId: this.createdPaths.get(spawn.guid) ?? spawn.pathId }, spawn.fields));
       }
     }
     return result;
@@ -250,18 +336,47 @@ export class WorldEditorChanges {
   }
 
   moveWaypoint(original: WaypointRecord, position: { x: number; y: number; z: number }): void {
+    this.editWaypoint(original, { x: position.x, y: position.y, z: position.z });
+  }
+
+  /** Changes a waypoint (its place, wait, move type, orientation, script); back to the original drops the edit. */
+  editWaypoint(original: WaypointRecord, edits: Partial<Omit<WaypointRecord, 'pathId' | 'point'>>): void {
     const key = waypointKey(original.pathId, original.point);
     const inserted = this.insertedWaypoints.get(key);
     if (inserted) {
-      this.insertedWaypoints.set(key, { ...inserted, x: position.x, y: position.y, z: position.z });
+      this.insertedWaypoints.set(key, { ...inserted, ...edits });
       return;
     }
-    const base = this.movedWaypoints.get(key)?.original ?? original;
-    const current = { ...base, x: position.x, y: position.y, z: position.z };
-    if (samePlacement({ ...base, o: 0 }, { ...current, o: 0 })) {
+    const edited = this.movedWaypoints.get(key);
+    const base = edited?.original ?? original;
+    const current = { ...(edited?.current ?? base), ...edits };
+    if (Object.keys(waypointUpdates(base, current)).length === 0) {
       this.movedWaypoints.delete(key);
     } else {
       this.movedWaypoints.set(key, { original: base, current });
+    }
+  }
+
+  /**
+   * Makes a path's points `target` (renumbered, one inserted or removed…) from what they are now (`current`): points
+   * that change are edited, new numbers added, numbers no longer used deleted.
+   */
+  setPathPoints(current: WaypointRecord[], target: WaypointRecord[]): void {
+    const now = new Map(current.map((w) => [w.point, w]));
+    const wanted = new Map(target.map((w) => [w.point, w]));
+    for (const [point, waypoint] of now) {
+      if (!wanted.has(point)) {
+        this.deleteWaypoint(waypoint);
+      }
+    }
+    for (const [point, waypoint] of wanted) {
+      const existing = now.get(point);
+      if (existing) {
+        const { pathId: _, point: __, ...fields } = waypoint;
+        this.editWaypoint(existing, fields);
+      } else {
+        this.addWaypoint(waypoint);
+      }
     }
   }
 
@@ -303,10 +418,14 @@ export class WorldEditorChanges {
       ...[...this.deletedSpawns.values()].map((s) => `Delete ${label(s)}`),
       ...[...this.insertedSpawns.values()].map((s) => `Place ${label(s)}`),
       ...[...this.movedSpawns.values()].map(({ original }) => `Move ${label(original)}`),
+      ...[...this.editedSpawns.values()].map(({ spawn }) => `Edit ${label(spawn)}`),
       ...[...this.createdPaths].map(([guid, pathId]) => `Create path ${pathId} for creature ${guid}`),
       ...[...this.deletedWaypoints.values()].map((w) => `Delete waypoint ${point(w)}`),
       ...[...this.insertedWaypoints.values()].map((w) => `Add waypoint ${point(w)}`),
-      ...[...this.movedWaypoints.values()].map(({ original: w }) => `Move waypoint ${point(w)}`),
+      ...[...this.movedWaypoints.values()].map(
+        ({ original: w, current }) =>
+          `${round(w.x) !== round(current.x) || round(w.y) !== round(current.y) || round(w.z) !== round(current.z) ? 'Move' : 'Edit'} waypoint ${point(w)}`,
+      ),
     ];
   }
 
@@ -326,6 +445,9 @@ export class WorldEditorChanges {
     }
     for (const { original, current } of this.movedSpawns.values()) {
       statements.push(this.updateQuery(tableOf(original.type), placementFields(original.type, current, original), { guid: original.guid }));
+    }
+    for (const { spawn, fields } of this.editedSpawns.values()) {
+      statements.push(this.updateQuery(tableOf(spawn.type), fields, { guid: spawn.guid }));
     }
     for (const [guid, pathId] of this.createdPaths) {
       statements.push(
@@ -350,14 +472,20 @@ export class WorldEditorChanges {
         position_y: round(waypoint.y),
         position_z: round(waypoint.z),
         delay: waypoint.delay,
+        // the other columns only when not their default
+        ...(waypoint.orientation != null && { orientation: round(waypoint.orientation) }),
+        ...(!isSaiPath(waypoint.pathId) && waypoint.moveType && { move_type: waypoint.moveType }),
+        ...(!isSaiPath(waypoint.pathId) && waypoint.action && { action: waypoint.action }),
+        ...(!isSaiPath(waypoint.pathId) &&
+          waypoint.actionChance !== undefined &&
+          waypoint.actionChance !== 100 && { action_chance: waypoint.actionChance }),
       };
       statements.push(this.deleteQuery(table, where));
       statements.push(`${squel.insert(squelConfig).into(table).setFields(fields).toString()};`);
     }
     for (const { original, current } of this.movedWaypoints.values()) {
       const { table, where } = keyOf(original);
-      const fields = { position_x: round(current.x), position_y: round(current.y), position_z: round(current.z) };
-      statements.push(this.updateQuery(table, fields, where));
+      statements.push(this.updateQuery(table, waypointUpdates(original, current), where));
     }
     return statements.join('\n');
   }
@@ -384,11 +512,11 @@ export class WorldEditorChanges {
     return `${squel
       .insert(squelConfig)
       .into(tableOf(spawn.type))
-      .setFields({ ...row })
+      .setFields({ ...row, ...spawn.fields })
       .toString()};`;
   }
 
-  private updateQuery(table: string, fields: Record<string, number>, where: Record<string, number>): string {
+  private updateQuery(table: string, fields: Record<string, number | null>, where: Record<string, number>): string {
     const query = squel.update(squelConfig).table(table).setFields(fields);
     Object.entries(where).forEach(([field, value]) => query.where(`\`${field}\` = ${value}`));
     return `${query.toString()};`;

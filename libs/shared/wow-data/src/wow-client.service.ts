@@ -1,5 +1,5 @@
 import { inject, Service } from '@angular/core';
-import { TileCoord } from './coords';
+import { TileCoord, tileKey } from './coords';
 import {
   AreaTriggerInfo,
   CreatureDisplay,
@@ -74,6 +74,13 @@ interface OpenClient {
 }
 
 /** Reads game data straight from the user's WoW 3.3.5a client (MPQ archives) and, optionally, the server's DataDir. */
+/** The server files of a tile: terrain (`.map`), collision (`.vmtile`) and navigation mesh (`.mmtile`). */
+export interface ServerTileCoverage {
+  map: boolean;
+  vmap: boolean;
+  mmap: boolean;
+}
+
 /** Server terrain tiles kept parsed. */
 const SERVER_MAP_CACHE = 9;
 
@@ -211,6 +218,27 @@ export class WowClientService {
       }
     }
     return map;
+  }
+
+  /**
+   * Which server files exist for each tile (`maps/`, `vmaps/`, `mmaps/` of the server data folder), by `tileKey`;
+   * empty without a server data folder (or outside the desktop app).
+   */
+  getServerCoverage(mapId: number, tiles: TileCoord[]): Map<string, ServerTileCoverage> {
+    const coverage = new Map<string, ServerTileCoverage>();
+    const serverDataPath = this.settings.paths().serverDataPath;
+    const native = this.native;
+    if (!serverDataPath || !native) {
+      return coverage;
+    }
+    for (const tile of tiles) {
+      coverage.set(tileKey(tile), {
+        map: native.exists(`${serverDataPath}/maps/${serverMapName(mapId, tile)}`),
+        vmap: native.exists(`${serverDataPath}/vmaps/${vmapTileName(mapId, tile)}`),
+        mmap: native.exists(`${serverDataPath}/mmaps/${mmtileName(mapId, tile)}`),
+      });
+    }
+    return coverage;
   }
 
   /** Area names (AreaTable.dbc) with their parent zone, by area id. */

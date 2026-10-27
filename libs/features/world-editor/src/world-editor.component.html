@@ -76,7 +76,17 @@
       <button type="submit" class="btn btn-sm btn-secondary" data-testid="tele-search-btn"><i class="fa fa-search"></i></button>
     </form>
 
-    <button type="button" class="btn btn-sm btn-outline-secondary ms-auto" data-testid="filters-toggle" (click)="toggleFilters()">
+    <button
+      type="button"
+      class="btn btn-sm ms-auto"
+      data-testid="map-toggle"
+      [class.btn-secondary]="showMap()"
+      [class.btn-outline-secondary]="!showMap()"
+      (click)="toggleMap()"
+    >
+      <i class="fa fa-map-o"></i> {{ 'WORLD_EDITOR.WORLD_MAP' | translate }}
+    </button>
+    <button type="button" class="btn btn-sm btn-outline-secondary" data-testid="filters-toggle" (click)="toggleFilters()">
       <i class="fa fa-filter"></i> {{ 'WORLD_EDITOR.FILTERS' | translate }}
       @if (hiddenCount()) {
         <span class="badge bg-secondary world-editor-hidden-count" data-testid="hidden-count">{{ hiddenCount() }}</span>
@@ -675,6 +685,8 @@
         [waypointCheck]="waypointCheckRequest()"
         (waypointsChecked)="waypointChecks.set($event)"
         (collisionSourceChanged)="collisionSource.set($event)"
+        [groundQuery]="groundQuery()"
+        (groundHeights)="onGroundHeights($event)"
         [links]="worldLinks()"
         [groupKeys]="groupKeys()"
         [simulation]="simulation()"
@@ -682,6 +694,31 @@
         [probe]="probeRequest()"
         [areaTriggers]="worldAreaTriggers()"
       />
+      @if (showMap()) {
+        <div class="world-editor-map">
+          <keira-world-map
+            [directory]="mapDirectory()"
+            [mapId]="mapId()"
+            [tiles]="mapTiles()"
+            [camera]="cameraCenter()"
+            [dots]="mapDots()"
+            [zones]="zones()"
+            [coverage]="mapCoverage()"
+            (goTo)="onMapGoTo($event)"
+            (regionSelected)="onMapRegion($event)"
+          />
+        </div>
+      }
+      @if (mapRegion()) {
+        <button
+          type="button"
+          class="btn btn-sm btn-warning world-editor-region"
+          data-testid="map-region-clear"
+          (click)="mapRegion.set(undefined)"
+        >
+          {{ 'WORLD_EDITOR.MAP_REGION_CLEAR' | translate }} <i class="fa fa-times"></i>
+        </button>
+      }
       @if (contextMenu(); as menu) {
         <div class="dropdown-menu show world-editor-context" data-testid="context-menu" [style.left.px]="menu.x" [style.top.px]="menu.y">
           @if (contextSpawn(); as spawn) {
@@ -924,6 +961,79 @@
         </div>
       </div>
 
+      <div class="card mb-2" data-testid="problems">
+        <div class="card-body p-2">
+          <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn btn-sm btn-outline-warning" data-testid="check-spawns" (click)="checkSpawns()">
+              <i class="fa fa-stethoscope"></i> {{ 'WORLD_EDITOR.CHECK_SPAWNS' | translate }}
+            </button>
+            @if (spawnProblems(); as problems) {
+              <small class="text-muted" data-testid="problem-count">{{
+                'WORLD_EDITOR.PROBLEM_COUNT' | translate: { count: problems.length }
+              }}</small>
+              <button
+                type="button"
+                class="btn btn-sm btn-link ms-auto p-0"
+                data-testid="problems-close"
+                (click)="spawnProblems.set(undefined)"
+              >
+                <i class="fa fa-times"></i>
+              </button>
+            }
+          </div>
+          @if (spawnProblems()?.length) {
+            <div class="list-group list-group-flush small world-editor-results mt-1" data-testid="problem-list">
+              @for (problem of spawnProblems(); track $index) {
+                <button
+                  type="button"
+                  class="list-group-item list-group-item-action py-1 px-2"
+                  [attr.data-testid]="'problem-' + $index"
+                  (click)="goToProblem(problem)"
+                >
+                  <strong [class.text-danger]="problem.severity === 'bad'" [class.text-warning]="problem.severity === 'warn'">!</strong>
+                  {{ spawnTitle(problem.spawn) }} — {{ problem.text }}
+                </button>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="card mb-2" data-testid="search">
+        <div class="card-body p-2">
+          <form class="input-group input-group-sm" (submit)="$event.preventDefault(); searchSpawns()">
+            <input
+              class="form-control"
+              data-testid="search-input"
+              [formControl]="searchForm"
+              [placeholder]="'WORLD_EDITOR.SEARCH_SPAWNS' | translate"
+            />
+            <button type="submit" class="btn btn-secondary" data-testid="search-btn" [disabled]="searching()">
+              <i class="fa fa-search"></i>
+            </button>
+            @if (searchResults().length) {
+              <button type="button" class="btn btn-outline-secondary" data-testid="search-clear" (click)="clearSearch()">
+                <i class="fa fa-times"></i>
+              </button>
+            }
+          </form>
+          @if (searchResults().length) {
+            <div class="list-group list-group-flush small world-editor-results mt-1" data-testid="search-results">
+              @for (result of searchResults(); track result.type + result.guid) {
+                <button
+                  type="button"
+                  class="list-group-item list-group-item-action py-1 px-2"
+                  [attr.data-testid]="'search-result-' + result.type + '-' + result.guid"
+                  (click)="goToResult(result)"
+                >
+                  {{ spawnTitle(result) }}
+                </button>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
       <div class="card mb-2">
         <div class="card-header py-1">{{ 'WORLD_EDITOR.SELECTION' | translate }}</div>
         <div class="card-body p-2" data-testid="selection">
@@ -939,6 +1049,9 @@
                 <span class="badge bg-info text-dark ms-1" data-testid="selected-sai-path">{{ pathLabel(sai) }}</span>
               }
             </div>
+            @if (spawnStored(); as stored) {
+              <keira-spawn-panel [spawn]="spawn" [stored]="stored.values" [edits]="spawnEdits()" (edited)="editSpawn($event)" />
+            }
           } @else if (selectedWaypoint(); as waypoint) {
             <div class="mb-1" data-testid="selected-title">
               <strong>{{ pathLabel(waypoint.pathId) }}</strong> <span class="text-muted">· point {{ waypoint.point }}</span>
@@ -947,6 +1060,12 @@
               {{ 'WORLD_EDITOR.WALKED_BY' | translate }}:
               {{ pathOwners().get(waypoint.pathId)?.join(', ') }}
             </div>
+            <keira-waypoint-panel
+              [waypoint]="waypoint"
+              (edited)="editSelectedWaypoint($event)"
+              (insertAfter)="insertWaypointAfter()"
+              (renumber)="renumberPath()"
+            />
             @let info = waypointInfo(waypoint);
             @if (info.length) {
               <ul class="small mb-1 ps-3" data-testid="selected-waypoint-info">
@@ -1057,6 +1176,33 @@
                     </select>
                   </div>
                 }
+                <!-- (inside the placement form: not a form of its own) -->
+                <div
+                  class="input-group input-group-sm mt-1"
+                  data-testid="array"
+                  [formGroup]="arrayForm"
+                  (keydown.enter)="$event.preventDefault(); arraySelected()"
+                >
+                  <span class="input-group-text">{{ 'WORLD_EDITOR.ARRAY' | translate }}</span>
+                  <input type="number" min="1" max="50" class="form-control" data-testid="array-count" formControlName="count" />
+                  <select class="form-select" data-testid="array-side" formControlName="side">
+                    @for (option of stackSides; track option.side) {
+                      <option [value]="option.side">{{ option.label | translate }}</option>
+                    }
+                  </select>
+                  <input
+                    type="number"
+                    min="0"
+                    step="any"
+                    class="form-control"
+                    data-testid="array-spacing"
+                    formControlName="spacing"
+                    [placeholder]="'WORLD_EDITOR.ARRAY_TOUCHING' | translate"
+                  />
+                  <button type="button" class="btn btn-outline-secondary" data-testid="array-place" (click)="arraySelected()">
+                    <i class="fa fa-th"></i>
+                  </button>
+                </div>
                 <div class="world-editor-stack mt-1" data-testid="stack" [title]="'WORLD_EDITOR.STACK_HINT' | translate">
                   <span class="small text-muted">{{ 'WORLD_EDITOR.STACK' | translate }}</span>
                   @for (option of stackSides; track option.side) {

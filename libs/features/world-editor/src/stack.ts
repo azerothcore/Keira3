@@ -55,3 +55,26 @@ export function stackPosition(spawn: WorldPosition & { o: number; rotation?: Qua
   const [dx, dy, dz] = rotate(rotationOf(spawn), offset);
   return { x: spawn.x + dx, y: spawn.y + dy, z: spawn.z + dz };
 }
+
+/** The size of a model box along the axis of a side. */
+export function boxExtent(box: ModelBox, side: StackSide): number {
+  const [axis] = SIDES[side];
+  return box.max[axis] - box.min[axis];
+}
+
+/** `count` places in a row from the spawn towards a side, `spacing` yards apart (the model's size: touching). */
+export function arrayPositions(
+  spawn: WorldPosition & { o: number; rotation?: Quaternion },
+  side: StackSide,
+  spacing: number,
+  count: number,
+): WorldPosition[] {
+  const [axis, direction] = SIDES[side];
+  const rotation = rotationOf(spawn);
+  return Array.from({ length: count }, (_, i) => {
+    const offset: [number, number, number] = [0, 0, 0];
+    offset[axis] = spacing * (i + 1) * direction;
+    const [dx, dy, dz] = rotate(rotation, offset);
+    return { x: spawn.x + dx, y: spawn.y + dy, z: spawn.z + dz };
+  });
+}

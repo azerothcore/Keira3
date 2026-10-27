@@ -1,6 +1,6 @@
 import { Service, signal } from '@angular/core';
 import { GizmoMode } from '@keira/shared/world-viewer';
-import { WorldPosition } from '@keira/shared/wow-data';
+import { WorldBounds, WorldPosition } from '@keira/shared/wow-data';
 import { ChangesSnapshot, WorldEditorChanges } from './world-editor-changes';
 import { CopiedSpawn } from './group-edit';
 import { EditorTool, LayerVisibility, SpawnType } from './world-editor.model';
@@ -43,6 +43,10 @@ export class WorldEditorSessionService {
   readonly showFilters = signal(false);
   readonly showView = signal(false);
   readonly showControls = signal(false);
+  /** The 2D world map is open over the 3D view. */
+  readonly showMap = signal(false);
+  /** An area picked on the world map (Shift + drag), loaded whole. */
+  readonly mapRegion = signal<WorldBounds | undefined>(undefined);
 
   /** The path "Check path" is on (its points are checked again whenever they change). */
   readonly checkedPathId = signal<number | undefined>(undefined);

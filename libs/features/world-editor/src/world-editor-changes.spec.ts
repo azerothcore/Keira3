@@ -324,4 +324,105 @@ describe('WorldEditorChanges', () => {
     changes.clear();
     expect(changes.count).toBe(0);
   });
+
+  describe('waypoint settings and renumbering', () => {
+    it("updates only the columns changed, and drops the edit when they're back", () => {
+      const changes = new WorldEditorChanges();
+      const point = waypoint(10, 1, { moveType: 0, action: 0, actionChance: 100 });
+      changes.editWaypoint(point, { delay: 2000, moveType: 1, orientation: 1.5, action: 50, actionChance: 40 });
+      expect(changes.describe()).toEqual(['Edit waypoint 10 #1']);
+      expect(changes.toSql()).toBe(
+        'UPDATE `waypoint_data` SET `delay` = 2000, `orientation` = 1.5, `move_type` = 1, `action` = 50, `action_chance` = 40 WHERE (`id` = 10) AND (`point` = 1);',
+      );
+      changes.editWaypoint(point, { orientation: null });
+      expect(changes.toSql()).not.toContain('orientation');
+      changes.editWaypoint(point, { delay: 0, moveType: 0, action: 0, actionChance: 100 });
+      expect(changes.count).toBe(0);
+      // a setting cleared: back to its default
+      changes.editWaypoint(waypoint(10, 2, { moveType: 1 }), { moveType: undefined });
+      expect(changes.toSql()).toBe('UPDATE `waypoint_data` SET `move_type` = 0 WHERE (`id` = 10) AND (`point` = 2);');
+      changes.clear();
+      // SmartAI paths: place, wait and facing only
+      const sai = waypoint(-500, 1, { orientation: 1 });
+      changes.editWaypoint(sai, { orientation: null, moveType: 1 });
+      expect(changes.toSql()).toBe('UPDATE `waypoints` SET `orientation` = NULL WHERE (`entry` = 500) AND (`pointid` = 1);');
+    });
+
+    it('inserts points with their settings, only the ones not left at their default', () => {
+      const changes = new WorldEditorChanges();
+      changes.addWaypoint(waypoint(10, 1, { moveType: 1, action: 50, actionChance: 40, orientation: 2 }));
+      changes.addWaypoint(waypoint(10, 2, { actionChance: 100 }));
+      changes.addWaypoint(waypoint(-500, 1, { moveType: 1, orientation: 0.5 }));
+      changes.editWaypoint(waypoint(10, 2), { delay: 500 });
+      const sql = changes.toSql();
+      expect(sql).toContain(
+        '(`id`, `point`, `position_x`, `position_y`, `position_z`, `delay`, `orientation`, `move_type`, `action`, `action_chance`) VALUES (10, 1, 10, 20, 30, 0, 2, 1, 50, 40)',
+      );
+      expect(sql).toContain('VALUES (10, 2, 10, 20, 30, 500);');
+      expect(sql).toContain(
+        '(`entry`, `pointid`, `position_x`, `position_y`, `position_z`, `delay`, `orientation`) VALUES (500, 1, 10, 20, 30, 0, 0.5)',
+      );
+    });
+
+    it('turns a path into new points: edits, adds and deletes what differs', () => {
+      const changes = new WorldEditorChanges();
+      const current = [waypoint(10, 1), waypoint(10, 2, { x: 50 }), waypoint(10, 3, { x: 60 })];
+      changes.setPathPoints(current, [waypoint(10, 1), waypoint(10, 2, { x: 40 }), waypoint(10, 3, { x: 50 }), waypoint(10, 4, { x: 60 })]);
+      expect(changes.describe()).toEqual(['Add waypoint 10 #4', 'Move waypoint 10 #2', 'Move waypoint 10 #3']);
+      changes.clear();
+      changes.setPathPoints(current, [waypoint(10, 1), waypoint(10, 2, { x: 60 })]);
+      expect(changes.describe()).toEqual(['Delete waypoint 10 #3', 'Move waypoint 10 #2']);
+    });
+  });
+
+  describe('spawn columns', () => {
+    const stored = { spawntimesecs: 120, MovementType: 0, wander_distance: 0, phaseMask: 1 };
+
+    it('updates the columns changed, keeps them in snapshots and drops them with the spawn', () => {
+      const changes = new WorldEditorChanges();
+      changes.editSpawnFields(creature(7), stored, { spawntimesecs: 300 });
+      changes.editSpawnFields(creature(7), stored, { MovementType: 1, wander_distance: 5 });
+      expect(changes.describe()).toEqual(['Edit creature 7 (Marshal McBride)']);
+      expect(changes.toSql()).toBe(
+        'UPDATE `creature` SET `spawntimesecs` = 300, `MovementType` = 1, `wander_distance` = 5 WHERE (`guid` = 7);',
+      );
+      expect(changes.spawnFields('creature', 7)).toEqual({ spawntimesecs: 300, MovementType: 1, wander_distance: 5 });
+      // drawn wandering now
+      expect(changes.applyToSpawns([creature(7)], 0)[0].wanderDistance).toBe(5);
+      const snapshot = changes.snapshot();
+      changes.editSpawnFields(creature(7), stored, { spawntimesecs: 120, MovementType: 0, wander_distance: 0 });
+      expect(changes.count).toBe(0);
+      changes.restore(snapshot);
+      expect(changes.count).toBe(1);
+      changes.restore({ ...snapshot, editedSpawns: undefined });
+      expect(changes.count).toBe(0);
+      changes.editSpawnFields(creature(7), stored, { spawntimesecs: 300 });
+      changes.deleteSpawn(creature(7));
+      expect(changes.describe()).toEqual(['Delete creature 7 (Marshal McBride)']);
+    });
+
+    it('puts the columns of a new spawn in its INSERT', () => {
+      const changes = new WorldEditorChanges();
+      changes.placeSpawn(gameobject(5));
+      changes.editSpawnFields(gameobject(5), {}, { spawntimesecs: 60, state: 0, phaseMask: 2 });
+      expect(changes.spawnFields('gameobject', 5)).toEqual({ spawntimesecs: 60, state: 0, phaseMask: 2 });
+      // phaseMask 2, spawntimesecs 60, state 0
+      expect(changes.toSql()).toContain('VALUES (5, 197, 0, 0, 0, 1, 2, 1, 2, 3, 0, 0, 0, 0, 1, 60, 0, 0,');
+      expect(changes.applyToSpawns([], 0)[0].phaseMask).toBe(2);
+      expect(changes.spawnFields('creature', 1)).toEqual({});
+    });
+
+    it('draws a creature as it will wander, or stop wandering', () => {
+      const changes = new WorldEditorChanges();
+      const wanderer = creature(8, { wanderDistance: 4 });
+      const wandering = { ...stored, MovementType: 1, wander_distance: 4 };
+      changes.editSpawnFields(wanderer, wandering, { MovementType: 0 });
+      expect(changes.applyToSpawns([wanderer], 0)[0].wanderDistance).toBeUndefined();
+      changes.editSpawnFields(wanderer, wandering, { MovementType: 1, phaseMask: 4 });
+      expect(changes.applyToSpawns([wanderer], 0)[0]).toEqual(expect.objectContaining({ wanderDistance: 4, phaseMask: 4 }));
+      changes.clear();
+      changes.editSpawnFields(wanderer, wandering, { wander_distance: 9 });
+      expect(changes.applyToSpawns([wanderer], 0)[0].wanderDistance).toBe(9);
+    });
+  });
 });

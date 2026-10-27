@@ -5,6 +5,7 @@ import { WorldPosition } from '@keira/shared/wow-data';
 import { firstValueFrom } from 'rxjs';
 import {
   FormationMember,
+  SPAWN_FIELDS,
   Graveyard,
   Teleport,
   isSaiPath,
@@ -35,6 +36,8 @@ const SAI_EVENT_ESCORT_REACHED = 40;
 /** SMART_ACTION_ESCORT_START (path id in param 2) and SMART_ACTION_START_CLOSEST_WAYPOINT (path ids in params 1–6). */
 const SAI_ACTION_ESCORT_START = 53;
 const SAI_ACTION_START_CLOSEST_WAYPOINT = 113;
+/** Spawn search results, at most, per type. */
+const SEARCH_LIMIT = 50;
 /** CREATURE_FLAG_EXTRA_TRIGGER: an invisible creature used by scripts. */
 const FLAG_EXTRA_TRIGGER = 128;
 /** Names of helper spawns players never see. */
@@ -98,13 +101,13 @@ export class WorldEditorService {
       ...(data.length
         ? [
             'SELECT id AS pathId, point, position_x AS x, position_y AS y, position_z AS z, delay, ' +
-              `move_type AS moveType, action, action_chance AS actionChance FROM waypoint_data WHERE id IN (${data.join(', ')})`,
+              `move_type AS moveType, action, action_chance AS actionChance, orientation FROM waypoint_data WHERE id IN (${data.join(', ')})`,
           ]
         : []),
       ...(sai.length
         ? [
             'SELECT -entry AS pathId, pointid AS point, position_x AS x, position_y AS y, position_z AS z, delay, ' +
-              `0 AS moveType, 0 AS action, 100 AS actionChance FROM waypoints WHERE entry IN (${sai.join(', ')})`,
+              `0 AS moveType, 0 AS action, 100 AS actionChance, orientation FROM waypoints WHERE entry IN (${sai.join(', ')})`,
           ]
         : []),
     ];
@@ -122,6 +125,7 @@ export class WorldEditorService {
       moveType: Number(row.moveType ?? 0),
       action: Number(row.action ?? 0),
       actionChance: Number(row.actionChance ?? 100),
+      ...(row['orientation'] != null ? { orientation: Number(row['orientation']) } : {}),
     }));
   }
 
@@ -196,6 +200,50 @@ export class WorldEditorService {
         : { pathId: Number(row['pathId']) }),
       actionType: Number(row['actionType']),
       comment: String(row['comment'] ?? ''),
+    }));
+  }
+
+  /** The columns of a spawn the properties panel edits (see `SPAWN_FIELDS`), as stored. */
+  async loadSpawnFields(type: SpawnType, guid: number): Promise<Record<string, number>> {
+    const columns = SPAWN_FIELDS[type].map((field) => field.column);
+    const [row] =
+      (await firstValueFrom(
+        this.queryService.query<TableRow>(
+          `SELECT ${columns.map((c) => `\`${c}\``).join(', ')} FROM ${type} WHERE guid = ${Math.trunc(guid)}`,
+        ),
+      )) ?? [];
+    return Object.fromEntries(columns.map((column) => [column, Number(row?.[column] ?? 0)]));
+  }
+
+  /**
+   * Spawns of a map by GUID, entry or name (creatures and gameobjects, at most `SEARCH_LIMIT` of each): a number looks
+   * for that GUID or entry, text for names containing it.
+   */
+  async searchSpawns(map: number, text: string): Promise<SpawnRecord[]> {
+    const query = text.trim();
+    if (!query) {
+      return [];
+    }
+    const number = /^\d+$/.test(query) ? Number(query) : undefined;
+    const match = (alias: string, name: string) =>
+      number !== undefined ? `(${alias}.guid = ${number} OR ${alias}.id = ${number})` : `${name} LIKE ?`;
+    const sql =
+      `(SELECT 'creature' AS type, c.guid, c.id AS entry, IFNULL(ct.name, '') AS name, c.position_x AS x, c.position_y AS y, c.position_z AS z, c.orientation AS o ` +
+      `FROM creature c LEFT JOIN creature_template ct ON ct.entry = c.id WHERE c.map = ${Math.trunc(map)} AND ${match('c', 'ct.name')} LIMIT ${SEARCH_LIMIT}) ` +
+      `UNION ALL (SELECT 'gameobject', g.guid, g.id, IFNULL(gt.name, ''), g.position_x, g.position_y, g.position_z, g.orientation ` +
+      `FROM gameobject g LEFT JOIN gameobject_template gt ON gt.entry = g.id WHERE g.map = ${Math.trunc(map)} AND ${match('g', 'gt.name')} LIMIT ${SEARCH_LIMIT})`;
+    const rows = await firstValueFrom(this.queryService.query<TableRow>(sql, number === undefined ? [`%${query}%`, `%${query}%`] : []));
+    return (rows ?? []).map((row) => ({
+      type: row['type'] as SpawnType,
+      guid: Number(row['guid']),
+      entry: Number(row['entry']),
+      name: String(row['name'] ?? ''),
+      map,
+      x: Number(row['x']),
+      y: Number(row['y']),
+      z: Number(row['z']),
+      o: Number(row['o']),
+      pathId: 0,
     }));
   }
 

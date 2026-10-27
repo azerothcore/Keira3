@@ -1,5 +1,5 @@
 import { ModelBox } from '@keira/shared/world-viewer';
-import { stackPosition, StackSide, STACK_SIDES } from './stack';
+import { arrayPositions, boxExtent, stackPosition, StackSide, STACK_SIDES } from './stack';
 
 const BOX: ModelBox = { min: [-1, -0.5, 0], max: [1, 0.5, 2] };
 const round = (p: { x: number; y: number; z: number }) => ({ x: +p.x.toFixed(4), y: +p.y.toFixed(4), z: +p.z.toFixed(4) });
@@ -28,5 +28,16 @@ describe('stackPosition', () => {
     // tipped over 90° around x: its top points to −y
     const tipped = { ...at, rotation: [Math.SQRT1_2, 0, 0, Math.SQRT1_2] as [number, number, number, number] };
     expect(round(stackPosition(tipped, BOX, 'above'))).toEqual({ x: 10, y: 18, z: 30 });
+  });
+});
+
+describe('arrayPositions', () => {
+  it('places copies in a row towards a side, a spacing apart', () => {
+    expect(boxExtent(BOX, 'left')).toBe(1);
+    expect(boxExtent(BOX, 'above')).toBe(2);
+    expect(arrayPositions({ x: 10, y: 20, z: 30, o: 0 }, 'front', 3, 2).map(round)).toEqual([
+      { x: 13, y: 20, z: 30 },
+      { x: 16, y: 20, z: 30 },
+    ]);
   });
 });

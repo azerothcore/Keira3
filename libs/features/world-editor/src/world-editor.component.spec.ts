@@ -66,6 +66,8 @@ class FakeWorldViewerComponent {
   readonly markers = input<WorldMarker[]>([]);
   readonly groupKeys = input<string[]>([]);
   readonly simulation = input<MovementSimulation | undefined>(undefined);
+  readonly groundQuery = input<{ key: string; position: WorldPosition }[] | undefined>(undefined);
+  readonly groundHeights = output<Record<string, number | null>>();
   readonly picked = output<PickResult>();
   readonly objectMoved = output<ObjectMoved>();
   readonly centerChanged = output<WorldPosition>();
@@ -163,11 +165,16 @@ describe(WorldEditorComponent.name, () => {
       getM2: vi.fn(),
       getTaxiNodes: vi.fn(),
       getTaxiPaths: vi.fn(),
+      getServerCoverage: vi.fn(),
+      getServerMap: vi.fn(),
+      getMinimap: vi.fn(),
     },
     service: {
       loadSpawns: vi.fn(),
       loadWaypoints: vi.fn(),
       loadSaiPaths: vi.fn(),
+      loadSpawnFields: vi.fn(),
+      searchSpawns: vi.fn(),
       loadFormations: vi.fn(),
       loadPools: vi.fn(),
       loadGraveyards: vi.fn(),
@@ -246,6 +253,18 @@ describe(WorldEditorComponent.name, () => {
     mocks.service.loadSpawns.mockResolvedValue(SPAWNS);
     mocks.service.loadWaypoints.mockResolvedValue(WAYPOINTS);
     mocks.service.loadSaiPaths.mockResolvedValue(new Map());
+    mocks.service.loadSpawnFields.mockResolvedValue({
+      spawntimesecs: 120,
+      MovementType: 0,
+      wander_distance: 0,
+      phaseMask: 1,
+      spawnMask: 1,
+      equipment_id: 0,
+    });
+    mocks.service.searchSpawns.mockResolvedValue([]);
+    mocks.client.getServerCoverage.mockReturnValue(new Map());
+    mocks.client.getServerMap.mockResolvedValue(undefined);
+    mocks.client.getMinimap.mockResolvedValue(undefined);
     mocks.service.loadFormations.mockResolvedValue([]);
     mocks.service.loadPools.mockResolvedValue([]);
     mocks.service.loadGraveyards.mockResolvedValue([]);
@@ -896,10 +915,11 @@ describe(WorldEditorComponent.name, () => {
           owners: ['Deputy Willem (1)'],
           closed: true,
           points: [
-            { point: 1, position: { x: -8901, y: -101, z: 80 }, delay: 0, info: [] },
+            { point: 1, position: { x: -8901, y: -101, z: 80 }, orientation: null, delay: 0, info: [] },
             {
               point: 2,
               position: { x: -8902, y: -102, z: 81 },
+              orientation: null,
               delay: 1000,
               info: ['wait 1 s', 'run', 'script 50: talk', 'SAI: Willem - Say'],
             },
@@ -1813,6 +1833,307 @@ describe(WorldEditorComponent.name, () => {
       await settle(page);
       expect(viewer.simulation()?.legs.at(-1)?.label).toBe('home');
       expect(viewer.simulation()?.rate).toBe(2);
+    });
+  });
+
+  describe('waypoint panel', () => {
+    const pickPoint = async (page: Page, point: number) => {
+      page.viewer().picked.emit({ type: 'waypoint', key: `path:10#${point}`, pathKey: 'path:10', point, position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+    };
+    const set = (page: Page, id: string, value: string) => {
+      const element = page.byId<HTMLInputElement | HTMLSelectElement>(id).nativeElement;
+      element.value = value;
+      element.dispatchEvent(new Event(element.tagName === 'SELECT' ? 'change' : 'input'));
+    };
+
+    it("edits a point's wait, move type, facing and script", async () => {
+      const { page } = await setup();
+      await loadArea(page);
+      await pickPoint(page, 2);
+      expect(page.byId<HTMLInputElement>('waypoint-delay').nativeElement.value).toBe('1000');
+      set(page, 'waypoint-delay', '2500.4');
+      set(page, 'waypoint-move-type', '0: 0');
+      set(page, 'waypoint-orientation', '1.5');
+      set(page, 'waypoint-action', '');
+      set(page, 'waypoint-chance', '250');
+      page.click('waypoint-apply');
+      await settle(page);
+      expect(page.pendingLines()).toEqual(['Edit waypoint 10 #2']);
+      expect(page.text('pending-sql')).toContain('SET `delay` = 2500, `orientation` = 1.5, `move_type` = 0, `action` = 0');
+      set(page, 'waypoint-orientation', '');
+      page.click('waypoint-apply');
+      await settle(page);
+      expect(page.text('pending-sql')).not.toContain('orientation');
+    });
+
+    it('inserts a point after the selected one and renumbers the path', async () => {
+      const { page } = await setup();
+      await loadArea(page);
+      await pickPoint(page, 1);
+      page.click('waypoint-insert');
+      await settle(page);
+      // halfway between points 1 and 2; point 2 becomes 3
+      expect(page.pendingLines()).toEqual(['Add waypoint 10 #3', 'Move waypoint 10 #2']);
+      expect(page.text('selected-title')).toContain('point 2');
+      expect(page.placementValue('x')).toBe(-8901.5);
+      // after the last point: as far again as from the one before
+      await pickPoint(page, 3);
+      page.click('waypoint-insert');
+      await settle(page);
+      expect(page.placementValue('x')).toBe(-8902.25);
+      // the new point (not in the database) takes settings too
+      set(page, 'waypoint-delay', '700');
+      page.click('waypoint-apply');
+      await settle(page);
+      expect(page.text('pending-sql')).toContain('700');
+      page.click('delete-selected');
+      await settle(page);
+      await pickPoint(page, 3);
+      page.click('waypoint-renumber');
+      await settle(page);
+      expect(
+        page
+          .viewer()
+          .paths()[0]
+          .points.map((p) => p.point),
+      ).toEqual([1, 2, 3]);
+    });
+
+    it('offers the wait and facing only on SmartAI paths, and inserts after a single point', async () => {
+      mocks.service.loadSaiPaths.mockResolvedValue(new Map([[102, [-500]]]));
+      mocks.service.loadWaypoints.mockResolvedValue([...WAYPOINTS, { pathId: -500, point: 1, x: -8920, y: -120, z: 80, delay: 0 }]);
+      const { page } = await setup();
+      await loadArea(page);
+      page.viewer().picked.emit({ type: 'waypoint', key: 'path:-500#1', pathKey: 'path:-500', point: 1, position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      expect(page.byId('waypoint-move-type', false)).toBeFalsy();
+      set(page, 'waypoint-delay', '3000');
+      page.click('waypoint-apply');
+      await settle(page);
+      expect(page.text('pending-sql')).toBe('UPDATE `waypoints` SET `delay` = 3000 WHERE (`entry` = 500) AND (`pointid` = 1);');
+      page.click('waypoint-insert');
+      await settle(page);
+      expect(page.placementValue('x')).toBe(-8917.5);
+    });
+  });
+
+  describe('spawn properties', () => {
+    it("shows a spawn's columns and edits them, or a new spawn's defaults", async () => {
+      const { page } = await setup();
+      await loadArea(page);
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:1', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      expect(mocks.service.loadSpawnFields).toHaveBeenCalledWith('creature', 1);
+      const respawn = page.byId<HTMLInputElement>('spawn-spawntimesecs').nativeElement;
+      expect(respawn.value).toBe('120');
+      respawn.value = '600';
+      respawn.dispatchEvent(new Event('change'));
+      const movement = page.byId<HTMLSelectElement>('spawn-MovementType').nativeElement;
+      movement.value = '1';
+      movement.dispatchEvent(new Event('change'));
+      await settle(page);
+      expect(page.pendingLines()).toEqual(['Edit creature 1 (Deputy Willem)']);
+      expect(page.text('pending-sql')).toContain('SET `spawntimesecs` = 600, `MovementType` = 1 WHERE (`guid` = 1)');
+      expect(respawn.closest('.input-group')?.classList).toContain('changed');
+      // a wrong value is put back
+      respawn.value = '-5';
+      respawn.dispatchEvent(new Event('change'));
+      expect(respawn.value).toBe('600');
+
+      // a new gameobject: its defaults, no database read
+      mocks.service.loadSpawnFields.mockClear();
+      page.click('tool-place-gameobject');
+      await settle(page);
+      page.type('place-entry', '1');
+      page.viewer().picked.emit({ type: 'ground', position: { x: 1, y: 2, z: 3 } });
+      await settle(page);
+      expect(mocks.service.loadSpawnFields).not.toHaveBeenCalled();
+      expect(page.byId<HTMLSelectElement>('spawn-state').nativeElement.value).toBe('1');
+    });
+
+    it('drops properties read for a spawn no longer selected', async () => {
+      const resolvers: ((v: Record<string, number>) => void)[] = [];
+      mocks.service.loadSpawnFields.mockImplementation(() => new Promise((resolve) => resolvers.push(resolve)));
+      const { page } = await setup();
+      await loadArea(page);
+      const pick = async (key: string) => {
+        page.viewer().picked.emit({ type: 'spawn', key, position: { x: 0, y: 0, z: 0 } });
+        await settle(page);
+      };
+      await pick('creature:1');
+      await pick('creature:2');
+      resolvers[0]({ spawntimesecs: 1 });
+      await settle(page);
+      page.viewer().picked.emit({ type: 'ground', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      resolvers[1]({ spawntimesecs: 2 });
+      await settle(page);
+      expect(page.byId('spawn-panel', false)).toBeFalsy();
+    });
+
+    it('has no properties panel when they can not be read', async () => {
+      mocks.service.loadSpawnFields.mockRejectedValue(new Error('no column'));
+      const { page } = await setup();
+      await loadArea(page);
+      page.viewer().picked.emit({ type: 'spawn', key: 'gameobject:3', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      expect(page.byId('spawn-panel', false)).toBeFalsy();
+      page.viewer().picked.emit({ type: 'ground', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      expect(page.byId('spawn-panel', false)).toBeFalsy();
+    });
+  });
+
+  describe('world map, search, problems and array', () => {
+    it('opens the world map, goes where clicked and loads a selected area', async () => {
+      mocks.client.getServerMap.mockResolvedValue({ v9: new Float32Array(129 * 129).fill(42) });
+      const { page } = await setup();
+      await loadArea(page);
+      page.click('map-toggle');
+      await settle(page);
+      const map = page.getDebugElementByTestId('world-map');
+      expect(map).toBeTruthy();
+      expect(mocks.client.getServerCoverage).toHaveBeenCalledWith(0, [
+        { tx: 31, ty: 48 },
+        { tx: 32, ty: 48 },
+      ]);
+      const component = page.fixture.debugElement.query((el) => el.name === 'keira-world-map').componentInstance as {
+        goTo: { emit: (p: WorldPosition) => void };
+        regionSelected: { emit: (b: WorldBounds) => void };
+      };
+      component.goTo.emit({ x: -9000, y: 100, z: 0 });
+      await settle(page);
+      expect(page.viewer().focus()).toEqual({ x: -9000, y: 100, z: 42 });
+      expect(page.getDebugElementByTestId('world-map', false)).toBeFalsy();
+
+      page.click('map-toggle');
+      await settle(page);
+      mocks.client.getServerMap.mockRejectedValue(new Error('none'));
+      (page.fixture.debugElement.query((el) => el.name === 'keira-world-map').componentInstance as typeof component).regionSelected.emit({
+        minX: -9100,
+        maxX: -9000,
+        minY: 0,
+        maxY: 100,
+      });
+      await settle(page);
+      expect(page.viewer().region()).toEqual({ minX: -9100, maxX: -9000, minY: 0, maxY: 100 });
+      expect(page.viewer().focus()).toEqual({ x: -9050, y: 50, z: 0 });
+      page.click('map-region-clear');
+      await settle(page);
+      expect(page.viewer().region()).toBeUndefined();
+      page.click('map-toggle');
+      page.click('map-toggle');
+      await settle(page);
+    });
+
+    it('opens the world map without tiles when they can not be read', async () => {
+      const { page } = await setup();
+      await loadArea(page);
+      mocks.client.getMapTiles.mockRejectedValue(new Error('no wdt'));
+      page.click('map-toggle');
+      await settle(page);
+      expect(mocks.client.getServerCoverage).toHaveBeenLastCalledWith(0, []);
+    });
+
+    it('finds spawns, flies to them and selects them once loaded', async () => {
+      const far = { ...spawn('creature', 99, { name: 'Far one' }), x: -5000 };
+      mocks.service.searchSpawns.mockResolvedValue([SPAWNS[0], far]);
+      const { page } = await setup();
+      await loadArea(page);
+      page.type('search-input', 'one');
+      page.click('search-btn');
+      await settle(page);
+      expect(mocks.service.searchSpawns).toHaveBeenCalledWith(0, 'one');
+      page.click('search-result-creature-1');
+      await settle(page);
+      expect(page.text('selected-title')).toContain('Deputy Willem');
+      // not loaded yet: selected once it is
+      mocks.service.loadSpawns.mockResolvedValue([...SPAWNS, far]);
+      page.click('search-result-creature-99');
+      await settle(page);
+      expect(page.viewer().focus()).toEqual({ x: -5000, y: -100, z: 80 });
+      await loadArea(page);
+      expect(page.text('selected-title')).toContain('Far one');
+      // results are dots on the world map
+      page.click('map-toggle');
+      await settle(page);
+      const map = page.fixture.debugElement.query((el) => el.name === 'keira-world-map').componentInstance as {
+        dots: () => { key: string }[];
+      };
+      expect(map.dots().map((d) => d.key)).toContain('search:creature:99');
+      page.click('map-toggle');
+      await settle(page);
+      page.click('search-clear');
+      await settle(page);
+      expect(page.byId('search-results', false)).toBeFalsy();
+      mocks.service.searchSpawns.mockRejectedValue(new Error('bad query'));
+      page.click('search-btn');
+      await settle(page);
+      expect(mocks.toastr.error).toHaveBeenCalledWith('bad query', 'World Editor');
+    });
+
+    it('checks the spawns shown and jumps to a problem', async () => {
+      const { page } = await setup();
+      await loadArea(page);
+      page.click('check-spawns');
+      await settle(page);
+      expect(
+        page
+          .viewer()
+          .groundQuery()
+          ?.map((q) => q.key),
+      ).toEqual(['creature:1', 'creature:2', 'gameobject:3']);
+      page.viewer().groundHeights.emit({ 'creature:1': 90, 'creature:2': 80, 'gameobject:3': null });
+      await settle(page);
+      expect(page.viewer().groundQuery()).toBeUndefined();
+      expect(page.text('problem-count')).toBe('WORLD_EDITOR.PROBLEM_COUNT');
+      page.click('problem-0');
+      await settle(page);
+      expect(page.text('selected-title')).toContain('Deputy Willem');
+      page.click('problems-close');
+      await settle(page);
+      expect(page.byId('problem-list', false)).toBeFalsy();
+    });
+
+    it('places a row of copies, touching or a spacing apart', async () => {
+      mocks.service.loadSpawns.mockResolvedValue([...SPAWNS, spawn('gameobject', 4, { name: 'Bench', displayId: 9, scale: 1 })]);
+      mocks.client.getGameObjectDisplay.mockResolvedValue('bench.m2');
+      mocks.client.getM2.mockResolvedValue({
+        positions: Float32Array.from([-0.5, 0, -1, 0.5, 3, 1]),
+        collision: { positions: new Float32Array(0) },
+      });
+      const { page } = await setup();
+      await loadArea(page);
+      page.viewer().picked.emit({ type: 'spawn', key: 'gameobject:4', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      page.type('array-count', '2');
+      page.click('array-place');
+      await settle(page);
+      expect(page.pendingLines()).toEqual(['Place gameobject 1001 (Bench)', 'Place gameobject 1002 (Bench)']);
+      expect(page.viewer().groupKeys()).toEqual(['gameobject:1001', 'gameobject:1002']);
+      // 2 yards long: touching copies 2 yards apart
+      expect(page.text('pending-sql')).toContain('-8902, -100, 80');
+      page.type('array-spacing', '5');
+      page.byId('array').nativeElement.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+      await settle(page);
+      expect(page.text('pending-sql')).toContain('-8899, -100, 80');
+      // no model: the spacing is needed
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:2', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      page.type('array-spacing', '');
+      page.click('array-place');
+      await settle(page);
+      expect(mocks.toastr.warning).toHaveBeenCalledWith('The model of  could not be read: give the spacing.', 'World Editor');
+      // a model that fails to load, no count and no spacing
+      mocks.client.getM2.mockRejectedValue(new Error('broken'));
+      page.viewer().picked.emit({ type: 'spawn', key: 'gameobject:4', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      page.type('array-count', '');
+      page.type('array-spacing', '0');
+      page.click('array-place');
+      await settle(page);
+      expect(mocks.toastr.warning).toHaveBeenLastCalledWith('The model of Bench could not be read: give the spacing.', 'World Editor');
     });
   });
 

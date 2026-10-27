@@ -307,3 +307,22 @@
     text-align: center;
   }
 }
+
+.world-editor-map {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+}
+
+.world-editor-region {
+  position: absolute;
+  left: 50%;
+  top: 8px;
+  transform: translateX(-50%);
+  z-index: 4;
+}
+
+.world-editor-results {
+  max-height: 12rem;
+  overflow-y: auto;
+}

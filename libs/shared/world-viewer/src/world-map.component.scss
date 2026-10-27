@@ -1,0 +1,124 @@
+:host {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.world-map {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #0b1a2b;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.world-map-plane {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.world-map-tile {
+  position: absolute;
+  background: #23384d;
+
+  img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    image-rendering: auto;
+    pointer-events: none;
+  }
+
+  &.grid {
+    outline: 1px solid rgba(255, 255, 255, 0.25);
+  }
+
+  &.missing::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(220, 53, 69, 0.35);
+  }
+}
+
+.world-map-tile-name {
+  position: absolute;
+  left: 3px;
+  top: 2px;
+  font-size: 11px;
+  color: #fff;
+  text-shadow: 0 0 2px #000;
+}
+
+.world-map-zone {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  color: #ffe08a;
+  font-size: 12px;
+  font-weight: 600;
+  text-shadow: 0 0 3px #000;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.world-map-dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.6);
+}
+
+.world-map-camera {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border: 2px solid #fff35c;
+  border-radius: 50%;
+  box-shadow: 0 0 4px #000;
+  pointer-events: none;
+}
+
+.world-map-selection {
+  position: absolute;
+  border: 2px dashed #fff35c;
+  background: rgba(255, 243, 92, 0.15);
+  pointer-events: none;
+}
+
+.world-map-info {
+  position: absolute;
+  padding: 4px 8px;
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  font-size: 12px;
+  border-radius: 3px;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.world-map-buttons {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  display: flex;
+  gap: 4px;
+}
+
+.world-map-hint {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  padding: 2px 8px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: 12px;
+  border-radius: 3px;
+  pointer-events: none;
+}

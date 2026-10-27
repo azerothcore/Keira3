@@ -1,0 +1,74 @@
+<div
+  #viewport
+  class="world-map"
+  data-testid="world-map"
+  (pointerdown)="onPointerDown($event)"
+  (pointermove)="onPointerMove($event)"
+  (pointerup)="onPointerUp($event)"
+  (pointerleave)="onPointerLeave()"
+>
+  <div class="world-map-plane" [style.transform]="'translate(' + offset().x + 'px, ' + offset().y + 'px)'">
+    @for (tile of visibleTiles(); track tile.key) {
+      <div
+        class="world-map-tile"
+        [attr.data-testid]="'world-map-tile-' + tile.key"
+        [class.grid]="showGrid()"
+        [class.missing]="tile.missing"
+        [style.left.px]="tile.left"
+        [style.top.px]="tile.top"
+        [style.width.px]="zoom()"
+        [style.height.px]="zoom()"
+      >
+        @if (tile.image) {
+          <img [src]="tile.image" alt="" draggable="false" />
+        }
+        @if (showGrid()) {
+          <span class="world-map-tile-name">{{ tile.key }}</span>
+        }
+      </div>
+    }
+    @for (zone of zoneLabels(); track zone.name) {
+      <span class="world-map-zone" [style.left.px]="zone.left" [style.top.px]="zone.top">{{ zone.name }}</span>
+    }
+    @for (dot of dotPoints(); track dot.key) {
+      <span
+        class="world-map-dot"
+        [attr.data-testid]="'world-map-dot-' + dot.key"
+        [title]="dot.title ?? ''"
+        [style.left.px]="dot.left"
+        [style.top.px]="dot.top"
+        [style.background]="dot.color"
+      ></span>
+    }
+    @if (cameraPoint(); as point) {
+      <span class="world-map-camera" data-testid="world-map-camera" [style.left.px]="point.left" [style.top.px]="point.top"></span>
+    }
+  </div>
+  @if (selection(); as rect) {
+    <div
+      class="world-map-selection"
+      data-testid="world-map-selection"
+      [style.left.px]="rect.x"
+      [style.top.px]="rect.y"
+      [style.width.px]="rect.width"
+      [style.height.px]="rect.height"
+    ></div>
+  }
+  @if (hoverInfo(); as info) {
+    <div class="world-map-info" data-testid="world-map-info" [style.left.px]="info.x + 12" [style.top.px]="info.y + 12">
+      <strong>{{ info.title }}</strong>
+      @for (file of info.names; track file.name) {
+        <div [class.text-danger]="file.present === false" [class.text-success]="file.present">{{ file.name }}</div>
+      }
+    </div>
+  }
+  <div class="world-map-buttons">
+    <button type="button" class="btn btn-sm btn-light" data-testid="world-map-camera-btn" (click)="centerOnCamera()">
+      <i class="fa fa-crosshairs"></i>
+    </button>
+    <button type="button" class="btn btn-sm btn-light" data-testid="world-map-fit" (click)="fitAll()">
+      <i class="fa fa-expand"></i>
+    </button>
+  </div>
+  <div class="world-map-hint">{{ 'WORLD_EDITOR.MAP_HINT' | translate }}</div>
+</div>

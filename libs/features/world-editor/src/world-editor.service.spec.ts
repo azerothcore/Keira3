@@ -249,10 +249,10 @@ describe('WorldEditorService', () => {
 
     // SmartAI paths (negative ids) come from `waypoints`
     queryService.query.mockReturnValueOnce(
-      of([{ pathId: '-500', point: '1', x: 1, y: 2, z: 3, delay: 0, moveType: 0, action: 0, actionChance: 100 }]),
+      of([{ pathId: '-500', point: '1', x: 1, y: 2, z: 3, delay: 0, moveType: 0, action: 0, actionChance: 100, orientation: '1.5' }]),
     );
     expect(await service.loadWaypoints([-500, 10])).toEqual([
-      { pathId: -500, point: 1, x: 1, y: 2, z: 3, delay: 0, moveType: 0, action: 0, actionChance: 100 },
+      { pathId: -500, point: 1, x: 1, y: 2, z: 3, delay: 0, moveType: 0, action: 0, actionChance: 100, orientation: 1.5 },
     ]);
     expect(queryService.query.mock.calls[1][0]).toContain(
       'UNION ALL SELECT -entry AS pathId, pointid AS point, position_x AS x, position_y AS y, position_z AS z, delay',
@@ -366,6 +366,41 @@ describe('WorldEditorService', () => {
     expect(await service.loadTeleports([45, 45])).toEqual([{ id: 45, name: 'Deadmines', map: 36, x: 1, y: 2, z: 3 }]);
     expect(queryService.query.mock.calls[2][0]).toContain('FROM areatrigger_teleport WHERE ID IN (45)');
     expect(await service.loadTeleports([46])).toEqual([]);
+  });
+
+  it("loads a spawn's columns for the properties panel", async () => {
+    const { service, queryService } = setup();
+    queryService.query.mockReturnValueOnce(of([{ spawntimesecs: '300', state: '1' }])).mockReturnValueOnce(of(undefined));
+    expect(await service.loadSpawnFields('gameobject', 5.5)).toEqual({
+      spawntimesecs: 300,
+      phaseMask: 0,
+      spawnMask: 0,
+      state: 1,
+      animprogress: 0,
+    });
+    expect(queryService.query.mock.calls[0][0]).toBe(
+      'SELECT `spawntimesecs`, `phaseMask`, `spawnMask`, `state`, `animprogress` FROM gameobject WHERE guid = 5',
+    );
+    expect((await service.loadSpawnFields('creature', 7))['MovementType']).toBe(0);
+  });
+
+  it('finds spawns of a map by GUID, entry or name', async () => {
+    const { service, queryService } = setup();
+    expect(await service.searchSpawns(0, '  ')).toEqual([]);
+    queryService.query
+      .mockReturnValueOnce(of([{ type: 'creature', guid: '7', entry: '197', name: 'Marshal', x: '1', y: '2', z: '3', o: '0.5' }]))
+      .mockReturnValueOnce(of(undefined));
+    expect(await service.searchSpawns(0, '197')).toEqual([
+      { type: 'creature', guid: 7, entry: 197, name: 'Marshal', map: 0, x: 1, y: 2, z: 3, o: 0.5, pathId: 0 },
+    ]);
+    expect(queryService.query.mock.calls[0][0]).toContain('(c.guid = 197 OR c.id = 197)');
+    expect(queryService.query.mock.calls[0][1]).toEqual([]);
+    expect(await service.searchSpawns(1, 'Marshal')).toEqual([]);
+    queryService.query.mockReturnValueOnce(of([{ type: 'gameobject', guid: '8', entry: '1', name: null, x: '1', y: '2', z: '3', o: '0' }]));
+    expect((await service.searchSpawns(0, 'x'))[0].name).toBe('');
+    expect(queryService.query.mock.calls[1][0]).toContain('ct.name LIKE ?');
+    expect(queryService.query.mock.calls[1][1]).toEqual(['%Marshal%', '%Marshal%']);
+    expect(queryService.query.mock.calls[2][1]).toEqual(['%x%', '%x%']);
   });
 
   it('reads the highest guid', async () => {

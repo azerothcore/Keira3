@@ -146,6 +146,10 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   readonly groupKeys = input<string[]>([]);
   /** A creature walking its path (or wandering), drawn as a moving copy of it; undefined stops it. */
   readonly simulation = input<MovementSimulation | undefined>(undefined);
+  /** Positions to know the ground under (the spawn problems report); answered by `groundHeights`. */
+  readonly groundQuery = input<{ key: string; position: WorldPosition }[] | undefined>(undefined);
+  /** The ground (terrain or floor) under each `groundQuery` position: the first below it, else the highest; null where nothing is loaded. */
+  readonly groundHeights = output<Record<string, number | null>>();
   /** Lines between places (formations, teleports, flight paths…). */
   readonly links = input<WorldLink[]>([]);
   /** Labelled markers (graveyards, flight masters, pools…), named on hover. */
@@ -280,6 +284,18 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       untracked(() => void this.runRebuild(directory, request));
     });
     effect(() => this.navMesh.setRealHidden(this.hideRealNavMesh()));
+    effect(() => {
+      const query = this.groundQuery();
+      if (query) {
+        untracked(() => {
+          this.world.scene.updateMatrixWorld();
+          const heights = Object.fromEntries(
+            query.map(({ key, position }) => [key, this.world.groundHeightAt(position.x, position.y, position.z) ?? null]),
+          );
+          this.groundHeights.emit(heights);
+        });
+      }
+    });
     effect(() => {
       this.world.setGroupSelection(this.groupKeys());
       this.requestRender();

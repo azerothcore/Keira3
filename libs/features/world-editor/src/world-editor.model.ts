@@ -17,6 +17,8 @@ export interface SpawnRecord {
   pathId: number;
   /** SmartAI paths its scripts start (`saiPathId`s), by entry or by guid. */
   saiPaths?: number[];
+  /** Columns set for a spawn placed in this session (respawn time, wander distance…), added to its INSERT. */
+  fields?: Record<string, number>;
   /** creature_template.speed_walk / speed_run (× 2.5 and × 7 yards per second). */
   speedWalk?: number;
   speedRun?: number;
@@ -61,6 +63,8 @@ export interface WaypointRecord {
   /** waypoint_scripts id run on arrival (0 = none), and its chance in %. */
   action?: number;
   actionChance?: number;
+  /** The way the creature faces on arrival (radians); null/undefined: it keeps its own. */
+  orientation?: number | null;
 }
 
 export interface Placement {
@@ -206,3 +210,49 @@ export interface Teleport {
   y: number;
   z: number;
 }
+
+/** A spawn column the properties panel edits: a number, or a choice among options. */
+export interface SpawnField {
+  column: string;
+  label: string;
+  /** Its value for a new spawn (what the editor inserts). */
+  default: number;
+  options?: { value: number; label: string }[];
+  step?: number;
+}
+
+/** The spawn columns the properties panel edits, by spawn type. */
+export const SPAWN_FIELDS: Record<SpawnType, SpawnField[]> = {
+  creature: [
+    { column: 'spawntimesecs', label: 'WORLD_EDITOR.FIELD_RESPAWN', default: 300 },
+    {
+      column: 'MovementType',
+      label: 'WORLD_EDITOR.FIELD_MOVEMENT',
+      default: 0,
+      options: [
+        { value: 0, label: 'WORLD_EDITOR.MOVEMENT_IDLE' },
+        { value: 1, label: 'WORLD_EDITOR.MOVEMENT_RANDOM' },
+        { value: 2, label: 'WORLD_EDITOR.MOVEMENT_WAYPOINT' },
+      ],
+    },
+    { column: 'wander_distance', label: 'WORLD_EDITOR.FIELD_WANDER', default: 0, step: 0.5 },
+    { column: 'phaseMask', label: 'WORLD_EDITOR.FIELD_PHASE_MASK', default: 1 },
+    { column: 'spawnMask', label: 'WORLD_EDITOR.FIELD_SPAWN_MASK', default: 1 },
+    { column: 'equipment_id', label: 'WORLD_EDITOR.FIELD_EQUIPMENT', default: 0 },
+  ],
+  gameobject: [
+    { column: 'spawntimesecs', label: 'WORLD_EDITOR.FIELD_RESPAWN', default: 300 },
+    { column: 'phaseMask', label: 'WORLD_EDITOR.FIELD_PHASE_MASK', default: 1 },
+    { column: 'spawnMask', label: 'WORLD_EDITOR.FIELD_SPAWN_MASK', default: 1 },
+    {
+      column: 'state',
+      label: 'WORLD_EDITOR.FIELD_STATE',
+      default: 1,
+      options: [
+        { value: 0, label: 'WORLD_EDITOR.STATE_ACTIVE' },
+        { value: 1, label: 'WORLD_EDITOR.STATE_READY' },
+      ],
+    },
+    { column: 'animprogress', label: 'WORLD_EDITOR.FIELD_ANIM', default: 0 },
+  ],
+};
