@@ -539,6 +539,13 @@ describe(WorldEditorComponent.name, () => {
         toggle.checked = false;
         toggle.dispatchEvent(new Event('change'));
       }
+      const collision = page.byId<HTMLInputElement>('view-collision').nativeElement;
+      collision.checked = true;
+      collision.dispatchEvent(new Event('change'));
+      page.fixture.detectChanges();
+      expect(page.viewer().renderSettings().showCollision).toBe(true);
+      collision.checked = false;
+      collision.dispatchEvent(new Event('change'));
       page.fixture.detectChanges();
       expect(drawDistance.disabled).toBe(false);
       expect(page.byId('view-distances', false)).toBeFalsy();

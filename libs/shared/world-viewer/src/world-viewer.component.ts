@@ -162,6 +162,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
         });
         this.zoneLighting.configure(settings.zoneLighting);
         this.world.setRoofsVisible(settings.showRoofs);
+        this.world.setCollisionVisible(settings.showCollision);
         this.world.setFacingArrowsVisible(settings.showFacingArrows);
         void this.streamer.update(this.center);
         void this.objects.update(this.center);

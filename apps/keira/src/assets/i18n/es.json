@@ -1046,6 +1046,8 @@
     "CONTROLS_HELP": "Arrastrar izq.: desplazar · Arrastrar der.: rotar · Rueda: zoom · W A S D / flechas: moverse · Espacio: marcador al cursor · Inicio: cámara al marcador · Alt+clic/arrastrar: mover selección · R: mover/rotar · Supr: eliminar · Ctrl+Z / Ctrl+Y: deshacer/rehacer · Esc: cancelar",
     "WALKED_BY": "Recorrida por",
     "VIEW": "Vista",
+    "COLLISION": "Hitboxes (colisión)",
+    "COLLISION_HELP": "Con lo que colisiona el servidor: la colisión de edificios y modelos, de la que se hacen los vmaps (línea de visión, altura)",
     "CONTROLS": "Controles",
     "CONTROLS_HINT": "Cualquier número de teclas por acción; en rojo: la tecla también está en otra acción (solo se activa la primera).",
     "CONTROL_GROUP_CAMERA": "Cámara",

@@ -1,6 +1,7 @@
 import { WmoModel, worldToScene } from '@keira/shared/wow-data';
 import { DoubleSide, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, Texture, Vector3 } from 'three';
 import { applyPlacement, buildWmoObject, disposeWmoObject, isRoofTexture, ROOF_LAYER, serverQuaternionToScene } from './wmo-object';
+import { COLLISION_LAYER } from './collision-object';
 
 const group = (indoor: boolean, colors = indoor) => ({
   positions: new Float32Array([0, 0, 0, 1, 0, 0, 0, 0, 1]),
@@ -100,6 +101,23 @@ describe('wmo-object', () => {
     // indoor ceilings stay with the rest
     expect(template.children).toHaveLength(4);
     expect(isRoofTexture(undefined)).toBe(false);
+  });
+
+  it('adds the collision of every group on the collision layer, also of groups that draw nothing', () => {
+    const collision = { positions: new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]), indices: new Uint16Array([0, 1, 2]) };
+    const model: WmoModel = {
+      materials: [{ texture: 'a.blp', twoSided: false, unlit: false, blend: 0 }],
+      groups: [
+        { ...group(false), collision },
+        { ...group(false), indices: new Uint16Array(0), batches: [], collision },
+        { ...group(false), collision: { positions: new Float32Array(0), indices: new Uint16Array(0) } },
+      ],
+    };
+    const template = buildWmoObject(model, [], new Texture());
+    const collisions = template.children.filter((child) => child.name === 'collision');
+    expect(collisions).toHaveLength(2);
+    expect(collisions.every((mesh) => mesh.layers.isEnabled(COLLISION_LAYER))).toBe(true);
+    disposeWmoObject(template);
   });
 
   it('blends glass-like materials', () => {

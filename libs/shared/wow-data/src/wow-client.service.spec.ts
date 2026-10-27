@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { buildDbc } from './dbc.mock';
+import { EMPTY_COLLISION } from './collision';
 import { WowClientService } from './wow-client.service';
 import { WowDataCacheService } from './wow-data-cache.service';
 import { WowDataSettingsService } from './wow-data-settings.service';
@@ -401,11 +402,23 @@ describe('WowClientService', () => {
       expect(await service.getWmo('World\\wmo\\A.wmo')).toEqual({
         materials: [{ texture: 't.blp' }],
         groups: [
-          { flags: 4, indoor: true },
-          { flags: 4, indoor: false },
+          { flags: 4, indoor: true, collision: EMPTY_COLLISION },
+          { flags: 4, indoor: false, collision: EMPTY_COLLISION },
         ],
       });
       expect(await service.getWmo('missing.wmo')).toBeUndefined();
+    });
+
+    it('reads a building again when its cached groups have no collision yet', async () => {
+      const { service } = setup({ mpqs: { 'common.MPQ': { files: { 'World\\wmo\\A.wmo': [1], 'World\\wmo\\A_000.wmo': [2] } } } });
+      const cache = TestBed.inject(WowDataCacheService);
+      await service.getMaps().catch(() => undefined);
+      wmo.parseWmoRoot.mockReturnValue({ flags: 0, materials: [], groups: [{ indoor: false }] });
+      wmo.parseWmoGroup.mockReturnValue({ indoor: false });
+      const write = vi.spyOn(cache, 'read').mockReturnValueOnce({ materials: [], groups: [{ indoor: false }] });
+      expect((await service.getWmo('World\\wmo\\A.wmo'))?.groups[0].collision).toEqual(EMPTY_COLLISION);
+      expect(wmo.parseWmoRoot).toHaveBeenCalled();
+      write.mockRestore();
     });
 
     it('loads models with their skin, reading .mdx names as .m2', async () => {
@@ -422,12 +435,21 @@ describe('WowClientService', () => {
       const { service } = setup({
         mpqs: { 'common.MPQ': { files: { 'World\\Tree.m2': [1], 'World\\Tree00.skin': [2] } } },
       });
-      m2.parseM2.mockImplementation((model: Uint8Array, skin: Uint8Array) => ({ model: model[0], skin: skin[0] }));
+      // a model cached before collisions were kept is parsed again
+      m2.parseM2.mockReturnValueOnce({ model: 0 });
       await service.getM2('World\\Tree.mdx');
+      await service.close();
+      m2.parseM2.mockImplementation((model: Uint8Array, skin: Uint8Array) => ({
+        model: model[0],
+        skin: skin[0],
+        collision: EMPTY_COLLISION,
+      }));
+      await service.getM2('World\\Tree.mdx');
+      expect(m2.parseM2).toHaveBeenCalledTimes(2);
       expect((await service.cacheUsage()).modelBytes).toBeGreaterThan(0);
       await service.close();
       m2.parseM2.mockClear();
-      expect(await service.getM2('World\\Tree.mdx')).toEqual({ model: 1, skin: 2 });
+      expect(await service.getM2('World\\Tree.mdx')).toEqual({ model: 1, skin: 2, collision: EMPTY_COLLISION });
       expect(m2.parseM2).not.toHaveBeenCalled();
     });
 
@@ -498,7 +520,7 @@ describe('WowClientService', () => {
       wmo.parseWmoGroup.mockReturnValue({ indoor: false });
 
       expect((await service.getTilePlacements('M', { tx: 1, ty: 2 }))?.wmos).toHaveLength(1);
-      expect(await service.getWmo('World\\wmo\\A.wmo')).toEqual({ materials: [], groups: [{ indoor: false }] });
+      expect(await service.getWmo('World\\wmo\\A.wmo')).toEqual({ materials: [], groups: [{ indoor: false, collision: EMPTY_COLLISION }] });
       expect(native.directorySize('/cache')).toBeGreaterThan(0);
 
       const usage = await service.cacheUsage();
@@ -511,7 +533,7 @@ describe('WowClientService', () => {
       formats.parseAdt.mockClear();
       wmo.parseWmoRoot.mockClear();
       expect((await service.getTilePlacements('M', { tx: 1, ty: 2 }))?.wmos).toHaveLength(1);
-      expect(await service.getWmo('World\\wmo\\A.wmo')).toEqual({ materials: [], groups: [{ indoor: false }] });
+      expect(await service.getWmo('World\\wmo\\A.wmo')).toEqual({ materials: [], groups: [{ indoor: false, collision: EMPTY_COLLISION }] });
       expect(formats.parseAdt).not.toHaveBeenCalled();
       expect(wmo.parseWmoRoot).not.toHaveBeenCalled();
     });

@@ -57,6 +57,7 @@ import {
 } from '@keira/shared/wow-data';
 import { createSkyDome, setSkyColors } from './sky';
 import { ROOF_LAYER } from './wmo-object';
+import { COLLISION_LAYER } from './collision-object';
 import { createTerrainLighting, createTerrainMaterial } from './terrain-material';
 import { PickResult, SpawnKind, WaypointPath, waypointKey, WorldAreaTrigger, WorldSpawn } from './world-viewer.model';
 
@@ -230,6 +231,15 @@ export class WorldScene {
   }
 
   /** Shows building roofs, or hides them to look inside (hidden roofs are not picked either, so clicks reach the floor). */
+  /** Shows the collision meshes of buildings and models (the server's hitboxes) as a wireframe. */
+  setCollisionVisible(visible: boolean): void {
+    if (visible) {
+      this.camera.layers.enable(COLLISION_LAYER);
+    } else {
+      this.camera.layers.disable(COLLISION_LAYER);
+    }
+  }
+
   setRoofsVisible(visible: boolean): void {
     for (const layers of [this.camera.layers, this.raycaster.layers]) {
       if (visible) {

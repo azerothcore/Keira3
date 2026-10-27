@@ -114,6 +114,7 @@ type RenderFlagKey =
   | 'showModels'
   | 'showFacingArrows'
   | 'showWanderRadius'
+  | 'showCollision'
   | 'zoneLighting'
   | 'advancedDistances'
   | 'loadWholeZone';

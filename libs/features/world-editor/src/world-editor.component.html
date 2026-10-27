@@ -366,6 +366,19 @@
         <input
           class="form-check-input"
           type="checkbox"
+          id="world-editor-collision"
+          data-testid="view-collision"
+          [checked]="renderSettings.settings().showCollision"
+          (change)="setRenderFlag('showCollision', $event)"
+        />
+        <label class="form-check-label" for="world-editor-collision" [title]="'WORLD_EDITOR.COLLISION_HELP' | translate">{{
+          'WORLD_EDITOR.COLLISION' | translate
+        }}</label>
+      </div>
+      <div class="form-check form-switch mb-0">
+        <input
+          class="form-check-input"
+          type="checkbox"
           id="world-editor-zone-lighting"
           data-testid="view-zone-lighting"
           [checked]="renderSettings.settings().zoneLighting"

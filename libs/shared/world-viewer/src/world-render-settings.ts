@@ -20,6 +20,8 @@ export interface WorldRenderSettings {
   showFacingArrows: boolean;
   /** A circle around wandering creatures showing how far they roam. */
   showWanderRadius: boolean;
+  /** What the server collides with (buildings' and models' collision, what vmaps are made of), as a red wireframe. */
+  showCollision: boolean;
   /** Zone lighting, fog and sky colours (otherwise a fixed neutral light). */
   zoneLighting: boolean;
   /** How far from the camera target (yards) doodads and models are drawn. */
@@ -65,6 +67,7 @@ export const DEFAULT_WORLD_RENDER_SETTINGS: WorldRenderSettings = {
   showModels: true,
   showFacingArrows: true,
   showWanderRadius: false,
+  showCollision: false,
   zoneLighting: false,
   drawDistance: 250,
   advancedDistances: false,

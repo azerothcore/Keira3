@@ -10,6 +10,7 @@ import {
   worldToTile,
 } from '@keira/shared/wow-data';
 import { Group, InstancedMesh, Object3D } from 'three';
+import { COLLISION_LAYER, COLLISION_MATERIAL } from './collision-object';
 import { buildM2Template, disposeM2Template, M2Template } from './m2-object';
 import { TextureCache } from './texture-cache';
 import { applyPlacement } from './wmo-object';
@@ -47,6 +48,8 @@ export class WorldDoodads {
   private readonly templates = new Map<string, Promise<M2Template | undefined>>();
   private readonly ready = new Map<string, M2Template | undefined>();
   private readonly meshes = new Map<string, InstancedMesh>();
+  /** The collision of the models that have one, instanced like the models. */
+  private readonly collisions = new Map<string, InstancedMesh>();
   private readonly dummy = new Object3D();
 
   constructor(
@@ -208,19 +211,30 @@ export class WorldDoodads {
         this.removeMesh(key, mesh);
       }
       // room to grow, so walking around doesn't recreate the mesh at every step
-      mesh = new InstancedMesh(template.geometry, template.materials, Math.ceil(placements.length * 1.5));
+      const capacity = Math.ceil(placements.length * 1.5);
+      mesh = new InstancedMesh(template.geometry, template.materials, capacity);
       mesh.name = `doodad:${key}`;
       this.group.add(mesh);
       this.meshes.set(key, mesh);
+      if (template.collision) {
+        const collision = new InstancedMesh(template.collision, COLLISION_MATERIAL, capacity);
+        collision.layers.set(COLLISION_LAYER);
+        collision.raycast = () => undefined;
+        this.group.add(collision);
+        this.collisions.set(key, collision);
+      }
     }
-    placements.forEach((placement, i) => {
-      applyPlacement(this.dummy, placement);
-      this.dummy.updateMatrix();
-      (mesh as InstancedMesh).setMatrixAt(i, this.dummy.matrix);
-    });
-    mesh.count = placements.length;
-    mesh.instanceMatrix.needsUpdate = true;
-    mesh.computeBoundingSphere();
+    const collision = this.collisions.get(key);
+    for (const instanced of collision ? [mesh, collision] : [mesh]) {
+      placements.forEach((placement, i) => {
+        applyPlacement(this.dummy, placement);
+        this.dummy.updateMatrix();
+        instanced.setMatrixAt(i, this.dummy.matrix);
+      });
+      instanced.count = placements.length;
+      instanced.instanceMatrix.needsUpdate = true;
+      instanced.computeBoundingSphere();
+    }
   }
 
   private loadTemplate(key: string, path: string): void {
@@ -258,6 +272,12 @@ export class WorldDoodads {
     this.group.remove(mesh);
     mesh.dispose();
     this.meshes.delete(key);
+    const collision = this.collisions.get(key);
+    if (collision) {
+      this.group.remove(collision);
+      collision.dispose();
+      this.collisions.delete(key);
+    }
   }
 
   private clear(): void {

@@ -1,3 +1,4 @@
+import { buildCollisionGeometry, collisionMesh } from './collision-object';
 import { ModelPlacement, WmoModel, worldToScene } from '@keira/shared/wow-data';
 import {
   BufferAttribute,
@@ -73,6 +74,10 @@ export function buildWmoObject(model: WmoModel, textures: Texture[], fallback: T
   };
 
   for (const group of model.groups) {
+    const collision = buildCollisionGeometry(group.collision);
+    if (collision) {
+      template.add(collisionMesh(collision));
+    }
     if (group.indices.length === 0) {
       continue;
     }

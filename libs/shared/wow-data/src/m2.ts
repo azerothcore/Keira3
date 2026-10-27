@@ -1,3 +1,4 @@
+import { CollisionMesh, parseM2Collision } from './collision';
 import { M2_VERTEX_SHADER, M2Model, M2SkinProfile } from '@wowserhq/format';
 import { toArrayBuffer } from './formats';
 
@@ -34,6 +35,8 @@ export interface M2Mesh {
   uvs: Float32Array;
   indices: Uint16Array;
   batches: M2BatchInfo[];
+  /** What the server collides with (empty for most small props). */
+  collision: CollisionMesh;
 }
 
 const VERTEX_STRIDE = 48;
@@ -92,5 +95,5 @@ export function parseM2(modelBytes: Uint8Array, skinBytes: Uint8Array): M2Mesh {
       };
     });
 
-  return { positions, normals, uvs, indices: Uint16Array.from(skin.indices), batches };
+  return { positions, normals, uvs, indices: Uint16Array.from(skin.indices), batches, collision: parseM2Collision(modelBytes) };
 }

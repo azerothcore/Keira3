@@ -14,8 +14,10 @@
 
 .world-editor-filters,
 .world-editor-view-settings,
-.world-editor-settings {
-  flex-shrink: 0;
+.world-editor-settings,
+.world-editor-controls {
+  flex-shrink: 1;
+  min-height: 0;
   max-height: 45vh;
   overflow-y: auto;
 }
@@ -73,13 +75,16 @@
   display: flex;
   flex: 1;
   gap: 8px;
-  min-height: 0;
+  // the 3D view always keeps some room; the open panels above scroll instead
+  min-height: 260px;
 }
 
 .world-editor-view {
   position: relative;
   flex: 1;
   min-width: 0;
+  // its overlays (help line, labels, menus) never spill over the panels
+  overflow: hidden;
 }
 
 .world-editor-loading {

@@ -1,5 +1,6 @@
-import { CreatureDisplay, M2Blend, M2Mesh, tileCenter, WorldPosition, worldToScene } from '@keira/shared/wow-data';
+import { CreatureDisplay, EMPTY_COLLISION, M2Blend, M2Mesh, tileCenter, WorldPosition, worldToScene } from '@keira/shared/wow-data';
 import { Mesh, MeshLambertMaterial, Texture } from 'three';
+import { COLLISION_LAYER } from './collision-object';
 import { SpawnModels, SpawnModelSource } from './spawn-models';
 import { TextureCache } from './texture-cache';
 import { WorldScene } from './world-scene';
@@ -23,6 +24,7 @@ const mesh = (batches: M2Mesh['batches']): M2Mesh => ({
   uvs: new Float32Array(6),
   indices: new Uint16Array([0, 1, 2]),
   batches,
+  collision: EMPTY_COLLISION,
 });
 const spawn = (key: string, kind: WorldSpawn['kind'], east: number, displayId?: number, scale?: number): WorldSpawn => ({
   key,
@@ -110,6 +112,17 @@ describe('SpawnModels', () => {
     const wolf = modelOf(world, 'creature:1') as Mesh;
     const maps = (wolf.material as MeshLambertMaterial[]).map((m) => m.map);
     expect(maps).toEqual([loaded.get('Creature\\Wolf\\WolfGrey.blp'), loaded.get('Creature\\Wolf\\Eyes.blp'), textures.fallback]);
+  });
+
+  it('adds the collision of models that have one, on the collision layer', async () => {
+    const { models, world, source } = setup();
+    source.getM2.mockResolvedValue({
+      ...mesh([batch()]),
+      collision: { positions: new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]), indices: new Uint16Array([0, 1, 2]) },
+    });
+    await show(models, world, [spawn('gameobject:1', 'gameobject', 0, 7)]);
+    const collision = modelOf(world, 'gameobject:1')?.getObjectByName('collision') as Mesh;
+    expect(collision.layers.isEnabled(COLLISION_LAYER)).toBe(true);
   });
 
   it('dresses humanoid NPCs with their default geosets', async () => {

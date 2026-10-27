@@ -1,3 +1,4 @@
+import { buildCollisionGeometry } from './collision-object';
 import { M2Blend, M2Mesh } from '@keira/shared/wow-data';
 import {
   AdditiveBlending,
@@ -18,6 +19,8 @@ export interface M2Template {
   materials: Material[];
   /** Bounding sphere radius of the model at scale 1. */
   radius: number;
+  /** What the server collides with, when the model has any. */
+  collision?: BufferGeometry;
 }
 
 /** One material per batch, following the batch's blend mode: cut-out leaves, glowing additive parts, glass… */
@@ -50,11 +53,12 @@ export function buildM2Template(mesh: M2Mesh, textures: Texture[], fallback: Tex
     return createM2Material(batch, textures[i] ?? fallback);
   });
   geometry.computeBoundingSphere();
-  return { geometry, materials, radius: (geometry.boundingSphere as Sphere).radius };
+  return { geometry, materials, radius: (geometry.boundingSphere as Sphere).radius, collision: buildCollisionGeometry(mesh.collision) };
 }
 
 /** Disposes a template's geometry and materials (not its shared textures). */
 export function disposeM2Template(template: M2Template): void {
   template.geometry.dispose();
+  template.collision?.dispose();
   template.materials.forEach((material) => material.dispose());
 }

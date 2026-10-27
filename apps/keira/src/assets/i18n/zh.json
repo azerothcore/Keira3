@@ -1046,6 +1046,8 @@
     "CONTROLS_HELP": "左键拖动：平移 · 右键拖动：旋转 · 滚轮：缩放 · W A S D / 方向键：移动 · 空格：标记到光标 · Home：镜头到标记 · Alt+单击/拖动：移动所选 · R：移动/旋转 · Del：删除 · Ctrl+Z / Ctrl+Y：撤销/重做 · Esc：取消",
     "WALKED_BY": "使用者",
     "VIEW": "视图",
+    "COLLISION": "碰撞箱（碰撞）",
+    "COLLISION_HELP": "服务器的碰撞体：建筑和模型的碰撞，vmaps（视线、高度）就由它们生成",
     "CONTROLS": "操作",
     "CONTROLS_HINT": "每个操作可绑定任意数量的按键；红色：该按键也绑定了其他操作（只触发第一个）。",
     "CONTROL_GROUP_CAMERA": "镜头",

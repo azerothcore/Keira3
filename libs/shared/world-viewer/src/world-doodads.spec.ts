@@ -1,5 +1,6 @@
-import { M2Blend, M2Mesh, ModelPlacement, tileCenter, TileCoord, worldToScene } from '@keira/shared/wow-data';
+import { EMPTY_COLLISION, M2Blend, M2Mesh, ModelPlacement, tileCenter, TileCoord, worldToScene } from '@keira/shared/wow-data';
 import { Group, InstancedMesh, Matrix4, Vector3 } from 'three';
+import { COLLISION_LAYER, COLLISION_MATERIAL } from './collision-object';
 import { TextureCache } from './texture-cache';
 import { DoodadSource, WorldDoodads } from './world-doodads';
 
@@ -12,6 +13,7 @@ const model: M2Mesh = {
     { start: 0, count: 3, texture: 'tree.blp', textureType: 0, blend: M2Blend.AlphaKey, geoset: 0, twoSided: true, unlit: false },
     { start: 0, count: 3, textureType: 11, blend: M2Blend.Opaque, geoset: 0, twoSided: false, unlit: false },
   ],
+  collision: EMPTY_COLLISION,
 };
 const CENTER = tileCenter({ tx: 32, ty: 48 });
 /** A doodad `east` yards east (server −y) of the centre of tile 32_48. */
@@ -136,6 +138,27 @@ describe('WorldDoodads', () => {
     expect(doodads.drawnCount).toBe(0);
     await doodads.update(CENTER);
     expect(source.getTilePlacements).toHaveBeenCalledTimes(9);
+  });
+
+  it('instances the collision of models that have one on the collision layer, and removes it with them', async () => {
+    const { source, group, doodads } = setup({ '32_48': [doodad(1, 10, 'World\\Fence.mdx'), doodad(2, 20, 'World\\Fence.mdx')] });
+    source.getM2.mockResolvedValue({
+      ...model,
+      collision: { positions: new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]), indices: new Uint16Array([0, 1, 2]) },
+    });
+    doodads.setMap('Azeroth');
+    await doodads.update(CENTER);
+    await flush();
+    const collision = meshes(group).find((mesh) => mesh.layers.isEnabled(COLLISION_LAYER));
+    expect(collision?.count).toBe(2);
+    expect(collision?.material).toBe(COLLISION_MATERIAL);
+    expect(collision?.raycast(undefined as never, [])).toBeUndefined();
+    const matrix = new Matrix4();
+    collision?.getMatrixAt(1, matrix);
+    expect(new Vector3().setFromMatrixPosition(matrix).x).toBeCloseTo(worldToScene({ x: CENTER.x, y: CENTER.y - 20, z: 0 }).x);
+
+    doodads.configure({ show: false, distance: 100, smallDistance: 100 });
+    expect(group.children).toHaveLength(0);
   });
 
   it('does nothing without a map', async () => {

@@ -1,5 +1,6 @@
 import { MapObj, MapObjGroup } from '@wowserhq/format';
 import { toArrayBuffer } from './formats';
+import type { CollisionMesh } from './collision';
 import { findChunk } from './liquid';
 
 /** A model placed by an ADT (MODF for buildings, MDDF for doodads), in server space. */
@@ -49,6 +50,8 @@ export interface WmoGroupMesh {
   indices: Uint16Array;
   batches: { start: number; count: number; material: number }[];
   indoor: boolean;
+  /** What the server collides with (read by `parseWmoGroupCollision`). */
+  collision?: CollisionMesh;
 }
 
 export interface WmoModel {

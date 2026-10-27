@@ -17,6 +17,7 @@ import {
   Vector3,
 } from 'three';
 import { flatDetail, flatTile } from './world-viewer.mock';
+import { COLLISION_LAYER } from './collision-object';
 import { pathColor, WorldScene } from './world-scene';
 import { WaypointPath, WorldSpawn } from './world-viewer.model';
 
@@ -291,6 +292,15 @@ describe('WorldScene', () => {
       const color = (model: Mesh): number => ((model.getObjectByName('facing') as Mesh).material as MeshBasicMaterial).color.getHex();
       expect(color(creature)).toBe(0xff9f1c);
       expect(color(gameobject)).toBe(0x2ec4f1);
+    });
+
+    it('shows the collision layer only when asked', () => {
+      const world = new WorldScene();
+      expect(world.camera.layers.isEnabled(COLLISION_LAYER)).toBe(false);
+      world.setCollisionVisible(true);
+      expect(world.camera.layers.isEnabled(COLLISION_LAYER)).toBe(true);
+      world.setCollisionVisible(false);
+      expect(world.camera.layers.isEnabled(COLLISION_LAYER)).toBe(false);
     });
 
     it('draws area triggers as spheres and turned boxes, picked only when asked', () => {

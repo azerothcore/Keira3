@@ -30,6 +30,7 @@ import {
   WmoModel,
   wmoGroupPath,
 } from './wmo';
+import { parseWmoGroupCollision } from './collision';
 import { clientIdentity, WowDataCacheService } from './wow-data-cache.service';
 import { WowDataSettingsService } from './wow-data-settings.service';
 import { StormArchive, WOW_NATIVE_API, WowNativeApi } from './wow-native-api';
@@ -238,7 +239,8 @@ export class WowClientService {
     await nextFrame();
     const { identity } = await this.getClient();
     const cached = this.cache.read<WmoModel>(identity, 'wmo', path);
-    if (cached) {
+    // buildings cached before their collision was kept are read again
+    if (cached && cached.groups.every((group) => group.collision)) {
       return cached;
     }
     const model = await this.loadWmo(path);
@@ -337,7 +339,7 @@ export class WowClientService {
     for (const [index, info] of root.groups.entries()) {
       const bytes = await this.readFile(wmoGroupPath(path, index));
       if (bytes) {
-        groups.push(parseWmoGroup(bytes, root.flags, info.indoor));
+        groups.push({ ...parseWmoGroup(bytes, root.flags, info.indoor), collision: parseWmoGroupCollision(bytes) });
       }
     }
     return { materials: root.materials, groups };
@@ -349,7 +351,7 @@ export class WowClientService {
     const { identity } = await this.getClient();
     const key = m2Path(path);
     const cached = this.cache.read<M2Mesh>(identity, 'm2', key);
-    if (cached) {
+    if (cached?.collision) {
       return cached;
     }
     const model = await this.readFile(key);

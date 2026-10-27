@@ -1,5 +1,6 @@
 import { CreatureDisplay, isDefaultCharacterGeoset, M2Mesh, WorldPosition } from '@keira/shared/wow-data';
 import { Mesh } from 'three';
+import { collisionMesh } from './collision-object';
 import { buildM2Template, disposeM2Template, M2Template } from './m2-object';
 import { TextureCache } from './texture-cache';
 import { WorldScene } from './world-scene';
@@ -105,7 +106,11 @@ export class SpawnModels {
       if (!model) {
         changed = this.hide(spawn.key) || changed;
       } else if (this.shown.get(spawn.key) !== displayKey) {
-        this.scene.setSpawnModel(spawn.key, new Mesh(model.template.geometry, model.template.materials), model.scale * (spawn.scale ?? 1));
+        const mesh = new Mesh(model.template.geometry, model.template.materials);
+        if (model.template.collision) {
+          mesh.add(collisionMesh(model.template.collision));
+        }
+        this.scene.setSpawnModel(spawn.key, mesh, model.scale * (spawn.scale ?? 1));
         this.shown.set(spawn.key, displayKey as string);
         changed = true;
       }
