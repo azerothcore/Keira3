@@ -1,51 +1,86 @@
 import { TestBed } from '@angular/core/testing';
 import {
+  controlFor,
+  controlMatches,
   DEFAULT_WORLD_CONTROLS_SETTINGS,
-  keyLabel,
+  inputLabel,
+  inputOf,
   WORLD_CONTROLS_SETTINGS_KEY,
   WorldControlsSettingsService,
 } from './world-controls-settings';
 
-describe('WorldControlsSettingsService', () => {
-  beforeEach(() => localStorage.clear());
+const key = (code: string, mods: { ctrlKey?: boolean; shiftKey?: boolean; altKey?: boolean; metaKey?: boolean } = {}) =>
+  new KeyboardEvent('keydown', { code, ...mods });
 
-  it('starts with W A S D and the arrow keys', () => {
+describe('world controls', () => {
+  beforeEach(() => localStorage.removeItem(WORLD_CONTROLS_SETTINGS_KEY));
+
+  it('starts with the default bindings', () => {
     expect(TestBed.inject(WorldControlsSettingsService).settings()).toEqual(DEFAULT_WORLD_CONTROLS_SETTINGS);
-    expect(DEFAULT_WORLD_CONTROLS_SETTINGS.keys.forward).toEqual(['KeyW', 'ArrowUp']);
   });
 
-  it('rebinds keys, moving a key away from the action it had, and remembers them', () => {
+  it('adds, removes and resets bindings, and remembers them', () => {
     const service = TestBed.inject(WorldControlsSettingsService);
-    service.bind('forward', 1, 'KeyI');
-    service.bind('up', 0, 'KeyW');
-    expect(service.settings().keys.forward).toEqual(['', 'KeyI']);
-    expect(service.settings().keys.up).toEqual(['KeyW', 'PageUp']);
+    service.addBinding('forward', 'KeyI');
+    service.addBinding('forward', 'KeyI');
+    service.removeBinding('forward', 'ArrowUp');
+    service.addBinding('undo', 'Ctrl+Alt+KeyU');
     service.setKeyboardNavigation(false);
+    expect(service.settings().bindings.forward).toEqual(['KeyW', 'KeyI']);
 
     TestBed.resetTestingModule();
-    const restored = TestBed.inject(WorldControlsSettingsService).settings();
-    expect(restored.keyboardNavigation).toBe(false);
-    expect(restored.keys.up).toEqual(['KeyW', 'PageUp']);
+    const restored = TestBed.inject(WorldControlsSettingsService);
+    expect(restored.settings().bindings.forward).toEqual(['KeyW', 'KeyI']);
+    expect(restored.settings().bindings.undo).toEqual(['Ctrl+KeyZ', 'Ctrl+Alt+KeyU']);
+    expect(restored.settings().keyboardNavigation).toBe(false);
 
-    TestBed.inject(WorldControlsSettingsService).reset();
-    expect(TestBed.inject(WorldControlsSettingsService).settings()).toEqual(DEFAULT_WORLD_CONTROLS_SETTINGS);
+    restored.resetAction('forward');
+    expect(restored.settings().bindings.forward).toEqual(['KeyW', 'ArrowUp']);
+    restored.reset();
+    expect(restored.settings()).toEqual(DEFAULT_WORLD_CONTROLS_SETTINGS);
   });
 
-  it('ignores invalid or damaged storage', () => {
+  it('tells which other actions an input clashes with', () => {
+    const service = TestBed.inject(WorldControlsSettingsService);
+    expect(service.clashes('forward', 'KeyW')).toEqual([]);
+    service.addBinding('toggleGizmo', 'KeyW');
+    expect(service.clashes('forward', 'KeyW')).toEqual(['toggleGizmo']);
+  });
+
+  it('reads the older two-key format and ignores damaged settings', () => {
     localStorage.setItem(
       WORLD_CONTROLS_SETTINGS_KEY,
-      JSON.stringify({ keyboardNavigation: 'yes', keys: { forward: ['KeyW'], back: [1, 2] } }),
+      JSON.stringify({ keyboardNavigation: 'yes', keys: { forward: ['KeyI', ''], back: [1, 2] } }),
     );
-    expect(TestBed.inject(WorldControlsSettingsService).settings()).toEqual(DEFAULT_WORLD_CONTROLS_SETTINGS);
+    const settings = TestBed.inject(WorldControlsSettingsService).settings();
+    expect(settings.bindings.forward).toEqual(['KeyI']);
+    expect(settings.bindings.back).toEqual(['KeyS', 'ArrowDown']);
+    expect(settings.keyboardNavigation).toBe(true);
+
     TestBed.resetTestingModule();
-    localStorage.setItem(WORLD_CONTROLS_SETTINGS_KEY, '{nope');
+    localStorage.setItem(WORLD_CONTROLS_SETTINGS_KEY, '{');
     expect(TestBed.inject(WorldControlsSettingsService).settings()).toEqual(DEFAULT_WORLD_CONTROLS_SETTINGS);
   });
 
-  it('names keys for display', () => {
-    expect(keyLabel('KeyW')).toBe('W');
-    expect(keyLabel('ArrowUp')).toBe('↑');
-    expect(keyLabel('Digit1')).toBe('1');
-    expect(keyLabel('PageUp')).toBe('PageUp');
+  it('writes key presses as bindings, and bindings as labels', () => {
+    expect(inputOf(key('KeyZ', { ctrlKey: true, shiftKey: true }))).toBe('Ctrl+Shift+KeyZ');
+    expect(inputOf(key('KeyZ', { metaKey: true, altKey: true }))).toBe('Ctrl+Alt+KeyZ');
+    expect(inputOf(key('ShiftLeft', { shiftKey: true }))).toBeUndefined();
+    expect(inputOf(key(''))).toBeUndefined();
+    expect(inputLabel('Ctrl+Shift+KeyZ')).toBe('Ctrl+Shift+Z');
+    expect(inputLabel('ArrowUp')).toBe('↑');
+    expect(inputLabel('Digit1')).toBe('1');
+    expect(inputLabel('PageUp')).toBe('PageUp');
+  });
+
+  it('matches key presses: camera moves ignore Shift, other actions need their exact modifiers', () => {
+    const settings = DEFAULT_WORLD_CONTROLS_SETTINGS;
+    expect(controlMatches(settings, 'forward', key('KeyW', { shiftKey: true }))).toBe(true);
+    expect(controlMatches(settings, 'undo', key('KeyZ', { ctrlKey: true }))).toBe(true);
+    expect(controlMatches(settings, 'undo', key('KeyZ', { ctrlKey: true, shiftKey: true }))).toBe(false);
+    expect(controlMatches(settings, 'redo', key('KeyZ', { ctrlKey: true, shiftKey: true }))).toBe(true);
+    expect(controlMatches(settings, 'undo', key('ControlLeft', { ctrlKey: true }))).toBe(false);
+    expect(controlFor(settings, ['undo', 'redo', 'delete'], key('Delete'))).toBe('delete');
+    expect(controlFor(settings, ['undo', 'redo'], key('KeyP'))).toBeUndefined();
   });
 });

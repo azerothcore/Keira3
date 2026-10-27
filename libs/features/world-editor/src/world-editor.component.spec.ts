@@ -48,6 +48,8 @@ class FakeWorldViewerComponent {
   readonly contextRequested = output<ContextRequest>();
 }
 
+const keyCode = (key: string): string => (/^[a-z]$/i.test(key) ? `Key${key.toUpperCase()}` : key);
+
 class Page extends PageObjectModel<WorldEditorComponent> {
   byId<T extends HTMLElement = HTMLElement>(id: string, assert = true): DebugHtmlElement<T> {
     return this.getDebugElementByTestId(id, assert);
@@ -65,8 +67,14 @@ class Page extends PageObjectModel<WorldEditorComponent> {
     const form = this.byId(id).nativeElement.closest('form') as HTMLFormElement;
     form.dispatchEvent(new Event('submit'));
   }
-  key(key: string, target: HTMLElement = this.fixture.nativeElement as HTMLElement, code = ''): void {
-    target.dispatchEvent(new KeyboardEvent('keydown', { key, code, bubbles: true }));
+  /** A key press; the physical key (`code`) defaults to the one of a letter ("r" → "KeyR") or the key itself. */
+  key(
+    key: string,
+    target: HTMLElement = this.fixture.nativeElement as HTMLElement,
+    code = keyCode(key),
+    init: KeyboardEventInit = {},
+  ): void {
+    target.dispatchEvent(new KeyboardEvent('keydown', { key, code, bubbles: true, ...init }));
   }
   viewer(): FakeWorldViewerComponent {
     return this.getDebugElementByDirective(FakeWorldViewerComponent).componentInstance as FakeWorldViewerComponent;
@@ -566,42 +574,59 @@ describe(WorldEditorComponent.name, () => {
       expect(JSON.parse(localStorage.getItem('keira3.worldEditor.render') as string).terrainRadius).toBe(2);
     });
 
-    it('lets the user turn keyboard navigation off and pick its keys', async () => {
+    it('lets the user bind any number of keys to every action, turn keyboard navigation off and reset', async () => {
       const { page } = await setup();
-      page.click('view-toggle');
+      page.click('controls-toggle');
       page.fixture.detectChanges();
-      expect(page.viewer().navigation().keys.forward).toEqual(['KeyW', 'ArrowUp']);
-      expect(page.text('key-forward-0')).toBe('W');
-      expect(page.text('key-left-1')).toBe('←');
+      const row = (action: string) => page.text('control-' + action);
+      expect(page.viewer().navigation().bindings.forward).toEqual(['KeyW', 'ArrowUp']);
+      expect(row('forward')).toContain('W');
+      expect(row('left')).toContain('←');
+      expect(row('redo')).toContain('Ctrl+Shift+Z');
 
-      page.click('key-forward-1');
+      // a key with modifiers: the modifier alone waits for the key
+      page.click('bind-forward');
       page.fixture.detectChanges();
-      expect(page.text('key-forward-1')).toBe('WORLD_EDITOR.PRESS_A_KEY');
-      page.key('i', page.byId('key-forward-1').nativeElement, 'KeyI');
+      expect(page.text('bind-forward')).toBe('WORLD_EDITOR.PRESS_A_KEY');
+      page.key('Shift', undefined, 'ShiftLeft', { shiftKey: true });
+      page.key('I', undefined, 'KeyI', { shiftKey: true });
       page.fixture.detectChanges();
-      expect(page.text('key-forward-1')).toBe('I');
-      expect(page.viewer().navigation().keys.forward).toEqual(['KeyW', 'KeyI']);
+      expect(page.viewer().navigation().bindings.forward).toEqual(['KeyW', 'ArrowUp', 'Shift+KeyI']);
+      expect(page.text('bind-forward')).toBe('WORLD_EDITOR.ADD_KEY');
 
-      // Escape cancels; a key taken from another action leaves that slot empty
-      page.click('key-back-0');
-      page.key('Escape', undefined, 'Escape');
+      // Escape cancels; a key already on another action is shown red
+      page.click('bind-back');
+      page.key('Escape');
       page.fixture.detectChanges();
-      expect(page.text('key-back-0')).toBe('S');
-      page.click('key-up-0');
-      page.key('w', undefined, 'KeyW');
+      expect(page.viewer().navigation().bindings.back).toEqual(['KeyS', 'ArrowDown']);
+      page.click('bind-toggleGizmo');
+      page.key('w');
       page.fixture.detectChanges();
-      expect(page.text('key-forward-0')).toBe('—');
+      const clash = (page.byId('unbind-toggleGizmo-KeyW').nativeElement as HTMLElement).parentElement as HTMLElement;
+      expect(clash.classList).toContain('bg-danger');
+      expect(clash.getAttribute('title')).toBe('WORLD_EDITOR.CLASH');
+      expect(((page.byId('unbind-toggleGizmo-KeyR').nativeElement as HTMLElement).parentElement as HTMLElement).getAttribute('title')).toBe(
+        '',
+      );
 
-      page.click('keys-reset');
+      page.click('unbind-forward-ArrowUp');
       page.fixture.detectChanges();
-      expect(page.text('key-forward-0')).toBe('W');
+      expect(page.viewer().navigation().bindings.forward).toEqual(['KeyW', 'Shift+KeyI']);
+      page.click('default-forward');
+      page.fixture.detectChanges();
+      expect(page.viewer().navigation().bindings.forward).toEqual(['KeyW', 'ArrowUp']);
+      page.click('controls-reset');
+      page.fixture.detectChanges();
+      expect(page.viewer().navigation().bindings.toggleGizmo).toEqual(['KeyR']);
 
-      const toggle = page.byId<HTMLInputElement>('view-keyboard').nativeElement;
+      const toggle = page.byId<HTMLInputElement>('controls-navigation').nativeElement;
       toggle.checked = false;
       toggle.dispatchEvent(new Event('change'));
       page.fixture.detectChanges();
       expect(page.viewer().navigation().keyboardNavigation).toBe(false);
-      expect(page.byId('key-forward-0', false)).toBeFalsy();
+      page.click('controls-toggle');
+      page.fixture.detectChanges();
+      expect(page.byId('controls', false)).toBeFalsy();
     });
 
     it('does not read game data outside the desktop app', async () => {
@@ -1463,7 +1488,9 @@ describe(WorldEditorComponent.name, () => {
         await settle(page);
       }
       const shortcut = (key: string, extra: KeyboardEventInit = {}, target: HTMLElement = page.fixture.nativeElement as HTMLElement) =>
-        target.dispatchEvent(new KeyboardEvent('keydown', { key, ctrlKey: true, bubbles: true, cancelable: true, ...extra }));
+        target.dispatchEvent(
+          new KeyboardEvent('keydown', { key, code: keyCode(key), ctrlKey: true, bubbles: true, cancelable: true, ...extra }),
+        );
       const count = () => page.text('pending-count');
       expect(count()).toBe('2');
       expect(page.byId<HTMLButtonElement>('redo').nativeElement.disabled).toBe(true);

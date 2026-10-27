@@ -815,7 +815,7 @@ describe(WorldViewerComponent.name, () => {
       expect(mapControls().enabled).toBe(true);
     });
 
-    it('moves the camera target to the ground under the cursor with Space', async () => {
+    it('puts the marker under the cursor with Space, and brings the camera to it with Home', async () => {
       const { page, host, fixture, update } = await setup((h) => {
         h.map.set('Azeroth');
         h.focus.set(at(0, 0));
@@ -824,8 +824,8 @@ describe(WorldViewerComponent.name, () => {
       await update(() => host.focus.set(at(-100, -100)));
       await settle(fixture);
       const canvas = page.canvas().nativeElement;
-      const space = (): KeyboardEvent => {
-        const event = new KeyboardEvent('keydown', { code: 'Space', cancelable: true });
+      const press = (code: string): KeyboardEvent => {
+        const event = new KeyboardEvent('keydown', { code, cancelable: true });
         canvas.dispatchEvent(event);
         flushFrames();
         fixture.detectChanges();
@@ -835,17 +835,35 @@ describe(WorldViewerComponent.name, () => {
       flushFrames();
       fixture.detectChanges();
       const start = target();
-      // before the cursor was ever over the view, nothing happens
-      expect(space().defaultPrevented).toBe(true);
+      // the marker starts where the view was sent; before the cursor was over the view, Space does nothing
+      expect(press('Home').defaultPrevented).toBe(true);
+      expect(press('Space').defaultPrevented).toBe(true);
+      press('Home');
       expect(target()).toBe(start);
+
       page.pointer('pointermove', 80, 20);
-      space();
-      expect(target()).not.toBe(start);
-      // nowhere to land (a view without size): it stays
+      press('Space');
+      expect(target()).toBe(start);
+      press('Home');
       const moved = target();
+      expect(moved).not.toBe(start);
+      // nowhere to land (a view without size): the marker stays
       vi.mocked(HTMLElement.prototype.getBoundingClientRect).mockReturnValueOnce(new DOMRect(0, 0, 0, 0));
-      space();
+      press('Space');
+      press('Home');
       expect(target()).toBe(moved);
+    });
+
+    it('has no marker to go to before the view was sent anywhere', async () => {
+      const { page, fixture } = await setup();
+      await settle(fixture);
+      flushFrames();
+      fixture.detectChanges();
+      const before = page.target().nativeElement.textContent;
+      page.canvas().nativeElement.dispatchEvent(new KeyboardEvent('keydown', { code: 'Home' }));
+      flushFrames();
+      fixture.detectChanges();
+      expect(page.target().nativeElement.textContent).toBe(before);
     });
 
     it('snaps moved objects against the nearest wall, facing away from it', async () => {

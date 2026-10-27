@@ -5,9 +5,12 @@ import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-component
 import {
   ContextRequest,
   GizmoMode,
-  keyLabel,
-  NAVIGATION_ACTIONS,
-  NavigationAction,
+  CONTROL_ACTIONS,
+  CONTROL_GROUPS,
+  ControlAction,
+  controlFor,
+  inputLabel,
+  inputOf,
   ObjectMoved,
   parseWaypointKey,
   PickResult,
@@ -135,10 +138,12 @@ export class WorldEditorComponent implements OnInit {
   protected readonly renderSettings = inject(WorldRenderSettingsService);
   protected readonly cache = inject(WowDataCacheService);
   protected readonly controls = inject(WorldControlsSettingsService);
-  protected readonly navigationActions = NAVIGATION_ACTIONS;
-  protected readonly keyLabel = keyLabel;
-  /** The key slot waiting for a key press to be rebound. */
-  protected readonly rebinding = signal<{ action: NavigationAction; slot: 0 | 1 } | undefined>(undefined);
+  protected readonly controlActions = CONTROL_ACTIONS;
+  protected readonly controlGroups = CONTROL_GROUPS;
+  protected readonly inputLabel = inputLabel;
+  protected readonly showControls = signal(false);
+  /** The action waiting for a key press to be bound to it. */
+  protected readonly capturing = signal<ControlAction | undefined>(undefined);
   private readonly toastr = inject(ToastrService);
   private readonly clipboard = inject(ClipboardService);
   private readonly route = inject(ActivatedRoute);
@@ -459,8 +464,8 @@ export class WorldEditorComponent implements OnInit {
     this.controls.setKeyboardNavigation((event.target as HTMLInputElement).checked);
   }
 
-  protected startRebinding(action: NavigationAction, slot: 0 | 1): void {
-    this.rebinding.set({ action, slot });
+  protected toggleControls(): void {
+    this.showControls.update((shown) => !shown);
   }
 
   protected setRenderFlag(key: RenderFlagKey, event: Event): void {
@@ -1024,33 +1029,37 @@ export class WorldEditorComponent implements OnInit {
   }
 
   protected onKeydown(event: KeyboardEvent): void {
-    const rebinding = this.rebinding();
-    if (rebinding) {
+    const capturing = this.capturing();
+    if (capturing) {
       event.preventDefault();
-      if (event.code !== 'Escape') {
-        this.controls.bind(rebinding.action, rebinding.slot, event.code);
+      const input = inputOf(event);
+      // a modifier on its own waits for the key it goes with; Esc cancels
+      if (input === 'Escape') {
+        this.capturing.set(undefined);
+      } else if (input) {
+        this.controls.addBinding(capturing, input);
+        this.capturing.set(undefined);
       }
-      this.rebinding.set(undefined);
       return;
     }
     const target = event.target as HTMLElement;
     if (['INPUT', 'SELECT', 'TEXTAREA'].includes(target.tagName)) {
       return;
     }
-    const shortcut = event.ctrlKey || event.metaKey;
-    if (shortcut && (event.key === 'y' || event.key === 'Y' || (event.shiftKey && (event.key === 'z' || event.key === 'Z')))) {
+    const action = controlFor(this.controls.settings(), ['undo', 'redo', 'delete', 'toggleGizmo', 'cancel'], event);
+    if (action === 'redo') {
       event.preventDefault();
       this.redo();
-    } else if (shortcut && (event.key === 'z' || event.key === 'Z')) {
+    } else if (action === 'undo') {
       event.preventDefault();
       this.undo();
-    } else if (event.key === 'Delete') {
+    } else if (action === 'delete') {
       this.deleteSelected();
-    } else if (event.key === 'Escape') {
+    } else if (action === 'cancel') {
       this.contextMenu.set(undefined);
       this.tool.set('select');
       this.selectedKey.set(undefined);
-    } else if (event.key === 'r' || event.key === 'R') {
+    } else if (action === 'toggleGizmo') {
       this.gizmoMode.update((mode) => (mode === 'rotate' ? 'translate' : 'rotate'));
     }
   }

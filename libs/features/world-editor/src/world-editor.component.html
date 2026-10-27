@@ -112,6 +112,9 @@
     <button type="button" class="btn btn-sm btn-outline-secondary" data-testid="view-toggle" (click)="toggleView()">
       <i class="fa fa-eye"></i> {{ 'WORLD_EDITOR.VIEW' | translate }}
     </button>
+    <button type="button" class="btn btn-sm btn-outline-secondary" data-testid="controls-toggle" (click)="toggleControls()">
+      <i class="fa fa-keyboard-o"></i> {{ 'WORLD_EDITOR.CONTROLS' | translate }}
+    </button>
     <button type="button" class="btn btn-sm btn-outline-secondary" data-testid="settings-toggle" (click)="toggleSettings()">
       <i class="fa fa-cog"></i> {{ 'WORLD_EDITOR.SETTINGS' | translate }}
     </button>
@@ -200,6 +203,83 @@
       } @else {
         <small class="text-muted" data-testid="no-events">{{ 'WORLD_EDITOR.NO_EVENTS' | translate }}</small>
       }
+    </div>
+  }
+
+  @if (showControls()) {
+    @let bindings = controls.settings().bindings;
+    <div class="card card-body mb-2 py-2 world-editor-controls" data-testid="controls">
+      <div class="d-flex align-items-center gap-3 mb-1">
+        <div class="form-check form-switch mb-0">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="world-editor-keyboard"
+            data-testid="controls-navigation"
+            [checked]="controls.settings().keyboardNavigation"
+            (change)="setKeyboardNavigation($event)"
+          />
+          <label class="form-check-label" for="world-editor-keyboard">{{ 'WORLD_EDITOR.KEYBOARD_NAVIGATION' | translate }}</label>
+        </div>
+        <small class="text-muted">{{ 'WORLD_EDITOR.CONTROLS_HINT' | translate }}</small>
+        <button type="button" class="btn btn-sm btn-link ms-auto" data-testid="controls-reset" (click)="controls.reset()">
+          {{ 'WORLD_EDITOR.RESET_KEYS' | translate }}
+        </button>
+      </div>
+      <table class="table table-sm table-borderless align-middle mb-0">
+        @for (group of controlGroups; track group) {
+          <tbody>
+            <tr>
+              <th colspan="3" class="world-editor-control-group">{{ 'WORLD_EDITOR.CONTROL_GROUP_' + group.toUpperCase() | translate }}</th>
+            </tr>
+            @for (item of controlActions; track item.action) {
+              @if (item.group === group) {
+                <tr [attr.data-testid]="'control-' + item.action">
+                  <td>{{ 'WORLD_EDITOR.CONTROL_' + item.action.toUpperCase() | translate }}</td>
+                  <td>
+                    @for (input of bindings[item.action]; track input) {
+                      <span
+                        class="badge world-editor-binding"
+                        [class.bg-danger]="controls.clashes(item.action, input).length"
+                        [class.bg-secondary]="!controls.clashes(item.action, input).length"
+                        [title]="controls.clashes(item.action, input).length ? ('WORLD_EDITOR.CLASH' | translate) : ''"
+                      >
+                        {{ inputLabel(input) }}
+                        <button
+                          type="button"
+                          class="btn-close btn-close-white"
+                          [attr.data-testid]="'unbind-' + item.action + '-' + input"
+                          [attr.aria-label]="'WORLD_EDITOR.REMOVE' | translate"
+                          (click)="controls.removeBinding(item.action, input)"
+                        ></button>
+                      </span>
+                    }
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-secondary world-editor-key"
+                      [attr.data-testid]="'bind-' + item.action"
+                      [class.active]="capturing() === item.action"
+                      (click)="capturing.set(item.action)"
+                    >
+                      {{ (capturing() === item.action ? 'WORLD_EDITOR.PRESS_A_KEY' : 'WORLD_EDITOR.ADD_KEY') | translate }}
+                    </button>
+                  </td>
+                  <td class="text-end">
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-link"
+                      [attr.data-testid]="'default-' + item.action"
+                      (click)="controls.resetAction(item.action)"
+                    >
+                      {{ 'WORLD_EDITOR.DEFAULT' | translate }}
+                    </button>
+                  </td>
+                </tr>
+              }
+            }
+          </tbody>
+        }
+      </table>
     </div>
   }
 
@@ -345,57 +425,6 @@
           (change)="setRenderFlag('advancedDistances', $event)"
         />
         <label class="form-check-label" for="world-editor-advanced-distances">{{ 'WORLD_EDITOR.ADVANCED' | translate }}</label>
-      </div>
-      <div class="d-flex flex-wrap align-items-start gap-2 world-editor-keys" data-testid="view-keys">
-        <div class="form-check form-switch mb-0">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="world-editor-keyboard"
-            data-testid="view-keyboard"
-            [checked]="controls.settings().keyboardNavigation"
-            (change)="setKeyboardNavigation($event)"
-          />
-          <label class="form-check-label" for="world-editor-keyboard">{{ 'WORLD_EDITOR.KEYBOARD_NAVIGATION' | translate }}</label>
-        </div>
-        @if (controls.settings().keyboardNavigation) {
-          <table class="table table-sm table-borderless align-middle mb-0 world-editor-distances">
-            <thead>
-              <tr>
-                <th scope="col">{{ 'WORLD_EDITOR.ACTION' | translate }}</th>
-                <th scope="col">{{ 'WORLD_EDITOR.KEY' | translate }}</th>
-                <th scope="col">{{ 'WORLD_EDITOR.ALT_KEY' | translate }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (action of navigationActions; track action) {
-                <tr>
-                  <td>{{ 'WORLD_EDITOR.MOVE_' + action.toUpperCase() | translate }}</td>
-                  @for (slot of [0, 1]; track slot) {
-                    <td>
-                      <button
-                        type="button"
-                        class="btn btn-sm btn-outline-secondary world-editor-key"
-                        [attr.data-testid]="'key-' + action + '-' + slot"
-                        [class.active]="rebinding()?.action === action && rebinding()?.slot === slot"
-                        (click)="startRebinding(action, slot === 0 ? 0 : 1)"
-                      >
-                        @if (rebinding()?.action === action && rebinding()?.slot === slot) {
-                          {{ 'WORLD_EDITOR.PRESS_A_KEY' | translate }}
-                        } @else {
-                          {{ keyLabel(controls.settings().keys[action][slot]) || '—' }}
-                        }
-                      </button>
-                    </td>
-                  }
-                </tr>
-              }
-            </tbody>
-          </table>
-          <button type="button" class="btn btn-sm btn-link" data-testid="keys-reset" (click)="controls.reset()">
-            {{ 'WORLD_EDITOR.RESET_KEYS' | translate }}
-          </button>
-        }
       </div>
       @if (renderSettings.settings().advancedDistances) {
         <table class="table table-sm table-borderless align-middle mb-0 world-editor-distances" data-testid="view-distances">

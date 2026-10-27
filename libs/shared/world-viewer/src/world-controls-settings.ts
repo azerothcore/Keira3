@@ -1,34 +1,109 @@
 import { Service, signal } from '@angular/core';
 
-/** Camera moves bound to keys: along the ground relative to the view, and up/down. */
-export type NavigationAction = 'forward' | 'back' | 'left' | 'right' | 'up' | 'down';
+/**
+ * Keyboard controls of the 3D world editor, the ArmA way: every action can have any number of bindings, and a binding
+ * is a key (`KeyboardEvent.code`) with the modifiers that must be held, written like `Ctrl+KeyZ`.
+ */
+export type ControlAction =
+  // camera
+  | 'forward'
+  | 'back'
+  | 'left'
+  | 'right'
+  | 'up'
+  | 'down'
+  // marker
+  | 'markerToCursor'
+  | 'cameraToMarker'
+  // editing
+  | 'undo'
+  | 'redo'
+  | 'delete'
+  | 'toggleGizmo'
+  | 'cancel';
 
+/** The camera moves held down: along the ground relative to the view, and up/down. Shift makes them faster. */
+export type NavigationAction = Extract<ControlAction, 'forward' | 'back' | 'left' | 'right' | 'up' | 'down'>;
 export const NAVIGATION_ACTIONS: NavigationAction[] = ['forward', 'back', 'left', 'right', 'up', 'down'];
 
-/** Keyboard navigation of the 3D view: two keys per action (primary, alternate), as `KeyboardEvent.code`s. */
+export type ControlGroup = 'camera' | 'marker' | 'editing';
+
+/** Every action, in the order of the settings panel, with its group. */
+export const CONTROL_ACTIONS: { action: ControlAction; group: ControlGroup }[] = [
+  ...NAVIGATION_ACTIONS.map((action) => ({ action, group: 'camera' as const })),
+  { action: 'markerToCursor', group: 'marker' },
+  { action: 'cameraToMarker', group: 'marker' },
+  { action: 'undo', group: 'editing' },
+  { action: 'redo', group: 'editing' },
+  { action: 'delete', group: 'editing' },
+  { action: 'toggleGizmo', group: 'editing' },
+  { action: 'cancel', group: 'editing' },
+];
+
+export const CONTROL_GROUPS: ControlGroup[] = ['camera', 'marker', 'editing'];
+
+export const DEFAULT_CONTROL_BINDINGS: Record<ControlAction, string[]> = {
+  forward: ['KeyW', 'ArrowUp'],
+  back: ['KeyS', 'ArrowDown'],
+  left: ['KeyA', 'ArrowLeft'],
+  right: ['KeyD', 'ArrowRight'],
+  up: ['KeyE', 'PageUp'],
+  down: ['KeyQ', 'PageDown'],
+  markerToCursor: ['Space'],
+  cameraToMarker: ['Home'],
+  undo: ['Ctrl+KeyZ'],
+  redo: ['Ctrl+KeyY', 'Ctrl+Shift+KeyZ'],
+  delete: ['Delete'],
+  toggleGizmo: ['KeyR'],
+  cancel: ['Escape'],
+};
+
 export interface WorldControlsSettings {
   keyboardNavigation: boolean;
-  keys: Record<NavigationAction, [string, string]>;
+  bindings: Record<ControlAction, string[]>;
 }
 
-export const DEFAULT_WORLD_CONTROLS_SETTINGS: WorldControlsSettings = {
-  keyboardNavigation: true,
-  keys: {
-    forward: ['KeyW', 'ArrowUp'],
-    back: ['KeyS', 'ArrowDown'],
-    left: ['KeyA', 'ArrowLeft'],
-    right: ['KeyD', 'ArrowRight'],
-    up: ['KeyE', 'PageUp'],
-    down: ['KeyQ', 'PageDown'],
-  },
-};
+export const DEFAULT_WORLD_CONTROLS_SETTINGS: WorldControlsSettings = { keyboardNavigation: true, bindings: DEFAULT_CONTROL_BINDINGS };
 
 export const WORLD_CONTROLS_SETTINGS_KEY = 'keira3.worldEditor.controls';
 
-/** "KeyW" → "W", "ArrowUp" → "↑", "Digit1" → "1"; anything else as is. */
-export function keyLabel(code: string): string {
+const MODIFIER_CODES = ['ControlLeft', 'ControlRight', 'ShiftLeft', 'ShiftRight', 'AltLeft', 'AltRight', 'MetaLeft', 'MetaRight'];
+
+/** A key press as a binding: `Ctrl+Shift+KeyZ` (⌘ counts as Ctrl); undefined for a modifier pressed on its own. */
+export function inputOf(event: KeyboardEvent): string | undefined {
+  if (!event.code || MODIFIER_CODES.includes(event.code)) {
+    return undefined;
+  }
+  const mods = [event.ctrlKey || event.metaKey ? 'Ctrl' : '', event.shiftKey ? 'Shift' : '', event.altKey ? 'Alt' : ''];
+  return [...mods.filter(Boolean), event.code].join('+');
+}
+
+/** `Ctrl+KeyZ` → "Ctrl+Z", `ArrowUp` → "↑", `Digit1` → "1"; anything else as is. */
+export function inputLabel(input: string): string {
   const arrows: Record<string, string> = { ArrowUp: '↑', ArrowDown: '↓', ArrowLeft: '←', ArrowRight: '→' };
-  return arrows[code] ?? code.replace(/^Key|^Digit/, '');
+  return input
+    .split('+')
+    .map((part) => arrows[part] ?? part.replace(/^Key|^Digit/, ''))
+    .join('+');
+}
+
+/**
+ * Whether a key press fires an action. Camera moves ignore Shift (held to go faster); everything else needs exactly the
+ * modifiers of one of its bindings.
+ */
+export function controlMatches(settings: WorldControlsSettings, action: ControlAction, event: KeyboardEvent): boolean {
+  const input = inputOf(event);
+  if (!input) {
+    return false;
+  }
+  const navigation = (NAVIGATION_ACTIONS as ControlAction[]).includes(action);
+  const normalise = (value: string): string => (navigation ? value.replace('Shift+', '') : value);
+  return settings.bindings[action].some((binding) => normalise(binding) === normalise(input));
+}
+
+/** The first action a key press fires, among the given ones. */
+export function controlFor<T extends ControlAction>(settings: WorldControlsSettings, actions: T[], event: KeyboardEvent): T | undefined {
+  return actions.find((action) => controlMatches(settings, action, event));
 }
 
 /** Keyboard settings of the 3D world editor, saved on this computer. */
@@ -41,20 +116,37 @@ export class WorldControlsSettingsService {
     this.save({ ...this._settings(), keyboardNavigation: enabled });
   }
 
-  /** Binds a key to an action's primary (0) or alternate (1) slot; the key is taken from any action it was bound to. */
-  bind(action: NavigationAction, slot: 0 | 1, code: string): void {
-    const keys = { ...this._settings().keys };
-    for (const other of NAVIGATION_ACTIONS) {
-      keys[other] = keys[other].map((bound) => (bound === code ? '' : bound)) as [string, string];
+  addBinding(action: ControlAction, input: string): void {
+    const current = this._settings().bindings[action];
+    if (!current.includes(input)) {
+      this.setBindings(action, [...current, input]);
     }
-    const pair = [...keys[action]] as [string, string];
-    pair[slot] = code;
-    keys[action] = pair;
-    this.save({ ...this._settings(), keys });
+  }
+
+  removeBinding(action: ControlAction, input: string): void {
+    this.setBindings(
+      action,
+      this._settings().bindings[action].filter((binding) => binding !== input),
+    );
+  }
+
+  resetAction(action: ControlAction): void {
+    this.setBindings(action, DEFAULT_CONTROL_BINDINGS[action]);
   }
 
   reset(): void {
     this.save(DEFAULT_WORLD_CONTROLS_SETTINGS);
+  }
+
+  /** Other actions the same input is bound to: they clash (only the first one in the list fires). */
+  clashes(action: ControlAction, input: string): ControlAction[] {
+    const bindings = this._settings().bindings;
+    return CONTROL_ACTIONS.map((a) => a.action).filter((other) => other !== action && bindings[other].includes(input));
+  }
+
+  private setBindings(action: ControlAction, inputs: string[]): void {
+    const settings = this._settings();
+    this.save({ ...settings, bindings: { ...settings.bindings, [action]: [...inputs] } });
   }
 
   private save(settings: WorldControlsSettings): void {
@@ -64,16 +156,21 @@ export class WorldControlsSettingsService {
 
   private load(): WorldControlsSettings {
     try {
-      const stored = JSON.parse(localStorage.getItem(WORLD_CONTROLS_SETTINGS_KEY) ?? '{}') as Partial<WorldControlsSettings>;
-      const keys = { ...DEFAULT_WORLD_CONTROLS_SETTINGS.keys };
-      for (const action of NAVIGATION_ACTIONS) {
-        const pair = stored.keys?.[action];
-        if (Array.isArray(pair) && pair.length === 2 && pair.every((code) => typeof code === 'string')) {
-          keys[action] = pair;
+      const stored = JSON.parse(localStorage.getItem(WORLD_CONTROLS_SETTINGS_KEY) ?? '{}') as {
+        keyboardNavigation?: unknown;
+        bindings?: Record<string, unknown>;
+        /** the older format: two keys (primary, alternate) per camera move */
+        keys?: Record<string, unknown>;
+      };
+      const bindings = { ...DEFAULT_CONTROL_BINDINGS };
+      for (const { action } of CONTROL_ACTIONS) {
+        const inputs = stored.bindings?.[action] ?? stored.keys?.[action];
+        if (Array.isArray(inputs) && inputs.every((input) => typeof input === 'string')) {
+          bindings[action] = inputs.filter(Boolean);
         }
       }
       const enabled = typeof stored.keyboardNavigation === 'boolean' ? stored.keyboardNavigation : true;
-      return { keyboardNavigation: enabled, keys };
+      return { keyboardNavigation: enabled, bindings };
     } catch {
       return DEFAULT_WORLD_CONTROLS_SETTINGS;
     }

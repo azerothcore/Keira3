@@ -22,7 +22,13 @@ import { TextureCache } from './texture-cache';
 import { SpawnModels } from './spawn-models';
 import { WorldDoodads } from './world-doodads';
 import { ZoneLighting } from './zone-lighting';
-import { DEFAULT_WORLD_CONTROLS_SETTINGS, NAVIGATION_ACTIONS, NavigationAction, WorldControlsSettings } from './world-controls-settings';
+import {
+  controlFor,
+  DEFAULT_WORLD_CONTROLS_SETTINGS,
+  NAVIGATION_ACTIONS,
+  NavigationAction,
+  WorldControlsSettings,
+} from './world-controls-settings';
 import { WorldObjects } from './world-objects';
 import { DEFAULT_WORLD_RENDER_SETTINGS, drawDistances, WorldRenderSettings } from './world-render-settings';
 import { WORLD_RENDERER_FACTORY, WorldRenderer } from './world-renderer';
@@ -131,6 +137,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private frameRequested = false;
   private pointerDown?: { x: number; y: number };
   private lastEmittedCenter?: WorldPosition;
+  /** The marker (the beam): where the last "go to" landed, or where Space put it; Home brings the camera there. */
+  private marker?: WorldPosition;
   /** Alt held during the last hover: labels show all their details. */
   private altHeld = false;
   /** Where the cursor last was over the view, for Space. */
@@ -197,7 +205,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       if (target) {
         untracked(() => {
           this.lookAt(target);
-          this.world.setBeacon(target);
+          this.setMarker(target);
         });
       }
     });
@@ -386,12 +394,17 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     if (event.key === 'Alt') {
       this.setAltHeld(true);
     }
-    if (event.code === 'Space') {
+    const marker = controlFor(this.navigation(), ['markerToCursor', 'cameraToMarker'], event);
+    if (marker) {
       event.preventDefault();
-      this.recenterOnCursor();
+      if (marker === 'markerToCursor') {
+        this.markerToCursor();
+      } else {
+        this.cameraToMarker();
+      }
       return;
     }
-    const action = this.navigationAction(event.code);
+    const action = this.navigationAction(event);
     if (!action) {
       return;
     }
@@ -420,7 +433,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     if (event.key === 'Alt') {
       this.setAltHeld(false);
     }
-    const action = this.navigationAction(event.code);
+    const action = this.navigationAction(event);
     if (action) {
       this.pressed.delete(action);
     }
@@ -432,23 +445,35 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   }
 
   /** Space: moves the camera target (and its marker) to the ground under the cursor, keeping the view's angle and zoom. */
-  private recenterOnCursor(): void {
+  private markerToCursor(): void {
     const ground = this.lastPointer && this.pickAt(this.lastPointer, { groundOnly: true });
-    if (ground?.type !== 'ground') {
+    if (ground?.type === 'ground') {
+      this.setMarker(ground.position);
+    }
+  }
+
+  /** Moves the camera target to the marker, keeping the view's angle and zoom. */
+  private cameraToMarker(): void {
+    if (!this.marker) {
       return;
     }
-    const point = worldToScene(ground.position);
+    const point = worldToScene(this.marker);
     const offset = new Vector3(point.x, point.y, point.z).sub(this.target);
     this.world.camera.position.add(offset);
     this.target.add(offset);
     (this.controls as MapControls).update();
-    this.world.setBeacon(ground.position);
     this.onCameraChange();
   }
 
-  private navigationAction(code: string): NavigationAction | undefined {
+  private setMarker(position: WorldPosition): void {
+    this.marker = position;
+    this.world.setBeacon(position);
+    this.requestRender();
+  }
+
+  private navigationAction(event: KeyboardEvent): NavigationAction | undefined {
     const navigation = this.navigation();
-    return navigation.keyboardNavigation ? NAVIGATION_ACTIONS.find((action) => navigation.keys[action].includes(code)) : undefined;
+    return navigation.keyboardNavigation ? controlFor(navigation, NAVIGATION_ACTIONS, event) : undefined;
   }
 
   /** Moves the camera and its target together, along the ground as seen from the camera, faster when zoomed out. */
