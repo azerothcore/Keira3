@@ -142,6 +142,36 @@ describe('WorldScene', () => {
       expect(world.groundHeightAt(CENTER.x, CENTER.y)).toBeCloseTo(10);
     });
 
+    it('finds the nearest wall and the orientation facing away from it', () => {
+      const world = new WorldScene();
+      // a wall 3 yards east (server −y) of CENTER: the plane scene x = −(CENTER.y − 3), seen from both sides
+      const wall = new Mesh(
+        new BufferGeometry().setFromPoints([
+          new Vector3(0, -50, -20),
+          new Vector3(0, 50, -20),
+          new Vector3(0, -50, 20),
+          new Vector3(0, 50, 20),
+        ]),
+      );
+      wall.geometry.setIndex([0, 1, 2, 2, 1, 3]);
+      wall.geometry.computeVertexNormals();
+      const p = worldToScene({ ...CENTER, y: CENTER.y - 3, z: 30 });
+      wall.position.set(p.x, 30, p.z);
+      world.buildingGroup.add(wall);
+      wall.updateMatrixWorld();
+      wall.material = new MeshLambertMaterial({ side: 2 });
+
+      const snap = world.wallSnap(CENTER.x, CENTER.y, 30);
+      expect(snap?.position.y).toBeCloseTo(CENTER.y - 3 + 0.1, 3);
+      expect(snap?.position.x).toBeCloseTo(CENTER.x, 3);
+      expect(snap?.position.z).toBeCloseTo(30, 3);
+      // facing west (+y), away from the wall
+      expect(snap?.orientation).toBeCloseTo(Math.PI / 2, 3);
+      // from the other side, facing east
+      expect(world.wallSnap(CENTER.x, CENTER.y - 6, 30)?.orientation).toBeCloseTo((3 * Math.PI) / 2, 3);
+      expect(world.wallSnap(CENTER.x, CENTER.y + 20, 30)).toBeUndefined();
+    });
+
     it('reports the ground height under a position', () => {
       const world = new WorldScene();
       world.setTerrainTile(flatTile(42));

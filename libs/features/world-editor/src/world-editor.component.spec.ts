@@ -32,6 +32,7 @@ class FakeWorldViewerComponent {
   readonly editableKey = input<string | undefined>(undefined);
   readonly gizmoMode = input<GizmoMode>('translate');
   readonly snapToGround = input<boolean>(true);
+  readonly snapToWall = input<boolean>(false);
   readonly groundOnly = input<boolean>(false);
   readonly renderSettings = input<WorldRenderSettings>(DEFAULT_WORLD_RENDER_SETTINGS);
   readonly focus = input<WorldPosition | undefined>(undefined);
@@ -896,10 +897,21 @@ describe(WorldEditorComponent.name, () => {
       page.fixture.detectChanges();
       expect(page.viewer().gizmoMode()).toBe('rotate');
       page.click('gizmo-translate');
-      page.click('snap-toggle');
       page.fixture.detectChanges();
       expect(page.viewer().gizmoMode()).toBe('translate');
-      expect(page.viewer().snapToGround()).toBe(false);
+      expect(page.viewer().snapToGround()).toBe(true);
+
+      const snap = page.byId<HTMLSelectElement>('snap-mode').nativeElement;
+      for (const [mode, ground, wall] of [
+        ['wall', false, true],
+        ['off', false, false],
+      ] as const) {
+        snap.value = mode;
+        snap.dispatchEvent(new Event('change'));
+        page.fixture.detectChanges();
+        expect(page.viewer().snapToGround()).toBe(ground);
+        expect(page.viewer().snapToWall()).toBe(wall);
+      }
     });
   });
 

@@ -97,6 +97,7 @@ interface FakeTransformControls extends EventDispatcher<{ 'dragging-changed': { 
       [editableKey]="editable()"
       [gizmoMode]="mode()"
       [snapToGround]="snap()"
+      [snapToWall]="wall()"
       [groundOnly]="groundOnly()"
       [renderSettings]="render()"
       [focus]="focus()"
@@ -116,6 +117,7 @@ class HostComponent {
   readonly editable = signal<string | undefined>(undefined);
   readonly mode = signal<GizmoMode>('translate');
   readonly snap = signal(true);
+  readonly wall = signal(false);
   readonly groundOnly = signal(false);
   readonly render = signal<WorldRenderSettings>(DEFAULT_WORLD_RENDER_SETTINGS);
   readonly focus = signal<WorldPosition | undefined>(undefined);
@@ -149,8 +151,8 @@ class Page extends PageObjectModel<HostComponent> {
     return this.getDebugElementByTestId('world-viewer-target');
   }
 
-  pointer(type: string, x: number, y: number, button = 0): void {
-    const event = new MouseEvent(type, { clientX: x, clientY: y, button, bubbles: true });
+  pointer(type: string, x: number, y: number, button = 0, altKey = false): void {
+    const event = new MouseEvent(type, { clientX: x, clientY: y, button, altKey, bubbles: true });
     this.viewer().nativeElement.dispatchEvent(event);
   }
   click(x = 50, y = 50, button = 0): void {
@@ -667,6 +669,107 @@ describe(WorldViewerComponent.name, () => {
         { key: 'creature:1', position: expect.objectContaining({ z: expect.closeTo(GROUND, 3) }), orientation: 0 },
       ]);
       expect(host.moves[0].position.y).toBeCloseTo(CENTER.y - 3);
+    });
+
+    it('puts the editable object under the cursor with Alt+click, and drags it while held', async () => {
+      const { page, host, mapControls, fixture, update } = await setup((h) => {
+        h.map.set('Azeroth');
+        h.spawns.set([spawn('creature:7', at(0, 0), 'Deputy Willem')]);
+        h.paths.set([{ key: 'path:1', label: 'Path 1', points: [{ point: 3, position: at(300, 300) }] }]);
+        h.focus.set(at(0, 0));
+      });
+      await settle(fixture);
+      await update(() => host.focus.set(at(-100, -100)));
+      await settle(fixture);
+      // without an editable object, Alt+click is a normal click
+      page.pointer('pointerdown', 50, 50, 0, true);
+      page.pointer('pointerup', 50, 50, 0, true);
+      expect(host.picks).toHaveLength(1);
+
+      await update(() => host.editable.set('creature:7'));
+      page.pointer('pointerdown', 50, 50, 0, true);
+      expect(mapControls().enabled).toBe(false);
+      page.pointer('pointermove', 70, 30, 0, true);
+      // where nothing can be picked (here: a view without size) it doesn't move
+      vi.mocked(HTMLElement.prototype.getBoundingClientRect).mockReturnValueOnce(new DOMRect(0, 0, 0, 0));
+      page.pointer('pointermove', 10, 10, 0, true);
+      page.pointer('pointermove', 50, 50, 0, true);
+      page.pointer('pointerup', 50, 50, 0, true);
+      expect(mapControls().enabled).toBe(true);
+      expect(host.picks).toHaveLength(1);
+      expect(host.moves).toEqual([
+        { key: 'creature:7', position: expect.objectContaining({ z: expect.closeTo(GROUND, 3) }), orientation: 0 },
+      ]);
+      expect(host.moves[0].position.x).toBeCloseTo(CENTER.x - 100, 0);
+
+      // a right-button Alt+click doesn't move it; neither does a waypoint go under the ground
+      page.pointer('pointerdown', 50, 50, 2, true);
+      page.pointer('pointerup', 50, 50, 2, true);
+      expect(host.moves).toHaveLength(1);
+      await update(() => host.editable.set('path:1#3'));
+      page.pointer('pointerdown', 50, 50, 0, true);
+      page.pointer('pointerup', 50, 50, 0, true);
+      expect(host.moves[1].position.z).toBeCloseTo(GROUND, 3);
+      await update(() => host.editable.set('creature:404'));
+      page.pointer('pointerdown', 50, 50, 0, true);
+      page.pointer('pointerup', 50, 50, 0, true);
+      expect(host.moves).toHaveLength(2);
+      // the object vanishing during a drag (spawns reloaded) ends it quietly
+      await update(() => host.editable.set('creature:7'));
+      page.pointer('pointerdown', 50, 50, 0, true);
+      await update(() => host.spawns.set([]));
+      page.pointer('pointerup', 50, 50, 0, true);
+      expect(host.moves).toHaveLength(2);
+      expect(mapControls().enabled).toBe(true);
+    });
+
+    it('snaps moved objects against the nearest wall, facing away from it', async () => {
+      // a building made of one wall, 3 yards east of the creature, facing west
+      const east = CENTER.y - 3;
+      client.getTilePlacements.mockResolvedValue({
+        wmos: [{ uniqueId: 1, path: 'wall.wmo', position: [CENTER.x, east, GROUND], rotation: [0, 0, 0, 1], scale: 1 }],
+        doodads: [],
+      });
+      client.getWmo.mockResolvedValue({
+        materials: [],
+        groups: [
+          {
+            // a quad in the server plane y = 0 (scene x = 0), normal towards +y (west), 200 yards tall
+            positions: new Float32Array([0, -100, -10, 0, 100, -10, 0, -100, 10, 0, 100, 10]),
+            normals: new Float32Array([-1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0]),
+            uvs: new Float32Array(8),
+            indices: new Uint16Array([0, 1, 2, 2, 1, 3, 0, 2, 1, 2, 3, 1]),
+            batches: [{ start: 0, count: 12, material: 0 }],
+            indoor: false,
+          },
+        ],
+      });
+      const { host, gizmo, fixture, update } = await gizmoSetup();
+      for (let i = 0; i < 4; i++) {
+        await settle(fixture);
+      }
+      await update(() => {
+        host.wall.set(true);
+        host.editable.set('creature:1');
+      });
+      gizmo().dispatchEvent({ type: 'dragging-changed', value: true });
+      gizmo().dispatchEvent({ type: 'objectChange' });
+      gizmo().dispatchEvent({ type: 'dragging-changed', value: false });
+      expect(host.moves[0].position.y).toBeCloseTo(east + 0.1, 1);
+      // facing away from the wall: west (+y), orientation π/2
+      expect(host.moves[0].orientation).toBeCloseTo(Math.PI / 2, 2);
+
+      // far from any wall it stays where it was
+      gizmo().object?.position.setX(gizmo().object!.position.x + 50);
+      gizmo().dispatchEvent({ type: 'objectChange' });
+      gizmo().dispatchEvent({ type: 'dragging-changed', value: false });
+      expect(host.moves[1].position.y).toBeCloseTo(east + 0.1 - 50, 0);
+      // waypoints snap without turning
+      await update(() => host.editable.set('path:1#1'));
+      gizmo().object?.position.set(worldToScene(at(0, 0)).x, worldToScene(at(0, 0)).y, worldToScene(at(0, 0)).z);
+      gizmo().dispatchEvent({ type: 'objectChange' });
+      gizmo().dispatchEvent({ type: 'dragging-changed', value: false });
+      expect(host.moves[2].position.y).toBeCloseTo(east + 0.1, 1);
     });
 
     it('moves waypoints with their path line, and keeps the height without snapping or ground', async () => {

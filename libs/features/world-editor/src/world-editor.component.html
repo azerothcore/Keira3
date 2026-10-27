@@ -503,6 +503,7 @@
         [editableKey]="editableKey()"
         [gizmoMode]="gizmoMode()"
         [snapToGround]="snapToGround()"
+        [snapToWall]="snapToWall()"
         [groundOnly]="tool() !== 'select'"
         [renderSettings]="renderSettings.settings()"
         [navigation]="controls.settings()"
@@ -587,17 +588,21 @@
                   <i class="fa fa-sync-alt"></i> {{ 'WORLD_EDITOR.ROTATE' | translate }}
                 </button>
               </div>
-              <div class="form-check form-switch ms-2 mb-0">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
+              <label class="d-flex align-items-center gap-1 ms-2 mb-0 small" for="world-editor-snap">
+                {{ 'WORLD_EDITOR.SNAP_TO' | translate }}
+                <select
                   id="world-editor-snap"
-                  data-testid="snap-toggle"
-                  [checked]="snapToGround()"
-                  (change)="toggleSnap()"
-                />
-                <label class="form-check-label small" for="world-editor-snap">{{ 'WORLD_EDITOR.SNAP' | translate }}</label>
-              </div>
+                  class="form-select form-select-sm w-auto"
+                  data-testid="snap-mode"
+                  (change)="setSnapMode($event)"
+                >
+                  @for (mode of ['ground', 'wall', 'off']; track mode) {
+                    <option [value]="mode" [selected]="mode === snapMode()">
+                      {{ 'WORLD_EDITOR.SNAP_' + mode.toUpperCase() | translate }}
+                    </option>
+                  }
+                </select>
+              </label>
             </div>
           }
         </div>

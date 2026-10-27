@@ -13,8 +13,8 @@ import {
   viewChild,
 } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
-import { WowClientService, WorldBounds, WorldPosition, worldToScene, sceneToWorld } from '@keira/shared/wow-data';
-import { Vector3 } from 'three';
+import { orientationToSceneYaw, WowClientService, WorldBounds, WorldPosition, worldToScene, sceneToWorld } from '@keira/shared/wow-data';
+import { Object3D, Vector3 } from 'three';
 import { MapControls } from 'three/addons/controls/MapControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { TerrainStreamer } from './terrain-streamer';
@@ -67,6 +67,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   readonly editableKey = input<string | undefined>(undefined);
   readonly gizmoMode = input<GizmoMode>('translate');
   readonly snapToGround = input<boolean>(true);
+  /** Moved objects go against the nearest wall instead (and face away from it). */
+  readonly snapToWall = input<boolean>(false);
   /** Clicks report the terrain under the cursor even over markers (for placing things). */
   readonly groundOnly = input<boolean>(false);
   /** Moves the camera to look at this position whenever it changes. */
@@ -91,6 +93,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   /** Server position the camera looks at, for the readout in the corner. */
   protected readonly cameraTarget = signal<WorldPosition | undefined>(undefined);
   private activityTimer?: ReturnType<typeof setTimeout>;
+  private altDragging = false;
   private readonly pressed = new Set<NavigationAction>();
   private fast = false;
   private moveFrame?: number;
@@ -246,10 +249,17 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   // ---------------------------------------------------------------- pointer handling
 
   protected onPointerDown(event: PointerEvent): void {
+    if (this.startAltDrag(event)) {
+      return;
+    }
     this.pointerDown = { x: event.clientX, y: event.clientY };
   }
 
   protected onPointerUp(event: PointerEvent): void {
+    if (this.altDragging) {
+      this.endAltDrag();
+      return;
+    }
     const start = this.pointerDown;
     this.pointerDown = undefined;
     if (!start || event.button !== 0 || this.gizmo.dragging) {
@@ -265,6 +275,10 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   }
 
   protected onPointerMove(event: PointerEvent): void {
+    if (this.altDragging) {
+      this.altDragTo(event);
+      return;
+    }
     if (this.pointerDown || this.gizmo.dragging) {
       this.hoverLabel.set(undefined);
       return;
@@ -407,6 +421,64 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     this.requestRender();
   }
 
+  /** Snaps a moved object onto the ground below it, or against the nearest wall (facing away from it). */
+  private snap(key: string, object: Object3D, waypoint: boolean): void {
+    const state = this.world.getObjectState(key) as { position: WorldPosition };
+    if (this.snapToWall()) {
+      const wall = this.world.wallSnap(state.position.x, state.position.y, state.position.z);
+      if (wall) {
+        const p = worldToScene(wall.position);
+        object.position.x = p.x;
+        object.position.z = p.z;
+        if (!waypoint) {
+          object.rotation.y = orientationToSceneYaw(wall.orientation);
+        }
+      }
+    } else if (this.snapToGround()) {
+      const ground = this.world.groundHeightAt(state.position.x, state.position.y, state.position.z);
+      if (ground !== undefined) {
+        object.position.y = ground + (waypoint ? 0.4 : 0);
+      }
+    }
+  }
+
+  // ---------------------------------------------------------------- Alt+click / Alt+drag
+
+  /** Alt+click puts the editable object under the cursor; holding the button drags it along. */
+  private startAltDrag(event: PointerEvent): boolean {
+    const key = this.editableKey();
+    if (!event.altKey || event.button !== 0 || !key || !this.world.getObject(key)) {
+      return false;
+    }
+    this.altDragging = true;
+    (this.controls as MapControls).enabled = false;
+    this.altDragTo(event);
+    return true;
+  }
+
+  private altDragTo(event: PointerEvent): void {
+    const key = this.editableKey() as string;
+    const object = this.world.getObject(key) as Object3D;
+    const ground = this.pickAt(event, { groundOnly: true });
+    if (ground?.type !== 'ground') {
+      return;
+    }
+    const waypoint = !!parseWaypointKey(key);
+    const p = worldToScene(ground.position);
+    object.position.set(p.x, p.y + (waypoint ? 0.4 : 0), p.z);
+    this.onGizmoChange();
+  }
+
+  private endAltDrag(): void {
+    this.altDragging = false;
+    (this.controls as MapControls).enabled = true;
+    const key = this.editableKey() as string;
+    const state = this.world.getObjectState(key);
+    if (state) {
+      this.objectMoved.emit({ key, position: state.position, orientation: state.orientation });
+    }
+  }
+
   private onGizmoDragging(dragging: boolean): void {
     (this.controls as MapControls).enabled = !dragging;
     const key = this.editableKey();
@@ -423,12 +495,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       return;
     }
     const waypoint = parseWaypointKey(key);
-    if (this.snapToGround() && this.gizmoMode() === 'translate') {
-      const state = this.world.getObjectState(key) as { position: WorldPosition };
-      const ground = this.world.groundHeightAt(state.position.x, state.position.y, state.position.z);
-      if (ground !== undefined) {
-        object.position.y = ground + (waypoint ? 0.4 : 0);
-      }
+    if (this.gizmoMode() === 'translate' || this.altDragging) {
+      this.snap(key, object, !!waypoint);
     }
     if (waypoint) {
       this.world.refreshPathLine(waypoint.pathKey);

@@ -105,6 +105,10 @@ const DEFAULT_FOG = { near: 600, far: 1600 };
 const MIN_FOG_END = 400;
 /** How far above an object snapping still looks for ground (yards): enough for a stair step or a small ledge. */
 const GROUND_STEP = 2;
+/** Snap to wall looks this far around (yards), in this many directions, and leaves this gap. */
+const WALL_SNAP_DISTANCE = 6;
+const WALL_SNAP_DIRECTIONS = 16;
+const WALL_SNAP_GAP = 0.1;
 
 const COLORS = {
   sky: 0x9cc3e6,
@@ -708,6 +712,40 @@ export class WorldScene {
   groundHeightAt(x: number, y: number, fromZ?: number): number | undefined {
     const below = fromZ === undefined ? undefined : this.firstGroundBelow(x, y, fromZ + GROUND_STEP);
     return below ?? this.firstGroundBelow(x, y, 10_000);
+  }
+
+  /**
+   * The nearest building wall around a point (within `WALL_SNAP_DISTANCE`, at the given height + 1 yard): where to
+   * stand against it and the orientation facing away from it, for torches, banners or NPCs leaning on a wall.
+   */
+  wallSnap(x: number, y: number, z: number): { position: WorldPosition; orientation: number } | undefined {
+    const origin = scenePoint({ x, y, z: z + 1 });
+    // buildings streamed in since the last frame have no world matrix yet
+    this.buildingGroup.updateMatrixWorld();
+    let best: Intersection | undefined;
+    for (let i = 0; i < WALL_SNAP_DIRECTIONS; i++) {
+      const angle = (i / WALL_SNAP_DIRECTIONS) * Math.PI * 2;
+      this.raycaster.set(origin, new Vector3(Math.cos(angle), 0, Math.sin(angle)));
+      this.raycaster.far = WALL_SNAP_DISTANCE;
+      const hit = this.raycaster.intersectObjects([this.buildingGroup], true)[0];
+      if (hit && (!best || hit.distance < best.distance)) {
+        best = hit;
+      }
+    }
+    this.raycaster.far = Infinity;
+    if (!best?.face) {
+      return undefined;
+    }
+    const normal = best.face.normal.clone().transformDirection(best.object.matrixWorld).setY(0);
+    // faces seen from behind (thin walls, inside of a hut): face the side the point is on
+    if (normal.dot(origin.clone().sub(best.point)) < 0) {
+      normal.negate();
+    }
+    normal.normalize();
+    const point = best.point.clone().addScaledVector(normal, WALL_SNAP_GAP);
+    const position = sceneToWorld({ x: point.x, y: point.y - 1, z: point.z });
+    // the scene yaw whose forward (−z) points along the normal
+    return { position, orientation: sceneYawToOrientation(Math.atan2(-normal.x, -normal.z)) };
   }
 
   private firstGroundBelow(x: number, y: number, z: number): number | undefined {

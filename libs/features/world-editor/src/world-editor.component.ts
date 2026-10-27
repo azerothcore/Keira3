@@ -143,7 +143,10 @@ export class WorldEditorComponent implements OnInit {
   protected readonly layers = signal<LayerVisibility>({ creatures: true, gameobjects: true, waypoints: true });
   protected readonly tool = signal<EditorTool>('select');
   protected readonly gizmoMode = signal<GizmoMode>('translate');
-  protected readonly snapToGround = signal(true);
+  /** Where moved objects snap: nowhere, onto the ground/floor below, or against the nearest wall. */
+  protected readonly snapMode = signal<'off' | 'ground' | 'wall'>('ground');
+  protected readonly snapToGround = computed(() => this.snapMode() === 'ground');
+  protected readonly snapToWall = computed(() => this.snapMode() === 'wall');
   protected readonly selectedKey = signal<string | undefined>(undefined);
   protected readonly showSettings = signal(!this.settings.isConfigured());
   protected readonly showView = signal(false);
@@ -651,8 +654,8 @@ export class WorldEditorComponent implements OnInit {
     this.gizmoMode.set(mode);
   }
 
-  protected toggleSnap(): void {
-    this.snapToGround.update((snap) => !snap);
+  protected setSnapMode(event: Event): void {
+    this.snapMode.set((event.target as HTMLSelectElement).value as 'off' | 'ground' | 'wall');
   }
 
   private select(key: string | undefined): void {
