@@ -197,3 +197,22 @@
   position: absolute;
   z-index: 10;
 }
+
+// area triggers: the purple of their volumes in the 3D view
+$trigger-color: #c77dff;
+
+.btn-trigger {
+  background-color: $trigger-color;
+  border-color: $trigger-color;
+  color: #fff;
+}
+
+.btn-outline-trigger {
+  border-color: $trigger-color;
+  color: $trigger-color;
+
+  &:hover {
+    background-color: $trigger-color;
+    color: #fff;
+  }
+}

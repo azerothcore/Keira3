@@ -160,6 +160,27 @@ describe('WorldEditorService', () => {
     expect((queryService.query.mock.calls[1][0] as string).split('UNION ALL')).toHaveLength(2);
   });
 
+  it('describes what the database does with area triggers', async () => {
+    const { service, queryService } = setup();
+    expect((await service.loadAreaTriggerInfo([])).size).toBe(0);
+    expect(queryService.query).not.toHaveBeenCalled();
+    queryService.query.mockReturnValueOnce(
+      of([
+        { id: '45', text: 'Teleport: Scarlet Monastery (map 189)' },
+        { id: '45', text: 'Script: at_scarlet' },
+        { id: '71', text: "Inn: Lion's Pride Inn" },
+      ]),
+    );
+    const info = await service.loadAreaTriggerInfo([45, 71, 45]);
+    expect(info.get(45)).toEqual(['Teleport: Scarlet Monastery (map 189)', 'Script: at_scarlet']);
+    expect(info.get(71)).toEqual(["Inn: Lion's Pride Inn"]);
+    const sql = queryService.query.mock.calls[0][0] as string;
+    expect(sql).toContain('FROM areatrigger_teleport WHERE ID IN (45, 71)');
+    expect(sql).toContain('FROM areatrigger_involvedrelation WHERE id IN (45, 71)');
+    queryService.query.mockReturnValueOnce(of(undefined));
+    expect((await service.loadAreaTriggerInfo([1])).size).toBe(0);
+  });
+
   it('loads the descriptions of game events', async () => {
     const { service, queryService } = setup();
     expect((await service.loadEventNames([0, -3])).size).toBe(0);

@@ -163,6 +163,35 @@ export function parseCreatureDisplays(dbcs: CreatureDisplayDbcs): Map<number, Cr
   return displays;
 }
 
+/** An area trigger of AreaTrigger.dbc: a sphere of `radius`, or a box when its length, width and height are set. */
+export interface AreaTriggerInfo {
+  id: number;
+  mapId: number;
+  x: number;
+  y: number;
+  z: number;
+  radius: number;
+  box?: { length: number; width: number; height: number; orientation: number };
+}
+
+/** AreaTrigger.dbc: 0 ID, 1 Map, 2-4 position, 5 radius, 6 box length, 7 width, 8 height, 9 orientation. */
+export function parseAreaTriggers(dbc: DbcFile): AreaTriggerInfo[] {
+  const triggers: AreaTriggerInfo[] = [];
+  for (let r = 0; r < dbc.recordCount; r++) {
+    const [length, width, height] = [6, 7, 8].map((field) => dbc.getFloat(r, field));
+    triggers.push({
+      id: dbc.getUint(r, 0),
+      mapId: dbc.getUint(r, 1),
+      x: dbc.getFloat(r, 2),
+      y: dbc.getFloat(r, 3),
+      z: dbc.getFloat(r, 4),
+      radius: dbc.getFloat(r, 5),
+      ...(length > 0 && width > 0 && height > 0 ? { box: { length, width, height, orientation: dbc.getFloat(r, 9) } } : {}),
+    });
+  }
+  return triggers;
+}
+
 /** GameObjectDisplayInfo.dbc: 0 ID, 1 ModelName → model path by display id. */
 export function parseGameObjectDisplays(dbc: DbcFile): Map<number, string> {
   const displays = new Map<number, string>();

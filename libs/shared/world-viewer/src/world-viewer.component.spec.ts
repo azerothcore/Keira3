@@ -8,7 +8,7 @@ import { DEFAULT_WORLD_CONTROLS_SETTINGS, WorldControlsSettings } from './world-
 import { DEFAULT_WORLD_RENDER_SETTINGS, WorldRenderSettings } from './world-render-settings';
 import { WORLD_RENDERER_FACTORY, WorldRenderer } from './world-renderer';
 import { WorldViewerComponent } from './world-viewer.component';
-import { ContextRequest, GizmoMode, ObjectMoved, PickResult, WaypointPath, WorldSpawn } from './world-viewer.model';
+import { ContextRequest, GizmoMode, ObjectMoved, PickResult, WaypointPath, WorldAreaTrigger, WorldSpawn } from './world-viewer.model';
 import { flatDetail, flatTile } from './world-viewer.mock';
 
 // ------------------------------------------------------------------ Three.js controls fakes (jsdom has no WebGL)
@@ -103,6 +103,7 @@ interface FakeTransformControls extends EventDispatcher<{ 'dragging-changed': { 
       [focus]="focus()"
       [region]="region()"
       [navigation]="navigation()"
+      [areaTriggers]="triggers()"
       (picked)="picks.push($event)"
       (contextRequested)="contexts.push($event)"
       (objectMoved)="moves.push($event)"
@@ -124,6 +125,7 @@ class HostComponent {
   readonly focus = signal<WorldPosition | undefined>(undefined);
   readonly region = signal<WorldBounds | undefined>(undefined);
   readonly navigation = signal<WorldControlsSettings>(DEFAULT_WORLD_CONTROLS_SETTINGS);
+  readonly triggers = signal<WorldAreaTrigger[]>([]);
   readonly picks: PickResult[] = [];
   readonly contexts: ContextRequest[] = [];
   readonly moves: ObjectMoved[] = [];
@@ -631,6 +633,26 @@ describe(WorldViewerComponent.name, () => {
 
       await update(() => host.focus.set(at(-100, -100)));
       hover(50, 50);
+      expect(page.label(false)).toBeFalsy();
+    });
+
+    it('names the hovered area trigger', async () => {
+      const { page, host, fixture, update } = await pickSetup();
+      await settle(fixture);
+      const focus = at(800, 800);
+      await update(() => {
+        host.focus.set(focus);
+        host.triggers.set([{ key: 'areatrigger:45', label: 'Area trigger 45 · teleport', position: focus, radius: 5 }]);
+      });
+      page.pointer('pointermove', 50, 50);
+      flushFrames();
+      fixture.detectChanges();
+      expect(page.label().nativeElement.textContent?.trim()).toBe('Area trigger 45 · teleport');
+      // a trigger removed meanwhile has no label
+      await update(() => host.triggers.set([]));
+      page.pointer('pointermove', 50, 50);
+      flushFrames();
+      fixture.detectChanges();
       expect(page.label(false)).toBeFalsy();
     });
 

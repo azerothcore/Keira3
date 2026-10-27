@@ -27,7 +27,16 @@ import { WorldObjects } from './world-objects';
 import { DEFAULT_WORLD_RENDER_SETTINGS, drawDistances, WorldRenderSettings } from './world-render-settings';
 import { WORLD_RENDERER_FACTORY, WorldRenderer } from './world-renderer';
 import { PickOptions, WorldScene } from './world-scene';
-import { ContextRequest, GizmoMode, ObjectMoved, parseWaypointKey, PickResult, WaypointPath, WorldSpawn } from './world-viewer.model';
+import {
+  ContextRequest,
+  GizmoMode,
+  ObjectMoved,
+  parseWaypointKey,
+  PickResult,
+  WaypointPath,
+  WorldAreaTrigger,
+  WorldSpawn,
+} from './world-viewer.model';
 
 const CLICK_TOLERANCE_PX = 4;
 const CENTER_EMIT_DISTANCE = 60;
@@ -81,6 +90,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   /** An area (e.g. a zone) whose terrain and buildings are loaded whole, on top of what's around the camera. */
   readonly region = input<WorldBounds | undefined>(undefined);
 
+  /** Area trigger volumes to draw (empty = none). */
+  readonly areaTriggers = input<WorldAreaTrigger[]>([]);
   readonly picked = output<PickResult>();
   /** Right-click on a spawn or waypoint, for a context menu. */
   readonly contextRequested = output<ContextRequest>();
@@ -166,6 +177,10 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       this.spawnModels.setSpawns(this.spawns());
       this.world.setWaypointPaths(this.paths());
       untracked(() => this.syncGizmo());
+      this.requestRender();
+    });
+    effect(() => {
+      this.world.setAreaTriggers(this.areaTriggers());
       this.requestRender();
     });
     effect(() => {
@@ -316,9 +331,15 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     const event = this.hoverEvent as PointerEvent;
     this.hoverEvent = undefined;
     this.altHeld = event.altKey;
-    const result = this.pickAt(event, { markersOnly: true, segments: true });
+    const result = this.pickAt(event, { markersOnly: true, segments: true, areaTriggers: true });
     const text =
-      result?.type === 'segment' ? this.segmentLabel(result) : result ? this.labelFor((result as { key: string }).key) : undefined;
+      result?.type === 'segment'
+        ? this.segmentLabel(result)
+        : result?.type === 'areatrigger'
+          ? this.areaTriggers().find((trigger) => trigger.key === result.key)?.label
+          : result
+            ? this.labelFor((result as { key: string }).key)
+            : undefined;
     const rect = this.host().nativeElement.getBoundingClientRect();
     this.hoverLabel.set(text ? { text, x: event.clientX - rect.left + 14, y: event.clientY - rect.top + 14 } : undefined);
   }

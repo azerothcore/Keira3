@@ -11,6 +11,7 @@ import {
   ObjectMoved,
   PickResult,
   WaypointPath,
+  WorldAreaTrigger,
   WorldRenderSettings,
   WorldSpawn,
   WorldViewerComponent,
@@ -40,6 +41,7 @@ class FakeWorldViewerComponent {
   readonly focus = input<WorldPosition | undefined>(undefined);
   readonly region = input<WorldBounds | undefined>(undefined);
   readonly navigation = input<WorldControlsSettings>(DEFAULT_WORLD_CONTROLS_SETTINGS);
+  readonly areaTriggers = input<WorldAreaTrigger[]>([]);
   readonly picked = output<PickResult>();
   readonly objectMoved = output<ObjectMoved>();
   readonly centerChanged = output<WorldPosition>();
@@ -120,6 +122,7 @@ describe(WorldEditorComponent.name, () => {
       getMaps: vi.fn(),
       getMapTiles: vi.fn(),
       getZones: vi.fn(),
+      getAreaTriggers: vi.fn(),
       preload: vi.fn(),
       cacheUsage: vi.fn(),
       close: vi.fn(),
@@ -131,6 +134,7 @@ describe(WorldEditorComponent.name, () => {
       loadWaypointSai: vi.fn(),
       loadEventNames: vi.fn(),
       loadQuests: vi.fn(),
+      loadAreaTriggerInfo: vi.fn(),
       getMaxGuid: vi.fn(),
       getFreePathId: vi.fn(),
       getEntryName: vi.fn(),
@@ -203,6 +207,17 @@ describe(WorldEditorComponent.name, () => {
     mocks.service.loadWaypointSai.mockResolvedValue([{ entryorguid: -1, point: 2, pathId: 10, actionType: 1, comment: 'Willem - Say' }]);
     mocks.service.loadEventNames.mockResolvedValue(new Map());
     mocks.service.loadQuests.mockResolvedValue([]);
+    mocks.service.loadAreaTriggerInfo.mockResolvedValue(new Map([[45, ["Inn: Lion's Pride Inn"]]]));
+    mocks.client.getAreaTriggers.mockImplementation((map: number) =>
+      Promise.resolve(
+        map === 0
+          ? [
+              { id: 45, mapId: 0, x: -9460, y: 30, z: 60, radius: 10 },
+              { id: 46, mapId: 0, x: -9400, y: 30, z: 60, radius: 0, box: { length: 5, width: 4, height: 3, orientation: 1 } },
+            ]
+          : [],
+      ),
+    );
     mocks.service.getMaxGuid.mockResolvedValue(1000);
     mocks.service.getFreePathId.mockResolvedValue(20);
     mocks.service.getEntryName.mockResolvedValue('Marshal McBride');
@@ -882,6 +897,72 @@ describe(WorldEditorComponent.name, () => {
       resolveMaps(MAPS);
       await settle(page);
       expect(mocks.service.loadSpawns).toHaveBeenCalledWith(0, CENTER);
+    });
+
+    it('draws the area triggers of the map, named with what the database does with them', async () => {
+      const { page } = await setup();
+      await settle(page);
+      expect(mocks.client.getAreaTriggers).toHaveBeenCalledWith(0);
+      expect(mocks.service.loadAreaTriggerInfo).toHaveBeenCalledWith([45, 46]);
+      expect(page.viewer().areaTriggers()).toEqual([
+        {
+          key: 'areatrigger:45',
+          label: "Area trigger 45\nInn: Lion's Pride Inn",
+          position: { x: -9460, y: 30, z: 60 },
+          radius: 10,
+          box: undefined,
+        },
+        {
+          key: 'areatrigger:46',
+          label: 'Area trigger 46',
+          position: { x: -9400, y: 30, z: 60 },
+          radius: 0,
+          box: { length: 5, width: 4, height: 3, orientation: 1 },
+        },
+      ]);
+      page.click('layer-area-triggers');
+      page.fixture.detectChanges();
+      expect(page.viewer().areaTriggers()).toEqual([]);
+
+      // another map; a failure shows an error and no triggers
+      const select = page.byId<HTMLSelectElement>('map-select').nativeElement;
+      select.value = '1';
+      select.dispatchEvent(new Event('change'));
+      await settle(page);
+      mocks.client.getAreaTriggers.mockRejectedValueOnce(new Error('bad dbc'));
+      select.value = '0';
+      select.dispatchEvent(new Event('change'));
+      await settle(page);
+      expect(mocks.toastr.error).toHaveBeenCalledWith('bad dbc', 'World Editor');
+    });
+
+    it('shows the area triggers without their database details when those can not be read', async () => {
+      mocks.service.loadAreaTriggerInfo.mockRejectedValue(new Error("Table 'areatrigger_tavern' doesn't exist"));
+      const { page } = await setup();
+      await settle(page);
+      expect(page.viewer().areaTriggers()[0].label).toBe('Area trigger 45');
+    });
+
+    it('keeps the area triggers of the map shown last when maps change quickly', async () => {
+      const { page } = await setup();
+      await settle(page);
+      let resolveFirst: (value: unknown[]) => void = () => undefined;
+      mocks.client.getAreaTriggers.mockReturnValueOnce(new Promise((resolve) => (resolveFirst = resolve)));
+      const select = page.byId<HTMLSelectElement>('map-select').nativeElement;
+      select.value = '1';
+      select.dispatchEvent(new Event('change'));
+      await settle(page);
+      select.value = '0';
+      select.dispatchEvent(new Event('change'));
+      await settle(page);
+      resolveFirst([{ id: 99, mapId: 1, x: 0, y: 0, z: 0, radius: 1 }]);
+      await settle(page);
+      expect(
+        page
+          .viewer()
+          .areaTriggers()
+          .map((t) => t.key),
+      ).toEqual(['areatrigger:45', 'areatrigger:46']);
     });
 
     it('filters layers', async () => {

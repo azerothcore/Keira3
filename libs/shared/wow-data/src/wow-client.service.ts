@@ -1,6 +1,17 @@
 import { inject, Service } from '@angular/core';
 import { TileCoord } from './coords';
-import { CreatureDisplay, DbcFile, parseCreatureDisplays, parseGameObjectDisplays, parseMapDbc, parseZones, WowMap, WowZone } from './dbc';
+import {
+  AreaTriggerInfo,
+  CreatureDisplay,
+  DbcFile,
+  parseAreaTriggers,
+  parseCreatureDisplays,
+  parseGameObjectDisplays,
+  parseMapDbc,
+  parseZones,
+  WowMap,
+  WowZone,
+} from './dbc';
 import { FolderArchive } from './folder-archive';
 import { decodeBlp, parseAdt, ParsedAdt, parseWdt, RgbaImage, WdtInfo } from './formats';
 import { MD5_TRANSLATE_PATH, MINIMAP_ROOT, minimapKey, parseMd5Translate } from './minimap';
@@ -66,6 +77,7 @@ export class WowClientService {
   private gameobjectDisplays?: Promise<Map<number, string>>;
   private zoneLights?: Promise<Map<number, ZoneLight[]>>;
   private zones?: Promise<WowZone[]>;
+  private areaTriggers?: Promise<AreaTriggerInfo[]>;
   private readonly wdts = new Map<string, Promise<WdtInfo | undefined>>();
   private readonly adts = new Map<string, Promise<CachedAdt | undefined>>();
   private readonly wmoDoodads = new Map<string, Promise<WmoDoodads | undefined>>();
@@ -136,6 +148,17 @@ export class WowClientService {
         throw error;
       }));
     return (await zones).filter((zone) => zone.mapId === mapId);
+  }
+
+  /** Area triggers of a map (AreaTrigger.dbc, from the server's DBCs when configured). */
+  async getAreaTriggers(mapId: number): Promise<AreaTriggerInfo[]> {
+    const triggers = (this.areaTriggers ??= this.readDbc('AreaTrigger.dbc')
+      .then((dbc) => (dbc ? parseAreaTriggers(dbc) : []))
+      .catch((error) => {
+        this.areaTriggers = undefined;
+        throw error;
+      }));
+    return (await triggers).filter((trigger) => trigger.mapId === mapId);
   }
 
   /** Zone lights (Light.dbc) of a map, by its directory; empty when the map or the light DBCs are unknown. */
@@ -416,6 +439,7 @@ export class WowClientService {
     this.gameobjectDisplays = undefined;
     this.zoneLights = undefined;
     this.zones = undefined;
+    this.areaTriggers = undefined;
     this.wdts.clear();
     this.adts.clear();
     this.wmoDoodads.clear();

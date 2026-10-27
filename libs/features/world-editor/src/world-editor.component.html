@@ -78,6 +78,16 @@
       >
         {{ 'WORLD_EDITOR.WAYPOINTS' | translate }}
       </button>
+      <button
+        type="button"
+        class="btn"
+        data-testid="layer-area-triggers"
+        [class.btn-trigger]="layers().areaTriggers"
+        [class.btn-outline-trigger]="!layers().areaTriggers"
+        (click)="toggleLayer('areaTriggers')"
+      >
+        {{ 'WORLD_EDITOR.AREA_TRIGGERS' | translate }}
+      </button>
     </div>
   </div>
   <div class="world-editor-toolbar d-flex align-items-center gap-2 mb-2">
@@ -623,6 +633,7 @@
         (objectMoved)="onObjectMoved($event)"
         (centerChanged)="onCenterChanged($event)"
         (contextRequested)="onContextRequested($event)"
+        [areaTriggers]="worldAreaTriggers()"
       />
       @if (contextMenu(); as menu) {
         <div class="dropdown-menu show world-editor-context" data-testid="context-menu" [style.left.px]="menu.x" [style.top.px]="menu.y">

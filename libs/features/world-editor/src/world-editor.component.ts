@@ -15,6 +15,7 @@ import {
   WaypointPath,
   WorldControlsSettingsService,
   WorldRenderSettingsService,
+  WorldAreaTrigger,
   WorldSpawn,
   WorldViewerComponent,
 } from '@keira/shared/world-viewer';
@@ -30,6 +31,7 @@ import {
   WowMap,
   WowZone,
   WorldPosition,
+  AreaTriggerInfo,
 } from '@keira/shared/wow-data';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ClipboardService } from 'ngx-clipboard';
@@ -200,7 +202,23 @@ export class WorldEditorComponent implements OnInit {
   protected readonly region = computed(() =>
     this.renderSettings.settings().loadWholeZone ? this.zones().find((zone) => zone.areaId === this.zoneId())?.bounds : undefined,
   );
-  protected readonly layers = signal<LayerVisibility>({ creatures: true, gameobjects: true, waypoints: true });
+  protected readonly layers = signal<LayerVisibility>({ creatures: true, gameobjects: true, waypoints: true, areaTriggers: true });
+  /** Area triggers of the current map, with what the database does with them. */
+  private readonly areaTriggerList = signal<AreaTriggerInfo[]>([]);
+  private readonly areaTriggerInfo = signal(new Map<number, string[]>());
+  protected readonly worldAreaTriggers = computed<WorldAreaTrigger[]>(() => {
+    if (!this.layers().areaTriggers) {
+      return [];
+    }
+    const info = this.areaTriggerInfo();
+    return this.areaTriggerList().map((trigger) => ({
+      key: `areatrigger:${trigger.id}`,
+      label: [`Area trigger ${trigger.id}`, ...(info.get(trigger.id) ?? [])].join('\n'),
+      position: { x: trigger.x, y: trigger.y, z: trigger.z },
+      radius: trigger.radius,
+      box: trigger.box,
+    }));
+  });
   protected readonly filters = signal<SpawnFilters>(loadSpawnFilters());
   protected readonly showFilters = signal(false);
   private readonly eventNames = signal(new Map<number, string>());
@@ -598,7 +616,25 @@ export class WorldEditorComponent implements OnInit {
     await this.loadZones();
   }
 
+  /** The area triggers of the current map, and their database rows. */
+  private async loadAreaTriggers(): Promise<void> {
+    const mapId = this.mapId();
+    try {
+      const triggers = await this.client.getAreaTriggers(mapId);
+      // a database without one of the areatrigger_* tables still shows the triggers
+      const info = await this.service.loadAreaTriggerInfo(triggers.map((trigger) => trigger.id)).catch(() => new Map<number, string[]>());
+      if (mapId === this.mapId()) {
+        this.areaTriggerList.set(triggers);
+        this.areaTriggerInfo.set(info);
+      }
+    } catch (error) {
+      this.areaTriggerList.set([]);
+      this.toastr.error((error as Error).message, 'World Editor');
+    }
+  }
+
   private async loadZones(): Promise<void> {
+    void this.loadAreaTriggers();
     this.zoneId.set(0);
     try {
       this.zones.set(await this.client.getZones(this.mapId()));

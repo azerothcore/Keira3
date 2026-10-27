@@ -251,6 +251,31 @@ describe('WowClientService', () => {
       expect((await service.getZones(1)).map((zone) => zone.name)).toEqual(['Durotar']);
     });
 
+    it('lists the area triggers of a map', async () => {
+      const float = (value: number) => new Uint32Array(new Float32Array([value]).buffer)[0];
+      const { service } = setup({
+        mpqs: displayMpqs({
+          'DBFilesClient\\AreaTrigger.dbc': dbc([
+            [45, 0, float(1), float(2), float(3), float(5), 0, 0, 0, 0],
+            [46, 1, float(1), float(2), float(3), 0, float(10), float(4), float(6), float(1.5)],
+          ]),
+        }),
+      });
+      expect(await service.getAreaTriggers(0)).toEqual([{ id: 45, mapId: 0, x: 1, y: 2, z: 3, radius: 5 }]);
+      expect((await service.getAreaTriggers(1))[0].box).toEqual({ length: 10, width: 4, height: 6, orientation: 1.5 });
+    });
+
+    it('retries area triggers after a failure', async () => {
+      const { service } = setup({ mpqs: displayMpqs({ 'DBFilesClient\\AreaTrigger.dbc': [1, 2, 3, 4] }) });
+      await expect(service.getAreaTriggers(0)).rejects.toThrowError(/WDBC/);
+      await expect(service.getAreaTriggers(0)).rejects.toThrowError(/WDBC/);
+    });
+
+    it('has no area triggers without the DBC', async () => {
+      const { service } = setup({ mpqs: displayMpqs({}) });
+      expect(await service.getAreaTriggers(0)).toEqual([]);
+    });
+
     it('has no zones without the world map DBC, and retries after a failure', async () => {
       const { service } = setup({ mpqs: displayMpqs({ 'DBFilesClient\\AreaTable.dbc': [1, 2, 3, 4] }) });
       await expect(service.getZones(0)).rejects.toThrowError(/WDBC/);

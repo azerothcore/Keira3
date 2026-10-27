@@ -169,6 +169,29 @@ export class WorldEditorService {
     }));
   }
 
+  /** What the database does with area triggers (teleport, inn, script, quest objective), as text lines by id. */
+  async loadAreaTriggerInfo(ids: number[]): Promise<Map<number, string[]>> {
+    const unique = [...new Set(ids.map(Math.trunc))];
+    const info = new Map<number, string[]>();
+    if (unique.length === 0) {
+      return info;
+    }
+    const list = unique.join(', ');
+    const rows = await firstValueFrom(
+      this.queryService.query<TableRow>(
+        `SELECT ID AS id, CONCAT('Teleport: ', Name, ' (map ', target_map, ')') AS text FROM areatrigger_teleport WHERE ID IN (${list}) ` +
+          `UNION ALL SELECT id, CONCAT('Inn: ', name) FROM areatrigger_tavern WHERE id IN (${list}) ` +
+          `UNION ALL SELECT entry, CONCAT('Script: ', ScriptName) FROM areatrigger_scripts WHERE entry IN (${list}) ` +
+          `UNION ALL SELECT id, CONCAT('Quest: ', quest) FROM areatrigger_involvedrelation WHERE id IN (${list})`,
+      ),
+    );
+    for (const row of rows ?? []) {
+      const id = Number(row['id']);
+      info.set(id, [...(info.get(id) ?? []), String(row['text'])]);
+    }
+    return info;
+  }
+
   /** Descriptions of game events, by id. */
   async loadEventNames(ids: number[]): Promise<Map<number, string>> {
     const unique = [...new Set(ids.map(Math.trunc).filter((id) => id > 0))];

@@ -1046,6 +1046,7 @@
     "CONTROLS_HELP": "左键拖动：平移 · 右键拖动：旋转 · 滚轮：缩放 · W A S D / 方向键：移动 · 空格：以光标为中心 · Alt+单击/拖动：移动所选 · R：移动/旋转 · Del：删除 · Ctrl+Z / Ctrl+Y：撤销/重做 · Esc：取消",
     "WALKED_BY": "使用者",
     "VIEW": "视图",
+    "AREA_TRIGGERS": "区域触发器",
     "PATH": "路径",
     "OPEN_CREATURE": "打开生物",
     "OPEN_SAI": "打开 SAI",

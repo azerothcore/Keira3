@@ -11,6 +11,7 @@ import {
   MeshLambertMaterial,
   Quaternion,
   ShaderMaterial,
+  SphereGeometry,
   SRGBColorSpace,
   Texture,
   Vector3,
@@ -290,6 +291,42 @@ describe('WorldScene', () => {
       const color = (model: Mesh): number => ((model.getObjectByName('facing') as Mesh).material as MeshBasicMaterial).color.getHex();
       expect(color(creature)).toBe(0xff9f1c);
       expect(color(gameobject)).toBe(0x2ec4f1);
+    });
+
+    it('draws area triggers as spheres and turned boxes, picked only when asked', () => {
+      const world = new WorldScene();
+      world.setAreaTriggers([
+        { key: 'areatrigger:1', label: 'A', position: at(0, 0), radius: 5 },
+        {
+          key: 'areatrigger:2',
+          label: 'B',
+          position: at(100, 0),
+          radius: 0,
+          box: { length: 10, width: 4, height: 6, orientation: Math.PI / 2 },
+        },
+        { key: 'areatrigger:3', label: 'C', position: at(200, 0), radius: 0 },
+      ]);
+      const [sphere, box, tiny] = world.triggerGroup.children as Mesh[];
+      expect(sphere.geometry).toBeInstanceOf(SphereGeometry);
+      expect((sphere.geometry as SphereGeometry).parameters.radius).toBe(5);
+      expect((tiny.geometry as SphereGeometry).parameters.radius).toBe(0.5);
+      expect((box.geometry as BoxGeometry).parameters).toEqual(expect.objectContaining({ width: 4, height: 6, depth: 10 }));
+      expect(box.rotation.y).not.toBe(0);
+      expect(sphere.position.x).toBeCloseTo(worldToScene(at(0, 0)).x);
+
+      lookDownAt(world, at(0, 0));
+      expect(world.pick(0, 0, { tolerance: 0, areaTriggers: true })).toEqual(
+        expect.objectContaining({ type: 'areatrigger', key: 'areatrigger:1' }),
+      );
+      expect(world.pick(0, 0, { tolerance: 0, markersOnly: true })).toBeUndefined();
+      // the edges aren't pickable on their own
+      expect(sphere.children[0].raycast(undefined as never, [])).toBeUndefined();
+
+      const dispose = vi.spyOn(sphere.geometry, 'dispose');
+      world.setAreaTriggers([]);
+      expect(dispose).toHaveBeenCalled();
+      expect(world.triggerGroup.children).toHaveLength(0);
+      world.dispose();
     });
 
     it('picks a spawn by its model', () => {

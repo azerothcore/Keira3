@@ -25,6 +25,15 @@ export interface WorldSpawn {
   allDetails?: string[];
 }
 
+/** An area trigger (AreaTrigger.dbc): a sphere, or a box when `box` is set. Centred on `position`. */
+export interface WorldAreaTrigger {
+  key: string;
+  label: string;
+  position: WorldPosition;
+  radius: number;
+  box?: { length: number; width: number; height: number; orientation: number };
+}
+
 export interface WorldWaypoint {
   point: number;
   position: WorldPosition;
@@ -50,6 +59,8 @@ export type PickResult =
   | { type: 'waypoint'; key: string; pathKey: string; point: number; position: WorldPosition }
   /** A path's direction arrow, between two of its points (only with `PickOptions.segments`). */
   | { type: 'segment'; pathKey: string; from: number; to: number; position: WorldPosition }
+  /** An area trigger's volume (only with `PickOptions.areaTriggers`). */
+  | { type: 'areatrigger'; key: string; position: WorldPosition }
   | { type: 'ground'; position: WorldPosition };
 
 /** A right-click (without dragging) on a spawn or waypoint; `x`/`y` are in pixels from the view's top-left corner. */

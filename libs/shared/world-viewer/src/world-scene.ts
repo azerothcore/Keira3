@@ -10,6 +10,7 @@ import {
   DataTexture,
   DirectionalLight,
   DoubleSide,
+  EdgesGeometry,
   Fog,
   Group,
   HemisphereLight,
@@ -17,6 +18,7 @@ import {
   Line,
   LineBasicMaterial,
   LineLoop,
+  LineSegments,
   LinearFilter,
   LinearMipmapLinearFilter,
   Material,
@@ -56,7 +58,7 @@ import {
 import { createSkyDome, setSkyColors } from './sky';
 import { ROOF_LAYER } from './wmo-object';
 import { createTerrainLighting, createTerrainMaterial } from './terrain-material';
-import { PickResult, SpawnKind, WaypointPath, waypointKey, WorldSpawn } from './world-viewer.model';
+import { PickResult, SpawnKind, WaypointPath, waypointKey, WorldAreaTrigger, WorldSpawn } from './world-viewer.model';
 
 type MarkerState = 'normal' | 'pending' | 'selected';
 
@@ -67,6 +69,8 @@ export interface PickOptions {
   markersOnly?: boolean;
   /** Also pick the direction arrows of paths (hover labels), as `segment` results. */
   segments?: boolean;
+  /** Also pick area trigger volumes (hover labels), as `areatrigger` results. */
+  areaTriggers?: boolean;
 }
 
 interface SegmentData {
@@ -108,6 +112,8 @@ const GROUND_STEP = 2;
 /** Snap to wall looks this far around (yards), in this many directions, and leaves this gap. */
 const WALL_SNAP_DISTANCE = 6;
 const WALL_SNAP_DIRECTIONS = 16;
+/** Area triggers with no radius still get a small sphere, to be seen. */
+const MIN_TRIGGER_RADIUS = 0.5;
 const WALL_SNAP_GAP = 0.1;
 
 const COLORS = {
@@ -115,6 +121,7 @@ const COLORS = {
   creature: 0xff9f1c,
   gameobject: 0x2ec4f1,
   selected: 0xfff35c,
+  areaTrigger: 0xc77dff,
   terrain: 0x5f8a3a,
 };
 const PATH_COLORS = [0xe63946, 0xb5179e, 0x7209b7, 0x06d6a0, 0x4361ee, 0xff006e, 0x8ac926, 0xffffff];
@@ -184,6 +191,16 @@ export class WorldScene {
   private readonly ringGeometry = new BufferGeometry().setFromPoints(
     Array.from({ length: 64 }, (_, i) => new Vector3(Math.cos((i / 64) * Math.PI * 2), 0.3, Math.sin((i / 64) * Math.PI * 2))),
   );
+  /** Area triggers: see-through purple volumes with solid edges. */
+  readonly triggerGroup = new Group();
+  private readonly triggerMaterial = new MeshBasicMaterial({
+    color: COLORS.areaTrigger,
+    transparent: true,
+    opacity: 0.15,
+    depthWrite: false,
+    side: DoubleSide,
+  });
+  private readonly triggerEdgeMaterial = new LineBasicMaterial({ color: COLORS.areaTrigger });
   private readonly wanderMaterial = new LineBasicMaterial({ color: 0xffd166, transparent: true, opacity: 0.8 });
   /** Nose on a waypoint ball, pointing to the next point (along +y before rotation, starting at the ball's surface). */
   private readonly pointerGeometry = new ConeGeometry(0.3, 0.8, 8).translate(0, 0.85, 0);
@@ -204,7 +221,7 @@ export class WorldScene {
     this.doodadGroup.name = 'doodads';
     this.spawnGroup.name = 'spawns';
     this.waypointGroup.name = 'waypoints';
-    this.scene.add(this.terrainGroup, this.buildingGroup, this.doodadGroup, this.spawnGroup, this.waypointGroup);
+    this.scene.add(this.terrainGroup, this.buildingGroup, this.doodadGroup, this.spawnGroup, this.waypointGroup, this.triggerGroup);
     this.camera.layers.enable(LIQUID_LAYER);
     this.setRoofsVisible(true);
 
@@ -492,6 +509,31 @@ export class WorldScene {
     return arrow;
   }
 
+  /** Draws area triggers (replacing the previous ones). */
+  setAreaTriggers(triggers: WorldAreaTrigger[]): void {
+    this.triggerGroup.traverse((object) => {
+      if (object instanceof Mesh || object instanceof LineSegments) {
+        object.geometry.dispose();
+      }
+    });
+    this.triggerGroup.clear();
+    for (const trigger of triggers) {
+      const geometry = trigger.box
+        ? new BoxGeometry(trigger.box.width, trigger.box.height, trigger.box.length)
+        : new SphereGeometry(Math.max(trigger.radius, MIN_TRIGGER_RADIUS), 24, 16);
+      const mesh = new Mesh(geometry, this.triggerMaterial);
+      mesh.name = trigger.key;
+      mesh.position.copy(scenePoint(trigger.position));
+      mesh.rotation.y = trigger.box ? orientationToSceneYaw(trigger.box.orientation) : 0;
+      mesh.userData = { areaTrigger: trigger.key };
+      mesh.renderOrder = 2;
+      const edges = new LineSegments(new EdgesGeometry(geometry), this.triggerEdgeMaterial);
+      edges.raycast = () => undefined;
+      mesh.add(edges);
+      this.triggerGroup.add(mesh);
+    }
+  }
+
   setWaypointPaths(paths: WaypointPath[]): void {
     this.clearGroup(this.waypointGroup);
     for (const path of paths) {
@@ -688,6 +730,10 @@ export class WorldScene {
         : { type: 'spawn', key: data.key, position: state.position };
     }
 
+    const triggerHit = options.areaTriggers ? this.raycaster.intersectObject(this.triggerGroup, true)[0] : undefined;
+    if (triggerHit) {
+      return { type: 'areatrigger', key: triggerHit.object.userData['areaTrigger'] as string, position: sceneToWorld(triggerHit.point) };
+    }
     const groundHit = markersOnly ? undefined : this.raycaster.intersectObjects([this.terrainGroup, this.buildingGroup], true)[0];
     return groundHit ? { type: 'ground', position: sceneToWorld(groundHit.point) } : undefined;
   }
@@ -772,6 +818,9 @@ export class WorldScene {
     this.wanderMaterial.dispose();
     this.facingArrowGeometry.dispose();
     Object.values(this.facingArrowMaterials).forEach((material) => material.dispose());
+    this.setAreaTriggers([]);
+    this.triggerMaterial.dispose();
+    this.triggerEdgeMaterial.dispose();
     this.beacon.traverse((object) => {
       if (object instanceof Mesh) {
         object.geometry.dispose();

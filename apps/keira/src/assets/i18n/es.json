@@ -1046,6 +1046,7 @@
     "CONTROLS_HELP": "Arrastrar izq.: desplazar · Arrastrar der.: rotar · Rueda: zoom · W A S D / flechas: moverse · Espacio: centrar en el cursor · Alt+clic/arrastrar: mover selección · R: mover/rotar · Supr: eliminar · Ctrl+Z / Ctrl+Y: deshacer/rehacer · Esc: cancelar",
     "WALKED_BY": "Recorrida por",
     "VIEW": "Vista",
+    "AREA_TRIGGERS": "Áreas de activación",
     "PATH": "Ruta",
     "OPEN_CREATURE": "Abrir criatura",
     "OPEN_SAI": "Abrir SAI",

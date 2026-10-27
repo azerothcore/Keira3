@@ -71,6 +71,7 @@ export interface LayerVisibility {
   creatures: boolean;
   gameobjects: boolean;
   waypoints: boolean;
+  areaTriggers: boolean;
 }
 
 /** Rows as returned by the spawn and waypoint queries. */
