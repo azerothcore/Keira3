@@ -33,9 +33,12 @@ describe('WorldNavMesh', () => {
     expect((fill.material as MeshBasicMaterial).transparent).toBe(true);
     expect((edges.material as MeshBasicMaterial).wireframe).toBe(true);
     expect(fill.raycast(undefined as never, [])).toBeUndefined();
-    // already loaded tiles aren't read again
+    // tiles already read (with a file or without) aren't read again
     await navMesh.update(CENTER);
-    expect(source.getNavMeshTile).toHaveBeenCalledTimes(16);
+    expect(source.getNavMeshTile).toHaveBeenCalledTimes(9);
+    expect(navMesh.tileAt('32_48')).toBe(TILE);
+    expect(navMesh.tileAt('31_47')).toBeNull();
+    expect(navMesh.tileAt('10_10')).toBeUndefined();
   });
 
   it('drops tiles out of range, and everything when turned off or the map changes', async () => {

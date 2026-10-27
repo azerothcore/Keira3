@@ -13,7 +13,17 @@ import {
   viewChild,
 } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
-import { orientationToSceneYaw, WowClientService, WorldBounds, WorldPosition, worldToScene, sceneToWorld } from '@keira/shared/wow-data';
+import {
+  mmtileName,
+  orientationToSceneYaw,
+  sceneToWorld,
+  tileKey,
+  WowClientService,
+  WorldBounds,
+  WorldPosition,
+  worldToScene,
+  worldToTile,
+} from '@keira/shared/wow-data';
 import { Object3D, Vector3 } from 'three';
 import { MapControls } from 'three/addons/controls/MapControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
@@ -39,6 +49,7 @@ import { PickOptions, WorldScene } from './world-scene';
 import {
   ContextRequest,
   GizmoMode,
+  NavMeshTileInfo,
   ObjectMoved,
   parseWaypointKey,
   PickResult,
@@ -106,6 +117,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   /** Area trigger volumes to draw (empty = none). */
   readonly areaTriggers = input<WorldAreaTrigger[]>([]);
   readonly picked = output<PickResult>();
+  /** The navigation mesh tile under the camera target, while the navigation mesh is shown (undefined otherwise). */
+  readonly navMeshTileChanged = output<NavMeshTileInfo | undefined>();
   /** Shift + wheel asked for another camera speed (the caller saves it in `navigation`). */
   readonly speedChanged = output<number>();
   /** The answer to `probe`. */
@@ -141,6 +154,9 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private readonly navMesh = new WorldNavMesh(this.client, this.world.navMeshGroup, () => this.requestRender());
   private readonly prober = new PathProber(this.client, this.world);
   private probeRequest = 0;
+  /** Id of the shown map (for mmtile names), once known. */
+  private mapId?: number;
+  protected readonly navMeshInfo = signal<NavMeshTileInfo | undefined>(undefined);
   private readonly spawnModels = new SpawnModels(this.client, this.world, this.textures, () => this.requestRender());
   private readonly zoneLighting = new ZoneLighting(this.client, this.world, () => this.requestRender());
   private renderer?: WorldRenderer;
@@ -677,6 +693,16 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
 
   private async loadMap(directory: string | undefined): Promise<void> {
     this.error.set(undefined);
+    this.mapId = undefined;
+    if (directory && this.client.isSupported()) {
+      void this.client
+        .getMaps()
+        .then((maps) => {
+          this.mapId = maps.find((map) => map.directory.toLowerCase() === directory.toLowerCase())?.id;
+          this.requestRender();
+        })
+        .catch(() => undefined);
+    }
     this.objects.setMap(directory);
     this.doodads.setMap(directory);
     this.navMesh.setMap(directory);
@@ -754,6 +780,21 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     });
   }
 
+  /** Which mmtile the camera target is on (while the navigation mesh is shown), reported when it changes. */
+  private updateNavMeshInfo(center: WorldPosition): void {
+    let info: NavMeshTileInfo | undefined;
+    if (this.renderSettings().showNavMesh && this.mapId !== undefined) {
+      const tile = worldToTile(center.x, center.y);
+      const read = this.navMesh.tileAt(tileKey(tile));
+      info = { file: mmtileName(this.mapId, tile), mapId: this.mapId, tile, config: read?.config, missing: read === null };
+    }
+    const current = this.navMeshInfo();
+    if (info?.file !== current?.file || info?.config !== current?.config || info?.missing !== current?.missing) {
+      this.navMeshInfo.set(info);
+      this.navMeshTileChanged.emit(info);
+    }
+  }
+
   /** Camera target readout and the loading bar (polled while anything is still loading). */
   private updateStatus(): void {
     const center = this.center;
@@ -762,6 +803,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     if (!current || current.x !== rounded.x || current.y !== rounded.y || current.z !== rounded.z) {
       this.cameraTarget.set(rounded);
     }
+    this.updateNavMeshInfo(center);
     const activity = {
       terrain: this.streamer.pendingCount,
       buildings: this.objects.pendingCount,

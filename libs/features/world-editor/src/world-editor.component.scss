@@ -237,3 +237,11 @@ $trigger-color: #c77dff;
 .world-editor-probe-height {
   max-width: 110px;
 }
+
+.world-editor-yaml {
+  max-height: 180px;
+  overflow: auto;
+  padding: 4px 6px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.06);
+}

@@ -1,4 +1,4 @@
-import { WorldPosition } from '@keira/shared/wow-data';
+import { MmapRecastConfig, TileCoord, WorldPosition } from '@keira/shared/wow-data';
 
 export type SpawnKind = 'creature' | 'gameobject';
 
@@ -62,6 +62,17 @@ export type PickResult =
   /** An area trigger's volume (only with `PickOptions.areaTriggers`). */
   | { type: 'areatrigger'; key: string; position: WorldPosition }
   | { type: 'ground'; position: WorldPosition };
+
+/** The navigation mesh tile (mmtile) under the camera target. */
+export interface NavMeshTileInfo {
+  file: string;
+  mapId: number;
+  tile: TileCoord;
+  /** The recast settings it was generated with; undefined while it loads or when there's no file. */
+  config?: MmapRecastConfig;
+  /** No mmtile there. */
+  missing: boolean;
+}
 
 /** A right-click (without dragging) on a spawn or waypoint; `x`/`y` are in pixels from the view's top-left corner. */
 export interface ContextRequest {

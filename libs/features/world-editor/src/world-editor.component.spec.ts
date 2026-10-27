@@ -8,6 +8,7 @@ import {
   DEFAULT_WORLD_RENDER_SETTINGS,
   WorldControlsSettings,
   GizmoMode,
+  NavMeshTileInfo,
   ObjectMoved,
   PathProbeRequest,
   PathProbeResult,
@@ -47,6 +48,7 @@ class FakeWorldViewerComponent {
   readonly probe = input<PathProbeRequest | undefined>(undefined);
   readonly probed = output<PathProbeResult>();
   readonly speedChanged = output<number>();
+  readonly navMeshTileChanged = output<NavMeshTileInfo | undefined>();
   readonly picked = output<PickResult>();
   readonly objectMoved = output<ObjectMoved>();
   readonly centerChanged = output<WorldPosition>();
@@ -1308,6 +1310,98 @@ describe(WorldEditorComponent.name, () => {
       page.click('tool-select');
       page.fixture.detectChanges();
       expect(page.viewer().probe()).toBeUndefined();
+    });
+  });
+
+  describe('mmaps settings', () => {
+    const config = {
+      walkableSlopeAngle: 60,
+      walkableHeight: 6,
+      walkableClimb: 6,
+      walkableRadius: 2,
+      verticesPerMapEdge: 2000,
+      verticesPerTileEdge: 80,
+      cellSizeHorizontal: 0.2667,
+      cellSizeVertical: 0.2667,
+      maxSimplificationError: 1.8,
+    };
+    const tile = (file = '0004832.mmtile', extra: Partial<NavMeshTileInfo> = {}): NavMeshTileInfo => ({
+      file,
+      mapId: 0,
+      tile: { tx: 32, ty: 48 },
+      config,
+      missing: false,
+      ...extra,
+    });
+
+    it('shows the settings of the mmtile under the camera and the mmaps-config.yaml override for new values', async () => {
+      const { page } = await setup();
+      expect(page.byId('mmap-tile', false)).toBeFalsy();
+      page.viewer().navMeshTileChanged.emit(tile());
+      page.fixture.detectChanges();
+      expect(page.text('mmap-tile')).toContain('mmtile 0004832.mmtile');
+      expect(page.byId<HTMLInputElement>('mmap-walkableClimb').nativeElement.placeholder).toBe('6');
+      expect(page.text('mmap-hint')).toBe('WORLD_EDITOR.MMAP_EDIT_HINT');
+
+      const set = (key: string, value: string) => {
+        const input = page.byId<HTMLInputElement>('mmap-' + key).nativeElement;
+        input.value = value;
+        input.dispatchEvent(new Event('change'));
+        page.fixture.detectChanges();
+      };
+      set('walkableClimb', '4');
+      set('walkableSlopeAngle', '60'); // the tile's own value: no change
+      set('cellSizeVertical', 'abc');
+      expect(page.text('mmap-yaml')).toBe(
+        'mmapsConfig:\n  meshSettings:\n    mapsOverrides:\n      "0":\n        tilesOverrides:\n          "48,32":\n            walkableClimb: 4',
+      );
+      const scope = page.byId<HTMLSelectElement>('mmap-scope').nativeElement;
+      scope.value = 'map';
+      scope.dispatchEvent(new Event('change'));
+      page.fixture.detectChanges();
+      expect(page.text('mmap-yaml')).toBe('mmapsConfig:\n  meshSettings:\n    mapsOverrides:\n      "0":\n        walkableClimb: 4');
+      scope.value = 'tile';
+      scope.dispatchEvent(new Event('change'));
+
+      page.click('mmap-copy');
+      expect(mocks.clipboard.copyFromContent).toHaveBeenCalledWith(expect.stringContaining('walkableClimb: 4'));
+      const createObjectURL = vi.fn().mockReturnValue('blob:yaml');
+      const revokeObjectURL = vi.fn();
+      Object.assign(URL, { createObjectURL, revokeObjectURL });
+      const click = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => undefined);
+      page.click('mmap-download');
+      expect(click).toHaveBeenCalled();
+      expect(createObjectURL).toHaveBeenCalledWith(expect.any(Blob));
+      expect(revokeObjectURL).toHaveBeenCalledWith('blob:yaml');
+      click.mockRestore();
+
+      // clearing a field, resetting, and moving to another tile forget the changes
+      set('walkableClimb', '');
+      expect(page.byId('mmap-yaml', false)).toBeFalsy();
+      set('walkableRadius', '3');
+      page.click('mmap-reset');
+      page.fixture.detectChanges();
+      expect(page.byId('mmap-yaml', false)).toBeFalsy();
+      set('walkableRadius', '3');
+      page.viewer().navMeshTileChanged.emit(tile());
+      page.fixture.detectChanges();
+      expect(page.byId('mmap-yaml', false)).toBeTruthy();
+      page.viewer().navMeshTileChanged.emit(tile('0004833.mmtile'));
+      page.fixture.detectChanges();
+      expect(page.byId('mmap-yaml', false)).toBeFalsy();
+    });
+
+    it('says when there is no mmtile, or it is still loading', async () => {
+      const { page } = await setup();
+      page.viewer().navMeshTileChanged.emit(tile('0004832.mmtile', { config: undefined, missing: true }));
+      page.fixture.detectChanges();
+      expect(page.text('mmap-missing')).toBe('WORLD_EDITOR.MMTILE_MISSING_HELP');
+      page.viewer().navMeshTileChanged.emit(tile('0004832.mmtile', { config: undefined }));
+      page.fixture.detectChanges();
+      expect(page.byId('mmap-loading')).toBeTruthy();
+      page.viewer().navMeshTileChanged.emit(undefined);
+      page.fixture.detectChanges();
+      expect(page.byId('mmap-tile', false)).toBeFalsy();
     });
   });
 

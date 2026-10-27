@@ -34,6 +34,14 @@
     <div class="world-viewer-target" data-testid="world-viewer-target">
       {{ 'WORLD_EDITOR.CAMERA' | translate }}: X {{ target.x }} Y {{ target.y }} Z {{ target.z }}
     </div>
+    @if (navMeshInfo(); as info) {
+      <div class="world-viewer-mmtile" data-testid="world-viewer-mmtile" [class.missing]="info.missing">
+        mmtile {{ info.file }}
+        @if (info.missing) {
+          — {{ 'WORLD_EDITOR.MMTILE_MISSING' | translate }}
+        }
+      </div>
+    }
     <div class="world-viewer-speed" data-testid="world-viewer-speed" [title]="'WORLD_EDITOR.SPEED_HELP' | translate">
       {{ 'WORLD_EDITOR.SPEED' | translate }} ×{{ navigation().speed }}
     </div>

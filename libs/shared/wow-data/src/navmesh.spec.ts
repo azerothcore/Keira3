@@ -1,4 +1,4 @@
-import { mmtileName, parseMmtile } from './navmesh';
+import { mmapOverrideYaml, mmtileName, parseMmtile } from './navmesh';
 import { buildMmtile } from './navmesh.mock';
 
 describe('navmesh', () => {
@@ -22,6 +22,39 @@ describe('navmesh', () => {
     expect(colorOf(1)).toEqual([0.2, 0.5, 1]);
     expect(colorOf(2)).toEqual([1, 0.45, 0.1]);
     expect(colorOf(3)).toEqual([0.7, 0.3, 0.9]);
+  });
+
+  it('reads the recast settings the tile was generated with', () => {
+    expect(parseMmtile(buildMmtile([{ flags: 1 }]))?.config).toEqual({
+      walkableSlopeAngle: 60,
+      walkableHeight: 6,
+      walkableClimb: 6,
+      walkableRadius: 2,
+      verticesPerMapEdge: 2000,
+      verticesPerTileEdge: 80,
+      cellSizeHorizontal: 0.2667,
+      cellSizeVertical: 0.2667,
+      maxSimplificationError: 1.8,
+    });
+  });
+
+  it('writes the mmaps-config.yaml overrides of a tile or a whole map', () => {
+    expect(mmapOverrideYaml(0, { tx: 32, ty: 48 }, { walkableClimb: 4, walkableSlopeAngle: 45 })).toBe(
+      [
+        'mmapsConfig:',
+        '  meshSettings:',
+        '    mapsOverrides:',
+        '      "0":',
+        '        tilesOverrides:',
+        '          "48,32":',
+        '            walkableSlopeAngle: 45',
+        '            walkableClimb: 4',
+        '',
+      ].join('\n'),
+    );
+    expect(mmapOverrideYaml(530, undefined, { cellSizeVertical: 0.5334 })).toBe(
+      ['mmapsConfig:', '  meshSettings:', '    mapsOverrides:', '      "530":', '        cellSizeVertical: 0.5334', ''].join('\n'),
+    );
   });
 
   it('refuses files that are not mmtiles, or cut short', () => {

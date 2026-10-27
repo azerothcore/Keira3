@@ -8,7 +8,16 @@ import { DEFAULT_WORLD_CONTROLS_SETTINGS, WorldControlsSettings } from './world-
 import { DEFAULT_WORLD_RENDER_SETTINGS, WorldRenderSettings } from './world-render-settings';
 import { WORLD_RENDERER_FACTORY, WorldRenderer } from './world-renderer';
 import { WorldViewerComponent } from './world-viewer.component';
-import { ContextRequest, GizmoMode, ObjectMoved, PickResult, WaypointPath, WorldAreaTrigger, WorldSpawn } from './world-viewer.model';
+import {
+  ContextRequest,
+  GizmoMode,
+  NavMeshTileInfo,
+  ObjectMoved,
+  PickResult,
+  WaypointPath,
+  WorldAreaTrigger,
+  WorldSpawn,
+} from './world-viewer.model';
 import { flatDetail, flatTile } from './world-viewer.mock';
 import { WorldScene } from './world-scene';
 import { PathProbeRequest, PathProbeResult } from './path-probe';
@@ -109,6 +118,7 @@ interface FakeTransformControls extends EventDispatcher<{ 'dragging-changed': { 
       [probe]="probe()"
       (probed)="probes.push($event)"
       (speedChanged)="speeds.push($event)"
+      (navMeshTileChanged)="navMeshTiles.push($event)"
       (picked)="picks.push($event)"
       (contextRequested)="contexts.push($event)"
       (objectMoved)="moves.push($event)"
@@ -134,6 +144,7 @@ class HostComponent {
   readonly probe = signal<PathProbeRequest | undefined>(undefined);
   readonly probes: PathProbeResult[] = [];
   readonly speeds: number[] = [];
+  readonly navMeshTiles: (NavMeshTileInfo | undefined)[] = [];
   readonly picks: PickResult[] = [];
   readonly contexts: ContextRequest[] = [];
   readonly moves: ObjectMoved[] = [];
@@ -209,6 +220,7 @@ describe(WorldViewerComponent.name, () => {
 
   const client = {
     isSupported: vi.fn(),
+    getMaps: vi.fn(),
     getNavMeshTile: vi.fn(),
     getMapTiles: vi.fn(),
     getTerrain: vi.fn(),
@@ -231,6 +243,7 @@ describe(WorldViewerComponent.name, () => {
     vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue(new DOMRect(0, 0, 100, 100));
     Object.values(renderer).forEach((fn) => (fn as ReturnType<typeof vi.fn>).mockReset());
     client.isSupported.mockReturnValue(true);
+    client.getMaps.mockResolvedValue([{ id: 0, directory: 'Azeroth', name: 'Eastern Kingdoms', instanceType: 0 }]);
     client.getMapTiles.mockResolvedValue([{ tx: 32, ty: 48 }]);
     client.getTerrain.mockImplementation(() => Promise.resolve(flatTile(GROUND)));
     client.getMinimap.mockResolvedValue(undefined);
@@ -664,6 +677,46 @@ describe(WorldViewerComponent.name, () => {
       await update(() => host.focus.set(at(-100, -100)));
       hover(50, 50);
       expect(page.label(false)).toBeFalsy();
+    });
+
+    it('shows which mmtile the camera is on while the navigation mesh is shown, with its settings', async () => {
+      const { page, host, fixture, update } = await pickSetup();
+      const config = { walkableSlopeAngle: 60 } as never;
+      client.getNavMeshTile.mockImplementation((_d: string, tile: { tx: number; ty: number }) =>
+        Promise.resolve(
+          tile.tx === 32 && tile.ty === 48 ? { positions: new Float32Array(9), colors: new Float32Array(9), config } : undefined,
+        ),
+      );
+      await settle(fixture);
+      expect(page.getDebugElementByTestId('world-viewer-mmtile', false)).toBeFalsy();
+      await update(() => host.render.set({ ...DEFAULT_WORLD_RENDER_SETTINGS, showNavMesh: true }));
+      await settle(fixture);
+      flushFrames();
+      fixture.detectChanges();
+      expect(page.getDebugElementByTestId('world-viewer-mmtile').nativeElement.textContent.trim()).toBe('mmtile 0004832.mmtile');
+      expect(host.navMeshTiles.at(-1)).toEqual({ file: '0004832.mmtile', mapId: 0, tile: { tx: 32, ty: 48 }, config, missing: false });
+
+      // a tile without a file
+      await update(() => host.focus.set({ x: CENTER.x + 600, y: CENTER.y, z: 0 }));
+      await settle(fixture);
+      flushFrames();
+      fixture.detectChanges();
+      expect(page.getDebugElementByTestId('world-viewer-mmtile').nativeElement.textContent).toContain('WORLD_EDITOR.MMTILE_MISSING');
+      // turned off: nothing to report
+      await update(() => host.render.set(DEFAULT_WORLD_RENDER_SETTINGS));
+      flushFrames();
+      fixture.detectChanges();
+      expect(host.navMeshTiles.at(-1)).toBeUndefined();
+    });
+
+    it('works without knowing the map id', async () => {
+      client.getMaps.mockRejectedValue(new Error('no Map.dbc'));
+      const { page, host, fixture, update } = await pickSetup();
+      await update(() => host.render.set({ ...DEFAULT_WORLD_RENDER_SETTINGS, showNavMesh: true }));
+      await settle(fixture);
+      flushFrames();
+      fixture.detectChanges();
+      expect(page.getDebugElementByTestId('world-viewer-mmtile', false)).toBeFalsy();
     });
 
     it('answers Path / LOS questions, keeping only the latest answer, and clears them', async () => {

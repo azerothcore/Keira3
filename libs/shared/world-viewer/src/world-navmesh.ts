@@ -22,6 +22,8 @@ export class WorldNavMesh {
   private options: WorldNavMeshOptions = { show: false, radius: 1 };
   private centerTile?: TileCoord;
   private readonly tiles = new Map<string, Group>();
+  /** What was read for each tile around: its mesh, or null when there's no mmtile there. */
+  private readonly read = new Map<string, NavMeshTile | null>();
   private readonly loading = new Set<string>();
   private readonly fill = new MeshBasicMaterial({
     vertexColors: true,
@@ -78,9 +80,14 @@ export class WorldNavMesh {
         this.remove(key, tile);
       }
     }
+    for (const key of [...this.read.keys()]) {
+      if (!this.isNear(key)) {
+        this.read.delete(key);
+      }
+    }
     for (const tile of tilesAround(centerTile, this.options.radius)) {
       const key = tileKey(tile);
-      if (this.tiles.has(key) || this.loading.has(key)) {
+      if (this.read.has(key) || this.loading.has(key)) {
         continue;
       }
       this.loading.add(key);
@@ -89,13 +96,21 @@ export class WorldNavMesh {
         if (generation !== this.generation) {
           return;
         }
-        if (mesh && mesh.positions.length > 0 && this.isNear(key)) {
-          this.add(key, mesh);
+        if (this.isNear(key)) {
+          this.read.set(key, mesh ?? null);
+          if (mesh && mesh.positions.length > 0) {
+            this.add(key, mesh);
+          }
         }
       } finally {
         this.loading.delete(key);
       }
     }
+  }
+
+  /** The tile read at a key (`tx_ty`): its data, null when it has no mmtile, undefined when not read (yet). */
+  tileAt(key: string): NavMeshTile | null | undefined {
+    return this.read.get(key);
   }
 
   dispose(): void {
@@ -126,12 +141,14 @@ export class WorldNavMesh {
     this.group.remove(tile);
     (tile.children[0] as Mesh).geometry.dispose();
     this.tiles.delete(key);
+    this.read.delete(key);
   }
 
   private clear(): void {
     this.generation++;
     this.loading.clear();
     this.tiles.forEach((tile, key) => this.remove(key, tile));
+    this.read.clear();
     this.onChange();
   }
 

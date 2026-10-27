@@ -11,6 +11,14 @@ export function buildMmtile(polys: { flags: number; offMesh?: boolean }[]): Uint
   const bytes = new Uint8Array(56 + size);
   const view = new DataView(bytes.buffer);
   view.setUint32(0, 0x4d4d4150, true);
+  // recast config: slope 60, radius 2, height 6, climb 6, 2000 / 80 vertices, cell sizes 0.2667, error 1.8
+  view.setFloat32(20, 60, true);
+  bytes.set([2, 6, 6], 24);
+  view.setUint32(28, 2000, true);
+  view.setUint32(32, 80, true);
+  view.setFloat32(44, 0.2667, true);
+  view.setFloat32(48, 0.2667, true);
+  view.setFloat32(52, 1.8, true);
   view.setUint32(12, size, true);
   const h = 56;
   view.setUint32(h, 0x444e4156, true);

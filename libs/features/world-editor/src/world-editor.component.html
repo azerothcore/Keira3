@@ -690,6 +690,7 @@
         (contextRequested)="onContextRequested($event)"
         (speedChanged)="controls.setSpeed($event)"
         (probed)="probeResult.set($event)"
+        (navMeshTileChanged)="onNavMeshTile($event)"
         [probe]="probeRequest()"
         [areaTriggers]="worldAreaTriggers()"
       />
@@ -1036,6 +1037,80 @@
           }
         </div>
       </div>
+
+      @if (navMeshTile(); as info) {
+        <div class="card mb-2" data-testid="mmap-tile">
+          <div class="card-header py-1">mmtile {{ info.file }}</div>
+          <div class="card-body p-2">
+            @if (info.config; as config) {
+              <table class="table table-sm table-borderless align-middle small mb-1">
+                <thead>
+                  <tr>
+                    <th scope="col">{{ 'WORLD_EDITOR.SETTING' | translate }}</th>
+                    <th scope="col">{{ 'WORLD_EDITOR.IN_TILE' | translate }}</th>
+                    <th scope="col">{{ 'WORLD_EDITOR.NEW_VALUE' | translate }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (key of mmapKeys; track key) {
+                    <tr [class.table-warning]="mmapChanges()[key] !== undefined">
+                      <td>{{ key }}</td>
+                      <td>{{ config[key] }}</td>
+                      <td>
+                        <input
+                          type="number"
+                          class="form-control form-control-sm"
+                          [attr.data-testid]="'mmap-' + key"
+                          [placeholder]="config[key]"
+                          [value]="mmapChanges()[key] ?? ''"
+                          (change)="setMmapValue(key, $event)"
+                        />
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+              <div class="input-group input-group-sm mb-1">
+                <span class="input-group-text">{{ 'WORLD_EDITOR.OVERRIDE_FOR' | translate }}</span>
+                <select class="form-select" data-testid="mmap-scope" (change)="setMmapScope($event)">
+                  <option value="tile" [selected]="mmapScope() === 'tile'">
+                    {{ 'WORLD_EDITOR.THIS_TILE' | translate }} ({{ info.tile.ty }},{{ info.tile.tx }})
+                  </option>
+                  <option value="map" [selected]="mmapScope() === 'map'">
+                    {{ 'WORLD_EDITOR.WHOLE_MAP' | translate }} ({{ info.mapId }})
+                  </option>
+                </select>
+              </div>
+              @if (mmapChanged()) {
+                <pre class="small mb-1 world-editor-yaml" data-testid="mmap-yaml">{{ mmapYaml() }}</pre>
+                <div class="d-flex gap-1">
+                  <button type="button" class="btn btn-sm btn-secondary" data-testid="mmap-copy" (click)="copyMmapYaml()">
+                    <i class="fa fa-copy"></i> {{ 'COPY' | translate }}
+                  </button>
+                  <button type="button" class="btn btn-sm btn-secondary" data-testid="mmap-download" (click)="downloadMmapYaml()">
+                    <i class="fa fa-download"></i> .yaml
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-secondary ms-auto"
+                    data-testid="mmap-reset"
+                    (click)="mmapChanges.set({})"
+                  >
+                    {{ 'WORLD_EDITOR.RESET_KEYS' | translate }}
+                  </button>
+                </div>
+                <small class="text-muted d-block mt-1">{{ 'WORLD_EDITOR.MMAP_YAML_HINT' | translate }}</small>
+              } @else {
+                <small class="text-muted" data-testid="mmap-hint">{{ 'WORLD_EDITOR.MMAP_EDIT_HINT' | translate }}</small>
+              }
+            } @else if (info.missing) {
+              <small class="text-danger" data-testid="mmap-missing">{{ 'WORLD_EDITOR.MMTILE_MISSING_HELP' | translate }}</small>
+            } @else {
+              <small class="text-muted" data-testid="mmap-loading">{{ 'LOADING' | translate }}</small>
+            }
+          </div>
+        </div>
+      }
 
       <div class="card mb-2 world-editor-help-card">
         <div class="card-header py-1">{{ 'WORLD_EDITOR.CONTROLS' | translate }}</div>

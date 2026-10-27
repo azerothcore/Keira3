@@ -7,6 +7,65 @@ import { TileCoord } from './coords';
 export interface NavMeshTile {
   positions: Float32Array;
   colors: Float32Array;
+  /** The recast settings the tile was generated with (stored in its header by AzerothCore's mmaps generator). */
+  config?: MmapRecastConfig;
+}
+
+/** Recast settings of a tile, named like the keys of the generator's mmaps-config.yaml (meshSettings). */
+export interface MmapRecastConfig {
+  walkableSlopeAngle: number;
+  walkableHeight: number;
+  walkableClimb: number;
+  walkableRadius: number;
+  verticesPerMapEdge: number;
+  verticesPerTileEdge: number;
+  cellSizeHorizontal: number;
+  cellSizeVertical: number;
+  maxSimplificationError: number;
+}
+
+/** The settings mmaps-config.yaml can override, in the order it lists them. */
+export const MMAP_CONFIG_KEYS: (keyof MmapRecastConfig)[] = [
+  'walkableSlopeAngle',
+  'walkableHeight',
+  'walkableClimb',
+  'walkableRadius',
+  'verticesPerMapEdge',
+  'verticesPerTileEdge',
+  'maxSimplificationError',
+  'cellSizeHorizontal',
+  'cellSizeVertical',
+];
+
+/** MmapTileRecastConfig, right after the first 20 bytes of the header. */
+function readRecastConfig(view: DataView): MmapRecastConfig {
+  const round = (value: number) => Math.round(value * 10_000) / 10_000;
+  return {
+    walkableSlopeAngle: round(view.getFloat32(20, true)),
+    walkableRadius: view.getUint8(24),
+    walkableHeight: view.getUint8(25),
+    walkableClimb: view.getUint8(26),
+    verticesPerMapEdge: view.getUint32(28, true),
+    verticesPerTileEdge: view.getUint32(32, true),
+    cellSizeHorizontal: round(view.getFloat32(44, true)),
+    cellSizeVertical: round(view.getFloat32(48, true)),
+    maxSimplificationError: round(view.getFloat32(52, true)),
+  };
+}
+
+/**
+ * The lines to add to mmaps-config.yaml (under mmapsConfig.meshSettings) to regenerate a tile, or its whole map, with
+ * other settings. Tiles are named "gridX,gridY" like their file (the ADT tile's second and first numbers).
+ */
+export function mmapOverrideYaml(mapId: number, tile: TileCoord | undefined, changes: Partial<MmapRecastConfig>): string {
+  const settings = MMAP_CONFIG_KEYS.filter((key) => changes[key] !== undefined);
+  const indent = tile ? '          ' : '      ';
+  const lines = ['mmapsConfig:', '  meshSettings:', '    mapsOverrides:', `      "${mapId}":`];
+  if (tile) {
+    lines.push('        tilesOverrides:', `          "${tile.ty},${tile.tx}":`);
+  }
+  lines.push(...settings.map((key) => `${indent}  ${key}: ${changes[key]}`));
+  return `${lines.join('\n')}\n`;
 }
 
 /** `mmaps/MMMXXYY.mmtile`: map id, then the grid's x and y, which are the ADT tile's second and first numbers. */
@@ -99,5 +158,5 @@ export function parseMmtile(bytes: Uint8Array): NavMeshTile | undefined {
       }
     }
   }
-  return { positions: Float32Array.from(positions), colors: Float32Array.from(colors) };
+  return { positions: Float32Array.from(positions), colors: Float32Array.from(colors), config: readRecastConfig(view) };
 }

@@ -11,6 +11,7 @@ import {
   controlFor,
   inputLabel,
   inputOf,
+  NavMeshTileInfo,
   ObjectMoved,
   parseWaypointKey,
   PathProbeRequest,
@@ -37,6 +38,9 @@ import {
   WowZone,
   WorldPosition,
   AreaTriggerInfo,
+  MMAP_CONFIG_KEYS,
+  mmapOverrideYaml,
+  MmapRecastConfig,
 } from '@keira/shared/wow-data';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ClipboardService } from 'ngx-clipboard';
@@ -178,6 +182,16 @@ export class WorldEditorComponent implements OnInit {
     { range: 30, label: 'WORLD_EDITOR.RANGE_RANGED' },
     { range: 40, label: 'WORLD_EDITOR.RANGE_LONG' },
   ];
+  /** The mmtile under the camera (navigation mesh shown), the settings changed for it and the YAML to regenerate it. */
+  protected readonly navMeshTile = signal<NavMeshTileInfo | undefined>(undefined);
+  protected readonly mmapKeys = MMAP_CONFIG_KEYS;
+  protected readonly mmapChanges = signal<Partial<MmapRecastConfig>>({});
+  protected readonly mmapScope = signal<'tile' | 'map'>('tile');
+  protected readonly mmapChanged = computed(() => Object.keys(this.mmapChanges()).length > 0);
+  protected readonly mmapYaml = computed(() => {
+    const info = this.navMeshTile() as NavMeshTileInfo;
+    return mmapOverrideYaml(info.mapId, this.mmapScope() === 'tile' ? info.tile : undefined, this.mmapChanges());
+  });
   protected readonly isRangePreset = computed(() => this.rangePresets.some((preset) => preset.range === this.probeRange()));
   protected readonly probeRequest = computed<PathProbeRequest | undefined>(() => {
     const from = this.probeFrom();
@@ -534,6 +548,40 @@ export class WorldEditorComponent implements OnInit {
     if (value !== undefined) {
       this.probeHeight.set(value);
     }
+  }
+
+  protected onNavMeshTile(info: NavMeshTileInfo | undefined): void {
+    if (info?.file !== this.navMeshTile()?.file) {
+      this.mmapChanges.set({});
+    }
+    this.navMeshTile.set(info);
+  }
+
+  /** A setting typed for the tile; empty, or the tile's own value, means unchanged. */
+  protected setMmapValue(key: keyof MmapRecastConfig, event: Event): void {
+    const text = (event.target as HTMLInputElement).value;
+    const value = Number(text);
+    const { [key]: _, ...others } = this.mmapChanges();
+    const original = (this.navMeshTile() as NavMeshTileInfo).config?.[key];
+    this.mmapChanges.set(text === '' || !Number.isFinite(value) || value === original ? others : { ...others, [key]: value });
+  }
+
+  protected setMmapScope(event: Event): void {
+    this.mmapScope.set((event.target as HTMLSelectElement).value === 'map' ? 'map' : 'tile');
+  }
+
+  protected copyMmapYaml(): void {
+    this.clipboard.copyFromContent(this.mmapYaml());
+  }
+
+  /** Saves the YAML as a file next to the user's downloads. */
+  protected downloadMmapYaml(): void {
+    const info = this.navMeshTile() as NavMeshTileInfo;
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(new Blob([this.mmapYaml()], { type: 'text/yaml' }));
+    link.download = `mmaps-config-${info.file.replace('.mmtile', '')}.yaml`;
+    link.click();
+    URL.revokeObjectURL(link.href);
   }
 
   protected clearProbe(): void {
