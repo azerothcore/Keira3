@@ -1046,6 +1046,8 @@
     "ERROR_DESKTOP_ONLY": "3D世界编辑器需要 Keira3 桌面应用来读取你的 WoW 客户端文件。",
     "WALKED_BY": "使用者",
     "VIEW": "视图",
+    "LOAD_AHEAD": "提前加载",
+    "LOAD_AHEAD_HELP": "在视野内没有加载时，读取已绘制范围之外的地块（地形、纹理、建筑、物件），到达时即可就绪。",
     "CACHE_FULL": "缓存已达上限（{{gb}} GB）：预加载已暂停。",
     "CACHE_RAISE": "提高到 {{gb}} GB 并继续",
     "MAP_SEARCH": "地图：名称或 ID",

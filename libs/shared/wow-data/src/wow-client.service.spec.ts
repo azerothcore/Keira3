@@ -624,7 +624,7 @@ describe('WowClientService', () => {
 
     it('keeps only the most recent parsed ADTs, and retries failed ones', async () => {
       const files: Record<string, number[]> = {};
-      for (let i = 0; i < 34; i++) {
+      for (let i = 0; i < 66; i++) {
         files[`World\\Maps\\M\\M_${i}_0.adt`] = [0, 0, 0, 0, 0, 0, 0, 0];
       }
       const { service } = setup({ mpqs: { 'common.MPQ': { files } } });
@@ -632,20 +632,20 @@ describe('WowClientService', () => {
       TestBed.inject(WowDataCacheService).setEnabled(false);
       formats.parseWdt.mockReturnValue(undefined);
       formats.parseAdt.mockReturnValue(adtOf());
-      for (let i = 0; i < 34; i++) {
+      for (let i = 0; i < 66; i++) {
         await service.getTilePlacements('M', { tx: i, ty: 0 });
       }
-      await service.getTilePlacements('M', { tx: 33, ty: 0 });
-      expect(formats.parseAdt).toHaveBeenCalledTimes(34);
+      await service.getTilePlacements('M', { tx: 65, ty: 0 });
+      expect(formats.parseAdt).toHaveBeenCalledTimes(66);
       await service.getTilePlacements('M', { tx: 0, ty: 0 });
-      expect(formats.parseAdt).toHaveBeenCalledTimes(35);
+      expect(formats.parseAdt).toHaveBeenCalledTimes(67);
 
       formats.parseAdt.mockImplementationOnce(() => {
         throw new Error('bad adt');
       });
       await expect(service.getTilePlacements('M', { tx: 1, ty: 0 })).rejects.toThrowError('bad adt');
       await service.getTilePlacements('M', { tx: 1, ty: 0 });
-      expect(formats.parseAdt).toHaveBeenCalledTimes(37);
+      expect(formats.parseAdt).toHaveBeenCalledTimes(69);
     });
 
     it('loads buildings with their existing groups', async () => {

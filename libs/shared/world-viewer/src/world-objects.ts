@@ -115,6 +115,11 @@ export class WorldObjects {
     }
   }
 
+  /** Loads a building ahead of time (kept for when a tile places it). */
+  prefetch(path: string): Promise<unknown> {
+    return this.getTemplate(path).catch(() => undefined);
+  }
+
   dispose(): void {
     this.directory = undefined;
     this.clear();

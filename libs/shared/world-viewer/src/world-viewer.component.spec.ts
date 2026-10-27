@@ -1219,6 +1219,40 @@ describe(WorldViewerComponent.name, () => {
     expect(host.centers.at(-1)?.x).toBeCloseTo(CENTER.x);
   });
 
+  describe('reading ahead', () => {
+    it('reads the tiles beyond those drawn: terrain, textures, buildings and models', async () => {
+      client.getMapTiles.mockResolvedValue([
+        { tx: 32, ty: 48 },
+        { tx: 34, ty: 48 },
+      ]);
+      client.getTilePlacements.mockImplementation((_d: string, tile: { tx: number }) =>
+        Promise.resolve(tile.tx === 34 ? { wmos: [{ path: 'Far.wmo' }], doodads: [{ path: 'Far\\Tree.mdx' }] } : { wmos: [], doodads: [] }),
+      );
+      client.getWmo.mockRejectedValue(new Error('broken'));
+      client.getTerrainDetail.mockImplementation((_d: string, tile: { tx: number }) =>
+        Promise.resolve(
+          tile.tx === 34
+            ? { ...flatDetail(GROUND), chunks: [{ ...flatDetail(GROUND).chunks[0], textures: ['far.blp'] }] }
+            : flatDetail(GROUND),
+        ),
+      );
+      const { fixture } = await setup((h) => {
+        h.map.set('Azeroth');
+        h.focus.set(at(0, 0));
+      });
+      for (let i = 0; i < 6; i++) {
+        await settle(fixture);
+        flushFrames();
+      }
+      await new Promise((resolve) => setTimeout(resolve, 400));
+      await settle(fixture);
+      expect(client.getTerrainDetail).toHaveBeenCalledWith('Azeroth', { tx: 34, ty: 48 });
+      expect(client.getTexture).toHaveBeenCalledWith('far.blp');
+      expect(client.getWmo).toHaveBeenCalledWith('Far.wmo');
+      expect(client.getM2).toHaveBeenCalledWith('Far\\Tree.mdx');
+    });
+  });
+
   describe('Path / LOS handles, resolution and marker model', () => {
     it('labels A and C, drags them along the ground and reports where they were dropped', async () => {
       const { page, host, fixture, update } = await setup((h) => {

@@ -63,7 +63,7 @@ export interface TerrainDetail {
 
 type CachedAdt = ParsedAdt & { liquids: LiquidMesh[] };
 
-const ADT_CACHE_SIZE = 32;
+const ADT_CACHE_SIZE = 64;
 
 interface OpenClient {
   clientPath: string;

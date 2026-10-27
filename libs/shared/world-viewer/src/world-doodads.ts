@@ -150,6 +150,11 @@ export class WorldDoodads {
     }
   }
 
+  /** Loads a model ahead of time (kept for when a tile places it). */
+  prefetch(path: string): void {
+    this.loadTemplate(m2Path(path).toLowerCase(), path);
+  }
+
   dispose(): void {
     this.directory = undefined;
     this.clear();

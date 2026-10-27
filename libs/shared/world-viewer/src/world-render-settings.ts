@@ -43,6 +43,8 @@ export interface WorldRenderSettings {
    * a bit blurrier.
    */
   renderScale: number;
+  /** Rings of tiles read ahead beyond those drawn, so moving on finds them ready (0 = off). */
+  loadAhead: number;
   /** The marker (Space) as a player character, `race:sex` (e.g. `1:0` human male); '' = the beam only. */
   markerModel: string;
 }
@@ -91,6 +93,7 @@ export const DEFAULT_WORLD_RENDER_SETTINGS: WorldRenderSettings = {
   creatureDistance: 250,
   gameobjectDistance: 250,
   renderScale: 1,
+  loadAhead: 1,
   markerModel: '',
 };
 

@@ -2342,6 +2342,11 @@ describe(WorldEditorComponent.name, () => {
       page.fixture.detectChanges();
       expect(page.viewer().renderSettings().markerModel).toBe('11:1');
       page.click('resolution-100');
+      const ahead = page.byId<HTMLSelectElement>('view-load-ahead').nativeElement;
+      ahead.value = '2';
+      ahead.dispatchEvent(new Event('change'));
+      page.fixture.detectChanges();
+      expect(page.viewer().renderSettings().loadAhead).toBe(2);
     });
 
     it("draws creatures' bounding radius and combat reach, and names them on hover", async () => {

@@ -32,6 +32,7 @@ import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { TerrainStreamer } from './terrain-streamer';
 import { TextureCache } from './texture-cache';
 import { DisplayModel, displayModel, SpawnModels } from './spawn-models';
+import { WorldPrefetch } from './world-prefetch';
 import { WorldDoodads } from './world-doodads';
 import { ZoneLighting } from './zone-lighting';
 import {
@@ -210,6 +211,13 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private readonly streamer = new TerrainStreamer(this.client, this.world, this.textures, () => this.onTileLoaded());
   private readonly objects = new WorldObjects(this.client, this.world.buildingGroup, this.textures, () => this.onTileLoaded());
   private readonly doodads = new WorldDoodads(this.client, this.world.doodadGroup, this.textures, () => this.requestRender());
+  /** Reads the tiles beyond the drawn ones ahead of time, while nothing in sight is loading. */
+  private readonly prefetch = new WorldPrefetch(this.client, {
+    texture: (path) => this.textures.get(path),
+    building: (path) => this.objects.prefetch(path),
+    model: (path) => this.doodads.prefetch(path),
+    idle: () => this.streamer.pendingCount + this.objects.pendingCount + this.doodads.pendingCount === 0,
+  });
   private readonly navMesh = new WorldNavMesh(this.client, this.world.navMeshGroup, () => this.requestRender());
   private readonly prober = new PathProber(this.client, this.world);
   /** The server's collision (vmaps), loaded while it's needed: hitboxes shown, Path / LOS or Check path in use. */
@@ -269,6 +277,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
         this.zoneLighting.configure(settings.zoneLighting);
         this.navMesh.configure({ show: settings.showNavMesh, radius: settings.terrainRadius });
         this.applyRenderScale(settings.renderScale);
+        this.prefetch.configure({ rings: settings.loadAhead, radius: settings.terrainRadius, detailed: !settings.lowDetailTerrain });
+        this.prefetch.update(this.center);
         void this.loadMarkerModel(settings.markerModel);
         this.world.setRoofsVisible(settings.showRoofs);
         this.world.setCollisionVisible(settings.showCollision);
@@ -1059,6 +1069,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     this.objects.setMap(directory);
     this.doodads.setMap(directory);
     this.navMesh.setMap(directory);
+    void this.prefetch.setMap(this.client.isSupported() ? directory : undefined).then(() => this.prefetch.update(this.center));
     void this.zoneLighting.setMap(this.client.isSupported() ? directory : undefined);
     if (!directory) {
       await this.streamer.setMap(undefined);
@@ -1132,6 +1143,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     void this.doodads.update(center);
     void this.navMesh.update(center);
     void this.vmaps.update(center);
+    this.prefetch.update(center);
     this.spawnModels.update(center);
     this.zoneLighting.update(center);
   }

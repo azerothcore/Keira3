@@ -966,6 +966,10 @@ export class WorldEditorComponent implements OnInit {
     this.renderSettings.update({ [key]: Number((event.target as HTMLSelectElement).value) });
   }
 
+  protected setLoadAhead(event: Event): void {
+    this.renderSettings.update({ loadAhead: Number((event.target as HTMLSelectElement).value) });
+  }
+
   protected setTerrainRadius(event: Event): void {
     this.renderSettings.update({ terrainRadius: Number((event.target as HTMLSelectElement).value) });
   }

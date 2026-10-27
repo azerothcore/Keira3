@@ -1046,6 +1046,8 @@
     "ERROR_DESKTOP_ONLY": "El editor de mundo 3D necesita la aplicación de escritorio de Keira3 para leer los archivos de tu cliente de WoW.",
     "WALKED_BY": "Recorrida por",
     "VIEW": "Vista",
+    "LOAD_AHEAD": "Cargar por adelantado",
+    "LOAD_AHEAD_HELP": "Lee las casillas más allá de las dibujadas (terreno, texturas, edificios, objetos) mientras no se carga nada a la vista, para tenerlas listas.",
     "CACHE_FULL": "La caché llegó a su máximo ({{gb}} GB): precarga en pausa.",
     "CACHE_RAISE": "Subir a {{gb}} GB y seguir",
     "MAP_SEARCH": "Mapa: nombre o id",
