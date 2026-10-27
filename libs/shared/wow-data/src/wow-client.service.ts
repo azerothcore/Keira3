@@ -1,5 +1,5 @@
 import { inject, Service } from '@angular/core';
-import { TileCoord, tileKey, worldToTile } from './coords';
+import { TileCoord, tileKey, WorldBounds, worldToTile } from './coords';
 import {
   AreaTriggerInfo,
   CreatureDisplay,
@@ -386,8 +386,20 @@ export class WowClientService {
   /** The map's tiles; a map made of one building (a dungeon) has the tile under it, which holds the building. */
   async getMapTiles(directory: string): Promise<TileCoord[]> {
     const wdt = await this.getWdt(directory);
-    const wmoTile = wdt?.wmo && worldToTile(wdt.wmo.position[0], wdt.wmo.position[1]);
-    return wdt?.tiles.length ? wdt.tiles : wmoTile ? [wmoTile] : [];
+    if (wdt?.tiles.length) {
+      return wdt.tiles;
+    }
+    return wdt?.wmo ? [buildingTile(wdt)] : [];
+  }
+
+  /** The one building of a map made of a single building instead of terrain (most dungeons and raids). */
+  async getMapBuilding(
+    directory: string,
+  ): Promise<{ placement: ModelPlacement; bounds: WorldBounds & { minZ: number; maxZ: number } } | undefined> {
+    const wdt = await this.getWdt(directory);
+    return wdt?.wmo && !wdt.tiles.length
+      ? { placement: wdt.wmo, bounds: wdt.wmoBounds as WorldBounds & { minZ: number; maxZ: number } }
+      : undefined;
   }
 
   /** The buildings of a tile: those its ADT places, or the map's one building for its tile (dungeons have no ADTs). */
@@ -395,8 +407,8 @@ export class WowClientService {
     if (adt) {
       return adt.wmos;
     }
-    const wmo = (await this.getWdt(directory))?.wmo;
-    return wmo && tileKey(worldToTile(wmo.position[0], wmo.position[1])) === tileKey(tile) ? [wmo] : [];
+    const wdt = await this.getWdt(directory);
+    return wdt?.wmo && tileKey(buildingTile(wdt)) === tileKey(tile) ? [wdt.wmo] : [];
   }
 
   /** Low-detail terrain of a tile: one mesh for the whole tile, textured with its minimap. */
@@ -794,6 +806,12 @@ export class WowClientService {
     const bytes = serverDataPath && native.exists(serverDbc) ? native.readFile(serverDbc) : await this.readFile(`DBFilesClient\\${name}`);
     return bytes ? new DbcFile(bytes) : undefined;
   }
+}
+
+/** The tile holding a map's one building: the one in the middle of where it stands. */
+function buildingTile(wdt: WdtInfo): TileCoord {
+  const { minX, maxX, minY, maxY } = wdt.wmoBounds as WorldBounds;
+  return worldToTile((minX + maxX) / 2, (minY + maxY) / 2);
 }
 
 /**

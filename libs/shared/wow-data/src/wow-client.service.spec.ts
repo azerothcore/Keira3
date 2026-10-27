@@ -537,6 +537,8 @@ describe('WowClientService', () => {
       formats.parseWdt.mockReturnValue({ tiles: [{ tx: 1, ty: 2 }], layerSplatDepth: 4 });
       expect(await service.getMapTiles('Azeroth')).toEqual([{ tx: 1, ty: 2 }]);
       expect(await service.getMapTiles('azeroth')).toEqual([{ tx: 1, ty: 2 }]);
+      // a map with terrain has no one building
+      expect(await service.getMapBuilding('Azeroth')).toBeUndefined();
       expect(formats.parseWdt).toHaveBeenCalledTimes(1);
       expect(Array.from(formats.parseWdt.mock.calls[0][0])).toEqual([9]);
       expect(await service.getMapTiles('Nowhere')).toEqual([]);
@@ -554,14 +556,17 @@ describe('WowClientService', () => {
         scale: 1,
         doodadSet: 0,
       };
-      formats.parseWdt.mockReturnValue({ tiles: [], layerSplatDepth: 4, wmo: building });
+      // where it stands: around the middle of tile 30_33
+      const bounds = { minX: -300, maxX: -200, minY: 900, maxY: 1100, minZ: 0, maxZ: 40 };
+      formats.parseWdt.mockReturnValue({ tiles: [], layerSplatDepth: 4, wmo: building, wmoBounds: bounds });
       wmo.parseWmoDoodads.mockReturnValue({ sets: [], doodads: [] });
-      expect(await service.getMapTiles('Dungeon')).toEqual([{ tx: 32, ty: 32 }]);
-      expect((await service.getTilePlacements('Dungeon', { tx: 32, ty: 32 }))?.wmos).toEqual([building]);
+      expect(await service.getMapTiles('Dungeon')).toEqual([{ tx: 30, ty: 32 }]);
+      expect(await service.getMapBuilding('Dungeon')).toEqual({ placement: building, bounds });
+      expect((await service.getTilePlacements('Dungeon', { tx: 30, ty: 32 }))?.wmos).toEqual([building]);
       expect(await service.getTilePlacements('Dungeon', { tx: 31, ty: 32 })).toBeUndefined();
       // preloading it caches the building
       const getWmo = vi.spyOn(service, 'getWmo');
-      expect(await service.preload('Dungeon', [{ tx: 32, ty: 32 }])).toBe(true);
+      expect(await service.preload('Dungeon', [{ tx: 30, ty: 32 }])).toBe(true);
       expect(getWmo).toHaveBeenCalledWith('world\\wmo\\dungeon.wmo');
     });
 

@@ -211,6 +211,8 @@ const spawnBounds = (spawn: SpawnRecord): { radius: number; reach: number } | un
       { radius: spawn.boundingRadius * (spawn.scale ?? 1), reach: (spawn.combatReach as number) * (spawn.scale ?? 1) }
     : undefined;
 /** Flight masters and flight paths (their own layer) among the travel overlays. */
+/** A dungeon is loaded whole: its building's extents, and this much around them (yards). */
+const INSTANCE_PADDING = 50;
 /** Colours of the boss boundaries, one per boss. */
 const BOUNDARY_COLORS = [0xff9ff3, 0x48dbfb, 0xfeca57, 0x1dd1a1, 0x5f27cd, 0xff6b6b];
 const isFlight = (key: string): boolean => key.startsWith('flight:') || key.startsWith('taxi:');
@@ -473,9 +475,16 @@ export class WorldEditorComponent implements OnInit {
   protected readonly zones = signal<WowZone[]>([]);
   protected readonly zoneId = this.session.zoneId;
   /** The selected zone, loaded whole when the View panel asks for it. */
+  /** A dungeon made of one building: the area around it, always loaded whole (building, props, spawns, models). */
+  private readonly instanceRegion = signal<WorldBounds | undefined>(undefined);
+  private readonly loadInstanceRegion = effect(() => {
+    const directory = this.mapDirectory();
+    untracked(() => void this.updateInstanceRegion(directory));
+  });
   protected readonly region = computed(
     () =>
       this.mapRegion() ??
+      this.instanceRegion() ??
       (this.renderSettings.settings().loadWholeZone ? this.zones().find((zone) => zone.areaId === this.zoneId())?.bounds : undefined),
   );
   protected readonly showMap = this.session.showMap;
@@ -1197,9 +1206,29 @@ export class WorldEditorComponent implements OnInit {
     }
   }
 
-  /** Looks at the middle of the map's terrain tiles (maps rarely have anything at 0,0). */
+  /** Where the one building of a dungeon stands (undefined for a map with terrain, or unreadable). */
+  private async buildingBounds(directory: string | undefined): Promise<(WorldBounds & { minZ: number; maxZ: number }) | undefined> {
+    return directory ? (await this.client.getMapBuilding(directory).catch(() => undefined))?.bounds : undefined;
+  }
+
+  private async updateInstanceRegion(directory: string | undefined): Promise<void> {
+    const b = await this.buildingBounds(directory);
+    // (another map may have been chosen meanwhile)
+    if (directory === this.mapDirectory()) {
+      const pad = INSTANCE_PADDING;
+      this.instanceRegion.set(b && { minX: b.minX - pad, maxX: b.maxX + pad, minY: b.minY - pad, maxY: b.maxY + pad });
+    }
+  }
+
+  /** Looks at the middle of the dungeon, or of the map's terrain tiles (maps rarely have anything at 0,0). */
   private async focusMapCenter(): Promise<void> {
     const directory = this.mapDirectory();
+    const b = await this.buildingBounds(directory);
+    if (b) {
+      // the middle of the dungeon
+      this.focus.set({ x: (b.minX + b.maxX) / 2, y: (b.minY + b.maxY) / 2, z: (b.minZ + b.maxZ) / 2 });
+      return;
+    }
     const tiles = directory ? await this.client.getMapTiles(directory) : [];
     if (tiles.length === 0) {
       this.focus.set({ x: 0, y: 0, z: 0 });

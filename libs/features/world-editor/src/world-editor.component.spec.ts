@@ -167,6 +167,7 @@ describe(WorldEditorComponent.name, () => {
       isSupported: vi.fn(),
       getMaps: vi.fn(),
       getMapTiles: vi.fn(),
+      getMapBuilding: vi.fn(),
       getZones: vi.fn(),
       getAreaTriggers: vi.fn(),
       preload: vi.fn(),
@@ -293,6 +294,7 @@ describe(WorldEditorComponent.name, () => {
     mocks.client.getTaxiNodes.mockResolvedValue([]);
     mocks.client.getTaxiPaths.mockResolvedValue([]);
     mocks.client.getBossBoundaries.mockResolvedValue([]);
+    mocks.client.getMapBuilding.mockResolvedValue(undefined);
     mocks.service.loadScriptEntries.mockResolvedValue(new Map());
     mocks.service.loadWaypointScripts.mockResolvedValue(new Map([[50, [{ id: 50, delay: 0, command: 0 }]]]));
     mocks.service.loadWaypointSai.mockResolvedValue([{ entryorguid: -1, point: 2, pathId: 10, actionType: 1, comment: 'Willem - Say' }]);
@@ -860,6 +862,39 @@ describe(WorldEditorComponent.name, () => {
       page.fixture.detectChanges();
       expect(page.byId('map-options', false)).toBeFalsy();
       expect(search.value).toBe('1 – Kalimdor');
+    });
+
+    it('loads a dungeon made of one building whole, looking at its middle', async () => {
+      const { page } = await setup();
+      mocks.client.getMapBuilding.mockImplementation((directory: string) =>
+        Promise.resolve(
+          directory === 'Kalimdor'
+            ? { placement: {}, bounds: { minX: 100, maxX: 300, minY: -200, maxY: 0, minZ: 10, maxZ: 50 } }
+            : undefined,
+        ),
+      );
+      page.chooseMap(1);
+      await settle(page);
+      await settle(page);
+      expect(page.viewer().focus()).toEqual({ x: 200, y: -100, z: 30 });
+      expect(page.viewer().region()).toEqual({ minX: 50, maxX: 350, minY: -250, maxY: 50 });
+      // its spawns everywhere in it
+      await loadArea(page);
+      expect(mocks.service.loadSpawns).toHaveBeenLastCalledWith(1, CENTER, 450, { minX: 50, maxX: 350, minY: -250, maxY: 50 });
+      // an unreadable map, or back to one with terrain: not loaded whole
+      mocks.client.getMapBuilding.mockRejectedValueOnce(new Error('bad wdt'));
+      page.chooseMap(0);
+      await settle(page);
+      expect(page.viewer().region()).toBeUndefined();
+      // read late, after another map was chosen: dropped
+      let late: (value: unknown) => void = () => undefined;
+      mocks.client.getMapBuilding.mockReturnValueOnce(new Promise((resolve) => (late = resolve)));
+      page.chooseMap(1);
+      page.chooseMap(0);
+      await settle(page);
+      late({ placement: {}, bounds: { minX: 0, maxX: 1, minY: 0, maxY: 1, minZ: 0, maxZ: 1 } });
+      await settle(page);
+      expect(page.viewer().region()).toBeUndefined();
     });
 
     it('switches maps', async () => {
@@ -2098,19 +2133,24 @@ describe(WorldEditorComponent.name, () => {
     });
 
     it('loads the tiles of the map shown, also when it changes or the editor opens again', async () => {
-      const resolvers = new Map<string, (tiles: { tx: number; ty: number }[]) => void>();
+      // every read of a map's tiles waits until answered
+      const resolvers = new Map<string, ((tiles: { tx: number; ty: number }[]) => void)[]>();
+      const answer = (directory: string, tiles: { tx: number; ty: number }[]) =>
+        (resolvers.get(directory) ?? []).forEach((resolve) => resolve(tiles));
       const { page, fixture } = await setup();
       await loadArea(page);
-      mocks.client.getMapTiles.mockImplementation((directory: string) => new Promise((resolve) => resolvers.set(directory, resolve)));
+      mocks.client.getMapTiles.mockImplementation(
+        (directory: string) => new Promise((resolve) => resolvers.set(directory, [...(resolvers.get(directory) ?? []), resolve])),
+      );
       page.click('map-toggle');
       await settle(page);
       page.chooseMap(1);
       await settle(page);
       expect(mocks.client.getMapTiles).toHaveBeenLastCalledWith('Kalimdor');
       // Kalimdor's tiles, then the late Azeroth ones: Kalimdor's stay
-      resolvers.get('Kalimdor')?.([{ tx: 40, ty: 30 }]);
+      answer('Kalimdor', [{ tx: 40, ty: 30 }]);
       await settle(page);
-      resolvers.get('Azeroth')?.([{ tx: 31, ty: 48 }]);
+      answer('Azeroth', [{ tx: 31, ty: 48 }]);
       await settle(page);
       expect(mocks.client.getServerCoverage).toHaveBeenLastCalledWith(1, [{ tx: 40, ty: 30 }]);
       fixture.destroy();

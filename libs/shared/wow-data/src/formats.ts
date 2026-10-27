@@ -1,5 +1,5 @@
 import { Blp, BLP_IMAGE_FORMAT, Map as WdtMap, MapArea } from '@wowserhq/format';
-import { TILE_COUNT, TileCoord } from './coords';
+import { TILE_COUNT, TileCoord, WorldBounds } from './coords';
 import { TerrainChunk } from './terrain-mesh';
 import { findChunk } from './liquid';
 import { ModelPlacement } from './wmo';
@@ -90,6 +90,8 @@ export interface WdtInfo {
   layerSplatDepth: LayerSplatDepth;
   /** The map's one building, for maps made of a single WMO instead of terrain (most dungeons and raids). */
   wmo?: ModelPlacement;
+  /** Where that building stands (server x/y), and its lowest and highest points. */
+  wmoBounds?: WorldBounds & { minZ: number; maxZ: number };
 }
 
 export function parseWdt(bytes: Uint8Array): WdtInfo {
@@ -101,7 +103,7 @@ export function parseWdt(bytes: Uint8Array): WdtInfo {
     }
   });
   const wmo = globalWmo(bytes);
-  return { tiles, layerSplatDepth: wdt.layerSplatDepth, ...(wmo ? { wmo } : {}) };
+  return { tiles, layerSplatDepth: wdt.layerSplatDepth, ...(wmo ?? {}) };
 }
 
 /** Half the size of the world: where placements' own axes start. */
@@ -111,7 +113,7 @@ const MAP_CORNER = 32 * (1600 / 3);
  * The WDT's MWMO (its building's file name) and MODF (where it's placed), turned to server axes the way
  * `@wowserhq/format` turns the placements of ADTs (it doesn't read these two chunks of WDTs).
  */
-function globalWmo(bytes: Uint8Array): ModelPlacement | undefined {
+function globalWmo(bytes: Uint8Array): { wmo: ModelPlacement; wmoBounds: WorldBounds & { minZ: number; maxZ: number } } | undefined {
   const name = findChunk(bytes, 'MWMO');
   const placement = findChunk(bytes, 'MODF');
   if (!name || !placement || name.size === 0 || placement.size < MODF_ENTRY_SIZE) {
@@ -123,14 +125,25 @@ function globalWmo(bytes: Uint8Array): ModelPlacement | undefined {
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   const at = placement.offset;
   const float = (i: number) => view.getFloat32(at + 8 + i * 4, true);
-  const [px, py, pz, rx, ry, rz] = [0, 1, 2, 3, 4, 5].map(float);
+  const [px, py, pz, rx, ry, rz, minX, minY, minZ, maxX, maxY, maxZ] = Array.from({ length: 12 }, (_, i) => float(i));
   return {
-    uniqueId: view.getUint32(at + MODF_UNIQUE_ID_OFFSET, true),
-    path,
-    position: [MAP_CORNER - pz, MAP_CORNER - px, py],
-    rotation: eulerQuaternion(rz, rx, ry + 180),
-    scale: 1,
-    doodadSet: view.getUint16(at + MODF_DOODAD_SET_OFFSET, true),
+    wmo: {
+      uniqueId: view.getUint32(at + MODF_UNIQUE_ID_OFFSET, true),
+      path,
+      position: [MAP_CORNER - pz, MAP_CORNER - px, py],
+      rotation: eulerQuaternion(rz, rx, ry + 180),
+      scale: 1,
+      doodadSet: view.getUint16(at + MODF_DOODAD_SET_OFFSET, true),
+    },
+    // the extents (corner to corner, in the placement's axes)
+    wmoBounds: {
+      minX: MAP_CORNER - maxZ,
+      maxX: MAP_CORNER - minZ,
+      minY: MAP_CORNER - maxX,
+      maxY: MAP_CORNER - minX,
+      minZ: minY,
+      maxZ: maxY,
+    },
   };
 }
 

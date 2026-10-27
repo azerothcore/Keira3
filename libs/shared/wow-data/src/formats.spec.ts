@@ -118,7 +118,7 @@ describe('formats', () => {
     const modf = new Uint8Array(64);
     const view = new DataView(modf.buffer);
     view.setUint32(4, 99, true);
-    [100, 50, 200, 0, 0, 0].forEach((value, i) => view.setFloat32(8 + i * 4, value, true));
+    [100, 50, 200, 0, 0, 0, 90, 10, 190, 110, 60, 210].forEach((value, i) => view.setFloat32(8 + i * 4, value, true));
     view.setUint16(58, 2, true);
     const wdt = parseWdt(Uint8Array.from([...chunk('MWMO', name), ...chunk('MODF', Array.from(modf))]));
     const corner = 32 * (1600 / 3);
@@ -130,6 +130,7 @@ describe('formats', () => {
       scale: 1,
       doodadSet: 2,
     });
+    expect(wdt.wmoBounds).toEqual({ minX: corner - 210, maxX: corner - 190, minY: corner - 110, maxY: corner - 90, minZ: 10, maxZ: 60 });
     // a name without its ending zero; no placement, or an empty name: no building
     expect(parseWdt(Uint8Array.from([...chunk('MWMO', [65]), ...chunk('MODF', Array.from(modf))])).wmo?.path).toBe('A');
     expect(parseWdt(Uint8Array.from(chunk('MWMO', name))).wmo).toBeUndefined();
