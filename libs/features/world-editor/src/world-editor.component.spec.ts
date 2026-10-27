@@ -228,7 +228,11 @@ describe(WorldEditorComponent.name, () => {
       page.type('cache-folder', 'D:\\Cache');
       page.submit('settings-save');
       await settle(page);
-      expect(JSON.parse(localStorage.getItem('keira3.worldEditor.cache') as string)).toEqual({ enabled: true, folder: 'D:\\Cache' });
+      expect(JSON.parse(localStorage.getItem('keira3.worldEditor.cache') as string)).toEqual({
+        enabled: true,
+        folder: 'D:\\Cache',
+        maxBytes: 10_000_000_000,
+      });
 
       page.click('settings-toggle');
       page.fixture.detectChanges();
@@ -240,6 +244,12 @@ describe(WorldEditorComponent.name, () => {
       expect(page.byId<HTMLButtonElement>('preload-map').nativeElement.disabled).toBe(true);
       page.click('cache-clear');
       expect(page.text('cache-size')).toBe('0.0 MB');
+
+      const max = page.byId<HTMLInputElement>('cache-max').nativeElement;
+      expect(max.value).toBe('10');
+      max.value = '25';
+      max.dispatchEvent(new Event('change'));
+      expect(JSON.parse(localStorage.getItem('keira3.worldEditor.cache') as string).maxBytes).toBe(25_000_000_000);
     });
 
     it('preloads the selected zone or the whole map into the cache, with progress', async () => {
@@ -254,7 +264,7 @@ describe(WorldEditorComponent.name, () => {
       mocks.client.preload.mockImplementation((_d: string, _t: unknown, progress: typeof report, isCancelled: typeof cancelled) => {
         report = progress;
         cancelled = isCancelled;
-        return new Promise<void>((resolve) => (finish = resolve));
+        return new Promise<boolean>((resolve) => (finish = () => resolve(true)));
       });
       page.click('settings-toggle');
       page.fixture.detectChanges();
@@ -298,6 +308,12 @@ describe(WorldEditorComponent.name, () => {
       await settle(page);
       expect(mocks.toastr.success).not.toHaveBeenCalled();
 
+      // a full cache stops everything
+      mocks.client.preload.mockResolvedValueOnce(false);
+      page.click('preload-all');
+      await settle(page);
+      expect(mocks.toastr.warning).toHaveBeenCalledWith('The cache reached its maximum size: preloading stopped.', 'World Editor');
+
       mocks.client.preload.mockRejectedValueOnce(new Error('disk full'));
       page.click('preload-map');
       await settle(page);
@@ -318,8 +334,8 @@ describe(WorldEditorComponent.name, () => {
       );
       let finishFirst: () => void = () => undefined;
       mocks.client.preload
-        .mockImplementationOnce(() => new Promise<void>((resolve) => (finishFirst = resolve)))
-        .mockResolvedValue(undefined);
+        .mockImplementationOnce(() => new Promise<boolean>((resolve) => (finishFirst = () => resolve(true))))
+        .mockResolvedValue(true);
       page.click('settings-toggle');
       page.fixture.detectChanges();
       page.click('preload-all');
@@ -353,7 +369,7 @@ describe(WorldEditorComponent.name, () => {
       mocks.client.preload.mockImplementation(() => {
         page.fixture.detectChanges();
         page.click('preload-cancel');
-        return Promise.resolve();
+        return Promise.resolve(true);
       });
       mocks.toastr.error.mockClear();
       page.click('preload-all');

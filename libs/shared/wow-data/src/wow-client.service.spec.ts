@@ -456,7 +456,7 @@ describe('WowClientService', () => {
       wmo.parseWmoRoot.mockReturnValue({ flags: 0, materials: [], groups: [] });
       const progress: [number, number][] = [];
       const tiles = [1, 2, 3, 4].map((ty) => ({ tx: 1, ty }));
-      await service.preload('M', tiles, (done, total) => progress.push([done, total]));
+      expect(await service.preload('M', tiles, (done, total) => progress.push([done, total]))).toBe(true);
       expect(progress).toEqual([
         [1, 4],
         [2, 4],
@@ -478,6 +478,17 @@ describe('WowClientService', () => {
         () => true,
       );
       await service.preload('M', []);
+
+      // a full cache stops the preload, before tiles or before buildings
+      const cache = TestBed.inject(WowDataCacheService);
+      cache.setMaxBytes(0);
+      expect(await service.preload('M', tiles)).toBe(false);
+      const isFull = vi.spyOn(cache, 'isFull').mockReturnValueOnce(false).mockReturnValue(true);
+      cache.clear();
+      cache.setMaxBytes(10_000);
+      formats.parseAdt.mockReturnValue(adtOf([], [{ uniqueId: 9, path: 'World\\wmo\\C.wmo' }]));
+      expect(await service.preload('M', tiles.slice(0, 1))).toBe(false);
+      isFull.mockRestore();
     });
 
     it('decodes textures', async () => {

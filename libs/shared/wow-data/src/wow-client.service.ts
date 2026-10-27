@@ -189,19 +189,23 @@ export class WowClientService {
   /**
    * Processes the given tiles of a map and the buildings on them into the disk cache ahead of time, so they load fast
    * later. `onProgress` gets the steps done and the steps known so far; `cancelled` is checked between steps.
+   * Stops when the cache is full, and then returns false.
    */
   async preload(
     directory: string,
     tiles: TileCoord[],
     onProgress: (done: number, total: number) => void = () => undefined,
     cancelled: () => boolean = () => false,
-  ): Promise<void> {
+  ): Promise<boolean> {
     const { identity } = await this.getClient();
     const buildings = new Set<string>();
     let done = 0;
     for (const tile of tiles) {
+      if (this.cache.isFull()) {
+        return false;
+      }
       if (cancelled()) {
-        return;
+        return true;
       }
       const adt = await this.loadAdt(directory, tile).catch((error: Error) => {
         console.warn(`[World Editor] Could not preload ${directory}_${tile.tx}_${tile.ty}: ${error.message}`);
@@ -212,12 +216,16 @@ export class WowClientService {
     }
     const missing = [...buildings].filter((path) => !this.cache.has(identity, 'wmo', path));
     for (const path of missing) {
+      if (this.cache.isFull()) {
+        return false;
+      }
       if (cancelled()) {
-        return;
+        return true;
       }
       await this.getWmo(path).catch((error: Error) => console.warn(`[World Editor] Could not preload ${path}: ${error.message}`));
       onProgress(++done, tiles.length + missing.length);
     }
+    return true;
   }
 
   private async loadWmo(path: string): Promise<WmoModel | undefined> {

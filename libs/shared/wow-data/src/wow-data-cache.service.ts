@@ -4,6 +4,8 @@ import { WOW_NATIVE_API, WowNativeApi } from './wow-native-api';
 export const WOW_DATA_CACHE_KEY = 'keira3.worldEditor.cache';
 /** Bumped whenever the cached data's shape changes, so old entries are simply not found. */
 const CACHE_VERSION = 'v1';
+/** Default limit of the cache on disk. */
+export const DEFAULT_CACHE_MAX_BYTES = 10 * 1_000_000_000;
 /** Subfolder created inside a folder the user picked. */
 export const CACHE_FOLDER_NAME = 'Keira3 world editor cache';
 
@@ -17,6 +19,11 @@ export class WowDataCacheService {
   private readonly stored = loadSettings();
   private readonly _enabled = signal(this.stored.enabled);
   private readonly _folder = signal(this.stored.folder);
+  private readonly _maxBytes = signal(this.stored.maxBytes);
+  /** Most the cache may take on disk; nothing more is written once reached. */
+  readonly maxBytes = this._maxBytes.asReadonly();
+  /** Bytes in the cache folder, counted once then kept up to date by the writes. */
+  private usedBytes?: number;
   readonly enabled = this._enabled.asReadonly();
   /** The folder chosen by the user ('' = the default, in the local application data). */
   readonly folder = this._folder.asReadonly();
@@ -29,7 +36,18 @@ export class WowDataCacheService {
   /** Moves the cache to another folder ('' = default). Entries in the old folder stay there until cleared. */
   setFolder(folder: string): void {
     this._folder.set(folder.trim());
+    this.usedBytes = undefined;
     this.save();
+  }
+
+  setMaxBytes(bytes: number): void {
+    this._maxBytes.set(Math.max(0, bytes));
+    this.save();
+  }
+
+  /** True once the cache reached its maximum size. */
+  isFull(): boolean {
+    return this.used() >= this._maxBytes();
   }
 
   /**
@@ -67,12 +85,14 @@ export class WowDataCacheService {
   }
 
   write(identity: string, kind: string, key: string, value: unknown): void {
-    if (!this.active) {
+    if (!this.active || this.isFull()) {
       return;
     }
     const native = this.native as WowNativeApi;
     try {
-      native.writeFile(this.path(identity, kind, key), native.pack(value));
+      const bytes = native.pack(value);
+      native.writeFile(this.path(identity, kind, key), bytes);
+      this.usedBytes = this.used() + bytes.length;
     } catch (error) {
       // a full disk or a read-only folder only costs speed
       console.warn(`[World Editor] Could not write to the cache: ${(error as Error).message}`);
@@ -90,15 +110,24 @@ export class WowDataCacheService {
 
   /** Bytes used on disk by the cache (0 outside the desktop app). */
   size(): number {
-    return this.native ? this.native.directorySize(this.root() as string) : 0;
+    this.usedBytes = this.native ? this.native.directorySize(this.root() as string) : 0;
+    return this.usedBytes;
   }
 
   clear(): void {
     this.native?.removeDirectory(this.root() as string);
+    this.usedBytes = 0;
+  }
+
+  private used(): number {
+    return this.usedBytes ?? this.size();
   }
 
   private save(): void {
-    localStorage.setItem(WOW_DATA_CACHE_KEY, JSON.stringify({ enabled: this._enabled(), folder: this._folder() }));
+    localStorage.setItem(
+      WOW_DATA_CACHE_KEY,
+      JSON.stringify({ enabled: this._enabled(), folder: this._folder(), maxBytes: this._maxBytes() }),
+    );
   }
 
   private get active(): boolean {
@@ -127,11 +156,19 @@ export function clientIdentity(clientPath: string, archives: string[]): string {
   return hash.toString(16).padStart(8, '0');
 }
 
-function loadSettings(): { enabled: boolean; folder: string } {
+function loadSettings(): { enabled: boolean; folder: string; maxBytes: number } {
   try {
-    const stored = JSON.parse(localStorage.getItem(WOW_DATA_CACHE_KEY) ?? '{}') as { enabled?: unknown; folder?: unknown };
-    return { enabled: stored.enabled !== false, folder: typeof stored.folder === 'string' ? stored.folder : '' };
+    const stored = JSON.parse(localStorage.getItem(WOW_DATA_CACHE_KEY) ?? '{}') as {
+      enabled?: unknown;
+      folder?: unknown;
+      maxBytes?: unknown;
+    };
+    return {
+      enabled: stored.enabled !== false,
+      folder: typeof stored.folder === 'string' ? stored.folder : '',
+      maxBytes: typeof stored.maxBytes === 'number' && stored.maxBytes >= 0 ? stored.maxBytes : DEFAULT_CACHE_MAX_BYTES,
+    };
   } catch {
-    return { enabled: true, folder: '' };
+    return { enabled: true, folder: '', maxBytes: DEFAULT_CACHE_MAX_BYTES };
   }
 }

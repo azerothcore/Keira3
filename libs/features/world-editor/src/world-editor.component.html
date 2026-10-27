@@ -398,6 +398,19 @@
           <label class="form-check-label" for="world-editor-cache-enabled">{{ 'WORLD_EDITOR.CACHE_ENABLED' | translate }}</label>
         </div>
         <span class="text-muted" data-testid="cache-size">{{ cacheSizeMb() }} MB</span>
+        <label class="d-flex align-items-center gap-1 mb-0">
+          {{ 'WORLD_EDITOR.CACHE_MAX' | translate }}
+          <input
+            type="number"
+            min="0"
+            step="1"
+            class="form-control form-control-sm cache-max"
+            data-testid="cache-max"
+            [value]="cache.maxBytes() / 1000000000"
+            (change)="setCacheMaxGb($event)"
+          />
+          GB
+        </label>
         <button
           type="button"
           class="btn btn-sm btn-outline-danger"

@@ -1078,6 +1078,7 @@
     "CACHE_FOLDER_HELP": "Optional. Where processed game data is kept so places load faster next time. A 'Keira3 world editor cache' folder is created inside it. Empty = default.",
     "CACHE_ENABLED": "Cache game data on this computer",
     "CACHE_CLEAR": "Clear cache",
+    "CACHE_MAX": "Max",
     "PRELOAD_ZONE": "Preload zone",
     "PRELOAD_MAP": "Preload whole map",
     "PRELOAD_ALL": "Preload all maps",

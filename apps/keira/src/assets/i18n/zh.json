@@ -1078,6 +1078,7 @@
     "CACHE_FOLDER_HELP": "可选。保存处理后的游戏数据，下次加载更快。会在其中创建 'Keira3 world editor cache' 文件夹。留空 = 默认位置。",
     "CACHE_ENABLED": "在此电脑上缓存游戏数据",
     "CACHE_CLEAR": "清除缓存",
+    "CACHE_MAX": "上限",
     "PRELOAD_ZONE": "预加载区域",
     "PRELOAD_MAP": "预加载整张地图",
     "PRELOAD_ALL": "预加载所有地图",

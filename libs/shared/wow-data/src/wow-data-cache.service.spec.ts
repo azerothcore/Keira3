@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { clientIdentity, WOW_DATA_CACHE_KEY, WowDataCacheService } from './wow-data-cache.service';
+import { clientIdentity, DEFAULT_CACHE_MAX_BYTES, WOW_DATA_CACHE_KEY, WowDataCacheService } from './wow-data-cache.service';
 import { WOW_NATIVE_API } from './wow-native-api';
 import { createFakeNative, FakeNative } from './wow-native-api.mock';
 
@@ -65,9 +65,10 @@ describe('WowDataCacheService', () => {
     localStorage.setItem(WOW_DATA_CACHE_KEY, '{nope');
     TestBed.resetTestingModule();
     expect(setup().cache.enabled()).toBe(true);
-    localStorage.setItem(WOW_DATA_CACHE_KEY, JSON.stringify({ folder: 3 }));
+    localStorage.setItem(WOW_DATA_CACHE_KEY, JSON.stringify({ folder: 3, maxBytes: -1 }));
     TestBed.resetTestingModule();
     expect(setup().cache.folder()).toBe('');
+    expect(TestBed.inject(WowDataCacheService).maxBytes()).toBe(DEFAULT_CACHE_MAX_BYTES);
   });
 
   it('can live in a folder of the user, in its own subfolder', () => {
@@ -89,6 +90,30 @@ describe('WowDataCacheService', () => {
     expect(cache.root()).toBe('/cache');
   });
 
+  it('stops growing at its maximum size (10 GB unless changed), and remembers it', () => {
+    const { cache } = setup();
+    expect(cache.maxBytes()).toBe(DEFAULT_CACHE_MAX_BYTES);
+    expect(DEFAULT_CACHE_MAX_BYTES).toBe(10_000_000_000);
+    cache.setMaxBytes(30);
+    cache.write('abc', 'adt', 'a', { data: 'x'.repeat(40) });
+    expect(cache.isFull()).toBe(true);
+    cache.write('abc', 'adt', 'b', 1);
+    expect(cache.has('abc', 'adt', 'b')).toBe(false);
+
+    cache.clear();
+    expect(cache.isFull()).toBe(false);
+    cache.setMaxBytes(-5);
+    expect(cache.maxBytes()).toBe(0);
+    cache.setMaxBytes(1000);
+
+    TestBed.resetTestingModule();
+    const restored = setup().cache;
+    expect(restored.maxBytes()).toBe(1000);
+    // the size of an existing cache is counted the first time it's needed
+    restored.write('abc', 'adt', 'c', 1);
+    expect(restored.isFull()).toBe(false);
+  });
+
   it('does nothing outside the desktop app', () => {
     const { cache } = setup(false);
     cache.write('abc', 'adt', 'x', 1);
@@ -97,6 +122,7 @@ describe('WowDataCacheService', () => {
     expect(cache.size()).toBe(0);
     expect(cache.root()).toBeUndefined();
     expect(cache.entries('abc', 'adt')).toEqual({});
+    expect(cache.isFull()).toBe(false);
     cache.clear();
   });
 

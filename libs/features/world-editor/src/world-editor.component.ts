@@ -391,6 +391,10 @@ export class WorldEditorComponent implements OnInit {
     }
   }
 
+  protected setCacheMaxGb(event: Event): void {
+    this.cache.setMaxBytes(Number((event.target as HTMLInputElement).value) * 1_000_000_000);
+  }
+
   protected setCacheEnabled(event: Event): void {
     this.cache.setEnabled((event.target as HTMLInputElement).checked);
   }
@@ -414,14 +418,18 @@ export class WorldEditorComponent implements OnInit {
         const label = jobs.length > 1 ? `${index + 1}/${jobs.length} ${job.name}` : job.name;
         const directory = job.directory.toLowerCase();
         this.preloading.set({ label, directory, done: 0, total: job.tiles.length });
-        await this.client.preload(
+        const completed = await this.client.preload(
           job.directory,
           job.tiles,
           (done, total) => this.preloading.set({ label, directory, done, total }),
           () => this.preloadCancelled,
         );
-        tileCount += job.tiles.length;
         await this.refreshCacheUsage();
+        if (!completed) {
+          this.toastr.warning('The cache reached its maximum size: preloading stopped.', 'World Editor');
+          return;
+        }
+        tileCount += job.tiles.length;
       }
       if (!this.preloadCancelled) {
         this.toastr.success(`Preloaded ${tileCount} tiles.`, 'World Editor');
