@@ -153,6 +153,7 @@
       "SELECT_PAGE_TEXT": "选择页面文本",
       "PAGE_TEXT": "页面文本",
       "ACORE_STRING_TEXT": "Acore字符串",
+      "ACORE_STRING_LOCALE": "Acore字符串本地化",
       "SELECT_ACORE_STRING_TEXT": "选择Acore字符串"
     },
     "GOSSIP": {

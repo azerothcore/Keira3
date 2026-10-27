@@ -153,6 +153,7 @@
       "SELECT_PAGE_TEXT": "Seleccionar Texto de Página",
       "PAGE_TEXT": "Texto de Página",
       "ACORE_STRING_TEXT": "Cadenas de Acore",
+      "ACORE_STRING_LOCALE": "Traducción de Cadenas de Acore",
       "SELECT_ACORE_STRING_TEXT": "Seleccionar Cadenas de Acore"
     },
     "GOSSIP": {

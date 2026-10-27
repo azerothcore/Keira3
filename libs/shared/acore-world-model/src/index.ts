@@ -1,4 +1,5 @@
 export * from './entities/acore-text.type';
+export * from './entities/acore-string-locale.type';
 export * from './entities/area.type';
 export * from './entities/broadcast-text.type';
 export * from './entities/conditions.type';
@@ -101,6 +102,7 @@ export * from './flags/unit-flags2';
 export * from './flags/smart-action-cast-flags';
 export * from './flags/smart-action-cast-triggered-flags';
 
+export * from './options/client-locale';
 export * from './options/conditions';
 export * from './options/creature-addon-bytes1';
 export * from './options/creature-addon-bytes2';
