@@ -67,4 +67,46 @@ describe('createWowNativeApi', () => {
     expect(() => api.loadStorm()).toThrowError('missing module');
     expect(env['NODE_ENV']).toBe('development');
   });
+
+  it('writes files with their folders, measures and removes folders', () => {
+    const writable = {
+      existsSync: (path: string) => path !== '/missing',
+      mkdirSync: vi.fn(),
+      writeFileSync: vi.fn(),
+      rmSync: vi.fn(),
+      readdirSync: (path: string) => (path === '/cache' ? ['a.bin', 'sub'] : ['b.bin']),
+      statSync: (path: string) => ({ isDirectory: () => path.endsWith('/sub'), size: path.endsWith('a.bin') ? 10 : 5 }),
+    };
+    const api = createWowNativeApi(writable as unknown as typeof fs, vi.fn(), {});
+    api.writeFile('/cache/v1/adt/x.bin', new Uint8Array([1]));
+    expect(writable.mkdirSync).toHaveBeenCalledWith('/cache/v1/adt', { recursive: true });
+    expect(writable.writeFileSync).toHaveBeenCalledWith('/cache/v1/adt/x.bin', new Uint8Array([1]));
+    expect(api.directorySize('/cache')).toBe(15);
+    expect(api.directorySize('/missing')).toBe(0);
+    api.removeDirectory('/cache');
+    expect(writable.rmSync).toHaveBeenCalledWith('/cache', { recursive: true, force: true });
+  });
+
+  it("keeps its cache in the user's local application data", () => {
+    expect(createWowNativeApi(nodeFs, vi.fn(), { LOCALAPPDATA: 'C:\\Users\\Me\\AppData\\Local' }).cacheDirectory()).toBe(
+      'C:/Users/Me/AppData/Local/Keira3/world-editor-cache',
+    );
+    expect(createWowNativeApi(nodeFs, vi.fn(), { APPDATA: '/roaming' }).cacheDirectory()).toBe('/roaming/Keira3/world-editor-cache');
+    expect(createWowNativeApi(nodeFs, vi.fn(), { HOME: '/home/me' }).cacheDirectory()).toBe('/home/me/.cache/Keira3/world-editor-cache');
+    expect(createWowNativeApi(nodeFs, vi.fn(), {}).cacheDirectory()).toBe('./.cache/Keira3/world-editor-cache');
+  });
+
+  it('packs data with its typed arrays', async () => {
+    const modules: Record<string, unknown> = { v8: await import('node:v8'), zlib: await import('node:zlib') };
+    const api = createWowNativeApi(nodeFs, (id) => modules[id], {});
+    const value = { name: 'tile', heights: new Float32Array([1.5, 2]), nested: [{ id: 1 }] };
+    const packed = api.pack(value);
+    expect(packed).toBeInstanceOf(Uint8Array);
+    const unpacked = api.unpack<typeof value>(packed);
+    // (V8 builds Node-realm typed arrays, so compare their values)
+    expect(unpacked.name).toBe('tile');
+    expect(Array.from(unpacked.heights)).toEqual([1.5, 2]);
+    expect(unpacked.heights.constructor.name).toBe('Float32Array');
+    expect(unpacked.nested).toEqual([{ id: 1 }]);
+  });
 });

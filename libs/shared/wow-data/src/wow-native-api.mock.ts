@@ -52,8 +52,8 @@ export function createFakeNative(files: Record<string, number[]>, mpqs: Record<s
       allFiles[`${mpqRoot}/${name}`] = [];
     }
   }
-  const paths = Object.keys(allFiles);
-  const isDirectory = (path: string): boolean => paths.some((p) => p.startsWith(`${path}/`));
+  const paths = (): string[] => Object.keys(allFiles);
+  const isDirectory = (path: string): boolean => paths().some((p) => p.startsWith(`${path}/`));
   const mounts = new Map<string, string>();
   const openedArchives: FakeStormArchive[] = [];
 
@@ -84,7 +84,13 @@ export function createFakeNative(files: Record<string, number[]>, mpqs: Record<s
     openedArchives,
     exists: (path) => path in allFiles || isDirectory(path),
     isDirectory,
-    readdir: (path) => [...new Set(paths.filter((p) => p.startsWith(`${path}/`)).map((p) => p.slice(path.length + 1).split('/')[0]))],
+    readdir: (path) => [
+      ...new Set(
+        paths()
+          .filter((p) => p.startsWith(`${path}/`))
+          .map((p) => p.slice(path.length + 1).split('/')[0]),
+      ),
+    ],
     readFile: (path) => {
       if (!(path in allFiles)) {
         throw new Error(`ENOENT: ${path}`);
@@ -92,5 +98,22 @@ export function createFakeNative(files: Record<string, number[]>, mpqs: Record<s
       return Uint8Array.from(allFiles[path]);
     },
     loadStorm: () => storm,
+    writeFile: (path, data) => void (allFiles[path] = Array.from(data)),
+    removeDirectory: (path) => paths().forEach((p) => p.startsWith(`${path}/`) && delete allFiles[p]),
+    directorySize: (path) => paths().reduce((total, p) => total + (p.startsWith(`${path}/`) ? allFiles[p].length : 0), 0),
+    cacheDirectory: () => '/cache',
+    // JSON with typed arrays tagged, standing in for V8 serialisation
+    pack: (value) =>
+      new TextEncoder().encode(
+        JSON.stringify(value, (_key, v) =>
+          ArrayBuffer.isView(v) ? { $typed: v.constructor.name, values: Array.from(v as Uint8Array) } : v,
+        ),
+      ),
+    unpack: <T>(bytes: Uint8Array) =>
+      JSON.parse(new TextDecoder().decode(bytes), (_key, v) =>
+        v && typeof v === 'object' && '$typed' in v
+          ? new (globalThis as unknown as Record<string, new (values: number[]) => unknown>)[v.$typed](v.values)
+          : v,
+      ) as T,
   };
 }

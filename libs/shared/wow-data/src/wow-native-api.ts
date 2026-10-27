@@ -31,6 +31,17 @@ export interface WowNativeApi {
   readdir(path: string): string[];
   readFile(path: string): Uint8Array;
   loadStorm(): StormModule;
+  /** Writes a file, creating its folders. */
+  writeFile(path: string, data: Uint8Array): void;
+  /** Deletes a folder and everything in it (nothing if missing). */
+  removeDirectory(path: string): void;
+  /** Total size in bytes of the files in a folder, recursively (0 if missing). */
+  directorySize(path: string): number;
+  /** Where Keira keeps data it can rebuild (the user's local application data). */
+  cacheDirectory(): string;
+  /** Turns plain data (objects, arrays, typed arrays…) into compact bytes, and back. */
+  pack(value: unknown): Uint8Array;
+  unpack<T>(bytes: Uint8Array): T;
 }
 
 export const WOW_NATIVE_API = new InjectionToken<WowNativeApi | undefined>('WOW_NATIVE_API', {

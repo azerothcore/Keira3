@@ -10,6 +10,7 @@ import { parseZoneLights, ZoneLight } from './light';
 import { M2Mesh, m2Path, m2SkinPath, parseM2 } from './m2';
 import { buildTerrainChunkMeshes, buildTerrainMesh, TerrainChunkMesh, TerrainMeshData } from './terrain-mesh';
 import { ModelPlacement, parseWmoGroup, parseWmoRoot, WmoModel, wmoGroupPath } from './wmo';
+import { clientIdentity, WowDataCacheService } from './wow-data-cache.service';
 import { WowDataSettingsService } from './wow-data-settings.service';
 import { StormArchive, WOW_NATIVE_API, WowNativeApi } from './wow-native-api';
 
@@ -29,6 +30,8 @@ interface OpenClient {
   /** Highest priority first. */
   archives: StormArchive[];
   archiveNames: string[];
+  /** Names this client's entries in the disk cache. */
+  identity: string;
 }
 
 /** Reads game data straight from the user's WoW 3.3.5a client (MPQ archives) and, optionally, the server's DataDir. */
@@ -36,6 +39,7 @@ interface OpenClient {
 export class WowClientService {
   private readonly native = inject(WOW_NATIVE_API);
   private readonly settings = inject(WowDataSettingsService);
+  private readonly cache = inject(WowDataCacheService);
 
   private client?: Promise<OpenClient>;
   private minimapIndex?: Promise<Map<string, string>>;
@@ -149,6 +153,53 @@ export class WowClientService {
 
   /** A building (WMO root and all its groups). */
   async getWmo(path: string): Promise<WmoModel | undefined> {
+    const { identity } = await this.getClient();
+    const cached = this.cache.read<WmoModel>(identity, 'wmo', path);
+    if (cached) {
+      return cached;
+    }
+    const model = await this.loadWmo(path);
+    if (model) {
+      this.cache.write(identity, 'wmo', path, model);
+    }
+    return model;
+  }
+
+  /**
+   * Processes the given tiles of a map and the buildings on them into the disk cache ahead of time, so they load fast
+   * later. `onProgress` gets the steps done and the steps known so far; `cancelled` is checked between steps.
+   */
+  async preload(
+    directory: string,
+    tiles: TileCoord[],
+    onProgress: (done: number, total: number) => void = () => undefined,
+    cancelled: () => boolean = () => false,
+  ): Promise<void> {
+    const { identity } = await this.getClient();
+    const buildings = new Set<string>();
+    let done = 0;
+    for (const tile of tiles) {
+      if (cancelled()) {
+        return;
+      }
+      const adt = await this.loadAdt(directory, tile).catch((error: Error) => {
+        console.warn(`[World Editor] Could not preload ${directory}_${tile.tx}_${tile.ty}: ${error.message}`);
+        return undefined;
+      });
+      adt?.wmos.forEach((wmo) => buildings.add(wmo.path.toLowerCase()));
+      onProgress(++done, tiles.length);
+    }
+    const missing = [...buildings].filter((path) => !this.cache.has(identity, 'wmo', path));
+    for (const path of missing) {
+      if (cancelled()) {
+        return;
+      }
+      await this.getWmo(path).catch((error: Error) => console.warn(`[World Editor] Could not preload ${path}: ${error.message}`));
+      onProgress(++done, tiles.length + missing.length);
+    }
+  }
+
+  private async loadWmo(path: string): Promise<WmoModel | undefined> {
     const rootBytes = await this.readFile(path);
     if (!rootBytes) {
       return undefined;
@@ -195,19 +246,28 @@ export class WowClientService {
     return adt;
   }
 
+  /** A parsed tile, from the disk cache when there, otherwise read from the archives (and then cached). */
   private async loadAdt(directory: string, tile: TileCoord): Promise<CachedAdt | undefined> {
-    const bytes = await this.readFile(`World\\Maps\\${directory}\\${directory}_${tile.tx}_${tile.ty}.adt`);
+    const { identity } = await this.getClient();
+    const key = `${directory}_${tile.tx}_${tile.ty}`;
+    const cached = this.cache.read<CachedAdt>(identity, 'adt', key);
+    if (cached) {
+      return cached;
+    }
+    const bytes = await this.readFile(`World\\Maps\\${directory}\\${key}.adt`);
     if (!bytes) {
       return undefined;
     }
     const parsed = parseAdt(bytes, (await this.getWdt(directory))?.layerSplatDepth ?? 4);
-    return {
+    const adt = {
       ...parsed,
       liquids: parseLiquids(
         bytes,
         parsed.chunks.map((chunk) => chunk.position),
       ),
     };
+    this.cache.write(identity, 'adt', key, adt);
+    return adt;
   }
 
   private getWdt(directory: string): Promise<WdtInfo | undefined> {
@@ -318,7 +378,7 @@ export class WowClientService {
       storm.FS.unmount(mountpoint);
       throw new Error(`None of the MPQ archives in ${dataPath} could be opened.`);
     }
-    return { clientPath, mountpoint, archives, archiveNames: opened };
+    return { clientPath, mountpoint, archives, archiveNames: opened, identity: clientIdentity(clientPath, opened) };
   }
 
   private getMinimapIndex(): Promise<Map<string, string>> {

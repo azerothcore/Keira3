@@ -9,6 +9,7 @@ export * from './minimap';
 export * from './mpq-order';
 export * from './terrain-mesh';
 export * from './wow-client.service';
+export * from './wow-data-cache.service';
 export * from './wow-data-settings.service';
 export * from './wmo';
 export * from './wow-native-api';

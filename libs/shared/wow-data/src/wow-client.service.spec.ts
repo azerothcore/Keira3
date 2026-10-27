@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { buildDbc } from './dbc.mock';
 import { WowClientService } from './wow-client.service';
+import { WowDataCacheService } from './wow-data-cache.service';
 import { WowDataSettingsService } from './wow-data-settings.service';
 import { WOW_NATIVE_API } from './wow-native-api';
 import { createFakeNative, FakeMpq, FakeNative } from './wow-native-api.mock';
@@ -337,6 +338,8 @@ describe('WowClientService', () => {
         files[`World\\Maps\\M\\M_${i}_0.adt`] = [0, 0, 0, 0, 0, 0, 0, 0];
       }
       const { service } = setup({ mpqs: { 'common.MPQ': { files } } });
+      // (without the disk cache, which would serve evicted tiles)
+      TestBed.inject(WowDataCacheService).setEnabled(false);
       formats.parseWdt.mockReturnValue(undefined);
       formats.parseAdt.mockReturnValue(adtOf());
       for (let i = 0; i < 34; i++) {
@@ -383,6 +386,93 @@ describe('WowClientService', () => {
       expect(await service.getM2('World\\Tree.mdx')).toEqual({ model: 1, skin: 2 });
       expect(await service.getM2('World\\NoSkin.m2')).toBeUndefined();
       expect(await service.getM2('World\\Missing.m2')).toBeUndefined();
+    });
+
+    it('keeps parsed tiles and buildings in the disk cache, per client', async () => {
+      const { service, native } = setup({
+        mpqs: {
+          'common.MPQ': {
+            files: { 'World\\Maps\\M\\M_1_2.adt': [1], 'World\\wmo\\A.wmo': [1], 'World\\wmo\\A_000.wmo': [2] },
+          },
+        },
+      });
+      formats.parseWdt.mockReturnValue(undefined);
+      formats.parseAdt.mockReturnValue(adtOf([], [{ uniqueId: 1, path: 'World\\wmo\\A.wmo' }]));
+      wmo.parseWmoRoot.mockReturnValue({ flags: 0, materials: [], groups: [{ indoor: false }] });
+      wmo.parseWmoGroup.mockReturnValue({ indoor: false });
+
+      expect((await service.getTilePlacements('M', { tx: 1, ty: 2 }))?.wmos).toHaveLength(1);
+      expect(await service.getWmo('World\\wmo\\A.wmo')).toEqual({ materials: [], groups: [{ indoor: false }] });
+      expect(native.directorySize('/cache')).toBeGreaterThan(0);
+
+      // after a restart, nothing is parsed again
+      await service.close();
+      formats.parseAdt.mockClear();
+      wmo.parseWmoRoot.mockClear();
+      expect((await service.getTilePlacements('M', { tx: 1, ty: 2 }))?.wmos).toHaveLength(1);
+      expect(await service.getWmo('World\\wmo\\A.wmo')).toEqual({ materials: [], groups: [{ indoor: false }] });
+      expect(formats.parseAdt).not.toHaveBeenCalled();
+      expect(wmo.parseWmoRoot).not.toHaveBeenCalled();
+    });
+
+    it('preloads tiles and their buildings, reporting progress, and can be cancelled', async () => {
+      const { service } = setup({
+        mpqs: {
+          'common.MPQ': {
+            files: {
+              'World\\Maps\\M\\M_1_1.adt': [1],
+              'World\\Maps\\M\\M_1_2.adt': [1],
+              'World\\Maps\\M\\M_1_3.adt': [1],
+              'World\\wmo\\A.wmo': [1],
+              'World\\wmo\\B.wmo': [1],
+            },
+          },
+        },
+      });
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+      formats.parseWdt.mockReturnValue(undefined);
+      formats.parseAdt
+        .mockReturnValueOnce(
+          adtOf(
+            [],
+            [
+              { uniqueId: 1, path: 'World\\wmo\\A.wmo' },
+              { uniqueId: 2, path: 'World\\wmo\\B.wmo' },
+            ],
+          ),
+        )
+        .mockImplementationOnce(() => {
+          throw new Error('bad adt');
+        })
+        .mockReturnValue(adtOf([], [{ uniqueId: 1, path: 'world\\WMO\\a.wmo' }]));
+      wmo.parseWmoRoot.mockImplementationOnce(() => {
+        throw new Error('bad wmo');
+      });
+      wmo.parseWmoRoot.mockReturnValue({ flags: 0, materials: [], groups: [] });
+      const progress: [number, number][] = [];
+      const tiles = [1, 2, 3, 4].map((ty) => ({ tx: 1, ty }));
+      await service.preload('M', tiles, (done, total) => progress.push([done, total]));
+      expect(progress).toEqual([
+        [1, 4],
+        [2, 4],
+        [3, 4],
+        [4, 4],
+        [5, 6],
+        [6, 6],
+      ]);
+      expect(warn).toHaveBeenCalledWith(expect.stringContaining('bad adt'));
+      expect(warn).toHaveBeenCalledWith(expect.stringContaining('bad wmo'));
+
+      // cancelled before the buildings, and before the first tile
+      let calls = 0;
+      await service.preload('M', tiles.slice(0, 1), undefined, () => calls++ > 0);
+      await service.preload(
+        'M',
+        tiles,
+        () => undefined,
+        () => true,
+      );
+      await service.preload('M', []);
     });
 
     it('decodes textures', async () => {

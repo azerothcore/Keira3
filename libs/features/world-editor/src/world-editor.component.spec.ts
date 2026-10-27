@@ -108,7 +108,7 @@ const CENTER = { x: -8913, y: -137, z: 82 };
 
 describe(WorldEditorComponent.name, () => {
   const mocks = {
-    client: { isSupported: vi.fn(), getMaps: vi.fn(), getMapTiles: vi.fn(), getZones: vi.fn(), close: vi.fn() },
+    client: { isSupported: vi.fn(), getMaps: vi.fn(), getMapTiles: vi.fn(), getZones: vi.fn(), preload: vi.fn(), close: vi.fn() },
     service: {
       loadSpawns: vi.fn(),
       loadWaypoints: vi.fn(),
@@ -202,6 +202,89 @@ describe(WorldEditorComponent.name, () => {
       expect(mocks.client.close).toHaveBeenCalled();
       expect(page.byId('settings', false)).toBeFalsy();
       expect(page.byId<HTMLSelectElement>('map-select').nativeElement.options.length).toBe(2);
+    });
+
+    it('keeps the cache where the user wants it, and manages it', async () => {
+      const { page } = await setup();
+      page.click('settings-toggle');
+      page.fixture.detectChanges();
+      expect(page.text('cache-size')).toBe('0.0 MB');
+      page.type('cache-folder', 'D:\\Cache');
+      page.submit('settings-save');
+      await settle(page);
+      expect(JSON.parse(localStorage.getItem('keira3.worldEditor.cache') as string)).toEqual({ enabled: true, folder: 'D:\\Cache' });
+
+      page.click('settings-toggle');
+      page.fixture.detectChanges();
+      const enabled = page.byId<HTMLInputElement>('cache-enabled').nativeElement;
+      enabled.checked = false;
+      enabled.dispatchEvent(new Event('change'));
+      page.fixture.detectChanges();
+      expect(JSON.parse(localStorage.getItem('keira3.worldEditor.cache') as string).enabled).toBe(false);
+      expect(page.byId<HTMLButtonElement>('preload-map').nativeElement.disabled).toBe(true);
+      page.click('cache-clear');
+      expect(page.text('cache-size')).toBe('0.0 MB');
+    });
+
+    it('preloads the selected zone or the whole map into the cache, with progress', async () => {
+      const { page } = await setup();
+      mocks.client.getMapTiles.mockResolvedValue([
+        { tx: 32, ty: 48 },
+        { tx: 40, ty: 40 },
+      ]);
+      let report: (done: number, total: number) => void = () => undefined;
+      let cancelled: () => boolean = () => false;
+      let finish: () => void = () => undefined;
+      mocks.client.preload.mockImplementation((_d: string, _t: unknown, progress: typeof report, isCancelled: typeof cancelled) => {
+        report = progress;
+        cancelled = isCancelled;
+        return new Promise<void>((resolve) => (finish = resolve));
+      });
+      page.click('settings-toggle');
+      page.fixture.detectChanges();
+      expect(page.byId<HTMLButtonElement>('preload-zone').nativeElement.disabled).toBe(true);
+
+      const zone = page.byId<HTMLSelectElement>('zone-select').nativeElement;
+      zone.value = '12';
+      zone.dispatchEvent(new Event('change'));
+      await settle(page);
+      page.click('preload-zone');
+      await settle(page);
+      expect(mocks.client.preload).toHaveBeenCalledWith('Azeroth', [{ tx: 32, ty: 48 }], expect.any(Function), expect.any(Function));
+      expect(page.text('preload-progress')).toBe('0 / 1');
+      report(1, 3);
+      page.fixture.detectChanges();
+      expect(page.text('preload-progress')).toBe('1 / 3');
+      finish();
+      await settle(page);
+      expect(page.byId('preload-progress', false)).toBeFalsy();
+      expect(mocks.toastr.success).toHaveBeenCalledWith('Preloaded 1 tiles.', 'World Editor');
+
+      // the whole map, cancelled
+      mocks.toastr.success.mockClear();
+      page.click('preload-map');
+      await settle(page);
+      expect(mocks.client.preload).toHaveBeenLastCalledWith(
+        'Azeroth',
+        [
+          { tx: 32, ty: 48 },
+          { tx: 40, ty: 40 },
+        ],
+        expect.any(Function),
+        expect.any(Function),
+      );
+      report(0, 0);
+      page.fixture.detectChanges();
+      page.click('preload-cancel');
+      expect(cancelled()).toBe(true);
+      finish();
+      await settle(page);
+      expect(mocks.toastr.success).not.toHaveBeenCalled();
+
+      mocks.client.preload.mockRejectedValueOnce(new Error('disk full'));
+      page.click('preload-map');
+      await settle(page);
+      expect(mocks.toastr.error).toHaveBeenCalledWith('disk full', 'World Editor');
     });
 
     it('toggles the settings panel', async () => {

@@ -264,8 +264,71 @@
         />
         <small class="form-text text-muted">{{ 'WORLD_EDITOR.SERVER_DATA_PATH_HELP' | translate }}</small>
       </div>
+      <div class="mb-2">
+        <label class="form-label" for="world-editor-cache-folder">{{ 'WORLD_EDITOR.CACHE_FOLDER' | translate }}</label>
+        <input
+          id="world-editor-cache-folder"
+          class="form-control form-control-sm"
+          data-testid="cache-folder"
+          formControlName="cacheFolder"
+          [placeholder]="cache.root() ?? ''"
+        />
+        <small class="form-text text-muted">{{ 'WORLD_EDITOR.CACHE_FOLDER_HELP' | translate }}</small>
+      </div>
       <div>
         <button type="submit" class="btn btn-sm btn-primary" data-testid="settings-save">{{ 'WORLD_EDITOR.SAVE' | translate }}</button>
+      </div>
+      <hr />
+      <div class="d-flex flex-wrap align-items-center gap-2 world-editor-cache" data-testid="cache">
+        <div class="form-check form-switch mb-0">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="world-editor-cache-enabled"
+            data-testid="cache-enabled"
+            [checked]="cache.enabled()"
+            (change)="setCacheEnabled($event)"
+          />
+          <label class="form-check-label" for="world-editor-cache-enabled">{{ 'WORLD_EDITOR.CACHE_ENABLED' | translate }}</label>
+        </div>
+        <span class="text-muted" data-testid="cache-size">{{ cacheSizeMb() }} MB</span>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-danger"
+          data-testid="cache-clear"
+          [disabled]="!!preloading()"
+          (click)="clearCache()"
+        >
+          {{ 'WORLD_EDITOR.CACHE_CLEAR' | translate }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary"
+          data-testid="preload-zone"
+          [disabled]="!cache.enabled() || !!preloading() || !mapDirectory() || zoneId() === 0"
+          (click)="preload('zone')"
+        >
+          {{ 'WORLD_EDITOR.PRELOAD_ZONE' | translate }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary"
+          data-testid="preload-map"
+          [disabled]="!cache.enabled() || !!preloading() || !mapDirectory()"
+          (click)="preload('map')"
+        >
+          {{ 'WORLD_EDITOR.PRELOAD_MAP' | translate }}
+        </button>
+        @if (preloading(); as progress) {
+          <div class="progress flex-grow-1 world-editor-preload" data-testid="preload-progress">
+            <div class="progress-bar" role="progressbar" [style.width.%]="progress.total ? (100 * progress.done) / progress.total : 0">
+              {{ progress.done }} / {{ progress.total }}
+            </div>
+          </div>
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-testid="preload-cancel" (click)="cancelPreload()">
+            {{ 'CANCEL' | translate }}
+          </button>
+        }
       </div>
     </form>
   }

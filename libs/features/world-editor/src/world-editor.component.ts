@@ -13,7 +13,17 @@ import {
   WorldSpawn,
   WorldViewerComponent,
 } from '@keira/shared/world-viewer';
-import { tileCenter, WowClientService, WowDataSettingsService, WowMap, WowZone, WorldPosition } from '@keira/shared/wow-data';
+import {
+  tileCenter,
+  tileKey,
+  tilesInBounds,
+  WowClientService,
+  WowDataCacheService,
+  WowDataSettingsService,
+  WowMap,
+  WowZone,
+  WorldPosition,
+} from '@keira/shared/wow-data';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ClipboardService } from 'ngx-clipboard';
 import { ToastrService } from 'ngx-toastr';
@@ -72,6 +82,7 @@ export class WorldEditorComponent implements OnInit {
   private readonly client = inject(WowClientService);
   private readonly settings = inject(WowDataSettingsService);
   protected readonly renderSettings = inject(WorldRenderSettingsService);
+  protected readonly cache = inject(WowDataCacheService);
   private readonly toastr = inject(ToastrService);
   private readonly clipboard = inject(ClipboardService);
   private readonly route = inject(ActivatedRoute);
@@ -86,6 +97,11 @@ export class WorldEditorComponent implements OnInit {
   protected readonly mapId = signal(0);
   protected readonly mapDirectory = computed(() => this.maps().find((m) => m.id === this.mapId())?.directory);
   protected readonly focus = signal<WorldPosition | undefined>(undefined);
+  protected readonly cacheSize = signal(0);
+  /** Megabytes, for the settings panel. */
+  protected readonly cacheSizeMb = computed(() => (this.cacheSize() / 1_000_000).toFixed(1));
+  protected readonly preloading = signal<{ done: number; total: number } | undefined>(undefined);
+  private preloadCancelled = false;
   protected readonly zones = signal<WowZone[]>([]);
   protected readonly zoneId = signal(0);
   /** The selected zone, loaded whole when the View panel asks for it. */
@@ -223,6 +239,7 @@ export class WorldEditorComponent implements OnInit {
   protected readonly settingsForm = new FormGroup({
     clientPath: new FormControl(this.settings.paths().clientPath, { nonNullable: true }),
     serverDataPath: new FormControl(this.settings.paths().serverDataPath, { nonNullable: true }),
+    cacheFolder: new FormControl(this.cache.folder(), { nonNullable: true }),
   });
   protected readonly placeEntry = new FormControl<number | null>(null);
   protected readonly teleSearch = new FormControl('', { nonNullable: true });
@@ -284,13 +301,61 @@ export class WorldEditorComponent implements OnInit {
 
   protected toggleSettings(): void {
     this.showSettings.update((shown) => !shown);
+    this.cacheSize.set(this.cache.size());
   }
 
   protected async saveSettings(): Promise<void> {
-    this.settings.save(this.settingsForm.getRawValue());
+    const { clientPath, serverDataPath, cacheFolder } = this.settingsForm.getRawValue();
+    this.settings.save({ clientPath, serverDataPath });
+    this.cache.setFolder(cacheFolder);
+    this.cacheSize.set(this.cache.size());
     await this.client.close();
     this.showSettings.set(false);
     await this.loadMaps();
+  }
+
+  // ---------------------------------------------------------------- cache
+
+  protected setCacheEnabled(event: Event): void {
+    this.cache.setEnabled((event.target as HTMLInputElement).checked);
+  }
+
+  protected clearCache(): void {
+    this.cache.clear();
+    this.cacheSize.set(this.cache.size());
+  }
+
+  /** Processes the selected zone, or the whole map, into the disk cache. */
+  protected async preload(scope: 'zone' | 'map'): Promise<void> {
+    const directory = this.mapDirectory() as string;
+    const zone = this.zones().find((z) => z.areaId === this.zoneId());
+    let tiles = await this.client.getMapTiles(directory);
+    if (zone && scope === 'zone') {
+      const inZone = new Set(tilesInBounds(zone.bounds, { tx: 32, ty: 32 }).map(tileKey));
+      tiles = tiles.filter((tile) => inZone.has(tileKey(tile)));
+    }
+    this.preloadCancelled = false;
+    this.preloading.set({ done: 0, total: tiles.length });
+    try {
+      await this.client.preload(
+        directory,
+        tiles,
+        (done, total) => this.preloading.set({ done, total }),
+        () => this.preloadCancelled,
+      );
+      if (!this.preloadCancelled) {
+        this.toastr.success(`Preloaded ${tiles.length} tiles.`, 'World Editor');
+      }
+    } catch (error) {
+      this.toastr.error((error as Error).message, 'World Editor');
+    } finally {
+      this.preloading.set(undefined);
+      this.cacheSize.set(this.cache.size());
+    }
+  }
+
+  protected cancelPreload(): void {
+    this.preloadCancelled = true;
   }
 
   private async loadMaps(): Promise<void> {
