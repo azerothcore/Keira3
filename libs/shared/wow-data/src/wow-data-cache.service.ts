@@ -24,6 +24,7 @@ export class WowDataCacheService {
   readonly maxBytes = this._maxBytes.asReadonly();
   /** Bytes in the cache folder, counted once then kept up to date by the writes. */
   private usedBytes?: number;
+  private counting?: Promise<number>;
   readonly enabled = this._enabled.asReadonly();
   /** The folder chosen by the user ('' = the default, in the local application data). */
   readonly folder = this._folder.asReadonly();
@@ -66,33 +67,49 @@ export class WowDataCacheService {
     return this.active ? (this.native as WowNativeApi).exists(this.path(identity, kind, key)) : false;
   }
 
-  /** The cached value, or undefined when missing, turned off or unreadable. */
-  read<T>(identity: string, kind: string, key: string): T | undefined {
+  /**
+   * The cached value, or undefined when missing, turned off or unreadable. Read, uncompressed and decoded without
+   * holding up the window (only the last step runs on its thread).
+   */
+  async read<T>(identity: string, kind: string, key: string): Promise<T | undefined> {
     if (!this.active) {
       return undefined;
     }
     const native = this.native as WowNativeApi;
     const path = this.path(identity, kind, key);
-    if (!native.exists(path)) {
+    let bytes: Uint8Array;
+    try {
+      bytes = await native.readFileAsync(path);
+    } catch {
+      // not cached
       return undefined;
     }
     try {
-      return native.unpack<T>(native.readFile(path));
+      return await native.unpack<T>(bytes);
     } catch (error) {
       console.warn(`[World Editor] Ignoring a damaged cache entry ${path}: ${(error as Error).message}`);
       return undefined;
     }
   }
 
-  write(identity: string, kind: string, key: string, value: unknown): void {
-    if (!this.active || this.isFull()) {
+  /** Stores a value (in the background: compressed and written off the window's thread). */
+  async write(identity: string, kind: string, key: string, value: unknown): Promise<void> {
+    if (!this.active) {
+      return;
+    }
+    // the first write of a session counts what's in the cache (thousands of files) in the background, not here
+    if (this.usedBytes === undefined) {
+      await this.countInBackground();
+    }
+    if (this.isFull()) {
       return;
     }
     const native = this.native as WowNativeApi;
     try {
-      const bytes = native.pack(value);
-      native.writeFile(this.path(identity, kind, key), bytes);
+      const bytes = await native.pack(value);
+      // counted before it's written, so writes in flight don't go over the limit
       this.usedBytes = this.used() + bytes.length;
+      await native.writeFile(this.path(identity, kind, key), bytes);
     } catch (error) {
       // a full disk or a read-only folder only costs speed
       console.warn(`[World Editor] Could not write to the cache: ${(error as Error).message}`);
@@ -117,6 +134,19 @@ export class WowDataCacheService {
   clear(): void {
     this.native?.removeDirectory(this.root() as string);
     this.usedBytes = 0;
+  }
+
+  private countInBackground(): Promise<number> {
+    const root = this.root() as string;
+    this.counting ??= (this.native as WowNativeApi).directorySizeAsync(root).then((bytes) => {
+      this.counting = undefined;
+      // (unless counted meanwhile, or moved to another folder)
+      if (root === this.root()) {
+        this.usedBytes ??= bytes;
+      }
+      return bytes;
+    });
+    return this.counting;
   }
 
   private used(): number {

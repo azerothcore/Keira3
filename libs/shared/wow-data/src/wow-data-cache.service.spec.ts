@@ -12,18 +12,18 @@ describe('WowDataCacheService', () => {
 
   beforeEach(() => localStorage.clear());
 
-  it('stores and reads back values per client, kind and key', () => {
+  it('stores and reads back values per client, kind and key', async () => {
     const { cache } = setup();
-    expect(cache.read('abc', 'adt', 'Azeroth_32_48')).toBeUndefined();
+    expect(await cache.read('abc', 'adt', 'Azeroth_32_48')).toBeUndefined();
     expect(cache.has('abc', 'adt', 'Azeroth_32_48')).toBe(false);
-    cache.write('abc', 'adt', 'Azeroth_32_48', { heights: new Float32Array([1, 2]) });
+    await cache.write('abc', 'adt', 'Azeroth_32_48', { heights: new Float32Array([1, 2]) });
     expect(cache.has('abc', 'adt', 'azeroth_32_48')).toBe(true);
-    expect(cache.read('abc', 'adt', 'Azeroth_32_48')).toEqual({ heights: new Float32Array([1, 2]) });
-    expect(cache.read('other', 'adt', 'Azeroth_32_48')).toBeUndefined();
+    expect(await cache.read('abc', 'adt', 'Azeroth_32_48')).toEqual({ heights: new Float32Array([1, 2]) });
+    expect(await cache.read('other', 'adt', 'Azeroth_32_48')).toBeUndefined();
     expect(cache.size()).toBeGreaterThan(0);
 
-    cache.write('abc', 'wmo', 'World\\wmo\\Abbey.wmo', { ok: true });
-    expect(cache.read('abc', 'wmo', 'world\\WMO\\abbey.wmo')).toEqual({ ok: true });
+    await cache.write('abc', 'wmo', 'World\\wmo\\Abbey.wmo', { ok: true });
+    expect(await cache.read('abc', 'wmo', 'world\\WMO\\abbey.wmo')).toEqual({ ok: true });
 
     expect(Object.keys(cache.entries('abc', 'adt'))).toEqual(['azeroth_32_48']);
     expect(cache.entries('abc', 'adt')['azeroth_32_48']).toBeGreaterThan(0);
@@ -31,35 +31,33 @@ describe('WowDataCacheService', () => {
 
     cache.clear();
     expect(cache.size()).toBe(0);
-    expect(cache.read('abc', 'wmo', 'World\\wmo\\Abbey.wmo')).toBeUndefined();
+    expect(await cache.read('abc', 'wmo', 'World\\wmo\\Abbey.wmo')).toBeUndefined();
   });
 
-  it('can be turned off, and remembers it', () => {
+  it('can be turned off, and remembers it', async () => {
     const { cache } = setup();
-    cache.write('abc', 'adt', 'x', 1);
+    await cache.write('abc', 'adt', 'x', 1);
     cache.setEnabled(false);
     expect(cache.enabled()).toBe(false);
-    expect(cache.read('abc', 'adt', 'x')).toBeUndefined();
+    expect(await cache.read('abc', 'adt', 'x')).toBeUndefined();
     expect(cache.has('abc', 'adt', 'x')).toBe(false);
-    cache.write('abc', 'adt', 'y', 2);
+    await cache.write('abc', 'adt', 'y', 2);
     cache.setEnabled(true);
-    expect(cache.read('abc', 'adt', 'y')).toBeUndefined();
-    expect(cache.read('abc', 'adt', 'x')).toBe(1);
+    expect(await cache.read('abc', 'adt', 'y')).toBeUndefined();
+    expect(await cache.read('abc', 'adt', 'x')).toBe(1);
 
     cache.setEnabled(false);
     TestBed.resetTestingModule();
     expect(setup().cache.enabled()).toBe(false);
   });
 
-  it('survives damaged entries, write failures and damaged settings', () => {
+  it('survives damaged entries, write failures and damaged settings', async () => {
     const { cache, native } = setup();
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
-    native?.writeFile('/cache/v1/abc/adt/x.bin', new TextEncoder().encode('{nope'));
-    expect(cache.read('abc', 'adt', 'x')).toBeUndefined();
-    vi.spyOn(native as FakeNative, 'writeFile').mockImplementation(() => {
-      throw new Error('ENOSPC');
-    });
-    cache.write('abc', 'adt', 'y', 1);
+    await native?.writeFile('/cache/v1/abc/adt/x.bin', new TextEncoder().encode('{nope'));
+    expect(await cache.read('abc', 'adt', 'x')).toBeUndefined();
+    vi.spyOn(native as FakeNative, 'writeFile').mockRejectedValue(new Error('ENOSPC'));
+    await cache.write('abc', 'adt', 'y', 1);
     expect(warn).toHaveBeenCalledWith(expect.stringContaining('ENOSPC'));
 
     localStorage.setItem(WOW_DATA_CACHE_KEY, '{nope');
@@ -71,18 +69,18 @@ describe('WowDataCacheService', () => {
     expect(TestBed.inject(WowDataCacheService).maxBytes()).toBe(DEFAULT_CACHE_MAX_BYTES);
   });
 
-  it('can live in a folder of the user, in its own subfolder', () => {
+  it('can live in a folder of the user, in its own subfolder', async () => {
     const { cache, native } = setup();
     expect(cache.root()).toBe('/cache');
     cache.setFolder(' D:\\Games\\Cache\\ ');
     expect(cache.folder()).toBe('D:\\Games\\Cache\\');
     expect(cache.root()).toBe('D:/Games/Cache/Keira3 world editor cache');
-    cache.write('abc', 'adt', 'x', 1);
+    await cache.write('abc', 'adt', 'x', 1);
     expect(native?.exists('D:/Games/Cache/Keira3 world editor cache/v1/abc/adt/x.bin')).toBe(true);
-    native?.writeFile('D:/Games/Cache/mine.txt', new Uint8Array([1]));
+    await native?.writeFile('D:/Games/Cache/mine.txt', new Uint8Array([1]));
     cache.clear();
     expect(native?.exists('D:/Games/Cache/mine.txt')).toBe(true);
-    expect(cache.read('abc', 'adt', 'x')).toBeUndefined();
+    expect(await cache.read('abc', 'adt', 'x')).toBeUndefined();
 
     TestBed.resetTestingModule();
     expect(setup().cache.folder()).toBe('D:\\Games\\Cache\\');
@@ -90,14 +88,14 @@ describe('WowDataCacheService', () => {
     expect(cache.root()).toBe('/cache');
   });
 
-  it('stops growing at its maximum size (10 GB unless changed), and remembers it', () => {
+  it('stops growing at its maximum size (10 GB unless changed), and remembers it', async () => {
     const { cache } = setup();
     expect(cache.maxBytes()).toBe(DEFAULT_CACHE_MAX_BYTES);
     expect(DEFAULT_CACHE_MAX_BYTES).toBe(10_000_000_000);
     cache.setMaxBytes(30);
-    cache.write('abc', 'adt', 'a', { data: 'x'.repeat(40) });
+    await cache.write('abc', 'adt', 'a', { data: 'x'.repeat(40) });
     expect(cache.isFull()).toBe(true);
-    cache.write('abc', 'adt', 'b', 1);
+    await cache.write('abc', 'adt', 'b', 1);
     expect(cache.has('abc', 'adt', 'b')).toBe(false);
 
     cache.clear();
@@ -110,14 +108,24 @@ describe('WowDataCacheService', () => {
     const restored = setup().cache;
     expect(restored.maxBytes()).toBe(1000);
     // the size of an existing cache is counted the first time it's needed
-    restored.write('abc', 'adt', 'c', 1);
+    await restored.write('abc', 'adt', 'c', 1);
     expect(restored.isFull()).toBe(false);
+    // counted in the background on the first write; a count for a folder left meanwhile is not used
+    TestBed.resetTestingModule();
+    const moved = setup();
+    let finish: (bytes: number) => void = () => undefined;
+    vi.spyOn(moved.native as FakeNative, 'directorySizeAsync').mockReturnValueOnce(new Promise((resolve) => (finish = resolve)));
+    const writing = moved.cache.write('abc', 'adt', 'd', 1);
+    moved.cache.setFolder('D:\\Elsewhere');
+    finish(999_999);
+    await writing;
+    expect(moved.cache.isFull()).toBe(false);
   });
 
-  it('does nothing outside the desktop app', () => {
+  it('does nothing outside the desktop app', async () => {
     const { cache } = setup(false);
-    cache.write('abc', 'adt', 'x', 1);
-    expect(cache.read('abc', 'adt', 'x')).toBeUndefined();
+    await cache.write('abc', 'adt', 'x', 1);
+    expect(await cache.read('abc', 'adt', 'x')).toBeUndefined();
     expect(cache.has('abc', 'adt', 'x')).toBe(false);
     expect(cache.size()).toBe(0);
     expect(cache.root()).toBeUndefined();

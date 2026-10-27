@@ -10,6 +10,7 @@ import {
   WorldBounds,
   WorldPosition,
   worldToTile,
+  perfTime,
 } from '@keira/shared/wow-data';
 import { Group, InstancedMesh, Object3D } from 'three';
 import { insideBounds } from './bounds';
@@ -62,6 +63,7 @@ export class WorldDoodads {
   private region?: WorldBounds;
   private regionKeys = new Set<string>();
   private refreshQueued = false;
+  private readonly modelKeys = new Map<string, string>();
 
   constructor(
     private readonly source: DoodadSource,
@@ -196,6 +198,10 @@ export class WorldDoodads {
 
   /** Rebuilds the instances from the loaded tiles: what's within the distance, grouped by model. */
   private refresh(): void {
+    perfTime('doodads refresh', () => this.refreshNow()); // TEMPORARY perf-log
+  }
+
+  private refreshNow(): void {
     const center = this.center;
     if (!center) {
       return;
@@ -204,7 +210,7 @@ export class WorldDoodads {
     const seen = new Set<number>();
     for (const placements of this.tiles.values()) {
       for (const placement of placements) {
-        const key = m2Path(placement.path).toLowerCase();
+        const key = this.modelKey(placement.path);
         if (seen.has(placement.uniqueId) || !this.inRange(placement, center, this.ready.get(key))) {
           continue;
         }
@@ -231,6 +237,16 @@ export class WorldDoodads {
       }
     }
     this.onChange();
+  }
+
+  /** The model a placement uses (as `.m2`, lower case): worked out once per path, this runs for every placement. */
+  private modelKey(path: string): string {
+    let key = this.modelKeys.get(path);
+    if (key === undefined) {
+      key = m2Path(path).toLowerCase();
+      this.modelKeys.set(path, key);
+    }
+    return key;
   }
 
   /** Within the distance of its size group; models not loaded yet use the farthest distance, to get loaded. */

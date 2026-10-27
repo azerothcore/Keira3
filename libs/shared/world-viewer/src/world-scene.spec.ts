@@ -23,7 +23,7 @@ import {
 } from 'three';
 import { flatDetail, flatTile } from './world-viewer.mock';
 import { COLLISION_LAYER, SERVER_COLLISION_LAYER } from './collision-object';
-import { pathColor, WorldScene } from './world-scene';
+import { mergeTerrainChunks, pathColor, WorldScene } from './world-scene';
 import { WaypointPath, WorldSpawn } from './world-viewer.model';
 
 const CENTER = tileCenter({ tx: 32, ty: 48 });
@@ -52,6 +52,33 @@ describe('pathColor', () => {
   it('is stable per key', () => {
     expect(pathColor('path:1')).toBe(pathColor('path:1'));
     expect(typeof pathColor('')).toBe('number');
+  });
+});
+
+describe('mergeTerrainChunks', () => {
+  it('puts the chunks one after the other, their alpha maps side by side, and has no alpha map when none blends', () => {
+    const chunk = (splat?: Uint8Array) => ({
+      positions: new Float32Array([0, 0, 0, 1, 0, 0, 0, 0, 1]),
+      normals: new Float32Array(9),
+      layerUvs: new Float32Array(6),
+      splatUvs: new Float32Array([0, 0, 1, 0, 0, 1]),
+      indices: new Uint16Array([0, 1, 2]),
+      textures: [],
+      splat,
+    });
+    const alpha = new Uint8Array(64 * 64 * 4).fill(9);
+    const merged = mergeTerrainChunks([chunk(), chunk(alpha)]);
+    expect(Array.from(merged.index.array)).toEqual([0, 1, 2, 3, 4, 5]);
+    expect(merged.ranges).toEqual([
+      { start: 0, count: 3 },
+      { start: 3, count: 3 },
+    ]);
+    // the second chunk's alpha map is in column 1: x from 64.5 to 127.5 of 1024
+    expect(merged.attributes.splatUv.getX(3)).toBeCloseTo(64.5 / 1024);
+    expect(merged.attributes.splatUv.getX(4)).toBeCloseTo(127.5 / 1024);
+    expect(merged.splat?.[64 * 4]).toBe(9);
+    expect(merged.splat?.[0]).toBe(0);
+    expect(mergeTerrainChunks([chunk()]).splat).toBeUndefined();
   });
 });
 
@@ -93,8 +120,24 @@ describe('WorldScene', () => {
         [liquid, magma, liquid],
       );
       const tile = world.scene.getObjectByName('tile:32_48') as Group;
-      expect(tile.children.length).toBe(256 + 3);
+      // the 256 chunks (for picking), one drawn mesh per material (2), and the liquids
+      expect(tile.children.length).toBe(256 + 2 + 3);
       expect(world.groundHeightAt(CENTER.x, CENTER.y)).toBeCloseTo(42);
+      const drawn = tile.children.filter((child) => child.name === 'terrain') as Mesh[];
+      expect(drawn.map((mesh) => mesh.geometry.index?.count)).toEqual([
+        detail.chunks[0].indices.length,
+        255 * detail.chunks[0].indices.length,
+      ]);
+      expect(drawn[0].raycast(undefined as never, [])).toBeUndefined();
+      expect(tile.children.slice(0, 256).every((chunk) => !chunk.visible)).toBe(true);
+      // one set of buffers for the tile, each chunk drawing its own part; chunks with the same textures share a material
+      const chunkMeshes = tile.children.slice(0, 256) as Mesh[];
+      expect(chunkMeshes[1].geometry.getAttribute('position')).toBe(chunkMeshes[2].geometry.getAttribute('position'));
+      expect(chunkMeshes[2].geometry.drawRange.start).toBe(2 * detail.chunks[0].indices.length);
+      expect(chunkMeshes[1].material).toBe(chunkMeshes[2].material);
+      expect(chunkMeshes[0].material).not.toBe(chunkMeshes[1].material);
+      expect(new Set(chunkMeshes.map((mesh) => mesh.material)).size).toBe(2);
+      expect(chunkMeshes[1].geometry.boundingSphere?.radius).toBeLessThan(100);
       const water = tile.children.filter((c) => c.name === 'liquid') as Mesh[];
       expect(water[0].material).toBe(water[2].material);
       expect(water[0].material).not.toBe(water[1].material);
@@ -511,15 +554,23 @@ describe('WorldScene', () => {
         // only a height range: nothing to draw
         { key: 'boundary:3', label: 'Height', color: 0, z: 0, shapes: [{ type: 'zrange', minZ: 1, maxZ: 2, inverted: false }] },
       ]);
-      // 2 shapes at one height + 1 shape at two heights, each an outline and a fill
-      expect(group().children).toHaveLength(8);
+      // 2 shapes at one height + 1 shape at two heights, each an outline and an area; and a wall per shape
+      expect(group().children).toHaveLength(11);
       const dashed = group().children.find((child) => child instanceof Line && child.material instanceof LineDashedMaterial) as Line;
       expect((dashed.material as LineDashedMaterial).color.getHex()).toBe(0xff4757);
       expect(dashed.raycast(undefined as never, [])).toBeUndefined();
       const fills = group().children.filter((child) => child.name === 'boundary:2:fill');
-      expect(fills.map((fill) => Math.round(((fill as Mesh).geometry.getAttribute('position') as BufferAttribute).getY(1)))).toEqual(
-        [40, 60].map((z) => Math.round(z + 0.3)),
-      );
+      const heights = (mesh: Object3D) => {
+        const position = (mesh as Mesh).geometry.getAttribute('position') as BufferAttribute;
+        return Array.from({ length: position.count }, (_, i) => Math.round(position.getY(i)));
+      };
+      // the areas at both heights, and a wall from one to the other
+      expect(fills.map((fill) => heights(fill)[1])).toEqual([40, 60, 40]);
+      expect(new Set(heights(fills[2]))).toEqual(new Set([40, 60]));
+      // without a height range: a wall from a little under the boss to some yards over it
+      const wall = group().children.filter((child) => child.name === 'boundary:1:fill')[1];
+      expect(new Set(heights(wall))).toEqual(new Set([48, 62]));
+      expect(((wall as Mesh).material as MeshBasicMaterial).depthTest).toBe(true);
       lookDownAt(world, { ...c, z: 50.3 }, 30);
       expect(world.pick(0, 0, { markersOnly: true, overlays: true })).toEqual(
         expect.objectContaining({ type: 'overlay', key: 'boundary:1' }),

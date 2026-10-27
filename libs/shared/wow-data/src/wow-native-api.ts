@@ -30,20 +30,24 @@ export interface WowNativeApi {
   isDirectory(path: string): boolean;
   readdir(path: string): string[];
   readFile(path: string): Uint8Array;
+  /** Reads a file without blocking the window (rejects when missing). */
+  readFileAsync(path: string): Promise<Uint8Array>;
   loadStorm(): StormModule;
-  /** Writes a file, creating its folders. */
-  writeFile(path: string, data: Uint8Array): void;
+  /** Writes a file, creating its folders, without blocking the window. */
+  writeFile(path: string, data: Uint8Array): Promise<void>;
   /** Deletes a folder and everything in it (nothing if missing). */
   removeDirectory(path: string): void;
   /** Total size in bytes of the files in a folder, recursively (0 if missing). */
   directorySize(path: string): number;
+  /** The same, counted without blocking the window. */
+  directorySizeAsync(path: string): Promise<number>;
   /** Size in bytes of each file directly in a folder, by name (empty if missing). */
   fileSizes(path: string): Record<string, number>;
   /** Where Keira keeps data it can rebuild (the user's local application data). */
   cacheDirectory(): string;
-  /** Turns plain data (objects, arrays, typed arrays…) into compact bytes, and back. */
-  pack(value: unknown): Uint8Array;
-  unpack<T>(bytes: Uint8Array): T;
+  /** Turns plain data (objects, arrays, typed arrays…) into compact bytes, and back (compressed off the window's thread). */
+  pack(value: unknown): Promise<Uint8Array>;
+  unpack<T>(bytes: Uint8Array): Promise<T>;
 }
 
 export const WOW_NATIVE_API = new InjectionToken<WowNativeApi | undefined>('WOW_NATIVE_API', {

@@ -62,3 +62,18 @@ export function runParseJob(job: ParseJob): ParseResults[ParseJob['kind']] {
       return decodeBlpForGpu(job.bytes);
   }
 }
+
+/**
+ * The buffers of the typed arrays in a result (each once), handed over with it instead of copied: the window then
+ * gets a parsed tile without spending time copying it.
+ */
+export function transferables(value: unknown, found = new Set<ArrayBuffer>()): ArrayBuffer[] {
+  if (ArrayBuffer.isView(value)) {
+    if (value.buffer instanceof ArrayBuffer) {
+      found.add(value.buffer);
+    }
+  } else if (value && typeof value === 'object') {
+    Object.values(value).forEach((child) => transferables(child, found));
+  }
+  return [...found];
+}

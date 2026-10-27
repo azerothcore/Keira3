@@ -19,3 +19,5 @@ export * from './navmesh';
 export * from './navmesh-path';
 export * from './server-map';
 export * from './vmap';
+// TEMPORARY (freeze investigation): delete with perf-log.ts
+export * from './perf-log';

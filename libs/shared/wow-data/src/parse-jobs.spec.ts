@@ -1,4 +1,4 @@
-import { runParseJob } from './parse-jobs';
+import { runParseJob, transferables } from './parse-jobs';
 
 const mocks = vi.hoisted(() => ({
   parseAdt: vi.fn().mockReturnValue({ chunks: [{ position: [1, 2, 3] }], wmos: [], doodads: [] }),
@@ -41,5 +41,15 @@ describe('runParseJob', () => {
     expect(runParseJob({ kind: 'wmoDoodads', bytes })).toBe('doodads');
     expect(runParseJob({ kind: 'blp', bytes })).toBe('rgba');
     expect(runParseJob({ kind: 'blpGpu', bytes })).toBe('gpu');
+  });
+
+  it('lists the buffers of a result once each, to hand them over', () => {
+    const heights = new Float32Array(4);
+    const shared = new Uint8Array(heights.buffer, 0, 4);
+    const other = new Uint16Array(2);
+    expect(transferables({ heights, chunks: [{ shared }, { other, name: 'x', none: null }] })).toEqual([heights.buffer, other.buffer]);
+    expect(transferables(undefined)).toEqual([]);
+    // (a shared buffer can't be handed over)
+    expect(transferables(new Uint8Array(new SharedArrayBuffer(4)))).toEqual([]);
   });
 });

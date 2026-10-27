@@ -68,21 +68,35 @@ describe('createWowNativeApi', () => {
     expect(env['NODE_ENV']).toBe('development');
   });
 
-  it('writes files with their folders, measures and removes folders', () => {
+  it('reads and writes files (with their folders) without blocking, measures and removes folders', async () => {
     const writable = {
       existsSync: (path: string) => path !== '/missing',
-      mkdirSync: vi.fn(),
-      writeFileSync: vi.fn(),
+      promises: {
+        mkdir: vi.fn().mockResolvedValue(undefined),
+        writeFile: vi.fn().mockResolvedValue(undefined),
+        readFile: vi.fn().mockResolvedValue(Buffer.from([7, 8])),
+        readdir: vi.fn((path: string) =>
+          path === '/missing'
+            ? Promise.reject(new Error('ENOENT'))
+            : Promise.resolve(
+                (path === '/cache' ? ['a.bin', 'sub'] : ['b.bin']).map((name) => ({ name, isDirectory: () => name === 'sub' })),
+              ),
+        ),
+        stat: vi.fn((path: string) => Promise.resolve({ size: path.endsWith('a.bin') ? 10 : 5 })),
+      },
       rmSync: vi.fn(),
       readdirSync: (path: string) => (path === '/cache' ? ['a.bin', 'sub'] : ['b.bin']),
       statSync: (path: string) => ({ isDirectory: () => path.endsWith('/sub'), size: path.endsWith('a.bin') ? 10 : 5 }),
     };
     const api = createWowNativeApi(writable as unknown as typeof fs, vi.fn(), {});
-    api.writeFile('/cache/v1/adt/x.bin', new Uint8Array([1]));
-    expect(writable.mkdirSync).toHaveBeenCalledWith('/cache/v1/adt', { recursive: true });
-    expect(writable.writeFileSync).toHaveBeenCalledWith('/cache/v1/adt/x.bin', new Uint8Array([1]));
+    await api.writeFile('/cache/v1/adt/x.bin', new Uint8Array([1]));
+    expect(writable.promises.mkdir).toHaveBeenCalledWith('/cache/v1/adt', { recursive: true });
+    expect(writable.promises.writeFile).toHaveBeenCalledWith('/cache/v1/adt/x.bin', new Uint8Array([1]));
+    expect(Array.from(await api.readFileAsync('/cache/v1/adt/x.bin'))).toEqual([7, 8]);
     expect(api.directorySize('/cache')).toBe(15);
     expect(api.directorySize('/missing')).toBe(0);
+    expect(await api.directorySizeAsync('/cache')).toBe(15);
+    expect(await api.directorySizeAsync('/missing')).toBe(0);
     expect(api.fileSizes('/cache')).toEqual({ 'a.bin': 10 });
     expect(api.fileSizes('/missing')).toEqual({});
     api.removeDirectory('/cache');
@@ -102,13 +116,22 @@ describe('createWowNativeApi', () => {
     const modules: Record<string, unknown> = { v8: await import('node:v8'), zlib: await import('node:zlib') };
     const api = createWowNativeApi(nodeFs, (id) => modules[id], {});
     const value = { name: 'tile', heights: new Float32Array([1.5, 2]), nested: [{ id: 1 }] };
-    const packed = api.pack(value);
+    const packed = await api.pack(value);
     expect(packed).toBeInstanceOf(Uint8Array);
-    const unpacked = api.unpack<typeof value>(packed);
+    const unpacked = await api.unpack<typeof value>(packed);
     // (V8 builds Node-realm typed arrays, so compare their values)
     expect(unpacked.name).toBe('tile');
     expect(Array.from(unpacked.heights)).toEqual([1.5, 2]);
     expect(unpacked.heights.constructor.name).toBe('Float32Array');
     expect(unpacked.nested).toEqual([{ id: 1 }]);
+    // damaged bytes
+    await expect(api.unpack(new Uint8Array([1, 2, 3]))).rejects.toThrow();
+    const failing = createWowNativeApi(
+      nodeFs,
+      (id) =>
+        id === 'zlib' ? { deflate: (_b: unknown, _o: unknown, done: (e: Error) => void) => done(new Error('no memory')) } : modules[id],
+      {},
+    );
+    await expect(failing.pack(value)).rejects.toThrow('no memory');
   });
 });

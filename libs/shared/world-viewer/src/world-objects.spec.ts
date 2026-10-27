@@ -132,6 +132,20 @@ describe('WorldObjects', () => {
     releaseMap();
     await stale;
     expect(second.group.children.length).toBe(0);
+
+    // a tile of the previous map listed after the change isn't taken as one of the new map's tiles
+    const third = setup({ '32_48': [placement(1)] });
+    let list: () => void = () => undefined;
+    vi.mocked(third.source.getTilePlacements).mockImplementationOnce(
+      () => new Promise((resolve) => (list = () => resolve({ wmos: [], doodads: [] }))),
+    );
+    third.objects.setMap('Azeroth');
+    const old = third.objects.update(tileCenter({ tx: 32, ty: 48 }));
+    third.objects.setMap('Kalimdor');
+    list();
+    await old;
+    await third.objects.update(tileCenter({ tx: 32, ty: 48 }));
+    expect(third.group.children.length).toBe(1);
   });
 
   it('warns about tiles that fail, retries failed files, and disposes templates', async () => {

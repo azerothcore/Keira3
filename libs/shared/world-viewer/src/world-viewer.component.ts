@@ -25,6 +25,8 @@ import {
   worldToTile,
   CHUNK_SIZE,
   serverAreaAt,
+  perfFrame,
+  perfTime,
 } from '@keira/shared/wow-data';
 import { Mesh, Object3D, Vector3 } from 'three';
 import { MapControls } from 'three/addons/controls/MapControls.js';
@@ -77,6 +79,8 @@ import {
   WorldSpawn,
 } from './world-viewer.model';
 
+/** How long (ms) loading must have calmed down before the waypoints' places are worked out again. */
+const CLASSIFY_DELAY = 250;
 const CLICK_TOLERANCE_PX = 4;
 const CENTER_EMIT_DISTANCE = 60;
 /** Textures loaded beyond which those nothing uses free their graphics memory. */
@@ -251,6 +255,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private gizmo!: TransformControls;
   private resizeObserver?: ResizeObserver;
   private frameRequested = false;
+  private classifyTimer?: ReturnType<typeof setTimeout>;
   private pointerDown?: { x: number; y: number };
   private renderScale = 1;
   private markerModel = '';
@@ -305,17 +310,21 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
         this.doodads.setRegion(region);
         this.navMesh.setRegion(region);
         this.spawnModels.setRegion(region);
-        void this.streamer.update(this.center);
-        void this.objects.update(this.center);
-        void this.doodads.update(this.center);
-        void this.navMesh.update(this.center);
+        // everything around the camera (and in the region) is looked at again
+        this.emitCenter(true);
       });
     });
     effect(() => void this.loadMap(this.mapDirectory()));
     effect(() => {
-      const kept = this.world.setSpawns(this.spawns());
-      this.spawnModels.setSpawns(this.spawns(), kept);
-      this.world.setWaypointPaths(this.paths());
+      // TEMPORARY perf-log
+      const kept = perfTime('scene spawns', () => this.world.setSpawns(this.spawns()));
+      perfTime('spawn models set', () => this.spawnModels.setSpawns(this.spawns(), kept));
+      untracked(() => this.syncGizmo());
+      this.requestRender();
+    });
+    // (on their own: a change of one doesn't redraw the other)
+    effect(() => {
+      perfTime('scene paths', () => this.world.setWaypointPaths(this.paths())); // TEMPORARY perf-log
       untracked(() => this.syncGizmo());
       this.requestRender();
     });
@@ -435,6 +444,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     clearTimeout(this.activityTimer);
     clearTimeout(this.recheckTimer);
+    clearTimeout(this.classifyTimer);
     this.simulationRun++;
     if (this.simulationFrame !== undefined) {
       cancelAnimationFrame(this.simulationFrame);
@@ -448,6 +458,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     this.navMesh.dispose();
     this.vmaps.dispose();
     this.spawnModels.dispose();
+    // stops reading ahead (what's waiting is dropped)
+    void this.prefetch.setMap(undefined);
     this.resizeObserver?.disconnect();
     this.host().nativeElement.removeEventListener('wheel', this.onSpeedWheel, { capture: true });
     this.gizmo.detach();
@@ -1092,10 +1104,10 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     this.loading.set(true);
     try {
       await this.streamer.setMap(directory);
+      // now that the map's tiles are known, everything around the camera loads (the camera may have been placed, and
+      // a region set, before: e.g. reopening the editor inside a dungeon)
+      this.emitCenter(true);
       await this.streamer.update(this.center);
-      void this.objects.update(this.center);
-      void this.doodads.update(this.center);
-      void this.navMesh.update(this.center);
     } catch (error) {
       this.error.set((error as Error).message);
     } finally {
@@ -1124,7 +1136,12 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   }
 
   private onTileLoaded(): void {
-    this.world.classifyWaypoints();
+    // what's under the waypoints is looked at again once tiles stop coming in (each look casts rays at everything)
+    clearTimeout(this.classifyTimer);
+    this.classifyTimer = setTimeout(() => {
+      perfTime('classify waypoints', () => this.world.classifyWaypoints()); // TEMPORARY perf-log
+      this.requestRender();
+    }, CLASSIFY_DELAY);
     // what's under the checked points may have changed: check them again once loading calms down
     if (untracked(() => this.waypointCheck())) {
       clearTimeout(this.recheckTimer);
@@ -1145,9 +1162,9 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       return;
     }
     this.lastEmittedCenter = center;
-    this.centerChanged.emit(center);
+    perfTime('center changed (editor)', () => this.centerChanged.emit(center)); // TEMPORARY perf-log
     // the graphics memory of textures left far behind goes back
-    this.textures.release(this.world.scene, TEXTURES_KEPT);
+    perfTime('textures release', () => this.textures.release(this.world.scene, TEXTURES_KEPT)); // TEMPORARY perf-log
     // load what's in front first
     const look = new Vector3();
     this.world.camera.getWorldDirection(look);
@@ -1184,7 +1201,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     requestAnimationFrame(() => {
       this.frameRequested = false;
       this.world.updateMarkerScale();
-      this.renderer?.render(this.world.scene, this.world.camera);
+      perfTime('render', () => this.renderer?.render(this.world.scene, this.world.camera)); // TEMPORARY perf-log
+      perfFrame(); // TEMPORARY perf-log
       this.updateStatus();
       this.updateProbeLabels();
     });
@@ -1250,7 +1268,11 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       models: this.spawnModels.pendingCount,
     };
     const busy = Object.values(activity).some((count) => count > 0);
-    this.activity.set(busy ? activity : undefined);
+    const shown = this.activity();
+    // (set only when it changed: this runs every frame)
+    if (busy ? JSON.stringify(shown) !== JSON.stringify(activity) : shown !== undefined) {
+      this.activity.set(busy ? activity : undefined);
+    }
     if (busy && !this.activityTimer) {
       this.activityTimer = setTimeout(() => {
         this.activityTimer = undefined;

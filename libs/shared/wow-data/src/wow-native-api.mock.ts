@@ -97,10 +97,19 @@ export function createFakeNative(files: Record<string, number[]>, mpqs: Record<s
       }
       return Uint8Array.from(allFiles[path]);
     },
+    readFileAsync: (path) =>
+      path in allFiles
+        ? Promise.resolve(Uint8Array.from(allFiles[path]))
+        : Promise.reject(Object.assign(new Error(`ENOENT: ${path}`), { code: 'ENOENT' })),
     loadStorm: () => storm,
-    writeFile: (path, data) => void (allFiles[path] = Array.from(data)),
+    writeFile: (path, data) => {
+      allFiles[path] = Array.from(data);
+      return Promise.resolve();
+    },
     removeDirectory: (path) => paths().forEach((p) => p.startsWith(`${path}/`) && delete allFiles[p]),
     directorySize: (path) => paths().reduce((total, p) => total + (p.startsWith(`${path}/`) ? allFiles[p].length : 0), 0),
+    directorySizeAsync: (path) =>
+      Promise.resolve(paths().reduce((total, p) => total + (p.startsWith(`${path}/`) ? allFiles[p].length : 0), 0)),
     fileSizes: (path) =>
       Object.fromEntries(
         paths()
@@ -110,16 +119,23 @@ export function createFakeNative(files: Record<string, number[]>, mpqs: Record<s
     cacheDirectory: () => '/cache',
     // JSON with typed arrays tagged, standing in for V8 serialisation
     pack: (value) =>
-      new TextEncoder().encode(
-        JSON.stringify(value, (_key, v) =>
-          ArrayBuffer.isView(v) ? { $typed: v.constructor.name, values: Array.from(v as Uint8Array) } : v,
+      Promise.resolve(
+        new TextEncoder().encode(
+          JSON.stringify(value, (_key, v) =>
+            ArrayBuffer.isView(v) ? { $typed: v.constructor.name, values: Array.from(v as Uint8Array) } : v,
+          ),
         ),
       ),
+    // (a damaged entry rejects, like the real one)
     unpack: <T>(bytes: Uint8Array) =>
-      JSON.parse(new TextDecoder().decode(bytes), (_key, v) =>
-        v && typeof v === 'object' && '$typed' in v
-          ? new (globalThis as unknown as Record<string, new (values: number[]) => unknown>)[v.$typed](v.values)
-          : v,
-      ) as T,
+      new Promise<T>((resolve) =>
+        resolve(
+          JSON.parse(new TextDecoder().decode(bytes), (_key, v) =>
+            v && typeof v === 'object' && '$typed' in v
+              ? new (globalThis as unknown as Record<string, new (values: number[]) => unknown>)[v.$typed](v.values)
+              : v,
+          ) as T,
+        ),
+      ),
   };
 }

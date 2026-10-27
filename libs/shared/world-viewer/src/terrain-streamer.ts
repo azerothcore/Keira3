@@ -9,6 +9,7 @@ import {
   WorldBounds,
   WorldPosition,
   worldToTile,
+  perfTime,
 } from '@keira/shared/wow-data';
 import { TextureCache } from './texture-cache';
 import { WorldScene } from './world-scene';
@@ -153,7 +154,7 @@ export class TerrainStreamer {
       this.source.getTerrain(directory, tile),
       this.source.getMinimap(directory, tile).catch(() => undefined),
     ]);
-    return mesh && (() => this.scene.setTerrainTile(mesh, image));
+    return mesh && (() => perfTime('terrain low-poly tile', () => this.scene.setTerrainTile(mesh, image)));
   }
 
   private async loadDetailed(directory: string, tile: TileCoord): Promise<(() => void) | undefined> {
@@ -164,7 +165,8 @@ export class TerrainStreamer {
     const withTextures = await Promise.all(
       detail.chunks.map(async (mesh) => ({ mesh, layers: await Promise.all(mesh.textures.map((path) => this.textures.get(path))) })),
     );
-    return () => this.scene.setTerrainTileDetailed(tile, withTextures, this.textures.fallback, detail.liquids);
+    return () =>
+      perfTime('terrain tile', () => this.scene.setTerrainTileDetailed(tile, withTextures, this.textures.fallback, detail.liquids));
   }
 
   /**

@@ -104,6 +104,18 @@ describe('WorldVmaps', () => {
     await far;
     expect(group.children).toHaveLength(0);
 
+    // the map changes while a model loads
+    let finishModel: (groups: VmapGroup[]) => void = () => undefined;
+    source.getVmapModel.mockReturnValueOnce(new Promise((resolve) => (finishModel = resolve)));
+    vmaps.setMap(2);
+    source.getVmapTile.mockResolvedValueOnce([spawn(5, 'Slow.wmo')]);
+    const slow = vmaps.update(CENTER);
+    await vi.waitFor(() => expect(source.getVmapModel).toHaveBeenCalledWith('Slow.wmo'));
+    vmaps.setMap(3);
+    finishModel([TRIANGLE]);
+    await slow;
+    expect(group.children).toHaveLength(0);
+
     vmaps.configure({ enabled: false, radius: 0 });
     expect(vmaps.active).toBe(false);
     vmaps.dispose();

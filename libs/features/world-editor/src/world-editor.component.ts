@@ -370,7 +370,7 @@ export class WorldEditorComponent implements OnInit {
     ];
   });
   private readonly travelOverlays = computed(() =>
-    travelOverlays(this.travel(), this.areaTriggerList(), new Map(this.maps().map((map) => [map.id, map.name])), this.cameraCenter()),
+    travelOverlays(this.travel(), this.areaTriggerList(), new Map(this.maps().map((map) => [map.id, map.name])), this.spawnsCenter()),
   );
   protected readonly checkedPathId = this.session.checkedPathId;
   /** "Check path": the points of the checked path, sorted; equal points don't ask the viewer again. */
@@ -450,10 +450,13 @@ export class WorldEditorComponent implements OnInit {
   private readonly taskbarProgress = effect(() => {
     const progress = this.preloading();
     const fraction = progress ? (progress.map + progress.done / Math.max(1, progress.total)) / Math.max(1, progress.maps) : -1;
-    if (this.electron.isElectron()) {
+    // "done" (which flashes the taskbar button) only after a preload, not each time the editor opens
+    if (this.electron.isElectron() && (fraction >= 0 || this.taskbarShown)) {
       this.electron.ipcRenderer.send('keira:progress', fraction);
+      this.taskbarShown = fraction >= 0;
     }
   });
+  private taskbarShown = false;
 
   /** Whole percent of `done` out of `total` (0 when nothing is known yet). */
   protected percent(done: number, total: number): number {
@@ -585,7 +588,7 @@ export class WorldEditorComponent implements OnInit {
       return [];
     }
     const spawns = this.spawns();
-    const camera = this.cameraCenter();
+    const camera = this.spawnsCenter();
     return this.bossBoundaries().map((boundary, i) => {
       const bosses = spawns.filter((s) => s.type === 'creature' && boundary.entries.includes(s.entry));
       const names = [...new Set(bosses.map((s) => s.name || s.entry))].join(', ');
@@ -605,6 +608,11 @@ export class WorldEditorComponent implements OnInit {
   });
   /** Where the camera looks (the last reported centre), for what's drawn near it. */
   private readonly cameraCenter = signal<WorldPosition | undefined>(undefined);
+  /**
+   * Where the spawns were last loaded around: flight paths and boss boundaries near the camera follow this (it changes
+   * every 150 yards or so) rather than every move, which redrew all of them.
+   */
+  private readonly spawnsCenter = signal<WorldPosition | undefined>(undefined);
   private readonly pools = signal<PoolMember[]>([]);
   /** Quests started or ended by the loaded entries, by `type:entry`. */
   private readonly quests = signal(new Map<string, SpawnQuest[]>());
@@ -668,21 +676,43 @@ export class WorldEditorComponent implements OnInit {
     const owners = pathOwners(this.visibleSpawns());
     const byPath = new Map<number, WaypointRecord[]>();
     for (const waypoint of this.waypoints().filter((w) => owners.has(w.pathId))) {
-      byPath.set(waypoint.pathId, [...(byPath.get(waypoint.pathId) ?? []), waypoint]);
+      const list = byPath.get(waypoint.pathId);
+      if (list) {
+        list.push(waypoint);
+      } else {
+        byPath.set(waypoint.pathId, [waypoint]);
+      }
     }
-    return [...byPath].map(([pathId, points]) => ({
-      key: pathKey(pathId),
-      label: pathLabel(pathId),
-      owners: owners.get(pathId) as string[],
-      closed: true,
-      points: points.map((p) => ({
-        point: p.point,
-        position: { x: p.x, y: p.y, z: p.z },
-        orientation: p.orientation ?? null,
-        delay: p.delay,
-        info: this.waypointInfo(p),
-      })),
-    }));
+    // the SmartAI rows of the creatures walking each path, worked out once per path (not per point)
+    const walkerIds = new Map<number, Set<number>>();
+    // (only creatures walk paths)
+    for (const spawn of this.spawns()) {
+      for (const pathId of pathsOf(spawn)) {
+        const ids = walkerIds.get(pathId) ?? new Set<number>();
+        ids.add(spawn.entry).add(-spawn.guid);
+        walkerIds.set(pathId, ids);
+      }
+    }
+    const sai = this.waypointSai();
+    const scripts = this.waypointScripts();
+    return [...byPath].map(([pathId, points]) => {
+      // (a shown path is walked by a creature shown)
+      const ids = walkerIds.get(pathId) as Set<number>;
+      const pathSai = sai.filter((row) => ids.has(row.entryorguid));
+      return {
+        key: pathKey(pathId),
+        label: pathLabel(pathId),
+        owners: owners.get(pathId) as string[],
+        closed: true,
+        points: points.map((p) => ({
+          point: p.point,
+          position: { x: p.x, y: p.y, z: p.z },
+          orientation: p.orientation ?? null,
+          delay: p.delay,
+          info: describeWaypoint(pathId, p.point, p, scripts, pathSai),
+        })),
+      };
+    });
   });
 
   /** What happens at a waypoint (wait, move type, script, SmartAI of the creatures walking the path). */
@@ -720,6 +750,7 @@ export class WorldEditorComponent implements OnInit {
     };
   }
 
+  /** What happens at one waypoint (for the selected one). */
   protected waypointInfo(waypoint: WaypointRecord): string[] {
     const walkers = this.spawns().filter((s) => s.type === 'creature' && pathsOf(s).includes(waypoint.pathId));
     const ids = new Set(walkers.flatMap((s) => [s.entry, -s.guid]));
@@ -1147,11 +1178,19 @@ export class WorldEditorComponent implements OnInit {
   protected async pickMap(id: number): Promise<void> {
     this.mapSearch.set(undefined);
     this.mapId.set(id);
+    // (picking the map shown loads it again)
+    this.leaveMap();
+    await this.focusMapCenter();
+    await this.loadZones();
+  }
+
+  /** Forgets what was loaded for the map shown: its spawns are loaded again, and an area chosen on it is let go. */
+  private leaveMap(): void {
     this.selectedKey.set(undefined);
     this.loadedSpawns.set([]);
     this.loadedWaypoints.set([]);
-    await this.focusMapCenter();
-    await this.loadZones();
+    this.spawnLoadCenter = undefined;
+    this.mapRegion.set(undefined);
   }
 
   /** The area triggers of the current map, and their database rows. */
@@ -1204,9 +1243,13 @@ export class WorldEditorComponent implements OnInit {
   private async loadZones(keepZone = false): Promise<void> {
     void this.loadAreaTriggers();
     const kept = keepZone ? this.zoneId() : 0;
+    const mapId = this.mapId();
     this.zoneId.set(0);
     try {
-      const zones = await this.client.getZones(this.mapId());
+      const zones = await this.client.getZones(mapId);
+      if (mapId !== this.mapId()) {
+        return;
+      }
       this.zones.set(zones);
       this.zoneId.set(zones.some((zone) => zone.areaId === kept) ? kept : 0);
     } catch (error) {
@@ -1241,14 +1284,19 @@ export class WorldEditorComponent implements OnInit {
 
   /** Looks at the middle of the dungeon, or of the map's terrain tiles (maps rarely have anything at 0,0). */
   private async focusMapCenter(): Promise<void> {
+    const mapId = this.mapId();
     const directory = this.mapDirectory();
     const b = await this.buildingBounds(directory);
+    const tiles = !b && directory ? await this.client.getMapTiles(directory) : [];
+    // another map was picked meanwhile: it looks at its own middle
+    if (mapId !== this.mapId()) {
+      return;
+    }
     if (b) {
       // the middle of the dungeon
       this.focus.set({ x: (b.minX + b.maxX) / 2, y: (b.minY + b.maxY) / 2, z: (b.minZ + b.maxZ) / 2 });
       return;
     }
-    const tiles = directory ? await this.client.getMapTiles(directory) : [];
     if (tiles.length === 0) {
       this.focus.set({ x: 0, y: 0, z: 0 });
       return;
@@ -1290,9 +1338,7 @@ export class WorldEditorComponent implements OnInit {
   private goTo(map: number, position: WorldPosition): void {
     const changedMap = map !== this.mapId();
     if (changedMap) {
-      this.selectedKey.set(undefined);
-      this.loadedSpawns.set([]);
-      this.loadedWaypoints.set([]);
+      this.leaveMap();
     }
     this.mapId.set(map);
     this.focus.set(position);
@@ -1369,6 +1415,7 @@ export class WorldEditorComponent implements OnInit {
     }
     const request = ++this.spawnRequest;
     this.spawnLoadCenter = { mapId: this.mapId(), x: center.x, y: center.y };
+    this.spawnsCenter.set(center);
     this.loadingSpawns.set(true);
     try {
       // with a region (Load the whole zone, an area of the world map), its spawns too

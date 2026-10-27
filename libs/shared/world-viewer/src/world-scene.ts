@@ -33,6 +33,7 @@ import {
   RingGeometry,
   RGBAFormat,
   Scene,
+  Sphere,
   SphereGeometry,
   ShaderMaterial,
   SRGBColorSpace,
@@ -128,6 +129,15 @@ function spawnSignature(spawn: WorldSpawn): string {
     spawn.scale,
   ]);
 }
+
+/** Boss boundaries: how far their wall goes under and over the boss (yards), and how see-through it and the area are. */
+const BOUNDARY_WALL_DEPTH = 2;
+const BOUNDARY_WALL_HEIGHT = 12;
+const BOUNDARY_WALL_OPACITY = 0.22;
+const BOUNDARY_FILL_OPACITY = 0.1;
+
+/** The alpha maps of a tile's 16 × 16 chunks, side by side. */
+const SPLAT_ATLAS_SIZE = 1024;
 
 const SPAWN_MODEL_NAME = 'model';
 const WANDER_RING_NAME = 'wander';
@@ -648,16 +658,58 @@ export class WorldScene {
     this.removeTerrainTile(key);
     const group = new Group();
     group.name = `tile:${key}`;
-    for (const { mesh, layers } of chunks) {
+    // All chunks share one set of buffers and one alpha map (uploaded once, not 256 times), and chunks with the same
+    // textures share a material: a new tile costs the graphics card a few uploads instead of over a thousand.
+    const merged = mergeTerrainChunks(chunks.map(({ mesh }) => mesh));
+    const splat = merged.splat && createSplatTexture(merged.splat, SPLAT_ATLAS_SIZE);
+    const materials = new Map<string, { material: ShaderMaterial; chunks: number[]; bounds: Box3 }>();
+    chunks.forEach(({ mesh, layers }, i) => {
+      const blended = !!mesh.splat;
+      const used = blended ? layers : layers.slice(0, 1);
+      const materialKey = `${blended}:${used.map((texture) => texture.uuid).join(',')}`;
+      let shared = materials.get(materialKey);
+      if (!shared) {
+        shared = {
+          material: createTerrainMaterial(used, blended ? splat : undefined, this.terrainLighting, fallback),
+          chunks: [],
+          bounds: new Box3(),
+        };
+        materials.set(materialKey, shared);
+      }
+      // each chunk on its own, not drawn, for picking and ground heights (a ray only tests the chunks it goes near)
       const geometry = new BufferGeometry();
-      geometry.setAttribute('position', new BufferAttribute(mesh.positions, 3));
-      geometry.setAttribute('normal', new BufferAttribute(mesh.normals, 3));
-      geometry.setAttribute('layerUv', new BufferAttribute(mesh.layerUvs, 2));
-      geometry.setAttribute('splatUv', new BufferAttribute(mesh.splatUvs, 2));
-      geometry.setIndex(new BufferAttribute(mesh.indices, 1));
-      geometry.computeBoundingSphere();
-      const splat = mesh.splat ? createSplatTexture(mesh.splat) : undefined;
-      group.add(new Mesh(geometry, createTerrainMaterial(layers, splat, this.terrainLighting, fallback)));
+      Object.entries(merged.attributes).forEach(([name, attribute]) => geometry.setAttribute(name, attribute));
+      geometry.setIndex(merged.index);
+      const range = merged.ranges[i];
+      geometry.setDrawRange(range.start, range.count);
+      // (bounds of this chunk only: the buffers hold the whole tile)
+      geometry.boundingBox = new Box3().setFromArray(mesh.positions);
+      geometry.boundingSphere = geometry.boundingBox.getBoundingSphere(new Sphere());
+      const chunk = new Mesh(geometry, shared.material);
+      chunk.visible = false;
+      group.add(chunk);
+      shared.chunks.push(i);
+      shared.bounds.union(geometry.boundingBox);
+    });
+    // what's drawn: the chunks of each material together, one draw each instead of one per chunk
+    for (const { material, chunks: members, bounds } of materials.values()) {
+      const geometry = new BufferGeometry();
+      Object.entries(merged.attributes).forEach(([name, attribute]) => geometry.setAttribute(name, attribute));
+      const all = merged.index.array as Uint32Array;
+      const index = new Uint32Array(members.reduce((sum, i) => sum + merged.ranges[i].count, 0));
+      let at = 0;
+      for (const i of members) {
+        const { start, count } = merged.ranges[i];
+        index.set(all.subarray(start, start + count), at);
+        at += count;
+      }
+      geometry.setIndex(new BufferAttribute(index, 1));
+      geometry.boundingBox = bounds;
+      geometry.boundingSphere = bounds.getBoundingSphere(new Sphere());
+      const drawn = new Mesh(geometry, material);
+      drawn.name = 'terrain';
+      drawn.raycast = () => undefined;
+      group.add(drawn);
     }
     for (const liquid of liquids) {
       const geometry = new BufferGeometry();
@@ -805,7 +857,8 @@ export class WorldScene {
       marker.add(model);
     }
     data.modelScale = model ? scale : undefined;
-    this.applySelection();
+    // (only this pin: restyling them all for each model shown made walking around stall)
+    this.styleObject(marker, key);
     return true;
   }
 
@@ -1286,6 +1339,10 @@ export class WorldScene {
       const flat = flatShapes(boundary.shapes);
       const ranges = flatShapes(boundary.shapes, true) as Extract<BoundaryShape, { type: 'zrange' }>[];
       const heights = ranges.length ? ranges.flatMap((range) => [range.minZ, range.maxZ]) : [boundary.z];
+      // a see-through wall around the area: from the floor of a height range to its ceiling, or a few yards high
+      const [bottom, top] = ranges.length
+        ? [Math.min(...heights), Math.max(...heights)]
+        : [boundary.z - BOUNDARY_WALL_DEPTH, boundary.z + BOUNDARY_WALL_HEIGHT];
       for (const shape of flat) {
         const outline = boundaryOutline(shape) as BoundaryPoint[];
         const color = shape.inverted ? BOUNDARY_OUT_COLOR : boundary.color;
@@ -1299,21 +1356,33 @@ export class WorldScene {
           line.renderOrder = 1;
           line.raycast = () => undefined;
           this.boundaryGroup.add(line);
-          // a fan from the middle: every shape is convex
+          // the area itself, seen through floors and walls: a fan from the middle (every shape is convex)
           const middle = points.reduce((sum, p) => sum.add(p), new Vector3()).divideScalar(points.length);
           const fan = points.flatMap((p, i) => [middle, p, points[(i + 1) % points.length]]);
-          const fill = new Mesh(
-            new BufferGeometry().setFromPoints(fan),
-            new MeshBasicMaterial({ color, transparent: true, opacity: 0.12, depthWrite: false, side: DoubleSide }),
-          );
-          fill.name = `${boundary.key}:fill`;
-          fill.renderOrder = 1;
-          fill.userData = { overlay: boundary.key };
-          this.boundaryGroup.add(fill);
-          this.boundaryFills.push(fill);
+          this.addBoundaryMesh(boundary.key, fan, color, false, BOUNDARY_FILL_OPACITY);
         }
+        const low = outline.map((p) => scenePoint({ x: p.x, y: p.y, z: bottom }));
+        const high = outline.map((p) => scenePoint({ x: p.x, y: p.y, z: top }));
+        const wall = low.flatMap((p, i) => {
+          const j = (i + 1) % low.length;
+          return [p, low[j], high[j], p, high[j], high[i]];
+        });
+        this.addBoundaryMesh(boundary.key, wall, color, true, BOUNDARY_WALL_OPACITY);
       }
     }
+  }
+
+  /** A see-through, pickable surface of a boss boundary (its area, or its wall). */
+  private addBoundaryMesh(key: string, triangles: Vector3[], color: number, depthTest: boolean, opacity: number): void {
+    const mesh = new Mesh(
+      new BufferGeometry().setFromPoints(triangles),
+      new MeshBasicMaterial({ color, transparent: true, opacity, depthWrite: false, depthTest, side: DoubleSide }),
+    );
+    mesh.name = `${key}:fill`;
+    mesh.renderOrder = 1;
+    mesh.userData = { overlay: key };
+    this.boundaryGroup.add(mesh);
+    this.boundaryFills.push(mesh);
   }
 
   /** One pickable arrow in the middle of each stretch of a labelled link, pointing the way it goes. */
@@ -1347,21 +1416,24 @@ export class WorldScene {
     const cameraPosition = this.camera.position;
     this.sky.position.copy(cameraPosition);
     this.sky.scale.setScalar(this.camera.far * 0.9);
-    for (const object of [...this.objects.values(), ...this.arrows, ...this.overlayMarkers]) {
+    // (every frame: no arrays built, no searching through models)
+    const rescale = (object: Object3D) => {
       const distance = object.position.distanceTo(cameraPosition);
       const scale = Math.min(MARKER_MAX_SCALE, Math.max(1, distance / MARKER_SCALE_DISTANCE));
       object.scale.setScalar(scale);
       // a model and a wander circle keep their real size whatever the pin's on-screen scaling
       const modelScale = (object.userData as SpawnMarkerData).modelScale;
-      if (modelScale !== undefined) {
-        object.getObjectByName(SPAWN_MODEL_NAME)?.scale.setScalar(modelScale / scale);
-      }
-      for (const ring of object.children) {
-        if (ring instanceof LineLoop) {
-          ring.scale.setScalar((ring.userData as { radius: number }).radius / scale);
+      for (const child of object.children) {
+        if (child instanceof LineLoop) {
+          child.scale.setScalar((child.userData as { radius: number }).radius / scale);
+        } else if (modelScale !== undefined && child.name === SPAWN_MODEL_NAME) {
+          child.scale.setScalar(modelScale / scale);
         }
       }
-    }
+    };
+    this.objects.forEach(rescale);
+    this.arrows.forEach(rescale);
+    this.overlayMarkers.forEach(rescale);
   }
 
   // ---------------------------------------------------------------- picking
@@ -1620,22 +1692,25 @@ export class WorldScene {
   }
 
   private applySelection(): void {
-    this.objects.forEach((object, key) => {
-      const mesh = object as Mesh;
-      const data = object.userData as PickableData & SpawnMarkerData;
-      const selected = key === this.selectedKey || this.groupKeys.has(key);
-      if (data.kind === 'waypoint') {
-        mesh.material = this.waypointMaterial(pathColor(data.pathKey as string), selected);
-        const pointer = object.getObjectByName(POINTER_NAME) as Mesh | undefined;
-        if (pointer) {
-          pointer.material = mesh.material;
-        }
-      } else if (data.modelScale !== undefined && !selected) {
-        mesh.material = this.hiddenMarkerMaterial;
-      } else {
-        mesh.material = this.markerMaterial(data.kind, selected ? 'selected' : data.pending ? 'pending' : 'normal');
+    this.objects.forEach((object, key) => this.styleObject(object, key));
+  }
+
+  /** The look of one pin or waypoint: selected, pending, hidden behind its model… */
+  private styleObject(object: Object3D, key: string): void {
+    const mesh = object as Mesh;
+    const data = object.userData as PickableData & SpawnMarkerData;
+    const selected = key === this.selectedKey || this.groupKeys.has(key);
+    if (data.kind === 'waypoint') {
+      mesh.material = this.waypointMaterial(pathColor(data.pathKey as string), selected);
+      const pointer = object.getObjectByName(POINTER_NAME) as Mesh | undefined;
+      if (pointer) {
+        pointer.material = mesh.material;
       }
-    });
+    } else if (data.modelScale !== undefined && !selected) {
+      mesh.material = this.hiddenMarkerMaterial;
+    } else {
+      mesh.material = this.markerMaterial(data.kind, selected ? 'selected' : data.pending ? 'pending' : 'normal');
+    }
   }
 }
 
@@ -1706,8 +1781,67 @@ function disposeTerrainMesh(mesh: Mesh): void {
   material.dispose();
 }
 
-function createSplatTexture(data: Uint8Array): DataTexture {
-  const texture = new DataTexture(data, SPLAT_SIZE, SPLAT_SIZE, RGBAFormat);
+/**
+ * The chunks of a tile in shared buffers: their vertices one after the other, their triangles (as `ranges` of one index
+ * buffer) pointing at them, and their 64 × 64 alpha maps side by side in one 1024 × 1024 map (chunk i at column
+ * i % 16, row i / 16), its coordinates moved there; no map when no chunk blends textures.
+ */
+export function mergeTerrainChunks(chunks: TerrainChunkMesh[]): {
+  attributes: Record<'position' | 'normal' | 'layerUv' | 'splatUv', BufferAttribute>;
+  index: BufferAttribute;
+  ranges: { start: number; count: number }[];
+  splat?: Uint8Array;
+} {
+  const vertices = chunks.reduce((sum, chunk) => sum + chunk.positions.length / 3, 0);
+  const positions = new Float32Array(vertices * 3);
+  const normals = new Float32Array(vertices * 3);
+  const layerUvs = new Float32Array(vertices * 2);
+  const splatUvs = new Float32Array(vertices * 2);
+  const index = new Uint32Array(chunks.reduce((sum, chunk) => sum + chunk.indices.length, 0));
+  const splat = chunks.some((chunk) => chunk.splat) ? new Uint8Array(SPLAT_ATLAS_SIZE * SPLAT_ATLAS_SIZE * 4) : undefined;
+  const ranges: { start: number; count: number }[] = [];
+  const perRow = SPLAT_ATLAS_SIZE / SPLAT_SIZE;
+  let vertex = 0;
+  let start = 0;
+  chunks.forEach((chunk, i) => {
+    const count = chunk.positions.length / 3;
+    positions.set(chunk.positions, vertex * 3);
+    normals.set(chunk.normals, vertex * 3);
+    layerUvs.set(chunk.layerUvs, vertex * 2);
+    const [column, row] = [i % perRow, Math.floor(i / perRow)];
+    // from the middle of its first texel to the middle of its last one, so filtering never reads the neighbour's
+    for (let v = 0; v < count; v++) {
+      splatUvs[(vertex + v) * 2] = (column * SPLAT_SIZE + 0.5 + chunk.splatUvs[v * 2] * (SPLAT_SIZE - 1)) / SPLAT_ATLAS_SIZE;
+      splatUvs[(vertex + v) * 2 + 1] = (row * SPLAT_SIZE + 0.5 + chunk.splatUvs[v * 2 + 1] * (SPLAT_SIZE - 1)) / SPLAT_ATLAS_SIZE;
+    }
+    for (let t = 0; t < chunk.indices.length; t++) {
+      index[start + t] = chunk.indices[t] + vertex;
+    }
+    if (chunk.splat && splat) {
+      for (let y = 0; y < SPLAT_SIZE; y++) {
+        const from = y * SPLAT_SIZE * 4;
+        splat.set(chunk.splat.subarray(from, from + SPLAT_SIZE * 4), ((row * SPLAT_SIZE + y) * SPLAT_ATLAS_SIZE + column * SPLAT_SIZE) * 4);
+      }
+    }
+    ranges.push({ start, count: chunk.indices.length });
+    vertex += count;
+    start += chunk.indices.length;
+  });
+  return {
+    attributes: {
+      position: new BufferAttribute(positions, 3),
+      normal: new BufferAttribute(normals, 3),
+      layerUv: new BufferAttribute(layerUvs, 2),
+      splatUv: new BufferAttribute(splatUvs, 2),
+    },
+    index: new BufferAttribute(index, 1),
+    ranges,
+    splat,
+  };
+}
+
+function createSplatTexture(data: Uint8Array, size: number): DataTexture {
+  const texture = new DataTexture(data, size, size, RGBAFormat);
   texture.magFilter = LinearFilter;
   texture.minFilter = LinearFilter;
   texture.userData['ownedByChunk'] = true;

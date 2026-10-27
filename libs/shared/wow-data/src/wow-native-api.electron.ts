@@ -2,6 +2,7 @@ import type * as fs from 'fs';
 import type * as v8 from 'v8';
 import type * as zlib from 'zlib';
 import type { StormModule, WowNativeApi } from './wow-native-api';
+import { perfTime } from './perf-log';
 
 /**
  * Electron implementation of {@link WowNativeApi}: Node `fs` plus StormJS loaded through `require` (`window.require` in
@@ -40,18 +41,35 @@ export function createWowNativeApi(
         }, 0)
       : 0;
 
+  const directorySizeAsync = async (path: string): Promise<number> => {
+    const entries = await nodeFs.promises.readdir(path, { withFileTypes: true }).catch(() => []);
+    const sizes = await Promise.all(
+      entries.map((entry) =>
+        entry.isDirectory()
+          ? directorySizeAsync(`${path}/${entry.name}`)
+          : nodeFs.promises.stat(`${path}/${entry.name}`).then((stat) => stat.size),
+      ),
+    );
+    return sizes.reduce((total, size) => total + size, 0);
+  };
+
   return {
     exists: (path) => nodeFs.existsSync(path),
     isDirectory: (path) => nodeFs.existsSync(path) && nodeFs.statSync(path).isDirectory(),
     readdir: (path) => nodeFs.readdirSync(path),
     readFile: (path) => new Uint8Array(nodeFs.readFileSync(path)),
+    readFileAsync: async (path) => {
+      const buffer = await nodeFs.promises.readFile(path);
+      return new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength);
+    },
     loadStorm: () => (storm ??= loadStorm()),
-    writeFile: (path, data) => {
-      nodeFs.mkdirSync(path.slice(0, path.lastIndexOf('/')), { recursive: true });
-      nodeFs.writeFileSync(path, data);
+    writeFile: async (path, data) => {
+      await nodeFs.promises.mkdir(path.slice(0, path.lastIndexOf('/')), { recursive: true });
+      await nodeFs.promises.writeFile(path, data);
     },
     removeDirectory: (path) => nodeFs.rmSync(path, { recursive: true, force: true }),
     directorySize,
+    directorySizeAsync,
     fileSizes: (path) =>
       nodeFs.existsSync(path)
         ? Object.fromEntries(
@@ -66,8 +84,21 @@ export function createWowNativeApi(
       const base = env['LOCALAPPDATA'] ?? env['APPDATA'] ?? `${env['HOME'] ?? '.'}/.cache`;
       return `${base.replace(/\\/g, '/')}/Keira3/world-editor-cache`;
     },
-    // V8's structured clone keeps typed arrays as they are; a fast deflate makes tiles about 3× smaller.
-    pack: (value) => new Uint8Array(zlibModule().deflateSync(v8Module().serialize(value), { level: 1 })),
-    unpack: <T>(bytes: Uint8Array) => v8Module().deserialize(zlibModule().inflateSync(bytes)) as T,
+    // V8's structured clone keeps typed arrays as they are; a fast deflate makes tiles about 3× smaller. The
+    // (de)compression runs on Node's thread pool, so reading a cached tile doesn't hold up the window.
+    pack: (value) =>
+      new Promise<Uint8Array>((resolve, reject) =>
+        zlibModule().deflate(
+          perfTime('cache serialize', () => v8Module().serialize(value)),
+          { level: 1 },
+          (error, bytes) => (error ? reject(error) : resolve(new Uint8Array(bytes.buffer, bytes.byteOffset, bytes.byteLength))),
+        ),
+      ),
+    unpack: <T>(bytes: Uint8Array) =>
+      new Promise<T>((resolve, reject) =>
+        zlibModule().inflate(bytes, (error, raw) =>
+          error ? reject(error) : resolve(perfTime('cache deserialize', () => v8Module().deserialize(raw)) as T),
+        ),
+      ),
   };
 }

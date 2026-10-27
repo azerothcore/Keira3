@@ -1,4 +1,4 @@
-import { CreatureDisplay, isDefaultCharacterGeoset, M2Mesh, WorldBounds, WorldPosition } from '@keira/shared/wow-data';
+import { CreatureDisplay, isDefaultCharacterGeoset, M2Mesh, WorldBounds, WorldPosition, perfTime } from '@keira/shared/wow-data';
 import { Mesh } from 'three';
 import { insideBounds } from './bounds';
 import { collisionMesh } from './collision-object';
@@ -99,6 +99,10 @@ export class SpawnModels {
   }
 
   private refresh(): void {
+    perfTime('spawn models refresh', () => this.refreshNow()); // TEMPORARY perf-log
+  }
+
+  private refreshNow(): void {
     const center = this.center;
     let changed = false;
     for (const spawn of this.spawns) {

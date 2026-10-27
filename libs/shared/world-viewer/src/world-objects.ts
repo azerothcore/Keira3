@@ -8,6 +8,7 @@ import {
   WorldBounds,
   WorldPosition,
   worldToTile,
+  perfTime,
 } from '@keira/shared/wow-data';
 import { Group, Object3D } from 'three';
 import { TextureCache } from './texture-cache';
@@ -131,6 +132,10 @@ export class WorldObjects {
 
   private async loadTile(directory: string, tile: TileCoord, key: string, generation: number): Promise<void> {
     const placements = (await this.source.getTilePlacements(directory, tile))?.wmos ?? [];
+    // another map (or other options) meanwhile: this tile isn't one of its tiles
+    if (generation !== this.generation) {
+      return;
+    }
     const ids: number[] = [];
     for (const placement of placements) {
       const template = await this.getTemplate(placement.path);
@@ -152,7 +157,7 @@ export class WorldObjects {
         existing.tiles.add(key);
         continue;
       }
-      const object = template.clone();
+      const object = perfTime('building clone', () => template.clone()); // TEMPORARY perf-log
       object.name = `wmo:${placement.uniqueId}`;
       applyPlacement(object, placement);
       this.group.add(object);
@@ -175,7 +180,7 @@ export class WorldObjects {
             material.texture ? this.textures.get(material.texture) : Promise.resolve(this.textures.fallback),
           ),
         );
-        return buildWmoObject(model, textures, this.textures.fallback);
+        return perfTime('building build', () => buildWmoObject(model, textures, this.textures.fallback)); // TEMPORARY perf-log
       });
       template.catch(() => this.templates.delete(key));
       this.templates.set(key, template);

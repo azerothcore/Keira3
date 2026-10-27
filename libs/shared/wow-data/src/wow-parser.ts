@@ -1,6 +1,7 @@
 import { InjectionToken } from '@angular/core';
 import { ParseJob, ParseResults, runParseJob } from './parse-jobs';
 import { createParserWorker } from './wow-parser-worker-factory';
+import { perfNote, perfTime } from './perf-log';
 
 /** The part of a `Worker` the parser talks to. */
 export interface ParserWorker {
@@ -27,6 +28,7 @@ export class WowParser {
 
   constructor(worker?: ParserWorker) {
     this.worker = worker;
+    perfNote(`parser: ${worker ? 'background worker' : 'main thread'}`); // TEMPORARY perf-log
     if (worker) {
       worker.onmessage = ({ data }) => {
         const job = this.pending.get(data.id);
@@ -40,6 +42,7 @@ export class WowParser {
       worker.onerror = () => {
         // no worker after all: what was sent to it, and everything from now on, runs here
         console.warn('[World Editor] The background parser stopped: parsing on the main thread instead.');
+        perfNote('parser: worker FAILED, main thread now'); // TEMPORARY perf-log
         this.worker = undefined;
         const left = [...this.pending.values()];
         this.pending.clear();
@@ -61,7 +64,7 @@ export class WowParser {
   }
 
   private runHere(job: ParseJob): Promise<unknown> {
-    return new Promise((resolve) => resolve(runParseJob(job)));
+    return new Promise((resolve) => resolve(perfTime(`parse ${job.kind}`, () => runParseJob(job))));
   }
 }
 

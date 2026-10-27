@@ -1,4 +1,4 @@
-import { GpuTexture, RgbaImage } from '@keira/shared/wow-data';
+import { GpuTexture, RgbaImage, perfTime } from '@keira/shared/wow-data';
 import {
   CompressedPixelFormat,
   CompressedTexture,
@@ -19,7 +19,12 @@ import {
 } from 'three';
 
 /** Loads each BLP once and shares the resulting texture (terrain tilesets, model skins…). */
+/** How many more textures must have been loaded before the unused ones are looked for again. */
+const RELEASE_STEP = 200;
+
 export class TextureCache {
+  /** How many textures were loaded when the unused ones were last released. */
+  private releasedAt = -Infinity;
   private readonly textures = new Map<string, Promise<Texture>>();
   /** The textures loaded so far. */
   private readonly loaded = new Set<Texture>();
@@ -37,7 +42,9 @@ export class TextureCache {
     let texture = this.textures.get(key);
     if (!texture) {
       texture = this.load(path)
-        .then((image) => (image ? ('format' in image ? createGpuTexture(image) : createTexture(image)) : this.fallback))
+        .then((image) =>
+          image ? perfTime('texture create', () => ('format' in image ? createGpuTexture(image) : createTexture(image))) : this.fallback,
+        )
         .catch(() => this.fallback)
         .then((loaded) => (loaded !== this.fallback && this.loaded.add(loaded), loaded));
       this.textures.set(key, texture);
@@ -50,9 +57,11 @@ export class TextureCache {
    * the image stays here, and goes back to the graphics card when something uses it again.
    */
   release(scene: Object3D, keep: number): number {
-    if (this.loaded.size <= keep) {
+    // (looked at again only once some more were loaded: going through the scene isn't free)
+    if (this.loaded.size <= keep || this.loaded.size < this.releasedAt + RELEASE_STEP) {
       return 0;
     }
+    this.releasedAt = this.loaded.size;
     const used = texturesIn(scene);
     let released = 0;
     for (const texture of this.loaded) {

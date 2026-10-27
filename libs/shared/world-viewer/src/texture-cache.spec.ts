@@ -60,6 +60,9 @@ describe('TextureCache', () => {
     expect(cache.release(scene, 3)).toBe(0);
     expect(cache.release(scene, 2)).toBe(1);
     expect(disposals.map((spy) => spy.mock.calls.length)).toEqual([0, 0, 1]);
+    // not looked at again until some more were loaded
+    expect(cache.release(scene, 2)).toBe(0);
+    expect(disposals[2]).toHaveBeenCalledTimes(1);
     expect(texturesIn(scene)).toEqual(new Set([used, inShader]));
   });
 

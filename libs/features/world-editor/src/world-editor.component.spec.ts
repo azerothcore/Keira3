@@ -843,6 +843,17 @@ describe(WorldEditorComponent.name, () => {
       expect(page.byId<HTMLSelectElement>('zone-select').nativeElement.disabled).toBe(true);
     });
 
+    it('ignores the zones of a map left while they loaded', async () => {
+      let resolveZones: (zones: typeof ZONES) => void = () => undefined;
+      mocks.client.getZones.mockImplementationOnce(() => new Promise((resolve) => (resolveZones = resolve)));
+      const { page } = await setup();
+      page.chooseMap(1);
+      await settle(page);
+      resolveZones(ZONES);
+      await settle(page);
+      expect(page.byId<HTMLSelectElement>('zone-select').nativeElement.options.length).toBe(1);
+    });
+
     it('falls back to the origin for maps missing from Map.dbc', async () => {
       const { page } = await setup({ params: { map: '999', x: 'abc', y: '2' } });
       expect(page.viewer().mapDirectory()).toBeUndefined();

@@ -97,6 +97,9 @@ export class WorldVmaps {
       this.loading.add(key);
       try {
         const spawns = (await this.source.getVmapTile(mapId, tile)) ?? [];
+        if (generation !== this.generation) {
+          return;
+        }
         const placed: number[] = [];
         for (const spawn of spawns) {
           const geometry = await this.geometryOf(spawn.name);
@@ -135,16 +138,22 @@ export class WorldVmaps {
         if (withTriangles.length === 0) {
           return undefined;
         }
-        const positions: number[] = [];
-        const indices: number[] = [];
+        // (copied in place: spreading a big model's vertices into a call overflows the stack)
+        const positions = new Float32Array(withTriangles.reduce((sum, group) => sum + group.vertices.length, 0));
+        const indices = new Uint32Array(withTriangles.reduce((sum, group) => sum + group.indices.length, 0));
+        let [vertex, index] = [0, 0];
         for (const group of withTriangles) {
-          const offset = positions.length / 3;
-          positions.push(...group.vertices);
-          group.indices.forEach((index) => indices.push(index + offset));
+          const offset = vertex / 3;
+          positions.set(group.vertices, vertex);
+          for (let i = 0; i < group.indices.length; i++) {
+            indices[index + i] = group.indices[i] + offset;
+          }
+          vertex += group.vertices.length;
+          index += group.indices.length;
         }
         const merged = new BufferGeometry();
-        merged.setAttribute('position', new BufferAttribute(Float32Array.from(positions), 3));
-        merged.setIndex(new BufferAttribute(Uint32Array.from(indices), 1));
+        merged.setAttribute('position', new BufferAttribute(positions, 3));
+        merged.setIndex(new BufferAttribute(indices, 1));
         merged.computeBoundingSphere();
         return merged;
       });

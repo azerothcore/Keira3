@@ -36,6 +36,7 @@ import { clientIdentity, WowDataCacheService } from './wow-data-cache.service';
 import { WowDataSettingsService } from './wow-data-settings.service';
 import { StormArchive, WOW_NATIVE_API, WowNativeApi } from './wow-native-api';
 import { WOW_PARSER } from './wow-parser';
+import { perfTime } from './perf-log';
 
 /** Disk space used by the cache of this client: per map (by lower-case directory), for buildings, and in total. */
 export interface CacheUsage {
@@ -124,7 +125,7 @@ export class WowClientService {
         const file = archive.openFile(path);
         try {
           // StormJS returns a view into WebAssembly memory that close() frees and later reads reuse: copy it.
-          return file.read().slice();
+          return perfTime('mpq read', () => file.read().slice());
         } finally {
           file.close();
         }
@@ -453,14 +454,14 @@ export class WowClientService {
 
   private async loadWmoDoodads(path: string): Promise<WmoDoodads | undefined> {
     const { identity } = await this.getClient();
-    const cached = this.cache.read<WmoDoodads>(identity, 'wmo-doodads', path);
+    const cached = await this.cache.read<WmoDoodads>(identity, 'wmo-doodads', path);
     if (cached) {
       return cached;
     }
     const bytes = await this.readFile(path);
     const doodads = bytes && (await this.parser.run({ kind: 'wmoDoodads', bytes }));
     if (doodads) {
-      this.cache.write(identity, 'wmo-doodads', path, doodads);
+      void this.cache.write(identity, 'wmo-doodads', path, doodads);
     }
     return doodads;
   }
@@ -469,14 +470,14 @@ export class WowClientService {
   async getWmo(path: string): Promise<WmoModel | undefined> {
     await nextFrame();
     const { identity } = await this.getClient();
-    const cached = this.cache.read<WmoModel>(identity, 'wmo', path);
+    const cached = await this.cache.read<WmoModel>(identity, 'wmo', path);
     // buildings cached before their collision was kept are read again
     if (cached && cached.groups.every((group) => group.collision)) {
       return cached;
     }
     const model = await this.loadWmo(path);
     if (model) {
-      this.cache.write(identity, 'wmo', path, model);
+      void this.cache.write(identity, 'wmo', path, model);
     }
     return model;
   }
@@ -594,7 +595,7 @@ export class WowClientService {
     await nextFrame();
     const { identity } = await this.getClient();
     const key = m2Path(path);
-    const cached = this.cache.read<M2Mesh>(identity, 'm2', key);
+    const cached = await this.cache.read<M2Mesh>(identity, 'm2', key);
     if (cached?.collision) {
       return cached;
     }
@@ -602,7 +603,7 @@ export class WowClientService {
     const skin = model && (await this.readFile(m2SkinPath(path)));
     const mesh = model && skin ? await this.parser.run({ kind: 'm2', model, skin }) : undefined;
     if (mesh) {
-      this.cache.write(identity, 'm2', key, mesh);
+      void this.cache.write(identity, 'm2', key, mesh);
     }
     return mesh;
   }
@@ -617,14 +618,14 @@ export class WowClientService {
   async getGpuTexture(path: string): Promise<GpuTexture | undefined> {
     const { identity } = await this.getClient();
     const key = path.toLowerCase();
-    const cached = this.cache.read<GpuTexture>(identity, 'texture', key);
+    const cached = await this.cache.read<GpuTexture>(identity, 'texture', key);
     if (cached) {
       return cached;
     }
     const blp = await this.readFile(path);
     const texture = blp && (await this.parser.run({ kind: 'blpGpu', bytes: blp }));
     if (texture) {
-      this.cache.write(identity, 'texture', key, texture);
+      void this.cache.write(identity, 'texture', key, texture);
     }
     return texture;
   }
@@ -653,7 +654,7 @@ export class WowClientService {
     const key = `${directory}_${tile.tx}_${tile.ty}`;
     // reading and parsing a tile is synchronous: one at a time, so the window keeps drawing in between
     await nextFrame();
-    const cached = this.cache.read<CachedAdt>(identity, 'adt', key);
+    const cached = await this.cache.read<CachedAdt>(identity, 'adt', key);
     // tiles cached before buildings kept their doodad set are parsed again
     if (cached && cached.wmos.every((wmo) => wmo.doodadSet !== undefined)) {
       return cached;
@@ -663,7 +664,7 @@ export class WowClientService {
       return undefined;
     }
     const adt = await this.parser.run({ kind: 'adt', bytes, depth: (await this.getWdt(directory))?.layerSplatDepth ?? 4 });
-    this.cache.write(identity, 'adt', key, adt);
+    void this.cache.write(identity, 'adt', key, adt);
     return adt;
   }
 
