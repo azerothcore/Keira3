@@ -1194,6 +1194,40 @@ describe(WorldEditorComponent.name, () => {
     });
   });
 
+  describe('coming back', () => {
+    it('finds everything as it was after leaving the editor (e.g. for a creature from the right-click menu)', async () => {
+      const { page, fixture } = await setup();
+      await loadArea(page);
+      const zone = page.byId<HTMLSelectElement>('zone-select').nativeElement;
+      zone.value = '12';
+      zone.dispatchEvent(new Event('change'));
+      page.click('layer-gameobjects');
+      page.click('filters-toggle');
+      page.click('tool-place-creature');
+      await settle(page);
+      page.type('place-entry', '197');
+      await settle(page);
+      page.viewer().picked.emit({ type: 'ground', position: { x: 1, y: 2, z: 3 } });
+      await settle(page);
+      page.click('tool-probe');
+      page.viewer().picked.emit({ type: 'ground', position: { x: 5, y: 5, z: 5 } });
+      await settle(page);
+      expect(page.pendingLines()).toHaveLength(1);
+      fixture.destroy();
+
+      // the editor opened again
+      const again = new Page(TestBed.createComponent(WorldEditorComponent));
+      await settle(again);
+      expect(again.pendingLines()).toHaveLength(1);
+      expect(again.byId<HTMLButtonElement>('undo').nativeElement.disabled).toBe(false);
+      expect(again.byId('layer-gameobjects').nativeElement.classList).toContain('btn-outline-info');
+      expect(again.byId('filters', false)).toBeTruthy();
+      expect(again.byId('tool-probe').nativeElement.classList).toContain('btn-primary');
+      expect(again.viewer().probe()).toEqual(expect.objectContaining({ from: { x: 5, y: 5, z: 5 } }));
+      expect(again.byId<HTMLSelectElement>('zone-select').nativeElement.value).toBe('12');
+    });
+  });
+
   describe('path & line of sight', () => {
     it('asks the view for the path, sight and attack position from A to C, and shows the answer', async () => {
       const { page } = await setup();

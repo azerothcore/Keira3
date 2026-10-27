@@ -41,7 +41,8 @@ import {
 import { TranslatePipe } from '@ngx-translate/core';
 import { ClipboardService } from 'ngx-clipboard';
 import { ToastrService } from 'ngx-toastr';
-import { ChangesSnapshot, WorldEditorChanges } from './world-editor-changes';
+import { ChangesSnapshot } from './world-editor-changes';
+import { WorldEditorSessionService } from './world-editor-session.service';
 import { WORLD_EDITOR_LINKS } from '@keira/shared/constants';
 import {
   EditorTool,
@@ -143,6 +144,8 @@ type RenderDistanceKey = 'drawDistance' | 'largeDoodadDistance' | 'smallDoodadDi
   host: { '(keydown)': 'onKeydown($event)', '(document:pointerdown)': 'onDocumentPointerDown($event)' },
 })
 export class WorldEditorComponent implements OnInit {
+  /** What the editor is in the middle of, kept across visits. */
+  private readonly session = inject(WorldEditorSessionService);
   private readonly service = inject(WorldEditorService);
   private readonly client = inject(WowClientService);
   private readonly settings = inject(WowDataSettingsService);
@@ -152,7 +155,7 @@ export class WorldEditorComponent implements OnInit {
   protected readonly controlActions = CONTROL_ACTIONS;
   protected readonly controlGroups = CONTROL_GROUPS;
   protected readonly inputLabel = inputLabel;
-  protected readonly showControls = signal(false);
+  protected readonly showControls = this.session.showControls;
   /** Mouse controls for the help card (keys are listed from the bindings). */
   protected readonly mouseHelp = [
     { input: 'WORLD_EDITOR.HELP_LEFT_DRAG', label: 'WORLD_EDITOR.HELP_PAN' },
@@ -164,10 +167,10 @@ export class WorldEditorComponent implements OnInit {
     { input: 'WORLD_EDITOR.HELP_RIGHT_CLICK', label: 'WORLD_EDITOR.HELP_MENU' },
   ];
   /** Path / LOS tool: A, C, the attack range and eye height, and the answer. */
-  protected readonly probeFrom = signal<WorldPosition | undefined>(undefined);
-  protected readonly probeTo = signal<WorldPosition | undefined>(undefined);
-  protected readonly probeRange = signal(30);
-  protected readonly probeHeight = signal(2);
+  protected readonly probeFrom = this.session.probeFrom;
+  protected readonly probeTo = this.session.probeTo;
+  protected readonly probeRange = this.session.probeRange;
+  protected readonly probeHeight = this.session.probeHeight;
   protected readonly probeResult = signal<PathProbeResult | undefined>(undefined);
   protected readonly rangePresets = [
     { range: 5, label: 'WORLD_EDITOR.RANGE_MELEE' },
@@ -187,12 +190,21 @@ export class WorldEditorComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   protected readonly links = inject(WORLD_EDITOR_LINKS, { optional: true });
 
-  private readonly changes = new WorldEditorChanges();
+  private readonly changes = this.session.changes;
   /** Bumped on every pending edit, so the computed views below recompute. */
   private readonly revision = signal(0);
-  /** Snapshots of the pending changes for undo/redo; `historyIndex` is the current one. */
-  private history: ChangesSnapshot[] = [this.changes.snapshot()];
-  private historyIndex = 0;
+  private get history(): ChangesSnapshot[] {
+    return this.session.history;
+  }
+  private set history(history: ChangesSnapshot[]) {
+    this.session.history = history;
+  }
+  private get historyIndex(): number {
+    return this.session.historyIndex;
+  }
+  private set historyIndex(index: number) {
+    this.session.historyIndex = index;
+  }
   protected readonly canUndo = computed(() => (this.revision(), this.historyIndex > 0));
   protected readonly canRedo = computed(() => (this.revision(), this.historyIndex < this.history.length - 1));
 
@@ -240,12 +252,12 @@ export class WorldEditorComponent implements OnInit {
   }
   private preloadCancelled = false;
   protected readonly zones = signal<WowZone[]>([]);
-  protected readonly zoneId = signal(0);
+  protected readonly zoneId = this.session.zoneId;
   /** The selected zone, loaded whole when the View panel asks for it. */
   protected readonly region = computed(() =>
     this.renderSettings.settings().loadWholeZone ? this.zones().find((zone) => zone.areaId === this.zoneId())?.bounds : undefined,
   );
-  protected readonly layers = signal<LayerVisibility>({ creatures: true, gameobjects: true, waypoints: true, areaTriggers: true });
+  protected readonly layers = this.session.layers;
   /** Area triggers of the current map, with what the database does with them. */
   private readonly areaTriggerList = signal<AreaTriggerInfo[]>([]);
   private readonly areaTriggerInfo = signal(new Map<number, string[]>());
@@ -263,21 +275,21 @@ export class WorldEditorComponent implements OnInit {
     }));
   });
   protected readonly filters = signal<SpawnFilters>(loadSpawnFilters());
-  protected readonly showFilters = signal(false);
+  protected readonly showFilters = this.session.showFilters;
   private readonly eventNames = signal(new Map<number, string>());
   /** Game events with spawns around, for the Filters panel. */
   protected readonly events = computed(() => spawnEvents(this.spawns(), this.eventNames()));
   /** How many of the loaded spawns the filters hide. */
   protected readonly hiddenCount = computed(() => this.spawns().length - this.visibleSpawns().length);
-  protected readonly tool = signal<EditorTool>('select');
-  protected readonly gizmoMode = signal<GizmoMode>('translate');
+  protected readonly tool = this.session.tool;
+  protected readonly gizmoMode = this.session.gizmoMode;
   /** Where moved objects snap: nowhere, onto the ground/floor below, or against the nearest wall. */
-  protected readonly snapMode = signal<'off' | 'ground' | 'wall'>('ground');
+  protected readonly snapMode = this.session.snapMode;
   protected readonly snapToGround = computed(() => this.snapMode() === 'ground');
   protected readonly snapToWall = computed(() => this.snapMode() === 'wall');
-  protected readonly selectedKey = signal<string | undefined>(undefined);
+  protected readonly selectedKey = this.session.selectedKey;
   protected readonly showSettings = signal(!this.settings.isConfigured());
-  protected readonly showView = signal(false);
+  protected readonly showView = this.session.showView;
   /** Draw distances offered, in yards (0 = off, per group in advanced mode only). */
   protected readonly drawDistances = [50, 100, 250, 500, 1000];
   protected readonly groupDistances = [0, ...this.drawDistances];
@@ -301,10 +313,13 @@ export class WorldEditorComponent implements OnInit {
   private readonly quests = signal(new Map<string, SpawnQuest[]>());
   private center?: WorldPosition;
   private spawnRequest = 0;
-  /** Last guid handed out per type, chained so quick consecutive placements never get the same guid. */
-  private readonly nextGuids = new Map<SpawnType, Promise<number>>();
-  /** Path ids handed out to new paths in this session (not saved yet). */
-  private reservedPathIds: number[] = [];
+  private readonly nextGuids = this.session.nextGuids;
+  private get reservedPathIds(): number[] {
+    return this.session.reservedPathIds;
+  }
+  private set reservedPathIds(ids: number[]) {
+    this.session.reservedPathIds = ids;
+  }
 
   protected readonly spawns = computed(() => {
     this.revision();
@@ -674,7 +689,7 @@ export class WorldEditorComponent implements OnInit {
       }
       // the view may have reported where it looks before the maps were known (e.g. when coming back to the editor)
       void this.reloadSpawns();
-      await this.loadZones();
+      await this.loadZones(true);
     } catch (error) {
       this.toastr.error((error as Error).message, 'World Editor');
     }
@@ -706,11 +721,15 @@ export class WorldEditorComponent implements OnInit {
     }
   }
 
-  private async loadZones(): Promise<void> {
+  /** The zones of the current map; `keepZone` keeps the chosen one (coming back to the editor on the same map). */
+  private async loadZones(keepZone = false): Promise<void> {
     void this.loadAreaTriggers();
+    const kept = keepZone ? this.zoneId() : 0;
     this.zoneId.set(0);
     try {
-      this.zones.set(await this.client.getZones(this.mapId()));
+      const zones = await this.client.getZones(this.mapId());
+      this.zones.set(zones);
+      this.zoneId.set(zones.some((zone) => zone.areaId === kept) ? kept : 0);
     } catch (error) {
       this.zones.set([]);
       this.toastr.error((error as Error).message, 'World Editor');
