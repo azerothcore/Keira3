@@ -1,4 +1,4 @@
-import { TileCoord } from './coords';
+import { TILE_SIZE, TileCoord } from './coords';
 
 /**
  * A tile of the server's terrain (`maps/MMMYYXX.map`, written by AzerothCore's map extractor, version 9): the heights
@@ -13,6 +13,9 @@ export interface ServerMapTile {
   /** Holes per chunk (16 × 16), a bit per 2 × 2 squares; undefined when there are none. */
   holes?: Uint16Array;
   liquid?: ServerMapLiquid;
+  /** Area id per chunk (16 × 16, by row of server x), or one `area` for the whole tile. */
+  areas?: Uint16Array;
+  area?: number;
 }
 
 export interface ServerMapLiquid {
@@ -29,6 +32,7 @@ export interface ServerMapLiquid {
 
 const MAP_MAGIC = 0x5350414d; // 'MAPS'
 const MAP_VERSION = 9;
+const AREA_NO_AREA = 0x1;
 const HEIGHT_NO_HEIGHT = 0x1;
 const HEIGHT_AS_INT16 = 0x2;
 const HEIGHT_AS_INT8 = 0x4;
@@ -49,8 +53,20 @@ export function parseServerMap(bytes: Uint8Array): ServerMapTile | undefined {
   if (bytes.length < 44 || view.getUint32(0, true) !== MAP_MAGIC || view.getUint32(4, true) !== MAP_VERSION) {
     return undefined;
   }
-  const [heightOffset, , liquidOffset, , holesOffset, holesSize] = [20, 24, 28, 32, 36, 40].map((at) => view.getUint32(at, true));
+  const [areaOffset, , heightOffset, , liquidOffset, , holesOffset, holesSize] = [12, 16, 20, 24, 28, 32, 36, 40].map((at) =>
+    view.getUint32(at, true),
+  );
   const tile: ServerMapTile = {};
+  if (areaOffset) {
+    if (view.getUint16(areaOffset + 4, true) & AREA_NO_AREA) {
+      tile.area = view.getUint16(areaOffset + 6, true);
+    } else {
+      tile.areas = new Uint16Array(256);
+      for (let i = 0; i < 256; i++) {
+        tile.areas[i] = view.getUint16(areaOffset + 8 + i * 2, true);
+      }
+    }
+  }
 
   const flags = view.getUint32(heightOffset + 4, true);
   if (!(flags & HEIGHT_NO_HEIGHT)) {
@@ -110,4 +126,14 @@ export function parseServerMap(bytes: Uint8Array): ServerMapTile | undefined {
     tile.liquid = liquid;
   }
   return tile;
+}
+
+/** The area id at a server position of a tile, like the server (`GridTerrainData::getArea`); 0 when unknown. */
+export function serverAreaAt(tile: ServerMapTile, x: number, y: number): number {
+  if (!tile.areas) {
+    return tile.area ?? 0;
+  }
+  const lx = Math.floor(16 * (32 - x / TILE_SIZE)) & 15;
+  const ly = Math.floor(16 * (32 - y / TILE_SIZE)) & 15;
+  return tile.areas[lx * 16 + ly];
 }

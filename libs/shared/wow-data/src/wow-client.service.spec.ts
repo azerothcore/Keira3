@@ -309,6 +309,57 @@ describe('WowClientService', () => {
       warn.mockRestore();
     });
 
+    it('names areas, and lists flight masters and flight paths', async () => {
+      const float = (value: number) => new Uint32Array(new Float32Array([value]).buffer)[0];
+      const { service } = setup({
+        mpqs: displayMpqs({
+          'DBFilesClient\\AreaTable.dbc': dbc([[87, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 'Goldshire']], 27),
+          'DBFilesClient\\TaxiNodes.dbc': dbc([[2, 0, float(1), float(2), float(3), 'Stormwind']], 24),
+          'DBFilesClient\\TaxiPath.dbc': dbc([[10, 2, 4, 50]]),
+          'DBFilesClient\\TaxiPathNode.dbc': dbc([[100, 10, 0, 0, float(1), float(1), float(1)]]),
+        }),
+      });
+      expect((await service.getAreaNames()).get(87)).toEqual({ name: 'Goldshire', parent: 12 });
+      expect(await service.getTaxiNodes(0)).toHaveLength(1);
+      expect(await service.getTaxiNodes(1)).toHaveLength(0);
+      expect((await service.getTaxiPaths(0))[0].points).toEqual([{ x: 1, y: 1, z: 1 }]);
+    });
+
+    it('retries area names and flight masters after a failure', async () => {
+      const broken = setup({
+        mpqs: displayMpqs({ 'DBFilesClient\\AreaTable.dbc': [1, 2], 'DBFilesClient\\TaxiNodes.dbc': [1, 2] }),
+      }).service;
+      await expect(broken.getAreaNames()).rejects.toThrowError(/WDBC/);
+      await expect(broken.getAreaNames()).rejects.toThrowError(/WDBC/);
+      await expect(broken.getTaxiNodes(0)).rejects.toThrowError(/WDBC/);
+      await expect(broken.getTaxiNodes(0)).rejects.toThrowError(/WDBC/);
+    });
+
+    it('has no area names or flight paths without their DBCs', async () => {
+      const missing = setup({ mpqs: displayMpqs({}) }).service;
+      expect((await missing.getAreaNames()).size).toBe(0);
+      expect(await missing.getTaxiNodes(0)).toEqual([]);
+      expect(await missing.getTaxiPaths(0)).toEqual([]);
+    });
+
+    it('keeps the few most recent server terrain tiles parsed', async () => {
+      const files: Record<string, number[]> = {};
+      for (let ty = 40; ty < 50; ty++) {
+        files[`/srv/maps/0003${ty}`.replace(/3(\d\d)$/, '$1') + '31.map'] = Array.from(buildServerMap());
+      }
+      const { service, native } = setup({ files, mpqs: standardMpqs(), serverDataPath: '/srv' });
+      const read = vi.spyOn(native, 'readFile');
+      await service.getServerMap(0, { tx: 31, ty: 40 });
+      await service.getServerMap(0, { tx: 31, ty: 40 });
+      expect(read).toHaveBeenCalledTimes(1);
+      for (let ty = 41; ty < 50; ty++) {
+        await service.getServerMap(0, { tx: 31, ty });
+      }
+      // the first one was dropped to keep 9
+      await service.getServerMap(0, { tx: 31, ty: 40 });
+      expect(read).toHaveBeenCalledTimes(11);
+    });
+
     it('has no server terrain or vmaps without a server data folder', async () => {
       const { service } = setup({ mpqs: standardMpqs() });
       expect(await service.getServerMap(0, { tx: 31, ty: 49 })).toBeUndefined();

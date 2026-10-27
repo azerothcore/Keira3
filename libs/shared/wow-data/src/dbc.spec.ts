@@ -1,4 +1,14 @@
-import { DbcFile, isDefaultCharacterGeoset, parseZones, parseCreatureDisplays, parseGameObjectDisplays, parseMapDbc } from './dbc';
+import {
+  DbcFile,
+  isDefaultCharacterGeoset,
+  parseAreaNames,
+  parseCreatureDisplays,
+  parseGameObjectDisplays,
+  parseMapDbc,
+  parseTaxiNodes,
+  parseTaxiPaths,
+  parseZones,
+} from './dbc';
 import { buildDbc } from './dbc.mock';
 
 describe('DbcFile', () => {
@@ -171,5 +181,59 @@ describe('parseZones', () => {
       { areaId: 40, mapId: 0, name: 'Westfall', bounds: { minX: -12000, maxX: -9000, minY: -2000, maxY: 500 } },
     ]);
     expect(parseZones(areas).map((z) => z.name)).toEqual(['Elwynn', 'Nowhere', 'Westfall']);
+  });
+});
+
+describe('parseAreaNames', () => {
+  it('names areas, with their parent zone', () => {
+    const areas = parseAreaNames(
+      dbcOf(
+        [
+          [87, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, '', 'Goldshire'],
+          [12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'Elwynn Forest'],
+        ],
+        27,
+      ),
+    );
+    expect(areas.get(87)).toEqual({ name: 'Goldshire', parent: 12 });
+    expect(areas.get(12)).toEqual({ name: 'Elwynn Forest', parent: 0 });
+  });
+});
+
+describe('flight paths', () => {
+  it('lists flight masters, and the flight paths of a map with their points in order', () => {
+    const nodes = parseTaxiNodes(
+      dbcOf(
+        [
+          [2, 0, float(-8835), float(490), float(109), 'Stormwind'],
+          [5, 1, float(1), float(2), float(3), '', 'Orgrimmar'],
+        ],
+        24,
+      ),
+    );
+    expect(nodes).toEqual([
+      { id: 2, mapId: 0, x: -8835, y: 490, z: 109, name: 'Stormwind' },
+      { id: 5, mapId: 1, x: 1, y: 2, z: 3, name: 'Orgrimmar' },
+    ]);
+    const paths = dbcOf([
+      [10, 2, 4, 50],
+      [11, 5, 6, 50],
+    ]);
+    const points = dbcOf([
+      [100, 10, 1, 0, float(2), float(2), float(2)],
+      [101, 10, 0, 0, float(1), float(1), float(1)],
+      [102, 11, 0, 1, float(9), float(9), float(9)],
+    ]);
+    expect(parseTaxiPaths(paths, points, 0)).toEqual([
+      {
+        id: 10,
+        from: 2,
+        to: 4,
+        points: [
+          { x: 1, y: 1, z: 1 },
+          { x: 2, y: 2, z: 2 },
+        ],
+      },
+    ]);
   });
 });

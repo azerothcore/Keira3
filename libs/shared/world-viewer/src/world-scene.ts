@@ -17,6 +17,7 @@ import {
   Intersection,
   Line,
   LineBasicMaterial,
+  LineDashedMaterial,
   LineLoop,
   LineSegments,
   LinearFilter,
@@ -26,6 +27,7 @@ import {
   MeshBasicMaterial,
   MeshLambertMaterial,
   Object3D,
+  OctahedronGeometry,
   PerspectiveCamera,
   Raycaster,
   RingGeometry,
@@ -69,6 +71,8 @@ import {
   WaypointPlace,
   waypointKey,
   WorldAreaTrigger,
+  WorldLink,
+  WorldMarker,
   WorldSpawn,
 } from './world-viewer.model';
 
@@ -83,6 +87,8 @@ export interface PickOptions {
   segments?: boolean;
   /** Also pick area trigger volumes (hover labels), as `areatrigger` results. */
   areaTriggers?: boolean;
+  /** Also pick overlay markers (hover labels), as `overlay` results. */
+  overlays?: boolean;
 }
 
 interface SegmentData {
@@ -192,6 +198,18 @@ export class WorldScene {
   readonly doodadGroup = new Group();
   /** The server's navigation mesh (mmaps), when shown. */
   readonly navMeshGroup = new Group();
+  private groupKeys = new Set<string>();
+  /** The movement simulation's moving copy of a spawn. */
+  private readonly ghostGroup = new Group();
+  /** Lines and labelled markers, see `setOverlays`. */
+  private readonly overlayGroup = new Group();
+  private readonly overlayMarkers: Mesh[] = [];
+  /** A diamond on a thin stick, standing on its position. */
+  private readonly overlayMarkerGeometry = mergeGeometries([
+    new OctahedronGeometry(0.6).translate(0, 2.4, 0),
+    // the octahedron isn't indexed: neither may the stick be, to merge them
+    new CylinderGeometry(0.05, 0.05, 1.8, 6).translate(0, 0.9, 0).toNonIndexed(),
+  ]);
   /** The server's collision (vmaps) around the camera, see `WorldVmaps`. */
   readonly serverCollisionGroup = new Group();
   private useServerCollision = false;
@@ -291,7 +309,10 @@ export class WorldScene {
       this.triggerGroup,
       this.navMeshGroup,
       this.serverCollisionGroup,
+      this.overlayGroup,
+      this.ghostGroup,
     );
+    this.overlayGroup.name = 'overlays';
     this.serverCollisionGroup.name = 'server-collision';
     this.camera.layers.enable(LIQUID_LAYER);
     this.setRoofsVisible(true);
@@ -672,6 +693,56 @@ export class WorldScene {
   }
 
   /** Draws area triggers (replacing the previous ones). */
+  /**
+   * Draws lines between places (drawn over the terrain, with an optional arrow head) and labelled markers (diamonds on a
+   * stick, picked with `PickOptions.overlays`); replaces what was drawn before.
+   */
+  setOverlays(links: WorldLink[], markers: WorldMarker[]): void {
+    this.overlayGroup.traverse((object) => {
+      if (object instanceof Line) {
+        object.geometry.dispose();
+      }
+      if (object instanceof Line || object instanceof Mesh) {
+        (object.material as Material).dispose();
+      }
+    });
+    this.overlayGroup.clear();
+    this.overlayMarkers.length = 0;
+    const up = new Vector3(0, 1, 0);
+    for (const link of links) {
+      const points = [link.from, ...(link.via ?? []), link.to].map((p) => scenePoint(p, WAYPOINT_LIFT));
+      const [from, to] = [points[points.length - 2], points[points.length - 1]];
+      const material = link.dashed
+        ? new LineDashedMaterial({ color: link.color, dashSize: 1.5, gapSize: 1, depthTest: false, transparent: true, opacity: 0.85 })
+        : new LineBasicMaterial({ color: link.color, depthTest: false, transparent: true, opacity: 0.85 });
+      const line = new Line(new BufferGeometry().setFromPoints(points), material);
+      line.computeLineDistances();
+      line.name = link.key;
+      line.renderOrder = 1;
+      line.raycast = () => undefined;
+      this.overlayGroup.add(line);
+      const direction = to.clone().sub(from);
+      if (link.arrow && direction.lengthSq() > 0) {
+        const head = new Mesh(this.arrowGeometry, new MeshBasicMaterial({ color: link.color, depthTest: false, transparent: true }));
+        head.position.copy(to).addScaledVector(direction.normalize(), -0.6);
+        head.quaternion.setFromUnitVectors(up, direction);
+        head.renderOrder = 2;
+        head.raycast = () => undefined;
+        this.overlayGroup.add(head);
+      }
+    }
+    for (const marker of markers) {
+      const material = new MeshBasicMaterial({ color: marker.color, depthTest: false, transparent: true, opacity: 0.95 });
+      const diamond = new Mesh(this.overlayMarkerGeometry, material);
+      diamond.name = marker.key;
+      diamond.position.copy(scenePoint(marker.position));
+      diamond.renderOrder = 3;
+      diamond.userData = { overlay: marker.key };
+      this.overlayGroup.add(diamond);
+      this.overlayMarkers.push(diamond);
+    }
+  }
+
   setAreaTriggers(triggers: WorldAreaTrigger[]): void {
     this.triggerGroup.traverse((object) => {
       if (object instanceof Mesh || object instanceof LineSegments) {
@@ -940,6 +1011,39 @@ export class WorldScene {
     this.applySelection();
   }
 
+  /** Spawns selected along with the main selection (multi-select), highlighted like it. */
+  setGroupSelection(keys: string[]): void {
+    this.groupKeys = new Set(keys);
+    this.applySelection();
+  }
+
+  /**
+   * A copy of a spawn's marker and model that moves on its own (the movement simulation), without its wander circle;
+   * undefined removes it. False when there's no such spawn.
+   */
+  setGhost(key: string | undefined): boolean {
+    this.ghostGroup.clear();
+    const source = key ? this.objects.get(key) : undefined;
+    if (!source) {
+      return false;
+    }
+    const ghost = source.clone(true);
+    ghost.getObjectByName(WANDER_RING_NAME)?.removeFromParent();
+    ghost.traverse((object) => {
+      object.raycast = () => undefined;
+    });
+    ghost.name = 'ghost';
+    this.ghostGroup.add(ghost);
+    return true;
+  }
+
+  moveGhost(position: WorldPosition, orientation: number): void {
+    const ghost = this.ghostGroup.children[0];
+    if (ghost) {
+      placeObject(ghost, position, orientation);
+    }
+  }
+
   get selection(): string | undefined {
     return this.selectedKey;
   }
@@ -960,7 +1064,7 @@ export class WorldScene {
     const cameraPosition = this.camera.position;
     this.sky.position.copy(cameraPosition);
     this.sky.scale.setScalar(this.camera.far * 0.9);
-    for (const object of [...this.objects.values(), ...this.arrows]) {
+    for (const object of [...this.objects.values(), ...this.arrows, ...this.overlayMarkers]) {
       const distance = object.position.distanceTo(cameraPosition);
       const scale = Math.min(MARKER_MAX_SCALE, Math.max(1, distance / MARKER_SCALE_DISTANCE));
       object.scale.setScalar(scale);
@@ -1006,6 +1110,10 @@ export class WorldScene {
         : { type: 'spawn', key: data.key, position: state.position };
     }
 
+    const overlayHit = options.overlays ? this.raycaster.intersectObjects(this.overlayMarkers, false)[0] : undefined;
+    if (overlayHit) {
+      return { type: 'overlay', key: overlayHit.object.userData['overlay'] as string, position: sceneToWorld(overlayHit.point) };
+    }
     const triggerHit = options.areaTriggers ? this.raycaster.intersectObject(this.triggerGroup, true)[0] : undefined;
     if (triggerHit) {
       return { type: 'areatrigger', key: triggerHit.object.userData['areaTrigger'] as string, position: sceneToWorld(triggerHit.point) };
@@ -1098,6 +1206,8 @@ export class WorldScene {
     this.facingArrowGeometry.dispose();
     Object.values(this.facingArrowMaterials).forEach((material) => material.dispose());
     this.setAreaTriggers([]);
+    this.setOverlays([], []);
+    this.overlayMarkerGeometry.dispose();
     this.triggerMaterial.dispose();
     this.triggerEdgeMaterial.dispose();
     this.beacon.traverse((object) => {
@@ -1163,7 +1273,7 @@ export class WorldScene {
     this.objects.forEach((object, key) => {
       const mesh = object as Mesh;
       const data = object.userData as PickableData & SpawnMarkerData;
-      const selected = key === this.selectedKey;
+      const selected = key === this.selectedKey || this.groupKeys.has(key);
       if (data.kind === 'waypoint') {
         mesh.material = this.waypointMaterial(pathColor(data.pathKey as string), selected);
         const pointer = object.getObjectByName(POINTER_NAME) as Mesh | undefined;

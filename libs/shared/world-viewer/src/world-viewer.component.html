@@ -30,9 +30,20 @@
       {{ 'WORLD_EDITOR.SNAP_TO' | translate }}: {{ (snapToWall() ? 'WORLD_EDITOR.SNAP_WALL' : 'WORLD_EDITOR.SNAP_GROUND') | translate }}
     </div>
   }
+  @if (simulationStatus(); as status) {
+    <div class="world-viewer-simulation" data-testid="world-viewer-simulation">
+      ▶ {{ status.label }}
+      @if (status.wait) {
+        · {{ 'WORLD_EDITOR.SIM_WAITING' | translate: { seconds: status.wait } }}
+      }
+    </div>
+  }
   @if (cameraTarget(); as target) {
     <div class="world-viewer-target" data-testid="world-viewer-target">
       {{ 'WORLD_EDITOR.CAMERA' | translate }}: X {{ target.x }} Y {{ target.y }} Z {{ target.z }}
+      @if (areaName(); as area) {
+        <span class="world-viewer-area" data-testid="world-viewer-area">· {{ area }}</span>
+      }
     </div>
     @if (navMeshInfo(); as info) {
       <div class="world-viewer-mmtile" data-testid="world-viewer-mmtile" [class.missing]="info.missing">

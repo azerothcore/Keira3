@@ -30,6 +30,9 @@ import {
   WAYPOINT_CHECK_COLORS,
   WaypointCheck,
   WaypointCheckRequest,
+  WorldLink,
+  WorldMarker,
+  MovementSimulation,
 } from '@keira/shared/world-viewer';
 import {
   CacheUsage,
@@ -47,6 +50,8 @@ import {
   MMAP_CONFIG_KEYS,
   mmapOverrideYaml,
   MmapRecastConfig,
+  TaxiNode,
+  TaxiPath,
 } from '@keira/shared/wow-data';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ClipboardService } from 'ngx-clipboard';
@@ -59,6 +64,12 @@ import {
   LayerVisibility,
   parseSpawnKey,
   pathKey,
+  pathLabel,
+  FormationMember,
+  Graveyard,
+  LAYER_SWITCHES,
+  Teleport,
+  PoolMember,
   SpawnQuest,
   SpawnRecord,
   spawnKey,
@@ -70,6 +81,10 @@ import { WorldEditorService } from './world-editor.service';
 import { GpsLocation, parseGpsOutput } from './gps';
 import { describeWaypoint, WaypointSaiRow, WaypointScriptStep } from './waypoint-info';
 import { STACK_SIDES, StackSide, stackPosition } from './stack';
+import { EMPTY_TRAVEL, TravelData, travelOverlays } from './travel';
+import { copySpawns, followPlacement, pastedSpawn } from './group-edit';
+import { pathSimulation, wanderSimulation } from './simulation-plan';
+import { formationLinks, formationSlots, groupDetails, poolOverlays } from './spawn-groups';
 import { isSpawnVisible, loadSpawnFilters, saveSpawnFilters, SpawnFilters, spawnEvents } from './spawn-filters';
 
 /** "Marshal McBride - Creature (GUID: 1, Entry: 197)", as shown on hover and in the selection panel. */
@@ -82,11 +97,16 @@ export function spawnTitle(spawn: { type: SpawnType; name: string; guid: number;
 function pathOwners(spawns: SpawnRecord[]): Map<number, string[]> {
   const owners = new Map<number, string[]>();
   for (const spawn of spawns) {
-    if (spawn.pathId) {
-      owners.set(spawn.pathId, [...(owners.get(spawn.pathId) ?? []), `${spawn.name || spawn.entry} (${spawn.guid})`]);
+    for (const pathId of pathsOf(spawn)) {
+      owners.set(pathId, [...(owners.get(pathId) ?? []), `${spawn.name || spawn.entry} (${spawn.guid})`]);
     }
   }
   return owners;
+}
+
+/** The paths a spawn walks: its `waypoint_data` path, then the SmartAI paths its scripts start. */
+function pathsOf(spawn: SpawnRecord): number[] {
+  return [...(spawn.pathId ? [spawn.pathId] : []), ...(spawn.saiPaths ?? [])];
 }
 
 /** The number typed in a field, when it is one and not negative (empty fields give nothing). */
@@ -204,6 +224,52 @@ export class WorldEditorComponent implements OnInit {
   protected readonly navMeshRebuildState = signal<NavMeshRebuildState | undefined>(undefined);
   protected readonly hideRealNavMesh = signal(false);
   protected readonly stackSides = STACK_SIDES;
+  protected readonly groupKeys = this.session.groupKeys;
+  protected readonly copied = this.session.copied;
+  /** The spawns selected along with the main one. */
+  private readonly groupSpawns = computed(() =>
+    this.groupKeys()
+      .map((key) => this.findSpawn(key))
+      .filter((spawn): spawn is SpawnRecord => !!spawn),
+  );
+  protected readonly simulation = signal<MovementSimulation | undefined>(undefined);
+  protected readonly simulationRate = signal(1);
+  /** The selected creature can be simulated: it has a path, or wanders. */
+  protected readonly canSimulate = computed(() => {
+    const spawn = this.selectedSpawn();
+    return spawn?.type === 'creature' && (this.activePathId() !== 0 || (spawn.wanderDistance ?? 0) > 0);
+  });
+  /** The Path / LOS tool as a ruler: from A to C in a straight line, along the ground, and in height. */
+  // (only read while the result has a C)
+  protected readonly probeDistance = computed(() => {
+    const { from, to } = this.probeResult() as { from: WorldPosition; to: WorldPosition };
+    const flat = Math.hypot(to.x - from.x, to.y - from.y);
+    return { straight: Math.hypot(flat, to.z - from.z), flat, height: to.z - from.z };
+  });
+  protected readonly layerSwitches = LAYER_SWITCHES;
+  /** Lines drawn in the view: formation members to their leader, pools to their spawns. */
+  protected readonly worldLinks = computed<WorldLink[]>(() => {
+    const layers = this.layers();
+    const spawns = this.visibleSpawns();
+    return [
+      ...(layers.formations ? formationLinks(spawns, this.formations()) : []),
+      ...(layers.pools ? poolOverlays(spawns, this.pools()).links : []),
+      ...(layers.travel ? this.travelOverlays().links : []),
+    ];
+  });
+  /** Labelled markers: pools, and the formation places of the selected creature's formation. */
+  protected readonly worldMarkers = computed<WorldMarker[]>(() => {
+    const layers = this.layers();
+    const spawns = this.visibleSpawns();
+    return [
+      ...(layers.pools ? poolOverlays(spawns, this.pools()).markers : []),
+      ...(layers.formations ? formationSlots(spawns, this.formations(), this.selectedSpawn()) : []),
+      ...(layers.travel ? this.travelOverlays().markers : []),
+    ];
+  });
+  private readonly travelOverlays = computed(() =>
+    travelOverlays(this.travel(), this.areaTriggerList(), new Map(this.maps().map((map) => [map.id, map.name])), this.cameraCenter()),
+  );
   protected readonly checkedPathId = this.session.checkedPathId;
   /** "Check path": the points of the checked path, sorted; equal points don't ask the viewer again. */
   protected readonly waypointCheckRequest = computed<WaypointCheckRequest | undefined>(
@@ -355,6 +421,11 @@ export class WorldEditorComponent implements OnInit {
   private readonly loadedWaypoints = signal<WaypointRecord[]>([]);
   private readonly waypointScripts = signal(new Map<number, WaypointScriptStep[]>());
   private readonly waypointSai = signal<WaypointSaiRow[]>([]);
+  private readonly formations = signal<FormationMember[]>([]);
+  private readonly travel = signal<TravelData>(EMPTY_TRAVEL);
+  /** Where the camera looks (the last reported centre), for what's drawn near it. */
+  private readonly cameraCenter = signal<WorldPosition | undefined>(undefined);
+  private readonly pools = signal<PoolMember[]>([]);
   /** Quests started or ended by the loaded entries, by `type:entry`. */
   private readonly quests = signal(new Map<string, SpawnQuest[]>());
   private center?: WorldPosition;
@@ -372,13 +443,7 @@ export class WorldEditorComponent implements OnInit {
     return this.changes.applyToSpawns(this.loadedSpawns(), this.mapId());
   });
 
-  private readonly pathIds = computed(() => [
-    ...new Set(
-      this.spawns()
-        .map((s) => s.pathId)
-        .filter((id) => id > 0),
-    ),
-  ]);
+  private readonly pathIds = computed(() => [...new Set(this.spawns().flatMap(pathsOf))]);
 
   private readonly waypoints = computed(() => {
     this.revision();
@@ -401,7 +466,7 @@ export class WorldEditorComponent implements OnInit {
         kind: s.type,
         guid: s.guid,
         entry: s.entry,
-        label: `${spawnTitle(s)}${s.pathId ? ` · path ${s.pathId}` : ''}`,
+        label: `${spawnTitle(s)}${pathsOf(s).length ? ` · ${pathsOf(s).map(pathLabel).join(', ')}` : ''}`,
         ...this.spawnDetails(s),
         position: { x: s.x, y: s.y, z: s.z },
         orientation: s.o,
@@ -424,7 +489,7 @@ export class WorldEditorComponent implements OnInit {
     }
     return [...byPath].map(([pathId, points]) => ({
       key: pathKey(pathId),
-      label: `Path ${pathId}`,
+      label: pathLabel(pathId),
       owners: owners.get(pathId) as string[],
       closed: true,
       points: points.map((p) => ({
@@ -438,6 +503,7 @@ export class WorldEditorComponent implements OnInit {
 
   /** What happens at a waypoint (wait, move type, script, SmartAI of the creatures walking the path). */
   protected readonly spawnTitle = spawnTitle;
+  protected readonly pathLabel = pathLabel;
 
   /** Hover lines of a spawn: its event, its phase when not 1, and its quests (all of them with Alt). */
   private spawnDetails(spawn: SpawnRecord): { details?: string[]; allDetails?: string[] } {
@@ -448,6 +514,7 @@ export class WorldEditorComponent implements OnInit {
     if (spawn.phaseMask !== undefined && spawn.phaseMask !== 1) {
       lines.push(`Phase mask ${spawn.phaseMask}`);
     }
+    lines.push(...groupDetails(spawn, this.formations(), this.pools()));
     const quests = (this.quests().get(`${spawn.type}:${spawn.entry}`) ?? []).map(
       (q) => `${q.role === 'starts' ? 'Starts' : 'Ends'} quest ${q.quest} (${q.title || '?'})`,
     );
@@ -462,7 +529,7 @@ export class WorldEditorComponent implements OnInit {
   }
 
   protected waypointInfo(waypoint: WaypointRecord): string[] {
-    const walkers = this.spawns().filter((s) => s.type === 'creature' && s.pathId === waypoint.pathId);
+    const walkers = this.spawns().filter((s) => s.type === 'creature' && pathsOf(s).includes(waypoint.pathId));
     const ids = new Set(walkers.flatMap((s) => [s.entry, -s.guid]));
     const sai = this.waypointSai().filter((row) => ids.has(row.entryorguid));
     return describeWaypoint(waypoint.pathId, waypoint.point, waypoint, this.waypointScripts(), sai);
@@ -480,7 +547,10 @@ export class WorldEditorComponent implements OnInit {
   protected readonly selectedWaypoint = computed(() => this.findWaypoint(this.selectedKey() ?? ''));
 
   /** Path new waypoints are appended to: the selected waypoint's path, or the selected creature's. */
-  protected readonly activePathId = computed(() => this.selectedWaypoint()?.pathId ?? this.selectedSpawn()?.pathId ?? 0);
+  protected readonly activePathId = computed(() => {
+    const spawn = this.selectedSpawn();
+    return this.selectedWaypoint()?.pathId ?? (spawn ? (pathsOf(spawn)[0] ?? 0) : 0);
+  });
 
   /** Paths coming from creature_template_addon: shared by every creature of an entry. */
   private readonly templatePathIds = computed(
@@ -819,9 +889,24 @@ export class WorldEditorComponent implements OnInit {
         this.areaTriggerList.set(triggers);
         this.areaTriggerInfo.set(info);
       }
+      await this.loadTravel(mapId, triggers);
     } catch (error) {
       this.areaTriggerList.set([]);
       this.toastr.error((error as Error).message, 'World Editor');
+    }
+  }
+
+  /** Graveyards, teleports, flight masters and flight paths of a map (each left out when it can't be read). */
+  private async loadTravel(mapId: number, triggers: AreaTriggerInfo[]): Promise<void> {
+    const none = <T>(): T[] => [];
+    const [graveyards, teleports, taxiNodes, taxiPaths] = await Promise.all([
+      this.service.loadGraveyards(mapId).catch(none<Graveyard>),
+      this.service.loadTeleports(triggers.map((trigger) => trigger.id)).catch(none<Teleport>),
+      this.client.getTaxiNodes(mapId).catch(none<TaxiNode>),
+      this.client.getTaxiPaths(mapId).catch(none<TaxiPath>),
+    ]);
+    if (mapId === this.mapId()) {
+      this.travel.set({ mapId, graveyards, teleports, taxiNodes, taxiPaths });
     }
   }
 
@@ -950,6 +1035,7 @@ export class WorldEditorComponent implements OnInit {
 
   protected async onCenterChanged(center: WorldPosition): Promise<void> {
     this.center = center;
+    this.cameraCenter.set(center);
     saveLastView({ mapId: this.mapId(), ...center });
     await this.reloadSpawns();
   }
@@ -962,26 +1048,35 @@ export class WorldEditorComponent implements OnInit {
     const request = ++this.spawnRequest;
     this.loadingSpawns.set(true);
     try {
-      const spawns = await this.service.loadSpawns(this.mapId(), center);
+      const loaded = await this.service.loadSpawns(this.mapId(), center);
+      const saiPaths = await this.service.loadSaiPaths(loaded.filter((s) => s.type === 'creature'));
       if (request !== this.spawnRequest) {
         return;
       }
+      const spawns = loaded.map((s) => {
+        const paths = s.type === 'creature' ? [...new Set([...(saiPaths.get(s.entry) ?? []), ...(saiPaths.get(-s.guid) ?? [])])] : [];
+        return paths.length ? { ...s, saiPaths: paths } : s;
+      });
       this.loadedSpawns.set(spawns);
       const waypoints = await this.service.loadWaypoints(this.pathIds());
       if (request !== this.spawnRequest) {
         return;
       }
       this.loadedWaypoints.set(waypoints);
-      const walkers = spawns.filter((s) => s.type === 'creature' && s.pathId);
-      const [scripts, sai, eventNames, quests] = await Promise.all([
+      const walkers = spawns.filter((s) => s.type === 'creature' && pathsOf(s).length);
+      const [scripts, sai, eventNames, quests, formations, pools] = await Promise.all([
         this.service.loadWaypointScripts(waypoints.map((w) => w.action ?? 0)),
         this.service.loadWaypointSai(walkers),
         this.service.loadEventNames(spawns.map((s) => s.event ?? 0)),
         this.service.loadQuests(spawns),
+        this.service.loadFormations(spawns.filter((s) => s.type === 'creature').map((s) => s.guid)),
+        this.service.loadPools(spawns),
       ]);
       if (request === this.spawnRequest) {
         this.waypointScripts.set(scripts);
         this.waypointSai.set(sai);
+        this.formations.set(formations);
+        this.pools.set(pools);
         this.eventNames.set(eventNames);
         const byEntry = new Map<string, SpawnQuest[]>();
         for (const quest of quests) {
@@ -1002,6 +1097,11 @@ export class WorldEditorComponent implements OnInit {
   protected async onPicked(result: PickResult): Promise<void> {
     const tool = this.tool();
     if (tool === 'select') {
+      if (result.additive && result.type === 'spawn') {
+        this.toggleInGroup(result.key);
+        return;
+      }
+      this.groupKeys.set([]);
       this.select(result.type === 'spawn' || result.type === 'waypoint' ? result.key : undefined);
       return;
     }
@@ -1097,7 +1197,7 @@ export class WorldEditorComponent implements OnInit {
     }
     const guid = await this.newGuid(spawn.type);
     // a new spawn: no path, not in the original's game event
-    const { pathFromTemplate: _, event: __, ...copy } = spawn;
+    const { pathFromTemplate: _, event: __, saiPaths: ___, ...copy } = spawn;
     this.changes.placeSpawn({ ...copy, guid, pathId: 0, ...stackPosition(spawn, box, side) });
     this.bump();
     this.select(spawnKey(spawn.type, guid));
@@ -1111,7 +1211,7 @@ export class WorldEditorComponent implements OnInit {
     }
     if (this.templatePathIds().has(pathId)) {
       this.toastr.warning(
-        `Path ${pathId} comes from creature_template_addon and is shared by every creature of this entry; edit it in the creature template instead.`,
+        `${pathLabel(pathId)} comes from creature_template_addon and is shared by every creature of this entry; edit it in the creature template instead.`,
         'World Editor',
       );
       return;
@@ -1131,8 +1231,14 @@ export class WorldEditorComponent implements OnInit {
   private applyPlacement(key: string, placement: { x: number; y: number; z: number; o: number }): void {
     const spawn = this.findSpawn(key);
     if (spawn) {
-      const original = this.loadedSpawns().find((s) => s.type === spawn.type && s.guid === spawn.guid) ?? spawn;
-      this.changes.moveSpawn(original, placement);
+      const original = (s: SpawnRecord) => this.loadedSpawns().find((l) => l.type === s.type && l.guid === s.guid) ?? s;
+      // the spawns selected with it follow
+      if (key === this.selectedKey()) {
+        for (const member of this.groupSpawns()) {
+          this.changes.moveSpawn(original(member), followPlacement(spawn, placement, member));
+        }
+      }
+      this.changes.moveSpawn(original(spawn), placement);
     } else {
       const waypoint = this.findWaypoint(key);
       if (!waypoint) {
@@ -1151,6 +1257,8 @@ export class WorldEditorComponent implements OnInit {
     const spawn = this.selectedSpawn();
     const waypoint = this.selectedWaypoint();
     if (spawn) {
+      this.groupSpawns().forEach((member) => this.changes.deleteSpawn(member));
+      this.groupKeys.set([]);
       this.changes.deleteSpawn(spawn);
     } else if (waypoint) {
       this.changes.deleteWaypoint(waypoint);
@@ -1166,6 +1274,68 @@ export class WorldEditorComponent implements OnInit {
     const pathId = this.activePathId();
     this.waypointChecks.set([]);
     this.checkedPathId.set(this.checkedPathId() === pathId ? undefined : pathId);
+  }
+
+  /** Ctrl + click: adds a spawn to the selection, or takes it out (the first one left becomes the main one). */
+  private toggleInGroup(key: string): void {
+    const selected = this.selectedKey();
+    const group = this.groupKeys();
+    if (!selected || !this.selectedSpawn()) {
+      this.select(key);
+    } else if (key === selected) {
+      const [next, ...rest] = group;
+      this.groupKeys.set(rest);
+      this.select(next);
+    } else {
+      this.groupKeys.set(group.includes(key) ? group.filter((k) => k !== key) : [...group, key]);
+    }
+  }
+
+  /** Copies the selected spawns (Ctrl + C), with where they stand relative to the main one. */
+  protected copySelection(): void {
+    const spawn = this.selectedSpawn();
+    if (spawn) {
+      this.copied.set(copySpawns([spawn, ...this.groupSpawns()]));
+    }
+  }
+
+  /** Pastes the copied spawns as new ones (Ctrl + V), the main one at the crosshair, and selects them. */
+  protected async pasteCopied(): Promise<void> {
+    const copied = this.copied();
+    // (something was copied from spawns loaded around the camera, so it has a target)
+    const at = this.cameraCenter() as WorldPosition;
+    if (copied.length === 0) {
+      return;
+    }
+    const keys: string[] = [];
+    for (const item of copied) {
+      const guid = await this.newGuid(item.spawn.type);
+      this.changes.placeSpawn({ ...pastedSpawn(item, guid, at), map: this.mapId() });
+      keys.push(spawnKey(item.spawn.type, guid));
+    }
+    this.bump();
+    this.select(keys[0]);
+    this.groupKeys.set(keys.slice(1));
+  }
+
+  /** Plays the selected creature walking its path, or wandering, in the view; again stops it. */
+  protected toggleSimulation(): void {
+    if (this.simulation()) {
+      this.simulation.set(undefined);
+      return;
+    }
+    const spawn = this.selectedSpawn() as SpawnRecord;
+    const key = spawnKey(spawn.type, spawn.guid);
+    const points = this.waypoints().filter((w) => w.pathId === this.activePathId());
+    this.simulation.set(pathSimulation(spawn, points, this.simulationRate(), key) ?? wanderSimulation(spawn, this.simulationRate(), key));
+  }
+
+  protected setSimulationRate(event: Event): void {
+    this.simulationRate.set(Number((event.target as HTMLSelectElement).value));
+    const simulation = this.simulation();
+    if (simulation) {
+      this.simulation.set({ ...simulation, rate: this.simulationRate() });
+    }
   }
 
   /** Only offered for a selected creature without a path. */
@@ -1281,7 +1451,7 @@ export class WorldEditorComponent implements OnInit {
     if (['INPUT', 'SELECT', 'TEXTAREA'].includes(target.tagName)) {
       return;
     }
-    const action = controlFor(this.controls.settings(), ['undo', 'redo', 'delete', 'toggleGizmo', 'cancel'], event);
+    const action = controlFor(this.controls.settings(), ['undo', 'redo', 'delete', 'toggleGizmo', 'cancel', 'copy', 'paste'], event);
     if (action === 'redo') {
       event.preventDefault();
       this.redo();
@@ -1294,8 +1464,13 @@ export class WorldEditorComponent implements OnInit {
       this.contextMenu.set(undefined);
       this.tool.set('select');
       this.selectedKey.set(undefined);
+      this.groupKeys.set([]);
     } else if (action === 'toggleGizmo') {
       this.gizmoMode.update((mode) => (mode === 'rotate' ? 'translate' : 'rotate'));
+    } else if (action === 'copy') {
+      this.copySelection();
+    } else if (action === 'paste') {
+      void this.pasteCopied();
     }
   }
 

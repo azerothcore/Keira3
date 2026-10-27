@@ -2,6 +2,7 @@ import { Service, signal } from '@angular/core';
 import { GizmoMode } from '@keira/shared/world-viewer';
 import { WorldPosition } from '@keira/shared/wow-data';
 import { ChangesSnapshot, WorldEditorChanges } from './world-editor-changes';
+import { CopiedSpawn } from './group-edit';
 import { EditorTool, LayerVisibility, SpawnType } from './world-editor.model';
 
 /**
@@ -20,12 +21,24 @@ export class WorldEditorSessionService {
   /** Path ids handed out to new paths in this session (not saved yet). */
   reservedPathIds: number[] = [];
 
-  readonly layers = signal<LayerVisibility>({ creatures: true, gameobjects: true, waypoints: true, areaTriggers: true });
+  readonly layers = signal<LayerVisibility>({
+    creatures: true,
+    gameobjects: true,
+    waypoints: true,
+    areaTriggers: true,
+    formations: true,
+    pools: true,
+    travel: true,
+  });
   readonly tool = signal<EditorTool>('select');
   readonly gizmoMode = signal<GizmoMode>('translate');
   /** Where moved objects snap: nowhere, onto the ground/floor below, or against the nearest wall. */
   readonly snapMode = signal<'off' | 'ground' | 'wall'>('ground');
   readonly selectedKey = signal<string | undefined>(undefined);
+  /** Spawns selected along with `selectedKey` (Ctrl + click): they move, turn and are deleted with it. */
+  readonly groupKeys = signal<string[]>([]);
+  /** Spawns copied (Ctrl + C), to paste at the crosshair (Ctrl + V). */
+  readonly copied = signal<CopiedSpawn[]>([]);
   readonly zoneId = signal(0);
   readonly showFilters = signal(false);
   readonly showView = signal(false);

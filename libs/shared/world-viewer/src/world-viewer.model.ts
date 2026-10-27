@@ -54,6 +54,48 @@ export interface WaypointPath {
   owners?: string[];
 }
 
+/** A creature walking its path (or wandering) in the movement simulation: from `start`, leg by leg, over and over. */
+export interface MovementSimulation {
+  key: string;
+  start: WorldPosition;
+  legs: SimulationLeg[];
+  /** Time runs this many times faster. */
+  rate: number;
+}
+
+export interface SimulationLeg {
+  to: WorldPosition;
+  /** Yards per second. */
+  speed: number;
+  /** Seconds waited on arrival. */
+  wait: number;
+  /** Straight through the air (flying) rather than along the navigation mesh. */
+  fly?: boolean;
+  /** Shown while on this leg (e.g. "point 3"). */
+  label: string;
+}
+
+/** A line drawn between two places (a formation member to its leader, a teleport to where it leads…). */
+export interface WorldLink {
+  key: string;
+  from: WorldPosition;
+  to: WorldPosition;
+  color: number;
+  /** An arrow head at `to`. */
+  arrow?: boolean;
+  dashed?: boolean;
+  /** Points the line goes through between `from` and `to` (a flight path). */
+  via?: WorldPosition[];
+}
+
+/** A labelled place (graveyard, flight master, pool label…): a diamond on a stick, named on hover. */
+export interface WorldMarker {
+  key: string;
+  position: WorldPosition;
+  color: number;
+  label: string;
+}
+
 /** Where a waypoint is: on the ground, in the air (a few yards above the floor), or in a liquid (swimming). */
 export type WaypointPlace = 'ground' | 'air' | 'water';
 
@@ -77,11 +119,16 @@ export interface WaypointCheck {
   params?: Record<string, number>;
 }
 
-export type PickResult =
+/** A click (or hover) in the view; `additive` when Ctrl (⌘) was held, to add to a selection. */
+export type PickResult = PickTarget & { additive?: boolean };
+
+export type PickTarget =
   | { type: 'spawn'; key: string; position: WorldPosition }
   | { type: 'waypoint'; key: string; pathKey: string; point: number; position: WorldPosition }
   /** A path's direction arrow, between two of its points (only with `PickOptions.segments`). */
   | { type: 'segment'; pathKey: string; from: number; to: number; position: WorldPosition }
+  /** A marker (only with `PickOptions.overlays`). */
+  | { type: 'overlay'; key: string; position: WorldPosition }
   /** An area trigger's volume (only with `PickOptions.areaTriggers`). */
   | { type: 'areatrigger'; key: string; position: WorldPosition }
   | { type: 'ground'; position: WorldPosition };

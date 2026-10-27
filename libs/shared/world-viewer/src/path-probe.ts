@@ -155,6 +155,11 @@ export class PathProber {
     return checks;
   }
 
+  /** The walking path from A to C on the navigation mesh, or undefined when there is none (or no mesh). */
+  async walkPath(directory: string, from: WorldPosition, to: WorldPosition): Promise<WorldPosition[] | undefined> {
+    return (await this.walk(directory, from, to)).path;
+  }
+
   /** The walking path from A to C, loading the navigation mesh tiles around and between them. */
   private async walk(directory: string, from: WorldPosition, to: WorldPosition): Promise<Partial<PathProbeResult>> {
     const graph = await this.graphFor(directory, from, to);

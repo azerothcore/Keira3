@@ -43,4 +43,14 @@ describe('describeWaypoint', () => {
     ]);
     expect(describeWaypoint(10, 3, { action: 77, actionChance: 100, moveType: 3 }, scripts, [])).toEqual(['take off', 'script 77']);
   });
+
+  it('matches SmartAI path reactions (event 40) to SmartAI paths only', () => {
+    const rows = [
+      { entryorguid: 1, point: 0, pathId: 0, actionType: 1, comment: 'any data path' },
+      { entryorguid: 1, point: 2, pathId: 0, escort: true, actionType: 1, comment: 'any SmartAI path' },
+      { entryorguid: 1, point: 2, pathId: -501, escort: true, actionType: 1, comment: 'another SmartAI path' },
+    ];
+    expect(describeWaypoint(-500, 2, {}, new Map(), rows)).toEqual(['SAI: any SmartAI path']);
+    expect(describeWaypoint(10, 2, {}, new Map(), rows)).toEqual(['SAI: any data path']);
+  });
 });

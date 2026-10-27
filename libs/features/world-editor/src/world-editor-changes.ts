@@ -9,7 +9,17 @@ import {
 } from '@keira/shared/acore-world-model';
 import { squelConfig } from '@keira/shared/config';
 import squel from 'squel';
-import { pathKey, Placement, Quaternion, SpawnRecord, spawnKey, SpawnType, WaypointRecord } from './world-editor.model';
+import {
+  isSaiPath,
+  pathKey,
+  Placement,
+  Quaternion,
+  saiPathEntry,
+  SpawnRecord,
+  spawnKey,
+  SpawnType,
+  WaypointRecord,
+} from './world-editor.model';
 
 const round = (value: number): number => Math.round(value * 10_000) / 10_000;
 const NEW_SPAWN_RESPAWN_SECS = 300;
@@ -32,6 +42,8 @@ const RELATED_ROWS: Record<SpawnType, { table: string; field: string }[]> = {
 };
 
 const tableOf = (type: SpawnType): string => (type === 'creature' ? CREATURE_SPAWN_TABLE : GAMEOBJECT_SPAWN_TABLE);
+/** SmartAI paths (started by SMART_ACTION_ESCORT_START and friends). */
+const SAI_WAYPOINTS_TABLE = 'waypoints';
 const waypointKey = (pathId: number, point: number): string => `${pathKey(pathId)}#${point}`;
 
 /** Yaw-only quaternion stored in gameobject.rotation0..3 (what `.gobject turn` writes). */
@@ -286,14 +298,15 @@ export class WorldEditorChanges {
   /** Human readable list of the pending edits. */
   describe(): string[] {
     const label = (s: SpawnRecord): string => `${s.type} ${s.guid}${s.name ? ` (${s.name})` : ''}`;
+    const point = (w: WaypointRecord): string => `${isSaiPath(w.pathId) ? `SmartAI ${saiPathEntry(w.pathId)}` : w.pathId} #${w.point}`;
     return [
       ...[...this.deletedSpawns.values()].map((s) => `Delete ${label(s)}`),
       ...[...this.insertedSpawns.values()].map((s) => `Place ${label(s)}`),
       ...[...this.movedSpawns.values()].map(({ original }) => `Move ${label(original)}`),
       ...[...this.createdPaths].map(([guid, pathId]) => `Create path ${pathId} for creature ${guid}`),
-      ...[...this.deletedWaypoints.values()].map((w) => `Delete waypoint ${w.pathId} #${w.point}`),
-      ...[...this.insertedWaypoints.values()].map((w) => `Add waypoint ${w.pathId} #${w.point}`),
-      ...[...this.movedWaypoints.values()].map(({ original: w }) => `Move waypoint ${w.pathId} #${w.point}`),
+      ...[...this.deletedWaypoints.values()].map((w) => `Delete waypoint ${point(w)}`),
+      ...[...this.insertedWaypoints.values()].map((w) => `Add waypoint ${point(w)}`),
+      ...[...this.movedWaypoints.values()].map(({ original: w }) => `Move waypoint ${point(w)}`),
     ];
   }
 
@@ -320,24 +333,31 @@ export class WorldEditorChanges {
       );
       statements.push(this.updateQuery(CREATURE_SPAWN_TABLE, { MovementType: MOVEMENT_TYPE_WAYPOINT }, { guid }));
     }
+    // SmartAI paths (negative path ids) live in `waypoints` (entry, pointid), the others in `waypoint_data` (id, point)
+    const keyOf = (waypoint: WaypointRecord): { table: string; where: Record<string, number> } =>
+      isSaiPath(waypoint.pathId)
+        ? { table: SAI_WAYPOINTS_TABLE, where: { entry: saiPathEntry(waypoint.pathId), pointid: waypoint.point } }
+        : { table: WAYPOINT_DATA_TABLE, where: { id: waypoint.pathId, point: waypoint.point } };
     for (const waypoint of this.deletedWaypoints.values()) {
-      statements.push(this.deleteQuery(WAYPOINT_DATA_TABLE, { id: waypoint.pathId, point: waypoint.point }));
+      const { table, where } = keyOf(waypoint);
+      statements.push(this.deleteQuery(table, where));
     }
     for (const waypoint of this.insertedWaypoints.values()) {
+      const { table, where } = keyOf(waypoint);
       const fields = {
-        id: waypoint.pathId,
-        point: waypoint.point,
+        ...where,
         position_x: round(waypoint.x),
         position_y: round(waypoint.y),
         position_z: round(waypoint.z),
         delay: waypoint.delay,
       };
-      statements.push(this.deleteQuery(WAYPOINT_DATA_TABLE, { id: waypoint.pathId, point: waypoint.point }));
-      statements.push(`${squel.insert(squelConfig).into(WAYPOINT_DATA_TABLE).setFields(fields).toString()};`);
+      statements.push(this.deleteQuery(table, where));
+      statements.push(`${squel.insert(squelConfig).into(table).setFields(fields).toString()};`);
     }
     for (const { original, current } of this.movedWaypoints.values()) {
+      const { table, where } = keyOf(original);
       const fields = { position_x: round(current.x), position_y: round(current.y), position_z: round(current.z) };
-      statements.push(this.updateQuery(WAYPOINT_DATA_TABLE, fields, { id: original.pathId, point: original.point }));
+      statements.push(this.updateQuery(table, fields, where));
     }
     return statements.join('\n');
   }

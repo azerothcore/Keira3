@@ -7,13 +7,16 @@ export interface WaypointScriptStep {
   command: number;
 }
 
-/** A SmartAI row reacting to a waypoint (event 108 "waypoint reached", for `waypoint_data` paths). */
+/** A SmartAI row reacting to a waypoint (event 108 on `waypoint_data` paths, event 40 on SmartAI paths). */
 export interface WaypointSaiRow {
   /** creature entry, or −guid for a single spawn. */
   entryorguid: number;
   /** 0 = any point / path. */
   point: number;
+  /** The path (negative for SmartAI paths, see `saiPathId`); 0 = any. */
   pathId: number;
+  /** Reacts to SmartAI paths (event 40) rather than `waypoint_data` ones. */
+  escort?: boolean;
   actionType: number;
   comment: string;
 }
@@ -95,7 +98,8 @@ export function describeWaypoint(
     lines.push(`script ${details.action}${chance}${commands.length ? `: ${commands.join(', ')}` : ''}`);
   }
   for (const row of sai) {
-    if ((row.point === 0 || row.point === point) && (row.pathId === 0 || row.pathId === pathId)) {
+    const sameKind = !!row.escort === pathId < 0;
+    if (sameKind && (row.point === 0 || row.point === point) && (row.pathId === 0 || row.pathId === pathId)) {
       lines.push(`SAI: ${row.comment || SAI_ACTION_NAMES[row.actionType] || `action ${row.actionType}`}`);
     }
   }

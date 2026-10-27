@@ -15,6 +15,11 @@ export interface SpawnRecord {
   o: number;
   /** Waypoint path (creature_addon.path_id, or creature_template_addon.path_id when there is no addon row), 0 if none. */
   pathId: number;
+  /** SmartAI paths its scripts start (`saiPathId`s), by entry or by guid. */
+  saiPaths?: number[];
+  /** creature_template.speed_walk / speed_run (× 2.5 and × 7 yards per second). */
+  speedWalk?: number;
+  speedRun?: number;
   /** The path comes from creature_template_addon, so it is shared by every creature of this entry. */
   pathFromTemplate?: boolean;
   /** gameobject.rotation0..3 (x, y, z, w quaternion; all 0 = derived from orientation). */
@@ -72,7 +77,24 @@ export interface LayerVisibility {
   gameobjects: boolean;
   waypoints: boolean;
   areaTriggers: boolean;
+  /** Lines from formation members to their leader. */
+  formations: boolean;
+  /** Pools: their spawns linked to a label. */
+  pools: boolean;
+  /** Teleports, graveyards and flight paths. */
+  travel: boolean;
 }
+
+/** The layer switches of the toolbar, in order. */
+export const LAYER_SWITCHES: { key: keyof LayerVisibility; id: string; label: string }[] = [
+  { key: 'creatures', id: 'creatures', label: 'WORLD_EDITOR.CREATURES' },
+  { key: 'gameobjects', id: 'gameobjects', label: 'WORLD_EDITOR.GAMEOBJECTS' },
+  { key: 'waypoints', id: 'waypoints', label: 'WORLD_EDITOR.WAYPOINTS' },
+  { key: 'areaTriggers', id: 'area-triggers', label: 'WORLD_EDITOR.AREA_TRIGGERS' },
+  { key: 'formations', id: 'formations', label: 'WORLD_EDITOR.FORMATIONS' },
+  { key: 'pools', id: 'pools', label: 'WORLD_EDITOR.POOLS' },
+  { key: 'travel', id: 'travel', label: 'WORLD_EDITOR.TRAVEL' },
+];
 
 /** Rows as returned by the spawn and waypoint queries. */
 export interface SpawnRow extends TableRow {
@@ -97,6 +119,8 @@ export interface SpawnRow extends TableRow {
   eventEntry: number;
   isTrigger: number;
   phaseMask: number;
+  speedWalk: number;
+  speedRun: number;
 }
 
 export interface WaypointRow extends TableRow {
@@ -123,6 +147,16 @@ export interface TeleRow extends TableRow {
 export const spawnKey = (type: SpawnType, guid: number): string => `${type}:${guid}`;
 export const pathKey = (pathId: number): string => `path:${pathId}`;
 
+/**
+ * SmartAI paths (the `waypoints` table, started by SmartAI actions) share the path id space with negative ids, so a
+ * SmartAI path `entry` is `-entry` here and can't clash with a `waypoint_data` path of the same number.
+ */
+export const saiPathId = (entry: number): number => -entry;
+export const isSaiPath = (pathId: number): boolean => pathId < 0;
+export const saiPathEntry = (pathId: number): number => -pathId;
+/** "Path 12" or "SmartAI path 12". */
+export const pathLabel = (pathId: number): string => (isSaiPath(pathId) ? `SmartAI path ${saiPathEntry(pathId)}` : `Path ${pathId}`);
+
 export function parseSpawnKey(key: string): { type: SpawnType; guid: number } | undefined {
   const match = /^(creature|gameobject):(\d+)$/.exec(key);
   return match ? { type: match[1] as SpawnType, guid: Number(match[2]) } : undefined;
@@ -134,3 +168,41 @@ export const preferredPathId = (guid: number): number => guid * 10;
 /** Half-size of the square (in yards) around the camera whose spawns are loaded. */
 export const SPAWN_LOAD_RADIUS = 450;
 export const SPAWN_LOAD_LIMIT = 3000;
+
+/** A `creature_formations` row: `member` follows `leader` at `dist` yards and `angle` degrees from its facing. */
+export interface FormationMember {
+  leader: number;
+  member: number;
+  dist: number;
+  angle: number;
+  groupAI: number;
+}
+
+/** A spawn of a pool: up to `maxLimit` of the pool's spawns are up at once (0: all of them). */
+export interface PoolMember {
+  type: SpawnType;
+  guid: number;
+  pool: number;
+  chance: number;
+  maxLimit: number;
+  description: string;
+}
+
+/** A graveyard (`game_graveyard`). */
+export interface Graveyard {
+  id: number;
+  x: number;
+  y: number;
+  z: number;
+  comment: string;
+}
+
+/** Where an area trigger teleports to (`areatrigger_teleport`). */
+export interface Teleport {
+  id: number;
+  name: string;
+  map: number;
+  x: number;
+  y: number;
+  z: number;
+}

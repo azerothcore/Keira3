@@ -4,7 +4,14 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
 import { WorldPosition } from '@keira/shared/wow-data';
 import { firstValueFrom } from 'rxjs';
 import {
+  FormationMember,
+  Graveyard,
+  Teleport,
+  isSaiPath,
+  PoolMember,
   preferredPathId,
+  saiPathEntry,
+  saiPathId,
   SPAWN_LOAD_LIMIT,
   SPAWN_LOAD_RADIUS,
   Quaternion,
@@ -23,6 +30,11 @@ const num = (value: number): number => Math.round(value * 100) / 100;
 const RANDOM_MOVEMENT = 1;
 /** SMART_EVENT_WAYPOINT_DATA_REACHED: a creature on a `waypoint_data` path reached a point. */
 const SAI_EVENT_WAYPOINT_DATA_REACHED = 108;
+/** SMART_EVENT_ESCORT_REACHED: a creature on a SmartAI path (`waypoints`) reached a point. */
+const SAI_EVENT_ESCORT_REACHED = 40;
+/** SMART_ACTION_ESCORT_START (path id in param 2) and SMART_ACTION_START_CLOSEST_WAYPOINT (path ids in params 1–6). */
+const SAI_ACTION_ESCORT_START = 53;
+const SAI_ACTION_START_CLOSEST_WAYPOINT = 113;
 /** CREATURE_FLAG_EXTRA_TRIGGER: an invisible creature used by scripts. */
 const FLAG_EXTRA_TRIGGER = 128;
 /** Names of helper spawns players never see. */
@@ -52,6 +64,7 @@ export class WorldEditorService {
       // the first template model, as the server picks when it has a single one
       'IFNULL(ctm.CreatureDisplayID, 0) AS displayId, IFNULL(ctm.DisplayScale, 1) AS scale, ' +
       'c.wander_distance AS wanderDistance, c.MovementType AS movementType, c.phaseMask, ' +
+      'IFNULL(ct.speed_walk, 1) AS speedWalk, IFNULL(ct.speed_run, 1) AS speedRun, ' +
       `${eventOf('game_event_creature', 'c.guid')}, ` +
       `((IFNULL(ct.flags_extra, 0) & ${FLAG_EXTRA_TRIGGER}) <> 0 OR ${helperName('ct.name')}) AS isTrigger ` +
       'FROM creature c ' +
@@ -77,17 +90,28 @@ export class WorldEditorService {
     return [...toSpawns('creature', creatureRows), ...toSpawns('gameobject', gameobjectRows)];
   }
 
+  /** Points of the given paths: `waypoint_data` ones, and SmartAI ones (negative ids, from `waypoints`). */
   async loadWaypoints(pathIds: number[]): Promise<WaypointRecord[]> {
-    if (pathIds.length === 0) {
+    const data = [...new Set(pathIds.filter((id) => !isSaiPath(id)))];
+    const sai = [...new Set(pathIds.filter(isSaiPath).map(saiPathEntry))];
+    const parts = [
+      ...(data.length
+        ? [
+            'SELECT id AS pathId, point, position_x AS x, position_y AS y, position_z AS z, delay, ' +
+              `move_type AS moveType, action, action_chance AS actionChance FROM waypoint_data WHERE id IN (${data.join(', ')})`,
+          ]
+        : []),
+      ...(sai.length
+        ? [
+            'SELECT -entry AS pathId, pointid AS point, position_x AS x, position_y AS y, position_z AS z, delay, ' +
+              `0 AS moveType, 0 AS action, 100 AS actionChance FROM waypoints WHERE entry IN (${sai.join(', ')})`,
+          ]
+        : []),
+    ];
+    if (parts.length === 0) {
       return [];
     }
-    const rows = await firstValueFrom(
-      this.queryService.query<WaypointRow>(
-        'SELECT id AS pathId, point, position_x AS x, position_y AS y, position_z AS z, delay, ' +
-          'move_type AS moveType, action, action_chance AS actionChance FROM waypoint_data ' +
-          `WHERE id IN (${[...new Set(pathIds)].join(', ')}) ORDER BY id, point`,
-      ),
-    );
+    const rows = await firstValueFrom(this.queryService.query<WaypointRow>(`${parts.join(' UNION ALL ')} ORDER BY pathId, point`));
     return (rows ?? []).map((row) => ({
       pathId: Number(row.pathId),
       point: Number(row.point),
@@ -120,7 +144,38 @@ export class WorldEditorService {
     return scripts;
   }
 
-  /** SmartAI "waypoint reached" rows (event 108) of the given creatures, by entry and by guid. */
+  /**
+   * SmartAI paths the scripts of the given creatures start (escort start, start closest waypoint), as `saiPathId`s by
+   * `entryorguid` (entry, or −guid).
+   */
+  async loadSaiPaths(creatures: { entry: number; guid: number }[]): Promise<Map<number, number[]>> {
+    const ids = [...new Set(creatures.flatMap((c) => [Math.trunc(c.entry), -Math.trunc(c.guid)]))];
+    const paths = new Map<number, number[]>();
+    if (ids.length === 0) {
+      return paths;
+    }
+    const rows = await firstValueFrom(
+      this.queryService.query<TableRow>(
+        'SELECT entryorguid, action_type AS actionType, action_param1 AS p1, action_param2 AS p2, action_param3 AS p3, ' +
+          'action_param4 AS p4, action_param5 AS p5, action_param6 AS p6 FROM smart_scripts ' +
+          `WHERE source_type = 0 AND action_type IN (${SAI_ACTION_ESCORT_START}, ${SAI_ACTION_START_CLOSEST_WAYPOINT}) AND entryorguid IN (${ids.join(', ')})`,
+      ),
+    );
+    for (const row of rows ?? []) {
+      const params = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6'].map((p) => Number(row[p]));
+      const entries = Number(row['actionType']) === SAI_ACTION_ESCORT_START ? [params[1]] : params;
+      const owner = Number(row['entryorguid']);
+      const list = paths.get(owner) ?? [];
+      entries.filter((entry) => entry > 0 && !list.includes(saiPathId(entry))).forEach((entry) => list.push(saiPathId(entry)));
+      paths.set(owner, list);
+    }
+    return paths;
+  }
+
+  /**
+   * SmartAI "waypoint reached" rows of the given creatures, by entry and by guid: on `waypoint_data` paths (event 108)
+   * and on SmartAI paths (event 40, path ids given as `saiPathId`s).
+   */
   async loadWaypointSai(creatures: { entry: number; guid: number }[]): Promise<WaypointSaiRow[]> {
     const ids = [...new Set(creatures.flatMap((c) => [Math.trunc(c.entry), -Math.trunc(c.guid)]))];
     if (ids.length === 0) {
@@ -128,16 +183,106 @@ export class WorldEditorService {
     }
     const rows = await firstValueFrom(
       this.queryService.query<TableRow>(
-        'SELECT entryorguid, event_param1 AS point, event_param2 AS pathId, action_type AS actionType, comment FROM smart_scripts ' +
-          `WHERE source_type = 0 AND event_type = ${SAI_EVENT_WAYPOINT_DATA_REACHED} AND entryorguid IN (${ids.join(', ')})`,
+        'SELECT entryorguid, event_type AS eventType, event_param1 AS point, event_param2 AS pathId, action_type AS actionType, comment FROM smart_scripts ' +
+          `WHERE source_type = 0 AND event_type IN (${SAI_EVENT_WAYPOINT_DATA_REACHED}, ${SAI_EVENT_ESCORT_REACHED}) AND entryorguid IN (${ids.join(', ')})`,
       ),
     );
     return (rows ?? []).map((row) => ({
       entryorguid: Number(row['entryorguid']),
       point: Number(row['point']),
-      pathId: Number(row['pathId']),
+      // 0 means any path; SmartAI paths are negative here
+      ...(Number(row['eventType']) === SAI_EVENT_ESCORT_REACHED
+        ? { escort: true, pathId: saiPathId(Number(row['pathId'])) || 0 }
+        : { pathId: Number(row['pathId']) }),
       actionType: Number(row['actionType']),
       comment: String(row['comment'] ?? ''),
+    }));
+  }
+
+  /** Graveyards (`game_graveyard`) of a map. */
+  async loadGraveyards(map: number): Promise<Graveyard[]> {
+    const rows = await firstValueFrom(
+      this.queryService.query<TableRow>(
+        `SELECT ID AS id, x, y, z, IFNULL(Comment, '') AS comment FROM game_graveyard WHERE Map = ${Math.trunc(map)}`,
+      ),
+    );
+    return (rows ?? []).map((row) => ({
+      id: Number(row['id']),
+      x: Number(row['x']),
+      y: Number(row['y']),
+      z: Number(row['z']),
+      comment: String(row['comment']),
+    }));
+  }
+
+  /** Where the given area triggers teleport to (`areatrigger_teleport`). */
+  async loadTeleports(ids: number[]): Promise<Teleport[]> {
+    const unique = [...new Set(ids.map(Math.trunc))];
+    if (unique.length === 0) {
+      return [];
+    }
+    const rows = await firstValueFrom(
+      this.queryService.query<TableRow>(
+        "SELECT ID AS id, IFNULL(Name, '') AS name, target_map AS map, target_position_x AS x, target_position_y AS y, target_position_z AS z " +
+          `FROM areatrigger_teleport WHERE ID IN (${unique.join(', ')})`,
+      ),
+    );
+    return (rows ?? []).map((row) => ({
+      id: Number(row['id']),
+      name: String(row['name']),
+      map: Number(row['map']),
+      x: Number(row['x']),
+      y: Number(row['y']),
+      z: Number(row['z']),
+    }));
+  }
+
+  /** Formation rows (`creature_formations`) the given creatures lead or are members of. */
+  async loadFormations(guids: number[]): Promise<FormationMember[]> {
+    const unique = [...new Set(guids.map(Math.trunc))];
+    if (unique.length === 0) {
+      return [];
+    }
+    const list = unique.join(', ');
+    const rows = await firstValueFrom(
+      this.queryService.query<TableRow>(
+        'SELECT leaderGUID AS leader, memberGUID AS member, dist, angle, groupAI FROM creature_formations ' +
+          `WHERE leaderGUID IN (${list}) OR memberGUID IN (${list})`,
+      ),
+    );
+    return (rows ?? []).map((row) => ({
+      leader: Number(row['leader']),
+      member: Number(row['member']),
+      dist: Number(row['dist']),
+      angle: Number(row['angle']),
+      groupAI: Number(row['groupAI']),
+    }));
+  }
+
+  /** The pools (`pool_creature` / `pool_gameobject` with their `pool_template`) the given spawns belong to. */
+  async loadPools(spawns: { type: SpawnType; guid: number }[]): Promise<PoolMember[]> {
+    const parts: string[] = [];
+    for (const type of ['creature', 'gameobject'] as SpawnType[]) {
+      const guids = [...new Set(spawns.filter((s) => s.type === type).map((s) => Math.trunc(s.guid)))];
+      if (guids.length) {
+        parts.push(
+          `SELECT '${type}' AS type, p.guid, p.pool_entry AS pool, p.chance, IFNULL(t.max_limit, 0) AS maxLimit, ` +
+            `IFNULL(t.description, IFNULL(p.description, '')) AS description FROM pool_${type} p ` +
+            `LEFT JOIN pool_template t ON t.entry = p.pool_entry WHERE p.guid IN (${guids.join(', ')})`,
+        );
+      }
+    }
+    if (parts.length === 0) {
+      return [];
+    }
+    const rows = await firstValueFrom(this.queryService.query<TableRow>(parts.join(' UNION ALL ')));
+    return (rows ?? []).map((row) => ({
+      type: row['type'] as SpawnType,
+      guid: Number(row['guid']),
+      pool: Number(row['pool']),
+      chance: Number(row['chance']),
+      maxLimit: Number(row['maxLimit']),
+      description: String(row['description'] ?? ''),
     }));
   }
 
@@ -278,6 +423,7 @@ function toSpawns(type: SpawnType, rows: SpawnRow[] | undefined): SpawnRecord[] 
     ...(Number(row.movementType) === RANDOM_MOVEMENT ? { wanderDistance: Number(row.wanderDistance) } : {}),
     ...(Number(row.eventEntry) > 0 ? { event: Number(row.eventEntry) } : {}),
     ...(Number(row.isTrigger) ? { trigger: true } : {}),
+    ...(type === 'creature' ? { speedWalk: Number(row.speedWalk), speedRun: Number(row.speedRun) } : {}),
     phaseMask: Number(row.phaseMask ?? 1),
   }));
 }

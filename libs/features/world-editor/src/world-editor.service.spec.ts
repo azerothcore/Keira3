@@ -21,7 +21,20 @@ describe('WorldEditorService', () => {
       of(
         sql.includes('FROM creature c')
           ? [
-              { guid: '1', entry: 197, name: 'Marshal', map: 0, x: 1, y: 2, z: 3, o: 0.5, pathId: 10, pathFromTemplate: 0 },
+              {
+                guid: '1',
+                entry: 197,
+                name: 'Marshal',
+                map: 0,
+                x: 1,
+                y: 2,
+                z: 3,
+                o: 0.5,
+                pathId: 10,
+                pathFromTemplate: 0,
+                speedWalk: '1',
+                speedRun: '1.14',
+              },
               {
                 guid: '9',
                 entry: 197,
@@ -38,6 +51,8 @@ describe('WorldEditorService', () => {
                 phaseMask: '2',
                 eventEntry: '12',
                 isTrigger: '1',
+                speedWalk: 1,
+                speedRun: 1,
               },
             ]
           : [
@@ -80,6 +95,8 @@ describe('WorldEditorService', () => {
         displayId: 0,
         scale: 1,
         phaseMask: 1,
+        speedWalk: 1,
+        speedRun: 1.14,
       },
       {
         type: 'creature',
@@ -99,6 +116,8 @@ describe('WorldEditorService', () => {
         event: 12,
         trigger: true,
         phaseMask: 2,
+        speedWalk: 1,
+        speedRun: 1,
       },
       {
         type: 'gameobject',
@@ -224,8 +243,42 @@ describe('WorldEditorService', () => {
       { pathId: 10, point: 1, x: 1.5, y: 2, z: 3, delay: 1000, moveType: 1, action: 50, actionChance: 40 },
       { pathId: 10, point: 2, x: 1, y: 2, z: 3, delay: 0, moveType: 0, action: 0, actionChance: 100 },
     ]);
-    expect(queryService.query.mock.calls[0][0]).toContain('WHERE id IN (10, 20) ORDER BY id, point');
+    expect(queryService.query.mock.calls[0][0]).toContain('WHERE id IN (10, 20) ORDER BY pathId, point');
     expect(queryService.query.mock.calls[0][0]).toContain('move_type AS moveType, action, action_chance AS actionChance');
+    expect(queryService.query.mock.calls[0][0]).not.toContain('FROM waypoints');
+
+    // SmartAI paths (negative ids) come from `waypoints`
+    queryService.query.mockReturnValueOnce(
+      of([{ pathId: '-500', point: '1', x: 1, y: 2, z: 3, delay: 0, moveType: 0, action: 0, actionChance: 100 }]),
+    );
+    expect(await service.loadWaypoints([-500, 10])).toEqual([
+      { pathId: -500, point: 1, x: 1, y: 2, z: 3, delay: 0, moveType: 0, action: 0, actionChance: 100 },
+    ]);
+    expect(queryService.query.mock.calls[1][0]).toContain(
+      'UNION ALL SELECT -entry AS pathId, pointid AS point, position_x AS x, position_y AS y, position_z AS z, delay',
+    );
+    expect(queryService.query.mock.calls[1][0]).toContain('FROM waypoints WHERE entry IN (500) ORDER BY pathId, point');
+    queryService.query.mockReturnValueOnce(of([]));
+    await service.loadWaypoints([-7]);
+    expect(queryService.query.mock.calls[2][0]).not.toContain('waypoint_data');
+  });
+
+  it('finds the SmartAI paths the scripts of creatures start, by entry and by guid', async () => {
+    const { service, queryService } = setup();
+    expect((await service.loadSaiPaths([])).size).toBe(0);
+    queryService.query.mockReturnValueOnce(
+      of([
+        { entryorguid: '197', actionType: '53', p1: '0', p2: '500', p3: '0', p4: '0', p5: '0', p6: '0' },
+        { entryorguid: '197', actionType: '53', p1: '1', p2: '500', p3: '0', p4: '0', p5: '0', p6: '0' },
+        { entryorguid: '-9', actionType: '113', p1: '600', p2: '601', p3: '0', p4: '0', p5: '0', p6: '0' },
+      ]),
+    );
+    const paths = await service.loadSaiPaths([{ entry: 197, guid: 9 }]);
+    expect(paths.get(197)).toEqual([-500]);
+    expect(paths.get(-9)).toEqual([-600, -601]);
+    expect(queryService.query.mock.calls[0][0]).toContain('action_type IN (53, 113) AND entryorguid IN (197, -9)');
+    queryService.query.mockReturnValueOnce(of(undefined));
+    expect((await service.loadSaiPaths([{ entry: 1, guid: 2 }])).size).toBe(0);
   });
 
   it('loads the scripts run at waypoints', async () => {
@@ -255,13 +308,64 @@ describe('WorldEditorService', () => {
   it('loads the SmartAI waypoint reactions of creatures, by entry and by guid', async () => {
     const { service, queryService } = setup();
     expect(await service.loadWaypointSai([])).toEqual([]);
-    queryService.query.mockReturnValueOnce(of([{ entryorguid: '-9', point: '3', pathId: '0', actionType: '1', comment: null }]));
+    queryService.query.mockReturnValueOnce(
+      of([
+        { entryorguid: '-9', eventType: '108', point: '3', pathId: '0', actionType: '1', comment: null },
+        { entryorguid: '197', eventType: '40', point: '2', pathId: '500', actionType: '1', comment: 'say' },
+        { entryorguid: '197', eventType: '40', point: '0', pathId: '0', actionType: '1', comment: 'any' },
+      ]),
+    );
     expect(await service.loadWaypointSai([{ entry: 197, guid: 9 }])).toEqual([
       { entryorguid: -9, point: 3, pathId: 0, actionType: 1, comment: '' },
+      { entryorguid: 197, point: 2, escort: true, pathId: -500, actionType: 1, comment: 'say' },
+      { entryorguid: 197, point: 0, escort: true, pathId: 0, actionType: 1, comment: 'any' },
     ]);
-    expect(queryService.query.mock.calls[0][0]).toContain('event_type = 108 AND entryorguid IN (197, -9)');
+    expect(queryService.query.mock.calls[0][0]).toContain('event_type IN (108, 40) AND entryorguid IN (197, -9)');
     queryService.query.mockReturnValueOnce(of(undefined));
     expect(await service.loadWaypointSai([{ entry: 1, guid: 2 }])).toEqual([]);
+  });
+
+  it('loads the formations and pools of spawns', async () => {
+    const { service, queryService } = setup();
+    expect(await service.loadFormations([])).toEqual([]);
+    expect(await service.loadPools([])).toEqual([]);
+    queryService.query
+      .mockReturnValueOnce(of([{ leader: '1', member: '2', dist: '3', angle: '90', groupAI: '512' }]))
+      .mockReturnValueOnce(of(undefined));
+    expect(await service.loadFormations([1, 1.5, 2])).toEqual([{ leader: 1, member: 2, dist: 3, angle: 90, groupAI: 512 }]);
+    expect(queryService.query.mock.calls[0][0]).toContain('WHERE leaderGUID IN (1, 2) OR memberGUID IN (1, 2)');
+    expect(await service.loadFormations([3])).toEqual([]);
+
+    queryService.query
+      .mockReturnValueOnce(of([{ type: 'gameobject', guid: '4', pool: '7', chance: '0', maxLimit: '1', description: null }]))
+      .mockReturnValueOnce(of(undefined));
+    expect(
+      await service.loadPools([
+        { type: 'creature', guid: 1 },
+        { type: 'gameobject', guid: 4 },
+      ]),
+    ).toEqual([{ type: 'gameobject', guid: 4, pool: 7, chance: 0, maxLimit: 1, description: '' }]);
+    const sql = queryService.query.mock.calls[2][0] as string;
+    expect(sql).toContain('FROM pool_creature p LEFT JOIN pool_template t ON t.entry = p.pool_entry WHERE p.guid IN (1)');
+    expect(sql).toContain('UNION ALL');
+    expect(sql).toContain('FROM pool_gameobject p');
+    expect(await service.loadPools([{ type: 'creature', guid: 1 }])).toEqual([]);
+  });
+
+  it('loads the graveyards of a map and where area triggers teleport to', async () => {
+    const { service, queryService } = setup();
+    expect(await service.loadTeleports([])).toEqual([]);
+    queryService.query
+      .mockReturnValueOnce(of([{ id: '1', x: '1', y: '2', z: '3', comment: 'Goldshire' }]))
+      .mockReturnValueOnce(of(undefined))
+      .mockReturnValueOnce(of([{ id: '45', name: 'Deadmines', map: '36', x: '1', y: '2', z: '3' }]))
+      .mockReturnValueOnce(of(undefined));
+    expect(await service.loadGraveyards(0)).toEqual([{ id: 1, x: 1, y: 2, z: 3, comment: 'Goldshire' }]);
+    expect(queryService.query.mock.calls[0][0]).toContain('FROM game_graveyard WHERE Map = 0');
+    expect(await service.loadGraveyards(1)).toEqual([]);
+    expect(await service.loadTeleports([45, 45])).toEqual([{ id: 45, name: 'Deadmines', map: 36, x: 1, y: 2, z: 3 }]);
+    expect(queryService.query.mock.calls[2][0]).toContain('FROM areatrigger_teleport WHERE ID IN (45)');
+    expect(await service.loadTeleports([46])).toEqual([]);
   });
 
   it('reads the highest guid', async () => {

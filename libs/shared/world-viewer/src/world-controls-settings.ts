@@ -20,7 +20,9 @@ export type ControlAction =
   | 'redo'
   | 'delete'
   | 'toggleGizmo'
-  | 'cancel';
+  | 'cancel'
+  | 'copy'
+  | 'paste';
 
 /** The camera moves held down: along the ground relative to the view, and up/down. Shift makes them faster. */
 export type NavigationAction = Extract<ControlAction, 'forward' | 'back' | 'left' | 'right' | 'up' | 'down'>;
@@ -38,6 +40,8 @@ export const CONTROL_ACTIONS: { action: ControlAction; group: ControlGroup }[] =
   { action: 'delete', group: 'editing' },
   { action: 'toggleGizmo', group: 'editing' },
   { action: 'cancel', group: 'editing' },
+  { action: 'copy', group: 'editing' },
+  { action: 'paste', group: 'editing' },
 ];
 
 export const CONTROL_GROUPS: ControlGroup[] = ['camera', 'marker', 'editing'];
@@ -56,6 +60,8 @@ export const DEFAULT_CONTROL_BINDINGS: Record<ControlAction, string[]> = {
   delete: ['Delete'],
   toggleGizmo: ['KeyR'],
   cancel: ['Escape'],
+  copy: ['Ctrl+KeyC'],
+  paste: ['Ctrl+KeyV'],
 };
 
 export interface WorldControlsSettings {

@@ -46,15 +46,27 @@ export interface ServerMapOptions {
   holes?: boolean;
   /** Liquid: with types per chunk and heights for a 2 × 2 corner area, or a single level. */
   liquid?: 'typed' | 'level';
+  /** Areas: one per chunk (chunk i has area i), or 87 for the whole tile. */
+  areas?: 'chunks' | 'one';
   version?: number;
 }
 
 /** A .map file (version 9): a flat terrain at `height`, optional holes and liquid. */
 export function buildServerMap(options: ServerMapOptions = {}): Uint8Array {
-  const { heights = 'float', height = 10, holes = false, liquid, version = 9 } = options;
+  const { heights = 'float', height = 10, holes = false, liquid, areas, version = 9 } = options;
   const w = new Writer().text('MAPS').u32(version, 0);
   const header = w.length;
   w.u32(0, 0, 0, 0, 0, 0, 0, 0); // area, height, liquid, holes (offset, size)
+  let areaOffset = 0;
+  if (areas) {
+    areaOffset = w.length;
+    w.text('AREA').u16(areas === 'one' ? 1 : 0, areas === 'one' ? 87 : 0);
+    if (areas === 'chunks') {
+      for (let i = 0; i < 256; i++) {
+        w.u16(i);
+      }
+    }
+  }
   const heightOffset = w.length;
   const count = 129 * 129 + 128 * 128;
   const flags = { float: 0, int16: 2, int8: 4, none: 1 }[heights];
@@ -101,6 +113,7 @@ export function buildServerMap(options: ServerMapOptions = {}): Uint8Array {
       w.u16(i === 0 ? 0xffff : 0);
     }
   }
+  w.patch32(header, areaOffset);
   w.patch32(header + 8, heightOffset);
   w.patch32(header + 16, liquidOffset);
   w.patch32(header + 24, holesOffset);

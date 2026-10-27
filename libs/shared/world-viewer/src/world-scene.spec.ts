@@ -6,10 +6,12 @@ import {
   Fog,
   Group,
   Line,
+  LineDashedMaterial,
   LineSegments,
   Mesh,
   MeshBasicMaterial,
   MeshLambertMaterial,
+  Object3D,
   Quaternion,
   ShaderMaterial,
   SphereGeometry,
@@ -185,6 +187,35 @@ describe('WorldScene', () => {
   });
 
   describe('spawns', () => {
+    it('highlights the spawns selected along with the main one', () => {
+      const world = new WorldScene();
+      world.setSpawns([spawn('creature:1', 'creature', at(0, 0)), spawn('creature:2', 'creature', at(5, 0))]);
+      const emissive = (key: string) => ((world.getObject(key) as Mesh).material as MeshLambertMaterial).emissiveIntensity;
+      world.setSelection('creature:1');
+      expect(emissive('creature:2')).toBe(0);
+      world.setGroupSelection(['creature:2']);
+      expect(emissive('creature:2')).toBeGreaterThan(0);
+      world.setGroupSelection([]);
+      expect(emissive('creature:2')).toBe(0);
+    });
+
+    it('moves a copy of a spawn on its own (the movement simulation), without its wander circle', () => {
+      const world = new WorldScene();
+      world.setSpawns([spawn('creature:1', 'creature', at(0, 0), { wanderRadius: 5 })]);
+      world.moveGhost(at(1, 1), 0);
+      expect(world.setGhost('creature:9')).toBe(false);
+      expect(world.setGhost('creature:1')).toBe(true);
+      const ghost = world.scene.getObjectByName('ghost') as Object3D;
+      expect(ghost.getObjectByName('wander')).toBeUndefined();
+      expect(ghost.raycast(undefined as never, [])).toBeUndefined();
+      world.moveGhost(at(10, 0), Math.PI / 2);
+      expect(ghost.position.equals(new Vector3(worldToScene(at(10, 0)).x, worldToScene(at(10, 0)).y, worldToScene(at(10, 0)).z))).toBe(
+        true,
+      );
+      world.setGhost(undefined);
+      expect(world.scene.getObjectByName('ghost')).toBeUndefined();
+    });
+
     it('places markers in scene coordinates, facing their orientation', () => {
       const world = new WorldScene();
       world.setSpawns([spawn('creature:1', 'creature', at(0, 0), { orientation: 1 }), spawn('gameobject:2', 'gameobject', at(5, 5))]);
@@ -337,6 +368,40 @@ describe('WorldScene', () => {
       expect(world.camera.layers.isEnabled(SERVER_COLLISION_LAYER)).toBe(true);
       world.setCollisionVisible(false);
       expect(world.camera.layers.isEnabled(SERVER_COLLISION_LAYER)).toBe(false);
+    });
+
+    it('draws links (dashed or with an arrow head) and markers picked only when asked, scaled like the other markers', () => {
+      const world = new WorldScene();
+      const overlays = () => world.scene.getObjectByName('overlays') as Group;
+      world.setOverlays(
+        [
+          { key: 'link:1', from: at(0, 0), to: at(10, 0), color: 0xff0000, arrow: true },
+          { key: 'link:2', from: at(0, 0), to: at(0, 10), color: 0x00ff00, dashed: true },
+          { key: 'link:3', from: at(5, 5), to: at(5, 5), color: 0x00ff00, arrow: true },
+        ],
+        [{ key: 'marker:1', position: at(20, 20), color: 0x0000ff, label: 'Graveyard' }],
+      );
+      // 3 lines, 1 arrow head (none for a link of no length), 1 marker
+      expect(overlays().children).toHaveLength(5);
+      const line = overlays().getObjectByName('link:2') as Line;
+      expect(line.material).toBeInstanceOf(LineDashedMaterial);
+      expect(line.raycast(undefined as never, [])).toBeUndefined();
+      const head = overlays().children.find((child) => child instanceof Mesh && !child.name) as Mesh;
+      expect(head.raycast(undefined as never, [])).toBeUndefined();
+
+      const marker = world.scene.getObjectByName('marker:1') as Mesh;
+      const p = worldToScene(at(20, 20));
+      lookDownAt(world, { ...at(20, 20), z: 52.4 }, 30);
+      expect(world.pick(0, 0, { markersOnly: true })).toBeUndefined();
+      expect(world.pick(0, 0, { markersOnly: true, overlays: true })).toEqual(
+        expect.objectContaining({ type: 'overlay', key: 'marker:1' }),
+      );
+      world.camera.position.set(p.x, p.y + 600, p.z);
+      world.updateMarkerScale();
+      expect(marker.scale.x).toBeGreaterThan(1);
+
+      world.setOverlays([], []);
+      expect(overlays().children).toHaveLength(0);
     });
 
     it('draws the Path / LOS probe and clears it', () => {

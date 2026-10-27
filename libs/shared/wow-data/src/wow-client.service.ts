@@ -4,7 +4,13 @@ import {
   AreaTriggerInfo,
   CreatureDisplay,
   DbcFile,
+  AreaName,
+  parseAreaNames,
   parseAreaTriggers,
+  parseTaxiNodes,
+  parseTaxiPaths,
+  TaxiNode,
+  TaxiPath,
   parseCreatureDisplays,
   parseGameObjectDisplays,
   parseMapDbc,
@@ -68,6 +74,9 @@ interface OpenClient {
 }
 
 /** Reads game data straight from the user's WoW 3.3.5a client (MPQ archives) and, optionally, the server's DataDir. */
+/** Server terrain tiles kept parsed. */
+const SERVER_MAP_CACHE = 9;
+
 @Service()
 export class WowClientService {
   private readonly native = inject(WOW_NATIVE_API);
@@ -86,6 +95,9 @@ export class WowClientService {
   private readonly adts = new Map<string, Promise<CachedAdt | undefined>>();
   private readonly wmoDoodads = new Map<string, Promise<WmoDoodads | undefined>>();
   private readonly vmapModels = new Map<string, Promise<VmapGroup[] | undefined>>();
+  private readonly serverMaps = new Map<string, Promise<ServerMapTile | undefined>>();
+  private areaNames?: Promise<Map<number, AreaName>>;
+  private taxiNodes?: Promise<TaxiNode[]>;
   private mountCounter = 0;
 
   /** False in the browser build: reading local game files needs Electron. */
@@ -188,7 +200,45 @@ export class WowClientService {
 
   /** A tile of the server's terrain and liquids (`<server data>/maps`); undefined without a server data folder or that file. */
   getServerMap(mapId: number, tile: TileCoord): Promise<ServerMapTile | undefined> {
-    return new Promise((resolve) => resolve(this.readServerFile(`maps/${serverMapName(mapId, tile)}`, parseServerMap)));
+    const name = serverMapName(mapId, tile);
+    let map = this.serverMaps.get(name);
+    if (!map) {
+      map = new Promise((resolve) => resolve(this.readServerFile(`maps/${name}`, parseServerMap)));
+      // the few most recent tiles (the area under the camera asks for the same one often)
+      this.serverMaps.set(name, map);
+      if (this.serverMaps.size > SERVER_MAP_CACHE) {
+        this.serverMaps.delete(this.serverMaps.keys().next().value as string);
+      }
+    }
+    return map;
+  }
+
+  /** Area names (AreaTable.dbc) with their parent zone, by area id. */
+  async getAreaNames(): Promise<Map<number, AreaName>> {
+    this.areaNames ??= this.readDbc('AreaTable.dbc')
+      .then((dbc) => (dbc ? parseAreaNames(dbc) : new Map<number, AreaName>()))
+      .catch((error) => {
+        this.areaNames = undefined;
+        throw error;
+      });
+    return this.areaNames;
+  }
+
+  /** Flight masters' nodes (TaxiNodes.dbc) of a map. */
+  async getTaxiNodes(mapId: number): Promise<TaxiNode[]> {
+    this.taxiNodes ??= this.readDbc('TaxiNodes.dbc')
+      .then((dbc) => (dbc ? parseTaxiNodes(dbc) : []))
+      .catch((error) => {
+        this.taxiNodes = undefined;
+        throw error;
+      });
+    return (await this.taxiNodes).filter((node) => node.mapId === mapId);
+  }
+
+  /** Flight paths (TaxiPath.dbc, TaxiPathNode.dbc) with their points on a map. */
+  async getTaxiPaths(mapId: number): Promise<TaxiPath[]> {
+    const [paths, nodes] = await Promise.all([this.readDbc('TaxiPath.dbc'), this.readDbc('TaxiPathNode.dbc')]);
+    return paths && nodes ? parseTaxiPaths(paths, nodes, mapId) : [];
   }
 
   /** The models placed in a tile of the server's vmaps (`<server data>/vmaps`); undefined without that file. */
@@ -509,6 +559,9 @@ export class WowClientService {
     this.adts.clear();
     this.wmoDoodads.clear();
     this.vmapModels.clear();
+    this.serverMaps.clear();
+    this.areaNames = undefined;
+    this.taxiNodes = undefined;
     if (!client) {
       return;
     }

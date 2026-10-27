@@ -29,6 +29,9 @@ import {
   NavMeshRebuildState,
   WaypointCheck,
   WaypointCheckRequest,
+  WorldLink,
+  WorldMarker,
+  MovementSimulation,
 } from './world-viewer.model';
 import { flatDetail, flatTile } from './world-viewer.mock';
 import { WorldScene } from './world-scene';
@@ -130,6 +133,10 @@ interface FakeTransformControls extends EventDispatcher<{ 'dragging-changed': { 
       [region]="region()"
       [navigation]="navigation()"
       [areaTriggers]="triggers()"
+      [links]="links()"
+      [groupKeys]="group()"
+      [simulation]="simulation()"
+      [markers]="markers()"
       [probe]="probe()"
       [navMeshRebuild]="rebuild()"
       [waypointCheck]="check()"
@@ -162,6 +169,10 @@ class HostComponent {
   readonly region = signal<WorldBounds | undefined>(undefined);
   readonly navigation = signal<WorldControlsSettings>(DEFAULT_WORLD_CONTROLS_SETTINGS);
   readonly triggers = signal<WorldAreaTrigger[]>([]);
+  readonly links = signal<WorldLink[]>([]);
+  readonly group = signal<string[]>([]);
+  readonly simulation = signal<MovementSimulation | undefined>(undefined);
+  readonly markers = signal<WorldMarker[]>([]);
   readonly probe = signal<PathProbeRequest | undefined>(undefined);
   readonly probes: PathProbeResult[] = [];
   readonly rebuild = signal<NavMeshRebuildRequest | undefined>(undefined);
@@ -201,8 +212,8 @@ class Page extends PageObjectModel<HostComponent> {
     return this.getDebugElementByTestId('world-viewer-target');
   }
 
-  pointer(type: string, x: number, y: number, button = 0, altKey = false): void {
-    const event = new MouseEvent(type, { clientX: x, clientY: y, button, altKey, bubbles: true });
+  pointer(type: string, x: number, y: number, button = 0, altKey = false, ctrlKey = false): void {
+    const event = new MouseEvent(type, { clientX: x, clientY: y, button, altKey, ctrlKey, bubbles: true });
     this.viewer().nativeElement.dispatchEvent(event);
   }
   click(x = 50, y = 50, button = 0): void {
@@ -263,6 +274,7 @@ describe(WorldViewerComponent.name, () => {
     getServerMap: vi.fn(),
     getVmapTile: vi.fn(),
     getVmapModel: vi.fn(),
+    getAreaNames: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -286,6 +298,7 @@ describe(WorldViewerComponent.name, () => {
     client.getServerMap.mockResolvedValue(undefined);
     client.getVmapTile.mockResolvedValue(undefined);
     client.getVmapModel.mockResolvedValue(undefined);
+    client.getAreaNames.mockResolvedValue(new Map());
 
     await TestBed.configureTestingModule({
       imports: [HostComponent, TranslateTestingModule],
@@ -556,6 +569,105 @@ describe(WorldViewerComponent.name, () => {
         h.paths.set([{ key: 'path:1', label: 'Path 1', owners: ['Guard (7)'], points: [{ point: 3, position: at(300, 300) }] }]);
         h.focus.set(at(0, 0));
       });
+
+    it('reports Ctrl + clicks as additive (to select more)', async () => {
+      const { page, host, fixture } = await pickSetup();
+      await settle(fixture);
+      page.pointer('pointerdown', 50, 50, 0, false, true);
+      page.pointer('pointerup', 50, 50, 0, false, true);
+      expect(host.picks).toEqual([expect.objectContaining({ type: 'spawn', key: 'creature:7', additive: true })]);
+    });
+
+    it('highlights the spawns selected along with the main one', async () => {
+      const groups = vi.spyOn(WorldScene.prototype, 'setGroupSelection');
+      const { host, update } = await pickSetup();
+      await update(() => host.group.set(['creature:7']));
+      expect(groups).toHaveBeenLastCalledWith(['creature:7']);
+    });
+
+    it('names the area under the camera from the server terrain', async () => {
+      const areas = new Uint16Array(256).fill(87);
+      client.getServerMap.mockResolvedValue({ areas });
+      client.getAreaNames.mockResolvedValue(
+        new Map([
+          [87, { name: 'Goldshire', parent: 12 }],
+          [12, { name: 'Elwynn Forest', parent: 0 }],
+          [5, { name: 'Zone', parent: 0 }],
+        ]),
+      );
+      const { page, host, fixture, update } = await pickSetup();
+      await settle(fixture);
+      flushFrames();
+      await settle(fixture);
+      expect(page.getDebugElementByTestId('world-viewer-area').nativeElement.textContent).toContain('Goldshire (Elwynn Forest)');
+      // a zone without parent; a tile without terrain data; a failure
+      areas.fill(5);
+      await update(() => host.focus.set(at(100, 0)));
+      await settle(fixture);
+      flushFrames();
+      await settle(fixture);
+      expect(page.getDebugElementByTestId('world-viewer-area').nativeElement.textContent?.trim()).toBe('· Zone');
+      client.getServerMap.mockResolvedValue(undefined);
+      await update(() => host.focus.set(at(200, 0)));
+      await settle(fixture);
+      flushFrames();
+      await settle(fixture);
+      expect(page.getDebugElementByTestId('world-viewer-area', false)).toBeFalsy();
+      client.getServerMap.mockRejectedValue(new Error('locked'));
+      await update(() => host.focus.set(at(300, 0)));
+      await settle(fixture);
+      flushFrames();
+      await settle(fixture);
+      expect(page.getDebugElementByTestId('world-viewer-area', false)).toBeFalsy();
+    });
+
+    it('plays the movement simulation with a copy of the creature, stops it, and replaces it', async () => {
+      let now = 0;
+      vi.spyOn(performance, 'now').mockImplementation(() => now);
+      const ghost = vi.spyOn(WorldScene.prototype, 'moveGhost');
+      // a flat navigation mesh around the centre: the first leg walks on it
+      const corners = [at(-100, -100), at(100, -100), at(100, 100), at(-100, 100)].map((p) => worldToScene({ ...p, z: GROUND }));
+      const positions = [0, 1, 2, 0, 2, 3].flatMap((k) => [corners[k].x, corners[k].y, corners[k].z]);
+      client.getNavMeshTile.mockResolvedValue({ positions: Float32Array.from(positions), colors: new Float32Array(positions.length) });
+      const { page, host, fixture, update } = await pickSetup();
+      await settle(fixture);
+      const plan: MovementSimulation = {
+        key: 'creature:7',
+        // off the mesh's diagonal (where its two triangles meet)
+        start: at(0, -5),
+        rate: 2,
+        legs: [
+          { to: at(10, -5), speed: 5, wait: 4, label: 'point 1' },
+          { to: at(10, 10), speed: 5, wait: 0, label: 'point 2', fly: true },
+        ],
+      };
+      await update(() => host.simulation.set(plan));
+      await settle(fixture);
+      fixture.detectChanges();
+      expect(page.getDebugElementByTestId('world-viewer-simulation').nativeElement.textContent).toContain('point 1');
+      // 1.5 s at ×2: 3 s in, at point 1 and waiting
+      now = 1500;
+      flushFrames();
+      fixture.detectChanges();
+      const [position, orientation] = ghost.mock.calls.at(-1) as [WorldPosition, number];
+      // at the end of the route walked on the navigation mesh
+      expect(Math.hypot(position.x - at(10, -5).x, position.y - at(10, -5).y)).toBeLessThan(0.01);
+      expect(Number.isFinite(orientation)).toBe(true);
+      expect(page.getDebugElementByTestId('world-viewer-simulation').nativeElement.textContent).toContain('WORLD_EDITOR.SIM_WAITING');
+      // a newer simulation replaces it; an unknown creature shows none
+      await update(() => host.simulation.set({ ...plan, key: 'creature:404' }));
+      await settle(fixture);
+      expect(page.getDebugElementByTestId('world-viewer-simulation', false)).toBeFalsy();
+      await update(() => host.simulation.set({ ...plan, legs: [] }));
+      await settle(fixture);
+      await update(() => host.simulation.set(plan));
+      await update(() => host.simulation.set(undefined));
+      await settle(fixture);
+      expect(page.getDebugElementByTestId('world-viewer-simulation', false)).toBeFalsy();
+      await update(() => host.simulation.set(plan));
+      await settle(fixture);
+      fixture.destroy();
+    });
 
     it('reports clicks on spawns', async () => {
       const { page, host, fixture } = await pickSetup();
@@ -929,6 +1041,29 @@ describe(WorldViewerComponent.name, () => {
         expect(host.rebuilds.map((state) => state.status)).toEqual(['reading', 'reading', 'failed']);
         expect(warn).toHaveBeenCalledWith(expect.stringContaining('no ADT'));
       });
+    });
+
+    it('draws links and names the hovered marker', async () => {
+      const { page, host, fixture, update } = await pickSetup();
+      await settle(fixture);
+      const focus = at(800, -800);
+      await update(() => {
+        host.focus.set(focus);
+        // the diamond stands 2.4 yards above its position: right on the focus
+        host.markers.set([
+          { key: 'graveyard:1', label: 'Graveyard: Goldshire', color: 0xffffff, position: { ...focus, z: focus.z - 2.4 } },
+        ]);
+        host.links.set([{ key: 'link:1', from: focus, to: at(810, -800), color: 0xff0000, arrow: true }]);
+      });
+      page.pointer('pointermove', 50, 50);
+      flushFrames();
+      fixture.detectChanges();
+      expect(page.label().nativeElement.textContent?.trim()).toBe('Graveyard: Goldshire');
+      await update(() => host.markers.set([]));
+      page.pointer('pointermove', 50, 50);
+      flushFrames();
+      fixture.detectChanges();
+      expect(page.label(false)).toBeFalsy();
     });
 
     it('names the hovered area trigger', async () => {

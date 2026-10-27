@@ -1,5 +1,5 @@
 import { buildServerMap } from './server-data.mock';
-import { parseServerMap, serverMapName } from './server-map';
+import { parseServerMap, serverAreaAt, serverMapName } from './server-map';
 
 describe('server maps', () => {
   it('names files like the mmtiles: map, grid y, grid x', () => {
@@ -30,5 +30,15 @@ describe('server maps', () => {
   it('refuses other files and versions', () => {
     expect(parseServerMap(new Uint8Array(10))).toBeUndefined();
     expect(parseServerMap(buildServerMap({ version: 8 }))).toBeUndefined();
+  });
+
+  it('tells the area at a position: per chunk, or one for the whole tile', () => {
+    const tile = parseServerMap(buildServerMap({ areas: 'chunks' })) as NonNullable<ReturnType<typeof parseServerMap>>;
+    // Goldshire's tile (31_49): x −9600..−9067, y 0..533; chunk row by x, column by y
+    expect(serverAreaAt(tile, -9070, 530)).toBe(0);
+    expect(serverAreaAt(tile, -9070, 500)).toBe(1);
+    expect(serverAreaAt(tile, -9110, 530)).toBe(16);
+    expect(serverAreaAt(parseServerMap(buildServerMap({ areas: 'one' })) as NonNullable<ReturnType<typeof parseServerMap>>, 0, 0)).toBe(87);
+    expect(serverAreaAt(parseServerMap(buildServerMap()) as NonNullable<ReturnType<typeof parseServerMap>>, 0, 0)).toBe(0);
   });
 });

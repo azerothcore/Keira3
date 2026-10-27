@@ -192,6 +192,92 @@ export function parseAreaTriggers(dbc: DbcFile): AreaTriggerInfo[] {
   return triggers;
 }
 
+/** An area (AreaTable.dbc): its name and its parent zone (0 for zones). */
+export interface AreaName {
+  name: string;
+  parent: number;
+}
+
+/** AreaTable.dbc: 0 ID, 2 ParentAreaID, 11..26 AreaName_lang (the first filled locale). */
+export function parseAreaNames(dbc: DbcFile): Map<number, AreaName> {
+  const areas = new Map<number, AreaName>();
+  for (let r = 0; r < dbc.recordCount; r++) {
+    let name = '';
+    for (let field = 11; field <= 26 && !name; field++) {
+      name = dbc.getString(r, field);
+    }
+    areas.set(dbc.getUint(r, 0), { name, parent: dbc.getUint(r, 2) });
+  }
+  return areas;
+}
+
+/** A flight master's node (TaxiNodes.dbc). */
+export interface TaxiNode {
+  id: number;
+  mapId: number;
+  x: number;
+  y: number;
+  z: number;
+  name: string;
+}
+
+/** TaxiNodes.dbc: 0 ID, 1 ContinentID, 2-4 position, 5..20 Name_lang. */
+export function parseTaxiNodes(dbc: DbcFile): TaxiNode[] {
+  const nodes: TaxiNode[] = [];
+  for (let r = 0; r < dbc.recordCount; r++) {
+    let name = '';
+    for (let field = 5; field <= 20 && !name; field++) {
+      name = dbc.getString(r, field);
+    }
+    nodes.push({
+      id: dbc.getUint(r, 0),
+      mapId: dbc.getUint(r, 1),
+      x: dbc.getFloat(r, 2),
+      y: dbc.getFloat(r, 3),
+      z: dbc.getFloat(r, 4),
+      name,
+    });
+  }
+  return nodes;
+}
+
+/** A flight path (TaxiPath.dbc) with its points on one map (TaxiPathNode.dbc), in order. */
+export interface TaxiPath {
+  id: number;
+  from: number;
+  to: number;
+  points: { x: number; y: number; z: number }[];
+}
+
+/**
+ * TaxiPath.dbc (0 ID, 1 FromTaxiNode, 2 ToTaxiNode) and TaxiPathNode.dbc (0 ID, 1 PathID, 2 NodeIndex, 3 ContinentID,
+ * 4-6 position): the paths with points on `mapId`, each with those points in order.
+ */
+export function parseTaxiPaths(paths: DbcFile, nodes: DbcFile, mapId: number): TaxiPath[] {
+  const byPath = new Map<number, { index: number; x: number; y: number; z: number }[]>();
+  for (let r = 0; r < nodes.recordCount; r++) {
+    if (nodes.getUint(r, 3) !== mapId) {
+      continue;
+    }
+    const path = nodes.getUint(r, 1);
+    const point = { index: nodes.getUint(r, 2), x: nodes.getFloat(r, 4), y: nodes.getFloat(r, 5), z: nodes.getFloat(r, 6) };
+    byPath.set(path, [...(byPath.get(path) ?? []), point]);
+  }
+  const result: TaxiPath[] = [];
+  for (let r = 0; r < paths.recordCount; r++) {
+    const points = byPath.get(paths.getUint(r, 0));
+    if (points) {
+      result.push({
+        id: paths.getUint(r, 0),
+        from: paths.getUint(r, 1),
+        to: paths.getUint(r, 2),
+        points: points.sort((a, b) => a.index - b.index).map(({ x, y, z }) => ({ x, y, z })),
+      });
+    }
+  }
+  return result;
+}
+
 /** GameObjectDisplayInfo.dbc: 0 ID, 1 ModelName → model path by display id. */
 export function parseGameObjectDisplays(dbc: DbcFile): Map<number, string> {
   const displays = new Map<number, string>();

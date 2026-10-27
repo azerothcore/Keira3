@@ -118,6 +118,19 @@ describe('NavGraph', () => {
     expect(graph.findPath({ x: 0.5, y: 0.5, z: 0 }, { x: 20.5, y: 20.5, z: 0 })).toBeUndefined();
   });
 
+  it('walks straight from or to a point right on the edge between two triangles', () => {
+    // the square's two triangles meet along its diagonal (0,0)–(1,1)
+    const graph = new NavGraph([tile([[0, 0]])]);
+    expect(graph.findPath({ x: 0.5, y: 0.5, z: 0 }, { x: 0.9, y: 0.1, z: 0 })).toEqual([
+      { x: 0.5, y: 0.5, z: 0 },
+      { x: 0.9, y: 0.1, z: 0 },
+    ]);
+    expect(graph.findPath({ x: 0.9, y: 0.1, z: 0 }, { x: 0.5, y: 0.5, z: 0 })).toEqual([
+      { x: 0.9, y: 0.1, z: 0 },
+      { x: 0.5, y: 0.5, z: 0 },
+    ]);
+  });
+
   it('knows the walkable surface right above or below a point', () => {
     const graph = new NavGraph([tile([[0, 0]], 0), tile([[0, 0]], 3)]);
     expect(graph.surfaceAt({ x: 0.5, y: 0.5, z: 1 })).toBe(0);

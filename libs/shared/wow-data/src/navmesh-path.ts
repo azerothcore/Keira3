@@ -22,6 +22,18 @@ function same(a: Point2, b: Point2): boolean {
   return Math.abs(a.x - b.x) < 1e-6 && Math.abs(a.y - b.y) < 1e-6;
 }
 
+/** `p` lies on the segment (on the ground plane). */
+function onSegment(p: Point2, [a, b]: Point2[]): boolean {
+  const length = Math.hypot(b.x - a.x, b.y - a.y);
+  return (
+    Math.abs(area(a, b, p)) <= 1e-4 * length &&
+    p.x >= Math.min(a.x, b.x) - 1e-6 &&
+    p.x <= Math.max(a.x, b.x) + 1e-6 &&
+    p.y >= Math.min(a.y, b.y) - 1e-6 &&
+    p.y <= Math.max(a.y, b.y) + 1e-6
+  );
+}
+
 const distance = (a: WorldPosition, b: WorldPosition): number => Math.hypot(a.x - b.x, a.y - b.y, a.z - b.z);
 
 /** Length of a path, in yards. */
@@ -135,7 +147,17 @@ export class NavGraph {
       return undefined;
     }
     const corridor = this.corridor(start, goal, to);
-    return corridor && this.straighten(corridor, from, to);
+    if (!corridor) {
+      return undefined;
+    }
+    // a point right on the edge two triangles share is in both: crossing that edge isn't a turn
+    while (corridor.length > 1 && onSegment(from, this.sharedEdge(corridor[0], corridor[1]))) {
+      corridor.shift();
+    }
+    while (corridor.length > 1 && onSegment(to, this.sharedEdge(corridor[corridor.length - 2], corridor[corridor.length - 1]))) {
+      corridor.pop();
+    }
+    return this.straighten(corridor, from, to);
   }
 
   private corners(t: number): WorldPosition[] {

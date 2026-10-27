@@ -251,6 +251,18 @@
     background-color: #c77dff;
     border-color: #c77dff;
   }
+  .layer-formations:checked {
+    background-color: #9b5de5;
+    border-color: #9b5de5;
+  }
+  .layer-pools:checked {
+    background-color: #00b894;
+    border-color: #00b894;
+  }
+  .layer-travel:checked {
+    background-color: #f0c419;
+    border-color: #f0c419;
+  }
 }
 
 .world-editor-preview-progress {

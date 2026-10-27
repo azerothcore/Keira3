@@ -230,6 +230,24 @@ describe('WorldEditorChanges', () => {
       );
     });
 
+    it('writes SmartAI path points to `waypoints` (entry, pointid)', () => {
+      const changes = new WorldEditorChanges();
+      const point = { pathId: -500, point: 1, x: 1, y: 2, z: 3, delay: 0 };
+      changes.addWaypoint({ ...point, point: 2 });
+      changes.moveWaypoint(point, { x: 4, y: 5, z: 6 });
+      changes.deleteWaypoint({ ...point, point: 3 });
+      expect(changes.describe()).toEqual(['Delete waypoint SmartAI 500 #3', 'Add waypoint SmartAI 500 #2', 'Move waypoint SmartAI 500 #1']);
+      const sql = changes.toSql();
+      expect(sql).toContain('DELETE FROM `waypoints` WHERE (`entry` = 500) AND (`pointid` = 3);');
+      expect(sql).toContain(
+        'INSERT INTO `waypoints` (`entry`, `pointid`, `position_x`, `position_y`, `position_z`, `delay`) VALUES (500, 2, 1, 2, 3, 0);',
+      );
+      expect(sql).toContain(
+        'UPDATE `waypoints` SET `position_x` = 4, `position_y` = 5, `position_z` = 6 WHERE (`entry` = 500) AND (`pointid` = 1);',
+      );
+      expect(sql).not.toContain('waypoint_data');
+    });
+
     it('updates moved waypoints until moved back', () => {
       const changes = new WorldEditorChanges();
       changes.moveWaypoint(waypoint(80, 2), { x: 9, y: 8, z: 7 });

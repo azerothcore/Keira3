@@ -23,6 +23,8 @@ import {
   WorldPosition,
   worldToScene,
   worldToTile,
+  CHUNK_SIZE,
+  serverAreaAt,
 } from '@keira/shared/wow-data';
 import { Object3D, Vector3 } from 'three';
 import { MapControls } from 'three/addons/controls/MapControls.js';
@@ -43,6 +45,7 @@ import {
 import { WorldNavMesh } from './world-navmesh';
 import { WorldVmaps } from './world-vmaps';
 import { collectServerTileGeometry } from './server-geometry';
+import { sampleTimeline, simulationTimeline } from './simulation';
 import { collectTileGeometry, loadRecast, rebuildNavMeshTile } from './navmesh-rebuild';
 import { PathProber, PathProbeRequest, PathProbeResult } from './path-probe';
 import { WorldObjects } from './world-objects';
@@ -52,11 +55,15 @@ import { PickOptions, WorldScene } from './world-scene';
 import {
   ContextRequest,
   GizmoMode,
+  MovementSimulation,
   NavMeshRebuildRequest,
   NavMeshRebuildState,
+  SimulationLeg,
   NavMeshTileInfo,
   WaypointCheck,
   WaypointCheckRequest,
+  WorldLink,
+  WorldMarker,
   ObjectMoved,
   parseWaypointKey,
   PickResult,
@@ -135,6 +142,14 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   readonly hideRealNavMesh = input<boolean>(false);
   /** How the `navMeshRebuild` is going. */
   readonly navMeshRebuilt = output<NavMeshRebuildState>();
+  /** Spawns selected along with `selectedKey` (multi-select), highlighted like it. */
+  readonly groupKeys = input<string[]>([]);
+  /** A creature walking its path (or wandering), drawn as a moving copy of it; undefined stops it. */
+  readonly simulation = input<MovementSimulation | undefined>(undefined);
+  /** Lines between places (formations, teleports, flight paths…). */
+  readonly links = input<WorldLink[]>([]);
+  /** Labelled markers (graveyards, flight masters, pools…), named on hover. */
+  readonly markers = input<WorldMarker[]>([]);
   /** Area trigger volumes to draw (empty = none). */
   readonly areaTriggers = input<WorldAreaTrigger[]>([]);
   readonly picked = output<PickResult>();
@@ -180,10 +195,17 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private probeRequest = 0;
   private rebuildRequest = 0;
   private checkRequest = 0;
+  private simulationRun = 0;
+  private simulationFrame?: number;
+  /** What the simulated creature is doing: the leg it's on, and how long it still waits there. */
+  protected readonly simulationStatus = signal<{ label: string; wait?: number } | undefined>(undefined);
   private recheckTimer?: ReturnType<typeof setTimeout>;
   /** Id of the shown map (for mmtile names), once known. */
   private mapId?: number;
   protected readonly navMeshInfo = signal<NavMeshTileInfo | undefined>(undefined);
+  /** The area under the camera target, from the server's terrain (`maps/`): "Goldshire (Elwynn Forest)". */
+  protected readonly areaName = signal<string | undefined>(undefined);
+  private areaChunk?: string;
   private readonly spawnModels = new SpawnModels(this.client, this.world, this.textures, () => this.requestRender());
   private readonly zoneLighting = new ZoneLighting(this.client, this.world, () => this.requestRender());
   private renderer?: WorldRenderer;
@@ -259,6 +281,15 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     });
     effect(() => this.navMesh.setRealHidden(this.hideRealNavMesh()));
     effect(() => {
+      this.world.setGroupSelection(this.groupKeys());
+      this.requestRender();
+    });
+    effect(() => {
+      const simulation = this.simulation();
+      const directory = this.mapDirectory();
+      untracked(() => void this.runSimulation(directory, simulation));
+    });
+    effect(() => {
       const enabled = this.renderSettings().showCollision || !!this.probe() || !!this.waypointCheck();
       untracked(() => {
         this.vmaps.configure({ enabled: enabled && this.client.isSupported(), radius: 1 });
@@ -271,6 +302,10 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       // the paths drawn first, so the marks land on their points
       this.paths();
       untracked(() => void this.runWaypointCheck(directory, request));
+    });
+    effect(() => {
+      this.world.setOverlays(this.links(), this.markers());
+      this.requestRender();
     });
     effect(() => {
       this.world.setAreaTriggers(this.areaTriggers());
@@ -330,6 +365,10 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     clearTimeout(this.activityTimer);
     clearTimeout(this.recheckTimer);
+    this.simulationRun++;
+    if (this.simulationFrame !== undefined) {
+      cancelAnimationFrame(this.simulationFrame);
+    }
     if (this.moveFrame !== undefined) {
       cancelAnimationFrame(this.moveFrame);
     }
@@ -395,7 +434,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     }
     const result = this.pickAt(event, { groundOnly: this.groundOnly() });
     if (result) {
-      this.picked.emit(result);
+      this.picked.emit(event.ctrlKey || event.metaKey ? { ...result, additive: true } : result);
     }
   }
 
@@ -430,15 +469,17 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     const event = this.hoverEvent as PointerEvent;
     this.hoverEvent = undefined;
     this.altHeld = event.altKey;
-    const result = this.pickAt(event, { markersOnly: true, segments: true, areaTriggers: true });
+    const result = this.pickAt(event, { markersOnly: true, segments: true, areaTriggers: true, overlays: true });
     const text =
       result?.type === 'segment'
         ? this.segmentLabel(result)
         : result?.type === 'areatrigger'
           ? this.areaTriggers().find((trigger) => trigger.key === result.key)?.label
-          : result
-            ? this.labelFor((result as { key: string }).key)
-            : undefined;
+          : result?.type === 'overlay'
+            ? this.markers().find((marker) => marker.key === result.key)?.label
+            : result
+              ? this.labelFor((result as { key: string }).key)
+              : undefined;
     const rect = this.host().nativeElement.getBoundingClientRect();
     this.hoverLabel.set(text ? { text, x: event.clientX - rect.left + 14, y: event.clientY - rect.top + 14 } : undefined);
   }
@@ -554,6 +595,47 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     });
     this.requestRender();
     this.probed.emit(result);
+  }
+
+  /**
+   * Plays the movement simulation: the creature's copy walks each leg (along the navigation mesh when there is one,
+   * straight when flying or without one) at its speed, waits on arrival, and starts over after the last leg.
+   */
+  private async runSimulation(directory: string | undefined, simulation: MovementSimulation | undefined): Promise<void> {
+    const run = ++this.simulationRun;
+    if (this.simulationFrame !== undefined) {
+      cancelAnimationFrame(this.simulationFrame);
+      this.simulationFrame = undefined;
+    }
+    this.simulationStatus.set(undefined);
+    if (!directory || !simulation || !this.world.setGhost(simulation.key)) {
+      this.world.setGhost(undefined);
+      this.requestRender();
+      return;
+    }
+    const segments: { points: WorldPosition[]; leg: SimulationLeg }[] = [];
+    let from = simulation.start;
+    for (const leg of simulation.legs) {
+      const walked = leg.fly ? undefined : await this.prober.walkPath(directory, from, leg.to);
+      if (run !== this.simulationRun) {
+        return;
+      }
+      segments.push({ points: walked && walked.length > 1 ? walked : [from, leg.to], leg });
+      from = leg.to;
+    }
+    const timeline = simulationTimeline(simulation.start, segments);
+    const started = performance.now();
+    const step = (): void => {
+      const elapsed = ((performance.now() - started) / 1000) * simulation.rate;
+      const at = sampleTimeline(timeline, elapsed);
+      this.world.moveGhost(at.position, at.orientation);
+      this.simulationStatus.set(at.status);
+      this.requestRender();
+      if (timeline.duration > 0) {
+        this.simulationFrame = requestAnimationFrame(() => run === this.simulationRun && step());
+      }
+    };
+    step();
   }
 
   /** Checks a path's points and marks them; a newer request makes an older answer be dropped. */
@@ -927,6 +1009,33 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     }
   }
 
+  /** Looks up the area under the camera target when it moved to another chunk (the server keeps one area per chunk). */
+  private async updateArea(center: WorldPosition): Promise<void> {
+    const mapId = this.mapId;
+    const chunk = `${mapId}:${Math.floor(center.x / CHUNK_SIZE)}:${Math.floor(center.y / CHUNK_SIZE)}`;
+    if (chunk === this.areaChunk) {
+      return;
+    }
+    this.areaChunk = chunk;
+    if (mapId === undefined || !this.client.isSupported()) {
+      this.areaName.set(undefined);
+      return;
+    }
+    try {
+      const [tile, names] = await Promise.all([
+        this.client.getServerMap(mapId, worldToTile(center.x, center.y)),
+        this.client.getAreaNames(),
+      ]);
+      const area = tile ? names.get(serverAreaAt(tile, center.x, center.y)) : undefined;
+      const zone = area?.parent ? names.get(area.parent)?.name : undefined;
+      if (chunk === this.areaChunk) {
+        this.areaName.set(area?.name ? `${area.name}${zone ? ` (${zone})` : ''}` : undefined);
+      }
+    } catch {
+      this.areaName.set(undefined);
+    }
+  }
+
   /** Camera target readout and the loading bar (polled while anything is still loading). */
   private updateStatus(): void {
     const center = this.center;
@@ -936,6 +1045,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       this.cameraTarget.set(rounded);
     }
     this.updateNavMeshInfo(center);
+    void this.updateArea(center);
     const activity = {
       terrain: this.streamer.pendingCount,
       buildings: this.objects.pendingCount,

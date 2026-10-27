@@ -13,6 +13,9 @@ import {
   NavMeshTileInfo,
   WaypointCheck,
   WaypointCheckRequest,
+  WorldLink,
+  WorldMarker,
+  MovementSimulation,
   ObjectMoved,
   PathProbeRequest,
   PathProbeResult,
@@ -59,6 +62,10 @@ class FakeWorldViewerComponent {
   readonly waypointCheck = input<WaypointCheckRequest | undefined>(undefined);
   readonly waypointsChecked = output<WaypointCheck[]>();
   readonly collisionSourceChanged = output<'server' | 'client'>();
+  readonly links = input<WorldLink[]>([]);
+  readonly markers = input<WorldMarker[]>([]);
+  readonly groupKeys = input<string[]>([]);
+  readonly simulation = input<MovementSimulation | undefined>(undefined);
   readonly picked = output<PickResult>();
   readonly objectMoved = output<ObjectMoved>();
   readonly centerChanged = output<WorldPosition>();
@@ -154,10 +161,17 @@ describe(WorldEditorComponent.name, () => {
       getCreatureDisplay: vi.fn(),
       getGameObjectDisplay: vi.fn(),
       getM2: vi.fn(),
+      getTaxiNodes: vi.fn(),
+      getTaxiPaths: vi.fn(),
     },
     service: {
       loadSpawns: vi.fn(),
       loadWaypoints: vi.fn(),
+      loadSaiPaths: vi.fn(),
+      loadFormations: vi.fn(),
+      loadPools: vi.fn(),
+      loadGraveyards: vi.fn(),
+      loadTeleports: vi.fn(),
       loadWaypointScripts: vi.fn(),
       loadWaypointSai: vi.fn(),
       loadEventNames: vi.fn(),
@@ -231,6 +245,13 @@ describe(WorldEditorComponent.name, () => {
     mocks.client.getZones.mockImplementation((map: number) => Promise.resolve(map === 0 ? ZONES : []));
     mocks.service.loadSpawns.mockResolvedValue(SPAWNS);
     mocks.service.loadWaypoints.mockResolvedValue(WAYPOINTS);
+    mocks.service.loadSaiPaths.mockResolvedValue(new Map());
+    mocks.service.loadFormations.mockResolvedValue([]);
+    mocks.service.loadPools.mockResolvedValue([]);
+    mocks.service.loadGraveyards.mockResolvedValue([]);
+    mocks.service.loadTeleports.mockResolvedValue([]);
+    mocks.client.getTaxiNodes.mockResolvedValue([]);
+    mocks.client.getTaxiPaths.mockResolvedValue([]);
     mocks.service.loadWaypointScripts.mockResolvedValue(new Map([[50, [{ id: 50, delay: 0, command: 0 }]]]));
     mocks.service.loadWaypointSai.mockResolvedValue([{ entryorguid: -1, point: 2, pathId: 10, actionType: 1, comment: 'Willem - Say' }]);
     mocks.service.loadEventNames.mockResolvedValue(new Map());
@@ -864,7 +885,7 @@ describe(WorldEditorComponent.name, () => {
           .spawns()
           .map((s) => s.label),
       ).toEqual([
-        'Deputy Willem - Creature (GUID: 1, Entry: 101) · path 10',
+        'Deputy Willem - Creature (GUID: 1, Entry: 101) · Path 10',
         '102 - Creature (GUID: 2, Entry: 102)',
         'Mailbox - GameObject (GUID: 3, Entry: 103)',
       ]);
@@ -1640,6 +1661,161 @@ describe(WorldEditorComponent.name, () => {
     });
   });
 
+  describe('groups and travel', () => {
+    it('draws formations, pools and travel points, each with its layer', async () => {
+      mocks.service.loadFormations.mockResolvedValue([{ leader: 1, member: 2, dist: 3, angle: 90, groupAI: 0 }]);
+      mocks.service.loadPools.mockResolvedValue([{ type: 'gameobject', guid: 3, pool: 7, chance: 0, maxLimit: 1, description: 'Mail' }]);
+      mocks.service.loadGraveyards.mockResolvedValue([{ id: 1, x: -8900, y: -100, z: 80, comment: 'Northshire' }]);
+      mocks.service.loadTeleports.mockResolvedValue([{ id: 46, name: 'Inside', map: 0, x: -9400, y: 40, z: 60 }]);
+      mocks.client.getTaxiNodes.mockResolvedValue([{ id: 2, mapId: 0, x: -8900, y: -100, z: 80, name: 'Stormwind' }]);
+      const { page } = await setup();
+      await loadArea(page);
+      const viewer = page.viewer();
+      expect(viewer.links().map((link) => link.key)).toEqual(['formation:1:2', 'pool:7:gameobject:3', 'teleport:46']);
+      expect(viewer.markers().map((marker) => marker.key)).toEqual(['pool:7', 'graveyard:1', 'taxi:2', 'teleport-to:46']);
+      // the formation places of the selected creature's formation
+      viewer.picked.emit({ type: 'spawn', key: 'creature:2', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      expect(viewer.markers().map((marker) => marker.key)).toContain('formation-slot:2');
+      for (const layer of ['formations', 'pools', 'travel']) {
+        page.click('layer-' + layer);
+      }
+      await settle(page);
+      expect(viewer.links()).toEqual([]);
+      expect(viewer.markers()).toEqual([]);
+      // hover lines
+      expect(viewer.spawns().find((s) => s.key === 'creature:2')?.details).toContain('In the formation of 1: 3 yd, 90°');
+    });
+
+    it('still shows the rest when travel data can not be read', async () => {
+      mocks.service.loadGraveyards.mockRejectedValue(new Error('no table'));
+      mocks.service.loadTeleports.mockRejectedValue(new Error('no table'));
+      mocks.client.getTaxiNodes.mockRejectedValue(new Error('no dbc'));
+      mocks.client.getTaxiPaths.mockRejectedValue(new Error('no dbc'));
+      const { page } = await setup();
+      await loadArea(page);
+      expect(page.viewer().markers()).toEqual([]);
+    });
+  });
+
+  describe('selecting several spawns', () => {
+    it('adds spawns with Ctrl + click, moves, turns and deletes them together', async () => {
+      const { page } = await setup();
+      await loadArea(page);
+      const viewer = page.viewer();
+      const pick = (key: string, additive = true) => viewer.picked.emit({ type: 'spawn', key, position: { x: 0, y: 0, z: 0 }, additive });
+      pick('creature:1');
+      await settle(page);
+      expect(page.text('selected-title')).toContain('Deputy Willem');
+      pick('creature:2');
+      pick('gameobject:3');
+      await settle(page);
+      expect(viewer.groupKeys()).toEqual(['creature:2', 'gameobject:3']);
+      expect(page.text('group-count')).toBe('WORLD_EDITOR.GROUP_COUNT');
+      pick('gameobject:3');
+      await settle(page);
+      expect(viewer.groupKeys()).toEqual(['creature:2']);
+
+      // creature 1 at (−8901, −100) moves 10 yards: creature 2 (−8902, −100) follows
+      viewer.objectMoved.emit({ key: 'creature:1', position: { x: -8891, y: -100, z: 80 }, orientation: 0 });
+      await settle(page);
+      expect(page.pendingLines()).toEqual(['Move creature 2', 'Move creature 1 (Deputy Willem)']);
+      expect(page.text('pending-sql')).toContain('`position_x` = -8892');
+
+      // taking the main one out: the next one becomes the main one
+      pick('creature:1');
+      await settle(page);
+      expect(page.text('selected-title')).toContain('GUID: 2');
+      expect(viewer.groupKeys()).toEqual([]);
+      pick('creature:1');
+      await settle(page);
+      page.click('delete-selected');
+      await settle(page);
+      expect([...page.pendingLines()].sort()).toEqual(['Delete creature 1 (Deputy Willem)', 'Delete creature 2']);
+      expect(viewer.groupKeys()).toEqual([]);
+    });
+
+    it('starts a selection with Ctrl + click, and drops it with a plain click or Escape', async () => {
+      const { page } = await setup();
+      await loadArea(page);
+      // nothing selected or copied yet
+      page.key('c', undefined, undefined, { ctrlKey: true });
+      page.key('v', undefined, undefined, { ctrlKey: true });
+      await settle(page);
+      expect(page.pendingLines()).toEqual([]);
+      const viewer = page.viewer();
+      viewer.picked.emit({ type: 'spawn', key: 'creature:1', position: { x: 0, y: 0, z: 0 }, additive: true });
+      viewer.picked.emit({ type: 'spawn', key: 'creature:2', position: { x: 0, y: 0, z: 0 }, additive: true });
+      await settle(page);
+      expect(viewer.groupKeys()).toEqual(['creature:2']);
+      viewer.picked.emit({ type: 'spawn', key: 'creature:1', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      expect(viewer.groupKeys()).toEqual([]);
+      viewer.picked.emit({ type: 'spawn', key: 'creature:2', position: { x: 0, y: 0, z: 0 }, additive: true });
+      await settle(page);
+      page.key('Escape');
+      await settle(page);
+      expect(viewer.groupKeys()).toEqual([]);
+    });
+
+    it('copies the selection and pastes it at the crosshair, by button or key', async () => {
+      const { page } = await setup();
+      await loadArea(page);
+      const viewer = page.viewer();
+      expect(page.byId<HTMLButtonElement>('paste-copied', false)).toBeFalsy();
+      viewer.picked.emit({ type: 'spawn', key: 'gameobject:3', position: { x: 0, y: 0, z: 0 } });
+      viewer.picked.emit({ type: 'spawn', key: 'creature:2', position: { x: 0, y: 0, z: 0 }, additive: true });
+      await settle(page);
+      expect(page.byId<HTMLButtonElement>('paste-copied').nativeElement.disabled).toBe(true);
+      page.click('copy-selection');
+      await settle(page);
+      page.click('paste-copied');
+      await settle(page);
+      // gameobject 3 (−8903, −100) at the camera target (CENTER), creature 2 one yard further along x
+      expect(page.pendingLines()).toEqual(['Place gameobject 1001 (Mailbox)', 'Place creature 1001']);
+      expect(page.text('selected-title')).toContain('GUID: 1001');
+      expect(viewer.groupKeys()).toEqual(['creature:1001']);
+      expect(page.text('pending-sql')).toContain(`${CENTER.x}, ${CENTER.y}, ${CENTER.z}`);
+      page.key('c', undefined, undefined, { ctrlKey: true });
+      page.key('v', undefined, undefined, { ctrlKey: true });
+      await settle(page);
+      expect(page.pendingLines()).toHaveLength(4);
+    });
+  });
+
+  describe('movement simulation', () => {
+    it('plays a creature walking its path, or wandering, at a chosen rate', async () => {
+      const { page } = await setup();
+      await loadArea(page);
+      const viewer = page.viewer();
+      viewer.picked.emit({ type: 'spawn', key: 'gameobject:3', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      expect(page.byId('simulate', false)).toBeFalsy();
+      viewer.picked.emit({ type: 'spawn', key: 'creature:1', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      page.click('simulate');
+      await settle(page);
+      expect(viewer.simulation()?.legs.map((leg) => leg.label)).toEqual(['point 1', 'point 2']);
+      const rate = page.byId<HTMLSelectElement>('simulation-rate').nativeElement;
+      rate.value = '4';
+      rate.dispatchEvent(new Event('change'));
+      await settle(page);
+      expect(viewer.simulation()?.rate).toBe(4);
+      page.click('simulate');
+      await settle(page);
+      expect(viewer.simulation()).toBeUndefined();
+      rate.value = '2';
+      rate.dispatchEvent(new Event('change'));
+      // creature 2 wanders 8 yards
+      viewer.picked.emit({ type: 'spawn', key: 'creature:2', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      page.click('simulate');
+      await settle(page);
+      expect(viewer.simulation()?.legs.at(-1)?.label).toBe('home');
+      expect(viewer.simulation()?.rate).toBe(2);
+    });
+  });
+
   describe('collision source', () => {
     it("says whether the line of sight uses the server's vmaps or the client's models", async () => {
       const { page } = await setup();
@@ -1778,6 +1954,41 @@ describe(WorldEditorComponent.name, () => {
       await settle(page);
       expect(page.pendingLines()).toEqual(['Add waypoint 10 #3']);
       expect(page.text('pending-sql')).toContain('VALUES (10, 3, 4, 5, 6, 0)');
+    });
+
+    it('shows and edits the SmartAI paths creature scripts start', async () => {
+      mocks.service.loadSaiPaths.mockResolvedValue(new Map([[102, [-500]]]));
+      mocks.service.loadWaypoints.mockResolvedValue([...WAYPOINTS, { pathId: -500, point: 1, x: -8920, y: -120, z: 80, delay: 0 }]);
+      mocks.service.loadWaypointSai.mockResolvedValue([
+        { entryorguid: 102, point: 1, pathId: -500, escort: true, actionType: 1, comment: 'Say hello' },
+      ]);
+      const { page } = await setup();
+      await loadArea(page);
+      expect(mocks.service.loadWaypoints).toHaveBeenCalledWith([10, -500]);
+      const sai = page
+        .viewer()
+        .paths()
+        .find((path) => path.key === 'path:-500');
+      expect(sai?.label).toBe('SmartAI path 500');
+      expect(sai?.owners).toEqual(['102 (2)']);
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:2', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      expect(page.text('selected-sai-path')).toBe('SmartAI path 500');
+      expect(page.text('check-path')).toContain('SmartAI path 500');
+
+      page.click('tool-add-waypoint');
+      await settle(page);
+      page.viewer().picked.emit({ type: 'ground', position: { x: 1, y: 2, z: 3 } });
+      await settle(page);
+      expect(page.pendingLines()).toEqual(['Add waypoint SmartAI 500 #2']);
+      expect(page.text('pending-sql')).toContain('INSERT INTO `waypoints`');
+      expect(page.text('selected-title')).toContain('SmartAI path 500');
+      page.viewer().picked.emit({ type: 'waypoint', key: 'path:-500#1', pathKey: 'path:-500', point: 1, position: { x: 0, y: 0, z: 0 } });
+      page.click('tool-select');
+      await settle(page);
+      page.viewer().picked.emit({ type: 'waypoint', key: 'path:-500#1', pathKey: 'path:-500', point: 1, position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      expect(page.text('selected-waypoint-info')).toContain('SAI: Say hello');
     });
 
     it('creates a path for a creature without one', async () => {

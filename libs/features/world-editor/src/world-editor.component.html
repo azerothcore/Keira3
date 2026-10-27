@@ -48,50 +48,19 @@
     </form>
 
     <div class="d-flex align-items-center gap-3 world-editor-layers">
-      <div class="form-check form-switch mb-0">
-        <input
-          class="form-check-input layer-creatures"
-          type="checkbox"
-          id="world-editor-layer-creatures"
-          data-testid="layer-creatures"
-          [checked]="layers().creatures"
-          (change)="toggleLayer('creatures')"
-        />
-        <label class="form-check-label" for="world-editor-layer-creatures">{{ 'WORLD_EDITOR.CREATURES' | translate }}</label>
-      </div>
-      <div class="form-check form-switch mb-0">
-        <input
-          class="form-check-input layer-gameobjects"
-          type="checkbox"
-          id="world-editor-layer-gameobjects"
-          data-testid="layer-gameobjects"
-          [checked]="layers().gameobjects"
-          (change)="toggleLayer('gameobjects')"
-        />
-        <label class="form-check-label" for="world-editor-layer-gameobjects">{{ 'WORLD_EDITOR.GAMEOBJECTS' | translate }}</label>
-      </div>
-      <div class="form-check form-switch mb-0">
-        <input
-          class="form-check-input layer-waypoints"
-          type="checkbox"
-          id="world-editor-layer-waypoints"
-          data-testid="layer-waypoints"
-          [checked]="layers().waypoints"
-          (change)="toggleLayer('waypoints')"
-        />
-        <label class="form-check-label" for="world-editor-layer-waypoints">{{ 'WORLD_EDITOR.WAYPOINTS' | translate }}</label>
-      </div>
-      <div class="form-check form-switch mb-0">
-        <input
-          class="form-check-input layer-area-triggers"
-          type="checkbox"
-          id="world-editor-layer-area-triggers"
-          data-testid="layer-area-triggers"
-          [checked]="layers().areaTriggers"
-          (change)="toggleLayer('areaTriggers')"
-        />
-        <label class="form-check-label" for="world-editor-layer-area-triggers">{{ 'WORLD_EDITOR.AREA_TRIGGERS' | translate }}</label>
-      </div>
+      @for (layer of layerSwitches; track layer.key) {
+        <div class="form-check form-switch mb-0">
+          <input
+            class="form-check-input layer-{{ layer.id }}"
+            type="checkbox"
+            id="world-editor-layer-{{ layer.id }}"
+            [attr.data-testid]="'layer-' + layer.id"
+            [checked]="layers()[layer.key]"
+            (change)="toggleLayer(layer.key)"
+          />
+          <label class="form-check-label" for="world-editor-layer-{{ layer.id }}">{{ layer.label | translate }}</label>
+        </div>
+      }
     </div>
   </div>
   <div class="world-editor-toolbar d-flex align-items-center gap-2 mb-2">
@@ -706,6 +675,10 @@
         [waypointCheck]="waypointCheckRequest()"
         (waypointsChecked)="waypointChecks.set($event)"
         (collisionSourceChanged)="collisionSource.set($event)"
+        [links]="worldLinks()"
+        [groupKeys]="groupKeys()"
+        [simulation]="simulation()"
+        [markers]="worldMarkers()"
         [probe]="probeRequest()"
         [areaTriggers]="worldAreaTriggers()"
       />
@@ -805,7 +778,7 @@
           @if (tool() === 'add-waypoint') {
             <small class="text-muted" data-testid="waypoint-hint">
               @if (activePathId()) {
-                {{ 'WORLD_EDITOR.ADD_WAYPOINT_HINT' | translate: { path: activePathId() } }}
+                {{ 'WORLD_EDITOR.ADD_WAYPOINT_HINT' | translate: { path: pathLabel(activePathId()) } }}
               } @else {
                 {{ 'WORLD_EDITOR.NO_ACTIVE_PATH' | translate }}
               }
@@ -855,6 +828,16 @@
               @if (probeResult(); as result) {
                 @if (result.to) {
                   <ul class="list-unstyled small mb-1" data-testid="probe-result">
+                    @if (probeDistance(); as distance) {
+                      <li data-testid="probe-distance">
+                        <strong>{{ 'WORLD_EDITOR.DISTANCE' | translate }}:</strong>
+                        {{ distance.straight.toFixed(1) }} {{ 'WORLD_EDITOR.YARDS' | translate }}
+                        <span class="text-muted"
+                          >({{ 'WORLD_EDITOR.HORIZONTAL' | translate }} {{ distance.flat.toFixed(1) }},
+                          {{ 'WORLD_EDITOR.HEIGHT' | translate }} {{ distance.height.toFixed(1) }})</span
+                        >
+                      </li>
+                    }
                     <li>
                       <strong>{{ 'WORLD_EDITOR.PATH_LABEL' | translate }}:</strong>
                       @if (result.noNavMesh) {
@@ -952,10 +935,13 @@
                   >path {{ spawn.pathId }}{{ spawn.pathFromTemplate ? ' (template)' : '' }}</span
                 >
               }
+              @for (sai of spawn.saiPaths ?? []; track sai) {
+                <span class="badge bg-info text-dark ms-1" data-testid="selected-sai-path">{{ pathLabel(sai) }}</span>
+              }
             </div>
           } @else if (selectedWaypoint(); as waypoint) {
             <div class="mb-1" data-testid="selected-title">
-              <strong>Path {{ waypoint.pathId }}</strong> <span class="text-muted">· point {{ waypoint.point }}</span>
+              <strong>{{ pathLabel(waypoint.pathId) }}</strong> <span class="text-muted">· point {{ waypoint.point }}</span>
             </div>
             <div class="small mb-1" data-testid="selected-path-owners">
               {{ 'WORLD_EDITOR.WALKED_BY' | translate }}:
@@ -1015,7 +1001,7 @@
                     [title]="'WORLD_EDITOR.CHECK_PATH_HINT' | translate"
                     (click)="toggleCheckPath()"
                   >
-                    <i class="fa fa-check-circle"></i> {{ 'WORLD_EDITOR.CHECK_PATH' | translate }} ({{ activePathId() }})
+                    <i class="fa fa-check-circle"></i> {{ 'WORLD_EDITOR.CHECK_PATH' | translate }} ({{ pathLabel(activePathId()) }})
                   </button>
                   @if (checkedPathId() === activePathId() && waypointChecks().length) {
                     <ul class="list-unstyled small mb-0 mt-1 world-editor-checks" data-testid="path-checks">
@@ -1032,6 +1018,45 @@
                 </div>
               }
               @if (selectedSpawn()) {
+                <div class="d-flex gap-1 flex-wrap align-items-center mt-1" data-testid="group-tools">
+                  <button type="button" class="btn btn-sm btn-outline-secondary" data-testid="copy-selection" (click)="copySelection()">
+                    <i class="fa fa-copy"></i> {{ 'COPY' | translate }}
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-secondary"
+                    data-testid="paste-copied"
+                    [disabled]="!copied().length"
+                    (click)="pasteCopied()"
+                  >
+                    <i class="fa fa-paste"></i> {{ 'WORLD_EDITOR.PASTE' | translate }}
+                  </button>
+                  <small class="text-muted" data-testid="group-count">{{
+                    groupKeys().length
+                      ? ('WORLD_EDITOR.GROUP_COUNT' | translate: { count: groupKeys().length + 1 })
+                      : ('WORLD_EDITOR.GROUP_HINT' | translate)
+                  }}</small>
+                </div>
+                @if (canSimulate()) {
+                  <div class="d-flex gap-1 align-items-center mt-1" data-testid="simulation">
+                    <button
+                      type="button"
+                      class="btn btn-sm"
+                      data-testid="simulate"
+                      [class.btn-primary]="simulation()"
+                      [class.btn-outline-primary]="!simulation()"
+                      (click)="toggleSimulation()"
+                    >
+                      <i class="fa" [class.fa-play]="!simulation()" [class.fa-stop]="simulation()"></i>
+                      {{ (simulation() ? 'WORLD_EDITOR.SIMULATE_STOP' : 'WORLD_EDITOR.SIMULATE') | translate }}
+                    </button>
+                    <select class="form-select form-select-sm w-auto" data-testid="simulation-rate" (change)="setSimulationRate($event)">
+                      @for (rate of [1, 2, 4, 8]; track rate) {
+                        <option [value]="rate" [selected]="simulationRate() === rate">×{{ rate }}</option>
+                      }
+                    </select>
+                  </div>
+                }
                 <div class="world-editor-stack mt-1" data-testid="stack" [title]="'WORLD_EDITOR.STACK_HINT' | translate">
                   <span class="small text-muted">{{ 'WORLD_EDITOR.STACK' | translate }}</span>
                   @for (option of stackSides; track option.side) {
