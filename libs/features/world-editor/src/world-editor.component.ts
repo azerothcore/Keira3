@@ -75,6 +75,7 @@ import {
   BossBoundary,
   describeBoundary,
 } from '@keira/shared/wow-data';
+import { ElectronService } from '@keira/shared/common-services';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ClipboardService } from 'ngx-clipboard';
 import { ToastrService } from 'ngx-toastr';
@@ -239,6 +240,7 @@ export class WorldEditorComponent implements OnInit {
   private readonly session = inject(WorldEditorSessionService);
   private readonly service = inject(WorldEditorService);
   private readonly client = inject(WowClientService);
+  private readonly electron = inject(ElectronService);
   private readonly settings = inject(WowDataSettingsService);
   protected readonly renderSettings = inject(WorldRenderSettingsService);
   protected readonly cache = inject(WowDataCacheService);
@@ -441,6 +443,14 @@ export class WorldEditorComponent implements OnInit {
   protected readonly preloading = signal<
     { label: string; directory: string; done: number; total: number; map: number; maps: number } | undefined
   >(undefined);
+  /** The preload's progress on the taskbar icon too (desktop app), so it's seen with Keira in the background. */
+  private readonly taskbarProgress = effect(() => {
+    const progress = this.preloading();
+    const fraction = progress ? (progress.map + progress.done / Math.max(1, progress.total)) / Math.max(1, progress.maps) : -1;
+    if (this.electron.isElectron()) {
+      this.electron.ipcRenderer.send('keira:progress', fraction);
+    }
+  });
 
   /** Whole percent of `done` out of `total` (0 when nothing is known yet). */
   protected percent(done: number, total: number): number {

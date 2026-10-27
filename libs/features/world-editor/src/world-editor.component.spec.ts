@@ -30,6 +30,7 @@ import {
 import { tileCenter, WOW_DATA_SETTINGS_KEY, WowClientService, WorldBounds, WorldPosition } from '@keira/shared/wow-data';
 import { DebugHtmlElement, PageObjectModel, typeInElement } from 'ngx-page-object-model';
 import { ClipboardService } from 'ngx-clipboard';
+import { ElectronService } from '@keira/shared/common-services';
 import { ToastrService } from 'ngx-toastr';
 import { WorldEditorComponent } from './world-editor.component';
 import { SpawnRecord, WaypointRecord } from './world-editor.model';
@@ -198,6 +199,7 @@ describe(WorldEditorComponent.name, () => {
     },
     toastr: { error: vi.fn(), warning: vi.fn(), success: vi.fn() },
     clipboard: { copyFromContent: vi.fn() },
+    electron: { isElectron: vi.fn(), ipcRenderer: { send: vi.fn() } },
   };
 
   const links = { openCreature: vi.fn(), openCreatureSai: vi.fn(), openGameObject: vi.fn() };
@@ -217,6 +219,7 @@ describe(WorldEditorComponent.name, () => {
         { provide: WorldEditorService, useValue: mocks.service },
         { provide: ToastrService, useValue: mocks.toastr },
         { provide: ClipboardService, useValue: mocks.clipboard },
+        { provide: ElectronService, useValue: mocks.electron },
         ...(opts.links === false ? [] : [{ provide: WORLD_EDITOR_LINKS, useValue: links }]),
         { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: convertToParamMap(opts.params ?? {}) } } },
       ],
@@ -387,12 +390,17 @@ describe(WorldEditorComponent.name, () => {
       expect(page.text('preload-label')).toBe('Elwynn Forest');
       expect(page.text('preload-progress')).toBe('0 / 1 (0%)');
       expect(page.byId('preload-maps', false)).toBeFalsy();
-      report(1, 3);
+      mocks.electron.isElectron.mockReturnValue(true);
+      report(1, 4);
       page.fixture.detectChanges();
-      expect(page.text('preload-progress')).toBe('1 / 3 (33%)');
+      expect(page.text('preload-progress')).toBe('1 / 4 (25%)');
+      // on the taskbar icon too, removed when done
+      expect(mocks.electron.ipcRenderer.send).toHaveBeenLastCalledWith('keira:progress', 0.25);
       finish();
       await settle(page);
       expect(page.byId('preload-progress', false)).toBeFalsy();
+      expect(mocks.electron.ipcRenderer.send).toHaveBeenLastCalledWith('keira:progress', -1);
+      mocks.electron.isElectron.mockReturnValue(false);
       expect(mocks.toastr.success).toHaveBeenCalledWith('Preloaded 1 tiles.', 'World Editor');
 
       // the whole map, cancelled

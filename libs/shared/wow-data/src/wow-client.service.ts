@@ -783,7 +783,18 @@ export class WowClientService {
   }
 }
 
-/** Lets the window repaint (3D view, progress bars, clicks on Cancel) between pieces of long, mostly synchronous work. */
+/**
+ * Lets the window repaint (3D view, progress bars, clicks on Cancel) between pieces of long, mostly synchronous work.
+ * A message, not a timer: timers of a window in the background are slowed down to one a second, then one a minute,
+ * which stalled preloading while Keira wasn't in front.
+ */
 function nextFrame(): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve));
+  return new Promise((resolve) => {
+    const channel = new MessageChannel();
+    channel.port1.onmessage = () => {
+      channel.port1.close();
+      resolve();
+    };
+    channel.port2.postMessage(undefined);
+  });
 }
