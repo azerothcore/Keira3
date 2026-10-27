@@ -57,6 +57,11 @@ export class WorldObjects {
     return this.placed.size;
   }
 
+  /** Tiles whose buildings are still being loaded. */
+  get pendingCount(): number {
+    return this.loading.size;
+  }
+
   get loadedTiles(): string[] {
     return [...this.tiles.keys()];
   }

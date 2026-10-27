@@ -46,6 +46,11 @@ export class SpawnModels {
     private readonly onChange: () => void,
   ) {}
 
+  /** Models still being loaded. */
+  get pendingCount(): number {
+    return this.models.size - this.ready.size;
+  }
+
   get shownCount(): number {
     return this.shown.size;
   }

@@ -30,7 +30,10 @@ import { GizmoMode, ObjectMoved, parseWaypointKey, PickResult, WaypointPath, Wor
 
 const CLICK_TOLERANCE_PX = 4;
 const CENTER_EMIT_DISTANCE = 60;
-const FOCUS_DISTANCE = 90;
+/** How far the camera stands from a place it was sent to (close enough to see an NPC there). */
+const FOCUS_DISTANCE = 40;
+/** While something loads, how often (ms) the loading bar is refreshed. */
+const ACTIVITY_POLL = 250;
 
 interface HoverLabel {
   text: string;
@@ -78,6 +81,11 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   protected readonly hoverLabel = signal<HoverLabel | undefined>(undefined);
   protected readonly error = signal<string | undefined>(undefined);
   protected readonly loading = signal(false);
+  /** What's still loading in the background (undefined when idle). */
+  protected readonly activity = signal<{ terrain: number; buildings: number; props: number; models: number } | undefined>(undefined);
+  /** Server position the camera looks at, for the readout in the corner. */
+  protected readonly cameraTarget = signal<WorldPosition | undefined>(undefined);
+  private activityTimer?: ReturnType<typeof setTimeout>;
 
   private readonly host = viewChild.required<ElementRef<HTMLDivElement>>('host');
   private readonly canvasRef = viewChild.required<ElementRef<HTMLCanvasElement>>('canvas');
@@ -153,7 +161,10 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     effect(() => {
       const target = this.focus();
       if (target) {
-        untracked(() => this.lookAt(target));
+        untracked(() => {
+          this.lookAt(target);
+          this.world.setBeacon(target);
+        });
       }
     });
   }
@@ -188,6 +199,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    clearTimeout(this.activityTimer);
     this.streamer.dispose();
     this.objects.dispose();
     this.doodads.dispose();
@@ -423,6 +435,31 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       this.frameRequested = false;
       this.world.updateMarkerScale();
       this.renderer?.render(this.world.scene, this.world.camera);
+      this.updateStatus();
     });
+  }
+
+  /** Camera target readout and the loading bar (polled while anything is still loading). */
+  private updateStatus(): void {
+    const center = this.center;
+    const rounded = { x: Math.round(center.x * 10) / 10, y: Math.round(center.y * 10) / 10, z: Math.round(center.z * 10) / 10 };
+    const current = this.cameraTarget();
+    if (!current || current.x !== rounded.x || current.y !== rounded.y || current.z !== rounded.z) {
+      this.cameraTarget.set(rounded);
+    }
+    const activity = {
+      terrain: this.streamer.pendingCount,
+      buildings: this.objects.pendingCount,
+      props: this.doodads.pendingCount,
+      models: this.spawnModels.pendingCount,
+    };
+    const busy = Object.values(activity).some((count) => count > 0);
+    this.activity.set(busy ? activity : undefined);
+    if (busy && !this.activityTimer) {
+      this.activityTimer = setTimeout(() => {
+        this.activityTimer = undefined;
+        this.requestRender();
+      }, ACTIVITY_POLL);
+    }
   }
 }

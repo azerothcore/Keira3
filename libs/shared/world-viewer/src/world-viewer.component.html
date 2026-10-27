@@ -16,6 +16,36 @@
     </div>
   }
 
+  <div class="world-viewer-crosshair" aria-hidden="true"></div>
+  @if (cameraTarget(); as target) {
+    <div class="world-viewer-target" data-testid="world-viewer-target">
+      {{ 'WORLD_EDITOR.CAMERA' | translate }}: X {{ target.x }} Y {{ target.y }} Z {{ target.z }}
+    </div>
+  }
+
+  @if (activity(); as busy) {
+    <div class="world-viewer-activity" data-testid="world-viewer-activity" role="status">
+      <div class="progress">
+        <div class="progress-bar progress-bar-striped progress-bar-animated w-100"></div>
+      </div>
+      <small>
+        {{ 'WORLD_EDITOR.LOADING' | translate }}
+        @if (busy.terrain) {
+          · {{ 'WORLD_EDITOR.TERRAIN' | translate }} {{ busy.terrain }}
+        }
+        @if (busy.buildings) {
+          · {{ 'WORLD_EDITOR.BUILDINGS' | translate }} {{ busy.buildings }}
+        }
+        @if (busy.props) {
+          · {{ 'WORLD_EDITOR.DOODADS' | translate }} {{ busy.props }}
+        }
+        @if (busy.models) {
+          · {{ 'WORLD_EDITOR.MODELS' | translate }} {{ busy.models }}
+        }
+      </small>
+    </div>
+  }
+
   @if (loading()) {
     <div class="world-viewer-status" data-testid="world-viewer-loading">{{ 'WORLD_EDITOR.LOADING_TERRAIN' | translate }}</div>
   }

@@ -63,6 +63,11 @@ export class WorldDoodads {
     return count;
   }
 
+  /** Tiles and models still being loaded. */
+  get pendingCount(): number {
+    return this.loading.size + this.templates.size - this.ready.size;
+  }
+
   get loadedTiles(): string[] {
     return [...this.tiles.keys()];
   }

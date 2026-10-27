@@ -567,6 +567,17 @@ describe('WorldScene', () => {
     });
   });
 
+  it('marks a place with a beacon', () => {
+    const world = new WorldScene();
+    const beacon = world.scene.getObjectByName('beacon') as Group;
+    expect(beacon.visible).toBe(false);
+    world.setBeacon(at(1, 2, 30));
+    expect(beacon.visible).toBe(true);
+    expect(beacon.position.y).toBe(30);
+    world.setBeacon(undefined);
+    expect(beacon.visible).toBe(false);
+  });
+
   it('disposes everything', () => {
     const world = new WorldScene();
     world.setTerrainTile(flatTile());

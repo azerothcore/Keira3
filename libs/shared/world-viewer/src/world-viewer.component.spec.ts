@@ -136,6 +136,12 @@ class Page extends PageObjectModel<HostComponent> {
   error(assert = true): DebugHtmlElement<HTMLDivElement> {
     return this.getDebugElementByTestId('world-viewer-error', assert);
   }
+  activity(assert = true): DebugHtmlElement<HTMLDivElement> {
+    return this.getDebugElementByTestId('world-viewer-activity', assert);
+  }
+  target(): DebugHtmlElement<HTMLDivElement> {
+    return this.getDebugElementByTestId('world-viewer-target');
+  }
 
   pointer(type: string, x: number, y: number, button = 0): void {
     const event = new MouseEvent(type, { clientX: x, clientY: y, button, bubbles: true });
@@ -294,6 +300,35 @@ describe(WorldViewerComponent.name, () => {
     expect(client.getCreatureDisplay).toHaveBeenCalledWith(5);
     expect(client.getM2).toHaveBeenCalledWith('Creature\\Wolf\\Wolf.mdx');
     expect(renderer.render).toHaveBeenCalled();
+  });
+
+  it('shows what is still loading, and where the camera looks', async () => {
+    let finish: (value: unknown) => void = () => undefined;
+    client.getTerrainDetail.mockReturnValueOnce(new Promise((resolve) => (finish = resolve)));
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    const { page, fixture } = await setup((h) => {
+      h.focus.set(at(0, 0));
+      h.map.set('Azeroth');
+    });
+    await settle(fixture);
+    vi.advanceTimersByTime(300);
+    flushFrames();
+    fixture.detectChanges();
+    const text = page.activity().nativeElement.textContent?.replace(/\s+/g, ' ');
+    expect(text).toContain('WORLD_EDITOR.TERRAIN 1');
+    expect(page.target().nativeElement.textContent?.trim()).toBe(
+      `WORLD_EDITOR.CAMERA: X ${CENTER.x} Y ${Math.round(CENTER.y * 10) / 10} Z ${GROUND}`,
+    );
+
+    finish(flatDetail(GROUND));
+    for (let i = 0; i < 5; i++) {
+      await settle(fixture);
+      vi.advanceTimersByTime(300);
+      flushFrames();
+    }
+    fixture.detectChanges();
+    expect(page.activity(false)).toBeFalsy();
+    vi.useRealTimers();
   });
 
   it('streams terrain around the focus of the selected map', async () => {

@@ -26,6 +26,7 @@ import {
   Object3D,
   PerspectiveCamera,
   Raycaster,
+  RingGeometry,
   RGBAFormat,
   Scene,
   SphereGeometry,
@@ -170,6 +171,7 @@ export class WorldScene {
   ]);
   private readonly facingArrowMaterial = new MeshBasicMaterial({ color: 0x00e5ff, depthTest: false, transparent: true, opacity: 0.9 });
   private facingArrowsVisible = true;
+  private readonly beacon = createBeacon();
   /** Unit circle on the ground (scaled to each creature's wander distance). */
   private readonly ringGeometry = new BufferGeometry().setFromPoints(
     Array.from({ length: 64 }, (_, i) => new Vector3(Math.cos((i / 64) * Math.PI * 2), 0.3, Math.sin((i / 64) * Math.PI * 2))),
@@ -199,7 +201,7 @@ export class WorldScene {
     this.setRoofsVisible(true);
 
     this.sun.position.set(300, 600, 200);
-    this.scene.add(this.hemisphere, this.ambient, this.sun, this.sky);
+    this.scene.add(this.hemisphere, this.ambient, this.sun, this.sky, this.beacon);
   }
 
   /** Shows building roofs, or hides them to look inside (hidden roofs are not picked either, so clicks reach the floor). */
@@ -442,6 +444,17 @@ export class WorldScene {
     data.modelScale = model ? scale : undefined;
     this.applySelection();
     return true;
+  }
+
+  /**
+   * Marks a place with a tall beam (seen from afar and through everything) and a ring on the ground, e.g. where a
+   * teleport or "go to" landed; `undefined` removes it.
+   */
+  setBeacon(position: WorldPosition | undefined): void {
+    this.beacon.visible = !!position;
+    if (position) {
+      this.beacon.position.copy(scenePoint(position));
+    }
   }
 
   /** Shows or hides the arrows through the middle of models that tell which way they face. */
@@ -717,6 +730,12 @@ export class WorldScene {
     this.wanderMaterial.dispose();
     this.facingArrowGeometry.dispose();
     this.facingArrowMaterial.dispose();
+    this.beacon.traverse((object) => {
+      if (object instanceof Mesh) {
+        object.geometry.dispose();
+        (object.material as Material).dispose();
+      }
+    });
     this.markerMaterials.forEach((material) => material.dispose());
     this.hiddenMarkerMaterial.dispose();
     this.sky.geometry.dispose();
@@ -788,6 +807,20 @@ export class WorldScene {
       }
     });
   }
+}
+
+function createBeacon(): Group {
+  const material = new MeshBasicMaterial({ color: 0xfff35c, transparent: true, opacity: 0.55, depthTest: false });
+  const beam = new Mesh(new CylinderGeometry(0.25, 0.25, 80, 8).translate(0, 40, 0), material);
+  const ring = new Mesh(new RingGeometry(1.2, 1.6, 32).rotateX(-Math.PI / 2).translate(0, 0.2, 0), material.clone());
+  const beacon = new Group();
+  beacon.name = 'beacon';
+  beacon.add(beam, ring);
+  beacon.renderOrder = 4;
+  beam.renderOrder = 4;
+  ring.renderOrder = 4;
+  beacon.visible = false;
+  return beacon;
 }
 
 function scenePoint(position: WorldPosition, lift = 0): Vector3 {
