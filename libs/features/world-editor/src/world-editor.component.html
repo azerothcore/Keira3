@@ -175,6 +175,17 @@
         <input
           class="form-check-input"
           type="checkbox"
+          id="world-editor-facing"
+          data-testid="view-facing"
+          [checked]="renderSettings.settings().showFacingArrows"
+          (change)="setRenderFlag('showFacingArrows', $event)"
+        />
+        <label class="form-check-label" for="world-editor-facing">{{ 'WORLD_EDITOR.FACING_ARROWS' | translate }}</label>
+      </div>
+      <div class="form-check form-switch mb-0">
+        <input
+          class="form-check-input"
+          type="checkbox"
           id="world-editor-wander"
           data-testid="view-wander"
           [checked]="renderSettings.settings().showWanderRadius"

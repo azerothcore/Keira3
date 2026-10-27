@@ -228,6 +228,27 @@ describe('WorldScene', () => {
       expect((marker.material as MeshLambertMaterial).visible).toBe(true);
     });
 
+    it('puts a facing arrow through the middle of models, which can be hidden', () => {
+      const world = new WorldScene();
+      world.setSpawns([spawn('creature:1', 'creature', at(0, 0)), spawn('creature:2', 'creature', at(5, 0))]);
+      const model = new Mesh(new BoxGeometry(2, 4, 1).translate(0, 2, 0), new MeshLambertMaterial());
+      world.setSpawnModel('creature:1', model);
+      const arrow = model.getObjectByName('facing') as Mesh;
+      expect(arrow.position.toArray()).toEqual([0, 2, 0]);
+      expect(arrow.scale.x).toBe(2);
+      expect(arrow.visible).toBe(true);
+      // re-attaching keeps a single arrow
+      world.setSpawnModel('creature:1', model);
+      expect(model.children.filter((c) => c.name === 'facing')).toHaveLength(1);
+
+      world.setFacingArrowsVisible(false);
+      expect(arrow.visible).toBe(false);
+      const later = new Mesh(new BoxGeometry(0.1, 0.1, 0.1), new MeshLambertMaterial());
+      world.setSpawnModel('creature:2', later);
+      expect((later.getObjectByName('facing') as Mesh).visible).toBe(false);
+      expect((later.getObjectByName('facing') as Mesh).scale.x).toBe(0.5);
+    });
+
     it('picks a spawn by its model', () => {
       const world = new WorldScene();
       world.setSpawns([spawn('creature:1', 'creature', at(0, 0))]);

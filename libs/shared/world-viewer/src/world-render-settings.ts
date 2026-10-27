@@ -16,6 +16,8 @@ export interface WorldRenderSettings {
   showDoodads: boolean;
   /** Real creature/gameobject models instead of pins (pins are always used beyond the draw distance). */
   showModels: boolean;
+  /** An arrow through the middle of NPC and object models, pointing where they face. */
+  showFacingArrows: boolean;
   /** A circle around wandering creatures showing how far they roam. */
   showWanderRadius: boolean;
   /** Zone lighting, fog and sky colours (otherwise a fixed neutral light). */
@@ -61,6 +63,7 @@ export const DEFAULT_WORLD_RENDER_SETTINGS: WorldRenderSettings = {
   showRoofs: true,
   showDoodads: true,
   showModels: true,
+  showFacingArrows: true,
   showWanderRadius: false,
   zoneLighting: false,
   drawDistance: 250,

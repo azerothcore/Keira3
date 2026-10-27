@@ -1,5 +1,6 @@
 import {
   AmbientLight,
+  Box3,
   BoxGeometry,
   BufferAttribute,
   BufferGeometry,
@@ -87,6 +88,7 @@ interface SpawnMarkerData {
 
 const SPAWN_MODEL_NAME = 'model';
 const WANDER_RING_NAME = 'wander';
+const FACING_ARROW_NAME = 'facing';
 /** Default colour and opacity of each liquid. */
 const LIQUID_LOOK: Record<LiquidKind, [number, number]> = {
   water: [0x2a6b9c, 0.65],
@@ -161,6 +163,13 @@ export class WorldScene {
   private readonly gameobjectGeometry = new BoxGeometry(1.2, 1.2, 1.2).translate(0, 0.6, 0);
   private readonly waypointGeometry = new SphereGeometry(0.5, 12, 8);
   private readonly arrowGeometry = new ConeGeometry(0.4, 1.2, 8);
+  /** Unit-length arrow along −z from the origin (shaft and head), scaled to each model. */
+  private readonly facingArrowGeometry = mergeGeometries([
+    new CylinderGeometry(0.03, 0.03, 0.7, 6).rotateX(Math.PI / 2).translate(0, 0, -0.35),
+    new ConeGeometry(0.09, 0.3, 8).rotateX(-Math.PI / 2).translate(0, 0, -0.85),
+  ]);
+  private readonly facingArrowMaterial = new MeshBasicMaterial({ color: 0x00e5ff, depthTest: false, transparent: true, opacity: 0.9 });
+  private facingArrowsVisible = true;
   /** Unit circle on the ground (scaled to each creature's wander distance). */
   private readonly ringGeometry = new BufferGeometry().setFromPoints(
     Array.from({ length: 64 }, (_, i) => new Vector3(Math.cos((i / 64) * Math.PI * 2), 0.3, Math.sin((i / 64) * Math.PI * 2))),
@@ -423,6 +432,9 @@ export class WorldScene {
     }
     if (model) {
       model.name = SPAWN_MODEL_NAME;
+      if (!model.getObjectByName(FACING_ARROW_NAME)) {
+        model.add(this.facingArrowFor(model));
+      }
       // hits on the model pick the spawn
       model.traverse((object) => (object.userData = data));
       marker.add(model);
@@ -430,6 +442,33 @@ export class WorldScene {
     data.modelScale = model ? scale : undefined;
     this.applySelection();
     return true;
+  }
+
+  /** Shows or hides the arrows through the middle of models that tell which way they face. */
+  setFacingArrowsVisible(visible: boolean): void {
+    this.facingArrowsVisible = visible;
+    this.spawnGroup.traverse((object) => {
+      if (object.name === FACING_ARROW_NAME) {
+        object.visible = visible;
+      }
+    });
+  }
+
+  /**
+   * An arrow through the centre of a model (half its height, middle of its footprint), sized to it and pointing to
+   * its front (−z, like the pins' nose): shows the orientation of creatures and objects even when they're round.
+   */
+  private facingArrowFor(model: Object3D): Mesh {
+    const box = new Box3().setFromObject(model);
+    const size = box.getSize(new Vector3());
+    const arrow = new Mesh(this.facingArrowGeometry, this.facingArrowMaterial);
+    arrow.name = FACING_ARROW_NAME;
+    box.getCenter(arrow.position);
+    arrow.scale.setScalar(Math.max(size.x, size.z, 0.5));
+    arrow.renderOrder = 3;
+    arrow.raycast = () => undefined;
+    arrow.visible = this.facingArrowsVisible;
+    return arrow;
   }
 
   setWaypointPaths(paths: WaypointPath[]): void {
@@ -676,6 +715,8 @@ export class WorldScene {
     this.pointerGeometry.dispose();
     this.ringGeometry.dispose();
     this.wanderMaterial.dispose();
+    this.facingArrowGeometry.dispose();
+    this.facingArrowMaterial.dispose();
     this.markerMaterials.forEach((material) => material.dispose());
     this.hiddenMarkerMaterial.dispose();
     this.sky.geometry.dispose();
