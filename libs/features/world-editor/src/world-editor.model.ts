@@ -65,7 +65,7 @@ export interface Placement {
   o: number;
 }
 
-export type EditorTool = 'select' | 'place-creature' | 'place-gameobject' | 'add-waypoint';
+export type EditorTool = 'select' | 'place-creature' | 'place-gameobject' | 'add-waypoint' | 'probe';
 
 export interface LayerVisibility {
   creatures: boolean;

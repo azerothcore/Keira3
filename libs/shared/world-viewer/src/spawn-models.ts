@@ -107,7 +107,8 @@ export class SpawnModels {
         changed = this.hide(spawn.key) || changed;
       } else if (this.shown.get(spawn.key) !== displayKey) {
         const mesh = new Mesh(model.template.geometry, model.template.materials);
-        if (model.template.collision) {
+        // only gameobjects collide on the server (doors, chests…); creatures never do
+        if (spawn.kind === 'gameobject' && model.template.collision) {
           mesh.add(collisionMesh(model.template.collision));
         }
         this.scene.setSpawnModel(spawn.key, mesh, model.scale * (spawn.scale ?? 1));

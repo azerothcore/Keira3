@@ -152,7 +152,6 @@ describe('WorldDoodads', () => {
     const collision = meshes(group).find((mesh) => mesh.layers.isEnabled(COLLISION_LAYER));
     expect(collision?.count).toBe(2);
     expect(collision?.material).toBe(COLLISION_MATERIAL);
-    expect(collision?.raycast(undefined as never, [])).toBeUndefined();
     const matrix = new Matrix4();
     collision?.getMatrixAt(1, matrix);
     expect(new Vector3().setFromMatrixPosition(matrix).x).toBeCloseTo(worldToScene({ x: CENTER.x, y: CENTER.y - 20, z: 0 }).x);

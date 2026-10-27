@@ -688,6 +688,9 @@
         (objectMoved)="onObjectMoved($event)"
         (centerChanged)="onCenterChanged($event)"
         (contextRequested)="onContextRequested($event)"
+        (speedChanged)="controls.setSpeed($event)"
+        (probed)="probeResult.set($event)"
+        [probe]="probeRequest()"
         [areaTriggers]="worldAreaTriggers()"
       />
       @if (contextMenu(); as menu) {
@@ -732,7 +735,6 @@
       @if (loadingSpawns()) {
         <span class="badge bg-dark world-editor-loading" data-testid="loading-spawns">{{ 'WORLD_EDITOR.LOADING_SPAWNS' | translate }}</span>
       }
-      <div class="world-editor-help small">{{ 'WORLD_EDITOR.CONTROLS_HELP' | translate }}</div>
     </div>
 
     <div class="world-editor-panel">
@@ -740,7 +742,7 @@
         <div class="card-header py-1">{{ 'WORLD_EDITOR.TOOLS' | translate }}</div>
         <div class="card-body p-2">
           <div class="btn-group btn-group-sm w-100 mb-2" role="group">
-            @for (option of ['select', 'place-creature', 'place-gameobject', 'add-waypoint']; track option) {
+            @for (option of ['select', 'place-creature', 'place-gameobject', 'add-waypoint', 'probe']; track option) {
               <button
                 type="button"
                 class="btn"
@@ -778,6 +780,91 @@
                 {{ 'WORLD_EDITOR.NO_ACTIVE_PATH' | translate }}
               }
             </small>
+          }
+
+          @if (tool() === 'probe') {
+            <div class="world-editor-probe" data-testid="probe">
+              <small class="text-muted d-block mb-1">{{
+                (probeFrom() ? 'WORLD_EDITOR.PROBE_PICK_C' : 'WORLD_EDITOR.PROBE_PICK_A') | translate
+              }}</small>
+              <div class="d-flex gap-1 mb-1">
+                <div class="input-group input-group-sm">
+                  <span class="input-group-text">{{ 'WORLD_EDITOR.RANGE' | translate }}</span>
+                  <select class="form-select" data-testid="probe-range-preset" (change)="setProbeRange($event)">
+                    @for (preset of rangePresets; track preset.range) {
+                      <option [value]="preset.range" [selected]="probeRange() === preset.range">
+                        {{ preset.label | translate }} ({{ preset.range }})
+                      </option>
+                    }
+                    @if (!isRangePreset()) {
+                      <option [value]="probeRange()" selected>{{ probeRange() }}</option>
+                    }
+                  </select>
+                  <input
+                    type="number"
+                    class="form-control"
+                    data-testid="probe-range"
+                    min="0"
+                    [value]="probeRange()"
+                    (change)="setProbeRange($event)"
+                  />
+                </div>
+                <div class="input-group input-group-sm world-editor-probe-height">
+                  <span class="input-group-text">{{ 'WORLD_EDITOR.EYE_HEIGHT' | translate }}</span>
+                  <input
+                    type="number"
+                    class="form-control"
+                    data-testid="probe-height"
+                    min="0"
+                    step="0.5"
+                    [value]="probeHeight()"
+                    (change)="setProbeHeight($event)"
+                  />
+                </div>
+              </div>
+              @if (probeResult(); as result) {
+                @if (result.to) {
+                  <ul class="list-unstyled small mb-1" data-testid="probe-result">
+                    <li>
+                      <strong>{{ 'WORLD_EDITOR.PATH_LABEL' | translate }}:</strong>
+                      @if (result.noNavMesh) {
+                        {{ 'WORLD_EDITOR.NO_NAVMESH' | translate }}
+                      } @else if (result.tooFar) {
+                        {{ 'WORLD_EDITOR.PROBE_TOO_FAR' | translate }}
+                      } @else if (result.path) {
+                        {{ result.length!.toFixed(1) }} {{ 'WORLD_EDITOR.YARDS' | translate }}
+                      } @else {
+                        <span class="text-danger">{{ 'WORLD_EDITOR.NO_PATH' | translate }}</span>
+                      }
+                    </li>
+                    <li>
+                      <strong>{{ 'WORLD_EDITOR.LINE_OF_SIGHT' | translate }}:</strong>
+                      @if (result.blockedAt; as hit) {
+                        <span class="text-danger">{{ 'WORLD_EDITOR.LOS_BLOCKED' | translate }}</span>
+                        ({{ hit.x.toFixed(1) }} {{ hit.y.toFixed(1) }} {{ hit.z.toFixed(1) }})
+                      } @else {
+                        <span class="text-success">{{ 'WORLD_EDITOR.LOS_CLEAR' | translate }}</span>
+                      }
+                    </li>
+                    <li>
+                      <strong>{{ 'WORLD_EDITOR.ATTACK_FROM' | translate }}:</strong>
+                      @if (result.attackFrom; as spot) {
+                        {{ spot.x.toFixed(1) }} {{ spot.y.toFixed(1) }} {{ spot.z.toFixed(1) }} ({{ result.attackDistance!.toFixed(1) }}
+                        {{ 'WORLD_EDITOR.YARDS' | translate }}, {{ 'WORLD_EDITOR.WALK' | translate }} {{ result.walkToAttack!.toFixed(1) }})
+                        <button type="button" class="btn btn-link btn-sm p-0" data-testid="probe-copy-go" (click)="copyGo(spot)">
+                          .go xyz
+                        </button>
+                      } @else {
+                        <span class="text-danger">{{ 'WORLD_EDITOR.NO_ATTACK_POSITION' | translate }}</span>
+                      }
+                    </li>
+                  </ul>
+                }
+              }
+              <button type="button" class="btn btn-sm btn-outline-secondary" data-testid="probe-clear" (click)="clearProbe()">
+                {{ 'WORLD_EDITOR.CLEAR' | translate }}
+              </button>
+            </div>
           }
 
           @if (tool() === 'select') {
@@ -947,6 +1034,30 @@
           } @else {
             <small class="text-muted" data-testid="no-changes">{{ 'WORLD_EDITOR.NO_CHANGES' | translate }}</small>
           }
+        </div>
+      </div>
+
+      <div class="card mb-2 world-editor-help-card">
+        <div class="card-header py-1">{{ 'WORLD_EDITOR.CONTROLS' | translate }}</div>
+        <div class="card-body p-2">
+          <table class="table table-sm table-borderless small mb-0" data-testid="controls-help">
+            <tbody>
+              @for (line of mouseHelp; track line.label) {
+                <tr>
+                  <td class="text-nowrap pe-2">{{ line.input | translate }}</td>
+                  <td>{{ line.label | translate }}</td>
+                </tr>
+              }
+              @for (item of controlActions; track item.action) {
+                @if (controls.settings().bindings[item.action].length) {
+                  <tr>
+                    <td class="text-nowrap pe-2">{{ bindingsLabel(item.action) }}</td>
+                    <td>{{ 'WORLD_EDITOR.CONTROL_' + item.action.toUpperCase() | translate }}</td>
+                  </tr>
+                }
+              }
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

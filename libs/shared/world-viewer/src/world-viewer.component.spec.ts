@@ -10,6 +10,8 @@ import { WORLD_RENDERER_FACTORY, WorldRenderer } from './world-renderer';
 import { WorldViewerComponent } from './world-viewer.component';
 import { ContextRequest, GizmoMode, ObjectMoved, PickResult, WaypointPath, WorldAreaTrigger, WorldSpawn } from './world-viewer.model';
 import { flatDetail, flatTile } from './world-viewer.mock';
+import { WorldScene } from './world-scene';
+import { PathProbeRequest, PathProbeResult } from './path-probe';
 
 // ------------------------------------------------------------------ Three.js controls fakes (jsdom has no WebGL)
 
@@ -104,6 +106,9 @@ interface FakeTransformControls extends EventDispatcher<{ 'dragging-changed': { 
       [region]="region()"
       [navigation]="navigation()"
       [areaTriggers]="triggers()"
+      [probe]="probe()"
+      (probed)="probes.push($event)"
+      (speedChanged)="speeds.push($event)"
       (picked)="picks.push($event)"
       (contextRequested)="contexts.push($event)"
       (objectMoved)="moves.push($event)"
@@ -126,6 +131,9 @@ class HostComponent {
   readonly region = signal<WorldBounds | undefined>(undefined);
   readonly navigation = signal<WorldControlsSettings>(DEFAULT_WORLD_CONTROLS_SETTINGS);
   readonly triggers = signal<WorldAreaTrigger[]>([]);
+  readonly probe = signal<PathProbeRequest | undefined>(undefined);
+  readonly probes: PathProbeResult[] = [];
+  readonly speeds: number[] = [];
   readonly picks: PickResult[] = [];
   readonly contexts: ContextRequest[] = [];
   readonly moves: ObjectMoved[] = [];
@@ -201,6 +209,7 @@ describe(WorldViewerComponent.name, () => {
 
   const client = {
     isSupported: vi.fn(),
+    getNavMeshTile: vi.fn(),
     getMapTiles: vi.fn(),
     getTerrain: vi.fn(),
     getMinimap: vi.fn(),
@@ -341,6 +350,27 @@ describe(WorldViewerComponent.name, () => {
     fixture.detectChanges();
     expect(page.activity(false)).toBeFalsy();
     vi.useRealTimers();
+  });
+
+  it('changes the camera speed with Shift + wheel instead of zooming, and shows it', async () => {
+    const { page, host, fixture, update } = await setup();
+    const viewer = page.getDebugElementByTestId('world-viewer').nativeElement as HTMLElement;
+    const wheel = (init: WheelEventInit) => {
+      const event = new WheelEvent('wheel', { cancelable: true, bubbles: true, ...init });
+      page.canvas().nativeElement.dispatchEvent(event);
+      return event;
+    };
+    expect(wheel({ deltaY: -100, shiftKey: true }).defaultPrevented).toBe(true);
+    wheel({ deltaX: 100, shiftKey: true });
+    wheel({ shiftKey: true });
+    expect(host.speeds).toEqual([1.25, 0.8]);
+    // a plain wheel zooms as usual
+    wheel({ deltaY: -100 });
+    expect(host.speeds).toHaveLength(2);
+    await update(() => host.navigation.set({ ...DEFAULT_WORLD_CONTROLS_SETTINGS, speed: 2.5 }));
+    expect(page.getDebugElementByTestId('world-viewer-speed').nativeElement.textContent.trim()).toBe('WORLD_EDITOR.SPEED ×2.5');
+    expect(viewer).toBeTruthy();
+    fixture.destroy();
   });
 
   it('moves the camera with the navigation keys while the view has the focus', async () => {
@@ -636,6 +666,29 @@ describe(WorldViewerComponent.name, () => {
       expect(page.label(false)).toBeFalsy();
     });
 
+    it('answers Path / LOS questions, keeping only the latest answer, and clears them', async () => {
+      const { host, fixture, update } = await pickSetup();
+      await settle(fixture);
+      client.getNavMeshTile.mockResolvedValue(undefined);
+      const from = at(0, 0);
+      await update(() => host.probe.set({ from, to: at(10, 0), range: 30, height: 2 }));
+      await settle(fixture);
+      expect(host.probes.at(-1)).toEqual(expect.objectContaining({ from, noNavMesh: true }));
+
+      // a newer question wins over one still being answered
+      let resolveFirst: (tile: undefined) => void = () => undefined;
+      client.getNavMeshTile.mockReturnValueOnce(new Promise((resolve) => (resolveFirst = resolve)));
+      await update(() => host.probe.set({ from, to: at(300, 300), range: 30, height: 2 }));
+      await update(() => host.probe.set({ from, range: 30, height: 2 }));
+      await settle(fixture);
+      resolveFirst(undefined);
+      await settle(fixture);
+      expect(host.probes.at(-1)).toEqual({ from });
+      const count = host.probes.length;
+      await update(() => host.probe.set(undefined));
+      expect(host.probes).toHaveLength(count);
+    });
+
     it('names the hovered area trigger', async () => {
       const { page, host, fixture, update } = await pickSetup();
       await settle(fixture);
@@ -815,7 +868,8 @@ describe(WorldViewerComponent.name, () => {
       expect(mapControls().enabled).toBe(true);
     });
 
-    it('puts the marker under the cursor with Space, and brings the camera to it with Home', async () => {
+    it('puts the marker under the crosshair with Space, and brings the camera back to it with Home', async () => {
+      vi.spyOn(performance, 'now').mockReturnValue(0);
       const { page, host, fixture, update } = await setup((h) => {
         h.map.set('Azeroth');
         h.focus.set(at(0, 0));
@@ -824,34 +878,60 @@ describe(WorldViewerComponent.name, () => {
       await update(() => host.focus.set(at(-100, -100)));
       await settle(fixture);
       const canvas = page.canvas().nativeElement;
-      const press = (code: string): KeyboardEvent => {
-        const event = new KeyboardEvent('keydown', { code, cancelable: true });
+      const key = (type: 'keydown' | 'keyup', code: string): KeyboardEvent => {
+        const event = new KeyboardEvent(type, { code, cancelable: true });
         canvas.dispatchEvent(event);
-        flushFrames();
-        fixture.detectChanges();
         return event;
       };
+      const frameAt = (time: number): void => {
+        for (let i = 0; i < 2; i++) {
+          const pending = frames;
+          frames = [];
+          pending.forEach((frame) => frame(time));
+        }
+        fixture.detectChanges();
+      };
       const target = () => page.target().nativeElement.textContent?.trim();
-      flushFrames();
-      fixture.detectChanges();
+      frameAt(0);
       const start = target();
-      // the marker starts where the view was sent; before the cursor was over the view, Space does nothing
-      expect(press('Home').defaultPrevented).toBe(true);
-      expect(press('Space').defaultPrevented).toBe(true);
-      press('Home');
+      expect(key('keydown', 'Space').defaultPrevented).toBe(true);
+      // walk away, then Home comes back to the marker
+      key('keydown', 'KeyW');
+      frameAt(100);
+      key('keyup', 'KeyW');
+      frameAt(200);
+      expect(target()).not.toBe(start);
+      expect(key('keydown', 'Home').defaultPrevented).toBe(true);
+      frameAt(300);
       expect(target()).toBe(start);
-
-      page.pointer('pointermove', 80, 20);
-      press('Space');
-      expect(target()).toBe(start);
-      press('Home');
+      // nothing under the crosshair (a view without size): the marker stays
+      key('keydown', 'KeyW');
+      frameAt(400);
+      key('keyup', 'KeyW');
+      frameAt(500);
       const moved = target();
+      vi.spyOn(WorldScene.prototype, 'pick').mockReturnValueOnce(undefined);
+      key('keydown', 'Space');
+      key('keydown', 'Home');
+      frameAt(600);
+      expect(target()).toBe(start);
       expect(moved).not.toBe(start);
-      // nowhere to land (a view without size): the marker stays
-      vi.mocked(HTMLElement.prototype.getBoundingClientRect).mockReturnValueOnce(new DOMRect(0, 0, 0, 0));
-      press('Space');
-      press('Home');
-      expect(target()).toBe(moved);
+    });
+
+    it('shows which snapping is on above the crosshair', async () => {
+      const { page, host, update } = await setup();
+      expect(page.getDebugElementByTestId('world-viewer-snap').nativeElement.textContent.trim()).toBe(
+        'WORLD_EDITOR.SNAP_TO: WORLD_EDITOR.SNAP_GROUND',
+      );
+      await update(() => {
+        host.snap.set(false);
+        host.wall.set(true);
+      });
+      expect(page.getDebugElementByTestId('world-viewer-snap').nativeElement.textContent.trim()).toBe(
+        'WORLD_EDITOR.SNAP_TO: WORLD_EDITOR.SNAP_WALL',
+      );
+      await update(() => host.wall.set(false));
+      expect(page.getDebugElementByTestId('world-viewer-snap', false)).toBeFalsy();
     });
 
     it('has no marker to go to before the view was sent anywhere', async () => {

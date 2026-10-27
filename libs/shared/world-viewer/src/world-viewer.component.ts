@@ -27,9 +27,11 @@ import {
   DEFAULT_WORLD_CONTROLS_SETTINGS,
   NAVIGATION_ACTIONS,
   NavigationAction,
+  SHIFT_SPEED,
   WorldControlsSettings,
 } from './world-controls-settings';
 import { WorldNavMesh } from './world-navmesh';
+import { PathProber, PathProbeRequest, PathProbeResult } from './path-probe';
 import { WorldObjects } from './world-objects';
 import { DEFAULT_WORLD_RENDER_SETTINGS, drawDistances, WorldRenderSettings } from './world-render-settings';
 import { WORLD_RENDERER_FACTORY, WorldRenderer } from './world-renderer';
@@ -50,6 +52,8 @@ const CENTER_EMIT_DISTANCE = 60;
 /** How far the camera stands from a place it was sent to (close enough to see an NPC there). */
 const FOCUS_DISTANCE = 40;
 const RIGHT_BUTTON = 2;
+/** Each Shift + wheel notch changes the camera speed by this factor. */
+const SPEED_STEP = 1.25;
 /** Keyboard movement speed (yards per second) when the camera is close; it grows with the camera distance. */
 const KEY_MIN_SPEED = 20;
 /** While something loads, how often (ms) the loading bar is refreshed. */
@@ -97,9 +101,15 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   /** An area (e.g. a zone) whose terrain and buildings are loaded whole, on top of what's around the camera. */
   readonly region = input<WorldBounds | undefined>(undefined);
 
+  /** The Path / LOS tool's question (A, C, range, eye height); undefined clears it. */
+  readonly probe = input<PathProbeRequest | undefined>(undefined);
   /** Area trigger volumes to draw (empty = none). */
   readonly areaTriggers = input<WorldAreaTrigger[]>([]);
   readonly picked = output<PickResult>();
+  /** Shift + wheel asked for another camera speed (the caller saves it in `navigation`). */
+  readonly speedChanged = output<number>();
+  /** The answer to `probe`. */
+  readonly probed = output<PathProbeResult>();
   /** Right-click on a spawn or waypoint, for a context menu. */
   readonly contextRequested = output<ContextRequest>();
   readonly objectMoved = output<ObjectMoved>();
@@ -129,6 +139,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private readonly objects = new WorldObjects(this.client, this.world.buildingGroup, this.textures, () => this.requestRender());
   private readonly doodads = new WorldDoodads(this.client, this.world.doodadGroup, this.textures, () => this.requestRender());
   private readonly navMesh = new WorldNavMesh(this.client, this.world.navMeshGroup, () => this.requestRender());
+  private readonly prober = new PathProber(this.client, this.world);
+  private probeRequest = 0;
   private readonly spawnModels = new SpawnModels(this.client, this.world, this.textures, () => this.requestRender());
   private readonly zoneLighting = new ZoneLighting(this.client, this.world, () => this.requestRender());
   private renderer?: WorldRenderer;
@@ -193,6 +205,11 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       this.requestRender();
     });
     effect(() => {
+      const request = this.probe();
+      const directory = this.mapDirectory();
+      untracked(() => void this.runProbe(directory, request));
+    });
+    effect(() => {
       this.world.setAreaTriggers(this.areaTriggers());
       this.requestRender();
     });
@@ -221,6 +238,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     this.renderer = this.rendererFactory(canvas);
     this.renderer.setPixelRatio(window.devicePixelRatio);
 
+    // Shift + wheel changes the camera speed instead of zooming (listened to before the map controls get the event)
+    this.host().nativeElement.addEventListener('wheel', this.onSpeedWheel, { capture: true, passive: false });
     this.controls = new MapControls(this.world.camera, canvas);
     this.controls.target = this.target;
     this.controls.screenSpacePanning = false;
@@ -256,6 +275,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     this.navMesh.dispose();
     this.spawnModels.dispose();
     this.resizeObserver?.disconnect();
+    this.host().nativeElement.removeEventListener('wheel', this.onSpeedWheel, { capture: true });
     this.gizmo.detach();
     this.gizmo.dispose();
     this.controls?.dispose();
@@ -404,7 +424,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     if (marker) {
       event.preventDefault();
       if (marker === 'markerToCursor') {
-        this.markerToCursor();
+        this.markerToCrosshair();
       } else {
         this.cameraToMarker();
       }
@@ -451,8 +471,42 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   }
 
   /** Space: moves the camera target (and its marker) to the ground under the cursor, keeping the view's angle and zoom. */
-  private markerToCursor(): void {
-    const ground = this.lastPointer && this.pickAt(this.lastPointer, { groundOnly: true });
+  private async runProbe(directory: string | undefined, request: PathProbeRequest | undefined): Promise<void> {
+    const id = ++this.probeRequest;
+    if (!directory || !request) {
+      this.world.setProbe(undefined);
+      this.requestRender();
+      return;
+    }
+    const result = await this.prober.probe(directory, request);
+    if (id !== this.probeRequest) {
+      return;
+    }
+    const eye = (p: WorldPosition): WorldPosition => ({ ...p, z: p.z + request.height });
+    this.world.setProbe({
+      ...result,
+      sight: result.to && { from: eye(result.from), to: eye(result.to), blockedAt: result.blockedAt },
+    });
+    this.requestRender();
+    this.probed.emit(result);
+  }
+
+  /** Puts the marker on the ground under the crosshair (the "+" in the middle of the view). */
+  private readonly onSpeedWheel = (event: WheelEvent): void => {
+    if (!event.shiftKey) {
+      return;
+    }
+    event.preventDefault();
+    event.stopPropagation();
+    // browsers turn Shift + wheel into a horizontal scroll
+    const delta = event.deltaY || event.deltaX;
+    if (delta) {
+      this.speedChanged.emit(this.navigation().speed * (delta < 0 ? SPEED_STEP : 1 / SPEED_STEP));
+    }
+  };
+
+  private markerToCrosshair(): void {
+    const ground = this.world.pick(0, 0, { groundOnly: true });
     if (ground?.type === 'ground') {
       this.setMarker(ground.position);
     }
@@ -495,7 +549,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     // the view's forward on the ground: where it looks (−z), plus its "up" for when it looks straight down
     const forward = new Vector3(0, 1, -1).applyQuaternion(camera.quaternion).setY(0).normalize();
     const right = new Vector3().crossVectors(forward, new Vector3(0, 1, 0));
-    const speed = Math.max(KEY_MIN_SPEED, camera.position.distanceTo(this.target)) * (this.fast ? 3 : 1) * seconds;
+    const speed =
+      Math.max(KEY_MIN_SPEED, camera.position.distanceTo(this.target)) * (this.fast ? SHIFT_SPEED : 1) * this.navigation().speed * seconds;
     const move = new Vector3();
     const sign = (positive: NavigationAction, negative: NavigationAction) =>
       Number(this.pressed.has(positive)) - Number(this.pressed.has(negative));

@@ -114,15 +114,17 @@ describe('SpawnModels', () => {
     expect(maps).toEqual([loaded.get('Creature\\Wolf\\WolfGrey.blp'), loaded.get('Creature\\Wolf\\Eyes.blp'), textures.fallback]);
   });
 
-  it('adds the collision of models that have one, on the collision layer', async () => {
+  it('adds the collision of gameobject models that have one, on the collision layer', async () => {
     const { models, world, source } = setup();
     source.getM2.mockResolvedValue({
       ...mesh([batch()]),
       collision: { positions: new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]), indices: new Uint16Array([0, 1, 2]) },
     });
-    await show(models, world, [spawn('gameobject:1', 'gameobject', 0, 7)]);
+    await show(models, world, [spawn('gameobject:1', 'gameobject', 0, 7), spawn('creature:1', 'creature', 0, 1)]);
     const collision = modelOf(world, 'gameobject:1')?.getObjectByName('collision') as Mesh;
     expect(collision.layers.isEnabled(COLLISION_LAYER)).toBe(true);
+    // creatures never collide on the server
+    expect(modelOf(world, 'creature:1')?.getObjectByName('collision')).toBeUndefined();
   });
 
   it('dresses humanoid NPCs with their default geosets', async () => {

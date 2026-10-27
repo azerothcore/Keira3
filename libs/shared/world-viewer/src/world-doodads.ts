@@ -219,7 +219,6 @@ export class WorldDoodads {
       if (template.collision) {
         const collision = new InstancedMesh(template.collision, COLLISION_MATERIAL, capacity);
         collision.layers.set(COLLISION_LAYER);
-        collision.raycast = () => undefined;
         this.group.add(collision);
         this.collisions.set(key, collision);
       }

@@ -113,6 +113,25 @@ const GROUND_STEP = 2;
 /** Snap to wall looks this far around (yards), in this many directions, and leaves this gap. */
 const WALL_SNAP_DISTANCE = 6;
 const WALL_SNAP_DIRECTIONS = 16;
+/** What the Path / LOS tool draws: A, C, the walking path, the line of sight (eye to eye) and where to attack from. */
+export interface ProbeDrawing {
+  from: WorldPosition;
+  to?: WorldPosition;
+  path?: WorldPosition[];
+  sight?: { from: WorldPosition; to: WorldPosition; blockedAt?: WorldPosition };
+  attackFrom?: WorldPosition;
+}
+
+const PROBE_COLORS = {
+  path: 0x22d3ee,
+  clear: 0x4ade80,
+  blocked: 0xef4444,
+  hidden: 0x6b7280,
+  from: 0x3b82f6,
+  to: 0xef4444,
+  attack: 0xfacc15,
+};
+
 /** Area triggers with no radius still get a small sphere, to be seen. */
 const MIN_TRIGGER_RADIUS = 0.5;
 const WALL_SNAP_GAP = 0.1;
@@ -190,6 +209,9 @@ export class WorldScene {
   };
   private facingArrowsVisible = true;
   private readonly beacon = createBeacon();
+  /** The Path / LOS tool's drawing: the path, the line of sight and the points. */
+  readonly probeGroup = new Group();
+  private readonly losRaycaster = new Raycaster();
   /** Unit circle on the ground (scaled to each creature's wander distance). */
   private readonly ringGeometry = new BufferGeometry().setFromPoints(
     Array.from({ length: 64 }, (_, i) => new Vector3(Math.cos((i / 64) * Math.PI * 2), 0.3, Math.sin((i / 64) * Math.PI * 2))),
@@ -237,10 +259,84 @@ export class WorldScene {
     this.setRoofsVisible(true);
 
     this.sun.position.set(300, 600, 200);
-    this.scene.add(this.hemisphere, this.ambient, this.sun, this.sky, this.beacon);
+    this.scene.add(this.hemisphere, this.ambient, this.sun, this.sky, this.beacon, this.probeGroup);
   }
 
   /** Shows building roofs, or hides them to look inside (hidden roofs are not picked either, so clicks reach the floor). */
+  /**
+   * Line of sight between two points, like the server's vmaps: blocked by the terrain and by the collision of buildings
+   * and models (only those loaded around the camera). Returns where the line is first blocked, if it is.
+   */
+  lineOfSightBlock(from: WorldPosition, to: WorldPosition): WorldPosition | undefined {
+    const start = scenePoint(from);
+    const end = scenePoint(to);
+    const length = start.distanceTo(end);
+    if (length === 0) {
+      return undefined;
+    }
+    this.scene.updateMatrixWorld();
+    const blockers: Object3D[] = [...this.terrainGroup.children];
+    for (const group of [this.buildingGroup, this.doodadGroup, this.spawnGroup]) {
+      group.traverse((object) => {
+        if (object.layers.isEnabled(COLLISION_LAYER)) {
+          blockers.push(object);
+        }
+      });
+    }
+    this.losRaycaster.layers.enableAll();
+    this.losRaycaster.set(start, end.clone().sub(start).normalize());
+    this.losRaycaster.far = length;
+    const hit = this.losRaycaster.intersectObjects(blockers, true)[0];
+    return hit ? sceneToWorld(hit.point) : undefined;
+  }
+
+  /** Draws (or clears, with undefined) the Path / LOS tool's result. */
+  setProbe(probe: ProbeDrawing | undefined): void {
+    this.probeGroup.traverse((object) => {
+      if (object instanceof Line || object instanceof Mesh) {
+        object.geometry.dispose();
+        (object.material as Material).dispose();
+      }
+    });
+    this.probeGroup.clear();
+    if (!probe) {
+      return;
+    }
+    const line = (points: WorldPosition[], color: number, lift = 0.3) => {
+      const geometry = new BufferGeometry().setFromPoints(points.map((p) => scenePoint(p, lift)));
+      const object = new Line(geometry, new LineBasicMaterial({ color, depthTest: false, transparent: true }));
+      object.renderOrder = 5;
+      this.probeGroup.add(object);
+    };
+    const dot = (position: WorldPosition, color: number, radius = 0.6) => {
+      const mesh = new Mesh(new SphereGeometry(radius, 12, 8), new MeshBasicMaterial({ color, depthTest: false, transparent: true }));
+      mesh.position.copy(scenePoint(position, 0.3));
+      mesh.renderOrder = 6;
+      this.probeGroup.add(mesh);
+    };
+    if (probe.path) {
+      line(probe.path, PROBE_COLORS.path);
+    }
+    if (probe.sight) {
+      const { from, to, blockedAt } = probe.sight;
+      line(blockedAt ? [from, blockedAt] : [from, to], blockedAt ? PROBE_COLORS.blocked : PROBE_COLORS.clear, 0);
+      if (blockedAt) {
+        line([blockedAt, to], PROBE_COLORS.hidden, 0);
+        dot(blockedAt, PROBE_COLORS.blocked, 0.35);
+      }
+    }
+    dot(probe.from, PROBE_COLORS.from);
+    if (probe.to) {
+      dot(probe.to, PROBE_COLORS.to);
+    }
+    if (probe.attackFrom) {
+      dot(probe.attackFrom, PROBE_COLORS.attack, 0.8);
+      if (probe.to) {
+        line([probe.attackFrom, probe.to], PROBE_COLORS.attack, 1);
+      }
+    }
+  }
+
   /** Shows the collision meshes of buildings and models (the server's hitboxes) as a wireframe. */
   setCollisionVisible(visible: boolean): void {
     if (visible) {

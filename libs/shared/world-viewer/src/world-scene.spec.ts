@@ -294,6 +294,48 @@ describe('WorldScene', () => {
       expect(color(gameobject)).toBe(0x2ec4f1);
     });
 
+    it('checks the line of sight against the terrain and the collision of buildings and models, not their looks', () => {
+      const world = new WorldScene();
+      world.setTerrainTile(flatTile(10));
+      const at2 = (dx: number, z: number) => ({ x: CENTER.x + dx, y: CENTER.y, z });
+      expect(world.lineOfSightBlock(at2(0, 12), at2(20, 12))).toBeUndefined();
+      expect(world.lineOfSightBlock(at2(0, 12), at2(0, 12))).toBeUndefined();
+      // through the ground
+      expect(world.lineOfSightBlock(at2(0, 12), at2(20, 5))?.z).toBeCloseTo(10, 0);
+
+      // a wall 10 yards north: its drawn mesh doesn't block, its collision does
+      const wall = new Mesh(new BoxGeometry(10, 20, 1), new MeshBasicMaterial());
+      wall.position.copy(new Vector3(worldToScene(at2(10, 0)).x, 10, worldToScene(at2(10, 0)).z));
+      world.buildingGroup.add(wall);
+      expect(world.lineOfSightBlock(at2(0, 12), at2(20, 12))).toBeUndefined();
+      const collision = new Mesh(wall.geometry, new MeshBasicMaterial());
+      collision.layers.set(COLLISION_LAYER);
+      wall.add(collision);
+      expect(world.lineOfSightBlock(at2(0, 12), at2(20, 12))?.x).toBeCloseTo(CENTER.x + 9.5);
+    });
+
+    it('draws the Path / LOS probe and clears it', () => {
+      const world = new WorldScene();
+      const p = (dx: number) => at(dx, 0);
+      world.setProbe({ from: p(0) });
+      expect(world.probeGroup.children).toHaveLength(1);
+      world.setProbe({
+        from: p(0),
+        to: p(10),
+        path: [p(0), p(5), p(10)],
+        sight: { from: p(0), to: p(10), blockedAt: p(4) },
+        attackFrom: p(6),
+      });
+      // path, sight up to the block, hidden rest, block dot, A, C, attack dot, attack line
+      expect(world.probeGroup.children).toHaveLength(8);
+      world.setProbe({ from: p(0), to: p(10), sight: { from: p(0), to: p(10) } });
+      expect(world.probeGroup.children).toHaveLength(3);
+      world.setProbe({ from: p(0), attackFrom: p(0) });
+      expect(world.probeGroup.children).toHaveLength(2);
+      world.setProbe(undefined);
+      expect(world.probeGroup.children).toHaveLength(0);
+    });
+
     it('shows the collision layer only when asked', () => {
       const world = new WorldScene();
       expect(world.camera.layers.isEnabled(COLLISION_LAYER)).toBe(false);

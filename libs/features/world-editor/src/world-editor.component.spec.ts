@@ -9,6 +9,8 @@ import {
   WorldControlsSettings,
   GizmoMode,
   ObjectMoved,
+  PathProbeRequest,
+  PathProbeResult,
   PickResult,
   WaypointPath,
   WorldAreaTrigger,
@@ -42,6 +44,9 @@ class FakeWorldViewerComponent {
   readonly region = input<WorldBounds | undefined>(undefined);
   readonly navigation = input<WorldControlsSettings>(DEFAULT_WORLD_CONTROLS_SETTINGS);
   readonly areaTriggers = input<WorldAreaTrigger[]>([]);
+  readonly probe = input<PathProbeRequest | undefined>(undefined);
+  readonly probed = output<PathProbeResult>();
+  readonly speedChanged = output<number>();
   readonly picked = output<PickResult>();
   readonly objectMoved = output<ObjectMoved>();
   readonly centerChanged = output<WorldPosition>();
@@ -1186,6 +1191,108 @@ describe(WorldEditorComponent.name, () => {
       await rightClick(page, 'creature:1');
       expect(page.byId<HTMLButtonElement>('context-creature').nativeElement.disabled).toBe(true);
       expect(page.byId<HTMLButtonElement>('context-sai').nativeElement.disabled).toBe(true);
+    });
+  });
+
+  describe('path & line of sight', () => {
+    it('asks the view for the path, sight and attack position from A to C, and shows the answer', async () => {
+      const { page } = await setup();
+      await loadArea(page);
+      page.click('tool-probe');
+      page.fixture.detectChanges();
+      expect(page.text('probe')).toContain('WORLD_EDITOR.PROBE_PICK_A');
+      expect(page.viewer().probe()).toBeUndefined();
+      const a = { x: 1, y: 2, z: 3 };
+      const c = { x: 10, y: 2, z: 3 };
+      page.viewer().picked.emit({ type: 'ground', position: a });
+      await settle(page);
+      expect(page.viewer().probe()).toEqual({ from: a, to: undefined, range: 30, height: 2 });
+      expect(page.text('probe')).toContain('WORLD_EDITOR.PROBE_PICK_C');
+      page.viewer().picked.emit({ type: 'ground', position: c });
+      await settle(page);
+      expect(page.viewer().probe()).toEqual({ from: a, to: c, range: 30, height: 2 });
+
+      const range = page.byId<HTMLSelectElement>('probe-range-preset').nativeElement;
+      range.value = '5';
+      range.dispatchEvent(new Event('change'));
+      const custom = page.byId<HTMLInputElement>('probe-range').nativeElement;
+      custom.value = '12';
+      custom.dispatchEvent(new Event('change'));
+      custom.value = '-3';
+      custom.dispatchEvent(new Event('change'));
+      const height = page.byId<HTMLInputElement>('probe-height').nativeElement;
+      height.value = '3.5';
+      height.dispatchEvent(new Event('change'));
+      height.value = 'x';
+      height.dispatchEvent(new Event('change'));
+      page.fixture.detectChanges();
+      expect(page.viewer().probe()).toEqual({ from: a, to: c, range: 12, height: 3.5 });
+      expect(range.selectedOptions[0].textContent?.trim()).toBe('12');
+
+      // the answers
+      page.viewer().probed.emit({ from: a });
+      page.fixture.detectChanges();
+      expect(page.byId('probe-result', false)).toBeFalsy();
+      page.viewer().probed.emit({
+        from: a,
+        to: c,
+        path: [a, c],
+        length: 9,
+        attackFrom: { x: 4, y: 2, z: 3 },
+        attackDistance: 6,
+        walkToAttack: 3,
+      });
+      page.fixture.detectChanges();
+      const result = page.text('probe-result');
+      expect(result).toContain('9.0 WORLD_EDITOR.YARDS');
+      expect(result).toContain('WORLD_EDITOR.LOS_CLEAR');
+      expect(result).toContain('4.0 2.0 3.0');
+      page.click('probe-copy-go');
+      expect(mocks.clipboard.copyFromContent).toHaveBeenCalledWith('.go xyz 4.00 2.00 3.00 0');
+      for (const [answer, text] of [
+        [{ noNavMesh: true }, 'WORLD_EDITOR.NO_NAVMESH'],
+        [{ tooFar: true }, 'WORLD_EDITOR.PROBE_TOO_FAR'],
+        [{ blockedAt: { x: 5, y: 2, z: 4 } }, 'WORLD_EDITOR.LOS_BLOCKED'],
+      ] as const) {
+        page.viewer().probed.emit({ from: a, to: c, ...answer });
+        page.fixture.detectChanges();
+        expect(page.text('probe-result')).toContain(text);
+        expect(page.text('probe-result')).toContain('WORLD_EDITOR.NO_ATTACK_POSITION');
+      }
+      page.viewer().probed.emit({ from: a, to: c });
+      page.fixture.detectChanges();
+      expect(page.text('probe-result')).toContain('WORLD_EDITOR.NO_PATH');
+
+      // a third click starts again from A; Clear forgets everything; other tools ask nothing
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:1', position: c });
+      await settle(page);
+      expect(page.viewer().probe()).toEqual({ from: c, to: undefined, range: 12, height: 3.5 });
+      page.click('probe-clear');
+      page.fixture.detectChanges();
+      expect(page.viewer().probe()).toBeUndefined();
+      page.viewer().picked.emit({ type: 'ground', position: a });
+      page.click('tool-select');
+      page.fixture.detectChanges();
+      expect(page.viewer().probe()).toBeUndefined();
+    });
+  });
+
+  describe('help & speed', () => {
+    it('lists the mouse controls and the keys bound to every action, and saves the camera speed', async () => {
+      const { page } = await setup();
+      const help = page.text('controls-help');
+      expect(help).toContain('WORLD_EDITOR.HELP_SHIFT_WHEEL');
+      expect(help).toContain('W / ↑');
+      expect(help).toContain('Ctrl+Y / Ctrl+Shift+Z');
+      page.viewer().speedChanged.emit(2.5);
+      page.fixture.detectChanges();
+      expect(page.viewer().navigation().speed).toBe(2.5);
+      // an action without keys isn't listed
+      page.click('controls-toggle');
+      page.fixture.detectChanges();
+      page.click('unbind-cancel-Escape');
+      page.fixture.detectChanges();
+      expect(page.text('controls-help')).not.toContain('WORLD_EDITOR.CONTROL_CANCEL');
     });
   });
 

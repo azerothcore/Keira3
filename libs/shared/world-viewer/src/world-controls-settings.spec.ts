@@ -40,6 +40,21 @@ describe('world controls', () => {
     expect(restored.settings()).toEqual(DEFAULT_WORLD_CONTROLS_SETTINGS);
   });
 
+  it('keeps the camera speed within its limits, and remembers it', () => {
+    const service = TestBed.inject(WorldControlsSettingsService);
+    service.setSpeed(2.345);
+    expect(service.settings().speed).toBe(2.35);
+    service.setSpeed(50);
+    expect(service.settings().speed).toBe(10);
+    service.setSpeed(0);
+    expect(service.settings().speed).toBe(0.1);
+    TestBed.resetTestingModule();
+    expect(TestBed.inject(WorldControlsSettingsService).settings().speed).toBe(0.1);
+    TestBed.resetTestingModule();
+    localStorage.setItem(WORLD_CONTROLS_SETTINGS_KEY, JSON.stringify({ speed: 99 }));
+    expect(TestBed.inject(WorldControlsSettingsService).settings().speed).toBe(1);
+  });
+
   it('tells which other actions an input clashes with', () => {
     const service = TestBed.inject(WorldControlsSettingsService);
     expect(service.clashes('forward', 'KeyW')).toEqual([]);

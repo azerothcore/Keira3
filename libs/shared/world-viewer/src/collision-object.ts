@@ -1,7 +1,7 @@
 import { CollisionMesh } from '@keira/shared/wow-data';
 import { BufferAttribute, BufferGeometry, Mesh, MeshBasicMaterial } from 'three';
 
-/** Collision meshes live on this layer: the camera sees it only when hitboxes are shown, and clicks never hit it. */
+/** Collision meshes live on this layer: the camera sees it only when hitboxes are shown, and clicks never hit it (only line-of-sight rays). */
 export const COLLISION_LAYER = 3;
 
 /** One see-through wireframe for every collision mesh (never disposed: shared by all of them). */
@@ -19,11 +19,10 @@ export function buildCollisionGeometry(collision: CollisionMesh | undefined): Bu
   return geometry;
 }
 
-/** A collision mesh on the collision layer, never picked. */
+/** A collision mesh on the collision layer: ordinary picking never sees it, line-of-sight rays do. */
 export function collisionMesh(geometry: BufferGeometry): Mesh {
   const mesh = new Mesh(geometry, COLLISION_MATERIAL);
   mesh.name = 'collision';
   mesh.layers.set(COLLISION_LAYER);
-  mesh.raycast = () => undefined;
   return mesh;
 }

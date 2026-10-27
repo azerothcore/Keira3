@@ -61,9 +61,21 @@ export const DEFAULT_CONTROL_BINDINGS: Record<ControlAction, string[]> = {
 export interface WorldControlsSettings {
   keyboardNavigation: boolean;
   bindings: Record<ControlAction, string[]>;
+  /** Camera speed of the movement keys (×1 = normal); Shift + mouse wheel changes it. */
+  speed: number;
 }
 
-export const DEFAULT_WORLD_CONTROLS_SETTINGS: WorldControlsSettings = { keyboardNavigation: true, bindings: DEFAULT_CONTROL_BINDINGS };
+/** Slowest and fastest camera speed. */
+export const MIN_CAMERA_SPEED = 0.1;
+export const MAX_CAMERA_SPEED = 10;
+/** Holding Shift moves the camera this many times faster. */
+export const SHIFT_SPEED = 3;
+
+export const DEFAULT_WORLD_CONTROLS_SETTINGS: WorldControlsSettings = {
+  keyboardNavigation: true,
+  bindings: DEFAULT_CONTROL_BINDINGS,
+  speed: 1,
+};
 
 export const WORLD_CONTROLS_SETTINGS_KEY = 'keira3.worldEditor.controls';
 
@@ -116,6 +128,11 @@ export class WorldControlsSettingsService {
     this.save({ ...this._settings(), keyboardNavigation: enabled });
   }
 
+  setSpeed(speed: number): void {
+    const clamped = Math.min(MAX_CAMERA_SPEED, Math.max(MIN_CAMERA_SPEED, Math.round(speed * 100) / 100));
+    this.save({ ...this._settings(), speed: clamped });
+  }
+
   addBinding(action: ControlAction, input: string): void {
     const current = this._settings().bindings[action];
     if (!current.includes(input)) {
@@ -158,6 +175,7 @@ export class WorldControlsSettingsService {
     try {
       const stored = JSON.parse(localStorage.getItem(WORLD_CONTROLS_SETTINGS_KEY) ?? '{}') as {
         keyboardNavigation?: unknown;
+        speed?: unknown;
         bindings?: Record<string, unknown>;
         /** the older format: two keys (primary, alternate) per camera move */
         keys?: Record<string, unknown>;
@@ -170,7 +188,9 @@ export class WorldControlsSettingsService {
         }
       }
       const enabled = typeof stored.keyboardNavigation === 'boolean' ? stored.keyboardNavigation : true;
-      return { keyboardNavigation: enabled, bindings };
+      const speed =
+        typeof stored.speed === 'number' && stored.speed >= MIN_CAMERA_SPEED && stored.speed <= MAX_CAMERA_SPEED ? stored.speed : 1;
+      return { keyboardNavigation: enabled, bindings, speed };
     } catch {
       return DEFAULT_WORLD_CONTROLS_SETTINGS;
     }

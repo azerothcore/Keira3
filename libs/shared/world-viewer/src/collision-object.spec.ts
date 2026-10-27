@@ -1,4 +1,5 @@
 import { EMPTY_COLLISION } from '@keira/shared/wow-data';
+import { Raycaster } from 'three';
 import { buildCollisionGeometry, COLLISION_LAYER, COLLISION_MATERIAL, collisionMesh } from './collision-object';
 
 describe('collision objects', () => {
@@ -21,6 +22,7 @@ describe('collision objects', () => {
     expect(mesh.layers.isEnabled(0)).toBe(false);
     expect(mesh.material).toBe(COLLISION_MATERIAL);
     expect(COLLISION_MATERIAL.wireframe).toBe(true);
-    expect(mesh.raycast(undefined as never, [])).toBeUndefined();
+    // ordinary rays (layer 0) don't see it
+    expect(mesh.layers.test(new Raycaster().layers)).toBe(false);
   });
 });

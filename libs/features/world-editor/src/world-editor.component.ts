@@ -13,6 +13,8 @@ import {
   inputOf,
   ObjectMoved,
   parseWaypointKey,
+  PathProbeRequest,
+  PathProbeResult,
   PickResult,
   waypointKey,
   WaypointPath,
@@ -73,6 +75,13 @@ function pathOwners(spawns: SpawnRecord[]): Map<number, string[]> {
     }
   }
   return owners;
+}
+
+/** The number typed in a field, when it is one and not negative (empty fields give nothing). */
+function positiveNumber(event: Event): number | undefined {
+  const text = (event.target as HTMLInputElement).value;
+  const value = Number(text);
+  return text !== '' && Number.isFinite(value) && value >= 0 ? value : undefined;
 }
 
 /** Quests shown on hover before "+N more": the rest while Alt is held. */
@@ -144,6 +153,33 @@ export class WorldEditorComponent implements OnInit {
   protected readonly controlGroups = CONTROL_GROUPS;
   protected readonly inputLabel = inputLabel;
   protected readonly showControls = signal(false);
+  /** Mouse controls for the help card (keys are listed from the bindings). */
+  protected readonly mouseHelp = [
+    { input: 'WORLD_EDITOR.HELP_LEFT_DRAG', label: 'WORLD_EDITOR.HELP_PAN' },
+    { input: 'WORLD_EDITOR.HELP_RIGHT_DRAG', label: 'WORLD_EDITOR.HELP_ROTATE' },
+    { input: 'WORLD_EDITOR.HELP_WHEEL', label: 'WORLD_EDITOR.HELP_ZOOM' },
+    { input: 'WORLD_EDITOR.HELP_SHIFT_WHEEL', label: 'WORLD_EDITOR.HELP_SPEED' },
+    { input: 'WORLD_EDITOR.HELP_SHIFT', label: 'WORLD_EDITOR.HELP_FAST' },
+    { input: 'WORLD_EDITOR.HELP_ALT_CLICK', label: 'WORLD_EDITOR.HELP_MOVE_SELECTION' },
+    { input: 'WORLD_EDITOR.HELP_RIGHT_CLICK', label: 'WORLD_EDITOR.HELP_MENU' },
+  ];
+  /** Path / LOS tool: A, C, the attack range and eye height, and the answer. */
+  protected readonly probeFrom = signal<WorldPosition | undefined>(undefined);
+  protected readonly probeTo = signal<WorldPosition | undefined>(undefined);
+  protected readonly probeRange = signal(30);
+  protected readonly probeHeight = signal(2);
+  protected readonly probeResult = signal<PathProbeResult | undefined>(undefined);
+  protected readonly rangePresets = [
+    { range: 5, label: 'WORLD_EDITOR.RANGE_MELEE' },
+    { range: 20, label: 'WORLD_EDITOR.RANGE_SHORT' },
+    { range: 30, label: 'WORLD_EDITOR.RANGE_RANGED' },
+    { range: 40, label: 'WORLD_EDITOR.RANGE_LONG' },
+  ];
+  protected readonly isRangePreset = computed(() => this.rangePresets.some((preset) => preset.range === this.probeRange()));
+  protected readonly probeRequest = computed<PathProbeRequest | undefined>(() => {
+    const from = this.probeFrom();
+    return this.tool() === 'probe' && from ? { from, to: this.probeTo(), range: this.probeRange(), height: this.probeHeight() } : undefined;
+  });
   /** The action waiting for a key press to be bound to it. */
   protected readonly capturing = signal<ControlAction | undefined>(undefined);
   private readonly toastr = inject(ToastrService);
@@ -464,6 +500,36 @@ export class WorldEditorComponent implements OnInit {
 
   protected setKeyboardNavigation(event: Event): void {
     this.controls.setKeyboardNavigation((event.target as HTMLInputElement).checked);
+  }
+
+  /** "W / ↑" */
+  protected bindingsLabel(action: ControlAction): string {
+    return this.controls.settings().bindings[action].map(inputLabel).join(' / ');
+  }
+
+  protected setProbeRange(event: Event): void {
+    const value = positiveNumber(event);
+    if (value !== undefined) {
+      this.probeRange.set(value);
+    }
+  }
+
+  protected setProbeHeight(event: Event): void {
+    const value = positiveNumber(event);
+    if (value !== undefined) {
+      this.probeHeight.set(value);
+    }
+  }
+
+  protected clearProbe(): void {
+    this.probeFrom.set(undefined);
+    this.probeTo.set(undefined);
+    this.probeResult.set(undefined);
+  }
+
+  /** Copies a `.go xyz` command to that spot. */
+  protected copyGo(position: WorldPosition): void {
+    this.clipboard.copyFromContent(`.go xyz ${position.x.toFixed(2)} ${position.y.toFixed(2)} ${position.z.toFixed(2)} ${this.mapId()}`);
   }
 
   protected toggleControls(): void {
@@ -814,6 +880,17 @@ export class WorldEditorComponent implements OnInit {
     const tool = this.tool();
     if (tool === 'select') {
       this.select(result.type === 'spawn' || result.type === 'waypoint' ? result.key : undefined);
+      return;
+    }
+    if (tool === 'probe') {
+      // A, then C; a third click starts again from A
+      if (!this.probeFrom() || this.probeTo()) {
+        this.probeFrom.set(result.position);
+        this.probeTo.set(undefined);
+        this.probeResult.set(undefined);
+      } else {
+        this.probeTo.set(result.position);
+      }
       return;
     }
     if (result.type !== 'ground') {

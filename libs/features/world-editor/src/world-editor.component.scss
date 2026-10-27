@@ -93,17 +93,6 @@
   right: 8px;
 }
 
-.world-editor-help {
-  position: absolute;
-  bottom: 6px;
-  left: 8px;
-  padding: 2px 8px;
-  border-radius: 3px;
-  background: rgba(0, 0, 0, 0.55);
-  color: #fff;
-  pointer-events: none;
-}
-
 .world-editor-panel {
   width: 360px;
   flex-shrink: 0;
@@ -243,4 +232,8 @@ $trigger-color: #c77dff;
       padding: 0;
     }
   }
+}
+
+.world-editor-probe-height {
+  max-width: 110px;
 }

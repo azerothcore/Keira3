@@ -15,3 +15,4 @@ export * from './wmo';
 export * from './wow-native-api';
 export * from './collision';
 export * from './navmesh';
+export * from './navmesh-path';
