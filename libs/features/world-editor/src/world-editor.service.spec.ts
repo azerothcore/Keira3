@@ -105,9 +105,54 @@ describe('WorldEditorService', () => {
     expect(await service.loadWaypoints([])).toEqual([]);
     expect(queryService.query).not.toHaveBeenCalled();
 
-    queryService.query.mockReturnValue(of([{ pathId: '10', point: '1', x: '1.5', y: 2, z: 3, delay: '1000' }]));
-    expect(await service.loadWaypoints([10, 10, 20])).toEqual([{ pathId: 10, point: 1, x: 1.5, y: 2, z: 3, delay: 1000 }]);
+    queryService.query.mockReturnValue(
+      of([
+        { pathId: '10', point: '1', x: '1.5', y: 2, z: 3, delay: '1000', moveType: '1', action: '50', actionChance: '40' },
+        { pathId: '10', point: '2', x: 1, y: 2, z: 3, delay: 0 },
+      ]),
+    );
+    expect(await service.loadWaypoints([10, 10, 20])).toEqual([
+      { pathId: 10, point: 1, x: 1.5, y: 2, z: 3, delay: 1000, moveType: 1, action: 50, actionChance: 40 },
+      { pathId: 10, point: 2, x: 1, y: 2, z: 3, delay: 0, moveType: 0, action: 0, actionChance: 100 },
+    ]);
     expect(queryService.query.mock.calls[0][0]).toContain('WHERE id IN (10, 20) ORDER BY id, point');
+    expect(queryService.query.mock.calls[0][0]).toContain('move_type AS moveType, action, action_chance AS actionChance');
+  });
+
+  it('loads the scripts run at waypoints', async () => {
+    const { service, queryService } = setup();
+    expect((await service.loadWaypointScripts([0, 0])).size).toBe(0);
+    expect(queryService.query).not.toHaveBeenCalled();
+    queryService.query.mockReturnValueOnce(
+      of([
+        { id: '50', delay: '0', command: '0' },
+        { id: '50', delay: '2', command: '1' },
+        { id: '60', delay: 0, command: 15 },
+      ]),
+    );
+    const scripts = await service.loadWaypointScripts([50, 60, 50]);
+    expect(scripts.get(50)).toEqual([
+      { id: 50, delay: 0, command: 0 },
+      { id: 50, delay: 2, command: 1 },
+    ]);
+    expect(scripts.get(60)).toHaveLength(1);
+    expect(queryService.query).toHaveBeenLastCalledWith(
+      'SELECT id, delay, command FROM waypoint_scripts WHERE id IN (50, 60) ORDER BY id, delay',
+    );
+    queryService.query.mockReturnValueOnce(of(undefined));
+    expect((await service.loadWaypointScripts([1])).size).toBe(0);
+  });
+
+  it('loads the SmartAI waypoint reactions of creatures, by entry and by guid', async () => {
+    const { service, queryService } = setup();
+    expect(await service.loadWaypointSai([])).toEqual([]);
+    queryService.query.mockReturnValueOnce(of([{ entryorguid: '-9', point: '3', pathId: '0', actionType: '1', comment: null }]));
+    expect(await service.loadWaypointSai([{ entry: 197, guid: 9 }])).toEqual([
+      { entryorguid: -9, point: 3, pathId: 0, actionType: 1, comment: '' },
+    ]);
+    expect(queryService.query.mock.calls[0][0]).toContain('event_type = 108 AND entryorguid IN (197, -9)');
+    queryService.query.mockReturnValueOnce(of(undefined));
+    expect(await service.loadWaypointSai([{ entry: 1, guid: 2 }])).toEqual([]);
   });
 
   it('reads the highest guid', async () => {

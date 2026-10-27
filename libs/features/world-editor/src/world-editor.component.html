@@ -23,6 +23,7 @@
       <input
         class="form-control form-control-sm"
         data-testid="tele-search"
+        (paste)="onPasteLocation($event)"
         [formControl]="teleSearch"
         [placeholder]="'WORLD_EDITOR.TELEPORT_PLACEHOLDER' | translate"
       />
@@ -30,9 +31,30 @@
     </form>
 
     <form class="d-flex gap-1 goto-form" [formGroup]="goToForm" (ngSubmit)="goToCoordinates()">
-      <input type="number" class="form-control form-control-sm" data-testid="goto-x" formControlName="x" placeholder="X" />
-      <input type="number" class="form-control form-control-sm" data-testid="goto-y" formControlName="y" placeholder="Y" />
-      <input type="number" class="form-control form-control-sm" data-testid="goto-z" formControlName="z" placeholder="Z" />
+      <input
+        type="number"
+        class="form-control form-control-sm"
+        data-testid="goto-x"
+        formControlName="x"
+        (paste)="onPasteLocation($event)"
+        placeholder="X"
+      />
+      <input
+        type="number"
+        class="form-control form-control-sm"
+        data-testid="goto-y"
+        formControlName="y"
+        (paste)="onPasteLocation($event)"
+        placeholder="Y"
+      />
+      <input
+        type="number"
+        class="form-control form-control-sm"
+        data-testid="goto-z"
+        formControlName="z"
+        (paste)="onPasteLocation($event)"
+        placeholder="Z"
+      />
       <button type="submit" class="btn btn-sm btn-secondary" data-testid="goto-btn">{{ 'WORLD_EDITOR.GO_TO' | translate }}</button>
     </form>
 
@@ -474,6 +496,14 @@
               {{ 'WORLD_EDITOR.WALKED_BY' | translate }}:
               {{ pathOwners().get(waypoint.pathId)?.join(', ') }}
             </div>
+            @let info = waypointInfo(waypoint);
+            @if (info.length) {
+              <ul class="small mb-1 ps-3" data-testid="selected-waypoint-info">
+                @for (line of info; track $index) {
+                  <li>{{ line }}</li>
+                }
+              </ul>
+            }
           } @else {
             <small class="text-muted" data-testid="nothing-selected">{{ 'WORLD_EDITOR.NOTHING_SELECTED' | translate }}</small>
           }

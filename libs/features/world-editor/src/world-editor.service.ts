@@ -1,4 +1,5 @@
 import { inject, Service } from '@angular/core';
+import { TableRow } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { WorldPosition } from '@keira/shared/wow-data';
 import { firstValueFrom } from 'rxjs';
@@ -14,8 +15,11 @@ import {
   WaypointRecord,
   WaypointRow,
 } from './world-editor.model';
+import { WaypointSaiRow, WaypointScriptStep } from './waypoint-info';
 
 const num = (value: number): number => Math.round(value * 100) / 100;
+/** SMART_EVENT_WAYPOINT_DATA_REACHED: a creature on a `waypoint_data` path reached a point. */
+const SAI_EVENT_WAYPOINT_DATA_REACHED = 108;
 
 /** Database access of the world editor (reads only; writes go through the generated SQL). */
 @Service()
@@ -65,7 +69,8 @@ export class WorldEditorService {
     }
     const rows = await firstValueFrom(
       this.queryService.query<WaypointRow>(
-        'SELECT id AS pathId, point, position_x AS x, position_y AS y, position_z AS z, delay FROM waypoint_data ' +
+        'SELECT id AS pathId, point, position_x AS x, position_y AS y, position_z AS z, delay, ' +
+          'move_type AS moveType, action, action_chance AS actionChance FROM waypoint_data ' +
           `WHERE id IN (${[...new Set(pathIds)].join(', ')}) ORDER BY id, point`,
       ),
     );
@@ -76,6 +81,49 @@ export class WorldEditorService {
       y: Number(row.y),
       z: Number(row.z),
       delay: Number(row.delay),
+      moveType: Number(row.moveType ?? 0),
+      action: Number(row.action ?? 0),
+      actionChance: Number(row.actionChance ?? 100),
+    }));
+  }
+
+  /** Steps of the `waypoint_scripts` scripts run at waypoints, by script id. */
+  async loadWaypointScripts(ids: number[]): Promise<Map<number, WaypointScriptStep[]>> {
+    const unique = [...new Set(ids.filter((id) => id > 0))];
+    const scripts = new Map<number, WaypointScriptStep[]>();
+    if (unique.length === 0) {
+      return scripts;
+    }
+    const rows = await firstValueFrom(
+      this.queryService.query<WaypointScriptStep & TableRow>(
+        `SELECT id, delay, command FROM waypoint_scripts WHERE id IN (${unique.join(', ')}) ORDER BY id, delay`,
+      ),
+    );
+    for (const row of rows ?? []) {
+      const step = { id: Number(row.id), delay: Number(row.delay), command: Number(row.command) };
+      scripts.set(step.id, [...(scripts.get(step.id) ?? []), step]);
+    }
+    return scripts;
+  }
+
+  /** SmartAI "waypoint reached" rows (event 108) of the given creatures, by entry and by guid. */
+  async loadWaypointSai(creatures: { entry: number; guid: number }[]): Promise<WaypointSaiRow[]> {
+    const ids = [...new Set(creatures.flatMap((c) => [Math.trunc(c.entry), -Math.trunc(c.guid)]))];
+    if (ids.length === 0) {
+      return [];
+    }
+    const rows = await firstValueFrom(
+      this.queryService.query<TableRow>(
+        'SELECT entryorguid, event_param1 AS point, event_param2 AS pathId, action_type AS actionType, comment FROM smart_scripts ' +
+          `WHERE source_type = 0 AND event_type = ${SAI_EVENT_WAYPOINT_DATA_REACHED} AND entryorguid IN (${ids.join(', ')})`,
+      ),
+    );
+    return (rows ?? []).map((row) => ({
+      entryorguid: Number(row['entryorguid']),
+      point: Number(row['point']),
+      pathId: Number(row['pathId']),
+      actionType: Number(row['actionType']),
+      comment: String(row['comment'] ?? ''),
     }));
   }
 

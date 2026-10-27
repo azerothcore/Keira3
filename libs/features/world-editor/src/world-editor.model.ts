@@ -34,6 +34,11 @@ export interface WaypointRecord {
   y: number;
   z: number;
   delay: number;
+  /** waypoint_data.move_type: 0 walk, 1 run, 2 land, 3 take off. */
+  moveType?: number;
+  /** waypoint_scripts id run on arrival (0 = none), and its chance in %. */
+  action?: number;
+  actionChance?: number;
 }
 
 export interface Placement {
@@ -78,6 +83,9 @@ export interface WaypointRow extends TableRow {
   y: number;
   z: number;
   delay: number;
+  moveType: number;
+  action: number;
+  actionChance: number;
 }
 
 export interface TeleRow extends TableRow {

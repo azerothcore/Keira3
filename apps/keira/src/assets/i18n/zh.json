@@ -1012,7 +1012,7 @@
     "SERVER_DATA_PATH": "服务器数据文件夹（可选）",
     "SERVER_DATA_PATH_HELP": "worldserver 的 DataDir（包含 dbc、maps、vmaps）。如果存在，将使用其中的 Map.dbc 以列出自定义地图。",
     "SAVE": "保存",
-    "TELEPORT_PLACEHOLDER": "传送 (game_tele)…",
+    "TELEPORT_PLACEHOLDER": "传送 (game_tele) 或粘贴 .gps…",
     "GO_TO": "前往",
     "CREATURES": "生物",
     "GAMEOBJECTS": "游戏对象",

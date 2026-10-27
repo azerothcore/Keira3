@@ -41,6 +41,8 @@ import {
   WaypointRecord,
 } from './world-editor.model';
 import { WorldEditorService } from './world-editor.service';
+import { GpsLocation, parseGpsOutput } from './gps';
+import { describeWaypoint, WaypointSaiRow, WaypointScriptStep } from './waypoint-info';
 
 const LAST_VIEW_KEY = 'keira3.worldEditor.lastView';
 
@@ -133,6 +135,8 @@ export class WorldEditorComponent implements OnInit {
 
   private readonly loadedSpawns = signal<SpawnRecord[]>([]);
   private readonly loadedWaypoints = signal<WaypointRecord[]>([]);
+  private readonly waypointScripts = signal(new Map<number, WaypointScriptStep[]>());
+  private readonly waypointSai = signal<WaypointSaiRow[]>([]);
   private center?: WorldPosition;
   private spawnRequest = 0;
   /** Last guid handed out per type, chained so quick consecutive placements never get the same guid. */
@@ -190,9 +194,22 @@ export class WorldEditorComponent implements OnInit {
       label: `Path ${pathId}`,
       owners: owners.get(pathId) ?? [],
       closed: true,
-      points: points.map((p) => ({ point: p.point, position: { x: p.x, y: p.y, z: p.z }, delay: p.delay })),
+      points: points.map((p) => ({
+        point: p.point,
+        position: { x: p.x, y: p.y, z: p.z },
+        delay: p.delay,
+        info: this.waypointInfo(p),
+      })),
     }));
   });
+
+  /** What happens at a waypoint (wait, move type, script, SmartAI of the creatures walking the path). */
+  protected waypointInfo(waypoint: WaypointRecord): string[] {
+    const walkers = this.spawns().filter((s) => s.type === 'creature' && s.pathId === waypoint.pathId);
+    const ids = new Set(walkers.flatMap((s) => [s.entry, -s.guid]));
+    const sai = this.waypointSai().filter((row) => ids.has(row.entryorguid));
+    return describeWaypoint(waypoint.pathId, waypoint.point, waypoint, this.waypointScripts(), sai);
+  }
 
   /** Creatures walking each loaded path ("Name (guid)"). */
   protected readonly pathOwners = computed(() => {
@@ -438,19 +455,43 @@ export class WorldEditorComponent implements OnInit {
 
   protected async searchTele(): Promise<void> {
     const text = this.teleSearch.value.trim();
+    const gps = parseGpsOutput(text);
+    if (gps) {
+      this.teleSearch.setValue('');
+      this.goToGps(gps);
+      return;
+    }
     this.teleResults.set(text ? await this.service.searchTele(text) : []);
   }
 
   protected goToTele(tele: TeleRow): void {
-    if (Number(tele.map) !== this.mapId()) {
+    this.goTo(Number(tele.map), { x: Number(tele.x), y: Number(tele.y), z: Number(tele.z) });
+    this.teleResults.set([]);
+  }
+
+  /** Pasting the output of the in-game `.gps` command goes straight to that place. */
+  protected onPasteLocation(event: ClipboardEvent): void {
+    const gps = parseGpsOutput(event.clipboardData?.getData('text') ?? '');
+    if (gps) {
+      event.preventDefault();
+      this.goToGps(gps);
+    }
+  }
+
+  private goToGps(gps: GpsLocation): void {
+    this.goToForm.setValue({ x: gps.x, y: gps.y, z: gps.z });
+    this.goTo(gps.map, { x: gps.x, y: gps.y, z: gps.z });
+  }
+
+  private goTo(map: number, position: WorldPosition): void {
+    const changedMap = map !== this.mapId();
+    if (changedMap) {
       this.selectedKey.set(undefined);
       this.loadedSpawns.set([]);
       this.loadedWaypoints.set([]);
     }
-    const changedMap = Number(tele.map) !== this.mapId();
-    this.mapId.set(Number(tele.map));
-    this.focus.set({ x: Number(tele.x), y: Number(tele.y), z: Number(tele.z) });
-    this.teleResults.set([]);
+    this.mapId.set(map);
+    this.focus.set(position);
     if (changedMap) {
       void this.loadZones();
     }
@@ -490,8 +531,18 @@ export class WorldEditorComponent implements OnInit {
       }
       this.loadedSpawns.set(spawns);
       const waypoints = await this.service.loadWaypoints(this.pathIds());
+      if (request !== this.spawnRequest) {
+        return;
+      }
+      this.loadedWaypoints.set(waypoints);
+      const walkers = spawns.filter((s) => s.type === 'creature' && s.pathId);
+      const [scripts, sai] = await Promise.all([
+        this.service.loadWaypointScripts(waypoints.map((w) => w.action ?? 0)),
+        this.service.loadWaypointSai(walkers),
+      ]);
       if (request === this.spawnRequest) {
-        this.loadedWaypoints.set(waypoints);
+        this.waypointScripts.set(scripts);
+        this.waypointSai.set(sai);
       }
     } catch (error) {
       this.toastr.error((error as Error).message, 'World Editor');

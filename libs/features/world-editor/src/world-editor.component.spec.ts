@@ -102,7 +102,7 @@ const SPAWNS = [
 ];
 const WAYPOINTS: WaypointRecord[] = [
   { pathId: 10, point: 1, x: -8901, y: -101, z: 80, delay: 0 },
-  { pathId: 10, point: 2, x: -8902, y: -102, z: 81, delay: 1000 },
+  { pathId: 10, point: 2, x: -8902, y: -102, z: 81, delay: 1000, moveType: 1, action: 50, actionChance: 100 },
 ];
 const CENTER = { x: -8913, y: -137, z: 82 };
 
@@ -112,6 +112,8 @@ describe(WorldEditorComponent.name, () => {
     service: {
       loadSpawns: vi.fn(),
       loadWaypoints: vi.fn(),
+      loadWaypointScripts: vi.fn(),
+      loadWaypointSai: vi.fn(),
       getMaxGuid: vi.fn(),
       getFreePathId: vi.fn(),
       getEntryName: vi.fn(),
@@ -176,6 +178,8 @@ describe(WorldEditorComponent.name, () => {
     mocks.client.getZones.mockImplementation((map: number) => Promise.resolve(map === 0 ? ZONES : []));
     mocks.service.loadSpawns.mockResolvedValue(SPAWNS);
     mocks.service.loadWaypoints.mockResolvedValue(WAYPOINTS);
+    mocks.service.loadWaypointScripts.mockResolvedValue(new Map([[50, [{ id: 50, delay: 0, command: 0 }]]]));
+    mocks.service.loadWaypointSai.mockResolvedValue([{ entryorguid: -1, point: 2, pathId: 10, actionType: 1, comment: 'Willem - Say' }]);
     mocks.service.getMaxGuid.mockResolvedValue(1000);
     mocks.service.getFreePathId.mockResolvedValue(20);
     mocks.service.getEntryName.mockResolvedValue('Marshal McBride');
@@ -542,6 +546,35 @@ describe(WorldEditorComponent.name, () => {
       expect(page.byId('tele-results', false)).toBeFalsy();
     });
 
+    it('goes to the place of pasted .gps output, switching map if needed', async () => {
+      const { page } = await setup();
+      const gps = '[23:18:23] Map: 1 (Kalimdor) Zone: 14\n[23:18:23] X: -618.5 Y: -4251.7 Z: 38.7 Orientation: 4.5';
+      const paste = (testId: string, text: string): ClipboardEvent => {
+        const event = new Event('paste', { cancelable: true }) as ClipboardEvent;
+        Object.defineProperty(event, 'clipboardData', { value: { getData: () => text } });
+        page.byId(testId).nativeElement.dispatchEvent(event);
+        return event;
+      };
+      expect(paste('goto-x', gps).defaultPrevented).toBe(true);
+      await settle(page);
+      expect(page.viewer().mapDirectory()).toBe('Kalimdor');
+      expect(page.viewer().focus()).toEqual({ x: -618.5, y: -4251.7, z: 38.7 });
+      expect(page.byId<HTMLInputElement>('goto-y').nativeElement.value).toBe('-4251.7');
+
+      // anything else pastes normally
+      expect(paste('tele-search', 'Goldshire').defaultPrevented).toBe(false);
+      const empty = new Event('paste', { cancelable: true });
+      page.byId('goto-y').nativeElement.dispatchEvent(empty);
+      expect(empty.defaultPrevented).toBe(false);
+
+      // typed (or pasted as text) in the teleport search, same map
+      page.type('tele-search', gps.replace('Map: 1', 'Map: 1').replace('-618.5', '-600'));
+      page.submit('tele-search-btn');
+      await settle(page);
+      expect(page.viewer().focus()).toEqual({ x: -600, y: -4251.7, z: 38.7 });
+      expect(mocks.service.searchTele).not.toHaveBeenCalled();
+    });
+
     it('goes to typed coordinates', async () => {
       const { page } = await setup();
       const before = page.viewer().focus();
@@ -589,8 +622,13 @@ describe(WorldEditorComponent.name, () => {
           owners: ['Deputy Willem (1)'],
           closed: true,
           points: [
-            { point: 1, position: { x: -8901, y: -101, z: 80 }, delay: 0 },
-            { point: 2, position: { x: -8902, y: -102, z: 81 }, delay: 1000 },
+            { point: 1, position: { x: -8901, y: -101, z: 80 }, delay: 0, info: [] },
+            {
+              point: 2,
+              position: { x: -8902, y: -102, z: 81 },
+              delay: 1000,
+              info: ['wait 1 s', 'run', 'script 50: talk', 'SAI: Willem - Say'],
+            },
           ],
         },
       ]);
@@ -669,6 +707,12 @@ describe(WorldEditorComponent.name, () => {
       expect(page.text('selected-title')).toContain('Path 10');
       expect(page.text('selected-path-owners')).toBe('WORLD_EDITOR.WALKED_BY: Deputy Willem (1)');
       expect(page.placementValue('z')).toBe(81);
+      expect(
+        Array.from((page.byId('selected-waypoint-info').nativeElement as HTMLElement).querySelectorAll('li')).map((li) =>
+          li.textContent?.trim(),
+        ),
+      ).toEqual(['wait 1 s', 'run', 'script 50: talk', 'SAI: Willem - Say']);
+      expect(page.viewer().paths()[0].points[1].info).toEqual(['wait 1 s', 'run', 'script 50: talk', 'SAI: Willem - Say']);
 
       page.viewer().picked.emit({ type: 'ground', position: { x: 0, y: 0, z: 0 } });
       await settle(page);
@@ -880,6 +924,19 @@ describe(WorldEditorComponent.name, () => {
       await settle(page);
       expect(mocks.service.getMaxGuid).toHaveBeenCalledTimes(1);
       expect(page.pendingLines()).toEqual(['Place creature 501 (Marshal McBride)', 'Place creature 502 (Marshal McBride)']);
+    });
+
+    it('ignores waypoint scripts of an older camera position', async () => {
+      const { page } = await setup();
+      let resolveScripts: (scripts: Map<number, unknown[]>) => void = () => undefined;
+      mocks.service.loadWaypointScripts.mockReturnValueOnce(new Promise((r) => (resolveScripts = r))).mockResolvedValueOnce(new Map());
+      page.viewer().centerChanged.emit(CENTER);
+      await settle(page);
+      page.viewer().centerChanged.emit(CENTER);
+      await settle(page);
+      resolveScripts(new Map([[50, [{ id: 50, delay: 0, command: 1 }]]]));
+      await settle(page);
+      expect(page.viewer().paths()[0].points[1].info).toContain('script 50');
     });
 
     it('ignores waypoints of an older camera position', async () => {

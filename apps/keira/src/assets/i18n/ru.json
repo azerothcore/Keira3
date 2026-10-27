@@ -1012,7 +1012,7 @@
     "SERVER_DATA_PATH": "Папка данных сервера (необязательно)",
     "SERVER_DATA_PATH_HELP": "DataDir worldserver (содержит dbc, maps, vmaps). Если есть, используется её Map.dbc, чтобы показать пользовательские карты.",
     "SAVE": "Сохранить",
-    "TELEPORT_PLACEHOLDER": "Телепорт (game_tele)…",
+    "TELEPORT_PLACEHOLDER": "Телепорт (game_tele) или вставьте .gps…",
     "GO_TO": "Перейти",
     "CREATURES": "Существа",
     "GAMEOBJECTS": "Игровые объекты",

@@ -24,6 +24,8 @@ export interface WorldWaypoint {
   position: WorldPosition;
   orientation?: number | null;
   delay?: number;
+  /** What happens there (wait, script…), shown when hovering the point. */
+  info?: string[];
 }
 
 /** An ordered path (waypoint_data / waypoints). `key` must be unique in the scene (e.g. `path:12340`). */

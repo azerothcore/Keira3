@@ -1012,7 +1012,7 @@
     "SERVER_DATA_PATH": "Server data folder (optional)",
     "SERVER_DATA_PATH_HELP": "The worldserver DataDir (contains dbc, maps, vmaps). Its Map.dbc is used when present, so custom maps are listed.",
     "SAVE": "Save",
-    "TELEPORT_PLACEHOLDER": "Teleport (game_tele)…",
+    "TELEPORT_PLACEHOLDER": "Teleport (game_tele) or paste .gps…",
     "GO_TO": "Go",
     "CREATURES": "Creatures",
     "GAMEOBJECTS": "GameObjects",
