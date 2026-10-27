@@ -79,6 +79,8 @@ import {
 
 const CLICK_TOLERANCE_PX = 4;
 const CENTER_EMIT_DISTANCE = 60;
+/** Textures loaded beyond which those nothing uses free their graphics memory. */
+const TEXTURES_KEPT = 1500;
 /** What kind of waypoint a point is, in its hover label. */
 const PLACE_NAMES: Record<WaypointPlace, string> = {
   ground: 'on the ground',
@@ -1137,6 +1139,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     }
     this.lastEmittedCenter = center;
     this.centerChanged.emit(center);
+    // the graphics memory of textures left far behind goes back
+    this.textures.release(this.world.scene, TEXTURES_KEPT);
     // load what's in front first
     const look = new Vector3();
     this.world.camera.getWorldDirection(look);

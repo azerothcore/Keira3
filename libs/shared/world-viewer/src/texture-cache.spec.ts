@@ -1,5 +1,5 @@
-import { DataTexture, SRGBColorSpace } from 'three';
-import { createTexture, TextureCache } from './texture-cache';
+import { BoxGeometry, DataTexture, Group, Line, Mesh, MeshBasicMaterial, ShaderMaterial, SRGBColorSpace } from 'three';
+import { createTexture, TextureCache, texturesIn } from './texture-cache';
 
 describe('TextureCache', () => {
   const image = { width: 2, height: 2, data: new Uint8Array(16) };
@@ -28,6 +28,23 @@ describe('TextureCache', () => {
     await Promise.resolve();
     expect(dispose).toHaveBeenCalled();
     expect(cache.size).toBe(0);
+  });
+
+  it('frees the graphics memory of textures nothing uses, once more than allowed were loaded', async () => {
+    const cache = new TextureCache((path) => Promise.resolve(path === 'missing' ? undefined : image));
+    const [used, inShader, unused] = await Promise.all([cache.get('used'), cache.get('shader'), cache.get('unused')]);
+    await cache.get('missing');
+    const scene = new Group();
+    scene.add(
+      new Mesh(new BoxGeometry(), new MeshBasicMaterial({ map: used })),
+      new Mesh(new BoxGeometry(), [new ShaderMaterial({ uniforms: { layers: { value: [inShader, 1] }, tint: { value: 2 } } })]),
+      new Line(),
+    );
+    const disposals = [used, inShader, unused].map((texture) => vi.spyOn(texture, 'dispose'));
+    expect(cache.release(scene, 3)).toBe(0);
+    expect(cache.release(scene, 2)).toBe(1);
+    expect(disposals.map((spy) => spy.mock.calls.length)).toEqual([0, 0, 1]);
+    expect(texturesIn(scene)).toEqual(new Set([used, inShader]));
   });
 
   it('creates repeating textures, sRGB unless asked otherwise', () => {
