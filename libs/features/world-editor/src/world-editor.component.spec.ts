@@ -108,7 +108,15 @@ const CENTER = { x: -8913, y: -137, z: 82 };
 
 describe(WorldEditorComponent.name, () => {
   const mocks = {
-    client: { isSupported: vi.fn(), getMaps: vi.fn(), getMapTiles: vi.fn(), getZones: vi.fn(), preload: vi.fn(), close: vi.fn() },
+    client: {
+      isSupported: vi.fn(),
+      getMaps: vi.fn(),
+      getMapTiles: vi.fn(),
+      getZones: vi.fn(),
+      preload: vi.fn(),
+      cacheUsage: vi.fn(),
+      close: vi.fn(),
+    },
     service: {
       loadSpawns: vi.fn(),
       loadWaypoints: vi.fn(),
@@ -175,6 +183,7 @@ describe(WorldEditorComponent.name, () => {
       { tx: 32, ty: 48 },
     ]);
     mocks.client.close.mockResolvedValue(undefined);
+    mocks.client.cacheUsage.mockResolvedValue({ maps: [], buildingBytes: 0, totalBytes: 0 });
     mocks.client.getZones.mockImplementation((map: number) => Promise.resolve(map === 0 ? ZONES : []));
     mocks.service.loadSpawns.mockResolvedValue(SPAWNS);
     mocks.service.loadWaypoints.mockResolvedValue(WAYPOINTS);
@@ -348,6 +357,49 @@ describe(WorldEditorComponent.name, () => {
       await settle(page);
       expect(mocks.client.preload).toHaveBeenCalledTimes(1);
       expect(mocks.toastr.error).not.toHaveBeenCalled();
+    });
+
+    it('shows what each map takes in the cache', async () => {
+      mocks.client.cacheUsage.mockResolvedValue({
+        maps: [
+          { directory: 'azeroth', tiles: 3, bytes: 3_000_000 },
+          { directory: 'kalimdor', tiles: 9, bytes: 9_500_000 },
+          { directory: 'custommap', tiles: 1, bytes: 100_000 },
+        ],
+        buildingBytes: 2_000_000,
+        totalBytes: 14_600_000,
+      });
+      const { page } = await setup();
+      page.click('settings-toggle');
+      await settle(page);
+      const rows = Array.from((page.byId('cache-maps').nativeElement as HTMLElement).querySelectorAll('tbody tr')).map((tr) =>
+        Array.from(tr.querySelectorAll('td')).map((td) => td.textContent?.trim()),
+      );
+      expect(rows).toEqual([
+        ['Kalimdor', '9', '9.5 MB'],
+        ['Eastern Kingdoms', '3', '3.0 MB'],
+        ['custommap', '1', '0.1 MB'],
+        ['WORLD_EDITOR.BUILDINGS', '', '2.0 MB'],
+        ['WORLD_EDITOR.TOTAL', '', '14.6 MB'],
+      ]);
+      expect(page.text('cache-size')).toBe('14.6 MB');
+
+      // a client that can't be opened only shows the total
+      mocks.client.cacheUsage.mockRejectedValue(new Error('no client'));
+      page.click('cache-clear');
+      await settle(page);
+      expect(page.byId('cache-maps', false)).toBeFalsy();
+    });
+
+    it('does not read the cache usage without a client', async () => {
+      const { page } = await setup({ configured: false });
+      page.click('settings-toggle');
+      page.click('settings-toggle');
+      await settle(page);
+      mocks.client.isSupported.mockReturnValue(false);
+      page.click('settings-toggle');
+      await settle(page);
+      expect(mocks.client.cacheUsage).not.toHaveBeenCalled();
     });
 
     it('toggles the settings panel', async () => {

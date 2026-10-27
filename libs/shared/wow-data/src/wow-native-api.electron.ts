@@ -52,6 +52,16 @@ export function createWowNativeApi(
     },
     removeDirectory: (path) => nodeFs.rmSync(path, { recursive: true, force: true }),
     directorySize,
+    fileSizes: (path) =>
+      nodeFs.existsSync(path)
+        ? Object.fromEntries(
+            nodeFs
+              .readdirSync(path)
+              .map((name) => [name, nodeFs.statSync(`${path}/${name}`)] as const)
+              .filter(([, stat]) => !stat.isDirectory())
+              .map(([name, stat]) => [name, stat.size]),
+          )
+        : {},
     cacheDirectory: () => {
       const base = env['LOCALAPPDATA'] ?? env['APPDATA'] ?? `${env['HOME'] ?? '.'}/.cache`;
       return `${base.replace(/\\/g, '/')}/Keira3/world-editor-cache`;

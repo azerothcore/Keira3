@@ -79,6 +79,15 @@ export class WowDataCacheService {
     }
   }
 
+  /** Files of one kind for a client, with their sizes, by key (lower case, as stored). */
+  entries(identity: string, kind: string): Record<string, number> {
+    if (!this.native) {
+      return {};
+    }
+    const sizes = this.native.fileSizes(this.kindFolder(identity, kind));
+    return Object.fromEntries(Object.entries(sizes).map(([name, size]) => [name.replace(/\.bin$/, ''), size]));
+  }
+
   /** Bytes used on disk by the cache (0 outside the desktop app). */
   size(): number {
     return this.native ? this.native.directorySize(this.root() as string) : 0;
@@ -96,10 +105,17 @@ export class WowDataCacheService {
     return !!this.native && this._enabled();
   }
 
-  private path(identity: string, kind: string, key: string): string {
-    const safe = (part: string) => part.toLowerCase().replace(/[^a-z0-9_.-]+/g, '_');
-    return `${this.root() as string}/${CACHE_VERSION}/${safe(identity)}/${safe(kind)}/${safe(key)}.bin`;
+  private kindFolder(identity: string, kind: string): string {
+    return `${this.root() as string}/${CACHE_VERSION}/${safeName(identity)}/${safeName(kind)}`;
   }
+
+  private path(identity: string, kind: string, key: string): string {
+    return `${this.kindFolder(identity, kind)}/${safeName(key)}.bin`;
+  }
+}
+
+function safeName(part: string): string {
+  return part.toLowerCase().replace(/[^a-z0-9_.-]+/g, '_');
 }
 
 /** A short, stable name for a client installation (its folder and archives), used to keep caches apart. */

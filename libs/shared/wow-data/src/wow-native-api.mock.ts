@@ -101,6 +101,12 @@ export function createFakeNative(files: Record<string, number[]>, mpqs: Record<s
     writeFile: (path, data) => void (allFiles[path] = Array.from(data)),
     removeDirectory: (path) => paths().forEach((p) => p.startsWith(`${path}/`) && delete allFiles[p]),
     directorySize: (path) => paths().reduce((total, p) => total + (p.startsWith(`${path}/`) ? allFiles[p].length : 0), 0),
+    fileSizes: (path) =>
+      Object.fromEntries(
+        paths()
+          .filter((p) => p.startsWith(`${path}/`) && !p.slice(path.length + 1).includes('/'))
+          .map((p) => [p.slice(path.length + 1), allFiles[p].length]),
+      ),
     cacheDirectory: () => '/cache',
     // JSON with typed arrays tagged, standing in for V8 serialisation
     pack: (value) =>

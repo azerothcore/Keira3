@@ -25,6 +25,10 @@ describe('WowDataCacheService', () => {
     cache.write('abc', 'wmo', 'World\\wmo\\Abbey.wmo', { ok: true });
     expect(cache.read('abc', 'wmo', 'world\\WMO\\abbey.wmo')).toEqual({ ok: true });
 
+    expect(Object.keys(cache.entries('abc', 'adt'))).toEqual(['azeroth_32_48']);
+    expect(cache.entries('abc', 'adt')['azeroth_32_48']).toBeGreaterThan(0);
+    expect(cache.entries('abc', 'other')).toEqual({});
+
     cache.clear();
     expect(cache.size()).toBe(0);
     expect(cache.read('abc', 'wmo', 'World\\wmo\\Abbey.wmo')).toBeUndefined();
@@ -92,6 +96,7 @@ describe('WowDataCacheService', () => {
     expect(cache.has('abc', 'adt', 'x')).toBe(false);
     expect(cache.size()).toBe(0);
     expect(cache.root()).toBeUndefined();
+    expect(cache.entries('abc', 'adt')).toEqual({});
     cache.clear();
   });
 

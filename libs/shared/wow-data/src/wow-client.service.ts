@@ -14,6 +14,13 @@ import { clientIdentity, WowDataCacheService } from './wow-data-cache.service';
 import { WowDataSettingsService } from './wow-data-settings.service';
 import { StormArchive, WOW_NATIVE_API, WowNativeApi } from './wow-native-api';
 
+/** Disk space used by the cache of this client: per map (by lower-case directory), for buildings, and in total. */
+export interface CacheUsage {
+  maps: { directory: string; tiles: number; bytes: number }[];
+  buildingBytes: number;
+  totalBytes: number;
+}
+
 /** Everything drawn for a tile in detailed mode. */
 export interface TerrainDetail {
   chunks: TerrainChunkMesh[];
@@ -163,6 +170,20 @@ export class WowClientService {
       this.cache.write(identity, 'wmo', path, model);
     }
     return model;
+  }
+
+  async cacheUsage(): Promise<CacheUsage> {
+    const { identity } = await this.getClient();
+    const maps = new Map<string, { directory: string; tiles: number; bytes: number }>();
+    for (const [key, bytes] of Object.entries(this.cache.entries(identity, 'adt'))) {
+      const directory = key.replace(/_\d+_\d+$/, '');
+      const usage = maps.get(directory) ?? { directory, tiles: 0, bytes: 0 };
+      usage.tiles++;
+      usage.bytes += bytes;
+      maps.set(directory, usage);
+    }
+    const buildingBytes = Object.values(this.cache.entries(identity, 'wmo')).reduce((total, bytes) => total + bytes, 0);
+    return { maps: [...maps.values()], buildingBytes, totalBytes: this.cache.size() };
   }
 
   /**

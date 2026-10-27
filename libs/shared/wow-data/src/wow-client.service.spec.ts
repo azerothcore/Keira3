@@ -405,6 +405,11 @@ describe('WowClientService', () => {
       expect(await service.getWmo('World\\wmo\\A.wmo')).toEqual({ materials: [], groups: [{ indoor: false }] });
       expect(native.directorySize('/cache')).toBeGreaterThan(0);
 
+      const usage = await service.cacheUsage();
+      expect(usage.maps).toEqual([{ directory: 'm', tiles: 1, bytes: expect.any(Number) }]);
+      expect(usage.buildingBytes).toBeGreaterThan(0);
+      expect(usage.totalBytes).toBe(usage.maps[0].bytes + usage.buildingBytes);
+
       // after a restart, nothing is parsed again
       await service.close();
       formats.parseAdt.mockClear();

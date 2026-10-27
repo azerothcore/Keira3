@@ -14,6 +14,7 @@ import {
   WorldViewerComponent,
 } from '@keira/shared/world-viewer';
 import {
+  CacheUsage,
   tileCenter,
   TileCoord,
   tileKey,
@@ -103,7 +104,20 @@ export class WorldEditorComponent implements OnInit {
   protected readonly cacheSize = signal(0);
   /** Megabytes, for the settings panel. */
   protected readonly cacheSizeMb = computed(() => (this.cacheSize() / 1_000_000).toFixed(1));
-  protected readonly preloading = signal<{ label: string; done: number; total: number } | undefined>(undefined);
+  protected readonly preloading = signal<{ label: string; directory: string; done: number; total: number } | undefined>(undefined);
+  protected readonly cacheUsage = signal<CacheUsage | undefined>(undefined);
+  /** What each map takes in the cache, biggest first, for the settings panel. */
+  protected cacheRows(cache: CacheUsage): { directory: string; name: string; tiles: number; mb: string }[] {
+    const maps = this.maps();
+    return cache.maps
+      .map((usage) => ({
+        directory: usage.directory,
+        name: maps.find((map) => map.directory.toLowerCase() === usage.directory)?.name ?? usage.directory,
+        tiles: usage.tiles,
+        mb: (usage.bytes / 1_000_000).toFixed(1),
+      }))
+      .sort((a, b) => Number(b.mb) - Number(a.mb));
+  }
   private preloadCancelled = false;
   protected readonly zones = signal<WowZone[]>([]);
   protected readonly zoneId = signal(0);
@@ -319,20 +333,36 @@ export class WorldEditorComponent implements OnInit {
 
   protected toggleSettings(): void {
     this.showSettings.update((shown) => !shown);
-    this.cacheSize.set(this.cache.size());
+    void this.refreshCacheUsage();
   }
 
   protected async saveSettings(): Promise<void> {
     const { clientPath, serverDataPath, cacheFolder } = this.settingsForm.getRawValue();
     this.settings.save({ clientPath, serverDataPath });
     this.cache.setFolder(cacheFolder);
-    this.cacheSize.set(this.cache.size());
     await this.client.close();
+    void this.refreshCacheUsage();
     this.showSettings.set(false);
     await this.loadMaps();
   }
 
   // ---------------------------------------------------------------- cache
+
+  /** Total size, and per map when the client can be read. */
+  private async refreshCacheUsage(): Promise<void> {
+    this.cacheSize.set(this.cache.size());
+    if (!this.client.isSupported() || !this.settings.isConfigured()) {
+      return;
+    }
+    try {
+      const usage = await this.client.cacheUsage();
+      this.cacheUsage.set(usage);
+      this.cacheSize.set(usage.totalBytes);
+    } catch {
+      // the client can't be opened (yet): the total is still shown
+      this.cacheUsage.set(undefined);
+    }
+  }
 
   protected setCacheEnabled(event: Event): void {
     this.cache.setEnabled((event.target as HTMLInputElement).checked);
@@ -340,13 +370,13 @@ export class WorldEditorComponent implements OnInit {
 
   protected clearCache(): void {
     this.cache.clear();
-    this.cacheSize.set(this.cache.size());
+    void this.refreshCacheUsage();
   }
 
   /** Processes the selected zone, the whole map, or every map into the disk cache. */
   protected async preload(scope: 'zone' | 'map' | 'all'): Promise<void> {
     this.preloadCancelled = false;
-    this.preloading.set({ label: '', done: 0, total: 0 });
+    this.preloading.set({ label: '', directory: '', done: 0, total: 0 });
     let tileCount = 0;
     try {
       const jobs = await this.preloadJobs(scope);
@@ -355,14 +385,16 @@ export class WorldEditorComponent implements OnInit {
           break;
         }
         const label = jobs.length > 1 ? `${index + 1}/${jobs.length} ${job.name}` : job.name;
-        this.preloading.set({ label, done: 0, total: job.tiles.length });
+        const directory = job.directory.toLowerCase();
+        this.preloading.set({ label, directory, done: 0, total: job.tiles.length });
         await this.client.preload(
           job.directory,
           job.tiles,
-          (done, total) => this.preloading.set({ label, done, total }),
+          (done, total) => this.preloading.set({ label, directory, done, total }),
           () => this.preloadCancelled,
         );
         tileCount += job.tiles.length;
+        await this.refreshCacheUsage();
       }
       if (!this.preloadCancelled) {
         this.toastr.success(`Preloaded ${tileCount} tiles.`, 'World Editor');
@@ -371,7 +403,7 @@ export class WorldEditorComponent implements OnInit {
       this.toastr.error((error as Error).message, 'World Editor');
     } finally {
       this.preloading.set(undefined);
-      this.cacheSize.set(this.cache.size());
+      await this.refreshCacheUsage();
     }
   }
 

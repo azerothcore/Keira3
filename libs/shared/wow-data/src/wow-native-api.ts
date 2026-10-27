@@ -37,6 +37,8 @@ export interface WowNativeApi {
   removeDirectory(path: string): void;
   /** Total size in bytes of the files in a folder, recursively (0 if missing). */
   directorySize(path: string): number;
+  /** Size in bytes of each file directly in a folder, by name (empty if missing). */
+  fileSizes(path: string): Record<string, number>;
   /** Where Keira keeps data it can rebuild (the user's local application data). */
   cacheDirectory(): string;
   /** Turns plain data (objects, arrays, typed arrays…) into compact bytes, and back. */

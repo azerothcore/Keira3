@@ -374,6 +374,36 @@
           </button>
         }
       </div>
+      @if (cacheUsage(); as usage) {
+        <table class="table table-sm table-borderless align-middle mt-2 mb-0 world-editor-cache-maps" data-testid="cache-maps">
+          <thead>
+            <tr>
+              <th scope="col">{{ 'WORLD_EDITOR.MAP' | translate }}</th>
+              <th scope="col">{{ 'WORLD_EDITOR.TILES_CACHED' | translate }}</th>
+              <th scope="col">{{ 'WORLD_EDITOR.SIZE' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of cacheRows(usage); track row.directory) {
+              <tr [attr.data-testid]="'cache-map-' + row.directory" [class.table-active]="preloading()?.directory === row.directory">
+                <td>{{ row.name }}</td>
+                <td>{{ row.tiles }}</td>
+                <td>{{ row.mb }} MB</td>
+              </tr>
+            }
+            <tr class="text-muted" data-testid="cache-buildings">
+              <td>{{ 'WORLD_EDITOR.BUILDINGS' | translate }}</td>
+              <td></td>
+              <td>{{ (usage.buildingBytes / 1000000).toFixed(1) }} MB</td>
+            </tr>
+            <tr class="fw-bold" data-testid="cache-total">
+              <td>{{ 'WORLD_EDITOR.TOTAL' | translate }}</td>
+              <td></td>
+              <td>{{ cacheSizeMb() }} MB</td>
+            </tr>
+          </tbody>
+        </table>
+      }
     </form>
   }
 

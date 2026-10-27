@@ -83,6 +83,8 @@ describe('createWowNativeApi', () => {
     expect(writable.writeFileSync).toHaveBeenCalledWith('/cache/v1/adt/x.bin', new Uint8Array([1]));
     expect(api.directorySize('/cache')).toBe(15);
     expect(api.directorySize('/missing')).toBe(0);
+    expect(api.fileSizes('/cache')).toEqual({ 'a.bin': 10 });
+    expect(api.fileSizes('/missing')).toEqual({});
     api.removeDirectory('/cache');
     expect(writable.rmSync).toHaveBeenCalledWith('/cache', { recursive: true, force: true });
   });
