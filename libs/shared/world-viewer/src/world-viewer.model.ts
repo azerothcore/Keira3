@@ -1,4 +1,4 @@
-import { BoundaryShape, MmapRecastConfig, TileCoord, WorldPosition } from '@keira/shared/wow-data';
+import { BoundaryShape, LiquidKind, MmapRecastConfig, TileCoord, WorldPosition } from '@keira/shared/wow-data';
 
 export type SpawnKind = 'creature' | 'gameobject';
 
@@ -198,6 +198,11 @@ export interface ContextRequest {
   position?: WorldPosition;
   /** Where the player marker (Space) is, when placed. */
   marker?: WorldPosition;
+  /**
+   * The liquid over the ground right-clicked: its surface height, kind, LiquidType.dbc id, and whether it's deep water
+   * (fatigue; known from the server data folder).
+   */
+  liquid?: { z: number; kind: LiquidKind; type: number; deep?: boolean };
 }
 
 export interface ObjectMoved {

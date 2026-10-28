@@ -499,7 +499,7 @@ describe(WorldViewerComponent.name, () => {
     expect(frames).toHaveLength(0);
   });
 
-  it('lights the zone at the time of day chosen, or at the computer\'s time checked every minute', async () => {
+  it("lights the zone at the time of day chosen, or at the computer's time checked every minute", async () => {
     const configure = vi.spyOn(ZoneLighting.prototype, 'configure');
     vi.useFakeTimers({ toFake: ['setInterval', 'clearInterval', 'Date'] });
     vi.setSystemTime(new Date(2026, 9, 28, 21, 30));
@@ -867,6 +867,40 @@ describe(WorldViewerComponent.name, () => {
       page.pointer('pointerup', 50, 50, 2);
       expect(host.contexts).toHaveLength(3);
       expect(host.picks).toEqual([]);
+    });
+
+    it('tells the liquid over the ground right-clicked, and whether it is deep water', async () => {
+      const { page, host, fixture, update } = await pickSetup();
+      await settle(fixture);
+      await update(() => host.focus.set(at(-100, -100)));
+      const liquidAt = vi.spyOn(WorldScene.prototype, 'liquidAt').mockReturnValue({ z: 10_000, kind: 'ocean', type: 2 });
+      const types = new Uint8Array(256).fill(2 | 16);
+      const rightClick = async () => {
+        page.pointer('pointerdown', 50, 50, 2);
+        page.pointer('pointerup', 50, 50, 2);
+        await settle(fixture);
+        return host.contexts.at(-1) as ContextRequest;
+      };
+      client.getServerMap.mockResolvedValue({ liquid: { types, offsetX: 0, offsetY: 0, width: 129, height: 129, level: 10_000 } });
+      expect((await rightClick()).liquid).toEqual({ z: 10_000, kind: 'ocean', type: 2, deep: true });
+      client.getServerMap.mockResolvedValue({
+        liquid: { types: new Uint8Array(256).fill(1), offsetX: 0, offsetY: 0, width: 129, height: 129, level: 1 },
+      });
+      expect((await rightClick()).liquid?.deep).toBe(false);
+      client.getServerMap.mockRejectedValue(new Error('no maps'));
+      expect((await rightClick()).liquid).toEqual({ z: 10_000, kind: 'ocean', type: 2 });
+      // a liquid under the ground (a cave's floor over a lake): just the ground
+      liquidAt.mockReturnValue({ z: -10_000, kind: 'water', type: 1 });
+      expect((await rightClick()).liquid).toBeUndefined();
+      // the view closed before the server's map was read: no menu
+      liquidAt.mockReturnValue({ z: 10_000, kind: 'water', type: 1 });
+      const count = host.contexts.length;
+      page.pointer('pointerdown', 50, 50, 2);
+      page.pointer('pointerup', 50, 50, 2);
+      fixture.destroy();
+      await new Promise((resolve) => setTimeout(resolve));
+      expect(host.contexts).toHaveLength(count);
+      liquidAt.mockRestore();
     });
 
     it('reports the ground under spawns when placing', async () => {
@@ -1661,6 +1695,22 @@ describe(WorldViewerComponent.name, () => {
       frameAt(600);
       expect(target()).toBe(start);
       expect(moved).not.toBe(start);
+      // on a liquid: Shift + Space (or always, when the marker stands on liquids)
+      const beacon = vi.spyOn(WorldScene.prototype, 'setBeacon');
+      const liquidAt = vi.spyOn(WorldScene.prototype, 'liquidAt').mockReturnValue({ z: 10_000, kind: 'water', type: 1 });
+      canvas.dispatchEvent(new KeyboardEvent('keydown', { code: 'Space', shiftKey: true, cancelable: true }));
+      expect(beacon.mock.calls.at(-1)?.[0].z).toBe(10_000);
+      key('keydown', 'Space');
+      expect(beacon.mock.calls.at(-1)?.[0].z).not.toBe(10_000);
+      await update(() => host.render.set({ ...DEFAULT_WORLD_RENDER_SETTINGS, markerOnLiquid: true }));
+      key('keydown', 'Space');
+      expect(beacon.mock.calls.at(-1)?.[0].z).toBe(10_000);
+      // no liquid there
+      liquidAt.mockReturnValue(undefined);
+      key('keydown', 'Space');
+      expect(beacon.mock.calls.at(-1)?.[0].z).not.toBe(10_000);
+      liquidAt.mockRestore();
+      beacon.mockRestore();
     });
 
     it('shows which snapping is on above the crosshair', async () => {

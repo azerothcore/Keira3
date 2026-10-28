@@ -550,6 +550,22 @@
                   }
                 </select>
               </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-marker-liquid"
+                  data-testid="view-marker-liquid"
+                  [checked]="renderSettings.settings().markerOnLiquid"
+                  (change)="setRenderFlag('markerOnLiquid', $event)"
+                />
+                <label
+                  class="form-check-label"
+                  for="world-editor-marker-liquid"
+                  [title]="'WORLD_EDITOR.MARKER_ON_LIQUID_HELP' | translate"
+                  >{{ 'WORLD_EDITOR.MARKER_ON_LIQUID' | translate }}</label
+                >
+              </div>
             </section>
             <section class="world-editor-view-group" data-testid="view-group-world">
               <h6 class="world-editor-view-group-title">{{ 'WORLD_EDITOR.VIEW_WORLD' | translate }}</h6>
@@ -1535,6 +1551,19 @@
           <button type="button" class="dropdown-item" data-testid="context-copy" (click)="copyContextInfo()">
             <i class="fa fa-clipboard"></i> {{ 'WORLD_EDITOR.COPY_INFO' | translate }}
           </button>
+          @if (menu.liquid; as liquid) {
+            <div class="dropdown-divider"></div>
+            <h6 class="dropdown-header" data-testid="context-liquid">
+              {{ 'WORLD_EDITOR.LIQUID_' + liquid.kind.toUpperCase() | translate }} · {{ liquid.z.toFixed(2) }}
+              @if (liquid.deep) {
+                · <span class="text-warning" data-testid="context-liquid-deep">{{ 'WORLD_EDITOR.LIQUID_DEEP' | translate }}</span>
+              }
+            </h6>
+            <button type="button" class="dropdown-item" data-testid="context-copy-go-liquid" (click)="copyContextGo('liquid')">
+              <i class="fa fa-water"></i> {{ 'WORLD_EDITOR.COPY_GO_LIQUID' | translate }}
+            </button>
+            <h6 class="dropdown-header">{{ 'WORLD_EDITOR.GROUND_BELOW' | translate }}</h6>
+          }
           @if (menu.position) {
             <button type="button" class="dropdown-item" data-testid="context-copy-go" (click)="copyContextGo('xyz')">
               <i class="fa fa-location-arrow"></i> {{ 'WORLD_EDITOR.COPY_GO' | translate }}

@@ -1420,6 +1420,15 @@
     "SKYBOX": "Skybox",
     "SKYBOX_HELP": "El modelo de cielo alrededor del mundo (estrellas, nubes, auroras): el de la zona (con iluminación de zona) o uno a elegir",
     "SKYBOX_ZONE": "El skybox de la zona",
-    "SKYBOX_SPIN": "Girarlo despacio"
+    "SKYBOX_SPIN": "Girarlo despacio",
+    "LIQUID_WATER": "Agua",
+    "LIQUID_OCEAN": "Océano",
+    "LIQUID_MAGMA": "Magma",
+    "LIQUID_SLIME": "Limo",
+    "LIQUID_DEEP": "aguas profundas: fatiga",
+    "COPY_GO_LIQUID": "Copiar .go xyz en la superficie",
+    "GROUND_BELOW": "Suelo debajo",
+    "MARKER_ON_LIQUID": "Marcador sobre líquidos",
+    "MARKER_ON_LIQUID_HELP": "Espacio pone el marcador sobre la superficie del agua, lava o limo en lugar del suelo; Mayús + Espacio hace lo otro"
   }
 }

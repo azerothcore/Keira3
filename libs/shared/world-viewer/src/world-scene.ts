@@ -748,6 +748,7 @@ export class WorldScene {
       geometry.computeVertexNormals();
       const surface = new Mesh(geometry, this.liquidMaterial(liquid.kind));
       surface.name = 'liquid';
+      surface.userData = { kind: liquid.kind, type: liquid.type };
       surface.renderOrder = 1;
       // Drawn but not picked: placing and snapping use the ground under the water.
       surface.layers.set(LIQUID_LAYER);
@@ -1255,10 +1256,16 @@ export class WorldScene {
 
   /** Height of the highest liquid surface at a server x/y, if loaded. */
   private liquidHeightAt(x: number, y: number): number | undefined {
+    return this.liquidAt(x, y)?.z;
+  }
+
+  /** The highest liquid surface loaded at a server position: its height, kind and LiquidType.dbc id. */
+  liquidAt(x: number, y: number): { z: number; kind: LiquidKind; type: number } | undefined {
     const from = worldToScene({ x, y, z: 10_000 });
     this.liquidRaycaster.layers.set(LIQUID_LAYER);
     this.liquidRaycaster.set(new Vector3(from.x, from.y, from.z), new Vector3(0, -1, 0));
-    return this.liquidRaycaster.intersectObjects([this.terrainGroup], true)[0]?.point.y;
+    const hit = this.liquidRaycaster.intersectObjects([this.terrainGroup], true)[0];
+    return hit && { z: hit.point.y, ...(hit.object.userData as { kind: LiquidKind; type: number }) };
   }
 
   /** Terrain or a building between a point and a height above it (a cave under a lake). */

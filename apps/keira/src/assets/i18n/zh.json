@@ -1420,6 +1420,15 @@
     "SKYBOX": "天空盒",
     "SKYBOX_HELP": "世界周围的天空模型（星空、云、极光）：区域的（需开启区域光照）或自选的",
     "SKYBOX_ZONE": "区域天空盒",
-    "SKYBOX_SPIN": "缓慢旋转"
+    "SKYBOX_SPIN": "缓慢旋转",
+    "LIQUID_WATER": "水",
+    "LIQUID_OCEAN": "海洋",
+    "LIQUID_MAGMA": "岩浆",
+    "LIQUID_SLIME": "软泥",
+    "LIQUID_DEEP": "深水：疲劳",
+    "COPY_GO_LIQUID": "复制水面上的 .go xyz",
+    "GROUND_BELOW": "下方地面",
+    "MARKER_ON_LIQUID": "标记放在液面上",
+    "MARKER_ON_LIQUID_HELP": "空格把标记放在水、岩浆或软泥的表面而不是下方地面；Shift + 空格则相反"
   }
 }

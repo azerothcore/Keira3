@@ -1,5 +1,14 @@
 import { buildServerMap } from './server-data.mock';
-import { parseServerMap, serverAreaAt, serverHeightAt, serverMapName } from './server-map';
+import {
+  LIQUID_DARK_WATER,
+  parseServerMap,
+  serverAreaAt,
+  serverHeightAt,
+  serverLiquidAt,
+  serverMapName,
+  ServerMapTile,
+} from './server-map';
+import { TILE_SIZE } from './coords';
 
 describe('server maps', () => {
   it('names files like the mmtiles: map, grid y, grid x', () => {
@@ -48,5 +57,25 @@ describe('server maps', () => {
     // outside the tile: the nearest edge
     expect(serverHeightAt(tile, { tx: 31, ty: 49 }, 0, 0)).toBe(42);
     expect(serverHeightAt({}, { tx: 31, ty: 49 }, 0, 0)).toBeUndefined();
+  });
+
+  it('tells the liquid at a place, with its surface and whether it is deep water', () => {
+    // a square (along x, y) of the liquid grid: just inside the tile's top corner, then 2 squares further
+    const at = (square: number) => -((square + 0.5) * TILE_SIZE) / 128;
+    const types = new Uint8Array(256);
+    types[0] = 2 | LIQUID_DARK_WATER;
+    const tile: ServerMapTile = {
+      liquid: { types, offsetX: 1, offsetY: 0, width: 3, height: 2, heights: new Float32Array([4, 5, 6, 7, 8, 9]), level: 0 },
+    };
+    expect(serverLiquidAt(tile, at(1), at(2))).toEqual({ level: 8, types: 2 | LIQUID_DARK_WATER });
+    expect(serverLiquidAt(tile, at(0), at(1))).toEqual({ level: 4, types: 18 });
+    // outside the liquid's grid, or in a chunk without liquid
+    expect(serverLiquidAt(tile, at(0), at(0))).toBeUndefined();
+    expect(serverLiquidAt(tile, at(2), at(1))).toBeUndefined();
+    expect(serverLiquidAt(tile, at(0), at(4))).toBeUndefined();
+    expect(serverLiquidAt(tile, at(9), at(1))).toBeUndefined();
+    // one level everywhere, and no liquid at all
+    expect(serverLiquidAt({ liquid: { ...tile.liquid!, heights: undefined, level: 3 } }, at(1), at(1))).toEqual({ level: 3, types: 18 });
+    expect(serverLiquidAt({}, 0, 0)).toBeUndefined();
   });
 });

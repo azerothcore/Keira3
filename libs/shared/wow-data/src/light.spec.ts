@@ -60,7 +60,12 @@ describe('light', () => {
     expect(global.skybox).toBeUndefined();
 
     // with the skyboxes of their LightParams
-    const params = new DbcFile(buildDbc([[2, 0, 9, 0], [3, 0, 8, 0]]));
+    const params = new DbcFile(
+      buildDbc([
+        [2, 0, 9, 0],
+        [3, 0, 8, 0],
+      ]),
+    );
     const skyboxes = new DbcFile(buildDbc([[9, 'Environments\\Stars\\Stars.mdx', 0]]));
     const withSky = parseZoneLights(lights, ints, floats, params, skyboxes).get(0) as ZoneLight[];
     expect(withSky.map((l) => l.skybox)).toEqual(['Environments\\Stars\\Stars.m2', undefined]);

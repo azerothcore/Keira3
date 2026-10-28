@@ -737,6 +737,9 @@ describe(WorldEditorComponent.name, () => {
       page.fixture.detectChanges();
       expect(page.viewer().renderSettings().showNavMesh).toBe(true);
       expect(page.viewer().renderSettings().fog).toBe(false);
+      page.byId<HTMLInputElement>('view-marker-liquid').nativeElement.click();
+      page.fixture.detectChanges();
+      expect(page.viewer().renderSettings().markerOnLiquid).toBe(true);
       // the skybox: the zone's or one chosen, turning slowly
       await settle(page);
       const skybox = page.byId<HTMLSelectElement>('view-skybox-model').nativeElement;
@@ -809,6 +812,7 @@ describe(WorldEditorComponent.name, () => {
         showFacingArrows: false,
         zoneLighting: false,
         fog: false,
+        markerOnLiquid: true,
         skybox: false,
         skyboxModel: 'Environments\\Stars\\Stars.m2',
         skyboxSpin: true,
@@ -1918,6 +1922,19 @@ describe(WorldEditorComponent.name, () => {
       await settle(page);
       page.click('context-copy-marker');
       expect(mocks.clipboard.copyFromContent).toHaveBeenLastCalledWith('.go xyz 5.0000 6.0000 7.0000 0');
+      // water over the ground: its kind, deep water, and a .go onto its surface
+      const water = { key: 'ground', x: 10, y: 10, label: '1 2 3', position: { x: 1, y: 2, z: -20 } };
+      page.viewer().contextRequested.emit({ ...water, liquid: { z: 0.5, kind: 'ocean', type: 2, deep: true } });
+      await settle(page);
+      expect(page.text('context-liquid')).toContain('WORLD_EDITOR.LIQUID_OCEAN · 0.50');
+      expect(page.text('context-liquid-deep')).toBe('WORLD_EDITOR.LIQUID_DEEP');
+      page.click('context-copy-go-liquid');
+      expect(mocks.clipboard.copyFromContent).toHaveBeenLastCalledWith('.go xyz 1.0000 2.0000 0.5000 0');
+      page.viewer().contextRequested.emit({ ...water, liquid: { z: 0.5, kind: 'water', type: 1 } });
+      await settle(page);
+      expect(page.byId('context-liquid-deep', false)).toBeFalsy();
+      page.click('context-copy-go');
+      expect(mocks.clipboard.copyFromContent).toHaveBeenLastCalledWith('.go xyz 1.0000 2.0000 -20.0000 0');
     });
 
     it('offers the (future) waypoint editor for waypoints, and closes on a press elsewhere or Escape', async () => {

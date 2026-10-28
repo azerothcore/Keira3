@@ -229,6 +229,7 @@ type RenderFlagKey =
   | 'showNavMesh'
   | 'zoneLighting'
   | 'fog'
+  | 'markerOnLiquid'
   | 'skybox'
   | 'skyboxSpin'
   | 'timeFollowsClock'
@@ -2459,9 +2460,12 @@ export class WorldEditorComponent implements OnInit {
    * Copies a command going where was right-clicked (or to the player marker): `.go xyz`, `.go xyz` with only x and y
    * (the server finds the ground; on the map the player is on) or `.go grid` (x = (gridX − 31.5) × 533.33, cs_go.cpp).
    */
-  protected copyContextGo(kind: 'xyz' | 'xy' | 'grid' | 'marker'): void {
+  protected copyContextGo(kind: 'xyz' | 'xy' | 'grid' | 'marker' | 'liquid'): void {
     const menu = this.contextMenu() as ContextRequest;
-    const { x, y, z } = (kind === 'marker' ? menu.marker : menu.position) as WorldPosition;
+    const { x, y, z } =
+      kind === 'liquid'
+        ? { ...(menu.position as WorldPosition), z: (menu.liquid as { z: number }).z }
+        : ((kind === 'marker' ? menu.marker : menu.position) as WorldPosition);
     const map = this.mapId();
     const grid = (value: number) => (value / TILE_SIZE + 31.5).toFixed(4);
     const command =

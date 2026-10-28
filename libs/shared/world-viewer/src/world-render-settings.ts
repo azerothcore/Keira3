@@ -46,6 +46,8 @@ export interface WorldRenderSettings {
   skybox: boolean;
   skyboxModel: string;
   skyboxSpin: boolean;
+  /** The marker (Space) stands on the surface of liquids instead of the ground under them (Shift + Space: the other). */
+  markerOnLiquid: boolean;
   /** Fog in the distance (the zone's with zone lighting): off to see far. */
   fog: boolean;
   /** How far from the camera target (yards) doodads and models are drawn. */
@@ -113,6 +115,7 @@ export const DEFAULT_WORLD_RENDER_SETTINGS: WorldRenderSettings = {
   showNavMesh: false,
   zoneLighting: false,
   fog: true,
+  markerOnLiquid: false,
   skybox: true,
   skyboxModel: '',
   skyboxSpin: false,

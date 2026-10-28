@@ -25,6 +25,8 @@ import {
   WorldPosition,
   worldToScene,
   worldToTile,
+  serverLiquidAt,
+  LIQUID_DARK_WATER,
   CHUNK_SIZE,
   serverAreaAt,
   perfFrame,
@@ -503,14 +505,18 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       const now = new Date();
       return now.getHours() * 60 + now.getMinutes();
     };
-    const apply = () => this.zoneLighting.configure(settings.zoneLighting, (settings.timeFollowsClock ? minutes() : settings.timeOfDay) * 2);
+    const apply = () =>
+      this.zoneLighting.configure(settings.zoneLighting, (settings.timeFollowsClock ? minutes() : settings.timeOfDay) * 2);
     apply();
     if (settings.zoneLighting && settings.timeFollowsClock) {
       this.clockTimer = setInterval(apply, CLOCK_CHECK);
     }
   }
 
+  private destroyed = false;
+
   ngOnDestroy(): void {
+    this.destroyed = true;
     clearTimeout(this.activityTimer);
     clearInterval(this.clockTimer);
     clearTimeout(this.recheckTimer);
@@ -609,14 +615,26 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       if (ground) {
         const { x, y, z } = ground.position;
         const label = `${x.toFixed(2)} ${y.toFixed(2)} ${z.toFixed(2)}`;
-        this.contextRequested.emit({
+        const request: ContextRequest = {
           key: GROUND_KEY,
           x: event.clientX - rect.left,
           y: event.clientY - rect.top,
           label,
           position: ground.position,
           marker: this.marker,
-        });
+        };
+        // a liquid over that ground: its surface, and whether it's deep water (from the server's map)
+        const liquid = this.world.liquidAt(x, y);
+        if (liquid && liquid.z > z) {
+          void this.isDeepWater(x, y).then((deep) => {
+            // (unless the view was closed meanwhile)
+            if (!this.destroyed) {
+              this.contextRequested.emit({ ...request, liquid: { ...liquid, ...(deep === undefined ? {} : { deep }) } });
+            }
+          });
+        } else {
+          this.contextRequested.emit(request);
+        }
       }
       return;
     }
@@ -737,7 +755,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     if (marker) {
       event.preventDefault();
       if (marker === 'markerToCursor') {
-        this.markerToCrosshair();
+        this.markerToCrosshair(event.shiftKey);
       } else {
         this.cameraToMarker();
       }
@@ -912,11 +930,24 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     }
   };
 
-  private markerToCrosshair(): void {
+  /**
+   * Puts the marker under the crosshair: on the ground, or on the liquid over it when the marker stands on liquids
+   * (View) — Shift doing the other one.
+   */
+  private markerToCrosshair(shift = false): void {
     const ground = this.world.pick(0, 0, { groundOnly: true });
     if (ground?.type === 'ground') {
-      this.setMarker(ground.position);
+      const liquid = this.renderSettings().markerOnLiquid !== shift ? this.world.liquidAt(ground.position.x, ground.position.y) : undefined;
+      this.setMarker(liquid && liquid.z > ground.position.z ? { ...ground.position, z: liquid.z } : ground.position);
     }
+  }
+
+  /** Whether a place is in deep water (fatigue), from the server's map; undefined without it. */
+  private async isDeepWater(x: number, y: number): Promise<boolean | undefined> {
+    // (ground was right-clicked: a map is shown)
+    const server = await this.client.getServerMap(this.mapId as number, worldToTile(x, y)).catch(() => undefined);
+    const liquid = server && serverLiquidAt(server, x, y);
+    return liquid ? (liquid.types & LIQUID_DARK_WATER) !== 0 : undefined;
   }
 
   /** Moves the camera target to the marker, keeping the view's angle and zoom. */

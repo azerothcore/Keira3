@@ -117,8 +117,11 @@ export function inputLabel(input: string): string {
     .join('+');
 }
 
+/** Actions Shift doesn't change the binding of: camera moves (faster), and the marker (on the ground or a liquid). */
+const SHIFT_FREE_ACTIONS: ControlAction[] = [...NAVIGATION_ACTIONS, 'markerToCursor'];
+
 /**
- * Whether a key press fires an action. Camera moves ignore Shift (held to go faster); everything else needs exactly the
+ * Whether a key press fires an action. Camera moves and the marker ignore Shift; everything else needs exactly the
  * modifiers of one of its bindings.
  */
 export function controlMatches(settings: WorldControlsSettings, action: ControlAction, event: KeyboardEvent): boolean {
@@ -126,8 +129,8 @@ export function controlMatches(settings: WorldControlsSettings, action: ControlA
   if (!input) {
     return false;
   }
-  const navigation = (NAVIGATION_ACTIONS as ControlAction[]).includes(action);
-  const normalise = (value: string): string => (navigation ? value.replace('Shift+', '') : value);
+  const shiftFree = SHIFT_FREE_ACTIONS.includes(action);
+  const normalise = (value: string): string => (shiftFree ? value.replace('Shift+', '') : value);
   return settings.bindings[action].some((binding) => normalise(binding) === normalise(input));
 }
 

@@ -1420,6 +1420,15 @@
     "SKYBOX": "Skybox",
     "SKYBOX_HELP": "The sky model around the world (stars, clouds, auroras): the zone's (with zone lighting) or one you choose",
     "SKYBOX_ZONE": "The zone's skybox",
-    "SKYBOX_SPIN": "Turn it slowly"
+    "SKYBOX_SPIN": "Turn it slowly",
+    "LIQUID_WATER": "Water",
+    "LIQUID_OCEAN": "Ocean",
+    "LIQUID_MAGMA": "Magma",
+    "LIQUID_SLIME": "Slime",
+    "LIQUID_DEEP": "deep water: fatigue",
+    "COPY_GO_LIQUID": "Copy .go xyz on the surface",
+    "GROUND_BELOW": "Ground below",
+    "MARKER_ON_LIQUID": "Marker on liquids",
+    "MARKER_ON_LIQUID_HELP": "Space puts the marker on the surface of water, lava or slime instead of the ground under it; Shift + Space does the other one"
   }
 }

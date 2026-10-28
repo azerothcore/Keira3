@@ -149,3 +149,26 @@ export function serverHeightAt(tile: ServerMapTile, coord: TileCoord, x: number,
   const row = clamp(((32 - coord.ty) * TILE_SIZE - x) / part);
   return tile.v9[row * V9_SIZE + col];
 }
+
+/** ServerMapLiquid type bit of deep ("dark") water, where swimming players get fatigue. */
+export const LIQUID_DARK_WATER = 0x10;
+
+/**
+ * The liquid at a server position of a tile, like the server (`GridTerrainData::GetLiquidData`): its surface height and
+ * its type bits (1 water, 2 ocean, 4 magma, 8 slime, 16 dark water: fatigue); undefined where there is none.
+ */
+export function serverLiquidAt(tile: ServerMapTile, x: number, y: number): { level: number; types: number } | undefined {
+  const liquid = tile.liquid;
+  if (!liquid) {
+    return undefined;
+  }
+  const lx = Math.floor(V8_SIZE * (32 - x / TILE_SIZE)) & (V8_SIZE - 1);
+  const ly = Math.floor(V8_SIZE * (32 - y / TILE_SIZE)) & (V8_SIZE - 1);
+  const types = liquid.types[(lx >> 3) * 16 + (ly >> 3)];
+  // (the server reads the liquid's rows along x from its y offset, and the other way round)
+  const [cx, cy] = [lx - liquid.offsetY, ly - liquid.offsetX];
+  if (!types || cx < 0 || cx >= liquid.height || cy < 0 || cy >= liquid.width) {
+    return undefined;
+  }
+  return { level: liquid.heights ? liquid.heights[cx * liquid.width + cy] : liquid.level, types };
+}
