@@ -105,6 +105,8 @@ import {
 } from '@keira/shared/wow-data';
 import { ElectronService } from '@keira/shared/common-services';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
+import { NgTemplateOutlet } from '@angular/common';
 import { ClipboardService } from 'ngx-clipboard';
 import { ToastrService } from 'ngx-toastr';
 import { ChangesSnapshot } from './world-editor-changes';
@@ -233,6 +235,11 @@ type RenderFlagKey =
   | 'showRoofs'
   | 'showBuildings'
   | 'showDoodads'
+  | 'showIndoor'
+  | 'showTrees'
+  | 'showProps'
+  | 'showCreatureModels'
+  | 'showGameobjectModels'
   | 'showModels'
   | 'showFacingArrows'
   | 'showWanderRadius'
@@ -289,6 +296,8 @@ const isFlight = (key: string): boolean => key.startsWith('flight:') || key.star
   templateUrl: './world-editor.component.html',
   styleUrls: ['./world-editor.component.scss', './world-editor-pickers.scss'],
   imports: [
+    NgTemplateOutlet,
+    TooltipDirective,
     ReactiveFormsModule,
     TranslatePipe,
     WorldViewerComponent,
@@ -735,6 +744,9 @@ export class WorldEditorComponent implements OnInit {
   protected readonly panelCollapsed = signal(false);
   private readonly root = viewChild.required<ElementRef<HTMLElement>>('root');
   protected readonly viewFullscreen = signal(false);
+  /** The view's own fullscreen: its top tab's menu (the main buttons, and the layers under Expand more). */
+  protected readonly quickOpen = signal(false);
+  protected readonly quickMore = signal(false);
   private readonly view = viewChild.required<ElementRef<HTMLElement>>('view');
   protected readonly renderScales = RENDER_SCALES;
   protected readonly playerRaces = PLAYER_RACES;
@@ -777,7 +789,7 @@ export class WorldEditorComponent implements OnInit {
         return {
           key: `boundary:${boundary.boss}`,
           label: [
-            `Boss boundary ${boundary.boss} (${boundary.instance})${names ? ` — ${names}` : ''}`,
+            `Boss boundary ${boundary.boss} (${boundary.instance})${names ? ` - ${names}` : ''}`,
             ...(shapes.length > 1 ? ['must stay inside all of:'] : []),
             ...shapes,
           ].join('\n'),

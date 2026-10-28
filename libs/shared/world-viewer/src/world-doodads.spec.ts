@@ -2,7 +2,7 @@ import { EMPTY_COLLISION, M2Blend, M2Mesh, ModelPlacement, tileCenter, TileCoord
 import { Group, InstancedMesh, Matrix4, Vector3 } from 'three';
 import { COLLISION_LAYER, COLLISION_MATERIAL } from './collision-object';
 import { TextureCache } from './texture-cache';
-import { DoodadSource, WorldDoodads } from './world-doodads';
+import { DoodadSource, isTreeModel, WorldDoodads } from './world-doodads';
 
 const model: M2Mesh = {
   positions: new Float32Array(9),
@@ -78,6 +78,26 @@ describe('WorldDoodads', () => {
     expect(meshes(group)[0].boundingSphere).not.toBeNull();
     expect(onChange).toHaveBeenCalled();
     expect(doodads.loadedTiles).toContain('32_48');
+  });
+
+  it('turns trees and the other doodads (props) on and off apart', async () => {
+    const { doodads, group } = setup({ '32_48': [doodad(1, 0), doodad(5, 20, 'World\\Rock.m2')] });
+    doodads.setMap('Azeroth');
+    await doodads.update(CENTER);
+    await flush();
+    const drawn = () =>
+      meshes(group)
+        .filter((mesh) => mesh.count > 0)
+        .map((mesh) => mesh.name);
+    expect(drawn()).toEqual(['doodad:world\\tree.m2', 'doodad:world\\rock.m2']);
+    doodads.configure({ show: true, distance: 100, smallDistance: 100, trees: false });
+    await flush();
+    expect(drawn()).toEqual(['doodad:world\\rock.m2']);
+    doodads.configure({ show: true, distance: 100, smallDistance: 100, trees: true, props: false });
+    await flush();
+    expect(drawn()).toEqual(['doodad:world\\tree.m2']);
+    expect(isTreeModel('World\\Azeroth\\Elwynn\\PassiveDoodads\\Trees\\ElwynnTree01.m2')).toBe(true);
+    expect(isTreeModel('World\\Generic\\Human\\Passive Doodads\\Barrel01.m2')).toBe(false);
   });
 
   it('follows the distance, growing the instanced meshes when more doodads come into range', async () => {

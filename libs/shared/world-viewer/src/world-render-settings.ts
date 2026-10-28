@@ -54,6 +54,16 @@ export interface WorldRenderSettings {
    */
   memoryCapMb: number;
   gpuCapMb: number;
+  /**
+   * The indoor parts of buildings in the world (the client draws them only from inside or through a doorway: from
+   * outside some show as flat squares). Dungeons made of one building always show them.
+   */
+  showIndoor: boolean;
+  /** Within doodads and models: trees and the other doodads (props), NPCs and gameobjects, each on or off. */
+  showTrees: boolean;
+  showProps: boolean;
+  showCreatureModels: boolean;
+  showGameobjectModels: boolean;
   /** Fog in the distance (the zone's with zone lighting): off to see far. */
   fog: boolean;
   /** How far from the camera target (yards) doodads and models are drawn. */
@@ -121,6 +131,11 @@ export const DEFAULT_WORLD_RENDER_SETTINGS: WorldRenderSettings = {
   showNavMesh: false,
   zoneLighting: false,
   fog: true,
+  showTrees: true,
+  showProps: true,
+  showCreatureModels: true,
+  showGameobjectModels: true,
+  showIndoor: true,
   memoryCapMb: 0,
   gpuCapMb: 0,
   markerOnLiquid: false,

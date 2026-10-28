@@ -31,6 +31,14 @@ export interface WorldDoodadsOptions {
   distance: number;
   /** Same for small doodads (bushes, grass tufts, barrels…). */
   smallDistance: number;
+  /** Trees (models in a `Trees` folder or named after one), and every other doodad (rocks, fences, props…). */
+  trees?: boolean;
+  props?: boolean;
+}
+
+/** Whether a doodad model is a tree: in a `Tree(s)` folder, or named `…Tree…`. */
+export function isTreeModel(path: string): boolean {
+  return /tree/i.test(path);
 }
 
 /** Doodads whose placed bounding radius is below this many yards count as small. */
@@ -102,7 +110,9 @@ export class WorldDoodads {
     if (
       options.show === this.options.show &&
       options.distance === this.options.distance &&
-      options.smallDistance === this.options.smallDistance
+      options.smallDistance === this.options.smallDistance &&
+      (options.trees ?? true) === (this.options.trees ?? true) &&
+      (options.props ?? true) === (this.options.props ?? true)
     ) {
       return;
     }
@@ -251,6 +261,10 @@ export class WorldDoodads {
 
   /** Within the distance of its size group; models not loaded yet use the farthest distance, to get loaded. */
   private inRange(placement: ModelPlacement, center: WorldPosition, template: M2Template | undefined): boolean {
+    // trees and the other doodads can each be turned off
+    if (!(isTreeModel(placement.path) ? (this.options.trees ?? true) : (this.options.props ?? true))) {
+      return false;
+    }
     if (insideBounds(this.region, placement.position[0], placement.position[1])) {
       return true;
     }

@@ -12,7 +12,7 @@ import {
 } from '@keira/shared/wow-data';
 import { Group, Object3D } from 'three';
 import { TextureCache } from './texture-cache';
-import { applyPlacement, buildWmoObject, disposeWmoObject } from './wmo-object';
+import { applyPlacement, buildWmoObject, disposeWmoObject, setWmoIndoorVisible } from './wmo-object';
 
 /** What the object streamer needs from `WowClientService`. */
 export interface ObjectSource {
@@ -58,6 +58,7 @@ export class WorldObjects {
   private regionKeys = new Set<string>();
   private readonly extras = new Map<string, Object3D>();
   private extrasGeneration = 0;
+  private indoorVisible = true;
 
   constructor(
     private readonly source: ObjectSource,
@@ -90,6 +91,15 @@ export class WorldObjects {
     }
     this.options = { ...options };
     this.clear();
+  }
+
+  /** Shows or hides the indoor parts of the buildings (see `setWmoIndoorVisible`), loaded and to come. */
+  setIndoorVisible(visible: boolean): void {
+    if (visible !== this.indoorVisible) {
+      this.indoorVisible = visible;
+      this.templates.forEach((template) => void template.then((t) => t && setWmoIndoorVisible(t, visible)));
+      this.onChange();
+    }
   }
 
   /** Also keeps the buildings of every tile of `bounds` (until set to undefined); takes effect at the next update(). */
@@ -223,7 +233,9 @@ export class WorldObjects {
             material.texture ? this.textures.get(material.texture) : Promise.resolve(this.textures.fallback),
           ),
         );
-        return perfTime('building build', () => buildWmoObject(model, textures, this.textures.fallback));
+        const built = perfTime('building build', () => buildWmoObject(model, textures, this.textures.fallback));
+        setWmoIndoorVisible(built, this.indoorVisible);
+        return built;
       });
       template.catch(() => this.templates.delete(key));
       this.templates.set(key, template);

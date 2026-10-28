@@ -109,21 +109,7 @@
       <button type="submit" class="btn btn-sm btn-secondary" data-testid="goto-btn">{{ 'WORLD_EDITOR.GO_TO' | translate }}</button>
     </form>
 
-    <div class="d-flex align-items-center gap-3 world-editor-layers">
-      @for (layer of layerSwitches; track layer.key) {
-        <div class="form-check form-switch mb-0">
-          <input
-            class="form-check-input layer-{{ layer.id }}"
-            type="checkbox"
-            id="world-editor-layer-{{ layer.id }}"
-            [attr.data-testid]="'layer-' + layer.id"
-            [checked]="layers()[layer.key]"
-            (change)="toggleLayer(layer.key)"
-          />
-          <label class="form-check-label" for="world-editor-layer-{{ layer.id }}">{{ layer.label | translate }}</label>
-        </div>
-      }
-    </div>
+    <ng-container [ngTemplateOutlet]="layerSwitchesTemplate" />
   </div>
   <div class="world-editor-toolbar d-flex align-items-center gap-2 mb-2">
     <form class="d-flex gap-1 tele-form" (submit)="$event.preventDefault(); searchTele()">
@@ -137,116 +123,7 @@
       />
       <button type="submit" class="btn btn-sm btn-secondary" data-testid="tele-search-btn"><i class="fa fa-search"></i></button>
     </form>
-    <div class="btn-group btn-group-sm" role="group">
-      <button
-        type="button"
-        class="btn btn-outline-secondary"
-        data-testid="map-previous"
-        [title]="'WORLD_EDITOR.MAP_PREVIOUS' | translate"
-        [disabled]="!maps().length"
-        (click)="stepMap(-1)"
-      >
-        <i class="fa fa-chevron-left"></i>
-      </button>
-      <button
-        type="button"
-        class="btn btn-outline-secondary"
-        data-testid="map-next"
-        [title]="'WORLD_EDITOR.MAP_NEXT' | translate"
-        [disabled]="!maps().length"
-        (click)="stepMap(1)"
-      >
-        {{ 'WORLD_EDITOR.MAP_NEXT' | translate }} <i class="fa fa-chevron-right"></i>
-      </button>
-    </div>
-    @if (difficulties().length) {
-      <select
-        class="form-select form-select-sm w-auto"
-        data-testid="difficulty"
-        [title]="'WORLD_EDITOR.DIFFICULTY_HELP' | translate"
-        (change)="setDifficulty($event)"
-      >
-        <option value="" [selected]="difficulty() === undefined">{{ 'WORLD_EDITOR.DIFFICULTY_ALL' | translate }}</option>
-        @for (option of difficulties(); track option.bit) {
-          <option [value]="option.bit" [selected]="difficulty() === option.bit">{{ option.label | translate }}</option>
-        }
-      </select>
-    }
-
-    <button
-      type="button"
-      class="btn btn-sm ms-auto"
-      data-testid="map-toggle"
-      [class.btn-secondary]="showMap()"
-      [class.btn-outline-secondary]="!showMap()"
-      [title]="'WORLD_EDITOR.WORLD_MAP_HELP' | translate"
-      (click)="toggleMap()"
-    >
-      <i class="fa fa-map"></i> {{ 'WORLD_EDITOR.WORLD_MAP' | translate }}
-    </button>
-    <button
-      type="button"
-      class="btn btn-sm"
-      data-testid="filters-toggle"
-      [class.btn-secondary]="showFilters()"
-      [class.btn-outline-secondary]="!showFilters()"
-      (click)="toggleFilters()"
-    >
-      <i class="fa fa-filter"></i> {{ 'WORLD_EDITOR.FILTERS' | translate }}
-      @if (hiddenCount()) {
-        <span class="badge bg-secondary world-editor-hidden-count" data-testid="hidden-count">{{ hiddenCount() }}</span>
-      }
-    </button>
-    <button
-      type="button"
-      class="btn btn-sm"
-      data-testid="view-toggle"
-      [class.btn-secondary]="showView()"
-      [class.btn-outline-secondary]="!showView()"
-      (click)="toggleView()"
-    >
-      <i class="fa fa-eye"></i> {{ 'WORLD_EDITOR.VIEW' | translate }}
-    </button>
-    <button
-      type="button"
-      class="btn btn-sm"
-      data-testid="controls-toggle"
-      [class.btn-secondary]="showControls()"
-      [class.btn-outline-secondary]="!showControls()"
-      (click)="toggleControls()"
-    >
-      <i class="fa fa-keyboard"></i> {{ 'WORLD_EDITOR.CONTROLS' | translate }}
-    </button>
-    <button
-      type="button"
-      class="btn btn-sm"
-      data-testid="settings-toggle"
-      [class.btn-secondary]="showSettings()"
-      [class.btn-outline-secondary]="!showSettings()"
-      (click)="toggleSettings()"
-    >
-      <i class="fa fa-cog"></i> {{ 'WORLD_EDITOR.SETTINGS' | translate }}
-    </button>
-    <button
-      type="button"
-      class="btn btn-sm"
-      data-testid="legend-toggle"
-      [class.btn-secondary]="showLegend()"
-      [class.btn-outline-secondary]="!showLegend()"
-      (click)="toggleLegend()"
-    >
-      <i class="fa fa-info-circle"></i> {{ 'WORLD_EDITOR.LEGEND' | translate }}
-    </button>
-    <button
-      type="button"
-      class="btn btn-sm btn-outline-secondary"
-      data-testid="refresh"
-      [title]="'WORLD_EDITOR.REFRESH_HELP' | translate"
-      [disabled]="loadingSpawns()"
-      (click)="refresh()"
-    >
-      <i class="fa fa-sync" [class.fa-spin]="loadingSpawns()"></i> {{ 'WORLD_EDITOR.REFRESH' | translate }}
-    </button>
+    <ng-container [ngTemplateOutlet]="mainButtonsTemplate" />
     <button
       type="button"
       class="btn btn-sm btn-outline-secondary"
@@ -255,15 +132,6 @@
       (click)="toggleFullscreen()"
     >
       <i class="fa" [class.fa-expand]="!fullscreen()" [class.fa-compress]="fullscreen()"></i>
-    </button>
-    <button
-      type="button"
-      class="btn btn-sm btn-outline-secondary"
-      data-testid="panel-toggle"
-      [title]="(panelCollapsed() ? 'WORLD_EDITOR.PANEL_SHOW' : 'WORLD_EDITOR.PANEL_HIDE') | translate"
-      (click)="panelCollapsed.set(!panelCollapsed())"
-    >
-      <i class="fa" [class.fa-angles-left]="panelCollapsed()" [class.fa-angles-right]="!panelCollapsed()"></i>
     </button>
   </div>
 
@@ -283,6 +151,16 @@
   }
 
   <div class="world-editor-body">
+    <button
+      type="button"
+      class="btn btn-sm btn-secondary world-editor-panel-toggle"
+      data-testid="panel-toggle"
+      [class.collapsed]="panelCollapsed()"
+      [title]="(panelCollapsed() ? 'WORLD_EDITOR.PANEL_SHOW' : 'WORLD_EDITOR.PANEL_HIDE') | translate"
+      (click)="panelCollapsed.set(!panelCollapsed())"
+    >
+      <i class="fa" [class.fa-angles-left]="panelCollapsed()" [class.fa-angles-right]="!panelCollapsed()"></i>
+    </button>
     <div
       #view
       class="world-editor-view"
@@ -341,6 +219,34 @@
       >
         <i class="fa" [class.fa-expand]="!viewFullscreen()" [class.fa-compress]="viewFullscreen()"></i>
       </button>
+      @if (viewFullscreen()) {
+        <div class="world-editor-quick" data-testid="quick-menu">
+          @if (quickOpen()) {
+            <div class="card card-body p-1 world-editor-quick-bar" data-testid="quick-bar">
+              <div class="d-flex flex-wrap align-items-center gap-1">
+                <ng-container [ngTemplateOutlet]="mainButtonsTemplate" />
+                <button type="button" class="btn btn-sm btn-link" data-testid="quick-more" (click)="quickMore.set(!quickMore())">
+                  {{ (quickMore() ? 'WORLD_EDITOR.SHOW_LESS' : 'WORLD_EDITOR.EXPAND_MORE') | translate }}
+                </button>
+              </div>
+              @if (quickMore()) {
+                <div class="d-flex flex-wrap align-items-center gap-3 mt-1" data-testid="quick-more-row">
+                  <ng-container [ngTemplateOutlet]="layerSwitchesTemplate" />
+                </div>
+              }
+            </div>
+          }
+          <button
+            type="button"
+            class="btn btn-sm btn-dark world-editor-quick-tab"
+            data-testid="quick-tab"
+            (click)="quickOpen.set(!quickOpen())"
+          >
+            <i class="fa" [class.fa-chevron-down]="!quickOpen()" [class.fa-chevron-up]="quickOpen()"></i>
+            {{ 'WORLD_EDITOR.MENU' | translate }}
+          </button>
+        </div>
+      }
       <div class="btn-group btn-group-sm world-editor-resolution" role="group" [title]="'WORLD_EDITOR.RESOLUTION_HELP' | translate">
         @for (scale of renderScales; track scale) {
           <button
@@ -554,6 +460,7 @@
                     (change)="toggleLayer(layer.key)"
                   />
                   <label class="form-check-label" for="world-editor-layer-{{ layer.id }}">{{ layer.label | translate }}</label>
+                  <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="layer.label + '_HELP' | translate"></i>
                 </div>
               }
               <div class="form-check form-switch mb-0">
@@ -565,14 +472,12 @@
                   [checked]="renderSettings.settings().showBounds"
                   (change)="setRenderFlag('showBounds', $event)"
                 />
-                <label class="form-check-label" for="world-editor-bounds" [title]="'WORLD_EDITOR.BOUNDS_HELP' | translate">{{
-                  'WORLD_EDITOR.BOUNDS' | translate
-                }}</label>
+                <label class="form-check-label" for="world-editor-bounds">{{ 'WORLD_EDITOR.BOUNDS' | translate }}</label
+                ><i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'WORLD_EDITOR.BOUNDS_HELP' | translate"></i>
               </div>
               <div class="d-flex align-items-center gap-2">
-                <label for="world-editor-marker-model" class="mb-0" [title]="'WORLD_EDITOR.MARKER_MODEL_HELP' | translate">{{
-                  'WORLD_EDITOR.MARKER_MODEL' | translate
-                }}</label>
+                <label for="world-editor-marker-model" class="mb-0">{{ 'WORLD_EDITOR.MARKER_MODEL' | translate }}</label
+                ><i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'WORLD_EDITOR.MARKER_MODEL_HELP' | translate"></i>
                 <select
                   id="world-editor-marker-model"
                   class="form-select form-select-sm w-auto"
@@ -600,12 +505,7 @@
                   [checked]="renderSettings.settings().markerOnLiquid"
                   (change)="setRenderFlag('markerOnLiquid', $event)"
                 />
-                <label
-                  class="form-check-label"
-                  for="world-editor-marker-liquid"
-                  [title]="'WORLD_EDITOR.MARKER_ON_LIQUID_HELP' | translate"
-                  >{{ 'WORLD_EDITOR.MARKER_ON_LIQUID' | translate }}</label
-                >
+                <label class="form-check-label" for="world-editor-marker-liquid">{{ 'WORLD_EDITOR.MARKER_ON_LIQUID' | translate }}</label>
               </div>
             </section>
             <section class="world-editor-view-group" data-testid="view-group-world">
@@ -619,7 +519,9 @@
                   [checked]="renderSettings.settings().lowDetailTerrain"
                   (change)="setLowDetailTerrain($event)"
                 />
-                <label class="form-check-label" for="world-editor-low-detail">{{ 'WORLD_EDITOR.LOW_DETAIL_TERRAIN' | translate }}</label>
+                <label class="form-check-label" for="world-editor-low-detail">{{ 'WORLD_EDITOR.LOW_DETAIL_TERRAIN' | translate }}</label
+                ><i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'WORLD_EDITOR.LOW_DETAIL_TERRAIN_HELP' | translate"></i
+                ><i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'WORLD_EDITOR.MARKER_ON_LIQUID_HELP' | translate"></i>
               </div>
               <div class="form-check form-switch mb-0">
                 <input
@@ -630,7 +532,8 @@
                   [checked]="renderSettings.settings().showBuildings"
                   (change)="setRenderFlag('showBuildings', $event)"
                 />
-                <label class="form-check-label" for="world-editor-buildings">{{ 'WORLD_EDITOR.BUILDINGS' | translate }}</label>
+                <label class="form-check-label" for="world-editor-buildings">{{ 'WORLD_EDITOR.BUILDINGS' | translate }}</label
+                ><i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'WORLD_EDITOR.BUILDINGS_HELP' | translate"></i>
               </div>
               <div class="form-check form-switch mb-0">
                 <input
@@ -639,9 +542,24 @@
                   id="world-editor-roofs"
                   data-testid="view-roofs"
                   [checked]="renderSettings.settings().showRoofs"
+                  [disabled]="!renderSettings.settings().showBuildings"
                   (change)="setRenderFlag('showRoofs', $event)"
                 />
-                <label class="form-check-label" for="world-editor-roofs">{{ 'WORLD_EDITOR.ROOFS' | translate }}</label>
+                <label class="form-check-label" for="world-editor-roofs">{{ 'WORLD_EDITOR.ROOFS' | translate }}</label
+                ><i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'WORLD_EDITOR.ROOFS_HELP' | translate"></i>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-indoor"
+                  data-testid="view-indoor"
+                  [checked]="renderSettings.settings().showIndoor"
+                  [disabled]="!renderSettings.settings().showBuildings"
+                  (change)="setRenderFlag('showIndoor', $event)"
+                />
+                <label class="form-check-label" for="world-editor-indoor">{{ 'WORLD_EDITOR.INDOOR' | translate }}</label
+                ><i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'WORLD_EDITOR.INDOOR_HELP' | translate"></i>
               </div>
               <div class="form-check form-switch mb-0">
                 <input
@@ -652,7 +570,34 @@
                   [checked]="renderSettings.settings().showDoodads"
                   (change)="setRenderFlag('showDoodads', $event)"
                 />
-                <label class="form-check-label" for="world-editor-doodads">{{ 'WORLD_EDITOR.DOODADS' | translate }}</label>
+                <label class="form-check-label" for="world-editor-doodads">{{ 'WORLD_EDITOR.DOODADS' | translate }}</label
+                ><i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'WORLD_EDITOR.DOODADS_HELP' | translate"></i>
+              </div>
+              <div class="form-check form-switch mb-0 ms-3">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-trees"
+                  data-testid="view-trees"
+                  [checked]="renderSettings.settings().showTrees"
+                  [disabled]="!renderSettings.settings().showDoodads"
+                  (change)="setRenderFlag('showTrees', $event)"
+                />
+                <label class="form-check-label" for="world-editor-trees">{{ 'WORLD_EDITOR.TREES' | translate }}</label
+                ><i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'WORLD_EDITOR.TREES_HELP' | translate"></i>
+              </div>
+              <div class="form-check form-switch mb-0 ms-3">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-props"
+                  data-testid="view-props"
+                  [checked]="renderSettings.settings().showProps"
+                  [disabled]="!renderSettings.settings().showDoodads"
+                  (change)="setRenderFlag('showProps', $event)"
+                />
+                <label class="form-check-label" for="world-editor-props">{{ 'WORLD_EDITOR.PROPS' | translate }}</label
+                ><i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'WORLD_EDITOR.PROPS_HELP' | translate"></i>
               </div>
               <div class="form-check form-switch mb-0">
                 <input
@@ -663,7 +608,8 @@
                   [checked]="renderSettings.settings().zoneLighting"
                   (change)="setRenderFlag('zoneLighting', $event)"
                 />
-                <label class="form-check-label" for="world-editor-zone-lighting">{{ 'WORLD_EDITOR.ZONE_LIGHTING' | translate }}</label>
+                <label class="form-check-label" for="world-editor-zone-lighting">{{ 'WORLD_EDITOR.ZONE_LIGHTING' | translate }}</label
+                ><i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'WORLD_EDITOR.ZONE_LIGHTING_HELP' | translate"></i>
               </div>
               @if (renderSettings.settings().zoneLighting) {
                 @let minutes = renderSettings.settings().timeOfDay;
@@ -704,7 +650,8 @@
                   [checked]="renderSettings.settings().fog"
                   (change)="setRenderFlag('fog', $event)"
                 />
-                <label class="form-check-label" for="world-editor-fog">{{ 'WORLD_EDITOR.FOG' | translate }}</label>
+                <label class="form-check-label" for="world-editor-fog">{{ 'WORLD_EDITOR.FOG' | translate }}</label
+                ><i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'WORLD_EDITOR.FOG_HELP' | translate"></i>
               </div>
               <div class="form-check form-switch mb-0">
                 <input
@@ -715,9 +662,8 @@
                   [checked]="renderSettings.settings().skybox"
                   (change)="setRenderFlag('skybox', $event)"
                 />
-                <label class="form-check-label" for="world-editor-skybox" [title]="'WORLD_EDITOR.SKYBOX_HELP' | translate">{{
-                  'WORLD_EDITOR.SKYBOX' | translate
-                }}</label>
+                <label class="form-check-label" for="world-editor-skybox">{{ 'WORLD_EDITOR.SKYBOX' | translate }}</label
+                ><i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'WORLD_EDITOR.SKYBOX_HELP' | translate"></i>
               </div>
               @if (renderSettings.settings().skybox) {
                 <select
@@ -755,7 +701,36 @@
                   [checked]="renderSettings.settings().showModels"
                   (change)="setRenderFlag('showModels', $event)"
                 />
-                <label class="form-check-label" for="world-editor-models">{{ 'WORLD_EDITOR.MODELS' | translate }}</label>
+                <label class="form-check-label" for="world-editor-models">{{ 'WORLD_EDITOR.MODELS' | translate }}</label
+                ><i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'WORLD_EDITOR.MODELS_HELP' | translate"></i>
+              </div>
+              <div class="form-check form-switch mb-0 ms-3">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-creature-models"
+                  data-testid="view-creature-models"
+                  [checked]="renderSettings.settings().showCreatureModels"
+                  [disabled]="!renderSettings.settings().showModels"
+                  (change)="setRenderFlag('showCreatureModels', $event)"
+                />
+                <label class="form-check-label" for="world-editor-creature-models">{{
+                  'WORLD_EDITOR.CREATURE_MODELS_SHOW' | translate
+                }}</label>
+              </div>
+              <div class="form-check form-switch mb-0 ms-3">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-gameobject-models"
+                  data-testid="view-gameobject-models"
+                  [checked]="renderSettings.settings().showGameobjectModels"
+                  [disabled]="!renderSettings.settings().showModels"
+                  (change)="setRenderFlag('showGameobjectModels', $event)"
+                />
+                <label class="form-check-label" for="world-editor-gameobject-models">{{
+                  'WORLD_EDITOR.GAMEOBJECT_MODELS_SHOW' | translate
+                }}</label>
               </div>
               <div class="form-check form-switch mb-0">
                 <input
@@ -766,7 +741,8 @@
                   [checked]="renderSettings.settings().showFacingArrows"
                   (change)="setRenderFlag('showFacingArrows', $event)"
                 />
-                <label class="form-check-label" for="world-editor-facing">{{ 'WORLD_EDITOR.FACING_ARROWS' | translate }}</label>
+                <label class="form-check-label" for="world-editor-facing">{{ 'WORLD_EDITOR.FACING_ARROWS' | translate }}</label
+                ><i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'WORLD_EDITOR.FACING_ARROWS_HELP' | translate"></i>
               </div>
               <div class="form-check form-switch mb-0">
                 <input
@@ -777,7 +753,8 @@
                   [checked]="renderSettings.settings().showWanderRadius"
                   (change)="setRenderFlag('showWanderRadius', $event)"
                 />
-                <label class="form-check-label" for="world-editor-wander">{{ 'WORLD_EDITOR.WANDER_RADIUS' | translate }}</label>
+                <label class="form-check-label" for="world-editor-wander">{{ 'WORLD_EDITOR.WANDER_RADIUS' | translate }}</label
+                ><i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'WORLD_EDITOR.WANDER_RADIUS_HELP' | translate"></i>
               </div>
               <div class="form-check form-switch mb-0">
                 <input
@@ -788,12 +765,7 @@
                   [checked]="renderSettings.settings().solidSelection"
                   (change)="setRenderFlag('solidSelection', $event)"
                 />
-                <label
-                  class="form-check-label"
-                  for="world-editor-solid-selection"
-                  [title]="'WORLD_EDITOR.SOLID_SELECTION_HELP' | translate"
-                  >{{ 'WORLD_EDITOR.SOLID_SELECTION' | translate }}</label
-                >
+                <label class="form-check-label" for="world-editor-solid-selection">{{ 'WORLD_EDITOR.SOLID_SELECTION' | translate }}</label>
               </div>
               <div class="form-check form-switch mb-0">
                 <input
@@ -806,7 +778,8 @@
                 />
                 <label class="form-check-label" for="world-editor-all-paths" [title]="'WORLD_EDITOR.ALL_PATHS_HELP' | translate">{{
                   'WORLD_EDITOR.ALL_PATHS' | translate
-                }}</label>
+                }}</label
+                ><i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'WORLD_EDITOR.SOLID_SELECTION_HELP' | translate"></i>
               </div>
             </section>
             <section class="world-editor-view-group" data-testid="view-group-compass">
@@ -820,9 +793,8 @@
                   [checked]="renderSettings.settings().compass"
                   (change)="setRenderFlag('compass', $event)"
                 />
-                <label class="form-check-label" for="world-editor-compass" [title]="'WORLD_EDITOR.COMPASS_HELP' | translate">{{
-                  'WORLD_EDITOR.COMPASS_SHOW' | translate
-                }}</label>
+                <label class="form-check-label" for="world-editor-compass">{{ 'WORLD_EDITOR.COMPASS_SHOW' | translate }}</label
+                ><i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'WORLD_EDITOR.COMPASS_HELP' | translate"></i>
               </div>
               <div class="form-check form-switch mb-0">
                 <input
@@ -833,12 +805,9 @@
                   [checked]="renderSettings.settings().compassNorthUp"
                   (change)="setRenderFlag('compassNorthUp', $event)"
                 />
-                <label
-                  class="form-check-label"
-                  for="world-editor-compass-north-up"
-                  [title]="'WORLD_EDITOR.COMPASS_NORTH_UP_HELP' | translate"
-                  >{{ 'WORLD_EDITOR.COMPASS_NORTH_UP' | translate }}</label
-                >
+                <label class="form-check-label" for="world-editor-compass-north-up">{{
+                  'WORLD_EDITOR.COMPASS_NORTH_UP' | translate
+                }}</label>
               </div>
               <div class="form-check form-switch mb-0">
                 <input
@@ -851,7 +820,8 @@
                 />
                 <label class="form-check-label" for="world-editor-compass-north-arrow">{{
                   'WORLD_EDITOR.COMPASS_NORTH_ARROW' | translate
-                }}</label>
+                }}</label
+                ><i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'WORLD_EDITOR.COMPASS_NORTH_UP_HELP' | translate"></i>
               </div>
               <div class="form-check form-switch mb-0">
                 <input
@@ -884,9 +854,8 @@
                   [checked]="renderSettings.settings().compassMils"
                   (change)="setRenderFlag('compassMils', $event)"
                 />
-                <label class="form-check-label" for="world-editor-compass-mils" [title]="'WORLD_EDITOR.COMPASS_MILS_HELP' | translate">{{
-                  'WORLD_EDITOR.COMPASS_MILS' | translate
-                }}</label>
+                <label class="form-check-label" for="world-editor-compass-mils">{{ 'WORLD_EDITOR.COMPASS_MILS' | translate }}</label
+                ><i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'WORLD_EDITOR.COMPASS_MILS_HELP' | translate"></i>
               </div>
             </section>
             <section class="world-editor-view-group" data-testid="view-group-collision">
@@ -900,9 +869,8 @@
                   [checked]="renderSettings.settings().showCollision"
                   (change)="setRenderFlag('showCollision', $event)"
                 />
-                <label class="form-check-label" for="world-editor-collision" [title]="'WORLD_EDITOR.COLLISION_HELP' | translate">{{
-                  'WORLD_EDITOR.COLLISION' | translate
-                }}</label>
+                <label class="form-check-label" for="world-editor-collision">{{ 'WORLD_EDITOR.COLLISION' | translate }}</label
+                ><i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'WORLD_EDITOR.COLLISION_HELP' | translate"></i>
                 @if (collisionSource(); as source) {
                   <small class="d-block text-muted" data-testid="collision-source">{{
                     (source === 'server' ? 'WORLD_EDITOR.COLLISION_SERVER' : 'WORLD_EDITOR.COLLISION_CLIENT') | translate
@@ -918,17 +886,15 @@
                   [checked]="renderSettings.settings().showNavMesh"
                   (change)="setRenderFlag('showNavMesh', $event)"
                 />
-                <label class="form-check-label" for="world-editor-navmesh" [title]="'WORLD_EDITOR.NAVMESH_HELP' | translate">{{
-                  'WORLD_EDITOR.NAVMESH' | translate
-                }}</label>
+                <label class="form-check-label" for="world-editor-navmesh">{{ 'WORLD_EDITOR.NAVMESH' | translate }}</label
+                ><i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'WORLD_EDITOR.NAVMESH_HELP' | translate"></i>
               </div>
             </section>
             <section class="world-editor-view-group" data-testid="view-group-loading">
               <h6 class="world-editor-view-group-title">{{ 'WORLD_EDITOR.VIEW_LOADING' | translate }}</h6>
               <div class="d-flex align-items-center gap-2">
-                <label for="world-editor-load-ahead" class="mb-0" [title]="'WORLD_EDITOR.LOAD_AHEAD_HELP' | translate">{{
-                  'WORLD_EDITOR.LOAD_AHEAD' | translate
-                }}</label>
+                <label for="world-editor-load-ahead" class="mb-0">{{ 'WORLD_EDITOR.LOAD_AHEAD' | translate }}</label
+                ><i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'WORLD_EDITOR.LOAD_AHEAD_HELP' | translate"></i>
                 <select
                   id="world-editor-load-ahead"
                   class="form-select form-select-sm w-auto"
@@ -947,7 +913,8 @@
                 </select>
               </div>
               <div class="d-flex align-items-center gap-2">
-                <label for="world-editor-terrain-radius" class="mb-0">{{ 'WORLD_EDITOR.TERRAIN_RANGE' | translate }}</label>
+                <label for="world-editor-terrain-radius" class="mb-0">{{ 'WORLD_EDITOR.TERRAIN_RANGE' | translate }}</label
+                ><i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'WORLD_EDITOR.TERRAIN_RANGE_HELP' | translate"></i>
                 <select
                   id="world-editor-terrain-radius"
                   class="form-select form-select-sm w-auto"
@@ -970,10 +937,12 @@
                   [checked]="renderSettings.settings().loadWholeZone"
                   (change)="setRenderFlag('loadWholeZone', $event)"
                 />
-                <label class="form-check-label" for="world-editor-whole-zone">{{ 'WORLD_EDITOR.LOAD_WHOLE_ZONE' | translate }}</label>
+                <label class="form-check-label" for="world-editor-whole-zone">{{ 'WORLD_EDITOR.LOAD_WHOLE_ZONE' | translate }}</label
+                ><i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'WORLD_EDITOR.LOAD_WHOLE_ZONE_HELP' | translate"></i>
               </div>
               <div class="d-flex align-items-center gap-2">
-                <label for="world-editor-draw-distance" class="mb-0">{{ 'WORLD_EDITOR.DRAW_DISTANCE' | translate }}</label>
+                <label for="world-editor-draw-distance" class="mb-0">{{ 'WORLD_EDITOR.DRAW_DISTANCE' | translate }}</label
+                ><i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'WORLD_EDITOR.DRAW_DISTANCE_HELP' | translate"></i>
                 <select
                   id="world-editor-draw-distance"
                   class="form-select form-select-sm w-auto"
@@ -997,7 +966,8 @@
                   [checked]="renderSettings.settings().advancedDistances"
                   (change)="setRenderFlag('advancedDistances', $event)"
                 />
-                <label class="form-check-label" for="world-editor-advanced-distances">{{ 'WORLD_EDITOR.ADVANCED' | translate }}</label>
+                <label class="form-check-label" for="world-editor-advanced-distances">{{ 'WORLD_EDITOR.ADVANCED' | translate }}</label
+                ><i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'WORLD_EDITOR.ADVANCED_HELP' | translate"></i>
               </div>
             </section>
             <section class="world-editor-view-group" data-testid="view-group-debug">
@@ -1011,9 +981,8 @@
                   [checked]="renderSettings.settings().showStats"
                   (change)="setRenderFlag('showStats', $event)"
                 />
-                <label class="form-check-label" for="world-editor-stats" [title]="'WORLD_EDITOR.STATS_HELP' | translate">{{
-                  'WORLD_EDITOR.STATS' | translate
-                }}</label>
+                <label class="form-check-label" for="world-editor-stats">{{ 'WORLD_EDITOR.STATS' | translate }}</label
+                ><i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'WORLD_EDITOR.STATS_HELP' | translate"></i>
               </div>
               <div class="form-check form-switch mb-0">
                 <input
@@ -1031,9 +1000,8 @@
               </div>
               @for (cap of memoryCaps; track cap.key) {
                 <div class="d-flex align-items-center gap-2">
-                  <label [for]="'world-editor-' + cap.key" class="mb-0" [title]="'WORLD_EDITOR.MEMORY_CAP_HELP' | translate">{{
-                    cap.label | translate
-                  }}</label>
+                  <label [for]="'world-editor-' + cap.key" class="mb-0">{{ cap.label | translate }}</label
+                  ><i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'WORLD_EDITOR.MEMORY_CAP_HELP' | translate"></i>
                   <select
                     [id]="'world-editor-' + cap.key"
                     class="form-select form-select-sm w-auto"
@@ -1943,7 +1911,7 @@
                   (click)="goToResult(result.spawn)"
                 >
                   <strong class="world-editor-scan-mark" [class]="'scan-' + result.level">!</strong>
-                  {{ result.spawn.name || result.spawn.entry }} ({{ result.spawn.guid }}) — {{ result.text }}
+                  {{ result.spawn.name || result.spawn.entry }} ({{ result.spawn.guid }}) - {{ result.text }}
                 </button>
               }
             </div>
@@ -1958,7 +1926,7 @@
                   (click)="goToProblem(problem)"
                 >
                   <strong [class.text-danger]="problem.severity === 'bad'" [class.text-warning]="problem.severity === 'warn'">!</strong>
-                  {{ spawnTitle(problem.spawn) }} — {{ problem.text }}
+                  {{ spawnTitle(problem.spawn) }} - {{ problem.text }}
                 </button>
               }
             </div>
@@ -2405,3 +2373,134 @@
     </div>
   </div>
 </div>
+
+<ng-template #layerSwitchesTemplate>
+  <div class="d-flex align-items-center gap-3 world-editor-layers">
+    @for (layer of layerSwitches; track layer.key) {
+      <div class="form-check form-switch mb-0">
+        <input
+          class="form-check-input layer-{{ layer.id }}"
+          type="checkbox"
+          id="world-editor-layer-{{ layer.id }}"
+          [attr.data-testid]="'layer-' + layer.id"
+          [checked]="layers()[layer.key]"
+          (change)="toggleLayer(layer.key)"
+        />
+        <label class="form-check-label" for="world-editor-layer-{{ layer.id }}">{{ layer.label | translate }}</label>
+      </div>
+    }
+  </div>
+</ng-template>
+
+<ng-template #mainButtonsTemplate>
+  <div class="btn-group btn-group-sm" role="group">
+    <button
+      type="button"
+      class="btn btn-outline-secondary"
+      data-testid="map-previous"
+      [title]="'WORLD_EDITOR.MAP_PREVIOUS' | translate"
+      [disabled]="!maps().length"
+      (click)="stepMap(-1)"
+    >
+      <i class="fa fa-chevron-left"></i>
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-secondary"
+      data-testid="map-next"
+      [title]="'WORLD_EDITOR.MAP_NEXT' | translate"
+      [disabled]="!maps().length"
+      (click)="stepMap(1)"
+    >
+      {{ 'WORLD_EDITOR.MAP_NEXT' | translate }} <i class="fa fa-chevron-right"></i>
+    </button>
+  </div>
+  @if (difficulties().length) {
+    <select
+      class="form-select form-select-sm w-auto"
+      data-testid="difficulty"
+      [title]="'WORLD_EDITOR.DIFFICULTY_HELP' | translate"
+      (change)="setDifficulty($event)"
+    >
+      <option value="" [selected]="difficulty() === undefined">{{ 'WORLD_EDITOR.DIFFICULTY_ALL' | translate }}</option>
+      @for (option of difficulties(); track option.bit) {
+        <option [value]="option.bit" [selected]="difficulty() === option.bit">{{ option.label | translate }}</option>
+      }
+    </select>
+  }
+
+  <button
+    type="button"
+    class="btn btn-sm ms-auto"
+    data-testid="map-toggle"
+    [class.btn-secondary]="showMap()"
+    [class.btn-outline-secondary]="!showMap()"
+    [title]="'WORLD_EDITOR.WORLD_MAP_HELP' | translate"
+    (click)="toggleMap()"
+  >
+    <i class="fa fa-map"></i> {{ 'WORLD_EDITOR.WORLD_MAP' | translate }}
+  </button>
+  <button
+    type="button"
+    class="btn btn-sm"
+    data-testid="filters-toggle"
+    [class.btn-secondary]="showFilters()"
+    [class.btn-outline-secondary]="!showFilters()"
+    (click)="toggleFilters()"
+  >
+    <i class="fa fa-filter"></i> {{ 'WORLD_EDITOR.FILTERS' | translate }}
+    @if (hiddenCount()) {
+      <span class="badge bg-secondary world-editor-hidden-count" data-testid="hidden-count">{{ hiddenCount() }}</span>
+    }
+  </button>
+  <button
+    type="button"
+    class="btn btn-sm"
+    data-testid="view-toggle"
+    [class.btn-secondary]="showView()"
+    [class.btn-outline-secondary]="!showView()"
+    (click)="toggleView()"
+  >
+    <i class="fa fa-eye"></i> {{ 'WORLD_EDITOR.VIEW' | translate }}
+  </button>
+  <button
+    type="button"
+    class="btn btn-sm"
+    data-testid="controls-toggle"
+    [class.btn-secondary]="showControls()"
+    [class.btn-outline-secondary]="!showControls()"
+    (click)="toggleControls()"
+  >
+    <i class="fa fa-keyboard"></i> {{ 'WORLD_EDITOR.CONTROLS' | translate }}
+  </button>
+  <button
+    type="button"
+    class="btn btn-sm"
+    data-testid="settings-toggle"
+    [class.btn-secondary]="showSettings()"
+    [class.btn-outline-secondary]="!showSettings()"
+    (click)="toggleSettings()"
+  >
+    <i class="fa fa-cog"></i> {{ 'WORLD_EDITOR.SETTINGS' | translate }}
+  </button>
+  <button
+    type="button"
+    class="btn btn-sm"
+    data-testid="legend-toggle"
+    [class.btn-secondary]="showLegend()"
+    [class.btn-outline-secondary]="!showLegend()"
+    (click)="toggleLegend()"
+  >
+    <i class="fa fa-info-circle"></i> {{ 'WORLD_EDITOR.LEGEND' | translate }}
+  </button>
+  <button
+    type="button"
+    class="btn btn-sm btn-outline-secondary"
+    data-testid="refresh"
+    [title]="'WORLD_EDITOR.REFRESH_HELP' | translate"
+    [disabled]="loadingSpawns()"
+    (click)="refresh()"
+  >
+    <i class="fa fa-sync" [class.fa-spin]="loadingSpawns()"></i> {{ 'WORLD_EDITOR.REFRESH' | translate }}
+  </button>
+</ng-template>

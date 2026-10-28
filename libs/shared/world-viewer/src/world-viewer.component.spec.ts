@@ -44,6 +44,7 @@ import { WorldNavMesh } from './world-navmesh';
 import { ZoneLighting } from './zone-lighting';
 import { TextureCache } from './texture-cache';
 import { SpawnModels } from './spawn-models';
+import { WorldDoodads } from './world-doodads';
 import { GamepadInputService, PadInput } from './gamepad-input';
 import { Subject } from 'rxjs';
 
@@ -302,6 +303,7 @@ describe(WorldViewerComponent.name, () => {
     getAreaNames: vi.fn(),
     getPlayerDisplay: vi.fn(),
     getGpuTexture: vi.fn(),
+    getMapBuilding: vi.fn(),
     memoryUsage: vi.fn(),
     trimMemory: vi.fn(),
   };
@@ -324,6 +326,7 @@ describe(WorldViewerComponent.name, () => {
     client.getWmo.mockResolvedValue(undefined);
     client.getM2.mockResolvedValue(undefined);
     client.getZoneLights.mockResolvedValue([]);
+    client.getMapBuilding.mockResolvedValue(undefined);
     client.getServerMap.mockResolvedValue(undefined);
     client.getVmapTile.mockResolvedValue(undefined);
     client.getVmapModel.mockResolvedValue(undefined);
@@ -508,6 +511,45 @@ describe(WorldViewerComponent.name, () => {
       delete renderer.info;
       delete (performance as unknown as { memory?: unknown }).memory;
     }
+  });
+
+  it('keeps the pins of a kind of model turned off, and passes trees and props apart', async () => {
+    const models = vi.spyOn(SpawnModels.prototype, 'configure');
+    const doodads = vi.spyOn(WorldDoodads.prototype, 'configure');
+    await setup((h) =>
+      h.render.set({ ...DEFAULT_WORLD_RENDER_SETTINGS, showCreatureModels: false, showGameobjectModels: false, showTrees: false }),
+    );
+    expect(models).toHaveBeenLastCalledWith(expect.objectContaining({ creatureDistance: 0, gameobjectDistance: 0 }));
+    expect(doodads).toHaveBeenLastCalledWith(expect.objectContaining({ trees: false, props: true }));
+    models.mockRestore();
+    doodads.mockRestore();
+  });
+
+  it('hides the indoor parts of buildings when asked, except on a map made of one building', async () => {
+    const indoor = vi.spyOn(WorldObjects.prototype, 'setIndoorVisible');
+    const { fixture, host } = await setup((h) => {
+      h.map.set('Azeroth');
+      h.render.set({ ...DEFAULT_WORLD_RENDER_SETTINGS, showIndoor: false });
+    });
+    await settle(fixture);
+    expect(indoor).toHaveBeenLastCalledWith(false);
+    // a dungeon of one building: always shown
+    client.getMapBuilding.mockResolvedValue({ placement: {}, bounds: {} });
+    host.map.set('Dungeon');
+    fixture.detectChanges();
+    await settle(fixture);
+    expect(indoor).toHaveBeenLastCalledWith(true);
+    // the answer for a map left meanwhile is dropped; a failure is ignored
+    let answer: (value: unknown) => void = () => undefined;
+    client.getMapBuilding.mockReturnValueOnce(new Promise((resolve) => (answer = resolve)));
+    host.map.set('Azeroth');
+    fixture.detectChanges();
+    client.getMapBuilding.mockRejectedValueOnce(new Error('no wdt'));
+    host.map.set('Kalimdor');
+    fixture.detectChanges();
+    answer(undefined);
+    await settle(fixture);
+    indoor.mockRestore();
   });
 
   it('draws the skybox chosen around the camera, turning slowly when asked', async () => {
@@ -1080,7 +1122,7 @@ describe(WorldViewerComponent.name, () => {
 
       await update(() => host.focus.set(at(300, 300)));
       hover(50, 50);
-      expect(page.label().nativeElement.textContent?.trim()).toBe('Path 1 · #3 · on the ground — Guard (7)');
+      expect(page.label().nativeElement.textContent?.trim()).toBe('Path 1 · #3 · on the ground - Guard (7)');
       await update(() => host.paths.set([{ key: 'path:1', label: 'Path 1', points: [{ point: 3, position: at(300, 300) }] }]));
       hover(50, 50);
       expect(page.label().nativeElement.textContent?.trim()).toBe('Path 1 · #3 · on the ground');
@@ -1433,7 +1475,7 @@ describe(WorldViewerComponent.name, () => {
       flushFrames();
       fixture.detectChanges();
       expect(page.label().nativeElement.textContent?.trim()).toBe(
-        'Path 2 · #4 (on the ground) → #5 (on the ground) — Guard (7)\n→ W (1.57), 200.0 yd',
+        'Path 2 · #4 (on the ground) → #5 (on the ground) - Guard (7)\n→ W (1.57), 200.0 yd',
       );
 
       await update(() => host.paths.set([path()]));

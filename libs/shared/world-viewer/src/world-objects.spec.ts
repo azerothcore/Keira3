@@ -1,5 +1,5 @@
 import { ModelPlacement, tileCenter, TileCoord, WmoModel } from '@keira/shared/wow-data';
-import { Group } from 'three';
+import { Group, Material, Mesh, Object3D } from 'three';
 import { TextureCache } from './texture-cache';
 import { ObjectSource, WorldObjects } from './world-objects';
 
@@ -16,6 +16,15 @@ const model: WmoModel = {
       indices: new Uint16Array([0, 1, 2]),
       batches: [{ start: 0, count: 3, material: 0 }],
       indoor: false,
+    },
+    {
+      positions: new Float32Array(9),
+      normals: new Float32Array(9),
+      uvs: new Float32Array(6),
+      colors: new Float32Array(9),
+      indices: new Uint16Array([0, 1, 2]),
+      batches: [{ start: 0, count: 3, material: 1 }],
+      indoor: true,
     },
   ],
 };
@@ -182,5 +191,26 @@ describe('WorldObjects', () => {
     await objects.update(tileCenter({ tx: 32, ty: 48 }));
     objects.dispose();
     expect(objects.placedCount).toBe(0);
+  });
+
+  it('hides the indoor parts of the buildings when asked, loaded ones and those to come', async () => {
+    const { objects, group, onChange } = setup({ '32_48': [placement(1)], '33_48': [placement(2, 'other.wmo')] });
+    objects.setMap('Azeroth');
+    await objects.update(tileCenter({ tx: 32, ty: 48 }));
+    const indoorOf = (object: Object3D) =>
+      ((object.children.find((child) => (child as Mesh).geometry?.getAttribute('color')) as Mesh).material as Material[])[0];
+    onChange.mockClear();
+    objects.setIndoorVisible(false);
+    objects.setIndoorVisible(false);
+    expect(onChange).toHaveBeenCalledTimes(1);
+    await new Promise((resolve) => setTimeout(resolve));
+    expect(indoorOf(group.children[0]).visible).toBe(false);
+    objects.configure({ showBuildings: true, radius: 1 });
+    await objects.update(tileCenter({ tx: 32, ty: 48 }));
+    const later = group.children.find((child) => child.name === 'wmo:2') as Object3D;
+    expect(indoorOf(later).visible).toBe(false);
+    objects.setIndoorVisible(true);
+    await new Promise((resolve) => setTimeout(resolve));
+    expect(indoorOf(later).visible).toBe(true);
   });
 });

@@ -308,6 +308,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private areaChunk?: string;
   private readonly spawnModels = new SpawnModels(this.client, this.world, this.textures, () => this.requestRender());
   private readonly zoneLighting = new ZoneLighting(this.client, this.world, () => this.requestRender());
+  /** The map shown is one building (most dungeons): see `showIndoor`. */
+  private singleBuildingMap = false;
   private readonly skybox = new WorldSkybox(this.client, this.textures, () => this.requestRender());
   /** Gamepad buttons and sticks bound to the marker or the camera moves. */
   private readonly padInputs = inject(GamepadInputService)
@@ -357,12 +359,20 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       untracked(() => {
         this.streamer.configure({ detailed: !settings.lowDetailTerrain, radius: settings.terrainRadius });
         this.objects.configure({ showBuildings: settings.showBuildings, radius: settings.terrainRadius });
+        this.objects.setIndoorVisible(settings.showIndoor || this.singleBuildingMap);
         const distances = drawDistances(settings);
-        this.doodads.configure({ show: settings.showDoodads, distance: distances.largeDoodads, smallDistance: distances.smallDoodads });
+        this.doodads.configure({
+          show: settings.showDoodads,
+          distance: distances.largeDoodads,
+          smallDistance: distances.smallDoodads,
+          trees: settings.showTrees,
+          props: settings.showProps,
+        });
+        // (a kind of model turned off keeps its pins: no distance)
         this.spawnModels.configure({
           show: settings.showModels,
-          creatureDistance: distances.creatures,
-          gameobjectDistance: distances.gameobjects,
+          creatureDistance: settings.showCreatureModels ? distances.creatures : 0,
+          gameobjectDistance: settings.showGameobjectModels ? distances.gameobjects : 0,
         });
         this.configureLighting(settings);
         this.world.setFog(settings.fog);
@@ -770,7 +780,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
 
   private segmentLabel(segment: { pathKey: string; from: number; to: number }): string {
     const path = this.paths().find((p) => p.key === segment.pathKey) as WaypointPath;
-    const owners = path.owners?.length ? ` — ${path.owners.join(', ')}` : '';
+    const owners = path.owners?.length ? ` - ${path.owners.join(', ')}` : '';
     // (the arrow is drawn between two of its points)
     const [from, to] = [segment.from, segment.to].map(
       (point) => (path.points.find((p) => p.point === point) as { position: WorldPosition }).position,
@@ -788,7 +798,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     // Every other pickable object is a waypoint of one of the paths.
     const { pathKey, point } = parseWaypointKey(key) as { pathKey: string; point: number };
     const path = this.paths().find((p) => p.key === pathKey) as WaypointPath;
-    const owners = path.owners?.length ? ` — ${path.owners.join(', ')}` : '';
+    const owners = path.owners?.length ? ` - ${path.owners.join(', ')}` : '';
     const info = path.points.find((p) => p.point === point)?.info ?? [];
     const place = PLACE_NAMES[this.world.waypointPlaceOf(key) as WaypointPlace];
     return `${path.label} · #${point} · ${place}${info.map((line) => ` · ${line}`).join('')}${owners}`;
@@ -989,7 +999,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
 
   /**
    * Puts the marker under the crosshair: on the ground, or on the liquid over it when the marker stands on liquids
-   * (View) — Shift doing the other one.
+   * (View) - Shift doing the other one.
    */
   private markerToCrosshair(shift = false): void {
     const ground = this.world.pick(0, 0, { groundOnly: true });
@@ -1299,6 +1309,20 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
         .catch(() => undefined);
     }
     this.objects.setMap(directory);
+    // a dungeon made of one building: its indoor parts always show
+    this.singleBuildingMap = false;
+    if (directory && this.client.isSupported()) {
+      void this.client
+        .getMapBuilding(directory)
+        .then((building) => {
+          // (unless another map was opened meanwhile)
+          if (directory === this.mapDirectory()) {
+            this.singleBuildingMap = !!building;
+            this.objects.setIndoorVisible(this.renderSettings().showIndoor || this.singleBuildingMap);
+          }
+        })
+        .catch(() => undefined);
+    }
     this.doodads.setMap(directory);
     this.navMesh.setMap(directory);
     void this.prefetch.setMap(this.client.isSupported() ? directory : undefined).then(() => this.prefetch.update(this.center));

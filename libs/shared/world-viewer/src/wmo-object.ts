@@ -68,6 +68,8 @@ export function buildWmoObject(model: WmoModel, textures: Texture[], fallback: T
         side: info?.twoSided ? DoubleSide : FrontSide,
       };
       result = indoor || info?.unlit ? new MeshBasicMaterial({ ...options, vertexColors: indoor }) : new MeshLambertMaterial(options);
+      // (indoor parts can be hidden from outside: see setWmoIndoorVisible)
+      result.userData = { indoor };
       cache.set(key, result);
     }
     return result;
@@ -118,6 +120,19 @@ export function buildWmoObject(model: WmoModel, textures: Texture[], fallback: T
   }
   template.userData['materials'] = [...cache.values()];
   return template;
+}
+
+/**
+ * Shows or hides a building template's indoor parts (and those of every copy of it): the client draws them only from
+ * inside or through a doorway, so from outside some (ceilings over tunnels, say) show as flat untextured squares.
+ * Hidden ones are still picked, so things can be placed inside.
+ */
+export function setWmoIndoorVisible(template: Group, visible: boolean): void {
+  for (const material of template.userData['materials'] as Material[]) {
+    if (material.userData['indoor']) {
+      material.visible = visible;
+    }
+  }
 }
 
 /** Disposes a template's geometries and materials (not its shared textures). */

@@ -734,6 +734,24 @@ describe(WorldEditorComponent.name, () => {
       const drawDistance = page.byId<HTMLSelectElement>('view-draw-distance').nativeElement;
       drawDistance.value = '500';
       drawDistance.dispatchEvent(new Event('change'));
+      page.fixture.detectChanges();
+      expect(page.byId<HTMLInputElement>('view-roofs').nativeElement.disabled).toBe(true);
+      expect(page.byId<HTMLInputElement>('view-indoor').nativeElement.disabled).toBe(true);
+      for (const id of ['view-trees', 'view-props', 'view-creature-models', 'view-gameobject-models']) {
+        const toggle = page.byId<HTMLInputElement>(id).nativeElement;
+        toggle.checked = false;
+        toggle.dispatchEvent(new Event('change'));
+      }
+      page.fixture.detectChanges();
+      expect(page.viewer().renderSettings()).toEqual(
+        expect.objectContaining({
+          showIndoor: true,
+          showTrees: false,
+          showProps: false,
+          showCreatureModels: false,
+          showGameobjectModels: false,
+        }),
+      );
       for (const id of ['view-doodads', 'view-models', 'view-zone-lighting', 'view-fog', 'view-roofs', 'view-facing']) {
         const toggle = page.byId<HTMLInputElement>(id).nativeElement;
         toggle.checked = false;
@@ -830,6 +848,10 @@ describe(WorldEditorComponent.name, () => {
         lowDetailTerrain: true,
         showBuildings: false,
         terrainRadius: 2,
+        showTrees: false,
+        showProps: false,
+        showCreatureModels: false,
+        showGameobjectModels: false,
         showDoodads: false,
         showModels: false,
         showRoofs: false,
@@ -3270,6 +3292,19 @@ describe(WorldEditorComponent.name, () => {
       await settle(page);
       expect(view.classList).toContain('view-fullscreen');
       expect(root.classList).not.toContain('fullscreen');
+      // its top tab opens the main buttons, and the layers with Expand more
+      expect(page.byId('quick-bar', false)).toBeFalsy();
+      page.click('quick-tab');
+      page.fixture.detectChanges();
+      expect(view.querySelector('[data-testid="quick-bar"] [data-testid="map-toggle"]')).toBeTruthy();
+      expect(page.byId('quick-more-row', false)).toBeFalsy();
+      page.click('quick-more');
+      page.fixture.detectChanges();
+      expect(view.querySelector('[data-testid="quick-more-row"] [data-testid="layer-creatures"]')).toBeTruthy();
+      page.click('quick-more');
+      page.click('quick-tab');
+      page.fixture.detectChanges();
+      expect(page.byId('quick-bar', false)).toBeFalsy();
       page.click('view-fullscreen');
       await settle(page);
       expect(view.classList).not.toContain('view-fullscreen');
@@ -3442,7 +3477,7 @@ describe(WorldEditorComponent.name, () => {
       const [patchwerk, gluth] = page.viewer().boundaries();
       // creatures 1 and 2 (no name) have entries 101 and 102
       expect(patchwerk.label).toBe(
-        'Boss boundary BOSS_PATCHWERK (instance_naxxramas) — Deputy Willem, 102\nmust stay inside all of:\n· circle r 30.0 at (-8900.0, -100.0)\n· height 70..90',
+        'Boss boundary BOSS_PATCHWERK (instance_naxxramas) - Deputy Willem, 102\nmust stay inside all of:\n· circle r 30.0 at (-8900.0, -100.0)\n· height 70..90',
       );
       expect(patchwerk.z).toBe(80);
       expect(gluth.label).toBe('Boss boundary BOSS_GLUTH (instance_naxxramas)\n· height 1..2');

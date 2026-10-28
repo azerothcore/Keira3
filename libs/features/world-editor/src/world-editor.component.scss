@@ -64,7 +64,9 @@
 
 // two fixed rows: nothing wraps, so no button moves when another one changes
 .world-editor-toolbar {
-  flex-wrap: nowrap;
+  // what doesn't fit goes on another row rather than out of sight
+  flex-wrap: wrap;
+  row-gap: 4px;
   white-space: nowrap;
 }
 

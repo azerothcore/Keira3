@@ -58,8 +58,8 @@ describe('spawn groups', () => {
     ];
     const { links, markers } = poolOverlays(spawns, pools);
     expect(markers.map((m) => m.label)).toEqual([
-      'Pool 7: Copper veins — 1 of 2 up at once (loaded spawns)',
-      'Pool 8 — all 1 up (loaded spawns)',
+      'Pool 7: Copper veins - 1 of 2 up at once (loaded spawns)',
+      'Pool 8 - all 1 up (loaded spawns)',
     ]);
     expect(markers[0].position).toEqual({ x: 6.5, y: 5, z: 13 });
     expect(links.map((l) => l.key)).toEqual(['pool:7:gameobject:4', 'pool:7:creature:2', 'pool:8:creature:3']);

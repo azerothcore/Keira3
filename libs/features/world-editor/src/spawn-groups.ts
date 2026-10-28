@@ -83,7 +83,7 @@ export function poolOverlays(spawns: SpawnRecord[], pools: PoolMember[]): { link
       key: `pool:${pool}`,
       position: center,
       color,
-      label: `Pool ${pool}${description ? `: ${description}` : ''} — ${limit} (loaded spawns)`,
+      label: `Pool ${pool}${description ? `: ${description}` : ''} - ${limit} (loaded spawns)`,
     });
     for (const spawn of group.spawns) {
       links.push({ key: `pool:${pool}:${spawnKey(spawn.type, spawn.guid)}`, from: center, to: positionOf(spawn), color, dashed: true });

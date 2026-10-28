@@ -144,3 +144,55 @@
 .world-editor-scan-mark {
   color: var(--scan-color);
 }
+
+// the layer switches in two rows, so the toolbar stays narrow
+.world-editor-layers {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(2, auto);
+  gap: 0 1rem;
+  font-size: 0.85rem;
+}
+
+.world-editor-body {
+  position: relative;
+}
+
+// the side panel's fold button: its bottom-right corner (the view's right edge when folded)
+.world-editor-panel-toggle {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  z-index: 9;
+  opacity: 0.85;
+  padding: 0 6px;
+
+  &.collapsed {
+    bottom: 50%;
+    right: 0;
+  }
+}
+
+// the view's fullscreen: a tab at the top opening the main buttons
+.world-editor-quick {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 95%;
+}
+
+.world-editor-quick-tab {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  opacity: 0.85;
+  padding: 0 10px;
+}
+
+.world-editor-quick-bar {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}

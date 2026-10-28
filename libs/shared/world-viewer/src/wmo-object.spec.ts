@@ -1,6 +1,14 @@
 import { WmoModel, worldToScene } from '@keira/shared/wow-data';
 import { DoubleSide, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, Texture, Vector3 } from 'three';
-import { applyPlacement, buildWmoObject, disposeWmoObject, isRoofTexture, ROOF_LAYER, serverQuaternionToScene } from './wmo-object';
+import {
+  applyPlacement,
+  buildWmoObject,
+  disposeWmoObject,
+  setWmoIndoorVisible,
+  isRoofTexture,
+  ROOF_LAYER,
+  serverQuaternionToScene,
+} from './wmo-object';
 import { COLLISION_LAYER } from './collision-object';
 
 const group = (indoor: boolean, colors = indoor) => ({
@@ -66,6 +74,12 @@ describe('wmo-object', () => {
 
     const clone = template.clone();
     expect((clone.children[0] as Mesh).geometry).toBe(outdoor.geometry);
+    // the indoor parts can be hidden (still picked), the rest stays
+    setWmoIndoorVisible(template, false);
+    expect(indoorMaterial.visible).toBe(false);
+    expect(outdoorMaterials[0].visible).toBe(true);
+    setWmoIndoorVisible(template, true);
+    expect(indoorMaterial.visible).toBe(true);
 
     const dispose = vi.spyOn(outdoor.geometry, 'dispose');
     const disposeMaterial = vi.spyOn(indoorMaterial, 'dispose');
