@@ -608,6 +608,36 @@
                 />
                 <label class="form-check-label" for="world-editor-zone-lighting">{{ 'WORLD_EDITOR.ZONE_LIGHTING' | translate }}</label>
               </div>
+              @if (renderSettings.settings().zoneLighting) {
+                @let minutes = renderSettings.settings().timeOfDay;
+                <div class="d-flex align-items-center gap-2 world-editor-time" data-testid="view-time">
+                  <label for="world-editor-time" class="mb-0 text-nowrap">{{ 'WORLD_EDITOR.TIME_OF_DAY' | translate }}</label>
+                  <input
+                    id="world-editor-time"
+                    type="range"
+                    class="form-range"
+                    data-testid="view-time-of-day"
+                    min="0"
+                    max="1430"
+                    step="10"
+                    [value]="minutes"
+                    [disabled]="renderSettings.settings().timeFollowsClock"
+                    (input)="setTimeOfDay($event)"
+                  />
+                  <span class="world-editor-time-value" data-testid="view-time-value">{{ clockText(minutes) }}</span>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-time-clock"
+                    data-testid="view-time-clock"
+                    [checked]="renderSettings.settings().timeFollowsClock"
+                    (change)="setRenderFlag('timeFollowsClock', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-time-clock">{{ 'WORLD_EDITOR.TIME_FOLLOWS_CLOCK' | translate }}</label>
+                </div>
+              }
               <div class="form-check form-switch mb-0">
                 <input
                   class="form-check-input"

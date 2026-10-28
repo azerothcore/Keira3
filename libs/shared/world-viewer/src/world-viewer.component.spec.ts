@@ -41,6 +41,7 @@ import { flatDetail, flatTile } from './world-viewer.mock';
 import { WorldScene } from './world-scene';
 import { PathProber, PathProbeRequest, PathProbeResult } from './path-probe';
 import { WorldNavMesh } from './world-navmesh';
+import { ZoneLighting } from './zone-lighting';
 
 // ------------------------------------------------------------------ Three.js controls fakes (jsdom has no WebGL)
 
@@ -469,6 +470,23 @@ describe(WorldViewerComponent.name, () => {
       delete renderer.info;
       delete (performance as unknown as { memory?: unknown }).memory;
     }
+  });
+
+  it('lights the zone at the time of day chosen, or at the computer\'s time checked every minute', async () => {
+    const configure = vi.spyOn(ZoneLighting.prototype, 'configure');
+    vi.useFakeTimers({ toFake: ['setInterval', 'clearInterval', 'Date'] });
+    vi.setSystemTime(new Date(2026, 9, 28, 21, 30));
+    const { fixture, host } = await setup((h) => h.render.set({ ...DEFAULT_WORLD_RENDER_SETTINGS, zoneLighting: true, timeOfDay: 600 }));
+    expect(configure).toHaveBeenLastCalledWith(true, 1200);
+    host.render.set({ ...DEFAULT_WORLD_RENDER_SETTINGS, zoneLighting: true, timeFollowsClock: true });
+    fixture.detectChanges();
+    expect(configure).toHaveBeenLastCalledWith(true, (21 * 60 + 30) * 2);
+    // (the clock moves on with the timers)
+    vi.advanceTimersByTime(60_000);
+    expect(configure).toHaveBeenLastCalledWith(true, (21 * 60 + 31) * 2);
+    fixture.destroy();
+    vi.useRealTimers();
+    configure.mockRestore();
   });
 
   it('shows what is still loading, and where the camera looks', async () => {

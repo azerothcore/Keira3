@@ -229,6 +229,7 @@ type RenderFlagKey =
   | 'showNavMesh'
   | 'zoneLighting'
   | 'fog'
+  | 'timeFollowsClock'
   | 'compass'
   | 'compassNorthUp'
   | 'compassNorthArrow'
@@ -1218,6 +1219,16 @@ export class WorldEditorComponent implements OnInit {
 
   protected setRenderFlag(key: RenderFlagKey, event: Event): void {
     this.renderSettings.update({ [key]: (event.target as HTMLInputElement).checked });
+  }
+
+  /** The time of day lit with zone lighting, from its slider (10-minute steps). */
+  protected setTimeOfDay(event: Event): void {
+    this.renderSettings.update({ timeOfDay: Number((event.target as HTMLInputElement).value) });
+  }
+
+  /** Minutes since midnight as "hh:mm". */
+  protected clockText(minutes: number): string {
+    return `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`;
   }
 
   protected setRenderDistance(key: RenderDistanceKey, event: Event): void {

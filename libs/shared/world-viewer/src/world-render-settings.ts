@@ -39,6 +39,9 @@ export interface WorldRenderSettings {
   /** The bearing under it, in degrees and/or mils (6400 a turn); both follow the camera live. */
   compassDegrees: boolean;
   compassMils: boolean;
+  /** The time of day lit with zone lighting (minutes since midnight), or the computer's clock. */
+  timeOfDay: number;
+  timeFollowsClock: boolean;
   /** Fog in the distance (the zone's with zone lighting): off to see far. */
   fog: boolean;
   /** How far from the camera target (yards) doodads and models are drawn. */
@@ -106,6 +109,8 @@ export const DEFAULT_WORLD_RENDER_SETTINGS: WorldRenderSettings = {
   showNavMesh: false,
   zoneLighting: false,
   fog: true,
+  timeOfDay: 720,
+  timeFollowsClock: false,
   showAllPaths: false,
   compass: true,
   compassNorthUp: false,

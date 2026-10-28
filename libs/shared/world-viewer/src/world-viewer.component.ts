@@ -130,6 +130,8 @@ const KEY_MIN_SPEED = 20;
 /** Wait (ms) after terrain or buildings loaded before checking the checked path again. */
 const RECHECK_DELAY = 500;
 const ACTIVITY_POLL = 250;
+/** How often (ms) the time of day is checked when it follows the computer's clock. */
+const CLOCK_CHECK = 60_000;
 
 interface HoverLabel {
   text: string;
@@ -325,7 +327,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
           creatureDistance: distances.creatures,
           gameobjectDistance: distances.gameobjects,
         });
-        this.zoneLighting.configure(settings.zoneLighting);
+        this.configureLighting(settings);
         this.world.setFog(settings.fog);
         this.navMesh.configure({ show: settings.showNavMesh, radius: settings.terrainRadius });
         this.applyRenderScale(settings.renderScale);
@@ -489,8 +491,25 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     this.syncGizmo();
   }
 
+  private clockTimer?: ReturnType<typeof setInterval>;
+  /** Zone lighting at the chosen time of day, or at the computer's time (checked every minute). */
+  private configureLighting(settings: WorldRenderSettings): void {
+    clearInterval(this.clockTimer);
+    this.clockTimer = undefined;
+    const minutes = (): number => {
+      const now = new Date();
+      return now.getHours() * 60 + now.getMinutes();
+    };
+    const apply = () => this.zoneLighting.configure(settings.zoneLighting, (settings.timeFollowsClock ? minutes() : settings.timeOfDay) * 2);
+    apply();
+    if (settings.zoneLighting && settings.timeFollowsClock) {
+      this.clockTimer = setInterval(apply, CLOCK_CHECK);
+    }
+  }
+
   ngOnDestroy(): void {
     clearTimeout(this.activityTimer);
+    clearInterval(this.clockTimer);
     clearTimeout(this.recheckTimer);
     clearTimeout(this.classifyTimer);
     this.simulationRun++;

@@ -1414,6 +1414,8 @@
     "DIFFICULTY_NORMAL": "Обычный",
     "DIFFICULTY_HEROIC": "Героический",
     "ALL_PATHS": "Все пути в области",
-    "ALL_PATHS_HELP": "Также пути, по которым не ходит ни одно загруженное существо: неиспользуемые пути waypoint_data, waypoints SmartAI и пути script_waypoint скриптов сопровождения (только отображаются)"
+    "ALL_PATHS_HELP": "Также пути, по которым не ходит ни одно загруженное существо: неиспользуемые пути waypoint_data, waypoints SmartAI и пути script_waypoint скриптов сопровождения (только отображаются)",
+    "TIME_OF_DAY": "Время суток",
+    "TIME_FOLLOWS_CLOCK": "По часам компьютера"
   }
 }

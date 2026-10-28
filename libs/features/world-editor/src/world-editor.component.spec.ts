@@ -735,6 +735,21 @@ describe(WorldEditorComponent.name, () => {
       page.fixture.detectChanges();
       expect(page.viewer().renderSettings().showNavMesh).toBe(true);
       expect(page.viewer().renderSettings().fog).toBe(false);
+      // the time of day, with zone lighting
+      expect(page.byId('view-time', false)).toBeFalsy();
+      page.byId<HTMLInputElement>('view-zone-lighting').nativeElement.click();
+      page.fixture.detectChanges();
+      expect(page.text('view-time-value')).toBe('12:00');
+      const time = page.byId<HTMLInputElement>('view-time-of-day').nativeElement;
+      time.value = '1290';
+      time.dispatchEvent(new Event('input'));
+      page.fixture.detectChanges();
+      expect(page.text('view-time-value')).toBe('21:30');
+      page.byId<HTMLInputElement>('view-time-clock').nativeElement.click();
+      page.fixture.detectChanges();
+      expect(time.disabled).toBe(true);
+      page.byId<HTMLInputElement>('view-zone-lighting').nativeElement.click();
+      page.fixture.detectChanges();
       page.byId<HTMLInputElement>('view-solid-selection').nativeElement.click();
       page.fixture.detectChanges();
       expect(page.viewer().renderSettings().solidSelection).toBe(true);
@@ -780,6 +795,8 @@ describe(WorldEditorComponent.name, () => {
         showFacingArrows: false,
         zoneLighting: false,
         fog: false,
+        timeOfDay: 1290,
+        timeFollowsClock: true,
         solidSelection: true,
         compassNorthUp: true,
         compassMils: true,

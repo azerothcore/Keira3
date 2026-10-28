@@ -91,3 +91,14 @@
   letter-spacing: 0.04em;
   opacity: 0.7;
 }
+
+.world-editor-time {
+  .form-range {
+    min-width: 100px;
+  }
+}
+
+.world-editor-time-value {
+  font-variant-numeric: tabular-nums;
+  min-width: 3em;
+}

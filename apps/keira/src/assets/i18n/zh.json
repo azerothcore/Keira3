@@ -1414,6 +1414,8 @@
     "DIFFICULTY_NORMAL": "普通",
     "DIFFICULTY_HEROIC": "英雄",
     "ALL_PATHS": "区域内所有路径",
-    "ALL_PATHS_HELP": "还包括没有已加载生物行走的路径：未使用的 waypoint_data 路径、SmartAI waypoints 和护送脚本的 script_waypoint 路径（仅显示，不可编辑）"
+    "ALL_PATHS_HELP": "还包括没有已加载生物行走的路径：未使用的 waypoint_data 路径、SmartAI waypoints 和护送脚本的 script_waypoint 路径（仅显示，不可编辑）",
+    "TIME_OF_DAY": "一天中的时间",
+    "TIME_FOLLOWS_CLOCK": "跟随电脑时钟"
   }
 }

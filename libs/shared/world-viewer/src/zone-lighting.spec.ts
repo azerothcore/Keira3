@@ -41,6 +41,11 @@ describe('ZoneLighting', () => {
     lighting.configure(true);
     expect(fogEnd(world)).toBeCloseTo(700);
 
+    // another time of day: the same light here (constant bands), but sampled again
+    onChange.mockClear();
+    lighting.configure(true, 0);
+    expect(onChange).toHaveBeenCalled();
+    lighting.configure(true, 0);
     // fog turned off: none, the zone's or the neutral one, until turned back on
     world.setFog(false);
     expect(fogEnd(world)).toBeGreaterThan(1e7);

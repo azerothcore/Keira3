@@ -1,4 +1,4 @@
-import { sampleZoneLight, WorldPosition, ZoneLight } from '@keira/shared/wow-data';
+import { NOON, sampleZoneLight, WorldPosition, ZoneLight } from '@keira/shared/wow-data';
 import { WorldScene } from './world-scene';
 
 /** What zone lighting needs from `WowClientService`. */
@@ -6,10 +6,12 @@ export interface ZoneLightSource {
   getZoneLights(directory: string): Promise<ZoneLight[]>;
 }
 
-/** Lights the scene like the zone the camera looks at (Light.dbc at noon), or neutrally when turned off. */
+/** Lights the scene like the zone the camera looks at (Light.dbc at a time of day), or neutrally when turned off. */
 export class ZoneLighting {
   private lights: ZoneLight[] = [];
   private enabled = false;
+  /** Half-minutes since midnight (0..2880), as Light.dbc counts them. */
+  private time = NOON;
   private center?: WorldPosition;
   private generation = 0;
 
@@ -37,9 +39,10 @@ export class ZoneLighting {
     }
   }
 
-  configure(enabled: boolean): void {
-    if (enabled !== this.enabled) {
+  configure(enabled: boolean, time = NOON): void {
+    if (enabled !== this.enabled || time !== this.time) {
       this.enabled = enabled;
+      this.time = time;
       this.apply();
     }
   }
@@ -50,7 +53,7 @@ export class ZoneLighting {
   }
 
   private apply(): void {
-    this.scene.applyLighting(this.enabled && this.center ? sampleZoneLight(this.lights, this.center) : undefined);
+    this.scene.applyLighting(this.enabled && this.center ? sampleZoneLight(this.lights, this.center, this.time) : undefined);
     this.onChange();
   }
 }
