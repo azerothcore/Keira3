@@ -1503,6 +1503,11 @@
     "SORT_EXPANSION": "资料片",
     "SORT_TYPE": "类型",
     "SORT_SAVE": "每次都以此排序开始（保存在设置中）",
-    "SORT_SAVED": "地图和区域列表将以此排序开始"
+    "SORT_SAVED": "地图和区域列表将以此排序开始",
+    "ASK_BEFORE_DELETE": "删除前询问",
+    "DELETE_CONFIRM": "删除",
+    "DELETE_CONFIRM_HINT": "保存前它仍是待处理的更改：撤销（Ctrl + Z）可恢复。",
+    "DONT_ASK_AGAIN": "不再询问",
+    "DELETE_SPAWNS": "{{count}} 个刷新点"
   }
 }

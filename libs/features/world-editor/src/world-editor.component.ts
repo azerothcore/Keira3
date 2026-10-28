@@ -208,6 +208,9 @@ const DUNGEON_DIFFICULTIES = [
   { bit: 1, label: 'WORLD_EDITOR.DIFFICULTY_HEROIC' },
 ];
 /** Words each expansion is found by in the map picker (by Map.dbc ExpansionID). */
+/** Ask before deleting ("false" once told not to). */
+const CONFIRM_DELETE_KEY = 'keira3.worldEditor.confirmDelete';
+
 /** The order of the kinds of map when sorting by type (as on the world map's atlas). */
 const MAP_KIND_ORDER = ['world', 'dungeon', 'raid', 'battleground', 'arena', 'transport'];
 
@@ -2218,17 +2221,57 @@ export class WorldEditorComponent implements OnInit {
     }
   }
 
+  /** Asks before deleting (unless told not to again: saved on this computer, turned back on in Controls). */
+  protected readonly askBeforeDelete = signal(localStorage.getItem(CONFIRM_DELETE_KEY) !== 'false');
+  /** What the delete confirmation asks about (open while set). */
+  protected readonly confirmingDelete = signal<string | undefined>(undefined);
+
+  protected setAskBeforeDelete(ask: boolean): void {
+    this.askBeforeDelete.set(ask);
+    localStorage.setItem(CONFIRM_DELETE_KEY, String(ask));
+  }
+
+  /** Deletes the selection, after asking when asked to. */
   protected deleteSelected(): void {
+    const spawn = this.selectedSpawn();
+    const waypoint = this.selectedWaypoint();
+    if (!spawn && !waypoint) {
+      return;
+    }
+    if (!this.askBeforeDelete()) {
+      this.deleteSelectedNow();
+      return;
+    }
+    const count = this.groupSpawns().length + 1;
+    this.confirmingDelete.set(
+      spawn
+        ? count > 1
+          ? this.translate.instant('WORLD_EDITOR.DELETE_SPAWNS', { count })
+          : spawnTitle(spawn)
+        : `${pathLabel((waypoint as WaypointRecord).pathId)} · point ${(waypoint as WaypointRecord).point}`,
+    );
+  }
+
+  /** The confirmation's answer; "don't ask again" sticks only when deleting. */
+  protected answerDelete(confirmed: boolean, dontAskAgain: boolean): void {
+    this.confirmingDelete.set(undefined);
+    if (confirmed) {
+      if (dontAskAgain) {
+        this.setAskBeforeDelete(false);
+      }
+      this.deleteSelectedNow();
+    }
+  }
+
+  private deleteSelectedNow(): void {
     const spawn = this.selectedSpawn();
     const waypoint = this.selectedWaypoint();
     if (spawn) {
       this.groupSpawns().forEach((member) => this.changes.deleteSpawn(member));
       this.groupKeys.set([]);
       this.changes.deleteSpawn(spawn);
-    } else if (waypoint) {
-      this.changes.deleteWaypoint(waypoint);
     } else {
-      return;
+      this.changes.deleteWaypoint(waypoint as WaypointRecord);
     }
     this.selectedKey.set(undefined);
     this.bump();

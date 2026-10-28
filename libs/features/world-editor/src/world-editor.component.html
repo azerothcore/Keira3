@@ -452,6 +452,17 @@
                 />
                 <label class="form-check-label" for="world-editor-keyboard">{{ 'WORLD_EDITOR.KEYBOARD_NAVIGATION' | translate }}</label>
               </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-ask-delete"
+                  data-testid="controls-ask-delete"
+                  [checked]="askBeforeDelete()"
+                  (change)="setAskBeforeDelete($any($event.target).checked)"
+                />
+                <label class="form-check-label" for="world-editor-ask-delete">{{ 'WORLD_EDITOR.ASK_BEFORE_DELETE' | translate }}</label>
+              </div>
               <small class="text-muted">{{ 'WORLD_EDITOR.CONTROLS_HINT' | translate }}</small>
               <button type="button" class="btn btn-sm btn-link ms-auto" data-testid="controls-reset" (click)="controls.reset()">
                 {{ 'WORLD_EDITOR.RESET_KEYS' | translate }}
@@ -2484,6 +2495,35 @@
       </div>
     </div>
   </div>
+  @if (confirmingDelete(); as what) {
+    <div class="world-editor-confirm-backdrop" data-testid="delete-confirm">
+      <div class="card world-editor-confirm" role="dialog" aria-modal="true" (keydown.escape)="answerDelete(false, false)">
+        <div class="card-body">
+          <p class="mb-2">
+            {{ 'WORLD_EDITOR.DELETE_CONFIRM' | translate }} <strong data-testid="delete-confirm-what">{{ what }}</strong>
+          </p>
+          <p class="small text-muted mb-2">{{ 'WORLD_EDITOR.DELETE_CONFIRM_HINT' | translate }}</p>
+          <div class="form-check mb-2">
+            <input #dontAsk class="form-check-input" type="checkbox" id="world-editor-dont-ask" data-testid="delete-dont-ask" />
+            <label class="form-check-label" for="world-editor-dont-ask">{{ 'WORLD_EDITOR.DONT_ASK_AGAIN' | translate }}</label>
+          </div>
+          <div class="d-flex gap-2 justify-content-end">
+            <button type="button" class="btn btn-sm btn-secondary" data-testid="delete-cancel" (click)="answerDelete(false, false)">
+              {{ 'WORLD_EDITOR.CANCEL' | translate }}
+            </button>
+            <button
+              type="button"
+              class="btn btn-sm btn-danger"
+              data-testid="delete-confirm-btn"
+              (click)="answerDelete(true, dontAsk.checked)"
+            >
+              <i class="fa fa-trash"></i> {{ 'WORLD_EDITOR.DELETE' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
 </div>
 
 <ng-template #layerSwitchesTemplate>

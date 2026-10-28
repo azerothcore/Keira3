@@ -265,9 +265,20 @@ describe(WorldEditorComponent.name, () => {
   };
 
   const setup = async (
-    opts: { params?: Record<string, string>; configured?: boolean; lastView?: string; links?: boolean; cacheRoot?: string } = {},
+    opts: {
+      params?: Record<string, string>;
+      configured?: boolean;
+      lastView?: string;
+      links?: boolean;
+      cacheRoot?: string;
+      askBeforeDelete?: boolean;
+    } = {},
   ) => {
     localStorage.clear();
+    // (deletes go through at once, but in the test of the confirmation)
+    if (!opts.askBeforeDelete) {
+      localStorage.setItem('keira3.worldEditor.confirmDelete', 'false');
+    }
     if (opts.lastView) {
       localStorage.setItem('keira3.worldEditor.lastView', opts.lastView);
     }
@@ -1332,6 +1343,58 @@ describe(WorldEditorComponent.name, () => {
         ],
         zones: [{ key: 'name', desc: true }],
       });
+    });
+
+    it('asks before deleting, unless told not to again (turned back on in Controls)', async () => {
+      const { page } = await setup({ askBeforeDelete: true });
+      await loadArea(page);
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:1', position: { x: 0, y: 0, z: 0 } });
+      page.fixture.detectChanges();
+      page.click('delete-selected');
+      page.fixture.detectChanges();
+      expect(page.text('delete-confirm-what')).toBe('Deputy Willem - Creature (GUID: 1, Entry: 101)');
+      // cancelled: nothing deleted
+      page.click('delete-cancel');
+      page.fixture.detectChanges();
+      expect(page.byId('delete-confirm', false)).toBeFalsy();
+      expect(page.pendingLines()).toEqual([]);
+      // several at once (Ctrl + click), with Esc to cancel
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:2', position: { x: 0, y: 0, z: 0 }, additive: true });
+      page.fixture.detectChanges();
+      page.click('delete-selected');
+      page.fixture.detectChanges();
+      expect(page.text('delete-confirm-what')).toBe('WORLD_EDITOR.DELETE_SPAWNS');
+      page
+        .byId('delete-confirm')
+        .nativeElement.querySelector('[role="dialog"]')
+        .dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+      page.fixture.detectChanges();
+      expect(page.byId('delete-confirm', false)).toBeFalsy();
+      // deleted without "don't ask again": still asks
+      page.click('delete-selected');
+      page.fixture.detectChanges();
+      page.click('delete-confirm-btn');
+      page.fixture.detectChanges();
+      expect(page.pendingLines().length).toBe(2);
+      expect(localStorage.getItem('keira3.worldEditor.confirmDelete')).toBeNull();
+      // a waypoint; "don't ask again" sticks
+      page.viewer().picked.emit({ type: 'waypoint', key: 'path:10#2', pathKey: 'path:10', point: 2, position: { x: 0, y: 0, z: 0 } });
+      page.fixture.detectChanges();
+      page.click('delete-selected');
+      page.fixture.detectChanges();
+      expect(page.text('delete-confirm-what')).toContain('point 2');
+      page.byId<HTMLInputElement>('delete-dont-ask').nativeElement.checked = true;
+      page.click('delete-confirm-btn');
+      page.fixture.detectChanges();
+      expect(page.pendingLines().length).toBe(3);
+      expect(localStorage.getItem('keira3.worldEditor.confirmDelete')).toBe('false');
+      page.click('controls-toggle');
+      page.fixture.detectChanges();
+      const ask = page.byId<HTMLInputElement>('controls-ask-delete').nativeElement;
+      expect(ask.checked).toBe(false);
+      ask.click();
+      page.fixture.detectChanges();
+      expect(localStorage.getItem('keira3.worldEditor.confirmDelete')).toBe('true');
     });
 
     it('draws every other path in the area when asked', async () => {

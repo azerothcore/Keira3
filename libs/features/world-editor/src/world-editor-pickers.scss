@@ -217,3 +217,18 @@
   background: var(--bs-body-bg);
   border-bottom: 1px solid var(--bs-border-color);
 }
+
+.world-editor-confirm-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.world-editor-confirm {
+  width: 360px;
+  max-width: 90vw;
+}

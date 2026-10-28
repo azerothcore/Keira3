@@ -1503,6 +1503,11 @@
     "SORT_EXPANSION": "Expansion",
     "SORT_TYPE": "Type",
     "SORT_SAVE": "Start with this sort every time (saved in the settings)",
-    "SORT_SAVED": "The map and zone lists will start with this sort"
+    "SORT_SAVED": "The map and zone lists will start with this sort",
+    "ASK_BEFORE_DELETE": "Ask before deleting",
+    "DELETE_CONFIRM": "Delete",
+    "DELETE_CONFIRM_HINT": "It stays a pending change until you save: Undo (Ctrl + Z) brings it back.",
+    "DONT_ASK_AGAIN": "Do not ask again",
+    "DELETE_SPAWNS": "{{count}} spawns"
   }
 }

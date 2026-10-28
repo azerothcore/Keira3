@@ -1503,6 +1503,11 @@
     "SORT_EXPANSION": "Expansión",
     "SORT_TYPE": "Tipo",
     "SORT_SAVE": "Empezar siempre con este orden (se guarda en los ajustes)",
-    "SORT_SAVED": "Las listas de mapas y zonas empezarán con este orden"
+    "SORT_SAVED": "Las listas de mapas y zonas empezarán con este orden",
+    "ASK_BEFORE_DELETE": "Preguntar antes de borrar",
+    "DELETE_CONFIRM": "¿Borrar",
+    "DELETE_CONFIRM_HINT": "Queda como cambio pendiente hasta que guardes: Deshacer (Ctrl + Z) lo recupera.",
+    "DONT_ASK_AGAIN": "No volver a preguntar",
+    "DELETE_SPAWNS": "{{count}} spawns"
   }
 }
