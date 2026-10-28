@@ -89,8 +89,15 @@ describe('world controls', () => {
   it('moves settings saved with the old up / down keys to the new ones (Q up, E down), keeping changed ones', () => {
     localStorage.setItem(WORLD_CONTROLS_SETTINGS_KEY, JSON.stringify({ bindings: { up: ['KeyE', 'PageUp'], down: ['KeyQ', 'PageDown'] } }));
     const settings = TestBed.inject(WorldControlsSettingsService).settings();
-    expect(settings.bindings.up).toEqual(['KeyQ', 'PageUp', 'PadRB']);
-    expect(settings.bindings.down).toEqual(['KeyE', 'PageDown', 'PadLB']);
+    expect(settings.bindings.up).toEqual(['KeyQ', 'PageUp', 'PadRT']);
+    expect(settings.bindings.down).toEqual(['KeyE', 'PageDown', 'PadLT']);
+    // and those saved when the bumpers went up and down: the triggers now
+    TestBed.resetTestingModule();
+    localStorage.setItem(
+      WORLD_CONTROLS_SETTINGS_KEY,
+      JSON.stringify({ bindings: { up: ['KeyQ', 'PageUp', 'PadRB'], down: ['KeyE', 'PageDown', 'PadLB'] } }),
+    );
+    expect(TestBed.inject(WorldControlsSettingsService).settings().bindings.up).toEqual(['KeyQ', 'PageUp', 'PadRT']);
 
     TestBed.resetTestingModule();
     localStorage.setItem(WORLD_CONTROLS_SETTINGS_KEY, JSON.stringify({ bindings: { up: ['KeyE'], down: ['KeyQ', 'PageDown'] } }));

@@ -1533,6 +1533,9 @@
     "SEASON_SPRING": "spring",
     "SEASON_SUMMER": "summer",
     "SEASON_FALL": "fall",
-    "SEASON_WINTER": "winter"
+    "SEASON_WINTER": "winter",
+    "CONTROL_ZOOMIN": "Zoom in",
+    "CONTROL_ZOOMOUT": "Zoom out",
+    "CONTROL_FAST": "Faster (held)"
   }
 }

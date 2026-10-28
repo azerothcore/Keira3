@@ -1533,6 +1533,9 @@
     "SEASON_SPRING": "春季",
     "SEASON_SUMMER": "夏季",
     "SEASON_FALL": "秋季",
-    "SEASON_WINTER": "冬季"
+    "SEASON_WINTER": "冬季",
+    "CONTROL_ZOOMIN": "拉近",
+    "CONTROL_ZOOMOUT": "拉远",
+    "CONTROL_FAST": "加速（按住）"
   }
 }

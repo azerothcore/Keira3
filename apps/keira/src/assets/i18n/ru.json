@@ -1533,6 +1533,9 @@
     "SEASON_SPRING": "весна",
     "SEASON_SUMMER": "лето",
     "SEASON_FALL": "осень",
-    "SEASON_WINTER": "зима"
+    "SEASON_WINTER": "зима",
+    "CONTROL_ZOOMIN": "Приблизить",
+    "CONTROL_ZOOMOUT": "Отдалить",
+    "CONTROL_FAST": "Быстрее (удерживать)"
   }
 }

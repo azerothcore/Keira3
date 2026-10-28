@@ -18,6 +18,9 @@ export type ControlAction =
   | 'turnRight'
   | 'lookUp'
   | 'lookDown'
+  | 'zoomIn'
+  | 'zoomOut'
+  | 'fast'
   // marker
   | 'markerToCursor'
   | 'cameraToMarker'
@@ -36,7 +39,7 @@ export type ControlAction =
 /** The camera moves held down: along the ground relative to the view, up/down, and turning around what it looks at. Shift makes them faster. */
 export type NavigationAction = Extract<
   ControlAction,
-  'forward' | 'back' | 'left' | 'right' | 'up' | 'down' | 'turnLeft' | 'turnRight' | 'lookUp' | 'lookDown'
+  'forward' | 'back' | 'left' | 'right' | 'up' | 'down' | 'turnLeft' | 'turnRight' | 'lookUp' | 'lookDown' | 'zoomIn' | 'zoomOut' | 'fast'
 >;
 export const NAVIGATION_ACTIONS: NavigationAction[] = [
   'forward',
@@ -49,6 +52,9 @@ export const NAVIGATION_ACTIONS: NavigationAction[] = [
   'turnRight',
   'lookUp',
   'lookDown',
+  'zoomIn',
+  'zoomOut',
+  'fast',
 ];
 
 export type ControlGroup = 'camera' | 'marker' | 'editing' | 'panels';
@@ -76,13 +82,18 @@ export const DEFAULT_CONTROL_BINDINGS: Record<ControlAction, string[]> = {
   back: ['KeyS', 'ArrowDown', 'PadLeftStickDown'],
   left: ['KeyA', 'ArrowLeft', 'PadLeftStickLeft'],
   right: ['KeyD', 'ArrowRight', 'PadLeftStickRight'],
-  up: ['KeyQ', 'PageUp', 'PadRB'],
-  down: ['KeyE', 'PageDown', 'PadLB'],
+  // a controller like a free camera: left stick moves, right stick looks, triggers go up and down, bumpers zoom,
+  // the left stick pressed in goes faster (Shift on the keyboard)
+  up: ['KeyQ', 'PageUp', 'PadRT'],
+  down: ['KeyE', 'PageDown', 'PadLT'],
   // (the right stick turns the camera around what it looks at)
   turnLeft: ['PadRightStickLeft'],
   turnRight: ['PadRightStickRight'],
   lookUp: ['PadRightStickUp'],
   lookDown: ['PadRightStickDown'],
+  zoomIn: ['PadRB'],
+  zoomOut: ['PadLB'],
+  fast: ['PadLeftStickPress'],
   markerToCursor: ['Space', 'PadA'],
   cameraToMarker: ['Home', 'PadY'],
   undo: ['Ctrl+KeyZ'],
@@ -99,6 +110,9 @@ export const DEFAULT_CONTROL_BINDINGS: Record<ControlAction, string[]> = {
 /** The defaults before Q and E were swapped (Q now goes up): saved settings still on them get the new ones. */
 const OLD_UP = ['KeyE', 'PageUp'];
 const OLD_DOWN = ['KeyQ', 'PageDown'];
+/** The controller's up / down before the triggers took them (the bumpers zoom now). */
+const PAD_BUMPERS_UP = ['KeyQ', 'PageUp', 'PadRB'];
+const PAD_BUMPERS_DOWN = ['KeyE', 'PageDown', 'PadLB'];
 const same = (a: unknown, b: string[]): boolean => Array.isArray(a) && a.length === b.length && a.every((v, i) => v === b[i]);
 
 export interface WorldControlsSettings {
@@ -390,7 +404,10 @@ export class WorldControlsSettingsService {
       };
       const bindings = { ...DEFAULT_CONTROL_BINDINGS };
       const saved: Record<string, unknown> = { ...stored.keys, ...stored.bindings };
-      if (same(saved['up'], OLD_UP) && same(saved['down'], OLD_DOWN)) {
+      if (
+        (same(saved['up'], OLD_UP) && same(saved['down'], OLD_DOWN)) ||
+        (same(saved['up'], PAD_BUMPERS_UP) && same(saved['down'], PAD_BUMPERS_DOWN))
+      ) {
         [saved['up'], saved['down']] = [DEFAULT_CONTROL_BINDINGS.up, DEFAULT_CONTROL_BINDINGS.down];
       }
       for (const { action } of CONTROL_ACTIONS) {

@@ -1533,6 +1533,9 @@
     "SEASON_SPRING": "primavera",
     "SEASON_SUMMER": "verano",
     "SEASON_FALL": "otoño",
-    "SEASON_WINTER": "invierno"
+    "SEASON_WINTER": "invierno",
+    "CONTROL_ZOOMIN": "Acercar",
+    "CONTROL_ZOOMOUT": "Alejar",
+    "CONTROL_FAST": "Más rápido (mantener)"
   }
 }

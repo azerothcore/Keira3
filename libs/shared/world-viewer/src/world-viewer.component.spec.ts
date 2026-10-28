@@ -1939,6 +1939,19 @@ describe(WorldViewerComponent.name, () => {
       }
       fixture.detectChanges();
       expect(camera.equals(before)).toBe(false);
+      // the bumpers zoom (in, then out faster with the left stick pressed in)
+      const zoomed = (input: string, time: number): boolean => {
+        const from = camera.clone();
+        pad.next({ input, pressed: true, type: 'paddown' });
+        frames.splice(0).forEach((frame) => frame(time));
+        frames.splice(0).forEach((frame) => frame(time + 100));
+        pad.next({ input, pressed: false, type: 'padup' });
+        return !camera.equals(from);
+      };
+      expect(zoomed('PadRB', 500)).toBe(true);
+      pad.next({ input: 'PadLeftStickPress', pressed: true, type: 'paddown' });
+      expect(zoomed('PadLB', 700)).toBe(true);
+      pad.next({ input: 'PadLeftStickPress', pressed: false, type: 'padup' });
       // Mouse 4 bound to Home (the camera back to the marker)
       await update(() =>
         host.navigation.set({

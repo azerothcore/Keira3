@@ -144,6 +144,10 @@ const MB = 1_000_000;
 /** How fast (radians per second) the camera turns around what it looks at (gamepad right stick); and how close to straight down or level it may look. */
 const TURN_SPEED = 1.5;
 const MIN_LOOK_ANGLE = 0.05;
+/** Zooming with the controls (bumpers): e-fold of the distance per second, between these distances (yards). */
+const ZOOM_SPEED = 1.2;
+const MIN_ZOOM_DISTANCE = 3;
+const MAX_ZOOM_DISTANCE = 3000;
 
 interface HoverLabel {
   text: string;
@@ -1107,8 +1111,9 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     // the view's forward on the ground: where it looks (−z), plus its "up" for when it looks straight down
     const forward = new Vector3(0, 1, -1).applyQuaternion(camera.quaternion).setY(0).normalize();
     const right = new Vector3().crossVectors(forward, new Vector3(0, 1, 0));
-    const speed =
-      Math.max(KEY_MIN_SPEED, camera.position.distanceTo(this.target)) * (this.fast ? SHIFT_SPEED : 1) * this.navigation().speed * seconds;
+    // Shift, or the action held (the controller's left stick pressed in)
+    const fast = this.fast || this.pressed.has('fast') ? SHIFT_SPEED : 1;
+    const speed = Math.max(KEY_MIN_SPEED, camera.position.distanceTo(this.target)) * fast * this.navigation().speed * seconds;
     const move = new Vector3();
     const sign = (positive: NavigationAction, negative: NavigationAction) =>
       Number(this.pressed.has(positive)) - Number(this.pressed.has(negative));
@@ -1123,12 +1128,15 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       this.onCameraChange();
     }
     // turning around what it looks at (the gamepad's right stick by default)
-    const turn = sign('turnLeft', 'turnRight') * TURN_SPEED * (this.fast ? SHIFT_SPEED : 1) * seconds;
-    const look = sign('lookUp', 'lookDown') * TURN_SPEED * (this.fast ? SHIFT_SPEED : 1) * seconds;
-    if (turn || look) {
+    const turn = sign('turnLeft', 'turnRight') * TURN_SPEED * fast * seconds;
+    const look = sign('lookUp', 'lookDown') * TURN_SPEED * fast * seconds;
+    // zooming: nearer to or farther from what it looks at, by a share of the distance each second
+    const zoom = sign('zoomIn', 'zoomOut') * ZOOM_SPEED * fast * seconds;
+    if (turn || look || zoom) {
       const orbit = new Spherical().setFromVector3(camera.position.clone().sub(this.target));
       orbit.theta += turn;
       orbit.phi = Math.min(Math.PI / 2 - MIN_LOOK_ANGLE, Math.max(MIN_LOOK_ANGLE, orbit.phi + look));
+      orbit.radius = Math.min(MAX_ZOOM_DISTANCE, Math.max(MIN_ZOOM_DISTANCE, orbit.radius * Math.exp(-zoom)));
       camera.position.copy(this.target).add(new Vector3().setFromSpherical(orbit));
       camera.lookAt(this.target);
       controls.update();
