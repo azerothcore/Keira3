@@ -138,6 +138,8 @@ const MOUSE_OVER_DELAY = 120;
 const LABEL_OFFSET = 14;
 /** How far south of straight above the top view puts the camera (yards). */
 const TOP_VIEW_OFFSET = 0.01;
+/** How high over the simulated creature its bubble is (yards). */
+const BUBBLE_HEIGHT = 3.5;
 const RIGHT_BUTTON = 2;
 /** Each Shift + wheel notch changes the camera speed by this factor. */
 const SPEED_STEP = 1.25;
@@ -344,14 +346,19 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   protected readonly simulationText = computed(() => {
     // (read only while there is one)
     const status = this.simulationStatus() as SimulationStatus;
-    const t = (key: string, params?: object) => this.translate.instant(`WORLD_EDITOR.${key}`, params) as string;
-    const doing =
-      status.wait !== undefined
-        ? `${status.label}: ${t('SIM_WAITING', { seconds: status.wait })}${status.actions?.length ? ` · ${status.actions.join(' · ')}` : ''}`
-        : `${t('SIM_' + status.move.toUpperCase())} → ${status.label}`;
     const elapsed = status.elapsed as number;
-    return `${doing} · ${elapsed.toFixed(1)} s (${Math.round(elapsed * 1000)} ms)`;
+    return `${this.simulationDoing()} · ${elapsed.toFixed(1)} s (${Math.round(elapsed * 1000)} ms)`;
   });
+  /** What the simulated creature is doing: in the bubble over its head. */
+  protected readonly simulationDoing = computed(() => {
+    const status = this.simulationStatus() as SimulationStatus;
+    const t = (key: string, params?: object) => this.translate.instant(`WORLD_EDITOR.${key}`, params) as string;
+    return status.wait !== undefined
+      ? `${status.label}: ${t('SIM_WAITING', { seconds: status.wait })}${status.actions?.length ? ` · ${status.actions.join(' · ')}` : ''}`
+      : `${t('SIM_' + status.move.toUpperCase())} → ${status.label}`;
+  });
+  /** Where the bubble over the simulated creature's head is on the canvas. */
+  protected readonly ghostBubble = signal<{ x: number; y: number } | undefined>(undefined);
   private recheckTimer?: ReturnType<typeof setTimeout>;
   /** Id of the shown map (for mmtile names), once known. */
   private mapId?: number;
@@ -1403,6 +1410,16 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     this.pathEndLabels.set(labels);
   }
 
+  /** Keeps the bubble over the simulated creature's head after each frame. */
+  private updateGhostBubble(): void {
+    const at = this.simulationStatus() && this.world.ghostPosition();
+    const bubble = at ? this.screenPoint({ ...at, z: at.z + BUBBLE_HEIGHT }) : undefined;
+    const current = this.ghostBubble();
+    if (bubble?.x !== current?.x || bubble?.y !== current?.y) {
+      this.ghostBubble.set(bubble);
+    }
+  }
+
   /** Where a place is on the canvas (px), when in front of the camera. */
   private screenPoint(position: WorldPosition): { x: number; y: number } | undefined {
     const canvas = this.canvasRef().nativeElement;
@@ -1678,6 +1695,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       this.updateStatus();
       this.updateProbeLabels();
       this.updatePathEndLabels();
+      this.updateGhostBubble();
       // a turning skybox, falling weather and animated creatures keep drawing
       if (spinning || this.weatherEffect.active || this.spawnModels.animating) {
         this.requestRender();

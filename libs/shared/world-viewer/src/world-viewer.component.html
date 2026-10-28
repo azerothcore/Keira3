@@ -65,6 +65,11 @@
       {{ (snapToWall() ? 'WORLD_EDITOR.SNAP_WALL' : snapToWater() ? 'WORLD_EDITOR.SNAP_WATER' : 'WORLD_EDITOR.SNAP_GROUND') | translate }}
     </div>
   }
+  @if (simulationStatus() && ghostBubble(); as bubble) {
+    <div class="world-viewer-bubble" data-testid="world-viewer-bubble" [style.left.px]="bubble.x" [style.top.px]="bubble.y">
+      {{ simulationDoing() }}
+    </div>
+  }
   @if (simulationStatus()) {
     <div class="world-viewer-simulation" data-testid="world-viewer-simulation">▶ {{ simulationText() }}</div>
   }

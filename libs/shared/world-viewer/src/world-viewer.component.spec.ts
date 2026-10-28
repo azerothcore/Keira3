@@ -1071,6 +1071,10 @@ describe(WorldViewerComponent.name, () => {
       await settle(fixture);
       fixture.detectChanges();
       expect(page.getDebugElementByTestId('world-viewer-simulation').nativeElement.textContent).toContain('point 1');
+      // a bubble over its head tells what it does
+      flushFrames();
+      fixture.detectChanges();
+      expect(page.getDebugElementByTestId('world-viewer-bubble').nativeElement.textContent).toContain('WORLD_EDITOR.SIM_WALK → point 1');
       // 1.5 s at ×2: 3 s in, at point 1 and waiting
       now = 1500;
       flushFrames();
@@ -1112,6 +1116,9 @@ describe(WorldViewerComponent.name, () => {
       fixture.detectChanges();
       expect(host.simulationEnds).toBe(1);
       expect(page.getDebugElementByTestId('world-viewer-simulation', false)).toBeFalsy();
+      flushFrames();
+      fixture.detectChanges();
+      expect(page.getDebugElementByTestId('world-viewer-bubble', false)).toBeFalsy();
       // a newer simulation replaces it; an unknown creature shows none
       await update(() => host.simulation.set({ ...plan, key: 'creature:404' }));
       await settle(fixture);

@@ -241,3 +241,29 @@
 .world-viewer-label.flip-x.flip-y {
   translate: calc(-100% - 28px) calc(-100% - 28px);
 }
+
+// a chat bubble over the simulated creature: what it's doing
+.world-viewer-bubble {
+  position: absolute;
+  z-index: 5;
+  transform: translate(-50%, -100%);
+  max-width: 260px;
+  padding: 3px 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #222;
+  font-size: 12px;
+  text-align: center;
+  pointer-events: none;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -6px;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-bottom: 0;
+    border-top-color: rgba(255, 255, 255, 0.92);
+  }
+}

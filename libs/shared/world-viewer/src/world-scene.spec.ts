@@ -1191,8 +1191,10 @@ describe('WorldScene', () => {
     it('tells when the simulated creature is under the cursor', () => {
       const world = setup();
       expect(world.ghostNear(0, 0)).toBe(false);
+      expect(world.ghostPosition()).toBeUndefined();
       world.setGhost('creature:1');
       world.moveGhost(at(0, 0), 0);
+      expect(world.ghostPosition()?.x).toBeCloseTo(at(0, 0).x);
       lookDownAt(world, at(0, 0));
       expect(world.ghostNear(0, 0)).toBe(true);
       expect(world.ghostNear(0.5, 0.5)).toBe(false);

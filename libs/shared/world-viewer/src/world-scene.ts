@@ -1499,6 +1499,12 @@ export class WorldScene {
     return true;
   }
 
+  /** Where the simulated creature is, while there is one. */
+  ghostPosition(): WorldPosition | undefined {
+    const ghost = this.ghostGroup.children[0];
+    return ghost && sceneToWorld(ghost.position);
+  }
+
   /** Whether the simulated creature is within `tolerance` (NDC) of the cursor on screen. */
   ghostNear(ndcX: number, ndcY: number, tolerance = 0.05): boolean {
     const ghost = this.ghostGroup.children[0];
