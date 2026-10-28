@@ -1517,6 +1517,22 @@
     "BRIGHTNESS_NIGHT": "Noche",
     "BRIGHTNESS_MORNING": "Mañana",
     "BRIGHTNESS_DAY": "Mediodía",
-    "BRIGHTNESS_EVENING": "Tarde"
+    "BRIGHTNESS_EVENING": "Tarde",
+    "WEATHER": "Clima",
+    "WEATHER_HELP": "Lluvia, nieve o tormenta de arena alrededor de la cámara: sorteado con las probabilidades de game_weather de la zona para la estación de hoy, como hace el servidor (el dado vuelve a tirar), o siempre el elegido",
+    "WEATHER_OFF": "Ninguno",
+    "WEATHER_DATABASE": "De la base de datos",
+    "WEATHER_RAIN": "Lluvia",
+    "WEATHER_SNOW": "Nieve",
+    "WEATHER_STORM": "Tormenta de arena",
+    "WEATHER_FINE": "Despejado",
+    "WEATHER_INTENSITY": "Intensidad",
+    "WEATHER_REROLL": "Volver a tirar",
+    "WEATHER_NO_ROW": "sin fila en game_weather: siempre despejado",
+    "WEATHER_NO_ZONE": "Aún no hay zona bajo la cámara",
+    "SEASON_SPRING": "primavera",
+    "SEASON_SUMMER": "verano",
+    "SEASON_FALL": "otoño",
+    "SEASON_WINTER": "invierno"
   }
 }

@@ -1,4 +1,5 @@
 import { inject, Service } from '@angular/core';
+import { Season, SEASONS, WeatherChances } from './weather';
 import { TableRow } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { WorldBounds, WorldPosition } from '@keira/shared/wow-data';
@@ -561,6 +562,19 @@ export class WorldEditorService {
   }
 
   /** Descriptions of game events, by id. */
+  /** The weather chances of a zone (game_weather), undefined when it has none. */
+  async loadWeather(zone: number): Promise<WeatherChances | undefined> {
+    const rows = await firstValueFrom(this.queryService.query<TableRow>(`SELECT * FROM game_weather WHERE zone = ${Math.trunc(zone)}`));
+    const row = rows?.[0];
+    if (!row) {
+      return undefined;
+    }
+    const chance = (season: Season, kind: string) => Number(row[`${season}_${kind}_chance`] ?? 0);
+    return Object.fromEntries(
+      SEASONS.map((season) => [season, { rain: chance(season, 'rain'), snow: chance(season, 'snow'), storm: chance(season, 'storm') }]),
+    ) as WeatherChances;
+  }
+
   async loadEventNames(ids: number[]): Promise<Map<number, string>> {
     const unique = [...new Set(ids.map(Math.trunc).filter((id) => id > 0))];
     const names = new Map<number, string>();

@@ -270,6 +270,8 @@
         [boundaries]="worldBoundaries()"
         [spawnsLoading]="loadingSpawns()"
         [cameraPhase]="filters().phase"
+        [weather]="weather()"
+        (zoneChanged)="onZoneChanged($event)"
         [buildings]="transportBuildings()"
         (probeMoved)="onProbeMoved($event)"
       />
@@ -817,6 +819,74 @@
                     (change)="setRenderFlag('timeFollowsClock', $event)"
                   />
                   <label class="form-check-label" for="world-editor-time-clock">{{ 'WORLD_EDITOR.TIME_FOLLOWS_CLOCK' | translate }}</label>
+                </div>
+              }
+              @let weatherMode = renderSettings.settings().weather;
+              <div class="d-flex align-items-center gap-2" data-testid="view-weather">
+                <label for="world-editor-weather" class="mb-0 text-nowrap"
+                  >{{ 'WORLD_EDITOR.WEATHER' | translate
+                  }}<i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'WORLD_EDITOR.WEATHER_HELP' | translate"></i
+                ></label>
+                <select
+                  id="world-editor-weather"
+                  class="form-select form-select-sm"
+                  data-testid="view-weather-mode"
+                  (change)="setWeatherMode($event)"
+                >
+                  @for (mode of weatherModes; track mode) {
+                    <option [value]="mode" [selected]="mode === weatherMode">
+                      {{ 'WORLD_EDITOR.WEATHER_' + mode.toUpperCase() | translate }}
+                    </option>
+                  }
+                </select>
+              </div>
+              @if (weatherMode === 'database') {
+                <div class="small d-flex align-items-center gap-2" data-testid="view-weather-roll">
+                  @if (weatherRoll(); as roll) {
+                    <span class="flex-grow-1">
+                      {{ 'WORLD_EDITOR.ZONE' | translate }} {{ roll.zone }},
+                      {{ 'WORLD_EDITOR.SEASON_' + roll.season.toUpperCase() | translate }}:
+                      @if (roll.chances; as chances) {
+                        {{ 'WORLD_EDITOR.WEATHER_RAIN' | translate }} {{ chances.rain }}%, {{ 'WORLD_EDITOR.WEATHER_SNOW' | translate }}
+                        {{ chances.snow }}%, {{ 'WORLD_EDITOR.WEATHER_STORM' | translate }} {{ chances.storm }}% →
+                        <strong data-testid="view-weather-result">{{
+                          (roll.weather ? 'WORLD_EDITOR.WEATHER_' + roll.weather.kind.toUpperCase() : 'WORLD_EDITOR.WEATHER_FINE')
+                            | translate
+                        }}</strong>
+                      } @else {
+                        <span class="text-muted" data-testid="view-weather-none">{{ 'WORLD_EDITOR.WEATHER_NO_ROW' | translate }}</span>
+                      }
+                    </span>
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-secondary py-0"
+                      data-testid="view-weather-reroll"
+                      [title]="'WORLD_EDITOR.WEATHER_REROLL' | translate"
+                      (click)="rollZoneWeather()"
+                    >
+                      <i class="fa fa-dice"></i>
+                    </button>
+                  } @else {
+                    <span class="text-muted">{{ 'WORLD_EDITOR.WEATHER_NO_ZONE' | translate }}</span>
+                  }
+                </div>
+              } @else if (weatherMode !== 'off') {
+                <div class="d-flex align-items-center gap-2">
+                  <label for="world-editor-weather-intensity" class="mb-0 text-nowrap">{{
+                    'WORLD_EDITOR.WEATHER_INTENSITY' | translate
+                  }}</label>
+                  <input
+                    id="world-editor-weather-intensity"
+                    type="range"
+                    class="form-range"
+                    min="5"
+                    max="100"
+                    step="5"
+                    data-testid="view-weather-intensity"
+                    [value]="renderSettings.settings().weatherIntensity"
+                    (input)="setWeatherIntensity($event)"
+                  />
+                  <span class="world-editor-time-value">{{ renderSettings.settings().weatherIntensity }}%</span>
                 </div>
               }
               <div class="form-check form-switch mb-0">

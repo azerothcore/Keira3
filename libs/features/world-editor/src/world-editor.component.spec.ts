@@ -31,6 +31,7 @@ import {
   WorldRenderSettings,
   WorldSpawn,
   WorldViewerComponent,
+  WorldWeather,
 } from '@keira/shared/world-viewer';
 import {
   flushPerfLog,
@@ -88,6 +89,8 @@ class FakeWorldViewerComponent {
   readonly groupKeys = input<string[]>([]);
   readonly spawnsLoading = input(false);
   readonly cameraPhase = input<number | undefined>(undefined);
+  readonly weather = input<WorldWeather | undefined>(undefined);
+  readonly zoneChanged = output<number | undefined>();
   readonly buildings = input<{ key: string; path: string }[]>([]);
   readonly simulation = input<MovementSimulation | undefined>(undefined);
   readonly groundQuery = input<{ key: string; position: WorldPosition }[] | undefined>(undefined);
@@ -241,6 +244,7 @@ describe(WorldEditorComponent.name, () => {
       loadWaypointScripts: vi.fn(),
       loadWaypointSai: vi.fn(),
       loadEventNames: vi.fn(),
+      loadWeather: vi.fn(),
       loadQuests: vi.fn(),
       loadAreaTriggerInfo: vi.fn(),
       getMaxGuid: vi.fn(),
@@ -381,6 +385,7 @@ describe(WorldEditorComponent.name, () => {
     mocks.service.loadWaypointScripts.mockResolvedValue(new Map([[50, [{ id: 50, delay: 0, command: 0 }]]]));
     mocks.service.loadWaypointSai.mockResolvedValue([{ entryorguid: -1, point: 2, pathId: 10, actionType: 1, comment: 'Willem - Say' }]);
     mocks.service.loadEventNames.mockResolvedValue(new Map());
+    mocks.service.loadWeather.mockResolvedValue(undefined);
     mocks.service.loadQuests.mockResolvedValue([]);
     mocks.service.loadAreaTriggerInfo.mockResolvedValue(new Map([[45, ["Inn: Lion's Pride Inn"]]]));
     mocks.client.getAreaTriggers.mockImplementation((map: number) =>
@@ -1437,6 +1442,66 @@ describe(WorldEditorComponent.name, () => {
       ask.click();
       page.fixture.detectChanges();
       expect(localStorage.getItem('keira3.worldEditor.confirmDelete')).toBe('true');
+    });
+
+    it('draws the weather chosen, or the one rolled from game_weather for the zone and the season', async () => {
+      vi.spyOn(Math, 'random').mockReturnValue(0.05);
+      mocks.service.loadWeather.mockResolvedValue({
+        spring: { rain: 10, snow: 0, storm: 0 },
+        summer: { rain: 10, snow: 0, storm: 0 },
+        fall: { rain: 10, snow: 0, storm: 0 },
+        winter: { rain: 0, snow: 10, storm: 0 },
+      });
+      const { page } = await setup();
+      page.click('view-toggle');
+      page.fixture.detectChanges();
+      expect(page.viewer().weather()).toBeUndefined();
+      const mode = page.byId<HTMLSelectElement>('view-weather-mode').nativeElement;
+      const choose = async (value: string) => {
+        mode.value = value;
+        mode.dispatchEvent(new Event('change'));
+        await settle(page);
+      };
+      await choose('snow');
+      expect(page.viewer().weather()).toEqual({ kind: 'snow', intensity: 0.6 });
+      const intensity = page.byId<HTMLInputElement>('view-weather-intensity').nativeElement;
+      intensity.value = '100';
+      intensity.dispatchEvent(new Event('input'));
+      page.fixture.detectChanges();
+      expect(page.viewer().weather()).toEqual({ kind: 'snow', intensity: 1 });
+
+      // from the database: nothing until the view says which zone it is in
+      await choose('database');
+      expect(page.text('view-weather-roll')).toBe('WORLD_EDITOR.WEATHER_NO_ZONE');
+      page.viewer().zoneChanged.emit(12);
+      await settle(page);
+      expect(mocks.service.loadWeather).toHaveBeenCalledWith(12);
+      expect(page.text('view-weather-result')).toMatch(/WORLD_EDITOR.WEATHER_(RAIN|SNOW)/);
+      expect(page.viewer().weather()?.intensity).toBe(0.1);
+      // rolled again: fine weather this time
+      vi.spyOn(Math, 'random').mockReturnValue(0.5);
+      page.click('view-weather-reroll');
+      await settle(page);
+      expect(page.text('view-weather-result')).toBe('WORLD_EDITOR.WEATHER_FINE');
+      expect(page.viewer().weather()).toBeUndefined();
+      // a zone without a row; a failure; an answer for a zone left meanwhile
+      mocks.service.loadWeather.mockResolvedValueOnce(undefined);
+      page.viewer().zoneChanged.emit(40);
+      await settle(page);
+      expect(page.text('view-weather-none')).toBe('WORLD_EDITOR.WEATHER_NO_ROW');
+      mocks.service.loadWeather.mockRejectedValueOnce(new Error('no table'));
+      page.viewer().zoneChanged.emit(41);
+      await settle(page);
+      expect(mocks.toastr.error).toHaveBeenCalledWith('no table', 'World Editor');
+      let answer: (value: undefined) => void = () => undefined;
+      mocks.service.loadWeather.mockReturnValueOnce(new Promise((resolve) => (answer = resolve)));
+      page.viewer().zoneChanged.emit(42);
+      page.viewer().zoneChanged.emit(undefined);
+      answer(undefined);
+      await settle(page);
+      expect(page.text('view-weather-roll')).toBe('WORLD_EDITOR.WEATHER_NO_ZONE');
+      await choose('off');
+      expect(page.viewer().weather()).toBeUndefined();
     });
 
     it('draws every other path in the area when asked', async () => {

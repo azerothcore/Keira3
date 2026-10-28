@@ -1,4 +1,5 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { rollWeather, Season, seasonOf } from './weather';
 import { debounceTime } from 'rxjs';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import packageInfo from '../../../../package.json';
@@ -67,6 +68,9 @@ import {
   WorldMapDot,
   RENDER_SCALES,
   WorldBoundary,
+  WeatherKind,
+  WorldRenderSettings,
+  WorldWeather,
 } from '@keira/shared/world-viewer';
 import {
   CacheUsage,
@@ -1346,6 +1350,61 @@ export class WorldEditorComponent implements OnInit {
   /** The time of day lit with zone lighting, from its slider (10-minute steps). */
   protected setTimeOfDay(event: Event): void {
     this.renderSettings.update({ timeOfDay: Number((event.target as HTMLInputElement).value) });
+  }
+
+  // ---------------------------------------------------------------- weather
+
+  protected readonly weatherModes = ['off', 'database', 'rain', 'snow', 'storm'] as const;
+  /** The zone under the camera (from the view), for its game_weather row. */
+  private readonly weatherZone = signal<number | undefined>(undefined);
+  /** What game_weather says for the zone and the season, and what was rolled from it. */
+  protected readonly weatherRoll = signal<
+    { zone: number; season: Season; chances?: Record<WeatherKind, number>; weather?: WorldWeather } | undefined
+  >(undefined);
+  private weatherRequest = 0;
+  /** The weather drawn: none, the one chosen, or the one rolled for the zone. */
+  protected readonly weather = computed<WorldWeather | undefined>(() => {
+    const { weather, weatherIntensity } = this.renderSettings.settings();
+    if (weather === 'database') {
+      return this.weatherRoll()?.weather;
+    }
+    return weather === 'rain' || weather === 'snow' || weather === 'storm'
+      ? { kind: weather, intensity: weatherIntensity / 100 }
+      : undefined;
+  });
+
+  protected setWeatherMode(event: Event): void {
+    this.renderSettings.update({ weather: (event.target as HTMLSelectElement).value as WorldRenderSettings['weather'] });
+    void this.rollZoneWeather();
+  }
+
+  protected setWeatherIntensity(event: Event): void {
+    this.renderSettings.update({ weatherIntensity: Number((event.target as HTMLInputElement).value) });
+  }
+
+  protected onZoneChanged(zone: number | undefined): void {
+    this.weatherZone.set(zone);
+    void this.rollZoneWeather();
+  }
+
+  /** Rolls the zone's weather from game_weather, for today's season (with "From the database"). */
+  protected async rollZoneWeather(): Promise<void> {
+    const request = ++this.weatherRequest;
+    const zone = this.weatherZone();
+    if (this.renderSettings.settings().weather !== 'database' || zone === undefined) {
+      this.weatherRoll.set(undefined);
+      return;
+    }
+    const season = seasonOf(new Date());
+    try {
+      const chances = await this.service.loadWeather(zone);
+      if (request === this.weatherRequest) {
+        this.weatherRoll.set({ zone, season, chances: chances?.[season], weather: chances && rollWeather(chances, season) });
+      }
+    } catch (error) {
+      this.weatherRoll.set(undefined);
+      this.toastr.error((error as Error).message, 'World Editor');
+    }
   }
 
   /** The time of day typed in as hours and minutes (open while editing). */

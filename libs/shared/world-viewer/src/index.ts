@@ -13,6 +13,7 @@ export * from './world-doodads';
 export * from './spawn-models';
 export * from './sky';
 export * from './zone-lighting';
+export * from './world-weather';
 export * from './world-controls-settings';
 export * from './world-navmesh';
 export * from './path-probe';

@@ -16,6 +16,7 @@ import { DebugHtmlElement, PageObjectModel } from 'ngx-page-object-model';
 import { EventDispatcher, Group, Object3D, Vector3 } from 'three';
 import { DEFAULT_WORLD_CONTROLS_SETTINGS, WorldControlsSettings } from './world-controls-settings';
 import { DEFAULT_WORLD_RENDER_SETTINGS, WorldRenderSettings } from './world-render-settings';
+import { WorldWeather } from './world-weather';
 import { ExtraBuilding, WorldObjects } from './world-objects';
 import { WORLD_RENDERER_FACTORY, WorldRenderer } from './world-renderer';
 import { WorldViewerComponent } from './world-viewer.component';
@@ -170,6 +171,8 @@ interface FakeTransformControls extends EventDispatcher<{ 'dragging-changed': { 
       [placePreview]="preview()"
       (objectMoved)="moves.push($event)"
       (centerChanged)="centers.push($event)"
+      (zoneChanged)="zones.push($event)"
+      [weather]="weather()"
     />
   `,
 })
@@ -215,6 +218,8 @@ class HostComponent {
   readonly preview = signal<{ kind: 'creature' | 'gameobject'; displayId: number; scale: number } | undefined>(undefined);
   readonly moves: ObjectMoved[] = [];
   readonly centers: WorldPosition[] = [];
+  readonly zones: (number | undefined)[] = [];
+  readonly weather = signal<WorldWeather | undefined>(undefined);
 }
 
 class Page extends PageObjectModel<HostComponent> {
@@ -581,6 +586,27 @@ describe(WorldViewerComponent.name, () => {
     expect(frames).toHaveLength(0);
   });
 
+  it('draws the weather around the camera, drawing on while it falls', async () => {
+    const { fixture, host } = await setup();
+    await fixture.whenStable();
+    flushFrames();
+    const scene = renderer.render.mock.calls.at(-1)?.[0] as Object3D;
+    expect(scene.getObjectByName('weather')?.children).toHaveLength(0);
+    expect(frames).toHaveLength(0);
+    host.weather.set({ kind: 'snow', intensity: 0.5 });
+    fixture.detectChanges();
+    flushFrames();
+    expect(scene.getObjectByName('weather')?.children).toHaveLength(1);
+    expect(frames.length).toBeGreaterThan(0);
+    flushFrames();
+    host.weather.set(undefined);
+    fixture.detectChanges();
+    flushFrames();
+    flushFrames();
+    expect(scene.getObjectByName('weather')?.children).toHaveLength(0);
+    expect(frames).toHaveLength(0);
+  });
+
   it("lights the zone at the time of day chosen, or at the computer's time checked every minute", async () => {
     const configure = vi.spyOn(ZoneLighting.prototype, 'configure');
     vi.useFakeTimers({ toFake: ['setInterval', 'clearInterval', 'Date'] });
@@ -851,6 +877,8 @@ describe(WorldViewerComponent.name, () => {
       flushFrames();
       await settle(fixture);
       expect(page.getDebugElementByTestId('world-viewer-area').nativeElement.textContent).toContain('Goldshire (Elwynn Forest)');
+      // the zone, for its weather
+      expect(host.zones.at(-1)).toBe(12);
       // the camera's phase, when told
       expect(page.getDebugElementByTestId('world-viewer-phase', false)).toBeFalsy();
       await update(() => host.cameraPhase.set(3));
@@ -862,12 +890,14 @@ describe(WorldViewerComponent.name, () => {
       flushFrames();
       await settle(fixture);
       expect(page.getDebugElementByTestId('world-viewer-area').nativeElement.textContent?.trim()).toBe('· Zone');
+      expect(host.zones.at(-1)).toBe(5);
       client.getServerMap.mockResolvedValue(undefined);
       await update(() => host.focus.set(at(200, 0)));
       await settle(fixture);
       flushFrames();
       await settle(fixture);
       expect(page.getDebugElementByTestId('world-viewer-area', false)).toBeFalsy();
+      expect(host.zones.at(-1)).toBeUndefined();
       client.getServerMap.mockRejectedValue(new Error('locked'));
       await update(() => host.focus.set(at(300, 0)));
       await settle(fixture);

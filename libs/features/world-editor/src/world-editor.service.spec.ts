@@ -269,6 +269,31 @@ describe('WorldEditorService', () => {
     expect((await service.loadEventNames([5])).size).toBe(0);
   });
 
+  it('loads the weather chances of a zone', async () => {
+    const { service, queryService } = setup();
+    queryService.query.mockReturnValueOnce(
+      of([
+        {
+          zone: 12,
+          spring_rain_chance: 20,
+          spring_snow_chance: 0,
+          spring_storm_chance: 0,
+          winter_snow_chance: '15',
+          fall_rain_chance: null,
+        },
+      ]),
+    );
+    const chances = await service.loadWeather(12);
+    expect(queryService.query).toHaveBeenLastCalledWith('SELECT * FROM game_weather WHERE zone = 12');
+    expect(chances?.spring).toEqual({ rain: 20, snow: 0, storm: 0 });
+    expect(chances?.winter).toEqual({ rain: 0, snow: 15, storm: 0 });
+    expect(chances?.fall.rain).toBe(0);
+    queryService.query.mockReturnValueOnce(of([]));
+    expect(await service.loadWeather(1)).toBeUndefined();
+    queryService.query.mockReturnValueOnce(of(undefined));
+    expect(await service.loadWeather(1)).toBeUndefined();
+  });
+
   it('treats missing results as empty', async () => {
     const { service, queryService } = setup();
     queryService.query.mockReturnValue(of(undefined));

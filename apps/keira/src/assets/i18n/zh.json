@@ -1517,6 +1517,22 @@
     "BRIGHTNESS_NIGHT": "夜晚",
     "BRIGHTNESS_MORNING": "早晨",
     "BRIGHTNESS_DAY": "正午",
-    "BRIGHTNESS_EVENING": "傍晚"
+    "BRIGHTNESS_EVENING": "傍晚",
+    "WEATHER": "天气",
+    "WEATHER_HELP": "镜头周围的雨、雪或沙尘暴：像服务器一样按区域 game_weather 中当季的几率随机（可重新掷骰），或始终为所选天气",
+    "WEATHER_OFF": "无",
+    "WEATHER_DATABASE": "来自数据库",
+    "WEATHER_RAIN": "雨",
+    "WEATHER_SNOW": "雪",
+    "WEATHER_STORM": "沙尘暴",
+    "WEATHER_FINE": "晴",
+    "WEATHER_INTENSITY": "强度",
+    "WEATHER_REROLL": "重新掷骰",
+    "WEATHER_NO_ROW": "没有 game_weather 记录：始终晴朗",
+    "WEATHER_NO_ZONE": "镜头下还没有区域",
+    "SEASON_SPRING": "春季",
+    "SEASON_SUMMER": "夏季",
+    "SEASON_FALL": "秋季",
+    "SEASON_WINTER": "冬季"
   }
 }

@@ -1517,6 +1517,22 @@
     "BRIGHTNESS_NIGHT": "Ночь",
     "BRIGHTNESS_MORNING": "Утро",
     "BRIGHTNESS_DAY": "Полдень",
-    "BRIGHTNESS_EVENING": "Вечер"
+    "BRIGHTNESS_EVENING": "Вечер",
+    "WEATHER": "Погода",
+    "WEATHER_HELP": "Дождь, снег или песчаная буря вокруг камеры: по шансам game_weather зоны для текущего сезона, как на сервере (кубик бросается заново), или всегда выбранная",
+    "WEATHER_OFF": "Нет",
+    "WEATHER_DATABASE": "Из базы данных",
+    "WEATHER_RAIN": "Дождь",
+    "WEATHER_SNOW": "Снег",
+    "WEATHER_STORM": "Песчаная буря",
+    "WEATHER_FINE": "Ясно",
+    "WEATHER_INTENSITY": "Сила",
+    "WEATHER_REROLL": "Бросить снова",
+    "WEATHER_NO_ROW": "нет строки в game_weather: всегда ясно",
+    "WEATHER_NO_ZONE": "Под камерой ещё нет зоны",
+    "SEASON_SPRING": "весна",
+    "SEASON_SUMMER": "лето",
+    "SEASON_FALL": "осень",
+    "SEASON_WINTER": "зима"
   }
 }

@@ -1517,6 +1517,22 @@
     "BRIGHTNESS_NIGHT": "Night",
     "BRIGHTNESS_MORNING": "Morning",
     "BRIGHTNESS_DAY": "Midday",
-    "BRIGHTNESS_EVENING": "Evening"
+    "BRIGHTNESS_EVENING": "Evening",
+    "WEATHER": "Weather",
+    "WEATHER_HELP": "Rain, snow or a sandstorm around the camera: rolled from the zone's game_weather chances for today's season like the server does (the dice rolls again), or always the one chosen",
+    "WEATHER_OFF": "None",
+    "WEATHER_DATABASE": "From the database",
+    "WEATHER_RAIN": "Rain",
+    "WEATHER_SNOW": "Snow",
+    "WEATHER_STORM": "Sandstorm",
+    "WEATHER_FINE": "Fine",
+    "WEATHER_INTENSITY": "Intensity",
+    "WEATHER_REROLL": "Roll again",
+    "WEATHER_NO_ROW": "no game_weather row: always fine",
+    "WEATHER_NO_ZONE": "No zone under the camera yet",
+    "SEASON_SPRING": "spring",
+    "SEASON_SUMMER": "summer",
+    "SEASON_FALL": "fall",
+    "SEASON_WINTER": "winter"
   }
 }

@@ -44,6 +44,7 @@ import { DisplayModel, displayModel, SpawnModels } from './spawn-models';
 import { WorldPrefetch } from './world-prefetch';
 import { WorldDoodads } from './world-doodads';
 import { brightnessAt, ZoneLighting } from './zone-lighting';
+import { WeatherEffect, WorldWeather } from './world-weather';
 import {
   controlFor,
   DEFAULT_WORLD_CONTROLS_SETTINGS,
@@ -232,6 +233,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   readonly objectMoved = output<ObjectMoved>();
   /** Camera target, emitted after it moved more than ~60 yards (use it to load nearby spawns). */
   readonly centerChanged = output<WorldPosition>();
+  /** The zone under the camera target (the area's zone, or the area when it is one), when it changes. */
+  readonly zoneChanged = output<number | undefined>();
 
   protected readonly hoverLabel = signal<HoverLabel | undefined>(undefined);
   /** "Start" and "End" over the Path / LOS tool's A and C, where they are on screen. */
@@ -261,6 +264,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   readonly spawnsLoading = input(false);
   /** The camera's phase mask (from the editor's filters), shown with its position. */
   readonly cameraPhase = input<number | undefined>(undefined);
+  /** Rain, snow or a sandstorm falling around the camera (none: undefined). */
+  readonly weather = input<WorldWeather | undefined>(undefined);
   /** Where the camera looks (degrees clockwise from north), for the compass. */
   protected readonly heading = signal(0);
   /** Server position the camera looks at, for the readout in the corner. */
@@ -315,6 +320,10 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   /** The map shown is one building (most dungeons): see `showIndoor`. */
   private singleBuildingMap = false;
   private readonly skybox = new WorldSkybox(this.client, this.textures, () => this.requestRender());
+  private readonly weatherEffect = new WeatherEffect();
+  /** When the last frame was drawn (ms), to move the weather on by the time between frames. */
+  private lastFrame?: number;
+  private zoneId?: number;
   /** Gamepad buttons and sticks bound to the marker or the camera moves. */
   private readonly padInputs = inject(GamepadInputService)
     .inputs.pipe(takeUntilDestroyed())
@@ -346,6 +355,14 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private readonly target = new Vector3();
 
   constructor() {
+    effect(() => {
+      const weather = this.weather();
+      untracked(() => {
+        this.weatherEffect.set(weather);
+        this.lastFrame = undefined;
+        this.requestRender();
+      });
+    });
     effect(() => {
       const preview = this.placePreview();
       untracked(() => void this.loadPlacePreview(preview));
@@ -531,6 +548,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     this.gizmo.addEventListener('objectChange', () => this.onGizmoChange());
     this.world.scene.add(this.gizmo.getHelper());
     this.world.scene.add(this.skybox.group);
+    this.world.scene.add(this.weatherEffect.group);
 
     if (typeof ResizeObserver !== 'undefined') {
       this.resizeObserver = new ResizeObserver(() => this.resize());
@@ -587,6 +605,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     this.objects.dispose();
     this.doodads.dispose();
     this.skybox.dispose();
+    this.weatherEffect.dispose();
     this.navMesh.dispose();
     this.vmaps.dispose();
     this.spawnModels.dispose();
@@ -1474,6 +1493,10 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       this.frameRequested = false;
       this.world.updateMarkerScale();
       const spinning = this.updateSkybox();
+      const now = performance.now();
+      // (at most a tenth of a second at once: a frame after a pause doesn't throw the weather far)
+      this.weatherEffect.update(this.world.camera, Math.min(0.1, (now - (this.lastFrame ?? now)) / 1000));
+      this.lastFrame = now;
       this.checkMemory();
       this.placePreviewTo();
       const began = performance.now();
@@ -1482,8 +1505,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       this.countFrame(performance.now() - began);
       this.updateStatus();
       this.updateProbeLabels();
-      // a turning skybox keeps drawing
-      if (spinning) {
+      // a turning skybox and falling weather keep drawing
+      if (spinning || this.weatherEffect.active) {
         this.requestRender();
       }
     });
@@ -1580,6 +1603,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     this.areaChunk = chunk;
     if (mapId === undefined || !this.client.isSupported()) {
       this.areaName.set(undefined);
+      this.setZone(undefined);
       return;
     }
     try {
@@ -1587,13 +1611,23 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
         this.client.getServerMap(mapId, worldToTile(center.x, center.y)),
         this.client.getAreaNames(),
       ]);
-      const area = tile ? names.get(serverAreaAt(tile, center.x, center.y)) : undefined;
+      const areaId = tile ? serverAreaAt(tile, center.x, center.y) : 0;
+      const area = names.get(areaId);
       const zone = area?.parent ? names.get(area.parent)?.name : undefined;
       if (chunk === this.areaChunk) {
         this.areaName.set(area?.name ? `${area.name}${zone ? ` (${zone})` : ''}` : undefined);
+        this.setZone(area ? area.parent || areaId : undefined);
       }
     } catch {
       this.areaName.set(undefined);
+      this.setZone(undefined);
+    }
+  }
+
+  private setZone(zoneId: number | undefined): void {
+    if (zoneId !== this.zoneId) {
+      this.zoneId = zoneId;
+      this.zoneChanged.emit(zoneId);
     }
   }
 

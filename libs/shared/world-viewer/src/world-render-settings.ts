@@ -42,6 +42,10 @@ export interface WorldRenderSettings {
   /** The time of day lit with zone lighting (minutes since midnight), or the computer's clock. */
   timeOfDay: number;
   /** Brightness of the zone lights (%) at night, in the morning, at midday and in the evening, blended in between. */
+  /** Weather around the camera: none, rolled from game_weather for the zone, or always the one chosen. */
+  weather: 'off' | 'database' | 'rain' | 'snow' | 'storm';
+  /** Intensity (%) of the weather chosen. */
+  weatherIntensity: number;
   brightnessNight: number;
   brightnessMorning: number;
   brightnessDay: number;
@@ -148,6 +152,8 @@ export const DEFAULT_WORLD_RENDER_SETTINGS: WorldRenderSettings = {
   skyboxModel: '',
   skyboxSpin: false,
   timeOfDay: 720,
+  weather: 'off',
+  weatherIntensity: 60,
   brightnessNight: 100,
   brightnessMorning: 100,
   brightnessDay: 100,
