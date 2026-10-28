@@ -1547,7 +1547,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     this.memoryCheckedAt = now;
     const heap = (performance as unknown as { memory?: { usedJSHeapSize: number } }).memory?.usedJSHeapSize;
     const ram = this.client.memoryUsage() ?? (heap === undefined ? undefined : { used: heap, total: undefined });
-    const gpu = sceneGpuBytes(this.world.scene);
+    const gpu = sceneGpuBytes(this.world.scene, this.world.camera.layers);
     const overRam = !!settings.memoryCapMb && !!ram && ram.used > settings.memoryCapMb * MB;
     const overGpu = !!settings.gpuCapMb && gpu > settings.gpuCapMb * MB;
     if (overRam) {

@@ -6,6 +6,9 @@ import {
   DataTexture,
   Group,
   InstancedMesh,
+  InterleavedBuffer,
+  InterleavedBufferAttribute,
+  Layers,
   Mesh,
   MeshBasicMaterial,
   RGBAFormat,
@@ -36,6 +39,28 @@ describe('memory budget', () => {
     // a geometry without an index
     const loose = new BufferGeometry().setAttribute('position', new BufferAttribute(new Float32Array(9), 3));
     expect(geometryBytes(new Mesh(loose))).toBe(36);
+  });
+
+  it('counts a buffer shared by several geometries once, and only what the camera can draw', () => {
+    const position = new BufferAttribute(new Float32Array(300), 3);
+    const index = new BufferAttribute(new Uint32Array(100), 1);
+    const chunk = () => new BufferGeometry().setAttribute('position', position).setIndex(index);
+    const hidden = new Mesh(chunk());
+    hidden.visible = false;
+    const scene = new Group().add(new Mesh(chunk()), new Mesh(chunk()), hidden);
+    expect(geometryBytes(scene)).toBe(1200 + 400);
+    // interleaved attributes: one buffer
+    const interleaved = new InterleavedBuffer(new Float32Array(60), 6);
+    const both = new BufferGeometry()
+      .setAttribute('position', new InterleavedBufferAttribute(interleaved, 3, 0))
+      .setAttribute('normal', new InterleavedBufferAttribute(interleaved, 3, 3));
+    expect(geometryBytes(new Mesh(both))).toBe(240);
+    // on a layer the camera doesn't show (collision): not drawn, not counted
+    const collision = new Mesh(new BufferGeometry().setAttribute('position', new BufferAttribute(new Float32Array(30), 3)));
+    collision.layers.set(5);
+    const camera = new Layers();
+    expect(geometryBytes(new Group().add(collision))).toBe(120);
+    expect(sceneGpuBytes(new Group().add(collision), camera)).toBe(0);
   });
 
   it('writes sizes in MB or GB', () => {
