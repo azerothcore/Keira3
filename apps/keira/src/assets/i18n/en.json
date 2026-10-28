@@ -1299,7 +1299,7 @@
     "CONTROL_DELETE": "Delete the selection",
     "CONTROL_TOGGLEGIZMO": "Switch move / rotate",
     "CONTROL_CANCEL": "Cancel / deselect",
-    "CLASH": "Also bound to another action",
+    "CLASH": "Also used by another action at the same time: only the first in the list fires, change one",
     "REMOVE": "Remove",
     "ADD_KEY": "+ Add",
     "DEFAULT": "Default",
@@ -1443,6 +1443,11 @@
     "SCAN_OK": "On the ground",
     "SCAN_WARN": "Off a little: the core puts it right (or worth a look)",
     "SCAN_BAD": "Inside the floor or floating: the core won't put it right",
-    "CANCEL": "Cancel"
+    "CANCEL": "Cancel",
+    "SHARED": "Also used by another action, never at the same time: fine",
+    "CAPTURE_HINT": "Press a key or a gamepad button to bind it (twice quickly for a double tap), or pick a mouse input below. Esc: cancel.",
+    "CAPTURE_MODIFIER": "Holding a modifier: press another key for a combination, or let go to bind the modifier itself.",
+    "DONE": "Done",
+    "MOUSE_AND_WHEEL": "Mouse and wheel:"
   }
 }

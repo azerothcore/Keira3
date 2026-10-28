@@ -283,7 +283,13 @@
   }
 
   <div class="world-editor-body">
-    <div #view class="world-editor-view" [class.view-fullscreen]="viewFullscreen()">
+    <div
+      #view
+      class="world-editor-view"
+      [class.view-fullscreen]="viewFullscreen()"
+      (pointerdown)="onViewInput($event)"
+      (wheel)="onViewInput($event)"
+    >
       <keira-world-viewer
         [mapDirectory]="mapDirectory()"
         [spawns]="worldSpawns()"
@@ -441,6 +447,35 @@
                 {{ 'WORLD_EDITOR.RESET_KEYS' | translate }}
               </button>
             </div>
+            @if (capturing(); as action) {
+              <div class="alert alert-secondary py-2 px-2 mb-2 small" data-testid="capture">
+                <div class="d-flex align-items-center gap-2 mb-1">
+                  <strong>{{ 'WORLD_EDITOR.CONTROL_' + action.toUpperCase() | translate }}</strong>
+                  <span class="text-muted" data-testid="capture-hint">{{
+                    (pendingModifier() ? 'WORLD_EDITOR.CAPTURE_MODIFIER' : 'WORLD_EDITOR.CAPTURE_HINT') | translate
+                  }}</span>
+                  <button type="button" class="btn btn-sm btn-primary ms-auto" data-testid="capture-done" (click)="finishCapture()">
+                    {{ 'WORLD_EDITOR.DONE' | translate }}
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-secondary" data-testid="capture-cancel" (click)="cancelCapture()">
+                    {{ 'WORLD_EDITOR.CANCEL' | translate }}
+                  </button>
+                </div>
+                <div class="d-flex flex-wrap align-items-center gap-1">
+                  <span class="me-1">{{ 'WORLD_EDITOR.MOUSE_AND_WHEEL' | translate }}</span>
+                  @for (input of mouseInputs; track input) {
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-secondary py-0 px-1"
+                      [attr.data-testid]="'capture-' + input"
+                      (click)="bindInput(input)"
+                    >
+                      {{ inputLabel(input) }}
+                    </button>
+                  }
+                </div>
+              </div>
+            }
             <table class="table table-sm table-borderless align-middle mb-0">
               @for (group of controlGroups; track group) {
                 <tbody>
@@ -455,11 +490,15 @@
                         <td>{{ 'WORLD_EDITOR.CONTROL_' + item.action.toUpperCase() | translate }}</td>
                         <td>
                           @for (input of bindings[item.action]; track input) {
+                            @let conflict = controls.conflict(item.action, input);
                             <span
                               class="badge world-editor-binding"
-                              [class.bg-danger]="controls.clashes(item.action, input).length"
-                              [class.bg-secondary]="!controls.clashes(item.action, input).length"
-                              [title]="controls.clashes(item.action, input).length ? ('WORLD_EDITOR.CLASH' | translate) : ''"
+                              [class.bg-danger]="conflict === 'clash'"
+                              [class.bg-warning]="conflict === 'shared'"
+                              [class.bg-secondary]="conflict === 'none'"
+                              [title]="
+                                conflict === 'none' ? '' : ('WORLD_EDITOR.' + (conflict === 'clash' ? 'CLASH' : 'SHARED') | translate)
+                              "
                             >
                               {{ inputLabel(input) }}
                               <button
@@ -476,7 +515,7 @@
                             class="btn btn-sm btn-outline-secondary world-editor-key"
                             [attr.data-testid]="'bind-' + item.action"
                             [class.active]="capturing() === item.action"
-                            (click)="capturing.set(item.action)"
+                            (click)="startCapture(item.action)"
                           >
                             {{ (capturing() === item.action ? 'WORLD_EDITOR.PRESS_A_KEY' : 'WORLD_EDITOR.ADD_KEY') | translate }}
                           </button>

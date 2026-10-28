@@ -1,3 +1,4 @@
+import { Subject } from 'rxjs';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import packageInfo from '../../../../package.json';
 import { Component, input, output } from '@angular/core';
@@ -6,6 +7,8 @@ import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import {
   ContextRequest,
+  GamepadInputService,
+  WorldControlsSettingsService,
   DEFAULT_WORLD_CONTROLS_SETTINGS,
   DEFAULT_WORLD_RENDER_SETTINGS,
   WorldControlsSettings,
@@ -844,28 +847,72 @@ describe(WorldEditorComponent.name, () => {
       page.click('controls-toggle');
       page.fixture.detectChanges();
       const row = (action: string) => page.text('control-' + action);
-      expect(page.viewer().navigation().bindings.forward).toEqual(['KeyW', 'ArrowUp']);
+      expect(page.viewer().navigation().bindings.forward).toEqual(['KeyW', 'ArrowUp', 'PadLeftStickUp']);
       expect(row('forward')).toContain('W');
+      expect(row('forward')).toContain('Pad Left Stick Up');
       expect(row('left')).toContain('←');
       expect(row('redo')).toContain('Ctrl+Shift+Z');
 
-      // a key with modifiers: the modifier alone waits for the key
+      // a key with modifiers: the modifier alone waits for the key; Done closes
       page.click('bind-forward');
       page.fixture.detectChanges();
       expect(page.text('bind-forward')).toBe('WORLD_EDITOR.PRESS_A_KEY');
+      expect(page.text('capture-hint')).toBe('WORLD_EDITOR.CAPTURE_HINT');
       page.key('Shift', undefined, 'ShiftLeft', { shiftKey: true });
+      page.fixture.detectChanges();
+      expect(page.text('capture-hint')).toBe('WORLD_EDITOR.CAPTURE_MODIFIER');
       page.key('I', undefined, 'KeyI', { shiftKey: true });
       page.fixture.detectChanges();
-      expect(page.viewer().navigation().bindings.forward).toEqual(['KeyW', 'ArrowUp', 'Shift+KeyI']);
+      expect(page.viewer().navigation().bindings.forward).toEqual(['KeyW', 'ArrowUp', 'PadLeftStickUp', 'Shift+KeyI']);
+      // a modifier let go on its own is bound itself; a mouse input from the list; a gamepad button
+      page.key('Control', undefined, 'ControlLeft', { ctrlKey: true });
+      page.fixture.nativeElement.dispatchEvent(new KeyboardEvent('keyup', { code: 'ControlLeft', bubbles: true }));
+      page.click('capture-Mouse4');
+      (TestBed.inject(GamepadInputService) as unknown as { changes: Subject<{ input: string; pressed: boolean }> }).changes.next({
+        input: 'PadX',
+        pressed: true,
+      });
+      page.fixture.detectChanges();
+      expect(page.viewer().navigation().bindings.forward).toEqual([
+        'KeyW',
+        'ArrowUp',
+        'PadLeftStickUp',
+        'Shift+KeyI',
+        'ControlLeft',
+        'Mouse4',
+        'PadX',
+      ]);
+      expect(row('forward')).toContain('Mouse 4');
+      page.click('capture-done');
+      page.fixture.detectChanges();
       expect(page.text('bind-forward')).toBe('WORLD_EDITOR.ADD_KEY');
+      // a key up with nothing held: nothing
+      page.fixture.nativeElement.dispatchEvent(new KeyboardEvent('keyup', { code: 'ShiftLeft', bubbles: true }));
 
-      // Escape cancels; a key already on another action is shown red
+      // a key the browser can't tell: nothing
+      page.click('bind-compass');
+      page.key('?', undefined, '');
+      // the same key twice quickly: a double tap
+
+      page.key('j');
+      page.key('j');
+      page.fixture.detectChanges();
+      expect(page.viewer().navigation().bindings.compass).toEqual(['KeyK', '2x KeyJ']);
+      expect(row('compass')).toContain('2x J');
+      page.click('capture-cancel');
+      page.fixture.detectChanges();
+      expect(page.viewer().navigation().bindings.compass).toEqual(['KeyK']);
+
+      // Escape cancels (what was bound meanwhile too); a key already on another action is shown red
       page.click('bind-back');
+      page.key('l');
       page.key('Escape');
       page.fixture.detectChanges();
-      expect(page.viewer().navigation().bindings.back).toEqual(['KeyS', 'ArrowDown']);
+      expect(page.viewer().navigation().bindings.back).toEqual(['KeyS', 'ArrowDown', 'PadLeftStickDown']);
       page.click('bind-toggleGizmo');
       page.key('w');
+      page.fixture.detectChanges();
+      page.click('capture-done');
       page.fixture.detectChanges();
       const clash = (page.byId('unbind-toggleGizmo-KeyW').nativeElement as HTMLElement).parentElement as HTMLElement;
       expect(clash.classList).toContain('bg-danger');
@@ -876,10 +923,17 @@ describe(WorldEditorComponent.name, () => {
 
       page.click('unbind-forward-ArrowUp');
       page.fixture.detectChanges();
-      expect(page.viewer().navigation().bindings.forward).toEqual(['KeyW', 'Shift+KeyI']);
+      expect(page.viewer().navigation().bindings.forward).toEqual([
+        'KeyW',
+        'PadLeftStickUp',
+        'Shift+KeyI',
+        'ControlLeft',
+        'Mouse4',
+        'PadX',
+      ]);
       page.click('default-forward');
       page.fixture.detectChanges();
-      expect(page.viewer().navigation().bindings.forward).toEqual(['KeyW', 'ArrowUp']);
+      expect(page.viewer().navigation().bindings.forward).toEqual(['KeyW', 'ArrowUp', 'PadLeftStickUp']);
       page.click('controls-reset');
       page.fixture.detectChanges();
       expect(page.viewer().navigation().bindings.toggleGizmo).toEqual(['KeyR']);
@@ -892,6 +946,38 @@ describe(WorldEditorComponent.name, () => {
       page.click('controls-toggle');
       page.fixture.detectChanges();
       expect(page.byId('controls', false)).toBeFalsy();
+    });
+
+    it('runs editing actions from mouse buttons, the wheel and gamepad buttons bound to them', async () => {
+      const { page } = await setup();
+      const controls = TestBed.inject(WorldControlsSettingsService);
+      controls.addBinding('worldMap', 'Mouse5');
+      controls.addBinding('compass', 'Ctrl+WheelUp');
+      controls.addBinding('toggleGizmo', 'PadStart');
+      page.fixture.detectChanges();
+      const area = (page.fixture.nativeElement as HTMLElement).querySelector('.world-editor-view') as HTMLElement;
+      area.dispatchEvent(new MouseEvent('pointerdown', { button: 4, bubbles: true }));
+      page.fixture.detectChanges();
+      expect(page.getDebugElementByTestId('world-map')).toBeTruthy();
+      area.dispatchEvent(new WheelEvent('wheel', { deltaY: -1, ctrlKey: true, bubbles: true }));
+      page.fixture.detectChanges();
+      expect(page.viewer().renderSettings().compass).toBe(false);
+      const pad = (TestBed.inject(GamepadInputService) as unknown as { changes: Subject<{ input: string; pressed: boolean }> }).changes;
+      pad.next({ input: 'PadStart', pressed: true });
+      pad.next({ input: 'PadStart', pressed: false });
+      page.fixture.detectChanges();
+      expect(page.viewer().gizmoMode()).toBe('rotate');
+      // an unbound button: nothing; and nothing while binding
+      area.dispatchEvent(new MouseEvent('pointerdown', { button: 0, bubbles: true }));
+      area.dispatchEvent(new MouseEvent('pointerdown', { button: 4, bubbles: true }));
+      page.fixture.detectChanges();
+      expect(page.getDebugElementByTestId('world-map', false)).toBeFalsy();
+      page.click('controls-toggle');
+      page.fixture.detectChanges();
+      page.click('bind-undo');
+      area.dispatchEvent(new MouseEvent('pointerdown', { button: 4, bubbles: true }));
+      page.fixture.detectChanges();
+      expect(page.getDebugElementByTestId('world-map', false)).toBeFalsy();
     });
 
     it('does not read game data outside the desktop app', async () => {

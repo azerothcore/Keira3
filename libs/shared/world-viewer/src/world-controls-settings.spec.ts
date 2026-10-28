@@ -1,7 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 import {
+  CONTROL_CONTEXTS,
   controlFor,
   controlMatches,
+  inputConflict,
+  isModifierCode,
+  MOUSE_INPUTS,
+  mouseInputOf,
+  pressedInputs,
   DEFAULT_WORLD_CONTROLS_SETTINGS,
   inputLabel,
   inputOf,
@@ -24,6 +30,7 @@ describe('world controls', () => {
     service.addBinding('forward', 'KeyI');
     service.addBinding('forward', 'KeyI');
     service.removeBinding('forward', 'ArrowUp');
+    service.removeBinding('forward', 'PadLeftStickUp');
     service.addBinding('undo', 'Ctrl+Alt+KeyU');
     service.setKeyboardNavigation(false);
     expect(service.settings().bindings.forward).toEqual(['KeyW', 'KeyI']);
@@ -34,8 +41,10 @@ describe('world controls', () => {
     expect(restored.settings().bindings.undo).toEqual(['Ctrl+KeyZ', 'Ctrl+Alt+KeyU']);
     expect(restored.settings().keyboardNavigation).toBe(false);
 
+    restored.setActionBindings('undo', ['2x KeyU']);
+    expect(restored.settings().bindings.undo).toEqual(['2x KeyU']);
     restored.resetAction('forward');
-    expect(restored.settings().bindings.forward).toEqual(['KeyW', 'ArrowUp']);
+    expect(restored.settings().bindings.forward).toEqual(['KeyW', 'ArrowUp', 'PadLeftStickUp']);
     restored.reset();
     expect(restored.settings()).toEqual(DEFAULT_WORLD_CONTROLS_SETTINGS);
   });
@@ -69,7 +78,7 @@ describe('world controls', () => {
     );
     const settings = TestBed.inject(WorldControlsSettingsService).settings();
     expect(settings.bindings.forward).toEqual(['KeyI']);
-    expect(settings.bindings.back).toEqual(['KeyS', 'ArrowDown']);
+    expect(settings.bindings.back).toEqual(['KeyS', 'ArrowDown', 'PadLeftStickDown']);
     expect(settings.keyboardNavigation).toBe(true);
 
     TestBed.resetTestingModule();
@@ -80,8 +89,8 @@ describe('world controls', () => {
   it('moves settings saved with the old up / down keys to the new ones (Q up, E down), keeping changed ones', () => {
     localStorage.setItem(WORLD_CONTROLS_SETTINGS_KEY, JSON.stringify({ bindings: { up: ['KeyE', 'PageUp'], down: ['KeyQ', 'PageDown'] } }));
     const settings = TestBed.inject(WorldControlsSettingsService).settings();
-    expect(settings.bindings.up).toEqual(['KeyQ', 'PageUp']);
-    expect(settings.bindings.down).toEqual(['KeyE', 'PageDown']);
+    expect(settings.bindings.up).toEqual(['KeyQ', 'PageUp', 'PadRB']);
+    expect(settings.bindings.down).toEqual(['KeyE', 'PageDown', 'PadLB']);
 
     TestBed.resetTestingModule();
     localStorage.setItem(WORLD_CONTROLS_SETTINGS_KEY, JSON.stringify({ bindings: { up: ['KeyE'], down: ['KeyQ', 'PageDown'] } }));
@@ -108,5 +117,56 @@ describe('world controls', () => {
     expect(controlMatches(settings, 'undo', key('ControlLeft', { ctrlKey: true }))).toBe(false);
     expect(controlFor(settings, ['undo', 'redo', 'delete'], key('Delete'))).toBe('delete');
     expect(controlFor(settings, ['undo', 'redo'], key('KeyP'))).toBeUndefined();
+  });
+
+  it('writes mouse buttons, wheel steps and gamepad inputs as bindings, and labels them', () => {
+    expect(mouseInputOf(new MouseEvent('pointerdown', { button: 3 }))).toBe('Mouse4');
+    expect(mouseInputOf(new MouseEvent('pointerdown', { button: 2, shiftKey: true }))).toBe('Shift+MouseRight');
+    expect(mouseInputOf(new MouseEvent('pointerdown', { button: 9 }))).toBeUndefined();
+    expect(mouseInputOf(new WheelEvent('wheel', { deltaY: -1, ctrlKey: true }))).toBe('Ctrl+WheelUp');
+    expect(mouseInputOf(new WheelEvent('wheel', { deltaY: 1 }))).toBe('WheelDown');
+    expect(mouseInputOf(new WheelEvent('wheel', { deltaY: 0 }))).toBeUndefined();
+    expect(MOUSE_INPUTS).toContain('Alt+WheelDown');
+    expect(isModifierCode('AltRight')).toBe(true);
+    expect(inputLabel('Mouse4')).toBe('Mouse 4');
+    expect(inputLabel('Shift+MouseRight')).toBe('Shift+Mouse Right');
+    expect(inputLabel('WheelUp')).toBe('Wheel Up');
+    expect(inputLabel('PadA')).toBe('Pad A (Down)');
+    expect(inputLabel('PadLeftStickUp')).toBe('Pad Left Stick Up');
+    expect(inputLabel('PadStart')).toBe('Pad Start');
+    expect(inputLabel('2x KeyK')).toBe('2x K');
+  });
+
+  it('tells a double tap: the same input again quickly, not after letting go, and not a third time', () => {
+    const now = vi.spyOn(performance, 'now').mockReturnValue(1000);
+    const settings = {
+      ...DEFAULT_WORLD_CONTROLS_SETTINGS,
+      bindings: { ...DEFAULT_WORLD_CONTROLS_SETTINGS.bindings, worldMap: ['2x KeyK'] },
+    };
+    const press = key('KeyK');
+    expect(pressedInputs(press)).toEqual(['KeyK']);
+    // the same event read again (by another listener): the same answer
+    expect(pressedInputs(press)).toEqual(['KeyK']);
+    expect(pressedInputs(new KeyboardEvent('keyup', { code: 'KeyK' }))).toEqual(['KeyK']);
+    now.mockReturnValue(1200);
+    expect(controlMatches(settings, 'worldMap', key('KeyK'))).toBe(true);
+    now.mockReturnValue(1300);
+    expect(pressedInputs(key('KeyK'))).toEqual(['KeyK']);
+    now.mockReturnValue(2000);
+    expect(pressedInputs(key('KeyK'))).toEqual(['KeyK']);
+    // gamepad inputs and mouse buttons too
+    expect(controlFor(settings, ['markerToCursor'], { input: 'PadA', type: 'paddown' })).toBe('markerToCursor');
+    expect(pressedInputs(new MouseEvent('pointerdown', { button: 1 }))).toEqual(['MouseMiddle']);
+    expect(pressedInputs(key('ShiftLeft'))).toEqual([]);
+    now.mockRestore();
+  });
+
+  it('tells inputs on other actions: clashing when they work at the same time, shared when never', () => {
+    const service = TestBed.inject(WorldControlsSettingsService);
+    service.addBinding('toggleGizmo', 'KeyW');
+    expect(service.conflict('forward', 'KeyW')).toBe('clash');
+    expect(service.conflict('forward', 'ArrowUp')).toBe('none');
+    const apart = { ...CONTROL_CONTEXTS, toggleGizmo: 2 };
+    expect(inputConflict(service.settings(), 'forward', 'KeyW', apart)).toBe('shared');
   });
 });

@@ -43,6 +43,8 @@ import { PathProber, PathProbeRequest, PathProbeResult } from './path-probe';
 import { WorldNavMesh } from './world-navmesh';
 import { ZoneLighting } from './zone-lighting';
 import { SpawnModels } from './spawn-models';
+import { GamepadInputService, PadInput } from './gamepad-input';
+import { Subject } from 'rxjs';
 
 // ------------------------------------------------------------------ Three.js controls fakes (jsdom has no WebGL)
 
@@ -1764,6 +1766,43 @@ describe(WorldViewerComponent.name, () => {
       page.pointer('pointerdown', 50, 50, 2, true);
       page.pointer('pointerup', 50, 50, 2, true);
       expect(beacon.mock.calls).toHaveLength(turns);
+      beacon.mockRestore();
+    });
+
+    it('takes the marker and camera moves from a gamepad and from mouse buttons bound to them', async () => {
+      const { page, host, fixture, update } = await setup((h) => {
+        h.map.set('Azeroth');
+        h.focus.set(at(0, 0));
+      });
+      await settle(fixture);
+      await update(() => host.focus.set(at(-100, -100)));
+      await settle(fixture);
+      flushFrames();
+      const beacon = vi.spyOn(WorldScene.prototype, 'setBeacon');
+      const pad = (TestBed.inject(GamepadInputService) as unknown as { changes: Subject<PadInput> }).changes;
+      pad.next({ input: 'PadA', pressed: true });
+      expect(beacon).toHaveBeenCalled();
+      const target = () => page.target().nativeElement.textContent?.trim();
+      const start = target();
+      pad.next({ input: 'PadLeftStickUp', pressed: true });
+      for (const time of [0, 100, 200]) {
+        frames.splice(0).forEach((frame) => frame(time));
+      }
+      pad.next({ input: 'PadLeftStickUp', pressed: false });
+      fixture.detectChanges();
+      expect(target()).not.toBe(start);
+      // Mouse 4 bound to Home (the camera back to the marker)
+      await update(() =>
+        host.navigation.set({
+          ...DEFAULT_WORLD_CONTROLS_SETTINGS,
+          bindings: { ...DEFAULT_WORLD_CONTROLS_SETTINGS.bindings, cameraToMarker: ['Mouse4'] },
+        }),
+      );
+      page.pointer('pointerdown', 50, 50, 3);
+      page.pointer('pointerup', 50, 50, 3);
+      flushFrames();
+      fixture.detectChanges();
+      expect(target()).toBe(start);
       beacon.mockRestore();
     });
 

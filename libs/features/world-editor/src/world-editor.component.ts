@@ -35,6 +35,11 @@ import {
   controlFor,
   inputLabel,
   inputOf,
+  isModifierCode,
+  MOUSE_INPUTS,
+  DOUBLE_TAP,
+  DOUBLE_TAP_MS,
+  GamepadInputService,
   NavMeshRebuildRequest,
   NavMeshRebuildState,
   NavMeshTileInfo,
@@ -182,6 +187,8 @@ export function formatSize(bytes: number): string {
 }
 
 const LAST_VIEW_KEY = 'keira3.worldEditor.lastView';
+/** Actions the editor itself runs (the view runs the camera moves and the marker). */
+const EDITOR_ACTIONS = ['undo', 'redo', 'delete', 'toggleGizmo', 'cancel', 'copy', 'paste', 'worldMap', 'compass'] as const;
 /** Scan the whole map: results listed at most, and the colour of each level. */
 const SCAN_LIST_SIZE = 300;
 const SCAN_COLORS: Record<SpawnScanLevel, number> = { ok: 0x2ecc71, warn: 0xf1c40f, bad: 0xe74c3c };
@@ -290,6 +297,7 @@ const isFlight = (key: string): boolean => key.startsWith('flight:') || key.star
   ],
   host: {
     '(keydown)': 'onKeydown($event)',
+    '(keyup)': 'onKeyup($event)',
     '(document:pointerdown)': 'onDocumentPointerDown($event)',
     '(document:fullscreenchange)': 'onFullscreenChange()',
   },
@@ -518,6 +526,11 @@ export class WorldEditorComponent implements OnInit {
   });
   /** The action waiting for a key press to be bound to it. */
   protected readonly capturing = signal<ControlAction | undefined>(undefined);
+  /** While binding: the action's bindings when it started (Esc puts them back), a modifier held on its own, the last input bound. */
+  private captureStart?: string[];
+  protected readonly pendingModifier = signal<string | undefined>(undefined);
+  private lastBound?: { input: string; time: number };
+  protected readonly mouseInputs = MOUSE_INPUTS;
   private readonly toastr = inject(ToastrService);
   private readonly clipboard = inject(ClipboardService);
   private readonly route = inject(ActivatedRoute);
@@ -2647,16 +2660,16 @@ export class WorldEditorComponent implements OnInit {
   }
 
   protected onKeydown(event: KeyboardEvent): void {
-    const capturing = this.capturing();
-    if (capturing) {
+    if (this.capturing()) {
       event.preventDefault();
-      const input = inputOf(event);
-      // a modifier on its own waits for the key it goes with; Esc cancels
-      if (input === 'Escape') {
-        this.capturing.set(undefined);
-      } else if (input) {
-        this.controls.addBinding(capturing, input);
-        this.capturing.set(undefined);
+      // Esc cancels; a modifier on its own waits for the key it goes with (or is bound itself when let go)
+      if (event.code === 'Escape' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+        this.cancelCapture();
+      } else if (isModifierCode(event.code)) {
+        this.pendingModifier.set(event.code);
+      } else if (inputOf(event)) {
+        this.pendingModifier.set(undefined);
+        this.bindInput(inputOf(event) as string);
       }
       return;
     }
@@ -2664,16 +2677,84 @@ export class WorldEditorComponent implements OnInit {
     if (['INPUT', 'SELECT', 'TEXTAREA'].includes(target.tagName)) {
       return;
     }
-    const action = controlFor(
-      this.controls.settings(),
-      ['undo', 'redo', 'delete', 'toggleGizmo', 'cancel', 'copy', 'paste', 'worldMap', 'compass'],
-      event,
-    );
-    if (action === 'redo') {
+    if (this.runControl(controlFor(this.controls.settings(), EDITOR_ACTIONS, event))) {
       event.preventDefault();
+    }
+  }
+
+  protected onKeyup(event: KeyboardEvent): void {
+    // a modifier let go with nothing pressed with it: bound on its own
+    if (this.capturing() && this.pendingModifier() === event.code) {
+      this.pendingModifier.set(undefined);
+      this.bindInput(event.code);
+    }
+  }
+
+  /** A mouse button or wheel step in the view bound to an editing action. */
+  protected onViewInput(event: MouseEvent): void {
+    if (!this.capturing()) {
+      this.runControl(controlFor(this.controls.settings(), EDITOR_ACTIONS, event));
+    }
+  }
+
+  /** Gamepad buttons: bound while binding, otherwise the editing action they're on. */
+  private readonly padInputs = inject(GamepadInputService)
+    .inputs.pipe(takeUntilDestroyed())
+    .subscribe(({ input, pressed }) => {
+      if (!pressed) {
+        return;
+      }
+      if (this.capturing()) {
+        this.bindInput(input);
+      } else {
+        this.runControl(controlFor(this.controls.settings(), EDITOR_ACTIONS, { input, type: 'paddown' }));
+      }
+    });
+
+  /** Controls > Add: binds what's pressed next (a key, a mouse input from the list, a gamepad input) to an action. */
+  protected startCapture(action: ControlAction): void {
+    this.capturing.set(action);
+    this.captureStart = [...this.controls.settings().bindings[action]];
+    this.pendingModifier.set(undefined);
+    this.lastBound = undefined;
+  }
+
+  protected finishCapture(): void {
+    this.capturing.set(undefined);
+    this.pendingModifier.set(undefined);
+  }
+
+  /** Esc: the action's bindings as they were. */
+  protected cancelCapture(): void {
+    this.controls.setActionBindings(this.capturing() as ControlAction, this.captureStart as string[]);
+    this.finishCapture();
+  }
+
+  /** Binds an input to the action being bound; the same input again quickly makes it a double tap ("2x K"). */
+  protected bindInput(input: string): void {
+    const action = this.capturing() as ControlAction;
+    const now = performance.now();
+    const current = this.controls.settings().bindings[action];
+    if (this.lastBound?.input === input && now - this.lastBound.time <= DOUBLE_TAP_MS && current.includes(input)) {
+      this.controls.setActionBindings(
+        action,
+        current.map((binding) => (binding === input ? DOUBLE_TAP + input : binding)),
+      );
+      this.lastBound = undefined;
+      return;
+    }
+    this.controls.addBinding(action, input);
+    this.lastBound = { input, time: now };
+  }
+
+  /** Runs an editing action; whether there was one. */
+  private runControl(action: (typeof EDITOR_ACTIONS)[number] | undefined): boolean {
+    if (!action) {
+      return false;
+    }
+    if (action === 'redo') {
       this.redo();
     } else if (action === 'undo') {
-      event.preventDefault();
       this.undo();
     } else if (action === 'delete') {
       this.deleteSelected();
@@ -2690,9 +2771,11 @@ export class WorldEditorComponent implements OnInit {
       void this.pasteCopied();
     } else if (action === 'worldMap') {
       this.toggleMap();
-    } else if (action === 'compass') {
+    } else {
+      // (the compass)
       this.renderSettings.update({ compass: !this.renderSettings.settings().compass });
     }
+    return true;
   }
 
   // ---------------------------------------------------------------- helpers

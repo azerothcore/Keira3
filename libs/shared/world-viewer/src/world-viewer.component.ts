@@ -1,3 +1,5 @@
+import { GamepadInputService } from './gamepad-input';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SKYBOX_SPIN, WorldSkybox } from './world-skybox';
 import { WorldCompassComponent } from './world-compass.component';
 import {
@@ -302,6 +304,10 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private readonly spawnModels = new SpawnModels(this.client, this.world, this.textures, () => this.requestRender());
   private readonly zoneLighting = new ZoneLighting(this.client, this.world, () => this.requestRender());
   private readonly skybox = new WorldSkybox(this.client, this.textures, () => this.requestRender());
+  /** Gamepad buttons and sticks bound to the marker or the camera moves. */
+  private readonly padInputs = inject(GamepadInputService)
+    .inputs.pipe(takeUntilDestroyed())
+    .subscribe(({ input, pressed }) => this.press({ input, type: pressed ? 'paddown' : 'padup' }, pressed, false));
   private renderer?: WorldRenderer;
   // Created in ngAfterViewInit; effects may run before that, hence the guards in syncGizmo/lookAt.
   private controls?: MapControls;
@@ -590,6 +596,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   // ---------------------------------------------------------------- pointer handling
 
   protected onPointerDown(event: PointerEvent): void {
+    // a mouse button bound to the marker or a camera move (the mouse's own dragging goes on as well)
+    this.press(event, true, event.shiftKey);
     if (this.startAltDrag(event) || this.startProbeDrag(event)) {
       return;
     }
@@ -597,6 +605,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   }
 
   protected onPointerUp(event: PointerEvent): void {
+    this.press(event, false, event.shiftKey);
     if (this.altDragging) {
       this.endAltDrag();
       return;
@@ -786,27 +795,40 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     if (event.key === 'Alt') {
       this.setAltHeld(true);
     }
-    const marker = controlFor(this.navigation(), ['markerToCursor', 'cameraToMarker'], event);
-    if (marker) {
+    if (this.press(event, true, event.shiftKey)) {
       event.preventDefault();
-      if (marker === 'markerToCursor') {
-        this.markerToCrosshair(event.shiftKey);
-      } else {
-        this.cameraToMarker();
-      }
-      return;
+    }
+  }
+
+  /**
+   * A key, mouse button or gamepad input pressed (`down`) or let go: the marker actions on a press, and the camera
+   * moves while held. Whether it was one of them.
+   */
+  private press(event: KeyboardEvent | MouseEvent | { input: string; type: string }, down: boolean, shift: boolean): boolean {
+    const marker = down ? controlFor(this.navigation(), ['markerToCursor', 'cameraToMarker'], event) : undefined;
+    if (marker === 'markerToCursor') {
+      this.markerToCrosshair(shift);
+      return true;
+    }
+    if (marker === 'cameraToMarker') {
+      this.cameraToMarker();
+      return true;
     }
     const action = this.navigationAction(event);
+    this.fast = shift;
     if (!action) {
-      return;
+      return false;
     }
-    event.preventDefault();
+    if (!down) {
+      this.pressed.delete(action);
+      return true;
+    }
     this.pressed.add(action);
-    this.fast = event.shiftKey;
     if (this.moveFrame === undefined) {
       this.lastMoveTime = performance.now();
       this.moveFrame = requestAnimationFrame((time) => this.moveStep(time));
     }
+    return true;
   }
 
   /** Alt pressed or released while hovering: shows the label with all or with the short details. */
@@ -825,11 +847,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     if (event.key === 'Alt') {
       this.setAltHeld(false);
     }
-    const action = this.navigationAction(event);
-    if (action) {
-      this.pressed.delete(action);
-    }
-    this.fast = event.shiftKey;
+    this.press(event, false, event.shiftKey);
   }
 
   protected onBlur(): void {
@@ -1012,7 +1030,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     this.setMarker(marker);
   }
 
-  private navigationAction(event: KeyboardEvent): NavigationAction | undefined {
+  private navigationAction(event: KeyboardEvent | MouseEvent | { input: string; type: string }): NavigationAction | undefined {
     const navigation = this.navigation();
     return navigation.keyboardNavigation ? controlFor(navigation, NAVIGATION_ACTIONS, event) : undefined;
   }

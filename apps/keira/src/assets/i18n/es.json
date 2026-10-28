@@ -1299,7 +1299,7 @@
     "CONTROL_DELETE": "Eliminar la selección",
     "CONTROL_TOGGLEGIZMO": "Cambiar mover / rotar",
     "CONTROL_CANCEL": "Cancelar / deseleccionar",
-    "CLASH": "También asignada a otra acción",
+    "CLASH": "Otra acción lo usa a la vez: solo se activa la primera de la lista, cambia una",
     "REMOVE": "Quitar",
     "ADD_KEY": "+ Añadir",
     "DEFAULT": "Predeterminado",
@@ -1443,6 +1443,11 @@
     "SCAN_OK": "En el suelo",
     "SCAN_WARN": "Un poco desplazado: el core lo corrige (o conviene revisarlo)",
     "SCAN_BAD": "Dentro del suelo o flotando: el core no lo corrige",
-    "CANCEL": "Cancelar"
+    "CANCEL": "Cancelar",
+    "SHARED": "También lo usa otra acción, nunca a la vez: correcto",
+    "CAPTURE_HINT": "Pulsa una tecla o un botón del mando para asignarlo (dos veces rápido para una doble pulsación), o elige una entrada del ratón abajo. Esc: cancelar.",
+    "CAPTURE_MODIFIER": "Manteniendo un modificador: pulsa otra tecla para una combinación, o suéltalo para asignar el propio modificador.",
+    "DONE": "Hecho",
+    "MOUSE_AND_WHEEL": "Ratón y rueda:"
   }
 }
