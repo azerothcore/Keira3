@@ -238,6 +238,10 @@ function saveLastView(view: LastView): void {
 /** How many steps can be undone. */
 const HISTORY_SIZE = 100;
 
+type BrightnessKey = 'brightnessNight' | 'brightnessMorning' | 'brightnessDay' | 'brightnessEvening';
+/** Minutes in a day. */
+const DAY_MINUTES = 1440;
+
 type RenderFlagKey =
   | 'showRoofs'
   | 'showBuildings'
@@ -1342,6 +1346,36 @@ export class WorldEditorComponent implements OnInit {
   /** The time of day lit with zone lighting, from its slider (10-minute steps). */
   protected setTimeOfDay(event: Event): void {
     this.renderSettings.update({ timeOfDay: Number((event.target as HTMLInputElement).value) });
+  }
+
+  /** The time of day typed in as hours and minutes (open while editing). */
+  protected readonly editingTime = signal(false);
+
+  protected clockPart(minutes: number, part: 'hours' | 'minutes'): number {
+    return part === 'hours' ? Math.floor(minutes / 60) : minutes % 60;
+  }
+
+  /** Hours or minutes typed (or stepped with the arrows): past 23 / 59 goes round, carrying into the hours. */
+  protected setClockPart(part: 'hours' | 'minutes', event: Event): void {
+    const text = (event.target as HTMLInputElement).value;
+    const value = Number(text);
+    if (text === '' || !Number.isInteger(value)) {
+      return;
+    }
+    const current = this.renderSettings.settings().timeOfDay;
+    const total = part === 'hours' ? value * 60 + (current % 60) : Math.floor(current / 60) * 60 + value;
+    this.renderSettings.update({ timeOfDay: ((total % DAY_MINUTES) + DAY_MINUTES) % DAY_MINUTES });
+  }
+
+  protected readonly brightnessParts: { key: BrightnessKey; label: string }[] = [
+    { key: 'brightnessNight', label: 'WORLD_EDITOR.BRIGHTNESS_NIGHT' },
+    { key: 'brightnessMorning', label: 'WORLD_EDITOR.BRIGHTNESS_MORNING' },
+    { key: 'brightnessDay', label: 'WORLD_EDITOR.BRIGHTNESS_DAY' },
+    { key: 'brightnessEvening', label: 'WORLD_EDITOR.BRIGHTNESS_EVENING' },
+  ];
+
+  protected setBrightness(key: BrightnessKey, event: Event): void {
+    this.renderSettings.update({ [key]: Number((event.target as HTMLInputElement).value) });
   }
 
   /** Minutes since midnight as "hh:mm". */

@@ -586,13 +586,21 @@ describe(WorldViewerComponent.name, () => {
     vi.useFakeTimers({ toFake: ['setInterval', 'clearInterval', 'Date'] });
     vi.setSystemTime(new Date(2026, 9, 28, 21, 30));
     const { fixture, host } = await setup((h) => h.render.set({ ...DEFAULT_WORLD_RENDER_SETTINGS, zoneLighting: true, timeOfDay: 600 }));
-    expect(configure).toHaveBeenLastCalledWith(true, 1200);
-    host.render.set({ ...DEFAULT_WORLD_RENDER_SETTINGS, zoneLighting: true, timeFollowsClock: true });
+    expect(configure).toHaveBeenLastCalledWith(true, 1200, 1);
+    // with the brightness of the time of day: 21:30 is between the evening (18:00) and the night (midnight)
+    host.render.set({
+      ...DEFAULT_WORLD_RENDER_SETTINGS,
+      zoneLighting: true,
+      timeFollowsClock: true,
+      brightnessEvening: 200,
+      brightnessNight: 50,
+    });
     fixture.detectChanges();
-    expect(configure).toHaveBeenLastCalledWith(true, (21 * 60 + 30) * 2);
+    expect(configure.mock.lastCall?.[2]).toBeCloseTo(2 + (0.5 - 2) * (210 / 360));
+    expect(configure).toHaveBeenLastCalledWith(true, (21 * 60 + 30) * 2, expect.any(Number));
     // (the clock moves on with the timers)
     vi.advanceTimersByTime(60_000);
-    expect(configure).toHaveBeenLastCalledWith(true, (21 * 60 + 31) * 2);
+    expect(configure).toHaveBeenLastCalledWith(true, (21 * 60 + 31) * 2, expect.any(Number));
     fixture.destroy();
     vi.useRealTimers();
     configure.mockRestore();

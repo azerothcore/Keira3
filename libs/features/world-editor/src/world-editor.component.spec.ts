@@ -143,6 +143,11 @@ class Page extends PageObjectModel<WorldEditorComponent> {
   ): void {
     target.dispatchEvent(new KeyboardEvent('keydown', { key, code, bubbles: true, ...init }));
   }
+  /** The time of day in the view settings, as hh:mm. */
+  clock(): string {
+    const minutes = this.viewer().renderSettings().timeOfDay;
+    return `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`;
+  }
   viewer(): FakeWorldViewerComponent {
     return this.getDebugElementByDirective(FakeWorldViewerComponent).componentInstance as FakeWorldViewerComponent;
   }
@@ -816,6 +821,42 @@ describe(WorldEditorComponent.name, () => {
       time.dispatchEvent(new Event('input'));
       page.fixture.detectChanges();
       expect(page.text('view-time-value')).toBe('21:30');
+      // typed as hours and minutes, the arrows going round and carrying into the hours
+      page.click('view-time-value');
+      page.fixture.detectChanges();
+      const typeTime = (part: 'hours' | 'minutes', value: string): string => {
+        const input = page.byId<HTMLInputElement>(`view-time-${part}`).nativeElement;
+        input.value = value;
+        input.dispatchEvent(new Event('input'));
+        page.fixture.detectChanges();
+        return page.clock();
+      };
+      expect(typeTime('hours', '16')).toBe('16:30');
+      expect(typeTime('minutes', '20')).toBe('16:20');
+      expect(typeTime('minutes', '60')).toBe('17:00');
+      expect(typeTime('minutes', '-1')).toBe('16:59');
+      expect(typeTime('hours', '24')).toBe('00:59');
+      expect(typeTime('hours', '-1')).toBe('23:59');
+      expect(typeTime('hours', '')).toBe('23:59');
+      expect(typeTime('minutes', '1.5')).toBe('23:59');
+      page.byId('view-time-minutes').nativeElement.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+      page.fixture.detectChanges();
+      expect(page.text('view-time-value')).toBe('23:59');
+      page.click('view-time-value');
+      page.fixture.detectChanges();
+      page.byId('view-time-hours').nativeElement.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+      page.fixture.detectChanges();
+      page.click('view-time-value');
+      page.fixture.detectChanges();
+      page.click('view-time-done');
+      page.fixture.detectChanges();
+      expect(page.byId('view-time-edit', false)).toBeFalsy();
+      // the brightness of each part of the day
+      const night = page.byId<HTMLInputElement>('view-brightnessNight').nativeElement;
+      night.value = '50';
+      night.dispatchEvent(new Event('input'));
+      page.fixture.detectChanges();
+      expect(page.viewer().renderSettings().brightnessNight).toBe(50);
       page.byId<HTMLInputElement>('view-time-clock').nativeElement.click();
       page.fixture.detectChanges();
       expect(time.disabled).toBe(true);
@@ -875,7 +916,8 @@ describe(WorldEditorComponent.name, () => {
         skybox: false,
         skyboxModel: 'Environments\\Stars\\Stars.m2',
         skyboxSpin: true,
-        timeOfDay: 1290,
+        timeOfDay: 1439,
+        brightnessNight: 50,
         timeFollowsClock: true,
         solidSelection: true,
         compassNorthUp: true,

@@ -43,7 +43,7 @@ import { TextureCache } from './texture-cache';
 import { DisplayModel, displayModel, SpawnModels } from './spawn-models';
 import { WorldPrefetch } from './world-prefetch';
 import { WorldDoodads } from './world-doodads';
-import { ZoneLighting } from './zone-lighting';
+import { brightnessAt, ZoneLighting } from './zone-lighting';
 import {
   controlFor,
   DEFAULT_WORLD_CONTROLS_SETTINGS,
@@ -552,8 +552,16 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       const now = new Date();
       return now.getHours() * 60 + now.getMinutes();
     };
-    const apply = () =>
-      this.zoneLighting.configure(settings.zoneLighting, (settings.timeFollowsClock ? minutes() : settings.timeOfDay) * 2);
+    const parts: [number, number, number, number] = [
+      settings.brightnessNight / 100,
+      settings.brightnessMorning / 100,
+      settings.brightnessDay / 100,
+      settings.brightnessEvening / 100,
+    ];
+    const apply = () => {
+      const time = (settings.timeFollowsClock ? minutes() : settings.timeOfDay) * 2;
+      this.zoneLighting.configure(settings.zoneLighting, time, brightnessAt(time, parts));
+    };
     apply();
     if (settings.zoneLighting && settings.timeFollowsClock) {
       this.clockTimer = setInterval(apply, CLOCK_CHECK);

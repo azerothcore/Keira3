@@ -1,5 +1,17 @@
-import { NOON, sampleZoneLight, WorldPosition, ZoneLight } from '@keira/shared/wow-data';
+import { DAY_LENGTH, NOON, Rgb, sampleZoneLight, WorldPosition, ZoneLight } from '@keira/shared/wow-data';
 import { WorldScene } from './world-scene';
+
+/**
+ * How bright the zone lights are at a time of day (half-minutes), from the brightness of each part of the day (1 = as
+ * the game): night at midnight, morning at 6:00, midday at noon, evening at 18:00, blended in between.
+ */
+export function brightnessAt(time: number, [night, morning, day, evening]: [number, number, number, number]): number {
+  const marks = [night, morning, day, evening, night];
+  const quarter = DAY_LENGTH / 4;
+  const at = (((time % DAY_LENGTH) + DAY_LENGTH) % DAY_LENGTH) / quarter;
+  const part = Math.floor(at);
+  return marks[part] + (marks[part + 1] - marks[part]) * (at - part);
+}
 
 /** What zone lighting needs from `WowClientService`. */
 export interface ZoneLightSource {
@@ -41,10 +53,14 @@ export class ZoneLighting {
     }
   }
 
-  configure(enabled: boolean, time = NOON): void {
-    if (enabled !== this.enabled || time !== this.time) {
+  /** Brightness of the sun and ambient light (1: as the game). */
+  private brightness = 1;
+
+  configure(enabled: boolean, time = NOON, brightness = 1): void {
+    if (enabled !== this.enabled || time !== this.time || brightness !== this.brightness) {
       this.enabled = enabled;
       this.time = time;
+      this.brightness = brightness;
       this.apply();
     }
   }
@@ -56,6 +72,11 @@ export class ZoneLighting {
 
   private apply(): void {
     const sample = this.enabled && this.center ? sampleZoneLight(this.lights, this.center, this.time) : undefined;
+    if (sample) {
+      const scale = (rgb: Rgb): Rgb => rgb.map((value) => value * this.brightness) as Rgb;
+      sample.diffuse = scale(sample.diffuse);
+      sample.ambient = scale(sample.ambient);
+    }
     this.skybox = sample?.skybox;
     this.scene.applyLighting(sample);
     this.onChange();

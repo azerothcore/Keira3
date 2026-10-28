@@ -41,6 +41,11 @@ export interface WorldRenderSettings {
   compassMils: boolean;
   /** The time of day lit with zone lighting (minutes since midnight), or the computer's clock. */
   timeOfDay: number;
+  /** Brightness of the zone lights (%) at night, in the morning, at midday and in the evening, blended in between. */
+  brightnessNight: number;
+  brightnessMorning: number;
+  brightnessDay: number;
+  brightnessEvening: number;
   timeFollowsClock: boolean;
   /** The skybox (stars, clouds, auroras): the zone's with zone lighting, or the one chosen (its .m2 path); turning slowly. */
   skybox: boolean;
@@ -143,6 +148,10 @@ export const DEFAULT_WORLD_RENDER_SETTINGS: WorldRenderSettings = {
   skyboxModel: '',
   skyboxSpin: false,
   timeOfDay: 720,
+  brightnessNight: 100,
+  brightnessMorning: 100,
+  brightnessDay: 100,
+  brightnessEvening: 100,
   timeFollowsClock: false,
   showAllPaths: false,
   compass: true,

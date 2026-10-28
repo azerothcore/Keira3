@@ -1508,6 +1508,15 @@
     "DELETE_CONFIRM": "¿Borrar",
     "DELETE_CONFIRM_HINT": "Queda como cambio pendiente hasta que guardes: Deshacer (Ctrl + Z) lo recupera.",
     "DONT_ASK_AGAIN": "No volver a preguntar",
-    "DELETE_SPAWNS": "{{count}} spawns"
+    "DELETE_SPAWNS": "{{count}} spawns",
+    "HOURS": "Horas",
+    "MINUTES": "Minutos",
+    "TIME_EDIT": "Escribir la hora",
+    "BRIGHTNESS": "Brillo",
+    "BRIGHTNESS_HELP": "El brillo del sol y la luz ambiental de la zona en cada parte del día (100%: como en el juego), mezclado entre ellas",
+    "BRIGHTNESS_NIGHT": "Noche",
+    "BRIGHTNESS_MORNING": "Mañana",
+    "BRIGHTNESS_DAY": "Mediodía",
+    "BRIGHTNESS_EVENING": "Tarde"
   }
 }

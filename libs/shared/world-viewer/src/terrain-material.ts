@@ -63,7 +63,8 @@ void main() {
     color = mix(color, texture2D(layer3, vLayerUv).rgb, blend.b);
   #endif
   float light = clamp(dot(normalize(vNormal), sunDirection), 0.0, 1.0);
-  gl_FragColor = vec4(color * pow(sunColor * light + ambientColor, vec3(2.2)), 1.0);
+  // (the client's fixed-function lighting saturates at 1: without it a strong sun, like midday's, burns orange)
+  gl_FragColor = vec4(color * pow(min(sunColor * light + ambientColor, vec3(1.0)), vec3(2.2)), 1.0);
   #include <colorspace_fragment>
   #include <fog_fragment>
 }

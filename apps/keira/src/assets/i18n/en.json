@@ -1508,6 +1508,15 @@
     "DELETE_CONFIRM": "Delete",
     "DELETE_CONFIRM_HINT": "It stays a pending change until you save: Undo (Ctrl + Z) brings it back.",
     "DONT_ASK_AGAIN": "Do not ask again",
-    "DELETE_SPAWNS": "{{count}} spawns"
+    "DELETE_SPAWNS": "{{count}} spawns",
+    "HOURS": "Hours",
+    "MINUTES": "Minutes",
+    "TIME_EDIT": "Type the time",
+    "BRIGHTNESS": "Brightness",
+    "BRIGHTNESS_HELP": "How bright the zone's sun and ambient light are in each part of the day (100%: as in game), blended in between",
+    "BRIGHTNESS_NIGHT": "Night",
+    "BRIGHTNESS_MORNING": "Morning",
+    "BRIGHTNESS_DAY": "Midday",
+    "BRIGHTNESS_EVENING": "Evening"
   }
 }

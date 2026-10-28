@@ -1508,6 +1508,15 @@
     "DELETE_CONFIRM": "删除",
     "DELETE_CONFIRM_HINT": "保存前它仍是待处理的更改：撤销（Ctrl + Z）可恢复。",
     "DONT_ASK_AGAIN": "不再询问",
-    "DELETE_SPAWNS": "{{count}} 个刷新点"
+    "DELETE_SPAWNS": "{{count}} 个刷新点",
+    "HOURS": "小时",
+    "MINUTES": "分钟",
+    "TIME_EDIT": "输入时间",
+    "BRIGHTNESS": "亮度",
+    "BRIGHTNESS_HELP": "区域阳光和环境光在一天各时段的亮度（100%：与游戏相同），其间平滑过渡",
+    "BRIGHTNESS_NIGHT": "夜晚",
+    "BRIGHTNESS_MORNING": "早晨",
+    "BRIGHTNESS_DAY": "正午",
+    "BRIGHTNESS_EVENING": "傍晚"
   }
 }

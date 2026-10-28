@@ -1508,6 +1508,15 @@
     "DELETE_CONFIRM": "Удалить",
     "DELETE_CONFIRM_HINT": "Это остаётся несохранённым изменением до сохранения: Отменить (Ctrl + Z) вернёт его.",
     "DONT_ASK_AGAIN": "Больше не спрашивать",
-    "DELETE_SPAWNS": "{{count}} спавнов"
+    "DELETE_SPAWNS": "{{count}} спавнов",
+    "HOURS": "Часы",
+    "MINUTES": "Минуты",
+    "TIME_EDIT": "Ввести время",
+    "BRIGHTNESS": "Яркость",
+    "BRIGHTNESS_HELP": "Яркость солнца и окружающего света зоны в каждой части дня (100%: как в игре), с плавным переходом",
+    "BRIGHTNESS_NIGHT": "Ночь",
+    "BRIGHTNESS_MORNING": "Утро",
+    "BRIGHTNESS_DAY": "Полдень",
+    "BRIGHTNESS_EVENING": "Вечер"
   }
 }

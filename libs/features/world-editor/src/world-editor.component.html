@@ -742,7 +742,70 @@
                     [disabled]="renderSettings.settings().timeFollowsClock"
                     (input)="setTimeOfDay($event)"
                   />
-                  <span class="world-editor-time-value" data-testid="view-time-value">{{ clockText(minutes) }}</span>
+                  @if (editingTime() && !renderSettings.settings().timeFollowsClock) {
+                    <span class="d-flex align-items-center gap-1" data-testid="view-time-edit">
+                      <input
+                        type="number"
+                        class="form-control form-control-sm world-editor-time-part"
+                        data-testid="view-time-hours"
+                        min="-1"
+                        max="24"
+                        [attr.aria-label]="'WORLD_EDITOR.HOURS' | translate"
+                        [value]="clockPart(minutes, 'hours')"
+                        (input)="setClockPart('hours', $event)"
+                        (keydown.enter)="editingTime.set(false)"
+                      />:<input
+                        type="number"
+                        class="form-control form-control-sm world-editor-time-part"
+                        data-testid="view-time-minutes"
+                        min="-1"
+                        max="60"
+                        [attr.aria-label]="'WORLD_EDITOR.MINUTES' | translate"
+                        [value]="clockPart(minutes, 'minutes')"
+                        (input)="setClockPart('minutes', $event)"
+                        (keydown.enter)="editingTime.set(false)"
+                      />
+                      <button type="button" class="btn btn-sm btn-link p-0" data-testid="view-time-done" (click)="editingTime.set(false)">
+                        <i class="fa fa-check"></i>
+                      </button>
+                    </span>
+                  } @else {
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-link p-0 world-editor-time-value"
+                      data-testid="view-time-value"
+                      [title]="'WORLD_EDITOR.TIME_EDIT' | translate"
+                      [disabled]="renderSettings.settings().timeFollowsClock"
+                      (click)="editingTime.set(true)"
+                    >
+                      {{ clockText(minutes) }}
+                    </button>
+                  }
+                </div>
+                <div class="world-editor-brightness" data-testid="view-brightness">
+                  <small class="text-muted"
+                    >{{ 'WORLD_EDITOR.BRIGHTNESS' | translate
+                    }}<i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'WORLD_EDITOR.BRIGHTNESS_HELP' | translate"></i
+                  ></small>
+                  @for (part of brightnessParts; track part.key) {
+                    <div class="d-flex align-items-center gap-2">
+                      <label [for]="'world-editor-' + part.key" class="mb-0 text-nowrap world-editor-brightness-label">{{
+                        part.label | translate
+                      }}</label>
+                      <input
+                        [id]="'world-editor-' + part.key"
+                        type="range"
+                        class="form-range"
+                        min="25"
+                        max="200"
+                        step="5"
+                        [attr.data-testid]="'view-' + part.key"
+                        [value]="renderSettings.settings()[part.key]"
+                        (input)="setBrightness(part.key, $event)"
+                      />
+                      <span class="world-editor-time-value">{{ renderSettings.settings()[part.key] }}%</span>
+                    </div>
+                  }
                 </div>
                 <div class="form-check form-switch mb-0">
                   <input
