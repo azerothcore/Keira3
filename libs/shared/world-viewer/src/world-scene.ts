@@ -316,6 +316,8 @@ export class WorldScene {
   private readonly beacon = createBeacon();
   /** Turns the marker's player character and facing arrow (see `setBeacon`). */
   private readonly beaconPivot = new Group();
+  /** The placing preview (see `setPlacePreview`). */
+  readonly placePreview = new Group();
   private readonly beaconArrowMaterial = new MeshBasicMaterial({ color: 0xfff35c, depthTest: false, transparent: true, opacity: 0.9 });
   /** The Path / LOS tool's drawing: the path, the line of sight and the points. */
   readonly probeGroup = new Group();
@@ -359,6 +361,9 @@ export class WorldScene {
 
   constructor() {
     this.scene.background = new Color(COLORS.sky);
+    this.placePreview.name = 'place-preview';
+    this.placePreview.visible = false;
+    this.scene.add(this.placePreview);
     this.beaconPivot.name = 'beacon-facing';
     this.beaconPivot.add(this.facingArrow(this.beaconArrowMaterial, 2.5));
     this.beacon.add(this.beaconPivot);
@@ -1759,6 +1764,7 @@ export class WorldScene {
     this.facingArrowGeometry.dispose();
     Object.values(this.facingArrowMaterials).forEach((material) => material.dispose());
     this.triggerArrowMaterial.dispose();
+    this.setPlacePreview(undefined);
     this.beaconArrowMaterial.dispose();
     this.setAreaTriggers([]);
     this.setOverlays([], []);
@@ -1856,6 +1862,39 @@ export class WorldScene {
     } else {
       mesh.material = this.markerMaterial(data.kind, selected ? 'selected' : data.pending ? 'pending' : 'normal');
       this.setSelectionBox(object, false);
+    }
+  }
+
+  /**
+   * The placing preview: a see-through copy of the model about to be placed (`undefined` removes it), at its size.
+   * Its materials are its own copies, so the spawns sharing the model stay as they are.
+   */
+  setPlacePreview(object: Object3D | undefined, scale = 1): void {
+    this.placePreview.traverse((child) => {
+      if (child instanceof Mesh) {
+        (Array.isArray(child.material) ? child.material : [child.material]).forEach((material: Material) => material.dispose());
+      }
+    });
+    this.placePreview.clear();
+    this.placePreview.visible = false;
+    if (object) {
+      object.traverse((child) => {
+        if (child instanceof Mesh) {
+          const see = (material: Material) => Object.assign(material.clone(), { transparent: true, opacity: 0.6, depthWrite: false });
+          child.material = Array.isArray(child.material) ? child.material.map(see) : see(child.material);
+          child.raycast = () => undefined;
+        }
+      });
+      object.scale.setScalar(scale);
+      this.placePreview.add(object);
+    }
+  }
+
+  /** Where the placing preview stands (hidden without a place). */
+  setPlacePreviewPosition(position: WorldPosition | undefined): void {
+    this.placePreview.visible = !!position && this.placePreview.children.length > 0;
+    if (position) {
+      placeObject(this.placePreview, position, 0);
     }
   }
 

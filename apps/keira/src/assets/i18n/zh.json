@@ -1434,6 +1434,8 @@
     "HELP_ALT_RIGHT_CLICK": "Alt + 右键",
     "HELP_FACE": "让玩家标记面向那里",
     "HELP_SHIFT_SPACE": "Shift + 空格",
-    "HELP_MARKER_LIQUID": "标记放在液面上（开启“标记放在液面上”时则放在地面）"
+    "HELP_MARKER_LIQUID": "标记放在液面上（开启“标记放在液面上”时则放在地面）",
+    "PLACE_SEARCH": "Entry 或名称",
+    "NO_MODEL": "无模型"
   }
 }

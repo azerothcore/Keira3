@@ -154,6 +154,15 @@ describe('SpawnModels', () => {
     expect(maps).toEqual([loaded.get('Creature\\Wolf\\WolfGrey.blp'), loaded.get('Creature\\Wolf\\Eyes.blp'), textures.fallback]);
   });
 
+  it('gives a copy of a display model, loaded once, for previews', async () => {
+    const { models, source } = setup();
+    const first = await models.instance('creature', 1);
+    expect(first?.object).toBeInstanceOf(Mesh);
+    expect(await models.instance('creature', 1)).toBeDefined();
+    expect(source.getCreatureDisplay).toHaveBeenCalledTimes(1);
+    expect(await models.instance('gameobject', 99)).toBeUndefined();
+  });
+
   it('adds the collision of gameobject models that have one, on the collision layer', async () => {
     const { models, world, source } = setup();
     source.getM2.mockResolvedValue({

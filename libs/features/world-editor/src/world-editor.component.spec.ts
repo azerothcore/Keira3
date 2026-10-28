@@ -64,6 +64,7 @@ class FakeWorldViewerComponent {
   readonly renderSettings = input<WorldRenderSettings>(DEFAULT_WORLD_RENDER_SETTINGS);
   readonly focus = input<WorldPosition | undefined>(undefined);
   readonly markerLookAt = input<WorldPosition | undefined>(undefined);
+  readonly placePreview = input<{ kind: string; displayId: number; scale: number } | undefined>(undefined);
   readonly region = input<WorldBounds | undefined>(undefined);
   readonly navigation = input<WorldControlsSettings>(DEFAULT_WORLD_CONTROLS_SETTINGS);
   readonly areaTriggers = input<WorldAreaTrigger[]>([]);
@@ -222,6 +223,7 @@ describe(WorldEditorComponent.name, () => {
       loadTeleports: vi.fn(),
       loadLandingSpot: vi.fn(),
       loadAreaPaths: vi.fn(),
+      searchTemplates: vi.fn(),
       loadScriptEntries: vi.fn(),
       loadWaypointScripts: vi.fn(),
       loadWaypointSai: vi.fn(),
@@ -344,6 +346,7 @@ describe(WorldEditorComponent.name, () => {
     mocks.service.loadTeleports.mockResolvedValue([]);
     mocks.service.loadLandingSpot.mockResolvedValue(undefined);
     mocks.service.loadAreaPaths.mockResolvedValue([]);
+    mocks.service.searchTemplates.mockResolvedValue([]);
     mocks.client.getTaxiNodes.mockResolvedValue([]);
     mocks.client.getTaxiPaths.mockResolvedValue([]);
     mocks.client.getBossBoundaries.mockResolvedValue([]);
@@ -2394,6 +2397,70 @@ describe(WorldEditorComponent.name, () => {
       await settle(page);
       expect(page.pendingLines().length).toBe(2);
       expect(page.text('pending-sql')).toContain('1002, 197, 0, 0, 0, 1, 1, 0, 7, 8, 9');
+    });
+
+    it('finds what to place by entry or name, previewing the model hovered and then the one chosen', async () => {
+      mocks.service.searchTemplates.mockResolvedValue([
+        { entry: 197, name: 'Marshal McBride', displayId: 1, scale: 1.2 },
+        { entry: 198, name: 'Marshal Haggard', displayId: 0, scale: 1 },
+      ]);
+      const { page } = await setup();
+      await loadArea(page);
+      page.click('tool-place-creature');
+      await settle(page);
+      const wait = () => new Promise((resolve) => setTimeout(resolve, 350));
+      // a single letter: nothing looked up
+      page.type('place-entry', 'M');
+      await wait();
+      expect(mocks.service.searchTemplates).not.toHaveBeenCalled();
+      page.type('place-entry', 'Marsh');
+      await wait();
+      await settle(page);
+      expect(mocks.service.searchTemplates).toHaveBeenCalledWith('creature', 'Marsh');
+      expect(page.text('place-result-198')).toContain('WORLD_EDITOR.NO_MODEL');
+      expect(page.viewer().placePreview()).toBeUndefined();
+      page.byId('place-result-197').nativeElement.dispatchEvent(new Event('mouseenter'));
+      page.fixture.detectChanges();
+      expect(page.viewer().placePreview()).toEqual({ kind: 'creature', displayId: 1, scale: 1.2 });
+      // a template without a model: nothing previewed
+      page.byId('place-result-198').nativeElement.dispatchEvent(new Event('mouseenter'));
+      page.fixture.detectChanges();
+      expect(page.viewer().placePreview()).toBeUndefined();
+      page.byId('place-results').nativeElement.dispatchEvent(new Event('mouseleave'));
+      page.click('place-result-197');
+      await settle(page);
+      expect(page.byId('place-results', false)).toBeFalsy();
+      expect(page.text('place-entry-name')).toBe('Marshal McBride');
+      expect(page.viewer().placePreview()).toEqual({ kind: 'creature', displayId: 1, scale: 1.2 });
+      page.viewer().picked.emit({ type: 'ground', position: { x: 1, y: 2, z: 3 } });
+      await settle(page);
+      expect(page.pendingLines()).toEqual(['Place creature 1001 (Marshal McBride)']);
+      // another tool: no preview; Escape closes the results; a failed search shows none; typed on meanwhile: dropped
+      page.click('tool-select');
+      page.fixture.detectChanges();
+      expect(page.viewer().placePreview()).toBeUndefined();
+      page.click('tool-place-gameobject');
+      await settle(page);
+      page.type('place-entry', '5');
+      await wait();
+      await settle(page);
+      expect(mocks.service.searchTemplates).toHaveBeenLastCalledWith('gameobject', '5');
+      page.byId('place-entry').nativeElement.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+      page.fixture.detectChanges();
+      expect(page.byId('place-results', false)).toBeFalsy();
+      mocks.service.searchTemplates.mockRejectedValueOnce(new Error('no table'));
+      page.type('place-entry', 'Mailbox');
+      await wait();
+      await settle(page);
+      expect(page.byId('place-results', false)).toBeFalsy();
+      let answer: (rows: unknown[]) => void = () => undefined;
+      mocks.service.searchTemplates.mockReturnValueOnce(new Promise((resolve) => (answer = resolve)));
+      page.type('place-entry', 'Chest');
+      await wait();
+      page.type('place-entry', 'Chests');
+      answer([{ entry: 1, name: 'Chest', displayId: 1, scale: 1 }]);
+      await settle(page);
+      expect(page.byId('place-result-1', false)).toBeFalsy();
     });
 
     it('places gameobjects', async () => {

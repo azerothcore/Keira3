@@ -1434,6 +1434,8 @@
     "HELP_ALT_RIGHT_CLICK": "Alt + right-click",
     "HELP_FACE": "Turn the player marker to face there",
     "HELP_SHIFT_SPACE": "Shift + Space",
-    "HELP_MARKER_LIQUID": "Marker on the liquid surface (or the ground, with Marker on liquids)"
+    "HELP_MARKER_LIQUID": "Marker on the liquid surface (or the ground, with Marker on liquids)",
+    "PLACE_SEARCH": "Entry or name",
+    "NO_MODEL": "no model"
   }
 }

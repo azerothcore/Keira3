@@ -82,6 +82,7 @@ import {
   WaypointPath,
   WorldAreaTrigger,
   WorldSpawn,
+  SpawnKind,
 } from './world-viewer.model';
 
 /** How long (ms) loading must have calmed down before the waypoints' places are worked out again. */
@@ -239,6 +240,12 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   protected readonly stats = signal<ViewerStats | undefined>(undefined);
   /** Buildings placed by the editor (a transport's ship on its map), at server positions. */
   readonly buildings = input<ExtraBuilding[]>([]);
+  /**
+   * The model about to be placed (the place tools): shown see-through under the cursor, or at the crosshair while the
+   * cursor is elsewhere (e.g. over the list of results).
+   */
+  readonly placePreview = input<{ kind: SpawnKind; displayId: number; scale: number } | undefined>(undefined);
+  private placePreviewRequest = 0;
   /** A place the player marker should turn to face (the editor's "Make the player face here"). */
   readonly markerLookAt = input<WorldPosition | undefined>(undefined);
   /** The editor is loading the spawns around the camera (shown in the same loading bar). */
@@ -322,6 +329,10 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private readonly target = new Vector3();
 
   constructor() {
+    effect(() => {
+      const preview = this.placePreview();
+      untracked(() => void this.loadPlacePreview(preview));
+    });
     effect(() => {
       const place = this.markerLookAt();
       untracked(() => {
@@ -672,6 +683,9 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
 
   protected onPointerMove(event: PointerEvent): void {
     this.lastPointer = event;
+    if (this.placePreview()) {
+      this.requestRender();
+    }
     if (this.altDragging) {
       this.altDragTo(event);
       return;
@@ -1376,6 +1390,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       this.frameRequested = false;
       this.world.updateMarkerScale();
       const spinning = this.updateSkybox();
+      this.placePreviewTo();
       const began = performance.now();
       perfTime('render', () => this.renderer?.render(this.world.scene, this.world.camera));
       perfFrame();
@@ -1387,6 +1402,24 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
         this.requestRender();
       }
     });
+  }
+
+  private async loadPlacePreview(preview: { kind: SpawnKind; displayId: number; scale: number } | undefined): Promise<void> {
+    const request = ++this.placePreviewRequest;
+    const model = preview && (await this.spawnModels.instance(preview.kind, preview.displayId));
+    if (request === this.placePreviewRequest) {
+      this.world.setPlacePreview(model?.object, (model?.scale ?? 1) * (preview?.scale ?? 1));
+      this.requestRender();
+    }
+  }
+
+  /** The placing preview under the cursor, or at the crosshair while the cursor is out of the view. */
+  private placePreviewTo(): void {
+    if (!this.placePreview()) {
+      return;
+    }
+    const ground = this.lastPointer ? this.pickAt(this.lastPointer, { groundOnly: true }) : this.world.pick(0, 0, { groundOnly: true });
+    this.world.setPlacePreviewPosition(ground?.position);
   }
 
   /** The skybox chosen, or the zone's: around the camera, turned when it turns slowly. Whether it's turning. */

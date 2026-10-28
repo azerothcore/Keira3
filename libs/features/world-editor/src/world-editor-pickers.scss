@@ -102,3 +102,15 @@
   font-variant-numeric: tabular-nums;
   min-width: 3em;
 }
+
+// the place tools' search results, over the panel below
+.place-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  max-height: 40vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}

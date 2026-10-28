@@ -297,6 +297,7 @@
         [renderSettings]="renderSettings.settings()"
         [navigation]="controls.settings()"
         [markerLookAt]="markerLookAt()"
+        [placePreview]="placePreview()"
         [region]="region()"
         [focus]="focus()"
         (picked)="onPicked($event)"
@@ -1624,15 +1625,38 @@
           </div>
 
           @if (tool() === 'place-creature' || tool() === 'place-gameobject') {
-            <div class="input-group input-group-sm mb-1">
-              <span class="input-group-text">{{ 'WORLD_EDITOR.ENTRY' | translate }}</span>
-              <input
-                type="number"
-                class="form-control"
-                data-testid="place-entry"
-                [formControl]="placeEntry"
-                (change)="onPlaceEntryChange()"
-              />
+            <div class="position-relative">
+              <div class="input-group input-group-sm mb-1">
+                <span class="input-group-text">{{ 'WORLD_EDITOR.ENTRY' | translate }}</span>
+                <input
+                  type="text"
+                  class="form-control"
+                  data-testid="place-entry"
+                  [placeholder]="'WORLD_EDITOR.PLACE_SEARCH' | translate"
+                  [formControl]="placeSearch"
+                  (change)="onPlaceEntryChange()"
+                  (keydown.escape)="placeResults.set([])"
+                />
+              </div>
+              @if (placeResults().length) {
+                <div class="list-group place-results" data-testid="place-results" (mouseleave)="placeHover.set(undefined)">
+                  @for (template of placeResults(); track template.entry) {
+                    <button
+                      type="button"
+                      class="list-group-item list-group-item-action py-1 small"
+                      [attr.data-testid]="'place-result-' + template.entry"
+                      [class.active]="template.entry === placeEntry.value"
+                      (mouseenter)="placeHover.set(template)"
+                      (click)="choosePlaceTemplate(template)"
+                    >
+                      {{ template.entry }} – {{ template.name || '?' }}
+                      @if (!template.displayId) {
+                        <span class="text-muted">({{ 'WORLD_EDITOR.NO_MODEL' | translate }})</span>
+                      }
+                    </button>
+                  }
+                </div>
+              }
             </div>
             <small class="text-muted" data-testid="place-entry-name">{{
               placeEntryName() || ('WORLD_EDITOR.PLACE_HINT' | translate)

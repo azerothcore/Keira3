@@ -464,6 +464,22 @@ describe('WorldEditorService', () => {
     expect(queryService.query.mock.calls[0][0]).toContain('BETWEEN -5000 AND');
   });
 
+  it('finds templates to place by entry or name, with their model', async () => {
+    const { service, queryService } = setup();
+    queryService.query
+      .mockReturnValueOnce(of([{ entry: '197', name: 'Marshal McBride', displayId: '1', scale: '1.2' }, { entry: '5', name: 'X' }]))
+      .mockReturnValueOnce(of(undefined));
+    expect(await service.searchTemplates('creature', ' 197 ')).toEqual([
+      { entry: 197, name: 'Marshal McBride', displayId: 1, scale: 1.2 },
+      { entry: 5, name: 'X', displayId: 0, scale: 1 },
+    ]);
+    expect(queryService.query.mock.calls[0][0]).toContain('FROM creature_template ct LEFT JOIN creature_template_model ctm');
+    expect(queryService.query.mock.calls[0][1]).toEqual(['197', '%197%', '197']);
+    expect(await service.searchTemplates('gameobject', 'Mailbox')).toEqual([]);
+    expect(queryService.query.mock.calls[1][0]).toContain('FROM gameobject_template');
+    expect(queryService.query.mock.calls[1][1]).toEqual(['-1', '%Mailbox%', '-1']);
+  });
+
   it('finds a good place to arrive on a map: an instance entrance, else a teleport location', async () => {
     const { service, queryService } = setup();
     queryService.query.mockReturnValueOnce(of([{ x: '1', y: '2', z: '3', source: '0' }])).mockReturnValueOnce(of(undefined));

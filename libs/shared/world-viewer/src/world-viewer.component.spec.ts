@@ -13,7 +13,7 @@ import {
   worldToScene,
 } from '@keira/shared/wow-data';
 import { DebugHtmlElement, PageObjectModel } from 'ngx-page-object-model';
-import { EventDispatcher, Object3D, Vector3 } from 'three';
+import { EventDispatcher, Group, Object3D, Vector3 } from 'three';
 import { DEFAULT_WORLD_CONTROLS_SETTINGS, WorldControlsSettings } from './world-controls-settings';
 import { DEFAULT_WORLD_RENDER_SETTINGS, WorldRenderSettings } from './world-render-settings';
 import { ExtraBuilding, WorldObjects } from './world-objects';
@@ -42,6 +42,7 @@ import { WorldScene } from './world-scene';
 import { PathProber, PathProbeRequest, PathProbeResult } from './path-probe';
 import { WorldNavMesh } from './world-navmesh';
 import { ZoneLighting } from './zone-lighting';
+import { SpawnModels } from './spawn-models';
 
 // ------------------------------------------------------------------ Three.js controls fakes (jsdom has no WebGL)
 
@@ -161,6 +162,7 @@ interface FakeTransformControls extends EventDispatcher<{ 'dragging-changed': { 
       (picked)="picks.push($event)"
       (contextRequested)="contexts.push($event)"
       [markerLookAt]="lookAt()"
+      [placePreview]="preview()"
       (objectMoved)="moves.push($event)"
       (centerChanged)="centers.push($event)"
     />
@@ -204,6 +206,7 @@ class HostComponent {
   readonly picks: PickResult[] = [];
   readonly contexts: ContextRequest[] = [];
   readonly lookAt = signal<WorldPosition | undefined>(undefined);
+  readonly preview = signal<{ kind: 'creature' | 'gameobject'; displayId: number; scale: number } | undefined>(undefined);
   readonly moves: ObjectMoved[] = [];
   readonly centers: WorldPosition[] = [];
 }
@@ -903,6 +906,41 @@ describe(WorldViewerComponent.name, () => {
       await new Promise((resolve) => setTimeout(resolve));
       expect(host.contexts).toHaveLength(count);
       liquidAt.mockRestore();
+    });
+
+    it('previews the model about to be placed under the cursor, or at the crosshair', async () => {
+      const { page, host, fixture, update } = await pickSetup();
+      await settle(fixture);
+      const place = vi.spyOn(WorldScene.prototype, 'setPlacePreviewPosition');
+      const model = new Group();
+      const instance = vi.spyOn(SpawnModels.prototype, 'instance').mockResolvedValue({ object: model, scale: 2 });
+      await update(() => host.preview.set({ kind: 'creature', displayId: 5, scale: 1.5 }));
+      await settle(fixture);
+      flushFrames();
+      expect(instance).toHaveBeenCalledWith('creature', 5);
+      const preview = (renderer.render.mock.calls.at(-1)?.[0] as Object3D).getObjectByName('place-preview') as Group;
+      expect(preview.children).toEqual([model]);
+      expect(model.scale.x).toBe(3);
+      // the cursor out of the view: at the crosshair; over it: under the cursor
+      expect(place).toHaveBeenCalledWith(expect.objectContaining({ x: expect.any(Number) }));
+      place.mockClear();
+      page.pointer('pointermove', 50, 50);
+      flushFrames();
+      expect(place).toHaveBeenCalled();
+      // another model asked meanwhile: only the last shown; then none
+      let first: (value: { object: Object3D; scale: number }) => void = () => undefined;
+      instance.mockReturnValueOnce(new Promise((resolve) => (first = resolve)));
+      await update(() => host.preview.set({ kind: 'gameobject', displayId: 6, scale: 1 }));
+      await update(() => host.preview.set(undefined));
+      first({ object: new Group(), scale: 1 });
+      await settle(fixture);
+      expect(preview.children).toHaveLength(0);
+      place.mockClear();
+      page.pointer('pointermove', 60, 60);
+      flushFrames();
+      expect(place).not.toHaveBeenCalled();
+      instance.mockRestore();
+      place.mockRestore();
     });
 
     it('reports the ground under spawns when placing', async () => {

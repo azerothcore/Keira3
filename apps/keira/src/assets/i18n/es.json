@@ -1434,6 +1434,8 @@
     "HELP_ALT_RIGHT_CLICK": "Alt + clic derecho",
     "HELP_FACE": "Girar el marcador del jugador hacia allí",
     "HELP_SHIFT_SPACE": "Mayús + Espacio",
-    "HELP_MARKER_LIQUID": "Marcador sobre la superficie del líquido (o el suelo, con Marcador sobre líquidos)"
+    "HELP_MARKER_LIQUID": "Marcador sobre la superficie del líquido (o el suelo, con Marcador sobre líquidos)",
+    "PLACE_SEARCH": "Entry o nombre",
+    "NO_MODEL": "sin modelo"
   }
 }

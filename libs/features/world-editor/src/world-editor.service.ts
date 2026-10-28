@@ -10,6 +10,7 @@ import {
   Teleport,
   isSaiPath,
   AreaPath,
+  PlaceTemplate,
   GAMEOBJECT_CHEST,
   GAMEOBJECT_FISHING_HOLE,
   GAMEOBJECT_TRANSPORT,
@@ -607,6 +608,25 @@ export class WorldEditorService {
         : `SELECT displayId, size AS scale FROM gameobject_template WHERE entry = ${Math.trunc(entry)}`;
     const [row] = (await firstValueFrom(this.queryService.query<{ displayId: number; scale: number }>(sql))) ?? [];
     return { displayId: Number(row?.displayId ?? 0), scale: Number(row?.scale ?? 1) };
+  }
+
+  /** Templates to place, by entry or name (an entry typed comes first), with their model (display id and scale). */
+  async searchTemplates(type: SpawnType, text: string): Promise<PlaceTemplate[]> {
+    const entry = /^\d+$/.test(text.trim()) ? Number(text.trim()) : -1;
+    const sql =
+      type === 'creature'
+        ? "SELECT ct.entry, IFNULL(ct.name, '') AS name, IFNULL(ctm.CreatureDisplayID, 0) AS displayId, IFNULL(ctm.DisplayScale, 1) AS scale " +
+          'FROM creature_template ct LEFT JOIN creature_template_model ctm ON ctm.CreatureID = ct.entry AND ctm.Idx = 0 ' +
+          'WHERE ct.entry = ? OR ct.name LIKE ? ORDER BY ct.entry = ? DESC, ct.name LIMIT 30'
+        : "SELECT entry, IFNULL(name, '') AS name, displayId, size AS scale FROM gameobject_template " +
+          'WHERE entry = ? OR name LIKE ? ORDER BY entry = ? DESC, name LIMIT 30';
+    const rows = await firstValueFrom(this.queryService.query<TableRow>(sql, [String(entry), `%${text.trim()}%`, String(entry)]));
+    return (rows ?? []).map((row) => ({
+      entry: Number(row['entry']),
+      name: String(row['name']),
+      displayId: Number(row['displayId'] ?? 0),
+      scale: Number(row['scale'] ?? 1),
+    }));
   }
 
   async searchTele(text: string): Promise<TeleRow[]> {

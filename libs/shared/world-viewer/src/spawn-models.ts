@@ -6,7 +6,7 @@ import { buildM2Template, disposeM2Template, M2Template } from './m2-object';
 import { TextureCache } from './texture-cache';
 import { buildWmoObject, disposeWmoObject } from './wmo-object';
 import { WorldScene } from './world-scene';
-import { WorldSpawn } from './world-viewer.model';
+import { SpawnKind, WorldSpawn } from './world-viewer.model';
 
 /** What spawn models need from `WowClientService`. */
 export interface SpawnModelSource {
@@ -102,6 +102,18 @@ export class SpawnModels {
     this.models.forEach((model) => void model.then((m) => m && disposeSpawnModel(m)));
     this.models.clear();
     this.ready.clear();
+  }
+
+  /**
+   * A copy of a display's model (loaded once, shared with the spawns showing it) with its size, e.g. for the placing
+   * preview; undefined when it can't be read.
+   */
+  async instance(kind: SpawnKind, displayId: number): Promise<{ object: Object3D; scale: number } | undefined> {
+    const displayKey = `${kind}:${displayId}`;
+    const spawn = { key: 'preview', kind, displayId } as WorldSpawn;
+    this.load(displayKey, spawn);
+    const model = await this.models.get(displayKey);
+    return model && { object: instantiate(model, spawn), scale: model.scale };
   }
 
   private refresh(): void {

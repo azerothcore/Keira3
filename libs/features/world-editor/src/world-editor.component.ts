@@ -103,6 +103,7 @@ import { LEGEND } from './legend';
 import { WorldEditorSessionService } from './world-editor-session.service';
 import { WORLD_EDITOR_LINKS, WorldEditorLoot } from '@keira/shared/constants';
 import {
+  PlaceTemplate,
   AreaPath,
   EditorTool,
   LayerVisibility,
@@ -1024,6 +1025,31 @@ export class WorldEditorComponent implements OnInit {
     cacheFolder: new FormControl(this.cache.folder(), { nonNullable: true }),
   });
   protected readonly placeEntry = new FormControl<number | null>(null);
+  /** The place tools' search: an entry or part of a name; an entry typed is the one placed. */
+  protected readonly placeSearch = new FormControl('', { nonNullable: true });
+  protected readonly placeResults = signal<PlaceTemplate[]>([]);
+  /** The result hovered (previewed in the view), and the template chosen. */
+  protected readonly placeHover = signal<PlaceTemplate | undefined>(undefined);
+  private readonly placeChosen = signal<PlaceTemplate | undefined>(undefined);
+  private readonly livePlaceSearch = this.placeSearch.valueChanges.pipe(takeUntilDestroyed()).subscribe((text) => {
+    const entry = /^\d+$/.test(text.trim()) ? Number(text.trim()) : null;
+    this.placeEntry.setValue(entry);
+  });
+  private readonly livePlaceResults = this.placeSearch.valueChanges
+    .pipe(debounceTime(TELE_SEARCH_DELAY), takeUntilDestroyed())
+    .subscribe((text) => void this.searchPlaceTemplates(text));
+  /** The model about to be placed, shown see-through in the view: the result hovered, or the template chosen. */
+  protected readonly placePreview = computed(() => {
+    const tool = this.tool();
+    const template = tool === 'place-creature' || tool === 'place-gameobject' ? (this.placeHover() ?? this.placeChosen()) : undefined;
+    return template?.displayId
+      ? {
+          kind: (tool === 'place-gameobject' ? 'gameobject' : 'creature') as SpawnType,
+          displayId: template.displayId,
+          scale: template.scale,
+        }
+      : undefined;
+  });
   protected readonly teleSearch = new FormControl('', { nonNullable: true });
   /** Teleports are looked up while typing (a pasted `.gps` goes there instead). */
   private readonly liveTele = this.teleSearch.valueChanges
@@ -1910,7 +1936,35 @@ export class WorldEditorComponent implements OnInit {
   protected async onPlaceEntryChange(): Promise<void> {
     const entry = this.placeEntry.value;
     const type: SpawnType = this.tool() === 'place-gameobject' ? 'gameobject' : 'creature';
-    this.placeEntryName.set(entry ? await this.service.getEntryName(type, entry) : '');
+    if (!entry) {
+      this.placeEntryName.set('');
+      this.placeChosen.set(undefined);
+      return;
+    }
+    const [name, display] = await Promise.all([this.service.getEntryName(type, entry), this.service.getEntryDisplay(type, entry)]);
+    this.placeEntryName.set(name);
+    this.placeChosen.set({ entry, name, ...display });
+  }
+
+  /** Templates matching what's typed in the place tools' search (an entry, or at least 2 letters of a name). */
+  private async searchPlaceTemplates(text: string): Promise<void> {
+    const search = text.trim();
+    const type: SpawnType = this.tool() === 'place-gameobject' ? 'gameobject' : 'creature';
+    const results = /^\d+$/.test(search) || search.length >= 2 ? await this.service.searchTemplates(type, search).catch(() => []) : [];
+    // (unless typed on meanwhile)
+    if (search === this.placeSearch.value.trim()) {
+      this.placeResults.set(results);
+    }
+  }
+
+  /** A result of the place tools' search picked: the template placed from now on. */
+  protected choosePlaceTemplate(template: PlaceTemplate): void {
+    this.placeSearch.setValue(String(template.entry), { emitEvent: false });
+    this.placeEntry.setValue(template.entry);
+    this.placeEntryName.set(template.name);
+    this.placeChosen.set(template);
+    this.placeResults.set([]);
+    this.placeHover.set(undefined);
   }
 
   private async placeSpawnAt(type: SpawnType, position: WorldPosition): Promise<void> {

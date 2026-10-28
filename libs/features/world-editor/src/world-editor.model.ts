@@ -194,6 +194,15 @@ export const pathKey = (pathId: number): string => `path:${pathId}`;
 export const saiPathId = (entry: number): number => -entry;
 export const isSaiPath = (pathId: number): boolean => pathId < 0;
 export const saiPathEntry = (pathId: number): number => -pathId;
+/** A creature or gameobject template found by the place tools' search. */
+export interface PlaceTemplate {
+  entry: number;
+  name: string;
+  /** Its model (0: none) and size. */
+  displayId: number;
+  scale: number;
+}
+
 /** A path shown only with View > Every path in the area (drawn, not edited). */
 export interface AreaPath {
   /** `waypoint_data`, SmartAI `waypoints`, or an escort script's `script_waypoint`. */

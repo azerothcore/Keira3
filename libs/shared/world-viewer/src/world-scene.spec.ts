@@ -7,6 +7,7 @@ import {
   Color,
   Fog,
   Group,
+  Material,
   Line,
   LineDashedMaterial,
   LineSegments,
@@ -1172,6 +1173,32 @@ describe('WorldScene', () => {
       expect(world.terrainLighting.sunColor.value.equals(neutral.sun)).toBe(true);
       expect(sky(world).visible).toBe(false);
     });
+  });
+
+  it('shows a see-through preview of a model about to be placed, without touching the shared materials', () => {
+    const world = new WorldScene();
+    const shared = new MeshLambertMaterial();
+    const model = new Group().add(new Mesh(new BoxGeometry(1, 1, 1), shared), new Mesh(new BoxGeometry(1, 1, 1), [shared]));
+    world.setPlacePreview(model, 2);
+    const [single, multi] = model.children as Mesh[];
+    expect(single.material).not.toBe(shared);
+    expect((single.material as Material).opacity).toBe(0.6);
+    expect(((multi.material as Material[])[0] as Material).transparent).toBe(true);
+    expect(shared.transparent).toBe(false);
+    expect(single.raycast(undefined as never, [])).toBeUndefined();
+    expect(model.scale.x).toBe(2);
+    expect(world.placePreview.visible).toBe(false);
+    world.setPlacePreviewPosition(at(1, 2, 3));
+    expect(world.placePreview.visible).toBe(true);
+    expect(world.placePreview.position.y).toBe(3);
+    world.setPlacePreviewPosition(undefined);
+    expect(world.placePreview.visible).toBe(false);
+    const dispose = vi.spyOn(single.material as Material, 'dispose');
+    world.setPlacePreview(undefined);
+    expect(dispose).toHaveBeenCalled();
+    world.setPlacePreviewPosition(at(1, 2, 3));
+    expect(world.placePreview.visible).toBe(false);
+    world.dispose();
   });
 
   it('marks a place with a beacon', () => {
