@@ -1,6 +1,7 @@
 import { CollisionMesh, parseM2Collision } from './collision';
 import { M2_VERTEX_SHADER, M2Model, M2SkinProfile } from '@wowserhq/format';
 import { toArrayBuffer } from './formats';
+import { M2SequenceRef, M2Skeleton, parseM2Skeleton } from './m2-animation';
 
 /** How a batch is blended with what's behind it (M2_MATERIAL_BLEND). */
 export enum M2Blend {
@@ -42,6 +43,38 @@ export interface M2Mesh {
   batches: M2BatchInfo[];
   /** What the server collides with (empty for most small props). */
   collision: CollisionMesh;
+  /** Where things attach (helmet, shoulders, hands…), in the bind pose, local scene axes. */
+  attachments?: M2AttachmentPoint[];
+}
+
+export interface M2AttachmentPoint {
+  /** M2Attachment.id: 11 head, 5 / 6 right / left shoulder, 1 / 2 right / left hand, 0 shield… */
+  id: number;
+  /** The bone it follows. */
+  bone: number;
+  position: [number, number, number];
+}
+
+/** WotLK M2 header: attachments (count + offset); each is 40 bytes: id, bone, unknown, position, animate track. */
+const M2_ATTACHMENTS = 0xf0;
+const ATTACHMENT_SIZE = 40;
+
+/** The attachment points of an M2 (none when the file is too short for them). */
+export function parseM2Attachments(bytes: Uint8Array): M2AttachmentPoint[] {
+  if (bytes.length < M2_ATTACHMENTS + 8) {
+    return [];
+  }
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const [count, offset] = [view.getUint32(M2_ATTACHMENTS, true), view.getUint32(M2_ATTACHMENTS + 4, true)];
+  if (offset + count * ATTACHMENT_SIZE > bytes.length) {
+    return [];
+  }
+  return Array.from({ length: count }, (_, i) => {
+    const at = offset + i * ATTACHMENT_SIZE;
+    const [x, y, z] = [8, 12, 16].map((field) => view.getFloat32(at + field, true));
+    // (server axes to scene axes: (x, y, z) → (−y, z, −x))
+    return { id: view.getUint32(at, true), bone: view.getUint16(at + 4, true), position: [-y, z, -x] as [number, number, number] };
+  });
 }
 
 const VERTEX_STRIDE = 48;
@@ -114,5 +147,25 @@ export function parseM2(modelBytes: Uint8Array, skinBytes: Uint8Array): M2Mesh {
       };
     });
 
-  return { positions, normals, uvs, indices: Uint16Array.from(skin.indices), batches, collision: parseM2Collision(modelBytes) };
+  return {
+    positions,
+    normals,
+    uvs,
+    indices: Uint16Array.from(skin.indices),
+    batches,
+    collision: parseM2Collision(modelBytes),
+    attachments: parseM2Attachments(modelBytes),
+  };
+}
+
+/** The skeleton and animations of a model, from its files (the skin maps its vertices to the model's). */
+export function parseM2SkeletonFiles(
+  modelBytes: Uint8Array,
+  skinBytes: Uint8Array,
+  refs: M2SequenceRef[],
+  anims: Map<number, Uint8Array>,
+): M2Skeleton | undefined {
+  const model = new M2Model().load(toArrayBuffer(modelBytes));
+  const skin = new M2SkinProfile(model).load(toArrayBuffer(skinBytes));
+  return parseM2Skeleton(modelBytes, skin.vertices, refs, anims);
 }

@@ -6,6 +6,7 @@ const mocks = vi.hoisted(() => ({
   decodeBlp: vi.fn().mockReturnValue('rgba'),
   decodeBlpForGpu: vi.fn().mockReturnValue('gpu'),
   parseM2: vi.fn().mockReturnValue('m2'),
+  parseM2SkeletonFiles: vi.fn().mockReturnValue('skeleton'),
   buildTerrainMesh: vi.fn().mockReturnValue('terrain'),
   buildTerrainChunkMeshes: vi.fn().mockReturnValue(['chunk']),
   parseWmoRoot: vi.fn().mockReturnValue('root'),
@@ -15,7 +16,7 @@ const mocks = vi.hoisted(() => ({
 }));
 vi.mock('./formats', () => ({ parseAdt: mocks.parseAdt, decodeBlp: mocks.decodeBlp, decodeBlpForGpu: mocks.decodeBlpForGpu }));
 vi.mock('./liquid', () => ({ parseLiquids: mocks.parseLiquids }));
-vi.mock('./m2', () => ({ parseM2: mocks.parseM2 }));
+vi.mock('./m2', () => ({ parseM2: mocks.parseM2, parseM2SkeletonFiles: mocks.parseM2SkeletonFiles }));
 vi.mock('./terrain-mesh', () => ({ buildTerrainMesh: mocks.buildTerrainMesh, buildTerrainChunkMeshes: mocks.buildTerrainChunkMeshes }));
 vi.mock('./wmo', () => ({ parseWmoRoot: mocks.parseWmoRoot, parseWmoGroup: mocks.parseWmoGroup, parseWmoDoodads: mocks.parseWmoDoodads }));
 vi.mock('./collision', () => ({ parseWmoGroupCollision: mocks.parseWmoGroupCollision }));
@@ -35,6 +36,7 @@ describe('runParseJob', () => {
     expect(runParseJob({ kind: 'terrain', tile: { tx: 1, ty: 2 }, chunks: [] })).toBe('terrain');
     expect(runParseJob({ kind: 'terrainDetail', chunks: [] })).toEqual(['chunk']);
     expect(runParseJob({ kind: 'm2', model: bytes, skin: bytes })).toBe('m2');
+    expect(runParseJob({ kind: 'm2Skeleton', model: bytes, skin: bytes, refs: [], anims: new Map() })).toBe('skeleton');
     expect(runParseJob({ kind: 'wmoRoot', bytes })).toBe('root');
     expect(runParseJob({ kind: 'wmoGroup', bytes, rootFlags: 3, indoor: true })).toEqual({ group: 1, collision: 'collision' });
     expect(mocks.parseWmoGroup).toHaveBeenCalledWith(bytes, 3, true);

@@ -28,10 +28,13 @@ vi.mock('./wmo', () => wmo);
 
 const m2 = vi.hoisted(() => ({
   parseM2: vi.fn(),
+  parseM2SkeletonFiles: vi.fn(),
   m2Path: (path: string) => path.replace(/\.mdx$/i, '.m2'),
   m2SkinPath: (path: string) => path.replace(/\.(mdx|m2)$/i, '00.skin'),
 }));
 vi.mock('./m2', () => m2);
+const m2Animation = vi.hoisted(() => ({ m2Sequences: vi.fn().mockReturnValue([]) }));
+vi.mock('./m2-animation', async (original) => ({ ...(await original<object>()), m2Sequences: m2Animation.m2Sequences }));
 
 const adtOf = (chunks: unknown[] = [], wmos: unknown[] = [], doodads: unknown[] = []) => ({ chunks, wmos, doodads });
 
@@ -285,7 +288,7 @@ describe('WowClientService', () => {
           'DBFilesClient\\CharSections.dbc': dbc([[1, 3, 0, 0, 'Character\\Dwarf\\Skin.blp', '', '', 0, 0, 0]], 10),
         }),
       });
-      expect(await service.getPlayerDisplay(3, 0)).toEqual({
+      expect(await service.getPlayerDisplay(3, 0)).toMatchObject({
         model: 'Character\\Dwarf\\Male\\DwarfMale.m2',
         scale: 1,
         textures: { 1: 'Character\\Dwarf\\Skin.blp' },
@@ -733,6 +736,66 @@ describe('WowClientService', () => {
       expect(await service.getM2('World\\Tree.mdx')).toEqual({ model: 1, skin: 2 });
       expect(await service.getM2('World\\NoSkin.m2')).toBeUndefined();
       expect(await service.getM2('World\\Missing.m2')).toBeUndefined();
+    });
+
+    it('reads the skeleton and animations of a model, with the .anim files they need, once', async () => {
+      const { service } = setup({
+        mpqs: {
+          'common.MPQ': {
+            files: { 'World\\Wolf.m2': [1], 'World\\Wolf00.skin': [2], 'World\\Wolf0004-00.anim': [3], 'World\\NoSkin.m2': [4] },
+          },
+        },
+      });
+      const walk = { index: 1, id: 4, fileId: 4, variation: 0, external: true };
+      const run = { index: 2, id: 5, fileId: 5, variation: 0, external: true };
+      m2Animation.m2Sequences.mockReturnValue([{ index: 0, id: 0, fileId: 0, variation: 0, external: false }, walk, run]);
+      m2.parseM2SkeletonFiles.mockReturnValue({ parents: [], animations: [] });
+      expect(await service.getM2Skeleton('World\\Wolf.mdx')).toEqual({ parents: [], animations: [] });
+      const [model, skin, refs, anims] = m2.parseM2SkeletonFiles.mock.calls[0];
+      expect([model[0], skin[0], refs.length]).toEqual([1, 2, 3]);
+      // (the run's .anim is missing: left out)
+      expect([...(anims as Map<number, Uint8Array>).keys()]).toEqual([1]);
+      // cached
+      await service.getM2Skeleton('World\\Wolf.mdx');
+      expect(m2.parseM2SkeletonFiles).toHaveBeenCalledTimes(1);
+      expect(await service.getM2Skeleton('World\\NoSkin.m2')).toBeUndefined();
+      expect(await service.getM2Skeleton('World\\Missing.m2')).toBeUndefined();
+    });
+
+    it('tells how an item looks when held, and whether it is a shield; again after a failure', async () => {
+      const dbc = (rows: (number | string)[][], fieldCount?: number) => Array.from(buildDbc(rows, fieldCount));
+      const displays = new Array(25).fill(0);
+      displays[0] = 500;
+      displays[1] = 'Sword.mdx';
+      const { service } = setup({
+        mpqs: {
+          'common.MPQ': {
+            files: {
+              'DBFilesClient\\Item.dbc': dbc(
+                [
+                  [25, 2, 7, 0, 0, 500, 13, 3],
+                  [26, 4, 6, 0, 0, 500, 14, 4],
+                  [27, 2, 7, 0, 0, 999, 13, 3],
+                ],
+                8,
+              ),
+              'DBFilesClient\\ItemDisplayInfo.dbc': dbc([displays], 25),
+            },
+          },
+        },
+      });
+      expect(await service.getItemDisplay(25)).toEqual({ display: expect.objectContaining({ models: ['Sword.mdx', ''] }), shield: false });
+      expect((await service.getItemDisplay(26))?.shield).toBe(true);
+      expect(await service.getItemDisplay(27)).toBeUndefined();
+      expect(await service.getItemDisplay(28)).toBeUndefined();
+
+      TestBed.resetTestingModule();
+      const broken = setup({ mpqs: { 'common.MPQ': { files: { 'DBFilesClient\\Item.dbc': [1, 2, 3, 4] } } } }).service;
+      await expect(broken.getItemDisplay(25)).rejects.toThrowError(/WDBC/);
+      await expect(broken.getItemDisplay(25)).rejects.toThrowError(/WDBC/);
+      // without the DBCs: nothing
+      TestBed.resetTestingModule();
+      expect(await setup({ mpqs: { 'common.MPQ': { files: {} } } }).service.getItemDisplay(25)).toBeUndefined();
     });
 
     it("hides the mesh of particle emitters, which the game doesn't draw", async () => {

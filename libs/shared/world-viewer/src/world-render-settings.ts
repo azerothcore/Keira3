@@ -74,6 +74,11 @@ export interface WorldRenderSettings {
   showInvisible: boolean;
   /** A see-through red wall where the map's terrain ends. */
   showMapEdge: boolean;
+  /** Creatures wear their equipment (helmet, shoulders, weapons, clothes' shapes). */
+  showEquipment: boolean;
+  /** Creatures play their standing animation; those that move, their walking one. */
+  animateIdle: boolean;
+  animateWalk: boolean;
   /** Within doodads and models: trees and the other doodads (props), NPCs and gameobjects, each on or off. */
   showTrees: boolean;
   showProps: boolean;
@@ -153,6 +158,9 @@ export const DEFAULT_WORLD_RENDER_SETTINGS: WorldRenderSettings = {
   showIndoor: true,
   showInvisible: false,
   showMapEdge: true,
+  showEquipment: true,
+  animateIdle: false,
+  animateWalk: false,
   memoryCapMb: 0,
   gpuCapMb: 0,
   markerOnLiquid: false,

@@ -59,6 +59,8 @@ describe('WorldEditorService', () => {
                 aiName: 'SmartAI',
                 scriptName: 'npc_marshal',
                 faction: '11',
+                item1: '1899',
+                item2: '0',
                 lootId: '197',
                 pickpocketLoot: '5',
                 skinLoot: '0',
@@ -134,6 +136,7 @@ describe('WorldEditorService', () => {
         faction: 11,
         aiName: 'SmartAI',
         scriptName: 'npc_marshal',
+        weapons: [1899, 0, 0],
         loot: { loot: 197, pickpocketing: 5 },
       },
       {
@@ -161,6 +164,9 @@ describe('WorldEditorService', () => {
     expect(creatureSql).toContain('IF(ca.guid IS NOT NULL, ca.path_id, IFNULL(cta.path_id, 0)) AS pathId');
     expect(queryService.query.mock.calls[1][0]).toContain('g.rotation0, g.rotation1, g.rotation2, g.rotation3');
     expect(creatureSql).toContain('LIMIT 3000');
+    expect(creatureSql).toContain(
+      'LEFT JOIN creature_equip_template ce ON ce.CreatureID = c.id AND ce.ID = IF(c.equipment_id < 0, 1, c.equipment_id)',
+    );
     expect(creatureSql).toContain('LEFT JOIN creature_template_model ctm ON ctm.CreatureID = c.id AND ctm.Idx = 0');
     expect(creatureSql).toContain('c.wander_distance AS wanderDistance, c.MovementType AS movementType');
     expect(queryService.query.mock.calls[1][0]).toContain('IFNULL(gt.displayId, 0) AS displayId, IFNULL(gt.size, 1) AS scale');

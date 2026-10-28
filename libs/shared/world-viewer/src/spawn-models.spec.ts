@@ -8,7 +8,7 @@ import {
   WorldPosition,
   worldToScene,
 } from '@keira/shared/wow-data';
-import { Mesh, MeshLambertMaterial, Texture } from 'three';
+import { Mesh, MeshLambertMaterial, SkinnedMesh, Texture } from 'three';
 import { COLLISION_LAYER } from './collision-object';
 import { SpawnModels, SpawnModelSource } from './spawn-models';
 import { TextureCache } from './texture-cache';
@@ -74,6 +74,30 @@ const DISPLAYS: Record<number, CreatureDisplay> = {
   1: { model: 'Creature\\Wolf\\Wolf.mdx', scale: 2, textures: { 11: 'Creature\\Wolf\\WolfGrey.blp' } },
   2: { model: 'Character\\Human\\Male\\HumanMale.mdx', scale: 1, textures: { 1: 'Baked.blp' }, hairGeoset: 3 },
   3: { model: 'Creature\\Missing.mdx', scale: 1, textures: {} },
+  // dressed: a helmet, and shoulders whose model is missing or whose point the model hasn't
+  4: {
+    model: 'Character\\Human\\Male\\HumanMale.mdx',
+    scale: 1,
+    textures: { 1: 'Baked.blp' },
+    hairGeoset: 3,
+    geosets: [0, 4],
+    plainGeosets: [0, 3, 702],
+    attachments: [
+      { point: 11, model: 'Item\\Head\\Helm.m2', texture: 'Helm.blp' },
+      { point: 5, model: 'Item\\Missing.m2' },
+      { point: 99, model: 'Item\\Head\\Helm.m2' },
+    ],
+  },
+};
+const SKELETON = {
+  parents: new Int16Array([-1]),
+  pivots: new Float32Array(3),
+  boneIndices: new Uint16Array(12),
+  boneWeights: new Uint8Array([255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0]),
+  animations: [
+    { id: 0, duration: 1000, bones: [{}] },
+    { id: 4, duration: 500, bones: [{}] },
+  ],
 };
 
 describe('SpawnModels', () => {
@@ -97,11 +121,35 @@ describe('SpawnModels', () => {
           );
         }
         if (path.includes('HumanMale')) {
-          return Promise.resolve(
-            mesh([batch({ textureType: 1 }), batch({ geoset: 3, textureType: 6 }), batch({ geoset: 4 }), batch({ geoset: 702 })]),
-          );
+          return Promise.resolve({
+            ...mesh([batch({ textureType: 1 }), batch({ geoset: 3, textureType: 6 }), batch({ geoset: 4 }), batch({ geoset: 702 })]),
+            attachments: [
+              { id: 11, bone: 0, position: [0, 2, 0] },
+              { id: 5, bone: 0, position: [0.3, 1.7, 0] },
+              { id: 1, bone: 0, position: [0.5, 0.9, 0] },
+              { id: 0, bone: 0, position: [-0.5, 0.9, 0] },
+            ],
+          });
+        }
+        if (path.startsWith('Item\\') && !path.includes('Missing')) {
+          return Promise.resolve(mesh([batch(), batch({ texture: 'Own.blp' })]));
         }
         return Promise.resolve(path.includes('Mailbox') ? mesh([batch({ texture: 'World\\Mailbox.blp' })]) : undefined);
+      }),
+      getM2Skeleton: vi.fn().mockResolvedValue(undefined),
+      getItemDisplay: vi.fn().mockImplementation((item: number) => {
+        const display = (model: string) => ({ models: [model, ''], textures: ['', ''], geosetGroups: [0, 0, 0], helmetVis: [0, 0] });
+        return item === 103
+          ? Promise.reject(new Error('no Item.dbc'))
+          : Promise.resolve(
+              item === 100
+                ? { display: display('Sword.mdx'), shield: false }
+                : item === 101
+                  ? { display: display('Shield.mdx'), shield: true }
+                  : item === 102
+                    ? { display: display(''), shield: false }
+                    : undefined,
+            );
       }),
     } satisfies SpawnModelSource;
     const world = new WorldScene();
@@ -114,6 +162,8 @@ describe('SpawnModels', () => {
     models.configure({ show: true, creatureDistance: 100, gameobjectDistance: 50 });
     return { source, world, models, onChange, textures, loaded };
   };
+  /** What a model wears (its children but the facing arrow the scene adds). */
+  const worn = (model: Mesh) => model.children.filter((child) => child.name !== 'facing');
   const modelOf = (world: WorldScene, key: string) => world.getObject(key)?.getObjectByName('model') as Mesh | undefined;
   const show = async (models: SpawnModels, world: WorldScene, spawns: WorldSpawn[]) => {
     world.setSpawns(spawns);
@@ -181,6 +231,76 @@ describe('SpawnModels', () => {
     await show(models, world, [spawn('creature:1', 'creature', 0, 2)]);
     const human = modelOf(world, 'creature:1') as Mesh;
     expect(human.geometry.groups).toHaveLength(2);
+  });
+
+  it('dresses humanoid NPCs in their equipment and weapons, or not', async () => {
+    const { models, world, loaded } = setup();
+    models.configure({ show: true, creatureDistance: 100, gameobjectDistance: 50, equipment: true });
+    await show(models, world, [
+      { ...spawn('creature:1', 'creature', 0, 4), weapons: [100, 101, 0] },
+      { ...spawn('creature:2', 'creature', 0, 4), weapons: [102, 103] },
+      { ...spawn('creature:3', 'creature', 0, 4), weapons: [0, 0, 0] },
+    ]);
+    const human = modelOf(world, 'creature:1') as Mesh;
+    expect(human.geometry.groups).toHaveLength(2);
+    // the helmet (with its own texture where it has one), the sword in the right hand, the shield
+    expect(worn(human).map((child) => child.position.toArray())).toEqual([
+      [0, 2, 0],
+      [0.5, 0.9, 0],
+      [-0.5, 0.9, 0],
+    ]);
+    const helm = worn(human)[0] as Mesh;
+    expect((helm.material as MeshLambertMaterial[]).map((m) => m.map)).toEqual([loaded.get('Helm.blp'), loaded.get('Own.blp')]);
+    // an item without a model, one that can't be read: just the helmet
+    expect(worn(modelOf(world, 'creature:2') as Mesh)).toHaveLength(1);
+    expect(worn(modelOf(world, 'creature:3') as Mesh)).toHaveLength(1);
+
+    // without equipment: the plain geosets, nothing worn
+    models.configure({ show: true, creatureDistance: 100, gameobjectDistance: 50, equipment: false });
+    await flush();
+    const plain = modelOf(world, 'creature:1') as Mesh;
+    expect(plain.geometry.groups).toHaveLength(3);
+    expect(worn(plain)).toHaveLength(0);
+  });
+
+  it('plays the standing animation, and the walking one for creatures that move', async () => {
+    const { models, world, source } = setup();
+    source.getM2Skeleton.mockResolvedValue(SKELETON);
+    models.configure({ show: true, creatureDistance: 100, gameobjectDistance: 50, equipment: true, idle: true, walk: true });
+    await show(models, world, [
+      { ...spawn('creature:1', 'creature', 0, 4), weapons: [100] },
+      { ...spawn('creature:2', 'creature', 0, 4), weapons: [100], moves: true },
+      spawn('gameobject:1', 'gameobject', 0, 7),
+    ]);
+    const standing = modelOf(world, 'creature:1') as SkinnedMesh;
+    const walking = modelOf(world, 'creature:2') as SkinnedMesh;
+    expect(standing).toBeInstanceOf(SkinnedMesh);
+    expect(walking.skeleton).not.toBe(standing.skeleton);
+    // what it wears follows its bones
+    expect(worn(standing).every((child) => child instanceof SkinnedMesh)).toBe(true);
+    expect(worn(standing)).toHaveLength(2);
+    expect(standing.geometry.getAttribute('skinWeight')).toBeDefined();
+    expect(modelOf(world, 'gameobject:1')).not.toBeInstanceOf(SkinnedMesh);
+    expect(models.animating).toBe(true);
+    models.animate(250);
+
+    // walking only: the others stand still
+    models.configure({ show: true, creatureDistance: 100, gameobjectDistance: 50, walk: true });
+    await flush();
+    expect(modelOf(world, 'creature:1')).not.toBeInstanceOf(SkinnedMesh);
+    expect(modelOf(world, 'creature:2')).toBeInstanceOf(SkinnedMesh);
+    // a model without a walking animation: those that move stand still
+    source.getM2Skeleton.mockResolvedValue({ ...SKELETON, animations: [SKELETON.animations[0]] });
+    models.configure({ show: true, creatureDistance: 100, gameobjectDistance: 50, walk: true, equipment: true });
+    await flush();
+    expect(modelOf(world, 'creature:2')).not.toBeInstanceOf(SkinnedMesh);
+    // a model without animations: still
+    source.getM2Skeleton.mockResolvedValue({ ...SKELETON, animations: [] });
+    models.configure({ show: true, creatureDistance: 100, gameobjectDistance: 50, idle: true });
+    await flush();
+    expect(modelOf(world, 'creature:1')).not.toBeInstanceOf(SkinnedMesh);
+    expect(models.animating).toBe(false);
+    models.dispose();
   });
 
   it('puts pins back when spawns leave the distance or models are turned off', async () => {

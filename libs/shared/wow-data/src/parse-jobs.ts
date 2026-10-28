@@ -2,7 +2,8 @@ import { CollisionMesh, parseWmoGroupCollision } from './collision';
 import { TileCoord } from './coords';
 import { decodeBlp, decodeBlpForGpu, GpuTexture, LayerSplatDepth, parseAdt, ParsedAdt, RgbaImage } from './formats';
 import { LiquidMesh, parseLiquids } from './liquid';
-import { M2Mesh, parseM2 } from './m2';
+import { M2Mesh, parseM2, parseM2SkeletonFiles } from './m2';
+import { M2SequenceRef, M2Skeleton } from './m2-animation';
 import { buildTerrainChunkMeshes, buildTerrainMesh, TerrainChunk, TerrainChunkMesh, TerrainMeshData } from './terrain-mesh';
 import { parseWmoDoodads, parseWmoGroup, parseWmoRoot, WmoDoodads, WmoGroupMesh, WmoMaterialInfo } from './wmo';
 
@@ -12,6 +13,7 @@ export type ParseJob =
   | { kind: 'terrain'; tile: TileCoord; chunks: TerrainChunk[] }
   | { kind: 'terrainDetail'; chunks: TerrainChunk[] }
   | { kind: 'm2'; model: Uint8Array; skin: Uint8Array }
+  | { kind: 'm2Skeleton'; model: Uint8Array; skin: Uint8Array; refs: M2SequenceRef[]; anims: Map<number, Uint8Array> }
   | { kind: 'wmoRoot'; bytes: Uint8Array }
   | { kind: 'wmoGroup'; bytes: Uint8Array; rootFlags: number; indoor: boolean }
   | { kind: 'wmoDoodads'; bytes: Uint8Array }
@@ -24,6 +26,7 @@ export interface ParseResults {
   terrain: TerrainMeshData;
   terrainDetail: TerrainChunkMesh[];
   m2: M2Mesh;
+  m2Skeleton: M2Skeleton | undefined;
   wmoRoot: { materials: WmoMaterialInfo[]; groups: { indoor: boolean }[]; flags: number };
   wmoGroup: WmoGroupMesh & { collision: CollisionMesh };
   wmoDoodads: WmoDoodads;
@@ -50,6 +53,8 @@ export function runParseJob(job: ParseJob): ParseResults[ParseJob['kind']] {
       return buildTerrainChunkMeshes(job.chunks);
     case 'm2':
       return parseM2(job.model, job.skin);
+    case 'm2Skeleton':
+      return parseM2SkeletonFiles(job.model, job.skin, job.refs, job.anims);
     case 'wmoRoot':
       return parseWmoRoot(job.bytes);
     case 'wmoGroup':

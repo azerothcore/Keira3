@@ -1,4 +1,4 @@
-import { M2Blend, m2Path, m2SkinPath, parseM2 } from './m2';
+import { M2Blend, m2Path, m2SkinPath, parseM2, parseM2Attachments, parseM2SkeletonFiles } from './m2';
 
 const mocks = vi.hoisted(() => ({
   vertices: new ArrayBuffer(0),
@@ -127,5 +127,29 @@ describe('m2', () => {
     mocks.weights = undefined;
     mocks.colors = undefined;
     expect(parseM2(new Uint8Array(1), new Uint8Array(1)).batches[0].alpha).toBe(1);
+  });
+
+  it('reads the attachment points in scene axes', () => {
+    const bytes = new Uint8Array(0x100 + 2 * 40);
+    const view = new DataView(bytes.buffer);
+    view.setUint32(0xf0, 2, true);
+    view.setUint32(0xf4, 0x100, true);
+    view.setUint32(0x100, 11, true);
+    view.setUint16(0x104, 7, true);
+    [1, 2, 3].forEach((v, i) => view.setFloat32(0x108 + i * 4, v, true));
+    view.setUint32(0x128, 5, true);
+    expect(parseM2Attachments(bytes)).toEqual([
+      { id: 11, bone: 7, position: [-2, 3, -1] },
+      { id: 5, bone: 0, position: [-0, 0, -0] },
+    ]);
+    // too short, or pointing past the end
+    expect(parseM2Attachments(new Uint8Array(16))).toEqual([]);
+    view.setUint32(0xf0, 9, true);
+    expect(parseM2Attachments(bytes)).toEqual([]);
+  });
+
+  it('reads the skeleton of a model through its skin (none for a file without bones)', () => {
+    mocks.skin = { vertices: new Uint16Array([0]), indices: new Uint16Array(0), batches: [] };
+    expect(parseM2SkeletonFiles(new Uint8Array(1), new Uint8Array(1), [], new Map())).toBeUndefined();
   });
 });

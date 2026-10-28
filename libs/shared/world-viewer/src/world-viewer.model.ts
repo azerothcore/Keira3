@@ -25,6 +25,10 @@ export interface WorldSpawn {
   details?: string[];
   /** The lines shown instead while Alt is held (e.g. every quest instead of the first one). */
   allDetails?: string[];
+  /** Creatures: the items in their hands (creature_equip_template: main hand, off hand, ranged), shown with equipment. */
+  weapons?: number[];
+  /** Creatures that move (a path, or wandering): they walk when animations play. */
+  moves?: boolean;
 }
 
 /** An area trigger (AreaTrigger.dbc): a sphere, or a box when `box` is set. Centred on `position`. */

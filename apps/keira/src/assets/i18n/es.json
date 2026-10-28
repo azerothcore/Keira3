@@ -1549,6 +1549,13 @@
     "INVISIBLE_WALLS": "Paredes invisibles",
     "INVISIBLE_WALLS_HELP": "Las partes de los modelos que el juego nunca dibuja, como paredes invisibles y las cajas de los emisores de humo (los cuadrados sobre Orgrimmar): se muestran translúcidas en azul",
     "MAP_EDGE": "Borde del mapa",
-    "MAP_EDGE_HELP": "Una pared roja translúcida donde termina el mapa (donde acaban sus casillas de terreno)"
+    "MAP_EDGE_HELP": "Una pared roja translúcida donde termina el mapa (donde acaban sus casillas de terreno)",
+    "VIEW_COSMETIC": "Aspecto",
+    "SHOW_EQUIPMENT": "Mostrar equipo",
+    "SHOW_EQUIPMENT_HELP": "Los PNJ llevan su casco, hombreras y las armas de su creature_equip_template, y su ropa cambia su forma (túnicas, botas, guantes, capas)",
+    "ANIMATE_IDLE": "Animación de reposo",
+    "ANIMATE_IDLE_HELP": "PNJ y criaturas reproducen su animación de estar de pie (la vista se dibuja continuamente)",
+    "ANIMATE_WALK": "Animación de movimiento",
+    "ANIMATE_WALK_HELP": "Las criaturas con ruta o que deambulan reproducen su animación de caminar, sin desplazarse"
   }
 }

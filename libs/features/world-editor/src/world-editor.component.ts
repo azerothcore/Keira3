@@ -253,6 +253,9 @@ type RenderFlagKey =
   | 'showIndoor'
   | 'showInvisible'
   | 'showMapEdge'
+  | 'showEquipment'
+  | 'animateIdle'
+  | 'animateWalk'
   | 'showTrees'
   | 'showProps'
   | 'showCreatureModels'
@@ -897,6 +900,8 @@ export class WorldEditorComponent implements OnInit {
           scale: s.scale,
           wanderRadius: showWander ? s.wanderDistance : undefined,
           bounds: showBounds ? spawnBounds(s) : undefined,
+          ...(s.weapons ? { weapons: s.weapons } : {}),
+          ...(s.pathId || s.wanderDistance ? { moves: true } : {}),
         }));
     }),
   );

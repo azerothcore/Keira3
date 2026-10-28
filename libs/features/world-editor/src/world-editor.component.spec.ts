@@ -3734,6 +3734,19 @@ describe(WorldEditorComponent.name, () => {
       toggle.dispatchEvent(new Event('change'));
     });
 
+    it('passes on the items in the hands of creatures and which creatures move (for the walking animation)', async () => {
+      mocks.service.loadSpawns.mockResolvedValue([...SPAWNS, spawn('creature', 4, { weapons: [1899, 0, 0] })]);
+      const { page } = await setup();
+      await loadArea(page);
+      const spawns = page.viewer().spawns();
+      expect(spawns.map((s) => [s.key, s.weapons, s.moves])).toEqual([
+        ['creature:1', undefined, true],
+        ['creature:2', undefined, true],
+        ['gameobject:3', undefined, undefined],
+        ['creature:4', [1899, 0, 0], undefined],
+      ]);
+    });
+
     it('copies what was right-clicked, and a .go xyz to it', async () => {
       const { page } = await setup();
       await loadArea(page);

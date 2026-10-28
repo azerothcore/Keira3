@@ -1124,6 +1124,60 @@
                 ></i>
               </div>
             </section>
+            <section class="world-editor-view-group" data-testid="view-group-cosmetic">
+              <h6 class="world-editor-view-group-title">{{ 'WORLD_EDITOR.VIEW_COSMETIC' | translate }}</h6>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-equipment"
+                  data-testid="view-equipment"
+                  [checked]="renderSettings.settings().showEquipment"
+                  (change)="setRenderFlag('showEquipment', $event)"
+                />
+                <label class="form-check-label" for="world-editor-equipment">{{ 'WORLD_EDITOR.SHOW_EQUIPMENT' | translate }}</label
+                ><i
+                  class="fas fa-info-circle ms-1"
+                  placement="auto"
+                  container="body"
+                  [tooltip]="'WORLD_EDITOR.SHOW_EQUIPMENT_HELP' | translate"
+                ></i>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-animate-idle"
+                  data-testid="view-animate-idle"
+                  [checked]="renderSettings.settings().animateIdle"
+                  (change)="setRenderFlag('animateIdle', $event)"
+                />
+                <label class="form-check-label" for="world-editor-animate-idle">{{ 'WORLD_EDITOR.ANIMATE_IDLE' | translate }}</label
+                ><i
+                  class="fas fa-info-circle ms-1"
+                  placement="auto"
+                  container="body"
+                  [tooltip]="'WORLD_EDITOR.ANIMATE_IDLE_HELP' | translate"
+                ></i>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-animate-walk"
+                  data-testid="view-animate-walk"
+                  [checked]="renderSettings.settings().animateWalk"
+                  (change)="setRenderFlag('animateWalk', $event)"
+                />
+                <label class="form-check-label" for="world-editor-animate-walk">{{ 'WORLD_EDITOR.ANIMATE_WALK' | translate }}</label
+                ><i
+                  class="fas fa-info-circle ms-1"
+                  placement="auto"
+                  container="body"
+                  [tooltip]="'WORLD_EDITOR.ANIMATE_WALK_HELP' | translate"
+                ></i>
+              </div>
+            </section>
             <section class="world-editor-view-group" data-testid="view-group-marker">
               <h6 class="world-editor-view-group-title">{{ 'WORLD_EDITOR.VIEW_MARKER' | translate }}</h6>
               <div class="d-flex align-items-center gap-2">

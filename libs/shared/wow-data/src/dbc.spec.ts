@@ -110,13 +110,13 @@ describe('playerDisplay', () => {
       [2, 1, 1, 1, 4],
       [3, 1, 0, 0, 5],
     ]);
-    expect(playerDisplay(1, 1, charSections, hairGeosets)).toEqual({
+    expect(playerDisplay(1, 1, charSections, hairGeosets)).toMatchObject({
       model: 'Character\\Human\\Female\\HumanFemale.m2',
       scale: 1,
       textures: { 1: 'Character\\Human\\Female\\Skin00_00.blp', 6: 'Character\\Human\\Hair00_00.blp' },
       hairGeoset: 3,
     });
-    expect(playerDisplay(5, 0)).toEqual({ model: 'Character\\Scourge\\Male\\ScourgeMale.m2', scale: 1, textures: {}, hairGeoset: 1 });
+    expect(playerDisplay(5, 0)).toMatchObject({ model: 'Character\\Scourge\\Male\\ScourgeMale.m2', scale: 1, textures: {}, hairGeoset: 1 });
     expect(playerDisplay(9, 0)).toBeUndefined();
     expect(playerDisplay(1, 0, undefined, dbcOf([[1, 1, 0, 0, 0]])).hairGeoset).toBe(1);
   });
@@ -147,7 +147,7 @@ describe('parseCreatureDisplays', () => {
       textures: { 11: 'Creature\\Wolf\\WolfGrey.blp', 13: 'Creature\\Wolf\\WolfEyes.blp' },
     });
     // without the character DBCs, humanoids keep their bare model
-    expect(parsed.get(11)).toEqual({ model: 'Character\\Human\\Male\\HumanMale.mdx', scale: 1, textures: {} });
+    expect(parsed.get(11)).toMatchObject({ model: 'Character\\Human\\Male\\HumanMale.mdx', scale: 1, textures: {} });
     expect(parsed.has(13)).toBe(false);
     expect(parsed.has(14)).toBe(false);
   });
@@ -174,13 +174,49 @@ describe('parseCreatureDisplays', () => {
       10,
     );
     const parsed = parseCreatureDisplays({ displays, models, extras, hairGeosets, charSections });
-    expect(parsed.get(11)).toEqual({
+    expect(parsed.get(11)).toMatchObject({
       model: 'Character\\Human\\Male\\HumanMale.mdx',
       scale: 1,
       textures: { 1: 'Textures\\BakedNpcTextures\\HumanMaleGuard.blp', 6: 'Character\\Human\\Hair04_02.blp' },
       hairGeoset: 5,
     });
-    expect(parsed.get(12)).toEqual({ model: 'Character\\Human\\Male\\HumanMale.mdx', scale: 1, textures: {}, hairGeoset: 1 });
+    expect(parsed.get(12)).toMatchObject({ model: 'Character\\Human\\Male\\HumanMale.mdx', scale: 1, textures: {}, hairGeoset: 1 });
+  });
+
+  it('dresses humanoid NPCs in their equipment: clothes geosets, helmet (hiding the hair), shoulders, facial hair', () => {
+    const items = new Array(11).fill(0);
+    items[0] = 900; // helmet
+    items[1] = 901; // shoulders
+    items[6] = 902; // boots
+    const extras = dbcOf([[50, 1, 0, 0, 0, 4, 2, 3, ...items, 0, 'Bake.blp']], 21);
+    const itemDisplays = dbcOf(
+      [
+        [900, 'Helm_Plate_D_01.mdx', '', 'Helm_Plate_D_01_Tex.blp', '', 0, 0, 0, 0, 0, 0, 0, 0, 7, 8],
+        [901, 'LShoulder_Plate.mdx', 'RShoulder_Plate.mdx', 'Shoulder_Tex.blp', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [902, '', '', '', '', 0, 0, 2, 0, 0, 0, 0, 0, 0, 0],
+      ],
+      25,
+    );
+    const facialHair = dbcOf([[1, 0, 3, 2, 3, 4, 0, 0]], 8);
+    // helmet 7 hides the hair and the ears of humans (bit 0)
+    const helmetVis = dbcOf([[7, 1, 0, 0, 0, 1, 0, 0]], 8);
+    const hairGeosets = dbcOf([[1, 1, 0, 4, 5]]);
+    const display = parseCreatureDisplays({ displays, models, extras, hairGeosets, itemDisplays, facialHair, helmetVis }).get(11);
+    expect(display?.geosets).toEqual([0, 1, 102, 204, 303, 401, 503, 801, 901, 1001, 1101, 1201, 1301, 1501, 1801]);
+    expect(display?.plainGeosets).toEqual([0, 1, 5, 102, 204, 303, 401, 501, 702, 801, 901, 1001, 1101, 1201, 1301, 1501, 1801]);
+    expect(display?.attachments).toEqual([
+      {
+        point: 11,
+        model: 'Item\\ObjectComponents\\Head\\Helm_Plate_D_01_HuM.m2',
+        texture: 'Item\\ObjectComponents\\Head\\Helm_Plate_D_01_Tex.blp',
+      },
+      {
+        point: 6,
+        model: 'Item\\ObjectComponents\\Shoulder\\LShoulder_Plate.m2',
+        texture: 'Item\\ObjectComponents\\Shoulder\\Shoulder_Tex.blp',
+      },
+      { point: 5, model: 'Item\\ObjectComponents\\Shoulder\\RShoulder_Plate.m2', texture: undefined },
+    ]);
   });
 });
 

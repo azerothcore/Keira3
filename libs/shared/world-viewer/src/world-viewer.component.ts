@@ -403,6 +403,9 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
           show: settings.showModels,
           creatureDistance: settings.showCreatureModels ? distances.creatures : 0,
           gameobjectDistance: settings.showGameobjectModels ? distances.gameobjects : 0,
+          equipment: settings.showEquipment,
+          idle: settings.animateIdle,
+          walk: settings.animateWalk,
         });
         this.configureLighting(settings);
         this.world.setFog(settings.fog);
@@ -1518,6 +1521,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       // (at most a tenth of a second at once: a frame after a pause doesn't throw the weather far)
       this.weatherEffect.update(this.world.camera, Math.min(0.1, (now - (this.lastFrame ?? now)) / 1000));
       this.lastFrame = now;
+      this.spawnModels.animate(now);
       this.checkMemory();
       this.placePreviewTo();
       const began = performance.now();
@@ -1526,8 +1530,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       this.countFrame(performance.now() - began);
       this.updateStatus();
       this.updateProbeLabels();
-      // a turning skybox and falling weather keep drawing
-      if (spinning || this.weatherEffect.active) {
+      // a turning skybox, falling weather and animated creatures keep drawing
+      if (spinning || this.weatherEffect.active || this.spawnModels.animating) {
         this.requestRender();
       }
     });

@@ -83,13 +83,16 @@ export class WorldEditorService {
       `((IFNULL(ct.flags_extra, 0) & ${FLAG_EXTRA_TRIGGER}) <> 0 OR ${helperName('ct.name')}) AS isTrigger, ` +
       "IFNULL(ct.AIName, '') AS aiName, IFNULL(ct.ScriptName, '') AS scriptName, " +
       'IFNULL(ct.lootid, 0) AS lootId, IFNULL(ct.pickpocketloot, 0) AS pickpocketLoot, IFNULL(ct.skinloot, 0) AS skinLoot, ' +
-      'IFNULL(ct.faction, 0) AS faction ' +
+      'IFNULL(ct.faction, 0) AS faction, ' +
+      // the items in its hands (equipment_id −1 picks one at random: the first)
+      'IFNULL(ce.ItemID1, 0) AS item1, IFNULL(ce.ItemID2, 0) AS item2, IFNULL(ce.ItemID3, 0) AS item3 ' +
       'FROM creature c ' +
       'LEFT JOIN creature_template ct ON ct.entry = c.id ' +
       'LEFT JOIN creature_template_model ctm ON ctm.CreatureID = c.id AND ctm.Idx = 0 ' +
       'LEFT JOIN creature_model_info cmi ON cmi.DisplayID = ctm.CreatureDisplayID ' +
       'LEFT JOIN creature_addon ca ON ca.guid = c.guid ' +
       'LEFT JOIN creature_template_addon cta ON cta.entry = c.id ' +
+      'LEFT JOIN creature_equip_template ce ON ce.CreatureID = c.id AND ce.ID = IF(c.equipment_id < 0, 1, c.equipment_id) ' +
       `WHERE ${area('c')} LIMIT ${SPAWN_LOAD_LIMIT}`;
 
     const gameobjects =
@@ -714,6 +717,7 @@ function toSpawns(type: SpawnType, rows: SpawnRow[] | undefined): SpawnRecord[] 
     ...(Number(row['faction']) > 0 ? { faction: Number(row['faction']) } : {}),
     ...(row['aiName'] ? { aiName: String(row['aiName']) } : {}),
     ...(row['scriptName'] ? { scriptName: String(row['scriptName']) } : {}),
+    ...weaponsOf(row),
     ...lootOf(row),
   }));
 }
@@ -722,6 +726,12 @@ function toSpawns(type: SpawnType, rows: SpawnRow[] | undefined): SpawnRecord[] 
 /** graveyard_zone.Faction of each side. */
 const TEAM_ALLIANCE = 469;
 const TEAM_HORDE = 67;
+
+/** A creature's items in hand (creature_equip_template), when it has any. */
+function weaponsOf(row: SpawnRow): Pick<SpawnRecord, 'weapons'> {
+  const items = ['item1', 'item2', 'item3'].map((column) => Number(row[column]) || 0);
+  return items.some(Boolean) ? { weapons: items } : {};
+}
 
 function lootOf(row: SpawnRow): Pick<SpawnRecord, 'loot'> {
   const loot = {

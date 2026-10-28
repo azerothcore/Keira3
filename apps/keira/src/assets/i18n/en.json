@@ -1549,6 +1549,13 @@
     "INVISIBLE_WALLS": "Invisible walls",
     "INVISIBLE_WALLS_HELP": "The parts of models the game never draws, like invisible walls and the boxes of smoke emitters (the squares over Orgrimmar): shown see-through in blue",
     "MAP_EDGE": "Map edge",
-    "MAP_EDGE_HELP": "A see-through red wall where the map ends (where its terrain tiles stop)"
+    "MAP_EDGE_HELP": "A see-through red wall where the map ends (where its terrain tiles stop)",
+    "VIEW_COSMETIC": "Cosmetic",
+    "SHOW_EQUIPMENT": "Show equipment",
+    "SHOW_EQUIPMENT_HELP": "NPCs wear their helmet, shoulders and the weapons of their creature_equip_template, and their clothes change their shape (robes, boots, gloves, capes)",
+    "ANIMATE_IDLE": "Idle animation",
+    "ANIMATE_IDLE_HELP": "NPCs and creatures play their standing animation (the view then draws all the time)",
+    "ANIMATE_WALK": "Movement animation",
+    "ANIMATE_WALK_HELP": "Creatures with a path or wandering play their walking animation, in place"
   }
 }

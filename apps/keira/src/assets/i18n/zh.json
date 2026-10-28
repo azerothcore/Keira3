@@ -1549,6 +1549,13 @@
     "INVISIBLE_WALLS": "隐形墙",
     "INVISIBLE_WALLS_HELP": "游戏从不绘制的模型部分，例如隐形墙和烟雾发射器的方框（奥格瑞玛上空的方块）：以半透明蓝色显示",
     "MAP_EDGE": "地图边缘",
-    "MAP_EDGE_HELP": "在地图结束处（地形地块终止处）显示半透明红色墙"
+    "MAP_EDGE_HELP": "在地图结束处（地形地块终止处）显示半透明红色墙",
+    "VIEW_COSMETIC": "外观",
+    "SHOW_EQUIPMENT": "显示装备",
+    "SHOW_EQUIPMENT_HELP": "NPC 佩戴头盔、护肩和 creature_equip_template 中的武器，衣物会改变其外形（长袍、靴子、手套、披风）",
+    "ANIMATE_IDLE": "待机动画",
+    "ANIMATE_IDLE_HELP": "NPC 和生物播放站立动画（视图会持续重绘）",
+    "ANIMATE_WALK": "移动动画",
+    "ANIMATE_WALK_HELP": "有路径或游荡的生物原地播放行走动画"
   }
 }

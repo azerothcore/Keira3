@@ -1,4 +1,16 @@
 import { WorldBounds } from './coords';
+import {
+  CharacterLook,
+  characterAttachments,
+  characterGeosets,
+  ItemDisplay,
+  ModelAttachment,
+  NPC_ITEM_SLOTS,
+  NpcItemSlot,
+  parseFacialHair,
+  parseHelmetVis,
+  parseItemDisplays,
+} from './character';
 
 /** Minimal reader for WotLK `WDBC` client database files (fixed 4-byte fields + string block). */
 export class DbcFile {
@@ -110,6 +122,12 @@ export interface CreatureDisplay {
   textures: Record<number, string>;
   /** Character models (humanoid NPCs) only: the hair geoset to show; other optional geosets use their default. */
   hairGeoset?: number;
+  /** Character models only: the geosets drawn with the NPC's equipment (gloves, boots, robe, cape… and the hair a helmet leaves). */
+  geosets?: number[];
+  /** … and without it. */
+  plainGeosets?: number[];
+  /** Character models only: what the NPC wears at its attachment points (helmet, shoulders). */
+  attachments?: ModelAttachment[];
 }
 
 /** The DBCs `parseCreatureDisplays` reads; the character ones are optional (humanoids then use bare models). */
@@ -119,6 +137,9 @@ export interface CreatureDisplayDbcs {
   extras?: DbcFile;
   hairGeosets?: DbcFile;
   charSections?: DbcFile;
+  itemDisplays?: DbcFile;
+  facialHair?: DbcFile;
+  helmetVis?: DbcFile;
 }
 
 const CHAR_SECTION_HAIR = 3;
@@ -153,6 +174,10 @@ export function parseCreatureDisplays(dbcs: CreatureDisplayDbcs): Map<number, Cr
     }
   }
 
+  const items = dbcs.itemDisplays ? parseItemDisplays(dbcs.itemDisplays) : new Map<number, ItemDisplay>();
+  const facialHair = dbcs.facialHair ? parseFacialHair(dbcs.facialHair) : new Map<string, [number, number, number]>();
+  const helmetVis = dbcs.helmetVis ? parseHelmetVis(dbcs.helmetVis) : undefined;
+
   const displays = new Map<number, CreatureDisplay>();
   const dbc = dbcs.displays;
   for (let r = 0; r < dbc.recordCount; r++) {
@@ -182,6 +207,25 @@ export function parseCreatureDisplays(dbcs: CreatureDisplayDbcs): Map<number, Cr
         textures[6] = hair;
       }
       display.hairGeoset = hairGeosets.get(`${race}:${sex}:${style}`) ?? 1;
+      // 7 FacialHairID, 8..18 NPCItemDisplay (head, shoulder, shirt, chest, belt, legs, boots, wrist, gloves, tabard, cape)
+      const worn: Partial<Record<NpcItemSlot, ItemDisplay>> = {};
+      NPC_ITEM_SLOTS.forEach((slot, i) => {
+        const item = items.get(extra.getUint(extraRecord, 8 + i));
+        if (item) {
+          worn[slot] = item;
+        }
+      });
+      const look: CharacterLook = {
+        race,
+        sex,
+        hair: display.hairGeoset,
+        facial: facialHair.get(`${race}:${sex}:${extra.getUint(extraRecord, 7)}`),
+        items: worn,
+        helmetVis,
+      };
+      display.geosets = characterGeosets(look);
+      display.plainGeosets = characterGeosets({ ...look, items: {} });
+      display.attachments = characterAttachments(look);
     }
     displays.set(dbc.getUint(r, 0), display);
   }
@@ -235,7 +279,16 @@ export function playerDisplay(race: number, sex: number, charSections?: DbcFile,
       hairGeoset = dbc.getUint(r, 4) || 1;
     }
   }
-  return { model: `Character\\${folder}\\${gender}\\${folder}${gender}.m2`, scale: 1, textures, hairGeoset };
+  const geosets = characterGeosets({ race, sex, hair: hairGeoset });
+  return {
+    model: `Character\\${folder}\\${gender}\\${folder}${gender}.m2`,
+    scale: 1,
+    textures,
+    hairGeoset,
+    geosets,
+    plainGeosets: geosets,
+    attachments: [],
+  };
 }
 
 /** An area trigger of AreaTrigger.dbc: a sphere of `radius`, or a box when its length, width and height are set. */

@@ -1,4 +1,6 @@
 import { inject, Service } from '@angular/core';
+import { ItemDisplay, parseItemDbc, parseItemDisplays } from './character';
+import { m2AnimPath, m2Sequences, M2Skeleton } from './m2-animation';
 import { TileCoord, tileKey, WorldBounds, worldToTile } from './coords';
 import {
   AreaTriggerInfo,
@@ -82,7 +84,11 @@ export interface ServerTileCoverage {
 const SERVER_MAP_CACHE = 9;
 
 /** Where parsed models are cached: a new name when what's kept of them changes (v2: each batch's opacity). */
-const M2_CACHE = 'm2-v2';
+const M2_CACHE = 'm2-v3';
+/** Where models' skeletons and animations are cached. */
+const SKELETON_CACHE = 'm2-skeleton-v1';
+/** Item.dbc InventoryType of a shield. */
+const INVENTORY_TYPE_SHIELD = 14;
 /** Particle emitters (smoke, fire, sparks…): a placeholder mesh the game never draws. */
 const EMITTER_MODEL = /emitter[^\\]*\.m2$|\\particleemitters\\/i;
 
@@ -661,6 +667,53 @@ export class WowClientService {
     return mesh;
   }
 
+  /**
+   * The bones and the standing and walking animations of a model (reading the `.anim` files they're kept in), for
+   * creatures and characters; undefined for a model without bones or that can't be read.
+   */
+  async getM2Skeleton(path: string): Promise<M2Skeleton | undefined> {
+    const { identity } = await this.getClient();
+    const key = m2Path(path);
+    const cached = await this.cache.read<{ skeleton?: M2Skeleton }>(identity, SKELETON_CACHE, key);
+    if (cached) {
+      return cached.skeleton;
+    }
+    const model = await this.readFile(key);
+    const skin = model && (await this.readFile(m2SkinPath(path)));
+    if (!model || !skin) {
+      return undefined;
+    }
+    const refs = m2Sequences(model);
+    const anims = new Map<number, Uint8Array>();
+    for (const ref of refs.filter((r) => r.external)) {
+      const file = await this.readFile(m2AnimPath(key, ref));
+      if (file) {
+        anims.set(ref.index, file);
+      }
+    }
+    const skeleton = await this.parser.run({ kind: 'm2Skeleton', model, skin, refs, anims });
+    void this.cache.write(identity, SKELETON_CACHE, key, { skeleton });
+    return skeleton;
+  }
+
+  /** How an item looks when held (Item.dbc → ItemDisplayInfo.dbc), and whether it's a shield. */
+  async getItemDisplay(itemId: number): Promise<{ display: ItemDisplay; shield: boolean } | undefined> {
+    this.itemData ??= Promise.all([this.readDbc('Item.dbc'), this.readDbc('ItemDisplayInfo.dbc')])
+      .then(([items, displays]) => ({
+        items: items ? parseItemDbc(items) : new Map<number, { displayId: number; inventoryType: number }>(),
+        displays: displays ? parseItemDisplays(displays) : new Map<number, ItemDisplay>(),
+      }))
+      .catch((error) => {
+        this.itemData = undefined;
+        throw error;
+      });
+    const { items, displays } = await this.itemData;
+    const item = items.get(itemId);
+    const display = item && displays.get(item.displayId);
+    return display && { display, shield: item.inventoryType === INVENTORY_TYPE_SHIELD };
+  }
+  private itemData?: Promise<{ items: Map<number, { displayId: number; inventoryType: number }>; displays: Map<number, ItemDisplay> }>;
+
   /** Decodes a BLP texture from the archives (e.g. a terrain tileset texture). */
   async getTexture(path: string): Promise<RgbaImage | undefined> {
     const blp = await this.readFile(path);
@@ -890,12 +943,21 @@ export class WowClientService {
   }
 
   private async loadCreatureDisplays(): Promise<Map<number, CreatureDisplay>> {
-    const [displays, models, extras, hairGeosets, charSections] = await Promise.all(
-      ['CreatureDisplayInfo', 'CreatureModelData', 'CreatureDisplayInfoExtra', 'CharHairGeosets', 'CharSections'].map((name) =>
-        this.readDbc(`${name}.dbc`),
-      ),
+    const [displays, models, extras, hairGeosets, charSections, itemDisplays, facialHair, helmetVis] = await Promise.all(
+      [
+        'CreatureDisplayInfo',
+        'CreatureModelData',
+        'CreatureDisplayInfoExtra',
+        'CharHairGeosets',
+        'CharSections',
+        'ItemDisplayInfo',
+        'CharacterFacialHairStyles',
+        'HelmetGeosetVisData',
+      ].map((name) => this.readDbc(`${name}.dbc`)),
     );
-    return displays && models ? parseCreatureDisplays({ displays, models, extras, hairGeosets, charSections }) : new Map();
+    return displays && models
+      ? parseCreatureDisplays({ displays, models, extras, hairGeosets, charSections, itemDisplays, facialHair, helmetVis })
+      : new Map();
   }
 
   private async loadZoneLights(): Promise<Map<number, ZoneLight[]>> {

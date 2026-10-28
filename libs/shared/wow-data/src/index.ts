@@ -21,3 +21,5 @@ export * from './server-map';
 export * from './vmap';
 export * from './perf-log';
 export * from './factions';
+export * from './character';
+export * from './m2-animation';

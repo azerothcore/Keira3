@@ -35,6 +35,8 @@ export interface SpawnRecord {
   scale?: number;
   /** Creatures that wander (MovementType 1): how far from the spawn point (creature.wander_distance). */
   wanderDistance?: number;
+  /** Creatures: the items in their hands (creature_equip_template ItemID1..3 of creature.equipment_id). */
+  weapons?: number[];
   /** Game event the spawn belongs to (game_event_creature / game_event_gameobject with a positive eventEntry). */
   event?: number;
   /** Invisible trigger or "[DND]" helper (CREATURE_FLAG_EXTRA_TRIGGER, or "Trigger" / "Bunny" / "DND" in its name). */
