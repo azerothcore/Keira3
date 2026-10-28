@@ -1,4 +1,12 @@
-import { DEFAULT_SPAWN_FILTERS, isSpawnVisible, loadSpawnFilters, saveSpawnFilters, SPAWN_FILTERS_KEY, spawnEvents } from './spawn-filters';
+import {
+  DEFAULT_SPAWN_FILTERS,
+  isSpawnVisible,
+  loadSpawnFilters,
+  phaseBits,
+  saveSpawnFilters,
+  SPAWN_FILTERS_KEY,
+  spawnEvents,
+} from './spawn-filters';
 import { SpawnRecord } from './world-editor.model';
 
 const spawn = (overrides: Partial<SpawnRecord> = {}): SpawnRecord => ({
@@ -29,12 +37,21 @@ describe('spawn filters', () => {
     expect(isSpawnVisible(spawn({ trigger: true }), { ...DEFAULT_SPAWN_FILTERS, showTriggers: true })).toBe(true);
   });
 
-  it('can hide spawns outside phase 1', () => {
-    const phase1Only = { ...DEFAULT_SPAWN_FILTERS, showOtherPhases: false };
+  it('can hide spawns outside the camera phase', () => {
+    const phase1Only = { ...DEFAULT_SPAWN_FILTERS, onlyVisiblePhases: true };
     expect(isSpawnVisible(spawn({ phaseMask: 2 }), DEFAULT_SPAWN_FILTERS)).toBe(true);
     expect(isSpawnVisible(spawn({ phaseMask: 2 }), phase1Only)).toBe(false);
     expect(isSpawnVisible(spawn({ phaseMask: 3 }), phase1Only)).toBe(true);
     expect(isSpawnVisible(spawn(), phase1Only)).toBe(true);
+    expect(isSpawnVisible(spawn({ phaseMask: 2 }), { ...phase1Only, phase: 6 })).toBe(true);
+    expect(isSpawnVisible(spawn({ phaseMask: 1 }), { ...phase1Only, phase: 6 })).toBe(false);
+  });
+
+  it('lists the phases of a mask', () => {
+    expect(phaseBits(1)).toEqual([1]);
+    expect(phaseBits(6)).toEqual([2, 4]);
+    expect(phaseBits(0)).toEqual([]);
+    expect(phaseBits(0x80000000)).toEqual([0x80000000]);
   });
 
   it('searches the name, entry and guid', () => {
@@ -59,12 +76,18 @@ describe('spawn filters', () => {
 
   it('saves and loads the filters, ignoring invalid values', () => {
     expect(loadSpawnFilters()).toEqual(DEFAULT_SPAWN_FILTERS);
-    const filters = { events: [1, 12], showTriggers: true, showOtherPhases: false, search: 'bunny' };
+    const filters = { events: [1, 12], showTriggers: true, onlyVisiblePhases: true, phase: 4, search: 'bunny', showSelectedEvent: false };
     saveSpawnFilters(filters);
     expect(loadSpawnFilters()).toEqual(filters);
 
-    localStorage.setItem(SPAWN_FILTERS_KEY, JSON.stringify({ events: [1, 'x'], showTriggers: 'yes', showOtherPhases: 0, search: 3 }));
+    localStorage.setItem(
+      SPAWN_FILTERS_KEY,
+      JSON.stringify({ events: [1, 'x'], showTriggers: 'yes', showOtherPhases: 0, phase: 0, search: 3 }),
+    );
     expect(loadSpawnFilters()).toEqual({ ...DEFAULT_SPAWN_FILTERS, events: [1] });
+    // the old "show spawns outside phase 1" switch
+    localStorage.setItem(SPAWN_FILTERS_KEY, JSON.stringify({ showOtherPhases: false }));
+    expect(loadSpawnFilters()).toEqual({ ...DEFAULT_SPAWN_FILTERS, onlyVisiblePhases: true });
     localStorage.setItem(SPAWN_FILTERS_KEY, JSON.stringify({ events: 'all' }));
     expect(loadSpawnFilters()).toEqual(DEFAULT_SPAWN_FILTERS);
     localStorage.setItem(SPAWN_FILTERS_KEY, '{');

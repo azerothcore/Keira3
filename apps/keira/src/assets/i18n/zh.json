@@ -1313,7 +1313,6 @@
     "FILTERS": "筛选",
     "FILTER_SEARCH": "名称、entry 或 GUID",
     "SHOW_TRIGGERS": "显示触发器和 DND 辅助对象",
-    "SHOW_OTHER_PHASES": "显示相位 1 以外的刷新",
     "GAME_EVENTS": "游戏事件",
     "SHOW_ALL": "全部显示",
     "HIDE_ALL": "全部隐藏",
@@ -1488,6 +1487,15 @@
     "LOAD_WHOLE_ZONE_HELP": "加载所选区域的所有地块，而不仅是镜头周围的",
     "TERRAIN_RANGE_HELP": "镜头周围加载多少个地形地块（每块 533 码）",
     "DRAW_DISTANCE_HELP": "离镜头多远绘制装饰物和模型",
-    "ADVANCED_HELP": "为每种类型分别设置距离：大、小装饰物，NPC 和游戏对象"
+    "ADVANCED_HELP": "为每种类型分别设置距离：大、小装饰物，NPC 和游戏对象",
+    "SHOW_SELECTED_EVENT": "显示所选刷新点的事件",
+    "SHOW_SELECTED_EVENT_HELP": "选中隐藏的游戏事件的刷新点时，同时显示该事件的其他刷新点",
+    "EVENT_HIDDEN": "事件已被筛选隐藏",
+    "ONLY_VISIBLE_PHASES": "只显示可见相位",
+    "ONLY_VISIBLE_PHASES_HELP": "隐藏处于镜头相位的玩家看不到的刷新点（其相位掩码与之没有共同相位）",
+    "CAMERA_PHASE": "镜头相位",
+    "CAMERA_PHASE_HELP": "镜头所用的相位掩码，类似玩家的（.modify phase）：点击相位或输入掩码。在刷新点上按住 Alt 可查看其相位",
+    "PHASE": "相位",
+    "ALT_FOR_MORE": "按住 Alt 查看更多"
   }
 }

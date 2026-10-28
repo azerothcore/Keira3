@@ -207,6 +207,7 @@
         [areaTriggers]="worldAreaTriggers()"
         [boundaries]="worldBoundaries()"
         [spawnsLoading]="loadingSpawns()"
+        [cameraPhase]="filters().phase"
         [buildings]="transportBuildings()"
         (probeMoved)="onProbeMoved($event)"
       />
@@ -291,10 +292,51 @@
                   type="checkbox"
                   id="world-editor-filter-phases"
                   data-testid="filter-phases"
-                  [checked]="filter.showOtherPhases"
-                  (change)="setFilterFlag('showOtherPhases', $event)"
+                  [checked]="filter.onlyVisiblePhases"
+                  (change)="setFilterFlag('onlyVisiblePhases', $event)"
                 />
-                <label class="form-check-label" for="world-editor-filter-phases">{{ 'WORLD_EDITOR.SHOW_OTHER_PHASES' | translate }}</label>
+                <label class="form-check-label" for="world-editor-filter-phases">{{ 'WORLD_EDITOR.ONLY_VISIBLE_PHASES' | translate }}</label
+                ><i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'WORLD_EDITOR.ONLY_VISIBLE_PHASES_HELP' | translate"></i>
+              </div>
+              <div class="d-flex align-items-center flex-wrap gap-1" data-testid="filter-phase">
+                <label for="world-editor-filter-phase" class="mb-0 text-nowrap">{{ 'WORLD_EDITOR.CAMERA_PHASE' | translate }}</label
+                ><i class="fas fa-info-circle me-1" placement="auto" [tooltip]="'WORLD_EDITOR.CAMERA_PHASE_HELP' | translate"></i>
+                <div class="btn-group btn-group-sm" role="group">
+                  @for (bit of phaseButtons; track bit) {
+                    <button
+                      type="button"
+                      class="btn btn-outline-secondary px-1 world-editor-phase-bit"
+                      [class.active]="phaseOn(bit)"
+                      [attr.data-testid]="'filter-phase-' + bit"
+                      (click)="togglePhase(bit)"
+                    >
+                      {{ bit }}
+                    </button>
+                  }
+                </div>
+                <input
+                  id="world-editor-filter-phase"
+                  type="number"
+                  min="1"
+                  class="form-control form-control-sm world-editor-phase-mask"
+                  data-testid="filter-phase-mask"
+                  [value]="filter.phase"
+                  (change)="setPhase($event)"
+                />
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-filter-selected-event"
+                  data-testid="filter-selected-event"
+                  [checked]="filter.showSelectedEvent"
+                  (change)="setFilterFlag('showSelectedEvent', $event)"
+                />
+                <label class="form-check-label" for="world-editor-filter-selected-event">{{
+                  'WORLD_EDITOR.SHOW_SELECTED_EVENT' | translate
+                }}</label
+                ><i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'WORLD_EDITOR.SHOW_SELECTED_EVENT_HELP' | translate"></i>
               </div>
             </div>
 
@@ -1984,6 +2026,14 @@
                 <span class="badge bg-info text-dark ms-1" data-testid="selected-sai-path">{{ pathLabel(sai) }}</span>
               }
             </div>
+            @if (spawn.event) {
+              <div class="small mb-1" data-testid="selected-event">
+                <i class="fa fa-calendar-alt me-1"></i>{{ eventLabel(spawn.event) }}
+                @if (!filters().events.includes(spawn.event)) {
+                  <span class="text-muted">· {{ 'WORLD_EDITOR.EVENT_HIDDEN' | translate }}</span>
+                }
+              </div>
+            }
             @if (spawnStored(); as stored) {
               <keira-spawn-panel [spawn]="spawn" [stored]="stored.values" [edits]="spawnEdits()" (edited)="editSpawn($event)" />
             }

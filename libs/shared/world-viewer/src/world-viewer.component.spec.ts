@@ -159,6 +159,7 @@ interface FakeTransformControls extends EventDispatcher<{ 'dragging-changed': { 
       (probed)="probes.push($event)"
       [boundaries]="boundaries()"
       [spawnsLoading]="spawnsLoading()"
+      [cameraPhase]="cameraPhase()"
       [buildings]="buildings()"
       (probeMoved)="probeMoves.push($event)"
       (speedChanged)="speeds.push($event)"
@@ -195,6 +196,7 @@ class HostComponent {
   readonly markers = signal<WorldMarker[]>([]);
   readonly boundaries = signal<WorldBoundary[]>([]);
   readonly spawnsLoading = signal(false);
+  readonly cameraPhase = signal<number | undefined>(undefined);
   readonly buildings = signal<ExtraBuilding[]>([]);
   readonly probe = signal<PathProbeRequest | undefined>(undefined);
   readonly probes: PathProbeResult[] = [];
@@ -841,6 +843,10 @@ describe(WorldViewerComponent.name, () => {
       flushFrames();
       await settle(fixture);
       expect(page.getDebugElementByTestId('world-viewer-area').nativeElement.textContent).toContain('Goldshire (Elwynn Forest)');
+      // the camera's phase, when told
+      expect(page.getDebugElementByTestId('world-viewer-phase', false)).toBeFalsy();
+      await update(() => host.cameraPhase.set(3));
+      expect(page.getDebugElementByTestId('world-viewer-phase').nativeElement.textContent?.trim()).toBe('· WORLD_EDITOR.PHASE 3');
       // a zone without parent; a tile without terrain data; a failure
       areas.fill(5);
       await update(() => host.focus.set(at(100, 0)));
@@ -1069,11 +1075,18 @@ describe(WorldViewerComponent.name, () => {
         ]),
       );
       const canvas = page.canvas().nativeElement;
-      const label = () => page.label().nativeElement.textContent?.trim();
+      const label = () =>
+        page
+          .label()
+          .nativeElement.textContent?.replace(/\s*WORLD_EDITOR\.ALT_FOR_MORE/, '')
+          .trim();
+      const hint = () => !!page.getDebugElementByTestId('world-viewer-label-hint', false);
       page.pointer('pointermove', 50, 50);
       flushFrames();
       fixture.detectChanges();
       expect(label()).toBe('Deputy Willem\nPhase 2\nQuest 1 (A) +1 (Alt)');
+      // the label tells to hold Alt for more, until Alt is held
+      expect(hint()).toBe(true);
 
       canvas.dispatchEvent(new KeyboardEvent('keydown', { key: 'Alt' }));
       // a second key event before the frame doesn't queue another update
@@ -1081,6 +1094,7 @@ describe(WorldViewerComponent.name, () => {
       flushFrames();
       fixture.detectChanges();
       expect(label()).toBe('Deputy Willem\nPhase 2\nQuest 1 (A)\nQuest 2 (B)');
+      expect(hint()).toBe(false);
       canvas.dispatchEvent(new KeyboardEvent('keyup', { key: 'Alt' }));
       flushFrames();
       fixture.detectChanges();
@@ -1092,6 +1106,15 @@ describe(WorldViewerComponent.name, () => {
       flushFrames();
       fixture.detectChanges();
       expect(label()).toBe('Deputy Willem\nPhase 2');
+      expect(hint()).toBe(false);
+      // nothing more with Alt: no hint
+      await update(() =>
+        host.spawns.set([{ ...spawn('creature:7', at(0, 0), 'Deputy Willem'), details: ['Phase 2'], allDetails: ['Phase 2'] }]),
+      );
+      page.pointer('pointermove', 50, 50);
+      flushFrames();
+      fixture.detectChanges();
+      expect(hint()).toBe(false);
       // after leaving the view, Alt does nothing
       page.pointer('pointerleave', 50, 50);
       canvas.dispatchEvent(new KeyboardEvent('keydown', { key: 'Alt' }));

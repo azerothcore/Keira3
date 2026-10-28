@@ -87,6 +87,7 @@ class FakeWorldViewerComponent {
   readonly markers = input<WorldMarker[]>([]);
   readonly groupKeys = input<string[]>([]);
   readonly spawnsLoading = input(false);
+  readonly cameraPhase = input<number | undefined>(undefined);
   readonly buildings = input<{ key: string; path: string }[]>([]);
   readonly simulation = input<MovementSimulation | undefined>(undefined);
   readonly groundQuery = input<{ key: string; position: WorldPosition }[] | undefined>(undefined);
@@ -1638,7 +1639,7 @@ describe(WorldEditorComponent.name, () => {
         spawn('creature', 1, { event: 12, phaseMask: 3, name: 'Headless Horseman' }),
         spawn('creature', 2, { event: 99, phaseMask: 1 }),
         spawn('gameobject', 3, { name: 'Wanted Poster' }),
-        spawn('gameobject', 4),
+        spawn('gameobject', 4, { phaseMask: 0 }),
       ]);
       mocks.service.loadEventNames.mockResolvedValue(new Map([[12, "Hallow's End"]]));
       mocks.service.loadQuests.mockResolvedValue([
@@ -1664,20 +1665,27 @@ describe(WorldEditorComponent.name, () => {
           .spawns()
           .find((s) => s.key === key);
       expect(details('creature:1')?.details).toEqual(["Event 12 (Hallow's End)", 'Phase mask 3']);
+      // with Alt, the phases of the mask and whether the camera's phase sees it
+      expect(details('creature:1')?.allDetails).toEqual([
+        "Event 12 (Hallow's End)",
+        "Phase mask 3 = phases 1 + 2 · seen from the camera's phase 1",
+      ]);
+      expect(details('creature:2')?.allDetails).toContain("Phase mask 1 = phases 1 · seen from the camera's phase 1");
       expect(details('creature:2')?.details).toEqual(['Event 99 (?)', 'Ends quest 7 (Seven)']);
       // gameobjects without a faction: anyone can use them
-      expect(details('gameobject:3')?.details).toEqual([
-        'Interact: everyone',
-        'Starts quest 176 (Wanted: "Hogger")',
-        '+2 more quests, hold Alt for more',
-      ]);
+      expect(details('gameobject:3')?.details).toEqual(['Interact: everyone', 'Starts quest 176 (Wanted: "Hogger")', '+2 more quests']);
       expect(details('gameobject:3')?.allDetails).toEqual([
         'Interact: everyone',
         'Starts quest 176 (Wanted: "Hogger")',
         'Ends quest 177 (?)',
         'Starts quest 178 (Third)',
       ]);
-      expect(details('gameobject:4')?.details).toEqual(['Interact: everyone']);
+      // (a broken mask: in no phase)
+      expect(details('gameobject:4')?.details).toEqual(['Phase mask 0', 'Interact: everyone']);
+      expect(details('gameobject:4')?.allDetails).toEqual([
+        "Phase mask 0 = phases none · not seen from the camera's phase 1",
+        'Interact: everyone',
+      ]);
     });
 
     it('tells who can interact with a spawn, and with Alt each race and the faction', async () => {
@@ -1716,7 +1724,7 @@ describe(WorldEditorComponent.name, () => {
           .viewer()
           .spawns()
           .find((s) => s.key === key);
-      expect(of('creature:1')?.details).toEqual(['Interact: Alliance (Friendly) · Horde no, (Hated)', 'hold Alt for more']);
+      expect(of('creature:1')?.details).toEqual(['Interact: Alliance (Friendly) · Horde no, (Hated)']);
       expect(of('creature:1')?.allDetails).toContain('Faction template 11 (Stormwind)');
       expect(of('creature:1')?.allDetails).toContain('  Human: Friendly (4000)');
       // a template the client doesn't know: nothing said
@@ -1856,6 +1864,21 @@ describe(WorldEditorComponent.name, () => {
       expect(keys()).toContain('creature:4');
       check('event-12', false);
       expect(keys()).not.toContain('creature:4');
+
+      // selecting a spawn of a hidden event (from the list, a search...) shows the event's spawns, unless turned off
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:4', position: { x: 0, y: 0, z: 0 } });
+      page.fixture.detectChanges();
+      expect(page.text('selected-event')).toBe("Event 12 (Hallow's End) · WORLD_EDITOR.EVENT_HIDDEN");
+      expect(keys()).toContain('creature:4');
+      check('filter-selected-event', false);
+      expect(keys()).not.toContain('creature:4');
+      check('filter-selected-event', true);
+      check('event-12', true);
+      expect(page.text('selected-event')).toBe("Event 12 (Hallow's End)");
+      check('event-12', false);
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:1', position: { x: 0, y: 0, z: 0 } });
+      page.fixture.detectChanges();
+      expect(keys()).not.toContain('creature:4');
       page.click('events-all');
       page.fixture.detectChanges();
       expect(keys()).toEqual(expect.arrayContaining(['creature:4', 'creature:5']));
@@ -1878,9 +1901,42 @@ describe(WorldEditorComponent.name, () => {
       expect(gameobject?.details).toEqual(['Phase mask 2', 'Interact: everyone']);
       check('filter-triggers', true);
       expect(keys()).toContain('creature:6');
-      check('filter-phases', false);
+      check('filter-phases', true);
       expect(keys()).not.toContain('gameobject:7');
-      expect(page.text('hidden-count')).toBe('3');
+      // the camera's phase: by its phases or typed in, at least one on; told to the view
+      expect(page.viewer().cameraPhase()).toBe(1);
+      page.click('filter-phase-2');
+      page.fixture.detectChanges();
+      expect(keys()).toContain('gameobject:7');
+      expect(page.viewer().cameraPhase()).toBe(3);
+      expect(
+        page
+          .viewer()
+          .spawns()
+          .find((s) => s.key === 'gameobject:7')?.allDetails?.[0],
+      ).toBe("Phase mask 2 = phases 2 · seen from the camera's phase 3");
+      page.click('filter-phase-1');
+      page.click('filter-phase-2');
+      page.fixture.detectChanges();
+      expect(page.viewer().cameraPhase()).toBe(2);
+      expect(keys()).not.toContain('creature:6');
+      const typePhase = (value: string): void => {
+        const input = page.byId<HTMLInputElement>('filter-phase-mask').nativeElement;
+        input.value = value;
+        input.dispatchEvent(new Event('change'));
+      };
+      typePhase('5');
+      page.fixture.detectChanges();
+      expect(page.viewer().cameraPhase()).toBe(5);
+      expect(keys()).toContain('creature:6');
+      for (const bad of ['0', '1.5', '', '5000000000']) {
+        typePhase(bad);
+      }
+      page.fixture.detectChanges();
+      expect(page.viewer().cameraPhase()).toBe(5);
+      check('filter-phases', false);
+      // only the two event spawns hidden now
+      expect(page.text('hidden-count')).toBe('2');
     });
 
     it('waits for the maps before loading spawns', async () => {

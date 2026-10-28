@@ -49,8 +49,11 @@ describe('WorldCompassComponent', () => {
   it('turns the dial so the way the camera looks is at the top, with the bearing in degrees', () => {
     const { host, page } = setup();
     expect(page.text('world-compass-readout')).toBe('WORLD_EDITOR.COMPASS_N 0°');
-    expect(page.text('world-compass-label-0')).toBe('WORLD_EDITOR.COMPASS_N');
-    expect(page.text('world-compass-label-45')).toBe('WORLD_EDITOR.COMPASS_NE');
+    // the points on the outer ring, the numbers between them inside
+    expect(page.text('world-compass-point-0')).toBe('WORLD_EDITOR.COMPASS_N');
+    expect(page.text('world-compass-point-45')).toBe('WORLD_EDITOR.COMPASS_NE');
+    expect(page.has('world-compass-label-45')).toBe(false);
+    expect(page.has('world-compass-ring')).toBe(true);
     expect(page.text('world-compass-label-15')).toBe('15');
     expect(page.has('world-compass-north')).toBe(true);
     host.heading.set(-312.6);
@@ -76,6 +79,8 @@ describe('WorldCompassComponent', () => {
     expect(page.transform('world-compass-needle')).toBe('rotate(90)');
     expect(page.text('world-compass-readout')).toBe('WORLD_EDITOR.COMPASS_E 90°1600 mil');
     expect(page.text('world-compass-label-0')).toBe('0');
+    expect(page.has('world-compass-point-0')).toBe(false);
+    expect(page.has('world-compass-ring')).toBe(false);
     expect(page.has('world-compass-north')).toBe(false);
     host.degrees.set(false);
     page.fixture.detectChanges();

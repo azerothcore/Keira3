@@ -1,5 +1,8 @@
 <div class="world-compass" data-testid="world-compass" [title]="'WORLD_EDITOR.COMPASS_HELP' | translate">
-  <svg viewBox="-60 -60 120 120" aria-hidden="true">
+  <svg viewBox="-74 -74 148 148" aria-hidden="true">
+    @if (points()) {
+      <circle class="world-compass-ring" data-testid="world-compass-ring" r="72" />
+    }
     <circle class="world-compass-face" r="58" />
     <g data-testid="world-compass-dial" [attr.transform]="'rotate(' + dialRotation() + ')'">
       @for (tick of ticks; track tick) {
@@ -14,21 +17,32 @@
         />
       }
       @for (label of labels; track label.angle) {
-        <text
-          class="world-compass-label"
-          [class.point]="label.point"
-          [class.north]="label.angle === 0"
-          [attr.data-testid]="'world-compass-label-' + label.angle"
-          x="0"
-          y="-39"
-          [attr.transform]="'rotate(' + label.angle + ')'"
-        >
-          @if (label.point && points()) {
-            {{ 'WORLD_EDITOR.COMPASS_' + label.point | translate }}
-          } @else {
+        @if (!(label.point && points())) {
+          <text
+            class="world-compass-label"
+            [class.north]="label.angle === 0"
+            [attr.data-testid]="'world-compass-label-' + label.angle"
+            x="0"
+            y="-40"
+            [attr.transform]="'rotate(' + label.angle + ')'"
+          >
             {{ label.angle }}
-          }
-        </text>
+          </text>
+        }
+      }
+      @if (points()) {
+        @for (label of pointLabels; track label.angle) {
+          <text
+            class="world-compass-label point"
+            [class.north]="label.angle === 0"
+            [attr.data-testid]="'world-compass-point-' + label.angle"
+            x="0"
+            y="-65"
+            [attr.transform]="'rotate(' + label.angle + ')'"
+          >
+            {{ 'WORLD_EDITOR.COMPASS_' + label.point | translate }}
+          </text>
+        }
       }
       @if (northArrow()) {
         <path class="world-compass-north" data-testid="world-compass-north" d="M0,-31 L-5,-21 L5,-21 Z" />
@@ -39,7 +53,7 @@
         <path class="world-compass-needle" d="M0,-30 L-4,0 L0,6 L4,0 Z" />
       </g>
     } @else {
-      <path class="world-compass-lubber" d="M0,-50 L-4,-59 L4,-59 Z" />
+      <path class="world-compass-lubber" d="M0,-50 L-4,-58 L4,-58 Z" />
     }
     <circle class="world-compass-hub" r="3" />
   </svg>

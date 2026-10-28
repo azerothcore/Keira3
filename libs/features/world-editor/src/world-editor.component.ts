@@ -150,7 +150,7 @@ import { SpawnPanelComponent } from './spawn-panel.component';
 import { findSpawnProblems, SpawnProblem } from './spawn-problems';
 import { pathSimulation, wanderSimulation } from './simulation-plan';
 import { formationLinks, formationSlots, groupDetails, poolOverlays } from './spawn-groups';
-import { isSpawnVisible, loadSpawnFilters, saveSpawnFilters, SpawnFilters, spawnEvents } from './spawn-filters';
+import { isSpawnVisible, loadSpawnFilters, phaseBits, saveSpawnFilters, SpawnFilters, spawnEvents } from './spawn-filters';
 
 /** "Marshal McBride - Creature (GUID: 1, Entry: 197)", as shown on hover and in the selection panel. */
 export function spawnTitle(spawn: { type: SpawnType; name: string; guid: number; entry: number }): string {
@@ -847,7 +847,8 @@ export class WorldEditorComponent implements OnInit {
 
   /** Spawns the filters (and the difficulty) let through; the paths they walk are the only ones drawn. */
   private readonly visibleSpawns = computed(() => {
-    const filters = this.filters();
+    const selectedEvent = this.filters().showSelectedEvent ? this.selectedSpawn()?.event : undefined;
+    const filters = selectedEvent ? { ...this.filters(), events: [...this.filters().events, selectedEvent] } : this.filters();
     const difficulty = this.difficulties().length ? this.difficulty() : undefined;
     return this.spawns().filter(
       (s) => isSpawnVisible(s, filters) && (difficulty === undefined || ((s.spawnMask ?? 1) & (1 << difficulty)) !== 0),
@@ -967,15 +968,30 @@ export class WorldEditorComponent implements OnInit {
   protected readonly spawnTitle = spawnTitle;
   protected readonly pathLabel = pathLabel;
 
+  /** "Event 26 (Festive mug)": a game event with its name, when known. */
+  protected eventLabel(id: number): string {
+    return `Event ${id} (${this.eventNames().get(id) || '?'})`;
+  }
+
   /** Hover lines of a spawn: its event, its phase when not 1, and its quests (all of them with Alt). */
   private spawnDetails(spawn: SpawnRecord): { details?: string[]; allDetails?: string[] } {
     const lines: string[] = [];
     if (spawn.event) {
-      lines.push(`Event ${spawn.event} (${this.eventNames().get(spawn.event) || '?'})`);
+      lines.push(this.eventLabel(spawn.event));
     }
+    // (where the phase goes, also with Alt)
+    const phaseAt = lines.length;
     if (spawn.phaseMask !== undefined && spawn.phaseMask !== 1) {
       lines.push(`Phase mask ${spawn.phaseMask}`);
     }
+    // with Alt: the phases of its mask, and whether the camera's phase sees it
+    const phaseDetails =
+      spawn.phaseMask === undefined
+        ? []
+        : [
+            `Phase mask ${spawn.phaseMask} = phases ${phaseBits(spawn.phaseMask).join(' + ') || 'none'} · ` +
+              `${spawn.phaseMask & this.filters().phase ? 'seen' : 'not seen'} from the camera's phase ${this.filters().phase}`,
+          ];
     const bounds = this.renderSettings.settings().showBounds ? spawnBounds(spawn) : undefined;
     if (bounds) {
       // the server's melee range against a player (combat reach 1.5): both reaches + 4/3, at least 5 yards
@@ -997,18 +1013,20 @@ export class WorldEditorComponent implements OnInit {
     const quests = (this.quests().get(`${spawn.type}:${spawn.entry}`) ?? []).map(
       (q) => `${q.role === 'starts' ? 'Starts' : 'Ends'} quest ${q.quest} (${q.title || '?'})`,
     );
-    if (lines.length === 0 && quests.length === 0) {
+    if (lines.length === 0 && quests.length === 0 && phaseDetails.length === 0) {
       return {};
     }
+    // (the view tells to hold Alt when there is more)
     const more = quests.length - HOVER_QUESTS;
-    const hidden = more > 0 || factionDetails.length > 0;
     return {
-      details: [
-        ...lines,
-        ...quests.slice(0, HOVER_QUESTS),
-        ...(hidden ? [`${more > 0 ? `+${more} more quests, ` : ''}hold Alt for more`] : []),
+      details: [...lines, ...quests.slice(0, HOVER_QUESTS), ...(more > 0 ? [`+${more} more quests`] : [])],
+      allDetails: [
+        ...lines.slice(0, phaseAt),
+        ...phaseDetails,
+        ...lines.slice(phaseAt).filter((line) => !line.startsWith('Phase mask')),
+        ...quests,
+        ...factionDetails,
       ],
-      allDetails: [...lines, ...quests, ...factionDetails],
     };
   }
 
@@ -1800,8 +1818,30 @@ export class WorldEditorComponent implements OnInit {
     saveSpawnFilters(filters);
   }
 
-  protected setFilterFlag(key: 'showTriggers' | 'showOtherPhases', event: Event): void {
+  protected setFilterFlag(key: 'showTriggers' | 'onlyVisiblePhases' | 'showSelectedEvent', event: Event): void {
     this.setFilters({ [key]: (event.target as HTMLInputElement).checked });
+  }
+
+  /** Turns one phase (bit) of the camera's phase mask on or off; at least one stays on. */
+  protected togglePhase(bit: number): void {
+    const phase = this.filters().phase ^ bit;
+    if (phase) {
+      this.setFilters({ phase });
+    }
+  }
+
+  /** The camera's phase mask, typed in. */
+  protected setPhase(event: Event): void {
+    const phase = positiveNumber(event);
+    if (phase && Number.isInteger(phase) && phase <= 0xffffffff) {
+      this.setFilters({ phase });
+    }
+  }
+
+  protected readonly phaseButtons = [1, 2, 4, 8, 16, 32, 64, 128];
+
+  protected phaseOn(bit: number): boolean {
+    return (this.filters().phase & bit) !== 0;
   }
 
   protected setFilterSearch(event: Event): void {

@@ -1313,7 +1313,6 @@
     "FILTERS": "Filtros",
     "FILTER_SEARCH": "Nombre, entry o GUID",
     "SHOW_TRIGGERS": "Mostrar triggers y ayudantes DND",
-    "SHOW_OTHER_PHASES": "Mostrar spawns fuera de la fase 1",
     "GAME_EVENTS": "Eventos del juego",
     "SHOW_ALL": "Mostrar todos",
     "HIDE_ALL": "Ocultar todos",
@@ -1488,6 +1487,15 @@
     "LOAD_WHOLE_ZONE_HELP": "Carga todas las casillas de la zona elegida, no solo las cercanas a la cámara",
     "TERRAIN_RANGE_HELP": "Cuántas casillas de terreno (533 yardas cada una) se cargan alrededor de la cámara",
     "DRAW_DISTANCE_HELP": "Hasta qué distancia de la cámara se dibujan doodads y modelos",
-    "ADVANCED_HELP": "Una distancia para cada tipo: doodads grandes y pequeños, PNJ y gameobjects"
+    "ADVANCED_HELP": "Una distancia para cada tipo: doodads grandes y pequeños, PNJ y gameobjects",
+    "SHOW_SELECTED_EVENT": "Mostrar el evento del spawn seleccionado",
+    "SHOW_SELECTED_EVENT_HELP": "Mientras un spawn de un evento oculto está seleccionado, también se muestran los demás spawns de ese evento",
+    "EVENT_HIDDEN": "evento oculto por los filtros",
+    "ONLY_VISIBLE_PHASES": "Mostrar solo las fases visibles",
+    "ONLY_VISIBLE_PHASES_HELP": "Oculta los spawns que un jugador en la fase de la cámara no vería (su máscara de fase no comparte ninguna fase con ella)",
+    "CAMERA_PHASE": "Fase de la cámara",
+    "CAMERA_PHASE_HELP": "La máscara de fase con la que ve la cámara, como la de un jugador (.modify phase): pulsa las fases o escribe la máscara. Mantén Alt sobre un spawn para ver sus fases",
+    "PHASE": "Fase",
+    "ALT_FOR_MORE": "Mantén Alt para ver más"
   }
 }

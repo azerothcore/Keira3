@@ -1313,7 +1313,6 @@
     "FILTERS": "Filters",
     "FILTER_SEARCH": "Name, entry or GUID",
     "SHOW_TRIGGERS": "Show triggers and DND helpers",
-    "SHOW_OTHER_PHASES": "Show spawns outside phase 1",
     "GAME_EVENTS": "Game events",
     "SHOW_ALL": "Show all",
     "HIDE_ALL": "Hide all",
@@ -1488,6 +1487,15 @@
     "LOAD_WHOLE_ZONE_HELP": "Loads every tile of the zone chosen, not only those around the camera",
     "TERRAIN_RANGE_HELP": "How many terrain tiles (533 yards each) are loaded around the camera",
     "DRAW_DISTANCE_HELP": "How far from the camera doodads and models are drawn",
-    "ADVANCED_HELP": "A draw distance for each kind: large and small doodads, NPCs and gameobjects"
+    "ADVANCED_HELP": "A draw distance for each kind: large and small doodads, NPCs and gameobjects",
+    "SHOW_SELECTED_EVENT": "Show the selected spawn's event",
+    "SHOW_SELECTED_EVENT_HELP": "While a spawn of a hidden game event is selected, the other spawns of that event show too",
+    "EVENT_HIDDEN": "event hidden by the filters",
+    "ONLY_VISIBLE_PHASES": "Only show visible phases",
+    "ONLY_VISIBLE_PHASES_HELP": "Hides the spawns a player in the camera's phase wouldn't see (their phase mask shares no phase with it)",
+    "CAMERA_PHASE": "Camera phase",
+    "CAMERA_PHASE_HELP": "The phase mask the camera sees with, like a player's (.modify phase): click the phases or type the mask. Hold Alt over a spawn to see its phases",
+    "PHASE": "Phase",
+    "ALT_FOR_MORE": "Hold Alt for more"
   }
 }

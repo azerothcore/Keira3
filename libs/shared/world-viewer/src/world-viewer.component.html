@@ -21,6 +21,9 @@
   @if (hoverLabel(); as label) {
     <div class="world-viewer-label" data-testid="world-viewer-label" [style.left.px]="label.x" [style.top.px]="label.y">
       {{ label.text }}
+      @if (label.more) {
+        <div class="world-viewer-label-hint" data-testid="world-viewer-label-hint">{{ 'WORLD_EDITOR.ALT_FOR_MORE' | translate }}</div>
+      }
     </div>
   }
 
@@ -55,6 +58,9 @@
       {{ 'WORLD_EDITOR.CAMERA' | translate }}: X {{ target.x }} Y {{ target.y }} Z {{ target.z }}
       @if (areaName(); as area) {
         <span class="world-viewer-area" data-testid="world-viewer-area">· {{ area }}</span>
+      }
+      @if (cameraPhase(); as phase) {
+        <span class="world-viewer-phase" data-testid="world-viewer-phase">· {{ 'WORLD_EDITOR.PHASE' | translate }} {{ phase }}</span>
       }
     </div>
     @if (navMeshInfo(); as info) {

@@ -1,15 +1,21 @@
 .world-compass {
-  width: 112px;
+  width: 132px;
   pointer-events: none;
   user-select: none;
   text-align: center;
 
   svg {
-    width: 112px;
-    height: 112px;
+    width: 132px;
+    height: 132px;
     display: block;
     filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.6));
   }
+}
+
+.world-compass-ring {
+  fill: rgba(12, 14, 17, 0.8);
+  stroke: #8a8a8a;
+  stroke-width: 1;
 }
 
 .world-compass-face {
@@ -34,7 +40,7 @@
   dominant-baseline: middle;
 
   &.point {
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 700;
     fill: #f0c675;
   }

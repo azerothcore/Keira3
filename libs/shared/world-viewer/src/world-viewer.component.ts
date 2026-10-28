@@ -146,6 +146,8 @@ const MIN_LOOK_ANGLE = 0.05;
 
 interface HoverLabel {
   text: string;
+  /** Holding Alt shows more (a spawn's every detail). */
+  more?: boolean;
   x: number;
   y: number;
 }
@@ -257,6 +259,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   readonly markerLookAt = input<WorldPosition | undefined>(undefined);
   /** The editor is loading the spawns around the camera (shown in the same loading bar). */
   readonly spawnsLoading = input(false);
+  /** The camera's phase mask (from the editor's filters), shown with its position. */
+  readonly cameraPhase = input<number | undefined>(undefined);
   /** Where the camera looks (degrees clockwise from north), for the compass. */
   protected readonly heading = signal(0);
   /** Server position the camera looks at, for the readout in the corner. */
@@ -737,7 +741,10 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     const result = this.pickAt(event, HOVER_PICK);
     const text = result && this.textOf(result);
     const rect = this.host().nativeElement.getBoundingClientRect();
-    this.hoverLabel.set(text ? { text, x: event.clientX - rect.left + 14, y: event.clientY - rect.top + 14 } : undefined);
+    const spawn = result && 'key' in result ? this.spawns().find((s) => s.key === result.key) : undefined;
+    // (String() of the arrays: the same lines, or none of either)
+    const more = !this.altHeld && !!spawn?.allDetails && String(spawn.allDetails) !== String(spawn.details);
+    this.hoverLabel.set(text ? { text, more, x: event.clientX - rect.left + 14, y: event.clientY - rect.top + 14 } : undefined);
   }
 
   protected onPointerLeave(): void {
