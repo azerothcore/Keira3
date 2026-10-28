@@ -2146,10 +2146,14 @@ describe(WorldEditorComponent.name, () => {
       expect(keys()).not.toContain('gameobject:7');
       // the camera's phase: by its phases or typed in, at least one on; told to the view
       expect(page.viewer().cameraPhase()).toBe(1);
+      // (choosing a phase turns "only visible phases" on)
+      check('filter-phases', false);
       page.click('filter-phase-2');
       page.fixture.detectChanges();
+      expect(page.byId<HTMLInputElement>('filter-phases').nativeElement.checked).toBe(true);
       expect(keys()).toContain('gameobject:7');
       expect(page.viewer().cameraPhase()).toBe(3);
+      expect(page.text('filter-phase-parts')).toBe('= 1 + 2');
       expect(
         page
           .viewer()

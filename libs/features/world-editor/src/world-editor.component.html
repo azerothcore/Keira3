@@ -387,6 +387,7 @@
                   [value]="filter.phase"
                   (change)="setPhase($event)"
                 />
+                <small class="text-muted" data-testid="filter-phase-parts">= {{ phaseParts() }}</small>
               </div>
               <div class="form-check form-switch mb-0">
                 <input

@@ -1964,19 +1964,27 @@ export class WorldEditorComponent implements OnInit {
     this.setFilters({ [key]: (event.target as HTMLInputElement).checked });
   }
 
-  /** Turns one phase (bit) of the camera's phase mask on or off; at least one stays on. */
+  /**
+   * Turns one phase (bit) of the camera's phase mask on or off; at least one stays on. Choosing a phase also turns
+   * "Only show visible phases" on: that's what one picks a phase for.
+   */
   protected togglePhase(bit: number): void {
     const phase = this.filters().phase ^ bit;
     if (phase) {
-      this.setFilters({ phase });
+      this.setFilters({ phase, onlyVisiblePhases: true });
     }
+  }
+
+  /** "2 + 4": the phases of the camera's mask. */
+  protected phaseParts(): string {
+    return phaseBits(this.filters().phase).join(' + ');
   }
 
   /** The camera's phase mask, typed in. */
   protected setPhase(event: Event): void {
     const phase = positiveNumber(event);
     if (phase && Number.isInteger(phase) && phase <= 0xffffffff) {
-      this.setFilters({ phase });
+      this.setFilters({ phase, onlyVisiblePhases: true });
     }
   }
 
