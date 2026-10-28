@@ -45,6 +45,8 @@ export interface WowNativeApi {
   fileSizesAsync(path: string): Promise<Record<string, number>>;
   /** Where Keira keeps data it can rebuild (the user's local application data). */
   cacheDirectory(): string;
+  /** The memory Keira's window takes (bytes, its resident set), and the computer's in all. */
+  memoryUsage(): { used: number; total: number };
   /** Turns plain data (objects, arrays, typed arrays…) into compact bytes, and back (compressed off the window's thread). */
   pack(value: unknown): Promise<Uint8Array>;
   unpack<T>(bytes: Uint8Array): Promise<T>;

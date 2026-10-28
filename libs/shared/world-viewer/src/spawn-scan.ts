@@ -1,4 +1,4 @@
-import { TileCoord, worldToTile, WorldPosition, tileKey } from '@keira/shared/wow-data';
+import { serverTerrainHeightAt, TileCoord, worldToTile, WorldPosition, tileKey } from '@keira/shared/wow-data';
 import { RebuildGeometry } from './navmesh-rebuild';
 import { collectServerTileGeometry, ServerGeometrySource } from './server-geometry';
 import { SpawnKind } from './world-viewer.model';
@@ -153,12 +153,18 @@ export async function scanSpawnPositions(
     if (cancelled()) {
       break;
     }
-    const geometry = await collect(source, mapId, tile).catch(() => undefined);
+    const [geometry, terrain] = await Promise.all([
+      collect(source, mapId, tile).catch(() => undefined),
+      source.getServerMap(mapId, tile).catch(() => undefined),
+    ]);
     if (geometry) {
       const grid = new FloorGrid(geometry);
       for (const spawn of here) {
         const { x, y } = spawn.position;
-        results.push(judgeSpawn(spawn, grid.heightsAt(x, y), grid.heightsAt(x, y, false)));
+        // (the navigation mesh's input leaves out the terrain under water: the terrain itself is added)
+        const ground = terrain && serverTerrainHeightAt(terrain, x, y);
+        const floors = [...grid.heightsAt(x, y), ...(ground === undefined ? [] : [ground])].sort((a, b) => b - a);
+        results.push(judgeSpawn(spawn, floors, grid.heightsAt(x, y, false)));
       }
     }
     onProgress(++done, byTile.size);

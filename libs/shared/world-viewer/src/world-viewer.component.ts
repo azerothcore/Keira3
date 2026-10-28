@@ -1,3 +1,4 @@
+import { formatBytes, sceneGpuBytes } from './memory-budget';
 import { GamepadInputService } from './gamepad-input';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SKYBOX_SPIN, WorldSkybox } from './world-skybox';
@@ -104,8 +105,6 @@ interface ViewerStats {
   geometries: number;
   textures: number;
   programs: number;
-  /** JavaScript memory in use (MB), where the browser tells it. */
-  heapMb?: number;
   tiles: number;
   buildings: number;
   props: number;
@@ -138,6 +137,9 @@ const RECHECK_DELAY = 500;
 const ACTIVITY_POLL = 250;
 /** How often (ms) the time of day is checked when it follows the computer's clock. */
 const CLOCK_CHECK = 60_000;
+/** How often (ms) the memory is measured (with the stats shown or a limit set), and the limits kept. */
+const MEMORY_CHECK = 2000;
+const MB = 1_000_000;
 /** How fast (radians per second) the camera turns around what it looks at (gamepad right stick); and how close to straight down or level it may look. */
 const TURN_SPEED = 1.5;
 const MIN_LOOK_ANGLE = 0.05;
@@ -1433,6 +1435,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       this.frameRequested = false;
       this.world.updateMarkerScale();
       const spinning = this.updateSkybox();
+      this.checkMemory();
       this.placePreviewTo();
       const began = performance.now();
       perfTime('render', () => this.renderer?.render(this.world.scene, this.world.camera));
@@ -1455,6 +1458,44 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       this.requestRender();
     }
   }
+
+  /**
+   * The memory in use: Keira's window (and the computer's in all, in the desktop app; the JavaScript heap where the
+   * browser tells it, otherwise) and an estimate of what the view puts on the graphics card. Over a limit (View >
+   * Debugging), what was read and isn't drawn is let go, and nothing is loaded ahead until back under.
+   */
+  protected readonly memory = signal<{ used?: number; total?: number; gpu: number; over: boolean } | undefined>(undefined);
+  private memoryCheckedAt = -Infinity;
+  private overBudget = false;
+
+  private checkMemory(): void {
+    const settings = this.renderSettings();
+    const now = performance.now();
+    if ((!settings.showStats && !settings.memoryCapMb && !settings.gpuCapMb) || now - this.memoryCheckedAt < MEMORY_CHECK) {
+      return;
+    }
+    this.memoryCheckedAt = now;
+    const heap = (performance as unknown as { memory?: { usedJSHeapSize: number } }).memory?.usedJSHeapSize;
+    const ram = this.client.memoryUsage() ?? (heap === undefined ? undefined : { used: heap, total: undefined });
+    const gpu = sceneGpuBytes(this.world.scene);
+    const overRam = !!settings.memoryCapMb && !!ram && ram.used > settings.memoryCapMb * MB;
+    const overGpu = !!settings.gpuCapMb && gpu > settings.gpuCapMb * MB;
+    if (overRam) {
+      this.client.trimMemory();
+    }
+    if (overRam || overGpu) {
+      this.textures.release(this.world.scene, 0, true);
+    }
+    if (overRam || overGpu || this.overBudget) {
+      this.overBudget = overRam || overGpu;
+      const rings = this.overBudget ? 0 : settings.loadAhead;
+      this.prefetch.configure({ rings, radius: settings.terrainRadius, detailed: !settings.lowDetailTerrain });
+    }
+    this.memory.set({ used: ram?.used, total: ram?.total, gpu, over: this.overBudget });
+  }
+
+  protected readonly formatBytes = formatBytes;
+  protected readonly MB = MB;
 
   /** The placing preview under the cursor, or at the crosshair while the cursor is out of the view. */
   private placePreviewTo(): void {
@@ -1533,7 +1574,6 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       return;
     }
     const info = this.renderer?.info;
-    const heap = (performance as unknown as { memory?: { usedJSHeapSize: number } }).memory?.usedJSHeapSize;
     this.stats.set({
       fps: window.start ? Math.round((window.frames * 1000) / (now - window.start)) : 0,
       frameMs: window.ms / window.frames,
@@ -1542,7 +1582,6 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       geometries: info?.memory.geometries ?? 0,
       textures: info?.memory.textures ?? 0,
       programs: info?.programs?.length ?? 0,
-      heapMb: heap === undefined ? undefined : Math.round(heap / 1_000_000),
       tiles: this.world.terrainKeys.length,
       buildings: this.objects.placedCount,
       props: this.doodads.drawnCount,

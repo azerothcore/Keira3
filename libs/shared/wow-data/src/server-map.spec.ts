@@ -1,6 +1,7 @@
 import { buildServerMap } from './server-data.mock';
 import {
   LIQUID_DARK_WATER,
+  serverTerrainHeightAt,
   parseServerMap,
   serverAreaAt,
   serverHeightAt,
@@ -77,5 +78,23 @@ describe('server maps', () => {
     // one level everywhere, and no liquid at all
     expect(serverLiquidAt({ liquid: { ...tile.liquid!, heights: undefined, level: 3 } }, at(1), at(1))).toEqual({ level: 3, types: 18 });
     expect(serverLiquidAt({}, 0, 0)).toBeUndefined();
+  });
+
+  it('tells the terrain height inside a square from its corners and centre, like the server', () => {
+    // corners rising with the column (server y going down), the centre in between
+    const v9 = new Float32Array(129 * 129).map((_, i) => i % 129);
+    const v8 = new Float32Array(128 * 128).map((_, i) => (i % 128) + 0.5);
+    const tile: ServerMapTile = { v9, v8 };
+    const at = (row: number, col: number) => [-(row * TILE_SIZE) / 128, -(col * TILE_SIZE) / 128] as const;
+    // each of the four triangles of square (10, 20) gives the plane's height
+    for (const [row, col] of [
+      [10.6, 20.2],
+      [10.2, 20.6],
+      [10.9, 20.7],
+      [10.7, 20.9],
+    ]) {
+      expect(serverTerrainHeightAt(tile, ...at(row, col))).toBeCloseTo(col, 3);
+    }
+    expect(serverTerrainHeightAt({ v9 }, 0, 0)).toBeUndefined();
   });
 });

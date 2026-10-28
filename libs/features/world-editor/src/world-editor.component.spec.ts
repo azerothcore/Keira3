@@ -750,6 +750,17 @@ describe(WorldEditorComponent.name, () => {
       page.fixture.detectChanges();
       expect(page.viewer().renderSettings().showNavMesh).toBe(true);
       expect(page.viewer().renderSettings().fog).toBe(false);
+      const memoryCap = page.byId<HTMLSelectElement>('view-memoryCapMb').nativeElement;
+      expect(Array.from(memoryCap.options, (o) => o.textContent?.trim())).toEqual([
+        'WORLD_EDITOR.NO_LIMIT',
+        '512 MB',
+        '1 GB',
+        '2 GB',
+        '4 GB',
+        '8 GB',
+      ]);
+      memoryCap.value = '1024';
+      memoryCap.dispatchEvent(new Event('change'));
       page.byId<HTMLInputElement>('view-marker-liquid').nativeElement.click();
       page.fixture.detectChanges();
       expect(page.viewer().renderSettings().markerOnLiquid).toBe(true);
@@ -825,6 +836,7 @@ describe(WorldEditorComponent.name, () => {
         showFacingArrows: false,
         zoneLighting: false,
         fog: false,
+        memoryCapMb: 1024,
         markerOnLiquid: true,
         skybox: false,
         skyboxModel: 'Environments\\Stars\\Stars.m2',
@@ -3086,7 +3098,10 @@ describe(WorldEditorComponent.name, () => {
       expect(page.text('scan-level-bad')).toBe('! 1');
       // worst first; green ones listed when asked
       expect(page.queryAll('[data-testid^="scan-creature"], [data-testid^="scan-gameobject"]').length).toBe(2);
-      expect(page.text('scan-gameobject:3')).toContain('3 (gameobject 3)');
+      expect(page.text('scan-gameobject:3')).toContain('3 (3)');
+      // creatures and objects apart
+      expect(page.text('scan-group-creature')).toBe('WORLD_EDITOR.CREATURES (1)');
+      expect(page.text('scan-group-gameobject')).toBe('WORLD_EDITOR.GAMEOBJECTS (1)');
       page.click('scan-level-ok');
       page.fixture.detectChanges();
       expect(page.text('scan-creature:4')).toContain('Flying');
@@ -3103,7 +3118,7 @@ describe(WorldEditorComponent.name, () => {
       expect(page.viewer().focus()).toEqual({ x: CENTER.x, y: CENTER.y, z: 45 });
       page.click('scan-close');
       page.fixture.detectChanges();
-      expect(page.byId('scan-list', false)).toBeFalsy();
+      expect(page.byId('scan-list-creature', false)).toBeFalsy();
       // cancelled; and a failure
       let answer: (rows: unknown[]) => void = () => undefined;
       mocks.service.loadMapSpawnPositions.mockReturnValueOnce(new Promise((resolve) => (answer = resolve)));

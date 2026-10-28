@@ -42,6 +42,7 @@ import { WorldScene } from './world-scene';
 import { PathProber, PathProbeRequest, PathProbeResult } from './path-probe';
 import { WorldNavMesh } from './world-navmesh';
 import { ZoneLighting } from './zone-lighting';
+import { TextureCache } from './texture-cache';
 import { SpawnModels } from './spawn-models';
 import { GamepadInputService, PadInput } from './gamepad-input';
 import { Subject } from 'rxjs';
@@ -301,6 +302,8 @@ describe(WorldViewerComponent.name, () => {
     getAreaNames: vi.fn(),
     getPlayerDisplay: vi.fn(),
     getGpuTexture: vi.fn(),
+    memoryUsage: vi.fn(),
+    trimMemory: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -460,16 +463,44 @@ describe(WorldViewerComponent.name, () => {
     await draw();
     await draw();
     expect(page.getDebugElementByTestId('world-viewer-stats').nativeElement.textContent).toContain('WORLD_EDITOR.STATS_DRAWS 0');
-    expect(page.getDebugElementByTestId('world-viewer-stats').nativeElement.textContent).not.toContain('MB');
+    expect(page.getDebugElementByTestId('world-viewer-memory', false)).toBeFalsy();
     renderer.info = { render: { calls: 12, triangles: 3400 }, memory: { geometries: 5, textures: 7 }, programs: [1, 2] };
     Object.defineProperty(performance, 'memory', { configurable: true, value: { usedJSHeapSize: 250_000_000 } });
     try {
+      // (memory is measured every 2 seconds)
+      clock.now += 3000;
       await draw();
       const text = page.getDebugElementByTestId('world-viewer-stats').nativeElement.textContent.replace(/\s+/g, ' ');
       expect(text).toContain('WORLD_EDITOR.STATS_DRAWS 12 · WORLD_EDITOR.STATS_TRIANGLES 3400');
       expect(text).toContain('5 WORLD_EDITOR.STATS_GEOMETRIES · 7 WORLD_EDITOR.STATS_TEXTURES · 2 WORLD_EDITOR.STATS_SHADERS');
       expect(text).toContain('WORLD_EDITOR.STATS_MEMORY 250 MB');
       // off: hidden
+      expect(text).toContain('WORLD_EDITOR.STATS_GPU_MEMORY ~');
+      // the desktop app: the window's memory and the computer's; over the limits set, what isn't used is let go
+      client.memoryUsage.mockReturnValue({ used: 2_000_000_000, total: 8_000_000_000 });
+      const release = vi.spyOn(TextureCache.prototype, 'release');
+      host.render.set({ ...DEFAULT_WORLD_RENDER_SETTINGS, showStats: true, memoryCapMb: 1024, gpuCapMb: 1 });
+      clock.now += 3000;
+      await draw();
+      const capped = page.getDebugElementByTestId('world-viewer-stats').nativeElement.textContent.replace(/\s+/g, ' ');
+      expect(capped).toContain('WORLD_EDITOR.STATS_MEMORY 2.0 GB / 8.0 GB (WORLD_EDITOR.STATS_CAPPED 1.0 GB)');
+      expect(capped).toContain('(WORLD_EDITOR.STATS_CAPPED 1 MB)');
+      expect(capped).toContain('WORLD_EDITOR.STATS_OVER');
+      expect(client.trimMemory).toHaveBeenCalled();
+      expect(release).toHaveBeenCalledWith(expect.anything(), 0, true);
+      // back under: loading ahead again
+      client.memoryUsage.mockReturnValue({ used: 100_000_000, total: 8_000_000_000 });
+      host.render.set({ ...DEFAULT_WORLD_RENDER_SETTINGS, showStats: true, memoryCapMb: 1024 });
+      clock.now += 3000;
+      await draw();
+      expect(page.getDebugElementByTestId('world-viewer-over-budget', false)).toBeFalsy();
+      // a limit without the stats still measures; nothing measured too often
+      host.render.set({ ...DEFAULT_WORLD_RENDER_SETTINGS, memoryCapMb: 1024 });
+      clock.now += 3000;
+      await draw();
+      await draw();
+      release.mockRestore();
+      client.memoryUsage.mockReturnValue(undefined);
       host.render.set(DEFAULT_WORLD_RENDER_SETTINGS);
       await draw();
       expect(page.getDebugElementByTestId('world-viewer-stats', false)).toBeFalsy();

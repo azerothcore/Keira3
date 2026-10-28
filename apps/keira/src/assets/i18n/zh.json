@@ -1452,6 +1452,13 @@
     "CONTROL_TURNLEFT": "向左转",
     "CONTROL_TURNRIGHT": "向右转",
     "CONTROL_LOOKUP": "向上看",
-    "CONTROL_LOOKDOWN": "向下看"
+    "CONTROL_LOOKDOWN": "向下看",
+    "MEMORY_CAP": "内存上限",
+    "GPU_CAP": "显存上限",
+    "NO_LIMIT": "不限制",
+    "MEMORY_CAP_HELP": "超过上限时，会释放已读取但未绘制的内容，并在回到上限以下前不再预先加载（在性能统计中显示）",
+    "STATS_CAPPED": "上限",
+    "STATS_GPU_MEMORY": "显存",
+    "STATS_OVER": "超过上限：正在释放未绘制的内容，暂停预加载"
   }
 }

@@ -76,6 +76,10 @@ export function createWowNativeApi(
       const sizes = await Promise.all(files.map((entry) => nodeFs.promises.stat(`${path}/${entry.name}`).then((stat) => stat.size)));
       return Object.fromEntries(files.map((entry, index) => [entry.name, sizes[index]]));
     },
+    memoryUsage: () => ({
+      used: (requireModule('process') as typeof process).memoryUsage().rss,
+      total: (requireModule('os') as { totalmem(): number }).totalmem(),
+    }),
     cacheDirectory: () => {
       const base = env['LOCALAPPDATA'] ?? env['APPDATA'] ?? `${env['HOME'] ?? '.'}/.cache`;
       return `${base.replace(/\\/g, '/')}/Keira3/world-editor-cache`;

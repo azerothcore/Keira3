@@ -53,12 +53,12 @@ export class TextureCache {
   }
 
   /**
-   * Frees the graphics memory of the textures nothing in `scene` uses (anymore), once more than `keep` were loaded:
-   * the image stays here, and goes back to the graphics card when something uses it again.
+   * Frees the graphics memory of the textures nothing in `scene` uses (anymore), once more than `keep` were loaded
+   * (or right away with `force`): the image stays here, and goes back to the graphics card when something uses it again.
    */
-  release(scene: Object3D, keep: number): number {
-    // (looked at again only once some more were loaded: going through the scene isn't free)
-    if (this.loaded.size <= keep || this.loaded.size < this.releasedAt + RELEASE_STEP) {
+  release(scene: Object3D, keep: number, force = false): number {
+    // (looked at again only once some more were loaded: going through the scene isn't free; unless asked)
+    if (!force && (this.loaded.size <= keep || this.loaded.size < this.releasedAt + RELEASE_STEP)) {
       return 0;
     }
     this.releasedAt = this.loaded.size;

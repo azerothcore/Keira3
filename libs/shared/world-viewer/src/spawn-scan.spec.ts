@@ -69,12 +69,22 @@ describe('spawn scan', () => {
           ? Promise.reject(new Error('bad'))
           : Promise.resolve(undefined),
     );
-    const source = { getServerMap: vi.fn(), getVmapTile: vi.fn(), getVmapModel: vi.fn() };
+    const source = { getServerMap: vi.fn().mockResolvedValue(undefined), getVmapTile: vi.fn(), getVmapModel: vi.fn() };
     const far = { key: 'creature:2', kind: 'creature' as const, position: { x: 1, y: TILE_SIZE + 5, z: 0 } };
     const farther = { key: 'creature:3', kind: 'creature' as const, position: { x: 1, y: -TILE_SIZE - 5, z: 0 } };
     const progress = vi.fn();
     const results = await scanSpawnPositions(source, 0, [creature(0.1), far, farther], progress, undefined, collect as never);
     expect(results).toEqual([expect.objectContaining({ key: 'creature:1', level: 'ok' })]);
+    // the terrain under water, left out of the geometry, is still a floor
+    source.getServerMap.mockImplementation(() =>
+      Promise.resolve({ v9: new Float32Array(129 * 129).fill(-7), v8: new Float32Array(128 * 128).fill(-7) }),
+    );
+    const underWater = await scanSpawnPositions(source, 0, [creature(-7)], undefined, undefined, (() =>
+      Promise.resolve(geometry(square(0, 8), square(-20)))) as never);
+    expect(underWater).toEqual([expect.objectContaining({ level: 'ok', text: 'On the ground', ground: -7 })]);
+    source.getServerMap.mockReset().mockResolvedValue(undefined);
+    source.getServerMap.mockRejectedValueOnce(new Error('no map'));
+    expect(await scanSpawnPositions(source, 0, [creature(0)], undefined, undefined, collect as never)).toHaveLength(1);
     expect(progress).toHaveBeenLastCalledWith(3, 3);
     expect(await scanSpawnPositions(source, 0, [creature(0)], undefined, () => true, collect as never)).toEqual([]);
     // the real geometry reader by default (no server data: nothing)

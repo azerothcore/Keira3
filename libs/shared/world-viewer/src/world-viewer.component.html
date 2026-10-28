@@ -93,8 +93,28 @@
         {{ 'WORLD_EDITOR.STATS_GPU' | translate }}: {{ s.geometries }} {{ 'WORLD_EDITOR.STATS_GEOMETRIES' | translate }} · {{ s.textures }}
         {{ 'WORLD_EDITOR.STATS_TEXTURES' | translate }} · {{ s.programs }} {{ 'WORLD_EDITOR.STATS_SHADERS' | translate }}
       </div>
-      @if (s.heapMb !== undefined) {
-        <div>{{ 'WORLD_EDITOR.STATS_MEMORY' | translate }} {{ s.heapMb }} MB</div>
+      @if (memory(); as m) {
+        @let view = renderSettings();
+        @if (m.used !== undefined) {
+          <div data-testid="world-viewer-memory">
+            {{ 'WORLD_EDITOR.STATS_MEMORY' | translate }} {{ formatBytes(m.used) }}
+            @if (m.total) {
+              / {{ formatBytes(m.total) }}
+            }
+            @if (view.memoryCapMb) {
+              ({{ 'WORLD_EDITOR.STATS_CAPPED' | translate }} {{ formatBytes(view.memoryCapMb * MB) }})
+            }
+          </div>
+        }
+        <div data-testid="world-viewer-gpu-memory">
+          {{ 'WORLD_EDITOR.STATS_GPU_MEMORY' | translate }} ~{{ formatBytes(m.gpu) }}
+          @if (view.gpuCapMb) {
+            ({{ 'WORLD_EDITOR.STATS_CAPPED' | translate }} {{ formatBytes(view.gpuCapMb * MB) }})
+          }
+        </div>
+        @if (m.over) {
+          <div class="world-viewer-stats-over" data-testid="world-viewer-over-budget">{{ 'WORLD_EDITOR.STATS_OVER' | translate }}</div>
+        }
       }
       <div>
         {{ 'WORLD_EDITOR.TERRAIN' | translate }} {{ s.tiles }} · {{ 'WORLD_EDITOR.BUILDINGS' | translate }} {{ s.buildings }} ·

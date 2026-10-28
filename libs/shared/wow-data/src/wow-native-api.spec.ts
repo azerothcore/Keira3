@@ -103,6 +103,14 @@ describe('createWowNativeApi', () => {
     expect(writable.rmSync).toHaveBeenCalledWith('/cache', { recursive: true, force: true });
   });
 
+  it("tells the window's memory and the computer's", () => {
+    const modules: Record<string, unknown> = {
+      process: { memoryUsage: () => ({ rss: 900 }) },
+      os: { totalmem: () => 8000 },
+    };
+    expect(createWowNativeApi(nodeFs, (id) => modules[id], {}).memoryUsage()).toEqual({ used: 900, total: 8000 });
+  });
+
   it("keeps its cache in the user's local application data", () => {
     expect(createWowNativeApi(nodeFs, vi.fn(), { LOCALAPPDATA: 'C:\\Users\\Me\\AppData\\Local' }).cacheDirectory()).toBe(
       'C:/Users/Me/AppData/Local/Keira3/world-editor-cache',

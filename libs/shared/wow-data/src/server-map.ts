@@ -172,3 +172,37 @@ export function serverLiquidAt(tile: ServerMapTile, x: number, y: number): { lev
   }
   return { level: liquid.heights ? liquid.heights[cx * liquid.width + cy] : liquid.level, types };
 }
+
+/**
+ * The terrain height at a server position of a tile, like the server (`GridTerrainData::getHeightFromFloat`): from the
+ * four triangles of its square (corners and centre). Undefined without terrain. Holes aren't looked at.
+ */
+export function serverTerrainHeightAt(tile: ServerMapTile, x: number, y: number): number | undefined {
+  const { v9, v8 } = tile;
+  if (!v9 || !v8) {
+    return undefined;
+  }
+  let fx = V8_SIZE * (32 - x / TILE_SIZE);
+  let fy = V8_SIZE * (32 - y / TILE_SIZE);
+  let xi = Math.floor(fx);
+  let yi = Math.floor(fy);
+  [fx, fy] = [fx - xi, fy - yi];
+  [xi, yi] = [xi & (V8_SIZE - 1), yi & (V8_SIZE - 1)];
+  const h = (row: number, col: number) => v9[row * V9_SIZE + col];
+  const h5 = 2 * v8[xi * V8_SIZE + yi];
+  let a: number;
+  let b: number;
+  let c: number;
+  if (fx + fy < 1) {
+    if (fx > fy) {
+      [a, b, c] = [h(xi + 1, yi) - h(xi, yi), h5 - h(xi, yi) - h(xi + 1, yi), h(xi, yi)];
+    } else {
+      [a, b, c] = [h5 - h(xi, yi) - h(xi, yi + 1), h(xi, yi + 1) - h(xi, yi), h(xi, yi)];
+    }
+  } else if (fx > fy) {
+    [a, b, c] = [h(xi + 1, yi) + h(xi + 1, yi + 1) - h5, h(xi + 1, yi + 1) - h(xi + 1, yi), h5 - h(xi + 1, yi + 1)];
+  } else {
+    [a, b, c] = [h(xi + 1, yi + 1) - h(xi, yi + 1), h(xi, yi + 1) + h(xi + 1, yi + 1) - h5, h5 - h(xi + 1, yi + 1)];
+  }
+  return a * fx + b * fy + c;
+}

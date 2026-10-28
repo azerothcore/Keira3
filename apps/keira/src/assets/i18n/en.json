@@ -1452,6 +1452,13 @@
     "CONTROL_TURNLEFT": "Turn left",
     "CONTROL_TURNRIGHT": "Turn right",
     "CONTROL_LOOKUP": "Look up",
-    "CONTROL_LOOKDOWN": "Look down"
+    "CONTROL_LOOKDOWN": "Look down",
+    "MEMORY_CAP": "Memory limit",
+    "GPU_CAP": "Graphics memory limit",
+    "NO_LIMIT": "No limit",
+    "MEMORY_CAP_HELP": "Over the limit, what was read and isn't drawn is let go and nothing is loaded ahead until back under (shown with the performance stats)",
+    "STATS_CAPPED": "capped at",
+    "STATS_GPU_MEMORY": "Graphics memory",
+    "STATS_OVER": "Over the limit: letting go of what isn't drawn, not loading ahead"
   }
 }

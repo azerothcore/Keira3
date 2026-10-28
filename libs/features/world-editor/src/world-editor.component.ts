@@ -256,7 +256,8 @@ type RenderFlagKey =
   | 'compassMils'
   | 'advancedDistances'
   | 'loadWholeZone';
-type RenderDistanceKey = 'drawDistance' | 'largeDoodadDistance' | 'smallDoodadDistance' | 'creatureDistance' | 'gameobjectDistance';
+type RenderDistanceKey =
+  'drawDistance' | 'largeDoodadDistance' | 'smallDoodadDistance' | 'creatureDistance' | 'gameobjectDistance' | 'memoryCapMb' | 'gpuCapMb';
 
 /**
  * 3D world editor: shows the terrain of a map with its creature/gameobject spawns and waypoint paths, and turns
@@ -532,6 +533,12 @@ export class WorldEditorComponent implements OnInit {
   protected readonly pendingModifier = signal<string | undefined>(undefined);
   private lastBound?: { input: string; time: number };
   /** The mouse inputs offered while binding (camera moves need a press and a release: no wheel steps). */
+  /** View > Debugging: limits on the memory and graphics memory (0 = none, the default). */
+  protected readonly memoryCaps: { key: 'memoryCapMb' | 'gpuCapMb'; label: string }[] = [
+    { key: 'memoryCapMb', label: 'WORLD_EDITOR.MEMORY_CAP' },
+    { key: 'gpuCapMb', label: 'WORLD_EDITOR.GPU_CAP' },
+  ];
+  protected readonly memoryCapSizes = [0, 512, 1024, 2048, 4096, 8192];
   protected readonly mouseInputs = computed(() =>
     (NAVIGATION_ACTIONS as ControlAction[]).includes(this.capturing() as ControlAction)
       ? MOUSE_INPUTS.filter((input) => !input.includes('Wheel'))
@@ -2239,14 +2246,17 @@ export class WorldEditorComponent implements OnInit {
     (this.scanResults() as SpawnScanResult[]).forEach((result) => counts[result.level]++);
     return counts;
   });
-  /** The results shown, worst first (the first few hundred). */
+  /** The results shown, creatures and objects apart, worst first (the first few hundred of each). */
   protected readonly scanList = computed(() => {
     const shown = this.scanShown();
     const order: Record<SpawnScanLevel, number> = { bad: 0, warn: 1, ok: 2 };
-    return (this.scanResults() ?? [])
-      .filter((result) => shown[result.level])
-      .sort((a, b) => order[a.level] - order[b.level])
-      .slice(0, SCAN_LIST_SIZE);
+    const results = (this.scanResults() ?? []).filter((result) => shown[result.level]).sort((a, b) => order[a.level] - order[b.level]);
+    return (['creature', 'gameobject'] as const)
+      .map((type) => {
+        const ofType = results.filter((result) => result.spawn.type === type);
+        return { type, count: ofType.length, results: ofType.slice(0, SCAN_LIST_SIZE) };
+      })
+      .filter((group) => group.count > 0);
   });
 
   protected async scanMap(): Promise<void> {

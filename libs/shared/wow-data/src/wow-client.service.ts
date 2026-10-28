@@ -114,6 +114,22 @@ export class WowClientService {
     return this.native !== undefined;
   }
 
+  /** The memory Keira's window takes and the computer's in all (bytes); undefined outside the desktop app. */
+  memoryUsage(): { used: number; total: number } | undefined {
+    return this.native?.memoryUsage();
+  }
+
+  /**
+   * Lets go of what was read and kept in memory (terrain tiles, building doodads, server maps and collision): read
+   * again (from the disk cache) when needed. For when Keira takes more memory than allowed.
+   */
+  trimMemory(): void {
+    this.adts.clear();
+    this.wmoDoodads.clear();
+    this.vmapModels.clear();
+    this.serverMaps.clear();
+  }
+
   /** Archives currently in use, lowest priority first (for diagnostics). */
   async getArchiveNames(): Promise<string[]> {
     return [...(await this.getClient()).archiveNames];

@@ -1029,6 +1029,25 @@
                   'WORLD_EDITOR.PERF_LOG' | translate
                 }}</label>
               </div>
+              @for (cap of memoryCaps; track cap.key) {
+                <div class="d-flex align-items-center gap-2">
+                  <label [for]="'world-editor-' + cap.key" class="mb-0" [title]="'WORLD_EDITOR.MEMORY_CAP_HELP' | translate">{{
+                    cap.label | translate
+                  }}</label>
+                  <select
+                    [id]="'world-editor-' + cap.key"
+                    class="form-select form-select-sm w-auto"
+                    [attr.data-testid]="'view-' + cap.key"
+                    (change)="setRenderDistance(cap.key, $event)"
+                  >
+                    @for (mb of memoryCapSizes; track mb) {
+                      <option [value]="mb" [selected]="mb === renderSettings.settings()[cap.key]">
+                        {{ mb ? (mb >= 1024 ? mb / 1024 + ' GB' : mb + ' MB') : ('WORLD_EDITOR.NO_LIMIT' | translate) }}
+                      </option>
+                    }
+                  </select>
+                </div>
+              }
             </section>
             @if (renderSettings.settings().advancedDistances) {
               <table class="table table-sm table-borderless align-middle mb-0 world-editor-distances" data-testid="view-distances">
@@ -1911,9 +1930,12 @@
               </button>
             }
           </div>
-          @if (scanList().length) {
-            <div class="list-group list-group-flush small world-editor-results mt-1" data-testid="scan-list">
-              @for (result of scanList(); track result.key) {
+          @for (group of scanList(); track group.type) {
+            <h6 class="small text-muted mt-2 mb-0" [attr.data-testid]="'scan-group-' + group.type">
+              {{ (group.type === 'creature' ? 'WORLD_EDITOR.CREATURES' : 'WORLD_EDITOR.GAMEOBJECTS') | translate }} ({{ group.count }})
+            </h6>
+            <div class="list-group list-group-flush small world-editor-results" [attr.data-testid]="'scan-list-' + group.type">
+              @for (result of group.results; track result.key) {
                 <button
                   type="button"
                   class="list-group-item list-group-item-action py-1 px-2"
@@ -1921,7 +1943,7 @@
                   (click)="goToResult(result.spawn)"
                 >
                   <strong class="world-editor-scan-mark" [class]="'scan-' + result.level">!</strong>
-                  {{ result.spawn.name || result.spawn.entry }} ({{ result.spawn.type }} {{ result.spawn.guid }}) — {{ result.text }}
+                  {{ result.spawn.name || result.spawn.entry }} ({{ result.spawn.guid }}) — {{ result.text }}
                 </button>
               }
             </div>

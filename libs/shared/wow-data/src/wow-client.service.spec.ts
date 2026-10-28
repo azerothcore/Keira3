@@ -146,11 +146,15 @@ describe('WowClientService', () => {
     await expect(service.readFile('x')).rejects.toThrowError(/only available in the Keira3 desktop app/);
     await expect(service.getMaps()).rejects.toThrowError(/only available in the Keira3 desktop app/);
     expect(service.getServerCoverage(0, [{ tx: 1, ty: 1 }]).size).toBe(0);
+    expect(service.memoryUsage()).toBeUndefined();
   });
 
   it('requires a client path', async () => {
     const { service } = setup({ clientPath: '' });
     expect(service.isSupported()).toBe(true);
+    expect(service.memoryUsage()).toEqual({ used: 500_000_000, total: 8_000_000_000 });
+    // letting go of what was kept in memory: nothing to lose yet
+    expect(() => service.trimMemory()).not.toThrow();
     await expect(service.readFile('x')).rejects.toThrowError(/Set the WoW client folder/);
   });
 

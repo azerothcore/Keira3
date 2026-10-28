@@ -48,6 +48,12 @@ export interface WorldRenderSettings {
   skyboxSpin: boolean;
   /** The marker (Space) stands on the surface of liquids instead of the ground under them (Shift + Space: the other). */
   markerOnLiquid: boolean;
+  /**
+   * Limits (MB, 0 = none) on the memory Keira's window takes and on what the view puts on the graphics card: over one,
+   * what isn't in use is let go and nothing is loaded ahead until back under.
+   */
+  memoryCapMb: number;
+  gpuCapMb: number;
   /** Fog in the distance (the zone's with zone lighting): off to see far. */
   fog: boolean;
   /** How far from the camera target (yards) doodads and models are drawn. */
@@ -115,6 +121,8 @@ export const DEFAULT_WORLD_RENDER_SETTINGS: WorldRenderSettings = {
   showNavMesh: false,
   zoneLighting: false,
   fog: true,
+  memoryCapMb: 0,
+  gpuCapMb: 0,
   markerOnLiquid: false,
   skybox: true,
   skyboxModel: '',

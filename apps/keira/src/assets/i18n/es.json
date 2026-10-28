@@ -1452,6 +1452,13 @@
     "CONTROL_TURNLEFT": "Girar a la izquierda",
     "CONTROL_TURNRIGHT": "Girar a la derecha",
     "CONTROL_LOOKUP": "Mirar arriba",
-    "CONTROL_LOOKDOWN": "Mirar abajo"
+    "CONTROL_LOOKDOWN": "Mirar abajo",
+    "MEMORY_CAP": "Límite de memoria",
+    "GPU_CAP": "Límite de memoria gráfica",
+    "NO_LIMIT": "Sin límite",
+    "MEMORY_CAP_HELP": "Por encima del límite, lo leído que no se dibuja se libera y no se carga nada por adelantado hasta volver por debajo (se ve con las estadísticas de rendimiento)",
+    "STATS_CAPPED": "límite",
+    "STATS_GPU_MEMORY": "Memoria gráfica",
+    "STATS_OVER": "Por encima del límite: liberando lo que no se dibuja, sin cargar por adelantado"
   }
 }
