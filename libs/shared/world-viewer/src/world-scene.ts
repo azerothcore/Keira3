@@ -155,6 +155,8 @@ const POINTER_NAME = 'pointer';
 const DEFAULT_LIGHTS = { sun: 1.6, hemisphere: 1.2, ambient: 0.35 };
 const ZONE_LIGHTS = { sun: 1.8, ambient: 1.6 };
 const DEFAULT_FOG = { near: 600, far: 1600 };
+/** Where the fog starts when it's turned off (yards): beyond anything drawn. */
+const NO_FOG = 1e8;
 /** Zone fog never closes in nearer than this (yards), so the editor can still see around. */
 const MIN_FOG_END = 400;
 /** How far above an object snapping still looks for ground (yards): enough for a stair step or a small ledge. */
@@ -343,6 +345,8 @@ export class WorldScene {
   private readonly selectionBoxMaterial = new LineBasicMaterial({ color: 0xffe066, depthTest: false, transparent: true });
   /** The selection over models: a solid pin, or an outline (see setSolidSelection). */
   private solidSelection = false;
+  private fogEnabled = true;
+  private lightSample?: LightSample;
 
   constructor() {
     this.scene.background = new Color(COLORS.sky);
@@ -567,6 +571,25 @@ export class WorldScene {
 
   /** Lights the world like the zone (sun, ambient, fog and sky), or with the neutral default light (`undefined`). */
   applyLighting(sample: LightSample | undefined): void {
+    this.lightSample = sample;
+    this.lightWorld(sample);
+    if (!this.fogEnabled) {
+      // (pushed out of sight rather than removed: the shaders stay the same)
+      const fog = this.scene.fog as Fog;
+      fog.near = NO_FOG;
+      fog.far = NO_FOG * 2;
+    }
+  }
+
+  /** Turns the fog (the zone's or the neutral one) on or off. */
+  setFog(enabled: boolean): void {
+    if (enabled !== this.fogEnabled) {
+      this.fogEnabled = enabled;
+      this.applyLighting(this.lightSample);
+    }
+  }
+
+  private lightWorld(sample: LightSample | undefined): void {
     const fog = this.scene.fog as Fog;
     const terrain = this.terrainLighting;
     if (!sample) {

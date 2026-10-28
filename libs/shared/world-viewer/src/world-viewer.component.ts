@@ -1,3 +1,4 @@
+import { WorldCompassComponent } from './world-compass.component';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -144,7 +145,7 @@ interface HoverLabel {
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-world-viewer',
-  imports: [TranslatePipe],
+  imports: [TranslatePipe, WorldCompassComponent],
   templateUrl: './world-viewer.component.html',
   styleUrl: './world-viewer.component.scss',
 })
@@ -235,6 +236,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   readonly buildings = input<ExtraBuilding[]>([]);
   /** The editor is loading the spawns around the camera (shown in the same loading bar). */
   readonly spawnsLoading = input(false);
+  /** Where the camera looks (degrees clockwise from north), for the compass. */
+  protected readonly heading = signal(0);
   /** Server position the camera looks at, for the readout in the corner. */
   protected readonly cameraTarget = signal<WorldPosition | undefined>(undefined);
   private activityTimer?: ReturnType<typeof setTimeout>;
@@ -323,6 +326,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
           gameobjectDistance: distances.gameobjects,
         });
         this.zoneLighting.configure(settings.zoneLighting);
+        this.world.setFog(settings.fog);
         this.navMesh.configure({ show: settings.showNavMesh, radius: settings.terrainRadius });
         this.applyRenderScale(settings.renderScale);
         this.prefetch.configure({ rings: settings.loadAhead, radius: settings.terrainRadius, detailed: !settings.lowDetailTerrain });
@@ -1385,6 +1389,12 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     }
     this.updateNavMeshInfo(center);
     void this.updateArea(center);
+    // scene x = −server y, scene z = −server x: north (+x) is −z, east (−y) is +x
+    const look = this.target.clone().sub(this.world.camera.position);
+    const heading = Math.round(((Math.atan2(look.x, -look.z) * 180) / Math.PI) * 10) / 10;
+    if (heading !== this.heading()) {
+      this.heading.set(heading);
+    }
     const activity = {
       terrain: this.streamer.pendingCount,
       buildings: this.objects.pendingCount,

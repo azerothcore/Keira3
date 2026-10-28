@@ -1,0 +1,73 @@
+.world-compass {
+  width: 112px;
+  pointer-events: none;
+  user-select: none;
+  text-align: center;
+
+  svg {
+    width: 112px;
+    height: 112px;
+    display: block;
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.6));
+  }
+}
+
+.world-compass-face {
+  fill: rgba(20, 24, 28, 0.72);
+  stroke: #c9c9c9;
+  stroke-width: 2;
+}
+
+.world-compass-tick {
+  stroke: #d8d8d8;
+  stroke-width: 0.8;
+
+  &.major {
+    stroke-width: 1.4;
+  }
+}
+
+.world-compass-label {
+  fill: #e8e8e8;
+  font-size: 7px;
+  text-anchor: middle;
+  dominant-baseline: middle;
+
+  &.point {
+    font-size: 9px;
+    font-weight: 700;
+    fill: #f0c675;
+  }
+
+  &.north {
+    fill: #ff6b5b;
+  }
+}
+
+.world-compass-north {
+  fill: #f0c675;
+}
+
+.world-compass-lubber {
+  fill: #ff6b5b;
+}
+
+.world-compass-needle {
+  fill: #c9c9c9;
+}
+
+.world-compass-hub {
+  fill: #c39361;
+}
+
+.world-compass-readout {
+  display: inline-flex;
+  gap: 0.4em;
+  margin-top: 2px;
+  padding: 0 6px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.6);
+}

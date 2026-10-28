@@ -41,6 +41,15 @@ describe('ZoneLighting', () => {
     lighting.configure(true);
     expect(fogEnd(world)).toBeCloseTo(700);
 
+    // fog turned off: none, the zone's or the neutral one, until turned back on
+    world.setFog(false);
+    expect(fogEnd(world)).toBeGreaterThan(1e7);
+    world.setFog(false);
+    lighting.update(CENTER);
+    expect(fogEnd(world)).toBeGreaterThan(1e7);
+    world.setFog(true);
+    expect(fogEnd(world)).toBeCloseTo(700);
+
     await lighting.setMap(undefined);
     expect(fogEnd(world)).toBe(neutral);
   });

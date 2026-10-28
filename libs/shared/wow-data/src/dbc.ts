@@ -61,7 +61,12 @@ export interface WowMap {
   name: string;
   /** 0 = open world, 1 = dungeon, 2 = raid, 3 = battleground, 4 = arena. */
   instanceType: number;
+  /** The expansion that added it: 0 = Vanilla, 1 = The Burning Crusade, 2 = Wrath of the Lich King. */
+  expansion?: number;
 }
+
+/** Expansions by Map.dbc ExpansionID. */
+export const EXPANSIONS = ['Vanilla', 'The Burning Crusade', 'Wrath of the Lich King'];
 
 /** Kinds of maps, by Map.dbc InstanceType (transports are told apart by name). */
 export type MapKind = 'world' | 'dungeon' | 'raid' | 'battleground' | 'arena' | 'transport';
@@ -76,7 +81,7 @@ export function mapKind(map: WowMap): MapKind {
   return MAP_KINDS[map.instanceType] ?? 'world';
 }
 
-/** Map.dbc (3.3.5a layout): 0 ID, 1 Directory, 2 InstanceType, 5..20 MapName_lang. */
+/** Map.dbc (3.3.5a layout): 0 ID, 1 Directory, 2 InstanceType, 5..20 MapName_lang, 63 ExpansionID. */
 export function parseMapDbc(dbc: DbcFile): WowMap[] {
   const maps: WowMap[] = [];
   for (let record = 0; record < dbc.recordCount; record++) {
@@ -85,7 +90,14 @@ export function parseMapDbc(dbc: DbcFile): WowMap[] {
       name = dbc.getString(record, field);
     }
     const directory = dbc.getString(record, 1);
-    maps.push({ id: dbc.getUint(record, 0), directory, name: name || directory, instanceType: dbc.getUint(record, 2) });
+    maps.push({
+      id: dbc.getUint(record, 0),
+      directory,
+      name: name || directory,
+      instanceType: dbc.getUint(record, 2),
+      // (a cut-down Map.dbc may not have it)
+      ...(dbc.fieldCount > 63 ? { expansion: dbc.getUint(record, 63) } : {}),
+    });
   }
   return maps.sort((a, b) => a.id - b.id);
 }

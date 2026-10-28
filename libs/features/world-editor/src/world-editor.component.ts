@@ -78,6 +78,7 @@ import {
   WowDataSettingsService,
   WowMap,
   mapKind,
+  EXPANSIONS,
   WowZone,
   WorldPosition,
   AreaTriggerInfo,
@@ -94,7 +95,7 @@ import {
   describeBoundary,
 } from '@keira/shared/wow-data';
 import { ElectronService } from '@keira/shared/common-services';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ClipboardService } from 'ngx-clipboard';
 import { ToastrService } from 'ngx-toastr';
 import { ChangesSnapshot } from './world-editor-changes';
@@ -176,6 +177,8 @@ export function formatSize(bytes: number): string {
 }
 
 const LAST_VIEW_KEY = 'keira3.worldEditor.lastView';
+/** Words each expansion is found by in the map picker (by Map.dbc ExpansionID). */
+const EXPANSION_SEARCH = ['vanilla classic', 'tbc the burning crusade', 'wotlk wrath of the lich king'];
 
 interface LastView extends WorldPosition {
   mapId: number;
@@ -213,6 +216,13 @@ type RenderFlagKey =
   | 'showCollision'
   | 'showNavMesh'
   | 'zoneLighting'
+  | 'fog'
+  | 'compass'
+  | 'compassNorthUp'
+  | 'compassNorthArrow'
+  | 'compassPoints'
+  | 'compassDegrees'
+  | 'compassMils'
   | 'advancedDistances'
   | 'loadWholeZone';
 type RenderDistanceKey = 'drawDistance' | 'largeDoodadDistance' | 'smallDoodadDistance' | 'creatureDistance' | 'gameobjectDistance';
@@ -245,7 +255,7 @@ const isFlight = (key: string): boolean => key.startsWith('flight:') || key.star
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-world-editor',
   templateUrl: './world-editor.component.html',
-  styleUrl: './world-editor.component.scss',
+  styleUrls: ['./world-editor.component.scss', './world-editor-pickers.scss'],
   imports: [
     ReactiveFormsModule,
     TranslatePipe,
@@ -266,6 +276,7 @@ export class WorldEditorComponent implements OnInit {
   private readonly session = inject(WorldEditorSessionService);
   private readonly service = inject(WorldEditorService);
   private readonly client = inject(WowClientService);
+  private readonly translate = inject(TranslateService);
   private readonly electron = inject(ElectronService);
   private readonly settings = inject(WowDataSettingsService);
   protected readonly renderSettings = inject(WorldRenderSettingsService);
@@ -1317,12 +1328,29 @@ export class WorldEditorComponent implements OnInit {
     const map = this.maps().find((m) => m.id === this.mapId());
     return map ? `${map.id} – ${map.name}` : '';
   });
-  /** Maps whose id or name (or folder) contain what's typed. */
+  /**
+   * Maps matching every word typed: in their id, name or folder, their kind (raid, dungeon…, also translated) or the
+   * expansion that added them (vanilla, tbc / burning crusade, wotlk / wrath).
+   */
   protected readonly filteredMaps = computed(() => {
     // (only read while the picker is open)
-    const text = (this.mapSearch() as string).trim().toLowerCase();
-    return this.maps().filter((map) => !text || `${map.id} ${map.name} ${map.directory}`.toLowerCase().includes(text));
+    const words = (this.mapSearch() as string).trim().toLowerCase().split(/\s+/).filter(Boolean);
+    return this.maps().filter((map) => {
+      const kind = mapKind(map);
+      const text = [
+        map.id,
+        map.name,
+        map.directory,
+        kind,
+        this.translate.instant(`WORLD_EDITOR.MAP_KIND_${kind.toUpperCase()}`),
+        EXPANSION_SEARCH[map.expansion ?? -1] ?? '',
+      ]
+        .join(' ')
+        .toLowerCase();
+      return words.every((word) => text.includes(word));
+    });
   });
+  protected readonly expansions = EXPANSIONS;
 
   private readonly mapList = viewChild<ElementRef<HTMLElement>>('mapList');
   private readonly injector = inject(Injector);
@@ -2321,6 +2349,13 @@ export class WorldEditorComponent implements OnInit {
     (moved.which === 'from' ? this.probeFrom : this.probeTo).set(moved.position);
   }
 
+  /** Copies `.go creature <guid>`, `.go gameobject <guid>` or `.go trigger <id>` for what was right-clicked. */
+  protected copyContextGoTo(): void {
+    const spawn = this.contextSpawn();
+    this.clipboard.copyFromContent(spawn ? `.go ${spawn.type} ${spawn.guid}` : `.go trigger ${this.contextAreaTrigger()}`);
+    this.contextMenu.set(undefined);
+  }
+
   protected copyContextGuid(): void {
     this.clipboard.copyFromContent(String((this.contextSpawn() as SpawnRecord).guid));
     this.contextMenu.set(undefined);
@@ -2346,7 +2381,7 @@ export class WorldEditorComponent implements OnInit {
     }
     const action = controlFor(
       this.controls.settings(),
-      ['undo', 'redo', 'delete', 'toggleGizmo', 'cancel', 'copy', 'paste', 'worldMap'],
+      ['undo', 'redo', 'delete', 'toggleGizmo', 'cancel', 'copy', 'paste', 'worldMap', 'compass'],
       event,
     );
     if (action === 'redo') {
@@ -2370,6 +2405,8 @@ export class WorldEditorComponent implements OnInit {
       void this.pasteCopied();
     } else if (action === 'worldMap') {
       this.toggleMap();
+    } else if (action === 'compass') {
+      this.renderSettings.update({ compass: !this.renderSettings.settings().compass });
     }
   }
 

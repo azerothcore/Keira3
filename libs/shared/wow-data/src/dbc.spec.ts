@@ -74,6 +74,14 @@ describe('parseMapDbc', () => {
       { id: 571, directory: 'Northrend', name: 'Northrend', instanceType: 0 },
     ]);
   });
+
+  it('reads the expansion that added each map', () => {
+    const karazhan = [...row(532, 'Karazahn', 2, 5, 'Karazhan'), ...new Array(44).fill(0)];
+    karazhan[63] = 1;
+    expect(parseMapDbc(new DbcFile(buildDbc([karazhan])))).toEqual([
+      { id: 532, directory: 'Karazahn', name: 'Karazhan', instanceType: 2, expansion: 1 },
+    ]);
+  });
 });
 
 const float = (value: number): number => {

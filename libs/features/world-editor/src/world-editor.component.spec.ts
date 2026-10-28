@@ -683,7 +683,7 @@ describe(WorldEditorComponent.name, () => {
       const drawDistance = page.byId<HTMLSelectElement>('view-draw-distance').nativeElement;
       drawDistance.value = '500';
       drawDistance.dispatchEvent(new Event('change'));
-      for (const id of ['view-doodads', 'view-models', 'view-zone-lighting', 'view-roofs', 'view-facing']) {
+      for (const id of ['view-doodads', 'view-models', 'view-zone-lighting', 'view-fog', 'view-roofs', 'view-facing']) {
         const toggle = page.byId<HTMLInputElement>(id).nativeElement;
         toggle.checked = false;
         toggle.dispatchEvent(new Event('change'));
@@ -698,6 +698,20 @@ describe(WorldEditorComponent.name, () => {
       navMesh.dispatchEvent(new Event('change'));
       page.fixture.detectChanges();
       expect(page.viewer().renderSettings().showNavMesh).toBe(true);
+      expect(page.viewer().renderSettings().fog).toBe(false);
+      page.byId<HTMLInputElement>('view-solid-selection').nativeElement.click();
+      page.fixture.detectChanges();
+      expect(page.viewer().renderSettings().solidSelection).toBe(true);
+      // the compass: K shows and hides it, and its options
+      page.key('k');
+      page.fixture.detectChanges();
+      expect(page.viewer().renderSettings().compass).toBe(false);
+      page.key('k');
+      for (const id of ['view-compass-north-up', 'view-compass-mils']) {
+        page.byId<HTMLInputElement>(id).nativeElement.click();
+      }
+      page.fixture.detectChanges();
+      expect(page.viewer().renderSettings()).toMatchObject({ compass: true, compassNorthUp: true, compassMils: true });
       navMesh.checked = false;
       navMesh.dispatchEvent(new Event('change'));
       collision.checked = false;
@@ -729,6 +743,10 @@ describe(WorldEditorComponent.name, () => {
         showRoofs: false,
         showFacingArrows: false,
         zoneLighting: false,
+        fog: false,
+        solidSelection: true,
+        compassNorthUp: true,
+        compassMils: true,
         drawDistance: 500,
         advancedDistances: true,
         smallDoodadDistance: 0,
@@ -909,7 +927,8 @@ describe(WorldEditorComponent.name, () => {
       mocks.client.getMaps.mockResolvedValue([
         ...MAPS,
         { id: 33, directory: 'Shadowfang', name: 'Shadowfang Keep', instanceType: 1 },
-        { id: 249, directory: 'OnyxiaLairInstance', name: "Onyxia's Lair", instanceType: 2 },
+        { id: 249, directory: 'OnyxiaLairInstance', name: "Onyxia's Lair", instanceType: 2, expansion: 0 },
+        { id: 532, directory: 'Karazahn', name: 'Karazhan', instanceType: 2, expansion: 1 },
         { id: 489, directory: 'PVPzone03', name: 'Warsong Gulch', instanceType: 3 },
         { id: 559, directory: 'PVPzone04', name: 'Nagrand Arena', instanceType: 4 },
         { id: 672, directory: 'Transport197347', name: 'Transport: The Skybreaker', instanceType: 0 },
@@ -924,6 +943,19 @@ describe(WorldEditorComponent.name, () => {
       expect(kinds).toEqual(
         ['WORLD', 'DUNGEON', 'RAID', 'BATTLEGROUND', 'ARENA', 'TRANSPORT', 'WORLD'].map((kind) => `WORLD_EDITOR.MAP_KIND_${kind}`),
       );
+      // the expansion that added each, and found by kind or expansion
+      expect(page.byId('map-option-532').nativeElement.className).toContain('map-expansion-1');
+      expect(page.byId('map-option-532').nativeElement.title).toBe('The Burning Crusade');
+      expect(page.byId('map-option-33').nativeElement.title).toBe('');
+      const found = (text: string) => {
+        search.value = text;
+        search.dispatchEvent(new Event('input'));
+        page.fixture.detectChanges();
+        return Array.from(page.queryAll<HTMLElement>('[data-testid^="map-option-"]'), (el) => el.dataset['testid']);
+      };
+      expect(found('raid')).toEqual(['map-option-249', 'map-option-532']);
+      expect(found('tbc raid')).toEqual(['map-option-532']);
+      expect(found('vanilla')).toEqual(['map-option-249']);
       search.dispatchEvent(new Event('blur'));
       page.click('map-next');
       await settle(page);
@@ -1526,6 +1558,10 @@ describe(WorldEditorComponent.name, () => {
       await rightClick(page, 'gameobject:3');
       page.click('context-copy-guid');
       expect(mocks.clipboard.copyFromContent).toHaveBeenCalledWith('3');
+      // and a command going to it
+      await rightClick(page, 'gameobject:3');
+      page.click('context-copy-go-guid');
+      expect(mocks.clipboard.copyFromContent).toHaveBeenCalledWith('.go gameobject 3');
     });
 
     it('names the AI and script, and opens the loot of creatures and chests', async () => {
@@ -1556,6 +1592,9 @@ describe(WorldEditorComponent.name, () => {
       expect(page.byId('context-trigger-go', false)).toBeFalsy();
       page.click('context-trigger-sai');
       expect(links.openAreaTriggerSai).toHaveBeenCalledWith(46);
+      await rightClick(page, 'areatrigger:46');
+      page.click('context-copy-go-trigger');
+      expect(mocks.clipboard.copyFromContent).toHaveBeenCalledWith('.go trigger 46');
       await rightClick(page, 'areatrigger:45');
       expect(page.text('context-trigger-go')).toContain('1 – Kalimdor');
       page.click('context-trigger-go');

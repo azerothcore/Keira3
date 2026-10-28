@@ -28,6 +28,17 @@ export interface WorldRenderSettings {
   showNavMesh: boolean;
   /** Zone lighting, fog and sky colours (otherwise a fixed neutral light). */
   zoneLighting: boolean;
+  /** A compass in the corner of the view (K): the dial turns with the camera, or stays north up with a needle. */
+  compass: boolean;
+  compassNorthUp: boolean;
+  /** A north arrow on the dial; the compass points (N, NE, E…) every 45° instead of numbers. */
+  compassNorthArrow: boolean;
+  compassPoints: boolean;
+  /** The bearing under it, in degrees and/or mils (6400 a turn); both follow the camera live. */
+  compassDegrees: boolean;
+  compassMils: boolean;
+  /** Fog in the distance (the zone's with zone lighting): off to see far. */
+  fog: boolean;
   /** How far from the camera target (yards) doodads and models are drawn. */
   drawDistance: number;
   /** Use the per-group distances below instead of `drawDistance` (0 = don't draw that group). */
@@ -92,6 +103,13 @@ export const DEFAULT_WORLD_RENDER_SETTINGS: WorldRenderSettings = {
   showCollision: false,
   showNavMesh: false,
   zoneLighting: false,
+  fog: true,
+  compass: true,
+  compassNorthUp: false,
+  compassNorthArrow: true,
+  compassPoints: true,
+  compassDegrees: true,
+  compassMils: false,
   drawDistance: 250,
   advancedDistances: false,
   largeDoodadDistance: 500,

@@ -70,6 +70,19 @@
     </div>
   }
 
+  @if (renderSettings().compass) {
+    @let view = renderSettings();
+    <keira-world-compass
+      class="world-viewer-compass"
+      [heading]="heading()"
+      [northUp]="view.compassNorthUp"
+      [northArrow]="view.compassNorthArrow"
+      [points]="view.compassPoints"
+      [degrees]="view.compassDegrees"
+      [mils]="view.compassMils"
+    />
+  }
+
   @if (renderSettings().showStats && stats(); as s) {
     <div class="world-viewer-stats" data-testid="world-viewer-stats">
       <div>{{ s.fps }} fps · {{ s.frameMs.toFixed(1) }} ms</div>

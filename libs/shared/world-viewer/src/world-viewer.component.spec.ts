@@ -485,6 +485,11 @@ describe(WorldViewerComponent.name, () => {
     fixture.detectChanges();
     const text = page.activity().nativeElement.textContent?.replace(/\s+/g, ' ');
     expect(text).toContain('WORLD_EDITOR.TERRAIN 1');
+    // the compass: the camera looks north-east at first
+    expect(page.getDebugElementByTestId('world-compass-degrees').nativeElement.textContent).toBe('45°');
+    fixture.componentInstance.render.set({ ...DEFAULT_WORLD_RENDER_SETTINGS, compass: false });
+    fixture.detectChanges();
+    expect(page.getDebugElementByTestId('world-compass', false)).toBeFalsy();
     // how much of it is done
     expect(page.getDebugElementByTestId('world-viewer-activity-percent').nativeElement.textContent).toBe('0%');
     expect(page.getDebugElementByTestId('world-viewer-activity-bar').nativeElement.style.width).toBe('0%');

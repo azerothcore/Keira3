@@ -189,3 +189,11 @@
   font: 11px/1.4 monospace;
   pointer-events: none;
 }
+
+// above the camera readout and speed in the bottom-right corner
+.world-viewer-compass {
+  position: absolute;
+  right: 8px;
+  bottom: 64px;
+  z-index: 2;
+}

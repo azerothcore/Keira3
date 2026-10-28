@@ -1,0 +1,57 @@
+<div class="world-compass" data-testid="world-compass" [title]="'WORLD_EDITOR.COMPASS_HELP' | translate">
+  <svg viewBox="-60 -60 120 120" aria-hidden="true">
+    <circle class="world-compass-face" r="58" />
+    <g data-testid="world-compass-dial" [attr.transform]="'rotate(' + dialRotation() + ')'">
+      @for (tick of ticks; track tick) {
+        <line
+          class="world-compass-tick"
+          [class.major]="tick % 15 === 0"
+          x1="0"
+          [attr.y1]="-55"
+          x2="0"
+          [attr.y2]="tick % 15 === 0 ? -48 : -51"
+          [attr.transform]="'rotate(' + tick + ')'"
+        />
+      }
+      @for (label of labels; track label.angle) {
+        <text
+          class="world-compass-label"
+          [class.point]="label.point"
+          [class.north]="label.angle === 0"
+          [attr.data-testid]="'world-compass-label-' + label.angle"
+          x="0"
+          y="-39"
+          [attr.transform]="'rotate(' + label.angle + ')'"
+        >
+          @if (label.point && points()) {
+            {{ 'WORLD_EDITOR.COMPASS_' + label.point | translate }}
+          } @else {
+            {{ label.angle }}
+          }
+        </text>
+      }
+      @if (northArrow()) {
+        <path class="world-compass-north" data-testid="world-compass-north" d="M0,-31 L-5,-21 L5,-21 Z" />
+      }
+    </g>
+    @if (northUp()) {
+      <g data-testid="world-compass-needle" [attr.transform]="'rotate(' + bearing() + ')'">
+        <path class="world-compass-needle" d="M0,-30 L-4,0 L0,6 L4,0 Z" />
+      </g>
+    } @else {
+      <path class="world-compass-lubber" d="M0,-50 L-4,-59 L4,-59 Z" />
+    }
+    <circle class="world-compass-hub" r="3" />
+  </svg>
+  @if (degrees() || mils()) {
+    <div class="world-compass-readout" data-testid="world-compass-readout">
+      {{ 'WORLD_EDITOR.COMPASS_' + point() | translate }}
+      @if (degrees()) {
+        <span data-testid="world-compass-degrees">{{ wholeDegrees() }}°</span>
+      }
+      @if (mils()) {
+        <span data-testid="world-compass-mils">{{ wholeMils() }} mil</span>
+      }
+    </div>
+  }
+</div>

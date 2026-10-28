@@ -138,6 +138,7 @@ describe('WowDataCacheService', () => {
 
   it('does nothing outside the desktop app', async () => {
     const { cache } = setup(false);
+    expect(cache.isFull()).toBe(false);
     await cache.write('abc', 'adt', 'x', 1);
     expect(await cache.read('abc', 'adt', 'x')).toBeUndefined();
     expect(cache.has('abc', 'adt', 'x')).toBe(false);

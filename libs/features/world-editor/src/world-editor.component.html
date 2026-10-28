@@ -18,14 +18,16 @@
           @for (map of filteredMaps(); track map.id) {
             <button
               type="button"
-              class="list-group-item list-group-item-action py-1"
+              class="list-group-item list-group-item-action py-1 map-expansion"
+              [class]="'map-expansion-' + map.expansion"
               [class.active]="map.id === mapId()"
               [attr.data-testid]="'map-option-' + map.id"
+              [title]="expansions[map.expansion ?? -1] ?? ''"
               (mousedown)="$event.preventDefault(); pickMap(map.id); mapInput.blur()"
             >
               @let kind = mapKind(map);
               <span class="d-flex align-items-center gap-2">
-                <span class="flex-grow-1 text-truncate" [title]="map.name">{{ map.id }} – {{ map.name }}</span>
+                <span class="flex-grow-1 text-truncate">{{ map.id }} – {{ map.name }}</span>
                 <span class="badge map-kind" [class]="'map-kind-' + kind" [attr.data-testid]="'map-kind-' + map.id">{{
                   'WORLD_EDITOR.MAP_KIND_' + kind.toUpperCase() | translate
                 }}</span>
@@ -584,6 +586,17 @@
                 />
                 <label class="form-check-label" for="world-editor-zone-lighting">{{ 'WORLD_EDITOR.ZONE_LIGHTING' | translate }}</label>
               </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-fog"
+                  data-testid="view-fog"
+                  [checked]="renderSettings.settings().fog"
+                  (change)="setRenderFlag('fog', $event)"
+                />
+                <label class="form-check-label" for="world-editor-fog">{{ 'WORLD_EDITOR.FOG' | translate }}</label>
+              </div>
             </section>
             <section class="world-editor-view-group" data-testid="view-group-spawns">
               <h6 class="world-editor-view-group-title">{{ 'WORLD_EDITOR.VIEW_SPAWNS' | translate }}</h6>
@@ -635,6 +648,86 @@
                   [title]="'WORLD_EDITOR.SOLID_SELECTION_HELP' | translate"
                   >{{ 'WORLD_EDITOR.SOLID_SELECTION' | translate }}</label
                 >
+              </div>
+            </section>
+            <section class="world-editor-view-group" data-testid="view-group-compass">
+              <h6 class="world-editor-view-group-title">{{ 'WORLD_EDITOR.VIEW_COMPASS' | translate }}</h6>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-compass"
+                  data-testid="view-compass"
+                  [checked]="renderSettings.settings().compass"
+                  (change)="setRenderFlag('compass', $event)"
+                />
+                <label class="form-check-label" for="world-editor-compass" [title]="'WORLD_EDITOR.COMPASS_HELP' | translate">{{
+                  'WORLD_EDITOR.COMPASS_SHOW' | translate
+                }}</label>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-compass-north-up"
+                  data-testid="view-compass-north-up"
+                  [checked]="renderSettings.settings().compassNorthUp"
+                  (change)="setRenderFlag('compassNorthUp', $event)"
+                />
+                <label
+                  class="form-check-label"
+                  for="world-editor-compass-north-up"
+                  [title]="'WORLD_EDITOR.COMPASS_NORTH_UP_HELP' | translate"
+                  >{{ 'WORLD_EDITOR.COMPASS_NORTH_UP' | translate }}</label
+                >
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-compass-north-arrow"
+                  data-testid="view-compass-north-arrow"
+                  [checked]="renderSettings.settings().compassNorthArrow"
+                  (change)="setRenderFlag('compassNorthArrow', $event)"
+                />
+                <label class="form-check-label" for="world-editor-compass-north-arrow">{{
+                  'WORLD_EDITOR.COMPASS_NORTH_ARROW' | translate
+                }}</label>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-compass-points"
+                  data-testid="view-compass-points"
+                  [checked]="renderSettings.settings().compassPoints"
+                  (change)="setRenderFlag('compassPoints', $event)"
+                />
+                <label class="form-check-label" for="world-editor-compass-points">{{ 'WORLD_EDITOR.COMPASS_POINTS' | translate }}</label>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-compass-degrees"
+                  data-testid="view-compass-degrees"
+                  [checked]="renderSettings.settings().compassDegrees"
+                  (change)="setRenderFlag('compassDegrees', $event)"
+                />
+                <label class="form-check-label" for="world-editor-compass-degrees">{{ 'WORLD_EDITOR.COMPASS_DEGREES' | translate }}</label>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-compass-mils"
+                  data-testid="view-compass-mils"
+                  [checked]="renderSettings.settings().compassMils"
+                  (change)="setRenderFlag('compassMils', $event)"
+                />
+                <label class="form-check-label" for="world-editor-compass-mils" [title]="'WORLD_EDITOR.COMPASS_MILS_HELP' | translate">{{
+                  'WORLD_EDITOR.COMPASS_MILS' | translate
+                }}</label>
               </div>
             </section>
             <section class="world-editor-view-group" data-testid="view-group-collision">
@@ -1186,6 +1279,9 @@
             <button type="button" class="dropdown-item" data-testid="context-copy-guid" (click)="copyContextGuid()">
               <i class="fa fa-copy"></i> {{ 'WORLD_EDITOR.COPY_GUID' | translate }}
             </button>
+            <button type="button" class="dropdown-item" data-testid="context-copy-go-guid" (click)="copyContextGoTo()">
+              <i class="fa fa-location-arrow"></i> {{ 'WORLD_EDITOR.COPY_GO_GUID' | translate }}
+            </button>
           } @else if (contextWaypoint(); as waypoint) {
             <h6 class="dropdown-header">{{ 'WORLD_EDITOR.PATH' | translate }} {{ waypoint.pathId }} · #{{ waypoint.point }}</h6>
             <button type="button" class="dropdown-item" data-testid="context-waypoints" disabled>
@@ -1207,6 +1303,9 @@
                 (click)="openTriggerSai(trigger)"
               >
                 <i class="fa fa-code"></i> {{ 'WORLD_EDITOR.OPEN_SAI' | translate }}
+              </button>
+              <button type="button" class="dropdown-item" data-testid="context-copy-go-trigger" (click)="copyContextGoTo()">
+                <i class="fa fa-location-arrow"></i> {{ 'WORLD_EDITOR.COPY_GO_TRIGGER' | translate }}
               </button>
             }
           }
