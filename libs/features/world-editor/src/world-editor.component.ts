@@ -65,6 +65,7 @@ import {
   tileKey,
   tilesInBounds,
   WowClientService,
+  perfTime,
   setPerfLog,
   describeFaction,
   FactionData,
@@ -377,25 +378,29 @@ export class WorldEditorComponent implements OnInit {
   protected readonly layerSwitches = LAYER_SWITCHES;
   protected readonly overlaySwitches = OVERLAY_SWITCHES;
   /** Lines drawn in the view: formation members to their leader, pools to their spawns. */
-  protected readonly worldLinks = computed<WorldLink[]>(() => {
-    const layers = this.layers();
-    const spawns = this.visibleSpawns();
-    return [
-      ...(layers.formations ? formationLinks(spawns, this.formations()) : []),
-      ...(layers.pools ? poolOverlays(spawns, this.pools()).links : []),
-      ...this.travelOverlays().links.filter((link) => (isFlight(link.key) ? layers.flightPaths : layers.travel)),
-    ];
-  });
+  protected readonly worldLinks = computed<WorldLink[]>(() =>
+    perfTime('editor worldLinks', () => {
+      const layers = this.layers();
+      const spawns = this.visibleSpawns();
+      return [
+        ...(layers.formations ? formationLinks(spawns, this.formations()) : []),
+        ...(layers.pools ? poolOverlays(spawns, this.pools()).links : []),
+        ...this.travelOverlays().links.filter((link) => (isFlight(link.key) ? layers.flightPaths : layers.travel)),
+      ];
+    }),
+  );
   /** Labelled markers: pools, and the formation places of the selected creature's formation. */
-  protected readonly worldMarkers = computed<WorldMarker[]>(() => {
-    const layers = this.layers();
-    const spawns = this.visibleSpawns();
-    return [
-      ...(layers.pools ? poolOverlays(spawns, this.pools()).markers : []),
-      ...(layers.formations ? formationSlots(spawns, this.formations(), this.selectedSpawn()) : []),
-      ...this.travelOverlays().markers.filter((marker) => (isFlight(marker.key) ? layers.flightPaths : layers.travel)),
-    ];
-  });
+  protected readonly worldMarkers = computed<WorldMarker[]>(() =>
+    perfTime('editor worldMarkers', () => {
+      const layers = this.layers();
+      const spawns = this.visibleSpawns();
+      return [
+        ...(layers.pools ? poolOverlays(spawns, this.pools()).markers : []),
+        ...(layers.formations ? formationSlots(spawns, this.formations(), this.selectedSpawn()) : []),
+        ...this.travelOverlays().markers.filter((marker) => (isFlight(marker.key) ? layers.flightPaths : layers.travel)),
+      ];
+    }),
+  );
   private readonly travelOverlays = computed(() =>
     travelOverlays(this.travel(), this.areaTriggerList(), new Map(this.maps().map((map) => [map.id, map.name])), this.spawnsCenter()),
   );
@@ -580,19 +585,21 @@ export class WorldEditorComponent implements OnInit {
   /** Area triggers of the current map, with what the database does with them. */
   private readonly areaTriggerList = signal<AreaTriggerInfo[]>([]);
   private readonly areaTriggerInfo = signal(new Map<number, string[]>());
-  protected readonly worldAreaTriggers = computed<WorldAreaTrigger[]>(() => {
-    if (!this.layers().areaTriggers) {
-      return [];
-    }
-    const info = this.areaTriggerInfo();
-    return this.areaTriggerList().map((trigger) => ({
-      key: `areatrigger:${trigger.id}`,
-      label: [`Area trigger ${trigger.id}`, ...(info.get(trigger.id) ?? [])].join('\n'),
-      position: { x: trigger.x, y: trigger.y, z: trigger.z },
-      radius: trigger.radius,
-      box: trigger.box,
-    }));
-  });
+  protected readonly worldAreaTriggers = computed<WorldAreaTrigger[]>(() =>
+    perfTime('editor worldAreaTriggers', () => {
+      if (!this.layers().areaTriggers) {
+        return [];
+      }
+      const info = this.areaTriggerInfo();
+      return this.areaTriggerList().map((trigger) => ({
+        key: `areatrigger:${trigger.id}`,
+        label: [`Area trigger ${trigger.id}`, ...(info.get(trigger.id) ?? [])].join('\n'),
+        position: { x: trigger.x, y: trigger.y, z: trigger.z },
+        radius: trigger.radius,
+        box: trigger.box,
+      }));
+    }),
+  );
   protected readonly filters = signal<SpawnFilters>(loadSpawnFilters());
   protected readonly showFilters = this.session.showFilters;
   private readonly eventNames = signal(new Map<number, string>());
@@ -641,29 +648,31 @@ export class WorldEditorComponent implements OnInit {
   /** Boss boundaries of the current map (from the AzerothCore source folder), with the entries of their creatures. */
   private readonly bossBoundaries = signal<(BossBoundary & { entries: number[] })[]>([]);
   /** Boss boundaries drawn in the view: at the height of a loaded boss (or of the camera), named with their bosses. */
-  protected readonly worldBoundaries = computed<WorldBoundary[]>(() => {
-    if (!this.layers().bossBoundaries) {
-      return [];
-    }
-    const spawns = this.spawns();
-    const camera = this.spawnsCenter();
-    return this.bossBoundaries().map((boundary, i) => {
-      const bosses = spawns.filter((s) => s.type === 'creature' && boundary.entries.includes(s.entry));
-      const names = [...new Set(bosses.map((s) => s.name || s.entry))].join(', ');
-      const shapes = boundary.shapes.map((shape) => `· ${describeBoundary(shape)}`);
-      return {
-        key: `boundary:${boundary.boss}`,
-        label: [
-          `Boss boundary ${boundary.boss} (${boundary.instance})${names ? ` — ${names}` : ''}`,
-          ...(shapes.length > 1 ? ['must stay inside all of:'] : []),
-          ...shapes,
-        ].join('\n'),
-        color: BOUNDARY_COLORS[i % BOUNDARY_COLORS.length],
-        z: bosses[0]?.z ?? camera?.z ?? 0,
-        shapes: boundary.shapes,
-      };
-    });
-  });
+  protected readonly worldBoundaries = computed<WorldBoundary[]>(() =>
+    perfTime('editor worldBoundaries', () => {
+      if (!this.layers().bossBoundaries) {
+        return [];
+      }
+      const spawns = this.spawns();
+      const camera = this.spawnsCenter();
+      return this.bossBoundaries().map((boundary, i) => {
+        const bosses = spawns.filter((s) => s.type === 'creature' && boundary.entries.includes(s.entry));
+        const names = [...new Set(bosses.map((s) => s.name || s.entry))].join(', ');
+        const shapes = boundary.shapes.map((shape) => `· ${describeBoundary(shape)}`);
+        return {
+          key: `boundary:${boundary.boss}`,
+          label: [
+            `Boss boundary ${boundary.boss} (${boundary.instance})${names ? ` — ${names}` : ''}`,
+            ...(shapes.length > 1 ? ['must stay inside all of:'] : []),
+            ...shapes,
+          ].join('\n'),
+          color: BOUNDARY_COLORS[i % BOUNDARY_COLORS.length],
+          z: bosses[0]?.z ?? camera?.z ?? 0,
+          shapes: boundary.shapes,
+        };
+      });
+    }),
+  );
   /** Where the camera looks (the last reported centre), for what's drawn near it. */
   private readonly cameraCenter = signal<WorldPosition | undefined>(undefined);
   /**
@@ -686,10 +695,12 @@ export class WorldEditorComponent implements OnInit {
     this.session.reservedPathIds = ids;
   }
 
-  protected readonly spawns = computed(() => {
-    this.revision();
-    return this.changes.applyToSpawns(this.loadedSpawns(), this.mapId());
-  });
+  protected readonly spawns = computed(() =>
+    perfTime('editor spawns', () => {
+      this.revision();
+      return this.changes.applyToSpawns(this.loadedSpawns(), this.mapId());
+    }),
+  );
 
   private readonly pathIds = computed(() => [...new Set(this.spawns().flatMap(pathsOf))]);
 
@@ -704,74 +715,78 @@ export class WorldEditorComponent implements OnInit {
     return this.spawns().filter((s) => isSpawnVisible(s, filters));
   });
 
-  protected readonly worldSpawns = computed<WorldSpawn[]>(() => {
-    const layers = this.layers();
-    const { showWanderRadius: showWander, showBounds } = this.renderSettings.settings();
-    return this.visibleSpawns()
-      .filter((s) => (s.type === 'creature' ? layers.creatures : layers.gameobjects))
-      .map((s) => ({
-        key: spawnKey(s.type, s.guid),
-        kind: s.type,
-        guid: s.guid,
-        entry: s.entry,
-        label: `${spawnTitle(s)}${pathsOf(s).length ? ` · ${pathsOf(s).map(pathLabel).join(', ')}` : ''}`,
-        ...this.spawnDetails(s),
-        position: { x: s.x, y: s.y, z: s.z },
-        orientation: s.o,
-        pending: this.changes.isNewSpawn(spawnKey(s.type, s.guid)),
-        displayId: s.displayId,
-        scale: s.scale,
-        wanderRadius: showWander ? s.wanderDistance : undefined,
-        bounds: showBounds ? spawnBounds(s) : undefined,
-      }));
-  });
+  protected readonly worldSpawns = computed<WorldSpawn[]>(() =>
+    perfTime('editor worldSpawns', () => {
+      const layers = this.layers();
+      const { showWanderRadius: showWander, showBounds } = this.renderSettings.settings();
+      return this.visibleSpawns()
+        .filter((s) => (s.type === 'creature' ? layers.creatures : layers.gameobjects))
+        .map((s) => ({
+          key: spawnKey(s.type, s.guid),
+          kind: s.type,
+          guid: s.guid,
+          entry: s.entry,
+          label: `${spawnTitle(s)}${pathsOf(s).length ? ` · ${pathsOf(s).map(pathLabel).join(', ')}` : ''}`,
+          ...this.spawnDetails(s),
+          position: { x: s.x, y: s.y, z: s.z },
+          orientation: s.o,
+          pending: this.changes.isNewSpawn(spawnKey(s.type, s.guid)),
+          displayId: s.displayId,
+          scale: s.scale,
+          wanderRadius: showWander ? s.wanderDistance : undefined,
+          bounds: showBounds ? spawnBounds(s) : undefined,
+        }));
+    }),
+  );
 
-  protected readonly worldPaths = computed<WaypointPath[]>(() => {
-    if (!this.layers().waypoints) {
-      return [];
-    }
-    // only the paths walked by a creature the filters show
-    const owners = pathOwners(this.visibleSpawns());
-    const byPath = new Map<number, WaypointRecord[]>();
-    for (const waypoint of this.waypoints().filter((w) => owners.has(w.pathId))) {
-      const list = byPath.get(waypoint.pathId);
-      if (list) {
-        list.push(waypoint);
-      } else {
-        byPath.set(waypoint.pathId, [waypoint]);
+  protected readonly worldPaths = computed<WaypointPath[]>(() =>
+    perfTime('editor worldPaths', () => {
+      if (!this.layers().waypoints) {
+        return [];
       }
-    }
-    // the SmartAI rows of the creatures walking each path, worked out once per path (not per point)
-    const walkerIds = new Map<number, Set<number>>();
-    // (only creatures walk paths)
-    for (const spawn of this.spawns()) {
-      for (const pathId of pathsOf(spawn)) {
-        const ids = walkerIds.get(pathId) ?? new Set<number>();
-        ids.add(spawn.entry).add(-spawn.guid);
-        walkerIds.set(pathId, ids);
+      // only the paths walked by a creature the filters show
+      const owners = pathOwners(this.visibleSpawns());
+      const byPath = new Map<number, WaypointRecord[]>();
+      for (const waypoint of this.waypoints().filter((w) => owners.has(w.pathId))) {
+        const list = byPath.get(waypoint.pathId);
+        if (list) {
+          list.push(waypoint);
+        } else {
+          byPath.set(waypoint.pathId, [waypoint]);
+        }
       }
-    }
-    const sai = this.waypointSai();
-    const scripts = this.waypointScripts();
-    return [...byPath].map(([pathId, points]) => {
-      // (a shown path is walked by a creature shown)
-      const ids = walkerIds.get(pathId) as Set<number>;
-      const pathSai = sai.filter((row) => ids.has(row.entryorguid));
-      return {
-        key: pathKey(pathId),
-        label: pathLabel(pathId),
-        owners: owners.get(pathId) as string[],
-        closed: true,
-        points: points.map((p) => ({
-          point: p.point,
-          position: { x: p.x, y: p.y, z: p.z },
-          orientation: p.orientation ?? null,
-          delay: p.delay,
-          info: describeWaypoint(pathId, p.point, p, scripts, pathSai),
-        })),
-      };
-    });
-  });
+      // the SmartAI rows of the creatures walking each path, worked out once per path (not per point)
+      const walkerIds = new Map<number, Set<number>>();
+      // (only creatures walk paths)
+      for (const spawn of this.spawns()) {
+        for (const pathId of pathsOf(spawn)) {
+          const ids = walkerIds.get(pathId) ?? new Set<number>();
+          ids.add(spawn.entry).add(-spawn.guid);
+          walkerIds.set(pathId, ids);
+        }
+      }
+      const sai = this.waypointSai();
+      const scripts = this.waypointScripts();
+      return [...byPath].map(([pathId, points]) => {
+        // (a shown path is walked by a creature shown)
+        const ids = walkerIds.get(pathId) as Set<number>;
+        const pathSai = sai.filter((row) => ids.has(row.entryorguid));
+        return {
+          key: pathKey(pathId),
+          label: pathLabel(pathId),
+          owners: owners.get(pathId) as string[],
+          closed: true,
+          points: points.map((p) => ({
+            point: p.point,
+            position: { x: p.x, y: p.y, z: p.z },
+            orientation: p.orientation ?? null,
+            delay: p.delay,
+            info: describeWaypoint(pathId, p.point, p, scripts, pathSai),
+          })),
+        };
+      });
+    }),
+  );
 
   /** What happens at a waypoint (wait, move type, script, SmartAI of the creatures walking the path). */
   protected readonly spawnTitle = spawnTitle;

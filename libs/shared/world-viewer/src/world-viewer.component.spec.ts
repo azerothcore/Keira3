@@ -400,6 +400,31 @@ describe(WorldViewerComponent.name, () => {
     expect(renderer.render).toHaveBeenCalled();
   });
 
+  it('works out where waypoints are a slice per frame, and stops when closed', async () => {
+    const slice = vi.spyOn(WorldScene.prototype, 'workOutWaypointPlaces');
+    slice.mockReturnValueOnce(true).mockReturnValueOnce(false);
+    const { fixture, host } = await setup();
+    const path = (key: string): WaypointPath => ({ key, label: key, points: [{ point: 1, position: at(0, 0) }] });
+    host.paths.set([path('path:1')]);
+    await settle(fixture);
+    // asked again while working: the same run carries on
+    host.paths.set([path('path:1'), path('path:2')]);
+    await settle(fixture);
+    flushFrames();
+    flushFrames();
+    flushFrames();
+    // a slice with some left, then the next frame's
+    expect(slice.mock.calls.length).toBeGreaterThanOrEqual(2);
+    // closed before the next slice
+    host.paths.set([path('path:3')]);
+    await settle(fixture);
+    const before = slice.mock.calls.length;
+    fixture.destroy();
+    flushFrames();
+    expect(slice).toHaveBeenCalledTimes(before);
+    slice.mockRestore();
+  });
+
   it('places the buildings the editor asks for (a transport on its map)', async () => {
     const setExtras = vi.spyOn(WorldObjects.prototype, 'setExtras');
     const { fixture, host } = await setup();

@@ -82,6 +82,8 @@ import {
 
 /** How long (ms) loading must have calmed down before the waypoints' places are worked out again. */
 const CLASSIFY_DELAY = 250;
+/** Time (ms) given each frame to working out waypoint places. */
+const PLACE_BUDGET = 6;
 /** How often (ms) the performance stats are updated. */
 const STATS_INTERVAL = 500;
 
@@ -221,7 +223,9 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   protected readonly error = signal<string | undefined>(undefined);
   protected readonly loading = signal(false);
   /** What's still loading in the background (undefined when idle). */
-  protected readonly activity = signal<{ terrain: number; buildings: number; props: number; models: number } | undefined>(undefined);
+  protected readonly activity = signal<
+    { terrain: number; buildings: number; props: number; models: number; waypoints: number } | undefined
+  >(undefined);
   /** The performance stats (View > Show performance stats). */
   protected readonly stats = signal<ViewerStats | undefined>(undefined);
   /** Buildings placed by the editor (a transport's ship on its map), at server positions. */
@@ -284,6 +288,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private resizeObserver?: ResizeObserver;
   private frameRequested = false;
   private classifyTimer?: ReturnType<typeof setTimeout>;
+  /** Waypoint places are being worked out, a slice per frame. */
+  private placing = false;
   private pointerDown?: { x: number; y: number };
   private renderScale = 1;
   private markerModel = '';
@@ -356,7 +362,10 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     // (on their own: a change of one doesn't redraw the other)
     effect(() => {
       perfTime('scene paths', () => this.world.setWaypointPaths(this.paths()));
-      untracked(() => this.syncGizmo());
+      untracked(() => {
+        this.syncGizmo();
+        this.workOutWaypointPlaces();
+      });
       this.requestRender();
     });
     effect(() => {
@@ -1191,8 +1200,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     // what's under the waypoints is looked at again once tiles stop coming in (each look casts rays at everything)
     clearTimeout(this.classifyTimer);
     this.classifyTimer = setTimeout(() => {
-      perfTime('classify waypoints', () => this.world.classifyWaypoints());
-      this.requestRender();
+      this.world.queueWaypointPlaces();
+      this.workOutWaypointPlaces();
     }, CLASSIFY_DELAY);
     // what's under the checked points may have changed: check them again once loading calms down
     if (untracked(() => this.waypointCheck())) {
@@ -1200,6 +1209,28 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       this.recheckTimer = setTimeout(() => void this.runWaypointCheck(this.mapDirectory(), this.waypointCheck()), RECHECK_DELAY);
     }
     this.requestRender();
+  }
+
+  /** Works out the queued waypoints' places a slice per frame (nearest first), so the view keeps drawing. */
+  private workOutWaypointPlaces(): void {
+    if (this.placing) {
+      return;
+    }
+    this.placing = true;
+    const step = () => {
+      if (!this.renderer) {
+        this.placing = false;
+        return;
+      }
+      const more = perfTime('waypoint places', () => this.world.workOutWaypointPlaces(PLACE_BUDGET));
+      this.requestRender();
+      if (more) {
+        requestAnimationFrame(step);
+      } else {
+        this.placing = false;
+      }
+    };
+    requestAnimationFrame(step);
   }
 
   private onCameraChange(): void {
@@ -1355,6 +1386,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       buildings: this.objects.pendingCount,
       props: this.doodads.pendingCount,
       models: this.spawnModels.pendingCount,
+      waypoints: this.world.waypointPlacesPending,
     };
     const busy = Object.values(activity).some((count) => count > 0);
     const shown = this.activity();

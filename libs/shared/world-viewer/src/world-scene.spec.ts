@@ -908,6 +908,13 @@ describe('WorldScene', () => {
         ]);
         // the number of sides of each cone / pyramid
         const geometry = (key: string) => ((world.getObject(key) as Mesh).geometry as ConeGeometry).parameters.radialSegments;
+        // worked out a slice at a time: ground cones until then
+        expect(world.waypointPlacesPending).toBe(3);
+        expect(geometry('path:1#2')).toBe(16);
+        expect(world.workOutWaypointPlaces(0)).toBe(true);
+        expect(world.waypointPlacesPending).toBe(2);
+        expect(world.workOutWaypointPlaces(1000)).toBe(false);
+        expect(world.waypointPlacesPending).toBe(0);
         expect([geometry('path:1#1'), geometry('path:1#2'), geometry('path:1#3')]).toEqual([16, 4, 5]);
         expect(world.waypointPlaceOf('path:1#2')).toBe('air');
         const drops = world.scene.getObjectByName('path:1:drops') as LineSegments;
@@ -920,6 +927,26 @@ describe('WorldScene', () => {
         world.refreshPathLine('path:1');
         expect(geometry('path:1#2')).toBe(16);
         expect(world.scene.getObjectByName('path:1:drops')).toBeUndefined();
+      });
+
+      it('works out the paths nearest the camera first, and forgets paths removed meanwhile', () => {
+        const world = lakeWorld();
+        const path = (key: string, east: number): WaypointPath => ({ key, label: key, points: [{ point: 1, position: at(east, 0, 25) }] });
+        world.setWaypointPaths([path('path:1', 500), path('path:2', 0), path('path:3', 900)]);
+        world.camera.position.copy(worldToScene(at(0, 0, 30)) as unknown as Vector3);
+        // one path per slice with no time: the nearest one first
+        world.workOutWaypointPlaces(0);
+        expect(world.waypointPlaceOf('path:2#1')).toBe('air');
+        expect(world.waypointPlaceOf('path:1#1')).toBeUndefined();
+        world.setWaypointPaths([path('path:1', 500)]);
+        expect(world.workOutWaypointPlaces(1000)).toBe(false);
+        expect(world.waypointPlaceOf('path:1#1')).toBeDefined();
+        expect(world.waypointPlaceOf('path:3#1')).toBeUndefined();
+        // a path emptied of its points while queued
+        world.queueWaypointPlaces();
+        const queued = world.scene.getObjectByName('path:1') as Group;
+        queued.clear();
+        expect(world.workOutWaypointPlaces(1000)).toBe(false);
       });
 
       it('marks checked points with a coloured "!", kept when the paths are drawn again', () => {

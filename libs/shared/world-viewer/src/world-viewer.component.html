@@ -92,7 +92,7 @@
   }
 
   @if (activity() || spawnsLoading()) {
-    @let busy = activity() ?? { terrain: 0, buildings: 0, props: 0, models: 0 };
+    @let busy = activity() ?? { terrain: 0, buildings: 0, props: 0, models: 0, waypoints: 0 };
     <div class="world-viewer-activity" data-testid="world-viewer-activity" role="status">
       <div class="progress">
         <div class="progress-bar progress-bar-striped progress-bar-animated w-100"></div>
@@ -110,6 +110,9 @@
         }
         @if (busy.models) {
           · {{ 'WORLD_EDITOR.MODELS' | translate }} {{ busy.models }}
+        }
+        @if (busy.waypoints) {
+          · <span data-testid="world-viewer-activity-waypoints">{{ 'WORLD_EDITOR.WAYPOINTS' | translate }} {{ busy.waypoints }}</span>
         }
         @if (spawnsLoading()) {
           · <span data-testid="world-viewer-activity-spawns">{{ 'WORLD_EDITOR.SPAWNS' | translate }}</span>

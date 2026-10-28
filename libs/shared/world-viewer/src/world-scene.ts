@@ -278,6 +278,8 @@ export class WorldScene {
   /** Arrow heads of flight paths: triangular pyramids. */
   private readonly flightArrowGeometry = new ConeGeometry(0.7, 1.6, 3);
   private readonly waypointPlaces = new Map<string, WaypointPlace>();
+  /** Paths whose waypoints' places are being worked out: the next waypoint to do, and the drop lines so far. */
+  private readonly placeQueue = new Map<Object3D, { next: number; drops: Vector3[] }>();
   /** "Check path" marks: an exclamation mark (bar and dot) over the point, in its status colour. */
   private readonly checkBarGeometry = new CylinderGeometry(0.12, 0.08, 0.8, 8).translate(0, 1.75, 0);
   private readonly checkDotGeometry = new SphereGeometry(0.12, 8, 6).translate(0, 1.15, 0);
@@ -1014,6 +1016,7 @@ export class WorldScene {
       } else {
         this.forget(group);
         group.removeFromParent();
+        this.placeQueue.delete(group);
       }
     }
     const added: Group[] = [];
@@ -1056,7 +1059,8 @@ export class WorldScene {
       this.orientPointers(group, path.closed === true && path.points.length > 2);
       this.waypointGroup.add(group);
     }
-    this.classifyWaypoints(added);
+    // worked out a slice at a time (see workOutWaypointPlaces): drawn as ground until then
+    this.queueWaypointPlaces(added);
     this.setWaypointChecks(this.waypointChecks);
     this.applySelection();
   }
@@ -1097,41 +1101,104 @@ export class WorldScene {
    * points in the air. Call again when terrain or buildings around them loaded.
    */
   classifyWaypoints(groups: Object3D[] = this.waypointGroup.children): void {
-    this.scene.updateMatrixWorld();
+    this.queueWaypointPlaces(groups);
+    while (this.workOutWaypointPlaces(Infinity)) {
+      // all of them, now
+    }
+  }
+
+  /**
+   * Marks paths whose waypoints' places must be worked out again (all by default), to be done a slice at a time with
+   * `workOutWaypointPlaces`: each one casts rays at the terrain and buildings, so thousands at once froze the view.
+   */
+  queueWaypointPlaces(groups: Object3D[] = this.waypointGroup.children): void {
     for (const group of groups) {
-      const drops: Vector3[] = [];
-      for (const waypoint of this.waypointsOf(group as Group)) {
-        const key = (waypoint.userData as PickableData).key;
-        const position = (this.getObjectState(key) as { position: WorldPosition }).position;
-        const place = this.waypointPlace(position);
-        this.waypointPlaces.set(key, place);
-        (waypoint as Mesh).geometry = this.waypointGeometries[place];
-        const floor = place === 'air' ? this.firstGroundBelow(position.x, position.y, position.z) : undefined;
-        if (floor !== undefined) {
-          const top = scenePoint(position, WAYPOINT_LIFT);
-          const bottom = scenePoint({ ...position, z: floor }, 0.05);
-          drops.push(top, bottom);
-          // a small square on the floor under it
-          const corners = [-0.4, 0.4].flatMap((dx) => [-0.4, 0.4].map((dz) => bottom.clone().add(new Vector3(dx, 0, dz))));
-          drops.push(corners[0], corners[1], corners[1], corners[3], corners[3], corners[2], corners[2], corners[0]);
+      this.placeQueue.set(group, { next: 0, drops: [] });
+    }
+  }
+
+  /** Waypoints whose place is still to be worked out. */
+  get waypointPlacesPending(): number {
+    let pending = 0;
+    this.placeQueue.forEach((progress, group) => (pending += this.waypointsOf(group as Group).length - progress.next));
+    return pending;
+  }
+
+  /**
+   * Works out the places of queued waypoints for about `budgetMs`, the paths nearest the camera first. Returns true
+   * while some are left.
+   */
+  workOutWaypointPlaces(budgetMs: number): boolean {
+    const until = performance.now() + budgetMs;
+    this.scene.updateMatrixWorld();
+    while (this.placeQueue.size > 0) {
+      const group = this.nearestQueuedPath();
+      const progress = this.placeQueue.get(group) as { next: number; drops: Vector3[] };
+      const waypoints = this.waypointsOf(group as Group);
+      while (progress.next < waypoints.length) {
+        this.placeWaypoint(waypoints[progress.next++], progress.drops);
+        if (performance.now() >= until && progress.next < waypoints.length) {
+          return true;
         }
       }
-      const old = group.getObjectByName(`${group.name}:drops`) as LineSegments | undefined;
-      if (old) {
-        group.remove(old);
-        old.geometry.dispose();
-        (old.material as Material).dispose();
+      this.placeQueue.delete(group);
+      this.setDropLines(group, progress.drops);
+      if (performance.now() >= until) {
+        return this.placeQueue.size > 0;
       }
-      if (drops.length > 0) {
-        const lines = new LineSegments(
-          new BufferGeometry().setFromPoints(drops),
-          new LineBasicMaterial({ color: pathColor(group.name), transparent: true, opacity: 0.7, depthTest: false }),
-        );
-        lines.name = `${group.name}:drops`;
-        lines.renderOrder = 1;
-        lines.raycast = () => undefined;
-        group.add(lines);
+    }
+    return false;
+  }
+
+  /** The queued path whose first point is nearest the camera. */
+  private nearestQueuedPath(): Object3D {
+    const camera = this.camera.position;
+    let nearest: Object3D | undefined;
+    let best = Infinity;
+    for (const group of this.placeQueue.keys()) {
+      const first = this.waypointsOf(group as Group)[0];
+      const distance = first ? first.position.distanceToSquared(camera) : 0;
+      if (distance < best || !nearest) {
+        [nearest, best] = [group, distance];
       }
+    }
+    return nearest as Object3D;
+  }
+
+  /** Gives a waypoint the marker of its place, and notes the line down to the floor under one in the air. */
+  private placeWaypoint(waypoint: Object3D, drops: Vector3[]): void {
+    const key = (waypoint.userData as PickableData).key;
+    const position = (this.getObjectState(key) as { position: WorldPosition }).position;
+    const place = this.waypointPlace(position);
+    this.waypointPlaces.set(key, place);
+    (waypoint as Mesh).geometry = this.waypointGeometries[place];
+    const floor = place === 'air' ? this.firstGroundBelow(position.x, position.y, position.z) : undefined;
+    if (floor !== undefined) {
+      const top = scenePoint(position, WAYPOINT_LIFT);
+      const bottom = scenePoint({ ...position, z: floor }, 0.05);
+      drops.push(top, bottom);
+      // a small square on the floor under it
+      const corners = [-0.4, 0.4].flatMap((dx) => [-0.4, 0.4].map((dz) => bottom.clone().add(new Vector3(dx, 0, dz))));
+      drops.push(corners[0], corners[1], corners[1], corners[3], corners[3], corners[2], corners[2], corners[0]);
+    }
+  }
+
+  private setDropLines(group: Object3D, drops: Vector3[]): void {
+    const old = group.getObjectByName(`${group.name}:drops`) as LineSegments | undefined;
+    if (old) {
+      group.remove(old);
+      old.geometry.dispose();
+      (old.material as Material).dispose();
+    }
+    if (drops.length > 0) {
+      const lines = new LineSegments(
+        new BufferGeometry().setFromPoints(drops),
+        new LineBasicMaterial({ color: pathColor(group.name), transparent: true, opacity: 0.7, depthTest: false }),
+      );
+      lines.name = `${group.name}:drops`;
+      lines.renderOrder = 1;
+      lines.raycast = () => undefined;
+      group.add(lines);
     }
   }
 
@@ -1195,7 +1262,8 @@ export class WorldScene {
       numbers.push(numbers[0]);
     }
     this.orientPointers(group, closed);
-    this.classifyWaypoints();
+    // (only this path: the others didn't move)
+    this.classifyWaypoints([group]);
     line.geometry.dispose();
     line.geometry = new BufferGeometry().setFromPoints(points);
     line.userData = { pathKey, numbers };
