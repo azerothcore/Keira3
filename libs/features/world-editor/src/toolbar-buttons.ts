@@ -23,6 +23,7 @@ export const TOOLBAR_BUTTONS = {
   view: { icon: 'fa-eye', label: 'WORLD_EDITOR.VIEW', help: 'WORLD_EDITOR.VIEW_HELP' },
   tree: { icon: 'fa-sitemap', label: 'WORLD_EDITOR.TREE', help: 'WORLD_EDITOR.TREE_HELP' },
   resetNorth: { icon: 'fa-location-arrow', label: 'WORLD_EDITOR.RESET_NORTH', help: 'WORLD_EDITOR.RESET_NORTH_HELP' },
+  topView: { icon: 'fa-arrows-down-to-line', label: 'WORLD_EDITOR.TOP_VIEW', help: 'WORLD_EDITOR.TOP_VIEW_HELP' },
   controls: { icon: 'fa-keyboard', label: 'WORLD_EDITOR.CONTROLS', help: 'WORLD_EDITOR.CONTROLS_HELP' },
   settings: { icon: 'fa-cog', label: 'WORLD_EDITOR.SETTINGS', help: 'WORLD_EDITOR.SETTINGS_HELP' },
   legend: { icon: 'fa-info-circle', label: 'WORLD_EDITOR.LEGEND', help: 'WORLD_EDITOR.LEGEND_HELP' },

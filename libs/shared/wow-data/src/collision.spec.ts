@@ -61,6 +61,16 @@ describe('collision', () => {
     expect(Array.from(collision.indices)).toEqual([0, 1, 2, 1, 2, 3]);
     expect(collision.positions).toHaveLength(12);
     expect(Array.from(collision.positions.slice(0, 3))).toEqual([-2, 3, -1]);
+    // the first one has no material: an invisible wall
+    expect(Array.from(collision.invisible ?? [])).toEqual([0, 1, 2]);
+    // drawn walls only: no invisible ones
+    const drawn = concat(
+      new Uint8Array(0x44),
+      chunk('MOPY', new Uint8Array([0x20, 0])),
+      chunk('MOVI', shorts([0, 1, 2])),
+      chunk('MOVT', movt),
+    );
+    expect(parseWmoGroupCollision(chunk('MOGP', drawn)).invisible).toBeUndefined();
 
     // nothing colliding, missing chunks, no MOGP
     const none = concat(

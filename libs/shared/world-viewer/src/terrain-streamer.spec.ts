@@ -152,7 +152,7 @@ describe('TerrainStreamer', () => {
       expect(source.getTerrainDetail).toHaveBeenCalledWith('Azeroth', { tx: 32, ty: 48 });
       expect(source.getTerrain).not.toHaveBeenCalled();
       expect(scene.terrainKeys).toEqual(['32_48']);
-      expect(scene.scene.getObjectByName('tile:32_48')?.children.length).toBe(256 + 1); // the chunks (picking) and one drawn mesh: they all use the same textures
+      expect(scene.scene.getObjectByName('tile:32_48')?.children.length).toBe(256 + 1 + 2); // the chunks (picking), one drawn mesh (they all use the same textures), and the two overlays
     });
 
     it('skips tiles without ADT', async () => {

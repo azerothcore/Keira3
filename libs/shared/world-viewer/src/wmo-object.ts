@@ -1,4 +1,5 @@
 import { buildCollisionGeometry, collisionMesh } from './collision-object';
+import { createInvisibleMaterial } from './m2-object';
 import { ModelPlacement, WmoModel, worldToScene } from '@keira/shared/wow-data';
 import {
   BufferAttribute,
@@ -52,6 +53,8 @@ export function applyPlacement(object: Object3D, placement: ModelPlacement): voi
 export function buildWmoObject(model: WmoModel, textures: Texture[], fallback: Texture): Group {
   const template = new Group();
   const cache = new Map<string, Material>();
+  let wallMaterial: Material | undefined;
+  const invisibleMaterial = (): Material => (wallMaterial ??= createInvisibleMaterial());
   const material = (index: number, indoor: boolean): Material => {
     const info = model.materials[index];
     const key = `${index}:${indoor}`;
@@ -75,13 +78,24 @@ export function buildWmoObject(model: WmoModel, textures: Texture[], fallback: T
     return result;
   };
 
-  for (const group of model.groups) {
+  model.groups.forEach((group, groupIndex) => {
     const collision = buildCollisionGeometry(group.collision);
     if (collision) {
       template.add(collisionMesh(collision));
     }
+    // its invisible walls, drawn see-through blue while invisible walls are shown
+    if (group.collision?.invisible) {
+      const walls = new BufferGeometry();
+      walls.setAttribute('position', new BufferAttribute(group.collision.positions, 3));
+      walls.setIndex(new BufferAttribute(group.collision.invisible, 1));
+      walls.computeBoundingSphere();
+      const mesh = new Mesh(walls, invisibleMaterial());
+      mesh.name = 'invisible-walls';
+      mesh.userData = { group: groupIndex };
+      template.add(mesh);
+    }
     if (group.indices.length === 0) {
-      continue;
+      return;
     }
     const geometry = new BufferGeometry();
     geometry.setAttribute('position', new BufferAttribute(group.positions, 3));
@@ -108,17 +122,21 @@ export function buildWmoObject(model: WmoModel, textures: Texture[], fallback: T
     });
     if (materials.length > 0) {
       geometry.computeBoundingSphere();
-      template.add(new Mesh(geometry, materials));
+      const mesh = new Mesh(geometry, materials);
+      // (which group, named when hovered)
+      mesh.userData = { group: groupIndex };
+      template.add(mesh);
     }
     if (roofMaterials.length > 0) {
       roof.computeBoundingSphere();
       const mesh = new Mesh(roof, roofMaterials);
       mesh.name = 'roof';
+      mesh.userData = { group: groupIndex };
       mesh.layers.set(ROOF_LAYER);
       template.add(mesh);
     }
-  }
-  template.userData['materials'] = [...cache.values()];
+  });
+  template.userData['materials'] = [...cache.values(), ...(wallMaterial ? [wallMaterial] : [])];
   return template;
 }
 

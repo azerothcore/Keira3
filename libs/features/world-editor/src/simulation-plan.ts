@@ -15,31 +15,31 @@ const WANDER_WAIT = [4, 10];
 const walkSpeed = (spawn: SpawnRecord): number => WALK_SPEED * (spawn.speedWalk ?? 1);
 const runSpeed = (spawn: SpawnRecord): number => RUN_SPEED * (spawn.speedRun ?? 1);
 
-/** A creature walking its path round after round: from the last point to the first, then on point by point. */
-export function pathSimulation(spawn: SpawnRecord, points: WaypointRecord[], rate: number, key: string): MovementSimulation | undefined {
+/** A creature walking its path once, as it does when it spawns: from its spawn point to the first point, then on. */
+export function pathSimulation(
+  spawn: SpawnRecord,
+  points: WaypointRecord[],
+  key: string,
+  actions: Map<number, string[]> = new Map(),
+): MovementSimulation | undefined {
   if (points.length === 0) {
     return undefined;
   }
   const sorted = [...points].sort((a, b) => a.point - b.point);
-  const last = sorted[sorted.length - 1];
   const legs: SimulationLeg[] = sorted.map((p) => ({
     to: { x: p.x, y: p.y, z: p.z },
     speed: p.moveType === MOVE_RUN ? runSpeed(spawn) : walkSpeed(spawn),
     wait: p.delay / 1000,
     fly: p.moveType === MOVE_LAND || p.moveType === MOVE_TAKE_OFF,
+    run: p.moveType === MOVE_RUN,
     label: `point ${p.point}`,
+    ...(actions.get(p.point)?.length ? { actions: actions.get(p.point) } : {}),
   }));
-  const start = sorted.length > 1 ? { x: last.x, y: last.y, z: last.z } : { x: spawn.x, y: spawn.y, z: spawn.z };
-  return { key, start, legs, rate };
+  return { key, start: { x: spawn.x, y: spawn.y, z: spawn.z }, legs, once: true };
 }
 
 /** A creature wandering around its spawn point, within its wander distance, back to it at the end of a round. */
-export function wanderSimulation(
-  spawn: SpawnRecord,
-  rate: number,
-  key: string,
-  random: () => number = Math.random,
-): MovementSimulation | undefined {
+export function wanderSimulation(spawn: SpawnRecord, key: string, random: () => number = Math.random): MovementSimulation | undefined {
   const radius = spawn.wanderDistance ?? 0;
   if (radius <= 0) {
     return undefined;
@@ -57,5 +57,5 @@ export function wanderSimulation(
     };
   });
   legs.push({ to: home, speed: walkSpeed(spawn), wait: wait(), label: 'home' });
-  return { key, start: home, legs, rate };
+  return { key, start: home, legs, once: true };
 }

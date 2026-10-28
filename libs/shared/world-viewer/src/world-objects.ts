@@ -154,6 +154,7 @@ export class WorldObjects {
       if (template) {
         const object = template.clone();
         object.name = extra.key;
+        object.userData = { path: extra.path };
         const { x, y, z } = extra.position;
         const half = extra.orientation / 2;
         applyPlacement(object, {
@@ -212,6 +213,7 @@ export class WorldObjects {
       }
       const object = perfTime('building clone', () => template.clone());
       object.name = `wmo:${placement.uniqueId}`;
+      object.userData = { path: placement.path, uniqueId: placement.uniqueId };
       applyPlacement(object, placement);
       this.group.add(object);
       this.placed.set(placement.uniqueId, { object, tiles: new Set([key]) });

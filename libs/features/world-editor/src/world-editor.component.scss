@@ -191,8 +191,11 @@
 }
 
 .world-editor-context {
-  position: absolute;
-  z-index: 10;
+  // on the page, over everything: scrolls when it's taller than the room left in the window
+  position: fixed;
+  z-index: 1050;
+  overflow-y: auto;
+  max-width: calc(100vw - 16px);
 }
 
 .world-editor-controls {

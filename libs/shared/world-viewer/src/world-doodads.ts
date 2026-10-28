@@ -299,6 +299,8 @@ export class WorldDoodads {
         this.collisions.set(key, collision);
       }
     }
+    // what each instance is, named when hovered
+    mesh.userData = { path: placements[0].path, ids: placements.map((p) => p.uniqueId) };
     const collision = this.collisions.get(key);
     for (const instanced of collision ? [mesh, collision] : [mesh]) {
       placements.forEach((placement, i) => {

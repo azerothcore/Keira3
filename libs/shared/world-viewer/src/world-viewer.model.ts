@@ -34,6 +34,23 @@ export interface WorldSpawn {
   moves?: boolean;
 }
 
+/** What the map shows under the cursor: a building, a doodad or the terrain (see `WorldScene.describe`). */
+export interface SceneThing {
+  kind: 'building' | 'doodad' | 'terrain';
+  /** The model's file. */
+  path?: string;
+  /** Its placement (uniqueId). */
+  id?: number;
+  /** A building's group. */
+  group?: number;
+  faces?: number;
+  batches?: number;
+  /** A part the game never draws (invisible wall, emitter box), drawn because invisible walls are shown. */
+  invisible?: boolean;
+  tile?: TileCoord;
+  position: WorldPosition;
+}
+
 /** An area trigger (AreaTrigger.dbc): a sphere, or a box when `box` is set. Centred on `position`. */
 export interface WorldAreaTrigger {
   key: string;
@@ -68,8 +85,8 @@ export interface MovementSimulation {
   key: string;
   start: WorldPosition;
   legs: SimulationLeg[];
-  /** Time runs this many times faster. */
-  rate: number;
+  /** Plays the legs once and stops at the end (`simulationEnded`), instead of round after round. */
+  once?: boolean;
 }
 
 export interface SimulationLeg {
@@ -80,8 +97,23 @@ export interface SimulationLeg {
   wait: number;
   /** Straight through the air (flying) rather than along the navigation mesh. */
   fly?: boolean;
+  /** Running rather than walking. */
+  run?: boolean;
   /** Shown while on this leg (e.g. "point 3"). */
   label: string;
+  /** What it does on arrival (its script, emotes, lines…), shown while there. */
+  actions?: string[];
+}
+
+/** Where a simulation is at: the leg it's on, how it moves, how long it still waits, the time since it started. */
+export interface SimulationStatus {
+  label: string;
+  move: 'walk' | 'run' | 'fly';
+  actions?: string[];
+  /** Seconds still waited there, while waiting. */
+  wait?: number;
+  /** Seconds since it started (in the simulation's time). */
+  elapsed?: number;
 }
 
 /** A line drawn between two places (a formation member to its leader, a teleport to where it leads…). */

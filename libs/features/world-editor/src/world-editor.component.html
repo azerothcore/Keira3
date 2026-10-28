@@ -171,7 +171,7 @@
       <button type="submit" class="btn btn-sm btn-secondary" data-testid="goto-btn">{{ 'WORLD_EDITOR.GO_TO' | translate }}</button>
     </form>
 
-    <ng-container [ngTemplateOutlet]="layerSwitchesTemplate" />
+    <ng-container [ngTemplateOutlet]="panelButtonsTemplate" />
   </div>
   <div class="world-editor-toolbar d-flex align-items-center gap-2 mb-2">
     <form class="d-flex gap-1 tele-form" (submit)="$event.preventDefault(); searchTele()">
@@ -203,7 +203,10 @@
         </div>
       }
     </form>
-    <ng-container [ngTemplateOutlet]="mainButtonsTemplate" />
+    <ng-container [ngTemplateOutlet]="mapButtonsTemplate" />
+    <div class="ms-auto">
+      <ng-container [ngTemplateOutlet]="layerSwitchesTemplate" />
+    </div>
     <button
       type="button"
       class="btn btn-sm btn-outline-secondary"
@@ -236,20 +239,22 @@
       <keira-world-viewer
         [mapDirectory]="mapDirectory()"
         [spawns]="worldSpawns()"
-        [paths]="worldPaths()"
+        [paths]="inGameView() ? [] : worldPaths()"
         [selectedKey]="selectedKey()"
         [editableKey]="editableKey()"
         [gizmoMode]="gizmoMode()"
         [snapToGround]="snapToGround()"
         [snapToWall]="snapToWall()"
         [groundOnly]="tool() !== 'select'"
-        [renderSettings]="renderSettings.settings()"
+        [renderSettings]="viewSettings()"
         [navigation]="controls.settings()"
         [markerLookAt]="markerLookAt()"
         [placePreview]="placePreview()"
         [region]="region()"
         [focus]="focus()"
+        [pathEnds]="inGameView() ? undefined : pathEnds()"
         [resetNorth]="resetNorthRequest()"
+        [topView]="topViewRequest()"
         (picked)="onPicked($event)"
         (objectMoved)="onObjectMoved($event)"
         (centerChanged)="onCenterChanged($event)"
@@ -265,13 +270,15 @@
         (collisionSourceChanged)="collisionSource.set($event)"
         [groundQuery]="groundQuery()"
         (groundHeights)="onGroundHeights($event)"
-        [links]="worldLinks()"
+        [links]="inGameView() ? [] : worldLinks()"
         [groupKeys]="groupKeys()"
         [simulation]="simulation()"
-        [markers]="worldMarkers()"
+        (simulationEnded)="simulationEnded.set(true)"
+        [simulationRate]="simulationRate()"
+        [markers]="inGameView() ? [] : worldMarkers()"
         [probe]="probeRequest()"
-        [areaTriggers]="worldAreaTriggers()"
-        [boundaries]="worldBoundaries()"
+        [areaTriggers]="inGameView() ? [] : worldAreaTriggers()"
+        [boundaries]="inGameView() ? [] : worldBoundaries()"
         [spawnsLoading]="loadingSpawns()"
         [cameraPhase]="filters().phase"
         [weather]="weather()"
@@ -293,7 +300,8 @@
           @if (quickOpen()) {
             <div class="card card-body p-1 world-editor-quick-bar" data-testid="quick-bar">
               <div class="d-flex flex-wrap align-items-center gap-1">
-                <ng-container [ngTemplateOutlet]="mainButtonsTemplate" />
+                <ng-container [ngTemplateOutlet]="mapButtonsTemplate" />
+                <ng-container [ngTemplateOutlet]="panelButtonsTemplate" />
                 <button type="button" class="btn btn-sm btn-link" data-testid="quick-more" (click)="quickMore.set(!quickMore())">
                   {{ (quickMore() ? 'WORLD_EDITOR.SHOW_LESS' : 'WORLD_EDITOR.EXPAND_MORE') | translate }}
                 </button>
@@ -623,6 +631,23 @@
             </section>
             <section class="world-editor-view-group" data-testid="view-group-overlays">
               <h6 class="world-editor-view-group-title">{{ 'WORLD_EDITOR.VIEW_OVERLAYS' | translate }}</h6>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-in-game"
+                  data-testid="view-in-game"
+                  [checked]="inGameView()"
+                  (change)="inGameView.set($any($event.target).checked)"
+                />
+                <label class="form-check-label" for="world-editor-in-game">{{ 'WORLD_EDITOR.IN_GAME_VIEW' | translate }}</label
+                ><i
+                  class="fas fa-info-circle ms-1"
+                  placement="auto"
+                  container="body"
+                  [tooltip]="'WORLD_EDITOR.IN_GAME_VIEW_HELP' | translate"
+                ></i>
+              </div>
               @for (layer of overlaySwitches; track layer.key) {
                 <div class="form-check form-switch mb-0">
                   <input
@@ -690,6 +715,91 @@
                   placement="auto"
                   container="body"
                   [tooltip]="'WORLD_EDITOR.LIQUID_INFO_HELP' | translate"
+                ></i>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-mouse-over"
+                  data-testid="view-mouse-over"
+                  [checked]="renderSettings.settings().showMouseOver"
+                  (change)="setRenderFlag('showMouseOver', $event)"
+                />
+                <label class="form-check-label" for="world-editor-mouse-over">{{ 'WORLD_EDITOR.MOUSE_OVER' | translate }}</label
+                ><i
+                  class="fas fa-info-circle ms-1"
+                  placement="auto"
+                  container="body"
+                  [tooltip]="'WORLD_EDITOR.MOUSE_OVER_HELP' | translate"
+                ></i>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-tile-grid"
+                  data-testid="view-tile-grid"
+                  [checked]="renderSettings.settings().showTileGrid"
+                  (change)="setRenderFlag('showTileGrid', $event)"
+                />
+                <label class="form-check-label" for="world-editor-tile-grid">{{ 'WORLD_EDITOR.TILE_GRID' | translate }}</label
+                ><i
+                  class="fas fa-info-circle ms-1"
+                  placement="auto"
+                  container="body"
+                  [tooltip]="'WORLD_EDITOR.TILE_GRID_HELP' | translate"
+                ></i>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-steep-slopes"
+                  data-testid="view-steep-slopes"
+                  [checked]="renderSettings.settings().showSteepSlopes"
+                  (change)="setRenderFlag('showSteepSlopes', $event)"
+                />
+                <label class="form-check-label" for="world-editor-steep-slopes">{{ 'WORLD_EDITOR.STEEP_SLOPES' | translate }}</label
+                ><i
+                  class="fas fa-info-circle ms-1"
+                  placement="auto"
+                  container="body"
+                  [tooltip]="'WORLD_EDITOR.STEEP_SLOPES_HELP' | translate"
+                ></i>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-wireframe"
+                  data-testid="view-wireframe"
+                  [checked]="renderSettings.settings().showWireframe"
+                  (change)="setRenderFlag('showWireframe', $event)"
+                />
+                <label class="form-check-label" for="world-editor-wireframe">{{ 'WORLD_EDITOR.WIREFRAME' | translate }}</label
+                ><i
+                  class="fas fa-info-circle ms-1"
+                  placement="auto"
+                  container="body"
+                  [tooltip]="'WORLD_EDITOR.WIREFRAME_HELP' | translate"
+                ></i>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-sea-level"
+                  data-testid="view-sea-level"
+                  [checked]="renderSettings.settings().showSeaLevel"
+                  (change)="setRenderFlag('showSeaLevel', $event)"
+                />
+                <label class="form-check-label" for="world-editor-sea-level">{{ 'WORLD_EDITOR.SEA_LEVEL' | translate }}</label
+                ><i
+                  class="fas fa-info-circle ms-1"
+                  placement="auto"
+                  container="body"
+                  [tooltip]="'WORLD_EDITOR.SEA_LEVEL_HELP' | translate"
                 ></i>
               </div>
               <div class="world-editor-view-sub">{{ 'WORLD_EDITOR.VIEW_SUB_BUILDINGS' | translate }}</div>
@@ -1111,6 +1221,40 @@
                   placement="auto"
                   container="body"
                   [tooltip]="'WORLD_EDITOR.FACING_ARROWS_HELP' | translate"
+                ></i>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-path-to-first"
+                  data-testid="view-path-to-first"
+                  [checked]="renderSettings.settings().showPathToFirst"
+                  (change)="setRenderFlag('showPathToFirst', $event)"
+                />
+                <label class="form-check-label" for="world-editor-path-to-first">{{ 'WORLD_EDITOR.PATH_TO_FIRST' | translate }}</label
+                ><i
+                  class="fas fa-info-circle ms-1"
+                  placement="auto"
+                  container="body"
+                  [tooltip]="'WORLD_EDITOR.PATH_TO_FIRST_HELP' | translate"
+                ></i>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-path-from-last"
+                  data-testid="view-path-from-last"
+                  [checked]="renderSettings.settings().showPathFromLast"
+                  (change)="setRenderFlag('showPathFromLast', $event)"
+                />
+                <label class="form-check-label" for="world-editor-path-from-last">{{ 'WORLD_EDITOR.PATH_FROM_LAST' | translate }}</label
+                ><i
+                  class="fas fa-info-circle ms-1"
+                  placement="auto"
+                  container="body"
+                  [tooltip]="'WORLD_EDITOR.PATH_FROM_LAST_HELP' | translate"
                 ></i>
               </div>
               <div class="form-check form-switch mb-0">
@@ -2067,7 +2211,16 @@
         </button>
       }
       @if (contextMenu(); as menu) {
-        <div class="dropdown-menu show world-editor-context" data-testid="context-menu" [style.left.px]="menu.x" [style.top.px]="menu.y">
+        @let place = contextPlace();
+        <div
+          class="dropdown-menu show world-editor-context"
+          data-testid="context-menu"
+          [style.left.px]="place.left"
+          [style.right.px]="place.right"
+          [style.top.px]="place.top"
+          [style.bottom.px]="place.bottom"
+          [style.max-height.px]="place.maxHeight"
+        >
           @if (contextSpawn(); as spawn) {
             <h6 class="dropdown-header">{{ spawnTitle(spawn) }}</h6>
             @if (spawn.aiName) {
@@ -2622,6 +2775,14 @@
       <div class="card mb-2">
         <div class="card-header py-1">{{ 'WORLD_EDITOR.SELECTION' | translate }}</div>
         <div class="card-body p-2" data-testid="selection">
+          @if (checkedPathId() !== undefined && checkedPathId() !== activePathId()) {
+            <div class="mt-1 small" data-testid="path-check-other">
+              {{ 'WORLD_EDITOR.CHECKING_PATH' | translate }} {{ pathLabel(checkedPathId()!) }}
+              <button type="button" class="btn btn-sm btn-link p-0 ms-1" data-testid="clear-other-path-check" (click)="clearPathCheck()">
+                <i class="fa fa-times"></i> {{ 'WORLD_EDITOR.CLEAR_PATH_CHECK' | translate }}
+              </button>
+            </div>
+          }
           @if (selectedSpawn(); as spawn) {
             <div class="mb-1" data-testid="selected-title">
               <strong>{{ spawnTitle(spawn) }}</strong>
@@ -2733,6 +2894,16 @@
                   >
                     <i class="fa fa-check-circle"></i> {{ 'WORLD_EDITOR.CHECK_PATH' | translate }} ({{ pathLabel(activePathId()) }})
                   </button>
+                  @if (checkedPathId() === activePathId()) {
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-secondary ms-1"
+                      data-testid="clear-path-check"
+                      (click)="clearPathCheck()"
+                    >
+                      <i class="fa fa-times"></i> {{ 'WORLD_EDITOR.CLEAR_PATH_CHECK' | translate }}
+                    </button>
+                  }
                   @if (checkedPathId() === activePathId() && waypointChecks().length) {
                     <ul class="list-unstyled small mb-0 mt-1 world-editor-checks" data-testid="path-checks">
                       @for (check of waypointChecks(); track check.key) {
@@ -2780,6 +2951,16 @@
                       <i class="fa" [class.fa-play]="!simulation()" [class.fa-stop]="simulation()"></i>
                       {{ (simulation() ? 'WORLD_EDITOR.SIMULATE_STOP' : 'WORLD_EDITOR.SIMULATE') | translate }}
                     </button>
+                    @if (simulationEnded()) {
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-primary"
+                        data-testid="simulation-replay"
+                        (click)="replaySimulation()"
+                      >
+                        <i class="fa fa-redo"></i> {{ 'WORLD_EDITOR.SIMULATE_REPLAY' | translate }}
+                      </button>
+                    }
                     <select class="form-select form-select-sm w-auto" data-testid="simulation-rate" (change)="setSimulationRate($event)">
                       @for (rate of [1, 2, 4, 8]; track rate) {
                         <option [value]="rate" [selected]="simulationRate() === rate">×{{ rate }}</option>
@@ -3097,7 +3278,7 @@
   </div>
 </ng-template>
 
-<ng-template #mainButtonsTemplate>
+<ng-template #mapButtonsTemplate>
   <div class="btn-group btn-group-sm" role="group">
     <button
       type="button"
@@ -3133,7 +3314,10 @@
       }
     </select>
   }
+</ng-template>
 
+<!-- the panels and actions: on the first row, where there's room -->
+<ng-template #panelButtonsTemplate>
   <button
     type="button"
     class="btn btn-sm ms-auto"
@@ -3189,6 +3373,15 @@
     (click)="resetNorth()"
   >
     <keira-button-label button="resetNorth" [mode]="buttonStyle()" />
+  </button>
+  <button
+    type="button"
+    class="btn btn-sm btn-outline-secondary"
+    data-testid="top-view"
+    [title]="buttonTitle('topView') | translate"
+    (click)="topViewRequest.update((n) => n + 1)"
+  >
+    <keira-button-label button="topView" [mode]="buttonStyle()" />
   </button>
   <button
     type="button"

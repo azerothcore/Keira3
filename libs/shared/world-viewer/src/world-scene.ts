@@ -14,6 +14,7 @@ import {
   Fog,
   Group,
   HemisphereLight,
+  Face,
   Intersection,
   Line,
   LineBasicMaterial,
@@ -29,6 +30,7 @@ import {
   Object3D,
   OctahedronGeometry,
   PerspectiveCamera,
+  PlaneGeometry,
   Raycaster,
   RingGeometry,
   RGBAFormat,
@@ -60,13 +62,23 @@ import {
   tileKey,
   WorldPosition,
   worldToScene,
+  worldToTile,
 } from '@keira/shared/wow-data';
 import { createSkyDome, setSkyColors } from './sky';
 import { ROOF_LAYER } from './wmo-object';
 import { COLLISION_LAYER, SERVER_COLLISION_LAYER } from './collision-object';
 import { createTerrainLighting, createTerrainMaterial } from './terrain-material';
 import {
+  createTerrainOverlayMaterial,
+  createTerrainWireframeMaterial,
+  setTerrainOverlay,
+  TERRAIN_OVERLAY_LAYER,
+  TERRAIN_WIREFRAME_LAYER,
+  terrainOverlayMeshes,
+} from './terrain-overlay';
+import {
   PickResult,
+  SceneThing,
   SpawnKind,
   WaypointCheck,
   WaypointCheckStatus,
@@ -154,6 +166,8 @@ const LIQUID_LOOK: Record<LiquidKind, [number, number]> = {
   slime: [0x5fbf3a, 0.85],
 };
 const POINTER_NAME = 'pointer';
+/** Width of the sea level plane (yards): beyond what's drawn around the camera. */
+const SEA_LEVEL_SIZE = 6000;
 const DEFAULT_LIGHTS = { sun: 1.6, hemisphere: 1.2, ambient: 0.35 };
 const ZONE_LIGHTS = { sun: 1.8, ambient: 1.6 };
 const DEFAULT_FOG = { near: 600, far: 1600 };
@@ -231,6 +245,13 @@ export class WorldScene {
   readonly buildingGroup = new Group();
   /** Trees, rocks and props (M2), streamed by `WorldDoodads`; never picked, so they don't catch clicks meant for the ground. */
   readonly doodadGroup = new Group();
+  /** View > Terrain: the tile grid and steep slopes over the ground, its wireframe, and the sea level. */
+  private readonly terrainOverlay = createTerrainOverlayMaterial();
+  private readonly terrainWireframe = createTerrainWireframeMaterial();
+  private readonly seaLevel = new Mesh(
+    new PlaneGeometry(SEA_LEVEL_SIZE, SEA_LEVEL_SIZE).rotateX(-Math.PI / 2),
+    new MeshBasicMaterial({ color: 0x2f7dd1, transparent: true, opacity: 0.3, depthWrite: false, side: DoubleSide }),
+  );
   /** The server's navigation mesh (mmaps), when shown. */
   readonly navMeshGroup = new Group();
   private groupKeys = new Set<string>();
@@ -395,6 +416,10 @@ export class WorldScene {
     this.serverCollisionGroup.name = 'server-collision';
     this.camera.layers.enable(LIQUID_LAYER);
     this.setRoofsVisible(true);
+    this.seaLevel.name = 'sea-level';
+    this.seaLevel.visible = false;
+    this.seaLevel.raycast = () => undefined;
+    this.scene.add(this.seaLevel);
 
     this.sun.position.set(300, 600, 200);
     this.scene.add(this.hemisphere, this.ambient, this.sun, this.sky, this.beacon, this.probeGroup);
@@ -578,6 +603,28 @@ export class WorldScene {
     this.useServerCollision = active;
   }
 
+  /** View > Terrain: the tile and chunk grid, the ground too steep to walk up, and the terrain's triangles. */
+  setTerrainOverlays(options: { grid: boolean; slopes: boolean; wireframe: boolean }): void {
+    setTerrainOverlay(this.terrainOverlay, options);
+    for (const [layer, on] of [
+      [TERRAIN_OVERLAY_LAYER, options.grid || options.slopes],
+      [TERRAIN_WIREFRAME_LAYER, options.wireframe],
+    ] as const) {
+      if (on) {
+        this.camera.layers.enable(layer);
+      } else {
+        this.camera.layers.disable(layer);
+      }
+    }
+  }
+
+  /** View > Sea level: a see-through plane at height 0 (where the oceans are), around what the camera looks at. */
+  setSeaLevel(visible: boolean, around: WorldPosition): void {
+    this.seaLevel.visible = visible;
+    const at = worldToScene({ ...around, z: 0 });
+    this.seaLevel.position.set(at.x, at.y, at.z);
+  }
+
   setRoofsVisible(visible: boolean): void {
     for (const layers of [this.camera.layers, this.raycaster.layers]) {
       if (visible) {
@@ -691,6 +738,7 @@ export class WorldScene {
 
     const mesh = new Mesh(geometry, material);
     mesh.name = `tile:${key}`;
+    mesh.add(...terrainOverlayMeshes(geometry, this.terrainOverlay, this.terrainWireframe));
     this.terrainTiles.set(key, mesh);
     this.terrainGroup.add(mesh);
   }
@@ -762,6 +810,12 @@ export class WorldScene {
       drawn.raycast = () => undefined;
       group.add(drawn);
     }
+    // the overlays, over the whole tile at once
+    const whole = new BufferGeometry();
+    Object.entries(merged.attributes).forEach(([name, attribute]) => whole.setAttribute(name, attribute));
+    whole.setIndex(merged.index);
+    whole.computeBoundingSphere();
+    group.add(...terrainOverlayMeshes(whole, this.terrainOverlay, this.terrainWireframe));
     for (const liquid of liquids) {
       const geometry = new BufferGeometry();
       geometry.setAttribute('position', new BufferAttribute(liquid.positions, 3));
@@ -1445,6 +1499,17 @@ export class WorldScene {
     return true;
   }
 
+  /** Whether the simulated creature is within `tolerance` (NDC) of the cursor on screen. */
+  ghostNear(ndcX: number, ndcY: number, tolerance = 0.05): boolean {
+    const ghost = this.ghostGroup.children[0];
+    if (!ghost) {
+      return false;
+    }
+    this.camera.updateMatrixWorld();
+    const projected = ghost.position.clone().project(this.camera);
+    return projected.z < 1 && Math.hypot(projected.x - ndcX, projected.y - ndcY) <= tolerance;
+  }
+
   moveGhost(position: WorldPosition, orientation: number): void {
     const ghost = this.ghostGroup.children[0];
     if (ghost) {
@@ -1652,6 +1717,45 @@ export class WorldScene {
     return groundHit ? { type: 'ground', position: sceneToWorld(groundHit.point) } : undefined;
   }
 
+  /**
+   * What the map shows under the cursor (not the spawns): a building (its file, group and placement), a doodad (its
+   * file and placement), or the terrain (its tile). Parts the game never draws count only while they're shown.
+   */
+  describe(ndcX: number, ndcY: number): SceneThing | undefined {
+    this.camera.updateMatrixWorld();
+    this.scene.updateMatrixWorld();
+    this.raycaster.setFromCamera(new Vector2(ndcX, ndcY), this.camera);
+    const hits = this.raycaster.intersectObjects([this.terrainGroup, this.buildingGroup, this.doodadGroup], true);
+    // (a hit is always on a face with a material)
+    const materialOf = (h: Intersection): Material => {
+      const material = (h.object as Mesh).material;
+      return Array.isArray(material) ? material[(h.face as Face).materialIndex] : material;
+    };
+    const hit = hits.find((h) => materialOf(h).visible);
+    if (!hit) {
+      return undefined;
+    }
+    const position = sceneToWorld(hit.point);
+    const mesh = hit.object as Mesh;
+    const faces = (mesh.geometry.index?.count ?? mesh.geometry.getAttribute('position').count) / 3;
+    const batches = Math.max(1, mesh.geometry.groups.length);
+    const invisible = !!materialOf(hit).userData['invisible'];
+    let owner: Object3D | null = mesh;
+    while (owner && !owner.name.startsWith('wmo:') && !owner.userData['path']) {
+      owner = owner.parent;
+    }
+    if (owner?.parent === this.doodadGroup) {
+      const data = owner.userData as { path: string; ids: number[] };
+      return { kind: 'doodad', path: data.path, id: data.ids[hit.instanceId as number], faces, batches, invisible, position };
+    }
+    if (owner) {
+      const data = owner.userData as { path: string; uniqueId?: number };
+      const group = mesh.userData['group'] as number | undefined;
+      return { kind: 'building', path: data.path, id: data.uniqueId, group, faces, batches, invisible, position };
+    }
+    return { kind: 'terrain', tile: worldToTile(position.x, position.y), position };
+  }
+
   /** Marker whose on-screen position is nearest to the cursor, if within `tolerance` and in front of the camera. */
   /** The stretch of a line passing nearest to the cursor on screen, if within `tolerance` (NDC) and in front. */
   private nearestLine(
@@ -1752,6 +1856,10 @@ export class WorldScene {
 
   dispose(): void {
     this.clearTerrain();
+    this.terrainOverlay.dispose();
+    this.terrainWireframe.dispose();
+    this.seaLevel.geometry.dispose();
+    (this.seaLevel.material as Material).dispose();
     this.clearGroup(this.spawnGroup);
     this.clearGroup(this.waypointGroup);
     this.creatureGeometry.dispose();

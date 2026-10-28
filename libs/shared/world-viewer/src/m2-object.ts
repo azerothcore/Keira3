@@ -35,15 +35,22 @@ export function setInvisibleModelsVisible(visible: boolean): void {
   invisibleMaterials.forEach((material) => (material.visible = visible));
 }
 
+/**
+ * The look of a part the game never draws (an invisible wall, an emitter's box): see-through blue like the game's own
+ * debug view of them, shown or hidden with `setInvisibleModelsVisible`.
+ */
+export function createInvisibleMaterial(): Material {
+  const material = new MeshBasicMaterial({ color: 0x4aa8ff, transparent: true, opacity: 0.25, depthWrite: false, side: DoubleSide });
+  material.visible = invisibleShown;
+  material.userData['invisible'] = true;
+  invisibleMaterials.add(material);
+  return material;
+}
+
 /** One material per batch, following the batch's blend mode: cut-out leaves, glowing additive parts, glass… */
 export function createM2Material(batch: M2Mesh['batches'][number], texture: Texture): Material {
   if (batch.alpha < INVISIBLE_ALPHA) {
-    // like the game's own debug view of them: see-through, without the placeholder texture
-    const material = new MeshBasicMaterial({ color: 0x4aa8ff, transparent: true, opacity: 0.25, depthWrite: false, side: DoubleSide });
-    material.visible = invisibleShown;
-    material.userData['invisible'] = true;
-    invisibleMaterials.add(material);
-    return material;
+    return createInvisibleMaterial();
   }
   const additive = batch.blend === M2Blend.NoAlphaAdd || batch.blend === M2Blend.Add;
   const options = {

@@ -145,8 +145,9 @@
 <text x="288" y="348" font-size="13" font-weight="bold">X</text>
 <rect x="362" y="332" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
 <text x="368" y="348" font-size="13" font-weight="bold">C</text>
-<rect x="442" y="332" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<rect x="442" y="332" width="76" height="62" rx="6" fill="#9696dc" stroke="#606060" stroke-width="1"/>
 <text x="448" y="348" font-size="13" font-weight="bold">V</text>
+<text x="448" y="363" font-size="9.5">Top view</text>
 <rect x="522" y="332" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
 <text x="528" y="348" font-size="13" font-weight="bold">B</text>
 <rect x="602" y="332" width="76" height="62" rx="6" fill="#9696dc" stroke="#606060" stroke-width="1"/>

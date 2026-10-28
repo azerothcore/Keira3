@@ -7,6 +7,7 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
+  computed,
   effect,
   ElementRef,
   inject,
@@ -17,7 +18,7 @@ import {
   untracked,
   viewChild,
 } from '@angular/core';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import {
   mmtileName,
   orientationToSceneYaw,
@@ -85,6 +86,8 @@ import {
   waypointKey,
   WaypointPlace,
   PickResult,
+  SceneThing,
+  SimulationStatus,
   WaypointPath,
   WorldAreaTrigger,
   WorldSpawn,
@@ -129,6 +132,12 @@ const PLACE_NAMES: Record<WaypointPlace, string> = {
 const HOVER_PICK = { markersOnly: true, segments: true, areaTriggers: true, overlays: true };
 /** How far the camera stands from a place it was sent to (close enough to see an NPC there). */
 const FOCUS_DISTANCE = 40;
+/** How long the mouse rests (ms) before the line under the view names what's under it. */
+const MOUSE_OVER_DELAY = 120;
+/** How far from the cursor its hover label is (px). */
+const LABEL_OFFSET = 14;
+/** How far south of straight above the top view puts the camera (yards). */
+const TOP_VIEW_OFFSET = 0.01;
 const RIGHT_BUTTON = 2;
 /** Each Shift + wheel notch changes the camera speed by this factor. */
 const SPEED_STEP = 1.25;
@@ -157,6 +166,9 @@ interface HoverLabel {
   more?: boolean;
   x: number;
   y: number;
+  /** Past the middle of the view: the label goes left of / above the cursor, so it stays in sight. */
+  flipX?: boolean;
+  flipY?: boolean;
 }
 
 /**
@@ -173,6 +185,7 @@ interface HoverLabel {
 })
 export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private readonly client = inject(WowClientService);
+  private readonly translate = inject(TranslateService);
   private readonly rendererFactory = inject(WORLD_RENDERER_FACTORY);
 
   readonly mapDirectory = input<string | undefined>(undefined);
@@ -190,6 +203,11 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   readonly focus = input<WorldPosition | undefined>(undefined);
   /** Turns the camera to face north (at the usual angle, still looking at the same place) whenever this goes up. */
   readonly resetNorth = input(0);
+  /** Looks straight down from above (north at the top) whenever this goes up. */
+  readonly topView = input(0);
+  /** A path's first and last points, labelled "Start" and "End". */
+  readonly pathEnds = input<{ start: WorldPosition; end: WorldPosition } | undefined>(undefined);
+  protected readonly pathEndLabels = signal<{ which: 'start' | 'end'; x: number; y: number }[]>([]);
   /** Quality and range of what is drawn. */
   readonly renderSettings = input<WorldRenderSettings>(DEFAULT_WORLD_RENDER_SETTINGS);
   /** Keyboard navigation (keys moving the camera while the view has the focus). */
@@ -215,6 +233,10 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   readonly groupKeys = input<string[]>([]);
   /** A creature walking its path (or wandering), drawn as a moving copy of it; undefined stops it. */
   readonly simulation = input<MovementSimulation | undefined>(undefined);
+  /** How many times faster than real time the simulation plays (changing it doesn't start it over). */
+  readonly simulationRate = input(1);
+  /** A simulation played once got to its end. */
+  readonly simulationEnded = output<void>();
   /** Positions to know the ground under (the spawn problems report); answered by `groundHeights`. */
   readonly groundQuery = input<{ key: string; position: WorldPosition }[] | undefined>(undefined);
   /** The ground (terrain or floor) under each `groundQuery` position: the first below it, else the highest; null where nothing is loaded. */
@@ -315,7 +337,19 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private simulationRun = 0;
   private simulationFrame?: number;
   /** What the simulated creature is doing: the leg it's on, and how long it still waits there. */
-  protected readonly simulationStatus = signal<{ label: string; wait?: number } | undefined>(undefined);
+  protected readonly simulationStatus = signal<SimulationStatus | undefined>(undefined);
+  /** The simulation's line (under the view, and over its creature on hover). */
+  protected readonly simulationText = computed(() => {
+    // (read only while there is one)
+    const status = this.simulationStatus() as SimulationStatus;
+    const t = (key: string, params?: object) => this.translate.instant(`WORLD_EDITOR.${key}`, params) as string;
+    const doing =
+      status.wait !== undefined
+        ? `${status.label}: ${t('SIM_WAITING', { seconds: status.wait })}${status.actions?.length ? ` · ${status.actions.join(' · ')}` : ''}`
+        : `${t('SIM_' + status.move.toUpperCase())} → ${status.label}`;
+    const elapsed = status.elapsed as number;
+    return `${doing} · ${elapsed.toFixed(1)} s (${Math.round(elapsed * 1000)} ms)`;
+  });
   private recheckTimer?: ReturnType<typeof setTimeout>;
   /** Id of the shown map (for mmtile names), once known. */
   private mapId?: number;
@@ -324,6 +358,9 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   protected readonly areaName = signal<string | undefined>(undefined);
   /** The liquid where the camera looks (from the server's map), with View > Liquid under the camera. */
   protected readonly liquidHere = signal<{ kind: string; deep: boolean } | undefined>(undefined);
+  /** View > Mouse over: what the map shows under the cursor, looked up once the mouse rests. */
+  protected readonly mouseOver = signal<SceneThing | undefined>(undefined);
+  private mouseOverTimer?: ReturnType<typeof setTimeout>;
   private areaChunk?: string;
   private readonly spawnModels = new SpawnModels(this.client, this.world, this.textures, () => this.requestRender());
   private readonly zoneLighting = new ZoneLighting(this.client, this.world, () => this.requestRender());
@@ -419,6 +456,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
         this.prefetch.update(this.center);
         void this.loadMarkerModel(settings.markerModel);
         this.world.setRoofsVisible(settings.showRoofs);
+        this.world.setTerrainOverlays({ grid: settings.showTileGrid, slopes: settings.showSteepSlopes, wireframe: settings.showWireframe });
+        this.world.setSeaLevel(settings.showSeaLevel, this.center);
         this.world.setCollisionVisible(settings.showCollision);
         this.world.setFacingArrowsVisible(settings.showFacingArrows);
         this.world.setSolidSelection(settings.solidSelection);
@@ -535,6 +574,16 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       }
     });
     effect(() => {
+      if (this.topView()) {
+        untracked(() => this.lookDown());
+      }
+    });
+    effect(() => {
+      // (the labels move with the camera: drawn after each frame)
+      this.pathEnds();
+      untracked(() => this.requestRender());
+    });
+    effect(() => {
       const target = this.focus();
       if (target) {
         untracked(() => {
@@ -616,6 +665,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     clearInterval(this.clockTimer);
     clearTimeout(this.recheckTimer);
     clearTimeout(this.classifyTimer);
+    clearTimeout(this.mouseOverTimer);
     this.simulationRun++;
     if (this.simulationFrame !== undefined) {
       cancelAnimationFrame(this.simulationFrame);
@@ -662,16 +712,27 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     this.emitCenter(true);
   }
 
-  /** Turns the camera to face north at the usual angle, keeping how far it is from what it looks at. */
+  /** Turns the camera to face north, keeping its height and how far it is from what it looks at. */
   protected faceNorth(): void {
+    const camera = this.world.camera.position;
+    // north is the scene's -z: the camera goes south of what it looks at (+z), as far along the ground as it was
+    const along = Math.hypot(camera.x - this.target.x, camera.z - this.target.z);
+    this.placeCamera(camera.y - this.target.y, along);
+  }
+
+  /** Looks straight down at what the camera looks at, north at the top (like a minimap), from as far as it was. */
+  protected lookDown(): void {
+    // (a hair south of straight above, so north stays at the top)
+    this.placeCamera(this.world.camera.position.distanceTo(this.target), TOP_VIEW_OFFSET);
+  }
+
+  /** The camera `up` above and `south` of what it looks at. */
+  private placeCamera(up: number, south: number): void {
     const controls = this.controls;
     if (!controls) {
       return;
     }
-    const distance = this.world.camera.position.distanceTo(this.target);
-    // north is the scene's -z: the camera south of what it looks at (+z), as high as it is far
-    const [up, back] = [0.8 / Math.hypot(0.8, 0.85), 0.85 / Math.hypot(0.8, 0.85)];
-    this.world.camera.position.set(this.target.x, this.target.y + distance * up, this.target.z + distance * back);
+    this.world.camera.position.set(this.target.x, this.target.y + up, this.target.z + south);
     controls.update();
     this.onCameraChange();
   }
@@ -790,6 +851,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       this.hoverLabel.set(undefined);
       return;
     }
+    this.queueMouseOver(event);
     // Hover picking is throttled to one per frame and only tests markers.
     const pending = this.hoverEvent;
     this.hoverEvent = event;
@@ -802,16 +864,44 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     const event = this.hoverEvent as PointerEvent;
     this.hoverEvent = undefined;
     this.altHeld = event.altKey;
-    const result = this.pickAt(event, HOVER_PICK);
-    const text = result && this.textOf(result);
     const rect = this.host().nativeElement.getBoundingClientRect();
+    const canvas = this.canvasRef().nativeElement.getBoundingClientRect();
+    // the simulated creature: what it's doing
+    const onGhost =
+      !!this.simulationStatus() &&
+      !!canvas.width &&
+      this.world.ghostNear(((event.clientX - canvas.left) / canvas.width) * 2 - 1, -((event.clientY - canvas.top) / canvas.height) * 2 + 1);
+    const result = onGhost ? undefined : this.pickAt(event, HOVER_PICK);
+    const text = onGhost ? this.simulationText() : result && this.textOf(result);
     const spawn = result && 'key' in result ? this.spawns().find((s) => s.key === result.key) : undefined;
     // (String() of the arrays: the same lines, or none of either)
     const more = !this.altHeld && !!spawn?.allDetails && String(spawn.allDetails) !== String(spawn.details);
-    this.hoverLabel.set(text ? { text, more, x: event.clientX - rect.left + 14, y: event.clientY - rect.top + 14 } : undefined);
+    const [x, y] = [event.clientX - rect.left, event.clientY - rect.top];
+    this.hoverLabel.set(
+      text ? { text, more, x: x + LABEL_OFFSET, y: y + LABEL_OFFSET, flipX: x > rect.width / 2, flipY: y > rect.height / 2 } : undefined,
+    );
+  }
+
+  /** Looks up what's under the cursor once the mouse rests (models are many: not at every move). */
+  private queueMouseOver(event: PointerEvent): void {
+    clearTimeout(this.mouseOverTimer);
+    if (!this.renderSettings().showMouseOver) {
+      this.mouseOver.set(undefined);
+      return;
+    }
+    this.mouseOverTimer = setTimeout(() => {
+      const rect = this.canvasRef().nativeElement.getBoundingClientRect();
+      if (rect.width && rect.height) {
+        const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+        this.mouseOver.set(this.world.describe(x, y));
+      }
+    }, MOUSE_OVER_DELAY);
   }
 
   protected onPointerLeave(): void {
+    clearTimeout(this.mouseOverTimer);
+    this.mouseOver.set(undefined);
     this.hoverEvent = undefined;
     this.lastPointer = undefined;
     this.hoverLabel.set(undefined);
@@ -982,14 +1072,21 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       from = leg.to;
     }
     const timeline = simulationTimeline(simulation.start, segments);
-    const started = performance.now();
+    // the simulation's own clock: each frame adds the real time passed at the rate of the moment
+    let elapsed = 0;
+    let last = performance.now();
     const step = (): void => {
-      const elapsed = ((performance.now() - started) / 1000) * simulation.rate;
-      const at = sampleTimeline(timeline, elapsed);
+      const now = performance.now();
+      elapsed += ((now - last) / 1000) * this.simulationRate();
+      last = now;
+      const ended = !!simulation.once && elapsed >= timeline.duration;
+      const at = sampleTimeline(timeline, elapsed, !simulation.once);
       this.world.moveGhost(at.position, at.orientation);
-      this.simulationStatus.set(at.status);
+      this.simulationStatus.set(ended || !at.status ? undefined : { ...at.status, elapsed });
       this.requestRender();
-      if (timeline.duration > 0) {
+      if (ended) {
+        this.simulationEnded.emit();
+      } else if (timeline.duration > 0) {
         this.simulationFrame = requestAnimationFrame(() => run === this.simulationRun && step());
       }
     };
@@ -1288,6 +1385,29 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     return display && displayModel(display, this.client, this.textures);
   }
 
+  /** Puts "Start" and "End" over the first and last points of the selected path after each frame. */
+  private updatePathEndLabels(): void {
+    const ends = this.pathEnds();
+    if (!ends && this.pathEndLabels().length === 0) {
+      return;
+    }
+    const labels = ends
+      ? (['start', 'end'] as const).flatMap((which) => {
+          const at = this.screenPoint({ ...ends[which], z: ends[which].z + 3 });
+          return at ? [{ which, ...at }] : [];
+        })
+      : [];
+    this.pathEndLabels.set(labels);
+  }
+
+  /** Where a place is on the canvas (px), when in front of the camera. */
+  private screenPoint(position: WorldPosition): { x: number; y: number } | undefined {
+    const canvas = this.canvasRef().nativeElement;
+    const p = worldToScene(position);
+    const screen = new Vector3(p.x, p.y, p.z).project(this.world.camera);
+    return screen.z < 1 ? { x: ((screen.x + 1) / 2) * canvas.clientWidth, y: ((1 - screen.y) / 2) * canvas.clientHeight } : undefined;
+  }
+
   /** Puts "Start" and "End" over A and C after each frame. */
   private updateProbeLabels(): void {
     const handles = this.world.probeHandlePositions();
@@ -1489,6 +1609,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   }
 
   private onCameraChange(): void {
+    this.world.setSeaLevel(this.renderSettings().showSeaLevel, this.center);
     this.emitCenter(false);
     this.requestRender();
   }
@@ -1553,6 +1674,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       this.countFrame(performance.now() - began);
       this.updateStatus();
       this.updateProbeLabels();
+      this.updatePathEndLabels();
       // a turning skybox, falling weather and animated creatures keep drawing
       if (spinning || this.weatherEffect.active || this.spawnModels.animating) {
         this.requestRender();

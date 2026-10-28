@@ -69,6 +69,10 @@ class FakeWorldViewerComponent {
   readonly renderSettings = input<WorldRenderSettings>(DEFAULT_WORLD_RENDER_SETTINGS);
   readonly focus = input<WorldPosition | undefined>(undefined);
   readonly resetNorth = input(0);
+  readonly topView = input(0);
+  readonly pathEnds = input<{ start: WorldPosition; end: WorldPosition } | undefined>(undefined);
+  readonly simulationRate = input(1);
+  readonly simulationEnded = output<void>();
   readonly markerLookAt = input<WorldPosition | undefined>(undefined);
   readonly placePreview = input<{ kind: string; displayId: number; scale: number } | undefined>(undefined);
   readonly region = input<WorldBounds | undefined>(undefined);
@@ -3046,7 +3050,13 @@ describe(WorldEditorComponent.name, () => {
       const { page } = await setup();
       await loadArea(page);
       const viewer = page.viewer();
-      expect(viewer.links().map((link) => link.key)).toEqual(['formation:1:2', 'pool:7:gameobject:3', 'flight:10', 'teleport:46']);
+      expect(viewer.links().map((link) => link.key)).toEqual([
+        'formation:1:2',
+        'pool:7:gameobject:3',
+        'flight:10',
+        'teleport:46',
+        'to-path:1',
+      ]);
       expect(viewer.markers().map((marker) => marker.key)).toEqual(['pool:7', 'graveyard:1', 'taxi:2', 'teleport-to:46']);
       // the formation places of the selected creature's formation
       viewer.picked.emit({ type: 'spawn', key: 'creature:2', position: { x: 0, y: 0, z: 0 } });
@@ -3059,7 +3069,8 @@ describe(WorldEditorComponent.name, () => {
         page.click('layer-' + layer);
       }
       await settle(page);
-      expect(viewer.links()).toEqual([]);
+      // (the walker's way onto its path stays: it goes with the paths)
+      expect(viewer.links().map((link) => link.key)).toEqual(['to-path:1']);
       expect(viewer.markers()).toEqual([]);
       // hover lines
       expect(viewer.spawns().find((s) => s.key === 'creature:2')?.details).toContain('In the formation of 1: 3 yd, 90°');
@@ -3174,11 +3185,26 @@ describe(WorldEditorComponent.name, () => {
       page.click('simulate');
       await settle(page);
       expect(viewer.simulation()?.legs.map((leg) => leg.label)).toEqual(['point 1', 'point 2']);
+      // from its spawn point, once, with what it does at each point
+      expect(viewer.simulation()?.start).toEqual({ x: SPAWNS[0].x, y: SPAWNS[0].y, z: SPAWNS[0].z });
+      expect(viewer.simulation()?.legs[1].actions?.[0]).toMatch(/^script 50/);
+      const playing = viewer.simulation();
       const rate = page.byId<HTMLSelectElement>('simulation-rate').nativeElement;
       rate.value = '4';
       rate.dispatchEvent(new Event('change'));
       await settle(page);
-      expect(viewer.simulation()?.rate).toBe(4);
+      // faster, without starting over
+      expect(viewer.simulationRate()).toBe(4);
+      expect(viewer.simulation()).toBe(playing);
+      // at the end: played again from the start
+      expect(page.byId('simulation-replay', false)).toBeFalsy();
+      viewer.simulationEnded.emit();
+      await settle(page);
+      page.click('simulation-replay');
+      await settle(page);
+      expect(viewer.simulation()).not.toBe(playing);
+      expect(viewer.simulation()).toEqual(playing);
+      expect(page.byId('simulation-replay', false)).toBeFalsy();
       page.click('simulate');
       await settle(page);
       expect(viewer.simulation()).toBeUndefined();
@@ -3190,7 +3216,7 @@ describe(WorldEditorComponent.name, () => {
       page.click('simulate');
       await settle(page);
       expect(viewer.simulation()?.legs.at(-1)?.label).toBe('home');
-      expect(viewer.simulation()?.rate).toBe(2);
+      expect(viewer.simulationRate()).toBe(2);
     });
   });
 
@@ -3678,6 +3704,71 @@ describe(WorldEditorComponent.name, () => {
       expect(page.text('filters-toggle')).toContain('WORLD_EDITOR.FILTERS');
     });
 
+    it('looks straight down by button or V', async () => {
+      const { page } = await setup();
+      page.click('top-view');
+      page.fixture.detectChanges();
+      expect(page.viewer().topView()).toBe(1);
+      page.key('v');
+      page.fixture.detectChanges();
+      expect(page.viewer().topView()).toBe(2);
+    });
+
+    it('turns every overlay off in the in-game view, and back on', async () => {
+      const { page } = await setup();
+      await loadArea(page);
+      page.click('view-toggle');
+      page.fixture.detectChanges();
+      const toggle = page.byId<HTMLInputElement>('view-in-game').nativeElement;
+      expect(page.viewer().paths()).not.toEqual([]);
+      toggle.checked = true;
+      toggle.dispatchEvent(new Event('change'));
+      await settle(page);
+      expect(page.viewer().paths()).toEqual([]);
+      expect(page.viewer().links()).toEqual([]);
+      expect(page.viewer().renderSettings().compass).toBe(false);
+      expect(page.viewer().renderSettings().showMouseOver).toBe(false);
+      toggle.checked = false;
+      toggle.dispatchEvent(new Event('change'));
+      await settle(page);
+      expect(page.viewer().paths()).not.toEqual([]);
+      expect(page.viewer().renderSettings().compass).toBe(true);
+    });
+
+    it("labels the selected creature's path, and draws how it gets onto it and back to its start", async () => {
+      const { page } = await setup();
+      await loadArea(page);
+      expect(page.viewer().pathEnds()).toBeUndefined();
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:1', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      expect(page.viewer().pathEnds()).toEqual({ start: { x: -8901, y: -101, z: 80 }, end: { x: -8902, y: -102, z: 81 } });
+      const toPath = page
+        .viewer()
+        .links()
+        .find((link) => link.key === 'to-path:1');
+      expect(toPath?.from).toEqual({ x: SPAWNS[0].x, y: SPAWNS[0].y, z: SPAWNS[0].z });
+      expect(toPath?.to).toEqual({ x: -8901, y: -101, z: 80 });
+      expect(page.viewer().paths()[0].closed).toBe(true);
+      page.click('view-toggle');
+      page.fixture.detectChanges();
+      for (const id of ['view-path-to-first', 'view-path-from-last']) {
+        const toggle = page.byId<HTMLInputElement>(id).nativeElement;
+        toggle.checked = false;
+        toggle.dispatchEvent(new Event('change'));
+      }
+      await settle(page);
+      expect(
+        page
+          .viewer()
+          .links()
+          .find((link) => link.key === 'to-path:1'),
+      ).toBeUndefined();
+      expect(page.viewer().paths()[0].closed).toBe(false); // paths hidden: neither
+      page.click('layer-waypoints');
+      await settle(page);
+      expect(page.viewer().pathEnds()).toBeUndefined();
+    });
+
     it('turns the camera north by button or N', async () => {
       const { page } = await setup();
       expect(page.viewer().resetNorth()).toBe(0);
@@ -4111,6 +4202,28 @@ describe(WorldEditorComponent.name, () => {
       page.click('check-path');
       await settle(page);
       expect(page.viewer().waypointCheck()).toBeUndefined();
+    });
+
+    it('clears the check, also when another path is selected or nothing is', async () => {
+      const { page } = await setup();
+      await loadArea(page);
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:1', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      page.click('check-path');
+      await settle(page);
+      page.click('clear-path-check');
+      await settle(page);
+      expect(page.viewer().waypointCheck()).toBeUndefined();
+      page.click('check-path');
+      await settle(page);
+      // nothing selected: still checked, with a way to clear it
+      page.viewer().picked.emit({ type: 'ground', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      expect(page.text('path-check-other')).toContain('WORLD_EDITOR.CHECKING_PATH');
+      page.click('clear-other-path-check');
+      await settle(page);
+      expect(page.viewer().waypointCheck()).toBeUndefined();
+      expect(page.byId('path-check-other', false)).toBeFalsy();
     });
   });
 

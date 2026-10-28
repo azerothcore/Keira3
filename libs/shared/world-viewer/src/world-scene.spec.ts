@@ -7,10 +7,12 @@ import {
   Color,
   Fog,
   Group,
+  InstancedMesh,
   Material,
   Line,
   LineDashedMaterial,
   LineSegments,
+  Matrix4,
   Mesh,
   MeshBasicMaterial,
   MeshLambertMaterial,
@@ -25,6 +27,7 @@ import {
 import { flatDetail, flatTile } from './world-viewer.mock';
 import { COLLISION_LAYER, SERVER_COLLISION_LAYER } from './collision-object';
 import { mergeTerrainChunks, pathColor, WorldScene } from './world-scene';
+import { TERRAIN_OVERLAY_LAYER, TERRAIN_WIREFRAME_LAYER } from './terrain-overlay';
 import { WaypointPath, WorldSpawn } from './world-viewer.model';
 
 const CENTER = tileCenter({ tx: 32, ty: 48 });
@@ -121,8 +124,8 @@ describe('WorldScene', () => {
         [liquid, magma, liquid],
       );
       const tile = world.scene.getObjectByName('tile:32_48') as Group;
-      // the 256 chunks (for picking), one drawn mesh per material (2), and the liquids
-      expect(tile.children.length).toBe(256 + 2 + 3);
+      // the 256 chunks (for picking), one drawn mesh per material (2), the overlay and wireframe, and the liquids
+      expect(tile.children.length).toBe(256 + 2 + 2 + 3);
       expect(world.groundHeightAt(CENTER.x, CENTER.y)).toBeCloseTo(42);
       const drawn = tile.children.filter((child) => child.name === 'terrain') as Mesh[];
       expect(drawn.map((mesh) => mesh.geometry.index?.count)).toEqual([
@@ -149,6 +152,28 @@ describe('WorldScene', () => {
       world.setTerrainTileDetailed({ tx: 32, ty: 48 }, [], fallback);
       expect(splatDispose).toHaveBeenCalled();
       expect(sharedDispose).not.toHaveBeenCalled();
+      world.dispose();
+    });
+
+    it('draws the tile grid, steep slopes and wireframe over the terrain, and the sea level, only when asked', () => {
+      const world = new WorldScene();
+      world.setTerrainTile(flatTile(50));
+      const tile = world.scene.getObjectByName('tile:32_48') as Mesh;
+      expect(tile.children.map((child) => child.name)).toEqual(['terrain-overlay', 'terrain-overlay']);
+      const layers = () => [TERRAIN_OVERLAY_LAYER, TERRAIN_WIREFRAME_LAYER].map((layer) => world.camera.layers.isEnabled(layer));
+      expect(layers()).toEqual([false, false]);
+      world.setTerrainOverlays({ grid: true, slopes: false, wireframe: false });
+      expect(layers()).toEqual([true, false]);
+      world.setTerrainOverlays({ grid: false, slopes: true, wireframe: true });
+      expect(layers()).toEqual([true, true]);
+      world.setTerrainOverlays({ grid: false, slopes: false, wireframe: false });
+      expect(layers()).toEqual([false, false]);
+
+      const sea = world.scene.getObjectByName('sea-level') as Mesh;
+      expect(sea.visible).toBe(false);
+      world.setSeaLevel(true, at(10, 20, 300));
+      expect(sea.visible).toBe(true);
+      expect(sea.position.toArray()).toEqual(Object.values(worldToScene(at(10, 20, 0))));
       world.dispose();
     });
 
@@ -1098,6 +1123,79 @@ describe('WorldScene', () => {
       world.camera.position.set(p.x, p.y + 5, p.z - 20);
       world.camera.lookAt(p.x, p.y + 5, p.z - 40);
       expect(world.pick(0, 0, { tolerance: 2 })?.type).not.toBe('spawn');
+    });
+
+    it('names the building, doodad or terrain under the cursor (invisible parts only while shown)', () => {
+      const world = setup();
+      lookDownAt(world, at(-100, -100));
+      expect(world.describe(0, 0)).toEqual(expect.objectContaining({ kind: 'terrain', tile: { tx: 32, ty: 48 } }));
+      // a building: its file, group and placement
+      const place = (object: Object3D, position: WorldPosition): void => {
+        const p = worldToScene(position);
+        object.position.set(p.x, p.y, p.z);
+      };
+      const building = new Group();
+      building.name = 'wmo:5';
+      building.userData = { path: 'World\\wmo\\Hall.wmo', uniqueId: 5 };
+      const part = new Mesh(new BoxGeometry(4, 20, 4), new MeshBasicMaterial());
+      part.userData = { group: 3 };
+      building.add(part);
+      place(building, at(-100, -100));
+      world.buildingGroup.add(building);
+      expect(world.describe(0, 0)).toEqual(
+        expect.objectContaining({
+          kind: 'building',
+          path: 'World\\wmo\\Hall.wmo',
+          id: 5,
+          group: 3,
+          faces: 12,
+          batches: 6,
+          invisible: false,
+        }),
+      );
+      // one placed by the editor (no placement id)
+      building.name = 'ship';
+      building.userData = { path: 'Ship.wmo' };
+      part.userData = {};
+      expect(world.describe(0, 0)).toEqual(
+        expect.objectContaining({ kind: 'building', path: 'Ship.wmo', id: undefined, group: undefined }),
+      );
+      building.removeFromParent();
+
+      // a doodad: which of its placements
+      const invisible = new MeshBasicMaterial();
+      invisible.userData['invisible'] = true;
+      invisible.visible = false;
+      const box = new BoxGeometry(4, 20, 4).toNonIndexed();
+      box.clearGroups();
+      box.addGroup(0, 36, 0);
+      const doodads = new InstancedMesh(box, [invisible], 2);
+      doodads.userData = { path: 'World\\Box.m2', ids: [7, 8] };
+      const p = worldToScene(at(-100, -100));
+      doodads.setMatrixAt(0, new Matrix4().makeTranslation(p.x, p.y, p.z));
+      doodads.setMatrixAt(1, new Matrix4().makeTranslation(p.x + 500, p.y, p.z));
+      doodads.computeBoundingSphere();
+      world.doodadGroup.add(doodads);
+      // (hidden: the terrain under it)
+      expect(world.describe(0, 0)?.kind).toBe('terrain');
+      invisible.visible = true;
+      expect(world.describe(0, 0)).toEqual(
+        expect.objectContaining({ kind: 'doodad', path: 'World\\Box.m2', id: 7, faces: 12, batches: 1, invisible: true }),
+      );
+      // nothing at all
+      world.camera.position.set(0, 1000, 0);
+      world.camera.lookAt(0, 2000, 0);
+      expect(world.describe(0, 0)).toBeUndefined();
+    });
+
+    it('tells when the simulated creature is under the cursor', () => {
+      const world = setup();
+      expect(world.ghostNear(0, 0)).toBe(false);
+      world.setGhost('creature:1');
+      world.moveGhost(at(0, 0), 0);
+      lookDownAt(world, at(0, 0));
+      expect(world.ghostNear(0, 0)).toBe(true);
+      expect(world.ghostNear(0.5, 0.5)).toBe(false);
     });
 
     it('picks nothing in the sky', () => {

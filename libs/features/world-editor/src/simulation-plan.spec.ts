@@ -16,7 +16,7 @@ const creature = (extra: Partial<SpawnRecord> = {}): SpawnRecord => ({
 });
 
 describe('movement simulation plans', () => {
-  it('walks the path round after round, running or flying where the points say so', () => {
+  it('walks the path once from the spawn point, running or flying where the points say so, doing what they say', () => {
     const plan = pathSimulation(
       creature({ speedWalk: 1, speedRun: 2 }),
       [
@@ -24,37 +24,34 @@ describe('movement simulation plans', () => {
         { pathId: 10, point: 1, x: 1, y: 0, z: 10, delay: 2000 },
         { pathId: 10, point: 3, x: 9, y: 0, z: 20, delay: 0, moveType: 3 },
       ],
-      2,
       'creature:1',
+      new Map([
+        [1, ['script 5']],
+        [2, []],
+      ]),
     );
-    expect(plan?.start).toEqual({ x: 9, y: 0, z: 20 });
-    expect(plan?.rate).toBe(2);
-    expect(plan?.legs.map((leg) => [leg.label, leg.speed, leg.wait, leg.fly])).toEqual([
-      ['point 1', WALK_SPEED, 2, false],
-      ['point 2', RUN_SPEED * 2, 0, false],
-      ['point 3', WALK_SPEED, 0, true],
+    expect(plan?.start).toEqual({ x: 0, y: 0, z: 10 });
+    expect(plan?.once).toBe(true);
+    expect(plan?.legs.map((leg) => [leg.label, leg.speed, leg.wait, leg.fly, leg.run, leg.actions])).toEqual([
+      ['point 1', WALK_SPEED, 2, false, false, ['script 5']],
+      ['point 2', RUN_SPEED * 2, 0, false, true, undefined],
+      ['point 3', WALK_SPEED, 0, true, false, undefined],
     ]);
     // without template speeds: the base ones
     expect(
-      pathSimulation(creature(), [{ pathId: 10, point: 1, x: 1, y: 0, z: 10, delay: 0, moveType: 1 }], 1, 'creature:1')?.legs[0].speed,
+      pathSimulation(creature(), [{ pathId: 10, point: 1, x: 1, y: 0, z: 10, delay: 0, moveType: 1 }], 'creature:1')?.legs[0].speed,
     ).toBe(RUN_SPEED);
-    // a single point: from the spawn point to it
-    expect(pathSimulation(creature(), [{ pathId: 10, point: 1, x: 1, y: 0, z: 10, delay: 0 }], 1, 'creature:1')?.start).toEqual({
-      x: 0,
-      y: 0,
-      z: 10,
-    });
-    expect(pathSimulation(creature(), [], 1, 'creature:1')).toBeUndefined();
+    expect(pathSimulation(creature(), [], 'creature:1')).toBeUndefined();
   });
 
   it('wanders within the wander distance and comes back home', () => {
-    const plan = wanderSimulation(creature({ wanderDistance: 10, speedWalk: 2 }), 1, 'creature:1', () => 0.5);
+    const plan = wanderSimulation(creature({ wanderDistance: 10, speedWalk: 2 }), 'creature:1', () => 0.5);
     expect(plan?.legs).toHaveLength(13);
     expect(plan?.legs[0].to.x).toBeCloseTo(-Math.sqrt(0.5) * 10);
     expect(plan?.legs[0].wait).toBe(7);
     expect(plan?.legs[0].speed).toBe(WALK_SPEED * 2);
     expect(plan?.legs.at(-1)?.to).toEqual({ x: 0, y: 0, z: 10 });
-    expect(wanderSimulation(creature(), 1, 'creature:1')).toBeUndefined();
-    expect(wanderSimulation(creature({ wanderDistance: 5 }), 1, 'creature:1')?.legs.length).toBe(13);
+    expect(wanderSimulation(creature(), 'creature:1')).toBeUndefined();
+    expect(wanderSimulation(creature({ wanderDistance: 5 }), 'creature:1')?.legs.length).toBe(13);
   });
 });

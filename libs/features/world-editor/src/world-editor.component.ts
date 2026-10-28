@@ -209,6 +209,7 @@ const EDITOR_ACTIONS = [
   'worldMap',
   'compass',
   'resetNorth',
+  'topView',
   'tree',
 ] as const;
 /** Scan the whole map: results listed at most, and the colour of each level. */
@@ -268,6 +269,13 @@ type RenderFlagKey =
   | 'showInvisible'
   | 'showMapEdge'
   | 'showLiquidInfo'
+  | 'showMouseOver'
+  | 'showTileGrid'
+  | 'showSteepSlopes'
+  | 'showWireframe'
+  | 'showSeaLevel'
+  | 'showPathToFirst'
+  | 'showPathFromLast'
   | 'showEquipment'
   | 'animateIdle'
   | 'animateWalk'
@@ -313,8 +321,52 @@ const MAX_ARRAY = 50;
 type Panel = 'map' | 'filters' | 'view' | 'controls' | 'settings' | 'legend';
 /** A player's combat reach, and the shortest melee range the server uses (NOMINAL_MELEE_RANGE). */
 const PLAYER_COMBAT_REACH = 1.5;
+/** The context menu keeps this far from the window's edges (px). */
+const CONTEXT_MARGIN = 8;
+
+/** Where a context menu goes on the page (fixed): by its top-left corner, or its other corners past the middle. */
+export interface ContextPlacement {
+  left?: number;
+  right?: number;
+  top?: number;
+  bottom?: number;
+  maxHeight: number;
+}
+
+/**
+ * Places a context menu opened at (`x`, `y`) in the view on the page, so it's never cut off: in the right half of the
+ * window it opens to the left of the cursor, in the lower half upwards, and it scrolls when taller than the room left.
+ */
+export function contextPlacement(view: { left: number; top: number }, at: { x: number; y: number }): ContextPlacement {
+  const [x, y] = [view.left + at.x, view.top + at.y];
+  const [width, height] = [window.innerWidth, window.innerHeight];
+  const across = x > width / 2 ? { right: width - x } : { left: x };
+  const down = y > height / 2 ? { bottom: height - y, maxHeight: y - CONTEXT_MARGIN } : { top: y, maxHeight: height - y - CONTEXT_MARGIN };
+  return { ...across, ...down };
+}
 /** How far a creature pulled into a fight calls the ones around it to help (the server's default CreatureFamilyAssistanceRadius). */
 const ASSIST_RADIUS = 10;
+/** The line from a walker's spawn point to the first point of its path. */
+const PATH_START_COLOR = 0x9be15d;
+/** What In-game view turns off. */
+const IN_GAME_VIEW: Partial<WorldRenderSettings> = {
+  showWanderRadius: false,
+  showBounds: false,
+  showAggroRadius: false,
+  showAssistRadius: false,
+  showFacingArrows: false,
+  showCollision: false,
+  showNavMesh: false,
+  showInvisible: false,
+  showMapEdge: false,
+  showMouseOver: false,
+  showTileGrid: false,
+  showSteepSlopes: false,
+  showWireframe: false,
+  showSeaLevel: false,
+  showStats: false,
+  compass: false,
+};
 /** A player's run and walk speed (yards a second). */
 const PLAYER_RUN_SPEED = 7;
 const PLAYER_WALK_SPEED = 2.5;
@@ -518,6 +570,8 @@ export class WorldEditorComponent implements OnInit {
   );
   protected readonly simulation = signal<MovementSimulation | undefined>(undefined);
   protected readonly simulationRate = signal(1);
+  /** The simulation got to its end: it can be played again. */
+  protected readonly simulationEnded = signal(false);
   /** The selected creature can be simulated: it has a path, or wanders. */
   protected readonly canSimulate = computed(() => {
     const spawn = this.selectedSpawn();
@@ -547,9 +601,51 @@ export class WorldEditorComponent implements OnInit {
         ...(layers.formations ? formationLinks(spawns, this.formations()) : []),
         ...(layers.pools ? poolOverlays(spawns, this.pools()).links : []),
         ...this.travelOverlays().links.filter((link) => (isFlight(link.key) ? layers.flightPaths : layers.travel)),
+        ...this.spawnToPathLinks(),
       ];
     }),
   );
+  /** View > Path to the first waypoint: where each shown walker goes from its spawn point to start its path. */
+  private readonly spawnToPathLinks = computed<WorldLink[]>(() => {
+    if (!this.layers().waypoints || !this.renderSettings.settings().showPathToFirst) {
+      return [];
+    }
+    const firsts = new Map<number, WaypointRecord>();
+    for (const w of this.waypoints()) {
+      const first = firsts.get(w.pathId);
+      if (!first || w.point < first.point) {
+        firsts.set(w.pathId, w);
+      }
+    }
+    return this.visibleSpawns().flatMap((spawn) => {
+      const first = spawn.type === 'creature' && spawn.pathId ? firsts.get(spawn.pathId) : undefined;
+      return first
+        ? [
+            {
+              key: `to-path:${spawn.guid}`,
+              from: { x: spawn.x, y: spawn.y, z: spawn.z },
+              to: { x: first.x, y: first.y, z: first.z },
+              color: PATH_START_COLOR,
+              arrow: true,
+              dashed: true,
+              label: `${spawnTitle(spawn)} → ${pathLabel(spawn.pathId)} #${first.point}`,
+            },
+          ]
+        : [];
+    });
+  });
+  /** "Start" and "End" over the first and last points of the selected creature's (or waypoint's) path. */
+  protected readonly pathEnds = computed(() => {
+    const pathId = this.activePathId();
+    const points = this.waypoints()
+      .filter((w) => w.pathId === pathId)
+      .sort((a, b) => a.point - b.point);
+    if (!pathId || points.length < 2 || !this.layers().waypoints) {
+      return undefined;
+    }
+    const [first, last] = [points[0], points[points.length - 1]];
+    return { start: { x: first.x, y: first.y, z: first.z }, end: { x: last.x, y: last.y, z: last.z } };
+  });
   /** Labelled markers: pools, and the formation places of the selected creature's formation. */
   protected readonly worldMarkers = computed<WorldMarker[]>(() =>
     perfTime('editor worldMarkers', () => {
@@ -640,6 +736,16 @@ export class WorldEditorComponent implements OnInit {
   protected readonly focus = signal<WorldPosition | undefined>(undefined);
   /** Goes up to turn the camera to the north. */
   protected readonly resetNorthRequest = signal(0);
+  /**
+   * View > In-game view: every editor overlay off at once (paths, markers, circles, grids, collision…), the view as the
+   * game shows it; turned off, everything comes back as it was.
+   */
+  protected readonly inGameView = signal(false);
+  protected readonly viewSettings = computed(() =>
+    this.inGameView() ? { ...this.renderSettings.settings(), ...IN_GAME_VIEW } : this.renderSettings.settings(),
+  );
+  /** Goes up to look straight down from above. */
+  protected readonly topViewRequest = signal(0);
   /** How the toolbar's buttons show (icon, name or both), kept on this computer. */
   protected readonly buttonStyle = signal(loadButtonStyle());
   protected readonly buttonStyles = BUTTON_STYLES;
@@ -1024,7 +1130,8 @@ export class WorldEditorComponent implements OnInit {
           key: pathKey(pathId),
           label: pathLabel(pathId),
           owners: owners.get(pathId) as string[],
-          closed: true,
+          // (after its last point it goes back to the first: View > Path from the last waypoint)
+          closed: this.renderSettings.settings().showPathFromLast,
           points: points.map((p) => ({
             point: p.point,
             position: { x: p.x, y: p.y, z: p.z },
@@ -1117,6 +1224,8 @@ export class WorldEditorComponent implements OnInit {
 
   /** The right-click menu: what it is about and where (pixels in the 3D view). */
   protected readonly contextMenu = signal<ContextRequest | undefined>(undefined);
+  /** Where the context menu is on the page, and how tall it can be. */
+  protected readonly contextPlace = signal<ContextPlacement>({ maxHeight: 0 });
   // (only read while the menu is open)
   protected readonly contextSpawn = computed(() => this.findSpawn((this.contextMenu() as ContextRequest).key));
   protected readonly contextWaypoint = computed(() => this.findWaypoint((this.contextMenu() as ContextRequest).key));
@@ -2495,6 +2604,12 @@ export class WorldEditorComponent implements OnInit {
     this.checkedPathId.set(this.checkedPathId() === pathId ? undefined : pathId);
   }
 
+  /** Takes the path check's marks away. */
+  protected clearPathCheck(): void {
+    this.waypointChecks.set([]);
+    this.checkedPathId.set(undefined);
+  }
+
   /** Ctrl + click: adds a spawn to the selection, or takes it out (the first one left becomes the main one). */
   private toggleInGroup(key: string): void {
     const selected = this.selectedKey();
@@ -2539,22 +2654,32 @@ export class WorldEditorComponent implements OnInit {
 
   /** Plays the selected creature walking its path, or wandering, in the view; again stops it. */
   protected toggleSimulation(): void {
+    this.simulationEnded.set(false);
     if (this.simulation()) {
       this.simulation.set(undefined);
       return;
     }
     const spawn = this.selectedSpawn() as SpawnRecord;
     const key = spawnKey(spawn.type, spawn.guid);
-    const points = this.waypoints().filter((w) => w.pathId === this.activePathId());
-    this.simulation.set(pathSimulation(spawn, points, this.simulationRate(), key) ?? wanderSimulation(spawn, this.simulationRate(), key));
+    const pathId = this.activePathId();
+    const points = this.waypoints().filter((w) => w.pathId === pathId);
+    // what it does at each point: its scripts and SmartAI (the waits and move types show as it goes)
+    const path = this.worldPaths().find((p) => p.key === pathKey(pathId as number));
+    const actions = new Map(
+      (path?.points ?? []).map((p) => [p.point, (p.info as string[]).filter((line) => /^(script|SAI:)/.test(line))] as const),
+    );
+    this.simulation.set(pathSimulation(spawn, points, key, actions) ?? wanderSimulation(spawn, key));
+  }
+
+  /** Plays the simulation that ended again, from the start. */
+  protected replaySimulation(): void {
+    this.simulationEnded.set(false);
+    this.simulation.update((simulation) => simulation && { ...simulation });
   }
 
   protected setSimulationRate(event: Event): void {
+    // (the simulation goes on at the new rate)
     this.simulationRate.set(Number((event.target as HTMLSelectElement).value));
-    const simulation = this.simulation();
-    if (simulation) {
-      this.simulation.set({ ...simulation, rate: this.simulationRate() });
-    }
   }
 
   private async loadSpawnFields(spawn: SpawnRecord, key: string): Promise<void> {
@@ -2851,6 +2976,7 @@ export class WorldEditorComponent implements OnInit {
     if (request.key !== GROUND_KEY) {
       this.select(request.key);
     }
+    this.contextPlace.set(contextPlacement(this.view().nativeElement.getBoundingClientRect(), request));
     this.contextMenu.set(request);
   }
 
@@ -3213,6 +3339,8 @@ export class WorldEditorComponent implements OnInit {
       this.toggleMap();
     } else if (action === 'resetNorth') {
       this.resetNorth();
+    } else if (action === 'topView') {
+      this.topViewRequest.update((n) => n + 1);
     } else if (action === 'tree') {
       this.toggleTree();
     } else {

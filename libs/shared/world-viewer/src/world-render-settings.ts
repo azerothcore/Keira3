@@ -79,6 +79,17 @@ export interface WorldRenderSettings {
   showMapEdge: boolean;
   /** The liquid where the camera looks (water, ocean, magma, slime) and whether it's deep (fatigue), by its position. */
   showLiquidInfo: boolean;
+  /** A line at the bottom of the view naming the building, doodad or terrain tile under the cursor. */
+  showMouseOver: boolean;
+  /** Over the terrain: the tile (ADT) and chunk grid, the ground too steep to walk up (red), its triangles. */
+  showTileGrid: boolean;
+  showSteepSlopes: boolean;
+  showWireframe: boolean;
+  /** A see-through plane at height 0, the oceans' level. */
+  showSeaLevel: boolean;
+  /** Waypoint paths: a dashed line from each walker's spawn point to the first point, and from the last point back to the first. */
+  showPathToFirst: boolean;
+  showPathFromLast: boolean;
   /** Creatures wear their equipment (helmet, shoulders, weapons, clothes' shapes). */
   showEquipment: boolean;
   /** Creatures play their standing animation; those that move, their walking one. */
@@ -166,6 +177,13 @@ export const DEFAULT_WORLD_RENDER_SETTINGS: WorldRenderSettings = {
   showInvisible: false,
   showMapEdge: true,
   showLiquidInfo: true,
+  showMouseOver: true,
+  showTileGrid: false,
+  showSteepSlopes: false,
+  showWireframe: false,
+  showSeaLevel: false,
+  showPathToFirst: true,
+  showPathFromLast: true,
   showEquipment: true,
   animateIdle: false,
   animateWalk: false,

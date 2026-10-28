@@ -1,5 +1,5 @@
 import { WmoModel, worldToScene } from '@keira/shared/wow-data';
-import { DoubleSide, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, Texture, Vector3 } from 'three';
+import { DoubleSide, Group, Material, Mesh, MeshBasicMaterial, MeshLambertMaterial, Texture, Vector3 } from 'three';
 import {
   applyPlacement,
   buildWmoObject,
@@ -131,6 +131,29 @@ describe('wmo-object', () => {
     const collisions = template.children.filter((child) => child.name === 'collision');
     expect(collisions).toHaveLength(2);
     expect(collisions.every((mesh) => mesh.layers.isEnabled(COLLISION_LAYER))).toBe(true);
+    disposeWmoObject(template);
+  });
+
+  it('draws the invisible walls of its groups see-through (one material for all), named by group when hovered', () => {
+    const walls = {
+      positions: new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]),
+      indices: new Uint16Array([0, 1, 2]),
+      invisible: new Uint16Array([0, 1, 2]),
+    };
+    const model: WmoModel = {
+      materials: [{ texture: 'a.blp', twoSided: false, unlit: false, blend: 0 }],
+      groups: [
+        { ...group(false), collision: walls },
+        { ...group(false), collision: walls },
+      ],
+    };
+    const template = buildWmoObject(model, [], new Texture());
+    const invisible = template.children.filter((child) => child.name === 'invisible-walls') as Mesh[];
+    expect(invisible.map((mesh) => mesh.userData['group'])).toEqual([0, 1]);
+    expect(invisible[0].material).toBe(invisible[1].material);
+    expect((invisible[0].material as Material).userData['invisible']).toBe(true);
+    // the drawn groups are named too
+    expect(template.children.filter((child) => child.name === '').map((child) => child.userData['group'])).toEqual([0, 1]);
     disposeWmoObject(template);
   });
 

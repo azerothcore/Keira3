@@ -10,6 +10,7 @@ import {
   WmoModel,
   WorldBounds,
   WorldPosition,
+  perfNote,
   perfTime,
   weaponAttachment,
 } from '@keira/shared/wow-data';
@@ -304,7 +305,10 @@ export class SpawnModels {
       return;
     }
     const model = this.loadModel(spawn).catch((error) => {
-      console.warn(`[World Editor] Could not load the model of ${spawn.kind} display ${spawn.displayId}: ${(error as Error).message}`);
+      const text = `Could not load the model of ${spawn.kind} display ${spawn.displayId}: ${(error as Error).message}`;
+      console.warn(`[World Editor] ${text}`);
+      // (in the performance log too, where it can be read afterwards)
+      perfNote(text);
       return undefined;
     });
     this.models.set(displayKey, model);
@@ -328,6 +332,7 @@ export class SpawnModels {
       return this.loadBuilding(display.model);
     }
     if (!display) {
+      perfNote(`No model for ${spawn.kind} display ${displayId} (not in the client's display tables)`);
       return undefined;
     }
     const creature = spawn.kind === 'creature';
@@ -396,6 +401,7 @@ export async function displayModel(
 ): Promise<DisplayModel | undefined> {
   const mesh = await source.getM2(display.model);
   if (!mesh) {
+    perfNote(`Could not read the model ${display.model}`);
     return undefined;
   }
   const geosets = options.equipment ? display.geosets : display.plainGeosets;

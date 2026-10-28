@@ -24,6 +24,8 @@
 
 .world-viewer-label {
   position: absolute;
+  // over the crosshair's "Snap to", the readouts and the compass
+  z-index: 6;
   pointer-events: none;
   padding: 2px 8px;
   border-radius: 3px;
@@ -209,4 +211,33 @@
   font-size: 0.85em;
   font-style: italic;
   opacity: 0.75;
+}
+
+// what's under the cursor, above the simulation line
+.world-viewer-mouseover {
+  position: absolute;
+  left: 50%;
+  bottom: 34px;
+  transform: translateX(-50%);
+  max-width: 70%;
+  padding: 2px 8px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+// a hover label past the middle of the view goes left of / above the cursor
+.world-viewer-label.flip-x {
+  translate: calc(-100% - 28px) 0;
+}
+.world-viewer-label.flip-y {
+  translate: 0 calc(-100% - 28px);
+}
+.world-viewer-label.flip-x.flip-y {
+  translate: calc(-100% - 28px) calc(-100% - 28px);
 }

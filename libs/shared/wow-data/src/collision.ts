@@ -8,6 +8,8 @@ import { toSceneAxes } from './wmo';
 export interface CollisionMesh {
   positions: Float32Array;
   indices: Uint16Array;
+  /** A building's walls the game collides with but never draws (no material): its invisible walls. */
+  invisible?: Uint16Array;
 }
 
 export const EMPTY_COLLISION: CollisionMesh = { positions: new Float32Array(0), indices: new Uint16Array(0) };
@@ -48,6 +50,8 @@ const MOGP_HEADER_SIZE = 0x44;
 const MATERIAL_DETAIL = 0x04;
 const MATERIAL_COLLISION = 0x08;
 const MATERIAL_RENDER = 0x20;
+/** MOPY material id of the triangles that have none (never drawn). */
+const NO_MATERIAL = 0xff;
 
 /**
  * The collision triangles of a WMO group, picked from its MOPY flags like the server's vmap extractor does: those
@@ -69,12 +73,16 @@ export function parseWmoGroupCollision(bytes: Uint8Array): CollisionMesh {
   const view = new DataView(body.buffer, body.byteOffset, body.byteLength);
   const triangles = Math.min(Math.floor(mopy.size / 2), Math.floor(movi.size / 6));
   const indices: number[] = [];
+  const invisible: number[] = [];
   for (let t = 0; t < triangles; t++) {
     const flags = body[mopy.offset + t * 2];
     const render = (flags & MATERIAL_RENDER) !== 0 && (flags & MATERIAL_DETAIL) === 0;
     if ((flags & MATERIAL_COLLISION) !== 0 || render) {
-      for (let k = 0; k < 3; k++) {
-        indices.push(view.getUint16(movi.offset + (t * 3 + k) * 2, true));
+      const corners = [0, 1, 2].map((k) => view.getUint16(movi.offset + (t * 3 + k) * 2, true));
+      indices.push(...corners);
+      // a collision triangle without a material: an invisible wall
+      if (body[mopy.offset + t * 2 + 1] === NO_MATERIAL) {
+        invisible.push(...corners);
       }
     }
   }
@@ -85,5 +93,9 @@ export function parseWmoGroupCollision(bytes: Uint8Array): CollisionMesh {
   for (let i = 0; i < vertices.length; i++) {
     vertices[i] = view.getFloat32(movt.offset + i * 4, true);
   }
-  return { positions: toSceneAxes(vertices), indices: Uint16Array.from(indices) };
+  return {
+    positions: toSceneAxes(vertices),
+    indices: Uint16Array.from(indices),
+    ...(invisible.length ? { invisible: Uint16Array.from(invisible) } : {}),
+  };
 }

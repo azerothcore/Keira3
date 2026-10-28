@@ -19,7 +19,14 @@
   ></canvas>
 
   @if (hoverLabel(); as label) {
-    <div class="world-viewer-label" data-testid="world-viewer-label" [style.left.px]="label.x" [style.top.px]="label.y">
+    <div
+      class="world-viewer-label"
+      data-testid="world-viewer-label"
+      [class.flip-x]="label.flipX"
+      [class.flip-y]="label.flipY"
+      [style.left.px]="label.x"
+      [style.top.px]="label.y"
+    >
       {{ label.text }}
       @if (label.more) {
         <div class="world-viewer-label-hint" data-testid="world-viewer-label-hint">{{ 'WORLD_EDITOR.ALT_FOR_MORE' | translate }}</div>
@@ -39,17 +46,48 @@
     </div>
   }
 
+  @for (label of pathEndLabels(); track label.which) {
+    <div
+      class="world-viewer-probe-label"
+      [class.end]="label.which === 'end'"
+      [attr.data-testid]="'world-viewer-path-' + label.which"
+      [style.left.px]="label.x"
+      [style.top.px]="label.y"
+    >
+      {{ (label.which === 'start' ? 'WORLD_EDITOR.PATH_START' : 'WORLD_EDITOR.PATH_END') | translate }}
+    </div>
+  }
+
   <div class="world-viewer-crosshair" aria-hidden="true"></div>
   @if (snapToGround() || snapToWall()) {
     <div class="world-viewer-snap" data-testid="world-viewer-snap">
       {{ 'WORLD_EDITOR.SNAP_TO' | translate }}: {{ (snapToWall() ? 'WORLD_EDITOR.SNAP_WALL' : 'WORLD_EDITOR.SNAP_GROUND') | translate }}
     </div>
   }
-  @if (simulationStatus(); as status) {
-    <div class="world-viewer-simulation" data-testid="world-viewer-simulation">
-      ▶ {{ status.label }}
-      @if (status.wait) {
-        · {{ 'WORLD_EDITOR.SIM_WAITING' | translate: { seconds: status.wait } }}
+  @if (simulationStatus()) {
+    <div class="world-viewer-simulation" data-testid="world-viewer-simulation">▶ {{ simulationText() }}</div>
+  }
+  @if (renderSettings().showMouseOver && mouseOver(); as thing) {
+    <div class="world-viewer-mouseover" data-testid="world-viewer-mouseover">
+      @switch (thing.kind) {
+        @case ('terrain') {
+          {{ 'WORLD_EDITOR.MOUSE_OVER_TERRAIN' | translate }} {{ thing.tile!.tx }}_{{ thing.tile!.ty }}
+        }
+        @default {
+          {{ (thing.kind === 'building' ? 'WORLD_EDITOR.MOUSE_OVER_BUILDING' : 'WORLD_EDITOR.MOUSE_OVER_DOODAD') | translate }}
+          {{ thing.path }}
+          @if (thing.group !== undefined) {
+            · {{ 'WORLD_EDITOR.MOUSE_OVER_GROUP' | translate }} {{ thing.group }}
+          }
+          @if (thing.invisible) {
+            · <span class="text-info">{{ 'WORLD_EDITOR.MOUSE_OVER_INVISIBLE' | translate }}</span>
+          }
+          · {{ thing.batches }} {{ 'WORLD_EDITOR.MOUSE_OVER_BATCHES' | translate }}, {{ thing.faces }}
+          {{ 'WORLD_EDITOR.MOUSE_OVER_FACES' | translate }}
+          @if (thing.id !== undefined) {
+            · id {{ thing.id }}
+          }
+        }
       }
     </div>
   }

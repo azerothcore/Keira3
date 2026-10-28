@@ -142,12 +142,16 @@ interface FakeTransformControls extends EventDispatcher<{ 'dragging-changed': { 
       [renderSettings]="render()"
       [focus]="focus()"
       [resetNorth]="resetNorth()"
+      [topView]="topView()"
+      [pathEnds]="pathEnds()"
       [region]="region()"
       [navigation]="navigation()"
       [areaTriggers]="triggers()"
       [links]="links()"
       [groupKeys]="group()"
       [simulation]="simulation()"
+      [simulationRate]="simulationRate()"
+      (simulationEnded)="simulationEnds = simulationEnds + 1"
       [groundQuery]="ground()"
       (groundHeights)="heights.push($event)"
       [markers]="markers()"
@@ -190,12 +194,16 @@ class HostComponent {
   readonly render = signal<WorldRenderSettings>(DEFAULT_WORLD_RENDER_SETTINGS);
   readonly focus = signal<WorldPosition | undefined>(undefined);
   readonly resetNorth = signal(0);
+  readonly topView = signal(0);
+  readonly pathEnds = signal<{ start: WorldPosition; end: WorldPosition } | undefined>(undefined);
   readonly region = signal<WorldBounds | undefined>(undefined);
   readonly navigation = signal<WorldControlsSettings>(DEFAULT_WORLD_CONTROLS_SETTINGS);
   readonly triggers = signal<WorldAreaTrigger[]>([]);
   readonly links = signal<WorldLink[]>([]);
   readonly group = signal<string[]>([]);
   readonly simulation = signal<MovementSimulation | undefined>(undefined);
+  readonly simulationRate = signal(2);
+  simulationEnds = 0;
   readonly ground = signal<{ key: string; position: WorldPosition }[] | undefined>(undefined);
   readonly heights: Record<string, number | null>[] = [];
   readonly markers = signal<WorldMarker[]>([]);
@@ -874,6 +882,89 @@ describe(WorldViewerComponent.name, () => {
         h.focus.set(at(0, 0));
       });
 
+    it('names what the map shows under the resting cursor, and puts hover labels away from the edges', async () => {
+      const describe = vi.spyOn(WorldScene.prototype, 'describe').mockReturnValue({
+        kind: 'building',
+        path: 'Hall.wmo',
+        group: 3,
+        id: 5,
+        faces: 12,
+        batches: 2,
+        invisible: true,
+        position: at(0, 0),
+      });
+      const { page, host, fixture } = await pickSetup();
+      await settle(fixture);
+      const line = () => page.getDebugElementByTestId('world-viewer-mouseover', false)?.nativeElement.textContent?.replace(/\s+/g, ' ');
+      const rest = async (x: number, y: number) => {
+        page.pointer('pointermove', x, y);
+        await new Promise((resolve) => setTimeout(resolve, 150));
+        flushFrames();
+        fixture.detectChanges();
+      };
+      await rest(80, 80);
+      expect(line()).toContain('WORLD_EDITOR.MOUSE_OVER_BUILDING Hall.wmo · WORLD_EDITOR.MOUSE_OVER_GROUP 3');
+      expect(line()).toContain('WORLD_EDITOR.MOUSE_OVER_INVISIBLE');
+      expect(line()).toContain('2 WORLD_EDITOR.MOUSE_OVER_BATCHES, 12 WORLD_EDITOR.MOUSE_OVER_FACES · id 5');
+      // a doodad without a placement id or group; the terrain
+      describe.mockReturnValue({ kind: 'doodad', path: 'Box.m2', faces: 1, batches: 1, position: at(0, 0) });
+      await rest(70, 70);
+      expect(line()).toContain('WORLD_EDITOR.MOUSE_OVER_DOODAD Box.m2 · 1');
+      expect(line()).not.toContain('id');
+      describe.mockReturnValue({ kind: 'terrain', tile: { tx: 32, ty: 48 }, position: at(0, 0) });
+      await rest(70, 70);
+      expect(line()).toContain('WORLD_EDITOR.MOUSE_OVER_TERRAIN 32_48');
+      // a canvas of no size: nothing looked up
+      describe.mockClear();
+      vi.mocked(HTMLElement.prototype.getBoundingClientRect).mockReturnValue(new DOMRect(0, 0, 0, 0));
+      await rest(70, 70);
+      expect(describe).not.toHaveBeenCalled();
+      vi.mocked(HTMLElement.prototype.getBoundingClientRect).mockReturnValue(new DOMRect(0, 0, 100, 100));
+      // leaving the view, or turned off: gone
+      page.pointer('pointerleave', 70, 70);
+      fixture.detectChanges();
+      expect(line()).toBeUndefined();
+      host.render.set({ ...DEFAULT_WORLD_RENDER_SETTINGS, showMouseOver: false });
+      await rest(70, 70);
+      expect(line()).toBeUndefined();
+      describe.mockRestore();
+
+      // the hover label of a spawn in the lower right: left of and above the cursor
+      page.pointer('pointermove', 50, 50);
+      flushFrames();
+      fixture.detectChanges();
+      expect(page.label().nativeElement.classList).not.toContain('flip-x');
+      page.pointer('pointermove', 51, 51);
+      flushFrames();
+      fixture.detectChanges();
+      expect(page.label().nativeElement.classList).toContain('flip-x');
+      expect(page.label().nativeElement.classList).toContain('flip-y');
+    });
+
+    it('looks straight down when asked, and labels the ends of a path', async () => {
+      const { page, host, fixture } = await pickSetup();
+      await settle(fixture);
+      host.topView.set(1);
+      fixture.detectChanges();
+      host.pathEnds.set({ start: at(0, 0), end: at(5, 5) });
+      fixture.detectChanges();
+      flushFrames();
+      fixture.detectChanges();
+      expect(page.getDebugElementByTestId('world-viewer-path-start').nativeElement.textContent).toContain('WORLD_EDITOR.PATH_START');
+      expect(page.getDebugElementByTestId('world-viewer-path-end').nativeElement.textContent).toContain('WORLD_EDITOR.PATH_END');
+      // an end behind the camera isn't labelled; no path: none
+      host.pathEnds.set({ start: at(0, 0), end: { ...at(0, 0), z: 100_000 } });
+      fixture.detectChanges();
+      flushFrames();
+      fixture.detectChanges();
+      expect(page.getDebugElementByTestId('world-viewer-path-end', false)).toBeFalsy();
+      host.pathEnds.set(undefined);
+      fixture.detectChanges();
+      flushFrames();
+      fixture.detectChanges();
+      expect(page.getDebugElementByTestId('world-viewer-path-start', false)).toBeFalsy();
+    });
+
     it('reports Ctrl + clicks as additive (to select more)', async () => {
       const { page, host, fixture } = await pickSetup();
       await settle(fixture);
@@ -969,10 +1060,9 @@ describe(WorldViewerComponent.name, () => {
         key: 'creature:7',
         // off the mesh's diagonal (where its two triangles meet)
         start: at(0, -5),
-        rate: 2,
         legs: [
-          { to: at(10, -5), speed: 5, wait: 4, label: 'point 1' },
-          { to: at(10, 10), speed: 5, wait: 0, label: 'point 2', fly: true },
+          { to: at(10, -5), speed: 5, wait: 4, label: 'point 1', actions: ['script 5'] },
+          { to: at(10, 10), speed: 5, wait: 2, label: 'point 2', fly: true },
         ],
       };
       await update(() => host.simulation.set(plan));
@@ -988,6 +1078,38 @@ describe(WorldViewerComponent.name, () => {
       expect(Math.hypot(position.x - at(10, -5).x, position.y - at(10, -5).y)).toBeLessThan(0.01);
       expect(Number.isFinite(orientation)).toBe(true);
       expect(page.getDebugElementByTestId('world-viewer-simulation').nativeElement.textContent).toContain('WORLD_EDITOR.SIM_WAITING');
+      // what it does there, and the time since it started
+      expect(page.getDebugElementByTestId('world-viewer-simulation').nativeElement.textContent).toContain('script 5');
+      expect(page.getDebugElementByTestId('world-viewer-simulation').nativeElement.textContent).toContain('3.0 s (3000 ms)');
+      // hovering the copy tells the same
+      const near = vi.spyOn(WorldScene.prototype, 'ghostNear').mockReturnValue(true);
+      page.pointer('pointermove', 50, 50);
+      flushFrames();
+      fixture.detectChanges();
+      expect(page.label().nativeElement.textContent).toContain('WORLD_EDITOR.SIM_WAITING');
+      near.mockRestore();
+      // slower from now on, without starting over: 1 s more at ×1 is 4 s in
+      host.simulationRate.set(1);
+      fixture.detectChanges();
+      now = 2500;
+      flushFrames();
+      fixture.detectChanges();
+      expect(page.getDebugElementByTestId('world-viewer-simulation').nativeElement.textContent).toContain('4.0 s (4000 ms)');
+      // 6.5 s more: waiting at point 2, which does nothing
+      now = 9000;
+      flushFrames();
+      fixture.detectChanges();
+      expect(page.getDebugElementByTestId('world-viewer-simulation').nativeElement.textContent).toContain(
+        'point 2: WORLD_EDITOR.SIM_WAITING',
+      );
+      // played once: it stops at the end, and says so
+      await update(() => host.simulation.set({ ...plan, once: true }));
+      await settle(fixture);
+      now = 100_000;
+      flushFrames();
+      fixture.detectChanges();
+      expect(host.simulationEnds).toBe(1);
+      expect(page.getDebugElementByTestId('world-viewer-simulation', false)).toBeFalsy();
       // a newer simulation replaces it; an unknown creature shows none
       await update(() => host.simulation.set({ ...plan, key: 'creature:404' }));
       await settle(fixture);
