@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620" font-family="Segoe UI, Helvetica, Arial, sans-serif" fill="#111111">
+<rect width="100%" height="100%" fill="#f4f4f4"/>
+<text x="20" y="30" font-size="20" font-weight="bold">Keira3 world editor: gamepad</text>
+<rect x="385" y="160" width="95" height="32" rx="10" fill="#d6d6d6" stroke="#505050" stroke-width="2"/>
+<rect x="620" y="160" width="95" height="32" rx="10" fill="#d6d6d6" stroke="#505050" stroke-width="2"/>
+<rect x="378" y="196" width="110" height="22" rx="8" fill="#bdbdbd" stroke="#505050" stroke-width="2"/>
+<rect x="612" y="196" width="110" height="22" rx="8" fill="#bdbdbd" stroke="#505050" stroke-width="2"/>
+<path d="M 380 215 L 720 215 Q 790 215 810 290 L 845 450 Q 860 530 800 535 Q 755 538 725 470 L 690 420 L 410 420 L 375 470 Q 345 538 300 535 Q 240 530 255 450 L 290 290 Q 310 215 380 215 Z" fill="#d6d6d6" stroke="#505050" stroke-width="2"/>
+<line x1="255" y1="56" x2="410" y2="175" stroke="#707070" stroke-width="1.2"/>
+<line x1="255" y1="106" x2="395" y2="207" stroke="#707070" stroke-width="1.2"/>
+<line x1="255" y1="161" x2="505" y2="278" stroke="#707070" stroke-width="1.2"/>
+<line x1="255" y1="211" x2="387" y2="285" stroke="#707070" stroke-width="1.2"/>
+<line x1="255" y1="311" x2="446" y2="375" stroke="#707070" stroke-width="1.2"/>
+<line x1="845" y1="56" x2="690" y2="175" stroke="#707070" stroke-width="1.2"/>
+<line x1="845" y1="106" x2="705" y2="207" stroke="#707070" stroke-width="1.2"/>
+<line x1="845" y1="161" x2="595" y2="278" stroke="#707070" stroke-width="1.2"/>
+<line x1="845" y1="211" x2="726" y2="285" stroke="#707070" stroke-width="1.2"/>
+<line x1="845" y1="311" x2="654" y2="375" stroke="#707070" stroke-width="1.2"/>
+<line x1="550" y1="449" x2="550" y2="343" stroke="#707070" stroke-width="1.2"/>
+<polygon points="409,252 431,252 431,272 420,282 409,272" fill="#6a6a6a" stroke="#404040" stroke-width="1.5"/>
+<polygon points="409,318 431,318 431,298 420,288 409,298" fill="#6a6a6a" stroke="#404040" stroke-width="1.5"/>
+<polygon points="387,274 407,274 417,285 407,296 387,296" fill="#6a6a6a" stroke="#404040" stroke-width="1.5"/>
+<polygon points="453,274 433,274 423,285 433,296 453,296" fill="#6a6a6a" stroke="#404040" stroke-width="1.5"/>
+<circle cx="680" cy="253" r="14" fill="#8a8a8a" stroke="#404040" stroke-width="1.5"/>
+<polygon points="0,-6 -5,3 5,3" transform="translate(680 253)" fill="#f0f0f0"/>
+<circle cx="648" cy="285" r="14" fill="#8a8a8a" stroke="#404040" stroke-width="1.5"/>
+<polygon points="-6,0 3,-5 3,5" transform="translate(648 285)" fill="#f0f0f0"/>
+<circle cx="712" cy="285" r="14" fill="#8a8a8a" stroke="#404040" stroke-width="1.5"/>
+<polygon points="6,0 -3,-5 -3,5" transform="translate(712 285)" fill="#f0f0f0"/>
+<circle cx="680" cy="317" r="14" fill="#8a8a8a" stroke="#404040" stroke-width="1.5"/>
+<polygon points="0,6 -5,-3 5,-3" transform="translate(680 317)" fill="#f0f0f0"/>
+<rect x="494" y="279" width="22" height="12" rx="4" fill="#6a6a6a"/>
+<polygon points="584,279 606,285 584,291" fill="#6a6a6a"/>
+<circle cx="550" cy="330" r="13" fill="#6a6a6a" stroke="#404040"/>
+<circle cx="480" cy="375" r="34" fill="#9a9a9a" stroke="#505050" stroke-width="2"/>
+<circle cx="480" cy="375" r="26" fill="#7a7a7a" stroke="#404040" stroke-width="1.5"/>
+<circle cx="480" cy="375" r="19" fill="#6a6a6a"/>
+<circle cx="480" cy="375" r="21" fill="none" stroke="#9a9a9a" stroke-width="2"/>
+<circle cx="620" cy="375" r="34" fill="#9a9a9a" stroke="#505050" stroke-width="2"/>
+<circle cx="620" cy="375" r="26" fill="#7a7a7a" stroke="#404040" stroke-width="1.5"/>
+<circle cx="620" cy="375" r="19" fill="#6a6a6a"/>
+<circle cx="620" cy="375" r="21" fill="none" stroke="#9a9a9a" stroke-width="2"/>
+<circle cx="410" cy="175" r="3" fill="#707070"/>
+<circle cx="395" cy="207" r="3" fill="#707070"/>
+<circle cx="505" cy="278" r="3" fill="#707070"/>
+<circle cx="387" cy="285" r="3" fill="#707070"/>
+<circle cx="446" cy="375" r="3" fill="#707070"/>
+<circle cx="690" cy="175" r="3" fill="#707070"/>
+<circle cx="705" cy="207" r="3" fill="#707070"/>
+<circle cx="595" cy="278" r="3" fill="#707070"/>
+<circle cx="726" cy="285" r="3" fill="#707070"/>
+<circle cx="654" cy="375" r="3" fill="#707070"/>
+<text x="250" y="60" font-size="13" font-weight="bold" text-anchor="end">Left trigger (Button 7)</text>
+<text x="250" y="75" font-size="11" text-anchor="end">Move down</text>
+<text x="250" y="110" font-size="13" font-weight="bold" text-anchor="end">Left bumper (Button 5)</text>
+<text x="250" y="125" font-size="11" text-anchor="end">Zoom out</text>
+<text x="250" y="165" font-size="13" font-weight="bold" text-anchor="end">Select (Button 9)</text>
+<text x="250" y="180" font-size="11" text-anchor="end" fill="#909090">(free)</text>
+<text x="250" y="215" font-size="13" font-weight="bold" text-anchor="end">D-pad</text>
+<text x="250" y="230" font-size="11" text-anchor="end" fill="#909090">Up: (free)</text>
+<text x="250" y="245" font-size="11" text-anchor="end" fill="#909090">Down: (free)</text>
+<text x="250" y="260" font-size="11" text-anchor="end" fill="#909090">Left: (free)</text>
+<text x="250" y="275" font-size="11" text-anchor="end" fill="#909090">Right: (free)</text>
+<text x="250" y="315" font-size="13" font-weight="bold" text-anchor="end">Left stick</text>
+<text x="250" y="330" font-size="11" text-anchor="end">Up: Move forward</text>
+<text x="250" y="345" font-size="11" text-anchor="end">Down: Move back</text>
+<text x="250" y="360" font-size="11" text-anchor="end">Left: Move left</text>
+<text x="250" y="375" font-size="11" text-anchor="end">Right: Move right</text>
+<text x="250" y="390" font-size="11" text-anchor="end">Press (Button 11): Faster (held)</text>
+<text x="850" y="60" font-size="13" font-weight="bold" text-anchor="start">Right trigger (Button 8)</text>
+<text x="850" y="75" font-size="11" text-anchor="start">Move up</text>
+<text x="850" y="110" font-size="13" font-weight="bold" text-anchor="start">Right bumper (Button 6)</text>
+<text x="850" y="125" font-size="11" text-anchor="start">Zoom in</text>
+<text x="850" y="165" font-size="13" font-weight="bold" text-anchor="start">Start (Button 10)</text>
+<text x="850" y="180" font-size="11" text-anchor="start" fill="#909090">(free)</text>
+<text x="850" y="215" font-size="13" font-weight="bold" text-anchor="start">Buttons (Y, A, X, B)</text>
+<text x="850" y="230" font-size="11" text-anchor="start">Up, Y (Button 4): Camera to the marker</text>
+<text x="850" y="245" font-size="11" text-anchor="start">Down, A (Button 2): Put the marker under the cursor</text>
+<text x="850" y="260" font-size="11" text-anchor="start" fill="#909090">Left, X (Button 1): (free)</text>
+<text x="850" y="275" font-size="11" text-anchor="start" fill="#909090">Right, B (Button 3): (free)</text>
+<text x="850" y="315" font-size="13" font-weight="bold" text-anchor="start">Right stick</text>
+<text x="850" y="330" font-size="11" text-anchor="start">Up: Look up</text>
+<text x="850" y="345" font-size="11" text-anchor="start">Down: Look down</text>
+<text x="850" y="360" font-size="11" text-anchor="start">Left: Turn left</text>
+<text x="850" y="375" font-size="11" text-anchor="start">Right: Turn right</text>
+<text x="850" y="390" font-size="11" text-anchor="start" fill="#909090">Press (Button 12): (free)</text>
+<text x="550" y="462" font-size="13" font-weight="bold" text-anchor="middle">Home (Button 13)</text>
+<text x="550" y="477" font-size="11" text-anchor="middle" fill="#909090">(free)</text>
+<text x="20" y="566" font-size="12">Buttons are named as on an Xbox pad and numbered as Windows' game controller settings number them; other pads have the same ones in the same places.</text>
+<text x="20" y="586" font-size="12">Red: clashes with another action. (free): nothing on it yet. The gamepad works in the world editor only, for the camera and the marker.</text>
+</svg>

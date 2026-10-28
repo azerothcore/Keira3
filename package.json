@@ -37,7 +37,8 @@
     "e2e": "playwright test -c apps/keira-e2e/playwright.config.ts apps/keira-e2e/",
     "e2e:show-trace": "playwright show-trace e2e/tracing/trace.zip",
     "version": "conventional-changelog -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "wiki:controls": "jiti TODO_wiki/scripts/update-controls.ts"
   },
   "dependencies": {
     "@acrodata/code-editor": "0.6.1",

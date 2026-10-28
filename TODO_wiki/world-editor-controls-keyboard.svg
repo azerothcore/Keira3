@@ -1,0 +1,218 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1560" height="680" viewBox="0 0 1560 680" font-family="Segoe UI, Helvetica, Arial, sans-serif" fill="#111111">
+<rect width="100%" height="100%" fill="#f4f4f4"/>
+<text x="20" y="30" font-size="20" font-weight="bold">Keira3 world editor: keyboard</text>
+<rect x="22" y="50" width="76" height="62" rx="6" fill="#e6c878" stroke="#606060" stroke-width="1"/>
+<text x="28" y="66" font-size="13" font-weight="bold">Esc</text>
+<text x="28" y="81" font-size="9.5">Cancel / des.</text>
+<rect x="142" y="50" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="148" y="66" font-size="13" font-weight="bold">F1</text>
+<rect x="222" y="50" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="228" y="66" font-size="13" font-weight="bold">F2</text>
+<rect x="302" y="50" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="308" y="66" font-size="13" font-weight="bold">F3</text>
+<rect x="382" y="50" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="388" y="66" font-size="13" font-weight="bold">F4</text>
+<rect x="502" y="50" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="508" y="66" font-size="13" font-weight="bold">F5</text>
+<rect x="582" y="50" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="588" y="66" font-size="13" font-weight="bold">F6</text>
+<rect x="662" y="50" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="668" y="66" font-size="13" font-weight="bold">F7</text>
+<rect x="742" y="50" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="748" y="66" font-size="13" font-weight="bold">F8</text>
+<rect x="862" y="50" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="868" y="66" font-size="13" font-weight="bold">F9</text>
+<rect x="942" y="50" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="948" y="66" font-size="13" font-weight="bold">F10</text>
+<rect x="1022" y="50" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="1028" y="66" font-size="13" font-weight="bold">F11</text>
+<rect x="1102" y="50" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="1108" y="66" font-size="13" font-weight="bold">F12</text>
+<rect x="1222" y="50" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="1228" y="66" font-size="13" font-weight="bold">PrtSc</text>
+<rect x="1302" y="50" width="76" height="62" rx="6" fill="#e68c8c" stroke="#606060" stroke-width="1"/>
+<text x="1308" y="66" font-size="13" font-weight="bold">Home</text>
+<text x="1308" y="81" font-size="9.5">Camera to th.</text>
+<rect x="22" y="128" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="28" y="144" font-size="13" font-weight="bold">`</text>
+<rect x="102" y="128" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="108" y="144" font-size="13" font-weight="bold">1</text>
+<rect x="182" y="128" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="188" y="144" font-size="13" font-weight="bold">2</text>
+<rect x="262" y="128" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="268" y="144" font-size="13" font-weight="bold">3</text>
+<rect x="342" y="128" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="348" y="144" font-size="13" font-weight="bold">4</text>
+<rect x="422" y="128" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="428" y="144" font-size="13" font-weight="bold">5</text>
+<rect x="502" y="128" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="508" y="144" font-size="13" font-weight="bold">6</text>
+<rect x="582" y="128" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="588" y="144" font-size="13" font-weight="bold">7</text>
+<rect x="662" y="128" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="668" y="144" font-size="13" font-weight="bold">8</text>
+<rect x="742" y="128" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="748" y="144" font-size="13" font-weight="bold">9</text>
+<rect x="822" y="128" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="828" y="144" font-size="13" font-weight="bold">0</text>
+<rect x="902" y="128" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="908" y="144" font-size="13" font-weight="bold">-</text>
+<rect x="982" y="128" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="988" y="144" font-size="13" font-weight="bold">=</text>
+<rect x="1062" y="128" width="156" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="1068" y="144" font-size="13" font-weight="bold">Back</text>
+<rect x="1262" y="128" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="1268" y="144" font-size="13" font-weight="bold">Ins</text>
+<rect x="1342" y="128" width="76" height="62" rx="6" fill="#9696dc" stroke="#606060" stroke-width="1"/>
+<text x="1348" y="144" font-size="13" font-weight="bold">PgUp</text>
+<text x="1348" y="159" font-size="9.5">Move up</text>
+<rect x="22" y="196" width="116" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="28" y="212" font-size="13" font-weight="bold">Tab</text>
+<rect x="142" y="196" width="76" height="62" rx="6" fill="#9696dc" stroke="#606060" stroke-width="1"/>
+<text x="148" y="212" font-size="13" font-weight="bold">Q</text>
+<text x="148" y="227" font-size="9.5">Move up</text>
+<rect x="222" y="196" width="76" height="62" rx="6" fill="#9696dc" stroke="#606060" stroke-width="1"/>
+<text x="228" y="212" font-size="13" font-weight="bold">W</text>
+<text x="228" y="227" font-size="9.5">Move forward</text>
+<rect x="302" y="196" width="76" height="62" rx="6" fill="#9696dc" stroke="#606060" stroke-width="1"/>
+<text x="308" y="212" font-size="13" font-weight="bold">E</text>
+<text x="308" y="227" font-size="9.5">Move down</text>
+<rect x="382" y="196" width="76" height="62" rx="6" fill="#e6c878" stroke="#606060" stroke-width="1"/>
+<text x="388" y="212" font-size="13" font-weight="bold">R</text>
+<text x="388" y="227" font-size="9.5">Switch move .</text>
+<rect x="462" y="196" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="468" y="212" font-size="13" font-weight="bold">T</text>
+<rect x="542" y="196" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="548" y="212" font-size="13" font-weight="bold">Y</text>
+<rect x="622" y="196" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="628" y="212" font-size="13" font-weight="bold">U</text>
+<rect x="702" y="196" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="708" y="212" font-size="13" font-weight="bold">I</text>
+<rect x="782" y="196" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="788" y="212" font-size="13" font-weight="bold">O</text>
+<rect x="862" y="196" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="868" y="212" font-size="13" font-weight="bold">P</text>
+<rect x="942" y="196" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="948" y="212" font-size="13" font-weight="bold">[</text>
+<rect x="1022" y="196" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="1028" y="212" font-size="13" font-weight="bold">]</text>
+<rect x="1102" y="196" width="116" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="1108" y="212" font-size="13" font-weight="bold">\</text>
+<rect x="1262" y="196" width="76" height="62" rx="6" fill="#e6c878" stroke="#606060" stroke-width="1"/>
+<text x="1268" y="212" font-size="13" font-weight="bold">Del</text>
+<text x="1268" y="227" font-size="9.5">Delete the s.</text>
+<rect x="1342" y="196" width="76" height="62" rx="6" fill="#9696dc" stroke="#606060" stroke-width="1"/>
+<text x="1348" y="212" font-size="13" font-weight="bold">PgDn</text>
+<text x="1348" y="227" font-size="9.5">Move down</text>
+<rect x="22" y="264" width="136" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="28" y="280" font-size="13" font-weight="bold">Caps</text>
+<rect x="162" y="264" width="76" height="62" rx="6" fill="#9696dc" stroke="#606060" stroke-width="1"/>
+<text x="168" y="280" font-size="13" font-weight="bold">A</text>
+<text x="168" y="295" font-size="9.5">Move left</text>
+<rect x="242" y="264" width="76" height="62" rx="6" fill="#9696dc" stroke="#606060" stroke-width="1"/>
+<text x="248" y="280" font-size="13" font-weight="bold">S</text>
+<text x="248" y="295" font-size="9.5">Move back</text>
+<rect x="322" y="264" width="76" height="62" rx="6" fill="#9696dc" stroke="#606060" stroke-width="1"/>
+<text x="328" y="280" font-size="13" font-weight="bold">D</text>
+<text x="328" y="295" font-size="9.5">Move right</text>
+<rect x="402" y="264" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="408" y="280" font-size="13" font-weight="bold">F</text>
+<rect x="482" y="264" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="488" y="280" font-size="13" font-weight="bold">G</text>
+<rect x="562" y="264" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="568" y="280" font-size="13" font-weight="bold">H</text>
+<rect x="642" y="264" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="648" y="280" font-size="13" font-weight="bold">J</text>
+<rect x="722" y="264" width="76" height="62" rx="6" fill="#96dca0" stroke="#606060" stroke-width="1"/>
+<text x="728" y="280" font-size="13" font-weight="bold">K</text>
+<text x="728" y="295" font-size="9.5">Show / hide .</text>
+<rect x="802" y="264" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="808" y="280" font-size="13" font-weight="bold">L</text>
+<rect x="882" y="264" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="888" y="280" font-size="13" font-weight="bold">;</text>
+<rect x="962" y="264" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="968" y="280" font-size="13" font-weight="bold">'</text>
+<rect x="1042" y="264" width="176" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="1048" y="280" font-size="13" font-weight="bold">Enter</text>
+<rect x="1262" y="264" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="1268" y="280" font-size="13" font-weight="bold">End</text>
+<rect x="22" y="332" width="176" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="28" y="348" font-size="13" font-weight="bold">Shift</text>
+<rect x="202" y="332" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="208" y="348" font-size="13" font-weight="bold">Z</text>
+<rect x="282" y="332" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="288" y="348" font-size="13" font-weight="bold">X</text>
+<rect x="362" y="332" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="368" y="348" font-size="13" font-weight="bold">C</text>
+<rect x="442" y="332" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="448" y="348" font-size="13" font-weight="bold">V</text>
+<rect x="522" y="332" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="528" y="348" font-size="13" font-weight="bold">B</text>
+<rect x="602" y="332" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="608" y="348" font-size="13" font-weight="bold">N</text>
+<rect x="682" y="332" width="76" height="62" rx="6" fill="#96dca0" stroke="#606060" stroke-width="1"/>
+<text x="688" y="348" font-size="13" font-weight="bold">M</text>
+<text x="688" y="363" font-size="9.5">Open / close.</text>
+<rect x="762" y="332" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="768" y="348" font-size="13" font-weight="bold">,</text>
+<rect x="842" y="332" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="848" y="348" font-size="13" font-weight="bold">.</text>
+<rect x="922" y="332" width="76" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="928" y="348" font-size="13" font-weight="bold">/</text>
+<rect x="1002" y="332" width="216" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="1008" y="348" font-size="13" font-weight="bold">Shift</text>
+<rect x="1342" y="332" width="76" height="62" rx="6" fill="#9696dc" stroke="#606060" stroke-width="1"/>
+<text x="1348" y="348" font-size="13" font-weight="bold">Up</text>
+<text x="1348" y="363" font-size="9.5">Move forward</text>
+<rect x="22" y="400" width="116" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="28" y="416" font-size="13" font-weight="bold">Ctrl</text>
+<rect x="142" y="400" width="96" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="148" y="416" font-size="13" font-weight="bold">Win</text>
+<rect x="242" y="400" width="96" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="248" y="416" font-size="13" font-weight="bold">Alt</text>
+<rect x="342" y="400" width="496" height="62" rx="6" fill="#e68c8c" stroke="#606060" stroke-width="1"/>
+<text x="348" y="416" font-size="13" font-weight="bold">Space</text>
+<text x="348" y="431" font-size="9.5">Put the marker under the cursor</text>
+<rect x="842" y="400" width="96" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="848" y="416" font-size="13" font-weight="bold">Alt</text>
+<rect x="942" y="400" width="116" height="62" rx="6" fill="#ffffff" stroke="#606060" stroke-width="1"/>
+<text x="948" y="416" font-size="13" font-weight="bold">Ctrl</text>
+<rect x="1102" y="400" width="76" height="62" rx="6" fill="#9696dc" stroke="#606060" stroke-width="1"/>
+<text x="1108" y="416" font-size="13" font-weight="bold">Left</text>
+<text x="1108" y="431" font-size="9.5">Move left</text>
+<rect x="1182" y="400" width="76" height="62" rx="6" fill="#9696dc" stroke="#606060" stroke-width="1"/>
+<text x="1188" y="416" font-size="13" font-weight="bold">Down</text>
+<text x="1188" y="431" font-size="9.5">Move back</text>
+<rect x="1262" y="400" width="76" height="62" rx="6" fill="#9696dc" stroke="#606060" stroke-width="1"/>
+<text x="1268" y="416" font-size="13" font-weight="bold">Right</text>
+<text x="1268" y="431" font-size="9.5">Move right</text>
+<rect x="20" y="478" width="14" height="14" fill="#9696dc" stroke="#606060"/>
+<text x="40" y="490" font-size="13">Camera</text>
+<rect x="94" y="478" width="14" height="14" fill="#e68c8c" stroke="#606060"/>
+<text x="114" y="490" font-size="13">Marker</text>
+<rect x="168" y="478" width="14" height="14" fill="#e6c878" stroke="#606060"/>
+<text x="188" y="490" font-size="13">Editing</text>
+<rect x="249" y="478" width="14" height="14" fill="#96dca0" stroke="#606060"/>
+<text x="269" y="490" font-size="13">Panels</text>
+<text x="20" y="514" font-size="12">Keys without Ctrl, Shift or Alt. Red border: the key clashes with another action (the first in the list wins).</text>
+<text x="20" y="540" font-size="13" font-weight="bold">Mouse, gamepad and combinations</text>
+<text x="20" y="560" font-size="11">Move forward: Pad Left Stick Up</text>
+<text x="540" y="560" font-size="11">Move back: Pad Left Stick Down</text>
+<text x="1060" y="560" font-size="11">Move left: Pad Left Stick Left</text>
+<text x="20" y="576" font-size="11">Move right: Pad Left Stick Right</text>
+<text x="540" y="576" font-size="11">Move up: Pad Right Trigger</text>
+<text x="1060" y="576" font-size="11">Move down: Pad Left Trigger</text>
+<text x="20" y="592" font-size="11">Turn left: Pad Right Stick Left</text>
+<text x="540" y="592" font-size="11">Turn right: Pad Right Stick Right</text>
+<text x="1060" y="592" font-size="11">Look up: Pad Right Stick Up</text>
+<text x="20" y="608" font-size="11">Look down: Pad Right Stick Down</text>
+<text x="540" y="608" font-size="11">Zoom in: Pad Right Bumper</text>
+<text x="1060" y="608" font-size="11">Zoom out: Pad Left Bumper</text>
+<text x="20" y="624" font-size="11">Faster (held): Pad Left Stick Press</text>
+<text x="540" y="624" font-size="11">Put the marker under the cursor: Pad A (Down)</text>
+<text x="1060" y="624" font-size="11">Camera to the marker: Pad Y (Up)</text>
+<text x="20" y="640" font-size="11">Undo: Ctrl+Z</text>
+<text x="540" y="640" font-size="11">Redo: Ctrl+Y, Ctrl+Shift+Z</text>
+<text x="1060" y="640" font-size="11">Copy the selection: Ctrl+C</text>
+<text x="20" y="656" font-size="11">Paste at the crosshair: Ctrl+V</text>
+</svg>
