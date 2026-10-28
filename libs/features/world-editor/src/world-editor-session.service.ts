@@ -4,6 +4,7 @@ import { WorldBounds, WorldPosition } from '@keira/shared/wow-data';
 import { ChangesSnapshot, WorldEditorChanges } from './world-editor-changes';
 import { CopiedSpawn } from './group-edit';
 import { EditorTool, LayerVisibility, SpawnType } from './world-editor.model';
+import { loadPickerSort } from './picker-sort';
 
 /**
  * What the 3D world editor is in the middle of, kept while the app runs: leaving it for another editor (e.g. a
@@ -42,6 +43,9 @@ export class WorldEditorSessionService {
   /** Spawns copied (Ctrl + C), to paste at the crosshair (Ctrl + V). */
   readonly copied = signal<CopiedSpawn[]>([]);
   readonly zoneId = signal(0);
+  /** How the map and zone pickers sort: from the preference when the app starts, then as changed in the pickers. */
+  readonly mapSort = signal(loadPickerSort().maps);
+  readonly zoneSort = signal(loadPickerSort().zones);
   readonly showFilters = signal(false);
   readonly showView = signal(false);
   readonly showControls = signal(false);

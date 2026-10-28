@@ -405,7 +405,7 @@ describe(WorldEditorComponent.name, () => {
       expect(page.byId('settings', false)).toBeFalsy();
       page.byId('map-search').nativeElement.dispatchEvent(new Event('focus'));
       page.fixture.detectChanges();
-      expect(page.byId('map-options').nativeElement.querySelectorAll('button').length).toBe(2);
+      expect(page.byId('map-options').nativeElement.querySelectorAll('[data-testid^="map-option-"]').length).toBe(2);
     });
 
     it('copies the folders set and opens them in the file manager', async () => {
@@ -1261,6 +1261,77 @@ describe(WorldEditorComponent.name, () => {
       search.dispatchEvent(new Event('focus'));
       search.dispatchEvent(new Event('blur'));
       await settle(page);
+    });
+
+    it('sorts the map and zone lists by one key or more, for the session, and saves the sort to start with', async () => {
+      mocks.client.getMaps.mockResolvedValue([
+        { id: 532, directory: 'Karazahn', name: 'Karazhan', instanceType: 2, expansion: 1 },
+        ...MAPS,
+        { id: 33, directory: 'Shadowfang', name: 'Shadowfang Keep', instanceType: 1, expansion: 0 },
+        { id: 249, directory: 'OnyxiaLairInstance', name: "Onyxia's Lair", instanceType: 2, expansion: 0 },
+      ]);
+      const { page } = await setup();
+      const search = page.byId<HTMLInputElement>('map-search').nativeElement;
+      search.dispatchEvent(new Event('focus'));
+      await settle(page);
+      const order = (prefix: string) =>
+        Array.from(page.queryAll<HTMLElement>(`[data-testid^="${prefix}-option-"]`), (el) =>
+          Number(el.dataset['testid']?.split('-').pop()),
+        );
+      const sortBy = (id: string) => {
+        page.byId(id).nativeElement.dispatchEvent(new MouseEvent('mousedown'));
+        page.fixture.detectChanges();
+      };
+      // by id, smallest first
+      expect(order('map')).toEqual([0, 1, 33, 249, 532]);
+      expect(page.text('map-sort-id').replace(/\s+/g, ' ')).toBe('WORLD_EDITOR.SORT_ID ▲');
+      // by type, then by name (the id key dropped after going descending)
+      sortBy('map-sort-type');
+      sortBy('map-sort-id');
+      sortBy('map-sort-id');
+      sortBy('map-sort-name');
+      expect(page.text('map-sort-type').replace(/\s+/g, ' ')).toBe('WORLD_EDITOR.SORT_TYPE ▲ 1');
+      expect(page.text('map-sort-name').replace(/\s+/g, ' ')).toBe('WORLD_EDITOR.SORT_NAME ▲ 2');
+      expect(page.text('map-sort-id').replace(/\s+/g, ' ')).toBe('WORLD_EDITOR.SORT_ID');
+      expect(order('map')).toEqual([0, 1, 33, 532, 249]);
+      sortBy('map-sort-type');
+      sortBy('map-sort-type');
+      sortBy('map-sort-expansion');
+      sortBy('map-sort-expansion');
+      // by name, then by expansion, newest first (the maps without one last)
+      expect(order('map')).toEqual([0, 1, 532, 249, 33]);
+      // by expansion alone, then by name within it
+      sortBy('map-sort-name');
+      sortBy('map-sort-name');
+      expect(order('map')).toEqual([532, 33, 249, 0, 1]);
+      sortBy('map-sort-name');
+      expect(order('map')).toEqual([532, 249, 33, 0, 1]);
+      search.dispatchEvent(new Event('blur'));
+      // the next map follows the list
+      page.click('map-next');
+      await settle(page);
+      expect(page.viewer().mapDirectory()).toBe('Kalimdor');
+      page.click('map-previous');
+      await settle(page);
+
+      // zones: by name descending; the sort is saved to start with
+      page.byId('zone-search').nativeElement.dispatchEvent(new Event('focus'));
+      page.fixture.detectChanges();
+      expect(order('zone')).toEqual([0, 12, 40]);
+      sortBy('zone-sort-name');
+      sortBy('zone-sort-name');
+      sortBy('zone-sort-id');
+      sortBy('zone-sort-id');
+      expect(order('zone')).toEqual([0, 40, 12]);
+      sortBy('zone-sort-save');
+      expect(mocks.toastr.success).toHaveBeenCalledWith('WORLD_EDITOR.SORT_SAVED', 'World Editor');
+      expect(JSON.parse(localStorage.getItem('keira3.worldEditor.pickerSort') as string)).toEqual({
+        maps: [
+          { key: 'expansion', desc: true },
+          { key: 'name', desc: false },
+        ],
+        zones: [{ key: 'name', desc: true }],
+      });
     });
 
     it('draws every other path in the area when asked', async () => {

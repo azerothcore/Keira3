@@ -1496,6 +1496,13 @@
     "CAMERA_PHASE": "Fase de la cámara",
     "CAMERA_PHASE_HELP": "La máscara de fase con la que ve la cámara, como la de un jugador (.modify phase): pulsa las fases o escribe la máscara. Mantén Alt sobre un spawn para ver sus fases",
     "PHASE": "Fase",
-    "ALT_FOR_MORE": "Mantén Alt para ver más"
+    "ALT_FOR_MORE": "Mantén Alt para ver más",
+    "SORT": "Ordenar",
+    "SORT_ID": "ID",
+    "SORT_NAME": "Nombre",
+    "SORT_EXPANSION": "Expansión",
+    "SORT_TYPE": "Tipo",
+    "SORT_SAVE": "Empezar siempre con este orden (se guarda en los ajustes)",
+    "SORT_SAVED": "Las listas de mapas y zonas empezarán con este orden"
   }
 }

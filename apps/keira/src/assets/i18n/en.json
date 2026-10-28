@@ -1496,6 +1496,13 @@
     "CAMERA_PHASE": "Camera phase",
     "CAMERA_PHASE_HELP": "The phase mask the camera sees with, like a player's (.modify phase): click the phases or type the mask. Hold Alt over a spawn to see its phases",
     "PHASE": "Phase",
-    "ALT_FOR_MORE": "Hold Alt for more"
+    "ALT_FOR_MORE": "Hold Alt for more",
+    "SORT": "Sort",
+    "SORT_ID": "ID",
+    "SORT_NAME": "Name",
+    "SORT_EXPANSION": "Expansion",
+    "SORT_TYPE": "Type",
+    "SORT_SAVE": "Start with this sort every time (saved in the settings)",
+    "SORT_SAVED": "The map and zone lists will start with this sort"
   }
 }

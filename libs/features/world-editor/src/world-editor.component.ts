@@ -150,6 +150,7 @@ import { SpawnPanelComponent } from './spawn-panel.component';
 import { findSpawnProblems, SpawnProblem } from './spawn-problems';
 import { pathSimulation, wanderSimulation } from './simulation-plan';
 import { formationLinks, formationSlots, groupDetails, poolOverlays } from './spawn-groups';
+import { MAP_SORT_KEYS, MapSortKey, savePickerSort, SortRule, sortItems, toggleSort, ZONE_SORT_KEYS, ZoneSortKey } from './picker-sort';
 import { isSpawnVisible, loadSpawnFilters, phaseBits, saveSpawnFilters, SpawnFilters, spawnEvents } from './spawn-filters';
 
 /** "Marshal McBride - Creature (GUID: 1, Entry: 197)", as shown on hover and in the selection panel. */
@@ -207,6 +208,9 @@ const DUNGEON_DIFFICULTIES = [
   { bit: 1, label: 'WORLD_EDITOR.DIFFICULTY_HEROIC' },
 ];
 /** Words each expansion is found by in the map picker (by Map.dbc ExpansionID). */
+/** The order of the kinds of map when sorting by type (as on the world map's atlas). */
+const MAP_KIND_ORDER = ['world', 'dungeon', 'raid', 'battleground', 'arena', 'transport'];
+
 const EXPANSION_SEARCH = ['vanilla classic', 'tbc the burning crusade', 'wotlk wrath of the lich king'];
 
 interface LastView extends WorldPosition {
@@ -1533,7 +1537,7 @@ export class WorldEditorComponent implements OnInit {
   protected readonly filteredMaps = computed(() => {
     // (only read while the picker is open)
     const words = (this.mapSearch() as string).trim().toLowerCase().split(/\s+/).filter(Boolean);
-    return this.maps().filter((map) => {
+    return this.sortedMaps().filter((map) => {
       const kind = mapKind(map);
       const text = [
         map.id,
@@ -1549,6 +1553,48 @@ export class WorldEditorComponent implements OnInit {
     });
   });
   protected readonly expansions = EXPANSIONS;
+
+  // ---------------------------------------------------------------- picker sorting
+
+  protected readonly mapSort = this.session.mapSort;
+  protected readonly zoneSort = this.session.zoneSort;
+  protected readonly mapSortKeys = MAP_SORT_KEYS;
+  protected readonly zoneSortKeys = ZONE_SORT_KEYS;
+  /** The maps in the picker's order (also the order of the next / previous map buttons). */
+  private readonly sortedMaps = computed(() =>
+    sortItems(this.maps(), this.mapSort(), (map, key: MapSortKey) =>
+      key === 'id'
+        ? map.id
+        : key === 'name'
+          ? map.name
+          : key === 'expansion'
+            ? (map.expansion ?? -1)
+            : MAP_KIND_ORDER.indexOf(mapKind(map)),
+    ),
+  );
+  private readonly sortedZones = computed(() =>
+    sortItems(this.zones(), this.zoneSort(), (zone, key: ZoneSortKey) => (key === 'id' ? zone.areaId : zone.name)),
+  );
+
+  /** Where a key stands in a sort (1: first), and which way, for its button. */
+  protected sortState(rules: SortRule<string>[], key: string): { at: number; desc: boolean } | undefined {
+    const at = rules.findIndex((rule) => rule.key === key);
+    return at < 0 ? undefined : { at: at + 1, desc: rules[at].desc };
+  }
+
+  protected toggleMapSort(key: MapSortKey): void {
+    this.mapSort.set(toggleSort(this.mapSort(), key));
+  }
+
+  protected toggleZoneSort(key: ZoneSortKey): void {
+    this.zoneSort.set(toggleSort(this.zoneSort(), key));
+  }
+
+  /** Makes the pickers' current sort the one they start with (the session keeps whatever is chosen meanwhile). */
+  protected saveSortPreference(): void {
+    savePickerSort({ maps: this.mapSort(), zones: this.zoneSort() });
+    this.toastr.success(this.translate.instant('WORLD_EDITOR.SORT_SAVED'), 'World Editor');
+  }
 
   private readonly mapList = viewChild<ElementRef<HTMLElement>>('mapList');
   private readonly injector = inject(Injector);
@@ -1567,7 +1613,7 @@ export class WorldEditorComponent implements OnInit {
 
   /** Goes to the next (or previous) map of the list, round the end. */
   protected stepMap(step: number): void {
-    const maps = this.maps();
+    const maps = this.sortedMaps();
     const at = maps.findIndex((map) => map.id === this.mapId());
     void this.pickMap(maps[(at + step + maps.length) % maps.length].id);
   }
@@ -1582,7 +1628,7 @@ export class WorldEditorComponent implements OnInit {
   protected readonly filteredZones = computed(() => {
     // (only read while the picker is open)
     const text = (this.zoneSearch() as string).trim().toLowerCase();
-    return this.zones().filter((zone) => !text || `${zone.areaId} ${zone.name}`.toLowerCase().includes(text));
+    return this.sortedZones().filter((zone) => !text || `${zone.areaId} ${zone.name}`.toLowerCase().includes(text));
   });
 
   protected pickFirstZone(): void {

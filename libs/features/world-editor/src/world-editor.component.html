@@ -15,6 +15,37 @@
       />
       @if (mapSearch() !== undefined) {
         <div #mapList class="list-group map-picker-list" data-testid="map-options">
+          <div class="map-picker-sort" [attr.data-testid]="'map-sort'">
+            <small class="text-muted">{{ 'WORLD_EDITOR.SORT' | translate }}</small>
+            @for (key of mapSortKeys; track key) {
+              @let state = sortState(mapSort(), key);
+              <button
+                type="button"
+                class="btn btn-sm py-0 px-1"
+                [class.btn-secondary]="state"
+                [class.btn-outline-secondary]="!state"
+                [attr.data-testid]="'map-sort-' + key"
+                (mousedown)="$event.preventDefault(); toggleMapSort(key)"
+              >
+                {{ 'WORLD_EDITOR.SORT_' + key.toUpperCase() | translate }}
+                @if (state) {
+                  {{ state.desc ? '▼' : '▲' }}
+                  @if (mapSort().length > 1) {
+                    <sup>{{ state.at }}</sup>
+                  }
+                }
+              </button>
+            }
+            <button
+              type="button"
+              class="btn btn-sm btn-link py-0 px-1 ms-auto"
+              [attr.data-testid]="'map-sort-save'"
+              [title]="'WORLD_EDITOR.SORT_SAVE' | translate"
+              (mousedown)="$event.preventDefault(); saveSortPreference()"
+            >
+              <i class="fa fa-thumbtack"></i>
+            </button>
+          </div>
           @for (map of filteredMaps(); track map.id) {
             <button
               type="button"
@@ -56,6 +87,37 @@
       />
       @if (zoneSearch() !== undefined) {
         <div class="list-group map-picker-list" data-testid="zone-options">
+          <div class="map-picker-sort" [attr.data-testid]="'zone-sort'">
+            <small class="text-muted">{{ 'WORLD_EDITOR.SORT' | translate }}</small>
+            @for (key of zoneSortKeys; track key) {
+              @let state = sortState(zoneSort(), key);
+              <button
+                type="button"
+                class="btn btn-sm py-0 px-1"
+                [class.btn-secondary]="state"
+                [class.btn-outline-secondary]="!state"
+                [attr.data-testid]="'zone-sort-' + key"
+                (mousedown)="$event.preventDefault(); toggleZoneSort(key)"
+              >
+                {{ 'WORLD_EDITOR.SORT_' + key.toUpperCase() | translate }}
+                @if (state) {
+                  {{ state.desc ? '▼' : '▲' }}
+                  @if (zoneSort().length > 1) {
+                    <sup>{{ state.at }}</sup>
+                  }
+                }
+              </button>
+            }
+            <button
+              type="button"
+              class="btn btn-sm btn-link py-0 px-1 ms-auto"
+              [attr.data-testid]="'zone-sort-save'"
+              [title]="'WORLD_EDITOR.SORT_SAVE' | translate"
+              (mousedown)="$event.preventDefault(); saveSortPreference()"
+            >
+              <i class="fa fa-thumbtack"></i>
+            </button>
+          </div>
           <button
             type="button"
             class="list-group-item list-group-item-action py-1 text-muted"
