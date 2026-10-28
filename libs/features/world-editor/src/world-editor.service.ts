@@ -9,7 +9,10 @@ import {
   Graveyard,
   Teleport,
   isSaiPath,
+  GAMEOBJECT_CHEST,
+  GAMEOBJECT_FISHING_HOLE,
   PoolMember,
+  PoolSpawn,
   preferredPathId,
   saiPathEntry,
   saiPathId,
@@ -73,7 +76,9 @@ export class WorldEditorService {
       'IFNULL(ct.speed_walk, 1) AS speedWalk, IFNULL(ct.speed_run, 1) AS speedRun, ' +
       'IFNULL(cmi.BoundingRadius, 0) AS boundingRadius, IFNULL(cmi.CombatReach, 0) AS combatReach, ' +
       `${eventOf('game_event_creature', 'c.guid')}, ` +
-      `((IFNULL(ct.flags_extra, 0) & ${FLAG_EXTRA_TRIGGER}) <> 0 OR ${helperName('ct.name')}) AS isTrigger ` +
+      `((IFNULL(ct.flags_extra, 0) & ${FLAG_EXTRA_TRIGGER}) <> 0 OR ${helperName('ct.name')}) AS isTrigger, ` +
+      "IFNULL(ct.AIName, '') AS aiName, IFNULL(ct.ScriptName, '') AS scriptName, " +
+      'IFNULL(ct.lootid, 0) AS lootId, IFNULL(ct.pickpocketloot, 0) AS pickpocketLoot, IFNULL(ct.skinloot, 0) AS skinLoot ' +
       'FROM creature c ' +
       'LEFT JOIN creature_template ct ON ct.entry = c.id ' +
       'LEFT JOIN creature_template_model ctm ON ctm.CreatureID = c.id AND ctm.Idx = 0 ' +
@@ -86,7 +91,10 @@ export class WorldEditorService {
       "SELECT g.guid, g.id AS entry, IFNULL(gt.name, '') AS name, g.map, g.position_x AS x, g.position_y AS y, g.position_z AS z, g.orientation AS o, " +
       '0 AS pathId, 0 AS pathFromTemplate, g.rotation0, g.rotation1, g.rotation2, g.rotation3, ' +
       'IFNULL(gt.displayId, 0) AS displayId, IFNULL(gt.size, 1) AS scale, 0 AS wanderDistance, 0 AS movementType, g.phaseMask, ' +
-      `${eventOf('game_event_gameobject', 'g.guid')}, IFNULL(${helperName('gt.name')}, 0) AS isTrigger ` +
+      `${eventOf('game_event_gameobject', 'g.guid')}, IFNULL(${helperName('gt.name')}, 0) AS isTrigger, ` +
+      "IFNULL(gt.AIName, '') AS aiName, IFNULL(gt.ScriptName, '') AS scriptName, " +
+      // chests (3) and fishing holes (25) keep their loot id in Data1
+      `IF(gt.type IN (${GAMEOBJECT_CHEST}, ${GAMEOBJECT_FISHING_HOLE}), IFNULL(gt.Data1, 0), 0) AS lootId, 0 AS pickpocketLoot, 0 AS skinLoot ` +
       'FROM gameobject g ' +
       'LEFT JOIN gameobject_template gt ON gt.entry = g.id ' +
       `WHERE ${area('g')} LIMIT ${SPAWN_LOAD_LIMIT}`;
@@ -359,6 +367,30 @@ export class WorldEditorService {
     }));
   }
 
+  /** Every creature and gameobject of a pool (`pool_creature` / `pool_gameobject`), wherever it is. */
+  async loadPoolMembers(pool: number): Promise<PoolSpawn[]> {
+    const part = (type: SpawnType, table: string, template: string): string =>
+      `SELECT '${type}' AS type, s.guid, s.id AS entry, IFNULL(t.name, '') AS name, s.map, ` +
+      `s.position_x AS x, s.position_y AS y, s.position_z AS z FROM pool_${type} p ` +
+      `JOIN ${table} s ON s.guid = p.guid LEFT JOIN ${template} t ON t.entry = s.id WHERE p.pool_entry = ${Math.trunc(pool)}`;
+    const rows = await firstValueFrom(
+      this.queryService.query<TableRow>(
+        `${part('creature', 'creature', 'creature_template')} UNION ALL ${part('gameobject', 'gameobject', 'gameobject_template')} ` +
+          'ORDER BY type, guid',
+      ),
+    );
+    return (rows ?? []).map((row) => ({
+      type: row['type'] as SpawnType,
+      guid: Number(row['guid']),
+      entry: Number(row['entry']),
+      name: String(row['name'] ?? ''),
+      map: Number(row['map']),
+      x: Number(row['x']),
+      y: Number(row['y']),
+      z: Number(row['z']),
+    }));
+  }
+
   /** Quests the given creatures and gameobjects start or end (by entry), with their titles. */
   async loadQuests(entries: { type: SpawnType; entry: number }[]): Promise<SpawnQuest[]> {
     const ids = (type: SpawnType): number[] => [...new Set(entries.filter((e) => e.type === type).map((e) => Math.trunc(e.entry)))];
@@ -501,5 +533,18 @@ function toSpawns(type: SpawnType, rows: SpawnRow[] | undefined): SpawnRecord[] 
       ? { boundingRadius: Number(row['boundingRadius']), combatReach: Number(row['combatReach']) }
       : {}),
     phaseMask: Number(row.phaseMask ?? 1),
+    ...(row['aiName'] ? { aiName: String(row['aiName']) } : {}),
+    ...(row['scriptName'] ? { scriptName: String(row['scriptName']) } : {}),
+    ...lootOf(row),
   }));
+}
+
+/** The loot tables a spawn uses (only those set). */
+function lootOf(row: SpawnRow): Pick<SpawnRecord, 'loot'> {
+  const loot = {
+    ...(Number(row['lootId']) > 0 ? { loot: Number(row['lootId']) } : {}),
+    ...(Number(row['pickpocketLoot']) > 0 ? { pickpocketing: Number(row['pickpocketLoot']) } : {}),
+    ...(Number(row['skinLoot']) > 0 ? { skinning: Number(row['skinLoot']) } : {}),
+  };
+  return Object.keys(loot).length ? { loot } : {};
 }

@@ -55,6 +55,11 @@ describe('WorldEditorService', () => {
                 isTrigger: '1',
                 speedWalk: 1,
                 speedRun: 1,
+                aiName: 'SmartAI',
+                scriptName: 'npc_marshal',
+                lootId: '197',
+                pickpocketLoot: '5',
+                skinLoot: '0',
               },
             ]
           : [
@@ -75,6 +80,7 @@ describe('WorldEditorService', () => {
                 rotation3: 0.99,
                 displayId: '45',
                 scale: '1.5',
+                skinLoot: '3',
               },
             ],
       ),
@@ -122,6 +128,9 @@ describe('WorldEditorService', () => {
         phaseMask: 2,
         speedWalk: 1,
         speedRun: 1,
+        aiName: 'SmartAI',
+        scriptName: 'npc_marshal',
+        loot: { loot: 197, pickpocketing: 5 },
       },
       {
         type: 'gameobject',
@@ -138,8 +147,10 @@ describe('WorldEditorService', () => {
         displayId: 45,
         scale: 1.5,
         phaseMask: 1,
+        loot: { skinning: 3 },
       },
     ]);
+    expect(queryService.query.mock.calls[1][0]).toContain('IF(gt.type IN (3, 25), IFNULL(gt.Data1, 0), 0) AS lootId');
     const creatureSql = queryService.query.mock.calls[0][0] as string;
     expect(creatureSql).toContain('c.map = 0 AND c.position_x BETWEEN -9013.46 AND -8813.46 AND c.position_y BETWEEN -237 AND -37');
     expect(creatureSql).toContain('LEFT JOIN creature_addon ca ON ca.guid = c.guid');
@@ -152,6 +163,25 @@ describe('WorldEditorService', () => {
     expect(creatureSql).toContain('FROM game_event_creature e WHERE e.guid = c.guid AND e.eventEntry > 0');
     expect(creatureSql).toContain("(IFNULL(ct.flags_extra, 0) & 128) <> 0 OR (ct.name LIKE '%Trigger%'");
     expect(queryService.query.mock.calls[1][0]).toContain('FROM game_event_gameobject e WHERE e.guid = g.guid');
+  });
+
+  it('loads every spawn of a pool', async () => {
+    const { service, queryService } = setup();
+    queryService.query.mockReturnValueOnce(
+      of([
+        { type: 'creature', guid: '1', entry: '197', name: 'Marshal', map: '0', x: '1', y: '2', z: '3' },
+        { type: 'gameobject', guid: '2', entry: '3', name: null, map: '0', x: '4', y: '5', z: '6' },
+      ]),
+    );
+    expect(await service.loadPoolMembers(7.9)).toEqual([
+      { type: 'creature', guid: 1, entry: 197, name: 'Marshal', map: 0, x: 1, y: 2, z: 3 },
+      { type: 'gameobject', guid: 2, entry: 3, name: '', map: 0, x: 4, y: 5, z: 6 },
+    ]);
+    const sql = queryService.query.mock.calls[0][0] as string;
+    expect(sql).toContain('FROM pool_creature p JOIN creature s ON s.guid = p.guid');
+    expect(sql).toContain('WHERE p.pool_entry = 7 UNION ALL');
+    queryService.query.mockReturnValueOnce(of(undefined));
+    expect(await service.loadPoolMembers(1)).toEqual([]);
   });
 
   it('loads the quests that creatures and gameobjects start or end', async () => {

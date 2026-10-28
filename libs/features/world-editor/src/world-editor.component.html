@@ -7,14 +7,14 @@
         data-testid="map-search"
         [value]="mapSearch() ?? currentMapLabel()"
         [placeholder]="'WORLD_EDITOR.MAP_SEARCH' | translate"
-        (focus)="mapSearch.set('')"
+        (focus)="openMapPicker()"
         (input)="mapSearch.set($any($event.target).value)"
         (keydown.enter)="pickFirstMap(); mapInput.blur()"
         (keydown.escape)="mapSearch.set(undefined); $any($event.target).blur()"
         (blur)="mapSearch.set(undefined)"
       />
       @if (mapSearch() !== undefined) {
-        <div class="list-group map-picker-list" data-testid="map-options">
+        <div #mapList class="list-group map-picker-list" data-testid="map-options">
           @for (map of filteredMaps(); track map.id) {
             <button
               type="button"
@@ -23,7 +23,13 @@
               [attr.data-testid]="'map-option-' + map.id"
               (mousedown)="$event.preventDefault(); pickMap(map.id); mapInput.blur()"
             >
-              {{ map.id }} – {{ map.name }}
+              @let kind = mapKind(map);
+              <span class="d-flex align-items-center gap-2">
+                <span class="flex-grow-1">{{ map.id }} – {{ map.name }}</span>
+                <span class="badge map-kind" [class]="'map-kind-' + kind" [attr.data-testid]="'map-kind-' + map.id">{{
+                  'WORLD_EDITOR.MAP_KIND_' + kind.toUpperCase() | translate
+                }}</span>
+              </span>
             </button>
           } @empty {
             <div class="list-group-item py-1 text-muted">{{ 'WORLD_EDITOR.NO_RESULTS' | translate }}</div>
@@ -32,18 +38,46 @@
       }
     </div>
 
-    <select
-      class="form-select form-select-sm zone-select"
-      data-testid="zone-select"
-      [attr.aria-label]="'WORLD_EDITOR.ZONE' | translate"
-      [disabled]="zones().length === 0"
-      (change)="onZoneChange($event)"
-    >
-      <option value="0" [selected]="zoneId() === 0">{{ 'WORLD_EDITOR.ZONE' | translate }}…</option>
-      @for (zone of zones(); track zone.areaId) {
-        <option [value]="zone.areaId" [selected]="zone.areaId === zoneId()">{{ zone.name }}</option>
+    <div class="map-picker zone-picker">
+      <input
+        #zoneInput
+        class="form-control form-control-sm zone-select"
+        data-testid="zone-search"
+        [value]="zoneSearch() ?? currentZoneLabel()"
+        [placeholder]="('WORLD_EDITOR.ZONE' | translate) + '…'"
+        [disabled]="zones().length === 0"
+        (focus)="zoneSearch.set('')"
+        (input)="zoneSearch.set($any($event.target).value)"
+        (keydown.enter)="pickFirstZone(); zoneInput.blur()"
+        (keydown.escape)="zoneSearch.set(undefined); $any($event.target).blur()"
+        (blur)="zoneSearch.set(undefined)"
+      />
+      @if (zoneSearch() !== undefined) {
+        <div class="list-group map-picker-list" data-testid="zone-options">
+          <button
+            type="button"
+            class="list-group-item list-group-item-action py-1 text-muted"
+            data-testid="zone-option-0"
+            (mousedown)="$event.preventDefault(); pickZone(0); zoneInput.blur()"
+          >
+            {{ 'WORLD_EDITOR.ZONE_NONE' | translate }}
+          </button>
+          @for (zone of filteredZones(); track zone.areaId) {
+            <button
+              type="button"
+              class="list-group-item list-group-item-action py-1"
+              [class.active]="zone.areaId === zoneId()"
+              [attr.data-testid]="'zone-option-' + zone.areaId"
+              (mousedown)="$event.preventDefault(); pickZone(zone.areaId); zoneInput.blur()"
+            >
+              {{ zone.areaId }} – {{ zone.name }}
+            </button>
+          } @empty {
+            <div class="list-group-item py-1 text-muted">{{ 'WORLD_EDITOR.NO_RESULTS' | translate }}</div>
+          }
+        </div>
       }
-    </select>
+    </div>
 
     <form class="d-flex gap-1 goto-form" [formGroup]="goToForm" (ngSubmit)="goToCoordinates()">
       <input
@@ -101,6 +135,28 @@
       />
       <button type="submit" class="btn btn-sm btn-secondary" data-testid="tele-search-btn"><i class="fa fa-search"></i></button>
     </form>
+    <div class="btn-group btn-group-sm" role="group">
+      <button
+        type="button"
+        class="btn btn-outline-secondary"
+        data-testid="map-previous"
+        [title]="'WORLD_EDITOR.MAP_PREVIOUS' | translate"
+        [disabled]="!maps().length"
+        (click)="stepMap(-1)"
+      >
+        <i class="fa fa-chevron-left"></i>
+      </button>
+      <button
+        type="button"
+        class="btn btn-outline-secondary"
+        data-testid="map-next"
+        [title]="'WORLD_EDITOR.MAP_NEXT' | translate"
+        [disabled]="!maps().length"
+        (click)="stepMap(1)"
+      >
+        {{ 'WORLD_EDITOR.MAP_NEXT' | translate }} <i class="fa fa-chevron-right"></i>
+      </button>
+    </div>
 
     <button
       type="button"
@@ -111,7 +167,7 @@
       [title]="'WORLD_EDITOR.WORLD_MAP_HELP' | translate"
       (click)="toggleMap()"
     >
-      <i class="fa fa-map-o"></i> {{ 'WORLD_EDITOR.WORLD_MAP' | translate }}
+      <i class="fa fa-map"></i> {{ 'WORLD_EDITOR.WORLD_MAP' | translate }}
     </button>
     <button
       type="button"
@@ -144,7 +200,7 @@
       [class.btn-outline-secondary]="!showControls()"
       (click)="toggleControls()"
     >
-      <i class="fa fa-keyboard-o"></i> {{ 'WORLD_EDITOR.CONTROLS' | translate }}
+      <i class="fa fa-keyboard"></i> {{ 'WORLD_EDITOR.CONTROLS' | translate }}
     </button>
     <button
       type="button"
@@ -196,14 +252,14 @@
           [attr.data-testid]="'tele-' + tele.id"
           (click)="goToTele(tele)"
         >
-          {{ tele.name }} <small class="text-muted">(map {{ tele.map }})</small>
+          {{ tele.name }} <small class="text-muted">({{ mapLabel(+tele.map) }})</small>
         </button>
       }
     </div>
   }
 
   <div class="world-editor-body">
-    <div class="world-editor-view">
+    <div #view class="world-editor-view" [class.view-fullscreen]="viewFullscreen()">
       <keira-world-viewer
         [mapDirectory]="mapDirectory()"
         [spawns]="worldSpawns()"
@@ -240,8 +296,18 @@
         [probe]="probeRequest()"
         [areaTriggers]="worldAreaTriggers()"
         [boundaries]="worldBoundaries()"
+        [spawnsLoading]="loadingSpawns()"
         (probeMoved)="onProbeMoved($event)"
       />
+      <button
+        type="button"
+        class="btn btn-sm btn-dark world-editor-view-fullscreen"
+        data-testid="view-fullscreen"
+        [title]="'WORLD_EDITOR.VIEW_FULLSCREEN' | translate"
+        (click)="toggleViewFullscreen()"
+      >
+        <i class="fa" [class.fa-expand]="!viewFullscreen()" [class.fa-compress]="viewFullscreen()"></i>
+      </button>
       <div class="btn-group btn-group-sm world-editor-resolution" role="group" [title]="'WORLD_EDITOR.RESOLUTION_HELP' | translate">
         @for (scale of renderScales; track scale) {
           <button
@@ -433,6 +499,33 @@
               />
               <label class="form-check-label" for="world-editor-bounds" [title]="'WORLD_EDITOR.BOUNDS_HELP' | translate">{{
                 'WORLD_EDITOR.BOUNDS' | translate
+              }}</label>
+            </div>
+            <div class="form-check form-switch mb-0">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="world-editor-stats"
+                data-testid="view-stats"
+                [checked]="renderSettings.settings().showStats"
+                (change)="setRenderFlag('showStats', $event)"
+              />
+              <label class="form-check-label" for="world-editor-stats" [title]="'WORLD_EDITOR.STATS_HELP' | translate">{{
+                'WORLD_EDITOR.STATS' | translate
+              }}</label>
+            </div>
+            <div class="form-check form-switch mb-0">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="world-editor-perf-log"
+                data-testid="view-perf-log"
+                [checked]="renderSettings.settings().perfLog"
+                [disabled]="!perfLogPath()"
+                (change)="setRenderFlag('perfLog', $event)"
+              />
+              <label class="form-check-label" for="world-editor-perf-log" [title]="perfLogPath() ?? ''">{{
+                'WORLD_EDITOR.PERF_LOG' | translate
               }}</label>
             </div>
             <div class="d-flex align-items-center gap-2">
@@ -706,6 +799,10 @@
                 placeholder="C:\Games\World of Warcraft 3.3.5a"
               />
               <small class="form-text text-muted">{{ 'WORLD_EDITOR.CLIENT_PATH_HELP' | translate }}</small>
+              <details class="world-editor-more-info small" [attr.data-testid]="'more-info-client'">
+                <summary>{{ 'WORLD_EDITOR.MORE_INFO' | translate }}</summary>
+                <div class="text-muted">{{ 'WORLD_EDITOR.CLIENT_PATH_INFO' | translate }}</div>
+              </details>
             </div>
             <div class="mb-2">
               <label class="form-label" for="world-editor-server-path">{{ 'WORLD_EDITOR.SERVER_DATA_PATH' | translate }}</label>
@@ -717,6 +814,10 @@
                 placeholder="C:\AzerothCore\bin\Data"
               />
               <small class="form-text text-muted">{{ 'WORLD_EDITOR.SERVER_DATA_PATH_HELP' | translate }}</small>
+              <details class="world-editor-more-info small" [attr.data-testid]="'more-info-server'">
+                <summary>{{ 'WORLD_EDITOR.MORE_INFO' | translate }}</summary>
+                <div class="text-muted">{{ 'WORLD_EDITOR.SERVER_DATA_PATH_INFO' | translate }}</div>
+              </details>
             </div>
             <div class="mb-2">
               <label class="form-label" for="world-editor-source-path">{{ 'WORLD_EDITOR.SOURCE_PATH' | translate }}</label>
@@ -728,6 +829,10 @@
                 placeholder="C:\AzerothCore\azerothcore-wotlk"
               />
               <small class="form-text text-muted">{{ 'WORLD_EDITOR.SOURCE_PATH_HELP' | translate }}</small>
+              <details class="world-editor-more-info small" [attr.data-testid]="'more-info-source'">
+                <summary>{{ 'WORLD_EDITOR.MORE_INFO' | translate }}</summary>
+                <div class="text-muted">{{ 'WORLD_EDITOR.SOURCE_PATH_INFO' | translate }}</div>
+              </details>
             </div>
             <div class="mb-2">
               <label class="form-label" for="world-editor-cache-folder">{{ 'WORLD_EDITOR.CACHE_FOLDER' | translate }}</label>
@@ -739,6 +844,10 @@
                 [placeholder]="cache.root() ?? ''"
               />
               <small class="form-text text-muted">{{ 'WORLD_EDITOR.CACHE_FOLDER_HELP' | translate }}</small>
+              <details class="world-editor-more-info small" [attr.data-testid]="'more-info-cache'">
+                <summary>{{ 'WORLD_EDITOR.MORE_INFO' | translate }}</summary>
+                <div class="text-muted">{{ 'WORLD_EDITOR.CACHE_FOLDER_INFO' | translate }}</div>
+              </details>
             </div>
             <div>
               <button type="submit" class="btn btn-sm btn-primary" data-testid="settings-save">
@@ -996,6 +1105,12 @@
         <div class="dropdown-menu show world-editor-context" data-testid="context-menu" [style.left.px]="menu.x" [style.top.px]="menu.y">
           @if (contextSpawn(); as spawn) {
             <h6 class="dropdown-header">{{ spawnTitle(spawn) }}</h6>
+            @if (spawn.aiName) {
+              <span class="dropdown-item-text small text-muted" data-testid="context-ai-name">AIName: {{ spawn.aiName }}</span>
+            }
+            @if (spawn.scriptName) {
+              <span class="dropdown-item-text small text-muted" data-testid="context-script-name">ScriptName: {{ spawn.scriptName }}</span>
+            }
             @if (spawn.type === 'creature') {
               <button
                 type="button"
@@ -1005,9 +1120,6 @@
                 (click)="openContextEntry('creature')"
               >
                 <i class="fa fa-paw"></i> {{ 'WORLD_EDITOR.OPEN_CREATURE' | translate }}
-              </button>
-              <button type="button" class="dropdown-item" data-testid="context-sai" [disabled]="!links" (click)="openContextEntry('sai')">
-                <i class="fa fa-code"></i> {{ 'WORLD_EDITOR.OPEN_SAI' | translate }}
               </button>
             } @else {
               <button
@@ -1020,6 +1132,20 @@
                 <i class="fa fa-cube"></i> {{ 'WORLD_EDITOR.OPEN_GAMEOBJECT' | translate }}
               </button>
             }
+            <button type="button" class="dropdown-item" data-testid="context-sai" [disabled]="!links" (click)="openContextEntry('sai')">
+              <i class="fa fa-code"></i> {{ 'WORLD_EDITOR.OPEN_SAI' | translate }}
+            </button>
+            @for (loot of contextLoot(); track loot.kind) {
+              <button
+                type="button"
+                class="dropdown-item"
+                [attr.data-testid]="'context-loot-' + loot.kind"
+                [disabled]="!links"
+                (click)="openContextLoot(loot.kind)"
+              >
+                <i class="fa fa-gem"></i> {{ loot.label | translate }} ({{ loot.id }})
+              </button>
+            }
             <button type="button" class="dropdown-item" data-testid="context-copy-guid" (click)="copyContextGuid()">
               <i class="fa fa-copy"></i> {{ 'WORLD_EDITOR.COPY_GUID' | translate }}
             </button>
@@ -1030,19 +1156,76 @@
             </button>
           } @else {
             <h6 class="dropdown-header world-editor-context-label" data-testid="context-label">{{ menu.label }}</h6>
+            @if (contextAreaTrigger(); as trigger) {
+              @if (contextTeleport(); as teleport) {
+                <button type="button" class="dropdown-item" data-testid="context-trigger-go" (click)="goThrough(teleport)">
+                  <i class="fa fa-sign-in"></i> {{ 'WORLD_EDITOR.GO_THROUGH' | translate }} ({{ mapLabel(teleport.map) }})
+                </button>
+              }
+              <button
+                type="button"
+                class="dropdown-item"
+                data-testid="context-trigger-sai"
+                [disabled]="!links"
+                (click)="openTriggerSai(trigger)"
+              >
+                <i class="fa fa-code"></i> {{ 'WORLD_EDITOR.OPEN_SAI' | translate }}
+              </button>
+            }
+          }
+          @if (contextPool(); as pool) {
+            <div class="dropdown-divider"></div>
+            <h6 class="dropdown-header" data-testid="context-pool">{{ 'WORLD_EDITOR.POOL' | translate }} {{ pool }}</h6>
+            @if (contextPoolMembers(); as members) {
+              <button
+                type="button"
+                class="dropdown-item"
+                data-testid="context-pool-select"
+                [disabled]="!loadedPoolKeys().length"
+                (click)="selectPool()"
+              >
+                <i class="fa fa-object-group"></i> {{ 'WORLD_EDITOR.SELECT_POOL' | translate }} ({{ loadedPoolKeys().length }} /
+                {{ members.length }})
+              </button>
+              <div class="world-editor-pool-list">
+                @for (member of members; track member.type + member.guid; let i = $index) {
+                  <button
+                    type="button"
+                    class="dropdown-item small py-0"
+                    [attr.data-testid]="'context-pool-member-' + i"
+                    [class.text-muted]="member.map !== mapId()"
+                    [disabled]="member.map !== mapId()"
+                    (click)="goToPoolMember(member)"
+                  >
+                    <i class="fa" [class.fa-paw]="member.type === 'creature'" [class.fa-cube]="member.type === 'gameobject'"></i>
+                    {{ member.name || member.entry }} ({{ member.guid }})
+                  </button>
+                }
+              </div>
+            } @else {
+              <span class="dropdown-item-text small text-muted" data-testid="context-pool-loading">{{ 'LOADING' | translate }}</span>
+            }
           }
           <button type="button" class="dropdown-item" data-testid="context-copy" (click)="copyContextInfo()">
             <i class="fa fa-clipboard"></i> {{ 'WORLD_EDITOR.COPY_INFO' | translate }}
           </button>
           @if (menu.position) {
-            <button type="button" class="dropdown-item" data-testid="context-copy-go" (click)="copyContextGo()">
+            <button type="button" class="dropdown-item" data-testid="context-copy-go" (click)="copyContextGo('xyz')">
               <i class="fa fa-location-arrow"></i> {{ 'WORLD_EDITOR.COPY_GO' | translate }}
+            </button>
+            <button type="button" class="dropdown-item" data-testid="context-copy-go-xy" (click)="copyContextGo('xy')">
+              <i class="fa fa-location-arrow"></i> {{ 'WORLD_EDITOR.COPY_GO_XY' | translate }}
+            </button>
+            <button type="button" class="dropdown-item" data-testid="context-copy-go-grid" (click)="copyContextGo('grid')">
+              <i class="fa fa-th"></i> {{ 'WORLD_EDITOR.COPY_GO_GRID' | translate }}
+            </button>
+          }
+          @if (menu.marker) {
+            <button type="button" class="dropdown-item" data-testid="context-copy-marker" (click)="copyContextGo('marker')">
+              <i class="fa fa-street-view"></i> {{ 'WORLD_EDITOR.COPY_GO_MARKER' | translate }}
             </button>
           }
         </div>
-      }
-      @if (loadingSpawns()) {
-        <span class="badge bg-dark world-editor-loading" data-testid="loading-spawns">{{ 'WORLD_EDITOR.LOADING_SPAWNS' | translate }}</span>
       }
     </div>
 

@@ -28,7 +28,7 @@ export class WowParser {
 
   constructor(worker?: ParserWorker) {
     this.worker = worker;
-    perfNote(`parser: ${worker ? 'background worker' : 'main thread'}`); // TEMPORARY perf-log
+    perfNote(`parser: ${worker ? 'background worker' : 'main thread'}`);
     if (worker) {
       worker.onmessage = ({ data }) => {
         const job = this.pending.get(data.id);
@@ -42,7 +42,7 @@ export class WowParser {
       worker.onerror = () => {
         // no worker after all: what was sent to it, and everything from now on, runs here
         console.warn('[World Editor] The background parser stopped: parsing on the main thread instead.');
-        perfNote('parser: worker FAILED, main thread now'); // TEMPORARY perf-log
+        perfNote('parser: worker FAILED, main thread now');
         this.worker = undefined;
         const left = [...this.pending.values()];
         this.pending.clear();

@@ -141,7 +141,8 @@
   position: absolute;
   left: 8px;
   right: 8px;
-  top: 0;
+  // under the buttons in the view's top corners (resolution, full screen)
+  top: 36px;
   color: #fff;
   text-shadow: 0 0 2px #000;
   pointer-events: none;
@@ -175,4 +176,16 @@
 .world-viewer-area {
   margin-left: 4px;
   color: #ffe08a;
+}
+
+.world-viewer-stats {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  padding: 4px 8px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #b8f5c8;
+  font: 11px/1.4 monospace;
+  pointer-events: none;
 }

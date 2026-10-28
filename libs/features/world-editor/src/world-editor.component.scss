@@ -90,12 +90,6 @@
   overflow: hidden;
 }
 
-.world-editor-loading {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-}
-
 .world-editor-panel {
   width: 360px;
   flex-shrink: 0;
@@ -349,7 +343,7 @@
 
 .world-editor-resolution {
   position: absolute;
-  top: 22px;
+  top: 8px;
   left: 8px;
   z-index: 3;
   opacity: 0.85;
@@ -416,4 +410,58 @@
   max-height: 60vh;
   overflow-y: auto;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+.zone-picker .zone-select {
+  width: 200px;
+}
+
+/* the kind of each map in the picker */
+.map-kind {
+  font-weight: 500;
+  min-width: 84px;
+}
+.map-kind-world {
+  background: #6c757d;
+}
+.map-kind-dungeon {
+  background: #198754;
+}
+.map-kind-raid {
+  background: #b02a37;
+}
+.map-kind-battleground {
+  background: #d97706;
+}
+.map-kind-arena {
+  background: #7c3aed;
+}
+.map-kind-transport {
+  background: #0e7490;
+}
+
+.world-editor-view-fullscreen {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 3;
+  opacity: 0.85;
+  padding: 0 6px;
+}
+
+.world-editor-view.view-fullscreen {
+  width: 100vw;
+  height: 100vh;
+}
+
+.world-editor-more-info {
+  summary {
+    cursor: pointer;
+    color: var(--bs-link-color, #0d6efd);
+  }
+
+  div {
+    white-space: pre-line;
+    padding: 4px 0 0 12px;
+  }
 }

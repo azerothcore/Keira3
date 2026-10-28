@@ -151,6 +151,7 @@ interface FakeTransformControls extends EventDispatcher<{ 'dragging-changed': { 
       (navMeshRebuilt)="rebuilds.push($event)"
       (probed)="probes.push($event)"
       [boundaries]="boundaries()"
+      [spawnsLoading]="spawnsLoading()"
       (probeMoved)="probeMoves.push($event)"
       (speedChanged)="speeds.push($event)"
       (navMeshTileChanged)="navMeshTiles.push($event)"
@@ -183,6 +184,7 @@ class HostComponent {
   readonly heights: Record<string, number | null>[] = [];
   readonly markers = signal<WorldMarker[]>([]);
   readonly boundaries = signal<WorldBoundary[]>([]);
+  readonly spawnsLoading = signal(false);
   readonly probe = signal<PathProbeRequest | undefined>(undefined);
   readonly probes: PathProbeResult[] = [];
   readonly probeMoves: { which: 'from' | 'to'; position: WorldPosition }[] = [];
@@ -395,6 +397,42 @@ describe(WorldViewerComponent.name, () => {
     expect(renderer.render).toHaveBeenCalled();
   });
 
+  it('shows performance stats when asked: frames, draws, graphics memory and what is loaded', async () => {
+    const clock = { now: 1000 };
+    vi.spyOn(performance, 'now').mockImplementation(() => clock.now);
+    const { page, fixture, host } = await setup((h) => h.render.set({ ...DEFAULT_WORLD_RENDER_SETTINGS, showStats: true }));
+    const draw = async () => {
+      clock.now += 600;
+      host.spawns.set([...host.spawns()]);
+      await settle(fixture);
+      flushFrames();
+      fixture.detectChanges();
+    };
+    // without what the renderer tells (a fake one) and the browser's memory; frames close together are counted
+    await draw();
+    clock.now -= 500;
+    await draw();
+    await draw();
+    expect(page.getDebugElementByTestId('world-viewer-stats').nativeElement.textContent).toContain('WORLD_EDITOR.STATS_DRAWS 0');
+    expect(page.getDebugElementByTestId('world-viewer-stats').nativeElement.textContent).not.toContain('MB');
+    renderer.info = { render: { calls: 12, triangles: 3400 }, memory: { geometries: 5, textures: 7 }, programs: [1, 2] };
+    Object.defineProperty(performance, 'memory', { configurable: true, value: { usedJSHeapSize: 250_000_000 } });
+    try {
+      await draw();
+      const text = page.getDebugElementByTestId('world-viewer-stats').nativeElement.textContent.replace(/\s+/g, ' ');
+      expect(text).toContain('WORLD_EDITOR.STATS_DRAWS 12 · WORLD_EDITOR.STATS_TRIANGLES 3400');
+      expect(text).toContain('5 WORLD_EDITOR.STATS_GEOMETRIES · 7 WORLD_EDITOR.STATS_TEXTURES · 2 WORLD_EDITOR.STATS_SHADERS');
+      expect(text).toContain('WORLD_EDITOR.STATS_MEMORY 250 MB');
+      // off: hidden
+      host.render.set(DEFAULT_WORLD_RENDER_SETTINGS);
+      await draw();
+      expect(page.getDebugElementByTestId('world-viewer-stats', false)).toBeFalsy();
+    } finally {
+      delete renderer.info;
+      delete (performance as unknown as { memory?: unknown }).memory;
+    }
+  });
+
   it('shows what is still loading, and where the camera looks', async () => {
     let finish: (value: unknown) => void = () => undefined;
     client.getTerrainDetail.mockReturnValueOnce(new Promise((resolve) => (finish = resolve)));
@@ -421,6 +459,10 @@ describe(WorldViewerComponent.name, () => {
     }
     fixture.detectChanges();
     expect(page.activity(false)).toBeFalsy();
+    // the editor loading spawns shows in the same bar
+    fixture.componentInstance.spawnsLoading.set(true);
+    fixture.detectChanges();
+    expect(page.activity().nativeElement.textContent?.replace(/\s+/g, ' ')).toContain('· WORLD_EDITOR.SPAWNS');
     vi.useRealTimers();
   });
 
@@ -704,7 +746,7 @@ describe(WorldViewerComponent.name, () => {
       expect(host.picks).toEqual([expect.objectContaining({ type: 'spawn', key: 'creature:7' })]);
     });
 
-    it('asks for a context menu on right-clicks on spawns and waypoints, not on the ground or after rotating', async () => {
+    it('asks for a context menu on right-clicks on spawns, waypoints and the ground, not after rotating', async () => {
       const { page, host, fixture, update } = await pickSetup();
       await settle(fixture);
       page.pointer('pointerdown', 50, 50, 2);
@@ -721,10 +763,18 @@ describe(WorldViewerComponent.name, () => {
       await update(() => host.focus.set(at(-100, -100)));
       page.pointer('pointerdown', 50, 50, 2);
       page.pointer('pointerup', 50, 50, 2);
+      // the ground: its place, and where the player marker is
+      expect(host.contexts[2]).toEqual(expect.objectContaining({ key: 'ground', label: expect.stringMatching(/^-?\d+\.\d\d /) }));
+      expect(host.contexts[2].position).toBeTruthy();
       // the middle button does nothing
       page.pointer('pointerdown', 50, 50, 1);
       page.pointer('pointerup', 50, 50, 1);
-      expect(host.contexts).toHaveLength(2);
+      expect(host.contexts).toHaveLength(3);
+      // nothing at all under the cursor (no terrain): no menu
+      await update(() => host.map.set(undefined));
+      page.pointer('pointerdown', 50, 50, 2);
+      page.pointer('pointerup', 50, 50, 2);
+      expect(host.contexts).toHaveLength(3);
       expect(host.picks).toEqual([]);
     });
 

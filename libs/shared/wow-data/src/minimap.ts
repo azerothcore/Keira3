@@ -19,8 +19,10 @@ export function parseMd5Translate(text: string): Map<string, string> {
   return entries;
 }
 
+/** The name md5translate.trs lists a tile's minimap under: `azeroth\\map32_48.blp`, with two digits (`map44_08`). */
 export function minimapKey(directory: string, tile: TileCoord): string {
-  return `${directory}\\map${tile.tx}_${tile.ty}.blp`.toLowerCase();
+  const two = (n: number) => String(n).padStart(2, '0');
+  return `${directory}\\map${two(tile.tx)}_${two(tile.ty)}.blp`.toLowerCase();
 }
 
 export const MINIMAP_ROOT = 'textures\\Minimap\\';

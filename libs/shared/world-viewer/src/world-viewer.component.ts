@@ -58,6 +58,7 @@ import { WORLD_RENDERER_FACTORY, WorldRenderer } from './world-renderer';
 import { PickOptions, WorldScene } from './world-scene';
 import {
   ContextRequest,
+  GROUND_KEY,
   GizmoMode,
   MovementSimulation,
   NavMeshRebuildRequest,
@@ -81,6 +82,27 @@ import {
 
 /** How long (ms) loading must have calmed down before the waypoints' places are worked out again. */
 const CLASSIFY_DELAY = 250;
+/** How often (ms) the performance stats are updated. */
+const STATS_INTERVAL = 500;
+
+interface ViewerStats {
+  /** Frames drawn per second (the view only draws when something changes). */
+  fps: number;
+  /** Time the last frames took to draw, on average (ms). */
+  frameMs: number;
+  calls: number;
+  triangles: number;
+  geometries: number;
+  textures: number;
+  programs: number;
+  /** JavaScript memory in use (MB), where the browser tells it. */
+  heapMb?: number;
+  tiles: number;
+  buildings: number;
+  props: number;
+  models: number;
+  spawns: number;
+}
 const CLICK_TOLERANCE_PX = 4;
 const CENTER_EMIT_DISTANCE = 60;
 /** Textures loaded beyond which those nothing uses free their graphics memory. */
@@ -200,6 +222,10 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   protected readonly loading = signal(false);
   /** What's still loading in the background (undefined when idle). */
   protected readonly activity = signal<{ terrain: number; buildings: number; props: number; models: number } | undefined>(undefined);
+  /** The performance stats (View > Show performance stats). */
+  protected readonly stats = signal<ViewerStats | undefined>(undefined);
+  /** The editor is loading the spawns around the camera (shown in the same loading bar). */
+  readonly spawnsLoading = input(false);
   /** Server position the camera looks at, for the readout in the corner. */
   protected readonly cameraTarget = signal<WorldPosition | undefined>(undefined);
   private activityTimer?: ReturnType<typeof setTimeout>;
@@ -316,7 +342,6 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     });
     effect(() => void this.loadMap(this.mapDirectory()));
     effect(() => {
-      // TEMPORARY perf-log
       const kept = perfTime('scene spawns', () => this.world.setSpawns(this.spawns()));
       perfTime('spawn models set', () => this.spawnModels.setSpawns(this.spawns(), kept));
       untracked(() => this.syncGizmo());
@@ -324,7 +349,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     });
     // (on their own: a change of one doesn't redraw the other)
     effect(() => {
-      perfTime('scene paths', () => this.world.setWaypointPaths(this.paths())); // TEMPORARY perf-log
+      perfTime('scene paths', () => this.world.setWaypointPaths(this.paths()));
       untracked(() => this.syncGizmo());
       this.requestRender();
     });
@@ -531,12 +556,33 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private requestContext(event: PointerEvent): void {
     const result = this.pickAt(event, HOVER_PICK);
     const label = result && this.textOf(result);
+    const rect = this.host().nativeElement.getBoundingClientRect();
     if (!label) {
+      // the ground (or a building): a menu for the place itself
+      const ground = this.pickAt(event, { groundOnly: true });
+      if (ground) {
+        const { x, y, z } = ground.position;
+        const label = `${x.toFixed(2)} ${y.toFixed(2)} ${z.toFixed(2)}`;
+        this.contextRequested.emit({
+          key: GROUND_KEY,
+          x: event.clientX - rect.left,
+          y: event.clientY - rect.top,
+          label,
+          position: ground.position,
+          marker: this.marker,
+        });
+      }
       return;
     }
     const key = result.type === 'segment' ? `${result.pathKey}:${result.from}-${result.to}` : (result as { key: string }).key;
-    const rect = this.host().nativeElement.getBoundingClientRect();
-    this.contextRequested.emit({ key, x: event.clientX - rect.left, y: event.clientY - rect.top, label, position: result.position });
+    this.contextRequested.emit({
+      key,
+      x: event.clientX - rect.left,
+      y: event.clientY - rect.top,
+      label,
+      position: result.position,
+      marker: this.marker,
+    });
   }
 
   protected onPointerMove(event: PointerEvent): void {
@@ -1139,7 +1185,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     // what's under the waypoints is looked at again once tiles stop coming in (each look casts rays at everything)
     clearTimeout(this.classifyTimer);
     this.classifyTimer = setTimeout(() => {
-      perfTime('classify waypoints', () => this.world.classifyWaypoints()); // TEMPORARY perf-log
+      perfTime('classify waypoints', () => this.world.classifyWaypoints());
       this.requestRender();
     }, CLASSIFY_DELAY);
     // what's under the checked points may have changed: check them again once loading calms down
@@ -1162,9 +1208,9 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       return;
     }
     this.lastEmittedCenter = center;
-    perfTime('center changed (editor)', () => this.centerChanged.emit(center)); // TEMPORARY perf-log
+    perfTime('center changed (editor)', () => this.centerChanged.emit(center));
     // the graphics memory of textures left far behind goes back
-    perfTime('textures release', () => this.textures.release(this.world.scene, TEXTURES_KEPT)); // TEMPORARY perf-log
+    perfTime('textures release', () => this.textures.release(this.world.scene, TEXTURES_KEPT));
     // load what's in front first
     const look = new Vector3();
     this.world.camera.getWorldDirection(look);
@@ -1201,8 +1247,10 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     requestAnimationFrame(() => {
       this.frameRequested = false;
       this.world.updateMarkerScale();
-      perfTime('render', () => this.renderer?.render(this.world.scene, this.world.camera)); // TEMPORARY perf-log
-      perfFrame(); // TEMPORARY perf-log
+      const began = performance.now();
+      perfTime('render', () => this.renderer?.render(this.world.scene, this.world.camera));
+      perfFrame();
+      this.countFrame(performance.now() - began);
       this.updateStatus();
       this.updateProbeLabels();
     });
@@ -1249,6 +1297,41 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     } catch {
       this.areaName.set(undefined);
     }
+  }
+
+  /** Frames drawn, and the time spent drawing them, since the stats were last shown. */
+  private statsWindow = { start: 0, frames: 0, ms: 0 };
+
+  /** Counts a drawn frame for the performance stats, shown twice a second (while they're on). */
+  private countFrame(ms: number): void {
+    if (!this.renderSettings().showStats) {
+      return;
+    }
+    const now = performance.now();
+    const window = this.statsWindow;
+    window.frames++;
+    window.ms += ms;
+    if (now - window.start < STATS_INTERVAL) {
+      return;
+    }
+    const info = this.renderer?.info;
+    const heap = (performance as unknown as { memory?: { usedJSHeapSize: number } }).memory?.usedJSHeapSize;
+    this.stats.set({
+      fps: window.start ? Math.round((window.frames * 1000) / (now - window.start)) : 0,
+      frameMs: window.ms / window.frames,
+      calls: info?.render.calls ?? 0,
+      triangles: info?.render.triangles ?? 0,
+      geometries: info?.memory.geometries ?? 0,
+      textures: info?.memory.textures ?? 0,
+      programs: info?.programs?.length ?? 0,
+      heapMb: heap === undefined ? undefined : Math.round(heap / 1_000_000),
+      tiles: this.world.terrainKeys.length,
+      buildings: this.objects.placedCount,
+      props: this.doodads.drawnCount,
+      models: this.spawnModels.shownCount,
+      spawns: this.spawns().length,
+    });
+    this.statsWindow = { start: now, frames: 0, ms: 0 };
   }
 
   /** Camera target readout and the loading bar (polled while anything is still loading). */

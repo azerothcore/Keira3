@@ -185,6 +185,9 @@ export interface NavMeshRebuildState {
 }
 
 /** A right-click (without dragging) on a spawn or waypoint; `x`/`y` are in pixels from the view's top-left corner. */
+/** The key of a right-click on the ground (or a building) rather than on something placed. */
+export const GROUND_KEY = 'ground';
+
 export interface ContextRequest {
   /** What was right-clicked: a spawn or waypoint key, or a path stretch, area trigger, marker or link. */
   key: string;
@@ -193,6 +196,8 @@ export interface ContextRequest {
   /** Its hover text, and where it was clicked. */
   label?: string;
   position?: WorldPosition;
+  /** Where the player marker (Space) is, when placed. */
+  marker?: WorldPosition;
 }
 
 export interface ObjectMoved {

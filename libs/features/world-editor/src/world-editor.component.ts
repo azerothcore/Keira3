@@ -1,5 +1,10 @@
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { debounceTime } from 'rxjs';
 import {
+  afterNextRender,
   ChangeDetectionStrategy,
+  DestroyRef,
+  Injector,
   Component,
   computed,
   effect,
@@ -16,6 +21,7 @@ import { ActivatedRoute } from '@angular/router';
 import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-components';
 import {
   ContextRequest,
+  GROUND_KEY,
   GizmoMode,
   CONTROL_ACTIONS,
   CONTROL_GROUPS,
@@ -52,11 +58,13 @@ import {
 } from '@keira/shared/world-viewer';
 import {
   CacheUsage,
+  TILE_SIZE,
   tileCenter,
   TileCoord,
   tileKey,
   tilesInBounds,
   WowClientService,
+  setPerfLog,
   WowDataCacheService,
   WowDataSettingsService,
   WowMap,
@@ -82,7 +90,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ChangesSnapshot } from './world-editor-changes';
 import { LEGEND } from './legend';
 import { WorldEditorSessionService } from './world-editor-session.service';
-import { WORLD_EDITOR_LINKS } from '@keira/shared/constants';
+import { WORLD_EDITOR_LINKS, WorldEditorLoot } from '@keira/shared/constants';
 import {
   EditorTool,
   LayerVisibility,
@@ -95,9 +103,13 @@ import {
   LAYER_SWITCHES,
   SPAWN_LOAD_RADIUS,
   SPAWN_RELOAD_DISTANCE,
+  TELE_SEARCH_DELAY,
+  MAP_KINDS,
+  MapKind,
   OVERLAY_SWITCHES,
   Teleport,
   PoolMember,
+  PoolSpawn,
   SpawnQuest,
   SpawnRecord,
   spawnKey,
@@ -187,6 +199,8 @@ type RenderFlagKey =
   | 'showFacingArrows'
   | 'showWanderRadius'
   | 'showBounds'
+  | 'showStats'
+  | 'perfLog'
   | 'showCollision'
   | 'showNavMesh'
   | 'zoneLighting'
@@ -247,6 +261,17 @@ export class WorldEditorComponent implements OnInit {
   private readonly settings = inject(WowDataSettingsService);
   protected readonly renderSettings = inject(WorldRenderSettingsService);
   protected readonly cache = inject(WowDataCacheService);
+  /** Where the performance log goes (next to the cache); undefined outside the desktop app. */
+  protected readonly perfLogPath = computed(() => {
+    const root = this.cache.root();
+    return root && `${root}/world-editor-perf.log`;
+  });
+  /** View > Write a performance log: appended to that file while on. */
+  private readonly perfLog = effect(() => {
+    const path = this.renderSettings.settings().perfLog ? this.perfLogPath() : undefined;
+    untracked(() => setPerfLog(path ? (text) => this.electron.fs.appendFileSync(path, text) : undefined));
+  });
+  private readonly stopPerfLog = inject(DestroyRef).onDestroy(() => setPerfLog(undefined));
   protected readonly controls = inject(WorldControlsSettingsService);
   protected readonly controlActions = CONTROL_ACTIONS;
   protected readonly controlGroups = CONTROL_GROUPS;
@@ -556,6 +581,8 @@ export class WorldEditorComponent implements OnInit {
   protected readonly legend = LEGEND;
   protected readonly fullscreen = signal(false);
   private readonly root = viewChild.required<ElementRef<HTMLElement>>('root');
+  protected readonly viewFullscreen = signal(false);
+  private readonly view = viewChild.required<ElementRef<HTMLElement>>('view');
   protected readonly renderScales = RENDER_SCALES;
   protected readonly playerRaces = PLAYER_RACES;
   protected readonly showView = this.session.showView;
@@ -809,6 +836,10 @@ export class WorldEditorComponent implements OnInit {
   });
   protected readonly placeEntry = new FormControl<number | null>(null);
   protected readonly teleSearch = new FormControl('', { nonNullable: true });
+  /** Teleports are looked up while typing (a pasted `.gps` goes there instead). */
+  private readonly liveTele = this.teleSearch.valueChanges
+    .pipe(debounceTime(TELE_SEARCH_DELAY), takeUntilDestroyed())
+    .subscribe((text) => !parseGpsOutput(text) && void this.searchTele());
   protected readonly goToForm = new FormGroup({
     x: new FormControl<number | null>(null),
     y: new FormControl<number | null>(null),
@@ -880,8 +911,18 @@ export class WorldEditorComponent implements OnInit {
     }
   }
 
+  /** The 3D view alone, full screen (with the world map and panels floating over it). */
+  protected async toggleViewFullscreen(): Promise<void> {
+    if (document.fullscreenElement) {
+      await document.exitFullscreen();
+    } else {
+      await this.view().nativeElement.requestFullscreen();
+    }
+  }
+
   protected onFullscreenChange(): void {
     this.fullscreen.set(document.fullscreenElement === this.root().nativeElement);
+    this.viewFullscreen.set(document.fullscreenElement === this.view().nativeElement);
   }
 
   protected setRenderScale(scale: number): void {
@@ -1168,6 +1209,64 @@ export class WorldEditorComponent implements OnInit {
     return this.maps().filter((map) => !text || `${map.id} ${map.name} ${map.directory}`.toLowerCase().includes(text));
   });
 
+  private readonly mapList = viewChild<ElementRef<HTMLElement>>('mapList');
+  private readonly injector = inject(Injector);
+  /** Opens the map list, scrolled to the map shown. */
+  protected openMapPicker(): void {
+    this.mapSearch.set('');
+    afterNextRender(
+      // (unless closed meanwhile)
+      () => this.mapList()?.nativeElement.querySelector('.active')?.scrollIntoView({ block: 'center' }),
+      { injector: this.injector },
+    );
+  }
+
+  /** What kind of map it is, for the colour of its badge in the picker. */
+  protected mapKind(map: WowMap): MapKind {
+    if (/^transport/i.test(map.name)) {
+      return 'transport';
+    }
+    return MAP_KINDS[map.instanceType] ?? 'world';
+  }
+
+  /** Goes to the next (or previous) map of the list, round the end. */
+  protected stepMap(step: number): void {
+    const maps = this.maps();
+    const at = maps.findIndex((map) => map.id === this.mapId());
+    void this.pickMap(maps[(at + step + maps.length) % maps.length].id);
+  }
+
+  /** What's typed in the zone picker (undefined: closed, showing the current zone). */
+  protected readonly zoneSearch = signal<string | undefined>(undefined);
+  protected readonly currentZoneLabel = computed(() => {
+    const zone = this.zones().find((z) => z.areaId === this.zoneId());
+    return zone ? `${zone.areaId} – ${zone.name}` : '';
+  });
+  /** Zones whose id or name contain what's typed. */
+  protected readonly filteredZones = computed(() => {
+    // (only read while the picker is open)
+    const text = (this.zoneSearch() as string).trim().toLowerCase();
+    return this.zones().filter((zone) => !text || `${zone.areaId} ${zone.name}`.toLowerCase().includes(text));
+  });
+
+  protected pickFirstZone(): void {
+    const first = this.filteredZones()[0];
+    if (first) {
+      this.pickZone(first.areaId);
+    }
+  }
+
+  /** Looks at the middle of the chosen zone (0: none). */
+  protected pickZone(areaId: number): void {
+    this.zoneSearch.set(undefined);
+    const zone = this.zones().find((z) => z.areaId === areaId);
+    this.zoneId.set(zone?.areaId ?? 0);
+    if (zone) {
+      const { minX, maxX, minY, maxY } = zone.bounds;
+      this.focus.set({ x: (minX + maxX) / 2, y: (minY + maxY) / 2, z: 0 });
+    }
+  }
+
   protected pickFirstMap(): void {
     const first = this.filteredMaps()[0];
     if (first) {
@@ -1255,16 +1354,6 @@ export class WorldEditorComponent implements OnInit {
     } catch (error) {
       this.zones.set([]);
       this.toastr.error((error as Error).message, 'World Editor');
-    }
-  }
-
-  /** Looks at the middle of the chosen zone. */
-  protected onZoneChange(event: Event): void {
-    const zone = this.zones().find((z) => z.areaId === Number((event.target as HTMLSelectElement).value));
-    this.zoneId.set(zone?.areaId ?? 0);
-    if (zone) {
-      const { minX, maxX, minY, maxY } = zone.bounds;
-      this.focus.set({ x: (minX + maxX) / 2, y: (minY + maxY) / 2, z: 0 });
     }
   }
 
@@ -1794,7 +1883,7 @@ export class WorldEditorComponent implements OnInit {
   }
 
   /** Flies to a search result and selects it once it's loaded. */
-  protected goToResult(result: SpawnRecord): void {
+  protected goToResult(result: PoolSpawn): void {
     const key = spawnKey(result.type, result.guid);
     if (this.findSpawn(key)) {
       this.groupKeys.set([]);
@@ -1958,7 +2047,9 @@ export class WorldEditorComponent implements OnInit {
   }
 
   protected onContextRequested(request: ContextRequest): void {
-    this.select(request.key);
+    if (request.key !== GROUND_KEY) {
+      this.select(request.key);
+    }
     this.contextMenu.set(request);
   }
 
@@ -1975,11 +2066,108 @@ export class WorldEditorComponent implements OnInit {
     this.contextMenu.set(undefined);
     if (target === 'creature') {
       links.openCreature(spawn.entry, spawn.name);
-    } else if (target === 'sai') {
+    } else if (target === 'gameobject') {
+      links.openGameObject(spawn.entry, spawn.name);
+    } else if (spawn.type === 'creature') {
       links.openCreatureSai(spawn.entry, spawn.name);
     } else {
-      links.openGameObject(spawn.entry, spawn.name);
+      links.openGameObjectSai(spawn.entry, spawn.name);
     }
+  }
+
+  /** The loot tables of the right-clicked spawn, for opening their editors. */
+  protected readonly contextLoot = computed(() => {
+    const spawn = this.contextSpawn() as SpawnRecord;
+    const loot = spawn.loot ?? {};
+    const kinds: { kind: WorldEditorLoot; id?: number; label: string }[] =
+      spawn.type === 'creature'
+        ? [
+            { kind: 'creature', id: loot.loot, label: 'WORLD_EDITOR.OPEN_LOOT' },
+            { kind: 'pickpocketing', id: loot.pickpocketing, label: 'WORLD_EDITOR.OPEN_PICKPOCKET_LOOT' },
+            { kind: 'skinning', id: loot.skinning, label: 'WORLD_EDITOR.OPEN_SKINNING_LOOT' },
+          ]
+        : [{ kind: 'gameobject', id: loot.loot, label: 'WORLD_EDITOR.OPEN_LOOT' }];
+    return kinds.filter((kind) => kind.id);
+  });
+
+  protected openContextLoot(kind: WorldEditorLoot): void {
+    const spawn = this.contextSpawn() as SpawnRecord;
+    this.contextMenu.set(undefined);
+    (this.links as NonNullable<typeof this.links>).openLoot(kind, spawn.entry, spawn.name);
+  }
+
+  /** The area trigger right-clicked (its id), if that's what it was. */
+  protected readonly contextAreaTrigger = computed(() => {
+    const match = /^areatrigger:(\d+)$/.exec((this.contextMenu() as ContextRequest).key);
+    return match ? Number(match[1]) : undefined;
+  });
+
+  /** Where the right-clicked area trigger teleports to (instance entrances, portals), if anywhere. */
+  protected readonly contextTeleport = computed(() => {
+    // (only read for an area trigger)
+    const id = this.contextAreaTrigger();
+    return this.travel().teleports.find((teleport) => teleport.id === id);
+  });
+
+  /** "id – name" of a map. */
+  protected mapLabel(id: number): string {
+    const map = this.maps().find((m) => m.id === id);
+    return map ? `${map.id} – ${map.name}` : String(id);
+  }
+
+  /** Goes where an area trigger teleports: inside the instance of an entrance. */
+  protected goThrough(teleport: Teleport): void {
+    this.contextMenu.set(undefined);
+    this.goTo(teleport.map, { x: teleport.x, y: teleport.y, z: teleport.z });
+  }
+
+  protected openTriggerSai(id: number): void {
+    this.contextMenu.set(undefined);
+    (this.links as NonNullable<typeof this.links>).openAreaTriggerSai(id);
+  }
+
+  /** The pool of what was right-clicked: a pooled spawn, or a pool's label or line. */
+  protected readonly contextPool = computed(() => {
+    const key = (this.contextMenu() as ContextRequest).key;
+    const overlay = /^pool:(\d+)/.exec(key);
+    if (overlay) {
+      return Number(overlay[1]);
+    }
+    const spawn = this.findSpawn(key);
+    return spawn && this.pools().find((row) => row.type === spawn.type && row.guid === spawn.guid)?.pool;
+  });
+  /** Every spawn of that pool (undefined while they load). */
+  protected readonly contextPoolMembers = signal<PoolSpawn[] | undefined>(undefined);
+  private readonly loadContextPool = effect(() => {
+    const pool = this.contextMenu() ? this.contextPool() : undefined;
+    untracked(() => {
+      this.contextPoolMembers.set(undefined);
+      if (pool !== undefined) {
+        void this.service.loadPoolMembers(pool).then(
+          (members) =>
+            pool === untracked(() => (this.contextMenu() ? this.contextPool() : undefined)) && this.contextPoolMembers.set(members),
+          (error: Error) => this.toastr.error(error.message, 'World Editor'),
+        );
+      }
+    });
+  });
+  /** The pool's spawns loaded in the view (they can be selected). */
+  protected readonly loadedPoolKeys = computed(() =>
+    // (only read once they're loaded)
+    (this.contextPoolMembers() as PoolSpawn[]).map((member) => spawnKey(member.type, member.guid)).filter((key) => this.findSpawn(key)),
+  );
+
+  /** Selects every loaded spawn of the pool. */
+  protected selectPool(): void {
+    const [first, ...rest] = this.loadedPoolKeys();
+    this.contextMenu.set(undefined);
+    this.select(first);
+    this.groupKeys.set(rest);
+  }
+
+  protected goToPoolMember(member: PoolSpawn): void {
+    this.contextMenu.set(undefined);
+    this.goToResult(member);
   }
 
   /** Copies what was right-clicked: its hover text and where it is. */
@@ -1990,10 +2178,22 @@ export class WorldEditorComponent implements OnInit {
     this.contextMenu.set(undefined);
   }
 
-  /** Copies a `.go xyz` command to where was right-clicked. */
-  protected copyContextGo(): void {
-    const { x, y, z } = (this.contextMenu() as ContextRequest).position as WorldPosition;
-    this.clipboard.copyFromContent(`.go xyz ${x.toFixed(4)} ${y.toFixed(4)} ${z.toFixed(4)} ${this.mapId()}`);
+  /**
+   * Copies a command going where was right-clicked (or to the player marker): `.go xyz`, `.go xyz` with only x and y
+   * (the server finds the ground; on the map the player is on) or `.go grid` (x = (gridX − 31.5) × 533.33, cs_go.cpp).
+   */
+  protected copyContextGo(kind: 'xyz' | 'xy' | 'grid' | 'marker'): void {
+    const menu = this.contextMenu() as ContextRequest;
+    const { x, y, z } = (kind === 'marker' ? menu.marker : menu.position) as WorldPosition;
+    const map = this.mapId();
+    const grid = (value: number) => (value / TILE_SIZE + 31.5).toFixed(4);
+    const command =
+      kind === 'xy'
+        ? `.go xyz ${x.toFixed(4)} ${y.toFixed(4)}`
+        : kind === 'grid'
+          ? `.go grid ${grid(x)} ${grid(y)} ${map}`
+          : `.go xyz ${x.toFixed(4)} ${y.toFixed(4)} ${z.toFixed(4)} ${map}`;
+    this.clipboard.copyFromContent(command);
     this.contextMenu.set(undefined);
   }
 

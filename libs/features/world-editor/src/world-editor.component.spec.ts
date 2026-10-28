@@ -27,7 +27,17 @@ import {
   WorldSpawn,
   WorldViewerComponent,
 } from '@keira/shared/world-viewer';
-import { tileCenter, WOW_DATA_SETTINGS_KEY, WowClientService, WorldBounds, WorldPosition } from '@keira/shared/wow-data';
+import {
+  flushPerfLog,
+  perfLogActive,
+  perfNote,
+  tileCenter,
+  WOW_DATA_SETTINGS_KEY,
+  WowClientService,
+  WowDataCacheService,
+  WorldBounds,
+  WorldPosition,
+} from '@keira/shared/wow-data';
 import { DebugHtmlElement, PageObjectModel, typeInElement } from 'ngx-page-object-model';
 import { ClipboardService } from 'ngx-clipboard';
 import { ElectronService } from '@keira/shared/common-services';
@@ -68,6 +78,7 @@ class FakeWorldViewerComponent {
   readonly links = input<WorldLink[]>([]);
   readonly markers = input<WorldMarker[]>([]);
   readonly groupKeys = input<string[]>([]);
+  readonly spawnsLoading = input(false);
   readonly simulation = input<MovementSimulation | undefined>(undefined);
   readonly groundQuery = input<{ key: string; position: WorldPosition }[] | undefined>(undefined);
   readonly groundHeights = output<Record<string, number | null>>();
@@ -89,6 +100,14 @@ class Page extends PageObjectModel<WorldEditorComponent> {
   }
   click(id: string): void {
     this.byId(id).nativeElement.click();
+  }
+  /** Opens the zone picker and picks a zone (0: none). */
+  chooseZone(id: number): void {
+    const search = this.byId<HTMLInputElement>('zone-search').nativeElement;
+    search.dispatchEvent(new Event('focus'));
+    this.fixture.detectChanges();
+    this.byId(`zone-option-${id}`).nativeElement.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true }));
+    this.fixture.detectChanges();
   }
   /** Opens the map picker and picks a map. */
   chooseMap(id: number): void {
@@ -191,6 +210,7 @@ describe(WorldEditorComponent.name, () => {
       searchSpawns: vi.fn(),
       loadFormations: vi.fn(),
       loadPools: vi.fn(),
+      loadPoolMembers: vi.fn(),
       loadGraveyards: vi.fn(),
       loadTeleports: vi.fn(),
       loadScriptEntries: vi.fn(),
@@ -208,12 +228,21 @@ describe(WorldEditorComponent.name, () => {
     },
     toastr: { error: vi.fn(), warning: vi.fn(), success: vi.fn() },
     clipboard: { copyFromContent: vi.fn() },
-    electron: { isElectron: vi.fn(), ipcRenderer: { send: vi.fn() } },
+    electron: { isElectron: vi.fn(), ipcRenderer: { send: vi.fn() }, fs: { appendFileSync: vi.fn() } },
   };
 
-  const links = { openCreature: vi.fn(), openCreatureSai: vi.fn(), openGameObject: vi.fn() };
+  const links = {
+    openCreature: vi.fn(),
+    openCreatureSai: vi.fn(),
+    openGameObject: vi.fn(),
+    openGameObjectSai: vi.fn(),
+    openAreaTriggerSai: vi.fn(),
+    openLoot: vi.fn(),
+  };
 
-  const setup = async (opts: { params?: Record<string, string>; configured?: boolean; lastView?: string; links?: boolean } = {}) => {
+  const setup = async (
+    opts: { params?: Record<string, string>; configured?: boolean; lastView?: string; links?: boolean; cacheRoot?: string } = {},
+  ) => {
     localStorage.clear();
     if (opts.lastView) {
       localStorage.setItem('keira3.worldEditor.lastView', opts.lastView);
@@ -237,6 +266,9 @@ describe(WorldEditorComponent.name, () => {
       remove: { imports: [WorldViewerComponent] },
       add: { imports: [FakeWorldViewerComponent] },
     });
+    if (opts.cacheRoot) {
+      vi.spyOn(TestBed.inject(WowDataCacheService), 'root').mockReturnValue(opts.cacheRoot);
+    }
     const fixture = TestBed.createComponent(WorldEditorComponent);
     const page = new Page(fixture);
     await settle(page);
@@ -261,6 +293,8 @@ describe(WorldEditorComponent.name, () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    // (jsdom doesn't scroll)
+    Element.prototype.scrollIntoView = vi.fn();
     // the next frame comes right away
     vi.stubGlobal('requestAnimationFrame', (callback: () => void) => setTimeout(callback));
     mocks.client.isSupported.mockReturnValue(true);
@@ -392,9 +426,7 @@ describe(WorldEditorComponent.name, () => {
       page.fixture.detectChanges();
       expect(page.byId<HTMLButtonElement>('preload-zone').nativeElement.disabled).toBe(true);
 
-      const zone = page.byId<HTMLSelectElement>('zone-select').nativeElement;
-      zone.value = '12';
-      zone.dispatchEvent(new Event('change'));
+      page.chooseZone(12);
       await settle(page);
       page.click('preload-zone');
       await settle(page);
@@ -809,11 +841,18 @@ describe(WorldEditorComponent.name, () => {
 
     it('jumps to a zone, and loads it whole when asked', async () => {
       const { page } = await setup();
-      const select = page.byId<HTMLSelectElement>('zone-select').nativeElement;
-      expect(Array.from(select.options).map((o) => o.textContent?.trim())).toEqual(['WORLD_EDITOR.ZONE…', 'Elwynn Forest', 'Westfall']);
-      select.value = '40';
-      select.dispatchEvent(new Event('change'));
+      const search = page.byId<HTMLInputElement>('zone-search').nativeElement;
+      search.dispatchEvent(new Event('focus'));
+      page.fixture.detectChanges();
+      // with their ids, searchable by name or id
+      expect(page.text('zone-options')).toContain('12 – Elwynn Forest');
+      search.value = 'west';
+      search.dispatchEvent(new Event('input'));
+      page.fixture.detectChanges();
+      expect(page.byId('zone-option-12', false)).toBeFalsy();
+      search.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
       await settle(page);
+      expect(search.value).toBe('40 – Westfall');
       expect(page.viewer().focus()).toEqual({ x: -11000, y: 1000, z: 0 });
       expect(page.viewer().region()).toBeUndefined();
 
@@ -825,22 +864,79 @@ describe(WorldEditorComponent.name, () => {
       await settle(page);
       expect(page.viewer().region()).toEqual(ZONES[1].bounds);
 
-      select.value = '0';
-      select.dispatchEvent(new Event('change'));
+      page.chooseZone(0);
       await settle(page);
       expect(page.viewer().region()).toBeUndefined();
+      // nothing matching, and Enter then picks nothing
+      search.dispatchEvent(new Event('focus'));
+      search.value = 'nowhere';
+      search.dispatchEvent(new Event('input'));
+      page.fixture.detectChanges();
+      expect(page.text('zone-options')).toContain('WORLD_EDITOR.NO_RESULTS');
+      search.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+      search.dispatchEvent(new Event('focus'));
+      search.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+      await settle(page);
 
       // other maps have their own zones
       page.chooseMap(1);
       await settle(page);
-      expect(select.disabled).toBe(true);
+      expect(search.disabled).toBe(true);
     });
 
     it('reports errors while loading zones', async () => {
       mocks.client.getZones.mockRejectedValue(new Error('bad WorldMapArea.dbc'));
       const { page } = await setup();
       expect(mocks.toastr.error).toHaveBeenCalledWith('bad WorldMapArea.dbc', 'World Editor');
-      expect(page.byId<HTMLSelectElement>('zone-select').nativeElement.disabled).toBe(true);
+      expect(page.byId<HTMLInputElement>('zone-search').nativeElement.disabled).toBe(true);
+    });
+
+    it('tells the kind of each map, steps to the next and previous map, and opens the list at the map shown', async () => {
+      mocks.client.getMaps.mockResolvedValue([
+        ...MAPS,
+        { id: 33, directory: 'Shadowfang', name: 'Shadowfang Keep', instanceType: 1 },
+        { id: 249, directory: 'OnyxiaLairInstance', name: "Onyxia's Lair", instanceType: 2 },
+        { id: 489, directory: 'PVPzone03', name: 'Warsong Gulch', instanceType: 3 },
+        { id: 559, directory: 'PVPzone04', name: 'Nagrand Arena', instanceType: 4 },
+        { id: 672, directory: 'Transport197347', name: 'Transport: The Skybreaker', instanceType: 0 },
+        { id: 999, directory: 'Odd', name: 'Odd', instanceType: 9 },
+      ]);
+      const { page } = await setup();
+      const search = page.byId<HTMLInputElement>('map-search').nativeElement;
+      search.dispatchEvent(new Event('focus'));
+      await settle(page);
+      expect(Element.prototype.scrollIntoView).toHaveBeenCalledWith({ block: 'center' });
+      const kinds = [0, 33, 249, 489, 559, 672, 999].map((id) => page.text(`map-kind-${id}`));
+      expect(kinds).toEqual(
+        ['WORLD', 'DUNGEON', 'RAID', 'BATTLEGROUND', 'ARENA', 'TRANSPORT', 'WORLD'].map((kind) => `WORLD_EDITOR.MAP_KIND_${kind}`),
+      );
+      search.dispatchEvent(new Event('blur'));
+      page.click('map-next');
+      await settle(page);
+      expect(page.viewer().mapDirectory()).toBe('Kalimdor');
+      page.click('map-previous');
+      page.click('map-previous');
+      await settle(page);
+      // round the start: the last map
+      expect(page.viewer().mapDirectory()).toBe('Odd');
+      // opened then closed right away: nothing to scroll
+      search.dispatchEvent(new Event('focus'));
+      search.dispatchEvent(new Event('blur'));
+      await settle(page);
+    });
+
+    it('looks teleports up while typing', async () => {
+      const { page } = await setup();
+      page.type('tele-search', 'North');
+      await new Promise((resolve) => setTimeout(resolve, 350));
+      await settle(page);
+      expect(mocks.service.searchTele).toHaveBeenCalledWith('North');
+      expect(page.text('tele-7')).toContain('1 – Kalimdor');
+      // not for a pasted .gps output
+      mocks.service.searchTele.mockClear();
+      page.type('tele-search', 'Map: 0 X: 1 Y: 2 Z: 3 Orientation: 0');
+      await new Promise((resolve) => setTimeout(resolve, 350));
+      expect(mocks.service.searchTele).not.toHaveBeenCalled();
     });
 
     it('ignores the zones of a map left while they loaded', async () => {
@@ -851,7 +947,7 @@ describe(WorldEditorComponent.name, () => {
       await settle(page);
       resolveZones(ZONES);
       await settle(page);
-      expect(page.byId<HTMLSelectElement>('zone-select').nativeElement.options.length).toBe(1);
+      expect(page.byId<HTMLInputElement>('zone-search').nativeElement.disabled).toBe(true);
     });
 
     it('falls back to the origin for maps missing from Map.dbc', async () => {
@@ -1002,11 +1098,11 @@ describe(WorldEditorComponent.name, () => {
       mocks.service.loadSpawns.mockReturnValueOnce(new Promise((r) => (resolve = r)));
       page.viewer().centerChanged.emit(CENTER);
       await settle(page);
-      expect(page.byId('loading-spawns')).toBeTruthy();
+      expect(page.viewer().spawnsLoading()).toBe(true);
 
       resolve(SPAWNS);
       await settle(page);
-      expect(page.byId('loading-spawns', false)).toBeFalsy();
+      expect(page.viewer().spawnsLoading()).toBe(false);
       expect(mocks.service.loadSpawns).toHaveBeenCalledWith(0, CENTER);
       expect(mocks.service.loadWaypoints).toHaveBeenCalledWith([10]);
       expect(
@@ -1314,13 +1410,125 @@ describe(WorldEditorComponent.name, () => {
       expect(links.openCreatureSai).toHaveBeenCalledWith(101, 'Deputy Willem');
 
       await rightClick(page, 'gameobject:3');
-      expect(page.byId('context-sai', false)).toBeFalsy();
       page.click('context-gameobject');
       expect(links.openGameObject).toHaveBeenCalledWith(103, 'Mailbox');
+      // gameobjects have SAI too
+      await rightClick(page, 'gameobject:3');
+      page.click('context-sai');
+      expect(links.openGameObjectSai).toHaveBeenCalledWith(103, 'Mailbox');
 
       await rightClick(page, 'gameobject:3');
       page.click('context-copy-guid');
       expect(mocks.clipboard.copyFromContent).toHaveBeenCalledWith('3');
+    });
+
+    it('names the AI and script, and opens the loot of creatures and chests', async () => {
+      mocks.service.loadSpawns.mockResolvedValue([
+        spawn('creature', 1, { name: 'Wolf', aiName: 'SmartAI', scriptName: 'npc_wolf', loot: { loot: 5, skinning: 7 } }),
+        spawn('gameobject', 3, { name: 'Chest', loot: { loot: 9 } }),
+      ]);
+      const { page } = await setup();
+      await loadArea(page);
+      await rightClick(page, 'creature:1');
+      expect(page.text('context-ai-name')).toBe('AIName: SmartAI');
+      expect(page.text('context-script-name')).toBe('ScriptName: npc_wolf');
+      expect(page.byId('context-loot-pickpocketing', false)).toBeFalsy();
+      expect(page.text('context-loot-skinning')).toContain('(7)');
+      page.click('context-loot-skinning');
+      expect(links.openLoot).toHaveBeenCalledWith('skinning', 101, 'Wolf');
+      await rightClick(page, 'gameobject:3');
+      expect(page.byId('context-ai-name', false)).toBeFalsy();
+      page.click('context-loot-gameobject');
+      expect(links.openLoot).toHaveBeenCalledWith('gameobject', 103, 'Chest');
+    });
+
+    it('goes through teleporting area triggers and opens their SAI', async () => {
+      mocks.service.loadTeleports.mockResolvedValue([{ id: 45, name: 'Inside', map: 1, x: 1, y: 2, z: 3 }]);
+      const { page } = await setup();
+      await loadArea(page);
+      await rightClick(page, 'areatrigger:46');
+      expect(page.byId('context-trigger-go', false)).toBeFalsy();
+      page.click('context-trigger-sai');
+      expect(links.openAreaTriggerSai).toHaveBeenCalledWith(46);
+      await rightClick(page, 'areatrigger:45');
+      expect(page.text('context-trigger-go')).toContain('1 – Kalimdor');
+      page.click('context-trigger-go');
+      await settle(page);
+      expect(page.viewer().focus()).toEqual({ x: 1, y: 2, z: 3 });
+      expect(page.viewer().mapDirectory()).toBe('Kalimdor');
+      // a map missing from Map.dbc is named by its id
+      expect((page.fixture.componentInstance as unknown as { mapLabel(id: number): string }).mapLabel(999)).toBe('999');
+    });
+
+    it('lists the spawns of a pool, selects the loaded ones and goes to the others', async () => {
+      mocks.service.loadPools.mockResolvedValue([{ type: 'creature', guid: 1, pool: 7, chance: 0, maxLimit: 1, description: 'Rares' }]);
+      let resolveMembers: (members: unknown[]) => void = () => undefined;
+      mocks.service.loadPoolMembers.mockReturnValueOnce(new Promise((resolve) => (resolveMembers = resolve)));
+      const { page } = await setup();
+      await loadArea(page);
+      await rightClick(page, 'creature:1');
+      expect(page.text('context-pool')).toBe('WORLD_EDITOR.POOL 7');
+      expect(page.byId('context-pool-loading')).toBeTruthy();
+      resolveMembers([
+        { type: 'creature', guid: 1, entry: 101, name: 'Deputy Willem', map: 0, x: -8901, y: -100, z: 80 },
+        { type: 'creature', guid: 2, entry: 102, name: '', map: 0, x: -8902, y: -100, z: 80 },
+        { type: 'gameobject', guid: 50, entry: 150, name: 'Far', map: 0, x: 100, y: 200, z: 5 },
+        { type: 'gameobject', guid: 51, entry: 151, name: 'Elsewhere', map: 1, x: 1, y: 1, z: 1 },
+      ]);
+      await settle(page);
+      expect(page.text('context-pool-select')).toContain('(2 / 4)');
+      expect(page.byId<HTMLButtonElement>('context-pool-member-3').nativeElement.disabled).toBe(true);
+      page.click('context-pool-select');
+      await settle(page);
+      expect(page.viewer().selectedKey()).toBe('creature:1');
+      expect(page.viewer().groupKeys()).toEqual(['creature:2']);
+      // from the pool's label: going to a member not loaded
+      mocks.service.loadPoolMembers.mockResolvedValue([
+        { type: 'gameobject', guid: 50, entry: 150, name: 'Far', map: 0, x: 100, y: 200, z: 5 },
+      ]);
+      await rightClick(page, 'pool:7');
+      page.click('context-pool-member-0');
+      await settle(page);
+      expect(page.viewer().focus()).toEqual({ x: 100, y: 200, z: 5 });
+      // closed before the members came
+      let late: (members: unknown[]) => void = () => undefined;
+      mocks.service.loadPoolMembers.mockReturnValueOnce(new Promise((resolve) => (late = resolve)));
+      await rightClick(page, 'pool:7');
+      document.body.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true }));
+      late([]);
+      await settle(page);
+      // a spawn in no pool, and a pool that can't be read
+      await rightClick(page, 'creature:2');
+      expect(page.byId('context-pool', false)).toBeFalsy();
+      mocks.service.loadPoolMembers.mockRejectedValueOnce(new Error('no pool_creature'));
+      await rightClick(page, 'pool:8');
+      expect(mocks.toastr.error).toHaveBeenCalledWith('no pool_creature', 'World Editor');
+    });
+
+    it('copies .go commands to a place on the ground and to the player marker', async () => {
+      const { page } = await setup();
+      await loadArea(page);
+      page.viewer().contextRequested.emit({
+        key: 'ground',
+        x: 10,
+        y: 10,
+        label: '1 2 3',
+        position: { x: 1066.6667, y: -533.3333, z: 3 },
+        marker: { x: 5, y: 6, z: 7 },
+      });
+      await settle(page);
+      expect(page.viewer().selectedKey()).toBeUndefined();
+      page.click('context-copy-go-xy');
+      expect(mocks.clipboard.copyFromContent).toHaveBeenLastCalledWith('.go xyz 1066.6667 -533.3333');
+      page.viewer().contextRequested.emit({ key: 'ground', x: 10, y: 10, label: '1 2 3', position: { x: 1066.6667, y: -533.3333, z: 3 } });
+      await settle(page);
+      expect(page.byId('context-copy-marker', false)).toBeFalsy();
+      page.click('context-copy-go-grid');
+      expect(mocks.clipboard.copyFromContent).toHaveBeenLastCalledWith('.go grid 33.5000 30.5000 0');
+      page.viewer().contextRequested.emit({ key: 'ground', x: 10, y: 10, label: '1 2 3', marker: { x: 5, y: 6, z: 7 } });
+      await settle(page);
+      page.click('context-copy-marker');
+      expect(mocks.clipboard.copyFromContent).toHaveBeenLastCalledWith('.go xyz 5.0000 6.0000 7.0000 0');
     });
 
     it('offers the (future) waypoint editor for waypoints, and closes on a press elsewhere or Escape', async () => {
@@ -1359,9 +1567,7 @@ describe(WorldEditorComponent.name, () => {
     it('finds everything as it was after leaving the editor (e.g. for a creature from the right-click menu)', async () => {
       const { page, fixture } = await setup();
       await loadArea(page);
-      const zone = page.byId<HTMLSelectElement>('zone-select').nativeElement;
-      zone.value = '12';
-      zone.dispatchEvent(new Event('change'));
+      page.chooseZone(12);
       page.click('layer-gameobjects');
       page.click('filters-toggle');
       page.click('tool-place-creature');
@@ -1385,7 +1591,7 @@ describe(WorldEditorComponent.name, () => {
       expect(again.byId('filters', false)).toBeTruthy();
       expect(again.byId('tool-probe').nativeElement.classList).toContain('btn-primary');
       expect(again.viewer().probe()).toEqual(expect.objectContaining({ from: { x: 5, y: 5, z: 5 } }));
-      expect(again.byId<HTMLSelectElement>('zone-select').nativeElement.value).toBe('12');
+      expect(again.byId<HTMLInputElement>('zone-search').nativeElement.value).toBe('12 – Elwynn Forest');
     });
   });
 
@@ -2340,6 +2546,46 @@ describe(WorldEditorComponent.name, () => {
       await settle(page);
       expect(document.exitFullscreen).toHaveBeenCalled();
       expect(root.classList).not.toContain('fullscreen');
+
+      // the 3D view alone
+      const view = page.fixture.nativeElement.querySelector('.world-editor-view') as HTMLElement;
+      view.requestFullscreen = vi.fn().mockImplementation(() => {
+        current = view;
+        document.dispatchEvent(new Event('fullscreenchange'));
+        return Promise.resolve();
+      });
+      page.click('view-fullscreen');
+      await settle(page);
+      expect(view.classList).toContain('view-fullscreen');
+      expect(root.classList).not.toContain('fullscreen');
+      page.click('view-fullscreen');
+      await settle(page);
+      expect(view.classList).not.toContain('view-fullscreen');
+    });
+
+    it('shows performance stats, and writes a performance log next to the cache', async () => {
+      const { page, fixture } = await setup({ cacheRoot: '/cache' });
+      page.click('view-toggle');
+      page.fixture.detectChanges();
+      page.click('view-stats');
+      page.fixture.detectChanges();
+      expect(page.viewer().renderSettings().showStats).toBe(true);
+      page.click('view-perf-log');
+      await settle(page);
+      expect(perfLogActive()).toBe(true);
+      perfNote('hello');
+      flushPerfLog();
+      expect(mocks.electron.fs.appendFileSync).toHaveBeenCalledWith('/cache/world-editor-perf.log', expect.stringContaining('hello'));
+      // stops with the editor
+      fixture.destroy();
+      expect(perfLogActive()).toBe(false);
+    });
+
+    it('offers no performance log outside the desktop app', async () => {
+      const { page } = await setup();
+      page.click('view-toggle');
+      page.fixture.detectChanges();
+      expect(page.byId<HTMLInputElement>('view-perf-log').nativeElement.disabled).toBe(true);
     });
 
     it('sets the resolution from the view, and the marker model', async () => {

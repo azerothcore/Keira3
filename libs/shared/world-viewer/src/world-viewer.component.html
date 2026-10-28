@@ -70,7 +70,29 @@
     </div>
   }
 
-  @if (activity(); as busy) {
+  @if (renderSettings().showStats && stats(); as s) {
+    <div class="world-viewer-stats" data-testid="world-viewer-stats">
+      <div>{{ s.fps }} fps · {{ s.frameMs.toFixed(1) }} ms</div>
+      <div>
+        {{ 'WORLD_EDITOR.STATS_DRAWS' | translate }} {{ s.calls }} · {{ 'WORLD_EDITOR.STATS_TRIANGLES' | translate }} {{ s.triangles }}
+      </div>
+      <div>
+        {{ 'WORLD_EDITOR.STATS_GPU' | translate }}: {{ s.geometries }} {{ 'WORLD_EDITOR.STATS_GEOMETRIES' | translate }} · {{ s.textures }}
+        {{ 'WORLD_EDITOR.STATS_TEXTURES' | translate }} · {{ s.programs }} {{ 'WORLD_EDITOR.STATS_SHADERS' | translate }}
+      </div>
+      @if (s.heapMb !== undefined) {
+        <div>{{ 'WORLD_EDITOR.STATS_MEMORY' | translate }} {{ s.heapMb }} MB</div>
+      }
+      <div>
+        {{ 'WORLD_EDITOR.TERRAIN' | translate }} {{ s.tiles }} · {{ 'WORLD_EDITOR.BUILDINGS' | translate }} {{ s.buildings }} ·
+        {{ 'WORLD_EDITOR.DOODADS' | translate }} {{ s.props }} · {{ 'WORLD_EDITOR.MODELS' | translate }} {{ s.models }} /
+        {{ s.spawns }}
+      </div>
+    </div>
+  }
+
+  @if (activity() || spawnsLoading()) {
+    @let busy = activity() ?? { terrain: 0, buildings: 0, props: 0, models: 0 };
     <div class="world-viewer-activity" data-testid="world-viewer-activity" role="status">
       <div class="progress">
         <div class="progress-bar progress-bar-striped progress-bar-animated w-100"></div>
@@ -88,6 +110,9 @@
         }
         @if (busy.models) {
           · {{ 'WORLD_EDITOR.MODELS' | translate }} {{ busy.models }}
+        }
+        @if (spawnsLoading()) {
+          · <span data-testid="world-viewer-activity-spawns">{{ 'WORLD_EDITOR.SPAWNS' | translate }}</span>
         }
       </small>
     </div>

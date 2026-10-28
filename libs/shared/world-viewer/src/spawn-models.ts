@@ -99,7 +99,7 @@ export class SpawnModels {
   }
 
   private refresh(): void {
-    perfTime('spawn models refresh', () => this.refreshNow()); // TEMPORARY perf-log
+    perfTime('spawn models refresh', () => this.refreshNow());
   }
 
   private refreshNow(): void {

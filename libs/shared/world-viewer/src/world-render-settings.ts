@@ -47,6 +47,10 @@ export interface WorldRenderSettings {
   loadAhead: number;
   /** The marker (Space) as a player character, `race:sex` (e.g. `1:0` human male); '' = the beam only. */
   markerModel: string;
+  /** Frames per second, draw calls, graphics memory and what's loading, in a corner of the view. */
+  showStats: boolean;
+  /** Writes world-editor-perf.log (in the cache folder): what held up the window, and for how long. */
+  perfLog: boolean;
 }
 
 export const RENDER_SCALES = [1, 0.75, 0.5];
@@ -95,6 +99,8 @@ export const DEFAULT_WORLD_RENDER_SETTINGS: WorldRenderSettings = {
   renderScale: 1,
   loadAhead: 1,
   markerModel: '',
+  showStats: false,
+  perfLog: false,
 };
 
 export const WORLD_RENDER_SETTINGS_KEY = 'keira3.worldEditor.render';

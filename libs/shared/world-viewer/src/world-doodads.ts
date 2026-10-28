@@ -198,7 +198,7 @@ export class WorldDoodads {
 
   /** Rebuilds the instances from the loaded tiles: what's within the distance, grouped by model. */
   private refresh(): void {
-    perfTime('doodads refresh', () => this.refreshNow()); // TEMPORARY perf-log
+    perfTime('doodads refresh', () => this.refreshNow());
   }
 
   private refreshNow(): void {

@@ -9,6 +9,8 @@ export interface WorldRenderer {
   dispose(): void;
   /** The WebGL extensions available (to use compressed textures). */
   extensions?: { has(name: string): boolean };
+  /** What the last frame drew and what's on the graphics card (for the performance stats). */
+  info?: { render: { calls: number; triangles: number }; memory: { geometries: number; textures: number }; programs: unknown[] | null };
 }
 
 export type WorldRendererFactory = (canvas: HTMLCanvasElement) => WorldRenderer;

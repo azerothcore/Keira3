@@ -157,7 +157,7 @@ export class WorldObjects {
         existing.tiles.add(key);
         continue;
       }
-      const object = perfTime('building clone', () => template.clone()); // TEMPORARY perf-log
+      const object = perfTime('building clone', () => template.clone());
       object.name = `wmo:${placement.uniqueId}`;
       applyPlacement(object, placement);
       this.group.add(object);
@@ -180,7 +180,7 @@ export class WorldObjects {
             material.texture ? this.textures.get(material.texture) : Promise.resolve(this.textures.fallback),
           ),
         );
-        return perfTime('building build', () => buildWmoObject(model, textures, this.textures.fallback)); // TEMPORARY perf-log
+        return perfTime('building build', () => buildWmoObject(model, textures, this.textures.fallback));
       });
       template.catch(() => this.templates.delete(key));
       this.templates.set(key, template);
