@@ -26,3 +26,4 @@ export * from './world-map.component';
 export * from './minimap-image';
 export * from './world-compass.component';
 export * from './world-skybox';
+export * from './spawn-scan';

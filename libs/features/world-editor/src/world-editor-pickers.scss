@@ -114,3 +114,33 @@
   overflow-y: auto;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
 }
+
+// Scan the whole map: green on the ground, yellow off a little (the core puts it right), red wrong
+.world-editor-scan-level {
+  color: #fff;
+  font-weight: 700;
+
+  &.off {
+    opacity: 0.35;
+  }
+}
+
+.scan-ok {
+  --scan-color: #2ecc71;
+}
+.scan-warn {
+  --scan-color: #f1c40f;
+}
+.scan-bad {
+  --scan-color: #e74c3c;
+}
+
+.world-editor-scan-level.scan-ok,
+.world-editor-scan-level.scan-warn,
+.world-editor-scan-level.scan-bad {
+  background: var(--scan-color);
+}
+
+.world-editor-scan-mark {
+  color: var(--scan-color);
+}

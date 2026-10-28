@@ -1832,6 +1832,61 @@
               </button>
             }
           </div>
+          <div class="d-flex align-items-center gap-2 mt-1">
+            @if (mapScan(); as scan) {
+              <small class="text-muted" data-testid="scan-progress">{{
+                'WORLD_EDITOR.SCAN_PROGRESS' | translate: { done: scan.done, total: scan.total || '?' }
+              }}</small>
+              <button type="button" class="btn btn-sm btn-link p-0" data-testid="scan-cancel" (click)="cancelScan()">
+                {{ 'WORLD_EDITOR.CANCEL' | translate }}
+              </button>
+            } @else {
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-secondary"
+                data-testid="scan-map"
+                [title]="'WORLD_EDITOR.SCAN_MAP_HELP' | translate"
+                [disabled]="!client.isSupported() || !settings.paths().serverDataPath"
+                (click)="scanMap()"
+              >
+                <i class="fa fa-satellite-dish"></i> {{ 'WORLD_EDITOR.SCAN_MAP' | translate }}
+              </button>
+            }
+            @if (scanResults()) {
+              @let counts = scanCounts();
+              @for (level of scanLevels; track level) {
+                <button
+                  type="button"
+                  class="btn btn-sm py-0 px-1 world-editor-scan-level"
+                  [class]="'scan-' + level"
+                  [class.off]="!scanShown()[level]"
+                  [attr.data-testid]="'scan-level-' + level"
+                  [title]="'WORLD_EDITOR.SCAN_' + level.toUpperCase() | translate"
+                  (click)="toggleScanLevel(level)"
+                >
+                  ! {{ counts[level] }}
+                </button>
+              }
+              <button type="button" class="btn btn-sm btn-link ms-auto p-0" data-testid="scan-close" (click)="scanResults.set(undefined)">
+                <i class="fa fa-times"></i>
+              </button>
+            }
+          </div>
+          @if (scanList().length) {
+            <div class="list-group list-group-flush small world-editor-results mt-1" data-testid="scan-list">
+              @for (result of scanList(); track result.key) {
+                <button
+                  type="button"
+                  class="list-group-item list-group-item-action py-1 px-2"
+                  [attr.data-testid]="'scan-' + result.key"
+                  (click)="goToResult(result.spawn)"
+                >
+                  <strong class="world-editor-scan-mark" [class]="'scan-' + result.level">!</strong>
+                  {{ result.spawn.name || result.spawn.entry }} ({{ result.spawn.type }} {{ result.spawn.guid }}) — {{ result.text }}
+                </button>
+              }
+            </div>
+          }
           @if (spawnProblems()?.length) {
             <div class="list-group list-group-flush small world-editor-results mt-1" data-testid="problem-list">
               @for (problem of spawnProblems(); track $index) {

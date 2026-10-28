@@ -464,10 +464,33 @@ describe('WorldEditorService', () => {
     expect(queryService.query.mock.calls[0][0]).toContain('BETWEEN -5000 AND');
   });
 
+  it('loads every spawn of a map to scan, telling creatures that fly', async () => {
+    const { service, queryService } = setup();
+    queryService.query
+      .mockReturnValueOnce(
+        of([
+          { type: 'creature', guid: '1', entry: '2', name: 'Bat', map: '0', x: '1', y: '2', z: '3', flying: '1' },
+          { type: 'gameobject', guid: '5', entry: '6', name: 'Box', map: '0', x: '1', y: '2', z: '3', flying: '0' },
+        ]),
+      )
+      .mockReturnValueOnce(of(undefined));
+    expect(await service.loadMapSpawnPositions(0)).toEqual([
+      { type: 'creature', guid: 1, entry: 2, name: 'Bat', map: 0, x: 1, y: 2, z: 3, flying: true },
+      { type: 'gameobject', guid: 5, entry: 6, name: 'Box', map: 0, x: 1, y: 2, z: 3, flying: false },
+    ]);
+    expect(queryService.query.mock.calls[0][0]).toContain('LEFT JOIN creature_template_movement m ON m.CreatureId = c.id WHERE c.map = 0');
+    expect(await service.loadMapSpawnPositions(1)).toEqual([]);
+  });
+
   it('finds templates to place by entry or name, with their model', async () => {
     const { service, queryService } = setup();
     queryService.query
-      .mockReturnValueOnce(of([{ entry: '197', name: 'Marshal McBride', displayId: '1', scale: '1.2' }, { entry: '5', name: 'X' }]))
+      .mockReturnValueOnce(
+        of([
+          { entry: '197', name: 'Marshal McBride', displayId: '1', scale: '1.2' },
+          { entry: '5', name: 'X' },
+        ]),
+      )
       .mockReturnValueOnce(of(undefined));
     expect(await service.searchTemplates('creature', ' 197 ')).toEqual([
       { entry: 197, name: 'Marshal McBride', displayId: 1, scale: 1.2 },

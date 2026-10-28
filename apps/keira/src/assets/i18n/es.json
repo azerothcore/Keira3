@@ -1436,6 +1436,13 @@
     "HELP_SHIFT_SPACE": "Mayús + Espacio",
     "HELP_MARKER_LIQUID": "Marcador sobre la superficie del líquido (o el suelo, con Marcador sobre líquidos)",
     "PLACE_SEARCH": "Entry o nombre",
-    "NO_MODEL": "sin modelo"
+    "NO_MODEL": "sin modelo",
+    "SCAN_MAP": "Revisar todo el mapa",
+    "SCAN_MAP_HELP": "Comprueba dónde está cada spawn del mapa respecto a los suelos del servidor (terreno y colisión de edificios de la carpeta de datos del servidor)",
+    "SCAN_PROGRESS": "Revisando… {{done}} / {{total}} casillas",
+    "SCAN_OK": "En el suelo",
+    "SCAN_WARN": "Un poco desplazado: el core lo corrige (o conviene revisarlo)",
+    "SCAN_BAD": "Dentro del suelo o flotando: el core no lo corrige",
+    "CANCEL": "Cancelar"
   }
 }

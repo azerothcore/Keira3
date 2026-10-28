@@ -22,6 +22,9 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-components';
 import {
+  scanSpawnPositions,
+  SpawnScanLevel,
+  SpawnScanResult,
   ContextRequest,
   ExtraBuilding,
   GROUND_KEY,
@@ -179,6 +182,9 @@ export function formatSize(bytes: number): string {
 }
 
 const LAST_VIEW_KEY = 'keira3.worldEditor.lastView';
+/** Scan the whole map: results listed at most, and the colour of each level. */
+const SCAN_LIST_SIZE = 300;
+const SCAN_COLORS: Record<SpawnScanLevel, number> = { ok: 0x2ecc71, warn: 0xf1c40f, bad: 0xe74c3c };
 /** Difficulties by spawnMask bit (1 << bit): a raid's 10 / 25 Normal / Heroic, a dungeon's Normal / Heroic. */
 const RAID_DIFFICULTIES = [
   { bit: 0, label: 'WORLD_EDITOR.DIFFICULTY_10N' },
@@ -292,10 +298,10 @@ export class WorldEditorComponent implements OnInit {
   /** What the editor is in the middle of, kept across visits. */
   private readonly session = inject(WorldEditorSessionService);
   private readonly service = inject(WorldEditorService);
-  private readonly client = inject(WowClientService);
+  protected readonly client = inject(WowClientService);
   private readonly translate = inject(TranslateService);
   protected readonly electron = inject(ElectronService);
-  private readonly settings = inject(WowDataSettingsService);
+  protected readonly settings = inject(WowDataSettingsService);
   protected readonly renderSettings = inject(WorldRenderSettingsService);
   protected readonly cache = inject(WowDataCacheService);
   /** The folder performance logs go to (the cache's); undefined outside the desktop app. */
@@ -478,6 +484,7 @@ export class WorldEditorComponent implements OnInit {
         ...(layers.pools ? poolOverlays(spawns, this.pools()).markers : []),
         ...(layers.formations ? formationSlots(spawns, this.formations(), this.selectedSpawn()) : []),
         ...this.travelOverlays().markers.filter((marker) => (isFlight(marker.key) ? layers.flightPaths : layers.travel)),
+        ...this.scanMarkers(),
       ];
     }),
   );
@@ -2197,6 +2204,83 @@ export class WorldEditorComponent implements OnInit {
     this.groundQuery.set(undefined);
     this.spawnProblems.set(findSpawnProblems(this.visibleSpawns(), heights, this.waypoints()));
   }
+
+  /** Scan the whole map: every spawn of the map against the server's floors (progress while it runs). */
+  protected readonly mapScan = signal<{ done: number; total: number } | undefined>(undefined);
+  protected readonly scanResults = signal<(SpawnScanResult & { spawn: PoolSpawn })[] | undefined>(undefined);
+  /** Which results are listed and marked in the view: on the ground (green), off a little (yellow), wrong (red). */
+  protected readonly scanShown = signal<Record<SpawnScanLevel, boolean>>({ ok: false, warn: true, bad: true });
+  protected readonly scanLevels: SpawnScanLevel[] = ['ok', 'warn', 'bad'];
+  private scanCancelled = false;
+  protected readonly scanCounts = computed(() => {
+    const counts: Record<SpawnScanLevel, number> = { ok: 0, warn: 0, bad: 0 };
+    // (only read once there are results)
+    (this.scanResults() as SpawnScanResult[]).forEach((result) => counts[result.level]++);
+    return counts;
+  });
+  /** The results shown, worst first (the first few hundred). */
+  protected readonly scanList = computed(() => {
+    const shown = this.scanShown();
+    const order: Record<SpawnScanLevel, number> = { bad: 0, warn: 1, ok: 2 };
+    return (this.scanResults() ?? [])
+      .filter((result) => shown[result.level])
+      .sort((a, b) => order[a.level] - order[b.level])
+      .slice(0, SCAN_LIST_SIZE);
+  });
+
+  protected async scanMap(): Promise<void> {
+    const mapId = this.mapId();
+    this.scanCancelled = false;
+    this.scanResults.set(undefined);
+    this.mapScan.set({ done: 0, total: 0 });
+    try {
+      const spawns = await this.service.loadMapSpawnPositions(mapId);
+      const byKey = new Map(spawns.map((spawn) => [spawnKey(spawn.type, spawn.guid), spawn]));
+      const results = await scanSpawnPositions(
+        this.client,
+        mapId,
+        spawns.map((spawn) => ({
+          key: spawnKey(spawn.type, spawn.guid),
+          kind: spawn.type,
+          position: { x: spawn.x, y: spawn.y, z: spawn.z },
+          flying: spawn.flying,
+        })),
+        (done, total) => this.mapScan.set({ done, total }),
+        () => this.scanCancelled || mapId !== this.mapId(),
+      );
+      if (mapId === this.mapId()) {
+        this.scanResults.set(results.map((result) => ({ ...result, spawn: byKey.get(result.key) as PoolSpawn })));
+      }
+    } catch (error) {
+      this.toastr.error((error as Error).message, 'World Editor');
+    } finally {
+      this.mapScan.set(undefined);
+    }
+  }
+
+  protected cancelScan(): void {
+    this.scanCancelled = true;
+  }
+
+  protected toggleScanLevel(level: SpawnScanLevel): void {
+    this.scanShown.update((shown) => ({ ...shown, [level]: !shown[level] }));
+  }
+
+  /** The scan's results near the camera, as "!" markers in their colour. */
+  private readonly scanMarkers = computed<WorldMarker[]>(() => {
+    const center = this.spawnsCenter();
+    const shown = this.scanShown();
+    return center
+      ? (this.scanResults() ?? [])
+          .filter((result) => shown[result.level] && Math.hypot(result.spawn.x - center.x, result.spawn.y - center.y) <= SPAWN_LOAD_RADIUS)
+          .map((result) => ({
+            key: `scan:${result.key}`,
+            position: { x: result.spawn.x, y: result.spawn.y, z: result.spawn.z },
+            color: SCAN_COLORS[result.level],
+            label: `! ${result.spawn.name || result.spawn.entry} (${result.spawn.guid}): ${result.text}`,
+          }))
+      : [];
+  });
 
   protected goToProblem(problem: SpawnProblem): void {
     this.groupKeys.set([]);

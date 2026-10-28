@@ -610,6 +610,31 @@ export class WorldEditorService {
     return { displayId: Number(row?.displayId ?? 0), scale: Number(row?.scale ?? 1) };
   }
 
+  /** Every spawn of a map with its place, and whether creatures fly (`creature_template_movement.Flight`), to scan them. */
+  async loadMapSpawnPositions(map: number): Promise<(PoolSpawn & { flying: boolean })[]> {
+    const id = Math.trunc(map);
+    const rows = await firstValueFrom(
+      this.queryService.query<TableRow>(
+        "SELECT 'creature' AS type, c.guid, c.id AS entry, IFNULL(ct.name, '') AS name, c.map, c.position_x AS x, c.position_y AS y, " +
+          'c.position_z AS z, IFNULL(m.Flight, 0) > 0 AS flying FROM creature c LEFT JOIN creature_template ct ON ct.entry = c.id ' +
+          `LEFT JOIN creature_template_movement m ON m.CreatureId = c.id WHERE c.map = ${id} UNION ALL ` +
+          "SELECT 'gameobject', g.guid, g.id, IFNULL(gt.name, ''), g.map, g.position_x, g.position_y, g.position_z, 0 " +
+          `FROM gameobject g LEFT JOIN gameobject_template gt ON gt.entry = g.id WHERE g.map = ${id}`,
+      ),
+    );
+    return (rows ?? []).map((row) => ({
+      type: row['type'] as SpawnType,
+      guid: Number(row['guid']),
+      entry: Number(row['entry']),
+      name: String(row['name']),
+      map: Number(row['map']),
+      x: Number(row['x']),
+      y: Number(row['y']),
+      z: Number(row['z']),
+      flying: Number(row['flying']) > 0,
+    }));
+  }
+
   /** Templates to place, by entry or name (an entry typed comes first), with their model (display id and scale). */
   async searchTemplates(type: SpawnType, text: string): Promise<PlaceTemplate[]> {
     const entry = /^\d+$/.test(text.trim()) ? Number(text.trim()) : -1;

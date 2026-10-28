@@ -1436,6 +1436,13 @@
     "HELP_SHIFT_SPACE": "Shift + 空格",
     "HELP_MARKER_LIQUID": "标记放在液面上（开启“标记放在液面上”时则放在地面）",
     "PLACE_SEARCH": "Entry 或名称",
-    "NO_MODEL": "无模型"
+    "NO_MODEL": "无模型",
+    "SCAN_MAP": "扫描整张地图",
+    "SCAN_MAP_HELP": "根据服务器的地面（服务器数据文件夹中的地形和建筑碰撞）检查地图上每个刷新点的位置",
+    "SCAN_PROGRESS": "扫描中… {{done}} / {{total}} 个地块",
+    "SCAN_OK": "在地面上",
+    "SCAN_WARN": "略有偏差：核心会修正（或值得检查）",
+    "SCAN_BAD": "在地面以下或悬空：核心不会修正",
+    "CANCEL": "取消"
   }
 }

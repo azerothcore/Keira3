@@ -1436,6 +1436,13 @@
     "HELP_SHIFT_SPACE": "Shift + Space",
     "HELP_MARKER_LIQUID": "Marker on the liquid surface (or the ground, with Marker on liquids)",
     "PLACE_SEARCH": "Entry or name",
-    "NO_MODEL": "no model"
+    "NO_MODEL": "no model",
+    "SCAN_MAP": "Scan the whole map",
+    "SCAN_MAP_HELP": "Checks where every spawn of the map stands against the server's floors (terrain and building collision from the server data folder)",
+    "SCAN_PROGRESS": "Scanning… {{done}} / {{total}} tiles",
+    "SCAN_OK": "On the ground",
+    "SCAN_WARN": "Off a little: the core puts it right (or worth a look)",
+    "SCAN_BAD": "Inside the floor or floating: the core won't put it right",
+    "CANCEL": "Cancel"
   }
 }

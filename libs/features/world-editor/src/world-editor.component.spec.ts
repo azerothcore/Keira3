@@ -35,6 +35,7 @@ import {
   perfNote,
   tileCenter,
   WOW_DATA_SETTINGS_KEY,
+  WowDataSettingsService,
   WowClientService,
   WowDataCacheService,
   WorldBounds,
@@ -206,6 +207,8 @@ describe(WorldEditorComponent.name, () => {
       getServerCoverage: vi.fn(),
       getServerMap: vi.fn(),
       getSkyboxes: vi.fn(),
+      getVmapTile: vi.fn(),
+      getVmapModel: vi.fn(),
       getMinimap: vi.fn(),
       getFactions: vi.fn(),
     },
@@ -224,6 +227,7 @@ describe(WorldEditorComponent.name, () => {
       loadLandingSpot: vi.fn(),
       loadAreaPaths: vi.fn(),
       searchTemplates: vi.fn(),
+      loadMapSpawnPositions: vi.fn(),
       loadScriptEntries: vi.fn(),
       loadWaypointScripts: vi.fn(),
       loadWaypointSai: vi.fn(),
@@ -347,6 +351,8 @@ describe(WorldEditorComponent.name, () => {
     mocks.service.loadLandingSpot.mockResolvedValue(undefined);
     mocks.service.loadAreaPaths.mockResolvedValue([]);
     mocks.service.searchTemplates.mockResolvedValue([]);
+    mocks.service.loadMapSpawnPositions.mockResolvedValue([]);
+    mocks.client.getVmapTile.mockResolvedValue(undefined);
     mocks.client.getTaxiNodes.mockResolvedValue([]);
     mocks.client.getTaxiPaths.mockResolvedValue([]);
     mocks.client.getBossBoundaries.mockResolvedValue([]);
@@ -2942,6 +2948,82 @@ describe(WorldEditorComponent.name, () => {
       page.click('search-btn');
       await settle(page);
       expect(mocks.toastr.error).toHaveBeenCalledWith('bad query', 'World Editor');
+    });
+
+    it('scans every spawn of the map against the server floors, marking them green, yellow or red', async () => {
+      const flat = { v9: new Float32Array(129 * 129).fill(42), v8: new Float32Array(128 * 128).fill(42) };
+      mocks.client.getServerMap.mockResolvedValue(flat);
+      const at = (type: 'creature' | 'gameobject', guid: number, z: number, flying = false) => ({
+        type,
+        guid,
+        entry: guid,
+        name: guid === 3 ? '' : `Spawn ${guid}`,
+        map: 0,
+        x: CENTER.x,
+        y: CENTER.y,
+        z,
+        flying,
+      });
+      mocks.service.loadMapSpawnPositions.mockResolvedValue([
+        at('creature', 1, 42),
+        at('creature', 2, 45),
+        at('gameobject', 3, 30),
+        at('creature', 4, 60, true),
+      ]);
+      const { page } = await setup();
+      await loadArea(page);
+      // the server's data is needed
+      expect(page.byId<HTMLButtonElement>('scan-map').nativeElement.disabled).toBe(true);
+      TestBed.inject(WowDataSettingsService).save({ clientPath: '/wow', serverDataPath: '/srv' });
+      page.fixture.detectChanges();
+      page.click('scan-map');
+      page.fixture.detectChanges();
+      expect(page.text('scan-progress')).toContain('WORLD_EDITOR.SCAN_PROGRESS');
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      await settle(page);
+      expect(page.text('scan-level-ok')).toBe('! 2');
+      expect(page.text('scan-level-warn')).toBe('! 1');
+      expect(page.text('scan-level-bad')).toBe('! 1');
+      // worst first; green ones listed when asked
+      expect(page.queryAll('[data-testid^="scan-creature"], [data-testid^="scan-gameobject"]').length).toBe(2);
+      expect(page.text('scan-gameobject:3')).toContain('3 (gameobject 3)');
+      page.click('scan-level-ok');
+      page.fixture.detectChanges();
+      expect(page.text('scan-creature:4')).toContain('Flying');
+      // and as markers near the camera
+      expect(
+        page
+          .viewer()
+          .markers()
+          .filter((m) => m.key.startsWith('scan:'))
+          .map((m) => m.color),
+      ).toEqual([0x2ecc71, 0xf1c40f, 0xe74c3c, 0x2ecc71]);
+      page.click('scan-creature:2');
+      await settle(page);
+      expect(page.viewer().focus()).toEqual({ x: CENTER.x, y: CENTER.y, z: 45 });
+      page.click('scan-close');
+      page.fixture.detectChanges();
+      expect(page.byId('scan-list', false)).toBeFalsy();
+      // cancelled; and a failure
+      let answer: (rows: unknown[]) => void = () => undefined;
+      mocks.service.loadMapSpawnPositions.mockReturnValueOnce(new Promise((resolve) => (answer = resolve)));
+      page.click('scan-map');
+      page.fixture.detectChanges();
+      page.click('scan-cancel');
+      answer([at('creature', 1, 42)]);
+      await settle(page);
+      expect(page.text('scan-level-ok')).toBe('! 0');
+      // another map picked meanwhile: dropped
+      mocks.service.loadMapSpawnPositions.mockReturnValueOnce(new Promise((resolve) => (answer = resolve)));
+      page.click('scan-map');
+      page.chooseMap(1);
+      answer([at('creature', 1, 42)]);
+      await settle(page);
+      expect(page.byId('scan-level-ok', false)).toBeFalsy();
+      mocks.service.loadMapSpawnPositions.mockRejectedValueOnce(new Error('no creature_template_movement'));
+      page.click('scan-map');
+      await settle(page);
+      expect(mocks.toastr.error).toHaveBeenCalledWith('no creature_template_movement', 'World Editor');
     });
 
     it('checks the spawns shown and jumps to a problem', async () => {
