@@ -77,7 +77,7 @@ export class WorldEditorService {
       // the first template model, as the server picks when it has a single one
       'IFNULL(ctm.CreatureDisplayID, 0) AS displayId, IFNULL(ctm.DisplayScale, 1) AS scale, ' +
       'c.wander_distance AS wanderDistance, c.MovementType AS movementType, c.phaseMask, c.spawnMask, ' +
-      'IFNULL(ct.speed_walk, 1) AS speedWalk, IFNULL(ct.speed_run, 1) AS speedRun, ' +
+      'IFNULL(ct.speed_walk, 1) AS speedWalk, IFNULL(ct.speed_run, 1) AS speedRun, IFNULL(ct.detection_range, 20) AS detectionRange, ' +
       'IFNULL(cmi.BoundingRadius, 0) AS boundingRadius, IFNULL(cmi.CombatReach, 0) AS combatReach, ' +
       `${eventOf('game_event_creature', 'c.guid')}, ` +
       `((IFNULL(ct.flags_extra, 0) & ${FLAG_EXTRA_TRIGGER}) <> 0 OR ${helperName('ct.name')}) AS isTrigger, ` +
@@ -707,7 +707,9 @@ function toSpawns(type: SpawnType, rows: SpawnRow[] | undefined): SpawnRecord[] 
     ...(Number(row.movementType) === RANDOM_MOVEMENT ? { wanderDistance: Number(row.wanderDistance) } : {}),
     ...(Number(row.eventEntry) > 0 ? { event: Number(row.eventEntry) } : {}),
     ...(Number(row.isTrigger) ? { trigger: true } : {}),
-    ...(type === 'creature' ? { speedWalk: Number(row.speedWalk), speedRun: Number(row.speedRun) } : {}),
+    ...(type === 'creature'
+      ? { speedWalk: Number(row.speedWalk), speedRun: Number(row.speedRun), detectionRange: Number(row['detectionRange'] ?? 20) }
+      : {}),
     ...(Number(row['boundingRadius']) > 0
       ? { boundingRadius: Number(row['boundingRadius']), combatReach: Number(row['combatReach']) }
       : {}),

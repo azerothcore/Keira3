@@ -1583,6 +1583,23 @@
     "BUTTON_STYLE_BOTH": "两者",
     "BUTTON_STYLE_HELP": "工具栏按钮的显示方式：图标、名称或两者。提示总会显示名称。",
     "CONTROL_RESETNORTH": "朝北",
-    "CONTROL_TREE": "打开 / 关闭树状图"
+    "CONTROL_TREE": "打开 / 关闭树状图",
+    "AGGRO_RADIUS": "仇恨范围",
+    "AGGRO_RADIUS_HELP": "每个生物周围的橙色圆圈：它发现同等级玩家的距离（creature_template.detection_range，通常为 20 码）。生物每比玩家高一级约远 1 码，每低一级则更近。只有敌对生物会攻击。",
+    "ASSIST_RADIUS": "呼救范围",
+    "ASSIST_RADIUS_HELP": "每个生物周围的蓝色圆圈：被攻击时，此范围内的同类生物（10 码，服务器的 CreatureFamilyAssistanceRadius）会加入战斗",
+    "LOCK": "锁定",
+    "UNLOCK": "解锁",
+    "LOCK_HELP": "锁定的刷新点可以选中，但不能移动或删除，避免误改",
+    "LOCK_OTHERS": "锁定其他所有",
+    "UNLOCK_ALL": "全部解锁",
+    "SELECT_LIKE": "选择所有同类",
+    "HIDE_THIS": "隐藏",
+    "HIDE_OTHERS": "隐藏其他所有",
+    "SHOW_HIDDEN": "显示隐藏的",
+    "TRAVEL_TIME": "用时",
+    "TRAVEL_TIME_HELP": "玩家从 A 到 C 所需时间，有路径时沿路径计算（跑步每秒 7 码，步行 2.5 码）",
+    "RUNNING": "跑步",
+    "WALKING": "步行"
   }
 }

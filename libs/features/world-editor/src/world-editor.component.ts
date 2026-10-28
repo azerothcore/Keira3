@@ -279,6 +279,8 @@ type RenderFlagKey =
   | 'showFacingArrows'
   | 'showWanderRadius'
   | 'showBounds'
+  | 'showAggroRadius'
+  | 'showAssistRadius'
   | 'showStats'
   | 'perfLog'
   | 'solidSelection'
@@ -311,6 +313,17 @@ const MAX_ARRAY = 50;
 type Panel = 'map' | 'filters' | 'view' | 'controls' | 'settings' | 'legend';
 /** A player's combat reach, and the shortest melee range the server uses (NOMINAL_MELEE_RANGE). */
 const PLAYER_COMBAT_REACH = 1.5;
+/** How far a creature pulled into a fight calls the ones around it to help (the server's default CreatureFamilyAssistanceRadius). */
+const ASSIST_RADIUS = 10;
+/** A player's run and walk speed (yards a second). */
+const PLAYER_RUN_SPEED = 7;
+const PLAYER_WALK_SPEED = 2.5;
+
+/** Seconds as "1m 05s". */
+export function travelTime(seconds: number): string {
+  const whole = Math.round(seconds);
+  return `${Math.floor(whole / 60)}m ${String(whole % 60).padStart(2, '0')}s`;
+}
 const MIN_MELEE_RANGE = 5;
 /** A creature's bounding radius and combat reach (creature_model_info), at its scale. */
 const spawnBounds = (spawn: SpawnRecord): { radius: number; reach: number } | undefined =>
@@ -516,6 +529,12 @@ export class WorldEditorComponent implements OnInit {
     const { from, to } = this.probeResult() as { from: WorldPosition; to: WorldPosition };
     const flat = Math.hypot(to.x - from.x, to.y - from.y);
     return { straight: Math.hypot(flat, to.z - from.z), flat, height: to.z - from.z };
+  });
+  /** How long a player takes from A to C (along the walking path when there is one), running and walking. */
+  protected readonly probeTime = computed(() => {
+    const result = this.probeResult() as PathProbeResult;
+    const distance = result.path ? (result.length as number) : this.probeDistance().straight;
+    return { run: travelTime(distance / PLAYER_RUN_SPEED), walk: travelTime(distance / PLAYER_WALK_SPEED) };
   });
   protected readonly layerSwitches = LAYER_SWITCHES;
   protected readonly overlaySwitches = OVERLAY_SWITCHES;
@@ -913,7 +932,7 @@ export class WorldEditorComponent implements OnInit {
   protected readonly worldSpawns = computed<WorldSpawn[]>(() =>
     perfTime('editor worldSpawns', () => {
       const layers = this.layers();
-      const { showWanderRadius: showWander, showBounds } = this.renderSettings.settings();
+      const { showWanderRadius: showWander, showBounds, showAggroRadius, showAssistRadius } = this.renderSettings.settings();
       return this.visibleSpawns()
         .filter((s) => (s.type === 'creature' ? layers.creatures : layers.gameobjects))
         .map((s) => ({
@@ -930,6 +949,9 @@ export class WorldEditorComponent implements OnInit {
           scale: s.scale,
           wanderRadius: showWander ? s.wanderDistance : undefined,
           bounds: showBounds ? spawnBounds(s) : undefined,
+          // (creatures that fight: not the invisible triggers)
+          ...(showAggroRadius && s.detectionRange && !s.trigger ? { aggroRadius: s.detectionRange } : {}),
+          ...(showAssistRadius && s.type === 'creature' && !s.trigger ? { assistRadius: ASSIST_RADIUS } : {}),
           ...(s.weapons ? { weapons: s.weapons } : {}),
           ...(s.pathId || s.wanderDistance ? { moves: true } : {}),
         }));
@@ -1117,8 +1139,13 @@ export class WorldEditorComponent implements OnInit {
       ),
   );
 
+  /** Spawns locked against moving and deleting (right-click > Lock), and whether the selection is one. */
+  protected readonly lockedKeys = signal<ReadonlySet<string>>(new Set());
+  protected readonly selectedLocked = computed(() => this.lockedKeys().has(this.selectedKey() as string));
   protected readonly editableKey = computed(() =>
-    this.tool() === 'select' && (this.selectedSpawn() || this.selectedWaypoint()) ? this.selectedKey() : undefined,
+    this.tool() === 'select' && (this.selectedSpawn() || this.selectedWaypoint()) && !this.selectedLocked()
+      ? this.selectedKey()
+      : undefined,
   );
 
   protected readonly pendingSql = computed(() => {
@@ -2373,6 +2400,9 @@ export class WorldEditorComponent implements OnInit {
 
   /** The placement form is only shown while something is selected. */
   protected applyPlacementForm(): void {
+    if (this.selectedLocked()) {
+      return;
+    }
     this.applyPlacement(this.selectedKey() as string, this.placementForm.getRawValue());
   }
 
@@ -2382,7 +2412,8 @@ export class WorldEditorComponent implements OnInit {
       const original = (s: SpawnRecord) => this.loadedSpawns().find((l) => l.type === s.type && l.guid === s.guid) ?? s;
       // the spawns selected with it follow
       if (key === this.selectedKey()) {
-        for (const member of this.groupSpawns()) {
+        // (but the locked ones)
+        for (const member of this.groupSpawns().filter((m) => !this.lockedKeys().has(spawnKey(m.type, m.guid)))) {
           this.changes.moveSpawn(original(member), followPlacement(spawn, placement, member));
         }
       }
@@ -2415,7 +2446,7 @@ export class WorldEditorComponent implements OnInit {
   protected deleteSelected(): void {
     const spawn = this.selectedSpawn();
     const waypoint = this.selectedWaypoint();
-    if (!spawn && !waypoint) {
+    if ((!spawn && !waypoint) || this.selectedLocked()) {
       return;
     }
     if (!this.askBeforeDelete()) {
@@ -2990,6 +3021,75 @@ export class WorldEditorComponent implements OnInit {
   protected copyContextGoTo(): void {
     const spawn = this.contextSpawn();
     this.clipboard.copyFromContent(spawn ? `.go ${spawn.type} ${spawn.guid}` : `.go trigger ${this.contextAreaTrigger()}`);
+    this.contextMenu.set(undefined);
+  }
+
+  /** Right-click > Hide: the spawn leaves the view (and is unticked in the tree). */
+  protected hideContext(): void {
+    const key = (this.contextMenu() as ContextRequest).key;
+    this.treeHidden.update((hidden) => new Set([...hidden, key]));
+    this.contextMenu.set(undefined);
+  }
+
+  /** Right-click > Hide all others: only this spawn stays. */
+  protected hideOthers(): void {
+    const key = (this.contextMenu() as ContextRequest).key;
+    this.treeHidden.set(
+      new Set(
+        this.spawns()
+          .map((s) => spawnKey(s.type, s.guid))
+          .filter((k) => k !== key),
+      ),
+    );
+    this.contextMenu.set(undefined);
+  }
+
+  protected showHidden(): void {
+    this.treeHidden.set(new Set());
+    this.contextMenu.set(undefined);
+  }
+
+  /** Right-click > Select all like this: every shown spawn of the same entry, this one first. */
+  protected selectLike(): void {
+    const spawn = this.contextSpawn() as SpawnRecord;
+    const key = spawnKey(spawn.type, spawn.guid);
+    this.select(key);
+    this.groupKeys.set(
+      this.visibleSpawns()
+        .filter((s) => s.type === spawn.type && s.entry === spawn.entry)
+        .map((s) => spawnKey(s.type, s.guid))
+        .filter((k) => k !== key),
+    );
+    this.contextMenu.set(undefined);
+  }
+
+  /** Locks a spawn against moving and deleting, or unlocks it. */
+  protected toggleLock(key: string): void {
+    this.lockedKeys.update((locked) => {
+      const next = new Set(locked);
+      if (!next.delete(key)) {
+        next.add(key);
+      }
+      return next;
+    });
+    this.contextMenu.set(undefined);
+  }
+
+  /** Right-click > Lock all others: only this spawn can still be moved. */
+  protected lockOthers(): void {
+    const key = (this.contextMenu() as ContextRequest).key;
+    this.lockedKeys.set(
+      new Set(
+        this.spawns()
+          .map((s) => spawnKey(s.type, s.guid))
+          .filter((k) => k !== key),
+      ),
+    );
+    this.contextMenu.set(undefined);
+  }
+
+  protected unlockAll(): void {
+    this.lockedKeys.set(new Set());
     this.contextMenu.set(undefined);
   }
 

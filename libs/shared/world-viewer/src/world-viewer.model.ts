@@ -19,6 +19,9 @@ export interface WorldSpawn {
   scale?: number;
   /** Draws a circle of this radius (yards) around the spawn: how far a wandering creature roams. */
   wanderRadius?: number;
+  /** Draws how far it notices a player of its level and attacks (orange), and how far it calls for help (blue). */
+  aggroRadius?: number;
+  assistRadius?: number;
   /** Draws its bounding radius (green) and combat reach (red) as circles (yards). */
   bounds?: { radius: number; reach: number };
   /** More lines shown under the label on hover (event, phase, quests…). */

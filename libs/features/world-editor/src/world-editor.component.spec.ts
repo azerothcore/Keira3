@@ -2241,6 +2241,88 @@ describe(WorldEditorComponent.name, () => {
       await settle(page);
     };
 
+    it('hides spawns, the others, and shows them again from a right-click', async () => {
+      const { page } = await setup();
+      await loadArea(page);
+      const shown = () =>
+        page
+          .viewer()
+          .spawns()
+          .map((s) => s.key);
+      await rightClick(page, 'creature:1');
+      expect(page.byId('context-show-hidden', false)).toBeFalsy();
+      page.click('context-hide');
+      await settle(page);
+      expect(shown()).toEqual(['creature:2', 'gameobject:3']);
+      await rightClick(page, 'creature:2');
+      expect(page.text('context-show-hidden')).toContain('(1)');
+      page.click('context-hide-others');
+      await settle(page);
+      expect(shown()).toEqual(['creature:2']);
+      await rightClick(page, 'creature:2');
+      page.click('context-show-hidden');
+      await settle(page);
+      expect(shown()).toHaveLength(3);
+    });
+
+    it('selects every spawn like the one right-clicked', async () => {
+      mocks.service.loadSpawns.mockResolvedValue([spawn('creature', 1), spawn('creature', 2, { entry: 101 }), spawn('gameobject', 3)]);
+      const { page } = await setup();
+      await loadArea(page);
+      await rightClick(page, 'creature:2');
+      page.click('context-select-like');
+      await settle(page);
+      expect(page.viewer().selectedKey()).toBe('creature:2');
+      expect(page.viewer().groupKeys()).toEqual(['creature:1']);
+      expect(page.byId('context-menu', false)).toBeFalsy();
+    });
+
+    it('locks spawns against moving and deleting, the others too, and unlocks them', async () => {
+      mocks.service.loadSpawns.mockResolvedValue([spawn('creature', 1), spawn('creature', 2, { entry: 101 }), spawn('gameobject', 3)]);
+      const { page } = await setup();
+      await loadArea(page);
+      await rightClick(page, 'creature:1');
+      expect(page.viewer().editableKey()).toBe('creature:1');
+      page.click('context-lock');
+      await settle(page);
+      expect(page.viewer().editableKey()).toBeUndefined();
+      expect(page.byId<HTMLButtonElement>('delete-selected').nativeElement.disabled).toBe(true);
+      expect(page.text('lock-selected')).toContain('WORLD_EDITOR.UNLOCK');
+      // typed coordinates and the Delete key do nothing to it
+      page.type('placement-z', '99');
+      page.submit('placement-apply');
+      page.key('Delete');
+      await settle(page);
+      expect(page.pendingLines()).toEqual([]);
+      await rightClick(page, 'creature:1');
+      expect(page.text('context-lock')).toContain('WORLD_EDITOR.UNLOCK');
+      expect(page.text('context-unlock-all')).toContain('(1)');
+      page.click('context-lock');
+      await settle(page);
+      expect(page.viewer().editableKey()).toBe('creature:1');
+      page.click('lock-selected');
+      await settle(page);
+      expect(page.viewer().editableKey()).toBeUndefined();
+      page.click('lock-selected');
+      await settle(page);
+
+      // the others locked: moving a group moves only the unlocked ones
+      await rightClick(page, 'creature:2');
+      page.click('context-lock-others');
+      await rightClick(page, 'creature:2');
+      page.click('context-select-like');
+      await settle(page);
+      page.type('placement-z', '99');
+      page.submit('placement-apply');
+      await settle(page);
+      expect(page.pendingLines()).toEqual(['Move creature 2 (Spawn 2)']);
+      await rightClick(page, 'creature:2');
+      page.click('context-unlock-all');
+      await settle(page);
+      await rightClick(page, 'creature:2');
+      expect(page.byId('context-unlock-all', false)).toBeFalsy();
+    });
+
     it('opens the creature, its SAI or the gameobject from a right-click, and copies the GUID', async () => {
       const { page } = await setup();
       await loadArea(page);
@@ -3805,6 +3887,52 @@ describe(WorldEditorComponent.name, () => {
       expect(spawns[1].details).toContain('Bounding radius 1.00 yd · combat reach 2.00 yd · melee range 5.00 yd');
       toggle.checked = false;
       toggle.dispatchEvent(new Event('change'));
+    });
+
+    it('draws how far creatures aggro and call for help, but not for triggers or gameobjects', async () => {
+      mocks.service.loadSpawns.mockResolvedValue([
+        spawn('creature', 1, { name: 'Ogre', detectionRange: 25 }),
+        spawn('creature', 2, { name: 'Bunny', detectionRange: 20, trigger: true }),
+        spawn('gameobject', 3, { name: 'Mailbox' }),
+        spawn('creature', 4, { name: 'Critter' }),
+      ]);
+      const { page } = await setup();
+      await loadArea(page);
+      // (triggers shown too)
+      page.click('filters-toggle');
+      page.fixture.detectChanges();
+      page.click('filter-triggers');
+      await settle(page);
+      expect(
+        page
+          .viewer()
+          .spawns()
+          .map((s) => [s.aggroRadius, s.assistRadius]),
+      ).toEqual([
+        [undefined, undefined],
+        [undefined, undefined],
+        [undefined, undefined],
+        [undefined, undefined],
+      ]);
+      page.click('view-toggle');
+      page.fixture.detectChanges();
+      for (const id of ['view-aggro', 'view-assist']) {
+        const toggle = page.byId<HTMLInputElement>(id).nativeElement;
+        toggle.checked = true;
+        toggle.dispatchEvent(new Event('change'));
+      }
+      await settle(page);
+      expect(
+        page
+          .viewer()
+          .spawns()
+          .map((s) => [s.aggroRadius, s.assistRadius]),
+      ).toEqual([
+        [25, 10],
+        [undefined, undefined],
+        [undefined, undefined],
+        [undefined, 10],
+      ]);
     });
 
     it('passes on the items in the hands of creatures and which creatures move (for the walking animation)', async () => {

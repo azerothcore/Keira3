@@ -1583,6 +1583,23 @@
     "BUTTON_STYLE_BOTH": "Both",
     "BUTTON_STYLE_HELP": "How the toolbar buttons show: their icon, their name, or both. The tooltip always names them.",
     "CONTROL_RESETNORTH": "Face north",
-    "CONTROL_TREE": "Open / close the tree"
+    "CONTROL_TREE": "Open / close the tree",
+    "AGGRO_RADIUS": "Aggro range",
+    "AGGRO_RADIUS_HELP": "An orange circle around each creature: how far it notices a player of its own level (creature_template.detection_range, usually 20 yards). It reaches about a yard further for each level the creature is above the player, and less for each level below. Only hostile creatures attack.",
+    "ASSIST_RADIUS": "Call for help range",
+    "ASSIST_RADIUS_HELP": "A blue circle around each creature: when it's pulled, creatures of its kind this close (10 yards, the server's CreatureFamilyAssistanceRadius) join the fight",
+    "LOCK": "Lock",
+    "UNLOCK": "Unlock",
+    "LOCK_HELP": "A locked spawn can be selected but not moved or deleted, so it isn't changed by accident",
+    "LOCK_OTHERS": "Lock all others",
+    "UNLOCK_ALL": "Unlock all",
+    "SELECT_LIKE": "Select all like this",
+    "HIDE_THIS": "Hide",
+    "HIDE_OTHERS": "Hide all others",
+    "SHOW_HIDDEN": "Show hidden",
+    "TRAVEL_TIME": "Time",
+    "TRAVEL_TIME_HELP": "How long a player takes from A to C, along the walking path when there is one (running 7 yards a second, walking 2.5)",
+    "RUNNING": "running",
+    "WALKING": "walking"
   }
 }

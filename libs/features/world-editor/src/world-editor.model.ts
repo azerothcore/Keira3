@@ -22,6 +22,8 @@ export interface SpawnRecord {
   /** creature_template.speed_walk / speed_run (× 2.5 and × 7 yards per second). */
   speedWalk?: number;
   speedRun?: number;
+  /** creature_template.detection_range: how far it notices a player of its own level (yards). */
+  detectionRange?: number;
   /** creature_model_info of its model: the size the server gives it, and how far it reaches in melee (yards). */
   boundingRadius?: number;
   combatReach?: number;

@@ -22,6 +22,9 @@ export interface WorldRenderSettings {
   showWanderRadius: boolean;
   /** Circles around creatures: their bounding radius and combat reach (creature_model_info). */
   showBounds: boolean;
+  /** Circles around creatures: how far they notice a player of their level (orange), and call for help (blue). */
+  showAggroRadius: boolean;
+  showAssistRadius: boolean;
   /** What the server collides with (buildings' and models' collision, what vmaps are made of), as a red wireframe. */
   showCollision: boolean;
   /** The server's navigation mesh (mmaps from the server data folder): where creatures can walk. */
@@ -149,6 +152,8 @@ export const DEFAULT_WORLD_RENDER_SETTINGS: WorldRenderSettings = {
   showFacingArrows: true,
   showWanderRadius: false,
   showBounds: false,
+  showAggroRadius: false,
+  showAssistRadius: false,
   showCollision: false,
   showNavMesh: false,
   zoneLighting: false,

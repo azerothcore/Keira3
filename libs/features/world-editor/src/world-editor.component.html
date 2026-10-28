@@ -1151,6 +1151,40 @@
                 <input
                   class="form-check-input"
                   type="checkbox"
+                  id="world-editor-aggro"
+                  data-testid="view-aggro"
+                  [checked]="renderSettings.settings().showAggroRadius"
+                  (change)="setRenderFlag('showAggroRadius', $event)"
+                />
+                <label class="form-check-label" for="world-editor-aggro">{{ 'WORLD_EDITOR.AGGRO_RADIUS' | translate }}</label
+                ><i
+                  class="fas fa-info-circle ms-1"
+                  placement="auto"
+                  container="body"
+                  [tooltip]="'WORLD_EDITOR.AGGRO_RADIUS_HELP' | translate"
+                ></i>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-assist"
+                  data-testid="view-assist"
+                  [checked]="renderSettings.settings().showAssistRadius"
+                  (change)="setRenderFlag('showAssistRadius', $event)"
+                />
+                <label class="form-check-label" for="world-editor-assist">{{ 'WORLD_EDITOR.ASSIST_RADIUS' | translate }}</label
+                ><i
+                  class="fas fa-info-circle ms-1"
+                  placement="auto"
+                  container="body"
+                  [tooltip]="'WORLD_EDITOR.ASSIST_RADIUS_HELP' | translate"
+                ></i>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
                   id="world-editor-solid-selection"
                   data-testid="view-solid-selection"
                   [checked]="renderSettings.settings().solidSelection"
@@ -2083,6 +2117,26 @@
             <button type="button" class="dropdown-item" data-testid="context-copy-go-guid" (click)="copyContextGoTo()">
               <i class="fa fa-location-arrow"></i> {{ 'WORLD_EDITOR.COPY_GO_GUID' | translate }}
             </button>
+            <div class="dropdown-divider"></div>
+            <button type="button" class="dropdown-item" data-testid="context-select-like" (click)="selectLike()">
+              <i class="fa fa-object-group"></i> {{ 'WORLD_EDITOR.SELECT_LIKE' | translate }}
+            </button>
+            <button type="button" class="dropdown-item" data-testid="context-hide" (click)="hideContext()">
+              <i class="fa fa-eye-slash"></i> {{ 'WORLD_EDITOR.HIDE_THIS' | translate }}
+            </button>
+            <button type="button" class="dropdown-item" data-testid="context-hide-others" (click)="hideOthers()">
+              <i class="fa fa-low-vision"></i> {{ 'WORLD_EDITOR.HIDE_OTHERS' | translate }}
+            </button>
+            <button type="button" class="dropdown-item" data-testid="context-lock" (click)="toggleLock(menu.key)">
+              @if (lockedKeys().has(menu.key)) {
+                <i class="fa fa-lock-open"></i> {{ 'WORLD_EDITOR.UNLOCK' | translate }}
+              } @else {
+                <i class="fa fa-lock"></i> {{ 'WORLD_EDITOR.LOCK' | translate }}
+              }
+            </button>
+            <button type="button" class="dropdown-item" data-testid="context-lock-others" (click)="lockOthers()">
+              <i class="fa fa-lock"></i> {{ 'WORLD_EDITOR.LOCK_OTHERS' | translate }}
+            </button>
           } @else if (contextWaypoint(); as waypoint) {
             <h6 class="dropdown-header">{{ 'WORLD_EDITOR.PATH' | translate }} {{ waypoint.pathId }} · #{{ waypoint.point }}</h6>
             <button type="button" class="dropdown-item" data-testid="context-waypoints" disabled>
@@ -2107,6 +2161,19 @@
               </button>
               <button type="button" class="dropdown-item" data-testid="context-copy-go-trigger" (click)="copyContextGoTo()">
                 <i class="fa fa-location-arrow"></i> {{ 'WORLD_EDITOR.COPY_GO_TRIGGER' | translate }}
+              </button>
+            }
+          }
+          @if (treeHidden().size || lockedKeys().size) {
+            <div class="dropdown-divider"></div>
+            @if (treeHidden().size) {
+              <button type="button" class="dropdown-item" data-testid="context-show-hidden" (click)="showHidden()">
+                <i class="fa fa-eye"></i> {{ 'WORLD_EDITOR.SHOW_HIDDEN' | translate }} ({{ treeHidden().size }})
+              </button>
+            }
+            @if (lockedKeys().size) {
+              <button type="button" class="dropdown-item" data-testid="context-unlock-all" (click)="unlockAll()">
+                <i class="fa fa-lock-open"></i> {{ 'WORLD_EDITOR.UNLOCK_ALL' | translate }} ({{ lockedKeys().size }})
               </button>
             }
           }
@@ -2317,6 +2384,22 @@
                           >({{ 'WORLD_EDITOR.HORIZONTAL' | translate }} {{ distance.flat.toFixed(1) }},
                           {{ 'WORLD_EDITOR.HEIGHT' | translate }} {{ distance.height.toFixed(1) }})</span
                         >
+                      </li>
+                      <li data-testid="probe-time">
+                        <strong>{{ 'WORLD_EDITOR.TRAVEL_TIME' | translate }}:</strong>
+                        {{ 'WORLD_EDITOR.RUNNING' | translate }} {{ probeTime().run }} · {{ 'WORLD_EDITOR.WALKING' | translate }}
+                        {{ probeTime().walk }}
+                        <i
+                          class="fas fa-info-circle ms-1"
+                          placement="auto"
+                          container="body"
+                          [tooltip]="'WORLD_EDITOR.TRAVEL_TIME_HELP' | translate"
+                        ></i>
+                      </li>
+                      <li>
+                        <button type="button" class="btn btn-link btn-sm p-0" data-testid="probe-copy-go-to" (click)="copyGo(result.to)">
+                          .go xyz C
+                        </button>
                       </li>
                     }
                     <li>
@@ -2607,11 +2690,29 @@
                 }
               </div>
               <div class="d-flex gap-1 flex-wrap">
-                <button type="submit" class="btn btn-sm btn-primary" data-testid="placement-apply">
+                <button type="submit" class="btn btn-sm btn-primary" data-testid="placement-apply" [disabled]="selectedLocked()">
                   {{ 'WORLD_EDITOR.APPLY' | translate }}
                 </button>
-                <button type="button" class="btn btn-sm btn-danger" data-testid="delete-selected" (click)="deleteSelected()">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-danger"
+                  data-testid="delete-selected"
+                  [disabled]="selectedLocked()"
+                  (click)="deleteSelected()"
+                >
                   <i class="fa fa-trash"></i> {{ 'WORLD_EDITOR.DELETE' | translate }}
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-sm"
+                  data-testid="lock-selected"
+                  [class.btn-warning]="selectedLocked()"
+                  [class.btn-outline-secondary]="!selectedLocked()"
+                  [title]="'WORLD_EDITOR.LOCK_HELP' | translate"
+                  (click)="toggleLock(selectedKey()!)"
+                >
+                  <i class="fa" [class.fa-lock]="selectedLocked()" [class.fa-lock-open]="!selectedLocked()"></i>
+                  {{ (selectedLocked() ? 'WORLD_EDITOR.UNLOCK' : 'WORLD_EDITOR.LOCK') | translate }}
                 </button>
                 @if (selectedSpawn()?.type === 'creature' && !selectedSpawn()?.pathId) {
                   <button type="button" class="btn btn-sm btn-outline-danger" data-testid="create-path" (click)="createPath()">

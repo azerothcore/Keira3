@@ -1583,6 +1583,23 @@
     "BUTTON_STYLE_BOTH": "Ambos",
     "BUTTON_STYLE_HELP": "Cómo se muestran los botones: icono, nombre o ambos. El tooltip siempre dice su nombre.",
     "CONTROL_RESETNORTH": "Mirar al norte",
-    "CONTROL_TREE": "Abrir / cerrar el árbol"
+    "CONTROL_TREE": "Abrir / cerrar el árbol",
+    "AGGRO_RADIUS": "Rango de agro",
+    "AGGRO_RADIUS_HELP": "Un círculo naranja alrededor de cada criatura: a qué distancia detecta a un jugador de su mismo nivel (creature_template.detection_range, normalmente 20 yardas). Llega cerca de una yarda más por cada nivel que la criatura supera al jugador, y menos por cada nivel por debajo. Solo atacan las hostiles.",
+    "ASSIST_RADIUS": "Rango de pedir ayuda",
+    "ASSIST_RADIUS_HELP": "Un círculo azul alrededor de cada criatura: al ser atacada, las criaturas afines a esta distancia (10 yardas, CreatureFamilyAssistanceRadius del servidor) se unen al combate",
+    "LOCK": "Bloquear",
+    "UNLOCK": "Desbloquear",
+    "LOCK_HELP": "Un spawn bloqueado se puede seleccionar pero no mover ni borrar, para no cambiarlo por error",
+    "LOCK_OTHERS": "Bloquear todos los demás",
+    "UNLOCK_ALL": "Desbloquear todo",
+    "SELECT_LIKE": "Seleccionar todos como este",
+    "HIDE_THIS": "Ocultar",
+    "HIDE_OTHERS": "Ocultar todos los demás",
+    "SHOW_HIDDEN": "Mostrar ocultos",
+    "TRAVEL_TIME": "Tiempo",
+    "TRAVEL_TIME_HELP": "Cuánto tarda un jugador de A a C, por el camino cuando lo hay (corriendo 7 yardas por segundo, andando 2,5)",
+    "RUNNING": "corriendo",
+    "WALKING": "andando"
   }
 }

@@ -124,6 +124,8 @@ function spawnSignature(spawn: WorldSpawn): string {
     spawn.position,
     spawn.orientation,
     spawn.wanderRadius,
+    spawn.aggroRadius,
+    spawn.assistRadius,
     spawn.bounds,
     spawn.displayId,
     spawn.scale,
@@ -343,6 +345,8 @@ export class WorldScene {
   private readonly wanderMaterial = new LineBasicMaterial({ color: 0xffd166, transparent: true, opacity: 0.8 });
   private readonly boundingMaterial = new LineBasicMaterial({ color: 0x4ade80, transparent: true, opacity: 0.9 });
   private readonly reachMaterial = new LineBasicMaterial({ color: 0xf87171, transparent: true, opacity: 0.9 });
+  private readonly aggroMaterial = new LineBasicMaterial({ color: 0xff8c00, transparent: true, opacity: 0.85 });
+  private readonly assistMaterial = new LineBasicMaterial({ color: 0x60a5fa, transparent: true, opacity: 0.85 });
   /** Nose on a waypoint ball, pointing to the next point (along +y before rotation, starting at the ball's surface). */
   private readonly pointerGeometry = new ConeGeometry(0.3, 0.8, 8).translate(0, 0.85, 0);
   private readonly arrows = new Set<Object3D>();
@@ -864,6 +868,8 @@ export class WorldScene {
         [WANDER_RING_NAME, spawn.wanderRadius, this.wanderMaterial],
         ['bounding-radius', spawn.bounds?.radius, this.boundingMaterial],
         ['combat-reach', spawn.bounds?.reach, this.reachMaterial],
+        ['aggro-radius', spawn.aggroRadius, this.aggroMaterial],
+        ['assist-radius', spawn.assistRadius, this.assistMaterial],
       ];
       for (const [name, radius, material] of rings) {
         if (radius) {
@@ -1761,6 +1767,8 @@ export class WorldScene {
     this.wanderMaterial.dispose();
     this.boundingMaterial.dispose();
     this.reachMaterial.dispose();
+    this.aggroMaterial.dispose();
+    this.assistMaterial.dispose();
     this.facingArrowGeometry.dispose();
     Object.values(this.facingArrowMaterials).forEach((material) => material.dispose());
     this.triggerArrowMaterial.dispose();
