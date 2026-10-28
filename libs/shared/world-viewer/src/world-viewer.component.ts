@@ -1,3 +1,4 @@
+import { SKYBOX_SPIN, WorldSkybox } from './world-skybox';
 import { WorldCompassComponent } from './world-compass.component';
 import {
   AfterViewInit,
@@ -289,6 +290,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private areaChunk?: string;
   private readonly spawnModels = new SpawnModels(this.client, this.world, this.textures, () => this.requestRender());
   private readonly zoneLighting = new ZoneLighting(this.client, this.world, () => this.requestRender());
+  private readonly skybox = new WorldSkybox(this.client, this.textures, () => this.requestRender());
   private renderer?: WorldRenderer;
   // Created in ngAfterViewInit; effects may run before that, hence the guards in syncGizmo/lookAt.
   private controls?: MapControls;
@@ -479,6 +481,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     this.gizmo.addEventListener('dragging-changed', (event) => this.onGizmoDragging(event.value as boolean));
     this.gizmo.addEventListener('objectChange', () => this.onGizmoChange());
     this.world.scene.add(this.gizmo.getHelper());
+    this.world.scene.add(this.skybox.group);
 
     if (typeof ResizeObserver !== 'undefined') {
       this.resizeObserver = new ResizeObserver(() => this.resize());
@@ -522,6 +525,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     this.streamer.dispose();
     this.objects.dispose();
     this.doodads.dispose();
+    this.skybox.dispose();
     this.navMesh.dispose();
     this.vmaps.dispose();
     this.spawnModels.dispose();
@@ -1311,13 +1315,27 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     requestAnimationFrame(() => {
       this.frameRequested = false;
       this.world.updateMarkerScale();
+      const spinning = this.updateSkybox();
       const began = performance.now();
       perfTime('render', () => this.renderer?.render(this.world.scene, this.world.camera));
       perfFrame();
       this.countFrame(performance.now() - began);
       this.updateStatus();
       this.updateProbeLabels();
+      // a turning skybox keeps drawing
+      if (spinning) {
+        this.requestRender();
+      }
     });
+  }
+
+  /** The skybox chosen, or the zone's: around the camera, turned when it turns slowly. Whether it's turning. */
+  private updateSkybox(): boolean {
+    const settings = this.renderSettings();
+    this.skybox.show(settings.skybox ? settings.skyboxModel || this.zoneLighting.skybox : undefined);
+    const spinning = settings.skybox && settings.skyboxSpin && this.skybox.group.children.length > 0;
+    this.skybox.place(this.world.camera, spinning ? (performance.now() / 1000) * SKYBOX_SPIN : 0);
+    return spinning;
   }
 
   /** Which mmtile the camera target is on (while the navigation mesh is shown), reported when it changes. */

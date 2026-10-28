@@ -12,6 +12,8 @@ export class ZoneLighting {
   private enabled = false;
   /** Half-minutes since midnight (0..2880), as Light.dbc counts them. */
   private time = NOON;
+  /** The skybox of the zone lights where the camera looks (with zone lighting on). */
+  skybox?: string;
   private center?: WorldPosition;
   private generation = 0;
 
@@ -53,7 +55,9 @@ export class ZoneLighting {
   }
 
   private apply(): void {
-    this.scene.applyLighting(this.enabled && this.center ? sampleZoneLight(this.lights, this.center, this.time) : undefined);
+    const sample = this.enabled && this.center ? sampleZoneLight(this.lights, this.center, this.time) : undefined;
+    this.skybox = sample?.skybox;
+    this.scene.applyLighting(sample);
     this.onChange();
   }
 }

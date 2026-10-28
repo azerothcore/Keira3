@@ -229,6 +229,8 @@ type RenderFlagKey =
   | 'showNavMesh'
   | 'zoneLighting'
   | 'fog'
+  | 'skybox'
+  | 'skyboxSpin'
   | 'timeFollowsClock'
   | 'compass'
   | 'compassNorthUp'
@@ -1062,6 +1064,23 @@ export class WorldEditorComponent implements OnInit {
 
   protected toggleView(): void {
     this.togglePanel('view');
+    // the skyboxes to choose from, read once
+    if (this.showView() && !this.skyboxes().length && this.client.isSupported() && this.settings.isConfigured()) {
+      void this.client
+        .getSkyboxes()
+        .then((skyboxes) => this.skyboxes.set(skyboxes))
+        .catch(() => undefined);
+    }
+  }
+  /** Every skybox model of the client, for View > Skybox. */
+  protected readonly skyboxes = signal<string[]>([]);
+  /** A skybox's name from its path: `Environments\Stars\NagrandSkyBox.m2` → "NagrandSkyBox". */
+  protected skyboxName(path: string): string {
+    return path.replace(/^.*\\/, '').replace(/\.m2$/i, '');
+  }
+
+  protected setSkyboxModel(event: Event): void {
+    this.renderSettings.update({ skyboxModel: (event.target as HTMLSelectElement).value });
   }
 
   /**

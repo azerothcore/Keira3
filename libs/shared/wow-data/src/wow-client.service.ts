@@ -25,7 +25,7 @@ import { GpuTexture, ParsedAdt, parseWdt, RgbaImage, WdtInfo } from './formats';
 import { MD5_TRANSLATE_PATH, MINIMAP_ROOT, minimapKey, parseMd5Translate } from './minimap';
 import { parseConfigWtfLocale, pickLocale, sortMpqArchives } from './mpq-order';
 import { LiquidMesh } from './liquid';
-import { parseZoneLights, ZoneLight } from './light';
+import { parseSkyboxes, parseZoneLights, ZoneLight } from './light';
 import { M2Mesh, m2Path, m2SkinPath } from './m2';
 import { TerrainChunkMesh, TerrainMeshData } from './terrain-mesh';
 import { ModelPlacement, WmoDoodads, wmoDoodadPlacements, WmoModel, wmoGroupPath } from './wmo';
@@ -865,10 +865,18 @@ export class WowClientService {
   }
 
   private async loadZoneLights(): Promise<Map<number, ZoneLight[]>> {
-    const [lights, intBands, floatBands] = await Promise.all(
-      ['Light', 'LightIntBand', 'LightFloatBand'].map((name) => this.readDbc(`${name}.dbc`)),
+    const [lights, intBands, floatBands, params, skyboxes] = await Promise.all(
+      ['Light', 'LightIntBand', 'LightFloatBand', 'LightParams', 'LightSkybox'].map((name) => this.readDbc(`${name}.dbc`)),
     );
-    return lights && intBands && floatBands ? parseZoneLights(lights, intBands, floatBands) : new Map();
+    return lights && intBands && floatBands ? parseZoneLights(lights, intBands, floatBands, params, skyboxes) : new Map();
+  }
+
+  /** Every skybox model of the client (LightSkybox.dbc), as .m2 paths, sorted and without repeats. */
+  async getSkyboxes(): Promise<string[]> {
+    const dbc = await this.readDbc('LightSkybox.dbc');
+    const paths = dbc ? [...parseSkyboxes(dbc).values()] : [];
+    const unique = new Map(paths.map((path) => [path.toLowerCase(), path]));
+    return [...unique.values()].sort((a, b) => a.localeCompare(b));
   }
 
   /** A DBC from the server's DataDir when configured (it may hold custom rows), otherwise from the client. */

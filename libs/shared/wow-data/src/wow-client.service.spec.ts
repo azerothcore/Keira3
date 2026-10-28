@@ -320,10 +320,20 @@ describe('WowClientService', () => {
           'DBFilesClient\\Light.dbc': dbc([row(1, 1), row(2, 5)]),
           'DBFilesClient\\LightIntBand.dbc': dbc([[1, 0]], 34),
           'DBFilesClient\\LightFloatBand.dbc': dbc([[1, 0]], 34),
+          'DBFilesClient\\LightParams.dbc': dbc([[1, 0, 4, 0, 0, 0, 0, 0, 0]]),
+          'DBFilesClient\\LightSkybox.dbc': dbc([
+            [4, 'Environments\\Stars\\Stars.mdx', 0],
+            [5, 'ENVIRONMENTS\\STARS\\stars.mdx', 0],
+            [6, 'Environments\\Stars\\Aurora.mdx', 0],
+            [7, '', 0],
+          ]),
         }),
       });
-      expect((await service.getZoneLights('azeroth')).map((light) => light.id)).toEqual([1]);
+      const [light] = await service.getZoneLights('azeroth');
+      expect(light.id).toBe(1);
+      expect(light.skybox).toBe('Environments\\Stars\\Stars.m2');
       expect(await service.getZoneLights('Unknown')).toEqual([]);
+      expect(await service.getSkyboxes()).toEqual(['Environments\\Stars\\Aurora.m2', 'ENVIRONMENTS\\STARS\\stars.m2']);
     });
 
     it('has no zone lights without their DBCs, and retries after a failure', async () => {
@@ -523,6 +533,7 @@ describe('WowClientService', () => {
     it('has no zone lights for a map without lights', async () => {
       const { service } = setup({ mpqs: displayMpqs({ 'DBFilesClient\\Map.dbc': mapDbc('Azeroth') }) });
       expect(await service.getZoneLights('Azeroth')).toEqual([]);
+      expect(await service.getSkyboxes()).toEqual([]);
     });
 
     it('reads the faction templates and factions', async () => {

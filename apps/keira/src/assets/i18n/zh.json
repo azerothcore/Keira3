@@ -1416,6 +1416,10 @@
     "ALL_PATHS": "区域内所有路径",
     "ALL_PATHS_HELP": "还包括没有已加载生物行走的路径：未使用的 waypoint_data 路径、SmartAI waypoints 和护送脚本的 script_waypoint 路径（仅显示，不可编辑）",
     "TIME_OF_DAY": "一天中的时间",
-    "TIME_FOLLOWS_CLOCK": "跟随电脑时钟"
+    "TIME_FOLLOWS_CLOCK": "跟随电脑时钟",
+    "SKYBOX": "天空盒",
+    "SKYBOX_HELP": "世界周围的天空模型（星空、云、极光）：区域的（需开启区域光照）或自选的",
+    "SKYBOX_ZONE": "区域天空盒",
+    "SKYBOX_SPIN": "缓慢旋转"
   }
 }

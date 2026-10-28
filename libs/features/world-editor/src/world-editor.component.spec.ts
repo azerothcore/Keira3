@@ -203,6 +203,7 @@ describe(WorldEditorComponent.name, () => {
       getBossBoundaries: vi.fn(),
       getServerCoverage: vi.fn(),
       getServerMap: vi.fn(),
+      getSkyboxes: vi.fn(),
       getMinimap: vi.fn(),
       getFactions: vi.fn(),
     },
@@ -332,6 +333,7 @@ describe(WorldEditorComponent.name, () => {
     mocks.service.searchSpawns.mockResolvedValue([]);
     mocks.client.getServerCoverage.mockReturnValue(new Map());
     mocks.client.getServerMap.mockResolvedValue(undefined);
+    mocks.client.getSkyboxes.mockResolvedValue(['Environments\\Stars\\Aurora.m2', 'Environments\\Stars\\Stars.m2']);
     mocks.client.getMinimap.mockResolvedValue(undefined);
     mocks.client.getFactions.mockResolvedValue({ templates: new Map(), factions: new Map() });
     mocks.service.loadFormations.mockResolvedValue([]);
@@ -735,6 +737,18 @@ describe(WorldEditorComponent.name, () => {
       page.fixture.detectChanges();
       expect(page.viewer().renderSettings().showNavMesh).toBe(true);
       expect(page.viewer().renderSettings().fog).toBe(false);
+      // the skybox: the zone's or one chosen, turning slowly
+      await settle(page);
+      const skybox = page.byId<HTMLSelectElement>('view-skybox-model').nativeElement;
+      expect(Array.from(skybox.options, (o) => o.textContent?.trim())).toEqual(['WORLD_EDITOR.SKYBOX_ZONE', 'Aurora', 'Stars']);
+      skybox.value = 'Environments\\Stars\\Stars.m2';
+      skybox.dispatchEvent(new Event('change'));
+      page.byId<HTMLInputElement>('view-skybox-spin').nativeElement.click();
+      page.fixture.detectChanges();
+      expect(page.viewer().renderSettings()).toMatchObject({ skyboxModel: 'Environments\\Stars\\Stars.m2', skyboxSpin: true });
+      page.byId<HTMLInputElement>('view-skybox').nativeElement.click();
+      page.fixture.detectChanges();
+      expect(page.byId('view-skybox-model', false)).toBeFalsy();
       // the time of day, with zone lighting
       expect(page.byId('view-time', false)).toBeFalsy();
       page.byId<HTMLInputElement>('view-zone-lighting').nativeElement.click();
@@ -795,6 +809,9 @@ describe(WorldEditorComponent.name, () => {
         showFacingArrows: false,
         zoneLighting: false,
         fog: false,
+        skybox: false,
+        skyboxModel: 'Environments\\Stars\\Stars.m2',
+        skyboxSpin: true,
         timeOfDay: 1290,
         timeFollowsClock: true,
         solidSelection: true,
@@ -873,6 +890,28 @@ describe(WorldEditorComponent.name, () => {
       mocks.client.getMaps.mockRejectedValue(new Error('No "Data" folder'));
       await setup();
       expect(mocks.toastr.error).toHaveBeenCalledWith('No "Data" folder', 'World Editor');
+    });
+
+    it('lists the skyboxes only once, and only with a client to read them from', async () => {
+      mocks.client.getSkyboxes.mockRejectedValueOnce(new Error('no dbc'));
+      const { page } = await setup();
+      page.click('view-toggle');
+      await settle(page);
+      expect(page.byId<HTMLSelectElement>('view-skybox-model').nativeElement.options.length).toBe(1);
+      page.click('view-toggle');
+      page.click('view-toggle');
+      await settle(page);
+      expect(page.byId<HTMLSelectElement>('view-skybox-model').nativeElement.options.length).toBe(3);
+      page.click('view-toggle');
+      page.click('view-toggle');
+      expect(mocks.client.getSkyboxes).toHaveBeenCalledTimes(2);
+      page.click('view-toggle');
+      mocks.client.isSupported.mockReturnValue(false);
+      TestBed.resetTestingModule();
+      const other = await setup();
+      other.page.click('view-toggle');
+      await settle(other.page);
+      expect(mocks.client.getSkyboxes).toHaveBeenCalledTimes(2);
     });
 
     it('folds the side panel away and back', async () => {

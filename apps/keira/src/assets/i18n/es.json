@@ -1416,6 +1416,10 @@
     "ALL_PATHS": "Todas las rutas de la zona",
     "ALL_PATHS_HELP": "También las rutas que no recorre ninguna criatura cargada: rutas de waypoint_data sin usar, waypoints de SmartAI y rutas script_waypoint de scripts de escolta (se dibujan, no se editan)",
     "TIME_OF_DAY": "Hora del día",
-    "TIME_FOLLOWS_CLOCK": "Seguir el reloj del ordenador"
+    "TIME_FOLLOWS_CLOCK": "Seguir el reloj del ordenador",
+    "SKYBOX": "Skybox",
+    "SKYBOX_HELP": "El modelo de cielo alrededor del mundo (estrellas, nubes, auroras): el de la zona (con iluminación de zona) o uno a elegir",
+    "SKYBOX_ZONE": "El skybox de la zona",
+    "SKYBOX_SPIN": "Girarlo despacio"
   }
 }

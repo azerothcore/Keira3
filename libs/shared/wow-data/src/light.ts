@@ -19,6 +19,8 @@ export interface ZoneLight {
   colors: LightBand[];
   /** LightFloatBand values: 0 fog end (1/36 yards), 1 fog start (fraction of the end). */
   floats: LightBand[];
+  /** Its skybox model (LightParams → LightSkybox), as an .m2 path. */
+  skybox?: string;
 }
 
 export type Rgb = [number, number, number];
@@ -37,6 +39,8 @@ export interface LightSample {
   /** Yards. */
   fogStart: number;
   fogEnd: number;
+  /** The skybox of the light weighing most here that has one. */
+  skybox?: string;
 }
 
 export const DAY_LENGTH = 2880;
@@ -71,9 +75,24 @@ function bandsById(dbc: DbcFile, float: boolean): Map<number, LightBand> {
  * Light.dbc (0 ID, 1 Map, 2..4 position, 5 falloff start, 6 falloff end, 7 clear-weather LightParams) with the
  * LightIntBand/LightFloatBand rows of that LightParams (18 and 6 consecutive ids). Returns the lights of every map.
  */
-export function parseZoneLights(lights: DbcFile, intBands: DbcFile, floatBands: DbcFile): Map<number, ZoneLight[]> {
+export function parseZoneLights(
+  lights: DbcFile,
+  intBands: DbcFile,
+  floatBands: DbcFile,
+  lightParams?: DbcFile,
+  skyboxes?: DbcFile,
+): Map<number, ZoneLight[]> {
   const colors = bandsById(intBands, false);
   const floats = bandsById(floatBands, true);
+  const skyboxPaths = skyboxes ? parseSkyboxes(skyboxes) : new Map<number, string>();
+  // LightParams.dbc: 0 ID, 2 LightSkyboxID
+  const skyboxOf = new Map<number, string>();
+  for (let r = 0; r < (lightParams?.recordCount ?? 0); r++) {
+    const path = skyboxPaths.get((lightParams as DbcFile).getUint(r, 2));
+    if (path) {
+      skyboxOf.set((lightParams as DbcFile).getUint(r, 0), path);
+    }
+  }
   const byMap = new Map<number, ZoneLight[]>();
   for (let r = 0; r < lights.recordCount; r++) {
     const params = lights.getUint(r, 7);
@@ -86,6 +105,7 @@ export function parseZoneLights(lights: DbcFile, intBands: DbcFile, floatBands: 
       outer: lights.getFloat(r, 6) / LIGHT_UNITS,
       colors: Array.from({ length: INT_BANDS }, (_, i) => colors.get((params - 1) * INT_BANDS + 1 + i) ?? { times: [], values: [] }),
       floats: Array.from({ length: FLOAT_BANDS }, (_, i) => floats.get((params - 1) * FLOAT_BANDS + 1 + i) ?? { times: [], values: [] }),
+      ...(skyboxOf.has(params) ? { skybox: skyboxOf.get(params) } : {}),
     };
     const map = lights.getUint(r, 1);
     byMap.set(map, [...(byMap.get(map) ?? []), light]);
@@ -176,6 +196,7 @@ export function sampleZoneLight(lights: ZoneLight[], position: WorldPosition, ti
     return undefined;
   }
   const samples = weighted.map(([light, weight]) => [sampleOne(light, time), weight / total] as const);
+  const skybox = weighted.filter(([light]) => light.skybox).sort((a, b) => b[1] - a[1])[0]?.[0].skybox;
   const mixColor = (key: 'diffuse' | 'ambient' | 'skyTop' | 'skyMiddle' | 'skyHorizon' | 'fog' | 'water' | 'ocean'): Rgb =>
     [0, 1, 2].map((i) => samples.reduce((sum, [sample, weight]) => sum + sample[key][i] * weight, 0)) as Rgb;
   const mixNumber = (key: 'fogStart' | 'fogEnd'): number => samples.reduce((sum, [sample, weight]) => sum + sample[key] * weight, 0);
@@ -190,5 +211,18 @@ export function sampleZoneLight(lights: ZoneLight[], position: WorldPosition, ti
     ocean: mixColor('ocean'),
     fogStart: mixNumber('fogStart'),
     fogEnd: mixNumber('fogEnd'),
+    ...(skybox ? { skybox } : {}),
   };
+}
+
+/** LightSkybox.dbc (0 ID, 1 Name): each skybox model by id, as an .m2 path (the client stores them as .mdx). */
+export function parseSkyboxes(dbc: DbcFile): Map<number, string> {
+  const skyboxes = new Map<number, string>();
+  for (let r = 0; r < dbc.recordCount; r++) {
+    const name = dbc.getString(r, 1);
+    if (name) {
+      skyboxes.set(dbc.getUint(r, 0), name.replace(/\.md[xl]$/i, '.m2'));
+    }
+  }
+  return skyboxes;
 }

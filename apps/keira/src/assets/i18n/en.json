@@ -1416,6 +1416,10 @@
     "ALL_PATHS": "Every path in the area",
     "ALL_PATHS_HELP": "Also the paths no loaded creature walks: unused waypoint_data paths, SmartAI waypoints and escort scripts' script_waypoint paths (drawn, not edited)",
     "TIME_OF_DAY": "Time of day",
-    "TIME_FOLLOWS_CLOCK": "Follow the computer's clock"
+    "TIME_FOLLOWS_CLOCK": "Follow the computer's clock",
+    "SKYBOX": "Skybox",
+    "SKYBOX_HELP": "The sky model around the world (stars, clouds, auroras): the zone's (with zone lighting) or one you choose",
+    "SKYBOX_ZONE": "The zone's skybox",
+    "SKYBOX_SPIN": "Turn it slowly"
   }
 }

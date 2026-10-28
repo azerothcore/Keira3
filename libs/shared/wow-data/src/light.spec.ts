@@ -57,6 +57,13 @@ describe('light', () => {
     expect(local.outer).toBeCloseTo(200);
     expect(local.colors[0].values).toEqual([0xffffff]);
     expect(parsed.get(1)).toHaveLength(1);
+    expect(global.skybox).toBeUndefined();
+
+    // with the skyboxes of their LightParams
+    const params = new DbcFile(buildDbc([[2, 0, 9, 0], [3, 0, 8, 0]]));
+    const skyboxes = new DbcFile(buildDbc([[9, 'Environments\\Stars\\Stars.mdx', 0]]));
+    const withSky = parseZoneLights(lights, ints, floats, params, skyboxes).get(0) as ZoneLight[];
+    expect(withSky.map((l) => l.skybox)).toEqual(['Environments\\Stars\\Stars.m2', undefined]);
   });
 
   describe('sampleZoneLight', () => {
@@ -70,6 +77,18 @@ describe('light', () => {
     });
     const red = light(0xff0000);
     const blue = light(0x0000ff, { x: 0, y: 0, z: 0 }, 36 * 100);
+
+    it('takes the skybox of the light weighing most that has one', () => {
+      const starry = { ...red, skybox: 'Stars.m2' };
+      const aurora = { ...blue, skybox: 'Aurora.m2' };
+      expect(sampleZoneLight([starry, aurora], { x: 1000, y: 0, z: 0 })?.skybox).toBe('Stars.m2');
+      expect(sampleZoneLight([starry, aurora], { x: 0, y: 0, z: 0 })?.skybox).toBe('Aurora.m2');
+      expect(sampleZoneLight([starry, blue], { x: 150, y: 0, z: 0 })?.skybox).toBe('Stars.m2');
+      // both in play: the heavier
+      expect(sampleZoneLight([starry, aurora], { x: 120, y: 0, z: 0 })?.skybox).toBe('Aurora.m2');
+      expect(sampleZoneLight([starry, aurora], { x: 180, y: 0, z: 0 })?.skybox).toBe('Stars.m2');
+      expect(sampleZoneLight([red, blue], { x: 0, y: 0, z: 0 })).not.toHaveProperty('skybox');
+    });
 
     it('uses the map light away from local lights, and the local light inside it', () => {
       expect(sampleZoneLight([red, blue], { x: 1000, y: 0, z: 0 })).toEqual({

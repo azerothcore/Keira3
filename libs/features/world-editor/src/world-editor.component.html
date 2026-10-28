@@ -649,6 +649,43 @@
                 />
                 <label class="form-check-label" for="world-editor-fog">{{ 'WORLD_EDITOR.FOG' | translate }}</label>
               </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-skybox"
+                  data-testid="view-skybox"
+                  [checked]="renderSettings.settings().skybox"
+                  (change)="setRenderFlag('skybox', $event)"
+                />
+                <label class="form-check-label" for="world-editor-skybox" [title]="'WORLD_EDITOR.SKYBOX_HELP' | translate">{{
+                  'WORLD_EDITOR.SKYBOX' | translate
+                }}</label>
+              </div>
+              @if (renderSettings.settings().skybox) {
+                <select
+                  class="form-select form-select-sm"
+                  data-testid="view-skybox-model"
+                  [attr.aria-label]="'WORLD_EDITOR.SKYBOX' | translate"
+                  (change)="setSkyboxModel($event)"
+                >
+                  <option value="" [selected]="!renderSettings.settings().skyboxModel">{{ 'WORLD_EDITOR.SKYBOX_ZONE' | translate }}</option>
+                  @for (path of skyboxes(); track path) {
+                    <option [value]="path" [selected]="path === renderSettings.settings().skyboxModel">{{ skyboxName(path) }}</option>
+                  }
+                </select>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-skybox-spin"
+                    data-testid="view-skybox-spin"
+                    [checked]="renderSettings.settings().skyboxSpin"
+                    (change)="setRenderFlag('skyboxSpin', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-skybox-spin">{{ 'WORLD_EDITOR.SKYBOX_SPIN' | translate }}</label>
+                </div>
+              }
             </section>
             <section class="world-editor-view-group" data-testid="view-group-spawns">
               <h6 class="world-editor-view-group-title">{{ 'WORLD_EDITOR.VIEW_SPAWNS' | translate }}</h6>

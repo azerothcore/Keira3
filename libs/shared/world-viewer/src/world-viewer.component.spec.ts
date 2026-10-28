@@ -472,6 +472,33 @@ describe(WorldViewerComponent.name, () => {
     }
   });
 
+  it('draws the skybox chosen around the camera, turning slowly when asked', async () => {
+    client.getM2.mockResolvedValue({
+      positions: new Float32Array([0, 0, 0, 100, 0, 0, 0, 100, 0]),
+      normals: new Float32Array(9),
+      uvs: new Float32Array(6),
+      indices: new Uint16Array([0, 1, 2]),
+      batches: [{ start: 0, count: 3, textureType: 0, blend: 0, geoset: 0, twoSided: false, unlit: true }],
+      collision: { positions: new Float32Array(0), indices: new Uint16Array(0) },
+    });
+    const { fixture, host } = await setup((h) =>
+      h.render.set({ ...DEFAULT_WORLD_RENDER_SETTINGS, skyboxModel: 'Environments\\Stars\\Stars.m2', skyboxSpin: true }),
+    );
+    await fixture.whenStable();
+    flushFrames();
+    const scene = renderer.render.mock.calls.at(-1)?.[0] as Object3D;
+    expect(client.getM2).toHaveBeenCalledWith('Environments\\Stars\\Stars.m2');
+    expect(scene.getObjectByName('skybox')?.children).toHaveLength(1);
+    // turning: it keeps drawing
+    expect(frames.length).toBeGreaterThan(0);
+    host.render.set({ ...DEFAULT_WORLD_RENDER_SETTINGS, skybox: false });
+    fixture.detectChanges();
+    flushFrames();
+    flushFrames();
+    expect(scene.getObjectByName('skybox')?.children).toHaveLength(0);
+    expect(frames).toHaveLength(0);
+  });
+
   it('lights the zone at the time of day chosen, or at the computer\'s time checked every minute', async () => {
     const configure = vi.spyOn(ZoneLighting.prototype, 'configure');
     vi.useFakeTimers({ toFake: ['setInterval', 'clearInterval', 'Date'] });
