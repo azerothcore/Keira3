@@ -14,6 +14,10 @@ export type ControlAction =
   | 'right'
   | 'up'
   | 'down'
+  | 'turnLeft'
+  | 'turnRight'
+  | 'lookUp'
+  | 'lookDown'
   // marker
   | 'markerToCursor'
   | 'cameraToMarker'
@@ -29,9 +33,23 @@ export type ControlAction =
   | 'worldMap'
   | 'compass';
 
-/** The camera moves held down: along the ground relative to the view, and up/down. Shift makes them faster. */
-export type NavigationAction = Extract<ControlAction, 'forward' | 'back' | 'left' | 'right' | 'up' | 'down'>;
-export const NAVIGATION_ACTIONS: NavigationAction[] = ['forward', 'back', 'left', 'right', 'up', 'down'];
+/** The camera moves held down: along the ground relative to the view, up/down, and turning around what it looks at. Shift makes them faster. */
+export type NavigationAction = Extract<
+  ControlAction,
+  'forward' | 'back' | 'left' | 'right' | 'up' | 'down' | 'turnLeft' | 'turnRight' | 'lookUp' | 'lookDown'
+>;
+export const NAVIGATION_ACTIONS: NavigationAction[] = [
+  'forward',
+  'back',
+  'left',
+  'right',
+  'up',
+  'down',
+  'turnLeft',
+  'turnRight',
+  'lookUp',
+  'lookDown',
+];
 
 export type ControlGroup = 'camera' | 'marker' | 'editing' | 'panels';
 
@@ -60,6 +78,11 @@ export const DEFAULT_CONTROL_BINDINGS: Record<ControlAction, string[]> = {
   right: ['KeyD', 'ArrowRight', 'PadLeftStickRight'],
   up: ['KeyQ', 'PageUp', 'PadRB'],
   down: ['KeyE', 'PageDown', 'PadLB'],
+  // (the right stick turns the camera around what it looks at)
+  turnLeft: ['PadRightStickLeft'],
+  turnRight: ['PadRightStickRight'],
+  lookUp: ['PadRightStickUp'],
+  lookDown: ['PadRightStickDown'],
   markerToCursor: ['Space', 'PadA'],
   cameraToMarker: ['Home', 'PadY'],
   undo: ['Ctrl+KeyZ'],

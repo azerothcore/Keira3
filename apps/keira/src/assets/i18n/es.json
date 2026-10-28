@@ -1448,6 +1448,10 @@
     "CAPTURE_HINT": "Pulsa una tecla o un botón del mando para asignarlo (dos veces rápido para una doble pulsación), o elige una entrada del ratón abajo. Esc: cancelar.",
     "CAPTURE_MODIFIER": "Manteniendo un modificador: pulsa otra tecla para una combinación, o suéltalo para asignar el propio modificador.",
     "DONE": "Hecho",
-    "MOUSE_AND_WHEEL": "Ratón y rueda:"
+    "MOUSE_AND_WHEEL": "Ratón y rueda:",
+    "CONTROL_TURNLEFT": "Girar a la izquierda",
+    "CONTROL_TURNRIGHT": "Girar a la derecha",
+    "CONTROL_LOOKUP": "Mirar arriba",
+    "CONTROL_LOOKDOWN": "Mirar abajo"
   }
 }

@@ -34,7 +34,7 @@ import {
   perfFrame,
   perfTime,
 } from '@keira/shared/wow-data';
-import { Mesh, Object3D, Vector3 } from 'three';
+import { Mesh, Object3D, Spherical, Vector3 } from 'three';
 import { MapControls } from 'three/addons/controls/MapControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { TerrainStreamer } from './terrain-streamer';
@@ -138,6 +138,9 @@ const RECHECK_DELAY = 500;
 const ACTIVITY_POLL = 250;
 /** How often (ms) the time of day is checked when it follows the computer's clock. */
 const CLOCK_CHECK = 60_000;
+/** How fast (radians per second) the camera turns around what it looks at (gamepad right stick); and how close to straight down or level it may look. */
+const TURN_SPEED = 1.5;
+const MIN_LOOK_ANGLE = 0.05;
 
 interface HoverLabel {
   text: string;
@@ -1070,6 +1073,18 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       move.normalize().multiplyScalar(speed);
       camera.position.add(move);
       this.target.add(move);
+      controls.update();
+      this.onCameraChange();
+    }
+    // turning around what it looks at (the gamepad's right stick by default)
+    const turn = sign('turnLeft', 'turnRight') * TURN_SPEED * (this.fast ? SHIFT_SPEED : 1) * seconds;
+    const look = sign('lookUp', 'lookDown') * TURN_SPEED * (this.fast ? SHIFT_SPEED : 1) * seconds;
+    if (turn || look) {
+      const orbit = new Spherical().setFromVector3(camera.position.clone().sub(this.target));
+      orbit.theta += turn;
+      orbit.phi = Math.min(Math.PI / 2 - MIN_LOOK_ANGLE, Math.max(MIN_LOOK_ANGLE, orbit.phi + look));
+      camera.position.copy(this.target).add(new Vector3().setFromSpherical(orbit));
+      camera.lookAt(this.target);
       controls.update();
       this.onCameraChange();
     }

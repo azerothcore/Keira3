@@ -2709,17 +2709,14 @@ export class WorldEditorComponent implements OnInit {
     }
   }
 
-  /** Gamepad buttons: bound while binding, otherwise the editing action they're on. */
+  /** Gamepad inputs while binding the camera's and the marker's actions (the gamepad only moves the view). */
   private readonly padInputs = inject(GamepadInputService)
     .inputs.pipe(takeUntilDestroyed())
     .subscribe((event) => {
-      if (!event.pressed) {
-        return;
-      }
-      if (this.capturing()) {
+      const action = this.capturing();
+      const group = CONTROL_ACTIONS.find((item) => item.action === action)?.group;
+      if (event.pressed && (group === 'camera' || group === 'marker')) {
         this.bindInput(event.input);
-      } else {
-        this.runControl(controlFor(this.controls.settings(), EDITOR_ACTIONS, event));
       }
     });
 

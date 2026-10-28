@@ -1780,17 +1780,31 @@ describe(WorldViewerComponent.name, () => {
       flushFrames();
       const beacon = vi.spyOn(WorldScene.prototype, 'setBeacon');
       const pad = (TestBed.inject(GamepadInputService) as unknown as { changes: Subject<PadInput> }).changes;
-      pad.next({ input: 'PadA', pressed: true });
+      pad.next({ input: 'PadA', pressed: true, type: 'paddown' });
       expect(beacon).toHaveBeenCalled();
       const target = () => page.target().nativeElement.textContent?.trim();
       const start = target();
-      pad.next({ input: 'PadLeftStickUp', pressed: true });
+      pad.next({ input: 'PadLeftStickUp', pressed: true, type: 'paddown' });
       for (const time of [0, 100, 200]) {
         frames.splice(0).forEach((frame) => frame(time));
       }
-      pad.next({ input: 'PadLeftStickUp', pressed: false });
+      pad.next({ input: 'PadLeftStickUp', pressed: false, type: 'padup' });
       fixture.detectChanges();
       expect(target()).not.toBe(start);
+      // the right stick turns the camera around what it looks at
+      const camera = (renderer.render.mock.calls.at(-1)?.[1] as { position: Vector3 }).position;
+      const before = camera.clone();
+      for (const [input, time] of [
+        ['PadRightStickLeft', 300],
+        ['PadRightStickUp', 400],
+      ] as const) {
+        pad.next({ input, pressed: true, type: 'paddown' });
+        frames.splice(0).forEach((frame) => frame(time));
+        frames.splice(0).forEach((frame) => frame(time + 100));
+        pad.next({ input, pressed: false, type: 'padup' });
+      }
+      fixture.detectChanges();
+      expect(camera.equals(before)).toBe(false);
       // Mouse 4 bound to Home (the camera back to the marker)
       await update(() =>
         host.navigation.set({

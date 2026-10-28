@@ -25,7 +25,7 @@ describe('GamepadInputService', () => {
   it('reads buttons and stick directions while a gamepad is connected, as presses and releases', () => {
     const service = TestBed.inject(GamepadInputService);
     const seen: PadInput[] = [];
-    service.inputs.subscribe((input) => seen.push(input));
+    const listening = service.inputs.subscribe((input) => seen.push(input));
     // none connected: nothing read
     expect(frames).toHaveLength(0);
     pads = [null, pad([1, 0, 0.8], [0, -0.9, 0.7, 0.1, 1])];
@@ -51,11 +51,34 @@ describe('GamepadInputService', () => {
     pads = [];
     frame();
     expect(frames).toHaveLength(0);
+    listening.unsubscribe();
+  });
+
+  it('reads only while something listens (the world editor), and stops when it goes', () => {
+    pads = [pad([1], [])];
+    const service = TestBed.inject(GamepadInputService);
+    expect(frames).toHaveLength(0);
+    const first = service.inputs.subscribe();
+    const second = service.inputs.subscribe();
+    expect(frames).toHaveLength(1);
+    frame();
+    expect(service.isHeld('PadA')).toBe(true);
+    const cancel = vi.fn();
+    vi.stubGlobal('cancelAnimationFrame', cancel);
+    second.unsubscribe();
+    expect(cancel).not.toHaveBeenCalled();
+    first.unsubscribe();
+    expect(cancel).toHaveBeenCalled();
+    expect(service.isHeld('PadA')).toBe(false);
+    // a pad connected with nobody listening: nothing read
+    frames.length = 0;
+    window.dispatchEvent(new Event('gamepadconnected'));
+    expect(frames).toHaveLength(0);
   });
 
   it('copes with a browser without gamepads', () => {
     delete (navigator as { getGamepads?: unknown }).getGamepads;
-    TestBed.inject(GamepadInputService);
+    TestBed.inject(GamepadInputService).inputs.subscribe().unsubscribe();
     expect(frames).toHaveLength(0);
   });
 });

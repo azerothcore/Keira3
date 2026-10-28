@@ -886,6 +886,16 @@ describe(WorldEditorComponent.name, () => {
       page.click('capture-done');
       page.fixture.detectChanges();
       expect(page.text('bind-forward')).toBe('WORLD_EDITOR.ADD_KEY');
+      // gamepad inputs only bind to the camera and the marker
+      page.click('bind-undo');
+      (TestBed.inject(GamepadInputService) as unknown as { changes: Subject<{ input: string; pressed: boolean }> }).changes.next({
+        input: 'PadY',
+        pressed: true,
+      });
+      page.fixture.detectChanges();
+      expect(page.viewer().navigation().bindings.undo).toEqual(['Ctrl+KeyZ']);
+      page.click('capture-done');
+      page.fixture.detectChanges();
       // a key up with nothing held: nothing
       page.fixture.nativeElement.dispatchEvent(new KeyboardEvent('keyup', { code: 'ShiftLeft', bubbles: true }));
 
@@ -951,7 +961,7 @@ describe(WorldEditorComponent.name, () => {
       expect(page.byId('controls', false)).toBeFalsy();
     });
 
-    it('runs editing actions from mouse buttons, the wheel and gamepad buttons bound to them', async () => {
+    it('runs editing actions from mouse buttons and the wheel bound to them, not from gamepad buttons', async () => {
       const { page } = await setup();
       const controls = TestBed.inject(WorldControlsSettingsService);
       controls.addBinding('worldMap', 'Mouse5');
@@ -966,10 +976,11 @@ describe(WorldEditorComponent.name, () => {
       page.fixture.detectChanges();
       expect(page.viewer().renderSettings().compass).toBe(false);
       const pad = (TestBed.inject(GamepadInputService) as unknown as { changes: Subject<{ input: string; pressed: boolean }> }).changes;
+      // the gamepad only moves the view
       pad.next({ input: 'PadStart', pressed: true });
       pad.next({ input: 'PadStart', pressed: false });
       page.fixture.detectChanges();
-      expect(page.viewer().gizmoMode()).toBe('rotate');
+      expect(page.viewer().gizmoMode()).toBe('translate');
       // an unbound button: nothing; and nothing while binding
       area.dispatchEvent(new MouseEvent('pointerdown', { button: 0, bubbles: true }));
       area.dispatchEvent(new MouseEvent('pointerdown', { button: 4, bubbles: true }));

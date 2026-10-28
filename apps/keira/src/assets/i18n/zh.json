@@ -1448,6 +1448,10 @@
     "CAPTURE_HINT": "按下一个键或手柄按钮进行绑定（快速按两次为双击），或在下方选择鼠标输入。Esc：取消。",
     "CAPTURE_MODIFIER": "正按住修饰键：再按另一个键组成组合键，或松开以绑定修饰键本身。",
     "DONE": "完成",
-    "MOUSE_AND_WHEEL": "鼠标和滚轮："
+    "MOUSE_AND_WHEEL": "鼠标和滚轮：",
+    "CONTROL_TURNLEFT": "向左转",
+    "CONTROL_TURNRIGHT": "向右转",
+    "CONTROL_LOOKUP": "向上看",
+    "CONTROL_LOOKDOWN": "向下看"
   }
 }

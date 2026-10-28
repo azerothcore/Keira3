@@ -1448,6 +1448,10 @@
     "CAPTURE_HINT": "Press a key or a gamepad button to bind it (twice quickly for a double tap), or pick a mouse input below. Esc: cancel.",
     "CAPTURE_MODIFIER": "Holding a modifier: press another key for a combination, or let go to bind the modifier itself.",
     "DONE": "Done",
-    "MOUSE_AND_WHEEL": "Mouse and wheel:"
+    "MOUSE_AND_WHEEL": "Mouse and wheel:",
+    "CONTROL_TURNLEFT": "Turn left",
+    "CONTROL_TURNRIGHT": "Turn right",
+    "CONTROL_LOOKUP": "Look up",
+    "CONTROL_LOOKDOWN": "Look down"
   }
 }
