@@ -1,6 +1,28 @@
+@if (showAll()) {
+  <div class="world-map-all" data-testid="world-map-all">
+    @for (map of maps(); track map.id) {
+      @let picture = thumbnails().get(map.directory);
+      <button type="button" class="world-map-card" [attr.data-testid]="'world-map-card-' + map.id" (click)="pickMap(map.id)">
+        <span class="world-map-card-name">{{ map.id }} – {{ map.name }}</span>
+        @if (picture) {
+          <img [src]="picture" alt="" draggable="false" />
+        } @else {
+          <span class="world-map-card-empty">
+            @if (picture === null) {
+              {{ 'WORLD_EDITOR.MAP_KIND_' + mapKind(map).toUpperCase() | translate }}
+            } @else {
+              <i class="fa fa-spinner fa-spin"></i>
+            }
+          </span>
+        }
+      </button>
+    }
+  </div>
+}
 <div
   #viewport
   class="world-map"
+  [class.hidden]="showAll()"
   data-testid="world-map"
   (pointerdown)="onPointerDown($event)"
   (pointermove)="onPointerMove($event)"
@@ -62,34 +84,56 @@
       }
     </div>
   }
-  <div class="world-map-buttons" (pointerdown)="$event.stopPropagation()" (pointerup)="$event.stopPropagation()">
-    <button
-      type="button"
-      class="btn btn-sm btn-light"
-      data-testid="world-map-camera-btn"
-      [title]="'WORLD_EDITOR.MAP_CENTER_CAMERA' | translate"
-      (click)="centerOnCamera()"
-    >
-      <i class="fa fa-crosshairs"></i>
-    </button>
-    <button
-      type="button"
-      class="btn btn-sm btn-light"
-      data-testid="world-map-fit"
-      [title]="'WORLD_EDITOR.MAP_FIT' | translate"
-      (click)="fitAll()"
-    >
-      <i class="fa fa-globe"></i>
-    </button>
-    <button
-      type="button"
-      class="btn btn-sm btn-light"
-      data-testid="world-map-close"
-      [title]="'WORLD_EDITOR.CLOSE' | translate"
-      (click)="closed.emit()"
-    >
-      <i class="fa fa-times"></i>
-    </button>
-  </div>
-  <div class="world-map-hint">{{ 'WORLD_EDITOR.MAP_HINT' | translate }}</div>
 </div>
+<div class="world-map-buttons" (pointerdown)="$event.stopPropagation()" (pointerup)="$event.stopPropagation()">
+  <button
+    type="button"
+    class="btn btn-sm"
+    data-testid="world-map-all-btn"
+    [class.btn-primary]="showAll()"
+    [class.btn-light]="!showAll()"
+    [title]="'WORLD_EDITOR.MAP_ALL_HELP' | translate"
+    (click)="toggleAll()"
+  >
+    <i class="fa fa-th-large"></i> {{ 'WORLD_EDITOR.MAP_ALL' | translate }}
+  </button>
+  <button
+    type="button"
+    class="btn btn-sm btn-light"
+    data-testid="world-map-camera-btn"
+    [title]="'WORLD_EDITOR.MAP_CENTER_CAMERA' | translate"
+    (click)="centerOnCamera()"
+  >
+    <i class="fa fa-crosshairs"></i>
+  </button>
+  <button
+    type="button"
+    class="btn btn-sm btn-light"
+    data-testid="world-map-fit"
+    [title]="'WORLD_EDITOR.MAP_FIT' | translate"
+    (click)="fitAll()"
+  >
+    <i class="fa fa-globe"></i>
+  </button>
+  <button
+    type="button"
+    class="btn btn-sm btn-light"
+    data-testid="world-map-fullscreen"
+    [title]="'WORLD_EDITOR.FULLSCREEN' | translate"
+    (click)="toggleFullscreen()"
+  >
+    <i class="fa" [class.fa-expand]="!fullscreen()" [class.fa-compress]="fullscreen()"></i>
+  </button>
+  <button
+    type="button"
+    class="btn btn-sm btn-light"
+    data-testid="world-map-close"
+    [title]="'WORLD_EDITOR.CLOSE' | translate"
+    (click)="closed.emit()"
+  >
+    <i class="fa fa-times"></i>
+  </button>
+</div>
+@if (!showAll()) {
+  <div class="world-map-hint">{{ 'WORLD_EDITOR.MAP_HINT' | translate }}</div>
+}

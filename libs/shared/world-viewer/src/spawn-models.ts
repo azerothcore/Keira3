@@ -1,9 +1,10 @@
-import { CreatureDisplay, isDefaultCharacterGeoset, M2Mesh, WorldBounds, WorldPosition, perfTime } from '@keira/shared/wow-data';
-import { Mesh } from 'three';
+import { CreatureDisplay, isDefaultCharacterGeoset, M2Mesh, WmoModel, WorldBounds, WorldPosition, perfTime } from '@keira/shared/wow-data';
+import { Group, Mesh, Object3D } from 'three';
 import { insideBounds } from './bounds';
 import { collisionMesh } from './collision-object';
 import { buildM2Template, disposeM2Template, M2Template } from './m2-object';
 import { TextureCache } from './texture-cache';
+import { buildWmoObject, disposeWmoObject } from './wmo-object';
 import { WorldScene } from './world-scene';
 import { WorldSpawn } from './world-viewer.model';
 
@@ -12,6 +13,8 @@ export interface SpawnModelSource {
   getCreatureDisplay(displayId: number): Promise<CreatureDisplay | undefined>;
   getGameObjectDisplay(displayId: number): Promise<string | undefined>;
   getM2(path: string): Promise<M2Mesh | undefined>;
+  /** Gameobjects whose model is a building (ships, elevators, some doors). */
+  getWmo(path: string): Promise<WmoModel | undefined>;
 }
 
 export interface SpawnModelsOptions {
@@ -28,6 +31,9 @@ export interface DisplayModel {
   scale: number;
 }
 
+/** A spawn's model: a model (M2) or, for some gameobjects, a building (WMO). */
+type SpawnModel = DisplayModel | { building: Group; scale: number };
+
 /**
  * Draws creatures and gameobjects near the camera target with their real models (by display id), and as pins farther
  * away. Models load once per display id; humanoid NPCs show their baked skin, hair and default geosets.
@@ -36,8 +42,8 @@ export class SpawnModels {
   private options: SpawnModelsOptions = { show: true, creatureDistance: 250, gameobjectDistance: 250 };
   private spawns: WorldSpawn[] = [];
   private center?: WorldPosition;
-  private readonly models = new Map<string, Promise<DisplayModel | undefined>>();
-  private readonly ready = new Map<string, DisplayModel | undefined>();
+  private readonly models = new Map<string, Promise<SpawnModel | undefined>>();
+  private readonly ready = new Map<string, SpawnModel | undefined>();
   /** Spawns drawn with a model: spawn key → display key. */
   private readonly shown = new Map<string, string>();
   /** Also show the models of every spawn inside this area (Load the whole zone), whatever the distance. */
@@ -93,7 +99,7 @@ export class SpawnModels {
     this.spawns = [];
     this.shown.forEach((_display, key) => this.scene.setSpawnModel(key, undefined));
     this.shown.clear();
-    this.models.forEach((model) => void model.then((m) => m && disposeM2Template(m.template)));
+    this.models.forEach((model) => void model.then((m) => m && disposeSpawnModel(m)));
     this.models.clear();
     this.ready.clear();
   }
@@ -119,12 +125,7 @@ export class SpawnModels {
       if (!model) {
         changed = this.hide(spawn.key) || changed;
       } else if (this.shown.get(spawn.key) !== displayKey) {
-        const mesh = new Mesh(model.template.geometry, model.template.materials);
-        // only gameobjects collide on the server (doors, chests…); creatures never do
-        if (spawn.kind === 'gameobject' && model.template.collision) {
-          mesh.add(collisionMesh(model.template.collision));
-        }
-        this.scene.setSpawnModel(spawn.key, mesh, model.scale * (spawn.scale ?? 1));
+        this.scene.setSpawnModel(spawn.key, instantiate(model, spawn), model.scale * (spawn.scale ?? 1));
         this.shown.set(spawn.key, displayKey as string);
         changed = true;
       }
@@ -179,18 +180,53 @@ export class SpawnModels {
         this.ready.set(displayKey, loaded);
         this.queueRefresh();
       } else if (loaded) {
-        disposeM2Template(loaded.template);
+        disposeSpawnModel(loaded);
       }
     });
   }
 
-  private async loadModel(spawn: WorldSpawn): Promise<DisplayModel | undefined> {
+  private async loadModel(spawn: WorldSpawn): Promise<SpawnModel | undefined> {
     const displayId = spawn.displayId as number;
     const display: CreatureDisplay | undefined =
       spawn.kind === 'creature'
         ? await this.source.getCreatureDisplay(displayId)
         : await this.source.getGameObjectDisplay(displayId).then((model) => (model ? { model, scale: 1, textures: {} } : undefined));
+    if (display && /\.wmo$/i.test(display.model)) {
+      return this.loadBuilding(display.model);
+    }
     return display && displayModel(display, this.source, this.textures);
+  }
+
+  private async loadBuilding(path: string): Promise<SpawnModel | undefined> {
+    const model = await this.source.getWmo(path);
+    if (!model) {
+      return undefined;
+    }
+    const textures = await Promise.all(
+      model.materials.map((material) => (material.texture ? this.textures.get(material.texture) : Promise.resolve(this.textures.fallback))),
+    );
+    return { building: buildWmoObject(model, textures, this.textures.fallback), scale: 1 };
+  }
+}
+
+/** A spawn's own copy of its model (sharing geometry and materials); gameobjects get their collision too. */
+function instantiate(model: SpawnModel, spawn: WorldSpawn): Object3D {
+  if ('building' in model) {
+    return model.building.clone();
+  }
+  const mesh = new Mesh(model.template.geometry, model.template.materials);
+  // only gameobjects collide on the server (doors, chests…); creatures never do
+  if (spawn.kind === 'gameobject' && model.template.collision) {
+    mesh.add(collisionMesh(model.template.collision));
+  }
+  return mesh;
+}
+
+function disposeSpawnModel(model: SpawnModel): void {
+  if ('building' in model) {
+    disposeWmoObject(model.building);
+  } else {
+    disposeM2Template(model.template);
   }
 }
 

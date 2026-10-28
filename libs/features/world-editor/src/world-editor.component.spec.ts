@@ -79,6 +79,7 @@ class FakeWorldViewerComponent {
   readonly markers = input<WorldMarker[]>([]);
   readonly groupKeys = input<string[]>([]);
   readonly spawnsLoading = input(false);
+  readonly buildings = input<{ key: string; path: string }[]>([]);
   readonly simulation = input<MovementSimulation | undefined>(undefined);
   readonly groundQuery = input<{ key: string; position: WorldPosition }[] | undefined>(undefined);
   readonly groundHeights = output<Record<string, number | null>>();
@@ -201,6 +202,7 @@ describe(WorldEditorComponent.name, () => {
       getServerCoverage: vi.fn(),
       getServerMap: vi.fn(),
       getMinimap: vi.fn(),
+      getFactions: vi.fn(),
     },
     service: {
       loadSpawns: vi.fn(),
@@ -211,6 +213,7 @@ describe(WorldEditorComponent.name, () => {
       loadFormations: vi.fn(),
       loadPools: vi.fn(),
       loadPoolMembers: vi.fn(),
+      loadTransports: vi.fn(),
       loadGraveyards: vi.fn(),
       loadTeleports: vi.fn(),
       loadScriptEntries: vi.fn(),
@@ -321,8 +324,10 @@ describe(WorldEditorComponent.name, () => {
     mocks.client.getServerCoverage.mockReturnValue(new Map());
     mocks.client.getServerMap.mockResolvedValue(undefined);
     mocks.client.getMinimap.mockResolvedValue(undefined);
+    mocks.client.getFactions.mockResolvedValue({ templates: new Map(), factions: new Map() });
     mocks.service.loadFormations.mockResolvedValue([]);
     mocks.service.loadPools.mockResolvedValue([]);
+    mocks.service.loadTransports.mockResolvedValue([]);
     mocks.service.loadGraveyards.mockResolvedValue([]);
     mocks.service.loadTeleports.mockResolvedValue([]);
     mocks.client.getTaxiNodes.mockResolvedValue([]);
@@ -886,6 +891,8 @@ describe(WorldEditorComponent.name, () => {
 
     it('reports errors while loading zones', async () => {
       mocks.client.getZones.mockRejectedValue(new Error('bad WorldMapArea.dbc'));
+      // (no factions: nothing said about who can interact)
+      mocks.client.getFactions.mockRejectedValue(new Error('bad Faction.dbc'));
       const { page } = await setup();
       expect(mocks.toastr.error).toHaveBeenCalledWith('bad WorldMapArea.dbc', 'World Editor');
       expect(page.byId<HTMLInputElement>('zone-search').nativeElement.disabled).toBe(true);
@@ -937,6 +944,48 @@ describe(WorldEditorComponent.name, () => {
       page.type('tele-search', 'Map: 0 X: 1 Y: 2 Z: 3 Orientation: 0');
       await new Promise((resolve) => setTimeout(resolve, 350));
       expect(mocks.service.searchTele).not.toHaveBeenCalled();
+    });
+
+    it("draws a transport map's ship at its middle", async () => {
+      mocks.client.getMaps.mockResolvedValue([
+        ...MAPS,
+        { id: 672, directory: 'Transport197347', name: 'Transport: The Skybreaker', instanceType: 0 },
+      ]);
+      mocks.service.loadTransports.mockImplementation((map: number) =>
+        Promise.resolve(
+          map === 672
+            ? [
+                { entry: 201580, name: 'The Skybreaker', displayId: 9150 },
+                { entry: 1, name: 'Unknown', displayId: 1 },
+              ]
+            : [],
+        ),
+      );
+      mocks.client.getGameObjectDisplay.mockImplementation((id: number) =>
+        Promise.resolve(id === 9150 ? 'world\\wmo\\nd_alliancegunship_icecrown.wmo' : undefined),
+      );
+      const { page } = await setup();
+      page.chooseMap(672);
+      await settle(page);
+      expect(page.viewer().buildings()).toEqual([
+        expect.objectContaining({
+          key: 'transport:201580',
+          path: 'world\\wmo\\nd_alliancegunship_icecrown.wmo',
+          position: { x: 0, y: 0, z: 0 },
+        }),
+      ]);
+      // another map: no ship; a ship of a map left meanwhile is not drawn; errors are reported
+      let late: (rows: unknown[]) => void = () => undefined;
+      mocks.service.loadTransports.mockReturnValueOnce(new Promise((resolve) => (late = resolve)));
+      page.chooseMap(1);
+      page.chooseMap(0);
+      late([{ entry: 201580, name: 'The Skybreaker', displayId: 9150 }]);
+      await settle(page);
+      expect(page.viewer().buildings()).toEqual([]);
+      mocks.service.loadTransports.mockRejectedValueOnce(new Error('no gameobject_template'));
+      page.chooseMap(1);
+      await settle(page);
+      expect(mocks.toastr.error).toHaveBeenCalledWith('no gameobject_template', 'World Editor');
     });
 
     it('ignores the zones of a map left while they loaded', async () => {
@@ -1185,13 +1234,63 @@ describe(WorldEditorComponent.name, () => {
           .find((s) => s.key === key);
       expect(details('creature:1')?.details).toEqual(["Event 12 (Hallow's End)", 'Phase mask 3']);
       expect(details('creature:2')?.details).toEqual(['Event 99 (?)', 'Ends quest 7 (Seven)']);
-      expect(details('gameobject:3')?.details).toEqual(['Starts quest 176 (Wanted: "Hogger")', '+2 more (hold Alt)']);
+      // gameobjects without a faction: anyone can use them
+      expect(details('gameobject:3')?.details).toEqual([
+        'Interact: everyone',
+        'Starts quest 176 (Wanted: "Hogger")',
+        '+2 more quests, hold Alt for more',
+      ]);
       expect(details('gameobject:3')?.allDetails).toEqual([
+        'Interact: everyone',
         'Starts quest 176 (Wanted: "Hogger")',
         'Ends quest 177 (?)',
         'Starts quest 178 (Third)',
       ]);
-      expect(details('gameobject:4')?.details).toBeUndefined();
+      expect(details('gameobject:4')?.details).toEqual(['Interact: everyone']);
+    });
+
+    it('tells who can interact with a spawn, and with Alt each race and the faction', async () => {
+      const template = (id: number, faction: number, ourMask: number, friendMask: number, enemyMask: number) => ({
+        id,
+        faction,
+        flags: 0,
+        ourMask,
+        friendMask,
+        enemyMask,
+        enemies: [],
+        friends: [],
+      });
+      mocks.client.getFactions.mockResolvedValue({
+        templates: new Map(
+          [
+            ...[1, 3, 4, 115, 1629].map((id) => template(id, id, 3, 2, 12)),
+            ...[2, 5, 6, 116, 1610].map((id) => template(id, id, 5, 4, 10)),
+            template(11, 72, 3, 2, 12),
+            template(35, 31, 0, 1, 0),
+          ].map((t) => [t.id, t]),
+        ),
+        factions: new Map([
+          [72, { id: 72, name: 'Stormwind', reputationIndex: 19, raceMasks: [1100, 690, 1, 0], baseReputation: [3100, -42000, 4000, 0] }],
+        ]),
+      });
+      mocks.service.loadSpawns.mockResolvedValue([
+        spawn('creature', 1, { name: 'Guard', faction: 11 }),
+        spawn('creature', 2, { name: 'Unknown', faction: 999 }),
+        spawn('gameobject', 3, { name: 'Door', faction: 35 }),
+      ]);
+      const { page } = await setup();
+      await loadArea(page);
+      const of = (key: string) =>
+        page
+          .viewer()
+          .spawns()
+          .find((s) => s.key === key);
+      expect(of('creature:1')?.details).toEqual(['Interact: Alliance (Friendly) · Horde no, (Hated)', 'hold Alt for more']);
+      expect(of('creature:1')?.allDetails).toContain('Faction template 11 (Stormwind)');
+      expect(of('creature:1')?.allDetails).toContain('  Human: Friendly (4000)');
+      // a template the client doesn't know: nothing said
+      expect(of('creature:2')?.details).toBeUndefined();
+      expect(of('gameobject:3')?.details?.[0]).toBe('Interact: everyone (Friendly)');
     });
 
     it('loads the spawns around the view once the maps are known, when the view reported its position first', async () => {
@@ -1345,7 +1444,7 @@ describe(WorldEditorComponent.name, () => {
         .spawns()
         .find((s) => s.key === 'gameobject:7');
       expect(gameobject?.label).toBe('Spawn 7 - GameObject (GUID: 7, Entry: 107)');
-      expect(gameobject?.details).toEqual(['Phase mask 2']);
+      expect(gameobject?.details).toEqual(['Phase mask 2', 'Interact: everyone']);
       check('filter-triggers', true);
       expect(keys()).toContain('creature:6');
       check('filter-phases', false);
@@ -2418,6 +2517,12 @@ describe(WorldEditorComponent.name, () => {
         dots: () => { key: string }[];
       };
       expect(map.dots().map((d) => d.key)).toContain('search:creature:99');
+      // a map picked in the list of every map
+      (map as unknown as { mapPicked: { emit(id: number): void } }).mapPicked.emit(1);
+      await settle(page);
+      expect(page.viewer().mapDirectory()).toBe('Kalimdor');
+      page.chooseMap(0);
+      await settle(page);
       page.click('map-toggle');
       await settle(page);
       page.click('search-clear');

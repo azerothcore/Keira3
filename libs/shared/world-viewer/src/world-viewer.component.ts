@@ -51,7 +51,7 @@ import { collectServerTileGeometry } from './server-geometry';
 import { sampleTimeline, simulationTimeline } from './simulation';
 import { collectTileGeometry, loadRecast, rebuildNavMeshTile } from './navmesh-rebuild';
 import { PathProber, PathProbeRequest, PathProbeResult } from './path-probe';
-import { WorldObjects } from './world-objects';
+import { ExtraBuilding, WorldObjects } from './world-objects';
 import { headingText, stretchText } from './heading';
 import { DEFAULT_WORLD_RENDER_SETTINGS, drawDistances, WorldRenderSettings } from './world-render-settings';
 import { WORLD_RENDERER_FACTORY, WorldRenderer } from './world-renderer';
@@ -224,6 +224,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   protected readonly activity = signal<{ terrain: number; buildings: number; props: number; models: number } | undefined>(undefined);
   /** The performance stats (View > Show performance stats). */
   protected readonly stats = signal<ViewerStats | undefined>(undefined);
+  /** Buildings placed by the editor (a transport's ship on its map), at server positions. */
+  readonly buildings = input<ExtraBuilding[]>([]);
   /** The editor is loading the spawns around the camera (shown in the same loading bar). */
   readonly spawnsLoading = input(false);
   /** Server position the camera looks at, for the readout in the corner. */
@@ -341,6 +343,10 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       });
     });
     effect(() => void this.loadMap(this.mapDirectory()));
+    effect(() => {
+      const buildings = this.buildings();
+      untracked(() => void this.objects.setExtras(buildings));
+    });
     effect(() => {
       const kept = perfTime('scene spawns', () => this.world.setSpawns(this.spawns()));
       perfTime('spawn models set', () => this.spawnModels.setSpawns(this.spawns(), kept));

@@ -1046,6 +1046,8 @@
     "ERROR_DESKTOP_ONLY": "The 3D world editor needs the Keira3 desktop app to read your WoW client files.",
     "WALKED_BY": "Walked by",
     "VIEW": "View",
+    "MAP_ALL": "All maps",
+    "MAP_ALL_HELP": "Every map, each with a picture of it (made from its minimaps the first time, then kept in the cache): click one to open it",
     "STATS": "Show performance stats",
     "STATS_HELP": "Frames per second, draw time, draw calls, triangles, what's on the graphics card, memory and what's loaded, in the bottom-left corner of the view",
     "PERF_LOG": "Write a performance log",

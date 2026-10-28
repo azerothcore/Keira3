@@ -20,9 +20,11 @@ import {
   TileCoord,
   tileKey,
   vmapTileName,
+  mapKind,
   WorldBounds,
   WorldPosition,
   WowClientService,
+  WowMap,
 } from '@keira/shared/wow-data';
 import { TranslatePipe } from '@ngx-translate/core';
 import { imageToDataUrl, shrinkImage } from './minimap-image';
@@ -62,7 +64,7 @@ const toWorld = (u: number, v: number): WorldPosition => ({ x: (32 - v) * TILE_S
   imports: [TranslatePipe],
   templateUrl: './world-map.component.html',
   styleUrl: './world-map.component.scss',
-  host: { '(wheel)': 'onWheel($event)' },
+  host: { '(wheel)': 'onWheel($event)', '(document:fullscreenchange)': 'onFullscreenChange()', '[class.fullscreen]': 'fullscreen()' },
 })
 export class WorldMapComponent implements OnDestroy {
   private readonly client = inject(WowClientService);
@@ -78,6 +80,18 @@ export class WorldMapComponent implements OnDestroy {
   readonly regionSelected = output<WorldBounds>();
   /** The close button. */
   readonly closed = output<void>();
+  /** Every map, for the list of all maps. */
+  readonly maps = input<WowMap[]>([]);
+  /** A map picked in the list of all maps. */
+  readonly mapPicked = output<number>();
+  /** The list of every map (with a picture of each) instead of the map shown. */
+  protected readonly showAll = signal(false);
+  protected readonly fullscreen = signal(false);
+  /** Pictures of maps by directory: a data URL, or null when it has none. */
+  protected readonly thumbnails = signal(new Map<string, string | null>());
+  protected readonly mapKind = mapKind;
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private thumbnailRun = 0;
 
   private readonly viewport = viewChild.required<ElementRef<HTMLDivElement>>('viewport');
   protected readonly zoom = signal(16);
@@ -180,6 +194,49 @@ export class WorldMapComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     this.destroyed = true;
+    this.thumbnailRun++;
+  }
+
+  /** Shows the list of every map, drawing their pictures one after the other (or goes back to the map). */
+  protected toggleAll(): void {
+    const show = !this.showAll();
+    this.showAll.set(show);
+    const run = ++this.thumbnailRun;
+    if (show) {
+      void this.loadThumbnails(run);
+    }
+  }
+
+  protected pickMap(id: number): void {
+    this.showAll.set(false);
+    this.thumbnailRun++;
+    this.mapPicked.emit(id);
+  }
+
+  protected async toggleFullscreen(): Promise<void> {
+    if (document.fullscreenElement) {
+      await document.exitFullscreen();
+    } else {
+      await this.host.nativeElement.requestFullscreen();
+    }
+  }
+
+  protected onFullscreenChange(): void {
+    this.fullscreen.set(document.fullscreenElement === this.host.nativeElement);
+  }
+
+  private async loadThumbnails(run: number): Promise<void> {
+    for (const map of this.maps()) {
+      if (run !== this.thumbnailRun) {
+        return;
+      }
+      if (this.thumbnails().has(map.directory)) {
+        continue;
+      }
+      const image = await this.client.getMapThumbnail(map.directory).catch(() => undefined);
+      const url = image ? imageToDataUrl(image) : null;
+      this.thumbnails.update((thumbnails) => new Map(thumbnails).set(map.directory, url));
+    }
   }
 
   protected onWheel(event: WheelEvent): void {
@@ -203,12 +260,8 @@ export class WorldMapComponent implements OnDestroy {
 
   protected onPointerMove(event: PointerEvent): void {
     const { x, y } = this.pointer(event);
-    const zoom = this.zoom();
-    const offset = this.offset();
-    const [u, v] = [(x - offset.x) / zoom, (y - offset.y) / zoom];
-    const tile = { tx: Math.floor(u), ty: Math.floor(v) };
-    const known = this.tiles().some((t) => t.tx === tile.tx && t.ty === tile.ty);
-    this.hover.set(known ? { tile, x, y } : undefined);
+    const tile = this.tileAt(x, y);
+    this.hover.set(tile ? { tile, x, y } : undefined);
     const press = this.press;
     if (!press) {
       return;
@@ -233,7 +286,10 @@ export class WorldMapComponent implements OnDestroy {
     const { x, y } = this.pointer(event);
     const at = (px: number, py: number) => this.worldAt(px, py);
     if (!press.moved) {
-      this.goTo.emit(at(x, y));
+      // only where the map has a tile (not the empty space around it)
+      if (this.tileAt(x, y)) {
+        this.goTo.emit(at(x, y));
+      }
     } else if (press.shift) {
       this.selection.set(undefined);
       const [a, b] = [at(press.x, press.y), at(x, y)];
@@ -257,6 +313,14 @@ export class WorldMapComponent implements OnDestroy {
 
   protected fitAll(): void {
     this.fit(this.tiles());
+  }
+
+  /** The map's tile under a point of the view, if it has one there. */
+  private tileAt(x: number, y: number): TileCoord | undefined {
+    const zoom = this.zoom();
+    const offset = this.offset();
+    const tile = { tx: Math.floor((x - offset.x) / zoom), ty: Math.floor((y - offset.y) / zoom) };
+    return this.tiles().some((t) => t.tx === tile.tx && t.ty === tile.ty) ? tile : undefined;
   }
 
   private worldAt(x: number, y: number): WorldPosition {

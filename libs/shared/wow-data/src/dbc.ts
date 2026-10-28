@@ -63,6 +63,18 @@ export interface WowMap {
   instanceType: number;
 }
 
+/** Kinds of maps, by Map.dbc InstanceType (transports are told apart by name). */
+export type MapKind = 'world' | 'dungeon' | 'raid' | 'battleground' | 'arena' | 'transport';
+const MAP_KINDS: MapKind[] = ['world', 'dungeon', 'raid', 'battleground', 'arena'];
+
+/** What kind of map it is: open world, dungeon, raid, battleground, arena, or a transport's own map. */
+export function mapKind(map: WowMap): MapKind {
+  if (/^transport/i.test(map.name)) {
+    return 'transport';
+  }
+  return MAP_KINDS[map.instanceType] ?? 'world';
+}
+
 /** Map.dbc (3.3.5a layout): 0 ID, 1 Directory, 2 InstanceType, 5..20 MapName_lang. */
 export function parseMapDbc(dbc: DbcFile): WowMap[] {
   const maps: WowMap[] = [];
@@ -269,9 +281,12 @@ export interface TaxiNode {
   y: number;
   z: number;
   name: string;
+  /** Who can fly from it: a flight master offers a mount to the Horde, the Alliance, or both (MountCreatureID). */
+  horde?: boolean;
+  alliance?: boolean;
 }
 
-/** TaxiNodes.dbc: 0 ID, 1 ContinentID, 2-4 position, 5..20 Name_lang. */
+/** TaxiNodes.dbc: 0 ID, 1 ContinentID, 2-4 position, 5..20 Name_lang, 22-23 MountCreatureID (Horde, Alliance). */
 export function parseTaxiNodes(dbc: DbcFile): TaxiNode[] {
   const nodes: TaxiNode[] = [];
   for (let r = 0; r < dbc.recordCount; r++) {
@@ -286,6 +301,7 @@ export function parseTaxiNodes(dbc: DbcFile): TaxiNode[] {
       y: dbc.getFloat(r, 3),
       z: dbc.getFloat(r, 4),
       name,
+      ...(dbc.fieldCount > 23 ? { horde: dbc.getUint(r, 22) > 0, alliance: dbc.getUint(r, 23) > 0 } : {}),
     });
   }
   return nodes;

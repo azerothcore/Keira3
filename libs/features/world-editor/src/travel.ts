@@ -36,11 +36,17 @@ export function travelOverlays(
       key: `graveyard:${graveyard.id}`,
       position: graveyard,
       color: GRAVEYARD_COLOR,
-      label: `Graveyard ${graveyard.id}${graveyard.comment ? `: ${graveyard.comment}` : ''}`,
+      label: [`Graveyard ${graveyard.id}${graveyard.comment ? `: ${graveyard.comment}` : ''}`, ...sideLine(graveyard.sides)].join('\n'),
     });
   }
   for (const node of data.taxiNodes) {
-    markers.push({ key: `taxi:${node.id}`, position: node, color: FLIGHT_COLOR, label: `Flight master: ${node.name} (node ${node.id})` });
+    const sides = node.alliance === undefined ? undefined : { alliance: node.alliance, horde: node.horde as boolean };
+    markers.push({
+      key: `taxi:${node.id}`,
+      position: node,
+      color: FLIGHT_COLOR,
+      label: [`Flight master: ${node.name} (node ${node.id})`, ...sideLine(sides)].join('\n'),
+    });
   }
   const near = (p: WorldPosition) => !!center && Math.hypot(p.x - center.x, p.y - center.y) <= FLIGHT_PATH_RANGE;
   const nodeName = (id: number) => data.taxiNodes.find((node) => node.id === id)?.name ?? `node ${id}`;
@@ -81,4 +87,14 @@ export function travelOverlays(
     }
   }
   return { links, markers };
+}
+
+/** Who can use a graveyard or a flight master. */
+function sideLine(sides: { alliance: boolean; horde: boolean } | undefined): string[] {
+  if (!sides) {
+    return [];
+  }
+  const who =
+    sides.alliance && sides.horde ? 'Alliance and Horde' : sides.alliance ? 'Alliance only' : sides.horde ? 'Horde only' : 'no one';
+  return [`Usable by: ${who}`];
 }

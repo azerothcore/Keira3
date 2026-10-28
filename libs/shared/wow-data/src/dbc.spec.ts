@@ -5,6 +5,7 @@ import {
   parseCreatureDisplays,
   playerDisplay,
   parseGameObjectDisplays,
+  mapKind,
   parseMapDbc,
   parseTaxiNodes,
   parseTaxiPaths,
@@ -238,15 +239,24 @@ describe('flight paths', () => {
       dbcOf(
         [
           [2, 0, float(-8835), float(490), float(109), 'Stormwind'],
-          [5, 1, float(1), float(2), float(3), '', 'Orgrimmar'],
+          [5, 1, float(1), float(2), float(3), '', 'Orgrimmar', ...Array(15).fill(0), 308, 0],
         ],
         24,
       ),
     );
     expect(nodes).toEqual([
-      { id: 2, mapId: 0, x: -8835, y: 490, z: 109, name: 'Stormwind' },
-      { id: 5, mapId: 1, x: 1, y: 2, z: 3, name: 'Orgrimmar' },
+      { id: 2, mapId: 0, x: -8835, y: 490, z: 109, name: 'Stormwind', horde: false, alliance: false },
+      { id: 5, mapId: 1, x: 1, y: 2, z: 3, name: 'Orgrimmar', horde: true, alliance: false },
     ]);
+    // older layouts without the mounts
+    expect(parseTaxiNodes(dbcOf([[3, 0, float(0), float(0), float(0), 'Old']], 21))[0]).toEqual({
+      id: 3,
+      mapId: 0,
+      x: 0,
+      y: 0,
+      z: 0,
+      name: 'Old',
+    });
     const paths = dbcOf([
       [10, 2, 4, 50],
       [11, 5, 6, 50],
@@ -267,5 +277,13 @@ describe('flight paths', () => {
         ],
       },
     ]);
+  });
+});
+
+describe('mapKind', () => {
+  it('tells open world, instances and transport maps apart', () => {
+    const map = (instanceType: number, name = 'Somewhere') => ({ id: 1, directory: 'X', name, instanceType });
+    expect([0, 1, 2, 3, 4, 7].map((type) => mapKind(map(type)))).toEqual(['world', 'dungeon', 'raid', 'battleground', 'arena', 'world']);
+    expect(mapKind(map(0, 'Transport: The Skybreaker'))).toBe('transport');
   });
 });

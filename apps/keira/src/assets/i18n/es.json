@@ -1046,6 +1046,8 @@
     "ERROR_DESKTOP_ONLY": "El editor de mundo 3D necesita la aplicación de escritorio de Keira3 para leer los archivos de tu cliente de WoW.",
     "WALKED_BY": "Recorrida por",
     "VIEW": "Vista",
+    "MAP_ALL": "Todos los mapas",
+    "MAP_ALL_HELP": "Todos los mapas, cada uno con su imagen (hecha con sus minimapas la primera vez y guardada en la caché): pulsa uno para abrirlo",
     "STATS": "Mostrar estadísticas de rendimiento",
     "STATS_HELP": "Fotogramas por segundo, tiempo de dibujo, llamadas de dibujo, triángulos, lo que hay en la tarjeta gráfica, memoria y lo cargado, en la esquina inferior izquierda de la vista",
     "PERF_LOG": "Escribir un registro de rendimiento",

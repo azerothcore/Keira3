@@ -37,6 +37,7 @@ import { WowDataSettingsService } from './wow-data-settings.service';
 import { StormArchive, WOW_NATIVE_API, WowNativeApi } from './wow-native-api';
 import { WOW_PARSER } from './wow-parser';
 import { perfTime } from './perf-log';
+import { FactionData, parseFactions, parseFactionTemplates } from './factions';
 
 /** Disk space used by the cache of this client: per map (by lower-case directory), for buildings, and in total. */
 export interface CacheUsage {
@@ -92,6 +93,7 @@ export class WowClientService {
   private minimapIndex?: Promise<Map<string, string>>;
   private maps?: Promise<WowMap[]>;
   private creatureDisplays?: Promise<Map<number, CreatureDisplay>>;
+  private factionData?: Promise<FactionData>;
   private gameobjectDisplays?: Promise<Map<number, string>>;
   private characterDbcs?: Promise<(DbcFile | undefined)[]>;
   private bossBoundaries?: { source: string; all: Promise<BossBoundary[]> };
@@ -218,12 +220,27 @@ export class WowClientService {
     return playerDisplay(race, sex, charSections, hairGeosets);
   }
 
+  /** Faction templates and factions (who can interact with what), from the server's DBCs when configured. */
+  getFactions(): Promise<FactionData> {
+    this.factionData ??= Promise.all([this.readDbc('FactionTemplate.dbc'), this.readDbc('Faction.dbc')])
+      .then(([templates, factions]) => ({
+        templates: templates ? parseFactionTemplates(templates) : new Map(),
+        factions: factions ? parseFactions(factions) : new Map(),
+      }))
+      .catch((error) => {
+        this.factionData = undefined;
+        throw error;
+      });
+    return this.factionData;
+  }
+
   /** Model path of a gameobject display id. */
   async getGameObjectDisplay(displayId: number): Promise<string | undefined> {
     this.gameobjectDisplays ??= this.readDbc('GameObjectDisplayInfo.dbc')
       .then((dbc) => (dbc ? parseGameObjectDisplays(dbc) : new Map<number, string>()))
       .catch((error) => {
         this.gameobjectDisplays = undefined;
+        this.factionData = undefined;
         throw error;
       });
     return (await this.gameobjectDisplays).get(displayId);
@@ -685,6 +702,39 @@ export class WowClientService {
     return blp ? this.parser.run({ kind: 'blp', bytes: blp }) : undefined;
   }
 
+  /**
+   * A small picture of a whole map (its minimaps side by side, about `MAP_THUMBNAIL_SIZE` pixels across), for the
+   * world map's list of every map; kept in the disk cache. Undefined for maps without minimaps (most dungeons).
+   */
+  async getMapThumbnail(directory: string): Promise<RgbaImage | undefined> {
+    const { identity } = await this.getClient();
+    const cached = await this.cache.read<RgbaImage>(identity, 'thumbnail', directory);
+    if (cached) {
+      return cached;
+    }
+    const tiles = await this.getMapTiles(directory);
+    if (tiles.length === 0) {
+      return undefined;
+    }
+    const [minX, minY] = [Math.min(...tiles.map((t) => t.tx)), Math.min(...tiles.map((t) => t.ty))];
+    const [columns, rows] = [Math.max(...tiles.map((t) => t.tx)) - minX + 1, Math.max(...tiles.map((t) => t.ty)) - minY + 1];
+    const per = Math.max(1, Math.floor(MAP_THUMBNAIL_SIZE / Math.max(columns, rows)));
+    const thumbnail: RgbaImage = { width: columns * per, height: rows * per, data: new Uint8Array(columns * per * rows * per * 4) };
+    let drawn = false;
+    for (const tile of tiles) {
+      const image = await this.getMinimap(directory, tile).catch(() => undefined);
+      if (image) {
+        drawn = true;
+        blit(image, thumbnail, (tile.tx - minX) * per, (tile.ty - minY) * per, per);
+      }
+    }
+    if (!drawn) {
+      return undefined;
+    }
+    void this.cache.write(identity, 'thumbnail', directory, thumbnail);
+    return thumbnail;
+  }
+
   /** Closes the archives; the next read reopens them (e.g. after the client path changed). */
   async close(): Promise<void> {
     const client = this.client;
@@ -846,4 +896,18 @@ function nextFrame(): Promise<void> {
     };
     channel.port2.postMessage(undefined);
   });
+}
+
+/** Pixels across a map's thumbnail (about: each tile gets a whole number of pixels). */
+export const MAP_THUMBNAIL_SIZE = 192;
+
+/** Draws `image` shrunk to `size` × `size` pixels (nearest pixel) into `target` at `left`, `top`. */
+function blit(image: RgbaImage, target: RgbaImage, left: number, top: number, size: number): void {
+  for (let y = 0; y < size; y++) {
+    const from = Math.floor(((y + 0.5) * image.height) / size) * image.width;
+    for (let x = 0; x < size; x++) {
+      const source = (from + Math.floor(((x + 0.5) * image.width) / size)) * 4;
+      target.data.set(image.data.subarray(source, source + 4), ((top + y) * target.width + left + x) * 4);
+    }
+  }
 }

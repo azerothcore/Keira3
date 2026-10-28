@@ -41,6 +41,8 @@ export interface SpawnRecord {
   trigger?: boolean;
   /** creature.phaseMask / gameobject.phaseMask. */
   phaseMask?: number;
+  /** Faction template (creature_template.faction, gameobject_template_addon.faction), when set. */
+  faction?: number;
   /** The template's AIName and ScriptName, when set. */
   aiName?: string;
   scriptName?: string;
@@ -54,6 +56,8 @@ export type PoolSpawn = Pick<SpawnRecord, 'type' | 'guid' | 'entry' | 'name' | '
 /** Gameobject types that have loot in Data1: chests and fishing holes. */
 export const GAMEOBJECT_CHEST = 3;
 export const GAMEOBJECT_FISHING_HOLE = 25;
+/** Ships, zeppelins and gunships moving between places (MO_TRANSPORT): Data6 is the map they carry. */
+export const GAMEOBJECT_TRANSPORT = 15;
 
 /** A quest a creature or gameobject entry starts or ends (creature_queststarter / _questender, gameobject_…). */
 export interface SpawnQuest {
@@ -200,9 +204,7 @@ export const preferredPathId = (guid: number): number => guid * 10;
 export const SPAWN_LOAD_RADIUS = 450;
 /** How long (ms) typing in the teleport box pauses before teleports are looked up. */
 export const TELE_SEARCH_DELAY = 300;
-/** Kinds of maps, by Map.dbc InstanceType (transports are told apart by name). */
-export type MapKind = 'world' | 'dungeon' | 'raid' | 'battleground' | 'arena' | 'transport';
-export const MAP_KINDS: MapKind[] = ['world', 'dungeon', 'raid', 'battleground', 'arena'];
+
 /** How far (yards) the camera goes from where the spawns were last loaded before they're loaded again. */
 export const SPAWN_RELOAD_DISTANCE = 150;
 export const SPAWN_LOAD_LIMIT = 3000;
@@ -233,6 +235,8 @@ export interface Graveyard {
   y: number;
   z: number;
   comment: string;
+  /** Who resurrects there (graveyard_zone.Faction: 0 both, 469 Alliance, 67 Horde); undefined when not linked. */
+  sides?: { alliance: boolean; horde: boolean };
 }
 
 /** Where an area trigger teleports to (`areatrigger_teleport`). */

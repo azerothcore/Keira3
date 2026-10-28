@@ -525,6 +525,31 @@ describe('WowClientService', () => {
       expect(await service.getZoneLights('Azeroth')).toEqual([]);
     });
 
+    it('reads the faction templates and factions', async () => {
+      const faction = [72, 19, 1100, 690, 1, 0, 0, 0, 0, 0, 3100, -42000, 4000, 0, ...Array(9).fill(0), 'Stormwind'];
+      const { service } = setup({
+        mpqs: displayMpqs({
+          'DBFilesClient\\FactionTemplate.dbc': dbc([[11, 72, 0, 3, 2, 12, 0, 0, 0, 0, 0, 0, 0, 0]], 14),
+          'DBFilesClient\\Faction.dbc': dbc([faction], 57),
+        }),
+      });
+      const data = await service.getFactions();
+      expect(data.templates.get(11)?.faction).toBe(72);
+      expect(data.factions.get(72)?.name).toBe('Stormwind');
+      expect(await service.getFactions()).toBe(data);
+    });
+
+    it('has no factions without their DBCs', async () => {
+      const { service } = setup({ mpqs: displayMpqs({}) });
+      expect((await service.getFactions()).templates.size).toBe(0);
+    });
+
+    it('retries the factions after a failure', async () => {
+      const { service } = setup({ mpqs: displayMpqs({ 'DBFilesClient\\Faction.dbc': [1, 2, 3, 4] }) });
+      await expect(service.getFactions()).rejects.toThrowError(/WDBC/);
+      await expect(service.getFactions()).rejects.toThrowError(/WDBC/);
+    });
+
     it('retries gameobject displays after a failure', async () => {
       const { service } = setup({ mpqs: displayMpqs({ 'DBFilesClient\\GameObjectDisplayInfo.dbc': [1, 2, 3, 4] }) });
       await expect(service.getGameObjectDisplay(5)).rejects.toThrowError(/WDBC/);
@@ -978,6 +1003,53 @@ describe('WowClientService', () => {
       expect(await service.getMinimap('Azeroth', { tx: 1, ty: 1 })).toBeUndefined();
       expect(await service.getMinimap('Azeroth', { tx: 2, ty: 2 })).toBeUndefined();
       expect(formats.decodeBlp).toHaveBeenCalledTimes(1);
+    });
+
+    it('pictures whole maps from their minimaps, kept in the cache', async () => {
+      const trs = Array.from(
+        new TextEncoder().encode('Azeroth\\map32_48.blp\thash.blp\nAzeroth\\map33_49.blp\thash.blp\nBlind\\map01_01.blp\thash.blp\n'),
+      );
+      const { service } = setup({
+        mpqs: {
+          'common.MPQ': {
+            files: {
+              'textures\\Minimap\\md5translate.trs': trs,
+              'textures\\Minimap\\hash.blp': [5],
+              'World\\Maps\\Azeroth\\Azeroth.wdt': [9],
+              'World\\Maps\\Empty\\Empty.wdt': [9],
+              'World\\Maps\\Blind\\Blind.wdt': [9],
+            },
+          },
+        },
+      });
+      // a 2 × 2 red minimap
+      formats.decodeBlp.mockReturnValue({ width: 2, height: 2, data: new Uint8Array(16).fill(255) });
+      formats.parseWdt.mockImplementation((bytes: Uint8Array) => ({ tiles: [], layerSplatDepth: 4, bytes }));
+      formats.parseWdt.mockReturnValueOnce({
+        tiles: [
+          { tx: 32, ty: 48 },
+          { tx: 33, ty: 49 },
+          { tx: 32, ty: 49 },
+        ],
+        layerSplatDepth: 4,
+      });
+      const picture = await service.getMapThumbnail('Azeroth');
+      // 2 × 2 tiles of 96 pixels: the top-left and bottom-right drawn, the bottom-left (no minimap) left clear
+      expect([picture?.width, picture?.height]).toEqual([192, 192]);
+      expect(picture?.data[0]).toBe(255);
+      expect(picture?.data[(191 * 192 + 191) * 4]).toBe(255);
+      expect(picture?.data[(191 * 192 + 0) * 4 + 3]).toBe(0);
+      formats.decodeBlp.mockClear();
+      expect((await service.getMapThumbnail('Azeroth'))?.width).toBe(192);
+      expect(formats.decodeBlp).not.toHaveBeenCalled();
+      // no tiles; tiles without minimaps
+      expect(await service.getMapThumbnail('Empty')).toBeUndefined();
+      // its one minimap can't be decoded
+      formats.parseWdt.mockReturnValueOnce({ tiles: [{ tx: 1, ty: 1 }], layerSplatDepth: 4 });
+      formats.decodeBlp.mockImplementationOnce(() => {
+        throw new Error('bad blp');
+      });
+      expect(await service.getMapThumbnail('Blind')).toBeUndefined();
     });
 
     it('has no minimaps without md5translate.trs', async () => {

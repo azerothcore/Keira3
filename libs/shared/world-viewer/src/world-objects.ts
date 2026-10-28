@@ -25,6 +25,14 @@ export interface WorldObjectsOptions {
   radius: number;
 }
 
+/** A building placed by key (not by a map tile), at a server position, facing `orientation`. */
+export interface ExtraBuilding {
+  key: string;
+  path: string;
+  position: WorldPosition;
+  orientation: number;
+}
+
 interface Placed {
   object: Object3D;
   tiles: Set<string>;
@@ -48,6 +56,8 @@ export class WorldObjects {
   /** An area whose buildings are all loaded (e.g. the selected zone). */
   private region?: WorldBounds;
   private regionKeys = new Set<string>();
+  private readonly extras = new Map<string, Object3D>();
+  private extrasGeneration = 0;
 
   constructor(
     private readonly source: ObjectSource,
@@ -118,6 +128,38 @@ export class WorldObjects {
     }
   }
 
+  /**
+   * Buildings placed from the database rather than by the map's tiles (a transport's ship at the middle of its own
+   * map): replaces the previous ones. They're ground like the others (snapping, line of sight).
+   */
+  async setExtras(extras: ExtraBuilding[]): Promise<void> {
+    const generation = ++this.extrasGeneration;
+    this.extras.forEach((object) => this.group.remove(object));
+    this.extras.clear();
+    for (const extra of extras) {
+      const template = await this.getTemplate(extra.path).catch(() => undefined);
+      if (generation !== this.extrasGeneration) {
+        return;
+      }
+      if (template) {
+        const object = template.clone();
+        object.name = extra.key;
+        const { x, y, z } = extra.position;
+        const half = extra.orientation / 2;
+        applyPlacement(object, {
+          uniqueId: 0,
+          path: extra.path,
+          position: [x, y, z],
+          rotation: [0, 0, Math.sin(half), Math.cos(half)],
+          scale: 1,
+        });
+        this.group.add(object);
+        this.extras.set(extra.key, object);
+      }
+    }
+    this.onChange();
+  }
+
   /** Loads a building ahead of time (kept for when a tile places it). */
   prefetch(path: string): Promise<unknown> {
     return this.getTemplate(path).catch(() => undefined);
@@ -126,6 +168,7 @@ export class WorldObjects {
   dispose(): void {
     this.directory = undefined;
     this.clear();
+    void this.setExtras([]);
     this.templates.forEach((template) => void template.then((t) => t && disposeWmoObject(t)));
     this.templates.clear();
   }

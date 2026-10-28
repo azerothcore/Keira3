@@ -297,6 +297,7 @@
         [areaTriggers]="worldAreaTriggers()"
         [boundaries]="worldBoundaries()"
         [spawnsLoading]="loadingSpawns()"
+        [buildings]="transportBuildings()"
         (probeMoved)="onProbeMoved($event)"
       />
       <button
@@ -1085,6 +1086,8 @@
             [dots]="mapDots()"
             [zones]="zones()"
             [coverage]="mapCoverage()"
+            [maps]="maps()"
+            (mapPicked)="pickMap($event)"
             (goTo)="onMapGoTo($event)"
             (regionSelected)="onMapRegion($event)"
             (closed)="toggleMap()"

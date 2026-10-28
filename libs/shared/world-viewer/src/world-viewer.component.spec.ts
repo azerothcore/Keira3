@@ -16,6 +16,7 @@ import { DebugHtmlElement, PageObjectModel } from 'ngx-page-object-model';
 import { EventDispatcher, Object3D, Vector3 } from 'three';
 import { DEFAULT_WORLD_CONTROLS_SETTINGS, WorldControlsSettings } from './world-controls-settings';
 import { DEFAULT_WORLD_RENDER_SETTINGS, WorldRenderSettings } from './world-render-settings';
+import { ExtraBuilding, WorldObjects } from './world-objects';
 import { WORLD_RENDERER_FACTORY, WorldRenderer } from './world-renderer';
 import { WorldViewerComponent } from './world-viewer.component';
 import {
@@ -152,6 +153,7 @@ interface FakeTransformControls extends EventDispatcher<{ 'dragging-changed': { 
       (probed)="probes.push($event)"
       [boundaries]="boundaries()"
       [spawnsLoading]="spawnsLoading()"
+      [buildings]="buildings()"
       (probeMoved)="probeMoves.push($event)"
       (speedChanged)="speeds.push($event)"
       (navMeshTileChanged)="navMeshTiles.push($event)"
@@ -185,6 +187,7 @@ class HostComponent {
   readonly markers = signal<WorldMarker[]>([]);
   readonly boundaries = signal<WorldBoundary[]>([]);
   readonly spawnsLoading = signal(false);
+  readonly buildings = signal<ExtraBuilding[]>([]);
   readonly probe = signal<PathProbeRequest | undefined>(undefined);
   readonly probes: PathProbeResult[] = [];
   readonly probeMoves: { which: 'from' | 'to'; position: WorldPosition }[] = [];
@@ -395,6 +398,16 @@ describe(WorldViewerComponent.name, () => {
     expect(client.getCreatureDisplay).toHaveBeenCalledWith(5);
     expect(client.getM2).toHaveBeenCalledWith('Creature\\Wolf\\Wolf.mdx');
     expect(renderer.render).toHaveBeenCalled();
+  });
+
+  it('places the buildings the editor asks for (a transport on its map)', async () => {
+    const setExtras = vi.spyOn(WorldObjects.prototype, 'setExtras');
+    const { fixture, host } = await setup();
+    const ship = { key: 'transport:1', path: 'ship.wmo', position: { x: 0, y: 0, z: 0 }, orientation: 0 };
+    host.buildings.set([ship]);
+    await settle(fixture);
+    expect(setExtras).toHaveBeenLastCalledWith([ship]);
+    setExtras.mockRestore();
   });
 
   it('shows performance stats when asked: frames, draws, graphics memory and what is loaded', async () => {

@@ -21,6 +21,7 @@ import { ActivatedRoute } from '@angular/router';
 import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-components';
 import {
   ContextRequest,
+  ExtraBuilding,
   GROUND_KEY,
   GizmoMode,
   CONTROL_ACTIONS,
@@ -65,9 +66,12 @@ import {
   tilesInBounds,
   WowClientService,
   setPerfLog,
+  describeFaction,
+  FactionData,
   WowDataCacheService,
   WowDataSettingsService,
   WowMap,
+  mapKind,
   WowZone,
   WorldPosition,
   AreaTriggerInfo,
@@ -104,8 +108,6 @@ import {
   SPAWN_LOAD_RADIUS,
   SPAWN_RELOAD_DISTANCE,
   TELE_SEARCH_DELAY,
-  MAP_KINDS,
-  MapKind,
   OVERLAY_SWITCHES,
   Teleport,
   PoolMember,
@@ -526,6 +528,35 @@ export class WorldEditorComponent implements OnInit {
   /** A spawn to select once it's loaded (after flying to a search result). */
   private pendingSelect?: string;
   protected readonly mapRegion = this.session.mapRegion;
+  /** The ship of a transport map, drawn at its middle (passengers are placed relative to it). */
+  protected readonly transportBuildings = signal<ExtraBuilding[]>([]);
+  private readonly loadTransportBuildings = effect(() => {
+    const mapId = this.mapId();
+    untracked(() => void this.loadTransport(mapId));
+  });
+
+  private async loadTransport(mapId: number): Promise<void> {
+    this.transportBuildings.set([]);
+    try {
+      const transports = await this.service.loadTransports(mapId);
+      const buildings: ExtraBuilding[] = [];
+      for (const transport of transports) {
+        const path = await this.client.getGameObjectDisplay(transport.displayId);
+        if (path) {
+          buildings.push({ key: `transport:${transport.entry}`, path, position: { x: 0, y: 0, z: 0 }, orientation: 0 });
+        }
+      }
+      if (mapId === this.mapId()) {
+        this.transportBuildings.set(buildings);
+      }
+    } catch (error) {
+      this.toastr.error((error as Error).message, 'World Editor');
+    }
+  }
+
+  /** Faction templates and factions, for who can interact with spawns (undefined until read, or unreadable). */
+  private readonly factionData = signal<FactionData | undefined>(undefined);
+
   /** The tiles of the current map (for the world map). */
   protected readonly mapTiles = signal<TileCoord[]>([]);
   /** Spawns (and search results) as dots on the world map. */
@@ -764,6 +795,15 @@ export class WorldEditorComponent implements OnInit {
       );
     }
     lines.push(...groupDetails(spawn, this.formations(), this.pools()));
+    // who can talk to it, use it or loot it; with Alt, each race's standing and the faction
+    const factions = this.factionData();
+    const faction = factions && spawn.faction ? describeFaction(spawn.faction, factions) : undefined;
+    const factionDetails = faction?.details ?? [];
+    if (faction) {
+      lines.push(faction.line);
+    } else if (spawn.type === 'gameobject' && !spawn.faction) {
+      lines.push('Interact: everyone');
+    }
     const quests = (this.quests().get(`${spawn.type}:${spawn.entry}`) ?? []).map(
       (q) => `${q.role === 'starts' ? 'Starts' : 'Ends'} quest ${q.quest} (${q.title || '?'})`,
     );
@@ -771,9 +811,14 @@ export class WorldEditorComponent implements OnInit {
       return {};
     }
     const more = quests.length - HOVER_QUESTS;
+    const hidden = more > 0 || factionDetails.length > 0;
     return {
-      details: [...lines, ...quests.slice(0, HOVER_QUESTS), ...(more > 0 ? [`+${more} more (hold Alt)`] : [])],
-      allDetails: [...lines, ...quests],
+      details: [
+        ...lines,
+        ...quests.slice(0, HOVER_QUESTS),
+        ...(hidden ? [`${more > 0 ? `+${more} more quests, ` : ''}hold Alt for more`] : []),
+      ],
+      allDetails: [...lines, ...quests, ...factionDetails],
     };
   }
 
@@ -1185,6 +1230,10 @@ export class WorldEditorComponent implements OnInit {
     }
     try {
       this.maps.set(await this.client.getMaps());
+      void this.client.getFactions().then(
+        (data) => this.factionData.set(data),
+        () => undefined,
+      );
       if (!this.focus()) {
         await this.focusMapCenter();
       }
@@ -1222,12 +1271,7 @@ export class WorldEditorComponent implements OnInit {
   }
 
   /** What kind of map it is, for the colour of its badge in the picker. */
-  protected mapKind(map: WowMap): MapKind {
-    if (/^transport/i.test(map.name)) {
-      return 'transport';
-    }
-    return MAP_KINDS[map.instanceType] ?? 'world';
-  }
+  protected readonly mapKind = mapKind;
 
   /** Goes to the next (or previous) map of the list, round the end. */
   protected stepMap(step: number): void {

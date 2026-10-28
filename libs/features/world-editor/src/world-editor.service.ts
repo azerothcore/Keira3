@@ -11,6 +11,7 @@ import {
   isSaiPath,
   GAMEOBJECT_CHEST,
   GAMEOBJECT_FISHING_HOLE,
+  GAMEOBJECT_TRANSPORT,
   PoolMember,
   PoolSpawn,
   preferredPathId,
@@ -78,7 +79,8 @@ export class WorldEditorService {
       `${eventOf('game_event_creature', 'c.guid')}, ` +
       `((IFNULL(ct.flags_extra, 0) & ${FLAG_EXTRA_TRIGGER}) <> 0 OR ${helperName('ct.name')}) AS isTrigger, ` +
       "IFNULL(ct.AIName, '') AS aiName, IFNULL(ct.ScriptName, '') AS scriptName, " +
-      'IFNULL(ct.lootid, 0) AS lootId, IFNULL(ct.pickpocketloot, 0) AS pickpocketLoot, IFNULL(ct.skinloot, 0) AS skinLoot ' +
+      'IFNULL(ct.lootid, 0) AS lootId, IFNULL(ct.pickpocketloot, 0) AS pickpocketLoot, IFNULL(ct.skinloot, 0) AS skinLoot, ' +
+      'IFNULL(ct.faction, 0) AS faction ' +
       'FROM creature c ' +
       'LEFT JOIN creature_template ct ON ct.entry = c.id ' +
       'LEFT JOIN creature_template_model ctm ON ctm.CreatureID = c.id AND ctm.Idx = 0 ' +
@@ -94,9 +96,11 @@ export class WorldEditorService {
       `${eventOf('game_event_gameobject', 'g.guid')}, IFNULL(${helperName('gt.name')}, 0) AS isTrigger, ` +
       "IFNULL(gt.AIName, '') AS aiName, IFNULL(gt.ScriptName, '') AS scriptName, " +
       // chests (3) and fishing holes (25) keep their loot id in Data1
-      `IF(gt.type IN (${GAMEOBJECT_CHEST}, ${GAMEOBJECT_FISHING_HOLE}), IFNULL(gt.Data1, 0), 0) AS lootId, 0 AS pickpocketLoot, 0 AS skinLoot ` +
+      `IF(gt.type IN (${GAMEOBJECT_CHEST}, ${GAMEOBJECT_FISHING_HOLE}), IFNULL(gt.Data1, 0), 0) AS lootId, 0 AS pickpocketLoot, 0 AS skinLoot, ` +
+      'IFNULL(gta.faction, 0) AS faction ' +
       'FROM gameobject g ' +
       'LEFT JOIN gameobject_template gt ON gt.entry = g.id ' +
+      'LEFT JOIN gameobject_template_addon gta ON gta.entry = g.id ' +
       `WHERE ${area('g')} LIMIT ${SPAWN_LOAD_LIMIT}`;
 
     const [creatureRows, gameobjectRows] = await Promise.all([
@@ -284,16 +288,29 @@ export class WorldEditorService {
   async loadGraveyards(map: number): Promise<Graveyard[]> {
     const rows = await firstValueFrom(
       this.queryService.query<TableRow>(
-        `SELECT ID AS id, x, y, z, IFNULL(Comment, '') AS comment FROM game_graveyard WHERE Map = ${Math.trunc(map)}`,
+        "SELECT g.ID AS id, g.x, g.y, g.z, IFNULL(g.Comment, '') AS comment, " +
+          '(SELECT GROUP_CONCAT(DISTINCT z.Faction) FROM graveyard_zone z WHERE z.ID = g.ID) AS factions ' +
+          `FROM game_graveyard g WHERE g.Map = ${Math.trunc(map)}`,
       ),
     );
-    return (rows ?? []).map((row) => ({
-      id: Number(row['id']),
-      x: Number(row['x']),
-      y: Number(row['y']),
-      z: Number(row['z']),
-      comment: String(row['comment']),
-    }));
+    return (rows ?? []).map((row) => {
+      const factions = row['factions'] ? String(row['factions']).split(',').map(Number) : [];
+      return {
+        id: Number(row['id']),
+        x: Number(row['x']),
+        y: Number(row['y']),
+        z: Number(row['z']),
+        comment: String(row['comment']),
+        ...(factions.length
+          ? {
+              sides: {
+                alliance: factions.some((f) => f === 0 || f === TEAM_ALLIANCE),
+                horde: factions.some((f) => f === 0 || f === TEAM_HORDE),
+              },
+            }
+          : {}),
+      };
+    });
   }
 
   /** Where the given area triggers teleport to (`areatrigger_teleport`). */
@@ -365,6 +382,19 @@ export class WorldEditorService {
       maxLimit: Number(row['maxLimit']),
       description: String(row['description'] ?? ''),
     }));
+  }
+
+  /** The transports (gameobject type 15) whose own map is `map` (Data6): their ship is drawn at its middle. */
+  async loadTransports(map: number): Promise<{ entry: number; name: string; displayId: number }[]> {
+    if (map <= 0) {
+      return [];
+    }
+    const rows = await firstValueFrom(
+      this.queryService.query<TableRow>(
+        `SELECT entry, IFNULL(name, '') AS name, displayId FROM gameobject_template WHERE type = ${GAMEOBJECT_TRANSPORT} AND Data6 = ${Math.trunc(map)}`,
+      ),
+    );
+    return (rows ?? []).map((row) => ({ entry: Number(row['entry']), name: String(row['name']), displayId: Number(row['displayId']) }));
   }
 
   /** Every creature and gameobject of a pool (`pool_creature` / `pool_gameobject`), wherever it is. */
@@ -533,6 +563,7 @@ function toSpawns(type: SpawnType, rows: SpawnRow[] | undefined): SpawnRecord[] 
       ? { boundingRadius: Number(row['boundingRadius']), combatReach: Number(row['combatReach']) }
       : {}),
     phaseMask: Number(row.phaseMask ?? 1),
+    ...(Number(row['faction']) > 0 ? { faction: Number(row['faction']) } : {}),
     ...(row['aiName'] ? { aiName: String(row['aiName']) } : {}),
     ...(row['scriptName'] ? { scriptName: String(row['scriptName']) } : {}),
     ...lootOf(row),
@@ -540,6 +571,10 @@ function toSpawns(type: SpawnType, rows: SpawnRow[] | undefined): SpawnRecord[] 
 }
 
 /** The loot tables a spawn uses (only those set). */
+/** graveyard_zone.Faction of each side. */
+const TEAM_ALLIANCE = 469;
+const TEAM_HORDE = 67;
+
 function lootOf(row: SpawnRow): Pick<SpawnRecord, 'loot'> {
   const loot = {
     ...(Number(row['lootId']) > 0 ? { loot: Number(row['lootId']) } : {}),

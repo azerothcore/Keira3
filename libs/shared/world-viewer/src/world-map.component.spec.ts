@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
-import { ServerTileCoverage, TILE_SIZE, TileCoord, WorldBounds, WorldPosition, WowClientService } from '@keira/shared/wow-data';
+import { ServerTileCoverage, TILE_SIZE, TileCoord, WorldBounds, WorldPosition, WowClientService, WowMap } from '@keira/shared/wow-data';
 import { PageObjectModel } from 'ngx-page-object-model';
 import { WorldMapComponent, WorldMapDot } from './world-map.component';
 
@@ -16,6 +16,8 @@ import { WorldMapComponent, WorldMapDot } from './world-map.component';
       [dots]="dots()"
       [zones]="zones()"
       [coverage]="coverage()"
+      [maps]="maps()"
+      (mapPicked)="picked.push($event)"
       (goTo)="goTos.push($event)"
       (regionSelected)="regions.push($event)"
       (closed)="closes = closes + 1"
@@ -34,6 +36,12 @@ class HostComponent {
   readonly zones = signal<{ name: string; bounds: WorldBounds }[]>([]);
   readonly coverage = signal<Map<string, ServerTileCoverage> | undefined>(undefined);
   readonly goTos: WorldPosition[] = [];
+  readonly maps = signal<WowMap[]>([
+    { id: 0, directory: 'Azeroth', name: 'Eastern Kingdoms', instanceType: 0 },
+    { id: 33, directory: 'Shadowfang', name: 'Shadowfang Keep', instanceType: 1 },
+    { id: 34, directory: 'Broken', name: 'Broken', instanceType: 0 },
+  ]);
+  readonly picked: number[] = [];
   readonly regions: WorldBounds[] = [];
   closes = 0;
 }
@@ -53,13 +61,14 @@ class Page extends PageObjectModel<HostComponent> {
 }
 
 describe(WorldMapComponent.name, () => {
-  const client = { getMinimap: vi.fn() };
+  const client = { getMinimap: vi.fn(), getMapThumbnail: vi.fn() };
   const image = { width: 128, height: 128, data: new Uint8Array(128 * 128 * 4).fill(200) };
 
   beforeEach(async () => {
     // a 200 × 100 view: the two tiles fit at 100 px each
     vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue(new DOMRect(0, 0, 200, 100));
     client.getMinimap.mockReset();
+    client.getMapThumbnail.mockReset();
     client.getMinimap.mockImplementation((_d: string, tile: TileCoord) =>
       tile.tx === 31 ? Promise.resolve(image) : tile.tx === 32 ? Promise.reject(new Error('none')) : Promise.resolve(undefined),
     );
@@ -120,6 +129,83 @@ describe(WorldMapComponent.name, () => {
     page.map().dispatchEvent(new MouseEvent('pointerdown', { button: 2, bubbles: true }));
     page.pointer('pointerup', 10, 10);
     expect(host.goTos).toHaveLength(1);
+  });
+
+  it('only goes where the map has a tile', async () => {
+    const { page, host } = await setup();
+    // under the two tiles: nothing there
+    page.pointer('pointerdown', 50, 150);
+    page.pointer('pointerup', 50, 150);
+    expect(host.goTos).toEqual([]);
+  });
+
+  it('lists every map with a picture of each, and opens the one picked', async () => {
+    client.getMapThumbnail.mockImplementation((directory: string) =>
+      directory === 'Azeroth'
+        ? Promise.resolve(image)
+        : directory === 'Broken'
+          ? Promise.reject(new Error('bad'))
+          : Promise.resolve(undefined),
+    );
+    const { page, host, fixture } = await setup();
+    page.getDebugElementByTestId('world-map-all-btn').nativeElement.click();
+    fixture.detectChanges();
+    expect(page.getDebugElementByTestId('world-map-card-33').nativeElement.querySelector('.fa-spinner')).toBeTruthy();
+    for (let i = 0; i < 4; i++) {
+      await new Promise((resolve) => setTimeout(resolve));
+    }
+    fixture.detectChanges();
+    expect(page.getDebugElementByTestId('world-map-card-0').nativeElement.querySelector('img')?.getAttribute('src')).toMatch(/^data:image/);
+    // no picture: its kind instead
+    expect(page.getDebugElementByTestId('world-map-card-33').nativeElement.textContent).toContain('WORLD_EDITOR.MAP_KIND_DUNGEON');
+    expect(page.getDebugElementByTestId('world-map-card-34').nativeElement.textContent).toContain('WORLD_EDITOR.MAP_KIND_WORLD');
+    expect(page.getDebugElementByTestId('world-map', false)?.nativeElement.classList).toContain('hidden');
+    // back to the map and to the list again: pictures aren't made twice
+    page.getDebugElementByTestId('world-map-all-btn').nativeElement.click();
+    page.getDebugElementByTestId('world-map-all-btn').nativeElement.click();
+    await new Promise((resolve) => setTimeout(resolve));
+    expect(client.getMapThumbnail).toHaveBeenCalledTimes(3);
+    page.getDebugElementByTestId('world-map-card-33').nativeElement.click();
+    fixture.detectChanges();
+    expect(host.picked).toEqual([33]);
+    expect(page.getDebugElementByTestId('world-map-all', false)).toBeFalsy();
+  });
+
+  it('stops making pictures when the list is left, and goes full screen', async () => {
+    let finish: (value: undefined) => void = () => undefined;
+    client.getMapThumbnail.mockReturnValueOnce(new Promise((resolve) => (finish = resolve)));
+    const { page, fixture } = await setup();
+    page.getDebugElementByTestId('world-map-all-btn').nativeElement.click();
+    page.getDebugElementByTestId('world-map-all-btn').nativeElement.click();
+    finish(undefined);
+    await new Promise((resolve) => setTimeout(resolve));
+    expect(client.getMapThumbnail).toHaveBeenCalledTimes(1);
+
+    const element = fixture.debugElement.query((el) => el.name === 'keira-world-map').nativeElement as HTMLElement;
+    let current: Element | null = null;
+    Object.defineProperty(document, 'fullscreenElement', { configurable: true, get: () => current });
+    element.requestFullscreen = vi.fn().mockImplementation(() => {
+      current = element;
+      document.dispatchEvent(new Event('fullscreenchange'));
+      return Promise.resolve();
+    });
+    document.exitFullscreen = vi.fn().mockImplementation(() => {
+      current = null;
+      document.dispatchEvent(new Event('fullscreenchange'));
+      return Promise.resolve();
+    });
+    page.getDebugElementByTestId('world-map-fullscreen').nativeElement.click();
+    await new Promise((resolve) => setTimeout(resolve));
+    fixture.detectChanges();
+    expect(element.classList).toContain('fullscreen');
+    page.getDebugElementByTestId('world-map-fullscreen').nativeElement.click();
+    await new Promise((resolve) => setTimeout(resolve));
+    fixture.detectChanges();
+    expect(element.classList).not.toContain('fullscreen');
+    // closed while making pictures
+    client.getMapThumbnail.mockReturnValueOnce(new Promise(() => undefined));
+    page.getDebugElementByTestId('world-map-all-btn').nativeElement.click();
+    fixture.destroy();
   });
 
   it('zooms around the cursor with the wheel, within limits, and comes back to the camera or the whole map', async () => {

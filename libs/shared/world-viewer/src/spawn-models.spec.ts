@@ -1,4 +1,13 @@
-import { CreatureDisplay, EMPTY_COLLISION, M2Blend, M2Mesh, tileCenter, WorldPosition, worldToScene } from '@keira/shared/wow-data';
+import {
+  CreatureDisplay,
+  EMPTY_COLLISION,
+  M2Blend,
+  M2Mesh,
+  tileCenter,
+  WmoModel,
+  WorldPosition,
+  worldToScene,
+} from '@keira/shared/wow-data';
 import { Mesh, MeshLambertMaterial, Texture } from 'three';
 import { COLLISION_LAYER } from './collision-object';
 import { SpawnModels, SpawnModelSource } from './spawn-models';
@@ -44,6 +53,23 @@ const flush = async () => {
   }
 };
 
+const WMO: WmoModel = {
+  materials: [
+    { texture: 'Elevator.blp', twoSided: false, unlit: false, blend: 0 },
+    { twoSided: false, unlit: false, blend: 0 },
+  ],
+  groups: [
+    {
+      positions: new Float32Array(9),
+      normals: new Float32Array(9),
+      uvs: new Float32Array(6),
+      indices: new Uint16Array([0, 1, 2]),
+      batches: [{ start: 0, count: 3, material: 0 }],
+      indoor: false,
+    },
+  ],
+};
+
 const DISPLAYS: Record<number, CreatureDisplay> = {
   1: { model: 'Creature\\Wolf\\Wolf.mdx', scale: 2, textures: { 11: 'Creature\\Wolf\\WolfGrey.blp' } },
   2: { model: 'Character\\Human\\Male\\HumanMale.mdx', scale: 1, textures: { 1: 'Baked.blp' }, hairGeoset: 3 },
@@ -58,7 +84,12 @@ describe('SpawnModels', () => {
   const setup = () => {
     const source = {
       getCreatureDisplay: vi.fn().mockImplementation((id: number) => Promise.resolve(DISPLAYS[id])),
-      getGameObjectDisplay: vi.fn().mockImplementation((id: number) => Promise.resolve(id === 7 ? 'World\\Mailbox.mdx' : undefined)),
+      getGameObjectDisplay: vi
+        .fn()
+        .mockImplementation((id: number) =>
+          Promise.resolve(id === 7 ? 'World\\Mailbox.mdx' : id === 8 ? 'World\\wmo\\Elevator.wmo' : id === 9 ? 'Gone.wmo' : undefined),
+        ),
+      getWmo: vi.fn().mockImplementation((path: string) => Promise.resolve(path.includes('Elevator') ? WMO : undefined)),
       getM2: vi.fn().mockImplementation((path: string) => {
         if (path.includes('Wolf')) {
           return Promise.resolve(
@@ -102,7 +133,7 @@ describe('SpawnModels', () => {
       spawn('creature:6', 'creature', 0, 99),
       spawn('gameobject:1', 'gameobject', 40, 7),
       spawn('gameobject:2', 'gameobject', 80, 7),
-      spawn('gameobject:3', 'gameobject', 0, 8),
+      spawn('gameobject:3', 'gameobject', 0, 10),
     ]);
 
     expect(source.getCreatureDisplay).toHaveBeenCalledTimes(3);
@@ -198,6 +229,18 @@ describe('SpawnModels', () => {
     await show(models, world, [spawn('creature:1', 'creature', 0, 1)]);
     expect(warn).toHaveBeenCalledWith(expect.stringContaining('bad dbc'));
     expect(models.shownCount).toBe(0);
+  });
+
+  it('draws gameobjects whose model is a building (elevators, ships) with that building', async () => {
+    const { models, world, loaded } = setup();
+    await show(models, world, [spawn('gameobject:1', 'gameobject', 0, 8), spawn('gameobject:2', 'gameobject', 0, 9)]);
+    const building = modelOf(world, 'gameobject:1');
+    expect(building?.children.length).toBeGreaterThan(0);
+    expect(loaded.has('Elevator.blp')).toBe(true);
+    // a building that can't be read keeps its pin
+    expect(modelOf(world, 'gameobject:2')).toBeUndefined();
+    models.dispose();
+    expect(modelOf(world, 'gameobject:1')).toBeUndefined();
   });
 
   it('disposes its models, including those still loading', async () => {

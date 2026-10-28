@@ -5,7 +5,7 @@ describe('travel overlays', () => {
     ...EMPTY_TRAVEL,
     mapId: 0,
     graveyards: [
-      { id: 1, x: 1, y: 2, z: 3, comment: 'Goldshire' },
+      { id: 1, x: 1, y: 2, z: 3, comment: 'Goldshire', sides: { alliance: true, horde: true } },
       { id: 2, x: 4, y: 5, z: 6, comment: '' },
     ],
     teleports: [
@@ -14,7 +14,12 @@ describe('travel overlays', () => {
       { id: 47, name: 'Lost', map: 0, x: 0, y: 0, z: 0 },
       { id: 48, name: 'Unknown map', map: 999, x: 0, y: 0, z: 0 },
     ],
-    taxiNodes: [{ id: 2, mapId: 0, x: 10, y: 10, z: 10, name: 'Stormwind' }],
+    taxiNodes: [
+      { id: 2, mapId: 0, x: 10, y: 10, z: 10, name: 'Stormwind', alliance: true, horde: false },
+      { id: 30, mapId: 0, x: 10, y: 10, z: 10, name: 'Orgrimmar', alliance: false, horde: true },
+      { id: 31, mapId: 0, x: 10, y: 10, z: 10, name: 'Nowhere', alliance: false, horde: false },
+      { id: 32, mapId: 0, x: 10, y: 10, z: 10, name: 'Old' },
+    ],
     taxiPaths: [
       {
         id: 10,
@@ -47,9 +52,12 @@ describe('travel overlays', () => {
   it('marks graveyards, flight masters and teleports, and draws teleports and flight paths near the camera', () => {
     const { links, markers } = travelOverlays(data, triggers, new Map([[36, 'The Deadmines']]), { x: 0, y: 0, z: 0 });
     expect(markers.map((m) => m.label)).toEqual([
-      'Graveyard 1: Goldshire',
+      'Graveyard 1: Goldshire\nUsable by: Alliance and Horde',
       'Graveyard 2',
-      'Flight master: Stormwind (node 2)',
+      'Flight master: Stormwind (node 2)\nUsable by: Alliance only',
+      'Flight master: Orgrimmar (node 30)\nUsable by: Horde only',
+      'Flight master: Nowhere (node 31)\nUsable by: no one',
+      'Flight master: Old (node 32)',
       'Teleport: Deadmines → The Deadmines (1.0, 2.0, 3.0)',
       'Teleport destination: area trigger 46',
       'Teleport: Unknown map → map 999 (0.0, 0.0, 0.0)',

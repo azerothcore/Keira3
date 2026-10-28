@@ -148,6 +148,24 @@ describe('WorldObjects', () => {
     expect(third.group.children.length).toBe(1);
   });
 
+  it('places buildings asked for by key (a transport on its map), replacing the previous ones', async () => {
+    const { objects, group, onChange, source } = setup();
+    await objects.setExtras([{ key: 'transport:1', path: 'ship.wmo', position: { x: 0, y: 0, z: 0 }, orientation: Math.PI }]);
+    expect(group.children.map((child) => child.name)).toEqual(['transport:1']);
+    expect(onChange).toHaveBeenCalled();
+    // a file that isn't there or can't be read, and a change while loading
+    await objects.setExtras([{ key: 'transport:2', path: 'missing.wmo', position: { x: 0, y: 0, z: 0 }, orientation: 0 }]);
+    expect(group.children).toEqual([]);
+    vi.mocked(source.getWmo).mockRejectedValueOnce(new Error('bad wmo'));
+    await objects.setExtras([{ key: 'transport:4', path: 'bad.wmo', position: { x: 0, y: 0, z: 0 }, orientation: 0 }]);
+    expect(group.children).toEqual([]);
+    const first = objects.setExtras([{ key: 'transport:3', path: 'a.wmo', position: { x: 0, y: 0, z: 0 }, orientation: 0 }]);
+    const second = objects.setExtras([]);
+    await Promise.all([first, second]);
+    expect(group.children).toEqual([]);
+    objects.dispose();
+  });
+
   it('warns about tiles that fail, retries failed files, and disposes templates', async () => {
     const { objects, source } = setup({ '32_48': [placement(1)] });
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);

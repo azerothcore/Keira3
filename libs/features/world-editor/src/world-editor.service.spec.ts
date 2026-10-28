@@ -57,6 +57,7 @@ describe('WorldEditorService', () => {
                 speedRun: 1,
                 aiName: 'SmartAI',
                 scriptName: 'npc_marshal',
+                faction: '11',
                 lootId: '197',
                 pickpocketLoot: '5',
                 skinLoot: '0',
@@ -128,6 +129,7 @@ describe('WorldEditorService', () => {
         phaseMask: 2,
         speedWalk: 1,
         speedRun: 1,
+        faction: 11,
         aiName: 'SmartAI',
         scriptName: 'npc_marshal',
         loot: { loot: 197, pickpocketing: 5 },
@@ -163,6 +165,17 @@ describe('WorldEditorService', () => {
     expect(creatureSql).toContain('FROM game_event_creature e WHERE e.guid = c.guid AND e.eventEntry > 0');
     expect(creatureSql).toContain("(IFNULL(ct.flags_extra, 0) & 128) <> 0 OR (ct.name LIKE '%Trigger%'");
     expect(queryService.query.mock.calls[1][0]).toContain('FROM game_event_gameobject e WHERE e.guid = g.guid');
+  });
+
+  it('loads the transports carrying a map', async () => {
+    const { service, queryService } = setup();
+    expect(await service.loadTransports(0)).toEqual([]);
+    expect(queryService.query).not.toHaveBeenCalled();
+    queryService.query.mockReturnValueOnce(of([{ entry: '201580', name: 'The Skybreaker', displayId: '9150' }]));
+    expect(await service.loadTransports(672)).toEqual([{ entry: 201580, name: 'The Skybreaker', displayId: 9150 }]);
+    expect(queryService.query.mock.calls[0][0]).toContain('WHERE type = 15 AND Data6 = 672');
+    queryService.query.mockReturnValueOnce(of(undefined));
+    expect(await service.loadTransports(673)).toEqual([]);
   });
 
   it('loads every spawn of a pool', async () => {
@@ -390,12 +403,24 @@ describe('WorldEditorService', () => {
     const { service, queryService } = setup();
     expect(await service.loadTeleports([])).toEqual([]);
     queryService.query
-      .mockReturnValueOnce(of([{ id: '1', x: '1', y: '2', z: '3', comment: 'Goldshire' }]))
+      .mockReturnValueOnce(
+        of([
+          { id: '1', x: '1', y: '2', z: '3', comment: 'Goldshire', factions: null },
+          { id: '2', x: '1', y: '2', z: '3', comment: 'Both', factions: '0' },
+          { id: '3', x: '1', y: '2', z: '3', comment: 'Alliance', factions: '469' },
+          { id: '4', x: '1', y: '2', z: '3', comment: 'Horde', factions: '67' },
+        ]),
+      )
       .mockReturnValueOnce(of(undefined))
       .mockReturnValueOnce(of([{ id: '45', name: 'Deadmines', map: '36', x: '1', y: '2', z: '3' }]))
       .mockReturnValueOnce(of(undefined));
-    expect(await service.loadGraveyards(0)).toEqual([{ id: 1, x: 1, y: 2, z: 3, comment: 'Goldshire' }]);
-    expect(queryService.query.mock.calls[0][0]).toContain('FROM game_graveyard WHERE Map = 0');
+    expect(await service.loadGraveyards(0)).toEqual([
+      { id: 1, x: 1, y: 2, z: 3, comment: 'Goldshire' },
+      { id: 2, x: 1, y: 2, z: 3, comment: 'Both', sides: { alliance: true, horde: true } },
+      { id: 3, x: 1, y: 2, z: 3, comment: 'Alliance', sides: { alliance: true, horde: false } },
+      { id: 4, x: 1, y: 2, z: 3, comment: 'Horde', sides: { alliance: false, horde: true } },
+    ]);
+    expect(queryService.query.mock.calls[0][0]).toContain('FROM game_graveyard g WHERE g.Map = 0');
     expect(await service.loadGraveyards(1)).toEqual([]);
     expect(await service.loadTeleports([45, 45])).toEqual([{ id: 45, name: 'Deadmines', map: 36, x: 1, y: 2, z: 3 }]);
     expect(queryService.query.mock.calls[2][0]).toContain('FROM areatrigger_teleport WHERE ID IN (45)');
