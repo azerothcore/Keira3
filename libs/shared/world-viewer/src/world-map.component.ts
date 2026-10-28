@@ -47,6 +47,15 @@ const GRID_ZOOM = 48;
 const SMALL_IMAGE = 64;
 /** Pixels a minimap is drawn with, for each quality (1-4). */
 const QUALITY_SIZES = [SMALL_IMAGE, 128, 192, 256];
+/**
+ * Pixels a minimap is made with: just enough for how big a tile is on screen, but never sharper than the quality allows
+ * (so zoomed out every quality looks the same, and zoomed in the higher ones are sharper).
+ */
+export function minimapImageSize(zoom: number, quality: number, pixelRatio = 1): number {
+  const most = QUALITY_SIZES[quality - 1];
+  const needed = zoom * (pixelRatio || 1);
+  return QUALITY_SIZES.find((size) => size >= needed && size <= most) ?? most;
+}
 export const MAP_QUALITY_KEY = 'keira3.worldEditor.mapQuality';
 
 function loadQuality(): number {
@@ -131,11 +140,7 @@ export class WorldMapComponent implements OnDestroy {
   /** How sharp the minimaps are drawn (1-4: 64 to 256 pixels a tile; sharper takes more memory), kept on this computer. */
   protected readonly quality = signal(loadQuality());
   protected readonly qualities = [1, 2, 3, 4];
-  protected readonly imageSize = computed(() => {
-    const size = QUALITY_SIZES[this.quality() - 1];
-    // zoomed in far: the full image whatever the setting
-    return this.zoom() > size * 2 ? 256 : size;
-  });
+  protected readonly imageSize = computed(() => minimapImageSize(this.zoom(), this.quality(), window.devicePixelRatio));
   /** The tiles in view, with their image and server files. */
   protected readonly visibleTiles = computed(() => {
     const [zoom, offset] = [this.zoom(), this.offset()];

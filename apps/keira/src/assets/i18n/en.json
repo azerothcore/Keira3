@@ -1369,7 +1369,7 @@
     "ATLAS_BATTLEGROUND": "Battlegrounds",
     "ATLAS_ARENA": "Arenas",
     "ATLAS_TRANSPORT": "Transports",
-    "MAP_QUALITY": "How sharp the minimaps are drawn: 1 (lightest) to 4 (sharpest, more memory)",
+    "MAP_QUALITY": "Sharpest the minimaps get when zoomed in: 1 (lightest) to 4 (full detail, more memory). Zoomed out they all look the same.",
     "VIEW_OVERLAYS": "Overlays",
     "VIEW_WORLD": "World",
     "VIEW_SPAWNS": "Spawns",

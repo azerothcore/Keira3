@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { ServerTileCoverage, TILE_SIZE, TileCoord, WorldBounds, WorldPosition, WowClientService, WowMap } from '@keira/shared/wow-data';
 import { PageObjectModel } from 'ngx-page-object-model';
-import { layoutAtlas, MAP_QUALITY_KEY, WorldMapComponent, WorldMapDot } from './world-map.component';
+import { layoutAtlas, MAP_QUALITY_KEY, minimapImageSize, WorldMapComponent, WorldMapDot } from './world-map.component';
 
 @Component({
   imports: [WorldMapComponent],
@@ -163,6 +163,20 @@ describe(WorldMapComponent.name, () => {
     expect(blocked.page.getDebugElementByTestId('world-map-quality-2').nativeElement.classList).toContain('btn-light');
     getItem.mockRestore();
     localStorage.removeItem(MAP_QUALITY_KEY);
+  });
+
+  it('makes the minimaps only as sharp as the tiles are big on screen, up to the quality', () => {
+    // zoomed out: the small picture whatever the quality
+    expect(minimapImageSize(16, 1)).toBe(64);
+    expect(minimapImageSize(16, 4)).toBe(64);
+    // zoomed in: as sharp as the quality allows
+    expect(minimapImageSize(300, 1)).toBe(64);
+    expect(minimapImageSize(300, 2)).toBe(128);
+    expect(minimapImageSize(300, 4)).toBe(256);
+    expect(minimapImageSize(150, 4)).toBe(192);
+    // a sharp screen needs twice the pixels; an unknown one counts as 1
+    expect(minimapImageSize(100, 4, 2)).toBe(256);
+    expect(minimapImageSize(100, 4, 0)).toBe(128);
   });
 
   it('only goes where the map has a tile', async () => {

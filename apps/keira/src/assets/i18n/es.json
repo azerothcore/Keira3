@@ -1369,7 +1369,7 @@
     "ATLAS_BATTLEGROUND": "Campos de batalla",
     "ATLAS_ARENA": "Arenas",
     "ATLAS_TRANSPORT": "Transportes",
-    "MAP_QUALITY": "Nitidez de los minimapas: 1 (más ligero) a 4 (más nítido, más memoria)",
+    "MAP_QUALITY": "Nitidez máxima de los minimapas al acercar: 1 (más ligera) a 4 (todo el detalle, más memoria). Alejados se ven igual.",
     "VIEW_OVERLAYS": "Capas",
     "VIEW_WORLD": "Mundo",
     "VIEW_SPAWNS": "Spawns",
