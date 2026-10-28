@@ -1400,6 +1400,10 @@
     "COMPASS_SW": "SO",
     "COMPASS_W": "O",
     "COMPASS_NW": "NO",
-    "CONTROL_COMPASS": "Mostrar / ocultar la brújula"
+    "CONTROL_COMPASS": "Mostrar / ocultar la brújula",
+    "COPY_PATH": "Copiar la carpeta",
+    "OPEN_FOLDER": "Abrir la carpeta",
+    "PANEL_SHOW": "Mostrar el panel lateral",
+    "PANEL_HIDE": "Ocultar el panel lateral"
   }
 }

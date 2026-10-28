@@ -335,6 +335,23 @@ export class WorldEditorService {
     }));
   }
 
+  /**
+   * A known good place to arrive on a map: where its instance entrance teleports to (`areatrigger_teleport`), else its
+   * first teleport location (`game_tele`); undefined without either.
+   */
+  async loadLandingSpot(map: number): Promise<WorldPosition | undefined> {
+    const id = Math.trunc(map);
+    const rows = await firstValueFrom(
+      this.queryService.query<TableRow>(
+        '(SELECT target_position_x AS x, target_position_y AS y, target_position_z AS z, 0 AS source ' +
+          `FROM areatrigger_teleport WHERE target_map = ${id} ORDER BY ID LIMIT 1) UNION ALL ` +
+          `(SELECT position_x, position_y, position_z, 1 FROM game_tele WHERE map = ${id} ORDER BY id LIMIT 1) ORDER BY source LIMIT 1`,
+      ),
+    );
+    const [row] = rows ?? [];
+    return row && { x: Number(row['x']), y: Number(row['y']), z: Number(row['z']) };
+  }
+
   /** Formation rows (`creature_formations`) the given creatures lead or are members of. */
   async loadFormations(guids: number[]): Promise<FormationMember[]> {
     const unique = [...new Set(guids.map(Math.trunc))];

@@ -427,6 +427,16 @@ describe('WorldEditorService', () => {
     expect(await service.loadTeleports([46])).toEqual([]);
   });
 
+  it('finds a good place to arrive on a map: an instance entrance, else a teleport location', async () => {
+    const { service, queryService } = setup();
+    queryService.query.mockReturnValueOnce(of([{ x: '1', y: '2', z: '3', source: '0' }])).mockReturnValueOnce(of(undefined));
+    expect(await service.loadLandingSpot(36)).toEqual({ x: 1, y: 2, z: 3 });
+    const sql = queryService.query.mock.calls[0][0] as string;
+    expect(sql).toContain('FROM areatrigger_teleport WHERE target_map = 36');
+    expect(sql).toContain('FROM game_tele WHERE map = 36');
+    expect(await service.loadLandingSpot(999)).toBeUndefined();
+  });
+
   it("loads a spawn's columns for the properties panel", async () => {
     const { service, queryService } = setup();
     queryService.query.mockReturnValueOnce(of([{ spawntimesecs: '300', state: '1' }])).mockReturnValueOnce(of(undefined));

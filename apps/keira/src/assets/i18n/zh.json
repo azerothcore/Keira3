@@ -1400,6 +1400,10 @@
     "COMPASS_SW": "西南",
     "COMPASS_W": "西",
     "COMPASS_NW": "西北",
-    "CONTROL_COMPASS": "显示 / 隐藏指南针"
+    "CONTROL_COMPASS": "显示 / 隐藏指南针",
+    "COPY_PATH": "复制文件夹路径",
+    "OPEN_FOLDER": "打开文件夹",
+    "PANEL_SHOW": "显示侧边栏",
+    "PANEL_HIDE": "隐藏侧边栏"
   }
 }

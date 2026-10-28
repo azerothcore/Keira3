@@ -1400,6 +1400,10 @@
     "COMPASS_SW": "ЮЗ",
     "COMPASS_W": "З",
     "COMPASS_NW": "СЗ",
-    "CONTROL_COMPASS": "Показать / скрыть компас"
+    "CONTROL_COMPASS": "Показать / скрыть компас",
+    "COPY_PATH": "Скопировать путь",
+    "OPEN_FOLDER": "Открыть папку",
+    "PANEL_SHOW": "Показать боковую панель",
+    "PANEL_HIDE": "Скрыть боковую панель"
   }
 }

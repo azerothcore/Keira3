@@ -218,6 +218,7 @@ describe(WorldEditorComponent.name, () => {
       loadTransports: vi.fn(),
       loadGraveyards: vi.fn(),
       loadTeleports: vi.fn(),
+      loadLandingSpot: vi.fn(),
       loadScriptEntries: vi.fn(),
       loadWaypointScripts: vi.fn(),
       loadWaypointSai: vi.fn(),
@@ -237,7 +238,7 @@ describe(WorldEditorComponent.name, () => {
       isElectron: vi.fn(),
       ipcRenderer: { send: vi.fn() },
       fs: { appendFileSync: vi.fn() },
-      childProcess: { execSync: vi.fn(() => 'abc1234\n') },
+      childProcess: { execSync: vi.fn(() => 'abc1234\n'), spawn: vi.fn(() => ({ unref: vi.fn() })) },
     },
   };
 
@@ -337,6 +338,7 @@ describe(WorldEditorComponent.name, () => {
     mocks.service.loadTransports.mockResolvedValue([]);
     mocks.service.loadGraveyards.mockResolvedValue([]);
     mocks.service.loadTeleports.mockResolvedValue([]);
+    mocks.service.loadLandingSpot.mockResolvedValue(undefined);
     mocks.client.getTaxiNodes.mockResolvedValue([]);
     mocks.client.getTaxiPaths.mockResolvedValue([]);
     mocks.client.getBossBoundaries.mockResolvedValue([]);
@@ -386,6 +388,38 @@ describe(WorldEditorComponent.name, () => {
       page.byId('map-search').nativeElement.dispatchEvent(new Event('focus'));
       page.fixture.detectChanges();
       expect(page.byId('map-options').nativeElement.querySelectorAll('button').length).toBe(2);
+    });
+
+    it('copies the folders set and opens them in the file manager', async () => {
+      mocks.electron.isElectron.mockReturnValue(true);
+      const { page } = await setup({ cacheRoot: '/cache' });
+      page.click('settings-toggle');
+      page.fixture.detectChanges();
+      // nothing set: nothing to copy or open
+      expect(page.byId<HTMLButtonElement>('source-path-copy').nativeElement.disabled).toBe(true);
+      page.type('source-path', 'C:\\Source');
+      page.fixture.detectChanges();
+      page.click('source-path-copy');
+      expect(mocks.clipboard.copyFromContent).toHaveBeenCalledWith('C:\\Source');
+      for (const [agent, opener] of [
+        ['Windows NT', 'explorer'],
+        ['Macintosh', 'open'],
+        ['X11; Linux', 'xdg-open'],
+      ]) {
+        const userAgent = vi.spyOn(navigator, 'userAgent', 'get').mockReturnValue(agent);
+        page.click('source-path-open');
+        expect(mocks.electron.childProcess.spawn).toHaveBeenLastCalledWith(opener, ['C:\\Source'], { detached: true, stdio: 'ignore' });
+        userAgent.mockRestore();
+      }
+      // the cache: its folder in use when none is chosen
+      page.click('cache-folder-copy');
+      expect(mocks.clipboard.copyFromContent).toHaveBeenLastCalledWith('/cache');
+      mocks.electron.childProcess.spawn.mockImplementationOnce(() => {
+        throw new Error('no file manager');
+      });
+      page.click('cache-folder-open');
+      expect(mocks.toastr.error).toHaveBeenCalledWith('no file manager', 'World Editor');
+      mocks.electron.isElectron.mockReturnValue(false);
     });
 
     it('keeps the cache where the user wants it, and manages it', async () => {
@@ -822,10 +856,61 @@ describe(WorldEditorComponent.name, () => {
       expect(mocks.toastr.error).toHaveBeenCalledWith('No "Data" folder', 'World Editor');
     });
 
+    it('folds the side panel away and back', async () => {
+      const { page } = await setup();
+      page.click('panel-toggle');
+      page.fixture.detectChanges();
+      expect(page.byId('side-panel').nativeElement.hidden).toBe(true);
+      expect(page.byId('panel-toggle').nativeElement.title).toBe('WORLD_EDITOR.PANEL_SHOW');
+      page.click('panel-toggle');
+      page.fixture.detectChanges();
+      expect(page.byId('side-panel').nativeElement.hidden).toBe(false);
+    });
+
     it('starts at the middle of the map', async () => {
       const { page } = await setup();
       expect(page.viewer().mapDirectory()).toBe('Azeroth');
       expect(page.viewer().focus()).toEqual(tileCenter({ tx: 32, ty: 48 }));
+    });
+
+    it('arrives on a picked map where one can stand: its entrance or teleport, else its middle on the ground', async () => {
+      mocks.client.getServerMap.mockResolvedValue({ v9: new Float32Array(129 * 129).fill(42) });
+      const { page } = await setup();
+      expect(page.viewer().focus()).toEqual({ ...tileCenter({ tx: 32, ty: 48 }), z: 42 });
+      mocks.service.loadLandingSpot.mockResolvedValueOnce({ x: 1, y: 2, z: 3 });
+      page.chooseMap(1);
+      await settle(page);
+      expect(mocks.service.loadLandingSpot).toHaveBeenCalledWith(1);
+      expect(page.viewer().focus()).toEqual({ x: 1, y: 2, z: 3 });
+      // no database answer: the middle
+      mocks.service.loadLandingSpot.mockRejectedValueOnce(new Error('no table'));
+      page.chooseMap(0);
+      await settle(page);
+      expect(page.viewer().focus()).toEqual({ ...tileCenter({ tx: 32, ty: 48 }), z: 42 });
+      // nor a server map: the middle of the tile
+      mocks.client.getServerMap.mockRejectedValueOnce(new Error('no maps'));
+      page.chooseMap(0);
+      await settle(page);
+      expect(page.viewer().focus()).toEqual(tileCenter({ tx: 32, ty: 48 }));
+      // another map picked meanwhile: the first answer is dropped
+      let answer: (spot: unknown) => void = () => undefined;
+      mocks.service.loadLandingSpot.mockReturnValueOnce(new Promise((resolve) => (answer = resolve)));
+      page.chooseMap(1);
+      mocks.service.loadLandingSpot.mockResolvedValueOnce({ x: 7, y: 8, z: 9 });
+      page.chooseMap(0);
+      answer({ x: 1, y: 2, z: 3 });
+      await settle(page);
+      expect(page.viewer().focus()).toEqual({ x: 7, y: 8, z: 9 });
+      // the ground height arriving after another map was picked
+      let ground: (tile: unknown) => void = () => undefined;
+      mocks.client.getServerMap.mockReturnValueOnce(new Promise((resolve) => (ground = resolve)));
+      page.chooseMap(0);
+      await settle(page);
+      mocks.service.loadLandingSpot.mockResolvedValueOnce({ x: 4, y: 5, z: 6 });
+      page.chooseMap(1);
+      ground(undefined);
+      await settle(page);
+      expect(page.viewer().focus()).toEqual({ x: 4, y: 5, z: 6 });
     });
 
     it('starts where the link points to', async () => {
@@ -2575,10 +2660,10 @@ describe(WorldEditorComponent.name, () => {
       await settle(page);
       expect(page.viewer().focus()).toEqual({ x: 100, y: 200, z: 42 });
       expect(page.getDebugElementByTestId('world-map', false)).toBeFalsy();
-      for (const server of [Promise.resolve(undefined), Promise.reject(new Error('no map'))]) {
+      for (const server of [() => Promise.resolve(undefined), () => Promise.reject(new Error('no map'))]) {
         page.click('map-toggle');
         await settle(page);
-        mocks.client.getServerMap.mockReturnValueOnce(server);
+        mocks.client.getServerMap.mockImplementationOnce(server);
         atlas().atlasPicked.emit({ mapId: 1, position: { x: 300, y: 400, z: 7 } });
         await settle(page);
         expect(page.viewer().focus()).toEqual({ x: 300, y: 400, z: 7 });

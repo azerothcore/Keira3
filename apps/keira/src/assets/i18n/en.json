@@ -1400,6 +1400,10 @@
     "COMPASS_SW": "SW",
     "COMPASS_W": "W",
     "COMPASS_NW": "NW",
-    "CONTROL_COMPASS": "Show / hide the compass"
+    "CONTROL_COMPASS": "Show / hide the compass",
+    "COPY_PATH": "Copy the folder",
+    "OPEN_FOLDER": "Open the folder",
+    "PANEL_SHOW": "Show the side panel",
+    "PANEL_HIDE": "Hide the side panel"
   }
 }

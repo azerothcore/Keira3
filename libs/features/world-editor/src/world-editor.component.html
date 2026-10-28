@@ -243,6 +243,15 @@
     >
       <i class="fa" [class.fa-expand]="!fullscreen()" [class.fa-compress]="fullscreen()"></i>
     </button>
+    <button
+      type="button"
+      class="btn btn-sm btn-outline-secondary"
+      data-testid="panel-toggle"
+      [title]="(panelCollapsed() ? 'WORLD_EDITOR.PANEL_SHOW' : 'WORLD_EDITOR.PANEL_HIDE') | translate"
+      (click)="panelCollapsed.set(!panelCollapsed())"
+    >
+      <i class="fa" [class.fa-angles-left]="panelCollapsed()" [class.fa-angles-right]="!panelCollapsed()"></i>
+    </button>
   </div>
 
   @if (teleResults().length) {
@@ -918,13 +927,35 @@
           >
             <div class="mb-2">
               <label class="form-label" for="world-editor-client-path">{{ 'WORLD_EDITOR.CLIENT_PATH' | translate }}</label>
-              <input
-                id="world-editor-client-path"
-                class="form-control form-control-sm"
-                data-testid="client-path"
-                formControlName="clientPath"
-                placeholder="C:\Games\World of Warcraft 3.3.5a"
-              />
+              <div class="input-group input-group-sm">
+                <input
+                  id="world-editor-client-path"
+                  class="form-control form-control-sm"
+                  data-testid="client-path"
+                  formControlName="clientPath"
+                  placeholder="C:\Games\World of Warcraft 3.3.5a"
+                />
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  data-testid="client-path-copy"
+                  [title]="'WORLD_EDITOR.COPY_PATH' | translate"
+                  [disabled]="!settingsForm.getRawValue().clientPath"
+                  (click)="copyPath(settingsForm.getRawValue().clientPath)"
+                >
+                  <i class="fa fa-copy"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  data-testid="client-path-open"
+                  [title]="'WORLD_EDITOR.OPEN_FOLDER' | translate"
+                  [disabled]="!electron.isElectron() || !settingsForm.getRawValue().clientPath"
+                  (click)="openFolder(settingsForm.getRawValue().clientPath)"
+                >
+                  <i class="fa fa-folder-open"></i>
+                </button>
+              </div>
               <small class="form-text text-muted">{{ 'WORLD_EDITOR.CLIENT_PATH_HELP' | translate }}</small>
               <details class="world-editor-more-info small" [attr.data-testid]="'more-info-client'">
                 <summary>{{ 'WORLD_EDITOR.MORE_INFO' | translate }}</summary>
@@ -933,13 +964,35 @@
             </div>
             <div class="mb-2">
               <label class="form-label" for="world-editor-server-path">{{ 'WORLD_EDITOR.SERVER_DATA_PATH' | translate }}</label>
-              <input
-                id="world-editor-server-path"
-                class="form-control form-control-sm"
-                data-testid="server-data-path"
-                formControlName="serverDataPath"
-                placeholder="C:\AzerothCore\bin\Data"
-              />
+              <div class="input-group input-group-sm">
+                <input
+                  id="world-editor-server-path"
+                  class="form-control form-control-sm"
+                  data-testid="server-data-path"
+                  formControlName="serverDataPath"
+                  placeholder="C:\AzerothCore\bin\Data"
+                />
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  data-testid="server-data-path-copy"
+                  [title]="'WORLD_EDITOR.COPY_PATH' | translate"
+                  [disabled]="!settingsForm.getRawValue().serverDataPath"
+                  (click)="copyPath(settingsForm.getRawValue().serverDataPath)"
+                >
+                  <i class="fa fa-copy"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  data-testid="server-data-path-open"
+                  [title]="'WORLD_EDITOR.OPEN_FOLDER' | translate"
+                  [disabled]="!electron.isElectron() || !settingsForm.getRawValue().serverDataPath"
+                  (click)="openFolder(settingsForm.getRawValue().serverDataPath)"
+                >
+                  <i class="fa fa-folder-open"></i>
+                </button>
+              </div>
               <small class="form-text text-muted">{{ 'WORLD_EDITOR.SERVER_DATA_PATH_HELP' | translate }}</small>
               <details class="world-editor-more-info small" [attr.data-testid]="'more-info-server'">
                 <summary>{{ 'WORLD_EDITOR.MORE_INFO' | translate }}</summary>
@@ -948,13 +1001,35 @@
             </div>
             <div class="mb-2">
               <label class="form-label" for="world-editor-source-path">{{ 'WORLD_EDITOR.SOURCE_PATH' | translate }}</label>
-              <input
-                id="world-editor-source-path"
-                class="form-control form-control-sm"
-                data-testid="source-path"
-                formControlName="sourcePath"
-                placeholder="C:\AzerothCore\azerothcore-wotlk"
-              />
+              <div class="input-group input-group-sm">
+                <input
+                  id="world-editor-source-path"
+                  class="form-control form-control-sm"
+                  data-testid="source-path"
+                  formControlName="sourcePath"
+                  placeholder="C:\AzerothCore\azerothcore-wotlk"
+                />
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  data-testid="source-path-copy"
+                  [title]="'WORLD_EDITOR.COPY_PATH' | translate"
+                  [disabled]="!settingsForm.getRawValue().sourcePath"
+                  (click)="copyPath(settingsForm.getRawValue().sourcePath)"
+                >
+                  <i class="fa fa-copy"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  data-testid="source-path-open"
+                  [title]="'WORLD_EDITOR.OPEN_FOLDER' | translate"
+                  [disabled]="!electron.isElectron() || !settingsForm.getRawValue().sourcePath"
+                  (click)="openFolder(settingsForm.getRawValue().sourcePath)"
+                >
+                  <i class="fa fa-folder-open"></i>
+                </button>
+              </div>
               <small class="form-text text-muted">{{ 'WORLD_EDITOR.SOURCE_PATH_HELP' | translate }}</small>
               <details class="world-editor-more-info small" [attr.data-testid]="'more-info-source'">
                 <summary>{{ 'WORLD_EDITOR.MORE_INFO' | translate }}</summary>
@@ -963,13 +1038,35 @@
             </div>
             <div class="mb-2">
               <label class="form-label" for="world-editor-cache-folder">{{ 'WORLD_EDITOR.CACHE_FOLDER' | translate }}</label>
-              <input
-                id="world-editor-cache-folder"
-                class="form-control form-control-sm"
-                data-testid="cache-folder"
-                formControlName="cacheFolder"
-                [placeholder]="cache.root() ?? ''"
-              />
+              <div class="input-group input-group-sm">
+                <input
+                  id="world-editor-cache-folder"
+                  class="form-control form-control-sm"
+                  data-testid="cache-folder"
+                  formControlName="cacheFolder"
+                  [placeholder]="cache.root() ?? ''"
+                />
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  data-testid="cache-folder-copy"
+                  [title]="'WORLD_EDITOR.COPY_PATH' | translate"
+                  [disabled]="!(settingsForm.getRawValue().cacheFolder || cache.root())"
+                  (click)="copyPath(settingsForm.getRawValue().cacheFolder || cache.root())"
+                >
+                  <i class="fa fa-copy"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  data-testid="cache-folder-open"
+                  [title]="'WORLD_EDITOR.OPEN_FOLDER' | translate"
+                  [disabled]="!electron.isElectron() || !(settingsForm.getRawValue().cacheFolder || cache.root())"
+                  (click)="openFolder(settingsForm.getRawValue().cacheFolder || cache.root())"
+                >
+                  <i class="fa fa-folder-open"></i>
+                </button>
+              </div>
               <small class="form-text text-muted">{{ 'WORLD_EDITOR.CACHE_FOLDER_HELP' | translate }}</small>
               <details class="world-editor-more-info small" [attr.data-testid]="'more-info-cache'">
                 <summary>{{ 'WORLD_EDITOR.MORE_INFO' | translate }}</summary>
@@ -1365,7 +1462,7 @@
       }
     </div>
 
-    <div class="world-editor-panel">
+    <div class="world-editor-panel" data-testid="side-panel" [hidden]="panelCollapsed()">
       <div class="card mb-2">
         <div class="card-header py-1">{{ 'WORLD_EDITOR.TOOLS' | translate }}</div>
         <div class="card-body p-2">

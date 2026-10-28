@@ -277,7 +277,7 @@ export class WorldEditorComponent implements OnInit {
   private readonly service = inject(WorldEditorService);
   private readonly client = inject(WowClientService);
   private readonly translate = inject(TranslateService);
-  private readonly electron = inject(ElectronService);
+  protected readonly electron = inject(ElectronService);
   private readonly settings = inject(WowDataSettingsService);
   protected readonly renderSettings = inject(WorldRenderSettingsService);
   protected readonly cache = inject(WowDataCacheService);
@@ -679,6 +679,8 @@ export class WorldEditorComponent implements OnInit {
   protected readonly showLegend = this.session.showLegend;
   protected readonly legend = LEGEND;
   protected readonly fullscreen = signal(false);
+  /** The side panel (tools, selection, changes) folded away, for a bigger view. */
+  protected readonly panelCollapsed = signal(false);
   private readonly root = viewChild.required<ElementRef<HTMLElement>>('root');
   protected readonly viewFullscreen = signal(false);
   private readonly view = viewChild.required<ElementRef<HTMLElement>>('view');
@@ -1207,6 +1209,20 @@ export class WorldEditorComponent implements OnInit {
     this.cacheSize.set(await this.cache.size());
   }
 
+  protected copyPath(path: string | undefined): void {
+    this.clipboard.copyFromContent(path as string);
+  }
+
+  /** Shows a folder in the system's file manager (Explorer, Finder…). */
+  protected openFolder(path: string | undefined): void {
+    const opener = navigator.userAgent.includes('Windows') ? 'explorer' : navigator.userAgent.includes('Mac') ? 'open' : 'xdg-open';
+    try {
+      this.electron.childProcess.spawn(opener, [path as string], { detached: true, stdio: 'ignore' }).unref();
+    } catch (error) {
+      this.toastr.error((error as Error).message, 'World Editor');
+    }
+  }
+
   protected setCacheMaxGb(event: Event): void {
     this.cache.setMaxBytes(Number((event.target as HTMLInputElement).value) * 1_000_000_000);
   }
@@ -1417,8 +1433,25 @@ export class WorldEditorComponent implements OnInit {
     this.mapId.set(id);
     // (picking the map shown loads it again)
     this.leaveMap();
-    await this.focusMapCenter();
+    await this.focusLandingSpot();
     await this.loadZones();
+  }
+
+  /**
+   * Arrives on the map picked somewhere one can stand: where its instance entrance leads, or its first teleport
+   * location; failing those, its middle (on the server's ground there when known).
+   */
+  private async focusLandingSpot(): Promise<void> {
+    const mapId = this.mapId();
+    const spot = await this.service.loadLandingSpot(mapId).catch(() => undefined);
+    if (mapId !== this.mapId()) {
+      return;
+    }
+    if (spot) {
+      this.focus.set(spot);
+      return;
+    }
+    await this.focusMapCenter();
   }
 
   /** Forgets what was loaded for the map shown: its spawns are loaded again, and an area chosen on it is let go. */
@@ -1515,21 +1548,21 @@ export class WorldEditorComponent implements OnInit {
     const directory = this.mapDirectory();
     const b = await this.buildingBounds(directory);
     const tiles = !b && directory ? await this.client.getMapTiles(directory) : [];
-    // another map was picked meanwhile: it looks at its own middle
-    if (mapId !== this.mapId()) {
-      return;
-    }
+    let focus: WorldPosition = { x: 0, y: 0, z: 0 };
     if (b) {
       // the middle of the dungeon
-      this.focus.set({ x: (b.minX + b.maxX) / 2, y: (b.minY + b.maxY) / 2, z: (b.minZ + b.maxZ) / 2 });
-      return;
+      focus = { x: (b.minX + b.maxX) / 2, y: (b.minY + b.maxY) / 2, z: (b.minZ + b.maxZ) / 2 };
+    } else if (tiles.length) {
+      // on the server's ground there, when known
+      const middle = tiles[Math.floor(tiles.length / 2)];
+      const center = tileCenter(middle);
+      const server = await this.client.getServerMap(mapId, middle).catch(() => undefined);
+      focus = { ...center, z: (server && serverHeightAt(server, middle, center.x, center.y)) ?? center.z };
     }
-    if (tiles.length === 0) {
-      this.focus.set({ x: 0, y: 0, z: 0 });
-      return;
+    // (unless another map was picked meanwhile: it looks at its own middle)
+    if (mapId === this.mapId()) {
+      this.focus.set(focus);
     }
-    const middle = tiles[Math.floor(tiles.length / 2)];
-    this.focus.set(tileCenter(middle));
   }
 
   protected async searchTele(): Promise<void> {
