@@ -34,7 +34,9 @@ export type ControlAction =
   | 'paste'
   // panels
   | 'worldMap'
-  | 'compass';
+  | 'compass'
+  | 'resetNorth'
+  | 'tree';
 
 /** The camera moves held down: along the ground relative to the view, up/down, and turning around what it looks at. Shift makes them faster. */
 export type NavigationAction = Extract<
@@ -73,6 +75,8 @@ export const CONTROL_ACTIONS: { action: ControlAction; group: ControlGroup }[] =
   { action: 'paste', group: 'editing' },
   { action: 'worldMap', group: 'panels' },
   { action: 'compass', group: 'panels' },
+  { action: 'resetNorth', group: 'camera' },
+  { action: 'tree', group: 'panels' },
 ];
 
 export const CONTROL_GROUPS: ControlGroup[] = ['camera', 'marker', 'editing', 'panels'];
@@ -105,6 +109,8 @@ export const DEFAULT_CONTROL_BINDINGS: Record<ControlAction, string[]> = {
   paste: ['Ctrl+KeyV'],
   worldMap: ['KeyM'],
   compass: ['KeyK'],
+  resetNorth: ['KeyN', 'PadSelect'],
+  tree: ['KeyT'],
 };
 
 /** The defaults before Q and E were swapped (Q now goes up): saved settings still on them get the new ones. */

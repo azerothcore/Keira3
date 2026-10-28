@@ -249,6 +249,7 @@
         [placePreview]="placePreview()"
         [region]="region()"
         [focus]="focus()"
+        [resetNorth]="resetNorthRequest()"
         (picked)="onPicked($event)"
         (objectMoved)="onObjectMoved($event)"
         (centerChanged)="onCenterChanged($event)"
@@ -329,6 +330,18 @@
           </button>
         }
       </div>
+      @if (showTree()) {
+        <keira-spawn-tree
+          class="world-editor-tree"
+          [spawns]="spawns()"
+          [zones]="zones()"
+          [hidden]="treeHidden()"
+          [selectedKey]="selectedKey()"
+          (hiddenChange)="treeHidden.set($event)"
+          (picked)="pickFromTree($event.spawn, $event.snap)"
+          (closed)="showTree.set(false)"
+        />
+      }
       <div class="world-editor-panels">
         @if (showFilters()) {
           @let filter = filters();
@@ -583,6 +596,31 @@
 
         @if (showView()) {
           <div class="card card-body mb-2 world-editor-view-settings py-2" data-testid="view-settings">
+            <section class="world-editor-view-group" data-testid="view-group-toolbar">
+              <h6 class="world-editor-view-group-title">{{ 'WORLD_EDITOR.VIEW_TOOLBAR' | translate }}</h6>
+              <div class="d-flex align-items-center gap-1">
+                <div class="btn-group btn-group-sm" role="group">
+                  @for (style of buttonStyles; track style) {
+                    <button
+                      type="button"
+                      class="btn py-0"
+                      [attr.data-testid]="'button-style-' + style"
+                      [class.btn-secondary]="buttonStyle() === style"
+                      [class.btn-outline-secondary]="buttonStyle() !== style"
+                      (click)="setButtonStyle(style)"
+                    >
+                      {{ 'WORLD_EDITOR.BUTTON_STYLE_' + style.toUpperCase() | translate }}
+                    </button>
+                  }
+                </div>
+                <i
+                  class="fas fa-info-circle ms-1"
+                  placement="auto"
+                  container="body"
+                  [tooltip]="'WORLD_EDITOR.BUTTON_STYLE_HELP' | translate"
+                ></i>
+              </div>
+            </section>
             <section class="world-editor-view-group" data-testid="view-group-overlays">
               <h6 class="world-editor-view-group-title">{{ 'WORLD_EDITOR.VIEW_OVERLAYS' | translate }}</h6>
               @for (layer of overlaySwitches; track layer.key) {
@@ -2978,7 +3016,7 @@
       [disabled]="!maps().length"
       (click)="stepMap(1)"
     >
-      {{ 'WORLD_EDITOR.MAP_NEXT' | translate }} <i class="fa fa-chevron-right"></i>
+      <keira-button-label button="mapNext" [mode]="buttonStyle()" />
     </button>
   </div>
   @if (difficulties().length) {
@@ -3001,10 +3039,10 @@
     data-testid="map-toggle"
     [class.btn-secondary]="showMap()"
     [class.btn-outline-secondary]="!showMap()"
-    [title]="'WORLD_EDITOR.WORLD_MAP_HELP' | translate"
+    [title]="buttonTitle('worldMap') | translate"
     (click)="toggleMap()"
   >
-    <i class="fa fa-map"></i> {{ 'WORLD_EDITOR.WORLD_MAP' | translate }}
+    <keira-button-label button="worldMap" [mode]="buttonStyle()" />
   </button>
   <button
     type="button"
@@ -3012,9 +3050,10 @@
     data-testid="filters-toggle"
     [class.btn-secondary]="showFilters()"
     [class.btn-outline-secondary]="!showFilters()"
+    [title]="buttonTitle('filters') | translate"
     (click)="toggleFilters()"
   >
-    <i class="fa fa-filter"></i> {{ 'WORLD_EDITOR.FILTERS' | translate }}
+    <keira-button-label button="filters" [mode]="buttonStyle()" />
     @if (hiddenCount()) {
       <span class="badge bg-secondary world-editor-hidden-count" data-testid="hidden-count">{{ hiddenCount() }}</span>
     }
@@ -3025,9 +3064,30 @@
     data-testid="view-toggle"
     [class.btn-secondary]="showView()"
     [class.btn-outline-secondary]="!showView()"
+    [title]="buttonTitle('view') | translate"
     (click)="toggleView()"
   >
-    <i class="fa fa-eye"></i> {{ 'WORLD_EDITOR.VIEW' | translate }}
+    <keira-button-label button="view" [mode]="buttonStyle()" />
+  </button>
+  <button
+    type="button"
+    class="btn btn-sm"
+    data-testid="tree-toggle"
+    [class.btn-secondary]="showTree()"
+    [class.btn-outline-secondary]="!showTree()"
+    [title]="buttonTitle('tree') | translate"
+    (click)="toggleTree()"
+  >
+    <keira-button-label button="tree" [mode]="buttonStyle()" />
+  </button>
+  <button
+    type="button"
+    class="btn btn-sm btn-outline-secondary"
+    data-testid="reset-north"
+    [title]="buttonTitle('resetNorth') | translate"
+    (click)="resetNorth()"
+  >
+    <keira-button-label button="resetNorth" [mode]="buttonStyle()" />
   </button>
   <button
     type="button"
@@ -3035,9 +3095,10 @@
     data-testid="controls-toggle"
     [class.btn-secondary]="showControls()"
     [class.btn-outline-secondary]="!showControls()"
+    [title]="buttonTitle('controls') | translate"
     (click)="toggleControls()"
   >
-    <i class="fa fa-keyboard"></i> {{ 'WORLD_EDITOR.CONTROLS' | translate }}
+    <keira-button-label button="controls" [mode]="buttonStyle()" />
   </button>
   <button
     type="button"
@@ -3045,9 +3106,10 @@
     data-testid="settings-toggle"
     [class.btn-secondary]="showSettings()"
     [class.btn-outline-secondary]="!showSettings()"
+    [title]="buttonTitle('settings') | translate"
     (click)="toggleSettings()"
   >
-    <i class="fa fa-cog"></i> {{ 'WORLD_EDITOR.SETTINGS' | translate }}
+    <keira-button-label button="settings" [mode]="buttonStyle()" />
   </button>
   <button
     type="button"
@@ -3055,18 +3117,19 @@
     data-testid="legend-toggle"
     [class.btn-secondary]="showLegend()"
     [class.btn-outline-secondary]="!showLegend()"
+    [title]="buttonTitle('legend') | translate"
     (click)="toggleLegend()"
   >
-    <i class="fa fa-info-circle"></i> {{ 'WORLD_EDITOR.LEGEND' | translate }}
+    <keira-button-label button="legend" [mode]="buttonStyle()" />
   </button>
   <button
     type="button"
     class="btn btn-sm btn-outline-secondary"
     data-testid="refresh"
-    [title]="'WORLD_EDITOR.REFRESH_HELP' | translate"
+    [title]="buttonTitle('refresh') | translate"
     [disabled]="loadingSpawns()"
     (click)="refresh()"
   >
-    <i class="fa fa-sync" [class.fa-spin]="loadingSpawns()"></i> {{ 'WORLD_EDITOR.REFRESH' | translate }}
+    <keira-button-label button="refresh" [mode]="buttonStyle()" [spin]="loadingSpawns()" />
   </button>
 </ng-template>

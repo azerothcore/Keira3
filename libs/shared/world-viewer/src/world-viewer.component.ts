@@ -188,6 +188,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   readonly groundOnly = input<boolean>(false);
   /** Moves the camera to look at this position whenever it changes. */
   readonly focus = input<WorldPosition | undefined>(undefined);
+  /** Turns the camera to face north (at the usual angle, still looking at the same place) whenever this goes up. */
+  readonly resetNorth = input(0);
   /** Quality and range of what is drawn. */
   readonly renderSettings = input<WorldRenderSettings>(DEFAULT_WORLD_RENDER_SETTINGS);
   /** Keyboard navigation (keys moving the camera while the view has the focus). */
@@ -528,6 +530,11 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       untracked(() => this.syncGizmo());
     });
     effect(() => {
+      if (this.resetNorth()) {
+        untracked(() => this.faceNorth());
+      }
+    });
+    effect(() => {
       const target = this.focus();
       if (target) {
         untracked(() => {
@@ -653,6 +660,20 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     this.world.camera.position.set(target.x - FOCUS_DISTANCE * 0.6, target.y + FOCUS_DISTANCE * 0.8, target.z + FOCUS_DISTANCE * 0.6);
     controls.update();
     this.emitCenter(true);
+  }
+
+  /** Turns the camera to face north at the usual angle, keeping how far it is from what it looks at. */
+  protected faceNorth(): void {
+    const controls = this.controls;
+    if (!controls) {
+      return;
+    }
+    const distance = this.world.camera.position.distanceTo(this.target);
+    // north is the scene's -z: the camera south of what it looks at (+z), as high as it is far
+    const [up, back] = [0.8 / Math.hypot(0.8, 0.85), 0.85 / Math.hypot(0.8, 0.85)];
+    this.world.camera.position.set(this.target.x, this.target.y + distance * up, this.target.z + distance * back);
+    controls.update();
+    this.onCameraChange();
   }
 
   // ---------------------------------------------------------------- pointer handling

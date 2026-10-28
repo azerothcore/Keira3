@@ -80,8 +80,9 @@
 <rect x="382" y="196" width="76" height="62" rx="6" fill="#8a7230" stroke="#7a7a80" stroke-width="1"/>
 <text x="388" y="212" font-size="13" font-weight="bold">R</text>
 <text x="388" y="227" font-size="9.5">Switch move .</text>
-<rect x="462" y="196" width="76" height="62" rx="6" fill="#2c2c31" stroke="#7a7a80" stroke-width="1"/>
+<rect x="462" y="196" width="76" height="62" rx="6" fill="#3b7a47" stroke="#7a7a80" stroke-width="1"/>
 <text x="468" y="212" font-size="13" font-weight="bold">T</text>
+<text x="468" y="227" font-size="9.5">Open / close.</text>
 <rect x="542" y="196" width="76" height="62" rx="6" fill="#2c2c31" stroke="#7a7a80" stroke-width="1"/>
 <text x="548" y="212" font-size="13" font-weight="bold">Y</text>
 <rect x="622" y="196" width="76" height="62" rx="6" fill="#2c2c31" stroke="#7a7a80" stroke-width="1"/>
@@ -148,8 +149,9 @@
 <text x="448" y="348" font-size="13" font-weight="bold">V</text>
 <rect x="522" y="332" width="76" height="62" rx="6" fill="#2c2c31" stroke="#7a7a80" stroke-width="1"/>
 <text x="528" y="348" font-size="13" font-weight="bold">B</text>
-<rect x="602" y="332" width="76" height="62" rx="6" fill="#2c2c31" stroke="#7a7a80" stroke-width="1"/>
+<rect x="602" y="332" width="76" height="62" rx="6" fill="#4b4b94" stroke="#7a7a80" stroke-width="1"/>
 <text x="608" y="348" font-size="13" font-weight="bold">N</text>
+<text x="608" y="363" font-size="9.5">Face north</text>
 <rect x="682" y="332" width="76" height="62" rx="6" fill="#3b7a47" stroke="#7a7a80" stroke-width="1"/>
 <text x="688" y="348" font-size="13" font-weight="bold">M</text>
 <text x="688" y="363" font-size="9.5">Open / close.</text>
@@ -215,4 +217,5 @@
 <text x="540" y="640" font-size="11">Redo: Ctrl+Y, Ctrl+Shift+Z</text>
 <text x="1060" y="640" font-size="11">Copy the selection: Ctrl+C</text>
 <text x="20" y="656" font-size="11">Paste at the crosshair: Ctrl+V</text>
+<text x="540" y="656" font-size="11">Face north: Pad Select</text>
 </svg>

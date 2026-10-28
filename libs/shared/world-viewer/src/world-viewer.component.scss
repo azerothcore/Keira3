@@ -196,6 +196,8 @@
   right: 8px;
   bottom: 64px;
   z-index: 2;
+  // a click turns the view to the north
+  cursor: pointer;
 }
 
 .world-viewer-stats-over {

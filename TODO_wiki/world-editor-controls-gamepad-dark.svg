@@ -55,7 +55,7 @@
 <text x="250" y="110" font-size="13" font-weight="bold" text-anchor="end">Left bumper (Button 5)</text>
 <text x="250" y="125" font-size="11" text-anchor="end">Zoom out</text>
 <text x="250" y="165" font-size="13" font-weight="bold" text-anchor="end">Select (Button 9)</text>
-<text x="250" y="180" font-size="11" text-anchor="end" fill="#7c7c84">(free)</text>
+<text x="250" y="180" font-size="11" text-anchor="end">Face north</text>
 <text x="250" y="215" font-size="13" font-weight="bold" text-anchor="end">D-pad</text>
 <text x="250" y="230" font-size="11" text-anchor="end" fill="#7c7c84">Up: (free)</text>
 <text x="250" y="245" font-size="11" text-anchor="end" fill="#7c7c84">Down: (free)</text>

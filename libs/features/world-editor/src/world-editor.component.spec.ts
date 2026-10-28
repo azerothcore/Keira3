@@ -68,6 +68,7 @@ class FakeWorldViewerComponent {
   readonly groundOnly = input<boolean>(false);
   readonly renderSettings = input<WorldRenderSettings>(DEFAULT_WORLD_RENDER_SETTINGS);
   readonly focus = input<WorldPosition | undefined>(undefined);
+  readonly resetNorth = input(0);
   readonly markerLookAt = input<WorldPosition | undefined>(undefined);
   readonly placePreview = input<{ kind: string; displayId: number; scale: number } | undefined>(undefined);
   readonly region = input<WorldBounds | undefined>(undefined);
@@ -3575,6 +3576,78 @@ describe(WorldEditorComponent.name, () => {
       page.click('legend-toggle');
       page.fixture.detectChanges();
       expect(page.byId('legend', false)).toBeFalsy();
+    });
+
+    it('shows the toolbar buttons as icons, names or both (kept), named in their tooltips', async () => {
+      const { page } = await setup();
+      expect(page.text('filters-toggle')).toContain('WORLD_EDITOR.FILTERS');
+      expect(page.byId('filters-toggle').nativeElement.querySelector('i')).toBeTruthy();
+      page.click('view-toggle');
+      page.fixture.detectChanges();
+      page.click('button-style-icons');
+      page.fixture.detectChanges();
+      expect(page.text('filters-toggle')).not.toContain('WORLD_EDITOR.FILTERS');
+      expect(page.byId('filters-toggle').nativeElement.getAttribute('title')).toBe('WORLD_EDITOR.FILTERS_HELP');
+      expect(page.byId('button-style-icons').nativeElement.classList).toContain('btn-secondary');
+      expect(localStorage.getItem('keira3.worldEditor.buttonStyle')).toBe('icons');
+      page.click('button-style-text');
+      page.fixture.detectChanges();
+      expect(page.byId('filters-toggle').nativeElement.querySelector('i')).toBeFalsy();
+      expect(page.text('filters-toggle')).toContain('WORLD_EDITOR.FILTERS');
+    });
+
+    it('turns the camera north by button or N', async () => {
+      const { page } = await setup();
+      expect(page.viewer().resetNorth()).toBe(0);
+      page.click('reset-north');
+      page.fixture.detectChanges();
+      expect(page.viewer().resetNorth()).toBe(1);
+      page.key('n');
+      page.fixture.detectChanges();
+      expect(page.viewer().resetNorth()).toBe(2);
+    });
+
+    it('lists what is loaded in a tree that hides spawns, picks them and flies there', async () => {
+      const { page } = await setup();
+      await loadArea(page);
+      page.key('t');
+      page.fixture.detectChanges();
+      expect(page.byId('tree-toggle').nativeElement.classList).toContain('btn-secondary');
+      page.click('tree-expand-all');
+      page.fixture.detectChanges();
+      // hiding a zone's spawns takes them out of the view, counted as hidden
+      page.click('tree-check-zone:12');
+      page.fixture.detectChanges();
+      expect(page.viewer().spawns()).toEqual([]);
+      expect(page.text('hidden-count')).toBe('3');
+      // picking one shows it again, selects it and flies there
+      page.click('tree-open-zone:12:creature:101');
+      page.fixture.detectChanges();
+      page.click('tree-label-creature:1');
+      page.fixture.detectChanges();
+      expect(
+        page
+          .viewer()
+          .spawns()
+          .map((s) => s.key),
+      ).toEqual(['creature:1']);
+      expect(page.viewer().selectedKey()).toBe('creature:1');
+      expect(page.viewer().focus()).toEqual({ x: SPAWNS[0].x, y: SPAWNS[0].y, z: SPAWNS[0].z });
+      // not flying there when told not to; a shown spawn stays as it is
+      page.click('tree-check-zone:12');
+      page.click('tree-snap');
+      page.fixture.detectChanges();
+      page.click('tree-label-creature:1');
+      page.fixture.detectChanges();
+      expect(page.viewer().focus()).toEqual({ x: SPAWNS[0].x, y: SPAWNS[0].y, z: SPAWNS[0].z });
+      expect(page.viewer().spawns()).toHaveLength(3);
+      page.click('tree-close');
+      page.fixture.detectChanges();
+      expect(page.byId('spawn-tree', false)).toBeFalsy();
+      page.click('tree-toggle');
+      page.fixture.detectChanges();
+      expect(page.byId('spawn-tree')).toBeTruthy();
+      localStorage.removeItem('keira3.worldEditor.treeSnapCamera');
     });
 
     it('goes full screen and back', async () => {

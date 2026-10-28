@@ -424,3 +424,14 @@
     padding: 4px 0 0 12px;
   }
 }
+
+// the tree of what's loaded, docked on the right of the view (under the panels)
+.world-editor-tree {
+  position: absolute;
+  top: 40px;
+  right: 8px;
+  bottom: 48px;
+  width: 300px;
+  max-width: 45%;
+  z-index: 6;
+}

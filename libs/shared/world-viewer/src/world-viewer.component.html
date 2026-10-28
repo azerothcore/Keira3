@@ -88,6 +88,8 @@
     @let view = renderSettings();
     <keira-world-compass
       class="world-viewer-compass"
+      data-testid="world-viewer-compass"
+      (click)="faceNorth()"
       [heading]="heading()"
       [northUp]="view.compassNorthUp"
       [northArrow]="view.compassNorthArrow"

@@ -141,6 +141,7 @@ interface FakeTransformControls extends EventDispatcher<{ 'dragging-changed': { 
       [groundOnly]="groundOnly()"
       [renderSettings]="render()"
       [focus]="focus()"
+      [resetNorth]="resetNorth()"
       [region]="region()"
       [navigation]="navigation()"
       [areaTriggers]="triggers()"
@@ -188,6 +189,7 @@ class HostComponent {
   readonly groundOnly = signal(false);
   readonly render = signal<WorldRenderSettings>(DEFAULT_WORLD_RENDER_SETTINGS);
   readonly focus = signal<WorldPosition | undefined>(undefined);
+  readonly resetNorth = signal(0);
   readonly region = signal<WorldBounds | undefined>(undefined);
   readonly navigation = signal<WorldControlsSettings>(DEFAULT_WORLD_CONTROLS_SETTINGS);
   readonly triggers = signal<WorldAreaTrigger[]>([]);
@@ -666,6 +668,7 @@ describe(WorldViewerComponent.name, () => {
     const { page, fixture } = await setup((h) => {
       h.focus.set(at(0, 0));
       h.map.set('Azeroth');
+      h.resetNorth.set(1);
     });
     await settle(fixture);
     vi.advanceTimersByTime(300);
@@ -675,6 +678,18 @@ describe(WorldViewerComponent.name, () => {
     expect(text).toContain('WORLD_EDITOR.TERRAIN 1');
     // the compass: the camera looks north-east at first
     expect(page.getDebugElementByTestId('world-compass-degrees').nativeElement.textContent).toBe('45°');
+    // clicking it turns the camera north, as asking from outside does (a turn asked before the view was ready is dropped)
+    page.getDebugElementByTestId('world-viewer-compass').nativeElement.click();
+    vi.advanceTimersByTime(300);
+    flushFrames();
+    fixture.detectChanges();
+    expect(page.getDebugElementByTestId('world-compass-degrees').nativeElement.textContent).toBe('0°');
+    fixture.componentInstance.resetNorth.set(2);
+    fixture.detectChanges();
+    vi.advanceTimersByTime(300);
+    flushFrames();
+    fixture.detectChanges();
+    expect(page.getDebugElementByTestId('world-compass-degrees').nativeElement.textContent).toBe('0°');
     fixture.componentInstance.render.set({ ...DEFAULT_WORLD_RENDER_SETTINGS, compass: false });
     fixture.detectChanges();
     expect(page.getDebugElementByTestId('world-compass', false)).toBeFalsy();

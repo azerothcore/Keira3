@@ -151,6 +151,8 @@ import { EMPTY_TRAVEL, TravelData, travelOverlays } from './travel';
 import { copySpawns, followPlacement, pastedSpawn } from './group-edit';
 import { WaypointEdits, WaypointPanelComponent } from './waypoint-panel.component';
 import { SpawnPanelComponent } from './spawn-panel.component';
+import { SpawnTreeComponent } from './spawn-tree.component';
+import { BUTTON_STYLES, ButtonLabelComponent, ButtonStyle, buttonTitle, loadButtonStyle, saveButtonStyle } from './toolbar-buttons';
 import { findSpawnProblems, SpawnProblem } from './spawn-problems';
 import { pathSimulation, wanderSimulation } from './simulation-plan';
 import { formationLinks, formationSlots, groupDetails, poolOverlays } from './spawn-groups';
@@ -196,7 +198,19 @@ export function formatSize(bytes: number): string {
 
 const LAST_VIEW_KEY = 'keira3.worldEditor.lastView';
 /** Actions the editor itself runs (the view runs the camera moves and the marker). */
-const EDITOR_ACTIONS = ['undo', 'redo', 'delete', 'toggleGizmo', 'cancel', 'copy', 'paste', 'worldMap', 'compass'] as const;
+const EDITOR_ACTIONS = [
+  'undo',
+  'redo',
+  'delete',
+  'toggleGizmo',
+  'cancel',
+  'copy',
+  'paste',
+  'worldMap',
+  'compass',
+  'resetNorth',
+  'tree',
+] as const;
 /** Scan the whole map: results listed at most, and the colour of each level. */
 const SCAN_LIST_SIZE = 300;
 const SCAN_COLORS: Record<SpawnScanLevel, number> = { ok: 0x2ecc71, warn: 0xf1c40f, bad: 0xe74c3c };
@@ -326,6 +340,8 @@ const isFlight = (key: string): boolean => key.startsWith('flight:') || key.star
     HighlightjsWrapperComponent,
     WaypointPanelComponent,
     SpawnPanelComponent,
+    SpawnTreeComponent,
+    ButtonLabelComponent,
   ],
   host: {
     '(keydown)': 'onKeydown($event)',
@@ -603,6 +619,15 @@ export class WorldEditorComponent implements OnInit {
   protected readonly mapId = signal(0);
   protected readonly mapDirectory = computed(() => this.maps().find((m) => m.id === this.mapId())?.directory);
   protected readonly focus = signal<WorldPosition | undefined>(undefined);
+  /** Goes up to turn the camera to the north. */
+  protected readonly resetNorthRequest = signal(0);
+  /** How the toolbar's buttons show (icon, name or both), kept on this computer. */
+  protected readonly buttonStyle = signal(loadButtonStyle());
+  protected readonly buttonStyles = BUTTON_STYLES;
+  protected readonly buttonTitle = buttonTitle;
+  /** The tree of what's loaded, docked on the right of the view, and the spawns its tick boxes hide. */
+  protected readonly showTree = signal(false);
+  protected readonly treeHidden = signal<ReadonlySet<string>>(new Set());
   protected readonly cacheSize = signal(0);
   /** Megabytes, for the settings panel. */
   protected readonly cacheSizeText = computed(() => formatSize(this.cacheSize()));
@@ -871,8 +896,12 @@ export class WorldEditorComponent implements OnInit {
     const selectedEvent = this.filters().showSelectedEvent ? this.selectedSpawn()?.event : undefined;
     const filters = selectedEvent ? { ...this.filters(), events: [...this.filters().events, selectedEvent] } : this.filters();
     const difficulty = this.difficulties().length ? this.difficulty() : undefined;
+    const hidden = this.treeHidden();
     return this.spawns().filter(
-      (s) => isSpawnVisible(s, filters) && (difficulty === undefined || ((s.spawnMask ?? 1) & (1 << difficulty)) !== 0),
+      (s) =>
+        isSpawnVisible(s, filters) &&
+        (difficulty === undefined || ((s.spawnMask ?? 1) & (1 << difficulty)) !== 0) &&
+        !hidden.has(spawnKey(s.type, s.guid)),
     );
   });
 
@@ -1219,6 +1248,34 @@ export class WorldEditorComponent implements OnInit {
 
   protected toggleLegend(): void {
     this.togglePanel('legend');
+  }
+
+  protected toggleTree(): void {
+    this.showTree.update((shown) => !shown);
+  }
+
+  /** Turns the camera to face north, still looking at the same place. */
+  protected resetNorth(): void {
+    this.resetNorthRequest.update((n) => n + 1);
+  }
+
+  protected setButtonStyle(style: ButtonStyle): void {
+    this.buttonStyle.set(style);
+    saveButtonStyle(style);
+  }
+
+  /** A spawn picked in the tree: selected, and the camera flies there when asked. */
+  protected pickFromTree(spawn: SpawnRecord, snap: boolean): void {
+    const key = spawnKey(spawn.type, spawn.guid);
+    // a spawn hidden in the tree shows again when picked
+    if (this.treeHidden().has(key)) {
+      this.treeHidden.update((hidden) => new Set([...hidden].filter((k) => k !== key)));
+    }
+    this.groupKeys.set([]);
+    this.select(key);
+    if (snap) {
+      this.focus.set({ x: spawn.x, y: spawn.y, z: spawn.z });
+    }
   }
 
   protected async toggleFullscreen(): Promise<void> {
@@ -3054,6 +3111,10 @@ export class WorldEditorComponent implements OnInit {
       void this.pasteCopied();
     } else if (action === 'worldMap') {
       this.toggleMap();
+    } else if (action === 'resetNorth') {
+      this.resetNorth();
+    } else if (action === 'tree') {
+      this.toggleTree();
     } else {
       // (the compass)
       this.renderSettings.update({ compass: !this.renderSettings.settings().compass });
