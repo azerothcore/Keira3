@@ -1556,6 +1556,8 @@
     "ANIMATE_IDLE": "待机动画",
     "ANIMATE_IDLE_HELP": "NPC 和生物播放站立动画（视图会持续重绘）",
     "ANIMATE_WALK": "移动动画",
-    "ANIMATE_WALK_HELP": "有路径或游荡的生物原地播放行走动画"
+    "ANIMATE_WALK_HELP": "有路径或游荡的生物原地播放行走动画",
+    "LIQUID_INFO": "镜头下的液体",
+    "LIQUID_INFO_HELP": "在镜头位置旁显示：所看之处的液体（水、海洋、岩浆、软泥）以及是否为会产生疲劳的深水（来自服务器数据文件夹）"
   }
 }

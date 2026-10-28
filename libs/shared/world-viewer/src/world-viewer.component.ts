@@ -45,7 +45,7 @@ import { WorldPrefetch } from './world-prefetch';
 import { WorldDoodads } from './world-doodads';
 import { brightnessAt, ZoneLighting } from './zone-lighting';
 import { setInvisibleModelsVisible } from './m2-object';
-import { MapEdge } from './map-edge';
+import { liquidKindOf, MapEdge } from './map-edge';
 import { WeatherEffect, WorldWeather } from './world-weather';
 import {
   controlFor,
@@ -320,6 +320,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   protected readonly navMeshInfo = signal<NavMeshTileInfo | undefined>(undefined);
   /** The area under the camera target, from the server's terrain (`maps/`): "Goldshire (Elwynn Forest)". */
   protected readonly areaName = signal<string | undefined>(undefined);
+  /** The liquid where the camera looks (from the server's map), with View > Liquid under the camera. */
+  protected readonly liquidHere = signal<{ kind: string; deep: boolean } | undefined>(undefined);
   private areaChunk?: string;
   private readonly spawnModels = new SpawnModels(this.client, this.world, this.textures, () => this.requestRender());
   private readonly zoneLighting = new ZoneLighting(this.client, this.world, () => this.requestRender());
@@ -1635,6 +1637,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     this.areaChunk = chunk;
     if (mapId === undefined || !this.client.isSupported()) {
       this.areaName.set(undefined);
+      this.liquidHere.set(undefined);
       this.setZone(undefined);
       return;
     }
@@ -1644,14 +1647,17 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
         this.client.getAreaNames(),
       ]);
       const areaId = tile ? serverAreaAt(tile, center.x, center.y) : 0;
+      const liquid = tile ? serverLiquidAt(tile, center.x, center.y) : undefined;
       const area = names.get(areaId);
       const zone = area?.parent ? names.get(area.parent)?.name : undefined;
       if (chunk === this.areaChunk) {
         this.areaName.set(area?.name ? `${area.name}${zone ? ` (${zone})` : ''}` : undefined);
         this.setZone(area ? area.parent || areaId : undefined);
+        this.liquidHere.set(liquid && liquidKindOf(liquid.types));
       }
     } catch {
       this.areaName.set(undefined);
+      this.liquidHere.set(undefined);
       this.setZone(undefined);
     }
   }

@@ -74,6 +74,8 @@ export interface WorldRenderSettings {
   showInvisible: boolean;
   /** A see-through red wall where the map's terrain ends. */
   showMapEdge: boolean;
+  /** The liquid where the camera looks (water, ocean, magma, slime) and whether it's deep (fatigue), by its position. */
+  showLiquidInfo: boolean;
   /** Creatures wear their equipment (helmet, shoulders, weapons, clothes' shapes). */
   showEquipment: boolean;
   /** Creatures play their standing animation; those that move, their walking one. */
@@ -158,6 +160,7 @@ export const DEFAULT_WORLD_RENDER_SETTINGS: WorldRenderSettings = {
   showIndoor: true,
   showInvisible: false,
   showMapEdge: true,
+  showLiquidInfo: true,
   showEquipment: true,
   animateIdle: false,
   animateWalk: false,

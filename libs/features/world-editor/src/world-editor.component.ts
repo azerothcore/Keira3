@@ -253,6 +253,7 @@ type RenderFlagKey =
   | 'showIndoor'
   | 'showInvisible'
   | 'showMapEdge'
+  | 'showLiquidInfo'
   | 'showEquipment'
   | 'animateIdle'
   | 'animateWalk'

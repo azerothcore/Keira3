@@ -1556,6 +1556,8 @@
     "ANIMATE_IDLE": "Idle animation",
     "ANIMATE_IDLE_HELP": "NPCs and creatures play their standing animation (the view then draws all the time)",
     "ANIMATE_WALK": "Movement animation",
-    "ANIMATE_WALK_HELP": "Creatures with a path or wandering play their walking animation, in place"
+    "ANIMATE_WALK_HELP": "Creatures with a path or wandering play their walking animation, in place",
+    "LIQUID_INFO": "Liquid under the camera",
+    "LIQUID_INFO_HELP": "Next to the camera position: the liquid where it looks (water, ocean, magma, slime) and whether it is deep water, where players get fatigue (from the server data folder)"
   }
 }

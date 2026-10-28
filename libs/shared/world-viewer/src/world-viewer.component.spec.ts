@@ -891,7 +891,10 @@ describe(WorldViewerComponent.name, () => {
 
     it('names the area under the camera from the server terrain', async () => {
       const areas = new Uint16Array(256).fill(87);
-      client.getServerMap.mockResolvedValue({ areas });
+      client.getServerMap.mockResolvedValue({
+        areas,
+        liquid: { types: new Uint8Array(256).fill(0x12), offsetX: 0, offsetY: 0, width: 128, height: 128, level: 5 },
+      });
       client.getAreaNames.mockResolvedValue(
         new Map([
           [87, { name: 'Goldshire', parent: 12 }],
@@ -906,6 +909,10 @@ describe(WorldViewerComponent.name, () => {
       expect(page.getDebugElementByTestId('world-viewer-area').nativeElement.textContent).toContain('Goldshire (Elwynn Forest)');
       // the zone, for its weather
       expect(host.zones.at(-1)).toBe(12);
+      // the liquid there: deep ocean
+      expect(page.getDebugElementByTestId('world-viewer-liquid').nativeElement.textContent.replace(/\s+/g, ' ').trim()).toBe(
+        '· WORLD_EDITOR.LIQUID_OCEAN (WORLD_EDITOR.LIQUID_DEEP)',
+      );
       // the camera's phase, when told
       expect(page.getDebugElementByTestId('world-viewer-phase', false)).toBeFalsy();
       await update(() => host.cameraPhase.set(3));

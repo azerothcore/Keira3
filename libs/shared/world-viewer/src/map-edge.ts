@@ -77,3 +77,9 @@ export class MapEdge {
     }
   }
 }
+
+/** The kind of liquid in a server map's liquid types (water 1, ocean 2, magma 4, slime 8) and whether it's deep (0x10: fatigue). */
+export function liquidKindOf(types: number): { kind: string; deep: boolean } {
+  const kind = types & 0x08 ? 'slime' : types & 0x04 ? 'magma' : types & 0x02 ? 'ocean' : 'water';
+  return { kind, deep: (types & 0x10) !== 0 };
+}

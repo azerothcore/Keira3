@@ -59,6 +59,14 @@
       @if (areaName(); as area) {
         <span class="world-viewer-area" data-testid="world-viewer-area">· {{ area }}</span>
       }
+      @if (renderSettings().showLiquidInfo && liquidHere(); as liquid) {
+        <span class="world-viewer-liquid" data-testid="world-viewer-liquid"
+          >· {{ 'WORLD_EDITOR.LIQUID_' + liquid.kind.toUpperCase() | translate }}
+          @if (liquid.deep) {
+            <span class="text-warning">({{ 'WORLD_EDITOR.LIQUID_DEEP' | translate }})</span>
+          }
+        </span>
+      }
       @if (cameraPhase(); as phase) {
         <span class="world-viewer-phase" data-testid="world-viewer-phase">· {{ 'WORLD_EDITOR.PHASE' | translate }} {{ phase }}</span>
       }

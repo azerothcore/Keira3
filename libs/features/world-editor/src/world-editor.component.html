@@ -637,6 +637,23 @@
                   [tooltip]="'WORLD_EDITOR.MAP_EDGE_HELP' | translate"
                 ></i>
               </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-liquid-info"
+                  data-testid="view-liquid-info"
+                  [checked]="renderSettings.settings().showLiquidInfo"
+                  (change)="setRenderFlag('showLiquidInfo', $event)"
+                />
+                <label class="form-check-label" for="world-editor-liquid-info">{{ 'WORLD_EDITOR.LIQUID_INFO' | translate }}</label
+                ><i
+                  class="fas fa-info-circle ms-1"
+                  placement="auto"
+                  container="body"
+                  [tooltip]="'WORLD_EDITOR.LIQUID_INFO_HELP' | translate"
+                ></i>
+              </div>
               <div class="world-editor-view-sub">{{ 'WORLD_EDITOR.VIEW_SUB_BUILDINGS' | translate }}</div>
               <div class="form-check form-switch mb-0">
                 <input

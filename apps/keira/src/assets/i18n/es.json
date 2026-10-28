@@ -1556,6 +1556,8 @@
     "ANIMATE_IDLE": "Animación de reposo",
     "ANIMATE_IDLE_HELP": "PNJ y criaturas reproducen su animación de estar de pie (la vista se dibuja continuamente)",
     "ANIMATE_WALK": "Animación de movimiento",
-    "ANIMATE_WALK_HELP": "Las criaturas con ruta o que deambulan reproducen su animación de caminar, sin desplazarse"
+    "ANIMATE_WALK_HELP": "Las criaturas con ruta o que deambulan reproducen su animación de caminar, sin desplazarse",
+    "LIQUID_INFO": "Líquido bajo la cámara",
+    "LIQUID_INFO_HELP": "Junto a la posición de la cámara: el líquido donde mira (agua, océano, magma, limo) y si es agua profunda, donde los jugadores se fatigan (de la carpeta de datos del servidor)"
   }
 }

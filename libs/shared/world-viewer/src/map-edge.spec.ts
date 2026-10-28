@@ -1,6 +1,6 @@
 import { TILE_SIZE } from '@keira/shared/wow-data';
 import { Mesh } from 'three';
-import { MapEdge, mapEdgeSegments } from './map-edge';
+import { liquidKindOf, MapEdge, mapEdgeSegments } from './map-edge';
 
 describe('map edge', () => {
   it('finds the sides of tiles without a tile next to them', () => {
@@ -39,5 +39,15 @@ describe('map edge', () => {
     edge.set([{ tx: 1, ty: 1 }]);
     edge.dispose();
     expect(edge.group.children).toHaveLength(0);
+  });
+
+  it('tells the kind of liquid and whether it is deep', () => {
+    expect([1, 2, 4, 8, 0x11].map(liquidKindOf)).toEqual([
+      { kind: 'water', deep: false },
+      { kind: 'ocean', deep: false },
+      { kind: 'magma', deep: false },
+      { kind: 'slime', deep: false },
+      { kind: 'water', deep: true },
+    ]);
   });
 });
