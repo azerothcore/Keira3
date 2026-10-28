@@ -27,26 +27,46 @@
 .world-compass-tick {
   stroke: #d8d8d8;
   stroke-width: 0.8;
+}
 
-  &.major {
-    stroke-width: 1.4;
+.world-compass-mark {
+  fill: #f0a030;
+  stroke: #f0a030;
+
+  line {
+    stroke-width: 2;
+    stroke-dasharray: 1.6 1.4;
+  }
+
+  path {
+    stroke: none;
+  }
+
+  &.north {
+    fill: #ff4a3a;
+    stroke: #ff4a3a;
   }
 }
 
 .world-compass-label {
   fill: #e8e8e8;
-  font-size: 7px;
+  stroke: none;
+  font-size: 8px;
   text-anchor: middle;
   dominant-baseline: middle;
 
   &.point {
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
-    fill: #f0c675;
+    fill: #f0a030;
+
+    &.between {
+      font-size: 8px;
+    }
   }
 
   &.north {
-    fill: #ff6b5b;
+    fill: #ff4a3a;
   }
 }
 

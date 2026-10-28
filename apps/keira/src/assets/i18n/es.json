@@ -1105,7 +1105,7 @@
     "FULLSCREEN": "Pantalla completa",
     "COPY_INFO": "Copiar",
     "COPY_GO": "Copiar .go xyz",
-    "BOUNDS": "Radio de colisión y alcance",
+    "BOUNDS": "Límites y alcance",
     "BOUNDS_HELP": "Círculos alrededor de las criaturas según creature_model_info: radio (verde) y alcance de combate (rojo), a su escala",
     "RESOLUTION_HELP": "Parte de la resolución dibujada: menos es más rápido, algo más borroso",
     "MARKER_MODEL": "Marcador",
@@ -1536,6 +1536,15 @@
     "SEASON_WINTER": "invierno",
     "CONTROL_ZOOMIN": "Acercar",
     "CONTROL_ZOOMOUT": "Alejar",
-    "CONTROL_FAST": "Más rápido (mantener)"
+    "CONTROL_FAST": "Más rápido (mantener)",
+    "VIEW_SKY": "Cielo y luz",
+    "VIEW_MARKER": "Marcador",
+    "VIEW_SUB_TERRAIN": "Terreno",
+    "VIEW_SUB_BUILDINGS": "Edificios",
+    "VIEW_SUB_DOODADS": "Doodads",
+    "VIEW_SUB_MODELS": "Modelos",
+    "VIEW_SUB_MARKERS": "Alrededor de los spawns",
+    "VIEW_SUB_PATHS": "Rutas",
+    "COMPASS_OPACITY": "Opacidad"
   }
 }

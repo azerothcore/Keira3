@@ -1105,7 +1105,7 @@
     "FULLSCREEN": "Во весь экран",
     "COPY_INFO": "Копировать",
     "COPY_GO": "Копировать .go xyz",
-    "BOUNDS": "Радиус и дистанция атаки",
+    "BOUNDS": "Границы и досягаемость",
     "BOUNDS_HELP": "Круги вокруг существ из creature_model_info: радиус (зелёный) и дистанция атаки (красный) с учётом масштаба",
     "RESOLUTION_HELP": "Доля разрешения экрана: меньше - быстрее, но чуть размытее",
     "MARKER_MODEL": "Маркер",
@@ -1536,6 +1536,15 @@
     "SEASON_WINTER": "зима",
     "CONTROL_ZOOMIN": "Приблизить",
     "CONTROL_ZOOMOUT": "Отдалить",
-    "CONTROL_FAST": "Быстрее (удерживать)"
+    "CONTROL_FAST": "Быстрее (удерживать)",
+    "VIEW_SKY": "Небо и свет",
+    "VIEW_MARKER": "Маркер",
+    "VIEW_SUB_TERRAIN": "Рельеф",
+    "VIEW_SUB_BUILDINGS": "Здания",
+    "VIEW_SUB_DOODADS": "Дудады",
+    "VIEW_SUB_MODELS": "Модели",
+    "VIEW_SUB_MARKERS": "Вокруг спавнов",
+    "VIEW_SUB_PATHS": "Пути",
+    "COMPASS_OPACITY": "Непрозрачность"
   }
 }

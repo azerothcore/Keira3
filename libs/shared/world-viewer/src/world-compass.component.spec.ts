@@ -14,6 +14,7 @@ import { normaliseBearing, WorldCompassComponent } from './world-compass.compone
       [points]="points()"
       [degrees]="degrees()"
       [mils]="mils()"
+      [opacity]="opacity()"
     />
   `,
 })
@@ -24,6 +25,7 @@ class HostComponent {
   readonly points = signal(true);
   readonly degrees = signal(true);
   readonly mils = signal(false);
+  readonly opacity = signal(1);
 }
 
 class CompassPage extends PageObjectModel<HostComponent> {
@@ -52,9 +54,19 @@ describe('WorldCompassComponent', () => {
     // the points on the outer ring, the numbers between them inside
     expect(page.text('world-compass-point-0')).toBe('WORLD_EDITOR.COMPASS_N');
     expect(page.text('world-compass-point-45')).toBe('WORLD_EDITOR.COMPASS_NE');
-    expect(page.has('world-compass-label-45')).toBe(false);
     expect(page.has('world-compass-ring')).toBe(true);
-    expect(page.text('world-compass-label-15')).toBe('15');
+    // numbers only at the marks every 45°: north a red arrow, east / south / west arrows, the others dotted ticks
+    expect(page.text('world-compass-label-45')).toBe('45');
+    expect(page.has('world-compass-label-15')).toBe(false);
+    const kind = (angle: number) =>
+      ['north', 'tick', 'arrow'].find((name) =>
+        (page.getDebugElementByTestId(`world-compass-mark-${angle}`).nativeElement as Element).classList.contains(name),
+      );
+    expect([0, 45, 90].map(kind)).toEqual(['north', 'tick', 'arrow']);
+    expect((page.getDebugElementByTestId('world-compass').nativeElement as HTMLElement).style.opacity).toBe('1');
+    host.opacity.set(0.4);
+    page.fixture.detectChanges();
+    expect((page.getDebugElementByTestId('world-compass').nativeElement as HTMLElement).style.opacity).toBe('0.4');
     expect(page.has('world-compass-north')).toBe(true);
     host.heading.set(-312.6);
     page.fixture.detectChanges();

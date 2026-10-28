@@ -29,7 +29,7 @@ export class WeatherEffect {
   readonly group = new Object3D();
   private kind?: WeatherKind;
   private object?: Points | LineSegments;
-  /** Particle positions relative to the area's corner (0..AREA, 0..AREA, 0..HEIGHT), and a phase each. */
+  /** Particle positions relative to the area's corner, in scene axes (x and z across 0..AREA, y up 0..HEIGHT). */
   private offsets = new Float32Array(0);
   private phases = new Float32Array(0);
   private time = 0;
@@ -54,7 +54,7 @@ export class WeatherEffect {
     this.offsets = new Float32Array(count * 3);
     this.phases = new Float32Array(count);
     for (let i = 0; i < count; i++) {
-      this.offsets.set([random() * AREA, random() * AREA, random() * HEIGHT], i * 3);
+      this.offsets.set([random() * AREA, random() * HEIGHT, random() * AREA], i * 3);
       this.phases[i] = random() * Math.PI * 2;
     }
     const geometry = new BufferGeometry();
@@ -84,22 +84,23 @@ export class WeatherEffect {
     const positions = object.geometry.getAttribute('position') as BufferAttribute;
     const array = positions.array as Float32Array;
     const { x: cx, y: cy, z: cz } = camera.position;
-    // the area's corner, so the camera stays in its middle
-    const [ox, oy, oz] = [cx - AREA / 2, cy - AREA / 2, cz - HEIGHT / 2];
+    // the area's corner, so the camera stays in its middle (scene axes: y is up)
+    const [ox, oy, oz] = [cx - AREA / 2, cy - HEIGHT / 2, cz - AREA / 2];
     const wrap = (value: number, size: number) => ((value % size) + size) % size;
     const count = this.phases.length;
     for (let i = 0; i < count; i++) {
       const wobble = Math.sin(this.time * 1.7 + this.phases[i]) * motion.wobble * seconds;
       const o = i * 3;
       this.offsets[o] += motion.drift * seconds + wobble;
-      this.offsets[o + 1] += motion.drift * 0.4 * seconds;
-      this.offsets[o + 2] -= motion.fall * seconds;
+      this.offsets[o + 1] -= motion.fall * seconds;
+      this.offsets[o + 2] += motion.drift * 0.4 * seconds;
       // (world positions wrapped around the camera: particles stay put in the world as the camera moves)
       const x = ox + wrap(this.offsets[o] - ox, AREA);
-      const y = oy + wrap(this.offsets[o + 1] - oy, AREA);
-      const z = oz + wrap(this.offsets[o + 2] - oz, HEIGHT);
+      const y = oy + wrap(this.offsets[o + 1] - oy, HEIGHT);
+      const z = oz + wrap(this.offsets[o + 2] - oz, AREA);
       if (rain) {
-        array.set([x, y, z, x - 0.03, y - 0.01, z + STREAK], i * 6);
+        // a streak along the way it falls (up the y axis behind it)
+        array.set([x, y, z, x - 0.03, y + STREAK, z - 0.01], i * 6);
       } else {
         array.set([x, y, z], o);
       }

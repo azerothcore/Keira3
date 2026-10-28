@@ -1433,7 +1433,8 @@ export class WorldEditorComponent implements OnInit {
     { key: 'brightnessEvening', label: 'WORLD_EDITOR.BRIGHTNESS_EVENING' },
   ];
 
-  protected setBrightness(key: BrightnessKey, event: Event): void {
+  /** A number of the view settings from its slider. */
+  protected setRenderNumber(key: BrightnessKey | 'compassOpacity', event: Event): void {
     this.renderSettings.update({ [key]: Number((event.target as HTMLInputElement).value) });
   }
 

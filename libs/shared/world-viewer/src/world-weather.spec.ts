@@ -14,15 +14,20 @@ describe('WeatherEffect', () => {
     expect(effect.active).toBe(true);
     expect(effect.group.children[0]).toBeInstanceOf(Points);
     expect(positions(effect).length).toBe(2000 * 3);
-    camera.position.set(1000, 2000, 50);
+    // (scene axes: y is up)
+    camera.position.set(1000, 50, 2000);
     effect.update(camera, 0.1);
     const [x, y, z] = positions(effect);
     // around the camera, wherever it is
     expect(Math.abs(x - 1000)).toBeLessThanOrEqual(30);
-    expect(Math.abs(y - 2000)).toBeLessThanOrEqual(30);
-    expect(Math.abs(z - 50)).toBeLessThanOrEqual(20);
+    expect(Math.abs(y - 50)).toBeLessThanOrEqual(20);
+    expect(Math.abs(z - 2000)).toBeLessThanOrEqual(30);
+    // falling: lower a moment later (unless wrapped back to the top)
+    const before = positions(effect)[1];
+    effect.update(camera, 0.01);
+    expect(positions(effect)[1]).toBeLessThan(before);
     effect.update(camera, 100);
-    expect(Math.abs(positions(effect)[2] - 50)).toBeLessThanOrEqual(20);
+    expect(Math.abs(positions(effect)[1] - 50)).toBeLessThanOrEqual(20);
   });
 
   it('draws rain as streaks, a sandstorm as dust, and nothing without weather or intensity', () => {
@@ -32,8 +37,8 @@ describe('WeatherEffect', () => {
     // (intensity above 1 counts as 1: two points per streak)
     expect(positions(effect).length).toBe(6000 * 6);
     effect.update(camera, 0.016);
-    const [, , z1, , , z2] = positions(effect);
-    expect(z2 - z1).toBeCloseTo(0.9);
+    const [, y1, , , y2] = positions(effect);
+    expect(y2 - y1).toBeCloseTo(0.9);
     effect.set({ kind: 'storm', intensity: 0.1 });
     expect(effect.group.children).toHaveLength(1);
     expect(effect.group.children[0]).toBeInstanceOf(Points);

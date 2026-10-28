@@ -10,8 +10,8 @@ export const MILS_PER_TURN = 6400;
 export const normaliseBearing = (degrees: number): number => ((degrees % 360) + 360) % 360;
 
 /**
- * The view's compass: a dial marked every 5°, numbered every 15°, with the compass points every 45° on an outer ring
- * (the numbers between them stay inside, so nothing crowds), turning so the
+ * The view's compass: a dial marked every 5°, with a mark and its number every 45° (north red, the others orange) and
+ * the compass points on an outer ring, turning so the
  * way the camera looks is at the top (or fixed with north up and a needle turning instead), and the bearing in degrees
  * and/or mils under it.
  */
@@ -31,6 +31,8 @@ export class WorldCompassComponent {
   readonly points = input(true);
   readonly degrees = input(true);
   readonly mils = input(false);
+  /** 0.1 (barely there) .. 1 (solid). */
+  readonly opacity = input(1);
 
   protected readonly bearing = computed(() => normaliseBearing(this.heading()));
   /** Rounded to the whole degree shown (360 shows as 0). */
@@ -38,11 +40,12 @@ export class WorldCompassComponent {
   protected readonly wholeMils = computed(() => Math.round((this.bearing() * MILS_PER_TURN) / 360) % MILS_PER_TURN);
   protected readonly point = computed(() => COMPASS_POINTS[Math.round(this.bearing() / 45) % 8]);
   protected readonly dialRotation = computed(() => (this.northUp() ? 0 : -this.bearing()));
-  protected readonly ticks = Array.from({ length: 72 }, (_, i) => i * 5);
-  /** Every 15°: the number, left out where the compass point stands on the outer ring (every 45°) when points show. */
-  protected readonly labels = Array.from({ length: 24 }, (_, i) => i * 15).map((angle) => ({
+  /** Small ticks every 5°, but where the marks are. */
+  protected readonly ticks = Array.from({ length: 72 }, (_, i) => i * 5).filter((angle) => angle % 45 !== 0);
+  /** Every 45°: north a red arrow, east / south / west orange arrows, the ones between an orange dotted tick. */
+  protected readonly marks = Array.from({ length: 8 }, (_, i) => i * 45).map((angle) => ({
     angle,
-    point: angle % 45 === 0,
+    kind: angle === 0 ? 'north' : angle % 90 === 0 ? 'arrow' : 'tick',
   }));
   /** The compass points on the outer ring. */
   protected readonly pointLabels = COMPASS_POINTS.map((point, i) => ({ angle: i * 45, point }));

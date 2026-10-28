@@ -39,6 +39,8 @@ export interface WorldRenderSettings {
   /** The bearing under it, in degrees and/or mils (6400 a turn); both follow the camera live. */
   compassDegrees: boolean;
   compassMils: boolean;
+  /** How solid the compass is (%): 10..100. */
+  compassOpacity: number;
   /** The time of day lit with zone lighting (minutes since midnight), or the computer's clock. */
   timeOfDay: number;
   /** Brightness of the zone lights (%) at night, in the morning, at midday and in the evening, blended in between. */
@@ -166,6 +168,7 @@ export const DEFAULT_WORLD_RENDER_SETTINGS: WorldRenderSettings = {
   compassPoints: true,
   compassDegrees: true,
   compassMils: false,
+  compassOpacity: 100,
   drawDistance: 250,
   advancedDistances: false,
   largeDoodadDistance: 500,

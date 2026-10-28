@@ -1,4 +1,4 @@
-<div class="world-compass" data-testid="world-compass" [title]="'WORLD_EDITOR.COMPASS_HELP' | translate">
+<div class="world-compass" data-testid="world-compass" [style.opacity]="opacity()" [title]="'WORLD_EDITOR.COMPASS_HELP' | translate">
   <svg viewBox="-74 -74 148 148" aria-hidden="true">
     @if (points()) {
       <circle class="world-compass-ring" data-testid="world-compass-ring" r="72" />
@@ -6,35 +6,29 @@
     <circle class="world-compass-face" r="58" />
     <g data-testid="world-compass-dial" [attr.transform]="'rotate(' + dialRotation() + ')'">
       @for (tick of ticks; track tick) {
-        <line
-          class="world-compass-tick"
-          [class.major]="tick % 15 === 0"
-          x1="0"
-          [attr.y1]="-55"
-          x2="0"
-          [attr.y2]="tick % 15 === 0 ? -48 : -51"
-          [attr.transform]="'rotate(' + tick + ')'"
-        />
+        <line class="world-compass-tick" x1="0" y1="-55" x2="0" y2="-51" [attr.transform]="'rotate(' + tick + ')'" />
       }
-      @for (label of labels; track label.angle) {
-        @if (!(label.point && points())) {
-          <text
-            class="world-compass-label"
-            [class.north]="label.angle === 0"
-            [attr.data-testid]="'world-compass-label-' + label.angle"
-            x="0"
-            y="-40"
-            [attr.transform]="'rotate(' + label.angle + ')'"
-          >
-            {{ label.angle }}
-          </text>
-        }
+      <!-- every 45°: north a red arrow, east, south and west orange arrows, the ones between a dotted orange tick, each with its number -->
+      @for (mark of marks; track mark.angle) {
+        <g
+          [attr.transform]="'rotate(' + mark.angle + ')'"
+          [attr.data-testid]="'world-compass-mark-' + mark.angle"
+          [class]="'world-compass-mark ' + mark.kind"
+        >
+          @if (mark.kind === 'tick') {
+            <line x1="0" y1="-56" x2="0" y2="-46" />
+          } @else {
+            <path d="M0,-57 L-5,-46 L5,-46 Z" />
+          }
+          <text class="world-compass-label" x="0" y="-37" [attr.data-testid]="'world-compass-label-' + mark.angle">{{ mark.angle }}</text>
+        </g>
       }
       @if (points()) {
         @for (label of pointLabels; track label.angle) {
           <text
             class="world-compass-label point"
             [class.north]="label.angle === 0"
+            [class.between]="label.angle % 90 !== 0"
             [attr.data-testid]="'world-compass-point-' + label.angle"
             x="0"
             y="-65"

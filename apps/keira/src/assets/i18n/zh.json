@@ -1105,7 +1105,7 @@
     "FULLSCREEN": "全屏",
     "COPY_INFO": "复制",
     "COPY_GO": "复制 .go xyz",
-    "BOUNDS": "包围半径和攻击距离",
+    "BOUNDS": "边界和距离",
     "BOUNDS_HELP": "根据 creature_model_info 在生物周围绘制圆圈：包围半径（绿色）和攻击距离（红色），按其缩放",
     "RESOLUTION_HELP": "绘制的分辨率比例：越低越快，但稍模糊",
     "MARKER_MODEL": "标记",
@@ -1536,6 +1536,15 @@
     "SEASON_WINTER": "冬季",
     "CONTROL_ZOOMIN": "拉近",
     "CONTROL_ZOOMOUT": "拉远",
-    "CONTROL_FAST": "加速（按住）"
+    "CONTROL_FAST": "加速（按住）",
+    "VIEW_SKY": "天空和光照",
+    "VIEW_MARKER": "标记",
+    "VIEW_SUB_TERRAIN": "地形",
+    "VIEW_SUB_BUILDINGS": "建筑",
+    "VIEW_SUB_DOODADS": "装饰物",
+    "VIEW_SUB_MODELS": "模型",
+    "VIEW_SUB_MARKERS": "刷新点周围",
+    "VIEW_SUB_PATHS": "路径",
+    "COMPASS_OPACITY": "不透明度"
   }
 }

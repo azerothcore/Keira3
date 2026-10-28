@@ -242,3 +242,24 @@
 .world-editor-brightness-label {
   min-width: 5.5em;
 }
+
+.world-editor-view-sub {
+  margin-top: 0.3rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  opacity: 0.55;
+}
+
+// every option on one line: a long name is cut with "…" (its tooltip says the rest)
+.world-editor-view-group .form-check {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: 0;
+  white-space: nowrap;
+
+  .form-check-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

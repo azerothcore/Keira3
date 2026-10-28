@@ -1105,7 +1105,7 @@
     "FULLSCREEN": "Full screen",
     "COPY_INFO": "Copy",
     "COPY_GO": "Copy .go xyz",
-    "BOUNDS": "Bounding radius and combat reach",
+    "BOUNDS": "Bounds and reach",
     "BOUNDS_HELP": "Circles around creatures from creature_model_info: bounding radius (green) and combat reach (red), at their scale",
     "RESOLUTION_HELP": "Share of the screen's resolution drawn: lower is faster, a bit blurrier",
     "MARKER_MODEL": "Marker",
@@ -1536,6 +1536,15 @@
     "SEASON_WINTER": "winter",
     "CONTROL_ZOOMIN": "Zoom in",
     "CONTROL_ZOOMOUT": "Zoom out",
-    "CONTROL_FAST": "Faster (held)"
+    "CONTROL_FAST": "Faster (held)",
+    "VIEW_SKY": "Sky and light",
+    "VIEW_MARKER": "Marker",
+    "VIEW_SUB_TERRAIN": "Terrain",
+    "VIEW_SUB_BUILDINGS": "Buildings",
+    "VIEW_SUB_DOODADS": "Doodads",
+    "VIEW_SUB_MODELS": "Models",
+    "VIEW_SUB_MARKERS": "Around spawns",
+    "VIEW_SUB_PATHS": "Paths",
+    "COMPASS_OPACITY": "Opacity"
   }
 }
