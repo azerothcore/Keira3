@@ -28,6 +28,8 @@ export interface WorldRenderSettings {
   showNavMesh: boolean;
   /** Zone lighting, fog and sky colours (otherwise a fixed neutral light). */
   zoneLighting: boolean;
+  /** Also every other path in the area: without a walker loaded, SmartAI ones and escort scripts' (drawn, not edited). */
+  showAllPaths: boolean;
   /** A compass in the corner of the view (K): the dial turns with the camera, or stays north up with a needle. */
   compass: boolean;
   compassNorthUp: boolean;
@@ -104,6 +106,7 @@ export const DEFAULT_WORLD_RENDER_SETTINGS: WorldRenderSettings = {
   showNavMesh: false,
   zoneLighting: false,
   fog: true,
+  showAllPaths: false,
   compass: true,
   compassNorthUp: false,
   compassNorthArrow: true,

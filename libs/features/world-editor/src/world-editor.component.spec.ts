@@ -219,6 +219,7 @@ describe(WorldEditorComponent.name, () => {
       loadGraveyards: vi.fn(),
       loadTeleports: vi.fn(),
       loadLandingSpot: vi.fn(),
+      loadAreaPaths: vi.fn(),
       loadScriptEntries: vi.fn(),
       loadWaypointScripts: vi.fn(),
       loadWaypointSai: vi.fn(),
@@ -339,6 +340,7 @@ describe(WorldEditorComponent.name, () => {
     mocks.service.loadGraveyards.mockResolvedValue([]);
     mocks.service.loadTeleports.mockResolvedValue([]);
     mocks.service.loadLandingSpot.mockResolvedValue(undefined);
+    mocks.service.loadAreaPaths.mockResolvedValue([]);
     mocks.client.getTaxiNodes.mockResolvedValue([]);
     mocks.client.getTaxiPaths.mockResolvedValue([]);
     mocks.client.getBossBoundaries.mockResolvedValue([]);
@@ -1054,6 +1056,107 @@ describe(WorldEditorComponent.name, () => {
       search.dispatchEvent(new Event('focus'));
       search.dispatchEvent(new Event('blur'));
       await settle(page);
+    });
+
+    it('draws every other path in the area when asked', async () => {
+      mocks.service.loadAreaPaths.mockResolvedValue([
+        { source: 'data', id: 5, points: [{ point: 1, x: 1, y: 2, z: 3, delay: 2000 }] },
+        { source: 'sai', id: 6, points: [{ point: 1, x: 1, y: 2, z: 3, delay: 0 }] },
+        { source: 'script', id: 7, points: [{ point: 1, x: 1, y: 2, z: 3, delay: 0 }] },
+      ]);
+      const { page } = await setup();
+      await loadArea(page);
+      expect(mocks.service.loadAreaPaths).not.toHaveBeenCalled();
+      page.click('view-toggle');
+      page.fixture.detectChanges();
+      page.byId<HTMLInputElement>('view-all-paths').nativeElement.click();
+      await settle(page);
+      expect(mocks.service.loadAreaPaths).toHaveBeenCalledWith(0, CENTER, expect.any(Array));
+      const area = page
+        .viewer()
+        .paths()
+        .filter((p) => p.key.startsWith('area:'));
+      expect(area.map((p) => [p.key, p.label, !!p.closed])).toEqual([
+        ['area:data:5', 'Path 5 (no walker loaded)', true],
+        ['area:sai:6', 'SmartAI path 6 (no walker loaded)', false],
+        ['area:script:7', 'Escort script path 7 (script_waypoint)', false],
+      ]);
+      expect(area[0].points[0].info).toEqual(['Path 5 (no walker loaded) · #1', 'Waits 2 s']);
+      // with a region (a whole zone) too
+      page.chooseZone(ZONES[0].areaId);
+      await settle(page);
+      const whole = page.byId<HTMLInputElement>('view-whole-zone').nativeElement;
+      whole.checked = true;
+      whole.dispatchEvent(new Event('change'));
+      await settle(page);
+      expect(page.viewer().region()).toEqual(ZONES[0].bounds);
+      page.click('refresh');
+      await settle(page);
+      expect(mocks.service.loadAreaPaths).toHaveBeenLastCalledWith(
+        0,
+        expect.anything(),
+        expect.any(Array),
+        expect.any(Number),
+        ZONES[0].bounds,
+      );
+      // off: gone
+      page.byId<HTMLInputElement>('view-all-paths').nativeElement.click();
+      await settle(page);
+      expect(
+        page
+          .viewer()
+          .paths()
+          .some((p) => p.key.startsWith('area:')),
+      ).toBe(false);
+    });
+
+    it('shows the spawns of one difficulty in a raid or dungeon', async () => {
+      mocks.client.getMaps.mockResolvedValue([
+        ...MAPS,
+        { id: 33, directory: 'Shadowfang', name: 'Shadowfang Keep', instanceType: 1 },
+        { id: 631, directory: 'IcecrownCitadel', name: 'Icecrown Citadel', instanceType: 2 },
+      ]);
+      mocks.service.loadSpawns.mockResolvedValue([
+        spawn('creature', 1, { map: 631 }),
+        spawn('creature', 2, { map: 631, spawnMask: 2 }),
+        spawn('creature', 3, { map: 631, spawnMask: 15 }),
+      ]);
+      const { page } = await setup();
+      // none on an open world map
+      expect(page.byId('difficulty', false)).toBeFalsy();
+      page.chooseMap(631);
+      await settle(page);
+      await loadArea(page);
+      const shown = () =>
+        page
+          .viewer()
+          .spawns()
+          .map((s) => s.guid);
+      expect(shown()).toEqual([1, 2, 3]);
+      const select = page.byId<HTMLSelectElement>('difficulty').nativeElement;
+      expect(Array.from(select.options, (o) => o.textContent?.trim())).toEqual([
+        'WORLD_EDITOR.DIFFICULTY_ALL',
+        'WORLD_EDITOR.DIFFICULTY_10N',
+        'WORLD_EDITOR.DIFFICULTY_25N',
+        'WORLD_EDITOR.DIFFICULTY_10H',
+        'WORLD_EDITOR.DIFFICULTY_25H',
+      ]);
+      select.value = '1';
+      select.dispatchEvent(new Event('change'));
+      page.fixture.detectChanges();
+      expect(shown()).toEqual([2, 3]);
+      select.value = '0';
+      select.dispatchEvent(new Event('change'));
+      page.fixture.detectChanges();
+      expect(shown()).toEqual([1, 3]);
+      // a dungeon: Normal and Heroic
+      page.chooseMap(33);
+      await settle(page);
+      expect(page.byId<HTMLSelectElement>('difficulty').nativeElement.options.length).toBe(3);
+      page.byId<HTMLSelectElement>('difficulty').nativeElement.value = '';
+      page.byId<HTMLSelectElement>('difficulty').nativeElement.dispatchEvent(new Event('change'));
+      page.fixture.detectChanges();
+      expect(page.byId<HTMLSelectElement>('difficulty').nativeElement.value).toBe('');
     });
 
     it('looks teleports up while typing', async () => {

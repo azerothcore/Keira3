@@ -41,6 +41,11 @@ export interface SpawnRecord {
   trigger?: boolean;
   /** creature.phaseMask / gameobject.phaseMask. */
   phaseMask?: number;
+  /**
+   * The difficulties it's spawned in (creature.spawnMask / gameobject.spawnMask): 1 normal (10), 2 heroic (25),
+   * 4 10 heroic, 8 25 heroic; left out when 1.
+   */
+  spawnMask?: number;
   /** Faction template (creature_template.faction, gameobject_template_addon.faction), when set. */
   faction?: number;
   /** The template's AIName and ScriptName, when set. */
@@ -189,6 +194,15 @@ export const pathKey = (pathId: number): string => `path:${pathId}`;
 export const saiPathId = (entry: number): number => -entry;
 export const isSaiPath = (pathId: number): boolean => pathId < 0;
 export const saiPathEntry = (pathId: number): number => -pathId;
+/** A path shown only with View > Every path in the area (drawn, not edited). */
+export interface AreaPath {
+  /** `waypoint_data`, SmartAI `waypoints`, or an escort script's `script_waypoint`. */
+  source: 'data' | 'sai' | 'script';
+  /** Path id, or the creature entry for SmartAI and script paths. */
+  id: number;
+  points: { point: number; x: number; y: number; z: number; delay: number }[];
+}
+
 /** "Path 12" or "SmartAI path 12". */
 export const pathLabel = (pathId: number): string => (isSaiPath(pathId) ? `SmartAI path ${saiPathEntry(pathId)}` : `Path ${pathId}`);
 

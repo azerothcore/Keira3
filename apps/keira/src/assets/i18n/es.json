@@ -1404,6 +1404,16 @@
     "COPY_PATH": "Copiar la carpeta",
     "OPEN_FOLDER": "Abrir la carpeta",
     "PANEL_SHOW": "Mostrar el panel lateral",
-    "PANEL_HIDE": "Ocultar el panel lateral"
+    "PANEL_HIDE": "Ocultar el panel lateral",
+    "DIFFICULTY_ALL": "Todas las dificultades",
+    "DIFFICULTY_HELP": "Solo los spawns de una dificultad (su spawnMask)",
+    "DIFFICULTY_10N": "10 Normal",
+    "DIFFICULTY_25N": "25 Normal",
+    "DIFFICULTY_10H": "10 Heroico",
+    "DIFFICULTY_25H": "25 Heroico",
+    "DIFFICULTY_NORMAL": "Normal",
+    "DIFFICULTY_HEROIC": "Heroico",
+    "ALL_PATHS": "Todas las rutas de la zona",
+    "ALL_PATHS_HELP": "También las rutas que no recorre ninguna criatura cargada: rutas de waypoint_data sin usar, waypoints de SmartAI y rutas script_waypoint de scripts de escolta (se dibujan, no se editan)"
   }
 }

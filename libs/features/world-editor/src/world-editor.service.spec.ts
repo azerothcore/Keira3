@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { MysqlQueryService } from '@keira/shared/db-layer';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { WorldEditorService } from './world-editor.service';
 
 describe('WorldEditorService', () => {
@@ -51,6 +51,7 @@ describe('WorldEditorService', () => {
                 movementType: '1',
                 wanderDistance: '5',
                 phaseMask: '2',
+                spawnMask: '12',
                 eventEntry: '12',
                 isTrigger: '1',
                 speedWalk: 1,
@@ -127,6 +128,7 @@ describe('WorldEditorService', () => {
         event: 12,
         trigger: true,
         phaseMask: 2,
+        spawnMask: 12,
         speedWalk: 1,
         speedRun: 1,
         faction: 11,
@@ -425,6 +427,41 @@ describe('WorldEditorService', () => {
     expect(await service.loadTeleports([45, 45])).toEqual([{ id: 45, name: 'Deadmines', map: 36, x: 1, y: 2, z: 3 }]);
     expect(queryService.query.mock.calls[2][0]).toContain('FROM areatrigger_teleport WHERE ID IN (45)');
     expect(await service.loadTeleports([46])).toEqual([]);
+  });
+
+  it('loads every other path in the area, each table skipped when it fails', async () => {
+    const { service, queryService } = setup();
+    queryService.query
+      .mockReturnValueOnce(
+        of([
+          { id: '5', point: '1', x: '1', y: '2', z: '3', delay: '0' },
+          { id: '5', point: '2', x: '4', y: '5', z: '6', delay: '1000' },
+        ]),
+      )
+      .mockReturnValueOnce(throwError(() => new Error('no waypoints table')))
+      .mockReturnValueOnce(of([{ id: '7', point: '1', x: '1', y: '1', z: '1', delay: '0' }]));
+    expect(await service.loadAreaPaths(0, { x: 0, y: 0, z: 0 }, [3, -9], 100)).toEqual([
+      {
+        source: 'data',
+        id: 5,
+        points: [
+          { point: 1, x: 1, y: 2, z: 3, delay: 0 },
+          { point: 2, x: 4, y: 5, z: 6, delay: 1000 },
+        ],
+      },
+      { source: 'script', id: 7, points: [{ point: 1, x: 1, y: 1, z: 1, delay: 0 }] },
+    ]);
+    const [data, sai, script] = queryService.query.mock.calls.map((call) => call[0] as string);
+    expect(data).toContain('position_x BETWEEN -100 AND 100 AND position_y BETWEEN -100 AND 100 AND id NOT IN (3)');
+    expect(data).toContain('c.map <> 0');
+    expect(sai).toContain('AND entry NOT IN (9)');
+    expect(script).toContain('FROM script_waypoint s WHERE EXISTS (SELECT 1 FROM creature c WHERE c.id = s.entry AND c.map = 0)');
+    // nothing known yet, a region, and empty answers
+    queryService.query.mockClear();
+    queryService.query.mockReturnValue(of(undefined));
+    expect(await service.loadAreaPaths(0, { x: 0, y: 0, z: 0 }, [], undefined, { minX: -5000, maxX: 10, minY: -10, maxY: 10 })).toEqual([]);
+    expect(queryService.query.mock.calls[0][0]).not.toContain('NOT IN');
+    expect(queryService.query.mock.calls[0][0]).toContain('BETWEEN -5000 AND');
   });
 
   it('finds a good place to arrive on a map: an instance entrance, else a teleport location', async () => {

@@ -1404,6 +1404,16 @@
     "COPY_PATH": "复制文件夹路径",
     "OPEN_FOLDER": "打开文件夹",
     "PANEL_SHOW": "显示侧边栏",
-    "PANEL_HIDE": "隐藏侧边栏"
+    "PANEL_HIDE": "隐藏侧边栏",
+    "DIFFICULTY_ALL": "所有难度",
+    "DIFFICULTY_HELP": "只显示某一难度的刷新（spawnMask）",
+    "DIFFICULTY_10N": "10人普通",
+    "DIFFICULTY_25N": "25人普通",
+    "DIFFICULTY_10H": "10人英雄",
+    "DIFFICULTY_25H": "25人英雄",
+    "DIFFICULTY_NORMAL": "普通",
+    "DIFFICULTY_HEROIC": "英雄",
+    "ALL_PATHS": "区域内所有路径",
+    "ALL_PATHS_HELP": "还包括没有已加载生物行走的路径：未使用的 waypoint_data 路径、SmartAI waypoints 和护送脚本的 script_waypoint 路径（仅显示，不可编辑）"
   }
 }

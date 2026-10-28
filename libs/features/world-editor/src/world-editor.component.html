@@ -159,6 +159,19 @@
         {{ 'WORLD_EDITOR.MAP_NEXT' | translate }} <i class="fa fa-chevron-right"></i>
       </button>
     </div>
+    @if (difficulties().length) {
+      <select
+        class="form-select form-select-sm w-auto"
+        data-testid="difficulty"
+        [title]="'WORLD_EDITOR.DIFFICULTY_HELP' | translate"
+        (change)="setDifficulty($event)"
+      >
+        <option value="" [selected]="difficulty() === undefined">{{ 'WORLD_EDITOR.DIFFICULTY_ALL' | translate }}</option>
+        @for (option of difficulties(); track option.bit) {
+          <option [value]="option.bit" [selected]="difficulty() === option.bit">{{ option.label | translate }}</option>
+        }
+      </select>
+    }
 
     <button
       type="button"
@@ -657,6 +670,19 @@
                   [title]="'WORLD_EDITOR.SOLID_SELECTION_HELP' | translate"
                   >{{ 'WORLD_EDITOR.SOLID_SELECTION' | translate }}</label
                 >
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-all-paths"
+                  data-testid="view-all-paths"
+                  [checked]="renderSettings.settings().showAllPaths"
+                  (change)="setAllPaths($event)"
+                />
+                <label class="form-check-label" for="world-editor-all-paths" [title]="'WORLD_EDITOR.ALL_PATHS_HELP' | translate">{{
+                  'WORLD_EDITOR.ALL_PATHS' | translate
+                }}</label>
               </div>
             </section>
             <section class="world-editor-view-group" data-testid="view-group-compass">

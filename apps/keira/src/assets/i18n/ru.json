@@ -1404,6 +1404,16 @@
     "COPY_PATH": "Скопировать путь",
     "OPEN_FOLDER": "Открыть папку",
     "PANEL_SHOW": "Показать боковую панель",
-    "PANEL_HIDE": "Скрыть боковую панель"
+    "PANEL_HIDE": "Скрыть боковую панель",
+    "DIFFICULTY_ALL": "Все сложности",
+    "DIFFICULTY_HELP": "Только спавны одной сложности (их spawnMask)",
+    "DIFFICULTY_10N": "10 обычный",
+    "DIFFICULTY_25N": "25 обычный",
+    "DIFFICULTY_10H": "10 героический",
+    "DIFFICULTY_25H": "25 героический",
+    "DIFFICULTY_NORMAL": "Обычный",
+    "DIFFICULTY_HEROIC": "Героический",
+    "ALL_PATHS": "Все пути в области",
+    "ALL_PATHS_HELP": "Также пути, по которым не ходит ни одно загруженное существо: неиспользуемые пути waypoint_data, waypoints SmartAI и пути script_waypoint скриптов сопровождения (только отображаются)"
   }
 }

@@ -103,6 +103,7 @@ import { LEGEND } from './legend';
 import { WorldEditorSessionService } from './world-editor-session.service';
 import { WORLD_EDITOR_LINKS, WorldEditorLoot } from '@keira/shared/constants';
 import {
+  AreaPath,
   EditorTool,
   LayerVisibility,
   parseSpawnKey,
@@ -177,6 +178,17 @@ export function formatSize(bytes: number): string {
 }
 
 const LAST_VIEW_KEY = 'keira3.worldEditor.lastView';
+/** Difficulties by spawnMask bit (1 << bit): a raid's 10 / 25 Normal / Heroic, a dungeon's Normal / Heroic. */
+const RAID_DIFFICULTIES = [
+  { bit: 0, label: 'WORLD_EDITOR.DIFFICULTY_10N' },
+  { bit: 1, label: 'WORLD_EDITOR.DIFFICULTY_25N' },
+  { bit: 2, label: 'WORLD_EDITOR.DIFFICULTY_10H' },
+  { bit: 3, label: 'WORLD_EDITOR.DIFFICULTY_25H' },
+];
+const DUNGEON_DIFFICULTIES = [
+  { bit: 0, label: 'WORLD_EDITOR.DIFFICULTY_NORMAL' },
+  { bit: 1, label: 'WORLD_EDITOR.DIFFICULTY_HEROIC' },
+];
 /** Words each expansion is found by in the map picker (by Map.dbc ExpansionID). */
 const EXPANSION_SEARCH = ['vanilla classic', 'tbc the burning crusade', 'wotlk wrath of the lich king'];
 
@@ -772,11 +784,28 @@ export class WorldEditorComponent implements OnInit {
     return this.changes.applyToWaypoints(this.loadedWaypoints(), this.pathIds());
   });
 
-  /** Spawns the filters let through; the paths they walk are the only ones drawn. */
+  /** The difficulty shown in a dungeon or raid (a spawnMask bit), or every one (undefined). */
+  protected readonly difficulty = signal<number | undefined>(undefined);
+  /** The difficulties of the map shown: 10 / 25 Normal / Heroic in a raid, Normal / Heroic in a dungeon. */
+  protected readonly difficulties = computed(() => {
+    const map = this.maps().find((m) => m.id === this.mapId());
+    const kind = map && mapKind(map);
+    return kind === 'raid' ? RAID_DIFFICULTIES : kind === 'dungeon' ? DUNGEON_DIFFICULTIES : [];
+  });
+
+  /** Spawns the filters (and the difficulty) let through; the paths they walk are the only ones drawn. */
   private readonly visibleSpawns = computed(() => {
     const filters = this.filters();
-    return this.spawns().filter((s) => isSpawnVisible(s, filters));
+    const difficulty = this.difficulties().length ? this.difficulty() : undefined;
+    return this.spawns().filter(
+      (s) => isSpawnVisible(s, filters) && (difficulty === undefined || ((s.spawnMask ?? 1) & (1 << difficulty)) !== 0),
+    );
   });
+
+  protected setDifficulty(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value;
+    this.difficulty.set(value === '' ? undefined : Number(value));
+  }
 
   protected readonly worldSpawns = computed<WorldSpawn[]>(() =>
     perfTime('editor worldSpawns', () => {
@@ -801,6 +830,36 @@ export class WorldEditorComponent implements OnInit {
         }));
     }),
   );
+
+  /** View > Every path in the area: the paths nothing loaded walks, drawn but not edited. */
+  private readonly areaPaths = signal<AreaPath[]>([]);
+  private readonly areaWorldPaths = computed<WaypointPath[]>(() =>
+    this.renderSettings.settings().showAllPaths
+      ? this.areaPaths().map((path) => {
+          const label =
+            path.source === 'script'
+              ? `Escort script path ${path.id} (script_waypoint)`
+              : `${path.source === 'sai' ? 'SmartAI path' : 'Path'} ${path.id} (no walker loaded)`;
+          return {
+            key: `area:${path.source}:${path.id}`,
+            label,
+            closed: path.source === 'data',
+            points: path.points.map((p) => ({
+              point: p.point,
+              position: { x: p.x, y: p.y, z: p.z },
+              delay: p.delay,
+              info: [`${label} · #${p.point}`, ...(p.delay ? [`Waits ${p.delay / 1000} s`] : [])],
+            })),
+          };
+        })
+      : [],
+  );
+
+  /** Turns View > Every path in the area on or off, loading them (or not) with the spawns. */
+  protected setAllPaths(event: Event): void {
+    this.renderSettings.update({ showAllPaths: (event.target as HTMLInputElement).checked });
+    void this.reloadSpawns();
+  }
 
   protected readonly worldPaths = computed<WaypointPath[]>(() =>
     perfTime('editor worldPaths', () => {
@@ -830,7 +889,7 @@ export class WorldEditorComponent implements OnInit {
       }
       const sai = this.waypointSai();
       const scripts = this.waypointScripts();
-      return [...byPath].map(([pathId, points]) => {
+      const walked = [...byPath].map(([pathId, points]) => {
         // (a shown path is walked by a creature shown)
         const ids = walkerIds.get(pathId) as Set<number>;
         const pathSai = sai.filter((row) => ids.has(row.entryorguid));
@@ -848,6 +907,7 @@ export class WorldEditorComponent implements OnInit {
           })),
         };
       });
+      return [...walked, ...this.areaWorldPaths()];
     }),
   );
 
@@ -1704,6 +1764,12 @@ export class WorldEditorComponent implements OnInit {
       if (request !== this.spawnRequest) {
         return;
       }
+      const known = [...new Set(waypoints.map((w) => w.pathId))];
+      const areaPaths = this.renderSettings.settings().showAllPaths
+        ? await (region
+            ? this.service.loadAreaPaths(this.mapId(), center, known, SPAWN_LOAD_RADIUS, region)
+            : this.service.loadAreaPaths(this.mapId(), center, known))
+        : [];
       const walkers = spawns.filter((s) => s.type === 'creature' && pathsOf(s).length);
       const [scripts, sai, eventNames, quests, formations, pools] = await Promise.all([
         this.service.loadWaypointScripts(waypoints.map((w) => w.action ?? 0)),
@@ -1717,6 +1783,7 @@ export class WorldEditorComponent implements OnInit {
         // all at once: the view redraws once
         this.loadedSpawns.set(spawns);
         this.loadedWaypoints.set(waypoints);
+        this.areaPaths.set(areaPaths);
         this.waypointScripts.set(scripts);
         this.waypointSai.set(sai);
         this.formations.set(formations);

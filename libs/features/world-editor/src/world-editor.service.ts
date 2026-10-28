@@ -9,6 +9,7 @@ import {
   Graveyard,
   Teleport,
   isSaiPath,
+  AreaPath,
   GAMEOBJECT_CHEST,
   GAMEOBJECT_FISHING_HOLE,
   GAMEOBJECT_TRANSPORT,
@@ -73,7 +74,7 @@ export class WorldEditorService {
       '0 AS rotation0, 0 AS rotation1, 0 AS rotation2, 0 AS rotation3, ' +
       // the first template model, as the server picks when it has a single one
       'IFNULL(ctm.CreatureDisplayID, 0) AS displayId, IFNULL(ctm.DisplayScale, 1) AS scale, ' +
-      'c.wander_distance AS wanderDistance, c.MovementType AS movementType, c.phaseMask, ' +
+      'c.wander_distance AS wanderDistance, c.MovementType AS movementType, c.phaseMask, c.spawnMask, ' +
       'IFNULL(ct.speed_walk, 1) AS speedWalk, IFNULL(ct.speed_run, 1) AS speedRun, ' +
       'IFNULL(cmi.BoundingRadius, 0) AS boundingRadius, IFNULL(cmi.CombatReach, 0) AS combatReach, ' +
       `${eventOf('game_event_creature', 'c.guid')}, ` +
@@ -92,7 +93,7 @@ export class WorldEditorService {
     const gameobjects =
       "SELECT g.guid, g.id AS entry, IFNULL(gt.name, '') AS name, g.map, g.position_x AS x, g.position_y AS y, g.position_z AS z, g.orientation AS o, " +
       '0 AS pathId, 0 AS pathFromTemplate, g.rotation0, g.rotation1, g.rotation2, g.rotation3, ' +
-      'IFNULL(gt.displayId, 0) AS displayId, IFNULL(gt.size, 1) AS scale, 0 AS wanderDistance, 0 AS movementType, g.phaseMask, ' +
+      'IFNULL(gt.displayId, 0) AS displayId, IFNULL(gt.size, 1) AS scale, 0 AS wanderDistance, 0 AS movementType, g.phaseMask, g.spawnMask, ' +
       `${eventOf('game_event_gameobject', 'g.guid')}, IFNULL(${helperName('gt.name')}, 0) AS isTrigger, ` +
       "IFNULL(gt.AIName, '') AS aiName, IFNULL(gt.ScriptName, '') AS scriptName, " +
       // chests (3) and fishing holes (25) keep their loot id in Data1
@@ -108,6 +109,75 @@ export class WorldEditorService {
       firstValueFrom(this.queryService.query<SpawnRow>(gameobjects)),
     ]);
     return [...toSpawns('creature', creatureRows), ...toSpawns('gameobject', gameobjectRows)];
+  }
+
+  /**
+   * Every path with a point in the area besides the given ones (View > Every path in the area): `waypoint_data` paths
+   * nothing loaded walks (left out when a creature on another map walks them), SmartAI `waypoints` and the escort
+   * scripts' `script_waypoint` paths of creatures spawned on this map. Each table is skipped when it can't be read.
+   */
+  async loadAreaPaths(
+    map: number,
+    center: WorldPosition,
+    known: number[],
+    radius = SPAWN_LOAD_RADIUS,
+    region?: WorldBounds,
+  ): Promise<AreaPath[]> {
+    const [minX, maxX] = [Math.min(center.x - radius, region?.minX ?? Infinity), Math.max(center.x + radius, region?.maxX ?? -Infinity)];
+    const [minY, maxY] = [Math.min(center.y - radius, region?.minY ?? Infinity), Math.max(center.y + radius, region?.maxY ?? -Infinity)];
+    const inside = (x: string, y: string): string =>
+      `${x} BETWEEN ${num(minX)} AND ${num(maxX)} AND ${y} BETWEEN ${num(minY)} AND ${num(maxY)}`;
+    const id = Math.trunc(map);
+    const data = known.filter((pathId) => !isSaiPath(pathId)).map(Math.trunc);
+    const sai = known.filter(isSaiPath).map((pathId) => Math.trunc(saiPathEntry(pathId)));
+    const notIn = (column: string, ids: number[]) => (ids.length ? ` AND ${column} NOT IN (${ids.join(', ')})` : '');
+    const queries: [AreaPath['source'], string][] = [
+      [
+        'data',
+        'SELECT id, point, position_x AS x, position_y AS y, position_z AS z, delay FROM waypoint_data w WHERE id IN ' +
+          `(SELECT id FROM (SELECT DISTINCT id FROM waypoint_data WHERE ${inside('position_x', 'position_y')}${notIn('id', data)}) t) ` +
+          `AND NOT EXISTS (SELECT 1 FROM creature_addon ca JOIN creature c ON c.guid = ca.guid WHERE ca.path_id = w.id AND c.map <> ${id}) ` +
+          'ORDER BY id, point',
+      ],
+      [
+        'sai',
+        'SELECT entry AS id, pointid AS point, position_x AS x, position_y AS y, position_z AS z, delay FROM waypoints w WHERE entry IN ' +
+          `(SELECT entry FROM (SELECT DISTINCT entry FROM waypoints WHERE ${inside('position_x', 'position_y')}${notIn('entry', sai)}) t) ` +
+          `AND NOT EXISTS (SELECT 1 FROM creature c WHERE c.id = w.entry AND c.map <> ${id}) ORDER BY entry, pointid`,
+      ],
+      [
+        'script',
+        'SELECT entry AS id, pointid AS point, location_x AS x, location_y AS y, location_z AS z, waittime AS delay FROM script_waypoint s ' +
+          `WHERE EXISTS (SELECT 1 FROM creature c WHERE c.id = s.entry AND c.map = ${id}) AND entry IN ` +
+          `(SELECT entry FROM (SELECT DISTINCT entry FROM script_waypoint WHERE ${inside('location_x', 'location_y')}) t) ORDER BY entry, pointid`,
+      ],
+    ];
+    const results = await Promise.all(
+      queries.map(([source, sql]) =>
+        firstValueFrom(this.queryService.query<TableRow>(sql))
+          .then((rows) => ({ source, rows: rows ?? [] }))
+          .catch(() => ({ source, rows: [] as TableRow[] })),
+      ),
+    );
+    const paths: AreaPath[] = [];
+    for (const { source, rows } of results) {
+      for (const row of rows) {
+        const pathId = Number(row['id']);
+        let path = paths.find((p) => p.source === source && p.id === pathId);
+        if (!path) {
+          path = { source, id: pathId, points: [] };
+          paths.push(path);
+        }
+        path.points.push({
+          point: Number(row['point']),
+          x: Number(row['x']),
+          y: Number(row['y']),
+          z: Number(row['z']),
+          delay: Number(row['delay']),
+        });
+      }
+    }
+    return paths;
   }
 
   /** Points of the given paths: `waypoint_data` ones, and SmartAI ones (negative ids, from `waypoints`). */
@@ -580,6 +650,8 @@ function toSpawns(type: SpawnType, rows: SpawnRow[] | undefined): SpawnRecord[] 
       ? { boundingRadius: Number(row['boundingRadius']), combatReach: Number(row['combatReach']) }
       : {}),
     phaseMask: Number(row.phaseMask ?? 1),
+    // (in which difficulties it's spawned: only kept when not just the first)
+    ...(Number(row['spawnMask'] ?? 1) !== 1 ? { spawnMask: Number(row['spawnMask']) } : {}),
     ...(Number(row['faction']) > 0 ? { faction: Number(row['faction']) } : {}),
     ...(row['aiName'] ? { aiName: String(row['aiName']) } : {}),
     ...(row['scriptName'] ? { scriptName: String(row['scriptName']) } : {}),

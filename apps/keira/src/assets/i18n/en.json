@@ -1404,6 +1404,16 @@
     "COPY_PATH": "Copy the folder",
     "OPEN_FOLDER": "Open the folder",
     "PANEL_SHOW": "Show the side panel",
-    "PANEL_HIDE": "Hide the side panel"
+    "PANEL_HIDE": "Hide the side panel",
+    "DIFFICULTY_ALL": "All difficulties",
+    "DIFFICULTY_HELP": "Only the spawns of one difficulty (their spawnMask)",
+    "DIFFICULTY_10N": "10 Normal",
+    "DIFFICULTY_25N": "25 Normal",
+    "DIFFICULTY_10H": "10 Heroic",
+    "DIFFICULTY_25H": "25 Heroic",
+    "DIFFICULTY_NORMAL": "Normal",
+    "DIFFICULTY_HEROIC": "Heroic",
+    "ALL_PATHS": "Every path in the area",
+    "ALL_PATHS_HELP": "Also the paths no loaded creature walks: unused waypoint_data paths, SmartAI waypoints and escort scripts' script_waypoint paths (drawn, not edited)"
   }
 }
