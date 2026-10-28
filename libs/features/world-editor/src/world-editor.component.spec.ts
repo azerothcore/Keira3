@@ -892,6 +892,9 @@ describe(WorldEditorComponent.name, () => {
       // a key the browser can't tell: nothing
       page.click('bind-compass');
       page.key('?', undefined, '');
+      // a key held down (repeating): one press
+      page.fixture.nativeElement.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyN', repeat: true, bubbles: true }));
+      expect(page.viewer().navigation().bindings.compass).toEqual(['KeyK']);
       // the same key twice quickly: a double tap
 
       page.key('j');

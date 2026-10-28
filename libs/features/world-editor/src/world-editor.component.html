@@ -463,7 +463,7 @@
                 </div>
                 <div class="d-flex flex-wrap align-items-center gap-1">
                   <span class="me-1">{{ 'WORLD_EDITOR.MOUSE_AND_WHEEL' | translate }}</span>
-                  @for (input of mouseInputs; track input) {
+                  @for (input of mouseInputs(); track input) {
                     <button
                       type="button"
                       class="btn btn-sm btn-outline-secondary py-0 px-1"

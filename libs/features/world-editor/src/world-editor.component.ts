@@ -36,6 +36,7 @@ import {
   inputLabel,
   inputOf,
   isModifierCode,
+  NAVIGATION_ACTIONS,
   MOUSE_INPUTS,
   DOUBLE_TAP,
   DOUBLE_TAP_MS,
@@ -530,7 +531,12 @@ export class WorldEditorComponent implements OnInit {
   private captureStart?: string[];
   protected readonly pendingModifier = signal<string | undefined>(undefined);
   private lastBound?: { input: string; time: number };
-  protected readonly mouseInputs = MOUSE_INPUTS;
+  /** The mouse inputs offered while binding (camera moves need a press and a release: no wheel steps). */
+  protected readonly mouseInputs = computed(() =>
+    (NAVIGATION_ACTIONS as ControlAction[]).includes(this.capturing() as ControlAction)
+      ? MOUSE_INPUTS.filter((input) => !input.includes('Wheel'))
+      : MOUSE_INPUTS,
+  );
   private readonly toastr = inject(ToastrService);
   private readonly clipboard = inject(ClipboardService);
   private readonly route = inject(ActivatedRoute);
@@ -1600,6 +1606,8 @@ export class WorldEditorComponent implements OnInit {
     this.loadedWaypoints.set([]);
     this.spawnLoadCenter = undefined;
     this.mapRegion.set(undefined);
+    // (a scan is of the map it was made on)
+    this.scanResults.set(undefined);
   }
 
   /** The area triggers of the current map, and their database rows. */
@@ -2662,6 +2670,10 @@ export class WorldEditorComponent implements OnInit {
   protected onKeydown(event: KeyboardEvent): void {
     if (this.capturing()) {
       event.preventDefault();
+      // (a key held down repeats: one press)
+      if (event.repeat) {
+        return;
+      }
       // Esc cancels; a modifier on its own waits for the key it goes with (or is bound itself when let go)
       if (event.code === 'Escape' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
         this.cancelCapture();
@@ -2700,14 +2712,14 @@ export class WorldEditorComponent implements OnInit {
   /** Gamepad buttons: bound while binding, otherwise the editing action they're on. */
   private readonly padInputs = inject(GamepadInputService)
     .inputs.pipe(takeUntilDestroyed())
-    .subscribe(({ input, pressed }) => {
-      if (!pressed) {
+    .subscribe((event) => {
+      if (!event.pressed) {
         return;
       }
       if (this.capturing()) {
-        this.bindInput(input);
+        this.bindInput(event.input);
       } else {
-        this.runControl(controlFor(this.controls.settings(), EDITOR_ACTIONS, { input, type: 'paddown' }));
+        this.runControl(controlFor(this.controls.settings(), EDITOR_ACTIONS, event));
       }
     });
 

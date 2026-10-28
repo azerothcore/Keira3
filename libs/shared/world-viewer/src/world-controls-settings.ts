@@ -118,9 +118,9 @@ export const MOUSE_INPUTS = [
   'WheelDown',
   '2x MouseLeft',
   '2x MouseRight',
-  ...['Shift', 'Ctrl', 'Alt'].flatMap((mod) =>
-    ['MouseLeft', 'MouseRight', 'MouseMiddle', 'WheelUp', 'WheelDown'].map((input) => `${mod}+${input}`),
-  ),
+  ...['Shift', 'Ctrl', 'Alt'].flatMap((mod) => ['MouseLeft', 'MouseRight', 'MouseMiddle'].map((input) => `${mod}+${input}`)),
+  // (Shift + wheel changes the camera speed)
+  ...['Ctrl', 'Alt'].flatMap((mod) => ['WheelUp', 'WheelDown'].map((input) => `${mod}+${input}`)),
 ];
 /** Gamepad buttons by their index in the standard mapping. */
 export const PAD_BUTTONS = [
@@ -226,9 +226,11 @@ export function pressedInputs(event: KeyboardEvent | MouseEvent | { input: strin
   if (known) {
     return known;
   }
-  const input = 'input' in event ? event.input : event instanceof KeyboardEvent ? inputOf(event) : mouseInputOf(event);
-  // (letting go is no press: it's matched as it is)
-  const release = 'type' in event && /up$/.test(event.type);
+  // (a modifier pressed on its own is its own input: `ShiftLeft`)
+  const keyInput = (key: KeyboardEvent) => (isModifierCode(key.code) ? key.code : inputOf(key));
+  const input = 'input' in event ? event.input : event instanceof KeyboardEvent ? keyInput(event) : mouseInputOf(event);
+  // (letting go is no press, nor a key repeating while held: they're matched as they are)
+  const release = ('type' in event && /up$/.test(event.type)) || (event instanceof KeyboardEvent && event.repeat);
   const now = performance.now();
   const twice = !release && !!input && lastPress?.input === input && now - lastPress.time <= DOUBLE_TAP_MS;
   const inputs = !input ? [] : twice ? [input, DOUBLE_TAP + input] : [input];

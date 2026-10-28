@@ -397,6 +397,19 @@ describe('WorldScene', () => {
       expect((later.getObjectByName('facing') as Mesh).scale.x).toBe(0.5);
     });
 
+    it('keeps the shared outline material when a selected spawn goes away', () => {
+      const world = new WorldScene();
+      world.setSpawns([spawn('creature:1', 'creature', at(0, 0))]);
+      world.setSpawnModel('creature:1', new Mesh(new BoxGeometry(1, 1, 1), new MeshLambertMaterial()));
+      world.setSelection('creature:1');
+      const outline = world.getObject('creature:1')?.getObjectByName('selection-box') as LineSegments;
+      const dispose = vi.spyOn(outline.material as Material, 'dispose');
+      const geometry = vi.spyOn(outline.geometry, 'dispose');
+      world.setSpawns([]);
+      expect(geometry).toHaveBeenCalled();
+      expect(dispose).not.toHaveBeenCalled();
+    });
+
     it('colours the facing arrows like the pins of their kind', () => {
       const world = new WorldScene();
       world.setSpawns([spawn('creature:1', 'creature', at(0, 0)), spawn('gameobject:2', 'gameobject', at(5, 0))]);

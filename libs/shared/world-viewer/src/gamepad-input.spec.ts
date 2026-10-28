@@ -34,10 +34,10 @@ describe('GamepadInputService', () => {
     expect(frames).toHaveLength(1);
     frame();
     expect(seen).toEqual([
-      { input: 'PadA', pressed: true },
-      { input: 'PadX', pressed: true },
-      { input: 'PadLeftStickUp', pressed: true },
-      { input: 'PadRightStickRight', pressed: true },
+      { input: 'PadA', pressed: true, type: 'paddown' },
+      { input: 'PadX', pressed: true, type: 'paddown' },
+      { input: 'PadLeftStickUp', pressed: true, type: 'paddown' },
+      { input: 'PadRightStickRight', pressed: true, type: 'paddown' },
     ]);
     expect(service.isHeld('PadA')).toBe(true);
     // held: nothing new; let go: released
@@ -45,7 +45,7 @@ describe('GamepadInputService', () => {
     expect(seen).toHaveLength(4);
     pads = [pad([0, 0, 0], [0, 0, 0, 0])];
     frame();
-    expect(seen.slice(4).every((input) => !input.pressed)).toBe(true);
+    expect(seen.slice(4).every((input) => !input.pressed && input.type === 'padup')).toBe(true);
     expect(service.isHeld('PadA')).toBe(false);
     // unplugged: it stops reading
     pads = [];

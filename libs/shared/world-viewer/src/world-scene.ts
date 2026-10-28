@@ -1811,7 +1811,10 @@ export class WorldScene {
       // the rings around spawns share their geometry and materials
       if (object instanceof Line && object.geometry !== this.ringGeometry) {
         object.geometry.dispose();
-        (object.material as Material).dispose();
+        // (the selection box's material is shared)
+        if (object.material !== this.selectionBoxMaterial) {
+          (object.material as Material).dispose();
+        }
       }
       if (object.name.endsWith(':arrows')) {
         this.disposeArrows(object as Group);
@@ -1927,7 +1930,9 @@ export class WorldScene {
       return;
     }
     const size = bounds.getSize(new Vector3());
-    const box = new LineSegments(new EdgesGeometry(new BoxGeometry(size.x, size.y, size.z)), this.selectionBoxMaterial);
+    const solid = new BoxGeometry(size.x, size.y, size.z);
+    const box = new LineSegments(new EdgesGeometry(solid), this.selectionBoxMaterial);
+    solid.dispose();
     box.name = SELECTION_BOX_NAME;
     bounds.getCenter(box.position);
     box.renderOrder = 3;

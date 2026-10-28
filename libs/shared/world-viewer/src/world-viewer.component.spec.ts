@@ -1803,6 +1803,21 @@ describe(WorldViewerComponent.name, () => {
       flushFrames();
       fixture.detectChanges();
       expect(target()).toBe(start);
+      // a wheel step bound to the marker (and one bound to nothing)
+      await update(() =>
+        host.navigation.set({
+          ...DEFAULT_WORLD_CONTROLS_SETTINGS,
+          bindings: { ...DEFAULT_WORLD_CONTROLS_SETTINGS.bindings, markerToCursor: ['WheelDown'] },
+        }),
+      );
+      beacon.mockClear();
+      const viewer = page.getDebugElementByTestId('world-viewer').nativeElement as HTMLElement;
+      const wheel = new WheelEvent('wheel', { deltaY: 1, cancelable: true });
+      viewer.dispatchEvent(wheel);
+      expect(beacon).toHaveBeenCalled();
+      expect(wheel.defaultPrevented).toBe(true);
+      viewer.dispatchEvent(new WheelEvent('wheel', { deltaY: -1, cancelable: true }));
+      expect(beacon).toHaveBeenCalledTimes(1);
       beacon.mockRestore();
     });
 

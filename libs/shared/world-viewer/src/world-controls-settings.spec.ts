@@ -157,7 +157,14 @@ describe('world controls', () => {
     // gamepad inputs and mouse buttons too
     expect(controlFor(settings, ['markerToCursor'], { input: 'PadA', type: 'paddown' })).toBe('markerToCursor');
     expect(pressedInputs(new MouseEvent('pointerdown', { button: 1 }))).toEqual(['MouseMiddle']);
-    expect(pressedInputs(key('ShiftLeft'))).toEqual([]);
+    // a modifier pressed on its own is an input of its own (it can be bound alone)
+    expect(pressedInputs(key('ShiftLeft'))).toEqual(['ShiftLeft']);
+    expect(pressedInputs(key(''))).toEqual([]);
+    // a key repeating while held is no double tap
+    now.mockReturnValue(5000);
+    expect(pressedInputs(key('KeyL'))).toEqual(['KeyL']);
+    expect(pressedInputs(new KeyboardEvent('keydown', { code: 'KeyL', repeat: true }))).toEqual(['KeyL']);
+    expect(pressedInputs(new KeyboardEvent('keydown', { code: 'KeyL', repeat: true }))).toEqual(['KeyL']);
     now.mockRestore();
   });
 

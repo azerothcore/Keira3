@@ -9,6 +9,8 @@ export const PAD_THRESHOLD = 0.5;
 export interface PadInput {
   input: string;
   pressed: boolean;
+  /** `paddown` or `padup`: the same object goes to every listener, so they agree on double taps. */
+  type: 'paddown' | 'padup';
 }
 
 /**
@@ -62,13 +64,13 @@ export class GamepadInputService {
     for (const input of now) {
       if (!this.held.has(input)) {
         this.held.add(input);
-        this.changes.next({ input, pressed: true });
+        this.changes.next({ input, pressed: true, type: 'paddown' });
       }
     }
     for (const input of [...this.held]) {
       if (!now.has(input)) {
         this.held.delete(input);
-        this.changes.next({ input, pressed: false });
+        this.changes.next({ input, pressed: false, type: 'padup' });
       }
     }
     // (until the last one is gone, and everything was let go)

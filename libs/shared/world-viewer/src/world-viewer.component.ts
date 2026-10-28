@@ -307,7 +307,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   /** Gamepad buttons and sticks bound to the marker or the camera moves. */
   private readonly padInputs = inject(GamepadInputService)
     .inputs.pipe(takeUntilDestroyed())
-    .subscribe(({ input, pressed }) => this.press({ input, type: pressed ? 'paddown' : 'padup' }, pressed, false));
+    .subscribe((event) => this.press(event, event.pressed, false));
   private renderer?: WorldRenderer;
   // Created in ngAfterViewInit; effects may run before that, hence the guards in syncGizmo/lookAt.
   private controls?: MapControls;
@@ -805,13 +805,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
    * moves while held. Whether it was one of them.
    */
   private press(event: KeyboardEvent | MouseEvent | { input: string; type: string }, down: boolean, shift: boolean): boolean {
-    const marker = down ? controlFor(this.navigation(), ['markerToCursor', 'cameraToMarker'], event) : undefined;
-    if (marker === 'markerToCursor') {
-      this.markerToCrosshair(shift);
-      return true;
-    }
-    if (marker === 'cameraToMarker') {
-      this.cameraToMarker();
+    if (down && this.markerAction(event, shift)) {
       return true;
     }
     const action = this.navigationAction(event);
@@ -971,6 +965,11 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
 
   /** Puts the marker on the ground under the crosshair (the "+" in the middle of the view). */
   private readonly onSpeedWheel = (event: WheelEvent): void => {
+    // a wheel step bound to the marker (camera moves need a press and a release: not the wheel)
+    if (!event.shiftKey && this.markerAction(event, false)) {
+      event.preventDefault();
+      return;
+    }
     if (!event.shiftKey) {
       return;
     }
@@ -993,6 +992,17 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       const liquid = this.renderSettings().markerOnLiquid !== shift ? this.world.liquidAt(ground.position.x, ground.position.y) : undefined;
       this.setMarker(liquid && liquid.z > ground.position.z ? { ...ground.position, z: liquid.z } : ground.position);
     }
+  }
+
+  /** The marker actions a press is bound to: put the marker, or bring the camera to it. Whether it was one. */
+  private markerAction(event: KeyboardEvent | MouseEvent | { input: string; type: string }, shift: boolean): boolean {
+    const marker = controlFor(this.navigation(), ['markerToCursor', 'cameraToMarker'], event);
+    if (marker === 'markerToCursor') {
+      this.markerToCrosshair(shift);
+    } else if (marker === 'cameraToMarker') {
+      this.cameraToMarker();
+    }
+    return !!marker;
   }
 
   /** Whether a place is in deep water (fatigue), from the server's map; undefined without it. */
