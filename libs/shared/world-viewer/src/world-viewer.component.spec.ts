@@ -138,6 +138,7 @@ interface FakeTransformControls extends EventDispatcher<{ 'dragging-changed': { 
       [gizmoMode]="mode()"
       [snapToGround]="snap()"
       [snapToWall]="wall()"
+      [snapToWater]="water()"
       [groundOnly]="groundOnly()"
       [renderSettings]="render()"
       [focus]="focus()"
@@ -189,6 +190,7 @@ class HostComponent {
   readonly editable = signal<string | undefined>(undefined);
   readonly mode = signal<GizmoMode>('translate');
   readonly snap = signal(true);
+  readonly water = signal(false);
   readonly wall = signal(false);
   readonly groundOnly = signal(false);
   readonly render = signal<WorldRenderSettings>(DEFAULT_WORLD_RENDER_SETTINGS);
@@ -417,7 +419,7 @@ describe(WorldViewerComponent.name, () => {
       normals: new Float32Array(9),
       uvs: new Float32Array(6),
       indices: new Uint16Array([0, 1, 2]),
-      batches: [],
+      batches: [{ start: 0, count: 3, textureType: 0, blend: 0, geoset: 0, twoSided: false, unlit: false, alpha: 1 }],
     });
     const { fixture } = await setup((h) => {
       h.focus.set(at(0, 0));
@@ -1940,6 +1942,25 @@ describe(WorldViewerComponent.name, () => {
         { key: 'creature:1', position: expect.objectContaining({ z: expect.closeTo(GROUND, 3) }), orientation: 0 },
       ]);
       expect(host.moves[0].position.y).toBeCloseTo(CENTER.y - 3);
+
+      // onto the water where there is some, onto the ground elsewhere
+      await update(() => {
+        host.snap.set(false);
+        host.water.set(true);
+      });
+      const liquid = vi.spyOn(WorldScene.prototype, 'liquidAt').mockReturnValue({ z: GROUND + 5, kind: 'water', type: 1 });
+      const drag = () => {
+        gizmo().dispatchEvent({ type: 'dragging-changed', value: true });
+        gizmo().object?.position.setX(gizmo().object!.position.x + 1);
+        gizmo().dispatchEvent({ type: 'objectChange' });
+        gizmo().dispatchEvent({ type: 'dragging-changed', value: false });
+      };
+      drag();
+      expect(host.moves.at(-1)?.position.z).toBeCloseTo(GROUND + 5, 3);
+      liquid.mockReturnValue(undefined);
+      drag();
+      expect(host.moves.at(-1)?.position.z).toBeCloseTo(GROUND, 3);
+      liquid.mockRestore();
     });
 
     it('puts the editable object under the cursor with Alt+click, and drags it while held', async () => {
@@ -2155,17 +2176,19 @@ describe(WorldViewerComponent.name, () => {
 
     it('shows which snapping is on above the crosshair', async () => {
       const { page, host, update } = await setup();
-      expect(page.getDebugElementByTestId('world-viewer-snap').nativeElement.textContent.trim()).toBe(
-        'WORLD_EDITOR.SNAP_TO: WORLD_EDITOR.SNAP_GROUND',
-      );
+      const text = () => page.getDebugElementByTestId('world-viewer-snap').nativeElement.textContent.replace(/\s+/g, ' ').trim();
+      expect(text()).toBe('WORLD_EDITOR.SNAP_TO: WORLD_EDITOR.SNAP_GROUND');
       await update(() => {
         host.snap.set(false);
         host.wall.set(true);
       });
-      expect(page.getDebugElementByTestId('world-viewer-snap').nativeElement.textContent.trim()).toBe(
-        'WORLD_EDITOR.SNAP_TO: WORLD_EDITOR.SNAP_WALL',
-      );
-      await update(() => host.wall.set(false));
+      expect(text()).toBe('WORLD_EDITOR.SNAP_TO: WORLD_EDITOR.SNAP_WALL');
+      await update(() => {
+        host.wall.set(false);
+        host.water.set(true);
+      });
+      expect(text()).toBe('WORLD_EDITOR.SNAP_TO: WORLD_EDITOR.SNAP_WATER');
+      await update(() => host.water.set(false));
       expect(page.getDebugElementByTestId('world-viewer-snap', false)).toBeFalsy();
     });
 

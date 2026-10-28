@@ -1024,7 +1024,8 @@
       "place-creature": "+ 生物",
       "place-gameobject": "+ 游戏对象",
       "add-waypoint": "+ 路径点",
-      "probe": "路径/视线"
+      "probe": "路径/视线",
+      "face": "朝向"
     },
     "ENTRY": "Entry",
     "PLACE_HINT": "输入 entry，然后点击地面进行放置。",
@@ -1634,6 +1635,10 @@
     "PATH_FROM_LAST": "从最后一个路径点的路线",
     "PATH_FROM_LAST_HELP": "从路径最后一个点回到第一个点的一段：生物走完后前往的地方，一圈又一圈",
     "PATH_START": "起点",
-    "PATH_END": "终点"
+    "PATH_END": "终点",
+    "SNAP_WATER": "水面",
+    "COPY_IN_PLACE": "原地复制",
+    "COPY_IN_PLACE_HELP": "在同一位置创建与所选相同的新刷新点：可移开其中一个，或叠放",
+    "FACE_HINT": "选择一个刷新点，然后点击它应该面向的位置"
   }
 }

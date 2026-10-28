@@ -36,7 +36,7 @@ export class WorldEditorSessionService {
   readonly tool = signal<EditorTool>('select');
   readonly gizmoMode = signal<GizmoMode>('translate');
   /** Where moved objects snap: nowhere, onto the ground/floor below, or against the nearest wall. */
-  readonly snapMode = signal<'off' | 'ground' | 'wall'>('ground');
+  readonly snapMode = signal<'off' | 'ground' | 'water' | 'wall'>('ground');
   readonly selectedKey = signal<string | undefined>(undefined);
   /** Spawns selected along with `selectedKey` (Ctrl + click): they move, turn and are deleted with it. */
   readonly groupKeys = signal<string[]>([]);

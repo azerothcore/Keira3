@@ -245,6 +245,7 @@
         [gizmoMode]="gizmoMode()"
         [snapToGround]="snapToGround()"
         [snapToWall]="snapToWall()"
+        [snapToWater]="snapToWater()"
         [groundOnly]="tool() !== 'select'"
         [renderSettings]="viewSettings()"
         [navigation]="controls.settings()"
@@ -2409,7 +2410,7 @@
         <div class="card-header py-1">{{ 'WORLD_EDITOR.TOOLS' | translate }}</div>
         <div class="card-body p-2">
           <div class="btn-group btn-group-sm w-100 mb-1" role="group">
-            @for (option of ['select', 'probe']; track option) {
+            @for (option of ['select', 'face', 'probe']; track option) {
               <button
                 type="button"
                 class="btn"
@@ -2437,6 +2438,9 @@
             }
           </div>
 
+          @if (tool() === 'face') {
+            <small class="text-muted d-block mb-1" data-testid="face-hint">{{ 'WORLD_EDITOR.FACE_HINT' | translate }}</small>
+          }
           @if (tool() === 'place-creature' || tool() === 'place-gameobject') {
             <div class="position-relative">
               <div class="input-group input-group-sm mb-1">
@@ -2629,7 +2633,7 @@
                   data-testid="snap-mode"
                   (change)="setSnapMode($event)"
                 >
-                  @for (mode of ['ground', 'wall', 'off']; track mode) {
+                  @for (mode of ['ground', 'water', 'wall', 'off']; track mode) {
                     <option [value]="mode" [selected]="mode === snapMode()">
                       {{ 'WORLD_EDITOR.SNAP_' + mode.toUpperCase() | translate }}
                     </option>
@@ -2922,6 +2926,15 @@
                 <div class="d-flex gap-1 flex-wrap align-items-center mt-1" data-testid="group-tools">
                   <button type="button" class="btn btn-sm btn-outline-secondary" data-testid="copy-selection" (click)="copySelection()">
                     <i class="fa fa-copy"></i> {{ 'COPY' | translate }}
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-secondary"
+                    data-testid="copy-in-place"
+                    [title]="'WORLD_EDITOR.COPY_IN_PLACE_HELP' | translate"
+                    (click)="copyInPlace()"
+                  >
+                    <i class="fa fa-clone"></i> {{ 'WORLD_EDITOR.COPY_IN_PLACE' | translate }}
                   </button>
                   <button
                     type="button"

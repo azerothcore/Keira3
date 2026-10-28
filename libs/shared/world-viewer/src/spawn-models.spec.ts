@@ -360,6 +360,19 @@ describe('SpawnModels', () => {
     expect(models.shownCount).toBe(0);
   });
 
+  it('keeps the pin of a model the game draws nothing of (an invisible trigger), and of a model that cannot be read', async () => {
+    const { models, world, source } = setup();
+    source.getM2.mockResolvedValueOnce(mesh([batch({ alpha: 0 }), batch({ alpha: 0.01 })]));
+    await show(models, world, [spawn('gameobject:1', 'gameobject', 0, 7)]);
+    expect(modelOf(world, 'gameobject:1')).toBeUndefined();
+    // unreadable, or not in the display tables
+    const { models: other, world: otherWorld, source: otherSource } = setup();
+    otherSource.getM2.mockResolvedValueOnce(undefined);
+    await show(other, otherWorld, [spawn('gameobject:1', 'gameobject', 0, 7), spawn('creature:2', 'creature', 1, 404)]);
+    expect(modelOf(otherWorld, 'gameobject:1')).toBeUndefined();
+    expect(modelOf(otherWorld, 'creature:2')).toBeUndefined();
+  });
+
   it('draws gameobjects whose model is a building (elevators, ships) with that building', async () => {
     const { models, world, loaded } = setup();
     await show(models, world, [spawn('gameobject:1', 'gameobject', 0, 8), spawn('gameobject:2', 'gameobject', 0, 9)]);

@@ -906,6 +906,7 @@ export class WorldEditorComponent implements OnInit {
   protected readonly snapMode = this.session.snapMode;
   protected readonly snapToGround = computed(() => this.snapMode() === 'ground');
   protected readonly snapToWall = computed(() => this.snapMode() === 'wall');
+  protected readonly snapToWater = computed(() => this.snapMode() === 'water');
   protected readonly selectedKey = this.session.selectedKey;
   protected readonly showSettings = signal(!this.settings.isConfigured());
   protected readonly showLegend = this.session.showLegend;
@@ -2334,6 +2335,10 @@ export class WorldEditorComponent implements OnInit {
       this.select(result.type === 'spawn' || result.type === 'waypoint' ? result.key : undefined);
       return;
     }
+    if (tool === 'face') {
+      this.faceSelectedTo(result.position);
+      return;
+    }
     if (tool === 'probe') {
       // A, then C; a third click starts again from A
       if (!this.probeFrom() || this.probeTo()) {
@@ -2355,6 +2360,16 @@ export class WorldEditorComponent implements OnInit {
     await this.placeSpawnAt(tool === 'place-creature' ? 'creature' : 'gameobject', result.position);
   }
 
+  /** The Face tool: the selected spawn (and the ones selected with it) turns to look at the clicked place. */
+  private faceSelectedTo(target: WorldPosition): void {
+    const spawn = this.selectedSpawn();
+    if (!spawn || this.selectedLocked()) {
+      return;
+    }
+    const o = (Math.atan2(target.y - spawn.y, target.x - spawn.x) + Math.PI * 2) % (Math.PI * 2);
+    this.applyPlacement(spawnKey(spawn.type, spawn.guid), { x: spawn.x, y: spawn.y, z: spawn.z, o });
+  }
+
   protected onObjectMoved(moved: ObjectMoved): void {
     const placement = { x: moved.position.x, y: moved.position.y, z: moved.position.z, o: moved.orientation };
     this.applyPlacement(moved.key, placement);
@@ -2371,7 +2386,7 @@ export class WorldEditorComponent implements OnInit {
   }
 
   protected setSnapMode(event: Event): void {
-    this.snapMode.set((event.target as HTMLSelectElement).value as 'off' | 'ground' | 'wall');
+    this.snapMode.set((event.target as HTMLSelectElement).value as 'off' | 'ground' | 'water' | 'wall');
   }
 
   private select(key: string | undefined): void {
@@ -2634,10 +2649,9 @@ export class WorldEditorComponent implements OnInit {
   }
 
   /** Pastes the copied spawns as new ones (Ctrl + V), the main one at the crosshair, and selects them. */
-  protected async pasteCopied(): Promise<void> {
+  protected async pasteCopied(at = this.cameraCenter() as WorldPosition): Promise<void> {
     const copied = this.copied();
     // (something was copied from spawns loaded around the camera, so it has a target)
-    const at = this.cameraCenter() as WorldPosition;
     if (copied.length === 0) {
       return;
     }
@@ -2650,6 +2664,13 @@ export class WorldEditorComponent implements OnInit {
     this.bump();
     this.select(keys[0]);
     this.groupKeys.set(keys.slice(1));
+  }
+
+  /** Copy in place: new spawns just like the selected ones, where they are (to move one away, or stack them). */
+  protected async copyInPlace(): Promise<void> {
+    const spawn = this.selectedSpawn() as SpawnRecord;
+    this.copySelection();
+    await this.pasteCopied({ x: spawn.x, y: spawn.y, z: spawn.z });
   }
 
   /** Plays the selected creature walking its path, or wandering, in the view; again stops it. */

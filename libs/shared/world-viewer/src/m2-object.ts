@@ -24,7 +24,7 @@ export interface M2Template {
 }
 
 /** Below this opacity a batch is one the game doesn't show (an invisible wall, a smoke emitter's box). */
-const INVISIBLE_ALPHA = 0.02;
+export const INVISIBLE_ALPHA = 0.02;
 /** The invisible batches' materials, drawn see-through while invisible walls are shown. */
 const invisibleMaterials = new Set<Material>();
 let invisibleShown = false;

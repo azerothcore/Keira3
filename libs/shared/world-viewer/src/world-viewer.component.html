@@ -59,9 +59,10 @@
   }
 
   <div class="world-viewer-crosshair" aria-hidden="true"></div>
-  @if (snapToGround() || snapToWall()) {
+  @if (snapToGround() || snapToWall() || snapToWater()) {
     <div class="world-viewer-snap" data-testid="world-viewer-snap">
-      {{ 'WORLD_EDITOR.SNAP_TO' | translate }}: {{ (snapToWall() ? 'WORLD_EDITOR.SNAP_WALL' : 'WORLD_EDITOR.SNAP_GROUND') | translate }}
+      {{ 'WORLD_EDITOR.SNAP_TO' | translate }}:
+      {{ (snapToWall() ? 'WORLD_EDITOR.SNAP_WALL' : snapToWater() ? 'WORLD_EDITOR.SNAP_WATER' : 'WORLD_EDITOR.SNAP_GROUND') | translate }}
     </div>
   }
   @if (simulationStatus()) {

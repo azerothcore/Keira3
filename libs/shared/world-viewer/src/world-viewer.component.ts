@@ -195,6 +195,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   readonly editableKey = input<string | undefined>(undefined);
   readonly gizmoMode = input<GizmoMode>('translate');
   readonly snapToGround = input<boolean>(true);
+  /** Snaps moved objects onto the water's surface where there is water (onto the ground elsewhere). */
+  readonly snapToWater = input<boolean>(false);
   /** Moved objects go against the nearest wall instead (and face away from it). */
   readonly snapToWall = input<boolean>(false);
   /** Clicks report the terrain under the cursor even over markers (for placing things). */
@@ -1311,8 +1313,9 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
           object.rotation.y = orientationToSceneYaw(wall.orientation);
         }
       }
-    } else if (this.snapToGround()) {
-      const ground = this.world.groundHeightAt(state.position.x, state.position.y, state.position.z);
+    } else if (this.snapToGround() || this.snapToWater()) {
+      const water = this.snapToWater() ? this.world.liquidAt(state.position.x, state.position.y) : undefined;
+      const ground = water?.z ?? this.world.groundHeightAt(state.position.x, state.position.y, state.position.z);
       if (ground !== undefined) {
         object.position.y = ground + (waypoint ? 0.4 : 0);
       }

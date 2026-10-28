@@ -1024,7 +1024,8 @@
       "place-creature": "+ Criatura",
       "place-gameobject": "+ GameObject",
       "add-waypoint": "+ Waypoint",
-      "probe": "Ruta/LdV"
+      "probe": "Ruta/LdV",
+      "face": "Mirar"
     },
     "ENTRY": "Entry",
     "PLACE_HINT": "Introduce un entry y haz clic en el suelo para colocarlo.",
@@ -1634,6 +1635,10 @@
     "PATH_FROM_LAST": "Camino desde el último punto",
     "PATH_FROM_LAST_HELP": "El tramo desde el último punto de vuelta al primero: adonde va la criatura tras el final, vuelta tras vuelta",
     "PATH_START": "Inicio",
-    "PATH_END": "Fin"
+    "PATH_END": "Fin",
+    "SNAP_WATER": "Agua",
+    "COPY_IN_PLACE": "Copiar en el sitio",
+    "COPY_IN_PLACE_HELP": "Nuevos spawns iguales a los seleccionados, en el mismo sitio: aparta uno o apílalos",
+    "FACE_HINT": "Selecciona un spawn y haz clic hacia donde debe mirar"
   }
 }

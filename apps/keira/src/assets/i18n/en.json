@@ -1024,7 +1024,8 @@
       "place-creature": "+ Creature",
       "place-gameobject": "+ GameObject",
       "add-waypoint": "+ Waypoint",
-      "probe": "Path/LOS"
+      "probe": "Path/LOS",
+      "face": "Face"
     },
     "ENTRY": "Entry",
     "PLACE_HINT": "Enter an entry, then click on the ground to place it.",
@@ -1634,6 +1635,10 @@
     "PATH_FROM_LAST": "Path from the last waypoint",
     "PATH_FROM_LAST_HELP": "The stretch from a path's last point back to its first: where the creature goes after the end, round after round",
     "PATH_START": "Start",
-    "PATH_END": "End"
+    "PATH_END": "End",
+    "SNAP_WATER": "Water",
+    "COPY_IN_PLACE": "Copy in place",
+    "COPY_IN_PLACE_HELP": "New spawns just like the selected ones, at the same place: move one away, or stack them",
+    "FACE_HINT": "Select a spawn, then click where it should look"
   }
 }

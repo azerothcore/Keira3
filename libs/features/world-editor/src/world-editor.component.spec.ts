@@ -65,6 +65,7 @@ class FakeWorldViewerComponent {
   readonly gizmoMode = input<GizmoMode>('translate');
   readonly snapToGround = input<boolean>(true);
   readonly snapToWall = input<boolean>(false);
+  readonly snapToWater = input<boolean>(false);
   readonly groundOnly = input<boolean>(false);
   readonly renderSettings = input<WorldRenderSettings>(DEFAULT_WORLD_RENDER_SETTINGS);
   readonly focus = input<WorldPosition | undefined>(undefined);
@@ -2891,15 +2892,17 @@ describe(WorldEditorComponent.name, () => {
       expect(page.viewer().snapToGround()).toBe(true);
 
       const snap = page.byId<HTMLSelectElement>('snap-mode').nativeElement;
-      for (const [mode, ground, wall] of [
-        ['wall', false, true],
-        ['off', false, false],
+      for (const [mode, ground, wall, water] of [
+        ['wall', false, true, false],
+        ['water', false, false, true],
+        ['off', false, false, false],
       ] as const) {
         snap.value = mode;
         snap.dispatchEvent(new Event('change'));
         page.fixture.detectChanges();
         expect(page.viewer().snapToGround()).toBe(ground);
         expect(page.viewer().snapToWall()).toBe(wall);
+        expect(page.viewer().snapToWater()).toBe(water);
       }
     });
   });
@@ -3169,6 +3172,46 @@ describe(WorldEditorComponent.name, () => {
       page.key('v', undefined, undefined, { ctrlKey: true });
       await settle(page);
       expect(page.pendingLines()).toHaveLength(4);
+    });
+
+    it('copies the selection in place', async () => {
+      const { page } = await setup();
+      await loadArea(page);
+      page.viewer().picked.emit({ type: 'spawn', key: 'gameobject:3', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      page.click('copy-in-place');
+      await settle(page);
+      expect(page.pendingLines()).toEqual(['Place gameobject 1001 (Mailbox)']);
+      expect(page.text('pending-sql')).toContain(`${SPAWNS[2].x}, ${SPAWNS[2].y}, ${SPAWNS[2].z}`);
+    });
+
+    it('turns the selected spawn to face where the Face tool clicks, unless it is locked', async () => {
+      const { page } = await setup();
+      await loadArea(page);
+      page.click('tool-face');
+      page.fixture.detectChanges();
+      expect(page.byId('face-hint')).toBeTruthy();
+      // nothing selected: nothing turns
+      page.viewer().picked.emit({ type: 'ground', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      expect(page.pendingLines()).toEqual([]);
+      page.click('tool-select');
+      page.viewer().picked.emit({ type: 'spawn', key: 'gameobject:3', position: { x: 0, y: 0, z: 0 } });
+      page.click('tool-face');
+      await settle(page);
+      // west of it (+y): facing π/2
+      page.viewer().picked.emit({ type: 'ground', position: { x: SPAWNS[2].x, y: SPAWNS[2].y + 10, z: 80 } });
+      await settle(page);
+      expect(page.pendingLines()).toEqual(['Move gameobject 3 (Mailbox)']);
+      expect(page.placementValue('o')).toBeCloseTo(Math.PI / 2, 3);
+      // south of it (−x): π
+      page.viewer().picked.emit({ type: 'ground', position: { x: SPAWNS[2].x - 10, y: SPAWNS[2].y, z: 80 } });
+      await settle(page);
+      expect(page.placementValue('o')).toBeCloseTo(Math.PI, 3);
+      page.click('lock-selected');
+      page.viewer().picked.emit({ type: 'ground', position: { x: SPAWNS[2].x, y: SPAWNS[2].y - 10, z: 80 } });
+      await settle(page);
+      expect(page.placementValue('o')).toBeCloseTo(Math.PI, 3);
     });
   });
 

@@ -18,7 +18,7 @@ import { BufferAttribute, BufferGeometry, Group, Mesh, Object3D, SkinnedMesh, Sp
 import { M2Animator } from './m2-animator';
 import { insideBounds } from './bounds';
 import { collisionMesh } from './collision-object';
-import { buildM2Template, disposeM2Template, M2Template } from './m2-object';
+import { buildM2Template, disposeM2Template, INVISIBLE_ALPHA, M2Template } from './m2-object';
 import { TextureCache } from './texture-cache';
 import { buildWmoObject, disposeWmoObject } from './wmo-object';
 import { WorldScene } from './world-scene';
@@ -411,6 +411,10 @@ export async function displayModel(
     : hairGeoset === undefined
       ? mesh.batches
       : mesh.batches.filter((b) => isDefaultCharacterGeoset(b.geoset, hairGeoset));
+  // nothing the game draws (an invisible trigger's model): its pin stands in for it
+  if (batches.every((b) => b.alpha < INVISIBLE_ALPHA)) {
+    return undefined;
+  }
   const images = await Promise.all(
     batches.map((batch) => {
       const path = batch.texture ?? display.textures[batch.textureType];
