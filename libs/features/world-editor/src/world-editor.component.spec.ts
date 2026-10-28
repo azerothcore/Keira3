@@ -1,3 +1,5 @@
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import packageInfo from '../../../../package.json';
 import { Component, input, output } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
@@ -231,7 +233,12 @@ describe(WorldEditorComponent.name, () => {
     },
     toastr: { error: vi.fn(), warning: vi.fn(), success: vi.fn() },
     clipboard: { copyFromContent: vi.fn() },
-    electron: { isElectron: vi.fn(), ipcRenderer: { send: vi.fn() }, fs: { appendFileSync: vi.fn() } },
+    electron: {
+      isElectron: vi.fn(),
+      ipcRenderer: { send: vi.fn() },
+      fs: { appendFileSync: vi.fn() },
+      childProcess: { execSync: vi.fn(() => 'abc1234\n') },
+    },
   };
 
   const links = {
@@ -2521,6 +2528,24 @@ describe(WorldEditorComponent.name, () => {
       (map as unknown as { mapPicked: { emit(id: number): void } }).mapPicked.emit(1);
       await settle(page);
       expect(page.viewer().mapDirectory()).toBe('Kalimdor');
+      // a place picked on the atlas of every map: there, at the server's ground (or the place's height without one)
+      type Atlas = { atlasPicked: { emit(pick: { mapId: number; position: { x: number; y: number; z: number } }): void } };
+      const atlas = () => page.fixture.debugElement.query((el) => el.name === 'keira-world-map')?.componentInstance as Atlas;
+      mocks.client.getServerMap.mockResolvedValueOnce({ v9: new Float32Array(129 * 129).fill(42) });
+      atlas().atlasPicked.emit({ mapId: 1, position: { x: 100, y: 200, z: 0 } });
+      await settle(page);
+      expect(page.viewer().focus()).toEqual({ x: 100, y: 200, z: 42 });
+      expect(page.getDebugElementByTestId('world-map', false)).toBeFalsy();
+      for (const server of [Promise.resolve(undefined), Promise.reject(new Error('no map'))]) {
+        page.click('map-toggle');
+        await settle(page);
+        mocks.client.getServerMap.mockReturnValueOnce(server);
+        atlas().atlasPicked.emit({ mapId: 1, position: { x: 300, y: 400, z: 7 } });
+        await settle(page);
+        expect(page.viewer().focus()).toEqual({ x: 300, y: 400, z: 7 });
+      }
+      page.click('map-toggle');
+      await settle(page);
       page.chooseMap(0);
       await settle(page);
       page.click('map-toggle');
@@ -2680,10 +2705,47 @@ describe(WorldEditorComponent.name, () => {
       expect(perfLogActive()).toBe(true);
       perfNote('hello');
       flushPerfLog();
-      expect(mocks.electron.fs.appendFileSync).toHaveBeenCalledWith('/cache/world-editor-perf.log', expect.stringContaining('hello'));
+      const name = new RegExp(
+        `^/cache/\\d{2}_\\d{2}_\\d{4}_abc1234_${packageInfo.version.replace(/\./g, '\\.')}_\\d{2}_\\d{2}_\\d{2}\\.log$`,
+      );
+      expect(mocks.electron.fs.appendFileSync).toHaveBeenCalledWith(expect.stringMatching(name), expect.stringContaining('hello'));
+      // with the settings in use, and again when they change
+      const written = () => mocks.electron.fs.appendFileSync.mock.calls.map((call) => call[1] as string).join('');
+      expect(written()).toMatch(/settings: camera speed ×[\d.]+ \| window \d+×\d+ at [\d.]+× \| .*showStats=true/);
+      expect(written()).not.toContain('perfLog=');
+      page.click('view-stats');
+      await settle(page);
+      page.click('view-bounds');
+      await settle(page);
+      flushPerfLog();
+      expect(written()).toContain('showStats=false');
+      expect(written().match(/settings:/g)?.length).toBe(3);
+      // still the same file
+      expect(new Set(mocks.electron.fs.appendFileSync.mock.calls.map((call) => call[0])).size).toBe(1);
       // stops with the editor
       fixture.destroy();
       expect(perfLogActive()).toBe(false);
+    });
+
+    it('names the performance log "release" when Keira is not run from a checkout, asking git once', async () => {
+      mocks.electron.childProcess.execSync.mockImplementationOnce(() => {
+        throw new Error('not a git repository');
+      });
+      const { page } = await setup({ cacheRoot: '/cache' });
+      page.click('view-toggle');
+      page.fixture.detectChanges();
+      page.click('view-perf-log');
+      await settle(page);
+      perfNote('one');
+      flushPerfLog();
+      expect(mocks.electron.fs.appendFileSync).toHaveBeenLastCalledWith(expect.stringContaining('_release_'), expect.any(String));
+      page.click('view-perf-log');
+      await settle(page);
+      page.click('view-perf-log');
+      await settle(page);
+      expect(mocks.electron.childProcess.execSync).toHaveBeenCalledTimes(1);
+      page.click('view-perf-log');
+      await settle(page);
     });
 
     it('offers no performance log outside the desktop app', async () => {

@@ -47,6 +47,8 @@ export interface WorldRenderSettings {
   loadAhead: number;
   /** The marker (Space) as a player character, `race:sex` (e.g. `1:0` human male); '' = the beam only. */
   markerModel: string;
+  /** The selected spawn's pin drawn over its model (otherwise an outline around the model, which keeps its size visible). */
+  solidSelection: boolean;
   /** Frames per second, draw calls, graphics memory and what's loading, in a corner of the view. */
   showStats: boolean;
   /** Writes world-editor-perf.log (in the cache folder): what held up the window, and for how long. */
@@ -99,6 +101,7 @@ export const DEFAULT_WORLD_RENDER_SETTINGS: WorldRenderSettings = {
   renderScale: 1,
   loadAhead: 1,
   markerModel: '',
+  solidSelection: false,
   showStats: false,
   perfLog: false,
 };

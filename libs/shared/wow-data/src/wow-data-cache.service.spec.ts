@@ -20,17 +20,17 @@ describe('WowDataCacheService', () => {
     expect(cache.has('abc', 'adt', 'azeroth_32_48')).toBe(true);
     expect(await cache.read('abc', 'adt', 'Azeroth_32_48')).toEqual({ heights: new Float32Array([1, 2]) });
     expect(await cache.read('other', 'adt', 'Azeroth_32_48')).toBeUndefined();
-    expect(cache.size()).toBeGreaterThan(0);
+    expect(await cache.size()).toBeGreaterThan(0);
 
     await cache.write('abc', 'wmo', 'World\\wmo\\Abbey.wmo', { ok: true });
     expect(await cache.read('abc', 'wmo', 'world\\WMO\\abbey.wmo')).toEqual({ ok: true });
 
-    expect(Object.keys(cache.entries('abc', 'adt'))).toEqual(['azeroth_32_48']);
-    expect(cache.entries('abc', 'adt')['azeroth_32_48']).toBeGreaterThan(0);
-    expect(cache.entries('abc', 'other')).toEqual({});
+    expect(Object.keys(await cache.entries('abc', 'adt'))).toEqual(['azeroth_32_48']);
+    expect((await cache.entries('abc', 'adt'))['azeroth_32_48']).toBeGreaterThan(0);
+    expect(await cache.entries('abc', 'other')).toEqual({});
 
     cache.clear();
-    expect(cache.size()).toBe(0);
+    expect(await cache.size()).toBe(0);
     expect(await cache.read('abc', 'wmo', 'World\\wmo\\Abbey.wmo')).toBeUndefined();
   });
 
@@ -120,6 +120,20 @@ describe('WowDataCacheService', () => {
     finish(999_999);
     await writing;
     expect(moved.cache.isFull()).toBe(false);
+    // the same for a size asked for
+    let finishSize: (bytes: number) => void = () => undefined;
+    vi.spyOn(moved.native as FakeNative, 'directorySizeAsync').mockReturnValueOnce(new Promise((resolve) => (finishSize = resolve)));
+    const sizing = moved.cache.size();
+    moved.cache.setFolder('');
+    finishSize(999_999);
+    expect(await sizing).toBe(999_999);
+    expect(moved.cache.isFull()).toBe(false);
+    // asked whether full before anything was counted: counted then
+    TestBed.resetTestingModule();
+    const fresh = setup();
+    await fresh.native?.writeFile('/cache/v1/abc/adt/e.bin', new Uint8Array(2000));
+    fresh.cache.setMaxBytes(1000);
+    expect(fresh.cache.isFull()).toBe(true);
   });
 
   it('does nothing outside the desktop app', async () => {
@@ -127,9 +141,9 @@ describe('WowDataCacheService', () => {
     await cache.write('abc', 'adt', 'x', 1);
     expect(await cache.read('abc', 'adt', 'x')).toBeUndefined();
     expect(cache.has('abc', 'adt', 'x')).toBe(false);
-    expect(cache.size()).toBe(0);
+    expect(await cache.size()).toBe(0);
     expect(cache.root()).toBeUndefined();
-    expect(cache.entries('abc', 'adt')).toEqual({});
+    expect(await cache.entries('abc', 'adt')).toEqual({});
     expect(cache.isFull()).toBe(false);
     cache.clear();
   });

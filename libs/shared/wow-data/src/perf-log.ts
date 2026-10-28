@@ -144,3 +144,11 @@ function observeLongTasks(report: (start: number, duration: number) => void): { 
   watcher.observe({ entryTypes: ['longtask'] });
   return watcher;
 }
+
+/** A performance log's file name: `dd_mm_yyyy_<commit>_<keira version>_hh_mm_ss.log`, in local time. */
+export function perfLogFileName(at: Date, commit: string, version: string): string {
+  const two = (n: number) => String(n).padStart(2, '0');
+  const date = `${two(at.getDate())}_${two(at.getMonth() + 1)}_${at.getFullYear()}`;
+  const time = `${two(at.getHours())}_${two(at.getMinutes())}_${two(at.getSeconds())}`;
+  return `${date}_${commit}_${version}_${time}.log`;
+}

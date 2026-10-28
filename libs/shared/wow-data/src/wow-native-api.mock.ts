@@ -110,11 +110,13 @@ export function createFakeNative(files: Record<string, number[]>, mpqs: Record<s
     directorySize: (path) => paths().reduce((total, p) => total + (p.startsWith(`${path}/`) ? allFiles[p].length : 0), 0),
     directorySizeAsync: (path) =>
       Promise.resolve(paths().reduce((total, p) => total + (p.startsWith(`${path}/`) ? allFiles[p].length : 0), 0)),
-    fileSizes: (path) =>
-      Object.fromEntries(
-        paths()
-          .filter((p) => p.startsWith(`${path}/`) && !p.slice(path.length + 1).includes('/'))
-          .map((p) => [p.slice(path.length + 1), allFiles[p].length]),
+    fileSizesAsync: (path) =>
+      Promise.resolve(
+        Object.fromEntries(
+          paths()
+            .filter((p) => p.startsWith(`${path}/`) && !p.slice(path.length + 1).includes('/'))
+            .map((p) => [p.slice(path.length + 1), allFiles[p].length]),
+        ),
       ),
     cacheDirectory: () => '/cache',
     // JSON with typed arrays tagged, standing in for V8 serialisation

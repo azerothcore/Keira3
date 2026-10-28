@@ -342,9 +342,26 @@ describe('WorldScene', () => {
       expect(model.scale.x).toBe(1.5);
       expect(far.scale.x).toBe(2 / 8);
 
-      // selected: the pin is shown highlighted with the model
+      // selected: an outline around the model (the pin stays out of the way), or the solid pin when asked
       world.setSelection('creature:1');
+      expect((marker.material as MeshLambertMaterial).visible).toBe(false);
+      const outline = model.getObjectByName('selection-box') as LineSegments;
+      expect(outline).toBeTruthy();
+      expect(outline.raycast(undefined as never, [])).toBeUndefined();
+      // (styled again: the same outline)
+      world.setGroupSelection([]);
+      expect(model.getObjectByName('selection-box')).toBe(outline);
+      world.setSolidSelection(true);
       expect((marker.material as MeshLambertMaterial).visible).toBe(true);
+      expect(model.getObjectByName('selection-box')).toBeUndefined();
+      world.setSolidSelection(false);
+      // a model with nothing to measure: no outline
+      const empty = new Group();
+      world.setSpawnModel('creature:2', empty);
+      world.setSelection('creature:2');
+      expect(empty.getObjectByName('selection-box')).toBeUndefined();
+      world.setSpawnModel('creature:2', far, 2);
+      world.setSelection('creature:1');
 
       // replacing and removing the model
       const other = new Mesh(new BoxGeometry(), new MeshLambertMaterial());
@@ -520,7 +537,7 @@ describe('WorldScene', () => {
       expect(world.probeGroup.children).toHaveLength(0);
     });
 
-    it('draws boss boundaries: outlines and fills at their height or at both heights of their height ranges, picked for hover', () => {
+    it('draws boss boundaries as walls (cylinders for circles), with outlines at their height or their range, picked for hover', () => {
       const world = new WorldScene();
       const group = () => world.scene.getObjectByName('boundaries') as Group;
       const c = at(0, 0);
@@ -554,24 +571,29 @@ describe('WorldScene', () => {
         // only a height range: nothing to draw
         { key: 'boundary:3', label: 'Height', color: 0, z: 0, shapes: [{ type: 'zrange', minZ: 1, maxZ: 2, inverted: false }] },
       ]);
-      // 2 shapes at one height + 1 shape at two heights, each an outline and an area; and a wall per shape
-      expect(group().children).toHaveLength(11);
+      // 2 shapes with an outline at one height + 1 shape with outlines at both heights of its range; a wall and ribs per shape
+      expect(group().children).toHaveLength(4 + 3 * 2);
       const dashed = group().children.find((child) => child instanceof Line && child.material instanceof LineDashedMaterial) as Line;
       expect((dashed.material as LineDashedMaterial).color.getHex()).toBe(0xff4757);
       expect(dashed.raycast(undefined as never, [])).toBeUndefined();
-      const fills = group().children.filter((child) => child.name === 'boundary:2:fill');
       const heights = (mesh: Object3D) => {
         const position = (mesh as Mesh).geometry.getAttribute('position') as BufferAttribute;
         return Array.from({ length: position.count }, (_, i) => Math.round(position.getY(i)));
       };
-      // the areas at both heights, and a wall from one to the other
-      expect(fills.map((fill) => heights(fill)[1])).toEqual([40, 60, 40]);
-      expect(new Set(heights(fills[2]))).toEqual(new Set([40, 60]));
-      // without a height range: a wall from a little under the boss to some yards over it
-      const wall = group().children.filter((child) => child.name === 'boundary:1:fill')[1];
-      expect(new Set(heights(wall))).toEqual(new Set([48, 62]));
+      // with a height range: the wall from its floor to its ceiling
+      const [rangeWall] = group().children.filter((child) => child.name === 'boundary:2:fill');
+      expect(new Set(heights(rangeWall))).toEqual(new Set([40, 60]));
+      // without: well under the boss to well over it, like .debug boundary's endless cylinder
+      const wall = group().children.filter((child) => child.name === 'boundary:1:fill')[0];
+      expect(new Set(heights(wall))).toEqual(new Set([-10, 170]));
+      const ribs = group().children.find((child) => child instanceof LineSegments) as LineSegments;
+      expect(ribs.raycast(undefined as never, [])).toBeUndefined();
       expect(((wall as Mesh).material as MeshBasicMaterial).depthTest).toBe(true);
-      lookDownAt(world, { ...c, z: 50.3 }, 30);
+      // looking from the boss towards the edge: the wall is hovered
+      const from = worldToScene({ ...c, z: 50 });
+      const to = worldToScene({ x: c.x + 20, y: c.y, z: 50 });
+      world.camera.position.set(from.x, from.y, from.z);
+      world.camera.lookAt(to.x, to.y, to.z);
       expect(world.pick(0, 0, { markersOnly: true, overlays: true })).toEqual(
         expect.objectContaining({ type: 'overlay', key: 'boundary:1' }),
       );

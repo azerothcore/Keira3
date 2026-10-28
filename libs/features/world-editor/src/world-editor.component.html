@@ -25,7 +25,7 @@
             >
               @let kind = mapKind(map);
               <span class="d-flex align-items-center gap-2">
-                <span class="flex-grow-1">{{ map.id }} – {{ map.name }}</span>
+                <span class="flex-grow-1 text-truncate" [title]="map.name">{{ map.id }} – {{ map.name }}</span>
                 <span class="badge map-kind" [class]="'map-kind-' + kind" [attr.data-testid]="'map-kind-' + map.id">{{
                   'WORLD_EDITOR.MAP_KIND_' + kind.toUpperCase() | translate
                 }}</span>
@@ -475,276 +475,309 @@
         }
 
         @if (showView()) {
-          <div class="card card-body mb-2 world-editor-view-settings d-flex flex-row flex-wrap gap-4 py-2" data-testid="view-settings">
-            @for (layer of overlaySwitches; track layer.key) {
+          <div class="card card-body mb-2 world-editor-view-settings py-2" data-testid="view-settings">
+            <section class="world-editor-view-group" data-testid="view-group-overlays">
+              <h6 class="world-editor-view-group-title">{{ 'WORLD_EDITOR.VIEW_OVERLAYS' | translate }}</h6>
+              @for (layer of overlaySwitches; track layer.key) {
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-layer-{{ layer.id }}"
+                    [attr.data-testid]="'layer-' + layer.id"
+                    [checked]="layers()[layer.key]"
+                    (change)="toggleLayer(layer.key)"
+                  />
+                  <label class="form-check-label" for="world-editor-layer-{{ layer.id }}">{{ layer.label | translate }}</label>
+                </div>
+              }
               <div class="form-check form-switch mb-0">
                 <input
                   class="form-check-input"
                   type="checkbox"
-                  id="world-editor-layer-{{ layer.id }}"
-                  [attr.data-testid]="'layer-' + layer.id"
-                  [checked]="layers()[layer.key]"
-                  (change)="toggleLayer(layer.key)"
+                  id="world-editor-bounds"
+                  data-testid="view-bounds"
+                  [checked]="renderSettings.settings().showBounds"
+                  (change)="setRenderFlag('showBounds', $event)"
                 />
-                <label class="form-check-label" for="world-editor-layer-{{ layer.id }}">{{ layer.label | translate }}</label>
+                <label class="form-check-label" for="world-editor-bounds" [title]="'WORLD_EDITOR.BOUNDS_HELP' | translate">{{
+                  'WORLD_EDITOR.BOUNDS' | translate
+                }}</label>
               </div>
-            }
-            <div class="form-check form-switch mb-0">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                id="world-editor-bounds"
-                data-testid="view-bounds"
-                [checked]="renderSettings.settings().showBounds"
-                (change)="setRenderFlag('showBounds', $event)"
-              />
-              <label class="form-check-label" for="world-editor-bounds" [title]="'WORLD_EDITOR.BOUNDS_HELP' | translate">{{
-                'WORLD_EDITOR.BOUNDS' | translate
-              }}</label>
-            </div>
-            <div class="form-check form-switch mb-0">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                id="world-editor-stats"
-                data-testid="view-stats"
-                [checked]="renderSettings.settings().showStats"
-                (change)="setRenderFlag('showStats', $event)"
-              />
-              <label class="form-check-label" for="world-editor-stats" [title]="'WORLD_EDITOR.STATS_HELP' | translate">{{
-                'WORLD_EDITOR.STATS' | translate
-              }}</label>
-            </div>
-            <div class="form-check form-switch mb-0">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                id="world-editor-perf-log"
-                data-testid="view-perf-log"
-                [checked]="renderSettings.settings().perfLog"
-                [disabled]="!perfLogPath()"
-                (change)="setRenderFlag('perfLog', $event)"
-              />
-              <label class="form-check-label" for="world-editor-perf-log" [title]="perfLogPath() ?? ''">{{
-                'WORLD_EDITOR.PERF_LOG' | translate
-              }}</label>
-            </div>
-            <div class="d-flex align-items-center gap-2">
-              <label for="world-editor-marker-model" class="mb-0" [title]="'WORLD_EDITOR.MARKER_MODEL_HELP' | translate">{{
-                'WORLD_EDITOR.MARKER_MODEL' | translate
-              }}</label>
-              <select
-                id="world-editor-marker-model"
-                class="form-select form-select-sm w-auto"
-                data-testid="view-marker-model"
-                (change)="setMarkerModel($event)"
-              >
-                <option value="" [selected]="renderSettings.settings().markerModel === ''">
-                  {{ 'WORLD_EDITOR.MARKER_BEAM' | translate }}
-                </option>
-                @for (race of playerRaces; track race.id) {
-                  @for (sex of [0, 1]; track sex) {
-                    <option [value]="race.id + ':' + sex" [selected]="renderSettings.settings().markerModel === race.id + ':' + sex">
-                      {{ race.name }} {{ (sex ? 'WORLD_EDITOR.FEMALE' : 'WORLD_EDITOR.MALE') | translate }}
+              <div class="d-flex align-items-center gap-2">
+                <label for="world-editor-marker-model" class="mb-0" [title]="'WORLD_EDITOR.MARKER_MODEL_HELP' | translate">{{
+                  'WORLD_EDITOR.MARKER_MODEL' | translate
+                }}</label>
+                <select
+                  id="world-editor-marker-model"
+                  class="form-select form-select-sm w-auto"
+                  data-testid="view-marker-model"
+                  (change)="setMarkerModel($event)"
+                >
+                  <option value="" [selected]="renderSettings.settings().markerModel === ''">
+                    {{ 'WORLD_EDITOR.MARKER_BEAM' | translate }}
+                  </option>
+                  @for (race of playerRaces; track race.id) {
+                    @for (sex of [0, 1]; track sex) {
+                      <option [value]="race.id + ':' + sex" [selected]="renderSettings.settings().markerModel === race.id + ':' + sex">
+                        {{ race.name }} {{ (sex ? 'WORLD_EDITOR.FEMALE' : 'WORLD_EDITOR.MALE') | translate }}
+                      </option>
+                    }
+                  }
+                </select>
+              </div>
+            </section>
+            <section class="world-editor-view-group" data-testid="view-group-world">
+              <h6 class="world-editor-view-group-title">{{ 'WORLD_EDITOR.VIEW_WORLD' | translate }}</h6>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-low-detail"
+                  data-testid="view-low-detail"
+                  [checked]="renderSettings.settings().lowDetailTerrain"
+                  (change)="setLowDetailTerrain($event)"
+                />
+                <label class="form-check-label" for="world-editor-low-detail">{{ 'WORLD_EDITOR.LOW_DETAIL_TERRAIN' | translate }}</label>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-buildings"
+                  data-testid="view-buildings"
+                  [checked]="renderSettings.settings().showBuildings"
+                  (change)="setRenderFlag('showBuildings', $event)"
+                />
+                <label class="form-check-label" for="world-editor-buildings">{{ 'WORLD_EDITOR.BUILDINGS' | translate }}</label>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-roofs"
+                  data-testid="view-roofs"
+                  [checked]="renderSettings.settings().showRoofs"
+                  (change)="setRenderFlag('showRoofs', $event)"
+                />
+                <label class="form-check-label" for="world-editor-roofs">{{ 'WORLD_EDITOR.ROOFS' | translate }}</label>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-doodads"
+                  data-testid="view-doodads"
+                  [checked]="renderSettings.settings().showDoodads"
+                  (change)="setRenderFlag('showDoodads', $event)"
+                />
+                <label class="form-check-label" for="world-editor-doodads">{{ 'WORLD_EDITOR.DOODADS' | translate }}</label>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-zone-lighting"
+                  data-testid="view-zone-lighting"
+                  [checked]="renderSettings.settings().zoneLighting"
+                  (change)="setRenderFlag('zoneLighting', $event)"
+                />
+                <label class="form-check-label" for="world-editor-zone-lighting">{{ 'WORLD_EDITOR.ZONE_LIGHTING' | translate }}</label>
+              </div>
+            </section>
+            <section class="world-editor-view-group" data-testid="view-group-spawns">
+              <h6 class="world-editor-view-group-title">{{ 'WORLD_EDITOR.VIEW_SPAWNS' | translate }}</h6>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-models"
+                  data-testid="view-models"
+                  [checked]="renderSettings.settings().showModels"
+                  (change)="setRenderFlag('showModels', $event)"
+                />
+                <label class="form-check-label" for="world-editor-models">{{ 'WORLD_EDITOR.MODELS' | translate }}</label>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-facing"
+                  data-testid="view-facing"
+                  [checked]="renderSettings.settings().showFacingArrows"
+                  (change)="setRenderFlag('showFacingArrows', $event)"
+                />
+                <label class="form-check-label" for="world-editor-facing">{{ 'WORLD_EDITOR.FACING_ARROWS' | translate }}</label>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-wander"
+                  data-testid="view-wander"
+                  [checked]="renderSettings.settings().showWanderRadius"
+                  (change)="setRenderFlag('showWanderRadius', $event)"
+                />
+                <label class="form-check-label" for="world-editor-wander">{{ 'WORLD_EDITOR.WANDER_RADIUS' | translate }}</label>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-solid-selection"
+                  data-testid="view-solid-selection"
+                  [checked]="renderSettings.settings().solidSelection"
+                  (change)="setRenderFlag('solidSelection', $event)"
+                />
+                <label
+                  class="form-check-label"
+                  for="world-editor-solid-selection"
+                  [title]="'WORLD_EDITOR.SOLID_SELECTION_HELP' | translate"
+                  >{{ 'WORLD_EDITOR.SOLID_SELECTION' | translate }}</label
+                >
+              </div>
+            </section>
+            <section class="world-editor-view-group" data-testid="view-group-collision">
+              <h6 class="world-editor-view-group-title">{{ 'WORLD_EDITOR.VIEW_COLLISION' | translate }}</h6>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-collision"
+                  data-testid="view-collision"
+                  [checked]="renderSettings.settings().showCollision"
+                  (change)="setRenderFlag('showCollision', $event)"
+                />
+                <label class="form-check-label" for="world-editor-collision" [title]="'WORLD_EDITOR.COLLISION_HELP' | translate">{{
+                  'WORLD_EDITOR.COLLISION' | translate
+                }}</label>
+                @if (collisionSource(); as source) {
+                  <small class="d-block text-muted" data-testid="collision-source">{{
+                    (source === 'server' ? 'WORLD_EDITOR.COLLISION_SERVER' : 'WORLD_EDITOR.COLLISION_CLIENT') | translate
+                  }}</small>
+                }
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-navmesh"
+                  data-testid="view-navmesh"
+                  [checked]="renderSettings.settings().showNavMesh"
+                  (change)="setRenderFlag('showNavMesh', $event)"
+                />
+                <label class="form-check-label" for="world-editor-navmesh" [title]="'WORLD_EDITOR.NAVMESH_HELP' | translate">{{
+                  'WORLD_EDITOR.NAVMESH' | translate
+                }}</label>
+              </div>
+            </section>
+            <section class="world-editor-view-group" data-testid="view-group-loading">
+              <h6 class="world-editor-view-group-title">{{ 'WORLD_EDITOR.VIEW_LOADING' | translate }}</h6>
+              <div class="d-flex align-items-center gap-2">
+                <label for="world-editor-load-ahead" class="mb-0" [title]="'WORLD_EDITOR.LOAD_AHEAD_HELP' | translate">{{
+                  'WORLD_EDITOR.LOAD_AHEAD' | translate
+                }}</label>
+                <select
+                  id="world-editor-load-ahead"
+                  class="form-select form-select-sm w-auto"
+                  data-testid="view-load-ahead"
+                  (change)="setLoadAhead($event)"
+                >
+                  @for (rings of [0, 1, 2, 3]; track rings) {
+                    <option [value]="rings" [selected]="rings === renderSettings.settings().loadAhead">
+                      @if (rings) {
+                        +{{ rings }} {{ 'WORLD_EDITOR.TILES' | translate }}
+                      } @else {
+                        {{ 'WORLD_EDITOR.OFF' | translate }}
+                      }
                     </option>
                   }
-                }
-              </select>
-            </div>
-            <div class="w-100 world-editor-view-break"></div>
-            <div class="form-check form-switch mb-0">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                id="world-editor-low-detail"
-                data-testid="view-low-detail"
-                [checked]="renderSettings.settings().lowDetailTerrain"
-                (change)="setLowDetailTerrain($event)"
-              />
-              <label class="form-check-label" for="world-editor-low-detail">{{ 'WORLD_EDITOR.LOW_DETAIL_TERRAIN' | translate }}</label>
-            </div>
-            <div class="form-check form-switch mb-0">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                id="world-editor-buildings"
-                data-testid="view-buildings"
-                [checked]="renderSettings.settings().showBuildings"
-                (change)="setRenderFlag('showBuildings', $event)"
-              />
-              <label class="form-check-label" for="world-editor-buildings">{{ 'WORLD_EDITOR.BUILDINGS' | translate }}</label>
-            </div>
-            <div class="form-check form-switch mb-0">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                id="world-editor-roofs"
-                data-testid="view-roofs"
-                [checked]="renderSettings.settings().showRoofs"
-                (change)="setRenderFlag('showRoofs', $event)"
-              />
-              <label class="form-check-label" for="world-editor-roofs">{{ 'WORLD_EDITOR.ROOFS' | translate }}</label>
-            </div>
-            <div class="form-check form-switch mb-0">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                id="world-editor-doodads"
-                data-testid="view-doodads"
-                [checked]="renderSettings.settings().showDoodads"
-                (change)="setRenderFlag('showDoodads', $event)"
-              />
-              <label class="form-check-label" for="world-editor-doodads">{{ 'WORLD_EDITOR.DOODADS' | translate }}</label>
-            </div>
-            <div class="form-check form-switch mb-0">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                id="world-editor-models"
-                data-testid="view-models"
-                [checked]="renderSettings.settings().showModels"
-                (change)="setRenderFlag('showModels', $event)"
-              />
-              <label class="form-check-label" for="world-editor-models">{{ 'WORLD_EDITOR.MODELS' | translate }}</label>
-            </div>
-            <div class="form-check form-switch mb-0">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                id="world-editor-facing"
-                data-testid="view-facing"
-                [checked]="renderSettings.settings().showFacingArrows"
-                (change)="setRenderFlag('showFacingArrows', $event)"
-              />
-              <label class="form-check-label" for="world-editor-facing">{{ 'WORLD_EDITOR.FACING_ARROWS' | translate }}</label>
-            </div>
-            <div class="form-check form-switch mb-0">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                id="world-editor-wander"
-                data-testid="view-wander"
-                [checked]="renderSettings.settings().showWanderRadius"
-                (change)="setRenderFlag('showWanderRadius', $event)"
-              />
-              <label class="form-check-label" for="world-editor-wander">{{ 'WORLD_EDITOR.WANDER_RADIUS' | translate }}</label>
-            </div>
-            <div class="form-check form-switch mb-0">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                id="world-editor-collision"
-                data-testid="view-collision"
-                [checked]="renderSettings.settings().showCollision"
-                (change)="setRenderFlag('showCollision', $event)"
-              />
-              <label class="form-check-label" for="world-editor-collision" [title]="'WORLD_EDITOR.COLLISION_HELP' | translate">{{
-                'WORLD_EDITOR.COLLISION' | translate
-              }}</label>
-              @if (collisionSource(); as source) {
-                <small class="d-block text-muted" data-testid="collision-source">{{
-                  (source === 'server' ? 'WORLD_EDITOR.COLLISION_SERVER' : 'WORLD_EDITOR.COLLISION_CLIENT') | translate
-                }}</small>
-              }
-            </div>
-            <div class="form-check form-switch mb-0">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                id="world-editor-navmesh"
-                data-testid="view-navmesh"
-                [checked]="renderSettings.settings().showNavMesh"
-                (change)="setRenderFlag('showNavMesh', $event)"
-              />
-              <label class="form-check-label" for="world-editor-navmesh" [title]="'WORLD_EDITOR.NAVMESH_HELP' | translate">{{
-                'WORLD_EDITOR.NAVMESH' | translate
-              }}</label>
-            </div>
-            <div class="form-check form-switch mb-0">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                id="world-editor-zone-lighting"
-                data-testid="view-zone-lighting"
-                [checked]="renderSettings.settings().zoneLighting"
-                (change)="setRenderFlag('zoneLighting', $event)"
-              />
-              <label class="form-check-label" for="world-editor-zone-lighting">{{ 'WORLD_EDITOR.ZONE_LIGHTING' | translate }}</label>
-            </div>
-            <div class="d-flex align-items-center gap-2">
-              <label for="world-editor-load-ahead" class="mb-0" [title]="'WORLD_EDITOR.LOAD_AHEAD_HELP' | translate">{{
-                'WORLD_EDITOR.LOAD_AHEAD' | translate
-              }}</label>
-              <select
-                id="world-editor-load-ahead"
-                class="form-select form-select-sm w-auto"
-                data-testid="view-load-ahead"
-                (change)="setLoadAhead($event)"
-              >
-                @for (rings of [0, 1, 2, 3]; track rings) {
-                  <option [value]="rings" [selected]="rings === renderSettings.settings().loadAhead">
-                    @if (rings) {
-                      +{{ rings }} {{ 'WORLD_EDITOR.TILES' | translate }}
-                    } @else {
-                      {{ 'WORLD_EDITOR.OFF' | translate }}
-                    }
-                  </option>
-                }
-              </select>
-            </div>
-            <div class="d-flex align-items-center gap-2">
-              <label for="world-editor-terrain-radius" class="mb-0">{{ 'WORLD_EDITOR.TERRAIN_RANGE' | translate }}</label>
-              <select
-                id="world-editor-terrain-radius"
-                class="form-select form-select-sm w-auto"
-                data-testid="view-terrain-radius"
-                (change)="setTerrainRadius($event)"
-              >
-                @for (radius of [1, 2, 3]; track radius) {
-                  <option [value]="radius" [selected]="radius === renderSettings.settings().terrainRadius">
-                    {{ (radius * 2 + 1) * (radius * 2 + 1) }} {{ 'WORLD_EDITOR.TILES' | translate }}
-                  </option>
-                }
-              </select>
-            </div>
-            <div class="form-check form-switch mb-0">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                id="world-editor-whole-zone"
-                data-testid="view-whole-zone"
-                [checked]="renderSettings.settings().loadWholeZone"
-                (change)="setRenderFlag('loadWholeZone', $event)"
-              />
-              <label class="form-check-label" for="world-editor-whole-zone">{{ 'WORLD_EDITOR.LOAD_WHOLE_ZONE' | translate }}</label>
-            </div>
-            <div class="d-flex align-items-center gap-2">
-              <label for="world-editor-draw-distance" class="mb-0">{{ 'WORLD_EDITOR.DRAW_DISTANCE' | translate }}</label>
-              <select
-                id="world-editor-draw-distance"
-                class="form-select form-select-sm w-auto"
-                data-testid="view-draw-distance"
-                [disabled]="renderSettings.settings().advancedDistances"
-                (change)="setRenderDistance('drawDistance', $event)"
-              >
-                @for (distance of drawDistances; track distance) {
-                  <option [value]="distance" [selected]="distance === renderSettings.settings().drawDistance">
-                    {{ distance }} {{ 'WORLD_EDITOR.YARDS' | translate }}
-                  </option>
-                }
-              </select>
-            </div>
-            <div class="form-check form-switch mb-0">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                id="world-editor-advanced-distances"
-                data-testid="view-advanced"
-                [checked]="renderSettings.settings().advancedDistances"
-                (change)="setRenderFlag('advancedDistances', $event)"
-              />
-              <label class="form-check-label" for="world-editor-advanced-distances">{{ 'WORLD_EDITOR.ADVANCED' | translate }}</label>
-            </div>
+                </select>
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <label for="world-editor-terrain-radius" class="mb-0">{{ 'WORLD_EDITOR.TERRAIN_RANGE' | translate }}</label>
+                <select
+                  id="world-editor-terrain-radius"
+                  class="form-select form-select-sm w-auto"
+                  data-testid="view-terrain-radius"
+                  (change)="setTerrainRadius($event)"
+                >
+                  @for (radius of [1, 2, 3]; track radius) {
+                    <option [value]="radius" [selected]="radius === renderSettings.settings().terrainRadius">
+                      {{ (radius * 2 + 1) * (radius * 2 + 1) }} {{ 'WORLD_EDITOR.TILES' | translate }}
+                    </option>
+                  }
+                </select>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-whole-zone"
+                  data-testid="view-whole-zone"
+                  [checked]="renderSettings.settings().loadWholeZone"
+                  (change)="setRenderFlag('loadWholeZone', $event)"
+                />
+                <label class="form-check-label" for="world-editor-whole-zone">{{ 'WORLD_EDITOR.LOAD_WHOLE_ZONE' | translate }}</label>
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <label for="world-editor-draw-distance" class="mb-0">{{ 'WORLD_EDITOR.DRAW_DISTANCE' | translate }}</label>
+                <select
+                  id="world-editor-draw-distance"
+                  class="form-select form-select-sm w-auto"
+                  data-testid="view-draw-distance"
+                  [disabled]="renderSettings.settings().advancedDistances"
+                  (change)="setRenderDistance('drawDistance', $event)"
+                >
+                  @for (distance of drawDistances; track distance) {
+                    <option [value]="distance" [selected]="distance === renderSettings.settings().drawDistance">
+                      {{ distance }} {{ 'WORLD_EDITOR.YARDS' | translate }}
+                    </option>
+                  }
+                </select>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-advanced-distances"
+                  data-testid="view-advanced"
+                  [checked]="renderSettings.settings().advancedDistances"
+                  (change)="setRenderFlag('advancedDistances', $event)"
+                />
+                <label class="form-check-label" for="world-editor-advanced-distances">{{ 'WORLD_EDITOR.ADVANCED' | translate }}</label>
+              </div>
+            </section>
+            <section class="world-editor-view-group" data-testid="view-group-debug">
+              <h6 class="world-editor-view-group-title">{{ 'WORLD_EDITOR.VIEW_DEBUG' | translate }}</h6>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-stats"
+                  data-testid="view-stats"
+                  [checked]="renderSettings.settings().showStats"
+                  (change)="setRenderFlag('showStats', $event)"
+                />
+                <label class="form-check-label" for="world-editor-stats" [title]="'WORLD_EDITOR.STATS_HELP' | translate">{{
+                  'WORLD_EDITOR.STATS' | translate
+                }}</label>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-perf-log"
+                  data-testid="view-perf-log"
+                  [checked]="renderSettings.settings().perfLog"
+                  [disabled]="!perfLogPath()"
+                  (change)="setRenderFlag('perfLog', $event)"
+                />
+                <label class="form-check-label" for="world-editor-perf-log" [title]="perfLogPath() ?? ''">{{
+                  'WORLD_EDITOR.PERF_LOG' | translate
+                }}</label>
+              </div>
+            </section>
             @if (renderSettings.settings().advancedDistances) {
               <table class="table table-sm table-borderless align-middle mb-0 world-editor-distances" data-testid="view-distances">
                 <thead>
@@ -1088,6 +1121,7 @@
             [coverage]="mapCoverage()"
             [maps]="maps()"
             (mapPicked)="pickMap($event)"
+            (atlasPicked)="goToPlace($event.mapId, $event.position)"
             (goTo)="onMapGoTo($event)"
             (regionSelected)="onMapRegion($event)"
             (closed)="toggleMap()"

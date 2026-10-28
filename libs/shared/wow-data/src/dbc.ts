@@ -69,7 +69,8 @@ const MAP_KINDS: MapKind[] = ['world', 'dungeon', 'raid', 'battleground', 'arena
 
 /** What kind of map it is: open world, dungeon, raid, battleground, arena, or a transport's own map. */
 export function mapKind(map: WowMap): MapKind {
-  if (/^transport/i.test(map.name)) {
+  // (by name, or by folder: some, like The Mighty Wind, are only named after their ship)
+  if (/^transport/i.test(map.name) || /^transport/i.test(map.directory)) {
     return 'transport';
   }
   return MAP_KINDS[map.instanceType] ?? 'world';

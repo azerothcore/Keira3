@@ -92,13 +92,30 @@
   }
 
   @if (activity() || spawnsLoading()) {
-    @let busy = activity() ?? { terrain: 0, buildings: 0, props: 0, models: 0, waypoints: 0 };
+    @let busy = activity() ?? { terrain: 0, buildings: 0, props: 0, models: 0, waypoints: 0, percent: 0 };
     <div class="world-viewer-activity" data-testid="world-viewer-activity" role="status">
-      <div class="progress">
-        <div class="progress-bar progress-bar-striped progress-bar-animated w-100"></div>
+      <div
+        class="progress"
+        role="progressbar"
+        [attr.aria-valuenow]="activity() ? busy.percent : null"
+        aria-valuemin="0"
+        aria-valuemax="100"
+      >
+        @if (activity()) {
+          <div
+            class="progress-bar progress-bar-striped progress-bar-animated"
+            data-testid="world-viewer-activity-bar"
+            [style.width.%]="busy.percent"
+          ></div>
+        } @else {
+          <div class="progress-bar progress-bar-striped progress-bar-animated w-100"></div>
+        }
       </div>
       <small>
         {{ 'WORLD_EDITOR.LOADING' | translate }}
+        @if (activity()) {
+          <span data-testid="world-viewer-activity-percent">{{ busy.percent }}%</span>
+        }
         @if (busy.terrain) {
           · {{ 'WORLD_EDITOR.TERRAIN' | translate }} {{ busy.terrain }}
         }

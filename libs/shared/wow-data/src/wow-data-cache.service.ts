@@ -117,18 +117,23 @@ export class WowDataCacheService {
   }
 
   /** Files of one kind for a client, with their sizes, by key (lower case, as stored). */
-  entries(identity: string, kind: string): Record<string, number> {
+  async entries(identity: string, kind: string): Promise<Record<string, number>> {
     if (!this.native) {
       return {};
     }
-    const sizes = this.native.fileSizes(this.kindFolder(identity, kind));
+    const sizes = await this.native.fileSizesAsync(this.kindFolder(identity, kind));
     return Object.fromEntries(Object.entries(sizes).map(([name, size]) => [name.replace(/\.bin$/, ''), size]));
   }
 
-  /** Bytes used on disk by the cache (0 outside the desktop app). */
-  size(): number {
-    this.usedBytes = this.native ? this.native.directorySize(this.root() as string) : 0;
-    return this.usedBytes;
+  /** Bytes used on disk by the cache (0 outside the desktop app), counted without blocking the window. */
+  async size(): Promise<number> {
+    const root = this.root();
+    const bytes = this.native ? await this.native.directorySizeAsync(root as string) : 0;
+    // (unless moved to another folder meanwhile)
+    if (root === this.root()) {
+      this.usedBytes = bytes;
+    }
+    return bytes;
   }
 
   clear(): void {
@@ -150,7 +155,7 @@ export class WowDataCacheService {
   }
 
   private used(): number {
-    return this.usedBytes ?? this.size();
+    return this.usedBytes ?? (this.usedBytes = this.native ? this.native.directorySize(this.root() as string) : 0);
   }
 
   private save(): void {

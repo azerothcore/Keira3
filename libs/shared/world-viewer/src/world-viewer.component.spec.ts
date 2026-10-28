@@ -485,6 +485,9 @@ describe(WorldViewerComponent.name, () => {
     fixture.detectChanges();
     const text = page.activity().nativeElement.textContent?.replace(/\s+/g, ' ');
     expect(text).toContain('WORLD_EDITOR.TERRAIN 1');
+    // how much of it is done
+    expect(page.getDebugElementByTestId('world-viewer-activity-percent').nativeElement.textContent).toBe('0%');
+    expect(page.getDebugElementByTestId('world-viewer-activity-bar').nativeElement.style.width).toBe('0%');
     expect(page.target().nativeElement.textContent?.trim()).toBe(
       `WORLD_EDITOR.CAMERA: X ${CENTER.x} Y ${Math.round(CENTER.y * 10) / 10} Z ${GROUND}`,
     );

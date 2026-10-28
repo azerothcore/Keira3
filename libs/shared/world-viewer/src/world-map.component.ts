@@ -21,6 +21,7 @@ import {
   tileKey,
   vmapTileName,
   mapKind,
+  MapKind,
   WorldBounds,
   WorldPosition,
   WowClientService,
@@ -44,6 +45,18 @@ const MAX_ZOOM = 512;
 const GRID_ZOOM = 48;
 /** Minimaps are shrunk to this size (bigger only when zoomed in). */
 const SMALL_IMAGE = 64;
+/** Pixels a minimap is drawn with, for each quality (1-4). */
+const QUALITY_SIZES = [SMALL_IMAGE, 128, 192, 256];
+export const MAP_QUALITY_KEY = 'keira3.worldEditor.mapQuality';
+
+function loadQuality(): number {
+  try {
+    const stored = Number(localStorage.getItem(MAP_QUALITY_KEY));
+    return stored >= 1 && stored <= 4 ? Math.round(stored) : 2;
+  } catch {
+    return 2;
+  }
+}
 /** At most this many dots are drawn. */
 const MAX_DOTS = 3000;
 /** A press moving less than this (pixels) is a click. */
@@ -80,18 +93,28 @@ export class WorldMapComponent implements OnDestroy {
   readonly regionSelected = output<WorldBounds>();
   /** The close button. */
   readonly closed = output<void>();
-  /** Every map, for the list of all maps. */
+  /** Every map, for the atlas of all maps. */
   readonly maps = input<WowMap[]>([]);
-  /** A map picked in the list of all maps. */
+  /** A map without tiles (a dungeon made of one building) picked in the atlas. */
   readonly mapPicked = output<number>();
-  /** The list of every map (with a picture of each) instead of the map shown. */
+  /** A place picked on a map of the atlas. */
+  readonly atlasPicked = output<{ mapId: number; position: WorldPosition }>();
+  /** The atlas of every map (one big page, by kind) instead of the map shown. */
   protected readonly showAll = signal(false);
   protected readonly fullscreen = signal(false);
+  /** What each map is made of, by directory: its tiles, or a single building (no tiles to draw). */
+  private readonly atlasMaps = signal(new Map<string, TileCoord[] | 'building'>());
   /** Pictures of maps by directory: a data URL, or null when it has none. */
   protected readonly thumbnails = signal(new Map<string, string | null>());
-  protected readonly mapKind = mapKind;
+  protected readonly atlasZoom = signal(8);
+  protected readonly atlasOffset = signal({ x: 0, y: 0 });
+  protected readonly atlasHover = signal<{ x: number; y: number; title: string } | undefined>(undefined);
+  /** The atlas: a section per kind of map, each map placed on a row at its own shape (in tiles). */
+  protected readonly atlas = computed(() => layoutAtlas(this.maps(), this.atlasMaps()));
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
-  private thumbnailRun = 0;
+  private readonly atlasView = viewChild<ElementRef<HTMLDivElement>>('atlasView');
+  private atlasRun = 0;
+  private atlasPress?: { x: number; y: number; offset: { x: number; y: number }; moved: boolean };
 
   private readonly viewport = viewChild.required<ElementRef<HTMLDivElement>>('viewport');
   protected readonly zoom = signal(16);
@@ -105,7 +128,14 @@ export class WorldMapComponent implements OnDestroy {
   private destroyed = false;
 
   protected readonly showGrid = computed(() => this.zoom() >= GRID_ZOOM);
-  protected readonly imageSize = computed(() => (this.zoom() > SMALL_IMAGE * 2 ? 256 : SMALL_IMAGE));
+  /** How sharp the minimaps are drawn (1-4: 64 to 256 pixels a tile; sharper takes more memory), kept on this computer. */
+  protected readonly quality = signal(loadQuality());
+  protected readonly qualities = [1, 2, 3, 4];
+  protected readonly imageSize = computed(() => {
+    const size = QUALITY_SIZES[this.quality() - 1];
+    // zoomed in far: the full image whatever the setting
+    return this.zoom() > size * 2 ? 256 : size;
+  });
   /** The tiles in view, with their image and server files. */
   protected readonly visibleTiles = computed(() => {
     const [zoom, offset] = [this.zoom(), this.offset()];
@@ -194,23 +224,26 @@ export class WorldMapComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     this.destroyed = true;
-    this.thumbnailRun++;
+    this.atlasRun++;
   }
 
-  /** Shows the list of every map, drawing their pictures one after the other (or goes back to the map). */
-  protected toggleAll(): void {
-    const show = !this.showAll();
-    this.showAll.set(show);
-    const run = ++this.thumbnailRun;
-    if (show) {
-      void this.loadThumbnails(run);
+  protected setQuality(quality: number): void {
+    this.quality.set(quality);
+    try {
+      localStorage.setItem(MAP_QUALITY_KEY, String(quality));
+    } catch {
+      // (not kept)
     }
   }
 
-  protected pickMap(id: number): void {
-    this.showAll.set(false);
-    this.thumbnailRun++;
-    this.mapPicked.emit(id);
+  /** Shows the atlas of every map, reading what each is made of then drawing their pictures (or goes back to the map). */
+  protected toggleAll(): void {
+    const show = !this.showAll();
+    this.showAll.set(show);
+    const run = ++this.atlasRun;
+    if (show) {
+      void this.loadAtlas(run);
+    }
   }
 
   protected async toggleFullscreen(): Promise<void> {
@@ -225,29 +258,118 @@ export class WorldMapComponent implements OnDestroy {
     this.fullscreen.set(document.fullscreenElement === this.host.nativeElement);
   }
 
-  private async loadThumbnails(run: number): Promise<void> {
+  protected onAtlasPointerDown(event: PointerEvent): void {
+    if (event.button === 0) {
+      const { x, y } = this.atlasPointer(event);
+      this.atlasPress = { x, y, offset: this.atlasOffset(), moved: false };
+    }
+  }
+
+  protected onAtlasPointerMove(event: PointerEvent): void {
+    const { x, y } = this.atlasPointer(event);
+    const spot = this.atlasSpot(x, y);
+    this.atlasHover.set(
+      spot && {
+        x,
+        y,
+        title: `${spot.block.map.id} – ${spot.block.map.name}${spot.tile ? ` · ${tileKey(spot.tile)}` : ''}`,
+      },
+    );
+    const press = this.atlasPress;
+    if (press) {
+      press.moved ||= Math.hypot(x - press.x, y - press.y) > CLICK_SLOP;
+      if (press.moved) {
+        this.atlasOffset.set({ x: press.offset.x + x - press.x, y: press.offset.y + y - press.y });
+      }
+    }
+  }
+
+  /** A click on a map of the atlas: there on that map (a dungeon: the dungeon). */
+  protected onAtlasPointerUp(event: PointerEvent): void {
+    const press = this.atlasPress;
+    this.atlasPress = undefined;
+    if (!press || press.moved) {
+      return;
+    }
+    const { x, y } = this.atlasPointer(event);
+    const spot = this.atlasSpot(x, y);
+    if (!spot || (spot.block.tiles.length && !spot.tile)) {
+      return;
+    }
+    this.showAll.set(false);
+    this.atlasRun++;
+    if (spot.tile) {
+      this.atlasPicked.emit({ mapId: spot.block.map.id, position: toWorld(spot.u, spot.v) });
+    } else {
+      this.mapPicked.emit(spot.block.map.id);
+    }
+  }
+
+  protected onAtlasPointerLeave(): void {
+    this.atlasHover.set(undefined);
+    this.atlasPress = undefined;
+  }
+
+  /** The map of the atlas under a point of the view, with the tile (and map units) there when it has one. */
+  private atlasSpot(x: number, y: number): { block: AtlasBlock; tile?: TileCoord; u: number; v: number } | undefined {
+    const zoom = this.atlasZoom();
+    const offset = this.atlasOffset();
+    const [px, py] = [(x - offset.x) / zoom, (y - offset.y) / zoom];
+    const block = this.atlas().blocks.find((b) => px >= b.x && px < b.x + b.width && py >= b.y && py < b.y + b.height);
+    if (!block) {
+      return undefined;
+    }
+    const [u, v] = [block.minTx + px - block.x, block.minTy + py - block.y];
+    const tile = block.tiles.find((t) => t.tx === Math.floor(u) && t.ty === Math.floor(v));
+    return { block, tile, u, v };
+  }
+
+  private atlasPointer(event: MouseEvent): { x: number; y: number } {
+    const rect = (this.atlasView() as ElementRef<HTMLDivElement>).nativeElement.getBoundingClientRect();
+    return { x: event.clientX - rect.left, y: event.clientY - rect.top };
+  }
+
+  /** What each map is made of (one after the other), then fits the atlas in the view and draws the pictures. */
+  private async loadAtlas(run: number): Promise<void> {
     for (const map of this.maps()) {
-      if (run !== this.thumbnailRun) {
+      if (run !== this.atlasRun) {
         return;
       }
-      if (this.thumbnails().has(map.directory)) {
+      if (this.atlasMaps().has(map.directory)) {
         continue;
       }
-      const image = await this.client.getMapThumbnail(map.directory).catch(() => undefined);
-      const url = image ? imageToDataUrl(image) : null;
-      this.thumbnails.update((thumbnails) => new Map(thumbnails).set(map.directory, url));
+      const tiles = await this.client.getMapTiles(map.directory).catch((): TileCoord[] => []);
+      // a single tile may be a dungeon's one building (no minimaps to draw)
+      const building = tiles.length === 1 && (await this.client.getMapBuilding(map.directory).catch(() => undefined));
+      this.atlasMaps.update((maps) => new Map(maps).set(map.directory, building ? 'building' : tiles));
+    }
+    // (the atlas fills the component)
+    const { width } = this.host.nativeElement.getBoundingClientRect();
+    this.atlasZoom.set(Math.max(1, (width - 16) / Math.max(1, this.atlas().width)));
+    this.atlasOffset.set({ x: 8, y: 48 });
+    for (const block of this.atlas().blocks) {
+      if (run !== this.atlasRun) {
+        return;
+      }
+      if (block.tiles.length === 0 || this.thumbnails().has(block.map.directory)) {
+        continue;
+      }
+      const image = await this.client.getMapThumbnail(block.map.directory).catch(() => undefined);
+      this.thumbnails.update((thumbnails) => new Map(thumbnails).set(block.map.directory, image ? imageToDataUrl(image) : null));
     }
   }
 
   protected onWheel(event: WheelEvent): void {
     event.preventDefault();
-    const { x, y } = this.pointer(event);
-    const before = this.zoom();
-    const zoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, before * (event.deltaY < 0 ? 1.25 : 0.8)));
-    const offset = this.offset();
+    const atlas = this.showAll();
+    const { x, y } = atlas ? this.atlasPointer(event) : this.pointer(event);
+    const [zoomSignal, offsetSignal] = atlas ? [this.atlasZoom, this.atlasOffset] : [this.zoom, this.offset];
+    const before = zoomSignal();
+    const zoom = Math.min(MAX_ZOOM, Math.max(atlas ? 1 : MIN_ZOOM, before * (event.deltaY < 0 ? 1.25 : 0.8)));
+    const offset = offsetSignal();
     // keep the point under the cursor where it is
-    this.offset.set({ x: x - ((x - offset.x) / before) * zoom, y: y - ((y - offset.y) / before) * zoom });
-    this.zoom.set(zoom);
+    offsetSignal.set({ x: x - ((x - offset.x) / before) * zoom, y: y - ((y - offset.y) / before) * zoom });
+    zoomSignal.set(zoom);
   }
 
   protected onPointerDown(event: PointerEvent): void {
@@ -371,4 +493,66 @@ export class WorldMapComponent implements OnDestroy {
       this.loading.delete(key);
     }
   }
+}
+
+/** A map placed in the atlas (in tiles): where, its size, and its tiles (none for a dungeon of one building). */
+export interface AtlasBlock {
+  map: WowMap;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  minTx: number;
+  minTy: number;
+  tiles: TileCoord[];
+}
+
+/** The sections of the atlas, in order. */
+const ATLAS_SECTIONS: MapKind[] = ['world', 'dungeon', 'raid', 'battleground', 'arena', 'transport'];
+/** Width (tiles) of the atlas page: an open world map is up to 64 tiles across. */
+const ATLAS_WIDTH = 160;
+/** Room (tiles) for a section's title, between maps, and the size of a dungeon of one building. */
+const ATLAS_TITLE = 6;
+const ATLAS_GAP = 2;
+const ATLAS_BUILDING = 8;
+
+/**
+ * Lays out every map known so far on one page: a section per kind (Maps, Dungeons, Raids…), and in each the maps on
+ * rows, left to right, each at its own shape (its tiles' extent); dungeons of one building get a square.
+ */
+export function layoutAtlas(
+  maps: WowMap[],
+  contents: Map<string, TileCoord[] | 'building'>,
+): { width: number; height: number; sections: { kind: MapKind; y: number }[]; blocks: AtlasBlock[] } {
+  const sections: { kind: MapKind; y: number }[] = [];
+  const blocks: AtlasBlock[] = [];
+  let y = 0;
+  for (const kind of ATLAS_SECTIONS) {
+    const members = maps.filter((map) => mapKind(map) === kind && contents.has(map.directory));
+    const placeable = members.filter(
+      (map) => contents.get(map.directory) === 'building' || (contents.get(map.directory) as TileCoord[]).length,
+    );
+    if (placeable.length === 0) {
+      continue;
+    }
+    sections.push({ kind, y });
+    y += ATLAS_TITLE;
+    let [x, rowHeight] = [0, 0];
+    for (const map of placeable) {
+      const content = contents.get(map.directory) as TileCoord[] | 'building';
+      const tiles = content === 'building' ? [] : content;
+      const minTx = tiles.length ? Math.min(...tiles.map((t) => t.tx)) : 0;
+      const minTy = tiles.length ? Math.min(...tiles.map((t) => t.ty)) : 0;
+      const width = tiles.length ? Math.max(...tiles.map((t) => t.tx)) - minTx + 1 : ATLAS_BUILDING;
+      const height = tiles.length ? Math.max(...tiles.map((t) => t.ty)) - minTy + 1 : ATLAS_BUILDING;
+      if (x > 0 && x + width > ATLAS_WIDTH) {
+        [x, y, rowHeight] = [0, y + rowHeight + ATLAS_GAP, 0];
+      }
+      blocks.push({ map, x, y, width, height, minTx, minTy, tiles });
+      x += width + ATLAS_GAP;
+      rowHeight = Math.max(rowHeight, height);
+    }
+    y += rowHeight + ATLAS_GAP * 2;
+  }
+  return { width: ATLAS_WIDTH, height: y, sections, blocks };
 }

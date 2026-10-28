@@ -1047,7 +1047,7 @@
     "WALKED_BY": "Recorrida por",
     "VIEW": "Vista",
     "MAP_ALL": "Todos los mapas",
-    "MAP_ALL_HELP": "Todos los mapas, cada uno con su imagen (hecha con sus minimapas la primera vez y guardada en la caché): pulsa uno para abrirlo",
+    "MAP_ALL_HELP": "Todos los mapas en una página, por tipo (mapas, mazmorras, bandas…), cada uno con sus minimapas (hechos la primera vez y guardados en la caché): pulsa un lugar para ir allí",
     "STATS": "Mostrar estadísticas de rendimiento",
     "STATS_HELP": "Fotogramas por segundo, tiempo de dibujo, llamadas de dibujo, triángulos, lo que hay en la tarjeta gráfica, memoria y lo cargado, en la esquina inferior izquierda de la vista",
     "PERF_LOG": "Escribir un registro de rendimiento",
@@ -1363,6 +1363,21 @@
     "SMALL_DOODADS": "Objetos pequeños",
     "CREATURE_MODELS": "PNJ",
     "GAMEOBJECT_MODELS": "Objetos",
-    "OFF": "No"
+    "OFF": "No",
+    "ATLAS_WORLD": "Mapas",
+    "ATLAS_DUNGEON": "Mazmorras",
+    "ATLAS_RAID": "Bandas",
+    "ATLAS_BATTLEGROUND": "Campos de batalla",
+    "ATLAS_ARENA": "Arenas",
+    "ATLAS_TRANSPORT": "Transportes",
+    "MAP_QUALITY": "Nitidez de los minimapas: 1 (más ligero) a 4 (más nítido, más memoria)",
+    "VIEW_OVERLAYS": "Capas",
+    "VIEW_WORLD": "Mundo",
+    "VIEW_SPAWNS": "Spawns",
+    "VIEW_COLLISION": "Colisión y navegación",
+    "VIEW_LOADING": "Carga y distancia",
+    "VIEW_DEBUG": "Depuración",
+    "SOLID_SELECTION": "Marcador de selección sólido",
+    "SOLID_SELECTION_HELP": "Muestra el modelo seleccionado como un marcador amarillo sólido en lugar de una caja de contorno"
   }
 }

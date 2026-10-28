@@ -1047,7 +1047,7 @@
     "WALKED_BY": "使用者",
     "VIEW": "视图",
     "MAP_ALL": "全部地图",
-    "MAP_ALL_HELP": "所有地图，各附一张图（首次由其小地图生成，之后存于缓存）：点击打开",
+    "MAP_ALL_HELP": "所有地图在一页上，按类型分组（地图、地下城、团队副本…），各带小地图（首次生成，之后存于缓存）：点击某处前往",
     "STATS": "显示性能统计",
     "STATS_HELP": "每秒帧数、绘制时间、绘制调用、三角形、显卡上的内容、内存和已加载内容，显示在视图左下角",
     "PERF_LOG": "写入性能日志",
@@ -1363,6 +1363,21 @@
     "SMALL_DOODADS": "小型道具",
     "CREATURE_MODELS": "NPC",
     "GAMEOBJECT_MODELS": "物体",
-    "OFF": "关闭"
+    "OFF": "关闭",
+    "ATLAS_WORLD": "地图",
+    "ATLAS_DUNGEON": "地下城",
+    "ATLAS_RAID": "团队副本",
+    "ATLAS_BATTLEGROUND": "战场",
+    "ATLAS_ARENA": "竞技场",
+    "ATLAS_TRANSPORT": "交通工具",
+    "MAP_QUALITY": "小地图清晰度：1（最轻）到 4（最清晰，更占内存）",
+    "VIEW_OVERLAYS": "图层",
+    "VIEW_WORLD": "世界",
+    "VIEW_SPAWNS": "刷新点",
+    "VIEW_COLLISION": "碰撞与导航",
+    "VIEW_LOADING": "加载与距离",
+    "VIEW_DEBUG": "调试",
+    "SOLID_SELECTION": "实心选中标记",
+    "SOLID_SELECTION_HELP": "将选中的模型显示为实心黄色标记，而不是外框"
   }
 }

@@ -224,8 +224,11 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   protected readonly loading = signal(false);
   /** What's still loading in the background (undefined when idle). */
   protected readonly activity = signal<
-    { terrain: number; buildings: number; props: number; models: number; waypoints: number } | undefined
+    { terrain: number; buildings: number; props: number; models: number; waypoints: number; percent: number } | undefined
   >(undefined);
+  /** Everything there was to load since the loading bar showed (what's left plus what got done), for its percentage. */
+  private loadTotal = 0;
+  private loadPending = 0;
   /** The performance stats (View > Show performance stats). */
   protected readonly stats = signal<ViewerStats | undefined>(undefined);
   /** Buildings placed by the editor (a transport's ship on its map), at server positions. */
@@ -328,6 +331,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
         this.world.setRoofsVisible(settings.showRoofs);
         this.world.setCollisionVisible(settings.showCollision);
         this.world.setFacingArrowsVisible(settings.showFacingArrows);
+        this.world.setSolidSelection(settings.solidSelection);
         void this.streamer.update(this.center);
         void this.objects.update(this.center);
         void this.doodads.update(this.center);
@@ -1388,11 +1392,16 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       models: this.spawnModels.pendingCount,
       waypoints: this.world.waypointPlacesPending,
     };
-    const busy = Object.values(activity).some((count) => count > 0);
+    const pending = Object.values(activity).reduce((total, count) => total + count, 0);
+    const busy = pending > 0;
+    // new work adds to the total; what's no longer pending is done
+    this.loadTotal = busy ? this.loadTotal + Math.max(0, pending - this.loadPending) : 0;
+    this.loadPending = pending;
+    const progress = { ...activity, percent: busy ? Math.floor((100 * (this.loadTotal - pending)) / this.loadTotal) : 0 };
     const shown = this.activity();
     // (set only when it changed: this runs every frame)
-    if (busy ? JSON.stringify(shown) !== JSON.stringify(activity) : shown !== undefined) {
-      this.activity.set(busy ? activity : undefined);
+    if (busy ? JSON.stringify(shown) !== JSON.stringify(progress) : shown !== undefined) {
+      this.activity.set(busy ? progress : undefined);
     }
     if (busy && !this.activityTimer) {
       this.activityTimer = setTimeout(() => {

@@ -1,4 +1,14 @@
-import { flushPerfLog, longTask, PERF_FLUSH_MS, perfFrame, perfLogActive, perfNote, perfTime, setPerfLog } from './perf-log';
+import {
+  flushPerfLog,
+  longTask,
+  perfLogFileName,
+  PERF_FLUSH_MS,
+  perfFrame,
+  perfLogActive,
+  perfNote,
+  perfTime,
+  setPerfLog,
+} from './perf-log';
 
 describe('perf log', () => {
   afterEach(() => {
@@ -84,5 +94,11 @@ describe('perf log', () => {
     setPerfLog(quiet);
     flushPerfLog();
     expect(quiet).toHaveBeenCalledWith(expect.stringContaining('long tasks can not be watched here'));
+  });
+});
+
+describe('perfLogFileName', () => {
+  it('names the log by date, commit, version and time', () => {
+    expect(perfLogFileName(new Date(2026, 9, 8, 7, 5, 3), '1b7538c', '1.2.3')).toBe('08_10_2026_1b7538c_1.2.3_07_05_03.log');
   });
 });

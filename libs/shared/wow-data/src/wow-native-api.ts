@@ -41,8 +41,8 @@ export interface WowNativeApi {
   directorySize(path: string): number;
   /** The same, counted without blocking the window. */
   directorySizeAsync(path: string): Promise<number>;
-  /** Size in bytes of each file directly in a folder, by name (empty if missing). */
-  fileSizes(path: string): Record<string, number>;
+  /** Size in bytes of each file directly in a folder, by name (empty if missing), without blocking the window. */
+  fileSizesAsync(path: string): Promise<Record<string, number>>;
   /** Where Keira keeps data it can rebuild (the user's local application data). */
   cacheDirectory(): string;
   /** Turns plain data (objects, arrays, typed arrays…) into compact bytes, and back (compressed off the window's thread). */

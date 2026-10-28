@@ -1,21 +1,48 @@
 @if (showAll()) {
-  <div class="world-map-all" data-testid="world-map-all">
-    @for (map of maps(); track map.id) {
-      @let picture = thumbnails().get(map.directory);
-      <button type="button" class="world-map-card" [attr.data-testid]="'world-map-card-' + map.id" (click)="pickMap(map.id)">
-        <span class="world-map-card-name">{{ map.id }} – {{ map.name }}</span>
-        @if (picture) {
-          <img [src]="picture" alt="" draggable="false" />
-        } @else {
-          <span class="world-map-card-empty">
-            @if (picture === null) {
-              {{ 'WORLD_EDITOR.MAP_KIND_' + mapKind(map).toUpperCase() | translate }}
-            } @else {
-              <i class="fa fa-spinner fa-spin"></i>
-            }
-          </span>
-        }
-      </button>
+  @let page = atlas();
+  @let zoom = atlasZoom();
+  <div
+    #atlasView
+    class="world-map world-map-atlas"
+    data-testid="world-map-atlas"
+    (pointerdown)="onAtlasPointerDown($event)"
+    (pointermove)="onAtlasPointerMove($event)"
+    (pointerup)="onAtlasPointerUp($event)"
+    (pointerleave)="onAtlasPointerLeave()"
+  >
+    <div class="world-map-plane" [style.transform]="'translate(' + atlasOffset().x + 'px, ' + atlasOffset().y + 'px)'">
+      @for (section of page.sections; track section.kind) {
+        <div
+          class="world-map-atlas-section"
+          [attr.data-testid]="'world-map-atlas-section-' + section.kind"
+          [style.top.px]="section.y * zoom"
+          [style.width.px]="page.width * zoom"
+        >
+          {{ 'WORLD_EDITOR.ATLAS_' + section.kind.toUpperCase() | translate }}
+        </div>
+      }
+      @for (block of page.blocks; track block.map.id) {
+        @let picture = thumbnails().get(block.map.directory);
+        <div
+          class="world-map-atlas-block"
+          [class.building]="!block.tiles.length"
+          [attr.data-testid]="'world-map-atlas-' + block.map.id"
+          [style.left.px]="block.x * zoom"
+          [style.top.px]="block.y * zoom"
+          [style.width.px]="block.width * zoom"
+          [style.height.px]="block.height * zoom"
+        >
+          @if (picture) {
+            <img [src]="picture" alt="" draggable="false" />
+          }
+          <span class="world-map-atlas-name">{{ block.map.id }} – {{ block.map.name }}</span>
+        </div>
+      }
+    </div>
+    @if (atlasHover(); as hover) {
+      <div class="world-map-info" data-testid="world-map-atlas-info" [style.left.px]="hover.x + 12" [style.top.px]="hover.y + 12">
+        {{ hover.title }}
+      </div>
     }
   </div>
 }
@@ -85,6 +112,28 @@
     </div>
   }
 </div>
+@if (!showAll()) {
+  <div
+    class="btn-group btn-group-sm world-map-quality"
+    role="group"
+    [title]="'WORLD_EDITOR.MAP_QUALITY' | translate"
+    (pointerdown)="$event.stopPropagation()"
+    (pointerup)="$event.stopPropagation()"
+  >
+    @for (level of qualities; track level) {
+      <button
+        type="button"
+        class="btn"
+        [attr.data-testid]="'world-map-quality-' + level"
+        [class.btn-light]="level === quality()"
+        [class.btn-dark]="level !== quality()"
+        (click)="setQuality(level)"
+      >
+        {{ level }}
+      </button>
+    }
+  </div>
+}
 <div class="world-map-buttons" (pointerdown)="$event.stopPropagation()" (pointerup)="$event.stopPropagation()">
   <button
     type="button"

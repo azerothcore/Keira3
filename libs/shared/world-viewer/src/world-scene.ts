@@ -130,16 +130,18 @@ function spawnSignature(spawn: WorldSpawn): string {
   ]);
 }
 
-/** Boss boundaries: how far their wall goes under and over the boss (yards), and how see-through it and the area are. */
-const BOUNDARY_WALL_DEPTH = 2;
-const BOUNDARY_WALL_HEIGHT = 12;
-const BOUNDARY_WALL_OPACITY = 0.22;
-const BOUNDARY_FILL_OPACITY = 0.1;
+/** Boss boundaries: how far their wall goes under and over the boss (yards), and how see-through it is. */
+const BOUNDARY_WALL_DEPTH = 60;
+const BOUNDARY_WALL_HEIGHT = 120;
+const BOUNDARY_WALL_OPACITY = 0.12;
+/** About how many upright lines are drawn around a boundary. */
+const BOUNDARY_RIBS = 24;
 
 /** The alpha maps of a tile's 16 × 16 chunks, side by side. */
 const SPLAT_ATLAS_SIZE = 1024;
 
 const SPAWN_MODEL_NAME = 'model';
+const SELECTION_BOX_NAME = 'selection-box';
 const WANDER_RING_NAME = 'wander';
 const FACING_ARROW_NAME = 'facing';
 /** Default colour and opacity of each liquid. */
@@ -338,6 +340,9 @@ export class WorldScene {
   private readonly sky = createSkyDome();
   /** Pins of spawns drawn with their real model: not rendered, but still picked (so small models stay clickable). */
   private readonly hiddenMarkerMaterial = new MeshBasicMaterial({ visible: false });
+  private readonly selectionBoxMaterial = new LineBasicMaterial({ color: 0xffe066, depthTest: false, transparent: true });
+  /** The selection over models: a solid pin, or an outline (see setSolidSelection). */
+  private solidSelection = false;
 
   constructor() {
     this.scene.background = new Color(COLORS.sky);
@@ -1407,13 +1412,15 @@ export class WorldScene {
       const flat = flatShapes(boundary.shapes);
       const ranges = flatShapes(boundary.shapes, true) as Extract<BoundaryShape, { type: 'zrange' }>[];
       const heights = ranges.length ? ranges.flatMap((range) => [range.minZ, range.maxZ]) : [boundary.z];
-      // a see-through wall around the area: from the floor of a height range to its ceiling, or a few yards high
+      // like .debug boundary: a shape has no height limit (a circle is a cylinder), unless a height range says so; drawn
+      // as a see-through wall from well under the boss to well over it (or the range's floor to its ceiling), with ribs
       const [bottom, top] = ranges.length
         ? [Math.min(...heights), Math.max(...heights)]
         : [boundary.z - BOUNDARY_WALL_DEPTH, boundary.z + BOUNDARY_WALL_HEIGHT];
       for (const shape of flat) {
         const outline = boundaryOutline(shape) as BoundaryPoint[];
         const color = shape.inverted ? BOUNDARY_OUT_COLOR : boundary.color;
+        // the outline at the boss's height (or at both heights of the range)
         for (const z of heights) {
           const points = outline.map((p) => scenePoint({ x: p.x, y: p.y, z }, 0.3));
           const lineMaterial = shape.inverted
@@ -1424,10 +1431,6 @@ export class WorldScene {
           line.renderOrder = 1;
           line.raycast = () => undefined;
           this.boundaryGroup.add(line);
-          // the area itself, seen through floors and walls: a fan from the middle (every shape is convex)
-          const middle = points.reduce((sum, p) => sum.add(p), new Vector3()).divideScalar(points.length);
-          const fan = points.flatMap((p, i) => [middle, p, points[(i + 1) % points.length]]);
-          this.addBoundaryMesh(boundary.key, fan, color, false, BOUNDARY_FILL_OPACITY);
         }
         const low = outline.map((p) => scenePoint({ x: p.x, y: p.y, z: bottom }));
         const high = outline.map((p) => scenePoint({ x: p.x, y: p.y, z: top }));
@@ -1436,6 +1439,15 @@ export class WorldScene {
           return [p, low[j], high[j], p, high[j], high[i]];
         });
         this.addBoundaryMesh(boundary.key, wall, color, true, BOUNDARY_WALL_OPACITY);
+        // upright lines around it, so the wall reads as a wall
+        const step = Math.max(1, Math.round(low.length / BOUNDARY_RIBS));
+        const ribs = low.flatMap((p, i) => (i % step === 0 ? [p, high[i]] : []));
+        const ribLines = new LineSegments(
+          new BufferGeometry().setFromPoints(ribs),
+          new LineBasicMaterial({ color, transparent: true, opacity: 0.55 }),
+        );
+        ribLines.raycast = () => undefined;
+        this.boundaryGroup.add(ribLines);
       }
     }
   }
@@ -1774,11 +1786,51 @@ export class WorldScene {
       if (pointer) {
         pointer.material = mesh.material;
       }
-    } else if (data.modelScale !== undefined && !selected) {
+    } else if (data.modelScale !== undefined && (!selected || !this.solidSelection)) {
+      // drawn with its model: the pin stays out of the way (selected: an outline around the model instead)
       mesh.material = this.hiddenMarkerMaterial;
+      this.setSelectionBox(object, selected);
     } else {
       mesh.material = this.markerMaterial(data.kind, selected ? 'selected' : data.pending ? 'pending' : 'normal');
+      this.setSelectionBox(object, false);
     }
+  }
+
+  /** Shows the selection over models as a solid pin (true) or as an outline around the model (false, the default). */
+  setSolidSelection(solid: boolean): void {
+    this.solidSelection = solid;
+    this.applySelection();
+  }
+
+  /** A thin box around the model of a selected spawn, so its size stays visible while it's moved. */
+  private setSelectionBox(marker: Object3D, show: boolean): void {
+    const model = marker.getObjectByName(SPAWN_MODEL_NAME);
+    const old = model?.getObjectByName(SELECTION_BOX_NAME);
+    if (old && !show) {
+      old.removeFromParent();
+      (old as LineSegments).geometry.dispose();
+    }
+    if (!model || !show || old) {
+      return;
+    }
+    // the model's own size (its meshes, not its facing arrow or collision)
+    const bounds = new Box3();
+    model.traverse((child) => {
+      if (child instanceof Mesh && child.name !== FACING_ARROW_NAME && child.layers.isEnabled(0)) {
+        child.geometry.computeBoundingBox();
+        bounds.union(child.geometry.boundingBox as Box3);
+      }
+    });
+    if (bounds.isEmpty()) {
+      return;
+    }
+    const size = bounds.getSize(new Vector3());
+    const box = new LineSegments(new EdgesGeometry(new BoxGeometry(size.x, size.y, size.z)), this.selectionBoxMaterial);
+    box.name = SELECTION_BOX_NAME;
+    bounds.getCenter(box.position);
+    box.renderOrder = 3;
+    box.raycast = () => undefined;
+    model.add(box);
   }
 }
 

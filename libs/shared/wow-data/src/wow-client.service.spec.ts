@@ -1034,13 +1034,13 @@ describe('WowClientService', () => {
         layerSplatDepth: 4,
       });
       const picture = await service.getMapThumbnail('Azeroth');
-      // 2 × 2 tiles of 96 pixels: the top-left and bottom-right drawn, the bottom-left (no minimap) left clear
-      expect([picture?.width, picture?.height]).toEqual([192, 192]);
+      // 2 × 2 tiles of 128 pixels: the top-left and bottom-right drawn, the bottom-left (no minimap) left clear
+      expect([picture?.width, picture?.height]).toEqual([256, 256]);
       expect(picture?.data[0]).toBe(255);
-      expect(picture?.data[(191 * 192 + 191) * 4]).toBe(255);
-      expect(picture?.data[(191 * 192 + 0) * 4 + 3]).toBe(0);
+      expect(picture?.data[(255 * 256 + 255) * 4]).toBe(255);
+      expect(picture?.data[(255 * 256 + 0) * 4 + 3]).toBe(0);
       formats.decodeBlp.mockClear();
-      expect((await service.getMapThumbnail('Azeroth'))?.width).toBe(192);
+      expect((await service.getMapThumbnail('Azeroth'))?.width).toBe(256);
       expect(formats.decodeBlp).not.toHaveBeenCalled();
       // no tiles; tiles without minimaps
       expect(await service.getMapThumbnail('Empty')).toBeUndefined();

@@ -1047,7 +1047,7 @@
     "WALKED_BY": "Walked by",
     "VIEW": "View",
     "MAP_ALL": "All maps",
-    "MAP_ALL_HELP": "Every map, each with a picture of it (made from its minimaps the first time, then kept in the cache): click one to open it",
+    "MAP_ALL_HELP": "Every map on one page, by kind (maps, dungeons, raids…), each with its minimaps (made the first time, then kept in the cache): click a place to go there",
     "STATS": "Show performance stats",
     "STATS_HELP": "Frames per second, draw time, draw calls, triangles, what's on the graphics card, memory and what's loaded, in the bottom-left corner of the view",
     "PERF_LOG": "Write a performance log",
@@ -1363,6 +1363,21 @@
     "SMALL_DOODADS": "Small props",
     "CREATURE_MODELS": "NPCs",
     "GAMEOBJECT_MODELS": "Objects",
-    "OFF": "Off"
+    "OFF": "Off",
+    "ATLAS_WORLD": "Maps",
+    "ATLAS_DUNGEON": "Dungeons",
+    "ATLAS_RAID": "Raids",
+    "ATLAS_BATTLEGROUND": "Battlegrounds",
+    "ATLAS_ARENA": "Arenas",
+    "ATLAS_TRANSPORT": "Transports",
+    "MAP_QUALITY": "How sharp the minimaps are drawn: 1 (lightest) to 4 (sharpest, more memory)",
+    "VIEW_OVERLAYS": "Overlays",
+    "VIEW_WORLD": "World",
+    "VIEW_SPAWNS": "Spawns",
+    "VIEW_COLLISION": "Collision & navigation",
+    "VIEW_LOADING": "Loading & distance",
+    "VIEW_DEBUG": "Debugging",
+    "SOLID_SELECTION": "Solid selection marker",
+    "SOLID_SELECTION_HELP": "Show the selected model as a solid yellow marker instead of an outline box around it"
   }
 }

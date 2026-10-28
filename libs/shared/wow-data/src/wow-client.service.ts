@@ -502,20 +502,25 @@ export class WowClientService {
   async cacheUsage(): Promise<CacheUsage> {
     const { identity } = await this.getClient();
     const maps = new Map<string, { directory: string; tiles: number; bytes: number }>();
-    for (const [key, bytes] of Object.entries(this.cache.entries(identity, 'adt'))) {
+    const [adt, wmo, m2, doodads, textures, totalBytes] = await Promise.all([
+      ...['adt', 'wmo', 'm2', 'wmo-doodads', 'texture'].map((kind) => this.cache.entries(identity, kind)),
+      this.cache.size(),
+    ]);
+    for (const [key, bytes] of Object.entries(adt as Record<string, number>)) {
       const directory = key.replace(/_\d+_\d+$/, '');
       const usage = maps.get(directory) ?? { directory, tiles: 0, bytes: 0 };
       usage.tiles++;
       usage.bytes += bytes;
       maps.set(directory, usage);
     }
-    const sum = (kind: string): number => Object.values(this.cache.entries(identity, kind)).reduce((total, bytes) => total + bytes, 0);
+    const sum = (sizes: Record<string, number> | number): number =>
+      Object.values(sizes as Record<string, number>).reduce((total, bytes) => total + bytes, 0);
     return {
       maps: [...maps.values()],
-      buildingBytes: sum('wmo'),
-      modelBytes: sum('m2') + sum('wmo-doodads'),
-      textureBytes: sum('texture'),
-      totalBytes: this.cache.size(),
+      buildingBytes: sum(wmo),
+      modelBytes: sum(m2) + sum(doodads),
+      textureBytes: sum(textures),
+      totalBytes: totalBytes as number,
     };
   }
 
@@ -708,7 +713,7 @@ export class WowClientService {
    */
   async getMapThumbnail(directory: string): Promise<RgbaImage | undefined> {
     const { identity } = await this.getClient();
-    const cached = await this.cache.read<RgbaImage>(identity, 'thumbnail', directory);
+    const cached = await this.cache.read<RgbaImage>(identity, MAP_PICTURE_KIND, directory);
     if (cached) {
       return cached;
     }
@@ -731,7 +736,7 @@ export class WowClientService {
     if (!drawn) {
       return undefined;
     }
-    void this.cache.write(identity, 'thumbnail', directory, thumbnail);
+    void this.cache.write(identity, MAP_PICTURE_KIND, directory, thumbnail);
     return thumbnail;
   }
 
@@ -899,7 +904,9 @@ function nextFrame(): Promise<void> {
 }
 
 /** Pixels across a map's thumbnail (about: each tile gets a whole number of pixels). */
-export const MAP_THUMBNAIL_SIZE = 192;
+export const MAP_THUMBNAIL_SIZE = 256;
+/** Cache folder of the map pictures (named after their size: pictures of another size are made again). */
+const MAP_PICTURE_KIND = `map-picture-${MAP_THUMBNAIL_SIZE}`;
 
 /** Draws `image` shrunk to `size` × `size` pixels (nearest pixel) into `target` at `left`, `top`. */
 function blit(image: RgbaImage, target: RgbaImage, left: number, top: number, size: number): void {

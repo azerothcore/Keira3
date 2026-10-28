@@ -285,5 +285,8 @@ describe('mapKind', () => {
     const map = (instanceType: number, name = 'Somewhere') => ({ id: 1, directory: 'X', name, instanceType });
     expect([0, 1, 2, 3, 4, 7].map((type) => mapKind(map(type)))).toEqual(['world', 'dungeon', 'raid', 'battleground', 'arena', 'world']);
     expect(mapKind(map(0, 'Transport: The Skybreaker'))).toBe('transport');
+    expect(mapKind({ id: 718, directory: 'Transport201834', name: 'The Mighty Wind (Icecrown Citadel Raid)', instanceType: 0 })).toBe(
+      'transport',
+    );
   });
 });

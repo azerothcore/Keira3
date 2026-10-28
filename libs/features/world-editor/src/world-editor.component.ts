@@ -1,5 +1,7 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { debounceTime } from 'rxjs';
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import packageInfo from '../../../../package.json';
 import {
   afterNextRender,
   ChangeDetectionStrategy,
@@ -67,6 +69,9 @@ import {
   WowClientService,
   perfTime,
   setPerfLog,
+  perfLogActive,
+  perfNote,
+  perfLogFileName,
   describeFaction,
   FactionData,
   WowDataCacheService,
@@ -204,6 +209,7 @@ type RenderFlagKey =
   | 'showBounds'
   | 'showStats'
   | 'perfLog'
+  | 'solidSelection'
   | 'showCollision'
   | 'showNavMesh'
   | 'zoneLighting'
@@ -264,16 +270,60 @@ export class WorldEditorComponent implements OnInit {
   private readonly settings = inject(WowDataSettingsService);
   protected readonly renderSettings = inject(WorldRenderSettingsService);
   protected readonly cache = inject(WowDataCacheService);
-  /** Where the performance log goes (next to the cache); undefined outside the desktop app. */
-  protected readonly perfLogPath = computed(() => {
-    const root = this.cache.root();
-    return root && `${root}/world-editor-perf.log`;
-  });
-  /** View > Write a performance log: appended to that file while on. */
+  /** The folder performance logs go to (the cache's); undefined outside the desktop app. */
+  protected readonly perfLogPath = computed(() => this.cache.root());
+  /**
+   * View > Write a performance log: each time it's turned on, a new file in that folder named
+   * `dd_mm_yyyy_<commit>_<keira version>_hh_mm_ss.log`, appended to while on.
+   */
+  // (its own signal: other settings changing don't start a new file)
+  private readonly perfLogOn = computed(() => this.renderSettings.settings().perfLog);
   private readonly perfLog = effect(() => {
-    const path = this.renderSettings.settings().perfLog ? this.perfLogPath() : undefined;
-    untracked(() => setPerfLog(path ? (text) => this.electron.fs.appendFileSync(path, text) : undefined));
+    const folder = this.perfLogOn() ? this.perfLogPath() : undefined;
+    untracked(() => {
+      const path = folder && `${folder}/${perfLogFileName(new Date(), this.gitCommit(), packageInfo.version)}`;
+      setPerfLog(path ? (text) => this.electron.fs.appendFileSync(path, text) : undefined);
+      this.loggedSettings = undefined;
+      this.logSettings();
+    });
   });
+  /** The settings in use go in the performance log when it starts and whenever they change. */
+  private readonly perfSettings = effect(() => {
+    this.renderSettings.settings();
+    this.controls.settings();
+    untracked(() => this.logSettings());
+  });
+  private loggedSettings?: string;
+  private logSettings(): void {
+    if (!perfLogActive()) {
+      return;
+    }
+    const { perfLog: _perfLog, ...render } = this.renderSettings.settings();
+    const line =
+      `settings: camera speed ×${this.controls.settings().speed} | window ${window.innerWidth}×${window.innerHeight} ` +
+      `at ${window.devicePixelRatio}× | ${Object.entries(render)
+        .map(([key, value]) => `${key}=${value}`)
+        .join(' ')}`;
+    if (line !== this.loggedSettings) {
+      this.loggedSettings = line;
+      perfNote(line);
+    }
+  }
+  private commit?: string;
+  /** The commit Keira runs from (a checkout); "release" when it isn't one. */
+  private gitCommit(): string {
+    if (this.commit === undefined) {
+      try {
+        this.commit = this.electron.childProcess
+          .execSync('git rev-parse --short HEAD', { encoding: 'utf8', timeout: 3000, stdio: ['ignore', 'pipe', 'ignore'] })
+          .trim();
+      } catch {
+        this.commit = '';
+      }
+      this.commit ||= 'release';
+    }
+    return this.commit;
+  }
   private readonly stopPerfLog = inject(DestroyRef).onDestroy(() => setPerfLog(undefined));
   protected readonly controls = inject(WorldControlsSettingsService);
   protected readonly controlActions = CONTROL_ACTIONS;
@@ -1131,18 +1181,19 @@ export class WorldEditorComponent implements OnInit {
 
   /** Total size, and per map when the client can be read. */
   private async refreshCacheUsage(): Promise<void> {
-    this.cacheSize.set(this.cache.size());
-    if (!this.client.isSupported() || !this.settings.isConfigured()) {
-      return;
+    // (counted off the window's thread: thousands of files)
+    if (this.client.isSupported() && this.settings.isConfigured()) {
+      try {
+        const usage = await this.client.cacheUsage();
+        this.cacheUsage.set(usage);
+        this.cacheSize.set(usage.totalBytes);
+        return;
+      } catch {
+        // the client can't be opened (yet): the total is still shown
+        this.cacheUsage.set(undefined);
+      }
     }
-    try {
-      const usage = await this.client.cacheUsage();
-      this.cacheUsage.set(usage);
-      this.cacheSize.set(usage.totalBytes);
-    } catch {
-      // the client can't be opened (yet): the total is still shown
-      this.cacheUsage.set(undefined);
-    }
+    this.cacheSize.set(await this.cache.size());
   }
 
   protected setCacheMaxGb(event: Event): void {
@@ -1481,6 +1532,15 @@ export class WorldEditorComponent implements OnInit {
   private goToGps(gps: GpsLocation): void {
     this.goToForm.setValue({ x: gps.x, y: gps.y, z: gps.z });
     this.goTo(gps.map, { x: gps.x, y: gps.y, z: gps.z });
+  }
+
+  /** A place picked on another map (the world map's atlas): there, at the server's ground height. */
+  protected async goToPlace(map: number, position: WorldPosition): Promise<void> {
+    const tile = worldToTile(position.x, position.y);
+    const server = await this.client.getServerMap(map, tile).catch(() => undefined);
+    const z = (server && serverHeightAt(server, tile, position.x, position.y)) ?? position.z;
+    this.goTo(map, { x: position.x, y: position.y, z });
+    this.showMap.set(false);
   }
 
   private goTo(map: number, position: WorldPosition): void {

@@ -70,16 +70,12 @@ export function createWowNativeApi(
     removeDirectory: (path) => nodeFs.rmSync(path, { recursive: true, force: true }),
     directorySize,
     directorySizeAsync,
-    fileSizes: (path) =>
-      nodeFs.existsSync(path)
-        ? Object.fromEntries(
-            nodeFs
-              .readdirSync(path)
-              .map((name) => [name, nodeFs.statSync(`${path}/${name}`)] as const)
-              .filter(([, stat]) => !stat.isDirectory())
-              .map(([name, stat]) => [name, stat.size]),
-          )
-        : {},
+    fileSizesAsync: async (path) => {
+      const entries = await nodeFs.promises.readdir(path, { withFileTypes: true }).catch(() => []);
+      const files = entries.filter((entry) => !entry.isDirectory());
+      const sizes = await Promise.all(files.map((entry) => nodeFs.promises.stat(`${path}/${entry.name}`).then((stat) => stat.size)));
+      return Object.fromEntries(files.map((entry, index) => [entry.name, sizes[index]]));
+    },
     cacheDirectory: () => {
       const base = env['LOCALAPPDATA'] ?? env['APPDATA'] ?? `${env['HOME'] ?? '.'}/.cache`;
       return `${base.replace(/\\/g, '/')}/Keira3/world-editor-cache`;

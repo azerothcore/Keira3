@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { ServerTileCoverage, TILE_SIZE, TileCoord, WorldBounds, WorldPosition, WowClientService, WowMap } from '@keira/shared/wow-data';
 import { PageObjectModel } from 'ngx-page-object-model';
-import { WorldMapComponent, WorldMapDot } from './world-map.component';
+import { layoutAtlas, MAP_QUALITY_KEY, WorldMapComponent, WorldMapDot } from './world-map.component';
 
 @Component({
   imports: [WorldMapComponent],
@@ -18,6 +18,7 @@ import { WorldMapComponent, WorldMapDot } from './world-map.component';
       [coverage]="coverage()"
       [maps]="maps()"
       (mapPicked)="picked.push($event)"
+      (atlasPicked)="atlasPicks.push($event)"
       (goTo)="goTos.push($event)"
       (regionSelected)="regions.push($event)"
       (closed)="closes = closes + 1"
@@ -42,6 +43,7 @@ class HostComponent {
     { id: 34, directory: 'Broken', name: 'Broken', instanceType: 0 },
   ]);
   readonly picked: number[] = [];
+  readonly atlasPicks: { mapId: number; position: WorldPosition }[] = [];
   readonly regions: WorldBounds[] = [];
   closes = 0;
 }
@@ -61,7 +63,7 @@ class Page extends PageObjectModel<HostComponent> {
 }
 
 describe(WorldMapComponent.name, () => {
-  const client = { getMinimap: vi.fn(), getMapThumbnail: vi.fn() };
+  const client = { getMinimap: vi.fn(), getMapThumbnail: vi.fn(), getMapTiles: vi.fn(), getMapBuilding: vi.fn() };
   const image = { width: 128, height: 128, data: new Uint8Array(128 * 128 * 4).fill(200) };
 
   beforeEach(async () => {
@@ -69,6 +71,8 @@ describe(WorldMapComponent.name, () => {
     vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue(new DOMRect(0, 0, 200, 100));
     client.getMinimap.mockReset();
     client.getMapThumbnail.mockReset();
+    client.getMapTiles.mockReset();
+    client.getMapBuilding.mockReset();
     client.getMinimap.mockImplementation((_d: string, tile: TileCoord) =>
       tile.tx === 31 ? Promise.resolve(image) : tile.tx === 32 ? Promise.reject(new Error('none')) : Promise.resolve(undefined),
     );
@@ -131,6 +135,36 @@ describe(WorldMapComponent.name, () => {
     expect(host.goTos).toHaveLength(1);
   });
 
+  it('draws the minimaps as sharp as asked (1-4), and remembers it', async () => {
+    const { page, fixture } = await setup();
+    expect(page.getDebugElementByTestId('world-map-quality-2').nativeElement.classList).toContain('btn-light');
+    page.getDebugElementByTestId('world-map-quality-4').nativeElement.click();
+    fixture.detectChanges();
+    await new Promise((resolve) => setTimeout(resolve));
+    expect(localStorage.getItem(MAP_QUALITY_KEY)).toBe('4');
+    expect(page.getDebugElementByTestId('world-map-quality-4').nativeElement.classList).toContain('btn-light');
+    // the images are made again at that size
+    expect(client.getMinimap.mock.calls.length).toBeGreaterThan(2);
+    const remembered = await setup();
+    expect(remembered.page.getDebugElementByTestId('world-map-quality-4').nativeElement.classList).toContain('btn-light');
+    // a damaged or missing setting: 2; storage that can't be written: not kept
+    localStorage.setItem(MAP_QUALITY_KEY, '9');
+    const again = await setup();
+    expect(again.page.getDebugElementByTestId('world-map-quality-2').nativeElement.classList).toContain('btn-light');
+    const setItem = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('full');
+    });
+    again.page.getDebugElementByTestId('world-map-quality-1').nativeElement.click();
+    setItem.mockRestore();
+    const getItem = vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+      throw new Error('blocked');
+    });
+    const blocked = await setup();
+    expect(blocked.page.getDebugElementByTestId('world-map-quality-2').nativeElement.classList).toContain('btn-light');
+    getItem.mockRestore();
+    localStorage.removeItem(MAP_QUALITY_KEY);
+  });
+
   it('only goes where the map has a tile', async () => {
     const { page, host } = await setup();
     // under the two tiles: nothing there
@@ -139,43 +173,128 @@ describe(WorldMapComponent.name, () => {
     expect(host.goTos).toEqual([]);
   });
 
-  it('lists every map with a picture of each, and opens the one picked', async () => {
-    client.getMapThumbnail.mockImplementation((directory: string) =>
+  it('lays every map out on one page, by kind, opening a map where clicked', async () => {
+    client.getMapTiles.mockImplementation((directory: string) =>
       directory === 'Azeroth'
-        ? Promise.resolve(image)
+        ? Promise.resolve([
+            { tx: 31, ty: 49 },
+            { tx: 32, ty: 49 },
+            { tx: 33, ty: 50 },
+          ])
         : directory === 'Broken'
-          ? Promise.reject(new Error('bad'))
-          : Promise.resolve(undefined),
+          ? Promise.reject(new Error('bad wdt'))
+          : Promise.resolve([{ tx: 32, ty: 32 }]),
+    );
+    client.getMapBuilding.mockImplementation((directory: string) =>
+      directory === 'Shadowfang' ? Promise.resolve({ bounds: {} }) : Promise.reject(new Error('no building')),
+    );
+    client.getMapThumbnail.mockImplementation((directory: string) =>
+      directory === 'Azeroth' ? Promise.resolve(image) : Promise.reject(new Error('no picture')),
     );
     const { page, host, fixture } = await setup();
-    page.getDebugElementByTestId('world-map-all-btn').nativeElement.click();
+    // a one-tile dungeon whose building can't be told, nor its picture made
+    host.maps.set([...host.maps(), { id: 35, directory: 'Odd', name: 'Odd', instanceType: 1 }]);
     fixture.detectChanges();
-    expect(page.getDebugElementByTestId('world-map-card-33').nativeElement.querySelector('.fa-spinner')).toBeTruthy();
-    for (let i = 0; i < 4; i++) {
+    page.getDebugElementByTestId('world-map-all-btn').nativeElement.click();
+    for (let i = 0; i < 12; i++) {
       await new Promise((resolve) => setTimeout(resolve));
     }
     fixture.detectChanges();
-    expect(page.getDebugElementByTestId('world-map-card-0').nativeElement.querySelector('img')?.getAttribute('src')).toMatch(/^data:image/);
-    // no picture: its kind instead
-    expect(page.getDebugElementByTestId('world-map-card-33').nativeElement.textContent).toContain('WORLD_EDITOR.MAP_KIND_DUNGEON');
-    expect(page.getDebugElementByTestId('world-map-card-34').nativeElement.textContent).toContain('WORLD_EDITOR.MAP_KIND_WORLD');
-    expect(page.getDebugElementByTestId('world-map', false)?.nativeElement.classList).toContain('hidden');
-    // back to the map and to the list again: pictures aren't made twice
-    page.getDebugElementByTestId('world-map-all-btn').nativeElement.click();
-    page.getDebugElementByTestId('world-map-all-btn').nativeElement.click();
-    await new Promise((resolve) => setTimeout(resolve));
-    expect(client.getMapThumbnail).toHaveBeenCalledTimes(3);
-    page.getDebugElementByTestId('world-map-card-33').nativeElement.click();
+    // sections: maps and dungeons (no raids here); the map that can't be read is left out
+    expect(page.getDebugElementByTestId('world-map-atlas-section-world').nativeElement.textContent.trim()).toBe('WORLD_EDITOR.ATLAS_WORLD');
+    expect(page.getDebugElementByTestId('world-map-atlas-section-dungeon')).toBeTruthy();
+    expect(page.getDebugElementByTestId('world-map-atlas-section-raid', false)).toBeFalsy();
+    expect(page.getDebugElementByTestId('world-map-atlas-34', false)).toBeFalsy();
+    expect(page.getDebugElementByTestId('world-map-atlas-0').nativeElement.querySelector('img')?.getAttribute('src')).toMatch(
+      /^data:image/,
+    );
+    expect(page.getDebugElementByTestId('world-map-atlas-33').nativeElement.classList).toContain('building');
+
+    // the view is 200 px wide: 1.15 px per tile, from (8, 48); Eastern Kingdoms starts below its section's title
+    const atlas = page.getDebugElementByTestId('world-map-atlas').nativeElement as HTMLElement;
+    const at = (type: string, tx: number, ty: number) =>
+      atlas.dispatchEvent(new MouseEvent(type, { clientX: 8 + tx * 1.15, clientY: 48 + ty * 1.15, button: 0, bubbles: true }));
+    at('pointermove', 1.5, 6.5);
     fixture.detectChanges();
-    expect(host.picked).toEqual([33]);
-    expect(page.getDebugElementByTestId('world-map-all', false)).toBeFalsy();
+    expect(page.getDebugElementByTestId('world-map-atlas-info').nativeElement.textContent).toContain('0 – Eastern Kingdoms · 32_49');
+    // not a tile of the map, or between maps: nothing
+    at('pointerdown', 0.5, 7.5);
+    at('pointerup', 0.5, 7.5);
+    at('pointerdown', 100, 100);
+    at('pointerup', 100, 100);
+    expect(host.atlasPicks).toEqual([]);
+    at('pointerdown', 1.5, 6.5);
+    at('pointerup', 1.5, 6.5);
+    expect(host.atlasPicks[0].mapId).toBe(0);
+    expect(host.atlasPicks[0].position.x).toBeCloseTo((32 - 49.5) * TILE_SIZE);
+    fixture.detectChanges();
+    expect(page.getDebugElementByTestId('world-map-atlas', false)).toBeFalsy();
   });
 
-  it('stops making pictures when the list is left, and goes full screen', async () => {
+  it('opens a dungeon of one building, pans and zooms the atlas, and stops reading when left', async () => {
+    client.getMapTiles.mockResolvedValue([{ tx: 32, ty: 32 }]);
+    client.getMapBuilding.mockImplementation((directory: string) => Promise.resolve(directory === 'Shadowfang' ? {} : undefined));
+    client.getMapThumbnail.mockResolvedValue(undefined);
+    const { page, host, fixture } = await setup();
+    page.getDebugElementByTestId('world-map-all-btn').nativeElement.click();
+    for (let i = 0; i < 12; i++) {
+      await new Promise((resolve) => setTimeout(resolve));
+    }
+    fixture.detectChanges();
+    const atlas = page.getDebugElementByTestId('world-map-atlas').nativeElement as HTMLElement;
+    const plane = () => atlas.querySelector('.world-map-plane') as HTMLElement;
+    const event = (type: string, x: number, y: number, button = 0) =>
+      atlas.dispatchEvent(new MouseEvent(type, { clientX: x, clientY: y, button, bubbles: true }));
+    // dragged: panned, not a click (a slight move is still a click)
+    event('pointerdown', 50, 50);
+    event('pointermove', 51, 50);
+    event('pointermove', 90, 60);
+    event('pointerup', 90, 60);
+    fixture.detectChanges();
+    expect(host.picked).toEqual([]);
+    expect(plane().style.transform).toBe('translate(48px, 58px)');
+    // other buttons, and leaving, do nothing
+    event('pointerdown', 50, 50, 2);
+    event('pointerup', 50, 50);
+    atlas.dispatchEvent(new MouseEvent('pointerleave'));
+    // the wheel zooms the atlas
+    atlas.dispatchEvent(new WheelEvent('wheel', { clientX: 10, clientY: 10, deltaY: -100, bubbles: true, cancelable: true }));
+    fixture.detectChanges();
+    expect(parseFloat(page.getDebugElementByTestId('world-map-atlas-0').nativeElement.style.width)).toBeCloseTo(1.15 * 1.25);
+    // Shadowfang Keep: its square in the dungeons
+    const block = page.getDebugElementByTestId('world-map-atlas-33').nativeElement as HTMLElement;
+    const [left, top] = [parseFloat(block.style.left), parseFloat(block.style.top)];
+    const [ox, oy] = plane()
+      .style.transform.match(/-?[\d.]+/g)
+      ?.map(Number) as number[];
+    event('pointermove', ox + left + 2, oy + top + 2);
+    fixture.detectChanges();
+    expect(page.getDebugElementByTestId('world-map-atlas-info').nativeElement.textContent.trim()).toBe('33 – Shadowfang Keep');
+    event('pointerdown', ox + left + 2, oy + top + 2);
+    event('pointerup', ox + left + 2, oy + top + 2);
+    expect(host.picked).toEqual([33]);
+
+    // left while reading what the maps are made of
+    let finish: (tiles: TileCoord[]) => void = () => undefined;
+    client.getMapTiles.mockReturnValueOnce(new Promise((resolve) => (finish = resolve)));
+    host.maps.set([{ id: 99, directory: 'Late', name: 'Late', instanceType: 0 }, ...host.maps()]);
+    fixture.detectChanges();
+    page.getDebugElementByTestId('world-map-all-btn').nativeElement.click();
+    page.getDebugElementByTestId('world-map-all-btn').nativeElement.click();
+    finish([]);
+    await new Promise((resolve) => setTimeout(resolve));
+  });
+
+  it('stops drawing pictures when the atlas is left, and goes full screen', async () => {
+    client.getMapTiles.mockResolvedValue([{ tx: 32, ty: 32 }]);
+    client.getMapBuilding.mockResolvedValue(undefined);
     let finish: (value: undefined) => void = () => undefined;
-    client.getMapThumbnail.mockReturnValueOnce(new Promise((resolve) => (finish = resolve)));
+    client.getMapThumbnail.mockReturnValueOnce(new Promise((resolve) => (finish = resolve))).mockResolvedValue(undefined);
     const { page, fixture } = await setup();
     page.getDebugElementByTestId('world-map-all-btn').nativeElement.click();
+    for (let i = 0; i < 12; i++) {
+      await new Promise((resolve) => setTimeout(resolve));
+    }
     page.getDebugElementByTestId('world-map-all-btn').nativeElement.click();
     finish(undefined);
     await new Promise((resolve) => setTimeout(resolve));
@@ -202,9 +321,10 @@ describe(WorldMapComponent.name, () => {
     await new Promise((resolve) => setTimeout(resolve));
     fixture.detectChanges();
     expect(element.classList).not.toContain('fullscreen');
-    // closed while making pictures
+    // closed while drawing pictures
     client.getMapThumbnail.mockReturnValueOnce(new Promise(() => undefined));
     page.getDebugElementByTestId('world-map-all-btn').nativeElement.click();
+    await new Promise((resolve) => setTimeout(resolve));
     fixture.destroy();
   });
 
@@ -307,5 +427,25 @@ describe(WorldMapComponent.name, () => {
     fixture.destroy();
     finish(image);
     await new Promise((resolve) => setTimeout(resolve));
+  });
+});
+
+describe('layoutAtlas', () => {
+  it('starts a new row when a map would go past the width of the page', () => {
+    const wide = (id: number) => ({ id, directory: `M${id}`, name: `M${id}`, instanceType: 0 });
+    const tiles = Array.from({ length: 64 }, (_, tx) => ({ tx, ty: 0 }));
+    const layout = layoutAtlas(
+      [wide(1), wide(2), wide(3)],
+      new Map([
+        ['M1', tiles],
+        ['M2', tiles],
+        ['M3', tiles],
+      ]),
+    );
+    expect(layout.blocks.map((b) => [b.x, b.y])).toEqual([
+      [0, 6],
+      [66, 6],
+      [0, 9],
+    ]);
   });
 });
