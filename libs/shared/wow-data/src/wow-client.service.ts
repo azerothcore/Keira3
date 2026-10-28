@@ -36,7 +36,7 @@ import { clientIdentity, WowDataCacheService } from './wow-data-cache.service';
 import { WowDataSettingsService } from './wow-data-settings.service';
 import { StormArchive, WOW_NATIVE_API, WowNativeApi } from './wow-native-api';
 import { WOW_PARSER } from './wow-parser';
-import { perfTime } from './perf-log';
+import { perfNote, perfTime } from './perf-log';
 import { FactionData, parseFactions, parseFactionTemplates } from './factions';
 
 /** Disk space used by the cache of this client: per map (by lower-case directory), for buildings, and in total. */
@@ -830,7 +830,9 @@ export class WowClientService {
       throw new Error(`No WoW 3.3.5a MPQ archives found in ${dataPath}.`);
     }
 
-    const storm = native.loadStorm();
+    // (timed for the performance log: opening the archives can freeze the app for seconds)
+    const began = performance.now();
+    const storm = perfTime('load StormLib', () => native.loadStorm());
     const mountpoint = `/keira-wow-${++this.mountCounter}`;
     storm.FS.mkdir(mountpoint);
     storm.FS.mount(storm.FS.filesystems.NODEFS, { root: dataPath }, mountpoint);
@@ -853,6 +855,7 @@ export class WowClientService {
       storm.FS.unmount(mountpoint);
       throw new Error(`None of the MPQ archives in ${dataPath} could be opened.`);
     }
+    perfNote(`client opened: ${opened.length} archives in ${(performance.now() - began).toFixed(0)}ms`);
     return { clientPath, mountpoint, archives, archiveNames: opened, identity: clientIdentity(clientPath, opened) };
   }
 
