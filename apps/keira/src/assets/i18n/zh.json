@@ -1547,6 +1547,8 @@
     "VIEW_SUB_PATHS": "路径",
     "COMPASS_OPACITY": "不透明度",
     "INVISIBLE_WALLS": "隐形墙",
-    "INVISIBLE_WALLS_HELP": "游戏从不绘制的模型部分，例如隐形墙和烟雾发射器的方框（奥格瑞玛上空的方块）：以半透明蓝色显示"
+    "INVISIBLE_WALLS_HELP": "游戏从不绘制的模型部分，例如隐形墙和烟雾发射器的方框（奥格瑞玛上空的方块）：以半透明蓝色显示",
+    "MAP_EDGE": "地图边缘",
+    "MAP_EDGE_HELP": "在地图结束处（地形地块终止处）显示半透明红色墙"
   }
 }

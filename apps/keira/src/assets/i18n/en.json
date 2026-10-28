@@ -1547,6 +1547,8 @@
     "VIEW_SUB_PATHS": "Paths",
     "COMPASS_OPACITY": "Opacity",
     "INVISIBLE_WALLS": "Invisible walls",
-    "INVISIBLE_WALLS_HELP": "The parts of models the game never draws, like invisible walls and the boxes of smoke emitters (the squares over Orgrimmar): shown see-through in blue"
+    "INVISIBLE_WALLS_HELP": "The parts of models the game never draws, like invisible walls and the boxes of smoke emitters (the squares over Orgrimmar): shown see-through in blue",
+    "MAP_EDGE": "Map edge",
+    "MAP_EDGE_HELP": "A see-through red wall where the map ends (where its terrain tiles stop)"
   }
 }

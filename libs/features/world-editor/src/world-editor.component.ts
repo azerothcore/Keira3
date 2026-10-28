@@ -252,6 +252,7 @@ type RenderFlagKey =
   | 'showDoodads'
   | 'showIndoor'
   | 'showInvisible'
+  | 'showMapEdge'
   | 'showTrees'
   | 'showProps'
   | 'showCreatureModels'

@@ -562,6 +562,30 @@ describe(WorldViewerComponent.name, () => {
     indoor.mockRestore();
   });
 
+  it("draws a wall at the map's edge, hidden when turned off, for the map shown only", async () => {
+    const { fixture, host } = await setup((h) => h.map.set('Azeroth'));
+    await settle(fixture);
+    flushFrames();
+    const scene = () => renderer.render.mock.calls.at(-1)?.[0] as Object3D;
+    const edge = () => scene().getObjectByName('map-edge') as Object3D;
+    expect(edge().children).toHaveLength(1);
+    expect(edge().visible).toBe(true);
+    host.render.set({ ...DEFAULT_WORLD_RENDER_SETTINGS, showMapEdge: false });
+    fixture.detectChanges();
+    expect(edge().visible).toBe(false);
+    // the answer for a map left meanwhile is dropped; a failure is ignored
+    let answer: (value: unknown) => void = () => undefined;
+    client.getMapTiles.mockReturnValueOnce(new Promise((resolve) => (answer = resolve)));
+    host.map.set('Kalimdor');
+    fixture.detectChanges();
+    client.getMapTiles.mockRejectedValueOnce(new Error('no wdt'));
+    host.map.set('Northrend');
+    fixture.detectChanges();
+    answer([{ tx: 1, ty: 1 }]);
+    await settle(fixture);
+    expect(edge().children).toHaveLength(0);
+  });
+
   it('draws the skybox chosen around the camera, turning slowly when asked', async () => {
     client.getM2.mockResolvedValue({
       positions: new Float32Array([0, 0, 0, 100, 0, 0, 0, 100, 0]),

@@ -1547,6 +1547,8 @@
     "VIEW_SUB_PATHS": "Rutas",
     "COMPASS_OPACITY": "Opacidad",
     "INVISIBLE_WALLS": "Paredes invisibles",
-    "INVISIBLE_WALLS_HELP": "Las partes de los modelos que el juego nunca dibuja, como paredes invisibles y las cajas de los emisores de humo (los cuadrados sobre Orgrimmar): se muestran translúcidas en azul"
+    "INVISIBLE_WALLS_HELP": "Las partes de los modelos que el juego nunca dibuja, como paredes invisibles y las cajas de los emisores de humo (los cuadrados sobre Orgrimmar): se muestran translúcidas en azul",
+    "MAP_EDGE": "Borde del mapa",
+    "MAP_EDGE_HELP": "Una pared roja translúcida donde termina el mapa (donde acaban sus casillas de terreno)"
   }
 }

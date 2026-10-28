@@ -620,6 +620,23 @@
                   [tooltip]="'WORLD_EDITOR.LOW_DETAIL_TERRAIN_HELP' | translate"
                 ></i>
               </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-map-edge"
+                  data-testid="view-map-edge"
+                  [checked]="renderSettings.settings().showMapEdge"
+                  (change)="setRenderFlag('showMapEdge', $event)"
+                />
+                <label class="form-check-label" for="world-editor-map-edge">{{ 'WORLD_EDITOR.MAP_EDGE' | translate }}</label
+                ><i
+                  class="fas fa-info-circle ms-1"
+                  placement="auto"
+                  container="body"
+                  [tooltip]="'WORLD_EDITOR.MAP_EDGE_HELP' | translate"
+                ></i>
+              </div>
               <div class="world-editor-view-sub">{{ 'WORLD_EDITOR.VIEW_SUB_BUILDINGS' | translate }}</div>
               <div class="form-check form-switch mb-0">
                 <input

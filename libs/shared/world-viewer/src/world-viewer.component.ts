@@ -45,6 +45,7 @@ import { WorldPrefetch } from './world-prefetch';
 import { WorldDoodads } from './world-doodads';
 import { brightnessAt, ZoneLighting } from './zone-lighting';
 import { setInvisibleModelsVisible } from './m2-object';
+import { MapEdge } from './map-edge';
 import { WeatherEffect, WorldWeather } from './world-weather';
 import {
   controlFor,
@@ -326,6 +327,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private singleBuildingMap = false;
   private readonly skybox = new WorldSkybox(this.client, this.textures, () => this.requestRender());
   private readonly weatherEffect = new WeatherEffect();
+  private readonly mapEdge = new MapEdge();
   /** When the last frame was drawn (ms), to move the weather on by the time between frames. */
   private lastFrame?: number;
   private zoneId?: number;
@@ -387,6 +389,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
         this.objects.configure({ showBuildings: settings.showBuildings, radius: settings.terrainRadius });
         this.objects.setIndoorVisible(settings.showIndoor || this.singleBuildingMap);
         setInvisibleModelsVisible(settings.showInvisible);
+        this.mapEdge.group.visible = settings.showMapEdge;
         const distances = drawDistances(settings);
         this.doodads.configure({
           show: settings.showDoodads,
@@ -555,6 +558,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     this.world.scene.add(this.gizmo.getHelper());
     this.world.scene.add(this.skybox.group);
     this.world.scene.add(this.weatherEffect.group);
+    this.world.scene.add(this.mapEdge.group);
 
     if (typeof ResizeObserver !== 'undefined') {
       this.resizeObserver = new ResizeObserver(() => this.resize());
@@ -612,6 +616,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     this.doodads.dispose();
     this.skybox.dispose();
     this.weatherEffect.dispose();
+    this.mapEdge.dispose();
     this.navMesh.dispose();
     this.vmaps.dispose();
     this.spawnModels.dispose();
@@ -1355,7 +1360,13 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     this.objects.setMap(directory);
     // a dungeon made of one building: its indoor parts always show
     this.singleBuildingMap = false;
+    this.mapEdge.set([]);
     if (directory && this.client.isSupported()) {
+      // where the map ends: the edge of its tiles
+      void this.client
+        .getMapTiles(directory)
+        .then((tiles) => directory === this.mapDirectory() && (this.mapEdge.set(tiles), this.requestRender()))
+        .catch(() => undefined);
       void this.client
         .getMapBuilding(directory)
         .then((building) => {

@@ -72,6 +72,8 @@ export interface WorldRenderSettings {
   showIndoor: boolean;
   /** The parts of models the game never draws (invisible walls, smoke emitters' boxes), shown see-through. */
   showInvisible: boolean;
+  /** A see-through red wall where the map's terrain ends. */
+  showMapEdge: boolean;
   /** Within doodads and models: trees and the other doodads (props), NPCs and gameobjects, each on or off. */
   showTrees: boolean;
   showProps: boolean;
@@ -150,6 +152,7 @@ export const DEFAULT_WORLD_RENDER_SETTINGS: WorldRenderSettings = {
   showGameobjectModels: true,
   showIndoor: true,
   showInvisible: false,
+  showMapEdge: true,
   memoryCapMb: 0,
   gpuCapMb: 0,
   markerOnLiquid: false,
