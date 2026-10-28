@@ -111,6 +111,29 @@ describe('createWowNativeApi', () => {
     expect(createWowNativeApi(nodeFs, (id) => modules[id], {}).memoryUsage()).toEqual({ used: 900, total: 8000 });
   });
 
+  it("reads the graphics card's memory on Windows from the registry, the biggest adapter's", async () => {
+    const exec = vi.fn((_command: string, _options: unknown, done: (error: unknown, stdout: string) => void) =>
+      done(
+        null,
+        [
+          'HKEY_LOCAL_MACHINE\\SYSTEM\\...\\0000',
+          '    HardwareInformation.qwMemorySize    REG_QWORD    0x200000000',
+          'HKEY_LOCAL_MACHINE\\SYSTEM\\...\\0001',
+          '    HardwareInformation.MemorySize    REG_DWORD    0x80000000',
+        ].join('\r\n'),
+      ),
+    );
+    const modules: Record<string, unknown> = { os: { platform: () => 'win32' }, child_process: { exec } };
+    expect(await createWowNativeApi(nodeFs, (id) => modules[id], {}).graphicsMemory()).toBe(8 * 1024 ** 3);
+    expect(exec.mock.calls[0][0]).toContain('HardwareInformation.*MemorySize');
+    // nothing found (or a failure: no output)
+    exec.mockImplementationOnce((_c, _o, done) => done(new Error('denied'), undefined as unknown as string));
+    expect(await createWowNativeApi(nodeFs, (id) => modules[id], {}).graphicsMemory()).toBeUndefined();
+    // not Windows
+    const linux: Record<string, unknown> = { os: { platform: () => 'linux' } };
+    expect(await createWowNativeApi(nodeFs, (id) => linux[id], {}).graphicsMemory()).toBeUndefined();
+  });
+
   it("keeps its cache in the user's local application data", () => {
     expect(createWowNativeApi(nodeFs, vi.fn(), { LOCALAPPDATA: 'C:\\Users\\Me\\AppData\\Local' }).cacheDirectory()).toBe(
       'C:/Users/Me/AppData/Local/Keira3/world-editor-cache',

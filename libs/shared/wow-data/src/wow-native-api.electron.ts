@@ -8,6 +8,15 @@ import { perfTime } from './perf-log';
  * Electron implementation of {@link WowNativeApi}: Node `fs` plus StormJS loaded through `require` (`window.require` in
  * the renderer, like `mysql2` and `sqlite3`).
  */
+/** The registry key of the display adapters (one subkey each). */
+const GPU_CLASS_KEY = 'HKLM\\SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e968-e325-11ce-bfc1-08002be10318}';
+
+/** The biggest graphics memory in `reg query` output: `qwMemorySize REG_QWORD 0x200000000`, or `MemorySize REG_DWORD`. */
+export function largestMemorySize(output: string): number | undefined {
+  const sizes = [...output.matchAll(/MemorySize\s+REG_(?:QWORD|DWORD)\s+0x([0-9a-f]+)/gi)].map((match) => parseInt(match[1], 16));
+  return sizes.length ? Math.max(...sizes) : undefined;
+}
+
 export function createWowNativeApi(
   nodeFs: typeof fs,
   requireModule: (id: string) => unknown,
@@ -80,6 +89,19 @@ export function createWowNativeApi(
       used: (requireModule('process') as typeof process).memoryUsage().rss,
       total: (requireModule('os') as { totalmem(): number }).totalmem(),
     }),
+    // (WebGL can't tell: Windows keeps it per display adapter in the registry, 64-bit, or 32-bit on older drivers)
+    graphicsMemory: () =>
+      new Promise<number | undefined>((resolve) => {
+        if ((requireModule('os') as { platform(): string }).platform() !== 'win32') {
+          resolve(undefined);
+          return;
+        }
+        (requireModule('child_process') as typeof import('child_process')).exec(
+          `reg query "${GPU_CLASS_KEY}" /s /v HardwareInformation.*MemorySize`,
+          { windowsHide: true },
+          (_error, stdout) => resolve(largestMemorySize(String(stdout ?? ''))),
+        );
+      }),
     cacheDirectory: () => {
       const base = env['LOCALAPPDATA'] ?? env['APPDATA'] ?? `${env['HOME'] ?? '.'}/.cache`;
       return `${base.replace(/\\/g, '/')}/Keira3/world-editor-cache`;

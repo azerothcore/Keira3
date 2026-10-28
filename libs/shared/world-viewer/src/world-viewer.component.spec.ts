@@ -312,6 +312,7 @@ describe(WorldViewerComponent.name, () => {
     getGpuTexture: vi.fn(),
     getMapBuilding: vi.fn(),
     memoryUsage: vi.fn(),
+    graphicsMemory: vi.fn().mockResolvedValue(6_000_000_000),
     trimMemory: vi.fn(),
   };
 
@@ -495,6 +496,8 @@ describe(WorldViewerComponent.name, () => {
       const capped = page.getDebugElementByTestId('world-viewer-stats').nativeElement.textContent.replace(/\s+/g, ' ');
       expect(capped).toContain('WORLD_EDITOR.STATS_MEMORY 2.0 GB / 8.0 GB (WORLD_EDITOR.STATS_CAPPED 1.0 GB)');
       expect(capped).toContain('(WORLD_EDITOR.STATS_CAPPED 1 MB)');
+      // and the graphics card's own memory
+      expect(capped).toMatch(/STATS_GPU_MEMORY ~\S+ \S+ \/ 6\.0 GB/);
       expect(capped).toContain('WORLD_EDITOR.STATS_OVER');
       expect(client.trimMemory).toHaveBeenCalled();
       expect(release).toHaveBeenCalledWith(expect.anything(), 0, true);

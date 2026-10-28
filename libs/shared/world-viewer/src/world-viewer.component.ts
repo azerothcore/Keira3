@@ -1562,9 +1562,16 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       this.prefetch.configure({ rings, radius: settings.terrainRadius, detailed: !settings.lowDetailTerrain });
     }
     this.memory.set({ used: ram?.used, total: ram?.total, gpu, over: this.overBudget });
+    if (!this.gpuTotalAsked) {
+      this.gpuTotalAsked = true;
+      void this.client.graphicsMemory().then((total) => this.gpuTotal.set(total));
+    }
   }
 
   protected readonly formatBytes = formatBytes;
+  /** The graphics card's memory, when known (read once the stats are shown). */
+  protected readonly gpuTotal = signal<number | undefined>(undefined);
+  private gpuTotalAsked = false;
   protected readonly MB = MB;
 
   /** The placing preview under the cursor, or at the crosshair while the cursor is out of the view. */

@@ -1612,6 +1612,24 @@ describe(WorldEditorComponent.name, () => {
       await settle(page);
       expect(mocks.service.searchTele).toHaveBeenCalledWith('North');
       expect(page.text('tele-7')).toContain('1 – Kalimdor');
+      // Esc: out of it, nothing typed, no results (even one still on its way)
+      let answer: (rows: never[]) => void = () => undefined;
+      mocks.service.searchTele.mockReturnValueOnce(new Promise((resolve) => (answer = resolve)));
+      page.submit('tele-search-btn');
+      const input = page.byId<HTMLInputElement>('tele-search').nativeElement;
+      input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+      answer([]);
+      await settle(page);
+      expect(input.value).toBe('');
+      expect(page.byId('tele-results', false)).toBeFalsy();
+      // leaving the field closes the results
+      page.type('tele-search', 'North');
+      await new Promise((resolve) => setTimeout(resolve, 350));
+      await settle(page);
+      expect(page.byId('tele-results', false)).toBeTruthy();
+      input.dispatchEvent(new Event('blur'));
+      page.fixture.detectChanges();
+      expect(page.byId('tele-results', false)).toBeFalsy();
       // not for a pasted .gps output
       mocks.service.searchTele.mockClear();
       page.type('tele-search', 'Map: 0 X: 1 Y: 2 Z: 3 Orientation: 0');

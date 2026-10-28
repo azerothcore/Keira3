@@ -119,6 +119,13 @@ export class WowClientService {
     return this.native?.memoryUsage();
   }
 
+  /** The graphics card's memory (bytes), read once; undefined when it can't be told (or outside the desktop app). */
+  graphicsMemory(): Promise<number | undefined> {
+    this.gpuMemory ??= this.native ? this.native.graphicsMemory() : Promise.resolve(undefined);
+    return this.gpuMemory;
+  }
+  private gpuMemory?: Promise<number | undefined>;
+
   /**
    * Lets go of what was read and kept in memory (terrain tiles, building doodads, server maps and collision): read
    * again (from the disk cache) when needed. For when Keira takes more memory than allowed.

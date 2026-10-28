@@ -182,8 +182,26 @@
         [formControl]="teleSearch"
         [placeholder]="'WORLD_EDITOR.TELEPORT_PLACEHOLDER' | translate"
         [title]="'WORLD_EDITOR.TELEPORT_HELP' | translate"
+        (keydown.escape)="closeTeleSearch(); $any($event.target).blur()"
+        (blur)="teleResults.set([])"
       />
       <button type="submit" class="btn btn-sm btn-secondary" data-testid="tele-search-btn"><i class="fa fa-search"></i></button>
+      <!-- over the view, not pushing it down (which resized the view at every key typed) -->
+      @if (teleResults().length) {
+        <div class="list-group map-picker-list tele-results" data-testid="tele-results">
+          @for (tele of teleResults(); track tele.id) {
+            <button
+              type="button"
+              class="list-group-item list-group-item-action py-1"
+              [attr.data-testid]="'tele-' + tele.id"
+              (mousedown)="$event.preventDefault()"
+              (click)="goToTele(tele)"
+            >
+              {{ tele.name }} <small class="text-muted">({{ mapLabel(+tele.map) }})</small>
+            </button>
+          }
+        </div>
+      }
     </form>
     <ng-container [ngTemplateOutlet]="mainButtonsTemplate" />
     <button
@@ -197,20 +215,6 @@
     </button>
   </div>
 
-  @if (teleResults().length) {
-    <div class="list-group tele-results mb-2" data-testid="tele-results">
-      @for (tele of teleResults(); track tele.id) {
-        <button
-          type="button"
-          class="list-group-item list-group-item-action py-1"
-          [attr.data-testid]="'tele-' + tele.id"
-          (click)="goToTele(tele)"
-        >
-          {{ tele.name }} <small class="text-muted">({{ mapLabel(+tele.map) }})</small>
-        </button>
-      }
-    </div>
-  }
 
   <div class="world-editor-body">
     <button

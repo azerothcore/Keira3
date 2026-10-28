@@ -58,8 +58,12 @@
   width: 90px;
 }
 
-.tele-form input {
-  width: 320px;
+.tele-form {
+  position: relative;
+
+  input {
+    width: 320px;
+  }
 }
 
 // two fixed rows: nothing wraps, so no button moves when another one changes

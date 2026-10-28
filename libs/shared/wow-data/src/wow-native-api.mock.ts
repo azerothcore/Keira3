@@ -119,6 +119,7 @@ export function createFakeNative(files: Record<string, number[]>, mpqs: Record<s
         ),
       ),
     memoryUsage: () => ({ used: 500_000_000, total: 8_000_000_000 }),
+    graphicsMemory: () => Promise.resolve(6_000_000_000),
     cacheDirectory: () => '/cache',
     // JSON with typed arrays tagged, standing in for V8 serialisation
     pack: (value) =>

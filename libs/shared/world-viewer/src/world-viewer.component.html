@@ -115,6 +115,9 @@
         }
         <div data-testid="world-viewer-gpu-memory">
           {{ 'WORLD_EDITOR.STATS_GPU_MEMORY' | translate }} ~{{ formatBytes(m.gpu) }}
+          @if (gpuTotal(); as total) {
+            / {{ formatBytes(total) }}
+          }
           @if (view.gpuCapMb) {
             ({{ 'WORLD_EDITOR.STATS_CAPPED' | translate }} {{ formatBytes(view.gpuCapMb * MB) }})
           }

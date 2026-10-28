@@ -1900,7 +1900,20 @@ export class WorldEditorComponent implements OnInit {
       this.goToGps(gps);
       return;
     }
-    this.teleResults.set(text ? await this.service.searchTele(text) : []);
+    // (only the last search counts, and none after Esc)
+    const request = ++this.teleSearchRequest;
+    const results = text ? await this.service.searchTele(text) : [];
+    if (request === this.teleSearchRequest) {
+      this.teleResults.set(results);
+    }
+  }
+  private teleSearchRequest = 0;
+
+  /** Esc in the teleport search: no results, and nothing typed. */
+  protected closeTeleSearch(): void {
+    this.teleSearchRequest++;
+    this.teleSearch.setValue('', { emitEvent: false });
+    this.teleResults.set([]);
   }
 
   protected goToTele(tele: TeleRow): void {

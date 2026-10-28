@@ -47,6 +47,8 @@ export interface WowNativeApi {
   cacheDirectory(): string;
   /** The memory Keira's window takes (bytes, its resident set), and the computer's in all. */
   memoryUsage(): { used: number; total: number };
+  /** The graphics card's own memory (bytes), as Windows records it; undefined elsewhere or when unknown. */
+  graphicsMemory(): Promise<number | undefined>;
   /** Turns plain data (objects, arrays, typed arrays…) into compact bytes, and back (compressed off the window's thread). */
   pack(value: unknown): Promise<Uint8Array>;
   unpack<T>(bytes: Uint8Array): Promise<T>;
