@@ -160,6 +160,7 @@ interface FakeTransformControls extends EventDispatcher<{ 'dragging-changed': { 
       (navMeshTileChanged)="navMeshTiles.push($event)"
       (picked)="picks.push($event)"
       (contextRequested)="contexts.push($event)"
+      [markerLookAt]="lookAt()"
       (objectMoved)="moves.push($event)"
       (centerChanged)="centers.push($event)"
     />
@@ -202,6 +203,7 @@ class HostComponent {
   readonly navMeshTiles: (NavMeshTileInfo | undefined)[] = [];
   readonly picks: PickResult[] = [];
   readonly contexts: ContextRequest[] = [];
+  readonly lookAt = signal<WorldPosition | undefined>(undefined);
   readonly moves: ObjectMoved[] = [];
   readonly centers: WorldPosition[] = [];
 }
@@ -1710,6 +1712,20 @@ describe(WorldViewerComponent.name, () => {
       key('keydown', 'Space');
       expect(beacon.mock.calls.at(-1)?.[0].z).not.toBe(10_000);
       liquidAt.mockRestore();
+      // turned to face a place: the editor's menu, or Alt + right-click (no menu then)
+      host.lookAt.set(at(0, 1_000_000));
+      fixture.detectChanges();
+      expect(beacon.mock.calls.at(-1)?.[1]).toBeCloseTo(Math.PI / 2, 1);
+      const contexts = host.contexts.length;
+      page.pointer('pointerdown', 50, 50, 2, true);
+      page.pointer('pointerup', 50, 50, 2, true);
+      expect(host.contexts).toHaveLength(contexts);
+      expect(beacon.mock.calls.at(-1)?.[1]).not.toBeCloseTo(Math.PI / 2, 1);
+      vi.spyOn(WorldScene.prototype, 'pick').mockReturnValueOnce(undefined);
+      const turns = beacon.mock.calls.length;
+      page.pointer('pointerdown', 50, 50, 2, true);
+      page.pointer('pointerup', 50, 50, 2, true);
+      expect(beacon.mock.calls).toHaveLength(turns);
       beacon.mockRestore();
     });
 

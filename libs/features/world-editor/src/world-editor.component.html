@@ -296,6 +296,7 @@
         [groundOnly]="tool() !== 'select'"
         [renderSettings]="renderSettings.settings()"
         [navigation]="controls.settings()"
+        [markerLookAt]="markerLookAt()"
         [region]="region()"
         [focus]="focus()"
         (picked)="onPicked($event)"
@@ -1579,6 +1580,11 @@
             <button type="button" class="dropdown-item" data-testid="context-copy-marker" (click)="copyContextGo('marker')">
               <i class="fa fa-street-view"></i> {{ 'WORLD_EDITOR.COPY_GO_MARKER' | translate }}
             </button>
+            @if (menu.position) {
+              <button type="button" class="dropdown-item" data-testid="context-face-here" (click)="faceMarkerHere()">
+                <i class="fa fa-compass"></i> {{ 'WORLD_EDITOR.FACE_HERE' | translate }}
+              </button>
+            }
           }
         </div>
       }

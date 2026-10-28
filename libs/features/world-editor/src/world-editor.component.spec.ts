@@ -63,6 +63,7 @@ class FakeWorldViewerComponent {
   readonly groundOnly = input<boolean>(false);
   readonly renderSettings = input<WorldRenderSettings>(DEFAULT_WORLD_RENDER_SETTINGS);
   readonly focus = input<WorldPosition | undefined>(undefined);
+  readonly markerLookAt = input<WorldPosition | undefined>(undefined);
   readonly region = input<WorldBounds | undefined>(undefined);
   readonly navigation = input<WorldControlsSettings>(DEFAULT_WORLD_CONTROLS_SETTINGS);
   readonly areaTriggers = input<WorldAreaTrigger[]>([]);
@@ -1922,6 +1923,23 @@ describe(WorldEditorComponent.name, () => {
       await settle(page);
       page.click('context-copy-marker');
       expect(mocks.clipboard.copyFromContent).toHaveBeenLastCalledWith('.go xyz 5.0000 6.0000 7.0000 0');
+      // facing a way: its orientation too, and turned to face a place
+      page.viewer().contextRequested.emit({
+        key: 'ground',
+        x: 10,
+        y: 10,
+        position: { x: 50, y: 60, z: 7 },
+        marker: { x: 5, y: 6, z: 7 },
+        markerOrientation: 1.5,
+      });
+      await settle(page);
+      page.click('context-copy-marker');
+      expect(mocks.clipboard.copyFromContent).toHaveBeenLastCalledWith('.go xyz 5.0000 6.0000 7.0000 0 1.5000');
+      page.viewer().contextRequested.emit({ key: 'ground', x: 10, y: 10, position: { x: 50, y: 60, z: 7 }, marker: { x: 5, y: 6, z: 7 } });
+      await settle(page);
+      page.click('context-face-here');
+      page.fixture.detectChanges();
+      expect(page.viewer().markerLookAt()).toEqual({ x: 50, y: 60, z: 7 });
       // water over the ground: its kind, deep water, and a .go onto its surface
       const water = { key: 'ground', x: 10, y: 10, label: '1 2 3', position: { x: 1, y: 2, z: -20 } };
       page.viewer().contextRequested.emit({ ...water, liquid: { z: 0.5, kind: 'ocean', type: 2, deep: true } });

@@ -196,8 +196,9 @@ export interface ContextRequest {
   /** Its hover text, and where it was clicked. */
   label?: string;
   position?: WorldPosition;
-  /** Where the player marker (Space) is, when placed. */
+  /** Where the player marker (Space) is, when placed, and which way it faces (server orientation). */
   marker?: WorldPosition;
+  markerOrientation?: number;
   /**
    * The liquid over the ground right-clicked: its surface height, kind, LiquidType.dbc id, and whether it's deep water
    * (fatigue; known from the server data folder).

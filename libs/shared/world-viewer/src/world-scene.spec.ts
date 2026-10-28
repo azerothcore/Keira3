@@ -1,4 +1,4 @@
-import { tileCenter, worldToScene, WorldPosition } from '@keira/shared/wow-data';
+import { orientationToSceneYaw, tileCenter, worldToScene, WorldPosition } from '@keira/shared/wow-data';
 import {
   BoxGeometry,
   BufferAttribute,
@@ -708,6 +708,14 @@ describe('WorldScene', () => {
       expect(world.pick(0, 0, { tolerance: 0, markersOnly: true })).toBeUndefined();
       // the edges aren't pickable on their own
       expect(sphere.children[0].raycast(undefined as never, [])).toBeUndefined();
+      // boxes show the way they face, with the spawns' arrows
+      const arrow = box.getObjectByName('facing') as Mesh;
+      expect(arrow.scale.x).toBe(6);
+      expect(arrow.raycast(undefined as never, [])).toBeUndefined();
+      expect(sphere.getObjectByName('facing')).toBeUndefined();
+      world.setFacingArrowsVisible(false);
+      expect(arrow.visible).toBe(false);
+      world.setFacingArrowsVisible(true);
 
       const dispose = vi.spyOn(sphere.geometry, 'dispose');
       world.setAreaTriggers([]);
@@ -1179,7 +1187,14 @@ describe('WorldScene', () => {
     const model = new Group();
     world.setBeaconModel(model);
     world.setBeaconModel(new Group());
-    expect(beacon.children.filter((child) => child.name === 'beacon-model')).toHaveLength(1);
+    const pivot = beacon.getObjectByName('beacon-facing') as Group;
+    expect(pivot.children.filter((child) => child.name === 'beacon-model')).toHaveLength(1);
+    // the character and its arrow turn the way it faces
+    world.setBeacon(at(1, 2, 30), Math.PI / 2);
+    expect(pivot.rotation.y).toBeCloseTo(orientationToSceneYaw(Math.PI / 2));
+    expect(pivot.getObjectByName('facing')).toBeTruthy();
+    world.setFacingArrowsVisible(false);
+    expect((pivot.getObjectByName('facing') as Mesh).visible).toBe(false);
     world.setBeaconModel(undefined);
     expect(beacon.getObjectByName('beacon-model')).toBeUndefined();
   });

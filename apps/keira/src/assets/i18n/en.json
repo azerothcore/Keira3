@@ -1429,6 +1429,11 @@
     "COPY_GO_LIQUID": "Copy .go xyz on the surface",
     "GROUND_BELOW": "Ground below",
     "MARKER_ON_LIQUID": "Marker on liquids",
-    "MARKER_ON_LIQUID_HELP": "Space puts the marker on the surface of water, lava or slime instead of the ground under it; Shift + Space does the other one"
+    "MARKER_ON_LIQUID_HELP": "Space puts the marker on the surface of water, lava or slime instead of the ground under it; Shift + Space does the other one",
+    "FACE_HERE": "Make the player face here (Alt + right-click)",
+    "HELP_ALT_RIGHT_CLICK": "Alt + right-click",
+    "HELP_FACE": "Turn the player marker to face there",
+    "HELP_SHIFT_SPACE": "Shift + Space",
+    "HELP_MARKER_LIQUID": "Marker on the liquid surface (or the ground, with Marker on liquids)"
   }
 }

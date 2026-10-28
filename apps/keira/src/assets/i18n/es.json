@@ -1429,6 +1429,11 @@
     "COPY_GO_LIQUID": "Copiar .go xyz en la superficie",
     "GROUND_BELOW": "Suelo debajo",
     "MARKER_ON_LIQUID": "Marcador sobre líquidos",
-    "MARKER_ON_LIQUID_HELP": "Espacio pone el marcador sobre la superficie del agua, lava o limo en lugar del suelo; Mayús + Espacio hace lo otro"
+    "MARKER_ON_LIQUID_HELP": "Espacio pone el marcador sobre la superficie del agua, lava o limo en lugar del suelo; Mayús + Espacio hace lo otro",
+    "FACE_HERE": "Hacer que el jugador mire aquí (Alt + clic derecho)",
+    "HELP_ALT_RIGHT_CLICK": "Alt + clic derecho",
+    "HELP_FACE": "Girar el marcador del jugador hacia allí",
+    "HELP_SHIFT_SPACE": "Mayús + Espacio",
+    "HELP_MARKER_LIQUID": "Marcador sobre la superficie del líquido (o el suelo, con Marcador sobre líquidos)"
   }
 }

@@ -366,6 +366,8 @@ export class WorldEditorComponent implements OnInit {
     { input: 'WORLD_EDITOR.HELP_SHIFT', label: 'WORLD_EDITOR.HELP_FAST' },
     { input: 'WORLD_EDITOR.HELP_ALT_CLICK', label: 'WORLD_EDITOR.HELP_MOVE_SELECTION' },
     { input: 'WORLD_EDITOR.HELP_RIGHT_CLICK', label: 'WORLD_EDITOR.HELP_MENU' },
+    { input: 'WORLD_EDITOR.HELP_ALT_RIGHT_CLICK', label: 'WORLD_EDITOR.HELP_FACE' },
+    { input: 'WORLD_EDITOR.HELP_SHIFT_SPACE', label: 'WORLD_EDITOR.HELP_MARKER_LIQUID' },
   ];
   /** Path / LOS tool: A, C, the attack range and eye height, and the answer. */
   protected readonly probeFrom = this.session.probeFrom;
@@ -2473,8 +2475,19 @@ export class WorldEditorComponent implements OnInit {
         ? `.go xyz ${x.toFixed(4)} ${y.toFixed(4)}`
         : kind === 'grid'
           ? `.go grid ${grid(x)} ${grid(y)} ${map}`
-          : `.go xyz ${x.toFixed(4)} ${y.toFixed(4)} ${z.toFixed(4)} ${map}`;
+          : `.go xyz ${x.toFixed(4)} ${y.toFixed(4)} ${z.toFixed(4)} ${map}${
+              kind === 'marker' && menu.markerOrientation !== undefined ? ` ${menu.markerOrientation.toFixed(4)}` : ''
+            }`;
     this.clipboard.copyFromContent(command);
+    this.contextMenu.set(undefined);
+  }
+
+  /** A place the player marker turns to face (View: its arrow; the .go of the marker copies the orientation). */
+  protected readonly markerLookAt = signal<WorldPosition | undefined>(undefined);
+
+  /** Right-click > Make the player face here. */
+  protected faceMarkerHere(): void {
+    this.markerLookAt.set({ ...((this.contextMenu() as ContextRequest).position as WorldPosition) });
     this.contextMenu.set(undefined);
   }
 

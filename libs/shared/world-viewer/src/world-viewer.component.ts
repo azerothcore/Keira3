@@ -239,6 +239,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   protected readonly stats = signal<ViewerStats | undefined>(undefined);
   /** Buildings placed by the editor (a transport's ship on its map), at server positions. */
   readonly buildings = input<ExtraBuilding[]>([]);
+  /** A place the player marker should turn to face (the editor's "Make the player face here"). */
+  readonly markerLookAt = input<WorldPosition | undefined>(undefined);
   /** The editor is loading the spawns around the camera (shown in the same loading bar). */
   readonly spawnsLoading = input(false);
   /** Where the camera looks (degrees clockwise from north), for the compass. */
@@ -310,6 +312,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private lastEmittedCenter?: WorldPosition;
   /** The marker (the beam): where the last "go to" landed, or where Space put it; Home brings the camera there. */
   private marker?: WorldPosition;
+  private markerOrientation = 0;
   /** Alt held during the last hover: labels show all their details. */
   private altHeld = false;
   /** Where the cursor last was over the view, for Space. */
@@ -319,6 +322,14 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private readonly target = new Vector3();
 
   constructor() {
+    effect(() => {
+      const place = this.markerLookAt();
+      untracked(() => {
+        if (place && this.marker) {
+          this.faceMarkerTo(place);
+        }
+      });
+    });
     effect(() => {
       const settings = this.renderSettings();
       untracked(() => {
@@ -606,6 +617,14 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
    * stretch, area trigger, marker or link), with its hover text.
    */
   private requestContext(event: PointerEvent): void {
+    // Alt + right-click: the player marker turns to face there
+    if (event.altKey && this.marker) {
+      const ground = this.pickAt(event, { groundOnly: true });
+      if (ground) {
+        this.faceMarkerTo(ground.position);
+      }
+      return;
+    }
     const result = this.pickAt(event, HOVER_PICK);
     const label = result && this.textOf(result);
     const rect = this.host().nativeElement.getBoundingClientRect();
@@ -622,6 +641,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
           label,
           position: ground.position,
           marker: this.marker,
+          markerOrientation: this.markerOrientation,
         };
         // a liquid over that ground: its surface, and whether it's deep water (from the server's map)
         const liquid = this.world.liquidAt(x, y);
@@ -646,6 +666,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       label,
       position: result.position,
       marker: this.marker,
+      markerOrientation: this.markerOrientation,
     });
   }
 
@@ -965,8 +986,16 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
 
   private setMarker(position: WorldPosition): void {
     this.marker = position;
-    this.world.setBeacon(position);
+    this.world.setBeacon(position, this.markerOrientation);
     this.requestRender();
+  }
+
+  /** Turns the player marker to face a place (its server orientation: 0 north, counter-clockwise). */
+  private faceMarkerTo(place: WorldPosition): void {
+    const marker = this.marker as WorldPosition;
+    const orientation = Math.atan2(place.y - marker.y, place.x - marker.x);
+    this.markerOrientation = (orientation + Math.PI * 2) % (Math.PI * 2);
+    this.setMarker(marker);
   }
 
   private navigationAction(event: KeyboardEvent): NavigationAction | undefined {

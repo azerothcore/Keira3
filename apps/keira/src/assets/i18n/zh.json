@@ -1429,6 +1429,11 @@
     "COPY_GO_LIQUID": "复制水面上的 .go xyz",
     "GROUND_BELOW": "下方地面",
     "MARKER_ON_LIQUID": "标记放在液面上",
-    "MARKER_ON_LIQUID_HELP": "空格把标记放在水、岩浆或软泥的表面而不是下方地面；Shift + 空格则相反"
+    "MARKER_ON_LIQUID_HELP": "空格把标记放在水、岩浆或软泥的表面而不是下方地面；Shift + 空格则相反",
+    "FACE_HERE": "让玩家面向这里（Alt + 右键）",
+    "HELP_ALT_RIGHT_CLICK": "Alt + 右键",
+    "HELP_FACE": "让玩家标记面向那里",
+    "HELP_SHIFT_SPACE": "Shift + 空格",
+    "HELP_MARKER_LIQUID": "标记放在液面上（开启“标记放在液面上”时则放在地面）"
   }
 }

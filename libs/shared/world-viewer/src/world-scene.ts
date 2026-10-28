@@ -307,7 +307,16 @@ export class WorldScene {
     gameobject: new MeshBasicMaterial({ color: COLORS.gameobject, depthTest: false, transparent: true, opacity: 0.9 }),
   };
   private facingArrowsVisible = true;
+  private readonly triggerArrowMaterial = new MeshBasicMaterial({
+    color: COLORS.areaTrigger,
+    depthTest: false,
+    transparent: true,
+    opacity: 0.9,
+  });
   private readonly beacon = createBeacon();
+  /** Turns the marker's player character and facing arrow (see `setBeacon`). */
+  private readonly beaconPivot = new Group();
+  private readonly beaconArrowMaterial = new MeshBasicMaterial({ color: 0xfff35c, depthTest: false, transparent: true, opacity: 0.9 });
   /** The Path / LOS tool's drawing: the path, the line of sight and the points. */
   readonly probeGroup = new Group();
   /** Boss boundaries: outlines and see-through fills (the fills are picked for their hover label). */
@@ -350,6 +359,9 @@ export class WorldScene {
 
   constructor() {
     this.scene.background = new Color(COLORS.sky);
+    this.beaconPivot.name = 'beacon-facing';
+    this.beaconPivot.add(this.facingArrow(this.beaconArrowMaterial, 2.5));
+    this.beacon.add(this.beaconPivot);
     this.scene.fog = new Fog(COLORS.sky, DEFAULT_FOG.near, DEFAULT_FOG.far);
     this.terrainGroup.name = 'terrain';
     this.buildingGroup.name = 'buildings';
@@ -897,40 +909,55 @@ export class WorldScene {
    * Marks a place with a tall beam (seen from afar and through everything) and a ring on the ground, e.g. where a
    * teleport or "go to" landed; `undefined` removes it.
    */
-  setBeacon(position: WorldPosition | undefined): void {
+  setBeacon(position: WorldPosition | undefined, orientation = 0): void {
     this.beacon.visible = !!position;
     if (position) {
       this.beacon.position.copy(scenePoint(position));
+      // the player character and its facing arrow turn the way it faces
+      this.beaconPivot.rotation.y = orientationToSceneYaw(orientation);
     }
   }
 
-  /** Puts a model (a player character) on the marker, facing north; undefined removes it. */
+  /** Puts a model (a player character) on the marker, facing its orientation; undefined removes it. */
   setBeaconModel(model: Object3D | undefined): void {
-    const old = this.beacon.getObjectByName('beacon-model');
+    const old = this.beaconPivot.getObjectByName('beacon-model');
     if (old) {
-      this.beacon.remove(old);
+      this.beaconPivot.remove(old);
     }
     if (model) {
       model.name = 'beacon-model';
-      model.rotation.y = orientationToSceneYaw(0);
-      this.beacon.add(model);
+      model.rotation.y = 0;
+      this.beaconPivot.add(model);
     }
   }
 
   /** Shows or hides the arrows through the middle of models that tell which way they face. */
   setFacingArrowsVisible(visible: boolean): void {
     this.facingArrowsVisible = visible;
-    this.spawnGroup.traverse((object) => {
-      if (object.name === FACING_ARROW_NAME) {
-        object.visible = visible;
-      }
-    });
+    for (const group of [this.spawnGroup, this.triggerGroup, this.beacon]) {
+      group.traverse((object) => {
+        if (object.name === FACING_ARROW_NAME) {
+          object.visible = visible;
+        }
+      });
+    }
   }
 
   /**
    * An arrow through the centre of a model (half its height, middle of its footprint), sized to it and pointing to
    * its front (−z, like the pins' nose): shows the orientation of creatures and objects even when they're round.
    */
+  /** A facing arrow of a given length, along −z from its object's middle, drawn over everything and never picked. */
+  private facingArrow(material: Material, length: number): Mesh {
+    const arrow = new Mesh(this.facingArrowGeometry, material);
+    arrow.name = FACING_ARROW_NAME;
+    arrow.scale.setScalar(length);
+    arrow.renderOrder = 4;
+    arrow.raycast = () => undefined;
+    arrow.visible = this.facingArrowsVisible;
+    return arrow;
+  }
+
   private facingArrowFor(model: Object3D, kind: SpawnKind): Mesh {
     const box = new Box3().setFromObject(model);
     const size = box.getSize(new Vector3());
@@ -1023,6 +1050,10 @@ export class WorldScene {
       const edges = new LineSegments(new EdgesGeometry(geometry), this.triggerEdgeMaterial);
       edges.raycast = () => undefined;
       mesh.add(edges);
+      if (trigger.box) {
+        // the way the box faces (its orientation), like the spawns' arrows
+        mesh.add(this.facingArrow(this.triggerArrowMaterial, Math.max(trigger.box.length, trigger.box.width) * 0.6));
+      }
       this.triggerGroup.add(mesh);
     }
   }
@@ -1727,6 +1758,8 @@ export class WorldScene {
     this.reachMaterial.dispose();
     this.facingArrowGeometry.dispose();
     Object.values(this.facingArrowMaterials).forEach((material) => material.dispose());
+    this.triggerArrowMaterial.dispose();
+    this.beaconArrowMaterial.dispose();
     this.setAreaTriggers([]);
     this.setOverlays([], []);
     this.overlayMarkerGeometry.dispose();
