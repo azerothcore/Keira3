@@ -44,6 +44,7 @@ import { DisplayModel, displayModel, SpawnModels } from './spawn-models';
 import { WorldPrefetch } from './world-prefetch';
 import { WorldDoodads } from './world-doodads';
 import { brightnessAt, ZoneLighting } from './zone-lighting';
+import { setInvisibleModelsVisible } from './m2-object';
 import { WeatherEffect, WorldWeather } from './world-weather';
 import {
   controlFor,
@@ -385,6 +386,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
         this.streamer.configure({ detailed: !settings.lowDetailTerrain, radius: settings.terrainRadius });
         this.objects.configure({ showBuildings: settings.showBuildings, radius: settings.terrainRadius });
         this.objects.setIndoorVisible(settings.showIndoor || this.singleBuildingMap);
+        setInvisibleModelsVisible(settings.showInvisible);
         const distances = drawDistances(settings);
         this.doodads.configure({
           show: settings.showDoodads,

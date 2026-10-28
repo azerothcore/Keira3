@@ -81,6 +81,11 @@ export interface ServerTileCoverage {
 /** Server terrain tiles kept parsed. */
 const SERVER_MAP_CACHE = 9;
 
+/** Where parsed models are cached: a new name when what's kept of them changes (v2: each batch's opacity). */
+const M2_CACHE = 'm2-v2';
+/** Particle emitters (smoke, fire, sparks…): a placeholder mesh the game never draws. */
+const EMITTER_MODEL = /emitter[^\\]*\.m2$|\\particleemitters\\/i;
+
 @Service()
 export class WowClientService {
   private readonly native = inject(WOW_NATIVE_API);
@@ -526,7 +531,7 @@ export class WowClientService {
     const { identity } = await this.getClient();
     const maps = new Map<string, { directory: string; tiles: number; bytes: number }>();
     const [adt, wmo, m2, doodads, textures, totalBytes] = await Promise.all([
-      ...['adt', 'wmo', 'm2', 'wmo-doodads', 'texture'].map((kind) => this.cache.entries(identity, kind)),
+      ...['adt', 'wmo', M2_CACHE, 'wmo-doodads', 'texture'].map((kind) => this.cache.entries(identity, kind)),
       this.cache.size(),
     ]);
     for (const [key, bytes] of Object.entries(adt as Record<string, number>)) {
@@ -640,15 +645,18 @@ export class WowClientService {
     await nextFrame();
     const { identity } = await this.getClient();
     const key = m2Path(path);
-    const cached = await this.cache.read<M2Mesh>(identity, 'm2', key);
+    const cached = await this.cache.read<M2Mesh>(identity, M2_CACHE, key);
     if (cached?.collision) {
       return cached;
     }
     const model = await this.readFile(key);
     const skin = model && (await this.readFile(m2SkinPath(path)));
-    const mesh = model && skin ? await this.parser.run({ kind: 'm2', model, skin }) : undefined;
+    const parsed = model && skin ? await this.parser.run({ kind: 'm2', model, skin }) : undefined;
+    // the mesh of a particle emitter only places its particles: the game doesn't draw it (some aren't faded out)
+    const mesh =
+      parsed && EMITTER_MODEL.test(key) ? { ...parsed, batches: parsed.batches.map((batch) => ({ ...batch, alpha: 0 })) } : parsed;
     if (mesh) {
-      void this.cache.write(identity, 'm2', key, mesh);
+      void this.cache.write(identity, M2_CACHE, key, mesh);
     }
     return mesh;
   }

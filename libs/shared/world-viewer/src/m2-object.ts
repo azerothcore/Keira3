@@ -23,8 +23,28 @@ export interface M2Template {
   collision?: BufferGeometry;
 }
 
+/** Below this opacity a batch is one the game doesn't show (an invisible wall, a smoke emitter's box). */
+const INVISIBLE_ALPHA = 0.02;
+/** The invisible batches' materials, drawn see-through while invisible walls are shown. */
+const invisibleMaterials = new Set<Material>();
+let invisibleShown = false;
+
+/** Shows the parts the game never draws (invisible walls, emitter boxes) as see-through blue, or hides them. */
+export function setInvisibleModelsVisible(visible: boolean): void {
+  invisibleShown = visible;
+  invisibleMaterials.forEach((material) => (material.visible = visible));
+}
+
 /** One material per batch, following the batch's blend mode: cut-out leaves, glowing additive parts, glass… */
 export function createM2Material(batch: M2Mesh['batches'][number], texture: Texture): Material {
+  if (batch.alpha < INVISIBLE_ALPHA) {
+    // like the game's own debug view of them: see-through, without the placeholder texture
+    const material = new MeshBasicMaterial({ color: 0x4aa8ff, transparent: true, opacity: 0.25, depthWrite: false, side: DoubleSide });
+    material.visible = invisibleShown;
+    material.userData['invisible'] = true;
+    invisibleMaterials.add(material);
+    return material;
+  }
   const additive = batch.blend === M2Blend.NoAlphaAdd || batch.blend === M2Blend.Add;
   const options = {
     map: texture,
@@ -33,6 +53,8 @@ export function createM2Material(batch: M2Mesh['batches'][number], texture: Text
     transparent: batch.blend >= M2Blend.Alpha,
     depthWrite: batch.blend < M2Blend.Alpha,
     ...(additive ? { blending: AdditiveBlending } : {}),
+    // (faded by its texture weight or colour)
+    ...(batch.alpha < 1 ? { transparent: true, opacity: batch.alpha, depthWrite: false } : {}),
   };
   // additive parts (glows, light beams) aren't shaded: lighting would only dim them
   return batch.unlit || additive ? new MeshBasicMaterial(options) : new MeshLambertMaterial(options);
@@ -60,5 +82,8 @@ export function buildM2Template(mesh: M2Mesh, textures: Texture[], fallback: Tex
 export function disposeM2Template(template: M2Template): void {
   template.geometry.dispose();
   template.collision?.dispose();
-  template.materials.forEach((material) => material.dispose());
+  template.materials.forEach((material) => {
+    invisibleMaterials.delete(material);
+    material.dispose();
+  });
 }

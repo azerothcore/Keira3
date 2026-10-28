@@ -1545,6 +1545,8 @@
     "VIEW_SUB_MODELS": "模型",
     "VIEW_SUB_MARKERS": "刷新点周围",
     "VIEW_SUB_PATHS": "路径",
-    "COMPASS_OPACITY": "不透明度"
+    "COMPASS_OPACITY": "不透明度",
+    "INVISIBLE_WALLS": "隐形墙",
+    "INVISIBLE_WALLS_HELP": "游戏从不绘制的模型部分，例如隐形墙和烟雾发射器的方框（奥格瑞玛上空的方块）：以半透明蓝色显示"
   }
 }

@@ -1,6 +1,6 @@
 import { M2Blend, M2Mesh } from '@keira/shared/wow-data';
 import { AdditiveBlending, DoubleSide, FrontSide, MeshBasicMaterial, MeshLambertMaterial, NormalBlending, Texture } from 'three';
-import { buildM2Template, createM2Material, disposeM2Template } from './m2-object';
+import { buildM2Template, createM2Material, disposeM2Template, setInvisibleModelsVisible } from './m2-object';
 
 const batch = (blend: M2Blend, overrides: Partial<M2Mesh['batches'][number]> = {}): M2Mesh['batches'][number] => ({
   start: 0,
@@ -10,6 +10,7 @@ const batch = (blend: M2Blend, overrides: Partial<M2Mesh['batches'][number]> = {
   blend,
   twoSided: false,
   unlit: false,
+  alpha: 1,
   ...overrides,
 });
 
@@ -63,5 +64,35 @@ describe('m2-object', () => {
     template.materials.forEach((material) => material.addEventListener('dispose', disposed));
     disposeM2Template(template);
     expect(disposed).toHaveBeenCalledTimes(3);
+  });
+
+  it('hides the parts the game never draws, and shows them see-through when asked; fades the faded ones', () => {
+    const faded = createM2Material(batch(M2Blend.Opaque, { alpha: 0.5 }), texture);
+    expect(faded.transparent).toBe(true);
+    expect(faded.opacity).toBe(0.5);
+    const wall = createM2Material(batch(M2Blend.Opaque, { alpha: 0 }), texture) as MeshBasicMaterial;
+    expect(wall.visible).toBe(false);
+    expect(wall.map).toBeNull();
+    setInvisibleModelsVisible(true);
+    expect(wall.visible).toBe(true);
+    // made while shown: shown
+    const other = createM2Material(batch(M2Blend.Opaque, { alpha: 0 }), texture);
+    expect(other.visible).toBe(true);
+    const template = buildM2Template(
+      {
+        positions: new Float32Array(9),
+        normals: new Float32Array(9),
+        uvs: new Float32Array(6),
+        indices: new Uint16Array(3),
+        batches: [batch(M2Blend.Opaque, { alpha: 0 })],
+      },
+      [],
+      texture,
+    );
+    disposeM2Template(template);
+    setInvisibleModelsVisible(false);
+    expect(wall.visible).toBe(false);
+    // (a disposed template's material is let go)
+    expect(template.materials[0].visible).toBe(true);
   });
 });

@@ -215,7 +215,6 @@
     </button>
   </div>
 
-
   <div class="world-editor-body">
     <button
       type="button"
@@ -713,6 +712,23 @@
                 />
                 <label class="form-check-label" for="world-editor-props">{{ 'WORLD_EDITOR.PROPS' | translate }}</label
                 ><i class="fas fa-info-circle ms-1" placement="auto" container="body" [tooltip]="'WORLD_EDITOR.PROPS_HELP' | translate"></i>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-invisible"
+                  data-testid="view-invisible"
+                  [checked]="renderSettings.settings().showInvisible"
+                  (change)="setRenderFlag('showInvisible', $event)"
+                />
+                <label class="form-check-label" for="world-editor-invisible">{{ 'WORLD_EDITOR.INVISIBLE_WALLS' | translate }}</label
+                ><i
+                  class="fas fa-info-circle ms-1"
+                  placement="auto"
+                  container="body"
+                  [tooltip]="'WORLD_EDITOR.INVISIBLE_WALLS_HELP' | translate"
+                ></i>
               </div>
             </section>
             <section class="world-editor-view-group" data-testid="view-group-sky">

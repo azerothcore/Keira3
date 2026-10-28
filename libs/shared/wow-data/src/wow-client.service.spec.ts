@@ -735,6 +735,14 @@ describe('WowClientService', () => {
       expect(await service.getM2('World\\Missing.m2')).toBeUndefined();
     });
 
+    it("hides the mesh of particle emitters, which the game doesn't draw", async () => {
+      const { service } = setup({
+        mpqs: { 'common.MPQ': { files: { 'World\\Fx\\LavaSmokeEmitter.m2': [1], 'World\\Fx\\LavaSmokeEmitter00.skin': [2] } } },
+      });
+      m2.parseM2.mockReturnValue({ batches: [{ alpha: 1 }], collision: EMPTY_COLLISION });
+      expect((await service.getM2('World\\Fx\\LavaSmokeEmitter.mdx'))?.batches).toEqual([{ alpha: 0 }]);
+    });
+
     it('keeps parsed models in the disk cache', async () => {
       const { service } = setup({
         mpqs: { 'common.MPQ': { files: { 'World\\Tree.m2': [1], 'World\\Tree00.skin': [2] } } },

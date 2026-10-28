@@ -1545,6 +1545,8 @@
     "VIEW_SUB_MODELS": "Modelos",
     "VIEW_SUB_MARKERS": "Alrededor de los spawns",
     "VIEW_SUB_PATHS": "Rutas",
-    "COMPASS_OPACITY": "Opacidad"
+    "COMPASS_OPACITY": "Opacidad",
+    "INVISIBLE_WALLS": "Paredes invisibles",
+    "INVISIBLE_WALLS_HELP": "Las partes de los modelos que el juego nunca dibuja, como paredes invisibles y las cajas de los emisores de humo (los cuadrados sobre Orgrimmar): se muestran translúcidas en azul"
   }
 }

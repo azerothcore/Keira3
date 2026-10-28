@@ -70,6 +70,8 @@ export interface WorldRenderSettings {
    * outside some show as flat squares). Dungeons made of one building always show them.
    */
   showIndoor: boolean;
+  /** The parts of models the game never draws (invisible walls, smoke emitters' boxes), shown see-through. */
+  showInvisible: boolean;
   /** Within doodads and models: trees and the other doodads (props), NPCs and gameobjects, each on or off. */
   showTrees: boolean;
   showProps: boolean;
@@ -147,6 +149,7 @@ export const DEFAULT_WORLD_RENDER_SETTINGS: WorldRenderSettings = {
   showCreatureModels: true,
   showGameobjectModels: true,
   showIndoor: true,
+  showInvisible: false,
   memoryCapMb: 0,
   gpuCapMb: 0,
   markerOnLiquid: false,

@@ -3,6 +3,8 @@ import { M2Blend, m2Path, m2SkinPath, parseM2 } from './m2';
 const mocks = vi.hoisted(() => ({
   vertices: new ArrayBuffer(0),
   skin: {} as Record<string, unknown>,
+  weights: undefined as unknown,
+  colors: undefined as unknown,
 }));
 
 vi.mock('@wowserhq/format', () => ({
@@ -10,6 +12,12 @@ vi.mock('@wowserhq/format', () => ({
   M2Model: class {
     get vertices(): ArrayBuffer {
       return mocks.vertices;
+    }
+    get textureWeights(): unknown {
+      return mocks.weights;
+    }
+    get colors(): unknown {
+      return mocks.colors;
     }
     load(): this {
       return this;
@@ -73,9 +81,51 @@ describe('m2', () => {
     expect(Array.from(mesh.uvs)).toEqual([0.25, 0.75, 0, 0]);
     expect(Array.from(mesh.indices)).toEqual([0, 1, 0]);
     expect(mesh.batches).toEqual([
-      { start: 0, count: 3, texture: 'World\\Tree.blp', textureType: 0, blend: M2Blend.AlphaKey, geoset: 0, twoSided: true, unlit: false },
-      { start: 0, count: 3, texture: undefined, textureType: 11, blend: M2Blend.Opaque, geoset: 0, twoSided: false, unlit: true },
-      { start: 0, count: 3, texture: undefined, textureType: 0, blend: M2Blend.AlphaKey, geoset: 0, twoSided: true, unlit: false },
+      {
+        start: 0,
+        count: 3,
+        texture: 'World\\Tree.blp',
+        textureType: 0,
+        blend: M2Blend.AlphaKey,
+        geoset: 0,
+        twoSided: true,
+        unlit: false,
+        alpha: 1,
+      },
+      { start: 0, count: 3, texture: undefined, textureType: 11, blend: M2Blend.Opaque, geoset: 0, twoSided: false, unlit: true, alpha: 1 },
+      {
+        start: 0,
+        count: 3,
+        texture: undefined,
+        textureType: 0,
+        blend: M2Blend.AlphaKey,
+        geoset: 0,
+        twoSided: true,
+        unlit: false,
+        alpha: 1,
+      },
     ]);
+  });
+
+  it('tells how opaque the game draws each batch: 0 for invisible walls and emitter boxes', () => {
+    mocks.vertices = vertexBuffer([{ pos: [0, 0, 0], normal: [0, 0, 1], uv: [0, 0] }]);
+    const track = (...keys: number[][]) => ({ sequenceKeys: keys.map((k) => new Int16Array(k)) });
+    mocks.weights = [{ weightTrack: track([0x7fff]) }, { weightTrack: track([0]) }, { weightTrack: track() }];
+    mocks.colors = [{ alphaTrack: track([0x3fff]) }];
+    mocks.skin = {
+      vertices: new Uint16Array([0]),
+      indices: new Uint16Array([0, 0, 0]),
+      batches: [
+        batch({ textureWeightIndex: 0, colorIndex: 0xffff }),
+        batch({ textureWeightIndex: 1, colorIndex: 0xffff }),
+        batch({ textureWeightIndex: 2, colorIndex: 0 }),
+        batch({ textureWeightIndex: 9, colorIndex: 9 }),
+      ],
+    };
+    expect(parseM2(new Uint8Array(1), new Uint8Array(1)).batches.map((b) => b.alpha.toFixed(2))).toEqual(['1.00', '0.00', '0.50', '1.00']);
+    // a model without weights or colours at all
+    mocks.weights = undefined;
+    mocks.colors = undefined;
+    expect(parseM2(new Uint8Array(1), new Uint8Array(1)).batches[0].alpha).toBe(1);
   });
 });

@@ -26,6 +26,11 @@ export interface M2BatchInfo {
   geoset: number;
   twoSided: boolean;
   unlit: boolean;
+  /**
+   * How opaque the game draws it (0..1): its texture weight times its colour's alpha, at the start of its first
+   * animation. 0 for the parts the game never shows: invisible walls, the boxes of smoke and particle emitters.
+   */
+  alpha: number;
 }
 
 /** A static M2 model (doodad, creature, gameobject) in local scene axes, in its bind pose. */
@@ -44,6 +49,8 @@ const NORMAL_OFFSET = 20;
 const UV_OFFSET = 32;
 const MATERIAL_UNLIT = 0x1;
 const MATERIAL_TWO_SIDED = 0x4;
+/** Fixed-point alpha of texture weights and colours: 32767 = opaque. */
+const MAX_ALPHA = 0x7fff;
 /** Batches whose first texture stage is a reflection (environment map): they need a shader we don't have. */
 const ENVIRONMENT_FIRST = new Set([M2_VERTEX_SHADER.VERTEX_ENV, M2_VERTEX_SHADER.VERTEX_ENV_T2, M2_VERTEX_SHADER.VERTEX_ENV_ENV]);
 
@@ -79,6 +86,17 @@ export function parseM2(modelBytes: Uint8Array, skinBytes: Uint8Array): M2Mesh {
     uvs[i * 2 + 1] = view.getFloat32(base + UV_OFFSET + 4, true);
   }
 
+  // (a track's first key of its first animation, or the fallback without any)
+  const firstKey = (track: { sequenceKeys: ArrayLike<number>[] } | undefined, fallback: number): number => {
+    const keys = track?.sequenceKeys[0];
+    return keys && keys.length > 0 ? keys[0] : fallback;
+  };
+  const alphaOf = (batch: { textureWeightIndex: number; colorIndex: number }): number => {
+    const weight = firstKey(model.textureWeights?.[batch.textureWeightIndex]?.weightTrack, MAX_ALPHA) / MAX_ALPHA;
+    const color = firstKey(model.colors?.[batch.colorIndex]?.alphaTrack, MAX_ALPHA) / MAX_ALPHA;
+    return Math.min(1, Math.max(0, weight * color));
+  };
+
   const batches = skin.batches
     .filter((batch) => !ENVIRONMENT_FIRST.has(batch.vertexShader) && batch.skinSection.indexCount > 0)
     .map((batch) => {
@@ -92,6 +110,7 @@ export function parseM2(modelBytes: Uint8Array, skinBytes: Uint8Array): M2Mesh {
         geoset: batch.skinSection.id,
         twoSided: (batch.material.flags & MATERIAL_TWO_SIDED) !== 0,
         unlit: (batch.material.flags & MATERIAL_UNLIT) !== 0,
+        alpha: alphaOf(batch),
       };
     });
 

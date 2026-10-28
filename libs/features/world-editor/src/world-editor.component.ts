@@ -251,6 +251,7 @@ type RenderFlagKey =
   | 'showBuildings'
   | 'showDoodads'
   | 'showIndoor'
+  | 'showInvisible'
   | 'showTrees'
   | 'showProps'
   | 'showCreatureModels'
