@@ -52,12 +52,15 @@ import {
   GAME_MAP_ROOT,
   overlayPieces,
   pageTiles,
+  pageTraceRegions,
+  subzoneTraceRegions,
   parseGameMapAreas,
   parseGameMapFloors,
   parseGameMapOverlays,
   parseGameMapTransforms,
   parseGameZones,
 } from './game-map';
+import { Ring } from './zone-tracer';
 import { FactionData, parseFactions, parseFactionTemplates } from './factions';
 
 /** Disk space used by the cache of this client: per map (by lower-case directory), for buildings, and in total. */
@@ -113,7 +116,9 @@ const INVENTORY_TYPE_SHIELD = 14;
 const EMITTER_MODEL = /emitter[^\\]*\.m2$|\\particleemitters\\/i;
 
 /** Where world map pictures are cached. */
-const GAME_MAP_KIND = 'game-map-2';
+const GAME_MAP_KIND = 'game-map-3';
+/** Where the outlines traced from world map pictures are cached. */
+const GAME_OUTLINES_KIND = 'game-map-outlines-1';
 /** World map pictures kept in memory. */
 const GAME_PICTURES_KEPT = 12;
 
@@ -440,7 +445,7 @@ export class WowClientService {
 
   /**
    * The picture of a world map page (1002 × 668): its tiles with, on a zone, every sub-zone it lights up once explored
-   * (`overlays` of that zone) and where each one is. Undefined when the client has none of its tiles. Kept in the disk
+   * (`overlays` of that zone). Undefined when the client has none of its tiles. Kept in the disk
    * cache, and the last few in memory.
    */
   getGameMapPicture(page: GamePage, overlays: GameMapOverlay[] = []): Promise<GameMapPicture | undefined> {
@@ -473,11 +478,11 @@ export class WowClientService {
     }
     const folder = page.prefix.slice(0, page.prefix.indexOf('\\') + 1);
     const pieces: GameMapPiece[] = [];
-    for (const [index, overlay] of overlays.entries()) {
+    for (const overlay of overlays) {
       for (const piece of overlayPieces(overlay)) {
         const image = await this.getTexture(`${GAME_MAP_ROOT}${folder}${overlay.texture}${piece.index}.blp`).catch(() => undefined);
         if (image) {
-          pieces.push({ image, x: piece.x, y: piece.y, label: Math.min(255, index + 1) });
+          pieces.push({ image, x: piece.x, y: piece.y });
         }
       }
     }
@@ -485,6 +490,90 @@ export class WowClientService {
     perfNote(`game map: drew ${page.prefix} (${pieces.length} overlay pieces) in ${Math.round(performance.now() - started)} ms`);
     void this.cache.write(identity, GAME_MAP_KIND, page.prefix, picture);
     return picture;
+  }
+
+  /**
+   * The outlines of a page's regions (a continent's zones, the world map's continents, the cosmic map's worlds), traced
+   * from the client's highlights as AoWoW does, in percent of the picture, by the page each one opens. Traced once (in
+   * the background worker) and kept in the disk cache.
+   */
+  getGameMapOutlines(page: GamePage): Promise<Map<string, Ring[]>> {
+    return this.outlines(`regions-${page.key}`, async () => {
+      const highlights = new Map<string, RgbaImage | undefined>();
+      for (const { highlight } of page.regions) {
+        if (highlight && !highlights.has(highlight)) {
+          highlights.set(highlight, await this.getTexture(highlight).catch(() => undefined));
+        }
+      }
+      return this.parser.run({ kind: 'trace', regions: pageTraceRegions(page, highlights) });
+    });
+  }
+
+  /** The outlines of a zone's sub-zones (from the pictures it lights up once explored, `overlays`), by area id. */
+  getGameMapSubzones(page: GamePage, overlays: GameMapOverlay[]): Promise<Map<string, Ring[]>> {
+    return this.outlines(`subzones-${page.key}`, async () => {
+      const folder = page.prefix.slice(0, page.prefix.indexOf('\\') + 1);
+      const images: (RgbaImage | undefined)[][] = [];
+      for (const overlay of overlays) {
+        const pieces: (RgbaImage | undefined)[] = [];
+        for (const piece of overlayPieces(overlay)) {
+          pieces.push(await this.getTexture(`${GAME_MAP_ROOT}${folder}${overlay.texture}${piece.index}.blp`).catch(() => undefined));
+        }
+        images.push(pieces);
+      }
+      return this.parser.run({ kind: 'trace', regions: subzoneTraceRegions(overlays, images) });
+    });
+  }
+
+  /**
+   * The parts of a zone's neighbours seen on its picture (their outlines on the continent brought into the zone's frame,
+   * less the zone and its sub-zones), in percent of the zone's picture, by the page each one opens.
+   */
+  getGameMapNeighbours(page: GamePage, continent: GamePage, overlays: GameMapOverlay[]): Promise<Map<string, Ring[]>> {
+    return this.outlines(`neighbours-${page.key}`, async () => {
+      const region = continent.regions.find((r) => r.page === page.key);
+      const zones = await this.getGameMapOutlines(continent);
+      const own = zones.get(page.key);
+      if (!region || !own) {
+        return [];
+      }
+      const subs = await this.getGameMapSubzones(page, overlays);
+      const { left, top, right, bottom } = region.rect;
+      return this.parser.run({
+        kind: 'neighbours',
+        frame: [left * 100, top * 100, right * 100, bottom * 100],
+        own,
+        subs: [...subs.values()],
+        others: [...zones].filter(([key]) => key !== page.key),
+      });
+    });
+  }
+
+  /** Outlines, once each (in memory, else from the disk cache, else traced). */
+  private outlines(key: string, trace: () => Promise<[string, Ring[]][]>): Promise<Map<string, Ring[]>> {
+    let outlines = this.gameOutlines.get(key);
+    if (!outlines) {
+      outlines = this.traceOutlines(key, trace).catch((error) => {
+        this.gameOutlines.delete(key);
+        throw error;
+      });
+      this.gameOutlines.set(key, outlines);
+    }
+    return outlines;
+  }
+  private readonly gameOutlines = new Map<string, Promise<Map<string, Ring[]>>>();
+
+  private async traceOutlines(key: string, trace: () => Promise<[string, Ring[]][]>): Promise<Map<string, Ring[]>> {
+    const { identity } = await this.getClient();
+    const cached = await this.cache.read<[string, Ring[]][]>(identity, GAME_OUTLINES_KIND, key);
+    if (cached) {
+      return new Map(cached);
+    }
+    const started = performance.now();
+    const outlines = await trace();
+    perfNote(`game map: traced ${key} (${outlines.length} outlines) in ${Math.round(performance.now() - started)} ms`);
+    void this.cache.write(identity, GAME_OUTLINES_KIND, key, outlines);
+    return new Map(outlines);
   }
 
   /** Flight masters' nodes (TaxiNodes.dbc) of a map. */

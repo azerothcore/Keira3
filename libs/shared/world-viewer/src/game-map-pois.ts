@@ -17,6 +17,8 @@ export interface GameMapPoi {
   subname?: string;
   /** Its faction template, to tell whose side it serves. */
   faction?: number;
+  /** The zone it is in (AreaTable id; 0 when the server hasn't worked it out). */
+  zoneId?: number;
 }
 
 /** A transport's route (a boat, a zeppelin…): its taxi path and faction. */
@@ -39,6 +41,8 @@ export interface GameMapIcon {
   path?: string;
   /** A cell of `POI_ATLAS`. */
   atlas?: number;
+  /** A part of the picture: [x, y, width, height]. */
+  crop?: [number, number, number, number];
   /** A square ability-like icon, drawn in a frame. */
   square?: boolean;
   fa?: string;
@@ -77,6 +81,23 @@ export const ATLAS = {
   zeppelin: { neutral: 140, alliance: 141, horde: 143 },
   boat: { neutral: 145, alliance: 146, horde: 148 },
 };
+
+/** Crossed swords (its top left quarter), the game's sign of a fight. */
+const COMBAT_SWORDS = 'Interface\\WorldStateFrame\\CombatSwords.blp';
+
+/** The layers shown on continents (as AoWoW's): how to get around and where the instances are. */
+export const CONTINENT_LAYERS = new Set([
+  'flight',
+  'boat',
+  'zeppelin',
+  'gunship',
+  'transport',
+  'routes',
+  'dungeon',
+  'raid',
+  'pvp',
+  'relations',
+]);
 
 const tracking = (file: string): GameMapIcon => ({ path: `${TRACKING}${file}.blp` });
 const square = (file: string): GameMapIcon => ({ path: `${ICONS}${file}.blp`, square: true });
@@ -173,6 +194,8 @@ export const GAME_MAP_LAYER_GROUPS: GameMapLayerGroup[] = [
       { key: 'stone', label: 'WORLD_EDITOR.POI_STONE', icon: square('Spell_Shadow_Teleport'), shown: true },
       { key: 'dungeon', label: 'WORLD_EDITOR.GAME_MAP_DUNGEONS', icon: { fa: 'fa-circle-o-notch', color: '#29b6f6' }, shown: true },
       { key: 'raid', label: 'WORLD_EDITOR.GAME_MAP_RAIDS', icon: { fa: 'fa-circle-o-notch', color: '#2ecc40' }, shown: true },
+      { key: 'pvp', label: 'WORLD_EDITOR.GAME_MAP_WORLD_PVP', icon: { path: COMBAT_SWORDS, crop: [0, 0, 32, 32] }, shown: true },
+      { key: 'relations', label: 'WORLD_EDITOR.GAME_MAP_RELATIONS', icon: { path: POI_ATLAS, atlas: ATLAS.allianceCrest }, shown: true },
     ],
   },
 ];

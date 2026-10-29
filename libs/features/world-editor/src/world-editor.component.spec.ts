@@ -239,6 +239,7 @@ describe(WorldEditorComponent.name, () => {
       getMapDifficulties: vi.fn(),
       getGameMap: vi.fn(),
       getGameMapPicture: vi.fn(),
+      getGameMapOutlines: vi.fn(),
       getTexture: vi.fn(),
     },
     service: {
@@ -398,6 +399,7 @@ describe(WorldEditorComponent.name, () => {
       zones: new Map(),
     });
     mocks.client.getGameMapPicture.mockResolvedValue(undefined);
+    mocks.client.getGameMapOutlines.mockResolvedValue(new Map());
     mocks.client.getTexture.mockResolvedValue(undefined);
     mocks.service.loadMapPois.mockResolvedValue([]);
     mocks.service.loadMapTeleports.mockResolvedValue([]);
@@ -3653,6 +3655,7 @@ describe(WorldEditorComponent.name, () => {
       await loadArea(page);
       // its pictures were made at the start: the cosmic and world maps and the continent
       expect(mocks.client.getGameMapPicture).toHaveBeenCalledTimes(3);
+      expect(mocks.client.getGameMapOutlines).toHaveBeenCalledTimes(3);
       page.viewer().zoneChanged.emit(12);
       page.click('game-map-toggle');
       await settle(page);

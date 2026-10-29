@@ -21,14 +21,10 @@ import {
   parseGameMapTransforms,
   parseGameZones,
   toGameMap,
-  regionShapes,
-  shapeEdges,
-  shapeCentres,
-  labelAt,
-  traceShapes,
   cropImage,
-  SHAPE_WIDTH,
-  SHAPE_HEIGHT,
+  GamePage,
+  pageTraceRegions,
+  subzoneTraceRegions,
 } from './game-map';
 
 const float = (value: number): number => {
@@ -280,15 +276,13 @@ describe('game map pictures', () => {
     ]);
   });
 
-  it('lays tiles out 4 by 3, blends pieces over them and marks where labelled ones are solid', () => {
+  it('lays tiles out 4 by 3 and blends pieces over them', () => {
     const red = solid(256, 256, [255, 0, 0, 255]);
-    const { image: picture, labels } = composeGameMap(
+    const { image: picture } = composeGameMap(
       [red, undefined, undefined, undefined, red],
       [
-        { image: solid(2, 2, [0, 0, 255, 128]), x: -1, y: -1, label: 3 },
+        { image: solid(2, 2, [0, 0, 255, 128]), x: -1, y: -1 },
         { image: solid(4, 4, [0, 255, 0, 255]), x: 1000, y: 666 },
-        { image: solid(10, 10, [0, 0, 0, 10]), x: 100, y: 100, label: 4 },
-        { image: solid(6, 6, [9, 9, 9, 255]), x: 200, y: 200, label: 5 },
       ],
     );
     expect([picture.width, picture.height]).toEqual([1002, 668]);
@@ -298,171 +292,50 @@ describe('game map pictures', () => {
     expect(at(300, 0)).toEqual([0, 0, 0, 255]);
     expect(at(0, 300)).toEqual([255, 0, 0, 255]);
     expect(at(1001, 667)).toEqual([0, 255, 0, 255]);
-    // the shape grid is half the picture: solid pieces only
-    expect(labels.length).toBe(SHAPE_WIDTH * SHAPE_HEIGHT);
-    expect(labels[0]).toBe(3);
-    expect(labels[50 * SHAPE_WIDTH + 50]).toBe(0);
-    expect(labels[101 * SHAPE_WIDTH + 101]).toBe(5);
-    expect(labels[104 * SHAPE_WIDTH + 104]).toBe(0);
-  });
-});
-
-describe('game map shapes', () => {
-  const W = SHAPE_WIDTH;
-  const lit = (width: number, height: number, value = 40) => ({ width, height, data: new Uint8Array(width * height * 4).fill(value) });
-  const rect = (left: number, top: number, right: number, bottom: number) => ({ left, top, right, bottom });
-  const at = (labels: ArrayLike<number>, u: number, v: number) => labelAt(labels, { u, v });
-
-  it('gives each pixel to the zone whose highlight lights it, the gaps between zones closed', () => {
-    const { labels, keys } = regionShapes([
-      { key: 'west', rect: rect(0.1, 0.1, 0.495, 0.5), image: lit(8, 8) },
-      { key: 'east', rect: rect(0.505, 0.1, 0.9, 0.5), image: lit(8, 8) },
-      { key: 'none', rect: rect(0.1, 0.6, 0.2, 0.7) },
-      { key: 'off', rect: rect(2, 2, 3, 3), image: lit(8, 8) },
-    ]);
-    expect(keys).toEqual(['west', 'east', 'none', 'off']);
-    expect(at(labels, 0.3, 0.2)).toBe(1);
-    expect(at(labels, 0.7, 0.2)).toBe(2);
-    // the 4-pixel gap between them closed; the sea around them not
-    expect(at(labels, 0.5, 0.2)).not.toBe(0);
-    // a gap nearer one side goes to that side
-    const uneven = regionShapes([
-      { key: 'w', rect: rect(0.1, 0.1, 0.495, 0.5), image: lit(8, 8) },
-      { key: 'e', rect: rect(0.5, 0.1, 0.9, 0.5), image: lit(8, 8) },
-    ]);
-    expect(at(uneven.labels, 0.4985, 0.3)).toBe(2);
-    expect(at(labels, 0.05, 0.2)).toBe(0);
-    expect(at(labels, 0.15, 0.65)).toBe(0);
-    // a zone highlight only uses its top 1002:668 part: the bottom row of this one is never drawn
-    const cropped = { width: 3, height: 3, data: new Uint8Array(36) };
-    cropped.data.set([
-      0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 40, 40, 40, 255, 40, 40, 40, 255, 40, 40, 40, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255,
-    ]);
-    const crop = regionShapes([{ key: 'a', rect: rect(0, 0, 0.3, 0.3), image: cropped }]);
-    expect(at(crop.labels, 0.15, 0.25)).toBe(1);
-    expect(at(crop.labels, 0.15, 0.05)).toBe(0);
+    expect(composeGameMap([]).image.data[3]).toBe(255);
   });
 
-  it('puts the place deep inside one zone in it, and cities (blank highlights) on top of their zone', () => {
-    const { labels } = regionShapes([
-      { key: 'a', rect: rect(0.1, 0.1, 0.5, 0.5), image: lit(4, 4) },
-      { key: 'b', rect: rect(0.3, 0.1, 0.7, 0.5), image: lit(4, 4) },
-      { key: 'city', rect: rect(0.12, 0.12, 0.2, 0.2), image: lit(4, 4, 0) },
-      { key: 'town', rect: rect(0.14, 0.14, 0.18, 0.18), image: lit(4, 4, 0) },
-      { key: 'above', rect: rect(0.2, 0.01, 0.22, 0.03), image: lit(4, 4) },
-      { key: 'below', rect: rect(0.2, 0.8, 0.22, 0.82), image: lit(4, 4) },
-      { key: 'right', rect: rect(0.9, 0.3, 0.92, 0.32), image: lit(4, 4) },
-    ]);
-    expect(at(labels, 0.32, 0.3)).toBe(1);
-    expect(at(labels, 0.48, 0.3)).toBe(2);
-    expect(at(labels, 0.16, 0.16)).toBe(4);
-    expect(at(labels, 0.142, 0.16)).toBe(3);
-    expect(at(labels, 0.121, 0.121)).toBe(1);
+  it('gives the regions of a page to trace: highlights over their rectangles, circles as ellipses', () => {
+    const glow = solid(2, 2, [255, 255, 255, 255]);
+    const page = {
+      regions: [
+        { page: 'a', rect: { left: 0.1, top: 0.2, right: 0.3, bottom: 0.5 }, highlight: 'A.blp' },
+        { page: 'b', rect: { left: 0, top: 0, right: 0.5, bottom: 1 }, highlight: 'B.blp', outline: true },
+        { page: 'c', rect: { left: 0.5, top: 0.5, right: 0.7, bottom: 0.8 }, circle: true },
+      ],
+    } as GamePage;
+    const [a, b, c] = pageTraceRegions(page, new Map([['A.blp', glow]]));
+    expect(a.id).toBe('a');
+    expect(a.parts[0].image).toBe(glow);
+    expect(a.parts[0].rect?.map(Math.round)).toEqual([100, 134, 301, 334]);
+    expect([a.parts[0].crop, a.parts[0].outline]).toEqual([true, undefined]);
+    expect([b.parts[0].image, b.parts[0].crop, b.parts[0].outline]).toEqual([undefined, false, true]);
+    expect(c.parts[0].ellipse?.map(Math.round)).toEqual([601, 434, 100, 100]);
   });
 
-  it('fills outlines, draws circles, and has no shape for a highlight too small to show', () => {
-    const ring = { width: 9, height: 9, data: new Uint8Array(9 * 9 * 4) };
-    for (let i = 0; i < 81; i++) {
-      const [x, y] = [i % 9, Math.floor(i / 9)];
-      const edge = Math.max(Math.abs(x - 4), Math.abs(y - 4)) === 3;
-      ring.data.set([edge ? 200 : 0, 0, 0, 255], i * 4);
-    }
-    const tiny = { width: 64, height: 64, data: new Uint8Array(64 * 64 * 4) };
-    tiny.data.set([255, 255, 255, 255], 63 * 4);
-    const { labels } = regionShapes([
-      { key: 'outline', rect: rect(0.1, 0.1, 0.4, 0.5), image: ring, outline: true, crop: false },
-      { key: 'circle', rect: rect(0.6, 0.1, 0.9, 0.5), circle: true },
-      { key: 'tiny', rect: rect(0.95, 0.95, 0.953, 0.953), image: tiny },
-      { key: 'speck', rect: rect(0.97, 0.97, 0.9701, 0.9701), circle: true },
-      { key: 'away', rect: rect(-2, -2, -1, -1), circle: true },
-      // an outline along its picture's edge: all of it inside
-      { key: 'framed', rect: rect(0.1, 0.6, 0.3, 0.9), image: lit(3, 3, 200), outline: true, crop: false },
-    ]);
-    expect(at(labels, 0.2, 0.75)).toBe(6);
-    expect(at(labels, 0.25, 0.3)).toBe(1);
-    // outside the outline
-    expect(at(labels, 0.105, 0.105)).toBe(0);
-    expect(at(labels, 0.75, 0.3)).toBe(2);
-    expect(at(labels, 0.61, 0.11)).toBe(0);
-    expect([...labels].some((l) => l === 3 || l === 4)).toBe(false);
-  });
-
-  it('finds the edges and middles of shapes, and the label at a point', () => {
-    const labels = new Uint16Array(W * SHAPE_HEIGHT);
-    for (let y = 10; y < 20; y++) {
-      for (let x = 10; x < 20; x++) {
-        labels[y * W + x] = 7;
-      }
-    }
-    labels[(SHAPE_HEIGHT - 1) * W + W - 1] = 2;
-    const edges = shapeEdges(labels);
-    expect(edges[10 * W + 15]).toBe(1);
-    expect(edges[15 * W + 15]).toBe(0);
-    expect(edges[19 * W + 19]).toBe(1);
-    expect(edges[5 * W + 5]).toBe(0);
-    expect(edges[(SHAPE_HEIGHT - 1) * W + W - 1]).toBe(1);
-    const middle = shapeCentres(labels).get(7);
-    expect(middle?.size).toBe(100);
-    expect(middle?.u).toBeCloseTo(15 / W);
-    expect(at(labels, 15 / W, 15 / SHAPE_HEIGHT)).toBe(7);
-    expect(at(labels, -0.1, 0.5)).toBe(0);
-    expect(at(labels, 0.5, 1)).toBe(0);
-  });
-});
-
-describe('game map outlines', () => {
-  const W = SHAPE_WIDTH;
-  const grid = (fill: (x: number, y: number) => number) => {
-    const labels = new Uint16Array(W * SHAPE_HEIGHT);
-    for (let y = 0; y < SHAPE_HEIGHT; y++) {
-      for (let x = 0; x < W; x++) {
-        labels[y * W + x] = fill(x, y);
-      }
-    }
-    return labels;
-  };
-  const rings = (d: string) => d.split('Z').filter(Boolean);
-  const points = (ring: string) =>
-    ring
-      .replace('M', '')
-      .split('L')
-      .map((p) => p.split(' ').map(Number));
-
-  it('traces each shape as smoothed rings, holes as rings of their own', () => {
-    // a 20 × 20 square with a 4 × 4 hole, a 1-pixel speck (too small to draw) and a 3 × 3 one
-    const labels = grid((x, y) =>
-      x >= 10 && x < 30 && y >= 10 && y < 30 && !(x >= 18 && x < 22 && y >= 18 && y < 22)
-        ? 1
-        : x === 100 && y === 100
-          ? 2
-          : x >= 200 && x < 203 && y >= 200 && y < 203
-            ? 3
-            : // two blocks touching at a corner: one ring through it
-              (x >= 300 && x < 305 && y >= 100 && y < 105) || (x >= 305 && x < 310 && y >= 105 && y < 110)
-              ? 4
-              : 0,
+  it('gives the sub-zones to trace: overlays put together from their pieces, by area', () => {
+    const overlay = (areaId: number, width: number, height: number) =>
+      ({ areaIds: [areaId], x: 10, y: 20, width, height }) as GameMapOverlay;
+    const piece = solid(256, 256, [0, 0, 0, 200]);
+    const small = solid(64, 32, [0, 0, 0, 100]);
+    const regions = subzoneTraceRegions(
+      [overlay(5, 300, 40), overlay(5, 64, 32), overlay(6, 64, 32), overlay(0, 64, 32), overlay(7, 300, 40)],
+      [[piece, small], [small], [small], [small], [piece, undefined]],
     );
-    const paths = traceShapes(labels);
-    const square = rings(paths.get(1) as string);
-    expect(square).toHaveLength(2);
-    // simplified to its corners, then each corner cut in two
-    const outer = points(square.find((r) => r.includes('10'))!);
-    expect(outer.length).toBe(8);
-    expect(outer.every(([x, y]) => x >= 10 && x <= 30 && y >= 10 && y <= 30)).toBe(true);
-    expect(paths.has(2)).toBe(false);
-    expect(rings(paths.get(3) as string)).toHaveLength(1);
-    expect(paths.get(4)).toBeTruthy();
-    expect(traceShapes(new Uint16Array(W * SHAPE_HEIGHT)).size).toBe(0);
+    expect(regions.map((r) => r.id)).toEqual(['5', '6']);
+    const [wide, narrow] = regions[0].parts;
+    expect(wide.rect).toEqual([10, 20, 310, 60]);
+    expect([wide.mode, wide.threshold, wide.crop]).toEqual(['alpha', 64, false]);
+    const image = wide.image as { width: number; data: Uint8Array };
+    expect(image.width).toBe(300);
+    expect(image.data[(10 * 300 + 100) * 4 + 3]).toBe(200);
+    expect(image.data[(10 * 300 + 260) * 4 + 3]).toBe(100);
+    expect(image.data[(35 * 300 + 260) * 4 + 3]).toBe(0);
+    expect(narrow.image?.width).toBe(64);
   });
+});
 
-  it('keeps the bends of a curved edge and drops the steps of a straight slope', () => {
-    // a staircase (a 45° edge) and a circle
-    const labels = grid((x, y) => (x < 60 && y < 60 && x + y < 60 ? 1 : Math.hypot(x - 200, y - 150) < 40 ? 2 : 0));
-    const paths = traceShapes(labels);
-    expect(points(rings(paths.get(1) as string)[0]).length).toBeLessThan(12);
-    expect(points(rings(paths.get(2) as string)[0]).length).toBeGreaterThan(16);
-  });
-
+describe('game map icons', () => {
   it('cuts a part out of a picture', () => {
     const image = { width: 3, height: 2, data: Uint8Array.from({ length: 24 }, (_, i) => i) };
     expect(Array.from(cropImage(image, 1, 1, 2, 1).data)).toEqual([16, 17, 18, 19, 20, 21, 22, 23]);

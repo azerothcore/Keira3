@@ -1061,6 +1061,7 @@ export class WorldEditorComponent implements OnInit {
       const pages = [...gameMapPages(data).values()].filter((page) => page.kind !== 'zone' && page.kind !== 'floor');
       for (const page of pages) {
         await this.client.getGameMapPicture(page);
+        await this.client.getGameMapOutlines(page);
       }
       perfNote(`in-game map: ${pages.length} maps made ready in ${Math.round(performance.now() - started)} ms`);
     } catch (error) {

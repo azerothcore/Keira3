@@ -1302,8 +1302,8 @@ describe('WowClientService', () => {
         await service.getGameMapPicture(pageOf(`Other${i}\\Other${i}`));
       }
       const read = vi.spyOn(TestBed.inject(WowDataCacheService), 'read');
-      expect((await service.getGameMapPicture(pageOf('Elwynn\\Elwynn')))?.labels.length).toBe(501 * 334);
-      expect(read).toHaveBeenCalledWith(expect.any(String), 'game-map-2', 'Elwynn\\Elwynn');
+      expect((await service.getGameMapPicture(pageOf('Elwynn\\Elwynn')))?.image.height).toBe(668);
+      expect(read).toHaveBeenCalledWith(expect.any(String), 'game-map-3', 'Elwynn\\Elwynn');
       expect(formats.decodeBlp).not.toHaveBeenCalled();
       // no tiles at all
       expect(await service.getGameMapPicture(pageOf('Nowhere\\Nowhere'))).toBeUndefined();
@@ -1311,6 +1311,60 @@ describe('WowClientService', () => {
       read.mockRejectedValueOnce(new Error('busy'));
       await expect(service.getGameMapPicture(pageOf('Elwynn\\Elwynn'.replace('Elwynn', 'Again')))).rejects.toThrow('busy');
       expect(await service.getGameMapPicture(pageOf('Again\\Elwynn'))).toBeUndefined();
+    });
+
+    it("traces a page's outlines, a zone's sub-zones and its neighbours, once each", async () => {
+      const { service } = setup({
+        mpqs: displayMpqs({
+          'Interface\\WorldMap\\A\\AHighlight.blp': [1],
+          'Interface\\WorldMap\\B\\BHighlight.blp': [1],
+          'Interface\\WorldMap\\A\\Sub1.blp': [1],
+        }),
+      });
+      formats.decodeBlp.mockImplementation(() => ({ width: 64, height: 64, data: new Uint8Array(64 * 64 * 4).fill(255) }));
+      const region = (page: string, left: number, highlight: string) => ({
+        page,
+        rect: { left, top: 0.1, right: left + 0.3, bottom: 0.4 },
+        highlight: `Interface\\WorldMap\\${highlight}\\${highlight}Highlight.blp`,
+      });
+      const continent = {
+        ...pageOf('C\\C'),
+        key: 'area:1',
+        kind: 'continent' as const,
+        regions: [
+          region('area:2', 0.1, 'A'),
+          region('area:3', 0.3, 'B'),
+          { page: 'area:4', rect: { left: 0.7, top: 0.6, right: 0.9, bottom: 0.9 }, circle: true },
+          region('area:5', 0.7, 'Missing'),
+          region('area:6', 0.7, 'Missing'),
+        ],
+      };
+      const outlines = await service.getGameMapOutlines(continent);
+      expect([...outlines.keys()]).toEqual(['area:2', 'area:3', 'area:4']);
+      expect(service.getGameMapOutlines(continent)).toBe(service.getGameMapOutlines(continent));
+      const zone = { ...pageOf('A\\A'), key: 'area:2' };
+      const overlay = {
+        mapAreaId: 2,
+        areaIds: [9],
+        texture: 'Sub',
+        width: 64,
+        height: 64,
+        x: 100,
+        y: 100,
+        hit: { left: 0, top: 0, right: 1, bottom: 1 },
+      };
+      expect([...(await service.getGameMapSubzones(zone, [overlay])).keys()]).toEqual(['9']);
+      expect([...(await service.getGameMapNeighbours(zone, continent, [overlay])).keys()]).toEqual(['area:3']);
+      // a zone not on the continent (or with no outline there) has none
+      expect((await service.getGameMapNeighbours({ ...zone, key: 'area:5' }, continent, [])).size).toBe(0);
+      expect((await service.getGameMapNeighbours({ ...zone, key: 'area:9' }, continent, [])).size).toBe(0);
+      // from the disk cache; a failure isn't kept
+      const read = vi.spyOn(TestBed.inject(WowDataCacheService), 'read');
+      read.mockResolvedValueOnce([['area:5', [[1, 2, 3, 4, 5, 6]]]]);
+      expect([...(await service.getGameMapOutlines({ ...continent, key: 'area:7' })).keys()]).toEqual(['area:5']);
+      read.mockRejectedValueOnce(new Error('busy'));
+      await expect(service.getGameMapOutlines({ ...continent, key: 'area:8' })).rejects.toThrow('busy');
+      expect((await service.getGameMapOutlines({ ...continent, key: 'area:8' })).size).toBe(3);
     });
   });
 });

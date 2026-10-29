@@ -5,6 +5,7 @@ import { LiquidMesh, parseLiquids } from './liquid';
 import { M2Mesh, parseM2, parseM2SkeletonFiles } from './m2';
 import { M2SequenceRef, M2Skeleton } from './m2-animation';
 import { buildTerrainChunkMeshes, buildTerrainMesh, TerrainChunk, TerrainChunkMesh, TerrainMeshData } from './terrain-mesh';
+import { neighbourParts, Ring, traceRegions, TraceRegion } from './zone-tracer';
 import { parseWmoDoodads, parseWmoGroup, parseWmoRoot, WmoDoodads, WmoGroupMesh, WmoMaterialInfo } from './wmo';
 
 /** The heavy parsing work, as plain data in and out, so it can run in a background worker. */
@@ -18,7 +19,15 @@ export type ParseJob =
   | { kind: 'wmoGroup'; bytes: Uint8Array; rootFlags: number; indoor: boolean }
   | { kind: 'wmoDoodads'; bytes: Uint8Array }
   | { kind: 'blp'; bytes: Uint8Array }
-  | { kind: 'blpGpu'; bytes: Uint8Array };
+  | { kind: 'blpGpu'; bytes: Uint8Array }
+  | { kind: 'trace'; regions: TraceRegion[] }
+  | {
+      kind: 'neighbours';
+      frame: [number, number, number, number];
+      own: Ring[];
+      subs: Ring[][];
+      others: [string, Ring[]][];
+    };
 
 /** What each job gives back. */
 export interface ParseResults {
@@ -32,6 +41,8 @@ export interface ParseResults {
   wmoDoodads: WmoDoodads;
   blp: RgbaImage;
   blpGpu: GpuTexture;
+  trace: [string, Ring[]][];
+  neighbours: [string, Ring[]][];
 }
 
 /** Runs a job (in the worker, or right here when there's none). */
@@ -65,6 +76,10 @@ export function runParseJob(job: ParseJob): ParseResults[ParseJob['kind']] {
       return decodeBlp(job.bytes);
     case 'blpGpu':
       return decodeBlpForGpu(job.bytes);
+    case 'trace':
+      return [...traceRegions(job.regions)];
+    case 'neighbours':
+      return [...neighbourParts(job.frame, job.own, job.subs, new Map(job.others))];
   }
 }
 

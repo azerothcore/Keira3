@@ -193,21 +193,21 @@
         @if (state && state !== 'loading') {
           <img class="game-map-image" data-testid="game-map-image" [src]="state.url" alt="" draggable="false" />
         }
-        <svg class="game-map-shapes" viewBox="0 0 501 334" preserveAspectRatio="none">
-          @for (shape of zonePaths(); track shape.label) {
+        <svg class="game-map-shapes" [class.colored]="colored()" viewBox="0 0 100 100" preserveAspectRatio="none">
+          @for (shape of zonePaths(); track shape.key) {
             <path
-              [attr.data-testid]="'game-map-shape-' + shape.label"
+              [attr.data-testid]="'game-map-shape-' + shape.key"
               [attr.d]="shape.d"
-              [attr.class]="shape.kind + (shape.label === hoverLabel() && hoverTarget() ? ' hover' : '')"
+              [attr.class]="shape.kind + (shape.key === hoverKey() && hoverTarget() ? ' hover' : '')"
               [style.--c]="shape.color ?? null"
               fill-rule="evenodd"
             />
           }
-          @for (shape of subPaths(); track shape.label) {
+          @for (shape of subPaths(); track shape.key) {
             <path
-              [attr.data-testid]="'game-map-sub-' + shape.label"
+              [attr.data-testid]="'game-map-sub-' + shape.key"
               [attr.d]="shape.d"
-              [attr.class]="'sub' + (shape.label === hoverSub() ? ' hover' : '')"
+              [attr.class]="'sub' + (shape.key === hoverSub() ? ' hover' : '')"
               fill-rule="evenodd"
             />
           }
@@ -222,33 +222,29 @@
           </svg>
         }
         @for (label of labels(); track label.key) {
-          @if (label.chip) {
-            <button
-              type="button"
-              class="game-map-chip"
-              [attr.data-testid]="'game-map-chip-' + label.key"
-              [style.left.%]="label.u * 100"
-              [style.top.%]="label.v * 100"
-              (pointerdown)="$event.stopPropagation()"
-              (pointerup)="$event.stopPropagation()"
-              (click)="openLabel(label, $event)"
-            >
-              <b>{{ label.text }}</b>
-              @if (label.levels) {
-                <span>{{ label.levels }}</span>
-              }
-              <i>›</i>
-            </button>
-          } @else {
-            <span
-              class="game-map-name"
-              [attr.data-testid]="'game-map-name-' + label.key"
-              [style.left.%]="label.u * 100"
-              [style.top.%]="label.v * 100"
-            >
-              {{ label.text }}
-            </span>
-          }
+          <button
+            type="button"
+            class="game-map-chip"
+            [class.edge]="!!label.edge"
+            [class.hover]="label.key === hoverTarget()?.key"
+            [attr.data-testid]="'game-map-chip-' + label.key"
+            [style.left.%]="label.u * 100"
+            [style.top.%]="label.v * 100"
+            (pointerdown)="$event.stopPropagation()"
+            (pointerup)="$event.stopPropagation()"
+            (click)="openLabel(label, $event)"
+          >
+            @if (label.edge === 'w' || label.edge === 'n') {
+              <i>{{ label.edge === 'w' ? '‹' : '˄' }}</i>
+            }
+            <b>{{ label.text }}</b>
+            @if (label.levels) {
+              <span>{{ label.levels }}</span>
+            }
+            @if (label.edge !== 'w' && label.edge !== 'n') {
+              <i>{{ label.edge === 's' ? '˅' : '›' }}</i>
+            }
+          </button>
         }
         @for (pin of pins(); track pin.key) {
           <span
@@ -268,9 +264,16 @@
             (dblclick)="onPinDoubleClick(pin, $event)"
           >
             @if (iconOf(pin.icon); as url) {
-              <img [src]="url" alt="" draggable="false" />
+              @if (pin.icon?.square) {
+                <span class="game-map-spell"><img [src]="url" alt="" draggable="false" /></span>
+              } @else {
+                <img [src]="url" alt="" draggable="false" />
+              }
             } @else if (pin.icon?.fa) {
               <i [class]="'fa ' + pin.icon.fa" [style.color]="pin.icon.color"></i>
+            }
+            @if (pin.more) {
+              <small class="game-map-more" [attr.data-testid]="'game-map-more-' + pin.key">{{ pin.more + 1 }}</small>
             }
             @if (pin.side && shown().has('badges') && sideIcon(pin.side); as badge) {
               <img class="game-map-side" [attr.data-testid]="'game-map-side-' + pin.key" [src]="badge" alt="" draggable="false" />
@@ -324,6 +327,9 @@
           <b>{{ hovered.pin.title }}</b>
           @for (line of hovered.pin.lines; track $index) {
             <div class="hint">{{ line }}</div>
+          }
+          @if (hovered.pin.more) {
+            <div class="hint">{{ 'WORLD_EDITOR.GAME_MAP_MORE' | translate: { count: hovered.pin.more } }}</div>
           }
           @if (hovered.pin.side) {
             <div [class]="'side ' + hovered.pin.side">{{ 'WORLD_EDITOR.GAME_MAP_' + hovered.pin.side.toUpperCase() | translate }}</div>

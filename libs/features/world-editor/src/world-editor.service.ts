@@ -439,7 +439,7 @@ export class WorldEditorService {
   async loadMapPois(): Promise<GameMapPoi[]> {
     const mask = NPC_FLAG_KINDS.reduce((all, [flag]) => all | flag, NPC_FLAG_TRAINER);
     const creatures = (trainer: boolean): string =>
-      "SELECT c.map, c.position_x AS x, c.position_y AS y, c.position_z AS z, IFNULL(ct.name, '') AS name, IFNULL(ct.subname, '') AS subname, " +
+      "SELECT c.map, c.position_x AS x, c.position_y AS y, c.position_z AS z, c.zoneId, IFNULL(ct.name, '') AS name, IFNULL(ct.subname, '') AS subname, " +
       `ct.npcflag, ct.faction, ${trainer ? 'IFNULL(t.Type, -1) AS trainerType, IFNULL(t.Requirement, 0) AS skill' : '-1 AS trainerType, 0 AS skill'} ` +
       'FROM creature c JOIN creature_template ct ON ct.entry = c.id ' +
       (trainer ? 'LEFT JOIN creature_default_trainer cdt ON cdt.CreatureId = c.id LEFT JOIN trainer t ON t.Id = cdt.TrainerId ' : '') +
@@ -449,7 +449,7 @@ export class WorldEditorService {
     );
     const objects = await firstValueFrom(
       this.queryService.query<TableRow>(
-        "SELECT g.map, g.position_x AS x, g.position_y AS y, g.position_z AS z, IFNULL(gt.name, '') AS name, gt.type " +
+        "SELECT g.map, g.position_x AS x, g.position_y AS y, g.position_z AS z, g.zoneId, IFNULL(gt.name, '') AS name, gt.type " +
           `FROM gameobject g JOIN gameobject_template gt ON gt.entry = g.id WHERE gt.type IN (${GAMEOBJECT_MAILBOX}, ${GAMEOBJECT_MEETING_STONE})`,
       ),
     );
@@ -459,6 +459,8 @@ export class WorldEditorService {
       y: Number(row['y']),
       z: Number(row['z']),
       name: String(row['name']),
+      // (0 when the server hasn't worked out where it is)
+      zoneId: Number(row['zoneId'] ?? 0),
     });
     return [
       ...(npcs ?? []).flatMap((row) =>

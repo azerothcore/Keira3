@@ -1,6 +1,7 @@
 import { WorldBounds } from './coords';
 import { DbcFile } from './dbc';
 import { RgbaImage } from './formats';
+import { TracePart, TraceRegion } from './zone-tracer';
 
 /**
  * The in-game world map, from the client's own files: the pictures under `Interface\WorldMap` and the DBCs that say
@@ -494,24 +495,19 @@ export function pageAt(pages: Map<string, GamePage>, mapId: number, x: number, y
   return continent ?? (pages.get(WORLD_PAGE) as GamePage);
 }
 
-/** A piece of picture to draw on a world map, at a place in pixels; `label` marks where it is solid in `labels`. */
+/** A piece of picture to draw on a world map, at a place in pixels. */
 export interface GameMapPiece {
   image: RgbaImage;
   x: number;
   y: number;
-  label?: number;
 }
 
-/** The grid shapes are kept in: half the picture. */
-export const SHAPE_WIDTH = 501;
-export const SHAPE_HEIGHT = 334;
 /** How solid an overlay's pixel must be to count as its sub-zone (of 255). */
 const OVERLAY_SOLID = 64;
 
-/** A world map picture, with which overlay (its index + 1; 0 none) covers each pixel of the shape grid. */
+/** A world map picture. */
 export interface GameMapPicture {
   image: RgbaImage;
-  labels: Uint8Array;
 }
 
 /** The pictures (`<texture><n>`, n from 1) an overlay is made of, with where each goes. */
@@ -531,12 +527,8 @@ export function pageTiles(page: Pick<GamePage, 'prefix'>): string[] {
   return Array.from({ length: GAME_MAP_TILES }, (_, i) => `${GAME_MAP_ROOT}${page.prefix}${i + 1}.blp`);
 }
 
-/**
- * A world map picture (1002 × 668): its 12 tiles (missing ones stay black), then the pieces laid over them, with where
- * each labelled piece is solid on the shape grid.
- */
+/** A world map picture (1002 × 668): its 12 tiles (missing ones stay black), then the pieces laid over them. */
 export function composeGameMap(tiles: (RgbaImage | undefined)[], pieces: GameMapPiece[] = []): GameMapPicture {
-  const labels = new Uint8Array(SHAPE_WIDTH * SHAPE_HEIGHT);
   const picture: RgbaImage = { width: GAME_MAP_WIDTH, height: GAME_MAP_HEIGHT, data: new Uint8Array(GAME_MAP_WIDTH * GAME_MAP_HEIGHT * 4) };
   for (let i = 3; i < picture.data.length; i += 4) {
     picture.data[i] = 255;
@@ -546,348 +538,70 @@ export function composeGameMap(tiles: (RgbaImage | undefined)[], pieces: GameMap
       tile &&
       draw(picture, { image: tile, x: (i % GAME_MAP_COLUMNS) * GAME_MAP_TILE, y: Math.floor(i / GAME_MAP_COLUMNS) * GAME_MAP_TILE }),
   );
-  pieces.forEach((piece) => {
-    draw(picture, piece);
-    if (piece.label) {
-      markSolid(labels, piece, piece.label);
-    }
-  });
-  return { image: picture, labels };
-}
-
-/** Where a piece is solid, on the shape grid. */
-function markSolid(labels: Uint8Array, { image, x: left, y: top }: GameMapPiece, label: number): void {
-  for (let gy = Math.max(0, Math.ceil(top / 2)); gy < SHAPE_HEIGHT && gy * 2 < top + image.height; gy++) {
-    for (let gx = Math.max(0, Math.ceil(left / 2)); gx < SHAPE_WIDTH && gx * 2 < left + image.width; gx++) {
-      if (image.data[((gy * 2 - top) * image.width + gx * 2 - left) * 4 + 3] >= OVERLAY_SOLID) {
-        labels[gy * SHAPE_WIDTH + gx] = label;
-      }
-    }
-  }
-}
-
-/** Shapes on the grid: the key each pixel belongs to (labels are indexes + 1 into `keys`; 0 for none). */
-export interface GameMapShapes {
-  labels: Uint16Array;
-  keys: string[];
+  pieces.forEach((piece) => draw(picture, piece));
+  return { image: picture };
 }
 
 /**
- * A region to find the shape of: by its highlight (the client's picture, drawn over `rect`; zone highlights only use
- * their top 1002:668 part, `crop`; the world map's continent highlights are outlines to fill), or as the circle in `rect`.
+ * The regions of a page to trace (a continent's zones, the world map's continents, the cosmic map's worlds): each
+ * region's highlight (by path; zone highlights only show their top 1002:668, the world map's are outlines to fill)
+ * over its rectangle, or the circle in its rectangle.
  */
-export interface ShapeSource {
-  key: string;
-  rect: GameMapRect;
-  image?: RgbaImage;
-  crop?: boolean;
-  outline?: boolean;
-  circle?: boolean;
-}
-
-/** A pixel of a highlight is lit from this share of its brightest, and at least this bright (of 255). */
-const LIT_SHARE = 0.07;
-const LIT_MIN = 4;
-/** Cities have blank highlights: an ellipse of this share of their rectangle instead. */
-const CITY_RADIUS = 0.3;
-/** A shape mostly (this share) inside another one this many times bigger is nested in it (a city in its zone). */
-const NESTED_COVER = 0.7;
-const NESTED_RATIO = 0.35;
-
-/** A region's lit pixels on the grid, in its bounding box. */
-interface Mask {
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-  m: Uint8Array;
-  n: number;
+export function pageTraceRegions(page: GamePage, highlights: Map<string, RgbaImage | undefined>): TraceRegion[] {
+  return page.regions.map(({ page: id, rect, circle, highlight, outline }) => {
+    const [x0, y0, x1, y1] = [
+      rect.left * GAME_MAP_WIDTH,
+      rect.top * GAME_MAP_HEIGHT,
+      rect.right * GAME_MAP_WIDTH,
+      rect.bottom * GAME_MAP_HEIGHT,
+    ];
+    const part: TracePart = circle
+      ? { ellipse: [(x0 + x1) / 2, (y0 + y1) / 2, (x1 - x0) / 2, (y1 - y0) / 2] }
+      : { image: highlights.get(highlight as string), rect: [x0, y0, x1, y1], crop: !outline, outline };
+    return { id, parts: [part] };
+  });
 }
 
 /**
- * The shapes of regions (zones on a continent, continents on the world map), as the game lights the zone under the
- * pointer: each region's highlight thresholded, then each pixel given to the region it is deepest inside, with regions
- * nested in another (cities) on top.
+ * The sub-zones of a zone to trace: its overlays (each put together from its pieces, `images[i]` for `overlays[i]` in
+ * the order of `overlayPieces`), by the area they light up; where an overlay is solid enough is its sub-zone.
  */
-export function regionShapes(sources: ShapeSource[], gap = GAP_CLOSE): GameMapShapes {
-  const labels = new Uint16Array(SHAPE_WIDTH * SHAPE_HEIGHT);
-  const masks = sources.map((source) => regionMask(source));
-  const nested = new Set<number>();
-  masks.forEach((mask, i) => {
-    if (
-      mask &&
-      masks.some((other, j) => j !== i && other && mask.n <= other.n * NESTED_RATIO && overlap(mask, other) >= mask.n * NESTED_COVER)
-    ) {
-      nested.add(i);
+export function subzoneTraceRegions(overlays: GameMapOverlay[], images: (RgbaImage | undefined)[][]): TraceRegion[] {
+  const byArea = new Map<number, TracePart[]>();
+  overlays.forEach((overlay, i) => {
+    const areaId = overlay.areaIds[0];
+    const image = areaId ? assembleOverlay(overlay, images[i]) : undefined;
+    if (image) {
+      const parts = byArea.get(areaId) ?? [];
+      parts.push({
+        image,
+        rect: [overlay.x, overlay.y, overlay.x + overlay.width, overlay.y + overlay.height],
+        crop: false,
+        mode: 'alpha',
+        threshold: OVERLAY_SOLID,
+      });
+      byArea.set(areaId, parts);
     }
   });
-  const best = new Float32Array(SHAPE_WIDTH * SHAPE_HEIGHT);
-  masks.forEach((mask, i) => {
-    if (!mask || nested.has(i)) {
-      return;
-    }
-    const depth = chamfer(mask);
-    eachLit(mask, (gi, mi) => {
-      if (depth[mi] > best[gi]) {
-        best[gi] = depth[mi];
-        labels[gi] = i + 1;
-      }
-    });
-  });
-  // nested ones on top, the biggest first so the smallest wins
-  [...nested]
-    .sort((a, b) => (masks[b] as Mask).n - (masks[a] as Mask).n)
-    .forEach((i) => eachLit(masks[i] as Mask, (gi) => (labels[gi] = i + 1)));
-  closeGaps(labels, gap);
-  return { labels, keys: sources.map((s) => s.key) };
+  return [...byArea].map(([areaId, parts]) => ({ id: String(areaId), parts }));
 }
 
-/** Gaps between shapes up to twice this wide (grid pixels) are closed; coasts stay as they are. */
-const GAP_CLOSE = 3;
-
-/** Fills the pixels between two shapes (left and right, or above and below, within `gap`) with the nearer one. */
-function closeGaps(labels: Uint16Array, gap: number): void {
-  const source = labels.slice();
-  const find = (x: number, y: number, dx: number, dy: number): [number, number] => {
-    for (let step = 1; step <= gap; step++) {
-      const [nx, ny] = [x + dx * step, y + dy * step];
-      if (nx < 0 || ny < 0 || nx >= SHAPE_WIDTH || ny >= SHAPE_HEIGHT) {
-        break;
-      }
-      const label = source[ny * SHAPE_WIDTH + nx];
-      if (label) {
-        return [label, step];
-      }
-    }
-    return [0, 0];
-  };
-  for (let y = 0; y < SHAPE_HEIGHT; y++) {
-    for (let x = 0; x < SHAPE_WIDTH; x++) {
-      if (source[y * SHAPE_WIDTH + x]) {
-        continue;
-      }
-      for (const [dx, dy] of [
-        [1, 0],
-        [0, 1],
-      ]) {
-        const [a, da] = find(x, y, -dx, -dy);
-        const [b, db] = find(x, y, dx, dy);
-        if (a && b) {
-          labels[y * SHAPE_WIDTH + x] = da <= db ? a : b;
-          break;
-        }
-      }
-    }
+/** An overlay's picture from its pieces (none when one is missing). */
+function assembleOverlay(overlay: GameMapOverlay, pieces: (RgbaImage | undefined)[]): RgbaImage | undefined {
+  const places = overlayPieces(overlay);
+  if (places.some((_, i) => !pieces[i])) {
+    return undefined;
   }
-}
-
-/** Calls `visit` with the grid index and mask index of each lit pixel of a mask. */
-function eachLit(mask: Mask, visit: (gridIndex: number, maskIndex: number) => void): void {
-  for (let y = 0; y < mask.h; y++) {
-    for (let x = 0; x < mask.w; x++) {
-      if (mask.m[y * mask.w + x]) {
-        visit((mask.y + y) * SHAPE_WIDTH + mask.x + x, y * mask.w + x);
-      }
-    }
-  }
-}
-
-/** How many lit pixels two masks share. */
-function overlap(a: Mask, b: Mask): number {
-  let count = 0;
-  eachLit(a, (gi) => {
-    const [x, y] = [(gi % SHAPE_WIDTH) - b.x, Math.floor(gi / SHAPE_WIDTH) - b.y];
-    if (x >= 0 && y >= 0 && x < b.w && y < b.h && b.m[y * b.w + x]) {
-      count++;
+  const image: RgbaImage = { width: overlay.width, height: overlay.height, data: new Uint8Array(overlay.width * overlay.height * 4) };
+  places.forEach(({ x, y }, i) => {
+    const piece = pieces[i] as RgbaImage;
+    const [left, top] = [x - overlay.x, y - overlay.y];
+    for (let row = 0; row < piece.height && top + row < image.height; row++) {
+      const width = Math.min(piece.width, image.width - left) * 4;
+      image.data.set(piece.data.subarray(row * piece.width * 4, row * piece.width * 4 + width), ((top + row) * image.width + left) * 4);
     }
   });
-  return count;
-}
-
-/** How far each lit pixel is from the mask's edge (in pixels, along the grid). */
-function chamfer(mask: Mask): Float32Array {
-  const { w, h, m } = mask;
-  const d = new Float32Array(w * h);
-  const at = (x: number, y: number) => (x < 0 || y < 0 || x >= w || y >= h ? 0 : d[y * w + x]);
-  for (let y = 0; y < h; y++) {
-    for (let x = 0; x < w; x++) {
-      d[y * w + x] = m[y * w + x] ? Math.min(at(x - 1, y), at(x, y - 1)) + 1 : 0;
-    }
-  }
-  for (let y = h - 1; y >= 0; y--) {
-    for (let x = w - 1; x >= 0; x--) {
-      if (m[y * w + x]) {
-        d[y * w + x] = Math.min(d[y * w + x], at(x + 1, y) + 1, at(x, y + 1) + 1);
-      }
-    }
-  }
-  return d;
-}
-
-/** The pixels of the grid inside a rectangle (in fractions of the picture), clipped to the grid. */
-function gridBox(rect: GameMapRect): { x: number; y: number; w: number; h: number } | undefined {
-  const [x0, x1] = [Math.max(0, Math.floor(rect.left * SHAPE_WIDTH)), Math.min(SHAPE_WIDTH, Math.ceil(rect.right * SHAPE_WIDTH))];
-  const [y0, y1] = [Math.max(0, Math.floor(rect.top * SHAPE_HEIGHT)), Math.min(SHAPE_HEIGHT, Math.ceil(rect.bottom * SHAPE_HEIGHT))];
-  return x1 > x0 && y1 > y0 ? { x: x0, y: y0, w: x1 - x0, h: y1 - y0 } : undefined;
-}
-
-/** An ellipse filling `share` of a rectangle around its middle. */
-function ellipseMask(rect: GameMapRect, share: number): Mask | undefined {
-  const box = gridBox(rect);
-  if (!box) {
-    return undefined;
-  }
-  const m = new Uint8Array(box.w * box.h);
-  let n = 0;
-  const [cu, cv] = [(rect.left + rect.right) / 2, (rect.top + rect.bottom) / 2];
-  const [ru, rv] = [((rect.right - rect.left) / 2) * share * 2, ((rect.bottom - rect.top) / 2) * share * 2];
-  for (let y = 0; y < box.h; y++) {
-    for (let x = 0; x < box.w; x++) {
-      const [u, v] = [(box.x + x + 0.5) / SHAPE_WIDTH, (box.y + y + 0.5) / SHAPE_HEIGHT];
-      if (((u - cu) / ru) ** 2 + ((v - cv) / rv) ** 2 <= 1) {
-        m[y * box.w + x] = 1;
-        n++;
-      }
-    }
-  }
-  return n ? { ...box, m, n } : undefined;
-}
-
-/** A region's mask: its circle, or its highlight thresholded (blank ones, cities, an ellipse). */
-function regionMask(source: ShapeSource): Mask | undefined {
-  if (source.circle) {
-    return ellipseMask(source.rect, 0.5);
-  }
-  const image = source.image;
-  const box = gridBox(source.rect);
-  if (!image || !box) {
-    return undefined;
-  }
-  const rows = Math.min(image.height, Math.ceil(source.crop === false ? image.height : (image.height * GAME_MAP_HEIGHT) / GAME_MAP_WIDTH));
-  const lum = new Float32Array(image.width * rows);
-  let peak = 0;
-  for (let i = 0; i < lum.length; i++) {
-    const [r, g, b, a] = image.data.subarray(i * 4, i * 4 + 4);
-    lum[i] = (Math.max(r, g, b) * a) / 255;
-    peak = Math.max(peak, lum[i]);
-  }
-  if (peak <= 0) {
-    return ellipseMask(source.rect, CITY_RADIUS);
-  }
-  const threshold = Math.max(LIT_MIN, peak * LIT_SHARE);
-  const { left, top, right, bottom } = source.rect;
-  const m = new Uint8Array(box.w * box.h);
-  let n = 0;
-  for (let y = 0; y < box.h; y++) {
-    const ty = Math.min(rows - 1, Math.floor((((box.y + y + 0.5) / SHAPE_HEIGHT - top) / (bottom - top)) * rows));
-    for (let x = 0; x < box.w; x++) {
-      const tx = Math.min(image.width - 1, Math.floor((((box.x + x + 0.5) / SHAPE_WIDTH - left) / (right - left)) * image.width));
-      if (tx >= 0 && ty >= 0 && lum[ty * image.width + tx] >= threshold) {
-        m[y * box.w + x] = 1;
-        n++;
-      }
-    }
-  }
-  if (!n) {
-    return undefined;
-  }
-  const mask = { ...box, m, n };
-  return source.outline ? fillOutline(mask) : mask;
-}
-
-/** An outline's inside filled: what can't be reached from the box's edge without crossing it (gaps of a pixel closed). */
-function fillOutline(mask: Mask): Mask {
-  const { w, h } = mask;
-  // thicken the outline by a pixel, so small gaps don't let the outside in
-  const wall = new Uint8Array(w * h);
-  for (let y = 0; y < h; y++) {
-    for (let x = 0; x < w; x++) {
-      if (mask.m[y * w + x]) {
-        for (let dy = -1; dy <= 1; dy++) {
-          for (let dx = -1; dx <= 1; dx++) {
-            const [nx, ny] = [x + dx, y + dy];
-            if (nx >= 0 && ny >= 0 && nx < w && ny < h) {
-              wall[ny * w + nx] = 1;
-            }
-          }
-        }
-      }
-    }
-  }
-  const outside = new Uint8Array(w * h);
-  const stack: number[] = [];
-  for (let x = 0; x < w; x++) {
-    stack.push(x, (h - 1) * w + x);
-  }
-  for (let y = 0; y < h; y++) {
-    stack.push(y * w, y * w + w - 1);
-  }
-  while (stack.length) {
-    const i = stack.pop() as number;
-    if (outside[i] || wall[i]) {
-      continue;
-    }
-    outside[i] = 1;
-    const [x, y] = [i % w, Math.floor(i / w)];
-    if (x > 0) stack.push(i - 1);
-    if (x + 1 < w) stack.push(i + 1);
-    if (y > 0) stack.push(i - w);
-    if (y + 1 < h) stack.push(i + w);
-  }
-  const m = new Uint8Array(w * h);
-  let n = 0;
-  for (let i = 0; i < m.length; i++) {
-    if (!outside[i]) {
-      m[i] = 1;
-      n++;
-    }
-  }
-  return { ...mask, m, n };
-}
-
-/** The pixels of the grid on the edge of a shape (a neighbour belongs to something else), as 1s. */
-export function shapeEdges(labels: ArrayLike<number>): Uint8Array {
-  const edges = new Uint8Array(SHAPE_WIDTH * SHAPE_HEIGHT);
-  for (let y = 0; y < SHAPE_HEIGHT; y++) {
-    for (let x = 0; x < SHAPE_WIDTH; x++) {
-      const i = y * SHAPE_WIDTH + x;
-      const here = labels[i];
-      if (
-        here &&
-        ((x > 0 && labels[i - 1] !== here) ||
-          (x + 1 < SHAPE_WIDTH && labels[i + 1] !== here) ||
-          (y > 0 && labels[i - SHAPE_WIDTH] !== here) ||
-          (y + 1 < SHAPE_HEIGHT && labels[i + SHAPE_WIDTH] !== here))
-      ) {
-        edges[i] = 1;
-      }
-    }
-  }
-  return edges;
-}
-
-/** Where each label's shape is centred (its pixels' mean), with how many pixels it has, by label. */
-export function shapeCentres(labels: ArrayLike<number>): Map<number, { u: number; v: number; size: number }> {
-  const sums = new Map<number, [number, number, number]>();
-  for (let i = 0; i < SHAPE_WIDTH * SHAPE_HEIGHT; i++) {
-    const label = labels[i];
-    if (label) {
-      const sum = sums.get(label) ?? [0, 0, 0];
-      sum[0] += i % SHAPE_WIDTH;
-      sum[1] += Math.floor(i / SHAPE_WIDTH);
-      sum[2]++;
-      sums.set(label, sum);
-    }
-  }
-  const centres = new Map<number, { u: number; v: number; size: number }>();
-  sums.forEach(([x, y, n], label) => centres.set(label, { u: (x / n + 0.5) / SHAPE_WIDTH, v: (y / n + 0.5) / SHAPE_HEIGHT, size: n }));
-  return centres;
-}
-
-/** The label at a point of the picture (0 outside it). */
-export function labelAt(labels: ArrayLike<number>, point: GameMapPoint): number {
-  const [x, y] = [Math.floor(point.u * SHAPE_WIDTH), Math.floor(point.v * SHAPE_HEIGHT)];
-  return x < 0 || y < 0 || x >= SHAPE_WIDTH || y >= SHAPE_HEIGHT ? 0 : labels[y * SHAPE_WIDTH + x];
+  return image;
 }
 
 /** Draws a picture over another at its size, blending by its alpha. */
@@ -902,121 +616,6 @@ function draw(target: RgbaImage, { image, x: left, y: top }: GameMapPiece): void
       }
     }
   }
-}
-
-/** Douglas–Peucker tolerance (grid pixels) and the corner cutting passes of traced outlines. */
-const SIMPLIFY = 0.85;
-const SMOOTH_PASSES = 1;
-
-/**
- * Each shape's outline as SVG path data on the grid (`viewBox="0 0 501 334"`), traced along its pixels' edges,
- * simplified and smoothed (as AoWoW draws its zone shapes); holes are rings of their own (use `fill-rule="evenodd"`).
- */
-export function traceShapes(labels: ArrayLike<number>): Map<number, string> {
-  const stride = SHAPE_WIDTH + 1;
-  // the edges between a shape's pixel and another's, going round each shape clockwise: start corner → end corners
-  const edges = new Map<number, Map<number, number[]>>();
-  const add = (label: number, from: number, to: number) => {
-    const byStart = edges.get(label) ?? new Map<number, number[]>();
-    edges.set(label, byStart);
-    const ends = byStart.get(from);
-    if (ends) {
-      ends.push(to);
-    } else {
-      byStart.set(from, [to]);
-    }
-  };
-  const at = (x: number, y: number) => (x < 0 || y < 0 || x >= SHAPE_WIDTH || y >= SHAPE_HEIGHT ? 0 : labels[y * SHAPE_WIDTH + x]);
-  for (let y = 0; y < SHAPE_HEIGHT; y++) {
-    for (let x = 0; x < SHAPE_WIDTH; x++) {
-      const label = labels[y * SHAPE_WIDTH + x];
-      if (!label) {
-        continue;
-      }
-      const corner = (cx: number, cy: number) => cy * stride + cx;
-      if (at(x, y - 1) !== label) add(label, corner(x, y), corner(x + 1, y));
-      if (at(x + 1, y) !== label) add(label, corner(x + 1, y), corner(x + 1, y + 1));
-      if (at(x, y + 1) !== label) add(label, corner(x + 1, y + 1), corner(x, y + 1));
-      if (at(x - 1, y) !== label) add(label, corner(x, y + 1), corner(x, y));
-    }
-  }
-  const paths = new Map<number, string>();
-  edges.forEach((byStart, label) => {
-    let d = '';
-    for (const [start, ends] of byStart) {
-      while (ends.length) {
-        const ring: number[] = [start];
-        let next = ends.pop() as number;
-        while (next !== start) {
-          ring.push(next);
-          next = (byStart.get(next) as number[]).pop() as number;
-        }
-        const points = smooth(simplify(ring.map((id) => [id % stride, Math.floor(id / stride)] as [number, number])));
-        if (points.length >= 3) {
-          d += `M${points.map(([x, y]) => `${round1(x)} ${round1(y)}`).join('L')}Z`;
-        }
-      }
-    }
-    if (d) {
-      paths.set(label, d);
-    }
-  });
-  return paths;
-}
-
-const round1 = (value: number): number => Math.round(value * 10) / 10;
-
-/** A closed ring with its corners in a line dropped, then simplified (Douglas–Peucker, split at its farthest points). */
-function simplify(ring: [number, number][]): [number, number][] {
-  const turns = ring.filter((point, i) => {
-    const [a, b] = [ring[(i + ring.length - 1) % ring.length], ring[(i + 1) % ring.length]];
-    return (point[0] - a[0]) * (b[1] - point[1]) !== (point[1] - a[1]) * (b[0] - point[0]);
-  });
-  // (a ring of pixel edges turns at least 4 times)
-  let far = 0;
-  turns.forEach((point, i) => {
-    if (Math.hypot(point[0] - turns[0][0], point[1] - turns[0][1]) > Math.hypot(turns[far][0] - turns[0][0], turns[far][1] - turns[0][1])) {
-      far = i;
-    }
-  });
-  const half = (from: number, to: number) => douglasPeucker(turns.slice(from, to + 1));
-  return [...half(0, far).slice(0, -1), ...douglasPeucker([...turns.slice(far), turns[0]]).slice(0, -1)];
-}
-
-function douglasPeucker(points: [number, number][]): [number, number][] {
-  if (points.length < 3) {
-    return points;
-  }
-  const [a, b] = [points[0], points[points.length - 1]];
-  const length = Math.hypot(b[0] - a[0], b[1] - a[1]);
-  let [index, distance] = [0, 0];
-  for (let i = 1; i < points.length - 1; i++) {
-    const p = points[i];
-    // (a run back to where it started, through a corner two of its pixels touch at, keeps its ends only)
-    const d = Math.abs((b[0] - a[0]) * (a[1] - p[1]) - (a[0] - p[0]) * (b[1] - a[1])) / Math.max(length, Number.EPSILON);
-    if (d > distance) {
-      [index, distance] = [i, d];
-    }
-  }
-  if (distance <= SIMPLIFY) {
-    return [a, b];
-  }
-  return [...douglasPeucker(points.slice(0, index + 1)).slice(0, -1), ...douglasPeucker(points.slice(index))];
-}
-
-/** Chaikin's corner cutting on a closed ring. */
-function smooth(ring: [number, number][]): [number, number][] {
-  let points = ring;
-  for (let pass = 0; pass < SMOOTH_PASSES && points.length >= 3; pass++) {
-    points = points.flatMap((p, i) => {
-      const q = points[(i + 1) % points.length];
-      return [
-        [p[0] * 0.75 + q[0] * 0.25, p[1] * 0.75 + q[1] * 0.25] as [number, number],
-        [p[0] * 0.25 + q[0] * 0.75, p[1] * 0.25 + q[1] * 0.75] as [number, number],
-      ];
-    });
-  }
-  return points;
 }
 
 /** A part of a picture (an icon of an atlas). */

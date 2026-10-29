@@ -4,6 +4,7 @@ import {
   AREA_SANCTUARY,
   AreaTriggerInfo,
   cropImage,
+  edgeButton,
   FactionData,
   firstPage,
   fromGameMap,
@@ -11,26 +12,24 @@ import {
   GameMapOverlay,
   GameMapPicture,
   GameMapPoint,
-  GameMapShapes,
+  GameMapRegion,
   GamePage,
   gameMapPages,
   GameZone,
-  labelAt,
+  labelPoint,
   onContinent,
   onGameMap,
+  outlinesTouch,
   pageAt,
   pageChildren,
   pageFloors,
   perfNote,
-  regionShapes,
-  RgbaImage,
-  shapeCentres,
-  SHAPE_HEIGHT,
-  SHAPE_WIDTH,
-  ShapeSource,
+  pointInRings,
+  Ring,
+  ringsArea,
+  ringsPath,
   TaxiPath,
   toGameMap,
-  traceShapes,
   WorldBounds,
   WorldPosition,
   WowClientService,
@@ -40,6 +39,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { cssRgb, LEVEL_BANDS, levelColor, territoryColor } from './game-map-layers';
 import {
   ATLAS,
+  CONTINENT_LAYERS,
   factionSide,
   GAME_MAP_LAYER_GROUPS,
   GAME_MAP_LAYERS,
@@ -72,8 +72,12 @@ const MAX_ZOOM = 10;
 const CLICK_SLOP = 4;
 /** A double click this soon after a click opened a page belongs to that click. */
 const DOUBLE_CLICK_AFTER_OPEN = 600;
-/** Zones smaller than this (grid pixels) aren't named on the map. */
-const NAME_MIN_PIXELS = 150;
+/** Zones whose outlines on their continent come this close (percent) are neighbours. */
+const NEIGHBOUR_TOUCH = 1;
+/** Markers of one kind (and side) closer than this (percent of the map, each way) are shown as one. */
+const MERGE_DISTANCE = 0.8;
+/** Wintergrasp (AreaTable), marked for its world PvP on Northrend. */
+const WINTERGRASP = 4197;
 /** Instance types (Map.dbc) of dungeons and raids. */
 const INSTANCE_DUNGEON = 1;
 const INSTANCE_RAID = 2;
@@ -93,10 +97,13 @@ interface GamePin {
   color?: string;
   icon?: GameMapIcon;
   side?: Side;
-  /** An instance's entrance opens its map. */
+  /** An instance's entrance (or a zone's shield) opens its map. */
   opens?: string;
   position: WorldPosition;
   mapId: number;
+  /** Its layer, when markers of it nearby can be shown as one; how many more are there then. */
+  kind?: string;
+  more?: number;
 }
 
 /** A transport's route on the picture. */
@@ -110,20 +117,27 @@ interface GameRoute {
 
 /** A shape drawn over the picture: a zone (coloured by level or land), a neighbour, or a sub-zone. */
 interface GameShape {
-  label: number;
+  /** The page it opens (a zone, a continent…), or a sub-zone's area id. */
+  key: string;
   d: string;
   kind: 'zone' | 'plain' | 'neighbour' | 'sub';
   color?: string;
 }
 
-/** Text on the picture: a zone's name, or a chip naming a neighbouring zone (with its levels) that opens it. */
+/**
+ * A chip on a zone's picture naming a neighbouring zone (with its levels) that opens it: on the part of it the picture
+ * shows, or (none shown) at the edge facing it, `edge` being that edge.
+ */
 interface GameLabel {
   key: string;
   u: number;
   v: number;
   text: string;
   levels?: string;
-  chip?: boolean;
+  edge?: string;
+  /** Its size, in percent of the picture (to keep chips apart). */
+  w: number;
+  h: number;
 }
 
 /** The world map's icon atlas cells this map uses. */
@@ -135,8 +149,41 @@ const ATLAS_CELLS = [
   ...Object.values(ATLAS.boat),
 ];
 /** An icon's key among the loaded pictures. */
-export const iconKey = (icon: GameMapIcon): string => (icon.atlas === undefined ? (icon.path as string) : `${icon.path}#${icon.atlas}`);
+export const iconKey = (icon: GameMapIcon): string =>
+  icon.atlas !== undefined ? `${icon.path}#${icon.atlas}` : icon.crop ? `${icon.path}@${icon.crop.join(',')}` : (icon.path as string);
 const atlasIcon = (atlas: number): GameMapIcon => ({ path: POI_ATLAS, atlas });
+
+/** The shape under a point of the picture, by its key. */
+function shapeAt(shapes: Map<string, Ring[]>, point: GameMapPoint): string | undefined {
+  for (const [key, rings] of shapes) {
+    if (pointInRings(point.u * 100, point.v * 100, rings)) {
+      return key;
+    }
+  }
+  return undefined;
+}
+
+/** Markers of one kind (and side) on top of each other shown as one, with how many more there are. */
+function mergePins(pins: GamePin[]): GamePin[] {
+  const merged: GamePin[] = [];
+  for (const pin of pins) {
+    const near =
+      pin.kind &&
+      merged.find(
+        (other) =>
+          other.kind === pin.kind &&
+          other.side === pin.side &&
+          Math.abs(other.u - pin.u) * 100 <= MERGE_DISTANCE &&
+          Math.abs(other.v - pin.v) * 100 <= MERGE_DISTANCE,
+      );
+    if (near) {
+      near.more = (near.more ?? 0) + 1;
+    } else {
+      merged.push(pin);
+    }
+  }
+  return merged;
+}
 
 /**
  * The in-game world map, made at run time from the user's own client (pictures and DBCs; nothing of the client ships
@@ -193,10 +240,12 @@ export class GameMapComponent {
     const page = this.page();
     return page ? this.pictures().get(page.prefix) : undefined;
   });
-  /** The shapes of the regions of pages with regions (continents, world, cosmic), by page key. */
-  private readonly shapes = signal(new Map<string, GameMapShapes>());
-  /** The highlights of the regions, by path (null: none). */
-  private readonly highlights = signal(new Map<string, RgbaImage | null>());
+  /**
+   * Outlines traced from the client's pictures (as AoWoW traces them), in percent of the picture: a page's regions
+   * (`regions:<page>`, by the page each one opens), a zone's sub-zones (`subzones:<page>`, by area id) and the parts of
+   * its neighbours it shows (`neighbours:<page>`); empty while being traced.
+   */
+  private readonly outlines = signal(new Map<string, Map<string, Ring[]>>());
   protected readonly shown = signal(loadShownLayers());
   protected readonly markerSize = signal(loadMarkerSize());
   protected readonly markerSizes = MARKER_SIZES;
@@ -260,45 +309,23 @@ export class GameMapComponent {
   });
 
   /**
-   * The zones of the page shown: its regions' shapes (continents, world, cosmic), or on a zone the shapes of its
-   * continent's zones on the zone's picture (the zone itself and its neighbours).
+   * What a click on the page shown opens: its regions (a continent's zones, the world map's continents, the cosmic map's
+   * worlds), or on a zone the parts of its neighbours it shows; by page.
    */
-  protected readonly zoneShapes = computed<GameMapShapes | undefined>(() => {
-    const page = this.page();
-    if (!page) {
-      return undefined;
-    }
-    if (page.regions.length) {
-      return this.shapes().get(page.key);
-    }
-    const continent = this.continent();
-    return continent && this.shapes().has(continent.key) ? this.zoneFrameShapes(page, continent) : undefined;
-  });
-
-  /** The zones' outlines, traced once per page. */
-  private readonly zoneOutlines = computed(() => {
-    const shapes = this.zoneShapes();
-    return shapes ? traceShapes(shapes.labels) : new Map<number, string>();
-  });
-
-  /** The sub-zones' outlines of the zone shown (from the explored overlays). */
-  private readonly subOutlines = computed(() => {
-    const picture = this.picture();
-    const page = this.page();
-    return page?.kind === 'zone' && typeof picture === 'object' && picture
-      ? traceShapes(picture.picture.labels)
-      : new Map<number, string>();
-  });
-
-  /** The page a zone shape opens (none for a region whose page the client doesn't have). */
-  private targetOf(label: number): GamePage | undefined {
-    return firstPage(this.pages(), (this.zoneShapes() as GameMapShapes).keys[label - 1]);
-  }
-
-  /** Whether a page is the one shown (or another picture of it). */
-  private isShown(target: GamePage): boolean {
+  protected readonly regions = computed(() => {
     const page = this.page() as GamePage;
-    return target.key === page.key || (!!target.mapAreaId && target.mapAreaId === page.mapAreaId);
+    return this.outlines().get(page.regions.length ? `regions:${page.key}` : `neighbours:${page.key}`) ?? new Map<string, Ring[]>();
+  });
+
+  /** The sub-zones of the zone shown, by area id. */
+  private readonly subzones = computed(() => {
+    const page = this.page();
+    return (page && this.outlines().get(`subzones:${page.key}`)) ?? new Map<string, Ring[]>();
+  });
+
+  /** The page a region opens (none for a region whose page the client doesn't have). */
+  private targetOf(key: string): GamePage | undefined {
+    return firstPage(this.pages(), key);
   }
 
   /** The shapes drawn over the picture: zones (coloured on continents), neighbours on a zone, and its sub-zones. */
@@ -309,83 +336,110 @@ export class GameMapComponent {
       return [];
     }
     const zones = (this.data() as GameMapData).zones;
-    const color = shown.has('territory') ? territoryColor : shown.has('levels') ? levelColor : undefined;
+    const color = this.colored() ? (shown.has('territory') ? territoryColor : levelColor) : undefined;
     const paths: GameShape[] = [];
-    this.zoneOutlines().forEach((d, label) => {
-      const target = this.targetOf(label);
+    this.regions().forEach((rings, key) => {
+      const target = this.targetOf(key);
       if (!target) {
         return;
       }
+      const d = ringsPath(rings);
       if (page.kind === 'zone') {
-        if (!this.isShown(target) && shown.has('transitions')) {
-          paths.push({ label, d, kind: 'neighbour' });
+        if (shown.has('transitions')) {
+          paths.push({ key, d, kind: 'neighbour' });
         }
       } else {
-        const rgb = page.kind === 'continent' && color ? color(zones.get(target.areaId)) : undefined;
-        paths.push({ label, d, kind: rgb ? 'zone' : 'plain', color: rgb && cssRgb(rgb) });
+        const rgb = color?.(zones.get(target.areaId));
+        paths.push({ key, d, kind: rgb ? 'zone' : 'plain', color: rgb && cssRgb(rgb) });
       }
     });
     return paths;
   });
 
+  /** Whether the zones are coloured (on continents, by level or land). */
+  protected readonly colored = computed(
+    () => this.page()?.kind === 'continent' && (this.shown().has('levels') || this.shown().has('territory')),
+  );
+
   protected readonly subPaths = computed<GameShape[]>(() =>
-    this.shown().has('subBorders') ? [...this.subOutlines()].map(([label, d]) => ({ label, d, kind: 'sub' as const })) : [],
+    this.shown().has('subBorders') ? [...this.subzones()].map(([key, rings]) => ({ key, d: ringsPath(rings), kind: 'sub' as const })) : [],
   );
 
   /** Whether zone borders are drawn (on continents, the world map). */
   protected readonly borders = computed(() => this.shown().has('borders'));
 
-  /** The zone (or continent, or world) under the pointer, by its label. */
-  protected readonly hoverLabel = computed(() => {
+  /** The region under the pointer (a zone, a continent, a world; a neighbour on a zone), by the page it opens. */
+  protected readonly hoverKey = computed(() => {
     const hover = this.hover();
-    const shapes = this.zoneShapes();
-    return hover && shapes ? labelAt(shapes.labels, hover.point) : 0;
+    return hover && this.page() ? shapeAt(this.regions(), hover.point) : undefined;
   });
 
-  /** The page the zone under the pointer opens: none when it is the page shown. */
+  /** The page the region under the pointer opens. */
   protected readonly hoverTarget = computed(() => {
-    const label = this.hoverLabel();
-    const target = label ? this.targetOf(label) : undefined;
-    return target && !this.isShown(target) ? target : undefined;
+    const key = this.hoverKey();
+    return key ? this.targetOf(key) : undefined;
   });
 
-  /** The sub-zone under the pointer on a zone, by its label. */
+  /** The sub-zone under the pointer on a zone, by area id. */
   protected readonly hoverSub = computed(() => {
     const hover = this.hover();
-    const picture = this.picture();
-    return hover && this.page()?.kind === 'zone' && typeof picture === 'object' && picture
-      ? labelAt(picture.picture.labels, hover.point)
-      : 0;
+    return hover ? shapeAt(this.subzones(), hover.point) : undefined;
   });
 
-  /** Zone names on continents (and the world map), chips naming the neighbours of a zone (a click opens them). */
+  /**
+   * Chips naming the neighbours of a zone (a click opens them): on the part of each the picture shows (the biggest
+   * parts placed first, the others moved off them), else at the edge facing it. Continents and worlds name nothing:
+   * their pictures have the names.
+   */
   protected readonly labels = computed<GameLabel[]>(() => {
-    const shapes = this.zoneShapes();
     const page = this.page();
-    if (!shapes || !page || page.kind === 'cosmic') {
+    if (page?.kind !== 'zone' || !this.shown().has('names')) {
       return [];
     }
-    const chips = page.kind === 'zone';
-    if (chips ? !this.shown().has('transitions') : !this.shown().has('names')) {
-      return [];
-    }
-    const labels: GameLabel[] = [];
-    shapeCentres(shapes.labels).forEach(({ u, v, size }, label) => {
-      const target = this.targetOf(label);
-      if (target && size >= NAME_MIN_PIXELS && !this.isShown(target)) {
-        const levels = this.levelsOf(target);
-        labels.push({
-          key: target.key,
-          u: Math.min(0.97, Math.max(0.03, u)),
-          v: Math.min(0.95, Math.max(0.05, v)),
-          text: this.pageName(target),
-          levels: levels && `${levels[0]}–${levels[1]}`,
-          chip: chips,
-        });
+    const placed: GameLabel[] = [];
+    const parts = [...this.regions()].sort(([, a], [, b]) => ringsArea(b) - ringsArea(a));
+    for (const [key, rings] of parts) {
+      const target = this.targetOf(key);
+      if (target) {
+        const [x, y] = labelPoint(rings);
+        placed.push(this.chip(target, x, y, placed));
       }
-    });
-    return labels;
+    }
+    // neighbours on the continent that the picture doesn't show (not the cities inside the zone: they are sub-zones)
+    const continent = this.continent();
+    const zones = continent && this.outlines().get(`regions:${continent.key}`);
+    const own = zones?.get(page.key);
+    if (zones && own) {
+      // (a zone with an outline on its continent is one of its regions)
+      const { left, top, right, bottom } = ((continent as GamePage).regions.find((r) => r.page === page.key) as GameMapRegion).rect;
+      const frame: [number, number, number, number] = [left * 100, top * 100, right * 100, bottom * 100];
+      const subzones = this.subzones();
+      zones.forEach((rings, key) => {
+        const target = this.targetOf(key);
+        const hidden = key !== page.key && !this.regions().has(key) && target && !subzones.has(String(target.areaId));
+        if (hidden && outlinesTouch(own, rings, NEIGHBOUR_TOUCH)) {
+          const { x, y, side } = edgeButton(frame, labelPoint(rings));
+          placed.push({ ...this.chip(target, x, y, placed), edge: side });
+        }
+      });
+    }
+    return placed;
   });
+
+  /** A neighbour's chip at a place (percent of the picture), moved up or down off the chips already placed. */
+  private chip(target: GamePage, x: number, y: number, placed: GameLabel[]): GameLabel {
+    const levels = this.levelsOf(target);
+    const text = this.pageName(target);
+    const levelText = levels && `${levels[0]}–${levels[1]}`;
+    // (about 6 pixels a letter, of the picture's 1002 × 668)
+    const w = (((text.length + (levelText?.length ?? 0)) * 6 + 34) * 100) / 1002;
+    const h = (22 * 100) / 668;
+    const clamp = (value: number, size: number) => Math.min(100 - size / 2, Math.max(size / 2, value));
+    const free = (v: number) => placed.every((p) => Math.abs(p.u * 100 - x) >= (p.w + w) / 2 || Math.abs(p.v * 100 - v) >= (p.h + h) / 2);
+    // (where it is, when there's no free place near)
+    const [v] = [...[0, 1, -1, 2, -2, 3, -3].map((k) => clamp(y + k * h, h)).filter(free), clamp(y, h)];
+    return { key: target.key, u: clamp(x, w) / 100, v: v / 100, text, levels: levelText, w, h };
+  }
 
   /** What the tooltip says: the zone a click opens, its levels and land; or (on a zone) the sub-zone under the pointer. */
   protected readonly tooltip = computed(() => {
@@ -410,7 +464,7 @@ export class GameMapComponent {
     if (!page.bounds || page.kind === 'continent' || (!sub && page.kind === 'zone')) {
       return undefined;
     }
-    const area = sub ? this.areaName(this.overlays()[sub - 1].areaIds[0]) : this.areaName(page.areaId);
+    const area = this.areaName(sub ? Number(sub) : page.areaId);
     return { x: hover.x, y: hover.y, title: area, levels: undefined, land: undefined, hint: this.areaName(page.areaId) };
   });
 
@@ -423,7 +477,11 @@ export class GameMapComponent {
       : undefined;
   });
 
-  /** The markers of the page: points of interest, transports, instance entrances and (when asked) the 3D view's spawns. */
+  /**
+   * The markers of the page: points of interest, transports, instance entrances, zones' shields and (when asked) the 3D
+   * view's spawns. Continents show only how to get around and where the instances are; a zone only its own markers.
+   * Markers of one kind on top of each other are one.
+   */
   protected readonly pins = computed<GamePin[]>(() => {
     const page = this.page();
     if (!page?.bounds) {
@@ -451,8 +509,8 @@ export class GameMapComponent {
     const factions = this.factions();
     this.pois().forEach((poi, i) => {
       const layer = layers.get(poi.kind);
-      const point = layer?.icon && shown.has(poi.kind) ? this.placeOn(page, poi.mapId, poi) : undefined;
-      if (layer && point) {
+      const point = layer?.icon && this.showsLayer(poi.kind) ? this.placeOn(page, poi.mapId, poi) : undefined;
+      if (layer && point && this.belongs(page, poi.mapId, poi, poi.zoneId)) {
         pins.push({
           key: `poi:${i}`,
           ...point,
@@ -462,10 +520,75 @@ export class GameMapComponent {
           side: factionSide(factions?.templates.get(poi.faction ?? 0)),
           position: poi,
           mapId: poi.mapId,
+          kind: poi.kind,
         });
       }
     });
-    pins.push(...this.transportPins(), ...this.entrances().filter((pin) => shown.has(pin.key.split(':')[1])));
+    pins.push(
+      ...this.transportPins(),
+      ...this.entrances().filter((pin) => this.showsLayer(pin.key.split(':')[1]) && this.belongs(page, pin.mapId, pin.position)),
+      ...this.territoryPins().filter((pin) => shown.has(pin.kind as string)),
+    );
+    return mergePins(pins);
+  });
+
+  /** Whether a layer's markers are shown on the page (on continents only some layers are). */
+  private showsLayer(key: string): boolean {
+    return this.shown().has(key) && (this.page()?.kind !== 'continent' || CONTINENT_LAYERS.has(key));
+  }
+
+  /**
+   * Whether a marker belongs on the page: on a zone, when its zone is that zone (its zone unknown: when it is inside the
+   * zone's outline on its continent); everything on a city's picture (as AoWoW: a city's outline is only a rough ellipse),
+   * and on other pages.
+   */
+  private belongs(page: GamePage, mapId: number, place: { x: number; y: number }, zoneId?: number): boolean {
+    const zone = (this.data() as GameMapData).zones.get(page.areaId);
+    if (page.kind !== 'zone' || (zone && zone.flags & AREA_CAPITAL)) {
+      return true;
+    }
+    if (zoneId) {
+      return zoneId === page.areaId;
+    }
+    const continent = this.continent();
+    const own = continent && this.outlines().get(`regions:${continent.key}`)?.get(page.key);
+    const point = own && this.placeOn(continent, mapId, place);
+    return !point || pointInRings(point.u * 100, point.v * 100, own);
+  }
+
+  /** On a continent, a shield on each zone of a side (whose land it is) and swords on Wintergrasp (its world PvP). */
+  private readonly territoryPins = computed<GamePin[]>(() => {
+    const page = this.page() as GamePage;
+    const outlines = page.kind === 'continent' ? this.outlines().get(`regions:${page.key}`) : undefined;
+    const pins: GamePin[] = [];
+    outlines?.forEach((rings, key) => {
+      const target = this.targetOf(key);
+      const zone = target && (this.data() as GameMapData).zones.get(target.areaId);
+      const kind = target?.areaId === WINTERGRASP ? 'pvp' : zone?.faction === 1 || zone?.faction === 0 ? 'relations' : undefined;
+      if (!target || !kind) {
+        return;
+      }
+      const [x, y] = labelPoint(rings);
+      const point = { u: x / 100, v: y / 100 };
+      const icon =
+        kind === 'pvp'
+          ? ((GAME_MAP_LAYERS.find((l) => l.key === 'pvp') as GameMapLayer).icon as GameMapIcon)
+          : atlasIcon(zone?.faction === 1 ? ATLAS.allianceCrest : ATLAS.hordeCrest);
+      pins.push({
+        key: `${kind}:${key}`,
+        ...point,
+        title: this.pageName(target),
+        lines: [
+          kind === 'pvp' ? this.translate.instant('WORLD_EDITOR.GAME_MAP_WORLD_PVP') : (this.landText(target) as string),
+          this.translate.instant('WORLD_EDITOR.GAME_MAP_OPEN_MAP'),
+        ],
+        icon,
+        opens: target.key,
+        position: { ...fromGameMap(page.bounds as WorldBounds, point), z: 0 },
+        mapId: page.mapId,
+        kind,
+      });
+    });
     return pins;
   });
 
@@ -621,7 +744,7 @@ export class GameMapComponent {
         if (page) {
           perfNote(`game map: page ${page.key} (${page.prefix})`);
           void this.load(page, overlays);
-          void this.loadShapes(continent ?? page);
+          this.loadOutlinesOf(page, overlays, continent);
         }
       });
     });
@@ -753,29 +876,6 @@ export class GameMapComponent {
     }
     const point = toGameMap(page.bounds as WorldBounds, x, y);
     return onGameMap(point) ? point : undefined;
-  }
-
-  /**
-   * The shapes of a continent's zones on one zone's picture (the zone and its neighbours), traced from their highlights
-   * drawn in the zone's frame, so they are as sharp there as on the continent.
-   */
-  private zoneFrameShapes(page: GamePage, continent: GamePage): GameMapShapes {
-    const transforms = (this.data() as GameMapData).transforms;
-    const frame = onContinent({ mapId: page.mapId, bounds: page.bounds as WorldBounds }, transforms).bounds;
-    const highlights = this.highlights();
-    const sources: ShapeSource[] = continent.regions.map((region) => {
-      const zone = this.pages().get(region.page) as GamePage;
-      const placed = onContinent({ mapId: zone.mapId, bounds: zone.bounds as WorldBounds }, transforms).bounds;
-      const [a, b] = [toGameMap(frame, placed.maxX, placed.maxY), toGameMap(frame, placed.minX, placed.minY)];
-      return {
-        key: region.page,
-        rect: { left: a.u, top: a.v, right: b.u, bottom: b.v },
-        image: highlights.get(region.highlight as string) ?? undefined,
-      };
-    });
-    // gaps as wide as on the continent
-    const scale = (continent.bounds as WorldBounds).maxY - (continent.bounds as WorldBounds).minY;
-    return regionShapes(sources, Math.min(8, Math.round((3 * scale) / (frame.maxY - frame.minY))));
   }
 
   // ------------------------------------------------------------------ pointer: hover, zoom, pan, clicks
@@ -999,32 +1099,33 @@ export class GameMapComponent {
     this.pictures.update((map) => new Map(map).set(page.prefix, picture ? { url: imageToDataUrl(picture.image), picture } : null));
   }
 
-  /** The shapes of a page's regions, from their highlights (read once). */
-  private async loadShapes(page: GamePage): Promise<void> {
-    if (!page.regions.length || this.shapes().has(page.key)) {
+  /** The outlines a page needs: its regions'; on a zone its sub-zones', its continent's zones' and its neighbours'. */
+  private loadOutlinesOf(page: GamePage, overlays: GameMapOverlay[], continent: GamePage | undefined): void {
+    if (page.regions.length) {
+      void this.loadOutlines(`regions:${page.key}`, () => this.client.getGameMapOutlines(page));
+    }
+    if (page.kind === 'zone') {
+      void this.loadOutlines(`subzones:${page.key}`, () => this.client.getGameMapSubzones(page, overlays));
+      if (continent) {
+        void this.loadOutlines(`regions:${continent.key}`, () => this.client.getGameMapOutlines(continent));
+        void this.loadOutlines(`neighbours:${page.key}`, () => this.client.getGameMapNeighbours(page, continent, overlays));
+      }
+    }
+  }
+
+  /** Outlines, asked once each (none when they can't be traced). */
+  private async loadOutlines(key: string, trace: () => Promise<Map<string, Ring[]>>): Promise<void> {
+    if (this.outlines().has(key)) {
       return;
     }
-    // (marked first: asked once)
-    this.shapes.update((map) => new Map(map).set(page.key, { labels: new Uint16Array(SHAPE_WIDTH * SHAPE_HEIGHT), keys: [] }));
-    const sources: ShapeSource[] = [];
-    for (const region of page.regions) {
-      const path = region.highlight;
-      const highlight = path ? await this.client.getTexture(path).catch(() => undefined) : undefined;
-      if (path) {
-        this.highlights.update((map) => new Map(map).set(path, highlight ?? null));
-      }
-      sources.push({
-        key: region.page,
-        rect: region.rect,
-        circle: region.circle,
-        image: highlight,
-        outline: region.outline,
-        crop: !region.outline,
-      });
-    }
-    const shapes = regionShapes(sources);
-    perfNote(`game map: shapes of ${page.key}, ${sources.filter((s) => s.image || s.circle).length} of ${sources.length} regions`);
-    this.shapes.update((map) => new Map(map).set(page.key, shapes));
+    this.outlines.update((map) => new Map(map).set(key, new Map()));
+    const started = performance.now();
+    const outlines = await trace().catch((error: Error) => {
+      console.warn(`[World Editor] Could not trace the world map's ${key}:`, error);
+      return new Map<string, Ring[]>();
+    });
+    perfNote(`game map: ${key}, ${outlines.size} outlines after ${Math.round(performance.now() - started)} ms`);
+    this.outlines.update((map) => new Map(map).set(key, outlines));
   }
 
   /** The area triggers and transport paths of a map (read once each). */
@@ -1043,13 +1144,12 @@ export class GameMapComponent {
 
   /** The layers' icons, the atlas's cells cut out. */
   private async loadIcons(): Promise<void> {
-    const paths = new Set(
-      GAME_MAP_LAYERS.filter((layer) => layer.icon?.path && layer.icon.atlas === undefined).map((layer) => layer.icon?.path as string),
-    );
-    for (const path of paths) {
-      const image = await this.client.getTexture(path).catch(() => undefined);
+    const icons = GAME_MAP_LAYERS.map((layer) => layer.icon as GameMapIcon).filter((icon) => icon?.path && icon.atlas === undefined);
+    for (const icon of icons) {
+      const image = await this.client.getTexture(icon.path as string).catch(() => undefined);
       if (image) {
-        this.icons.update((map) => new Map(map).set(path, imageToPngUrl(image)));
+        const part = icon.crop ? cropImage(image, ...icon.crop) : image;
+        this.icons.update((map) => new Map(map).set(iconKey(icon), imageToPngUrl(part)));
       }
     }
     const atlas = await this.client.getTexture(POI_ATLAS).catch(() => undefined);

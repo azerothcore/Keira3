@@ -13,12 +13,15 @@ const mocks = vi.hoisted(() => ({
   parseWmoGroup: vi.fn().mockReturnValue({ group: 1 }),
   parseWmoDoodads: vi.fn().mockReturnValue('doodads'),
   parseWmoGroupCollision: vi.fn().mockReturnValue('collision'),
+  traceRegions: vi.fn().mockReturnValue(new Map([['a', [[1, 2]]]])),
+  neighbourParts: vi.fn().mockReturnValue(new Map([['b', [[3, 4]]]])),
 }));
 vi.mock('./formats', () => ({ parseAdt: mocks.parseAdt, decodeBlp: mocks.decodeBlp, decodeBlpForGpu: mocks.decodeBlpForGpu }));
 vi.mock('./liquid', () => ({ parseLiquids: mocks.parseLiquids }));
 vi.mock('./m2', () => ({ parseM2: mocks.parseM2, parseM2SkeletonFiles: mocks.parseM2SkeletonFiles }));
 vi.mock('./terrain-mesh', () => ({ buildTerrainMesh: mocks.buildTerrainMesh, buildTerrainChunkMeshes: mocks.buildTerrainChunkMeshes }));
 vi.mock('./wmo', () => ({ parseWmoRoot: mocks.parseWmoRoot, parseWmoGroup: mocks.parseWmoGroup, parseWmoDoodads: mocks.parseWmoDoodads }));
+vi.mock('./zone-tracer', () => ({ traceRegions: mocks.traceRegions, neighbourParts: mocks.neighbourParts }));
 vi.mock('./collision', () => ({ parseWmoGroupCollision: mocks.parseWmoGroupCollision }));
 
 describe('runParseJob', () => {
@@ -43,6 +46,9 @@ describe('runParseJob', () => {
     expect(runParseJob({ kind: 'wmoDoodads', bytes })).toBe('doodads');
     expect(runParseJob({ kind: 'blp', bytes })).toBe('rgba');
     expect(runParseJob({ kind: 'blpGpu', bytes })).toBe('gpu');
+    expect(runParseJob({ kind: 'trace', regions: [] })).toEqual([['a', [[1, 2]]]]);
+    expect(runParseJob({ kind: 'neighbours', frame: [0, 0, 1, 1], own: [], subs: [], others: [['c', []]] })).toEqual([['b', [[3, 4]]]]);
+    expect(mocks.neighbourParts).toHaveBeenCalledWith([0, 0, 1, 1], [], [], new Map([['c', []]]));
   });
 
   it('lists the buffers of a result once each, to hand them over', () => {

@@ -520,6 +520,7 @@ describe('WorldEditorService', () => {
       trainerType: '0',
       skill: '0',
       faction: '11',
+      zoneId: '12',
     };
     queryService.query
       .mockReturnValueOnce(
@@ -528,15 +529,15 @@ describe('WorldEditorService', () => {
       .mockReturnValueOnce(
         of([
           { map: '1', x: '4', y: '5', z: '6', name: 'Mailbox', type: '19' },
-          { map: '1', x: '4', y: '5', z: '6', name: 'Meeting Stone', type: '23' },
+          { map: '1', x: '4', y: '5', z: '6', name: 'Meeting Stone', type: '23', zoneId: '14' },
         ]),
       );
     expect(await service.loadMapPois()).toEqual([
-      { kind: 'flight', mapId: 0, x: 1, y: 2, z: 3, name: 'Thor', subname: 'Gryphon Master', faction: 11 },
-      { kind: 'classTrainer', mapId: 0, x: 1, y: 2, z: 3, name: 'Thor', subname: 'Gryphon Master', faction: 11 },
-      { kind: 'inn', mapId: 0, x: 1, y: 2, z: 3, name: 'Inn', faction: 11 },
-      { kind: 'mailbox', mapId: 1, x: 4, y: 5, z: 6, name: 'Mailbox' },
-      { kind: 'stone', mapId: 1, x: 4, y: 5, z: 6, name: 'Meeting Stone' },
+      { kind: 'flight', mapId: 0, x: 1, y: 2, z: 3, name: 'Thor', subname: 'Gryphon Master', faction: 11, zoneId: 12 },
+      { kind: 'classTrainer', mapId: 0, x: 1, y: 2, z: 3, name: 'Thor', subname: 'Gryphon Master', faction: 11, zoneId: 12 },
+      { kind: 'inn', mapId: 0, x: 1, y: 2, z: 3, name: 'Inn', faction: 11, zoneId: 12 },
+      { kind: 'mailbox', mapId: 1, x: 4, y: 5, z: 6, name: 'Mailbox', zoneId: 0 },
+      { kind: 'stone', mapId: 1, x: 4, y: 5, z: 6, name: 'Meeting Stone', zoneId: 14 },
     ]);
     expect(queryService.query.mock.calls[0][0]).toContain('LEFT JOIN trainer t');
     queryService.query

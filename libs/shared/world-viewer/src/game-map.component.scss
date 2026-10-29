@@ -252,6 +252,16 @@
       stroke-opacity 0.12s ease;
   }
 
+  &.colored .plain {
+    fill-opacity: 0.12;
+    stroke-opacity: 0.45;
+
+    &.hover {
+      fill-opacity: 0.3;
+      stroke-opacity: 1;
+    }
+  }
+
   .plain {
     fill: var(--gold);
     fill-opacity: 0;
@@ -339,20 +349,6 @@
   }
 }
 
-.game-map-name {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  color: #fff;
-  font-size: 11px;
-  font-weight: 600;
-  text-shadow:
-    0 0 3px #000,
-    0 0 2px #000,
-    0 0 1px #000;
-  white-space: nowrap;
-  pointer-events: none;
-}
-
 // a neighbouring zone's name, which opens it
 .game-map-chip {
   position: absolute;
@@ -379,10 +375,17 @@
     font-size: 14px;
   }
 
-  &:hover {
+  &:hover,
+  &.hover {
     color: #fff;
     border-color: #6dff4d;
     background: rgba(0, 0, 0, 0.88);
+  }
+
+  // a neighbour the picture doesn't show: at the edge facing it
+  &.edge {
+    border-style: dashed;
+    background: rgba(0, 0, 0, 0.8);
   }
 }
 
@@ -406,12 +409,9 @@
     image-rendering: auto;
   }
 
-  &.square > img:first-child {
-    width: 80%;
-    height: 80%;
-    border: 1px solid #000;
-    border-radius: 3px;
-    box-shadow: 0 0 0 1px #6b5a3a;
+  &.square {
+    width: calc(var(--marker) * 1.2);
+    height: calc(var(--marker) * 1.2);
   }
 
   &.dot {
@@ -429,6 +429,54 @@
     transform: translate(-50%, -50%) scale(1.35);
     z-index: 5;
   }
+}
+
+// a square (spell or item) icon in a round-cornered frame, as AoWoW draws them
+.game-map-spell {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+
+  > img {
+    position: absolute;
+    left: 15.4%;
+    top: 15.4%;
+    width: 69.2%;
+    height: 69.2%;
+    display: block;
+    border-radius: 2px;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 4%;
+    border: 2px solid #3d3d3d;
+    border-radius: 22%;
+    box-shadow:
+      inset 0 0 0 1px #000,
+      0 0 0 1px #000;
+  }
+}
+
+// how many markers of its kind are on this spot
+.game-map-more {
+  position: absolute;
+  right: -6px;
+  bottom: -4px;
+  min-width: 13px;
+  padding: 0 3px;
+  font-size: 9px;
+  line-height: 12px;
+  font-weight: 700;
+  text-align: center;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid #6b5a3a;
+  border-radius: 6px;
+  pointer-events: none;
 }
 
 // the side a marker serves: a small crest above it
