@@ -41,6 +41,21 @@ import { WowDataSettingsService } from './wow-data-settings.service';
 import { StormArchive, WOW_NATIVE_API, WowNativeApi } from './wow-native-api';
 import { WOW_PARSER } from './wow-parser';
 import { logFact, perfTime } from './perf-log';
+import {
+  composeGameMap,
+  GameMapData,
+  GameMapOverlay,
+  GameMapPiece,
+  GamePage,
+  GAME_MAP_ROOT,
+  overlayPieces,
+  pageTiles,
+  parseGameMapAreas,
+  parseGameMapFloors,
+  parseGameMapOverlays,
+  parseGameMapTransforms,
+  parseGameZones,
+} from './game-map';
 import { FactionData, parseFactions, parseFactionTemplates } from './factions';
 
 /** Disk space used by the cache of this client: per map (by lower-case directory), for buildings, and in total. */
@@ -95,6 +110,9 @@ const INVENTORY_TYPE_SHIELD = 14;
 /** Particle emitters (smoke, fire, sparks…): a placeholder mesh the game never draws. */
 const EMITTER_MODEL = /emitter[^\\]*\.m2$|\\particleemitters\\/i;
 
+/** Where world map pictures are cached. */
+const GAME_MAP_KIND = 'game-map';
+
 /** Reads game data straight from the user's WoW 3.3.5a client (MPQ archives) and, optionally, the server's DataDir. */
 @Service()
 export class WowClientService {
@@ -122,6 +140,7 @@ export class WowClientService {
   private readonly vmapModels = new Map<string, Promise<VmapGroup[] | undefined>>();
   private readonly serverMaps = new Map<string, Promise<ServerMapTile | undefined>>();
   private areaNames?: Promise<Map<number, AreaName>>;
+  private gameMap?: Promise<GameMapData>;
   private taxiNodes?: Promise<TaxiNode[]>;
   private mountCounter = 0;
 
@@ -385,6 +404,56 @@ export class WowClientService {
         throw error;
       });
     return this.areaNames;
+  }
+
+  /** What the in-game world map is made of (its DBCs: pages, overlays, floors, zones with their levels). */
+  getGameMap(): Promise<GameMapData> {
+    this.gameMap ??= Promise.all(
+      ['WorldMapArea', 'WorldMapOverlay', 'DungeonMap', 'WorldMapTransforms', 'AreaTable', 'LFGDungeons'].map((name) =>
+        this.readDbc(`${name}.dbc`),
+      ),
+    )
+      .then(([areas, overlays, floors, transforms, areaTable, lfg]) => ({
+        areas: areas ? parseGameMapAreas(areas) : [],
+        overlays: overlays ? parseGameMapOverlays(overlays) : [],
+        floors: floors ? parseGameMapFloors(floors) : [],
+        transforms: transforms ? parseGameMapTransforms(transforms) : [],
+        zones: areaTable ? parseGameZones(areaTable, lfg) : new Map(),
+      }))
+      .catch((error) => {
+        this.gameMap = undefined;
+        throw error;
+      });
+    return this.gameMap;
+  }
+
+  /**
+   * The picture of a world map page (1002 × 668): its tiles with, on a zone, every sub-zone it lights up once explored
+   * (`overlays` of that zone). Undefined when the client has none of its tiles. Kept in the disk cache.
+   */
+  async getGameMapPicture(page: GamePage, overlays: GameMapOverlay[] = []): Promise<RgbaImage | undefined> {
+    const { identity } = await this.getClient();
+    const cached = await this.cache.read<RgbaImage>(identity, GAME_MAP_KIND, page.prefix);
+    if (cached) {
+      return cached;
+    }
+    const tiles = await Promise.all(pageTiles(page).map((path) => this.getTexture(path).catch(() => undefined)));
+    if (!tiles.some(Boolean)) {
+      return undefined;
+    }
+    const folder = page.prefix.slice(0, page.prefix.indexOf('\\') + 1);
+    const pieces: GameMapPiece[] = [];
+    for (const overlay of overlays) {
+      for (const piece of overlayPieces(overlay)) {
+        const image = await this.getTexture(`${GAME_MAP_ROOT}${folder}${overlay.texture}${piece.index}.blp`).catch(() => undefined);
+        if (image) {
+          pieces.push({ image, x: piece.x, y: piece.y });
+        }
+      }
+    }
+    const picture = composeGameMap(tiles, pieces);
+    void this.cache.write(identity, GAME_MAP_KIND, page.prefix, picture);
+    return picture;
   }
 
   /** Flight masters' nodes (TaxiNodes.dbc) of a map. */

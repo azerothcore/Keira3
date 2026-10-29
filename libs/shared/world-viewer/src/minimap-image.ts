@@ -53,3 +53,83 @@ export function imageToDataUrl(image: RgbaImage): string {
   }
   return `data:image/bmp;base64,${btoa(binary)}`;
 }
+
+const CRC_TABLE = Array.from({ length: 256 }, (_, n) => {
+  let c = n;
+  for (let k = 0; k < 8; k++) {
+    c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+  }
+  return c >>> 0;
+});
+
+function crc32(bytes: Uint8Array): number {
+  let c = 0xffffffff;
+  for (const byte of bytes) {
+    c = CRC_TABLE[(c ^ byte) & 255] ^ (c >>> 8);
+  }
+  return (c ^ 0xffffffff) >>> 0;
+}
+
+/** Most bytes a stored (not compressed) deflate block holds. */
+const STORED_BLOCK = 0xffff;
+
+/** An image as a `data:` URL of a PNG, alpha kept (stored without compression: no canvas or zlib needed). */
+export function imageToPngUrl(image: RgbaImage): string {
+  const rowSize = image.width * 4 + 1;
+  const raw = new Uint8Array(rowSize * image.height);
+  for (let y = 0; y < image.height; y++) {
+    // filter 0, then the row as it is
+    raw.set(image.data.subarray(y * image.width * 4, (y + 1) * image.width * 4), y * rowSize + 1);
+  }
+  const blocks = Math.max(1, Math.ceil(raw.length / STORED_BLOCK));
+  const zlib = new Uint8Array(2 + blocks * 5 + raw.length + 4);
+  zlib.set([0x78, 0x01]);
+  let at = 2;
+  let [a, b] = [1, 0];
+  for (let block = 0; block < blocks; block++) {
+    const part = raw.subarray(block * STORED_BLOCK, (block + 1) * STORED_BLOCK);
+    zlib.set([block === blocks - 1 ? 1 : 0, part.length & 255, part.length >> 8, ~part.length & 255, (~part.length >> 8) & 255], at);
+    zlib.set(part, at + 5);
+    at += 5 + part.length;
+    for (const byte of part) {
+      a = (a + byte) % 65521;
+      b = (b + a) % 65521;
+    }
+  }
+  new DataView(zlib.buffer).setUint32(at, ((b << 16) | a) >>> 0);
+
+  const chunk = (type: string, data: Uint8Array): Uint8Array => {
+    const out = new Uint8Array(12 + data.length);
+    const view = new DataView(out.buffer);
+    view.setUint32(0, data.length);
+    out.set(
+      [...type].map((c) => c.charCodeAt(0)),
+      4,
+    );
+    out.set(data, 8);
+    view.setUint32(8 + data.length, crc32(out.subarray(4, 8 + data.length)));
+    return out;
+  };
+  const header = new Uint8Array(13);
+  const view = new DataView(header.buffer);
+  view.setUint32(0, image.width);
+  view.setUint32(4, image.height);
+  header.set([8, 6], 8); // 8 bits, RGBA
+  const parts = [
+    Uint8Array.from([137, 80, 78, 71, 13, 10, 26, 10]),
+    chunk('IHDR', header),
+    chunk('IDAT', zlib),
+    chunk('IEND', new Uint8Array(0)),
+  ];
+  const png = new Uint8Array(parts.reduce((sum, part) => sum + part.length, 0));
+  let offset = 0;
+  for (const part of parts) {
+    png.set(part, offset);
+    offset += part.length;
+  }
+  let binary = '';
+  for (let i = 0; i < png.length; i += 0x8000) {
+    binary += String.fromCharCode(...png.subarray(i, i + 0x8000));
+  }
+  return `data:image/png;base64,${btoa(binary)}`;
+}

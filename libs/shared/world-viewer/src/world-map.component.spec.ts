@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { ServerTileCoverage, TILE_SIZE, TileCoord, WorldBounds, WorldPosition, WowClientService, WowMap } from '@keira/shared/wow-data';
 import { PageObjectModel } from 'ngx-page-object-model';
-import { layoutAtlas, MAP_QUALITY_KEY, minimapImageSize, WorldMapComponent, WorldMapDot } from './world-map.component';
+import { layoutAtlas, MAP_GAME_KEY, MAP_QUALITY_KEY, minimapImageSize, WorldMapComponent, WorldMapDot } from './world-map.component';
 
 @Component({
   imports: [WorldMapComponent],
@@ -22,6 +22,7 @@ import { layoutAtlas, MAP_QUALITY_KEY, minimapImageSize, WorldMapComponent, Worl
       (goTo)="goTos.push($event)"
       (regionSelected)="regions.push($event)"
       (closed)="closes = closes + 1"
+      (gameMapShown)="gameMaps = gameMaps + 1"
     />
   `,
 })
@@ -46,6 +47,7 @@ class HostComponent {
   readonly atlasPicks: { mapId: number; position: WorldPosition }[] = [];
   readonly regions: WorldBounds[] = [];
   closes = 0;
+  gameMaps = 0;
 }
 
 class Page extends PageObjectModel<HostComponent> {
@@ -63,7 +65,14 @@ class Page extends PageObjectModel<HostComponent> {
 }
 
 describe(WorldMapComponent.name, () => {
-  const client = { getMinimap: vi.fn(), getMapThumbnail: vi.fn(), getMapTiles: vi.fn(), getMapBuilding: vi.fn() };
+  const client = {
+    getMinimap: vi.fn(),
+    getMapThumbnail: vi.fn(),
+    getMapTiles: vi.fn(),
+    getMapBuilding: vi.fn(),
+    // (the game's world map stays loading)
+    getGameMap: vi.fn(() => new Promise(() => undefined)),
+  };
   const image = { width: 128, height: 128, data: new Uint8Array(128 * 128 * 4).fill(200) };
 
   beforeEach(async () => {
@@ -91,6 +100,39 @@ describe(WorldMapComponent.name, () => {
     fixture.detectChanges();
     return { fixture, page, host: fixture.componentInstance };
   };
+
+  it("switches to the game's world map, and opens on it next time", async () => {
+    localStorage.removeItem(MAP_GAME_KEY);
+    const { page, fixture, host } = await setup();
+    expect(page.getDebugElementByTestId('game-map', false)).toBeFalsy();
+    page.getDebugElementByTestId('world-map-game-btn').nativeElement.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(page.getDebugElementByTestId('game-map')).toBeTruthy();
+    expect(host.gameMaps).toBe(1);
+    expect(page.getDebugElementByTestId('world-map-quality-2', false)).toBeFalsy();
+    expect(page.getDebugElementByTestId('world-map-fit', false)).toBeFalsy();
+    // the wheel is the game map's then, not the minimaps'
+    page.wheel(100, 50, -100);
+    expect(localStorage.getItem(MAP_GAME_KEY)).toBe('1');
+    const again = await setup();
+    expect(again.page.getDebugElementByTestId('game-map')).toBeTruthy();
+    // all maps leaves it; the button goes back to the minimaps
+    client.getMapTiles.mockResolvedValue([]);
+    again.page.getDebugElementByTestId('world-map-all-btn').nativeElement.click();
+    again.fixture.detectChanges();
+    expect(again.page.getDebugElementByTestId('game-map', false)).toBeFalsy();
+    again.page.getDebugElementByTestId('world-map-game-btn').nativeElement.click();
+    again.page.getDebugElementByTestId('world-map-game-btn').nativeElement.click();
+    const setItem = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('full');
+    });
+    again.page.getDebugElementByTestId('world-map-game-btn').nativeElement.click();
+    setItem.mockRestore();
+    again.fixture.detectChanges();
+    expect(again.page.getDebugElementByTestId('game-map')).toBeTruthy();
+    localStorage.removeItem(MAP_GAME_KEY);
+  });
 
   it("fits the map's tiles in the view, with their minimap images, names and grid", async () => {
     const { page } = await setup();

@@ -507,6 +507,44 @@ describe('WorldEditorService', () => {
     expect(await service.loadTeleports([46])).toEqual([]);
   });
 
+  it('loads the points of interest of the world, without trainer types when that table is missing', async () => {
+    const { service, queryService } = setup();
+    const npc = {
+      map: '0',
+      x: '1',
+      y: '2',
+      z: '3',
+      name: 'Thor',
+      subname: 'Gryphon Master',
+      npcflag: String(0x2000 | 0x10),
+      trainerType: '0',
+    };
+    queryService.query
+      .mockReturnValueOnce(
+        of([npc, { ...npc, name: 'Bob', subname: '', npcflag: '128' }, { ...npc, name: 'Inn', subname: '', npcflag: String(0x10000) }]),
+      )
+      .mockReturnValueOnce(
+        of([
+          { map: '1', x: '4', y: '5', z: '6', name: 'Mailbox', type: '19' },
+          { map: '1', x: '4', y: '5', z: '6', name: 'Meeting Stone', type: '23' },
+        ]),
+      );
+    expect(await service.loadMapPois()).toEqual([
+      { kind: 'flight', mapId: 0, x: 1, y: 2, z: 3, name: 'Thor', subname: 'Gryphon Master' },
+      { kind: 'classTrainer', mapId: 0, x: 1, y: 2, z: 3, name: 'Thor', subname: 'Gryphon Master' },
+      { kind: 'inn', mapId: 0, x: 1, y: 2, z: 3, name: 'Inn' },
+      { kind: 'mailbox', mapId: 1, x: 4, y: 5, z: 6, name: 'Mailbox' },
+      { kind: 'stone', mapId: 1, x: 4, y: 5, z: 6, name: 'Meeting Stone' },
+    ]);
+    expect(queryService.query.mock.calls[0][0]).toContain('LEFT JOIN trainer t');
+    queryService.query
+      .mockReturnValueOnce(throwError(() => new Error('no trainer table')))
+      .mockReturnValueOnce(of(undefined))
+      .mockReturnValueOnce(of(undefined));
+    expect(await service.loadMapPois()).toEqual([]);
+    expect(queryService.query.mock.calls[3][0]).not.toContain('trainer t');
+  });
+
   it('loads every other path in the area, each table skipped when it fails', async () => {
     const { service, queryService } = setup();
     queryService.query

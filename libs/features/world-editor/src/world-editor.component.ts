@@ -70,6 +70,7 @@ import {
   colorNumber,
   WorldMapComponent,
   WorldMapDot,
+  GameMapPoi,
   RENDER_SCALES,
   WorldBoundary,
   WeatherKind,
@@ -1010,6 +1011,21 @@ export class WorldEditorComponent implements OnInit {
       title: spawnTitle(r),
     })),
   ]);
+  /** Points of interest of the whole world for the game's world map (read when it is first opened). */
+  protected readonly gameMapPois = signal<GameMapPoi[]>([]);
+  private gameMapPoisLoading = false;
+  protected loadGameMapPois(): void {
+    if (this.gameMapPoisLoading) {
+      return;
+    }
+    this.gameMapPoisLoading = true;
+    void this.service
+      .loadMapPois()
+      .catch(this.quietly<GameMapPoi[]>('read the points of interest', []))
+      .then((pois) => this.gameMapPois.set(pois));
+  }
+  /** The zone under the camera (0 until the view says). */
+  protected readonly cameraZone = computed(() => this.weatherZone() ?? 0);
   /** Which server files each tile of the map has (only read while the world map is open). */
   protected readonly mapCoverage = computed(() => this.client.getServerCoverage(this.mapId(), this.mapTiles()));
   protected readonly layers = this.session.layers;

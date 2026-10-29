@@ -1,0 +1,174 @@
+@let current = page();
+<div class="game-map" data-testid="game-map">
+  <div class="game-map-bar" (pointerdown)="$event.stopPropagation()" (pointerup)="$event.stopPropagation()">
+    @if (parentPage(); as parent) {
+      <button
+        type="button"
+        class="btn btn-sm btn-light"
+        data-testid="game-map-back"
+        [title]="'WORLD_EDITOR.GAME_MAP_BACK' | translate"
+        (click)="open(parent.key)"
+      >
+        <i class="fa fa-level-up"></i> {{ pageName(parent) }}
+      </button>
+    }
+    @if (current) {
+      <strong class="game-map-title" data-testid="game-map-title">{{ pageName(current) }}</strong>
+    }
+    @if (floors().length) {
+      <div class="btn-group btn-group-sm" role="group" [attr.aria-label]="'WORLD_EDITOR.GAME_MAP_FLOORS' | translate">
+        @for (floor of floors(); track floor.key) {
+          <button
+            type="button"
+            class="btn"
+            [attr.data-testid]="'game-map-floor-' + floor.key"
+            [class.btn-light]="floor.key === current?.key"
+            [class.btn-dark]="floor.key !== current?.key"
+            (click)="open(floor.key)"
+          >
+            {{ floorName(floor) }}
+          </button>
+        }
+      </div>
+    }
+    <span class="flex-grow-1"></span>
+    @if (canLoadZone()) {
+      <button type="button" class="btn btn-sm btn-light" data-testid="game-map-load-zone" (click)="loadZone()">
+        <i class="fa fa-download"></i> {{ 'WORLD_EDITOR.GAME_MAP_LOAD_ZONE' | translate }}
+      </button>
+    }
+    <button
+      type="button"
+      class="btn btn-sm btn-light"
+      data-testid="game-map-camera"
+      [title]="'WORLD_EDITOR.MAP_CENTER_CAMERA' | translate"
+      (click)="showCamera()"
+    >
+      <i class="fa fa-crosshairs"></i>
+    </button>
+    <button
+      type="button"
+      class="btn btn-sm"
+      data-testid="game-map-filters-btn"
+      [class.btn-primary]="showFilters()"
+      [class.btn-light]="!showFilters()"
+      [title]="'WORLD_EDITOR.GAME_MAP_POIS' | translate"
+      (click)="showFilters.set(!showFilters())"
+    >
+      <i class="fa fa-map-marker"></i>
+    </button>
+  </div>
+
+  <div class="game-map-body">
+    @if (failed()) {
+      <div class="game-map-message" data-testid="game-map-failed">{{ 'WORLD_EDITOR.GAME_MAP_FAILED' | translate }}</div>
+    } @else if (current) {
+      @let picture = pictures().get(current.prefix);
+      <div
+        class="game-map-picture"
+        data-testid="game-map-picture"
+        [class.clickable]="!!hoverRegion() || (!!current.bounds && current.kind !== 'continent')"
+        [style.aspect-ratio]="width + ' / ' + height"
+        (pointermove)="onPointerMove($event)"
+        (pointerleave)="onPointerLeave()"
+        (click)="onClick()"
+      >
+        @if (picture) {
+          <img class="game-map-image" [src]="picture" alt="" draggable="false" />
+        } @else if (picture === null && pictures().has(current.prefix)) {
+          <div class="game-map-message" data-testid="game-map-no-picture">{{ 'WORLD_EDITOR.GAME_MAP_NO_PICTURE' | translate }}</div>
+        }
+        @if (hoverGlow(); as glow) {
+          <img
+            class="game-map-glow"
+            data-testid="game-map-glow"
+            alt=""
+            draggable="false"
+            [src]="glow.url"
+            [style.left.%]="glow.rect.left * 100"
+            [style.top.%]="glow.rect.top * 100"
+            [style.width.%]="(glow.rect.right - glow.rect.left) * 100"
+            [style.height.%]="(glow.rect.bottom - glow.rect.top) * 100"
+          />
+        } @else if (hoverRegion(); as region) {
+          @if (region.circle) {
+            <span
+              class="game-map-ring"
+              data-testid="game-map-ring"
+              [style.left.%]="region.rect.left * 100"
+              [style.top.%]="region.rect.top * 100"
+              [style.width.%]="(region.rect.right - region.rect.left) * 100"
+              [style.height.%]="(region.rect.bottom - region.rect.top) * 100"
+            ></span>
+          }
+        }
+        @for (pin of pins(); track pin.key) {
+          <span
+            class="game-map-pin"
+            [class.poi]="!pin.color"
+            [attr.data-testid]="'game-map-pin-' + pin.key"
+            [title]="pin.title"
+            [style.left.%]="pin.u * 100"
+            [style.top.%]="pin.v * 100"
+            [style.background]="pin.color ?? null"
+            (pointermove)="$event.stopPropagation(); onPointerLeave()"
+            (click)="goToPin(pin, $event)"
+          >
+            @if (pin.icon) {
+              <img [src]="pin.icon" alt="" draggable="false" />
+            } @else if (pin.fa) {
+              <i [class]="'fa ' + pin.fa"></i>
+            }
+          </span>
+        }
+        @if (cameraPin(); as point) {
+          <span
+            class="game-map-camera"
+            data-testid="game-map-camera-pin"
+            [style.left.%]="point.u * 100"
+            [style.top.%]="point.v * 100"
+          ></span>
+        }
+        @if (tooltip(); as tip) {
+          <div class="game-map-tooltip" data-testid="game-map-tooltip" [style.left.px]="tip.x + 14" [style.top.px]="tip.y + 14">
+            <strong>{{ tip.title }}</strong>
+            @for (line of tip.lines; track $index) {
+              <div>{{ line }}</div>
+            }
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="game-map-message" data-testid="game-map-loading"><i class="fa fa-spinner fa-spin"></i></div>
+    }
+
+    @if (showFilters()) {
+      <div class="game-map-filters" data-testid="game-map-filters" (pointerdown)="$event.stopPropagation()">
+        <div class="d-flex gap-1 mb-1">
+          <button type="button" class="btn btn-sm btn-outline-light" data-testid="game-map-pois-all" (click)="setAllPois(true)">
+            {{ 'WORLD_EDITOR.SHOW_ALL' | translate }}
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-light" data-testid="game-map-pois-none" (click)="setAllPois(false)">
+            {{ 'WORLD_EDITOR.HIDE_ALL' | translate }}
+          </button>
+        </div>
+        @for (kind of poiKinds; track kind.kind) {
+          <label class="game-map-filter">
+            <input
+              type="checkbox"
+              [attr.data-testid]="'game-map-poi-' + kind.kind"
+              [checked]="shownPois().has(kind.kind)"
+              (change)="togglePoi(kind.kind)"
+            />
+            @if (kind.icon && icons().get(kind.icon); as icon) {
+              <img [src]="icon" alt="" />
+            } @else if (kind.fa) {
+              <i [class]="'fa ' + kind.fa"></i>
+            }
+            {{ kind.label | translate }}
+          </label>
+        }
+      </div>
+    }
+  </div>
+</div>

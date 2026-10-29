@@ -31,3 +31,5 @@ export * from './spawn-scan';
 export * from './gamepad-input';
 export * from './memory-budget';
 export * from './world-style';
+export * from './game-map.component';
+export * from './game-map-pois';

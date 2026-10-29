@@ -63,10 +63,22 @@
     }
   </div>
 }
+@if (showGame()) {
+  <keira-game-map
+    [mapId]="mapId()"
+    [camera]="camera()"
+    [zoneId]="zoneId()"
+    [dots]="dots()"
+    [pois]="pois()"
+    [maps]="maps()"
+    (goTo)="atlasPicked.emit($event)"
+    (regionSelected)="regionSelected.emit($event)"
+  />
+}
 <div
   #viewport
   class="world-map"
-  [class.hidden]="showAll()"
+  [class.hidden]="showAll() || showGame()"
   data-testid="world-map"
   (pointerdown)="onPointerDown($event)"
   (pointermove)="onPointerMove($event)"
@@ -129,7 +141,7 @@
     </div>
   }
 </div>
-@if (!showAll()) {
+@if (!showAll() && !showGame()) {
   <div
     class="btn-group btn-group-sm world-map-quality"
     role="group"
@@ -155,6 +167,17 @@
   <button
     type="button"
     class="btn btn-sm"
+    data-testid="world-map-game-btn"
+    [class.btn-primary]="showGame()"
+    [class.btn-light]="!showGame()"
+    [title]="'WORLD_EDITOR.GAME_MAP_HELP' | translate"
+    (click)="toggleGame()"
+  >
+    <i class="fa fa-map"></i> {{ 'WORLD_EDITOR.GAME_MAP' | translate }}
+  </button>
+  <button
+    type="button"
+    class="btn btn-sm"
     data-testid="world-map-all-btn"
     [class.btn-primary]="showAll()"
     [class.btn-light]="!showAll()"
@@ -163,24 +186,26 @@
   >
     <i class="fa fa-th-large"></i> {{ 'WORLD_EDITOR.MAP_ALL' | translate }}
   </button>
-  <button
-    type="button"
-    class="btn btn-sm btn-light"
-    data-testid="world-map-camera-btn"
-    [title]="'WORLD_EDITOR.MAP_CENTER_CAMERA' | translate"
-    (click)="centerOnCamera()"
-  >
-    <i class="fa fa-crosshairs"></i>
-  </button>
-  <button
-    type="button"
-    class="btn btn-sm btn-light"
-    data-testid="world-map-fit"
-    [title]="'WORLD_EDITOR.MAP_FIT' | translate"
-    (click)="fitAll()"
-  >
-    <i class="fa fa-globe"></i>
-  </button>
+  @if (!showGame()) {
+    <button
+      type="button"
+      class="btn btn-sm btn-light"
+      data-testid="world-map-camera-btn"
+      [title]="'WORLD_EDITOR.MAP_CENTER_CAMERA' | translate"
+      (click)="centerOnCamera()"
+    >
+      <i class="fa fa-crosshairs"></i>
+    </button>
+    <button
+      type="button"
+      class="btn btn-sm btn-light"
+      data-testid="world-map-fit"
+      [title]="'WORLD_EDITOR.MAP_FIT' | translate"
+      (click)="fitAll()"
+    >
+      <i class="fa fa-globe"></i>
+    </button>
+  }
   <button
     type="button"
     class="btn btn-sm btn-light"
@@ -200,6 +225,6 @@
     <i class="fa fa-times"></i>
   </button>
 </div>
-@if (!showAll()) {
+@if (!showAll() && !showGame()) {
   <div class="world-map-hint">{{ 'WORLD_EDITOR.MAP_HINT' | translate }}</div>
 }

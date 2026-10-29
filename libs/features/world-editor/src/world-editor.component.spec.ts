@@ -249,6 +249,7 @@ describe(WorldEditorComponent.name, () => {
       loadPoolMembers: vi.fn(),
       loadTransports: vi.fn(),
       loadGraveyards: vi.fn(),
+      loadMapPois: vi.fn(),
       loadTeleports: vi.fn(),
       loadLandingSpot: vi.fn(),
       loadAreaPaths: vi.fn(),
@@ -3624,6 +3625,43 @@ describe(WorldEditorComponent.name, () => {
   });
 
   describe('world map, search, problems and array', () => {
+    it("gives the game's world map the points of interest (read once) and the zone the camera is in", async () => {
+      const { page } = await setup();
+      const poi = { kind: 'flight', mapId: 0, x: 1, y: 2, z: 3, name: 'Thor' };
+      mocks.service.loadMapPois.mockResolvedValueOnce([poi]);
+      await loadArea(page);
+      page.viewer().zoneChanged.emit(12);
+      page.click('map-toggle');
+      await settle(page);
+      const map = () =>
+        page.fixture.debugElement.query((el) => el.name === 'keira-world-map').componentInstance as {
+          gameMapShown: { emit: () => void };
+          pois: () => unknown[];
+          zoneId: () => number;
+        };
+      expect(map().zoneId()).toBe(12);
+      map().gameMapShown.emit();
+      map().gameMapShown.emit();
+      await settle(page);
+      expect(map().pois()).toEqual([poi]);
+      expect(mocks.service.loadMapPois).toHaveBeenCalledTimes(1);
+    });
+
+    it("says nothing when the points of interest can't be read", async () => {
+      const { page } = await setup();
+      mocks.service.loadMapPois.mockRejectedValueOnce(new Error('no table'));
+      vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+      page.click('map-toggle');
+      await settle(page);
+      const map = page.fixture.debugElement.query((el) => el.name === 'keira-world-map').componentInstance as {
+        gameMapShown: { emit: () => void };
+        pois: () => unknown[];
+      };
+      map.gameMapShown.emit();
+      await settle(page);
+      expect(map.pois()).toEqual([]);
+    });
+
     it('opens the world map, goes where clicked and loads a selected area', async () => {
       mocks.client.getServerMap.mockResolvedValue({ v9: new Float32Array(129 * 129).fill(42) });
       const { page } = await setup();

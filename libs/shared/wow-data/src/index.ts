@@ -23,3 +23,4 @@ export * from './perf-log';
 export * from './factions';
 export * from './character';
 export * from './m2-animation';
+export * from './game-map';

@@ -1212,4 +1212,73 @@ describe('WowClientService', () => {
       expect(await service.getMinimap('Azeroth', { tx: 32, ty: 48 })).toBeUndefined();
     });
   });
+
+  describe('game world map', () => {
+    const rows = (r: (number | string)[][], fields?: number) => Array.from(buildDbc(r, fields));
+    const displayMpqs = (files: Record<string, number[]>): Record<string, FakeMpq> => ({ 'common.MPQ': { files } });
+    const pageOf = (prefix: string) => ({ key: 'k', kind: 'zone' as const, prefix, mapAreaId: 30, mapId: 0, areaId: 12, regions: [] });
+
+    it('reads what the world map is made of, once', async () => {
+      const area = new Array(11).fill(0);
+      Object.assign(area, { 0: 30, 2: 12, 3: 'Elwynn' });
+      const { service } = setup({
+        mpqs: displayMpqs({
+          'DBFilesClient\\WorldMapArea.dbc': rows([area]),
+          'DBFilesClient\\AreaTable.dbc': rows([[12, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 'Elwynn Forest']], 27),
+          'DBFilesClient\\WorldMapOverlay.dbc': rows([[1, 30, 87, 0, 0, 0, 0, 0, 'Goldshire', 10, 10, 0, 0, 0, 0, 0, 0]]),
+          'DBFilesClient\\DungeonMap.dbc': rows([[56, 533, 1, 0, 0, 0, 0, 0]]),
+          'DBFilesClient\\WorldMapTransforms.dbc': rows([[2, 530, 0, 0, 0, 0, 0, 0, 0, 0]]),
+        }),
+      });
+      const data = await service.getGameMap();
+      expect(data.areas.map((a) => a.folder)).toEqual(['Elwynn']);
+      expect([data.overlays.length, data.floors.length, data.transforms.length]).toEqual([1, 1, 1]);
+      expect(data.zones.get(12)?.name).toBe('Elwynn Forest');
+      expect(await service.getGameMap()).toBe(data);
+    });
+
+    it('has an empty world map without its DBCs', async () => {
+      const data = await setup({ mpqs: displayMpqs({}) }).service.getGameMap();
+      expect([data.areas, data.overlays, data.floors, data.transforms, data.zones.size]).toEqual([[], [], [], [], 0]);
+    });
+
+    it('reads the world map again after a failure', async () => {
+      const { service } = setup({ mpqs: displayMpqs({ 'DBFilesClient\\WorldMapArea.dbc': [1, 2] }) });
+      await expect(service.getGameMap()).rejects.toThrowError(/WDBC/);
+      await expect(service.getGameMap()).rejects.toThrowError(/WDBC/);
+    });
+
+    it('pictures a page from its tiles and overlays, kept in the cache', async () => {
+      const files: Record<string, number[]> = { 'Interface\\WorldMap\\Elwynn\\Goldshire1.blp': [2] };
+      for (let i = 1; i <= 12; i++) {
+        files[`Interface\\WorldMap\\Elwynn\\Elwynn${i}.blp`] = [1];
+      }
+      const { service } = setup({ mpqs: displayMpqs(files) });
+      formats.decodeBlp.mockImplementation((bytes: Uint8Array) => ({
+        width: 1,
+        height: 1,
+        data: Uint8Array.from(bytes[0] === 2 ? [0, 255, 0, 255] : [255, 0, 0, 255]),
+      }));
+      const overlay = {
+        mapAreaId: 30,
+        areaIds: [87],
+        texture: 'Goldshire',
+        width: 300,
+        height: 10,
+        x: 0,
+        y: 0,
+        hit: { left: 0, top: 0, right: 1, bottom: 1 },
+      };
+      const picture = await service.getGameMapPicture(pageOf('Elwynn\\Elwynn'), [overlay]);
+      expect([picture?.width, picture?.height]).toEqual([1002, 668]);
+      // the overlay's first piece (green) over the first tile (red); its second piece is missing
+      expect(Array.from(picture?.data.subarray(0, 4) ?? [])).toEqual([0, 255, 0, 255]);
+      expect(Array.from(picture?.data.subarray(256 * 4, 256 * 4 + 4) ?? [])).toEqual([255, 0, 0, 255]);
+      formats.decodeBlp.mockClear();
+      expect((await service.getGameMapPicture(pageOf('Elwynn\\Elwynn')))?.width).toBe(1002);
+      expect(formats.decodeBlp).not.toHaveBeenCalled();
+      // no tiles at all
+      expect(await service.getGameMapPicture(pageOf('Nowhere\\Nowhere'))).toBeUndefined();
+    });
+  });
 });

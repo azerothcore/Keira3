@@ -3,6 +3,14 @@ import { Season, SEASONS, WeatherChances } from './weather';
 import { TableRow } from '@keira/shared/constants';
 import { MysqlQueryService, MysqlService } from '@keira/shared/db-layer';
 import { WorldBounds, WorldPosition } from '@keira/shared/wow-data';
+import {
+  GAMEOBJECT_MAILBOX,
+  GAMEOBJECT_MEETING_STONE,
+  GameMapPoi,
+  NPC_FLAG_KINDS,
+  NPC_FLAG_TRAINER,
+  npcPoiKinds,
+} from '@keira/shared/world-viewer';
 import { firstValueFrom } from 'rxjs';
 import {
   FormationMember,
@@ -420,6 +428,48 @@ export class WorldEditorService {
           : {}),
       };
     });
+  }
+
+  /**
+   * Every point of interest of the world, for the game's world map: creatures serving players by their NPC flags (a
+   * trainer's kind from its `trainer` row, left out when that table can't be read), mailboxes and meeting stones.
+   */
+  async loadMapPois(): Promise<GameMapPoi[]> {
+    const mask = NPC_FLAG_KINDS.reduce((all, [flag]) => all | flag, NPC_FLAG_TRAINER);
+    const creatures = (trainer: boolean): string =>
+      "SELECT c.map, c.position_x AS x, c.position_y AS y, c.position_z AS z, IFNULL(ct.name, '') AS name, IFNULL(ct.subname, '') AS subname, " +
+      `ct.npcflag, ${trainer ? 'IFNULL(t.Type, -1)' : '-1'} AS trainerType FROM creature c JOIN creature_template ct ON ct.entry = c.id ` +
+      (trainer ? 'LEFT JOIN creature_default_trainer cdt ON cdt.CreatureId = c.id LEFT JOIN trainer t ON t.Id = cdt.TrainerId ' : '') +
+      `WHERE (ct.npcflag & ${mask}) <> 0`;
+    const npcs = await firstValueFrom(this.queryService.query<TableRow>(creatures(true))).catch(() =>
+      firstValueFrom(this.queryService.query<TableRow>(creatures(false))),
+    );
+    const objects = await firstValueFrom(
+      this.queryService.query<TableRow>(
+        "SELECT g.map, g.position_x AS x, g.position_y AS y, g.position_z AS z, IFNULL(gt.name, '') AS name, gt.type " +
+          `FROM gameobject g JOIN gameobject_template gt ON gt.entry = g.id WHERE gt.type IN (${GAMEOBJECT_MAILBOX}, ${GAMEOBJECT_MEETING_STONE})`,
+      ),
+    );
+    const place = (row: TableRow) => ({
+      mapId: Number(row['map']),
+      x: Number(row['x']),
+      y: Number(row['y']),
+      z: Number(row['z']),
+      name: String(row['name']),
+    });
+    return [
+      ...(npcs ?? []).flatMap((row) =>
+        npcPoiKinds(Number(row['npcflag']), Number(row['trainerType'])).map((kind) => ({
+          kind,
+          ...place(row),
+          ...(row['subname'] ? { subname: String(row['subname']) } : {}),
+        })),
+      ),
+      ...(objects ?? []).map((row) => ({
+        kind: Number(row['type']) === GAMEOBJECT_MAILBOX ? ('mailbox' as const) : ('stone' as const),
+        ...place(row),
+      })),
+    ];
   }
 
   /** Where the given area triggers teleport to (`areatrigger_teleport`). */
