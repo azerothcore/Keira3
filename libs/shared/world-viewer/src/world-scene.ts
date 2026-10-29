@@ -65,7 +65,7 @@ import {
   worldToTile,
 } from '@keira/shared/wow-data';
 import { createSkyDome, setSkyColors } from './sky';
-import { ROOF_LAYER } from './wmo-object';
+import { INVISIBLE_WALL_LAYER, ROOF_LAYER } from './wmo-object';
 import { COLLISION_LAYER, SERVER_COLLISION_LAYER } from './collision-object';
 import { createTerrainLighting, createTerrainMaterial } from './terrain-material';
 import {
@@ -420,6 +420,7 @@ export class WorldScene {
     this.overlayGroup.name = 'overlays';
     this.serverCollisionGroup.name = 'server-collision';
     this.camera.layers.enable(LIQUID_LAYER);
+    this.camera.layers.enable(INVISIBLE_WALL_LAYER);
     this.setRoofsVisible(true);
     this.seaLevel.name = 'sea-level';
     this.seaLevel.visible = false;
@@ -1013,10 +1014,6 @@ export class WorldScene {
     }
   }
 
-  /**
-   * An arrow through the centre of a model (half its height, middle of its footprint), sized to it and pointing to
-   * its front (−z, like the pins' nose): shows the orientation of creatures and objects even when they're round.
-   */
   /** A facing arrow of a given length, along −z from its object's middle, drawn over everything and never picked. */
   private facingArrow(material: Material, length: number): Mesh {
     const arrow = new Mesh(this.facingArrowGeometry, material);
@@ -1028,6 +1025,10 @@ export class WorldScene {
     return arrow;
   }
 
+  /**
+   * An arrow through the centre of a model (half its height, middle of its footprint), sized to it and pointing to
+   * its front (−z, like the pins' nose): shows the orientation of creatures and objects even when they're round.
+   */
   private facingArrowFor(model: Object3D, kind: SpawnKind): Mesh {
     const box = new Box3().setFromObject(model);
     const size = box.getSize(new Vector3());
@@ -1074,8 +1075,6 @@ export class WorldScene {
         // hovering the line itself names it too
         line.userData = { overlay: link.key, stops: [link.from, ...(link.via ?? []), link.to] };
         this.linkLines.push(line);
-      }
-      if (link.label) {
         this.addLinkArrows(link, points);
       }
       const direction = to.clone().sub(from);
@@ -1102,7 +1101,8 @@ export class WorldScene {
 
   setAreaTriggers(triggers: WorldAreaTrigger[]): void {
     this.triggerGroup.traverse((object) => {
-      if (object instanceof Mesh || object instanceof LineSegments) {
+      // (the boxes' facing arrows share the spawns' arrow geometry)
+      if ((object instanceof Mesh || object instanceof LineSegments) && object.geometry !== this.facingArrowGeometry) {
         object.geometry.dispose();
       }
     });
@@ -1392,7 +1392,7 @@ export class WorldScene {
   }
 
   /** Redraws the line and direction arrows of a path after one of its points was moved interactively. */
-  refreshPathLine(pathKey: string): void {
+  refreshPathLine(pathKey: string, classify = true): void {
     const line = this.waypointGroup.getObjectByName(`${pathKey}:line`) as Line | undefined;
     if (!line) {
       return;
@@ -1408,7 +1408,9 @@ export class WorldScene {
     }
     this.orientPointers(group, closed);
     // (only this path: the others didn't move)
-    this.classifyWaypoints([group]);
+    if (classify) {
+      this.classifyWaypoints([group]);
+    }
     line.geometry.dispose();
     line.geometry = new BufferGeometry().setFromPoints(points);
     line.userData = { pathKey, numbers };
@@ -1777,7 +1779,10 @@ export class WorldScene {
     this.camera.updateMatrixWorld();
     this.scene.updateMatrixWorld();
     this.raycaster.setFromCamera(new Vector2(ndcX, ndcY), this.camera);
+    // (buildings' invisible walls too: named while they're shown)
+    this.raycaster.layers.enable(INVISIBLE_WALL_LAYER);
     const hits = this.raycaster.intersectObjects([this.terrainGroup, this.buildingGroup, this.doodadGroup], true);
+    this.raycaster.layers.disable(INVISIBLE_WALL_LAYER);
     // (a hit is always on a face with a material)
     const materialOf = (h: Intersection): Material => {
       const material = (h.object as Mesh).material;
@@ -1808,7 +1813,6 @@ export class WorldScene {
     return { kind: 'terrain', tile: worldToTile(position.x, position.y), position };
   }
 
-  /** Marker whose on-screen position is nearest to the cursor, if within `tolerance` and in front of the camera. */
   /** The stretch of a line passing nearest to the cursor on screen, if within `tolerance` (NDC) and in front. */
   private nearestLine(
     ndcX: number,
@@ -1840,6 +1844,7 @@ export class WorldScene {
     return best;
   }
 
+  /** Marker whose on-screen position is nearest to the cursor, if within `tolerance` and in front of the camera. */
   private nearestMarker(ndcX: number, ndcY: number, tolerance: number): Object3D | undefined {
     let best: Object3D | undefined;
     let bestDistance = tolerance;
@@ -1944,7 +1949,8 @@ export class WorldScene {
     this.beacon.traverse((object) => {
       if (object instanceof Mesh) {
         object.geometry.dispose();
-        (object.material as Material).dispose();
+        // (a player model on it has one material per batch)
+        [object.material as Material | Material[]].flat().forEach((material) => material.dispose());
       }
     });
     this.markerMaterials.forEach((material) => material.dispose());

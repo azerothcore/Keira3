@@ -19,6 +19,8 @@ import {
 
 /** Render layer of building roofs: the camera shows it unless roofs are hidden; picking (layer 0) never sees it. */
 export const ROOF_LAYER = 2;
+/** Render layer of buildings' invisible walls: drawn (while shown), but never ground for picking and snapping. */
+export const INVISIBLE_WALL_LAYER = 7;
 
 /** Roof textures live in DUNGEONS\TEXTURES\ROOF (and are named …ROOF…). */
 export function isRoofTexture(texture: string | undefined): boolean {
@@ -92,6 +94,7 @@ export function buildWmoObject(model: WmoModel, textures: Texture[], fallback: T
       const mesh = new Mesh(walls, invisibleMaterial());
       mesh.name = 'invisible-walls';
       mesh.userData = { group: groupIndex };
+      mesh.layers.set(INVISIBLE_WALL_LAYER);
       template.add(mesh);
     }
     if (group.indices.length === 0) {

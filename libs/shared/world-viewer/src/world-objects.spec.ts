@@ -162,6 +162,12 @@ describe('WorldObjects', () => {
     await objects.setExtras([{ key: 'transport:1', path: 'ship.wmo', position: { x: 0, y: 0, z: 0 }, orientation: Math.PI }]);
     expect(group.children.map((child) => child.name)).toEqual(['transport:1']);
     expect(onChange).toHaveBeenCalled();
+    // another map: its buildings are freed, but the one the editor placed is kept
+    objects.setMap('Azeroth');
+    objects.setMap('Kalimdor');
+    const reads = vi.mocked(source.getWmo).mock.calls.length;
+    await objects.setExtras([{ key: 'transport:1', path: 'ship.wmo', position: { x: 0, y: 0, z: 0 }, orientation: Math.PI }]);
+    expect(vi.mocked(source.getWmo).mock.calls.length).toBe(reads);
     // a file that isn't there or can't be read, and a change while loading
     await objects.setExtras([{ key: 'transport:2', path: 'missing.wmo', position: { x: 0, y: 0, z: 0 }, orientation: 0 }]);
     expect(group.children).toEqual([]);

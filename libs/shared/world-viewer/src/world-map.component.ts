@@ -212,7 +212,10 @@ export class WorldMapComponent implements OnDestroy {
     // another map: other minimaps
     effect(() => {
       this.directory();
-      untracked(() => this.images.set(new Map()));
+      untracked(() => {
+        this.images.set(new Map());
+        this.loading.clear();
+      });
     });
     // fit the map in the view when it changes
     effect(() => {
@@ -488,7 +491,8 @@ export class WorldMapComponent implements OnDestroy {
     this.loading.add(key);
     try {
       const image = await this.client.getMinimap(directory, tile);
-      if (image && !this.destroyed) {
+      // (not if another map was opened meanwhile: its tiles have the same names)
+      if (image && !this.destroyed && directory === this.directory()) {
         const url = imageToDataUrl(size >= image.width ? image : shrinkImage(image, size));
         this.images.update((images) => new Map(images).set(key, url));
       }

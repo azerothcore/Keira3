@@ -1412,6 +1412,12 @@ describe(WorldViewerComponent.name, () => {
       page.pointer('pointerleave', 50, 50);
       fixture.detectChanges();
       expect(page.label(false)).toBeFalsy();
+      // left before the frame came: nothing to name
+      page.pointer('pointermove', 50, 50);
+      page.pointer('pointerleave', 50, 50);
+      flushFrames();
+      fixture.detectChanges();
+      expect(page.label(false)).toBeFalsy();
 
       await update(() => host.focus.set(at(300, 300)));
       hover(50, 50);
@@ -1943,6 +1949,11 @@ describe(WorldViewerComponent.name, () => {
       fixture.detectChanges();
       await marker('');
       expect(beacon.mock.calls).toEqual([[undefined]]);
+      // one with no model replaced while loading; one shown when the view closes (freed with it)
+      host.render.set({ ...DEFAULT_WORLD_RENDER_SETTINGS, markerModel: '9:1' });
+      fixture.detectChanges();
+      await marker('1:0');
+      fixture.destroy();
     });
   });
 

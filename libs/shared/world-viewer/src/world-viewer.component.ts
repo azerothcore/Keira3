@@ -41,7 +41,7 @@ import { MapControls } from 'three/addons/controls/MapControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { TerrainStreamer } from './terrain-streamer';
 import { TextureCache } from './texture-cache';
-import { DisplayModel, displayModel, SpawnModels } from './spawn-models';
+import { DisplayModel, displayModel, disposeSpawnModel, SpawnModels } from './spawn-models';
 import { WorldPrefetch } from './world-prefetch';
 import { WorldDoodads } from './world-doodads';
 import { brightnessAt, ZoneLighting } from './zone-lighting';
@@ -150,9 +150,9 @@ const RIGHT_BUTTON = 2;
 const SPEED_STEP = 1.25;
 /** Keyboard movement speed (yards per second) when the camera is close; it grows with the camera distance. */
 const KEY_MIN_SPEED = 20;
-/** While something loads, how often (ms) the loading bar is refreshed. */
 /** Wait (ms) after terrain or buildings loaded before checking the checked path again. */
 const RECHECK_DELAY = 500;
+/** While something loads, how often (ms) the loading bar is refreshed. */
 const ACTIVITY_POLL = 250;
 /** How often (ms) the time of day is checked when it follows the computer's clock. */
 const CLOCK_CHECK = 60_000;
@@ -680,6 +680,9 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     clearTimeout(this.recheckTimer);
     clearTimeout(this.classifyTimer);
     clearTimeout(this.mouseOverTimer);
+    if (this.markerDisplay) {
+      disposeSpawnModel(this.markerDisplay);
+    }
     this.simulationRun++;
     if (this.simulationFrame !== undefined) {
       cancelAnimationFrame(this.simulationFrame);
@@ -875,7 +878,11 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   }
 
   private updateHover(): void {
-    const event = this.hoverEvent as PointerEvent;
+    const event = this.hoverEvent;
+    // (the pointer left the view before the frame)
+    if (!event) {
+      return;
+    }
     this.hoverEvent = undefined;
     this.altHeld = event.altKey;
     const rect = this.host().nativeElement.getBoundingClientRect();
@@ -1187,7 +1194,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  /** Puts the marker on the ground under the crosshair (the "+" in the middle of the view). */
+  /** Shift + wheel changes the camera speed; a wheel step bound to a marker action runs it. */
   private readonly onSpeedWheel = (event: WheelEvent): void => {
     // a wheel step bound to the marker (camera moves need a press and a release: not the wheel)
     if (!event.shiftKey && this.markerAction(event, false)) {
@@ -1408,16 +1415,28 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   }
 
   /** The marker as a player character (`race:sex`), or the beam alone (''). */
+  /** The player marker's model, while it has one (freed when replaced). */
+  private markerDisplay?: DisplayModel;
+
   private async loadMarkerModel(choice: string): Promise<void> {
     if (choice === this.markerModel) {
       return;
     }
     this.markerModel = choice;
     const model = choice ? await this.playerModel(choice).catch(() => undefined) : undefined;
-    if (choice !== this.markerModel) {
+    if (choice !== this.markerModel || this.destroyed) {
+      // (another one was asked for meanwhile)
+      if (model) {
+        disposeSpawnModel(model);
+      }
       return;
     }
     this.world.setBeaconModel(model && new Mesh(model.template.geometry, model.template.materials));
+    // the previous one leaves the graphics card
+    if (this.markerDisplay) {
+      disposeSpawnModel(this.markerDisplay);
+    }
+    this.markerDisplay = model;
     this.requestRender();
   }
 
@@ -1534,7 +1553,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       this.snap(key, object, !!waypoint);
     }
     if (waypoint) {
-      this.world.refreshPathLine(waypoint.pathKey);
+      // (where its points stand is worked out again once the move is saved: not at every step of the drag)
+      this.world.refreshPathLine(waypoint.pathKey, false);
     }
     this.requestRender();
   }
@@ -1728,6 +1748,10 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     this.frameRequested = true;
     requestAnimationFrame(() => {
       this.frameRequested = false;
+      // (a frame asked for just before the view closed: nothing to draw anymore)
+      if (this.destroyed) {
+        return;
+      }
       this.world.updateMarkerScale();
       const spinning = this.updateSkybox();
       const now = performance.now();

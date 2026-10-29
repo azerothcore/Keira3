@@ -18,10 +18,10 @@ import {
   Texture,
 } from 'three';
 
-/** Loads each BLP once and shares the resulting texture (terrain tilesets, model skins…). */
 /** How many more textures must have been loaded before the unused ones are looked for again. */
 const RELEASE_STEP = 200;
 
+/** Loads each BLP once and shares the resulting texture (terrain tilesets, model skins…). */
 export class TextureCache {
   /** How many textures were loaded when the unused ones were last released. */
   private releasedAt = -Infinity;

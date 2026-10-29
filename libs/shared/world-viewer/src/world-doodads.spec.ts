@@ -253,6 +253,22 @@ describe('WorldDoodads', () => {
     expect(doodads.loadedTiles).not.toContain('31_47');
   });
 
+  it('stops loading the tiles of a map left meanwhile, even after a tile that failed', async () => {
+    const { doodads, source } = setup({ '32_48': [doodad(1, 0)] });
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    let fail: (error: Error) => void = () => undefined;
+    source.getTilePlacements.mockReturnValueOnce(new Promise((_resolve, reject) => (fail = reject)));
+    doodads.setMap('Azeroth');
+    const first = doodads.update(CENTER);
+    const asked = source.getTilePlacements.mock.calls.length;
+    doodads.setMap('Kalimdor');
+    fail(new Error('bad tile'));
+    await first;
+    // (the other tiles of Azeroth weren't asked for)
+    expect(source.getTilePlacements.mock.calls.length).toBe(asked);
+    warn.mockRestore();
+  });
+
   it('disposes its models, including those still loading', async () => {
     const { doodads, source } = setup({ '32_48': [doodad(1, 0), doodad(2, 5, 'World\\Missing.mdx')] });
     doodads.setMap('Azeroth');

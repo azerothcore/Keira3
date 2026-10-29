@@ -24,11 +24,11 @@ import { buildWmoObject, disposeWmoObject } from './wmo-object';
 import { WorldScene } from './world-scene';
 import { SpawnKind, WorldSpawn } from './world-viewer.model';
 
-/** What spawn models need from `WowClientService`. */
 /** Why a pin stands in for a spawn's model. */
 const NO_DISPLAY = 'it has no display (creature_template_model / gameobject_template.displayId)';
 const LOADING = 'its model is loading';
 
+/** What spawn models need from `WowClientService`. */
 export interface SpawnModelSource {
   getCreatureDisplay(displayId: number): Promise<CreatureDisplay | undefined>;
   getGameObjectDisplay(displayId: number): Promise<string | undefined>;
@@ -422,7 +422,8 @@ export class SpawnModels {
   }
 }
 
-function disposeSpawnModel(model: SpawnModel): void {
+/** Frees a model's geometry and materials (with what it wears and its skeletons). */
+export function disposeSpawnModel(model: SpawnModel): void {
   if ('building' in model) {
     disposeWmoObject(model.building);
     return;
