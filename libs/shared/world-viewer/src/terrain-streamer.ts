@@ -128,6 +128,10 @@ export class TerrainStreamer {
     }
 
     for (const tile of [...tilesAround(centerTile, this.options.radius, this.facing), ...regionTiles]) {
+      // another map or other options meanwhile: this loop's tiles aren't wanted anymore
+      if (generation !== this.generation) {
+        return;
+      }
       const key = tileKey(tile);
       const detailed = this.wantsDetail(tile);
       if (!this.available.has(key) || this.loading.has(key) || this.loadedDetail.get(key) === detailed) {
@@ -145,7 +149,10 @@ export class TerrainStreamer {
       } catch (error) {
         console.warn(`[World Editor] Could not load tile ${directory}_${key}: ${(error as Error).message}`);
       } finally {
-        this.loading.delete(key);
+        // (a newer generation may be loading this key itself)
+        if (generation === this.generation) {
+          this.loading.delete(key);
+        }
       }
     }
   }

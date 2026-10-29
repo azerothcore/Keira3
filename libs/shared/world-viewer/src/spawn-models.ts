@@ -83,7 +83,8 @@ export class SpawnModels {
   private center?: WorldPosition;
   private readonly models = new Map<string, Promise<SpawnModel | undefined>>();
   /** Spawns drawn animated now (spawn keys): while any is, the view keeps drawing. */
-  private readonly animatedShown = new Set<string>();
+  /** The skeletons the shown spawns play, by spawn (only those are posed each frame). */
+  private readonly animatedShown = new Map<string, M2Animator>();
   private readonly ready = new Map<string, SpawnModel | undefined>();
   /** Spawns drawn with a model: spawn key → display key. */
   private readonly shown = new Map<string, string>();
@@ -160,11 +161,8 @@ export class SpawnModels {
 
   /** Poses the animated models at `time` (ms). */
   animate(time: number): void {
-    for (const model of this.ready.values()) {
-      if (model && 'animated' in model && model.animated) {
-        model.animated.animators.forEach((animator) => animator.update(time));
-      }
-    }
+    // (spawns sharing a display and an animation share its skeleton: posed once)
+    new Set(this.animatedShown.values()).forEach((animator) => animator.update(time));
   }
 
   setRegion(bounds: WorldBounds | undefined): void {
@@ -175,7 +173,12 @@ export class SpawnModels {
   /** Call after `WorldScene.setSpawns`, with the keys of the pins it kept (those keep their model). */
   setSpawns(spawns: WorldSpawn[], kept: ReadonlySet<string> = new Set()): void {
     this.spawns = spawns;
-    [...this.shown.keys()].filter((key) => !kept.has(key)).forEach((key) => this.shown.delete(key));
+    [...this.shown.keys()]
+      .filter((key) => !kept.has(key))
+      .forEach((key) => {
+        this.shown.delete(key);
+        this.animatedShown.delete(key);
+      });
     this.refresh();
   }
 
@@ -230,7 +233,7 @@ export class SpawnModels {
       const model = this.ready.get(displayKey as string);
       if (!model) {
         changed = this.hide(spawn.key) || changed;
-      } else if (this.shown.get(spawn.key) !== displayKey) {
+      } else if (this.shown.get(spawn.key) !== `${displayKey}#${this.animationOf(spawn) ?? ''}`) {
         let object: Object3D;
         try {
           object = this.instantiate(model, spawn);
@@ -241,9 +244,12 @@ export class SpawnModels {
           continue;
         }
         this.scene.setSpawnModel(spawn.key, object, model.scale * (spawn.scale ?? 1));
-        this.shown.set(spawn.key, displayKey as string);
-        if (object instanceof SkinnedMesh) {
-          this.animatedShown.add(spawn.key);
+        // (shown with the animation it plays: one that starts or stops moving changes it)
+        const animation = this.animationOf(spawn);
+        this.shown.set(spawn.key, `${displayKey}#${animation ?? ''}`);
+        const animator = object instanceof SkinnedMesh && (model as DisplayModel).animated?.animators.get(animation as number);
+        if (animator) {
+          this.animatedShown.set(spawn.key, animator);
         } else {
           this.animatedShown.delete(spawn.key);
         }

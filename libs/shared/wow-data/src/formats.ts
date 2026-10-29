@@ -32,6 +32,16 @@ export interface ParsedAdt {
 /** MDDF scale is fixed point: 1024 = 1.0. */
 const DOODAD_SCALE_UNIT = 1024;
 
+/**
+ * A typed array of its own: the library hands out some arrays as views into the whole file it read, which would keep
+ * (and send to the window, and write to the cache) the entire file with each of them.
+ */
+function own<T>(values: T): T {
+  return ArrayBuffer.isView(values) && values.byteLength !== values.buffer.byteLength
+    ? ((values as unknown as Uint8Array).slice() as unknown as T)
+    : values;
+}
+
 /** `layerSplatDepth` must come from the map's WDT: parsing alpha maps with the wrong depth fails. */
 export function parseAdt(bytes: Uint8Array, layerSplatDepth: LayerSplatDepth): ParsedAdt {
   const area = new MapArea(layerSplatDepth).load(toArrayBuffer(bytes));
@@ -39,10 +49,10 @@ export function parseAdt(bytes: Uint8Array, layerSplatDepth: LayerSplatDepth): P
   return {
     chunks: area.chunks.map((chunk) => ({
       position: chunk.position,
-      vertexHeights: chunk.vertexHeights,
+      vertexHeights: own(chunk.vertexHeights),
       holes: chunk.holes,
-      vertexNormals: chunk.vertexNormals,
-      layers: chunk.layers.map((layer) => ({ texture: layer.texture, splat: layer.splat })),
+      vertexNormals: own(chunk.vertexNormals),
+      layers: chunk.layers.map((layer) => ({ texture: layer.texture, splat: own(layer.splat) })),
     })),
     wmos: area.objDefs.map((def) => ({
       uniqueId: def.id,
@@ -78,10 +88,6 @@ function buildingDoodadSets(bytes: Uint8Array): Map<number, number> {
     }
   }
   return sets;
-}
-
-export function parseAdtChunks(bytes: Uint8Array, layerSplatDepth: LayerSplatDepth): TerrainChunk[] {
-  return parseAdt(bytes, layerSplatDepth).chunks;
 }
 
 export interface WdtInfo {

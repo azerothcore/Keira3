@@ -159,14 +159,9 @@ export function buildTerrainMesh(tile: TileCoord, chunks: TerrainChunk[]): Terra
     const [chunkX, chunkY, chunkZ] = [chunk.position[0], chunk.position[1], chunk.position[2]];
 
     for (let i = 0; i < CHUNK_VERTEX_COUNT; i++) {
-      const row = Math.floor(i / ROW_STRIDE);
-      const inRow = i % ROW_STRIDE;
-      const inner = inRow >= OUTER;
-      const offset = inner ? 0.5 : 0;
-      const col = inner ? inRow - OUTER : inRow;
-
-      const x = chunkX - (row + offset) * UNIT_SIZE;
-      const y = chunkY - (col + offset) * UNIT_SIZE;
+      const { row, col } = vertexCell(i);
+      const x = chunkX - row * UNIT_SIZE;
+      const y = chunkY - col * UNIT_SIZE;
       const z = chunkZ + (chunk.vertexHeights[i] ?? 0);
       minHeight = Math.min(minHeight, z);
       maxHeight = Math.max(maxHeight, z);

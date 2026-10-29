@@ -1,4 +1,4 @@
-import { decodeBlp, decodeBlpForGpu, parseAdt, parseAdtChunks, parseWdt, toArrayBuffer } from './formats';
+import { decodeBlp, decodeBlpForGpu, parseAdt, parseWdt, toArrayBuffer } from './formats';
 
 const mocks = vi.hoisted(() => ({
   chunks: [] as {
@@ -43,6 +43,28 @@ vi.mock('@wowserhq/format', () => ({
 }));
 
 describe('formats', () => {
+  it('keeps copies of the arrays the library hands out as views into the whole file', () => {
+    const file = new Uint8Array(10_000);
+    const splat = file.subarray(100, 4196);
+    const heights = new Float32Array(145);
+    mocks.chunks = [
+      {
+        position: [0, 0, 0],
+        vertexHeights: heights,
+        vertexNormals: undefined,
+        holes: 0,
+        areaId: 0,
+        layers: [{ texture: 'a', splat, effectId: 0 }],
+      },
+    ] as never;
+    const [chunk] = parseAdt(new Uint8Array(), 4).chunks;
+    const copied = chunk.layers?.[0].splat as Uint8Array;
+    expect(copied.buffer.byteLength).toBe(4096);
+    expect(copied.buffer).not.toBe(file.buffer);
+    // (an array of its own stays as it is)
+    expect(chunk.vertexHeights).toBe(heights);
+  });
+
   it('extracts terrain chunks from an ADT', () => {
     const heights = new Float32Array(145);
     const normals = new Int8Array(145 * 3);
@@ -60,7 +82,7 @@ describe('formats', () => {
         ],
       },
     ];
-    expect(parseAdtChunks(new Uint8Array(), 4)).toEqual([
+    expect(parseAdt(new Uint8Array(), 4).chunks).toEqual([
       {
         position: [1, 2, 3],
         vertexHeights: heights,

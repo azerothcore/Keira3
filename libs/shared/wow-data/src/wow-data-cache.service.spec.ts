@@ -114,7 +114,10 @@ describe('WowDataCacheService', () => {
     TestBed.resetTestingModule();
     const moved = setup();
     let finish: (bytes: number) => void = () => undefined;
-    vi.spyOn(moved.native as FakeNative, 'directorySizeAsync').mockReturnValueOnce(new Promise((resolve) => (finish = resolve)));
+    vi.spyOn(moved.native as FakeNative, 'directorySizeAsync')
+      .mockReturnValueOnce(new Promise((resolve) => (finish = resolve)))
+      // (the new folder's count still going on when the entry is written)
+      .mockReturnValueOnce(new Promise(() => undefined));
     const writing = moved.cache.write('abc', 'adt', 'd', 1);
     moved.cache.setFolder('D:\\Elsewhere');
     finish(999_999);
@@ -128,12 +131,17 @@ describe('WowDataCacheService', () => {
     finishSize(999_999);
     expect(await sizing).toBe(999_999);
     expect(moved.cache.isFull()).toBe(false);
-    // asked whether full before anything was counted: counted then
+    // asked whether full before anything was counted: not yet, counted in the background, then known
     TestBed.resetTestingModule();
     const fresh = setup();
     await fresh.native?.writeFile('/cache/v1/abc/adt/e.bin', new Uint8Array(2000));
     fresh.cache.setMaxBytes(1000);
+    expect(fresh.cache.isFull()).toBe(false);
+    await fresh.cache.size();
     expect(fresh.cache.isFull()).toBe(true);
+    // turned off: never full
+    fresh.cache.setEnabled(false);
+    expect(fresh.cache.isFull()).toBe(false);
   });
 
   it('does nothing outside the desktop app', async () => {

@@ -9,7 +9,6 @@ describe('FolderArchive', () => {
 
   it('indexes files recursively and looks them up case-insensitively', () => {
     const archive = new FolderArchive(native, '/Data/patch-y.mpq');
-    expect(archive.fileCount).toBe(2);
     expect(archive.hasFile('creature\\bear\\BEAR.M2')).toBe(true);
     expect(archive.hasFile('missing.m2')).toBe(false);
 
@@ -21,8 +20,9 @@ describe('FolderArchive', () => {
   it('throws for missing files and clears on close', () => {
     const archive = new FolderArchive(native, '/Data/patch-y.mpq');
     expect(() => archive.openFile('missing')).toThrowError('File not found in folder archive: missing');
+    expect(archive.hasFile('readme.txt')).toBe(true);
     archive.close();
-    expect(archive.fileCount).toBe(0);
+    expect(archive.hasFile('readme.txt')).toBe(false);
   });
 
   it('normalizes archive paths', () => {

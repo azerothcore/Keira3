@@ -46,9 +46,19 @@ export class WowDataCacheService {
     this.save();
   }
 
-  /** True once the cache reached its maximum size. */
+  /**
+   * True once the cache reached its maximum size. Not known yet (the cache's folder not counted): counted in the
+   * background (going through thousands of files at once froze the window), not full meanwhile.
+   */
   isFull(): boolean {
-    return this.used() >= this._maxBytes();
+    if (!this.active) {
+      return false;
+    }
+    if (this.usedBytes === undefined) {
+      void this.countInBackground();
+      return false;
+    }
+    return this.usedBytes >= this._maxBytes();
   }
 
   /**
@@ -155,7 +165,7 @@ export class WowDataCacheService {
   }
 
   private used(): number {
-    return this.usedBytes ?? (this.usedBytes = this.native ? this.native.directorySize(this.root() as string) : 0);
+    return this.usedBytes ?? 0;
   }
 
   private save(): void {

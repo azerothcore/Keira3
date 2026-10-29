@@ -72,7 +72,6 @@ interface OpenClient {
   identity: string;
 }
 
-/** Reads game data straight from the user's WoW 3.3.5a client (MPQ archives) and, optionally, the server's DataDir. */
 /** The server files of a tile: terrain (`.map`), collision (`.vmtile`) and navigation mesh (`.mmtile`). */
 export interface ServerTileCoverage {
   map: boolean;
@@ -83,8 +82,10 @@ export interface ServerTileCoverage {
 /** Server terrain tiles kept parsed. */
 const SERVER_MAP_CACHE = 9;
 
-/** Where parsed models are cached: a new name when what's kept of them changes (v2: each batch's opacity). */
+/** Where parsed models are cached: a new name when what's kept of them changes (v3: each batch's opacity). */
 const M2_CACHE = 'm2-v3';
+/** Where parsed tiles are cached (v2: their arrays no longer hold on to the whole file they were read from). */
+const ADT_CACHE = 'adt-v2';
 /** Where models' skeletons and animations are cached. */
 const SKELETON_CACHE = 'm2-skeleton-v1';
 /** Item.dbc InventoryType of a shield. */
@@ -92,6 +93,7 @@ const INVENTORY_TYPE_SHIELD = 14;
 /** Particle emitters (smoke, fire, sparks…): a placeholder mesh the game never draws. */
 const EMITTER_MODEL = /emitter[^\\]*\.m2$|\\particleemitters\\/i;
 
+/** Reads game data straight from the user's WoW 3.3.5a client (MPQ archives) and, optionally, the server's DataDir. */
 @Service()
 export class WowClientService {
   private readonly native = inject(WOW_NATIVE_API);
@@ -198,7 +200,12 @@ export class WowClientService {
       return [];
     }
     if (this.bossBoundaries?.source !== source) {
-      this.bossBoundaries = { source, all: this.readBossBoundaries(this.native, source) };
+      const all = this.readBossBoundaries(this.native, source).catch((error) => {
+        // (read again next time)
+        this.bossBoundaries = undefined;
+        throw error;
+      });
+      this.bossBoundaries = { source, all };
     }
     return (await this.bossBoundaries.all).filter((boundary) => boundary.mapId === mapId);
   }
@@ -274,7 +281,6 @@ export class WowClientService {
       .then((dbc) => (dbc ? parseGameObjectDisplays(dbc) : new Map<number, string>()))
       .catch((error) => {
         this.gameobjectDisplays = undefined;
-        this.factionData = undefined;
         throw error;
       });
     return (await this.gameobjectDisplays).get(displayId);
@@ -325,14 +331,12 @@ export class WowClientService {
   /** A tile of the server's terrain and liquids (`<server data>/maps`); undefined without a server data folder or that file. */
   getServerMap(mapId: number, tile: TileCoord): Promise<ServerMapTile | undefined> {
     const name = serverMapName(mapId, tile);
-    let map = this.serverMaps.get(name);
-    if (!map) {
-      map = new Promise((resolve) => resolve(this.readServerFile(`maps/${name}`, parseServerMap)));
-      // the few most recent tiles (the area under the camera asks for the same one often)
-      this.serverMaps.set(name, map);
-      if (this.serverMaps.size > SERVER_MAP_CACHE) {
-        this.serverMaps.delete(this.serverMaps.keys().next().value as string);
-      }
+    // the few most recently used tiles (the area under the camera asks for the same one often): a hit goes last again
+    const map = this.serverMaps.get(name) ?? new Promise((resolve) => resolve(this.readServerFile(`maps/${name}`, parseServerMap)));
+    this.serverMaps.delete(name);
+    this.serverMaps.set(name, map);
+    if (this.serverMaps.size > SERVER_MAP_CACHE) {
+      this.serverMaps.delete(this.serverMaps.keys().next().value as string);
     }
     return map;
   }
@@ -382,9 +386,16 @@ export class WowClientService {
 
   /** Flight paths (TaxiPath.dbc, TaxiPathNode.dbc) with their points on a map. */
   async getTaxiPaths(mapId: number): Promise<TaxiPath[]> {
-    const [paths, nodes] = await Promise.all([this.readDbc('TaxiPath.dbc'), this.readDbc('TaxiPathNode.dbc')]);
+    // (read once)
+    this.taxiPathDbcs ??= Promise.all([this.readDbc('TaxiPath.dbc'), this.readDbc('TaxiPathNode.dbc')]).catch((error) => {
+      this.taxiPathDbcs = undefined;
+      throw error;
+    });
+    const [paths, nodes] = await this.taxiPathDbcs;
     return paths && nodes ? parseTaxiPaths(paths, nodes, mapId) : [];
   }
+  private taxiPathDbcs?: Promise<[DbcFile | undefined, DbcFile | undefined]>;
+  private skyboxDbc?: Promise<DbcFile | undefined>;
 
   /** The models placed in a tile of the server's vmaps (`<server data>/vmaps`); undefined without that file. */
   getVmapTile(mapId: number, tile: TileCoord): Promise<VmapSpawn[] | undefined> {
@@ -462,7 +473,9 @@ export class WowClientService {
   async getTerrain(directory: string, tile: TileCoord): Promise<TerrainMeshData | undefined> {
     await nextFrame();
     const adt = await this.getAdt(directory, tile);
-    return adt && this.parser.run({ kind: 'terrain', tile, chunks: adt.chunks });
+    // (only what the mesh is made of goes to the worker: not the texture layers and their alpha maps)
+    const chunks = adt?.chunks.map(({ position, vertexHeights, holes }) => ({ position, vertexHeights, holes }));
+    return chunks && this.parser.run({ kind: 'terrain', tile, chunks });
   }
 
   /** Textured terrain of a tile: one mesh per chunk with its texture layers, plus its liquid surfaces. */
@@ -496,8 +509,10 @@ export class WowClientService {
     const key = path.toLowerCase();
     let doodads = this.wmoDoodads.get(key);
     if (!doodads) {
-      doodads = this.loadWmoDoodads(path);
-      doodads.catch(() => this.wmoDoodads.delete(key));
+      const loading = this.loadWmoDoodads(path);
+      // (only this load: a newer one may be kept under the key by then)
+      loading.catch(() => this.wmoDoodads.get(key) === loading && this.wmoDoodads.delete(key));
+      doodads = loading;
       this.wmoDoodads.set(key, doodads);
     }
     return doodads;
@@ -537,7 +552,7 @@ export class WowClientService {
     const { identity } = await this.getClient();
     const maps = new Map<string, { directory: string; tiles: number; bytes: number }>();
     const [adt, wmo, m2, doodads, textures, totalBytes] = await Promise.all([
-      ...['adt', 'wmo', M2_CACHE, 'wmo-doodads', 'texture'].map((kind) => this.cache.entries(identity, kind)),
+      ...[ADT_CACHE, 'wmo', M2_CACHE, 'wmo-doodads', 'texture'].map((kind) => this.cache.entries(identity, kind)),
       this.cache.size(),
     ]);
     for (const [key, bytes] of Object.entries(adt as Record<string, number>)) {
@@ -744,8 +759,10 @@ export class WowClientService {
       // refresh its position in the LRU order
       this.adts.delete(key);
     } else {
-      adt = this.loadAdt(directory, tile);
-      adt.catch(() => this.adts.delete(key));
+      const loading = this.loadAdt(directory, tile);
+      // (only this load: a newer one may be kept under the key by then)
+      loading.catch(() => this.adts.get(key) === loading && this.adts.delete(key));
+      adt = loading;
     }
     this.adts.set(key, adt);
     while (this.adts.size > ADT_CACHE_SIZE) {
@@ -760,7 +777,7 @@ export class WowClientService {
     const key = `${directory}_${tile.tx}_${tile.ty}`;
     // reading and parsing a tile is synchronous: one at a time, so the window keeps drawing in between
     await nextFrame();
-    const cached = await this.cache.read<CachedAdt>(identity, 'adt', key);
+    const cached = await this.cache.read<CachedAdt>(identity, ADT_CACHE, key);
     // tiles cached before buildings kept their doodad set are parsed again
     if (cached && cached.wmos.every((wmo) => wmo.doodadSet !== undefined)) {
       return cached;
@@ -770,7 +787,7 @@ export class WowClientService {
       return undefined;
     }
     const adt = await this.parser.run({ kind: 'adt', bytes, depth: (await this.getWdt(directory))?.layerSplatDepth ?? 4 });
-    void this.cache.write(identity, 'adt', key, adt);
+    void this.cache.write(identity, ADT_CACHE, key, adt);
     return adt;
   }
 
@@ -842,6 +859,11 @@ export class WowClientService {
     this.serverMaps.clear();
     this.areaNames = undefined;
     this.taxiNodes = undefined;
+    this.taxiPathDbcs = undefined;
+    this.skyboxDbc = undefined;
+    this.factionData = undefined;
+    this.characterDbcs = undefined;
+    this.itemData = undefined;
     if (!client) {
       return;
     }
@@ -928,9 +950,13 @@ export class WowClientService {
   }
 
   private getMinimapIndex(): Promise<Map<string, string>> {
-    this.minimapIndex ??= this.readFile(MD5_TRANSLATE_PATH).then((trs) =>
-      trs ? parseMd5Translate(new TextDecoder().decode(trs)) : new Map<string, string>(),
-    );
+    this.minimapIndex ??= this.readFile(MD5_TRANSLATE_PATH)
+      .then((trs) => (trs ? parseMd5Translate(new TextDecoder().decode(trs)) : new Map<string, string>()))
+      .catch((error) => {
+        // (tried again next time)
+        this.minimapIndex = undefined;
+        throw error;
+      });
     return this.minimapIndex;
   }
 
@@ -969,7 +995,10 @@ export class WowClientService {
 
   /** Every skybox model of the client (LightSkybox.dbc), as .m2 paths, sorted and without repeats. */
   async getSkyboxes(): Promise<string[]> {
-    const dbc = await this.readDbc('LightSkybox.dbc');
+    const dbc = await (this.skyboxDbc ??= this.readDbc('LightSkybox.dbc').catch((error) => {
+      this.skyboxDbc = undefined;
+      throw error;
+    }));
     const paths = dbc ? [...parseSkyboxes(dbc).values()] : [];
     const unique = new Map(paths.map((path) => [path.toLowerCase(), path]));
     return [...unique.values()].sort((a, b) => a.localeCompare(b));

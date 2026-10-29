@@ -82,6 +82,16 @@ export class WorldObjects {
   }
 
   setMap(directory: string | undefined): void {
+    if (directory !== this.directory) {
+      // another map: its buildings go from the graphics card (but the ones the editor placed, still shown)
+      const kept = new Set([...this.extras.values()].map((object) => (object.userData['path'] as string).toLowerCase()));
+      for (const [key, template] of [...this.templates]) {
+        if (!kept.has(key)) {
+          this.templates.delete(key);
+          void template.then((t) => t && disposeWmoObject(t));
+        }
+      }
+    }
     this.directory = directory;
     this.clear();
   }
@@ -124,6 +134,10 @@ export class WorldObjects {
       }
     }
     for (const tile of [...tilesAround(this.centerTile, this.options.radius, this.facing), ...regionTiles]) {
+      // another map or other options meanwhile: this loop's tiles aren't wanted anymore
+      if (generation !== this.generation) {
+        return;
+      }
       const key = tileKey(tile);
       if (this.tiles.has(key) || this.loading.has(key)) {
         continue;
@@ -134,7 +148,9 @@ export class WorldObjects {
       } catch (error) {
         console.warn(`[World Editor] Could not load the buildings of ${directory}_${key}: ${(error as Error).message}`);
       } finally {
-        this.loading.delete(key);
+        if (generation === this.generation) {
+          this.loading.delete(key);
+        }
       }
     }
   }

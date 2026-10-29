@@ -97,6 +97,11 @@ export class WorldDoodads {
   }
 
   setMap(directory: string | undefined): void {
+    if (directory !== this.directory) {
+      // another map: its models go from the graphics card
+      this.clear();
+      this.disposeTemplates();
+    }
     this.directory = directory;
     this.clear();
   }
@@ -142,6 +147,10 @@ export class WorldDoodads {
     this.refresh();
 
     for (const tile of [...tilesAround(this.centerTile, this.tileRadius, this.facing), ...regionTiles]) {
+      // another map or other options meanwhile: this loop's tiles aren't wanted anymore
+      if (generation !== this.generation) {
+        return;
+      }
       const key = tileKey(tile);
       if (this.tiles.has(key) || this.loading.has(key)) {
         continue;
@@ -159,7 +168,9 @@ export class WorldDoodads {
       } catch (error) {
         console.warn(`[World Editor] Could not load the doodads of ${directory}_${key}: ${(error as Error).message}`);
       } finally {
-        this.loading.delete(key);
+        if (generation === this.generation) {
+          this.loading.delete(key);
+        }
       }
     }
   }
@@ -172,6 +183,10 @@ export class WorldDoodads {
   dispose(): void {
     this.directory = undefined;
     this.clear();
+    this.disposeTemplates();
+  }
+
+  private disposeTemplates(): void {
     this.templates.forEach((template) => void template.then((t) => t && disposeM2Template(t)));
     this.templates.clear();
     this.ready.clear();

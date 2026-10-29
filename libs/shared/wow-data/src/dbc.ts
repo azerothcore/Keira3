@@ -393,7 +393,12 @@ export function parseTaxiPaths(paths: DbcFile, nodes: DbcFile, mapId: number): T
     }
     const path = nodes.getUint(r, 1);
     const point = { index: nodes.getUint(r, 2), x: nodes.getFloat(r, 4), y: nodes.getFloat(r, 5), z: nodes.getFloat(r, 6) };
-    byPath.set(path, [...(byPath.get(path) ?? []), point]);
+    const points = byPath.get(path);
+    if (points) {
+      points.push(point);
+    } else {
+      byPath.set(path, [point]);
+    }
   }
   const result: TaxiPath[] = [];
   for (let r = 0; r < paths.recordCount; r++) {

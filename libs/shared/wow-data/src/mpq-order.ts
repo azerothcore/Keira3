@@ -33,10 +33,12 @@ function baseRank(name: string): number | undefined {
 }
 
 function localeRank(locale: string, name: string): number | undefined {
+  // the locale's base archives sit between the base ones and the base patches (so a custom patch-4.MPQ overrides
+  // the stock DBCs of locale-enUS.MPQ, as in the game); the locale's patches above everything
   const fixed: Record<string, number> = {
-    [`locale-${locale}.mpq`]: 100,
-    [`expansion-locale-${locale}.mpq`]: 101,
-    [`lichking-locale-${locale}.mpq`]: 102,
+    [`locale-${locale}.mpq`]: 5,
+    [`expansion-locale-${locale}.mpq`]: 6,
+    [`lichking-locale-${locale}.mpq`]: 7,
     [`patch-${locale}.mpq`]: 110,
   };
   if (name in fixed) {
@@ -48,7 +50,8 @@ function localeRank(locale: string, name: string): number | undefined {
 
 /**
  * Priority of an archive given its path relative to the client's `Data` folder (`patch-3.MPQ`, `enUS/locale-enUS.MPQ`),
- * or `undefined` when the client wouldn't load it. Archives of `locale` rank above the base ones.
+ * or `undefined` when the client wouldn't load it. Like the game (lowest first): common, common-2, expansion, lichking,
+ * the locale's locale / expansion-locale / lichking-locale, patch, patch-2…9, patch-A…Z, then the locale's patches.
  */
 export function rankMpqArchive(relativePath: string, locale: string): number | undefined {
   const parts = relativePath.replace(/\\/g, '/').toLowerCase().split('/');

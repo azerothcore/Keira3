@@ -141,6 +141,17 @@ describe('WowClientService', () => {
       settings.save({ ...settings.paths(), sourcePath: '/ac' });
       expect(await service.getBossBoundaries(533)).toEqual([]);
     });
+
+    it('reads them again after a failure', async () => {
+      const { service, settings, native } = setup({ files });
+      settings.save({ ...settings.paths(), sourcePath: '/ac' });
+      const readdir = vi.spyOn(native, 'readdir').mockImplementationOnce(() => {
+        throw new Error('locked');
+      });
+      await expect(service.getBossBoundaries(533)).rejects.toThrow('locked');
+      readdir.mockRestore();
+      expect(await service.getBossBoundaries(533)).toHaveLength(2);
+    });
   });
 
   it('is not supported outside Electron', async () => {
@@ -193,7 +204,7 @@ describe('WowClientService', () => {
       mpqs: { ...standardMpqs(), 'patch-2.MPQ': { fail: true } },
     });
 
-    expect(await service.getArchiveNames()).toEqual(['common.MPQ', 'patch.MPQ', 'enUS/locale-enUS.MPQ', 'enUS/patch-enUS-y.mpq']);
+    expect(await service.getArchiveNames()).toEqual(['common.MPQ', 'enUS/locale-enUS.MPQ', 'patch.MPQ', 'enUS/patch-enUS-y.mpq']);
     expect(warn).toHaveBeenCalledTimes(1);
     expect(Array.from((await service.readFile('a.txt')) as Uint8Array)).toEqual([3]);
     // the archive's buffer is released on close; the returned bytes must survive that
@@ -206,7 +217,7 @@ describe('WowClientService', () => {
       files: { '/wow/WTF/Config.wtf': Array.from(new TextEncoder().encode('SET locale "deDE"')) },
       mpqs: { ...standardMpqs(), 'deDE/locale-deDE.MPQ': { files: {} } },
     });
-    expect(await service.getArchiveNames()).toEqual(['common.MPQ', 'patch.MPQ', 'deDE/locale-deDE.MPQ']);
+    expect(await service.getArchiveNames()).toEqual(['common.MPQ', 'deDE/locale-deDE.MPQ', 'patch.MPQ']);
   });
 
   it('works without any locale folder', async () => {
@@ -353,6 +364,16 @@ describe('WowClientService', () => {
       });
       await expect(service.getZoneLights('Azeroth')).rejects.toThrowError(/WDBC/);
       await expect(service.getZoneLights('Azeroth')).rejects.toThrowError(/WDBC/);
+    });
+
+    it('reads the flight paths and skyboxes again after a failure', async () => {
+      const { service } = setup({
+        mpqs: displayMpqs({ 'DBFilesClient\\TaxiPath.dbc': [1, 2, 3, 4], 'DBFilesClient\\LightSkybox.dbc': [1, 2, 3, 4] }),
+      });
+      for (let i = 0; i < 2; i++) {
+        await expect(service.getTaxiPaths(0)).rejects.toThrowError(/WDBC/);
+        await expect(service.getSkyboxes()).rejects.toThrowError(/WDBC/);
+      }
     });
 
     it('lists the zones of a map', async () => {
@@ -1088,6 +1109,10 @@ describe('WowClientService', () => {
       });
       const image = { width: 1, height: 1, data: new Uint8Array(4) };
       formats.decodeBlp.mockReturnValue(image);
+      // the index unreadable once: read again next time
+      const read = vi.spyOn(service, 'readFile').mockRejectedValueOnce(new Error('busy'));
+      await expect(service.getMinimap('Azeroth', { tx: 32, ty: 48 })).rejects.toThrow('busy');
+      read.mockRestore();
 
       expect(await service.getMinimap('Azeroth', { tx: 32, ty: 48 })).toBe(image);
       expect(await service.getMinimap('Azeroth', { tx: 1, ty: 1 })).toBeUndefined();

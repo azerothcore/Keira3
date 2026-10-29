@@ -26,10 +26,6 @@ export class FolderArchive implements StormArchive {
     }
   }
 
-  get fileCount(): number {
-    return this.files.size;
-  }
-
   hasFile(name: string): boolean {
     return this.files.has(normalizeArchivePath(name));
   }
