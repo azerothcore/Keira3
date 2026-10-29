@@ -56,6 +56,11 @@
       [style.top.px]="label.y"
     >
       {{ 'WORLD_EDITOR.PATH_' + label.which.toUpperCase() | translate }}
+      @if (label.which === 'end' && pathEnds()?.endText) {
+        <span class="world-viewer-path-then" data-testid="world-viewer-path-then"
+          >· {{ 'WORLD_EDITOR.PATH_THEN' | translate }} {{ pathEnds()?.endText }}</span
+        >
+      }
     </div>
   }
 

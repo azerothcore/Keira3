@@ -18,6 +18,8 @@ export interface Timeline {
   steps: TimelineStep[];
   /** Seconds for one round. */
   duration: number;
+  /** When the part played round after round starts (0: all of it). */
+  loopStart: number;
   start: WorldPosition;
 }
 
@@ -34,12 +36,23 @@ function legStatus(leg: SimulationLeg, arrived: boolean): SimulationStatus {
   };
 }
 
-/** The steps of one round of the simulation: each leg's route walked at its speed, then its wait. */
-export function simulationTimeline(start: WorldPosition, segments: { points: WorldPosition[]; leg: SimulationLeg }[]): Timeline {
+/**
+ * The steps of one round of the simulation: each leg's route walked at its speed, then its wait. Rounds after the first
+ * start at leg `loopFrom`.
+ */
+export function simulationTimeline(
+  start: WorldPosition,
+  segments: { points: WorldPosition[]; leg: SimulationLeg }[],
+  loopFrom = 0,
+): Timeline {
   const steps: TimelineStep[] = [];
   let time = 0;
   let orientation = 0;
+  let loopStart = 0;
   segments.forEach(({ points, leg }, index) => {
+    if (index === loopFrom) {
+      loopStart = time;
+    }
     for (let i = 0; i + 1 < points.length; i++) {
       const [from, to] = [points[i], points[i + 1]];
       const duration = leg.speed > 0 ? distance(from, to) / leg.speed : 0;
@@ -62,7 +75,8 @@ export function simulationTimeline(start: WorldPosition, segments: { points: Wor
       time += leg.wait;
     }
   });
-  return { steps, duration: time, start };
+  // (no such leg: nothing repeats)
+  return { steps, duration: time, loopStart: loopFrom < segments.length ? loopStart : time, start };
 }
 
 /** Where the creature is `elapsed` seconds into the simulation (rounds repeat), facing where it goes. */
@@ -75,11 +89,13 @@ export function sampleTimeline(
     return { position: timeline.start, orientation: 0 };
   }
   const last = timeline.steps[timeline.steps.length - 1];
-  if (!loop && elapsed >= timeline.duration) {
-    // played once: standing where it ended, every leg done
+  const round = timeline.duration - timeline.loopStart;
+  if ((!loop || round <= 0) && elapsed >= timeline.duration) {
+    // played once (or nothing to repeat): standing where it ended, every leg done
     return { position: last.to, orientation: last.orientation, leg: last.leg + 1 };
   }
-  const t = elapsed % timeline.duration;
+  // (past the first round, the repeated part over and over)
+  const t = elapsed < timeline.duration ? elapsed : timeline.loopStart + ((elapsed - timeline.loopStart) % round);
   // the last step ends at the duration, and a step of no length is never the one under way
   const step = timeline.steps.find((s) => t < s.end) as TimelineStep;
   const f = (t - step.start) / (step.end - step.start);

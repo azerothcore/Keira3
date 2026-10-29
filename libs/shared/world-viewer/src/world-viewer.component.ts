@@ -224,7 +224,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   /** Looks straight down from above (north at the top) whenever this goes up. */
   readonly topView = input(0);
   /** A path's first and last points, labelled "Start" and "End". */
-  readonly pathEnds = input<{ spawn?: WorldPosition; start: WorldPosition; end: WorldPosition } | undefined>(undefined);
+  readonly pathEnds = input<{ spawn?: WorldPosition; start: WorldPosition; end: WorldPosition; endText?: string } | undefined>(undefined);
   protected readonly pathEndLabels = signal<{ which: 'spawn' | 'start' | 'end'; x: number; y: number }[]>([]);
   /** Quality and range of what is drawn. */
   readonly renderSettings = input<WorldRenderSettings>(DEFAULT_WORLD_RENDER_SETTINGS);
@@ -369,9 +369,11 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   protected readonly simulationDoing = computed(() => {
     const status = this.simulationStatus() as SimulationStatus;
     const t = (key: string, params?: object) => this.translate.instant(`WORLD_EDITOR.${key}`, params) as string;
-    return status.wait !== undefined
-      ? `${status.label}: ${t('SIM_WAITING', { seconds: status.wait })}${status.actions?.length ? ` · ${status.actions.join(' · ')}` : ''}`
-      : `${t('SIM_' + status.move.toUpperCase())} → ${status.label}`;
+    return status.ended
+      ? `${t('SIM_ENDED')}: ${status.ended}`
+      : status.wait !== undefined
+        ? `${status.label}: ${t('SIM_WAITING', { seconds: status.wait })}${status.actions?.length ? ` · ${status.actions.join(' · ')}` : ''}`
+        : `${t('SIM_' + status.move.toUpperCase())} → ${status.label}`;
   });
   /** Where the bubble over the simulated creature's head is on the canvas. */
   protected readonly ghostBubble = signal<{ x: number; y: number } | undefined>(undefined);
@@ -481,7 +483,12 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
         this.prefetch.update(this.center);
         void this.loadMarkerModel(settings.markerModel);
         this.world.setRoofsVisible(settings.showRoofs);
-        this.world.setTerrainOverlays({ grid: settings.showTileGrid, slopes: settings.showSteepSlopes, wireframe: settings.showWireframe });
+        this.world.setTerrainOverlays({
+          grid: settings.showTileGrid,
+          slopes: settings.showSteepSlopes,
+          contours: settings.showContours,
+          wireframe: settings.showWireframe,
+        });
         this.world.setSeaLevel(settings.showSeaLevel, this.center);
         this.world.setCollisionVisible(settings.showCollision);
         this.world.setFacingArrowsVisible(settings.showFacingArrows);
@@ -1156,7 +1163,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       from = leg.to;
     }
     let shownLeg = -1;
-    const timeline = simulationTimeline(simulation.start, segments);
+    const timeline = simulationTimeline(simulation.start, segments, simulation.loopFrom);
     // the simulation's own clock: each frame adds the real time passed at the rate of the moment
     let elapsed = 0;
     let last = performance.now();
@@ -1179,7 +1186,10 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
           })),
         );
       }
-      this.simulationStatus.set(ended || !at.status ? undefined : { ...at.status, elapsed });
+      // (at the end: what happens then, when told)
+      const ending =
+        ended && simulation.ending ? { label: '', move: 'walk' as const, ended: simulation.ending, elapsed: timeline.duration } : undefined;
+      this.simulationStatus.set(ending ?? (ended || !at.status ? undefined : { ...at.status, elapsed }));
       // a hover label over the moving copy follows what it does (and goes when it leaves the cursor)
       if (this.lastPointer && !this.hoverEvent) {
         this.hoverEvent = this.lastPointer;

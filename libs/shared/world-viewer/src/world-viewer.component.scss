@@ -57,6 +57,14 @@
   &.spawn {
     background: #16a34a;
   }
+
+  // what the creature does after the last point (wrapped: it can be long)
+  .world-viewer-path-then {
+    display: inline-block;
+    max-width: 260px;
+    font-weight: 400;
+    white-space: normal;
+  }
 }
 
 .world-viewer-status {

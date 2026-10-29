@@ -200,7 +200,7 @@ class HostComponent {
   readonly focus = signal<WorldPosition | undefined>(undefined);
   readonly resetNorth = signal(0);
   readonly topView = signal(0);
-  readonly pathEnds = signal<{ start: WorldPosition; end: WorldPosition } | undefined>(undefined);
+  readonly pathEnds = signal<{ spawn?: WorldPosition; start: WorldPosition; end: WorldPosition; endText?: string } | undefined>(undefined);
   readonly region = signal<WorldBounds | undefined>(undefined);
   readonly navigation = signal<WorldControlsSettings>(DEFAULT_WORLD_CONTROLS_SETTINGS);
   readonly triggers = signal<WorldAreaTrigger[]>([]);
@@ -1026,6 +1026,15 @@ describe(WorldViewerComponent.name, () => {
       expect(page.getDebugElementByTestId('world-viewer-path-spawn').nativeElement.textContent).toContain('WORLD_EDITOR.PATH_SPAWN');
       expect(page.getDebugElementByTestId('world-viewer-path-start').nativeElement.textContent).toContain('WORLD_EDITOR.PATH_START');
       expect(page.getDebugElementByTestId('world-viewer-path-end').nativeElement.textContent).toContain('WORLD_EDITOR.PATH_END');
+      expect(page.getDebugElementByTestId('world-viewer-path-then', false)).toBeFalsy();
+      // with what the creature does then
+      host.pathEnds.set({ spawn: at(-5, -5), start: at(0, 0), end: at(5, 5), endText: 'back to point 1, round after round' });
+      fixture.detectChanges();
+      flushFrames();
+      fixture.detectChanges();
+      expect(page.getDebugElementByTestId('world-viewer-path-then').nativeElement.textContent).toContain(
+        'WORLD_EDITOR.PATH_THEN back to point 1, round after round',
+      );
       // an end behind the camera isn't labelled; no path: none
       host.pathEnds.set({ start: at(0, 0), end: { ...at(0, 0), z: 100_000 } });
       fixture.detectChanges();
@@ -1207,6 +1216,27 @@ describe(WorldViewerComponent.name, () => {
       flushFrames();
       fixture.detectChanges();
       expect(page.getDebugElementByTestId('world-viewer-bubble', false)).toBeFalsy();
+      // with what happens at the end: it says so, there and over the creature
+      now = 0;
+      await update(() => host.simulation.set({ ...plan, once: true, ending: 'despawns at the last point' }));
+      await settle(fixture);
+      now = 100_000;
+      flushFrames();
+      fixture.detectChanges();
+      expect(page.getDebugElementByTestId('world-viewer-simulation').nativeElement.textContent).toContain(
+        'WORLD_EDITOR.SIM_ENDED: despawns at the last point',
+      );
+      flushFrames();
+      fixture.detectChanges();
+      expect(page.getDebugElementByTestId('world-viewer-bubble').nativeElement.textContent).toContain('despawns at the last point');
+      // round after round from the second leg: still going long after
+      now = 0;
+      await update(() => host.simulation.set({ ...plan, loopFrom: 1 }));
+      await settle(fixture);
+      now = 1_000_000;
+      flushFrames();
+      fixture.detectChanges();
+      expect(page.getDebugElementByTestId('world-viewer-simulation').nativeElement.textContent).toContain('point');
       // a newer simulation replaces it; an unknown creature shows none
       await update(() => host.simulation.set({ ...plan, key: 'creature:404' }));
       await settle(fixture);

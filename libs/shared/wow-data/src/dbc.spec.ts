@@ -7,6 +7,7 @@ import {
   parseGameObjectDisplays,
   mapKind,
   parseMapDbc,
+  parseMapDifficulties,
   parseTaxiNodes,
   parseTaxiPaths,
   parseZones,
@@ -81,6 +82,24 @@ describe('parseMapDbc', () => {
     expect(parseMapDbc(new DbcFile(buildDbc([karazhan])))).toEqual([
       { id: 532, directory: 'Karazahn', name: 'Karazhan', instanceType: 2, expansion: 1 },
     ]);
+  });
+});
+
+describe('parseMapDifficulties', () => {
+  const row = (mapId: number, difficulty: number, maxPlayers: number): number[] => {
+    const fields = new Array(23).fill(0);
+    [fields[1], fields[2], fields[21]] = [mapId, difficulty, maxPlayers];
+    return fields;
+  };
+
+  it('lists the difficulties of each instance in order, with how many players each is for', () => {
+    const byMap = parseMapDifficulties(new DbcFile(buildDbc([row(249, 1, 25), row(249, 0, 10), row(409, 0, 40)])));
+    expect(byMap.get(249)).toEqual([
+      { difficulty: 0, maxPlayers: 10 },
+      { difficulty: 1, maxPlayers: 25 },
+    ]);
+    expect(byMap.get(409)).toEqual([{ difficulty: 0, maxPlayers: 40 }]);
+    expect(byMap.get(0)).toBeUndefined();
   });
 });
 

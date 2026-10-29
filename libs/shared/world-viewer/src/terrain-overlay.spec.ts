@@ -7,6 +7,7 @@ import {
   TERRAIN_WIREFRAME_LAYER,
   terrainOverlayMeshes,
   WALKABLE_SLOPE,
+  CONTOUR_STEP,
 } from './terrain-overlay';
 
 describe('terrain overlays', () => {
@@ -18,6 +19,10 @@ describe('terrain overlays', () => {
     expect([material.uniforms['showGrid'].value, material.uniforms['showSlopes'].value]).toEqual([1, 0]);
     setTerrainOverlay(material, { grid: false, slopes: true });
     expect([material.uniforms['showGrid'].value, material.uniforms['showSlopes'].value]).toEqual([0, 1]);
+    expect(material.uniforms['showContours'].value).toBe(0);
+    setTerrainOverlay(material, { grid: false, slopes: false, contours: true });
+    expect(material.uniforms['showContours'].value).toBe(1);
+    expect(material.uniforms['contourStep'].value).toBe(CONTOUR_STEP);
     const wireframe = createTerrainWireframeMaterial();
     expect(wireframe.wireframe).toBe(true);
     expect(wireframe.userData['shared']).toBe(true);

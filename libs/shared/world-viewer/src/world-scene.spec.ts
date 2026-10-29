@@ -169,6 +169,8 @@ describe('WorldScene', () => {
       expect(layers()).toEqual([true, true]);
       world.setTerrainOverlays({ grid: false, slopes: false, wireframe: false });
       expect(layers()).toEqual([false, false]);
+      world.setTerrainOverlays({ grid: false, slopes: false, contours: true, wireframe: false });
+      expect(layers()).toEqual([true, false]);
 
       const sea = world.scene.getObjectByName('sea-level') as Mesh;
       expect(sea.visible).toBe(false);

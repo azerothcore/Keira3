@@ -1,4 +1,5 @@
 import { pathSimulation, RUN_SPEED, WALK_SPEED, wanderSimulation } from './simulation-plan';
+import { LOOP_ENDING } from './path-ending';
 import { SpawnRecord } from './world-editor.model';
 
 const creature = (extra: Partial<SpawnRecord> = {}): SpawnRecord => ({
@@ -42,6 +43,25 @@ describe('movement simulation plans', () => {
       pathSimulation(creature(), [{ pathId: 10, point: 1, x: 1, y: 0, z: 10, delay: 0, moveType: 1 }], 'creature:1')?.legs[0].speed,
     ).toBe(RUN_SPEED);
     expect(pathSimulation(creature(), [], 'creature:1')).toBeUndefined();
+  });
+
+  it('goes round and round a path that starts over, from its first point; ends the others saying what happens then', () => {
+    const points = [
+      { pathId: 10, point: 1, x: 1, y: 0, z: 10, delay: 1000 },
+      { pathId: 10, point: 2, x: 5, y: 0, z: 10, delay: 0 },
+    ];
+    const loop = pathSimulation(creature(), points, 'creature:1', new Map(), LOOP_ENDING);
+    expect(loop?.once).toBeUndefined();
+    expect(loop?.loopFrom).toBe(1);
+    expect(loop?.legs.map((leg) => [leg.label, leg.to.x, leg.wait])).toEqual([
+      ['point 1', 1, 1],
+      ['point 2', 5, 0],
+      ['point 1', 1, 1],
+    ]);
+    const despawns = pathSimulation(creature(), points, 'creature:1', new Map(), { kind: 'despawn', text: 'despawns at the last point' });
+    expect(despawns?.once).toBe(true);
+    expect(despawns?.ending).toBe('despawns at the last point');
+    expect(despawns?.legs).toHaveLength(2);
   });
 
   it('wanders within the wander distance and comes back home', () => {

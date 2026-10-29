@@ -610,10 +610,10 @@ export class WorldScene {
   }
 
   /** View > Terrain: the tile and chunk grid, the ground too steep to walk up, and the terrain's triangles. */
-  setTerrainOverlays(options: { grid: boolean; slopes: boolean; wireframe: boolean }): void {
+  setTerrainOverlays(options: { grid: boolean; slopes: boolean; contours?: boolean; wireframe: boolean }): void {
     setTerrainOverlay(this.terrainOverlay, options);
     for (const [layer, on] of [
-      [TERRAIN_OVERLAY_LAYER, options.grid || options.slopes],
+      [TERRAIN_OVERLAY_LAYER, options.grid || options.slopes || !!options.contours],
       [TERRAIN_WIREFRAME_LAYER, options.wireframe],
     ] as const) {
       if (on) {

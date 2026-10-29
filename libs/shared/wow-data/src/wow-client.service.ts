@@ -17,6 +17,8 @@ import {
   playerDisplay,
   parseGameObjectDisplays,
   parseMapDbc,
+  parseMapDifficulties,
+  MapDifficulty,
   parseZones,
   WowMap,
   WowZone,
@@ -105,6 +107,7 @@ export class WowClientService {
   private client?: Promise<OpenClient>;
   private minimapIndex?: Promise<Map<string, string>>;
   private maps?: Promise<WowMap[]>;
+  private mapDifficulties?: Promise<Map<number, MapDifficulty[]>>;
   private creatureDisplays?: Promise<Map<number, CreatureDisplay>>;
   private factionData?: Promise<FactionData>;
   private gameobjectDisplays?: Promise<Map<number, string>>;
@@ -179,6 +182,17 @@ export class WowClientService {
       throw error;
     });
     return this.maps;
+  }
+
+  /** The difficulties of an instance (MapDifficulty.dbc, from the server's DBCs when configured); none for the rest. */
+  async getMapDifficulties(mapId: number): Promise<MapDifficulty[]> {
+    this.mapDifficulties ??= this.readDbc('MapDifficulty.dbc')
+      .then((dbc) => (dbc ? parseMapDifficulties(dbc) : new Map<number, MapDifficulty[]>()))
+      .catch((error) => {
+        this.mapDifficulties = undefined;
+        throw error;
+      });
+    return (await this.mapDifficulties).get(mapId) ?? [];
   }
 
   /** How a creature display id is drawn (model, size, textures), from the server's DBCs when configured. */
@@ -847,6 +861,7 @@ export class WowClientService {
     this.client = undefined;
     this.minimapIndex = undefined;
     this.maps = undefined;
+    this.mapDifficulties = undefined;
     this.creatureDisplays = undefined;
     this.gameobjectDisplays = undefined;
     this.zoneLights = undefined;

@@ -65,23 +65,38 @@
   border-left-color: #5daceb;
 }
 
-// View: fixed groups on a grid, so switches never move when another one changes
+// View: the groups flow through as many columns as fit, balanced, so no column is left half empty; a group may go on in
+// the next column, but a switch (or a heading without what follows it) never splits
 .world-editor-view-settings {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  gap: 0.5rem 1.5rem;
-  align-items: start;
+  display: block;
 
   .world-editor-distances {
-    grid-column: 1 / -1;
+    margin-top: 0.5rem;
   }
 }
 
+.world-editor-view-columns {
+  column-width: 230px;
+  column-gap: 1.5rem;
+}
+
 .world-editor-view-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+  display: block;
   min-width: 0;
+  margin-bottom: 0.5rem;
+
+  > * + * {
+    margin-top: 0.25rem;
+  }
+
+  > * {
+    break-inside: avoid;
+  }
+
+  .world-editor-view-group-title,
+  .world-editor-view-sub {
+    break-after: avoid;
+  }
 }
 
 .world-editor-view-group-title {

@@ -50,7 +50,7 @@ import { DebugHtmlElement, PageObjectModel, typeInElement } from 'ngx-page-objec
 import { ClipboardService } from 'ngx-clipboard';
 import { ElectronService } from '@keira/shared/common-services';
 import { ToastrService } from 'ngx-toastr';
-import { buildKind, WorldEditorComponent } from './world-editor.component';
+import { buildKind, difficultyLabel, WorldEditorComponent } from './world-editor.component';
 import { SpawnRecord, WaypointRecord } from './world-editor.model';
 import { WorldEditorService } from './world-editor.service';
 import { WORLD_EDITOR_LINKS } from '@keira/shared/constants';
@@ -231,6 +231,7 @@ describe(WorldEditorComponent.name, () => {
       getVmapModel: vi.fn(),
       getMinimap: vi.fn(),
       getFactions: vi.fn(),
+      getMapDifficulties: vi.fn(),
     },
     service: {
       loadSpawns: vi.fn(),
@@ -361,7 +362,7 @@ describe(WorldEditorComponent.name, () => {
     mocks.client.getZones.mockImplementation((map: number) => Promise.resolve(map === 0 ? ZONES : []));
     mocks.service.loadSpawns.mockResolvedValue(SPAWNS);
     mocks.service.loadWaypoints.mockResolvedValue(WAYPOINTS);
-    mocks.service.loadSaiPaths.mockResolvedValue(new Map());
+    mocks.service.loadSaiPaths.mockResolvedValue({ paths: new Map(), starts: [] });
     mocks.service.loadSpawnFields.mockResolvedValue({
       spawntimesecs: 120,
       MovementType: 0,
@@ -415,6 +416,31 @@ describe(WorldEditorComponent.name, () => {
     mocks.service.execute.mockResolvedValue(undefined);
     mocks.service.describeDatabase.mockResolvedValue('root@localhost:3306/acore_world | MySQL 8.4.0 | AzerothCore rev. 1 | ACDB 335.1');
     mocks.electron.fs.existsSync.mockReturnValue(true);
+    // ICC: 10 / 25 Normal / Heroic; Shadowfang Keep: one only; Utgarde Keep: Normal / Heroic; Onyxia: 10 / 25; Molten Core: one (40)
+    mocks.client.getMapDifficulties.mockImplementation((map: number) =>
+      Promise.resolve(
+        (
+          {
+            631: [
+              [0, 10],
+              [1, 25],
+              [2, 10],
+              [3, 25],
+            ],
+            33: [[0, 5]],
+            574: [
+              [0, 5],
+              [1, 5],
+            ],
+            249: [
+              [0, 10],
+              [1, 25],
+            ],
+            409: [[0, 40]],
+          } as Record<number, number[][]>
+        )[map]?.map(([difficulty, maxPlayers]) => ({ difficulty, maxPlayers })) ?? [],
+      ),
+    );
   });
 
   describe('setup & navigation', () => {
@@ -793,6 +819,14 @@ describe(WorldEditorComponent.name, () => {
         toggle.checked = false;
         toggle.dispatchEvent(new Event('change'));
       }
+      // height lines over the terrain
+      const contours = page.byId<HTMLInputElement>('view-contours').nativeElement;
+      contours.checked = true;
+      contours.dispatchEvent(new Event('change'));
+      page.fixture.detectChanges();
+      expect(page.viewer().renderSettings().showContours).toBe(true);
+      contours.checked = false;
+      contours.dispatchEvent(new Event('change'));
       const collision = page.byId<HTMLInputElement>('view-collision').nativeElement;
       collision.checked = true;
       collision.dispatchEvent(new Event('change'));
@@ -1575,6 +1609,9 @@ describe(WorldEditorComponent.name, () => {
         ...MAPS,
         { id: 33, directory: 'Shadowfang', name: 'Shadowfang Keep', instanceType: 1 },
         { id: 631, directory: 'IcecrownCitadel', name: 'Icecrown Citadel', instanceType: 2 },
+        { id: 574, directory: 'Valgarde', name: 'Utgarde Keep', instanceType: 1 },
+        { id: 249, directory: 'OnyxiaLairInstance', name: "Onyxia's Lair", instanceType: 2 },
+        { id: 409, directory: 'MoltenCore', name: 'Molten Core', instanceType: 2 },
       ]);
       mocks.service.loadSpawns.mockResolvedValue([
         spawn('creature', 1, { map: 631 }),
@@ -1609,10 +1646,33 @@ describe(WorldEditorComponent.name, () => {
       select.dispatchEvent(new Event('change'));
       page.fixture.detectChanges();
       expect(shown()).toEqual([1, 3]);
-      // a dungeon: Normal and Heroic
+      // a heroic dungeon: Normal and Heroic; Onyxia's Lair: 10 and 25 Normal; one difficulty only: nothing to choose
+      page.chooseMap(574);
+      await settle(page);
+      const labels = () =>
+        Array.from(page.byId<HTMLSelectElement>('difficulty').nativeElement.options, (o) => o.textContent?.trim()).slice(1);
+      expect(labels()).toEqual(['WORLD_EDITOR.DIFFICULTY_NORMAL', 'WORLD_EDITOR.DIFFICULTY_HEROIC']);
+      page.chooseMap(249);
+      await settle(page);
+      expect(labels()).toEqual(['WORLD_EDITOR.DIFFICULTY_10N', 'WORLD_EDITOR.DIFFICULTY_25N']);
+      for (const map of [33, 409]) {
+        page.chooseMap(map);
+        await settle(page);
+        expect(page.byId('difficulty', false)).toBeFalsy();
+      }
+      // left before they were read: not shown on the next map
+      page.chooseMap(574);
       page.chooseMap(33);
       await settle(page);
-      expect(page.byId<HTMLSelectElement>('difficulty').nativeElement.options.length).toBe(3);
+      expect(page.byId('difficulty', false)).toBeFalsy();
+      expect(difficultyLabel({ difficulty: 1, maxPlayers: 40 })).toBe('WORLD_EDITOR.DIFFICULTY_NORMAL');
+      // unreadable: none either
+      mocks.client.getMapDifficulties.mockRejectedValueOnce(new Error('no dbc'));
+      page.chooseMap(574);
+      await settle(page);
+      expect(page.byId('difficulty', false)).toBeFalsy();
+      page.chooseMap(631);
+      await settle(page);
       page.byId<HTMLSelectElement>('difficulty').nativeElement.value = '';
       page.byId<HTMLSelectElement>('difficulty').nativeElement.dispatchEvent(new Event('change'));
       page.fixture.detectChanges();
@@ -1882,7 +1942,7 @@ describe(WorldEditorComponent.name, () => {
               position: { x: -8902, y: -102, z: 81 },
               orientation: null,
               delay: 1000,
-              info: ['wait 1 s', 'run', 'script 50: talk', 'SAI: Willem - Say'],
+              info: ['wait 1 s', 'run', 'script 50: talk', 'SAI: Willem - Say', 'then: back to point 1, round after round'],
             },
           ],
         },
@@ -2866,8 +2926,14 @@ describe(WorldEditorComponent.name, () => {
         Array.from((page.byId('selected-waypoint-info').nativeElement as HTMLElement).querySelectorAll('li')).map((li) =>
           li.textContent?.trim(),
         ),
-      ).toEqual(['wait 1 s', 'run', 'script 50: talk', 'SAI: Willem - Say']);
-      expect(page.viewer().paths()[0].points[1].info).toEqual(['wait 1 s', 'run', 'script 50: talk', 'SAI: Willem - Say']);
+      ).toEqual(['wait 1 s', 'run', 'script 50: talk', 'SAI: Willem - Say', 'then: back to point 1, round after round']);
+      expect(page.viewer().paths()[0].points[1].info).toEqual([
+        'wait 1 s',
+        'run',
+        'script 50: talk',
+        'SAI: Willem - Say',
+        'then: back to point 1, round after round',
+      ]);
 
       page.viewer().picked.emit({ type: 'ground', position: { x: 0, y: 0, z: 0 } });
       await settle(page);
@@ -3277,8 +3343,9 @@ describe(WorldEditorComponent.name, () => {
       await settle(page);
       page.click('simulate');
       await settle(page);
-      expect(viewer.simulation()?.legs.map((leg) => leg.label)).toEqual(['point 1', 'point 2']);
-      // from its spawn point, once, with what it does at each point
+      // from its spawn point, then round and round from point 1 (its path starts over), with what it does at each point
+      expect(viewer.simulation()?.legs.map((leg) => leg.label)).toEqual(['point 1', 'point 2', 'point 1']);
+      expect(viewer.simulation()?.loopFrom).toBe(1);
       expect(viewer.simulation()?.start).toEqual({ x: SPAWNS[0].x, y: SPAWNS[0].y, z: SPAWNS[0].z });
       expect(viewer.simulation()?.legs[1].actions?.[0]).toMatch(/^script 50/);
       const playing = viewer.simulation();
@@ -3310,6 +3377,26 @@ describe(WorldEditorComponent.name, () => {
       await settle(page);
       expect(viewer.simulation()?.legs.at(-1)?.label).toBe('home');
       expect(viewer.simulationRate()).toBe(2);
+    });
+
+    it('plays a path started not to repeat once, and a path despawning at its end once, saying so', async () => {
+      // creature 1's SmartAI starts its path 10 without repeating
+      mocks.service.loadSaiPaths.mockResolvedValue({
+        paths: new Map([[-1, [10]]]),
+        starts: [{ owner: -1, pathId: 10, repeat: false, despawn: 0 }],
+      });
+      const { page } = await setup();
+      await loadArea(page);
+      const viewer = page.viewer();
+      viewer.picked.emit({ type: 'spawn', key: 'creature:1', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      expect(viewer.pathEnds()?.endText).toBe('stops at the last point (its new home)');
+      // (no line back to the first point)
+      expect(viewer.paths()[0].closed).toBe(false);
+      page.click('simulate');
+      await settle(page);
+      expect(viewer.simulation()).toEqual(expect.objectContaining({ once: true, ending: 'stops at the last point (its new home)' }));
+      expect(viewer.simulation()?.legs).toHaveLength(2);
     });
   });
 
@@ -3378,7 +3465,7 @@ describe(WorldEditorComponent.name, () => {
     });
 
     it('offers the wait and facing only on SmartAI paths, and inserts after a single point', async () => {
-      mocks.service.loadSaiPaths.mockResolvedValue(new Map([[102, [-500]]]));
+      mocks.service.loadSaiPaths.mockResolvedValue({ paths: new Map([[102, [-500]]]), starts: [] });
       mocks.service.loadWaypoints.mockResolvedValue([...WAYPOINTS, { pathId: -500, point: 1, x: -8920, y: -120, z: 80, delay: 0 }]);
       const { page } = await setup();
       await loadArea(page);
@@ -3846,7 +3933,11 @@ describe(WorldEditorComponent.name, () => {
         spawn: { x: SPAWNS[0].x, y: SPAWNS[0].y, z: SPAWNS[0].z },
         start: { x: -8901, y: -101, z: 80 },
         end: { x: -8902, y: -102, z: 81 },
+        endText: 'back to point 1, round after round',
       });
+      // its last point tells it too
+      expect(page.viewer().paths()[0].points.at(-1)?.info).toContain('then: back to point 1, round after round');
+      expect(page.viewer().paths()[0].points[0].info).not.toContain('then: back to point 1, round after round');
       // from one of its points: the creature walking it
       page.viewer().picked.emit({ type: 'waypoint', key: 'path:10#2', pathKey: 'path:10', point: 2, position: { x: 0, y: 0, z: 0 } });
       await settle(page);
@@ -4507,7 +4598,7 @@ describe(WorldEditorComponent.name, () => {
     });
 
     it('shows and edits the SmartAI paths creature scripts start', async () => {
-      mocks.service.loadSaiPaths.mockResolvedValue(new Map([[102, [-500]]]));
+      mocks.service.loadSaiPaths.mockResolvedValue({ paths: new Map([[102, [-500]]]), starts: [] });
       mocks.service.loadWaypoints.mockResolvedValue([...WAYPOINTS, { pathId: -500, point: 1, x: -8920, y: -120, z: 80, delay: 0 }]);
       mocks.service.loadWaypointSai.mockResolvedValue([
         { entryorguid: 102, point: 1, pathId: -500, escort: true, actionType: 1, comment: 'Say hello' },

@@ -114,6 +114,29 @@ export function parseMapDbc(dbc: DbcFile): WowMap[] {
   return maps.sort((a, b) => a.id - b.id);
 }
 
+/** A difficulty of a dungeon or raid: its index (the spawnMask bit) and how many players it is for. */
+export interface MapDifficulty {
+  difficulty: number;
+  maxPlayers: number;
+}
+
+/**
+ * MapDifficulty.dbc (3.3.5a layout: 1 MapID, 2 Difficulty, 21 MaxPlayers): the difficulties of each instance, in order.
+ * Most instances have one (every Vanilla raid but Onyxia's Lair and Naxxramas, which Wrath gave 10 and 25 players);
+ * heroic dungeons two, and Wrath raids two or four (10 / 25 players, normal and heroic).
+ */
+export function parseMapDifficulties(dbc: DbcFile): Map<number, MapDifficulty[]> {
+  const byMap = new Map<number, MapDifficulty[]>();
+  for (let record = 0; record < dbc.recordCount; record++) {
+    const mapId = dbc.getUint(record, 1);
+    const list = byMap.get(mapId) ?? [];
+    list.push({ difficulty: dbc.getUint(record, 2), maxPlayers: dbc.getUint(record, 21) });
+    byMap.set(mapId, list);
+  }
+  byMap.forEach((list) => list.sort((a, b) => a.difficulty - b.difficulty));
+  return byMap;
+}
+
 /** How a creature display id is drawn: its model, size and the textures for the model's replaceable slots. */
 export interface CreatureDisplay {
   model: string;

@@ -49,6 +49,8 @@ describe('describeWaypoint', () => {
       { entryorguid: 1, point: 0, pathId: 0, actionType: 1, comment: 'any data path' },
       { entryorguid: 1, point: 2, pathId: 0, escort: true, actionType: 1, comment: 'any SmartAI path' },
       { entryorguid: 1, point: 2, pathId: -501, escort: true, actionType: 1, comment: 'another SmartAI path' },
+      // (the end of a path: told as the path's ending, not at a point)
+      { entryorguid: 1, point: 0, pathId: 0, ended: true, actionType: 41, comment: 'despawn at the end' },
     ];
     expect(describeWaypoint(-500, 2, {}, new Map(), rows)).toEqual(['SAI: any SmartAI path']);
     expect(describeWaypoint(10, 2, {}, new Map(), rows)).toEqual(['SAI: any data path']);

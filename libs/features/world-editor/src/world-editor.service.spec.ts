@@ -369,20 +369,39 @@ describe('WorldEditorService', () => {
 
   it('finds the SmartAI paths the scripts of creatures start, by entry and by guid', async () => {
     const { service, queryService } = setup();
-    expect((await service.loadSaiPaths([])).size).toBe(0);
+    expect((await service.loadSaiPaths([])).paths.size).toBe(0);
     queryService.query.mockReturnValueOnce(
       of([
-        { entryorguid: '197', actionType: '53', p1: '0', p2: '500', p3: '0', p4: '0', p5: '0', p6: '0' },
-        { entryorguid: '197', actionType: '53', p1: '1', p2: '500', p3: '0', p4: '0', p5: '0', p6: '0' },
-        { entryorguid: '-9', actionType: '113', p1: '600', p2: '601', p3: '0', p4: '0', p5: '0', p6: '0' },
+        // escort start: SmartAI path 500, repeating or despawning after 3 s
+        { entryorguid: '197', actionType: '53', p1: '0', p2: '500', p3: '1', p4: '0', p5: '0' },
+        { entryorguid: '197', actionType: '53', p1: '1', p2: '500', p3: '0', p4: '0', p5: '3000' },
+        // the closest of SmartAI paths 600 to 601, repeating; of waypoint_data path 700 alone
+        { entryorguid: '-9', actionType: '113', p1: '600', p2: '601', p3: '1', p4: '0', p5: '1' },
+        { entryorguid: '-9', actionType: '113', p1: '700', p2: '0', p3: '0', p4: '0', p5: '0' },
+        // waypoint_data path 800 (not repeating), SmartAI path 900
+        { entryorguid: '-9', actionType: '232', p1: '800', p2: '0', p3: '0', p4: '0', p5: '0' },
+        { entryorguid: '-9', actionType: '232', p1: '900', p2: '1', p3: '1', p4: '0', p5: '0' },
+        { entryorguid: '-9', actionType: '232', p1: '0', p2: '1', p3: '1', p4: '0', p5: '0' },
       ]),
     );
-    const paths = await service.loadSaiPaths([{ entry: 197, guid: 9 }]);
+    const { paths, starts } = await service.loadSaiPaths([{ entry: 197, guid: 9 }]);
     expect(paths.get(197)).toEqual([-500]);
-    expect(paths.get(-9)).toEqual([-600, -601]);
-    expect(queryService.query.mock.calls[0][0]).toContain('action_type IN (53, 113) AND entryorguid IN (197, -9)');
+    expect(paths.get(-9)).toEqual([-600, -601, 700, 800, -900]);
+    expect(starts).toEqual([
+      { owner: 197, pathId: -500, repeat: true, despawn: 0 },
+      { owner: 197, pathId: -500, repeat: false, despawn: 3000 },
+      { owner: -9, pathId: -600, repeat: true, despawn: 0 },
+      { owner: -9, pathId: -601, repeat: true, despawn: 0 },
+      { owner: -9, pathId: 700, repeat: false, despawn: 0 },
+      { owner: -9, pathId: 800, repeat: false, despawn: 0 },
+      { owner: -9, pathId: -900, repeat: true, despawn: 0 },
+    ]);
+    expect(queryService.query.mock.calls[0][0]).toContain('action_type IN (53, 113, 232) AND entryorguid IN (197, -9)');
+    // (a range of at most 50 paths)
+    queryService.query.mockReturnValueOnce(of([{ entryorguid: '1', actionType: '113', p1: '1', p2: '1000', p3: '0', p4: '0', p5: '1' }]));
+    expect((await service.loadSaiPaths([{ entry: 1, guid: 2 }])).paths.get(1)).toHaveLength(50);
     queryService.query.mockReturnValueOnce(of(undefined));
-    expect((await service.loadSaiPaths([{ entry: 1, guid: 2 }])).size).toBe(0);
+    expect((await service.loadSaiPaths([{ entry: 1, guid: 2 }])).paths.size).toBe(0);
   });
 
   it('loads the scripts run at waypoints', async () => {
@@ -417,14 +436,18 @@ describe('WorldEditorService', () => {
         { entryorguid: '-9', eventType: '108', point: '3', pathId: '0', actionType: '1', comment: null },
         { entryorguid: '197', eventType: '40', point: '2', pathId: '500', actionType: '1', comment: 'say' },
         { entryorguid: '197', eventType: '40', point: '0', pathId: '0', actionType: '1', comment: 'any' },
+        { entryorguid: '197', eventType: '109', point: '0', pathId: '10', actionType: '41', targetType: '1', comment: 'despawn' },
+        { entryorguid: '197', eventType: '58', point: '0', pathId: '500', actionType: '37', targetType: '1', comment: 'die' },
       ]),
     );
     expect(await service.loadWaypointSai([{ entry: 197, guid: 9 }])).toEqual([
-      { entryorguid: -9, point: 3, pathId: 0, actionType: 1, comment: '' },
-      { entryorguid: 197, point: 2, escort: true, pathId: -500, actionType: 1, comment: 'say' },
-      { entryorguid: 197, point: 0, escort: true, pathId: 0, actionType: 1, comment: 'any' },
+      { entryorguid: -9, point: 3, pathId: 0, actionType: 1, targetType: 0, comment: '' },
+      { entryorguid: 197, point: 2, escort: true, pathId: -500, actionType: 1, targetType: 0, comment: 'say' },
+      { entryorguid: 197, point: 0, escort: true, pathId: 0, actionType: 1, targetType: 0, comment: 'any' },
+      { entryorguid: 197, point: 0, pathId: 10, ended: true, actionType: 41, targetType: 1, comment: 'despawn' },
+      { entryorguid: 197, point: 0, escort: true, pathId: -500, ended: true, actionType: 37, targetType: 1, comment: 'die' },
     ]);
-    expect(queryService.query.mock.calls[0][0]).toContain('event_type IN (108, 40) AND entryorguid IN (197, -9)');
+    expect(queryService.query.mock.calls[0][0]).toContain('event_type IN (108, 40, 109, 58) AND entryorguid IN (197, -9)');
     queryService.query.mockReturnValueOnce(of(undefined));
     expect(await service.loadWaypointSai([{ entry: 1, guid: 2 }])).toEqual([]);
   });

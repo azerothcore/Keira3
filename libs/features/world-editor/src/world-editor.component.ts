@@ -86,6 +86,7 @@ import {
   perfLogActive,
   perfNote,
   perfLogFileName,
+  MapDifficulty,
   captureProblems,
   describeError,
   logFact,
@@ -159,6 +160,7 @@ import { SpawnTreeComponent } from './spawn-tree.component';
 import { BUTTON_STYLES, ButtonLabelComponent, ButtonStyle, buttonTitle, loadButtonStyle, saveButtonStyle } from './toolbar-buttons';
 import { findSpawnProblems, SpawnProblem } from './spawn-problems';
 import { pathSimulation, wanderSimulation } from './simulation-plan';
+import { PathEnding, pathEnding, PathStart } from './path-ending';
 import { formationLinks, formationSlots, groupDetails, poolOverlays } from './spawn-groups';
 import { MAP_SORT_KEYS, MapSortKey, savePickerSort, SortRule, sortItems, toggleSort, ZONE_SORT_KEYS, ZoneSortKey } from './picker-sort';
 import { isSpawnVisible, loadSpawnFilters, phaseBits, saveSpawnFilters, SpawnFilters, spawnEvents } from './spawn-filters';
@@ -180,9 +182,9 @@ function pathOwners(spawns: SpawnRecord[]): Map<number, string[]> {
   return owners;
 }
 
-/** The paths a spawn walks: its `waypoint_data` path, then the SmartAI paths its scripts start. */
+/** The paths a spawn walks: its `waypoint_data` path, then the paths its SmartAI starts (each once). */
 function pathsOf(spawn: SpawnRecord): number[] {
-  return [...(spawn.pathId ? [spawn.pathId] : []), ...(spawn.saiPaths ?? [])];
+  return spawn.saiPaths ? [...new Set([...(spawn.pathId ? [spawn.pathId] : []), ...spawn.saiPaths])] : spawn.pathId ? [spawn.pathId] : [];
 }
 
 /** The number typed in a field, when it is one and not negative (empty fields give nothing). */
@@ -219,17 +221,17 @@ const EDITOR_ACTIONS = [
 /** Scan the whole map: results listed at most, and the colour of each level. */
 const SCAN_LIST_SIZE = 300;
 const SCAN_COLORS: Record<SpawnScanLevel, number> = { ok: 0x2ecc71, warn: 0xf1c40f, bad: 0xe74c3c };
-/** Difficulties by spawnMask bit (1 << bit): a raid's 10 / 25 Normal / Heroic, a dungeon's Normal / Heroic. */
-const RAID_DIFFICULTIES = [
-  { bit: 0, label: 'WORLD_EDITOR.DIFFICULTY_10N' },
-  { bit: 1, label: 'WORLD_EDITOR.DIFFICULTY_25N' },
-  { bit: 2, label: 'WORLD_EDITOR.DIFFICULTY_10H' },
-  { bit: 3, label: 'WORLD_EDITOR.DIFFICULTY_25H' },
-];
-const DUNGEON_DIFFICULTIES = [
-  { bit: 0, label: 'WORLD_EDITOR.DIFFICULTY_NORMAL' },
-  { bit: 1, label: 'WORLD_EDITOR.DIFFICULTY_HEROIC' },
-];
+/**
+ * The name of a difficulty (its index is the spawnMask bit): a raid's 10 / 25 Normal / Heroic, a dungeon's Normal /
+ * Heroic (a dungeon's second difficulty, a raid's third and fourth, are the heroic ones).
+ */
+export function difficultyLabel({ difficulty, maxPlayers }: MapDifficulty): string {
+  const raid = maxPlayers > 5;
+  const heroic = raid ? difficulty >= 2 : difficulty === 1;
+  return raid && (maxPlayers === 10 || maxPlayers === 25)
+    ? `WORLD_EDITOR.DIFFICULTY_${maxPlayers}${heroic ? 'H' : 'N'}`
+    : `WORLD_EDITOR.DIFFICULTY_${heroic ? 'HEROIC' : 'NORMAL'}`;
+}
 /** Ask before deleting ("false" once told not to). */
 const CONFIRM_DELETE_KEY = 'keira3.worldEditor.confirmDelete';
 
@@ -276,6 +278,7 @@ type RenderFlagKey =
   | 'showMouseOver'
   | 'showTileGrid'
   | 'showSteepSlopes'
+  | 'showContours'
   | 'showWireframe'
   | 'showSeaLevel'
   | 'showPathToFirst'
@@ -366,6 +369,7 @@ const IN_GAME_VIEW: Partial<WorldRenderSettings> = {
   showMouseOver: false,
   showTileGrid: false,
   showSteepSlopes: false,
+  showContours: false,
   showWireframe: false,
   showSeaLevel: false,
   showStats: false,
@@ -751,6 +755,8 @@ export class WorldEditorComponent implements OnInit {
       ...(walker ? { spawn: { x: walker.x, y: walker.y, z: walker.z } } : {}),
       start: { x: first.x, y: first.y, z: first.z },
       end: { x: last.x, y: last.y, z: last.z },
+      // what it does after it
+      endText: this.pathEndings().get(pathId)?.text,
     };
   });
   /** Labelled markers: pools, and the formation places of the selected creature's formation. */
@@ -1051,6 +1057,46 @@ export class WorldEditorComponent implements OnInit {
   private readonly loadedWaypoints = signal<WaypointRecord[]>([]);
   private readonly waypointScripts = signal(new Map<number, WaypointScriptStep[]>());
   private readonly waypointSai = signal<WaypointSaiRow[]>([]);
+  /** How the SmartAI of the loaded creatures starts them on paths (whether they repeat, despawn at the end). */
+  private readonly pathStarts = signal<PathStart[]>([]);
+  /** The entries and −guids of the creatures walking each loaded path. */
+  private readonly pathWalkerIds = computed(() => {
+    const walkerIds = new Map<number, Set<number>>();
+    for (const spawn of this.spawns()) {
+      for (const pathId of pathsOf(spawn)) {
+        const ids = walkerIds.get(pathId) ?? new Set<number>();
+        ids.add(spawn.entry).add(-spawn.guid);
+        walkerIds.set(pathId, ids);
+      }
+    }
+    return walkerIds;
+  });
+  /** What the creatures do once at the end of each loaded path: start over, stay, despawn or die. */
+  protected readonly pathEndings = computed(() => {
+    const byPath = new Map<number, WaypointRecord>();
+    // (the waypoints come sorted by path and point: the last one met is the last point)
+    for (const waypoint of this.waypoints()) {
+      byPath.set(waypoint.pathId, waypoint);
+    }
+    const scripts = this.waypointScripts();
+    const sai = this.waypointSai();
+    const starts = this.pathStarts();
+    const endings = new Map<number, PathEnding>();
+    for (const [pathId, last] of byPath) {
+      const ids = this.pathWalkerIds().get(pathId) ?? new Set<number>();
+      endings.set(
+        pathId,
+        pathEnding(
+          pathId,
+          last,
+          starts.filter((s) => ids.has(s.owner)),
+          scripts,
+          sai.filter((row) => ids.has(row.entryorguid)),
+        ),
+      );
+    }
+    return endings;
+  });
   private readonly formations = signal<FormationMember[]>([]);
   private readonly travel = signal<TravelData>(EMPTY_TRAVEL);
   /** Boss boundaries of the current map (from the AzerothCore source folder), with the entries of their creatures. */
@@ -1119,11 +1165,27 @@ export class WorldEditorComponent implements OnInit {
 
   /** The difficulty shown in a dungeon or raid (a spawnMask bit), or every one (undefined). */
   protected readonly difficulty = signal<number | undefined>(undefined);
-  /** The difficulties of the map shown: 10 / 25 Normal / Heroic in a raid, Normal / Heroic in a dungeon. */
+  /** The difficulties of the map shown, as the client's MapDifficulty.dbc tells them. */
+  private readonly mapDifficulties = signal<MapDifficulty[]>([]);
+  private readonly loadDifficulties = effect(() => {
+    const mapId = this.mapId();
+    untracked(() => {
+      this.mapDifficulties.set([]);
+      if (this.client.isSupported() && this.settings.isConfigured()) {
+        void this.client
+          .getMapDifficulties(mapId)
+          .catch(this.quietly(`read the difficulties of map ${mapId}`, [] as MapDifficulty[]))
+          .then((list) => mapId === this.mapId() && this.mapDifficulties.set(list));
+      }
+    });
+  });
+  /**
+   * The difficulties to choose from (only for maps with more than one): 10 / 25 Normal / Heroic in a raid (Onyxia's Lair
+   * and Naxxramas: 10 and 25 Normal; other Vanilla and Burning Crusade raids none), Normal / Heroic in a dungeon.
+   */
   protected readonly difficulties = computed(() => {
-    const map = this.maps().find((m) => m.id === this.mapId());
-    const kind = map && mapKind(map);
-    return kind === 'raid' ? RAID_DIFFICULTIES : kind === 'dungeon' ? DUNGEON_DIFFICULTIES : [];
+    const list = this.mapDifficulties();
+    return list.length < 2 ? [] : list.map((entry) => ({ bit: entry.difficulty, label: difficultyLabel(entry) }));
   });
 
   /** Spawns the filters (and the difficulty) let through; the paths they walk are the only ones drawn. */
@@ -1221,33 +1283,29 @@ export class WorldEditorComponent implements OnInit {
         }
       }
       // the SmartAI rows of the creatures walking each path, worked out once per path (not per point)
-      const walkerIds = new Map<number, Set<number>>();
-      // (only creatures walk paths)
-      for (const spawn of this.spawns()) {
-        for (const pathId of pathsOf(spawn)) {
-          const ids = walkerIds.get(pathId) ?? new Set<number>();
-          ids.add(spawn.entry).add(-spawn.guid);
-          walkerIds.set(pathId, ids);
-        }
-      }
+      const walkerIds = this.pathWalkerIds();
+      const endings = this.pathEndings();
       const sai = this.waypointSai();
       const scripts = this.waypointScripts();
       const walked = [...byPath].map(([pathId, points]) => {
         // (a shown path is walked by a creature shown)
         const ids = walkerIds.get(pathId) as Set<number>;
         const pathSai = sai.filter((row) => ids.has(row.entryorguid));
+        const ending = endings.get(pathId) as PathEnding;
+        // (in order)
+        const last = points[points.length - 1];
         return {
           key: pathKey(pathId),
           label: pathLabel(pathId),
           owners: owners.get(pathId) as string[],
-          // (after its last point it goes back to the first: View > Path from the last waypoint)
-          closed: this.renderSettings.settings().showPathFromLast,
+          // (after its last point it goes back to the first, for a path that starts over: View > Path from the last waypoint)
+          closed: ending.kind === 'loop' && this.renderSettings.settings().showPathFromLast,
           points: points.map((p) => ({
             point: p.point,
             position: { x: p.x, y: p.y, z: p.z },
             orientation: p.orientation ?? null,
             delay: p.delay,
-            info: describeWaypoint(pathId, p.point, p, scripts, pathSai),
+            info: [...describeWaypoint(pathId, p.point, p, scripts, pathSai), ...(p === last ? [`then: ${ending.text}`] : [])],
           })),
         };
       });
@@ -1326,7 +1384,16 @@ export class WorldEditorComponent implements OnInit {
     const walkers = this.spawns().filter((s) => s.type === 'creature' && pathsOf(s).includes(waypoint.pathId));
     const ids = new Set(walkers.flatMap((s) => [s.entry, -s.guid]));
     const sai = this.waypointSai().filter((row) => ids.has(row.entryorguid));
-    return describeWaypoint(waypoint.pathId, waypoint.point, waypoint, this.waypointScripts(), sai);
+    const last = Math.max(
+      ...this.waypoints()
+        .filter((w) => w.pathId === waypoint.pathId)
+        .map((w) => w.point),
+    );
+    const ending = waypoint.point === last ? this.pathEndings().get(waypoint.pathId) : undefined;
+    return [
+      ...describeWaypoint(waypoint.pathId, waypoint.point, waypoint, this.waypointScripts(), sai),
+      ...(ending ? [`then: ${ending.text}`] : []),
+    ];
   }
 
   /** Creatures walking each loaded path ("Name (guid)"). */
@@ -2390,7 +2457,7 @@ export class WorldEditorComponent implements OnInit {
       const loaded = await (region
         ? this.service.loadSpawns(this.mapId(), center, SPAWN_LOAD_RADIUS, region)
         : this.service.loadSpawns(this.mapId(), center));
-      const saiPaths = await this.service.loadSaiPaths(loaded.filter((s) => s.type === 'creature'));
+      const { paths: saiPaths, starts } = await this.service.loadSaiPaths(loaded.filter((s) => s.type === 'creature'));
       if (request !== this.spawnRequest) {
         return;
       }
@@ -2430,6 +2497,7 @@ export class WorldEditorComponent implements OnInit {
         this.areaPaths.set(areaPaths);
         this.waypointScripts.set(scripts);
         this.waypointSai.set(sai);
+        this.pathStarts.set(starts);
         this.formations.set(formations);
         this.pools.set(pools);
         this.eventNames.set(eventNames);
@@ -2839,7 +2907,9 @@ export class WorldEditorComponent implements OnInit {
     const actions = new Map(
       (path?.points ?? []).map((p) => [p.point, (p.info as string[]).filter((line) => /^(script|SAI:)/.test(line))] as const),
     );
-    this.simulation.set(pathSimulation(spawn, points, key, actions) ?? wanderSimulation(spawn, key));
+    // (repeating paths go on round after round from point 1; the others stop at the end, saying what happens then)
+    const ending = this.pathEndings().get(pathId as number);
+    this.simulation.set(pathSimulation(spawn, points, key, actions, ending) ?? wanderSimulation(spawn, key));
   }
 
   /** Plays the simulation that ended again, from the start. */

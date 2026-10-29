@@ -1,5 +1,6 @@
 import { MovementSimulation, SimulationLeg } from '@keira/shared/world-viewer';
 import { SpawnRecord, WaypointRecord } from './world-editor.model';
+import { PathEnding } from './path-ending';
 
 /** Base creature speeds (yards per second), times creature_template.speed_walk / speed_run. */
 export const WALK_SPEED = 2.5;
@@ -15,12 +16,17 @@ const WANDER_WAIT = [4, 10];
 const walkSpeed = (spawn: SpawnRecord): number => WALK_SPEED * (spawn.speedWalk ?? 1);
 const runSpeed = (spawn: SpawnRecord): number => RUN_SPEED * (spawn.speedRun ?? 1);
 
-/** A creature walking its path once, as it does when it spawns: from its spawn point to the first point, then on. */
+/**
+ * A creature walking its path as it does when it spawns: from its spawn point to the first point, then on. A path that
+ * starts over (`ending`) goes on from the last point back to the first, round after round; the others are played once
+ * and end saying what happens then (it stays, despawns or dies).
+ */
 export function pathSimulation(
   spawn: SpawnRecord,
   points: WaypointRecord[],
   key: string,
   actions: Map<number, string[]> = new Map(),
+  ending?: PathEnding,
 ): MovementSimulation | undefined {
   if (points.length === 0) {
     return undefined;
@@ -37,7 +43,12 @@ export function pathSimulation(
     label: `point ${p.point}`,
     ...(actions.get(p.point)?.length ? { actions: actions.get(p.point) } : {}),
   }));
-  return { key, start: { x: spawn.x, y: spawn.y, z: spawn.z }, legs, once: true };
+  const start = { x: spawn.x, y: spawn.y, z: spawn.z };
+  if (ending?.kind === 'loop') {
+    // (back to the first point: the leg to it from the spawn point, but from the last point)
+    return { key, start, legs: [...legs, { ...legs[0] }], loopFrom: 1 };
+  }
+  return { key, start, legs, once: true, ...(ending ? { ending: ending.text } : {}) };
 }
 
 /** A creature wandering around its spawn point, within its wander distance, back to it at the end of a round. */

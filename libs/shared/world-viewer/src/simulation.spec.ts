@@ -30,6 +30,27 @@ describe('movement simulation timeline', () => {
     expect(sampleTimeline(timeline, 13.5, false)).toEqual({ position: p(10, 8), orientation: Math.PI / 2, leg: 3 });
   });
 
+  it('repeats only the legs from the one asked, after the first round', () => {
+    // from the spawn point to point 1 once (5 s), then round point 1 (3 s wait) → point 2 (2 s) → point 3 (1 s)
+    const looping = simulationTimeline(
+      p(0),
+      [
+        { points: [p(0), p(10)], leg: { to: p(10), speed: 2, wait: 3, label: 'point 1' } },
+        { points: [p(10), p(10, 8)], leg: { to: p(10, 8), speed: 4, wait: 1, label: 'point 2' } },
+        { points: [p(10, 8), p(10)], leg: { to: p(10), speed: 4, wait: 3, label: 'point 1' } },
+      ],
+      1,
+    );
+    expect(looping.loopStart).toBe(8);
+    expect(looping.duration).toBe(16);
+    // 1 s into the second round: on the way to point 2 again, never back at the spawn point
+    expect(sampleTimeline(looping, 17).position).toEqual(p(10, 4));
+    expect(sampleTimeline(looping, 17).leg).toBe(1);
+    // nothing to repeat (a round of no time): standing at the end
+    const empty = simulationTimeline(p(0), [{ points: [p(0), p(2)], leg: { to: p(2), speed: 2, wait: 0, label: 'a' } }], 1);
+    expect(sampleTimeline(empty, 5)).toEqual({ position: p(2), orientation: 0, leg: 1 });
+  });
+
   it('tells how it moves, and what it does once there', () => {
     const moves = simulationTimeline(p(0), [
       { points: [p(0), p(2)], leg: { to: p(2), speed: 2, wait: 1, label: 'a', run: true, actions: ['script 5'] } },

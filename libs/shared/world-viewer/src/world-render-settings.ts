@@ -84,6 +84,8 @@ export interface WorldRenderSettings {
   /** Over the terrain: the tile (ADT) and chunk grid, the ground too steep to walk up (red), its triangles. */
   showTileGrid: boolean;
   showSteepSlopes: boolean;
+  /** Height lines every 5 yards (bolder every 25), like a topographic map. */
+  showContours: boolean;
   showWireframe: boolean;
   /** A see-through plane at height 0, the oceans' level. */
   showSeaLevel: boolean;
@@ -180,6 +182,7 @@ export const DEFAULT_WORLD_RENDER_SETTINGS: WorldRenderSettings = {
   showMouseOver: true,
   showTileGrid: false,
   showSteepSlopes: false,
+  showContours: false,
   showWireframe: false,
   showSeaLevel: false,
   showPathToFirst: true,

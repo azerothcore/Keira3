@@ -563,6 +563,23 @@ describe('WowClientService', () => {
       await expect(service.getAreaTriggers(0)).rejects.toThrowError(/WDBC/);
     });
 
+    it('lists the difficulties of an instance, none without the DBC, and reads it again after a failure', async () => {
+      const row = (mapId: number, difficulty: number, maxPlayers: number) =>
+        Object.assign(new Array(23).fill(0), { 1: mapId, 2: difficulty, 21: maxPlayers });
+      const { service } = setup({ mpqs: displayMpqs({ 'DBFilesClient\\MapDifficulty.dbc': dbc([row(533, 0, 10), row(533, 1, 25)]) }) });
+      expect(await service.getMapDifficulties(533)).toEqual([
+        { difficulty: 0, maxPlayers: 10 },
+        { difficulty: 1, maxPlayers: 25 },
+      ]);
+      expect(await service.getMapDifficulties(0)).toEqual([]);
+      TestBed.resetTestingModule();
+      expect(await setup({ mpqs: displayMpqs({}) }).service.getMapDifficulties(533)).toEqual([]);
+      TestBed.resetTestingModule();
+      const broken = setup({ mpqs: displayMpqs({ 'DBFilesClient\\MapDifficulty.dbc': [1, 2, 3, 4] }) }).service;
+      await expect(broken.getMapDifficulties(533)).rejects.toThrowError(/WDBC/);
+      await expect(broken.getMapDifficulties(533)).rejects.toThrowError(/WDBC/);
+    });
+
     it('has no area triggers without the DBC', async () => {
       const { service } = setup({ mpqs: displayMpqs({}) });
       expect(await service.getAreaTriggers(0)).toEqual([]);

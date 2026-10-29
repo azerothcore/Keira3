@@ -32,6 +32,7 @@ import {
   WaypointRow,
 } from './world-editor.model';
 import { WaypointSaiRow, WaypointScriptStep } from './waypoint-info';
+import { PathStart } from './path-ending';
 
 const num = (value: number): number => Math.round(value * 100) / 100;
 /** creature.MovementType of creatures wandering around their spawn point (within wander_distance). */
@@ -40,9 +41,20 @@ const RANDOM_MOVEMENT = 1;
 const SAI_EVENT_WAYPOINT_DATA_REACHED = 108;
 /** SMART_EVENT_ESCORT_REACHED: a creature on a SmartAI path (`waypoints`) reached a point. */
 const SAI_EVENT_ESCORT_REACHED = 40;
-/** SMART_ACTION_ESCORT_START (path id in param 2) and SMART_ACTION_START_CLOSEST_WAYPOINT (path ids in params 1–6). */
+/** SMART_EVENT_WAYPOINT_ENDED / ESCORT_ENDED: a creature got to the end of a `waypoint_data` / SmartAI path. */
+const SAI_EVENT_WAYPOINT_DATA_ENDED = 109;
+const SAI_EVENT_ESCORT_ENDED = 58;
+/**
+ * SMART_ACTION_ESCORT_START (forced movement, path, repeat, quest, despawn time: a SmartAI path), START_CLOSEST_WAYPOINT
+ * (first path, last path, repeat, forced movement, path source) and WAYPOINT_START (path, repeat, path source).
+ */
 const SAI_ACTION_ESCORT_START = 53;
 const SAI_ACTION_START_CLOSEST_WAYPOINT = 113;
+const SAI_ACTION_WAYPOINT_START = 232;
+/** PathSource::SMART_WAYPOINT_MGR: a path of `waypoints` (otherwise of `waypoint_data`). */
+const PATH_SOURCE_SMART = 1;
+/** The most paths of a START_CLOSEST_WAYPOINT range looked at. */
+const CLOSEST_RANGE_LIMIT = 50;
 /** Spawn search results, at most, per type. */
 const SEARCH_LIMIT = 50;
 /** CREATURE_FLAG_EXTRA_TRIGGER: an invisible creature used by scripts. */
@@ -246,28 +258,42 @@ export class WorldEditorService {
    * SmartAI paths the scripts of the given creatures start (escort start, start closest waypoint), as `saiPathId`s by
    * `entryorguid` (entry, or −guid).
    */
-  async loadSaiPaths(creatures: { entry: number; guid: number }[]): Promise<Map<number, number[]>> {
+  async loadSaiPaths(creatures: { entry: number; guid: number }[]): Promise<{ paths: Map<number, number[]>; starts: PathStart[] }> {
     const ids = [...new Set(creatures.flatMap((c) => [Math.trunc(c.entry), -Math.trunc(c.guid)]))];
     const paths = new Map<number, number[]>();
+    const starts: PathStart[] = [];
     if (ids.length === 0) {
-      return paths;
+      return { paths, starts };
     }
     const rows = await firstValueFrom(
       this.queryService.query<TableRow>(
         'SELECT entryorguid, action_type AS actionType, action_param1 AS p1, action_param2 AS p2, action_param3 AS p3, ' +
-          'action_param4 AS p4, action_param5 AS p5, action_param6 AS p6 FROM smart_scripts ' +
-          `WHERE source_type = 0 AND action_type IN (${SAI_ACTION_ESCORT_START}, ${SAI_ACTION_START_CLOSEST_WAYPOINT}) AND entryorguid IN (${ids.join(', ')})`,
+          'action_param4 AS p4, action_param5 AS p5 FROM smart_scripts WHERE source_type = 0 AND action_type IN ' +
+          `(${SAI_ACTION_ESCORT_START}, ${SAI_ACTION_START_CLOSEST_WAYPOINT}, ${SAI_ACTION_WAYPOINT_START}) AND entryorguid IN (${ids.join(', ')})`,
       ),
     );
     for (const row of rows ?? []) {
-      const params = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6'].map((p) => Number(row[p]));
-      const entries = Number(row['actionType']) === SAI_ACTION_ESCORT_START ? [params[1]] : params;
+      const [p1, p2, p3, , p5] = ['p1', 'p2', 'p3', 'p4', 'p5'].map((p) => Number(row[p]));
+      const action = Number(row['actionType']);
       const owner = Number(row['entryorguid']);
+      // the paths it may start, how, as ids of this editor (SmartAI ones negative)
+      const started =
+        action === SAI_ACTION_ESCORT_START
+          ? { entries: [p2], smart: true, repeat: p3, despawn: p5 }
+          : action === SAI_ACTION_START_CLOSEST_WAYPOINT
+            ? { entries: closestRange(p1, p2), smart: p5 === PATH_SOURCE_SMART, repeat: p3, despawn: 0 }
+            : { entries: [p1], smart: p3 === PATH_SOURCE_SMART, repeat: p2, despawn: 0 };
       const list = paths.get(owner) ?? [];
-      entries.filter((entry) => entry > 0 && !list.includes(saiPathId(entry))).forEach((entry) => list.push(saiPathId(entry)));
+      for (const entry of started.entries.filter((e) => e > 0)) {
+        const pathId = started.smart ? saiPathId(entry) : entry;
+        if (!list.includes(pathId)) {
+          list.push(pathId);
+        }
+        starts.push({ owner, pathId, repeat: started.repeat !== 0, despawn: started.despawn });
+      }
       paths.set(owner, list);
     }
-    return paths;
+    return { paths, starts };
   }
 
   /**
@@ -281,20 +307,26 @@ export class WorldEditorService {
     }
     const rows = await firstValueFrom(
       this.queryService.query<TableRow>(
-        'SELECT entryorguid, event_type AS eventType, event_param1 AS point, event_param2 AS pathId, action_type AS actionType, comment FROM smart_scripts ' +
-          `WHERE source_type = 0 AND event_type IN (${SAI_EVENT_WAYPOINT_DATA_REACHED}, ${SAI_EVENT_ESCORT_REACHED}) AND entryorguid IN (${ids.join(', ')})`,
+        'SELECT entryorguid, event_type AS eventType, event_param1 AS point, event_param2 AS pathId, action_type AS actionType, ' +
+          'target_type AS targetType, comment FROM smart_scripts WHERE source_type = 0 AND event_type IN ' +
+          `(${SAI_EVENT_WAYPOINT_DATA_REACHED}, ${SAI_EVENT_ESCORT_REACHED}, ${SAI_EVENT_WAYPOINT_DATA_ENDED}, ${SAI_EVENT_ESCORT_ENDED}) ` +
+          `AND entryorguid IN (${ids.join(', ')})`,
       ),
     );
-    return (rows ?? []).map((row) => ({
-      entryorguid: Number(row['entryorguid']),
-      point: Number(row['point']),
-      // 0 means any path; SmartAI paths are negative here
-      ...(Number(row['eventType']) === SAI_EVENT_ESCORT_REACHED
-        ? { escort: true, pathId: saiPathId(Number(row['pathId'])) || 0 }
-        : { pathId: Number(row['pathId']) }),
-      actionType: Number(row['actionType']),
-      comment: String(row['comment'] ?? ''),
-    }));
+    return (rows ?? []).map((row) => {
+      const event = Number(row['eventType']);
+      const escort = event === SAI_EVENT_ESCORT_REACHED || event === SAI_EVENT_ESCORT_ENDED;
+      return {
+        entryorguid: Number(row['entryorguid']),
+        point: Number(row['point']),
+        // 0 means any path; SmartAI paths are negative here
+        ...(escort ? { escort: true, pathId: saiPathId(Number(row['pathId'])) || 0 } : { pathId: Number(row['pathId']) }),
+        ...(event === SAI_EVENT_WAYPOINT_DATA_ENDED || event === SAI_EVENT_ESCORT_ENDED ? { ended: true } : {}),
+        actionType: Number(row['actionType']),
+        targetType: Number(row['targetType'] ?? 0),
+        comment: String(row['comment'] ?? ''),
+      };
+    });
   }
 
   /** The columns of a spawn the properties panel edits (see `SPAWN_FIELDS`), as stored. */
@@ -760,4 +792,10 @@ function lootOf(row: SpawnRow): Pick<SpawnRecord, 'loot'> {
     ...(Number(row['skinLoot']) > 0 ? { skinning: Number(row['skinLoot']) } : {}),
   };
   return Object.keys(loot).length ? { loot } : {};
+}
+
+/** The paths of a START_CLOSEST_WAYPOINT range (`first` to `last`; just `first` without a last). */
+function closestRange(first: number, last: number): number[] {
+  const end = Math.min(Math.max(first, last), first + CLOSEST_RANGE_LIMIT - 1);
+  return Array.from({ length: end - first + 1 }, (_, i) => first + i);
 }

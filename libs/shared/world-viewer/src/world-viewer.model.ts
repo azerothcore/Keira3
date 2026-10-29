@@ -87,6 +87,10 @@ export interface MovementSimulation {
   legs: SimulationLeg[];
   /** Plays the legs once and stops at the end (`simulationEnded`), instead of round after round. */
   once?: boolean;
+  /** Round after round, the legs from this one on (the ones before, e.g. from the spawn point, are walked once). */
+  loopFrom?: number;
+  /** What happens once played (e.g. "despawns at the last point"), shown when it ends. */
+  ending?: string;
 }
 
 export interface SimulationLeg {
@@ -116,6 +120,8 @@ export interface SimulationStatus {
   wait?: number;
   /** Seconds since it started (in the simulation's time). */
   elapsed?: number;
+  /** It got to the end: what happens then. */
+  ended?: string;
 }
 
 /** A line drawn between two places (a formation member to its leader, a teleport to where it leads…). */
