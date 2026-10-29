@@ -155,6 +155,7 @@ interface FakeTransformControls extends EventDispatcher<{ 'dragging-changed': { 
       [simulation]="simulation()"
       [simulationRate]="simulationRate()"
       (simulationEnded)="simulationEnds = simulationEnds + 1"
+      (topViewChanged)="topViews.push($event)"
       [groundQuery]="ground()"
       (groundHeights)="heights.push($event)"
       [markers]="markers()"
@@ -208,6 +209,7 @@ class HostComponent {
   readonly simulation = signal<MovementSimulation | undefined>(undefined);
   readonly simulationRate = signal(2);
   simulationEnds = 0;
+  readonly topViews: boolean[] = [];
   readonly ground = signal<{ key: string; position: WorldPosition }[] | undefined>(undefined);
   readonly heights: Record<string, number | null>[] = [];
   readonly markers = signal<WorldMarker[]>([]);
@@ -1163,6 +1165,22 @@ describe(WorldViewerComponent.name, () => {
       flushFrames();
       fixture.detectChanges();
       expect(page.label().nativeElement.textContent).toContain('WORLD_EDITOR.SIM_WAITING');
+      // clicking it selects the creature it simulates (with Ctrl, adds it), but not while placing on the ground
+      host.picks.length = 0;
+      page.click();
+      page.pointer('pointerdown', 50, 50, 0, false, true);
+      page.pointer('pointerup', 50, 50, 0, false, true);
+      expect(host.picks).toEqual([
+        { type: 'spawn', key: 'creature:7', position: expect.objectContaining({ x: expect.any(Number) }) },
+        expect.objectContaining({ type: 'spawn', key: 'creature:7', additive: true }),
+      ]);
+      host.groundOnly.set(true);
+      fixture.detectChanges();
+      host.picks.length = 0;
+      page.click();
+      expect(host.picks.every((pick) => pick.type !== 'spawn')).toBe(true);
+      host.groundOnly.set(false);
+      fixture.detectChanges();
       near.mockRestore();
       // slower from now on, without starting over: 1 s more at ×1 is 4 s in
       host.simulationRate.set(1);
@@ -1850,6 +1868,37 @@ describe(WorldViewerComponent.name, () => {
       page.pointer('pointerup', 50, 50);
       expect(host.picks.at(-1)?.type).not.toBe('segment');
     });
+  });
+
+  it('toggles the top view: straight down, then back to the angle before, unless the camera was turned meanwhile', async () => {
+    const { host, fixture, mapControls } = await setup();
+    const camera = mapControls().camera.position;
+    const offset = () => camera.clone().sub(mapControls().target);
+    const angle = offset().normalize();
+    const ask = (n: number) => {
+      host.topView.set(n);
+      fixture.detectChanges();
+    };
+    ask(1);
+    expect(Math.hypot(offset().x, offset().z)).toBeLessThan(0.1);
+    expect(offset().y).toBeGreaterThan(0);
+    // zoomed in meanwhile: back at the same angle, from as far as it is now
+    const half = offset().multiplyScalar(0.5);
+    camera.copy(mapControls().target).add(half);
+    mapControls().dispatchEvent({ type: 'change' });
+    const distance = offset().length();
+    ask(2);
+    expect(offset().clone().normalize().distanceTo(angle)).toBeLessThan(1e-6);
+    expect(offset().length()).toBeCloseTo(distance);
+    expect(host.topViews).toEqual([true, false]);
+    // turned away while looking down: left the top view, and asking again looks down again
+    ask(3);
+    camera.copy(mapControls().target).add(new Vector3(30, 40, 0));
+    mapControls().dispatchEvent({ type: 'change' });
+    expect(host.topViews).toEqual([true, false, true, false]);
+    ask(4);
+    expect(Math.hypot(offset().x, offset().z)).toBeLessThan(0.1);
+    expect(host.topViews.at(-1)).toBe(true);
   });
 
   it('reports the camera centre after it moved far enough', async () => {

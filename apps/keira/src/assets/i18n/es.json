@@ -1619,7 +1619,7 @@
     "IN_GAME_VIEW": "Vista del juego",
     "IN_GAME_VIEW_HELP": "Desactiva todas las capas del editor a la vez (caminos, marcadores, círculos, cuadrículas, colisión, brújula…) para ver el lugar como en el juego; al desactivarla todo vuelve como estaba",
     "TOP_VIEW": "Vista superior",
-    "TOP_VIEW_HELP": "Mira hacia abajo desde arriba, con el norte arriba, como un minimapa (V)",
+    "TOP_VIEW_HELP": "Mira hacia abajo desde arriba, con el norte arriba, como un minimapa; otra vez, vuelve al ángulo de antes (V)",
     "CONTROL_TOPVIEW": "Vista superior",
     "CLEAR_PATH_CHECK": "Quitar",
     "CHECKING_PATH": "Comprobado:",

@@ -1619,7 +1619,7 @@
     "IN_GAME_VIEW": "游戏内视图",
     "IN_GAME_VIEW_HELP": "一次关闭所有编辑器叠加层（路径、标记、圆圈、网格、碰撞、指南针……），以游戏中的样子查看该地点；关闭后一切恢复原样",
     "TOP_VIEW": "俯视图",
-    "TOP_VIEW_HELP": "从正上方向下看，北方朝上，像小地图一样（V）",
+    "TOP_VIEW_HELP": "从正上方向下看，北方朝上，像小地图一样；再次点击，回到之前的角度（V）",
     "CONTROL_TOPVIEW": "俯视图",
     "CLEAR_PATH_CHECK": "清除",
     "CHECKING_PATH": "已检查：",

@@ -853,6 +853,8 @@ export class WorldEditorComponent implements OnInit {
   );
   /** Goes up to look straight down from above. */
   protected readonly topViewRequest = signal(0);
+  /** Looking straight down (the Top view button shows pressed; pressed again, back to the angle before). */
+  protected readonly inTopView = signal(false);
   /** How the toolbar's buttons show (icon, name or both), kept on this computer. */
   protected readonly buttonStyle = signal(loadButtonStyle());
   protected readonly buttonStyles = BUTTON_STYLES;

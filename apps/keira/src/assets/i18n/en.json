@@ -1619,7 +1619,7 @@
     "IN_GAME_VIEW": "In-game view",
     "IN_GAME_VIEW_HELP": "Turns every editor overlay off at once (paths, markers, circles, grids, collision, compass…) to see the place as the game shows it; turned off, everything comes back as it was",
     "TOP_VIEW": "Top view",
-    "TOP_VIEW_HELP": "Looks straight down from above, north at the top, like a minimap (V)",
+    "TOP_VIEW_HELP": "Looks straight down from above, north at the top, like a minimap; again, back to the angle before (V)",
     "CONTROL_TOPVIEW": "Top view",
     "CLEAR_PATH_CHECK": "Clear",
     "CHECKING_PATH": "Checked:",

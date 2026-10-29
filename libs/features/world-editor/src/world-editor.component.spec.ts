@@ -75,6 +75,7 @@ class FakeWorldViewerComponent {
   readonly pathEnds = input<{ start: WorldPosition; end: WorldPosition } | undefined>(undefined);
   readonly simulationRate = input(1);
   readonly simulationEnded = output<void>();
+  readonly topViewChanged = output<boolean>();
   readonly markerLookAt = input<WorldPosition | undefined>(undefined);
   readonly placePreview = input<{ kind: string; displayId: number; scale: number } | undefined>(undefined);
   readonly region = input<WorldBounds | undefined>(undefined);
@@ -3804,6 +3805,14 @@ describe(WorldEditorComponent.name, () => {
       page.key('v');
       page.fixture.detectChanges();
       expect(page.viewer().topView()).toBe(2);
+      // pressed while looking down (asked again, the view goes back to the angle before)
+      page.viewer().topViewChanged.emit(true);
+      page.fixture.detectChanges();
+      expect(page.byId('top-view').nativeElement.classList).toContain('active');
+      expect(page.byId('top-view').nativeElement.getAttribute('aria-pressed')).toBe('true');
+      page.viewer().topViewChanged.emit(false);
+      page.fixture.detectChanges();
+      expect(page.byId('top-view').nativeElement.classList).not.toContain('active');
     });
 
     it('turns every overlay off in the in-game view, and back on', async () => {

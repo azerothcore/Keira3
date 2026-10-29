@@ -143,6 +143,8 @@ const MOUSE_OVER_DELAY = 120;
 const LABEL_OFFSET = 14;
 /** How far south of straight above the top view puts the camera (yards). */
 const TOP_VIEW_OFFSET = 0.01;
+/** Still looking (about) straight down: the camera at most this far south of above, for each yard of height. */
+const TOP_VIEW_TOLERANCE = 0.01;
 /** How high over the simulated creature its bubble is (yards). */
 const BUBBLE_HEIGHT = 3.5;
 /** A walked route this many times longer than the straight line went a long way round. */
@@ -253,6 +255,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   readonly simulationRate = input(1);
   /** A simulation played once got to its end. */
   readonly simulationEnded = output<void>();
+  /** The top view was turned on (true) or left, by asking again or turning the camera (false). */
+  readonly topViewChanged = output<boolean>();
   /** Positions to know the ground under (the spawn problems report); answered by `groundHeights`. */
   readonly groundQuery = input<{ key: string; position: WorldPosition }[] | undefined>(undefined);
   /** The ground (terrain or floor) under each `groundQuery` position: the first below it, else the highest; null where nothing is loaded. */
@@ -596,7 +600,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     });
     effect(() => {
       if (this.topView()) {
-        untracked(() => this.lookDown());
+        untracked(() => this.toggleTopView());
       }
     });
     effect(() => {
@@ -746,22 +750,50 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     const camera = this.world.camera.position;
     // north is the scene's -z: the camera goes south of what it looks at (+z), as far along the ground as it was
     const along = Math.hypot(camera.x - this.target.x, camera.z - this.target.z);
-    this.placeCamera(camera.y - this.target.y, along);
+    this.placeCamera(new Vector3(0, camera.y - this.target.y, along));
   }
 
-  /** Looks straight down at what the camera looks at, north at the top (like a minimap), from as far as it was. */
-  protected lookDown(): void {
+  /** Where the camera was, from what it looked at, before the top view (while in it). */
+  private beforeTopView?: Vector3;
+
+  /**
+   * Looks straight down at what the camera looks at, north at the top (like a minimap), from as far as it was; asked
+   * again, back to the angle it had before (looking at where it looks now, from as far as it is now).
+   */
+  protected toggleTopView(): void {
+    const camera = this.world.camera.position;
+    const distance = camera.distanceTo(this.target);
+    const before = this.beforeTopView;
+    this.beforeTopView = undefined;
+    if (before) {
+      this.placeCamera(before.clone().setLength(distance));
+      this.topViewChanged.emit(false);
+      return;
+    }
+    const offset = camera.clone().sub(this.target);
     // (a hair south of straight above, so north stays at the top)
-    this.placeCamera(this.world.camera.position.distanceTo(this.target), TOP_VIEW_OFFSET);
+    this.placeCamera(new Vector3(0, distance, TOP_VIEW_OFFSET));
+    this.beforeTopView = offset;
+    this.topViewChanged.emit(true);
   }
 
-  /** The camera `up` above and `south` of what it looks at. */
-  private placeCamera(up: number, south: number): void {
+  /** Left the top view by turning the camera: asking for it again looks down again. */
+  private checkTopView(): void {
+    const before = this.beforeTopView;
+    const offset = this.world.camera.position.clone().sub(this.target);
+    if (before && Math.hypot(offset.x, offset.z) > Math.max(offset.y, 1) * TOP_VIEW_TOLERANCE) {
+      this.beforeTopView = undefined;
+      this.topViewChanged.emit(false);
+    }
+  }
+
+  /** The camera at `offset` from what it looks at (scene axes: y up, +z south). */
+  private placeCamera(offset: Vector3): void {
     const controls = this.controls;
     if (!controls) {
       return;
     }
-    this.world.camera.position.set(this.target.x, this.target.y + up, this.target.z + south);
+    this.world.camera.position.copy(this.target).add(offset);
     controls.update();
     this.onCameraChange();
   }
@@ -799,10 +831,24 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     if (event.button !== 0) {
       return;
     }
-    const result = this.pickAt(event, { groundOnly: this.groundOnly() });
+    // the simulated creature stands for the spawn it simulates (unless placing on the ground)
+    const ghost = !this.groundOnly() && this.onGhost(event) && this.simulation();
+    const result: PickResult | undefined = ghost
+      ? { type: 'spawn', key: ghost.key, position: this.world.ghostPosition() as WorldPosition }
+      : this.pickAt(event, { groundOnly: this.groundOnly() });
     if (result) {
       this.picked.emit(event.ctrlKey || event.metaKey ? { ...result, additive: true } : result);
     }
+  }
+
+  /** Whether the pointer is on the simulated creature (while a simulation runs). */
+  private onGhost(event: { clientX: number; clientY: number }): boolean {
+    const canvas = this.canvasRef().nativeElement.getBoundingClientRect();
+    return (
+      !!this.simulationStatus() &&
+      !!canvas.width &&
+      this.world.ghostNear(((event.clientX - canvas.left) / canvas.width) * 2 - 1, -((event.clientY - canvas.top) / canvas.height) * 2 + 1)
+    );
   }
 
   /**
@@ -898,12 +944,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     this.hoverEvent = undefined;
     this.altHeld = event.altKey;
     const rect = this.host().nativeElement.getBoundingClientRect();
-    const canvas = this.canvasRef().nativeElement.getBoundingClientRect();
     // the simulated creature: what it's doing
-    const onGhost =
-      !!this.simulationStatus() &&
-      !!canvas.width &&
-      this.world.ghostNear(((event.clientX - canvas.left) / canvas.width) * 2 - 1, -((event.clientY - canvas.top) / canvas.height) * 2 + 1);
+    const onGhost = this.onGhost(event);
     const result = onGhost ? undefined : this.pickAt(event, HOVER_PICK);
     const text = onGhost ? this.simulationText() : result && this.textOf(result);
     const spawn = result && 'key' in result ? this.spawns().find((s) => s.key === result.key) : undefined;
@@ -1710,6 +1752,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   }
 
   private onCameraChange(): void {
+    this.checkTopView();
     this.world.setSeaLevel(this.renderSettings().showSeaLevel, this.center);
     this.emitCenter(false);
     this.requestRender();

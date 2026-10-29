@@ -256,6 +256,7 @@
         [pathEnds]="inGameView() ? undefined : pathEnds()"
         [resetNorth]="resetNorthRequest()"
         [topView]="topViewRequest()"
+        (topViewChanged)="inTopView.set($event)"
         (picked)="onPicked($event)"
         (objectMoved)="onObjectMoved($event)"
         (centerChanged)="onCenterChanged($event)"
@@ -3391,6 +3392,8 @@
     type="button"
     class="btn btn-sm btn-outline-secondary"
     data-testid="top-view"
+    [class.active]="inTopView()"
+    [attr.aria-pressed]="inTopView()"
     [title]="buttonTitle('topView') | translate"
     (click)="topViewRequest.update((n) => n + 1)"
   >
