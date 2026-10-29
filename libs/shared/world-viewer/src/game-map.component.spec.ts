@@ -4,7 +4,15 @@ import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { GameMapData, Ring, WorldBounds, WorldPosition, WowClientService, WowMap } from '@keira/shared/wow-data';
 import { DebugHtmlElement, PageObjectModel } from 'ngx-page-object-model';
 import { GameMapComponent } from './game-map.component';
-import { GAME_MAP_LAYERS_KEY, GAME_MAP_MARKER_KEY, GameMapPoi, GameMapPortal, GameMapTeleport, GameMapTransport } from './game-map-pois';
+import {
+  GAME_MAP_LAYERS_KEY,
+  GAME_MAP_MARKER_KEY,
+  GameMapPoi,
+  GameMapPortal,
+  GameMapSpawnLevel,
+  GameMapTeleport,
+  GameMapTransport,
+} from './game-map-pois';
 import { WorldMapDot } from './world-map.component';
 
 @Component({
@@ -18,6 +26,7 @@ import { WorldMapDot } from './world-map.component';
       [pois]="pois()"
       [teleports]="teleports()"
       [portals]="portals()"
+      [spawnLevels]="spawnLevels"
       [transports]="transports()"
       [maps]="maps()"
       (regionSelected)="regions.push($event)"
@@ -68,11 +77,22 @@ class HostComponent {
     { name: 'Portal to nowhere', mapId: 0, x: -9300, y: -450, targetMap: 530, tx: -1800, ty: 5300 },
   ]);
   readonly transports = signal<GameMapTransport[]>([
-    { entry: 1, name: 'Boat (The Bravery)', path: 7, faction: 11 },
+    {
+      entry: 1,
+      name: 'Boat (The Bravery)',
+      path: 7,
+      faction: 11,
+      description: 'Elwynn and Somewhere (Boat, Alliance ("The Bravery"))',
+      speed: 30,
+      accel: 1,
+    },
     { entry: 2, name: 'Zeppelin', path: 8, faction: 0 },
+    { entry: 6, name: 'Boat (The Neutral)', path: 9, faction: 0 },
     { entry: 3, name: 'Tram', path: 9, faction: 0 },
     { entry: 4, name: 'Lost', path: 99, faction: 0 },
-    { entry: 5, name: "Orgrim's Hammer", path: 9, faction: 0 },
+    // (no stops at all)
+    { entry: 7, name: 'Zeppelin (circling)', path: 10, faction: 0 },
+    { entry: 5, name: "Orgrim's Hammer", path: 9, faction: 0, description: 'Icecrown (Gunship, Horde ("Orgrim\'s Hammer"))' },
   ]);
   readonly maps = signal<WowMap[]>([
     { id: 0, directory: 'Azeroth', name: 'Eastern Kingdoms', instanceType: 0 },
@@ -82,6 +102,15 @@ class HostComponent {
     { id: 603, directory: 'UlduarRaid', name: 'Ulduar', instanceType: 2 },
   ]);
   readonly regions: WorldBounds[] = [];
+  /** Creatures in Goldshire (levels 5-7), a friendly one, and one outside Elwynn's outline; none elsewhere. */
+  readonly spawns: GameMapSpawnLevel[] = [
+    ...[5, 6, 7, 6].map((level) => ({ x: -9000, y: -250, minLevel: level, maxLevel: level, faction: 14 })),
+    { x: -9000, y: -250, minLevel: 60, maxLevel: 60, faction: 11 },
+    { x: -9900, y: -1900, minLevel: 60, maxLevel: 60, faction: 14 },
+  ];
+  spawnLevels?: (mapId: number, bounds: WorldBounds) => Promise<GameMapSpawnLevel[]> = vi.fn((mapId: number, bounds: WorldBounds) =>
+    bounds.minX === -10000 ? Promise.resolve(this.spawns) : Promise.reject(new Error(`no creatures on ${mapId}`)),
+  );
   closes = 0;
 }
 
@@ -186,7 +215,7 @@ const data = (): GameMapData => ({
     [40, { name: 'Westfall', flags: 64, levels: [10, 20] as [number, number], faction: 0 }],
     [3430, { name: 'Eversong Woods', flags: 0, faction: -1 }],
     [87, { name: 'Goldshire', flags: 0 }],
-    [88, { name: 'Northshire', flags: 0 }],
+    [88, { name: 'Northshire', flags: 0x100 }],
     [6001, { name: 'Fargodeep Mine', flags: 0 }],
     [3456, { name: 'Naxxramas', flags: 0 }],
   ]),
@@ -237,7 +266,7 @@ describe(GameMapComponent.name, () => {
     getTexture: vi.fn(),
     getFactions: vi.fn(),
     getAreaTriggers: vi.fn(),
-    getTaxiPaths: vi.fn(),
+    getTaxiPathNodes: vi.fn(),
   };
   const clipboard = { writeText: vi.fn() };
 
@@ -289,33 +318,16 @@ describe(GameMapComponent.name, () => {
           ? Promise.resolve([100, 101, 102, 103, 104].map((id) => ({ id, mapId: 0, x: -9500 + id, y: 500, z: 1, radius: 5 })))
           : Promise.reject(new Error('no dbc')),
       );
-    client.getTaxiPaths.mockReset().mockImplementation((mapId: number) =>
-      mapId === 0
-        ? Promise.resolve([
-            {
-              id: 7,
-              from: 0,
-              to: 0,
-              points: [
-                { x: -9000, y: 0, z: 0 },
-                { x: -9500, y: 0, z: 0 },
-                { x: 0, y: 0, z: 0 },
-                { x: -8500, y: 1000, z: 0 },
-                { x: -8600, y: 1000, z: 0 },
-              ],
-            },
-            { id: 8, from: 0, to: 0, points: [{ x: -9000, y: 0, z: 0 }] },
-            {
-              id: 9,
-              from: 0,
-              to: 0,
-              points: [
-                { x: -9000, y: 0, z: 0 },
-                { x: -9100, y: 0, z: 0 },
-              ],
-            },
-          ])
-        : Promise.resolve([]),
+    const node = (x: number, y: number, delay = 0) => ({ mapId: 0, x, y, z: 0, flags: 0, delay });
+    client.getTaxiPathNodes.mockReset().mockResolvedValue(
+      new Map([
+        // the boat waits at two docks, and goes off the picture between them
+        [7, [node(-9000, 0, 30), node(-9500, 0), node(0, 0), node(-8500, 0, 60), node(-8600, 0)]],
+        [8, [node(-9000, 0)]],
+        // (its stops off the picture)
+        [9, [node(-9000, 0), node(-9100, 0), node(0, 0, 10), node(100, 0, 10)]],
+        [10, [node(-9200, 0), node(-9250, 0)]],
+      ]),
     );
     await TestBed.configureTestingModule({
       imports: [HostComponent, TranslateTestingModule],
@@ -391,12 +403,29 @@ describe(GameMapComponent.name, () => {
     );
     expect(page.byId('game-map-pin-transport:3:0').nativeElement.querySelector('i.fa-train')).toBeTruthy();
     expect(page.byId('game-map-pin-transport:5:0').nativeElement.querySelector('img').getAttribute('src')).toBe(
+      'assets/img/map/poi/zep-h.png',
+    );
+    expect(page.byId('game-map-pin-transport:6:0').nativeElement.querySelector('img').getAttribute('src')).toBe(
+      'assets/img/map/poi/boat-n.png',
+    );
+    expect(page.byId('game-map-route:5').nativeElement.getAttribute('class')).toBe('side-h');
+    expect(page.byId('game-map-pin-transport:7:0').nativeElement.querySelector('img').getAttribute('src')).toBe(
       'assets/img/map/poi/zep-n.png',
     );
     expect(page.byId('game-map-side-poi:1')).toBeTruthy();
     expect(page.byId('game-map-route:2', false)).toBeFalsy();
-    expect(page.byId('game-map-route:3').nativeElement.getAttribute('stroke')).toBe('#ffd200');
-    expect(page.byId('game-map-route:1').nativeElement.getAttribute('stroke')).toBe('#4d8dff');
+    expect(page.byId('game-map-route:3').nativeElement.getAttribute('class')).toBe('side-n');
+    expect(page.byId('game-map-route:1').nativeElement.getAttribute('class')).toBe('side-a');
+    expect(page.byId('game-map-route:1-no').nativeElement.textContent?.trim()).toBe('1');
+    // a dock at each of its stops
+    expect(page.byId('game-map-pin-transport:1:1')).toBeTruthy();
+    // on its line: what it is, where it goes, how long it takes
+    page.hoverAt(429, 420);
+    expect(page.byId('game-map-route:1').nativeElement.getAttribute('class')).toBe('side-a hl');
+    expect(page.tooltip()).toBe(
+      '1 · The Bravery WORLD_EDITOR.GAME_MAP_BOATS Elwynn ↔ Somewhere WORLD_EDITOR.GAME_MAP_ARROWS ' +
+        'WORLD_EDITOR.GAME_MAP_WAIT_TIME WORLD_EDITOR.GAME_MAP_ONE_WAY WORLD_EDITOR.GAME_MAP_TWO_WAY',
+    );
     // Stormwind (a city with its map) and Westfall (a neighbour) have chips that open them, kept apart; Duskwood, a
     // neighbour not shown, one at the edge facing it
     const stormwind = page.byId('game-map-chip-area:301').nativeElement;
@@ -411,12 +440,13 @@ describe(GameMapComponent.name, () => {
     // sub-zones and the coordinates as the game says them, with the ids
     page.hoverAt(501, 334);
     expect(page.tooltip()).toBe(
-      'Goldshire Elwynn Forest WORLD_EDITOR.GAME_MAP_MAP_ID WORLD_EDITOR.GAME_MAP_ZONE_ID WORLD_EDITOR.GAME_MAP_AREA_ID',
+      'Goldshire WORLD_EDITOR.GAME_MAP_LEVELS Elwynn Forest WORLD_EDITOR.GAME_MAP_MAP_ID WORLD_EDITOR.GAME_MAP_ZONE_ID WORLD_EDITOR.GAME_MAP_AREA_ID',
     );
     expect(page.byId('game-map-sub-87').nativeElement.getAttribute('class')).toBe('sub hover');
     expect(page.byId('game-map-coords').nativeElement.textContent?.trim()).toBe('(50.0, 50.0)');
+    // (a city among them)
     page.hoverAt(100, 100);
-    expect(page.tooltip()).toContain('Northshire Elwynn Forest');
+    expect(page.tooltip()).toContain('Northshire WORLD_EDITOR.GAME_MAP_CITY Elwynn Forest');
     page.hoverAt(980, 600);
     expect(page.byId('game-map-tooltip', false)).toBeFalsy();
     expect(page.byId('game-map-coords').nativeElement.textContent?.trim()).toBe('(97.8, 89.8)');
@@ -756,6 +786,8 @@ describe(GameMapComponent.name, () => {
     const { page } = await setup((h) => {
       h.mapId.set(603);
       h.camera.set({ x: 1600, y: -100, z: 1 });
+      // (no levels for sub-zones)
+      h.spawnLevels = undefined;
     });
     expect(page.title()).toBe('Ulduar – WORLD_EDITOR.GAME_MAP_FLOOR');
     page.click('game-map-floor-area:529');
@@ -770,6 +802,7 @@ describe(GameMapComponent.name, () => {
 
   it('opens the world map without a camera, and says when the world map or the factions cannot be read', async () => {
     client.getFactions.mockRejectedValueOnce(new Error('no factions'));
+    client.getTaxiPathNodes.mockRejectedValueOnce(new Error('no dbc'));
     const textures = client.getTexture.getMockImplementation() as (path: string) => Promise<unknown>;
     client.getTexture.mockImplementation((path: string) =>
       path.includes('FlightMaster') ? Promise.reject(new Error('none')) : textures(path),
@@ -784,6 +817,7 @@ describe(GameMapComponent.name, () => {
     expect(page.title()).toBe('WORLD_EDITOR.GAME_MAP_AZEROTH');
     expect(page.byId('game-map-camera-pin', false)).toBeFalsy();
     expect(warn).toHaveBeenCalledWith('[World Editor] Could not read the factions for the world map:', expect.any(Error));
+    expect(warn).toHaveBeenCalledWith("[World Editor] Could not read the transports' paths for the world map:", expect.any(Error));
     page.clickAt(900, 300);
     await settle(page);
     page.clickAt(457, 501);

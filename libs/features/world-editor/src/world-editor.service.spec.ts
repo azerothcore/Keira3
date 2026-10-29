@@ -548,22 +548,46 @@ describe('WorldEditorService', () => {
     expect(queryService.query.mock.calls[3][0]).not.toContain('trainer t');
   });
 
+  it("loads the creatures that tell an area's levels, plainer when the tables lack columns", async () => {
+    const { service, queryService } = setup();
+    queryService.query
+      .mockReturnValueOnce(of([{ x: '1', y: '2', minlevel: '3', maxlevel: '4', faction: '5' }]))
+      .mockReturnValueOnce(throwError(() => new Error('no column')))
+      .mockReturnValueOnce(of(undefined));
+    const bounds = { minX: -10, maxX: 10, minY: -20, maxY: 20 };
+    expect(await service.loadSpawnLevels(0, bounds)).toEqual([{ x: 1, y: 2, minLevel: 3, maxLevel: 4, faction: 5 }]);
+    expect(queryService.query.mock.calls[0][0]).toContain('c.position_x BETWEEN -10 AND 10 AND c.position_y BETWEEN -20 AND 20');
+    expect(queryService.query.mock.calls[0][0]).toContain('NOT EXISTS (SELECT 1 FROM game_event_creature');
+    expect(await service.loadSpawnLevels(0, bounds)).toEqual([]);
+    expect(queryService.query.mock.calls[2][0]).not.toContain('game_event_creature');
+  });
+
   it('loads the teleports and transports for the in-game map', async () => {
     const { service, queryService } = setup();
     queryService.query
       .mockReturnValueOnce(of([{ id: '45', name: 'Naxx', target_map: '533', tx: '1', ty: '2' }]))
       .mockReturnValueOnce(of(undefined))
-      .mockReturnValueOnce(of([{ entry: '1', name: 'Boat', path: '7', faction: '11' }]))
+      .mockReturnValueOnce(of([{ entry: '1', name: 'Boat', path: '7', faction: '11', description: 'A and B', speed: '30', accel: '1' }]))
+      // (no transports table: without the descriptions)
+      .mockReturnValueOnce(throwError(() => new Error('no transports table')))
+      .mockReturnValueOnce(of([{ entry: '2', name: 'Zeppelin', path: '8', faction: '0' }]))
       .mockReturnValueOnce(of(undefined))
       .mockReturnValueOnce(of([{ name: 'Portal', map: '0', x: '1', y: '2', targetMap: '530', tx: '3', ty: '4' }]))
       .mockReturnValueOnce(of(undefined));
     expect(await service.loadMapTeleports()).toEqual([{ id: 45, name: 'Naxx', targetMap: 533, target: { x: 1, y: 2 } }]);
     expect(await service.loadMapTeleports()).toEqual([]);
-    expect(await service.loadTransportRoutes()).toEqual([{ entry: 1, name: 'Boat', path: 7, faction: 11 }]);
+    expect(await service.loadTransportRoutes()).toEqual([
+      { entry: 1, name: 'Boat', path: 7, faction: 11, description: 'A and B', speed: 30, accel: 1 },
+    ]);
     expect(queryService.query.mock.calls[2][0]).toContain('WHERE gt.type = 15');
+    expect(queryService.query.mock.calls[2][0]).toContain('FROM transports t');
+    expect(await service.loadTransportRoutes()).toEqual([
+      { entry: 2, name: 'Zeppelin', path: 8, faction: 0, description: undefined, speed: 0, accel: 0 },
+    ]);
+    expect(queryService.query.mock.calls[4][0]).not.toContain('transports t');
     expect(await service.loadTransportRoutes()).toEqual([]);
     expect(await service.loadMapPortals()).toEqual([{ name: 'Portal', mapId: 0, x: 1, y: 2, targetMap: 530, tx: 3, ty: 4 }]);
-    expect(queryService.query.mock.calls[4][0]).toContain('JOIN spell_target_position stp ON stp.ID = gt.Data0 WHERE gt.type = 22');
+    expect(queryService.query.mock.calls[6][0]).toContain('JOIN spell_target_position stp ON stp.ID = gt.Data0 WHERE gt.type = 22');
     expect(await service.loadMapPortals()).toEqual([]);
   });
 

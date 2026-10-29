@@ -357,13 +357,113 @@
   height: 100%;
   pointer-events: none;
 
-  polyline {
+  path {
     fill: none;
-    stroke-width: 2px;
-    stroke-dasharray: 5 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
     vector-effect: non-scaling-stroke;
-    filter: drop-shadow(0 0 1px #000);
   }
+
+  .case {
+    stroke: rgba(0, 0, 0, 0.55);
+    stroke-width: 4px;
+  }
+
+  .line {
+    stroke: #ffd100;
+    stroke-width: 2px;
+    stroke-dasharray: 6px 5px;
+  }
+
+  .side-a .line {
+    stroke: #4da6ff;
+  }
+
+  .side-h .line {
+    stroke: #ff4d4d;
+  }
+
+  .hl .line {
+    stroke-width: 3.5px;
+    stroke-dasharray: none;
+  }
+
+  .hl .case {
+    stroke-width: 6px;
+    stroke: rgba(0, 0, 0, 0.75);
+  }
+}
+
+// AoWoW's arrows (the way it goes), stops (a bar where it waits, the wait beside it) and line numbers (its ID)
+.game-map-route-marks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  .side-a {
+    --route: #4da6ff;
+  }
+
+  .side-h {
+    --route: #ff4d4d;
+  }
+}
+
+.game-map-route-arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 5px 0 5px 9px;
+  border-color: transparent transparent transparent var(--route, #ffd100);
+  transform: translate(-50%, -50%) rotate(var(--a, 0deg));
+  filter: drop-shadow(0 0 1px #000) drop-shadow(0 0 1px #000);
+}
+
+.game-map-route-stop {
+  position: absolute;
+  z-index: 2;
+  width: 5px;
+  height: 16px;
+  background: var(--route, #ffd100);
+  border: 1px solid #000;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
+  transform: translate(-50%, -50%) rotate(var(--a, 0deg));
+}
+
+.game-map-route-wait {
+  position: absolute;
+  z-index: 2;
+  height: 15px;
+  padding: 0 5px;
+  font:
+    bold 9px/13px Verdana,
+    sans-serif;
+  white-space: nowrap;
+  color: var(--route, #ffd100);
+  background: rgba(17, 17, 17, 0.88);
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  transform: translate(-50%, -50%) translate(var(--dx, 0px), var(--dy, 0px));
+}
+
+.game-map-route-no {
+  position: absolute;
+  z-index: 1;
+  min-width: 15px;
+  height: 15px;
+  padding: 0 3px;
+  font:
+    bold 10px/11px Verdana,
+    sans-serif;
+  text-align: center;
+  white-space: nowrap;
+  color: var(--route, #ffd100);
+  background: #111;
+  border: 2px solid currentColor;
+  border-radius: 8px;
+  transform: translate(-50%, -50%) rotate(var(--r, 0deg));
 }
 
 // a neighbouring zone's name, which opens it

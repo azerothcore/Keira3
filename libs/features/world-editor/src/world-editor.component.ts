@@ -72,6 +72,7 @@ import {
   WorldMapDot,
   GameMapPoi,
   GameMapPortal,
+  GameMapSpawnLevel,
   GameMapTeleport,
   GameMapTransport,
   GameMapComponent,
@@ -1021,6 +1022,9 @@ export class WorldEditorComponent implements OnInit {
   protected readonly gameMapPois = signal<GameMapPoi[]>([]);
   protected readonly gameMapTeleports = signal<GameMapTeleport[]>([]);
   protected readonly gameMapPortals = signal<GameMapPortal[]>([]);
+  /** The creatures of an area, for the levels of the in-game map's sub-zones. */
+  protected readonly readSpawnLevels = (mapId: number, bounds: WorldBounds): Promise<GameMapSpawnLevel[]> =>
+    this.service.loadSpawnLevels(mapId, bounds);
   protected readonly gameMapTransports = signal<GameMapTransport[]>([]);
   private gameMapDataLoading = false;
   private loadGameMapData(): void {

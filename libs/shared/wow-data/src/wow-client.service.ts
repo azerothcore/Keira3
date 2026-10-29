@@ -11,8 +11,10 @@ import {
   parseAreaTriggers,
   parseTaxiNodes,
   parseTaxiPaths,
+  parseTaxiPathNodes,
   TaxiNode,
   TaxiPath,
+  TaxiPathNode,
   parseCreatureDisplays,
   playerDisplay,
   parseGameObjectDisplays,
@@ -629,6 +631,16 @@ export class WowClientService {
     return paths && nodes ? parseTaxiPaths(paths, nodes, mapId) : [];
   }
   private taxiPathDbcs?: Promise<[DbcFile | undefined, DbcFile | undefined]>;
+
+  /** The nodes of taxi paths (transports' paths: every map, with flags and waits), by path. */
+  async getTaxiPathNodes(pathIds: number[]): Promise<Map<number, TaxiPathNode[]>> {
+    this.taxiPathDbcs ??= Promise.all([this.readDbc('TaxiPath.dbc'), this.readDbc('TaxiPathNode.dbc')]).catch((error) => {
+      this.taxiPathDbcs = undefined;
+      throw error;
+    });
+    const [, nodes] = await this.taxiPathDbcs;
+    return nodes ? parseTaxiPathNodes(nodes, new Set(pathIds)) : new Map();
+  }
   private skyboxDbc?: Promise<DbcFile | undefined>;
 
   /** The models placed in a tile of the server's vmaps (`<server data>/vmaps`); undefined without that file. */

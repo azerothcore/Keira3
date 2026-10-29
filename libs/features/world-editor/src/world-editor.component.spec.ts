@@ -257,6 +257,7 @@ describe(WorldEditorComponent.name, () => {
       loadMapTeleports: vi.fn(),
       loadTransportRoutes: vi.fn(),
       loadMapPortals: vi.fn(),
+      loadSpawnLevels: vi.fn(),
       loadTeleports: vi.fn(),
       loadLandingSpot: vi.fn(),
       loadAreaPaths: vi.fn(),
@@ -3668,6 +3669,7 @@ describe(WorldEditorComponent.name, () => {
           teleports: () => unknown[];
           transports: () => unknown[];
           portals: () => unknown[];
+          spawnLevels: () => (mapId: number, bounds: WorldBounds) => Promise<unknown[]>;
           zoneId: () => number;
           regionSelected: { emit: (b: WorldBounds) => void };
           closed: { emit: () => void };
@@ -3678,6 +3680,10 @@ describe(WorldEditorComponent.name, () => {
       expect(map().teleports()).toHaveLength(1);
       expect(map().transports()).toHaveLength(1);
       expect(map().portals()).toHaveLength(1);
+      // (the creatures of an area, for its sub-zones' levels, from the database)
+      mocks.service.loadSpawnLevels.mockResolvedValueOnce([{ x: 1, y: 2, minLevel: 3, maxLevel: 4, faction: 5 }]);
+      expect(await map().spawnLevels()(0, { minX: 0, maxX: 1, minY: 0, maxY: 1 })).toHaveLength(1);
+      expect(mocks.service.loadSpawnLevels).toHaveBeenCalledWith(0, { minX: 0, maxX: 1, minY: 0, maxY: 1 });
       map().regionSelected.emit({ minX: -9100, maxX: -9000, minY: 0, maxY: 100 });
       await settle(page);
       expect(page.viewer().region()).toEqual({ minX: -9100, maxX: -9000, minY: 0, maxY: 100 });

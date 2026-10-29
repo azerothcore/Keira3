@@ -29,7 +29,7 @@ import {
   Ring,
   ringsArea,
   ringsPath,
-  TaxiPath,
+  TaxiPathNode,
   toGameMap,
   WorldBounds,
   WorldPosition,
@@ -52,6 +52,7 @@ import {
   GameMapLayerGroup,
   GameMapPoi,
   GameMapPortal,
+  GameMapSpawnLevel,
   GameMapTeleport,
   GameMapTransport,
   loadMarkerSize,
@@ -61,10 +62,23 @@ import {
   POI_ASSETS,
   saveMarkerSize,
   saveShownLayers,
+  subzoneLevels,
   TERRITORY_ICONS,
   transportKind,
   TRAVEL_ICONS,
 } from './game-map-pois';
+import {
+  describeTransport,
+  legTime,
+  roundTrip,
+  routeArrows,
+  routeLabel,
+  routeLines,
+  routeNearest,
+  RoutePoint,
+  RouteStop,
+  routeStops,
+} from './game-map-routes';
 import { imageToDataUrl, imageToPngUrl } from './minimap-image';
 import { WorldMapDot } from './world-map.component';
 
@@ -91,8 +105,11 @@ const WINTERGRASP = 4197;
 /** Instance types (Map.dbc) of dungeons and raids. */
 const INSTANCE_DUNGEON = 1;
 const INSTANCE_RAID = 2;
-/** A transport's line, by side. */
-const ROUTE_COLORS = { alliance: '#4d8dff', horde: '#ff4d4d', neutral: '#ffd200' };
+/** The picture's size (pixels) routes' arrows are spaced and turned in (its shape is what counts). */
+const FRAME_W = 1002;
+const FRAME_H = 668;
+/** A route is under the pointer this close to it (pixels of that frame). */
+const ROUTE_HOVER = 6;
 
 type Side = 'alliance' | 'horde';
 
@@ -119,13 +136,23 @@ interface GamePin {
   more?: number;
 }
 
-/** A transport's route on the picture. */
+/** A transport's route on the picture (as AoWoW's): its lines, arrows, number and stops, and what it says. */
 interface GameRoute {
   key: string;
-  name: string;
-  color: string;
-  /** Its runs on the picture, as SVG points (0..1000). */
-  lines: string[];
+  entry: number;
+  /** Its side's colour: a(lliance), h(orde), n(eutral). */
+  side: 'a' | 'h' | 'n';
+  /** Its lines as SVG path data (percent), and as points. */
+  d: string;
+  lines: RoutePoint[][];
+  arrows: { u: number; v: number; angle: number }[];
+  label?: { u: number; v: number; angle: number };
+  /** Where it waits: a bar across the line, the wait beside it (pixels off the line). */
+  stops: { u: number; v: number; angle: number; text: string; dx: number; dy: number }[];
+  title: string;
+  kind: string;
+  route?: string;
+  times: string[];
 }
 
 /** A shape drawn over the picture: a zone (coloured by level or land), a neighbour, or a sub-zone. */
@@ -233,6 +260,8 @@ export class GameMapComponent {
   /** Portal objects (Shattrath's, Dalaran's…) with where they send to. */
   readonly portals = input<GameMapPortal[]>([]);
   readonly maps = input<WowMap[]>([]);
+  /** Reads the creatures spawned in an area of a map, for the levels of a zone's sub-zones (none: no levels). */
+  readonly spawnLevels = input<((mapId: number, bounds: WorldBounds) => Promise<GameMapSpawnLevel[]>) | undefined>(undefined);
   /** Load every spawn of an area (the zone shown). */
   readonly regionSelected = output<WorldBounds>();
   readonly closed = output<void>();
@@ -286,7 +315,11 @@ export class GameMapComponent {
   protected readonly icons = signal(new Map<string, string>());
   private readonly factions = signal<FactionData | undefined>(undefined);
   private readonly triggers = signal(new Map<number, AreaTriggerInfo[]>());
-  private readonly taxiPaths = signal(new Map<number, TaxiPath[]>());
+  /** The creatures spawned on zones' pictures (for their sub-zones' levels), by page. */
+  private readonly pageSpawns = signal(new Map<string, GameMapSpawnLevel[]>());
+  /** The transports' paths (every map), by taxi path. */
+  private readonly transportNodes = signal(new Map<number, TaxiPathNode[]>());
+  private transportNodesAsked = false;
   private press?: { x: number; y: number; pan: { x: number; y: number }; moved: boolean };
 
   /** Markers are smaller on continents, as on AoWoW's. */
@@ -406,6 +439,34 @@ export class GameMapComponent {
   private readonly subzones = computed(() => {
     const page = this.page();
     return (page && this.outlines().get(`subzones:${page.key}`)) ?? new Map<string, Ring[]>();
+  });
+
+  /** The levels of the zone's sub-zones, from the creatures spawned in them (as AoWoW's), by area id. */
+  private readonly subLevels = computed(() => {
+    const page = this.page() as GamePage;
+    // (asked for when the zone opened)
+    const spawns = this.pageSpawns().get(page.key) as GameMapSpawnLevel[];
+    const templates = this.factions()?.templates;
+    const continent = this.continent();
+    const own = continent && this.outlines().get(`regions:${continent.key}`)?.get(page.key);
+    return subzoneLevels(
+      spawns,
+      this.subzones(),
+      (spawn) => {
+        const point = toGameMap(page.bounds as WorldBounds, spawn.x, spawn.y);
+        return [point.u * 100, point.v * 100];
+      },
+      // (the zone's picture shows its neighbours too: only what is in the zone itself)
+      (spawn) => {
+        const point = own && this.placeOn(continent as GamePage, page.mapId, spawn);
+        return !point || pointInRings(point.u * 100, point.v * 100, own);
+      },
+      (faction) => {
+        const template = templates?.get(faction);
+        return !!template && ((template.ourMask | template.friendMask) & 7) !== 0;
+      },
+      pointInRings,
+    );
   });
 
   /** The page a region opens (none for a region whose page the client doesn't have). */
@@ -559,6 +620,18 @@ export class GameMapComponent {
     if (!hover || !page || this.hoverPin()) {
       return undefined;
     }
+    const route = this.hoverRoute();
+    if (route) {
+      return {
+        x: hover.x,
+        y: hover.y,
+        title: route.title,
+        levels: route.kind,
+        land: route.route,
+        hint: this.translate.instant('WORLD_EDITOR.GAME_MAP_ARROWS'),
+        ids: route.times,
+      };
+    }
     const target = this.hoverTarget();
     const sub = this.hoverSub();
     if (target) {
@@ -580,11 +653,16 @@ export class GameMapComponent {
       return undefined;
     }
     const area = this.areaName(sub ? Number(sub) : page.areaId);
+    const levels = sub ? this.subLevels().get(sub) : undefined;
+    const city = ((this.data() as GameMapData).zones.get(Number(sub))?.flags ?? 0) & AREA_CAPITAL;
     return {
       x: hover.x,
       y: hover.y,
       title: area,
-      levels: undefined,
+      levels:
+        sub && city
+          ? this.translate.instant('WORLD_EDITOR.GAME_MAP_CITY')
+          : levels && this.translate.instant('WORLD_EDITOR.GAME_MAP_LEVELS', { min: levels[0], max: levels[1] }),
       land: undefined,
       hint: this.areaName(page.areaId),
       ids: this.ids(page.mapId, page.areaId, sub ? Number(sub) : 0),
@@ -827,83 +905,168 @@ export class GameMapComponent {
     return pins;
   });
 
-  /** The transports with a stop on the page's map: their routes, and where each run starts and ends. */
+  /** The transports whose path crosses the page: their lines and stops on it, and how long they take. */
   private readonly transportRuns = computed(() => {
     const page = this.page();
     if (!page?.bounds) {
       return [];
     }
-    const paths = new Map((this.taxiPaths().get(page.mapId) ?? []).map((path) => [path.id, path]));
     const factions = this.factions();
-    const runs: { transport: GameMapTransport; kind: string; side?: Side; lines: GameMapPoint[][] }[] = [];
+    const runs: {
+      transport: GameMapTransport;
+      kind: string;
+      side?: Side;
+      ship: string;
+      route?: string;
+      lines: RoutePoint[][];
+      stops: { at: RoutePoint; wait: number; node: TaxiPathNode }[];
+      legs: RouteStop[];
+    }[] = [];
     for (const transport of this.transports()) {
-      const path = paths.get(transport.path);
-      if (!path) {
+      const nodes = this.transportNodes().get(transport.path);
+      if (!nodes?.length) {
         continue;
       }
-      const lines: GameMapPoint[][] = [];
-      let run: GameMapPoint[] = [];
-      for (const point of path.points) {
-        const at = this.placeOn(page, page.mapId, point);
-        if (at) {
-          run.push(at);
-        } else if (run.length) {
-          lines.push(run);
-          run = [];
-        }
-      }
-      if (run.length) {
-        lines.push(run);
-      }
-      if (lines.some((line) => line.length > 1)) {
-        runs.push({ transport, kind: transportKind(transport.name), side: factionSide(factions?.templates.get(transport.faction)), lines });
+      const place = (node: TaxiPathNode): RoutePoint | undefined => {
+        const point = this.placeOn(page, node.mapId, node);
+        return point && [point.u * 100, point.v * 100];
+      };
+      const { lines, stops } = routeLines(nodes, place, page.kind === 'continent' ? 0.06 : 0.15);
+      if (lines.length) {
+        const description = describeTransport(transport.description || transport.name);
+        runs.push({
+          transport,
+          kind: transportKind(transport.description || transport.name),
+          side: description.side ?? factionSide(factions?.templates.get(transport.faction)),
+          ship: description.ship,
+          route: description.route,
+          lines,
+          stops,
+          legs: routeStops(nodes),
+        });
       }
     }
     return runs;
   });
 
+  /** The routes drawn (as AoWoW's): dashed in their side's colour, arrows the way they go, their number, their stops. */
   protected readonly routes = computed<GameRoute[]>(() =>
     this.shown().has('routes')
       ? this.transportRuns()
           .filter((run) => this.shown().has(run.kind))
-          .map(({ transport, side, lines }) => ({
-            key: `route:${transport.entry}`,
-            name: transport.name,
-            color: ROUTE_COLORS[side ?? 'neutral'],
-            lines: lines.map((line) => line.map(({ u, v }) => `${Math.round(u * 1000)},${Math.round(v * 1000)}`).join(' ')),
-          }))
+          .map((run) => {
+            const { transport, side, lines } = run;
+            const stops = run.stops
+              .map(({ at, wait }) => ({
+                near: routeNearest(lines, at, FRAME_W, FRAME_H) as NonNullable<ReturnType<typeof routeNearest>>,
+                wait,
+              }))
+              .filter(({ near }) => near.distance <= ((this.page() as GamePage).kind === 'continent' ? 10 : 24))
+              .map(({ near, wait }) => {
+                const a = (near.angle * Math.PI) / 180;
+                return {
+                  u: near.u,
+                  v: near.v,
+                  angle: near.angle,
+                  text: this.translate.instant('WORLD_EDITOR.GAME_MAP_WAIT', { time: this.timeText(wait) }),
+                  dx: -Math.sin(a) * 22,
+                  dy: Math.cos(a) * 22,
+                };
+              });
+            const legs = run.legs.find((leg) => run.stops.some(({ node }) => node.x === leg.x && node.y === leg.y));
+            return {
+              key: `route:${transport.entry}`,
+              entry: transport.entry,
+              side: side === 'alliance' ? 'a' : side === 'horde' ? 'h' : 'n',
+              d: lines.map((line) => `M${line.map(([u, v]) => `${u.toFixed(2)} ${v.toFixed(2)}`).join('L')}`).join(''),
+              lines,
+              arrows: lines.flatMap((line) => routeArrows(line, FRAME_W, FRAME_H)),
+              label: routeLabel(lines, FRAME_W, FRAME_H),
+              stops,
+              title: `${transport.entry} · ${run.ship}`,
+              kind: this.translate.instant((GAME_MAP_LAYERS.find((l) => l.key === run.kind) as GameMapLayer).label),
+              route: run.route,
+              times: this.travelTimes(transport, run.legs, legs),
+            } as GameRoute;
+          })
       : [],
   );
 
-  /** A transport's icon (anchor, zeppelin…) where each of its runs starts on the picture. */
+  /** "Wait time", "Travel 1-way" (from a stop) and "Travel 2-way" (a whole loop), when known. */
+  private travelTimes(transport: GameMapTransport, legs: RouteStop[], from: RouteStop | undefined): string[] {
+    if (!legs.length) {
+      return [];
+    }
+    const times = from
+      ? [
+          this.translate.instant('WORLD_EDITOR.GAME_MAP_WAIT_TIME', { time: this.timeText(from.wait) }),
+          this.translate.instant('WORLD_EDITOR.GAME_MAP_ONE_WAY', {
+            time: this.timeText(legTime(from.leg, transport.speed, transport.accel)),
+          }),
+        ]
+      : [];
+    return [
+      ...times,
+      this.translate.instant('WORLD_EDITOR.GAME_MAP_TWO_WAY', { time: this.timeText(roundTrip(legs, transport.speed, transport.accel)) }),
+    ];
+  }
+
+  /** A time: "45 sec", "1.5 min". */
+  private timeText(seconds: number): string {
+    return seconds < 60
+      ? this.translate.instant('WORLD_EDITOR.GAME_MAP_SECONDS', { n: Math.round(seconds) })
+      : this.translate.instant('WORLD_EDITOR.GAME_MAP_MINUTES', { n: Math.round(seconds / 6) / 10 });
+  }
+
+  /** The route under the pointer. */
+  protected readonly hoverRoute = computed(() => {
+    const hover = this.hover();
+    return hover
+      ? this.routes().find(
+          (route) =>
+            (routeNearest(route.lines, [hover.point.u * 100, hover.point.v * 100], FRAME_W, FRAME_H) as { distance: number }).distance <=
+            ROUTE_HOVER,
+        )
+      : undefined;
+  });
+
+  /** A transport's icon (anchor, zeppelin…) at each of its stops on the picture (where its line starts, without any). */
   private readonly transportPins = computed<GamePin[]>(() =>
     this.transportRuns()
       .filter((run) => this.shown().has(run.kind))
-      .flatMap(({ transport, kind, side, lines }) =>
-        lines.map((line, i) => {
-          const layer = GAME_MAP_LAYERS.find((l) => l.key === kind) as GameMapLayer;
-          const icon: GameMapIcon =
-            kind === 'boat'
-              ? TRAVEL_ICONS.boat[side ?? 'neutral']
-              : kind === 'transport'
-                ? (layer.icon as GameMapIcon)
-                : TRAVEL_ICONS.zeppelin[side ?? 'neutral'];
+      .flatMap(({ transport, kind, side, ship, route, lines, stops, legs }) => {
+        const layer = GAME_MAP_LAYERS.find((l) => l.key === kind) as GameMapLayer;
+        const icon: GameMapIcon =
+          kind === 'boat'
+            ? TRAVEL_ICONS.boat[side ?? 'neutral']
+            : kind === 'transport'
+              ? (layer.icon as GameMapIcon)
+              : TRAVEL_ICONS.zeppelin[side ?? 'neutral'];
+        const docks = stops.length ? stops.map(({ at, node }) => ({ at, node })) : [{ at: lines[0][0], node: undefined }];
+        return docks.map(({ at, node }, i) => {
+          const point = { u: at[0] / 100, v: at[1] / 100 };
           return {
             key: `transport:${transport.entry}:${i}`,
-            ...line[0],
-            title: transport.name,
+            ...point,
+            title: ship,
             lines: [
               this.translate.instant(layer.label),
+              route ?? '',
+              ...this.travelTimes(
+                transport,
+                legs,
+                legs.find((leg) => node && leg.x === node.x && leg.y === node.y),
+              ),
               this.translate.instant('WORLD_EDITOR.GAME_MAP_TRANSPORT_ID', { entry: transport.entry, path: transport.path }),
-            ],
+            ].filter(Boolean),
             icon,
             side,
             badges: side ? [side] : [],
-            position: fromGameMap((this.page() as GamePage).bounds as WorldBounds, line[0]) as WorldPosition,
+            position: { ...fromGameMap((this.page() as GamePage).bounds as WorldBounds, point), z: 0 },
             mapId: (this.page() as GamePage).mapId,
           };
-        }),
-      ),
+        });
+      }),
   );
 
   protected readonly cameraPin = computed(() => {
@@ -951,8 +1114,17 @@ export class GameMapComponent {
           perfNote(`game map: page ${page.key} (${page.prefix})`);
           void this.load(page, overlays);
           this.loadOutlinesOf(page, overlays, continent);
+          void this.loadSpawns(page);
         }
       });
+    });
+    // the transports' paths, once their list is known
+    effect(() => {
+      const transports = this.transports();
+      if (transports.length && this.data() && !this.transportNodesAsked) {
+        this.transportNodesAsked = true;
+        untracked(() => void this.loadTransportNodes(transports));
+      }
     });
     // the icons, once the client is read
     effect(() => {
@@ -1361,18 +1533,39 @@ export class GameMapComponent {
     this.outlines.update((map) => new Map(map).set(key, outlines));
   }
 
-  /** The area triggers and transport paths of a map (read once each). */
+  /** The area triggers of a map (read once). */
   private async loadMapData(mapId: number): Promise<void> {
     if (!this.triggers().has(mapId)) {
       this.triggers.update((map) => new Map(map).set(mapId, []));
       const triggers = await this.client.getAreaTriggers(mapId).catch(() => []);
       this.triggers.update((map) => new Map(map).set(mapId, triggers));
     }
-    if (!this.taxiPaths().has(mapId)) {
-      this.taxiPaths.update((map) => new Map(map).set(mapId, []));
-      const paths = await this.client.getTaxiPaths(mapId).catch(() => []);
-      this.taxiPaths.update((map) => new Map(map).set(mapId, paths));
+  }
+
+  /** The creatures spawned on a zone's picture (once), for its sub-zones' levels. */
+  private async loadSpawns(page: GamePage): Promise<void> {
+    const read = this.spawnLevels();
+    if (page.kind !== 'zone' || this.pageSpawns().has(page.key)) {
+      return;
     }
+    this.pageSpawns.update((map) => new Map(map).set(page.key, []));
+    if (!read) {
+      return;
+    }
+    const spawns = await read(page.mapId, page.bounds as WorldBounds).catch((error: Error) => {
+      console.warn(`[World Editor] Could not read the creatures of ${page.key} for its levels:`, error);
+      return [];
+    });
+    this.pageSpawns.update((map) => new Map(map).set(page.key, spawns));
+  }
+
+  /** The paths of the transports (every map, with their stops). */
+  private async loadTransportNodes(transports: GameMapTransport[]): Promise<void> {
+    const nodes = await this.client.getTaxiPathNodes(transports.map((t) => t.path)).catch((error: Error) => {
+      console.warn("[World Editor] Could not read the transports' paths for the world map:", error);
+      return new Map<number, TaxiPathNode[]>();
+    });
+    this.transportNodes.set(nodes);
   }
 
   /** The layers' icons and the badges that are the client's (parts cut out). */

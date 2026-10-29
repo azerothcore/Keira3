@@ -21,12 +21,18 @@ export interface GameMapPoi {
   zoneId?: number;
 }
 
-/** A transport's route (a boat, a zeppelin…): its taxi path and faction. */
+/**
+ * A transport (a boat, a zeppelin…): its taxi path and faction; its description (`transports.name`: where it goes, the
+ * ship and its side), and its speed and acceleration (gameobject_template Data1, Data2) for how long it takes.
+ */
 export interface GameMapTransport {
   entry: number;
   name: string;
   path: number;
   faction: number;
+  description?: string;
+  speed?: number;
+  accel?: number;
 }
 
 /** An area trigger teleporting to another map (an instance's entrance, the Dark Portal…), with where it sends to. */
@@ -346,7 +352,9 @@ export function transportKind(name: string): 'boat' | 'zeppelin' | 'gunship' | '
   if (/zeppelin/i.test(name)) {
     return 'zeppelin';
   }
-  return /boat|ship|bravery|mehley|moonspray|feathermoon|kraken|maiden|lady|galley|northspear|rabbit/i.test(name) ? 'boat' : 'transport';
+  return /boat|ship|turtle|bravery|mehley|moonspray|feathermoon|kraken|maiden|lady|galley|northspear|rabbit/i.test(name)
+    ? 'boat'
+    : 'transport';
 }
 
 /** Which sides a faction template is friendly to (AoWoW's reaction > 0): FactionGroup masks 2 (Alliance) and 4 (Horde). */
@@ -365,4 +373,58 @@ export function factionSide(template: FactionTemplate | undefined): 'alliance' |
   const alliance = (friends & 2) !== 0 && (template.enemyMask & 2) === 0;
   const horde = (friends & 4) !== 0 && (template.enemyMask & 4) === 0;
   return alliance && !horde ? 'alliance' : horde && !alliance ? 'horde' : undefined;
+}
+
+/** A creature spawn that tells a sub-zone's levels: where it is, its levels and faction template. */
+export interface GameMapSpawnLevel {
+  x: number;
+  y: number;
+  minLevel: number;
+  maxLevel: number;
+  faction: number;
+}
+
+/** A sub-zone needs this many spawns to get levels; the levels are these shares of its spawns' lowest and highest. */
+const LEVEL_MIN_SPAWNS = 4;
+const LEVEL_LOW = 0.1;
+const LEVEL_HIGH = 0.9;
+
+/**
+ * Sub-zones' levels from the creatures spawned in them, as AoWoW works them out: the hostile and neutral spawns in a
+ * sub-zone's outline (not those of a side's faction or friendly to players, nor outside the zone itself: `inZone`), at
+ * least 4, from the 10th percentile of their lowest levels to the 90th of their highest (so a single boss doesn't
+ * stretch the range). `place` gives a spawn's place on the zone's picture (percent).
+ */
+export function subzoneLevels(
+  spawns: GameMapSpawnLevel[],
+  subzones: Map<string, number[][]>,
+  place: (spawn: GameMapSpawnLevel) => [number, number],
+  inZone: (spawn: GameMapSpawnLevel) => boolean,
+  friendly: (faction: number) => boolean,
+  pointIn: (x: number, y: number, rings: number[][]) => boolean,
+): Map<string, [number, number]> {
+  const lows = new Map<string, number[]>();
+  const highs = new Map<string, number[]>();
+  for (const spawn of spawns) {
+    if (friendly(spawn.faction) || !inZone(spawn)) {
+      continue;
+    }
+    const [u, v] = place(spawn);
+    const area = [...subzones].find(([, rings]) => pointIn(u, v, rings))?.[0];
+    if (area) {
+      lows.set(area, [...(lows.get(area) ?? []), spawn.minLevel]);
+      highs.set(area, [...(highs.get(area) ?? []), spawn.maxLevel]);
+    }
+  }
+  const levels = new Map<string, [number, number]>();
+  lows.forEach((low, area) => {
+    if (low.length >= LEVEL_MIN_SPAWNS) {
+      const high = (highs.get(area) as number[]).sort((a, b) => a - b);
+      low.sort((a, b) => a - b);
+      const min = low[Math.floor((low.length - 1) * LEVEL_LOW)];
+      const max = high[Math.ceil((high.length - 1) * LEVEL_HIGH)];
+      levels.set(area, [Math.min(min, max), Math.max(min, max)]);
+    }
+  });
+  return levels;
 }

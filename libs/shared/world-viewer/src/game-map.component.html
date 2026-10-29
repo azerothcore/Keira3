@@ -250,13 +250,52 @@
           }
         </svg>
         @if (routes().length) {
-          <svg class="game-map-routes" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+          <svg class="game-map-routes" viewBox="0 0 100 100" preserveAspectRatio="none">
             @for (route of routes(); track route.key) {
-              @for (line of route.lines; track $index) {
-                <polyline [attr.data-testid]="'game-map-' + route.key" [attr.points]="line" [attr.stroke]="route.color" />
-              }
+              <g [attr.data-testid]="'game-map-' + route.key" [attr.class]="'side-' + route.side + (route === hoverRoute() ? ' hl' : '')">
+                <path class="case" [attr.d]="route.d" />
+                <path class="line" [attr.d]="route.d" />
+              </g>
             }
           </svg>
+          <div class="game-map-route-marks">
+            @for (route of routes(); track route.key) {
+              @for (arrow of route.arrows; track $index) {
+                <i
+                  [class]="'game-map-route-arrow side-' + route.side"
+                  [style.left.%]="arrow.u"
+                  [style.top.%]="arrow.v"
+                  [style.--a]="arrow.angle + 'deg'"
+                ></i>
+              }
+              @for (stop of route.stops; track $index) {
+                <i
+                  [class]="'game-map-route-stop side-' + route.side"
+                  [style.left.%]="stop.u"
+                  [style.top.%]="stop.v"
+                  [style.--a]="stop.angle + 'deg'"
+                ></i>
+                <span
+                  [class]="'game-map-route-wait side-' + route.side"
+                  [style.left.%]="stop.u"
+                  [style.top.%]="stop.v"
+                  [style.--dx]="stop.dx + 'px'"
+                  [style.--dy]="stop.dy + 'px'"
+                  >{{ stop.text }}</span
+                >
+              }
+              @if (route.label; as label) {
+                <span
+                  [class]="'game-map-route-no side-' + route.side"
+                  [attr.data-testid]="'game-map-' + route.key + '-no'"
+                  [style.left.%]="label.u"
+                  [style.top.%]="label.v"
+                  [style.--r]="label.angle + 'deg'"
+                  >{{ route.entry }}</span
+                >
+              }
+            }
+          </div>
         }
         @for (label of labels(); track label.key) {
           <button

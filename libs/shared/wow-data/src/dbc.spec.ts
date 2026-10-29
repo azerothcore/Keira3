@@ -10,6 +10,7 @@ import {
   parseMapDifficulties,
   parseTaxiNodes,
   parseTaxiPaths,
+  parseTaxiPathNodes,
   parseZones,
 } from './dbc';
 import { buildDbc } from './dbc.mock';
@@ -340,6 +341,23 @@ describe('flight paths', () => {
         ],
       },
     ]);
+    // a transport's path: every node, on every map, with its flags and wait
+    const pathNodes = dbcOf([
+      [100, 10, 1, 1, float(2), float(2), float(2), 1, 30],
+      [101, 10, 0, 0, float(1), float(1), float(1), 0, 0],
+      [102, 11, 0, 1, float(9), float(9), float(9), 0, 0],
+    ]);
+    expect(parseTaxiPathNodes(pathNodes, new Set([10]))).toEqual(
+      new Map([
+        [
+          10,
+          [
+            { mapId: 0, x: 1, y: 1, z: 1, flags: 0, delay: 0 },
+            { mapId: 1, x: 2, y: 2, z: 2, flags: 1, delay: 30 },
+          ],
+        ],
+      ]),
+    );
   });
 });
 

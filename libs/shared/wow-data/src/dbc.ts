@@ -438,6 +438,51 @@ export function parseTaxiPaths(paths: DbcFile, nodes: DbcFile, mapId: number): T
   return result;
 }
 
+/** A node of a taxi path, as a transport runs it (boats, zeppelins…). */
+export interface TaxiPathNode {
+  mapId: number;
+  x: number;
+  y: number;
+  z: number;
+  /** 0x1: the next node is reached by teleporting (to another map, or across it). */
+  flags: number;
+  /** Seconds waited here (a stop). */
+  delay: number;
+}
+
+/**
+ * TaxiPathNode.dbc (0 ID, 1 PathID, 2 NodeIndex, 3 ContinentID, 4-6 position, 7 Flags, 8 Delay): every node of the
+ * paths asked for (all maps), in order, by path.
+ */
+export function parseTaxiPathNodes(nodes: DbcFile, pathIds: Set<number>): Map<number, TaxiPathNode[]> {
+  const byPath = new Map<number, (TaxiPathNode & { index: number })[]>();
+  for (let r = 0; r < nodes.recordCount; r++) {
+    const path = nodes.getUint(r, 1);
+    if (!pathIds.has(path)) {
+      continue;
+    }
+    const list = byPath.get(path) ?? [];
+    list.push({
+      index: nodes.getUint(r, 2),
+      mapId: nodes.getUint(r, 3),
+      x: nodes.getFloat(r, 4),
+      y: nodes.getFloat(r, 5),
+      z: nodes.getFloat(r, 6),
+      flags: nodes.getUint(r, 7),
+      delay: nodes.getUint(r, 8),
+    });
+    byPath.set(path, list);
+  }
+  const result = new Map<number, TaxiPathNode[]>();
+  byPath.forEach((list, path) =>
+    result.set(
+      path,
+      list.sort((a, b) => a.index - b.index).map(({ index: _, ...node }) => node),
+    ),
+  );
+  return result;
+}
+
 /** GameObjectDisplayInfo.dbc: 0 ID, 1 ModelName → model path by display id. */
 export function parseGameObjectDisplays(dbc: DbcFile): Map<number, string> {
   const displays = new Map<number, string>();

@@ -8,6 +8,7 @@ import {
   GAMEOBJECT_MEETING_STONE,
   GameMapPoi,
   GameMapPortal,
+  GameMapSpawnLevel,
   GameMapTeleport,
   GameMapTransport,
   NPC_FLAG_KINDS,
@@ -499,6 +500,35 @@ export class WorldEditorService {
   }
 
   /**
+   * The creatures spawned in an area of a map that tell its sub-zones' levels on the game's world map, as AoWoW picks
+   * them: no NPCs with a service (npcflag), critters or pets, nothing unattackable or unselectable, no civilians,
+   * triggers or guards, no holiday spawns; plainer when the server's tables don't have all of that.
+   */
+  async loadSpawnLevels(mapId: number, bounds: WorldBounds): Promise<GameMapSpawnLevel[]> {
+    const where =
+      `c.map = ${Math.trunc(mapId)} AND c.position_x BETWEEN ${bounds.minX} AND ${bounds.maxX} ` +
+      `AND c.position_y BETWEEN ${bounds.minY} AND ${bounds.maxY} AND ct.minlevel > 0`;
+    const query = (full: boolean) =>
+      'SELECT c.position_x AS x, c.position_y AS y, ct.minlevel, ct.maxlevel, ct.faction FROM creature c ' +
+      `JOIN creature_template ct ON ct.entry = c.id WHERE ${where}` +
+      (full
+        ? ' AND ct.npcflag = 0 AND c.npcflag = 0 AND ct.type NOT IN (8, 12) AND (ct.unit_flags & 33554690) = 0 ' +
+          'AND (c.unit_flags & 33554434) = 0 AND (ct.flags_extra & 32898) = 0 ' +
+          'AND NOT EXISTS (SELECT 1 FROM game_event_creature gec WHERE gec.guid = c.guid AND gec.eventEntry > 0)'
+        : ' AND ct.npcflag = 0');
+    const rows = await firstValueFrom(this.queryService.query<TableRow>(query(true))).catch(() =>
+      firstValueFrom(this.queryService.query<TableRow>(query(false))),
+    );
+    return (rows ?? []).map((row) => ({
+      x: Number(row['x']),
+      y: Number(row['y']),
+      minLevel: Number(row['minlevel']),
+      maxLevel: Number(row['maxlevel']),
+      faction: Number(row['faction']),
+    }));
+  }
+
+  /**
    * The portal objects of the continents (gameobject type 22, spellcasters: Shattrath's, Dalaran's…) with where their
    * spell sends to (`spell_target_position`), for the game's world map.
    */
@@ -523,19 +553,27 @@ export class WorldEditorService {
     }));
   }
 
-  /** Every transport (boats, zeppelins…) with its taxi path and faction, for their routes on the game's world map. */
+  /**
+   * Every transport (boats, zeppelins…) with its taxi path and faction, its description (`transports.name`) and its
+   * speed and acceleration, for their routes on the game's world map (without the description when the server has no
+   * `transports` table).
+   */
   async loadTransportRoutes(): Promise<GameMapTransport[]> {
-    const rows = await firstValueFrom(
-      this.queryService.query<TableRow>(
-        "SELECT gt.entry, IFNULL(gt.name, '') AS name, gt.Data0 AS path, IFNULL(gta.faction, 0) AS faction FROM gameobject_template gt " +
-          `LEFT JOIN gameobject_template_addon gta ON gta.entry = gt.entry WHERE gt.type = ${GAMEOBJECT_TRANSPORT}`,
-      ),
+    const query = (described: boolean) =>
+      "SELECT gt.entry, IFNULL(gt.name, '') AS name, gt.Data0 AS path, gt.Data1 AS speed, gt.Data2 AS accel, " +
+      `IFNULL(gta.faction, 0) AS faction${described ? ", IFNULL((SELECT t.name FROM transports t WHERE t.entry = gt.entry LIMIT 1), '') AS description" : ''} ` +
+      `FROM gameobject_template gt LEFT JOIN gameobject_template_addon gta ON gta.entry = gt.entry WHERE gt.type = ${GAMEOBJECT_TRANSPORT}`;
+    const rows = await firstValueFrom(this.queryService.query<TableRow>(query(true))).catch(() =>
+      firstValueFrom(this.queryService.query<TableRow>(query(false))),
     );
     return (rows ?? []).map((row) => ({
       entry: Number(row['entry']),
       name: String(row['name']),
       path: Number(row['path']),
       faction: Number(row['faction']),
+      description: row['description'] ? String(row['description']) : undefined,
+      speed: Number(row['speed'] ?? 0),
+      accel: Number(row['accel'] ?? 0),
     }));
   }
 

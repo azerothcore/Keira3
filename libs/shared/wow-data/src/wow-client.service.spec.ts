@@ -389,6 +389,7 @@ describe('WowClientService', () => {
       });
       for (let i = 0; i < 2; i++) {
         await expect(service.getTaxiPaths(0)).rejects.toThrowError(/WDBC/);
+        await expect(service.getTaxiPathNodes([1])).rejects.toThrowError(/WDBC/);
         await expect(service.getSkyboxes()).rejects.toThrowError(/WDBC/);
       }
     });
@@ -469,13 +470,14 @@ describe('WowClientService', () => {
           'DBFilesClient\\AreaTable.dbc': dbc([[87, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 'Goldshire']], 27),
           'DBFilesClient\\TaxiNodes.dbc': dbc([[2, 0, float(1), float(2), float(3), 'Stormwind']], 24),
           'DBFilesClient\\TaxiPath.dbc': dbc([[10, 2, 4, 50]]),
-          'DBFilesClient\\TaxiPathNode.dbc': dbc([[100, 10, 0, 0, float(1), float(1), float(1)]]),
+          'DBFilesClient\\TaxiPathNode.dbc': dbc([[100, 10, 0, 0, float(1), float(1), float(1), 0, 0]]),
         }),
       });
       expect((await service.getAreaNames()).get(87)).toEqual({ name: 'Goldshire', parent: 12 });
       expect(await service.getTaxiNodes(0)).toHaveLength(1);
       expect(await service.getTaxiNodes(1)).toHaveLength(0);
       expect((await service.getTaxiPaths(0))[0].points).toEqual([{ x: 1, y: 1, z: 1 }]);
+      expect((await service.getTaxiPathNodes([10])).get(10)).toHaveLength(1);
     });
 
     it('retries area names and flight masters after a failure', async () => {
@@ -493,6 +495,7 @@ describe('WowClientService', () => {
       expect((await missing.getAreaNames()).size).toBe(0);
       expect(await missing.getTaxiNodes(0)).toEqual([]);
       expect(await missing.getTaxiPaths(0)).toEqual([]);
+      expect((await missing.getTaxiPathNodes([10])).size).toBe(0);
     });
 
     it('keeps the few most recent server terrain tiles parsed', async () => {
