@@ -634,7 +634,10 @@ export class WorldEditorComponent implements OnInit {
         : [];
     });
   });
-  /** "Start" and "End" over the first and last points of the selected creature's (or waypoint's) path. */
+  /**
+   * "Start" over the selected creature's spawn point (or the first walker's of the selected waypoint's path), "Start
+   * waypoint" and "End waypoint" over the first and last points of its path.
+   */
   protected readonly pathEnds = computed(() => {
     const pathId = this.activePathId();
     const points = this.waypoints()
@@ -644,7 +647,12 @@ export class WorldEditorComponent implements OnInit {
       return undefined;
     }
     const [first, last] = [points[0], points[points.length - 1]];
-    return { start: { x: first.x, y: first.y, z: first.z }, end: { x: last.x, y: last.y, z: last.z } };
+    const walker = this.selectedSpawn() ?? this.visibleSpawns().find((s) => pathsOf(s).includes(pathId));
+    return {
+      ...(walker ? { spawn: { x: walker.x, y: walker.y, z: walker.z } } : {}),
+      start: { x: first.x, y: first.y, z: first.z },
+      end: { x: last.x, y: last.y, z: last.z },
+    };
   });
   /** Labelled markers: pools, and the formation places of the selected creature's formation. */
   protected readonly worldMarkers = computed<WorldMarker[]>(() =>

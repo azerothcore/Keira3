@@ -210,8 +210,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   /** Looks straight down from above (north at the top) whenever this goes up. */
   readonly topView = input(0);
   /** A path's first and last points, labelled "Start" and "End". */
-  readonly pathEnds = input<{ start: WorldPosition; end: WorldPosition } | undefined>(undefined);
-  protected readonly pathEndLabels = signal<{ which: 'start' | 'end'; x: number; y: number }[]>([]);
+  readonly pathEnds = input<{ spawn?: WorldPosition; start: WorldPosition; end: WorldPosition } | undefined>(undefined);
+  protected readonly pathEndLabels = signal<{ which: 'spawn' | 'start' | 'end'; x: number; y: number }[]>([]);
   /** Quality and range of what is drawn. */
   readonly renderSettings = input<WorldRenderSettings>(DEFAULT_WORLD_RENDER_SETTINGS);
   /** Keyboard navigation (keys moving the camera while the view has the focus). */
@@ -1094,6 +1094,11 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       const at = sampleTimeline(timeline, elapsed, !simulation.once);
       this.world.moveGhost(at.position, at.orientation);
       this.simulationStatus.set(ended || !at.status ? undefined : { ...at.status, elapsed });
+      // a hover label over the moving copy follows what it does (and goes when it leaves the cursor)
+      if (this.lastPointer && !this.hoverEvent) {
+        this.hoverEvent = this.lastPointer;
+        this.updateHover();
+      }
       this.requestRender();
       if (ended) {
         this.simulationEnded.emit();
@@ -1404,8 +1409,9 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       return;
     }
     const labels = ends
-      ? (['start', 'end'] as const).flatMap((which) => {
-          const at = this.screenPoint({ ...ends[which], z: ends[which].z + 3 });
+      ? (['spawn', 'start', 'end'] as const).flatMap((which) => {
+          const place = ends[which];
+          const at = place && this.screenPoint({ ...place, z: place.z + 3 });
           return at ? [{ which, ...at }] : [];
         })
       : [];

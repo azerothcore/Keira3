@@ -3784,7 +3784,17 @@ describe(WorldEditorComponent.name, () => {
       expect(page.viewer().pathEnds()).toBeUndefined();
       page.viewer().picked.emit({ type: 'spawn', key: 'creature:1', position: { x: 0, y: 0, z: 0 } });
       await settle(page);
-      expect(page.viewer().pathEnds()).toEqual({ start: { x: -8901, y: -101, z: 80 }, end: { x: -8902, y: -102, z: 81 } });
+      expect(page.viewer().pathEnds()).toEqual({
+        spawn: { x: SPAWNS[0].x, y: SPAWNS[0].y, z: SPAWNS[0].z },
+        start: { x: -8901, y: -101, z: 80 },
+        end: { x: -8902, y: -102, z: 81 },
+      });
+      // from one of its points: the creature walking it
+      page.viewer().picked.emit({ type: 'waypoint', key: 'path:10#2', pathKey: 'path:10', point: 2, position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      expect(page.viewer().pathEnds()?.spawn).toEqual({ x: SPAWNS[0].x, y: SPAWNS[0].y, z: SPAWNS[0].z });
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:1', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
       const toPath = page
         .viewer()
         .links()

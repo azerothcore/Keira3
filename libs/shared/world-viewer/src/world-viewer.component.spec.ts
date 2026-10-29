@@ -960,10 +960,11 @@ describe(WorldViewerComponent.name, () => {
       await settle(fixture);
       host.topView.set(1);
       fixture.detectChanges();
-      host.pathEnds.set({ start: at(0, 0), end: at(5, 5) });
+      host.pathEnds.set({ spawn: at(-5, -5), start: at(0, 0), end: at(5, 5) });
       fixture.detectChanges();
       flushFrames();
       fixture.detectChanges();
+      expect(page.getDebugElementByTestId('world-viewer-path-spawn').nativeElement.textContent).toContain('WORLD_EDITOR.PATH_SPAWN');
       expect(page.getDebugElementByTestId('world-viewer-path-start').nativeElement.textContent).toContain('WORLD_EDITOR.PATH_START');
       expect(page.getDebugElementByTestId('world-viewer-path-end').nativeElement.textContent).toContain('WORLD_EDITOR.PATH_END');
       // an end behind the camera isn't labelled; no path: none

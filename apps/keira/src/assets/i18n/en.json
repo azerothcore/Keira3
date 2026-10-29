@@ -1634,11 +1634,12 @@
     "PATH_TO_FIRST_HELP": "A dashed green arrow from each walking creature's spawn point to the first point of its path: where it goes when it spawns",
     "PATH_FROM_LAST": "Path from the last waypoint",
     "PATH_FROM_LAST_HELP": "The stretch from a path's last point back to its first: where the creature goes after the end, round after round",
-    "PATH_START": "Start",
-    "PATH_END": "End",
+    "PATH_START": "Start waypoint",
+    "PATH_END": "End waypoint",
     "SNAP_WATER": "Water",
     "COPY_IN_PLACE": "Copy in place",
     "COPY_IN_PLACE_HELP": "New spawns just like the selected ones, at the same place: move one away, or stack them",
-    "FACE_HINT": "Select a spawn, then click where it should look"
+    "FACE_HINT": "Select a spawn, then click where it should look",
+    "PATH_SPAWN": "Start"
   }
 }

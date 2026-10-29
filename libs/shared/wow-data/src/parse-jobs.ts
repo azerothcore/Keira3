@@ -70,11 +70,12 @@ export function runParseJob(job: ParseJob): ParseResults[ParseJob['kind']] {
 
 /**
  * The buffers of the typed arrays in a result (each once), handed over with it instead of copied: the window then
- * gets a parsed tile without spending time copying it.
+ * gets a parsed tile without spending time copying it. Empty ones are left out: there's nothing to save, and they
+ * may be shared constants (like `EMPTY_COLLISION`'s) that, handed over once, would be gone for every later result.
  */
 export function transferables(value: unknown, found = new Set<ArrayBuffer>()): ArrayBuffer[] {
   if (ArrayBuffer.isView(value)) {
-    if (value.buffer instanceof ArrayBuffer) {
+    if (value.buffer instanceof ArrayBuffer && value.buffer.byteLength > 0) {
       found.add(value.buffer);
     }
   } else if (value && typeof value === 'object') {

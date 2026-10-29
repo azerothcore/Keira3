@@ -50,6 +50,11 @@
   &.end {
     background: #ef4444;
   }
+
+  // a path's walker's spawn point
+  &.spawn {
+    background: #16a34a;
+  }
 }
 
 .world-viewer-status {

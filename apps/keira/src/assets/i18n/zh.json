@@ -1634,11 +1634,12 @@
     "PATH_TO_FIRST_HELP": "从每个巡逻生物的刷新点到其路径第一个点的绿色虚线箭头：它刷新后前往的地方",
     "PATH_FROM_LAST": "从最后一个路径点的路线",
     "PATH_FROM_LAST_HELP": "从路径最后一个点回到第一个点的一段：生物走完后前往的地方，一圈又一圈",
-    "PATH_START": "起点",
-    "PATH_END": "终点",
+    "PATH_START": "起始路径点",
+    "PATH_END": "终点路径点",
     "SNAP_WATER": "水面",
     "COPY_IN_PLACE": "原地复制",
     "COPY_IN_PLACE_HELP": "在同一位置创建与所选相同的新刷新点：可移开其中一个，或叠放",
-    "FACE_HINT": "选择一个刷新点，然后点击它应该面向的位置"
+    "FACE_HINT": "选择一个刷新点，然后点击它应该面向的位置",
+    "PATH_SPAWN": "起点"
   }
 }

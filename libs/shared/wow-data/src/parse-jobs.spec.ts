@@ -53,5 +53,7 @@ describe('runParseJob', () => {
     expect(transferables(undefined)).toEqual([]);
     // (a shared buffer can't be handed over)
     expect(transferables(new Uint8Array(new SharedArrayBuffer(4)))).toEqual([]);
+    // nor empty ones: shared constants like EMPTY_COLLISION's would be gone for every later model without collision
+    expect(transferables({ collision: { positions: new Float32Array(0), indices: new Uint16Array(0) }, other })).toEqual([other.buffer]);
   });
 });

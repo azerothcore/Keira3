@@ -1506,14 +1506,27 @@ export class WorldScene {
   }
 
   /** Whether the simulated creature is within `tolerance` (NDC) of the cursor on screen. */
-  ghostNear(ndcX: number, ndcY: number, tolerance = 0.05): boolean {
+  ghostNear(ndcX: number, ndcY: number, tolerance = 0.03): boolean {
     const ghost = this.ghostGroup.children[0];
     if (!ghost) {
       return false;
     }
     this.camera.updateMatrixWorld();
-    const projected = ghost.position.clone().project(this.camera);
-    return projected.z < 1 && Math.hypot(projected.x - ndcX, projected.y - ndcY) <= tolerance;
+    ghost.updateMatrixWorld(true);
+    // anywhere over its model (or pin) on screen, not just at its feet
+    const box = new Box3().setFromObject(ghost);
+    let [minX, minY, maxX, maxY] = [Infinity, Infinity, -Infinity, -Infinity];
+    let inFront = false;
+    for (const corner of [0, 1, 2, 3, 4, 5, 6, 7]) {
+      const p = new Vector3(
+        corner & 1 ? box.max.x : box.min.x,
+        corner & 2 ? box.max.y : box.min.y,
+        corner & 4 ? box.max.z : box.min.z,
+      ).project(this.camera);
+      inFront ||= p.z < 1;
+      [minX, minY, maxX, maxY] = [Math.min(minX, p.x), Math.min(minY, p.y), Math.max(maxX, p.x), Math.max(maxY, p.y)];
+    }
+    return inFront && ndcX >= minX - tolerance && ndcX <= maxX + tolerance && ndcY >= minY - tolerance && ndcY <= maxY + tolerance;
   }
 
   moveGhost(position: WorldPosition, orientation: number): void {

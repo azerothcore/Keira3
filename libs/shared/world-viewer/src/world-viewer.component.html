@@ -50,11 +50,12 @@
     <div
       class="world-viewer-probe-label"
       [class.end]="label.which === 'end'"
+      [class.spawn]="label.which === 'spawn'"
       [attr.data-testid]="'world-viewer-path-' + label.which"
       [style.left.px]="label.x"
       [style.top.px]="label.y"
     >
-      {{ (label.which === 'start' ? 'WORLD_EDITOR.PATH_START' : 'WORLD_EDITOR.PATH_END') | translate }}
+      {{ 'WORLD_EDITOR.PATH_' + label.which.toUpperCase() | translate }}
     </div>
   }
 
