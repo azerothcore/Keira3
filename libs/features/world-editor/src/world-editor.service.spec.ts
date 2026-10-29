@@ -551,15 +551,20 @@ describe('WorldEditorService', () => {
   it('loads the teleports and transports for the in-game map', async () => {
     const { service, queryService } = setup();
     queryService.query
-      .mockReturnValueOnce(of([{ id: '45', name: 'Naxx', target_map: '533' }]))
+      .mockReturnValueOnce(of([{ id: '45', name: 'Naxx', target_map: '533', tx: '1', ty: '2' }]))
       .mockReturnValueOnce(of(undefined))
       .mockReturnValueOnce(of([{ entry: '1', name: 'Boat', path: '7', faction: '11' }]))
+      .mockReturnValueOnce(of(undefined))
+      .mockReturnValueOnce(of([{ name: 'Portal', map: '0', x: '1', y: '2', targetMap: '530', tx: '3', ty: '4' }]))
       .mockReturnValueOnce(of(undefined));
-    expect(await service.loadMapTeleports()).toEqual([{ id: 45, name: 'Naxx', targetMap: 533 }]);
+    expect(await service.loadMapTeleports()).toEqual([{ id: 45, name: 'Naxx', targetMap: 533, target: { x: 1, y: 2 } }]);
     expect(await service.loadMapTeleports()).toEqual([]);
     expect(await service.loadTransportRoutes()).toEqual([{ entry: 1, name: 'Boat', path: 7, faction: 11 }]);
     expect(queryService.query.mock.calls[2][0]).toContain('WHERE gt.type = 15');
     expect(await service.loadTransportRoutes()).toEqual([]);
+    expect(await service.loadMapPortals()).toEqual([{ name: 'Portal', mapId: 0, x: 1, y: 2, targetMap: 530, tx: 3, ty: 4 }]);
+    expect(queryService.query.mock.calls[4][0]).toContain('JOIN spell_target_position stp ON stp.ID = gt.Data0 WHERE gt.type = 22');
+    expect(await service.loadMapPortals()).toEqual([]);
   });
 
   it('loads every other path in the area, each table skipped when it fails', async () => {

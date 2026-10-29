@@ -1741,13 +1741,24 @@
     "GAME_MAP_SPAWNS": "Spawns loaded in the 3D view",
     "GAME_MAP_MARKER_SIZE": "Marker size",
     "GAME_MAP_RESET": "Default markers",
-    "GAME_MAP_HINT": "Click a zone to open it; the wheel zooms, drag to move. Ctrl + click copies a .go command.",
+    "GAME_MAP_HINT": "Click a zone to open it; the wheel zooms, drag to move. A right click (or Alt + click) copies a .go command.",
     "GAME_MAP_CLICK_OPENS": "Click to open map",
     "GAME_MAP_OPEN_MAP": "Click to open its map",
     "GAME_MAP_BOATS": "Boats",
     "GAME_MAP_ZEPPELINS": "Zeppelins",
     "GAME_MAP_OTHER_TRANSPORTS": "Other transports",
     "GAME_MAP_DUNGEONS": "Dungeon entrances",
+    "GAME_MAP_NO_GO": "No zone here",
+    "GAME_MAP_COPIED": "Copied: {{command}}",
+    "GAME_MAP_MENU_BATTLEGROUNDS": "Battlegrounds",
+    "GAME_MAP_MENU_DUNGEONS": "Dungeons",
+    "GAME_MAP_MENU_RAIDS": "Raids",
+    "GAME_MAP_TRANSPORT_ID": "Transport ID: {{entry}} (taxi path {{path}})",
+    "GAME_MAP_AREA_ID": "Area ID: {{id}}",
+    "GAME_MAP_ZONE_ID": "Zone ID: {{id}}",
+    "GAME_MAP_MAP_ID": "Map ID: {{id}}",
+    "GAME_MAP_PORTAL_TO": "To {{zone}}",
+    "GAME_MAP_PORTALS": "Portals & crossings",
     "GAME_MAP_WORLD_PVP": "World PvP",
     "GAME_MAP_RELATIONS": "Faction relations",
     "GAME_MAP_MORE": "+{{count}} more here",
@@ -1783,6 +1794,6 @@
     "GAME_MAP_OTHER_AREA": "Another area · click to open map",
     "GAME_MAP_BACK_TO": "Back to:",
     "GAME_MAP_ZOOM_RESET": "Whole map",
-    "GAME_MAP_TIP": "Tip: double click to move the camera there"
+    "GAME_MAP_TIP": "Tip: right click (or Alt + click) copies a .go command"
   }
 }

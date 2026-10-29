@@ -84,7 +84,11 @@
                 <span>{{ layer.label | translate }}</span>
                 <span class="game-map-icon" [class.square]="layer.icon?.square">
                   @if (iconOf(layer.icon); as url) {
-                    <img [src]="url" alt="" />
+                    @if (layer.icon?.square) {
+                      <span class="game-map-spell"><img [src]="url" alt="" /><img class="frame" [src]="spellBorder" alt="" /></span>
+                    } @else {
+                      <img [src]="url" alt="" />
+                    }
                   } @else if (layer.icon?.fa) {
                     <i [class]="'fa ' + layer.icon.fa" [style.color]="layer.icon.color"></i>
                   }
@@ -110,6 +114,39 @@
       >
         <i class="fa fa-list"></i>
       </button>
+      <nav class="game-map-nav" data-testid="game-map-nav">
+        <button type="button" class="game-map-nav-item" data-testid="game-map-nav-cosmic" (click)="open(cosmicPage)">
+          {{ 'WORLD_EDITOR.GAME_MAP_COSMIC' | translate }}
+        </button>
+        <button type="button" class="game-map-nav-item" data-testid="game-map-nav-world" (click)="open(worldPage)">
+          {{ 'WORLD_EDITOR.GAME_MAP_AZEROTH' | translate }}
+        </button>
+        @for (menu of menus(); track menu.key) {
+          <div class="game-map-nav-group" [class.open]="openMenu() === menu.key">
+            <button type="button" class="game-map-nav-item" [attr.data-testid]="'game-map-menu-' + menu.key" (click)="toggleMenu(menu.key)">
+              {{ menu.label }} <i class="fa fa-caret-down"></i>
+            </button>
+            @if (openMenu() === menu.key) {
+              <div class="game-map-nav-drop" [attr.data-testid]="'game-map-menu-list-' + menu.key">
+                @for (column of menu.columns; track $index) {
+                  <ul>
+                    @for (item of column; track item.key) {
+                      <li>
+                        <button type="button" [attr.data-testid]="'game-map-menu-item-' + item.key" (click)="open(item.key)">
+                          {{ item.name }}
+                          @if (item.exp) {
+                            <img [src]="item.exp" alt="" />
+                          }
+                        </button>
+                      </li>
+                    }
+                  </ul>
+                }
+              </div>
+            }
+          </div>
+        }
+      </nav>
       @if (floors().length) {
         <div class="btn-group btn-group-sm" role="group" [attr.aria-label]="'WORLD_EDITOR.GAME_MAP_FLOORS' | translate">
           @for (floor of floors(); track floor.key) {
@@ -171,7 +208,7 @@
       (pointermove)="onPointerMove($event)"
       (pointerup)="onPointerUp($event)"
       (pointerleave)="onPointerLeave()"
-      (dblclick)="onDoubleClick()"
+      (contextmenu)="onContextMenu($event)"
       (wheel)="onWheel($event)"
     >
       @if (failed()) {
@@ -207,7 +244,7 @@
             <path
               [attr.data-testid]="'game-map-sub-' + shape.key"
               [attr.d]="shape.d"
-              [attr.class]="'sub' + (shape.key === hoverSub() ? ' hover' : '')"
+              [attr.class]="shape.kind + (shape.key === hoverSub() ? ' hover' : '')"
               fill-rule="evenodd"
             />
           }
@@ -251,6 +288,7 @@
             class="game-map-pin"
             [class.dot]="!!pin.color"
             [class.square]="pin.icon?.square"
+            [class.shield]="pin.kind === 'relations'"
             [class.opens]="!!pin.opens"
             [attr.data-testid]="'game-map-pin-' + pin.key"
             [style.left.%]="pin.u * 100"
@@ -261,11 +299,12 @@
             (pointerdown)="$event.stopPropagation()"
             (pointerup)="$event.stopPropagation()"
             (click)="onPinClick(pin, $event)"
-            (dblclick)="onPinDoubleClick(pin, $event)"
           >
             @if (iconOf(pin.icon); as url) {
               @if (pin.icon?.square) {
-                <span class="game-map-spell"><img [src]="url" alt="" draggable="false" /></span>
+                <span class="game-map-spell"
+                  ><img [src]="url" alt="" draggable="false" /><img class="frame" [src]="spellBorder" alt="" draggable="false"
+                /></span>
               } @else {
                 <img [src]="url" alt="" draggable="false" />
               }
@@ -275,8 +314,14 @@
             @if (pin.more) {
               <small class="game-map-more" [attr.data-testid]="'game-map-more-' + pin.key">{{ pin.more + 1 }}</small>
             }
-            @if (pin.side && shown().has('badges') && sideIcon(pin.side); as badge) {
-              <img class="game-map-side" [attr.data-testid]="'game-map-side-' + pin.key" [src]="badge" alt="" draggable="false" />
+            @if (pin.badges?.length && shown().has('badges')) {
+              <span class="game-map-badges" [attr.data-testid]="'game-map-side-' + pin.key">
+                @for (side of pin.badges; track side) {
+                  @if (badgeIcon(side); as badge) {
+                    <img [src]="badge" alt="" draggable="false" />
+                  }
+                }
+              </span>
             }
           </span>
         }
@@ -291,7 +336,12 @@
       </div>
 
       @if (current) {
-        <div class="game-map-title" data-testid="game-map-title" (pointerdown)="$event.stopPropagation()">{{ pageName(current) }}</div>
+        <div class="game-map-title" (pointerdown)="$event.stopPropagation()">
+          <span data-testid="game-map-title">{{ pageName(current) }}</span>
+          @if (titleExpansion(); as exp) {
+            <img [src]="exp" alt="" data-testid="game-map-title-exp" />
+          }
+        </div>
       }
       @if (parentPage(); as parent) {
         <button
@@ -347,6 +397,20 @@
           @if (tip.hint) {
             <div class="hint">{{ tip.hint }}</div>
           }
+          @for (id of tip.ids; track id) {
+            <div class="id">{{ id }}</div>
+          }
+        </div>
+      }
+      @if (toast(); as note) {
+        <div
+          class="game-map-toast"
+          data-testid="game-map-toast"
+          [class.error]="note.error"
+          [style.left.px]="note.x"
+          [style.top.px]="note.y"
+        >
+          {{ note.text }}
         </div>
       }
     </div>

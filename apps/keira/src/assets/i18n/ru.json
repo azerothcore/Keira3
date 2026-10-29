@@ -1741,13 +1741,24 @@
     "GAME_MAP_SPAWNS": "Спавны, загруженные в 3D-виде",
     "GAME_MAP_MARKER_SIZE": "Размер меток",
     "GAME_MAP_RESET": "Метки по умолчанию",
-    "GAME_MAP_HINT": "Щелчок по зоне открывает её; колесо масштабирует, перетаскивание двигает. Ctrl + щелчок копирует команду .go.",
+    "GAME_MAP_HINT": "Нажмите на зону, чтобы открыть её; колесо масштабирует, перетаскивание двигает. Правый клик (или Alt + клик) копирует команду .go.",
     "GAME_MAP_CLICK_OPENS": "Щелчок открывает карту",
     "GAME_MAP_OPEN_MAP": "Щелчок открывает его карту",
     "GAME_MAP_BOATS": "Корабли",
     "GAME_MAP_ZEPPELINS": "Дирижабли",
     "GAME_MAP_OTHER_TRANSPORTS": "Другой транспорт",
     "GAME_MAP_DUNGEONS": "Входы в подземелья",
+    "GAME_MAP_NO_GO": "Здесь нет зоны",
+    "GAME_MAP_COPIED": "Скопировано: {{command}}",
+    "GAME_MAP_MENU_BATTLEGROUNDS": "Поля боя",
+    "GAME_MAP_MENU_DUNGEONS": "Подземелья",
+    "GAME_MAP_MENU_RAIDS": "Рейды",
+    "GAME_MAP_TRANSPORT_ID": "ID транспорта: {{entry}} (маршрут {{path}})",
+    "GAME_MAP_AREA_ID": "ID области: {{id}}",
+    "GAME_MAP_ZONE_ID": "ID зоны: {{id}}",
+    "GAME_MAP_MAP_ID": "ID карты: {{id}}",
+    "GAME_MAP_PORTAL_TO": "В {{zone}}",
+    "GAME_MAP_PORTALS": "Порталы и переходы",
     "GAME_MAP_WORLD_PVP": "Мировое PvP",
     "GAME_MAP_RELATIONS": "Отношения фракций",
     "GAME_MAP_MORE": "ещё {{count}} здесь",
@@ -1783,6 +1794,6 @@
     "GAME_MAP_OTHER_AREA": "Другая зона · щелчок открывает карту",
     "GAME_MAP_BACK_TO": "Назад к:",
     "GAME_MAP_ZOOM_RESET": "Вся карта",
-    "GAME_MAP_TIP": "Совет: двойной щелчок переносит туда камеру"
+    "GAME_MAP_TIP": "Совет: правый клик (или Alt + клик) копирует команду .go"
   }
 }

@@ -67,6 +67,8 @@ export const GAMEOBJECT_CHEST = 3;
 export const GAMEOBJECT_FISHING_HOLE = 25;
 /** Ships, zeppelins and gunships moving between places (MO_TRANSPORT): Data6 is the map they carry. */
 export const GAMEOBJECT_TRANSPORT = 15;
+/** Gameobject type of portals (spellcasters: their spell teleports). */
+export const GAMEOBJECT_SPELLCASTER = 22;
 
 /** A quest a creature or gameobject entry starts or ends (creature_queststarter / _questender, gameobject_…). */
 export interface SpawnQuest {

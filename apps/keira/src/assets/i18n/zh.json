@@ -1741,13 +1741,24 @@
     "GAME_MAP_SPAWNS": "3D 视图中已加载的刷新点",
     "GAME_MAP_MARKER_SIZE": "标记大小",
     "GAME_MAP_RESET": "默认标记",
-    "GAME_MAP_HINT": "单击区域打开；滚轮缩放，拖动移动。Ctrl + 单击复制 .go 命令。",
+    "GAME_MAP_HINT": "单击区域将其打开；滚轮缩放，拖动移动。右键（或 Alt + 单击）复制 .go 命令。",
     "GAME_MAP_CLICK_OPENS": "单击打开地图",
     "GAME_MAP_OPEN_MAP": "单击打开其地图",
     "GAME_MAP_BOATS": "船只",
     "GAME_MAP_ZEPPELINS": "飞艇",
     "GAME_MAP_OTHER_TRANSPORTS": "其他交通工具",
     "GAME_MAP_DUNGEONS": "地下城入口",
+    "GAME_MAP_NO_GO": "这里没有区域",
+    "GAME_MAP_COPIED": "已复制：{{command}}",
+    "GAME_MAP_MENU_BATTLEGROUNDS": "战场",
+    "GAME_MAP_MENU_DUNGEONS": "地下城",
+    "GAME_MAP_MENU_RAIDS": "团队副本",
+    "GAME_MAP_TRANSPORT_ID": "交通工具 ID：{{entry}}（路径 {{path}}）",
+    "GAME_MAP_AREA_ID": "地区 ID：{{id}}",
+    "GAME_MAP_ZONE_ID": "区域 ID：{{id}}",
+    "GAME_MAP_MAP_ID": "地图 ID：{{id}}",
+    "GAME_MAP_PORTAL_TO": "前往 {{zone}}",
+    "GAME_MAP_PORTALS": "传送门与通道",
     "GAME_MAP_WORLD_PVP": "世界PvP",
     "GAME_MAP_RELATIONS": "阵营关系",
     "GAME_MAP_MORE": "此处还有 {{count}} 个",
@@ -1783,6 +1794,6 @@
     "GAME_MAP_OTHER_AREA": "其他区域 · 单击打开地图",
     "GAME_MAP_BACK_TO": "返回：",
     "GAME_MAP_ZOOM_RESET": "整张地图",
-    "GAME_MAP_TIP": "提示：双击将镜头移到那里"
+    "GAME_MAP_TIP": "提示：右键（或 Alt + 单击）复制 .go 命令"
   }
 }

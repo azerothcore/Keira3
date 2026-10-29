@@ -3,6 +3,7 @@ import {
   AREA_CAPITAL,
   AREA_SANCTUARY,
   AreaTriggerInfo,
+  COSMIC_PAGE,
   cropImage,
   edgeButton,
   FactionData,
@@ -33,14 +34,16 @@ import {
   WorldBounds,
   WorldPosition,
   WowClientService,
+  WORLD_PAGE,
   WowMap,
 } from '@keira/shared/wow-data';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { cssRgb, LEVEL_BANDS, levelColor, territoryColor } from './game-map-layers';
 import {
-  ATLAS,
+  BADGE_ICONS,
   CONTINENT_LAYERS,
   factionSide,
+  friendlySides,
   GAME_MAP_LAYER_GROUPS,
   GAME_MAP_LAYERS,
   GAME_MAP_OPTIONS,
@@ -48,18 +51,19 @@ import {
   GameMapLayer,
   GameMapLayerGroup,
   GameMapPoi,
+  GameMapPortal,
   GameMapTeleport,
   GameMapTransport,
   loadMarkerSize,
   loadShownLayers,
   MARKER_SIZES,
-  POI_ATLAS,
-  POI_ATLAS_CELL,
-  POI_ATLAS_COLUMNS,
-  POI_ATLAS_PITCH,
+  NO_BADGE,
+  POI_ASSETS,
   saveMarkerSize,
   saveShownLayers,
+  TERRITORY_ICONS,
   transportKind,
+  TRAVEL_ICONS,
 } from './game-map-pois';
 import { imageToDataUrl, imageToPngUrl } from './minimap-image';
 import { WorldMapDot } from './world-map.component';
@@ -70,8 +74,14 @@ const MIN_ZOOM = 1;
 const MAX_ZOOM = 10;
 /** A press moving less than this (pixels) is a click. */
 const CLICK_SLOP = 4;
-/** A double click this soon after a click opened a page belongs to that click. */
-const DOUBLE_CLICK_AFTER_OPEN = 600;
+/** The continents (Map.dbc), as AoWoW's menu lists them; and the maps a `.go zonexy` works on. */
+const CONTINENT_ORDER = [0, 1, 530, 571];
+/** Instance types (Map.dbc) of battlegrounds. */
+const INSTANCE_BATTLEGROUND = 3;
+/** The expansion badges after a map's name (none for Classic). */
+const EXPANSION_ICONS = ['', `${POI_ASSETS}exp-bc.gif`, `${POI_ASSETS}exp-wotlk.gif`];
+/** How long the note of a copied `.go` command stays. */
+const TOAST_MS = 2200;
 /** Zones whose outlines on their continent come this close (percent) are neighbours. */
 const NEIGHBOUR_TOUCH = 1;
 /** Markers of one kind (and side) closer than this (percent of the map, each way) are shown as one. */
@@ -96,8 +106,11 @@ interface GamePin {
   /** A spawn's dot colour. */
   color?: string;
   icon?: GameMapIcon;
+  /** The side it serves (markers of one kind are only shown as one with those of the same side). */
   side?: Side;
-  /** An instance's entrance (or a zone's shield) opens its map. */
+  /** The sides that may use it (small badges above it). */
+  badges?: Side[];
+  /** An instance's entrance (or a zone's shield, a portal) opens its map. */
   opens?: string;
   position: WorldPosition;
   mapId: number;
@@ -120,13 +133,13 @@ interface GameShape {
   /** The page it opens (a zone, a continent…), or a sub-zone's area id. */
   key: string;
   d: string;
-  kind: 'zone' | 'plain' | 'neighbour' | 'sub';
+  kind: 'zone' | 'plain' | 'neighbour' | 'sub' | 'sub link';
   color?: string;
 }
 
 /**
  * A chip on a zone's picture naming a neighbouring zone (with its levels) that opens it: on the part of it the picture
- * shows, or (none shown) at the edge facing it, `edge` being that edge.
+ * shows, or (none shown) at the edge facing it, `edge` being that edge; or a city inside the zone that has a map.
  */
 interface GameLabel {
   key: string;
@@ -140,18 +153,15 @@ interface GameLabel {
   h: number;
 }
 
-/** The world map's icon atlas cells this map uses. */
-const ATLAS_CELLS = [
-  ATLAS.graveyard,
-  ATLAS.allianceCrest,
-  ATLAS.hordeCrest,
-  ...Object.values(ATLAS.zeppelin),
-  ...Object.values(ATLAS.boat),
-];
 /** An icon's key among the loaded pictures. */
-export const iconKey = (icon: GameMapIcon): string =>
-  icon.atlas !== undefined ? `${icon.path}#${icon.atlas}` : icon.crop ? `${icon.path}@${icon.crop.join(',')}` : (icon.path as string);
-const atlasIcon = (atlas: number): GameMapIcon => ({ path: POI_ATLAS, atlas });
+export const iconKey = (icon: GameMapIcon): string => (icon.crop ? `${icon.path}@${icon.crop.join(',')}` : (icon.path as string));
+
+/** A menu of maps (a continent's zones, the raids…), in columns (by expansion for instances). */
+interface GameMapMenu {
+  key: string;
+  label: string;
+  columns: { key: string; name: string; exp: string }[][];
+}
 
 /** The shape under a point of the picture, by its key. */
 function shapeAt(shapes: Map<string, Ring[]>, point: GameMapPoint): string | undefined {
@@ -194,10 +204,10 @@ function mergePins(pins: GamePin[]): GamePin[] {
  * with Keira), like AoWoW's maps: the cosmic map, the world map, the continents, their zones and the floors of
  * instances. Zones are outlined as AoWoW traces them (from the client's highlights), coloured by level or faction; the
  * zone under the pointer lights up and a click opens it, neighbouring zones too (dotted, with a chip naming them).
- * Sub-zones are outlined and named, with the game's coordinates. The wheel zooms and dragging pans. Markers
- * (townsfolk, professions, vendors, transports, instance entrances, and the 3D view's spawns when asked) use the
- * client's own icons, with a crest for the side they serve. A double click moves the camera there; Ctrl + click
- * copies a `.go` command.
+ * Sub-zones are outlined and named (cities inside a zone open their map), with the game's coordinates. The wheel zooms
+ * and dragging pans. Markers (townsfolk, professions, vendors, travel, instance entrances, and the 3D view's spawns when
+ * asked) use AoWoW's icons (the client's where they are the client's), with badges for the sides that may use them.
+ * A right click (or Alt + click) copies a `.go` command for the place.
  */
 @Component({
   selector: 'keira-game-map',
@@ -220,9 +230,9 @@ export class GameMapComponent {
   readonly pois = input<GameMapPoi[]>([]);
   readonly transports = input<GameMapTransport[]>([]);
   readonly teleports = input<GameMapTeleport[]>([]);
+  /** Portal objects (Shattrath's, Dalaran's…) with where they send to. */
+  readonly portals = input<GameMapPortal[]>([]);
   readonly maps = input<WowMap[]>([]);
-  /** Go to a place (of any map). */
-  readonly goTo = output<{ mapId: number; position: WorldPosition }>();
   /** Load every spawn of an area (the zone shown). */
   readonly regionSelected = output<WorldBounds>();
   readonly closed = output<void>();
@@ -267,13 +277,17 @@ export class GameMapComponent {
   protected readonly hover = signal<{ point: GameMapPoint; x: number; y: number } | undefined>(undefined);
   protected readonly hoverPin = signal<{ pin: GamePin; x: number; y: number } | undefined>(undefined);
   protected readonly copied = signal<string | undefined>(undefined);
+  /** The note by the pointer after a right click: the `.go` command copied, or why there is none. */
+  protected readonly toast = signal<{ x: number; y: number; text: string; error: boolean } | undefined>(undefined);
+  private toastTimer?: ReturnType<typeof setTimeout>;
+  /** The menu of maps open (by key). */
+  protected readonly openMenu = signal<string | undefined>(undefined);
   /** The icons (and crests) as pictures, by `iconKey`. */
   protected readonly icons = signal(new Map<string, string>());
   private readonly factions = signal<FactionData | undefined>(undefined);
   private readonly triggers = signal(new Map<number, AreaTriggerInfo[]>());
   private readonly taxiPaths = signal(new Map<number, TaxiPath[]>());
   private press?: { x: number; y: number; pan: { x: number; y: number }; moved: boolean };
-  private openedAt = 0;
 
   /** Markers are smaller on continents, as on AoWoW's. */
   protected readonly pinSize = computed(() => Math.round(this.markerSize() * (this.page()?.kind === 'continent' ? 0.8 : 1)));
@@ -291,6 +305,71 @@ export class GameMapComponent {
       .map((child) => ({ key: child.key, name: this.pageName({ ...child, floor: undefined }) }))
       .sort((a, b) => a.name.localeCompare(b.name));
   });
+
+  /** AoWoW's menus of maps: each continent's zones, then the raids, dungeons and battlegrounds by expansion. */
+  protected readonly menus = computed<GameMapMenu[]>(() => {
+    const pages = this.pages();
+    const maps = new Map(this.maps().map((m) => [m.id, m]));
+    const item = (page: GamePage) => ({
+      key: page.key,
+      name: this.pageName({ ...page, floor: undefined }),
+      exp: EXPANSION_ICONS[maps.get(page.mapId)?.expansion ?? 0],
+    });
+    const byName = (a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name);
+    const menus: GameMapMenu[] = [];
+    for (const mapId of CONTINENT_ORDER) {
+      const continent = [...pages.values()].find((p) => p.kind === 'continent' && p.mapId === mapId);
+      if (continent) {
+        const zones = continent.regions
+          .map((region) => firstPage(pages, region.page))
+          .filter((page): page is GamePage => !!page)
+          .map(item)
+          .sort(byName);
+        menus.push({ key: continent.key, label: this.pageName(continent), columns: [zones] });
+      }
+    }
+    const instances: [string, number][] = [
+      ['RAIDS', INSTANCE_RAID],
+      ['DUNGEONS', INSTANCE_DUNGEON],
+      ['BATTLEGROUNDS', INSTANCE_BATTLEGROUND],
+    ];
+    for (const [key, type] of instances) {
+      const areas = new Map<number, GamePage>();
+      for (const page of pages.values()) {
+        const map = maps.get(page.mapId);
+        if ((page.kind === 'zone' || page.kind === 'floor') && map?.instanceType === type && !areas.has(page.mapAreaId)) {
+          areas.set(page.mapAreaId, firstPage(pages, `area:${page.mapAreaId}`) as GamePage);
+        }
+      }
+      const columns = [0, 1, 2]
+        .map((exp) =>
+          [...areas.values()]
+            .filter((page) => (maps.get(page.mapId)?.expansion ?? 0) === exp)
+            .map(item)
+            .sort(byName),
+        )
+        .filter((column) => column.length);
+      if (columns.length) {
+        menus.push({ key, label: this.translate.instant(`WORLD_EDITOR.GAME_MAP_MENU_${key}`), columns });
+      }
+    }
+    return menus;
+  });
+
+  /** The expansion badge after the name of the map shown. */
+  protected readonly titleExpansion = computed(() => {
+    const page = this.page();
+    return (page && EXPANSION_ICONS[this.maps().find((m) => m.id === page.mapId)?.expansion ?? 0]) || '';
+  });
+
+  /** AoWoW's round frame around square (spell / item) icons. */
+  protected readonly spellBorder = `${POI_ASSETS}spell-border.png`;
+  protected readonly cosmicPage = COSMIC_PAGE;
+  protected readonly worldPage = WORLD_PAGE;
+
+  protected toggleMenu(key: string): void {
+    this.openMenu.set(this.openMenu() === key ? undefined : key);
+  }
 
   /** The page "back" goes to. */
   protected readonly parentPage = computed(() => {
@@ -367,8 +446,24 @@ export class GameMapComponent {
     () => this.page()?.kind === 'continent' && (this.shown().has('levels') || this.shown().has('territory')),
   );
 
+  /** The sub-zones of the zone shown that have a map of their own (cities: Stormwind in Elwynn Forest), by area id. */
+  private readonly subLinks = computed(() => {
+    const page = this.page();
+    const links = new Map<string, GamePage>();
+    this.subzones().forEach((_, key) => {
+      const target = [...this.pages().values()].find((p) => p.areaId === Number(key) && p.mapAreaId !== (page as GamePage).mapAreaId);
+      if (target) {
+        links.set(key, target);
+      }
+    });
+    return links;
+  });
+
+  /** Sub-zones (faint lines when asked), those with a map of their own like neighbours (always: they open it). */
   protected readonly subPaths = computed<GameShape[]>(() =>
-    this.shown().has('subBorders') ? [...this.subzones()].map(([key, rings]) => ({ key, d: ringsPath(rings), kind: 'sub' as const })) : [],
+    [...this.subzones()]
+      .filter(([key]) => this.shown().has('subBorders') || this.subLinks().has(key))
+      .map(([key, rings]) => ({ key, d: ringsPath(rings), kind: this.subLinks().has(key) ? ('sub link' as const) : ('sub' as const) })),
   );
 
   /** Whether zone borders are drawn (on continents, the world map). */
@@ -377,15 +472,15 @@ export class GameMapComponent {
   /** The region under the pointer (a zone, a continent, a world; a neighbour on a zone), by the page it opens. */
   protected readonly hoverKey = computed(() => {
     const hover = this.hover();
-    const page = this.page();
-    // (neighbours only when shown)
-    return hover && page && (page.kind !== 'zone' || this.shown().has('transitions')) ? shapeAt(this.regions(), hover.point) : undefined;
+    // (neighbours too when their outlines are hidden, as on AoWoW's)
+    return hover && this.page() ? shapeAt(this.regions(), hover.point) : undefined;
   });
 
-  /** The page the region under the pointer opens. */
+  /** The page the region (or city) under the pointer opens. */
   protected readonly hoverTarget = computed(() => {
     const key = this.hoverKey();
-    return key ? this.targetOf(key) : undefined;
+    const sub = this.hoverSub();
+    return key ? this.targetOf(key) : sub ? this.subLinks().get(sub) : undefined;
   });
 
   /** The sub-zone under the pointer on a zone, by area id. */
@@ -405,6 +500,10 @@ export class GameMapComponent {
       return [];
     }
     const placed: GameLabel[] = [];
+    this.subLinks().forEach((target, key) => {
+      const [x, y] = labelPoint(this.subzones().get(key) as Ring[]);
+      placed.push(this.chip(target, x, y, placed));
+    });
     const parts = [...this.regions()].sort(([, a], [, b]) => ringsArea(b) - ringsArea(a));
     for (const [key, rings] of parts) {
       const target = this.targetOf(key);
@@ -450,7 +549,10 @@ export class GameMapComponent {
     return { key: target.key, u: u / 100, v: v / 100, text, levels: levelText, w, h };
   }
 
-  /** What the tooltip says: the zone a click opens, its levels and land; or (on a zone) the sub-zone under the pointer. */
+  /**
+   * What the tooltip says: the zone a click opens, its levels and land; or (on a zone) the sub-zone under the pointer;
+   * with the map's, zone's and area's ids at the bottom.
+   */
   protected readonly tooltip = computed(() => {
     const hover = this.hover();
     const page = this.page();
@@ -458,24 +560,45 @@ export class GameMapComponent {
       return undefined;
     }
     const target = this.hoverTarget();
+    const sub = this.hoverSub();
     if (target) {
       const levels = this.levelsOf(target);
+      const city = !this.hoverKey();
       return {
         x: hover.x,
         y: hover.y,
         title: this.pageName(target),
         levels: this.levelLine(target, levels),
         land: this.landText(target),
-        hint: this.translate.instant(page.kind === 'zone' ? 'WORLD_EDITOR.GAME_MAP_OTHER_AREA' : 'WORLD_EDITOR.GAME_MAP_CLICK_OPENS'),
+        hint: city
+          ? `${this.areaName(page.areaId)} · ${this.translate.instant('WORLD_EDITOR.GAME_MAP_CLICK_OPENS')}`
+          : this.translate.instant(page.kind === 'zone' ? 'WORLD_EDITOR.GAME_MAP_OTHER_AREA' : 'WORLD_EDITOR.GAME_MAP_CLICK_OPENS'),
+        ids: this.ids(target.mapId, target.areaId),
       };
     }
-    const sub = this.hoverSub();
     if (!page.bounds || page.kind === 'continent' || (!sub && page.kind === 'zone')) {
       return undefined;
     }
     const area = this.areaName(sub ? Number(sub) : page.areaId);
-    return { x: hover.x, y: hover.y, title: area, levels: undefined, land: undefined, hint: this.areaName(page.areaId) };
+    return {
+      x: hover.x,
+      y: hover.y,
+      title: area,
+      levels: undefined,
+      land: undefined,
+      hint: this.areaName(page.areaId),
+      ids: this.ids(page.mapId, page.areaId, sub ? Number(sub) : 0),
+    };
   });
+
+  /** "Map ID: …", "Zone ID: …", "Area ID: …" (one a line; none for what isn't known). */
+  private ids(mapId: number, zoneId: number, areaId = 0): string[] {
+    return [
+      mapId >= 0 ? this.translate.instant('WORLD_EDITOR.GAME_MAP_MAP_ID', { id: mapId }) : '',
+      zoneId ? this.translate.instant('WORLD_EDITOR.GAME_MAP_ZONE_ID', { id: zoneId }) : '',
+      areaId ? this.translate.instant('WORLD_EDITOR.GAME_MAP_AREA_ID', { id: areaId }) : '',
+    ].filter(Boolean);
+  }
 
   /** The game's coordinates of the place under the pointer (zones and floors). */
   protected readonly coordinates = computed(() => {
@@ -527,6 +650,7 @@ export class GameMapComponent {
           lines: [poi.subname ? `<${poi.subname}>` : '', this.translate.instant(layer.label)].filter(Boolean),
           icon: layer.icon,
           side: factionSide(factions?.templates.get(poi.faction ?? 0)),
+          badges: NO_BADGE.has(poi.kind) ? [] : this.badgesOf(friendlySides(factions?.templates.get(poi.faction ?? 0))),
           position: poi,
           mapId: poi.mapId,
           kind: poi.kind,
@@ -536,10 +660,16 @@ export class GameMapComponent {
     pins.push(
       ...this.transportPins(),
       ...this.entrances().filter((pin) => this.showsLayer(pin.key.split(':')[1]) && this.belongs(page, pin.mapId, pin.position)),
+      ...(this.showsLayer('portal') ? this.portalPins() : []),
       ...this.territoryPins().filter((pin) => shown.has(pin.kind as string)),
     );
     return mergePins(pins);
   });
+
+  /** The sides of these that badges are shown for. */
+  private badgesOf(sides: { alliance: boolean; horde: boolean }): Side[] {
+    return (['alliance', 'horde'] as Side[]).filter((side) => sides[side]);
+  }
 
   /** Whether a layer's markers are shown on the page (on continents only some layers are). */
   private showsLayer(key: string): boolean {
@@ -570,7 +700,10 @@ export class GameMapComponent {
     return !point || pointInRings(point.u * 100, point.v * 100, own);
   }
 
-  /** On a continent, a shield on each zone of a side (whose land it is) and swords on Wintergrasp (its world PvP). */
+  /**
+   * On a continent, a shield on each zone of a side (whose land it is; not its capital cities, which lie in such a zone)
+   * and swords on Wintergrasp (its world PvP).
+   */
   private readonly territoryPins = computed<GamePin[]>(() => {
     const page = this.page() as GamePage;
     const outlines = page.kind === 'continent' ? this.outlines().get(`regions:${page.key}`) : undefined;
@@ -578,7 +711,9 @@ export class GameMapComponent {
     outlines?.forEach((rings, key) => {
       const target = this.targetOf(key);
       const zone = target && (this.data() as GameMapData).zones.get(target.areaId);
-      const kind = target?.areaId === WINTERGRASP ? 'pvp' : zone?.faction === 1 || zone?.faction === 0 ? 'relations' : undefined;
+      const side =
+        zone && !(zone.flags & AREA_CAPITAL) ? (zone.faction === 1 ? 'alliance' : zone.faction === 0 ? 'horde' : undefined) : undefined;
+      const kind = target?.areaId === WINTERGRASP ? 'pvp' : side ? 'relations' : undefined;
       if (!target || !kind) {
         return;
       }
@@ -587,7 +722,7 @@ export class GameMapComponent {
       const icon =
         kind === 'pvp'
           ? ((GAME_MAP_LAYERS.find((l) => l.key === 'pvp') as GameMapLayer).icon as GameMapIcon)
-          : atlasIcon(zone?.faction === 1 ? ATLAS.allianceCrest : ATLAS.hordeCrest);
+          : TERRITORY_ICONS[side as Side];
       pins.push({
         key: `${kind}:${key}`,
         ...point,
@@ -597,12 +732,63 @@ export class GameMapComponent {
           this.translate.instant('WORLD_EDITOR.GAME_MAP_OPEN_MAP'),
         ],
         icon,
+        side,
         opens: target.key,
         position: { ...fromGameMap(page.bounds as WorldBounds, point), z: 0 },
         mapId: page.mapId,
         kind,
       });
     });
+    return pins;
+  });
+
+  /**
+   * Portals and crossings on the page (as AoWoW's): area triggers sending to another continent's map or another zone
+   * (the Dark Portal, Rut'theran Village to Darnassus), and portal objects (Shattrath's, Dalaran's…); a click opens where
+   * they lead.
+   */
+  private readonly portalPins = computed<GamePin[]>(() => {
+    const page = this.page() as GamePage;
+    const triggers = this.triggers().get(page.mapId) as AreaTriggerInfo[];
+    const byTrigger = new Map(this.teleports().map((t) => [t.id, t]));
+    const ways: { key: string; name: string; mapId: number; x: number; y: number; targetMap: number; tx: number; ty: number }[] = [];
+    for (const trigger of triggers) {
+      const teleport = byTrigger.get(trigger.id);
+      if (teleport?.target && !/leap of faith/i.test(teleport.name)) {
+        ways.push({
+          key: `portal:t${trigger.id}`,
+          name: teleport.name,
+          ...trigger,
+          targetMap: teleport.targetMap,
+          tx: teleport.target.x,
+          ty: teleport.target.y,
+        });
+      }
+    }
+    this.portals().forEach((portal, i) => ways.push({ key: `portal:o${i}`, ...portal }));
+    const layer = GAME_MAP_LAYERS.find((l) => l.key === 'portal') as GameMapLayer;
+    const pins: GamePin[] = [];
+    for (const way of ways) {
+      const point = CONTINENT_ORDER.includes(way.targetMap) ? this.placeOn(page, way.mapId, way) : undefined;
+      const from = point && pageAt(this.pages(), way.mapId, way.x, way.y);
+      const to = point && pageAt(this.pages(), way.targetMap, way.tx, way.ty);
+      if (point && to && from !== to && to.kind !== 'continent' && to.kind !== 'world') {
+        pins.push({
+          key: way.key,
+          ...point,
+          title: way.name,
+          lines: [
+            this.translate.instant(layer.label),
+            this.translate.instant('WORLD_EDITOR.GAME_MAP_PORTAL_TO', { zone: this.pageName(to) }),
+          ],
+          icon: layer.icon,
+          opens: to.key,
+          position: { x: way.x, y: way.y, z: 0 },
+          mapId: way.mapId,
+          kind: 'portal',
+        });
+      }
+    }
     return pins;
   });
 
@@ -695,18 +881,24 @@ export class GameMapComponent {
       .filter((run) => this.shown().has(run.kind))
       .flatMap(({ transport, kind, side, lines }) =>
         lines.map((line, i) => {
+          const layer = GAME_MAP_LAYERS.find((l) => l.key === kind) as GameMapLayer;
           const icon: GameMapIcon =
             kind === 'boat'
-              ? atlasIcon(ATLAS.boat[side ?? 'neutral'])
+              ? TRAVEL_ICONS.boat[side ?? 'neutral']
               : kind === 'transport'
-                ? ((GAME_MAP_LAYERS.find((l) => l.key === 'transport') as GameMapLayer).icon as GameMapIcon)
-                : atlasIcon(ATLAS.zeppelin[side ?? 'neutral']);
+                ? (layer.icon as GameMapIcon)
+                : TRAVEL_ICONS.zeppelin[side ?? 'neutral'];
           return {
             key: `transport:${transport.entry}:${i}`,
             ...line[0],
             title: transport.name,
-            lines: [],
+            lines: [
+              this.translate.instant(layer.label),
+              this.translate.instant('WORLD_EDITOR.GAME_MAP_TRANSPORT_ID', { entry: transport.entry, path: transport.path }),
+            ],
             icon,
+            side,
+            badges: side ? [side] : [],
             position: fromGameMap((this.page() as GamePage).bounds as WorldBounds, line[0]) as WorldPosition,
             mapId: (this.page() as GamePage).mapId,
           };
@@ -795,7 +987,7 @@ export class GameMapComponent {
     this.hoverPin.set(undefined);
     this.zoom.set(1);
     this.pan.set({ x: 0, y: 0 });
-    this.openedAt = Date.now();
+    this.openMenu.set(undefined);
   }
 
   protected openChild(event: Event): void {
@@ -929,27 +1121,22 @@ export class GameMapComponent {
       return;
     }
     const target = this.hoverTarget();
-    if (event.ctrlKey || event.metaKey) {
-      void this.copyGo();
+    if (event.altKey) {
+      void this.copyGo(event);
     } else if (target) {
       this.open(target.key);
     }
   }
 
+  /** A right click copies a `.go` command for the place under the pointer. */
+  protected onContextMenu(event: MouseEvent): void {
+    event.preventDefault();
+    void this.copyGo(event);
+  }
+
   protected onPointerLeave(): void {
     this.press = undefined;
     this.hover.set(undefined);
-  }
-
-  /** A double click moves the camera there (not the one that ends a click opening a zone). */
-  protected onDoubleClick(): void {
-    const page = this.page();
-    const hover = this.hover();
-    if (!page?.bounds || page.kind === 'continent' || !hover || Date.now() - this.openedAt < DOUBLE_CLICK_AFTER_OPEN) {
-      return;
-    }
-    const { x, y } = fromGameMap(page.bounds, hover.point);
-    this.goTo.emit({ mapId: page.mapId, position: { x, y, z: this.heightOn(page) } });
   }
 
   /** The height a place of a page is taken at: the camera's on its map (the map has no heights), else 0. */
@@ -981,24 +1168,62 @@ export class GameMapComponent {
     this.pan.set({ x: 0, y: 0 });
   }
 
-  /** Ctrl + click: a `.go` command for the place under the pointer (`zonexy` on a zone, `xyz` elsewhere). */
-  private async copyGo(): Promise<void> {
+  /**
+   * The `.go` command for the place under the pointer, as AoWoW's: `.go zonexy` on a zone of a continent (the server
+   * finds the ground), on a continent for the zone under the pointer; `.go xyz` on other maps (instances, floors).
+   */
+  private goCommand(page: GamePage, point: GameMapPoint): string | undefined {
+    const xy = (u: number, v: number) =>
+      `${(Math.min(1, Math.max(0, u)) * 100).toFixed(2)} ${(Math.min(1, Math.max(0, v)) * 100).toFixed(2)}`;
+    if (page.kind === 'zone' && this.continent()) {
+      return `.go zonexy ${xy(point.u, point.v)} ${page.areaId}`;
+    }
+    if (page.kind === 'continent') {
+      // the smallest zone under the pointer (cities lie inside their zone)
+      const key = [...this.regions()]
+        .filter(([, rings]) => pointInRings(point.u * 100, point.v * 100, rings))
+        .sort(([, a], [, b]) => ringsArea(a) - ringsArea(b))[0]?.[0];
+      const region = page.regions.find((r) => r.page === key);
+      const target = key ? this.targetOf(key) : undefined;
+      if (!region || !target) {
+        return undefined;
+      }
+      const { left, top, right, bottom } = region.rect;
+      return `.go zonexy ${xy((point.u - left) / (right - left), (point.v - top) / (bottom - top))} ${target.areaId}`;
+    }
+    if (!page.bounds) {
+      return undefined;
+    }
+    const { x, y } = fromGameMap(page.bounds, point);
+    return `.go xyz ${x.toFixed(1)} ${y.toFixed(1)} ${this.heightOn(page).toFixed(1)} ${page.mapId}`;
+  }
+
+  /** Copies the `.go` command for the place under the pointer, with a note by it. */
+  private async copyGo(event: MouseEvent): Promise<void> {
     const page = this.page();
     const hover = this.hover();
-    if (!page?.bounds || page.kind === 'continent' || !hover) {
+    const command = page && hover ? this.goCommand(page, hover.point) : undefined;
+    if (!command) {
+      this.showToast(event, this.translate.instant('WORLD_EDITOR.GAME_MAP_NO_GO'), true);
       return;
     }
-    const { x, y } = fromGameMap(page.bounds, hover.point);
-    const command =
-      page.kind === 'zone'
-        ? `.go zonexy ${(hover.point.u * 100).toFixed(1)} ${(hover.point.v * 100).toFixed(1)} ${page.areaId}`
-        : `.go xyz ${x.toFixed(1)} ${y.toFixed(1)} ${this.heightOn(page).toFixed(1)} ${page.mapId}`;
     try {
       await navigator.clipboard.writeText(command);
       this.copied.set(command);
+      this.showToast(event, this.translate.instant('WORLD_EDITOR.GAME_MAP_COPIED', { command }), false);
     } catch (error) {
       console.warn('[World Editor] Could not copy the .go command:', error);
+      this.showToast(event, command, false);
     }
+  }
+
+  private showToast(event: MouseEvent, text: string, error: boolean): void {
+    const viewport = ((event.currentTarget as HTMLElement | null)?.closest('.game-map-viewport') ??
+      event.currentTarget) as HTMLElement | null;
+    const box = viewport?.getBoundingClientRect() ?? new DOMRect();
+    this.toast.set({ x: event.clientX - box.left + 12, y: event.clientY - box.top - 28, text, error });
+    clearTimeout(this.toastTimer);
+    this.toastTimer = setTimeout(() => this.toast.set(undefined), TOAST_MS);
   }
 
   protected onPinEnter(pin: GamePin, event: MouseEvent): void {
@@ -1025,12 +1250,6 @@ export class GameMapComponent {
     this.open(label.key);
   }
 
-  /** A double click on a marker moves the camera to it. */
-  protected onPinDoubleClick(pin: GamePin, event: Event): void {
-    event.stopPropagation();
-    this.goTo.emit({ mapId: pin.mapId, position: pin.position });
-  }
-
   protected loadZone(): void {
     this.regionSelected.emit((this.page() as GamePage).bounds as WorldBounds);
   }
@@ -1038,11 +1257,11 @@ export class GameMapComponent {
   // ------------------------------------------------------------------ layers
 
   protected iconOf(icon: GameMapIcon | undefined): string | undefined {
-    return icon?.path ? this.icons().get(iconKey(icon)) : undefined;
+    return icon?.asset ? `${POI_ASSETS}${icon.asset}.png` : icon?.path ? this.icons().get(iconKey(icon)) : undefined;
   }
 
-  protected sideIcon(side: Side): string | undefined {
-    return this.icons().get(iconKey(atlasIcon(side === 'alliance' ? ATLAS.allianceCrest : ATLAS.hordeCrest)));
+  protected badgeIcon(side: Side): string | undefined {
+    return this.iconOf(BADGE_ICONS[side]);
   }
 
   protected toggleLayer(key: string): void {
@@ -1156,24 +1375,17 @@ export class GameMapComponent {
     }
   }
 
-  /** The layers' icons, the atlas's cells cut out. */
+  /** The layers' icons and the badges that are the client's (parts cut out). */
   private async loadIcons(): Promise<void> {
-    const icons = GAME_MAP_LAYERS.map((layer) => layer.icon as GameMapIcon).filter((icon) => icon?.path && icon.atlas === undefined);
+    const icons = [...GAME_MAP_LAYERS.map((layer) => layer.icon as GameMapIcon), ...Object.values(BADGE_ICONS)].filter(
+      (icon) => icon?.path,
+    );
     for (const icon of icons) {
       const image = await this.client.getTexture(icon.path as string).catch(() => undefined);
       if (image) {
         const part = icon.crop ? cropImage(image, ...icon.crop) : image;
         this.icons.update((map) => new Map(map).set(iconKey(icon), imageToPngUrl(part)));
       }
-    }
-    const atlas = await this.client.getTexture(POI_ATLAS).catch(() => undefined);
-    if (atlas) {
-      const cells = new Map<string, string>();
-      for (const cell of ATLAS_CELLS) {
-        const [x, y] = [(cell % POI_ATLAS_COLUMNS) * POI_ATLAS_PITCH + 1, Math.floor(cell / POI_ATLAS_COLUMNS) * POI_ATLAS_PITCH + 1];
-        cells.set(iconKey(atlasIcon(cell)), imageToPngUrl(cropImage(atlas, x, y, POI_ATLAS_CELL, POI_ATLAS_CELL)));
-      }
-      this.icons.update((map) => new Map([...map, ...cells]));
     }
   }
 }

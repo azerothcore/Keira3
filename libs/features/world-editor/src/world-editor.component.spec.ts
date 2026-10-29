@@ -256,6 +256,7 @@ describe(WorldEditorComponent.name, () => {
       loadMapPois: vi.fn(),
       loadMapTeleports: vi.fn(),
       loadTransportRoutes: vi.fn(),
+      loadMapPortals: vi.fn(),
       loadTeleports: vi.fn(),
       loadLandingSpot: vi.fn(),
       loadAreaPaths: vi.fn(),
@@ -404,6 +405,7 @@ describe(WorldEditorComponent.name, () => {
     mocks.service.loadMapPois.mockResolvedValue([]);
     mocks.service.loadMapTeleports.mockResolvedValue([]);
     mocks.service.loadTransportRoutes.mockResolvedValue([]);
+    mocks.service.loadMapPortals.mockResolvedValue([]);
     mocks.service.loadFormations.mockResolvedValue([]);
     mocks.service.loadPools.mockResolvedValue([]);
     mocks.service.loadTransports.mockResolvedValue([]);
@@ -3652,6 +3654,7 @@ describe(WorldEditorComponent.name, () => {
       mocks.service.loadMapPois.mockResolvedValueOnce([poi]);
       mocks.service.loadMapTeleports.mockResolvedValueOnce([{ id: 1, name: 'Naxx', targetMap: 533 }]);
       mocks.service.loadTransportRoutes.mockResolvedValueOnce([{ entry: 2, name: 'Boat', path: 3, faction: 0 }]);
+      mocks.service.loadMapPortals.mockResolvedValueOnce([{ name: 'Portal', mapId: 0, x: 1, y: 2, targetMap: 530, tx: 3, ty: 4 }]);
       await loadArea(page);
       // its pictures were made at the start: the cosmic and world maps and the continent
       expect(mocks.client.getGameMapPicture).toHaveBeenCalledTimes(3);
@@ -3664,8 +3667,8 @@ describe(WorldEditorComponent.name, () => {
           pois: () => unknown[];
           teleports: () => unknown[];
           transports: () => unknown[];
+          portals: () => unknown[];
           zoneId: () => number;
-          goTo: { emit: (place: { mapId: number; position: WorldPosition }) => void };
           regionSelected: { emit: (b: WorldBounds) => void };
           closed: { emit: () => void };
         };
@@ -3674,9 +3677,7 @@ describe(WorldEditorComponent.name, () => {
       expect(map().pois()).toEqual([poi]);
       expect(map().teleports()).toHaveLength(1);
       expect(map().transports()).toHaveLength(1);
-      map().goTo.emit({ mapId: 0, position: { x: -9000, y: 100, z: 5 } });
-      await settle(page);
-      expect(page.viewer().focus()).toEqual({ x: -9000, y: 100, z: 5 });
+      expect(map().portals()).toHaveLength(1);
       map().regionSelected.emit({ minX: -9100, maxX: -9000, minY: 0, maxY: 100 });
       await settle(page);
       expect(page.viewer().region()).toEqual({ minX: -9100, maxX: -9000, minY: 0, maxY: 100 });
@@ -3698,6 +3699,7 @@ describe(WorldEditorComponent.name, () => {
       mocks.service.loadMapPois.mockRejectedValueOnce(new Error('no table'));
       mocks.service.loadMapTeleports.mockRejectedValueOnce(new Error('no table'));
       mocks.service.loadTransportRoutes.mockRejectedValueOnce(new Error('no table'));
+      mocks.service.loadMapPortals.mockRejectedValueOnce(new Error('no table'));
       const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
       const { page } = await setup();
       await loadArea(page);

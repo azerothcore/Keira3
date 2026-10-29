@@ -1741,13 +1741,24 @@
     "GAME_MAP_SPAWNS": "Spawns cargados en la vista 3D",
     "GAME_MAP_MARKER_SIZE": "Tamaño de marcadores",
     "GAME_MAP_RESET": "Marcadores por defecto",
-    "GAME_MAP_HINT": "Haz clic en una zona para abrirla; la rueda acerca, arrastra para mover. Ctrl + clic copia un comando .go.",
+    "GAME_MAP_HINT": "Haz clic en una zona para abrirla; la rueda acerca, arrastra para moverte. Un clic derecho (o Alt + clic) copia un comando .go.",
     "GAME_MAP_CLICK_OPENS": "Clic para abrir el mapa",
     "GAME_MAP_OPEN_MAP": "Clic para abrir su mapa",
     "GAME_MAP_BOATS": "Barcos",
     "GAME_MAP_ZEPPELINS": "Zepelines",
     "GAME_MAP_OTHER_TRANSPORTS": "Otros transportes",
     "GAME_MAP_DUNGEONS": "Entradas de mazmorra",
+    "GAME_MAP_NO_GO": "Aquí no hay ninguna zona",
+    "GAME_MAP_COPIED": "Copiado: {{command}}",
+    "GAME_MAP_MENU_BATTLEGROUNDS": "Campos de batalla",
+    "GAME_MAP_MENU_DUNGEONS": "Mazmorras",
+    "GAME_MAP_MENU_RAIDS": "Bandas",
+    "GAME_MAP_TRANSPORT_ID": "ID de transporte: {{entry}} (ruta {{path}})",
+    "GAME_MAP_AREA_ID": "ID de área: {{id}}",
+    "GAME_MAP_ZONE_ID": "ID de zona: {{id}}",
+    "GAME_MAP_MAP_ID": "ID de mapa: {{id}}",
+    "GAME_MAP_PORTAL_TO": "A {{zone}}",
+    "GAME_MAP_PORTALS": "Portales y pasos",
     "GAME_MAP_WORLD_PVP": "JcJ mundial",
     "GAME_MAP_RELATIONS": "Relaciones de facción",
     "GAME_MAP_MORE": "+{{count}} más aquí",
@@ -1783,6 +1794,6 @@
     "GAME_MAP_OTHER_AREA": "Otra zona · clic para abrir su mapa",
     "GAME_MAP_BACK_TO": "Volver a:",
     "GAME_MAP_ZOOM_RESET": "Mapa completo",
-    "GAME_MAP_TIP": "Consejo: doble clic para mover la cámara allí"
+    "GAME_MAP_TIP": "Consejo: clic derecho (o Alt + clic) copia un comando .go"
   }
 }

@@ -29,16 +29,34 @@ export interface GameMapTransport {
   faction: number;
 }
 
-/** An area trigger teleporting to another map (an instance's entrance). */
+/** An area trigger teleporting to another map (an instance's entrance, the Dark Portal…), with where it sends to. */
 export interface GameMapTeleport {
   id: number;
   name: string;
   targetMap: number;
+  target?: { x: number; y: number };
 }
 
-/** How a layer's markers look: a picture of the client (a whole file, or a cell of the world map's icon atlas), drawn round or as a framed square icon; or a Font Awesome icon in a colour. */
+/** A portal object (gameobject type 22, a spellcaster) and where its spell sends to (spell_target_position). */
+export interface GameMapPortal {
+  name: string;
+  mapId: number;
+  x: number;
+  y: number;
+  targetMap: number;
+  tx: number;
+  ty: number;
+}
+
+/**
+ * How a layer's markers look: a picture of the client (a whole file, a part of it, or a cell of the world map's icon
+ * atlas), drawn as it is or (a square spell / item icon) in a round frame; one of AoWoW's own icons that Keira ships
+ * (`asset`, under `assets/img/map/poi/`); or a Font Awesome icon in a colour.
+ */
 export interface GameMapIcon {
   path?: string;
+  /** One of AoWoW's map icons Keira ships (its file name, without `.png`). */
+  asset?: string;
   /** A cell of `POI_ATLAS`. */
   atlas?: number;
   /** A part of the picture: [x, y, width, height]. */
@@ -91,6 +109,7 @@ export const CONTINENT_LAYERS = new Set([
   'boat',
   'zeppelin',
   'gunship',
+  'portal',
   'transport',
   'routes',
   'dungeon',
@@ -100,6 +119,23 @@ export const CONTINENT_LAYERS = new Set([
 ]);
 
 const tracking = (file: string): GameMapIcon => ({ path: `${TRACKING}${file}.blp` });
+const aowow = (asset: string): GameMapIcon => ({ asset });
+/** Where Keira's copies of AoWoW's map icons are. */
+export const POI_ASSETS = 'assets/img/map/poi/';
+/** The small Alliance / Horde badges above a marker (who may use it): the game's world-state icons. */
+export const BADGE_ICONS: Record<'alliance' | 'horde', GameMapIcon> = {
+  alliance: { path: 'Interface\\WorldStateFrame\\AllianceIcon.blp' },
+  horde: { path: 'Interface\\WorldStateFrame\\HordeIcon.blp' },
+};
+/** AoWoW's boat and zeppelin icons by side (gunships use the zeppelins). */
+export const TRAVEL_ICONS = {
+  boat: { alliance: aowow('boat-a'), horde: aowow('boat-h'), neutral: aowow('boat-n') },
+  zeppelin: { alliance: aowow('zep-a'), horde: aowow('zep-h'), neutral: aowow('zep-n') },
+};
+/** Territory shields on continents, by side. */
+export const TERRITORY_ICONS = { alliance: aowow('ta'), horde: aowow('th') };
+/** Markers that never carry a side's badge (AoWoW's rule). */
+export const NO_BADGE = new Set(['dungeon', 'raid', 'pvp', 'relations', 'mailbox', 'stone']);
 const square = (file: string): GameMapIcon => ({ path: `${ICONS}${file}.blp`, square: true });
 
 /** Professions (SkillLine ids) with their icons; the first 11 primary, then secondary. */
@@ -140,7 +176,7 @@ export const GAME_MAP_LAYER_GROUPS: GameMapLayerGroup[] = [
     layers: [
       { key: 'auction', label: 'WORLD_EDITOR.POI_AUCTION', icon: tracking('Auctioneer'), shown: true },
       { key: 'bank', label: 'WORLD_EDITOR.POI_BANK', icon: tracking('Banker'), shown: false },
-      { key: 'barber', label: 'WORLD_EDITOR.POI_BARBER', icon: square('INV_Misc_Comb_02'), shown: false },
+      { key: 'barber', label: 'WORLD_EDITOR.POI_BARBER', icon: aowow('barber'), shown: false },
       { key: 'battle', label: 'WORLD_EDITOR.POI_BATTLE', icon: tracking('BattleMaster'), shown: false },
       { key: 'classTrainer', label: 'WORLD_EDITOR.POI_CLASS_TRAINER', icon: tracking('Class'), shown: false },
       { key: 'flight', label: 'WORLD_EDITOR.POI_FLIGHT', icon: tracking('FlightMaster'), shown: true },
@@ -148,9 +184,9 @@ export const GAME_MAP_LAYER_GROUPS: GameMapLayerGroup[] = [
       { key: 'mailbox', label: 'WORLD_EDITOR.POI_MAILBOX', icon: tracking('Mailbox'), shown: false },
       { key: 'repair', label: 'WORLD_EDITOR.POI_REPAIR', icon: tracking('Repair'), shown: false },
       { key: 'riding', label: 'WORLD_EDITOR.POI_RIDING', icon: square('Ability_Mount_RidingHorse'), shown: false },
-      { key: 'spirit', label: 'WORLD_EDITOR.POI_SPIRIT', icon: { path: POI_ATLAS, atlas: ATLAS.graveyard }, shown: true },
+      { key: 'spirit', label: 'WORLD_EDITOR.POI_SPIRIT', icon: aowow('sh'), shown: true },
       { key: 'stable', label: 'WORLD_EDITOR.POI_STABLE', icon: tracking('StableMaster'), shown: false },
-      { key: 'weaponMaster', label: 'WORLD_EDITOR.POI_WEAPON_MASTER', icon: square('INV_Sword_04'), shown: false },
+      { key: 'weaponMaster', label: 'WORLD_EDITOR.POI_WEAPON_MASTER', icon: aowow('wm'), shown: false },
     ],
   },
   {
@@ -180,34 +216,35 @@ export const GAME_MAP_LAYER_GROUPS: GameMapLayerGroup[] = [
     key: 'travel',
     label: 'WORLD_EDITOR.GAME_MAP_GROUP_TRAVEL',
     layers: [
-      { key: 'boat', label: 'WORLD_EDITOR.GAME_MAP_BOATS', icon: { path: POI_ATLAS, atlas: ATLAS.boat.neutral }, shown: true },
-      { key: 'zeppelin', label: 'WORLD_EDITOR.GAME_MAP_ZEPPELINS', icon: { path: POI_ATLAS, atlas: ATLAS.zeppelin.neutral }, shown: true },
-      { key: 'gunship', label: 'WORLD_EDITOR.GAME_MAP_GUNSHIPS', icon: { path: POI_ATLAS, atlas: ATLAS.zeppelin.neutral }, shown: true },
+      { key: 'boat', label: 'WORLD_EDITOR.GAME_MAP_BOATS', icon: aowow('boat-n'), shown: true },
+      { key: 'zeppelin', label: 'WORLD_EDITOR.GAME_MAP_ZEPPELINS', icon: aowow('zep-n'), shown: true },
+      { key: 'gunship', label: 'WORLD_EDITOR.GAME_MAP_GUNSHIPS', icon: aowow('zep-n'), shown: true },
+      { key: 'portal', label: 'WORLD_EDITOR.GAME_MAP_PORTALS', icon: aowow('portal'), shown: true },
       { key: 'transport', label: 'WORLD_EDITOR.GAME_MAP_OTHER_TRANSPORTS', icon: { fa: 'fa-train', color: '#ffd200' }, shown: true },
-      { key: 'routes', label: 'WORLD_EDITOR.GAME_MAP_ROUTES', icon: { fa: 'fa-ellipsis-h', color: '#ffd200' }, shown: true },
+      { key: 'routes', label: 'WORLD_EDITOR.GAME_MAP_ROUTES', icon: aowow('boat-n'), shown: true },
     ],
   },
   {
     key: 'locations',
     label: 'WORLD_EDITOR.GAME_MAP_GROUP_LOCATIONS',
     layers: [
-      { key: 'stone', label: 'WORLD_EDITOR.POI_STONE', icon: square('Spell_Shadow_Teleport'), shown: true },
-      { key: 'dungeon', label: 'WORLD_EDITOR.GAME_MAP_DUNGEONS', icon: { fa: 'fa-circle-o-notch', color: '#29b6f6' }, shown: true },
-      { key: 'raid', label: 'WORLD_EDITOR.GAME_MAP_RAIDS', icon: { fa: 'fa-circle-o-notch', color: '#2ecc40' }, shown: true },
+      { key: 'stone', label: 'WORLD_EDITOR.POI_STONE', icon: aowow('stone'), shown: true },
+      { key: 'dungeon', label: 'WORLD_EDITOR.GAME_MAP_DUNGEONS', icon: aowow('dg'), shown: true },
+      { key: 'raid', label: 'WORLD_EDITOR.GAME_MAP_RAIDS', icon: aowow('rd'), shown: true },
       { key: 'pvp', label: 'WORLD_EDITOR.GAME_MAP_WORLD_PVP', icon: { path: COMBAT_SWORDS, crop: [0, 0, 32, 32] }, shown: true },
-      { key: 'relations', label: 'WORLD_EDITOR.GAME_MAP_RELATIONS', icon: { path: POI_ATLAS, atlas: ATLAS.allianceCrest }, shown: true },
+      { key: 'relations', label: 'WORLD_EDITOR.GAME_MAP_RELATIONS', icon: TERRITORY_ICONS.alliance, shown: true },
     ],
   },
 ];
 
 export const GAME_MAP_LAYERS: GameMapLayer[] = [...GAME_MAP_OPTIONS, ...GAME_MAP_LAYER_GROUPS.flatMap((group) => group.layers)];
 
-/** Where the layers shown and the size of the markers are kept. */
-export const GAME_MAP_LAYERS_KEY = 'keira3.worldEditor.gameMapLayers';
+/**
+ * Where the layers shown and the size of the markers are kept (a new name when the defaults changed for everyone: v2,
+ * AoWoW's defaults; layers saved before some layers existed had them off).
+ */
+export const GAME_MAP_LAYERS_KEY = 'keira3.worldEditor.gameMapLayers.v2';
 export const GAME_MAP_MARKER_KEY = 'keira3.worldEditor.gameMapMarkers';
-
-/** Layers added after the layers shown were first kept as a plain list (which didn't say which layers there were). */
-const LAYERS_ADDED_LATER = ['pvp', 'relations'];
 
 /**
  * The layers shown: as last chosen on this computer (layers added since as they are by default), else the default ones.
@@ -215,9 +252,7 @@ const LAYERS_ADDED_LATER = ['pvp', 'relations'];
 export function loadShownLayers(): Set<string> {
   try {
     const stored: unknown = JSON.parse(localStorage.getItem(GAME_MAP_LAYERS_KEY) ?? 'null');
-    const kept = Array.isArray(stored)
-      ? { shown: stored as unknown[], known: GAME_MAP_LAYERS.map((l) => l.key).filter((key) => !LAYERS_ADDED_LATER.includes(key)) }
-      : (stored as { shown?: unknown[]; known?: unknown[] } | null);
+    const kept = stored as { shown?: unknown[]; known?: unknown[] } | null;
     if (Array.isArray(kept?.shown) && Array.isArray(kept.known)) {
       const { shown, known } = kept as { shown: unknown[]; known: unknown[] };
       return new Set(
@@ -312,6 +347,13 @@ export function transportKind(name: string): 'boat' | 'zeppelin' | 'gunship' | '
     return 'zeppelin';
   }
   return /boat|ship|bravery|mehley|moonspray|feathermoon|kraken|maiden|lady|galley|northspear|rabbit/i.test(name) ? 'boat' : 'transport';
+}
+
+/** Which sides a faction template is friendly to (AoWoW's reaction > 0): FactionGroup masks 2 (Alliance) and 4 (Horde). */
+export function friendlySides(template: FactionTemplate | undefined): { alliance: boolean; horde: boolean } {
+  const friends = template ? template.ourMask | template.friendMask : 0;
+  const enemies = template ? template.enemyMask : 0;
+  return { alliance: (friends & 2) !== 0 && (enemies & 2) === 0, horde: (friends & 4) !== 0 && (enemies & 4) === 0 };
 }
 
 /** Whose side a faction template serves: FactionGroup masks 2 (Alliance) and 4 (Horde). */

@@ -2313,9 +2313,9 @@
             [dots]="mapDots()"
             [pois]="gameMapPois()"
             [teleports]="gameMapTeleports()"
+            [portals]="gameMapPortals()"
             [transports]="gameMapTransports()"
             [maps]="maps()"
-            (goTo)="goToPlace($event.mapId, $event.position)"
             (regionSelected)="onMapRegion($event)"
             (closed)="toggleGameMap()"
           />

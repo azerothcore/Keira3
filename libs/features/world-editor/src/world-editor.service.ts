@@ -7,6 +7,7 @@ import {
   GAMEOBJECT_MAILBOX,
   GAMEOBJECT_MEETING_STONE,
   GameMapPoi,
+  GameMapPortal,
   GameMapTeleport,
   GameMapTransport,
   NPC_FLAG_KINDS,
@@ -24,6 +25,7 @@ import {
   PlaceTemplate,
   GAMEOBJECT_CHEST,
   GAMEOBJECT_FISHING_HOLE,
+  GAMEOBJECT_SPELLCASTER,
   GAMEOBJECT_TRANSPORT,
   PoolMember,
   PoolSpawn,
@@ -478,12 +480,47 @@ export class WorldEditorService {
     ];
   }
 
-  /** Every area trigger teleport (`areatrigger_teleport`): the instances' entrances on the game's world map. */
+  /**
+   * Every area trigger teleport (`areatrigger_teleport`) with where it sends to: the instances' entrances and the
+   * crossings (the Dark Portal…) on the game's world map.
+   */
   async loadMapTeleports(): Promise<GameMapTeleport[]> {
     const rows = await firstValueFrom(
-      this.queryService.query<TableRow>("SELECT ID AS id, IFNULL(Name, '') AS name, target_map FROM areatrigger_teleport"),
+      this.queryService.query<TableRow>(
+        "SELECT ID AS id, IFNULL(Name, '') AS name, target_map, target_position_x AS tx, target_position_y AS ty FROM areatrigger_teleport",
+      ),
     );
-    return (rows ?? []).map((row) => ({ id: Number(row['id']), name: String(row['name']), targetMap: Number(row['target_map']) }));
+    return (rows ?? []).map((row) => ({
+      id: Number(row['id']),
+      name: String(row['name']),
+      targetMap: Number(row['target_map']),
+      target: { x: Number(row['tx']), y: Number(row['ty']) },
+    }));
+  }
+
+  /**
+   * The portal objects of the continents (gameobject type 22, spellcasters: Shattrath's, Dalaran's…) with where their
+   * spell sends to (`spell_target_position`), for the game's world map.
+   */
+  async loadMapPortals(): Promise<GameMapPortal[]> {
+    const continents = '0, 1, 530, 571';
+    const rows = await firstValueFrom(
+      this.queryService.query<TableRow>(
+        "SELECT g.map, g.position_x AS x, g.position_y AS y, IFNULL(gt.name, '') AS name, stp.MapID AS targetMap, " +
+          'stp.PositionX AS tx, stp.PositionY AS ty FROM gameobject g JOIN gameobject_template gt ON gt.entry = g.id ' +
+          `JOIN spell_target_position stp ON stp.ID = gt.Data0 WHERE gt.type = ${GAMEOBJECT_SPELLCASTER} AND g.map IN (${continents}) ` +
+          `AND stp.MapID IN (${continents})`,
+      ),
+    );
+    return (rows ?? []).map((row) => ({
+      name: String(row['name']),
+      mapId: Number(row['map']),
+      x: Number(row['x']),
+      y: Number(row['y']),
+      targetMap: Number(row['targetMap']),
+      tx: Number(row['tx']),
+      ty: Number(row['ty']),
+    }));
   }
 
   /** Every transport (boats, zeppelins…) with its taxi path and faction, for their routes on the game's world map. */

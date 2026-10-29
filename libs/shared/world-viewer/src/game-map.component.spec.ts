@@ -4,7 +4,7 @@ import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { GameMapData, Ring, WorldBounds, WorldPosition, WowClientService, WowMap } from '@keira/shared/wow-data';
 import { DebugHtmlElement, PageObjectModel } from 'ngx-page-object-model';
 import { GameMapComponent } from './game-map.component';
-import { GAME_MAP_LAYERS_KEY, GAME_MAP_MARKER_KEY, GameMapPoi, GameMapTeleport, GameMapTransport } from './game-map-pois';
+import { GAME_MAP_LAYERS_KEY, GAME_MAP_MARKER_KEY, GameMapPoi, GameMapPortal, GameMapTeleport, GameMapTransport } from './game-map-pois';
 import { WorldMapDot } from './world-map.component';
 
 @Component({
@@ -17,9 +17,9 @@ import { WorldMapDot } from './world-map.component';
       [dots]="dots()"
       [pois]="pois()"
       [teleports]="teleports()"
+      [portals]="portals()"
       [transports]="transports()"
       [maps]="maps()"
-      (goTo)="goTos.push($event)"
       (regionSelected)="regions.push($event)"
       (closed)="closes = closes + 1"
     />
@@ -51,12 +51,21 @@ class HostComponent {
     { kind: 'spirit', mapId: 0, x: -9300, y: -400, z: 1, name: 'In Westfall', zoneId: 40 },
     { kind: 'spirit', mapId: 0, x: -9300, y: -500, z: 1, name: 'In Elwynn', zoneId: 12 },
     { kind: 'flight', mapId: 603, x: 0, y: 0, z: 1, name: 'Ulduar flight master' },
+    { kind: 'stone', mapId: 0, x: -9300, y: -350, z: 1, name: 'Meeting Stone', faction: 11 },
   ]);
   readonly teleports = signal<GameMapTeleport[]>([
-    { id: 100, name: 'Naxx', targetMap: 533 },
+    { id: 100, name: 'Naxx', targetMap: 533, target: { x: 3000, y: -3000 } },
     { id: 101, name: 'Deadmines', targetMap: 36 },
-    { id: 102, name: 'Elsewhere', targetMap: 0 },
-    { id: 103, name: 'Naxx again', targetMap: 533 },
+    // (into the zone it is in: no way anywhere)
+    { id: 102, name: 'Elsewhere', targetMap: 0, target: { x: -9000, y: 0 } },
+    { id: 103, name: 'Naxx again (Leap of Faith)', targetMap: 533, target: { x: 3000, y: -3000 } },
+    // a crossing to another zone
+    { id: 104, name: 'To Eversong', targetMap: 530, target: { x: 9000, y: -7000 } },
+  ]);
+  readonly portals = signal<GameMapPortal[]>([
+    { name: 'Portal to Eversong', mapId: 0, x: -9300, y: -400, targetMap: 530, tx: 9000, ty: -7000 },
+    // (to a place on no zone's map)
+    { name: 'Portal to nowhere', mapId: 0, x: -9300, y: -450, targetMap: 530, tx: -1800, ty: 5300 },
   ]);
   readonly transports = signal<GameMapTransport[]>([
     { entry: 1, name: 'Boat (The Bravery)', path: 7, faction: 11 },
@@ -68,9 +77,10 @@ class HostComponent {
   readonly maps = signal<WowMap[]>([
     { id: 0, directory: 'Azeroth', name: 'Eastern Kingdoms', instanceType: 0 },
     { id: 36, directory: 'DeadminesInstance', name: 'Deadmines', instanceType: 1 },
-    { id: 533, directory: 'Stratholme Raid', name: 'Naxxramas', instanceType: 2 },
+    { id: 530, directory: 'Expansion01', name: 'Outland', instanceType: 0, expansion: 1 },
+    { id: 533, directory: 'Stratholme Raid', name: 'Naxxramas', instanceType: 2, expansion: 2 },
+    { id: 603, directory: 'UlduarRaid', name: 'Ulduar', instanceType: 2 },
   ]);
-  readonly goTos: { mapId: number; position: WorldPosition }[] = [];
   readonly regions: WorldBounds[] = [];
   closes = 0;
 }
@@ -97,9 +107,9 @@ class Page extends PageObjectModel<HostComponent> {
     this.pointer('pointerdown', x, y, init);
     this.pointer('pointerup', x, y, init);
   }
-  doubleClickAt(x: number, y: number): void {
+  rightClickAt(x: number, y: number): void {
     this.hoverAt(x, y);
-    this.viewport().dispatchEvent(new MouseEvent('dblclick', { bubbles: true }));
+    this.viewport().dispatchEvent(new MouseEvent('contextmenu', { clientX: x, clientY: y, bubbles: true, cancelable: true }));
     this.fixture.detectChanges();
   }
   click(id: string): void {
@@ -202,15 +212,15 @@ const outlines: Record<string, [string, Ring[]][]> = {
     ['outland', [square(20, 10, 42, 58)]],
   ],
 };
-/** Elwynn's sub-zones (Goldshire in the middle, Northshire top left; Redridge's area id, as if it were one) and neighbours. */
+/** Elwynn's sub-zones (Goldshire in the middle, Northshire top left, Stormwind, which has its own map) and neighbours. */
 const elwynnSubzones: [string, Ring[]][] = [
   ['87', [square(40, 45, 60, 60)]],
   ['88', [square(3, 9, 14, 21)]],
-  ['44', [square(90, 2, 95, 6)]],
+  ['1519', [square(10, 22, 25, 35)]],
 ];
 const elwynnNeighbours: [string, Ring[]][] = [
-  ['area:301', [square(10, 22, 25, 35)]],
-  ['area:31', [square(10, 24, 25, 34)]],
+  // (its chip would sit on Stormwind's)
+  ['area:31', [square(26, 24, 30, 34)]],
   ['area:998', [square(80, 80, 90, 90)]],
 ];
 
@@ -331,23 +341,24 @@ describe(GameMapComponent.name, () => {
     await settle(page);
     return { page, host: fixture.componentInstance };
   };
-  /** Clicks long after the page opened (a double click right after a click opening a page belongs to it). */
-  const later = () => vi.spyOn(Date, 'now').mockReturnValue(Date.now() + 60_000);
 
   it('opens the zone the camera is in, with its sub-zones, neighbours, markers and coordinates', async () => {
     const { page, host } = await setup();
     expect(page.title()).toBe('Elwynn Forest');
     expect(page.byId('game-map-image')).toBeTruthy();
-    // Stormwind, a neighbour, dotted (not a neighbour whose page the client doesn't have); the sub-zones outlined
-    expect(page.byId('game-map-shape-area:301').nativeElement.getAttribute('class')).toBe('neighbour');
+    // Westfall, a neighbour, dotted (not a neighbour whose page the client doesn't have); the sub-zones outlined,
+    // Stormwind (it has its own map) like a neighbour
+    expect(page.byId('game-map-shape-area:31').nativeElement.getAttribute('class')).toBe('neighbour');
     expect(page.byId('game-map-shape-area:998', false)).toBeFalsy();
-    expect(page.byId('game-map-sub-87')).toBeTruthy();
+    expect(page.byId('game-map-sub-87').nativeElement.getAttribute('class')).toBe('sub');
+    expect(page.byId('game-map-sub-1519').nativeElement.getAttribute('class')).toBe('sub link');
     expect(client.getGameMapPicture.mock.calls[0][1]).toHaveLength(2);
     expect(page.byId('game-map-camera-pin').nativeElement.style.left).toBe('50%');
-    // markers of the kinds shown: flight masters with their icon and side, spirit healers; no spawns until asked
+    // markers of the kinds shown: flight masters with their icon and badges, spirit healers (AoWoW's icon); no spawns
     expect(page.byId('game-map-pin-creature:1', false)).toBeFalsy();
     expect(page.byId('game-map-pin-poi:0').nativeElement.querySelector('img')).toBeTruthy();
-    expect(page.byId('game-map-side-poi:0')).toBeTruthy();
+    expect(page.byId('game-map-side-poi:0').nativeElement.querySelectorAll('img')).toHaveLength(1);
+    expect(page.byId('game-map-pin-poi:1').nativeElement.querySelector('img').getAttribute('src')).toBe('assets/img/map/poi/sh.png');
     // three flight masters on one spot: one marker; only the zone's own markers
     expect(page.byId('game-map-more-poi:0').nativeElement.textContent?.trim()).toBe('3');
     page.click('game-map-layer-camera');
@@ -357,25 +368,37 @@ describe(GameMapComponent.name, () => {
     expect(page.byId('game-map-pin-poi:9', false)).toBeFalsy();
     expect(page.byId('game-map-pin-poi:10', false)).toBeFalsy();
     expect(page.byId('game-map-pin-poi:11')).toBeTruthy();
-    expect(page.byId('game-map-pin-poi:1')).toBeTruthy();
+    // (a meeting stone: no badges)
+    expect(page.byId('game-map-pin-poi:13')).toBeTruthy();
+    expect(page.byId('game-map-side-poi:13', false)).toBeFalsy();
     expect(page.byId('game-map-pin-poi:2', false)).toBeFalsy();
     expect(page.byId('game-map-pin-poi:5', false)).toBeFalsy();
     expect(page.byId('game-map-pin-poi:6').nativeElement.querySelector('img')).toBeTruthy();
-    // instance entrances (one per instance), the raid's opening its map
-    expect(page.byId('game-map-pin-entrance:raid:533').nativeElement.querySelector('i.fa-circle-o-notch')).toBeTruthy();
+    // instance entrances (one per instance) with AoWoW's icons, the raid's opening its map
+    expect(page.byId('game-map-pin-entrance:raid:533').nativeElement.querySelector('img').getAttribute('src')).toBe(
+      'assets/img/map/poi/rd.png',
+    );
     expect(page.byId('game-map-pin-entrance:dungeon:36')).toBeTruthy();
+    // a crossing and a portal object to Eversong Woods (not the others)
+    expect(page.byId('game-map-pin-portal:t104')).toBeTruthy();
+    expect(page.byId('game-map-pin-portal:o0')).toBeTruthy();
+    expect(page.fixture.nativeElement.querySelectorAll('[data-testid^="game-map-pin-portal:"]')).toHaveLength(2);
     // the boat's route, in its runs on the picture; a route of one point isn't drawn
     expect(page.byId('game-map-route:1')).toBeTruthy();
     // its icon (an Alliance anchor) where each run starts
-    expect(page.byId('game-map-pin-transport:1:0').nativeElement.querySelector('img')).toBeTruthy();
+    expect(page.byId('game-map-pin-transport:1:0').nativeElement.querySelector('img').getAttribute('src')).toBe(
+      'assets/img/map/poi/boat-a.png',
+    );
     expect(page.byId('game-map-pin-transport:3:0').nativeElement.querySelector('i.fa-train')).toBeTruthy();
-    expect(page.byId('game-map-pin-transport:5:0').nativeElement.querySelector('img')).toBeTruthy();
+    expect(page.byId('game-map-pin-transport:5:0').nativeElement.querySelector('img').getAttribute('src')).toBe(
+      'assets/img/map/poi/zep-n.png',
+    );
     expect(page.byId('game-map-side-poi:1')).toBeTruthy();
     expect(page.byId('game-map-route:2', false)).toBeFalsy();
     expect(page.byId('game-map-route:3').nativeElement.getAttribute('stroke')).toBe('#ffd200');
     expect(page.byId('game-map-route:1').nativeElement.getAttribute('stroke')).toBe('#4d8dff');
-    // Stormwind and Westfall, neighbours, have chips that open them (kept apart); Duskwood, a neighbour not shown, one
-    // at the edge facing it; Redridge (here a sub-zone) none
+    // Stormwind (a city with its map) and Westfall (a neighbour) have chips that open them, kept apart; Duskwood, a
+    // neighbour not shown, one at the edge facing it
     const stormwind = page.byId('game-map-chip-area:301').nativeElement;
     const westfall = page.byId('game-map-chip-area:31').nativeElement;
     expect(stormwind.textContent).toContain('Stormwind City');
@@ -383,28 +406,25 @@ describe(GameMapComponent.name, () => {
     expect(stormwind.style.top).not.toBe(westfall.style.top);
     expect(page.byId('game-map-chip-area:32').nativeElement.classList).toContain('edge');
     expect(page.byId('game-map-chip-area:32').nativeElement.textContent).toContain('˅');
-    expect(page.byId('game-map-chip-area:36', false)).toBeFalsy();
     expect(page.byId('game-map-chip-area:998', false)).toBeFalsy();
 
-    // sub-zones and the coordinates as the game says them
+    // sub-zones and the coordinates as the game says them, with the ids
     page.hoverAt(501, 334);
-    expect(page.tooltip()).toBe('Goldshire Elwynn Forest');
+    expect(page.tooltip()).toBe(
+      'Goldshire Elwynn Forest WORLD_EDITOR.GAME_MAP_MAP_ID WORLD_EDITOR.GAME_MAP_ZONE_ID WORLD_EDITOR.GAME_MAP_AREA_ID',
+    );
     expect(page.byId('game-map-sub-87').nativeElement.getAttribute('class')).toBe('sub hover');
     expect(page.byId('game-map-coords').nativeElement.textContent?.trim()).toBe('(50.0, 50.0)');
     page.hoverAt(100, 100);
-    expect(page.tooltip()).toBe('Northshire Elwynn Forest');
+    expect(page.tooltip()).toContain('Northshire Elwynn Forest');
     page.hoverAt(980, 600);
     expect(page.byId('game-map-tooltip', false)).toBeFalsy();
     expect(page.byId('game-map-coords').nativeElement.textContent?.trim()).toBe('(97.8, 89.8)');
-    // a click on the zone itself does nothing; a double click moves the camera there
+    // a click on the zone itself does nothing
     page.clickAt(501, 334);
     expect(page.title()).toBe('Elwynn Forest');
-    expect(host.goTos).toEqual([]);
-    later();
-    page.doubleClickAt(501, 334);
-    expect(host.goTos.at(-1)).toEqual({ mapId: 0, position: { x: -9000, y: -250, z: 55 } });
 
-    // a marker says what it is; a double click goes to it; an entrance opens its instance's map
+    // a marker says what it is; an entrance opens its instance's map, a portal where it leads
     const pin = page.byId('game-map-pin-poi:0').nativeElement;
     pin.dispatchEvent(new PointerEvent('pointerenter', { clientX: 10, clientY: 10 }));
     page.fixture.detectChanges();
@@ -413,16 +433,21 @@ describe(GameMapComponent.name, () => {
     );
     expect(page.byId('game-map-tooltip', false)).toBeFalsy();
     pin.click();
-    pin.dispatchEvent(new MouseEvent('dblclick', { bubbles: true }));
-    expect(host.goTos.at(-1)).toEqual({ mapId: 0, position: host.pois()[0] });
     pin.dispatchEvent(new PointerEvent('pointerleave'));
     page.fixture.detectChanges();
     expect(page.byId('game-map-pin-tooltip', false)).toBeFalsy();
+    page.byId('game-map-pin-transport:1:0').nativeElement.dispatchEvent(new PointerEvent('pointerenter'));
+    page.fixture.detectChanges();
+    expect(page.tooltip('game-map-pin-tooltip')).toContain('WORLD_EDITOR.GAME_MAP_TRANSPORT_ID');
     page.click('game-map-pin-entrance:raid:533');
     expect(page.title()).toBe('Naxxramas – WORLD_EDITOR.GAME_MAP_FLOOR');
     page.click('game-map-back');
     page.click('game-map-pin-entrance:dungeon:36');
     expect(page.title()).toBe('Elwynn Forest');
+    page.click('game-map-pin-portal:t104');
+    expect(page.title()).toBe('Eversong Woods');
+    expect(page.byId('game-map-title-exp').nativeElement.getAttribute('src')).toBe('assets/img/map/poi/exp-bc.gif');
+    page.click('game-map-camera');
 
     page.click('game-map-load-zone');
     expect(host.regions).toEqual([bounds(-10000, -8000, -2000, 1500)]);
@@ -430,14 +455,15 @@ describe(GameMapComponent.name, () => {
     expect(host.closes).toBe(1);
   });
 
-  it('opens a neighbouring zone with a click on it, and the maps inside a zone from its menu', async () => {
+  it('opens a neighbouring zone or a city with a click on it, and the maps inside a zone from its menu', async () => {
     const { page } = await setup();
-    // Stormwind on Elwynn's picture
+    // Stormwind on Elwynn's picture: a city with its own map
     page.hoverAt(143, 167);
     expect(page.tooltip()).toBe(
-      'Stormwind City WORLD_EDITOR.GAME_MAP_CITY WORLD_EDITOR.GAME_MAP_SANCTUARY WORLD_EDITOR.GAME_MAP_OTHER_AREA',
+      'Stormwind City WORLD_EDITOR.GAME_MAP_CITY WORLD_EDITOR.GAME_MAP_SANCTUARY Elwynn Forest · WORLD_EDITOR.GAME_MAP_CLICK_OPENS ' +
+        'WORLD_EDITOR.GAME_MAP_MAP_ID WORLD_EDITOR.GAME_MAP_ZONE_ID',
     );
-    expect(page.byId('game-map-shape-area:301').nativeElement.getAttribute('class')).toBe('neighbour hover');
+    expect(page.byId('game-map-sub-1519').nativeElement.getAttribute('class')).toBe('sub link hover');
     expect(page.byId('game-map-chip-area:301').nativeElement.classList).toContain('hover');
     expect(page.viewport().classList).toContain('pointer');
     page.clickAt(143, 167);
@@ -445,15 +471,16 @@ describe(GameMapComponent.name, () => {
     await settle(page);
     // a city's picture shows everything on it
     expect(page.byId('game-map-pin-poi:9')).toBeTruthy();
-    // the double click ending that click doesn't move the camera
-    page.doubleClickAt(143, 167);
-    expect(page.fixture.componentInstance.goTos).toEqual([]);
     page.click('game-map-camera');
     await settle(page);
     page.click('game-map-chip-area:301');
     expect(page.title()).toBe('Stormwind City');
     page.click('game-map-camera');
     await settle(page);
+    // a neighbour
+    page.hoverAt(281, 194);
+    expect(page.tooltip()).toContain('Westfall WORLD_EDITOR.GAME_MAP_LEVELS WORLD_EDITOR.GAME_MAP_HORDE WORLD_EDITOR.GAME_MAP_OTHER_AREA');
+    expect(page.byId('game-map-shape-area:31').nativeElement.getAttribute('class')).toBe('neighbour hover');
     // Westfall: no picture, no outline, its sub-zones can't be traced
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     page.click('game-map-chip-area:31');
@@ -473,6 +500,43 @@ describe(GameMapComponent.name, () => {
     expect(page.byId('game-map-children', false)).toBeFalsy();
   });
 
+  it("opens any map from AoWoW's menus: the continents' zones, then the instances by expansion", async () => {
+    const { page } = await setup();
+    page.click('game-map-nav-cosmic');
+    expect(page.title()).toBe('WORLD_EDITOR.GAME_MAP_COSMIC');
+    page.click('game-map-nav-world');
+    expect(page.title()).toBe('WORLD_EDITOR.GAME_MAP_AZEROTH');
+    page.click('game-map-menu-area:14');
+    const zones = page.byId('game-map-menu-list-area:14').nativeElement;
+    expect([...zones.querySelectorAll('button')].map((b) => b.textContent?.trim())).toEqual([
+      'Duskwood',
+      'Elwynn Forest',
+      'Eversong Woods',
+      'LakeWintergrasp',
+      'Redridge Mountains',
+      'Stormwind City',
+      'Westfall',
+    ]);
+    expect(page.byId('game-map-menu-item-area:462').nativeElement.querySelector('img').getAttribute('src')).toBe(
+      'assets/img/map/poi/exp-bc.gif',
+    );
+    // another menu closes it; a second click closes it too
+    page.click('game-map-menu-RAIDS');
+    expect(page.byId('game-map-menu-list-area:14', false)).toBeFalsy();
+    // (Ulduar here without its expansion: Classic)
+    expect(page.byId('game-map-menu-list-RAIDS').nativeElement.querySelectorAll('ul')).toHaveLength(2);
+    page.click('game-map-menu-RAIDS');
+    expect(page.byId('game-map-menu-list-RAIDS', false)).toBeFalsy();
+    expect(page.byId('game-map-menu-DUNGEONS', false)).toBeFalsy();
+    page.click('game-map-menu-RAIDS');
+    page.click('game-map-menu-item-area:535:1');
+    expect(page.title()).toBe('Naxxramas – WORLD_EDITOR.GAME_MAP_FLOOR');
+    expect(page.byId('game-map-menu-list-RAIDS', false)).toBeFalsy();
+    page.click('game-map-menu-area:14');
+    page.click('game-map-menu-item-area:30');
+    expect(page.title()).toBe('Elwynn Forest');
+  });
+
   it('goes back to the continent, where zones light up with their levels and land, coloured by level or faction', async () => {
     const { page } = await setup();
     page.click('game-map-back');
@@ -486,13 +550,14 @@ describe(GameMapComponent.name, () => {
     expect(page.byId('game-map-pin-poi:0')).toBeTruthy();
     // no names (the picture has them); shields on the zones of a side, swords on Wintergrasp
     expect(page.fixture.nativeElement.querySelector('.game-map-chip')).toBeFalsy();
-    // (two shields on one spot, each opening its zone: both drawn, still after other changes)
-    expect(page.byId('game-map-pin-relations:area:30')).toBeTruthy();
-    expect(page.byId('game-map-pin-relations:area:301')).toBeTruthy();
-    page.click('game-map-layer-camera');
-    page.click('game-map-layer-camera');
-    expect(page.byId('game-map-more-relations:area:30', false)).toBeFalsy();
-    expect(page.byId('game-map-pin-relations:area:32')).toBeTruthy();
+    // (not on capital cities)
+    expect(page.byId('game-map-pin-relations:area:30').nativeElement.querySelector('img').getAttribute('src')).toBe(
+      'assets/img/map/poi/ta.png',
+    );
+    expect(page.byId('game-map-pin-relations:area:301', false)).toBeFalsy();
+    expect(page.byId('game-map-pin-relations:area:32').nativeElement.querySelector('img').getAttribute('src')).toBe(
+      'assets/img/map/poi/th.png',
+    );
     expect(page.byId('game-map-pin-relations:area:36', false)).toBeFalsy();
     expect(page.byId('game-map-pin-relations:area:462', false)).toBeFalsy();
     const swords = page.byId('game-map-pin-pvp:area:501').nativeElement;
@@ -506,26 +571,36 @@ describe(GameMapComponent.name, () => {
     expect(page.byId('game-map-shape-area:30').nativeElement.style.getPropertyValue('--c')).toBe('rgb(47, 158, 68)');
     expect(page.byId('game-map-shape-area:36').nativeElement.getAttribute('class')).toBe('plain');
     expect(page.byId('game-map-shape-area:999', false)).toBeFalsy();
+    const ids = 'WORLD_EDITOR.GAME_MAP_MAP_ID WORLD_EDITOR.GAME_MAP_ZONE_ID';
     expect(page.tooltip()).toBe(
-      'Elwynn Forest WORLD_EDITOR.GAME_MAP_LEVELS WORLD_EDITOR.GAME_MAP_ALLIANCE WORLD_EDITOR.GAME_MAP_CLICK_OPENS',
+      `Elwynn Forest WORLD_EDITOR.GAME_MAP_LEVELS WORLD_EDITOR.GAME_MAP_ALLIANCE WORLD_EDITOR.GAME_MAP_CLICK_OPENS ${ids}`,
     );
     page.hoverAt(463, 549);
-    expect(page.tooltip()).toBe('Duskwood WORLD_EDITOR.GAME_MAP_LEVELS WORLD_EDITOR.GAME_MAP_HORDE WORLD_EDITOR.GAME_MAP_CLICK_OPENS');
+    expect(page.tooltip()).toBe(
+      `Duskwood WORLD_EDITOR.GAME_MAP_LEVELS WORLD_EDITOR.GAME_MAP_HORDE WORLD_EDITOR.GAME_MAP_CLICK_OPENS ${ids}`,
+    );
     page.hoverAt(532, 525);
-    expect(page.tooltip()).toBe('Redridge Mountains WORLD_EDITOR.GAME_MAP_CLICK_OPENS');
+    expect(page.tooltip()).toBe(`Redridge Mountains WORLD_EDITOR.GAME_MAP_CLICK_OPENS ${ids}`);
     page.hoverAt(565, 120);
-    expect(page.tooltip()).toBe('Eversong Woods WORLD_EDITOR.GAME_MAP_CONTESTED WORLD_EDITOR.GAME_MAP_CLICK_OPENS');
+    expect(page.tooltip()).toBe(`Eversong Woods WORLD_EDITOR.GAME_MAP_CONTESTED WORLD_EDITOR.GAME_MAP_CLICK_OPENS ${ids}`);
     // a region whose page the client doesn't have: nothing
     page.hoverAt(621, 414);
     expect(page.byId('game-map-tooltip', false)).toBeFalsy();
-    // Westfall has no outline: nothing there; a click there does nothing, nor a double click on a continent
+    // Westfall has no outline: nothing there; a click there does nothing; no .go command for it
     page.hoverAt(515, 560);
     expect(page.byId('game-map-tooltip', false)).toBeFalsy();
     page.clickAt(515, 560);
-    later();
-    page.doubleClickAt(515, 560);
     expect(page.title()).toBe('Eastern Kingdoms');
-    expect(page.fixture.componentInstance.goTos).toEqual([]);
+    page.rightClickAt(515, 560);
+    expect(page.byId('game-map-toast').nativeElement.classList).toContain('error');
+    // a right click on a zone: .go zonexy in that zone's coordinates (the smallest: a city in its zone)
+    page.rightClickAt(457, 501);
+    await settle(page);
+    expect(clipboard.writeText).toHaveBeenLastCalledWith(expect.stringMatching(/^\.go zonexy \d+\.\d\d \d+\.\d\d 1519$/));
+    page.rightClickAt(440, 492);
+    await settle(page);
+    expect(clipboard.writeText).toHaveBeenLastCalledWith(expect.stringMatching(/^\.go zonexy \d+\.\d\d \d+\.\d\d 12$/));
+    page.hoverAt(515, 560);
 
     // faction territory instead of levels (they don't mix), then neither, nor borders
     expect(page.stage().classList).toContain('borders');
@@ -555,7 +630,9 @@ describe(GameMapComponent.name, () => {
     await settle(page);
     // the Eastern Kingdoms on the right
     page.hoverAt(900, 300);
-    expect(page.tooltip()).toBe('Eastern Kingdoms WORLD_EDITOR.GAME_MAP_LEVELS WORLD_EDITOR.GAME_MAP_CLICK_OPENS');
+    expect(page.tooltip()).toBe(
+      'Eastern Kingdoms WORLD_EDITOR.GAME_MAP_LEVELS WORLD_EDITOR.GAME_MAP_CLICK_OPENS WORLD_EDITOR.GAME_MAP_MAP_ID',
+    );
     page.click('game-map-back');
     expect(page.title()).toBe('WORLD_EDITOR.GAME_MAP_COSMIC');
     await settle(page);
@@ -570,6 +647,14 @@ describe(GameMapComponent.name, () => {
     // in the circle's square, out of the circle
     page.hoverAt(148, 67);
     expect(page.byId('game-map-tooltip', false)).toBeFalsy();
+    // no .go command on the cosmic map; the note goes after a while
+    vi.useFakeTimers();
+    page.rightClickAt(148, 67);
+    expect(page.byId('game-map-toast').nativeElement.textContent?.trim()).toBe('WORLD_EDITOR.GAME_MAP_NO_GO');
+    vi.advanceTimersByTime(3000);
+    page.fixture.detectChanges();
+    expect(page.byId('game-map-toast', false)).toBeFalsy();
+    vi.useRealTimers();
     // Outland: its picture can't be read
     vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     page.clickAt(309, 228);
@@ -580,7 +665,7 @@ describe(GameMapComponent.name, () => {
   });
 
   it('zooms with the wheel and the buttons, pans by dragging (not a click then), and copies .go commands', async () => {
-    const { page, host } = await setup();
+    const { page } = await setup();
     page.viewport().dispatchEvent(new WheelEvent('wheel', { clientX: 701, clientY: 334, deltaY: -100, bubbles: true, cancelable: true }));
     page.fixture.detectChanges();
     expect(page.stage().style.getPropertyValue('--zoom')).toBe('1.25');
@@ -614,27 +699,33 @@ describe(GameMapComponent.name, () => {
     page.viewport().dispatchEvent(new PointerEvent('pointerleave'));
     page.pointer('pointerup', 10, 10);
 
-    // Ctrl + click: .go zonexy on a zone, .go xyz on a floor
-    page.clickAt(501, 334, { ctrlKey: true });
+    // a right click (or Alt + click): .go zonexy on a zone, .go xyz on a floor
+    page.rightClickAt(501, 334);
     await settle(page);
-    expect(clipboard.writeText).toHaveBeenCalledWith('.go zonexy 50.0 50.0 12');
-    expect(page.byId('game-map-copied').nativeElement.textContent).toContain('.go zonexy 50.0 50.0 12');
+    expect(clipboard.writeText).toHaveBeenCalledWith('.go zonexy 50.00 50.00 12');
+    expect(page.byId('game-map-copied').nativeElement.textContent).toContain('.go zonexy 50.00 50.00 12');
+    expect(page.byId('game-map-toast').nativeElement.textContent?.trim()).toBe('WORLD_EDITOR.GAME_MAP_COPIED');
+    page.clickAt(100, 100, { altKey: true });
+    await settle(page);
+    expect(clipboard.writeText).toHaveBeenLastCalledWith('.go zonexy 9.98 14.97 12');
+    expect(page.title()).toBe('Elwynn Forest');
     page.click('game-map-pin-entrance:raid:533');
     await settle(page);
-    page.clickAt(501, 334, { metaKey: true });
+    page.rightClickAt(501, 334);
     await settle(page);
     expect(clipboard.writeText).toHaveBeenLastCalledWith(expect.stringMatching(/^\.go xyz [-\d.]+ [-\d.]+ 0\.0 533$/));
     clipboard.writeText.mockRejectedValueOnce(new Error('denied'));
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
-    page.clickAt(501, 334, { ctrlKey: true });
+    page.rightClickAt(501, 334);
     await settle(page);
     expect(warn).toHaveBeenCalled();
+    expect(page.byId('game-map-toast').nativeElement.textContent).toContain('.go xyz');
     // off the picture: nothing under the pointer
     page.hoverAt(2000, 2000);
     expect(page.byId('game-map-tooltip', false)).toBeFalsy();
-    page.clickAt(2000, 2000, { ctrlKey: true });
-    expect(clipboard.writeText).toHaveBeenCalledTimes(3);
-    expect(host.goTos).toEqual([]);
+    page.viewport().dispatchEvent(new MouseEvent('contextmenu', { clientX: 2000, clientY: 2000, bubbles: true, cancelable: true }));
+    page.fixture.detectChanges();
+    expect(clipboard.writeText).toHaveBeenCalledTimes(4);
     // a picture with no size yet: the pointer isn't read
     vi.mocked(HTMLElement.prototype.getBoundingClientRect).mockReturnValue(new DOMRect(0, 0, 0, 0));
     page.hoverAt(10, 10);
@@ -642,7 +733,7 @@ describe(GameMapComponent.name, () => {
   });
 
   it('switches between the floors of an instance, and its own picture', async () => {
-    const { page, host } = await setup((h) => {
+    const { page } = await setup((h) => {
       h.mapId.set(533);
       h.camera.set({ x: 3200, y: -3100, z: 1 });
       h.zoneId.set(0);
@@ -653,18 +744,12 @@ describe(GameMapComponent.name, () => {
     expect(page.byId('game-map-floor-area:535:2').nativeElement.classList).toContain('btn-warning');
     page.hoverAt(10, 10);
     expect(page.tooltip()).toContain('Naxxramas');
-    later();
-    page.doubleClickAt(10, 10);
-    expect(host.goTos.at(-1)?.position.z).toBe(1);
-    page.clickAt(10, 10, { ctrlKey: true });
+    // the camera's height on its map
+    page.rightClickAt(10, 10);
     await settle(page);
     expect(clipboard.writeText).toHaveBeenLastCalledWith(expect.stringMatching(/ 1\.0 533$/));
     page.click('game-map-back');
     expect(page.title()).toBe('Elwynn Forest');
-    // a zone of another map: a double click goes there on the ground
-    later();
-    page.doubleClickAt(501, 334);
-    expect(host.goTos.at(-1)).toEqual({ mapId: 0, position: { x: -9000, y: -250, z: 0 } });
   });
 
   it("names an instance's own picture besides its floors", async () => {
@@ -677,36 +762,39 @@ describe(GameMapComponent.name, () => {
     expect(page.byId('game-map-floor-area:529').nativeElement.textContent?.trim()).toBe('WORLD_EDITOR.GAME_MAP_OUTSIDE');
     expect(page.title()).toBe('Ulduar');
     expect(page.byId('game-map-pin-poi:12')).toBeTruthy();
-    later();
-    page.doubleClickAt(10, 10);
-    expect(page.fixture.componentInstance.goTos.at(-1)?.position.z).toBe(1);
+    // not on a continent: .go xyz
+    page.rightClickAt(10, 10);
+    await settle(page);
+    expect(clipboard.writeText).toHaveBeenLastCalledWith(expect.stringMatching(/^\.go xyz [-\d.]+ [-\d.]+ 1\.0 603$/));
   });
 
   it('opens the world map without a camera, and says when the world map or the factions cannot be read', async () => {
     client.getFactions.mockRejectedValueOnce(new Error('no factions'));
     const textures = client.getTexture.getMockImplementation() as (path: string) => Promise<unknown>;
     client.getTexture.mockImplementation((path: string) =>
-      path.includes('POIIcons') ? Promise.reject(new Error('none')) : textures(path),
+      path.includes('FlightMaster') ? Promise.reject(new Error('none')) : textures(path),
     );
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
-    const { page } = await setup((h) => h.camera.set(undefined));
+    const { page } = await setup((h) => {
+      h.camera.set(undefined);
+      // (on Naxxramas; and no name for Outland)
+      h.mapId.set(533);
+      h.maps.set(h.maps().filter((m) => m.id !== 530));
+    });
     expect(page.title()).toBe('WORLD_EDITOR.GAME_MAP_AZEROTH');
     expect(page.byId('game-map-camera-pin', false)).toBeFalsy();
     expect(warn).toHaveBeenCalledWith('[World Editor] Could not read the factions for the world map:', expect.any(Error));
-    later();
-    page.doubleClickAt(900, 300);
-    expect(page.fixture.componentInstance.goTos).toEqual([]);
-    // the camera's map without knowing where it is: on the ground
     page.clickAt(900, 300);
     await settle(page);
     page.clickAt(457, 501);
     await settle(page);
     expect(page.title()).toBe('Elwynn Forest');
-    later();
-    page.doubleClickAt(501, 334);
-    expect(page.fixture.componentInstance.goTos.at(-1)?.position.z).toBe(0);
+    // (no badges without the factions; a flight master without its icon)
+    expect(page.byId('game-map-side-poi:0', false)).toBeFalsy();
+    expect(page.byId('game-map-pin-poi:0').nativeElement.querySelector('img')).toBeFalsy();
+    // the camera's map without knowing where it is: on the ground
     page.click('game-map-pin-entrance:raid:533');
-    page.clickAt(501, 334, { ctrlKey: true });
+    page.rightClickAt(501, 334);
     await settle(page);
     expect(clipboard.writeText).toHaveBeenLastCalledWith(expect.stringMatching(/ 0\.0 533$/));
 
@@ -718,7 +806,7 @@ describe(GameMapComponent.name, () => {
   });
 
   it('shows the layers and markers chosen, by group, kept on this computer', async () => {
-    const { page, host } = await setup();
+    const { page } = await setup();
     page.click('game-map-panel-btn');
     expect(page.byId('game-map-panel', false)).toBeFalsy();
     page.click('game-map-panel-btn');
@@ -741,10 +829,15 @@ describe(GameMapComponent.name, () => {
     expect(page.byId('game-map-pin-entrance:raid:533', false)).toBeFalsy();
     page.click('game-map-layer-subBorders');
     expect(page.byId('game-map-sub-87', false)).toBeFalsy();
+    // (cities with their map still: they open it)
+    expect(page.byId('game-map-sub-1519')).toBeTruthy();
     page.click('game-map-layer-transitions');
-    expect(page.byId('game-map-shape-area:301', false)).toBeFalsy();
+    expect(page.byId('game-map-shape-area:31', false)).toBeFalsy();
+    // (hidden neighbours still open, as on AoWoW's)
+    page.hoverAt(281, 194);
+    expect(page.viewport().classList).toContain('pointer');
     page.click('game-map-layer-names');
-    expect(page.byId('game-map-chip-area:301', false)).toBeFalsy();
+    expect(page.byId('game-map-chip-area:31', false)).toBeFalsy();
     page.click('game-map-layer-badges');
     expect(page.byId('game-map-side-poi:0', false)).toBeFalsy();
     // a group at once: all on, all off
@@ -772,6 +865,5 @@ describe(GameMapComponent.name, () => {
     page.fixture.detectChanges();
     expect(localStorage.getItem(GAME_MAP_MARKER_KEY)).toBe('32');
     expect((page.fixture.nativeElement.querySelector('keira-game-map') as HTMLElement).style.getPropertyValue('--marker')).toBe('32px');
-    expect(host.goTos).toEqual([]);
   });
 });

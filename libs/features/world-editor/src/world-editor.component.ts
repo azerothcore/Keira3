@@ -71,6 +71,7 @@ import {
   WorldMapComponent,
   WorldMapDot,
   GameMapPoi,
+  GameMapPortal,
   GameMapTeleport,
   GameMapTransport,
   GameMapComponent,
@@ -1019,6 +1020,7 @@ export class WorldEditorComponent implements OnInit {
   /** What the in-game map shows from the database (points of interest, entrances, transports), read when first opened. */
   protected readonly gameMapPois = signal<GameMapPoi[]>([]);
   protected readonly gameMapTeleports = signal<GameMapTeleport[]>([]);
+  protected readonly gameMapPortals = signal<GameMapPortal[]>([]);
   protected readonly gameMapTransports = signal<GameMapTransport[]>([]);
   private gameMapDataLoading = false;
   private loadGameMapData(): void {
@@ -1031,13 +1033,15 @@ export class WorldEditorComponent implements OnInit {
       this.service.loadMapPois().catch(this.quietly<GameMapPoi[]>('read the points of interest', [])),
       this.service.loadMapTeleports().catch(this.quietly<GameMapTeleport[]>('read the teleports for the in-game map', [])),
       this.service.loadTransportRoutes().catch(this.quietly<GameMapTransport[]>('read the transports for the in-game map', [])),
-    ]).then(([pois, teleports, transports]) => {
+      this.service.loadMapPortals().catch(this.quietly<GameMapPortal[]>('read the portals for the in-game map', [])),
+    ]).then(([pois, teleports, transports, portals]) => {
       perfNote(
         `in-game map: ${pois.length} points of interest, ${teleports.length} teleports, ${transports.length} transports read in ${Math.round(performance.now() - started)} ms`,
       );
       this.gameMapPois.set(pois);
       this.gameMapTeleports.set(teleports);
       this.gameMapTransports.set(transports);
+      this.gameMapPortals.set(portals);
     });
   }
   /** The in-game map (its own panel). */

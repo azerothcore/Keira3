@@ -1,6 +1,7 @@
 import { FactionTemplate } from '@keira/shared/wow-data';
 import {
   factionSide,
+  friendlySides,
   GAME_MAP_LAYERS_KEY,
   GAME_MAP_MARKER_KEY,
   loadMarkerSize,
@@ -42,6 +43,10 @@ describe('game map markers', () => {
     expect(factionSide(template(0, 6, 0))).toBeUndefined();
     expect(factionSide(template(2, 4, 4))).toBe('alliance');
     expect(factionSide(undefined)).toBeUndefined();
+    // the badges: every side it is friendly to
+    expect(friendlySides(template(0, 6, 0))).toEqual({ alliance: true, horde: true });
+    expect(friendlySides(template(2, 4, 4))).toEqual({ alliance: true, horde: false });
+    expect(friendlySides(undefined)).toEqual({ alliance: false, horde: false });
   });
 
   it('keeps the layers shown and the marker size on this computer', () => {
@@ -53,9 +58,9 @@ describe('game map markers', () => {
     expect(loadShownLayers().has('flight')).toBe(true);
     localStorage.setItem(GAME_MAP_LAYERS_KEY, '"flight"');
     expect(loadShownLayers().has('levels')).toBe(true);
-    // kept as a plain list (before the layers there were were kept too): the layers added since as by default
+    // a plain list (not what is kept): the defaults
     localStorage.setItem(GAME_MAP_LAYERS_KEY, '["bank"]');
-    expect([...loadShownLayers()]).toEqual(['bank', 'pvp', 'relations']);
+    expect(loadShownLayers().has('flight')).toBe(true);
     localStorage.setItem(GAME_MAP_LAYERS_KEY, JSON.stringify({ shown: ['bank'], known: ['bank', 'flight'] }));
     expect(loadShownLayers().has('flight')).toBe(false);
     expect(loadShownLayers().has('levels')).toBe(true);
