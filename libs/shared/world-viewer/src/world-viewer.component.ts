@@ -41,6 +41,7 @@ import {
   perfNote,
 } from '@keira/shared/wow-data';
 import { graphicsDescription, stateLine } from './viewer-log';
+import { cssColor, DEFAULT_WORLD_STYLE, WorldStyle } from './world-style';
 import { Mesh, Object3D, Spherical, Vector3 } from 'three';
 import { MapControls } from 'three/addons/controls/MapControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
@@ -230,6 +231,9 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   readonly pathEnds = input<{ spawn?: WorldPosition; start: WorldPosition; end: WorldPosition; endText?: string } | undefined>(undefined);
   /** Badges over spawns ("Leader", "1", "2"… over a formation); over their simulated copies while they move. */
   readonly tags = input<WorldTag[]>([]);
+  /** The colours and shapes things are drawn with (View > Colours and shapes). */
+  readonly worldStyle = input<WorldStyle>(DEFAULT_WORLD_STYLE);
+  protected readonly tagColor = computed(() => cssColor(this.worldStyle().tag));
   /** Where the tags are on the canvas (after each frame). */
   protected readonly tagLabels = signal<{ key: string; text: string; x: number; y: number }[]>([]);
   /** Where the simulated creatures are, by spawn key (while a simulation runs). */
@@ -538,6 +542,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     });
     // (on their own: a change of one doesn't redraw the other)
     effect(() => {
+      // (a new style draws the paths again: they carry their colours)
+      this.world.setStyle(this.worldStyle());
       perfTime('scene paths', () => this.world.setWaypointPaths(this.paths()));
       untracked(() => {
         this.syncGizmo();

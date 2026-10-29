@@ -255,6 +255,7 @@
         [focus]="focus()"
         [pathEnds]="inGameView() ? undefined : pathEnds()"
         [tags]="inGameView() ? [] : worldTags()"
+        [worldStyle]="styles.style()"
         [resetNorth]="resetNorthRequest()"
         [topView]="topViewRequest()"
         (topViewChanged)="inTopView.set($event)"
@@ -2219,6 +2220,9 @@
             }
           </form>
         }
+        @if (showStyle()) {
+          <keira-style-panel />
+        }
         @if (showLegend()) {
           <div class="card card-body world-editor-legend py-2" data-testid="legend">
             @for (section of legend; track section.title) {
@@ -3568,6 +3572,17 @@
     (click)="toggleLegend()"
   >
     <keira-button-label button="legend" [mode]="buttonStyle()" />
+  </button>
+  <button
+    type="button"
+    class="btn btn-sm"
+    data-testid="style-toggle"
+    [class.btn-secondary]="showStyle()"
+    [class.btn-outline-secondary]="!showStyle()"
+    [title]="buttonTitle('style') | translate"
+    (click)="toggleStyle()"
+  >
+    <keira-button-label button="style" [mode]="buttonStyle()" />
   </button>
   <button
     type="button"

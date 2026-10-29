@@ -30,3 +30,4 @@ export * from './world-skybox';
 export * from './spawn-scan';
 export * from './gamepad-input';
 export * from './memory-budget';
+export * from './world-style';

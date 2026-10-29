@@ -32,6 +32,9 @@ import {
   WorldSpawn,
   WorldViewerComponent,
   WorldWeather,
+  WorldStyle,
+  WorldStyleService,
+  DEFAULT_WORLD_STYLE,
 } from '@keira/shared/world-viewer';
 import {
   resetLogMemory,
@@ -102,6 +105,7 @@ class FakeWorldViewerComponent {
   readonly buildings = input<{ key: string; path: string }[]>([]);
   readonly simulation = input<MovementSimulation | undefined>(undefined);
   readonly tags = input<{ key: string; text: string }[]>([]);
+  readonly worldStyle = input<WorldStyle>(DEFAULT_WORLD_STYLE);
   readonly groundQuery = input<{ key: string; position: WorldPosition }[] | undefined>(undefined);
   readonly groundHeights = output<Record<string, number | null>>();
   readonly picked = output<PickResult>();
@@ -3934,6 +3938,17 @@ describe(WorldEditorComponent.name, () => {
       page.click('legend-toggle');
       page.fixture.detectChanges();
       expect(page.byId('legend', false)).toBeFalsy();
+      // colours and shapes: what the view draws with, and the formation lines in their colour
+      page.click('style-toggle');
+      page.fixture.detectChanges();
+      expect(page.getDebugElementByTestId('style-panel')).toBeTruthy();
+      TestBed.inject(WorldStyleService).update({ formation: { color: '#010203', opacity: 1 } });
+      page.fixture.detectChanges();
+      expect(page.viewer().worldStyle().formation.color).toBe('#010203');
+      page.click('style-toggle');
+      page.fixture.detectChanges();
+      expect(page.getDebugElementByTestId('style-panel', false)).toBeFalsy();
+      TestBed.inject(WorldStyleService).reset();
     });
 
     it('shows the toolbar buttons as icons, names or both (kept), named in their tooltips', async () => {

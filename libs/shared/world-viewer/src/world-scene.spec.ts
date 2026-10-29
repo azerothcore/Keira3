@@ -10,6 +10,7 @@ import {
   InstancedMesh,
   Material,
   Line,
+  LineBasicMaterial,
   LineDashedMaterial,
   LineSegments,
   Matrix4,
@@ -28,6 +29,7 @@ import {
 import { flatDetail, flatTile } from './world-viewer.mock';
 import { COLLISION_LAYER, SERVER_COLLISION_LAYER } from './collision-object';
 import { mergeTerrainChunks, pathColor, WorldScene } from './world-scene';
+import { DEFAULT_WORLD_STYLE, MARKER_SHAPES } from './world-style';
 import { TERRAIN_OVERLAY_LAYER, TERRAIN_WIREFRAME_LAYER } from './terrain-overlay';
 import { WaypointPath, WorldSpawn } from './world-viewer.model';
 
@@ -57,6 +59,62 @@ describe('pathColor', () => {
   it('is stable per key', () => {
     expect(pathColor('path:1')).toBe(pathColor('path:1'));
     expect(typeof pathColor('')).toBe('number');
+    // from the palette given
+    expect(pathColor('path:1', ['#123456'])).toBe(0x123456);
+  });
+});
+
+describe('WorldScene styles', () => {
+  it('paints the circles, triggers and pins, reshapes the pins and waypoints, and draws the paths again', () => {
+    const world = new WorldScene();
+    world.setSpawns([
+      spawn('creature:1', 'creature', at(0, 0), { wanderRadius: 5, aggroRadius: 10 }),
+      spawn('gameobject:2', 'gameobject', at(5, 0), { pending: true }),
+    ]);
+    world.setWaypointPaths([{ key: 'path:1', label: 'Path 1', points: [{ point: 1, position: at(9, 9) }] }]);
+    const creature = world.getObject('creature:1') as Mesh;
+    const gameobject = world.getObject('gameobject:2') as Mesh;
+    const [creatureShape, gameobjectShape] = [creature.geometry, gameobject.geometry];
+    // the same style: nothing to do
+    world.setStyle(DEFAULT_WORLD_STYLE);
+    expect(world.getObject('path:1#1')).toBeTruthy();
+    world.setStyle({
+      ...DEFAULT_WORLD_STYLE,
+      creature: { color: '#010203', opacity: 0.5 },
+      creatureShape: 'sphere',
+      gameobjectShape: 'diamond',
+      waypointShape: 'box',
+      wander: { color: '#ff0000', opacity: 1 },
+      areaTrigger: { color: '#00ff00', opacity: 0.3 },
+    });
+    const creatureMaterial = creature.material as MeshLambertMaterial;
+    expect(creatureMaterial.color.getHex()).toBe(0x010203);
+    expect([creatureMaterial.opacity, creatureMaterial.transparent]).toEqual([0.5, true]);
+    // a pending one: more see-through still
+    expect((gameobject.material as MeshLambertMaterial).opacity).toBeCloseTo(0.6);
+    expect(creature.geometry).not.toBe(creatureShape);
+    expect(gameobject.geometry).not.toBe(gameobjectShape);
+    const wander = creature.getObjectByName('wander') as Line;
+    expect((wander.material as LineBasicMaterial).color.getHex()).toBe(0xff0000);
+    expect((wander.material as LineBasicMaterial).transparent).toBe(false);
+    // the paths go until given again, then drawn with the new shape
+    expect(world.getObject('path:1#1')).toBeUndefined();
+    world.setWaypointPaths([{ key: 'path:1', label: 'Path 1', points: [{ point: 1, position: at(9, 9) }] }]);
+    expect((world.getObject('path:1#1') as Mesh).geometry.type).toBe('BoxGeometry');
+    // the waypoint size alone reshapes them too; a shape left as it was keeps its geometry
+    const kept = creature.geometry;
+    world.setStyle({ ...DEFAULT_WORLD_STYLE, creatureShape: 'sphere', gameobjectShape: 'diamond', waypointShape: 'box', waypointSize: 2 });
+    expect(creature.geometry).toBe(kept);
+    // every shape, for each (a creature's pin keeps its nose)
+    const warn = vi.spyOn(console, 'warn');
+    for (const shape of MARKER_SHAPES) {
+      world.setStyle({ ...DEFAULT_WORLD_STYLE, creatureShape: shape, gameobjectShape: shape, waypointShape: shape });
+      world.setWaypointPaths([{ key: 'path:1', label: 'Path 1', points: [{ point: 1, position: at(9, 9) }] }]);
+      expect(creature.geometry.getAttribute('position').count).toBeGreaterThan(gameobject.geometry.getAttribute('position').count);
+      expect(world.getObject('path:1#1')).toBeTruthy();
+    }
+    expect(warn).not.toHaveBeenCalled();
+    world.dispose();
   });
 });
 

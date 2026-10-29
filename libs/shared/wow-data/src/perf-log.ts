@@ -141,11 +141,36 @@ export function describeError(value: unknown): string {
     return value;
   }
   try {
-    const text = JSON.stringify(value) ?? String(value);
+    const text = JSON.stringify(plain(value)) ?? String(value);
     return text.length > DESCRIBED_LENGTH ? `${text.slice(0, DESCRIBED_LENGTH)}…` : text;
   } catch {
     return String(value);
   }
+}
+
+/** How deep into objects and arrays a logged value is written. */
+const PLAIN_DEPTH = 3;
+
+/**
+ * Plain data for JSON: objects and arrays as they are (to a depth), anything else (a texture, a mesh, an element…) by
+ * its kind and name: serializing those runs their own `toJSON`, which can be slow, warn, or never end.
+ */
+function plain(value: unknown, depth = 0): unknown {
+  if (value === null || typeof value !== 'object') {
+    return value;
+  }
+  if (depth >= PLAIN_DEPTH) {
+    return Array.isArray(value) ? `[${value.length} items]` : '{…}';
+  }
+  if (Array.isArray(value)) {
+    return value.map((item) => plain(item, depth + 1));
+  }
+  const prototype = Object.getPrototypeOf(value);
+  if (prototype !== Object.prototype && prototype !== null) {
+    const { name } = value as { name?: unknown };
+    return `[${prototype.constructor?.name ?? 'object'}${typeof name === 'string' && name ? ` ${name}` : ''}]`;
+  }
+  return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, plain(item, depth + 1)]));
 }
 
 let captures = 0;

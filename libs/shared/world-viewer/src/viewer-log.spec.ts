@@ -48,7 +48,7 @@ describe('viewer log', () => {
       gpu: 512 * 1024 ** 2,
     };
     expect(stateLine(state)).toBe(
-      'state: Azeroth at -8913.3 -137.5 82.0 | 30.0 fps, 900 draw calls, 1200000 triangles | ' +
+      'state: Azeroth at -8913.3 -137.5 82.0 | 300 frames drawn in 10 s (only when something changes), 900 draw calls, 1200000 triangles | ' +
         'loaded: 9 tiles, 20 buildings, 1500 props, 80 models, 200 spawns | ' +
         'GPU: 400 geometries, 300 textures, 12 shaders, about 512 MB | memory 2048 MB of 16384 MB',
     );

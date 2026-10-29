@@ -9,7 +9,7 @@ const nameOf = (spawn: SpawnRecord): string => `${spawn.name || spawn.entry} (${
 const positionOf = (spawn: SpawnRecord) => ({ x: spawn.x, y: spawn.y, z: spawn.z });
 
 /** A line from each loaded formation member to its loaded leader. */
-export function formationLinks(spawns: SpawnRecord[], formations: FormationMember[]): WorldLink[] {
+export function formationLinks(spawns: SpawnRecord[], formations: FormationMember[], color = FORMATION_COLOR): WorldLink[] {
   const creatures = new Map(spawns.filter((s) => s.type === 'creature').map((s) => [s.guid, s]));
   return formations.flatMap((row) => {
     const [leader, member] = [creatures.get(row.leader), creatures.get(row.member)];
@@ -19,7 +19,7 @@ export function formationLinks(spawns: SpawnRecord[], formations: FormationMembe
             key: `formation:${row.leader}:${row.member}`,
             from: positionOf(member),
             to: positionOf(leader),
-            color: FORMATION_COLOR,
+            color,
             arrow: true,
             dashed: true,
           },

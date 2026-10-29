@@ -27,6 +27,7 @@ export const TOOLBAR_BUTTONS = {
   controls: { icon: 'fa-keyboard', label: 'WORLD_EDITOR.CONTROLS', help: 'WORLD_EDITOR.CONTROLS_HELP' },
   settings: { icon: 'fa-cog', label: 'WORLD_EDITOR.SETTINGS', help: 'WORLD_EDITOR.SETTINGS_HELP' },
   legend: { icon: 'fa-info-circle', label: 'WORLD_EDITOR.LEGEND', help: 'WORLD_EDITOR.LEGEND_HELP' },
+  style: { icon: 'fa-palette', label: 'WORLD_EDITOR.STYLE', help: 'WORLD_EDITOR.STYLE_HELP' },
   refresh: { icon: 'fa-sync', label: 'WORLD_EDITOR.REFRESH', help: 'WORLD_EDITOR.REFRESH_HELP' },
 } satisfies Record<string, ToolbarButton>;
 

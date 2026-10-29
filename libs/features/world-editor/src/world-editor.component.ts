@@ -66,6 +66,8 @@ import {
   WorldMarker,
   MovementSimulation,
   SimulationFollower,
+  WorldStyleService,
+  colorNumber,
   WorldMapComponent,
   WorldMapDot,
   RENDER_SCALES,
@@ -158,6 +160,7 @@ import { copySpawns, followPlacement, newSpawnFrom, pastedSpawn } from './group-
 import { WaypointEdits, WaypointPanelComponent } from './waypoint-panel.component';
 import { SpawnPanelComponent } from './spawn-panel.component';
 import { SpawnTreeComponent } from './spawn-tree.component';
+import { StylePanelComponent } from './style-panel.component';
 import { BUTTON_STYLES, ButtonLabelComponent, ButtonStyle, buttonTitle, loadButtonStyle, saveButtonStyle } from './toolbar-buttons';
 import { findSpawnProblems, SpawnProblem } from './spawn-problems';
 import { pathSimulation, wanderSimulation } from './simulation-plan';
@@ -336,7 +339,7 @@ type RenderDistanceKey =
 /** The array tool places at most this many copies at once. */
 const MAX_ARRAY = 50;
 /** The panels under the toolbar: one open at a time. */
-type Panel = 'map' | 'filters' | 'view' | 'controls' | 'settings' | 'legend';
+type Panel = 'map' | 'filters' | 'view' | 'controls' | 'settings' | 'legend' | 'style';
 /** A player's combat reach, and the shortest melee range the server uses (NOMINAL_MELEE_RANGE). */
 const PLAYER_COMBAT_REACH = 1.5;
 /** The context menu keeps this far from the window's edges (px). */
@@ -364,8 +367,6 @@ export function contextPlacement(view: { left: number; top: number }, at: { x: n
 }
 /** How far a creature pulled into a fight calls the ones around it to help (the server's default CreatureFamilyAssistanceRadius). */
 const ASSIST_RADIUS = 10;
-/** The line from a walker's spawn point to the first point of its path. */
-const PATH_START_COLOR = 0x9be15d;
 /** What In-game view turns off. */
 const IN_GAME_VIEW: Partial<WorldRenderSettings> = {
   showWanderRadius: false,
@@ -430,6 +431,7 @@ export function buildKind(dev = isDevMode()): 'development' | 'release' {
     WaypointPanelComponent,
     SpawnPanelComponent,
     SpawnTreeComponent,
+    StylePanelComponent,
     ButtonLabelComponent,
   ],
   host: {
@@ -520,10 +522,8 @@ export class WorldEditorComponent implements OnInit {
   private readonly logWhere = effect(() => {
     const id = this.mapId();
     const directory = this.mapDirectory();
-    untracked(() => {
-      const map = this.maps().find((m) => m.id === id);
-      perfNote(`map: ${id} ${map?.name ?? '?'} (${directory ?? 'no directory'})`);
-    });
+    // (once the maps are known)
+    untracked(() => directory && perfNote(`map: ${id} ${this.maps().find((m) => m.id === id)?.name} (${directory})`));
   });
   private readonly logZone = effect(() => {
     const zoneId = this.zoneId();
@@ -724,7 +724,7 @@ export class WorldEditorComponent implements OnInit {
       const layers = this.layers();
       const spawns = this.visibleSpawns();
       return [
-        ...(layers.formations ? formationLinks(spawns, this.formations()) : []),
+        ...(layers.formations ? formationLinks(spawns, this.formations(), colorNumber(this.styles.style().formation.color)) : []),
         ...(layers.pools ? poolOverlays(spawns, this.pools()).links : []),
         ...this.travelOverlays().links.filter((link) => (isFlight(link.key) ? layers.flightPaths : layers.travel)),
         ...this.spawnToPathLinks(),
@@ -751,7 +751,7 @@ export class WorldEditorComponent implements OnInit {
               key: `to-path:${spawn.guid}`,
               from: { x: spawn.x, y: spawn.y, z: spawn.z },
               to: { x: first.x, y: first.y, z: first.z },
-              color: PATH_START_COLOR,
+              color: colorNumber(this.styles.style().pathStart.color),
               arrow: true,
               dashed: true,
               label: `${spawnTitle(spawn)} → ${pathLabel(spawn.pathId)} #${first.point}`,
@@ -1575,6 +1575,7 @@ export class WorldEditorComponent implements OnInit {
       controls: this.showControls,
       settings: this.showSettings,
       legend: this.showLegend,
+      style: this.showStyle,
     };
     const open = !panels[panel]();
     for (const [name, shown] of Object.entries(panels)) {
@@ -1584,6 +1585,13 @@ export class WorldEditorComponent implements OnInit {
 
   protected toggleLegend(): void {
     this.togglePanel('legend');
+  }
+
+  /** View > Colours and shapes. */
+  protected readonly showStyle = signal(false);
+  protected readonly styles = inject(WorldStyleService);
+  protected toggleStyle(): void {
+    this.togglePanel('style');
   }
 
   protected toggleTree(): void {

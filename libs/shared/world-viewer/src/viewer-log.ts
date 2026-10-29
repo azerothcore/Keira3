@@ -47,7 +47,7 @@ export function stateLine(state: ViewerState): string {
   const ram = state.ram ? `${mb(state.ram.used)}${state.ram.total ? ` of ${mb(state.ram.total)}` : ''}` : 'unknown';
   return (
     `state: ${state.map ?? 'no map'} at ${camera.x.toFixed(1)} ${camera.y.toFixed(1)} ${camera.z.toFixed(1)} | ` +
-    `${(state.frames / state.seconds).toFixed(1)} fps, ${state.calls} draw calls, ${state.triangles} triangles | ` +
+    `${state.frames} frames drawn in ${state.seconds.toFixed(0)} s (only when something changes), ${state.calls} draw calls, ${state.triangles} triangles | ` +
     `loaded: ${state.tiles} tiles, ${state.buildings} buildings, ${state.props} props, ${state.models} models, ${state.spawns} spawns | ` +
     `GPU: ${state.geometries} geometries, ${state.textures} textures, ${state.programs} shaders, about ${mb(state.gpu)} | memory ${ram}`
   );

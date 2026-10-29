@@ -42,6 +42,7 @@ import {
 } from './world-viewer.model';
 import { flatDetail, flatTile } from './world-viewer.mock';
 import { WorldScene } from './world-scene';
+import { DEFAULT_WORLD_STYLE } from './world-style';
 import { PathProber, PathProbeRequest, PathProbeResult } from './path-probe';
 import { WorldNavMesh } from './world-navmesh';
 import { ZoneLighting } from './zone-lighting';
@@ -148,6 +149,7 @@ interface FakeTransformControls extends EventDispatcher<{ 'dragging-changed': { 
       [topView]="topView()"
       [pathEnds]="pathEnds()"
       [tags]="tags()"
+      [worldStyle]="worldStyle()"
       [region]="region()"
       [navigation]="navigation()"
       [areaTriggers]="triggers()"
@@ -209,6 +211,7 @@ class HostComponent {
   readonly group = signal<string[]>([]);
   readonly simulation = signal<MovementSimulation | undefined>(undefined);
   readonly tags = signal<{ key: string; position: WorldPosition; text: string }[]>([]);
+  readonly worldStyle = signal(DEFAULT_WORLD_STYLE);
   readonly simulationRate = signal(2);
   simulationEnds = 0;
   readonly topViews: boolean[] = [];
@@ -1035,6 +1038,12 @@ describe(WorldViewerComponent.name, () => {
       fixture.detectChanges();
       expect(tag('creature:7')?.textContent).toContain('Leader');
       expect(tag('creature:9')).toBeUndefined();
+      // in the colour set for them; a new style draws the paths again
+      host.worldStyle.set({ ...DEFAULT_WORLD_STYLE, tag: { color: '#ff0000', opacity: 0.5 } });
+      await settle(fixture);
+      flushFrames();
+      fixture.detectChanges();
+      expect(tag('creature:7')?.style.background).toBe('rgba(255, 0, 0, 0.5)');
       // the leader walks, the member keeps 3 yards to its left
       await update(() =>
         host.simulation.set({

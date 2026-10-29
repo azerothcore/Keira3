@@ -64,7 +64,27 @@ describe('perf log', () => {
     expect(describeError(undefined)).toBe('undefined');
     const circular: { self?: unknown } = {};
     circular.self = circular;
-    expect(describeError(circular)).toBe('[object Object]');
+    expect(describeError(circular)).toBe('{"self":{"self":{"self":"{…}"}}}');
+    // things that aren't plain data: by their kind and name (their own toJSON is never run)
+    class Texture {
+      name = 'tree.blp';
+      toJSON = vi.fn();
+    }
+    const texture = new Texture();
+    expect(describeError({ texture, list: [new Texture(), [1, [2, [3]]]], bare: Object.create(null) })).toBe(
+      '{"texture":"[Texture tree.blp]","list":["[Texture tree.blp]",[1,"[2 items]"]],"bare":{}}',
+    );
+    expect(texture.toJSON).not.toHaveBeenCalled();
+    class Unnamed {}
+    expect(describeError(new Unnamed())).toBe('"[Unnamed]"');
+    expect(describeError(Object.assign(new Unnamed(), { name: '' }))).toBe('"[Unnamed]"');
+    expect(describeError(Object.create(Object.create(null)))).toBe('"[object]"');
+    const broken = {
+      get value(): never {
+        throw new Error('no');
+      },
+    };
+    expect(describeError(broken)).toBe('[object Object]');
   });
 
   it('captures console warnings and errors, uncaught errors and unhandled rejections until released', () => {

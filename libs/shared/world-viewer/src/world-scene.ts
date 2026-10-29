@@ -65,6 +65,7 @@ import {
   worldToTile,
 } from '@keira/shared/wow-data';
 import { createSkyDome, setSkyColors } from './sky';
+import { colorNumber, DEFAULT_WORLD_STYLE, MarkerShape, StyleColor, WorldStyle } from './world-style';
 import { INVISIBLE_WALL_LAYER, ROOF_LAYER } from './wmo-object';
 import { COLLISION_LAYER, SERVER_COLLISION_LAYER } from './collision-object';
 import { createTerrainLighting, createTerrainMaterial } from './terrain-material';
@@ -169,7 +170,14 @@ const POINTER_NAME = 'pointer';
 /** Width of the sea level plane (yards): beyond what's drawn around the camera. */
 const SEA_LEVEL_SIZE = 6000;
 /** The colours of a simulation's points (see `setSimulationMarks`). */
-const SIMULATION_COLORS = { ok: 0x22c55e, detour: 0xfacc15, stuck: 0xef4444, current: 0x3b82f6, next: 0x9ca3af };
+/** The style of each simulation mark's state. */
+const SIMULATION_STYLE = {
+  ok: 'simulationDone',
+  detour: 'simulationDetour',
+  stuck: 'simulationStuck',
+  current: 'simulationCurrent',
+  next: 'simulationNext',
+} as const satisfies Record<string, keyof WorldStyle>;
 const DEFAULT_LIGHTS = { sun: 1.6, hemisphere: 1.2, ambient: 0.35 };
 const ZONE_LIGHTS = { sun: 1.8, ambient: 1.6 };
 const DEFAULT_FOG = { near: 600, far: 1600 };
@@ -197,9 +205,6 @@ export interface ProbeDrawing {
 }
 
 const PROBE_COLORS = {
-  path: 0x22d3ee,
-  clear: 0x4ade80,
-  blocked: 0xef4444,
   from: 0x3b82f6,
   to: 0xef4444,
   attack: 0xfacc15,
@@ -211,13 +216,8 @@ const WALL_SNAP_GAP = 0.1;
 
 const COLORS = {
   sky: 0x9cc3e6,
-  creature: 0xff9f1c,
-  gameobject: 0x2ec4f1,
-  selected: 0xfff35c,
-  areaTrigger: 0xc77dff,
   terrain: 0x5f8a3a,
 };
-const PATH_COLORS = [0xe63946, 0xb5179e, 0x7209b7, 0x06d6a0, 0x4361ee, 0xff006e, 0x8ac926, 0xffffff];
 const WAYPOINT_LIFT = 0.4;
 /** Render layer of liquid surfaces: seen by the camera, ignored by picking (raycaster uses layer 0). */
 const LIQUID_LAYER = 1;
@@ -225,13 +225,55 @@ const LIQUID_LAYER = 1;
 const MARKER_SCALE_DISTANCE = 120;
 const MARKER_MAX_SCALE = 8;
 
-/** Stable colour per path key, so a path keeps its colour across reloads. */
-export function pathColor(key: string): number {
+/** Stable colour per path key (one of `palette`), so a path keeps its colour across reloads. */
+export function pathColor(key: string, palette = DEFAULT_WORLD_STYLE.pathColors): number {
   let hash = 0;
   for (let i = 0; i < key.length; i++) {
     hash = (hash * 31 + key.charCodeAt(i)) | 0;
   }
-  return PATH_COLORS[Math.abs(hash) % PATH_COLORS.length];
+  return colorNumber(palette[Math.abs(hash) % palette.length]);
+}
+
+/** A spawn pin of a shape: standing on the spawn point; a creature's with a nose pointing where it faces (−z). */
+function pinGeometry(shape: MarkerShape, nose: boolean): BufferGeometry {
+  const body = {
+    cylinder: () => new CylinderGeometry(0.45, 0.45, 2.2, 10).translate(0, 1.1, 0),
+    box: () => new BoxGeometry(1.2, 1.2, 1.2).translate(0, 0.6, 0),
+    sphere: () => new SphereGeometry(0.7, 14, 10).translate(0, 0.7, 0),
+    cone: () => new ConeGeometry(0.6, 2.2, 12).translate(0, 1.1, 0),
+    diamond: () => new OctahedronGeometry(0.8).translate(0, 0.8, 0),
+  }[shape]();
+  if (!nose) {
+    return body;
+  }
+  const merged = mergeGeometries([
+    // (the same kind of geometry for both: a diamond's has no index already)
+    body.index ? body.toNonIndexed() : body,
+    new ConeGeometry(0.35, 1.1, 8)
+      .rotateX(-Math.PI / 2)
+      .translate(0, 1.7, -0.9)
+      .toNonIndexed(),
+  ]);
+  body.dispose();
+  return merged;
+}
+
+/** A see-through line material of a style colour. */
+function lineMaterial({ color, opacity }: StyleColor): LineBasicMaterial {
+  return new LineBasicMaterial({ color: colorNumber(color), transparent: opacity < 1, opacity });
+}
+
+/** A waypoint on the ground of a shape and size (centred on the point, its nose pointing up). */
+function waypointGeometry(shape: MarkerShape, size: number): BufferGeometry {
+  return {
+    cone: () => new ConeGeometry(0.45, 1, 16),
+    cylinder: () => new CylinderGeometry(0.4, 0.4, 0.9, 12),
+    box: () => new BoxGeometry(0.75, 0.75, 0.75),
+    sphere: () => new SphereGeometry(0.5, 12, 8),
+    diamond: () => new OctahedronGeometry(0.55),
+  }
+    [shape]()
+    .scale(size, size, size);
 }
 
 /**
@@ -290,18 +332,17 @@ export class WorldScene {
   private readonly objects = new Map<string, Object3D>();
   private selectedKey?: string;
 
+  /** The colours and shapes things are drawn with (see `setStyle`). */
+  private style: WorldStyle = DEFAULT_WORLD_STYLE;
   /** Upright pin standing on the spawn point, with a nose pointing where the creature faces (−z before rotation). */
-  private readonly creatureGeometry = mergeGeometries([
-    new CylinderGeometry(0.45, 0.45, 2.2, 10).translate(0, 1.1, 0),
-    new ConeGeometry(0.35, 1.1, 8).rotateX(-Math.PI / 2).translate(0, 1.7, -0.9),
-  ]);
-  private readonly gameobjectGeometry = new BoxGeometry(1.2, 1.2, 1.2).translate(0, 0.6, 0);
+  private creatureGeometry = pinGeometry(DEFAULT_WORLD_STYLE.creatureShape, true);
+  private gameobjectGeometry = pinGeometry(DEFAULT_WORLD_STYLE.gameobjectShape, false);
   /**
    * Waypoint markers by place: a cone on the ground, a square pyramid in the air, a pentagonal pyramid in water or
    * under the map (flight paths use triangular pyramids).
    */
   private readonly waypointGeometries: Record<WaypointPlace, BufferGeometry> = {
-    ground: new ConeGeometry(0.45, 1, 16),
+    ground: waypointGeometry(DEFAULT_WORLD_STYLE.waypointShape, DEFAULT_WORLD_STYLE.waypointSize),
     air: new ConeGeometry(0.6, 1, 4).rotateY(Math.PI / 4),
     water: new ConeGeometry(0.55, 1, 5),
     under: new ConeGeometry(0.55, 1, 5),
@@ -330,12 +371,22 @@ export class WorldScene {
   ]);
   /** Facing arrows in the colour of their kind's pins: creatures amber, gameobjects cyan. */
   private readonly facingArrowMaterials = {
-    creature: new MeshBasicMaterial({ color: COLORS.creature, depthTest: false, transparent: true, opacity: 0.9 }),
-    gameobject: new MeshBasicMaterial({ color: COLORS.gameobject, depthTest: false, transparent: true, opacity: 0.9 }),
+    creature: new MeshBasicMaterial({
+      color: colorNumber(DEFAULT_WORLD_STYLE.creature.color),
+      depthTest: false,
+      transparent: true,
+      opacity: 0.9,
+    }),
+    gameobject: new MeshBasicMaterial({
+      color: colorNumber(DEFAULT_WORLD_STYLE.gameobject.color),
+      depthTest: false,
+      transparent: true,
+      opacity: 0.9,
+    }),
   };
   private facingArrowsVisible = true;
   private readonly triggerArrowMaterial = new MeshBasicMaterial({
-    color: COLORS.areaTrigger,
+    color: colorNumber(DEFAULT_WORLD_STYLE.areaTrigger.color),
     depthTest: false,
     transparent: true,
     opacity: 0.9,
@@ -360,18 +411,18 @@ export class WorldScene {
   /** Area triggers: see-through purple volumes with solid edges. */
   readonly triggerGroup = new Group();
   private readonly triggerMaterial = new MeshBasicMaterial({
-    color: COLORS.areaTrigger,
+    color: colorNumber(DEFAULT_WORLD_STYLE.areaTrigger.color),
     transparent: true,
-    opacity: 0.15,
+    opacity: DEFAULT_WORLD_STYLE.areaTrigger.opacity,
     depthWrite: false,
     side: DoubleSide,
   });
-  private readonly triggerEdgeMaterial = new LineBasicMaterial({ color: COLORS.areaTrigger });
-  private readonly wanderMaterial = new LineBasicMaterial({ color: 0xffd166, transparent: true, opacity: 0.8 });
-  private readonly boundingMaterial = new LineBasicMaterial({ color: 0x4ade80, transparent: true, opacity: 0.9 });
-  private readonly reachMaterial = new LineBasicMaterial({ color: 0xf87171, transparent: true, opacity: 0.9 });
-  private readonly aggroMaterial = new LineBasicMaterial({ color: 0xff8c00, transparent: true, opacity: 0.85 });
-  private readonly assistMaterial = new LineBasicMaterial({ color: 0x60a5fa, transparent: true, opacity: 0.85 });
+  private readonly triggerEdgeMaterial = new LineBasicMaterial({ color: colorNumber(DEFAULT_WORLD_STYLE.areaTrigger.color) });
+  private readonly wanderMaterial = lineMaterial(DEFAULT_WORLD_STYLE.wander);
+  private readonly boundingMaterial = lineMaterial(DEFAULT_WORLD_STYLE.bounds);
+  private readonly reachMaterial = lineMaterial(DEFAULT_WORLD_STYLE.reach);
+  private readonly aggroMaterial = lineMaterial(DEFAULT_WORLD_STYLE.aggro);
+  private readonly assistMaterial = lineMaterial(DEFAULT_WORLD_STYLE.assist);
   /** Nose on a waypoint ball, pointing to the next point (along +y before rotation, starting at the ball's surface). */
   private readonly pointerGeometry = new ConeGeometry(0.3, 0.8, 8).translate(0, 0.85, 0);
   private readonly arrows = new Set<Object3D>();
@@ -486,7 +537,7 @@ export class WorldScene {
       this.probeGroup.add(mesh);
     };
     if (probe.path) {
-      line(probe.path, PROBE_COLORS.path);
+      line(probe.path, colorNumber(this.style.probePath.color));
       this.addProbePathArrows(probe.path);
     }
     if (probe.sight) {
@@ -495,14 +546,20 @@ export class WorldScene {
       if (blockedAt) {
         const dashed = new Line(
           new BufferGeometry().setFromPoints([from, to].map((p) => scenePoint(p))),
-          new LineDashedMaterial({ color: PROBE_COLORS.blocked, dashSize: 1, gapSize: 0.7, depthTest: false, transparent: true }),
+          new LineDashedMaterial({
+            color: colorNumber(this.style.probeBlocked.color),
+            dashSize: 1,
+            gapSize: 0.7,
+            depthTest: false,
+            transparent: true,
+          }),
         );
         dashed.computeLineDistances();
         dashed.renderOrder = 5;
         this.probeGroup.add(dashed);
-        dot(blockedAt, PROBE_COLORS.blocked, 0.35);
+        dot(blockedAt, colorNumber(this.style.probeBlocked.color), 0.35);
       } else {
-        line([from, to], PROBE_COLORS.clear, 0);
+        line([from, to], colorNumber(this.style.probeClear.color), 0);
       }
     }
     this.probeHandles.clear();
@@ -529,7 +586,7 @@ export class WorldScene {
       }
       const arrow = new Mesh(
         new ConeGeometry(0.35, 1, 8),
-        new MeshBasicMaterial({ color: PROBE_COLORS.path, depthTest: false, transparent: true }),
+        new MeshBasicMaterial({ color: colorNumber(this.style.probePath.color), depthTest: false, transparent: true }),
       );
       arrow.name = 'probe-path-arrow';
       arrow.position.copy(a).add(b).multiplyScalar(0.5);
@@ -1154,7 +1211,7 @@ export class WorldScene {
       if (kept.has(path.key)) {
         continue;
       }
-      const color = pathColor(path.key);
+      const color = this.pathColor(path.key);
       const group = new Group();
       group.name = path.key;
       group.userData = { signature: wanted.get(path.key) };
@@ -1169,7 +1226,7 @@ export class WorldScene {
       // Drawn over the terrain so a path stays readable where it crosses a hill between two points.
       const line = new Line(
         new BufferGeometry().setFromPoints(linePoints),
-        new LineBasicMaterial({ color, depthTest: false, transparent: true, opacity: 0.85 }),
+        new LineBasicMaterial({ color, depthTest: false, transparent: true, opacity: this.style.pathOpacity }),
       );
       line.renderOrder = 1;
       line.name = `${path.key}:line`;
@@ -1332,7 +1389,7 @@ export class WorldScene {
     if (drops.length > 0) {
       const lines = new LineSegments(
         new BufferGeometry().setFromPoints(drops),
-        new LineBasicMaterial({ color: pathColor(group.name), transparent: true, opacity: 0.7, depthTest: false }),
+        new LineBasicMaterial({ color: this.pathColor(group.name), transparent: true, opacity: 0.7, depthTest: false }),
       );
       lines.name = `${group.name}:drops`;
       lines.renderOrder = 1;
@@ -1418,7 +1475,7 @@ export class WorldScene {
     const oldArrows = group.getObjectByName(`${pathKey}:arrows`) as Group;
     this.disposeArrows(oldArrows);
     group.remove(oldArrows);
-    group.add(this.buildArrows(pathKey, points, numbers, pathColor(pathKey)));
+    group.add(this.buildArrows(pathKey, points, numbers, this.pathColor(pathKey)));
   }
 
   private waypointsOf(group: Group): Object3D[] {
@@ -1549,7 +1606,10 @@ export class WorldScene {
     this.simulationMarks.children.forEach((child) => ((child as Mesh).material as Material).dispose());
     this.simulationMarks.clear();
     for (const { position, state } of marks) {
-      const mark = new Mesh(this.simulationMarkGeometry, new MeshBasicMaterial({ color: SIMULATION_COLORS[state], depthTest: false }));
+      const mark = new Mesh(
+        this.simulationMarkGeometry,
+        new MeshBasicMaterial({ color: colorNumber(this.style[SIMULATION_STYLE[state]].color), depthTest: false }),
+      );
       const p = worldToScene({ ...position, z: position.z + 1 });
       mark.position.set(p.x, p.y, p.z);
       mark.scale.setScalar(state === 'current' ? 1.8 : 1);
@@ -2028,17 +2088,86 @@ export class WorldScene {
     const id = `${kind}:${state}:${color ?? ''}`;
     let material = this.markerMaterials.get(id);
     if (!material) {
-      const base = color ?? COLORS[kind as SpawnKind];
+      const own = kind === 'waypoint' ? undefined : this.style[kind];
+      const selected = colorNumber(this.style.selected.color);
+      // (a pin's opacity as set; a pending one more see-through still)
+      const opacity = (own?.opacity ?? 1) * (state === 'pending' ? 0.6 : 1);
       material = new MeshLambertMaterial({
-        color: state === 'selected' ? COLORS.selected : base,
-        emissive: state === 'selected' ? COLORS.selected : 0x000000,
+        color: state === 'selected' ? selected : (color ?? colorNumber((own as StyleColor).color)),
+        emissive: state === 'selected' ? selected : 0x000000,
         emissiveIntensity: state === 'selected' ? 0.6 : 0,
-        transparent: state === 'pending',
-        opacity: state === 'pending' ? 0.6 : 1,
+        transparent: opacity < 1,
+        opacity,
       });
       this.markerMaterials.set(id, material);
     }
     return material;
+  }
+
+  /** A path's colour from the palette set. */
+  private pathColor(key: string): number {
+    return pathColor(key, this.style.pathColors);
+  }
+
+  /**
+   * Draws with these colours and shapes from now on: the circles, area triggers and pins change at once, the paths are
+   * drawn again (they are removed here: give them again with `setWaypointPaths`).
+   */
+  setStyle(style: WorldStyle): void {
+    if (style === this.style) {
+      return;
+    }
+    const before = this.style;
+    this.style = style;
+    const paint = (material: MeshBasicMaterial | LineBasicMaterial, { color, opacity }: StyleColor, keepOpacity = false) => {
+      material.color.setHex(colorNumber(color));
+      if (!keepOpacity) {
+        material.opacity = opacity;
+        material.transparent = opacity < 1;
+      }
+    };
+    paint(this.wanderMaterial, style.wander);
+    paint(this.boundingMaterial, style.bounds);
+    paint(this.reachMaterial, style.reach);
+    paint(this.aggroMaterial, style.aggro);
+    paint(this.assistMaterial, style.assist);
+    paint(this.triggerMaterial, style.areaTrigger);
+    paint(this.triggerEdgeMaterial, style.areaTrigger, true);
+    paint(this.triggerArrowMaterial, style.areaTrigger, true);
+    paint(this.facingArrowMaterials.creature, style.creature, true);
+    paint(this.facingArrowMaterials.gameobject, style.gameobject, true);
+    // the pins: their shapes, then their colours (made again as asked for)
+    if (style.creatureShape !== before.creatureShape) {
+      this.creatureGeometry = this.reshape(this.creatureGeometry, pinGeometry(style.creatureShape, true));
+    }
+    if (style.gameobjectShape !== before.gameobjectShape) {
+      this.gameobjectGeometry = this.reshape(this.gameobjectGeometry, pinGeometry(style.gameobjectShape, false));
+    }
+    if (style.waypointShape !== before.waypointShape || style.waypointSize !== before.waypointSize) {
+      const old = this.waypointGeometries.ground;
+      this.waypointGeometries.ground = waypointGeometry(style.waypointShape, style.waypointSize);
+      old.dispose();
+    }
+    this.markerMaterials.forEach((material) => material.dispose());
+    this.markerMaterials.clear();
+    this.applySelection();
+    // the paths (their lines and arrows have their colour in them): drawn again when given again
+    for (const group of [...this.waypointGroup.children]) {
+      this.forget(group);
+      group.removeFromParent();
+      this.placeQueue.delete(group);
+    }
+  }
+
+  /** Swaps a pin geometry on every pin using it. */
+  private reshape(old: BufferGeometry, next: BufferGeometry): BufferGeometry {
+    this.spawnGroup.children.forEach((marker) => {
+      if ((marker as Mesh).geometry === old) {
+        (marker as Mesh).geometry = next;
+      }
+    });
+    old.dispose();
+    return next;
   }
 
   private waypointMaterial(color: number, selected = false): MeshLambertMaterial {
@@ -2055,7 +2184,7 @@ export class WorldScene {
     const data = object.userData as PickableData & SpawnMarkerData;
     const selected = key === this.selectedKey || this.groupKeys.has(key);
     if (data.kind === 'waypoint') {
-      mesh.material = this.waypointMaterial(pathColor(data.pathKey as string), selected);
+      mesh.material = this.waypointMaterial(this.pathColor(data.pathKey as string), selected);
       const pointer = object.getObjectByName(POINTER_NAME) as Mesh | undefined;
       if (pointer) {
         pointer.material = mesh.material;
