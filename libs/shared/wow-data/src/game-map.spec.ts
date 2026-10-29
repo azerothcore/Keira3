@@ -13,6 +13,7 @@ import {
   onGameMap,
   overlayPieces,
   pageAt,
+  pageChildren,
   pageFloors,
   pageKey,
   pageTiles,
@@ -164,6 +165,7 @@ describe('game map pages', () => {
       area(99, 0, 0, 'NotAContinent', bounds(0, 1, 0, 1)),
       area(30, 0, 12, 'Elwynn', bounds(-10000, -8000, -2000, 1500)),
       area(301, 0, 1519, 'Stormwind', bounds(-9150, -8000, -15, 1700)),
+      area(864, 0, 6170, 'Northshire', bounds(-9200, -8600, -800, 200), 30),
       area(462, 530, 3430, 'EversongWoods', bounds(7700, 11000, -9400, -4500)),
       area(465, 530, 3483, 'Hellfire', bounds(-2000, 1500, 400, 5500)),
       area(488, 571, 65, 'Dragonblight', bounds(1800, 5600, -2000, 3600)),
@@ -231,6 +233,10 @@ describe('game map pages', () => {
     expect(pageFloors(pages, pages.get('area:529:1')!).map((p) => p.key)).toEqual(['area:529', 'area:529:1']);
     expect(pageFloors(pages, pages.get('world')!)).toEqual([]);
     expect(firstPage(pages, 'area:30')?.key).toBe('area:30');
+    // the maps reached from a zone: a cave on its map, instances (once each, by their first page)
+    expect(pageChildren(pages, pages.get('area:30')!).map((p) => p.key)).toEqual(['area:864']);
+    expect(pageChildren(pages, pages.get('area:488')!).map((p) => p.key)).toEqual(['area:535:1', 'area:531']);
+    expect(pageChildren(pages, pages.get('area:510')!).map((p) => p.key)).toEqual(['area:504:1']);
     expect(firstPage(pages, 'area:535')?.key).toBe('area:535:1');
     expect(firstPage(pages, 'area:12345')).toBeUndefined();
     expect(firstPage(pages, 'nowhere')).toBeUndefined();

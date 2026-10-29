@@ -1725,6 +1725,7 @@
     "POI_REAGENT": "Componentes",
     "POI_MAILBOX": "Buzón",
     "POI_SPIRIT": "Ángel de la resurrección",
-    "POI_STONE": "Piedra de encuentro"
+    "POI_STONE": "Piedra de encuentro",
+    "GAME_MAP_INSIDE": "Mapas aquí…"
   }
 }

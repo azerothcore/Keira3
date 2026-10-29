@@ -84,6 +84,7 @@ const data = (): GameMapData => ({
     area(30, 0, 12, 'Elwynn', bounds(-10000, -8000, -2000, 1500)),
     area(32, 0, 10, 'Duskwood', bounds(-11500, -10500, -2000, 1000)),
     area(36, 0, 44, 'Redridge', bounds(-10500, -9500, -4000, -2500)),
+    area(1001, 0, 6001, 'Fargodeepmine1_', bounds(-9860, -9700, 42, 282), 30),
     area(31, 0, 40, 'Westfall', bounds(-12000, -9000, -3000, 0)),
     area(462, 530, 3430, 'EversongWoods', bounds(7700, 11000, -9400, -4500)),
     area(535, 533, 3456, 'Naxxramas', bounds(2300, 3600, -4400, -2500), 30),
@@ -126,6 +127,7 @@ const data = (): GameMapData => ({
     [40, { name: 'Westfall', flags: 64, levels: [10, 20] as [number, number], faction: 0 }],
     [3430, { name: 'Eversong Woods', flags: 0, faction: -1 }],
     [87, { name: 'Goldshire', flags: 0 }],
+    [6001, { name: 'Fargodeep Mine', flags: 0 }],
     [88, { name: 'Northshire', flags: 0 }],
     [3456, { name: 'Naxxramas', flags: 0x800 }],
   ]),
@@ -223,6 +225,16 @@ describe(GameMapComponent.name, () => {
     page.byId('game-map-pin-creature:1').nativeElement.dispatchEvent(new PointerEvent('pointermove', { bubbles: true }));
     page.click('game-map-pin-creature:1');
     expect(host.goTos.at(-1)?.position).toEqual({ x: -9000, y: 0, z: 50 });
+
+    // the maps inside the zone: a mine, Naxxramas (reached from here in this test)
+    const inside = page.byId<HTMLSelectElement>('game-map-children').nativeElement;
+    expect([...inside.options].map((o) => o.textContent?.trim())).toEqual(['WORLD_EDITOR.GAME_MAP_INSIDE', 'Fargodeep Mine', 'Naxxramas']);
+    inside.value = 'area:1001';
+    inside.dispatchEvent(new Event('change'));
+    page.fixture.detectChanges();
+    expect(page.title()).toBe('Fargodeep Mine');
+    expect(page.byId('game-map-children', false)).toBeFalsy();
+    page.click('game-map-back');
 
     page.click('game-map-load-zone');
     expect(host.regions).toEqual([bounds(-10000, -8000, -2000, 1500)]);

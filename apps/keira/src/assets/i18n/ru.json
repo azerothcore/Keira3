@@ -1725,6 +1725,7 @@
     "POI_REAGENT": "Реагенты",
     "POI_MAILBOX": "Почтовый ящик",
     "POI_SPIRIT": "Целитель душ",
-    "POI_STONE": "Камень встреч"
+    "POI_STONE": "Камень встреч",
+    "GAME_MAP_INSIDE": "Карты здесь…"
   }
 }

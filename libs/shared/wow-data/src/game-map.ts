@@ -378,10 +378,10 @@ export function gameMapPages(data: GameMapData): Map<string, GamePage> {
       if (!continents.has(area.mapId) || CONTINENT_AREAS[area.mapId] !== area.id) {
         continue;
       }
-      // its zones, where they are drawn on it
+      // its zones, where they are drawn on it (not the maps inside a zone, like the caves some patches add)
       const regions: GameMapRegion[] = [];
       for (const zone of data.areas) {
-        if (zone.areaId === 0 || !hasBounds(zone.bounds)) {
+        if (zone.areaId === 0 || zone.parent || !hasBounds(zone.bounds)) {
           continue;
         }
         const placed = onContinent(zone, data.transforms);
@@ -440,6 +440,19 @@ export function gameMapPages(data: GameMapData): Map<string, GamePage> {
 /** The pages of one world map row (its own picture first, then its floors), to switch between them. */
 export function pageFloors(pages: Map<string, GamePage>, page: GamePage): GamePage[] {
   return page.mapAreaId ? [...pages.values()].filter((p) => p.mapAreaId === page.mapAreaId && p.kind !== 'continent') : [];
+}
+
+/** The maps reached from a page (caves, mines, instances), each by the page it is first shown on, by name order of key. */
+export function pageChildren(pages: Map<string, GamePage>, page: GamePage): GamePage[] {
+  const seen = new Set<number>();
+  const children: GamePage[] = [];
+  for (const child of pages.values()) {
+    if (child.parent === page.key && child.kind !== 'continent' && child.mapAreaId !== page.mapAreaId && !seen.has(child.mapAreaId)) {
+      seen.add(child.mapAreaId);
+      children.push(child);
+    }
+  }
+  return children;
 }
 
 /** The page a zone, city or instance is first shown on: its own picture, else its first floor. */

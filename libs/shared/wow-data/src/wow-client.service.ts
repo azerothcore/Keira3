@@ -406,11 +406,14 @@ export class WowClientService {
     return this.areaNames;
   }
 
-  /** What the in-game world map is made of (its DBCs: pages, overlays, floors, zones with their levels). */
+  /**
+   * What the in-game world map is made of (its DBCs: pages, overlays, floors, zones with their levels), from the client
+   * first: patches that add maps (dungeon maps, caves) change these DBCs, and the server doesn't need them.
+   */
   getGameMap(): Promise<GameMapData> {
     this.gameMap ??= Promise.all(
       ['WorldMapArea', 'WorldMapOverlay', 'DungeonMap', 'WorldMapTransforms', 'AreaTable', 'LFGDungeons'].map((name) =>
-        this.readDbc(`${name}.dbc`),
+        this.readClientDbc(`${name}.dbc`),
       ),
     )
       .then(([areas, overlays, floors, transforms, areaTable, lfg]) => ({
@@ -1094,6 +1097,22 @@ export class WowClientService {
   }
 
   /** A DBC from the server's DataDir when configured (it may hold custom rows), otherwise from the client. */
+  /** A DBC from the client; the server's when the client has none or a damaged one. */
+  private async readClientDbc(name: string): Promise<DbcFile | undefined> {
+    const bytes = await this.readFile(`DBFilesClient\\${name}`);
+    if (bytes) {
+      try {
+        return new DbcFile(bytes);
+      } catch (error) {
+        console.warn(`[World Editor] The client's ${name} can't be read, using the server's:`, error);
+      }
+    }
+    const native = this.requireNative();
+    const serverDataPath = this.settings.paths().serverDataPath;
+    const serverDbc = `${serverDataPath}/dbc/${name}`;
+    return serverDataPath && native.exists(serverDbc) ? new DbcFile(native.readFile(serverDbc)) : undefined;
+  }
+
   private async readDbc(name: string): Promise<DbcFile | undefined> {
     const native = this.requireNative();
     const serverDataPath = this.settings.paths().serverDataPath;

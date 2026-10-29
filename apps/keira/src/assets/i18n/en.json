@@ -1725,6 +1725,7 @@
     "POI_REAGENT": "Reagents",
     "POI_MAILBOX": "Mailbox",
     "POI_SPIRIT": "Spirit Healer",
-    "POI_STONE": "Meeting Stone"
+    "POI_STONE": "Meeting Stone",
+    "GAME_MAP_INSIDE": "Maps here…"
   }
 }

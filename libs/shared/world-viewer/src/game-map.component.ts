@@ -17,6 +17,7 @@ import {
   glowImage,
   onGameMap,
   pageAt,
+  pageChildren,
   pageFloors,
   RgbaImage,
   toGameMap,
@@ -112,6 +113,20 @@ export class GameMapComponent {
     const floors = page ? pageFloors(this.pages(), page) : [];
     return floors.length > 1 ? floors : [];
   });
+
+  /** The maps reached from the page shown (caves, mines, instances), by name. */
+  protected readonly children = computed(() => {
+    const page = this.page();
+    return (page ? pageChildren(this.pages(), page) : [])
+      .map((child) => ({ key: child.key, name: this.pageName({ ...child, floor: undefined }) }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  });
+
+  protected openChild(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    this.open(select.value);
+    select.value = '';
+  }
 
   /** The overlays of the zone shown, to name sub-zones. */
   private readonly overlays = computed(() => {

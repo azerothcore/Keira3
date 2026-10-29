@@ -1725,6 +1725,7 @@
     "POI_REAGENT": "材料",
     "POI_MAILBOX": "邮箱",
     "POI_SPIRIT": "灵魂医者",
-    "POI_STONE": "集合石"
+    "POI_STONE": "集合石",
+    "GAME_MAP_INSIDE": "此处的地图…"
   }
 }

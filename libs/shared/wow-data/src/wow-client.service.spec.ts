@@ -1242,10 +1242,31 @@ describe('WowClientService', () => {
       expect([data.areas, data.overlays, data.floors, data.transforms, data.zones.size]).toEqual([[], [], [], [], 0]);
     });
 
+    it("reads the world map's DBCs from the client first, the server's when the client's are damaged or missing", async () => {
+      const area = new Array(11).fill(0);
+      Object.assign(area, { 0: 30, 2: 12, 3: 'FromClient' });
+      const serverArea = [...area];
+      serverArea[3] = 'FromServer';
+      const { service } = setup({
+        files: { '/srv/dbc/WorldMapArea.dbc': rows([serverArea]), '/srv/dbc/DungeonMap.dbc': rows([[56, 533, 1, 0, 0, 0, 0, 0]]) },
+        mpqs: displayMpqs({ 'DBFilesClient\\WorldMapArea.dbc': rows([area]), 'DBFilesClient\\WorldMapOverlay.dbc': [1, 2] }),
+        serverDataPath: '/srv',
+      });
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+      const data = await service.getGameMap();
+      expect(data.areas[0].folder).toBe('FromClient');
+      // a damaged one with no server copy: none; one only the server has: the server's
+      expect(data.overlays).toEqual([]);
+      expect(warn).toHaveBeenCalled();
+      expect(data.floors).toHaveLength(1);
+    });
+
     it('reads the world map again after a failure', async () => {
-      const { service } = setup({ mpqs: displayMpqs({ 'DBFilesClient\\WorldMapArea.dbc': [1, 2] }) });
-      await expect(service.getGameMap()).rejects.toThrowError(/WDBC/);
-      await expect(service.getGameMap()).rejects.toThrowError(/WDBC/);
+      const { service } = setup({ mpqs: displayMpqs({}) });
+      const read = vi.spyOn(service, 'readFile').mockRejectedValueOnce(new Error('busy'));
+      await expect(service.getGameMap()).rejects.toThrowError('busy');
+      read.mockRestore();
+      expect((await service.getGameMap()).areas).toEqual([]);
     });
 
     it('pictures a page from its tiles and overlays, kept in the cache', async () => {

@@ -31,6 +31,14 @@
         }
       </div>
     }
+    @if (children().length) {
+      <select class="form-select form-select-sm w-auto" data-testid="game-map-children" (change)="openChild($event)">
+        <option value="" selected>{{ 'WORLD_EDITOR.GAME_MAP_INSIDE' | translate }}</option>
+        @for (child of children(); track child.key) {
+          <option [value]="child.key">{{ child.name }}</option>
+        }
+      </select>
+    }
     <span class="flex-grow-1"></span>
     @if (canLoadZone()) {
       <button type="button" class="btn btn-sm btn-light" data-testid="game-map-load-zone" (click)="loadZone()">
