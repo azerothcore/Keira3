@@ -34,13 +34,22 @@ export interface GameMapTeleport {
   targetMap: number;
 }
 
+/** How a layer's markers look: a picture of the client (a whole file, or a cell of the world map's icon atlas), drawn round or as a framed square icon; or a Font Awesome icon in a colour. */
+export interface GameMapIcon {
+  path?: string;
+  /** A cell of `POI_ATLAS`. */
+  atlas?: number;
+  /** A square ability-like icon, drawn in a frame. */
+  square?: boolean;
+  fa?: string;
+  color?: string;
+}
+
 export interface GameMapLayer {
   key: string;
-  /** i18n key of its name (or a name as it is). */
+  /** i18n key of its name. */
   label: string;
-  /** A picture of the client, else a Font Awesome icon. */
-  icon?: string;
-  fa?: string;
+  icon?: GameMapIcon;
   /** Shown before the user chooses. */
   shown: boolean;
 }
@@ -48,13 +57,31 @@ export interface GameMapLayer {
 export interface GameMapLayerGroup {
   key: string;
   label: string;
+  /** Sub-headings: the layers from each index on (Primary / Secondary…). */
+  parts?: { label: string; from: number }[];
   layers: GameMapLayer[];
 }
 
 const TRACKING = 'Interface\\Minimap\\Tracking\\';
 const ICONS = 'Interface\\Icons\\';
+/** The world map's icon atlas: graveyards, towers, flags, crests, zeppelins, anchors… 14 icons of 16 pixels a row, 18 apart. */
+export const POI_ATLAS = 'Interface\\Minimap\\POIIcons.blp';
+export const POI_ATLAS_COLUMNS = 14;
+export const POI_ATLAS_PITCH = 18;
+export const POI_ATLAS_CELL = 16;
+/** Its cells used here. */
+export const ATLAS = {
+  graveyard: 8,
+  allianceCrest: 46,
+  hordeCrest: 48,
+  zeppelin: { neutral: 140, alliance: 141, horde: 143 },
+  boat: { neutral: 145, alliance: 146, horde: 148 },
+};
 
-/** Professions (SkillLine ids) with their icons. */
+const tracking = (file: string): GameMapIcon => ({ path: `${TRACKING}${file}.blp` });
+const square = (file: string): GameMapIcon => ({ path: `${ICONS}${file}.blp`, square: true });
+
+/** Professions (SkillLine ids) with their icons; the first 11 primary, then secondary. */
 export const PROFESSIONS: [number, string, string][] = [
   [171, 'WORLD_EDITOR.PROF_ALCHEMY', 'Trade_Alchemy'],
   [164, 'WORLD_EDITOR.PROF_BLACKSMITHING', 'Trade_BlackSmithing'],
@@ -72,73 +99,85 @@ export const PROFESSIONS: [number, string, string][] = [
   [356, 'WORLD_EDITOR.PROF_FISHING', 'Trade_Fishing'],
 ];
 
+/** The map's own layers (colours, borders, names…), apart from the markers. */
+export const GAME_MAP_OPTIONS: GameMapLayer[] = [
+  { key: 'levels', label: 'WORLD_EDITOR.GAME_MAP_LEVEL_COLOURS', shown: true },
+  { key: 'territory', label: 'WORLD_EDITOR.GAME_MAP_TERRITORY', shown: false },
+  { key: 'borders', label: 'WORLD_EDITOR.GAME_MAP_BORDERS', shown: true },
+  { key: 'subBorders', label: 'WORLD_EDITOR.GAME_MAP_SUB_BORDERS', shown: true },
+  { key: 'transitions', label: 'WORLD_EDITOR.GAME_MAP_TRANSITIONS', shown: true },
+  { key: 'names', label: 'WORLD_EDITOR.GAME_MAP_NAMES', shown: true },
+  { key: 'badges', label: 'WORLD_EDITOR.GAME_MAP_BADGES', shown: true },
+  { key: 'camera', label: 'WORLD_EDITOR.GAME_MAP_CAMERA', shown: true },
+  { key: 'spawns', label: 'WORLD_EDITOR.GAME_MAP_SPAWNS', shown: false },
+];
+
 export const GAME_MAP_LAYER_GROUPS: GameMapLayerGroup[] = [
-  {
-    key: 'map',
-    label: 'WORLD_EDITOR.GAME_MAP_GROUP_MAP',
-    layers: [
-      { key: 'levels', label: 'WORLD_EDITOR.GAME_MAP_LEVEL_COLOURS', fa: 'fa-signal', shown: true },
-      { key: 'territory', label: 'WORLD_EDITOR.GAME_MAP_TERRITORY', fa: 'fa-flag', shown: false },
-      { key: 'borders', label: 'WORLD_EDITOR.GAME_MAP_BORDERS', fa: 'fa-square-o', shown: true },
-      { key: 'subBorders', label: 'WORLD_EDITOR.GAME_MAP_SUB_BORDERS', fa: 'fa-th', shown: true },
-      { key: 'names', label: 'WORLD_EDITOR.GAME_MAP_NAMES', fa: 'fa-font', shown: true },
-      { key: 'camera', label: 'WORLD_EDITOR.GAME_MAP_CAMERA', fa: 'fa-video-camera', shown: true },
-      { key: 'spawns', label: 'WORLD_EDITOR.GAME_MAP_SPAWNS', fa: 'fa-circle', shown: false },
-    ],
-  },
   {
     key: 'townsfolk',
     label: 'WORLD_EDITOR.GAME_MAP_GROUP_TOWNSFOLK',
     layers: [
-      { key: 'auction', label: 'WORLD_EDITOR.POI_AUCTION', icon: `${TRACKING}Auctioneer.blp`, shown: true },
-      { key: 'bank', label: 'WORLD_EDITOR.POI_BANK', icon: `${TRACKING}Banker.blp`, shown: false },
-      { key: 'battle', label: 'WORLD_EDITOR.POI_BATTLE', icon: `${TRACKING}BattleMaster.blp`, shown: false },
-      { key: 'classTrainer', label: 'WORLD_EDITOR.POI_CLASS_TRAINER', icon: `${TRACKING}Class.blp`, shown: false },
-      { key: 'flight', label: 'WORLD_EDITOR.POI_FLIGHT', icon: `${TRACKING}FlightMaster.blp`, shown: true },
-      { key: 'inn', label: 'WORLD_EDITOR.POI_INN', icon: `${TRACKING}Innkeeper.blp`, shown: false },
-      { key: 'mailbox', label: 'WORLD_EDITOR.POI_MAILBOX', icon: `${TRACKING}Mailbox.blp`, shown: false },
-      { key: 'repair', label: 'WORLD_EDITOR.POI_REPAIR', icon: `${TRACKING}Repair.blp`, shown: false },
-      { key: 'riding', label: 'WORLD_EDITOR.POI_RIDING', icon: `${ICONS}Ability_Mount_RidingHorse.blp`, shown: false },
-      { key: 'spirit', label: 'WORLD_EDITOR.POI_SPIRIT', icon: `${ICONS}Spell_Holy_Resurrection.blp`, shown: true },
-      { key: 'stable', label: 'WORLD_EDITOR.POI_STABLE', icon: `${TRACKING}StableMaster.blp`, shown: false },
+      { key: 'auction', label: 'WORLD_EDITOR.POI_AUCTION', icon: tracking('Auctioneer'), shown: true },
+      { key: 'bank', label: 'WORLD_EDITOR.POI_BANK', icon: tracking('Banker'), shown: false },
+      { key: 'barber', label: 'WORLD_EDITOR.POI_BARBER', icon: square('INV_Misc_Comb_02'), shown: false },
+      { key: 'battle', label: 'WORLD_EDITOR.POI_BATTLE', icon: tracking('BattleMaster'), shown: false },
+      { key: 'classTrainer', label: 'WORLD_EDITOR.POI_CLASS_TRAINER', icon: tracking('Class'), shown: false },
+      { key: 'flight', label: 'WORLD_EDITOR.POI_FLIGHT', icon: tracking('FlightMaster'), shown: true },
+      { key: 'inn', label: 'WORLD_EDITOR.POI_INN', icon: tracking('Innkeeper'), shown: false },
+      { key: 'mailbox', label: 'WORLD_EDITOR.POI_MAILBOX', icon: tracking('Mailbox'), shown: false },
+      { key: 'repair', label: 'WORLD_EDITOR.POI_REPAIR', icon: tracking('Repair'), shown: false },
+      { key: 'riding', label: 'WORLD_EDITOR.POI_RIDING', icon: square('Ability_Mount_RidingHorse'), shown: false },
+      { key: 'spirit', label: 'WORLD_EDITOR.POI_SPIRIT', icon: { path: POI_ATLAS, atlas: ATLAS.graveyard }, shown: true },
+      { key: 'stable', label: 'WORLD_EDITOR.POI_STABLE', icon: tracking('StableMaster'), shown: false },
+      { key: 'weaponMaster', label: 'WORLD_EDITOR.POI_WEAPON_MASTER', icon: square('INV_Sword_04'), shown: false },
     ],
   },
   {
     key: 'professions',
     label: 'WORLD_EDITOR.GAME_MAP_GROUP_PROFESSIONS',
-    layers: PROFESSIONS.map(([skill, label, icon]) => ({ key: `prof:${skill}`, label, icon: `${ICONS}${icon}.blp`, shown: false })),
+    parts: [
+      { label: 'WORLD_EDITOR.GAME_MAP_PRIMARY', from: 0 },
+      { label: 'WORLD_EDITOR.GAME_MAP_SECONDARY', from: 11 },
+    ],
+    layers: PROFESSIONS.map(([skill, label, icon]) => ({ key: `prof:${skill}`, label, icon: square(icon), shown: false })),
   },
   {
     key: 'vendors',
     label: 'WORLD_EDITOR.GAME_MAP_GROUP_VENDORS',
+    parts: [
+      { label: 'WORLD_EDITOR.GAME_MAP_CONSUMABLES', from: 0 },
+      { label: 'WORLD_EDITOR.GAME_MAP_SUPPLIES', from: 1 },
+    ],
     layers: [
-      { key: 'food', label: 'WORLD_EDITOR.POI_FOOD', icon: `${TRACKING}Food.blp`, shown: false },
-      { key: 'ammo', label: 'WORLD_EDITOR.POI_AMMO', icon: `${TRACKING}Ammunition.blp`, shown: false },
-      { key: 'poison', label: 'WORLD_EDITOR.POI_POISON', icon: `${TRACKING}Poisons.blp`, shown: false },
-      { key: 'reagent', label: 'WORLD_EDITOR.POI_REAGENT', icon: `${TRACKING}Reagents.blp`, shown: false },
+      { key: 'food', label: 'WORLD_EDITOR.POI_FOOD', icon: tracking('Food'), shown: false },
+      { key: 'ammo', label: 'WORLD_EDITOR.POI_AMMO', icon: tracking('Ammunition'), shown: false },
+      { key: 'poison', label: 'WORLD_EDITOR.POI_POISON', icon: tracking('Poisons'), shown: false },
+      { key: 'reagent', label: 'WORLD_EDITOR.POI_REAGENT', icon: tracking('Reagents'), shown: false },
     ],
   },
   {
     key: 'travel',
     label: 'WORLD_EDITOR.GAME_MAP_GROUP_TRAVEL',
     layers: [
-      { key: 'boat', label: 'WORLD_EDITOR.GAME_MAP_BOATS', fa: 'fa-ship', shown: true },
-      { key: 'zeppelin', label: 'WORLD_EDITOR.GAME_MAP_ZEPPELINS', fa: 'fa-plane', shown: true },
-      { key: 'transport', label: 'WORLD_EDITOR.GAME_MAP_OTHER_TRANSPORTS', fa: 'fa-train', shown: true },
+      { key: 'boat', label: 'WORLD_EDITOR.GAME_MAP_BOATS', icon: { path: POI_ATLAS, atlas: ATLAS.boat.neutral }, shown: true },
+      { key: 'zeppelin', label: 'WORLD_EDITOR.GAME_MAP_ZEPPELINS', icon: { path: POI_ATLAS, atlas: ATLAS.zeppelin.neutral }, shown: true },
+      { key: 'gunship', label: 'WORLD_EDITOR.GAME_MAP_GUNSHIPS', icon: { path: POI_ATLAS, atlas: ATLAS.zeppelin.neutral }, shown: true },
+      { key: 'transport', label: 'WORLD_EDITOR.GAME_MAP_OTHER_TRANSPORTS', icon: { fa: 'fa-train', color: '#ffd200' }, shown: true },
+      { key: 'routes', label: 'WORLD_EDITOR.GAME_MAP_ROUTES', icon: { fa: 'fa-ellipsis-h', color: '#ffd200' }, shown: true },
     ],
   },
   {
     key: 'locations',
     label: 'WORLD_EDITOR.GAME_MAP_GROUP_LOCATIONS',
     layers: [
-      { key: 'dungeon', label: 'WORLD_EDITOR.GAME_MAP_DUNGEONS', icon: 'Interface\\LFGFrame\\LFGICON-DUNGEON.BLP', shown: true },
-      { key: 'raid', label: 'WORLD_EDITOR.GAME_MAP_RAIDS', icon: 'Interface\\LFGFrame\\LFGICON-RAID.BLP', shown: true },
-      { key: 'stone', label: 'WORLD_EDITOR.POI_STONE', icon: `${ICONS}Spell_Shadow_Teleport.blp`, shown: true },
+      { key: 'stone', label: 'WORLD_EDITOR.POI_STONE', icon: square('Spell_Shadow_Teleport'), shown: true },
+      { key: 'dungeon', label: 'WORLD_EDITOR.GAME_MAP_DUNGEONS', icon: { fa: 'fa-circle-o-notch', color: '#29b6f6' }, shown: true },
+      { key: 'raid', label: 'WORLD_EDITOR.GAME_MAP_RAIDS', icon: { fa: 'fa-circle-o-notch', color: '#2ecc40' }, shown: true },
     ],
   },
 ];
 
-export const GAME_MAP_LAYERS: GameMapLayer[] = GAME_MAP_LAYER_GROUPS.flatMap((group) => group.layers);
+export const GAME_MAP_LAYERS: GameMapLayer[] = [...GAME_MAP_OPTIONS, ...GAME_MAP_LAYER_GROUPS.flatMap((group) => group.layers)];
 
 /** Where the layers shown and the size of the markers are kept. */
 export const GAME_MAP_LAYERS_KEY = 'keira3.worldEditor.gameMapLayers';
@@ -208,9 +247,15 @@ export const TRAINER_PROFESSION = 2;
 export const GAMEOBJECT_MAILBOX = 19;
 export const GAMEOBJECT_MEETING_STONE = 23;
 
-/** The kinds a creature with these NPC flags (and trainer type and skill, −1 for none) is shown as. */
-export function npcPoiKinds(npcFlags: number, trainerType: number, skill = 0): string[] {
+/** The kinds a creature with these NPC flags (trainer type and skill, −1 for none; and its subname) is shown as. */
+export function npcPoiKinds(npcFlags: number, trainerType: number, skill = 0, subname = ''): string[] {
   const kinds = NPC_FLAG_KINDS.filter(([flag]) => npcFlags & flag).map(([, kind]) => kind);
+  // (no flag of their own)
+  if (/^barber$/i.test(subname)) {
+    kinds.push('barber');
+  } else if (/^weapon master$/i.test(subname)) {
+    kinds.push('weaponMaster');
+  }
   if (npcFlags & NPC_FLAG_TRAINER) {
     if (trainerType === TRAINER_CLASS) {
       kinds.push('classTrainer');
@@ -224,12 +269,14 @@ export function npcPoiKinds(npcFlags: number, trainerType: number, skill = 0): s
 }
 
 /** The kind of a transport, by its name. */
-export function transportKind(name: string): 'boat' | 'zeppelin' | 'transport' {
-  return /zeppelin/i.test(name)
-    ? 'zeppelin'
-    : /boat|ship|bravery|mehley|moonspray|feathermoon|kraken|maiden|lady|galley|northspear|rabbit/i.test(name) && !/gunship/i.test(name)
-      ? 'boat'
-      : 'transport';
+export function transportKind(name: string): 'boat' | 'zeppelin' | 'gunship' | 'transport' {
+  if (/gunship|skybreaker|orgrim's hammer/i.test(name)) {
+    return 'gunship';
+  }
+  if (/zeppelin/i.test(name)) {
+    return 'zeppelin';
+  }
+  return /boat|ship|bravery|mehley|moonspray|feathermoon|kraken|maiden|lady|galley|northspear|rabbit/i.test(name) ? 'boat' : 'transport';
 }
 
 /** Whose side a faction template serves: FactionGroup masks 2 (Alliance) and 4 (Horde). */

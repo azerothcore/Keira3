@@ -443,7 +443,7 @@ export class WorldEditorService {
       `ct.npcflag, ct.faction, ${trainer ? 'IFNULL(t.Type, -1) AS trainerType, IFNULL(t.Requirement, 0) AS skill' : '-1 AS trainerType, 0 AS skill'} ` +
       'FROM creature c JOIN creature_template ct ON ct.entry = c.id ' +
       (trainer ? 'LEFT JOIN creature_default_trainer cdt ON cdt.CreatureId = c.id LEFT JOIN trainer t ON t.Id = cdt.TrainerId ' : '') +
-      `WHERE (ct.npcflag & ${mask}) <> 0`;
+      `WHERE (ct.npcflag & ${mask}) <> 0 OR ct.subname IN ('Barber', 'Weapon Master')`;
     const npcs = await firstValueFrom(this.queryService.query<TableRow>(creatures(true))).catch(() =>
       firstValueFrom(this.queryService.query<TableRow>(creatures(false))),
     );
@@ -462,7 +462,7 @@ export class WorldEditorService {
     });
     return [
       ...(npcs ?? []).flatMap((row) =>
-        npcPoiKinds(Number(row['npcflag']), Number(row['trainerType']), Number(row['skill'])).map((kind) => ({
+        npcPoiKinds(Number(row['npcflag']), Number(row['trainerType']), Number(row['skill']), String(row['subname'])).map((kind) => ({
           kind,
           ...place(row),
           faction: Number(row['faction']),

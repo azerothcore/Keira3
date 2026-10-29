@@ -25,6 +25,8 @@ import {
   shapeEdges,
   shapeCentres,
   labelAt,
+  traceShapes,
+  cropImage,
   SHAPE_WIDTH,
   SHAPE_HEIGHT,
 } from './game-map';
@@ -405,5 +407,64 @@ describe('game map shapes', () => {
     expect(at(labels, 15 / W, 15 / SHAPE_HEIGHT)).toBe(7);
     expect(at(labels, -0.1, 0.5)).toBe(0);
     expect(at(labels, 0.5, 1)).toBe(0);
+  });
+});
+
+describe('game map outlines', () => {
+  const W = SHAPE_WIDTH;
+  const grid = (fill: (x: number, y: number) => number) => {
+    const labels = new Uint16Array(W * SHAPE_HEIGHT);
+    for (let y = 0; y < SHAPE_HEIGHT; y++) {
+      for (let x = 0; x < W; x++) {
+        labels[y * W + x] = fill(x, y);
+      }
+    }
+    return labels;
+  };
+  const rings = (d: string) => d.split('Z').filter(Boolean);
+  const points = (ring: string) =>
+    ring
+      .replace('M', '')
+      .split('L')
+      .map((p) => p.split(' ').map(Number));
+
+  it('traces each shape as smoothed rings, holes as rings of their own', () => {
+    // a 20 × 20 square with a 4 × 4 hole, a 1-pixel speck (too small to draw) and a 3 × 3 one
+    const labels = grid((x, y) =>
+      x >= 10 && x < 30 && y >= 10 && y < 30 && !(x >= 18 && x < 22 && y >= 18 && y < 22)
+        ? 1
+        : x === 100 && y === 100
+          ? 2
+          : x >= 200 && x < 203 && y >= 200 && y < 203
+            ? 3
+            : // two blocks touching at a corner: one ring through it
+              (x >= 300 && x < 305 && y >= 100 && y < 105) || (x >= 305 && x < 310 && y >= 105 && y < 110)
+              ? 4
+              : 0,
+    );
+    const paths = traceShapes(labels);
+    const square = rings(paths.get(1) as string);
+    expect(square).toHaveLength(2);
+    // simplified to its corners, then each corner cut in two
+    const outer = points(square.find((r) => r.includes('10'))!);
+    expect(outer.length).toBe(8);
+    expect(outer.every(([x, y]) => x >= 10 && x <= 30 && y >= 10 && y <= 30)).toBe(true);
+    expect(paths.has(2)).toBe(false);
+    expect(rings(paths.get(3) as string)).toHaveLength(1);
+    expect(paths.get(4)).toBeTruthy();
+    expect(traceShapes(new Uint16Array(W * SHAPE_HEIGHT)).size).toBe(0);
+  });
+
+  it('keeps the bends of a curved edge and drops the steps of a straight slope', () => {
+    // a staircase (a 45° edge) and a circle
+    const labels = grid((x, y) => (x < 60 && y < 60 && x + y < 60 ? 1 : Math.hypot(x - 200, y - 150) < 40 ? 2 : 0));
+    const paths = traceShapes(labels);
+    expect(points(rings(paths.get(1) as string)[0]).length).toBeLessThan(12);
+    expect(points(rings(paths.get(2) as string)[0]).length).toBeGreaterThan(16);
+  });
+
+  it('cuts a part out of a picture', () => {
+    const image = { width: 3, height: 2, data: Uint8Array.from({ length: 24 }, (_, i) => i) };
+    expect(Array.from(cropImage(image, 1, 1, 2, 1).data)).toEqual([16, 17, 18, 19, 20, 21, 22, 23]);
   });
 });

@@ -903,3 +903,128 @@ function draw(target: RgbaImage, { image, x: left, y: top }: GameMapPiece): void
     }
   }
 }
+
+/** Douglas–Peucker tolerance (grid pixels) and the corner cutting passes of traced outlines. */
+const SIMPLIFY = 0.85;
+const SMOOTH_PASSES = 1;
+
+/**
+ * Each shape's outline as SVG path data on the grid (`viewBox="0 0 501 334"`), traced along its pixels' edges,
+ * simplified and smoothed (as AoWoW draws its zone shapes); holes are rings of their own (use `fill-rule="evenodd"`).
+ */
+export function traceShapes(labels: ArrayLike<number>): Map<number, string> {
+  const stride = SHAPE_WIDTH + 1;
+  // the edges between a shape's pixel and another's, going round each shape clockwise: start corner → end corners
+  const edges = new Map<number, Map<number, number[]>>();
+  const add = (label: number, from: number, to: number) => {
+    const byStart = edges.get(label) ?? new Map<number, number[]>();
+    edges.set(label, byStart);
+    const ends = byStart.get(from);
+    if (ends) {
+      ends.push(to);
+    } else {
+      byStart.set(from, [to]);
+    }
+  };
+  const at = (x: number, y: number) => (x < 0 || y < 0 || x >= SHAPE_WIDTH || y >= SHAPE_HEIGHT ? 0 : labels[y * SHAPE_WIDTH + x]);
+  for (let y = 0; y < SHAPE_HEIGHT; y++) {
+    for (let x = 0; x < SHAPE_WIDTH; x++) {
+      const label = labels[y * SHAPE_WIDTH + x];
+      if (!label) {
+        continue;
+      }
+      const corner = (cx: number, cy: number) => cy * stride + cx;
+      if (at(x, y - 1) !== label) add(label, corner(x, y), corner(x + 1, y));
+      if (at(x + 1, y) !== label) add(label, corner(x + 1, y), corner(x + 1, y + 1));
+      if (at(x, y + 1) !== label) add(label, corner(x + 1, y + 1), corner(x, y + 1));
+      if (at(x - 1, y) !== label) add(label, corner(x, y + 1), corner(x, y));
+    }
+  }
+  const paths = new Map<number, string>();
+  edges.forEach((byStart, label) => {
+    let d = '';
+    for (const [start, ends] of byStart) {
+      while (ends.length) {
+        const ring: number[] = [start];
+        let next = ends.pop() as number;
+        while (next !== start) {
+          ring.push(next);
+          next = (byStart.get(next) as number[]).pop() as number;
+        }
+        const points = smooth(simplify(ring.map((id) => [id % stride, Math.floor(id / stride)] as [number, number])));
+        if (points.length >= 3) {
+          d += `M${points.map(([x, y]) => `${round1(x)} ${round1(y)}`).join('L')}Z`;
+        }
+      }
+    }
+    if (d) {
+      paths.set(label, d);
+    }
+  });
+  return paths;
+}
+
+const round1 = (value: number): number => Math.round(value * 10) / 10;
+
+/** A closed ring with its corners in a line dropped, then simplified (Douglas–Peucker, split at its farthest points). */
+function simplify(ring: [number, number][]): [number, number][] {
+  const turns = ring.filter((point, i) => {
+    const [a, b] = [ring[(i + ring.length - 1) % ring.length], ring[(i + 1) % ring.length]];
+    return (point[0] - a[0]) * (b[1] - point[1]) !== (point[1] - a[1]) * (b[0] - point[0]);
+  });
+  // (a ring of pixel edges turns at least 4 times)
+  let far = 0;
+  turns.forEach((point, i) => {
+    if (Math.hypot(point[0] - turns[0][0], point[1] - turns[0][1]) > Math.hypot(turns[far][0] - turns[0][0], turns[far][1] - turns[0][1])) {
+      far = i;
+    }
+  });
+  const half = (from: number, to: number) => douglasPeucker(turns.slice(from, to + 1));
+  return [...half(0, far).slice(0, -1), ...douglasPeucker([...turns.slice(far), turns[0]]).slice(0, -1)];
+}
+
+function douglasPeucker(points: [number, number][]): [number, number][] {
+  if (points.length < 3) {
+    return points;
+  }
+  const [a, b] = [points[0], points[points.length - 1]];
+  const length = Math.hypot(b[0] - a[0], b[1] - a[1]);
+  let [index, distance] = [0, 0];
+  for (let i = 1; i < points.length - 1; i++) {
+    const p = points[i];
+    // (a run back to where it started, through a corner two of its pixels touch at, keeps its ends only)
+    const d = Math.abs((b[0] - a[0]) * (a[1] - p[1]) - (a[0] - p[0]) * (b[1] - a[1])) / Math.max(length, Number.EPSILON);
+    if (d > distance) {
+      [index, distance] = [i, d];
+    }
+  }
+  if (distance <= SIMPLIFY) {
+    return [a, b];
+  }
+  return [...douglasPeucker(points.slice(0, index + 1)).slice(0, -1), ...douglasPeucker(points.slice(index))];
+}
+
+/** Chaikin's corner cutting on a closed ring. */
+function smooth(ring: [number, number][]): [number, number][] {
+  let points = ring;
+  for (let pass = 0; pass < SMOOTH_PASSES && points.length >= 3; pass++) {
+    points = points.flatMap((p, i) => {
+      const q = points[(i + 1) % points.length];
+      return [
+        [p[0] * 0.75 + q[0] * 0.25, p[1] * 0.75 + q[1] * 0.25] as [number, number],
+        [p[0] * 0.25 + q[0] * 0.75, p[1] * 0.25 + q[1] * 0.75] as [number, number],
+      ];
+    });
+  }
+  return points;
+}
+
+/** A part of a picture (an icon of an atlas). */
+export function cropImage(image: RgbaImage, x: number, y: number, width: number, height: number): RgbaImage {
+  const data = new Uint8Array(width * height * 4);
+  for (let row = 0; row < height; row++) {
+    const from = ((y + row) * image.width + x) * 4;
+    data.set(image.data.subarray(from, from + width * 4), row * width * 4);
+  }
+  return { width, height, data };
+}

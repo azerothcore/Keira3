@@ -1,122 +1,79 @@
 @let current = page();
 @let state = picture();
 <div class="game-map" data-testid="game-map">
-  <div class="game-map-bar">
-    <button
-      type="button"
-      class="btn btn-sm"
-      data-testid="game-map-panel-btn"
-      [class.btn-primary]="showPanel()"
-      [class.btn-light]="!showPanel()"
-      [title]="'WORLD_EDITOR.GAME_MAP_LAYERS' | translate"
-      (click)="showPanel.set(!showPanel())"
-    >
-      <i class="fa fa-list"></i>
-    </button>
-    @if (parentPage(); as parent) {
-      <button
-        type="button"
-        class="btn btn-sm btn-light"
-        data-testid="game-map-back"
-        [title]="'WORLD_EDITOR.GAME_MAP_BACK' | translate"
-        (click)="open(parent.key)"
-      >
-        <i class="fa fa-level-up"></i> {{ pageName(parent) }}
-      </button>
-    }
-    @if (current) {
-      <strong class="game-map-title" data-testid="game-map-title">{{ pageName(current) }}</strong>
-    }
-    @if (floors().length) {
-      <div class="btn-group btn-group-sm" role="group" [attr.aria-label]="'WORLD_EDITOR.GAME_MAP_FLOORS' | translate">
-        @for (floor of floors(); track floor.key) {
-          <button
-            type="button"
-            class="btn"
-            [attr.data-testid]="'game-map-floor-' + floor.key"
-            [class.btn-light]="floor.key === current?.key"
-            [class.btn-dark]="floor.key !== current?.key"
-            (click)="open(floor.key)"
-          >
-            {{ floorName(floor) }}
-          </button>
+  @if (showPanel()) {
+    <div class="game-map-panel" data-testid="game-map-panel">
+      <section class="game-map-box">
+        <h6>{{ 'WORLD_EDITOR.GAME_MAP_GROUP_MAP' | translate }}</h6>
+        @for (option of options; track option.key) {
+          <label class="game-map-option">
+            <span>{{ option.label | translate }}</span>
+            <input
+              type="checkbox"
+              [attr.data-testid]="'game-map-layer-' + option.key"
+              [checked]="shown().has(option.key)"
+              (change)="toggleLayer(option.key)"
+            />
+          </label>
+          @if (option.key === 'levels' && shown().has('levels')) {
+            <div class="game-map-bands" data-testid="game-map-bands">
+              @for (band of levelBands; track band.text) {
+                <span><i [style.background]="band.color"></i>{{ band.text }}</span>
+              }
+            </div>
+          }
         }
-      </div>
-    }
-    @if (children().length) {
-      <select class="form-select form-select-sm w-auto" data-testid="game-map-children" (change)="openChild($event)">
-        <option value="" selected>{{ 'WORLD_EDITOR.GAME_MAP_INSIDE' | translate }}</option>
-        @for (child of children(); track child.key) {
-          <option [value]="child.key">{{ child.name }}</option>
-        }
-      </select>
-    }
-    <span class="flex-grow-1"></span>
-    @if (copied(); as command) {
-      <span class="game-map-copied" data-testid="game-map-copied"><i class="fa fa-check"></i> {{ command }}</span>
-    }
-    @if (canLoadZone()) {
-      <button type="button" class="btn btn-sm btn-light" data-testid="game-map-load-zone" (click)="loadZone()">
-        <i class="fa fa-download"></i> {{ 'WORLD_EDITOR.GAME_MAP_LOAD_ZONE' | translate }}
-      </button>
-    }
-    <div class="btn-group btn-group-sm">
-      <button
-        type="button"
-        class="btn btn-light"
-        data-testid="game-map-zoom-out"
-        [title]="'WORLD_EDITOR.ZOOM_OUT' | translate"
-        (click)="zoomBy(0.8)"
-      >
-        <i class="fa fa-search-minus"></i>
-      </button>
-      <button
-        type="button"
-        class="btn btn-light"
-        data-testid="game-map-zoom-in"
-        [title]="'WORLD_EDITOR.ZOOM_IN' | translate"
-        (click)="zoomBy(1.25)"
-      >
-        <i class="fa fa-search-plus"></i>
-      </button>
-    </div>
-    <button
-      type="button"
-      class="btn btn-sm btn-light"
-      data-testid="game-map-camera"
-      [title]="'WORLD_EDITOR.MAP_CENTER_CAMERA' | translate"
-      (click)="showCamera()"
-    >
-      <i class="fa fa-crosshairs"></i>
-    </button>
-    <button
-      type="button"
-      class="btn btn-sm btn-light"
-      data-testid="game-map-close"
-      [title]="'WORLD_EDITOR.CLOSE' | translate"
-      (click)="closed.emit()"
-    >
-      <i class="fa fa-times"></i>
-    </button>
-  </div>
+        <label class="game-map-option">
+          <span>{{ 'WORLD_EDITOR.GAME_MAP_MARKER_SIZE' | translate }}</span>
+          <input
+            type="range"
+            class="form-range"
+            min="0"
+            [max]="markerSizes.length - 1"
+            step="1"
+            data-testid="game-map-marker-size"
+            [value]="markerSizeIndex()"
+            (input)="setMarkerSize($event)"
+          />
+        </label>
+        <small class="game-map-help">{{ 'WORLD_EDITOR.GAME_MAP_HINT' | translate }}</small>
+      </section>
 
-  <div class="game-map-body">
-    @if (showPanel()) {
-      <div class="game-map-panel" data-testid="game-map-panel">
+      <section class="game-map-box">
+        <div class="game-map-show">
+          <span>{{ 'WORLD_EDITOR.GAME_MAP_SHOW_ON_MAP' | translate }}</span>
+          <button type="button" class="btn btn-sm" data-testid="game-map-all" (click)="setAll(true)">
+            {{ 'WORLD_EDITOR.TREE_CHECK_ALL' | translate }}
+          </button>
+          <button type="button" class="btn btn-sm" data-testid="game-map-none" (click)="setAll(false)">
+            {{ 'WORLD_EDITOR.TREE_UNCHECK_ALL' | translate }}
+          </button>
+          <button type="button" class="btn btn-sm" data-testid="game-map-reset" (click)="resetLayers()">
+            {{ 'WORLD_EDITOR.GAME_MAP_RESET' | translate }}
+          </button>
+        </div>
         @for (group of groups; track group.key) {
-          @let groupShown = groupState(group);
-          <section class="game-map-group">
+          @let count = groupCount(group);
+          <div class="game-map-group">
             <label class="game-map-group-title">
               <input
                 type="checkbox"
                 [attr.data-testid]="'game-map-group-' + group.key"
-                [checked]="groupShown === 'all'"
-                [indeterminate]="groupShown === 'some'"
-                (change)="setGroup(group, groupShown !== 'all')"
+                [checked]="count === group.layers.length"
+                [indeterminate]="count > 0 && count < group.layers.length"
+                (change)="setGroup(group, count !== group.layers.length)"
               />
-              {{ group.label | translate }}
+              <span>{{ group.label | translate }}</span>
+              @if (count) {
+                <small>{{ count }}/{{ group.layers.length }}</small>
+              }
             </label>
-            @for (layer of group.layers; track layer.key) {
+            @for (layer of group.layers; track layer.key; let i = $index) {
+              @for (part of group.parts ?? []; track part.label) {
+                @if (part.from === i) {
+                  <div class="game-map-part">{{ part.label | translate }}</div>
+                }
+              }
               <label class="game-map-layer">
                 <input
                   type="checkbox"
@@ -124,44 +81,87 @@
                   [checked]="shown().has(layer.key)"
                   (change)="toggleLayer(layer.key)"
                 />
-                @if (layer.icon && icons().get(layer.icon); as icon) {
-                  <img [src]="icon" alt="" />
-                } @else {
-                  <i [class]="'fa fa-fw ' + (layer.fa ?? 'fa-map-marker')"></i>
-                }
                 <span>{{ layer.label | translate }}</span>
-              </label>
-            }
-            @if (group.key === 'map') {
-              @if (shown().has('levels')) {
-                <div class="game-map-bands" data-testid="game-map-bands">
-                  @for (band of levelBands; track band.text) {
-                    <span [style.background]="band.color">{{ band.text }}</span>
+                <span class="game-map-icon" [class.square]="layer.icon?.square">
+                  @if (iconOf(layer.icon); as url) {
+                    <img [src]="url" alt="" />
+                  } @else if (layer.icon?.fa) {
+                    <i [class]="'fa ' + layer.icon.fa" [style.color]="layer.icon.color"></i>
                   }
-                </div>
-              }
-              <label class="game-map-layer">
-                <span>{{ 'WORLD_EDITOR.GAME_MAP_MARKER_SIZE' | translate }}</span>
-                <input
-                  type="range"
-                  class="form-range"
-                  min="0"
-                  [max]="markerSizes.length - 1"
-                  step="1"
-                  data-testid="game-map-marker-size"
-                  [value]="markerSizeIndex()"
-                  (input)="setMarkerSize($event)"
-                />
+                </span>
               </label>
             }
-          </section>
+          </div>
         }
-        <button type="button" class="btn btn-sm btn-outline-light w-100" data-testid="game-map-reset" (click)="resetLayers()">
-          <i class="fa fa-undo"></i> {{ 'WORLD_EDITOR.GAME_MAP_RESET' | translate }}
+      </section>
+    </div>
+  }
+
+  <div class="game-map-main">
+    <div class="game-map-bar">
+      <button
+        type="button"
+        class="btn btn-sm"
+        data-testid="game-map-panel-btn"
+        [class.btn-primary]="showPanel()"
+        [class.btn-dark]="!showPanel()"
+        [title]="'WORLD_EDITOR.GAME_MAP_LAYERS' | translate"
+        (click)="showPanel.set(!showPanel())"
+      >
+        <i class="fa fa-list"></i>
+      </button>
+      @if (floors().length) {
+        <div class="btn-group btn-group-sm" role="group" [attr.aria-label]="'WORLD_EDITOR.GAME_MAP_FLOORS' | translate">
+          @for (floor of floors(); track floor.key) {
+            <button
+              type="button"
+              class="btn"
+              [attr.data-testid]="'game-map-floor-' + floor.key"
+              [class.btn-warning]="floor.key === current?.key"
+              [class.btn-dark]="floor.key !== current?.key"
+              (click)="open(floor.key)"
+            >
+              {{ floorName(floor) }}
+            </button>
+          }
+        </div>
+      }
+      @if (children().length) {
+        <select class="form-select form-select-sm w-auto" data-testid="game-map-children" (change)="openChild($event)">
+          <option value="" selected>{{ 'WORLD_EDITOR.GAME_MAP_INSIDE' | translate }}</option>
+          @for (child of children(); track child.key) {
+            <option [value]="child.key">{{ child.name }}</option>
+          }
+        </select>
+      }
+      <span class="flex-grow-1"></span>
+      @if (copied(); as command) {
+        <span class="game-map-copied" data-testid="game-map-copied"><i class="fa fa-check"></i> {{ command }}</span>
+      }
+      @if (canLoadZone()) {
+        <button type="button" class="btn btn-sm btn-dark" data-testid="game-map-load-zone" (click)="loadZone()">
+          <i class="fa fa-download"></i> {{ 'WORLD_EDITOR.GAME_MAP_LOAD_ZONE' | translate }}
         </button>
-        <small class="game-map-help">{{ 'WORLD_EDITOR.GAME_MAP_HINT' | translate }}</small>
-      </div>
-    }
+      }
+      <button
+        type="button"
+        class="btn btn-sm btn-dark"
+        data-testid="game-map-camera"
+        [title]="'WORLD_EDITOR.MAP_CENTER_CAMERA' | translate"
+        (click)="showCamera()"
+      >
+        <i class="fa fa-crosshairs"></i>
+      </button>
+      <button
+        type="button"
+        class="btn btn-sm btn-dark"
+        data-testid="game-map-close"
+        [title]="'WORLD_EDITOR.CLOSE' | translate"
+        (click)="closed.emit()"
+      >
+        <i class="fa fa-times"></i>
+      </button>
+    </div>
 
     <div
       class="game-map-viewport"
@@ -186,43 +186,75 @@
       <div
         class="game-map-stage"
         data-testid="game-map-stage"
+        [class.borders]="borders()"
         [style.--zoom]="zoom()"
         [style.transform]="'translate(calc(-50% + ' + pan().x + 'px), calc(-50% + ' + pan().y + 'px))'"
       >
         @if (state && state !== 'loading') {
           <img class="game-map-image" data-testid="game-map-image" [src]="state.url" alt="" draggable="false" />
         }
-        @if (layersImage(); as layers) {
-          <img class="game-map-image game-map-layers" data-testid="game-map-layers" [src]="layers" alt="" draggable="false" />
-        }
-        @if (hoverImage(); as glow) {
-          <img class="game-map-image game-map-layers" data-testid="game-map-hover" [src]="glow" alt="" draggable="false" />
-        }
+        <svg class="game-map-shapes" viewBox="0 0 501 334" preserveAspectRatio="none">
+          @for (shape of zonePaths(); track shape.label) {
+            <path
+              [attr.data-testid]="'game-map-shape-' + shape.label"
+              [attr.d]="shape.d"
+              [attr.class]="shape.kind + (shape.label === hoverLabel() && hoverTarget() ? ' hover' : '')"
+              [style.--c]="shape.color ?? null"
+              fill-rule="evenodd"
+            />
+          }
+          @for (shape of subPaths(); track shape.label) {
+            <path
+              [attr.data-testid]="'game-map-sub-' + shape.label"
+              [attr.d]="shape.d"
+              [attr.class]="'sub' + (shape.label === hoverSub() ? ' hover' : '')"
+              fill-rule="evenodd"
+            />
+          }
+        </svg>
         @if (routes().length) {
           <svg class="game-map-routes" viewBox="0 0 1000 1000" preserveAspectRatio="none">
             @for (route of routes(); track route.key) {
               @for (line of route.lines; track $index) {
-                <polyline [attr.data-testid]="'game-map-' + route.key" [attr.points]="line" [attr.stroke]="route.color">
-                  <title>{{ route.name }}</title>
-                </polyline>
+                <polyline [attr.data-testid]="'game-map-' + route.key" [attr.points]="line" [attr.stroke]="route.color" />
               }
             }
           </svg>
         }
         @for (label of labels(); track label.key) {
-          <span
-            class="game-map-name"
-            [attr.data-testid]="'game-map-name-' + label.key"
-            [style.left.%]="label.u * 100"
-            [style.top.%]="label.v * 100"
-          >
-            {{ label.text }}
-          </span>
+          @if (label.chip) {
+            <button
+              type="button"
+              class="game-map-chip"
+              [attr.data-testid]="'game-map-chip-' + label.key"
+              [style.left.%]="label.u * 100"
+              [style.top.%]="label.v * 100"
+              (pointerdown)="$event.stopPropagation()"
+              (pointerup)="$event.stopPropagation()"
+              (click)="openLabel(label, $event)"
+            >
+              <b>{{ label.text }}</b>
+              @if (label.levels) {
+                <span>{{ label.levels }}</span>
+              }
+              <i>›</i>
+            </button>
+          } @else {
+            <span
+              class="game-map-name"
+              [attr.data-testid]="'game-map-name-' + label.key"
+              [style.left.%]="label.u * 100"
+              [style.top.%]="label.v * 100"
+            >
+              {{ label.text }}
+            </span>
+          }
         }
         @for (pin of pins(); track pin.key) {
           <span
             class="game-map-pin"
             [class.dot]="!!pin.color"
+            [class.square]="pin.icon?.square"
             [class.opens]="!!pin.opens"
             [attr.data-testid]="'game-map-pin-' + pin.key"
             [style.left.%]="pin.u * 100"
@@ -235,12 +267,12 @@
             (click)="onPinClick(pin, $event)"
             (dblclick)="onPinDoubleClick(pin, $event)"
           >
-            @if (pin.icon) {
-              <img [src]="pin.icon" alt="" draggable="false" />
-            } @else if (pin.fa) {
-              <i [class]="'fa ' + pin.fa"></i>
+            @if (iconOf(pin.icon); as url) {
+              <img [src]="url" alt="" draggable="false" />
+            } @else if (pin.icon?.fa) {
+              <i [class]="'fa ' + pin.icon.fa" [style.color]="pin.icon.color"></i>
             }
-            @if (pin.side && icons().get(sideBadges[pin.side]); as badge) {
+            @if (pin.side && shown().has('badges') && sideIcon(pin.side); as badge) {
               <img class="game-map-side" [attr.data-testid]="'game-map-side-' + pin.key" [src]="badge" alt="" draggable="false" />
             }
           </span>
@@ -254,24 +286,60 @@
           ></span>
         }
       </div>
+
+      @if (current) {
+        <div class="game-map-title" data-testid="game-map-title" (pointerdown)="$event.stopPropagation()">{{ pageName(current) }}</div>
+      }
+      @if (parentPage(); as parent) {
+        <button
+          type="button"
+          class="game-map-back"
+          data-testid="game-map-back"
+          (pointerdown)="$event.stopPropagation()"
+          (pointerup)="$event.stopPropagation()"
+          (click)="open(parent.key)"
+        >
+          ← {{ 'WORLD_EDITOR.GAME_MAP_BACK_TO' | translate }} <b>{{ pageName(parent) }}</b>
+        </button>
+      }
+      <div class="game-map-zoom" (pointerdown)="$event.stopPropagation()" (pointerup)="$event.stopPropagation()">
+        <button type="button" data-testid="game-map-zoom-in" [title]="'WORLD_EDITOR.ZOOM_IN' | translate" (click)="zoomBy(1.25)">+</button>
+        <button type="button" data-testid="game-map-zoom-out" [title]="'WORLD_EDITOR.ZOOM_OUT' | translate" (click)="zoomBy(0.8)">−</button>
+        <button
+          type="button"
+          data-testid="game-map-zoom-reset"
+          [title]="'WORLD_EDITOR.GAME_MAP_ZOOM_RESET' | translate"
+          (click)="resetZoom()"
+        >
+          <i class="fa fa-repeat"></i>
+        </button>
+      </div>
+      @if (coordinates(); as coords) {
+        <div class="game-map-coords" data-testid="game-map-coords">({{ coords }})</div>
+      }
+      <div class="game-map-tip">{{ 'WORLD_EDITOR.GAME_MAP_TIP' | translate }}</div>
+
       @if (hoverPin(); as hovered) {
         <div class="game-map-tooltip" data-testid="game-map-pin-tooltip" [style.left.px]="hovered.x + 14" [style.top.px]="hovered.y + 14">
-          <strong>{{ hovered.pin.title }}</strong>
+          <b>{{ hovered.pin.title }}</b>
           @for (line of hovered.pin.lines; track $index) {
-            <div>{{ line }}</div>
+            <div class="hint">{{ line }}</div>
           }
           @if (hovered.pin.side) {
-            <div class="game-map-side-line">{{ 'WORLD_EDITOR.GAME_MAP_' + hovered.pin.side.toUpperCase() | translate }}</div>
+            <div [class]="'side ' + hovered.pin.side">{{ 'WORLD_EDITOR.GAME_MAP_' + hovered.pin.side.toUpperCase() | translate }}</div>
           }
         </div>
       } @else if (tooltip(); as tip) {
         <div class="game-map-tooltip" data-testid="game-map-tooltip" [style.left.px]="tip.x + 14" [style.top.px]="tip.y + 14">
-          <strong>{{ tip.title }}</strong>
-          @for (line of tip.lines; track $index) {
-            <div>{{ line }}</div>
+          <b>{{ tip.title }}</b>
+          @if (tip.levels) {
+            <div class="levels">{{ tip.levels }}</div>
           }
-          @if (tip.open) {
-            <div class="game-map-tooltip-hint">{{ 'WORLD_EDITOR.GAME_MAP_CLICK_OPENS' | translate }}</div>
+          @if (tip.land) {
+            <div class="land">{{ tip.land }}</div>
+          }
+          @if (tip.hint) {
+            <div class="hint">{{ tip.hint }}</div>
           }
         </div>
       }

@@ -25,12 +25,16 @@ describe('game map markers', () => {
     expect(npcPoiKinds(0x10, 2, 171)).toEqual(['prof:171']);
     expect(npcPoiKinds(0x10, 2, 999)).toEqual([]);
     expect(npcPoiKinds(0x10, 3)).toEqual([]);
+    expect(npcPoiKinds(0, -1, 0, 'Barber')).toEqual(['barber']);
+    expect(npcPoiKinds(0x80, -1, 0, 'Weapon Master')).toEqual(['weaponMaster']);
+    expect(npcPoiKinds(0, -1, 0, 'Banker')).toEqual([]);
   });
 
   it('tells transports apart by name, and whose side a faction serves', () => {
     expect(transportKind('Zeppelin, Horde (The Purple Princess)')).toBe('zeppelin');
     expect(transportKind('Boat (The Bravery)')).toBe('boat');
-    expect(transportKind('Alliance gunship patrol')).toBe('transport');
+    expect(transportKind('Alliance gunship patrol')).toBe('gunship');
+    expect(transportKind("Orgrim's Hammer")).toBe('gunship');
     expect(transportKind('Deeprun Tram')).toBe('transport');
     const template = (ourMask: number, friendMask: number, enemyMask: number) => ({ ourMask, friendMask, enemyMask }) as FactionTemplate;
     expect(factionSide(template(2, 0, 4))).toBe('alliance');

@@ -1,17 +1,188 @@
+// in the look of AoWoW's maps page (dark panels, gold text, the game's tooltip)
 :host {
   display: block;
   position: absolute;
   inset: 0;
   --marker: 20px;
+  --gold: #ffd100;
+  --green: #1eff00;
 }
 
 .game-map {
   position: absolute;
   inset: 0;
   display: flex;
-  flex-direction: column;
-  background: #1b2228;
+  background: #141414;
+  color: #ccc;
   user-select: none;
+  font-size: 13px;
+}
+
+// ---------------------------------------------------------------- side panel
+
+.game-map-panel {
+  flex: 0 0 16rem;
+  overflow: hidden auto;
+  padding: 0.5rem;
+  background: #1a1a1a;
+  border-right: 1px solid #2c2c2c;
+}
+
+.game-map-box {
+  margin-bottom: 0.6rem;
+  padding: 0.5rem 0.6rem;
+  background: #101010;
+  border: 1px solid #2c2c2c;
+  border-radius: 4px;
+
+  h6 {
+    margin: 0 0 0.3rem;
+    color: var(--gold);
+    font-size: 13px;
+    font-weight: 600;
+  }
+}
+
+.game-map-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.12rem 0;
+  color: var(--gold);
+  cursor: pointer;
+
+  input[type='checkbox'] {
+    margin: 0;
+  }
+
+  .form-range {
+    width: 7rem;
+  }
+}
+
+.game-map-bands {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.5rem;
+  margin: 0.15rem 0 0.25rem;
+  font-size: 11px;
+
+  i {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 3px;
+    vertical-align: -1px;
+    border: 1px solid #000;
+  }
+}
+
+.game-map-help {
+  display: block;
+  margin-top: 0.4rem;
+  color: #888;
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+.game-map-show {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem;
+  margin-bottom: 0.4rem;
+  color: #999;
+
+  span {
+    flex: 1 0 100%;
+  }
+
+  .btn {
+    padding: 0.05rem 0.4rem;
+    font-size: 11px;
+    color: #ddd;
+    background: #2a2a2a;
+    border: 1px solid #444;
+  }
+}
+
+.game-map-group {
+  margin-top: 0.35rem;
+}
+
+.game-map-group-title {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--gold);
+  font-weight: 600;
+  cursor: pointer;
+
+  input {
+    margin: 0;
+  }
+
+  small {
+    margin-left: auto;
+    color: #888;
+    font-weight: normal;
+  }
+}
+
+.game-map-part {
+  margin: 0.2rem 0 0.05rem 1.2rem;
+  color: #c79c38;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.game-map-layer {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.08rem 0 0.08rem 1.2rem;
+  color: #ddd;
+  cursor: pointer;
+
+  input {
+    margin: 0;
+  }
+
+  > span:first-of-type {
+    flex: 1 1 auto;
+  }
+}
+
+.game-map-icon {
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  &.square {
+    border: 1px solid #000;
+    border-radius: 3px;
+    box-shadow: 0 0 0 1px #555;
+    overflow: hidden;
+  }
+}
+
+// ---------------------------------------------------------------- map
+
+.game-map-main {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .game-map-bar {
@@ -20,113 +191,25 @@
   flex-wrap: wrap;
   gap: 0.35rem;
   padding: 0.3rem 0.4rem;
-  background: rgba(20, 24, 28, 0.95);
-  color: #fff;
-}
-
-.game-map-title {
-  font-size: 0.95rem;
-  white-space: nowrap;
+  background: #1a1a1a;
+  border-bottom: 1px solid #2c2c2c;
 }
 
 .game-map-copied {
-  font-size: 0.8rem;
+  font-size: 12px;
   color: #8fdc8f;
   font-family: monospace;
-}
-
-.game-map-body {
-  position: relative;
-  flex: 1 1 auto;
-  min-height: 0;
-  display: flex;
-}
-
-.game-map-panel {
-  flex: 0 0 15rem;
-  overflow: hidden auto;
-  padding: 0.4rem 0.6rem;
-  background: rgba(20, 24, 28, 0.95);
-  color: #ddd;
-  font-size: 0.82rem;
-  border-right: 1px solid #333;
-}
-
-.game-map-group {
-  margin-bottom: 0.5rem;
-}
-
-.game-map-group-title {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  margin: 0 0 0.15rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  font-size: 0.72rem;
-  letter-spacing: 0.04em;
-  color: #ffd200;
-  cursor: pointer;
-
-  input {
-    margin: 0;
-  }
-}
-
-.game-map-layer {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  margin: 0.1rem 0 0.1rem 0.6rem;
-  cursor: pointer;
-
-  input[type='checkbox'] {
-    margin: 0;
-    flex: 0 0 auto;
-  }
-
-  img,
-  i {
-    width: 16px;
-    height: 16px;
-    flex: 0 0 16px;
-    text-align: center;
-  }
-
-  .form-range {
-    flex: 1 1 auto;
-  }
-}
-
-.game-map-bands {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2px;
-  margin: 0.2rem 0 0.2rem 0.6rem;
-
-  span {
-    padding: 0 0.25rem;
-    border-radius: 2px;
-    color: #111;
-    font-size: 0.68rem;
-  }
-}
-
-.game-map-help {
-  display: block;
-  margin-top: 0.5rem;
-  color: #999;
 }
 
 .game-map-viewport {
   position: relative;
   flex: 1 1 auto;
-  min-width: 0;
+  min-height: 0;
   overflow: hidden;
   container-type: size;
   cursor: grab;
   touch-action: none;
-  background: repeating-linear-gradient(45deg, #2b343c 0 10px, #313b44 10px 20px);
+  background: #0b0b0b;
 
   &.pointer {
     cursor: pointer;
@@ -140,6 +223,7 @@
   // as big as fits keeping the picture's shape (1002 × 668), times the zoom
   width: calc(min(100cqw, 100cqh * 1002 / 668) * var(--zoom, 1));
   aspect-ratio: 1002 / 668;
+  box-shadow: 0 0 0 1px #3a2a10;
 }
 
 .game-map-image {
@@ -151,8 +235,92 @@
   pointer-events: none;
 }
 
-.game-map-layers {
-  image-rendering: auto;
+// zones: AoWoW's colours, a gold outline on the one under the pointer
+.game-map-shapes {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+
+  path {
+    vector-effect: non-scaling-stroke;
+    stroke-linejoin: round;
+    transition:
+      fill-opacity 0.12s ease,
+      stroke-opacity 0.12s ease;
+  }
+
+  .plain {
+    fill: var(--gold);
+    fill-opacity: 0;
+    stroke: var(--gold);
+    stroke-opacity: 0;
+    stroke-width: 1.5px;
+
+    &.hover {
+      fill-opacity: 0.22;
+      stroke-opacity: 1;
+    }
+  }
+
+  .zone {
+    fill: var(--c, var(--gold));
+    fill-opacity: 0.42;
+    stroke: #1a1006;
+    stroke-opacity: 0;
+    stroke-width: 1px;
+
+    &.hover {
+      fill-opacity: 0.7;
+      stroke: var(--gold);
+      stroke-opacity: 1;
+      stroke-width: 2px;
+    }
+  }
+
+  // neighbouring zones on a zone: dotted green
+  .neighbour {
+    fill: var(--green);
+    fill-opacity: 0.05;
+    stroke: #6dff4d;
+    stroke-opacity: 0.9;
+    stroke-width: 1.6px;
+    stroke-dasharray: 1px 4px;
+    stroke-linecap: round;
+
+    &.hover {
+      fill-opacity: 0.16;
+      stroke-opacity: 1;
+      stroke-width: 2.2px;
+    }
+  }
+
+  // sub-zones: a faint gold line
+  .sub {
+    fill: var(--gold);
+    fill-opacity: 0;
+    stroke: var(--gold);
+    stroke-opacity: 0.32;
+    stroke-width: 1px;
+
+    &.hover {
+      fill-opacity: 0.16;
+      stroke-opacity: 1;
+      stroke-width: 1.5px;
+    }
+  }
+}
+
+.game-map-stage.borders .game-map-shapes {
+  .plain {
+    stroke-opacity: 0.45;
+  }
+
+  .zone {
+    stroke-opacity: 0.55;
+  }
 }
 
 .game-map-routes {
@@ -164,24 +332,58 @@
 
   polyline {
     fill: none;
-    stroke-width: 2.5;
-    stroke-dasharray: 6 4;
+    stroke-width: 2px;
+    stroke-dasharray: 5 4;
     vector-effect: non-scaling-stroke;
-    pointer-events: stroke;
+    filter: drop-shadow(0 0 1px #000);
   }
 }
 
 .game-map-name {
   position: absolute;
   transform: translate(-50%, -50%);
-  color: #fff3c4;
-  font-size: 0.78rem;
+  color: #fff;
+  font-size: 11px;
   font-weight: 600;
   text-shadow:
     0 0 3px #000,
-    0 0 2px #000;
+    0 0 2px #000,
+    0 0 1px #000;
   white-space: nowrap;
   pointer-events: none;
+}
+
+// a neighbouring zone's name, which opens it
+.game-map-chip {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 7px;
+  font-size: 11px;
+  line-height: 16px;
+  white-space: nowrap;
+  color: var(--gold);
+  background: rgba(0, 0, 0, 0.72);
+  border: 1px solid rgba(109, 255, 77, 0.55);
+  border-radius: 10px;
+  cursor: pointer;
+
+  span {
+    color: var(--green);
+  }
+
+  i {
+    font-style: normal;
+    font-size: 14px;
+  }
+
+  &:hover {
+    color: #fff;
+    border-color: #6dff4d;
+    background: rgba(0, 0, 0, 0.88);
+  }
 }
 
 .game-map-pin {
@@ -192,15 +394,24 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #9ff;
-  font-size: calc(var(--marker) * 0.7);
-  text-shadow: 0 0 2px #000;
-  cursor: default;
+  font-size: calc(var(--marker) * 0.75);
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.8));
+  transition: transform 0.1s ease;
 
-  img {
+  > img:first-child {
     width: 100%;
     height: 100%;
+    display: block;
     pointer-events: none;
+    image-rendering: auto;
+  }
+
+  &.square > img:first-child {
+    width: 80%;
+    height: 80%;
+    border: 1px solid #000;
+    border-radius: 3px;
+    box-shadow: 0 0 0 1px #6b5a3a;
   }
 
   &.dot {
@@ -215,20 +426,21 @@
   }
 
   &:hover {
-    z-index: 2;
-    filter: drop-shadow(0 0 3px #fff);
+    transform: translate(-50%, -50%) scale(1.35);
+    z-index: 5;
   }
 }
 
+// the side a marker serves: a small crest above it
 .game-map-side {
   position: absolute;
-  right: -35%;
-  bottom: -35%;
-  width: 70% !important;
-  height: 70% !important;
-  // the crest is the top-left of the picture
-  object-fit: cover;
-  object-position: 0 0;
+  left: 50%;
+  bottom: 78%;
+  width: 13px;
+  height: 13px;
+  transform: translateX(-50%);
+  filter: drop-shadow(0 0 1px #000);
+  pointer-events: none;
 }
 
 .game-map-camera {
@@ -243,31 +455,122 @@
   z-index: 3;
 }
 
-.game-map-tooltip {
+// over the map, as on AoWoW
+.game-map-title,
+.game-map-back,
+.game-map-zoom button {
   position: absolute;
-  z-index: 4;
-  padding: 0.25rem 0.5rem;
-  max-width: 20rem;
-  background: rgba(10, 14, 30, 0.94);
-  border: 1px solid #8a8fb0;
+  z-index: 6;
+  color: var(--gold);
+  background: rgba(0, 0, 0, 0.75);
+  border: 1px solid #5a4a1a;
   border-radius: 4px;
-  color: #fff;
-  font-size: 0.8rem;
-  pointer-events: none;
-  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 600;
+}
 
-  strong {
-    color: #ffd200;
+.game-map-title {
+  left: 0.6rem;
+  top: 0.6rem;
+  padding: 0.2rem 0.6rem;
+}
+
+.game-map-back {
+  right: 0.6rem;
+  top: 0.6rem;
+  padding: 0.2rem 0.6rem;
+  font-weight: normal;
+  cursor: pointer;
+
+  b {
+    color: var(--gold);
+  }
+
+  &:hover {
+    color: #fff;
   }
 }
 
-.game-map-tooltip-hint {
-  color: #8fdc8f;
-  font-size: 0.72rem;
+.game-map-zoom {
+  position: absolute;
+  right: 0.6rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  button {
+    position: static;
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    font-size: 15px;
+    line-height: 1;
+    cursor: pointer;
+
+    &:hover {
+      color: #fff;
+    }
+  }
 }
 
-.game-map-side-line {
-  color: #aac8ff;
+.game-map-coords,
+.game-map-tip {
+  position: absolute;
+  bottom: 0.4rem;
+  z-index: 6;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  text-shadow: 0 0 3px #000;
+  pointer-events: none;
+}
+
+.game-map-coords {
+  left: 0.6rem;
+}
+
+.game-map-tip {
+  right: 0.6rem;
+}
+
+// the game's tooltip
+.game-map-tooltip {
+  position: absolute;
+  z-index: 7;
+  padding: 0.3rem 0.55rem;
+  max-width: 22rem;
+  background: rgba(4, 6, 24, 0.92);
+  border: 1px solid #9d9fa8;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.35;
+  pointer-events: none;
+  white-space: nowrap;
+
+  b {
+    color: var(--gold);
+    font-size: 13px;
+  }
+
+  .levels {
+    color: var(--green);
+  }
+
+  .hint {
+    color: #9d9d9d;
+  }
+
+  .side.alliance {
+    color: #4d8dff;
+  }
+
+  .side.horde {
+    color: #ff4d4d;
+  }
 }
 
 .game-map-message {
