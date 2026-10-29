@@ -43,7 +43,8 @@ export class WorldVmaps {
   constructor(
     private readonly source: VmapSource,
     private readonly group: Group,
-    private readonly onChange: () => void,
+    /** The server's collision changed: of one tile (its key), or any. */
+    private readonly onChange: (key?: string) => void,
   ) {}
 
   /** The server's collision is loaded for this map (it has vmaps). */
@@ -117,7 +118,7 @@ export class WorldVmaps {
         }
         this.found ||= spawns.length > 0;
         this.tiles.set(key, placed);
-        this.onChange();
+        this.onChange(key);
       } finally {
         this.loading.delete(key);
       }

@@ -64,7 +64,8 @@ export class WorldObjects {
     private readonly source: ObjectSource,
     private readonly group: Group,
     private readonly textures: TextureCache,
-    private readonly onChange: () => void,
+    /** The buildings changed: those of one tile (its key), or any. */
+    private readonly onChange: (key?: string) => void,
   ) {}
 
   get placedCount(): number {
@@ -219,7 +220,7 @@ export class WorldObjects {
       this.placed.set(placement.uniqueId, { object, tiles: new Set([key]) });
     }
     this.tiles.set(key, ids);
-    this.onChange();
+    this.onChange(key);
   }
 
   private getTemplate(path: string): Promise<Group | undefined> {

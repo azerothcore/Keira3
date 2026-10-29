@@ -52,7 +52,8 @@ export class TerrainStreamer {
     private readonly source: TerrainSource,
     private readonly scene: WorldScene,
     private readonly textures: TextureCache,
-    private readonly onTileLoaded: () => void,
+    /** A tile was drawn (its key, like `32_48`). */
+    private readonly onTileLoaded: (key: string) => void,
   ) {}
 
   get mapDirectory(): string | undefined {
@@ -139,7 +140,7 @@ export class TerrainStreamer {
         if (add && stillWanted) {
           add();
           this.loadedDetail.set(key, detailed);
-          this.onTileLoaded();
+          this.onTileLoaded(key);
         }
       } catch (error) {
         console.warn(`[World Editor] Could not load tile ${directory}_${key}: ${(error as Error).message}`);

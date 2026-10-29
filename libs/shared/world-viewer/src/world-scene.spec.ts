@@ -985,6 +985,12 @@ describe('WorldScene', () => {
         expect(world.workOutWaypointPlaces(1000)).toBe(false);
         expect(world.waypointPlacesPending).toBe(0);
         expect([geometry('path:1#1'), geometry('path:1#2'), geometry('path:1#3')]).toEqual([16, 4, 5]);
+        // ground changed on its tile (or next to it): looked at again; far away: not
+        world.queueWaypointPlacesNear(new Set(['10_10']));
+        expect(world.waypointPlacesPending).toBe(0);
+        world.queueWaypointPlacesNear(new Set(['33_49']));
+        expect(world.waypointPlacesPending).toBe(3);
+        world.workOutWaypointPlaces(1000);
         expect(world.waypointPlaceOf('path:1#2')).toBe('air');
         const drops = world.scene.getObjectByName('path:1:drops') as LineSegments;
         // the drop line and the 4 sides of the square on the floor

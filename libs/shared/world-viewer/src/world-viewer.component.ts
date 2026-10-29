@@ -325,8 +325,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private readonly textures = new TextureCache((path) =>
     this.compressedTextures ? this.client.getGpuTexture(path) : this.client.getTexture(path),
   );
-  private readonly streamer = new TerrainStreamer(this.client, this.world, this.textures, () => this.onTileLoaded());
-  private readonly objects = new WorldObjects(this.client, this.world.buildingGroup, this.textures, () => this.onTileLoaded());
+  private readonly streamer = new TerrainStreamer(this.client, this.world, this.textures, (key) => this.onTileLoaded(key));
+  private readonly objects = new WorldObjects(this.client, this.world.buildingGroup, this.textures, (key) => this.onTileLoaded(key));
   private readonly doodads = new WorldDoodads(this.client, this.world.doodadGroup, this.textures, () => this.requestRender());
   /** Reads the tiles beyond the drawn ones ahead of time, while nothing in sight is loading. */
   private readonly prefetch = new WorldPrefetch(this.client, {
@@ -338,7 +338,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   private readonly navMesh = new WorldNavMesh(this.client, this.world.navMeshGroup, () => this.requestRender());
   private readonly prober = new PathProber(this.client, this.world);
   /** The server's collision (vmaps), loaded while it's needed: hitboxes shown, Path / LOS or Check path in use. */
-  private readonly vmaps = new WorldVmaps(this.client, this.world.serverCollisionGroup, () => this.onCollisionLoaded());
+  private readonly vmaps = new WorldVmaps(this.client, this.world.serverCollisionGroup, (key) => this.onCollisionLoaded(key));
   private collisionSource?: 'server' | 'client';
   private probeRequest = 0;
   private rebuildRequest = 0;
@@ -1606,7 +1606,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   }
 
   /** The server's collision changed: the line of sight uses it once there is some, and answers are worked out again. */
-  private onCollisionLoaded(): void {
+  private onCollisionLoaded(key?: string): void {
     // also called from effects (map changes): not something they depend on
     untracked(() => {
       this.world.setServerCollision(this.vmaps.active);
@@ -1620,15 +1620,31 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       if ((changed || this.vmaps.active) && this.probe()) {
         void this.runProbe(this.mapDirectory(), this.probe());
       }
-      this.onTileLoaded();
+      this.onTileLoaded(key);
     });
   }
 
-  private onTileLoaded(): void {
-    // what's under the waypoints is looked at again once tiles stop coming in (each look casts rays at everything)
+  /** Tiles whose ground changed since the waypoints' places were last looked at; undefined: anywhere. */
+  private changedTiles?: Set<string> = new Set();
+
+  /** Something was drawn: of one tile (its key), or anywhere. */
+  private onTileLoaded(key?: string): void {
+    // what's under the waypoints is looked at again once tiles stop coming in (each look casts rays at everything),
+    // only for the paths near the tiles that changed
+    if (key === undefined) {
+      this.changedTiles = undefined;
+    } else {
+      this.changedTiles?.add(key);
+    }
     clearTimeout(this.classifyTimer);
     this.classifyTimer = setTimeout(() => {
-      this.world.queueWaypointPlaces();
+      const changed = this.changedTiles;
+      this.changedTiles = new Set();
+      if (changed) {
+        this.world.queueWaypointPlacesNear(changed);
+      } else {
+        this.world.queueWaypointPlaces();
+      }
       this.workOutWaypointPlaces();
     }, CLASSIFY_DELAY);
     // what's under the checked points may have changed: check them again once loading calms down

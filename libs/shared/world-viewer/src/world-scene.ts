@@ -1247,6 +1247,15 @@ export class WorldScene {
     }
   }
 
+  /** Queues the paths with a point on (or next to: buildings reach over the edges) one of the given tiles. */
+  queueWaypointPlacesNear(tileKeys: ReadonlySet<string>): void {
+    const near = (position: Vector3): boolean => {
+      const { tx, ty } = worldToTile(-position.z, -position.x);
+      return [-1, 0, 1].some((dx) => [-1, 0, 1].some((dy) => tileKeys.has(tileKey({ tx: tx + dx, ty: ty + dy }))));
+    };
+    this.queueWaypointPlaces(this.waypointGroup.children.filter((group) => this.waypointsOf(group as Group).some((w) => near(w.position))));
+  }
+
   /** Waypoints whose place is still to be worked out. */
   get waypointPlacesPending(): number {
     let pending = 0;
