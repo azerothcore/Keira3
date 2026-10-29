@@ -351,13 +351,53 @@ describe('SpawnModels', () => {
     expect(source.getCreatureDisplay).not.toHaveBeenCalled();
   });
 
-  it('reports models that fail to load', async () => {
+  it('tells why a spawn near enough shows its pin (once each, in the console), not when it has its model or is far', async () => {
     const { models, world, source } = setup();
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     source.getCreatureDisplay.mockRejectedValueOnce(new Error('bad dbc'));
-    await show(models, world, [spawn('creature:1', 'creature', 0, 1)]);
+    let finish: (value: undefined) => void = () => undefined;
+    source.getGameObjectDisplay.mockReturnValueOnce(new Promise((resolve) => (finish = resolve)));
+    const spawns = [
+      spawn('creature:1', 'creature', 0, 1),
+      spawn('creature:2', 'creature', 1),
+      spawn('creature:3', 'creature', 2, 404),
+      spawn('gameobject:4', 'gameobject', 3, 7),
+      spawn('creature:5', 'creature', 500, 1),
+      spawn('gameobject:6', 'gameobject', 4, 9),
+    ];
+    await show(models, world, spawns);
+    expect(models.pinReason('creature:1')).toContain('could not be loaded: bad dbc');
+    expect(models.pinReason('creature:2')).toContain('has no display');
+    expect(models.pinReason('creature:3')).toContain('not in the client');
+    expect(models.pinReason('gameobject:4')).toContain('loading');
+    expect(models.pinReason('creature:5')).toBeUndefined();
+    expect(models.pinReason('gameobject:6')).toContain('building Gone.wmo could not be read');
+    expect(models.pinReason('creature:404')).toBeUndefined();
     expect(warn).toHaveBeenCalledWith(expect.stringContaining('bad dbc'));
+    // once each
+    const count = warn.mock.calls.length;
+    models.update(CENTER);
+    expect(warn.mock.calls.length).toBe(count);
     expect(models.shownCount).toBe(0);
+    finish(undefined);
+    await flush();
+    warn.mockRestore();
+  });
+
+  it('keeps the other models when one cannot be placed, and says why', async () => {
+    const { models, world } = setup();
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const place = vi.spyOn(models as unknown as { instantiate: () => never }, 'instantiate').mockImplementationOnce(() => {
+      throw new Error('bad mesh');
+    });
+    await show(models, world, [spawn('gameobject:1', 'gameobject', 0, 7)]);
+    expect(models.pinReason('gameobject:1')).toContain('could not be placed: bad mesh');
+    place.mockRestore();
+    warn.mockRestore();
+    // a model shown: no reason
+    const shown = setup();
+    await show(shown.models, shown.world, [spawn('gameobject:1', 'gameobject', 0, 7)]);
+    expect(shown.models.pinReason('gameobject:1')).toBeUndefined();
   });
 
   it('keeps the pin of a model the game draws nothing of (an invisible trigger), and of a model that cannot be read', async () => {
@@ -371,6 +411,8 @@ describe('SpawnModels', () => {
     await show(other, otherWorld, [spawn('gameobject:1', 'gameobject', 0, 7), spawn('creature:2', 'creature', 1, 404)]);
     expect(modelOf(otherWorld, 'gameobject:1')).toBeUndefined();
     expect(modelOf(otherWorld, 'creature:2')).toBeUndefined();
+    expect(other.pinReason('gameobject:1')).toContain('could not be read');
+    expect(models.pinReason('gameobject:1')).toContain('draws nothing');
   });
 
   it('draws gameobjects whose model is a building (elevators, ships) with that building', async () => {

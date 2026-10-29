@@ -963,7 +963,9 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     const spawn = this.spawns().find((s) => s.key === key);
     if (spawn) {
       const details = (this.altHeld && spawn.allDetails) || spawn.details || [];
-      return [spawn.label, ...details].join('\n');
+      // a pin standing in for its model: why
+      const pin = this.spawnModels.pinReason(key);
+      return [spawn.label, ...details, ...(pin ? [`Pin: ${pin}`] : [])].join('\n');
     }
     // Every other pickable object is a waypoint of one of the paths.
     const { pathKey, point } = parseWaypointKey(key) as { pathKey: string; point: number };

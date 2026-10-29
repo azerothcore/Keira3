@@ -25,6 +25,10 @@ import { WorldScene } from './world-scene';
 import { SpawnKind, WorldSpawn } from './world-viewer.model';
 
 /** What spawn models need from `WowClientService`. */
+/** Why a pin stands in for a spawn's model. */
+const NO_DISPLAY = 'it has no display (creature_template_model / gameobject_template.displayId)';
+const LOADING = 'its model is loading';
+
 export interface SpawnModelSource {
   getCreatureDisplay(displayId: number): Promise<CreatureDisplay | undefined>;
   getGameObjectDisplay(displayId: number): Promise<string | undefined>;
@@ -99,6 +103,27 @@ export class SpawnModels {
     return this.models.size - this.ready.size;
   }
 
+  /** Why a display has no model (its pin stands in), by display key; and what was already written down. */
+  private readonly failures = new Map<string, string>();
+  private readonly noted = new Set<string>();
+
+  /**
+   * Why a spawn near enough to have its model shows its pin instead (the model couldn't be loaded, has no display…),
+   * undefined when it has its model or is too far for one.
+   */
+  pinReason(key: string): string | undefined {
+    const spawn = this.spawns.find((s) => s.key === key);
+    if (!spawn || this.shown.has(key) || !this.center || !this.inRange(spawn, this.center)) {
+      return undefined;
+    }
+    const displayKey = this.displayKey(spawn);
+    if (!displayKey) {
+      return NO_DISPLAY;
+    }
+    // (a model loaded is shown, or failed with its reason)
+    return this.failures.get(displayKey) ?? LOADING;
+  }
+
   get shownCount(): number {
     return this.shown.size;
   }
@@ -128,6 +153,7 @@ export class SpawnModels {
       this.models.forEach((model) => void model.then((m) => m && disposeSpawnModel(m)));
       this.models.clear();
       this.ready.clear();
+      this.failures.clear();
     }
     this.refresh();
   }
@@ -189,7 +215,11 @@ export class SpawnModels {
     let changed = false;
     for (const spawn of this.spawns) {
       const displayKey = this.displayKey(spawn);
-      const wanted = !!center && !!displayKey && this.inRange(spawn, center);
+      const near = !!center && this.inRange(spawn, center);
+      const wanted = near && !!displayKey;
+      if (near) {
+        this.notePin(spawn, displayKey);
+      }
       if (!wanted || !this.ready.has(displayKey as string)) {
         if (wanted) {
           this.load(displayKey as string, spawn);
@@ -201,7 +231,15 @@ export class SpawnModels {
       if (!model) {
         changed = this.hide(spawn.key) || changed;
       } else if (this.shown.get(spawn.key) !== displayKey) {
-        const object = this.instantiate(model, spawn);
+        let object: Object3D;
+        try {
+          object = this.instantiate(model, spawn);
+        } catch (error) {
+          // (one model that can't be placed doesn't keep the others from theirs)
+          this.failures.set(displayKey as string, `could not be placed: ${(error as Error).message}`);
+          this.notePin(spawn, displayKey);
+          continue;
+        }
         this.scene.setSpawnModel(spawn.key, object, model.scale * (spawn.scale ?? 1));
         this.shown.set(spawn.key, displayKey as string);
         if (object instanceof SkinnedMesh) {
@@ -214,6 +252,18 @@ export class SpawnModels {
     }
     if (changed) {
       this.onChange();
+    }
+  }
+
+  /** Writes down (once each, in the console and the performance log) why a spawn near enough shows its pin. */
+  private notePin(spawn: WorldSpawn, displayKey: string | undefined): void {
+    const reason = displayKey ? this.failures.get(displayKey) : NO_DISPLAY;
+    const id = displayKey ?? spawn.key;
+    if (reason && !this.noted.has(id)) {
+      this.noted.add(id);
+      const text = `Pin instead of a model: ${spawn.label} (${spawn.kind} display ${spawn.displayId ?? 0}): ${reason}`;
+      console.warn(`[World Editor] ${text}`);
+      perfNote(text);
     }
   }
 
@@ -304,13 +354,11 @@ export class SpawnModels {
     if (this.models.has(displayKey)) {
       return;
     }
-    const model = this.loadModel(spawn).catch((error) => {
-      const text = `Could not load the model of ${spawn.kind} display ${spawn.displayId}: ${(error as Error).message}`;
-      console.warn(`[World Editor] ${text}`);
-      // (in the performance log too, where it can be read afterwards)
-      perfNote(text);
+    const fail = (reason: string): undefined => {
+      this.failures.set(displayKey, reason);
       return undefined;
-    });
+    };
+    const model = this.loadModel(spawn, fail).catch((error) => fail(`could not be loaded: ${(error as Error).message}`));
     this.models.set(displayKey, model);
     void model.then((loaded) => {
       if (this.models.get(displayKey) === model) {
@@ -322,18 +370,17 @@ export class SpawnModels {
     });
   }
 
-  private async loadModel(spawn: WorldSpawn): Promise<SpawnModel | undefined> {
+  private async loadModel(spawn: WorldSpawn, fail: (reason: string) => undefined): Promise<SpawnModel | undefined> {
     const displayId = spawn.displayId as number;
     const display: CreatureDisplay | undefined =
       spawn.kind === 'creature'
         ? await this.source.getCreatureDisplay(displayId)
         : await this.source.getGameObjectDisplay(displayId).then((model) => (model ? { model, scale: 1, textures: {} } : undefined));
     if (display && /\.wmo$/i.test(display.model)) {
-      return this.loadBuilding(display.model);
+      return (await this.loadBuilding(display.model)) ?? fail(`its building ${display.model} could not be read`);
     }
     if (!display) {
-      perfNote(`No model for ${spawn.kind} display ${displayId} (not in the client's display tables)`);
-      return undefined;
+      return fail(`display ${displayId} is not in the client's display tables`);
     }
     const creature = spawn.kind === 'creature';
     const weapons = creature && this.options.equipment ? await this.weaponsOf(spawn) : [];
@@ -341,6 +388,7 @@ export class SpawnModels {
       equipment: creature && !!this.options.equipment,
       weapons,
       animations: creature && (this.options.idle || this.options.walk) ? [ANIM_STAND, ANIM_WALK] : [],
+      onSkipped: fail,
     });
   }
 
@@ -385,6 +433,8 @@ export interface DisplayModelOptions {
   equipment?: boolean;
   weapons?: ModelAttachment[];
   animations?: number[];
+  /** Told why there's no model, when there's none. */
+  onSkipped?: (reason: string) => void;
 }
 
 /**
@@ -401,7 +451,7 @@ export async function displayModel(
 ): Promise<DisplayModel | undefined> {
   const mesh = await source.getM2(display.model);
   if (!mesh) {
-    perfNote(`Could not read the model ${display.model}`);
+    options.onSkipped?.(`its model ${display.model} could not be read`);
     return undefined;
   }
   const geosets = options.equipment ? display.geosets : display.plainGeosets;
@@ -413,6 +463,7 @@ export async function displayModel(
       : mesh.batches.filter((b) => isDefaultCharacterGeoset(b.geoset, hairGeoset));
   // nothing the game draws (an invisible trigger's model): its pin stands in for it
   if (batches.every((b) => b.alpha < INVISIBLE_ALPHA)) {
+    options.onSkipped?.(`its model ${display.model} draws nothing (an invisible model)`);
     return undefined;
   }
   const images = await Promise.all(

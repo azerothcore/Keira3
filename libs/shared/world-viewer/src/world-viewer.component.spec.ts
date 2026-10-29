@@ -884,6 +884,18 @@ describe(WorldViewerComponent.name, () => {
         h.focus.set(at(0, 0));
       });
 
+    it('tells on hover why a spawn shows its pin instead of its model', async () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+      const { page, fixture } = await pickSetup();
+      await settle(fixture);
+      page.pointer('pointermove', 50, 50);
+      flushFrames();
+      fixture.detectChanges();
+      expect(page.label().nativeElement.textContent).toContain('Pin: it has no display');
+      expect(warn).toHaveBeenCalledWith(expect.stringContaining('Pin instead of a model: Deputy Willem'));
+      warn.mockRestore();
+    });
+
     it('names what the map shows under the resting cursor, and puts hover labels away from the edges', async () => {
       const describe = vi.spyOn(WorldScene.prototype, 'describe').mockReturnValue({
         kind: 'building',
@@ -1283,6 +1295,8 @@ describe(WorldViewerComponent.name, () => {
     it('shows the details of a hovered spawn, and all of them while Alt is held', async () => {
       const { page, host, fixture, update } = await pickSetup();
       await settle(fixture);
+      // (models off: no pin to explain)
+      await update(() => host.render.set({ ...DEFAULT_WORLD_RENDER_SETTINGS, showModels: false }));
       await update(() =>
         host.spawns.set([
           {
@@ -1344,6 +1358,8 @@ describe(WorldViewerComponent.name, () => {
     it('shows the name of the hovered spawn or waypoint, at most once per frame', async () => {
       const { page, host, fixture, update } = await pickSetup();
       await settle(fixture);
+      // (models off: no pin to explain)
+      await update(() => host.render.set({ ...DEFAULT_WORLD_RENDER_SETTINGS, showModels: false }));
       const hover = (x: number, y: number): void => {
         page.pointer('pointermove', x, y);
         flushFrames();
