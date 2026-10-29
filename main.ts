@@ -6,6 +6,8 @@ import * as url from 'url';
 let win;
 const args = process.argv.slice(1);
 const serve = args.some((val) => val === '--serve');
+/** Developer tools open by themselves in development (served, or not packaged), unless KEIRA_NO_DEVTOOLS is set (e2e tests). */
+const openDevTools = (serve || !app.isPackaged) && !process.env['KEIRA_NO_DEVTOOLS'];
 
 function createWindow() {
   const hasPreviousSettings = settings.hasSync('user_settings.width');
@@ -46,7 +48,7 @@ function createWindow() {
     );
   }
 
-  if (serve) {
+  if (openDevTools) {
     win.webContents.openDevTools();
   }
 
