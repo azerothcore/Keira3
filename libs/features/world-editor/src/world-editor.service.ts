@@ -58,7 +58,6 @@ const eventOf = (table: string, guid: string): string =>
 export class WorldEditorService {
   private readonly queryService = inject(MysqlQueryService);
 
-  /** Creatures and gameobjects of `map` in a square of `radius` yards around `center`. */
   /** Spawns around `center`, and also everywhere in `region` when given (Load the whole zone, an area of the world map). */
   async loadSpawns(map: number, center: WorldPosition, radius = SPAWN_LOAD_RADIUS, region?: WorldBounds): Promise<SpawnRecord[]> {
     const [minX, maxX] = [Math.min(center.x - radius, region?.minX ?? Infinity), Math.max(center.x + radius, region?.maxX ?? -Infinity)];
@@ -164,14 +163,16 @@ export class WorldEditorService {
           .catch(() => ({ source, rows: [] as TableRow[] })),
       ),
     );
-    const paths: AreaPath[] = [];
+    // grouped by source and id (in the order first met)
+    const paths = new Map<string, AreaPath>();
     for (const { source, rows } of results) {
       for (const row of rows) {
         const pathId = Number(row['id']);
-        let path = paths.find((p) => p.source === source && p.id === pathId);
+        const key = `${source}:${pathId}`;
+        let path = paths.get(key);
         if (!path) {
           path = { source, id: pathId, points: [] };
-          paths.push(path);
+          paths.set(key, path);
         }
         path.points.push({
           point: Number(row['point']),
@@ -182,7 +183,7 @@ export class WorldEditorService {
         });
       }
     }
-    return paths;
+    return [...paths.values()];
   }
 
   /** Points of the given paths: `waypoint_data` ones, and SmartAI ones (negative ids, from `waypoints`). */
@@ -564,7 +565,6 @@ export class WorldEditorService {
     return info;
   }
 
-  /** Descriptions of game events, by id. */
   /** The weather chances of a zone (game_weather), undefined when it has none. */
   async loadWeather(zone: number): Promise<WeatherChances | undefined> {
     const rows = await firstValueFrom(this.queryService.query<TableRow>(`SELECT * FROM game_weather WHERE zone = ${Math.trunc(zone)}`));
@@ -578,6 +578,7 @@ export class WorldEditorService {
     ) as WeatherChances;
   }
 
+  /** Descriptions of game events, by id. */
   async loadEventNames(ids: number[]): Promise<Map<number, string>> {
     const unique = [...new Set(ids.map(Math.trunc).filter((id) => id > 0))];
     const names = new Map<number, string>();
@@ -724,7 +725,6 @@ function toSpawns(type: SpawnType, rows: SpawnRow[] | undefined): SpawnRecord[] 
   }));
 }
 
-/** The loot tables a spawn uses (only those set). */
 /** graveyard_zone.Faction of each side. */
 const TEAM_ALLIANCE = 469;
 const TEAM_HORDE = 67;
@@ -735,6 +735,7 @@ function weaponsOf(row: SpawnRow): Pick<SpawnRecord, 'weapons'> {
   return items.some(Boolean) ? { weapons: items } : {};
 }
 
+/** The loot tables a spawn uses (only those set). */
 function lootOf(row: SpawnRow): Pick<SpawnRecord, 'loot'> {
   const loot = {
     ...(Number(row['lootId']) > 0 ? { loot: Number(row['lootId']) } : {}),

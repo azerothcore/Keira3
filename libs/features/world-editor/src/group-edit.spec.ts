@@ -1,4 +1,4 @@
-import { copySpawns, followPlacement, pastedSpawn } from './group-edit';
+import { copySpawns, followPlacement, newSpawnFrom, pastedSpawn } from './group-edit';
 import { SpawnRecord } from './world-editor.model';
 
 const spawn = (guid: number, x: number, y: number, extra: Partial<SpawnRecord> = {}): SpawnRecord => ({
@@ -35,5 +35,20 @@ describe('group editing', () => {
       { x: 2, y: -1, z: 0 },
     ]);
     expect(pastedSpawn(copied[1], 99, { x: 100, y: 100, z: 50 })).toEqual(spawn(99, 102, 99, { z: 50 }));
+  });
+
+  it('writes the difficulties, phases, wandering and edited columns of the copied spawn with the copy', () => {
+    const original = spawn(1, 10, 10, { type: 'creature', phaseMask: 2, spawnMask: 3, wanderDistance: 5, fields: { spawntimesecs: 60 } });
+    expect(newSpawnFrom(original, 9, { x: 1, y: 2, z: 3, o: 1 })).toEqual({
+      ...original,
+      guid: 9,
+      x: 1,
+      y: 2,
+      z: 3,
+      o: 1,
+      fields: { phaseMask: 2, spawnMask: 3, MovementType: 1, wander_distance: 5, spawntimesecs: 60 },
+    });
+    // in the first phase, every difficulty, not wandering: nothing to write
+    expect(newSpawnFrom(spawn(1, 10, 10, { phaseMask: 1 }), 9, { x: 1, y: 2, z: 3 }).fields).toBeUndefined();
   });
 });

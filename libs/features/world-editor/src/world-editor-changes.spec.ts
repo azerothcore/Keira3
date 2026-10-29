@@ -129,6 +129,21 @@ describe('WorldEditorChanges', () => {
       ]);
     });
 
+    it('turns the quaternion of a loaded tilted gameobject turned in this session', () => {
+      const changes = new WorldEditorChanges();
+      const tilted = gameobject(5, { o: 0, rotation: [0.5, 0, 0, 0.8660254] });
+      changes.moveSpawn(tilted, { x: 1, y: 2, z: 3, o: 0 });
+      expect(changes.applyToSpawns([tilted], 0)[0].rotation).toEqual([0.5, 0, 0, 0.8660254]);
+      changes.moveSpawn(tilted, { x: 1, y: 2, z: 3, o: Math.PI });
+      const turned = changes.applyToSpawns([tilted], 0)[0].rotation as number[];
+      expect(turned).not.toEqual([0.5, 0, 0, 0.8660254]);
+      expect(Math.hypot(...turned)).toBeCloseTo(1);
+      // not tilted: no quaternion of its own
+      const flat = gameobject(6, { o: 0 });
+      changes.moveSpawn(flat, { x: 1, y: 2, z: 3, o: 1 });
+      expect(changes.applyToSpawns([flat], 0)[0].rotation).toBeUndefined();
+    });
+
     it('updates the insert when a new spawn is moved, and drops it when deleted', () => {
       const changes = new WorldEditorChanges();
       changes.placeSpawn(creature(100));
@@ -278,6 +293,13 @@ describe('WorldEditorChanges', () => {
       changes.deleteWaypoint(waypoint(80, 3));
       changes.addWaypoint(waypoint(80, 3, { x: 99 }));
       expect(changes.describe()).toEqual(['Move waypoint 80 #3']);
+      // every column of the point given, not the deleted point's wait or script
+      changes.clear();
+      changes.deleteWaypoint(waypoint(80, 3, { delay: 500, action: 5, moveType: 1 }));
+      changes.addWaypoint(waypoint(80, 3));
+      expect(changes.toSql()).toBe(
+        'UPDATE `waypoint_data` SET `delay` = 0, `move_type` = 0, `action` = 0 WHERE (`id` = 80) AND (`point` = 3);',
+      );
     });
 
     it('applies pending edits to loaded waypoints, sorted', () => {
@@ -372,6 +394,12 @@ describe('WorldEditorChanges', () => {
       changes.clear();
       changes.setPathPoints(current, [waypoint(10, 1), waypoint(10, 2, { x: 60 })]);
       expect(changes.describe()).toEqual(['Delete waypoint 10 #3', 'Move waypoint 10 #2']);
+      // a point renumbered takes every column of the one moved to its number
+      changes.clear();
+      changes.setPathPoints([waypoint(10, 1, { delay: 1000, moveType: 1 }), waypoint(10, 2, { x: 50 })], [waypoint(10, 1, { x: 50 })]);
+      expect(changes.toSql()).toContain(
+        'UPDATE `waypoint_data` SET `position_x` = 50, `delay` = 0, `move_type` = 0 WHERE (`id` = 10) AND (`point` = 1);',
+      );
     });
   });
 

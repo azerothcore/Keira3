@@ -122,7 +122,6 @@ import {
   AreaPath,
   EditorTool,
   LayerVisibility,
-  parseSpawnKey,
   pathKey,
   pathLabel,
   FormationMember,
@@ -148,7 +147,7 @@ import { GpsLocation, parseGpsOutput } from './gps';
 import { describeWaypoint, WaypointSaiRow, WaypointScriptStep } from './waypoint-info';
 import { arrayPositions, boxExtent, STACK_SIDES, StackSide, stackPosition } from './stack';
 import { EMPTY_TRAVEL, TravelData, travelOverlays } from './travel';
-import { copySpawns, followPlacement, pastedSpawn } from './group-edit';
+import { copySpawns, followPlacement, newSpawnFrom, pastedSpawn } from './group-edit';
 import { WaypointEdits, WaypointPanelComponent } from './waypoint-panel.component';
 import { SpawnPanelComponent } from './spawn-panel.component';
 import { SpawnTreeComponent } from './spawn-tree.component';
@@ -226,13 +225,13 @@ const DUNGEON_DIFFICULTIES = [
   { bit: 0, label: 'WORLD_EDITOR.DIFFICULTY_NORMAL' },
   { bit: 1, label: 'WORLD_EDITOR.DIFFICULTY_HEROIC' },
 ];
-/** Words each expansion is found by in the map picker (by Map.dbc ExpansionID). */
 /** Ask before deleting ("false" once told not to). */
 const CONFIRM_DELETE_KEY = 'keira3.worldEditor.confirmDelete';
 
 /** The order of the kinds of map when sorting by type (as on the world map's atlas). */
 const MAP_KIND_ORDER = ['world', 'dungeon', 'raid', 'battleground', 'arena', 'transport'];
 
+/** Words each expansion is found by in the map picker (by Map.dbc ExpansionID). */
 const EXPANSION_SEARCH = ['vanilla classic', 'tbc the burning crusade', 'wotlk wrath of the lich king'];
 
 interface LastView extends WorldPosition {
@@ -383,11 +382,11 @@ const spawnBounds = (spawn: SpawnRecord): { radius: number; reach: number } | un
     ? // (the service reads both together)
       { radius: spawn.boundingRadius * (spawn.scale ?? 1), reach: (spawn.combatReach as number) * (spawn.scale ?? 1) }
     : undefined;
-/** Flight masters and flight paths (their own layer) among the travel overlays. */
 /** A dungeon is loaded whole: its building's extents, and this much around them (yards). */
 const INSTANCE_PADDING = 50;
 /** Colours of the boss boundaries, one per boss. */
 const BOUNDARY_COLORS = [0xff9ff3, 0x48dbfb, 0xfeca57, 0x1dd1a1, 0x5f27cd, 0xff6b6b];
+/** Flight masters and flight paths (their own layer) among the travel overlays. */
 const isFlight = (key: string): boolean => key.startsWith('flight:') || key.startsWith('taxi:');
 
 @Component({
@@ -568,6 +567,11 @@ export class WorldEditorComponent implements OnInit {
       .map((key) => this.findSpawn(key))
       .filter((spawn): spawn is SpawnRecord => !!spawn),
   );
+  /** The ones of them that aren't locked: moved and deleted with the main one. */
+  private readonly unlockedGroup = computed(() => this.groupSpawns().filter((s) => !this.lockedKeys().has(spawnKey(s.type, s.guid))));
+  /** The spawns (as edited, and as loaded) by key, for looking them up without going through them all. */
+  private readonly spawnsByKey = computed(() => new Map(this.spawns().map((s) => [spawnKey(s.type, s.guid), s])));
+  private readonly loadedByKey = computed(() => new Map(this.loadedSpawns().map((s) => [spawnKey(s.type, s.guid), s])));
   protected readonly simulation = signal<MovementSimulation | undefined>(undefined);
   protected readonly simulationRate = signal(1);
   /** The simulation got to its end: it can be played again. */
@@ -701,13 +705,13 @@ export class WorldEditorComponent implements OnInit {
   private captureStart?: string[];
   protected readonly pendingModifier = signal<string | undefined>(undefined);
   private lastBound?: { input: string; time: number };
-  /** The mouse inputs offered while binding (camera moves need a press and a release: no wheel steps). */
   /** View > Debugging: limits on the memory and graphics memory (0 = none, the default). */
   protected readonly memoryCaps: { key: 'memoryCapMb' | 'gpuCapMb'; label: string }[] = [
     { key: 'memoryCapMb', label: 'WORLD_EDITOR.MEMORY_CAP' },
     { key: 'gpuCapMb', label: 'WORLD_EDITOR.GPU_CAP' },
   ];
   protected readonly memoryCapSizes = [0, 512, 1024, 2048, 4096, 8192];
+  /** The mouse inputs offered while binding (camera moves need a press and a release: no wheel steps). */
   protected readonly mouseInputs = computed(() =>
     (NAVIGATION_ACTIONS as ControlAction[]).includes(this.capturing() as ControlAction)
       ? MOUSE_INPUTS.filter((input) => !input.includes('Wheel'))
@@ -811,13 +815,13 @@ export class WorldEditorComponent implements OnInit {
   private preloadCancelled = false;
   protected readonly zones = signal<WowZone[]>([]);
   protected readonly zoneId = this.session.zoneId;
-  /** The selected zone, loaded whole when the View panel asks for it. */
   /** A dungeon made of one building: the area around it, always loaded whole (building, props, spawns, models). */
   private readonly instanceRegion = signal<WorldBounds | undefined>(undefined);
   private readonly loadInstanceRegion = effect(() => {
     const directory = this.mapDirectory();
     untracked(() => void this.updateInstanceRegion(directory));
   });
+  /** What is loaded whole: the area picked on the world map, the dungeon, or the selected zone when the View panel asks for it. */
   protected readonly region = computed(
     () =>
       this.mapRegion() ??
@@ -1729,7 +1733,6 @@ export class WorldEditorComponent implements OnInit {
     void this.refreshCacheUsage();
   }
 
-  /** Processes the selected zone, the whole map, or every map into the disk cache. */
   /** The cache got full while preloading: offers to double its maximum and go on. */
   protected readonly cacheFull = signal<{ scope: 'zone' | 'map' | 'all'; maxGb: number } | undefined>(undefined);
 
@@ -1740,6 +1743,7 @@ export class WorldEditorComponent implements OnInit {
     void this.preload(full.scope);
   }
 
+  /** Processes the selected zone, the whole map, or every map into the disk cache. */
   protected async preload(scope: 'zone' | 'map' | 'all'): Promise<void> {
     this.preloadCancelled = false;
     this.cacheFull.set(undefined);
@@ -1991,7 +1995,17 @@ export class WorldEditorComponent implements OnInit {
 
   /** Forgets what was loaded for the map shown: its spawns are loaded again, and an area chosen on it is let go. */
   private leaveMap(): void {
+    // what belongs to the map left: its selection, difficulty, checked path, simulation, hidden and locked spawns, probe
     this.selectedKey.set(undefined);
+    this.groupKeys.set([]);
+    this.difficulty.set(undefined);
+    this.checkedPathId.set(undefined);
+    this.simulation.set(undefined);
+    this.treeHidden.set(new Set());
+    this.lockedKeys.set(new Set());
+    this.probeFrom.set(undefined);
+    this.probeTo.set(undefined);
+    this.probeResult.set(undefined);
     this.loadedSpawns.set([]);
     this.loadedWaypoints.set([]);
     this.spawnLoadCenter = undefined;
@@ -2380,7 +2394,14 @@ export class WorldEditorComponent implements OnInit {
 
   protected onObjectMoved(moved: ObjectMoved): void {
     const placement = { x: moved.position.x, y: moved.position.y, z: moved.position.z, o: moved.orientation };
-    this.applyPlacement(moved.key, placement);
+    // (the gizmo let go without moving: no step to undo)
+    const before = this.findSpawn(moved.key) ?? this.findWaypoint(moved.key);
+    const o = (before as { o?: number } | undefined)?.o ?? moved.orientation;
+    const still =
+      before && [before.x - placement.x, before.y - placement.y, before.z - placement.z, o - placement.o].every((d) => Math.abs(d) < 1e-4);
+    if (!still) {
+      this.applyPlacement(moved.key, placement);
+    }
   }
 
   // ---------------------------------------------------------------- editing
@@ -2457,8 +2478,12 @@ export class WorldEditorComponent implements OnInit {
 
   /** The next free guid of a type, chained so quick consecutive placements never get the same one. */
   private newGuid(type: SpawnType): Promise<number> {
-    const next = (this.nextGuids.get(type) ?? this.service.getMaxGuid(type)).then((last) => last + 1);
+    // after the last one handed out, and after anything added to the table meanwhile (elsewhere in Keira, say)
+    const handedOut = this.nextGuids.get(type)?.catch(() => 0) ?? Promise.resolve(0);
+    const next = Promise.all([handedOut, this.service.getMaxGuid(type)]).then(([last, max]) => Math.max(last, max) + 1);
     this.nextGuids.set(type, next);
+    // (a failed read is tried again next time)
+    next.catch(() => this.nextGuids.get(type) === next && this.nextGuids.delete(type));
     return next;
   }
 
@@ -2476,9 +2501,7 @@ export class WorldEditorComponent implements OnInit {
       return;
     }
     const guid = await this.newGuid(spawn.type);
-    // a new spawn: no path, not in the original's game event
-    const { pathFromTemplate: _, event: __, saiPaths: ___, ...copy } = spawn;
-    this.changes.placeSpawn({ ...copy, guid, pathId: 0, ...stackPosition(spawn, box, side) });
+    this.changes.placeSpawn(newSpawnFrom(spawn, guid, stackPosition(spawn, box, side)));
     this.bump();
     this.select(spawnKey(spawn.type, guid));
   }
@@ -2502,8 +2525,7 @@ export class WorldEditorComponent implements OnInit {
     const keys: string[] = [];
     for (const position of arrayPositions(spawn, side, distance, copies)) {
       const guid = await this.newGuid(spawn.type);
-      const { pathFromTemplate: _, event: __, saiPaths: ___, ...copy } = spawn;
-      this.changes.placeSpawn({ ...copy, guid, pathId: 0, ...position });
+      this.changes.placeSpawn(newSpawnFrom(spawn, guid, position));
       keys.push(spawnKey(spawn.type, guid));
     }
     this.bump();
@@ -2532,7 +2554,9 @@ export class WorldEditorComponent implements OnInit {
 
   /** The placement form is only shown while something is selected. */
   protected applyPlacementForm(): void {
-    if (this.selectedLocked()) {
+    const values = Object.values(this.placementForm.getRawValue());
+    // locked, or a box left empty (not moved to 0)
+    if (this.selectedLocked() || values.some((value) => value === null || !Number.isFinite(Number(value)))) {
       return;
     }
     this.applyPlacement(this.selectedKey() as string, this.placementForm.getRawValue());
@@ -2541,11 +2565,11 @@ export class WorldEditorComponent implements OnInit {
   private applyPlacement(key: string, placement: { x: number; y: number; z: number; o: number }): void {
     const spawn = this.findSpawn(key);
     if (spawn) {
-      const original = (s: SpawnRecord) => this.loadedSpawns().find((l) => l.type === s.type && l.guid === s.guid) ?? s;
+      const original = (s: SpawnRecord) => this.loadedByKey().get(spawnKey(s.type, s.guid)) ?? s;
       // the spawns selected with it follow
       if (key === this.selectedKey()) {
         // (but the locked ones)
-        for (const member of this.groupSpawns().filter((m) => !this.lockedKeys().has(spawnKey(m.type, m.guid)))) {
+        for (const member of this.unlockedGroup()) {
           this.changes.moveSpawn(original(member), followPlacement(spawn, placement, member));
         }
       }
@@ -2585,7 +2609,7 @@ export class WorldEditorComponent implements OnInit {
       this.deleteSelectedNow();
       return;
     }
-    const count = this.groupSpawns().length + 1;
+    const count = this.unlockedGroup().length + 1;
     this.confirmingDelete.set(
       spawn
         ? count > 1
@@ -2610,7 +2634,8 @@ export class WorldEditorComponent implements OnInit {
     const spawn = this.selectedSpawn();
     const waypoint = this.selectedWaypoint();
     if (spawn) {
-      this.groupSpawns().forEach((member) => this.changes.deleteSpawn(member));
+      // (but the locked ones)
+      this.unlockedGroup().forEach((member) => this.changes.deleteSpawn(member));
       this.groupKeys.set([]);
       this.changes.deleteSpawn(spawn);
     } else {
@@ -2963,6 +2988,11 @@ export class WorldEditorComponent implements OnInit {
       this.toastr.success('Query executed successfully', 'Success');
       this.clearChanges();
       await this.reloadSpawns();
+      // the selected spawn's columns as saved now (the panel compares edits with them)
+      const spawn = this.selectedSpawn();
+      if (spawn) {
+        await this.loadSpawnFields(spawn, spawnKey(spawn.type, spawn.guid));
+      }
     } catch (error) {
       await this.service.execute('ROLLBACK;').catch(() => undefined);
       this.toastr.error((error as { message?: string }).message ?? 'Error when executing the query!', 'Query error');
@@ -3394,8 +3424,7 @@ export class WorldEditorComponent implements OnInit {
   }
 
   private findSpawn(key: string): SpawnRecord | undefined {
-    const parsed = parseSpawnKey(key);
-    return parsed && this.spawns().find((s) => s.type === parsed.type && s.guid === parsed.guid);
+    return this.spawnsByKey().get(key);
   }
 
   private findWaypoint(key: string): WaypointRecord | undefined {

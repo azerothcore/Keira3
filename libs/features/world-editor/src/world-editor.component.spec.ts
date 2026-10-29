@@ -2326,6 +2326,29 @@ describe(WorldEditorComponent.name, () => {
       await settle(page);
       await rightClick(page, 'creature:2');
       expect(page.byId('context-unlock-all', false)).toBeFalsy();
+
+      // a group with a locked spawn: deleting it leaves the locked one
+      await rightClick(page, 'creature:1');
+      page.click('context-lock');
+      await settle(page);
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:2', position: { x: 0, y: 0, z: 0 } });
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:1', position: { x: 0, y: 0, z: 0 }, additive: true });
+      page.viewer().picked.emit({ type: 'spawn', key: 'gameobject:3', position: { x: 0, y: 0, z: 0 }, additive: true });
+      await settle(page);
+      page.key('Delete');
+      await settle(page);
+      expect(page.pendingLines().filter((line) => line.startsWith('Delete'))).toEqual([
+        expect.stringContaining('gameobject 3'),
+        expect.stringContaining('creature 2'),
+      ]);
+
+      // another map: nothing is locked there
+      page.chooseMap(1);
+      await settle(page);
+      page.chooseMap(0);
+      await loadArea(page);
+      await rightClick(page, 'creature:1');
+      expect(page.byId('context-unlock-all', false)).toBeFalsy();
     });
 
     it('opens the creature, its SAI or the gameobject from a right-click, and copies the GUID', async () => {
@@ -2859,6 +2882,14 @@ describe(WorldEditorComponent.name, () => {
       await settle(page);
 
       expect(page.pendingLines()).toEqual(['Move creature 1 (Deputy Willem)', 'Move waypoint 10 #1']);
+      // let go where it already is: nothing to undo
+      page.viewer().objectMoved.emit({ key: 'creature:1', position: { x: 1.1235, y: 2, z: 3 }, orientation: 1.5 });
+      await settle(page);
+      page.click('undo');
+      await settle(page);
+      expect(page.pendingLines()).toEqual(['Move creature 1 (Deputy Willem)']);
+      page.click('redo');
+      await settle(page);
       expect(page.placementValue('x')).toBe(1.1235);
       expect(page.placementValue('o')).toBe(1.5);
       expect(page.text('pending-sql')).toContain('UPDATE `creature` SET `position_x` = 1.1235');
@@ -2873,6 +2904,16 @@ describe(WorldEditorComponent.name, () => {
       page.submit('placement-apply');
       await settle(page);
       expect(page.pendingLines()).toEqual(['Move gameobject 3 (Mailbox)']);
+      expect(
+        page
+          .viewer()
+          .spawns()
+          .find((s) => s.key === 'gameobject:3')?.position.z,
+      ).toBe(99);
+      // a box left empty: not moved to 0
+      page.type('placement-z', '');
+      page.submit('placement-apply');
+      await settle(page);
       expect(
         page
           .viewer()
@@ -2931,7 +2972,8 @@ describe(WorldEditorComponent.name, () => {
       page.viewer().picked.emit({ type: 'ground', position: { x: 4, y: 5, z: 6 } });
       await settle(page);
 
-      expect(mocks.service.getMaxGuid).toHaveBeenCalledTimes(1);
+      // read each time: a spawn added to the table meanwhile isn't given its guid again
+      expect(mocks.service.getMaxGuid).toHaveBeenCalledTimes(2);
       expect(page.pendingLines()).toEqual(['Place creature 1001 (Marshal McBride)', 'Place creature 1002 (Marshal McBride)']);
       expect(
         page
@@ -4452,8 +4494,33 @@ describe(WorldEditorComponent.name, () => {
       page.viewer().picked.emit({ type: 'ground', position: { x: 4, y: 5, z: 6 } });
       resolveMax(500);
       await settle(page);
-      expect(mocks.service.getMaxGuid).toHaveBeenCalledTimes(1);
       expect(page.pendingLines()).toEqual(['Place creature 501 (Marshal McBride)', 'Place creature 502 (Marshal McBride)']);
+    });
+
+    it('places after the highest guid of the table when it grew meanwhile, and reads again after a failed read', async () => {
+      const { page } = await setup();
+      await loadArea(page);
+      page.click('tool-place-creature');
+      await settle(page);
+      page.type('place-entry', '197');
+      mocks.service.getMaxGuid.mockResolvedValueOnce(500).mockResolvedValueOnce(800);
+      page.viewer().picked.emit({ type: 'ground', position: { x: 1, y: 2, z: 3 } });
+      await settle(page);
+      page.viewer().picked.emit({ type: 'ground', position: { x: 4, y: 5, z: 6 } });
+      await settle(page);
+      expect(page.pendingLines()).toEqual(['Place creature 501 (Marshal McBride)', 'Place creature 801 (Marshal McBride)']);
+      mocks.service.getMaxGuid.mockRejectedValueOnce(new Error('connection lost')).mockResolvedValueOnce(900);
+      page.viewer().picked.emit({ type: 'ground', position: { x: 7, y: 8, z: 9 } });
+      await settle(page);
+      page.viewer().picked.emit({ type: 'ground', position: { x: 1, y: 1, z: 1 } });
+      await settle(page);
+      expect(page.pendingLines()).toContain('Place creature 901 (Marshal McBride)');
+      // one placed while the failed read is still going on: from the table alone
+      mocks.service.getMaxGuid.mockRejectedValueOnce(new Error('connection lost')).mockResolvedValueOnce(950);
+      page.viewer().picked.emit({ type: 'ground', position: { x: 2, y: 2, z: 2 } });
+      page.viewer().picked.emit({ type: 'ground', position: { x: 3, y: 3, z: 3 } });
+      await settle(page);
+      expect(page.pendingLines()).toContain('Place creature 951 (Marshal McBride)');
     });
 
     it('ignores waypoint scripts of an older camera position', async () => {
@@ -4655,6 +4722,16 @@ describe(WorldEditorComponent.name, () => {
       expect(mocks.toastr.success).toHaveBeenCalledWith('Query executed successfully', 'Success');
       expect(page.byId('no-changes')).toBeTruthy();
       expect(mocks.service.loadSpawns).toHaveBeenCalledTimes(2);
+    });
+
+    it('reads the columns of the selected spawn again once executed', async () => {
+      const { page } = await withChange();
+      page.viewer().picked.emit({ type: 'spawn', key: 'gameobject:3', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      mocks.service.loadSpawnFields.mockClear();
+      page.click('execute-sql');
+      await settle(page);
+      expect(mocks.service.loadSpawnFields).toHaveBeenCalledWith('gameobject', 3);
     });
 
     it('keeps the changes when executing fails', async () => {

@@ -1005,7 +1005,6 @@
     "HIDE": "隐藏地图"
   },
   "WORLD_EDITOR": {
-    "TITLE": "3D世界编辑器",
     "SETTINGS": "游戏数据",
     "CLIENT_PATH": "WoW 3.3.5a 客户端文件夹",
     "CLIENT_PATH_HELP": "包含 Wow.exe 和 Data 的文件夹。地形和小地图从其 MPQ 文件中读取。",
@@ -1033,7 +1032,6 @@
     "NO_ACTIVE_PATH": "请先选择一个带路径的生物（或创建路径）。",
     "MOVE": "移动",
     "ROTATE": "旋转",
-    "SNAP": "贴合地面",
     "SELECTION": "选中项",
     "NOTHING_SELECTED": "点击刷新点或路径点以选中。",
     "APPLY": "应用",
@@ -1043,7 +1041,6 @@
     "NO_CHANGES": "没有待保存的更改。",
     "DISCARD": "放弃",
     "LOADING_TERRAIN": "正在加载地形…",
-    "LOADING_SPAWNS": "正在加载刷新点…",
     "ERROR_DESKTOP_ONLY": "3D世界编辑器需要 Keira3 桌面应用来读取你的 WoW 客户端文件。",
     "WALKED_BY": "使用者",
     "VIEW": "视图",

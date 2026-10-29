@@ -1005,7 +1005,6 @@
     "HIDE": "Ocultar mapa"
   },
   "WORLD_EDITOR": {
-    "TITLE": "Editor de Mundo 3D",
     "SETTINGS": "Datos del juego",
     "CLIENT_PATH": "Carpeta del cliente WoW 3.3.5a",
     "CLIENT_PATH_HELP": "La carpeta que contiene Wow.exe y Data. El terreno y los minimapas se leen de sus archivos MPQ.",
@@ -1033,7 +1032,6 @@
     "NO_ACTIVE_PATH": "Primero selecciona una criatura con ruta (o crea una).",
     "MOVE": "Mover",
     "ROTATE": "Rotar",
-    "SNAP": "Ajustar al suelo",
     "SELECTION": "Selección",
     "NOTHING_SELECTED": "Haz clic en un spawn o waypoint para seleccionarlo.",
     "APPLY": "Aplicar",
@@ -1043,7 +1041,6 @@
     "NO_CHANGES": "No hay cambios pendientes.",
     "DISCARD": "Descartar",
     "LOADING_TERRAIN": "Cargando terreno…",
-    "LOADING_SPAWNS": "Cargando spawns…",
     "ERROR_DESKTOP_ONLY": "El editor de mundo 3D necesita la aplicación de escritorio de Keira3 para leer los archivos de tu cliente de WoW.",
     "WALKED_BY": "Recorrida por",
     "VIEW": "Vista",

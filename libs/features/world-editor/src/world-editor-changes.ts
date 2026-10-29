@@ -85,6 +85,20 @@ function placementFields(type: SpawnType, p: Placement, original?: SpawnRecord):
   return round(original.o) === round(p.o) ? fields : { ...fields, ...rotateGameobject(original.rotation, original.o, p.o) };
 }
 
+/** Every column of a waypoint but its path and number, the ones left out at their defaults. */
+function everyWaypointField(w: WaypointRecord): Omit<WaypointRecord, 'pathId' | 'point'> {
+  return {
+    x: w.x,
+    y: w.y,
+    z: w.z,
+    delay: w.delay,
+    orientation: w.orientation ?? null,
+    moveType: w.moveType ?? 0,
+    action: w.action ?? 0,
+    actionChance: w.actionChance ?? 100,
+  };
+}
+
 /** The columns of a waypoint that differ between `original` and `current` (SmartAI paths only have place, wait, orientation). */
 function waypointUpdates(original: WaypointRecord, current: WaypointRecord): Record<string, number | null> {
   const fields: Record<string, number | null> = {};
@@ -308,7 +322,20 @@ export class WorldEditorChanges {
       const moved = this.movedSpawns.get(key);
       const pathId = this.createdPaths.get(spawn.guid) ?? spawn.pathId;
       const fields = this.editedSpawns.get(key)?.fields;
-      result.push(withFields({ ...spawn, ...moved?.current, pathId }, fields));
+      // a tilted gameobject turned in this session: its quaternion turned with it (a copy of it faces the same way)
+      const turned = moved && spawn.rotation?.some((v) => v !== 0) && round(spawn.o) !== round(moved.current.o);
+      const rotation = turned ? rotateGameobject(spawn.rotation, spawn.o, moved.current.o) : undefined;
+      result.push(
+        withFields(
+          {
+            ...spawn,
+            ...moved?.current,
+            pathId,
+            ...(rotation && { rotation: [rotation['rotation0'], rotation['rotation1'], rotation['rotation2'], rotation['rotation3']] }),
+          },
+          fields,
+        ),
+      );
     }
     for (const spawn of this.insertedSpawns.values()) {
       if (spawn.map === map) {
@@ -329,7 +356,8 @@ export class WorldEditorChanges {
     if (this.deletedWaypoints.has(key)) {
       const original = this.deletedWaypoints.get(key) as WaypointRecord;
       this.deletedWaypoints.delete(key);
-      this.moveWaypoint(original, waypoint);
+      // the number comes back as the point given, every column of it (not the deleted point's wait or script)
+      this.editWaypoint(original, everyWaypointField(waypoint));
       return;
     }
     this.insertedWaypoints.set(key, { ...waypoint });
@@ -372,8 +400,8 @@ export class WorldEditorChanges {
     for (const [point, waypoint] of wanted) {
       const existing = now.get(point);
       if (existing) {
-        const { pathId: _, point: __, ...fields } = waypoint;
-        this.editWaypoint(existing, fields);
+        // (every column: one the point given leaves out isn't the old point's)
+        this.editWaypoint(existing, everyWaypointField(waypoint));
       } else {
         this.addWaypoint(waypoint);
       }
