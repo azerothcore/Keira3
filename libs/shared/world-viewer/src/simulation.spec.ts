@@ -12,8 +12,14 @@ describe('movement simulation timeline', () => {
   it('walks each leg at its speed, then waits, round after round', () => {
     // 5 s to point 1, 3 s there, 2 s to point 2, 1 s at point 3
     expect(timeline.duration).toBe(11);
-    expect(sampleTimeline(timeline, 2.5)).toEqual({ position: p(5), orientation: 0, status: { label: 'point 1', move: 'walk' } });
-    expect(sampleTimeline(timeline, 6)).toEqual({ position: p(10), orientation: 0, status: { label: 'point 1', move: 'walk', wait: 2 } });
+    expect(sampleTimeline(timeline, 2.5)).toEqual({ position: p(5), orientation: 0, status: { label: 'point 1', move: 'walk' }, leg: 0 });
+    expect(sampleTimeline(timeline, 6)).toEqual({
+      position: p(10),
+      orientation: 0,
+      status: { label: 'point 1', move: 'walk', wait: 2 },
+      leg: 0,
+    });
+    expect(sampleTimeline(timeline, 9).leg).toBe(1);
     const halfway = sampleTimeline(timeline, 9);
     expect(halfway.position).toEqual(p(10, 4));
     expect(halfway.orientation).toBeCloseTo(Math.PI / 2);
@@ -21,7 +27,7 @@ describe('movement simulation timeline', () => {
     // next round
     expect(sampleTimeline(timeline, 13.5).position).toEqual(p(5));
     // played once: standing where it ended
-    expect(sampleTimeline(timeline, 13.5, false)).toEqual({ position: p(10, 8), orientation: Math.PI / 2 });
+    expect(sampleTimeline(timeline, 13.5, false)).toEqual({ position: p(10, 8), orientation: Math.PI / 2, leg: 3 });
   });
 
   it('tells how it moves, and what it does once there', () => {

@@ -168,6 +168,8 @@ const LIQUID_LOOK: Record<LiquidKind, [number, number]> = {
 const POINTER_NAME = 'pointer';
 /** Width of the sea level plane (yards): beyond what's drawn around the camera. */
 const SEA_LEVEL_SIZE = 6000;
+/** The colours of a simulation's points (see `setSimulationMarks`). */
+const SIMULATION_COLORS = { ok: 0x22c55e, detour: 0xfacc15, stuck: 0xef4444, current: 0x3b82f6, next: 0x9ca3af };
 const DEFAULT_LIGHTS = { sun: 1.6, hemisphere: 1.2, ambient: 0.35 };
 const ZONE_LIGHTS = { sun: 1.8, ambient: 1.6 };
 const DEFAULT_FOG = { near: 600, far: 1600 };
@@ -257,6 +259,8 @@ export class WorldScene {
   private groupKeys = new Set<string>();
   /** The movement simulation's moving copy of a spawn. */
   private readonly ghostGroup = new Group();
+  /** The points of a simulation, coloured by how it's going there. */
+  private readonly simulationMarks = new Group();
   /** Lines and labelled markers, see `setOverlays`. */
   private readonly overlayGroup = new Group();
   private readonly overlayMarkers: Mesh[] = [];
@@ -410,6 +414,7 @@ export class WorldScene {
       this.overlayGroup,
       this.boundaryGroup,
       this.ghostGroup,
+      this.simulationMarks,
     );
     this.boundaryGroup.name = 'boundaries';
     this.overlayGroup.name = 'overlays';
@@ -1499,6 +1504,25 @@ export class WorldScene {
     return true;
   }
 
+  /**
+   * Marks a simulation's points: done (green), done a long way round (yellow), with no way there (red), the one it's
+   * heading to (blue, bigger), the ones to come (grey).
+   */
+  setSimulationMarks(marks: { position: WorldPosition; state: 'ok' | 'detour' | 'stuck' | 'current' | 'next' }[]): void {
+    this.simulationMarks.children.forEach((child) => ((child as Mesh).material as Material).dispose());
+    this.simulationMarks.clear();
+    for (const { position, state } of marks) {
+      const mark = new Mesh(this.simulationMarkGeometry, new MeshBasicMaterial({ color: SIMULATION_COLORS[state], depthTest: false }));
+      const p = worldToScene({ ...position, z: position.z + 1 });
+      mark.position.set(p.x, p.y, p.z);
+      mark.scale.setScalar(state === 'current' ? 1.8 : 1);
+      mark.renderOrder = 4;
+      mark.raycast = () => undefined;
+      this.simulationMarks.add(mark);
+    }
+  }
+  private readonly simulationMarkGeometry = new SphereGeometry(0.5, 12, 8);
+
   /** Where the simulated creature is, while there is one. */
   ghostPosition(): WorldPosition | undefined {
     const ghost = this.ghostGroup.children[0];
@@ -1876,6 +1900,8 @@ export class WorldScene {
   dispose(): void {
     this.clearTerrain();
     this.terrainOverlay.dispose();
+    this.setSimulationMarks([]);
+    this.simulationMarkGeometry.dispose();
     this.terrainWireframe.dispose();
     this.seaLevel.geometry.dispose();
     (this.seaLevel.material as Material).dispose();

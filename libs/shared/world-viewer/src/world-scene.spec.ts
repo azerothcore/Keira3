@@ -1198,6 +1198,17 @@ describe('WorldScene', () => {
       lookDownAt(world, at(0, 0));
       expect(world.ghostNear(0, 0)).toBe(true);
       expect(world.ghostNear(0.5, 0.5)).toBe(false);
+      // its points, coloured by how it's going there, the current one bigger
+      world.setSimulationMarks([
+        { position: at(0, 0), state: 'ok' },
+        { position: at(5, 0), state: 'current' },
+      ]);
+      const marks = world.scene.children.find((child) => child.children.some((mark) => mark.renderOrder === 4)) as Group;
+      expect(marks.children.map((mark) => ((mark as Mesh).material as MeshBasicMaterial).color.getHex())).toEqual([0x22c55e, 0x3b82f6]);
+      expect(marks.children[1].scale.x).toBeCloseTo(1.8);
+      world.setSimulationMarks([]);
+      expect(marks.children).toHaveLength(0);
+      world.dispose();
     });
 
     it('picks nothing in the sky', () => {

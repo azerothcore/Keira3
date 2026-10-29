@@ -140,6 +140,11 @@ const LABEL_OFFSET = 14;
 const TOP_VIEW_OFFSET = 0.01;
 /** How high over the simulated creature its bubble is (yards). */
 const BUBBLE_HEIGHT = 3.5;
+/** A walked route this many times longer than the straight line went a long way round. */
+const DETOUR_RATIO = 1.25;
+type LegOutcome = 'ok' | 'detour' | 'stuck';
+const distance3d = (a: WorldPosition, b: WorldPosition): number => Math.hypot(b.x - a.x, b.y - a.y, b.z - a.z);
+const routeLength = (points: WorldPosition[]): number => points.slice(1).reduce((sum, p, i) => sum + distance3d(points[i], p), 0);
 const RIGHT_BUTTON = 2;
 /** Each Shift + wheel notch changes the camera speed by this factor. */
 const SPEED_STEP = 1.25;
@@ -1067,21 +1072,29 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       this.simulationFrame = undefined;
     }
     this.simulationStatus.set(undefined);
+    this.world.setSimulationMarks([]);
     if (!directory || !simulation || !this.world.setGhost(simulation.key)) {
       this.world.setGhost(undefined);
       this.requestRender();
       return;
     }
     const segments: { points: WorldPosition[]; leg: SimulationLeg }[] = [];
+    // how each leg went on the navigation mesh: fine, a long way round, or no way there
+    const outcomes: LegOutcome[] = [];
     let from = simulation.start;
     for (const leg of simulation.legs) {
       const walked = leg.fly ? undefined : await this.prober.walkPath(directory, from, leg.to);
       if (run !== this.simulationRun) {
         return;
       }
-      segments.push({ points: walked && walked.length > 1 ? walked : [from, leg.to], leg });
+      const found = !!walked && walked.length > 1;
+      outcomes.push(
+        leg.fly ? 'ok' : !found ? 'stuck' : routeLength(walked) > distance3d(from, leg.to) * DETOUR_RATIO + 1 ? 'detour' : 'ok',
+      );
+      segments.push({ points: found && !leg.straight ? walked : [from, leg.to], leg });
       from = leg.to;
     }
+    let shownLeg = -1;
     const timeline = simulationTimeline(simulation.start, segments);
     // the simulation's own clock: each frame adds the real time passed at the rate of the moment
     let elapsed = 0;
@@ -1093,6 +1106,18 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       const ended = !!simulation.once && elapsed >= timeline.duration;
       const at = sampleTimeline(timeline, elapsed, !simulation.once);
       this.world.moveGhost(at.position, at.orientation);
+      // the points: done (green, yellow when it went a long way round, red when it found no way), the one it's
+      // heading to (blue), the ones to come (grey)
+      const leg = at.leg ?? 0;
+      if (leg !== shownLeg) {
+        shownLeg = leg;
+        this.world.setSimulationMarks(
+          simulation.legs.map((l, i) => ({
+            position: l.to,
+            state: i < leg ? outcomes[i] : i === leg ? 'current' : 'next',
+          })),
+        );
+      }
       this.simulationStatus.set(ended || !at.status ? undefined : { ...at.status, elapsed });
       // a hover label over the moving copy follows what it does (and goes when it leaves the cursor)
       if (this.lastPointer && !this.hoverEvent) {

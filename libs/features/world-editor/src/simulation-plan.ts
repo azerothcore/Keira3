@@ -32,6 +32,8 @@ export function pathSimulation(
     wait: p.delay / 1000,
     fly: p.moveType === MOVE_LAND || p.moveType === MOVE_TAKE_OFF,
     run: p.moveType === MOVE_RUN,
+    // (creatures walk straight from one waypoint to the next)
+    straight: true,
     label: `point ${p.point}`,
     ...(actions.get(p.point)?.length ? { actions: actions.get(p.point) } : {}),
   }));

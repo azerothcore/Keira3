@@ -32,8 +32,10 @@
   background: rgba(0, 0, 0, 0.75);
   color: #fff;
   font-size: 12px;
-  // one line per detail
-  white-space: pre;
+  // one line per detail, long ones wrapped
+  white-space: pre-wrap;
+  max-width: 420px;
+  overflow-wrap: anywhere;
 }
 
 .world-viewer-probe-label {

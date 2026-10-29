@@ -99,6 +99,8 @@ export interface SimulationLeg {
   fly?: boolean;
   /** Running rather than walking. */
   run?: boolean;
+  /** Straight to the point, like a creature walking its waypoints (otherwise along the navigation mesh). */
+  straight?: boolean;
   /** Shown while on this leg (e.g. "point 3"). */
   label: string;
   /** What it does on arrival (its script, emotes, lines…), shown while there. */

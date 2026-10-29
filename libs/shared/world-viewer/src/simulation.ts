@@ -10,6 +10,8 @@ interface TimelineStep {
   orientation: number;
   status: SimulationStatus;
   waiting: boolean;
+  /** Which leg it's part of. */
+  leg: number;
 }
 
 export interface Timeline {
@@ -37,20 +39,29 @@ export function simulationTimeline(start: WorldPosition, segments: { points: Wor
   const steps: TimelineStep[] = [];
   let time = 0;
   let orientation = 0;
-  for (const { points, leg } of segments) {
+  segments.forEach(({ points, leg }, index) => {
     for (let i = 0; i + 1 < points.length; i++) {
       const [from, to] = [points[i], points[i + 1]];
       const duration = leg.speed > 0 ? distance(from, to) / leg.speed : 0;
       orientation = facing(from, to, orientation);
-      steps.push({ start: time, end: time + duration, from, to, orientation, status: legStatus(leg, false), waiting: false });
+      steps.push({ start: time, end: time + duration, from, to, orientation, status: legStatus(leg, false), waiting: false, leg: index });
       time += duration;
     }
     if (leg.wait > 0) {
       const at = points[points.length - 1];
-      steps.push({ start: time, end: time + leg.wait, from: at, to: at, orientation, status: legStatus(leg, true), waiting: true });
+      steps.push({
+        start: time,
+        end: time + leg.wait,
+        from: at,
+        to: at,
+        orientation,
+        status: legStatus(leg, true),
+        waiting: true,
+        leg: index,
+      });
       time += leg.wait;
     }
-  }
+  });
   return { steps, duration: time, start };
 }
 
@@ -59,14 +70,14 @@ export function sampleTimeline(
   timeline: Timeline,
   elapsed: number,
   loop = true,
-): { position: WorldPosition; orientation: number; status?: SimulationStatus } {
+): { position: WorldPosition; orientation: number; status?: SimulationStatus; leg?: number } {
   if (timeline.duration <= 0 || timeline.steps.length === 0) {
     return { position: timeline.start, orientation: 0 };
   }
   const last = timeline.steps[timeline.steps.length - 1];
   if (!loop && elapsed >= timeline.duration) {
-    // played once: standing where it ended
-    return { position: last.to, orientation: last.orientation };
+    // played once: standing where it ended, every leg done
+    return { position: last.to, orientation: last.orientation, leg: last.leg + 1 };
   }
   const t = elapsed % timeline.duration;
   // the last step ends at the duration, and a step of no length is never the one under way
@@ -78,5 +89,5 @@ export function sampleTimeline(
     z: step.from.z + (step.to.z - step.from.z) * f,
   };
   const status = step.waiting ? { ...step.status, wait: Math.ceil(step.end - t) } : step.status;
-  return { position, orientation: step.orientation, status };
+  return { position, orientation: step.orientation, status, leg: step.leg };
 }

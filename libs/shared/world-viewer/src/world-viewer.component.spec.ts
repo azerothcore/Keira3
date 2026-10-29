@@ -1147,6 +1147,41 @@ describe(WorldViewerComponent.name, () => {
       fixture.destroy();
     });
 
+    it('marks the points of a simulation as it goes: done, a long way round, no way there, current, to come', async () => {
+      let now = 0;
+      vi.spyOn(performance, 'now').mockImplementation(() => now);
+      const marks = vi.spyOn(WorldScene.prototype, 'setSimulationMarks');
+      const walk = vi
+        .spyOn(PathProber.prototype, 'walkPath')
+        // a long way round, no way at all, a straight way
+        .mockImplementationOnce((_d, from, to) => Promise.resolve([from, at(5, 30), to]))
+        .mockResolvedValueOnce(undefined)
+        .mockImplementationOnce((_d, from, to) => Promise.resolve([from, to]));
+      const { host, fixture, update } = await pickSetup();
+      await settle(fixture);
+      const states = () => (marks.mock.lastCall?.[0] ?? []).map((mark) => mark.state);
+      await update(() =>
+        host.simulation.set({
+          key: 'creature:7',
+          start: at(0, 0),
+          once: true,
+          legs: [
+            { to: at(10, 0), speed: 5, wait: 0, label: 'point 1', straight: true },
+            { to: at(20, 0), speed: 5, wait: 0, label: 'point 2' },
+            { to: at(30, 0), speed: 5, wait: 0, label: 'point 3' },
+          ],
+        }),
+      );
+      await settle(fixture);
+      expect(states()).toEqual(['current', 'next', 'next']);
+      now = 100_000;
+      flushFrames();
+      expect(states()).toEqual(['detour', 'stuck', 'ok']);
+      walk.mockRestore();
+      marks.mockRestore();
+      fixture.destroy();
+    });
+
     it('reports clicks on spawns', async () => {
       const { page, host, fixture } = await pickSetup();
       await settle(fixture);
