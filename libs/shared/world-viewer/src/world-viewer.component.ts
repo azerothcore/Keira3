@@ -35,7 +35,12 @@ import {
   serverAreaAt,
   perfFrame,
   perfTime,
+  logFact,
+  logProblem,
+  perfLogActive,
+  perfNote,
 } from '@keira/shared/wow-data';
+import { graphicsDescription, stateLine } from './viewer-log';
 import { Mesh, Object3D, Spherical, Vector3 } from 'three';
 import { MapControls } from 'three/addons/controls/MapControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
@@ -158,6 +163,8 @@ const ACTIVITY_POLL = 250;
 const CLOCK_CHECK = 60_000;
 /** How often (ms) the memory is measured (with the stats shown or a limit set), and the limits kept. */
 const MEMORY_CHECK = 2000;
+/** How often (ms) the log gets a line of what's shown and what it costs (while it's on). */
+const LOG_STATE_EVERY = 10_000;
 const MB = 1_000_000;
 /** How fast (radians per second) the camera turns around what it looks at (gamepad right stick); and how close to straight down or level it may look. */
 const TURN_SPEED = 1.5;
@@ -614,6 +621,9 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     this.compressedTextures = ['WEBGL_compressed_texture_s3tc', 'WEBGL_compressed_texture_s3tc_srgb'].every(
       (name) => !!this.renderer?.extensions?.has(name),
     );
+    logFact('graphics', graphicsDescription(this.renderer, this.compressedTextures));
+    canvas.addEventListener('webglcontextlost', this.onContextLost);
+    canvas.addEventListener('webglcontextrestored', this.onContextRestored);
     this.renderScale = this.renderSettings().renderScale;
     this.renderer.setPixelRatio(window.devicePixelRatio * this.renderScale);
 
@@ -703,6 +713,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     void this.prefetch.setMap(undefined);
     this.resizeObserver?.disconnect();
     this.host().nativeElement.removeEventListener('wheel', this.onSpeedWheel, { capture: true });
+    this.canvasRef().nativeElement.removeEventListener('webglcontextlost', this.onContextLost);
+    this.canvasRef().nativeElement.removeEventListener('webglcontextrestored', this.onContextRestored);
     this.gizmo.detach();
     this.gizmo.dispose();
     this.controls?.dispose();
@@ -1765,6 +1777,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       perfTime('render', () => this.renderer?.render(this.world.scene, this.world.camera));
       perfFrame();
       this.countFrame(performance.now() - began);
+      this.logState(now);
       this.updateStatus();
       this.updateProbeLabels();
       this.updatePathEndLabels();
@@ -1904,6 +1917,56 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       this.zoneId = zoneId;
       this.zoneChanged.emit(zoneId);
     }
+  }
+
+  /** The graphics card dropped the view (a driver reset, too much asked of it): it draws nothing until it's back. */
+  private readonly onContextLost = () =>
+    logProblem(
+      'error',
+      'the graphics card context was lost (driver reset, or out of graphics memory): nothing is drawn until it comes back',
+    );
+  private readonly onContextRestored = () => perfNote('the graphics card context is back');
+
+  /** Frames drawn since the log last had a state line, and when that was. */
+  private logWindow = { start: -1, frames: 0 };
+
+  /** Every little while (log on): where the camera is, what's loaded and drawn, and the memory it takes. */
+  private logState(now: number): void {
+    if (!perfLogActive()) {
+      this.logWindow = { start: -1, frames: 0 };
+      return;
+    }
+    const window = this.logWindow;
+    window.frames++;
+    if (window.start < 0) {
+      window.start = now;
+    }
+    if (now - window.start < LOG_STATE_EVERY) {
+      return;
+    }
+    const info = this.renderer?.info;
+    const heap = (performance as unknown as { memory?: { usedJSHeapSize: number } }).memory?.usedJSHeapSize;
+    perfNote(
+      stateLine({
+        map: this.mapDirectory(),
+        camera: this.center,
+        frames: window.frames,
+        seconds: (now - window.start) / 1000,
+        calls: info?.render.calls ?? 0,
+        triangles: info?.render.triangles ?? 0,
+        geometries: info?.memory.geometries ?? 0,
+        textures: info?.memory.textures ?? 0,
+        programs: info?.programs?.length ?? 0,
+        tiles: this.world.terrainKeys.length,
+        buildings: this.objects.placedCount,
+        props: this.doodads.drawnCount,
+        models: this.spawnModels.shownCount,
+        spawns: this.spawns().length,
+        ram: this.client.memoryUsage() ?? (heap === undefined ? undefined : { used: heap }),
+        gpu: sceneGpuBytes(this.world.scene, this.world.camera.layers),
+      }),
+    );
+    this.logWindow = { start: now, frames: 0 };
   }
 
   /** Frames drawn, and the time spent drawing them, since the stats were last shown. */

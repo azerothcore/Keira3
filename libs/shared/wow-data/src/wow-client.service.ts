@@ -38,7 +38,7 @@ import { clientIdentity, WowDataCacheService } from './wow-data-cache.service';
 import { WowDataSettingsService } from './wow-data-settings.service';
 import { StormArchive, WOW_NATIVE_API, WowNativeApi } from './wow-native-api';
 import { WOW_PARSER } from './wow-parser';
-import { perfNote, perfTime } from './perf-log';
+import { logFact, perfTime } from './perf-log';
 import { FactionData, parseFactions, parseFactionTemplates } from './factions';
 
 /** Disk space used by the cache of this client: per map (by lower-case directory), for buildings, and in total. */
@@ -945,7 +945,12 @@ export class WowClientService {
       storm.FS.unmount(mountpoint);
       throw new Error(`None of the MPQ archives in ${dataPath} could be opened.`);
     }
-    perfNote(`client opened: ${opened.length} archives in ${(performance.now() - began).toFixed(0)}ms`);
+    logFact(
+      'game client',
+      `${clientPath} | locale ${locale ?? 'none'}${preferredLocale && preferredLocale !== locale ? ` (Config.wtf asks for ${preferredLocale})` : ''} | ` +
+        `${opened.length} of ${archiveNames.length} archives opened in ${(performance.now() - began).toFixed(0)}ms, lowest priority first: ` +
+        opened.join(', '),
+    );
     return { clientPath, mountpoint, archives, archiveNames: opened, identity: clientIdentity(clientPath, opened) };
   }
 

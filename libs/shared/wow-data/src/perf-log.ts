@@ -1,8 +1,11 @@
 /**
- * The world editor's performance log (View > Write a performance log): every task that held up the window for 50 ms
- * or more, with the measured work it contained; anything measured that took 30 ms or more; and every 2 seconds the
- * frames drawn and where the time went. Off unless a writer is set, and then cheap: measuring is a couple of clock
- * reads.
+ * The world editor's log (View > Write a performance log). At the top, what's needed to make sense of the rest: Keira
+ * and the system, the graphics card, the game client, the server files, the cache and the database (`logFact`), and
+ * the warnings and errors since Keira started. Then as it goes: what the user did that loads or changes things, every
+ * warning and error (`logProblem`, and anything written to the console as one, and errors nothing caught), every task
+ * that held up the window for 50 ms or more with the measured work it contained, anything measured that took 30 ms or
+ * more, and every 2 seconds the frames drawn and where the time went. Off unless a writer is set, and then cheap:
+ * measuring is a couple of clock reads.
  */
 
 interface Span {
@@ -17,6 +20,12 @@ export const PERF_SLOW_MS = 30;
 export const PERF_FLUSH_MS = 2000;
 /** How long (ms) measured work is kept to tell what a long task was made of. */
 const SPAN_KEEP_MS = 5000;
+/** How many warnings and errors are kept while the log is off (the most recent ones). */
+export const PROBLEMS_KEPT = 200;
+/** How much of a logged object is written (characters). */
+const DESCRIBED_LENGTH = 1000;
+/** How many lines of a stack are written. */
+const STACK_LINES = 8;
 
 let write: ((text: string) => void) | undefined;
 let timer: ReturnType<typeof setInterval> | undefined;
@@ -25,6 +34,10 @@ const spans: Span[] = [];
 const lines: string[] = [];
 const totals = new Map<string, { ms: number; count: number }>();
 let frames = 0;
+/** What the log starts with, by name: kept up to date while it's off, so each new file has it. */
+const facts = new Map<string, string>();
+/** The latest warnings and errors, kept while the log is off too: turning it on after one still shows it. */
+const problems: string[] = [];
 
 const time = () => new Date().toISOString().slice(11, 23);
 const summary = (sums: Map<string, { ms: number; count: number }>, limit = Infinity) =>
@@ -54,6 +67,10 @@ export function setPerfLog(writer: ((text: string) => void) | undefined): void {
     return;
   }
   lines.push(`===== ${new Date().toISOString()} world editor performance log =====`);
+  facts.forEach((text, name) => lines.push(`${name}: ${text}`));
+  if (problems.length) {
+    lines.push(`----- the last ${problems.length} warnings and errors before this log -----`, ...problems, '-----');
+  }
   observer = observeLongTasks((start, duration) => longTask(start, duration));
   timer = setInterval(flushPerfLog, PERF_FLUSH_MS);
 }
@@ -87,6 +104,106 @@ export function perfNote(text: string): void {
   if (write) {
     lines.push(`${time()} ${text}`);
   }
+}
+
+/**
+ * Something the log starts with (Keira's version, the graphics card, the client opened…), written now too if it's on.
+ * Set again under the same name to replace it.
+ */
+export function logFact(name: string, text: string): void {
+  facts.set(name, text);
+  perfNote(`${name}: ${text}`);
+}
+
+/** A warning or an error: written if the log is on, and kept for the next log if not. */
+export function logProblem(level: 'warning' | 'error', text: string): void {
+  const line = `${time()} ${level.toUpperCase()} ${text}`;
+  problems.push(line);
+  if (problems.length > PROBLEMS_KEPT) {
+    problems.shift();
+  }
+  if (write) {
+    lines.push(line);
+  }
+}
+
+/** An error (with the top of its stack), or anything else logged, as text for the log. */
+export function describeError(value: unknown): string {
+  if (value instanceof Error) {
+    const stack = value.stack
+      ?.split('\n')
+      .slice(1, STACK_LINES + 1)
+      .map((line) => line.trim())
+      .join(' | ');
+    return `${value.name}: ${value.message}${stack ? ` [${stack}]` : ''}`;
+  }
+  if (typeof value === 'string') {
+    return value;
+  }
+  try {
+    const text = JSON.stringify(value) ?? String(value);
+    return text.length > DESCRIBED_LENGTH ? `${text.slice(0, DESCRIBED_LENGTH)}…` : text;
+  } catch {
+    return String(value);
+  }
+}
+
+let captures = 0;
+let restoreCapture: (() => void) | undefined;
+
+/**
+ * Writes down every console warning and error, uncaught error and unhandled rejection (as well as passing them on as
+ * before), until the returned function is called; nested calls share the one capture.
+ */
+export function captureProblems(target: Pick<Window, 'addEventListener' | 'removeEventListener'> = window): () => void {
+  if (captures++ === 0) {
+    const original = { warn: console.warn, error: console.error };
+    const warn = (...args: unknown[]) => {
+      logProblem('warning', args.map(describeError).join(' '));
+      original.warn.apply(console, args);
+    };
+    const error = (...args: unknown[]) => {
+      logProblem('error', args.map(describeError).join(' '));
+      original.error.apply(console, args);
+    };
+    const onError = (event: Event) => {
+      const { error: thrown, message, filename, lineno, colno } = event as ErrorEvent;
+      logProblem('error', `uncaught ${describeError(thrown ?? message)}${filename ? ` at ${filename}:${lineno}:${colno}` : ''}`);
+    };
+    const onRejection = (event: Event) =>
+      logProblem('error', `unhandled rejection ${describeError((event as PromiseRejectionEvent).reason)}`);
+    console.warn = warn;
+    console.error = error;
+    target.addEventListener('error', onError);
+    target.addEventListener('unhandledrejection', onRejection);
+    restoreCapture = () => {
+      // (left alone if something else replaced them since)
+      if (console.warn === warn) {
+        console.warn = original.warn;
+      }
+      if (console.error === error) {
+        console.error = original.error;
+      }
+      target.removeEventListener('error', onError);
+      target.removeEventListener('unhandledrejection', onRejection);
+    };
+  }
+  let released = false;
+  return () => {
+    if (!released) {
+      released = true;
+      if (--captures === 0) {
+        restoreCapture?.();
+        restoreCapture = undefined;
+      }
+    }
+  };
+}
+
+/** Forgets the facts and the problems kept (for tests). */
+export function resetLogMemory(): void {
+  facts.clear();
+  problems.length = 0;
 }
 
 /** Counts a drawn frame. */

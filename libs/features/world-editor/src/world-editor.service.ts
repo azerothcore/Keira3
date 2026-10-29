@@ -1,7 +1,7 @@
 import { inject, Service } from '@angular/core';
 import { Season, SEASONS, WeatherChances } from './weather';
 import { TableRow } from '@keira/shared/constants';
-import { MysqlQueryService } from '@keira/shared/db-layer';
+import { MysqlQueryService, MysqlService } from '@keira/shared/db-layer';
 import { WorldBounds, WorldPosition } from '@keira/shared/wow-data';
 import { firstValueFrom } from 'rxjs';
 import {
@@ -57,6 +57,7 @@ const eventOf = (table: string, guid: string): string =>
 @Service()
 export class WorldEditorService {
   private readonly queryService = inject(MysqlQueryService);
+  private readonly mysqlService = inject(MysqlService);
 
   /** Spawns around `center`, and also everywhere in `region` when given (Load the whole zone, an area of the world map). */
   async loadSpawns(map: number, center: WorldPosition, radius = SPAWN_LOAD_RADIUS, region?: WorldBounds): Promise<SpawnRecord[]> {
@@ -607,6 +608,22 @@ export class WorldEditorService {
     );
     const used = Number(rows?.[0]?.used ?? 0) > 0 || reserved.includes(preferred);
     return used ? Math.max(Number(rows?.[0]?.max ?? 0), ...reserved) + 1 : preferred;
+  }
+
+  /**
+   * The database the editor works on, for the log: where it is (never the password), the server's version and the
+   * core and database versions AzerothCore wrote in `version` (each left out when it can't be read).
+   */
+  async describeDatabase(): Promise<string> {
+    const config = this.mysqlService.config ?? {};
+    const where = `${config.user ?? '?'}@${config.host ?? '?'}:${config.port ?? '?'}/${config.database ?? '?'}${config.sshEnabled ? ' (through SSH)' : ''}`;
+    const read = async (sql: string) => (await firstValueFrom(this.queryService.query<TableRow>(sql)).catch(() => undefined))?.[0];
+    const [server, core] = await Promise.all([read('SELECT VERSION() AS v'), read('SELECT core_version, db_version FROM version')]);
+    return [
+      where,
+      server ? `MySQL ${server['v']}` : 'MySQL version unknown',
+      core ? `${core['core_version']} | ${core['db_version']}` : 'no `version` table',
+    ].join(' | ');
   }
 
   async getMaxGuid(type: SpawnType): Promise<number> {

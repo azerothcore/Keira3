@@ -34,6 +34,7 @@ import {
   WorldWeather,
 } from '@keira/shared/world-viewer';
 import {
+  resetLogMemory,
   flushPerfLog,
   perfLogActive,
   perfNote,
@@ -49,7 +50,7 @@ import { DebugHtmlElement, PageObjectModel, typeInElement } from 'ngx-page-objec
 import { ClipboardService } from 'ngx-clipboard';
 import { ElectronService } from '@keira/shared/common-services';
 import { ToastrService } from 'ngx-toastr';
-import { WorldEditorComponent } from './world-editor.component';
+import { buildKind, WorldEditorComponent } from './world-editor.component';
 import { SpawnRecord, WaypointRecord } from './world-editor.model';
 import { WorldEditorService } from './world-editor.service';
 import { WORLD_EDITOR_LINKS } from '@keira/shared/constants';
@@ -259,13 +260,14 @@ describe(WorldEditorComponent.name, () => {
       getEntryDisplay: vi.fn(),
       searchTele: vi.fn(),
       execute: vi.fn(),
+      describeDatabase: vi.fn(),
     },
     toastr: { error: vi.fn(), warning: vi.fn(), success: vi.fn() },
     clipboard: { copyFromContent: vi.fn() },
     electron: {
       isElectron: vi.fn(),
       ipcRenderer: { send: vi.fn() },
-      fs: { appendFileSync: vi.fn() },
+      fs: { appendFileSync: vi.fn(), existsSync: vi.fn() },
       childProcess: { execSync: vi.fn(() => 'abc1234\n'), spawn: vi.fn(() => ({ unref: vi.fn() })) },
     },
   };
@@ -410,6 +412,8 @@ describe(WorldEditorComponent.name, () => {
     mocks.service.getEntryDisplay.mockResolvedValue({ displayId: 1, scale: 1 });
     mocks.service.searchTele.mockResolvedValue([{ id: 7, name: 'Northshire', map: 1, x: 1, y: 2, z: 3 }]);
     mocks.service.execute.mockResolvedValue(undefined);
+    mocks.service.describeDatabase.mockResolvedValue('root@localhost:3306/acore_world | MySQL 8.4.0 | AzerothCore rev. 1 | ACDB 335.1');
+    mocks.electron.fs.existsSync.mockReturnValue(true);
   });
 
   describe('setup & navigation', () => {
@@ -658,7 +662,10 @@ describe(WorldEditorComponent.name, () => {
       expect(page.text('preload-progress')).toBe('0 / 2 (0%)');
       finishScan();
       await settle(page);
-      expect(warn).toHaveBeenCalledWith('[World Editor] Could not read the tiles of Azeroth: bad WDT');
+      expect(warn).toHaveBeenCalledWith(
+        '[World Editor] Could not read the tiles of Azeroth:',
+        expect.objectContaining({ message: 'bad WDT' }),
+      );
       expect(mocks.client.preload).toHaveBeenCalledTimes(1);
       expect(mocks.client.preload.mock.calls[0][0]).toBe('Kalimdor');
 
@@ -4002,6 +4009,90 @@ describe(WorldEditorComponent.name, () => {
       // stops with the editor
       fixture.destroy();
       expect(perfLogActive()).toBe(false);
+    });
+
+    it('starts the log with Keira, the system, the folders, the cache and the database, and writes what is done and what fails', async () => {
+      resetLogMemory();
+      const versions = process.versions;
+      Object.defineProperty(process, 'versions', { value: { ...versions, electron: '39.0.0', chrome: '142.0' }, configurable: true });
+      Object.defineProperty(process, 'getSystemVersion', { value: () => '10.0.26100', configurable: true });
+      mocks.electron.fs.existsSync.mockImplementation((path: string) => {
+        if (path === '/srv/dbc') {
+          throw new Error('EACCES');
+        }
+        return path !== '/srv/mmaps';
+      });
+      try {
+        const { page } = await setup({ cacheRoot: '/cache' });
+        TestBed.inject(WowDataSettingsService).save({ clientPath: '/wow', serverDataPath: '/srv' });
+        await loadArea(page);
+        page.click('view-toggle');
+        page.fixture.detectChanges();
+        page.click('view-perf-log');
+        await settle(page);
+        page.viewer().picked.emit({ type: 'spawn', key: 'creature:1', position: { x: 0, y: 0, z: 0 } });
+        page.viewer().objectMoved.emit({ key: 'creature:1', position: { x: 1, y: 2, z: 3 }, orientation: 0 });
+        await settle(page);
+        mocks.service.execute.mockRejectedValueOnce(new Error('Duplicate entry'));
+        page.click('execute-sql');
+        await settle(page);
+        page.click('execute-sql');
+        await settle(page);
+        page.chooseMap(1);
+        await settle(page);
+        mocks.service.loadSpawns.mockRejectedValueOnce(new Error('connection lost'));
+        page.viewer().centerChanged.emit({ ...CENTER, x: CENTER.x + 2000 });
+        await settle(page);
+        console.warn('[World Editor] Could not read a.blp');
+        flushPerfLog();
+        const written = () => mocks.electron.fs.appendFileSync.mock.calls.map((call) => call[1] as string).join('');
+        expect(written()).toContain(`keira: ${packageInfo.version} | commit abc1234 | `);
+        expect(written()).toMatch(/\| (development|release) build/);
+        expect(buildKind(false)).toBe('release');
+        expect(buildKind(true)).toBe('development');
+        expect(written()).toMatch(
+          /system: .* \| Electron 39\.0\.0, Chrome 142\.0, Node [\d.]+ \| OS version 10\.0\.26100 \| \d+ threads \| screen \d+×\d+/,
+        );
+        expect(written()).toContain(
+          'folders: client /wow (Data found) | server data /srv (maps yes, vmaps yes, mmaps MISSING, dbc MISSING)',
+        );
+        expect(written()).toContain('cache: /cache | up to 10.0 GB');
+        expect(written()).toContain('database: root@localhost:3306/acore_world | MySQL 8.4.0');
+        expect(written()).toContain('selected: creature:1 | tool select');
+        expect(written()).toMatch(/ERROR executing 1 changes failed \(rolled back\): Error: Duplicate entry .*\| Move creature 1/);
+        expect(written()).toContain('executed 1 changes: Move creature 1 (Deputy Willem)');
+        expect(written()).toMatch(/map: 1 \S+/);
+        expect(written()).toMatch(/spawns loaded: \d+ creatures, \d+ gameobjects, \d+ waypoints, \d+ other paths around/);
+        expect(written()).toMatch(/ERROR World Editor: Error: connection lost/);
+        expect(written()).toContain('WARNING [World Editor] Could not read a.blp');
+
+        // started again: without Electron's details, folders, cache or database
+        Object.defineProperty(process, 'versions', { value: versions, configurable: true });
+        delete (process as { getSystemVersion?: unknown }).getSystemVersion;
+        TestBed.inject(WowDataSettingsService).save({ clientPath: '', serverDataPath: '' });
+        TestBed.inject(WowDataCacheService).setEnabled(false);
+        mocks.service.describeDatabase.mockRejectedValueOnce(new Error('not connected'));
+        mocks.electron.fs.appendFileSync.mockClear();
+        page.click('view-perf-log');
+        await settle(page);
+        page.click('view-perf-log');
+        await settle(page);
+        flushPerfLog();
+        expect(written()).not.toContain('Electron');
+        expect(written()).not.toContain('OS version');
+        expect(written()).toContain('folders: client not set (Data MISSING) | server data not set');
+        expect(written()).toContain('cache: turned off');
+        expect(written()).toContain('database: could not be described: Error: not connected');
+        // the warnings and errors from before, at the top
+        expect(written()).toContain('warnings and errors before this log');
+        page.click('view-perf-log');
+        await settle(page);
+      } finally {
+        Object.defineProperty(process, 'versions', { value: versions, configurable: true });
+        delete (process as { getSystemVersion?: unknown }).getSystemVersion;
+        TestBed.inject(WowDataCacheService).setEnabled(true);
+        resetLogMemory();
+      }
     });
 
     it('names the performance log "release" when Keira is not run from a checkout, asking git once', async () => {

@@ -18,6 +18,7 @@ import {
   MeshLambertMaterial,
   Object3D,
   Quaternion,
+  Raycaster,
   ShaderMaterial,
   SphereGeometry,
   SRGBColorSpace,
@@ -174,6 +175,9 @@ describe('WorldScene', () => {
       world.setSeaLevel(true, at(10, 20, 300));
       expect(sea.visible).toBe(true);
       expect(sea.position.toArray()).toEqual(Object.values(worldToScene(at(10, 20, 0))));
+      // never picked (clicks go through to what's under the water)
+      const down = new Raycaster(new Vector3(sea.position.x, 500, sea.position.z), new Vector3(0, -1, 0));
+      expect(down.intersectObject(sea)).toEqual([]);
       world.dispose();
     });
 
@@ -1212,6 +1216,9 @@ describe('WorldScene', () => {
       const marks = world.scene.children.find((child) => child.children.some((mark) => mark.renderOrder === 4)) as Group;
       expect(marks.children.map((mark) => ((mark as Mesh).material as MeshBasicMaterial).color.getHex())).toEqual([0x22c55e, 0x3b82f6]);
       expect(marks.children[1].scale.x).toBeCloseTo(1.8);
+      // never picked
+      const mark = marks.children[0];
+      expect(new Raycaster(mark.position.clone().add(new Vector3(0, 50, 0)), new Vector3(0, -1, 0)).intersectObject(mark)).toEqual([]);
       world.setSimulationMarks([]);
       expect(marks.children).toHaveLength(0);
       world.dispose();

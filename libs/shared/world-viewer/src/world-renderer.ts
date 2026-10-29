@@ -11,6 +11,8 @@ export interface WorldRenderer {
   extensions?: { has(name: string): boolean };
   /** What the last frame drew and what's on the graphics card (for the performance stats). */
   info?: { render: { calls: number; triangles: number }; memory: { geometries: number; textures: number }; programs: unknown[] | null };
+  /** Its WebGL context (to tell the graphics card in the log). */
+  getContext?(): Pick<WebGLRenderingContext, 'getExtension' | 'getParameter' | 'RENDERER' | 'VENDOR' | 'VERSION' | 'MAX_TEXTURE_SIZE'>;
 }
 
 export type WorldRendererFactory = (canvas: HTMLCanvasElement) => WorldRenderer;

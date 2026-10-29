@@ -7,6 +7,7 @@ import {
   afterNextRender,
   ChangeDetectionStrategy,
   DestroyRef,
+  isDevMode,
   Injector,
   Component,
   computed,
@@ -85,6 +86,10 @@ import {
   perfLogActive,
   perfNote,
   perfLogFileName,
+  captureProblems,
+  describeError,
+  logFact,
+  logProblem,
   describeFaction,
   FactionData,
   WowDataCacheService,
@@ -389,6 +394,11 @@ const BOUNDARY_COLORS = [0xff9ff3, 0x48dbfb, 0xfeca57, 0x1dd1a1, 0x5f27cd, 0xff6
 /** Flight masters and flight paths (their own layer) among the travel overlays. */
 const isFlight = (key: string): boolean => key.startsWith('flight:') || key.startsWith('taxi:');
 
+/** The kind of build Keira is (for the log): a development one, or a release (production) one. */
+export function buildKind(dev = isDevMode()): 'development' | 'release' {
+  return dev ? 'development' : 'release';
+}
+
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-world-editor',
@@ -436,11 +446,96 @@ export class WorldEditorComponent implements OnInit {
     const folder = this.perfLogOn() ? this.perfLogPath() : undefined;
     untracked(() => {
       const path = folder && `${folder}/${perfLogFileName(new Date(), this.gitCommit(), packageInfo.version)}`;
+      if (path) {
+        this.logStartFacts();
+      }
       setPerfLog(path ? (text) => this.electron.fs.appendFileSync(path, text) : undefined);
       this.loggedSettings = undefined;
       this.logSettings();
     });
   });
+  /** Warnings and errors (the console's, and the ones nothing caught) go in the log while the editor is open. */
+  private readonly stopCapture = (() => {
+    const release = captureProblems();
+    inject(DestroyRef).onDestroy(release);
+    return release;
+  })();
+  /** What the log starts with: Keira and the system, the game data and server folders, the cache and the database. */
+  private logStartFacts(): void {
+    const process = (globalThis as { process?: { versions?: Record<string, string>; getSystemVersion?: () => string } }).process;
+    const versions = process?.versions;
+    logFact('keira', `${packageInfo.version} | commit ${this.gitCommit()} | ${buildKind()} build`);
+    logFact(
+      'system',
+      [
+        navigator.userAgent,
+        ...(versions?.['electron'] ? [`Electron ${versions['electron']}, Chrome ${versions['chrome']}, Node ${versions['node']}`] : []),
+        ...(process?.getSystemVersion ? [`OS version ${process.getSystemVersion()}`] : []),
+        `${navigator.hardwareConcurrency} threads`,
+        `screen ${screen.width}×${screen.height}`,
+      ].join(' | '),
+    );
+    const { clientPath, serverDataPath } = this.settings.paths();
+    const exists = (path: string) => {
+      try {
+        return this.electron.fs.existsSync(path);
+      } catch {
+        return false;
+      }
+    };
+    const serverFolders = ['maps', 'vmaps', 'mmaps', 'dbc'].map(
+      (folder) => `${folder} ${exists(`${serverDataPath}/${folder}`) ? 'yes' : 'MISSING'}`,
+    );
+    logFact(
+      'folders',
+      `client ${clientPath || 'not set'} (Data ${clientPath && exists(`${clientPath}/Data`) ? 'found' : 'MISSING'}) | ` +
+        `server data ${serverDataPath ? `${serverDataPath} (${serverFolders.join(', ')})` : 'not set'}`,
+    );
+    logFact(
+      'cache',
+      // (the log lives in the cache's folder: there is one)
+      this.cache.enabled() ? `${this.cache.root()} | up to ${(this.cache.maxBytes() / 1e9).toFixed(1)} GB` : 'turned off',
+    );
+    void this.service.describeDatabase().then(
+      (text) => logFact('database', text),
+      (error) => logFact('database', `could not be described: ${describeError(error)}`),
+    );
+  }
+  /** Where the editor is, and what's selected, as it changes. */
+  private readonly logWhere = effect(() => {
+    const id = this.mapId();
+    const directory = this.mapDirectory();
+    untracked(() => {
+      const map = this.maps().find((m) => m.id === id);
+      perfNote(`map: ${id} ${map?.name ?? '?'} (${directory ?? 'no directory'})`);
+    });
+  });
+  private readonly logZone = effect(() => {
+    const zoneId = this.zoneId();
+    untracked(() => perfNote(`zone: ${zoneId} ${this.zones().find((zone) => zone.areaId === zoneId)?.name ?? ''}`.trim()));
+  });
+  private readonly logSelection = effect(() => {
+    const key = this.selectedKey();
+    const tool = this.tool();
+    untracked(() => perfNote(`selected: ${key ?? '-'} | tool ${tool}`));
+  });
+  /** An error shown to the user, and written in the log. */
+  private showError(error: unknown, title = 'World Editor'): void {
+    logProblem('error', `${title}: ${describeError(error)}`);
+    this.toastr.error((error as Error).message, title);
+  }
+  /** A warning shown to the user, and written in the log. */
+  private showWarning(message: string, title = 'World Editor'): void {
+    logProblem('warning', `${title}: ${message}`);
+    this.toastr.warning(message, title);
+  }
+  /** For something read that the editor does without when it fails: `fallback`, with the reason in the console (so the log). */
+  private quietly<T>(what: string, fallback: T): (error: unknown) => T {
+    return (error) => {
+      console.warn(`[World Editor] Could not ${what}:`, error);
+      return fallback;
+    };
+  }
   /** The settings in use go in the performance log when it starts and whenever they change. */
   private readonly perfSettings = effect(() => {
     this.renderSettings.settings();
@@ -860,7 +955,7 @@ export class WorldEditorComponent implements OnInit {
         this.transportBuildings.set(buildings);
       }
     } catch (error) {
-      this.toastr.error((error as Error).message, 'World Editor');
+      this.showError(error);
     }
   }
 
@@ -1362,7 +1457,7 @@ export class WorldEditorComponent implements OnInit {
       void this.client
         .getSkyboxes()
         .then((skyboxes) => this.skyboxes.set(skyboxes))
-        .catch(() => undefined);
+        .catch(this.quietly('list the skyboxes', undefined));
     }
   }
   /** Every skybox model of the client, for View > Skybox. */
@@ -1617,7 +1712,7 @@ export class WorldEditorComponent implements OnInit {
       }
     } catch (error) {
       this.weatherRoll.set(undefined);
-      this.toastr.error((error as Error).message, 'World Editor');
+      this.showError(error);
     }
   }
 
@@ -1716,7 +1811,7 @@ export class WorldEditorComponent implements OnInit {
     try {
       this.electron.childProcess.spawn(opener, [path as string], { detached: true, stdio: 'ignore' }).unref();
     } catch (error) {
-      this.toastr.error((error as Error).message, 'World Editor');
+      this.showError(error);
     }
   }
 
@@ -1749,8 +1844,10 @@ export class WorldEditorComponent implements OnInit {
     this.cacheFull.set(undefined);
     this.preloading.set({ label: '', directory: '', done: 0, total: 0, map: 0, maps: 0 });
     let tileCount = 0;
+    const began = performance.now();
     try {
       const jobs = await this.preloadJobs(scope);
+      perfNote(`preload (${scope}): ${jobs.map((job) => `${job.name} ${job.tiles.length} tiles`).join(', ') || 'nothing to preload'}`);
       for (const [index, job] of jobs.entries()) {
         if (this.preloadCancelled) {
           break;
@@ -1767,17 +1864,21 @@ export class WorldEditorComponent implements OnInit {
         );
         await this.refreshCacheUsage();
         if (!completed) {
+          logProblem('warning', `preload stopped: the cache is full (${(this.cache.maxBytes() / 1e9).toFixed(1)} GB) at ${label}`);
           // ask to make room and go on (what's cached already is skipped quickly)
           this.cacheFull.set({ scope, maxGb: this.cache.maxBytes() / 1_000_000_000 });
           return;
         }
         tileCount += job.tiles.length;
       }
+      perfNote(
+        `preload ${this.preloadCancelled ? 'cancelled' : 'done'}: ${tileCount} tiles in ${((performance.now() - began) / 1000).toFixed(0)}s`,
+      );
       if (!this.preloadCancelled) {
         this.toastr.success(`Preloaded ${tileCount} tiles.`, 'World Editor');
       }
     } catch (error) {
-      this.toastr.error((error as Error).message, 'World Editor');
+      this.showError(error);
     } finally {
       this.preloading.set(undefined);
       await this.refreshCacheUsage();
@@ -1794,10 +1895,7 @@ export class WorldEditorComponent implements OnInit {
       }
       this.preloading.set({ label: `${map.name}…`, directory: '', done: index, total: maps.length, map: 0, maps: 0 });
       // one unreadable map shouldn't stop the others
-      let tiles = await this.client.getMapTiles(map.directory).catch((error: Error) => {
-        console.warn(`[World Editor] Could not read the tiles of ${map.directory}: ${error.message}`);
-        return [];
-      });
+      let tiles = await this.client.getMapTiles(map.directory).catch(this.quietly<TileCoord[]>(`read the tiles of ${map.directory}`, []));
       const zone = this.zones().find((z) => z.areaId === this.zoneId());
       if (scope === 'zone' && zone) {
         const inZone = new Set(tilesInBounds(zone.bounds, { tx: 32, ty: 32 }).map(tileKey));
@@ -1820,10 +1918,7 @@ export class WorldEditorComponent implements OnInit {
     }
     try {
       this.maps.set(await this.client.getMaps());
-      void this.client.getFactions().then(
-        (data) => this.factionData.set(data),
-        () => undefined,
-      );
+      void this.client.getFactions().then((data) => this.factionData.set(data), this.quietly('read the factions', undefined));
       if (!this.focus()) {
         await this.focusMapCenter();
       }
@@ -1831,7 +1926,7 @@ export class WorldEditorComponent implements OnInit {
       void this.reloadSpawns();
       await this.loadZones(true);
     } catch (error) {
-      this.toastr.error((error as Error).message, 'World Editor');
+      this.showError(error);
     }
   }
 
@@ -1982,7 +2077,7 @@ export class WorldEditorComponent implements OnInit {
    */
   private async focusLandingSpot(): Promise<void> {
     const mapId = this.mapId();
-    const spot = await this.service.loadLandingSpot(mapId).catch(() => undefined);
+    const spot = await this.service.loadLandingSpot(mapId).catch(this.quietly(`read where to arrive on map ${mapId}`, undefined));
     if (mapId !== this.mapId()) {
       return;
     }
@@ -2020,7 +2115,9 @@ export class WorldEditorComponent implements OnInit {
     try {
       const triggers = await this.client.getAreaTriggers(mapId);
       // a database without one of the areatrigger_* tables still shows the triggers
-      const info = await this.service.loadAreaTriggerInfo(triggers.map((trigger) => trigger.id)).catch(() => new Map<number, string[]>());
+      const info = await this.service
+        .loadAreaTriggerInfo(triggers.map((trigger) => trigger.id))
+        .catch(this.quietly('read the area triggers', new Map<number, string[]>()));
       if (mapId === this.mapId()) {
         this.areaTriggerList.set(triggers);
         this.areaTriggerInfo.set(info);
@@ -2029,18 +2126,18 @@ export class WorldEditorComponent implements OnInit {
       await this.loadTravel(mapId, triggers);
     } catch (error) {
       this.areaTriggerList.set([]);
-      this.toastr.error((error as Error).message, 'World Editor');
+      this.showError(error);
     }
   }
 
   /** Graveyards, teleports, flight masters and flight paths of a map (each left out when it can't be read). */
   private async loadTravel(mapId: number, triggers: AreaTriggerInfo[]): Promise<void> {
-    const none = <T>(): T[] => [];
+    const none = <T>(what: string) => this.quietly<T[]>(`read the ${what} of map ${mapId}`, []);
     const [graveyards, teleports, taxiNodes, taxiPaths] = await Promise.all([
-      this.service.loadGraveyards(mapId).catch(none<Graveyard>),
-      this.service.loadTeleports(triggers.map((trigger) => trigger.id)).catch(none<Teleport>),
-      this.client.getTaxiNodes(mapId).catch(none<TaxiNode>),
-      this.client.getTaxiPaths(mapId).catch(none<TaxiPath>),
+      this.service.loadGraveyards(mapId).catch(none<Graveyard>('graveyards')),
+      this.service.loadTeleports(triggers.map((trigger) => trigger.id)).catch(none<Teleport>('teleports')),
+      this.client.getTaxiNodes(mapId).catch(none<TaxiNode>('flight masters')),
+      this.client.getTaxiPaths(mapId).catch(none<TaxiPath>('flight paths')),
     ]);
     if (mapId === this.mapId()) {
       this.travel.set({ mapId, graveyards, teleports, taxiNodes, taxiPaths });
@@ -2049,10 +2146,12 @@ export class WorldEditorComponent implements OnInit {
 
   /** The boss boundaries of a map, and the creatures they apply to (none when the scripts or the database can't tell). */
   private async loadBossBoundaries(mapId: number): Promise<void> {
-    const boundaries = await this.client.getBossBoundaries(mapId).catch((): BossBoundary[] => []);
+    const boundaries = await this.client
+      .getBossBoundaries(mapId)
+      .catch(this.quietly<BossBoundary[]>(`read the boss boundaries of map ${mapId}`, []));
     const entries = await this.service
       .loadScriptEntries(boundaries.flatMap((boundary) => boundary.scriptNames))
-      .catch(() => new Map<string, number[]>());
+      .catch(this.quietly('read the creatures of the boss scripts', new Map<string, number[]>()));
     if (mapId === this.mapId()) {
       this.bossBoundaries.set(
         boundaries.map((boundary) => ({ ...boundary, entries: boundary.scriptNames.flatMap((name) => entries.get(name) ?? []) })),
@@ -2075,13 +2174,15 @@ export class WorldEditorComponent implements OnInit {
       this.zoneId.set(zones.some((zone) => zone.areaId === kept) ? kept : 0);
     } catch (error) {
       this.zones.set([]);
-      this.toastr.error((error as Error).message, 'World Editor');
+      this.showError(error);
     }
   }
 
   /** Where the one building of a dungeon stands (undefined for a map with terrain, or unreadable). */
   private async buildingBounds(directory: string | undefined): Promise<(WorldBounds & { minZ: number; maxZ: number }) | undefined> {
-    return directory ? (await this.client.getMapBuilding(directory).catch(() => undefined))?.bounds : undefined;
+    return directory
+      ? (await this.client.getMapBuilding(directory).catch(this.quietly(`read the building of ${directory}`, undefined)))?.bounds
+      : undefined;
   }
 
   private async updateInstanceRegion(directory: string | undefined): Promise<void> {
@@ -2280,6 +2381,7 @@ export class WorldEditorComponent implements OnInit {
     this.spawnLoadCenter = { mapId: this.mapId(), x: center.x, y: center.y };
     this.spawnsCenter.set(center);
     this.loadingSpawns.set(true);
+    const began = performance.now();
     try {
       // with a region (Load the whole zone, an area of the world map), its spawns too
       const region = this.region();
@@ -2317,6 +2419,12 @@ export class WorldEditorComponent implements OnInit {
         // all at once: the view redraws once
         this.loadedSpawns.set(spawns);
         this.loadedWaypoints.set(waypoints);
+        const creatures = spawns.filter((s) => s.type === 'creature').length;
+        perfNote(
+          `spawns loaded: ${creatures} creatures, ${spawns.length - creatures} gameobjects, ${waypoints.length} waypoints, ` +
+            `${areaPaths.length} other paths around ${center.x.toFixed(0)} ${center.y.toFixed(0)}${region ? ' and in the zone or area picked' : ''} ` +
+            `in ${(performance.now() - began).toFixed(0)}ms`,
+        );
         this.areaPaths.set(areaPaths);
         this.waypointScripts.set(scripts);
         this.waypointSai.set(sai);
@@ -2338,7 +2446,7 @@ export class WorldEditorComponent implements OnInit {
     } catch (error) {
       // tried again on the next move
       this.spawnLoadCenter = undefined;
-      this.toastr.error((error as Error).message, 'World Editor');
+      this.showError(error);
     } finally {
       if (request === this.spawnRequest) {
         this.loadingSpawns.set(false);
@@ -2446,7 +2554,10 @@ export class WorldEditorComponent implements OnInit {
   private async searchPlaceTemplates(text: string): Promise<void> {
     const search = text.trim();
     const type: SpawnType = this.tool() === 'place-gameobject' ? 'gameobject' : 'creature';
-    const results = /^\d+$/.test(search) || search.length >= 2 ? await this.service.searchTemplates(type, search).catch(() => []) : [];
+    const results =
+      /^\d+$/.test(search) || search.length >= 2
+        ? await this.service.searchTemplates(type, search).catch(this.quietly(`search the ${type} templates`, []))
+        : [];
     // (unless typed on meanwhile)
     if (search === this.placeSearch.value.trim()) {
       this.placeResults.set(results);
@@ -2466,7 +2577,7 @@ export class WorldEditorComponent implements OnInit {
   private async placeSpawnAt(type: SpawnType, position: WorldPosition): Promise<void> {
     const entry = this.placeEntry.value;
     if (!entry || entry <= 0) {
-      this.toastr.warning(`Enter the ${type} entry to place first.`, 'World Editor');
+      this.showWarning(`Enter the ${type} entry to place first.`, 'World Editor');
       return;
     }
     const guid = await this.newGuid(type);
@@ -2494,10 +2605,12 @@ export class WorldEditorComponent implements OnInit {
   protected async stackSelected(side: StackSide): Promise<void> {
     const spawn = this.selectedSpawn() as SpawnRecord;
     const box = spawn.displayId
-      ? await spawnModelBox(this.client, spawn.type, spawn.displayId, spawn.scale).catch(() => undefined)
+      ? await spawnModelBox(this.client, spawn.type, spawn.displayId, spawn.scale).catch(
+          this.quietly(`read the model of ${spawn.name}`, undefined),
+        )
       : undefined;
     if (!box) {
-      this.toastr.warning(`The model of ${spawn.name} could not be read, so its size is unknown.`, 'World Editor');
+      this.showWarning(`The model of ${spawn.name} could not be read, so its size is unknown.`, 'World Editor');
       return;
     }
     const guid = await this.newGuid(spawn.type);
@@ -2514,10 +2627,12 @@ export class WorldEditorComponent implements OnInit {
     let distance = spacing !== null && spacing > 0 ? spacing : undefined;
     if (distance === undefined) {
       const box = spawn.displayId
-        ? await spawnModelBox(this.client, spawn.type, spawn.displayId, spawn.scale).catch((): undefined => undefined)
+        ? await spawnModelBox(this.client, spawn.type, spawn.displayId, spawn.scale).catch(
+            this.quietly(`read the model of ${spawn.name}`, undefined),
+          )
         : undefined;
       if (!box) {
-        this.toastr.warning(`The model of ${spawn.name} could not be read: give the spacing.`, 'World Editor');
+        this.showWarning(`The model of ${spawn.name} could not be read: give the spacing.`, 'World Editor');
         return;
       }
       distance = boxExtent(box, side);
@@ -2535,11 +2650,11 @@ export class WorldEditorComponent implements OnInit {
   private addWaypointAt(position: WorldPosition): void {
     const pathId = this.activePathId();
     if (!pathId) {
-      this.toastr.warning('Select a creature with a path (or create one) before adding waypoints.', 'World Editor');
+      this.showWarning('Select a creature with a path (or create one) before adding waypoints.', 'World Editor');
       return;
     }
     if (this.templatePathIds().has(pathId)) {
-      this.toastr.warning(
+      this.showWarning(
         `${pathLabel(pathId)} comes from creature_template_addon and is shared by every creature of this entry; edit it in the creature template instead.`,
         'World Editor',
       );
@@ -2740,7 +2855,9 @@ export class WorldEditorComponent implements OnInit {
     this.spawnStored.set(undefined);
     const values = this.changes.isNewSpawn(key)
       ? Object.fromEntries(SPAWN_FIELDS[spawn.type].map((field) => [field.column, field.default]))
-      : await this.service.loadSpawnFields(spawn.type, spawn.guid).catch(() => undefined);
+      : await this.service
+          .loadSpawnFields(spawn.type, spawn.guid)
+          .catch(this.quietly(`read the columns of ${spawn.type} ${spawn.guid}`, undefined));
     // still the spawn selected?
     const selected = this.selectedSpawn();
     const current = values && selected && spawnKey(selected.type, selected.guid) === key;
@@ -2814,7 +2931,7 @@ export class WorldEditorComponent implements OnInit {
         this.scanResults.set(results.map((result) => ({ ...result, spawn: byKey.get(result.key) as PoolSpawn })));
       }
     } catch (error) {
-      this.toastr.error((error as Error).message, 'World Editor');
+      this.showError(error);
     } finally {
       this.mapScan.set(undefined);
     }
@@ -2856,7 +2973,7 @@ export class WorldEditorComponent implements OnInit {
     try {
       this.searchResults.set(await this.service.searchSpawns(this.mapId(), this.searchForm.value));
     } catch (error) {
-      this.toastr.error((error as Error).message, 'World Editor');
+      this.showError(error);
     } finally {
       this.searching.set(false);
     }
@@ -2885,7 +3002,7 @@ export class WorldEditorComponent implements OnInit {
 
   private async loadMapTiles(directory: string): Promise<void> {
     this.mapTiles.set([]);
-    const tiles = await this.client.getMapTiles(directory).catch((): TileCoord[] => []);
+    const tiles = await this.client.getMapTiles(directory).catch(this.quietly<TileCoord[]>(`read the tiles of ${directory}`, []));
     // another map chosen meanwhile: its own tiles are on the way
     this.mapTiles.update((current) => (directory === this.mapDirectory() ? tiles : current));
   }
@@ -2983,8 +3100,10 @@ export class WorldEditorComponent implements OnInit {
    */
   protected async executeSql(): Promise<void> {
     this.executing.set(true);
+    const changes = this.changes.describe();
     try {
       await this.service.execute(`START TRANSACTION;\n${this.pendingSql()}\nCOMMIT;`);
+      perfNote(`executed ${changes.length} changes: ${changes.join('; ')}`);
       this.toastr.success('Query executed successfully', 'Success');
       this.clearChanges();
       await this.reloadSpawns();
@@ -2994,7 +3113,8 @@ export class WorldEditorComponent implements OnInit {
         await this.loadSpawnFields(spawn, spawnKey(spawn.type, spawn.guid));
       }
     } catch (error) {
-      await this.service.execute('ROLLBACK;').catch(() => undefined);
+      await this.service.execute('ROLLBACK;').catch(this.quietly('roll back', undefined));
+      logProblem('error', `executing ${changes.length} changes failed (rolled back): ${describeError(error)} | ${changes.join('; ')}`);
       this.toastr.error((error as { message?: string }).message ?? 'Error when executing the query!', 'Query error');
     } finally {
       this.executing.set(false);
@@ -3002,6 +3122,7 @@ export class WorldEditorComponent implements OnInit {
   }
 
   protected discardChanges(): void {
+    perfNote(`discarded ${this.changes.count} changes`);
     this.clearChanges();
     this.selectedKey.set(undefined);
   }
@@ -3132,7 +3253,7 @@ export class WorldEditorComponent implements OnInit {
         void this.service.loadPoolMembers(pool).then(
           (members) =>
             pool === untracked(() => (this.contextMenu() ? this.contextPool() : undefined)) && this.contextPoolMembers.set(members),
-          (error: Error) => this.toastr.error(error.message, 'World Editor'),
+          (error: Error) => this.showError(error),
         );
       }
     });

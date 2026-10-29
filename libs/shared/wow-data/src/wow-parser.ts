@@ -1,7 +1,7 @@
 import { InjectionToken } from '@angular/core';
 import { ParseJob, ParseResults, runParseJob } from './parse-jobs';
 import { createParserWorker } from './wow-parser-worker-factory';
-import { perfNote, perfTime } from './perf-log';
+import { describeError, logFact, logProblem, perfTime } from './perf-log';
 
 /** The part of a `Worker` the parser talks to. */
 export interface ParserWorker {
@@ -28,21 +28,27 @@ export class WowParser {
 
   constructor(worker?: ParserWorker) {
     this.worker = worker;
-    perfNote(`parser: ${worker ? 'background worker' : 'main thread'}`);
+    logFact('parser', worker ? 'background worker' : 'main thread');
     if (worker) {
       worker.onmessage = ({ data }) => {
         const job = this.pending.get(data.id);
         this.pending.delete(data.id);
         if (data.error !== undefined) {
-          job?.reject(new Error(data.error));
+          // (which kind of file: the caller adds which one)
+          job?.reject(new Error(`${data.error} (parsing ${job?.job.kind})`));
         } else {
           job?.resolve(data.result);
         }
       };
-      worker.onerror = () => {
+      worker.onerror = (event) => {
         // no worker after all: what was sent to it, and everything from now on, runs here
-        console.warn('[World Editor] The background parser stopped: parsing on the main thread instead.');
-        perfNote('parser: worker FAILED, main thread now');
+        const { message, filename, lineno } = (event ?? {}) as Partial<ErrorEvent>;
+        const where = filename ? ` at ${filename}:${lineno}` : '';
+        logProblem(
+          'error',
+          `the background parser stopped${message ? `: ${describeError(message)}${where}` : ''}; parsing on the main thread instead`,
+        );
+        logFact('parser', `main thread (the background worker stopped with ${this.pending.size} files to parse)`);
         this.worker = undefined;
         const left = [...this.pending.values()];
         this.pending.clear();

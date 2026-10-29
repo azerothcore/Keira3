@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { MysqlQueryService } from '@keira/shared/db-layer';
+import { MysqlQueryService, MysqlService } from '@keira/shared/db-layer';
 import { of, throwError } from 'rxjs';
 import { WorldEditorService } from './world-editor.service';
 
@@ -11,9 +11,30 @@ describe('WorldEditorService', () => {
       getCreatureNameById: vi.fn().mockResolvedValue('Marshal McBride'),
       getGameObjectNameById: vi.fn().mockResolvedValue('Mailbox'),
     };
-    TestBed.configureTestingModule({ providers: [{ provide: MysqlQueryService, useValue: queryService }] });
-    return { service: TestBed.inject(WorldEditorService), queryService };
+    const mysql: { config?: object } = { config: { user: 'acore', host: 'db', port: 3306, database: 'acore_world', password: 'secret' } };
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: MysqlQueryService, useValue: queryService },
+        { provide: MysqlService, useValue: mysql },
+      ],
+    });
+    return { service: TestBed.inject(WorldEditorService), queryService, mysql };
   };
+
+  it('describes the database for the log: where it is (not the password) and its versions', async () => {
+    const { service, queryService, mysql } = setup();
+    queryService.query.mockImplementation((sql: string) =>
+      sql.includes('VERSION()') ? of([{ v: '8.4.0' }]) : of([{ core_version: 'AzerothCore rev. abc', db_version: 'ACDB 335.12-dev' }]),
+    );
+    expect(await service.describeDatabase()).toBe('acore@db:3306/acore_world | MySQL 8.4.0 | AzerothCore rev. abc | ACDB 335.12-dev');
+    expect(await service.describeDatabase()).not.toContain('secret');
+    // through SSH, nothing readable, nothing configured
+    queryService.query.mockImplementation((sql: string) => (sql.includes('VERSION()') ? throwError(() => new Error('gone')) : of([])));
+    mysql.config = { ...mysql.config, sshEnabled: true };
+    expect(await service.describeDatabase()).toBe('acore@db:3306/acore_world (through SSH) | MySQL version unknown | no `version` table');
+    mysql.config = undefined;
+    expect(await service.describeDatabase()).toMatch(/^\?@\?:\?\/\? \| /);
+  });
 
   it('loads creatures and gameobjects in the area around the camera', async () => {
     const { service, queryService } = setup();

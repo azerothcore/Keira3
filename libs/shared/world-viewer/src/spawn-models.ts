@@ -10,7 +10,6 @@ import {
   WmoModel,
   WorldBounds,
   WorldPosition,
-  perfNote,
   perfTime,
   weaponAttachment,
 } from '@keira/shared/wow-data';
@@ -261,7 +260,7 @@ export class SpawnModels {
     }
   }
 
-  /** Writes down (once each, in the console and the performance log) why a spawn near enough shows its pin. */
+  /** Writes down (once each, in the console, so in the log too) why a spawn near enough shows its pin. */
   private notePin(spawn: WorldSpawn, displayKey: string | undefined): void {
     const reason = displayKey ? this.failures.get(displayKey) : NO_DISPLAY;
     const id = displayKey ?? spawn.key;
@@ -269,7 +268,6 @@ export class SpawnModels {
       this.noted.add(id);
       const text = `Pin instead of a model: ${spawn.label} (${spawn.kind} display ${spawn.displayId ?? 0}): ${reason}`;
       console.warn(`[World Editor] ${text}`);
-      perfNote(text);
     }
   }
 

@@ -1048,7 +1048,7 @@
     "MAP_ALL_HELP": "Todos los mapas en una página, por tipo (mapas, mazmorras, bandas…), cada uno con sus minimapas (hechos la primera vez y guardados en la caché): pulsa un lugar para ir allí",
     "STATS": "Mostrar estadísticas de rendimiento",
     "STATS_HELP": "Fotogramas por segundo, tiempo de dibujo, llamadas de dibujo, triángulos, lo que hay en la tarjeta gráfica, memoria y lo cargado, en la esquina inferior izquierda de la vista",
-    "PERF_LOG": "Escribir un registro de rendimiento",
+    "PERF_LOG": "Escribir un registro (rendimiento, avisos y errores)",
     "STATS_DRAWS": "dibujos",
     "STATS_TRIANGLES": "triángulos",
     "STATS_GPU": "GPU",

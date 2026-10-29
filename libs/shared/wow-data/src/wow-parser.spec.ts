@@ -1,4 +1,5 @@
 import { ParserWorker, WowParser } from './wow-parser';
+import { resetLogMemory, setPerfLog } from './perf-log';
 import { createParserWorker } from './wow-parser-worker-factory';
 
 const jobs = vi.hoisted(() => ({ runParseJob: vi.fn() }));
@@ -28,7 +29,7 @@ describe('WowParser', () => {
     // a reply nobody waits for
     worker.onmessage?.({ data: { id: 99, result: 'stray' } });
     expect(await first).toBe('image');
-    await expect(second).rejects.toThrowError('bad blp');
+    await expect(second).rejects.toThrowError('bad blp (parsing blp)');
     expect(jobs.runParseJob).not.toHaveBeenCalled();
   });
 
@@ -42,7 +43,26 @@ describe('WowParser', () => {
     expect(await waiting).toBe('here');
     expect(await parser.run(job)).toBe('here');
     expect(worker.postMessage).toHaveBeenCalledTimes(1);
-    expect(warn).toHaveBeenCalled();
+    expect(warn).not.toHaveBeenCalled();
+  });
+
+  it('writes in the log why and where the worker stopped, and that parsing goes on here', () => {
+    resetLogMemory();
+    const write = vi.fn();
+    const worker: ParserWorker = { postMessage: vi.fn(), onmessage: null, onerror: null };
+    new WowParser(worker);
+    worker.onerror?.({ message: 'out of memory', filename: 'worker.js', lineno: 12 });
+    // (no details: nothing more to say)
+    const other: ParserWorker = { postMessage: vi.fn(), onmessage: null, onerror: null };
+    new WowParser(other);
+    other.onerror?.(undefined);
+    setPerfLog(write);
+    setPerfLog(undefined);
+    const text = write.mock.calls.map((call) => call[0]).join('');
+    expect(text).toContain('parser: main thread (the background worker stopped with 0 files to parse)');
+    expect(text).toContain('ERROR the background parser stopped: out of memory at worker.js:12; parsing on the main thread instead');
+    expect(text).toContain('ERROR the background parser stopped; parsing on the main thread instead');
+    resetLogMemory();
   });
 });
 

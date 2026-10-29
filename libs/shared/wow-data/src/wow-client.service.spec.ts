@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { buildDbc } from './dbc.mock';
+import { resetLogMemory, setPerfLog } from './perf-log';
 import { EMPTY_COLLISION } from './collision';
 import { buildMmtile } from './navmesh.mock';
 import { buildServerMap, buildVmapModel, buildVmapTile } from './server-data.mock';
@@ -223,6 +224,22 @@ describe('WowClientService', () => {
   it('works without any locale folder', async () => {
     const { service } = setup({ mpqs: { 'common.MPQ': { files: {} } } });
     expect(await service.getArchiveNames()).toEqual(['common.MPQ']);
+  });
+
+  it('writes the client opened in the log: its folder, locale and archives', async () => {
+    resetLogMemory();
+    const { service } = setup({
+      files: { '/wow/WTF/Config.wtf': Array.from(new TextEncoder().encode('SET locale "frFR"')) },
+      mpqs: { 'common.MPQ': { files: {} } },
+    });
+    await service.getArchiveNames();
+    const write = vi.fn();
+    setPerfLog(write);
+    setPerfLog(undefined);
+    expect(write.mock.calls[0][0]).toMatch(
+      /game client: \/wow \| locale none \(Config\.wtf asks for frFR\) \| 1 of 1 archives opened in \d+ms, lowest priority first: common\.MPQ/,
+    );
+    resetLogMemory();
   });
 
   it('reuses the open client and reopens it when the client path changes', async () => {
@@ -652,9 +669,15 @@ describe('WowClientService', () => {
         },
       });
       formats.parseWdt.mockReturnValue({ tiles: [], layerSplatDepth: 8 });
-      formats.parseAdt.mockReturnValue(adtOf());
+      // (the chunks' texture layers aren't needed for the mesh)
+      formats.parseAdt.mockReturnValue(
+        adtOf([
+          { position: [0, 0, 0], vertexHeights: new Float32Array(145), holes: 0, layers: [{ texture: 'a.blp', splat: new Uint8Array(1) }] },
+        ]),
+      );
       const mesh = await service.getTerrain('Azeroth', { tx: 32, ty: 48 });
       expect(mesh?.tile).toEqual({ tx: 32, ty: 48 });
+      expect(mesh?.positions.length).toBeGreaterThan(0);
       expect(formats.parseAdt.mock.calls[0][1]).toBe(8);
       expect(await service.getTerrain('Azeroth', { tx: 1, ty: 1 })).toBeUndefined();
 

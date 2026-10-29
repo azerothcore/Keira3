@@ -2,6 +2,8 @@ import { Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import {
+  resetLogMemory,
+  setPerfLog,
   EMPTY_COLLISION,
   M2Blend,
   MmapRecastConfig,
@@ -467,6 +469,61 @@ describe(WorldViewerComponent.name, () => {
     await settle(fixture);
     expect(setExtras).toHaveBeenLastCalledWith([ship]);
     setExtras.mockRestore();
+  });
+
+  it('writes the graphics card, a lost graphics context and every little while what is shown in the log', async () => {
+    resetLogMemory();
+    const clock = { now: 1000 };
+    vi.spyOn(performance, 'now').mockImplementation(() => clock.now);
+    renderer.getContext = () => ({
+      RENDERER: 1,
+      VENDOR: 2,
+      VERSION: 3,
+      MAX_TEXTURE_SIZE: 4,
+      getExtension: (() => null) as WebGLRenderingContext['getExtension'],
+      getParameter: (name: number) => ({ 1: 'WebKit WebGL', 2: 'WebKit', 3: 'WebGL 2.0', 4: 16384 })[name],
+    });
+    const write = vi.fn();
+    try {
+      const { fixture, host } = await setup((h) => h.map.set('Azeroth'));
+      const draw = async () => {
+        host.spawns.set([...host.spawns()]);
+        await settle(fixture);
+        flushFrames();
+      };
+      // (off: nothing counted)
+      await draw();
+      setPerfLog(write);
+      await draw();
+      clock.now += 4000;
+      await draw();
+      clock.now += 7000;
+      await draw();
+      // the memory as the app tells it, else as the browser does
+      client.memoryUsage.mockReturnValue({ used: 3 * 1024 ** 3, total: 16 * 1024 ** 3 });
+      clock.now += 11_000;
+      await draw();
+      client.memoryUsage.mockReturnValue(undefined);
+      Object.defineProperty(performance, 'memory', { configurable: true, value: { usedJSHeapSize: 250 * 1024 ** 2 } });
+      clock.now += 11_000;
+      await draw();
+      delete (performance as { memory?: unknown }).memory;
+      const canvas: HTMLCanvasElement = fixture.nativeElement.querySelector('canvas');
+      canvas.dispatchEvent(new Event('webglcontextlost'));
+      canvas.dispatchEvent(new Event('webglcontextrestored'));
+      setPerfLog(undefined);
+      const text = write.mock.calls.map((call) => call[0]).join('');
+      expect(text).toContain('graphics: WebKit WebGL (WebKit) | WebGL 2.0 | textures up to 16384 px | compressed textures NO');
+      expect(text.match(/state: Azeroth at /g)?.length).toBe(3);
+      expect(text).toContain('memory unknown');
+      expect(text).toContain('memory 3072 MB of 16384 MB');
+      expect(text).toContain('memory 250 MB');
+      expect(text).toMatch(/ERROR the graphics card context was lost/);
+      expect(text).toContain('the graphics card context is back');
+    } finally {
+      delete renderer.getContext;
+      resetLogMemory();
+    }
   });
 
   it('shows performance stats when asked: frames, draws, graphics memory and what is loaded', async () => {

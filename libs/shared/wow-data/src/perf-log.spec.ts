@@ -1,4 +1,10 @@
 import {
+  captureProblems,
+  describeError,
+  logFact,
+  logProblem,
+  PROBLEMS_KEPT,
+  resetLogMemory,
   flushPerfLog,
   longTask,
   perfLogFileName,
@@ -12,9 +18,97 @@ import {
 
 describe('perf log', () => {
   afterEach(() => {
+    resetLogMemory();
     setPerfLog(undefined);
     vi.useRealTimers();
     vi.unstubAllGlobals();
+  });
+
+  it('starts each log with the facts and the warnings and errors kept, and writes new ones as they come', () => {
+    const write = vi.fn();
+    logFact('keira', '3.10.5');
+    logFact('keira', '3.10.6');
+    logProblem('warning', 'a damaged cache entry');
+    setPerfLog(write);
+    logFact('database', 'acore_world');
+    logProblem('error', 'boom');
+    setPerfLog(undefined);
+    const text = write.mock.calls.map((call) => call[0]).join('');
+    expect(text).toContain('keira: 3.10.6');
+    expect(text).not.toContain('3.10.5');
+    expect(text).toMatch(/the last 1 warnings and errors before this log -----\n\S+ WARNING a damaged cache entry\n-----/);
+    expect(text).toContain('database: acore_world');
+    expect(text).toMatch(/\S+ ERROR boom/);
+    // the next log has both problems, and only the latest few hundred are kept
+    for (let i = 0; i < PROBLEMS_KEPT; i++) {
+      logProblem('warning', `problem ${i}`);
+    }
+    const next = vi.fn();
+    setPerfLog(next);
+    setPerfLog(undefined);
+    const nextText = next.mock.calls.map((call) => call[0]).join('');
+    expect(nextText).toContain(`the last ${PROBLEMS_KEPT} warnings and errors`);
+    expect(nextText).not.toContain('boom');
+    expect(nextText).toContain(`problem ${PROBLEMS_KEPT - 1}`);
+  });
+
+  it('describes errors with the top of their stack, and anything else logged', () => {
+    const error = new Error('bad file');
+    error.stack = 'Error: bad file\n    at read (a.js:1)\n    at load (b.js:2)';
+    expect(describeError(error)).toBe('Error: bad file [at read (a.js:1) | at load (b.js:2)]');
+    error.stack = undefined;
+    expect(describeError(error)).toBe('Error: bad file');
+    expect(describeError('text')).toBe('text');
+    expect(describeError({ code: 'ENOENT' })).toBe('{"code":"ENOENT"}');
+    expect(describeError({ long: 'x'.repeat(2000) })).toMatch(/^\{"long":"x+…$/);
+    expect(describeError(undefined)).toBe('undefined');
+    const circular: { self?: unknown } = {};
+    circular.self = circular;
+    expect(describeError(circular)).toBe('[object Object]');
+  });
+
+  it('captures console warnings and errors, uncaught errors and unhandled rejections until released', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const target = new EventTarget();
+    const release = captureProblems(target as unknown as Window);
+    const nested = captureProblems(target as unknown as Window);
+    const write = vi.fn();
+    setPerfLog(write);
+    console.warn('[World Editor] Could not read', { path: 'a.blp' });
+    console.error('ERROR', new Error('broken'));
+    target.dispatchEvent(Object.assign(new Event('error'), { error: new Error('thrown'), filename: 'main.js', lineno: 3, colno: 4 }));
+    target.dispatchEvent(Object.assign(new Event('error'), { message: 'Script error.' }));
+    target.dispatchEvent(Object.assign(new Event('unhandledrejection'), { reason: 'nobody caught me' }));
+    // still passed on
+    expect(warn).toHaveBeenCalledWith('[World Editor] Could not read', { path: 'a.blp' });
+    expect(error).toHaveBeenCalledTimes(1);
+    nested();
+    nested();
+    console.warn('still captured');
+    release();
+    console.warn('not anymore');
+    target.dispatchEvent(new Event('error'));
+    setPerfLog(undefined);
+    const text = write.mock.calls.map((call) => call[0]).join('');
+    expect(text).toContain('WARNING [World Editor] Could not read {"path":"a.blp"}');
+    expect(text).toContain('ERROR ERROR Error: broken');
+    expect(text).toContain('ERROR uncaught Error: thrown');
+    expect(text).toContain('at main.js:3:4');
+    expect(text).toContain('ERROR uncaught Script error.');
+    expect(text).toContain('ERROR unhandled rejection nobody caught me');
+    expect(text).toContain('still captured');
+    expect(text).not.toContain('not anymore');
+    expect(text.match(/ERROR uncaught/g)?.length).toBe(2);
+    // replaced by something else meanwhile: left as it is
+    const restoreWarn = console.warn;
+    const releaseAgain = captureProblems();
+    const replaced = vi.fn();
+    console.warn = replaced;
+    console.error = replaced;
+    releaseAgain();
+    expect(console.warn).toBe(replaced);
+    console.warn = restoreWarn;
   });
 
   it('only runs the work while off', () => {

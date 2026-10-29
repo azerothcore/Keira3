@@ -1048,7 +1048,7 @@
     "MAP_ALL_HELP": "Every map on one page, by kind (maps, dungeons, raids…), each with its minimaps (made the first time, then kept in the cache): click a place to go there",
     "STATS": "Show performance stats",
     "STATS_HELP": "Frames per second, draw time, draw calls, triangles, what's on the graphics card, memory and what's loaded, in the bottom-left corner of the view",
-    "PERF_LOG": "Write a performance log",
+    "PERF_LOG": "Write a log (performance, warnings and errors)",
     "STATS_DRAWS": "draws",
     "STATS_TRIANGLES": "triangles",
     "STATS_GPU": "GPU",
