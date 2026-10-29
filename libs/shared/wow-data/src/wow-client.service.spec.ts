@@ -1290,16 +1290,27 @@ describe('WowClientService', () => {
         y: 0,
         hit: { left: 0, top: 0, right: 1, bottom: 1 },
       };
-      const picture = await service.getGameMapPicture(pageOf('Elwynn\\Elwynn'), [overlay]);
+      const picture = (await service.getGameMapPicture(pageOf('Elwynn\\Elwynn'), [overlay]))?.image;
       expect([picture?.width, picture?.height]).toEqual([1002, 668]);
       // the overlay's first piece (green) over the first tile (red); its second piece is missing
       expect(Array.from(picture?.data.subarray(0, 4) ?? [])).toEqual([0, 255, 0, 255]);
       expect(Array.from(picture?.data.subarray(256 * 4, 256 * 4 + 4) ?? [])).toEqual([255, 0, 0, 255]);
       formats.decodeBlp.mockClear();
-      expect((await service.getGameMapPicture(pageOf('Elwynn\\Elwynn')))?.width).toBe(1002);
+      // kept in memory, then (once more than 12 others were asked) read again from the disk cache
+      expect((await service.getGameMapPicture(pageOf('Elwynn\\Elwynn')))?.image.width).toBe(1002);
+      for (let i = 0; i < 12; i++) {
+        await service.getGameMapPicture(pageOf(`Other${i}\\Other${i}`));
+      }
+      const read = vi.spyOn(TestBed.inject(WowDataCacheService), 'read');
+      expect((await service.getGameMapPicture(pageOf('Elwynn\\Elwynn')))?.labels.length).toBe(501 * 334);
+      expect(read).toHaveBeenCalledWith(expect.any(String), 'game-map-2', 'Elwynn\\Elwynn');
       expect(formats.decodeBlp).not.toHaveBeenCalled();
       // no tiles at all
       expect(await service.getGameMapPicture(pageOf('Nowhere\\Nowhere'))).toBeUndefined();
+      // a failure isn't kept
+      read.mockRejectedValueOnce(new Error('busy'));
+      await expect(service.getGameMapPicture(pageOf('Elwynn\\Elwynn'.replace('Elwynn', 'Again')))).rejects.toThrow('busy');
+      expect(await service.getGameMapPicture(pageOf('Again\\Elwynn'))).toBeUndefined();
     });
   });
 });

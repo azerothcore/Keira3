@@ -7,6 +7,8 @@ import {
   GAMEOBJECT_MAILBOX,
   GAMEOBJECT_MEETING_STONE,
   GameMapPoi,
+  GameMapTeleport,
+  GameMapTransport,
   NPC_FLAG_KINDS,
   NPC_FLAG_TRAINER,
   npcPoiKinds,
@@ -438,7 +440,8 @@ export class WorldEditorService {
     const mask = NPC_FLAG_KINDS.reduce((all, [flag]) => all | flag, NPC_FLAG_TRAINER);
     const creatures = (trainer: boolean): string =>
       "SELECT c.map, c.position_x AS x, c.position_y AS y, c.position_z AS z, IFNULL(ct.name, '') AS name, IFNULL(ct.subname, '') AS subname, " +
-      `ct.npcflag, ${trainer ? 'IFNULL(t.Type, -1)' : '-1'} AS trainerType FROM creature c JOIN creature_template ct ON ct.entry = c.id ` +
+      `ct.npcflag, ct.faction, ${trainer ? 'IFNULL(t.Type, -1) AS trainerType, IFNULL(t.Requirement, 0) AS skill' : '-1 AS trainerType, 0 AS skill'} ` +
+      'FROM creature c JOIN creature_template ct ON ct.entry = c.id ' +
       (trainer ? 'LEFT JOIN creature_default_trainer cdt ON cdt.CreatureId = c.id LEFT JOIN trainer t ON t.Id = cdt.TrainerId ' : '') +
       `WHERE (ct.npcflag & ${mask}) <> 0`;
     const npcs = await firstValueFrom(this.queryService.query<TableRow>(creatures(true))).catch(() =>
@@ -459,9 +462,10 @@ export class WorldEditorService {
     });
     return [
       ...(npcs ?? []).flatMap((row) =>
-        npcPoiKinds(Number(row['npcflag']), Number(row['trainerType'])).map((kind) => ({
+        npcPoiKinds(Number(row['npcflag']), Number(row['trainerType']), Number(row['skill'])).map((kind) => ({
           kind,
           ...place(row),
+          faction: Number(row['faction']),
           ...(row['subname'] ? { subname: String(row['subname']) } : {}),
         })),
       ),
@@ -470,6 +474,30 @@ export class WorldEditorService {
         ...place(row),
       })),
     ];
+  }
+
+  /** Every area trigger teleport (`areatrigger_teleport`): the instances' entrances on the game's world map. */
+  async loadMapTeleports(): Promise<GameMapTeleport[]> {
+    const rows = await firstValueFrom(
+      this.queryService.query<TableRow>("SELECT ID AS id, IFNULL(Name, '') AS name, target_map FROM areatrigger_teleport"),
+    );
+    return (rows ?? []).map((row) => ({ id: Number(row['id']), name: String(row['name']), targetMap: Number(row['target_map']) }));
+  }
+
+  /** Every transport (boats, zeppelins…) with its taxi path and faction, for their routes on the game's world map. */
+  async loadTransportRoutes(): Promise<GameMapTransport[]> {
+    const rows = await firstValueFrom(
+      this.queryService.query<TableRow>(
+        "SELECT gt.entry, IFNULL(gt.name, '') AS name, gt.Data0 AS path, IFNULL(gta.faction, 0) AS faction FROM gameobject_template gt " +
+          `LEFT JOIN gameobject_template_addon gta ON gta.entry = gt.entry WHERE gt.type = ${GAMEOBJECT_TRANSPORT}`,
+      ),
+    );
+    return (rows ?? []).map((row) => ({
+      entry: Number(row['entry']),
+      name: String(row['name']),
+      path: Number(row['path']),
+      faction: Number(row['faction']),
+    }));
   }
 
   /** Where the given area triggers teleport to (`areatrigger_teleport`). */

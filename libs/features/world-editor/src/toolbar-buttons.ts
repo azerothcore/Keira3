@@ -19,6 +19,7 @@ export interface ToolbarButton {
 export const TOOLBAR_BUTTONS = {
   mapNext: { icon: 'fa-chevron-right', label: 'WORLD_EDITOR.MAP_NEXT', iconAfter: true },
   worldMap: { icon: 'fa-map', label: 'WORLD_EDITOR.WORLD_MAP', help: 'WORLD_EDITOR.WORLD_MAP_HELP' },
+  gameMap: { icon: 'fa-globe', label: 'WORLD_EDITOR.GAME_MAP', help: 'WORLD_EDITOR.GAME_MAP_HELP' },
   filters: { icon: 'fa-filter', label: 'WORLD_EDITOR.FILTERS', help: 'WORLD_EDITOR.FILTERS_HELP' },
   view: { icon: 'fa-eye', label: 'WORLD_EDITOR.VIEW', help: 'WORLD_EDITOR.VIEW_HELP' },
   tree: { icon: 'fa-sitemap', label: 'WORLD_EDITOR.TREE', help: 'WORLD_EDITOR.TREE_HELP' },

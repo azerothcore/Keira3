@@ -518,6 +518,8 @@ describe('WorldEditorService', () => {
       subname: 'Gryphon Master',
       npcflag: String(0x2000 | 0x10),
       trainerType: '0',
+      skill: '0',
+      faction: '11',
     };
     queryService.query
       .mockReturnValueOnce(
@@ -530,9 +532,9 @@ describe('WorldEditorService', () => {
         ]),
       );
     expect(await service.loadMapPois()).toEqual([
-      { kind: 'flight', mapId: 0, x: 1, y: 2, z: 3, name: 'Thor', subname: 'Gryphon Master' },
-      { kind: 'classTrainer', mapId: 0, x: 1, y: 2, z: 3, name: 'Thor', subname: 'Gryphon Master' },
-      { kind: 'inn', mapId: 0, x: 1, y: 2, z: 3, name: 'Inn' },
+      { kind: 'flight', mapId: 0, x: 1, y: 2, z: 3, name: 'Thor', subname: 'Gryphon Master', faction: 11 },
+      { kind: 'classTrainer', mapId: 0, x: 1, y: 2, z: 3, name: 'Thor', subname: 'Gryphon Master', faction: 11 },
+      { kind: 'inn', mapId: 0, x: 1, y: 2, z: 3, name: 'Inn', faction: 11 },
       { kind: 'mailbox', mapId: 1, x: 4, y: 5, z: 6, name: 'Mailbox' },
       { kind: 'stone', mapId: 1, x: 4, y: 5, z: 6, name: 'Meeting Stone' },
     ]);
@@ -543,6 +545,20 @@ describe('WorldEditorService', () => {
       .mockReturnValueOnce(of(undefined));
     expect(await service.loadMapPois()).toEqual([]);
     expect(queryService.query.mock.calls[3][0]).not.toContain('trainer t');
+  });
+
+  it('loads the teleports and transports for the in-game map', async () => {
+    const { service, queryService } = setup();
+    queryService.query
+      .mockReturnValueOnce(of([{ id: '45', name: 'Naxx', target_map: '533' }]))
+      .mockReturnValueOnce(of(undefined))
+      .mockReturnValueOnce(of([{ entry: '1', name: 'Boat', path: '7', faction: '11' }]))
+      .mockReturnValueOnce(of(undefined));
+    expect(await service.loadMapTeleports()).toEqual([{ id: 45, name: 'Naxx', targetMap: 533 }]);
+    expect(await service.loadMapTeleports()).toEqual([]);
+    expect(await service.loadTransportRoutes()).toEqual([{ entry: 1, name: 'Boat', path: 7, faction: 11 }]);
+    expect(queryService.query.mock.calls[2][0]).toContain('WHERE gt.type = 15');
+    expect(await service.loadTransportRoutes()).toEqual([]);
   });
 
   it('loads every other path in the area, each table skipped when it fails', async () => {

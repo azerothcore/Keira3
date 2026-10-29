@@ -2,6 +2,7 @@
   display: block;
   position: absolute;
   inset: 0;
+  --marker: 20px;
 }
 
 .game-map {
@@ -9,7 +10,7 @@
   inset: 0;
   display: flex;
   flex-direction: column;
-  background: repeating-linear-gradient(45deg, #3a4752 0 10px, #414f5b 10px 20px);
+  background: #1b2228;
   user-select: none;
 }
 
@@ -19,9 +20,7 @@
   flex-wrap: wrap;
   gap: 0.35rem;
   padding: 0.3rem 0.4rem;
-  // room for the map's own buttons on the right
-  padding-right: 15rem;
-  background: rgba(20, 24, 28, 0.85);
+  background: rgba(20, 24, 28, 0.95);
   color: #fff;
 }
 
@@ -30,82 +29,206 @@
   white-space: nowrap;
 }
 
+.game-map-copied {
+  font-size: 0.8rem;
+  color: #8fdc8f;
+  font-family: monospace;
+}
+
 .game-map-body {
   position: relative;
   flex: 1 1 auto;
   min-height: 0;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  container-type: size;
 }
 
-.game-map-picture {
-  position: relative;
-  // as big as fits, keeping the picture's shape (1002 × 668)
-  width: min(100cqw, 100cqh * 1002 / 668);
-  background: #111;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2);
-  overflow: visible;
+.game-map-panel {
+  flex: 0 0 15rem;
+  overflow: hidden auto;
+  padding: 0.4rem 0.6rem;
+  background: rgba(20, 24, 28, 0.95);
+  color: #ddd;
+  font-size: 0.82rem;
+  border-right: 1px solid #333;
+}
 
-  &.clickable {
+.game-map-group {
+  margin-bottom: 0.5rem;
+}
+
+.game-map-group-title {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0 0 0.15rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: #ffd200;
+  cursor: pointer;
+
+  input {
+    margin: 0;
+  }
+}
+
+.game-map-layer {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0.1rem 0 0.1rem 0.6rem;
+  cursor: pointer;
+
+  input[type='checkbox'] {
+    margin: 0;
+    flex: 0 0 auto;
+  }
+
+  img,
+  i {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 16px;
+    text-align: center;
+  }
+
+  .form-range {
+    flex: 1 1 auto;
+  }
+}
+
+.game-map-bands {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  margin: 0.2rem 0 0.2rem 0.6rem;
+
+  span {
+    padding: 0 0.25rem;
+    border-radius: 2px;
+    color: #111;
+    font-size: 0.68rem;
+  }
+}
+
+.game-map-help {
+  display: block;
+  margin-top: 0.5rem;
+  color: #999;
+}
+
+.game-map-viewport {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  container-type: size;
+  cursor: grab;
+  touch-action: none;
+  background: repeating-linear-gradient(45deg, #2b343c 0 10px, #313b44 10px 20px);
+
+  &.pointer {
     cursor: pointer;
   }
 }
 
-.game-map-image,
-.game-map-glow {
+.game-map-stage {
   position: absolute;
+  left: 50%;
+  top: 50%;
+  // as big as fits keeping the picture's shape (1002 × 668), times the zoom
+  width: calc(min(100cqw, 100cqh * 1002 / 668) * var(--zoom, 1));
+  aspect-ratio: 1002 / 668;
+}
+
+.game-map-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   display: block;
   pointer-events: none;
 }
 
-.game-map-image {
+.game-map-layers {
+  image-rendering: auto;
+}
+
+.game-map-routes {
+  position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
+  pointer-events: none;
+
+  polyline {
+    fill: none;
+    stroke-width: 2.5;
+    stroke-dasharray: 6 4;
+    vector-effect: non-scaling-stroke;
+    pointer-events: stroke;
+  }
 }
 
-.game-map-ring {
+.game-map-name {
   position: absolute;
-  border: 3px solid rgba(255, 214, 64, 0.9);
-  border-radius: 50%;
-  box-shadow: 0 0 12px rgba(255, 214, 64, 0.8);
+  transform: translate(-50%, -50%);
+  color: #fff3c4;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-shadow:
+    0 0 3px #000,
+    0 0 2px #000;
+  white-space: nowrap;
   pointer-events: none;
 }
 
 .game-map-pin {
   position: absolute;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  border: 1px solid rgba(0, 0, 0, 0.7);
+  width: var(--marker);
+  height: var(--marker);
   transform: translate(-50%, -50%);
-  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ff;
+  font-size: calc(var(--marker) * 0.7);
+  text-shadow: 0 0 2px #000;
+  cursor: default;
 
-  &.poi {
-    width: 18px;
-    height: 18px;
-    border: 0;
-    border-radius: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #9ff;
-    text-shadow: 0 0 2px #000;
-    font-size: 13px;
+  img {
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
 
-    img {
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-    }
+  &.dot {
+    width: calc(var(--marker) * 0.4);
+    height: calc(var(--marker) * 0.4);
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.7);
+  }
+
+  &.opens {
+    cursor: pointer;
   }
 
   &:hover {
     z-index: 2;
-    outline: 2px solid #fff;
+    filter: drop-shadow(0 0 3px #fff);
   }
+}
+
+.game-map-side {
+  position: absolute;
+  right: -35%;
+  bottom: -35%;
+  width: 70% !important;
+  height: 70% !important;
+  // the crest is the top-left of the picture
+  object-fit: cover;
+  object-position: 0 0;
 }
 
 .game-map-camera {
@@ -124,8 +247,8 @@
   position: absolute;
   z-index: 4;
   padding: 0.25rem 0.5rem;
-  max-width: 18rem;
-  background: rgba(10, 14, 30, 0.92);
+  max-width: 20rem;
+  background: rgba(10, 14, 30, 0.94);
   border: 1px solid #8a8fb0;
   border-radius: 4px;
   color: #fff;
@@ -138,47 +261,25 @@
   }
 }
 
+.game-map-tooltip-hint {
+  color: #8fdc8f;
+  font-size: 0.72rem;
+}
+
+.game-map-side-line {
+  color: #aac8ff;
+}
+
 .game-map-message {
   position: absolute;
   inset: 0;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 0.5rem;
   color: #fff;
   text-align: center;
   padding: 1rem;
-}
-
-.game-map-filters {
-  position: absolute;
-  top: 0.4rem;
-  right: 0.4rem;
-  bottom: 0.4rem;
-  z-index: 5;
-  overflow: hidden auto;
-  min-width: 12rem;
-  padding: 0.4rem 0.6rem;
-  background: rgba(20, 24, 28, 0.92);
-  border-radius: 4px;
-  color: #fff;
-  font-size: 0.85rem;
-}
-
-.game-map-filter {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  margin: 0.1rem 0;
-  cursor: pointer;
-
-  input {
-    margin: 0;
-  }
-
-  img,
-  i {
-    width: 16px;
-    height: 16px;
-    text-align: center;
-  }
+  pointer-events: none;
 }

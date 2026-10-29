@@ -40,11 +40,13 @@ import { clientIdentity, WowDataCacheService } from './wow-data-cache.service';
 import { WowDataSettingsService } from './wow-data-settings.service';
 import { StormArchive, WOW_NATIVE_API, WowNativeApi } from './wow-native-api';
 import { WOW_PARSER } from './wow-parser';
-import { logFact, perfTime } from './perf-log';
+import { logFact, perfNote, perfTime } from './perf-log';
 import {
   composeGameMap,
   GameMapData,
   GameMapOverlay,
+  GameZone,
+  GameMapPicture,
   GameMapPiece,
   GamePage,
   GAME_MAP_ROOT,
@@ -111,7 +113,9 @@ const INVENTORY_TYPE_SHIELD = 14;
 const EMITTER_MODEL = /emitter[^\\]*\.m2$|\\particleemitters\\/i;
 
 /** Where world map pictures are cached. */
-const GAME_MAP_KIND = 'game-map';
+const GAME_MAP_KIND = 'game-map-2';
+/** World map pictures kept in memory. */
+const GAME_PICTURES_KEPT = 12;
 
 /** Reads game data straight from the user's WoW 3.3.5a client (MPQ archives) and, optionally, the server's DataDir. */
 @Service()
@@ -416,13 +420,17 @@ export class WowClientService {
         this.readClientDbc(`${name}.dbc`),
       ),
     )
-      .then(([areas, overlays, floors, transforms, areaTable, lfg]) => ({
-        areas: areas ? parseGameMapAreas(areas) : [],
-        overlays: overlays ? parseGameMapOverlays(overlays) : [],
-        floors: floors ? parseGameMapFloors(floors) : [],
-        transforms: transforms ? parseGameMapTransforms(transforms) : [],
-        zones: areaTable ? parseGameZones(areaTable, lfg) : new Map(),
-      }))
+      .then(([areas, overlays, floors, transforms, areaTable, lfg]) => {
+        const data = {
+          areas: areas ? parseGameMapAreas(areas) : [],
+          overlays: overlays ? parseGameMapOverlays(overlays) : [],
+          floors: floors ? parseGameMapFloors(floors) : [],
+          transforms: transforms ? parseGameMapTransforms(transforms) : [],
+          zones: areaTable ? parseGameZones(areaTable, lfg) : new Map<number, GameZone>(),
+        };
+        logFact('game map', `${data.areas.length} world maps, ${data.floors.length} floors, ${data.overlays.length} overlays`);
+        return data;
+      })
       .catch((error) => {
         this.gameMap = undefined;
         throw error;
@@ -432,11 +440,30 @@ export class WowClientService {
 
   /**
    * The picture of a world map page (1002 × 668): its tiles with, on a zone, every sub-zone it lights up once explored
-   * (`overlays` of that zone). Undefined when the client has none of its tiles. Kept in the disk cache.
+   * (`overlays` of that zone) and where each one is. Undefined when the client has none of its tiles. Kept in the disk
+   * cache, and the last few in memory.
    */
-  async getGameMapPicture(page: GamePage, overlays: GameMapOverlay[] = []): Promise<RgbaImage | undefined> {
+  getGameMapPicture(page: GamePage, overlays: GameMapOverlay[] = []): Promise<GameMapPicture | undefined> {
+    const key = page.prefix;
+    const picture =
+      this.gamePictures.get(key) ??
+      this.loadGameMapPicture(page, overlays).catch((error) => {
+        this.gamePictures.delete(key);
+        throw error;
+      });
+    this.gamePictures.delete(key);
+    this.gamePictures.set(key, picture);
+    if (this.gamePictures.size > GAME_PICTURES_KEPT) {
+      this.gamePictures.delete(this.gamePictures.keys().next().value as string);
+    }
+    return picture;
+  }
+  private readonly gamePictures = new Map<string, Promise<GameMapPicture | undefined>>();
+
+  private async loadGameMapPicture(page: GamePage, overlays: GameMapOverlay[]): Promise<GameMapPicture | undefined> {
     const { identity } = await this.getClient();
-    const cached = await this.cache.read<RgbaImage>(identity, GAME_MAP_KIND, page.prefix);
+    const started = performance.now();
+    const cached = await this.cache.read<GameMapPicture>(identity, GAME_MAP_KIND, page.prefix);
     if (cached) {
       return cached;
     }
@@ -446,15 +473,16 @@ export class WowClientService {
     }
     const folder = page.prefix.slice(0, page.prefix.indexOf('\\') + 1);
     const pieces: GameMapPiece[] = [];
-    for (const overlay of overlays) {
+    for (const [index, overlay] of overlays.entries()) {
       for (const piece of overlayPieces(overlay)) {
         const image = await this.getTexture(`${GAME_MAP_ROOT}${folder}${overlay.texture}${piece.index}.blp`).catch(() => undefined);
         if (image) {
-          pieces.push({ image, x: piece.x, y: piece.y });
+          pieces.push({ image, x: piece.x, y: piece.y, label: Math.min(255, index + 1) });
         }
       }
     }
     const picture = composeGameMap(tiles, pieces);
+    perfNote(`game map: drew ${page.prefix} (${pieces.length} overlay pieces) in ${Math.round(performance.now() - started)} ms`);
     void this.cache.write(identity, GAME_MAP_KIND, page.prefix, picture);
     return picture;
   }

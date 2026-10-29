@@ -30,8 +30,6 @@ import {
 } from '@keira/shared/wow-data';
 import { TranslatePipe } from '@ngx-translate/core';
 import { imageToDataUrl, shrinkImage } from './minimap-image';
-import { GameMapComponent } from './game-map.component';
-import { GameMapPoi } from './game-map-pois';
 
 /** A dot on the world map (a spawn, a search result…). */
 export interface WorldMapDot {
@@ -60,16 +58,6 @@ export function minimapImageSize(zoom: number, quality: number, pixelRatio = 1):
   return QUALITY_SIZES.find((size) => size >= needed && size <= most) ?? most;
 }
 export const MAP_QUALITY_KEY = 'keira3.worldEditor.mapQuality';
-/** Whether the map opens on the game's world map (else on the minimaps), as last left. */
-export const MAP_GAME_KEY = 'keira3.worldEditor.gameMap';
-
-function loadGameMode(): boolean {
-  try {
-    return localStorage.getItem(MAP_GAME_KEY) === '1';
-  } catch {
-    return false;
-  }
-}
 
 function loadQuality(): number {
   try {
@@ -96,7 +84,7 @@ const toWorld = (u: number, v: number): WorldPosition => ({ x: (32 - v) * TILE_S
 @Component({
   selector: 'keira-world-map',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, GameMapComponent],
+  imports: [TranslatePipe],
   templateUrl: './world-map.component.html',
   styleUrl: './world-map.component.scss',
   host: { '(wheel)': 'onWheel($event)', '(document:fullscreenchange)': 'onFullscreenChange()', '[class.fullscreen]': 'fullscreen()' },
@@ -123,13 +111,6 @@ export class WorldMapComponent implements OnDestroy {
   readonly atlasPicked = output<{ mapId: number; position: WorldPosition }>();
   /** The atlas of every map (one big page, by kind) instead of the map shown. */
   protected readonly showAll = signal(false);
-  /** The game's world map instead of the minimaps. */
-  protected readonly showGame = signal(loadGameMode());
-  /** Points of interest for the game's world map, and the zone the camera is in. */
-  readonly pois = input<GameMapPoi[]>([]);
-  readonly zoneId = input(0);
-  /** The game's world map was opened (to load its points of interest). */
-  readonly gameMapShown = output<void>();
   protected readonly fullscreen = signal(false);
   /** What each map is made of, by directory: its tiles, or a single building (no tiles to draw). */
   private readonly atlasMaps = signal(new Map<string, TileCoord[] | 'building'>());
@@ -237,11 +218,6 @@ export class WorldMapComponent implements OnDestroy {
   private readonly size = signal({ width: 0, height: 0 });
 
   constructor() {
-    effect(() => {
-      if (this.showGame()) {
-        untracked(() => this.gameMapShown.emit());
-      }
-    });
     // another map: other minimaps
     effect(() => {
       this.directory();
@@ -278,21 +254,9 @@ export class WorldMapComponent implements OnDestroy {
   }
 
   /** Shows the atlas of every map, reading what each is made of then drawing their pictures (or goes back to the map). */
-  protected toggleGame(): void {
-    const show = !this.showGame();
-    this.showGame.set(show);
-    this.showAll.set(false);
-    try {
-      localStorage.setItem(MAP_GAME_KEY, show ? '1' : '0');
-    } catch {
-      // (not kept)
-    }
-  }
-
   protected toggleAll(): void {
     const show = !this.showAll();
     this.showAll.set(show);
-    this.showGame.set(false);
     const run = ++this.atlasRun;
     if (show) {
       void this.loadAtlas(run);
@@ -417,9 +381,6 @@ export class WorldMapComponent implements OnDestroy {
   }
 
   protected onWheel(event: WheelEvent): void {
-    if (this.showGame()) {
-      return;
-    }
     event.preventDefault();
     const atlas = this.showAll();
     const { x, y } = atlas ? this.atlasPointer(event) : this.pointer(event);

@@ -7,8 +7,6 @@ import {
   GameMapData,
   GameMapOverlay,
   gameMapPages,
-  glowAt,
-  glowImage,
   onContinent,
   onGameMap,
   overlayPieces,
@@ -23,6 +21,12 @@ import {
   parseGameMapTransforms,
   parseGameZones,
   toGameMap,
+  regionShapes,
+  shapeEdges,
+  shapeCentres,
+  labelAt,
+  SHAPE_WIDTH,
+  SHAPE_HEIGHT,
 } from './game-map';
 
 const float = (value: number): number => {
@@ -197,6 +201,7 @@ describe('game map pages', () => {
     expect(world?.parent).toBe('cosmic');
     expect(world?.regions.map((r) => r.page)).toEqual(['area:14', 'area:13', 'area:485']);
     expect(world?.regions[0].highlight).toBe('Interface\\WorldMap\\Azeroth\\AzerothHighlight.blp');
+    expect(world?.regions[0].outline).toBe(true);
     const azeroth = pages.get('area:14');
     expect(azeroth).toMatchObject({ kind: 'continent', prefix: 'Azeroth\\Azeroth', parent: 'world', mapId: 0 });
     // Eversong Woods is on the Eastern Kingdoms, moved there from Outland's map
@@ -273,13 +278,15 @@ describe('game map pictures', () => {
     ]);
   });
 
-  it('lays tiles out 4 by 3 and blends pieces over them', () => {
+  it('lays tiles out 4 by 3, blends pieces over them and marks where labelled ones are solid', () => {
     const red = solid(256, 256, [255, 0, 0, 255]);
-    const picture = composeGameMap(
+    const { image: picture, labels } = composeGameMap(
       [red, undefined, undefined, undefined, red],
       [
-        { image: solid(2, 2, [0, 0, 255, 128]), x: -1, y: -1 },
+        { image: solid(2, 2, [0, 0, 255, 128]), x: -1, y: -1, label: 3 },
         { image: solid(4, 4, [0, 255, 0, 255]), x: 1000, y: 666 },
+        { image: solid(10, 10, [0, 0, 0, 10]), x: 100, y: 100, label: 4 },
+        { image: solid(6, 6, [9, 9, 9, 255]), x: 200, y: 200, label: 5 },
       ],
     );
     expect([picture.width, picture.height]).toEqual([1002, 668]);
@@ -289,16 +296,114 @@ describe('game map pictures', () => {
     expect(at(300, 0)).toEqual([0, 0, 0, 255]);
     expect(at(0, 300)).toEqual([255, 0, 0, 255]);
     expect(at(1001, 667)).toEqual([0, 255, 0, 255]);
+    // the shape grid is half the picture: solid pieces only
+    expect(labels.length).toBe(SHAPE_WIDTH * SHAPE_HEIGHT);
+    expect(labels[0]).toBe(3);
+    expect(labels[50 * SHAPE_WIDTH + 50]).toBe(0);
+    expect(labels[101 * SHAPE_WIDTH + 101]).toBe(5);
+    expect(labels[104 * SHAPE_WIDTH + 104]).toBe(0);
+  });
+});
+
+describe('game map shapes', () => {
+  const W = SHAPE_WIDTH;
+  const lit = (width: number, height: number, value = 40) => ({ width, height, data: new Uint8Array(width * height * 4).fill(value) });
+  const rect = (left: number, top: number, right: number, bottom: number) => ({ left, top, right, bottom });
+  const at = (labels: ArrayLike<number>, u: number, v: number) => labelAt(labels, { u, v });
+
+  it('gives each pixel to the zone whose highlight lights it, the gaps between zones closed', () => {
+    const { labels, keys } = regionShapes([
+      { key: 'west', rect: rect(0.1, 0.1, 0.495, 0.5), image: lit(8, 8) },
+      { key: 'east', rect: rect(0.505, 0.1, 0.9, 0.5), image: lit(8, 8) },
+      { key: 'none', rect: rect(0.1, 0.6, 0.2, 0.7) },
+      { key: 'off', rect: rect(2, 2, 3, 3), image: lit(8, 8) },
+    ]);
+    expect(keys).toEqual(['west', 'east', 'none', 'off']);
+    expect(at(labels, 0.3, 0.2)).toBe(1);
+    expect(at(labels, 0.7, 0.2)).toBe(2);
+    // the 4-pixel gap between them closed; the sea around them not
+    expect(at(labels, 0.5, 0.2)).not.toBe(0);
+    // a gap nearer one side goes to that side
+    const uneven = regionShapes([
+      { key: 'w', rect: rect(0.1, 0.1, 0.495, 0.5), image: lit(8, 8) },
+      { key: 'e', rect: rect(0.5, 0.1, 0.9, 0.5), image: lit(8, 8) },
+    ]);
+    expect(at(uneven.labels, 0.4985, 0.3)).toBe(2);
+    expect(at(labels, 0.05, 0.2)).toBe(0);
+    expect(at(labels, 0.15, 0.65)).toBe(0);
+    // a zone highlight only uses its top 1002:668 part: the bottom row of this one is never drawn
+    const cropped = { width: 3, height: 3, data: new Uint8Array(36) };
+    cropped.data.set([
+      0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 40, 40, 40, 255, 40, 40, 40, 255, 40, 40, 40, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255,
+    ]);
+    const crop = regionShapes([{ key: 'a', rect: rect(0, 0, 0.3, 0.3), image: cropped }]);
+    expect(at(crop.labels, 0.15, 0.25)).toBe(1);
+    expect(at(crop.labels, 0.15, 0.05)).toBe(0);
   });
 
-  it('makes glows from the dim highlights and reads how strong they are', () => {
-    const highlight = { width: 2, height: 1, data: Uint8Array.from([40, 10, 0, 255, 0, 0, 0, 255]) };
-    const glow = glowImage(highlight, [255, 200, 0]);
-    expect(Array.from(glow.data)).toEqual([255, 200, 0, 220, 255, 200, 0, 0]);
-    expect(glowAt(glow, 0.2, 0.5)).toBeCloseTo(220 / 255);
-    expect(glowAt(glow, 0.7, 0.5)).toBe(0);
-    expect(glowAt(glow, -0.1, 0.5)).toBe(0);
-    expect(glowAt(glow, 0.5, 1)).toBe(0);
-    expect(glowImage({ width: 1, height: 1, data: Uint8Array.from([100, 0, 0, 255]) }, [1, 2, 3]).data[3]).toBe(255);
+  it('puts the place deep inside one zone in it, and cities (blank highlights) on top of their zone', () => {
+    const { labels } = regionShapes([
+      { key: 'a', rect: rect(0.1, 0.1, 0.5, 0.5), image: lit(4, 4) },
+      { key: 'b', rect: rect(0.3, 0.1, 0.7, 0.5), image: lit(4, 4) },
+      { key: 'city', rect: rect(0.12, 0.12, 0.2, 0.2), image: lit(4, 4, 0) },
+      { key: 'town', rect: rect(0.14, 0.14, 0.18, 0.18), image: lit(4, 4, 0) },
+      { key: 'above', rect: rect(0.2, 0.01, 0.22, 0.03), image: lit(4, 4) },
+      { key: 'below', rect: rect(0.2, 0.8, 0.22, 0.82), image: lit(4, 4) },
+      { key: 'right', rect: rect(0.9, 0.3, 0.92, 0.32), image: lit(4, 4) },
+    ]);
+    expect(at(labels, 0.32, 0.3)).toBe(1);
+    expect(at(labels, 0.48, 0.3)).toBe(2);
+    expect(at(labels, 0.16, 0.16)).toBe(4);
+    expect(at(labels, 0.142, 0.16)).toBe(3);
+    expect(at(labels, 0.121, 0.121)).toBe(1);
+  });
+
+  it('fills outlines, draws circles, and has no shape for a highlight too small to show', () => {
+    const ring = { width: 9, height: 9, data: new Uint8Array(9 * 9 * 4) };
+    for (let i = 0; i < 81; i++) {
+      const [x, y] = [i % 9, Math.floor(i / 9)];
+      const edge = Math.max(Math.abs(x - 4), Math.abs(y - 4)) === 3;
+      ring.data.set([edge ? 200 : 0, 0, 0, 255], i * 4);
+    }
+    const tiny = { width: 64, height: 64, data: new Uint8Array(64 * 64 * 4) };
+    tiny.data.set([255, 255, 255, 255], 63 * 4);
+    const { labels } = regionShapes([
+      { key: 'outline', rect: rect(0.1, 0.1, 0.4, 0.5), image: ring, outline: true, crop: false },
+      { key: 'circle', rect: rect(0.6, 0.1, 0.9, 0.5), circle: true },
+      { key: 'tiny', rect: rect(0.95, 0.95, 0.953, 0.953), image: tiny },
+      { key: 'speck', rect: rect(0.97, 0.97, 0.9701, 0.9701), circle: true },
+      { key: 'away', rect: rect(-2, -2, -1, -1), circle: true },
+      // an outline along its picture's edge: all of it inside
+      { key: 'framed', rect: rect(0.1, 0.6, 0.3, 0.9), image: lit(3, 3, 200), outline: true, crop: false },
+    ]);
+    expect(at(labels, 0.2, 0.75)).toBe(6);
+    expect(at(labels, 0.25, 0.3)).toBe(1);
+    // outside the outline
+    expect(at(labels, 0.105, 0.105)).toBe(0);
+    expect(at(labels, 0.75, 0.3)).toBe(2);
+    expect(at(labels, 0.61, 0.11)).toBe(0);
+    expect([...labels].some((l) => l === 3 || l === 4)).toBe(false);
+  });
+
+  it('finds the edges and middles of shapes, and the label at a point', () => {
+    const labels = new Uint16Array(W * SHAPE_HEIGHT);
+    for (let y = 10; y < 20; y++) {
+      for (let x = 10; x < 20; x++) {
+        labels[y * W + x] = 7;
+      }
+    }
+    labels[(SHAPE_HEIGHT - 1) * W + W - 1] = 2;
+    const edges = shapeEdges(labels);
+    expect(edges[10 * W + 15]).toBe(1);
+    expect(edges[15 * W + 15]).toBe(0);
+    expect(edges[19 * W + 19]).toBe(1);
+    expect(edges[5 * W + 5]).toBe(0);
+    expect(edges[(SHAPE_HEIGHT - 1) * W + W - 1]).toBe(1);
+    const middle = shapeCentres(labels).get(7);
+    expect(middle?.size).toBe(100);
+    expect(middle?.u).toBeCloseTo(15 / W);
+    expect(at(labels, 15 / W, 15 / SHAPE_HEIGHT)).toBe(7);
+    expect(at(labels, -0.1, 0.5)).toBe(0);
+    expect(at(labels, 0.5, 1)).toBe(0);
   });
 });

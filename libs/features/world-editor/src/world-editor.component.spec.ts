@@ -237,6 +237,9 @@ describe(WorldEditorComponent.name, () => {
       getMinimap: vi.fn(),
       getFactions: vi.fn(),
       getMapDifficulties: vi.fn(),
+      getGameMap: vi.fn(),
+      getGameMapPicture: vi.fn(),
+      getTexture: vi.fn(),
     },
     service: {
       loadSpawns: vi.fn(),
@@ -250,6 +253,8 @@ describe(WorldEditorComponent.name, () => {
       loadTransports: vi.fn(),
       loadGraveyards: vi.fn(),
       loadMapPois: vi.fn(),
+      loadMapTeleports: vi.fn(),
+      loadTransportRoutes: vi.fn(),
       loadTeleports: vi.fn(),
       loadLandingSpot: vi.fn(),
       loadAreaPaths: vi.fn(),
@@ -383,6 +388,20 @@ describe(WorldEditorComponent.name, () => {
     mocks.client.getSkyboxes.mockResolvedValue(['Environments\\Stars\\Aurora.m2', 'Environments\\Stars\\Stars.m2']);
     mocks.client.getMinimap.mockResolvedValue(undefined);
     mocks.client.getFactions.mockResolvedValue({ templates: new Map(), factions: new Map() });
+    mocks.client.getGameMap.mockResolvedValue({
+      areas: [
+        { id: 14, mapId: 0, areaId: 0, folder: 'Azeroth', bounds: { minX: -1, maxX: 1, minY: -1, maxY: 1 }, parent: 0, defaultFloor: 0 },
+      ],
+      overlays: [],
+      floors: [],
+      transforms: [],
+      zones: new Map(),
+    });
+    mocks.client.getGameMapPicture.mockResolvedValue(undefined);
+    mocks.client.getTexture.mockResolvedValue(undefined);
+    mocks.service.loadMapPois.mockResolvedValue([]);
+    mocks.service.loadMapTeleports.mockResolvedValue([]);
+    mocks.service.loadTransportRoutes.mockResolvedValue([]);
     mocks.service.loadFormations.mockResolvedValue([]);
     mocks.service.loadPools.mockResolvedValue([]);
     mocks.service.loadTransports.mockResolvedValue([]);
@@ -3625,40 +3644,64 @@ describe(WorldEditorComponent.name, () => {
   });
 
   describe('world map, search, problems and array', () => {
-    it("gives the game's world map the points of interest (read once) and the zone the camera is in", async () => {
+    it('opens the in-game map in its own panel, reading its markers once, and goes where it says', async () => {
       const { page } = await setup();
       const poi = { kind: 'flight', mapId: 0, x: 1, y: 2, z: 3, name: 'Thor' };
       mocks.service.loadMapPois.mockResolvedValueOnce([poi]);
+      mocks.service.loadMapTeleports.mockResolvedValueOnce([{ id: 1, name: 'Naxx', targetMap: 533 }]);
+      mocks.service.loadTransportRoutes.mockResolvedValueOnce([{ entry: 2, name: 'Boat', path: 3, faction: 0 }]);
       await loadArea(page);
+      // its pictures were made at the start: the cosmic and world maps and the continent
+      expect(mocks.client.getGameMapPicture).toHaveBeenCalledTimes(3);
       page.viewer().zoneChanged.emit(12);
-      page.click('map-toggle');
+      page.click('game-map-toggle');
       await settle(page);
       const map = () =>
-        page.fixture.debugElement.query((el) => el.name === 'keira-world-map').componentInstance as {
-          gameMapShown: { emit: () => void };
+        page.fixture.debugElement.query((el) => el.name === 'keira-game-map').componentInstance as {
           pois: () => unknown[];
+          teleports: () => unknown[];
+          transports: () => unknown[];
           zoneId: () => number;
+          goTo: { emit: (place: { mapId: number; position: WorldPosition }) => void };
+          regionSelected: { emit: (b: WorldBounds) => void };
+          closed: { emit: () => void };
         };
+      expect(page.byId('game-map-toggle').nativeElement.classList).toContain('btn-secondary');
       expect(map().zoneId()).toBe(12);
-      map().gameMapShown.emit();
-      map().gameMapShown.emit();
-      await settle(page);
       expect(map().pois()).toEqual([poi]);
+      expect(map().teleports()).toHaveLength(1);
+      expect(map().transports()).toHaveLength(1);
+      map().goTo.emit({ mapId: 0, position: { x: -9000, y: 100, z: 5 } });
+      await settle(page);
+      expect(page.viewer().focus()).toEqual({ x: -9000, y: 100, z: 5 });
+      map().regionSelected.emit({ minX: -9100, maxX: -9000, minY: 0, maxY: 100 });
+      await settle(page);
+      expect(page.viewer().region()).toEqual({ minX: -9100, maxX: -9000, minY: 0, maxY: 100 });
+      map().closed.emit();
+      await settle(page);
+      expect(page.fixture.debugElement.query((el) => el.name === 'keira-game-map')).toBeFalsy();
+      // the minimaps' panel and this one take turns
+      page.click('game-map-toggle');
+      page.click('map-toggle');
+      await settle(page);
+      expect(page.fixture.debugElement.query((el) => el.name === 'keira-game-map')).toBeFalsy();
+      page.click('game-map-toggle');
+      await settle(page);
       expect(mocks.service.loadMapPois).toHaveBeenCalledTimes(1);
     });
 
-    it("says nothing when the points of interest can't be read", async () => {
-      const { page } = await setup();
+    it("says nothing when the in-game map's markers or pictures can't be read", async () => {
+      mocks.client.getGameMap.mockRejectedValueOnce(new Error('no dbc'));
       mocks.service.loadMapPois.mockRejectedValueOnce(new Error('no table'));
-      vi.spyOn(console, 'warn').mockImplementation(() => undefined);
-      page.click('map-toggle');
+      mocks.service.loadMapTeleports.mockRejectedValueOnce(new Error('no table'));
+      mocks.service.loadTransportRoutes.mockRejectedValueOnce(new Error('no table'));
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+      const { page } = await setup();
+      await loadArea(page);
+      expect(warn).toHaveBeenCalledWith('[World Editor] Could not prepare the in-game map:', expect.any(Error));
+      page.click('game-map-toggle');
       await settle(page);
-      const map = page.fixture.debugElement.query((el) => el.name === 'keira-world-map').componentInstance as {
-        gameMapShown: { emit: () => void };
-        pois: () => unknown[];
-      };
-      map.gameMapShown.emit();
-      await settle(page);
+      const map = page.fixture.debugElement.query((el) => el.name === 'keira-game-map').componentInstance as { pois: () => unknown[] };
       expect(map.pois()).toEqual([]);
     });
 

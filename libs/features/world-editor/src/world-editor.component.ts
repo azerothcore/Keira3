@@ -71,6 +71,9 @@ import {
   WorldMapComponent,
   WorldMapDot,
   GameMapPoi,
+  GameMapTeleport,
+  GameMapTransport,
+  GameMapComponent,
   RENDER_SCALES,
   WorldBoundary,
   WeatherKind,
@@ -89,6 +92,7 @@ import {
   setPerfLog,
   perfLogActive,
   perfNote,
+  gameMapPages,
   perfLogFileName,
   MapDifficulty,
   captureProblems,
@@ -340,7 +344,7 @@ type RenderDistanceKey =
 /** The array tool places at most this many copies at once. */
 const MAX_ARRAY = 50;
 /** The panels under the toolbar: one open at a time. */
-type Panel = 'map' | 'filters' | 'view' | 'controls' | 'settings' | 'legend' | 'style';
+type Panel = 'map' | 'gameMap' | 'filters' | 'view' | 'controls' | 'settings' | 'legend' | 'style';
 /** A player's combat reach, and the shortest melee range the server uses (NOMINAL_MELEE_RANGE). */
 const PLAYER_COMBAT_REACH = 1.5;
 /** The context menu keeps this far from the window's edges (px). */
@@ -428,6 +432,7 @@ export function buildKind(dev = isDevMode()): 'development' | 'release' {
     TranslatePipe,
     WorldViewerComponent,
     WorldMapComponent,
+    GameMapComponent,
     HighlightjsWrapperComponent,
     WaypointPanelComponent,
     SpawnPanelComponent,
@@ -1011,18 +1016,56 @@ export class WorldEditorComponent implements OnInit {
       title: spawnTitle(r),
     })),
   ]);
-  /** Points of interest of the whole world for the game's world map (read when it is first opened). */
+  /** What the in-game map shows from the database (points of interest, entrances, transports), read when first opened. */
   protected readonly gameMapPois = signal<GameMapPoi[]>([]);
-  private gameMapPoisLoading = false;
-  protected loadGameMapPois(): void {
-    if (this.gameMapPoisLoading) {
+  protected readonly gameMapTeleports = signal<GameMapTeleport[]>([]);
+  protected readonly gameMapTransports = signal<GameMapTransport[]>([]);
+  private gameMapDataLoading = false;
+  private loadGameMapData(): void {
+    if (this.gameMapDataLoading) {
       return;
     }
-    this.gameMapPoisLoading = true;
-    void this.service
-      .loadMapPois()
-      .catch(this.quietly<GameMapPoi[]>('read the points of interest', []))
-      .then((pois) => this.gameMapPois.set(pois));
+    this.gameMapDataLoading = true;
+    const started = performance.now();
+    void Promise.all([
+      this.service.loadMapPois().catch(this.quietly<GameMapPoi[]>('read the points of interest', [])),
+      this.service.loadMapTeleports().catch(this.quietly<GameMapTeleport[]>('read the teleports for the in-game map', [])),
+      this.service.loadTransportRoutes().catch(this.quietly<GameMapTransport[]>('read the transports for the in-game map', [])),
+    ]).then(([pois, teleports, transports]) => {
+      perfNote(
+        `in-game map: ${pois.length} points of interest, ${teleports.length} teleports, ${transports.length} transports read in ${Math.round(performance.now() - started)} ms`,
+      );
+      this.gameMapPois.set(pois);
+      this.gameMapTeleports.set(teleports);
+      this.gameMapTransports.set(transports);
+    });
+  }
+  /** The in-game map (its own panel). */
+  protected readonly showGameMap = signal(false);
+  protected toggleGameMap(): void {
+    this.togglePanel('gameMap');
+    if (this.showGameMap()) {
+      this.loadGameMapData();
+    }
+  }
+  /** The in-game map's pictures are made at the start (continents first), so it opens at once. */
+  private gameMapPrefetched = false;
+  private async prefetchGameMap(): Promise<void> {
+    if (this.gameMapPrefetched) {
+      return;
+    }
+    this.gameMapPrefetched = true;
+    const started = performance.now();
+    try {
+      const data = await this.client.getGameMap();
+      const pages = [...gameMapPages(data).values()].filter((page) => page.kind !== 'zone' && page.kind !== 'floor');
+      for (const page of pages) {
+        await this.client.getGameMapPicture(page);
+      }
+      perfNote(`in-game map: ${pages.length} maps made ready in ${Math.round(performance.now() - started)} ms`);
+    } catch (error) {
+      this.quietly('prepare the in-game map', undefined)(error);
+    }
   }
   /** The zone under the camera (0 until the view says). */
   protected readonly cameraZone = computed(() => this.weatherZone() ?? 0);
@@ -1586,6 +1629,7 @@ export class WorldEditorComponent implements OnInit {
   private togglePanel(panel: Panel): void {
     const panels: Record<Panel, WritableSignal<boolean>> = {
       map: this.showMap,
+      gameMap: this.showGameMap,
       filters: this.showFilters,
       view: this.showView,
       controls: this.showControls,
@@ -2034,6 +2078,7 @@ export class WorldEditorComponent implements OnInit {
     }
     try {
       this.maps.set(await this.client.getMaps());
+      void this.prefetchGameMap();
       void this.client.getFactions().then((data) => this.factionData.set(data), this.quietly('read the factions', undefined));
       if (!this.focus()) {
         await this.focusMapCenter();

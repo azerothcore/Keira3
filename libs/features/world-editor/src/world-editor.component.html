@@ -2296,14 +2296,28 @@
             [zones]="zones()"
             [coverage]="mapCoverage()"
             [maps]="maps()"
-            [pois]="gameMapPois()"
-            [zoneId]="cameraZone()"
-            (gameMapShown)="loadGameMapPois()"
             (mapPicked)="pickMap($event)"
             (atlasPicked)="goToPlace($event.mapId, $event.position)"
             (goTo)="onMapGoTo($event)"
             (regionSelected)="onMapRegion($event)"
             (closed)="toggleMap()"
+          />
+        </div>
+      }
+      @if (showGameMap()) {
+        <div class="world-editor-map">
+          <keira-game-map
+            [mapId]="mapId()"
+            [camera]="cameraCenter()"
+            [zoneId]="cameraZone()"
+            [dots]="mapDots()"
+            [pois]="gameMapPois()"
+            [teleports]="gameMapTeleports()"
+            [transports]="gameMapTransports()"
+            [maps]="maps()"
+            (goTo)="goToPlace($event.mapId, $event.position)"
+            (regionSelected)="onMapRegion($event)"
+            (closed)="toggleGameMap()"
           />
         </div>
       }
@@ -3486,6 +3500,17 @@
     (click)="toggleMap()"
   >
     <keira-button-label button="worldMap" [mode]="buttonStyle()" />
+  </button>
+  <button
+    type="button"
+    class="btn btn-sm"
+    data-testid="game-map-toggle"
+    [class.btn-secondary]="showGameMap()"
+    [class.btn-outline-secondary]="!showGameMap()"
+    [title]="buttonTitle('gameMap') | translate"
+    (click)="toggleGameMap()"
+  >
+    <keira-button-label button="gameMap" [mode]="buttonStyle()" />
   </button>
   <button
     type="button"
