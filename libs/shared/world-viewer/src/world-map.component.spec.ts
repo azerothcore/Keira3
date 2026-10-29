@@ -223,22 +223,29 @@ describe(WorldMapComponent.name, () => {
       /^data:image/,
     );
     expect(page.getDebugElementByTestId('world-map-atlas-33').nativeElement.classList).toContain('building');
+    // no picture (a dungeon of one building, a map without minimaps): red; a map too small for its name tells it on hover
+    expect(page.getDebugElementByTestId('world-map-atlas-33').nativeElement.classList).toContain('no-picture');
+    expect(page.getDebugElementByTestId('world-map-atlas-0').nativeElement.classList).not.toContain('no-picture');
+    expect(page.getDebugElementByTestId('world-map-atlas-35').nativeElement.classList).toContain('no-picture');
+    expect(page.getDebugElementByTestId('world-map-atlas-35').nativeElement.querySelector('.world-map-atlas-name')).toBeFalsy();
 
-    // the view is 200 px wide: 1.15 px per tile, from (8, 48); Eastern Kingdoms starts below its section's title
+    // the view is 200 px wide: a page 64 tiles across (6 px per tile at least), 2.875 px per tile, from (8, 48);
+    // Eastern Kingdoms starts below its section's title (30 px: 11 tiles)
     const atlas = page.getDebugElementByTestId('world-map-atlas').nativeElement as HTMLElement;
     const at = (type: string, tx: number, ty: number) =>
-      atlas.dispatchEvent(new MouseEvent(type, { clientX: 8 + tx * 1.15, clientY: 48 + ty * 1.15, button: 0, bubbles: true }));
-    at('pointermove', 1.5, 6.5);
+      atlas.dispatchEvent(new MouseEvent(type, { clientX: 8 + tx * 2.875, clientY: 48 + ty * 2.875, button: 0, bubbles: true }));
+    at('pointermove', 1.5, 11.5);
     fixture.detectChanges();
     expect(page.getDebugElementByTestId('world-map-atlas-info').nativeElement.textContent).toContain('0 – Eastern Kingdoms · 32_49');
+    expect(page.getDebugElementByTestId('world-map-atlas-no-image', false)).toBeFalsy();
     // not a tile of the map, or between maps: nothing
-    at('pointerdown', 0.5, 7.5);
-    at('pointerup', 0.5, 7.5);
+    at('pointerdown', 0.5, 12.5);
+    at('pointerup', 0.5, 12.5);
     at('pointerdown', 100, 100);
     at('pointerup', 100, 100);
     expect(host.atlasPicks).toEqual([]);
-    at('pointerdown', 1.5, 6.5);
-    at('pointerup', 1.5, 6.5);
+    at('pointerdown', 1.5, 11.5);
+    at('pointerup', 1.5, 11.5);
     expect(host.atlasPicks[0].mapId).toBe(0);
     expect(host.atlasPicks[0].position.x).toBeCloseTo((32 - 49.5) * TILE_SIZE);
     fixture.detectChanges();
@@ -274,7 +281,7 @@ describe(WorldMapComponent.name, () => {
     // the wheel zooms the atlas
     atlas.dispatchEvent(new WheelEvent('wheel', { clientX: 10, clientY: 10, deltaY: -100, bubbles: true, cancelable: true }));
     fixture.detectChanges();
-    expect(parseFloat(page.getDebugElementByTestId('world-map-atlas-0').nativeElement.style.width)).toBeCloseTo(1.15 * 1.25);
+    expect(parseFloat(page.getDebugElementByTestId('world-map-atlas-0').nativeElement.style.width)).toBeCloseTo(2.875 * 1.25);
     // Shadowfang Keep: its square in the dungeons
     const block = page.getDebugElementByTestId('world-map-atlas-33').nativeElement as HTMLElement;
     const [left, top] = [parseFloat(block.style.left), parseFloat(block.style.top)];
@@ -283,7 +290,8 @@ describe(WorldMapComponent.name, () => {
       ?.map(Number) as number[];
     event('pointermove', ox + left + 2, oy + top + 2);
     fixture.detectChanges();
-    expect(page.getDebugElementByTestId('world-map-atlas-info').nativeElement.textContent.trim()).toBe('33 – Shadowfang Keep');
+    expect(page.getDebugElementByTestId('world-map-atlas-info').nativeElement.textContent).toContain('33 – Shadowfang Keep');
+    expect(page.getDebugElementByTestId('world-map-atlas-no-image').nativeElement.textContent).toContain('WORLD_EDITOR.ATLAS_NO_IMAGE');
     event('pointerdown', ox + left + 2, oy + top + 2);
     event('pointerup', ox + left + 2, oy + top + 2);
     expect(host.picked).toEqual([33]);
@@ -445,6 +453,39 @@ describe(WorldMapComponent.name, () => {
 });
 
 describe('layoutAtlas', () => {
+  it('splits each kind by expansion, with a title for each, in order', () => {
+    const map = (id: number, instanceType: number, expansion?: number) => ({
+      id,
+      directory: `M${id}`,
+      name: `M${id}`,
+      instanceType,
+      expansion,
+    });
+    const tile = [{ tx: 0, ty: 0 }];
+    const layout = layoutAtlas(
+      [map(1, 1, 2), map(5, 1), map(2, 1, 0), map(3, 1, 0), map(4, 2)],
+      new Map(['M1', 'M2', 'M3', 'M4', 'M5'].map((d) => [d, tile])),
+      64,
+      6,
+      4,
+    );
+    expect(layout.sections).toEqual([
+      { kind: 'dungeon', y: 0 },
+      { kind: 'dungeon', expansion: 0, y: 6 },
+      // (one tile tall, a gap, then the next title)
+      { kind: 'dungeon', expansion: 2, y: 15 },
+      // (then the ones Map.dbc gives no expansion, without a title)
+      { kind: 'raid', y: 29 },
+    ]);
+    expect(layout.blocks.map((b) => [b.map.id, b.x, b.y])).toEqual([
+      [2, 0, 10],
+      [3, 3, 10],
+      [1, 0, 19],
+      [5, 0, 24],
+      [4, 0, 35],
+    ]);
+  });
+
   it('starts a new row when a map would go past the width of the page', () => {
     const wide = (id: number) => ({ id, directory: `M${id}`, name: `M${id}`, instanceType: 0 });
     const tiles = Array.from({ length: 64 }, (_, tx) => ({ tx, ty: 0 }));

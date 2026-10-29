@@ -147,6 +147,7 @@ interface FakeTransformControls extends EventDispatcher<{ 'dragging-changed': { 
       [resetNorth]="resetNorth()"
       [topView]="topView()"
       [pathEnds]="pathEnds()"
+      [tags]="tags()"
       [region]="region()"
       [navigation]="navigation()"
       [areaTriggers]="triggers()"
@@ -207,6 +208,7 @@ class HostComponent {
   readonly links = signal<WorldLink[]>([]);
   readonly group = signal<string[]>([]);
   readonly simulation = signal<MovementSimulation | undefined>(undefined);
+  readonly tags = signal<{ key: string; position: WorldPosition; text: string }[]>([]);
   readonly simulationRate = signal(2);
   simulationEnds = 0;
   readonly topViews: boolean[] = [];
@@ -1012,6 +1014,58 @@ describe(WorldViewerComponent.name, () => {
       fixture.detectChanges();
       expect(page.label().nativeElement.classList).toContain('flip-x');
       expect(page.label().nativeElement.classList).toContain('flip-y');
+    });
+
+    it('puts tags over spawns, and over their simulated copies (a formation) while they move', async () => {
+      let now = 0;
+      vi.spyOn(performance, 'now').mockImplementation(() => now);
+      const followers = vi.spyOn(WorldScene.prototype, 'moveFollowerGhosts');
+      const leader = vi.spyOn(WorldScene.prototype, 'moveGhost');
+      const { page, host, fixture, update } = await pickSetup();
+      const tag = (key: string) => page.getDebugElementByTestId('world-viewer-tag-' + key, false)?.nativeElement as HTMLElement | undefined;
+      host.spawns.set([spawn('creature:7', at(0, 0), 'Leader'), spawn('creature:8', at(0, 3), 'Member')]);
+      host.tags.set([
+        { key: 'creature:7', position: at(0, 0), text: 'Leader' },
+        { key: 'creature:8', position: at(0, 3), text: '1' },
+        // (behind the camera: not drawn)
+        { key: 'creature:9', position: { ...at(0, 0), z: 100_000 }, text: '2' },
+      ]);
+      await settle(fixture);
+      flushFrames();
+      fixture.detectChanges();
+      expect(tag('creature:7')?.textContent).toContain('Leader');
+      expect(tag('creature:9')).toBeUndefined();
+      // the leader walks, the member keeps 3 yards to its left
+      await update(() =>
+        host.simulation.set({
+          key: 'creature:7',
+          start: at(0, 0),
+          legs: [{ to: at(20, 0), speed: 5, wait: 0, label: 'point 1', straight: true }],
+          followers: [{ key: 'creature:8', dist: 3, angle: Math.PI / 2 }],
+        }),
+      );
+      await settle(fixture);
+      now = 2000;
+      flushFrames();
+      fixture.detectChanges();
+      // (moving now: it started once its route was worked out)
+      now = 3000;
+      flushFrames();
+      fixture.detectChanges();
+      flushFrames();
+      fixture.detectChanges();
+      const [[place]] = followers.mock.calls.at(-1) as [[{ position: WorldPosition }]];
+      // 3 yards beside the leader, wherever it is (its tag over it)
+      const [leaderAt] = leader.mock.calls.at(-1) as [WorldPosition];
+      expect(Math.hypot(place.position.x - leaderAt.x, place.position.y - leaderAt.y)).toBeCloseTo(3);
+      expect(tag('creature:8')?.textContent).toContain('1');
+      // no tags: none drawn
+      host.tags.set([]);
+      await settle(fixture);
+      flushFrames();
+      fixture.detectChanges();
+      expect(tag('creature:7')).toBeUndefined();
+      await update(() => host.simulation.set(undefined));
     });
 
     it('looks straight down when asked, and labels the ends of a path', async () => {

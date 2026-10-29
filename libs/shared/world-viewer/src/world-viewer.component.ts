@@ -86,6 +86,7 @@ import {
   WorldLink,
   WorldBoundary,
   WorldMarker,
+  WorldTag,
   ObjectMoved,
   parseWaypointKey,
   waypointKey,
@@ -165,6 +166,8 @@ const ACTIVITY_POLL = 250;
 const CLOCK_CHECK = 60_000;
 /** How often (ms) the memory is measured (with the stats shown or a limit set), and the limits kept. */
 const MEMORY_CHECK = 2000;
+/** How high (yards) over a spawn its tag is. */
+const TAG_HEIGHT = 3.5;
 /** How often (ms) the log gets a line of what's shown and what it costs (while it's on). */
 const LOG_STATE_EVERY = 10_000;
 const MB = 1_000_000;
@@ -225,6 +228,12 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   readonly topView = input(0);
   /** A path's first and last points, labelled "Start" and "End". */
   readonly pathEnds = input<{ spawn?: WorldPosition; start: WorldPosition; end: WorldPosition; endText?: string } | undefined>(undefined);
+  /** Badges over spawns ("Leader", "1", "2"… over a formation); over their simulated copies while they move. */
+  readonly tags = input<WorldTag[]>([]);
+  /** Where the tags are on the canvas (after each frame). */
+  protected readonly tagLabels = signal<{ key: string; text: string; x: number; y: number }[]>([]);
+  /** Where the simulated creatures are, by spawn key (while a simulation runs). */
+  private simulatedPlaces = new Map<string, WorldPosition>();
   protected readonly pathEndLabels = signal<{ which: 'spawn' | 'start' | 'end'; x: number; y: number }[]>([]);
   /** Quality and range of what is drawn. */
   readonly renderSettings = input<WorldRenderSettings>(DEFAULT_WORLD_RENDER_SETTINGS);
@@ -465,7 +474,10 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
           smallDistance: distances.smallDoodads,
           trees: settings.showTrees,
           props: settings.showProps,
+          treeOpacity: settings.treeOpacity / 100,
+          propOpacity: settings.propOpacity / 100,
         });
+        this.objects.setOpacity(settings.buildingOpacity / 100);
         // (a kind of model turned off keeps its pins: no distance)
         this.spawnModels.configure({
           show: settings.showModels,
@@ -613,6 +625,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     effect(() => {
       // (the labels move with the camera: drawn after each frame)
       this.pathEnds();
+      this.tags();
       untracked(() => this.requestRender());
     });
     effect(() => {
@@ -1141,7 +1154,16 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     }
     this.simulationStatus.set(undefined);
     this.world.setSimulationMarks([]);
-    if (!directory || !simulation || !this.world.setGhost(simulation.key)) {
+    this.simulatedPlaces = new Map();
+    const followers = simulation?.followers ?? [];
+    if (
+      !directory ||
+      !simulation ||
+      !this.world.setGhost(
+        simulation.key,
+        followers.map((f) => f.key),
+      )
+    ) {
       this.world.setGhost(undefined);
       this.requestRender();
       return;
@@ -1174,6 +1196,17 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       const ended = !!simulation.once && elapsed >= timeline.duration;
       const at = sampleTimeline(timeline, elapsed, !simulation.once);
       this.world.moveGhost(at.position, at.orientation);
+      // its followers keep their places beside it: at their distance and angle from where it faces
+      const places = followers.map((f) => ({
+        position: {
+          x: at.position.x + Math.cos(at.orientation + f.angle) * f.dist,
+          y: at.position.y + Math.sin(at.orientation + f.angle) * f.dist,
+          z: at.position.z,
+        },
+        orientation: at.orientation,
+      }));
+      this.world.moveFollowerGhosts(places);
+      this.simulatedPlaces = new Map([[simulation.key, at.position], ...followers.map((f, i) => [f.key, places[i].position] as const)]);
       // the points: done (green, yellow when it went a long way round, red when it found no way), the one it's
       // heading to (blue), the ones to come (grey)
       const leg = at.leg ?? 0;
@@ -1526,6 +1559,21 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     this.pathEndLabels.set(labels);
   }
 
+  /** Keeps the tags over their spawns (or over their simulated copies) after each frame. */
+  private updateTagLabels(): void {
+    const tags = this.tags();
+    if (tags.length === 0 && this.tagLabels().length === 0) {
+      return;
+    }
+    this.tagLabels.set(
+      tags.flatMap((tag) => {
+        const place = this.simulatedPlaces.get(tag.key) ?? tag.position;
+        const at = this.screenPoint({ ...place, z: place.z + TAG_HEIGHT });
+        return at ? [{ key: tag.key, text: tag.text, ...at }] : [];
+      }),
+    );
+  }
+
   /** Keeps the bubble over the simulated creature's head after each frame. */
   private updateGhostBubble(): void {
     const at = this.simulationStatus() && this.world.ghostPosition();
@@ -1834,6 +1882,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
       this.updateStatus();
       this.updateProbeLabels();
       this.updatePathEndLabels();
+      this.updateTagLabels();
       this.updateGhostBubble();
       // a turning skybox, falling weather and animated creatures keep drawing
       if (spinning || this.weatherEffect.active || this.spawnModels.animating) {

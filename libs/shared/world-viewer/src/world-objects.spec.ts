@@ -199,6 +199,33 @@ describe('WorldObjects', () => {
     expect(objects.placedCount).toBe(0);
   });
 
+  it('makes the buildings see-through when asked, loaded ones and those to come', async () => {
+    const { objects, group, onChange } = setup({ '32_48': [placement(1)], '33_48': [placement(2, 'other.wmo')] });
+    objects.setMap('Azeroth');
+    await objects.update(tileCenter({ tx: 32, ty: 48 }));
+    const opacities = (object: Object3D) => {
+      const found: number[] = [];
+      object.traverse((child) => {
+        const material = (child as Mesh).material;
+        (Array.isArray(material) ? material : material ? [material] : []).forEach((m) => found.push(m.opacity));
+      });
+      return found;
+    };
+    onChange.mockClear();
+    objects.setOpacity(0.5);
+    objects.setOpacity(0.5);
+    expect(onChange).toHaveBeenCalledTimes(1);
+    await new Promise((resolve) => setTimeout(resolve));
+    expect(opacities(group.children[0]).every((o) => o <= 0.5)).toBe(true);
+    objects.configure({ showBuildings: true, radius: 1 });
+    await objects.update(tileCenter({ tx: 32, ty: 48 }));
+    const later = group.children.find((child) => child.name === 'wmo:2') as Object3D;
+    expect(opacities(later).every((o) => o <= 0.5)).toBe(true);
+    objects.setOpacity(1);
+    await new Promise((resolve) => setTimeout(resolve));
+    expect(opacities(later).some((o) => o === 1)).toBe(true);
+  });
+
   it('hides the indoor parts of the buildings when asked, loaded ones and those to come', async () => {
     const { objects, group, onChange } = setup({ '32_48': [placement(1)], '33_48': [placement(2, 'other.wmo')] });
     objects.setMap('Azeroth');

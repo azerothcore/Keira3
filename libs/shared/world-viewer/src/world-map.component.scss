@@ -104,6 +104,10 @@
   white-space: nowrap;
 }
 
+.world-map-info-note {
+  color: #ff9b9b;
+}
+
 .world-map-buttons {
   position: absolute;
   right: 8px;
@@ -134,7 +138,8 @@
 
 /* the atlas of every map */
 .world-map-atlas {
-  background: #2b3540;
+  // diagonal stripes around the maps
+  background: repeating-linear-gradient(45deg, #34414e 0 14px, #3b4a58 14px 28px);
 }
 
 .world-map-atlas-section {
@@ -146,6 +151,15 @@
   font-size: 15px;
   font-weight: 600;
   pointer-events: none;
+
+  // the expansions within a kind
+  &.expansion {
+    padding-left: 14px;
+    border-bottom-style: dotted;
+    color: #d8e3ee;
+    font-size: 12px;
+    font-weight: 500;
+  }
 }
 
 .world-map-atlas-block {
@@ -162,6 +176,12 @@
 
   &.building {
     background: repeating-linear-gradient(45deg, #34414d 0 6px, #3a4855 6px 12px);
+  }
+
+  // no picture to show (a dungeon of one building, or no minimap)
+  &.no-picture {
+    background: rgba(200, 40, 40, 0.55);
+    outline-color: rgba(255, 120, 120, 0.7);
   }
 
   &:hover {

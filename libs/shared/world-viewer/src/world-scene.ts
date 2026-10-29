@@ -1499,20 +1499,46 @@ export class WorldScene {
    * A copy of a spawn's marker and model that moves on its own (the movement simulation), without its wander circle;
    * undefined removes it. False when there's no such spawn.
    */
-  setGhost(key: string | undefined): boolean {
+  setGhost(key: string | undefined, followers: string[] = []): boolean {
     this.ghostGroup.clear();
+    this.followerGhosts = [];
     const source = key ? this.objects.get(key) : undefined;
     if (!source) {
       return false;
     }
+    this.ghostGroup.add(this.ghostOf(source));
+    // the creatures moving with it (each copied, when shown)
+    this.followerGhosts = followers.map((follower) => {
+      const object = this.objects.get(follower);
+      const ghost = object && this.ghostOf(object);
+      if (ghost) {
+        this.ghostGroup.add(ghost);
+      }
+      return ghost;
+    });
+    return true;
+  }
+  private followerGhosts: (Object3D | undefined)[] = [];
+
+  /** A copy of a spawn's object that is never picked, without its circles. */
+  private ghostOf(source: Object3D): Object3D {
     const ghost = source.clone(true);
     ghost.children.filter((child) => child instanceof LineLoop).forEach((ring) => ring.removeFromParent());
     ghost.traverse((object) => {
       object.raycast = () => undefined;
     });
     ghost.name = 'ghost';
-    this.ghostGroup.add(ghost);
-    return true;
+    return ghost;
+  }
+
+  /** Moves the copies of the followers (in the order given to `setGhost`). */
+  moveFollowerGhosts(places: { position: WorldPosition; orientation: number }[]): void {
+    places.forEach((place, i) => {
+      const ghost = this.followerGhosts[i];
+      if (ghost) {
+        placeObject(ghost, place.position, place.orientation);
+      }
+    });
   }
 
   /**

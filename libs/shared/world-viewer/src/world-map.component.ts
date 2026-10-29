@@ -22,6 +22,7 @@ import {
   vmapTileName,
   mapKind,
   MapKind,
+  EXPANSIONS,
   WorldBounds,
   WorldPosition,
   WowClientService,
@@ -117,9 +118,17 @@ export class WorldMapComponent implements OnDestroy {
   protected readonly thumbnails = signal(new Map<string, string | null>());
   protected readonly atlasZoom = signal(8);
   protected readonly atlasOffset = signal({ x: 0, y: 0 });
-  protected readonly atlasHover = signal<{ x: number; y: number; title: string } | undefined>(undefined);
-  /** The atlas: a section per kind of map, each map placed on a row at its own shape (in tiles). */
-  protected readonly atlas = computed(() => layoutAtlas(this.maps(), this.atlasMaps()));
+  protected readonly atlasHover = signal<{ x: number; y: number; title: string; noImage: boolean } | undefined>(undefined);
+  /** How the atlas page is laid out for the view's width: its width and the room for titles (in tiles). */
+  private readonly atlasPage = signal({ width: ATLAS_WIDTH, title: ATLAS_TITLE, subtitle: ATLAS_SUBTITLE });
+  /** The atlas: a section per kind of map and expansion, each map placed on a row at its own shape (in tiles). */
+  protected readonly atlas = computed(() => {
+    const page = this.atlasPage();
+    return layoutAtlas(this.maps(), this.atlasMaps(), page.width, page.title, page.subtitle);
+  });
+  protected readonly expansions = EXPANSIONS;
+  /** A map's name is written on it when it is at least this wide on screen (px); the others tell it on hover. */
+  protected readonly atlasNameWidth = ATLAS_NAME_WIDTH;
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly atlasView = viewChild<ElementRef<HTMLDivElement>>('atlasView');
   private atlasRun = 0;
@@ -281,6 +290,7 @@ export class WorldMapComponent implements OnDestroy {
         x,
         y,
         title: `${spot.block.map.id} – ${spot.block.map.name}${spot.tile ? ` · ${tileKey(spot.tile)}` : ''}`,
+        noImage: !spot.block.tiles.length || this.thumbnails().get(spot.block.map.directory) === null,
       },
     );
     const press = this.atlasPress;
@@ -351,9 +361,12 @@ export class WorldMapComponent implements OnDestroy {
       const building = tiles.length === 1 && (await this.client.getMapBuilding(map.directory).catch(() => undefined));
       this.atlasMaps.update((maps) => new Map(maps).set(map.directory, building ? 'building' : tiles));
     }
-    // (the atlas fills the component)
+    // (the atlas fills the component: as many tiles across as fit at a readable size, the titles a readable height)
     const { width } = this.host.nativeElement.getBoundingClientRect();
-    this.atlasZoom.set(Math.max(1, (width - 16) / Math.max(1, this.atlas().width)));
+    const across = Math.min(ATLAS_WIDTH, Math.max(ATLAS_MIN_WIDTH, Math.floor((width - 16) / ATLAS_MIN_ZOOM)));
+    const zoom = Math.max(1, (width - 16) / across);
+    this.atlasPage.set({ width: across, title: Math.ceil(ATLAS_TITLE_PX / zoom), subtitle: Math.ceil(ATLAS_SUBTITLE_PX / zoom) });
+    this.atlasZoom.set(zoom);
     this.atlasOffset.set({ x: 8, y: 48 });
     for (const block of this.atlas().blocks) {
       if (run !== this.atlasRun) {
@@ -518,12 +531,20 @@ export interface AtlasBlock {
 
 /** The sections of the atlas, in order. */
 const ATLAS_SECTIONS: MapKind[] = ['world', 'dungeon', 'raid', 'battleground', 'arena', 'transport'];
-/** Width (tiles) of the atlas page: an open world map is up to 64 tiles across. */
+/** Width (tiles) of the atlas page at most, and at least (an open world map is up to 64 tiles across). */
 const ATLAS_WIDTH = 160;
-/** Room (tiles) for a section's title, between maps, and the size of a dungeon of one building. */
+const ATLAS_MIN_WIDTH = 64;
+/** The fewest pixels per tile the atlas is first shown at (in a narrow view, the page is narrower instead). */
+const ATLAS_MIN_ZOOM = 6;
+/** Room (tiles, and pixels on screen) for a section's title and an expansion's, between maps, and the size of a dungeon of one building. */
 const ATLAS_TITLE = 6;
+const ATLAS_SUBTITLE = 4;
+const ATLAS_TITLE_PX = 30;
+const ATLAS_SUBTITLE_PX = 22;
 const ATLAS_GAP = 2;
 const ATLAS_BUILDING = 8;
+/** The narrowest map (px) its name is written on. */
+const ATLAS_NAME_WIDTH = 60;
 
 /**
  * Lays out every map known so far on one page: a section per kind (Maps, Dungeons, Raids…), and in each the maps on
@@ -532,8 +553,11 @@ const ATLAS_BUILDING = 8;
 export function layoutAtlas(
   maps: WowMap[],
   contents: Map<string, TileCoord[] | 'building'>,
-): { width: number; height: number; sections: { kind: MapKind; y: number }[]; blocks: AtlasBlock[] } {
-  const sections: { kind: MapKind; y: number }[] = [];
+  pageWidth = ATLAS_WIDTH,
+  titleRows = ATLAS_TITLE,
+  subtitleRows = ATLAS_SUBTITLE,
+): { width: number; height: number; sections: AtlasSection[]; blocks: AtlasBlock[] } {
+  const sections: AtlasSection[] = [];
   const blocks: AtlasBlock[] = [];
   let y = 0;
   for (const kind of ATLAS_SECTIONS) {
@@ -545,23 +569,58 @@ export function layoutAtlas(
       continue;
     }
     sections.push({ kind, y });
-    y += ATLAS_TITLE;
-    let [x, rowHeight] = [0, 0];
-    for (const map of placeable) {
-      const content = contents.get(map.directory) as TileCoord[] | 'building';
-      const tiles = content === 'building' ? [] : content;
-      const minTx = tiles.length ? Math.min(...tiles.map((t) => t.tx)) : 0;
-      const minTy = tiles.length ? Math.min(...tiles.map((t) => t.ty)) : 0;
-      const width = tiles.length ? Math.max(...tiles.map((t) => t.tx)) - minTx + 1 : ATLAS_BUILDING;
-      const height = tiles.length ? Math.max(...tiles.map((t) => t.ty)) - minTy + 1 : ATLAS_BUILDING;
-      if (x > 0 && x + width > ATLAS_WIDTH) {
-        [x, y, rowHeight] = [0, y + rowHeight + ATLAS_GAP, 0];
+    y += titleRows;
+    // by expansion (Vanilla, The Burning Crusade, Wrath…), when Map.dbc tells it
+    // (sort() puts the maps of no expansion last, without comparing them)
+    const expansions = [...new Set(placeable.map((map) => map.expansion))].sort((a, b) => (a as number) - (b as number));
+    for (const expansion of expansions) {
+      if (expansion !== undefined) {
+        sections.push({ kind, expansion, y });
+        y += subtitleRows;
       }
-      blocks.push({ map, x, y, width, height, minTx, minTy, tiles });
-      x += width + ATLAS_GAP;
-      rowHeight = Math.max(rowHeight, height);
+      y = placeRow(
+        placeable.filter((map) => map.expansion === expansion),
+        contents,
+        blocks,
+        y,
+        pageWidth,
+      );
     }
-    y += rowHeight + ATLAS_GAP * 2;
   }
-  return { width: ATLAS_WIDTH, height: y, sections, blocks };
+  return { width: pageWidth, height: y, sections, blocks };
+}
+
+/** A title of the atlas: a kind of map, or (with `expansion`) the maps of an expansion within it. */
+export interface AtlasSection {
+  kind: MapKind;
+  expansion?: number;
+  y: number;
+}
+
+/** Places maps on rows from `y` (tiles), left to right; where the next things go. */
+function placeRow(
+  maps: WowMap[],
+  contents: Map<string, TileCoord[] | 'building'>,
+  blocks: AtlasBlock[],
+  top: number,
+  pageWidth: number,
+): number {
+  let y = top;
+  let [x, rowHeight] = [0, 0];
+  for (const map of maps) {
+    const content = contents.get(map.directory) as TileCoord[] | 'building';
+    const tiles = content === 'building' ? [] : content;
+    const minTx = tiles.length ? Math.min(...tiles.map((t) => t.tx)) : 0;
+    const minTy = tiles.length ? Math.min(...tiles.map((t) => t.ty)) : 0;
+    const width = tiles.length ? Math.max(...tiles.map((t) => t.tx)) - minTx + 1 : ATLAS_BUILDING;
+    const height = tiles.length ? Math.max(...tiles.map((t) => t.ty)) - minTy + 1 : ATLAS_BUILDING;
+    if (x > 0 && x + width > pageWidth) {
+      [x, y, rowHeight] = [0, y + rowHeight + ATLAS_GAP, 0];
+    }
+    blocks.push({ map, x, y, width, height, minTx, minTy, tiles });
+    x += width + ATLAS_GAP;
+    rowHeight = Math.max(rowHeight, height);
+  }
+  y += rowHeight + ATLAS_GAP * 2;
+  return y;
 }

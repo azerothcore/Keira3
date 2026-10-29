@@ -1366,6 +1366,7 @@
     "ATLAS_DUNGEON": "Dungeons",
     "ATLAS_RAID": "Raids",
     "ATLAS_BATTLEGROUND": "Battlegrounds",
+    "ATLAS_NO_IMAGE": "No preview image",
     "ATLAS_ARENA": "Arenas",
     "ATLAS_TRANSPORT": "Transports",
     "MAP_QUALITY": "Sharpest the minimaps get when zoomed in: 1 (lightest) to 4 (full detail, more memory). Zoomed out they all look the same.",
@@ -1641,6 +1642,17 @@
     "COPY_IN_PLACE": "Copy in place",
     "COPY_IN_PLACE_HELP": "New spawns just like the selected ones, at the same place: move one away, or stack them",
     "FACE_HINT": "Select a spawn, then click where it should look",
-    "PATH_SPAWN": "Start"
+    "PATH_SPAWN": "Start",
+    "FORMATION": "Formation",
+    "FORMATION_MEMBERS": "{{count}} creatures",
+    "SELECT_FORMATION": "Select the formation",
+    "HIDE_FORMATION": "Hide the formation",
+    "LOCK_FORMATION": "Lock the formation",
+    "UNLOCK_FORMATION": "Unlock the formation",
+    "SIMULATE_FORMATION": "Whole formation",
+    "SIMULATE_FORMATION_HELP": "The leader walks its path and the members that follow it (group AI flag 512) keep their places beside it; the others stay where they are",
+    "BUILDING_OPACITY": "Buildings solid",
+    "TREE_OPACITY": "Trees solid",
+    "PROP_OPACITY": "Props solid"
   }
 }

@@ -17,6 +17,7 @@ import { insideBounds } from './bounds';
 import { COLLISION_LAYER, COLLISION_MATERIAL } from './collision-object';
 import { buildM2Template, disposeM2Template, M2Template } from './m2-object';
 import { TextureCache } from './texture-cache';
+import { setMaterialOpacity } from './see-through';
 import { applyPlacement } from './wmo-object';
 
 /** What the doodad streamer needs from `WowClientService`. */
@@ -34,6 +35,9 @@ export interface WorldDoodadsOptions {
   /** Trees (models in a `Trees` folder or named after one), and every other doodad (rocks, fences, props…). */
   trees?: boolean;
   props?: boolean;
+  /** How solid trees and the other doodads are (0..1; 1, as built): see-through to show what they hide. */
+  treeOpacity?: number;
+  propOpacity?: number;
 }
 
 /** Whether a doodad model is a tree: in a `Tree(s)` folder, or named `…Tree…`. */
@@ -112,6 +116,13 @@ export class WorldDoodads {
   }
 
   configure(options: WorldDoodadsOptions): void {
+    const opacityChanged =
+      (options.treeOpacity ?? 1) !== (this.options.treeOpacity ?? 1) || (options.propOpacity ?? 1) !== (this.options.propOpacity ?? 1);
+    if (opacityChanged) {
+      this.options = { ...this.options, treeOpacity: options.treeOpacity, propOpacity: options.propOpacity };
+      this.ready.forEach((template, key) => template && this.applyOpacity(key, template));
+      this.onChange();
+    }
     if (
       options.show === this.options.show &&
       options.distance === this.options.distance &&
@@ -329,6 +340,12 @@ export class WorldDoodads {
     }
   }
 
+  /** Makes a model as see-through as its kind (tree or other doodad) is set to be. */
+  private applyOpacity(key: string, template: M2Template): void {
+    const opacity = (isTreeModel(key) ? this.options.treeOpacity : this.options.propOpacity) ?? 1;
+    template.materials.forEach((material) => setMaterialOpacity(material, opacity));
+  }
+
   private loadTemplate(key: string, path: string): void {
     if (this.templates.has(key)) {
       return;
@@ -352,6 +369,9 @@ export class WorldDoodads {
     void template.then((loaded) => {
       // dispose() may have run meanwhile: only a template still listed is used
       if (this.templates.get(key) === template) {
+        if (loaded) {
+          this.applyOpacity(key, loaded);
+        }
         this.ready.set(key, loaded);
         this.queueRefresh();
       } else if (loaded) {

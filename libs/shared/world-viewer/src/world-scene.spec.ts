@@ -313,6 +313,22 @@ describe('WorldScene', () => {
       expect(world.scene.getObjectByName('ghost')).toBeUndefined();
     });
 
+    it('moves copies of the followers with it (a formation), skipping the ones not shown', () => {
+      const world = new WorldScene();
+      world.setSpawns([spawn('creature:1', 'creature', at(0, 0)), spawn('creature:2', 'creature', at(3, 0))]);
+      expect(world.setGhost('creature:1', ['creature:9', 'creature:2'])).toBe(true);
+      const ghosts = world.scene.children.flatMap((child) => child.children.filter((c) => c.name === 'ghost'));
+      expect(ghosts).toHaveLength(2);
+      world.moveFollowerGhosts([
+        { position: at(50, 0), orientation: 0 },
+        { position: at(20, 5), orientation: 1 },
+      ]);
+      expect(ghosts[1].position.x).toBeCloseTo(worldToScene(at(20, 5)).x);
+      expect(ghosts[1].position.z).toBeCloseTo(worldToScene(at(20, 5)).z);
+      // the leader stays where it was put
+      expect(world.ghostPosition()?.x).toBeCloseTo(at(0, 0).x);
+    });
+
     it('places markers in scene coordinates, facing their orientation', () => {
       const world = new WorldScene();
       world.setSpawns([spawn('creature:1', 'creature', at(0, 0), { orientation: 1 }), spawn('gameobject:2', 'gameobject', at(5, 5))]);

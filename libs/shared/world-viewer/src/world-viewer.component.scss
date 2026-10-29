@@ -67,6 +67,23 @@
   }
 }
 
+// a numbered badge over a spawn (the members of a formation: "Leader", 1, 2…)
+.world-viewer-tag {
+  position: absolute;
+  pointer-events: none;
+  transform: translate(-50%, -100%);
+  min-width: 18px;
+  padding: 0 5px;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 9px;
+  background: #7c3aed;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
+}
+
 .world-viewer-status {
   position: absolute;
   top: 8px;

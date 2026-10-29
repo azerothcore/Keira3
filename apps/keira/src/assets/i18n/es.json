@@ -1366,6 +1366,7 @@
     "ATLAS_DUNGEON": "Mazmorras",
     "ATLAS_RAID": "Bandas",
     "ATLAS_BATTLEGROUND": "Campos de batalla",
+    "ATLAS_NO_IMAGE": "Sin imagen de vista previa",
     "ATLAS_ARENA": "Arenas",
     "ATLAS_TRANSPORT": "Transportes",
     "MAP_QUALITY": "Nitidez máxima de los minimapas al acercar: 1 (más ligera) a 4 (todo el detalle, más memoria). Alejados se ven igual.",
@@ -1641,6 +1642,17 @@
     "COPY_IN_PLACE": "Copiar en el sitio",
     "COPY_IN_PLACE_HELP": "Nuevos spawns iguales a los seleccionados, en el mismo sitio: aparta uno o apílalos",
     "FACE_HINT": "Selecciona un spawn y haz clic hacia donde debe mirar",
-    "PATH_SPAWN": "Inicio"
+    "PATH_SPAWN": "Inicio",
+    "FORMATION": "Formación",
+    "FORMATION_MEMBERS": "{{count}} criaturas",
+    "SELECT_FORMATION": "Seleccionar la formación",
+    "HIDE_FORMATION": "Ocultar la formación",
+    "LOCK_FORMATION": "Bloquear la formación",
+    "UNLOCK_FORMATION": "Desbloquear la formación",
+    "SIMULATE_FORMATION": "Toda la formación",
+    "SIMULATE_FORMATION_HELP": "El líder recorre su ruta y los miembros que lo siguen (indicador de IA de grupo 512) mantienen su puesto a su lado; los demás se quedan donde están",
+    "BUILDING_OPACITY": "Opacidad",
+    "TREE_OPACITY": "Opacidad de árboles",
+    "PROP_OPACITY": "Opacidad de objetos"
   }
 }

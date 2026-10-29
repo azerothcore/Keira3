@@ -64,6 +64,12 @@
     </div>
   }
 
+  @for (tag of tagLabels(); track tag.key) {
+    <div class="world-viewer-tag" [attr.data-testid]="'world-viewer-tag-' + tag.key" [style.left.px]="tag.x" [style.top.px]="tag.y">
+      {{ tag.text }}
+    </div>
+  }
+
   <div class="world-viewer-crosshair" aria-hidden="true"></div>
   @if (snapToGround() || snapToWall() || snapToWater()) {
     <div class="world-viewer-snap" data-testid="world-viewer-snap">

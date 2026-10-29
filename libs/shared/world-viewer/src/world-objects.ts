@@ -12,6 +12,7 @@ import {
 } from '@keira/shared/wow-data';
 import { Group, Object3D } from 'three';
 import { TextureCache } from './texture-cache';
+import { setObjectOpacity } from './see-through';
 import { applyPlacement, buildWmoObject, disposeWmoObject, setWmoIndoorVisible } from './wmo-object';
 
 /** What the object streamer needs from `WowClientService`. */
@@ -103,6 +104,16 @@ export class WorldObjects {
     this.options = { ...options };
     this.clear();
   }
+
+  /** How solid the buildings are (0..1; 1, as built): see-through to show what's inside or behind them. */
+  setOpacity(opacity: number): void {
+    if (opacity !== this.opacity) {
+      this.opacity = opacity;
+      this.templates.forEach((template) => void template.then((t) => t && setObjectOpacity(t, opacity)));
+      this.onChange();
+    }
+  }
+  private opacity = 1;
 
   /** Shows or hides the indoor parts of the buildings (see `setWmoIndoorVisible`), loaded and to come. */
   setIndoorVisible(visible: boolean): void {
@@ -254,6 +265,7 @@ export class WorldObjects {
         );
         const built = perfTime('building build', () => buildWmoObject(model, textures, this.textures.fallback));
         setWmoIndoorVisible(built, this.indoorVisible);
+        setObjectOpacity(built, this.opacity);
         return built;
       });
       template.catch(() => this.templates.delete(key));

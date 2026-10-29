@@ -65,6 +65,7 @@ import {
   WorldLink,
   WorldMarker,
   MovementSimulation,
+  SimulationFollower,
   WorldMapComponent,
   WorldMapDot,
   RENDER_SCALES,
@@ -161,7 +162,17 @@ import { BUTTON_STYLES, ButtonLabelComponent, ButtonStyle, buttonTitle, loadButt
 import { findSpawnProblems, SpawnProblem } from './spawn-problems';
 import { pathSimulation, wanderSimulation } from './simulation-plan';
 import { PathEnding, pathEnding, PathStart } from './path-ending';
-import { formationLinks, formationSlots, groupDetails, poolOverlays } from './spawn-groups';
+import {
+  FOLLOW_LEADER,
+  Formation,
+  formationKeys,
+  formationLinks,
+  formationOf,
+  formationSlots,
+  formationTags,
+  groupDetails,
+  poolOverlays,
+} from './spawn-groups';
 import { MAP_SORT_KEYS, MapSortKey, savePickerSort, SortRule, sortItems, toggleSort, ZONE_SORT_KEYS, ZoneSortKey } from './picker-sort';
 import { isSpawnVisible, loadSpawnFilters, phaseBits, saveSpawnFilters, SpawnFilters, spawnEvents } from './spawn-filters';
 
@@ -676,9 +687,21 @@ export class WorldEditorComponent implements OnInit {
   /** The simulation got to its end: it can be played again. */
   protected readonly simulationEnded = signal(false);
   /** The selected creature can be simulated: it has a path, or wanders. */
+  /** The formation of the selected creature (while formations are shown). */
+  protected readonly selectedFormation = computed(() => {
+    const spawn = this.selectedSpawn();
+    return spawn?.type === 'creature' && this.layers().formations ? formationOf(spawn.guid, this.formations()) : undefined;
+  });
+  /** "Leader" and 1, 2, 3… over the members of the selected creature's formation. */
+  protected readonly worldTags = computed(() => {
+    const formation = this.selectedFormation();
+    return formation ? formationTags(formation, this.visibleSpawns()) : [];
+  });
+  /** Simulate: the whole formation moves (its leader walking, the members beside it), rather than the creature alone. */
+  protected readonly simulateFormation = signal(false);
   protected readonly canSimulate = computed(() => {
     const spawn = this.selectedSpawn();
-    return spawn?.type === 'creature' && (this.activePathId() !== 0 || (spawn.wanderDistance ?? 0) > 0);
+    return spawn?.type === 'creature' && (this.activePathId() !== 0 || (spawn.wanderDistance ?? 0) > 0 || !!this.selectedFormation());
   });
   /** The Path / LOS tool as a ruler: from A to C in a straight line, along the ground, and in height. */
   // (only read while the result has a C)
@@ -1812,7 +1835,7 @@ export class WorldEditorComponent implements OnInit {
   ];
 
   /** A number of the view settings from its slider. */
-  protected setRenderNumber(key: BrightnessKey | 'compassOpacity', event: Event): void {
+  protected setRenderNumber(key: BrightnessKey | 'compassOpacity' | 'treeOpacity' | 'propOpacity' | 'buildingOpacity', event: Event): void {
     this.renderSettings.update({ [key]: Number((event.target as HTMLInputElement).value) });
   }
 
@@ -2898,9 +2921,12 @@ export class WorldEditorComponent implements OnInit {
       this.simulation.set(undefined);
       return;
     }
-    const spawn = this.selectedSpawn() as SpawnRecord;
+    // the whole formation: its leader walks (its path), the members following it keep their places beside it
+    const formation = this.simulateFormation() ? this.selectedFormation() : undefined;
+    const leader = formation && this.findSpawn(spawnKey('creature', formation.leader));
+    const spawn = leader ?? (this.selectedSpawn() as SpawnRecord);
     const key = spawnKey(spawn.type, spawn.guid);
-    const pathId = this.activePathId();
+    const pathId = leader ? (pathsOf(leader)[0] ?? 0) : this.activePathId();
     const points = this.waypoints().filter((w) => w.pathId === pathId);
     // what it does at each point: its scripts and SmartAI (the waits and move types show as it goes)
     const path = this.worldPaths().find((p) => p.key === pathKey(pathId as number));
@@ -2909,7 +2935,16 @@ export class WorldEditorComponent implements OnInit {
     );
     // (repeating paths go on round after round from point 1; the others stop at the end, saying what happens then)
     const ending = this.pathEndings().get(pathId as number);
-    this.simulation.set(pathSimulation(spawn, points, key, actions, ending) ?? wanderSimulation(spawn, key));
+    const simulation = pathSimulation(spawn, points, key, actions, ending) ?? wanderSimulation(spawn, key);
+    const followers = formation ? this.formationFollowers(formation) : [];
+    this.simulation.set(simulation && followers.length ? { ...simulation, followers } : simulation);
+  }
+
+  /** The members of a formation that walk beside its leader (GROUP_AI_FLAG_FOLLOW_LEADER), at their distance and angle. */
+  private formationFollowers(formation: Formation): SimulationFollower[] {
+    return formation.members
+      .filter((row) => (row.groupAI & FOLLOW_LEADER) !== 0 && this.findSpawn(spawnKey('creature', row.member)))
+      .map((row) => ({ key: spawnKey('creature', row.member), dist: row.dist, angle: (row.angle * Math.PI) / 180 }));
   }
 
   /** Plays the simulation that ended again, from the start. */
@@ -3406,6 +3441,45 @@ export class WorldEditorComponent implements OnInit {
   protected hideContext(): void {
     const key = (this.contextMenu() as ContextRequest).key;
     this.treeHidden.update((hidden) => new Set([...hidden, key]));
+    this.contextMenu.set(undefined);
+  }
+
+  /** The formation of the right-clicked creature (only read while the menu is open). */
+  protected readonly contextFormation = computed(() => {
+    const spawn = this.contextSpawn();
+    return spawn?.type === 'creature' ? formationOf(spawn.guid, this.formations()) : undefined;
+  });
+  /** Whether every loaded member of the right-clicked creature's formation is locked. */
+  protected readonly contextFormationLocked = computed(() => {
+    // (the right-clicked one is loaded: never none)
+    const keys = formationKeys(this.contextFormation() as Formation).filter((key) => this.findSpawn(key));
+    return keys.every((key) => this.lockedKeys().has(key));
+  });
+
+  /** Right-click > Select the formation: its leader, and its members with it. */
+  protected selectFormation(): void {
+    const keys = formationKeys(this.contextFormation() as Formation).filter((key) => this.findSpawn(key));
+    this.select(keys[0]);
+    this.groupKeys.set(keys.slice(1));
+    this.contextMenu.set(undefined);
+  }
+
+  /** Right-click > Hide the formation. */
+  protected hideFormation(): void {
+    const keys = formationKeys(this.contextFormation() as Formation);
+    this.treeHidden.update((hidden) => new Set([...hidden, ...keys]));
+    this.contextMenu.set(undefined);
+  }
+
+  /** Right-click > Lock the formation (or unlock it, when all of it is locked). */
+  protected toggleFormationLock(): void {
+    const keys = formationKeys(this.contextFormation() as Formation);
+    const unlock = this.contextFormationLocked();
+    this.lockedKeys.update((locked) => {
+      const next = new Set(locked);
+      keys.forEach((key) => (unlock ? next.delete(key) : next.add(key)));
+      return next;
+    });
     this.contextMenu.set(undefined);
   }
 

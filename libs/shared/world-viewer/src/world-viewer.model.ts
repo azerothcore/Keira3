@@ -91,6 +91,8 @@ export interface MovementSimulation {
   loopFrom?: number;
   /** What happens once played (e.g. "despawns at the last point"), shown when it ends. */
   ending?: string;
+  /** Creatures moving with it (its formation). */
+  followers?: SimulationFollower[];
 }
 
 export interface SimulationLeg {
@@ -161,6 +163,22 @@ export interface WorldMarker {
   position: WorldPosition;
   color: number;
   label: string;
+}
+
+/** A short tag over a spawn ("Leader", "1", "2"… over the members of a formation), drawn as a badge on screen. */
+export interface WorldTag {
+  /** The spawn it is over (also over its simulated copy while it moves). */
+  key: string;
+  position: WorldPosition;
+  text: string;
+}
+
+/** A creature moving with the simulated one, keeping its place beside it (a formation member following its leader). */
+export interface SimulationFollower {
+  key: string;
+  /** Yards from the leader, and the angle (radians) from the leader's facing. */
+  dist: number;
+  angle: number;
 }
 
 /**

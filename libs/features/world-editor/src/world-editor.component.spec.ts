@@ -101,6 +101,7 @@ class FakeWorldViewerComponent {
   readonly zoneChanged = output<number | undefined>();
   readonly buildings = input<{ key: string; path: string }[]>([]);
   readonly simulation = input<MovementSimulation | undefined>(undefined);
+  readonly tags = input<{ key: string; text: string }[]>([]);
   readonly groundQuery = input<{ key: string; position: WorldPosition }[] | undefined>(undefined);
   readonly groundHeights = output<Record<string, number | null>>();
   readonly picked = output<PickResult>();
@@ -2313,6 +2314,75 @@ describe(WorldEditorComponent.name, () => {
       page.viewer().contextRequested.emit({ key, x: 120, y: 80 });
       await settle(page);
     };
+
+    it('tags, simulates, selects, hides and locks a formation', async () => {
+      // creature 1 leads creature 2 (which follows it, 3 yards to its left)
+      mocks.service.loadFormations.mockResolvedValue([
+        { leader: 1, member: 1, dist: 0, angle: 0, groupAI: 0 },
+        { leader: 1, member: 2, dist: 3, angle: 90, groupAI: 512 },
+      ]);
+      const { page } = await setup();
+      await loadArea(page);
+      const viewer = page.viewer();
+      expect(viewer.tags()).toEqual([]);
+      viewer.picked.emit({ type: 'spawn', key: 'creature:2', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      expect(viewer.tags().map((tag) => [tag.key, tag.text])).toEqual([
+        ['creature:1', 'Leader'],
+        ['creature:2', '1'],
+      ]);
+      // the whole formation: the leader walks its path, the member beside it
+      page.click('simulate-formation');
+      page.click('simulate');
+      await settle(page);
+      expect(viewer.simulation()?.key).toBe('creature:1');
+      expect(viewer.simulation()?.followers).toEqual([{ key: 'creature:2', dist: 3, angle: Math.PI / 2 }]);
+      page.click('simulate');
+      // alone: creature 2 wanders by itself
+      page.click('simulate-formation');
+      page.click('simulate');
+      await settle(page);
+      expect(viewer.simulation()?.key).toBe('creature:2');
+      expect(viewer.simulation()?.followers).toBeUndefined();
+      page.click('simulate');
+      await settle(page);
+
+      // right-click: the formation's own entries
+      await rightClick(page, 'gameobject:3');
+      expect(page.byId('context-formation', false)).toBeFalsy();
+      await rightClick(page, 'creature:2');
+      expect(page.text('context-formation')).toContain('WORLD_EDITOR.FORMATION');
+      page.click('context-select-formation');
+      await settle(page);
+      expect(page.text('selected-title')).toContain('GUID: 1');
+      await rightClick(page, 'creature:1');
+      page.click('context-lock-formation');
+      await settle(page);
+      await rightClick(page, 'creature:1');
+      expect(page.text('context-lock-formation')).toContain('WORLD_EDITOR.UNLOCK_FORMATION');
+      expect(page.text('context-unlock-all')).toContain('(2)');
+      page.click('context-lock-formation');
+      await settle(page);
+      await rightClick(page, 'creature:1');
+      expect(page.text('context-lock-formation')).toContain('WORLD_EDITOR.LOCK_FORMATION');
+      page.click('context-hide-formation');
+      await settle(page);
+      expect(viewer.spawns().map((s) => s.key)).toEqual(['gameobject:3']);
+    });
+
+    it('simulates a formation whose leader has no path: it wanders, its members with it', async () => {
+      mocks.service.loadFormations.mockResolvedValue([{ leader: 2, member: 1, dist: 2, angle: 180, groupAI: 512 }]);
+      const { page } = await setup();
+      await loadArea(page);
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:1', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      page.click('simulate-formation');
+      page.click('simulate');
+      await settle(page);
+      expect(page.viewer().simulation()?.key).toBe('creature:2');
+      expect(page.viewer().simulation()?.legs.at(-1)?.label).toBe('home');
+      expect(page.viewer().simulation()?.followers?.[0].key).toBe('creature:1');
+    });
 
     it('hides spawns, the others, and shows them again from a right-click', async () => {
       const { page } = await setup();

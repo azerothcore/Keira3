@@ -1366,6 +1366,7 @@
     "ATLAS_DUNGEON": "地下城",
     "ATLAS_RAID": "团队副本",
     "ATLAS_BATTLEGROUND": "战场",
+    "ATLAS_NO_IMAGE": "没有预览图",
     "ATLAS_ARENA": "竞技场",
     "ATLAS_TRANSPORT": "交通工具",
     "MAP_QUALITY": "放大时小地图的最高清晰度：1（最轻）到 4（完整细节，占用更多内存）。缩小时看起来都一样。",
@@ -1641,6 +1642,17 @@
     "COPY_IN_PLACE": "原地复制",
     "COPY_IN_PLACE_HELP": "在同一位置创建与所选相同的新刷新点：可移开其中一个，或叠放",
     "FACE_HINT": "选择一个刷新点，然后点击它应该面向的位置",
-    "PATH_SPAWN": "起点"
+    "PATH_SPAWN": "起点",
+    "FORMATION": "队形",
+    "FORMATION_MEMBERS": "{{count}} 个生物",
+    "SELECT_FORMATION": "选择整个队形",
+    "HIDE_FORMATION": "隐藏队形",
+    "LOCK_FORMATION": "锁定队形",
+    "UNLOCK_FORMATION": "解锁队形",
+    "SIMULATE_FORMATION": "整个队形",
+    "SIMULATE_FORMATION_HELP": "首领沿路径行走，跟随它的成员（群组 AI 标志 512）保持在其身旁的位置；其他成员留在原地",
+    "BUILDING_OPACITY": "不透明度",
+    "TREE_OPACITY": "树木不透明度",
+    "PROP_OPACITY": "物件不透明度"
   }
 }

@@ -1,4 +1,13 @@
-import { formationLinks, formationSlots, groupDetails, poolOverlays, FORMATION_COLOR } from './spawn-groups';
+import {
+  formationKeys,
+  formationLinks,
+  formationOf,
+  formationSlots,
+  formationTags,
+  groupDetails,
+  poolOverlays,
+  FORMATION_COLOR,
+} from './spawn-groups';
 import { FormationMember, PoolMember, SpawnRecord } from './world-editor.model';
 
 const spawn = (type: 'creature' | 'gameobject', guid: number, x: number, y: number, extra: Partial<SpawnRecord> = {}): SpawnRecord => ({
@@ -47,6 +56,22 @@ describe('spawn groups', () => {
     expect(formationSlots(spawns, formations, spawns[3])).toEqual([]);
     expect(formationSlots(spawns, formations, undefined)).toEqual([]);
     expect(formationSlots([spawns[1]], formations, spawns[1])).toEqual([]);
+  });
+
+  it('finds the formation of a leader or member, numbers its members in guid order and tags the loaded ones', () => {
+    const shuffled = [formations[3], formations[2], formations[0], formations[1]];
+    const formation = formationOf(3, shuffled);
+    expect(formation).toEqual({ leader: 1, members: [formations[1], formations[2], formations[3]] });
+    expect(formationOf(1, formations)?.members.map((row) => row.member)).toEqual([2, 3, 9]);
+    expect(formationOf(4, formations)).toBeUndefined();
+    expect(formationKeys(formation as NonNullable<typeof formation>)).toEqual(['creature:1', 'creature:2', 'creature:3', 'creature:9']);
+    // (not the gameobject that has the same guid, and only the loaded ones)
+    const tags = formationTags(formation as NonNullable<typeof formation>, [...spawns, spawn('gameobject', 9, 50, 50)]);
+    expect(tags).toEqual([
+      { key: 'creature:1', position: { x: 0, y: 0, z: 10 }, text: 'Leader' },
+      { key: 'creature:2', position: { x: 3, y: 0, z: 10 }, text: '1' },
+      { key: 'creature:3', position: { x: 0, y: 3, z: 10 }, text: '2' },
+    ]);
   });
 
   it('labels pools above their loaded spawns, linked to each', () => {

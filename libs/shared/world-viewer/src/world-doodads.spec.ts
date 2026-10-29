@@ -1,5 +1,5 @@
 import { EMPTY_COLLISION, M2Blend, M2Mesh, ModelPlacement, tileCenter, TileCoord, worldToScene } from '@keira/shared/wow-data';
-import { Group, InstancedMesh, Matrix4, Vector3 } from 'three';
+import { Group, InstancedMesh, Matrix4, MeshBasicMaterial, Vector3 } from 'three';
 import { COLLISION_LAYER, COLLISION_MATERIAL } from './collision-object';
 import { TextureCache } from './texture-cache';
 import { DoodadSource, isTreeModel, WorldDoodads } from './world-doodads';
@@ -98,6 +98,32 @@ describe('WorldDoodads', () => {
     expect(drawn()).toEqual(['doodad:world\\tree.m2']);
     expect(isTreeModel('World\\Azeroth\\Elwynn\\PassiveDoodads\\Trees\\ElwynnTree01.m2')).toBe(true);
     expect(isTreeModel('World\\Generic\\Human\\Passive Doodads\\Barrel01.m2')).toBe(false);
+  });
+
+  it('makes trees and the other doodads see-through apart, the ones loaded and those to come', async () => {
+    const { doodads, group, onChange } = setup({ '32_48': [doodad(1, 0)], '33_48': [doodad(5, 20, 'World\\Rock.m2')] });
+    doodads.setMap('Azeroth');
+    await doodads.update(CENTER);
+    await flush();
+    const opacityOf = (name: string) =>
+      ((meshes(group).find((mesh) => mesh.name === name)?.material as MeshBasicMaterial[])[1] as MeshBasicMaterial).opacity;
+    onChange.mockClear();
+    doodads.configure({ show: true, distance: 100, smallDistance: 100, treeOpacity: 0.3, propOpacity: 0.6 });
+    expect(onChange).toHaveBeenCalled();
+    expect(opacityOf('doodad:world\\tree.m2')).toBeCloseTo(0.3);
+    expect(opacityOf('doodad:world\\rock.m2')).toBeCloseTo(0.6);
+    // unchanged: nothing to redo
+    onChange.mockClear();
+    doodads.configure({ show: true, distance: 100, smallDistance: 100, treeOpacity: 0.3, propOpacity: 0.6 });
+    expect(onChange).not.toHaveBeenCalled();
+    // a model loaded afterwards
+    doodads.setMap('Kalimdor');
+    doodads.setMap('Azeroth');
+    await doodads.update(CENTER);
+    await flush();
+    expect(opacityOf('doodad:world\\tree.m2')).toBeCloseTo(0.3);
+    doodads.configure({ show: true, distance: 100, smallDistance: 100 });
+    expect(opacityOf('doodad:world\\tree.m2')).toBeCloseTo(1);
   });
 
   it('follows the distance, growing the instanced meshes when more doodads come into range', async () => {

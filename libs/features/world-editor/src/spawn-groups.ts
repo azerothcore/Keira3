@@ -1,4 +1,4 @@
-import { WorldLink, WorldMarker } from '@keira/shared/world-viewer';
+import { WorldLink, WorldMarker, WorldTag } from '@keira/shared/world-viewer';
 import { FormationMember, PoolMember, SpawnRecord, spawnKey } from './world-editor.model';
 
 export const FORMATION_COLOR = 0x9b5de5;
@@ -25,6 +25,42 @@ export function formationLinks(spawns: SpawnRecord[], formations: FormationMembe
           },
         ]
       : [];
+  });
+}
+
+/** GROUP_AI_FLAG_FOLLOW_LEADER: the member walks beside the leader (others stay where they are while it moves). */
+export const FOLLOW_LEADER = 0x200;
+
+/** A formation: its leader's guid, and its members (not the leader) in guid order, numbered 1, 2, 3… in that order. */
+export interface Formation {
+  leader: number;
+  members: FormationMember[];
+}
+
+/** The formation a creature leads or is in (from `creature_formations`), undefined when in none. */
+export function formationOf(guid: number, formations: FormationMember[]): Formation | undefined {
+  const leader = formations.find((row) => row.member === guid || row.leader === guid)?.leader;
+  if (leader === undefined) {
+    return undefined;
+  }
+  const members = formations.filter((row) => row.leader === leader && row.member !== leader).sort((a, b) => a.member - b.member);
+  return { leader, members };
+}
+
+/** The spawn keys of a formation: its leader first, then its members. */
+export function formationKeys(formation: Formation): string[] {
+  return [formation.leader, ...formation.members.map((row) => row.member)].map((guid) => spawnKey('creature', guid));
+}
+
+/** "Leader" over the leader and 1, 2, 3… over the members of a formation, over the ones loaded. */
+export function formationTags(formation: Formation, spawns: SpawnRecord[]): WorldTag[] {
+  const creatures = new Map(spawns.filter((s) => s.type === 'creature').map((s) => [s.guid, s]));
+  return [
+    { guid: formation.leader, text: 'Leader' },
+    ...formation.members.map((row, i) => ({ guid: row.member, text: String(i + 1) })),
+  ].flatMap(({ guid, text }) => {
+    const spawn = creatures.get(guid);
+    return spawn ? [{ key: spawnKey('creature', guid), position: positionOf(spawn), text }] : [];
   });
 }
 

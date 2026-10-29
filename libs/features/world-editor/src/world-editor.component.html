@@ -254,6 +254,7 @@
         [region]="region()"
         [focus]="focus()"
         [pathEnds]="inGameView() ? undefined : pathEnds()"
+        [tags]="inGameView() ? [] : worldTags()"
         [resetNorth]="resetNorthRequest()"
         [topView]="topViewRequest()"
         (topViewChanged)="inTopView.set($event)"
@@ -877,6 +878,23 @@
                     [tooltip]="'WORLD_EDITOR.INDOOR_HELP' | translate"
                   ></i>
                 </div>
+                <div class="d-flex align-items-center gap-2" data-testid="view-building-opacity-row">
+                  <label for="world-editor-view-building-opacity" class="mb-0 text-nowrap">{{
+                    'WORLD_EDITOR.BUILDING_OPACITY' | translate
+                  }}</label>
+                  <input
+                    id="world-editor-view-building-opacity"
+                    type="range"
+                    class="form-range"
+                    min="10"
+                    max="100"
+                    step="5"
+                    [attr.data-testid]="'view-building-opacity'"
+                    [value]="renderSettings.settings().buildingOpacity"
+                    (input)="setRenderNumber('buildingOpacity', $event)"
+                  />
+                  <span class="world-editor-time-value">{{ renderSettings.settings().buildingOpacity }}%</span>
+                </div>
                 <div class="world-editor-view-sub">{{ 'WORLD_EDITOR.VIEW_SUB_DOODADS' | translate }}</div>
                 <div class="form-check form-switch mb-0">
                   <input
@@ -930,6 +948,36 @@
                     container="body"
                     [tooltip]="'WORLD_EDITOR.PROPS_HELP' | translate"
                   ></i>
+                </div>
+                <div class="d-flex align-items-center gap-2" data-testid="view-tree-opacity-row">
+                  <label for="world-editor-view-tree-opacity" class="mb-0 text-nowrap">{{ 'WORLD_EDITOR.TREE_OPACITY' | translate }}</label>
+                  <input
+                    id="world-editor-view-tree-opacity"
+                    type="range"
+                    class="form-range"
+                    min="10"
+                    max="100"
+                    step="5"
+                    [attr.data-testid]="'view-tree-opacity'"
+                    [value]="renderSettings.settings().treeOpacity"
+                    (input)="setRenderNumber('treeOpacity', $event)"
+                  />
+                  <span class="world-editor-time-value">{{ renderSettings.settings().treeOpacity }}%</span>
+                </div>
+                <div class="d-flex align-items-center gap-2" data-testid="view-prop-opacity-row">
+                  <label for="world-editor-view-prop-opacity" class="mb-0 text-nowrap">{{ 'WORLD_EDITOR.PROP_OPACITY' | translate }}</label>
+                  <input
+                    id="world-editor-view-prop-opacity"
+                    type="range"
+                    class="form-range"
+                    min="10"
+                    max="100"
+                    step="5"
+                    [attr.data-testid]="'view-prop-opacity'"
+                    [value]="renderSettings.settings().propOpacity"
+                    (input)="setRenderNumber('propOpacity', $event)"
+                  />
+                  <span class="world-editor-time-value">{{ renderSettings.settings().propOpacity }}%</span>
                 </div>
                 <div class="form-check form-switch mb-0">
                   <input
@@ -2342,6 +2390,26 @@
             <button type="button" class="dropdown-item" data-testid="context-lock-others" (click)="lockOthers()">
               <i class="fa fa-lock"></i> {{ 'WORLD_EDITOR.LOCK_OTHERS' | translate }}
             </button>
+            @if (contextFormation(); as formation) {
+              <div class="dropdown-divider"></div>
+              <h6 class="dropdown-header" data-testid="context-formation">
+                {{ 'WORLD_EDITOR.FORMATION' | translate }} ·
+                {{ 'WORLD_EDITOR.FORMATION_MEMBERS' | translate: { count: formation.members.length + 1 } }}
+              </h6>
+              <button type="button" class="dropdown-item" data-testid="context-select-formation" (click)="selectFormation()">
+                <i class="fa fa-object-group"></i> {{ 'WORLD_EDITOR.SELECT_FORMATION' | translate }}
+              </button>
+              <button type="button" class="dropdown-item" data-testid="context-hide-formation" (click)="hideFormation()">
+                <i class="fa fa-eye-slash"></i> {{ 'WORLD_EDITOR.HIDE_FORMATION' | translate }}
+              </button>
+              <button type="button" class="dropdown-item" data-testid="context-lock-formation" (click)="toggleFormationLock()">
+                @if (contextFormationLocked()) {
+                  <i class="fa fa-lock-open"></i> {{ 'WORLD_EDITOR.UNLOCK_FORMATION' | translate }}
+                } @else {
+                  <i class="fa fa-lock"></i> {{ 'WORLD_EDITOR.LOCK_FORMATION' | translate }}
+                }
+              </button>
+            }
           } @else if (contextWaypoint(); as waypoint) {
             <h6 class="dropdown-header">{{ 'WORLD_EDITOR.PATH' | translate }} {{ waypoint.pathId }} · #{{ waypoint.point }}</h6>
             <button type="button" class="dropdown-item" data-testid="context-waypoints" disabled>
@@ -3024,6 +3092,25 @@
                       >
                         <i class="fa fa-redo"></i> {{ 'WORLD_EDITOR.SIMULATE_REPLAY' | translate }}
                       </button>
+                    }
+                    @if (selectedFormation()) {
+                      <div
+                        class="form-check form-check-inline mb-0 ms-1"
+                        [tooltip]="'WORLD_EDITOR.SIMULATE_FORMATION_HELP' | translate"
+                        container="body"
+                      >
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          id="world-editor-simulate-formation"
+                          data-testid="simulate-formation"
+                          [checked]="simulateFormation()"
+                          (change)="simulateFormation.set($any($event.target).checked)"
+                        />
+                        <label class="form-check-label" for="world-editor-simulate-formation">{{
+                          'WORLD_EDITOR.SIMULATE_FORMATION' | translate
+                        }}</label>
+                      </div>
                     }
                     <select class="form-select form-select-sm w-auto" data-testid="simulation-rate" (change)="setSimulationRate($event)">
                       @for (rate of [1, 2, 4, 8]; track rate) {

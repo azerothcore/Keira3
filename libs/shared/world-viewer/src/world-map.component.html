@@ -11,21 +11,33 @@
     (pointerleave)="onAtlasPointerLeave()"
   >
     <div class="world-map-plane" [style.transform]="'translate(' + atlasOffset().x + 'px, ' + atlasOffset().y + 'px)'">
-      @for (section of page.sections; track section.kind) {
-        <div
-          class="world-map-atlas-section"
-          [attr.data-testid]="'world-map-atlas-section-' + section.kind"
-          [style.top.px]="section.y * zoom"
-          [style.width.px]="page.width * zoom"
-        >
-          {{ 'WORLD_EDITOR.ATLAS_' + section.kind.toUpperCase() | translate }}
-        </div>
+      @for (section of page.sections; track section.kind + ':' + section.expansion) {
+        @if (section.expansion === undefined) {
+          <div
+            class="world-map-atlas-section"
+            [attr.data-testid]="'world-map-atlas-section-' + section.kind"
+            [style.top.px]="section.y * zoom"
+            [style.width.px]="page.width * zoom"
+          >
+            {{ 'WORLD_EDITOR.ATLAS_' + section.kind.toUpperCase() | translate }}
+          </div>
+        } @else {
+          <div
+            class="world-map-atlas-section expansion"
+            [attr.data-testid]="'world-map-atlas-section-' + section.kind + '-' + section.expansion"
+            [style.top.px]="section.y * zoom"
+            [style.width.px]="page.width * zoom"
+          >
+            {{ expansions[section.expansion] ?? section.expansion }}
+          </div>
+        }
       }
       @for (block of page.blocks; track block.map.id) {
         @let picture = thumbnails().get(block.map.directory);
         <div
           class="world-map-atlas-block"
           [class.building]="!block.tiles.length"
+          [class.no-picture]="!block.tiles.length || picture === null"
           [attr.data-testid]="'world-map-atlas-' + block.map.id"
           [style.left.px]="block.x * zoom"
           [style.top.px]="block.y * zoom"
@@ -35,13 +47,18 @@
           @if (picture) {
             <img [src]="picture" alt="" draggable="false" />
           }
-          <span class="world-map-atlas-name">{{ block.map.id }} – {{ block.map.name }}</span>
+          @if (block.width * zoom >= atlasNameWidth) {
+            <span class="world-map-atlas-name">{{ block.map.id }} – {{ block.map.name }}</span>
+          }
         </div>
       }
     </div>
     @if (atlasHover(); as hover) {
       <div class="world-map-info" data-testid="world-map-atlas-info" [style.left.px]="hover.x + 12" [style.top.px]="hover.y + 12">
         {{ hover.title }}
+        @if (hover.noImage) {
+          <div class="world-map-info-note" data-testid="world-map-atlas-no-image">{{ 'WORLD_EDITOR.ATLAS_NO_IMAGE' | translate }}</div>
+        }
       </div>
     }
   </div>

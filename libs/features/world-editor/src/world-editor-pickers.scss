@@ -69,6 +69,8 @@
 // the next column, but a switch (or a heading without what follows it) never splits
 .world-editor-view-settings {
   display: block;
+  // (everything fits its column: no sideways scrolling)
+  overflow-x: hidden;
 
   .world-editor-distances {
     margin-top: 0.5rem;
@@ -83,6 +85,14 @@
 .world-editor-view-group {
   display: block;
   min-width: 0;
+  max-width: 100%;
+
+  // selects, sliders and tables shrink to the column too
+  select,
+  input[type='range'],
+  table {
+    max-width: 100%;
+  }
   margin-bottom: 0.5rem;
 
   > * + * {
@@ -271,10 +281,23 @@
   align-items: center;
   gap: 0.25rem;
   min-width: 0;
-  white-space: nowrap;
 
+  // the switch centred on its label: no float, margins or padding of Bootstrap's own layout to push it off
+  &.form-switch,
+  & {
+    padding-left: 0;
+  }
+
+  .form-check-input {
+    float: none;
+    flex-shrink: 0;
+    margin: 0 0.25rem 0 0;
+  }
+
+  // a long label wraps within its column (never wider than it)
   .form-check-label {
-    overflow: hidden;
-    text-overflow: ellipsis;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    line-height: 1.25;
   }
 }

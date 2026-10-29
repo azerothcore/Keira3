@@ -44,6 +44,10 @@ export interface WorldRenderSettings {
   compassMils: boolean;
   /** How solid the compass is (%): 10..100. */
   compassOpacity: number;
+  /** How solid trees, the other doodads and the buildings are (%): 10..100; lower, see-through, showing what they hide. */
+  treeOpacity: number;
+  propOpacity: number;
+  buildingOpacity: number;
   /** The time of day lit with zone lighting (minutes since midnight), or the computer's clock. */
   timeOfDay: number;
   /** Brightness of the zone lights (%) at night, in the morning, at midday and in the evening, blended in between. */
@@ -212,6 +216,9 @@ export const DEFAULT_WORLD_RENDER_SETTINGS: WorldRenderSettings = {
   compassDegrees: true,
   compassMils: false,
   compassOpacity: 100,
+  treeOpacity: 100,
+  propOpacity: 100,
+  buildingOpacity: 100,
   drawDistance: 250,
   advancedDistances: false,
   largeDoodadDistance: 500,
