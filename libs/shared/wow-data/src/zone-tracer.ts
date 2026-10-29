@@ -893,8 +893,10 @@ export function fillRings(grid: { [i: number]: number }, rings: Ring[], value: n
   }
 }
 
-/** A neighbour needs this much of it on a zone's map (pixels of 1002 × 668) to be outlined there. */
+/** A neighbour needs this much of it on a zone's map (pixels of 1002 × 668) to be outlined there… */
 export const NEIGHBOUR_MIN_PIXELS = 1200;
+/** …each piece of it at least this much. */
+const NEIGHBOUR_MIN_PIECE = 200;
 
 /**
  * The parts of a zone's neighbours seen on the zone's map: their continent outlines brought into the zone's frame,
@@ -924,8 +926,20 @@ export function neighbourParts(
       fillRings(label, fromContinent(rings), index, mask);
     }
   });
+  // too little of a neighbour (all its pieces together) on the map: none of it
+  const counts = new Int32Array(ids.length);
+  for (const l of label) {
+    if (l >= 0) {
+      counts[l]++;
+    }
+  }
+  for (let i = 0; i < label.length; i++) {
+    if (label[i] >= 0 && counts[label[i]] < minPixels) {
+      label[i] = -1;
+    }
+  }
   const parts = new Map<string, Ring[]>();
-  vectorizeLabels(label, minPixels, { smoothPasses: 1 }).forEach((rings, index) => parts.set(ids[index], rings.map(toPercent)));
+  vectorizeLabels(label, NEIGHBOUR_MIN_PIECE, { smoothPasses: 1 }).forEach((rings, index) => parts.set(ids[index], rings.map(toPercent)));
   return parts;
 }
 

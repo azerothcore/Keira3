@@ -170,7 +170,7 @@ const data = (): GameMapData => ({
   transforms: [{ mapId: 530, region: bounds(4800, 16000, -10000, -2600), newMapId: 0, offsetX: -2400, offsetY: 2400 }],
   zones: new Map([
     [12, { name: 'Elwynn Forest', flags: 64, levels: [1, 10] as [number, number], faction: 1 }],
-    [1519, { name: 'Stormwind City', flags: 0x100 | 0x800 }],
+    [1519, { name: 'Stormwind City', flags: 0x100 | 0x800, faction: 1 }],
     [10, { name: 'Duskwood', flags: 0, levels: [18, 30] as [number, number], faction: 0 }],
     [44, { name: 'Redridge Mountains', flags: 0 }],
     [40, { name: 'Westfall', flags: 64, levels: [10, 20] as [number, number], faction: 0 }],
@@ -187,7 +187,8 @@ const square = (x0: number, y0: number, x1: number, y1: number): Ring => [x0, y0
 const outlines: Record<string, [string, Ring[]][]> = {
   'area:14': [
     ['area:30', [square(43, 72, 48, 78)]],
-    ['area:301', [square(40, 70, 42.5, 71.5)]],
+    // (inside Elwynn, where Elwynn's shield goes)
+    ['area:301', [square(44, 74, 46, 76)]],
     ['area:32', [square(43, 78.5, 49, 85)]],
     ['area:36', [square(48.5, 76, 55, 81)]],
     ['area:462', [square(54, 15, 59, 21)]],
@@ -349,6 +350,9 @@ describe(GameMapComponent.name, () => {
     expect(page.byId('game-map-side-poi:0')).toBeTruthy();
     // three flight masters on one spot: one marker; only the zone's own markers
     expect(page.byId('game-map-more-poi:0').nativeElement.textContent?.trim()).toBe('3');
+    page.click('game-map-layer-camera');
+    page.click('game-map-layer-camera');
+    expect(page.byId('game-map-more-poi:0').nativeElement.textContent?.trim()).toBe('3');
     expect(page.byId('game-map-pin-poi:7', false)).toBeFalsy();
     expect(page.byId('game-map-pin-poi:9', false)).toBeFalsy();
     expect(page.byId('game-map-pin-poi:10', false)).toBeFalsy();
@@ -482,7 +486,12 @@ describe(GameMapComponent.name, () => {
     expect(page.byId('game-map-pin-poi:0')).toBeTruthy();
     // no names (the picture has them); shields on the zones of a side, swords on Wintergrasp
     expect(page.fixture.nativeElement.querySelector('.game-map-chip')).toBeFalsy();
+    // (two shields on one spot, each opening its zone: both drawn, still after other changes)
     expect(page.byId('game-map-pin-relations:area:30')).toBeTruthy();
+    expect(page.byId('game-map-pin-relations:area:301')).toBeTruthy();
+    page.click('game-map-layer-camera');
+    page.click('game-map-layer-camera');
+    expect(page.byId('game-map-more-relations:area:30', false)).toBeFalsy();
     expect(page.byId('game-map-pin-relations:area:32')).toBeTruthy();
     expect(page.byId('game-map-pin-relations:area:36', false)).toBeFalsy();
     expect(page.byId('game-map-pin-relations:area:462', false)).toBeFalsy();
@@ -723,7 +732,7 @@ describe(GameMapComponent.name, () => {
     expect(page.tooltip('game-map-pin-tooltip')).toBe('');
     page.click('game-map-layer-bank');
     expect(page.byId('game-map-pin-poi:2')).toBeTruthy();
-    expect(JSON.parse(localStorage.getItem(GAME_MAP_LAYERS_KEY) as string)).toContain('bank');
+    expect(JSON.parse(localStorage.getItem(GAME_MAP_LAYERS_KEY) as string).shown).toContain('bank');
     page.click('game-map-layer-camera');
     expect(page.byId('game-map-camera-pin', false)).toBeFalsy();
     page.click('game-map-layer-boat');

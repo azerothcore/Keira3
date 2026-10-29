@@ -495,14 +495,15 @@ export class WowClientService {
   /**
    * The outlines of a page's regions (a continent's zones, the world map's continents, the cosmic map's worlds), traced
    * from the client's highlights as AoWoW does, in percent of the picture, by the page each one opens. Traced once (in
-   * the background worker) and kept in the disk cache.
+   * the background worker) and kept in the disk cache (not when a picture couldn't be read: asked again, they are traced
+   * again).
    */
   getGameMapOutlines(page: GamePage): Promise<Map<string, Ring[]>> {
-    return this.outlines(`regions-${page.key}`, async () => {
+    return this.outlines(`regions-${page.key}`, async (read) => {
       const highlights = new Map<string, RgbaImage | undefined>();
       for (const { highlight } of page.regions) {
         if (highlight && !highlights.has(highlight)) {
-          highlights.set(highlight, await this.getTexture(highlight).catch(() => undefined));
+          highlights.set(highlight, await read(highlight));
         }
       }
       return this.parser.run({ kind: 'trace', regions: pageTraceRegions(page, highlights) });
@@ -511,13 +512,13 @@ export class WowClientService {
 
   /** The outlines of a zone's sub-zones (from the pictures it lights up once explored, `overlays`), by area id. */
   getGameMapSubzones(page: GamePage, overlays: GameMapOverlay[]): Promise<Map<string, Ring[]>> {
-    return this.outlines(`subzones-${page.key}`, async () => {
+    return this.outlines(`subzones-${page.key}`, async (read) => {
       const folder = page.prefix.slice(0, page.prefix.indexOf('\\') + 1);
       const images: (RgbaImage | undefined)[][] = [];
       for (const overlay of overlays) {
         const pieces: (RgbaImage | undefined)[] = [];
         for (const piece of overlayPieces(overlay)) {
-          pieces.push(await this.getTexture(`${GAME_MAP_ROOT}${folder}${overlay.texture}${piece.index}.blp`).catch(() => undefined));
+          pieces.push(await read(`${GAME_MAP_ROOT}${folder}${overlay.texture}${piece.index}.blp`));
         }
         images.push(pieces);
       }
@@ -530,14 +531,18 @@ export class WowClientService {
    * less the zone and its sub-zones), in percent of the zone's picture, by the page each one opens.
    */
   getGameMapNeighbours(page: GamePage, continent: GamePage, overlays: GameMapOverlay[]): Promise<Map<string, Ring[]>> {
-    return this.outlines(`neighbours-${page.key}`, async () => {
+    return this.outlines(`neighbours-${page.key}`, async (_, partly) => {
       const region = continent.regions.find((r) => r.page === page.key);
       const zones = await this.getGameMapOutlines(continent);
+      const subs = await this.getGameMapSubzones(page, overlays);
+      // (made from outlines missing a picture: not kept either)
+      if (this.partialOutlines.has(`regions-${continent.key}`) || this.partialOutlines.has(`subzones-${page.key}`)) {
+        partly();
+      }
       const own = zones.get(page.key);
       if (!region || !own) {
         return [];
       }
-      const subs = await this.getGameMapSubzones(page, overlays);
       const { left, top, right, bottom } = region.rect;
       return this.parser.run({
         kind: 'neighbours',
@@ -549,8 +554,14 @@ export class WowClientService {
     });
   }
 
-  /** Outlines, once each (in memory, else from the disk cache, else traced). */
-  private outlines(key: string, trace: () => Promise<[string, Ring[]][]>): Promise<Map<string, Ring[]>> {
+  /**
+   * Outlines, once each (in memory, else from the disk cache, else traced). `trace` reads pictures with `read` (a
+   * picture that can't be read is left out) and calls `partly` when its outlines are made from such; those aren't kept.
+   */
+  private outlines(
+    key: string,
+    trace: (read: (path: string) => Promise<RgbaImage | undefined>, partly: () => void) => Promise<[string, Ring[]][]>,
+  ): Promise<Map<string, Ring[]>> {
     let outlines = this.gameOutlines.get(key);
     if (!outlines) {
       outlines = this.traceOutlines(key, trace).catch((error) => {
@@ -562,17 +573,37 @@ export class WowClientService {
     return outlines;
   }
   private readonly gameOutlines = new Map<string, Promise<Map<string, Ring[]>>>();
+  /** Outlines last traced with a picture missing (that couldn't be read), by key. */
+  private readonly partialOutlines = new Set<string>();
 
-  private async traceOutlines(key: string, trace: () => Promise<[string, Ring[]][]>): Promise<Map<string, Ring[]>> {
+  private async traceOutlines(
+    key: string,
+    trace: (read: (path: string) => Promise<RgbaImage | undefined>, partly: () => void) => Promise<[string, Ring[]][]>,
+  ): Promise<Map<string, Ring[]>> {
     const { identity } = await this.getClient();
     const cached = await this.cache.read<[string, Ring[]][]>(identity, GAME_OUTLINES_KIND, key);
     if (cached) {
       return new Map(cached);
     }
     const started = performance.now();
-    const outlines = await trace();
+    let partial = false;
+    const partly = () => (partial = true);
+    const read = (path: string) =>
+      this.getTexture(path).catch((error: Error) => {
+        console.warn(`[World Editor] Could not read ${path} for the world map's outlines:`, error);
+        partly();
+        return undefined;
+      });
+    const outlines = await trace(read, partly);
     perfNote(`game map: traced ${key} (${outlines.length} outlines) in ${Math.round(performance.now() - started)} ms`);
-    void this.cache.write(identity, GAME_OUTLINES_KIND, key, outlines);
+    if (partial) {
+      // asked again, traced again
+      this.partialOutlines.add(key);
+      this.gameOutlines.delete(key);
+    } else {
+      this.partialOutlines.delete(key);
+      void this.cache.write(identity, GAME_OUTLINES_KIND, key, outlines);
+    }
     return new Map(outlines);
   }
 
@@ -1068,6 +1099,11 @@ export class WowClientService {
     this.factionData = undefined;
     this.characterDbcs = undefined;
     this.itemData = undefined;
+    // (the world map of another client)
+    this.gameMap = undefined;
+    this.gamePictures.clear();
+    this.gameOutlines.clear();
+    this.partialOutlines.clear();
     if (!client) {
       return;
     }

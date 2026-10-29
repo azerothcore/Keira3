@@ -163,7 +163,10 @@ function shapeAt(shapes: Map<string, Ring[]>, point: GameMapPoint): string | und
   return undefined;
 }
 
-/** Markers of one kind (and side) on top of each other shown as one, with how many more there are. */
+/**
+ * Markers of one kind (and side, opening the same map) on top of each other shown as one, with how many more there are
+ * (on copies: the markers may be kept by other computations).
+ */
 function mergePins(pins: GamePin[]): GamePin[] {
   const merged: GamePin[] = [];
   for (const pin of pins) {
@@ -173,13 +176,14 @@ function mergePins(pins: GamePin[]): GamePin[] {
         (other) =>
           other.kind === pin.kind &&
           other.side === pin.side &&
+          other.opens === pin.opens &&
           Math.abs(other.u - pin.u) * 100 <= MERGE_DISTANCE &&
           Math.abs(other.v - pin.v) * 100 <= MERGE_DISTANCE,
       );
     if (near) {
       near.more = (near.more ?? 0) + 1;
     } else {
-      merged.push(pin);
+      merged.push({ ...pin });
     }
   }
   return merged;
@@ -243,9 +247,11 @@ export class GameMapComponent {
   /**
    * Outlines traced from the client's pictures (as AoWoW traces them), in percent of the picture: a page's regions
    * (`regions:<page>`, by the page each one opens), a zone's sub-zones (`subzones:<page>`, by area id) and the parts of
-   * its neighbours it shows (`neighbours:<page>`); empty while being traced.
+   * its neighbours it shows (`neighbours:<page>`); none while being traced.
    */
   private readonly outlines = signal(new Map<string, Map<string, Ring[]>>());
+  /** The outlines asked for. */
+  private readonly outlinesAsked = new Set<string>();
   protected readonly shown = signal(loadShownLayers());
   protected readonly markerSize = signal(loadMarkerSize());
   protected readonly markerSizes = MARKER_SIZES;
@@ -371,7 +377,9 @@ export class GameMapComponent {
   /** The region under the pointer (a zone, a continent, a world; a neighbour on a zone), by the page it opens. */
   protected readonly hoverKey = computed(() => {
     const hover = this.hover();
-    return hover && this.page() ? shapeAt(this.regions(), hover.point) : undefined;
+    const page = this.page();
+    // (neighbours only when shown)
+    return hover && page && (page.kind !== 'zone' || this.shown().has('transitions')) ? shapeAt(this.regions(), hover.point) : undefined;
   });
 
   /** The page the region under the pointer opens. */
@@ -435,10 +443,11 @@ export class GameMapComponent {
     const w = (((text.length + (levelText?.length ?? 0)) * 6 + 34) * 100) / 1002;
     const h = (22 * 100) / 668;
     const clamp = (value: number, size: number) => Math.min(100 - size / 2, Math.max(size / 2, value));
-    const free = (v: number) => placed.every((p) => Math.abs(p.u * 100 - x) >= (p.w + w) / 2 || Math.abs(p.v * 100 - v) >= (p.h + h) / 2);
+    const u = clamp(x, w);
+    const free = (v: number) => placed.every((p) => Math.abs(p.u * 100 - u) >= (p.w + w) / 2 || Math.abs(p.v * 100 - v) >= (p.h + h) / 2);
     // (where it is, when there's no free place near)
     const [v] = [...[0, 1, -1, 2, -2, 3, -3].map((k) => clamp(y + k * h, h)).filter(free), clamp(y, h)];
-    return { key: target.key, u: clamp(x, w) / 100, v: v / 100, text, levels: levelText, w, h };
+    return { key: target.key, u: u / 100, v: v / 100, text, levels: levelText, w, h };
   }
 
   /** What the tooltip says: the zone a click opens, its levels and land; or (on a zone) the sub-zone under the pointer. */
@@ -551,8 +560,13 @@ export class GameMapComponent {
       return zoneId === page.areaId;
     }
     const continent = this.continent();
-    const own = continent && this.outlines().get(`regions:${continent.key}`)?.get(page.key);
-    const point = own && this.placeOn(continent, mapId, place);
+    const zones = continent && this.outlines().get(`regions:${continent.key}`);
+    if (continent && !zones) {
+      // (not until the zone's outline is known: not shown, then hidden)
+      return false;
+    }
+    const own = zones?.get(page.key);
+    const point = own && this.placeOn(continent as GamePage, mapId, place);
     return !point || pointInRings(point.u * 100, point.v * 100, own);
   }
 
@@ -1115,10 +1129,10 @@ export class GameMapComponent {
 
   /** Outlines, asked once each (none when they can't be traced). */
   private async loadOutlines(key: string, trace: () => Promise<Map<string, Ring[]>>): Promise<void> {
-    if (this.outlines().has(key)) {
+    if (this.outlinesAsked.has(key)) {
       return;
     }
-    this.outlines.update((map) => new Map(map).set(key, new Map()));
+    this.outlinesAsked.add(key);
     const started = performance.now();
     const outlines = await trace().catch((error: Error) => {
       console.warn(`[World Editor] Could not trace the world map's ${key}:`, error);

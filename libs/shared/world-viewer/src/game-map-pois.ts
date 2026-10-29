@@ -206,12 +206,23 @@ export const GAME_MAP_LAYERS: GameMapLayer[] = [...GAME_MAP_OPTIONS, ...GAME_MAP
 export const GAME_MAP_LAYERS_KEY = 'keira3.worldEditor.gameMapLayers';
 export const GAME_MAP_MARKER_KEY = 'keira3.worldEditor.gameMapMarkers';
 
-/** The layers shown: as last chosen on this computer, else the default ones. */
+/** Layers added after the layers shown were first kept as a plain list (which didn't say which layers there were). */
+const LAYERS_ADDED_LATER = ['pvp', 'relations'];
+
+/**
+ * The layers shown: as last chosen on this computer (layers added since as they are by default), else the default ones.
+ */
 export function loadShownLayers(): Set<string> {
   try {
     const stored: unknown = JSON.parse(localStorage.getItem(GAME_MAP_LAYERS_KEY) ?? 'null');
-    if (Array.isArray(stored)) {
-      return new Set(GAME_MAP_LAYERS.map((layer) => layer.key).filter((key) => stored.includes(key)));
+    const kept = Array.isArray(stored)
+      ? { shown: stored as unknown[], known: GAME_MAP_LAYERS.map((l) => l.key).filter((key) => !LAYERS_ADDED_LATER.includes(key)) }
+      : (stored as { shown?: unknown[]; known?: unknown[] } | null);
+    if (Array.isArray(kept?.shown) && Array.isArray(kept.known)) {
+      const { shown, known } = kept as { shown: unknown[]; known: unknown[] };
+      return new Set(
+        GAME_MAP_LAYERS.filter((layer) => (known.includes(layer.key) ? shown.includes(layer.key) : layer.shown)).map((l) => l.key),
+      );
     }
   } catch {
     // (unreadable: the defaults)
@@ -219,9 +230,10 @@ export function loadShownLayers(): Set<string> {
   return new Set(GAME_MAP_LAYERS.filter((layer) => layer.shown).map((layer) => layer.key));
 }
 
+/** Keeps the layers shown, with the layers there are (so layers added later start as they are by default). */
 export function saveShownLayers(keys: Set<string>): void {
   try {
-    localStorage.setItem(GAME_MAP_LAYERS_KEY, JSON.stringify([...keys]));
+    localStorage.setItem(GAME_MAP_LAYERS_KEY, JSON.stringify({ shown: [...keys], known: GAME_MAP_LAYERS.map((layer) => layer.key) }));
   } catch {
     // (not kept)
   }

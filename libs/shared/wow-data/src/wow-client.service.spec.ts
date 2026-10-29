@@ -1366,5 +1366,54 @@ describe('WowClientService', () => {
       await expect(service.getGameMapOutlines({ ...continent, key: 'area:8' })).rejects.toThrow('busy');
       expect((await service.getGameMapOutlines({ ...continent, key: 'area:8' })).size).toBe(3);
     });
+
+    it('keeps no outlines traced while a picture could not be read, nor those made from them, and forgets them with the client', async () => {
+      const { service } = setup({
+        mpqs: displayMpqs({ 'Interface\\WorldMap\\A\\AHighlight.blp': [1], 'Interface\\WorldMap\\B\\BHighlight.blp': [1] }),
+      });
+      formats.decodeBlp.mockImplementation(() => ({ width: 64, height: 64, data: new Uint8Array(64 * 64 * 4).fill(255) }));
+      const region = (page: string, left: number, highlight: string) => ({
+        page,
+        rect: { left, top: 0.1, right: left + 0.3, bottom: 0.4 },
+        highlight: `Interface\\WorldMap\\${highlight}\\${highlight}Highlight.blp`,
+      });
+      const continent = {
+        ...pageOf('C\\C'),
+        key: 'area:1',
+        kind: 'continent' as const,
+        regions: [region('area:2', 0.1, 'A'), region('area:3', 0.3, 'B')],
+      };
+      const zone = { ...pageOf('A\\A'), key: 'area:2' };
+      const write = vi.spyOn(TestBed.inject(WowDataCacheService), 'write');
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+      const texture = vi.spyOn(service, 'getTexture');
+      texture.mockRejectedValueOnce(new Error('busy'));
+      expect([...(await service.getGameMapOutlines(continent)).keys()]).toEqual(['area:3']);
+      expect(warn).toHaveBeenCalledWith(expect.stringContaining('AHighlight.blp'), expect.any(Error));
+      expect(write).not.toHaveBeenCalled();
+      // asked again: traced again, now in full; neighbours made from sub-zones missing a picture aren't kept
+      const overlay = {
+        mapAreaId: 2,
+        areaIds: [9],
+        texture: 'Sub',
+        width: 64,
+        height: 64,
+        x: 100,
+        y: 100,
+        hit: { left: 0, top: 0, right: 1, bottom: 1 },
+      };
+      texture.mockImplementation((path: string) =>
+        path.includes('Sub') ? Promise.reject(new Error('busy')) : service.readFile(path).then(() => formats.decodeBlp()),
+      );
+      expect([...(await service.getGameMapNeighbours(zone, continent, [overlay])).keys()]).toEqual(['area:3']);
+      expect(write.mock.calls.map((call) => call[2])).toEqual(['regions-area:1']);
+      texture.mockRestore();
+      expect([...(await service.getGameMapNeighbours(zone, continent, [overlay])).keys()]).toEqual(['area:3']);
+      expect(write.mock.calls.map((call) => call[2])).toEqual(['regions-area:1', 'subzones-area:2', 'neighbours-area:2']);
+      // another client: asked again
+      const outlines = service.getGameMapOutlines(continent);
+      await service.close();
+      expect(service.getGameMapOutlines(continent)).not.toBe(outlines);
+    });
   });
 });

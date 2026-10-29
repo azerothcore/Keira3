@@ -297,6 +297,8 @@ describe('outline helpers', () => {
         ['far-west', [square(0, 20, 10, 40)]],
         ['far-south', [square(20, 60, 40, 70)]],
         ['far-north', [square(20, 0, 40, 10)]],
+        // too little of it on the map
+        ['sliver', [square(39.9, 20, 40.5, 21)]],
       ]),
     );
     expect([...parts.keys()]).toEqual(['east']);

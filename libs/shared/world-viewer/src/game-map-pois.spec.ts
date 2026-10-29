@@ -53,6 +53,14 @@ describe('game map markers', () => {
     expect(loadShownLayers().has('flight')).toBe(true);
     localStorage.setItem(GAME_MAP_LAYERS_KEY, '"flight"');
     expect(loadShownLayers().has('levels')).toBe(true);
+    // kept as a plain list (before the layers there were were kept too): the layers added since as by default
+    localStorage.setItem(GAME_MAP_LAYERS_KEY, '["bank"]');
+    expect([...loadShownLayers()]).toEqual(['bank', 'pvp', 'relations']);
+    localStorage.setItem(GAME_MAP_LAYERS_KEY, JSON.stringify({ shown: ['bank'], known: ['bank', 'flight'] }));
+    expect(loadShownLayers().has('flight')).toBe(false);
+    expect(loadShownLayers().has('levels')).toBe(true);
+    localStorage.setItem(GAME_MAP_LAYERS_KEY, JSON.stringify({ shown: ['bank'] }));
+    expect(loadShownLayers().has('bank')).toBe(false);
 
     expect(loadMarkerSize()).toBe(20);
     saveMarkerSize(26);
