@@ -177,7 +177,21 @@
       }
       @if (canLoadZone()) {
         <button type="button" class="btn btn-sm btn-dark" data-testid="game-map-load-zone" (click)="loadZone()">
-          <i class="fa fa-download"></i> {{ 'WORLD_EDITOR.GAME_MAP_LOAD_ZONE' | translate }}
+          <i class="fa fa-download"></i>
+          {{ (seamlessOn() ? 'WORLD_EDITOR.GAME_MAP_LOAD_AREA' : 'WORLD_EDITOR.GAME_MAP_LOAD_ZONE') | translate }}
+        </button>
+      }
+      @if (current) {
+        <button
+          type="button"
+          class="btn btn-sm"
+          data-testid="game-map-seamless"
+          [class.btn-primary]="seamless()"
+          [class.btn-dark]="!seamless()"
+          [title]="'WORLD_EDITOR.GAME_MAP_SEAMLESS_TIP' | translate"
+          (click)="toggleSeamless()"
+        >
+          <i class="fa fa-globe"></i> {{ 'WORLD_EDITOR.GAME_MAP_SEAMLESS' | translate }}
         </button>
       }
       <button
@@ -229,6 +243,44 @@
       >
         @if (state && state !== 'loading') {
           <img class="game-map-image" data-testid="game-map-image" [src]="state.url" alt="" draggable="false" />
+        }
+        @if (seamlessOn()) {
+          <svg class="game-map-seamless" data-testid="game-map-seamless-layer" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <defs>
+              @for (zone of seamlessZones(); track zone.key) {
+                <clipPath [attr.id]="zone.clip"><path [attr.d]="zone.d" fill-rule="evenodd" /></clipPath>
+              }
+            </defs>
+            @for (zone of seamlessZones(); track zone.key) {
+              @if (zone.url) {
+                <image
+                  [attr.data-testid]="'game-map-seamless-zone-' + zone.key"
+                  [attr.href]="zone.url"
+                  [attr.x]="zone.x"
+                  [attr.y]="zone.y"
+                  [attr.width]="zone.width"
+                  [attr.height]="zone.height"
+                  [attr.clip-path]="'url(#' + zone.clip + ')'"
+                  [attr.opacity]="zone.alpha"
+                  preserveAspectRatio="none"
+                />
+              }
+            }
+            @for (tile of seamlessTiles(); track tile.key) {
+              @if (tile.url) {
+                <image
+                  [attr.data-testid]="'game-map-seamless-tile-' + tile.key"
+                  [attr.href]="tile.url"
+                  [attr.x]="tile.x"
+                  [attr.y]="tile.y"
+                  [attr.width]="tile.width * 1.004"
+                  [attr.height]="tile.height * 1.004"
+                  [attr.opacity]="tile.alpha"
+                  preserveAspectRatio="none"
+                />
+              }
+            }
+          </svg>
         }
         <svg class="game-map-shapes" [class.colored]="colored()" viewBox="0 0 100 100" preserveAspectRatio="none">
           @for (shape of zonePaths(); track shape.key) {

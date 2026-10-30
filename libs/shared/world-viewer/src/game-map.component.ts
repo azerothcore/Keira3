@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output, signal, untracked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, ElementRef, inject, input, output, signal, untracked } from '@angular/core';
 import {
   AREA_CAPITAL,
   AREA_SANCTUARY,
@@ -13,6 +13,7 @@ import {
   GameMapOverlay,
   GameMapPicture,
   GameMapPoint,
+  GameMapRect,
   GameMapRegion,
   GamePage,
   gameMapPages,
@@ -30,7 +31,12 @@ import {
   ringsArea,
   ringsPath,
   TaxiPathNode,
+  TILE_SIZE,
+  TileCoord,
+  tileKey,
+  tileOrigin,
   toGameMap,
+  worldToTile,
   WorldBounds,
   WorldPosition,
   WowClientService,
@@ -86,6 +92,21 @@ import { WorldMapDot } from './world-map.component';
 const MAX_DOTS = 3000;
 const MIN_ZOOM = 1;
 const MAX_ZOOM = 10;
+/**
+ * The seamless map (like the OpenMap addon): how deep it zooms (minimaps about full size), the width on screen (px)
+ * zone pictures show from (fully at twice it), the size of a minimap tile they show from (fully at twice it), and the
+ * zoom from which every marker shows (not only travel and instances).
+ */
+const SEAMLESS_MAX_ZOOM = 48;
+const ZONE_FADE = 180;
+const TILE_FADE = 64;
+const SEAMLESS_ALL_MARKERS = 4;
+/** At most this many minimap tiles are drawn at once. */
+const MAX_TILES = 120;
+/** The spawns of the area shown can be loaded from this zoom on, in the seamless map. */
+const SEAMLESS_LOAD_ZOOM = 6;
+/** Each game map's own ids (its zones' clip paths). */
+let gameMapCount = 0;
 /** A press moving less than this (pixels) is a click. */
 const CLICK_SLOP = 4;
 /** The continents (Map.dbc), as AoWoW's menu lists them; and the maps a `.go zonexy` works on. */
@@ -204,7 +225,7 @@ function shapeAt(shapes: Map<string, Ring[]>, point: GameMapPoint): string | und
  * Markers of one kind (and side, opening the same map) on top of each other shown as one, with how many more there are
  * (on copies: the markers may be kept by other computations).
  */
-function mergePins(pins: GamePin[]): GamePin[] {
+function mergePins(pins: GamePin[], distance: number): GamePin[] {
   const merged: GamePin[] = [];
   for (const pin of pins) {
     const near =
@@ -214,8 +235,8 @@ function mergePins(pins: GamePin[]): GamePin[] {
           other.kind === pin.kind &&
           other.side === pin.side &&
           other.opens === pin.opens &&
-          Math.abs(other.u - pin.u) * 100 <= MERGE_DISTANCE &&
-          Math.abs(other.v - pin.v) * 100 <= MERGE_DISTANCE,
+          Math.abs(other.u - pin.u) * 100 <= distance &&
+          Math.abs(other.v - pin.v) * 100 <= distance,
       );
     if (near) {
       near.more = (near.more ?? 0) + 1;
@@ -246,6 +267,7 @@ function mergePins(pins: GamePin[]): GamePin[] {
 })
 export class GameMapComponent {
   private readonly client = inject(WowClientService);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly translate = inject(TranslateService);
 
   /** The map the camera is on, and where. */
@@ -311,6 +333,17 @@ export class GameMapComponent {
   private toastTimer?: ReturnType<typeof setTimeout>;
   /** The menu of maps open (by key). */
   protected readonly openMenu = signal<string | undefined>(undefined);
+  /**
+   * The seamless map (like the OpenMap addon): a continent whose zones' pictures, then their cities', then the
+   * minimaps of the ground fade in as it is zoomed into, with every marker once close enough.
+   */
+  protected readonly seamless = signal(false);
+  /** The viewport's size (px), as last measured. */
+  private readonly viewportSize = signal({ width: 0, height: 0 }, { equal: (a, b) => a.width === b.width && a.height === b.height });
+  /** Minimap tiles as pictures (null: none there), by directory and tile. */
+  private readonly tileImages = signal(new Map<string, string | null>());
+  private readonly tilesAsked = new Set<string>();
+  private readonly uid = `game-map-${++gameMapCount}`;
   /** The icons (and crests) as pictures, by `iconKey`. */
   protected readonly icons = signal(new Map<string, string>());
   private readonly factions = signal<FactionData | undefined>(undefined);
@@ -402,6 +435,14 @@ export class GameMapComponent {
 
   protected toggleMenu(key: string): void {
     this.openMenu.set(this.openMenu() === key ? undefined : key);
+    // (kept on the screen: opening to the left when it would go past the window's right edge)
+    setTimeout(() => {
+      const drop = this.host.nativeElement.querySelector<HTMLElement>('.game-map-nav-drop');
+      if (drop && drop.getBoundingClientRect().right > window.innerWidth) {
+        drop.style.left = 'auto';
+        drop.style.right = '0';
+      }
+    });
   }
 
   /** The page "back" goes to. */
@@ -413,8 +454,12 @@ export class GameMapComponent {
   /** The overlays of the zone shown (its sub-zones). */
   private readonly overlays = computed(() => {
     const page = this.page();
-    return page?.kind === 'zone' ? (this.data() as GameMapData).overlays.filter((o) => o.mapAreaId === page.mapAreaId) : [];
+    return page?.kind === 'zone' ? this.overlaysOf(page) : [];
   });
+
+  private overlaysOf(page: GamePage): GameMapOverlay[] {
+    return (this.data() as GameMapData).overlays.filter((o) => o.mapAreaId === page.mapAreaId);
+  }
 
   /** The continent a zone is drawn on, to find its neighbours there. */
   private readonly continent = computed(() => {
@@ -504,8 +549,243 @@ export class GameMapComponent {
 
   /** Whether the zones are coloured (on continents, by level or land). */
   protected readonly colored = computed(
-    () => this.page()?.kind === 'continent' && (this.shown().has('levels') || this.shown().has('territory')),
+    () => this.page()?.kind === 'continent' && !this.seamlessOn() && (this.shown().has('levels') || this.shown().has('territory')),
   );
+
+  // ------------------------------------------------------------------ the seamless map
+
+  /** Whether the seamless map is shown (it is a continent's). */
+  protected readonly seamlessOn = computed(() => this.seamless() && this.page()?.kind === 'continent');
+
+  /** The stage's size on screen (px). */
+  private readonly stageSize = computed(() => {
+    const { width, height } = this.viewportSize();
+    const stage = Math.min(width, (height * FRAME_W) / FRAME_H) * this.zoom();
+    return { width: stage, height: (stage * FRAME_H) / FRAME_W };
+  });
+
+  /** The part of the picture on screen (fractions of it; all of it until the viewport is measured). */
+  private readonly visibleBox = computed<GameMapRect>(() => {
+    const { width, height } = this.viewportSize();
+    const stage = this.stageSize();
+    const pan = this.pan();
+    if (!stage.width) {
+      return { left: 0, top: 0, right: 1, bottom: 1 };
+    }
+    return {
+      left: 0.5 + (-width / 2 - pan.x) / stage.width,
+      right: 0.5 + (width / 2 - pan.x) / stage.width,
+      top: 0.5 + (-height / 2 - pan.y) / stage.height,
+      bottom: 0.5 + (height / 2 - pan.y) / stage.height,
+    };
+  });
+
+  /**
+   * The zones' pictures on the seamless map: those on screen and big enough, where they are on the continent, clipped
+   * to their outline there and fading in as they grow; the big ones first (cities on top of their zone).
+   */
+  protected readonly seamlessZones = computed(() => {
+    const page = this.page() as GamePage;
+    if (!this.seamlessOn()) {
+      return [];
+    }
+    const width = this.stageSize().width;
+    const box = this.visibleBox();
+    const pictures = this.pictures();
+    const outlines = this.regions();
+    const zones: {
+      key: string;
+      page: GamePage;
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+      d: string;
+      clip: string;
+      alpha: number;
+      area: number;
+      url?: string;
+    }[] = [];
+    for (const region of page.regions) {
+      const target = this.targetOf(region.page);
+      const rings = outlines.get(region.page);
+      const { left, top, right, bottom } = region.rect;
+      const alpha = Math.min(1, ((right - left) * width - ZONE_FADE) / ZONE_FADE);
+      if (!target || !rings || alpha <= 0 || right < box.left || left > box.right || bottom < box.top || top > box.bottom) {
+        continue;
+      }
+      const picture = pictures.get(target.prefix);
+      zones.push({
+        key: region.page,
+        page: target,
+        x: left * 100,
+        y: top * 100,
+        width: (right - left) * 100,
+        height: (bottom - top) * 100,
+        d: ringsPath(rings),
+        clip: `${this.uid}-clip-${zones.length}`,
+        alpha,
+        area: (right - left) * (bottom - top),
+        url: picture && picture !== 'loading' ? picture.url : undefined,
+      });
+    }
+    return zones.sort((a, b) => b.area - a.area);
+  });
+
+  /**
+   * Where the ground's minimaps come from on the seamless map: the continent's own map (but the parts drawn on another
+   * continent), and the parts of other maps drawn on it (Eversong Woods on the Eastern Kingdoms); none until they are
+   * big enough to show.
+   */
+  private readonly tileSources = computed(() => {
+    const page = this.page() as GamePage;
+    if (!this.seamlessOn()) {
+      return [];
+    }
+    const bounds = page.bounds as WorldBounds;
+    if ((TILE_SIZE / (bounds.maxY - bounds.minY)) * this.stageSize().width <= TILE_FADE) {
+      return [];
+    }
+    const maps = this.maps();
+    const directory = (mapId: number) => maps.find((m) => m.id === mapId)?.directory;
+    const transforms = (this.data() as GameMapData).transforms;
+    return [
+      {
+        directory: directory(page.mapId),
+        offsetX: 0,
+        offsetY: 0,
+        region: undefined as WorldBounds | undefined,
+        away: transforms.filter((t) => t.mapId === page.mapId).map((t) => t.region),
+      },
+      ...transforms
+        .filter((t) => t.newMapId === page.mapId)
+        .map((t) => ({ directory: directory(t.mapId), offsetX: t.offsetX, offsetY: t.offsetY, region: t.region, away: [] })),
+    ].filter((source): source is typeof source & { directory: string } => !!source.directory);
+  });
+
+  /** The minimap tiles on screen on the seamless map (the nearest to the middle first), fading in as they grow. */
+  protected readonly seamlessTiles = computed(() => {
+    const sources = this.tileSources();
+    if (!sources.length) {
+      return [];
+    }
+    const bounds = (this.page() as GamePage).bounds as WorldBounds;
+    const [du, dv] = [TILE_SIZE / (bounds.maxY - bounds.minY), TILE_SIZE / (bounds.maxX - bounds.minX)];
+    const alpha = Math.min(1, (du * this.stageSize().width - TILE_FADE) / TILE_FADE);
+    const box = this.visibleBox();
+    const [left, top, right, bottom] = [Math.max(0, box.left), Math.max(0, box.top), Math.min(1, box.right), Math.min(1, box.bottom)];
+    const [cu, cv] = [(left + right) / 2, (top + bottom) / 2];
+    const images = this.tileImages();
+    const inside = (r: WorldBounds, x: number, y: number) => Math.min(x - r.minX, r.maxX - x, y - r.minY, r.maxY - y) >= 0;
+    const tiles: {
+      key: string;
+      directory: string;
+      tile: TileCoord;
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+      alpha: number;
+      distance: number;
+      url?: string | null;
+    }[] = [];
+    for (const source of sources) {
+      const a = fromGameMap(bounds, { u: left, v: top });
+      const b = fromGameMap(bounds, { u: right, v: bottom });
+      const from = worldToTile(a.x - source.offsetX, a.y - source.offsetY);
+      const to = worldToTile(b.x - source.offsetX, b.y - source.offsetY);
+      for (let tx = from.tx; tx <= to.tx; tx++) {
+        for (let ty = from.ty; ty <= to.ty; ty++) {
+          const origin = tileOrigin({ tx, ty });
+          const [mx, my] = [origin.x - TILE_SIZE / 2, origin.y - TILE_SIZE / 2];
+          if ((source.region && !inside(source.region, mx, my)) || source.away.some((r) => inside(r, mx, my))) {
+            continue;
+          }
+          const { u, v } = toGameMap(bounds, origin.x + source.offsetX, origin.y + source.offsetY);
+          const key = `${source.directory}:${tileKey({ tx, ty })}`;
+          tiles.push({
+            key,
+            directory: source.directory,
+            tile: { tx, ty },
+            x: u * 100,
+            y: v * 100,
+            width: du * 100,
+            height: dv * 100,
+            alpha,
+            distance: Math.hypot(u + du / 2 - cu, v + dv / 2 - cv),
+            url: images.get(key),
+          });
+        }
+      }
+    }
+    return tiles.sort((x, y) => x.distance - y.distance).slice(0, MAX_TILES);
+  });
+
+  /** Whether a zone's picture is fully shown on the seamless map (a click on it then doesn't zoom). */
+  private zoneShown(key: string): boolean {
+    return this.seamlessZones().some((zone) => zone.key === key && zone.alpha === 1);
+  }
+
+  /** Whether a place of the picture is on screen (always, but on the seamless map). */
+  private inView(point: GameMapPoint): boolean {
+    const box = this.visibleBox();
+    return !this.seamlessOn() || (point.u >= box.left && point.u <= box.right && point.v >= box.top && point.v <= box.bottom);
+  }
+
+  /** Measures the viewport (the seamless map shows what is on screen). */
+  private measure(): { width: number; height: number } {
+    const rect = (this.host.nativeElement.querySelector('.game-map-viewport') as HTMLElement).getBoundingClientRect();
+    const size = { width: rect.width, height: rect.height };
+    this.viewportSize.set(size);
+    return size;
+  }
+
+  /** How deep the map zooms. */
+  private maxZoom(): number {
+    return this.seamlessOn() ? SEAMLESS_MAX_ZOOM : MAX_ZOOM;
+  }
+
+  /** Shows the seamless map, or the pages again: from a zone, its continent zoomed to it. */
+  protected toggleSeamless(): void {
+    const on = !this.seamless();
+    this.seamless.set(on);
+    this.measure();
+    // (the button shows once a page is)
+    if (on) {
+      this.open(this.pageKey() as string);
+    } else {
+      this.resetZoom();
+    }
+  }
+
+  /** The continent a page is a zone of, with where it is there (for the seamless map). */
+  private seamlessTarget(key: string): { continent: GamePage; region: GameMapRegion } | undefined {
+    const target = this.targetOf(key);
+    for (const page of this.pages().values()) {
+      const region = target && page.kind === 'continent' ? page.regions.find((r) => this.targetOf(r.page) === target) : undefined;
+      if (region) {
+        return { continent: page, region };
+      }
+    }
+    return undefined;
+  }
+
+  /** Zooms to fit a part of the picture on screen. */
+  private zoomToRect(rect: GameMapRect): void {
+    const { width, height } = this.measure();
+    const base = Math.min(width, (height * FRAME_W) / FRAME_H);
+    if (!base) {
+      return;
+    }
+    const fit = Math.min(width / ((rect.right - rect.left) * base), (height * FRAME_W) / ((rect.bottom - rect.top) * base * FRAME_H));
+    const zoom = Math.min(this.maxZoom(), Math.max(MIN_ZOOM, fit * 0.9));
+    const stage = base * zoom;
+    this.zoom.set(zoom);
+    this.pan.set({
+      x: -((rect.left + rect.right) / 2 - 0.5) * stage,
+      y: -((rect.top + rect.bottom) / 2 - 0.5) * ((stage * FRAME_H) / FRAME_W),
+    });
+  }
 
   /** The sub-zones of the zone shown that have a map of their own (cities: Stormwind in Elwynn Forest), by area id. */
   private readonly subLinks = computed(() => {
@@ -637,6 +917,11 @@ export class GameMapComponent {
     if (target) {
       const levels = this.levelsOf(target);
       const city = !this.hoverKey();
+      const opens = !this.seamlessOn()
+        ? 'WORLD_EDITOR.GAME_MAP_CLICK_OPENS'
+        : this.zoneShown(target.key)
+          ? ''
+          : 'WORLD_EDITOR.GAME_MAP_CLICK_ZOOMS';
       return {
         x: hover.x,
         y: hover.y,
@@ -644,8 +929,10 @@ export class GameMapComponent {
         levels: this.levelLine(target, levels),
         land: this.landText(target),
         hint: city
-          ? `${this.areaName(page.areaId)} · ${this.translate.instant('WORLD_EDITOR.GAME_MAP_CLICK_OPENS')}`
-          : this.translate.instant(page.kind === 'zone' ? 'WORLD_EDITOR.GAME_MAP_OTHER_AREA' : 'WORLD_EDITOR.GAME_MAP_CLICK_OPENS'),
+          ? `${this.areaName(page.areaId)} · ${this.translate.instant(opens)}`
+          : page.kind === 'zone'
+            ? this.translate.instant('WORLD_EDITOR.GAME_MAP_OTHER_AREA')
+            : opens && this.translate.instant(opens),
         ids: this.ids(target.mapId, target.areaId),
       };
     }
@@ -682,6 +969,10 @@ export class GameMapComponent {
   protected readonly coordinates = computed(() => {
     const hover = this.hover();
     const page = this.page();
+    const zone = hover && this.seamlessOn() ? this.zoneAt(hover.point) : undefined;
+    if (zone) {
+      return `${this.areaName(zone.target.areaId)} ${(zone.u * 100).toFixed(1)}, ${(zone.v * 100).toFixed(1)}`;
+    }
     return hover && page?.bounds && page.kind !== 'continent'
       ? `${(hover.point.u * 100).toFixed(1)}, ${(hover.point.v * 100).toFixed(1)}`
       : undefined;
@@ -702,7 +993,7 @@ export class GameMapComponent {
     if (shown.has('spawns') && page.mapId === this.mapId()) {
       for (const dot of this.dots()) {
         const point = this.placeOn(page, page.mapId, dot.position);
-        if (point && pins.length < MAX_DOTS) {
+        if (point && this.inView(point) && pins.length < MAX_DOTS) {
           pins.push({
             key: dot.key,
             ...point,
@@ -741,7 +1032,9 @@ export class GameMapComponent {
       ...(this.showsLayer('portal') ? this.portalPins() : []),
       ...this.territoryPins().filter((pin) => shown.has(pin.kind as string)),
     );
-    return mergePins(pins);
+    // (on the seamless map, markers merge as close on screen as on a page)
+    const seamless = this.seamlessOn();
+    return mergePins(seamless ? pins.filter((pin) => this.inView(pin)) : pins, MERGE_DISTANCE / (seamless ? this.zoom() : 1));
   });
 
   /** The sides of these that badges are shown for. */
@@ -751,7 +1044,10 @@ export class GameMapComponent {
 
   /** Whether a layer's markers are shown on the page (on continents only some layers are). */
   private showsLayer(key: string): boolean {
-    return this.shown().has(key) && (this.page()?.kind !== 'continent' || CONTINENT_LAYERS.has(key));
+    return (
+      this.shown().has(key) &&
+      (this.page()?.kind !== 'continent' || CONTINENT_LAYERS.has(key) || (this.seamlessOn() && this.zoom() >= SEAMLESS_ALL_MARKERS))
+    );
   }
 
   /**
@@ -1079,6 +1375,9 @@ export class GameMapComponent {
   /** Whether the zone shown is on the map the camera is on (its spawns can be loaded). */
   protected readonly canLoadZone = computed(() => {
     const page = this.page();
+    if (this.seamlessOn()) {
+      return this.zoom() >= SEAMLESS_LOAD_ZOOM && page?.mapId === this.mapId();
+    }
     return !!page?.bounds && page.kind !== 'continent' && page.mapId === this.mapId();
   });
 
@@ -1118,6 +1417,15 @@ export class GameMapComponent {
         }
       });
     });
+    // the seamless map's zone pictures and minimaps on screen
+    effect(() => {
+      const zones = this.seamlessZones();
+      untracked(() => zones.forEach((zone) => void this.load(zone.page, this.overlaysOf(zone.page))));
+    });
+    effect(() => {
+      const tiles = this.seamlessTiles();
+      untracked(() => tiles.forEach((tile) => void this.loadTile(tile.directory, tile.tile, tile.key)));
+    });
     // the transports' paths, once their list is known
     effect(() => {
       const transports = this.transports();
@@ -1149,6 +1457,16 @@ export class GameMapComponent {
 
   /** Opens a page (every link points at one that exists). */
   protected open(key: string): void {
+    // (on the seamless map, a zone is shown where it is on its continent)
+    const seamless = this.seamless() ? this.seamlessTarget(key) : undefined;
+    if (seamless) {
+      if (this.pageKey() !== seamless.continent.key) {
+        this.show(seamless.continent.key);
+      }
+      this.openMenu.set(undefined);
+      this.zoomToRect(seamless.region.rect);
+      return;
+    }
     this.show((firstPage(this.pages(), key) as GamePage).key);
   }
 
@@ -1279,6 +1597,7 @@ export class GameMapComponent {
     }
     const box = this.stageBox(event);
     const viewport = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    this.viewportSize.set({ width: viewport.width, height: viewport.height });
     if (!box.width || !box.height) {
       return;
     }
@@ -1295,7 +1614,7 @@ export class GameMapComponent {
     const target = this.hoverTarget();
     if (event.altKey) {
       void this.copyGo(event);
-    } else if (target) {
+    } else if (target && !(this.seamlessOn() && this.zoneShown(target.key))) {
       this.open(target.key);
     }
   }
@@ -1319,9 +1638,10 @@ export class GameMapComponent {
   protected onWheel(event: WheelEvent): void {
     event.preventDefault();
     const viewport = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    this.viewportSize.set({ width: viewport.width, height: viewport.height });
     const [px, py] = [event.clientX - viewport.left - viewport.width / 2, event.clientY - viewport.top - viewport.height / 2];
     const before = this.zoom();
-    const zoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, before * (event.deltaY < 0 ? 1.25 : 0.8)));
+    const zoom = Math.min(this.maxZoom(), Math.max(MIN_ZOOM, before * (event.deltaY < 0 ? 1.25 : 0.8)));
     const pan = this.pan();
     // keep the point under the pointer where it is
     this.pan.set(zoom === MIN_ZOOM ? { x: 0, y: 0 } : { x: px - ((px - pan.x) / before) * zoom, y: py - ((py - pan.y) / before) * zoom });
@@ -1329,7 +1649,8 @@ export class GameMapComponent {
   }
 
   protected zoomBy(factor: number): void {
-    const zoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, this.zoom() * factor));
+    this.measure();
+    const zoom = Math.min(this.maxZoom(), Math.max(MIN_ZOOM, this.zoom() * factor));
     const pan = this.pan();
     this.pan.set(zoom === MIN_ZOOM ? { x: 0, y: 0 } : { x: (pan.x / this.zoom()) * zoom, y: (pan.y / this.zoom()) * zoom });
     this.zoom.set(zoom);
@@ -1351,23 +1672,29 @@ export class GameMapComponent {
       return `.go zonexy ${xy(point.u, point.v)} ${page.areaId}`;
     }
     if (page.kind === 'continent') {
-      // the smallest zone under the pointer (cities lie inside their zone)
-      const key = [...this.regions()]
-        .filter(([, rings]) => pointInRings(point.u * 100, point.v * 100, rings))
-        .sort(([, a], [, b]) => ringsArea(a) - ringsArea(b))[0]?.[0];
-      const region = page.regions.find((r) => r.page === key);
-      const target = key ? this.targetOf(key) : undefined;
-      if (!region || !target) {
-        return undefined;
-      }
-      const { left, top, right, bottom } = region.rect;
-      return `.go zonexy ${xy((point.u - left) / (right - left), (point.v - top) / (bottom - top))} ${target.areaId}`;
+      const zone = this.zoneAt(point);
+      return zone && `.go zonexy ${xy(zone.u, zone.v)} ${zone.target.areaId}`;
     }
     if (!page.bounds) {
       return undefined;
     }
     const { x, y } = fromGameMap(page.bounds, point);
     return `.go xyz ${x.toFixed(1)} ${y.toFixed(1)} ${this.heightOn(page).toFixed(1)} ${page.mapId}`;
+  }
+
+  /** The zone of the continent shown under a point (the smallest: cities lie inside their zone), and where it is in it. */
+  private zoneAt(point: GameMapPoint): { target: GamePage; u: number; v: number } | undefined {
+    const page = this.page() as GamePage;
+    const key = [...this.regions()]
+      .filter(([, rings]) => pointInRings(point.u * 100, point.v * 100, rings))
+      .sort(([, a], [, b]) => ringsArea(a) - ringsArea(b))[0]?.[0];
+    const region = page.regions.find((r) => r.page === key);
+    const target = key ? this.targetOf(key) : undefined;
+    if (!region || !target) {
+      return undefined;
+    }
+    const { left, top, right, bottom } = region.rect;
+    return { target, u: (point.u - left) / (right - left), v: (point.v - top) / (bottom - top) };
   }
 
   /** Copies the `.go` command for the place under the pointer, with a note by it. */
@@ -1422,8 +1749,17 @@ export class GameMapComponent {
     this.open(label.key);
   }
 
+  /** Loads the spawns of the zone shown (on the seamless map: of what is on screen). */
   protected loadZone(): void {
-    this.regionSelected.emit((this.page() as GamePage).bounds as WorldBounds);
+    const bounds = (this.page() as GamePage).bounds as WorldBounds;
+    if (!this.seamlessOn()) {
+      this.regionSelected.emit(bounds);
+      return;
+    }
+    const box = this.visibleBox();
+    const a = fromGameMap(bounds, { u: Math.max(0, box.left), v: Math.max(0, box.top) });
+    const b = fromGameMap(bounds, { u: Math.min(1, box.right), v: Math.min(1, box.bottom) });
+    this.regionSelected.emit({ minX: b.x, maxX: a.x, minY: b.y, maxY: a.y });
   }
 
   // ------------------------------------------------------------------ layers
@@ -1502,6 +1838,16 @@ export class GameMapComponent {
     });
     perfNote(`game map: ${page.prefix} ${picture ? 'shown' : 'has no picture'} after ${Math.round(performance.now() - started)} ms`);
     this.pictures.update((map) => new Map(map).set(page.prefix, picture ? { url: imageToDataUrl(picture.image), picture } : null));
+  }
+
+  /** A minimap tile of the seamless map (once). */
+  private async loadTile(directory: string, tile: TileCoord, key: string): Promise<void> {
+    if (this.tilesAsked.has(key)) {
+      return;
+    }
+    this.tilesAsked.add(key);
+    const image = await this.client.getMinimap(directory, tile).catch(() => undefined);
+    this.tileImages.update((map) => new Map(map).set(key, image ? imageToDataUrl(image) : null));
   }
 
   /** The outlines a page needs: its regions'; on a zone its sub-zones', its continent's zones' and its neighbours'. */

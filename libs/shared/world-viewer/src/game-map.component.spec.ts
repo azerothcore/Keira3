@@ -206,7 +206,11 @@ const data = (): GameMapData => ({
     { id: 57, mapId: 533, floor: 2, bounds: bounds(2886, 3615, -3734, -2640), parent: 0 },
     { id: 69, mapId: 603, floor: 1, bounds: bounds(1400, 1800, -450, 220), parent: 0 },
   ],
-  transforms: [{ mapId: 530, region: bounds(4800, 16000, -10000, -2600), newMapId: 0, offsetX: -2400, offsetY: 2400 }],
+  transforms: [
+    { mapId: 530, region: bounds(4800, 16000, -10000, -2600), newMapId: 0, offsetX: -2400, offsetY: 2400 },
+    // (a corner of the Eastern Kingdoms drawn on Outland: not on the Eastern Kingdoms' own map)
+    { mapId: 0, region: bounds(15000, 15001, 15000, 15001), newMapId: 530, offsetX: 0, offsetY: 0 },
+  ],
   zones: new Map([
     [12, { name: 'Elwynn Forest', flags: 64, levels: [1, 10] as [number, number], faction: 1 }],
     [1519, { name: 'Stormwind City', flags: 0x100 | 0x800, faction: 1 }],
@@ -267,6 +271,7 @@ describe(GameMapComponent.name, () => {
     getFactions: vi.fn(),
     getAreaTriggers: vi.fn(),
     getTaxiPathNodes: vi.fn(),
+    getMinimap: vi.fn(),
   };
   const clipboard = { writeText: vi.fn() };
 
@@ -329,6 +334,13 @@ describe(GameMapComponent.name, () => {
         [10, [node(-9200, 0), node(-9250, 0)]],
       ]),
     );
+    client.getMinimap
+      .mockReset()
+      .mockImplementation((directory: string, tile: { tx: number; ty: number }) =>
+        tile.tx === 31 && tile.ty === 48
+          ? Promise.reject(new Error('bad'))
+          : Promise.resolve(directory === 'Azeroth' && tile.tx === 32 && tile.ty === 48 ? icon : undefined),
+      );
     await TestBed.configureTestingModule({
       imports: [HostComponent, TranslateTestingModule],
       providers: [{ provide: WowClientService, useValue: client }],
@@ -760,6 +772,105 @@ describe(GameMapComponent.name, () => {
     vi.mocked(HTMLElement.prototype.getBoundingClientRect).mockReturnValue(new DOMRect(0, 0, 0, 0));
     page.hoverAt(10, 10);
     expect(page.byId('game-map-tooltip', false)).toBeFalsy();
+  });
+
+  it('shows the seamless map: zones, cities and the ground fading in as the continent is zoomed into, with every marker', async () => {
+    const { page, host } = await setup();
+    // (the menus open to the left when they would go past the window's edge)
+    const width = window.innerWidth;
+    Object.defineProperty(window, 'innerWidth', { value: 500, configurable: true });
+    page.click('game-map-menu-area:14');
+    await settle(page);
+    expect(page.byId('game-map-menu-list-area:14').nativeElement.style.right).toBe('0px');
+    Object.defineProperty(window, 'innerWidth', { value: width, configurable: true });
+    page.click('game-map-menu-area:14');
+
+    // from Elwynn Forest: the Eastern Kingdoms, zoomed to it
+    page.click('game-map-seamless');
+    await settle(page);
+    expect(page.title()).toBe('Eastern Kingdoms');
+    expect(Number(page.stage().style.getPropertyValue('--zoom'))).toBeCloseTo(10.29, 1);
+    expect(page.byId('game-map-seamless').nativeElement.classList).toContain('btn-primary');
+    expect(page.fixture.nativeElement.querySelector('.game-map-shapes').classList).not.toContain('colored');
+    // Elwynn's picture clipped to its outline, Stormwind's on top fading in; Duskwood off the screen
+    const elwynn = page.byId('game-map-seamless-zone-area:30').nativeElement;
+    expect(elwynn.getAttribute('opacity')).toBe('1');
+    expect(elwynn.getAttribute('clip-path')).toMatch(/^url\(#game-map-\d+-clip-\d+\)$/);
+    const stormwind = page.byId('game-map-seamless-zone-area:301').nativeElement;
+    expect(Number(stormwind.getAttribute('opacity'))).toBeCloseTo(0.15, 1);
+    expect(elwynn.compareDocumentPosition(stormwind) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(page.byId('game-map-seamless-zone-area:32', false)).toBeFalsy();
+    // the ground's minimaps on screen (none where the client has none)
+    expect(page.byId('game-map-seamless-tile-Azeroth:32_48').nativeElement.getAttribute('opacity')).toBe('1');
+    expect(page.byId('game-map-seamless-tile-Azeroth:31_48', false)).toBeFalsy();
+    expect(client.getMinimap).not.toHaveBeenCalledWith('Expansion01', expect.anything());
+    // every marker on screen, not only travel and instances
+    expect(page.byId('game-map-pin-poi:1')).toBeTruthy();
+    expect(page.byId('game-map-pin-poi:3', false)).toBeFalsy();
+    page.click('game-map-layer-spawns');
+    expect(page.byId('game-map-pin-creature:1')).toBeTruthy();
+    expect(page.byId('game-map-pin-creature:2', false)).toBeFalsy();
+
+    // Elwynn is shown: no click to zoom, its coordinates under the pointer; Redridge, off the screen, zooms in
+    page.hoverAt(440, 492);
+    const ids = 'WORLD_EDITOR.GAME_MAP_MAP_ID WORLD_EDITOR.GAME_MAP_ZONE_ID';
+    expect(page.tooltip()).toBe(`Elwynn Forest WORLD_EDITOR.GAME_MAP_LEVELS WORLD_EDITOR.GAME_MAP_ALLIANCE ${ids}`);
+    expect(page.byId('game-map-coords').nativeElement.textContent).toMatch(/^\(Elwynn Forest \d+\.\d, \d+\.\d\)$/);
+    page.clickAt(440, 492);
+    expect(Number(page.stage().style.getPropertyValue('--zoom'))).toBeCloseTo(10.29, 1);
+    page.hoverAt(515, 560);
+    expect(page.byId('game-map-coords', false)).toBeFalsy();
+    page.hoverAt(532, 525);
+    expect(page.tooltip()).toBe(`Redridge Mountains WORLD_EDITOR.GAME_MAP_CLICK_ZOOMS ${ids}`);
+
+    // the spawns of what is on screen
+    expect(page.byId('game-map-load-zone').nativeElement.textContent).toContain('WORLD_EDITOR.GAME_MAP_LOAD_AREA');
+    page.click('game-map-load-zone');
+    const loaded = host.regions[host.regions.length - 1];
+    expect(loaded.minX).toBeLessThan(-9000);
+    expect(loaded.maxX).toBeGreaterThan(-9000);
+    expect(loaded.minY).toBeLessThan(-250);
+    expect(loaded.maxY).toBeGreaterThan(-250);
+
+    page.clickAt(532, 525);
+    expect(Number(page.stage().style.getPropertyValue('--zoom'))).toBeCloseTo(24, 1);
+    // deeper than the pages zoom
+    for (let i = 0; i < 20; i++) {
+      page.viewport().dispatchEvent(new WheelEvent('wheel', { clientX: 501, clientY: 334, deltaY: -100, bubbles: true, cancelable: true }));
+    }
+    page.click('game-map-zoom-in');
+    expect(page.stage().style.getPropertyValue('--zoom')).toBe('48');
+    // a zone from the menu: zoomed to on the continent
+    page.click('game-map-menu-area:14');
+    page.click('game-map-menu-item-area:30');
+    expect(page.byId('game-map-menu-list-area:14', false)).toBeFalsy();
+    expect(Number(page.stage().style.getPropertyValue('--zoom'))).toBeCloseTo(10.29, 1);
+    // pages that aren't zones of a continent: as ever
+    page.click('game-map-nav-world');
+    expect(page.byId('game-map-seamless-layer', false)).toBeFalsy();
+    page.click('game-map-seamless');
+    page.click('game-map-seamless');
+    expect(page.title()).toBe('WORLD_EDITOR.GAME_MAP_AZEROTH');
+
+    // off: the continent's page again
+    page.click('game-map-menu-area:14');
+    page.click('game-map-menu-item-area:30');
+    page.click('game-map-seamless');
+    expect(page.title()).toBe('Eastern Kingdoms');
+    expect(page.stage().style.getPropertyValue('--zoom')).toBe('1');
+    // on from the continent: all of it, its zones too small to show yet; not before the viewport has a size
+    page.click('game-map-seamless');
+    await settle(page);
+    expect(page.byId('game-map-seamless-layer')).toBeTruthy();
+    expect(page.byId('game-map-seamless-zone-area:30', false)).toBeFalsy();
+    page.click('game-map-seamless');
+    page.click('game-map-menu-area:14');
+    page.click('game-map-menu-item-area:30');
+    vi.mocked(HTMLElement.prototype.getBoundingClientRect).mockReturnValue(new DOMRect(0, 0, 0, 0));
+    page.click('game-map-seamless');
+    await settle(page);
+    expect(page.title()).toBe('Eastern Kingdoms');
+    expect(page.stage().style.getPropertyValue('--zoom')).toBe('1');
   });
 
   it('switches between the floors of an instance, and its own picture', async () => {
