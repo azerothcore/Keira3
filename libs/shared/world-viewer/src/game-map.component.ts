@@ -655,7 +655,18 @@ export class GameMapComponent {
         offsetX: 0,
         offsetY: 0,
         region: undefined as WorldBounds | undefined,
-        away: transforms.filter((t) => t.mapId === page.mapId).map((t) => t.region),
+        // (nor where another map's part is drawn: the Eastern Kingdoms' own map has empty sea under Eversong Woods)
+        away: [
+          ...transforms.filter((t) => t.mapId === page.mapId).map((t) => t.region),
+          ...transforms
+            .filter((t) => t.newMapId === page.mapId)
+            .map((t) => ({
+              minX: t.region.minX + t.offsetX,
+              maxX: t.region.maxX + t.offsetX,
+              minY: t.region.minY + t.offsetY,
+              maxY: t.region.maxY + t.offsetY,
+            })),
+        ],
       },
       ...transforms
         .filter((t) => t.newMapId === page.mapId)
@@ -746,16 +757,54 @@ export class GameMapComponent {
   }
 
   /** Shows the seamless map, or the pages again: from a zone, its continent zoomed to it. */
+  /**
+   * Switches between the seamless map and the pages, keeping what is on screen: a zone's page becomes its continent
+   * zoomed to the same place, and the seamless map the page of the zone in the middle of the screen (when it is big
+   * enough to have been shown), as deep as pages zoom.
+   */
   protected toggleSeamless(): void {
     const on = !this.seamless();
-    this.seamless.set(on);
     this.measure();
-    // (the button shows once a page is)
+    const centre = this.viewCentre();
+    const zoom = this.zoom();
+    // (the switch shows once a page is)
+    const page = this.page() as GamePage;
     if (on) {
-      this.open(this.pageKey() as string);
-    } else {
-      this.resetZoom();
+      this.seamless.set(true);
+      const found = page.kind === 'zone' ? this.seamlessTarget(page.key) : undefined;
+      if (found) {
+        const r = found.region.rect;
+        this.show(found.continent.key);
+        this.setView(zoom / (r.right - r.left), r.left + centre.u * (r.right - r.left), r.top + centre.v * (r.bottom - r.top));
+      }
+      return;
     }
+    const zone = this.seamlessOn() ? this.zoneAt(centre) : undefined;
+    const region = zone && page.regions.find((r) => this.targetOf(r.page) === zone.target);
+    const zoneZoom = region ? zoom * (region.rect.right - region.rect.left) : 0;
+    this.seamless.set(false);
+    if (zone && zoneZoom >= MIN_ZOOM) {
+      this.show(zone.target.key);
+      this.setView(zoneZoom, zone.u, zone.v);
+    } else {
+      this.setView(zoom, centre.u, centre.v);
+    }
+  }
+
+  /** The place of the picture in the middle of the screen. */
+  private viewCentre(): GameMapPoint {
+    const stage = this.stageSize();
+    const pan = this.pan();
+    return stage.width ? { u: 0.5 - pan.x / stage.width, v: 0.5 - pan.y / stage.height } : { u: 0.5, v: 0.5 };
+  }
+
+  /** Shows a place of the picture in the middle of the screen, at a zoom (within the page's). */
+  private setView(zoom: number, u: number, v: number): void {
+    const { width, height } = this.viewportSize();
+    const fit = Math.min(this.maxZoom(), Math.max(MIN_ZOOM, zoom));
+    const stage = Math.min(width, (height * FRAME_W) / FRAME_H) * fit;
+    this.zoom.set(fit);
+    this.pan.set(fit === MIN_ZOOM ? { x: 0, y: 0 } : { x: -(u - 0.5) * stage, y: -(v - 0.5) * ((stage * FRAME_H) / FRAME_W) });
   }
 
   /** The continent a page is a zone of, with where it is there (for the seamless map). */

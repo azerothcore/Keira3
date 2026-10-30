@@ -785,19 +785,19 @@ describe(GameMapComponent.name, () => {
     Object.defineProperty(window, 'innerWidth', { value: width, configurable: true });
     page.click('game-map-menu-area:14');
 
-    // from Elwynn Forest: the Eastern Kingdoms, zoomed to it
+    // from Elwynn Forest: the Eastern Kingdoms, showing just what Elwynn's page showed
     page.click('game-map-seamless');
     await settle(page);
     expect(page.title()).toBe('Eastern Kingdoms');
-    expect(Number(page.stage().style.getPropertyValue('--zoom'))).toBeCloseTo(10.29, 1);
-    expect(page.byId('game-map-seamless').nativeElement.classList).toContain('btn-primary');
+    expect(Number(page.stage().style.getPropertyValue('--zoom'))).toBeCloseTo(11.43, 1);
+    expect(page.byId<HTMLInputElement>('game-map-seamless').nativeElement.checked).toBe(true);
     expect(page.fixture.nativeElement.querySelector('.game-map-shapes').classList).not.toContain('colored');
     // Elwynn's picture clipped to its outline, Stormwind's on top fading in; Duskwood off the screen
     const elwynn = page.byId('game-map-seamless-zone-area:30').nativeElement;
     expect(elwynn.getAttribute('opacity')).toBe('1');
     expect(elwynn.getAttribute('clip-path')).toMatch(/^url\(#game-map-\d+-clip-\d+\)$/);
     const stormwind = page.byId('game-map-seamless-zone-area:301').nativeElement;
-    expect(Number(stormwind.getAttribute('opacity'))).toBeCloseTo(0.15, 1);
+    expect(Number(stormwind.getAttribute('opacity'))).toBeCloseTo(0.27, 1);
     expect(elwynn.compareDocumentPosition(stormwind) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(page.byId('game-map-seamless-zone-area:32', false)).toBeFalsy();
     // the ground's minimaps on screen (none where the client has none)
@@ -817,7 +817,7 @@ describe(GameMapComponent.name, () => {
     expect(page.tooltip()).toBe(`Elwynn Forest WORLD_EDITOR.GAME_MAP_LEVELS WORLD_EDITOR.GAME_MAP_ALLIANCE ${ids}`);
     expect(page.byId('game-map-coords').nativeElement.textContent).toMatch(/^\(Elwynn Forest \d+\.\d, \d+\.\d\)$/);
     page.clickAt(440, 492);
-    expect(Number(page.stage().style.getPropertyValue('--zoom'))).toBeCloseTo(10.29, 1);
+    expect(Number(page.stage().style.getPropertyValue('--zoom'))).toBeCloseTo(11.43, 1);
     page.hoverAt(515, 560);
     expect(page.byId('game-map-coords', false)).toBeFalsy();
     page.hoverAt(532, 525);
@@ -834,6 +834,14 @@ describe(GameMapComponent.name, () => {
 
     page.clickAt(532, 525);
     expect(Number(page.stage().style.getPropertyValue('--zoom'))).toBeCloseTo(24, 1);
+    // to Redridge's page and back, the same place on screen (once Redridge is big enough to have its page)
+    page.viewport().dispatchEvent(new WheelEvent('wheel', { clientX: 501, clientY: 334, deltaY: -100, bubbles: true, cancelable: true }));
+    page.click('game-map-seamless');
+    expect(page.title()).toBe('Redridge Mountains');
+    expect(Number(page.stage().style.getPropertyValue('--zoom'))).toBeCloseTo(1.125, 2);
+    page.click('game-map-seamless');
+    expect(page.title()).toBe('Eastern Kingdoms');
+    expect(Number(page.stage().style.getPropertyValue('--zoom'))).toBeCloseTo(30, 1);
     // deeper than the pages zoom
     for (let i = 0; i < 20; i++) {
       page.viewport().dispatchEvent(new WheelEvent('wheel', { clientX: 501, clientY: 334, deltaY: -100, bubbles: true, cancelable: true }));
@@ -852,13 +860,14 @@ describe(GameMapComponent.name, () => {
     page.click('game-map-seamless');
     expect(page.title()).toBe('WORLD_EDITOR.GAME_MAP_AZEROTH');
 
-    // off: the continent's page again
+    // off over Stormwind, too small for its page yet: the continent's page, as deep as pages zoom
     page.click('game-map-menu-area:14');
     page.click('game-map-menu-item-area:30');
     page.click('game-map-seamless');
     expect(page.title()).toBe('Eastern Kingdoms');
-    expect(page.stage().style.getPropertyValue('--zoom')).toBe('1');
-    // on from the continent: all of it, its zones too small to show yet; not before the viewport has a size
+    expect(page.stage().style.getPropertyValue('--zoom')).toBe('10');
+    // on from the whole continent: its zones too small to show yet; not before the viewport has a size
+    page.click('game-map-zoom-reset');
     page.click('game-map-seamless');
     await settle(page);
     expect(page.byId('game-map-seamless-layer')).toBeTruthy();
@@ -870,7 +879,10 @@ describe(GameMapComponent.name, () => {
     page.click('game-map-seamless');
     await settle(page);
     expect(page.title()).toBe('Eastern Kingdoms');
-    expect(page.stage().style.getPropertyValue('--zoom')).toBe('1');
+    const zoom = page.stage().style.getPropertyValue('--zoom');
+    page.click('game-map-menu-area:14');
+    page.click('game-map-menu-item-area:36');
+    expect(page.stage().style.getPropertyValue('--zoom')).toBe(zoom);
   });
 
   it('switches between the floors of an instance, and its own picture', async () => {

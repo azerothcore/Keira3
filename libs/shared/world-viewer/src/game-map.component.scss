@@ -226,6 +226,23 @@
   box-shadow: 0 0 0 1px #3a2a10;
 }
 
+// the switch between the pages and the seamless map
+.game-map-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 4px;
+  padding-left: 2.5em;
+  color: #ddd;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  cursor: pointer;
+
+  .form-check-input {
+    cursor: pointer;
+  }
+}
+
 // the seamless map: zones' pictures and the ground's minimaps over the continent
 .game-map-seamless {
   position: absolute;

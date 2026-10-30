@@ -182,17 +182,17 @@
         </button>
       }
       @if (current) {
-        <button
-          type="button"
-          class="btn btn-sm"
-          data-testid="game-map-seamless"
-          [class.btn-primary]="seamless()"
-          [class.btn-dark]="!seamless()"
-          [title]="'WORLD_EDITOR.GAME_MAP_SEAMLESS_TIP' | translate"
-          (click)="toggleSeamless()"
-        >
-          <i class="fa fa-globe"></i> {{ 'WORLD_EDITOR.GAME_MAP_SEAMLESS' | translate }}
-        </button>
+        <label class="form-check form-switch game-map-switch" [title]="'WORLD_EDITOR.GAME_MAP_SEAMLESS_TIP' | translate">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            role="switch"
+            data-testid="game-map-seamless"
+            [checked]="seamless()"
+            (change)="toggleSeamless()"
+          />
+          <span class="form-check-label">{{ 'WORLD_EDITOR.GAME_MAP_SEAMLESS' | translate }}</span>
+        </label>
       }
       <button
         type="button"
