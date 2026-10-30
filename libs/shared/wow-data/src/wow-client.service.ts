@@ -28,7 +28,7 @@ import {
 import { BossBoundary, parseBossScripts, parseInstanceBoundaries, parseMapConstants } from './boss-boundaries';
 import { FolderArchive } from './folder-archive';
 import { GpuTexture, ParsedAdt, parseWdt, RgbaImage, WdtInfo } from './formats';
-import { MD5_TRANSLATE_PATH, MINIMAP_ROOT, minimapKey, parseMd5Translate } from './minimap';
+import { MD5_TRANSLATE_PATH, MINIMAP_ROOT, minimapCacheKey, minimapKey, parseMd5Translate } from './minimap';
 import { parseConfigWtfLocale, pickLocale, sortMpqArchives } from './mpq-order';
 import { LiquidMesh } from './liquid';
 import { parseSkyboxes, parseZoneLights, ZoneLight } from './light';
@@ -121,6 +121,8 @@ const EMITTER_MODEL = /emitter[^\\]*\.m2$|\\particleemitters\\/i;
 const GAME_MAP_KIND = 'game-map-3';
 /** Where the outlines traced from world map pictures are cached. */
 const GAME_OUTLINES_KIND = 'game-map-outlines-1';
+/** Where minimap tiles are cached. */
+const MINIMAP_KIND = 'minimap-1';
 /** World map pictures kept in memory. */
 const GAME_PICTURES_KEPT = 12;
 
@@ -1048,10 +1050,39 @@ export class WowClientService {
     return wdt;
   }
 
+  /** A map's minimap tile (undefined where the client has none); kept in the disk cache. */
   async getMinimap(directory: string, tile: TileCoord): Promise<RgbaImage | undefined> {
     const hashed = (await this.getMinimapIndex()).get(minimapKey(directory, tile));
-    const blp = hashed ? await this.readFile(`${MINIMAP_ROOT}${hashed}`) : undefined;
-    return blp ? this.parser.run({ kind: 'blp', bytes: blp }) : undefined;
+    if (!hashed) {
+      return undefined;
+    }
+    const { identity } = await this.getClient();
+    const key = minimapCacheKey(directory, tile);
+    const cached = await this.cache.read<RgbaImage>(identity, MINIMAP_KIND, key);
+    if (cached) {
+      return cached;
+    }
+    const blp = await this.readFile(`${MINIMAP_ROOT}${hashed}`);
+    const image = blp && (await this.parser.run({ kind: 'blp', bytes: blp }));
+    if (image) {
+      void this.cache.write(identity, MINIMAP_KIND, key, image);
+    }
+    return image;
+  }
+
+  /**
+   * The maps' pictures already in the disk cache, by the names the cache keeps them under (`cacheFileName` of
+   * `minimapCacheKey`, of a map's directory for its thumbnail, of a page's prefix for its picture, of an outline's key).
+   */
+  async cachedMapKeys(): Promise<{ minimaps: Set<string>; thumbnails: Set<string>; pictures: Set<string>; outlines: Set<string> }> {
+    const { identity } = await this.getClient();
+    const keys = async (kind: string) => new Set(Object.keys(await this.cache.entries(identity, kind)));
+    return {
+      minimaps: await keys(MINIMAP_KIND),
+      thumbnails: await keys(MAP_PICTURE_KIND),
+      pictures: await keys(GAME_MAP_KIND),
+      outlines: await keys(GAME_OUTLINES_KIND),
+    };
   }
 
   /**

@@ -34,6 +34,7 @@ export type ControlAction =
   | 'paste'
   // panels
   | 'worldMap'
+  | 'gameMap'
   | 'compass'
   | 'resetNorth'
   | 'topView'
@@ -75,6 +76,7 @@ export const CONTROL_ACTIONS: { action: ControlAction; group: ControlGroup }[] =
   { action: 'copy', group: 'editing' },
   { action: 'paste', group: 'editing' },
   { action: 'worldMap', group: 'panels' },
+  { action: 'gameMap', group: 'panels' },
   { action: 'compass', group: 'panels' },
   { action: 'resetNorth', group: 'camera' },
   { action: 'topView', group: 'camera' },
@@ -110,6 +112,7 @@ export const DEFAULT_CONTROL_BINDINGS: Record<ControlAction, string[]> = {
   copy: ['Ctrl+KeyC'],
   paste: ['Ctrl+KeyV'],
   worldMap: ['KeyM'],
+  gameMap: ['Shift+KeyM'],
   compass: ['KeyK'],
   resetNorth: ['KeyN', 'PadSelect'],
   topView: ['KeyV'],

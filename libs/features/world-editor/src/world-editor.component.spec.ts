@@ -46,6 +46,7 @@ import {
   WowDataSettingsService,
   WowClientService,
   WowDataCacheService,
+  WowMapPreloadService,
   WorldBounds,
   WorldPosition,
 } from '@keira/shared/wow-data';
@@ -540,7 +541,42 @@ describe(WorldEditorComponent.name, () => {
         enabled: true,
         folder: 'D:\\Cache',
         maxBytes: 10_000_000_000,
+        sections: { maps: true, terrain: true, buildings: true, models: true, textures: true },
+        preloadMaps: true,
       });
+
+      // its sections, each on its own; every map's pictures loaded at start, or now
+      page.click('settings-toggle');
+      page.fixture.detectChanges();
+      const preload = TestBed.inject(WowMapPreloadService);
+      const run = vi.spyOn(preload, 'run').mockResolvedValue(undefined);
+      const models = page.byId<HTMLInputElement>('cache-section-models').nativeElement;
+      models.checked = false;
+      models.dispatchEvent(new Event('change'));
+      expect(TestBed.inject(WowDataCacheService).sections().models).toBe(false);
+      const atStart = page.byId<HTMLInputElement>('cache-preload-maps').nativeElement;
+      atStart.checked = false;
+      atStart.dispatchEvent(new Event('change'));
+      expect(TestBed.inject(WowDataCacheService).preloadMaps()).toBe(false);
+      expect(run).not.toHaveBeenCalled();
+      atStart.checked = true;
+      atStart.dispatchEvent(new Event('change'));
+      expect(run).toHaveBeenCalledTimes(1);
+      page.click('cache-preload-maps-now');
+      expect(run).toHaveBeenCalledTimes(2);
+      vi.spyOn(preload, 'running').mockReturnValue(true);
+      vi.spyOn(preload, 'progress').mockReturnValue({ done: 1, total: 4 });
+      const maps = page.byId<HTMLInputElement>('cache-section-maps').nativeElement;
+      maps.checked = false;
+      maps.dispatchEvent(new Event('change'));
+      page.fixture.detectChanges();
+      expect(page.byId<HTMLInputElement>('cache-preload-maps').nativeElement.disabled).toBe(true);
+      expect(page.text('cache-preload-maps-progress')).toBe('WORLD_EDITOR.CACHE_MAPS_PROGRESS');
+      const stop = vi.spyOn(preload, 'stop');
+      page.click('cache-preload-maps-stop');
+      expect(stop).toHaveBeenCalled();
+      page.click('settings-toggle');
+      page.fixture.detectChanges();
 
       page.click('settings-toggle');
       page.fixture.detectChanges();
@@ -849,6 +885,21 @@ describe(WorldEditorComponent.name, () => {
         toggle.checked = false;
         toggle.dispatchEvent(new Event('change'));
       }
+      // the view distance fog; drawing only so far
+      const edgeFog = page.byId<HTMLInputElement>('view-edge-fog').nativeElement;
+      edgeFog.checked = true;
+      edgeFog.dispatchEvent(new Event('change'));
+      const limit = page.byId<HTMLSelectElement>('view-draw-limit').nativeElement;
+      limit.value = 'tiles:3';
+      limit.dispatchEvent(new Event('change'));
+      page.fixture.detectChanges();
+      expect(page.viewer().renderSettings()).toEqual(expect.objectContaining({ edgeFog: true, drawLimit: 'tiles', drawLimitTiles: 3 }));
+      expect(limit.value).toBe('tiles:3');
+      limit.value = 'view';
+      limit.dispatchEvent(new Event('change'));
+      page.fixture.detectChanges();
+      expect(page.viewer().renderSettings().drawLimit).toBe('view');
+      expect(limit.value).toBe('view');
       // height lines over the terrain
       const contours = page.byId<HTMLInputElement>('view-contours').nativeElement;
       contours.checked = true;
@@ -994,6 +1045,9 @@ describe(WorldEditorComponent.name, () => {
         showFacingArrows: false,
         zoneLighting: false,
         fog: false,
+        edgeFog: true,
+        drawLimit: 'view',
+        drawLimitTiles: 3,
         memoryCapMb: 1024,
         markerOnLiquid: true,
         skybox: false,
@@ -4026,6 +4080,13 @@ describe(WorldEditorComponent.name, () => {
       ).closed.emit();
       await settle(page);
       expect(page.getDebugElementByTestId('world-map', false)).toBeFalsy();
+      // Shift + M: the in-game map
+      page.key('M', undefined, 'KeyM', { shiftKey: true });
+      await settle(page);
+      expect(page.fixture.debugElement.query((el) => el.name === 'keira-game-map')).toBeTruthy();
+      page.key('M', undefined, 'KeyM', { shiftKey: true });
+      await settle(page);
+      expect(page.fixture.debugElement.query((el) => el.name === 'keira-game-map')).toBeFalsy();
       page.click('legend-toggle');
       page.click('legend-toggle');
       page.fixture.detectChanges();

@@ -2,6 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import {
   DEFAULT_WORLD_RENDER_SETTINGS,
   drawDistances,
+  drawLimit,
+  viewDistance,
   WORLD_RENDER_SETTINGS_KEY,
   WorldRenderSettingsService,
 } from './world-render-settings';
@@ -47,5 +49,13 @@ describe('WorldRenderSettingsService', () => {
       creatures: 250,
       gameobjects: 250,
     });
+  });
+
+  it('tells how far the terrain loaded reaches, and the limit of what is drawn', () => {
+    const settings = { ...DEFAULT_WORLD_RENDER_SETTINGS, terrainRadius: 2 };
+    expect(viewDistance(settings)).toBeCloseTo(2.5 * (1600 / 3));
+    expect(drawLimit(settings)).toBeUndefined();
+    expect(drawLimit({ ...settings, drawLimit: 'view' })).toBeCloseTo(2.5 * (1600 / 3));
+    expect(drawLimit({ ...settings, drawLimit: 'tiles', drawLimitTiles: 4 })).toBeCloseTo(4.5 * (1600 / 3));
   });
 });

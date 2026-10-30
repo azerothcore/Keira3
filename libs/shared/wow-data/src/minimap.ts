@@ -25,5 +25,10 @@ export function minimapKey(directory: string, tile: TileCoord): string {
   return `${directory}\\map${two(tile.tx)}_${two(tile.ty)}.blp`.toLowerCase();
 }
 
+/** The key a minimap tile is kept under in the disk cache. */
+export function minimapCacheKey(directory: string, tile: TileCoord): string {
+  return `${directory}_${tile.tx}_${tile.ty}`;
+}
+
 export const MINIMAP_ROOT = 'textures\\Minimap\\';
 export const MD5_TRANSLATE_PATH = `${MINIMAP_ROOT}md5translate.trs`;

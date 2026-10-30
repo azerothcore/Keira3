@@ -183,6 +183,10 @@ const ZONE_LIGHTS = { sun: 1.8, ambient: 1.6 };
 const DEFAULT_FOG = { near: 600, far: 1600 };
 /** Where the fog starts when it's turned off (yards): beyond anything drawn. */
 const NO_FOG = 1e8;
+/** The edge fog starts this share of the way to where the drawn world ends. */
+const EDGE_FOG_START = 0.6;
+/** How far the camera draws (yards) unless limited. */
+const CAMERA_FAR = 4000;
 /** Zone fog never closes in nearer than this (yards), so the editor can still see around. */
 const MIN_FOG_END = 400;
 /** How far above an object snapping still looks for ground (yards): enough for a stair step or a small ledge. */
@@ -282,7 +286,7 @@ function waypointGeometry(shape: MarkerShape, size: number): BufferGeometry {
  */
 export class WorldScene {
   readonly scene = new Scene();
-  readonly camera = new PerspectiveCamera(60, 1, 0.5, 4000);
+  readonly camera = new PerspectiveCamera(60, 1, 0.5, CAMERA_FAR);
 
   private readonly terrainGroup = new Group();
   /** Buildings (WMO), streamed by `WorldObjects`; they count as ground for picking and snapping. */
@@ -437,6 +441,8 @@ export class WorldScene {
   /** The selection over models: a solid pin, or an outline (see setSolidSelection). */
   private solidSelection = false;
   private fogEnabled = true;
+  /** Where the drawn world ends (yards), for a fog hiding that edge; none: no edge fog. */
+  private edgeFog?: number;
   private lightSample?: LightSample;
 
   constructor() {
@@ -704,11 +710,33 @@ export class WorldScene {
   applyLighting(sample: LightSample | undefined): void {
     this.lightSample = sample;
     this.lightWorld(sample);
+    const fog = this.scene.fog as Fog;
     if (!this.fogEnabled) {
       // (pushed out of sight rather than removed: the shaders stay the same)
-      const fog = this.scene.fog as Fog;
       fog.near = NO_FOG;
       fog.far = NO_FOG * 2;
+    }
+    if (this.edgeFog) {
+      // (closing in to where the world drawn ends, whatever fog there is)
+      fog.far = Math.min(fog.far, this.edgeFog);
+      fog.near = Math.min(fog.near, fog.far * EDGE_FOG_START);
+    }
+  }
+
+  /** A fog fading the world into the sky before where it stops being drawn (yards from the camera); none: off. */
+  setEdgeFog(distance: number | undefined): void {
+    if (distance !== this.edgeFog) {
+      this.edgeFog = distance;
+      this.applyLighting(this.lightSample);
+    }
+  }
+
+  /** Draws nothing farther than this from the camera (yards); none: as far as ever. */
+  setDrawLimit(distance: number | undefined): void {
+    const far = distance ?? CAMERA_FAR;
+    if (far !== this.camera.far) {
+      this.camera.far = far;
+      this.camera.updateProjectionMatrix();
     }
   }
 

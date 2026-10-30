@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { WowMapPreloadService } from '@keira/shared/wow-data';
 import { RouterOutlet } from '@angular/router';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { SidebarService } from './sidebar/sidebar.service';
@@ -12,4 +13,9 @@ import { SidebarService } from './sidebar/sidebar.service';
 })
 export class MainWindowComponent {
   readonly sidebarService = inject(SidebarService);
+
+  constructor() {
+    // every map's pictures, read in the background once Keira has started (when the world editor's cache asks for it)
+    inject(WowMapPreloadService).startup();
+  }
 }

@@ -25,3 +25,4 @@ export * from './character';
 export * from './m2-animation';
 export * from './game-map';
 export * from './zone-tracer';
+export * from './map-preload.service';

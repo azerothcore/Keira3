@@ -104,6 +104,8 @@ import {
   describeFaction,
   FactionData,
   WowDataCacheService,
+  WowMapPreloadService,
+  CacheSection,
   WowDataSettingsService,
   WowMap,
   mapKind,
@@ -234,6 +236,7 @@ const EDITOR_ACTIONS = [
   'copy',
   'paste',
   'worldMap',
+  'gameMap',
   'compass',
   'resetNorth',
   'topView',
@@ -324,6 +327,7 @@ type RenderFlagKey =
   | 'showNavMesh'
   | 'zoneLighting'
   | 'fog'
+  | 'edgeFog'
   | 'markerOnLiquid'
   | 'skybox'
   | 'skyboxSpin'
@@ -613,6 +617,10 @@ export class WorldEditorComponent implements OnInit {
     { input: 'WORLD_EDITOR.HELP_RIGHT_CLICK', label: 'WORLD_EDITOR.HELP_MENU' },
     { input: 'WORLD_EDITOR.HELP_ALT_RIGHT_CLICK', label: 'WORLD_EDITOR.HELP_FACE' },
     { input: 'WORLD_EDITOR.HELP_SHIFT_SPACE', label: 'WORLD_EDITOR.HELP_MARKER_LIQUID' },
+    // the world map and the in-game map
+    { input: 'WORLD_EDITOR.HELP_MAP_DRAG', label: 'WORLD_EDITOR.HELP_MAP_MOVE' },
+    { input: 'WORLD_EDITOR.HELP_MAP_RIGHT_CLICK', label: 'WORLD_EDITOR.HELP_MAP_GO' },
+    { input: 'WORLD_EDITOR.HELP_MAP_CLICK', label: 'WORLD_EDITOR.HELP_MAP_OPEN' },
   ];
   /** Path / LOS tool: A, C, the attack range and eye height, and the answer. */
   protected readonly probeFrom = this.session.probeFrom;
@@ -1929,6 +1937,24 @@ export class WorldEditorComponent implements OnInit {
     this.renderSettings.update({ loadAhead: Number((event.target as HTMLSelectElement).value) });
   }
 
+  /** Where drawing stops: no limit, the terrain loaded, or a number of tiles around the camera. */
+  protected readonly drawLimitOptions = [
+    { value: 'all', label: 'WORLD_EDITOR.DRAW_LIMIT_ALL', tiles: 0 },
+    { value: 'view', label: 'WORLD_EDITOR.DRAW_LIMIT_VIEW', tiles: 0 },
+    ...[1, 2, 3, 4, 5].map((tiles) => ({ value: `tiles:${tiles}`, label: 'WORLD_EDITOR.DRAW_LIMIT_TILES', tiles })),
+  ];
+  protected readonly drawLimitValue = computed(() => {
+    const settings = this.renderSettings.settings();
+    return settings.drawLimit === 'tiles' ? `tiles:${settings.drawLimitTiles}` : settings.drawLimit;
+  });
+
+  protected setDrawLimit(event: Event): void {
+    const [limit, tiles] = (event.target as HTMLSelectElement).value.split(':');
+    this.renderSettings.update(
+      tiles ? { drawLimit: 'tiles', drawLimitTiles: Number(tiles) } : { drawLimit: limit as WorldRenderSettings['drawLimit'] },
+    );
+  }
+
   protected setTerrainRadius(event: Event): void {
     this.renderSettings.update({ terrainRadius: Number((event.target as HTMLSelectElement).value) });
   }
@@ -1990,6 +2016,32 @@ export class WorldEditorComponent implements OnInit {
 
   protected setCacheEnabled(event: Event): void {
     this.cache.setEnabled((event.target as HTMLInputElement).checked);
+  }
+
+  /** Every map's pictures, read in the background into the cache (when Keira starts, or now). */
+  protected readonly mapPreload = inject(WowMapPreloadService);
+  /** The kinds of game data cached each on its own. */
+  protected readonly gameDataSections: { key: CacheSection; label: string }[] = [
+    { key: 'terrain', label: 'WORLD_EDITOR.CACHE_TERRAIN' },
+    { key: 'buildings', label: 'WORLD_EDITOR.CACHE_BUILDINGS' },
+    { key: 'models', label: 'WORLD_EDITOR.CACHE_MODELS' },
+    { key: 'textures', label: 'WORLD_EDITOR.CACHE_TEXTURES' },
+  ];
+
+  protected setCacheSection(section: CacheSection, event: Event): void {
+    this.cache.setSection(section, (event.target as HTMLInputElement).checked);
+  }
+
+  protected setPreloadMaps(event: Event): void {
+    const on = (event.target as HTMLInputElement).checked;
+    this.cache.setPreloadMaps(on);
+    if (on) {
+      this.preloadMapsNow();
+    }
+  }
+
+  protected preloadMapsNow(): void {
+    void this.mapPreload.run();
   }
 
   protected clearCache(): void {
@@ -3741,6 +3793,8 @@ export class WorldEditorComponent implements OnInit {
       void this.pasteCopied();
     } else if (action === 'worldMap') {
       this.toggleMap();
+    } else if (action === 'gameMap') {
+      this.toggleGameMap();
     } else if (action === 'resetNorth') {
       this.resetNorth();
     } else if (action === 'topView') {

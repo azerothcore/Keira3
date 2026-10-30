@@ -1,5 +1,12 @@
 import { TestBed } from '@angular/core/testing';
-import { clientIdentity, DEFAULT_CACHE_MAX_BYTES, WOW_DATA_CACHE_KEY, WowDataCacheService } from './wow-data-cache.service';
+import {
+  cacheFileName,
+  cacheSection,
+  clientIdentity,
+  DEFAULT_CACHE_MAX_BYTES,
+  WOW_DATA_CACHE_KEY,
+  WowDataCacheService,
+} from './wow-data-cache.service';
 import { WOW_NATIVE_API } from './wow-native-api';
 import { createFakeNative, FakeNative } from './wow-native-api.mock';
 
@@ -49,6 +56,45 @@ describe('WowDataCacheService', () => {
     cache.setEnabled(false);
     TestBed.resetTestingModule();
     expect(setup().cache.enabled()).toBe(false);
+  });
+
+  it('caches each section on its own (all by default), and remembers them and whether to load the maps at start', async () => {
+    const { cache } = setup();
+    expect(cache.sections()).toEqual({ maps: true, terrain: true, buildings: true, models: true, textures: true });
+    expect(cache.preloadMaps()).toBe(true);
+    expect([cacheSection('minimap-1'), cacheSection('game-map-3'), cacheSection('adt-v2'), cacheSection('wmo-doodads')]).toEqual([
+      'maps',
+      'maps',
+      'terrain',
+      'buildings',
+    ]);
+    expect([cacheSection('m2-v3'), cacheSection('texture'), cacheSection('map-picture-256'), cacheSection('other')]).toEqual([
+      'models',
+      'textures',
+      'maps',
+      undefined,
+    ]);
+    expect(cacheFileName('Azeroth_32_48')).toBe('azeroth_32_48');
+    await cache.write('abc', 'adt-v2', 'x', 1);
+    cache.setSection('terrain', false);
+    expect(cache.isOn('adt-v2')).toBe(false);
+    expect(cache.isOn('wmo')).toBe(true);
+    expect(cache.isOn('other')).toBe(true);
+    expect(await cache.read('abc', 'adt-v2', 'x')).toBeUndefined();
+    await cache.write('abc', 'adt-v2', 'y', 2);
+    cache.setSection('terrain', true);
+    expect(await cache.read('abc', 'adt-v2', 'y')).toBeUndefined();
+    expect(await cache.read('abc', 'adt-v2', 'x')).toBe(1);
+    cache.setSection('maps', false);
+    cache.setPreloadMaps(false);
+    TestBed.resetTestingModule();
+    const again = setup().cache;
+    expect(again.sections().maps).toBe(false);
+    expect(again.sections().terrain).toBe(true);
+    expect(again.preloadMaps()).toBe(false);
+    // off: nothing is
+    again.setEnabled(false);
+    expect(again.isOn('other')).toBe(false);
   });
 
   it('survives damaged entries, write failures and damaged settings', async () => {

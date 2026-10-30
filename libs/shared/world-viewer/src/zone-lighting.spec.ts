@@ -54,6 +54,15 @@ describe('ZoneLighting', () => {
     expect(fogEnd(world)).toBeGreaterThan(1e7);
     world.setFog(true);
     expect(fogEnd(world)).toBeCloseTo(700);
+    // the edge fog closes in to where the drawn world ends, the fog on or off
+    world.setEdgeFog(500);
+    world.setEdgeFog(500);
+    expect(fogEnd(world)).toBe(500);
+    world.setFog(false);
+    expect(fogEnd(world)).toBe(500);
+    world.setFog(true);
+    world.setEdgeFog(undefined);
+    expect(fogEnd(world)).toBeCloseTo(700);
 
     await lighting.setMap(undefined);
     expect(fogEnd(world)).toBe(neutral);

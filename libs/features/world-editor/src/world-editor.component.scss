@@ -311,10 +311,12 @@
   }
 }
 
+// the world map and the in-game map take the whole window (over Keira's sidebar too), until closed
 .world-editor-map {
-  position: absolute;
+  position: fixed;
   inset: 0;
-  z-index: 5;
+  z-index: 1030;
+  background: #0b0b0b;
 }
 
 .world-editor-region {
@@ -437,4 +439,17 @@
   width: 300px;
   max-width: 45%;
   z-index: 6;
+}
+
+// the cache's sections: the maps' pictures, then each kind of game data
+.world-editor-cache-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+
+  h6 {
+    margin-bottom: 0.25rem;
+    font-size: 0.85rem;
+  }
 }

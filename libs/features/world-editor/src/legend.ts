@@ -68,4 +68,15 @@ export const LEGEND: LegendSection[] = [
       { shape: 'ring', color: '#ff4d6d', label: 'WORLD_EDITOR.LEGEND_MAP_SEARCH' },
     ],
   },
+  {
+    title: 'WORLD_EDITOR.LEGEND_GAME_MAP',
+    items: [
+      { shape: 'tile', color: '#ffd100', label: 'WORLD_EDITOR.LEGEND_GM_ZONE' },
+      { shape: 'dashed', color: '#6dff4d', label: 'WORLD_EDITOR.LEGEND_GM_NEIGHBOUR' },
+      { shape: 'dashed', color: '#ffd100', label: 'WORLD_EDITOR.LEGEND_GM_ROUTE' },
+      { shape: 'dashed', color: '#4da6ff', label: 'WORLD_EDITOR.LEGEND_GM_ROUTE_ALLIANCE' },
+      { shape: 'dashed', color: '#ff4d4d', label: 'WORLD_EDITOR.LEGEND_GM_ROUTE_HORDE' },
+      { shape: 'ring', color: '#ffffff', label: 'WORLD_EDITOR.LEGEND_MAP_CAMERA' },
+    ],
+  },
 ];

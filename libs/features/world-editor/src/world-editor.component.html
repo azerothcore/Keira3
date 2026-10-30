@@ -1454,6 +1454,23 @@
                   <input
                     class="form-check-input"
                     type="checkbox"
+                    id="world-editor-edge-fog"
+                    data-testid="view-edge-fog"
+                    [checked]="renderSettings.settings().edgeFog"
+                    (change)="setRenderFlag('edgeFog', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-edge-fog">{{ 'WORLD_EDITOR.EDGE_FOG' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.EDGE_FOG_HELP' | translate"
+                  ></i>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
                     id="world-editor-equipment"
                     data-testid="view-equipment"
                     [checked]="renderSettings.settings().showEquipment"
@@ -1744,6 +1761,27 @@
                     @for (radius of [1, 2, 3]; track radius) {
                       <option [value]="radius" [selected]="radius === renderSettings.settings().terrainRadius">
                         {{ (radius * 2 + 1) * (radius * 2 + 1) }} {{ 'WORLD_EDITOR.TILES' | translate }}
+                      </option>
+                    }
+                  </select>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <label for="world-editor-draw-limit" class="mb-0">{{ 'WORLD_EDITOR.DRAW_LIMIT' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.DRAW_LIMIT_HELP' | translate"
+                  ></i>
+                  <select
+                    id="world-editor-draw-limit"
+                    class="form-select form-select-sm w-auto"
+                    data-testid="view-draw-limit"
+                    (change)="setDrawLimit($event)"
+                  >
+                    @for (option of drawLimitOptions; track option.value) {
+                      <option [value]="option.value" [selected]="option.value === drawLimitValue()">
+                        {{ option.label | translate: { tiles: option.tiles } }}
                       </option>
                     }
                   </select>
@@ -2177,6 +2215,85 @@
                   {{ 'CANCEL' | translate }}
                 </button>
               }
+            </div>
+            <!-- what is cached: the maps' pictures (and loading them all at start), then each kind of game data -->
+            <div class="world-editor-cache-sections" data-testid="cache-sections">
+              <section>
+                <h6>{{ 'WORLD_EDITOR.CACHE_MAPS' | translate }}</h6>
+                <div class="d-flex flex-wrap align-items-center gap-3">
+                  <div class="form-check form-switch mb-0">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="world-editor-cache-maps"
+                      data-testid="cache-section-maps"
+                      [checked]="cache.sections().maps"
+                      [disabled]="!cache.enabled()"
+                      (change)="setCacheSection('maps', $event)"
+                    />
+                    <label class="form-check-label" for="world-editor-cache-maps">{{ 'WORLD_EDITOR.CACHE_KEEP' | translate }}</label>
+                  </div>
+                  <div class="form-check form-switch mb-0">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="world-editor-cache-preload-maps"
+                      data-testid="cache-preload-maps"
+                      [checked]="cache.preloadMaps()"
+                      [disabled]="!cache.enabled() || !cache.sections().maps"
+                      (change)="setPreloadMaps($event)"
+                    />
+                    <label class="form-check-label" for="world-editor-cache-preload-maps">{{
+                      'WORLD_EDITOR.CACHE_PRELOAD_MAPS' | translate
+                    }}</label>
+                  </div>
+                  @if (mapPreload.running()) {
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-secondary"
+                      data-testid="cache-preload-maps-stop"
+                      (click)="mapPreload.stop()"
+                    >
+                      {{ 'WORLD_EDITOR.CACHE_PRELOAD_STOP' | translate }}
+                    </button>
+                  } @else {
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-secondary"
+                      data-testid="cache-preload-maps-now"
+                      [disabled]="!cache.enabled() || !cache.sections().maps"
+                      (click)="preloadMapsNow()"
+                    >
+                      {{ 'WORLD_EDITOR.CACHE_PRELOAD_MAPS_NOW' | translate }}
+                    </button>
+                  }
+                  @if (mapPreload.progress(); as progress) {
+                    <span class="text-muted" data-testid="cache-preload-maps-progress">{{
+                      'WORLD_EDITOR.CACHE_MAPS_PROGRESS'
+                        | translate: { done: progress.done, total: progress.total, percent: percent(progress.done, progress.total) }
+                    }}</span>
+                  }
+                </div>
+              </section>
+              <section>
+                <h6>{{ 'WORLD_EDITOR.CACHE_GAME_DATA' | translate }}</h6>
+                <div class="d-flex flex-wrap align-items-center gap-3">
+                  @for (section of gameDataSections; track section.key) {
+                    <div class="form-check form-switch mb-0">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        [id]="'world-editor-cache-' + section.key"
+                        [attr.data-testid]="'cache-section-' + section.key"
+                        [checked]="cache.sections()[section.key]"
+                        [disabled]="!cache.enabled()"
+                        (change)="setCacheSection(section.key, $event)"
+                      />
+                      <label class="form-check-label" [for]="'world-editor-cache-' + section.key">{{ section.label | translate }}</label>
+                    </div>
+                  }
+                </div>
+              </section>
             </div>
             @if (cacheUsage(); as usage) {
               <table class="table table-sm table-borderless align-middle mt-2 mb-0 world-editor-cache-maps" data-testid="cache-maps">

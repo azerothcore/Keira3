@@ -1161,6 +1161,13 @@ describe('WowClientService', () => {
       expect(await service.getMinimap('Azeroth', { tx: 1, ty: 1 })).toBeUndefined();
       expect(await service.getMinimap('Azeroth', { tx: 2, ty: 2 })).toBeUndefined();
       expect(formats.decodeBlp).toHaveBeenCalledTimes(1);
+      // kept in the disk cache: not decoded again; listed as cached
+      await new Promise((resolve) => setTimeout(resolve));
+      expect(await service.getMinimap('Azeroth', { tx: 32, ty: 48 })).toEqual(image);
+      expect(formats.decodeBlp).toHaveBeenCalledTimes(1);
+      const cached = await service.cachedMapKeys();
+      expect([...cached.minimaps]).toEqual(['azeroth_32_48']);
+      expect(cached.pictures.size + cached.thumbnails.size + cached.outlines.size).toBe(0);
     });
 
     it('pictures whole maps from their minimaps, kept in the cache', async () => {
@@ -1276,6 +1283,7 @@ describe('WowClientService', () => {
       const files: Record<string, number[]> = { 'Interface\\WorldMap\\Elwynn\\Goldshire1.blp': [2] };
       for (let i = 1; i <= 12; i++) {
         files[`Interface\\WorldMap\\Elwynn\\Elwynn${i}.blp`] = [1];
+        files[`Interface\\WorldMap\\Elwynn\\Second${i}.blp`] = [1];
       }
       const { service } = setup({ mpqs: displayMpqs(files) });
       formats.decodeBlp.mockImplementation((bytes: Uint8Array) => ({
@@ -1314,6 +1322,13 @@ describe('WowClientService', () => {
       read.mockRejectedValueOnce(new Error('busy'));
       await expect(service.getGameMapPicture(pageOf('Elwynn\\Elwynn'.replace('Elwynn', 'Again')))).rejects.toThrow('busy');
       expect(await service.getGameMapPicture(pageOf('Again\\Elwynn'))).toBeUndefined();
+      // pictures that can't be read are left out
+      const original = service.getTexture.bind(service);
+      vi.spyOn(service, 'getTexture').mockImplementation((path: string) =>
+        /Goldshire|Broken/.test(path) ? Promise.reject(new Error('bad blp')) : original(path),
+      );
+      expect((await service.getGameMapPicture(pageOf('Elwynn\\Second'), [overlay]))?.image.width).toBe(1002);
+      expect(await service.getGameMapPicture(pageOf('Broken\\Broken'))).toBeUndefined();
     });
 
     it("traces a page's outlines, a zone's sub-zones and its neighbours, once each", async () => {

@@ -108,6 +108,11 @@ export interface WorldRenderSettings {
   showGameobjectModels: boolean;
   /** Fog in the distance (the zone's with zone lighting): off to see far. */
   fog: boolean;
+  /** A fog fading the world into the sky where the terrain loaded around the camera ends (cosmetic). */
+  edgeFog: boolean;
+  /** Draw nothing beyond the terrain loaded around the camera ('view'), beyond a number of tiles, or no limit. */
+  drawLimit: 'all' | 'view' | 'tiles';
+  drawLimitTiles: number;
   /** How far from the camera target (yards) doodads and models are drawn. */
   drawDistance: number;
   /** Use the per-group distances below instead of `drawDistance` (0 = don't draw that group). */
@@ -136,6 +141,25 @@ export interface WorldRenderSettings {
 }
 
 export const RENDER_SCALES = [1, 0.75, 0.5];
+/** The terrain tiles' size (yards). */
+const TILE_YARDS = 1600 / 3;
+
+/** How far the terrain loaded around the camera reaches (yards): its tiles, and half the one it is on. */
+export function viewDistance(settings: Pick<WorldRenderSettings, 'terrainRadius'>): number {
+  return (settings.terrainRadius + 0.5) * TILE_YARDS;
+}
+
+/** How far from the camera anything is drawn (yards); none: no limit. */
+export function drawLimit(settings: Pick<WorldRenderSettings, 'terrainRadius' | 'drawLimit' | 'drawLimitTiles'>): number | undefined {
+  switch (settings.drawLimit) {
+    case 'view':
+      return viewDistance(settings);
+    case 'tiles':
+      return (settings.drawLimitTiles + 0.5) * TILE_YARDS;
+    default:
+      return undefined;
+  }
+}
 
 /** Draw distance of each group, in yards (0 = not drawn). */
 export interface DrawDistances {
@@ -175,6 +199,9 @@ export const DEFAULT_WORLD_RENDER_SETTINGS: WorldRenderSettings = {
   showNavMesh: false,
   zoneLighting: false,
   fog: true,
+  edgeFog: false,
+  drawLimit: 'all',
+  drawLimitTiles: 2,
   showTrees: true,
   showProps: true,
   showCreatureModels: true,

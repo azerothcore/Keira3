@@ -15,7 +15,7 @@ import {
   worldToScene,
 } from '@keira/shared/wow-data';
 import { DebugHtmlElement, PageObjectModel } from 'ngx-page-object-model';
-import { EventDispatcher, Group, Object3D, Vector3 } from 'three';
+import { EventDispatcher, Fog, Group, Object3D, PerspectiveCamera, Scene, Vector3 } from 'three';
 import { DEFAULT_WORLD_CONTROLS_SETTINGS, WorldControlsSettings } from './world-controls-settings';
 import { DEFAULT_WORLD_RENDER_SETTINGS, WorldRenderSettings } from './world-render-settings';
 import { WorldWeather } from './world-weather';
@@ -636,6 +636,29 @@ describe(WorldViewerComponent.name, () => {
     answer(undefined);
     await settle(fixture);
     indoor.mockRestore();
+  });
+
+  it('fades the world into the sky where the drawn world ends, and draws nothing past the limit asked', async () => {
+    const { fixture, host } = await setup((h) => h.map.set('Azeroth'));
+    await settle(fixture);
+    flushFrames();
+    const last = () => renderer.render.mock.calls.at(-1) as unknown as [Scene, PerspectiveCamera];
+    const tile = 1600 / 3;
+    host.render.set({ ...DEFAULT_WORLD_RENDER_SETTINGS, edgeFog: true, drawLimit: 'tiles', drawLimitTiles: 1 });
+    fixture.detectChanges();
+    flushFrames();
+    expect(last()[1].far).toBeCloseTo(1.5 * tile);
+    expect((last()[0].fog as Fog).far).toBeLessThanOrEqual(1.5 * tile);
+    // (no limit: the edge of the terrain loaded)
+    host.render.set({ ...DEFAULT_WORLD_RENDER_SETTINGS, edgeFog: true, terrainRadius: 3, fog: false });
+    fixture.detectChanges();
+    flushFrames();
+    expect(last()[1].far).toBe(4000);
+    expect((last()[0].fog as Fog).far).toBeCloseTo(3.5 * tile);
+    host.render.set({ ...DEFAULT_WORLD_RENDER_SETTINGS, drawLimit: 'view' });
+    fixture.detectChanges();
+    flushFrames();
+    expect(last()[1].far).toBeCloseTo(1.5 * tile);
   });
 
   it("draws a wall at the map's edge, hidden when turned off, for the map shown only", async () => {

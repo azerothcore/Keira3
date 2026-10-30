@@ -10,6 +10,28 @@ export const DEFAULT_CACHE_MAX_BYTES = 10 * 1_000_000_000;
 export const CACHE_FOLDER_NAME = 'Keira3 world editor cache';
 
 /**
+ * What is cached, each turned on or off on its own (all on by default): the maps' pictures (the world map's minimaps
+ * and thumbnails, the in-game map's pictures and outlines), map tiles, buildings, models and textures.
+ */
+export type CacheSection = 'maps' | 'terrain' | 'buildings' | 'models' | 'textures';
+export const CACHE_SECTIONS: CacheSection[] = ['maps', 'terrain', 'buildings', 'models', 'textures'];
+/** The section of each kind of entry, by the start of its name. */
+const KIND_SECTIONS: [string, CacheSection][] = [
+  ['game-map', 'maps'],
+  ['map-picture', 'maps'],
+  ['minimap', 'maps'],
+  ['adt', 'terrain'],
+  ['wmo', 'buildings'],
+  ['m2', 'models'],
+  ['texture', 'textures'],
+];
+
+/** The section an entry of a kind belongs to (none: always cached with the rest). */
+export function cacheSection(kind: string): CacheSection | undefined {
+  return KIND_SECTIONS.find(([start]) => kind.startsWith(start))?.[1];
+}
+
+/**
  * Keeps processed game data (parsed map tiles, buildings) in a folder on this computer, so a place loads much faster
  * the second time. Entries are grouped per client (`identity`); the cache can be turned off and cleared.
  */
@@ -20,6 +42,12 @@ export class WowDataCacheService {
   private readonly _enabled = signal(this.stored.enabled);
   private readonly _folder = signal(this.stored.folder);
   private readonly _maxBytes = signal(this.stored.maxBytes);
+  private readonly _sections = signal(this.stored.sections);
+  private readonly _preloadMaps = signal(this.stored.preloadMaps);
+  /** The sections cached (when the cache is on). */
+  readonly sections = this._sections.asReadonly();
+  /** Whether every map's pictures are read (and cached) in the background when Keira starts. */
+  readonly preloadMaps = this._preloadMaps.asReadonly();
   /** Most the cache may take on disk; nothing more is written once reached. */
   readonly maxBytes = this._maxBytes.asReadonly();
   /** Bytes in the cache folder, counted once then kept up to date by the writes. */
@@ -39,6 +67,22 @@ export class WowDataCacheService {
     this._folder.set(folder.trim());
     this.usedBytes = undefined;
     this.save();
+  }
+
+  setSection(section: CacheSection, on: boolean): void {
+    this._sections.set({ ...this._sections(), [section]: on });
+    this.save();
+  }
+
+  setPreloadMaps(on: boolean): void {
+    this._preloadMaps.set(on);
+    this.save();
+  }
+
+  /** Whether entries of a kind are cached (the cache on, and their section). */
+  isOn(kind: string): boolean {
+    const section = cacheSection(kind);
+    return this.active && (!section || this._sections()[section]);
   }
 
   setMaxBytes(bytes: number): void {
@@ -74,7 +118,7 @@ export class WowDataCacheService {
   }
 
   has(identity: string, kind: string, key: string): boolean {
-    return this.active ? (this.native as WowNativeApi).exists(this.path(identity, kind, key)) : false;
+    return this.isOn(kind) ? (this.native as WowNativeApi).exists(this.path(identity, kind, key)) : false;
   }
 
   /**
@@ -82,7 +126,7 @@ export class WowDataCacheService {
    * holding up the window (only the last step runs on its thread).
    */
   async read<T>(identity: string, kind: string, key: string): Promise<T | undefined> {
-    if (!this.active) {
+    if (!this.isOn(kind)) {
       return undefined;
     }
     const native = this.native as WowNativeApi;
@@ -104,7 +148,7 @@ export class WowDataCacheService {
 
   /** Stores a value (in the background: compressed and written off the window's thread). */
   async write(identity: string, kind: string, key: string, value: unknown): Promise<void> {
-    if (!this.active) {
+    if (!this.isOn(kind)) {
       return;
     }
     // the first write of a session counts what's in the cache (thousands of files) in the background, not here
@@ -171,7 +215,13 @@ export class WowDataCacheService {
   private save(): void {
     localStorage.setItem(
       WOW_DATA_CACHE_KEY,
-      JSON.stringify({ enabled: this._enabled(), folder: this._folder(), maxBytes: this._maxBytes() }),
+      JSON.stringify({
+        enabled: this._enabled(),
+        folder: this._folder(),
+        maxBytes: this._maxBytes(),
+        sections: this._sections(),
+        preloadMaps: this._preloadMaps(),
+      }),
     );
   }
 
@@ -188,6 +238,11 @@ export class WowDataCacheService {
   }
 }
 
+/** The name an entry's key is stored under (as `entries` lists them). */
+export function cacheFileName(part: string): string {
+  return safeName(part);
+}
+
 function safeName(part: string): string {
   return part.toLowerCase().replace(/[^a-z0-9_.-]+/g, '_');
 }
@@ -201,19 +256,36 @@ export function clientIdentity(clientPath: string, archives: string[]): string {
   return hash.toString(16).padStart(8, '0');
 }
 
-function loadSettings(): { enabled: boolean; folder: string; maxBytes: number } {
+interface CacheSettings {
+  enabled: boolean;
+  folder: string;
+  maxBytes: number;
+  sections: Record<CacheSection, boolean>;
+  preloadMaps: boolean;
+}
+
+const allSections = (stored: unknown): Record<CacheSection, boolean> => {
+  const given = (stored && typeof stored === 'object' ? stored : {}) as Record<string, unknown>;
+  return Object.fromEntries(CACHE_SECTIONS.map((section) => [section, given[section] !== false])) as Record<CacheSection, boolean>;
+};
+
+function loadSettings(): CacheSettings {
   try {
     const stored = JSON.parse(localStorage.getItem(WOW_DATA_CACHE_KEY) ?? '{}') as {
       enabled?: unknown;
       folder?: unknown;
       maxBytes?: unknown;
+      sections?: unknown;
+      preloadMaps?: unknown;
     };
     return {
       enabled: stored.enabled !== false,
       folder: typeof stored.folder === 'string' ? stored.folder : '',
       maxBytes: typeof stored.maxBytes === 'number' && stored.maxBytes >= 0 ? stored.maxBytes : DEFAULT_CACHE_MAX_BYTES,
+      sections: allSections(stored.sections),
+      preloadMaps: stored.preloadMaps !== false,
     };
   } catch {
-    return { enabled: true, folder: '', maxBytes: DEFAULT_CACHE_MAX_BYTES };
+    return { enabled: true, folder: '', maxBytes: DEFAULT_CACHE_MAX_BYTES, sections: allSections(undefined), preloadMaps: true };
   }
 }

@@ -70,7 +70,7 @@ import { collectTileGeometry, loadRecast, rebuildNavMeshTile } from './navmesh-r
 import { PathProber, PathProbeRequest, PathProbeResult } from './path-probe';
 import { ExtraBuilding, WorldObjects } from './world-objects';
 import { headingText, stretchText } from './heading';
-import { DEFAULT_WORLD_RENDER_SETTINGS, drawDistances, WorldRenderSettings } from './world-render-settings';
+import { DEFAULT_WORLD_RENDER_SETTINGS, drawDistances, drawLimit, viewDistance, WorldRenderSettings } from './world-render-settings';
 import { WORLD_RENDERER_FACTORY, WorldRenderer } from './world-renderer';
 import { PickOptions, WorldScene } from './world-scene';
 import {
@@ -493,6 +493,10 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
         });
         this.configureLighting(settings);
         this.world.setFog(settings.fog);
+        // (the edge fog closes in where the drawn world ends: the limit asked, else the terrain loaded)
+        const limit = drawLimit(settings);
+        this.world.setEdgeFog(settings.edgeFog ? (limit ?? viewDistance(settings)) : undefined);
+        this.world.setDrawLimit(limit);
         this.navMesh.configure({ show: settings.showNavMesh, radius: settings.terrainRadius });
         this.applyRenderScale(settings.renderScale);
         this.prefetch.configure({ rings: settings.loadAhead, radius: settings.terrainRadius, detailed: !settings.lowDetailTerrain });
