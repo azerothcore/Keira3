@@ -339,7 +339,7 @@ describe(GameMapComponent.name, () => {
       .mockImplementation((directory: string, tile: { tx: number; ty: number }) =>
         tile.tx === 31 && tile.ty === 48
           ? Promise.reject(new Error('bad'))
-          : Promise.resolve(directory === 'Azeroth' && tile.tx === 32 && tile.ty === 48 ? icon : undefined),
+          : Promise.resolve(directory === 'Expansion01' || (tile.tx === 32 && tile.ty === 48) ? icon : undefined),
       );
     await TestBed.configureTestingModule({
       imports: [HostComponent, TranslateTestingModule],
@@ -853,6 +853,18 @@ describe(GameMapComponent.name, () => {
     page.click('game-map-menu-item-area:30');
     expect(page.byId('game-map-menu-list-area:14', false)).toBeFalsy();
     expect(Number(page.stage().style.getPropertyValue('--zoom'))).toBeCloseTo(10.29, 1);
+    // the continent's own minimaps but under the zones of another map, drawn on it
+    const masked = page.byId('game-map-seamless-tiles-own').nativeElement;
+    expect(masked.querySelector('image')).toBeTruthy();
+    expect(masked.getAttribute('mask')).toMatch(/^url\(#game-map-\d+-own\)$/);
+    expect(page.fixture.nativeElement.querySelectorAll('mask path')).toHaveLength(1);
+    // Eversong Woods: Outland's minimaps, only inside its outline
+    page.click('game-map-menu-area:14');
+    page.click('game-map-menu-item-area:462');
+    await settle(page);
+    const moved = page.byId('game-map-seamless-tiles-moved').nativeElement;
+    expect(moved.getAttribute('clip-path')).toMatch(/^url\(#game-map-\d+-moved\)$/);
+    expect(moved.querySelector('image')?.getAttribute('data-testid')).toMatch(/^game-map-seamless-tile-Expansion01:/);
     // pages that aren't zones of a continent: as ever
     page.click('game-map-nav-world');
     expect(page.byId('game-map-seamless-layer', false)).toBeFalsy();

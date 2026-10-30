@@ -343,7 +343,7 @@ export class GameMapComponent {
   /** Minimap tiles as pictures (null: none there), by directory and tile. */
   private readonly tileImages = signal(new Map<string, string | null>());
   private readonly tilesAsked = new Set<string>();
-  private readonly uid = `game-map-${++gameMapCount}`;
+  protected readonly seamlessId = `game-map-${++gameMapCount}`;
   /** The icons (and crests) as pictures, by `iconKey`. */
   protected readonly icons = signal(new Map<string, string>());
   private readonly factions = signal<FactionData | undefined>(undefined);
@@ -623,7 +623,7 @@ export class GameMapComponent {
         width: (right - left) * 100,
         height: (bottom - top) * 100,
         d: ringsPath(rings),
-        clip: `${this.uid}-clip-${zones.length}`,
+        clip: `${this.seamlessId}-clip-${zones.length}`,
         alpha,
         area: (right - left) * (bottom - top),
         url: picture && picture !== 'loading' ? picture.url : undefined,
@@ -655,22 +655,19 @@ export class GameMapComponent {
         offsetX: 0,
         offsetY: 0,
         region: undefined as WorldBounds | undefined,
-        // (nor where another map's part is drawn: the Eastern Kingdoms' own map has empty sea under Eversong Woods)
-        away: [
-          ...transforms.filter((t) => t.mapId === page.mapId).map((t) => t.region),
-          ...transforms
-            .filter((t) => t.newMapId === page.mapId)
-            .map((t) => ({
-              minX: t.region.minX + t.offsetX,
-              maxX: t.region.maxX + t.offsetX,
-              minY: t.region.minY + t.offsetY,
-              maxY: t.region.maxY + t.offsetY,
-            })),
-        ],
+        away: transforms.filter((t) => t.mapId === page.mapId).map((t) => t.region),
+        moved: false,
       },
       ...transforms
         .filter((t) => t.newMapId === page.mapId)
-        .map((t) => ({ directory: directory(t.mapId), offsetX: t.offsetX, offsetY: t.offsetY, region: t.region, away: [] })),
+        .map((t) => ({
+          directory: directory(t.mapId),
+          offsetX: t.offsetX,
+          offsetY: t.offsetY,
+          region: t.region,
+          away: [],
+          moved: true,
+        })),
     ].filter((source): source is typeof source & { directory: string } => !!source.directory);
   });
 
@@ -687,7 +684,9 @@ export class GameMapComponent {
     const [left, top, right, bottom] = [Math.max(0, box.left), Math.max(0, box.top), Math.min(1, box.right), Math.min(1, box.bottom)];
     const [cu, cv] = [(left + right) / 2, (top + bottom) / 2];
     const images = this.tileImages();
-    const inside = (r: WorldBounds, x: number, y: number) => Math.min(x - r.minX, r.maxX - x, y - r.minY, r.maxY - y) >= 0;
+    // (a tile's north-west corner: whether the tile reaches into a region)
+    const overlaps = (r: WorldBounds, x: number, y: number) =>
+      Math.min(x - r.minX, r.maxX - x + TILE_SIZE, y - r.minY, r.maxY - y + TILE_SIZE) > 0;
     const tiles: {
       key: string;
       directory: string;
@@ -698,6 +697,7 @@ export class GameMapComponent {
       height: number;
       alpha: number;
       distance: number;
+      moved: boolean;
       url?: string | null;
     }[] = [];
     for (const source of sources) {
@@ -708,8 +708,7 @@ export class GameMapComponent {
       for (let tx = from.tx; tx <= to.tx; tx++) {
         for (let ty = from.ty; ty <= to.ty; ty++) {
           const origin = tileOrigin({ tx, ty });
-          const [mx, my] = [origin.x - TILE_SIZE / 2, origin.y - TILE_SIZE / 2];
-          if ((source.region && !inside(source.region, mx, my)) || source.away.some((r) => inside(r, mx, my))) {
+          if ((source.region && !overlaps(source.region, origin.x, origin.y)) || source.away.some((r) => overlaps(r, origin.x, origin.y))) {
             continue;
           }
           const { u, v } = toGameMap(bounds, origin.x + source.offsetX, origin.y + source.offsetY);
@@ -724,12 +723,32 @@ export class GameMapComponent {
             height: dv * 100,
             alpha,
             distance: Math.hypot(u + du / 2 - cu, v + dv / 2 - cv),
+            moved: source.moved,
             url: images.get(key),
           });
         }
       }
     }
     return tiles.sort((x, y) => x.distance - y.distance).slice(0, MAX_TILES);
+  });
+
+  /**
+   * The outlines of the continent's zones that are another map's (Eversong Woods and the Ghostlands, Outland's, on the
+   * Eastern Kingdoms): that map's minimaps show only inside them, the continent's own only outside them (both maps have
+   * sea and empty ground where the other has the land).
+   */
+  protected readonly movedOutlines = computed(() => {
+    const page = this.page() as GamePage;
+    const paths: string[] = [];
+    if (this.seamlessTiles().length) {
+      this.regions().forEach((rings, key) => {
+        const target = this.targetOf(key);
+        if (target && target.mapId !== page.mapId) {
+          paths.push(ringsPath(rings));
+        }
+      });
+    }
+    return paths;
   });
 
   /** Whether a zone's picture is fully shown on the seamless map (a click on it then doesn't zoom). */

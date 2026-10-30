@@ -266,19 +266,40 @@
                 />
               }
             }
-            @for (tile of seamlessTiles(); track tile.key) {
-              @if (tile.url) {
-                <image
-                  [attr.data-testid]="'game-map-seamless-tile-' + tile.key"
-                  [attr.href]="tile.url"
-                  [attr.x]="tile.x"
-                  [attr.y]="tile.y"
-                  [attr.width]="tile.width * 1.004"
-                  [attr.height]="tile.height * 1.004"
-                  [attr.opacity]="tile.alpha"
-                  preserveAspectRatio="none"
-                />
-              }
+            <defs>
+              <clipPath [attr.id]="seamlessId + '-moved'">
+                @for (d of movedOutlines(); track $index) {
+                  <path [attr.d]="d" clip-rule="evenodd" />
+                }
+              </clipPath>
+              <mask [attr.id]="seamlessId + '-own'" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100">
+                <rect width="100" height="100" fill="white" />
+                @for (d of movedOutlines(); track $index) {
+                  <path [attr.d]="d" fill="black" fill-rule="evenodd" />
+                }
+              </mask>
+            </defs>
+            @for (moved of [false, true]; track moved) {
+              <g
+                [attr.data-testid]="'game-map-seamless-tiles-' + (moved ? 'moved' : 'own')"
+                [attr.mask]="moved ? null : 'url(#' + seamlessId + '-own)'"
+                [attr.clip-path]="moved ? 'url(#' + seamlessId + '-moved)' : null"
+              >
+                @for (tile of seamlessTiles(); track tile.key) {
+                  @if (tile.url && tile.moved === moved) {
+                    <image
+                      [attr.data-testid]="'game-map-seamless-tile-' + tile.key"
+                      [attr.href]="tile.url"
+                      [attr.x]="tile.x"
+                      [attr.y]="tile.y"
+                      [attr.width]="tile.width * 1.004"
+                      [attr.height]="tile.height * 1.004"
+                      [attr.opacity]="tile.alpha"
+                      preserveAspectRatio="none"
+                    />
+                  }
+                }
+              </g>
             }
           </svg>
         }
