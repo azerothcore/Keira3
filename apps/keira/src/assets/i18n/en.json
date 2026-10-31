@@ -1889,6 +1889,10 @@
     "SCRIPT_DELAY_TOOLTIP": "When the step runs after the creature reaches the point (seconds)",
     "USED_AT": "Points running this script",
     "NOT_USED": "No waypoint runs this script (waypoint_data.action).",
-    "PATH_POINT": "Path {{id}}, point {{point}}"
+    "PATH_POINT": "Path {{id}}, point {{point}}",
+    "ORIENTATION_TOOLTIP": "Where the creature faces on arriving, in radians (north 0, south 3.14). Leave it empty (NULL) to keep the way it walked in.",
+    "ORIENTATION_NULL": "NULL (keeps its way)",
+    "VELOCITY_TOOLTIP": "Its speed to the point (0: its usual walk or run speed).",
+    "SMOOTH_TOOLTIP": "1: goes on to the next point without stopping (a smooth curve through the points)."
   }
 }

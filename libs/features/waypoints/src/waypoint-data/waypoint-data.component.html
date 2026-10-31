@@ -26,10 +26,29 @@
               <label class="control-label" for="point">point</label>
               <input [formControlName]="'point'" id="point" type="number" class="form-control form-control-sm" />
             </div>
-            @for (field of ['position_x', 'position_y', 'position_z', 'orientation']; track field) {
+            @for (field of ['position_x', 'position_y', 'position_z']; track field) {
               <div class="form-group col-6 col-md-3 col-xl-2">
                 <label class="control-label" [for]="field">{{ field }}</label>
                 <input [formControlName]="field" [id]="field" type="number" step="any" class="form-control form-control-sm" />
+              </div>
+            }
+            <div class="form-group col-6 col-md-3 col-xl-2">
+              <label class="control-label" for="orientation">orientation</label>
+              <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'WAYPOINTS.ORIENTATION_TOOLTIP' | translate"></i>
+              <input
+                [formControlName]="'orientation'"
+                id="orientation"
+                type="number"
+                step="any"
+                class="form-control form-control-sm"
+                [placeholder]="'WAYPOINTS.ORIENTATION_NULL' | translate"
+              />
+            </div>
+            @if (editorService.hasColumn('velocity')) {
+              <div class="form-group col-6 col-md-3 col-xl-1">
+                <label class="control-label" for="velocity">velocity</label>
+                <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'WAYPOINTS.VELOCITY_TOOLTIP' | translate"></i>
+                <input [formControlName]="'velocity'" id="velocity" type="number" step="any" class="form-control form-control-sm" />
               </div>
             }
             <div class="form-group col-6 col-md-3 col-xl-1">
@@ -37,6 +56,13 @@
               <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'WAYPOINTS.DELAY_TOOLTIP' | translate"></i>
               <input [formControlName]="'delay'" id="delay" type="number" class="form-control form-control-sm" />
             </div>
+            @if (editorService.hasColumn('smoothTransition')) {
+              <div class="form-group col-6 col-md-3 col-xl-1">
+                <label class="control-label" for="smoothTransition">smoothTransition</label>
+                <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'WAYPOINTS.SMOOTH_TOOLTIP' | translate"></i>
+                <input [formControlName]="'smoothTransition'" id="smoothTransition" type="number" class="form-control form-control-sm" />
+              </div>
+            }
             <div class="form-group col-6 col-md-3 col-xl-2">
               <label class="control-label" for="move_type">move_type</label>
               <keira-single-value-selector-btn
@@ -102,7 +128,9 @@
               <ngx-datatable-column name="position_x" prop="position_x" [minWidth]="90" />
               <ngx-datatable-column name="position_y" prop="position_y" [minWidth]="90" />
               <ngx-datatable-column name="position_z" prop="position_z" [minWidth]="90" />
-              <ngx-datatable-column name="orientation" prop="orientation" [minWidth]="80" />
+              <ngx-datatable-column name="orientation" [minWidth]="80">
+                <ng-template let-row="row" ngx-datatable-cell-template>{{ row.orientation ?? 'NULL' }}</ng-template>
+              </ngx-datatable-column>
               <ngx-datatable-column name="delay" prop="delay" [minWidth]="60" />
               <ngx-datatable-column name="move_type" [minWidth]="80">
                 <ng-template let-row="row" ngx-datatable-cell-template>{{ moveTypeName(row.move_type) }}</ng-template>
