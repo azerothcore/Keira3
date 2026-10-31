@@ -1,8 +1,7 @@
-import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { Component, viewChild, provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { PageObject } from '@keira/shared/test-utils';
+import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { TopBarComponent } from './top-bar.component';
 
 describe(TopBarComponent.name, () => {
