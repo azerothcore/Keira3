@@ -9,6 +9,8 @@ import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { of } from 'rxjs';
 import { TimedActionlistComponent } from './timed-actionlist.component';
 import { MysqlQueryService } from '@keira/shared/db-layer';
+import { provideRouter } from '@angular/router';
+import { SaiHandlerService } from '../sai-handler.service';
 
 @Component({
   template: `<keira-timed-actionlist [creatureId]="creatureId" />`,
@@ -25,7 +27,7 @@ describe('TimedActionlistComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [NgxDatatableModule, TimedActionlistComponent, TestHostComponent],
-      providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), provideRouter([])],
     }).compileComponents();
   });
 
@@ -55,5 +57,18 @@ describe('TimedActionlistComponent', () => {
     expect(page.getDatatableCell(0, 1).innerText).toContain(String(timedActionlists[0].id));
     expect(page.getDatatableCell(1, 0).innerText).toContain(String(timedActionlists[1].entryorguid));
     expect(page.getDatatableCell(1, 1).innerText).toContain(String(timedActionlists[1].id));
+  });
+
+  it('opens the timed actionlist clicked in the SmartAI editor', () => {
+    const { page, queryService, host } = setup();
+    const list = Object.assign(new SmartScripts(), { entryorguid: 4600, source_type: 9, id: 0 });
+    vi.spyOn(queryService, 'getTimedActionlists').mockReturnValue(of([list]));
+    const select = vi.spyOn(TestBed.inject(SaiHandlerService), 'select').mockImplementation(() => undefined);
+    host.creatureId = '46';
+    page.detectChanges();
+    host.child().ngOnChanges();
+    page.detectChanges();
+    page.clickRowOfDatatable(0);
+    expect(select).toHaveBeenCalledWith(false, { entryorguid: 4600, source_type: 9 }, 'Timed Actionlist ID 4600');
   });
 });
