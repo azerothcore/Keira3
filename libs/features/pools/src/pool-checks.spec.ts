@@ -2,14 +2,18 @@ import { chanceProblems } from './pool-checks';
 
 describe('chanceProblems', () => {
   it('finds chances out of 0–100', () => {
-    expect(chanceProblems([-1, 150, 0], 1)).toEqual([
-      { key: 'CHANCE_RANGE', params: { count: 2 } },
-      { key: 'CHANCE_EQUAL_NEVER', params: { sum: 149, count: 1 } },
-    ]);
+    // (those are skipped: the one left at 0 spawns)
+    expect(chanceProblems([-1, 150, 0], 1)).toEqual([{ key: 'CHANCE_RANGE', params: { count: 2 } }]);
+  });
+
+  it('says a pool with max_limit 0 spawns nothing', () => {
+    expect(chanceProblems([], 0)).toEqual([]);
+    expect(chanceProblems([0, 50], 0)).toEqual([{ key: 'MAX_LIMIT_ZERO' }]);
   });
 
   it('says chances do nothing unless the pool spawns one at a time', () => {
     expect(chanceProblems([0, 0], 2)).toEqual([]);
+    expect(chanceProblems([50], 0)).toEqual([{ key: 'MAX_LIMIT_ZERO' }]);
     expect(chanceProblems([50, 0], 2)).toEqual([{ key: 'CHANCE_IGNORED', params: { max: 2 } }]);
   });
 

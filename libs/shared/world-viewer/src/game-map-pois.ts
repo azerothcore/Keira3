@@ -30,18 +30,34 @@ export const QUEST_HUB_MIN = 3;
  * one marker in their middle naming how many there are and who.
  */
 export function questHubs(givers: GameMapPoi[], radius = QUEST_HUB_RADIUS, min = QUEST_HUB_MIN): GameMapPoi[] {
-  const left = [...givers];
+  // (a grid of `radius` cells: only the 9 cells around a giver can hold its neighbours)
+  const cellOf = (giver: GameMapPoi) => [giver.mapId, Math.floor(giver.x / radius), Math.floor(giver.y / radius)];
+  const grid = new Map<string, GameMapPoi[]>();
+  for (const giver of givers) {
+    const key = cellOf(giver).join(':');
+    grid.set(key, [...(grid.get(key) ?? []), giver]);
+  }
+  const taken = new Set<GameMapPoi>();
   const hubs: GameMapPoi[] = [];
-  while (left.length) {
-    const seed = left.shift() as GameMapPoi;
+  for (const seed of givers) {
+    if (taken.has(seed)) {
+      continue;
+    }
+    taken.add(seed);
     const group = [seed];
     // grow the group with every giver near one of it
     for (let i = 0; i < group.length; i++) {
-      const near = left.filter(
-        (other) => other.mapId === group[i].mapId && Math.hypot(other.x - group[i].x, other.y - group[i].y) <= radius,
-      );
-      group.push(...near);
-      near.forEach((other) => left.splice(left.indexOf(other), 1));
+      const [map, cx, cy] = cellOf(group[i]);
+      for (let dx = -1; dx <= 1; dx++) {
+        for (let dy = -1; dy <= 1; dy++) {
+          for (const other of grid.get(`${map}:${cx + dx}:${cy + dy}`) ?? []) {
+            if (!taken.has(other) && Math.hypot(other.x - group[i].x, other.y - group[i].y) <= radius) {
+              taken.add(other);
+              group.push(other);
+            }
+          }
+        }
+      }
     }
     if (group.length >= min) {
       const mean = (key: 'x' | 'y' | 'z') => group.reduce((sum, giver) => sum + giver[key], 0) / group.length;

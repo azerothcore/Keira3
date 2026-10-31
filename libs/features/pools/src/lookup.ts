@@ -8,6 +8,8 @@ import { Observable, Subscription } from 'rxjs';
  */
 export class Lookup {
   private readonly _rows = signal<Map<number, TableRow | null>>(new Map());
+  /** The ids being read (not asked again meanwhile). */
+  private readonly pending = new Set<number>();
   readonly rows: Signal<Map<number, TableRow | null>> = this._rows.asReadonly();
 
   constructor(
@@ -22,18 +24,21 @@ export class Lookup {
 
   need(ids: number[]): Subscription | undefined {
     const known = this._rows();
-    const unknown = [...new Set(ids.map((id) => Math.trunc(Number(id))))].filter((id) => !known.has(id));
+    const unknown = [...new Set(ids.map((id) => Math.trunc(Number(id))))].filter((id) => !known.has(id) && !this.pending.has(id));
     if (!unknown.length) {
       return undefined;
     }
+    unknown.forEach((id) => this.pending.add(id));
+    const done = () => unknown.forEach((id) => this.pending.delete(id));
     return this.query(this.sql(unknown.join(', '))).subscribe({
       next: (rows) => {
+        done();
         const next = new Map(this._rows());
         unknown.forEach((id) => next.set(id, null));
         (rows ?? []).forEach((row) => next.set(Number(row['id']), row));
         this._rows.set(next);
       },
-      error: () => undefined,
+      error: () => done(),
     });
   }
 }

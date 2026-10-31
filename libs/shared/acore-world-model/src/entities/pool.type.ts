@@ -1,6 +1,6 @@
 import { TableRow } from '@keira/shared/constants';
 
-/** `pool_template`: a pool, spawning up to `max_limit` of its members at once (0: all of them). */
+/** `pool_template`: a pool, spawning up to `max_limit` of its members at once (0: none, PoolGroup::SpawnObject). */
 export const POOL_TEMPLATE_TABLE = 'pool_template';
 export const POOL_TEMPLATE_ID = 'entry';
 export const POOL_TEMPLATE_NAME = 'description';
@@ -9,7 +9,7 @@ export const POOL_TEMPLATE_CUSTOM_STARTING_ID = 100_000;
 
 export class PoolTemplate extends TableRow {
   entry: number = 0;
-  /** How many of its members are up at once (0: all of them). */
+  /** How many of its members are up at once (0 spawns none). */
   max_limit: number = 0;
   description: string = '';
 }

@@ -34,6 +34,18 @@ export const THEME_VARIABLES: Record<string, string> = {
 /** A value a theme may give a variable: colours and plain lengths, nothing that could end the rule. */
 const SAFE_VALUE = /^[#\w\s.,%()-]{1,64}$/;
 
+/** A value fit for a theme: safe characters, balanced brackets, and nothing loaded (no `url(`). */
+function safeValue(value: string): boolean {
+  let depth = 0;
+  for (const char of value) {
+    depth += char === '(' ? 1 : char === ')' ? -1 : 0;
+    if (depth < 0) {
+      return false;
+    }
+  }
+  return SAFE_VALUE.test(value) && depth === 0 && !/url\s*\(/i.test(value);
+}
+
 /** Reads a theme someone made (JSON), or says what's wrong with it. */
 export function parseTheme(json: string): KeiraTheme {
   let data: unknown;
@@ -57,7 +69,7 @@ export function parseTheme(json: string): KeiraTheme {
   }
   const colors: Record<string, string> = {};
   for (const [name, value] of Object.entries(theme.colors)) {
-    if (!/^--[\w-]{1,48}$/.test(name) || typeof value !== 'string' || !SAFE_VALUE.test(value)) {
+    if (!/^--[\w-]{1,48}$/.test(name) || typeof value !== 'string' || !safeValue(value)) {
       throw new Error(`"${name}" can't be set to "${String(value)}".`);
     }
     colors[name] = value.trim();

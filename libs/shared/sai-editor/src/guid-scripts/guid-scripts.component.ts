@@ -36,13 +36,13 @@ export class GuidScriptsComponent {
       untracked(() =>
         this.queryService
           .query<TableRow>(
-            `SELECT s.entryorguid, t.map, COUNT(*) AS rows FROM smart_scripts s JOIN ${table} t ON t.guid = -s.entryorguid ` +
-              `WHERE s.source_type = ${sourceType} AND s.entryorguid < 0 AND t.id = ${entry} GROUP BY s.entryorguid, t.map ORDER BY t.guid`,
+            `SELECT s.entryorguid, t.map, COUNT(*) AS \`rowCount\` FROM smart_scripts s JOIN ${table} t ON t.guid = -s.entryorguid ` +
+              `WHERE s.source_type = ${sourceType} AND s.entryorguid < 0 AND t.id = ${entry} GROUP BY s.entryorguid, t.map ORDER BY s.entryorguid DESC`,
           )
           .subscribe({
             next: (rows) =>
               this.scripts.set(
-                (rows ?? []).map((row) => ({ guid: -Number(row['entryorguid']), map: Number(row['map']), rows: Number(row['rows']) })),
+                (rows ?? []).map((row) => ({ guid: -Number(row['entryorguid']), map: Number(row['map']), rows: Number(row['rowCount']) })),
               ),
             error: () => this.scripts.set([]),
           }),

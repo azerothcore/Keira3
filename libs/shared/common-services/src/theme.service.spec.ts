@@ -20,6 +20,10 @@ describe('parseTheme', () => {
     expect(() => parseTheme('{"name":"A","base":"light","colors":{"color":"red"}}')).toThrow('"color"');
     expect(() => parseTheme('{"name":"A","base":"light","colors":{"--x":"red; } body { display: none"}}')).toThrow('"--x"');
     expect(() => parseTheme('{"name":"A","base":"light","colors":{"--x":5}}')).toThrow('"--x"');
+    expect(() => parseTheme('{"name":"A","base":"light","colors":{"--x":"url(evil)"}}')).toThrow('"--x"');
+    expect(() => parseTheme('{"name":"A","base":"light","colors":{"--x":"rgb(1, 2, 3"}}')).toThrow('"--x"');
+    expect(() => parseTheme('{"name":"A","base":"light","colors":{"--x":"a) b("}}')).toThrow('"--x"');
+    expect(parseTheme('{"name":"A","base":"light","colors":{"--x":"rgba(1, 2, 3, 0.5)"}}').colors['--x']).toBe('rgba(1, 2, 3, 0.5)');
   });
 });
 

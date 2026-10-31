@@ -6,8 +6,9 @@ export interface EntitySnapshot {
   table: string;
   id: string;
   rows: TableRow[];
-  /** The column telling the rows apart (multi-row editors). */
+  /** The column telling the rows apart (multi-row editors), with a second one when it alone doesn't (creature_text). */
   key?: string;
+  extraKey?: string;
 }
 
 /** A value differing between the pinned entity and the one shown (of the row with that key, in multi-row editors). */
@@ -36,7 +37,8 @@ export class EntityCompareService {
  * columns holding each one's own id.
  */
 export function compareEntities(pinned: EntitySnapshot, current: EntitySnapshot): CompareResult {
-  const keyOf = (row: TableRow, index: number) => (pinned.key ? String(row[pinned.key]) : String(index));
+  const keyOf = (row: TableRow, index: number) =>
+    pinned.key ? (pinned.extraKey ? `${row[pinned.key]}_${row[pinned.extraKey]}` : String(row[pinned.key])) : String(index);
   const pinnedRows = new Map(pinned.rows.map((row, i) => [keyOf(row, i), row]));
   const currentRows = new Map(current.rows.map((row, i) => [keyOf(row, i), row]));
   const differences: CompareDifference[] = [];

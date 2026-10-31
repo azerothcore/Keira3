@@ -1962,7 +1962,7 @@
   },
   "POOLS": {
     "SELECT": "Selecciona un pool existente",
-    "MAX_LIMIT_TOOLTIP": "Cuántos de sus miembros aparecen a la vez (0: todos). Las probabilidades solo se usan cuando es 1.",
+    "MAX_LIMIT_TOOLTIP": "Cuántos de sus miembros aparecen a la vez. 0 no genera ninguno. Las probabilidades solo se usan cuando es 1.",
     "CONTENTS": "Qué contiene el pool",
     "CREATURES": "Criaturas",
     "GAMEOBJECTS": "Objetos",
@@ -2000,7 +2000,8 @@
     "PROBLEM_QUEST_NOT_REPEATING": "No son diarias ni semanales (usa un ExclusiveGroup): {{ids}}. Se ignoran.",
     "PROBLEM_QUEST_MIXED": "No se pueden mezclar misiones diarias y semanales en un pool.",
     "PROBLEM_ONE_EVENT": "Un pool tiene un solo evento: solo se guarda una fila.",
-    "PROBLEM_MISSING_EVENT": "No existe el evento {{ids}}."
+    "PROBLEM_MISSING_EVENT": "No existe el evento {{ids}}.",
+    "PROBLEM_MAX_LIMIT_ZERO": "max_limit es 0: el servidor no genera ningún miembro del pool."
   },
   "SCRIPTS": {
     "SELECT_SCRIPT_WAYPOINT": "Selecciona una ruta de escolta existente (script_waypoint, por entry de criatura)",

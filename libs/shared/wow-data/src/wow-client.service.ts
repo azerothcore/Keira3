@@ -307,10 +307,21 @@ export class WowClientService {
     }
     const walk = (dir: string): string[] =>
       native.readdir(dir).flatMap((name) => (native.isDirectory(`${dir}/${name}`) ? walk(`${dir}/${name}`) : [`${dir}/${name}`]));
-    const files = walk(`${root}/scripts`).filter((path) => path.endsWith('.cpp'));
+    // the core's scripts, and the modules' (modules/<name>/src, beside src/server)
+    const modules = `${source}/modules`;
+    const files = [
+      ...walk(`${root}/scripts`),
+      ...(native.isDirectory(modules)
+        ? native
+            .readdir(modules)
+            .filter((name) => native.isDirectory(`${modules}/${name}/src`))
+            .flatMap((name) => walk(`${modules}/${name}/src`))
+        : []),
+    ].filter((path) => path.endsWith('.cpp'));
     const names: ScriptName[] = [];
     for (const [i, file] of files.entries()) {
-      names.push(...parseScriptNames(new TextDecoder().decode(native.readFile(file)), file.slice(root.length + 1)));
+      const shown = file.startsWith(`${modules}/`) ? `modules${file.slice(modules.length)}` : file.slice(root.length + 1);
+      names.push(...parseScriptNames(new TextDecoder().decode(native.readFile(file)), shown));
       if (i % 50 === 49) {
         await nextFrame();
       }

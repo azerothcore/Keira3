@@ -137,8 +137,9 @@ describe('MultiRowEditorService', () => {
       service.entitySecondIdField,
       service['_originalRows'],
       service.newRows,
-      undefined,
+      service.entityExtraIdField,
     );
+    expect(service.entityExtraIdField).toBeUndefined();
     expect(service.diffQuery).toEqual(queryResult);
   });
 

@@ -6,7 +6,19 @@
 
 /** What a script is for (which table names it). */
 export type ScriptKind =
-  'creature' | 'gameobject' | 'spell' | 'instance' | 'areatrigger' | 'item' | 'achievement' | 'outdoorpvp' | 'command' | 'other';
+  | 'creature'
+  | 'gameobject'
+  | 'spell'
+  | 'instance'
+  | 'areatrigger'
+  | 'item'
+  | 'achievement'
+  | 'outdoorpvp'
+  | 'command'
+  | 'condition'
+  | 'transport'
+  | 'weather'
+  | 'other';
 
 /** A script the source registers: its name, what it's for and the file (path from the source folder). */
 export interface ScriptName {
@@ -26,6 +38,9 @@ const CLASS_KINDS: Record<string, ScriptKind> = {
   AchievementCriteriaScript: 'achievement',
   OutdoorPvPScript: 'outdoorpvp',
   CommandScript: 'command',
+  ConditionScript: 'condition',
+  TransportScript: 'transport',
+  WeatherScript: 'weather',
 };
 
 /** The scripts a source file registers (macro definitions left out). */

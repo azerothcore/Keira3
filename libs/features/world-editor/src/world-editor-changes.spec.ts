@@ -135,6 +135,12 @@ describe('WorldEditorChanges', () => {
       expect(changes.count).toBe(1);
       changes.deleteSpawn(creature(1));
       expect(changes.describe()).toEqual(['Delete creature 1 (Marshal McBride)']);
+      // the only spawn of a pool made in this session deleted: no empty pool
+      changes.createPool({ entry: 91, maxLimit: 1, description: 'C:\\camp' });
+      changes.setPoolMember({ type: 'creature', guid: 2, pool: 91, chance: 0 }, null);
+      expect(changes.toSql()).toContain("VALUES (91, 1, 'C:\\\\camp')");
+      changes.deleteSpawn(creature(2));
+      expect(changes.newPools()).toEqual([]);
     });
   });
 

@@ -1962,7 +1962,7 @@
   },
   "POOLS": {
     "SELECT": "Select an existing pool",
-    "MAX_LIMIT_TOOLTIP": "How many of its members are up at once (0: all of them). Chances are only used when it is 1.",
+    "MAX_LIMIT_TOOLTIP": "How many of its members are up at once. 0 spawns none of them. Chances are only used when it is 1.",
     "CONTENTS": "What the pool holds",
     "CREATURES": "Creatures",
     "GAMEOBJECTS": "Gameobjects",
@@ -2000,7 +2000,8 @@
     "PROBLEM_QUEST_NOT_REPEATING": "Not daily or weekly (use an ExclusiveGroup instead): {{ids}}. Skipped.",
     "PROBLEM_QUEST_MIXED": "Daily and weekly quests can't be mixed in one pool.",
     "PROBLEM_ONE_EVENT": "A pool has one game event: only one row is kept.",
-    "PROBLEM_MISSING_EVENT": "No game event {{ids}}."
+    "PROBLEM_MISSING_EVENT": "No game event {{ids}}.",
+    "PROBLEM_MAX_LIMIT_ZERO": "max_limit is 0: the world server spawns none of the pool's members."
   },
   "SCRIPTS": {
     "SELECT_SCRIPT_WAYPOINT": "Select an existing escort path (script_waypoint, by creature entry)",

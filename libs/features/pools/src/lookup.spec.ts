@@ -1,4 +1,5 @@
-import { of, throwError } from 'rxjs';
+import { TableRow } from '@keira/shared/constants';
+import { of, Subject, throwError } from 'rxjs';
 import { Lookup } from './lookup';
 
 describe('Lookup', () => {
@@ -14,13 +15,22 @@ describe('Lookup', () => {
     expect(query).toHaveBeenCalledTimes(1);
   });
 
-  it('stays quiet when the query fails, or gives nothing', () => {
-    const lookup = new Lookup(
-      () => throwError(() => new Error('no table')),
-      (ids) => ids,
-    );
+  it('does not ask again for ids still being read', () => {
+    const answer = new Subject<TableRow[]>();
+    const query = vi.fn(() => answer);
+    const lookup = new Lookup(query, (ids) => ids);
+    lookup.need([1]);
+    lookup.need([1, 2]);
+    expect(query.mock.calls.map(([sql]) => sql)).toEqual(['1', '2']);
+  });
+
+  it('stays quiet when the query fails (asking again later), or gives nothing', () => {
+    const query = vi.fn(() => throwError(() => new Error('no table')));
+    const lookup = new Lookup(query, (ids) => ids);
     lookup.need([3]);
     expect(lookup.get(3)).toBeUndefined();
+    lookup.need([3]);
+    expect(query).toHaveBeenCalledTimes(2);
     const empty = new Lookup(
       () => of(undefined as never),
       (ids) => ids,

@@ -3344,14 +3344,27 @@ export class WorldEditorComponent implements OnInit {
 
   /** Makes a pool (the next free `pool_template.entry`) holding the selected spawns. */
   protected async createPool({ maxLimit, description }: { maxLimit: number; description: string }): Promise<void> {
+    if (this.creatingPool) {
+      return;
+    }
+    // (the spawns selected when asked, whatever is selected by the time the free entry is known)
+    const spawns = this.selection();
+    this.creatingPool = true;
     try {
       const entry = await this.service.getFreePoolId(this.changes.newPools().map((pool) => pool.entry));
       this.changes.createPool({ entry, maxLimit, description });
-      this.joinPool({ pool: entry, chance: 0 });
+      for (const spawn of spawns) {
+        this.changes.setPoolMember({ type: spawn.type, guid: spawn.guid, pool: entry, chance: 0 }, this.storedPool(spawn));
+      }
+      this.bump();
     } catch (error) {
       this.showError(error);
+    } finally {
+      this.creatingPool = false;
     }
   }
+  /** A pool being made (its free entry being read): not twice at once. */
+  private creatingPool = false;
 
   protected openPool(id: number): void {
     (this.links as NonNullable<typeof this.links>).openPool(id);

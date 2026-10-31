@@ -7,6 +7,7 @@ describe('parseScriptNames', () => {
       class npc_old : public CreatureScript { public: npc_old() : CreatureScript("npc_old") { } };
       class at_door : public OnlyOnceAreaTriggerScript { at_door() : OnlyOnceAreaTriggerScript("at_door") { } };
       class go_chest : public GameObjectScript { go_chest() : GameObjectScript("go_chest") { } };
+      class cs_x : public CommandScript { cs_x() : CommandScript("cs_x") { } };
       class not_a_script { void Say(const char* text); };
       void AddSC_test() {
         RegisterCreatureAI(npc_guard);
@@ -35,6 +36,7 @@ describe('parseScriptNames', () => {
       'creature:npc_old',
       'areatrigger:at_door',
       'gameobject:go_chest',
+      'command:cs_x',
     ]);
     expect(parseScriptNames(text, 'scripts/x.cpp')[0].file).toBe('scripts/x.cpp');
   });

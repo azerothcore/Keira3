@@ -314,7 +314,11 @@ export class WorldEditorChanges {
     } else {
       this.poolMembers.set(key, { ...membership });
     }
-    // a pool made in this session and left empty goes away
+    this.dropEmptyPools();
+  }
+
+  /** A pool made in this session and left empty goes away. */
+  private dropEmptyPools(): void {
     for (const entry of this.createdPools.keys()) {
       if (![...this.poolMembers.values()].some((member) => member.pool === entry)) {
         this.createdPools.delete(entry);
@@ -390,6 +394,7 @@ export class WorldEditorChanges {
     }
     this.editedSpawns.delete(key);
     this.poolMembers.delete(key);
+    this.dropEmptyPools();
     if (this.insertedSpawns.delete(key)) {
       return;
     }
@@ -580,7 +585,8 @@ export class WorldEditorChanges {
         `${squel
           .insert(squelConfig)
           .into('pool_template')
-          .setFields({ entry: pool.entry, max_limit: pool.maxLimit, description: pool.description })
+          // (squel only doubles quotes: a backslash would end the string)
+          .setFields({ entry: pool.entry, max_limit: pool.maxLimit, description: pool.description.replace(/\\/g, '\\\\') })
           .toString()};`,
       );
     }

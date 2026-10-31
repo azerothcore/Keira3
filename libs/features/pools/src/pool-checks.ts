@@ -17,17 +17,22 @@ export const POOLED_GAMEOBJECT_TYPES = [3, 10, 25];
  * member with a chance gets that chance (PoolGroup::AddEntry), the ones with 0 share what's left. With none at 0, the
  * chances must add up to 100 (or all be 0), else the pool doesn't spawn (PoolGroup::CheckPool).
  */
-export function chanceProblems(chances: number[], maxLimit: number): PoolProblem[] {
+export function chanceProblems(all: number[], maxLimit: number): PoolProblem[] {
   const problems: PoolProblem[] = [];
-  const outside = chances.filter((chance) => chance < 0 || chance > 100);
+  if (maxLimit === 0 && all.length) {
+    problems.push({ key: 'MAX_LIMIT_ZERO' });
+  }
+  const outside = all.filter((chance) => chance < 0 || chance > 100);
   if (outside.length) {
     problems.push({ key: 'CHANCE_RANGE', params: { count: outside.length } });
   }
+  // (the world server skips the members out of 0–100: they aren't in the pool)
+  const chances = all.filter((chance) => chance >= 0 && chance <= 100);
   const explicit = chances.filter((chance) => chance !== 0);
-  if (!explicit.length) {
+  if (!explicit.length || maxLimit === 0) {
     return problems;
   }
-  if (maxLimit !== 1) {
+  if (maxLimit > 1) {
     problems.push({ key: 'CHANCE_IGNORED', params: { max: maxLimit } });
     return problems;
   }

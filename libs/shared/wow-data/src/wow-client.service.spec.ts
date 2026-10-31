@@ -214,6 +214,8 @@ describe('WowClientService', () => {
       ),
       '/ac/src/server/scripts/World/notes.txt': bytes('RegisterCreatureAI(npc_txt);'),
       '/ac/src/server/game/Battlegrounds/Zones/BattlegroundWS.cpp': bytes('AddObject(1, 179830, 1.5f, 2.5f, 3.5f);'),
+      '/ac/modules/mod-x/src/mod_x.cpp': bytes('RegisterCreatureAI(npc_module);'),
+      '/ac/modules/mod-x/tools/tool.cpp': bytes('RegisterCreatureAI(npc_tool);'),
     };
 
     it('reads them all from the source folder, the names once', async () => {
@@ -228,6 +230,7 @@ describe('WowClientService', () => {
         { name: 'instance_naxxramas', kind: 'instance', file: 'scripts/Northrend/Naxx/instance_naxxramas.cpp' },
         { name: 'boss_a', kind: 'creature', file: 'scripts/Northrend/Naxx/boss_a.cpp' },
         { name: 'spell_a', kind: 'spell', file: 'scripts/Northrend/Naxx/boss_a.cpp' },
+        { name: 'npc_module', kind: 'creature', file: 'modules/mod-x/src/mod_x.cpp' },
       ]);
       const reads = vi.spyOn(native, 'readFile');
       await service.getScriptNames();

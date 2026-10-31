@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { QueryError } from 'mysql2';
 // eslint-disable-next-line @nx/enforce-module-boundaries
@@ -71,7 +71,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
       sshPassword: new FormControl<string>('') as FormControl<string>,
       sshPrivateKey: new FormControl<string>('') as FormControl<string>,
       // how long to wait for the database (ms, mysql2's connectTimeout): slow or far servers need more than 10 s
-      connectTimeout: new FormControl<number>(DEFAULT_CONNECT_TIMEOUT) as FormControl<number>,
+      connectTimeout: new FormControl<number>(DEFAULT_CONNECT_TIMEOUT, [Validators.min(1000)]) as FormControl<number>,
     });
 
     this.configs = this.loginConfigService.getConfigs();
@@ -112,6 +112,10 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
 
   onConnect(): void {
     const connectionConfig = this.form.getRawValue();
+    // (left empty or too short: mysql2's default, rather than no timeout or one too short to connect)
+    if (!(Number(connectionConfig.connectTimeout) >= 1000)) {
+      connectionConfig.connectTimeout = DEFAULT_CONNECT_TIMEOUT;
+    }
 
     // Add SSL configuration if SSL is enabled
     if (this.form.getRawValue().sslEnabled) {
