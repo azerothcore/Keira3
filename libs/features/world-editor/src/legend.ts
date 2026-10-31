@@ -92,6 +92,8 @@ export const LEGEND: LegendSection[] = [
       { shape: 'dashed', color: '#4da6ff', label: 'WORLD_EDITOR.LEGEND_GM_ROUTE_ALLIANCE' },
       { shape: 'dashed', color: '#ff4d4d', label: 'WORLD_EDITOR.LEGEND_GM_ROUTE_HORDE' },
       { shape: 'ring', color: '#ffffff', label: 'WORLD_EDITOR.LEGEND_MAP_CAMERA' },
+      { shape: 'pin', color: '#ff4d4d', label: 'WORLD_EDITOR.LEGEND_GM_USER_PIN' },
+      { shape: 'dashed', color: '#ffd200', label: 'WORLD_EDITOR.LEGEND_GM_MEASURE' },
     ],
   },
 ];

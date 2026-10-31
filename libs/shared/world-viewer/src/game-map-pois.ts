@@ -21,6 +21,46 @@ export interface GameMapPoi {
   zoneId?: number;
 }
 
+/** How close quest givers are to make a hub (yards), and how many it takes. */
+export const QUEST_HUB_RADIUS = 80;
+export const QUEST_HUB_MIN = 3;
+
+/**
+ * Quest hubs: places where at least `min` quest givers stand within `radius` yards of each other (on one map), each as
+ * one marker in their middle naming how many there are and who.
+ */
+export function questHubs(givers: GameMapPoi[], radius = QUEST_HUB_RADIUS, min = QUEST_HUB_MIN): GameMapPoi[] {
+  const left = [...givers];
+  const hubs: GameMapPoi[] = [];
+  while (left.length) {
+    const seed = left.shift() as GameMapPoi;
+    const group = [seed];
+    // grow the group with every giver near one of it
+    for (let i = 0; i < group.length; i++) {
+      const near = left.filter(
+        (other) => other.mapId === group[i].mapId && Math.hypot(other.x - group[i].x, other.y - group[i].y) <= radius,
+      );
+      group.push(...near);
+      near.forEach((other) => left.splice(left.indexOf(other), 1));
+    }
+    if (group.length >= min) {
+      const mean = (key: 'x' | 'y' | 'z') => group.reduce((sum, giver) => sum + giver[key], 0) / group.length;
+      const names = [...new Set(group.map((giver) => giver.name))];
+      hubs.push({
+        kind: 'questHub',
+        mapId: seed.mapId,
+        x: mean('x'),
+        y: mean('y'),
+        z: mean('z'),
+        name: `${group.length} quest givers`,
+        subname: names.slice(0, 6).join(', ') + (names.length > 6 ? '…' : ''),
+        zoneId: seed.zoneId,
+      });
+    }
+  }
+  return hubs;
+}
+
 /**
  * A transport (a boat, a zeppelin…): its taxi path and faction; its description (`transports.name`: where it goes, the
  * ship and its side), and its speed and acceleration (gameobject_template Data1, Data2) for how long it takes.
@@ -228,6 +268,19 @@ export const GAME_MAP_LAYER_GROUPS: GameMapLayerGroup[] = [
       { key: 'portal', label: 'WORLD_EDITOR.GAME_MAP_PORTALS', icon: aowow('portal'), shown: true },
       { key: 'transport', label: 'WORLD_EDITOR.GAME_MAP_OTHER_TRANSPORTS', icon: { fa: 'fa-train', color: '#ffd200' }, shown: true },
       { key: 'routes', label: 'WORLD_EDITOR.GAME_MAP_ROUTES', icon: aowow('boat-n'), shown: true },
+    ],
+  },
+  {
+    key: 'quests',
+    label: 'WORLD_EDITOR.GAME_MAP_GROUP_QUESTS',
+    layers: [
+      { key: 'questHub', label: 'WORLD_EDITOR.POI_QUEST_HUB', icon: aowow('qh'), shown: false },
+      {
+        key: 'questGiver',
+        label: 'WORLD_EDITOR.POI_QUEST_GIVER',
+        icon: { path: 'Interface\\GossipFrame\\AvailableQuestIcon.blp' },
+        shown: false,
+      },
     ],
   },
   {

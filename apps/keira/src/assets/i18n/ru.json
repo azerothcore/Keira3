@@ -1899,7 +1899,18 @@
     "POOL_ADD_TO": "Пул",
     "POOL_ADD": "Добавить ({{count}})",
     "POOL_NEW": "Новый пул",
-    "POOL_CREATE": "Создать ({{count}})"
+    "POOL_CREATE": "Создать ({{count}})",
+    "GAME_MAP_MEASURE_TIP": "Измерение: щёлкайте по карте, чтобы измерить расстояние (ярды)",
+    "GAME_MAP_MEASURE_UNDO": "Убрать последнюю точку",
+    "GAME_MAP_MEASURE_HINT": "Измерение: щёлкните, чтобы добавить точки; кнопка линейки завершает",
+    "GAME_MAP_PINS_TIP": "Ваши метки (Shift + щелчок по карте ставит метку)",
+    "GAME_MAP_PINS_EMPTY": "Меток пока нет: Shift + щелчок по карте ставит метку.",
+    "GAME_MAP_PINS_CLEAR": "Убрать все метки",
+    "GAME_MAP_GROUP_QUESTS": "Задания",
+    "POI_QUEST_HUB": "Центры заданий",
+    "POI_QUEST_GIVER": "Выдающие задания",
+    "LEGEND_GM_USER_PIN": "Ваша метка (Shift + щелчок)",
+    "LEGEND_GM_MEASURE": "Измеренная линия"
   },
   "SETTINGS": {
     "TITLE": "Настройки",

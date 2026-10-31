@@ -45,6 +45,7 @@ import {
 } from '@keira/shared/wow-data';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { cssRgb, LEVEL_BANDS, levelColor, territoryColor } from './game-map-layers';
+import { addUserPin, loadUserPins, MapPlace, pathLength, saveUserPins, UserPin } from './game-map-marks';
 import {
   BADGE_ICONS,
   CONTINENT_LAYERS,
@@ -328,6 +329,13 @@ export class GameMapComponent {
   protected readonly hover = signal<{ point: GameMapPoint; x: number; y: number } | undefined>(undefined);
   protected readonly hoverPin = signal<{ pin: GamePin; x: number; y: number } | undefined>(undefined);
   protected readonly copied = signal<string | undefined>(undefined);
+  /** Pins put with Shift + click (kept on this computer), newest first. */
+  protected readonly userPins = signal<UserPin[]>(loadUserPins());
+  protected readonly showPinList = signal(false);
+  /** The measuring tool: on, and the points clicked. */
+  protected readonly measuring = signal(false);
+  protected readonly measurePoints = signal<MapPlace[]>([]);
+  protected readonly measureLength = computed(() => pathLength(this.measurePoints()));
   /** The note by the pointer after a right click: the `.go` command copied, or why there is none. */
   protected readonly toast = signal<{ x: number; y: number; text: string; error: boolean } | undefined>(undefined);
   private toastTimer?: ReturnType<typeof setTimeout>;
@@ -1440,6 +1448,30 @@ export class GameMapComponent {
     return page?.bounds && camera && mapId !== undefined && this.shown().has('camera') ? this.placeOn(page, mapId, camera) : undefined;
   });
 
+  /** The pins on the page shown, where they are on it. */
+  protected readonly shownUserPins = computed(() => {
+    const page = this.page();
+    return page?.bounds
+      ? this.userPins()
+          .map((pin) => ({ pin, point: this.placeOn(page, pin.mapId, pin) }))
+          .filter((shown): shown is { pin: UserPin; point: GameMapPoint } => !!shown.point)
+      : [];
+  });
+  /** The measured points on the page shown (in % of it, for the line). */
+  protected readonly measureShown = computed(() => {
+    const page = this.page();
+    return page?.bounds
+      ? this.measurePoints()
+          .map((place) => this.placeOn(page, place.mapId, place))
+          .filter((point): point is GameMapPoint => !!point)
+      : [];
+  });
+  protected readonly measureLine = computed(() =>
+    this.measureShown()
+      .map((point) => `${point.u * 100},${point.v * 100}`)
+      .join(' '),
+  );
+
   /** Whether the zone shown is on the map the camera is on (its spawns can be loaded). */
   protected readonly canLoadZone = computed(() => {
     const page = this.page();
@@ -1680,11 +1712,66 @@ export class GameMapComponent {
       return;
     }
     const target = this.hoverTarget();
+    const place = this.placeUnderPointer();
     if (event.altKey) {
       void this.copyGo(event);
+    } else if (this.measuring()) {
+      if (place) {
+        this.measurePoints.update((points) => [...points, place]);
+      }
+    } else if (event.shiftKey) {
+      if (place) {
+        this.pinPlace(place);
+      }
     } else if (target && !(this.seamlessOn() && this.zoneShown(target.key))) {
       this.open(target.key);
     }
+  }
+
+  /** The place under the pointer (server coordinates), on a page with a map. */
+  private placeUnderPointer(): MapPlace | undefined {
+    const page = this.page();
+    const hover = this.hover();
+    if (!page?.bounds || !hover) {
+      return undefined;
+    }
+    return { mapId: page.mapId, ...fromGameMap(page.bounds, hover.point) };
+  }
+
+  /** Puts a pin at a place (kept on this computer). */
+  private pinPlace(place: MapPlace): void {
+    const page = this.page() as GamePage;
+    const pins = addUserPin(this.userPins(), place, `${this.pageName(page)} (${place.x.toFixed(1)}, ${place.y.toFixed(1)})`);
+    this.userPins.set(pins);
+    saveUserPins(pins);
+  }
+
+  protected removeUserPin(id: number): void {
+    const pins = this.userPins().filter((pin) => pin.id !== id);
+    this.userPins.set(pins);
+    saveUserPins(pins);
+  }
+
+  protected clearUserPins(): void {
+    this.userPins.set([]);
+    saveUserPins([]);
+  }
+
+  /** Opens the page a pin is on. */
+  protected goToUserPin(pin: UserPin): void {
+    this.showPinList.set(false);
+    this.show(pageAt(this.pages(), pin.mapId, pin.x, pin.y, 0).key);
+  }
+
+  /** Turns the measuring tool on (from no points) or off. */
+  protected toggleMeasure(): void {
+    this.measuring.update((on) => !on);
+    this.measurePoints.set([]);
+  }
+
+  /** Takes the last measured point back. */
+  protected undoMeasure(): void {
+    this.measurePoints.update((points) => points.slice(0, -1));
   }
 
   /** A right click copies a `.go` command for the place under the pointer. */

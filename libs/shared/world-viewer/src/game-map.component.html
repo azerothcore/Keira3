@@ -196,6 +196,73 @@
       }
       <button
         type="button"
+        class="btn btn-sm"
+        [class.btn-warning]="measuring()"
+        [class.btn-dark]="!measuring()"
+        data-testid="game-map-measure"
+        [title]="'WORLD_EDITOR.GAME_MAP_MEASURE_TIP' | translate"
+        (click)="toggleMeasure()"
+      >
+        <i class="fa fa-ruler"></i>
+        @if (measuring()) {
+          <span data-testid="game-map-measure-length">{{ measureLength().toFixed(1) }} yd</span>
+        }
+      </button>
+      @if (measuring() && measurePoints().length) {
+        <button
+          type="button"
+          class="btn btn-sm btn-dark"
+          data-testid="game-map-measure-undo"
+          [title]="'WORLD_EDITOR.GAME_MAP_MEASURE_UNDO' | translate"
+          (click)="undoMeasure()"
+        >
+          <i class="fa fa-undo"></i>
+        </button>
+      }
+      <div class="game-map-pins-menu">
+        <button
+          type="button"
+          class="btn btn-sm btn-dark"
+          data-testid="game-map-pins"
+          [title]="'WORLD_EDITOR.GAME_MAP_PINS_TIP' | translate"
+          (click)="showPinList.set(!showPinList())"
+        >
+          <i class="fa fa-thumbtack"></i> {{ userPins().length }}
+        </button>
+        @if (showPinList()) {
+          <div class="game-map-pins-list" data-testid="game-map-pins-list">
+            @for (pin of userPins(); track pin.id) {
+              <div class="game-map-pins-row">
+                <button
+                  type="button"
+                  class="btn btn-link btn-sm p-0 text-start"
+                  [attr.data-testid]="'game-map-pin-go-' + pin.id"
+                  (click)="goToUserPin(pin)"
+                >
+                  {{ pin.label }}
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-link btn-sm p-0 text-danger"
+                  [attr.data-testid]="'game-map-pin-remove-' + pin.id"
+                  (click)="removeUserPin(pin.id)"
+                >
+                  <i class="fa fa-times"></i>
+                </button>
+              </div>
+            } @empty {
+              <div class="text-muted small" data-testid="game-map-pins-empty">{{ 'WORLD_EDITOR.GAME_MAP_PINS_EMPTY' | translate }}</div>
+            }
+            @if (userPins().length) {
+              <button type="button" class="btn btn-sm btn-outline-danger mt-1" data-testid="game-map-pins-clear" (click)="clearUserPins()">
+                {{ 'WORLD_EDITOR.GAME_MAP_PINS_CLEAR' | translate }}
+              </button>
+            }
+          </div>
+        }
+      </div>
+      <button
+        type="button"
         class="btn btn-sm btn-dark"
         data-testid="game-map-camera"
         [title]="'WORLD_EDITOR.MAP_CENTER_CAMERA' | translate"
@@ -437,6 +504,24 @@
             }
           </span>
         }
+        @for (shown of shownUserPins(); track shown.pin.id) {
+          <span
+            class="game-map-user-pin"
+            [attr.data-testid]="'game-map-user-pin-' + shown.pin.id"
+            [title]="shown.pin.label"
+            [style.left.%]="shown.point.u * 100"
+            [style.top.%]="shown.point.v * 100"
+            ><i class="fa fa-map-pin"></i
+          ></span>
+        }
+        @if (measureShown().length) {
+          <svg class="game-map-measure" viewBox="0 0 100 100" preserveAspectRatio="none" data-testid="game-map-measure-line">
+            <polyline [attr.points]="measureLine()" vector-effect="non-scaling-stroke" />
+          </svg>
+          @for (point of measureShown(); track $index) {
+            <span class="game-map-measure-point" [style.left.%]="point.u * 100" [style.top.%]="point.v * 100"></span>
+          }
+        }
         @if (cameraPin(); as point) {
           <span
             class="game-map-camera"
@@ -482,7 +567,7 @@
       @if (coordinates(); as coords) {
         <div class="game-map-coords" data-testid="game-map-coords">({{ coords }})</div>
       }
-      <div class="game-map-tip">{{ 'WORLD_EDITOR.GAME_MAP_TIP' | translate }}</div>
+      <div class="game-map-tip">{{ (measuring() ? 'WORLD_EDITOR.GAME_MAP_MEASURE_HINT' : 'WORLD_EDITOR.GAME_MAP_TIP') | translate }}</div>
 
       @if (hoverPin(); as hovered) {
         <div class="game-map-tooltip" data-testid="game-map-pin-tooltip" [style.left.px]="hovered.x + 14" [style.top.px]="hovered.y + 14">
