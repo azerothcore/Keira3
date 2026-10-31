@@ -1916,7 +1916,19 @@
     "TITLE": "设置",
     "GAME_DATA": "游戏数据",
     "GAME_DATA_HELP": "世界编辑器读取游戏的文件夹（WoW 客户端，以及可选的服务器数据和 AzerothCore 源码），以及存放处理结果的位置。保存在此电脑上。",
-    "SAVED": "设置已保存"
+    "SAVED": "设置已保存",
+    "APPEARANCE": "外观",
+    "THEME": "主题",
+    "THEME_SYSTEM": "跟随系统（浅色或深色）",
+    "THEME_LIGHT": "浅色",
+    "THEME_DARK": "深色",
+    "THEME_COPY": "复制为 JSON",
+    "THEME_REMOVE": "移除",
+    "THEME_HELP": "主题是任何人都可以制作和分享的 JSON：名称、基础主题（浅色或深色）以及要修改的颜色。复制内置主题即可得到包含所有颜色的模板。",
+    "THEME_IMPORT": "导入主题",
+    "THEME_IMPORT_FILE": "从文件导入",
+    "THEME_IMPORTED": "已导入主题“{{name}}”",
+    "THEME_COPIED": "主题已复制"
   },
   "WAYPOINTS": {
     "SELECT_PATH": "选择现有路径",

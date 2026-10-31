@@ -35,4 +35,64 @@ describe(SettingsComponent.name, () => {
     expect(client.close).toHaveBeenCalled();
     expect(toastr.success).toHaveBeenCalledWith('SETTINGS.SAVED');
   });
+
+  it('picks, imports, copies and removes themes', async () => {
+    localStorage.clear();
+    window.matchMedia = vi.fn(() => ({ matches: false, addEventListener: vi.fn() })) as never;
+    const toastr = { success: vi.fn(), error: vi.fn() };
+    const clipboard = { copyFromContent: vi.fn() };
+    TestBed.configureTestingModule({
+      imports: [SettingsComponent, TranslateTestingModule],
+      providers: [
+        { provide: ToastrService, useValue: toastr },
+        { provide: WowClientService, useValue: { close: vi.fn() } },
+        { provide: ClipboardService, useValue: clipboard },
+        { provide: ElectronService, useValue: { isElectron: () => false } },
+      ],
+    });
+    const fixture = TestBed.createComponent(SettingsComponent);
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    const query = <T extends HTMLElement>(id: string) => el.querySelector<T>(`[data-testid="${id}"]`) as T;
+    const select = query<HTMLSelectElement>('theme-select');
+    select.value = 'dark';
+    select.dispatchEvent(new Event('change'));
+    expect(document.documentElement.getAttribute('data-bs-theme')).toBe('dark');
+    // a built-in theme copies a template
+    query('theme-copy').click();
+    expect(JSON.parse(clipboard.copyFromContent.mock.calls[0][0]).name).toBe('My theme');
+    // a broken theme says why; a good one is picked
+    const json = query<HTMLTextAreaElement>('theme-json');
+    json.value = '{"name":"Night"}';
+    json.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    query('theme-import').click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(query('theme-error').textContent).toContain('"base"');
+    json.value = '{"name":"Night","base":"dark","colors":{"--keira-accent":"#e67e22"}}';
+    json.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    query('theme-import').click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(toastr.success).toHaveBeenCalledWith('SETTINGS.THEME_IMPORTED');
+    expect(query<HTMLSelectElement>('theme-select').value).toBe('Night');
+    // from a file
+    const file = query<HTMLInputElement>('theme-file');
+    Object.defineProperty(file, 'files', {
+      configurable: true,
+      value: [new File(['{"name":"Dawn","base":"light","colors":{}}'], 'dawn.json')],
+    });
+    file.dispatchEvent(new Event('change'));
+    await new Promise((resolve) => setTimeout(resolve));
+    fixture.detectChanges();
+    expect(query<HTMLSelectElement>('theme-select').value).toBe('Dawn');
+    Object.defineProperty(file, 'files', { configurable: true, value: [] });
+    file.dispatchEvent(new Event('change'));
+    query('theme-remove').click();
+    fixture.detectChanges();
+    expect(query<HTMLSelectElement>('theme-select').value).toBe('system');
+    expect(query('theme-remove')).toBeNull();
+  });
 });

@@ -1916,7 +1916,19 @@
     "TITLE": "Ajustes",
     "GAME_DATA": "Datos del juego",
     "GAME_DATA_HELP": "Las carpetas de las que el Editor del Mundo lee el juego (el cliente de WoW y, opcionalmente, los datos del servidor y el código de AzerothCore), y dónde guarda lo procesado. Se guardan en este equipo.",
-    "SAVED": "Ajustes guardados"
+    "SAVED": "Ajustes guardados",
+    "APPEARANCE": "Apariencia",
+    "THEME": "Tema",
+    "THEME_SYSTEM": "Como el equipo (claro u oscuro)",
+    "THEME_LIGHT": "Claro",
+    "THEME_DARK": "Oscuro",
+    "THEME_COPY": "Copiar como JSON",
+    "THEME_REMOVE": "Quitar",
+    "THEME_HELP": "Los temas son JSON que cualquiera puede crear y compartir: un nombre, el tema del que parte (claro u oscuro) y los colores que cambia. Copia un tema incluido para obtener una plantilla con todos los colores.",
+    "THEME_IMPORT": "Importar tema",
+    "THEME_IMPORT_FILE": "Desde un archivo",
+    "THEME_IMPORTED": "Tema \"{{name}}\" importado",
+    "THEME_COPIED": "Tema copiado"
   },
   "WAYPOINTS": {
     "SELECT_PATH": "Selecciona una ruta existente",
