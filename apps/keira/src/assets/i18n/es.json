@@ -836,7 +836,12 @@
       "GENERATE_COMMENTS_ALL": "Generar comentarios (todos)",
       "CONDITIONS_TOOLTIP": "{{count}} condición(es) adjuntas a este evento — clic para abrirlas en el editor de Condiciones",
       "ADD_NEW_CONDITION": "Añadir condición",
-      "CONDITIONS_ADD_TOOLTIP": "Crea una condición para el evento seleccionado en el editor de Condiciones"
+      "CONDITIONS_ADD_TOOLTIP": "Crea una condición para el evento seleccionado en el editor de Condiciones",
+      "GUID_SCRIPTS": "Spawns con script propio",
+      "GUID_SCRIPTS_TOOLTIP": "SmartAI por GUID: spawns de esta entry cuyo script propio (entryorguid = -guid) sustituye a este.",
+      "GUID_SCRIPT_ROWS": "Filas",
+      "OPEN_GUID_SCRIPT": "Abrir",
+      "NO_GUID_SCRIPTS": "Ningún spawn de esta entry tiene script propio."
     },
     "SEARCH_BY_EXISTING": {
       "SOURCE_TYPE": "Tipo de Origen:",

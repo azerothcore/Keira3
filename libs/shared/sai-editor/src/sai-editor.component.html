@@ -603,6 +603,15 @@
       </div>
     </div>
 
+    @if (showGuidScripts) {
+      <div class="content-block" id="guid-scripts-block">
+        <p class="lead">
+          {{ 'SMARTAI.EDITOR.GUID_SCRIPTS' | translate }}
+          <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SMARTAI.EDITOR.GUID_SCRIPTS_TOOLTIP' | translate"></i>
+        </p>
+        <keira-guid-scripts [sourceType]="handlerService.parsedSelected.source_type" [entry]="entryOrGuid" />
+      </div>
+    }
     @if (showTimedActionlists) {
       <div class="content-block">
         <p class="lead">

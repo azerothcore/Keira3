@@ -836,7 +836,12 @@
       "GENERATE_COMMENTS_ALL": "Generate comments (all)",
       "CONDITIONS_TOOLTIP": "{{count}} condition(s) attached to this event — click to open them in the Conditions editor",
       "ADD_NEW_CONDITION": "Add new condition",
-      "CONDITIONS_ADD_TOOLTIP": "Create a condition for the selected event in the Conditions editor"
+      "CONDITIONS_ADD_TOOLTIP": "Create a condition for the selected event in the Conditions editor",
+      "GUID_SCRIPTS": "Spawns with a script of their own",
+      "GUID_SCRIPTS_TOOLTIP": "GUID-specific SmartAI: spawns of this entry whose own script (entryorguid = -guid) replaces this one.",
+      "GUID_SCRIPT_ROWS": "Rows",
+      "OPEN_GUID_SCRIPT": "Open",
+      "NO_GUID_SCRIPTS": "No spawn of this entry has a script of its own."
     },
     "SEARCH_BY_EXISTING": {
       "SOURCE_TYPE": "Source Type:",
