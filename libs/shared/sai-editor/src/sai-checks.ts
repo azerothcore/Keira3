@@ -22,13 +22,15 @@ const PHASE_ACTIONS = [22, 23, 30, 31];
 const SET_EVENT_PHASE = 22;
 const INC_EVENT_PHASE = 23;
 const CALL_TIMED_ACTIONLIST = 80;
+/** CALL_TIMED_ACTIONLIST, CALL_RANDOM_TIMED_ACTIONLIST, CALL_RANDOM_RANGE_TIMED_ACTIONLIST: their lists may set the phase. */
+const ACTIONLIST_ACTIONS = [CALL_TIMED_ACTIONLIST, 87, 88];
 
 export function checkSmartScripts(rows: SmartScripts[]): SaiProblem[] {
   const problems = new Map<string, number[]>();
   const add = (key: string, row: SmartScripts) => problems.set(key, [...(problems.get(key) ?? []), row.id]);
   const ids = new Set(rows.map((row) => row.id));
   const linked = new Set(rows.filter((row) => row.link).map((row) => row.link));
-  const setsPhase = rows.some((row) => PHASE_ACTIONS.includes(row.action_type));
+  const setsPhase = rows.some((row) => PHASE_ACTIONS.includes(row.action_type) || ACTIONLIST_ACTIONS.includes(row.action_type));
 
   for (const row of rows) {
     // (a timed actionlist's rows are all timed, whatever their event)
@@ -40,9 +42,6 @@ export function checkSmartScripts(rows: SmartScripts[]): SaiProblem[] {
       add('PHASE_MASK', row);
     } else if (row.event_phase_mask && !setsPhase) {
       add('PHASE_NEVER_SET', row);
-    }
-    if (Number(row.event_chance) === 0) {
-      add('CHANCE_ZERO', row);
     }
     if (row.link && row.link === row.id) {
       add('LINK_SELF', row);

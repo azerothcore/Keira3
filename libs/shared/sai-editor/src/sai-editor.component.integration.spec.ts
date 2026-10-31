@@ -206,9 +206,9 @@ describe('SaiEditorComponent integration tests', () => {
       const { page } = setup(true);
       expect(page.query('#sai-checks', false)).toBeFalsy();
       page.addNewRow();
-      page.setInputValueById('event_chance', 0);
-      expect(page.query('#sai-check-CHANCE_ZERO').textContent).toContain('id 0');
-      page.setInputValueById('event_chance', 100);
+      page.setInputValueById('event_phase_mask', 2);
+      expect(page.query('#sai-check-PHASE_NEVER_SET').textContent).toContain('id 0');
+      page.setInputValueById('event_phase_mask', 0);
       expect(page.query('#sai-checks', false)).toBeFalsy();
     });
 

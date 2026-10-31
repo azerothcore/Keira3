@@ -21,15 +21,18 @@ describe('checkSmartScripts', () => {
     ).toEqual([{ key: 'MIN_MAX', ids: [0, 1, 3] }]);
   });
 
-  it('finds phases out of range or never set, and chances of 0', () => {
+  it('finds phases out of range or never set (a chance of 0 is no roll: the row always runs)', () => {
     expect(checkSmartScripts([row(0, { event_phase_mask: 0x1000 }), row(1, { event_phase_mask: 2 }), row(2, { event_chance: 0 })])).toEqual(
       [
         { key: 'PHASE_MASK', ids: [0] },
         { key: 'PHASE_NEVER_SET', ids: [1] },
-        { key: 'CHANCE_ZERO', ids: [2] },
       ],
     );
     expect(checkSmartScripts([row(0, { event_phase_mask: 2 }), row(1, { action_type: 22, action_param1: 2 })])).toEqual([]);
+    // the phase may be set by an actionlist the script calls
+    for (const action_type of [80, 87, 88]) {
+      expect(checkSmartScripts([row(0, { event_phase_mask: 2 }), row(1, { action_type, action_param1: 100 })])).toEqual([]);
+    }
   });
 
   it('finds broken links', () => {

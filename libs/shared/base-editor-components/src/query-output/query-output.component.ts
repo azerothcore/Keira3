@@ -54,8 +54,14 @@ export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandle
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
   private readonly soap = inject(SoapService);
-  /** The worldserver's answer to the last `.reload` (and whether it failed). */
-  protected readonly reloadAnswer = signal<{ text: string; failed: boolean } | undefined>(undefined);
+  /** The worldserver's answer to the last `.reload` (and whether it failed), for the entity it was sent with. */
+  private readonly reloadAnswer = signal<{ text: string; failed: boolean; entity: string } | undefined>(undefined);
+
+  /** The answer to the last `.reload`, while the same entity is open. */
+  protected shownReloadAnswer(): { text: string; failed: boolean } | undefined {
+    const answer = this.reloadAnswer();
+    return answer?.entity === this.editorService.loadedEntityId ? answer : undefined;
+  }
 
   /** The `.reload` for this editor's table, when the server can be told (SOAP on) and has one. */
   reloadCommand(): string | undefined {
@@ -64,10 +70,11 @@ export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandle
 
   /** Tells the worldserver to read the table again (after the query was executed). */
   async reloadOnServer(command: string): Promise<void> {
+    const entity = this.editorService.loadedEntityId;
     try {
-      this.reloadAnswer.set({ text: (await this.soap.execute(command)) || command, failed: false });
+      this.reloadAnswer.set({ text: (await this.soap.execute(command)) || command, failed: false, entity });
     } catch (error) {
-      this.reloadAnswer.set({ text: (error as Error).message, failed: true });
+      this.reloadAnswer.set({ text: (error as Error).message, failed: true, entity });
     }
   }
 

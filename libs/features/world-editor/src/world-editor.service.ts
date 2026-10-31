@@ -87,6 +87,9 @@ const eventOf = (table: string, guid: string): string =>
   `IFNULL((SELECT MAX(e.eventEntry) FROM ${table} e WHERE e.guid = ${guid} AND e.eventEntry > 0), 0) AS eventEntry`;
 
 /** Database access of the world editor (reads only; writes go through the generated SQL). */
+/** At most this many characters are read (offline ones can be thousands on a continent). */
+export const PLAYERS_LIMIT = 500;
+
 @Service()
 export class WorldEditorService {
   private readonly queryService = inject(MysqlQueryService);
@@ -902,10 +905,6 @@ export class WorldEditorService {
   }
 
   /**
-   * Id for a new path of a creature: `guid * 10` (AzerothCore's convention) when unused, otherwise the highest path id
-   * + 1 (what `.wp add` does). `reserved` are ids already handed out in this session but not saved yet.
-   */
-  /**
    * The characters on a map from the characters database (`database`, on the same server; read with the same login),
    * where the server last saved them: the online ones, and the offline ones too when asked.
    */
@@ -916,12 +915,13 @@ export class WorldEditorService {
     const rows = await firstValueFrom(
       this.queryService.query<TableRow>(
         'SELECT guid, name, race, class, level, map, position_x AS x, position_y AS y, position_z AS z, zone, online ' +
-          `FROM \`${database}\`.\`characters\` WHERE map = ${Math.trunc(map)}${offline ? '' : ' AND online = 1'}`,
+          `FROM \`${database}\`.\`characters\` WHERE map = ${Math.trunc(map)} AND deleteDate IS NULL${offline ? '' : ' AND online = 1'} ` +
+          `ORDER BY online DESC LIMIT ${PLAYERS_LIMIT}`,
       ),
     );
     return (rows ?? []).map((row) => ({
       guid: Number(row['guid']),
-      name: String(row['name']),
+      name: String(row['name'] ?? ''),
       race: Number(row['race']),
       class: Number(row['class']),
       level: Number(row['level']),
@@ -940,6 +940,10 @@ export class WorldEditorService {
     return Math.max(Number(rows?.[0]?.max ?? 0), ...reserved) + 1;
   }
 
+  /**
+   * Id for a new path of a creature: `guid * 10` (AzerothCore's convention) when unused, otherwise the highest path id
+   * + 1 (what `.wp add` does). `reserved` are ids already handed out in this session but not saved yet.
+   */
   async getFreePathId(guid: number, reserved: number[] = []): Promise<number> {
     const preferred = preferredPathId(guid);
     const rows = await firstValueFrom(

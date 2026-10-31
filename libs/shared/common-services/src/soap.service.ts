@@ -56,6 +56,9 @@ export class SoapService {
 
   /** Runs a command (without its leading dot) and gives what the server answered; fails with the server's message. */
   async execute(command: string): Promise<string> {
+    if (!this.electron.isElectron()) {
+      throw new Error('SOAP commands can only be sent from the desktop app.');
+    }
     const { soapHost, soapPort, soapUser, soapPassword } = this.server.settings();
     const body =
       '<?xml version="1.0" encoding="utf-8"?>' +
@@ -64,7 +67,10 @@ export class SoapService {
       '</SOAP-ENV:Body></SOAP-ENV:Envelope>';
     const answer = await this.transport({ host: soapHost, port: soapPort, auth: `${soapUser}:${soapPassword}`, body });
     if (answer.status === 401) {
-      throw new Error('The SOAP account was refused (it needs the GM level SOAP asks for).');
+      throw new Error('The SOAP login was refused: check the account name and password.');
+    }
+    if (answer.status === 403) {
+      throw new Error('The SOAP account is not allowed: it needs to be a GM of the administrator level (3).');
     }
     const fault = /<faultstring>([\s\S]*?)<\/faultstring>/.exec(answer.body);
     if (fault || answer.status !== 200) {

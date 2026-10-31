@@ -38,6 +38,7 @@
   "RELOAD": "Reload",
   "CANCEL": "Cancel",
   "CLOSE_TAB": "Close tab",
+  "FILTER_FIELDS": "Filter fields",
   "SELECTORS": {
     "ENABLED": "Enabled",
     "DISABLED": "Disabled"
@@ -857,7 +858,6 @@
       "MIN_MAX": "A timer's minimum is above its maximum: the world server skips these rows.",
       "PHASE_MASK": "The phase mask goes past phase 12 (4095): the world server skips these rows.",
       "PHASE_NEVER_SET": "These rows only run in some phases, but nothing in this script sets the phase.",
-      "CHANCE_ZERO": "A chance of 0: these rows never run.",
       "LINK_SELF": "These rows link to themselves (an endless loop): skipped.",
       "LINK_MISSING": "These rows link to an id this script doesn't have.",
       "LINK_NOT_LINK_EVENT": "These rows link to a row whose event isn't LINK (61): that row also runs on its own.",
@@ -1959,11 +1959,12 @@
     "SERVER": "Server",
     "CHARACTERS_DATABASE": "Characters database",
     "CHARACTERS_DATABASE_HELP": "On the same MySQL server as the world database, read with the same login: the World Editor shows its players.",
-    "DATABASE_NAME_ERROR": "Letters, digits and _ only.",
+    "DATABASE_NAME_ERROR": "Letters, digits, _ and $ only (up to 64).",
     "SOAP": "Send commands to the worldserver (SOAP)",
-    "SOAP_HELP": "With SOAP.Enabled = 1 in worldserver.conf, and a GM account it accepts: the editors offer the .reload of their table after a change. The password is kept on this computer.",
+    "SOAP_HELP": "With SOAP.Enabled = 1 in worldserver.conf, and a GM account it accepts: the editors offer the .reload of their table after a change.",
     "SOAP_USER": "GM account",
     "SOAP_PASSWORD": "Password",
+    "SOAP_REMEMBER_PASSWORD": "Remember the password (kept on this computer, encoded but not encrypted)",
     "SOAP_TEST": "Test (server info)"
   },
   "WAYPOINTS": {

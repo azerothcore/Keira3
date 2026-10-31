@@ -1,5 +1,6 @@
 import { Component, provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { TopBarComponent } from '../top-bar/top-bar.component';
 import { FILTERED_OUT } from './field-filter.component';
 
@@ -23,7 +24,7 @@ class EditorComponent {}
 
 describe('FieldFilterComponent', () => {
   const setup = () => {
-    TestBed.configureTestingModule({ imports: [EditorComponent], providers: [provideZonelessChangeDetection()] });
+    TestBed.configureTestingModule({ imports: [EditorComponent, TranslateTestingModule], providers: [provideZonelessChangeDetection()] });
     const fixture = TestBed.createComponent(EditorComponent);
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
@@ -49,6 +50,9 @@ describe('FieldFilterComponent', () => {
     // fields added later are filtered too
     const form = el.querySelector('form') as HTMLFormElement;
     form.insertAdjacentHTML('beforeend', '<div class="form-group"><label>armor</label><input id="armor" /></div>');
+    form.insertAdjacentHTML('beforeend', '<div class="form-group"><label>level 2</label><input id="lvl2" /></div>');
+    form.lastElementChild?.remove();
+    await new Promise((resolve) => requestAnimationFrame(resolve));
     await new Promise((resolve) => setTimeout(resolve));
     expect(hidden()).toBe(5);
     // Escape clears it

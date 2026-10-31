@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, inject, signal } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 /** The class hiding a field the filter leaves out. */
 export const FILTERED_OUT = 'keira-filtered-out';
@@ -18,12 +19,13 @@ export function fieldText(group: Element): string {
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-field-filter',
+  imports: [TranslatePipe],
   template: `
     <input
       class="keira-field-filter"
       type="search"
       id="field-filter"
-      placeholder="Filter fields"
+      [placeholder]="'FILTER_FIELDS' | translate"
       [value]="text()"
       (input)="setText($any($event.target).value)"
       (keydown.escape)="setText('')"
@@ -63,9 +65,18 @@ export class FieldFilterComponent {
   /** How many fields are shown, of how many. */
   protected readonly shown = signal('');
   private observer?: MutationObserver;
+  /** The frame the next filtering is waiting for (changes to the page come in bursts: filtered once per frame). */
+  private frame = 0;
 
   constructor() {
-    inject(DestroyRef).onDestroy(() => this.observer?.disconnect());
+    inject(DestroyRef).onDestroy(() => this.stopObserving());
+  }
+
+  private stopObserving(): void {
+    this.observer?.disconnect();
+    this.observer = undefined;
+    cancelAnimationFrame(this.frame);
+    this.frame = 0;
   }
 
   protected setText(text: string): void {
@@ -73,11 +84,15 @@ export class FieldFilterComponent {
     this.apply();
     // (fields shown later, a row selected or a page loaded, are filtered too)
     if (text && !this.observer) {
-      this.observer = new MutationObserver(() => this.apply());
+      this.observer = new MutationObserver(() => {
+        this.frame ||= requestAnimationFrame(() => {
+          this.frame = 0;
+          this.apply();
+        });
+      });
       this.observer.observe(this.editor(), { childList: true, subtree: true });
     } else if (!text) {
-      this.observer?.disconnect();
-      this.observer = undefined;
+      this.stopObserving();
     }
   }
 

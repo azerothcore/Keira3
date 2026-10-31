@@ -3803,6 +3803,47 @@ describe(WorldEditorComponent.name, () => {
         vi.useRealTimers();
       }
     });
+    it('reads one at a time, drops the answer of a read made for other layers, and skips reads while the tab is hidden', async () => {
+      vi.useFakeTimers({ shouldAdvanceTime: true });
+      try {
+        let answer: (players: ReturnType<typeof player>[]) => void = () => undefined;
+        mocks.service.loadPlayers.mockImplementation(() => new Promise((resolve) => (answer = resolve)));
+        const { page } = await setup();
+        await loadArea(page);
+        const first = answer;
+        const calls = mocks.service.loadPlayers.mock.calls.length;
+        // still waiting for the first read: the timer does not start another one
+        await vi.advanceTimersByTimeAsync(10_000);
+        expect(mocks.service.loadPlayers.mock.calls.length).toBe(calls);
+        // the layers change: the first answer comes too late and is dropped
+        page.click('view-toggle');
+        page.fixture.detectChanges();
+        page.click('layer-offline-players');
+        await settle(page);
+        answer([player(2, false)]);
+        first([player(1, true)]);
+        await settle(page);
+        const labels = () =>
+          page
+            .viewer()
+            .markers()
+            .filter((marker) => marker.key.startsWith('player:'))
+            .map((marker) => marker.label);
+        expect(labels()).toEqual(['P2 (80 Orc Shaman) · offline']);
+        // the page is kept but not shown (another tab is open): no reads
+        const host = page.fixture.nativeElement as HTMLElement;
+        const parent = host.parentNode as Node;
+        host.remove();
+        const hiddenCalls = mocks.service.loadPlayers.mock.calls.length;
+        await vi.advanceTimersByTimeAsync(30_000);
+        expect(mocks.service.loadPlayers.mock.calls.length).toBe(hiddenCalls);
+        parent.appendChild(host);
+        await vi.advanceTimersByTimeAsync(10_000);
+        expect(mocks.service.loadPlayers.mock.calls.length).toBe(hiddenCalls + 1);
+      } finally {
+        vi.useRealTimers();
+      }
+    });
   });
 
   describe('pools of the selection', () => {

@@ -1,9 +1,9 @@
 import { vi } from 'vitest';
-import { Component, provideZonelessChangeDetection, signal, viewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, provideZonelessChangeDetection, signal, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, By } from '@angular/platform-browser';
 
 import { EditorService } from '@keira/shared/base-abstract-classes';
 import { TableRow } from '@keira/shared/constants';
@@ -353,7 +353,7 @@ describe('QueryOutputComponent', () => {
       TestBed.overrideProvider(SoapService, {
         useValue: { available: () => true, execute: vi.fn().mockResolvedValueOnce('').mockRejectedValueOnce(new Error('no account')) },
       });
-      const { page, host } = setup();
+      const { page, host, fixture } = setup();
       host.entityTable = 'creature_text';
       host.editorService = { loadedEntityId: '1', reloadSameEntity() {} } as unknown as EditorService<TableRow>;
       page.detectChanges();
@@ -367,6 +367,11 @@ describe('QueryOutputComponent', () => {
       await new Promise((resolve) => setTimeout(resolve));
       page.detectChanges();
       expect(page.query('#reload-server-answer').classList).toContain('text-danger');
+      // another entity open: the answer was for the one before
+      (host.editorService as { loadedEntityId: string }).loadedEntityId = '2';
+      fixture.debugElement.query(By.directive(QueryOutputComponent)).injector.get(ChangeDetectorRef).markForCheck();
+      page.detectChanges();
+      expect(page.query('#reload-server-answer', false)).toBeFalsy();
     });
 
     it('offers nothing without SOAP', () => {

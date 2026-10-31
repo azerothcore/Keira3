@@ -38,6 +38,7 @@
   "RELOAD": "Recargar",
   "CANCEL": "Cancelar",
   "CLOSE_TAB": "Cerrar pestaña",
+  "FILTER_FIELDS": "Filtrar campos",
   "SELECTORS": {
     "ENABLED": "Habilitado",
     "DISABLED": "Deshabilitado"
@@ -857,7 +858,6 @@
       "MIN_MAX": "El mínimo de un temporizador supera su máximo: el servidor ignora estas filas.",
       "PHASE_MASK": "La máscara de fases pasa de la fase 12 (4095): el servidor ignora estas filas.",
       "PHASE_NEVER_SET": "Estas filas solo se ejecutan en algunas fases, pero nada en este script cambia la fase.",
-      "CHANCE_ZERO": "Probabilidad 0: estas filas nunca se ejecutan.",
       "LINK_SELF": "Estas filas se enlazan a sí mismas (bucle infinito): se ignoran.",
       "LINK_MISSING": "Estas filas enlazan a un id que este script no tiene.",
       "LINK_NOT_LINK_EVENT": "Estas filas enlazan a una fila cuyo evento no es LINK (61): esa fila también se ejecuta sola.",
@@ -1959,11 +1959,12 @@
     "SERVER": "Servidor",
     "CHARACTERS_DATABASE": "Base de datos de personajes",
     "CHARACTERS_DATABASE_HELP": "En el mismo servidor MySQL que la base de datos del mundo, leída con el mismo usuario: el editor de mundo muestra sus jugadores.",
-    "DATABASE_NAME_ERROR": "Solo letras, dígitos y _.",
+    "DATABASE_NAME_ERROR": "Solo letras, dígitos, _ y $ (hasta 64).",
     "SOAP": "Enviar comandos al worldserver (SOAP)",
-    "SOAP_HELP": "Con SOAP.Enabled = 1 en worldserver.conf y una cuenta GM que acepte: los editores ofrecen el .reload de su tabla tras un cambio. La contraseña se guarda en este equipo.",
+    "SOAP_HELP": "Con SOAP.Enabled = 1 en worldserver.conf y una cuenta GM que acepte: los editores ofrecen el .reload de su tabla tras un cambio.",
     "SOAP_USER": "Cuenta GM",
     "SOAP_PASSWORD": "Contraseña",
+    "SOAP_REMEMBER_PASSWORD": "Recordar la contraseña (se guarda en este equipo, codificada pero no cifrada)",
     "SOAP_TEST": "Probar (server info)"
   },
   "WAYPOINTS": {

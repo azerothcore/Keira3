@@ -106,7 +106,7 @@
     }
   </div>
 }
-@if (reloadAnswer(); as answer) {
+@if (shownReloadAnswer(); as answer) {
   <div class="small mt-1" [class.text-danger]="answer.failed" [class.text-success]="!answer.failed" id="reload-server-answer">
     <i class="fa fa-server me-1"></i>{{ answer.text }}
   </div>

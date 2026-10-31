@@ -37,15 +37,20 @@ describe('SoapService', () => {
       'There is no such command',
     );
     TestBed.resetTestingModule();
-    await expect(setup({ status: 401, body: '' }).service.execute('x')).rejects.toThrow('refused');
+    await expect(setup({ status: 401, body: '' }).service.execute('x')).rejects.toThrow('login was refused');
+    TestBed.resetTestingModule();
+    await expect(setup({ status: 403, body: '' }).service.execute('x')).rejects.toThrow('administrator level');
     TestBed.resetTestingModule();
     await expect(setup({ status: 404, body: '' }).service.execute('x')).rejects.toThrow('HTTP 404');
     TestBed.resetTestingModule();
     await expect(setup(new Error('ECONNREFUSED')).service.execute('x')).rejects.toThrow('ECONNREFUSED');
   });
 
-  it('is only available in the desktop app, with SOAP on', () => {
-    expect(setup({ status: 200, body: '' }, false).service.available()).toBe(false);
+  it('is only available in the desktop app, with SOAP on', async () => {
+    const { service, transport } = setup({ status: 200, body: '' }, false);
+    expect(service.available()).toBe(false);
+    await expect(service.execute('server info')).rejects.toThrow('desktop app');
+    expect(transport).not.toHaveBeenCalled();
   });
 
   it("knows each table's reload", () => {
