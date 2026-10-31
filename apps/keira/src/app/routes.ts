@@ -3,8 +3,12 @@ import { Routes } from '@angular/router';
 import { DashboardComponent } from '@keira/features/dashboard';
 import { SettingsComponent } from '@keira/features/settings';
 import {
+  SaiWaypointsComponent,
+  SaiWaypointsHandlerService,
+  SelectSaiWaypointsComponent,
   SelectWaypointComponent,
   SelectWaypointScriptsComponent,
+  WaypointDataAddonComponent,
   WaypointDataComponent,
   WaypointHandlerService,
   WaypointScriptsComponent,
@@ -502,6 +506,9 @@ export const KEIRA_ROUTES: Routes = [
         component: WaypointScriptsComponent,
         canActivate: [WaypointScriptsHandlerService],
       },
+      { path: 'waypoint-data-addon', component: WaypointDataAddonComponent, canActivate: [WaypointHandlerService] },
+      { path: 'select-sai', component: SelectSaiWaypointsComponent },
+      { path: 'sai-waypoints', component: SaiWaypointsComponent, canActivate: [SaiWaypointsHandlerService] },
     ],
   },
   {

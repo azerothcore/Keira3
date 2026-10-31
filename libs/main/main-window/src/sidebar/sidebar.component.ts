@@ -10,7 +10,7 @@ import { CreatureHandlerService } from '@keira/features/creature';
 import { GameobjectHandlerService } from '@keira/features/gameobject';
 import { GossipHandlerService } from '@keira/features/gossip';
 import { PoolHandlerService } from '@keira/features/pools';
-import { WaypointHandlerService, WaypointScriptsHandlerService } from '@keira/features/waypoints';
+import { SaiWaypointsHandlerService, WaypointHandlerService, WaypointScriptsHandlerService } from '@keira/features/waypoints';
 import { ItemHandlerService } from '@keira/features/item';
 import {
   FishingLootHandlerService,
@@ -96,6 +96,7 @@ export class SidebarComponent {
   protected readonly waypointHandlerService = inject(WaypointHandlerService);
   protected readonly waypointScriptsHandlerService = inject(WaypointScriptsHandlerService);
   protected readonly poolHandlerService = inject(PoolHandlerService);
+  protected readonly saiWaypointsHandlerService = inject(SaiWaypointsHandlerService);
   protected readonly conditionsHandlerService = inject(ConditionsHandlerService);
   protected readonly saiHandlerService = inject(SaiHandlerService);
   protected readonly referenceLootHandlerService = inject(ReferenceLootHandlerService);

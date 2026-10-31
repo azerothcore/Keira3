@@ -693,6 +693,14 @@
                       }
                     </a>
                   </li>
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'waypoints/waypoint-data-addon'">
+                      {{ 'SIDEBAR.WAYPOINTS.WAYPOINT_DATA_ADDON' | translate }}
+                      @if (waypointHandlerService.isWaypointDataAddonTableUnsaved()) {
+                        <keira-unsaved-icon />
+                      }
+                    </a>
+                  </li>
                 }
                 <li>
                   <a href="#" routerLinkActive="active" [routerLink]="'waypoints/select-scripts'">
@@ -704,6 +712,21 @@
                     <a href="#" routerLinkActive="active" [routerLink]="'waypoints/waypoint-scripts'">
                       {{ 'SIDEBAR.WAYPOINTS.WAYPOINT_SCRIPTS' | translate }}
                       @if (waypointScriptsHandlerService.isWaypointScriptsTableUnsaved()) {
+                        <keira-unsaved-icon />
+                      }
+                    </a>
+                  </li>
+                }
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'waypoints/select-sai'">
+                    {{ 'SIDEBAR.WAYPOINTS.SELECT_SAI_PATH' | translate }}
+                  </a>
+                </li>
+                @if (saiWaypointsHandlerService.selected) {
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'waypoints/sai-waypoints'">
+                      {{ 'SIDEBAR.WAYPOINTS.SAI_WAYPOINTS' | translate }}
+                      @if (saiWaypointsHandlerService.isSaiWaypointsTableUnsaved()) {
                         <keira-unsaved-icon />
                       }
                     </a>

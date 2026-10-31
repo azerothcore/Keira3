@@ -202,7 +202,10 @@
       "SELECT_PATH": "搜索路径",
       "WAYPOINT_DATA": "路径点",
       "SELECT_SCRIPT": "搜索路径点脚本",
-      "WAYPOINT_SCRIPTS": "路径点脚本"
+      "WAYPOINT_SCRIPTS": "路径点脚本",
+      "WAYPOINT_DATA_ADDON": "样条点",
+      "SELECT_SAI_PATH": "搜索 SmartAI 路径",
+      "SAI_WAYPOINTS": "SmartAI 路径点"
     },
     "POOLS": {
       "TITLE": "刷新池",
@@ -1912,7 +1915,12 @@
     "ORIENTATION_TOOLTIP": "生物到达时的朝向（弧度，北 0，南 3.14）。留空（NULL）则保持行进方向。",
     "ORIENTATION_NULL": "NULL（保持方向）",
     "VELOCITY_TOOLTIP": "到该点的速度（0：通常的行走或奔跑速度）。",
-    "SMOOTH_TOOLTIP": "1：不停顿地前往下一个点（穿过各点的平滑曲线）。"
+    "SMOOTH_TOOLTIP": "1：不停顿地前往下一个点（穿过各点的平滑曲线）。",
+    "SELECT_SAI_PATH": "选择已有的 SmartAI 路径（waypoints）",
+    "SAI_USERS": "启动此路径的 SmartAI 脚本（WP_START）",
+    "NO_SAI_USERS": "没有 SmartAI 脚本启动此路径（smart_scripts 动作 53，param2 为该路径）。",
+    "OPEN_SAI": "打开 SmartAI",
+    "SPLINE_HELP": "生物到达路径每个点时所沿曲线上的点（按 SplinePointIndex 排序）。"
   },
   "POOLS": {
     "SELECT": "选择已有的刷新池",

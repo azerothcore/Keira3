@@ -202,7 +202,10 @@
       "SELECT_PATH": "Buscar ruta",
       "WAYPOINT_DATA": "Puntos de la ruta",
       "SELECT_SCRIPT": "Buscar script de punto",
-      "WAYPOINT_SCRIPTS": "Script de punto"
+      "WAYPOINT_SCRIPTS": "Script de punto",
+      "WAYPOINT_DATA_ADDON": "Puntos de spline",
+      "SELECT_SAI_PATH": "Buscar ruta SmartAI",
+      "SAI_WAYPOINTS": "Puntos de ruta SmartAI"
     },
     "POOLS": {
       "TITLE": "Pools",
@@ -1912,7 +1915,12 @@
     "ORIENTATION_TOOLTIP": "Hacia dónde mira la criatura al llegar, en radianes (norte 0, sur 3,14). Déjalo vacío (NULL) para que mantenga la dirección con la que llegó.",
     "ORIENTATION_NULL": "NULL (mantiene su dirección)",
     "VELOCITY_TOOLTIP": "Su velocidad hasta el punto (0: su velocidad habitual al andar o correr).",
-    "SMOOTH_TOOLTIP": "1: sigue al siguiente punto sin detenerse (una curva suave entre los puntos)."
+    "SMOOTH_TOOLTIP": "1: sigue al siguiente punto sin detenerse (una curva suave entre los puntos).",
+    "SELECT_SAI_PATH": "Selecciona una ruta SmartAI existente (waypoints)",
+    "SAI_USERS": "Scripts SmartAI que inician esta ruta (WP_START)",
+    "NO_SAI_USERS": "Ningún script SmartAI inicia esta ruta (acción 53 de smart_scripts con ella como param2).",
+    "OPEN_SAI": "Abrir SmartAI",
+    "SPLINE_HELP": "Los puntos de la curva que sigue la criatura hasta cada punto de la ruta (en orden de SplinePointIndex)."
   },
   "POOLS": {
     "SELECT": "Selecciona un pool existente",

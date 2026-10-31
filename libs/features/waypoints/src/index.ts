@@ -4,3 +4,7 @@ export * from './select-waypoint-scripts/select-waypoint-scripts.component';
 export * from './waypoint-scripts/waypoint-scripts.component';
 export * from './waypoint-handler.service';
 export * from './waypoint-scripts-handler.service';
+export * from './select-sai-waypoints/select-sai-waypoints.component';
+export * from './sai-waypoints/sai-waypoints.component';
+export * from './waypoint-data-addon/waypoint-data-addon.component';
+export * from './sai-waypoints-handler.service';
