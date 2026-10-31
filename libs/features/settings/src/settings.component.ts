@@ -1,5 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { BUILT_IN_THEMES, isDatabaseName, ServerSettingsService, ThemeService } from '@keira/shared/common-services';
+import {
+  BUILT_IN_THEMES,
+  isDatabaseName,
+  ServerSettings,
+  ServerSettingsService,
+  SoapService,
+  ThemeService,
+} from '@keira/shared/common-services';
 import { ClipboardService } from 'ngx-clipboard';
 import { GameDataFoldersComponent } from '@keira/shared/world-viewer';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -23,6 +30,25 @@ export class SettingsComponent {
   protected readonly theme = inject(ThemeService);
   protected readonly server = inject(ServerSettingsService);
   protected readonly databaseError = signal(false);
+  private readonly soap = inject(SoapService);
+  /** The answer of the SOAP test (`server info`), or why it failed. */
+  protected readonly soapAnswer = signal<{ text: string; failed: boolean } | undefined>(undefined);
+
+  /** Keeps a SOAP setting as it's changed. */
+  protected setSoap(key: keyof ServerSettings, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const value = input.type === 'checkbox' ? input.checked : input.type === 'number' ? Number(input.value) : input.value.trim();
+    this.server.save({ [key]: value });
+  }
+
+  /** Asks the worldserver for `server info` through SOAP. */
+  protected async testSoap(): Promise<void> {
+    try {
+      this.soapAnswer.set({ text: await this.soap.execute('server info'), failed: false });
+    } catch (error) {
+      this.soapAnswer.set({ text: (error as Error).message, failed: true });
+    }
+  }
 
   /** The characters database's name (saved when it's one). */
   protected setCharactersDatabase(event: Event): void {

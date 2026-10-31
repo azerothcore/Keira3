@@ -3,3 +3,5 @@ export * from './config.service';
 export * from './location.service';
 export * from './theme.service';
 export * from './server-settings.service';
+export * from './soap-transport';
+export * from './soap.service';

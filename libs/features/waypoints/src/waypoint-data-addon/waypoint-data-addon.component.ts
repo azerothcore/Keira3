@@ -5,7 +5,6 @@ import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { EditorButtonsComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { WaypointHandlerService } from '../waypoint-handler.service';
 import { WaypointDataAddonService } from './waypoint-data-addon.service';
 
@@ -21,7 +20,6 @@ import { WaypointDataAddonService } from './waypoint-data-addon.service';
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,
-    TooltipDirective,
     EditorButtonsComponent,
     NgxDatatableModule,
   ],

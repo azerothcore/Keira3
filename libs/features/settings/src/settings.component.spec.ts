@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { ElectronService, ServerSettingsService } from '@keira/shared/common-services';
+import { ElectronService, ServerSettingsService, SoapService } from '@keira/shared/common-services';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { WOW_DATA_SETTINGS_KEY, WowClientService } from '@keira/shared/wow-data';
 import { ClipboardService } from 'ngx-clipboard';
@@ -121,5 +121,51 @@ describe(SettingsComponent.name, () => {
     fixture.detectChanges();
     expect(el.querySelector('[data-testid="characters-database-error"]')).toBeNull();
     expect(TestBed.inject(ServerSettingsService).settings().charactersDatabase).toBe('chars');
+  });
+
+  it('keeps the SOAP settings and tests them', async () => {
+    localStorage.clear();
+    const soap = {
+      execute: vi.fn().mockResolvedValueOnce('AzerothCore rev. x').mockRejectedValueOnce(new Error('refused')),
+      available: () => true,
+    };
+    TestBed.configureTestingModule({
+      imports: [SettingsComponent, TranslateTestingModule],
+      providers: [
+        { provide: ToastrService, useValue: { success: vi.fn() } },
+        { provide: WowClientService, useValue: { close: vi.fn() } },
+        { provide: ClipboardService, useValue: { copyFromContent: vi.fn() } },
+        { provide: ElectronService, useValue: { isElectron: () => false } },
+        { provide: SoapService, useValue: soap },
+      ],
+    });
+    const fixture = TestBed.createComponent(SettingsComponent);
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    const query = <T extends HTMLElement>(id: string) => el.querySelector<T>(`[data-testid="${id}"]`) as T;
+    expect(query('soap-host')).toBeNull();
+    query('soap-enabled').click();
+    fixture.detectChanges();
+    const set = (id: string, value: string) => {
+      const input = query<HTMLInputElement>(id);
+      input.value = value;
+      input.dispatchEvent(new Event('change'));
+    };
+    set('soap-host', ' 10.0.0.2 ');
+    set('soap-port', '7879');
+    set('soap-user', 'gm');
+    set('soap-password', 'secret');
+    expect(TestBed.inject(ServerSettingsService).settings()).toEqual(
+      expect.objectContaining({ soapEnabled: true, soapHost: '10.0.0.2', soapPort: 7879, soapUser: 'gm', soapPassword: 'secret' }),
+    );
+    query('soap-test').click();
+    await new Promise((resolve) => setTimeout(resolve));
+    fixture.detectChanges();
+    expect(query('soap-answer').textContent).toBe('AzerothCore rev. x');
+    expect(soap.execute).toHaveBeenCalledWith('server info');
+    query('soap-test').click();
+    await new Promise((resolve) => setTimeout(resolve));
+    fixture.detectChanges();
+    expect(query('soap-answer').classList).toContain('text-danger');
   });
 });

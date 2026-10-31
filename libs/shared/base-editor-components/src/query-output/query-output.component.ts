@@ -23,6 +23,7 @@ import { HighlightjsWrapperComponent } from '../highlightjs-wrapper/highlightjs-
 import { ModalConfirmComponent } from '../modal-confirm/modal-confirm.component';
 import { QueryErrorComponent } from './query-error/query-error.component';
 import { QueryError } from 'mysql2';
+import { reloadCommand, SoapService } from '@keira/shared/common-services';
 import { CompareResult, compareEntities, EntityCompareService, EntitySnapshot } from './entity-compare';
 
 @Component({
@@ -51,6 +52,24 @@ export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandle
   private modalRef!: BsModalRef;
 
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
+
+  private readonly soap = inject(SoapService);
+  /** The worldserver's answer to the last `.reload` (and whether it failed). */
+  protected readonly reloadAnswer = signal<{ text: string; failed: boolean } | undefined>(undefined);
+
+  /** The `.reload` for this editor's table, when the server can be told (SOAP on) and has one. */
+  reloadCommand(): string | undefined {
+    return this.soap.available() ? reloadCommand(this.entityTable(), this.editorService.loadedEntityId) : undefined;
+  }
+
+  /** Tells the worldserver to read the table again (after the query was executed). */
+  async reloadOnServer(command: string): Promise<void> {
+    try {
+      this.reloadAnswer.set({ text: (await this.soap.execute(command)) || command, failed: false });
+    } catch (error) {
+      this.reloadAnswer.set({ text: (error as Error).message, failed: true });
+    }
+  }
 
   private readonly compareService = inject(EntityCompareService);
   protected readonly pinned = this.compareService.pinned;
