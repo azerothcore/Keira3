@@ -21,10 +21,10 @@ export abstract class SearchService<T extends TableRow> extends SubscriptionHand
   protected readonly selectFields: string[] | undefined = undefined;
   protected readonly groupFields: string[] | undefined = undefined;
   protected readonly orderFields: string[] | undefined = undefined;
-  private readonly editorSettings = inject(EditorSettingsService);
+  protected readonly editorSettings = inject(EditorSettingsService);
 
   /** The search as Settings > Editors sets it for this table (exact numbers or names, rows at first). */
-  private searchQuery(): string {
+  private settingsSearchQuery(): string {
     const { exactNumbers, exactNames } = this.editorSettings.search(this.entityTable);
     return this.queryService.getSearchQuery(
       this.entityTable,
@@ -41,13 +41,13 @@ export abstract class SearchService<T extends TableRow> extends SubscriptionHand
       this.fields.addControl(field, new FormControl());
     }
 
-    this.queryForm.controls.limit.setValue(this.editorSettings.search(this.entityTable).limit as never, { emitEvent: false });
-    this.query = this.searchQuery();
+    (this.queryForm.controls.limit as FormControl).setValue(this.editorSettings.search(this.entityTable).limit, { emitEvent: false });
+    this.query = this.settingsSearchQuery();
 
     this.subscriptions.push(
       this.queryForm.valueChanges.subscribe(() => {
         if (this.queryForm.valid) {
-          this.query = this.searchQuery();
+          this.query = this.settingsSearchQuery();
         }
       }),
     );

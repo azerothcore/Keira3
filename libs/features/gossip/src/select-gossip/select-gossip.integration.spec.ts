@@ -1,3 +1,4 @@
+import { EditorSettingsService } from '@keira/shared/common-services';
 import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
@@ -170,5 +171,17 @@ describe('SelectGossip integration tests', () => {
     );
     page.setInputValueById('limit', '');
     expect(page.queryWrapper.innerText).not.toContain('LIMIT');
+  });
+
+  it('searches numbers and texts exactly when set so', async () => {
+    const { fixture, page } = setup();
+    await fixture.whenStable();
+    TestBed.inject(EditorSettingsService).saveSearch('gossip_menu', { exactNumbers: true, exactNames: true });
+    page.setInputValueById('search-id', 12);
+    page.setInputValueById('text0_0', 'Hello');
+    expect(page.queryWrapper.innerText).toContain(
+      "WHERE (`MenuID` = '12') AND (`TextID` IN (SELECT `ID` FROM `npc_text` WHERE `text0_0` = 'Hello'))",
+    );
+    localStorage.clear();
   });
 });
