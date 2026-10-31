@@ -155,4 +155,20 @@ describe('SelectGossip integration tests', () => {
     // Note: this is different than in other editors
     expect(page.topBar.innerText).toContain(`Editing: gossip_menu (${results[1].MenuID})`);
   });
+
+  it('searches the menus by the texts they show, through npc_text', async () => {
+    const { fixture, page } = setup();
+    await fixture.whenStable();
+    page.setInputValueById('text0_0', "Greetings, it's");
+    expect(page.queryWrapper.innerText).toContain(
+      "SELECT * FROM `gossip_menu` WHERE (`TextID` IN (SELECT `ID` FROM `npc_text` WHERE `text0_0` LIKE '%Greetings, it\\'s%')) LIMIT 50",
+    );
+    page.setInputValueById('search-id', 12);
+    page.setInputValueById('text0_1', 'traveller');
+    expect(page.queryWrapper.innerText).toContain(
+      "WHERE (`MenuID` LIKE '%12%') AND (`TextID` IN (SELECT `ID` FROM `npc_text` WHERE `text0_0` LIKE '%Greetings, it\\'s%' AND `text0_1` LIKE '%traveller%'))",
+    );
+    page.setInputValueById('limit', '');
+    expect(page.queryWrapper.innerText).not.toContain('LIMIT');
+  });
 });
