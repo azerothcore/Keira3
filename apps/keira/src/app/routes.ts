@@ -92,6 +92,7 @@ import {
   SelectPageTextComponent,
   AcoreStringComponent,
   AcoreStringHandlerService,
+  AcoreStringLocaleComponent,
   SelectAcoreStringComponent,
 } from '@keira/features/texts';
 import { GameTeleComponent, GameTeleHandlerService, SelectGameTeleComponent } from '@keira/features/game-tele';
@@ -433,6 +434,11 @@ export const KEIRA_ROUTES: Routes = [
       {
         path: 'acore-string',
         component: AcoreStringComponent,
+        canActivate: [AcoreStringHandlerService],
+      },
+      {
+        path: 'acore-string-locale',
+        component: AcoreStringLocaleComponent,
         canActivate: [AcoreStringHandlerService],
       },
       {

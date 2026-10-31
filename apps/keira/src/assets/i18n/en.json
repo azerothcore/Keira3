@@ -153,6 +153,7 @@
       "SELECT_PAGE_TEXT": "Select Page Text",
       "PAGE_TEXT": "Page Text",
       "ACORE_STRING_TEXT": "Acore Strings",
+      "ACORE_STRING_LOCALE": "Acore String Locale",
       "SELECT_ACORE_STRING_TEXT": "Select Acore Strings"
     },
     "GOSSIP": {

@@ -153,6 +153,7 @@
       "SELECT_PAGE_TEXT": "Выбрать текст страницы",
       "PAGE_TEXT": "Текст страницы",
       "ACORE_STRING_TEXT": "Строки Acore",
+      "ACORE_STRING_LOCALE": "Локализация строк Acore",
       "SELECT_ACORE_STRING_TEXT": "Выбрать строки Acore"
     },
     "GOSSIP": {

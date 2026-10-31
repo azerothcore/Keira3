@@ -13,3 +13,4 @@ export { NpcTextComponent } from './npc-text/npc-text.component';
 export { AcoreStringHandlerService } from './acore-string/acore-string-handler.service';
 export { SelectAcoreStringComponent } from './acore-string/select-acore-string.component';
 export { AcoreStringComponent } from './acore-string/acore-string.component';
+export { AcoreStringLocaleComponent } from './acore-string-locale/acore-string-locale.component';
