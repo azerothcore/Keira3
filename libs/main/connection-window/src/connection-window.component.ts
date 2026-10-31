@@ -16,6 +16,9 @@ import { LoginConfigService } from '@keira/shared/login-config';
 import { SwitchLanguageComponent } from '@keira/shared/switch-language';
 import { ModelForm, SubscriptionHandler } from '@keira/shared/utils';
 
+/** mysql2's own default (ms). */
+export const DEFAULT_CONNECT_TIMEOUT = 10_000;
+
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-connection-window',
@@ -67,6 +70,8 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
       sshUser: new FormControl<string>('') as FormControl<string>,
       sshPassword: new FormControl<string>('') as FormControl<string>,
       sshPrivateKey: new FormControl<string>('') as FormControl<string>,
+      // how long to wait for the database (ms, mysql2's connectTimeout): slow or far servers need more than 10 s
+      connectTimeout: new FormControl<number>(DEFAULT_CONNECT_TIMEOUT) as FormControl<number>,
     });
 
     this.configs = this.loginConfigService.getConfigs();

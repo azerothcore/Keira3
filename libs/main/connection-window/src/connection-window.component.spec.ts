@@ -150,6 +150,7 @@ describe('ConnectionWindowComponent', () => {
       sshUser: '',
       sshPassword: '',
       sshPrivateKey: '',
+      connectTimeout: 10000,
       ssl: { rejectUnauthorized: false },
     });
     expect(component.error).toBeUndefined();
@@ -178,6 +179,7 @@ describe('ConnectionWindowComponent', () => {
       sshUser: '',
       sshPassword: '',
       sshPrivateKey: '',
+      connectTimeout: 10000,
     });
 
     expect(component.error).toBeUndefined();
@@ -214,6 +216,7 @@ describe('ConnectionWindowComponent', () => {
       sshUser: '',
       sshPassword: '',
       sshPrivateKey: '',
+      connectTimeout: 10000,
     });
     expect(component.error).toBeUndefined();
     expect(page.errorElement.innerHTML).not.toContain('error-box');
@@ -307,6 +310,7 @@ describe('ConnectionWindowComponent', () => {
         sshUser: '',
         sshPassword: '',
         sshPrivateKey: '',
+        connectTimeout: 10000,
       });
       expect(connectSpy).toHaveBeenCalledTimes(1);
       expect(connectSpy).toHaveBeenCalledWith({
@@ -322,6 +326,7 @@ describe('ConnectionWindowComponent', () => {
         sshUser: '',
         sshPassword: '',
         sshPrivateKey: '',
+        connectTimeout: 10000,
       });
     });
 
@@ -348,6 +353,7 @@ describe('ConnectionWindowComponent', () => {
         sshUser: '',
         sshPassword: '',
         sshPrivateKey: '',
+        connectTimeout: 10000,
       });
       expect(connectSpy).toHaveBeenCalledTimes(1);
       expect(connectSpy).toHaveBeenCalledWith({
@@ -363,6 +369,7 @@ describe('ConnectionWindowComponent', () => {
         sshUser: '',
         sshPassword: '',
         sshPrivateKey: '',
+        connectTimeout: 10000,
       });
     });
   });

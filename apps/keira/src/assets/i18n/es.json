@@ -63,7 +63,9 @@
     "LOAD_RECENT": "Cargar Reciente",
     "CLEAR_ALL": "Limpiar Todo",
     "CONNECT": "Conectar",
-    "CREATED_BY": "Creado originalmente por"
+    "CREATED_BY": "Creado originalmente por",
+    "TIMEOUT": "Tiempo de espera (ms)",
+    "TIMEOUT_TOOLTIP": "Cuánto esperar a la base de datos antes de rendirse (milisegundos; 10000 son 10 segundos). Súbelo para servidores lentos o lejanos."
   },
   "SIDEBAR": {
     "DASHBOARD": "Tablero",
