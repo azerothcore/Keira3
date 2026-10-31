@@ -321,7 +321,7 @@ export class WowClientService {
     const names: ScriptName[] = [];
     for (const [i, file] of files.entries()) {
       const shown = file.startsWith(`${modules}/`) ? `modules${file.slice(modules.length)}` : file.slice(root.length + 1);
-      names.push(...parseScriptNames(new TextDecoder().decode(native.readFile(file)), shown));
+      names.push(...parseScriptNames(new TextDecoder().decode(native.readFile(file)), shown).map((name) => ({ ...name, path: file })));
       if (i % 50 === 49) {
         await nextFrame();
       }

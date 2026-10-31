@@ -6,6 +6,7 @@ import { ScriptSpawn, WowClientService } from '@keira/shared/wow-data';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { sourceFolderSet } from '../source-folder';
+import { TableSort } from '../table-sort';
 
 /**
  * Scripted spawns: the gameobjects the core's scripts spawn themselves (battleground flags, banners and doors,
@@ -27,6 +28,14 @@ export class ScriptSpawnsComponent implements OnInit {
   protected readonly names = signal(new Map<number, string>());
   protected readonly error = signal('');
   protected readonly filter = signal('');
+
+  protected readonly sort = new TableSort<ScriptSpawn>({
+    entry: (spawn) => spawn.entry,
+    name: (spawn) => this.names().get(spawn.entry) ?? '',
+    map: (spawn) => spawn.mapId,
+    file: (spawn) => spawn.file,
+  });
+  protected readonly sorted = computed(() => this.sort.apply(this.shown()));
 
   /** The spawns listed: only gameobjects (the database tells), by the filter. */
   protected readonly shown = computed(() => {

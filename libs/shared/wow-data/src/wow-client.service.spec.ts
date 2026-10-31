@@ -226,12 +226,14 @@ describe('WowClientService', () => {
       settings.save({ ...settings.paths(), sourcePath: '/ac' });
       expect((await service.getAllBossBoundaries()).map((b) => b.boss)).toEqual(['BOSS_A']);
       expect((await service.getAllScriptSpawns()).map((s) => s.entry)).toEqual([179830]);
-      expect(await service.getScriptNames()).toEqual([
+      expect((await service.getScriptNames()).map(({ name, kind, file }) => ({ name, kind, file }))).toEqual([
         { name: 'instance_naxxramas', kind: 'instance', file: 'scripts/Northrend/Naxx/instance_naxxramas.cpp' },
         { name: 'boss_a', kind: 'creature', file: 'scripts/Northrend/Naxx/boss_a.cpp' },
         { name: 'spell_a', kind: 'spell', file: 'scripts/Northrend/Naxx/boss_a.cpp' },
         { name: 'npc_module', kind: 'creature', file: 'modules/mod-x/src/mod_x.cpp' },
       ]);
+      // (with the file on this computer)
+      expect((await service.getScriptNames())[3].path).toBe('/ac/modules/mod-x/src/mod_x.cpp');
       const reads = vi.spyOn(native, 'readFile');
       await service.getScriptNames();
       expect(reads).not.toHaveBeenCalled();

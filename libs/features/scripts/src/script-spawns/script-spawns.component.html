@@ -21,16 +21,24 @@
       <table class="table table-sm table-striped" id="script-spawns">
         <thead>
           <tr>
-            <th>entry</th>
-            <th>name</th>
-            <th>map</th>
+            <th class="keira-sortable" [id]="'sort-entry'" (click)="sort.toggle('entry')">
+              entry <i class="fa fa-xs" [class]="'fa ' + sort.icon('entry')"></i>
+            </th>
+            <th class="keira-sortable" [id]="'sort-name'" (click)="sort.toggle('name')">
+              name <i class="fa fa-xs" [class]="'fa ' + sort.icon('name')"></i>
+            </th>
+            <th class="keira-sortable" [id]="'sort-map'" (click)="sort.toggle('map')">
+              map <i class="fa fa-xs" [class]="'fa ' + sort.icon('map')"></i>
+            </th>
             <th>x, y, z</th>
-            <th>{{ 'SCRIPTS.FILE' | translate }}</th>
+            <th class="keira-sortable" [id]="'sort-file'" (click)="sort.toggle('file')">
+              {{ 'SCRIPTS.FILE' | translate }} <i class="fa fa-xs" [class]="'fa ' + sort.icon('file')"></i>
+            </th>
             <th></th>
           </tr>
         </thead>
         <tbody>
-          @for (spawn of shown(); track $index) {
+          @for (spawn of sorted(); track $index) {
             <tr>
               <td>{{ spawn.entry }}</td>
               <td>{{ name(spawn.entry) }}</td>

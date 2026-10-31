@@ -67,6 +67,16 @@
           <ngx-datatable-column name="entry" prop="entry" [minWidth]="80" [maxWidth]="120" />
           <ngx-datatable-column name="max_limit" prop="max_limit" [minWidth]="80" [maxWidth]="120" />
           <ngx-datatable-column name="description" prop="description" [minWidth]="300" />
+          <ngx-datatable-column [name]="'POOLS.CREATURES' | translate" prop="creatures" [minWidth]="80" [maxWidth]="110" />
+          <ngx-datatable-column [name]="'POOLS.GAMEOBJECTS' | translate" prop="gameobjects" [minWidth]="90" [maxWidth]="120" />
+          <ngx-datatable-column [name]="'POOLS.CHILD_POOLS' | translate" prop="pools" [minWidth]="90" [maxWidth]="120" />
+          <ngx-datatable-column [name]="'POOLS.QUESTS' | translate" prop="quests" [minWidth]="70" [maxWidth]="100" />
+          <ngx-datatable-column [name]="'POOLS.MOTHER_POOL' | translate" prop="mother" [minWidth]="90" [maxWidth]="120">
+            <ng-template let-value="value" ngx-datatable-cell-template>{{ value ?? '—' }}</ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column [name]="'POOLS.EVENT' | translate" prop="event" [minWidth]="90" [maxWidth]="120">
+            <ng-template let-value="value" ngx-datatable-cell-template>{{ value ?? '—' }}</ng-template>
+          </ngx-datatable-column>
         </ngx-datatable>
       </div>
     }

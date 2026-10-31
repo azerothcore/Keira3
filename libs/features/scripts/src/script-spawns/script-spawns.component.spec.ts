@@ -27,6 +27,13 @@ describe('ScriptSpawnsComponent', () => {
     expect(page.queryAll('#script-spawns tbody tr').length).toBe(2);
     click(page, '#show-0');
     expect(navigate).toHaveBeenCalledWith(['world-editor'], { queryParams: { map: 489, x: 1, y: 2, z: 3 } });
+    // sorted by any column
+    click(page, '#sort-name');
+    click(page, '#sort-name');
+    expect(page.query('#script-spawns tbody tr td:nth-child(2)').textContent).toBe('Warsong Flag');
+    for (const column of ['entry', 'map', 'file']) {
+      click(page, '#sort-' + column);
+    }
     setValue(page, '#spawn-filter', 'warsong');
     expect(page.queryAll('#script-spawns tbody tr').length).toBe(1);
   });

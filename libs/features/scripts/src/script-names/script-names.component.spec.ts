@@ -1,5 +1,6 @@
 import { ScriptName } from '@keira/shared/wow-data';
 import { TestBed } from '@angular/core/testing';
+import { ElectronService } from '@keira/shared/common-services';
 import { click, settle, setupSourcePage, setValue } from '../scripts.testing';
 import { SCRIPT_NAMES_SHOWN, ScriptNamesComponent } from './script-names.component';
 
@@ -57,6 +58,35 @@ describe('ScriptNamesComponent', () => {
     setValue(page, '#script-kind', 'gameobject');
     expect(page.queryAll('#script-names tbody tr').length).toBe(0);
     expect(SCRIPT_NAMES_SHOWN).toBe(200);
+  });
+
+  it('sorts by its columns, links the core files to GitHub and opens them on this computer', async () => {
+    const withLines = names.map((name, i) => ({ ...name, line: i + 1, path: `/ac/src/server/${name.file}` }));
+    const { page, fixture } = setupSourcePage(ScriptNamesComponent, { getScriptNames: vi.fn().mockResolvedValue(withLines) }, answers);
+    await settle(fixture);
+    // (in the desktop app)
+    const electron = TestBed.inject(ElectronService);
+    electron.isElectron = (() => 'renderer') as never;
+    electron.openPath = vi.fn().mockResolvedValue('');
+    fixture.detectChanges();
+    const first = () => page.query('#script-names tbody tr td code').textContent;
+    expect(first()).toBe('npc_guard');
+    click(page, '#sort-name');
+    expect(first()).toBe('cs_gm');
+    click(page, '#sort-name');
+    expect(first()).toBe('spell_fire');
+    click(page, '#sort-users');
+    click(page, '#sort-users');
+    expect(['npc_guard', 'go_chest']).toContain(first());
+    click(page, '#sort-kind');
+    expect(first()).toBe('cs_gm');
+    click(page, '#sort-file');
+    expect(first()).toBe('cs_gm');
+    expect(page.query<HTMLAnchorElement>('#github-npc_guard').href).toBe(
+      'https://github.com/azerothcore/azerothcore-wotlk/blob/master/src/server/scripts/World/npcs.cpp#L1',
+    );
+    click(page, '#open-file-npc_guard');
+    expect(electron.openPath).toHaveBeenCalledWith('/ac/src/server/scripts/World/npcs.cpp');
   });
 
   it('shows at most so many, and works without the other editors', async () => {
