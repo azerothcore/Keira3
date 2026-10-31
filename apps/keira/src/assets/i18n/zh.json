@@ -1889,6 +1889,10 @@
     "SCRIPT_DELAY_TOOLTIP": "到达该点后该步骤何时运行（秒）",
     "USED_AT": "运行此脚本的路径点",
     "NOT_USED": "没有路径点运行此脚本（waypoint_data.action）。",
-    "PATH_POINT": "路径 {{id}}，第 {{point}} 点"
+    "PATH_POINT": "路径 {{id}}，第 {{point}} 点",
+    "ORIENTATION_TOOLTIP": "生物到达时的朝向（弧度，北 0，南 3.14）。留空（NULL）则保持行进方向。",
+    "ORIENTATION_NULL": "NULL（保持方向）",
+    "VELOCITY_TOOLTIP": "到该点的速度（0：通常的行走或奔跑速度）。",
+    "SMOOTH_TOOLTIP": "1：不停顿地前往下一个点（穿过各点的平滑曲线）。"
   }
 }

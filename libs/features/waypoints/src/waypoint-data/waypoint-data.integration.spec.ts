@@ -32,7 +32,7 @@ describe('WaypointData integration tests', () => {
     }).compileComponents();
   });
 
-  function setup(rows: WaypointData[], walkers: unknown = [], isNew = false) {
+  function setup(rows: WaypointData[], walkers: unknown = [], isNew = false, columns: unknown = []) {
     const handlerService = TestBed.inject(WaypointHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = isNew;
@@ -40,7 +40,15 @@ describe('WaypointData integration tests', () => {
     const querySpy = vi
       .spyOn(queryService, 'query')
       .mockImplementation(((sql: string) =>
-        /creature_addon/.test(sql) ? (walkers instanceof Error ? throwError(() => walkers) : of(walkers)) : of([])) as never);
+        /creature_addon/.test(sql)
+          ? walkers instanceof Error
+            ? throwError(() => walkers)
+            : of(walkers)
+          : /SHOW COLUMNS/.test(sql)
+            ? columns instanceof Error
+              ? throwError(() => columns)
+              : of(columns)
+            : of([])) as never);
     vi.spyOn(queryService, 'selectAll').mockReturnValue(of(rows));
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
     const fixture = TestBed.createComponent(WaypointDataComponent);
@@ -54,7 +62,9 @@ describe('WaypointData integration tests', () => {
     const { page, handlerService } = setup([], [], true);
     page.addNewRow();
     page.expectDiffQueryToContain('INSERT INTO `waypoint_data`');
-    page.expectDiffQueryToContain('(1230, 1, 0, 0, 0, 0, 0, 0, 0, 100, 0)');
+    // (orientation NULL: the creature keeps the way it walked in)
+    page.expectDiffQueryToContain('(1230, 1, 0, 0, 0, NULL, 0, 0, 0, 0, 0, 100, 0)');
+    expect(page.getDatatableCell(0, 5).innerText).toBe('NULL');
     expect(handlerService.isWaypointDataTableUnsaved()).toBe(true);
     page.setInputValueById('move_type', 9);
     expect(page.getDatatableCell(0, 7).innerText).toBe('9');
@@ -87,6 +97,41 @@ describe('WaypointData integration tests', () => {
     expect(page.query('#no-walkers')).toBeTruthy();
     page.clickElement(page.query('#show-in-3d'));
     expect(navigate).toHaveBeenLastCalledWith(['world-editor'], { queryParams: { map: 0 } });
+  });
+
+  it("leaves out the columns an older database doesn't have", () => {
+    const columns = [
+      'id',
+      'point',
+      'position_x',
+      'position_y',
+      'position_z',
+      'orientation',
+      'delay',
+      'move_type',
+      'action',
+      'action_chance',
+      'wpguid',
+    ];
+    const { page } = setup(
+      [point(1)],
+      [],
+      false,
+      columns.map((Field) => ({ Field })),
+    );
+    page.expectFullQueryToContain(
+      '(`id`, `point`, `position_x`, `position_y`, `position_z`, `orientation`, `delay`, `move_type`, `action`, `action_chance`, `wpguid`)',
+    );
+    page.addNewRow();
+    page.expectDiffQueryToContain('(1230, 2, 0, 0, 0, NULL, 0, 0, 0, 100, 0)');
+    expect(page.query('#velocity', false)).toBeFalsy();
+    expect(page.query('#smoothTransition', false)).toBeFalsy();
+  });
+
+  it('keeps every column when the columns can not be read', () => {
+    const { page } = setup([point(1)], [], false, new Error('denied'));
+    expect(page.query('#velocity')).toBeTruthy();
+    page.expectFullQueryToContain('`velocity`');
   });
 
   it('takes no rows from the database as no walkers', () => {

@@ -1889,6 +1889,10 @@
     "SCRIPT_DELAY_TOOLTIP": "Cuándo se ejecuta el paso tras llegar al punto (segundos)",
     "USED_AT": "Puntos que ejecutan este script",
     "NOT_USED": "Ningún punto ejecuta este script (waypoint_data.action).",
-    "PATH_POINT": "Ruta {{id}}, punto {{point}}"
+    "PATH_POINT": "Ruta {{id}}, punto {{point}}",
+    "ORIENTATION_TOOLTIP": "Hacia dónde mira la criatura al llegar, en radianes (norte 0, sur 3,14). Déjalo vacío (NULL) para que mantenga la dirección con la que llegó.",
+    "ORIENTATION_NULL": "NULL (mantiene su dirección)",
+    "VELOCITY_TOOLTIP": "Su velocidad hasta el punto (0: su velocidad habitual al andar o correr).",
+    "SMOOTH_TOOLTIP": "1: sigue al siguiente punto sin detenerse (una curva suave entre los puntos)."
   }
 }
