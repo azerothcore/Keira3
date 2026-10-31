@@ -1959,7 +1959,12 @@
     "SERVER": "Servidor",
     "CHARACTERS_DATABASE": "Base de datos de personajes",
     "CHARACTERS_DATABASE_HELP": "En el mismo servidor MySQL que la base de datos del mundo, leída con el mismo usuario: el editor de mundo muestra sus jugadores.",
-    "DATABASE_NAME_ERROR": "Solo letras, dígitos y _."
+    "DATABASE_NAME_ERROR": "Solo letras, dígitos y _.",
+    "SOAP": "Enviar comandos al worldserver (SOAP)",
+    "SOAP_HELP": "Con SOAP.Enabled = 1 en worldserver.conf y una cuenta GM que acepte: los editores ofrecen el .reload de su tabla tras un cambio. La contraseña se guarda en este equipo.",
+    "SOAP_USER": "Cuenta GM",
+    "SOAP_PASSWORD": "Contraseña",
+    "SOAP_TEST": "Probar (server info)"
   },
   "WAYPOINTS": {
     "SELECT_PATH": "Selecciona una ruta existente",
@@ -2066,5 +2071,8 @@
   },
   "TABS": {
     "OPEN": "Abrir una parte de Keira en una pestaña"
+  },
+  "SOAP": {
+    "RELOAD_TIP": "Ejecutar {{command}} en el worldserver para que vuelva a leer la tabla (tras ejecutar la consulta)"
   }
 }

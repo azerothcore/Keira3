@@ -32,6 +32,17 @@
   <button type="button" class="btn btn-success btn-sm" (click)="copy(); execute()" id="execute-and-copy-btn">
     <i class="fa fa-bolt fa-sm"></i> {{ 'EXECUTE_AND_COPY' | translate }} <i class="fa fa-copy fa-sm"></i>
   </button>
+  @if (reloadCommand(); as command) {
+    <button
+      type="button"
+      class="btn btn-outline-success btn-sm ms-1"
+      (click)="reloadOnServer(command)"
+      id="reload-server-btn"
+      [title]="'SOAP.RELOAD_TIP' | translate: { command: '.' + command }"
+    >
+      <i class="fa fa-server fa-sm"></i> .{{ command }}
+    </button>
+  }
   <button
     type="button"
     class="btn btn-sm ms-1"
@@ -93,6 +104,11 @@
         </p>
       }
     }
+  </div>
+}
+@if (reloadAnswer(); as answer) {
+  <div class="small mt-1" [class.text-danger]="answer.failed" [class.text-success]="!answer.failed" id="reload-server-answer">
+    <i class="fa fa-server me-1"></i>{{ answer.text }}
   </div>
 }
 <keira-query-error [error]="error()" />

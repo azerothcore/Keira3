@@ -14,6 +14,7 @@ import { HighlightjsWrapperComponent } from '../highlightjs-wrapper/highlightjs-
 import { QueryErrorComponent } from './query-error/query-error.component';
 import { QueryOutputComponent } from './query-output.component';
 import { tickAsync } from 'ngx-page-object-model';
+import { SoapService } from '@keira/shared/common-services';
 
 describe('QueryOutputComponent', () => {
   const diffQuery = '--diffQuery';
@@ -344,6 +345,35 @@ describe('QueryOutputComponent', () => {
       page.detectChanges();
       page.clickElement(page.query('#compare-btn'));
       expect(page.query('#compare-table').textContent).toContain('0_1');
+    });
+  });
+
+  describe('telling the worldserver', () => {
+    it("offers the table's .reload when SOAP is on, and shows the server's answer", async () => {
+      TestBed.overrideProvider(SoapService, {
+        useValue: { available: () => true, execute: vi.fn().mockResolvedValueOnce('').mockRejectedValueOnce(new Error('no account')) },
+      });
+      const { page, host } = setup();
+      host.entityTable = 'creature_text';
+      host.editorService = { loadedEntityId: '1', reloadSameEntity() {} } as unknown as EditorService<TableRow>;
+      page.detectChanges();
+      const button = page.query<HTMLButtonElement>('#reload-server-btn');
+      expect(button.textContent).toContain('.reload creature_text');
+      button.click();
+      await new Promise((resolve) => setTimeout(resolve));
+      page.detectChanges();
+      expect(page.query('#reload-server-answer').textContent).toContain('reload creature_text');
+      button.click();
+      await new Promise((resolve) => setTimeout(resolve));
+      page.detectChanges();
+      expect(page.query('#reload-server-answer').classList).toContain('text-danger');
+    });
+
+    it('offers nothing without SOAP', () => {
+      const { page, host } = setup();
+      host.entityTable = 'creature_text';
+      page.detectChanges();
+      expect(page.query('#reload-server-btn', false)).toBeFalsy();
     });
   });
 });

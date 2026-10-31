@@ -1959,7 +1959,12 @@
     "SERVER": "服务器",
     "CHARACTERS_DATABASE": "角色数据库",
     "CHARACTERS_DATABASE_HELP": "与世界数据库位于同一 MySQL 服务器，使用相同账号读取：世界编辑器会显示其中的玩家。",
-    "DATABASE_NAME_ERROR": "只能包含字母、数字和 _。"
+    "DATABASE_NAME_ERROR": "只能包含字母、数字和 _。",
+    "SOAP": "向 worldserver 发送命令（SOAP）",
+    "SOAP_HELP": "需要在 worldserver.conf 中设置 SOAP.Enabled = 1，并使用它接受的 GM 账号：编辑器会在修改后提供对应表的 .reload。密码保存在本机。",
+    "SOAP_USER": "GM 账号",
+    "SOAP_PASSWORD": "密码",
+    "SOAP_TEST": "测试（server info）"
   },
   "WAYPOINTS": {
     "SELECT_PATH": "选择现有路径",
@@ -2066,5 +2071,8 @@
   },
   "TABS": {
     "OPEN": "在标签页中打开 Keira 的某个部分"
+  },
+  "SOAP": {
+    "RELOAD_TIP": "在 worldserver 上执行 {{command}}，让它重新读取该表（执行查询之后）"
   }
 }
