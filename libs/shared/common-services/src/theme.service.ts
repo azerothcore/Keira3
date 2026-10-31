@@ -89,6 +89,8 @@ export class ThemeService {
   /** The theme chosen: a built-in one or a custom one's name. */
   readonly choice = signal<string>(this.stored.choice);
   readonly custom = signal<KeiraTheme[]>(this.stored.custom);
+  /** Whether the page is dark now (for what draws its own colours: the SQL editor…). */
+  readonly dark = signal(false);
 
   constructor() {
     this.media?.addEventListener?.('change', () => this.apply());
@@ -131,6 +133,7 @@ export class ThemeService {
     const base = theme?.base ?? (choice === 'light' || choice === 'dark' ? choice : this.media?.matches ? 'dark' : 'light');
     const root = this.document.documentElement;
     root.setAttribute('data-bs-theme', base);
+    this.dark.set(base === 'dark');
     let style = this.document.getElementById('keira-custom-theme');
     if (!style) {
       style = this.document.createElement('style');

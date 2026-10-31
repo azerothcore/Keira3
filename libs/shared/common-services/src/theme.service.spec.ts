@@ -39,9 +39,11 @@ describe('ThemeService', () => {
   it("follows the computer's mode by default, and keeps the choice", () => {
     const service = TestBed.inject(ThemeService);
     expect(document.documentElement.getAttribute('data-bs-theme')).toBe('light');
+    expect(service.dark()).toBe(false);
     dark.matches = true;
     (dark.addEventListener.mock.calls[0][1] as () => void)();
     expect(document.documentElement.getAttribute('data-bs-theme')).toBe('dark');
+    expect(service.dark()).toBe(true);
     dark.matches = false;
     service.select('dark');
     expect(document.documentElement.getAttribute('data-bs-theme')).toBe('dark');

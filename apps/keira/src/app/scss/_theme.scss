@@ -12,23 +12,133 @@
   --keira-link: #5d176a;
   --keira-code-bg: #efefef;
   --keira-top-bar-bg: #000000;
+  --keira-top-bar-color: #fafafa;
+  --keira-dirty: #5b6cff87;
+  --keira-dirty-glow: rgba(16, 0, 255, 0.13);
+  --keira-error: #dc3545;
+  --keira-badge-bg: #f3e5a9;
+  --keira-badge-hover: #e8d47a;
+  --keira-badge-color: #7d6608;
+  --keira-badge-border: #b7950b;
 }
 
+// The same purple and greys as the light theme, brighter where they're text or marks on the dark backgrounds.
 [data-bs-theme='dark'] {
   --keira-page-bg: #15181c;
   --keira-content-bg: #22262c;
   --keira-row-bg: #282d34;
-  --keira-row-hover: #323842;
-  --keira-border: #3a4048;
-  --keira-muted: #a3abb5;
-  --keira-accent: #9d7cc4;
-  --keira-link: #c9a6e8;
-  --keira-code-bg: #1b1f24;
+  --keira-row-hover: #343a45;
+  --keira-border: #444b55;
+  --keira-muted: #b4bcc6;
+  --keira-accent: #a888d1;
+  --keira-link: #d4b6f0;
+  --keira-code-bg: #1a1d22;
   --keira-top-bar-bg: #000000;
+  --keira-top-bar-color: #e9ecef;
+  --keira-dirty: #8f9bff;
+  --keira-dirty-glow: rgba(143, 155, 255, 0.25);
+  --keira-error: #ff7b7b;
+  --keira-badge-bg: #4a3f12;
+  --keira-badge-hover: #5e5017;
+  --keira-badge-color: #f5dc7a;
+  --keira-badge-border: #a68a1e;
+  --bs-link-color: #8ab8ff;
+  --bs-link-color-rgb: 138, 184, 255;
+  --bs-link-hover-color: #b3d1ff;
+  --bs-link-hover-color-rgb: 179, 209, 255;
+
+  // selects (ngx-select-ex draws its own light toggle)
+  .ngx-select__toggle,
+  .ngx-select__toggle:hover {
+    color: var(--bs-body-color);
+    border-color: var(--bs-border-color);
+  }
+
+  .ngx-select__toggle {
+    background-color: var(--bs-body-bg);
+  }
+
+  .ngx-select__toggle:hover {
+    background-color: var(--keira-row-hover);
+  }
+
+  .ngx-select__disabled {
+    background-color: var(--bs-secondary-bg);
+  }
+
+  .ngx-select__clear,
+  .ngx-select_multiple .ngx-select__clear {
+    color: var(--bs-body-color);
+  }
+
+  .ngx-select__item_active {
+    color: #fff;
+    background-color: #7d5bb0;
+  }
+
+  // datatables: the expand button, check boxes and radios
+  .ngx-datatable .fa-chevron-right {
+    background: var(--keira-row-hover);
+    color: var(--bs-body-color);
+  }
+
+  .ngx-datatable .fa-chevron-down {
+    background: var(--keira-accent);
+  }
+
+  .ngx-datatable input[type='checkbox'],
+  .ngx-datatable input[type='radio'],
+  .radio input[type='radio'] {
+    background: var(--bs-body-bg);
+    border-color: var(--keira-border);
+  }
+
+  .ngx-datatable input[type='checkbox']:checked,
+  .ngx-datatable input[type='radio']:checked {
+    background: var(--keira-accent);
+  }
+
+  // buttons: outlines in the brighter blue, and disabled ones still readable
+  .btn {
+    --bs-btn-disabled-opacity: 0.8;
+  }
+
+  .btn-outline-primary {
+    --bs-btn-color: #8ab8ff;
+    --bs-btn-border-color: #8ab8ff;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #3d8bfd;
+    --bs-btn-hover-border-color: #3d8bfd;
+    --bs-btn-active-bg: #3d8bfd;
+    --bs-btn-active-border-color: #3d8bfd;
+    --bs-btn-disabled-color: #8ab8ff;
+    --bs-btn-disabled-border-color: #8ab8ff;
+  }
+
+  // a placeholder isn't mistaken for what's typed
+  .form-control::placeholder {
+    color: rgba(222, 226, 230, 0.45);
+    font-style: italic;
+  }
+
+  // disabled outline buttons (Pin to compare…) stay readable
+  .btn-outline-secondary:disabled,
+  .btn-outline-secondary.disabled {
+    color: #b4bcc6;
+    border-color: #6c757d;
+  }
+
+  // native dropdown lists
+  option,
+  optgroup {
+    color: var(--bs-body-color);
+    background-color: var(--bs-body-bg);
+  }
 
   // highlight.js (its github theme is light): GitHub's dark colours
   .hljs {
     color: #c9d1d9;
+    background: var(--keira-code-bg);
   }
 
   .hljs-keyword,

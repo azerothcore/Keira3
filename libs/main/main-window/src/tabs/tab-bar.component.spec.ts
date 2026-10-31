@@ -9,7 +9,9 @@ describe('TabBarComponent', () => {
     const tabs = signal<KeiraTab[]>([]);
     const service = {
       tabs,
-      active: signal('world-editor'),
+      activeId: signal(1),
+      number: (tab: KeiraTab) => (tab.n > 1 ? `[${tab.n}]` : ''),
+      testId: (tab: KeiraTab) => (tab.section || 'dashboard') + (tab.n > 1 ? `-${tab.n}` : ''),
       titleKey: (tab: KeiraTab) => tab.section || 'Dashboard',
       pageName: (tab: KeiraTab) => (tab.section === 'creature' ? 'Creature Template' : ''),
       show: vi.fn(),
@@ -26,11 +28,13 @@ describe('TabBarComponent', () => {
     const el = fixture.nativeElement as HTMLElement;
     expect(el.querySelector('[data-testid="tab-bar"]')).toBeNull();
     tabs.set([
-      { section: 'world-editor', url: '/world-editor' },
-      { section: 'creature', url: '/creature/creature-template' },
-      { section: '', url: '/' },
+      { id: 1, section: 'world-editor', url: '/world-editor', n: 1 },
+      { id: 2, section: 'creature', url: '/creature/creature-template', n: 1 },
+      { id: 3, section: '', url: '/', n: 1 },
+      { id: 4, section: 'creature', url: '/creature/select', n: 2 },
     ]);
     fixture.detectChanges();
+    expect(el.querySelector('[data-testid="tab-creature-2"]')?.textContent).toContain('[2]');
     expect(el.querySelector('[data-testid="tab-world-editor"]')?.classList).toContain('active');
     expect(el.querySelector('[data-testid="tab-creature"]')?.textContent).toContain('Creature Template');
     (el.querySelector('[data-testid="tab-open-creature"]') as HTMLButtonElement).click();

@@ -29,6 +29,11 @@
   }
 }
 
+.keira-tab-number {
+  font-weight: bold;
+  color: var(--keira-accent);
+}
+
 .keira-tab-open {
   display: flex;
   align-items: baseline;
