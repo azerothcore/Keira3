@@ -1,4 +1,4 @@
-@if (tabs.tabs().length > 1) {
+@if (tabs.tabs().length) {
   <nav class="keira-tab-bar" data-testid="tab-bar">
     @for (tab of tabs.tabs(); track tab.section) {
       <div class="keira-tab" [class.active]="tab.section === tabs.active()" [attr.data-testid]="'tab-' + (tab.section || 'dashboard')">
@@ -24,5 +24,31 @@
         </button>
       </div>
     }
+    <div class="keira-tab-launcher">
+      <button
+        type="button"
+        class="keira-tab-new"
+        data-testid="tab-launcher"
+        [title]="'TABS.OPEN' | translate"
+        (click)="launcherOpen.set(!launcherOpen())"
+      >
+        <i class="fa fa-plus"></i>
+      </button>
+      @if (launcherOpen()) {
+        <div class="keira-tab-grid" data-testid="tab-launcher-grid">
+          @for (item of sections; track item.section) {
+            <button
+              type="button"
+              class="keira-tab-grid-item"
+              [class.open]="tabs.isOpen(item.section)"
+              [attr.data-testid]="'tab-launch-' + (item.section || 'dashboard')"
+              (click)="launch(item.section)"
+            >
+              {{ tabs.titleKey(item) | translate }}
+            </button>
+          }
+        </div>
+      }
+    </div>
   </nav>
 }

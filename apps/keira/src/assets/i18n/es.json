@@ -2010,5 +2010,17 @@
     "SHAPES": "Formas",
     "SCRIPT_SPAWNS": "Spawns de scripts",
     "SCRIPT_SPAWNS_HELP": "Los objetos que generan los propios scripts del núcleo, fuera de la tabla gameobject: banderas, estandartes y puertas de campos de batalla, muros y torres de Conquista del Invierno, puntos de captura JcJ."
+  },
+  "COMPARE": {
+    "PIN": "Fijar para comparar",
+    "UNPIN": "Fijado (quitar)",
+    "PIN_TIP": "Guarda esta entidad para comparar otra de este editor con ella (abre la otra y luego Comparar)",
+    "WITH": "Comparar con #{{id}}",
+    "SAME": "No hay diferencias.",
+    "FIELD": "Campo",
+    "ONLY_IN": "Filas que solo tiene #{{id}}:"
+  },
+  "TABS": {
+    "OPEN": "Abrir una parte de Keira en una pestaña"
   }
 }
