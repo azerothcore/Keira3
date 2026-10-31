@@ -1879,7 +1879,16 @@
     "GAME_MAP_ZOOM_RESET": "Вся карта",
     "GAME_MAP_TIP": "Совет: правый клик (или Alt + клик) копирует команду .go",
     "MODIFY": "Изменить",
-    "OPEN_WAYPOINT_SCRIPT": "Открыть скрипт точки"
+    "OPEN_WAYPOINT_SCRIPT": "Открыть скрипт точки",
+    "POOL_N": "Пул {{pool}}",
+    "POOL_CHANCE": "Шанс",
+    "POOL_LEAVE": "Убрать из пула",
+    "POOL_LEAVE_ALL": "Убрать {{count}} из их пулов",
+    "POOL_OPEN": "Открыть в редакторе пулов",
+    "POOL_ADD_TO": "Пул",
+    "POOL_ADD": "Добавить ({{count}})",
+    "POOL_NEW": "Новый пул",
+    "POOL_CREATE": "Создать ({{count}})"
   },
   "SETTINGS": {
     "TITLE": "Настройки",

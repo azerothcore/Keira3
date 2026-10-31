@@ -1879,7 +1879,16 @@
     "GAME_MAP_ZOOM_RESET": "Whole map",
     "GAME_MAP_TIP": "Tip: right click (or Alt + click) copies a .go command",
     "MODIFY": "Modify",
-    "OPEN_WAYPOINT_SCRIPT": "Open the waypoint script"
+    "OPEN_WAYPOINT_SCRIPT": "Open the waypoint script",
+    "POOL_N": "Pool {{pool}}",
+    "POOL_CHANCE": "Chance",
+    "POOL_LEAVE": "Take out of the pool",
+    "POOL_LEAVE_ALL": "Take the {{count}} out of their pools",
+    "POOL_OPEN": "Open in the Pool Editor",
+    "POOL_ADD_TO": "Pool",
+    "POOL_ADD": "Add ({{count}})",
+    "POOL_NEW": "New pool",
+    "POOL_CREATE": "Create ({{count}})"
   },
   "SETTINGS": {
     "TITLE": "Settings",

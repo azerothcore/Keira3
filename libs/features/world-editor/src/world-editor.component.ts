@@ -174,6 +174,7 @@ import { arrayPositions, boxExtent, STACK_SIDES, StackSide, stackPosition } from
 import { EMPTY_TRAVEL, TravelData, travelOverlays } from './travel';
 import { copySpawns, followPlacement, newSpawnFrom, pastedSpawn } from './group-edit';
 import { WaypointEdits, WaypointPanelComponent } from './waypoint-panel.component';
+import { PoolPanelComponent } from './pool-panel.component';
 import { SpawnPanelComponent } from './spawn-panel.component';
 import { SpawnTreeComponent } from './spawn-tree.component';
 import { StylePanelComponent } from './style-panel.component';
@@ -476,6 +477,7 @@ export function buildKind(dev = isDevMode()): 'development' | 'release' {
     HighlightjsWrapperComponent,
     WaypointPanelComponent,
     SpawnPanelComponent,
+    PoolPanelComponent,
     SpawnTreeComponent,
     StylePanelComponent,
     ButtonLabelComponent,
@@ -775,7 +777,7 @@ export class WorldEditorComponent implements OnInit {
       const spawns = this.visibleSpawns();
       return [
         ...(layers.formations ? formationLinks(spawns, this.formations(), colorNumber(this.styles.style().formation.color)) : []),
-        ...(layers.pools ? poolOverlays(spawns, this.pools()).links : []),
+        ...(layers.pools ? poolOverlays(spawns, this.poolRows()).links : []),
         ...this.travelOverlays().links.filter((link) => (isFlight(link.key) ? layers.flightPaths : layers.travel)),
         ...this.spawnToPathLinks(),
       ];
@@ -838,7 +840,7 @@ export class WorldEditorComponent implements OnInit {
       const layers = this.layers();
       const spawns = this.visibleSpawns();
       return [
-        ...(layers.pools ? poolOverlays(spawns, this.pools()).markers : []),
+        ...(layers.pools ? poolOverlays(spawns, this.poolRows()).markers : []),
         ...(layers.formations ? formationSlots(spawns, this.formations(), this.selectedSpawn()) : []),
         ...this.travelOverlays().markers.filter((marker) => (isFlight(marker.key) ? layers.flightPaths : layers.travel)),
         ...this.scanMarkers(),
@@ -1354,7 +1356,13 @@ export class WorldEditorComponent implements OnInit {
    * every 150 yards or so) rather than every move, which redrew all of them.
    */
   private readonly spawnsCenter = signal<WorldPosition | undefined>(undefined);
+  /** The pools of the loaded spawns, as stored. */
   private readonly pools = signal<PoolMember[]>([]);
+  /** The pools of the loaded spawns, with the pending changes. */
+  private readonly poolRows = computed(() => {
+    this.revision();
+    return this.changes.applyToPools(this.pools());
+  });
   /** Quests started or ended by the loaded entries, by `type:entry`. */
   private readonly quests = signal(new Map<string, SpawnQuest[]>());
   private center?: WorldPosition;
@@ -1570,7 +1578,7 @@ export class WorldEditorComponent implements OnInit {
         `Bounding radius ${bounds.radius.toFixed(2)} yd · combat reach ${bounds.reach.toFixed(2)} yd · melee range ${melee.toFixed(2)} yd`,
       );
     }
-    lines.push(...groupDetails(spawn, this.formations(), this.pools()));
+    lines.push(...groupDetails(spawn, this.formations(), this.poolRows()));
     // who can talk to it, use it or loot it; with Alt, each race's standing and the faction
     const factions = this.factionData();
     const faction = factions && spawn.faction ? describeFaction(spawn.faction, factions) : undefined;
@@ -3286,6 +3294,69 @@ export class WorldEditorComponent implements OnInit {
   }
 
   /** A column changed in the properties panel. */
+  // ---------------------------------------------------------------- pools
+
+  /** The selected spawn's pool (with the pending changes). */
+  protected readonly selectedPool = computed(() => {
+    const spawn = this.selectedSpawn();
+    return spawn && this.poolRows().find((row) => row.type === spawn.type && row.guid === spawn.guid);
+  });
+  /** How many spawns are selected: the pool panel acts on all of them. */
+  protected readonly selectionCount = computed(() => 1 + this.groupSpawns().length);
+
+  /** Changes the chance of the selected spawns in their pools. */
+  protected setPoolChance(chance: number): void {
+    for (const spawn of this.selection()) {
+      const current = this.poolRows().find((row) => row.type === spawn.type && row.guid === spawn.guid);
+      if (current) {
+        this.changes.setPoolMember({ type: spawn.type, guid: spawn.guid, pool: current.pool, chance }, this.storedPool(spawn));
+      }
+    }
+    this.bump();
+  }
+
+  /** Takes the selected spawns out of their pools. */
+  protected leavePool(): void {
+    for (const spawn of this.selection()) {
+      this.changes.setPoolMember({ type: spawn.type, guid: spawn.guid, pool: null, chance: 0 }, this.storedPool(spawn));
+    }
+    this.bump();
+  }
+
+  /** Puts the selected spawns in a pool. */
+  protected joinPool({ pool, chance }: { pool: number; chance: number }): void {
+    for (const spawn of this.selection()) {
+      this.changes.setPoolMember({ type: spawn.type, guid: spawn.guid, pool, chance }, this.storedPool(spawn));
+    }
+    this.bump();
+  }
+
+  /** Makes a pool (the next free `pool_template.entry`) holding the selected spawns. */
+  protected async createPool({ maxLimit, description }: { maxLimit: number; description: string }): Promise<void> {
+    try {
+      const entry = await this.service.getFreePoolId(this.changes.newPools().map((pool) => pool.entry));
+      this.changes.createPool({ entry, maxLimit, description });
+      this.joinPool({ pool: entry, chance: 0 });
+    } catch (error) {
+      this.showError(error);
+    }
+  }
+
+  protected openPool(id: number): void {
+    (this.links as NonNullable<typeof this.links>).openPool(id);
+  }
+
+  /** The selected spawn and the ones selected with it. */
+  private selection(): SpawnRecord[] {
+    return [this.selectedSpawn() as SpawnRecord, ...this.groupSpawns()];
+  }
+
+  /** The pool a spawn is in, in the database. */
+  private storedPool(spawn: SpawnRecord): { pool: number; chance: number } | null {
+    const row = this.pools().find((member) => member.type === spawn.type && member.guid === spawn.guid);
+    return row ? { pool: row.pool, chance: row.chance } : null;
+  }
+
   protected editSpawn(fields: Record<string, number>): void {
     const spawn = this.selectedSpawn() as SpawnRecord;
     this.changes.editSpawnFields(spawn, (this.spawnStored() as { values: Record<string, number> }).values, fields);
@@ -3676,7 +3747,7 @@ export class WorldEditorComponent implements OnInit {
       return Number(overlay[1]);
     }
     const spawn = this.findSpawn(key);
-    return spawn && this.pools().find((row) => row.type === spawn.type && row.guid === spawn.guid)?.pool;
+    return spawn && this.poolRows().find((row) => row.type === spawn.type && row.guid === spawn.guid)?.pool;
   });
   /** Every spawn of that pool (undefined while they load). */
   protected readonly contextPoolMembers = signal<PoolSpawn[] | undefined>(undefined);

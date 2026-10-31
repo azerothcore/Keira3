@@ -2,6 +2,7 @@ import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { CreatureHandlerService } from '@keira/features/creature';
 import { GameobjectHandlerService } from '@keira/features/gameobject';
+import { PoolHandlerService } from '@keira/features/pools';
 import { WaypointHandlerService, WaypointScriptsHandlerService } from '@keira/features/waypoints';
 import { WorldEditorLinks } from '@keira/shared/constants';
 import { SaiHandlerService } from '@keira/shared/sai-editor';
@@ -17,6 +18,7 @@ export function worldEditorLinks(): WorldEditorLinks {
   const sai = inject(SaiHandlerService);
   const path = inject(WaypointHandlerService);
   const script = inject(WaypointScriptsHandlerService);
+  const pool = inject(PoolHandlerService);
   return {
     openCreature: (entry, name) => creature.select(false, entry, name),
     openCreatureSai: (entry, name) => {
@@ -35,5 +37,6 @@ export function worldEditorLinks(): WorldEditorLinks {
     },
     openPath: (id) => path.select(false, id, `${id}`),
     openWaypointScript: (id) => script.select(false, id, `${id}`),
+    openPool: (id) => pool.select(false, id, `${id}`),
   };
 }

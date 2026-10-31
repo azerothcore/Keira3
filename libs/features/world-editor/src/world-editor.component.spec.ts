@@ -278,6 +278,7 @@ describe(WorldEditorComponent.name, () => {
       loadAreaTriggerInfo: vi.fn(),
       getMaxGuid: vi.fn(),
       getFreePathId: vi.fn(),
+      getFreePoolId: vi.fn(),
       getEntryName: vi.fn(),
       getEntryDisplay: vi.fn(),
       searchTele: vi.fn(),
@@ -303,6 +304,7 @@ describe(WorldEditorComponent.name, () => {
     openLoot: vi.fn(),
     openPath: vi.fn(),
     openWaypointScript: vi.fn(),
+    openPool: vi.fn(),
   };
 
   const setup = async (
@@ -3709,6 +3711,97 @@ describe(WorldEditorComponent.name, () => {
       page.click('waypoint-insert');
       await settle(page);
       expect(page.placementValue('x')).toBe(-8917.5);
+    });
+  });
+
+  describe('pools of the selection', () => {
+    const typeInto = (page: { byId<T>(id: string): { nativeElement: T } }, id: string, value: string, event = 'input') => {
+      const input = page.byId<HTMLInputElement>(id).nativeElement;
+      input.value = value;
+      input.dispatchEvent(new Event(event));
+    };
+
+    it('puts the selection in a new pool, changes chances, takes it out and opens the pool', async () => {
+      mocks.service.getFreePoolId.mockResolvedValue(900);
+      const { page } = await setup();
+      await loadArea(page);
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:1', position: { x: 0, y: 0, z: 0 } });
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:2', position: { x: 0, y: 0, z: 0 }, additive: true });
+      await settle(page);
+      typeInto(page, 'pool-new-max', '1');
+      typeInto(page, 'pool-new-description', ' Rares ');
+      page.click('pool-create');
+      await settle(page);
+      expect(mocks.service.getFreePoolId).toHaveBeenCalledWith([]);
+      expect(page.pendingLines()).toEqual(['Create pool 900', 'Put creature 1 in pool 900', 'Put creature 2 in pool 900']);
+      expect(page.text('pool-name')).toContain('WORLD_EDITOR.POOL_N');
+      typeInto(page, 'pool-chance', '50', 'change');
+      await settle(page);
+      expect(page.text('pending-sql')).toContain('VALUES (1, 900, 50);');
+      // a chance out of 0–100 is put back
+      typeInto(page, 'pool-chance', '150', 'change');
+      expect(page.byId<HTMLInputElement>('pool-chance').nativeElement.value).toBe('50');
+      page.click('pool-open');
+      expect(links.openPool).toHaveBeenCalledWith(900);
+      // another new pool comes after it
+      page.viewer().picked.emit({ type: 'spawn', key: 'gameobject:3', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      page.click('pool-create');
+      await settle(page);
+      expect(mocks.service.getFreePoolId).toHaveBeenLastCalledWith([900]);
+      page.click('pool-leave');
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:1', position: { x: 0, y: 0, z: 0 } });
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:2', position: { x: 0, y: 0, z: 0 }, additive: true });
+      await settle(page);
+      page.click('pool-leave');
+      await settle(page);
+      expect(page.pendingLines()).toEqual([]);
+    });
+
+    it('puts the selection in a pool, and takes a pooled spawn out', async () => {
+      mocks.service.loadPools.mockResolvedValue([{ type: 'creature', guid: 1, pool: 7, chance: 10, maxLimit: 1, description: 'Rares' }]);
+      const { page } = await setup();
+      await loadArea(page);
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:2', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      // nothing happens without a pool
+      page.click('pool-join');
+      await settle(page);
+      expect(page.pendingLines()).toEqual([]);
+      typeInto(page, 'pool-join-id', '7');
+      typeInto(page, 'pool-join-chance', '20');
+      page.click('pool-join');
+      await settle(page);
+      expect(page.pendingLines()).toEqual(['Put creature 2 in pool 7']);
+      expect(page.text('pool-max')).toContain('1');
+      // the pooled one (with an object in no pool): its chance, then out of its pool
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:1', position: { x: 0, y: 0, z: 0 } });
+      page.viewer().picked.emit({ type: 'spawn', key: 'gameobject:3', position: { x: 0, y: 0, z: 0 }, additive: true });
+      await settle(page);
+      typeInto(page, 'pool-chance', '30', 'change');
+      await settle(page);
+      expect(page.pendingLines()).toEqual(['Put creature 2 in pool 7', 'Put creature 1 in pool 7']);
+      page.click('pool-leave');
+      await settle(page);
+      expect(page.pendingLines()).toEqual(['Put creature 2 in pool 7', 'Take creature 1 out of its pool']);
+      // a bad max_limit makes no pool
+      typeInto(page, 'pool-new-max', '-1');
+      page.click('pool-create');
+      await settle(page);
+      expect(mocks.service.getFreePoolId).not.toHaveBeenCalled();
+    });
+
+    it('says when no pool can be made', async () => {
+      mocks.service.getFreePoolId.mockRejectedValue(new Error('no table'));
+      const { page } = await setup({ links: false });
+      await loadArea(page);
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:1', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      typeInto(page, 'pool-new-max', '');
+      page.click('pool-create');
+      await settle(page);
+      expect(mocks.toastr.error).toHaveBeenCalled();
+      expect(page.pendingLines()).toEqual([]);
     });
   });
 

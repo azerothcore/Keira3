@@ -1879,7 +1879,16 @@
     "GAME_MAP_ZOOM_RESET": "Mapa completo",
     "GAME_MAP_TIP": "Consejo: clic derecho (o Alt + clic) copia un comando .go",
     "MODIFY": "Modificar",
-    "OPEN_WAYPOINT_SCRIPT": "Abrir el script del punto"
+    "OPEN_WAYPOINT_SCRIPT": "Abrir el script del punto",
+    "POOL_N": "Pool {{pool}}",
+    "POOL_CHANCE": "Probabilidad",
+    "POOL_LEAVE": "Sacar del pool",
+    "POOL_LEAVE_ALL": "Sacar los {{count}} de sus pools",
+    "POOL_OPEN": "Abrir en el editor de pools",
+    "POOL_ADD_TO": "Pool",
+    "POOL_ADD": "Añadir ({{count}})",
+    "POOL_NEW": "Nuevo pool",
+    "POOL_CREATE": "Crear ({{count}})"
   },
   "SETTINGS": {
     "TITLE": "Ajustes",
