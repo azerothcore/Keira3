@@ -1937,7 +1937,8 @@
     "OFFLINE_PLAYERS_HELP": "Where offline characters were left (grey).",
     "PLAYERS_ERROR": "Can't read {{database}}.characters (Settings > Server: the database name, and that the login can read it).",
     "LEGEND_PLAYER": "Player online",
-    "LEGEND_OFFLINE_PLAYER": "Offline character"
+    "LEGEND_OFFLINE_PLAYER": "Offline character",
+    "POOL_MOTHER": "In pool"
   },
   "SETTINGS": {
     "TITLE": "Settings",

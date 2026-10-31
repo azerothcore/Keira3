@@ -467,6 +467,7 @@ describe(WorldEditorComponent.name, () => {
     mocks.service.getMaxGuid.mockResolvedValue(1000);
     mocks.service.getFreePathId.mockResolvedValue(20);
     mocks.service.loadPlayers.mockResolvedValue([]);
+    mocks.service.loadPoolMembers.mockResolvedValue([]);
     mocks.service.getEntryName.mockResolvedValue('Marshal McBride');
     mocks.service.getEntryDisplay.mockResolvedValue({ displayId: 1, scale: 1 });
     mocks.service.searchTele.mockResolvedValue([{ id: 7, name: 'Northshire', map: 1, x: 1, y: 2, z: 3 }]);
@@ -2708,7 +2709,8 @@ describe(WorldEditorComponent.name, () => {
     it('lists the spawns of a pool, selects the loaded ones and goes to the others', async () => {
       mocks.service.loadPools.mockResolvedValue([{ type: 'creature', guid: 1, pool: 7, chance: 0, maxLimit: 1, description: 'Rares' }]);
       let resolveMembers: (members: unknown[]) => void = () => undefined;
-      mocks.service.loadPoolMembers.mockReturnValueOnce(new Promise((resolve) => (resolveMembers = resolve)));
+      // (the pool panel of the selected spawn reads them too)
+      mocks.service.loadPoolMembers.mockReturnValue(new Promise((resolve) => (resolveMembers = resolve)));
       const { page } = await setup();
       await loadArea(page);
       await rightClick(page, 'creature:1');
@@ -3921,6 +3923,85 @@ describe(WorldEditorComponent.name, () => {
       page.click('pool-create');
       await settle(page);
       expect(mocks.service.getFreePoolId).not.toHaveBeenCalled();
+    });
+
+    it("changes the pool's max_limit, description and mother pool, and says what the world server will think", async () => {
+      mocks.service.loadPools.mockResolvedValue([
+        { type: 'creature', guid: 1, pool: 7, chance: 10, maxLimit: 1, description: 'Rares', mother: null, motherChance: 0 },
+      ]);
+      const member = (guid: number, chance: number) => ({ type: 'creature', guid, entry: 1, name: '', map: 0, x: 0, y: 0, z: 0, chance });
+      mocks.service.loadPoolMembers.mockResolvedValue([member(1, 10), member(9, 50)]);
+      const { page } = await setup();
+      await loadArea(page);
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:1', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      // 10 + 50 is not 100
+      expect(page.text('pool-problem-CHANCE_SUM')).toContain('POOLS.PROBLEM_CHANCE_SUM');
+      typeInto(page, 'pool-max-limit', '2', 'change');
+      await settle(page);
+      expect(page.pendingLines()).toEqual(['Edit pool 7']);
+      expect(page.byId('pool-problem-CHANCE_SUM', false)).toBeFalsy();
+      expect(page.text('pool-problem-CHANCE_IGNORED')).toContain('POOLS.PROBLEM_CHANCE_IGNORED');
+      // a bad max_limit keeps it; the description changes
+      typeInto(page, 'pool-max-limit', '-1', 'change');
+      typeInto(page, 'pool-description', ' Rare spawns ', 'change');
+      await settle(page);
+      expect(page.text('pool-max')).toContain('2');
+      // in a mother pool, then in none again
+      typeInto(page, 'pool-mother', '17');
+      typeInto(page, 'pool-mother-chance', '50', 'change');
+      await settle(page);
+      expect(page.pendingLines()).toEqual(['Edit pool 7', 'Put pool 7 in pool 17']);
+      typeInto(page, 'pool-mother-chance', '150', 'change');
+      typeInto(page, 'pool-mother', '', 'change');
+      await settle(page);
+      expect(page.pendingLines()).toEqual(['Edit pool 7']);
+      // back as stored
+      typeInto(page, 'pool-max-limit', '1', 'change');
+      typeInto(page, 'pool-description', 'Rares', 'change');
+      await settle(page);
+      expect(page.pendingLines()).toEqual([]);
+    });
+
+    it('reads the members of a pool once, and drops the answer for a pool no longer selected', async () => {
+      mocks.service.loadPools.mockResolvedValue([
+        { type: 'creature', guid: 1, pool: 7, chance: 0, maxLimit: 1, description: '', mother: null, motherChance: 0 },
+        { type: 'creature', guid: 2, pool: 8, chance: 0, maxLimit: 1, description: '', mother: null, motherChance: 0 },
+      ]);
+      let answer: (members: unknown[]) => void = () => undefined;
+      mocks.service.loadPoolMembers.mockReturnValueOnce(new Promise((resolve) => (answer = resolve)));
+      const { page } = await setup();
+      await loadArea(page);
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:1', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:2', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      answer([{ type: 'creature', guid: 1, entry: 1, name: '', map: 0, x: 0, y: 0, z: 0, chance: 150 }]);
+      await settle(page);
+      expect(page.byId('pool-problem-CHANCE_RANGE', false)).toBeFalsy();
+      const calls = mocks.service.loadPoolMembers.mock.calls.length;
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:2', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      expect(mocks.service.loadPoolMembers.mock.calls.length).toBe(calls);
+    });
+
+    it('checks nothing when the members of the pool can not be read, and reads them again next time', async () => {
+      mocks.service.loadPools.mockResolvedValue([
+        { type: 'creature', guid: 1, pool: 7, chance: 0, maxLimit: 1, description: '', mother: null, motherChance: 0 },
+        { type: 'creature', guid: 2, pool: 8, chance: 0, maxLimit: 1, description: '', mother: null, motherChance: 0 },
+      ]);
+      mocks.service.loadPoolMembers.mockRejectedValueOnce(new Error('no pool_creature'));
+      const { page } = await setup();
+      await loadArea(page);
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:1', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      expect(page.byId('pool-panel')).toBeTruthy();
+      expect(page.byId('pool-problem-CHANCE_SUM', false)).toBeFalsy();
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:2', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:1', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      expect(mocks.service.loadPoolMembers).toHaveBeenCalledTimes(3);
     });
 
     it('makes one pool at a time, of the spawns selected when asked', async () => {

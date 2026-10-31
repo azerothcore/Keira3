@@ -667,7 +667,8 @@ export class WorldEditorService {
       if (guids.length) {
         parts.push(
           `SELECT '${type}' AS type, p.guid, p.pool_entry AS pool, p.chance, IFNULL(t.max_limit, 0) AS maxLimit, ` +
-            `IFNULL(t.description, IFNULL(p.description, '')) AS description FROM pool_${type} p ` +
+            `IFNULL(t.description, IFNULL(p.description, '')) AS description, m.mother_pool AS mother, IFNULL(m.chance, 0) AS motherChance ` +
+            `FROM pool_${type} p LEFT JOIN pool_pool m ON m.pool_id = p.pool_entry ` +
             `LEFT JOIN pool_template t ON t.entry = p.pool_entry WHERE p.guid IN (${guids.join(', ')})`,
         );
       }
@@ -683,6 +684,8 @@ export class WorldEditorService {
       chance: Number(row['chance']),
       maxLimit: Number(row['maxLimit']),
       description: String(row['description'] ?? ''),
+      mother: row['mother'] === null || row['mother'] === undefined ? null : Number(row['mother']),
+      motherChance: Number(row['motherChance'] ?? 0),
     }));
   }
 
@@ -803,7 +806,7 @@ export class WorldEditorService {
   /** Every creature and gameobject of a pool (`pool_creature` / `pool_gameobject`), wherever it is. */
   async loadPoolMembers(pool: number): Promise<PoolSpawn[]> {
     const part = (type: SpawnType, table: string, template: string): string =>
-      `SELECT '${type}' AS type, s.guid, s.id AS entry, IFNULL(t.name, '') AS name, s.map, ` +
+      `SELECT '${type}' AS type, s.guid, s.id AS entry, IFNULL(t.name, '') AS name, s.map, p.chance, ` +
       `s.position_x AS x, s.position_y AS y, s.position_z AS z FROM pool_${type} p ` +
       `JOIN ${table} s ON s.guid = p.guid LEFT JOIN ${template} t ON t.entry = s.id WHERE p.pool_entry = ${Math.trunc(pool)}`;
     const rows = await firstValueFrom(
@@ -821,6 +824,7 @@ export class WorldEditorService {
       x: Number(row['x']),
       y: Number(row['y']),
       z: Number(row['z']),
+      chance: Number(row['chance'] ?? 0),
     }));
   }
 

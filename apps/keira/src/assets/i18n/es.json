@@ -1937,7 +1937,8 @@
     "OFFLINE_PLAYERS_HELP": "Donde se quedaron los personajes desconectados (gris).",
     "PLAYERS_ERROR": "No se puede leer {{database}}.characters (Ajustes > Servidor: el nombre de la base de datos, y que el usuario pueda leerla).",
     "LEGEND_PLAYER": "Jugador conectado",
-    "LEGEND_OFFLINE_PLAYER": "Personaje desconectado"
+    "LEGEND_OFFLINE_PLAYER": "Personaje desconectado",
+    "POOL_MOTHER": "En el pool"
   },
   "SETTINGS": {
     "TITLE": "Ajustes",

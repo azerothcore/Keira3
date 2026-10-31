@@ -1,3 +1,4 @@
+import { PoolProblem } from '@keira/shared/utils';
 import { ChangeDetectionStrategy, Component, computed, effect, inject, untracked } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PoolQuest } from '@keira/shared/acore-world-model';
@@ -7,7 +8,6 @@ import { QuestSelectorBtnComponent } from '@keira/shared/selectors';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { Lookup } from '../lookup';
-import { PoolProblem } from '../pool-checks';
 import { PoolMembersComponent } from '../pool-members.component';
 import { PoolQuestService } from './pool-quest.service';
 
