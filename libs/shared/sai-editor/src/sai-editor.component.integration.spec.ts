@@ -202,6 +202,16 @@ describe('SaiEditorComponent integration tests', () => {
       expect(handlerService.isSaiUnsaved()).toBe(false);
     });
 
+    it("checks the script as it's edited", () => {
+      const { page } = setup(true);
+      expect(page.query('#sai-checks', false)).toBeFalsy();
+      page.addNewRow();
+      page.setInputValueById('event_chance', 0);
+      expect(page.query('#sai-check-CHANCE_ZERO').textContent).toContain('id 0');
+      page.setInputValueById('event_chance', 100);
+      expect(page.query('#sai-checks', false)).toBeFalsy();
+    });
+
     it('adding new rows and executing the query should correctly work', () => {
       const { querySpy, page } = setup(true);
       const expectedQuery =
