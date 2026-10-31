@@ -1,4 +1,4 @@
-<div class="top-bar">
+<div class="top-bar position-relative">
   @if (selected) {
     <span [class]="scssClass">
       @if (isNew()) {
@@ -7,5 +7,6 @@
         Editing: {{ selectedName() }} ({{ selected }})
       }
     </span>
+    <keira-field-filter />
   }
 </div>

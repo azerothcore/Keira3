@@ -1,9 +1,11 @@
 import { ChangeDetectionStrategy, Component, Input, input } from '@angular/core';
+import { FieldFilterComponent } from '../field-filter/field-filter.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-top-bar',
   templateUrl: './top-bar.component.html',
+  imports: [FieldFilterComponent],
 })
 export class TopBarComponent {
   @Input({ required: true }) selected: string | undefined;
