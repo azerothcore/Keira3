@@ -9,6 +9,7 @@
 @use 'ngx-ui-switch/ui-switch.component' as ui-switch;
 @use 'ngx-toastr/toastr.css' as toastr;
 
+@use 'theme';
 @use 'bootstrap5-overrides';
 @use 'ngx-datatable';
 @use 'content';

@@ -1,0 +1,59 @@
+// Keira's colours, as CSS variables: light by default, dark with Bootstrap's dark mode (data-bs-theme="dark" on the
+// page, set by the ThemeService). A theme of one's own sets some of them over these (Settings > Appearance).
+:root,
+[data-bs-theme='light'] {
+  --keira-page-bg: #e3e3e3;
+  --keira-content-bg: #fafafa;
+  --keira-row-bg: #f7f7f7;
+  --keira-row-hover: #eeeeee;
+  --keira-border: #e7e7e7;
+  --keira-muted: #666666;
+  --keira-accent: #8261a7;
+  --keira-link: #5d176a;
+  --keira-code-bg: #efefef;
+  --keira-top-bar-bg: #000000;
+}
+
+[data-bs-theme='dark'] {
+  --keira-page-bg: #15181c;
+  --keira-content-bg: #22262c;
+  --keira-row-bg: #282d34;
+  --keira-row-hover: #323842;
+  --keira-border: #3a4048;
+  --keira-muted: #a3abb5;
+  --keira-accent: #9d7cc4;
+  --keira-link: #c9a6e8;
+  --keira-code-bg: #1b1f24;
+  --keira-top-bar-bg: #000000;
+
+  // highlight.js (its github theme is light): GitHub's dark colours
+  .hljs {
+    color: #c9d1d9;
+  }
+
+  .hljs-keyword,
+  .hljs-built_in,
+  .hljs-type {
+    color: #ff7b72;
+  }
+
+  .hljs-string,
+  .hljs-regexp {
+    color: #a5d6ff;
+  }
+
+  .hljs-number,
+  .hljs-literal,
+  .hljs-attr {
+    color: #79c0ff;
+  }
+
+  .hljs-comment {
+    color: #8b949e;
+  }
+
+  .hljs-title,
+  .hljs-symbol {
+    color: #d2a8ff;
+  }
+}

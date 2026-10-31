@@ -1,7 +1,7 @@
 @use 'variables' as *;
 
 .top-bar {
-  background-color: #000;
+  background-color: var(--keira-top-bar-bg);
   color: $content-block-bg-color;
   font-family: monospace;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);

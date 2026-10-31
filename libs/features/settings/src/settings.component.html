@@ -1,5 +1,63 @@
 <div class="container-fluid keira-settings" data-testid="settings-page">
   <h3 class="mt-3">{{ 'SETTINGS.TITLE' | translate }}</h3>
+  <section class="card mb-3" data-testid="appearance">
+    <div class="card-header">{{ 'SETTINGS.APPEARANCE' | translate }}</div>
+    <div class="card-body">
+      <div class="row g-2 align-items-center mb-2">
+        <label class="col-auto col-form-label" for="theme-select">{{ 'SETTINGS.THEME' | translate }}</label>
+        <div class="col-auto">
+          <select class="form-select form-select-sm" id="theme-select" data-testid="theme-select" (change)="selectTheme($event)">
+            @for (name of builtIn; track name) {
+              <option [value]="name" [selected]="theme.choice() === name">{{ 'SETTINGS.THEME_' + name.toUpperCase() | translate }}</option>
+            }
+            @for (custom of theme.custom(); track custom.name) {
+              <option [value]="custom.name" [selected]="theme.choice() === custom.name">{{ custom.name }}</option>
+            }
+          </select>
+        </div>
+        <div class="col-auto">
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-testid="theme-copy" (click)="copyTheme()">
+            <i class="fa fa-copy"></i> {{ 'SETTINGS.THEME_COPY' | translate }}
+          </button>
+          @if (isCustom(theme.choice())) {
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-danger ms-1"
+              data-testid="theme-remove"
+              (click)="theme.removeTheme(theme.choice())"
+            >
+              <i class="fa fa-trash"></i> {{ 'SETTINGS.THEME_REMOVE' | translate }}
+            </button>
+          }
+        </div>
+      </div>
+      <p class="text-muted small mb-1">{{ 'SETTINGS.THEME_HELP' | translate }}</p>
+      <textarea
+        class="form-control form-control-sm font-monospace mb-1"
+        rows="4"
+        data-testid="theme-json"
+        [value]="themeJson()"
+        [placeholder]="'{ &quot;name&quot;: &quot;My theme&quot;, &quot;base&quot;: &quot;dark&quot;, &quot;colors&quot;: { &quot;--keira-accent&quot;: &quot;#e67e22&quot; } }'"
+        (input)="setThemeJson($event)"
+      ></textarea>
+      @if (themeError()) {
+        <div class="text-danger small mb-1" data-testid="theme-error">{{ themeError() }}</div>
+      }
+      <button
+        type="button"
+        class="btn btn-sm btn-primary"
+        data-testid="theme-import"
+        [disabled]="!themeJson().trim()"
+        (click)="importTheme()"
+      >
+        {{ 'SETTINGS.THEME_IMPORT' | translate }}
+      </button>
+      <label class="btn btn-sm btn-outline-primary ms-1 mb-0">
+        <i class="fa fa-file-import"></i> {{ 'SETTINGS.THEME_IMPORT_FILE' | translate }}
+        <input type="file" accept=".json,application/json" hidden data-testid="theme-file" (change)="importThemeFile($event)" />
+      </label>
+    </div>
+  </section>
   <section class="card mb-3">
     <div class="card-header">{{ 'SETTINGS.GAME_DATA' | translate }}</div>
     <div class="card-body">

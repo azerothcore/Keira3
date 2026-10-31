@@ -1916,7 +1916,19 @@
     "TITLE": "Settings",
     "GAME_DATA": "Game data",
     "GAME_DATA_HELP": "The folders the World Editor reads the game from (the WoW client, and optionally the server's data and the AzerothCore source), and where it keeps what it processed. They are kept on this computer.",
-    "SAVED": "Settings saved"
+    "SAVED": "Settings saved",
+    "APPEARANCE": "Appearance",
+    "THEME": "Theme",
+    "THEME_SYSTEM": "Like the computer (light or dark)",
+    "THEME_LIGHT": "Light",
+    "THEME_DARK": "Dark",
+    "THEME_COPY": "Copy as JSON",
+    "THEME_REMOVE": "Remove",
+    "THEME_HELP": "Themes are JSON anyone can make and share: a name, the theme it starts from (light or dark) and the colours it changes. Copy a built-in theme for a template of every colour.",
+    "THEME_IMPORT": "Import theme",
+    "THEME_IMPORT_FILE": "From a file",
+    "THEME_IMPORTED": "Theme \"{{name}}\" imported",
+    "THEME_COPIED": "Theme copied"
   },
   "WAYPOINTS": {
     "SELECT_PATH": "Select an existing path",
