@@ -11,27 +11,16 @@ interface Stateful {
   [key: string]: unknown;
 }
 
-const registered = new Set<WeakRef<Stateful>>();
+/** (Keira's handlers and editors are made once and live as long as Keira.) */
+const registered = new Set<Stateful>();
 
 /** Called by every handler and editor when made. */
 export function registerTabState(service: object): void {
-  registered.add(new WeakRef(service as Stateful));
+  registered.add(service as Stateful);
 }
 
-/** The handlers and editors alive. */
-function alive(): Stateful[] {
-  const services: Stateful[] = [];
-  for (const ref of registered) {
-    const service = ref.deref();
-    if (service) {
-      services.push(service);
-    } else {
-      /* istanbul ignore next */ // (collected by the garbage collector: can't be made to happen in a test)
-      registered.delete(ref);
-    }
-  }
-  return services;
-}
+/** The handlers and editors made. */
+const alive = (): Stateful[] => [...registered];
 
 /** The part of Keira (first path segment) of a handler: from its editor's route. */
 function handlerSection(handler: Stateful): string | undefined {
