@@ -63,7 +63,9 @@
     "LOAD_RECENT": "加载最近的",
     "CLEAR_ALL": "全部清除",
     "CONNECT": "连接",
-    "CREATED_BY": "创建者"
+    "CREATED_BY": "创建者",
+    "TIMEOUT": "超时（毫秒）",
+    "TIMEOUT_TOOLTIP": "放弃前等待数据库的时间（毫秒；10000 即 10 秒）。服务器较慢或较远时请调高。"
   },
   "SIDEBAR": {
     "DASHBOARD": "仪表盘",

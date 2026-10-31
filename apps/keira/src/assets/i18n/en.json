@@ -63,7 +63,9 @@
     "LOAD_RECENT": "Load recent",
     "CLEAR_ALL": "Clear all",
     "CONNECT": "Connect",
-    "CREATED_BY": "Created by"
+    "CREATED_BY": "Created by",
+    "TIMEOUT": "Timeout (ms)",
+    "TIMEOUT_TOOLTIP": "How long to wait for the database before giving up (milliseconds; 10000 is 10 seconds). Raise it for slow or far servers."
   },
   "SIDEBAR": {
     "DASHBOARD": "Dashboard",
