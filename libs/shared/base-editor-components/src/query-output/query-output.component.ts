@@ -23,6 +23,7 @@ import { HighlightjsWrapperComponent } from '../highlightjs-wrapper/highlightjs-
 import { ModalConfirmComponent } from '../modal-confirm/modal-confirm.component';
 import { QueryErrorComponent } from './query-error/query-error.component';
 import { QueryError } from 'mysql2';
+import { CompareResult, compareEntities, EntityCompareService, EntitySnapshot } from './entity-compare';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -50,6 +51,45 @@ export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandle
   private modalRef!: BsModalRef;
 
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
+
+  private readonly compareService = inject(EntityCompareService);
+  protected readonly pinned = this.compareService.pinned;
+  protected readonly showCompare = signal(false);
+
+  /** The entity shown, as rows (for comparing it with another). */
+  private snapshot(): EntitySnapshot {
+    const editor = this.editorService as EditorService<T> & { newRows?: T[]; entitySecondIdField?: string };
+    return {
+      table: this.entityTable(),
+      id: editor.loadedEntityId,
+      rows: editor.newRows ? [...editor.newRows] : [editor.form.getRawValue() as TableRow],
+      ...(editor.newRows ? { key: editor.entitySecondIdField } : {}),
+    };
+  }
+
+  /** Pins the entity shown for comparison, or unpins it. */
+  togglePin(): void {
+    const pinned = this.pinned();
+    this.compareService.pinned.set(pinned && this.isPinnedHere() ? undefined : this.snapshot());
+    this.showCompare.set(false);
+  }
+
+  /** Whether the pinned entity is the one shown. */
+  isPinnedHere(): boolean {
+    const pinned = this.pinned();
+    return !!pinned && pinned.table === this.entityTable() && pinned.id === this.editorService.loadedEntityId;
+  }
+
+  /** Whether another entity of this editor is pinned (to compare with). */
+  canCompare(): boolean {
+    const pinned = this.pinned();
+    return !!pinned && pinned.table === this.entityTable() && pinned.id !== this.editorService.loadedEntityId;
+  }
+
+  /** How the entity shown differs from the pinned one. */
+  comparison(): CompareResult {
+    return compareEntities(this.pinned() as EntitySnapshot, this.snapshot());
+  }
 
   readonly showFullQuery = computed<boolean>(() => this.isNew() || this.selectedQuery() === 'full');
 

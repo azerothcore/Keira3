@@ -1,5 +1,5 @@
 import { vi } from 'vitest';
-import { Component, provideZonelessChangeDetection, viewChild } from '@angular/core';
+import { Component, provideZonelessChangeDetection, signal, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
@@ -225,5 +225,105 @@ describe('QueryOutputComponent', () => {
     });
 
     // closeModalsAfterEach();
+  });
+
+  describe('comparing two entities', () => {
+    @Component({
+      template: `<keira-query-output
+        [isNew]="false"
+        diffQuery=""
+        fullQuery=""
+        [error]="null!"
+        [entityTable]="table()"
+        [editorService]="service()"
+      />`,
+      imports: [TranslateTestingModule, QueryOutputComponent],
+    })
+    class CompareHostComponent {
+      readonly table = signal('');
+      readonly service = signal<EditorService<TableRow>>({} as EditorService<TableRow>);
+    }
+    const setupCompare = () => {
+      const fixture = TestBed.createComponent(CompareHostComponent);
+      const page = new QueryOutputComponentPage<CompareHostComponent>(fixture);
+      const host = {
+        set entityTable(table: string) {
+          fixture.componentInstance.table.set(table);
+        },
+        set editorService(service: EditorService<TableRow>) {
+          fixture.componentInstance.service.set(service);
+        },
+      };
+      return { page, host };
+    };
+    const single = (id: string, row: TableRow) =>
+      ({ loadedEntityId: id, form: { getRawValue: () => row }, reloadSameEntity() {} }) as unknown as EditorService<TableRow>;
+    const multi = (id: string, rows: TableRow[]) =>
+      ({ loadedEntityId: id, newRows: rows, entitySecondIdField: 'item', reloadSameEntity() {} }) as unknown as EditorService<TableRow>;
+    const el = (page: { query<T extends HTMLElement>(s: string, a?: boolean): T }, selector: string) =>
+      page.query<HTMLElement>(selector, false);
+
+    it('pins an entity, then shows how another of the same table differs from it', () => {
+      const { page, host } = setupCompare();
+      host.entityTable = 'creature_template';
+      host.editorService = single('1', { entry: 1, name: 'A', minlevel: 5 });
+      page.detectChanges();
+      expect(el(page, '#compare-btn')).toBeFalsy();
+      page.clickElement(page.query('#compare-pin-btn'));
+      expect(page.query('#compare-pin-btn').textContent).toContain('COMPARE.UNPIN');
+      expect(el(page, '#compare-btn')).toBeFalsy();
+      // another creature: what differs
+      host.editorService = single('2', { entry: 2, name: 'B', minlevel: 5 });
+      page.detectChanges();
+      page.clickElement(page.query('#compare-btn'));
+      expect(page.query('#compare-table').textContent).toContain('name');
+      expect(page.query('#compare-table').textContent).not.toContain('minlevel');
+      page.clickElement(page.query('#compare-btn'));
+      expect(el(page, '#compare-panel')).toBeFalsy();
+      // the same values: nothing differs
+      host.editorService = single('3', { entry: 3, name: 'A', minlevel: 5 });
+      page.detectChanges();
+      page.clickElement(page.query('#compare-btn'));
+      expect(el(page, '#compare-same')).toBeTruthy();
+      // another table: nothing to compare with; pinning there replaces the pin
+      host.entityTable = 'item_template';
+      page.detectChanges();
+      expect(el(page, '#compare-btn')).toBeFalsy();
+      page.clickElement(page.query('#compare-pin-btn'));
+      host.entityTable = 'creature_template';
+      page.detectChanges();
+      expect(el(page, '#compare-btn')).toBeFalsy();
+    });
+
+    it('matches the rows of multi-row editors, and unpins', () => {
+      const { page, host } = setupCompare();
+      host.entityTable = 'npc_vendor';
+      host.editorService = multi('1', [
+        { entry: 1, item: 10, maxcount: 0 },
+        { entry: 1, item: 11, maxcount: 0 },
+      ]);
+      page.detectChanges();
+      page.clickElement(page.query('#compare-pin-btn'));
+      host.editorService = multi('2', [
+        { entry: 2, item: 10, maxcount: 5 },
+        { entry: 2, item: 12, maxcount: 0 },
+      ]);
+      page.detectChanges();
+      page.clickElement(page.query('#compare-btn'));
+      expect(page.query('#compare-table').textContent).toContain('maxcount');
+      expect(page.query('#compare-only-pinned').textContent).toContain('11');
+      expect(page.query('#compare-only-current').textContent).toContain('12');
+      // only pinned rows, or only current ones
+      host.editorService = multi('3', [{ entry: 3, item: 10, maxcount: 0 }]);
+      page.detectChanges();
+      expect(el(page, '#compare-only-current')).toBeFalsy();
+      host.editorService = multi('1', [
+        { entry: 1, item: 10, maxcount: 0 },
+        { entry: 1, item: 11, maxcount: 0 },
+      ]);
+      page.detectChanges();
+      page.clickElement(page.query('#compare-pin-btn'));
+      expect(page.query('#compare-pin-btn').textContent).toContain('COMPARE.PIN');
+    });
   });
 });

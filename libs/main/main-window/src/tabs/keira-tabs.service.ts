@@ -31,7 +31,33 @@ const SECTION_NAMES: Record<string, string> = {
   'unused-guid-search': 'SIDEBAR.UNUSED_GUID_SEARCH',
   'world-editor': 'SIDEBAR.WORLD_EDITOR',
   'sql-editor': 'SIDEBAR.SQL_EDITOR',
+  settings: 'SIDEBAR.SETTINGS',
 };
+
+/** The first page of each part (where a new tab of it opens), in the order the launcher lists them. */
+export const SECTION_START: [string, string][] = [
+  ['', '/'],
+  ['world-editor', '/world-editor'],
+  ['creature', '/creature/select'],
+  ['quest', '/quest/select'],
+  ['gameobject', '/gameobject/select'],
+  ['item', '/item/select'],
+  ['other-loots', '/other-loots/select-reference'],
+  ['texts', '/texts/select-page-text'],
+  ['gossip', '/gossip/select'],
+  ['waypoints', '/waypoints/select'],
+  ['pools', '/pools/select'],
+  ['scripts', '/scripts/select-script-waypoint'],
+  ['conditions', '/conditions/select'],
+  ['smart-ai', '/smart-ai/search-existing'],
+  ['spell', '/spell/select'],
+  ['game-tele', '/game-tele/select'],
+  ['creature-immunities', '/creature-immunities/select'],
+  ['trainer', '/trainer/select'],
+  ['unused-guid-search', '/unused-guid-search'],
+  ['sql-editor', '/sql-editor'],
+  ['settings', '/settings'],
+];
 
 /** "creature-template" → "Creature Template". */
 const humanize = (segment: string): string => segment.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
@@ -79,6 +105,17 @@ export class KeiraTabsService {
 
   show(tab: KeiraTab): void {
     void this.router.navigateByUrl(tab.url);
+  }
+
+  /** Whether a part has a tab open. */
+  isOpen(section: string): boolean {
+    return this._tabs().some((tab) => tab.section === section);
+  }
+
+  /** Opens a part from the launcher: its tab when open, else a new tab at its first page. */
+  launch(section: string): void {
+    const open = this._tabs().find((tab) => tab.section === section);
+    void this.router.navigateByUrl(open ? open.url : (SECTION_START.find(([key]) => key === section) as [string, string])[1]);
   }
 
   /** Closes a tab (a kept page lets go): the one shown closes to the tab before it (the next, for the first). */

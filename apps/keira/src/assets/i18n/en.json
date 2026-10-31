@@ -2010,5 +2010,17 @@
     "SHAPES": "Shapes",
     "SCRIPT_SPAWNS": "Scripted spawns",
     "SCRIPT_SPAWNS_HELP": "The gameobjects the core's scripts spawn themselves, not in the gameobject table: battleground flags, banners and doors, Wintergrasp's walls and towers, outdoor PvP capture points."
+  },
+  "COMPARE": {
+    "PIN": "Pin to compare",
+    "UNPIN": "Pinned (unpin)",
+    "PIN_TIP": "Keep this entity to compare another one of this editor with it (open the other one, then Compare)",
+    "WITH": "Compare with #{{id}}",
+    "SAME": "Nothing differs.",
+    "FIELD": "Field",
+    "ONLY_IN": "Rows only #{{id}} has:"
+  },
+  "TABS": {
+    "OPEN": "Open a part of Keira in a tab"
   }
 }

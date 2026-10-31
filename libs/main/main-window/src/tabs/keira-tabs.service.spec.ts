@@ -71,4 +71,18 @@ describe('KeiraTabsService', () => {
     tabs.close(tabs.tabs()[0]);
     expect(tabs.tabs()).toEqual([]);
   });
+
+  it('opens a part from the launcher: its tab when open, else its first page', async () => {
+    const { tabs, router } = setup();
+    await router.navigateByUrl('/creature/creature-template');
+    await router.navigateByUrl('/world-editor');
+    expect(tabs.isOpen('creature')).toBe(true);
+    expect(tabs.isOpen('quest')).toBe(false);
+    tabs.launch('creature');
+    await new Promise((resolve) => setTimeout(resolve));
+    expect(router.url).toBe('/creature/creature-template');
+    const navigate = vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
+    tabs.launch('quest');
+    expect(navigate).toHaveBeenCalledWith('/quest/select');
+  });
 });
