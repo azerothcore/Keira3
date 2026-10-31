@@ -33,11 +33,13 @@ describe('SelectWaypointComponent integration tests', () => {
     return { navigateSpy, querySpy, fixture, page };
   }
 
-  it('lists one row per id, with how many rows it has, and opens one', async () => {
+  it('searches by its columns, lists one row per id and opens one', async () => {
     const { fixture, page, querySpy, navigateSpy } = setup();
     await fixture.whenStable();
     expect(page.createInput.value).toEqual('10000000');
     expect(page.queryWrapper.innerText).toContain('GROUP BY');
+    page.setInputValueById('search-action', '12');
+    expect(page.queryWrapper.innerText).toContain("WHERE (`action` LIKE '%12%')");
     querySpy.mockReturnValue(of([{ id: 7 }]));
     page.clickElement(page.searchBtn);
     expect(page.getDatatableCell(0, 0).innerText).toBe('7');

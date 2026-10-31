@@ -4,7 +4,15 @@ import { TableRow } from '@keira/shared/constants';
 export const WAYPOINT_SCRIPTS_TABLE = 'waypoint_scripts';
 export const WAYPOINT_SCRIPTS_ID = 'id';
 export const WAYPOINT_SCRIPTS_ID_2 = 'guid';
-export const WAYPOINT_SCRIPTS_SEARCH_FIELDS = [WAYPOINT_SCRIPTS_ID];
+export const WAYPOINT_SCRIPTS_SEARCH_FIELDS = [
+  WAYPOINT_SCRIPTS_ID,
+  'delay',
+  'command',
+  'datalong',
+  'datalong2',
+  'dataint',
+  WAYPOINT_SCRIPTS_ID_2,
+];
 export const WAYPOINT_SCRIPTS_CUSTOM_STARTING_ID = 10_000;
 
 export class WaypointScripts extends TableRow {
