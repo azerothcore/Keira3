@@ -37,6 +37,7 @@
   "EXECUTE_AND_COPY": "Execute & copy",
   "RELOAD": "Reload",
   "CANCEL": "Cancel",
+  "CLOSE_TAB": "Close tab",
   "SELECTORS": {
     "ENABLED": "Enabled",
     "DISABLED": "Disabled"
@@ -1529,6 +1530,7 @@
     "TRAVEL_HELP": "Where area triggers teleport to (areatrigger_teleport), graveyards and who they are for (game_graveyard)",
     "ZONE_LIGHTING_HELP": "Lights the world like the zone at the time of day (Light.dbc), with its fog and sky",
     "FOG_HELP": "Fog in the distance: off to see far",
+    "PERCENT": "Percent",
     "EDGE_FOG": "View distance fog",
     "EDGE_FOG_HELP": "Fades the world into the sky where the terrain loaded around the camera (or the draw limit) ends, so its edge never shows.",
     "DRAW_LIMIT": "Draw only",

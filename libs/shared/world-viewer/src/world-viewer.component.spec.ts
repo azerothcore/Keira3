@@ -15,7 +15,7 @@ import {
   worldToScene,
 } from '@keira/shared/wow-data';
 import { DebugHtmlElement, PageObjectModel } from 'ngx-page-object-model';
-import { EventDispatcher, Fog, Group, Object3D, PerspectiveCamera, Scene, Vector3 } from 'three';
+import { EventDispatcher, Fog, Group, MOUSE, Object3D, PerspectiveCamera, Scene, Vector3 } from 'three';
 import { DEFAULT_WORLD_CONTROLS_SETTINGS, WorldControlsSettings } from './world-controls-settings';
 import { DEFAULT_WORLD_RENDER_SETTINGS, WorldRenderSettings } from './world-render-settings';
 import { WorldWeather } from './world-weather';
@@ -659,6 +659,11 @@ describe(WorldViewerComponent.name, () => {
     fixture.detectChanges();
     flushFrames();
     expect(last()[1].far).toBeCloseTo(1.5 * tile);
+    // without the edge fog: the fog as it is
+    host.render.set({ ...DEFAULT_WORLD_RENDER_SETTINGS, edgeFog: false });
+    fixture.detectChanges();
+    flushFrames();
+    expect((last()[0].fog as Fog).far).toBeGreaterThan(1.5 * tile);
   });
 
   it("draws a wall at the map's edge, hidden when turned off, for the map shown only", async () => {
@@ -831,6 +836,21 @@ describe(WorldViewerComponent.name, () => {
     expect(page.getDebugElementByTestId('world-viewer-speed').nativeElement.textContent.trim()).toBe('WORLD_EDITOR.SPEED ×2.5');
     expect(viewer).toBeTruthy();
     fixture.destroy();
+  });
+
+  it('keeps the mouse panning and turning the same with Shift, Ctrl or ⌘ held', async () => {
+    const { page, fixture } = await setup();
+    const canvas = page.canvas().nativeElement;
+    const controls = (fixture.debugElement.query((el) => el.name === 'keira-world-viewer').componentInstance as Record<string, unknown>)[
+      'controls'
+    ] as { mouseButtons: Record<string, number> };
+    canvas.dispatchEvent(new PointerEvent('pointerdown', { button: 2, shiftKey: true, bubbles: true }));
+    canvas.dispatchEvent(new PointerEvent('pointerup', { button: 2, bubbles: true }));
+    // (the controls swap them back: right still turns, left still pans)
+    expect(controls.mouseButtons).toEqual({ LEFT: MOUSE.ROTATE, MIDDLE: MOUSE.DOLLY, RIGHT: MOUSE.PAN });
+    canvas.dispatchEvent(new PointerEvent('pointerdown', { button: 2, bubbles: true }));
+    canvas.dispatchEvent(new PointerEvent('pointerup', { button: 2, bubbles: true }));
+    expect(controls.mouseButtons).toEqual({ LEFT: MOUSE.PAN, MIDDLE: MOUSE.DOLLY, RIGHT: MOUSE.ROTATE });
   });
 
   it('moves the camera with the navigation keys while the view has the focus', async () => {

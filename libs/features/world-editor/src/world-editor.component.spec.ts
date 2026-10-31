@@ -859,6 +859,30 @@ describe(WorldEditorComponent.name, () => {
       expect(page.byId('settings')).toBeTruthy();
     });
 
+    it('takes percentages typed beside their sliders, to a tenth, within their range', async () => {
+      const { page } = await setup();
+      page.click('view-toggle');
+      page.fixture.detectChanges();
+      const typed = (id: string, value: string): HTMLInputElement => {
+        const input = page.byId<HTMLInputElement>(id).nativeElement;
+        input.value = value;
+        input.dispatchEvent(new Event('change'));
+        page.fixture.detectChanges();
+        return input;
+      };
+      expect(page.byId<HTMLInputElement>('view-tree-opacity-value').nativeElement.value).toBe('50');
+      typed('view-tree-opacity-value', '25.55');
+      expect(page.viewer().renderSettings().treeOpacity).toBe(25.6);
+      expect(typed('view-tree-opacity-value', 'abc').value).toBe('25.6');
+      expect(typed('view-building-opacity-value', '500').value).toBe('100');
+      const lighting = page.byId<HTMLInputElement>('view-zone-lighting').nativeElement;
+      lighting.checked = true;
+      lighting.dispatchEvent(new Event('change'));
+      page.fixture.detectChanges();
+      typed('view-brightnessNight-value', '1');
+      expect(page.viewer().renderSettings().brightnessNight).toBe(25);
+    });
+
     it('changes and remembers the view settings', async () => {
       const { page } = await setup();
       expect(page.byId('view-settings', false)).toBeFalsy();
@@ -4719,16 +4743,35 @@ describe(WorldEditorComponent.name, () => {
         }),
       );
       expect(page.viewer().boundaries()[2].label).toContain('Fel Reaver Cap - WORLD_EDITOR.ZONE_CAPTURE (50 yd)');
+      // the flags and the like drawn with their models like spawns, the buildings as buildings
       const scripted = () =>
         page
           .viewer()
-          .markers()
+          .spawns()
           .filter((m) => m.key.startsWith('script-object:'));
-      expect(scripted().map((m) => m.label)).toEqual([
-        'Wall - WORLD_EDITOR.SCRIPT_OBJECT (Entry: 190219, BattlefieldWG.h)',
-        'Fel Reaver Cap - WORLD_EDITOR.SCRIPT_OBJECT (Entry: 184081, BattlegroundEY.cpp)',
-        'Broken Hill - WORLD_EDITOR.SCRIPT_OBJECT (Entry: 182175, OutdoorPvPHP.h)',
+      expect(scripted()).toEqual([
+        {
+          key: 'script-object:1',
+          kind: 'gameobject',
+          guid: 0,
+          entry: 184081,
+          label: 'Fel Reaver Cap - WORLD_EDITOR.SCRIPT_OBJECT (Entry: 184081, BattlegroundEY.cpp)',
+          position: { x: CENTER.x, y: CENTER.y, z: 10 },
+          orientation: 1,
+          displayId: 8,
+          scale: 1,
+        },
+        expect.objectContaining({
+          key: 'script-object:2',
+          label: 'Broken Hill - WORLD_EDITOR.SCRIPT_OBJECT (Entry: 182175, OutdoorPvPHP.h)',
+        }),
       ]);
+      // they're only shown: never selected, no menu
+      page.viewer().picked.emit({ type: 'spawn', key: 'script-object:1', position: CENTER });
+      page.viewer().contextRequested.emit({ key: 'script-object:1', x: 1, y: 1 });
+      await settle(page);
+      expect(page.viewer().selectedKey()).toBeUndefined();
+      expect(page.byId('context-menu', false)).toBeFalsy();
       // (the buildings among them drawn)
       expect(page.viewer().buildings()).toEqual([
         { key: 'script-object:0', path: 'world\\wmo\\wall.wmo', position: { x: CENTER.x, y: CENTER.y, z: 10 }, orientation: 1 },

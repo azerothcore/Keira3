@@ -436,8 +436,8 @@ export const ZONE_COLORS: Record<ZoneKind, number> = {
   aura: 0xa855f7,
   sight: 0xec4899,
 };
-/** The colour of the gameobjects scripts spawn (their markers). */
-const SCRIPT_OBJECT_COLOR = 0xffd166;
+/** The keys of the gameobjects scripts spawn (drawn, never selected). */
+const SCRIPT_OBJECT_KEY = 'script-object:';
 /** Which layer shows each kind of area. */
 const ZONE_LAYERS: Record<ZoneKind, keyof LayerVisibility> = {
   capture: 'captureZones',
@@ -840,7 +840,6 @@ export class WorldEditorComponent implements OnInit {
         ...(layers.formations ? formationSlots(spawns, this.formations(), this.selectedSpawn()) : []),
         ...this.travelOverlays().markers.filter((marker) => (isFlight(marker.key) ? layers.flightPaths : layers.travel)),
         ...this.scanMarkers(),
-        ...this.scriptMarkers(),
       ];
     }),
   );
@@ -1284,15 +1283,29 @@ export class WorldEditorComponent implements OnInit {
         : [];
     }),
   );
-  /** The gameobjects the scripts spawn, as markers (named, with where they're spawned). */
-  private readonly scriptMarkers = computed<WorldMarker[]>(() =>
+  /**
+   * The gameobjects the scripts spawn that aren't buildings (flags, banners, doors…), drawn with their models like
+   * spawns, named with where they're spawned; they can't be selected or moved (they aren't in the database).
+   */
+  private readonly scriptSpawns = computed<WorldSpawn[]>(() =>
     this.layers().scriptObjects
-      ? this.scriptObjects().map(({ spawn, template }, i) => ({
-          key: `script-object:${i}`,
-          position: { x: spawn.x, y: spawn.y, z: spawn.z },
-          color: SCRIPT_OBJECT_COLOR,
-          label: `${template.name} - ${this.translate.instant('WORLD_EDITOR.SCRIPT_OBJECT')} (Entry: ${template.entry}, ${spawn.file})`,
-        }))
+      ? this.scriptObjects().flatMap(({ spawn, template, path }, i) =>
+          path
+            ? []
+            : [
+                {
+                  key: `${SCRIPT_OBJECT_KEY}${i}`,
+                  kind: 'gameobject' as const,
+                  guid: 0,
+                  entry: template.entry,
+                  label: `${template.name} - ${this.translate.instant('WORLD_EDITOR.SCRIPT_OBJECT')} (Entry: ${template.entry}, ${spawn.file})`,
+                  position: { x: spawn.x, y: spawn.y, z: spawn.z },
+                  orientation: spawn.o,
+                  displayId: template.displayId,
+                  scale: template.size,
+                },
+              ],
+        )
       : [],
   );
   /** The buildings (walls, towers, gates) the scripts spawn, drawn as they are, with the transports' ships. */
@@ -1417,7 +1430,7 @@ export class WorldEditorComponent implements OnInit {
       const { showWanderRadius: showWander, showBounds, showAggroRadius, showAssistRadius } = this.renderSettings.settings();
       return this.visibleSpawns()
         .filter((s) => (s.type === 'creature' ? layers.creatures : layers.gameobjects))
-        .map((s) => ({
+        .map((s): WorldSpawn => ({
           key: spawnKey(s.type, s.guid),
           kind: s.type,
           guid: s.guid,
@@ -1436,7 +1449,8 @@ export class WorldEditorComponent implements OnInit {
           ...(showAssistRadius && s.type === 'creature' && !s.trigger ? { assistRadius: ASSIST_RADIUS } : {}),
           ...(s.weapons ? { weapons: s.weapons } : {}),
           ...(s.pathId || s.wanderDistance ? { moves: true } : {}),
-        }));
+        }))
+        .concat(this.scriptSpawns());
     }),
   );
 
@@ -2027,6 +2041,27 @@ export class WorldEditorComponent implements OnInit {
   /** A number of the view settings from its slider. */
   protected setRenderNumber(key: BrightnessKey | 'compassOpacity' | 'treeOpacity' | 'propOpacity' | 'buildingOpacity', event: Event): void {
     this.renderSettings.update({ [key]: Number((event.target as HTMLInputElement).value) });
+  }
+
+  /**
+   * A percentage typed beside its slider (any value, to a tenth: 25.5), kept between `min` and `max`; one that isn't a
+   * number puts the current one back.
+   */
+  protected setPercent(
+    key: BrightnessKey | 'compassOpacity' | 'treeOpacity' | 'propOpacity' | 'buildingOpacity' | 'weatherIntensity',
+    event: Event,
+    min: number,
+    max: number,
+  ): void {
+    const input = event.target as HTMLInputElement;
+    const typed = parseFloat(input.value);
+    if (Number.isNaN(typed)) {
+      input.value = String(this.renderSettings.settings()[key]);
+      return;
+    }
+    const value = Math.round(Math.min(max, Math.max(min, typed)) * 10) / 10;
+    input.value = String(value);
+    this.renderSettings.update({ [key]: value });
   }
 
   /** Minutes since midnight as "hh:mm". */
@@ -2830,6 +2865,10 @@ export class WorldEditorComponent implements OnInit {
 
   protected async onPicked(result: PickResult): Promise<void> {
     const tool = this.tool();
+    // (the gameobjects scripts spawn are only shown)
+    if (result.type === 'spawn' && result.key.startsWith(SCRIPT_OBJECT_KEY)) {
+      return;
+    }
     if (tool === 'select') {
       if (result.additive && result.type === 'spawn') {
         this.toggleInGroup(result.key);
@@ -3541,6 +3580,9 @@ export class WorldEditorComponent implements OnInit {
   }
 
   protected onContextRequested(request: ContextRequest): void {
+    if (request.key.startsWith(SCRIPT_OBJECT_KEY)) {
+      return;
+    }
     if (request.key !== GROUND_KEY) {
       this.select(request.key);
     }

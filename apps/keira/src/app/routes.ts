@@ -560,6 +560,8 @@ export const KEIRA_ROUTES: Routes = [
   },
   {
     path: 'world-editor',
+    // kept alive in its tab while other parts of Keira are open (see KeepAliveRouteStrategy)
+    data: { keepAlive: true },
     // Lazy: keeps Three.js and the game-data parsers out of the startup bundle.
     loadComponent: () => import('@keira/features/world-editor').then((m) => m.WorldEditorComponent),
     providers: [{ provide: WORLD_EDITOR_LINKS, useFactory: worldEditorLinks }],
