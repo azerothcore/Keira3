@@ -1,0 +1,28 @@
+@if (tabs.tabs().length > 1) {
+  <nav class="keira-tab-bar" data-testid="tab-bar">
+    @for (tab of tabs.tabs(); track tab.section) {
+      <div class="keira-tab" [class.active]="tab.section === tabs.active()" [attr.data-testid]="'tab-' + (tab.section || 'dashboard')">
+        <button
+          type="button"
+          class="keira-tab-open"
+          [attr.data-testid]="'tab-open-' + (tab.section || 'dashboard')"
+          (click)="tabs.show(tab)"
+        >
+          <span>{{ tabs.titleKey(tab) | translate }}</span>
+          @if (tabs.pageName(tab); as page) {
+            <small>{{ page }}</small>
+          }
+        </button>
+        <button
+          type="button"
+          class="keira-tab-close"
+          [attr.data-testid]="'tab-close-' + (tab.section || 'dashboard')"
+          [title]="'CLOSE_TAB' | translate"
+          (click)="tabs.close(tab)"
+        >
+          <i class="fa fa-times"></i>
+        </button>
+      </div>
+    }
+  </nav>
+}

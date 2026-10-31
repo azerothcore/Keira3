@@ -37,6 +37,7 @@
   "EXECUTE_AND_COPY": "Ejecutar y copiar",
   "RELOAD": "Recargar",
   "CANCEL": "Cancelar",
+  "CLOSE_TAB": "Cerrar pestaña",
   "SELECTORS": {
     "ENABLED": "Habilitado",
     "DISABLED": "Deshabilitado"
@@ -1529,6 +1530,7 @@
     "TRAVEL_HELP": "A dónde teletransportan los area triggers (areatrigger_teleport), cementerios y para quién son (game_graveyard)",
     "ZONE_LIGHTING_HELP": "Ilumina el mundo como la zona a esa hora del día (Light.dbc), con su niebla y cielo",
     "FOG_HELP": "Niebla a lo lejos: desactívala para ver lejos",
+    "PERCENT": "Porcentaje",
     "EDGE_FOG": "Niebla de distancia de visión",
     "EDGE_FOG_HELP": "Funde el mundo con el cielo donde acaba el terreno cargado alrededor de la cámara (o el límite de dibujo), para que nunca se vea el borde.",
     "DRAW_LIMIT": "Dibujar solo",

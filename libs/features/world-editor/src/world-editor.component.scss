@@ -462,3 +462,16 @@
     cursor: not-allowed;
   }
 }
+
+// a percentage beside its slider, typed (25.5)
+.world-editor-percent {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  white-space: nowrap;
+
+  input {
+    width: 4.6rem;
+    padding: 0 0.25rem;
+  }
+}

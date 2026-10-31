@@ -37,6 +37,7 @@
   "EXECUTE_AND_COPY": "执行并复制",
   "RELOAD": "重新加载",
   "CANCEL": "取消",
+  "CLOSE_TAB": "关闭标签页",
   "SELECTORS": {
     "ENABLED": "启用",
     "DISABLED": "禁用"
@@ -1529,6 +1530,7 @@
     "TRAVEL_HELP": "区域触发器的传送目的地（areatrigger_teleport）、墓地及其适用阵营（game_graveyard）",
     "ZONE_LIGHTING_HELP": "按区域在该时刻的光照（Light.dbc）照亮世界，并带有雾和天空",
     "FOG_HELP": "远处的雾：关闭可看得更远",
+    "PERCENT": "百分比",
     "EDGE_FOG": "视距雾",
     "EDGE_FOG_HELP": "在摄像机周围已加载地形（或绘制范围）结束处让世界渐隐到天空中，看不到边缘。",
     "DRAW_LIMIT": "仅绘制",

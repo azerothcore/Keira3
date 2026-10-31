@@ -901,7 +901,19 @@
                     [value]="renderSettings.settings().buildingOpacity"
                     (input)="setRenderNumber('buildingOpacity', $event)"
                   />
-                  <span class="world-editor-time-value">{{ renderSettings.settings().buildingOpacity }}%</span>
+                  <span class="world-editor-percent"
+                    ><input
+                      type="number"
+                      class="form-control form-control-sm"
+                      step="0.1"
+                      min="10"
+                      max="100"
+                      [attr.data-testid]="'view-building-opacity-value'"
+                      [attr.aria-label]="'WORLD_EDITOR.PERCENT' | translate"
+                      [value]="renderSettings.settings().buildingOpacity"
+                      (change)="setPercent('buildingOpacity', $event, 10, 100)"
+                    />%</span
+                  >
                 </div>
                 <div class="world-editor-view-sub">{{ 'WORLD_EDITOR.VIEW_SUB_DOODADS' | translate }}</div>
                 <div class="form-check form-switch mb-0">
@@ -970,7 +982,19 @@
                     [value]="renderSettings.settings().treeOpacity"
                     (input)="setRenderNumber('treeOpacity', $event)"
                   />
-                  <span class="world-editor-time-value">{{ renderSettings.settings().treeOpacity }}%</span>
+                  <span class="world-editor-percent"
+                    ><input
+                      type="number"
+                      class="form-control form-control-sm"
+                      step="0.1"
+                      min="10"
+                      max="100"
+                      [attr.data-testid]="'view-tree-opacity-value'"
+                      [attr.aria-label]="'WORLD_EDITOR.PERCENT' | translate"
+                      [value]="renderSettings.settings().treeOpacity"
+                      (change)="setPercent('treeOpacity', $event, 10, 100)"
+                    />%</span
+                  >
                 </div>
                 <div class="d-flex align-items-center gap-2" data-testid="view-prop-opacity-row">
                   <label for="world-editor-view-prop-opacity" class="mb-0 text-nowrap">{{ 'WORLD_EDITOR.PROP_OPACITY' | translate }}</label>
@@ -985,7 +1009,19 @@
                     [value]="renderSettings.settings().propOpacity"
                     (input)="setRenderNumber('propOpacity', $event)"
                   />
-                  <span class="world-editor-time-value">{{ renderSettings.settings().propOpacity }}%</span>
+                  <span class="world-editor-percent"
+                    ><input
+                      type="number"
+                      class="form-control form-control-sm"
+                      step="0.1"
+                      min="10"
+                      max="100"
+                      [attr.data-testid]="'view-prop-opacity-value'"
+                      [attr.aria-label]="'WORLD_EDITOR.PERCENT' | translate"
+                      [value]="renderSettings.settings().propOpacity"
+                      (change)="setPercent('propOpacity', $event, 10, 100)"
+                    />%</span
+                  >
                 </div>
                 <div class="form-check form-switch mb-0">
                   <input
@@ -1106,7 +1142,19 @@
                           [value]="renderSettings.settings()[part.key]"
                           (input)="setRenderNumber(part.key, $event)"
                         />
-                        <span class="world-editor-time-value">{{ renderSettings.settings()[part.key] }}%</span>
+                        <span class="world-editor-percent"
+                          ><input
+                            type="number"
+                            class="form-control form-control-sm"
+                            step="0.1"
+                            min="25"
+                            max="200"
+                            [attr.data-testid]="'view-' + part.key + '-value'"
+                            [attr.aria-label]="'WORLD_EDITOR.PERCENT' | translate"
+                            [value]="renderSettings.settings()[part.key]"
+                            (change)="setPercent(part.key, $event, 25, 200)"
+                          />%</span
+                        >
                       </div>
                     }
                   </div>
@@ -1194,7 +1242,19 @@
                       [value]="renderSettings.settings().weatherIntensity"
                       (input)="setWeatherIntensity($event)"
                     />
-                    <span class="world-editor-time-value">{{ renderSettings.settings().weatherIntensity }}%</span>
+                    <span class="world-editor-percent"
+                      ><input
+                        type="number"
+                        class="form-control form-control-sm"
+                        step="0.1"
+                        min="5"
+                        max="100"
+                        [attr.data-testid]="'view-weather-intensity-value'"
+                        [attr.aria-label]="'WORLD_EDITOR.PERCENT' | translate"
+                        [value]="renderSettings.settings().weatherIntensity"
+                        (change)="setPercent('weatherIntensity', $event, 5, 100)"
+                      />%</span
+                    >
                   </div>
                 }
                 <div class="form-check form-switch mb-0">
@@ -1679,7 +1739,19 @@
                     [value]="renderSettings.settings().compassOpacity"
                     (input)="setRenderNumber('compassOpacity', $event)"
                   />
-                  <span class="world-editor-time-value">{{ renderSettings.settings().compassOpacity }}%</span>
+                  <span class="world-editor-percent"
+                    ><input
+                      type="number"
+                      class="form-control form-control-sm"
+                      step="0.1"
+                      min="10"
+                      max="100"
+                      [attr.data-testid]="'view-compass-opacity-value'"
+                      [attr.aria-label]="'WORLD_EDITOR.PERCENT' | translate"
+                      [value]="renderSettings.settings().compassOpacity"
+                      (change)="setPercent('compassOpacity', $event, 10, 100)"
+                    />%</span
+                  >
                 </div>
               </section>
               <section class="world-editor-view-group" data-testid="view-group-collision">

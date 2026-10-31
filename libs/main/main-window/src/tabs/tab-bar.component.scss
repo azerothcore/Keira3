@@ -1,0 +1,55 @@
+// Keira's tabs: one per part opened, the one shown lit
+.keira-tab-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 4px 6px 0;
+  border-bottom: 1px solid var(--bs-border-color, #dee2e6);
+  background: var(--bs-tertiary-bg, #f1f3f5);
+}
+
+.keira-tab {
+  display: flex;
+  align-items: stretch;
+  max-width: 240px;
+  border: 1px solid var(--bs-border-color, #dee2e6);
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  background: var(--bs-secondary-bg, #e9ecef);
+
+  &.active {
+    background: var(--bs-body-bg, #fff);
+    font-weight: 600;
+  }
+
+  button {
+    border: none;
+    background: none;
+    color: inherit;
+  }
+}
+
+.keira-tab-open {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+  padding: 3px 4px 3px 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  small {
+    opacity: 0.7;
+    font-weight: normal;
+  }
+}
+
+.keira-tab-close {
+  padding: 0 8px;
+  opacity: 0.6;
+
+  &:hover {
+    opacity: 1;
+  }
+}

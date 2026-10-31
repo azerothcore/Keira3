@@ -42,7 +42,7 @@ import {
 } from '@keira/shared/wow-data';
 import { graphicsDescription, stateLine } from './viewer-log';
 import { cssColor, DEFAULT_WORLD_STYLE, WorldStyle } from './world-style';
-import { Mesh, Object3D, Spherical, Vector3 } from 'three';
+import { Mesh, MOUSE, Object3D, Spherical, Vector3 } from 'three';
 import { MapControls } from 'three/addons/controls/MapControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { TerrainStreamer } from './terrain-streamer';
@@ -663,6 +663,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
 
     // Shift + wheel changes the camera speed instead of zooming (listened to before the map controls get the event)
     this.host().nativeElement.addEventListener('wheel', this.onSpeedWheel, { capture: true, passive: false });
+    this.host().nativeElement.addEventListener('pointerdown', this.onModifiedPress, { capture: true });
     this.controls = new MapControls(this.world.camera, canvas);
     this.controls.target = this.target;
     this.controls.screenSpacePanning = false;
@@ -747,6 +748,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     void this.prefetch.setMap(undefined);
     this.resizeObserver?.disconnect();
     this.host().nativeElement.removeEventListener('wheel', this.onSpeedWheel, { capture: true });
+    this.host().nativeElement.removeEventListener('pointerdown', this.onModifiedPress, { capture: true });
     this.canvasRef().nativeElement.removeEventListener('webglcontextlost', this.onContextLost);
     this.canvasRef().nativeElement.removeEventListener('webglcontextrestored', this.onContextRestored);
     this.gizmo.detach();
@@ -1302,6 +1304,17 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   }
 
   /** Shift + wheel changes the camera speed; a wheel step bound to a marker action runs it. */
+  /**
+   * The map controls swap panning and turning while Shift, Ctrl or ⌘ is held (Shift goes faster, Ctrl adds to the
+   * selection here): swapped back before they see the press, the mouse keeps doing what it does.
+   */
+  private readonly onModifiedPress = (event: PointerEvent): void => {
+    const modified = event.shiftKey || event.ctrlKey || event.metaKey;
+    (this.controls as MapControls).mouseButtons = modified
+      ? { LEFT: MOUSE.ROTATE, MIDDLE: MOUSE.DOLLY, RIGHT: MOUSE.PAN }
+      : { LEFT: MOUSE.PAN, MIDDLE: MOUSE.DOLLY, RIGHT: MOUSE.ROTATE };
+  };
+
   private readonly onSpeedWheel = (event: WheelEvent): void => {
     // a wheel step bound to the marker (camera moves need a press and a release: not the wheel)
     if (!event.shiftKey && this.markerAction(event, false)) {
