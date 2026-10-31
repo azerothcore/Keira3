@@ -852,6 +852,19 @@
     },
     "SEARCH_BY_ENTITY": {
       "SOURCE_TYPE": "选择源类型"
+    },
+    "CHECK": {
+      "MIN_MAX": "计时器的最小值大于最大值：服务器会跳过这些行。",
+      "PHASE_MASK": "阶段掩码超过第 12 阶段（4095）：服务器会跳过这些行。",
+      "PHASE_NEVER_SET": "这些行只在某些阶段运行，但此脚本中没有任何内容设置阶段。",
+      "CHANCE_ZERO": "几率为 0：这些行永远不会运行。",
+      "LINK_SELF": "这些行链接到自身（无限循环）：已跳过。",
+      "LINK_MISSING": "这些行链接到此脚本中不存在的 id。",
+      "LINK_NOT_LINK_EVENT": "这些行链接到事件不是 LINK（61）的行：那一行也会单独运行。",
+      "LINK_ORPHAN": "没有任何行链接到的 LINK 事件（61）：永远不会运行。",
+      "SET_PHASE_RANGE": "SET_EVENT_PHASE 超过第 12 阶段：服务器会跳过这些行。",
+      "INC_PHASE_ZERO": "INC_EVENT_PHASE 增量为 0：这些行没有任何作用。",
+      "ACTIONLIST_ZERO": "CALL_TIMED_ACTIONLIST 缺少动作列表 id。"
     }
   },
   "SPELL_DBC": {

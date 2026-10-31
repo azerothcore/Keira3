@@ -852,6 +852,19 @@
     },
     "SEARCH_BY_ENTITY": {
       "SOURCE_TYPE": "Selecciona un Tipo de Origen"
+    },
+    "CHECK": {
+      "MIN_MAX": "El mínimo de un temporizador supera su máximo: el servidor ignora estas filas.",
+      "PHASE_MASK": "La máscara de fases pasa de la fase 12 (4095): el servidor ignora estas filas.",
+      "PHASE_NEVER_SET": "Estas filas solo se ejecutan en algunas fases, pero nada en este script cambia la fase.",
+      "CHANCE_ZERO": "Probabilidad 0: estas filas nunca se ejecutan.",
+      "LINK_SELF": "Estas filas se enlazan a sí mismas (bucle infinito): se ignoran.",
+      "LINK_MISSING": "Estas filas enlazan a un id que este script no tiene.",
+      "LINK_NOT_LINK_EVENT": "Estas filas enlazan a una fila cuyo evento no es LINK (61): esa fila también se ejecuta sola.",
+      "LINK_ORPHAN": "Eventos LINK (61) a los que ninguna fila enlaza: nunca se ejecutan.",
+      "SET_PHASE_RANGE": "SET_EVENT_PHASE más allá de la fase 12: el servidor ignora estas filas.",
+      "INC_PHASE_ZERO": "INC_EVENT_PHASE en 0: estas filas no hacen nada.",
+      "ACTIONLIST_ZERO": "CALL_TIMED_ACTIONLIST sin id de lista de acciones."
     }
   },
   "SPELL_DBC": {

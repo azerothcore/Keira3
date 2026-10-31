@@ -852,6 +852,19 @@
     },
     "SEARCH_BY_ENTITY": {
       "SOURCE_TYPE": "Select a Source Type"
+    },
+    "CHECK": {
+      "MIN_MAX": "A timer's minimum is above its maximum: the world server skips these rows.",
+      "PHASE_MASK": "The phase mask goes past phase 12 (4095): the world server skips these rows.",
+      "PHASE_NEVER_SET": "These rows only run in some phases, but nothing in this script sets the phase.",
+      "CHANCE_ZERO": "A chance of 0: these rows never run.",
+      "LINK_SELF": "These rows link to themselves (an endless loop): skipped.",
+      "LINK_MISSING": "These rows link to an id this script doesn't have.",
+      "LINK_NOT_LINK_EVENT": "These rows link to a row whose event isn't LINK (61): that row also runs on its own.",
+      "LINK_ORPHAN": "LINK events (61) no row links to: they never run.",
+      "SET_PHASE_RANGE": "SET_EVENT_PHASE past phase 12: the world server skips these rows.",
+      "INC_PHASE_ZERO": "INC_EVENT_PHASE by 0: these rows do nothing.",
+      "ACTIONLIST_ZERO": "CALL_TIMED_ACTIONLIST without an actionlist id."
     }
   },
   "SPELL_DBC": {

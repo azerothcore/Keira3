@@ -18,6 +18,16 @@
         (executeQuery)="save($event)"
       />
     </div>
+    @if (checks().length) {
+      <div class="content-block" id="sai-checks">
+        @for (problem of checks(); track problem.key) {
+          <div class="alert alert-warning py-1 px-2 small mb-1" [id]="'sai-check-' + problem.key">
+            <i class="fas fa-exclamation-triangle me-1"></i>{{ 'SMARTAI.CHECK.' + problem.key | translate }}
+            <span class="text-muted">(id {{ problem.ids.join(', ') }})</span>
+          </div>
+        }
+      </div>
+    }
     <div class="content-block">
       <form [formGroup]="editorService.form" class="edit-form mb-2">
         <div class="row">
