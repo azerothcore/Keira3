@@ -1,3 +1,4 @@
+import { RouterLink } from '@angular/router';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 
 import { AC_DISCORD_URL, KEIRA3_REPO_URL, PAYPAL_DONATE_URL, VersionRow } from '@keira/shared/constants';
@@ -16,7 +17,7 @@ import { ConfigService } from '@keira/shared/common-services';
   selector: 'keira-home',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
-  imports: [TranslateDirective, TranslatePipe, ClipboardModule, FormsModule],
+  imports: [TranslateDirective, TranslatePipe, ClipboardModule, FormsModule, RouterLink],
 })
 export class DashboardComponent extends SubscriptionHandler implements OnInit {
   protected coreVersions!: VersionRow;

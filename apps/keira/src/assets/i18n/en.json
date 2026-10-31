@@ -195,7 +195,8 @@
       "TRAINER_SPELL": "Trainer Spell"
     },
     "UNUSED_GUID_SEARCH": "Unused GUIDs",
-    "WORLD_EDITOR": "3D World Editor"
+    "WORLD_EDITOR": "3D World Editor",
+    "SETTINGS": "Settings"
   },
   "DASHBOARD": {
     "WELCOME": "Welcome to Keira3",
@@ -1859,6 +1860,13 @@
     "GAME_MAP_OTHER_AREA": "Another area · click to open map",
     "GAME_MAP_BACK_TO": "Back to:",
     "GAME_MAP_ZOOM_RESET": "Whole map",
-    "GAME_MAP_TIP": "Tip: right click (or Alt + click) copies a .go command"
+    "GAME_MAP_TIP": "Tip: right click (or Alt + click) copies a .go command",
+    "MODIFY": "Modify"
+  },
+  "SETTINGS": {
+    "TITLE": "Settings",
+    "GAME_DATA": "Game data",
+    "GAME_DATA_HELP": "The folders the World Editor reads the game from (the WoW client, and optionally the server's data and the AzerothCore source), and where it keeps what it processed. They are kept on this computer.",
+    "SAVED": "Settings saved"
   }
 }

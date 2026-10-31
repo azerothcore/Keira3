@@ -1,0 +1,54 @@
+<form class="game-data-folders" data-testid="game-data-folders" [formGroup]="form" (ngSubmit)="save()">
+  @for (folder of folders; track folder.key) {
+    @let path = folderOf(folder.key);
+    <div class="mb-2">
+      <label class="form-label" [for]="'game-data-' + folder.id">{{ folder.label | translate }}</label>
+      <div class="input-group input-group-sm">
+        <input
+          class="form-control form-control-sm"
+          [id]="'game-data-' + folder.id"
+          [attr.data-testid]="folder.id"
+          [formControlName]="folder.key"
+          [readOnly]="readOnly()"
+          [placeholder]="folder.key === 'cacheFolder' ? (cache.root() ?? '') : folder.placeholder"
+        />
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          [attr.data-testid]="folder.id + '-copy'"
+          [title]="'WORLD_EDITOR.COPY_PATH' | translate"
+          [disabled]="!path"
+          (click)="copyPath(path)"
+        >
+          <i class="fa fa-copy"></i>
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          [attr.data-testid]="folder.id + '-open'"
+          [title]="'WORLD_EDITOR.OPEN_FOLDER' | translate"
+          [disabled]="!electron.isElectron() || !path"
+          (click)="openFolder(path)"
+        >
+          <i class="fa fa-folder-open"></i>
+        </button>
+      </div>
+      <small class="form-text text-muted">{{ folder.help | translate }}</small>
+      <details class="game-data-more-info small" [attr.data-testid]="'more-info-' + folder.id">
+        <summary>{{ 'WORLD_EDITOR.MORE_INFO' | translate }}</summary>
+        <div class="text-muted">{{ folder.info | translate }}</div>
+      </details>
+    </div>
+  }
+  <div>
+    @if (readOnly()) {
+      <button type="button" class="btn btn-sm btn-outline-primary" data-testid="folders-modify" (click)="modify()">
+        <i class="fa fa-pencil"></i> {{ 'WORLD_EDITOR.MODIFY' | translate }}
+      </button>
+    } @else {
+      <button type="submit" class="btn btn-sm btn-primary" data-testid="settings-save">
+        {{ 'WORLD_EDITOR.SAVE' | translate }}
+      </button>
+    }
+  </div>
+</form>

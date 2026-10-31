@@ -418,18 +418,6 @@
   height: 100vh;
 }
 
-.world-editor-more-info {
-  summary {
-    cursor: pointer;
-    color: var(--bs-link-color, #0d6efd);
-  }
-
-  div {
-    white-space: pre-line;
-    padding: 4px 0 0 12px;
-  }
-}
-
 // the tree of what's loaded, docked on the right of the view (under the panels)
 .world-editor-tree {
   position: absolute;

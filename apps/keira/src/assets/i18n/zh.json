@@ -195,7 +195,8 @@
       "TRAINER_SPELL": "训练师法术"
     },
     "UNUSED_GUID_SEARCH": "未使用的GUID",
-    "WORLD_EDITOR": "3D世界编辑器"
+    "WORLD_EDITOR": "3D世界编辑器",
+    "SETTINGS": "设置"
   },
   "DASHBOARD": {
     "WELCOME": "欢迎使用Keira3",
@@ -1859,6 +1860,13 @@
     "GAME_MAP_OTHER_AREA": "其他区域 · 单击打开地图",
     "GAME_MAP_BACK_TO": "返回：",
     "GAME_MAP_ZOOM_RESET": "整张地图",
-    "GAME_MAP_TIP": "提示：右键（或 Alt + 单击）复制 .go 命令"
+    "GAME_MAP_TIP": "提示：右键（或 Alt + 单击）复制 .go 命令",
+    "MODIFY": "修改"
+  },
+  "SETTINGS": {
+    "TITLE": "设置",
+    "GAME_DATA": "游戏数据",
+    "GAME_DATA_HELP": "世界编辑器读取游戏的文件夹（WoW 客户端，以及可选的服务器数据和 AzerothCore 源码），以及存放处理结果的位置。保存在此电脑上。",
+    "SAVED": "设置已保存"
   }
 }

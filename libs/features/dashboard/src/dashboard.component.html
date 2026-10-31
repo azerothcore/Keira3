@@ -5,6 +5,9 @@
     <p [innerHTML]="'DASHBOARD.WELCOME_2' | translate: { REPO_URL: KEIRA3_REPO_URL }"></p>
     <p [innerHTML]="'DASHBOARD.WELCOME_3' | translate: { DONATE_URL: PAYPAL_DONATE_URL }"></p>
     <p [innerHTML]="'DASHBOARD.WELCOME_4' | translate"></p>
+    <a id="dashboard-settings" class="btn btn-outline-primary btn-sm" [routerLink]="'/settings'">
+      <i class="fa fa-cog"></i> {{ 'SIDEBAR.SETTINGS' | translate }}
+    </a>
   </div>
 
   <div class="content-block">

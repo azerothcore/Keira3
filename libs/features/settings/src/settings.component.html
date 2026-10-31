@@ -1,0 +1,10 @@
+<div class="container-fluid keira-settings" data-testid="settings-page">
+  <h3 class="mt-3">{{ 'SETTINGS.TITLE' | translate }}</h3>
+  <section class="card mb-3">
+    <div class="card-header">{{ 'SETTINGS.GAME_DATA' | translate }}</div>
+    <div class="card-body">
+      <p class="text-muted small">{{ 'SETTINGS.GAME_DATA_HELP' | translate }}</p>
+      <keira-game-data-folders [title]="'SETTINGS.TITLE' | translate" (saved)="onSaved()" />
+    </div>
+  </section>
+</div>

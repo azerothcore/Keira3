@@ -37,6 +37,17 @@
               <keira-switch-language />
             </span>
             <span>
+              <a
+                id="settings-link"
+                class="btn btn-sm btn-outline-light keira-settings-link"
+                href="#"
+                [routerLink]="'settings'"
+                [title]="'SIDEBAR.SETTINGS' | translate"
+              >
+                <i class="fa fa-cog"></i>
+              </a>
+            </span>
+            <span>
               <keira-logout-btn />
             </span>
           </div>

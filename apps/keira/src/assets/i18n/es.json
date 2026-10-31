@@ -195,7 +195,8 @@
       "TRAINER_SPELL": "Hechizo de Entrenador"
     },
     "UNUSED_GUID_SEARCH": "GUIDs sin Usar",
-    "WORLD_EDITOR": "Editor de Mundo 3D"
+    "WORLD_EDITOR": "Editor de Mundo 3D",
+    "SETTINGS": "Ajustes"
   },
   "DASHBOARD": {
     "WELCOME": "Bienvenido a Keira3",
@@ -1859,6 +1860,13 @@
     "GAME_MAP_OTHER_AREA": "Otra zona · clic para abrir su mapa",
     "GAME_MAP_BACK_TO": "Volver a:",
     "GAME_MAP_ZOOM_RESET": "Mapa completo",
-    "GAME_MAP_TIP": "Consejo: clic derecho (o Alt + clic) copia un comando .go"
+    "GAME_MAP_TIP": "Consejo: clic derecho (o Alt + clic) copia un comando .go",
+    "MODIFY": "Modificar"
+  },
+  "SETTINGS": {
+    "TITLE": "Ajustes",
+    "GAME_DATA": "Datos del juego",
+    "GAME_DATA_HELP": "Las carpetas de las que el Editor del Mundo lee el juego (el cliente de WoW y, opcionalmente, los datos del servidor y el código de AzerothCore), y dónde guarda lo procesado. Se guardan en este equipo.",
+    "SAVED": "Ajustes guardados"
   }
 }
