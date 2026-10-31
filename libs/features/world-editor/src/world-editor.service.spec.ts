@@ -859,6 +859,21 @@ describe('WorldEditorService', () => {
     expect(queryService.query).toHaveBeenCalledWith('DELETE FROM creature WHERE guid = 1;');
   });
 
+  it('reads the characters of a map from the characters database', async () => {
+    const { service, queryService } = setup();
+    queryService.query.mockReturnValueOnce(
+      of([{ guid: 1, name: 'Thrall', race: 2, class: 7, level: 80, map: 1, x: '1', y: '2', z: '3', zone: 14, online: 1 }]),
+    );
+    expect(await service.loadPlayers('acore_characters', 1, false)).toEqual([
+      { guid: 1, name: 'Thrall', race: 2, class: 7, level: 80, map: 1, x: 1, y: 2, z: 3, zone: 14, online: true },
+    ]);
+    expect(queryService.query.mock.calls[0][0]).toContain('FROM `acore_characters`.`characters` WHERE map = 1 AND online = 1');
+    queryService.query.mockReturnValueOnce(of(undefined));
+    expect(await service.loadPlayers('chars', 1, true)).toEqual([]);
+    expect(queryService.query.mock.calls[1][0]).not.toContain('online = 1');
+    await expect(service.loadPlayers('x`; DROP', 1, true)).rejects.toThrow('not a database name');
+  });
+
   it('picks the next free pool, above those made in the session', async () => {
     const { service, queryService } = setup();
     queryService.query.mockReturnValueOnce(of([{ max: 50 }]));

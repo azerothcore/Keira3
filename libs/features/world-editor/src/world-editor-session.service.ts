@@ -36,6 +36,8 @@ export class WorldEditorSessionService {
     objectRanges: false,
     sightRanges: false,
     scriptObjects: true,
+    players: true,
+    offlinePlayers: false,
   });
   readonly tool = signal<EditorTool>('select');
   readonly gizmoMode = signal<GizmoMode>('translate');

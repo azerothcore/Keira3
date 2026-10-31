@@ -673,6 +673,11 @@
                         'WORLD_EDITOR.NEEDS_' + (layer.requires === 'source' ? 'SOURCE' : 'SERVER_DATA') | translate
                       }}</small>
                     }
+                    @if (layer.key === 'players' && playersError() && (layers().players || layers().offlinePlayers)) {
+                      <small class="text-danger d-block" data-testid="players-error">{{
+                        'WORLD_EDITOR.PLAYERS_ERROR' | translate: { database: serverSettingsDb() }
+                      }}</small>
+                    }
                   </div>
                 }
               </section>

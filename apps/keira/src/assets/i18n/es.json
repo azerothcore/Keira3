@@ -1930,7 +1930,14 @@
     "POI_QUEST_HUB": "Centros de misiones",
     "POI_QUEST_GIVER": "Dadores de misiones",
     "LEGEND_GM_USER_PIN": "Tu marca (Mayús + clic)",
-    "LEGEND_GM_MEASURE": "Línea medida"
+    "LEGEND_GM_MEASURE": "Línea medida",
+    "PLAYERS": "Jugadores conectados",
+    "PLAYERS_HELP": "Los personajes conectados, de la base de datos de personajes (Ajustes > Servidor), leídos cada 10 segundos. El servidor guarda su posición cada pocos minutos y al desconectar, así que se muestran donde estuvieron hace poco.",
+    "OFFLINE_PLAYERS": "Personajes desconectados",
+    "OFFLINE_PLAYERS_HELP": "Donde se quedaron los personajes desconectados (gris).",
+    "PLAYERS_ERROR": "No se puede leer {{database}}.characters (Ajustes > Servidor: el nombre de la base de datos, y que el usuario pueda leerla).",
+    "LEGEND_PLAYER": "Jugador conectado",
+    "LEGEND_OFFLINE_PLAYER": "Personaje desconectado"
   },
   "SETTINGS": {
     "TITLE": "Ajustes",
@@ -1948,7 +1955,11 @@
     "THEME_IMPORT": "Importar tema",
     "THEME_IMPORT_FILE": "Desde un archivo",
     "THEME_IMPORTED": "Tema \"{{name}}\" importado",
-    "THEME_COPIED": "Tema copiado"
+    "THEME_COPIED": "Tema copiado",
+    "SERVER": "Servidor",
+    "CHARACTERS_DATABASE": "Base de datos de personajes",
+    "CHARACTERS_DATABASE_HELP": "En el mismo servidor MySQL que la base de datos del mundo, leída con el mismo usuario: el editor de mundo muestra sus jugadores.",
+    "DATABASE_NAME_ERROR": "Solo letras, dígitos y _."
   },
   "WAYPOINTS": {
     "SELECT_PATH": "Selecciona una ruta existente",

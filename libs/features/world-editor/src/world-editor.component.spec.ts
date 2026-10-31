@@ -279,6 +279,7 @@ describe(WorldEditorComponent.name, () => {
       getMaxGuid: vi.fn(),
       getFreePathId: vi.fn(),
       getFreePoolId: vi.fn(),
+      loadPlayers: vi.fn(),
       getEntryName: vi.fn(),
       getEntryDisplay: vi.fn(),
       searchTele: vi.fn(),
@@ -465,6 +466,7 @@ describe(WorldEditorComponent.name, () => {
     );
     mocks.service.getMaxGuid.mockResolvedValue(1000);
     mocks.service.getFreePathId.mockResolvedValue(20);
+    mocks.service.loadPlayers.mockResolvedValue([]);
     mocks.service.getEntryName.mockResolvedValue('Marshal McBride');
     mocks.service.getEntryDisplay.mockResolvedValue({ displayId: 1, scale: 1 });
     mocks.service.searchTele.mockResolvedValue([{ id: 7, name: 'Northshire', map: 1, x: 1, y: 2, z: 3 }]);
@@ -3722,6 +3724,84 @@ describe(WorldEditorComponent.name, () => {
       page.click('waypoint-insert');
       await settle(page);
       expect(page.placementValue('x')).toBe(-8917.5);
+    });
+  });
+
+  describe('players', () => {
+    const player = (guid: number, online: boolean, race = 2, cls = 7) => ({
+      guid,
+      name: `P${guid}`,
+      race,
+      class: cls,
+      level: 80,
+      map: 0,
+      x: -8900,
+      y: -100,
+      z: 80,
+      zone: 12,
+      online,
+    });
+
+    it('shows the players of the map, reads them again every few seconds, and the offline ones when asked', async () => {
+      mocks.service.loadPlayers.mockResolvedValue([player(1, true), player(2, false, 99, 99)]);
+      const { page } = await setup();
+      await loadArea(page);
+      expect(mocks.service.loadPlayers).toHaveBeenCalledWith('acore_characters', 0, false);
+      const markers = () =>
+        page
+          .viewer()
+          .markers()
+          .filter((marker) => marker.key.startsWith('player:'));
+      expect(markers().map((marker) => marker.label)).toEqual(['P1 (80 Orc Shaman)']);
+      // offline characters too
+      page.click('view-toggle');
+      page.fixture.detectChanges();
+      page.click('layer-offline-players');
+      await settle(page);
+      expect(mocks.service.loadPlayers).toHaveBeenLastCalledWith('acore_characters', 0, true);
+      expect(markers().map((marker) => marker.label)).toEqual(['P1 (80 Orc Shaman)', 'P2 (80 race 99 class 99) · offline']);
+      // on the world map too
+      page.click('map-toggle');
+      await settle(page);
+      const map = page.fixture.debugElement.query((el) => el.name === 'keira-world-map').componentInstance as {
+        dots: () => { key: string; color: string }[];
+      };
+      expect(
+        map
+          .dots()
+          .filter((d) => d.key.startsWith('player:'))
+          .map((d) => d.color),
+      ).toEqual(['#4dff88', '#9aa0a6']);
+      // both layers off: nothing read, none shown
+      page.click('map-toggle');
+      await settle(page);
+      page.click('view-toggle');
+      page.fixture.detectChanges();
+      page.click('layer-players');
+      page.click('layer-offline-players');
+      await settle(page);
+      expect(markers()).toEqual([]);
+    });
+
+    it('reads them again on a timer, and says when the characters database can not be read', async () => {
+      vi.useFakeTimers({ shouldAdvanceTime: true });
+      try {
+        mocks.service.loadPlayers.mockRejectedValue(new Error('denied'));
+        const { page } = await setup();
+        await loadArea(page);
+        page.click('view-toggle');
+        page.fixture.detectChanges();
+        await settle(page);
+        expect(page.text('players-error')).toContain('WORLD_EDITOR.PLAYERS_ERROR');
+        const calls = mocks.service.loadPlayers.mock.calls.length;
+        mocks.service.loadPlayers.mockResolvedValue([player(1, true)]);
+        await vi.advanceTimersByTimeAsync(10_000);
+        await settle(page);
+        expect(mocks.service.loadPlayers.mock.calls.length).toBeGreaterThan(calls);
+        expect(page.byId('players-error', false)).toBeFalsy();
+      } finally {
+        vi.useRealTimers();
+      }
     });
   });
 
