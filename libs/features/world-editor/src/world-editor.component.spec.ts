@@ -519,6 +519,11 @@ describe(WorldEditorComponent.name, () => {
       page.fixture.detectChanges();
       // nothing set: nothing to copy or open
       expect(page.byId<HTMLButtonElement>('source-path-copy').nativeElement.disabled).toBe(true);
+      // (greyed until Modify)
+      expect(page.byId<HTMLInputElement>('source-path').nativeElement.readOnly).toBe(true);
+      expect(page.byId('settings-save', false)).toBeFalsy();
+      page.click('folders-modify');
+      page.fixture.detectChanges();
       page.type('source-path', 'C:\\Source');
       page.fixture.detectChanges();
       page.click('source-path-copy');
@@ -549,6 +554,8 @@ describe(WorldEditorComponent.name, () => {
       page.click('settings-toggle');
       page.fixture.detectChanges();
       expect(page.text('cache-size')).toBe('0.0 MB (0.00 GB)');
+      page.click('folders-modify');
+      page.fixture.detectChanges();
       page.type('cache-folder', 'D:\\Cache');
       page.submit('settings-save');
       await settle(page);
@@ -4848,6 +4855,8 @@ describe(WorldEditorComponent.name, () => {
       ]);
       mocks.service.loadScriptEntries.mockRejectedValue(new Error('no table'));
       page.click('settings-toggle');
+      page.fixture.detectChanges();
+      page.click('folders-modify');
       page.fixture.detectChanges();
       page.type('source-path', 'C:\\Source\\azerothcore-wotlk');
       page.submit('settings-save');

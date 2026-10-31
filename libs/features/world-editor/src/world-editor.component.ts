@@ -75,6 +75,7 @@ import {
   GameMapSpawnLevel,
   GameMapTeleport,
   GameMapTransport,
+  GameDataFoldersComponent,
   GameMapComponent,
   RENDER_SCALES,
   WorldBoundary,
@@ -469,6 +470,7 @@ export function buildKind(dev = isDevMode()): 'development' | 'release' {
     ReactiveFormsModule,
     TranslatePipe,
     WorldViewerComponent,
+    GameDataFoldersComponent,
     WorldMapComponent,
     GameMapComponent,
     HighlightjsWrapperComponent,
@@ -1664,12 +1666,6 @@ export class WorldEditorComponent implements OnInit {
 
   // ---------------------------------------------------------------- forms
 
-  protected readonly settingsForm = new FormGroup({
-    clientPath: new FormControl(this.settings.paths().clientPath, { nonNullable: true }),
-    serverDataPath: new FormControl(this.settings.paths().serverDataPath, { nonNullable: true }),
-    sourcePath: new FormControl(this.settings.paths().sourcePath, { nonNullable: true }),
-    cacheFolder: new FormControl(this.cache.folder(), { nonNullable: true }),
-  });
   protected readonly placeEntry = new FormControl<number | null>(null);
   /** The place tools' search: an entry or part of a name; an entry typed is the one placed. */
   protected readonly placeSearch = new FormControl('', { nonNullable: true });
@@ -2107,11 +2103,8 @@ export class WorldEditorComponent implements OnInit {
     }
   }
 
-  protected async saveSettings(): Promise<void> {
-    const { clientPath, serverDataPath, sourcePath, cacheFolder } = this.settingsForm.getRawValue();
-    this.settings.save({ clientPath, serverDataPath, sourcePath });
-    this.cache.setFolder(cacheFolder);
-    await this.client.close();
+  /** The game data folders saved (in the settings panel): the maps of the client set are read. */
+  protected async onFoldersSaved(): Promise<void> {
     void this.refreshCacheUsage();
     this.showSettings.set(false);
     await this.loadMaps();
@@ -2134,20 +2127,6 @@ export class WorldEditorComponent implements OnInit {
       }
     }
     this.cacheSize.set(await this.cache.size());
-  }
-
-  protected copyPath(path: string | undefined): void {
-    this.clipboard.copyFromContent(path as string);
-  }
-
-  /** Shows a folder in the system's file manager (Explorer, Finder…). */
-  protected openFolder(path: string | undefined): void {
-    const opener = navigator.userAgent.includes('Windows') ? 'explorer' : navigator.userAgent.includes('Mac') ? 'open' : 'xdg-open';
-    try {
-      this.electron.childProcess.spawn(opener, [path as string], { detached: true, stdio: 'ignore' }).unref();
-    } catch (error) {
-      this.showError(error);
-    }
   }
 
   protected setCacheMaxGb(event: Event): void {
