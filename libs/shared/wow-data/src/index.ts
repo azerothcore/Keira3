@@ -26,3 +26,4 @@ export * from './m2-animation';
 export * from './game-map';
 export * from './zone-tracer';
 export * from './map-preload.service';
+export * from './script-spawns';

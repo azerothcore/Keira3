@@ -287,7 +287,7 @@
         [cameraPhase]="filters().phase"
         [weather]="weather()"
         (zoneChanged)="onZoneChanged($event)"
-        [buildings]="transportBuildings()"
+        [buildings]="extraBuildings()"
         (probeMoved)="onProbeMoved($event)"
       />
       <button
@@ -655,17 +655,24 @@
                   ></i>
                 </div>
                 @for (layer of overlaySwitches; track layer.key) {
-                  <div class="form-check form-switch mb-0">
+                  @let unavailable = missing(layer.requires);
+                  <div class="form-check form-switch mb-0" [class.world-editor-unavailable]="unavailable">
                     <input
                       class="form-check-input"
                       type="checkbox"
                       id="world-editor-layer-{{ layer.id }}"
                       [attr.data-testid]="'layer-' + layer.id"
-                      [checked]="layers()[layer.key]"
+                      [checked]="layers()[layer.key] && !unavailable"
+                      [disabled]="unavailable"
                       (change)="toggleLayer(layer.key)"
                     />
                     <label class="form-check-label" for="world-editor-layer-{{ layer.id }}">{{ layer.label | translate }}</label>
                     <i class="fas fa-info-circle ms-1" placement="auto" container="body" [tooltip]="layer.label + '_HELP' | translate"></i>
+                    @if (unavailable) {
+                      <small class="text-muted ms-1" [attr.data-testid]="'needs-' + layer.id">{{
+                        'WORLD_EDITOR.NEEDS_' + (layer.requires === 'source' ? 'SOURCE' : 'SERVER_DATA') | translate
+                      }}</small>
+                    }
                   </div>
                 }
               </section>
@@ -1699,13 +1706,14 @@
                     }}</small>
                   }
                 </div>
-                <div class="form-check form-switch mb-0">
+                <div class="form-check form-switch mb-0" [class.world-editor-unavailable]="missing('serverData')">
                   <input
                     class="form-check-input"
                     type="checkbox"
                     id="world-editor-navmesh"
                     data-testid="view-navmesh"
-                    [checked]="renderSettings.settings().showNavMesh"
+                    [checked]="renderSettings.settings().showNavMesh && !missing('serverData')"
+                    [disabled]="missing('serverData')"
                     (change)="setRenderFlag('showNavMesh', $event)"
                   />
                   <label class="form-check-label" for="world-editor-navmesh">{{ 'WORLD_EDITOR.NAVMESH' | translate }}</label
@@ -1715,6 +1723,9 @@
                     container="body"
                     [tooltip]="'WORLD_EDITOR.NAVMESH_HELP' | translate"
                   ></i>
+                  @if (missing('serverData')) {
+                    <small class="text-muted ms-1" data-testid="needs-navmesh">{{ 'WORLD_EDITOR.NEEDS_SERVER_DATA' | translate }}</small>
+                  }
                 </div>
               </section>
               <section class="world-editor-view-group" data-testid="view-group-loading">
@@ -2675,6 +2686,8 @@
                 [attr.data-testid]="'tool-' + option"
                 [class.btn-primary]="tool() === option"
                 [class.btn-outline-primary]="tool() !== option"
+                [disabled]="option === 'probe' && missing('serverData')"
+                [title]="option === 'probe' && missing('serverData') ? ('WORLD_EDITOR.NEEDS_SERVER_DATA' | translate) : ''"
                 (click)="setTool($any(option))"
               >
                 {{ 'WORLD_EDITOR.TOOL.' + option | translate }}

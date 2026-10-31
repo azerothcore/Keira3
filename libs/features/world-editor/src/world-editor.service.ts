@@ -28,6 +28,11 @@ import {
   GAMEOBJECT_FISHING_HOLE,
   GAMEOBJECT_SPELLCASTER,
   GAMEOBJECT_TRANSPORT,
+  objectRange,
+  ObjectTemplate,
+  RANGED_OBJECT_TYPES,
+  SAI_SIGHT_EVENTS,
+  WorldZone,
   PoolMember,
   PoolSpawn,
   preferredPathId,
@@ -662,6 +667,107 @@ export class WorldEditorService {
       chance: Number(row['chance']),
       maxLimit: Number(row['maxLimit']),
       description: String(row['description'] ?? ''),
+    }));
+  }
+
+  /** Gameobject templates by entry (those of the gameobjects spawned by scripts). */
+  async loadObjectTemplates(entries: number[]): Promise<Map<number, ObjectTemplate>> {
+    const ids = [...new Set(entries.map((e) => Math.trunc(e)))];
+    if (!ids.length) {
+      return new Map();
+    }
+    const rows = await firstValueFrom(
+      this.queryService.query<TableRow>(
+        `SELECT entry, IFNULL(name, '') AS name, type, displayId, size, Data0, Data1, Data2 FROM gameobject_template WHERE entry IN (${ids.join(', ')})`,
+      ),
+    );
+    return new Map(
+      (rows ?? []).map((row) => [
+        Number(row['entry']),
+        {
+          entry: Number(row['entry']),
+          name: String(row['name']),
+          type: Number(row['type']),
+          displayId: Number(row['displayId']),
+          size: Number(row['size']),
+          data: [Number(row['Data0']), Number(row['Data1']), Number(row['Data2'])],
+        },
+      ]),
+    );
+  }
+
+  /** The gameobjects of a map with a range (capture points, traps, spell focuses…), and their ranges. */
+  async loadObjectZones(map: number): Promise<WorldZone[]> {
+    const rows = await firstValueFrom(
+      this.queryService.query<TableRow>(
+        "SELECT g.guid, g.id AS entry, IFNULL(t.name, '') AS name, t.type, t.Data0, t.Data1, t.Data2, " +
+          'g.position_x AS x, g.position_y AS y, g.position_z AS z FROM gameobject g JOIN gameobject_template t ON t.entry = g.id ' +
+          `WHERE g.map = ${Math.trunc(map)} AND t.type IN (${Object.keys(RANGED_OBJECT_TYPES).join(', ')})`,
+      ),
+    );
+    return (rows ?? []).flatMap((row) => {
+      const type = Number(row['type']);
+      const radius = objectRange({ type, data: [Number(row['Data0']), Number(row['Data1']), Number(row['Data2'])] });
+      return radius > 0
+        ? [
+            {
+              key: `zone:object:${row['guid']}`,
+              kind: RANGED_OBJECT_TYPES[type].kind,
+              x: Number(row['x']),
+              y: Number(row['y']),
+              z: Number(row['z']),
+              radius,
+              name: String(row['name']),
+              detail: `Gameobject (GUID: ${row['guid']}, Entry: ${row['entry']})`,
+            },
+          ]
+        : [];
+    });
+  }
+
+  /**
+   * Where battleground players wait before the gates open, on a map: each side's start (battleground_template's
+   * start location, a game_graveyard row) and how far they may go from it (StartMaxDist; farther, they're sent back).
+   */
+  async loadBattlegroundStarts(map: number): Promise<WorldZone[]> {
+    const side = (name: string, column: string) =>
+      `SELECT b.ID AS id, IFNULL(b.Comment, '') AS name, b.StartMaxDist AS radius, g.x, g.y, g.z, '${name}' AS side ` +
+      `FROM battleground_template b JOIN game_graveyard g ON g.ID = b.${column} WHERE g.Map = ${Math.trunc(map)} AND b.StartMaxDist > 0`;
+    const rows = await firstValueFrom(
+      this.queryService.query<TableRow>(`${side('Alliance', 'AllianceStartLoc')} UNION ALL ${side('Horde', 'HordeStartLoc')}`),
+    );
+    return (rows ?? []).map((row) => ({
+      key: `zone:start:${row['id']}:${row['side']}`,
+      kind: 'start' as const,
+      x: Number(row['x']),
+      y: Number(row['y']),
+      z: Number(row['z']),
+      radius: Number(row['radius']),
+      name: String(row['name']),
+      detail: `${row['side']} start (battleground_template ${row['id']})`,
+    }));
+  }
+
+  /** How far the SmartAI creatures of a map see players (line of sight in and out of combat, players near). */
+  async loadSightZones(map: number): Promise<WorldZone[]> {
+    const rows = await firstValueFrom(
+      this.queryService.query<TableRow>(
+        "SELECT c.guid, c.id AS entry, IFNULL(t.name, '') AS name, c.position_x AS x, c.position_y AS y, c.position_z AS z, " +
+          's.entryorguid, s.id AS row, s.event_type, s.event_param2 AS radius FROM creature c ' +
+          'JOIN creature_template t ON t.entry = c.id ' +
+          'JOIN smart_scripts s ON s.source_type = 0 AND (s.entryorguid = c.id OR s.entryorguid = -c.guid) ' +
+          `WHERE c.map = ${Math.trunc(map)} AND s.event_type IN (${Object.keys(SAI_SIGHT_EVENTS).join(', ')}) AND s.event_param2 > 0`,
+      ),
+    );
+    return (rows ?? []).map((row) => ({
+      key: `zone:sight:${row['guid']}:${row['row']}:${row['entryorguid']}`,
+      kind: 'sight' as const,
+      x: Number(row['x']),
+      y: Number(row['y']),
+      z: Number(row['z']),
+      radius: Number(row['radius']),
+      name: String(row['name']),
+      detail: `SMART_EVENT_${SAI_SIGHT_EVENTS[Number(row['event_type'])]} (smart_scripts ${row['entryorguid']}, id ${row['row']}) - Creature (GUID: ${row['guid']}, Entry: ${row['entry']})`,
     }));
   }
 

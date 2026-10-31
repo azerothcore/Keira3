@@ -70,6 +70,61 @@ export const GAMEOBJECT_TRANSPORT = 15;
 /** Gameobject type of portals (spellcasters: their spell teleports). */
 export const GAMEOBJECT_SPELLCASTER = 22;
 
+/**
+ * Areas with a range around a place: capture points (gameobject type 29, Data0, and Eye of the Storm's towers), the
+ * gameobjects that act on what comes near (traps, spell focuses, area damage, flag stands, fishing holes, aura
+ * generators), where battleground players must wait before the gates open (battleground_template.StartMaxDist), and how
+ * far SmartAI creatures see players (OOC / IC line of sight, players near).
+ */
+export type ZoneKind = 'capture' | 'trap' | 'focus' | 'damage' | 'flag' | 'fishing' | 'aura' | 'start' | 'sight';
+
+export interface WorldZone {
+  key: string;
+  kind: ZoneKind;
+  x: number;
+  y: number;
+  z: number;
+  radius: number;
+  /** What it is (the gameobject's or creature's name, the battleground's). */
+  name: string;
+  /** More about it (the entry, the script row, the side…). */
+  detail: string;
+}
+
+/** Gameobject types with a range, the template field holding it, and whether it's a diameter (traps). */
+export const RANGED_OBJECT_TYPES: Record<number, { kind: ZoneKind; field: 'Data0' | 'Data1' | 'Data2'; diameter?: boolean }> = {
+  6: { kind: 'trap', field: 'Data2', diameter: true },
+  8: { kind: 'focus', field: 'Data1' },
+  12: { kind: 'damage', field: 'Data1' },
+  24: { kind: 'flag', field: 'Data2' },
+  25: { kind: 'fishing', field: 'Data0' },
+  29: { kind: 'capture', field: 'Data0' },
+  30: { kind: 'aura', field: 'Data1' },
+};
+
+/** SmartAI events with a range in their second parameter: out of combat / in combat line of sight, players near. */
+export const SAI_SIGHT_EVENTS: Record<number, string> = { 10: 'OOC_LOS', 26: 'IC_LOS', 101: 'NEAR_PLAYERS' };
+
+/** A gameobject template (the ones spawned by scripts, to draw and name them). */
+export interface ObjectTemplate {
+  entry: number;
+  name: string;
+  type: number;
+  displayId: number;
+  size: number;
+  data: [number, number, number];
+}
+
+/** The range of a gameobject template (yards; 0: none). */
+export function objectRange(template: Pick<ObjectTemplate, 'type' | 'data'>): number {
+  const ranged = RANGED_OBJECT_TYPES[template.type];
+  if (!ranged) {
+    return 0;
+  }
+  const value = template.data[Number(ranged.field.slice(4))];
+  return ranged.diameter ? value / 2 : value;
+}
+
 /** A quest a creature or gameobject entry starts or ends (creature_queststarter / _questender, gameobject_…). */
 export interface SpawnQuest {
   type: SpawnType;
@@ -121,9 +176,20 @@ export interface LayerVisibility {
   travel: boolean;
   /** Boss boundaries (from the AzerothCore source folder). */
   bossBoundaries: boolean;
+  /** Capture points (outdoor PvP, Wintergrasp, Eye of the Storm) and where battleground players wait to start. */
+  captureZones: boolean;
+  /** The ranges of traps, spell focuses, area damage, flag stands, fishing holes and aura generators. */
+  objectRanges: boolean;
+  /** How far SmartAI creatures see players (line of sight events). */
+  sightRanges: boolean;
+  /** The gameobjects scripts spawn (battleground flags, banners and doors, Wintergrasp's walls and towers). */
+  scriptObjects: boolean;
 }
 
-export type LayerSwitch = { key: keyof LayerVisibility; id: string; label: string };
+/** What a switch needs: the AzerothCore source folder, or the server's data folder (mmaps, vmaps, maps). */
+export type Requirement = 'source' | 'serverData';
+
+export type LayerSwitch = { key: keyof LayerVisibility; id: string; label: string; requires?: Requirement };
 
 /** The layer switches of the toolbar, in order. */
 export const LAYER_SWITCHES: LayerSwitch[] = [
@@ -139,7 +205,11 @@ export const OVERLAY_SWITCHES: LayerSwitch[] = [
   { key: 'pools', id: 'pools', label: 'WORLD_EDITOR.POOLS' },
   { key: 'flightPaths', id: 'flight-paths', label: 'WORLD_EDITOR.FLIGHT_PATHS' },
   { key: 'travel', id: 'travel', label: 'WORLD_EDITOR.TRAVEL' },
-  { key: 'bossBoundaries', id: 'boss-boundaries', label: 'WORLD_EDITOR.BOSS_BOUNDARIES' },
+  { key: 'bossBoundaries', id: 'boss-boundaries', label: 'WORLD_EDITOR.BOSS_BOUNDARIES', requires: 'source' },
+  { key: 'captureZones', id: 'capture-zones', label: 'WORLD_EDITOR.CAPTURE_ZONES' },
+  { key: 'scriptObjects', id: 'script-objects', label: 'WORLD_EDITOR.SCRIPT_OBJECTS', requires: 'source' },
+  { key: 'objectRanges', id: 'object-ranges', label: 'WORLD_EDITOR.OBJECT_RANGES' },
+  { key: 'sightRanges', id: 'sight-ranges', label: 'WORLD_EDITOR.SIGHT_RANGES' },
 ];
 
 /** Rows as returned by the spawn and waypoint queries. */

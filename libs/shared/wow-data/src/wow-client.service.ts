@@ -26,6 +26,7 @@ import {
   WowZone,
 } from './dbc';
 import { BossBoundary, parseBossScripts, parseInstanceBoundaries, parseMapConstants } from './boss-boundaries';
+import { parseScriptConstants, parseScriptSpawns, ScriptSpawn } from './script-spawns';
 import { FolderArchive } from './folder-archive';
 import { GpuTexture, ParsedAdt, parseWdt, RgbaImage, WdtInfo } from './formats';
 import { MD5_TRANSLATE_PATH, MINIMAP_ROOT, minimapCacheKey, minimapKey, parseMd5Translate } from './minimap';
@@ -144,6 +145,7 @@ export class WowClientService {
   private gameobjectDisplays?: Promise<Map<number, string>>;
   private characterDbcs?: Promise<(DbcFile | undefined)[]>;
   private bossBoundaries?: { source: string; all: Promise<BossBoundary[]> };
+  private scriptSpawns?: { source: string; all: Promise<ScriptSpawn[]> };
   private zoneLights?: Promise<Map<number, ZoneLight[]>>;
   private zones?: Promise<WowZone[]>;
   private areaTriggers?: Promise<AreaTriggerInfo[]>;
@@ -254,6 +256,51 @@ export class WowClientService {
       this.bossBoundaries = { source, all };
     }
     return (await this.bossBoundaries.all).filter((boundary) => boundary.mapId === mapId);
+  }
+
+  /**
+   * The gameobjects the scripts spawn on a map (battlegrounds, Wintergrasp, outdoor PvP: flags, banners, doors, walls,
+   * towers, capture points), read from the AzerothCore source folder (empty without one, or outside the desktop app).
+   * Candidates: entries that aren't gameobjects are for the database to leave out.
+   */
+  async getScriptSpawns(mapId: number): Promise<ScriptSpawn[]> {
+    const source = this.settings.paths().sourcePath;
+    if (!source || !this.native) {
+      return [];
+    }
+    if (this.scriptSpawns?.source !== source) {
+      const all = this.readScriptSpawns(this.native, source).catch((error) => {
+        // (read again next time)
+        this.scriptSpawns = undefined;
+        throw error;
+      });
+      this.scriptSpawns = { source, all };
+    }
+    return (await this.scriptSpawns.all).filter((spawn) => spawn.mapId === mapId);
+  }
+
+  private async readScriptSpawns(native: WowNativeApi, source: string): Promise<ScriptSpawn[]> {
+    const base = [`${source}/src/server`, `${source}/server`].find((path) => native.isDirectory(`${path}/scripts`));
+    if (!base) {
+      return [];
+    }
+    const text = (path: string) => new TextDecoder().decode(native.readFile(path));
+    const defines = `${base}/game/Maps/AreaDefines.h`;
+    const maps = native.exists(defines) ? parseMapConstants(text(defines)) : new Map<string, number>();
+    const spawns: ScriptSpawn[] = [];
+    for (const folder of [`${base}/game/Battlegrounds/Zones`, `${base}/game/Battlefield/Zones`, `${base}/scripts/OutdoorPvP`]) {
+      if (!native.isDirectory(folder)) {
+        continue;
+      }
+      // (the entries are named in the folder's headers, used in its files)
+      const files = native.readdir(folder).filter((name) => /\.(h|cpp)$/.test(name));
+      const texts = new Map(files.map((name) => [name, text(`${folder}/${name}`)]));
+      const constants = new Map(maps);
+      texts.forEach((code) => parseScriptConstants(code).forEach((value, name) => constants.set(name, value)));
+      await nextFrame();
+      texts.forEach((code, name) => spawns.push(...parseScriptSpawns(code, name, constants)));
+    }
+    return spawns;
   }
 
   private async readBossBoundaries(native: WowNativeApi, source: string): Promise<BossBoundary[]> {

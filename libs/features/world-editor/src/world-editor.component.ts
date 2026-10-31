@@ -84,6 +84,7 @@ import {
 } from '@keira/shared/world-viewer';
 import {
   CacheUsage,
+  ScriptSpawn,
   TILE_SIZE,
   tileCenter,
   TileCoord,
@@ -140,6 +141,11 @@ import {
   AreaPath,
   EditorTool,
   LayerVisibility,
+  objectRange,
+  ObjectTemplate,
+  Requirement,
+  WorldZone,
+  ZoneKind,
   pathKey,
   pathLabel,
   FormationMember,
@@ -418,6 +424,32 @@ const spawnBounds = (spawn: SpawnRecord): { radius: number; reach: number } | un
 const INSTANCE_PADDING = 50;
 /** Colours of the boss boundaries, one per boss. */
 const BOUNDARY_COLORS = [0xff9ff3, 0x48dbfb, 0xfeca57, 0x1dd1a1, 0x5f27cd, 0xff6b6b];
+/** The colours of the areas with a range, by kind. */
+export const ZONE_COLORS: Record<ZoneKind, number> = {
+  capture: 0xffa500,
+  start: 0x3b82f6,
+  trap: 0xef4444,
+  focus: 0xf59e0b,
+  damage: 0xdc2626,
+  flag: 0x22c55e,
+  fishing: 0x06b6d4,
+  aura: 0xa855f7,
+  sight: 0xec4899,
+};
+/** The colour of the gameobjects scripts spawn (their markers). */
+const SCRIPT_OBJECT_COLOR = 0xffd166;
+/** Which layer shows each kind of area. */
+const ZONE_LAYERS: Record<ZoneKind, keyof LayerVisibility> = {
+  capture: 'captureZones',
+  start: 'captureZones',
+  trap: 'objectRanges',
+  focus: 'objectRanges',
+  damage: 'objectRanges',
+  flag: 'objectRanges',
+  fishing: 'objectRanges',
+  aura: 'objectRanges',
+  sight: 'sightRanges',
+};
 /** Flight masters and flight paths (their own layer) among the travel overlays. */
 const isFlight = (key: string): boolean => key.startsWith('flight:') || key.startsWith('taxi:');
 
@@ -808,6 +840,7 @@ export class WorldEditorComponent implements OnInit {
         ...(layers.formations ? formationSlots(spawns, this.formations(), this.selectedSpawn()) : []),
         ...this.travelOverlays().markers.filter((marker) => (isFlight(marker.key) ? layers.flightPaths : layers.travel)),
         ...this.scanMarkers(),
+        ...this.scriptMarkers(),
       ];
     }),
   );
@@ -1201,7 +1234,79 @@ export class WorldEditorComponent implements OnInit {
   /** Boss boundaries of the current map (from the AzerothCore source folder), with the entries of their creatures. */
   private readonly bossBoundaries = signal<(BossBoundary & { entries: number[] })[]>([]);
   /** Boss boundaries drawn in the view: at the height of a loaded boss (or of the camera), named with their bosses. */
-  protected readonly worldBoundaries = computed<WorldBoundary[]>(() =>
+  protected readonly worldBoundaries = computed<WorldBoundary[]>(() => [...this.bossBoundaryShapes(), ...this.zoneShapes()]);
+
+  /**
+   * The areas with a range near the camera, each as a circle: capture points and battleground starts, the gameobjects
+   * acting on what comes near, SmartAI creatures' sight; and the capture points of the gameobjects scripts spawn.
+   */
+  private readonly zoneShapes = computed<WorldBoundary[]>(() =>
+    perfTime('editor zoneShapes', () => {
+      const layers = this.layers();
+      const center = this.spawnsCenter();
+      const near = (zone: WorldZone) => !center || Math.hypot(zone.x - center.x, zone.y - center.y) <= SPAWN_LOAD_RADIUS + zone.radius;
+      return [...this.mapZones(), ...this.scriptZones()]
+        .filter((zone) => layers[ZONE_LAYERS[zone.kind]] && near(zone))
+        .map((zone) => ({
+          key: zone.key,
+          label: [
+            `${zone.name} - ${this.translate.instant(`WORLD_EDITOR.ZONE_${zone.kind.toUpperCase()}`)} (${zone.radius} yd)`,
+            zone.detail,
+          ].join('\n'),
+          color: ZONE_COLORS[zone.kind],
+          z: zone.z,
+          shapes: [{ type: 'circle' as const, center: { x: zone.x, y: zone.y }, radius: zone.radius, inverted: false }],
+        }));
+    }),
+  );
+
+  /** The areas with a range of the current map, from the database. */
+  private readonly mapZones = signal<WorldZone[]>([]);
+  /** The gameobjects the scripts spawn on the current map (with the source folder), with their templates and models. */
+  private readonly scriptObjects = signal<{ spawn: ScriptSpawn; template: ObjectTemplate; path?: string }[]>([]);
+  /** The capture points of the gameobjects the scripts spawn. */
+  private readonly scriptZones = computed<WorldZone[]>(() =>
+    this.scriptObjects().flatMap(({ spawn, template }, i) => {
+      const radius = spawn.radius ?? (template.type === 29 ? objectRange(template) : 0);
+      return radius > 0
+        ? [
+            {
+              key: `zone:script:${i}`,
+              kind: 'capture' as const,
+              x: spawn.x,
+              y: spawn.y,
+              z: spawn.z,
+              radius,
+              name: template.name,
+              detail: `Scripted gameobject (Entry: ${template.entry}, ${spawn.file})`,
+            },
+          ]
+        : [];
+    }),
+  );
+  /** The gameobjects the scripts spawn, as markers (named, with where they're spawned). */
+  private readonly scriptMarkers = computed<WorldMarker[]>(() =>
+    this.layers().scriptObjects
+      ? this.scriptObjects().map(({ spawn, template }, i) => ({
+          key: `script-object:${i}`,
+          position: { x: spawn.x, y: spawn.y, z: spawn.z },
+          color: SCRIPT_OBJECT_COLOR,
+          label: `${template.name} - ${this.translate.instant('WORLD_EDITOR.SCRIPT_OBJECT')} (Entry: ${template.entry}, ${spawn.file})`,
+        }))
+      : [],
+  );
+  /** The buildings (walls, towers, gates) the scripts spawn, drawn as they are, with the transports' ships. */
+  protected readonly extraBuildings = computed<ExtraBuilding[]>(() => [
+    ...this.transportBuildings(),
+    ...(this.layers().scriptObjects
+      ? this.scriptObjects().flatMap(({ spawn, path }, i) =>
+          path ? [{ key: `script-object:${i}`, path, position: { x: spawn.x, y: spawn.y, z: spawn.z }, orientation: spawn.o }] : [],
+        )
+      : []),
+  ]);
+
+  /** Boss boundaries drawn in the view: at the height of a loaded boss (or of the camera), named with their bosses. */
+  private readonly bossBoundaryShapes = computed<WorldBoundary[]>(() =>
     perfTime('editor worldBoundaries', () => {
       if (!this.layers().bossBoundaries) {
         return [];
@@ -2345,6 +2450,8 @@ export class WorldEditorComponent implements OnInit {
         this.areaTriggerInfo.set(info);
       }
       void this.loadBossBoundaries(mapId);
+      void this.loadMapZones(mapId);
+      void this.loadScriptObjects(mapId);
       await this.loadTravel(mapId, triggers);
     } catch (error) {
       this.areaTriggerList.set([]);
@@ -2364,6 +2471,48 @@ export class WorldEditorComponent implements OnInit {
     if (mapId === this.mapId()) {
       this.travel.set({ mapId, graveyards, teleports, taxiNodes, taxiPaths });
     }
+  }
+
+  /** The areas with a range of a map: gameobjects with one, battleground starts, SmartAI sight (each left out if unreadable). */
+  private async loadMapZones(mapId: number): Promise<void> {
+    const [objects, starts, sight] = await Promise.all([
+      this.service.loadObjectZones(mapId).catch(this.quietly<WorldZone[]>('read the gameobjects with a range', [])),
+      this.service.loadBattlegroundStarts(mapId).catch(this.quietly<WorldZone[]>('read the battleground starts', [])),
+      this.service.loadSightZones(mapId).catch(this.quietly<WorldZone[]>('read the SmartAI sight ranges', [])),
+    ]);
+    if (mapId === this.mapId()) {
+      this.mapZones.set([...objects, ...starts, ...sight]);
+    }
+  }
+
+  /**
+   * The gameobjects the scripts spawn on a map (from the source folder): those the database has a template for, with
+   * the models of the buildings among them (walls, towers, gates).
+   */
+  private async loadScriptObjects(mapId: number): Promise<void> {
+    const spawns = await this.client
+      .getScriptSpawns(mapId)
+      .catch(this.quietly<ScriptSpawn[]>('read the gameobjects spawned by scripts', []));
+    const templates = await this.service
+      .loadObjectTemplates(spawns.map((spawn) => spawn.entry))
+      .catch(this.quietly('read the templates of the gameobjects spawned by scripts', new Map<number, ObjectTemplate>()));
+    const objects: { spawn: ScriptSpawn; template: ObjectTemplate; path?: string }[] = [];
+    for (const spawn of spawns) {
+      const template = templates.get(spawn.entry);
+      if (template) {
+        const path = await this.client.getGameObjectDisplay(template.displayId).catch(() => undefined);
+        objects.push({ spawn, template, ...(path && /\.wmo$/i.test(path) ? { path } : {}) });
+      }
+    }
+    if (mapId === this.mapId()) {
+      this.scriptObjects.set(objects);
+    }
+  }
+
+  /** Whether what a switch needs is missing (the source folder, the server's data folder): it's greyed out then. */
+  protected missing(requirement: Requirement | undefined): boolean {
+    const paths = this.settings.paths();
+    return requirement === 'source' ? !paths.sourcePath : requirement === 'serverData' ? !paths.serverDataPath : false;
   }
 
   /** The boss boundaries of a map, and the creatures they apply to (none when the scripts or the database can't tell). */
@@ -2590,6 +2739,8 @@ export class WorldEditorComponent implements OnInit {
   /** Loads everything again: the spawns around the camera (and their paths, scripts…), the zones and boss boundaries. */
   protected async refresh(): Promise<void> {
     void this.loadBossBoundaries(this.mapId());
+    void this.loadMapZones(this.mapId());
+    void this.loadScriptObjects(this.mapId());
     void this.loadZones(true);
     await this.reloadSpawns();
   }

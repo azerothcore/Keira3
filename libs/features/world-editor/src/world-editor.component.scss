@@ -453,3 +453,12 @@
     font-size: 0.85rem;
   }
 }
+
+// a switch whose requirement (the source folder, the server's data folder) is missing
+.world-editor-unavailable {
+  opacity: 0.55;
+
+  .form-check-label {
+    cursor: not-allowed;
+  }
+}

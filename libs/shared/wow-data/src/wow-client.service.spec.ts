@@ -155,6 +155,54 @@ describe('WowClientService', () => {
     });
   });
 
+  describe('gameobjects spawned by scripts', () => {
+    const bytes = (text: string) => Array.from(new TextEncoder().encode(text));
+    const files = {
+      '/ac/src/server/scripts/World/x.cpp': bytes(''),
+      '/ac/src/server/game/Maps/AreaDefines.h': bytes('MAP_OUTLAND = 530,'),
+      '/ac/src/server/game/Battlegrounds/Zones/BattlegroundEY.h': bytes('enum { BG_EY_POINT_RADIUS = 50, CAP_ENTRY = 184081 };'),
+      '/ac/src/server/game/Battlegrounds/Zones/BattlegroundEY.cpp': bytes('AddObject(1, CAP_ENTRY, 2024.6f, 1742.8f, 1195.1f, 2.4f);'),
+      '/ac/src/server/game/Battlegrounds/Zones/notes.txt': bytes('AddObject(1, 184082, 1.5f, 2.5f, 3.5f);'),
+      '/ac/src/server/scripts/OutdoorPvP/OutdoorPvPHP.h': bytes('{182175, MAP_OUTLAND, -471.462f, 3451.09f, 34.6432f, 0.17f},'),
+    };
+
+    it('reads them from the source folder, once, by map', async () => {
+      const { service, settings, native } = setup({ files });
+      expect(await service.getScriptSpawns(566)).toEqual([]);
+      settings.save({ ...settings.paths(), sourcePath: '/ac' });
+      expect(await service.getScriptSpawns(566)).toEqual([
+        { entry: 184081, mapId: 566, x: 2024.6, y: 1742.8, z: 1195.1, o: 2.4, file: 'BattlegroundEY.cpp', radius: 50 },
+      ]);
+      expect((await service.getScriptSpawns(530)).map((s) => s.entry)).toEqual([182175]);
+      const reads = vi.spyOn(native, 'readFile');
+      await service.getScriptSpawns(530);
+      expect(reads).not.toHaveBeenCalled();
+      // no source there; outside the desktop app
+      settings.save({ ...settings.paths(), sourcePath: '/nowhere' });
+      expect(await service.getScriptSpawns(530)).toEqual([]);
+    });
+
+    it('has none outside the desktop app', async () => {
+      const { service, settings } = setup({ native: false });
+      settings.save({ ...settings.paths(), sourcePath: '/ac' });
+      expect(await service.getScriptSpawns(530)).toEqual([]);
+    });
+
+    it('reads without the map constants, and again after a failure', async () => {
+      const withoutDefines = Object.fromEntries(Object.entries(files).filter(([path]) => !path.endsWith('AreaDefines.h')));
+      const { service, settings, native } = setup({ files: withoutDefines });
+      settings.save({ ...settings.paths(), sourcePath: '/ac/src' });
+      const readdir = vi.spyOn(native, 'readdir').mockImplementationOnce(() => {
+        throw new Error('locked');
+      });
+      await expect(service.getScriptSpawns(566)).rejects.toThrow('locked');
+      readdir.mockRestore();
+      expect(await service.getScriptSpawns(566)).toHaveLength(1);
+      // (an outdoor PvP map named by an unknown constant: on the file's map)
+      expect(await service.getScriptSpawns(530)).toHaveLength(1);
+    });
+  });
+
   it('is not supported outside Electron', async () => {
     const { service } = setup({ native: false });
     expect(service.isSupported()).toBe(false);

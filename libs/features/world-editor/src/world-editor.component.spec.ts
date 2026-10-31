@@ -230,6 +230,7 @@ describe(WorldEditorComponent.name, () => {
       getTaxiNodes: vi.fn(),
       getTaxiPaths: vi.fn(),
       getBossBoundaries: vi.fn(),
+      getScriptSpawns: vi.fn(),
       getServerCoverage: vi.fn(),
       getServerMap: vi.fn(),
       getSkyboxes: vi.fn(),
@@ -265,6 +266,10 @@ describe(WorldEditorComponent.name, () => {
       searchTemplates: vi.fn(),
       loadMapSpawnPositions: vi.fn(),
       loadScriptEntries: vi.fn(),
+      loadObjectTemplates: vi.fn(),
+      loadObjectZones: vi.fn(),
+      loadBattlegroundStarts: vi.fn(),
+      loadSightZones: vi.fn(),
       loadWaypointScripts: vi.fn(),
       loadWaypointSai: vi.fn(),
       loadEventNames: vi.fn(),
@@ -306,6 +311,8 @@ describe(WorldEditorComponent.name, () => {
       links?: boolean;
       cacheRoot?: string;
       askBeforeDelete?: boolean;
+      /** The server data and source folders (both set unless given). */
+      folders?: { serverDataPath: string; sourcePath: string };
     } = {},
   ) => {
     localStorage.clear();
@@ -317,7 +324,10 @@ describe(WorldEditorComponent.name, () => {
       localStorage.setItem('keira3.worldEditor.lastView', opts.lastView);
     }
     if (opts.configured !== false) {
-      localStorage.setItem(WOW_DATA_SETTINGS_KEY, JSON.stringify({ clientPath: '/wow', serverDataPath: '' }));
+      localStorage.setItem(
+        WOW_DATA_SETTINGS_KEY,
+        JSON.stringify({ clientPath: '/wow', ...(opts.folders ?? { serverDataPath: '/srv', sourcePath: '/ac' }) }),
+      );
     }
     TestBed.configureTestingModule({
       imports: [WorldEditorComponent, TranslateTestingModule],
@@ -421,6 +431,11 @@ describe(WorldEditorComponent.name, () => {
     mocks.client.getTaxiNodes.mockResolvedValue([]);
     mocks.client.getTaxiPaths.mockResolvedValue([]);
     mocks.client.getBossBoundaries.mockResolvedValue([]);
+    mocks.client.getScriptSpawns.mockResolvedValue([]);
+    mocks.service.loadObjectTemplates.mockResolvedValue(new Map());
+    mocks.service.loadObjectZones.mockResolvedValue([]);
+    mocks.service.loadBattlegroundStarts.mockResolvedValue([]);
+    mocks.service.loadSightZones.mockResolvedValue([]);
     mocks.client.getMapBuilding.mockResolvedValue(undefined);
     mocks.service.loadScriptEntries.mockResolvedValue(new Map());
     mocks.service.loadWaypointScripts.mockResolvedValue(new Map([[50, [{ id: 50, delay: 0, command: 0 }]]]));
@@ -499,7 +514,7 @@ describe(WorldEditorComponent.name, () => {
 
     it('copies the folders set and opens them in the file manager', async () => {
       mocks.electron.isElectron.mockReturnValue(true);
-      const { page } = await setup({ cacheRoot: '/cache' });
+      const { page } = await setup({ cacheRoot: '/cache', folders: { serverDataPath: '', sourcePath: '' } });
       page.click('settings-toggle');
       page.fixture.detectChanges();
       // nothing set: nothing to copy or open
@@ -3932,7 +3947,7 @@ describe(WorldEditorComponent.name, () => {
         at('gameobject', 3, 30),
         at('creature', 4, 60, true),
       ]);
-      const { page } = await setup();
+      const { page } = await setup({ folders: { serverDataPath: '', sourcePath: '' } });
       await loadArea(page);
       // the server's data is needed
       expect(page.byId<HTMLButtonElement>('scan-map').nativeElement.disabled).toBe(true);
@@ -4636,6 +4651,148 @@ describe(WorldEditorComponent.name, () => {
       page.click('layer-boss-boundaries');
       page.fixture.detectChanges();
       expect(page.viewer().boundaries()).toEqual([]);
+    });
+
+    it('draws capture points, battleground starts, object ranges, SmartAI sight and scripted objects, each with its switch', async () => {
+      const zone = (key: string, kind: string, radius: number, dx = 0) => ({
+        key,
+        kind,
+        x: CENTER.x + dx,
+        y: CENTER.y,
+        z: 5,
+        radius,
+        name: key,
+        detail: 'detail',
+      });
+      mocks.service.loadObjectZones.mockResolvedValue([
+        zone('tower', 'capture', 60),
+        zone('trap', 'trap', 5),
+        zone('far', 'focus', 10, 5000),
+      ]);
+      mocks.service.loadBattlegroundStarts.mockResolvedValue([zone('start', 'start', 75)]);
+      mocks.service.loadSightZones.mockResolvedValue([zone('sight', 'sight', 20)]);
+      const spawn = (entry: number, file: string, radius?: number) => ({
+        entry,
+        mapId: 0,
+        x: CENTER.x,
+        y: CENTER.y,
+        z: 10,
+        o: 1,
+        file,
+        ...(radius ? { radius } : {}),
+      });
+      mocks.client.getScriptSpawns.mockResolvedValue([
+        spawn(190219, 'BattlefieldWG.h'),
+        spawn(184081, 'BattlegroundEY.cpp', 50),
+        spawn(182175, 'OutdoorPvPHP.h'),
+        spawn(28048, 'BattlegroundAV.h'),
+      ]);
+      const template = (entry: number, name: string, type: number, displayId: number, data: number[] = [0, 0, 0]) =>
+        [entry, { entry, name, type, displayId, size: 1, data }] as const;
+      mocks.service.loadObjectTemplates.mockResolvedValue(
+        new Map([
+          template(190219, 'Wall', 33, 7),
+          template(184081, 'Fel Reaver Cap', 1, 8),
+          template(182175, 'Broken Hill', 29, 9, [60, 0, 0]),
+        ]),
+      );
+      mocks.client.getGameObjectDisplay.mockImplementation((id: number) =>
+        id === 7
+          ? Promise.resolve('world\\wmo\\wall.wmo')
+          : id === 8
+            ? Promise.resolve('flag.m2')
+            : Promise.reject(new Error('no display')),
+      );
+      const { page } = await setup();
+      await loadArea(page);
+      const keys = () =>
+        page
+          .viewer()
+          .boundaries()
+          .map((b) => b.key);
+      expect(keys()).toEqual(['tower', 'start', 'zone:script:1', 'zone:script:2']);
+      expect(page.viewer().boundaries()[0]).toEqual(
+        expect.objectContaining({
+          label: 'tower - WORLD_EDITOR.ZONE_CAPTURE (60 yd)\ndetail',
+          z: 5,
+          shapes: [{ type: 'circle', center: { x: CENTER.x, y: CENTER.y }, radius: 60, inverted: false }],
+        }),
+      );
+      expect(page.viewer().boundaries()[2].label).toContain('Fel Reaver Cap - WORLD_EDITOR.ZONE_CAPTURE (50 yd)');
+      const scripted = () =>
+        page
+          .viewer()
+          .markers()
+          .filter((m) => m.key.startsWith('script-object:'));
+      expect(scripted().map((m) => m.label)).toEqual([
+        'Wall - WORLD_EDITOR.SCRIPT_OBJECT (Entry: 190219, BattlefieldWG.h)',
+        'Fel Reaver Cap - WORLD_EDITOR.SCRIPT_OBJECT (Entry: 184081, BattlegroundEY.cpp)',
+        'Broken Hill - WORLD_EDITOR.SCRIPT_OBJECT (Entry: 182175, OutdoorPvPHP.h)',
+      ]);
+      // (the buildings among them drawn)
+      expect(page.viewer().buildings()).toEqual([
+        { key: 'script-object:0', path: 'world\\wmo\\wall.wmo', position: { x: CENTER.x, y: CENTER.y, z: 10 }, orientation: 1 },
+      ]);
+      page.click('view-toggle');
+      page.fixture.detectChanges();
+      for (const id of ['layer-object-ranges', 'layer-sight-ranges']) {
+        page.click(id);
+      }
+      page.fixture.detectChanges();
+      expect(keys()).toEqual(['tower', 'trap', 'start', 'sight', 'zone:script:1', 'zone:script:2']);
+      for (const id of ['layer-capture-zones', 'layer-script-objects']) {
+        page.click(id);
+      }
+      page.fixture.detectChanges();
+      expect(keys()).toEqual(['trap', 'sight']);
+      expect(scripted()).toEqual([]);
+      expect(page.viewer().buildings()).toEqual([]);
+    });
+
+    it('has no ranges or scripted objects when they can not be read', async () => {
+      mocks.service.loadObjectZones.mockRejectedValue(new Error('no table'));
+      mocks.service.loadBattlegroundStarts.mockRejectedValue(new Error('no table'));
+      mocks.service.loadSightZones.mockRejectedValue(new Error('no table'));
+      mocks.client.getScriptSpawns.mockRejectedValue(new Error('no source'));
+      mocks.service.loadObjectTemplates.mockRejectedValue(new Error('no table'));
+      const { page } = await setup();
+      await loadArea(page);
+      expect(page.viewer().boundaries()).toEqual([]);
+      // (a map left meanwhile: dropped)
+      let late: (zones: unknown[]) => void = () => undefined;
+      mocks.service.loadObjectZones.mockReturnValueOnce(new Promise((resolve) => (late = resolve)));
+      mocks.client.getScriptSpawns.mockResolvedValue([{ entry: 1, mapId: 1, x: 0, y: 0, z: 0, o: 0, file: 'f' }]);
+      mocks.service.loadObjectTemplates.mockResolvedValue(
+        new Map([[1, { entry: 1, name: 'A', type: 29, displayId: 1, size: 1, data: [9, 0, 0] }]]),
+      );
+      page.chooseMap(1);
+      page.chooseMap(0);
+      late([{ key: 'late', kind: 'capture', x: 0, y: 0, z: 0, radius: 1, name: 'late', detail: '' }]);
+      await settle(page);
+      expect(
+        page
+          .viewer()
+          .boundaries()
+          .map((b) => b.key),
+      ).not.toContain('late');
+    });
+
+    it('greys out what needs the source folder or the server data folder', async () => {
+      const { page } = await setup({ folders: { serverDataPath: '', sourcePath: '' } });
+      page.click('view-toggle');
+      page.fixture.detectChanges();
+      for (const id of ['boss-boundaries', 'script-objects']) {
+        expect(page.byId<HTMLInputElement>(`layer-${id}`).nativeElement.disabled).toBe(true);
+        expect(page.byId<HTMLInputElement>(`layer-${id}`).nativeElement.checked).toBe(false);
+        expect(page.text(`needs-${id}`)).toBe('WORLD_EDITOR.NEEDS_SOURCE');
+      }
+      expect(page.byId<HTMLInputElement>('layer-capture-zones').nativeElement.disabled).toBe(false);
+      expect(page.byId<HTMLInputElement>('view-navmesh').nativeElement.disabled).toBe(true);
+      expect(page.text('needs-navmesh')).toBe('WORLD_EDITOR.NEEDS_SERVER_DATA');
+      const probe = page.byId<HTMLButtonElement>('tool-probe').nativeElement;
+      expect(probe.disabled).toBe(true);
+      expect(probe.title).toBe('WORLD_EDITOR.NEEDS_SERVER_DATA');
+      expect(page.byId<HTMLButtonElement>('tool-face').nativeElement.disabled).toBe(false);
     });
 
     it('has no boss boundaries when they or their creatures can not be read, and keeps the source folder setting', async () => {

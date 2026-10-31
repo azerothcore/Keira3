@@ -210,6 +210,76 @@ describe('WorldEditorService', () => {
     expect(await service.loadTransports(673)).toEqual([]);
   });
 
+  it('loads gameobject templates, the gameobjects with a range, battleground starts and SmartAI sight', async () => {
+    const { service, queryService } = setup();
+    expect(await service.loadObjectTemplates([])).toEqual(new Map());
+    expect(queryService.query).not.toHaveBeenCalled();
+    queryService.query.mockReturnValueOnce(
+      of([{ entry: '182175', name: 'Broken Hill', type: '29', displayId: '6834', size: '1', Data0: '60', Data1: '0', Data2: '0' }]),
+    );
+    expect((await service.loadObjectTemplates([182175, 182175.4])).get(182175)).toEqual({
+      entry: 182175,
+      name: 'Broken Hill',
+      type: 29,
+      displayId: 6834,
+      size: 1,
+      data: [60, 0, 0],
+    });
+    expect(queryService.query.mock.calls[0][0]).toContain('WHERE entry IN (182175)');
+    queryService.query.mockReturnValueOnce(of(undefined));
+    expect(await service.loadObjectTemplates([1])).toEqual(new Map());
+
+    queryService.query.mockReturnValueOnce(
+      of([
+        { guid: '1', entry: '2', name: 'Trap', type: '6', Data0: '0', Data1: '0', Data2: '10', x: '1', y: '2', z: '3' },
+        { guid: '3', entry: '4', name: 'Anvil', type: '8', Data0: '1', Data1: '0', Data2: '0', x: '1', y: '2', z: '3' },
+      ]),
+    );
+    expect(await service.loadObjectZones(0)).toEqual([
+      { key: 'zone:object:1', kind: 'trap', x: 1, y: 2, z: 3, radius: 5, name: 'Trap', detail: 'Gameobject (GUID: 1, Entry: 2)' },
+    ]);
+    expect(queryService.query.mock.calls[2][0]).toContain('t.type IN (6, 8, 12, 24, 25, 29, 30)');
+    queryService.query.mockReturnValueOnce(of(undefined));
+    expect(await service.loadObjectZones(0)).toEqual([]);
+
+    queryService.query.mockReturnValueOnce(
+      of([{ id: '7', name: 'Eye of the Storm', radius: '75', x: '1', y: '2', z: '3', side: 'Horde' }]),
+    );
+    expect(await service.loadBattlegroundStarts(566)).toEqual([
+      {
+        key: 'zone:start:7:Horde',
+        kind: 'start',
+        x: 1,
+        y: 2,
+        z: 3,
+        radius: 75,
+        name: 'Eye of the Storm',
+        detail: 'Horde start (battleground_template 7)',
+      },
+    ]);
+    expect(queryService.query.mock.calls[4][0]).toContain('UNION ALL');
+    queryService.query.mockReturnValueOnce(of(undefined));
+    expect(await service.loadBattlegroundStarts(566)).toEqual([]);
+
+    queryService.query.mockReturnValueOnce(
+      of([{ guid: '5', entry: '6', name: 'Guard', x: '1', y: '2', z: '3', entryorguid: '6', row: '0', event_type: '10', radius: '20' }]),
+    );
+    expect(await service.loadSightZones(0)).toEqual([
+      {
+        key: 'zone:sight:5:0:6',
+        kind: 'sight',
+        x: 1,
+        y: 2,
+        z: 3,
+        radius: 20,
+        name: 'Guard',
+        detail: 'SMART_EVENT_OOC_LOS (smart_scripts 6, id 0) - Creature (GUID: 5, Entry: 6)',
+      },
+    ]);
+    queryService.query.mockReturnValueOnce(of(undefined));
+    expect(await service.loadSightZones(0)).toEqual([]);
+  });
+
   it('loads every spawn of a pool', async () => {
     const { service, queryService } = setup();
     queryService.query.mockReturnValueOnce(

@@ -49,6 +49,21 @@ export const LEGEND: LegendSection[] = [
     ],
   },
   {
+    title: 'WORLD_EDITOR.LEGEND_ZONES',
+    items: [
+      { shape: 'tile', color: '#ffa500', label: 'WORLD_EDITOR.ZONE_CAPTURE' },
+      { shape: 'tile', color: '#3b82f6', label: 'WORLD_EDITOR.ZONE_START' },
+      { shape: 'tile', color: '#ef4444', label: 'WORLD_EDITOR.ZONE_TRAP' },
+      { shape: 'tile', color: '#f59e0b', label: 'WORLD_EDITOR.ZONE_FOCUS' },
+      { shape: 'tile', color: '#dc2626', label: 'WORLD_EDITOR.ZONE_DAMAGE' },
+      { shape: 'tile', color: '#22c55e', label: 'WORLD_EDITOR.ZONE_FLAG' },
+      { shape: 'tile', color: '#06b6d4', label: 'WORLD_EDITOR.ZONE_FISHING' },
+      { shape: 'tile', color: '#a855f7', label: 'WORLD_EDITOR.ZONE_AURA' },
+      { shape: 'tile', color: '#ec4899', label: 'WORLD_EDITOR.ZONE_SIGHT' },
+      { shape: 'diamond', color: '#ffd166', label: 'WORLD_EDITOR.SCRIPT_OBJECTS' },
+    ],
+  },
+  {
     title: 'WORLD_EDITOR.LEGEND_TOOLS',
     items: [
       { shape: 'beam', color: '#fff35c', label: 'WORLD_EDITOR.LEGEND_MARKER' },
