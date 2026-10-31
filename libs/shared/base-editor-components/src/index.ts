@@ -12,3 +12,4 @@ export * from './icon/icon.component';
 export * from './create/create.component';
 export * from './query-output/query-output.component';
 export * from './query-output/query-error/query-error.component';
+export * from './field-filter/field-filter.component';
