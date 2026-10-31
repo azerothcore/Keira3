@@ -13,6 +13,7 @@ import {
   isSaiPath,
   pathKey,
   Placement,
+  PoolMember,
   Quaternion,
   saiPathEntry,
   SpawnRecord,
@@ -34,10 +35,12 @@ const RELATED_ROWS: Record<SpawnType, { table: string; field: string }[]> = {
     { table: 'creature_multispawn', field: 'spawnId' },
     { table: 'game_event_creature', field: 'guid' },
     { table: 'game_event_model_equip', field: 'guid' },
+    { table: 'pool_creature', field: 'guid' },
   ],
   gameobject: [
     { table: GAMEOBJECT_SPAWN_ADDON_TABLE, field: 'guid' },
     { table: 'game_event_gameobject', field: 'guid' },
+    { table: 'pool_gameobject', field: 'guid' },
   ],
 };
 
@@ -163,6 +166,23 @@ export interface ChangesSnapshot {
   deletedWaypoints: [string, WaypointRecord][];
   createdPaths: [number, number][];
   editedSpawns?: [string, { spawn: SpawnRecord; fields: Record<string, number> }][];
+  createdPools?: [number, NewPool][];
+  poolMembers?: [string, PoolMembership][];
+}
+
+/** A pool made in this session (`pool_template`). */
+export interface NewPool {
+  entry: number;
+  maxLimit: number;
+  description: string;
+}
+
+/** A spawn put in a pool, or taken out of its pool (`pool` null), in this session. */
+export interface PoolMembership {
+  type: SpawnType;
+  guid: number;
+  pool: number | null;
+  chance: number;
 }
 
 export class WorldEditorChanges {
@@ -175,6 +195,9 @@ export class WorldEditorChanges {
   private readonly createdPaths = new Map<number, number>();
   /** Spawn columns changed in the properties panel (respawn time, wander distance…), by spawn. */
   private readonly editedSpawns = new Map<string, { spawn: SpawnRecord; fields: Record<string, number> }>();
+  private readonly createdPools = new Map<number, NewPool>();
+  /** Spawns put in (or taken out of) a pool, by spawn. */
+  private readonly poolMembers = new Map<string, PoolMembership>();
 
   get count(): number {
     return (
@@ -185,7 +208,9 @@ export class WorldEditorChanges {
       this.movedWaypoints.size +
       this.deletedWaypoints.size +
       this.createdPaths.size +
-      this.editedSpawns.size
+      this.editedSpawns.size +
+      this.createdPools.size +
+      this.poolMembers.size
     );
   }
 
@@ -200,6 +225,8 @@ export class WorldEditorChanges {
       deletedWaypoints: [...this.deletedWaypoints],
       createdPaths: [...this.createdPaths],
       editedSpawns: [...this.editedSpawns],
+      createdPools: [...this.createdPools],
+      poolMembers: [...this.poolMembers],
     });
   }
 
@@ -214,6 +241,8 @@ export class WorldEditorChanges {
     copy.deletedWaypoints.forEach(([key, value]) => this.deletedWaypoints.set(key, value));
     copy.createdPaths.forEach(([key, value]) => this.createdPaths.set(key, value));
     (copy.editedSpawns ?? []).forEach(([key, value]) => this.editedSpawns.set(key, value));
+    (copy.createdPools ?? []).forEach(([key, value]) => this.createdPools.set(key, value));
+    (copy.poolMembers ?? []).forEach(([key, value]) => this.poolMembers.set(key, value));
   }
 
   clear(): void {
@@ -225,6 +254,8 @@ export class WorldEditorChanges {
     this.deletedWaypoints.clear();
     this.createdPaths.clear();
     this.editedSpawns.clear();
+    this.createdPools.clear();
+    this.poolMembers.clear();
   }
 
   /**
@@ -255,6 +286,61 @@ export class WorldEditorChanges {
   spawnFields(type: SpawnType, guid: number): Record<string, number> {
     const key = spawnKey(type, guid);
     return { ...(this.insertedSpawns.get(key)?.fields ?? this.editedSpawns.get(key)?.fields) };
+  }
+
+  // ---------------------------------------------------------------- pools
+
+  /** Makes a pool (`pool_template`). */
+  createPool(pool: NewPool): void {
+    this.createdPools.set(pool.entry, { ...pool });
+  }
+
+  /** The pools made in this session. */
+  newPools(): NewPool[] {
+    return [...this.createdPools.values()];
+  }
+
+  /**
+   * Puts a spawn in a pool with a chance, or takes it out of its pool (`pool` null). `stored` is the pool it's in in the
+   * database (null: none): putting it back there with its chance drops the change.
+   */
+  setPoolMember(membership: PoolMembership, stored: { pool: number; chance: number } | null): void {
+    const key = spawnKey(membership.type, membership.guid);
+    const unchanged = stored
+      ? membership.pool === stored.pool && round(membership.chance) === round(stored.chance)
+      : membership.pool === null;
+    if (unchanged) {
+      this.poolMembers.delete(key);
+    } else {
+      this.poolMembers.set(key, { ...membership });
+    }
+    // a pool made in this session and left empty goes away
+    for (const entry of this.createdPools.keys()) {
+      if (![...this.poolMembers.values()].some((member) => member.pool === entry)) {
+        this.createdPools.delete(entry);
+      }
+    }
+  }
+
+  /** The pools of the spawns as stored (`loaded`), with the pending changes. */
+  applyToPools(loaded: PoolMember[]): PoolMember[] {
+    const result = loaded.filter((member) => !this.poolMembers.has(spawnKey(member.type, member.guid)));
+    for (const { type, guid, pool, chance } of this.poolMembers.values()) {
+      if (pool === null) {
+        continue;
+      }
+      const created = this.createdPools.get(pool);
+      const known = loaded.find((member) => member.pool === pool);
+      result.push({
+        type,
+        guid,
+        pool,
+        chance,
+        maxLimit: created?.maxLimit ?? known?.maxLimit ?? 0,
+        description: created?.description ?? known?.description ?? '',
+      });
+    }
+    return result;
   }
 
   // ---------------------------------------------------------------- spawns
@@ -303,6 +389,7 @@ export class WorldEditorChanges {
       }
     }
     this.editedSpawns.delete(key);
+    this.poolMembers.delete(key);
     if (this.insertedSpawns.delete(key)) {
       return;
     }
@@ -448,6 +535,10 @@ export class WorldEditorChanges {
       ...[...this.movedSpawns.values()].map(({ original }) => `Move ${label(original)}`),
       ...[...this.editedSpawns.values()].map(({ spawn }) => `Edit ${label(spawn)}`),
       ...[...this.createdPaths].map(([guid, pathId]) => `Create path ${pathId} for creature ${guid}`),
+      ...[...this.createdPools.values()].map((pool) => `Create pool ${pool.entry}`),
+      ...[...this.poolMembers.values()].map(({ type, guid, pool }) =>
+        pool === null ? `Take ${type} ${guid} out of its pool` : `Put ${type} ${guid} in pool ${pool}`,
+      ),
       ...[...this.deletedWaypoints.values()].map((w) => `Delete waypoint ${point(w)}`),
       ...[...this.insertedWaypoints.values()].map((w) => `Add waypoint ${point(w)}`),
       ...[...this.movedWaypoints.values()].map(
@@ -482,6 +573,28 @@ export class WorldEditorChanges {
         `INSERT INTO \`${CREATURE_SPAWN_ADDON_TABLE}\` (\`guid\`, \`path_id\`) VALUES (${guid}, ${pathId}) ON DUPLICATE KEY UPDATE \`path_id\` = ${pathId};`,
       );
       statements.push(this.updateQuery(CREATURE_SPAWN_TABLE, { MovementType: MOVEMENT_TYPE_WAYPOINT }, { guid }));
+    }
+    for (const pool of this.createdPools.values()) {
+      statements.push(this.deleteQuery('pool_template', { entry: pool.entry }));
+      statements.push(
+        `${squel
+          .insert(squelConfig)
+          .into('pool_template')
+          .setFields({ entry: pool.entry, max_limit: pool.maxLimit, description: pool.description })
+          .toString()};`,
+      );
+    }
+    for (const { type, guid, pool, chance } of this.poolMembers.values()) {
+      statements.push(this.deleteQuery(`pool_${type}`, { guid }));
+      if (pool !== null) {
+        statements.push(
+          `${squel
+            .insert(squelConfig)
+            .into(`pool_${type}`)
+            .setFields({ guid, pool_entry: pool, chance: round(chance) })
+            .toString()};`,
+        );
+      }
     }
     // SmartAI paths (negative path ids) live in `waypoints` (entry, pointid), the others in `waypoint_data` (id, point)
     const keyOf = (waypoint: WaypointRecord): { table: string; where: Record<string, number> } =>

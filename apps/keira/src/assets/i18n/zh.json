@@ -1879,7 +1879,16 @@
     "GAME_MAP_ZOOM_RESET": "整张地图",
     "GAME_MAP_TIP": "提示：右键（或 Alt + 单击）复制 .go 命令",
     "MODIFY": "修改",
-    "OPEN_WAYPOINT_SCRIPT": "打开路径点脚本"
+    "OPEN_WAYPOINT_SCRIPT": "打开路径点脚本",
+    "POOL_N": "刷新池 {{pool}}",
+    "POOL_CHANCE": "几率",
+    "POOL_LEAVE": "移出刷新池",
+    "POOL_LEAVE_ALL": "将这 {{count}} 个移出刷新池",
+    "POOL_OPEN": "在刷新池编辑器中打开",
+    "POOL_ADD_TO": "刷新池",
+    "POOL_ADD": "添加（{{count}}）",
+    "POOL_NEW": "新建刷新池",
+    "POOL_CREATE": "创建（{{count}}）"
   },
   "SETTINGS": {
     "TITLE": "设置",

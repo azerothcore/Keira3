@@ -848,6 +848,16 @@ describe('WorldEditorService', () => {
     expect(queryService.query).toHaveBeenCalledWith('DELETE FROM creature WHERE guid = 1;');
   });
 
+  it('picks the next free pool, above those made in the session', async () => {
+    const { service, queryService } = setup();
+    queryService.query.mockReturnValueOnce(of([{ max: 50 }]));
+    expect(await service.getFreePoolId()).toBe(51);
+    queryService.query.mockReturnValueOnce(of([{ max: 50 }]));
+    expect(await service.getFreePoolId([60])).toBe(61);
+    queryService.query.mockReturnValueOnce(of(undefined));
+    expect(await service.getFreePoolId()).toBe(1);
+  });
+
   it('picks guid * 10 for a new path when free, otherwise the highest path id + 1', async () => {
     const { service, queryService } = setup();
     queryService.query.mockReturnValueOnce(of([{ used: 0, max: 900 }]));

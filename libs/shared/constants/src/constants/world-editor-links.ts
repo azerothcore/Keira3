@@ -19,6 +19,8 @@ export interface WorldEditorLinks {
   openPath(pathId: number): void;
   /** The Waypoint Scripts editor for a waypoint action (`waypoint_scripts.id`). */
   openWaypointScript(id: number): void;
+  /** The Pool Editor for a pool (`pool_template.entry`). */
+  openPool(id: number): void;
 }
 
 export type WorldEditorLoot = 'creature' | 'pickpocketing' | 'skinning' | 'gameobject';

@@ -3013,6 +3013,16 @@
             @if (spawnStored(); as stored) {
               <keira-spawn-panel [spawn]="spawn" [stored]="stored.values" [edits]="spawnEdits()" (edited)="editSpawn($event)" />
             }
+            <keira-pool-panel
+              [member]="selectedPool()"
+              [count]="selectionCount()"
+              [canOpen]="!!links"
+              (chance)="setPoolChance($event)"
+              (leave)="leavePool()"
+              (join)="joinPool($event)"
+              (create)="createPool($event)"
+              (open)="openPool($event)"
+            />
           } @else if (selectedWaypoint(); as waypoint) {
             <div class="mb-1" data-testid="selected-title">
               <strong>{{ pathLabel(waypoint.pathId) }}</strong> <span class="text-muted">· point {{ waypoint.point }}</span>

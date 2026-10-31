@@ -81,6 +81,63 @@ describe('WorldEditorChanges', () => {
     expect(changes.toSql()).toBe(sql);
   });
 
+  describe('pools', () => {
+    const stored = { type: 'creature' as const, guid: 1, pool: 5, chance: 0, maxLimit: 1, description: 'Old' };
+
+    it('makes pools and puts spawns in them or takes them out', () => {
+      const changes = new WorldEditorChanges();
+      changes.createPool({ entry: 90, maxLimit: 1, description: "Kobold's camp" });
+      changes.setPoolMember({ type: 'creature', guid: 2, pool: 90, chance: 25.5 }, null);
+      changes.setPoolMember({ type: 'gameobject', guid: 3, pool: 5, chance: 0 }, null);
+      changes.setPoolMember({ type: 'creature', guid: 1, pool: null, chance: 0 }, stored);
+      expect(changes.newPools()).toEqual([{ entry: 90, maxLimit: 1, description: "Kobold's camp" }]);
+      expect(changes.count).toBe(4);
+      expect(changes.describe()).toEqual([
+        'Create pool 90',
+        'Put creature 2 in pool 90',
+        'Put gameobject 3 in pool 5',
+        'Take creature 1 out of its pool',
+      ]);
+      expect(changes.toSql().split('\n')).toEqual([
+        'DELETE FROM `pool_template` WHERE (`entry` = 90);',
+        "INSERT INTO `pool_template` (`entry`, `max_limit`, `description`) VALUES (90, 1, 'Kobold\\'s camp');",
+        'DELETE FROM `pool_creature` WHERE (`guid` = 2);',
+        'INSERT INTO `pool_creature` (`guid`, `pool_entry`, `chance`) VALUES (2, 90, 25.5);',
+        'DELETE FROM `pool_gameobject` WHERE (`guid` = 3);',
+        'INSERT INTO `pool_gameobject` (`guid`, `pool_entry`, `chance`) VALUES (3, 5, 0);',
+        'DELETE FROM `pool_creature` WHERE (`guid` = 1);',
+      ]);
+      // the pools as they will be
+      expect(changes.applyToPools([stored, { ...stored, guid: 4 }])).toEqual([
+        { ...stored, guid: 4 },
+        { type: 'creature', guid: 2, pool: 90, chance: 25.5, maxLimit: 1, description: "Kobold's camp" },
+        { type: 'gameobject', guid: 3, pool: 5, chance: 0, maxLimit: 1, description: 'Old' },
+      ]);
+      expect(changes.applyToPools([])[1]).toEqual({ type: 'gameobject', guid: 3, pool: 5, chance: 0, maxLimit: 0, description: '' });
+      const snapshot = changes.snapshot();
+      changes.clear();
+      changes.restore(snapshot);
+      expect(changes.count).toBe(4);
+      // old snapshots had no pools
+      changes.restore({ ...snapshot, createdPools: undefined, poolMembers: undefined });
+      expect(changes.count).toBe(0);
+    });
+
+    it('drops changes that put things back, pools left empty, and the pool of a deleted spawn', () => {
+      const changes = new WorldEditorChanges();
+      changes.setPoolMember({ type: 'creature', guid: 1, pool: 5, chance: 0 }, stored);
+      changes.setPoolMember({ type: 'creature', guid: 9, pool: null, chance: 0 }, null);
+      expect(changes.count).toBe(0);
+      changes.createPool({ entry: 90, maxLimit: 1, description: '' });
+      changes.setPoolMember({ type: 'creature', guid: 1, pool: 90, chance: 0 }, stored);
+      changes.setPoolMember({ type: 'creature', guid: 1, pool: 5, chance: 10 }, stored);
+      expect(changes.newPools()).toEqual([]);
+      expect(changes.count).toBe(1);
+      changes.deleteSpawn(creature(1));
+      expect(changes.describe()).toEqual(['Delete creature 1 (Marshal McBride)']);
+    });
+  });
+
   it('starts empty', () => {
     const changes = new WorldEditorChanges();
     expect(changes.count).toBe(0);
@@ -199,9 +256,11 @@ describe('WorldEditorChanges', () => {
         'DELETE FROM `creature_multispawn` WHERE (`spawnId` = 7);',
         'DELETE FROM `game_event_creature` WHERE (`guid` = 7);',
         'DELETE FROM `game_event_model_equip` WHERE (`guid` = 7);',
+        'DELETE FROM `pool_creature` WHERE (`guid` = 7);',
         'DELETE FROM `gameobject` WHERE (`guid` = 8);',
         'DELETE FROM `gameobject_addon` WHERE (`guid` = 8);',
         'DELETE FROM `game_event_gameobject` WHERE (`guid` = 8);',
+        'DELETE FROM `pool_gameobject` WHERE (`guid` = 8);',
       ]);
     });
 
@@ -332,6 +391,7 @@ describe('WorldEditorChanges', () => {
       'DELETE FROM `creature_multispawn`',
       'DELETE FROM `game_event_creature`',
       'DELETE FROM `game_event_model_equip`',
+      'DELETE FROM `pool_creature`',
       'DELETE FROM `creature`',
       'INSERT INTO `creature`',
       'UPDATE `creature` SET',

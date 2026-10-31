@@ -892,6 +892,12 @@ export class WorldEditorService {
    * Id for a new path of a creature: `guid * 10` (AzerothCore's convention) when unused, otherwise the highest path id
    * + 1 (what `.wp add` does). `reserved` are ids already handed out in this session but not saved yet.
    */
+  /** The next free pool (`pool_template.entry`), above those `reserved` (made in this session). */
+  async getFreePoolId(reserved: number[] = []): Promise<number> {
+    const rows = await firstValueFrom(this.queryService.query<{ max: number }>('SELECT IFNULL(MAX(entry), 0) AS max FROM pool_template'));
+    return Math.max(Number(rows?.[0]?.max ?? 0), ...reserved) + 1;
+  }
+
   async getFreePathId(guid: number, reserved: number[] = []): Promise<number> {
     const preferred = preferredPathId(guid);
     const rows = await firstValueFrom(
