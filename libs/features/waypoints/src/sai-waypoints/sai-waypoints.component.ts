@@ -58,7 +58,7 @@ export class SaiWaypointsComponent extends MultiRowEditorComponent<SaiWaypoints>
       this.editorService.queryService
         .query<TableRow>(
           "SELECT DISTINCT s.entryorguid, s.source_type, IFNULL(ct.name, '') AS name, " +
-            '(SELECT c.map FROM creature c WHERE (s.entryorguid > 0 AND c.id = s.entryorguid) OR (s.entryorguid < 0 AND c.guid = -s.entryorguid) LIMIT 1) AS map ' +
+            '(SELECT c.map FROM creature c WHERE s.source_type = 0 AND ((s.entryorguid > 0 AND c.id = s.entryorguid) OR (s.entryorguid < 0 AND c.guid = -s.entryorguid)) LIMIT 1) AS map ' +
             'FROM smart_scripts s LEFT JOIN creature_template ct ON s.source_type = 0 AND ct.entry = s.entryorguid ' +
             `WHERE s.action_type = ${SMART_ACTION_WP_START} AND s.action_param2 = ${entry} LIMIT 50`,
         )

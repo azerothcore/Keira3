@@ -24,6 +24,10 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
   get entitySecondIdField(): string {
     return this._entitySecondIdField;
   }
+  /** The third key column, when the second alone doesn't tell the rows apart. */
+  get entityExtraIdField(): string | undefined {
+    return this._entityExtraIdField;
+  }
 
   /* istanbul ignore next */ // TODO: fix coverage
   get errors(): string[] {

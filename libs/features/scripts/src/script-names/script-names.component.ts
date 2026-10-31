@@ -26,7 +26,16 @@ const USER_QUERIES: [string, string][] = [
   ['instance', "SELECT map AS id, '' AS name, script AS scriptName FROM instance_template WHERE script <> ''"],
   ['creature spawn', "SELECT guid AS id, '' AS name, ScriptName AS scriptName FROM creature WHERE ScriptName <> ''"],
   ['gameobject spawn', "SELECT guid AS id, '' AS name, ScriptName AS scriptName FROM gameobject WHERE ScriptName <> ''"],
+  ['outdoorpvp', "SELECT TypeId AS id, comment AS name, ScriptName AS scriptName FROM outdoorpvp_template WHERE ScriptName <> ''"],
+  ['achievement', "SELECT criteria_id AS id, '' AS name, ScriptName AS scriptName FROM achievement_criteria_data WHERE ScriptName <> ''"],
+  ['condition', "SELECT SourceEntry AS id, Comment AS name, ScriptName AS scriptName FROM conditions WHERE ScriptName <> ''"],
+  ['transport', "SELECT entry AS id, name, ScriptName AS scriptName FROM transports WHERE ScriptName <> ''"],
+  ['weather', "SELECT zone AS id, '' AS name, ScriptName AS scriptName FROM game_weather WHERE ScriptName <> ''"],
+  ['battleground', "SELECT ID AS id, Comment AS name, ScriptName AS scriptName FROM battleground_template WHERE ScriptName <> ''"],
 ];
+
+/** Scripts no table names (GM commands, player and server hooks): never "used by nothing". */
+const NOT_NAMED_IN_DB = new Set(['command', 'other']);
 
 /** How many rows are listed at once (the filter narrows them down). */
 export const SCRIPT_NAMES_SHOWN = 200;
@@ -82,7 +91,7 @@ export class ScriptNamesComponent implements OnInit {
     return (this.names() as ScriptName[])
       .filter((name) => (!kind || name.kind === kind) && (name.name.toLowerCase().includes(text) || name.file.toLowerCase().includes(text)))
       .map((name) => ({ ...name, users: byName.get(name.name) ?? [] }))
-      .filter((row) => this.show() === 'all' || !row.users.length);
+      .filter((row) => this.show() === 'all' || (!row.users.length && !NOT_NAMED_IN_DB.has(row.kind)));
   });
 
   ngOnInit(): void {

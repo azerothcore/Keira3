@@ -17,12 +17,15 @@ export function showInWorldEditor(router: Router, place: PoolPlace): void {
   });
 }
 
-/** Opens another pool in the Pool Editor (going through the start page, as it may be the page already shown). */
+/**
+ * Opens another pool in the Pool Editor (through the pool search, as it may be the page already shown: staying in the
+ * Pools tab).
+ */
 export function openPool(
   router: Router,
   handler: { select(isNew: boolean, id: number, name: string, navigate: boolean): void },
   id: number,
 ): void {
   handler.select(false, id, `${id}`, false);
-  void router.navigateByUrl('/', { skipLocationChange: true }).then(() => router.navigate(['pools/pool-template']));
+  void router.navigateByUrl('/pools/select', { skipLocationChange: true }).then(() => router.navigate(['pools/pool-template']));
 }

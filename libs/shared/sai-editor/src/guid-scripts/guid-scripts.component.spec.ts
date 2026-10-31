@@ -32,9 +32,12 @@ describe('GuidScriptsComponent', () => {
   };
 
   it("lists the entry's spawns with a script of their own, and opens one", () => {
-    const { fixture, query, select, el } = setup([{ entryorguid: -42, map: 0, rows: 3 }]);
+    const { fixture, query, select, el } = setup([{ entryorguid: -42, map: 0, rowCount: 3 }]);
     expect(query.mock.calls[0][0]).toContain('JOIN creature t ON t.guid = -s.entryorguid');
     expect(query.mock.calls[0][0]).toContain('s.source_type = 0 AND s.entryorguid < 0 AND t.id = 299');
+    // (`rows` is a reserved word in MySQL 8; the order only uses grouped columns)
+    expect(query.mock.calls[0][0]).toContain('COUNT(*) AS `rowCount`');
+    expect(query.mock.calls[0][0]).toContain('ORDER BY s.entryorguid DESC');
     expect(el.querySelector('#guid-scripts')?.textContent).toContain('42');
     (el.querySelector('#open-guid-script-42') as HTMLButtonElement).click();
     expect(select).toHaveBeenCalledWith(false, { entryorguid: -42, source_type: 0 }, 'GUID 42');

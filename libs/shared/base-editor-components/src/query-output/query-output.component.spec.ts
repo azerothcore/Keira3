@@ -325,5 +325,25 @@ describe('QueryOutputComponent', () => {
       page.clickElement(page.query('#compare-pin-btn'));
       expect(page.query('#compare-pin-btn').textContent).toContain('COMPARE.PIN');
     });
+
+    it('matches the rows by both keys in editors that have two', () => {
+      const { page, host } = setupCompare();
+      const texts = (id: string, text: string) =>
+        ({
+          loadedEntityId: id,
+          newRows: [0, 1].map((ID) => ({ CreatureID: Number(id), GroupID: 0, ID, Text: ID ? text : 'same' })),
+          entitySecondIdField: 'GroupID',
+          entityExtraIdField: 'ID',
+          reloadSameEntity() {},
+        }) as unknown as EditorService<TableRow>;
+      host.entityTable = 'creature_text';
+      host.editorService = texts('1', 'A');
+      page.detectChanges();
+      page.clickElement(page.query('#compare-pin-btn'));
+      host.editorService = texts('2', 'B');
+      page.detectChanges();
+      page.clickElement(page.query('#compare-btn'));
+      expect(page.query('#compare-table').textContent).toContain('0_1');
+    });
   });
 });

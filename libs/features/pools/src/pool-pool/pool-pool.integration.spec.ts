@@ -29,7 +29,7 @@ describe('PoolPool integration tests', () => {
     expect(problemIds(page)).toEqual(['POOL_LOOP', 'CHILD_NO_TEMPLATE', 'OTHER_MOTHER']);
     page.clickElement(page.query('#open-60'));
     expect(handlerService.selected).toBe('60');
-    expect(navigateByUrl).toHaveBeenCalledWith('/', { skipLocationChange: true });
+    expect(navigateByUrl).toHaveBeenCalledWith('/pools/select', { skipLocationChange: true });
     await Promise.resolve();
     expect(navigate).toHaveBeenCalledWith(['pools/pool-template']);
   });
@@ -40,7 +40,7 @@ describe('PoolPool integration tests', () => {
       50,
       [child(50)],
       [
-        [/FROM pool_template WHERE entry = /, [{ max_limit: 0 }]],
+        [/FROM pool_template WHERE entry = /, [{ max_limit: 2 }]],
         [/./, new Error('down')],
       ],
     );
@@ -53,7 +53,7 @@ describe('PoolPool integration tests', () => {
       50,
       [child(60)],
       [
-        [/FROM pool_template WHERE entry = /, [{ max_limit: 0 }]],
+        [/FROM pool_template WHERE entry = /, [{ max_limit: 2 }]],
         [/FROM pool_template WHERE entry IN/, [{ id: 60, description: 'Copper' }]],
       ],
     );

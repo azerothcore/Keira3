@@ -3802,6 +3802,23 @@ describe(WorldEditorComponent.name, () => {
       expect(mocks.service.getFreePoolId).not.toHaveBeenCalled();
     });
 
+    it('makes one pool at a time, of the spawns selected when asked', async () => {
+      let resolve: (entry: number) => void = () => undefined;
+      mocks.service.getFreePoolId.mockReturnValue(new Promise((r) => (resolve = r)));
+      const { page } = await setup();
+      await loadArea(page);
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:1', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      page.click('pool-create');
+      page.click('pool-create');
+      // another spawn selected meanwhile: the pool is still the first one's
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:2', position: { x: 0, y: 0, z: 0 } });
+      resolve(900);
+      await settle(page);
+      expect(mocks.service.getFreePoolId).toHaveBeenCalledTimes(1);
+      expect(page.pendingLines()).toEqual(['Create pool 900', 'Put creature 1 in pool 900']);
+    });
+
     it('says when no pool can be made', async () => {
       mocks.service.getFreePoolId.mockRejectedValue(new Error('no table'));
       const { page } = await setup({ links: false });

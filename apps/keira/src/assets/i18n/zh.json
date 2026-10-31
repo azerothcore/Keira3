@@ -1962,7 +1962,7 @@
   },
   "POOLS": {
     "SELECT": "选择已有的刷新池",
-    "MAX_LIMIT_TOOLTIP": "同时出现的成员数量（0：全部）。只有为 1 时才使用几率。",
+    "MAX_LIMIT_TOOLTIP": "同时出现的成员数量。0 表示一个都不刷新。只有为 1 时才使用几率。",
     "CONTENTS": "刷新池的内容",
     "CREATURES": "生物",
     "GAMEOBJECTS": "游戏对象",
@@ -2000,7 +2000,8 @@
     "PROBLEM_QUEST_NOT_REPEATING": "不是日常或周常任务（请改用 ExclusiveGroup）：{{ids}}。已跳过。",
     "PROBLEM_QUEST_MIXED": "一个刷新池中不能混合日常和周常任务。",
     "PROBLEM_ONE_EVENT": "一个刷新池只有一个游戏事件：只保留一行。",
-    "PROBLEM_MISSING_EVENT": "没有游戏事件 {{ids}}。"
+    "PROBLEM_MISSING_EVENT": "没有游戏事件 {{ids}}。",
+    "PROBLEM_MAX_LIMIT_ZERO": "max_limit 为 0：服务器不会刷出该池的任何成员。"
   },
   "SCRIPTS": {
     "SELECT_SCRIPT_WAYPOINT": "选择已有的护送路径（script_waypoint，按生物 entry）",

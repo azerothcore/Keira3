@@ -58,12 +58,14 @@ export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandle
 
   /** The entity shown, as rows (for comparing it with another). */
   private snapshot(): EntitySnapshot {
-    const editor = this.editorService as EditorService<T> & { newRows?: T[]; entitySecondIdField?: string };
+    const editor = this.editorService as EditorService<T> & { newRows?: T[]; entitySecondIdField?: string; entityExtraIdField?: string };
     return {
       table: this.entityTable(),
       id: editor.loadedEntityId,
       rows: editor.newRows ? [...editor.newRows] : [editor.form.getRawValue() as TableRow],
-      ...(editor.newRows ? { key: editor.entitySecondIdField } : {}),
+      ...(editor.newRows
+        ? { key: editor.entitySecondIdField, ...(editor.entityExtraIdField ? { extraKey: editor.entityExtraIdField } : {}) }
+        : {}),
     };
   }
 

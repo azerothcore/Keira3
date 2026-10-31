@@ -8,6 +8,7 @@ describe('ScriptNamesComponent', () => {
     { name: 'npc_guard', kind: 'creature', file: 'scripts/World/npcs.cpp' },
     { name: 'go_chest', kind: 'gameobject', file: 'scripts/World/go.cpp' },
     { name: 'spell_fire', kind: 'spell', file: 'scripts/Spells/mage.cpp' },
+    { name: 'cs_gm', kind: 'command', file: 'scripts/Commands/cs_gm.cpp' },
   ];
   const answers: [RegExp, unknown][] = [
     [
@@ -27,7 +28,7 @@ describe('ScriptNamesComponent', () => {
     const { page, fixture, links } = setupSourcePage(ScriptNamesComponent, { getScriptNames: vi.fn().mockResolvedValue(names) }, answers);
     expect(page.query('#reading')).toBeTruthy();
     await settle(fixture);
-    expect(page.queryAll('#script-names tbody tr').length).toBe(3);
+    expect(page.queryAll('#script-names tbody tr').length).toBe(4);
     click(page, '#users-npc_guard');
     expect(page.query('#user-list-npc_guard').textContent).toContain('Guard');
     click(page, '#open-creature-1');
@@ -47,6 +48,8 @@ describe('ScriptNamesComponent', () => {
     setValue(page, '#script-show', 'unused');
     expect(page.query('#script-names').textContent).toContain('spell_fire');
     expect(page.query('#script-names').textContent).not.toContain('npc_guard');
+    // (a GM command: no table names it, so never "used by nothing")
+    expect(page.query('#script-names').textContent).not.toContain('cs_gm');
     setValue(page, '#script-show', 'missing');
     expect(page.query('#script-names').textContent).toContain('npc_gone');
     setValue(page, '#script-kind', 'creature');
