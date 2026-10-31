@@ -607,7 +607,8 @@
     "GROUP_ID": "Conjunto de Definiciones de Botín, consulte la Wiki de Azerothcore (en este caso la sección en español) para más detalles acerca de éste y otros campos más",
     "MIN_COUNT": "El Número Mínimo de copias del Item que pueden aparecer en un sólo Botín individual. En el caso de las Referencias de Botín, este campo es ignorado directamente.",
     "MAX_COUNT": "El Número Máximo de copias del Item que pueden aparecer en un sólo Botín individual. En el caso de las Referencias de Botín, este campo es el valor del recuento EXACTO.",
-    "COMMENT": "Un comentario el cual ignora el emulador (usado para dejar anotaciones al respecto)"
+    "COMMENT": "Un comentario el cual ignora el emulador (usado para dejar anotaciones al respecto)",
+    "REFERENCE_COUNT": "Una fila de referencia suelta su referencia MaxCount veces: MinCount sigue a MaxCount (AzerothCore no admite otra cosa)."
   },
   "LOOT_TEMPLATE": {
     "SET_FIELD": "Debes establecer el campo <strong>`{{ LOOT_FIELD }}`</strong> de <strong>{{ ENTITY_TABLE }}</strong> para poder habilitar esta funcionalidad.",
