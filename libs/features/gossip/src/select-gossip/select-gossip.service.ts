@@ -40,7 +40,15 @@ export class SelectGossipService extends SelectService<GossipMenu> {
   private searchQuery(): string {
     const { limit, fields } = this.queryForm.getRawValue() as { limit: number | null; fields: Record<string, unknown> };
     const filled = (field: string) => fields[field] !== null && fields[field] !== undefined && fields[field] !== '';
-    const like = (field: string) => `\`${field}\` LIKE ${escape(`%${fields[field]}%`)}`;
+    const { exactNumbers, exactNames } = this.editorSettings.search(GOSSIP_MENU_TABLE);
+    // (exactly or as a part, as Settings > Editors sets the gossip search)
+    const like = (field: string) => {
+      const value = String(fields[field]).trim();
+      const number = /^-?\d+(\.\d+)?$/.test(value);
+      return (number ? exactNumbers : exactNames)
+        ? `\`${field}\` = ${escape(number ? value : fields[field])}`
+        : `\`${field}\` LIKE ${escape(`%${fields[field]}%`)}`;
+    };
     const query = squel.select(squelConfig).from(GOSSIP_MENU_TABLE);
     GOSSIP_MENU_SEARCH_FIELDS.filter(filled).forEach((field) => query.where(like(field)));
     const texts = GOSSIP_MENU_TEXT_SEARCH_FIELDS.filter(filled);
