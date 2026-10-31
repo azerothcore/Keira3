@@ -6,7 +6,7 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { ToastrService } from 'ngx-toastr';
 import { instance, mock } from 'ts-mockito';
-import { MysqlQueryService } from '@keira/shared/db-layer';
+import { MysqlQueryService, isFlagsColumn } from '@keira/shared/db-layer';
 import { SingleRowEditorService } from './single-row-editor.service';
 
 import { MockEntity, MockHandlerService, MockSingleRowEditorService } from '../../core.mock';
@@ -94,6 +94,7 @@ describe('SingleRowEditorService', () => {
       service['_entityIdField'],
       service['_originalValue'],
       service.form.getRawValue(),
+      isFlagsColumn,
     );
     expect(service.diffQuery).toEqual(queryResult);
     expect(service['updateEditorStatus']).toHaveBeenCalledTimes(1);

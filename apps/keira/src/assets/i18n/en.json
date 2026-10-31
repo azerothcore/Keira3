@@ -1965,7 +1965,16 @@
     "SOAP_USER": "GM account",
     "SOAP_PASSWORD": "Password",
     "SOAP_REMEMBER_PASSWORD": "Remember the password (kept on this computer, encoded but not encrypted)",
-    "SOAP_TEST": "Test (server info)"
+    "SOAP_TEST": "Test (server info)",
+    "EDITORS": "Editors",
+    "COPY_ONLY_ON_SUCCESS": "\"Execute & copy\" copies the query only when it ran (a failed one keeps your changes and isn't copied)",
+    "BITWISE_FLAGS": "Update flags and masks by their bits (flags = (flags | added) & ~removed), keeping bits changed elsewhere",
+    "SEARCH_HELP": "Searches: an exact search finds 120 as 120 (not 1200 or 3120). An empty row follows the default.",
+    "SEARCH_TABLE": "Table",
+    "SEARCH_DEFAULT": "Default (all tables)",
+    "EXACT_NUMBERS": "Exact numbers",
+    "EXACT_NAMES": "Exact names",
+    "SEARCH_LIMIT": "Rows"
   },
   "WAYPOINTS": {
     "SELECT_PATH": "Select an existing path",

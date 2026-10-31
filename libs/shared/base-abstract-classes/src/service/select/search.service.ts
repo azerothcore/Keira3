@@ -1,6 +1,7 @@
 import { FormControl, FormGroup } from '@angular/forms';
 import { QueryForm, StringKeys, TableRow } from '@keira/shared/constants';
-import { ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectorRef, inject } from '@angular/core';
+import { EditorSettingsService } from '@keira/shared/common-services';
 import { BaseQueryService } from '@keira/shared/db-layer';
 import { ModelForm, ModelNestedForm, SubscriptionHandler } from '@keira/shared/utils';
 
@@ -20,30 +21,33 @@ export abstract class SearchService<T extends TableRow> extends SubscriptionHand
   protected readonly selectFields: string[] | undefined = undefined;
   protected readonly groupFields: string[] | undefined = undefined;
   protected readonly orderFields: string[] | undefined = undefined;
+  private readonly editorSettings = inject(EditorSettingsService);
+
+  /** The search as Settings > Editors sets it for this table (exact numbers or names, rows at first). */
+  private searchQuery(): string {
+    const { exactNumbers, exactNames } = this.editorSettings.search(this.entityTable);
+    return this.queryService.getSearchQuery(
+      this.entityTable,
+      this.queryForm.getRawValue(),
+      this.selectFields,
+      this.groupFields,
+      this.orderFields,
+      { numbers: exactNumbers, names: exactNames },
+    );
+  }
 
   protected init(): void {
     for (const field of this.fieldList) {
       this.fields.addControl(field, new FormControl());
     }
 
-    this.query = this.queryService.getSearchQuery(
-      this.entityTable,
-      this.queryForm.getRawValue(),
-      this.selectFields,
-      this.groupFields,
-      this.orderFields,
-    );
+    this.queryForm.controls.limit.setValue(this.editorSettings.search(this.entityTable).limit as never, { emitEvent: false });
+    this.query = this.searchQuery();
 
     this.subscriptions.push(
       this.queryForm.valueChanges.subscribe(() => {
         if (this.queryForm.valid) {
-          this.query = this.queryService.getSearchQuery(
-            this.entityTable,
-            this.queryForm.getRawValue(),
-            this.selectFields,
-            this.groupFields,
-            this.orderFields,
-          );
+          this.query = this.searchQuery();
         }
       }),
     );

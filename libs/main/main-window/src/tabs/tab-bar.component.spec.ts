@@ -5,7 +5,7 @@ import { KeiraTab, KeiraTabsService } from './keira-tabs.service';
 import { TabBarComponent } from './tab-bar.component';
 
 describe('TabBarComponent', () => {
-  it('shows the tabs once one is open, opens and closes them, and launches any part', () => {
+  it('shows the tabs, opens and closes them, and launches any part', () => {
     const tabs = signal<KeiraTab[]>([]);
     const service = {
       tabs,
@@ -26,7 +26,9 @@ describe('TabBarComponent', () => {
     const fixture = TestBed.createComponent(TabBarComponent);
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
-    expect(el.querySelector('[data-testid="tab-bar"]')).toBeNull();
+    // shown always, even before a tab is open (with its launcher)
+    expect(el.querySelector('[data-testid="tab-bar"]')).toBeTruthy();
+    expect(el.querySelector('[data-testid="tab-launcher"]')).toBeTruthy();
     tabs.set([
       { id: 1, section: 'world-editor', url: '/world-editor', n: 1 },
       { id: 2, section: 'creature', url: '/creature/creature-template', n: 1 },

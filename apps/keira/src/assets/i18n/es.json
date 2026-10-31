@@ -1965,7 +1965,16 @@
     "SOAP_USER": "Cuenta GM",
     "SOAP_PASSWORD": "Contraseña",
     "SOAP_REMEMBER_PASSWORD": "Recordar la contraseña (se guarda en este equipo, codificada pero no cifrada)",
-    "SOAP_TEST": "Probar (server info)"
+    "SOAP_TEST": "Probar (server info)",
+    "EDITORS": "Editores",
+    "COPY_ONLY_ON_SUCCESS": "\"Ejecutar y copiar\" copia la consulta solo si se ejecutó (si falla, tus cambios se mantienen y no se copia)",
+    "BITWISE_FLAGS": "Actualizar flags y máscaras por sus bits (flags = (flags | añadidos) & ~quitados), conservando los bits cambiados en otro sitio",
+    "SEARCH_HELP": "Búsquedas: una búsqueda exacta encuentra 120 como 120 (no 1200 ni 3120). Una fila vacía sigue la predeterminada.",
+    "SEARCH_TABLE": "Tabla",
+    "SEARCH_DEFAULT": "Predeterminado (todas las tablas)",
+    "EXACT_NUMBERS": "Números exactos",
+    "EXACT_NAMES": "Nombres exactos",
+    "SEARCH_LIMIT": "Filas"
   },
   "WAYPOINTS": {
     "SELECT_PATH": "Selecciona una ruta existente",

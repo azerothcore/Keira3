@@ -170,7 +170,7 @@ describe('QuestTemplateAddon integration tests', () => {
         '`MaxLevel` = 0, `AllowableClasses` = 1, `SourceSpellID` = 2, `PrevQuestID` = 3, `NextQuestID` = 4, `ExclusiveGroup` = 5, ' +
         '`BreadcrumbForQuestId` = 6, `RewardMailTemplateID` = 7, `RewardMailDelay` = 8, `RequiredSkillID` = 9, ' +
         '`RequiredSkillPoints` = 10, `RequiredMinRepFaction` = 11, `RequiredMaxRepFaction` = 12, `RequiredMinRepValue` = 13, ' +
-        '`RequiredMaxRepValue` = 14, `ProvidedItemCount` = 15, `SpecialFlags` = 16 WHERE (`ID` = 1234);';
+        '`RequiredMaxRepValue` = 14, `ProvidedItemCount` = 15, `SpecialFlags` = (`SpecialFlags` | 16) WHERE (`ID` = 1234);';
       querySpy.mockClear();
 
       page.changeAllFields(originalEntity, ['VerifiedBuild']);
@@ -223,7 +223,7 @@ describe('QuestTemplateAddon integration tests', () => {
       await page.whenReady();
 
       expect(page.getInputById(field).value).toEqual('10');
-      page.expectDiffQueryToContain('UPDATE `quest_template_addon` SET `SpecialFlags` = 10 WHERE (`ID` = 1234);');
+      page.expectDiffQueryToContain('UPDATE `quest_template_addon` SET `SpecialFlags` = (`SpecialFlags` | 10) WHERE (`ID` = 1234);');
 
       page.expectFullQueryToContain(
         'DELETE FROM `quest_template_addon` WHERE (`ID` = 1234);\n' +

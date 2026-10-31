@@ -14,7 +14,8 @@ import { HighlightjsWrapperComponent } from '../highlightjs-wrapper/highlightjs-
 import { QueryErrorComponent } from './query-error/query-error.component';
 import { QueryOutputComponent } from './query-output.component';
 import { tickAsync } from 'ngx-page-object-model';
-import { SoapService } from '@keira/shared/common-services';
+import { EditorSettingsService, SoapService } from '@keira/shared/common-services';
+import { Subject } from 'rxjs';
 
 describe('QueryOutputComponent', () => {
   const diffQuery = '--diffQuery';
@@ -141,6 +142,27 @@ describe('QueryOutputComponent', () => {
     page.clickElement(page.executeAndCopyBtn);
     expect(copySpy).toHaveBeenCalledWith(fullQuery);
     expect(executeSpy).toHaveBeenCalledWith(fullQuery);
+  });
+
+  it('execute & copy copies only once the query ran (or always, when set so)', () => {
+    const { page, host } = setup();
+    const saved = new Subject<boolean>();
+    host.editorService = { saved, reloadSameEntity() {} } as unknown as EditorService<TableRow>;
+    const copySpy = vi.spyOn(TestBed.inject(ClipboardService), 'copyFromContent').mockImplementation(() => undefined);
+    page.detectChanges();
+    vi.spyOn(host.child().executeQuery, 'emit').mockImplementation(() => undefined);
+    page.clickElement(page.executeAndCopyBtn);
+    expect(copySpy).not.toHaveBeenCalled();
+    saved.next(false);
+    expect(copySpy).not.toHaveBeenCalled();
+    page.clickElement(page.executeAndCopyBtn);
+    saved.next(true);
+    expect(copySpy).toHaveBeenCalledExactlyOnceWith(diffQuery);
+    // set to always copy
+    TestBed.inject(EditorSettingsService).save({ copyOnlyOnSuccess: false });
+    page.clickElement(page.executeAndCopyBtn);
+    expect(copySpy).toHaveBeenCalledTimes(2);
+    TestBed.inject(EditorSettingsService).save({ copyOnlyOnSuccess: true });
   });
 
   describe('getQuery', () => {

@@ -132,15 +132,15 @@ describe('CreatureTemplate integration tests', () => {
         'UPDATE `creature_template` SET ' +
         '`difficulty_entry_1` = 1, `difficulty_entry_2` = 1, `difficulty_entry_3` = 2, `KillCredit1` = 3, `KillCredit2` = 4, ' +
         "`name` = '5', `subname` = '6', `IconName` = 'Directions', `gossip_menu_id` = 8, `minlevel` = 9, `maxlevel` = 10, " +
-        '`exp` = 1, `faction` = 12, `npcflag` = 13, `speed_walk` = 14, `speed_run` = 15, `speed_swim` = 16, ' +
+        '`exp` = 1, `faction` = 12, `npcflag` = (`npcflag` | 13), `speed_walk` = 14, `speed_run` = 15, `speed_swim` = 16, ' +
         '`speed_flight` = 17, `detection_range` = 18, `rank` = 1, `dmgschool` = 1, `DamageModifier` = 21, ' +
         '`BaseAttackTime` = 22, `RangeAttackTime` = 23, `BaseVariance` = 24, `RangeVariance` = 25, `unit_class` = 2, ' +
-        '`unit_flags` = 27, `unit_flags2` = 28, `dynamicflags` = 29, `family` = 1, `type` = 1, ' +
-        '`type_flags` = 32, `lootid` = 33, `pickpocketloot` = 34, `skinloot` = 35, ' +
+        '`unit_flags` = (`unit_flags` | 27), `unit_flags2` = (`unit_flags2` | 28), `dynamicflags` = (`dynamicflags` | 29), `family` = 1, `type` = 1, ' +
+        '`type_flags` = (`type_flags` | 32), `lootid` = 33, `pickpocketloot` = 34, `skinloot` = 35, ' +
         "`PetSpellDataId` = 36, `VehicleId` = 37, `mingold` = 38, `maxgold` = 39, `AIName` = '40', " +
         '`MovementType` = 1, `HoverHeight` = 42, `HealthModifier` = 43, `ManaModifier` = 44, `ArmorModifier` = 45, ' +
         '`ExperienceModifier` = 46, `RacialLeader` = 1, `movementId` = 48, `RegenHealth` = 0, `CreatureImmunitiesId` = 50, ' +
-        "`flags_extra` = 51, `ScriptName` = '52' WHERE (`entry` = 1234);";
+        "`flags_extra` = (`flags_extra` | 51), `ScriptName` = '52' WHERE (`entry` = 1234);";
 
       querySpy.mockClear();
 
@@ -193,7 +193,7 @@ describe('CreatureTemplate integration tests', () => {
       const result = await page.openFlagsAndToggle(field, [2, 12]);
 
       expect(result).toBe(4100);
-      page.expectDiffQueryToContain('UPDATE `creature_template` SET `unit_flags` = 4100 WHERE (`entry` = 1234);');
+      page.expectDiffQueryToContain('UPDATE `creature_template` SET `unit_flags` = (`unit_flags` | 4100) WHERE (`entry` = 1234);');
 
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
       page.expectFullQueryToContain('4100');

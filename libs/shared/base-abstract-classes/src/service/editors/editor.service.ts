@@ -1,10 +1,11 @@
 import { QueryError } from 'mysql2';
 import { ToastrService } from 'ngx-toastr';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { FormControl, FormGroup } from '@angular/forms';
 
 import { Class, StringKeys, TableRow } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
+import { EditorSettingsService } from '@keira/shared/common-services';
 import { ModelForm, SubscriptionHandler } from '@keira/shared/utils';
 import { HandlerService } from '../handlers/handler.service';
 import { registerTabState } from '../tab-state';
@@ -13,6 +14,7 @@ import { ChangeDetectorRef, inject, signal } from '@angular/core';
 export abstract class EditorService<T extends TableRow> extends SubscriptionHandler {
   readonly queryService = inject(MysqlQueryService);
   protected readonly toastrService = inject(ToastrService);
+  protected readonly editorSettings = inject(EditorSettingsService);
 
   protected _loading = false;
   protected _loadedEntityId: string | number | Partial<T> | undefined;
@@ -22,6 +24,8 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
   protected _isNew = false;
   protected _form!: FormGroup<ModelForm<T>>;
   protected _error: QueryError | undefined;
+  /** Whether each query executed ran (true) or failed (false). */
+  readonly saved = new Subject<boolean>();
 
   constructor() {
     super();
@@ -155,12 +159,14 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
           this.toastrService.success('Query executed successfully', 'Success');
           this._loading = false;
           changeDetectorRef.markForCheck();
+          this.saved.next(true);
         },
         error: (error: QueryError) => {
           this._error = error;
           this.toastrService.error('Error when executing the query!', 'Query error');
           this._loading = false;
           changeDetectorRef.markForCheck();
+          this.saved.next(false);
         },
       }),
     );
