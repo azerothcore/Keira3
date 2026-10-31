@@ -20,6 +20,7 @@ const SECTION_NAMES: Record<string, string> = {
   texts: 'SIDEBAR.TEXTS.TITLE',
   gossip: 'SIDEBAR.GOSSIP.TITLE',
   waypoints: 'SIDEBAR.WAYPOINTS.TITLE',
+  pools: 'SIDEBAR.POOLS.TITLE',
   conditions: 'SIDEBAR.CONDITIONS.TITLE',
   'smart-ai': 'SIDEBAR.SMARTAI.TITLE',
   spell: 'SIDEBAR.SPELL_DBC_OVERRIDES.TITLE',

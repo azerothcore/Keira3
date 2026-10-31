@@ -10,6 +10,16 @@ import {
   WaypointScriptsComponent,
   WaypointScriptsHandlerService,
 } from '@keira/features/waypoints';
+import {
+  GameEventPoolComponent,
+  PoolCreatureComponent,
+  PoolGameobjectComponent,
+  PoolHandlerService,
+  PoolPoolComponent,
+  PoolQuestComponent,
+  PoolTemplateComponent,
+  SelectPoolComponent,
+} from '@keira/features/pools';
 
 import { ConditionsComponent, ConditionsHandlerService, SelectConditionsComponent } from '@keira/features/conditions';
 import {
@@ -492,6 +502,18 @@ export const KEIRA_ROUTES: Routes = [
         component: WaypointScriptsComponent,
         canActivate: [WaypointScriptsHandlerService],
       },
+    ],
+  },
+  {
+    path: 'pools',
+    children: [
+      { path: 'select', component: SelectPoolComponent },
+      { path: 'pool-template', component: PoolTemplateComponent, canActivate: [PoolHandlerService] },
+      { path: 'pool-creature', component: PoolCreatureComponent, canActivate: [PoolHandlerService] },
+      { path: 'pool-gameobject', component: PoolGameobjectComponent, canActivate: [PoolHandlerService] },
+      { path: 'pool-pool', component: PoolPoolComponent, canActivate: [PoolHandlerService] },
+      { path: 'pool-quest', component: PoolQuestComponent, canActivate: [PoolHandlerService] },
+      { path: 'game-event-pool', component: GameEventPoolComponent, canActivate: [PoolHandlerService] },
     ],
   },
   {
