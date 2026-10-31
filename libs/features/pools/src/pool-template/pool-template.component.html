@@ -1,0 +1,105 @@
+<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
+
+<div class="container-fluid">
+  @if (editorService.loading) {
+    <span [translate]="'LOADING'"></span>
+  }
+
+  @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
+    <div>
+      <div class="content-block">
+        <keira-query-output
+          [docUrl]="docUrl"
+          [isNew]="editorService.isNew"
+          [diffQuery]="editorService.diffQuery"
+          [fullQuery]="editorService.fullQuery"
+          [error]="editorService.error"
+          [entityTable]="editorService.entityTable"
+          [editorService]="editorService"
+          (executeQuery)="save($event)"
+        />
+      </div>
+      <form [formGroup]="editorService.form" class="form-group edit-form">
+        <div class="content-block">
+          <div class="row">
+            <div class="form-group col-6 col-md-3 col-xl-2">
+              <label class="control-label" for="entry">entry</label>
+              <input [formControlName]="'entry'" id="entry" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-6 col-md-3 col-xl-2">
+              <label class="control-label" for="max_limit">max_limit</label>
+              <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'POOLS.MAX_LIMIT_TOOLTIP' | translate"></i>
+              <input [formControlName]="'max_limit'" id="max_limit" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-md-6 col-xl-8">
+              <label class="control-label" for="description">description</label>
+              <input [formControlName]="'description'" id="description" class="form-control form-control-sm" />
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <div class="content-block" id="pool-summary">
+        <p class="lead">{{ 'POOLS.CONTENTS' | translate }}</p>
+        @for (problem of problems(); track problem.key) {
+          <div class="alert alert-warning py-1 px-2 small" [id]="'problem-' + problem.key">
+            <i class="fas fa-exclamation-triangle me-1"></i>{{ 'POOLS.PROBLEM_' + problem.key | translate: problem.params }}
+          </div>
+        }
+        @if (summary(); as summary) {
+          <table class="table table-sm w-auto">
+            <tbody>
+              <tr>
+                <td>
+                  <a id="link-creatures" [routerLink]="'/pools/pool-creature'">{{ 'POOLS.CREATURES' | translate }}</a>
+                </td>
+                <td id="count-creatures">{{ summary.creatures }}</td>
+              </tr>
+              <tr>
+                <td>
+                  <a id="link-gameobjects" [routerLink]="'/pools/pool-gameobject'">{{ 'POOLS.GAMEOBJECTS' | translate }}</a>
+                </td>
+                <td id="count-gameobjects">{{ summary.gameobjects }}</td>
+              </tr>
+              <tr>
+                <td>
+                  <a id="link-pools" [routerLink]="'/pools/pool-pool'">{{ 'POOLS.CHILD_POOLS' | translate }}</a>
+                </td>
+                <td id="count-pools">{{ summary.pools }}</td>
+              </tr>
+              <tr>
+                <td>
+                  <a id="link-quests" [routerLink]="'/pools/pool-quest'">{{ 'POOLS.QUESTS' | translate }}</a>
+                </td>
+                <td id="count-quests">{{ summary.quests }}</td>
+              </tr>
+              <tr>
+                <td>{{ 'POOLS.MOTHER_POOL' | translate }}</td>
+                <td>
+                  @if (summary.mother !== null) {
+                    <button type="button" class="btn btn-link btn-sm p-0" id="open-mother" (click)="openPool(summary.mother)">
+                      {{ summary.mother }}
+                    </button>
+                  } @else {
+                    <span class="text-muted" id="no-mother">{{ 'POOLS.NONE' | translate }}</span>
+                  }
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <a id="link-event" [routerLink]="'/pools/game-event-pool'">{{ 'POOLS.EVENT' | translate }}</a>
+                </td>
+                <td id="event">{{ summary.event ?? ('POOLS.NONE' | translate) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        }
+        @if (place(); as place) {
+          <button type="button" class="btn btn-sm btn-outline-primary" id="show-in-3d" (click)="showIn3d(place)">
+            <i class="fa fa-cube"></i> {{ 'POOLS.SHOW_IN_3D' | translate }}
+          </button>
+        }
+      </div>
+    </div>
+  }
+</div>

@@ -713,6 +713,72 @@
             </div>
           </li>
 
+          <li class="sidebar-dropdown" [class.active]="menuStates['pools'] === 'down'">
+            <a id="pools-toggle" (click)="toggleState('pools')">
+              <i class="fa fa-dice"></i>
+              <span [translate]="'SIDEBAR.POOLS.TITLE'"></span>
+            </a>
+            <div class="sidebar-submenu" [@slide]="menuStates['pools']">
+              <ul>
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'pools/select'">
+                    {{ 'SIDEBAR.POOLS.SELECT' | translate }}
+                  </a>
+                </li>
+                @if (poolHandlerService.selected) {
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'pools/pool-template'">
+                      {{ 'SIDEBAR.POOLS.POOL_TEMPLATE' | translate }}
+                      @if (poolHandlerService.isPoolTemplateUnsaved()) {
+                        <keira-unsaved-icon />
+                      }
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'pools/pool-creature'">
+                      {{ 'SIDEBAR.POOLS.POOL_CREATURE' | translate }}
+                      @if (poolHandlerService.isPoolCreatureUnsaved()) {
+                        <keira-unsaved-icon />
+                      }
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'pools/pool-gameobject'">
+                      {{ 'SIDEBAR.POOLS.POOL_GAMEOBJECT' | translate }}
+                      @if (poolHandlerService.isPoolGameobjectUnsaved()) {
+                        <keira-unsaved-icon />
+                      }
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'pools/pool-pool'">
+                      {{ 'SIDEBAR.POOLS.POOL_POOL' | translate }}
+                      @if (poolHandlerService.isPoolPoolUnsaved()) {
+                        <keira-unsaved-icon />
+                      }
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'pools/pool-quest'">
+                      {{ 'SIDEBAR.POOLS.POOL_QUEST' | translate }}
+                      @if (poolHandlerService.isPoolQuestUnsaved()) {
+                        <keira-unsaved-icon />
+                      }
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'pools/game-event-pool'">
+                      {{ 'SIDEBAR.POOLS.GAME_EVENT_POOL' | translate }}
+                      @if (poolHandlerService.isGameEventPoolUnsaved()) {
+                        <keira-unsaved-icon />
+                      }
+                    </a>
+                  </li>
+                }
+              </ul>
+            </div>
+          </li>
+
           <li class="sidebar-dropdown" [class.active]="menuStates['conditions'] === 'down'">
             <a (click)="toggleState('conditions')">
               <i class="fas fa-sort-amount-up"></i>
