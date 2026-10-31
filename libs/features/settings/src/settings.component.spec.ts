@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { ElectronService } from '@keira/shared/common-services';
+import { ElectronService, ServerSettingsService } from '@keira/shared/common-services';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { WOW_DATA_SETTINGS_KEY, WowClientService } from '@keira/shared/wow-data';
 import { ClipboardService } from 'ngx-clipboard';
@@ -94,5 +94,32 @@ describe(SettingsComponent.name, () => {
     fixture.detectChanges();
     expect(query<HTMLSelectElement>('theme-select').value).toBe('system');
     expect(query('theme-remove')).toBeNull();
+  });
+
+  it('keeps the characters database name, when it is one', () => {
+    localStorage.clear();
+    TestBed.configureTestingModule({
+      imports: [SettingsComponent, TranslateTestingModule],
+      providers: [
+        { provide: ToastrService, useValue: { success: vi.fn() } },
+        { provide: WowClientService, useValue: { close: vi.fn() } },
+        { provide: ClipboardService, useValue: { copyFromContent: vi.fn() } },
+        { provide: ElectronService, useValue: { isElectron: () => false } },
+      ],
+    });
+    const fixture = TestBed.createComponent(SettingsComponent);
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    const input = el.querySelector<HTMLInputElement>('[data-testid="characters-database"]') as HTMLInputElement;
+    expect(input.value).toBe('acore_characters');
+    input.value = 'bad name';
+    input.dispatchEvent(new Event('change'));
+    fixture.detectChanges();
+    expect(el.querySelector('[data-testid="characters-database-error"]')).toBeTruthy();
+    input.value = ' chars ';
+    input.dispatchEvent(new Event('change'));
+    fixture.detectChanges();
+    expect(el.querySelector('[data-testid="characters-database-error"]')).toBeNull();
+    expect(TestBed.inject(ServerSettingsService).settings().charactersDatabase).toBe('chars');
   });
 });

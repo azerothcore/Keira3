@@ -43,6 +43,8 @@ export const LEGEND: LegendSection[] = [
       { shape: 'triangle', color: '#f0c419', label: 'WORLD_EDITOR.LEGEND_FLIGHT_PATH' },
       { shape: 'diamond', color: '#f0c419', label: 'WORLD_EDITOR.LEGEND_FLIGHT_MASTER' },
       { shape: 'diamond', color: '#dfe6e9', label: 'WORLD_EDITOR.LEGEND_GRAVEYARD' },
+      { shape: 'diamond', color: '#4dff88', label: 'WORLD_EDITOR.LEGEND_PLAYER' },
+      { shape: 'diamond', color: '#9aa0a6', label: 'WORLD_EDITOR.LEGEND_OFFLINE_PLAYER' },
       { shape: 'dashed', color: '#74b9ff', label: 'WORLD_EDITOR.LEGEND_TELEPORT' },
       { shape: 'tile', color: '#ff9ff3', label: 'WORLD_EDITOR.LEGEND_BOUNDARY' },
       { shape: 'dashed', color: '#ff4757', label: 'WORLD_EDITOR.LEGEND_BOUNDARY_OUT' },

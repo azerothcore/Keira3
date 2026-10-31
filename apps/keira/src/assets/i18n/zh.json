@@ -1930,7 +1930,14 @@
     "POI_QUEST_HUB": "任务中心",
     "POI_QUEST_GIVER": "任务发布者",
     "LEGEND_GM_USER_PIN": "你的标记（Shift + 点击）",
-    "LEGEND_GM_MEASURE": "测量线"
+    "LEGEND_GM_MEASURE": "测量线",
+    "PLAYERS": "在线玩家",
+    "PLAYERS_HELP": "来自角色数据库（设置 > 服务器）的在线角色，每 10 秒读取一次。服务器每隔几分钟和下线时才保存位置，因此显示的是他们最近所在的位置。",
+    "OFFLINE_PLAYERS": "离线角色",
+    "OFFLINE_PLAYERS_HELP": "离线角色停留的位置（灰色）。",
+    "PLAYERS_ERROR": "无法读取 {{database}}.characters（设置 > 服务器：检查数据库名称以及该账号是否有读取权限）。",
+    "LEGEND_PLAYER": "在线玩家",
+    "LEGEND_OFFLINE_PLAYER": "离线角色"
   },
   "SETTINGS": {
     "TITLE": "设置",
@@ -1948,7 +1955,11 @@
     "THEME_IMPORT": "导入主题",
     "THEME_IMPORT_FILE": "从文件导入",
     "THEME_IMPORTED": "已导入主题“{{name}}”",
-    "THEME_COPIED": "主题已复制"
+    "THEME_COPIED": "主题已复制",
+    "SERVER": "服务器",
+    "CHARACTERS_DATABASE": "角色数据库",
+    "CHARACTERS_DATABASE_HELP": "与世界数据库位于同一 MySQL 服务器，使用相同账号读取：世界编辑器会显示其中的玩家。",
+    "DATABASE_NAME_ERROR": "只能包含字母、数字和 _。"
   },
   "WAYPOINTS": {
     "SELECT_PATH": "选择现有路径",

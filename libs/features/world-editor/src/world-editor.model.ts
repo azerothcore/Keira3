@@ -184,7 +184,56 @@ export interface LayerVisibility {
   sightRanges: boolean;
   /** The gameobjects scripts spawn (battleground flags, banners and doors, Wintergrasp's walls and towers). */
   scriptObjects: boolean;
+  /** The players online (from the characters database). */
+  players: boolean;
+  /** Where offline characters were left. */
+  offlinePlayers: boolean;
 }
+
+/** A character of the characters database, where the server last saved it. */
+export interface Player {
+  guid: number;
+  name: string;
+  race: number;
+  class: number;
+  level: number;
+  map: number;
+  x: number;
+  y: number;
+  z: number;
+  zone: number;
+  online: boolean;
+}
+
+/** ChrRaces and ChrClasses names (3.3.5a). */
+export const RACE_NAMES: Record<number, string> = {
+  1: 'Human',
+  2: 'Orc',
+  3: 'Dwarf',
+  4: 'Night Elf',
+  5: 'Undead',
+  6: 'Tauren',
+  7: 'Gnome',
+  8: 'Troll',
+  10: 'Blood Elf',
+  11: 'Draenei',
+};
+export const CLASS_NAMES: Record<number, string> = {
+  1: 'Warrior',
+  2: 'Paladin',
+  3: 'Hunter',
+  4: 'Rogue',
+  5: 'Priest',
+  6: 'Death Knight',
+  7: 'Shaman',
+  8: 'Mage',
+  9: 'Warlock',
+  11: 'Druid',
+};
+
+/** "Thrall (80 Orc Shaman)". */
+export const playerLabel = (player: Player): string =>
+  `${player.name} (${player.level} ${RACE_NAMES[player.race] ?? `race ${player.race}`} ${CLASS_NAMES[player.class] ?? `class ${player.class}`})${player.online ? '' : ' · offline'}`;
 
 /** What a switch needs: the AzerothCore source folder, or the server's data folder (mmaps, vmaps, maps). */
 export type Requirement = 'source' | 'serverData';
@@ -210,6 +259,8 @@ export const OVERLAY_SWITCHES: LayerSwitch[] = [
   { key: 'scriptObjects', id: 'script-objects', label: 'WORLD_EDITOR.SCRIPT_OBJECTS', requires: 'source' },
   { key: 'objectRanges', id: 'object-ranges', label: 'WORLD_EDITOR.OBJECT_RANGES' },
   { key: 'sightRanges', id: 'sight-ranges', label: 'WORLD_EDITOR.SIGHT_RANGES' },
+  { key: 'players', id: 'players', label: 'WORLD_EDITOR.PLAYERS' },
+  { key: 'offlinePlayers', id: 'offline-players', label: 'WORLD_EDITOR.OFFLINE_PLAYERS' },
 ];
 
 /** Rows as returned by the spawn and waypoint queries. */

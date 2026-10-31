@@ -127,7 +127,7 @@ import {
   BossBoundary,
   describeBoundary,
 } from '@keira/shared/wow-data';
-import { ElectronService } from '@keira/shared/common-services';
+import { ElectronService, ServerSettingsService } from '@keira/shared/common-services';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { NgTemplateOutlet } from '@angular/common';
@@ -166,6 +166,8 @@ import {
   SpawnType,
   TeleRow,
   WaypointRecord,
+  Player,
+  playerLabel,
 } from './world-editor.model';
 import { WorldEditorService } from './world-editor.service';
 import { GpsLocation, parseGpsOutput } from './gps';
@@ -441,6 +443,10 @@ export const ZONE_COLORS: Record<ZoneKind, number> = {
 };
 /** The keys of the gameobjects scripts spawn (drawn, never selected). */
 const SCRIPT_OBJECT_KEY = 'script-object:';
+/** How often the players are read again (ms). */
+export const PLAYERS_REFRESH_MS = 10_000;
+const PLAYER_COLOR = 0x4dff88;
+const OFFLINE_PLAYER_COLOR = 0x9aa0a6;
 /** Which layer shows each kind of area. */
 const ZONE_LAYERS: Record<ZoneKind, keyof LayerVisibility> = {
   capture: 'captureZones',
@@ -847,9 +853,52 @@ export class WorldEditorComponent implements OnInit {
         ...(layers.formations ? formationSlots(spawns, this.formations(), this.selectedSpawn()) : []),
         ...this.travelOverlays().markers.filter((marker) => (isFlight(marker.key) ? layers.flightPaths : layers.travel)),
         ...this.scanMarkers(),
+        ...this.shownPlayers().map((player) => ({
+          key: `player:${player.guid}`,
+          position: { x: player.x, y: player.y, z: player.z },
+          color: player.online ? PLAYER_COLOR : OFFLINE_PLAYER_COLOR,
+          label: playerLabel(player),
+        })),
       ];
     }),
   );
+
+  // ---------------------------------------------------------------- players
+
+  private readonly serverSettings = inject(ServerSettingsService);
+  /** The characters of the map shown, from the characters database (refreshed every few seconds). */
+  protected readonly players = signal<Player[]>([]);
+  /** Why the characters database can't be read (none: it can, or isn't asked). */
+  protected readonly playersError = signal('');
+  protected readonly serverSettingsDb = computed(() => this.serverSettings.settings().charactersDatabase);
+  protected readonly shownPlayers = computed(() => {
+    const layers = this.layers();
+    return this.players().filter((player) => (player.online ? layers.players : layers.offlinePlayers));
+  });
+  /** Reads the players again every few seconds while a players layer is on (the server saves them every few minutes). */
+  private readonly pollPlayers = effect((onCleanup) => {
+    const layers = this.layers();
+    const map = this.mapId();
+    const database = this.serverSettings.settings().charactersDatabase;
+    if (!layers.players && !layers.offlinePlayers) {
+      untracked(() => this.players.set([]));
+      return;
+    }
+    const read = () =>
+      this.service.loadPlayers(database, map, layers.offlinePlayers).then(
+        (players) => {
+          this.players.set(players);
+          this.playersError.set('');
+        },
+        (error: unknown) => {
+          this.players.set([]);
+          this.playersError.set(describeError(error));
+        },
+      );
+    untracked(() => void read());
+    const timer = setInterval(() => void read(), PLAYERS_REFRESH_MS);
+    onCleanup(() => clearInterval(timer));
+  });
   private readonly travelOverlays = computed(() =>
     travelOverlays(this.travel(), this.areaTriggerList(), new Map(this.maps().map((map) => [map.id, map.name])), this.spawnsCenter()),
   );
@@ -1058,6 +1107,12 @@ export class WorldEditorComponent implements OnInit {
       position: s,
       color: s.type === 'creature' ? '#ffc107' : '#0dcaf0',
       title: spawnTitle(s),
+    })),
+    ...this.shownPlayers().map((player) => ({
+      key: `player:${player.guid}`,
+      position: { x: player.x, y: player.y, z: player.z },
+      color: player.online ? '#4dff88' : '#9aa0a6',
+      title: playerLabel(player),
     })),
     ...this.searchResults().map((r) => ({
       key: `search:${spawnKey(r.type, r.guid)}`,

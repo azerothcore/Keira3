@@ -1930,7 +1930,14 @@
     "POI_QUEST_HUB": "Quest hubs",
     "POI_QUEST_GIVER": "Quest givers",
     "LEGEND_GM_USER_PIN": "Your pin (Shift + click)",
-    "LEGEND_GM_MEASURE": "Measured line"
+    "LEGEND_GM_MEASURE": "Measured line",
+    "PLAYERS": "Players online",
+    "PLAYERS_HELP": "The characters online, from the characters database (Settings > Server), read again every 10 seconds. The server saves where they are every few minutes and on logout, so they're shown where they recently were.",
+    "OFFLINE_PLAYERS": "Offline characters",
+    "OFFLINE_PLAYERS_HELP": "Where offline characters were left (grey).",
+    "PLAYERS_ERROR": "Can't read {{database}}.characters (Settings > Server: the database name, and that the login can read it).",
+    "LEGEND_PLAYER": "Player online",
+    "LEGEND_OFFLINE_PLAYER": "Offline character"
   },
   "SETTINGS": {
     "TITLE": "Settings",
@@ -1948,7 +1955,11 @@
     "THEME_IMPORT": "Import theme",
     "THEME_IMPORT_FILE": "From a file",
     "THEME_IMPORTED": "Theme \"{{name}}\" imported",
-    "THEME_COPIED": "Theme copied"
+    "THEME_COPIED": "Theme copied",
+    "SERVER": "Server",
+    "CHARACTERS_DATABASE": "Characters database",
+    "CHARACTERS_DATABASE_HELP": "On the same MySQL server as the world database, read with the same login: the World Editor shows its players.",
+    "DATABASE_NAME_ERROR": "Letters, digits and _ only."
   },
   "WAYPOINTS": {
     "SELECT_PATH": "Select an existing path",

@@ -58,6 +58,29 @@
       </label>
     </div>
   </section>
+  <section class="card mb-3" data-testid="server">
+    <div class="card-header">{{ 'SETTINGS.SERVER' | translate }}</div>
+    <div class="card-body">
+      <div class="row g-2 align-items-center">
+        <label class="col-auto col-form-label" for="characters-database">{{ 'SETTINGS.CHARACTERS_DATABASE' | translate }}</label>
+        <div class="col-auto">
+          <input
+            class="form-control form-control-sm"
+            id="characters-database"
+            data-testid="characters-database"
+            [value]="server.settings().charactersDatabase"
+            (change)="setCharactersDatabase($event)"
+          />
+        </div>
+        @if (databaseError()) {
+          <div class="col-auto text-danger small" data-testid="characters-database-error">
+            {{ 'SETTINGS.DATABASE_NAME_ERROR' | translate }}
+          </div>
+        }
+      </div>
+      <p class="text-muted small mt-1 mb-0">{{ 'SETTINGS.CHARACTERS_DATABASE_HELP' | translate }}</p>
+    </div>
+  </section>
   <section class="card mb-3">
     <div class="card-header">{{ 'SETTINGS.GAME_DATA' | translate }}</div>
     <div class="card-body">

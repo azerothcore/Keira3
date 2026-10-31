@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { BUILT_IN_THEMES, ThemeService } from '@keira/shared/common-services';
+import { BUILT_IN_THEMES, isDatabaseName, ServerSettingsService, ThemeService } from '@keira/shared/common-services';
 import { ClipboardService } from 'ngx-clipboard';
 import { GameDataFoldersComponent } from '@keira/shared/world-viewer';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -21,6 +21,17 @@ export class SettingsComponent {
   private readonly translate = inject(TranslateService);
   private readonly clipboard = inject(ClipboardService);
   protected readonly theme = inject(ThemeService);
+  protected readonly server = inject(ServerSettingsService);
+  protected readonly databaseError = signal(false);
+
+  /** The characters database's name (saved when it's one). */
+  protected setCharactersDatabase(event: Event): void {
+    const name = (event.target as HTMLInputElement).value.trim();
+    this.databaseError.set(!isDatabaseName(name));
+    if (isDatabaseName(name)) {
+      this.server.save({ charactersDatabase: name });
+    }
+  }
   protected readonly builtIn = BUILT_IN_THEMES;
   /** The theme JSON pasted to import. */
   protected readonly themeJson = signal('');

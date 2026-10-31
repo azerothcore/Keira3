@@ -16,6 +16,7 @@ import {
   npcPoiKinds,
   questHubs,
 } from '@keira/shared/world-viewer';
+import { isDatabaseName } from '@keira/shared/common-services';
 import { firstValueFrom } from 'rxjs';
 import {
   FormationMember,
@@ -49,6 +50,7 @@ import {
   TeleRow,
   WaypointRecord,
   WaypointRow,
+  Player,
 } from './world-editor.model';
 import { WaypointSaiRow, WaypointScriptStep } from './waypoint-info';
 import { PathStart } from './path-ending';
@@ -903,6 +905,35 @@ export class WorldEditorService {
    * Id for a new path of a creature: `guid * 10` (AzerothCore's convention) when unused, otherwise the highest path id
    * + 1 (what `.wp add` does). `reserved` are ids already handed out in this session but not saved yet.
    */
+  /**
+   * The characters on a map from the characters database (`database`, on the same server; read with the same login),
+   * where the server last saved them: the online ones, and the offline ones too when asked.
+   */
+  async loadPlayers(database: string, map: number, offline: boolean): Promise<Player[]> {
+    if (!isDatabaseName(database)) {
+      throw new Error(`"${database}" is not a database name.`);
+    }
+    const rows = await firstValueFrom(
+      this.queryService.query<TableRow>(
+        'SELECT guid, name, race, class, level, map, position_x AS x, position_y AS y, position_z AS z, zone, online ' +
+          `FROM \`${database}\`.\`characters\` WHERE map = ${Math.trunc(map)}${offline ? '' : ' AND online = 1'}`,
+      ),
+    );
+    return (rows ?? []).map((row) => ({
+      guid: Number(row['guid']),
+      name: String(row['name']),
+      race: Number(row['race']),
+      class: Number(row['class']),
+      level: Number(row['level']),
+      map: Number(row['map']),
+      x: Number(row['x']),
+      y: Number(row['y']),
+      z: Number(row['z']),
+      zone: Number(row['zone']),
+      online: Number(row['online']) > 0,
+    }));
+  }
+
   /** The next free pool (`pool_template.entry`), above those `reserved` (made in this session). */
   async getFreePoolId(reserved: number[] = []): Promise<number> {
     const rows = await firstValueFrom(this.queryService.query<{ max: number }>('SELECT IFNULL(MAX(entry), 0) AS max FROM pool_template'));
