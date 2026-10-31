@@ -607,7 +607,8 @@
     "GROUP_ID": "一组战利品定义，查看wiki以获取更多详细信息",
     "MIN_COUNT": "在一次战利品获取中可以掉落物品的最高数量。作为参考，该参数将被忽略。",
     "MAX_COUNT": "在一次战利品获取中可以掉落物品的最大数量。作为参考，这是EXACT计数值。",
-    "COMMENT": "被内核忽略的注释"
+    "COMMENT": "被内核忽略的注释",
+    "REFERENCE_COUNT": "引用行会按 MaxCount 次掉落其引用：MinCount 跟随 MaxCount（AzerothCore 不支持其他值）。"
   },
   "LOOT_TEMPLATE": {
     "SET_FIELD": "你必须设置 <strong>`{{ LOOT_FIELD }}`</strong> 字段在 <strong>{{ ENTITY_TABLE }}</strong> 中才能启用此功能。",

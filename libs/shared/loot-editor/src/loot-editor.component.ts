@@ -15,6 +15,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { ReferenceViewerComponent } from './reference-viewer.component';
+import { syncReferenceCount } from './reference-count';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -63,6 +64,7 @@ export class LootEditorComponent<T extends LootTemplate> extends SubscriptionHan
           this.changeDetectorRef.markForCheck();
         });
       }),
+      syncReferenceCount(this.editorService.form),
     );
   }
 
