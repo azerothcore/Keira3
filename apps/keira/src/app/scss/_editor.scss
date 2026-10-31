@@ -68,3 +68,14 @@
 .keira-filtered-out {
   display: none !important;
 }
+
+// a table header sorting its table (clicked: up, down, as it was)
+.keira-sortable {
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+
+  i {
+    opacity: 0.6;
+  }
+}

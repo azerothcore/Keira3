@@ -1,4 +1,4 @@
-import { parseScriptNames } from './script-names';
+import { parseScriptNames, scriptGithubUrl } from './script-names';
 
 describe('parseScriptNames', () => {
   it('reads the names the scripts register, and what for', () => {
@@ -38,6 +38,20 @@ describe('parseScriptNames', () => {
       'gameobject:go_chest',
       'command:cs_x',
     ]);
-    expect(parseScriptNames(text, 'scripts/x.cpp')[0].file).toBe('scripts/x.cpp');
+    const [guard, , , , , , , , , old] = parseScriptNames(text, 'scripts/x.cpp');
+    expect(guard.file).toBe('scripts/x.cpp');
+    // the lines of the file (the define and comments above don't shift them)
+    expect([guard.line, old.line]).toEqual([9, 3]);
+  });
+
+  it("links a core file to GitHub at its line, not a module's", () => {
+    expect(scriptGithubUrl({ file: 'scripts/Commands/cs_account.cpp', line: 12 })).toBe(
+      'https://github.com/azerothcore/azerothcore-wotlk/blob/master/src/server/scripts/Commands/cs_account.cpp#L12',
+    );
+    expect(scriptGithubUrl({ file: 'scripts/x.cpp' })).toBe(
+      'https://github.com/azerothcore/azerothcore-wotlk/blob/master/src/server/scripts/x.cpp',
+    );
+    expect(scriptGithubUrl({ file: 'modules/mod-x/src/x.cpp', line: 1 })).toBeUndefined();
+    expect(scriptGithubUrl({ file: '' })).toBeUndefined();
   });
 });

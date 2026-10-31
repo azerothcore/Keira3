@@ -2,10 +2,12 @@ import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } 
 import { RouterLink } from '@angular/router';
 import { TableRow, WORLD_EDITOR_LINKS } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
-import { ScriptName, WowClientService } from '@keira/shared/wow-data';
+import { ScriptName, scriptGithubUrl, WowClientService } from '@keira/shared/wow-data';
+import { ElectronService } from '@keira/shared/common-services';
 import { TranslatePipe } from '@ngx-translate/core';
 import { catchError, forkJoin, map, of } from 'rxjs';
 import { sourceFolderSet } from '../source-folder';
+import { TableSort } from '../table-sort';
 
 /** A row of the database naming a script (`ScriptName` and the like). */
 export interface ScriptUser {
@@ -14,6 +16,16 @@ export interface ScriptUser {
   id: number;
   name: string;
   scriptName: string;
+}
+
+/** A script listed, with the rows using it. */
+interface ScriptRow {
+  name: string;
+  kind: string;
+  file: string;
+  line?: number;
+  path?: string;
+  users: ScriptUser[];
 }
 
 /** The tables naming scripts: their kind and how to read them (`id`, `name`, `scriptName`). */
@@ -64,6 +76,19 @@ export class ScriptNamesComponent implements OnInit {
   protected readonly show = signal<'all' | 'unused' | 'missing'>('all');
   protected readonly expanded = signal<string | undefined>(undefined);
   protected readonly SHOWN = SCRIPT_NAMES_SHOWN;
+  protected readonly githubUrl = scriptGithubUrl;
+  private readonly electron = inject(ElectronService);
+  /** Whether a file can be opened on this computer (the desktop app). */
+  protected canOpenFiles(): boolean {
+    return !!this.electron.isElectron();
+  }
+  protected readonly sort = new TableSort<ScriptRow>({
+    name: (row) => row.name,
+    kind: (row) => row.kind,
+    file: (row) => row.file,
+    users: (row) => row.users.length,
+  });
+  protected readonly sorted = computed(() => this.sort.apply(this.rows()));
 
   /** The database rows using each script name. */
   private readonly usersByName = computed(() => {
@@ -133,6 +158,11 @@ export class ScriptNamesComponent implements OnInit {
 
   protected setShow(event: Event): void {
     this.show.set((event.target as HTMLSelectElement).value as 'all' | 'unused' | 'missing');
+  }
+
+  /** Opens a script's file in the program set for it on this computer. */
+  protected openFile(path: string): void {
+    void this.electron.openPath(path);
   }
 
   protected toggle(name: string): void {

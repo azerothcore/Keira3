@@ -2068,7 +2068,9 @@
     "BOSS": "Boss",
     "SHAPES": "Shapes",
     "SCRIPT_SPAWNS": "Scripted spawns",
-    "SCRIPT_SPAWNS_HELP": "The gameobjects the core's scripts spawn themselves, not in the gameobject table: battleground flags, banners and doors, Wintergrasp's walls and towers, outdoor PvP capture points."
+    "SCRIPT_SPAWNS_HELP": "The gameobjects the core's scripts spawn themselves, not in the gameobject table: battleground flags, banners and doors, Wintergrasp's walls and towers, outdoor PvP capture points.",
+    "OPEN_GITHUB": "Open on GitHub (AzerothCore master)",
+    "OPEN_FILE": "Open the file on this computer"
   },
   "COMPARE": {
     "PIN": "Pin to compare",

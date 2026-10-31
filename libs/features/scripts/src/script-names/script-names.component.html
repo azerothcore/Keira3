@@ -43,20 +43,48 @@
       <table class="table table-sm table-striped" id="script-names">
         <thead>
           <tr>
-            <th>ScriptName</th>
-            <th>{{ 'SCRIPTS.KIND' | translate }}</th>
-            <th>{{ 'SCRIPTS.FILE' | translate }}</th>
-            <th>{{ 'SCRIPTS.USED_BY' | translate }}</th>
+            <th class="keira-sortable" [id]="'sort-name'" (click)="sort.toggle('name')">
+              ScriptName <i class="fa fa-xs" [class]="'fa ' + sort.icon('name')"></i>
+            </th>
+            <th class="keira-sortable" [id]="'sort-kind'" (click)="sort.toggle('kind')">
+              {{ 'SCRIPTS.KIND' | translate }} <i class="fa fa-xs" [class]="'fa ' + sort.icon('kind')"></i>
+            </th>
+            <th class="keira-sortable" [id]="'sort-file'" (click)="sort.toggle('file')">
+              {{ 'SCRIPTS.FILE' | translate }} <i class="fa fa-xs" [class]="'fa ' + sort.icon('file')"></i>
+            </th>
+            <th class="keira-sortable" [id]="'sort-users'" (click)="sort.toggle('users')">
+              {{ 'SCRIPTS.USED_BY' | translate }} <i class="fa fa-xs" [class]="'fa ' + sort.icon('users')"></i>
+            </th>
           </tr>
         </thead>
         <tbody>
-          @for (row of rows().slice(0, SHOWN); track row.name) {
+          @for (row of sorted().slice(0, SHOWN); track row.name) {
             <tr>
               <td>
                 <code>{{ row.name }}</code>
               </td>
               <td>{{ row.kind }}</td>
-              <td class="small text-muted">{{ row.file }}</td>
+              <td class="small text-muted">
+                @if (githubUrl(row); as url) {
+                  <a [href]="url" target="_blank" [id]="'github-' + row.name" [title]="'SCRIPTS.OPEN_GITHUB' | translate">{{ row.file }}</a>
+                } @else {
+                  {{ row.file }}
+                }
+                @if (row.line) {
+                  <span>:{{ row.line }}</span>
+                }
+                @if (canOpenFiles() && row.path) {
+                  <button
+                    type="button"
+                    class="btn btn-link btn-sm py-0"
+                    [id]="'open-file-' + row.name"
+                    [title]="'SCRIPTS.OPEN_FILE' | translate"
+                    (click)="openFile(row.path)"
+                  >
+                    <i class="fa fa-folder-open"></i>
+                  </button>
+                }
+              </td>
               <td>
                 @if (row.users.length) {
                   <button type="button" class="btn btn-link btn-sm p-0" [id]="'users-' + row.name" (click)="toggle(row.name)">

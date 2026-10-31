@@ -2068,7 +2068,9 @@
     "BOSS": "首领",
     "SHAPES": "形状",
     "SCRIPT_SPAWNS": "脚本刷新",
-    "SCRIPT_SPAWNS_HELP": "由核心脚本自行刷新、不在 gameobject 表中的游戏对象：战场旗帜、旗标和大门，冬拥湖的城墙和塔楼，野外 PvP 占领点。"
+    "SCRIPT_SPAWNS_HELP": "由核心脚本自行刷新、不在 gameobject 表中的游戏对象：战场旗帜、旗标和大门，冬拥湖的城墙和塔楼，野外 PvP 占领点。",
+    "OPEN_GITHUB": "在 GitHub 上打开（AzerothCore master）",
+    "OPEN_FILE": "在此电脑上打开文件"
   },
   "COMPARE": {
     "PIN": "固定以比较",

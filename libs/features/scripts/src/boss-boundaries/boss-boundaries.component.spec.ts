@@ -49,6 +49,15 @@ describe('BossBoundariesComponent', () => {
     expect(queryParams['map']).toBe(533);
     expect(queryParams['x']).toBeCloseTo(10);
     expect(queryParams['y']).toBeCloseTo(20);
+    // sorted by any column
+    const firstBoss = () => page.query('#boundaries tbody tr td code').textContent;
+    click(page, '#sort-boss');
+    click(page, '#sort-boss');
+    expect(firstBoss()).toBe('BOSS_PATCHWERK');
+    for (const column of ['map', 'instance', 'shapes', 'scriptName']) {
+      click(page, '#sort-' + column);
+    }
+    expect(page.queryAll('#boundaries tbody tr').length).toBe(2);
     setValue(page, '#boundary-filter', 'patchwerk');
     expect(page.queryAll('#boundaries tbody tr').length).toBe(1);
   });

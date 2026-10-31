@@ -21,16 +21,26 @@
       <table class="table table-sm table-striped" id="boundaries">
         <thead>
           <tr>
-            <th>map</th>
-            <th>{{ 'SCRIPTS.INSTANCE' | translate }}</th>
-            <th>{{ 'SCRIPTS.BOSS' | translate }}</th>
-            <th>{{ 'SCRIPTS.SHAPES' | translate }}</th>
-            <th>ScriptName</th>
+            <th class="keira-sortable" [id]="'sort-map'" (click)="sort.toggle('map')">
+              map <i class="fa fa-xs" [class]="'fa ' + sort.icon('map')"></i>
+            </th>
+            <th class="keira-sortable" [id]="'sort-instance'" (click)="sort.toggle('instance')">
+              {{ 'SCRIPTS.INSTANCE' | translate }} <i class="fa fa-xs" [class]="'fa ' + sort.icon('instance')"></i>
+            </th>
+            <th class="keira-sortable" [id]="'sort-boss'" (click)="sort.toggle('boss')">
+              {{ 'SCRIPTS.BOSS' | translate }} <i class="fa fa-xs" [class]="'fa ' + sort.icon('boss')"></i>
+            </th>
+            <th class="keira-sortable" [id]="'sort-shapes'" (click)="sort.toggle('shapes')">
+              {{ 'SCRIPTS.SHAPES' | translate }} <i class="fa fa-xs" [class]="'fa ' + sort.icon('shapes')"></i>
+            </th>
+            <th class="keira-sortable" [id]="'sort-scriptName'" (click)="sort.toggle('scriptName')">
+              ScriptName <i class="fa fa-xs" [class]="'fa ' + sort.icon('scriptName')"></i>
+            </th>
             <th></th>
           </tr>
         </thead>
         <tbody>
-          @for (boundary of shown(); track boundary.mapId + boundary.boss) {
+          @for (boundary of sorted(); track boundary.mapId + boundary.boss) {
             <tr>
               <td>{{ boundary.mapId }}</td>
               <td>{{ boundary.instance }}</td>

@@ -3,6 +3,7 @@ import { Router, RouterLink } from '@angular/router';
 import { BossBoundary, BoundaryPoint, boundaryOutline, BoundaryShape, describeBoundary, WowClientService } from '@keira/shared/wow-data';
 import { TranslatePipe } from '@ngx-translate/core';
 import { sourceFolderSet } from '../source-folder';
+import { TableSort } from '../table-sort';
 
 /** The middle of the first flat shape of a boundary (to look at it), undefined when it has none (heights only). */
 export function boundaryCenter(shapes: BoundaryShape[]): BoundaryPoint | undefined {
@@ -45,6 +46,15 @@ export class BossBoundariesComponent implements OnInit {
   protected readonly filter = signal('');
   protected readonly describe = describeBoundary;
   protected readonly center = boundaryCenter;
+
+  protected readonly sort = new TableSort<BossBoundary>({
+    map: (boundary) => boundary.mapId,
+    instance: (boundary) => boundary.instance,
+    boss: (boundary) => boundary.boss,
+    shapes: (boundary) => boundary.shapes.length,
+    scriptName: (boundary) => boundary.scriptNames.join(', '),
+  });
+  protected readonly sorted = computed(() => this.sort.apply(this.shown()));
 
   protected readonly shown = computed(() => {
     const text = this.filter().trim().toLowerCase();

@@ -59,7 +59,14 @@ export abstract class BaseQueryService {
     const query = squel.select(squelConfig).from(table);
 
     if (selectFields) {
-      query.fields(selectFields);
+      for (const field of selectFields) {
+        // (a subquery, "(SELECT …) AS `name`", goes as it's written)
+        if (field.startsWith('(')) {
+          query.field(squel.rstr(field));
+        } else {
+          query.field(field);
+        }
+      }
     }
 
     const filters = queryForm.fields;
