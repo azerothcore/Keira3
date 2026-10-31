@@ -12,6 +12,7 @@ export interface MenuStats {
   gossip: ToggleType;
   waypoints: ToggleType;
   pools: ToggleType;
+  scripts: ToggleType;
   spell: ToggleType;
   gameTele: ToggleType;
   trainer: ToggleType;
@@ -34,6 +35,7 @@ export const ROUTE_MENUS: Record<string, keyof MenuStats> = {
   gossip: 'gossip',
   waypoints: 'waypoints',
   pools: 'pools',
+  scripts: 'scripts',
   spell: 'spell',
   'game-tele': 'gameTele',
   trainer: 'trainer',

@@ -44,6 +44,7 @@
       "@keira/features/unused-guid-search": ["libs/features/unused-guid-search/src/index.ts"],
       "@keira/features/waypoints": ["libs/features/waypoints/src/index.ts"],
       "@keira/features/pools": ["libs/features/pools/src/index.ts"],
+      "@keira/features/scripts": ["libs/features/scripts/src/index.ts"],
       "@keira/features/world-editor": ["libs/features/world-editor/src/index.ts"],
       "@keira/main/connection-window": ["libs/main/connection-window/src/index.ts"],
       "@keira/main/main-window": ["libs/main/main-window/src/index.ts"],

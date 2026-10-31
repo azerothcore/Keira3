@@ -1,0 +1,112 @@
+<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
+
+<div class="container-fluid">
+  @if (editorService.loading) {
+    <span [translate]="'LOADING'"></span>
+  }
+
+  @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
+    <div>
+      <div class="content-block">
+        <keira-query-output
+          [docUrl]="docUrl"
+          [isNew]="editorService.isNew"
+          [diffQuery]="editorService.diffQuery"
+          [fullQuery]="editorService.fullQuery"
+          [error]="editorService.error"
+          [entityTable]="editorService.entityTable"
+          [editorService]="editorService"
+          (executeQuery)="save($event)"
+        />
+      </div>
+      <div class="content-block">
+        <form [formGroup]="editorService.form" class="form-group edit-form">
+          <div class="row">
+            <div class="form-group col-6 col-md-3 col-xl-1">
+              <label class="control-label" for="pointid">pointid</label>
+              <input [formControlName]="'pointid'" id="pointid" type="number" class="form-control form-control-sm" />
+            </div>
+            @for (field of ['location_x', 'location_y', 'location_z']; track field) {
+              <div class="form-group col-6 col-md-3 col-xl-2">
+                <label class="control-label" [for]="field">{{ field }}</label>
+                <input [formControlName]="field" [id]="field" type="number" step="any" class="form-control form-control-sm" />
+              </div>
+            }
+            <div class="form-group col-6 col-md-3 col-xl-1">
+              <label class="control-label" for="waittime">waittime</label>
+              <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'WAYPOINTS.DELAY_TOOLTIP' | translate"></i>
+              <input [formControlName]="'waittime'" id="waittime" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-xl-12">
+              <label class="control-label" for="point_comment">point_comment</label>
+              <input [formControlName]="'point_comment'" id="point_comment" class="form-control form-control-sm" />
+            </div>
+            <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
+              <i class="fas fa-exclamation-triangle"></i>
+              <span [innerHTML]="'UNIQUE' | translate: { ENTITY_SECOND_ID_FIELD: editorService.entitySecondIdField }"></span>
+            </div>
+          </div>
+        </form>
+        <div class="row">
+          <div class="col-12">
+            <keira-editor-buttons
+              [selectedRowId]="editorService.selectedRowId"
+              (deleteSelectedRow)="editorService.deleteSelectedRow()"
+              (addNewRow)="editorService.addNewRow()"
+              (duplicateRow)="editorService.addNewRow(true)"
+            />
+            <button type="button" class="btn btn-sm btn-outline-primary ms-2" id="show-in-3d" (click)="showIn3d()">
+              <i class="fa fa-cube"></i> {{ 'SCRIPTS.SHOW_IN_3D' | translate }}
+            </button>
+            <ngx-datatable
+              id="editor-table"
+              class="bootstrap table table-striped text-center datatable-select"
+              [rows]="editorService.newRows"
+              [headerHeight]="DTCFG.headerHeight"
+              [footerHeight]="DTCFG.footerHeight"
+              [columnMode]="DTCFG.columnMode"
+              [rowHeight]="DTCFG.rowHeight"
+              [selectionType]="DTCFG.selectionType"
+              (select)="editorService.onRowSelection($event)"
+              (keydown.delete)="editorService.deleteSelectedRow()"
+            >
+              <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                  <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="pointid" prop="pointid" [minWidth]="60" />
+              <ngx-datatable-column name="location_x" prop="location_x" [minWidth]="90" />
+              <ngx-datatable-column name="location_y" prop="location_y" [minWidth]="90" />
+              <ngx-datatable-column name="location_z" prop="location_z" [minWidth]="90" />
+              <ngx-datatable-column name="waittime" prop="waittime" [minWidth]="60" />
+              <ngx-datatable-column name="point_comment" prop="point_comment" [minWidth]="160" />
+            </ngx-datatable>
+          </div>
+        </div>
+      </div>
+      <div class="content-block" id="escort-creature">
+        <p class="lead">{{ 'SCRIPTS.ESCORT_CREATURE' | translate }}</p>
+        @if (creature(); as creature) {
+          <p class="mb-1">
+            @if (links) {
+              <button type="button" class="btn btn-link btn-sm p-0" id="open-creature" (click)="openCreature(creature.name)">
+                {{ creature.name }} ({{ handlerService.selected }})
+              </button>
+            } @else {
+              {{ creature.name }} ({{ handlerService.selected }})
+            }
+          </p>
+          <p class="small mb-1">
+            ScriptName: <code id="script-name">{{ creature.scriptName || '-' }}</code>
+          </p>
+          @if (creature.map === null) {
+            <p class="small text-muted" id="not-spawned">{{ 'SCRIPTS.NOT_SPAWNED' | translate }}</p>
+          }
+        } @else {
+          <p class="text-muted" id="no-creature">{{ 'SCRIPTS.NO_CREATURE' | translate }}</p>
+        }
+      </div>
+    </div>
+  }
+</div>

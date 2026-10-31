@@ -216,6 +216,14 @@
       "POOL_POOL": "Pools hijos",
       "POOL_QUEST": "Misiones",
       "GAME_EVENT_POOL": "Evento"
+    },
+    "SCRIPTS": {
+      "TITLE": "Scripts",
+      "SELECT_SCRIPT_WAYPOINT": "Buscar ruta de escolta",
+      "SCRIPT_WAYPOINT": "Puntos de ruta de escolta",
+      "SCRIPT_NAMES": "Nombres de scripts",
+      "BOSS_BOUNDARIES": "Límites de jefes",
+      "SCRIPT_SPAWNS": "Spawns de scripts"
     }
   },
   "DASHBOARD": {
@@ -1963,5 +1971,33 @@
     "PROBLEM_QUEST_MIXED": "No se pueden mezclar misiones diarias y semanales en un pool.",
     "PROBLEM_ONE_EVENT": "Un pool tiene un solo evento: solo se guarda una fila.",
     "PROBLEM_MISSING_EVENT": "No existe el evento {{ids}}."
+  },
+  "SCRIPTS": {
+    "SELECT_SCRIPT_WAYPOINT": "Selecciona una ruta de escolta existente (script_waypoint, por entry de criatura)",
+    "SHOW_IN_3D": "Ver en el editor de mundo",
+    "ESCORT_CREATURE": "La criatura que la recorre",
+    "NOT_SPAWNED": "No aparece en ningún sitio.",
+    "NO_CREATURE": "No hay creature_template con este entry.",
+    "NEEDS_SOURCE": "Necesita la carpeta del código de AzerothCore: configúrala en",
+    "READING_SOURCE": "Leyendo la carpeta del código...",
+    "FILTER": "Filtrar",
+    "SCRIPT_NAMES": "Nombres de scripts",
+    "SCRIPT_NAMES_HELP": "Los scripts que registra el código de AzerothCore y qué los usa en la base de datos (columnas ScriptName, spell_script_names, areatrigger_scripts, instance_template).",
+    "ALL_KINDS": "Todos los tipos",
+    "SHOW_ALL": "Todos los scripts",
+    "SHOW_UNUSED": "Sin usar",
+    "SHOW_MISSING": "Usados, pero no en el código",
+    "SHOWING": "{{shown}} de {{total}} mostrados",
+    "KIND": "Tipo",
+    "FILE": "Archivo",
+    "USED_BY": "Usado por",
+    "OPEN": "Abrir",
+    "BOSS_BOUNDARIES": "Límites de jefes",
+    "BOSS_BOUNDARIES_HELP": "Las zonas en las que los scripts de instancia mantienen a cada jefe (si sale, evade), lo que muestra .debug boundary.",
+    "INSTANCE": "Instancia",
+    "BOSS": "Jefe",
+    "SHAPES": "Formas",
+    "SCRIPT_SPAWNS": "Spawns de scripts",
+    "SCRIPT_SPAWNS_HELP": "Los objetos que generan los propios scripts del núcleo, fuera de la tabla gameobject: banderas, estandartes y puertas de campos de batalla, muros y torres de Conquista del Invierno, puntos de captura JcJ."
   }
 }

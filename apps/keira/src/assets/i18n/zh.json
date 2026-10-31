@@ -216,6 +216,14 @@
       "POOL_POOL": "子刷新池",
       "POOL_QUEST": "任务",
       "GAME_EVENT_POOL": "游戏事件"
+    },
+    "SCRIPTS": {
+      "TITLE": "脚本",
+      "SELECT_SCRIPT_WAYPOINT": "搜索护送路径",
+      "SCRIPT_WAYPOINT": "护送路径点",
+      "SCRIPT_NAMES": "脚本名称",
+      "BOSS_BOUNDARIES": "首领边界",
+      "SCRIPT_SPAWNS": "脚本刷新"
     }
   },
   "DASHBOARD": {
@@ -1963,5 +1971,33 @@
     "PROBLEM_QUEST_MIXED": "一个刷新池中不能混合日常和周常任务。",
     "PROBLEM_ONE_EVENT": "一个刷新池只有一个游戏事件：只保留一行。",
     "PROBLEM_MISSING_EVENT": "没有游戏事件 {{ids}}。"
+  },
+  "SCRIPTS": {
+    "SELECT_SCRIPT_WAYPOINT": "选择已有的护送路径（script_waypoint，按生物 entry）",
+    "SHOW_IN_3D": "在世界编辑器中显示",
+    "ESCORT_CREATURE": "沿路径行走的生物",
+    "NOT_SPAWNED": "未在任何地方刷新。",
+    "NO_CREATURE": "没有该 entry 的 creature_template。",
+    "NEEDS_SOURCE": "需要 AzerothCore 源码文件夹：请在此设置",
+    "READING_SOURCE": "正在读取源码文件夹...",
+    "FILTER": "筛选",
+    "SCRIPT_NAMES": "脚本名称",
+    "SCRIPT_NAMES_HELP": "AzerothCore 源码注册的脚本，以及数据库中使用它们的内容（ScriptName 列、spell_script_names、areatrigger_scripts、instance_template）。",
+    "ALL_KINDS": "所有类型",
+    "SHOW_ALL": "所有脚本",
+    "SHOW_UNUSED": "未被使用",
+    "SHOW_MISSING": "已使用但源码中没有",
+    "SHOWING": "显示 {{shown}} / {{total}}",
+    "KIND": "类型",
+    "FILE": "文件",
+    "USED_BY": "使用者",
+    "OPEN": "打开",
+    "BOSS_BOUNDARIES": "首领边界",
+    "BOSS_BOUNDARIES_HELP": "副本脚本将每个首领限制在其中的区域（离开会脱战），即 .debug boundary 显示的内容。",
+    "INSTANCE": "副本",
+    "BOSS": "首领",
+    "SHAPES": "形状",
+    "SCRIPT_SPAWNS": "脚本刷新",
+    "SCRIPT_SPAWNS_HELP": "由核心脚本自行刷新、不在 gameobject 表中的游戏对象：战场旗帜、旗标和大门，冬拥湖的城墙和塔楼，野外 PvP 占领点。"
   }
 }

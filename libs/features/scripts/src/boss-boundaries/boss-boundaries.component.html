@@ -1,0 +1,59 @@
+<div class="container-fluid">
+  <div class="content-block">
+    <p class="lead">{{ 'SCRIPTS.BOSS_BOUNDARIES' | translate }}</p>
+    <p class="small text-muted">{{ 'SCRIPTS.BOSS_BOUNDARIES_HELP' | translate }}</p>
+    @if (!hasSource()) {
+      <div class="alert alert-info" id="no-source">
+        {{ 'SCRIPTS.NEEDS_SOURCE' | translate }} <a routerLink="/settings">{{ 'SIDEBAR.SETTINGS' | translate }}</a>
+      </div>
+    } @else if (boundaries() === undefined) {
+      <p id="reading">{{ 'SCRIPTS.READING_SOURCE' | translate }}</p>
+    } @else {
+      @if (error()) {
+        <div class="alert alert-danger" id="source-error">{{ error() }}</div>
+      }
+      <input
+        class="form-control form-control-sm mb-2"
+        id="boundary-filter"
+        [placeholder]="'SCRIPTS.FILTER' | translate"
+        (input)="setFilter($event)"
+      />
+      <table class="table table-sm table-striped" id="boundaries">
+        <thead>
+          <tr>
+            <th>map</th>
+            <th>{{ 'SCRIPTS.INSTANCE' | translate }}</th>
+            <th>{{ 'SCRIPTS.BOSS' | translate }}</th>
+            <th>{{ 'SCRIPTS.SHAPES' | translate }}</th>
+            <th>ScriptName</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (boundary of shown(); track boundary.mapId + boundary.boss) {
+            <tr>
+              <td>{{ boundary.mapId }}</td>
+              <td>{{ boundary.instance }}</td>
+              <td>
+                <code>{{ boundary.boss }}</code>
+              </td>
+              <td class="small">
+                @for (shape of boundary.shapes; track $index) {
+                  <div>{{ describe(shape) }}</div>
+                }
+              </td>
+              <td class="small">{{ boundary.scriptNames.join(', ') }}</td>
+              <td>
+                @if (center(boundary.shapes); as at) {
+                  <button type="button" class="btn btn-link btn-sm py-0" [id]="'show-' + boundary.boss" (click)="showIn3d(boundary, at)">
+                    <i class="fa fa-cube"></i> {{ 'SCRIPTS.SHOW_IN_3D' | translate }}
+                  </button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

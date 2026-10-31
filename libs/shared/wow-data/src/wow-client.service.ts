@@ -27,6 +27,7 @@ import {
 } from './dbc';
 import { BossBoundary, parseBossScripts, parseInstanceBoundaries, parseMapConstants } from './boss-boundaries';
 import { parseScriptConstants, parseScriptSpawns, ScriptSpawn } from './script-spawns';
+import { parseScriptNames, ScriptName } from './script-names';
 import { FolderArchive } from './folder-archive';
 import { GpuTexture, ParsedAdt, parseWdt, RgbaImage, WdtInfo } from './formats';
 import { MD5_TRANSLATE_PATH, MINIMAP_ROOT, minimapCacheKey, minimapKey, parseMd5Translate } from './minimap';
@@ -146,6 +147,7 @@ export class WowClientService {
   private characterDbcs?: Promise<(DbcFile | undefined)[]>;
   private bossBoundaries?: { source: string; all: Promise<BossBoundary[]> };
   private scriptSpawns?: { source: string; all: Promise<ScriptSpawn[]> };
+  private scriptNames?: { source: string; all: Promise<ScriptName[]> };
   private zoneLights?: Promise<Map<number, ZoneLight[]>>;
   private zones?: Promise<WowZone[]>;
   private areaTriggers?: Promise<AreaTriggerInfo[]>;
@@ -256,6 +258,64 @@ export class WowClientService {
       this.bossBoundaries = { source, all };
     }
     return (await this.bossBoundaries.all).filter((boundary) => boundary.mapId === mapId);
+  }
+
+  /** Every boss boundary of the instance scripts (see `getBossBoundaries`). */
+  async getAllBossBoundaries(): Promise<BossBoundary[]> {
+    const source = this.settings.paths().sourcePath;
+    if (!source || !this.native) {
+      return [];
+    }
+    // (read with the first map's)
+    await this.getBossBoundaries(-1);
+    return (this.bossBoundaries as { all: Promise<BossBoundary[]> }).all;
+  }
+
+  /** Every gameobject the scripts spawn (see `getScriptSpawns`). */
+  async getAllScriptSpawns(): Promise<ScriptSpawn[]> {
+    const source = this.settings.paths().sourcePath;
+    if (!source || !this.native) {
+      return [];
+    }
+    await this.getScriptSpawns(-1);
+    return (this.scriptSpawns as { all: Promise<ScriptSpawn[]> }).all;
+  }
+
+  /**
+   * The script names the AzerothCore source registers (what the `ScriptName` columns name), read from the source folder
+   * once (empty without one, or outside the desktop app).
+   */
+  async getScriptNames(): Promise<ScriptName[]> {
+    const source = this.settings.paths().sourcePath;
+    if (!source || !this.native) {
+      return [];
+    }
+    if (this.scriptNames?.source !== source) {
+      const all = this.readScriptNames(this.native, source).catch((error) => {
+        this.scriptNames = undefined;
+        throw error;
+      });
+      this.scriptNames = { source, all };
+    }
+    return this.scriptNames.all;
+  }
+
+  private async readScriptNames(native: WowNativeApi, source: string): Promise<ScriptName[]> {
+    const root = [`${source}/src/server`, `${source}/server`].find((path) => native.isDirectory(`${path}/scripts`));
+    if (!root) {
+      return [];
+    }
+    const walk = (dir: string): string[] =>
+      native.readdir(dir).flatMap((name) => (native.isDirectory(`${dir}/${name}`) ? walk(`${dir}/${name}`) : [`${dir}/${name}`]));
+    const files = walk(`${root}/scripts`).filter((path) => path.endsWith('.cpp'));
+    const names: ScriptName[] = [];
+    for (const [i, file] of files.entries()) {
+      names.push(...parseScriptNames(new TextDecoder().decode(native.readFile(file)), file.slice(root.length + 1)));
+      if (i % 50 === 49) {
+        await nextFrame();
+      }
+    }
+    return names;
   }
 
   /**
