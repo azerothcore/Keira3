@@ -1965,7 +1965,16 @@
     "SOAP_USER": "GM 账号",
     "SOAP_PASSWORD": "密码",
     "SOAP_REMEMBER_PASSWORD": "记住密码（保存在此电脑上，已编码但未加密）",
-    "SOAP_TEST": "测试（server info）"
+    "SOAP_TEST": "测试（server info）",
+    "EDITORS": "编辑器",
+    "COPY_ONLY_ON_SUCCESS": "\"执行并复制\"只在查询成功执行时复制（失败时保留你的修改且不复制）",
+    "BITWISE_FLAGS": "按位更新标志和掩码（flags = (flags | 新增) & ~移除），保留其他地方修改的位",
+    "SEARCH_HELP": "搜索：精确搜索把 120 当作 120（而不是 1200 或 3120）。空行沿用默认设置。",
+    "SEARCH_TABLE": "表",
+    "SEARCH_DEFAULT": "默认（所有表）",
+    "EXACT_NUMBERS": "精确数字",
+    "EXACT_NAMES": "精确名称",
+    "SEARCH_LIMIT": "行数"
   },
   "WAYPOINTS": {
     "SELECT_PATH": "选择现有路径",

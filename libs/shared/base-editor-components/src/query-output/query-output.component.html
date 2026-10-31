@@ -29,7 +29,7 @@
   <button type="button" class="btn btn-primary btn-sm" (click)="execute()" id="execute-btn">
     <i class="fa fa-bolt fa-sm"></i> {{ 'EXECUTE' | translate }}
   </button>
-  <button type="button" class="btn btn-success btn-sm" (click)="copy(); execute()" id="execute-and-copy-btn">
+  <button type="button" class="btn btn-success btn-sm" (click)="executeAndCopy()" id="execute-and-copy-btn">
     <i class="fa fa-bolt fa-sm"></i> {{ 'EXECUTE_AND_COPY' | translate }} <i class="fa fa-copy fa-sm"></i>
   </button>
   @if (reloadCommand(); as command) {

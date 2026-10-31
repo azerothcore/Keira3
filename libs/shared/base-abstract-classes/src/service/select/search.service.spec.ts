@@ -52,7 +52,10 @@ describe('SearchService', () => {
       const { service, spy } = setupQueryFormChanged();
       service.queryForm.controls.limit?.setValue(123);
 
-      expect(spy).toHaveBeenCalledWith(service['entityTable'], service.queryForm.getRawValue(), undefined, undefined, undefined);
+      expect(spy).toHaveBeenCalledWith(service['entityTable'], service.queryForm.getRawValue(), undefined, undefined, undefined, {
+        numbers: false,
+        names: false,
+      });
       expect(service.query).toEqual(newQuery);
     });
 
@@ -98,7 +101,10 @@ describe('SearchService', () => {
 
       const service = TestBed.inject(TestOrderedSearchService);
 
-      expect(spy).toHaveBeenCalledWith(service['entityTable'], service.queryForm.getRawValue(), undefined, undefined, ['entry']);
+      expect(spy).toHaveBeenCalledWith(service['entityTable'], service.queryForm.getRawValue(), undefined, undefined, ['entry'], {
+        numbers: false,
+        names: false,
+      });
       expect(service.query).toEqual(newQuery);
     });
   });

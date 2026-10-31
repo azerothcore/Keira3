@@ -23,6 +23,31 @@ import squel, { Delete, Insert, Update } from 'squel';
 import { MysqlService } from '../mysql.service';
 import { BaseQueryService } from './base-query.service';
 
+/** The bits set and cleared from one value of a flags column to another (both whole and not negative), else undefined. */
+export function bitsChanged(from: unknown, to: unknown): { set: bigint; cleared: bigint } | undefined {
+  const whole = (value: unknown): boolean => (typeof value === 'number' || typeof value === 'string') && /^\d+$/.test(String(value));
+  if (!whole(from) || !whole(to)) {
+    return undefined;
+  }
+  const [a, b] = [BigInt(from as number), BigInt(to as number)];
+  return { set: b & ~a, cleared: a & ~b };
+}
+
+/** `(\`flags\` | set) & ~cleared`: the bits changed, keeping the others as they are in the database. */
+export function bitsExpression(field: string, { set, cleared }: { set: bigint; cleared: bigint }): string {
+  let expression = `\`${field}\``;
+  if (set) {
+    expression = `(${expression} | ${set})`;
+  }
+  if (cleared) {
+    expression = `${expression} & ~${cleared}`;
+  }
+  return expression;
+}
+
+/** Whether a column holds flags or a mask (updated by its bits when set so). */
+export const isFlagsColumn = (field: string): boolean => /flag|mask/i.test(field);
+
 @Service()
 export class MysqlQueryService extends BaseQueryService {
   private mysqlService = inject(MysqlService);
@@ -71,6 +96,7 @@ export class MysqlQueryService extends BaseQueryService {
     tableName: string, // the name of the table (example: 'creature_template')
     currentRow: T, // object of the original row
     newRow: T, // object of the new row
+    bitwise?: (field: string) => boolean, // the columns updated by their bits
   ): Update | undefined {
     let diff = false;
     const query = squel.update(squelConfig).table(tableName);
@@ -78,7 +104,12 @@ export class MysqlQueryService extends BaseQueryService {
     for (const key in currentRow) {
       if (currentRow[key] !== newRow[key]) {
         diff = true;
-        query.set(key, newRow[key]);
+        const bits = bitwise?.(key) ? bitsChanged(currentRow[key], newRow[key]) : undefined;
+        if (bits) {
+          query.set(key, squel.rstr(bitsExpression(key, bits)));
+        } else {
+          query.set(key, newRow[key]);
+        }
       }
     }
 
@@ -91,8 +122,9 @@ export class MysqlQueryService extends BaseQueryService {
     primaryKey: string, // the key that uniquely identifies the row in the table
     currentRow: T, // object of the original row
     newRow: T, // object of the new row
+    bitwise?: (field: string) => boolean, // the columns updated by their bits (`flags = (flags | 2) & ~1`)
   ): string {
-    const query = this.getUpdateQueryBase(tableName, currentRow, newRow);
+    const query = this.getUpdateQueryBase(tableName, currentRow, newRow, bitwise);
 
     if (!query) {
       return '';
@@ -325,8 +357,9 @@ export class MysqlQueryService extends BaseQueryService {
     currentRow: T, // the original row, it MUST contain ALL the primaryKeys
     newRow: T, // the original row, it MUST contain ALL the primaryKeys
     primaryKeys: string[], // array of the primary keys
+    bitwise?: (field: string) => boolean, // the columns updated by their bits
   ) {
-    const updateQuery = this.getUpdateQueryBase(tableName, currentRow, newRow);
+    const updateQuery = this.getUpdateQueryBase(tableName, currentRow, newRow, bitwise);
     if (!updateQuery) {
       return '';
     }

@@ -121,8 +121,11 @@ describe('EditorService', () => {
       const { service, querySpy, reloadSpy, toastrSuccessSpy, toastrErrorSpy } = setupSave();
       service['_error'] = { code: 'some previous error', errno: 123 } as QueryError;
       querySpy.mockReturnValue(of('mock result' as any));
+      const saved: boolean[] = [];
+      service.saved.subscribe((ran) => saved.push(ran));
 
       service.save(mockChangeDetectorRef, query);
+      expect(saved).toEqual([true]);
 
       expect(querySpy).toHaveBeenCalledWith(query);
       expect(reloadSpy).toHaveBeenCalledWith(mockChangeDetectorRef, service.loadedEntityId);
@@ -135,8 +138,11 @@ describe('EditorService', () => {
     it('should correctly work when the query errors', () => {
       const { service, querySpy, reloadSpy, toastrSuccessSpy, toastrErrorSpy } = setupSave();
       querySpy.mockReturnValue(throwError(error));
+      const saved: boolean[] = [];
+      service.saved.subscribe((ran) => saved.push(ran));
 
       service.save(mockChangeDetectorRef, query);
+      expect(saved).toEqual([false]);
 
       expect(querySpy).toHaveBeenCalledWith(query);
       expect(reloadSpy).toHaveBeenCalledTimes(0);

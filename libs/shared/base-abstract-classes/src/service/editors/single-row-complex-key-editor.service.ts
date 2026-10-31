@@ -1,3 +1,4 @@
+import { isFlagsColumn } from '@keira/shared/db-layer';
 import { Observable } from 'rxjs';
 
 import { Class, TableRow } from '@keira/shared/constants';
@@ -29,6 +30,7 @@ export abstract class SingleRowComplexKeyEditorService<T extends TableRow> exten
       this._originalValue,
       this._form.getRawValue() as T,
       this.entityIdFields,
+      this.editorSettings.settings().bitwiseFlags ? isFlagsColumn : undefined,
     );
 
     this.updateEditorStatus();

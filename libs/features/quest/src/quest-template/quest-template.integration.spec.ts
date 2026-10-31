@@ -151,7 +151,7 @@ describe('QuestTemplate integration tests', () => {
         '`RequiredFactionId1` = 6, `RequiredFactionId2` = 7, `RequiredFactionValue1` = 8, `RequiredFactionValue2` = 9, ' +
         '`RewardNextQuest` = 10, `RewardXPDifficulty` = 11, `RewardMoney` = 12, `RewardMoneyDifficulty` = 13, ' +
         '`RewardDisplaySpell` = 14, `RewardSpell` = 15, `RewardHonor` = 16, `RewardKillHonor` = 17, `StartItem` = 18, ' +
-        '`Flags` = 19, `RequiredPlayerKills` = 20, `RewardItem1` = 21, `RewardAmount1` = 22, `RewardItem2` = 23, `RewardAmount2` = 24, ' +
+        '`Flags` = (`Flags` | 19), `RequiredPlayerKills` = 20, `RewardItem1` = 21, `RewardAmount1` = 22, `RewardItem2` = 23, `RewardAmount2` = 24, ' +
         '`RewardItem3` = 25, `RewardAmount3` = 26, `RewardItem4` = 27, `RewardAmount4` = 28, `ItemDrop1` = 29, `ItemDropQuantity1` = 30, ' +
         '`ItemDrop2` = 31, `ItemDropQuantity2` = 32, `ItemDrop3` = 33, `ItemDropQuantity3` = 34, `ItemDrop4` = 35, ' +
         '`ItemDropQuantity4` = 36, `RewardChoiceItemID1` = 37, `RewardChoiceItemQuantity1` = 38, `RewardChoiceItemID2` = 39, ' +
@@ -211,7 +211,7 @@ describe('QuestTemplate integration tests', () => {
       await page.whenReady();
 
       expect(page.getInputById(field).value).toEqual('4100');
-      page.expectDiffQueryToContain('UPDATE `quest_template` SET `Flags` = 4100 WHERE (`ID` = 1234);');
+      page.expectDiffQueryToContain('UPDATE `quest_template` SET `Flags` = (`Flags` | 4100) WHERE (`ID` = 1234);');
 
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
       page.expectFullQueryToContain('4100');

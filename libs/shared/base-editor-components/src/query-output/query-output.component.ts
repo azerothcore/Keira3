@@ -18,12 +18,12 @@ import { SubscriptionHandler } from '@keira/shared/utils';
 import { TranslatePipe } from '@ngx-translate/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ClipboardService } from 'ngx-clipboard';
-import { filter } from 'rxjs';
+import { filter, take } from 'rxjs';
 import { HighlightjsWrapperComponent } from '../highlightjs-wrapper/highlightjs-wrapper.component';
 import { ModalConfirmComponent } from '../modal-confirm/modal-confirm.component';
 import { QueryErrorComponent } from './query-error/query-error.component';
 import { QueryError } from 'mysql2';
-import { reloadCommand, SoapService } from '@keira/shared/common-services';
+import { EditorSettingsService, reloadCommand, SoapService } from '@keira/shared/common-services';
 import { CompareResult, compareEntities, EntityCompareService, EntitySnapshot } from './entity-compare';
 
 @Component({
@@ -129,6 +129,20 @@ export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandle
 
   execute(): void {
     this.executeQuery.emit(this.getQuery());
+  }
+
+  private readonly editorSettings = inject(EditorSettingsService);
+
+  /** Executes the query and copies it: only once it ran (Settings > Editors), so a failed one isn't copied. */
+  executeAndCopy(): void {
+    const query = this.getQuery();
+    const saved = this.editorService.saved;
+    if (this.editorSettings.settings().copyOnlyOnSuccess && saved) {
+      saved.pipe(take(1)).subscribe((ran) => ran && this.clipboardService.copyFromContent(query));
+    } else {
+      this.copy();
+    }
+    this.execute();
   }
 
   reload(): void {

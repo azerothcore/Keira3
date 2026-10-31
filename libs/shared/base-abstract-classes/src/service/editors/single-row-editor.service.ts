@@ -2,6 +2,7 @@ import { Class, TableRow } from '@keira/shared/constants';
 import { compareObjFn, getNumberOrString } from '@keira/shared/utils';
 import { distinctUntilChanged } from 'rxjs';
 import { EditorService } from './editor.service';
+import { isFlagsColumn } from '@keira/shared/db-layer';
 
 export abstract class SingleRowEditorService<T extends TableRow> extends EditorService<T> {
   protected _originalValue!: T;
@@ -38,6 +39,7 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
       this._entityIdField,
       this._originalValue,
       this._form.getRawValue() as T,
+      this.editorSettings.settings().bitwiseFlags ? isFlagsColumn : undefined,
     );
 
     this.updateEditorStatus();

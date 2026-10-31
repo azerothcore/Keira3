@@ -8,7 +8,7 @@ import { MaxRow, MinRow, TableRow } from '@keira/shared/constants';
 import { lastValueFrom, of } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
 import { MysqlService } from '../mysql.service';
-import { MysqlQueryService } from './mysql-query.service';
+import { bitsChanged, isFlagsColumn, MysqlQueryService } from './mysql-query.service';
 
 interface MockRow extends TableRow {
   entry: number;
@@ -431,6 +431,24 @@ describe('MysqlQueryService', () => {
         ]) {
           expect(service.getUpdateQuery(tableName, primaryKey, currentRow, newRow)).toEqual(expectedQuery);
         }
+      });
+
+      it('updates flags columns by their bits when asked, keeping the other bits as they are in the database', () => {
+        const { service } = setup();
+        const flags = { entry: 1, npcflag: 3, unit_flags: 4294967295, flags_extra: 0, name: 'a' } as unknown as MockRow;
+        const changed = { entry: 1, npcflag: 6, unit_flags: 2147483647, flags_extra: 128, name: 'b' } as unknown as MockRow;
+        expect(service.getUpdateQuery(tableName, primaryKey, flags, changed, isFlagsColumn)).toEqual(
+          'UPDATE `my_table` SET `npcflag` = (`npcflag` | 4) & ~1, `unit_flags` = `unit_flags` & ~2147483648, ' +
+            "`flags_extra` = (`flags_extra` | 128), `name` = 'b' WHERE (`entry` = 1);",
+        );
+        // a negative value (or not a number) is set as it is
+        const negative = { entry: 1, npcflag: -1 } as unknown as MockRow;
+        expect(
+          service.getUpdateQuery(tableName, primaryKey, negative, { entry: 1, npcflag: 2 } as unknown as MockRow, isFlagsColumn),
+        ).toEqual('UPDATE `my_table` SET `npcflag` = 2 WHERE (`entry` = 1);');
+        expect(bitsChanged('x', 1)).toBeUndefined();
+        expect(bitsChanged(null, 1)).toBeUndefined();
+        expect(service.getUpdateMultipleKeysQuery(tableName, flags, changed, ['entry'], isFlagsColumn)).toContain('(`npcflag` | 4) & ~1');
       });
     });
 

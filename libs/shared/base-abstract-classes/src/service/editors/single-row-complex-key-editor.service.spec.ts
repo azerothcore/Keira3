@@ -8,7 +8,7 @@ import { QueryError } from 'mysql2';
 import { instance, mock } from 'ts-mockito';
 import { ToastrService } from 'ngx-toastr';
 
-import { MysqlQueryService } from '@keira/shared/db-layer';
+import { MysqlQueryService, isFlagsColumn } from '@keira/shared/db-layer';
 import { SingleRowComplexKeyEditorService } from './single-row-complex-key-editor.service';
 
 import { getPartial } from '@keira/shared/utils';
@@ -69,6 +69,7 @@ describe('SingleRowComplexKeyEditorService', () => {
         service['_originalValue'],
         service['_form'].getRawValue(),
         service['entityIdFields'],
+        isFlagsColumn,
       );
       expect(service['updateEditorStatus']).toHaveBeenCalledTimes(1);
     });
