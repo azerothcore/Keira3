@@ -875,29 +875,51 @@ export class WorldEditorComponent implements OnInit {
     const layers = this.layers();
     return this.players().filter((player) => (player.online ? layers.players : layers.offlinePlayers));
   });
-  /** Reads the players again every few seconds while a players layer is on (the server saves them every few minutes). */
+  private readonly onlineLayer = computed(() => this.layers().players);
+  private readonly offlineLayer = computed(() => this.layers().offlinePlayers);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  /**
+   * Reads the players again every few seconds while a players layer is on (the server saves them every few minutes):
+   * one read at a time, none while the editor's tab isn't shown (the page is kept, off the screen), and the answer of a
+   * read for another map or setting dropped.
+   */
   private readonly pollPlayers = effect((onCleanup) => {
-    const layers = this.layers();
-    const map = this.mapId();
-    const database = this.serverSettings.settings().charactersDatabase;
-    if (!layers.players && !layers.offlinePlayers) {
+    const [online, offline, map, database] = [this.onlineLayer(), this.offlineLayer(), this.mapId(), this.serverSettingsDb()];
+    if (!online && !offline) {
       untracked(() => this.players.set([]));
       return;
     }
-    const read = () =>
-      this.service.loadPlayers(database, map, layers.offlinePlayers).then(
-        (players) => {
-          this.players.set(players);
-          this.playersError.set('');
-        },
-        (error: unknown) => {
-          this.players.set([]);
-          this.playersError.set(describeError(error));
-        },
-      );
-    untracked(() => void read());
-    const timer = setInterval(() => void read(), PLAYERS_REFRESH_MS);
-    onCleanup(() => clearInterval(timer));
+    let cancelled = false;
+    let reading = false;
+    const read = () => {
+      if (reading || !this.host.nativeElement.isConnected) {
+        return;
+      }
+      reading = true;
+      void this.service
+        .loadPlayers(database, map, offline)
+        .then(
+          (players) => {
+            if (!cancelled) {
+              this.players.set(players);
+              this.playersError.set('');
+            }
+          },
+          (error: unknown) => {
+            if (!cancelled) {
+              this.players.set([]);
+              this.playersError.set(describeError(error));
+            }
+          },
+        )
+        .finally(() => (reading = false));
+    };
+    untracked(read);
+    const timer = setInterval(read, PLAYERS_REFRESH_MS);
+    onCleanup(() => {
+      cancelled = true;
+      clearInterval(timer);
+    });
   });
   private readonly travelOverlays = computed(() =>
     travelOverlays(this.travel(), this.areaTriggerList(), new Map(this.maps().map((map) => [map.id, map.name])), this.spawnsCenter()),

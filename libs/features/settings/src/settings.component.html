@@ -133,6 +133,17 @@
             />
           </div>
         </div>
+        <div class="form-check mb-2">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="soap-remember-password"
+            data-testid="soap-remember-password"
+            [checked]="soap.soapRememberPassword"
+            (change)="setSoap('soapRememberPassword', $event)"
+          />
+          <label class="form-check-label" for="soap-remember-password">{{ 'SETTINGS.SOAP_REMEMBER_PASSWORD' | translate }}</label>
+        </div>
         <button type="button" class="btn btn-sm btn-outline-primary" data-testid="soap-test" (click)="testSoap()">
           {{ 'SETTINGS.SOAP_TEST' | translate }}
         </button>

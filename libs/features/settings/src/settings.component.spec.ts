@@ -154,9 +154,17 @@ describe(SettingsComponent.name, () => {
     set('soap-host', ' 10.0.0.2 ');
     set('soap-port', '7879');
     set('soap-user', 'gm');
-    set('soap-password', 'secret');
+    set('soap-password', ' secret');
+    query('soap-remember-password').click();
     expect(TestBed.inject(ServerSettingsService).settings()).toEqual(
-      expect.objectContaining({ soapEnabled: true, soapHost: '10.0.0.2', soapPort: 7879, soapUser: 'gm', soapPassword: 'secret' }),
+      expect.objectContaining({
+        soapEnabled: true,
+        soapHost: '10.0.0.2',
+        soapPort: 7879,
+        soapUser: 'gm',
+        soapPassword: ' secret',
+        soapRememberPassword: true,
+      }),
     );
     query('soap-test').click();
     await new Promise((resolve) => setTimeout(resolve));

@@ -37,7 +37,9 @@ export class SettingsComponent {
   /** Keeps a SOAP setting as it's changed. */
   protected setSoap(key: keyof ServerSettings, event: Event): void {
     const input = event.target as HTMLInputElement;
-    const value = input.type === 'checkbox' ? input.checked : input.type === 'number' ? Number(input.value) : input.value.trim();
+    // (a password is kept as typed: it may start or end with spaces)
+    const text = input.type === 'password' ? input.value : input.value.trim();
+    const value = input.type === 'checkbox' ? input.checked : input.type === 'number' ? Number(input.value) : text;
     this.server.save({ [key]: value });
   }
 
