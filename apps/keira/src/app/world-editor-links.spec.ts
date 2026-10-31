@@ -4,6 +4,7 @@ import { CreatureHandlerService } from '@keira/features/creature';
 import { GameobjectHandlerService } from '@keira/features/gameobject';
 import { vi } from 'vitest';
 import { SaiHandlerService } from '@keira/shared/sai-editor';
+import { WaypointHandlerService, WaypointScriptsHandlerService } from '@keira/features/waypoints';
 import { worldEditorLinks } from './world-editor-links';
 
 describe('worldEditorLinks', () => {
@@ -58,5 +59,25 @@ describe('worldEditorLinks', () => {
     links.openLoot('gameobject', 1561, 'Chest');
     expect(gameobject.select).toHaveBeenCalledWith(false, 1561, 'Chest');
     expect(router.navigate).toHaveBeenLastCalledWith(['gameobject/gameobject-loot-template']);
+  });
+
+  it('opens paths in the Waypoint Editor and waypoint actions in the Waypoint Scripts editor', () => {
+    const path = { select: vi.fn() };
+    const script = { select: vi.fn() };
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: CreatureHandlerService, useValue: {} },
+        { provide: GameobjectHandlerService, useValue: {} },
+        { provide: Router, useValue: {} },
+        { provide: SaiHandlerService, useValue: {} },
+        { provide: WaypointHandlerService, useValue: path },
+        { provide: WaypointScriptsHandlerService, useValue: script },
+      ],
+    });
+    const links = TestBed.runInInjectionContext(() => worldEditorLinks());
+    links.openPath(1230);
+    expect(path.select).toHaveBeenCalledWith(false, 1230, '1230');
+    links.openWaypointScript(50);
+    expect(script.select).toHaveBeenCalledWith(false, 50, '50');
   });
 });

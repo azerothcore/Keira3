@@ -1,9 +1,9 @@
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import packageInfo from '../../../../package.json';
 import { Component, input, output } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, ParamMap } from '@angular/router';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import {
   ContextRequest,
@@ -301,6 +301,8 @@ describe(WorldEditorComponent.name, () => {
     openGameObjectSai: vi.fn(),
     openAreaTriggerSai: vi.fn(),
     openLoot: vi.fn(),
+    openPath: vi.fn(),
+    openWaypointScript: vi.fn(),
   };
 
   const setup = async (
@@ -311,6 +313,8 @@ describe(WorldEditorComponent.name, () => {
       links?: boolean;
       cacheRoot?: string;
       askBeforeDelete?: boolean;
+      /** The query parameters as they change (the editor kept alive in its tab, opened again with a place to show). */
+      paramChanges?: BehaviorSubject<ParamMap>;
       /** The server data and source folders (both set unless given). */
       folders?: { serverDataPath: string; sourcePath: string };
     } = {},
@@ -338,7 +342,10 @@ describe(WorldEditorComponent.name, () => {
         { provide: ClipboardService, useValue: mocks.clipboard },
         { provide: ElectronService, useValue: mocks.electron },
         ...(opts.links === false ? [] : [{ provide: WORLD_EDITOR_LINKS, useValue: links }]),
-        { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: convertToParamMap(opts.params ?? {}) } } },
+        {
+          provide: ActivatedRoute,
+          useValue: { snapshot: { queryParamMap: convertToParamMap(opts.params ?? {}) }, queryParamMap: opts.paramChanges },
+        },
       ],
     });
     TestBed.overrideComponent(WorldEditorComponent, {
@@ -2795,12 +2802,36 @@ describe(WorldEditorComponent.name, () => {
       expect(mocks.clipboard.copyFromContent).toHaveBeenLastCalledWith('.go xyz 1.0000 2.0000 -20.0000 0');
     });
 
-    it('offers the (future) waypoint editor for waypoints, and closes on a press elsewhere or Escape', async () => {
+    it('goes where another editor asks once open (kept alive in its tab), and selects what it names', async () => {
+      const paramChanges = new BehaviorSubject<ParamMap>(convertToParamMap({}));
+      const { page } = await setup({ paramChanges });
+      await loadArea(page);
+      paramChanges.next(convertToParamMap({ map: '1', x: '5', y: '6', z: '7', select: 'path:10#2' }));
+      await settle(page);
+      expect(page.viewer().focus()).toEqual({ x: 5, y: 6, z: 7 });
+      expect(page.viewer().selectedKey()).toBe('path:10#2');
+      expect(mocks.client.getZones).toHaveBeenLastCalledWith(1);
+      // no map nor height: the map shown, at height 0; no place: only the selection
+      paramChanges.next(convertToParamMap({ map: 'x', x: '8', y: '9', z: 'high' }));
+      await settle(page);
+      expect(page.viewer().focus()).toEqual({ x: 8, y: 9, z: 0 });
+      paramChanges.next(convertToParamMap({ x: 'nope', y: '1', select: 'creature:1' }));
+      await settle(page);
+      expect(page.viewer().focus()).toEqual({ x: 8, y: 9, z: 0 });
+      expect(page.viewer().selectedKey()).toBe('creature:1');
+    });
+
+    it('opens the Waypoint Editor and the waypoint script for waypoints, and closes on a press elsewhere or Escape', async () => {
       const { page } = await setup();
       await loadArea(page);
       await rightClick(page, 'path:10#2');
       expect(page.text('context-menu')).toContain('WORLD_EDITOR.PATH 10 · #2');
-      expect(page.byId<HTMLButtonElement>('context-waypoints').nativeElement.disabled).toBe(true);
+      page.click('context-waypoints');
+      expect(links.openPath).toHaveBeenCalledWith(10);
+      await rightClick(page, 'path:10#2');
+      page.click('context-waypoint-script');
+      expect(links.openWaypointScript).toHaveBeenCalledWith(50);
+      await rightClick(page, 'path:10#2');
       // pressing inside the menu keeps it
       page.byId('context-waypoints').nativeElement.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true }));
       page.fixture.detectChanges();

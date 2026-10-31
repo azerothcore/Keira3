@@ -9,6 +9,7 @@ import { ConditionsHandlerService } from '@keira/features/conditions';
 import { CreatureHandlerService } from '@keira/features/creature';
 import { GameobjectHandlerService } from '@keira/features/gameobject';
 import { GossipHandlerService } from '@keira/features/gossip';
+import { WaypointHandlerService, WaypointScriptsHandlerService } from '@keira/features/waypoints';
 import { ItemHandlerService } from '@keira/features/item';
 import {
   FishingLootHandlerService,
@@ -73,6 +74,7 @@ export class SidebarComponent {
     conditions: 'up',
     texts: 'up',
     gossip: 'up',
+    waypoints: 'up',
     spell: 'up',
     gameTele: 'up',
     trainer: 'up',
@@ -89,6 +91,8 @@ export class SidebarComponent {
   protected readonly gameobjectHandlerService = inject(GameobjectHandlerService);
   protected readonly itemHandlerService = inject(ItemHandlerService);
   protected readonly gossipHandlerService = inject(GossipHandlerService);
+  protected readonly waypointHandlerService = inject(WaypointHandlerService);
+  protected readonly waypointScriptsHandlerService = inject(WaypointScriptsHandlerService);
   protected readonly conditionsHandlerService = inject(ConditionsHandlerService);
   protected readonly saiHandlerService = inject(SaiHandlerService);
   protected readonly referenceLootHandlerService = inject(ReferenceLootHandlerService);
@@ -161,6 +165,7 @@ export class SidebarComponent {
     this.menuStates.smartAi = 'up';
     this.menuStates.conditions = 'up';
     this.menuStates.gossip = 'up';
+    this.menuStates.waypoints = 'up';
     this.menuStates.spell = 'up';
     this.menuStates.gameTele = 'up';
     this.menuStates.trainer = 'up';

@@ -10,6 +10,7 @@ export interface MenuStats {
   conditions: ToggleType;
   texts: ToggleType;
   gossip: ToggleType;
+  waypoints: ToggleType;
   spell: ToggleType;
   gameTele: ToggleType;
   trainer: ToggleType;
@@ -30,6 +31,7 @@ export const ROUTE_MENUS: Record<string, keyof MenuStats> = {
   conditions: 'conditions',
   texts: 'texts',
   gossip: 'gossip',
+  waypoints: 'waypoints',
   spell: 'spell',
   'game-tele': 'gameTele',
   trainer: 'trainer',

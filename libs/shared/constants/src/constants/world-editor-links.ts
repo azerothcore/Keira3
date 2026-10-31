@@ -15,6 +15,10 @@ export interface WorldEditorLinks {
   openAreaTriggerSai(id: number): void;
   /** A loot editor of a creature or gameobject entry. */
   openLoot(kind: WorldEditorLoot, entry: number, name: string): void;
+  /** The Waypoint Editor for a path (`waypoint_data.id`). */
+  openPath(pathId: number): void;
+  /** The Waypoint Scripts editor for a waypoint action (`waypoint_scripts.id`). */
+  openWaypointScript(id: number): void;
 }
 
 export type WorldEditorLoot = 'creature' | 'pickpocketing' | 'skinning' | 'gameobject';

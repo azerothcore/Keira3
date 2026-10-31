@@ -2,6 +2,14 @@ import { Routes } from '@angular/router';
 
 import { DashboardComponent } from '@keira/features/dashboard';
 import { SettingsComponent } from '@keira/features/settings';
+import {
+  SelectWaypointComponent,
+  SelectWaypointScriptsComponent,
+  WaypointDataComponent,
+  WaypointHandlerService,
+  WaypointScriptsComponent,
+  WaypointScriptsHandlerService,
+} from '@keira/features/waypoints';
 
 import { ConditionsComponent, ConditionsHandlerService, SelectConditionsComponent } from '@keira/features/conditions';
 import {
@@ -460,6 +468,29 @@ export const KEIRA_ROUTES: Routes = [
         path: 'gossip-menu-option',
         component: GossipMenuOptionComponent,
         canActivate: [GossipHandlerService],
+      },
+    ],
+  },
+  {
+    path: 'waypoints',
+    children: [
+      {
+        path: 'select',
+        component: SelectWaypointComponent,
+      },
+      {
+        path: 'waypoint-data',
+        component: WaypointDataComponent,
+        canActivate: [WaypointHandlerService],
+      },
+      {
+        path: 'select-scripts',
+        component: SelectWaypointScriptsComponent,
+      },
+      {
+        path: 'waypoint-scripts',
+        component: WaypointScriptsComponent,
+        canActivate: [WaypointScriptsHandlerService],
       },
     ],
   },

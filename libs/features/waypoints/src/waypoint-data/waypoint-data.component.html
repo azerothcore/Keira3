@@ -1,0 +1,151 @@
+<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
+
+<div class="container-fluid">
+  @if (editorService.loading) {
+    <span [translate]="'LOADING'"></span>
+  }
+
+  @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
+    <div>
+      <div class="content-block">
+        <keira-query-output
+          [docUrl]="docUrl"
+          [isNew]="editorService.isNew"
+          [diffQuery]="editorService.diffQuery"
+          [fullQuery]="editorService.fullQuery"
+          [error]="editorService.error"
+          [entityTable]="editorService.entityTable"
+          [editorService]="editorService"
+          (executeQuery)="save($event)"
+        />
+      </div>
+      <div class="content-block">
+        <form [formGroup]="editorService.form" class="form-group edit-form">
+          <div class="row">
+            <div class="form-group col-6 col-md-3 col-xl-1">
+              <label class="control-label" for="point">point</label>
+              <input [formControlName]="'point'" id="point" type="number" class="form-control form-control-sm" />
+            </div>
+            @for (field of ['position_x', 'position_y', 'position_z', 'orientation']; track field) {
+              <div class="form-group col-6 col-md-3 col-xl-2">
+                <label class="control-label" [for]="field">{{ field }}</label>
+                <input [formControlName]="field" [id]="field" type="number" step="any" class="form-control form-control-sm" />
+              </div>
+            }
+            <div class="form-group col-6 col-md-3 col-xl-1">
+              <label class="control-label" for="delay">delay</label>
+              <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'WAYPOINTS.DELAY_TOOLTIP' | translate"></i>
+              <input [formControlName]="'delay'" id="delay" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-6 col-md-3 col-xl-2">
+              <label class="control-label" for="move_type">move_type</label>
+              <keira-single-value-selector-btn
+                [control]="editorService.form.controls.move_type"
+                [disabled]="editorService.form.controls.move_type.disabled"
+                [config]="{ options: MOVE_TYPE, name: 'move_type' }"
+              />
+              <input [formControlName]="'move_type'" id="move_type" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-6 col-md-3 col-xl-2">
+              <label class="control-label" for="action">action</label>
+              <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'WAYPOINTS.ACTION_TOOLTIP' | translate"></i>
+              @if (editorService.form.controls.action.value; as action) {
+                <button type="button" class="btn btn-link btn-sm py-0" id="edit-action" (click)="editAction(action)">
+                  {{ 'WAYPOINTS.EDIT_ACTION' | translate }}
+                </button>
+              }
+              <input [formControlName]="'action'" id="action" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-6 col-md-3 col-xl-1">
+              <label class="control-label" for="action_chance">action_chance</label>
+              <input [formControlName]="'action_chance'" id="action_chance" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-6 col-md-3 col-xl-1">
+              <label class="control-label" for="wpguid">wpguid</label>
+              <input [formControlName]="'wpguid'" id="wpguid" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
+              <i class="fas fa-exclamation-triangle"></i>
+              <span [innerHTML]="'UNIQUE' | translate: { ENTITY_SECOND_ID_FIELD: editorService.entitySecondIdField }"></span>
+            </div>
+          </div>
+        </form>
+        <div class="row">
+          <div class="col-12">
+            <keira-editor-buttons
+              [selectedRowId]="editorService.selectedRowId"
+              (deleteSelectedRow)="editorService.deleteSelectedRow()"
+              (addNewRow)="editorService.addNewRow()"
+              (duplicateRow)="editorService.addNewRow(true)"
+            />
+            <button type="button" class="btn btn-sm btn-outline-primary ms-2" id="show-in-3d" (click)="showIn3d()">
+              <i class="fa fa-cube"></i> {{ 'WAYPOINTS.SHOW_IN_3D' | translate }}
+            </button>
+            <ngx-datatable
+              id="editor-table"
+              class="bootstrap table table-striped text-center datatable-select"
+              [rows]="editorService.newRows"
+              [headerHeight]="DTCFG.headerHeight"
+              [footerHeight]="DTCFG.footerHeight"
+              [columnMode]="DTCFG.columnMode"
+              [rowHeight]="DTCFG.rowHeight"
+              [selectionType]="DTCFG.selectionType"
+              (select)="editorService.onRowSelection($event)"
+              (keydown.delete)="editorService.deleteSelectedRow()"
+            >
+              <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                  <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="point" prop="point" [minWidth]="60" />
+              <ngx-datatable-column name="position_x" prop="position_x" [minWidth]="90" />
+              <ngx-datatable-column name="position_y" prop="position_y" [minWidth]="90" />
+              <ngx-datatable-column name="position_z" prop="position_z" [minWidth]="90" />
+              <ngx-datatable-column name="orientation" prop="orientation" [minWidth]="80" />
+              <ngx-datatable-column name="delay" prop="delay" [minWidth]="60" />
+              <ngx-datatable-column name="move_type" [minWidth]="80">
+                <ng-template let-row="row" ngx-datatable-cell-template>{{ moveTypeName(row.move_type) }}</ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="action" prop="action" [minWidth]="60" />
+              <ngx-datatable-column name="action_chance" prop="action_chance" [minWidth]="60" />
+            </ngx-datatable>
+          </div>
+        </div>
+      </div>
+      <div class="content-block">
+        <p class="lead">{{ 'WAYPOINTS.WALKERS' | translate }}</p>
+        @if (walkers().length) {
+          <table class="table table-sm table-striped" id="walkers">
+            <thead>
+              <tr>
+                <th>guid</th>
+                <th>entry</th>
+                <th>name</th>
+                <th>map</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (walker of walkers(); track walker.guid) {
+                <tr>
+                  <td>{{ walker.guid }}</td>
+                  <td>{{ walker.entry }}</td>
+                  <td>{{ walker.name }}</td>
+                  <td>{{ walker.map }}</td>
+                  <td>
+                    <button type="button" class="btn btn-link btn-sm py-0" [id]="'show-walker-' + walker.guid" (click)="showIn3d(walker)">
+                      <i class="fa fa-cube"></i> {{ 'WAYPOINTS.SHOW_IN_3D' | translate }}
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        } @else {
+          <p class="text-muted" id="no-walkers">{{ 'WAYPOINTS.NO_WALKERS' | translate }}</p>
+        }
+      </div>
+    </div>
+  }
+</div>

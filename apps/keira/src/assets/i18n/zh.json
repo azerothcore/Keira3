@@ -196,7 +196,14 @@
     },
     "UNUSED_GUID_SEARCH": "未使用的GUID",
     "WORLD_EDITOR": "3D世界编辑器",
-    "SETTINGS": "设置"
+    "SETTINGS": "设置",
+    "WAYPOINTS": {
+      "TITLE": "路径点",
+      "SELECT_PATH": "搜索路径",
+      "WAYPOINT_DATA": "路径点",
+      "SELECT_SCRIPT": "搜索路径点脚本",
+      "WAYPOINT_SCRIPTS": "路径点脚本"
+    }
   },
   "DASHBOARD": {
     "WELCOME": "欢迎使用Keira3",
@@ -1317,7 +1324,7 @@
     "OPEN_SAI": "打开 SAI",
     "OPEN_GAMEOBJECT": "打开游戏对象",
     "COPY_GUID": "复制 GUID",
-    "OPEN_WAYPOINTS": "打开路径点编辑器（尚未实现）",
+    "OPEN_WAYPOINTS": "在路径点编辑器中打开",
     "FILTERS": "筛选",
     "FILTER_SEARCH": "名称、entry 或 GUID",
     "SHOW_TRIGGERS": "显示触发器和 DND 辅助对象",
@@ -1861,12 +1868,27 @@
     "GAME_MAP_BACK_TO": "返回：",
     "GAME_MAP_ZOOM_RESET": "整张地图",
     "GAME_MAP_TIP": "提示：右键（或 Alt + 单击）复制 .go 命令",
-    "MODIFY": "修改"
+    "MODIFY": "修改",
+    "OPEN_WAYPOINT_SCRIPT": "打开路径点脚本"
   },
   "SETTINGS": {
     "TITLE": "设置",
     "GAME_DATA": "游戏数据",
     "GAME_DATA_HELP": "世界编辑器读取游戏的文件夹（WoW 客户端，以及可选的服务器数据和 AzerothCore 源码），以及存放处理结果的位置。保存在此电脑上。",
     "SAVED": "设置已保存"
+  },
+  "WAYPOINTS": {
+    "SELECT_PATH": "选择现有路径",
+    "SELECT_SCRIPT": "选择现有路径点脚本",
+    "DELAY_TOOLTIP": "生物在该点等待的时间（毫秒）",
+    "ACTION_TOOLTIP": "在该点运行的路径点脚本（waypoint_scripts.id；0：无）",
+    "EDIT_ACTION": "编辑",
+    "SHOW_IN_3D": "在世界编辑器中显示",
+    "WALKERS": "沿此路径行走的生物",
+    "NO_WALKERS": "没有生物使用此路径（creature_addon / creature_template_addon 的 path_id）。",
+    "SCRIPT_DELAY_TOOLTIP": "到达该点后该步骤何时运行（秒）",
+    "USED_AT": "运行此脚本的路径点",
+    "NOT_USED": "没有路径点运行此脚本（waypoint_data.action）。",
+    "PATH_POINT": "路径 {{id}}，第 {{point}} 点"
   }
 }

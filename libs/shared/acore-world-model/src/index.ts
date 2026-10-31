@@ -12,6 +12,8 @@ export * from './entities/creature-questitem.type';
 export * from './entities/creature-queststarter.type';
 export * from './entities/creature-spawn-addon.type';
 export * from './entities/waypoint-data.type';
+export * from './entities/waypoint-scripts.type';
+export * from './options/waypoint';
 export * from './entities/creature-spawn.type';
 export * from './entities/creature-template-addon.type';
 export * from './entities/creature-template-model.type';
