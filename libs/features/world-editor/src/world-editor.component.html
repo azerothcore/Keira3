@@ -2657,6 +2657,11 @@
                   (change)="onPlaceEntryChange()"
                   (keydown.escape)="placeResults.set([])"
                 />
+                @if (tool() === 'place-creature') {
+                  <keira-creature-selector-btn [control]="placeEntry" [disabled]="false" [config]="{ name: 'place-entry' }" />
+                } @else {
+                  <keira-gameobject-selector-btn [control]="placeEntry" [disabled]="false" [config]="{ name: 'place-entry' }" />
+                }
               </div>
               @if (placeResults().length) {
                 <div class="list-group place-results" data-testid="place-results" (mouseleave)="placeHover.set(undefined)">

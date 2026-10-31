@@ -774,6 +774,55 @@ describe(GameMapComponent.name, () => {
     expect(page.byId('game-map-tooltip', false)).toBeFalsy();
   });
 
+  it('keeps pins put with Shift + click, and measures distances', async () => {
+    const { page } = await setup();
+    expect(page.title()).toBe('Elwynn Forest');
+    page.clickAt(501, 334, { shiftKey: true });
+    page.clickAt(100, 100, { shiftKey: true });
+    expect(page.byId('game-map-pins').nativeElement.textContent?.trim()).toBe('2');
+    expect(page.getAllDebugElementsByCss('.game-map-user-pin')).toHaveLength(2);
+    expect(JSON.parse(localStorage.getItem('keira3.worldEditor.gameMapPins') as string)).toHaveLength(2);
+    page.click('game-map-pins');
+    const [newest, oldest] = page
+      .getAllDebugElementsByCss('[data-testid^="game-map-pin-go-"]')
+      .map((el) => el.nativeElement as HTMLElement);
+    expect(newest.textContent).toContain('Elwynn Forest');
+    // a pin's page opens (closing the list); removing one, then all
+    page.click('game-map-nav-world');
+    oldest.click();
+    page.fixture.detectChanges();
+    await settle(page);
+    expect(page.title()).toBe('Elwynn Forest');
+    expect(page.byId('game-map-pins-list', false)).toBeFalsy();
+    page.click('game-map-pins');
+    page.getAllDebugElementsByCss('[data-testid^="game-map-pin-remove-"]')[0].nativeElement.click();
+    page.fixture.detectChanges();
+    expect(page.byId('game-map-pins').nativeElement.textContent?.trim()).toBe('1');
+    page.click('game-map-pins-clear');
+    expect(page.byId('game-map-pins-empty')).toBeTruthy();
+
+    // measuring: each click a point (not opening anything), the length in yards
+    page.click('game-map-measure');
+    page.clickAt(100, 100);
+    page.clickAt(500, 100);
+    expect(page.title()).toBe('Elwynn Forest');
+    expect(page.byId('game-map-measure-line')).toBeTruthy();
+    expect(Number(page.byId('game-map-measure-length').nativeElement.textContent?.replace(' yd', ''))).toBeGreaterThan(0);
+    page.click('game-map-measure-undo');
+    expect(page.byId('game-map-measure-length').nativeElement.textContent?.trim()).toBe('0.0 yd');
+    // off the picture: no point
+    page.clickAt(2000, 2000);
+    page.click('game-map-measure');
+    expect(page.byId('game-map-measure-length', false)).toBeFalsy();
+    // pins and points need a page with a map: not the world map
+    page.click('game-map-nav-world');
+    page.clickAt(501, 334, { shiftKey: true });
+    page.click('game-map-measure');
+    page.clickAt(501, 334);
+    expect(page.byId('game-map-measure-line', false)).toBeFalsy();
+    expect(page.byId('game-map-pins').nativeElement.textContent?.trim()).toBe('0');
+  });
+
   it('shows the seamless map: zones, cities and the ground fading in as the continent is zoomed into, with every marker', async () => {
     const { page, host } = await setup();
     // (the menus open to the left when they would go past the window's edge)

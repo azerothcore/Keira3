@@ -174,6 +174,7 @@ import { arrayPositions, boxExtent, STACK_SIDES, StackSide, stackPosition } from
 import { EMPTY_TRAVEL, TravelData, travelOverlays } from './travel';
 import { copySpawns, followPlacement, newSpawnFrom, pastedSpawn } from './group-edit';
 import { WaypointEdits, WaypointPanelComponent } from './waypoint-panel.component';
+import { CreatureSelectorBtnComponent, GameobjectSelectorBtnComponent } from '@keira/shared/selectors';
 import { PoolPanelComponent } from './pool-panel.component';
 import { SpawnPanelComponent } from './spawn-panel.component';
 import { SpawnTreeComponent } from './spawn-tree.component';
@@ -478,6 +479,8 @@ export function buildKind(dev = isDevMode()): 'development' | 'release' {
     WaypointPanelComponent,
     SpawnPanelComponent,
     PoolPanelComponent,
+    CreatureSelectorBtnComponent,
+    GameobjectSelectorBtnComponent,
     SpawnTreeComponent,
     StylePanelComponent,
     ButtonLabelComponent,
@@ -1685,6 +1688,14 @@ export class WorldEditorComponent implements OnInit {
   private readonly livePlaceSearch = this.placeSearch.valueChanges.pipe(takeUntilDestroyed()).subscribe((text) => {
     const entry = /^\d+$/.test(text.trim()) ? Number(text.trim()) : null;
     this.placeEntry.setValue(entry);
+  });
+  /** An entry picked in the Creature / GameObject search (the selector button): the one placed. */
+  private readonly pickedPlaceEntry = this.placeEntry.valueChanges.pipe(takeUntilDestroyed()).subscribe((entry) => {
+    if (entry && String(entry) !== this.placeSearch.value.trim()) {
+      this.placeSearch.setValue(String(entry), { emitEvent: false });
+      this.placeResults.set([]);
+      void this.onPlaceEntryChange();
+    }
   });
   private readonly livePlaceResults = this.placeSearch.valueChanges
     .pipe(debounceTime(TELE_SEARCH_DELAY), takeUntilDestroyed())

@@ -14,6 +14,7 @@ import {
   NPC_FLAG_KINDS,
   NPC_FLAG_TRAINER,
   npcPoiKinds,
+  questHubs,
 } from '@keira/shared/world-viewer';
 import { firstValueFrom } from 'rxjs';
 import {
@@ -461,6 +462,13 @@ export class WorldEditorService {
           `FROM gameobject g JOIN gameobject_template gt ON gt.entry = g.id WHERE gt.type IN (${GAMEOBJECT_MAILBOX}, ${GAMEOBJECT_MEETING_STONE})`,
       ),
     );
+    // (quest givers: an older database without creature_queststarter has none)
+    const givers = await firstValueFrom(
+      this.queryService.query<TableRow>(
+        "SELECT c.map, c.position_x AS x, c.position_y AS y, c.position_z AS z, c.zoneId, IFNULL(ct.name, '') AS name, ct.faction " +
+          'FROM creature c JOIN creature_template ct ON ct.entry = c.id WHERE EXISTS (SELECT 1 FROM creature_queststarter q WHERE q.id = c.id)',
+      ),
+    ).catch(() => [] as TableRow[]);
     const place = (row: TableRow) => ({
       mapId: Number(row['map']),
       x: Number(row['x']),
@@ -470,6 +478,7 @@ export class WorldEditorService {
       // (0 when the server hasn't worked out where it is)
       zoneId: Number(row['zoneId'] ?? 0),
     });
+    const questGivers: GameMapPoi[] = (givers ?? []).map((row) => ({ kind: 'questGiver', ...place(row), faction: Number(row['faction']) }));
     return [
       ...(npcs ?? []).flatMap((row) =>
         npcPoiKinds(Number(row['npcflag']), Number(row['trainerType']), Number(row['skill']), String(row['subname'])).map((kind) => ({
@@ -483,6 +492,8 @@ export class WorldEditorService {
         kind: Number(row['type']) === GAMEOBJECT_MAILBOX ? ('mailbox' as const) : ('stone' as const),
         ...place(row),
       })),
+      ...questGivers,
+      ...questHubs(questGivers),
     ];
   }
 

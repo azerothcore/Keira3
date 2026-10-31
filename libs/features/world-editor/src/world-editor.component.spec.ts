@@ -3324,6 +3324,17 @@ describe(WorldEditorComponent.name, () => {
       page.fixture.detectChanges();
       expect(page.viewer().placePreview()).toBeUndefined();
       page.byId('place-results').nativeElement.dispatchEvent(new Event('mouseleave'));
+      // the Creature search (its selector button) picks an entry too
+      expect(page.fixture.nativeElement.querySelector('#place-entry-selector-btn')).toBeTruthy();
+      mocks.service.getEntryName.mockResolvedValueOnce('Marshal Haggard');
+      (page.fixture.componentInstance as unknown as { placeEntry: { setValue(v: number): void } }).placeEntry.setValue(198);
+      await settle(page);
+      expect(page.byId<HTMLInputElement>('place-entry').nativeElement.value).toBe('198');
+      expect(page.text('place-entry-name')).toBe('Marshal Haggard');
+      expect(page.byId('place-results', false)).toBeFalsy();
+      page.type('place-entry', 'Marsh');
+      await wait();
+      await settle(page);
       page.click('place-result-197');
       await settle(page);
       expect(page.byId('place-results', false)).toBeFalsy();

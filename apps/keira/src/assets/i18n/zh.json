@@ -1899,7 +1899,18 @@
     "POOL_ADD_TO": "刷新池",
     "POOL_ADD": "添加（{{count}}）",
     "POOL_NEW": "新建刷新池",
-    "POOL_CREATE": "创建（{{count}}）"
+    "POOL_CREATE": "创建（{{count}}）",
+    "GAME_MAP_MEASURE_TIP": "测量：在地图上点击各点以测量距离（码）",
+    "GAME_MAP_MEASURE_UNDO": "撤回最后一个点",
+    "GAME_MAP_MEASURE_HINT": "测量中：点击添加点；再次点击标尺按钮结束",
+    "GAME_MAP_PINS_TIP": "你的标记（在地图上 Shift + 点击放置）",
+    "GAME_MAP_PINS_EMPTY": "还没有标记：在地图上 Shift + 点击放置一个。",
+    "GAME_MAP_PINS_CLEAR": "移除所有标记",
+    "GAME_MAP_GROUP_QUESTS": "任务",
+    "POI_QUEST_HUB": "任务中心",
+    "POI_QUEST_GIVER": "任务发布者",
+    "LEGEND_GM_USER_PIN": "你的标记（Shift + 点击）",
+    "LEGEND_GM_MEASURE": "测量线"
   },
   "SETTINGS": {
     "TITLE": "设置",

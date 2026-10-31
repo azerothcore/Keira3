@@ -1899,7 +1899,18 @@
     "POOL_ADD_TO": "Pool",
     "POOL_ADD": "Añadir ({{count}})",
     "POOL_NEW": "Nuevo pool",
-    "POOL_CREATE": "Crear ({{count}})"
+    "POOL_CREATE": "Crear ({{count}})",
+    "GAME_MAP_MEASURE_TIP": "Medir: haz clic en puntos del mapa para medir la distancia (yardas)",
+    "GAME_MAP_MEASURE_UNDO": "Quitar el último punto",
+    "GAME_MAP_MEASURE_HINT": "Midiendo: haz clic para añadir puntos; el botón de la regla termina",
+    "GAME_MAP_PINS_TIP": "Tus marcas (Mayús + clic en el mapa pone una)",
+    "GAME_MAP_PINS_EMPTY": "Aún no hay marcas: Mayús + clic en el mapa pone una.",
+    "GAME_MAP_PINS_CLEAR": "Quitar todas las marcas",
+    "GAME_MAP_GROUP_QUESTS": "Misiones",
+    "POI_QUEST_HUB": "Centros de misiones",
+    "POI_QUEST_GIVER": "Dadores de misiones",
+    "LEGEND_GM_USER_PIN": "Tu marca (Mayús + clic)",
+    "LEGEND_GM_MEASURE": "Línea medida"
   },
   "SETTINGS": {
     "TITLE": "Ajustes",

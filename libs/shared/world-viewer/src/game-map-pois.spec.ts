@@ -1,6 +1,7 @@
 import { FactionTemplate } from '@keira/shared/wow-data';
 import {
   factionSide,
+  GameMapPoi,
   friendlySides,
   GAME_MAP_LAYERS_KEY,
   GAME_MAP_MARKER_KEY,
@@ -11,6 +12,7 @@ import {
   saveShownLayers,
   subzoneLevels,
   transportKind,
+  questHubs,
 } from './game-map-pois';
 
 describe('game map markers', () => {
@@ -123,5 +125,42 @@ describe('game map markers', () => {
         inBox,
       ),
     ).toEqual(new Map([['1', [2, 9]]]));
+  });
+});
+
+describe('questHubs', () => {
+  const giver = (name: string, mapId: number, x: number, y: number): GameMapPoi => ({
+    kind: 'questGiver',
+    mapId,
+    x,
+    y,
+    z: 10,
+    name,
+    zoneId: 12,
+  });
+
+  it('makes a hub of quest givers standing together, naming them', () => {
+    const many = Array.from({ length: 8 }, (_, i) => giver(`Npc ${i}`, 0, i * 10, 0));
+    const hubs = questHubs([
+      giver('Far', 0, 5000, 0),
+      giver('Other map', 1, 0, 0),
+      ...many,
+      giver('Pair', 0, 9000, 0),
+      giver('Pair 2', 0, 9010, 0),
+    ]);
+    expect(hubs).toEqual([
+      {
+        kind: 'questHub',
+        mapId: 0,
+        x: 35,
+        y: 0,
+        z: 10,
+        name: '8 quest givers',
+        subname: 'Npc 0, Npc 1, Npc 2, Npc 3, Npc 4, Npc 5…',
+        zoneId: 12,
+      },
+    ]);
+    // a chain of givers, each near the next, makes one hub
+    expect(questHubs([giver('A', 0, 0, 0), giver('B', 0, 70, 0), giver('C', 0, 140, 0)])[0].subname).toBe('A, B, C');
   });
 });
