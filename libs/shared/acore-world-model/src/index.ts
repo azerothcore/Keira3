@@ -15,6 +15,7 @@ export * from './entities/waypoint-data.type';
 export * from './entities/waypoint-scripts.type';
 export * from './entities/pool.type';
 export * from './entities/sai-waypoints.type';
+export * from './entities/script-waypoint.type';
 export * from './options/waypoint';
 export * from './entities/creature-spawn.type';
 export * from './entities/creature-template-addon.type';

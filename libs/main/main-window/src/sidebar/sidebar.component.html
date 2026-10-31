@@ -802,6 +802,65 @@
             </div>
           </li>
 
+          <li class="sidebar-dropdown" [class.active]="menuStates['scripts'] === 'down'">
+            <a id="scripts-toggle" (click)="toggleState('scripts')">
+              <i class="fa fa-file-code"></i>
+              <span [translate]="'SIDEBAR.SCRIPTS.TITLE'"></span>
+            </a>
+            <div class="sidebar-submenu" [@slide]="menuStates['scripts']">
+              <ul>
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'scripts/select-script-waypoint'">
+                    {{ 'SIDEBAR.SCRIPTS.SELECT_SCRIPT_WAYPOINT' | translate }}
+                  </a>
+                </li>
+                @if (scriptWaypointHandlerService.selected) {
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'scripts/script-waypoint'">
+                      {{ 'SIDEBAR.SCRIPTS.SCRIPT_WAYPOINT' | translate }}
+                      @if (scriptWaypointHandlerService.isScriptWaypointTableUnsaved()) {
+                        <keira-unsaved-icon />
+                      }
+                    </a>
+                  </li>
+                }
+                <li>
+                  @if (sourceFolderSet()) {
+                    <a href="#" routerLinkActive="active" [routerLink]="'scripts/script-names'">
+                      {{ 'SIDEBAR.SCRIPTS.SCRIPT_NAMES' | translate }}
+                    </a>
+                  } @else {
+                    <a class="sidebar-disabled" [id]="'scripts-needs-source-1'" [title]="'SCRIPTS.NEEDS_SOURCE' | translate">
+                      {{ 'SIDEBAR.SCRIPTS.SCRIPT_NAMES' | translate }}
+                    </a>
+                  }
+                </li>
+                <li>
+                  @if (sourceFolderSet()) {
+                    <a href="#" routerLinkActive="active" [routerLink]="'scripts/boss-boundaries'">
+                      {{ 'SIDEBAR.SCRIPTS.BOSS_BOUNDARIES' | translate }}
+                    </a>
+                  } @else {
+                    <a class="sidebar-disabled" [id]="'scripts-needs-source-2'" [title]="'SCRIPTS.NEEDS_SOURCE' | translate">
+                      {{ 'SIDEBAR.SCRIPTS.BOSS_BOUNDARIES' | translate }}
+                    </a>
+                  }
+                </li>
+                <li>
+                  @if (sourceFolderSet()) {
+                    <a href="#" routerLinkActive="active" [routerLink]="'scripts/script-spawns'">
+                      {{ 'SIDEBAR.SCRIPTS.SCRIPT_SPAWNS' | translate }}
+                    </a>
+                  } @else {
+                    <a class="sidebar-disabled" [id]="'scripts-needs-source-3'" [title]="'SCRIPTS.NEEDS_SOURCE' | translate">
+                      {{ 'SIDEBAR.SCRIPTS.SCRIPT_SPAWNS' | translate }}
+                    </a>
+                  }
+                </li>
+              </ul>
+            </div>
+          </li>
+
           <li class="sidebar-dropdown" [class.active]="menuStates['conditions'] === 'down'">
             <a (click)="toggleState('conditions')">
               <i class="fas fa-sort-amount-up"></i>

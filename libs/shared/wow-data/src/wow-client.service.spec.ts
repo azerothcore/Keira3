@@ -203,6 +203,62 @@ describe('WowClientService', () => {
     });
   });
 
+  describe('every boundary and scripted spawn, and the script names', () => {
+    const bytes = (text: string) => Array.from(new TextEncoder().encode(text));
+    const files = {
+      '/ac/src/server/scripts/Northrend/Naxx/instance_naxxramas.cpp': bytes(
+        'BossBoundaryData const b = { { BOSS_A, new ZRangeBoundary(1, 2) } }; RegisterInstanceScript(instance_naxxramas, 533);',
+      ),
+      '/ac/src/server/scripts/Northrend/Naxx/boss_a.cpp': bytes(
+        'void AddSC_a() { RegisterCreatureAI(boss_a); RegisterSpellScript(spell_a); }',
+      ),
+      '/ac/src/server/scripts/World/notes.txt': bytes('RegisterCreatureAI(npc_txt);'),
+      '/ac/src/server/game/Battlegrounds/Zones/BattlegroundWS.cpp': bytes('AddObject(1, 179830, 1.5f, 2.5f, 3.5f);'),
+    };
+
+    it('reads them all from the source folder, the names once', async () => {
+      const { service, settings, native } = setup({ files });
+      expect(await service.getAllBossBoundaries()).toEqual([]);
+      expect(await service.getAllScriptSpawns()).toEqual([]);
+      expect(await service.getScriptNames()).toEqual([]);
+      settings.save({ ...settings.paths(), sourcePath: '/ac' });
+      expect((await service.getAllBossBoundaries()).map((b) => b.boss)).toEqual(['BOSS_A']);
+      expect((await service.getAllScriptSpawns()).map((s) => s.entry)).toEqual([179830]);
+      expect(await service.getScriptNames()).toEqual([
+        { name: 'instance_naxxramas', kind: 'instance', file: 'scripts/Northrend/Naxx/instance_naxxramas.cpp' },
+        { name: 'boss_a', kind: 'creature', file: 'scripts/Northrend/Naxx/boss_a.cpp' },
+        { name: 'spell_a', kind: 'spell', file: 'scripts/Northrend/Naxx/boss_a.cpp' },
+      ]);
+      const reads = vi.spyOn(native, 'readFile');
+      await service.getScriptNames();
+      expect(reads).not.toHaveBeenCalled();
+      settings.save({ ...settings.paths(), sourcePath: '/nowhere' });
+      expect(await service.getScriptNames()).toEqual([]);
+    });
+
+    it('waits a frame now and then while reading many files, and reads again after a failure', async () => {
+      const many = Object.fromEntries(
+        Array.from({ length: 60 }, (_, i) => [`/ac/src/server/scripts/World/npc_${i}.cpp`, bytes(`RegisterCreatureAI(npc_${i});`)]),
+      );
+      const { service, settings, native } = setup({ files: many });
+      settings.save({ ...settings.paths(), sourcePath: '/ac' });
+      const readdir = vi.spyOn(native, 'readdir').mockImplementationOnce(() => {
+        throw new Error('locked');
+      });
+      await expect(service.getScriptNames()).rejects.toThrow('locked');
+      readdir.mockRestore();
+      expect(await service.getScriptNames()).toHaveLength(60);
+    });
+
+    it('has none outside the desktop app', async () => {
+      const { service, settings } = setup({ native: false });
+      settings.save({ ...settings.paths(), sourcePath: '/ac' });
+      expect(await service.getAllBossBoundaries()).toEqual([]);
+      expect(await service.getAllScriptSpawns()).toEqual([]);
+      expect(await service.getScriptNames()).toEqual([]);
+    });
+  });
+
   it('is not supported outside Electron', async () => {
     const { service } = setup({ native: false });
     expect(service.isSupported()).toBe(false);

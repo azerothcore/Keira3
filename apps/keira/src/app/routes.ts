@@ -24,6 +24,14 @@ import {
   PoolTemplateComponent,
   SelectPoolComponent,
 } from '@keira/features/pools';
+import {
+  BossBoundariesComponent,
+  ScriptNamesComponent,
+  ScriptSpawnsComponent,
+  ScriptWaypointComponent,
+  ScriptWaypointHandlerService,
+  SelectScriptWaypointComponent,
+} from '@keira/features/scripts';
 
 import { ConditionsComponent, ConditionsHandlerService, SelectConditionsComponent } from '@keira/features/conditions';
 import {
@@ -521,6 +529,16 @@ export const KEIRA_ROUTES: Routes = [
       { path: 'pool-pool', component: PoolPoolComponent, canActivate: [PoolHandlerService] },
       { path: 'pool-quest', component: PoolQuestComponent, canActivate: [PoolHandlerService] },
       { path: 'game-event-pool', component: GameEventPoolComponent, canActivate: [PoolHandlerService] },
+    ],
+  },
+  {
+    path: 'scripts',
+    children: [
+      { path: 'select-script-waypoint', component: SelectScriptWaypointComponent },
+      { path: 'script-waypoint', component: ScriptWaypointComponent, canActivate: [ScriptWaypointHandlerService] },
+      { path: 'script-names', component: ScriptNamesComponent },
+      { path: 'boss-boundaries', component: BossBoundariesComponent },
+      { path: 'script-spawns', component: ScriptSpawnsComponent },
     ],
   },
   {

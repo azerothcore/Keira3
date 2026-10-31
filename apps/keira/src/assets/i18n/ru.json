@@ -216,6 +216,14 @@
       "POOL_POOL": "Дочерние пулы",
       "POOL_QUEST": "Задания",
       "GAME_EVENT_POOL": "Событие"
+    },
+    "SCRIPTS": {
+      "TITLE": "Скрипты",
+      "SELECT_SCRIPT_WAYPOINT": "Поиск пути сопровождения",
+      "SCRIPT_WAYPOINT": "Точки пути сопровождения",
+      "SCRIPT_NAMES": "Имена скриптов",
+      "BOSS_BOUNDARIES": "Границы боссов",
+      "SCRIPT_SPAWNS": "Спавны скриптов"
     }
   },
   "DASHBOARD": {
@@ -1963,5 +1971,33 @@
     "PROBLEM_QUEST_MIXED": "Нельзя смешивать ежедневные и еженедельные задания в одном пуле.",
     "PROBLEM_ONE_EVENT": "У пула одно событие: сохраняется только одна строка.",
     "PROBLEM_MISSING_EVENT": "Нет игрового события {{ids}}."
+  },
+  "SCRIPTS": {
+    "SELECT_SCRIPT_WAYPOINT": "Выберите существующий путь сопровождения (script_waypoint, по entry существа)",
+    "SHOW_IN_3D": "Показать в редакторе мира",
+    "ESCORT_CREATURE": "Существо, идущее по нему",
+    "NOT_SPAWNED": "Нигде не заспавнено.",
+    "NO_CREATURE": "Нет creature_template с этим entry.",
+    "NEEDS_SOURCE": "Нужна папка исходников AzerothCore: укажите её в",
+    "READING_SOURCE": "Чтение папки исходников...",
+    "FILTER": "Фильтр",
+    "SCRIPT_NAMES": "Имена скриптов",
+    "SCRIPT_NAMES_HELP": "Скрипты, регистрируемые исходниками AzerothCore, и что их использует в базе данных (столбцы ScriptName, spell_script_names, areatrigger_scripts, instance_template).",
+    "ALL_KINDS": "Все типы",
+    "SHOW_ALL": "Все скрипты",
+    "SHOW_UNUSED": "Не используются",
+    "SHOW_MISSING": "Используются, но нет в исходниках",
+    "SHOWING": "Показано {{shown}} из {{total}}",
+    "KIND": "Тип",
+    "FILE": "Файл",
+    "USED_BY": "Используется",
+    "OPEN": "Открыть",
+    "BOSS_BOUNDARIES": "Границы боссов",
+    "BOSS_BOUNDARIES_HELP": "Области, в которых скрипты подземелий удерживают каждого босса (выход из них вызывает сброс), то, что показывает .debug boundary.",
+    "INSTANCE": "Подземелье",
+    "BOSS": "Босс",
+    "SHAPES": "Фигуры",
+    "SCRIPT_SPAWNS": "Спавны скриптов",
+    "SCRIPT_SPAWNS_HELP": "Объекты, которые скрипты ядра создают сами, вне таблицы gameobject: флаги, знамёна и двери полей боя, стены и башни Озера Ледяных Оков, точки захвата PvP."
   }
 }

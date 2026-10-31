@@ -1,5 +1,5 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, computed, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { TitleCasePipe } from '@angular/common';
@@ -10,6 +10,8 @@ import { CreatureHandlerService } from '@keira/features/creature';
 import { GameobjectHandlerService } from '@keira/features/gameobject';
 import { GossipHandlerService } from '@keira/features/gossip';
 import { PoolHandlerService } from '@keira/features/pools';
+import { ScriptWaypointHandlerService } from '@keira/features/scripts';
+import { WowDataSettingsService } from '@keira/shared/wow-data';
 import { SaiWaypointsHandlerService, WaypointHandlerService, WaypointScriptsHandlerService } from '@keira/features/waypoints';
 import { ItemHandlerService } from '@keira/features/item';
 import {
@@ -77,6 +79,7 @@ export class SidebarComponent {
     gossip: 'up',
     waypoints: 'up',
     pools: 'up',
+    scripts: 'up',
     spell: 'up',
     gameTele: 'up',
     trainer: 'up',
@@ -97,6 +100,10 @@ export class SidebarComponent {
   protected readonly waypointScriptsHandlerService = inject(WaypointScriptsHandlerService);
   protected readonly poolHandlerService = inject(PoolHandlerService);
   protected readonly saiWaypointsHandlerService = inject(SaiWaypointsHandlerService);
+  protected readonly scriptWaypointHandlerService = inject(ScriptWaypointHandlerService);
+  private readonly wowDataSettings = inject(WowDataSettingsService);
+  /** Whether the AzerothCore source folder is set: the script pages reading it are greyed out without it. */
+  protected readonly sourceFolderSet = computed(() => !!this.wowDataSettings.paths().sourcePath);
   protected readonly conditionsHandlerService = inject(ConditionsHandlerService);
   protected readonly saiHandlerService = inject(SaiHandlerService);
   protected readonly referenceLootHandlerService = inject(ReferenceLootHandlerService);
@@ -171,6 +178,7 @@ export class SidebarComponent {
     this.menuStates.gossip = 'up';
     this.menuStates.waypoints = 'up';
     this.menuStates.pools = 'up';
+    this.menuStates.scripts = 'up';
     this.menuStates.spell = 'up';
     this.menuStates.gameTele = 'up';
     this.menuStates.trainer = 'up';
