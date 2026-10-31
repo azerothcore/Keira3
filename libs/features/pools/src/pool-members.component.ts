@@ -1,9 +1,9 @@
+import { chanceProblems, PoolProblem } from '@keira/shared/utils';
 import { Directive, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { TableRow } from '@keira/shared/constants';
 import { Subscription } from 'rxjs';
-import { chanceProblems, PoolProblem } from './pool-checks';
 import { openPool } from './pool-links';
 import { PoolHandlerService } from './pool-handler.service';
 import { PoolMembersService } from './pool-members.service';

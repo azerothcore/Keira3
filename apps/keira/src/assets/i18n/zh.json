@@ -1937,7 +1937,8 @@
     "OFFLINE_PLAYERS_HELP": "离线角色停留的位置（灰色）。",
     "PLAYERS_ERROR": "无法读取 {{database}}.characters（设置 > 服务器：检查数据库名称以及该账号是否有读取权限）。",
     "LEGEND_PLAYER": "在线玩家",
-    "LEGEND_OFFLINE_PLAYER": "离线角色"
+    "LEGEND_OFFLINE_PLAYER": "离线角色",
+    "POOL_MOTHER": "所属池"
   },
   "SETTINGS": {
     "TITLE": "设置",

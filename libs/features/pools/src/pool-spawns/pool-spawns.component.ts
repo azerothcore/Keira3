@@ -1,3 +1,4 @@
+import { POOLED_GAMEOBJECT_TYPES, PoolProblem } from '@keira/shared/utils';
 import { ChangeDetectionStrategy, Component, computed, Directive, effect, inject, untracked } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PoolCreature, PoolGameobject } from '@keira/shared/acore-world-model';
@@ -6,7 +7,6 @@ import { TableRow } from '@keira/shared/constants';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { TooltipDirective } from 'ngx-bootstrap/tooltip';
-import { POOLED_GAMEOBJECT_TYPES, PoolProblem } from '../pool-checks';
 import { PoolPlace, showInWorldEditor } from '../pool-links';
 import { Lookup } from '../lookup';
 import { PoolMembersComponent } from '../pool-members.component';

@@ -1937,7 +1937,8 @@
     "OFFLINE_PLAYERS_HELP": "Где остались персонажи не в сети (серые).",
     "PLAYERS_ERROR": "Не удаётся прочитать {{database}}.characters (Настройки > Сервер: имя базы и права пользователя на чтение).",
     "LEGEND_PLAYER": "Игрок в сети",
-    "LEGEND_OFFLINE_PLAYER": "Персонаж не в сети"
+    "LEGEND_OFFLINE_PLAYER": "Персонаж не в сети",
+    "POOL_MOTHER": "В пуле"
   },
   "SETTINGS": {
     "TITLE": "Настройки",

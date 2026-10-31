@@ -60,7 +60,7 @@ export interface SpawnRecord {
 }
 
 /** A spawn of a pool, for listing it and going there. */
-export type PoolSpawn = Pick<SpawnRecord, 'type' | 'guid' | 'entry' | 'name' | 'map' | 'x' | 'y' | 'z'>;
+export type PoolSpawn = Pick<SpawnRecord, 'type' | 'guid' | 'entry' | 'name' | 'map' | 'x' | 'y' | 'z'> & { chance?: number };
 
 /** Gameobject types that have loot in Data1: chests and fishing holes. */
 export const GAMEOBJECT_CHEST = 3;
@@ -376,6 +376,9 @@ export interface PoolMember {
   chance: number;
   maxLimit: number;
   description: string;
+  /** The pool this pool is in (`pool_pool`), and its chance there; null when in none. */
+  mother: number | null;
+  motherChance: number;
 }
 
 /** A graveyard (`game_graveyard`). */

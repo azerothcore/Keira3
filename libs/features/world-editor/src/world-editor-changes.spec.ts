@@ -82,7 +82,16 @@ describe('WorldEditorChanges', () => {
   });
 
   describe('pools', () => {
-    const stored = { type: 'creature' as const, guid: 1, pool: 5, chance: 0, maxLimit: 1, description: 'Old' };
+    const stored = {
+      type: 'creature' as const,
+      guid: 1,
+      pool: 5,
+      chance: 0,
+      maxLimit: 1,
+      description: 'Old',
+      mother: null,
+      motherChance: 0,
+    };
 
     it('makes pools and puts spawns in them or takes them out', () => {
       const changes = new WorldEditorChanges();
@@ -110,10 +119,19 @@ describe('WorldEditorChanges', () => {
       // the pools as they will be
       expect(changes.applyToPools([stored, { ...stored, guid: 4 }])).toEqual([
         { ...stored, guid: 4 },
-        { type: 'creature', guid: 2, pool: 90, chance: 25.5, maxLimit: 1, description: "Kobold's camp" },
-        { type: 'gameobject', guid: 3, pool: 5, chance: 0, maxLimit: 1, description: 'Old' },
+        { type: 'creature', guid: 2, pool: 90, chance: 25.5, maxLimit: 1, description: "Kobold's camp", mother: null, motherChance: 0 },
+        { type: 'gameobject', guid: 3, pool: 5, chance: 0, maxLimit: 1, description: 'Old', mother: null, motherChance: 0 },
       ]);
-      expect(changes.applyToPools([])[1]).toEqual({ type: 'gameobject', guid: 3, pool: 5, chance: 0, maxLimit: 0, description: '' });
+      expect(changes.applyToPools([])[1]).toEqual({
+        type: 'gameobject',
+        guid: 3,
+        pool: 5,
+        chance: 0,
+        maxLimit: 0,
+        description: '',
+        mother: null,
+        motherChance: 0,
+      });
       const snapshot = changes.snapshot();
       changes.clear();
       changes.restore(snapshot);
@@ -141,6 +159,43 @@ describe('WorldEditorChanges', () => {
       expect(changes.toSql()).toContain("VALUES (91, 1, 'C:\\\\camp')");
       changes.deleteSpawn(creature(2));
       expect(changes.newPools()).toEqual([]);
+    });
+
+    it("changes a pool's max_limit, description and mother pool", () => {
+      const changes = new WorldEditorChanges();
+      const template = { maxLimit: 1, description: 'Old' };
+      changes.editPool(5, { maxLimit: 2, description: 'C:\\new' }, template);
+      changes.setPoolMother(5, { mother: 17, chance: 12.5 }, { mother: null, chance: 0 });
+      changes.setPoolMother(6, { mother: null, chance: 0 }, { mother: 17, chance: 50 });
+      expect(changes.count).toBe(3);
+      expect(changes.describe()).toEqual(['Edit pool 5', 'Put pool 5 in pool 17', 'Take pool 6 out of its mother pool']);
+      expect(changes.toSql().split('\n')).toEqual([
+        "UPDATE `pool_template` SET `max_limit` = 2, `description` = 'C:\\\\new' WHERE (`entry` = 5);",
+        'DELETE FROM `pool_pool` WHERE (`pool_id` = 5);',
+        'INSERT INTO `pool_pool` (`pool_id`, `mother_pool`, `chance`) VALUES (5, 17, 12.5);',
+        'DELETE FROM `pool_pool` WHERE (`pool_id` = 6);',
+      ]);
+      // the pool as it will be
+      expect(changes.applyToPools([stored, { ...stored, guid: 2, pool: 6 }])).toEqual([
+        { ...stored, maxLimit: 2, description: 'C:\\new', mother: 17, motherChance: 12.5 },
+        { ...stored, guid: 2, pool: 6, mother: null, motherChance: 0 },
+      ]);
+      // kept in snapshots (old ones had none)
+      const snapshot = changes.snapshot();
+      changes.restore({ ...snapshot, editedPools: undefined, poolMothers: undefined });
+      expect(changes.count).toBe(0);
+      changes.restore(snapshot);
+      expect(changes.count).toBe(3);
+      // back as stored: no change
+      changes.editPool(5, template, template);
+      changes.setPoolMother(5, { mother: null, chance: 5 }, { mother: null, chance: 0 });
+      changes.setPoolMother(6, { mother: 17, chance: 50 }, { mother: 17, chance: 50 });
+      expect(changes.count).toBe(0);
+      changes.clear();
+      // a pool made in this session is made so
+      changes.createPool({ entry: 90, maxLimit: 1, description: '' });
+      changes.editPool(90, { maxLimit: 3, description: 'Camp' }, { maxLimit: 0, description: '' });
+      expect(changes.newPools()).toEqual([{ entry: 90, maxLimit: 3, description: 'Camp' }]);
     });
   });
 

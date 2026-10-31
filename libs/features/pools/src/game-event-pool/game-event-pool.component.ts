@@ -1,3 +1,4 @@
+import { PoolProblem } from '@keira/shared/utils';
 import { ChangeDetectionStrategy, Component, computed, effect, inject, untracked } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GameEventPool } from '@keira/shared/acore-world-model';
@@ -7,7 +8,6 @@ import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { Lookup } from '../lookup';
-import { PoolProblem } from '../pool-checks';
 import { PoolMembersComponent } from '../pool-members.component';
 import { GameEventPoolService } from './game-event-pool.service';
 

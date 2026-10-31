@@ -168,6 +168,20 @@ export interface ChangesSnapshot {
   editedSpawns?: [string, { spawn: SpawnRecord; fields: Record<string, number> }][];
   createdPools?: [number, NewPool][];
   poolMembers?: [string, PoolMembership][];
+  editedPools?: [number, PoolTemplateEdit][];
+  poolMothers?: [number, PoolMother][];
+}
+
+/** A pool's `max_limit` and description changed in this session. */
+export interface PoolTemplateEdit {
+  maxLimit: number;
+  description: string;
+}
+
+/** A pool put in a mother pool (`pool_pool`) with a chance, or taken out of it (`mother` null). */
+export interface PoolMother {
+  mother: number | null;
+  chance: number;
 }
 
 /** A pool made in this session (`pool_template`). */
@@ -198,6 +212,10 @@ export class WorldEditorChanges {
   private readonly createdPools = new Map<number, NewPool>();
   /** Spawns put in (or taken out of) a pool, by spawn. */
   private readonly poolMembers = new Map<string, PoolMembership>();
+  /** Pools of the database whose max_limit or description changed, by pool. */
+  private readonly editedPools = new Map<number, PoolTemplateEdit>();
+  /** Pools put in (or taken out of) a mother pool, by pool. */
+  private readonly poolMothers = new Map<number, PoolMother>();
 
   get count(): number {
     return (
@@ -210,7 +228,9 @@ export class WorldEditorChanges {
       this.createdPaths.size +
       this.editedSpawns.size +
       this.createdPools.size +
-      this.poolMembers.size
+      this.poolMembers.size +
+      this.editedPools.size +
+      this.poolMothers.size
     );
   }
 
@@ -227,6 +247,8 @@ export class WorldEditorChanges {
       editedSpawns: [...this.editedSpawns],
       createdPools: [...this.createdPools],
       poolMembers: [...this.poolMembers],
+      editedPools: [...this.editedPools],
+      poolMothers: [...this.poolMothers],
     });
   }
 
@@ -243,6 +265,8 @@ export class WorldEditorChanges {
     (copy.editedSpawns ?? []).forEach(([key, value]) => this.editedSpawns.set(key, value));
     (copy.createdPools ?? []).forEach(([key, value]) => this.createdPools.set(key, value));
     (copy.poolMembers ?? []).forEach(([key, value]) => this.poolMembers.set(key, value));
+    (copy.editedPools ?? []).forEach(([key, value]) => this.editedPools.set(key, value));
+    (copy.poolMothers ?? []).forEach(([key, value]) => this.poolMothers.set(key, value));
   }
 
   clear(): void {
@@ -256,6 +280,8 @@ export class WorldEditorChanges {
     this.editedSpawns.clear();
     this.createdPools.clear();
     this.poolMembers.clear();
+    this.editedPools.clear();
+    this.poolMothers.clear();
   }
 
   /**
@@ -326,6 +352,30 @@ export class WorldEditorChanges {
     }
   }
 
+  /**
+   * Changes a pool's max_limit and description: a pool made in this session is made so, one of the database is updated
+   * (`stored`: as it is there).
+   */
+  editPool(entry: number, edit: PoolTemplateEdit, stored: PoolTemplateEdit): void {
+    const created = this.createdPools.get(entry);
+    if (created) {
+      this.createdPools.set(entry, { ...created, ...edit });
+    } else if (edit.maxLimit === stored.maxLimit && edit.description === stored.description) {
+      this.editedPools.delete(entry);
+    } else {
+      this.editedPools.set(entry, { ...edit });
+    }
+  }
+
+  /** Puts a pool in a mother pool with a chance, or takes it out (`mother` null); `stored`: as it is in the database. */
+  setPoolMother(pool: number, mother: PoolMother, stored: PoolMother): void {
+    if (mother.mother === stored.mother && (mother.mother === null || round(mother.chance) === round(stored.chance))) {
+      this.poolMothers.delete(pool);
+    } else {
+      this.poolMothers.set(pool, { ...mother });
+    }
+  }
+
   /** The pools of the spawns as stored (`loaded`), with the pending changes. */
   applyToPools(loaded: PoolMember[]): PoolMember[] {
     const result = loaded.filter((member) => !this.poolMembers.has(spawnKey(member.type, member.guid)));
@@ -342,9 +392,19 @@ export class WorldEditorChanges {
         chance,
         maxLimit: created?.maxLimit ?? known?.maxLimit ?? 0,
         description: created?.description ?? known?.description ?? '',
+        mother: known?.mother ?? null,
+        motherChance: known?.motherChance ?? 0,
       });
     }
-    return result;
+    return result.map((member) => {
+      const edit = this.editedPools.get(member.pool);
+      const mother = this.poolMothers.get(member.pool);
+      return {
+        ...member,
+        ...(edit ?? {}),
+        ...(mother ? { mother: mother.mother, motherChance: mother.chance } : {}),
+      };
+    });
   }
 
   // ---------------------------------------------------------------- spawns
@@ -544,6 +604,10 @@ export class WorldEditorChanges {
       ...[...this.poolMembers.values()].map(({ type, guid, pool }) =>
         pool === null ? `Take ${type} ${guid} out of its pool` : `Put ${type} ${guid} in pool ${pool}`,
       ),
+      ...[...this.editedPools.keys()].map((pool) => `Edit pool ${pool}`),
+      ...[...this.poolMothers].map(([pool, { mother }]) =>
+        mother === null ? `Take pool ${pool} out of its mother pool` : `Put pool ${pool} in pool ${mother}`,
+      ),
       ...[...this.deletedWaypoints.values()].map((w) => `Delete waypoint ${point(w)}`),
       ...[...this.insertedWaypoints.values()].map((w) => `Add waypoint ${point(w)}`),
       ...[...this.movedWaypoints.values()].map(
@@ -598,6 +662,29 @@ export class WorldEditorChanges {
             .insert(squelConfig)
             .into(`pool_${type}`)
             .setFields({ guid, pool_entry: pool, chance: round(chance) })
+            .toString()};`,
+        );
+      }
+    }
+    for (const [entry, { maxLimit, description }] of this.editedPools) {
+      statements.push(
+        `${squel
+          .update(squelConfig)
+          .table('pool_template')
+          .set('max_limit', maxLimit)
+          .set('description', description.replace(/\\/g, '\\\\'))
+          .where(`\`entry\` = ${entry}`)
+          .toString()};`,
+      );
+    }
+    for (const [pool, { mother, chance }] of this.poolMothers) {
+      statements.push(this.deleteQuery('pool_pool', { pool_id: pool }));
+      if (mother !== null) {
+        statements.push(
+          `${squel
+            .insert(squelConfig)
+            .into('pool_pool')
+            .setFields({ pool_id: pool, mother_pool: mother, chance: round(chance) })
             .toString()};`,
         );
       }

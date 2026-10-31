@@ -1,3 +1,4 @@
+import { PoolProblem } from '@keira/shared/utils';
 import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -8,7 +9,6 @@ import { TableRow } from '@keira/shared/constants';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { openPool, PoolPlace, showInWorldEditor } from '../pool-links';
-import { PoolProblem } from '../pool-checks';
 import { PoolHandlerService } from '../pool-handler.service';
 import { PoolTemplateService } from './pool-template.service';
 

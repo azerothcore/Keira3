@@ -1,3 +1,4 @@
+import { chanceProblems, PoolProblem } from '@keira/shared/utils';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { rollWeather, Season, seasonOf } from './weather';
 import { debounceTime, skip } from 'rxjs';
@@ -2929,6 +2930,7 @@ export class WorldEditorComponent implements OnInit {
         this.pathStarts.set(starts);
         this.formations.set(formations);
         this.pools.set(pools);
+        this.poolMembersRead.clear();
         this.eventNames.set(eventNames);
         const byEntry = new Map<string, SpawnQuest[]>();
         for (const quest of quests) {
@@ -3442,6 +3444,70 @@ export class WorldEditorComponent implements OnInit {
   }
   /** A pool being made (its free entry being read): not twice at once. */
   private creatingPool = false;
+
+  /** The selected pool as the database has it (max_limit, description, mother pool). */
+  private storedPoolTemplate(pool: number): PoolMember | undefined {
+    return this.pools().find((member) => member.pool === pool);
+  }
+
+  /** Changes the selected spawn's pool: its max_limit and description. */
+  protected editPool(edit: { maxLimit: number; description: string }): void {
+    const pool = (this.selectedPool() as PoolMember).pool;
+    const stored = this.storedPoolTemplate(pool);
+    this.changes.editPool(pool, edit, { maxLimit: stored?.maxLimit ?? 0, description: stored?.description ?? '' });
+    this.bump();
+  }
+
+  /** Puts the selected spawn's pool in a mother pool, or takes it out of it (null). */
+  protected setPoolMother(mother: { mother: number | null; chance: number }): void {
+    const pool = (this.selectedPool() as PoolMember).pool;
+    const stored = this.storedPoolTemplate(pool);
+    this.changes.setPoolMother(pool, mother, { mother: stored?.mother ?? null, chance: stored?.motherChance ?? 0 });
+    this.bump();
+  }
+
+  /** The members of each pool read (once per load of the spawns: the panel and the context menu share them). */
+  private readonly poolMembersRead = new Map<number, Promise<PoolSpawn[]>>();
+  private readPoolMembers(pool: number): Promise<PoolSpawn[]> {
+    let read = this.poolMembersRead.get(pool);
+    if (!read) {
+      read = this.service.loadPoolMembers(pool);
+      // (a failed read is tried again next time)
+      read.catch(() => this.poolMembersRead.delete(pool));
+      this.poolMembersRead.set(pool, read);
+    }
+    return read;
+  }
+
+  /** Every member of the selected spawn's pool, wherever it is (for its chance checks). */
+  private readonly selectedPoolMembers = signal<{ pool: number; members: PoolSpawn[] } | undefined>(undefined);
+  private readonly loadSelectedPoolMembers = effect(() => {
+    const pool = this.selectedPool()?.pool;
+    if (pool === undefined || untracked(() => this.selectedPoolMembers()?.pool) === pool) {
+      return;
+    }
+    untracked(() => this.selectedPoolMembers.set(undefined));
+    void this.readPoolMembers(pool).then(
+      (members) => this.selectedPool()?.pool === pool && this.selectedPoolMembers.set({ pool, members }),
+      this.quietly<void>('read the members of the pool', undefined),
+    );
+  });
+
+  /** What the world server will say about the selected pool's chances (with the pending changes). */
+  protected readonly selectedPoolProblems = computed<PoolProblem[]>(() => {
+    const member = this.selectedPool();
+    const loaded = this.selectedPoolMembers();
+    if (!member || loaded?.pool !== member.pool) {
+      return [];
+    }
+    this.revision();
+    const stored = loaded.members.map((spawn) => ({ ...member, type: spawn.type, guid: spawn.guid, chance: spawn.chance as number }));
+    const chances = this.changes
+      .applyToPools(stored)
+      .filter((row) => row.pool === member.pool)
+      .map((row) => row.chance);
+    return chanceProblems(chances, member.maxLimit);
+  });
 
   protected openPool(id: number): void {
     (this.links as NonNullable<typeof this.links>).openPool(id);

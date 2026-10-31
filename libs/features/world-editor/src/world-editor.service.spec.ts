@@ -284,13 +284,13 @@ describe('WorldEditorService', () => {
     const { service, queryService } = setup();
     queryService.query.mockReturnValueOnce(
       of([
-        { type: 'creature', guid: '1', entry: '197', name: 'Marshal', map: '0', x: '1', y: '2', z: '3' },
+        { type: 'creature', guid: '1', entry: '197', name: 'Marshal', map: '0', x: '1', y: '2', z: '3', chance: '25' },
         { type: 'gameobject', guid: '2', entry: '3', name: null, map: '0', x: '4', y: '5', z: '6' },
       ]),
     );
     expect(await service.loadPoolMembers(7.9)).toEqual([
-      { type: 'creature', guid: 1, entry: 197, name: 'Marshal', map: 0, x: 1, y: 2, z: 3 },
-      { type: 'gameobject', guid: 2, entry: 3, name: '', map: 0, x: 4, y: 5, z: 6 },
+      { type: 'creature', guid: 1, entry: 197, name: 'Marshal', map: 0, x: 1, y: 2, z: 3, chance: 25 },
+      { type: 'gameobject', guid: 2, entry: 3, name: '', map: 0, x: 4, y: 5, z: 6, chance: 0 },
     ]);
     const sql = queryService.query.mock.calls[0][0] as string;
     expect(sql).toContain('FROM pool_creature p JOIN creature s ON s.guid = p.guid');
@@ -534,16 +534,26 @@ describe('WorldEditorService', () => {
     expect(await service.loadFormations([3])).toEqual([]);
 
     queryService.query
-      .mockReturnValueOnce(of([{ type: 'gameobject', guid: '4', pool: '7', chance: '0', maxLimit: '1', description: null }]))
+      .mockReturnValueOnce(
+        of([
+          { type: 'gameobject', guid: '4', pool: '7', chance: '0', maxLimit: '1', description: null, mother: null },
+          { type: 'creature', guid: '1', pool: '8', chance: '0', maxLimit: '1', description: 'x', mother: '17', motherChance: '50' },
+        ]),
+      )
       .mockReturnValueOnce(of(undefined));
     expect(
       await service.loadPools([
         { type: 'creature', guid: 1 },
         { type: 'gameobject', guid: 4 },
       ]),
-    ).toEqual([{ type: 'gameobject', guid: 4, pool: 7, chance: 0, maxLimit: 1, description: '' }]);
+    ).toEqual([
+      { type: 'gameobject', guid: 4, pool: 7, chance: 0, maxLimit: 1, description: '', mother: null, motherChance: 0 },
+      { type: 'creature', guid: 1, pool: 8, chance: 0, maxLimit: 1, description: 'x', mother: 17, motherChance: 50 },
+    ]);
     const sql = queryService.query.mock.calls[2][0] as string;
-    expect(sql).toContain('FROM pool_creature p LEFT JOIN pool_template t ON t.entry = p.pool_entry WHERE p.guid IN (1)');
+    expect(sql).toContain(
+      'FROM pool_creature p LEFT JOIN pool_pool m ON m.pool_id = p.pool_entry LEFT JOIN pool_template t ON t.entry = p.pool_entry WHERE p.guid IN (1)',
+    );
     expect(sql).toContain('UNION ALL');
     expect(sql).toContain('FROM pool_gameobject p');
     expect(await service.loadPools([{ type: 'creature', guid: 1 }])).toEqual([]);

@@ -1,3 +1,4 @@
+import { PoolProblem } from '@keira/shared/utils';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { PoolMember } from './world-editor.model';
@@ -35,6 +36,56 @@ import { PoolMember } from './world-editor.model';
           />
           <span class="input-group-text">%</span>
         </div>
+        <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text">max_limit</span>
+          <input
+            #maxLimit
+            type="number"
+            min="0"
+            class="form-control"
+            data-testid="pool-max-limit"
+            [value]="member.maxLimit"
+            (change)="editPool(maxLimit.value, description.value, member)"
+          />
+          <input
+            #description
+            class="form-control w-50"
+            data-testid="pool-description"
+            placeholder="description"
+            [value]="member.description"
+            (change)="editPool(maxLimit.value, description.value, member)"
+          />
+        </div>
+        <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text">{{ 'WORLD_EDITOR.POOL_MOTHER' | translate }}</span>
+          <input
+            #mother
+            type="number"
+            min="1"
+            class="form-control"
+            data-testid="pool-mother"
+            placeholder="pool_pool"
+            [value]="member.mother ?? ''"
+            (change)="setMother(mother.value, motherChance.value)"
+          />
+          <input
+            #motherChance
+            type="number"
+            min="0"
+            max="100"
+            step="any"
+            class="form-control"
+            data-testid="pool-mother-chance"
+            placeholder="%"
+            [value]="member.mother === null ? '' : member.motherChance"
+            (change)="setMother(mother.value, motherChance.value)"
+          />
+        </div>
+        @for (problem of problems(); track problem.key) {
+          <div class="text-warning mb-1" [attr.data-testid]="'pool-problem-' + problem.key">
+            <i class="fa fa-exclamation-triangle me-1"></i>{{ 'POOLS.PROBLEM_' + problem.key | translate: problem.params }}
+          </div>
+        }
         <div class="d-flex gap-1">
           <button type="button" class="btn btn-sm btn-outline-danger" data-testid="pool-leave" (click)="leave.emit()">
             {{ (count() > 1 ? 'WORLD_EDITOR.POOL_LEAVE_ALL' : 'WORLD_EDITOR.POOL_LEAVE') | translate: { count: count() } }}
@@ -78,6 +129,10 @@ export class PoolPanelComponent {
   readonly count = input(1);
   /** Whether the Pool Editor can be opened from here. */
   readonly canOpen = input(false);
+  /** What the world server will say about the pool's chances. */
+  readonly problems = input<PoolProblem[]>([]);
+  readonly template = output<{ maxLimit: number; description: string }>();
+  readonly mother = output<{ mother: number | null; chance: number }>();
   readonly chance = output<number>();
   readonly leave = output<void>();
   readonly join = output<{ pool: number; chance: number }>();
@@ -92,6 +147,26 @@ export class PoolPanelComponent {
       return;
     }
     this.chance.emit(value);
+  }
+
+  protected editPool(max: string, description: string, member: PoolMember): void {
+    const maxLimit = Math.trunc(Number(max));
+    if (max.trim() !== '' && maxLimit >= 0) {
+      this.template.emit({ maxLimit, description: description.trim() });
+    } else {
+      this.template.emit({ maxLimit: member.maxLimit, description: description.trim() });
+    }
+  }
+
+  /** Puts the pool in a mother pool (an empty one: in none). */
+  protected setMother(mother: string, chance: string): void {
+    const id = Math.trunc(Number(mother));
+    const value = Number(chance || 0);
+    if (mother.trim() === '') {
+      this.mother.emit({ mother: null, chance: 0 });
+    } else if (id > 0 && value >= 0 && value <= 100) {
+      this.mother.emit({ mother: id, chance: value });
+    }
   }
 
   protected joinPool(pool: string, chance: string): void {
