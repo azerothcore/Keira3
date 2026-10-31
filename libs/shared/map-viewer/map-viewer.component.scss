@@ -100,12 +100,13 @@
   padding: 2px 10px;
   font-size: 13px;
   cursor: pointer;
-  border: 1px solid #ccc;
+  border: 1px solid var(--bs-border-color);
   border-radius: 4px;
-  background-color: #f5f5f5;
+  color: var(--bs-body-color);
+  background-color: var(--bs-secondary-bg);
 
   &:hover {
-    background-color: #e8e8e8;
+    background-color: var(--bs-tertiary-bg);
   }
 }
 

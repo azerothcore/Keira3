@@ -7,6 +7,7 @@ import { Class, StringKeys, TableRow } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { ModelForm, SubscriptionHandler } from '@keira/shared/utils';
 import { HandlerService } from '../handlers/handler.service';
+import { registerTabState } from '../tab-state';
 import { ChangeDetectorRef, inject, signal } from '@angular/core';
 
 export abstract class EditorService<T extends TableRow> extends SubscriptionHandler {
@@ -21,6 +22,12 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
   protected _isNew = false;
   protected _form!: FormGroup<ModelForm<T>>;
   protected _error: QueryError | undefined;
+
+  constructor() {
+    super();
+    // (each tab of this part of Keira keeps its own rows and changes)
+    registerTabState(this);
+  }
 
   /* istanbul ignore next */ // TODO: fix coverage
   get loadedEntityId(): string {

@@ -12,6 +12,13 @@ const keptPath = (route: ActivatedRouteSnapshot): string | undefined =>
 @Injectable({ providedIn: 'root' })
 export class KeepAliveRouteStrategy extends BaseRouteReuseStrategy {
   private readonly kept = new Map<string, DetachedRouteHandle>();
+  /** Set while switching between two tabs of the same part: the page is made again (with the other tab's state). */
+  renew = false;
+
+  override shouldReuseRoute(future: ActivatedRouteSnapshot, current: ActivatedRouteSnapshot): boolean {
+    const page = !future.firstChild && !!future.routeConfig?.component;
+    return super.shouldReuseRoute(future, current) && !(this.renew && page);
+  }
 
   override shouldDetach(route: ActivatedRouteSnapshot): boolean {
     return keptPath(route) !== undefined;

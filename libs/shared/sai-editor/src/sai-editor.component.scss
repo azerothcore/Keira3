@@ -1,5 +1,5 @@
 .sai-category {
-  border: 1px solid #e7e7e7;
+  border: 1px solid var(--keira-border);
   border-left: none;
 
   .sai-category-title {
@@ -52,16 +52,16 @@
 .sai-cond-badge {
   display: inline-block;
   padding: 1px 6px;
-  border: 1px solid #b7950b;
+  border: 1px solid var(--keira-badge-border);
   border-radius: 9px;
-  background-color: #f3e5a9;
-  color: #7d6608;
+  background-color: var(--keira-badge-bg);
+  color: var(--keira-badge-color);
   font-size: 11px;
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
 
   &:hover {
-    background-color: #e8d47a;
+    background-color: var(--keira-badge-hover);
   }
 }

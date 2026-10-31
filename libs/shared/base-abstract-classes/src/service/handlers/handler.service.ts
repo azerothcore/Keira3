@@ -2,6 +2,7 @@ import { inject, WritableSignal } from '@angular/core';
 import { Router } from '@angular/router';
 import { TableRow } from '@keira/shared/constants';
 import { SubscriptionHandler } from '@keira/shared/utils';
+import { registerTabState } from '../tab-state';
 
 export abstract class HandlerService<T extends TableRow> extends SubscriptionHandler {
   protected readonly router = inject(Router);
@@ -12,6 +13,12 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
   selectedName!: string;
   isNew = false;
   forceReload = false;
+
+  constructor() {
+    super();
+    // (each tab of this part of Keira keeps its own selection)
+    registerTabState(this);
+  }
 
   protected abstract _statusMap: { [key: string]: WritableSignal<boolean> };
   protected abstract readonly mainEditorRoutePath: string;

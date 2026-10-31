@@ -4,13 +4,15 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
 import { LanguageDescription } from '@codemirror/language';
 import { MySQL, sql } from '@codemirror/lang-sql';
 import { finalize, forkJoin, map, of, switchMap } from 'rxjs';
-import { githubLight } from '@uiw/codemirror-theme-github';
+import { githubDark, githubLight } from '@uiw/codemirror-theme-github';
+import { ThemeService } from '@keira/shared/common-services';
 
 export type SqlSchema = Record<string, string[]>;
 
 @Service()
 export class SqlEditorService {
   private readonly mysqlQueryService = inject(MysqlQueryService);
+  private readonly theme = inject(ThemeService);
 
   code =
     'SELECT `entry`, `name`, `subname`, `minlevel`, `maxlevel`, `AIName`, `ScriptName` \n' +
@@ -35,7 +37,7 @@ export class SqlEditorService {
   ]);
 
   readonly extensions = computed(() => [
-    githubLight,
+    this.theme.dark() ? githubDark : githubLight,
     sql({
       dialect: MySQL,
       upperCaseKeywords: true,
