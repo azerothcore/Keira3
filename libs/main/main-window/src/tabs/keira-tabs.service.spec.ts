@@ -43,7 +43,7 @@ describe('KeiraTabsService', () => {
     const [editor, creature, custom] = tabs.tabs();
     expect([tabs.titleKey(editor), tabs.titleKey(creature), tabs.titleKey(custom)]).toEqual([
       'SIDEBAR.WORLD_EDITOR',
-      'SIDEBAR.CREATURE',
+      'SIDEBAR.CREATURE.TITLE',
       'Custom Thing',
     ]);
     expect([tabs.pageName(editor), tabs.pageName(creature)]).toEqual(['', 'Creature Template']);

@@ -196,7 +196,14 @@
     },
     "UNUSED_GUID_SEARCH": "GUIDs sin Usar",
     "WORLD_EDITOR": "Editor de Mundo 3D",
-    "SETTINGS": "Ajustes"
+    "SETTINGS": "Ajustes",
+    "WAYPOINTS": {
+      "TITLE": "Puntos de ruta",
+      "SELECT_PATH": "Buscar ruta",
+      "WAYPOINT_DATA": "Puntos de la ruta",
+      "SELECT_SCRIPT": "Buscar script de punto",
+      "WAYPOINT_SCRIPTS": "Script de punto"
+    }
   },
   "DASHBOARD": {
     "WELCOME": "Bienvenido a Keira3",
@@ -1317,7 +1324,7 @@
     "OPEN_SAI": "Abrir SAI",
     "OPEN_GAMEOBJECT": "Abrir gameobject",
     "COPY_GUID": "Copiar GUID",
-    "OPEN_WAYPOINTS": "Abrir editor de waypoints (aún no implementado)",
+    "OPEN_WAYPOINTS": "Abrir en el Editor de puntos de ruta",
     "FILTERS": "Filtros",
     "FILTER_SEARCH": "Nombre, entry o GUID",
     "SHOW_TRIGGERS": "Mostrar triggers y ayudantes DND",
@@ -1861,12 +1868,27 @@
     "GAME_MAP_BACK_TO": "Volver a:",
     "GAME_MAP_ZOOM_RESET": "Mapa completo",
     "GAME_MAP_TIP": "Consejo: clic derecho (o Alt + clic) copia un comando .go",
-    "MODIFY": "Modificar"
+    "MODIFY": "Modificar",
+    "OPEN_WAYPOINT_SCRIPT": "Abrir el script del punto"
   },
   "SETTINGS": {
     "TITLE": "Ajustes",
     "GAME_DATA": "Datos del juego",
     "GAME_DATA_HELP": "Las carpetas de las que el Editor del Mundo lee el juego (el cliente de WoW y, opcionalmente, los datos del servidor y el código de AzerothCore), y dónde guarda lo procesado. Se guardan en este equipo.",
     "SAVED": "Ajustes guardados"
+  },
+  "WAYPOINTS": {
+    "SELECT_PATH": "Selecciona una ruta existente",
+    "SELECT_SCRIPT": "Selecciona un script de punto existente",
+    "DELAY_TOOLTIP": "Cuánto espera la criatura en el punto (milisegundos)",
+    "ACTION_TOOLTIP": "El script que se ejecuta en el punto (waypoint_scripts.id; 0: ninguno)",
+    "EDIT_ACTION": "Editar",
+    "SHOW_IN_3D": "Ver en el Editor del Mundo",
+    "WALKERS": "Criaturas que recorren esta ruta",
+    "NO_WALKERS": "Ninguna criatura usa esta ruta (path_id de creature_addon / creature_template_addon).",
+    "SCRIPT_DELAY_TOOLTIP": "Cuándo se ejecuta el paso tras llegar al punto (segundos)",
+    "USED_AT": "Puntos que ejecutan este script",
+    "NOT_USED": "Ningún punto ejecuta este script (waypoint_data.action).",
+    "PATH_POINT": "Ruta {{id}}, punto {{point}}"
   }
 }

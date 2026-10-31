@@ -672,6 +672,47 @@
             </div>
           </li>
 
+          <li class="sidebar-dropdown" [class.active]="menuStates['waypoints'] === 'down'">
+            <a id="waypoints-toggle" (click)="toggleState('waypoints')">
+              <i class="fa fa-route"></i>
+              <span [translate]="'SIDEBAR.WAYPOINTS.TITLE'"></span>
+            </a>
+            <div class="sidebar-submenu" [@slide]="menuStates['waypoints']">
+              <ul>
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'waypoints/select'">
+                    {{ 'SIDEBAR.WAYPOINTS.SELECT_PATH' | translate }}
+                  </a>
+                </li>
+                @if (waypointHandlerService.selected) {
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'waypoints/waypoint-data'">
+                      {{ 'SIDEBAR.WAYPOINTS.WAYPOINT_DATA' | translate }}
+                      @if (waypointHandlerService.isWaypointDataTableUnsaved()) {
+                        <keira-unsaved-icon />
+                      }
+                    </a>
+                  </li>
+                }
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'waypoints/select-scripts'">
+                    {{ 'SIDEBAR.WAYPOINTS.SELECT_SCRIPT' | translate }}
+                  </a>
+                </li>
+                @if (waypointScriptsHandlerService.selected) {
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'waypoints/waypoint-scripts'">
+                      {{ 'SIDEBAR.WAYPOINTS.WAYPOINT_SCRIPTS' | translate }}
+                      @if (waypointScriptsHandlerService.isWaypointScriptsTableUnsaved()) {
+                        <keira-unsaved-icon />
+                      }
+                    </a>
+                  </li>
+                }
+              </ul>
+            </div>
+          </li>
+
           <li class="sidebar-dropdown" [class.active]="menuStates['conditions'] === 'down'">
             <a (click)="toggleState('conditions')">
               <i class="fas fa-sort-amount-up"></i>

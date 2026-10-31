@@ -196,7 +196,14 @@
     },
     "UNUSED_GUID_SEARCH": "Неиспользуемые GUID",
     "WORLD_EDITOR": "3D-редактор мира",
-    "SETTINGS": "Настройки"
+    "SETTINGS": "Настройки",
+    "WAYPOINTS": {
+      "TITLE": "Маршруты",
+      "SELECT_PATH": "Найти маршрут",
+      "WAYPOINT_DATA": "Точки маршрута",
+      "SELECT_SCRIPT": "Найти скрипт точки",
+      "WAYPOINT_SCRIPTS": "Скрипт точки"
+    }
   },
   "DASHBOARD": {
     "WELCOME": "Добро пожаловать в Keira3",
@@ -1317,7 +1324,7 @@
     "OPEN_SAI": "Открыть SAI",
     "OPEN_GAMEOBJECT": "Открыть объект",
     "COPY_GUID": "Копировать GUID",
-    "OPEN_WAYPOINTS": "Открыть редактор точек (ещё не реализовано)",
+    "OPEN_WAYPOINTS": "Открыть в редакторе маршрутов",
     "FILTERS": "Фильтры",
     "FILTER_SEARCH": "Имя, entry или GUID",
     "SHOW_TRIGGERS": "Показывать триггеры и DND-помощники",
@@ -1861,12 +1868,27 @@
     "GAME_MAP_BACK_TO": "Назад к:",
     "GAME_MAP_ZOOM_RESET": "Вся карта",
     "GAME_MAP_TIP": "Совет: правый клик (или Alt + клик) копирует команду .go",
-    "MODIFY": "Изменить"
+    "MODIFY": "Изменить",
+    "OPEN_WAYPOINT_SCRIPT": "Открыть скрипт точки"
   },
   "SETTINGS": {
     "TITLE": "Настройки",
     "GAME_DATA": "Игровые данные",
     "GAME_DATA_HELP": "Папки, из которых Редактор мира читает игру (клиент WoW и, по желанию, данные сервера и исходники AzerothCore), и где он хранит обработанное. Хранятся на этом компьютере.",
     "SAVED": "Настройки сохранены"
+  },
+  "WAYPOINTS": {
+    "SELECT_PATH": "Выберите существующий маршрут",
+    "SELECT_SCRIPT": "Выберите существующий скрипт точки",
+    "DELAY_TOOLTIP": "Сколько существо ждёт в точке (миллисекунды)",
+    "ACTION_TOOLTIP": "Скрипт, выполняемый в точке (waypoint_scripts.id; 0: нет)",
+    "EDIT_ACTION": "Изменить",
+    "SHOW_IN_3D": "Показать в Редакторе мира",
+    "WALKERS": "Существа на этом маршруте",
+    "NO_WALKERS": "Ни одно существо не использует этот маршрут (path_id в creature_addon / creature_template_addon).",
+    "SCRIPT_DELAY_TOOLTIP": "Когда шаг выполняется после прибытия в точку (секунды)",
+    "USED_AT": "Точки, выполняющие этот скрипт",
+    "NOT_USED": "Ни одна точка не выполняет этот скрипт (waypoint_data.action).",
+    "PATH_POINT": "Маршрут {{id}}, точка {{point}}"
   }
 }

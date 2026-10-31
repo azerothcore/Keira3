@@ -1,6 +1,6 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { rollWeather, Season, seasonOf } from './weather';
-import { debounceTime } from 'rxjs';
+import { debounceTime, skip } from 'rxjs';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import packageInfo from '../../../../package.json';
 import {
@@ -21,7 +21,7 @@ import {
   WritableSignal,
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-components';
 import {
   scanSpawnPositions,
@@ -894,6 +894,7 @@ export class WorldEditorComponent implements OnInit {
   private readonly toastr = inject(ToastrService);
   private readonly clipboard = inject(ClipboardService);
   private readonly route = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
   protected readonly links = inject(WORLD_EDITOR_LINKS, { optional: true });
 
   private readonly changes = this.session.changes;
@@ -1729,6 +1730,20 @@ export class WorldEditorComponent implements OnInit {
       this.selectedKey.set(select);
     }
     void this.loadMaps();
+    // (kept alive in its tab: opened again from another editor with a place to show, e.g. a path)
+    this.route.queryParamMap?.pipe(skip(1), takeUntilDestroyed(this.destroyRef)).subscribe((next) => this.showPlace(next));
+  }
+
+  /** Goes to the place another editor asks for (`map`, `x`, `y`, `z`) and selects what it names (`select`). */
+  private showPlace(params: ParamMap): void {
+    const [map, x, y, z] = ['map', 'x', 'y', 'z'].map((name) => Number(params.get(name)));
+    if (params.has('x') && params.has('y') && Number.isFinite(x) && Number.isFinite(y)) {
+      this.goTo(Number.isFinite(map) ? map : this.mapId(), { x, y, z: Number.isFinite(z) ? z : 0 });
+    }
+    const select = params.get('select');
+    if (select) {
+      this.selectedKey.set(select);
+    }
   }
 
   // ---------------------------------------------------------------- settings & navigation
@@ -3589,6 +3604,17 @@ export class WorldEditorComponent implements OnInit {
     } else {
       links.openGameObjectSai(spawn.entry, spawn.name);
     }
+  }
+
+  /** Opens a path (not a SmartAI one) in the Waypoint Editor, and a waypoint action in the Waypoint Scripts editor. */
+  protected openContextPath(pathId: number): void {
+    this.contextMenu.set(undefined);
+    (this.links as NonNullable<typeof this.links>).openPath(pathId);
+  }
+
+  protected openContextScript(id: number): void {
+    this.contextMenu.set(undefined);
+    (this.links as NonNullable<typeof this.links>).openWaypointScript(id);
   }
 
   /** The loot tables of the right-clicked spawn, for opening their editors. */

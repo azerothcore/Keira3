@@ -196,7 +196,14 @@
     },
     "UNUSED_GUID_SEARCH": "Unused GUIDs",
     "WORLD_EDITOR": "3D World Editor",
-    "SETTINGS": "Settings"
+    "SETTINGS": "Settings",
+    "WAYPOINTS": {
+      "TITLE": "Waypoints",
+      "SELECT_PATH": "Search path",
+      "WAYPOINT_DATA": "Path points",
+      "SELECT_SCRIPT": "Search waypoint script",
+      "WAYPOINT_SCRIPTS": "Waypoint script"
+    }
   },
   "DASHBOARD": {
     "WELCOME": "Welcome to Keira3",
@@ -1317,7 +1324,7 @@
     "OPEN_SAI": "Open SAI",
     "OPEN_GAMEOBJECT": "Open gameobject",
     "COPY_GUID": "Copy GUID",
-    "OPEN_WAYPOINTS": "Open waypoint editor (not implemented yet)",
+    "OPEN_WAYPOINTS": "Open in the Waypoint Editor",
     "FILTERS": "Filters",
     "FILTER_SEARCH": "Name, entry or GUID",
     "SHOW_TRIGGERS": "Show triggers and DND helpers",
@@ -1861,12 +1868,27 @@
     "GAME_MAP_BACK_TO": "Back to:",
     "GAME_MAP_ZOOM_RESET": "Whole map",
     "GAME_MAP_TIP": "Tip: right click (or Alt + click) copies a .go command",
-    "MODIFY": "Modify"
+    "MODIFY": "Modify",
+    "OPEN_WAYPOINT_SCRIPT": "Open the waypoint script"
   },
   "SETTINGS": {
     "TITLE": "Settings",
     "GAME_DATA": "Game data",
     "GAME_DATA_HELP": "The folders the World Editor reads the game from (the WoW client, and optionally the server's data and the AzerothCore source), and where it keeps what it processed. They are kept on this computer.",
     "SAVED": "Settings saved"
+  },
+  "WAYPOINTS": {
+    "SELECT_PATH": "Select an existing path",
+    "SELECT_SCRIPT": "Select an existing waypoint script",
+    "DELAY_TOOLTIP": "How long the creature waits at the point (milliseconds)",
+    "ACTION_TOOLTIP": "The waypoint script run at the point (waypoint_scripts.id; 0: none)",
+    "EDIT_ACTION": "Edit",
+    "SHOW_IN_3D": "Show in the World Editor",
+    "WALKERS": "Creatures walking this path",
+    "NO_WALKERS": "No creature uses this path (creature_addon / creature_template_addon path_id).",
+    "SCRIPT_DELAY_TOOLTIP": "When the step runs after the creature reaches the point (seconds)",
+    "USED_AT": "Points running this script",
+    "NOT_USED": "No waypoint runs this script (waypoint_data.action).",
+    "PATH_POINT": "Path {{id}}, point {{point}}"
   }
 }

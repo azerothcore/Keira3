@@ -2477,9 +2477,26 @@
             }
           } @else if (contextWaypoint(); as waypoint) {
             <h6 class="dropdown-header">{{ 'WORLD_EDITOR.PATH' | translate }} {{ waypoint.pathId }} · #{{ waypoint.point }}</h6>
-            <button type="button" class="dropdown-item" data-testid="context-waypoints" disabled>
+            <button
+              type="button"
+              class="dropdown-item"
+              data-testid="context-waypoints"
+              [disabled]="!links || waypoint.pathId < 0"
+              (click)="openContextPath(waypoint.pathId)"
+            >
               <i class="fa fa-map-signs"></i> {{ 'WORLD_EDITOR.OPEN_WAYPOINTS' | translate }}
             </button>
+            @if (waypoint.action) {
+              <button
+                type="button"
+                class="dropdown-item"
+                data-testid="context-waypoint-script"
+                [disabled]="!links"
+                (click)="openContextScript(waypoint.action)"
+              >
+                <i class="fa fa-scroll"></i> {{ 'WORLD_EDITOR.OPEN_WAYPOINT_SCRIPT' | translate }} ({{ waypoint.action }})
+              </button>
+            }
           } @else {
             <h6 class="dropdown-header world-editor-context-label" data-testid="context-label">{{ menu.label }}</h6>
             @if (contextAreaTrigger(); as trigger) {

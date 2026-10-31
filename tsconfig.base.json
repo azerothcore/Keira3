@@ -42,6 +42,7 @@
       "@keira/features/trainer": ["libs/features/trainer/src/index.ts"],
       "@keira/features/settings": ["libs/features/settings/src/index.ts"],
       "@keira/features/unused-guid-search": ["libs/features/unused-guid-search/src/index.ts"],
+      "@keira/features/waypoints": ["libs/features/waypoints/src/index.ts"],
       "@keira/features/world-editor": ["libs/features/world-editor/src/index.ts"],
       "@keira/main/connection-window": ["libs/main/connection-window/src/index.ts"],
       "@keira/main/main-window": ["libs/main/main-window/src/index.ts"],

@@ -2,6 +2,7 @@ import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { CreatureHandlerService } from '@keira/features/creature';
 import { GameobjectHandlerService } from '@keira/features/gameobject';
+import { WaypointHandlerService, WaypointScriptsHandlerService } from '@keira/features/waypoints';
 import { WorldEditorLinks } from '@keira/shared/constants';
 import { SaiHandlerService } from '@keira/shared/sai-editor';
 
@@ -14,6 +15,8 @@ export function worldEditorLinks(): WorldEditorLinks {
   const gameobject = inject(GameobjectHandlerService);
   const router = inject(Router);
   const sai = inject(SaiHandlerService);
+  const path = inject(WaypointHandlerService);
+  const script = inject(WaypointScriptsHandlerService);
   return {
     openCreature: (entry, name) => creature.select(false, entry, name),
     openCreatureSai: (entry, name) => {
@@ -30,5 +33,7 @@ export function worldEditorLinks(): WorldEditorLinks {
       (kind === 'gameobject' ? gameobject : creature).select(false, entry, name);
       void router.navigate([kind === 'gameobject' ? 'gameobject/gameobject-loot-template' : `creature/${kind}-loot-template`]);
     },
+    openPath: (id) => path.select(false, id, `${id}`),
+    openWaypointScript: (id) => script.select(false, id, `${id}`),
   };
 }
