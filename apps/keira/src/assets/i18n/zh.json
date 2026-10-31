@@ -836,7 +836,12 @@
       "GENERATE_COMMENTS_ALL": "生成注释（全部）",
       "CONDITIONS_TOOLTIP": "此事件附加了 {{count}} 条条件 — 点击在条件编辑器中打开",
       "ADD_NEW_CONDITION": "添加条件",
-      "CONDITIONS_ADD_TOOLTIP": "在条件编辑器中为选中的事件创建条件"
+      "CONDITIONS_ADD_TOOLTIP": "在条件编辑器中为选中的事件创建条件",
+      "GUID_SCRIPTS": "拥有专属脚本的刷新点",
+      "GUID_SCRIPTS_TOOLTIP": "按 GUID 的 SmartAI：该 entry 的刷新点中，专属脚本（entryorguid = -guid）会取代此脚本的那些。",
+      "GUID_SCRIPT_ROWS": "行数",
+      "OPEN_GUID_SCRIPT": "打开",
+      "NO_GUID_SCRIPTS": "该 entry 的刷新点都没有专属脚本。"
     },
     "SEARCH_BY_EXISTING": {
       "SOURCE_TYPE": "源类型：",

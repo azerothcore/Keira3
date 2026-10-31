@@ -836,7 +836,12 @@
       "GENERATE_COMMENTS_ALL": "Сгенерировать комментарии (все)",
       "CONDITIONS_TOOLTIP": "К этому событию привязано условий: {{count}} — нажмите, чтобы открыть их в редакторе условий",
       "ADD_NEW_CONDITION": "Добавить условие",
-      "CONDITIONS_ADD_TOOLTIP": "Создать условие для выбранного события в редакторе условий"
+      "CONDITIONS_ADD_TOOLTIP": "Создать условие для выбранного события в редакторе условий",
+      "GUID_SCRIPTS": "Спавны со своим скриптом",
+      "GUID_SCRIPTS_TOOLTIP": "SmartAI по GUID: спавны этой записи, чей собственный скрипт (entryorguid = -guid) заменяет этот.",
+      "GUID_SCRIPT_ROWS": "Строк",
+      "OPEN_GUID_SCRIPT": "Открыть",
+      "NO_GUID_SCRIPTS": "Ни у одного спавна этой записи нет своего скрипта."
     },
     "SEARCH_BY_EXISTING": {
       "SOURCE_TYPE": "Тип источника:",
