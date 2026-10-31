@@ -202,7 +202,10 @@
       "SELECT_PATH": "Search path",
       "WAYPOINT_DATA": "Path points",
       "SELECT_SCRIPT": "Search waypoint script",
-      "WAYPOINT_SCRIPTS": "Waypoint script"
+      "WAYPOINT_SCRIPTS": "Waypoint script",
+      "WAYPOINT_DATA_ADDON": "Spline points",
+      "SELECT_SAI_PATH": "Search SmartAI path",
+      "SAI_WAYPOINTS": "SmartAI path points"
     },
     "POOLS": {
       "TITLE": "Pools",
@@ -1912,7 +1915,12 @@
     "ORIENTATION_TOOLTIP": "Where the creature faces on arriving, in radians (north 0, south 3.14). Leave it empty (NULL) to keep the way it walked in.",
     "ORIENTATION_NULL": "NULL (keeps its way)",
     "VELOCITY_TOOLTIP": "Its speed to the point (0: its usual walk or run speed).",
-    "SMOOTH_TOOLTIP": "1: goes on to the next point without stopping (a smooth curve through the points)."
+    "SMOOTH_TOOLTIP": "1: goes on to the next point without stopping (a smooth curve through the points).",
+    "SELECT_SAI_PATH": "Select an existing SmartAI path (waypoints)",
+    "SAI_USERS": "SmartAI scripts starting this path (WP_START)",
+    "NO_SAI_USERS": "No SmartAI script starts this path (smart_scripts action 53 with it as param2).",
+    "OPEN_SAI": "Open SmartAI",
+    "SPLINE_HELP": "The points of the curve the creature follows to reach each point of the path (in order of SplinePointIndex)."
   },
   "POOLS": {
     "SELECT": "Select an existing pool",

@@ -5,7 +5,7 @@ import { GameobjectHandlerService } from '@keira/features/gameobject';
 import { vi } from 'vitest';
 import { SaiHandlerService } from '@keira/shared/sai-editor';
 import { PoolHandlerService } from '@keira/features/pools';
-import { WaypointHandlerService, WaypointScriptsHandlerService } from '@keira/features/waypoints';
+import { SaiWaypointsHandlerService, WaypointHandlerService, WaypointScriptsHandlerService } from '@keira/features/waypoints';
 import { worldEditorLinks } from './world-editor-links';
 
 describe('worldEditorLinks', () => {
@@ -66,6 +66,7 @@ describe('worldEditorLinks', () => {
     const path = { select: vi.fn() };
     const script = { select: vi.fn() };
     const pool = { select: vi.fn() };
+    const saiPath = { select: vi.fn() };
     TestBed.configureTestingModule({
       providers: [
         { provide: CreatureHandlerService, useValue: {} },
@@ -75,11 +76,14 @@ describe('worldEditorLinks', () => {
         { provide: WaypointHandlerService, useValue: path },
         { provide: WaypointScriptsHandlerService, useValue: script },
         { provide: PoolHandlerService, useValue: pool },
+        { provide: SaiWaypointsHandlerService, useValue: saiPath },
       ],
     });
     const links = TestBed.runInInjectionContext(() => worldEditorLinks());
     links.openPath(1230);
     expect(path.select).toHaveBeenCalledWith(false, 1230, '1230');
+    links.openPath(-500);
+    expect(saiPath.select).toHaveBeenCalledWith(false, 500, '500');
     links.openWaypointScript(50);
     expect(script.select).toHaveBeenCalledWith(false, 50, '50');
     links.openPool(7);

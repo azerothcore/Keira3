@@ -2481,7 +2481,7 @@
               type="button"
               class="dropdown-item"
               data-testid="context-waypoints"
-              [disabled]="!links || waypoint.pathId < 0"
+              [disabled]="!links"
               (click)="openContextPath(waypoint.pathId)"
             >
               <i class="fa fa-map-signs"></i> {{ 'WORLD_EDITOR.OPEN_WAYPOINTS' | translate }}

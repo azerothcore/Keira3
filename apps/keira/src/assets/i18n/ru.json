@@ -202,7 +202,10 @@
       "SELECT_PATH": "Найти маршрут",
       "WAYPOINT_DATA": "Точки маршрута",
       "SELECT_SCRIPT": "Найти скрипт точки",
-      "WAYPOINT_SCRIPTS": "Скрипт точки"
+      "WAYPOINT_SCRIPTS": "Скрипт точки",
+      "WAYPOINT_DATA_ADDON": "Точки сплайна",
+      "SELECT_SAI_PATH": "Поиск пути SmartAI",
+      "SAI_WAYPOINTS": "Точки пути SmartAI"
     },
     "POOLS": {
       "TITLE": "Пулы",
@@ -1912,7 +1915,12 @@
     "ORIENTATION_TOOLTIP": "Куда смотрит существо по прибытии, в радианах (север 0, юг 3,14). Оставьте пустым (NULL), чтобы оно сохранило направление движения.",
     "ORIENTATION_NULL": "NULL (сохраняет направление)",
     "VELOCITY_TOOLTIP": "Скорость до точки (0: обычная скорость шага или бега).",
-    "SMOOTH_TOOLTIP": "1: идёт к следующей точке без остановки (плавная кривая через точки)."
+    "SMOOTH_TOOLTIP": "1: идёт к следующей точке без остановки (плавная кривая через точки).",
+    "SELECT_SAI_PATH": "Выберите существующий путь SmartAI (waypoints)",
+    "SAI_USERS": "Скрипты SmartAI, запускающие этот путь (WP_START)",
+    "NO_SAI_USERS": "Ни один скрипт SmartAI не запускает этот путь (действие 53 в smart_scripts с ним в param2).",
+    "OPEN_SAI": "Открыть SmartAI",
+    "SPLINE_HELP": "Точки кривой, по которой существо идёт к каждой точке пути (по порядку SplinePointIndex)."
   },
   "POOLS": {
     "SELECT": "Выберите существующий пул",
