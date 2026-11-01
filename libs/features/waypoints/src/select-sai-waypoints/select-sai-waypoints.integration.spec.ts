@@ -34,8 +34,13 @@ describe('SelectSaiWaypointsComponent integration tests', () => {
     expect(page.createInput.value).toEqual('1000000');
     page.setInputValueById('search-point_comment', 'gate');
     expect(page.queryWrapper.innerText).toContain("WHERE (`point_comment` LIKE '%gate%')");
-    querySpy.mockReturnValue(of([{ entry: 7 }]));
+    querySpy.mockReturnValue(of([{ entry: 7, points: 4, users: 2, name: null }]));
     page.clickElement(page.searchBtn);
+    // (with what each one is: its creature, points…)
+    expect(page.queryWrapper.innerText).toContain('AS `users`');
+    expect(page.query('ngx-datatable').textContent).toContain('4');
+    expect(page.query('ngx-datatable').textContent).toContain('2');
+    expect(page.query('ngx-datatable').textContent).toContain('—');
     page.clickRowOfDatatable(0);
     expect(navigateSpy).toHaveBeenCalledWith(['waypoints/sai-waypoints']);
     expect(TestBed.inject(SelectSaiWaypointsService)).toBeTruthy();

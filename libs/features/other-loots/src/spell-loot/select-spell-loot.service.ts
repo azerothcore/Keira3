@@ -12,7 +12,12 @@ export class SelectSpellLootService extends SelectService<SpellLootTemplate> {
   protected override readonly entityIdField = LOOT_TEMPLATE_ID;
   protected override entityNameField = null;
   protected override readonly fieldList = [LOOT_TEMPLATE_ID];
-  protected override readonly selectFields = [LOOT_TEMPLATE_ID];
+  protected override readonly selectFields = [
+    LOOT_TEMPLATE_ID,
+    // (its rows and groups, named so: `rows` and `groups` are MySQL 8 keywords)
+    '(COUNT(*)) AS `items`',
+    '(COUNT(DISTINCT `GroupId`)) AS `lootGroups`',
+  ];
   protected override readonly groupFields = [LOOT_TEMPLATE_ID];
   constructor() {
     super();

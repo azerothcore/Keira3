@@ -33,4 +33,5 @@ export class SelectMailLootComponent extends SelectComponent<MailLootTemplate> {
   readonly customStartingId = MAIL_LOOT_TEMPLATE_CUSTOM_STARTING_ID;
   readonly selectService = inject(SelectMailLootService);
   readonly handlerService = inject(MailLootHandlerService);
+  protected readonly showUsedBy = false;
 }

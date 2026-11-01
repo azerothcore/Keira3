@@ -72,10 +72,10 @@
           <ngx-datatable-column [name]="'POOLS.CHILD_POOLS' | translate" prop="pools" [minWidth]="90" [maxWidth]="120" />
           <ngx-datatable-column [name]="'POOLS.QUESTS' | translate" prop="quests" [minWidth]="70" [maxWidth]="100" />
           <ngx-datatable-column [name]="'POOLS.MOTHER_POOL' | translate" prop="mother" [minWidth]="90" [maxWidth]="120">
-            <ng-template let-value="value" ngx-datatable-cell-template>{{ value ?? '—' }}</ng-template>
+            <ng-template let-row="row" ngx-datatable-cell-template>{{ row.mother ?? '—' }}</ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column [name]="'POOLS.EVENT' | translate" prop="event" [minWidth]="90" [maxWidth]="120">
-            <ng-template let-value="value" ngx-datatable-cell-template>{{ value ?? '—' }}</ng-template>
+            <ng-template let-row="row" ngx-datatable-cell-template>{{ row.event ?? '—' }}</ng-template>
           </ngx-datatable-column>
         </ngx-datatable>
       </div>

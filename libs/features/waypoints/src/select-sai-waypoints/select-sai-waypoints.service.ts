@@ -13,7 +13,13 @@ export class SelectSaiWaypointsService extends SelectService<SaiWaypoints> {
   protected override readonly entityIdField = SAI_WAYPOINTS_ID;
   protected override entityNameField = null;
   protected override readonly fieldList = SAI_WAYPOINTS_SEARCH_FIELDS as (keyof SaiWaypoints & string)[];
-  protected override readonly selectFields = ['entry'];
+  protected override readonly selectFields = [
+    'entry',
+    '(COUNT(*)) AS `points`',
+    '(SELECT COUNT(*) FROM `smart_scripts` WHERE `action_type` = 53 AND `action_param2` = `waypoints`.`entry`) AS `users`',
+    '(SELECT `name` FROM `creature_template` WHERE `entry` = (SELECT MIN(`entryorguid`) FROM `smart_scripts` ' +
+      'WHERE `action_type` = 53 AND `action_param2` = `waypoints`.`entry` AND `source_type` = 0 AND `entryorguid` > 0)) AS `name`',
+  ];
   protected override readonly groupFields = ['entry'];
 
   constructor() {
