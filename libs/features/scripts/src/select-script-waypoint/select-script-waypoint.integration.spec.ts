@@ -34,8 +34,13 @@ describe('SelectScriptWaypointComponent integration tests', () => {
     expect(page.createInput.value).toEqual('2');
     page.setInputValueById('search-point_comment', 'gate');
     expect(page.queryWrapper.innerText).toContain("WHERE (`point_comment` LIKE '%gate%')");
-    querySpy.mockReturnValue(of([{ entry: 7 }]));
+    querySpy.mockReturnValue(of([{ entry: 7, points: 12, name: 'Escortee', map: null }]));
     page.clickElement(page.searchBtn);
+    // (with what each one is: its creature, points…)
+    expect(page.queryWrapper.innerText).toContain('AS `name`');
+    expect(page.query('ngx-datatable').textContent).toContain('Escortee');
+    expect(page.query('ngx-datatable').textContent).toContain('12');
+    expect(page.query('ngx-datatable').textContent).toContain('—');
     page.clickRowOfDatatable(0);
     expect(navigateSpy).toHaveBeenCalledWith(['scripts/script-waypoint']);
     expect(TestBed.inject(SelectScriptWaypointService)).toBeTruthy();

@@ -40,8 +40,13 @@ describe('SelectWaypointComponent integration tests', () => {
     expect(page.queryWrapper.innerText).toContain('GROUP BY');
     page.setInputValueById('search-action', '12');
     expect(page.queryWrapper.innerText).toContain("WHERE (`action` LIKE '%12%')");
-    querySpy.mockReturnValue(of([{ id: 7 }]));
+    querySpy.mockReturnValue(of([{ id: 7, points: 9, guid: 1, entry: null, name: 'Patroller', map: 0 }]));
     page.clickElement(page.searchBtn);
+    // (with what each one is: its creature, points…)
+    expect(page.queryWrapper.innerText).toContain('AS `guid`');
+    expect(page.query('ngx-datatable').textContent).toContain('Patroller');
+    expect(page.query('ngx-datatable').textContent).toContain('9');
+    expect(page.query('ngx-datatable').textContent).toContain('—');
     expect(page.getDatatableCell(0, 0).innerText).toBe('7');
     page.clickRowOfDatatable(0);
     expect(navigateSpy).toHaveBeenCalledWith(['waypoints/waypoint-data']);

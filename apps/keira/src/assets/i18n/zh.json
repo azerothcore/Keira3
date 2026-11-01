@@ -608,7 +608,10 @@
     "MIN_COUNT": "在一次战利品获取中可以掉落物品的最高数量。作为参考，该参数将被忽略。",
     "MAX_COUNT": "在一次战利品获取中可以掉落物品的最大数量。作为参考，这是EXACT计数值。",
     "COMMENT": "被内核忽略的注释",
-    "REFERENCE_COUNT": "引用行会按 MaxCount 次掉落其引用：MinCount 跟随 MaxCount（AzerothCore 不支持其他值）。"
+    "REFERENCE_COUNT": "引用行会按 MaxCount 次掉落其引用：MinCount 跟随 MaxCount（AzerothCore 不支持其他值）。",
+    "ITEMS": "行数",
+    "GROUPS": "分组",
+    "USED_BY": "被引用（掉落行）"
   },
   "LOOT_TEMPLATE": {
     "SET_FIELD": "你必须设置 <strong>`{{ LOOT_FIELD }}`</strong> 字段在 <strong>{{ ENTITY_TABLE }}</strong> 中才能启用此功能。",
@@ -1999,7 +2002,16 @@
     "SAI_USERS": "启动此路径的 SmartAI 脚本（WP_START）",
     "NO_SAI_USERS": "没有 SmartAI 脚本启动此路径（smart_scripts 动作 53，param2 为该路径）。",
     "OPEN_SAI": "打开 SmartAI",
-    "SPLINE_HELP": "生物到达路径每个点时所沿曲线上的点（按 SplinePointIndex 排序）。"
+    "SPLINE_HELP": "生物到达路径每个点时所沿曲线上的点（按 SplinePointIndex 排序）。",
+    "COL_NAME": "生物",
+    "COL_POINTS": "路点数",
+    "COL_MAP": "地图",
+    "COL_GUID": "刷新点 (guid)",
+    "COL_ENTRY": "模板 (entry)",
+    "COL_SAI_USERS": "SmartAI 脚本",
+    "COL_ACTIONS": "动作数",
+    "COL_COMMANDS": "命令",
+    "COL_USED": "被路点使用"
   },
   "POOLS": {
     "SELECT": "选择已有的刷新池",

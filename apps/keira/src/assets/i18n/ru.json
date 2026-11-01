@@ -608,7 +608,10 @@
     "MIN_COUNT": "Минимальное количество копий предмета за один лут. Для ссылок игнорируется.",
     "MAX_COUNT": "Максимальное количество копий предмета за один лут. Для ссылок это ТОЧНОЕ значение.",
     "COMMENT": "Комментарий, игнорируемый ядром",
-    "REFERENCE_COUNT": "Строка-ссылка выдаёт свою ссылку MaxCount раз: MinCount следует за MaxCount (AzerothCore не поддерживает иное)."
+    "REFERENCE_COUNT": "Строка-ссылка выдаёт свою ссылку MaxCount раз: MinCount следует за MaxCount (AzerothCore не поддерживает иное).",
+    "ITEMS": "Строки",
+    "GROUPS": "Группы",
+    "USED_BY": "Используется (строки добычи)"
   },
   "LOOT_TEMPLATE": {
     "SET_FIELD": "Необходимо установить поле <strong>`{{ LOOT_FIELD }}`</strong> в <strong>{{ ENTITY_TABLE }}</strong>, чтобы включить эту функцию.",
@@ -1999,7 +2002,16 @@
     "SAI_USERS": "Скрипты SmartAI, запускающие этот путь (WP_START)",
     "NO_SAI_USERS": "Ни один скрипт SmartAI не запускает этот путь (действие 53 в smart_scripts с ним в param2).",
     "OPEN_SAI": "Открыть SmartAI",
-    "SPLINE_HELP": "Точки кривой, по которой существо идёт к каждой точке пути (по порядку SplinePointIndex)."
+    "SPLINE_HELP": "Точки кривой, по которой существо идёт к каждой точке пути (по порядку SplinePointIndex).",
+    "COL_NAME": "Существо",
+    "COL_POINTS": "Точки",
+    "COL_MAP": "Карта",
+    "COL_GUID": "Спавн (guid)",
+    "COL_ENTRY": "Шаблон (entry)",
+    "COL_SAI_USERS": "Скрипты SmartAI",
+    "COL_ACTIONS": "Действия",
+    "COL_COMMANDS": "Команды",
+    "COL_USED": "Используется точками"
   },
   "POOLS": {
     "SELECT": "Выберите существующий пул",

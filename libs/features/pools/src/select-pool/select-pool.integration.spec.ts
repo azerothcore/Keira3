@@ -34,8 +34,27 @@ describe('SelectPoolComponent integration tests', () => {
     expect(page.createInput.value).toEqual('100000');
     page.setInputValueById('search-description', 'Copper');
     expect(page.queryWrapper.innerText).toContain("WHERE (`description` LIKE '%Copper%')");
-    querySpy.mockReturnValue(of([{ entry: 7, max_limit: 1, description: 'Copper veins' }]));
+    querySpy.mockReturnValue(
+      of([
+        {
+          entry: 7,
+          max_limit: 1,
+          description: 'Copper veins',
+          creatures: 0,
+          gameobjects: 12,
+          pools: 0,
+          quests: 0,
+          mother: 17,
+          event: null,
+        },
+      ]),
+    );
     page.clickElement(page.searchBtn);
+    // what each pool holds, its mother pool and its event (none: —)
+    expect(page.queryWrapper.innerText).toContain('AS `gameobjects`');
+    expect(page.query('ngx-datatable').textContent).toContain('12');
+    expect(page.query('ngx-datatable').textContent).toContain('17');
+    expect(page.query('ngx-datatable').textContent).toContain('—');
     expect(page.getDatatableCell(0, 2).innerText).toBe('Copper veins');
     page.clickRowOfDatatable(0);
     expect(navigateSpy).toHaveBeenCalledWith(['pools/pool-template']);

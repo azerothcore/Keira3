@@ -53,6 +53,11 @@
               {{ entityTable }} <strong>#{{ row.Entry }}</strong>
             </ng-template>
           </ngx-datatable-column>
+          <ngx-datatable-column [name]="'LOOT_EDITOR.ITEMS' | translate" prop="items" [minWidth]="90" />
+          <ngx-datatable-column [name]="'LOOT_EDITOR.GROUPS' | translate" prop="lootGroups" [minWidth]="90" />
+          @if (showUsedBy) {
+            <ngx-datatable-column [name]="'LOOT_EDITOR.USED_BY' | translate" prop="usedBy" [minWidth]="110" />
+          }
         </ngx-datatable>
       </div>
     }

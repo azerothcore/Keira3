@@ -13,7 +13,16 @@ export class SelectWaypointService extends SelectService<WaypointData> {
   protected override readonly entityIdField = WAYPOINT_DATA_ID;
   protected override entityNameField = null;
   protected override readonly fieldList = WAYPOINT_DATA_SEARCH_FIELDS as (keyof WaypointData & string)[];
-  protected override readonly selectFields = ['id'];
+  protected override readonly selectFields = [
+    'id',
+    '(COUNT(*)) AS `points`',
+    '(SELECT MIN(`guid`) FROM `creature_addon` WHERE `path_id` = `waypoint_data`.`id`) AS `guid`',
+    '(SELECT MIN(`entry`) FROM `creature_template_addon` WHERE `path_id` = `waypoint_data`.`id`) AS `entry`',
+    '(SELECT `t`.`name` FROM `creature_template` `t` WHERE `t`.`entry` = COALESCE(' +
+      '(SELECT `c`.`id` FROM `creature` `c` JOIN `creature_addon` `a` ON `a`.`guid` = `c`.`guid` WHERE `a`.`path_id` = `waypoint_data`.`id` LIMIT 1), ' +
+      '(SELECT `ta`.`entry` FROM `creature_template_addon` `ta` WHERE `ta`.`path_id` = `waypoint_data`.`id` LIMIT 1))) AS `name`',
+    '(SELECT `c`.`map` FROM `creature` `c` JOIN `creature_addon` `a` ON `a`.`guid` = `c`.`guid` WHERE `a`.`path_id` = `waypoint_data`.`id` LIMIT 1) AS `map`',
+  ];
   protected override readonly groupFields = ['id'];
 
   constructor() {

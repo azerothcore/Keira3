@@ -18,7 +18,12 @@ export class SelectWaypointScriptsService extends SelectService<WaypointScripts>
   protected override readonly entityIdField = WAYPOINT_SCRIPTS_ID;
   protected override entityNameField = null;
   protected override readonly fieldList = WAYPOINT_SCRIPTS_SEARCH_FIELDS as (keyof WaypointScripts & string)[];
-  protected override readonly selectFields = ['id'];
+  protected override readonly selectFields = [
+    'id',
+    '(COUNT(*)) AS `actions`',
+    '(GROUP_CONCAT(DISTINCT `command` ORDER BY `command`)) AS `commands`',
+    '(SELECT COUNT(*) FROM `waypoint_data` WHERE `action` = `waypoint_scripts`.`id`) AS `used`',
+  ];
   protected override readonly groupFields = ['id'];
 
   constructor() {
