@@ -1,6 +1,12 @@
 import { Service, inject } from '@angular/core';
 import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
-import { FISHING_LOOT_TEMPLATE_TABLE, FishingLootTemplate, LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2 } from '@keira/shared/acore-world-model';
+import {
+  FISHING_LOOT_TEMPLATE_TABLE,
+  FishingLootTemplate,
+  LOOT_TEMPLATE_ID,
+  LOOT_TEMPLATE_ID_2,
+  LOOT_TEMPLATE_ID_3,
+} from '@keira/shared/acore-world-model';
 import { FishingLootHandlerService } from './fishing-loot-handler.service';
 
 @Service()
@@ -10,6 +16,7 @@ export class FishingLootTemplateService extends MultiRowEditorService<FishingLoo
   protected override readonly _entityTable = FISHING_LOOT_TEMPLATE_TABLE;
   protected override readonly _entityIdField = LOOT_TEMPLATE_ID;
   protected override readonly _entitySecondIdField = LOOT_TEMPLATE_ID_2;
+  protected override readonly _entityExtraIdField = LOOT_TEMPLATE_ID_3;
 
   constructor() {
     super();

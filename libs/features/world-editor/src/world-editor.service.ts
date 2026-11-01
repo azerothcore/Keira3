@@ -667,7 +667,7 @@ export class WorldEditorService {
       if (guids.length) {
         parts.push(
           `SELECT '${type}' AS type, p.guid, p.pool_entry AS pool, p.chance, IFNULL(t.max_limit, 0) AS maxLimit, ` +
-            `IFNULL(t.description, IFNULL(p.description, '')) AS description, m.mother_pool AS mother, IFNULL(m.chance, 0) AS motherChance ` +
+            `IFNULL(t.description, '') AS description, m.mother_pool AS mother, IFNULL(m.chance, 0) AS motherChance ` +
             `FROM pool_${type} p LEFT JOIN pool_pool m ON m.pool_id = p.pool_entry ` +
             `LEFT JOIN pool_template t ON t.entry = p.pool_entry WHERE p.guid IN (${guids.join(', ')})`,
         );

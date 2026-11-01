@@ -43,6 +43,7 @@ describe('KeiraTabsService', () => {
           { path: 'world-editor', component: PageComponent },
           { path: 'creature/:page', component: PageComponent },
           { path: 'custom-thing', component: PageComponent },
+          { path: 'refused', component: PageComponent, canActivate: [() => false] },
         ]),
       ],
     });
@@ -114,7 +115,7 @@ describe('KeiraTabsService', () => {
     expect(tabs.tabs().length).toBe(2);
     const navigate = vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
     tabs.launch('quest');
-    expect(navigate).toHaveBeenCalledWith('/quest/select');
+    expect(navigate).toHaveBeenCalledWith('/quest/select', { onSameUrlNavigation: 'reload' });
   });
 
   it('keeps an entity and its changes in each tab of a part, and reads the rows again in a tab without changes', async () => {
@@ -184,6 +185,57 @@ describe('KeiraTabsService', () => {
     expect(handler._selected).toBe('38');
     await router.navigateByUrl('/custom-thing');
     tabs.close(tabs.tabs()[0]);
+    await router.navigateByUrl('/creature/select');
+    expect(shape(tabs).map((tab) => tab.section)).toEqual(['custom-thing', 'creature']);
+  });
+
+  it('opens a new tab of a part shown at its first page, and leaves nothing waiting after a navigation that did not happen', async () => {
+    const { tabs, router, strategy } = setup();
+    const handler = new FakeHandler();
+    new FakeEditor(handler);
+    await router.navigateByUrl('/creature/select');
+    handler._selected = '38';
+    tabs.launch('creature');
+    await settle();
+    expect(shape(tabs)).toEqual([
+      { section: 'creature', url: '/creature/select', n: 1 },
+      { section: 'creature', url: '/creature/select', n: 2 },
+    ]);
+    expect(tabs.activeId()).toBe(tabs.tabs()[1].id);
+    expect(handler._selected).toBeUndefined();
+    // a page refusing to open: nothing left waiting, the page isn't made again next time
+    strategy.renew = true;
+    await router.navigateByUrl('/refused');
+    expect(strategy.renew).toBe(false);
+    await router.navigateByUrl('/creature/creature-template');
+    expect(tabs.activeId()).toBe(tabs.tabs()[1].id);
+  });
+
+  it('names the dashboard tab, and shows no part before a page is shown', async () => {
+    const { tabs, router } = setup();
+    expect(tabs.active()).toBe('');
+    await router.navigateByUrl('/');
+    await router.navigateByUrl('/creature/select');
+    tabs.launch('creature');
+    await settle();
+    expect(tabs.testId(tabs.tabs()[0])).toBe('dashboard');
+    // a tab not holding its part's editors closes alone
+    const handler = new FakeHandler();
+    handler._selected = '38';
+    tabs.close(tabs.tabs()[1]);
+    expect(handler._selected).toBe('38');
+  });
+
+  it("empties a part's editors when the tab holding them closes", async () => {
+    const { tabs, router } = setup();
+    const handler = new FakeHandler();
+    new FakeEditor(handler);
+    await router.navigateByUrl('/creature/creature-template');
+    handler._selected = '38';
+    await router.navigateByUrl('/custom-thing');
+    tabs.close(tabs.tabs()[0]);
+    expect(handler._selected).toBeUndefined();
+    // a link to the part: a new tab, empty
     await router.navigateByUrl('/creature/select');
     expect(shape(tabs).map((tab) => tab.section)).toEqual(['custom-thing', 'creature']);
   });

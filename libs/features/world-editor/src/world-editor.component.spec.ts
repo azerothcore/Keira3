@@ -3930,7 +3930,8 @@ describe(WorldEditorComponent.name, () => {
         { type: 'creature', guid: 1, pool: 7, chance: 10, maxLimit: 1, description: 'Rares', mother: null, motherChance: 0 },
       ]);
       const member = (guid: number, chance: number) => ({ type: 'creature', guid, entry: 1, name: '', map: 0, x: 0, y: 0, z: 0, chance });
-      mocks.service.loadPoolMembers.mockResolvedValue([member(1, 10), member(9, 50)]);
+      // (its gameobjects are checked apart: 100 alone is right)
+      mocks.service.loadPoolMembers.mockResolvedValue([member(1, 10), member(9, 50), { ...member(5, 100), type: 'gameobject' }]);
       const { page } = await setup();
       await loadArea(page);
       page.viewer().picked.emit({ type: 'spawn', key: 'creature:1', position: { x: 0, y: 0, z: 0 } });
@@ -3952,6 +3953,11 @@ describe(WorldEditorComponent.name, () => {
       typeInto(page, 'pool-mother-chance', '50', 'change');
       await settle(page);
       expect(page.pendingLines()).toEqual(['Edit pool 7', 'Put pool 7 in pool 17']);
+      // not in itself
+      typeInto(page, 'pool-mother', '7', 'change');
+      await settle(page);
+      expect(page.pendingLines()).toEqual(['Edit pool 7', 'Put pool 7 in pool 17']);
+      expect(page.byId<HTMLInputElement>('pool-mother').nativeElement.value).toBe('17');
       typeInto(page, 'pool-mother-chance', '150', 'change');
       typeInto(page, 'pool-mother', '', 'change');
       await settle(page);

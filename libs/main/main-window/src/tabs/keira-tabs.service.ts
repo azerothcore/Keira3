@@ -1,6 +1,6 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { captureSection, resetSection, restoreSection, SectionState } from '@keira/shared/base-abstract-classes';
-import { NavigationEnd, Router } from '@angular/router';
+import { NavigationCancel, NavigationEnd, NavigationError, NavigationSkipped, Router } from '@angular/router';
 import { filter } from 'rxjs';
 import { KeepAliveRouteStrategy } from './keep-alive.strategy';
 
@@ -101,6 +101,13 @@ export class KeiraTabsService {
   private readonly owners = new Map<string, number>();
 
   constructor() {
+    // (a navigation that didn't happen leaves nothing waiting)
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationCancel || event instanceof NavigationError || event instanceof NavigationSkipped))
+      .subscribe(() => {
+        this.pending = undefined;
+        this.strategy.renew = false;
+      });
     this.router.events.pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd)).subscribe((event) => {
       const url = event.urlAfterRedirects;
       const { section } = urlSection(url);
@@ -196,7 +203,10 @@ export class KeiraTabsService {
       this.takeOver(tab);
     }
     this.pending = tab.id;
-    void this.router.navigateByUrl((SECTION_START.find(([key]) => key === section) as [string, string])[1]);
+    // (made again even when its part already shows its first page)
+    void this.router.navigateByUrl((SECTION_START.find(([key]) => key === section) as [string, string])[1], {
+      onSameUrlNavigation: 'reload',
+    });
   }
 
   /** Closes a tab (a kept page lets go): the one shown closes to the tab before it (the next, for the first). */
@@ -206,7 +216,9 @@ export class KeiraTabsService {
     const rest = tabs.filter((other) => other !== tab);
     this._tabs.set(rest);
     if (this.owners.get(tab.section) === tab.id) {
+      // (its entity and changes go with it: the next tab of its part starts empty, or with its own)
       this.owners.delete(tab.section);
+      resetSection(tab.section);
     }
     const last = !rest.some((other) => other.section === tab.section);
     const drop = () => last && this.strategy.drop(tab.section);

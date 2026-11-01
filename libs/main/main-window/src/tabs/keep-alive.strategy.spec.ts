@@ -31,4 +31,17 @@ describe('KeepAliveRouteStrategy', () => {
     strategy.store(editor, {} as DetachedRouteHandle);
     strategy.drop('world-editor');
   });
+
+  it('makes a page again while switching between two tabs of the same part (not the pages around it)', () => {
+    const strategy = new KeepAliveRouteStrategy();
+    const config = { component: class {} };
+    const page = { routeConfig: config, firstChild: null } as unknown as ActivatedRouteSnapshot;
+    const parent = { routeConfig: config, firstChild: page } as unknown as ActivatedRouteSnapshot;
+    const empty = { routeConfig: null, firstChild: null } as unknown as ActivatedRouteSnapshot;
+    expect(strategy.shouldReuseRoute(page, page)).toBe(true);
+    strategy.renew = true;
+    expect(strategy.shouldReuseRoute(page, page)).toBe(false);
+    expect(strategy.shouldReuseRoute(parent, parent)).toBe(true);
+    expect(strategy.shouldReuseRoute(empty, empty)).toBe(true);
+  });
 });

@@ -66,7 +66,7 @@ import { PoolMember } from './world-editor.model';
             data-testid="pool-mother"
             placeholder="pool_pool"
             [value]="member.mother ?? ''"
-            (change)="setMother(mother.value, motherChance.value)"
+            (change)="setMother(mother.value, motherChance.value, member, mother)"
           />
           <input
             #motherChance
@@ -78,7 +78,7 @@ import { PoolMember } from './world-editor.model';
             data-testid="pool-mother-chance"
             placeholder="%"
             [value]="member.mother === null ? '' : member.motherChance"
-            (change)="setMother(mother.value, motherChance.value)"
+            (change)="setMother(mother.value, motherChance.value, member, mother)"
           />
         </div>
         @for (problem of problems(); track problem.key) {
@@ -159,11 +159,14 @@ export class PoolPanelComponent {
   }
 
   /** Puts the pool in a mother pool (an empty one: in none). */
-  protected setMother(mother: string, chance: string): void {
+  protected setMother(mother: string, chance: string, member: PoolMember, input: HTMLInputElement): void {
     const id = Math.trunc(Number(mother));
     const value = Number(chance || 0);
     if (mother.trim() === '') {
       this.mother.emit({ mother: null, chance: 0 });
+    } else if (id === member.pool) {
+      // (a pool in itself: the world server skips it)
+      input.value = member.mother === null ? '' : String(member.mother);
     } else if (id > 0 && value >= 0 && value <= 100) {
       this.mother.emit({ mother: id, chance: value });
     }

@@ -348,6 +348,8 @@ export class WorldEditorChanges {
     for (const entry of this.createdPools.keys()) {
       if (![...this.poolMembers.values()].some((member) => member.pool === entry)) {
         this.createdPools.delete(entry);
+        // (nor its place in a mother pool)
+        this.poolMothers.delete(entry);
       }
     }
   }

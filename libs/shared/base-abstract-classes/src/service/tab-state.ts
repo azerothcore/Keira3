@@ -22,9 +22,13 @@ export function registerTabState(service: object): void {
 /** The handlers and editors made. */
 const alive = (): Stateful[] => [...registered];
 
-/** The part of Keira (first path segment) of a handler: from its editor's route. */
+/**
+ * The part of Keira (first path segment) of a handler: its `tabSection` when it says (the creature's SmartAI handler
+ * is Creature's, though its editor's route is SmartAI's), else from its editor's route.
+ */
 function handlerSection(handler: Stateful): string | undefined {
-  const path = handler['mainEditorRoutePath'];
+  const own = handler['tabSection'];
+  const path = typeof own === 'string' ? own : handler['mainEditorRoutePath'];
   return typeof path === 'string' ? path.replace(/^\//, '').split('/')[0] : undefined;
 }
 
@@ -36,8 +40,20 @@ function sectionOf(service: Stateful): string | undefined {
 }
 
 const NOT_PLAIN = Symbol('not plain');
-/** Not copied: other services, the subscriptions, the forms (kept apart), the status signals (kept apart). */
-const SKIPPED = new Set(['subscriptions', 'router', 'queryService', 'toastrService', 'handlerService', '_form', '_statusMap']);
+/**
+ * Not copied: other services, the subscriptions, the forms (kept apart), the status signals (kept apart), and the
+ * count of tabs an editor has served (it only goes up: a query sent for a tab no longer shown is dropped).
+ */
+const SKIPPED = new Set([
+  'subscriptions',
+  'router',
+  'queryService',
+  'toastrService',
+  'handlerService',
+  '_form',
+  '_statusMap',
+  '_tabGeneration',
+]);
 
 /** A deep copy of plain data (numbers, strings, arrays, plain objects); NOT_PLAIN for anything else. */
 function copyPlain(value: unknown): unknown {
@@ -63,15 +79,31 @@ function copyPlain(value: unknown): unknown {
   return copy;
 }
 
-function copyFields(service: Stateful): Record<string, unknown> {
+/** A service's fields: plain data copied, the rest (an error, rows with binary values…) kept as it is. */
+function copyFields(service: Stateful): { fields: Record<string, unknown>; kept: Record<string, unknown> } {
   const fields: Record<string, unknown> = {};
+  const kept: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(service)) {
-    const copy = SKIPPED.has(key) ? NOT_PLAIN : copyPlain(value);
-    if (copy !== NOT_PLAIN) {
+    if (SKIPPED.has(key) || typeof value === 'function') {
+      continue;
+    }
+    const copy = copyPlain(value);
+    if (copy === NOT_PLAIN) {
+      kept[key] = value;
+    } else {
       fields[key] = copy;
     }
   }
-  return fields;
+  // (a query still running for this tab is dropped when it comes: it isn't loading when it's shown again)
+  if ('_loading' in fields) {
+    fields['_loading'] = false;
+  }
+  return { fields, kept };
+}
+
+/** Starts a new tab in an editor: what it was asked before is dropped when it answers. */
+function nextGeneration(editor: Stateful): void {
+  editor['_tabGeneration'] = Number(editor['_tabGeneration'] ?? 0) + 1;
 }
 
 type StatusMap = Record<string, WritableSignal<boolean>>;
@@ -80,6 +112,7 @@ const statusMap = (handler: Stateful): StatusMap => (handler['_statusMap'] ?? {}
 interface ServiceState {
   service: Stateful;
   fields: Record<string, unknown>;
+  kept: Record<string, unknown>;
   form?: unknown;
   status?: Record<string, boolean>;
 }
@@ -97,7 +130,7 @@ export function captureSection(section: string): SectionState {
   const services = alive()
     .filter((service) => (isHandler(service) || isEditor(service)) && sectionOf(service) === section)
     .map((service) => {
-      const state: ServiceState = { service, fields: copyFields(service) };
+      const state: ServiceState = { service, ...copyFields(service) };
       if (isEditor(service)) {
         state.form = service['_form'];
       } else {
@@ -114,9 +147,13 @@ export function captureSection(section: string): SectionState {
  * when shown (what another tab executed meanwhile shows up).
  */
 export function restoreSection(state: SectionState): void {
-  for (const { service, fields, form, status } of state.services) {
-    Object.assign(service, copyPlain(fields));
+  // (the editors made after the tab left start empty in it)
+  const saved = new Set(state.services.map(({ service }) => service));
+  resetSection(state.section, (service) => !saved.has(service));
+  for (const { service, fields, kept, form, status } of state.services) {
+    Object.assign(service, copyPlain(fields), kept);
     if (form) {
+      nextGeneration(service);
       service['_form'] = form;
       if (!state.unsaved) {
         service['_loadedEntityId'] = undefined;
@@ -133,14 +170,37 @@ export function restoreSection(state: SectionState): void {
   }
 }
 
-/** Empties a part's handlers and editors (a new tab of it): nothing selected, each editor with a form of its own. */
-export function resetSection(section: string): void {
+/** What an empty editor holds (those of its fields it has). */
+const EMPTY_EDITOR: Record<string, () => unknown> = {
+  _loadedEntityId: () => undefined,
+  _originalValue: () => undefined,
+  _originalRows: () => [],
+  _newRows: () => [],
+  _selectedRowId: () => undefined,
+  _diffQuery: () => '',
+  _fullQuery: () => '',
+  _error: () => undefined,
+  _errors: () => [],
+  _loading: () => false,
+  _isNew: () => false,
+};
+
+/**
+ * Empties a part's handlers and editors (a new tab of it, or the one holding them closed): nothing selected, each
+ * editor empty with a form of its own. `only` picks some of them.
+ */
+export function resetSection(section: string, only: (service: Stateful) => boolean = () => true): void {
   for (const service of alive()) {
-    if (sectionOf(service) !== section) {
+    if (sectionOf(service) !== section || !only(service)) {
       continue;
     }
     if (isEditor(service)) {
-      service['_loadedEntityId'] = undefined;
+      nextGeneration(service);
+      for (const [key, empty] of Object.entries(EMPTY_EDITOR)) {
+        if (key in service) {
+          service[key] = empty();
+        }
+      }
       (service['initForm'] as () => void).call(service);
     } else if (isHandler(service)) {
       service['_selected'] = undefined;
