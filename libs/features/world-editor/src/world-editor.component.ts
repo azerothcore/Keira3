@@ -2931,6 +2931,8 @@ export class WorldEditorComponent implements OnInit {
         this.formations.set(formations);
         this.pools.set(pools);
         this.poolMembersRead.clear();
+        // (read again: saved changes are in them now)
+        this.selectedPoolMembers.set(undefined);
         this.eventNames.set(eventNames);
         const byEntry = new Map<string, SpawnQuest[]>();
         for (const quest of quests) {
@@ -3502,11 +3504,13 @@ export class WorldEditorComponent implements OnInit {
     }
     this.revision();
     const stored = loaded.members.map((spawn) => ({ ...member, type: spawn.type, guid: spawn.guid, chance: spawn.chance as number }));
-    const chances = this.changes
-      .applyToPools(stored)
-      .filter((row) => row.pool === member.pool)
-      .map((row) => row.chance);
-    return chanceProblems(chances, member.maxLimit);
+    const rows = this.changes.applyToPools(stored).filter((row) => row.pool === member.pool);
+    // (the world server checks a pool's creatures and its gameobjects apart)
+    const problems = (['creature', 'gameobject'] as SpawnType[]).flatMap((type) => {
+      const chances = rows.filter((row) => row.type === type).map((row) => row.chance);
+      return chances.length ? chanceProblems(chances, member.maxLimit) : [];
+    });
+    return problems.filter((problem, i) => problems.findIndex((other) => other.key === problem.key) === i);
   });
 
   protected openPool(id: number): void {

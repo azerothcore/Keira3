@@ -136,9 +136,13 @@ export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandle
   /** Executes the query and copies it: only once it ran (Settings > Editors), so a failed one isn't copied. */
   executeAndCopy(): void {
     const query = this.getQuery();
+    if (!query) {
+      // (nothing to execute: nothing will answer)
+      return;
+    }
     const saved = this.editorService.saved;
     if (this.editorSettings.settings().copyOnlyOnSuccess && saved) {
-      saved.pipe(take(1)).subscribe((ran) => ran && this.clipboardService.copyFromContent(query));
+      this.subscriptions.push(saved.pipe(take(1)).subscribe((ran) => ran && this.clipboardService.copyFromContent(query)));
     } else {
       this.copy();
     }

@@ -163,6 +163,14 @@ describe('QueryOutputComponent', () => {
     page.clickElement(page.executeAndCopyBtn);
     expect(copySpy).toHaveBeenCalledTimes(2);
     TestBed.inject(EditorSettingsService).save({ copyOnlyOnSuccess: true });
+    // nothing to execute: nothing is waited for (a later query isn't copied in its place)
+    Object.assign(host.child(), { getQuery: () => '' });
+    const emit = vi.mocked(host.child().executeQuery.emit);
+    emit.mockClear();
+    page.clickElement(page.executeAndCopyBtn);
+    saved.next(true);
+    expect(copySpy).toHaveBeenCalledTimes(2);
+    expect(emit).not.toHaveBeenCalled();
   });
 
   describe('getQuery', () => {
