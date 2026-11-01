@@ -1,3 +1,4 @@
+import { EditorSettingsService } from '@keira/shared/common-services';
 import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
@@ -72,6 +73,10 @@ describe('SingleRowComplexKeyEditorService', () => {
         isFlagsColumn,
       );
       expect(service['updateEditorStatus']).toHaveBeenCalledTimes(1);
+      TestBed.inject(EditorSettingsService).save({ bitwiseFlags: false });
+      service['updateDiffQuery']();
+      expect(getUpdateMultipleKeysQuerySpy.mock.calls[1][4]).toBeUndefined();
+      localStorage.clear();
     });
 
     it('updateFullQuery()', () => {

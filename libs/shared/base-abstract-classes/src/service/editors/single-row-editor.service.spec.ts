@@ -1,3 +1,4 @@
+import { EditorSettingsService } from '@keira/shared/common-services';
 import { provideRouter } from '@angular/router';
 import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
@@ -98,6 +99,11 @@ describe('SingleRowEditorService', () => {
     );
     expect(service.diffQuery).toEqual(queryResult);
     expect(service['updateEditorStatus']).toHaveBeenCalledTimes(1);
+    // flags set as they are (Settings > Editors)
+    TestBed.inject(EditorSettingsService).save({ bitwiseFlags: false });
+    service['updateDiffQuery']();
+    expect(getQuerySpy.mock.calls[1][4]).toBeUndefined();
+    localStorage.clear();
   });
 
   it('updateFullQuery() should correctly work', () => {
