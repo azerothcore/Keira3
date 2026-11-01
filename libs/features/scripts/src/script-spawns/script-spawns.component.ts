@@ -31,7 +31,7 @@ export class ScriptSpawnsComponent implements OnInit {
 
   protected readonly sort = new TableSort<ScriptSpawn>({
     entry: (spawn) => spawn.entry,
-    name: (spawn) => this.names().get(spawn.entry) ?? '',
+    name: (spawn) => this.names().get(spawn.entry) as string,
     map: (spawn) => spawn.mapId,
     file: (spawn) => spawn.file,
   });

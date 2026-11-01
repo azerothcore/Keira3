@@ -3842,6 +3842,18 @@ describe(WorldEditorComponent.name, () => {
         parent.appendChild(host);
         await vi.advanceTimersByTimeAsync(10_000);
         expect(mocks.service.loadPlayers.mock.calls.length).toBe(hiddenCalls + 1);
+        // a failed read for layers since changed: no error shown
+        let fail: (error: Error) => void = () => undefined;
+        mocks.service.loadPlayers.mockImplementation(() => new Promise((_, reject) => (fail = reject)));
+        answer([player(2, false)]);
+        await settle(page);
+        await vi.advanceTimersByTimeAsync(10_000);
+        const stale = fail;
+        page.click('layer-offline-players');
+        await settle(page);
+        stale(new Error('late'));
+        await settle(page);
+        expect(page.byId('players-error', false)).toBeFalsy();
       } finally {
         vi.useRealTimers();
       }
@@ -3953,6 +3965,14 @@ describe(WorldEditorComponent.name, () => {
       typeInto(page, 'pool-mother-chance', '50', 'change');
       await settle(page);
       expect(page.pendingLines()).toEqual(['Edit pool 7', 'Put pool 7 in pool 17']);
+      // no chance: 0
+      typeInto(page, 'pool-mother-chance', '');
+      typeInto(page, 'pool-mother', '18', 'change');
+      await settle(page);
+      expect(page.pendingLines()).toEqual(['Edit pool 7', 'Put pool 7 in pool 18']);
+      typeInto(page, 'pool-mother-chance', '50');
+      typeInto(page, 'pool-mother', '17', 'change');
+      await settle(page);
       // not in itself
       typeInto(page, 'pool-mother', '7', 'change');
       await settle(page);
@@ -3962,6 +3982,10 @@ describe(WorldEditorComponent.name, () => {
       typeInto(page, 'pool-mother', '', 'change');
       await settle(page);
       expect(page.pendingLines()).toEqual(['Edit pool 7']);
+      // (in no mother pool, itself again: left empty)
+      typeInto(page, 'pool-mother', '7', 'change');
+      await settle(page);
+      expect(page.byId<HTMLInputElement>('pool-mother').nativeElement.value).toBe('');
       // back as stored
       typeInto(page, 'pool-max-limit', '1', 'change');
       typeInto(page, 'pool-description', 'Rares', 'change');
@@ -3989,6 +4013,11 @@ describe(WorldEditorComponent.name, () => {
       page.viewer().picked.emit({ type: 'spawn', key: 'creature:2', position: { x: 0, y: 0, z: 0 } });
       await settle(page);
       expect(mocks.service.loadPoolMembers.mock.calls.length).toBe(calls);
+      // back to the first pool: read already
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:1', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      expect(mocks.service.loadPoolMembers.mock.calls.length).toBe(calls);
+      expect(page.text('pool-problem-CHANCE_RANGE')).toContain('POOLS.PROBLEM_CHANCE_RANGE');
     });
 
     it('checks nothing when the members of the pool can not be read, and reads them again next time', async () => {
@@ -4008,6 +4037,21 @@ describe(WorldEditorComponent.name, () => {
       page.viewer().picked.emit({ type: 'spawn', key: 'creature:1', position: { x: 0, y: 0, z: 0 } });
       await settle(page);
       expect(mocks.service.loadPoolMembers).toHaveBeenCalledTimes(3);
+    });
+
+    it("changes a new pool's max_limit and mother pool", async () => {
+      mocks.service.getFreePoolId.mockResolvedValue(900);
+      const { page } = await setup();
+      await loadArea(page);
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:1', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      page.click('pool-create');
+      await settle(page);
+      typeInto(page, 'pool-max-limit', '3', 'change');
+      typeInto(page, 'pool-mother', '17', 'change');
+      await settle(page);
+      expect(page.pendingLines()).toEqual(['Create pool 900', 'Put creature 1 in pool 900', 'Put pool 900 in pool 17']);
+      expect(page.text('pool-max')).toContain('3');
     });
 
     it('makes one pool at a time, of the spawns selected when asked', async () => {
