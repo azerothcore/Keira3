@@ -226,7 +226,8 @@
       "SCRIPT_WAYPOINT": "Escort path points",
       "SCRIPT_NAMES": "Script names",
       "BOSS_BOUNDARIES": "Boss boundaries",
-      "SCRIPT_SPAWNS": "Scripted spawns"
+      "SCRIPT_SPAWNS": "Scripted spawns",
+      "TEMPLATE": "New script (template)"
     }
   },
   "DASHBOARD": {
@@ -2097,7 +2098,30 @@
     "SCRIPT_SPAWNS": "Scripted spawns",
     "SCRIPT_SPAWNS_HELP": "The gameobjects the core's scripts spawn themselves, not in the gameobject table: battleground flags, banners and doors, Wintergrasp's walls and towers, outdoor PvP capture points.",
     "OPEN_GITHUB": "Open on GitHub (AzerothCore master)",
-    "OPEN_FILE": "Open the file on this computer"
+    "OPEN_FILE": "Open the file on this computer",
+    "TEMPLATE": "New script (template)",
+    "TEMPLATE_HELP": "Starting files for a script in AzerothCore's own way: the header with its constants, the .cpp with the script and its AddSC_ function, the script loader lines and the SQL naming it in the database. Fill in the TODOs.",
+    "TEMPLATE_KIND": "What it is",
+    "TEMPLATE_KIND_CREATURE": "Creature (ScriptedAI)",
+    "TEMPLATE_KIND_BOSS": "Boss (BossAI)",
+    "TEMPLATE_KIND_GAMEOBJECT": "Gameobject",
+    "TEMPLATE_KIND_SPELL": "Spell (SpellScript)",
+    "TEMPLATE_KIND_AURA": "Aura (AuraScript)",
+    "TEMPLATE_KIND_INSTANCE": "Instance",
+    "TEMPLATE_ENTRY_CREATURE": "Creature entry",
+    "TEMPLATE_ENTRY_BOSS": "Creature entry",
+    "TEMPLATE_ENTRY_GAMEOBJECT": "Gameobject entry",
+    "TEMPLATE_ENTRY_SPELL": "Spell ID",
+    "TEMPLATE_ENTRY_AURA": "Spell ID",
+    "TEMPLATE_ENTRY_INSTANCE": "Map ID",
+    "TEMPLATE_INSTANCE": "Instance (short name)",
+    "TEMPLATE_SPELLS": "Spells (name = id, one per line)",
+    "TEMPLATE_EVENTS": "Events (one per line)",
+    "TEMPLATE_TEXTS": "Texts (creature_text groups, one per line)",
+    "TEMPLATE_BOSSES": "Bosses (in order, one per line)",
+    "TEMPLATE_SAVE": "Save",
+    "TEMPLATE_LOADER": "Add to the script loader of its folder (the declaration above its AddScripts function, the call inside it):",
+    "TEMPLATE_SQL": "SQL naming it in the database:"
   },
   "COMPARE": {
     "PIN": "Pin to compare",
