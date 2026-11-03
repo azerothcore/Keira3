@@ -14,7 +14,13 @@
     "CREATE_A_NEW": "新建一个 <strong>{{ ENTITY_TABLE }}</strong>，选择一个未使用的 <strong>{{ ENTITY_ID_FIELD }}</strong>:",
     "FREE_ENTRY": "{{ ENTITY_ID_FIELD }}是",
     "FREE": "可用的",
-    "ALREADY_USE": "已在使用中"
+    "ALREADY_USE": "已在使用中",
+    "SOURCE_ENTRY": "{{ ENTITY_ID_FIELD }}",
+    "EXISTS": "存在",
+    "DOES_NOT_EXIST": "不存在",
+    "START_FROM_BLANK": "从空白开始",
+    "COPY_FROM_EXISTING": "从现有条目复制",
+    "COPY_DISABLED": "此类型不支持从现有条目复制"
   },
   "CONNECTED": "连接",
   "SEARCH": "搜索",
@@ -98,7 +104,8 @@
       "SPAWN_ADDON": "生物刷新插件",
       "SMARTAI": "SmartAI",
       "TEXT": "文本",
-      "FORMATIONS": "编队"
+      "FORMATIONS": "编队",
+      "CREATURE_TEMPLATE_LOCALE": "生物模板本地化"
     },
     "QUEST": {
       "TITLE": "任务",
@@ -112,7 +119,9 @@
       "CREATURE_QUESTENDER": "完成任务NPC配置",
       "GAMEOBJECT_QUESTSTARTER": "接取任务的游戏对象配置",
       "GAMEOBJECT_QUESTENDER": "完成任务游戏对象配置",
-      "QUEST_CHAIN": "任务链"
+      "QUEST_CHAIN": "任务链",
+      "QUEST_OFFER_REWARD_LOCALE": "任务奖励文本本地化",
+      "QUEST_REQUEST_ITEMS_LOCALE": "任务需求物品文本本地化"
     },
     "GAME_OBJECT": {
       "TITLE": "游戏对象",
@@ -123,7 +132,8 @@
       "GAMEOBJECT_LOOT": "游戏对象掉落",
       "SPAWN": "游戏对象刷新",
       "SPAWN_ADDON": "对象刷新插件",
-      "SMART_AI": "SmartAI"
+      "SMART_AI": "SmartAI",
+      "GAMEOBJECT_TEMPLATE_LOCALE": "游戏对象模板本地化"
     },
     "ITEM": {
       "TITLE": "物品",
@@ -133,7 +143,9 @@
       "ITEM_LOOT": "物品掉落",
       "DISENCHANT_LOOT": "分解掉落",
       "PROSPECTING_LOOT": "采矿掉落",
-      "MILLING_LOOT": "研磨掉落"
+      "MILLING_LOOT": "研磨掉落",
+      "SOURCES": "来源",
+      "ITEM_TEMPLATE_LOCALE": "物品模板本地化"
     },
     "OTHER_LOOTS": {
       "TITLE": "其它掉落",
@@ -157,7 +169,10 @@
       "SELECT_PAGE_TEXT": "选择页面文本",
       "PAGE_TEXT": "页面文本",
       "ACORE_STRING_TEXT": "Acore字符串",
-      "SELECT_ACORE_STRING_TEXT": "选择Acore字符串"
+      "SELECT_ACORE_STRING_TEXT": "选择Acore字符串",
+      "PAGE_TEXT_LOCALE": "页面文本本地化",
+      "NPC_TEXT_LOCALE": "NPC 文本本地化",
+      "BROADCAST_TEXT_LOCALE": "广播文本本地化"
     },
     "GOSSIP": {
       "TITLE": "闲聊对话",
@@ -257,6 +272,28 @@
     "AFFECTED_ROWS": "受影响的行:",
     "HIDE_TRACE": "隐藏追踪",
     "SHOW_TRACE": "显示追踪"
+  },
+  "COPY_OUTPUT": {
+    "TITLE": "复制条目的 SQL",
+    "DESCRIPTION": "检查并执行下面的 SQL 以复制该条目。你可以复制查询手动执行，或使用“执行”按钮直接运行。",
+    "COPY": "复制",
+    "COPY_TOOLTIP": "将 SQL 查询复制到剪贴板",
+    "EXECUTE": "执行",
+    "EXECUTE_TOOLTIP": "执行 SQL 查询并创建新条目",
+    "EXECUTED": "已执行",
+    "CONTINUE": "前往编辑器",
+    "CONTINUE_TOOLTIP": "打开新条目的编辑器",
+    "SELECT_ALL": "全选",
+    "SELECT_NONE": "全不选",
+    "TABLE": "表",
+    "RAW": "直接 INSERT",
+    "TEMP": "临时表",
+    "RAW_COLUMNS": "直接 INSERT（指定列）",
+    "RAW_INFERRED": "直接 INSERT（自动推断列）",
+    "TEMP_TOOLTIP": "临时表（使用临时表）",
+    "GENERATED_SQL": "生成的 SQL",
+    "EXPAND": "展开",
+    "COLLAPSE": "收起"
   },
   "CREATURE": {
     "TEMPLATE": {
@@ -368,7 +405,11 @@
       "BROADCAST_TEXT_ID": "在broadcast_text中找到的等效文本的ID",
       "SEARCH_BROADCAST_TEXT": "搜索 MaleText 或 FemaleText",
       "COPY_TO_ROW": "复制到选中的行",
-      "MATCHED_ROW": "与搜索匹配的行"
+      "MATCHED_ROW": "与搜索匹配的行",
+      "COMMENT_FROM_CREATURE": "使用生物名称",
+      "TEXT_FROM_BROADCAST_TEXT": "根据 BroadcastTextId 读取文本（MaleText 或 FemaleText）",
+      "NO_BROADCAST_TEXT_ID": "请先设置 BroadcastTextId。",
+      "BROADCAST_TEXT_NOT_FOUND": "没有此 ID 的 broadcast_text（或其没有文本）。"
     },
     "FORMATION_LEADER": "领队的编队（刷新点 guid）",
     "FORMATION_LEADS": "{{guid}}：带领 {{count}} 个（地图 {{map}}）",
@@ -605,6 +646,25 @@
       "SPELL_CATEGORY_COOLDOWNS": "冷却时间(以毫秒为单位)，该冷却时间适用于触发法术所在类别的所有其他法术。使用-1使用默认的法术冷却时间。",
       "REQUIRED_FACTION": "使用物品所需的阵营，当引用物品所需的阵营ID时，它是选择器中左侧的'ID'列，更多信息请查看wiki中的'faction'。",
       "REQUIRED_FACTION_RANK": "指定阵营所需的等级值。"
+    },
+    "SOURCES": {
+      "HELP": "此物品的来源（只读）：包含它的掉落表及掉落者、使用包含它的引用掉落的掉落表、出售它的商人以及相关任务。",
+      "RELOAD": "重新读取",
+      "READING": "读取中…",
+      "LOOT": "掉落",
+      "LOOT_TABLE": "掉落表",
+      "COUNT": "数量",
+      "USED_BY": "掉落者 / 使用者",
+      "THROUGH_REFERENCE": "通过引用掉落",
+      "VENDORS": "商人",
+      "QUESTS": "任务",
+      "HOW": "方式",
+      "NONE": "无。",
+      "QUEST_REWARD": "奖励",
+      "QUEST_CHOICE": "奖励（可选）",
+      "QUEST_REQUIRED": "需要",
+      "QUEST_START": "开始任务",
+      "QUEST_DROP": "任务掉落"
     }
   },
   "LOOT_EDITOR": {
@@ -2143,5 +2203,14 @@
   },
   "SOAP": {
     "RELOAD_TIP": "在 worldserver 上执行 {{command}}，让它重新读取该表（执行查询之后）"
+  },
+  "MONEY": {
+    "HELP": "以金、银、铜表示的数额（修改任意一项会更新该字段）",
+    "GOLD": "金",
+    "SILVER": "银",
+    "COPPER": "铜",
+    "GOLD_SHORT": "金",
+    "SILVER_SHORT": "银",
+    "COPPER_SHORT": "铜"
   }
 }

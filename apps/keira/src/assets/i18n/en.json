@@ -14,7 +14,13 @@
     "CREATE_A_NEW": "Create a new <strong>{{ ENTITY_TABLE }}</strong> by selecting an empty <strong>{{ ENTITY_ID_FIELD }}</strong>:",
     "FREE_ENTRY": "The {{ ENTITY_ID_FIELD }} is",
     "FREE": "free",
-    "ALREADY_USE": "already in use"
+    "ALREADY_USE": "already in use",
+    "SOURCE_ENTRY": "The {{ ENTITY_ID_FIELD }}",
+    "EXISTS": "exists",
+    "DOES_NOT_EXIST": "does not exist",
+    "START_FROM_BLANK": "Start from blank",
+    "COPY_FROM_EXISTING": "Copy from existing",
+    "COPY_DISABLED": "Copy from existing is not available for this entity"
   },
   "CONNECTED": "Connected",
   "SEARCH": "Search",
@@ -98,7 +104,8 @@
       "SPAWN_ADDON": "Spawn Addon",
       "SMARTAI": "SmartAI",
       "TEXT": "Text",
-      "FORMATIONS": "Formations"
+      "FORMATIONS": "Formations",
+      "CREATURE_TEMPLATE_LOCALE": "Creature Template Locale"
     },
     "QUEST": {
       "TITLE": "Quest",
@@ -112,7 +119,9 @@
       "CREATURE_QUESTENDER": "Creature Questender",
       "GAMEOBJECT_QUESTSTARTER": "Gameobject Queststarter",
       "GAMEOBJECT_QUESTENDER": "Gameobject Questender",
-      "QUEST_CHAIN": "Quest Chain"
+      "QUEST_CHAIN": "Quest Chain",
+      "QUEST_OFFER_REWARD_LOCALE": "Quest Offer Reward Locale",
+      "QUEST_REQUEST_ITEMS_LOCALE": "Quest Request Items Locale"
     },
     "GAME_OBJECT": {
       "TITLE": "GameObject",
@@ -123,7 +132,8 @@
       "GAMEOBJECT_LOOT": "Gameobject Loot",
       "SPAWN": "Spawn",
       "SPAWN_ADDON": "Spawn Addon",
-      "SMART_AI": "SmartAI"
+      "SMART_AI": "SmartAI",
+      "GAMEOBJECT_TEMPLATE_LOCALE": "Gameobject Template Locale"
     },
     "ITEM": {
       "TITLE": "Item",
@@ -133,7 +143,9 @@
       "ITEM_LOOT": "Item Loot",
       "DISENCHANT_LOOT": "Disenchant Loot",
       "PROSPECTING_LOOT": "Prospecting Loot",
-      "MILLING_LOOT": "Milling Loot"
+      "MILLING_LOOT": "Milling Loot",
+      "SOURCES": "Where it comes from",
+      "ITEM_TEMPLATE_LOCALE": "Item Template Locale"
     },
     "OTHER_LOOTS": {
       "TITLE": "Other Loots",
@@ -157,7 +169,10 @@
       "SELECT_PAGE_TEXT": "Select Page Text",
       "PAGE_TEXT": "Page Text",
       "ACORE_STRING_TEXT": "Acore Strings",
-      "SELECT_ACORE_STRING_TEXT": "Select Acore Strings"
+      "SELECT_ACORE_STRING_TEXT": "Select Acore Strings",
+      "PAGE_TEXT_LOCALE": "Page Text Locale",
+      "NPC_TEXT_LOCALE": "Npc Text Locale",
+      "BROADCAST_TEXT_LOCALE": "Broadcast Text Locale"
     },
     "GOSSIP": {
       "TITLE": "Gossip",
@@ -257,6 +272,28 @@
     "AFFECTED_ROWS": "Affected rows:",
     "HIDE_TRACE": "Hide trace",
     "SHOW_TRACE": "Show trace"
+  },
+  "COPY_OUTPUT": {
+    "TITLE": "Copy Entry SQL",
+    "DESCRIPTION": "Review and execute the SQL below to copy the entry. You can copy the query to execute it manually, or use the Execute button to run it directly.",
+    "COPY": "Copy",
+    "COPY_TOOLTIP": "Copy SQL query to clipboard",
+    "EXECUTE": "Execute",
+    "EXECUTE_TOOLTIP": "Execute the SQL query and create the new entry",
+    "EXECUTED": "Executed",
+    "CONTINUE": "Continue to Editor",
+    "CONTINUE_TOOLTIP": "Navigate to the editor for the new entry",
+    "SELECT_ALL": "Select All",
+    "SELECT_NONE": "Select None",
+    "TABLE": "Table",
+    "RAW": "Raw INSERT",
+    "TEMP": "Temp Table",
+    "RAW_COLUMNS": "Raw INSERT (explicit columns)",
+    "RAW_INFERRED": "Raw INSERT (columns will be inferred)",
+    "TEMP_TOOLTIP": "Temp Table (uses a temporary table)",
+    "GENERATED_SQL": "Generated SQL",
+    "EXPAND": "Expand",
+    "COLLAPSE": "Collapse"
   },
   "CREATURE": {
     "TEMPLATE": {
@@ -368,7 +405,11 @@
       "BROADCAST_TEXT_ID": "Id of the equivalent text found in broadcast_text",
       "SEARCH_BROADCAST_TEXT": "Search MaleText or FemaleText",
       "COPY_TO_ROW": "Copy to Selected Row",
-      "MATCHED_ROW": "The row your search matched"
+      "MATCHED_ROW": "The row your search matched",
+      "COMMENT_FROM_CREATURE": "Use the creature's name",
+      "TEXT_FROM_BROADCAST_TEXT": "Read the text from the BroadcastTextId (MaleText, or FemaleText)",
+      "NO_BROADCAST_TEXT_ID": "Set a BroadcastTextId first.",
+      "BROADCAST_TEXT_NOT_FOUND": "No broadcast_text with this ID (or it has no text)."
     },
     "FORMATION_LEADER": "Formation of the leader (spawn guid)",
     "FORMATION_LEADS": "{{guid}}: leads {{count}} (map {{map}})",
@@ -605,6 +646,25 @@
       "SPELL_CATEGORY_COOLDOWNS": "The cooldown time in milliseconds that is applied to all other spells in the category that the triggered spell is also in. Use -1 to use the default spell cooldown.",
       "REQUIRED_FACTION": "Required Faction to be able to use the item, when refering to the Item Faction ID required, it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki.",
       "REQUIRED_FACTION_RANK": "The rank value required for the specified faction."
+    },
+    "SOURCES": {
+      "HELP": "Where this item comes from (read only): the loot tables having it and what drops them, the loot tables using the reference loots having it, the vendors selling it and the quests about it.",
+      "RELOAD": "Read again",
+      "READING": "Reading…",
+      "LOOT": "Loot",
+      "LOOT_TABLE": "Loot table",
+      "COUNT": "Count",
+      "USED_BY": "Dropped by / used by",
+      "THROUGH_REFERENCE": "Through reference loot",
+      "VENDORS": "Vendors",
+      "QUESTS": "Quests",
+      "HOW": "How",
+      "NONE": "None.",
+      "QUEST_REWARD": "Reward",
+      "QUEST_CHOICE": "Reward (choice)",
+      "QUEST_REQUIRED": "Required",
+      "QUEST_START": "Starts the quest",
+      "QUEST_DROP": "Quest drop"
     }
   },
   "LOOT_EDITOR": {
@@ -2143,5 +2203,14 @@
   },
   "SOAP": {
     "RELOAD_TIP": "Run {{command}} on the worldserver, so it reads the table again (after executing the query)"
+  },
+  "MONEY": {
+    "HELP": "The amount in gold, silver and copper (changing one changes the field)",
+    "GOLD": "Gold",
+    "SILVER": "Silver",
+    "COPPER": "Copper",
+    "GOLD_SHORT": "g",
+    "SILVER_SHORT": "s",
+    "COPPER_SHORT": "c"
   }
 }

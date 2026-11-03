@@ -14,7 +14,13 @@
     "CREATE_A_NEW": "Crear nuevo <strong>{{ ENTITY_TABLE }}</strong> seleccionando un <strong>{{ ENTITY_ID_FIELD }}</strong>:",
     "FREE_ENTRY": "El o La {{ ENTITY_ID_FIELD }} es",
     "FREE": "Libre",
-    "ALREADY_USE": "Está en uso"
+    "ALREADY_USE": "Está en uso",
+    "SOURCE_ENTRY": "El o La {{ ENTITY_ID_FIELD }}",
+    "EXISTS": "existe",
+    "DOES_NOT_EXIST": "no existe",
+    "START_FROM_BLANK": "Empezar en blanco",
+    "COPY_FROM_EXISTING": "Copiar de uno existente",
+    "COPY_DISABLED": "Copiar de uno existente no está disponible para esta entidad"
   },
   "CONNECTED": "Conectado",
   "SEARCH": "Buscar",
@@ -98,7 +104,8 @@
       "SPAWN_ADDON": "Addon de Spawn",
       "SMARTAI": "SmartAI",
       "TEXT": "Texto",
-      "FORMATIONS": "Formaciones"
+      "FORMATIONS": "Formaciones",
+      "CREATURE_TEMPLATE_LOCALE": "Locale de Creature Template"
     },
     "QUEST": {
       "TITLE": "Misión",
@@ -112,7 +119,9 @@
       "CREATURE_QUESTENDER": "Criatura para Finalizar la Misión",
       "GAMEOBJECT_QUESTSTARTER": "Objeto del Juego para Iniciar la Misión",
       "GAMEOBJECT_QUESTENDER": "Objeto del Juego para Finalizar la Misión",
-      "QUEST_CHAIN": "Cadena de Misiones"
+      "QUEST_CHAIN": "Cadena de Misiones",
+      "QUEST_OFFER_REWARD_LOCALE": "Locale de Quest Offer Reward",
+      "QUEST_REQUEST_ITEMS_LOCALE": "Locale de Quest Request Items"
     },
     "GAME_OBJECT": {
       "TITLE": "Objeto del Juego",
@@ -123,7 +132,8 @@
       "GAMEOBJECT_LOOT": "Botín de Objeto del Juego",
       "SPAWN": "Aparición",
       "SPAWN_ADDON": "Addon de Spawn",
-      "SMART_AI": "SmartAI"
+      "SMART_AI": "SmartAI",
+      "GAMEOBJECT_TEMPLATE_LOCALE": "Locale de Gameobject Template"
     },
     "ITEM": {
       "TITLE": "Objeto",
@@ -133,7 +143,9 @@
       "ITEM_LOOT": "Botín de Item",
       "DISENCHANT_LOOT": "Botín de Desencantamiento",
       "PROSPECTING_LOOT": "Botín por Prospectar",
-      "MILLING_LOOT": "Botín por Moler"
+      "MILLING_LOOT": "Botín por Moler",
+      "SOURCES": "De dónde sale",
+      "ITEM_TEMPLATE_LOCALE": "Locale de Item Template"
     },
     "OTHER_LOOTS": {
       "TITLE": "Otro Tipo de Botines",
@@ -157,7 +169,10 @@
       "SELECT_PAGE_TEXT": "Seleccionar Texto de Página",
       "PAGE_TEXT": "Texto de Página",
       "ACORE_STRING_TEXT": "Cadenas de Acore",
-      "SELECT_ACORE_STRING_TEXT": "Seleccionar Cadenas de Acore"
+      "SELECT_ACORE_STRING_TEXT": "Seleccionar Cadenas de Acore",
+      "PAGE_TEXT_LOCALE": "Locale de Page Text",
+      "NPC_TEXT_LOCALE": "Locale de Npc Text",
+      "BROADCAST_TEXT_LOCALE": "Locale de Broadcast Text"
     },
     "GOSSIP": {
       "TITLE": "Ventana de Texto de Criatura",
@@ -257,6 +272,28 @@
     "AFFECTED_ROWS": "Líneas afectadas:",
     "HIDE_TRACE": "Ocultar traza",
     "SHOW_TRACE": "Mostrar traza"
+  },
+  "COPY_OUTPUT": {
+    "TITLE": "SQL para copiar la entrada",
+    "DESCRIPTION": "Revisa y ejecuta el SQL de abajo para copiar la entrada. Puedes copiar la consulta para ejecutarla a mano, o usar el botón Ejecutar para hacerlo directamente.",
+    "COPY": "Copiar",
+    "COPY_TOOLTIP": "Copiar la consulta SQL al portapapeles",
+    "EXECUTE": "Ejecutar",
+    "EXECUTE_TOOLTIP": "Ejecutar la consulta SQL y crear la nueva entrada",
+    "EXECUTED": "Ejecutado",
+    "CONTINUE": "Continuar al editor",
+    "CONTINUE_TOOLTIP": "Ir al editor de la nueva entrada",
+    "SELECT_ALL": "Seleccionar todo",
+    "SELECT_NONE": "No seleccionar nada",
+    "TABLE": "Tabla",
+    "RAW": "INSERT directo",
+    "TEMP": "Tabla temporal",
+    "RAW_COLUMNS": "INSERT directo (columnas explícitas)",
+    "RAW_INFERRED": "INSERT directo (columnas deducidas)",
+    "TEMP_TOOLTIP": "Tabla temporal (usa una tabla temporal)",
+    "GENERATED_SQL": "SQL generado",
+    "EXPAND": "Expandir",
+    "COLLAPSE": "Contraer"
   },
   "CREATURE": {
     "TEMPLATE": {
@@ -368,7 +405,11 @@
       "BROADCAST_TEXT_ID": "ID del texto equivalente encontrado en broadcast_text",
       "SEARCH_BROADCAST_TEXT": "Buscar en MaleText o FemaleText",
       "COPY_TO_ROW": "Copiar a la fila seleccionada",
-      "MATCHED_ROW": "La fila que coincidió con tu búsqueda"
+      "MATCHED_ROW": "La fila que coincidió con tu búsqueda",
+      "COMMENT_FROM_CREATURE": "Usar el nombre de la criatura",
+      "TEXT_FROM_BROADCAST_TEXT": "Leer el texto del BroadcastTextId (MaleText, o FemaleText)",
+      "NO_BROADCAST_TEXT_ID": "Primero pon un BroadcastTextId.",
+      "BROADCAST_TEXT_NOT_FOUND": "No hay broadcast_text con este ID (o no tiene texto)."
     },
     "FORMATION_LEADER": "Formación del líder (guid del spawn)",
     "FORMATION_LEADS": "{{guid}}: lidera a {{count}} (mapa {{map}})",
@@ -605,6 +646,25 @@
       "SPELL_CATEGORY_COOLDOWNS": "El Tiempo de Enfriamiento (la recarga) en milisegundos que es aplicada a todos los demás Hechizos que caben dentro de la Categoría a la que también pertenece el Hechizo. Utilice el valor -1 en este campo para el Tiempo de Reutilización de Hechizos que viene por defecto en el mismo.",
       "REQUIRED_FACTION": "Facción requerida para poder usar el objeto, cuando se refiere al ID de Facción del Objeto requerido, es la columna de la izquierda 'ID' en el selector, para más información consulta 'faction' en la wiki.",
       "REQUIRED_FACTION_RANK": "El rango requerido para la facción especificada."
+    },
+    "SOURCES": {
+      "HELP": "De dónde sale este objeto (solo lectura): las tablas de botín que lo tienen y qué las suelta, las tablas que usan los botines de referencia que lo tienen, los vendedores que lo venden y las misiones relacionadas.",
+      "RELOAD": "Leer de nuevo",
+      "READING": "Leyendo…",
+      "LOOT": "Botín",
+      "LOOT_TABLE": "Tabla de botín",
+      "COUNT": "Cantidad",
+      "USED_BY": "Lo suelta / lo usa",
+      "THROUGH_REFERENCE": "A través de botín de referencia",
+      "VENDORS": "Vendedores",
+      "QUESTS": "Misiones",
+      "HOW": "Cómo",
+      "NONE": "Ninguno.",
+      "QUEST_REWARD": "Recompensa",
+      "QUEST_CHOICE": "Recompensa (a elegir)",
+      "QUEST_REQUIRED": "Requerido",
+      "QUEST_START": "Inicia la misión",
+      "QUEST_DROP": "Botín de misión"
     }
   },
   "LOOT_EDITOR": {
@@ -2143,5 +2203,14 @@
   },
   "SOAP": {
     "RELOAD_TIP": "Ejecutar {{command}} en el worldserver para que vuelva a leer la tabla (tras ejecutar la consulta)"
+  },
+  "MONEY": {
+    "HELP": "La cantidad en oro, plata y cobre (cambiar uno cambia el campo)",
+    "GOLD": "Oro",
+    "SILVER": "Plata",
+    "COPPER": "Cobre",
+    "GOLD_SHORT": "o",
+    "SILVER_SHORT": "p",
+    "COPPER_SHORT": "c"
   }
 }
