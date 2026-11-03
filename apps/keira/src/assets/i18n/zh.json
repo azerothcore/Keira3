@@ -369,7 +369,13 @@
       "SEARCH_BROADCAST_TEXT": "搜索 MaleText 或 FemaleText",
       "COPY_TO_ROW": "复制到选中的行",
       "MATCHED_ROW": "与搜索匹配的行"
-    }
+    },
+    "FORMATION_LEADER": "领队的编队（刷新点 guid）",
+    "FORMATION_LEADS": "{{guid}}：带领 {{count}} 个（地图 {{map}}）",
+    "FORMATION_LED_BY": "{{guid}}：刷新点 {{member}} 的领队",
+    "FORMATION_NONE": "{{guid}}：暂无编队（地图 {{map}}）",
+    "FORMATION_NO_SPAWNS": "该生物没有刷新点：编队由刷新点（creature guid）组成。",
+    "FORMATION_HELP": "creature_formations 按刷新点设置：其行是领队的成员（领队自己那一行以其 guid 作为成员）。"
   },
   "QUEST": {
     "TEMPLATE": {

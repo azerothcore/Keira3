@@ -5,6 +5,24 @@
     <span [translate]="'LOADING'"></span>
   }
 
+  <div class="content-block" id="formation-leader-block">
+    <label class="form-label small" for="formation-leader">{{ 'CREATURE.FORMATION_LEADER' | translate }}</label>
+    @if (spawns() === undefined) {
+      <p class="small mb-0" id="formation-spawns-reading">{{ 'LOADING' | translate }}</p>
+    } @else if (!leaders().length) {
+      <p class="small text-muted mb-0" id="formation-no-spawns">{{ 'CREATURE.FORMATION_NO_SPAWNS' | translate }}</p>
+    } @else {
+      <select class="form-select form-select-sm w-auto" id="formation-leader" (change)="pickLeader(+$any($event.target).value)">
+        @for (leader of leaders(); track leader.guid) {
+          <option [value]="leader.guid" [selected]="leader.guid === editorService.leader">
+            {{ leader.key | translate: leader.params }}
+          </option>
+        }
+      </select>
+      <p class="small text-muted mt-1 mb-0">{{ 'CREATURE.FORMATION_HELP' | translate }}</p>
+    }
+  </div>
+
   @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
     <div>
       <div class="content-block">

@@ -369,7 +369,13 @@
       "SEARCH_BROADCAST_TEXT": "Поиск по MaleText или FemaleText",
       "COPY_TO_ROW": "Скопировать в выбранную строку",
       "MATCHED_ROW": "Строка, найденная по вашему запросу"
-    }
+    },
+    "FORMATION_LEADER": "Строй лидера (guid спавна)",
+    "FORMATION_LEADS": "{{guid}}: ведёт {{count}} (карта {{map}})",
+    "FORMATION_LED_BY": "{{guid}}: лидер спавна {{member}}",
+    "FORMATION_NONE": "{{guid}}: строя пока нет (карта {{map}})",
+    "FORMATION_NO_SPAWNS": "У этого существа нет спавнов: строй состоит из спавнов (guid в creature).",
+    "FORMATION_HELP": "creature_formations задаётся для спавнов: строки — это члены строя лидера (строка самого лидера содержит его guid как члена)."
   },
   "QUEST": {
     "TEMPLATE": {
