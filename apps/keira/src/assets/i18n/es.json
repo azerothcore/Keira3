@@ -1942,7 +1942,12 @@
     "PLAYERS_ERROR": "No se puede leer {{database}}.characters (Ajustes > Servidor: el nombre de la base de datos, y que el usuario pueda leerla).",
     "LEGEND_PLAYER": "Jugador conectado",
     "LEGEND_OFFLINE_PLAYER": "Personaje desconectado",
-    "POOL_MOTHER": "En el pool"
+    "POOL_MOTHER": "En el pool",
+    "LOAD_ON_STARTUP": "Leerla al iniciar Keira",
+    "STARTUP_WAITING": "en espera",
+    "STARTUP_READING": "leyendo…",
+    "STARTUP_DONE": "leída",
+    "STARTUP_FAILED": "no se pudo leer (ver la consola)"
   },
   "SETTINGS": {
     "TITLE": "Ajustes",

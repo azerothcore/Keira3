@@ -34,6 +34,24 @@
         </button>
       </div>
       <small class="form-text text-muted">{{ folder.help | translate }}</small>
+      @if (startupFolder(folder.key); as startup) {
+        <div class="form-check small mb-0">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            [id]="'startup-' + folder.id"
+            [attr.data-testid]="'startup-' + folder.id"
+            [checked]="startupLoad.chosen()[startup]"
+            (change)="startupLoad.choose(startup, $any($event.target).checked)"
+          />
+          <label class="form-check-label" [for]="'startup-' + folder.id">{{ 'WORLD_EDITOR.LOAD_ON_STARTUP' | translate }}</label>
+          @if (startupLoad.states()[startup]; as state) {
+            <span class="ms-1" [class.text-danger]="state === 'failed'" [attr.data-testid]="'startup-state-' + folder.id">
+              · {{ 'WORLD_EDITOR.STARTUP_' + state.toUpperCase() | translate }}
+            </span>
+          }
+        </div>
+      }
       <details class="game-data-more-info small" [attr.data-testid]="'more-info-' + folder.id">
         <summary>{{ 'WORLD_EDITOR.MORE_INFO' | translate }}</summary>
         <div class="text-muted">{{ folder.info | translate }}</div>

@@ -2,7 +2,7 @@ import { Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ElectronService } from '@keira/shared/common-services';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
-import { WOW_DATA_SETTINGS_KEY, WowClientService, WowDataCacheService } from '@keira/shared/wow-data';
+import { WOW_DATA_SETTINGS_KEY, WowClientService, WowDataCacheService, StartupLoadService } from '@keira/shared/wow-data';
 import { ClipboardService } from 'ngx-clipboard';
 import { ToastrService } from 'ngx-toastr';
 import { GameDataFoldersComponent } from './game-data-folders.component';
@@ -68,6 +68,18 @@ describe(GameDataFoldersComponent.name, () => {
     expect(fixture.componentInstance.saves).toBe(1);
     // locked again
     expect(byId('folders-modify')).toBeTruthy();
+  });
+
+  it('reads the folders asked for when Keira starts, and says how it went', () => {
+    const { fixture, byId } = setup({ clientPath: '/wow', serverDataPath: '' });
+    // (not the cache's folder)
+    expect(byId('startup-cache-folder')).toBeNull();
+    byId<HTMLInputElement>('startup-client-path').click();
+    expect(TestBed.inject(StartupLoadService).chosen().client).toBe(true);
+    (TestBed.inject(StartupLoadService) as unknown as { _states: { set(v: object): void } })._states.set({ client: 'failed' });
+    fixture.detectChanges();
+    expect(byId('startup-state-client-path').textContent).toContain('WORLD_EDITOR.STARTUP_FAILED');
+    expect(byId('startup-state-client-path').classList).toContain('text-danger');
   });
 
   it('is open to edit when no client folder is set, copies folders and opens them', () => {
