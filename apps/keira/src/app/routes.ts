@@ -59,6 +59,7 @@ import {
   SelectCreatureComponent,
   SkinningLootTemplateComponent,
   CreatureTemplateLocaleComponent,
+  CreatureTextLocaleComponent,
 } from '@keira/features/creature';
 import {
   GameobjectHandlerService,
@@ -79,6 +80,7 @@ import {
   GossipMenuOptionComponent,
   SelectGossipComponent,
   GossipCopyComponent,
+  GossipMenuOptionLocaleComponent,
 } from '@keira/features/gossip';
 import {
   DisenchantLootTemplateComponent,
@@ -181,6 +183,11 @@ export const KEIRA_ROUTES: Routes = [
   {
     path: 'creature',
     children: [
+      {
+        path: 'creature-text-locale',
+        component: CreatureTextLocaleComponent,
+        canActivate: [CreatureHandlerService],
+      },
       {
         path: 'creature-template-locale',
         component: CreatureTemplateLocaleComponent,
@@ -610,6 +617,11 @@ export const KEIRA_ROUTES: Routes = [
   {
     path: 'gossip',
     children: [
+      {
+        path: 'gossip-menu-option-locale',
+        component: GossipMenuOptionLocaleComponent,
+        canActivate: [GossipHandlerService],
+      },
       {
         path: 'select',
         component: SelectGossipComponent,

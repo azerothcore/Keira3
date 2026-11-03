@@ -65,6 +65,8 @@ export * from './entities/quest-offer-reward.type';
 export * from './entities/quest-request-items.type';
 export * from './entities/quest-template-addon.type';
 export * from './entities/quest-template-locale.type';
+export * from './entities/creature-text-locale.type';
+export * from './entities/gossip-menu-option-locale.type';
 export * from './entities/broadcast-text-locale.type';
 export * from './entities/npc-text-locale.type';
 export * from './entities/page-text-locale.type';

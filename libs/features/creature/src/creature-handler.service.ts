@@ -21,6 +21,7 @@ import {
   SAI_TABLE,
   SKINNING_LOOT_TEMPLATE_TABLE,
   CREATURE_TEMPLATE_LOCALE_TABLE,
+  CREATURE_TEXT_LOCALE_TABLE,
 } from '@keira/shared/acore-world-model';
 import { HandlerService } from '@keira/shared/base-abstract-classes';
 import { SaiCreatureHandlerService } from './sai-creature-handler.service';
@@ -93,6 +94,10 @@ export class CreatureHandlerService extends HandlerService<CreatureTemplate> {
     return this.statusMap[CREATURE_TEMPLATE_LOCALE_TABLE].asReadonly();
   }
 
+  get isCreatureTextLocaleUnsaved(): Signal<boolean> {
+    return this.statusMap[CREATURE_TEXT_LOCALE_TABLE].asReadonly();
+  }
+
   protected _statusMap = {
     [CREATURE_TEMPLATE_TABLE]: signal(false),
     [CREATURE_TEMPLATE_MODEL_TABLE]: signal(false),
@@ -113,6 +118,7 @@ export class CreatureHandlerService extends HandlerService<CreatureTemplate> {
     [CREATURE_TEXT_TABLE]: signal(false),
     [CREATURE_FORMATIONS_TABLE]: signal(false),
     [CREATURE_TEMPLATE_LOCALE_TABLE]: signal(false),
+    [CREATURE_TEXT_LOCALE_TABLE]: signal(false),
   };
 
   override select(isNew: boolean, id: string | number | Partial<CreatureTemplate>, name?: string, navigate = true, sourceId?: string) {
