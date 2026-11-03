@@ -96,9 +96,9 @@
                 </ng-template>
               </ngx-datatable-column>
               <ngx-datatable-column name="item" prop="item" [minWidth]="80" />
-              <ngx-datatable-column name="Name" [minWidth]="200">
+              <ngx-datatable-column name="Name" prop="item" [minWidth]="200" [comparator]="itemNames.compare">
                 <ng-template let-row="row" ngx-datatable-cell-template>
-                  {{ editorService.queryService.getItemNameById(row.item) | async }}
+                  {{ itemNames.name(row.item) }}
                 </ng-template>
               </ngx-datatable-column>
               <ngx-datatable-column name="slot" prop="slot" />

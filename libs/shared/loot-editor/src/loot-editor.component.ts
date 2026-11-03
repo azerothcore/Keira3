@@ -10,7 +10,7 @@ import { EditorButtonsComponent, IconComponent, QueryOutputComponent } from '@ke
 import { DTCFG } from '@keira/shared/config';
 import { WIKI_BASE_URL } from '@keira/shared/constants';
 import { FlagsSelectorBtnComponent, ItemSelectorBtnComponent } from '@keira/shared/selectors';
-import { compareObjFn, SubscriptionHandler } from '@keira/shared/utils';
+import { compareObjFn, SubscriptionHandler, NameCache } from '@keira/shared/utils';
 import { TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { TooltipDirective } from 'ngx-bootstrap/tooltip';
@@ -38,6 +38,11 @@ import { syncReferenceCount } from './reference-count';
   ],
 })
 export class LootEditorComponent<T extends LootTemplate> extends SubscriptionHandler implements OnInit {
+  /** The names shown, read once each: the table sorts by them. */
+  protected readonly itemNames = new NameCache(
+    (id) => this.editorService.queryService.getItemNameById(id),
+    () => this.changeDetectorRef.markForCheck(),
+  );
   @Input() editorService!: MultiRowEditorService<T>;
 
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
