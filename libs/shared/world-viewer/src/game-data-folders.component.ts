@@ -1,7 +1,15 @@
 import { ChangeDetectionStrategy, Component, computed, inject, Injector, input, output, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ElectronService } from '@keira/shared/common-services';
-import { WowClientService, WowDataCacheService, WowDataSettingsService, StartupFolder, StartupLoadService } from '@keira/shared/wow-data';
+import {
+  WowClientService,
+  WowDataCacheService,
+  WowDataSettingsService,
+  StartupFolder,
+  StartupLoadService,
+  ModelViewerSettingService,
+  ModelViewerSource,
+} from '@keira/shared/wow-data';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ClipboardService } from 'ngx-clipboard';
 import { ToastrService } from 'ngx-toastr';
@@ -27,6 +35,8 @@ export class GameDataFoldersComponent {
   private readonly clipboard = inject(ClipboardService);
   protected readonly electron = inject(ElectronService);
   protected readonly startupLoad = inject(StartupLoadService);
+  protected readonly modelViewer = inject(ModelViewerSettingService);
+  protected readonly modelSources: ModelViewerSource[] = ['wowhead', 'game-data'];
 
   /** The folder read when Keira starts, for a folder field (none for the cache's). */
   protected startupFolder(key: FolderKey): StartupFolder | undefined {

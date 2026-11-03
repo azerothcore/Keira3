@@ -2,7 +2,13 @@ import { Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ElectronService } from '@keira/shared/common-services';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
-import { WOW_DATA_SETTINGS_KEY, WowClientService, WowDataCacheService, StartupLoadService } from '@keira/shared/wow-data';
+import {
+  WOW_DATA_SETTINGS_KEY,
+  WowClientService,
+  WowDataCacheService,
+  StartupLoadService,
+  ModelViewerSettingService,
+} from '@keira/shared/wow-data';
 import { ClipboardService } from 'ngx-clipboard';
 import { ToastrService } from 'ngx-toastr';
 import { GameDataFoldersComponent } from './game-data-folders.component';
@@ -80,6 +86,18 @@ describe(GameDataFoldersComponent.name, () => {
     fixture.detectChanges();
     expect(byId('startup-state-client-path').textContent).toContain('WORLD_EDITOR.STARTUP_FAILED');
     expect(byId('startup-state-client-path').classList).toContain('text-danger');
+  });
+
+  it('picks where the 3D previews come from: Wowhead or the game data', () => {
+    const { fixture, byId } = setup({ clientPath: '/wow', serverDataPath: '' });
+    expect(byId<HTMLInputElement>('model-viewer-wowhead').checked).toBe(true);
+
+    byId<HTMLInputElement>('model-viewer-game-data').click();
+    fixture.detectChanges();
+
+    expect(TestBed.inject(ModelViewerSettingService).source()).toBe('game-data');
+    expect(byId<HTMLInputElement>('model-viewer-game-data').checked).toBe(true);
+    expect(byId('model-viewer-source').textContent).toContain('WORLD_EDITOR.MODEL_VIEWER_GAME_DATA');
   });
 
   it('is open to edit when no client folder is set, copies folders and opens them', () => {

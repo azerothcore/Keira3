@@ -1,5 +1,16 @@
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, inject, input, OnChanges, OnDestroy, OnInit, signal, SimpleChanges } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  signal,
+  SimpleChanges,
+} from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CREATURE_RACE_OPTION_ICON } from '@keira/shared/acore-world-model';
 import { Option, TableRow } from '@keira/shared/constants';
@@ -7,6 +18,8 @@ import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
 import { GenericOptionSelectorComponent } from '@keira/shared/selectors';
 import { TranslatePipe } from '@ngx-translate/core';
 import * as jquery from 'jquery';
+import { LocalModelViewerComponent } from '@keira/shared/world-viewer';
+import { ModelViewerSettingService } from '@keira/shared/wow-data';
 import { BehaviorSubject, catchError, filter, Observable, of, Subscription } from 'rxjs';
 import {
   CHAR_DISPLAYABLE_INVENTORY_TYPE,
@@ -30,13 +43,27 @@ declare const ZamModelViewer: any;
   selector: 'keira-model-3d-viewer',
   templateUrl: './model-3d-viewer.component.html',
   styleUrl: './model-3d-viewer.component.scss',
-  imports: [GenericOptionSelectorComponent, ReactiveFormsModule, FormsModule, TranslatePipe],
+  imports: [GenericOptionSelectorComponent, ReactiveFormsModule, FormsModule, TranslatePipe, LocalModelViewerComponent],
 })
 export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   private readonly queryService = inject(MysqlQueryService);
   private readonly sqliteQueryService = inject(SqliteQueryService);
   private readonly http = inject(HttpClient);
   private readonly model3DViewerService = inject(Model3DViewerService);
+  private readonly modelViewerSetting = inject(ModelViewerSettingService);
+  /** The game data's model of this display couldn't be shown: Wowhead's is. */
+  protected readonly localFailed = signal(false);
+  /** Creatures and gameobjects are drawn from the game data when Settings > Game data say so. */
+  protected readonly local = computed(
+    () =>
+      this.modelViewerSetting.useGameData() &&
+      !this.localFailed() &&
+      (this.viewerType() === VIEWER_TYPE.NPC || this.viewerType() === VIEWER_TYPE.OBJECT),
+  );
+  protected readonly LOCAL_KIND = { [VIEWER_TYPE.NPC]: 'creature', [VIEWER_TYPE.OBJECT]: 'gameobject' } as Record<
+    number,
+    'creature' | 'gameobject'
+  >;
 
   protected CREATURE_RACE = signal<Option[]>(CREATURE_RACE_OPTION_ICON);
   protected readonly raceControl = new FormControl<Race>(Race.HUMAN);
@@ -82,6 +109,9 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (changes['displayId']) {
+      this.localFailed.set(false);
+    }
     if (!this.windowRef.jQuery) {
       return;
     }
@@ -97,7 +127,16 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
+  /** The game data hasn't this display: Wowhead's model instead. */
+  protected onLocalFailed(): void {
+    this.localFailed.set(true);
+    setTimeout(() => this.show3Dmodel());
+  }
+
   protected show3Dmodel(): void {
+    if (this.local()) {
+      return;
+    }
     if (this.viewerType() === VIEWER_TYPE.ITEM) {
       this.subscriptions.add(
         this.getItemData$().subscribe((data) => {

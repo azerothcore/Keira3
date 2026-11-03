@@ -1,8 +1,11 @@
+import { ModelViewerSettingService } from '@keira/shared/wow-data';
+import { LocalModelViewerComponent } from '@keira/shared/world-viewer';
+import { By } from '@angular/platform-browser';
 import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { vi } from 'vitest';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideZonelessChangeDetection } from '@angular/core';
+import { provideZonelessChangeDetection, signal, SimpleChange } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -168,6 +171,45 @@ describe('Model3DViewerComponent', () => {
       fixture.componentRef.setInput('displayId', mockDisplayId);
 
       expect(component['getContentPathUrl'](1)).toBe(`${CONTENT_WOTLK}meta/item/${mockDisplayId}.json`);
+    });
+  });
+
+  describe('from the game data', () => {
+    it('draws creatures and gameobjects from the game data when set so, Wowhead when it has not the display', () => {
+      const setting = TestBed.inject(ModelViewerSettingService);
+      const local = signal(true);
+      vi.spyOn(setting, 'useGameData').mockImplementation(() => local());
+      const { component, fixture } = setup({
+        displayId: 3,
+        viewerType: VIEWER_TYPE.NPC,
+        itemClass: 0,
+        itemInventoryType: InventoryType.HEAD,
+      });
+      const generate = vi.spyOn<any>(component, 'generate3Dmodel').mockImplementation(() => undefined);
+      fixture.detectChanges();
+      const viewer = fixture.debugElement.query(By.directive(LocalModelViewerComponent));
+      expect(viewer.componentInstance.kind()).toBe('creature');
+
+      component['show3Dmodel']();
+      expect(generate).not.toHaveBeenCalled();
+
+      vi.useFakeTimers();
+      (viewer.componentInstance as LocalModelViewerComponent).failed.emit('display 3 is not in the game data');
+      vi.runAllTimers();
+      vi.useRealTimers();
+      fixture.detectChanges();
+      expect(generate).toHaveBeenCalled();
+      expect(fixture.debugElement.query(By.directive(LocalModelViewerComponent))).toBeFalsy();
+
+      // another display: the game data is tried again
+      fixture.componentRef.setInput('displayId', 4);
+      component.ngOnChanges({ displayId: new SimpleChange(3, 4, false) });
+      fixture.detectChanges();
+      expect(fixture.debugElement.query(By.directive(LocalModelViewerComponent))).toBeTruthy();
+
+      fixture.componentRef.setInput('viewerType', VIEWER_TYPE.ITEM);
+      fixture.detectChanges();
+      expect(fixture.debugElement.query(By.directive(LocalModelViewerComponent))).toBeFalsy();
     });
   });
 

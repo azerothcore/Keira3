@@ -58,6 +58,26 @@
       </details>
     </div>
   }
+  <div class="mb-2" data-testid="model-viewer-source">
+    <span class="form-label d-block">{{ 'WORLD_EDITOR.MODEL_VIEWER' | translate }}</span>
+    @for (source of modelSources; track source) {
+      <div class="form-check form-check-inline">
+        <input
+          class="form-check-input"
+          type="radio"
+          name="model-viewer-source"
+          [id]="'model-viewer-' + source"
+          [attr.data-testid]="'model-viewer-' + source"
+          [checked]="modelViewer.source() === source"
+          (change)="modelViewer.choose(source)"
+        />
+        <label class="form-check-label" [for]="'model-viewer-' + source">{{
+          'WORLD_EDITOR.MODEL_VIEWER_' + source.toUpperCase().replace('-', '_') | translate
+        }}</label>
+      </div>
+    }
+    <small class="form-text text-muted d-block">{{ 'WORLD_EDITOR.MODEL_VIEWER_HELP' | translate }}</small>
+  </div>
   <div>
     @if (readOnly()) {
       <button type="button" class="btn btn-sm btn-outline-primary" data-testid="folders-modify" (click)="modify()">

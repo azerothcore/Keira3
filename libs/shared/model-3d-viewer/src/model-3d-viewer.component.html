@@ -1,5 +1,8 @@
 <div class="model-viewer" [style]="{ 'background-color': backgroundColor.value }">
-  <div [id]="`model_3d_${uniqueId}`"></div>
+  @if (local()) {
+    <keira-local-model-viewer [kind]="LOCAL_KIND[viewerType()]" [displayId]="displayId()" (failed)="onLocalFailed()" />
+  }
+  <div [id]="`model_3d_${uniqueId}`" [hidden]="local()"></div>
 
   @if (enableBgSettings()) {
     <div class="d-flex justify-content-center align-items-center p-1 gap-2 mt-2">

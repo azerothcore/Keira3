@@ -2021,7 +2021,11 @@
     "STARTUP_WAITING": "en espera",
     "STARTUP_READING": "leyendo…",
     "STARTUP_DONE": "leída",
-    "STARTUP_FAILED": "no se pudo leer (ver la consola)"
+    "STARTUP_FAILED": "no se pudo leer (ver la consola)",
+    "MODEL_VIEWER": "Vistas 3D (criaturas, objetos)",
+    "MODEL_VIEWER_WOWHEAD": "Wowhead (en línea)",
+    "MODEL_VIEWER_GAME_DATA": "Datos del juego (la carpeta del cliente de arriba)",
+    "MODEL_VIEWER_HELP": "Los datos del juego muestran los modelos propios de este servidor (también los parcheados o personalizados), leídos de la carpeta del cliente; una apariencia que no tenga se muestra desde Wowhead. Los objetos siguen usando Wowhead."
   },
   "SETTINGS": {
     "TITLE": "Ajustes",
