@@ -2216,5 +2216,8 @@
     "GOLD_SHORT": "o",
     "SILVER_SHORT": "p",
     "COPPER_SHORT": "c"
+  },
+  "MODEL_3D": {
+    "ON_CHARACTER": "Mostrarlo puesto en un personaje"
   }
 }

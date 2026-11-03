@@ -1,3 +1,4 @@
+import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { vi } from 'vitest';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
@@ -16,7 +17,7 @@ import { CONTENT_WOTLK, Gender, InventoryType, MODEL_TYPE, Race, VIEWER_TYPE } f
 describe('Model3DViewerComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalDirective, ReactiveFormsModule, GenericOptionSelectorComponent, Model3DViewerComponent],
+      imports: [ModalDirective, ReactiveFormsModule, GenericOptionSelectorComponent, Model3DViewerComponent, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
@@ -167,6 +168,47 @@ describe('Model3DViewerComponent', () => {
       fixture.componentRef.setInput('displayId', mockDisplayId);
 
       expect(component['getContentPathUrl'](1)).toBe(`${CONTENT_WOTLK}meta/item/${mockDisplayId}.json`);
+    });
+  });
+
+  describe('worn by a character (#3502)', () => {
+    const toggle = (fixture: { nativeElement: HTMLElement }) =>
+      fixture.nativeElement.querySelector<HTMLInputElement>('.model-3d-on-character input');
+
+    it('shows a helmet, shoulders or weapon worn by a character when asked', () => {
+      const { component, fixture } = setup();
+      const show = vi.spyOn<any>(component, 'show3Dmodel').mockImplementation(() => undefined);
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('.model-3d-race')).toBeFalsy();
+
+      toggle(fixture).click();
+      fixture.detectChanges();
+
+      expect(show).toHaveBeenCalled();
+      expect(component['getModelType']()).toBe(MODEL_TYPE.CHARACTER);
+      expect(fixture.nativeElement.querySelector('.model-3d-race')).toBeTruthy();
+      toggle(fixture).click();
+      fixture.detectChanges();
+      expect(component['getModelType']()).toBe(MODEL_TYPE.HELMET);
+    });
+
+    it('offers it only for items that can be worn that way', () => {
+      const { fixture } = setup({ displayId: 2, viewerType: VIEWER_TYPE.NPC, itemClass: 0, itemInventoryType: InventoryType.HEAD });
+      vi.spyOn<any>(fixture.componentInstance, 'show3Dmodel').mockImplementation(() => undefined);
+      fixture.detectChanges();
+      expect(toggle(fixture)).toBeFalsy();
+
+      fixture.componentRef.setInput('viewerType', VIEWER_TYPE.ITEM);
+      fixture.componentRef.setInput('itemInventoryType', InventoryType.FEET);
+      fixture.detectChanges();
+      expect(toggle(fixture)).toBeFalsy();
+
+      fixture.componentRef.setInput('itemInventoryType', InventoryType.WEAPON);
+      fixture.detectChanges();
+      expect(toggle(fixture)).toBeTruthy();
+      fixture.componentRef.setInput('itemInventoryType', undefined);
+      fixture.detectChanges();
+      expect(toggle(fixture)).toBeFalsy();
     });
   });
 
