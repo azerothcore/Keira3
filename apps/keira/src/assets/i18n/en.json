@@ -248,6 +248,24 @@
       "BOSS_BOUNDARIES": "Boss boundaries",
       "SCRIPT_SPAWNS": "Scripted spawns",
       "TEMPLATE": "New script (template)"
+    },
+    "GAME_EVENTS": {
+      "TITLE": "Game events",
+      "SEARCH": "Search events",
+      "GAME_EVENT": "Game event",
+      "CREATURE": "Creatures spawned",
+      "CREATURE_REMOVED": "Creatures removed",
+      "GAMEOBJECT": "Gameobjects spawned",
+      "GAMEOBJECT_REMOVED": "Gameobjects removed",
+      "POOL": "Pools spawned",
+      "PREREQUISITE": "Prerequisite events",
+      "NPCFLAG": "NPC flags",
+      "MODEL_EQUIP": "Models and equipment",
+      "NPC_VENDOR": "Vendor items",
+      "CREATURE_QUEST": "Creature quests",
+      "GAMEOBJECT_QUEST": "Gameobject quests",
+      "SEASONAL_QUEST": "Seasonal quests",
+      "BATTLEGROUND_HOLIDAY": "Battleground holiday"
     }
   },
   "DASHBOARD": {
@@ -2230,5 +2248,27 @@
   "QUERY_OUTPUT": {
     "COPIED": "Copied.",
     "NOT_COPIED": "It failed: not copied (your changes are kept)."
+  },
+  "GAME_EVENT": {
+    "TIME": "A date and time (YYYY-MM-DD hh:mm:ss) in the server time.",
+    "OCCURENCE": "Minutes between two starts of the event.",
+    "LENGTH": "Minutes the event lasts.",
+    "WORLD_EVENT": "1: a world event (started and stopped by its conditions).",
+    "ANNOUNCE": "0: not announced, 1: announced, 2: as the worldserver config says.",
+    "CREATURES": "Creatures",
+    "GAMEOBJECTS": "Gameobjects",
+    "GAME_EVENT_CREATURE_HELP": "The creature spawns that appear while the event runs (game_event_creature, eventEntry = the event).",
+    "GAME_EVENT_CREATURE_REMOVED_HELP": "The creature spawns removed while the event runs (game_event_creature, eventEntry = minus the event).",
+    "GAME_EVENT_GAMEOBJECT_HELP": "The gameobject spawns that appear while the event runs.",
+    "GAME_EVENT_GAMEOBJECT_REMOVED_HELP": "The gameobject spawns removed while the event runs (eventEntry = minus the event).",
+    "GAME_EVENT_POOL_HELP": "The pools spawned while the event runs.",
+    "GAME_EVENT_PREREQUISITE_HELP": "Events that must have run before this one starts.",
+    "GAME_EVENT_NPCFLAG_HELP": "NPC flags added to these spawns while the event runs.",
+    "GAME_EVENT_MODEL_EQUIP_HELP": "The model and equipment of these spawns while the event runs.",
+    "GAME_EVENT_NPC_VENDOR_HELP": "Items these vendors sell while the event runs.",
+    "GAME_EVENT_CREATURE_QUEST_HELP": "Quests creatures (by entry) give while the event runs.",
+    "GAME_EVENT_GAMEOBJECT_QUEST_HELP": "Quests gameobjects (by entry) give while the event runs.",
+    "GAME_EVENT_SEASONAL_QUEST_HELP": "Quests that reset each time the event starts.",
+    "GAME_EVENT_BATTLEGROUND_HOLIDAY_HELP": "The battleground holiday (bgflag) of the event."
   }
 }

@@ -167,6 +167,24 @@ import {
   TrainerHandlerService,
   TrainerSpellComponent,
 } from '@keira/features/trainer';
+import {
+  GameEventHandlerService,
+  SelectGameEventComponent,
+  GameEventComponent,
+  GameEventCreatureComponent,
+  GameEventCreatureRemovedComponent,
+  GameEventGameobjectComponent,
+  GameEventGameobjectRemovedComponent,
+  GameEventSpawnedPoolsComponent,
+  GameEventPrerequisiteComponent,
+  GameEventNpcflagComponent,
+  GameEventModelEquipComponent,
+  GameEventNpcVendorComponent,
+  GameEventCreatureQuestComponent,
+  GameEventGameobjectQuestComponent,
+  GameEventSeasonalQuestComponent,
+  GameEventBattlegroundHolidayComponent,
+} from '@keira/features/game-events';
 import { UnusedGuidSearchComponent } from '@keira/features/unused-guid-search';
 import { WORLD_EDITOR_LINKS } from '@keira/shared/constants';
 import { worldEditorLinks } from './world-editor-links';
@@ -758,6 +776,85 @@ export const KEIRA_ROUTES: Routes = [
         path: 'tele',
         component: GameTeleComponent,
         canActivate: [GameTeleHandlerService],
+      },
+    ],
+  },
+  {
+    path: 'game-events',
+    children: [
+      {
+        path: 'select',
+        component: SelectGameEventComponent,
+      },
+      {
+        path: 'game-event',
+        component: GameEventComponent,
+        canActivate: [GameEventHandlerService],
+      },
+      {
+        path: 'game-event-creature',
+        component: GameEventCreatureComponent,
+        canActivate: [GameEventHandlerService],
+      },
+      {
+        path: 'game-event-creature-removed',
+        component: GameEventCreatureRemovedComponent,
+        canActivate: [GameEventHandlerService],
+      },
+      {
+        path: 'game-event-gameobject',
+        component: GameEventGameobjectComponent,
+        canActivate: [GameEventHandlerService],
+      },
+      {
+        path: 'game-event-gameobject-removed',
+        component: GameEventGameobjectRemovedComponent,
+        canActivate: [GameEventHandlerService],
+      },
+      {
+        path: 'game-event-pool',
+        component: GameEventSpawnedPoolsComponent,
+        canActivate: [GameEventHandlerService],
+      },
+      {
+        path: 'game-event-prerequisite',
+        component: GameEventPrerequisiteComponent,
+        canActivate: [GameEventHandlerService],
+      },
+      {
+        path: 'game-event-npcflag',
+        component: GameEventNpcflagComponent,
+        canActivate: [GameEventHandlerService],
+      },
+      {
+        path: 'game-event-model-equip',
+        component: GameEventModelEquipComponent,
+        canActivate: [GameEventHandlerService],
+      },
+      {
+        path: 'game-event-npc-vendor',
+        component: GameEventNpcVendorComponent,
+        canActivate: [GameEventHandlerService],
+      },
+      {
+        path: 'game-event-creature-quest',
+        component: GameEventCreatureQuestComponent,
+        canActivate: [GameEventHandlerService],
+      },
+      {
+        path: 'game-event-gameobject-quest',
+        component: GameEventGameobjectQuestComponent,
+        canActivate: [GameEventHandlerService],
+      },
+      {
+        path: 'game-event-seasonal-quest',
+        component: GameEventSeasonalQuestComponent,
+        canActivate: [GameEventHandlerService],
+      },
+      {
+        path: 'game-event-battleground-holiday',
+        component: GameEventBattlegroundHolidayComponent,
+        canActivate: [GameEventHandlerService],
       },
     ],
   },
