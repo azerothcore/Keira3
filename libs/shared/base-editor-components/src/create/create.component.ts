@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HandlerService } from '@keira/shared/base-abstract-classes';
 import { TableRow } from '@keira/shared/constants';
@@ -22,17 +22,34 @@ export class CreateComponent<T extends TableRow> extends SubscriptionHandler imp
   @Input({ required: true }) customStartingId!: number;
   @Input({ required: true }) handlerService!: HandlerService<T>;
   @Input({ required: true }) queryService!: MysqlQueryService;
+  // Controls whether "copy from existing" is allowed for the current entity table.
+  // Default is false (disabled). Individual selectors can enable it by passing [allowCopy]="true".
+  private _allowCopy = false;
+  @Input()
+  set allowCopy(value: boolean) {
+    this._allowCopy = !!value;
+    if (!this._allowCopy) {
+      // Reset creation method if copy is disabled
+      this.creationMethod.set('blank');
+      this.sourceIdModel.set(undefined);
+      this.isSourceIdValid.set(false);
+    }
+  }
+  get allowCopy(): boolean {
+    return this._allowCopy;
+  }
   @Input() maxEntryValue = MAX_INT_UNSIGNED_VALUE;
   @Input() nextIdFrom: 'max' | 'min' = 'max';
 
-  private readonly changeDetectorRef = inject(ChangeDetectorRef);
-
-  public idModel!: number;
-  private _loading = false;
-  isIdFree = false;
+  idModel = signal<number | undefined>(undefined);
+  sourceIdModel = signal<number | undefined>(undefined);
+  creationMethod = signal<'blank' | 'copy'>('blank');
+  private _loading = signal<boolean>(false);
+  isIdFree = signal<boolean>(false);
+  isSourceIdValid = signal<boolean>(false);
 
   get loading(): boolean {
-    return this._loading;
+    return this._loading();
   }
 
   ngOnInit() {
@@ -41,25 +58,31 @@ export class CreateComponent<T extends TableRow> extends SubscriptionHandler imp
     }
   }
 
-  checkId() {
-    this._loading = true;
+  protected checkId() {
+    this._loading.set(true);
+    const id = this.idModel();
+    if (id === undefined) {
+      this.isIdFree.set(false);
+      this._loading.set(false);
+      return;
+    }
+
     this.subscriptions.push(
-      this.queryService.selectAll<T>(this.entityTable, this.entityIdField, this.idModel).subscribe({
+      this.queryService.selectAll<T>(this.entityTable, this.entityIdField, id).subscribe({
         next: (data) => {
-          this.isIdFree = data.length <= 0;
-          this._loading = false;
-          this.changeDetectorRef.markForCheck();
+          this.isIdFree.set(data.length <= 0);
+          this._loading.set(false);
         },
         error: (error: QueryError) => {
           console.error(error);
-          this._loading = false;
+          this._loading.set(false);
         },
       }),
     );
   }
 
   private getNextId(): void {
-    this._loading = true;
+    this._loading.set(true);
     const currentId$: Observable<number | null> =
       this.nextIdFrom === 'min'
         ? this.queryService.getMinId(this.entityTable, this.entityIdField).pipe(map((rows) => rows[0].min))
@@ -68,22 +91,26 @@ export class CreateComponent<T extends TableRow> extends SubscriptionHandler imp
     this.subscriptions.push(
       currentId$.subscribe({
         next: (currentId) => {
-          this.idModel = this.calculateNextId(currentId);
-          this.isIdFree = true;
-          this._loading = false;
-          this.changeDetectorRef.markForCheck();
+          this.idModel.set(this.calculateNextId(currentId));
+          this.isIdFree.set(true);
+          this._loading.set(false);
         },
         error: (error: QueryError) => {
           console.error(error);
-          this._loading = false;
+          this._loading.set(false);
         },
       }),
     );
   }
 
   protected checkMaxValue(): void {
-    if (this.idModel > MAX_INT_UNSIGNED_VALUE) {
-      this.idModel = MAX_INT_UNSIGNED_VALUE;
+    const idVal = this.idModel();
+    if (typeof idVal === 'number' && idVal > MAX_INT_UNSIGNED_VALUE) {
+      this.idModel.set(MAX_INT_UNSIGNED_VALUE);
+    }
+    const srcVal = this.sourceIdModel();
+    if (typeof srcVal === 'number' && srcVal > MAX_INT_UNSIGNED_VALUE) {
+      this.sourceIdModel.set(MAX_INT_UNSIGNED_VALUE);
     }
   }
 
@@ -92,5 +119,54 @@ export class CreateComponent<T extends TableRow> extends SubscriptionHandler imp
       return currentId === null ? this.customStartingId : currentId - 1;
     }
     return currentId === null || currentId < this.customStartingId ? this.customStartingId : currentId + 1;
+  }
+
+  protected onCreationMethodChange(): void {
+    if (this.creationMethod() === 'blank') {
+      this.sourceIdModel.set(undefined);
+      this.isSourceIdValid.set(false);
+    }
+  }
+
+  protected checkSourceId(): void {
+    const src = this.sourceIdModel();
+    if (src === undefined) {
+      this.isSourceIdValid.set(false);
+      return;
+    }
+
+    this._loading.set(true);
+    this.subscriptions.push(
+      this.queryService.selectAll<T>(this.entityTable, this.entityIdField, src).subscribe({
+        next: (data) => {
+          // Source ID should exist (opposite of new ID check)
+          this.isSourceIdValid.set(data.length > 0);
+          this._loading.set(false);
+        },
+        error: (error: QueryError) => {
+          console.error(error);
+          this.isSourceIdValid.set(false);
+          this._loading.set(false);
+        },
+      }),
+    );
+  }
+
+  protected isFormValid(): boolean {
+    const isNewIdValid = !!this.idModel() && this.isIdFree();
+
+    if (this.creationMethod() === 'copy') {
+      return isNewIdValid && !!this.sourceIdModel() && this.isSourceIdValid();
+    }
+
+    return isNewIdValid;
+  }
+
+  protected onCreate(): void {
+    if (this.creationMethod() === 'copy') {
+      this.handlerService.select(true, this.idModel()!, undefined, true, this.sourceIdModel()!.toString());
+    } else {
+      this.handlerService.select(true, this.idModel()!);
+    }
   }
 }

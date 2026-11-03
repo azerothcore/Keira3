@@ -9,6 +9,8 @@ import {
   QUEST_REQUEST_ITEMS_TABLE,
   QUEST_TEMPLATE_ADDON_TABLE,
   QUEST_TEMPLATE_LOCALE_TABLE,
+  QUEST_REQUEST_ITEMS_LOCALE_TABLE,
+  QUEST_OFFER_REWARD_LOCALE_TABLE,
   QUEST_TEMPLATE_TABLE,
   QuestTemplate,
 } from '@keira/shared/acore-world-model';
@@ -16,6 +18,7 @@ import {
 @Service()
 export class QuestHandlerService extends HandlerService<QuestTemplate> {
   protected readonly mainEditorRoutePath = 'quest/quest-template';
+  protected override readonly copyRoutePath = 'quest/copy';
 
   get isQuestTemplateUnsaved(): Signal<boolean> {
     return this.statusMap[QUEST_TEMPLATE_TABLE].asReadonly();
@@ -25,6 +28,12 @@ export class QuestHandlerService extends HandlerService<QuestTemplate> {
   }
   get isQuestTemplateLocaleUnsaved(): Signal<boolean> {
     return this.statusMap[QUEST_TEMPLATE_LOCALE_TABLE].asReadonly();
+  }
+  get isQuestOfferRewardLocaleUnsaved(): Signal<boolean> {
+    return this.statusMap[QUEST_OFFER_REWARD_LOCALE_TABLE].asReadonly();
+  }
+  get isQuestRequestItemsLocaleUnsaved(): Signal<boolean> {
+    return this.statusMap[QUEST_REQUEST_ITEMS_LOCALE_TABLE].asReadonly();
   }
   get isQuestOfferRewardUnsaved(): Signal<boolean> {
     return this.statusMap[QUEST_OFFER_REWARD_TABLE].asReadonly();
@@ -49,6 +58,8 @@ export class QuestHandlerService extends HandlerService<QuestTemplate> {
     [QUEST_TEMPLATE_TABLE]: signal(false),
     [QUEST_TEMPLATE_ADDON_TABLE]: signal(false),
     [QUEST_TEMPLATE_LOCALE_TABLE]: signal(false),
+    [QUEST_OFFER_REWARD_LOCALE_TABLE]: signal(false),
+    [QUEST_REQUEST_ITEMS_LOCALE_TABLE]: signal(false),
     [QUEST_OFFER_REWARD_TABLE]: signal(false),
     [QUEST_REQUEST_ITEMS_TABLE]: signal(false),
     [CREATURE_QUESTSTARTER_TABLE]: signal(false),

@@ -42,6 +42,17 @@ describe('HandlerService', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['mock/route']);
   });
 
+  it('should navigate to copy route when creating from a copy', () => {
+    const { service } = setup();
+    (service as unknown as { copyRoutePath: string }).copyRoutePath = 'mock/copy';
+    const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate').mockImplementation(() => Promise.resolve(true));
+
+    service.select(true, 'copyId', 'copyName', true, 'source-123');
+
+    expect(service.sourceId).toBe('source-123');
+    expect(navigateSpy).toHaveBeenCalledWith(['mock/copy']);
+  });
+
   it('should not throw error when _statusMap is undefined in resetStatus()', () => {
     const { service } = setup();
     (service as any)._statusMap = undefined;

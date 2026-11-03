@@ -14,7 +14,13 @@
     "CREATE_A_NEW": "Создать новый <strong>{{ ENTITY_TABLE }}</strong> выбрав пустой <strong>{{ ENTITY_ID_FIELD }}</strong>:",
     "FREE_ENTRY": "Значение {{ ENTITY_ID_FIELD }}",
     "FREE": "свободно",
-    "ALREADY_USE": "уже используется"
+    "ALREADY_USE": "уже используется",
+    "SOURCE_ENTRY": "Значение {{ ENTITY_ID_FIELD }}",
+    "EXISTS": "существует",
+    "DOES_NOT_EXIST": "не существует",
+    "START_FROM_BLANK": "Начать с нуля",
+    "COPY_FROM_EXISTING": "Скопировать существующий",
+    "COPY_DISABLED": "Копирование существующего недоступно для этой сущности"
   },
   "CONNECTED": "Подключено",
   "SEARCH": "Поиск",
@@ -98,7 +104,8 @@
       "SPAWN_ADDON": "Дополнение появления",
       "SMARTAI": "SmartAI",
       "TEXT": "Текст",
-      "FORMATIONS": "Формации"
+      "FORMATIONS": "Формации",
+      "CREATURE_TEMPLATE_LOCALE": "Creature Template (локализация)"
     },
     "QUEST": {
       "TITLE": "Задания",
@@ -112,7 +119,9 @@
       "CREATURE_QUESTENDER": "Существо-завершатель задания",
       "GAMEOBJECT_QUESTSTARTER": "Объект-начинатель задания",
       "GAMEOBJECT_QUESTENDER": "Объект-завершатель задания",
-      "QUEST_CHAIN": "Цепочка заданий"
+      "QUEST_CHAIN": "Цепочка заданий",
+      "QUEST_OFFER_REWARD_LOCALE": "Quest Offer Reward (локализация)",
+      "QUEST_REQUEST_ITEMS_LOCALE": "Quest Request Items (локализация)"
     },
     "GAME_OBJECT": {
       "TITLE": "Игровые Объекты",
@@ -123,7 +132,8 @@
       "GAMEOBJECT_LOOT": "Добыча с объекта",
       "SPAWN": "Точка появления",
       "SPAWN_ADDON": "Дополнение появления",
-      "SMART_AI": "SmartAI"
+      "SMART_AI": "SmartAI",
+      "GAMEOBJECT_TEMPLATE_LOCALE": "Gameobject Template (локализация)"
     },
     "ITEM": {
       "TITLE": "Предметы",
@@ -133,7 +143,9 @@
       "ITEM_LOOT": "Добыча из предмета",
       "DISENCHANT_LOOT": "Добыча распыления",
       "PROSPECTING_LOOT": "Добыча обогащения руды",
-      "MILLING_LOOT": "Добыча измельчения"
+      "MILLING_LOOT": "Добыча измельчения",
+      "SOURCES": "Откуда берётся",
+      "ITEM_TEMPLATE_LOCALE": "Item Template (локализация)"
     },
     "OTHER_LOOTS": {
       "TITLE": "Другие луты",
@@ -157,7 +169,10 @@
       "SELECT_PAGE_TEXT": "Выбрать текст страницы",
       "PAGE_TEXT": "Текст страницы",
       "ACORE_STRING_TEXT": "Строки Acore",
-      "SELECT_ACORE_STRING_TEXT": "Выбрать строки Acore"
+      "SELECT_ACORE_STRING_TEXT": "Выбрать строки Acore",
+      "PAGE_TEXT_LOCALE": "Page Text (локализация)",
+      "NPC_TEXT_LOCALE": "Npc Text (локализация)",
+      "BROADCAST_TEXT_LOCALE": "Broadcast Text (локализация)"
     },
     "GOSSIP": {
       "TITLE": "Разговоры",
@@ -257,6 +272,28 @@
     "AFFECTED_ROWS": "Затронутые строки:",
     "HIDE_TRACE": "Скрыть трассировку",
     "SHOW_TRACE": "Показать трассировку"
+  },
+  "COPY_OUTPUT": {
+    "TITLE": "SQL для копирования записи",
+    "DESCRIPTION": "Проверьте и выполните SQL ниже, чтобы скопировать запись. Запрос можно скопировать и выполнить вручную или выполнить сразу кнопкой «Выполнить».",
+    "COPY": "Копировать",
+    "COPY_TOOLTIP": "Скопировать SQL-запрос в буфер обмена",
+    "EXECUTE": "Выполнить",
+    "EXECUTE_TOOLTIP": "Выполнить SQL-запрос и создать новую запись",
+    "EXECUTED": "Выполнено",
+    "CONTINUE": "Перейти в редактор",
+    "CONTINUE_TOOLTIP": "Открыть редактор новой записи",
+    "SELECT_ALL": "Выбрать все",
+    "SELECT_NONE": "Снять выбор",
+    "TABLE": "Таблица",
+    "RAW": "Прямой INSERT",
+    "TEMP": "Временная таблица",
+    "RAW_COLUMNS": "Прямой INSERT (явные столбцы)",
+    "RAW_INFERRED": "Прямой INSERT (столбцы определяются автоматически)",
+    "TEMP_TOOLTIP": "Временная таблица (использует временную таблицу)",
+    "GENERATED_SQL": "Сгенерированный SQL",
+    "EXPAND": "Развернуть",
+    "COLLAPSE": "Свернуть"
   },
   "CREATURE": {
     "TEMPLATE": {
@@ -368,7 +405,11 @@
       "BROADCAST_TEXT_ID": "ID соответствующего текста из broadcast_text",
       "SEARCH_BROADCAST_TEXT": "Поиск по MaleText или FemaleText",
       "COPY_TO_ROW": "Скопировать в выбранную строку",
-      "MATCHED_ROW": "Строка, найденная по вашему запросу"
+      "MATCHED_ROW": "Строка, найденная по вашему запросу",
+      "COMMENT_FROM_CREATURE": "Использовать имя существа",
+      "TEXT_FROM_BROADCAST_TEXT": "Прочитать текст по BroadcastTextId (MaleText или FemaleText)",
+      "NO_BROADCAST_TEXT_ID": "Сначала укажите BroadcastTextId.",
+      "BROADCAST_TEXT_NOT_FOUND": "Нет broadcast_text с этим ID (или в нём нет текста)."
     },
     "FORMATION_LEADER": "Строй лидера (guid спавна)",
     "FORMATION_LEADS": "{{guid}}: ведёт {{count}} (карта {{map}})",
@@ -605,6 +646,25 @@
       "SPELL_CATEGORY_COOLDOWNS": "Время перезарядки в миллисекундах для всех заклинаний той же категории. Используйте -1 для стандартной перезарядки.",
       "REQUIRED_FACTION": "Требуемая фракция для использования предмета. При указании ID фракции используется левый столбец 'ID' в селекторе, подробнее смотрите 'faction' в вики.",
       "REQUIRED_FACTION_RANK": "Требуемый ранг для указанной фракции."
+    },
+    "SOURCES": {
+      "HELP": "Откуда берётся этот предмет (только чтение): таблицы добычи с ним и кто их роняет, таблицы, использующие содержащие его ссылочные таблицы, продавцы и связанные задания.",
+      "RELOAD": "Прочитать снова",
+      "READING": "Чтение…",
+      "LOOT": "Добыча",
+      "LOOT_TABLE": "Таблица добычи",
+      "COUNT": "Количество",
+      "USED_BY": "Кто роняет / использует",
+      "THROUGH_REFERENCE": "Через ссылочную добычу",
+      "VENDORS": "Продавцы",
+      "QUESTS": "Задания",
+      "HOW": "Как",
+      "NONE": "Нет.",
+      "QUEST_REWARD": "Награда",
+      "QUEST_CHOICE": "Награда (на выбор)",
+      "QUEST_REQUIRED": "Требуется",
+      "QUEST_START": "Начинает задание",
+      "QUEST_DROP": "Добыча задания"
     }
   },
   "LOOT_EDITOR": {
@@ -2143,5 +2203,14 @@
   },
   "SOAP": {
     "RELOAD_TIP": "Выполнить {{command}} на worldserver, чтобы он перечитал таблицу (после выполнения запроса)"
+  },
+  "MONEY": {
+    "HELP": "Сумма в золоте, серебре и меди (изменение любой меняет поле)",
+    "GOLD": "Золото",
+    "SILVER": "Серебро",
+    "COPPER": "Медь",
+    "GOLD_SHORT": "з",
+    "SILVER_SHORT": "с",
+    "COPPER_SHORT": "м"
   }
 }

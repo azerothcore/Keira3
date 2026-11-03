@@ -36,6 +36,7 @@ import {
 
 import { ConditionsComponent, ConditionsHandlerService, SelectConditionsComponent } from '@keira/features/conditions';
 import {
+  CreatureCopyComponent,
   CreatureEquipTemplateComponent,
   CreatureFormationsComponent,
   CreatureHandlerService,
@@ -57,9 +58,11 @@ import {
   SaiCreatureComponent,
   SelectCreatureComponent,
   SkinningLootTemplateComponent,
+  CreatureTemplateLocaleComponent,
 } from '@keira/features/creature';
 import {
   GameobjectHandlerService,
+  GameobjectCopyComponent,
   GameobjectLootTemplateComponent,
   GameobjectQuestitemComponent,
   GameobjectSpawnAddonComponent,
@@ -68,23 +71,37 @@ import {
   GameobjectTemplateComponent,
   SaiGameobjectComponent,
   SelectGameobjectComponent,
+  GameobjectTemplateLocaleComponent,
 } from '@keira/features/gameobject';
-import { GossipHandlerService, GossipMenuComponent, GossipMenuOptionComponent, SelectGossipComponent } from '@keira/features/gossip';
+import {
+  GossipHandlerService,
+  GossipMenuComponent,
+  GossipMenuOptionComponent,
+  SelectGossipComponent,
+  GossipCopyComponent,
+} from '@keira/features/gossip';
 import {
   DisenchantLootTemplateComponent,
   ItemEnchantmentTemplateComponent,
   ItemHandlerService,
+  ItemCopyComponent,
   ItemLootTemplateComponent,
+  ItemSourcesComponent,
   ItemTemplateComponent,
   MillingLootTemplateComponent,
   ProspectingLootTemplateComponent,
   SelectItemComponent,
+  ItemTemplateLocaleComponent,
 } from '@keira/features/item';
 import {
   FishingLootHandlerService,
   FishingLootTemplateComponent,
   MailLootHandlerService,
   MailLootTemplateComponent,
+  FishingLootCopyComponent,
+  SpellLootCopyComponent,
+  MailLootCopyComponent,
+  ReferenceLootCopyComponent,
   ReferenceLootHandlerService,
   ReferenceLootTemplateComponent,
   SelectFishingLootComponent,
@@ -105,11 +122,14 @@ import {
   QuestRequestItemsComponent,
   QuestTemplateAddonComponent,
   QuestTemplateLocaleComponent,
+  QuestRequestItemsLocaleComponent,
+  QuestOfferRewardLocaleComponent,
   QuestTemplateComponent,
   SelectQuestComponent,
+  QuestCopyComponent,
 } from '@keira/features/quest';
 import { SaiFullEditorComponent, SaiSearchEntityComponent, SaiSearchExistingComponent } from '@keira/features/smart-scripts';
-import { SelectSpellComponent, SpellDbcComponent } from '@keira/features/spell';
+import { SelectSpellComponent, SpellDbcComponent, SpellCopyComponent, SpellHandlerService } from '@keira/features/spell';
 import { SqlEditorComponent } from '@keira/features/sql-editor';
 import { SaiHandlerService } from '@keira/shared/sai-editor';
 import {
@@ -119,20 +139,32 @@ import {
   NpcTextHandlerService,
   PageTextComponent,
   PageTextHandlerService,
+  PageTextCopyComponent,
+  NpcTextCopyComponent,
   SelectBroadcastTextComponent,
   SelectNpcTextComponent,
   SelectPageTextComponent,
   AcoreStringComponent,
   AcoreStringHandlerService,
+  AcoreStringCopyComponent,
   SelectAcoreStringComponent,
+  PageTextLocaleComponent,
+  NpcTextLocaleComponent,
+  BroadcastTextLocaleComponent,
 } from '@keira/features/texts';
-import { GameTeleComponent, GameTeleHandlerService, SelectGameTeleComponent } from '@keira/features/game-tele';
+import { GameTeleComponent, GameTeleCopyComponent, GameTeleHandlerService, SelectGameTeleComponent } from '@keira/features/game-tele';
 import {
   CreatureImmunitiesComponent,
   CreatureImmunitiesHandlerService,
   SelectCreatureImmunitiesComponent,
 } from '@keira/features/creature-immunities';
-import { SelectTrainerComponent, TrainerComponent, TrainerHandlerService, TrainerSpellComponent } from '@keira/features/trainer';
+import {
+  SelectTrainerComponent,
+  TrainerComponent,
+  TrainerCopyComponent,
+  TrainerHandlerService,
+  TrainerSpellComponent,
+} from '@keira/features/trainer';
 import { UnusedGuidSearchComponent } from '@keira/features/unused-guid-search';
 import { WORLD_EDITOR_LINKS } from '@keira/shared/constants';
 import { worldEditorLinks } from './world-editor-links';
@@ -150,8 +182,18 @@ export const KEIRA_ROUTES: Routes = [
     path: 'creature',
     children: [
       {
+        path: 'creature-template-locale',
+        component: CreatureTemplateLocaleComponent,
+        canActivate: [CreatureHandlerService],
+      },
+      {
         path: 'select',
         component: SelectCreatureComponent,
+      },
+      {
+        path: 'copy',
+        component: CreatureCopyComponent,
+        canActivate: [CreatureHandlerService],
       },
       {
         path: 'creature-template',
@@ -264,6 +306,11 @@ export const KEIRA_ROUTES: Routes = [
         canActivate: [QuestHandlerService],
       },
       {
+        path: 'copy',
+        component: QuestCopyComponent,
+        canActivate: [QuestHandlerService],
+      },
+      {
         path: 'quest-template-addon',
         component: QuestTemplateAddonComponent,
         canActivate: [QuestHandlerService],
@@ -271,6 +318,16 @@ export const KEIRA_ROUTES: Routes = [
       {
         path: 'quest-template-locale',
         component: QuestTemplateLocaleComponent,
+        canActivate: [QuestHandlerService],
+      },
+      {
+        path: 'quest-offer-reward-locale',
+        component: QuestOfferRewardLocaleComponent,
+        canActivate: [QuestHandlerService],
+      },
+      {
+        path: 'quest-request-items-locale',
+        component: QuestRequestItemsLocaleComponent,
         canActivate: [QuestHandlerService],
       },
       {
@@ -314,12 +371,22 @@ export const KEIRA_ROUTES: Routes = [
     path: 'gameobject',
     children: [
       {
+        path: 'gameobject-template-locale',
+        component: GameobjectTemplateLocaleComponent,
+        canActivate: [GameobjectHandlerService],
+      },
+      {
         path: 'select',
         component: SelectGameobjectComponent,
       },
       {
         path: 'gameobject-template',
         component: GameobjectTemplateComponent,
+        canActivate: [GameobjectHandlerService],
+      },
+      {
+        path: 'copy',
+        component: GameobjectCopyComponent,
         canActivate: [GameobjectHandlerService],
       },
       {
@@ -358,12 +425,22 @@ export const KEIRA_ROUTES: Routes = [
     path: 'item',
     children: [
       {
+        path: 'item-template-locale',
+        component: ItemTemplateLocaleComponent,
+        canActivate: [ItemHandlerService],
+      },
+      {
         path: 'select',
         component: SelectItemComponent,
       },
       {
         path: 'item-template',
         component: ItemTemplateComponent,
+        canActivate: [ItemHandlerService],
+      },
+      {
+        path: 'copy',
+        component: ItemCopyComponent,
         canActivate: [ItemHandlerService],
       },
       {
@@ -374,6 +451,11 @@ export const KEIRA_ROUTES: Routes = [
       {
         path: 'item-loot-template',
         component: ItemLootTemplateComponent,
+        canActivate: [ItemHandlerService],
+      },
+      {
+        path: 'item-sources',
+        component: ItemSourcesComponent,
         canActivate: [ItemHandlerService],
       },
       {
@@ -406,6 +488,16 @@ export const KEIRA_ROUTES: Routes = [
         canActivate: [ReferenceLootHandlerService],
       },
       {
+        path: 'reference-copy',
+        component: ReferenceLootCopyComponent,
+        canActivate: [ReferenceLootHandlerService],
+      },
+      {
+        path: 'spell-copy',
+        component: SpellLootCopyComponent,
+        canActivate: [SpellLootHandlerService],
+      },
+      {
         path: 'select-spell',
         component: SelectSpellLootComponent,
       },
@@ -424,6 +516,11 @@ export const KEIRA_ROUTES: Routes = [
         canActivate: [FishingLootHandlerService],
       },
       {
+        path: 'fishing-copy',
+        component: FishingLootCopyComponent,
+        canActivate: [FishingLootHandlerService],
+      },
+      {
         path: 'select-mail',
         component: SelectMailLootComponent,
       },
@@ -432,14 +529,39 @@ export const KEIRA_ROUTES: Routes = [
         component: MailLootTemplateComponent,
         canActivate: [MailLootHandlerService],
       },
+      {
+        path: 'mail-copy',
+        component: MailLootCopyComponent,
+        canActivate: [MailLootHandlerService],
+      },
     ],
   },
   {
     path: 'texts',
     children: [
       {
+        path: 'broadcast-text-locale',
+        component: BroadcastTextLocaleComponent,
+        canActivate: [BroadcastTextHandlerService],
+      },
+      {
+        path: 'npc-text-locale',
+        component: NpcTextLocaleComponent,
+        canActivate: [NpcTextHandlerService],
+      },
+      {
+        path: 'page-text-locale',
+        component: PageTextLocaleComponent,
+        canActivate: [PageTextHandlerService],
+      },
+      {
         path: 'select-page-text',
         component: SelectPageTextComponent,
+      },
+      {
+        path: 'page-text-copy',
+        component: PageTextCopyComponent,
+        canActivate: [PageTextHandlerService],
       },
       {
         path: 'page-text',
@@ -460,6 +582,11 @@ export const KEIRA_ROUTES: Routes = [
         component: SelectNpcTextComponent,
       },
       {
+        path: 'npc-text-copy',
+        component: NpcTextCopyComponent,
+        canActivate: [NpcTextHandlerService],
+      },
+      {
         path: 'npc-text',
         component: NpcTextComponent,
         canActivate: [NpcTextHandlerService],
@@ -467,6 +594,11 @@ export const KEIRA_ROUTES: Routes = [
       {
         path: 'acore-string',
         component: AcoreStringComponent,
+        canActivate: [AcoreStringHandlerService],
+      },
+      {
+        path: 'acore-string-copy',
+        component: AcoreStringCopyComponent,
         canActivate: [AcoreStringHandlerService],
       },
       {
@@ -481,6 +613,11 @@ export const KEIRA_ROUTES: Routes = [
       {
         path: 'select',
         component: SelectGossipComponent,
+      },
+      {
+        path: 'copy',
+        component: GossipCopyComponent,
+        canActivate: [GossipHandlerService],
       },
       {
         path: 'gossip-menu',
@@ -586,6 +723,11 @@ export const KEIRA_ROUTES: Routes = [
         path: 'spell-dbc',
         component: SpellDbcComponent,
       },
+      {
+        path: 'copy',
+        component: SpellCopyComponent,
+        canActivate: [SpellHandlerService],
+      },
     ],
   },
   {
@@ -594,6 +736,11 @@ export const KEIRA_ROUTES: Routes = [
       {
         path: 'select',
         component: SelectGameTeleComponent,
+      },
+      {
+        path: 'copy',
+        component: GameTeleCopyComponent,
+        canActivate: [GameTeleHandlerService],
       },
       {
         path: 'tele',
@@ -622,6 +769,11 @@ export const KEIRA_ROUTES: Routes = [
       {
         path: 'select',
         component: SelectTrainerComponent,
+      },
+      {
+        path: 'copy',
+        component: TrainerCopyComponent,
+        canActivate: [TrainerHandlerService],
       },
       {
         path: 'trainer',

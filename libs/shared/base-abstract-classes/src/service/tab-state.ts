@@ -207,6 +207,7 @@ export function resetSection(section: string, only: (service: Stateful) => boole
       service['selectedName'] = undefined;
       service['isNew'] = false;
       service['forceReload'] = false;
+      service['sourceId'] = undefined;
       for (const changed of Object.values(statusMap(service))) {
         changed.set(false);
       }
