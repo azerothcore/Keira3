@@ -20,6 +20,7 @@ export interface MenuStats {
   gameEvents: ToggleType;
   disables: ToggleType;
   areaTriggers: ToggleType;
+  dbScripts: ToggleType;
 }
 
 /**
@@ -46,4 +47,5 @@ export const ROUTE_MENUS: Record<string, keyof MenuStats> = {
   'game-events': 'gameEvents',
   disables: 'disables',
   'area-triggers': 'areaTriggers',
+  'db-scripts': 'dbScripts',
 };

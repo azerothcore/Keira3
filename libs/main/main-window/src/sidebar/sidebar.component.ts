@@ -34,6 +34,7 @@ import { CreatureImmunitiesHandlerService } from '@keira/features/creature-immun
 import { GameEventHandlerService } from '@keira/features/game-events';
 import { DisablesHandlerService } from '@keira/features/disables';
 import { AreaTriggerHandlerService } from '@keira/features/area-triggers';
+import { EventScriptsHandlerService, SpellScriptsHandlerService } from '@keira/features/db-scripts';
 import { LocationService } from '@keira/shared/common-services';
 import { MysqlService } from '@keira/shared/db-layer';
 import { SaiHandlerService } from '@keira/shared/sai-editor';
@@ -90,6 +91,7 @@ export class SidebarComponent {
     gameEvents: 'up',
     disables: 'up',
     areaTriggers: 'up',
+    dbScripts: 'up',
   };
   private readonly IMAGES_COUNT = 7;
   private readonly RANDOM_IMAGE = Math.floor(Math.random() * this.IMAGES_COUNT) + 1;
@@ -127,6 +129,8 @@ export class SidebarComponent {
   protected readonly gameEventHandlerService = inject(GameEventHandlerService);
   protected readonly disablesHandlerService = inject(DisablesHandlerService);
   protected readonly areaTriggerHandlerService = inject(AreaTriggerHandlerService);
+  protected readonly eventScriptsHandlerService = inject(EventScriptsHandlerService);
+  protected readonly spellScriptsHandlerService = inject(SpellScriptsHandlerService);
   private readonly locationService = inject(LocationService);
   private readonly router = inject(Router);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
@@ -195,6 +199,7 @@ export class SidebarComponent {
     this.menuStates.gameEvents = 'up';
     this.menuStates.disables = 'up';
     this.menuStates.areaTriggers = 'up';
+    this.menuStates.dbScripts = 'up';
   }
 
   logout(): void {

@@ -203,6 +203,14 @@ import {
   AreatriggerScriptsComponent,
   AreatriggerComponent,
 } from '@keira/features/area-triggers';
+import {
+  EventScriptsComponent,
+  EventScriptsHandlerService,
+  SelectEventScriptsComponent,
+  SelectSpellScriptsComponent,
+  SpellScriptsComponent,
+  SpellScriptsHandlerService,
+} from '@keira/features/db-scripts';
 import { UnusedGuidSearchComponent } from '@keira/features/unused-guid-search';
 import { WORLD_EDITOR_LINKS } from '@keira/shared/constants';
 import { worldEditorLinks } from './world-editor-links';
@@ -936,6 +944,29 @@ export const KEIRA_ROUTES: Routes = [
         path: 'areatrigger',
         component: AreatriggerComponent,
         canActivate: [AreaTriggerHandlerService],
+      },
+    ],
+  },
+  {
+    path: 'db-scripts',
+    children: [
+      {
+        path: 'select-event-scripts',
+        component: SelectEventScriptsComponent,
+      },
+      {
+        path: 'event-scripts',
+        component: EventScriptsComponent,
+        canActivate: [EventScriptsHandlerService],
+      },
+      {
+        path: 'select-spell-scripts',
+        component: SelectSpellScriptsComponent,
+      },
+      {
+        path: 'spell-scripts',
+        component: SpellScriptsComponent,
+        canActivate: [SpellScriptsHandlerService],
       },
     ],
   },

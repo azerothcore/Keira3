@@ -283,6 +283,13 @@
       "AREATRIGGER_INVOLVEDRELATION": "Quest objective",
       "AREATRIGGER_SCRIPTS": "Script",
       "AREATRIGGER": "Shape (custom)"
+    },
+    "DB_SCRIPTS": {
+      "EVENT_SCRIPTS": "Event scripts",
+      "SELECT_EVENT_SCRIPTS": "Search event scripts",
+      "SPELL_SCRIPTS": "Spell scripts",
+      "SELECT_SPELL_SCRIPTS": "Search spell scripts",
+      "TITLE": "Event and spell scripts"
     }
   },
   "DASHBOARD": {
@@ -2297,12 +2304,19 @@
     "AREATRIGGER_TAVERN": "A rest area: players inside rest (faction 0 all, 2 Horde only, 4 Alliance only).",
     "AREATRIGGER_INVOLVEDRELATION": "The quest whose exploration objective this trigger completes.",
     "AREATRIGGER_SCRIPTS": "The core script run when a player enters the trigger.",
-    "AREATRIGGER": "A trigger the client data hasn't (AreaTrigger.dbc): where it is and its size (a sphere by radius, or a box by length, width and height)."
+    "AREATRIGGER": "A trigger the client data hasn't (AreaTrigger.dbc): where it is and its size (a sphere by radius, or a box by length, width and height).",
+    "EVENT_SCRIPTS": "The steps of the scripts run by events (gameobject and spell events, taxi paths): each with its delay (seconds), command (as waypoint_scripts) and data.",
+    "SPELL_SCRIPTS": "The steps run by a spell's SCRIPT_EFFECT/DUMMY effects (effIndex), each with its delay (seconds), command and data."
   },
   "DISABLES": {
     "OPEN_TYPE": "Open the disables of a source type:"
   },
   "AREA_TRIGGERS": {
     "CREATE_HELP": "A new id (above the client's AreaTrigger.dbc ids for a custom one, with its shape), or the id of a trigger of the client data to give it a teleport, rest area, quest objective or script."
+  },
+  "DB_SCRIPTS": {
+    "STEPS": "Steps",
+    "COMMANDS": "Commands",
+    "GAMEOBJECTS": "Gameobjects starting it"
   }
 }

@@ -283,6 +283,13 @@
       "AREATRIGGER_INVOLVEDRELATION": "任务目标",
       "AREATRIGGER_SCRIPTS": "脚本",
       "AREATRIGGER": "形状（自定义）"
+    },
+    "DB_SCRIPTS": {
+      "EVENT_SCRIPTS": "事件脚本",
+      "SELECT_EVENT_SCRIPTS": "搜索事件脚本",
+      "SPELL_SCRIPTS": "法术脚本",
+      "SELECT_SPELL_SCRIPTS": "搜索法术脚本",
+      "TITLE": "事件和法术脚本"
     }
   },
   "DASHBOARD": {
@@ -2297,12 +2304,19 @@
     "AREATRIGGER_TAVERN": "休息区：区域内的玩家进入休息状态（faction 0 全部，2 仅部落，4 仅联盟）。",
     "AREATRIGGER_INVOLVEDRELATION": "此触发器完成其探索目标的任务。",
     "AREATRIGGER_SCRIPTS": "玩家进入触发器时运行的核心脚本。",
-    "AREATRIGGER": "客户端数据（AreaTrigger.dbc）中没有的触发器：位置和大小（按半径的球体，或按长宽高的盒子）。"
+    "AREATRIGGER": "客户端数据（AreaTrigger.dbc）中没有的触发器：位置和大小（按半径的球体，或按长宽高的盒子）。",
+    "EVENT_SCRIPTS": "由事件（游戏对象和法术事件、飞行路线）运行的脚本步骤：每步的延迟（秒）、命令（同 waypoint_scripts）和数据。",
+    "SPELL_SCRIPTS": "由法术的 SCRIPT_EFFECT/DUMMY 效果（effIndex）运行的步骤，每步含延迟（秒）、命令和数据。"
   },
   "DISABLES": {
     "OPEN_TYPE": "打开某个来源类型的禁用："
   },
   "AREA_TRIGGERS": {
     "CREATE_HELP": "新的 id（自定义触发器请大于客户端 AreaTrigger.dbc 的 id，并设置形状），或客户端数据中触发器的 id，以设置传送、休息区、任务目标或脚本。"
+  },
+  "DB_SCRIPTS": {
+    "STEPS": "步骤",
+    "COMMANDS": "命令",
+    "GAMEOBJECTS": "启动它的游戏对象"
   }
 }
