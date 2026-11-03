@@ -39,12 +39,7 @@ export const ITEM_CONSTANTS = {
     ammo: ['Adds %d damage per second', 'Adds %d %s damage per second', '+ %d damage per second', '+ %d %s damage per second'],
   },
   socketBonus: 'Socket Bonus: %s', // ITEM_SOCKET_BONUS
-  socket: [
-    'Meta Socket',
-    'Red Socket',
-    'Yellow Socket',
-    'Blue Socket',
-  ],
+  socket: ['Meta Socket', 'Red Socket', 'Yellow Socket', 'Blue Socket'],
   // (socketColor 14: red, yellow and blue)
   prismaticSocket: 'Prismatic Socket',
   gemColors: [

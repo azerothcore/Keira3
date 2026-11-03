@@ -203,7 +203,7 @@ export class QuestPreviewComponent implements OnInit {
       const reqFaction = this.service.questTemplate['RequiredFactionId' + i];
       if (reqFaction) {
         factionRequirements.push({
-          name$: from(this.service.sqliteQueryService.getFactionNameById(reqFaction)),
+          name$: from(this.service.sqliteQueryService.getFactionNameByNameId(reqFaction)),
           value: this.service.getFactionByValue(i),
         });
       }

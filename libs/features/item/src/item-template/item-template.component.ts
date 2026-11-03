@@ -25,11 +25,16 @@ import {
   TOTEM_CATEGORY,
 } from '@keira/shared/acore-world-model';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
-import { IconComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
+import {
+  IconComponent,
+  QueryOutputComponent,
+  TopBarComponent,
+  MoneyInputComponent,
+  FactionNameComponent,
+} from '@keira/shared/base-editor-components';
 import { InventoryType, Model3DViewerComponent, VIEWER_TYPE } from '@keira/shared/model-3d-viewer';
 import {
   AreaSelectorBtnComponent,
-  FactionSelectorBtnComponent,
   FlagsSelectorBtnComponent,
   HolidaySelectorBtnComponent,
   ItemEnchantmentSelectorBtnComponent,
@@ -40,6 +45,7 @@ import {
   SingleValueSelectorBtnComponent,
   SkillSelectorBtnComponent,
   SpellSelectorBtnComponent,
+  QuestFactionSelectorBtnComponent,
 } from '@keira/shared/selectors';
 import { compareObjFn } from '@keira/shared/utils';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
@@ -56,6 +62,9 @@ import { ItemTemplateService } from './item-template.service';
   templateUrl: './item-template.component.html',
   styleUrls: ['./item-template.component.scss'],
   imports: [
+    FactionNameComponent,
+    QuestFactionSelectorBtnComponent,
+    MoneyInputComponent,
     TopBarComponent,
     TranslateDirective,
     TranslatePipe,
@@ -70,7 +79,6 @@ import { ItemTemplateService } from './item-template.service';
     LanguageSelectorBtnComponent,
     SkillSelectorBtnComponent,
     SpellSelectorBtnComponent,
-    FactionSelectorBtnComponent,
     MapSelectorBtnComponent,
     AreaSelectorBtnComponent,
     HolidaySelectorBtnComponent,

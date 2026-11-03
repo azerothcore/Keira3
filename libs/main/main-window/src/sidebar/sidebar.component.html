@@ -235,6 +235,14 @@
                       </a>
                     </li>
                     <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-template-locale'">
+                        {{ 'SIDEBAR.CREATURE.CREATURE_TEMPLATE_LOCALE' | translate }}
+                        @if (creatureHandlerService.isCreatureTemplateLocaleUnsaved()) {
+                          <keira-unsaved-icon />
+                        }
+                      </a>
+                    </li>
+                    <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'creature/creature-formations'">
                         {{ 'SIDEBAR.CREATURE.FORMATIONS' | translate }}
                         @if (creatureHandlerService.isCreatureFormationUnsaved()) {
@@ -281,6 +289,22 @@
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/quest-template-locale'">
                         {{ 'SIDEBAR.QUEST.QUEST_TEMPLATE_LOCALE' | translate }}
                         @if (questHandlerService.isQuestTemplateLocaleUnsaved()) {
+                          <keira-unsaved-icon />
+                        }
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'quest/quest-offer-reward-locale'">
+                        {{ 'SIDEBAR.QUEST.QUEST_OFFER_REWARD_LOCALE' | translate }}
+                        @if (questHandlerService.isQuestOfferRewardLocaleUnsaved()) {
+                          <keira-unsaved-icon />
+                        }
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'quest/quest-request-items-locale'">
+                        {{ 'SIDEBAR.QUEST.QUEST_REQUEST_ITEMS_LOCALE' | translate }}
+                        @if (questHandlerService.isQuestRequestItemsLocaleUnsaved()) {
                           <keira-unsaved-icon />
                         }
                       </a>
@@ -375,6 +399,14 @@
                       </a>
                     </li>
                     <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-template-locale'">
+                        {{ 'SIDEBAR.GAME_OBJECT.GAMEOBJECT_TEMPLATE_LOCALE' | translate }}
+                        @if (gameobjectHandlerService.isGameobjectTemplateLocaleUnsaved()) {
+                          <keira-unsaved-icon />
+                        }
+                      </a>
+                    </li>
+                    <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'gameobject/gameobject-questitem'">
                         {{ 'SIDEBAR.GAME_OBJECT.QUEST_ITEMS' | translate }}
                         @if (gameobjectHandlerService.isGameobjectQuestitemUnsaved()) {
@@ -451,6 +483,14 @@
                       </a>
                     </li>
                     <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'item/item-template-locale'">
+                        {{ 'SIDEBAR.ITEM.ITEM_TEMPLATE_LOCALE' | translate }}
+                        @if (itemHandlerService.isItemTemplateLocaleUnsaved()) {
+                          <keira-unsaved-icon />
+                        }
+                      </a>
+                    </li>
+                    <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'item/item-loot-template'">
                         {{ 'SIDEBAR.ITEM.ITEM_LOOT' | translate }}
                         @if (itemHandlerService.isItemLootTemplateUnsaved()) {
@@ -480,6 +520,11 @@
                         @if (itemHandlerService.isMillingLootTemplateUnsaved()) {
                           <keira-unsaved-icon />
                         }
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'item/item-sources'">
+                        {{ 'SIDEBAR.ITEM.SOURCES' | translate }}
                       </a>
                     </li>
                   }
@@ -599,6 +644,14 @@
                       }
                     </a>
                   </li>
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'texts/broadcast-text-locale'">
+                      {{ 'SIDEBAR.TEXTS.BROADCAST_TEXT_LOCALE' | translate }}
+                      @if (broadcastTextHandlerService.isBroadcastTextLocaleUnsaved()) {
+                        <keira-unsaved-icon />
+                      }
+                    </a>
+                  </li>
                 }
                 <hr />
                 <li>
@@ -615,6 +668,14 @@
                       }
                     </a>
                   </li>
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'texts/npc-text-locale'">
+                      {{ 'SIDEBAR.TEXTS.NPC_TEXT_LOCALE' | translate }}
+                      @if (npcTextHandlerService.isNpcTextLocaleUnsaved()) {
+                        <keira-unsaved-icon />
+                      }
+                    </a>
+                  </li>
                 }
                 <hr />
                 <li>
@@ -627,6 +688,14 @@
                     <a href="#" routerLinkActive="active" [routerLink]="'texts/page-text'">
                       {{ 'SIDEBAR.TEXTS.PAGE_TEXT' | translate }}
                       @if (pageTextHandlerService.isUnsaved()) {
+                        <keira-unsaved-icon />
+                      }
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'texts/page-text-locale'">
+                      {{ 'SIDEBAR.TEXTS.PAGE_TEXT_LOCALE' | translate }}
+                      @if (pageTextHandlerService.isPageTextLocaleUnsaved()) {
                         <keira-unsaved-icon />
                       }
                     </a>

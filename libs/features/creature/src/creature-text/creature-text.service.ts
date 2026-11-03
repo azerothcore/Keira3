@@ -2,6 +2,7 @@ import { Service, inject } from '@angular/core';
 import { CREATURE_ID, CREATURE_TEXT_TABLE, CreatureText, EXTRA_ID, TEXT_ID } from '@keira/shared/acore-world-model';
 import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
 import { CreatureHandlerService } from '../creature-handler.service';
+import { firstValueFrom } from 'rxjs';
 import { BroadcastTextRow } from './broadcast-text-browser/broadcast-text-browser.model';
 
 @Service()
@@ -38,6 +39,39 @@ export class CreatureTextService extends MultiRowEditorService<CreatureText> {
 
     this._form.markAsDirty();
     this._form.patchValue({ BroadcastTextId: ID, Language: LanguageID, Text });
+  }
+
+  /**
+   * Fills the selected row's Text (and Language) from the broadcast_text its BroadcastTextId names: the MaleText, or the
+   * FemaleText when there's none (#3568). Says why when it can't.
+   */
+  async textFromBroadcastText(): Promise<string> {
+    const id = Number(this._form.controls.BroadcastTextId.value);
+    if (!this.hasSelectedRow() || !(id > 0)) {
+      return 'CREATURE.TEXT.NO_BROADCAST_TEXT_ID';
+    }
+    const [row] =
+      (await firstValueFrom(
+        this.queryService.query<{ MaleText: string; FemaleText: string; LanguageID: number }>(
+          `SELECT \`MaleText\`, \`FemaleText\`, \`LanguageID\` FROM \`broadcast_text\` WHERE \`ID\` = ${id}`,
+        ),
+      )) ?? [];
+    const text = row?.MaleText || row?.FemaleText;
+    if (!text) {
+      return 'CREATURE.TEXT.BROADCAST_TEXT_NOT_FOUND';
+    }
+    this._form.markAsDirty();
+    this._form.patchValue({ Text: text, Language: row.LanguageID });
+    return '';
+  }
+
+  /** The selected row's comment: the creature's name (#3568). */
+  commentFromCreature(): void {
+    if (!this.hasSelectedRow() || !this.handlerService.selectedName) {
+      return;
+    }
+    this._form.markAsDirty();
+    this._form.patchValue({ comment: this.handlerService.selectedName });
   }
 
   private getNextIdOfGroup(groupId: number): number {

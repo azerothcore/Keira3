@@ -395,6 +395,68 @@ describe('CreatureText integration tests', () => {
     });
   });
 
+  describe('Filling a row (#3568)', () => {
+    const settle = async (page: CreatureTextPage) => {
+      await page.whenStable();
+      await Promise.resolve();
+      page.detectChanges();
+    };
+
+    it('reads the Text and Language from the BroadcastTextId, the MaleText first then the FemaleText', async () => {
+      const { page, querySpy } = setup(false);
+      page.clickRowOfDatatable(0);
+      page.setInputValueById('BroadcastTextId', 25);
+
+      querySpy.mockReturnValue(of([{ MaleText: 'Hi!', FemaleText: 'Hello!', LanguageID: 7 }]));
+      page.clickElement(page.query<HTMLButtonElement>('#text-from-broadcast-text'));
+      await settle(page);
+      expect(querySpy).toHaveBeenCalledWith('SELECT `MaleText`, `FemaleText`, `LanguageID` FROM `broadcast_text` WHERE `ID` = 25');
+      expect(page.getInputById('Text').value).toBe('Hi!');
+      expect(page.getInputById('Language').value).toBe('7');
+
+      querySpy.mockReturnValue(of([{ MaleText: '', FemaleText: 'Hello!', LanguageID: 0 }]));
+      page.clickElement(page.query<HTMLButtonElement>('#text-from-broadcast-text'));
+      await settle(page);
+      expect(page.getInputById('Text').value).toBe('Hello!');
+      expect(page.query('#text-problem', false)).toBeFalsy();
+    });
+
+    it('says why the Text cannot be read', async () => {
+      const { page, querySpy } = setup(false);
+      page.clickRowOfDatatable(0);
+
+      page.clickElement(page.query<HTMLButtonElement>('#text-from-broadcast-text'));
+      await settle(page);
+      expect(page.query('#text-problem').textContent).toContain('CREATURE.TEXT.NO_BROADCAST_TEXT_ID');
+
+      page.setInputValueById('BroadcastTextId', 99);
+      querySpy.mockReturnValue(of(undefined as never));
+      page.clickElement(page.query<HTMLButtonElement>('#text-from-broadcast-text'));
+      await settle(page);
+      expect(page.query('#text-problem').textContent).toContain('CREATURE.TEXT.BROADCAST_TEXT_NOT_FOUND');
+    });
+
+    it("uses the creature's name as the comment", () => {
+      const { page, handlerService } = setup(false);
+      page.clickRowOfDatatable(0);
+
+      handlerService.selectedName = '';
+      page.clickElement(page.query<HTMLButtonElement>('#comment-from-creature'));
+      expect(page.getInputById('comment').value).toBe('');
+
+      handlerService.selectedName = 'Hogger';
+      page.clickElement(page.query<HTMLButtonElement>('#comment-from-creature'));
+      expect(page.getInputById('comment').value).toBe('Hogger');
+    });
+
+    it('keeps the buttons disabled while no row is selected', () => {
+      const { page } = setup(false);
+
+      expect(page.query<HTMLButtonElement>('#text-from-broadcast-text').disabled).toBe(true);
+      expect(page.query<HTMLButtonElement>('#comment-from-creature').disabled).toBe(true);
+    });
+  });
+
   describe('Editing existing', () => {
     it('should correctly initialise', () => {
       const { page } = setup(false);
