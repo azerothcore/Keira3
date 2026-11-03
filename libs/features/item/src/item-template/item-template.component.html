@@ -94,6 +94,11 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="displayid">displayid</label>
+              <keira-item-display-selector-btn
+                [control]="editorService.form.controls.displayid"
+                [disabled]="editorService.form.controls.displayid.disabled"
+                [config]="{ name: 'displayid' }"
+              />
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.DISPLAYID' | translate"></i>
               <input [formControlName]="'displayid'" id="displayid" type="number" class="form-control form-control-sm" />
             </div>

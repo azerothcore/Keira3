@@ -46,6 +46,7 @@ import {
   SkillSelectorBtnComponent,
   SpellSelectorBtnComponent,
   QuestFactionSelectorBtnComponent,
+  ItemDisplaySelectorBtnComponent,
 } from '@keira/shared/selectors';
 import { compareObjFn } from '@keira/shared/utils';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
@@ -62,6 +63,7 @@ import { ItemTemplateService } from './item-template.service';
   templateUrl: './item-template.component.html',
   styleUrls: ['./item-template.component.scss'],
   imports: [
+    ItemDisplaySelectorBtnComponent,
     FactionNameComponent,
     QuestFactionSelectorBtnComponent,
     MoneyInputComponent,

@@ -47,7 +47,10 @@
   "FILTER_FIELDS": "Фильтр полей",
   "SELECTORS": {
     "ENABLED": "Включено",
-    "DISABLED": "Отключено"
+    "DISABLED": "Отключено",
+    "ITEM_DISPLAY": "Выбор внешнего вида предмета (используемые другими предметами)",
+    "ITEMS": "Предметы",
+    "FOR_EXAMPLE": "Например"
   },
   "CONNECTION_WINDOW": {
     "HOST": "Хост",

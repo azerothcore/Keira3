@@ -86,3 +86,6 @@ export * from './selectors/options-selector/options-selector.model';
 export * from './selectors/options-selector/options-selector.service';
 export * from './selectors/options-selector/options-selector-modal.component';
 export * from './selectors/options-selector/options-selector-btn.component';
+export * from './search/item-display-search.service';
+export * from './selectors/item-display-selector/item-display-selector-btn.component';
+export * from './selectors/item-display-selector/item-display-selector-modal.component';

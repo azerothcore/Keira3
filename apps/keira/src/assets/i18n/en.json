@@ -47,7 +47,10 @@
   "FILTER_FIELDS": "Filter fields",
   "SELECTORS": {
     "ENABLED": "Enabled",
-    "DISABLED": "Disabled"
+    "DISABLED": "Disabled",
+    "ITEM_DISPLAY": "Item display selector (the displays other items use)",
+    "ITEMS": "Items",
+    "FOR_EXAMPLE": "For example"
   },
   "CONNECTION_WINDOW": {
     "HOST": "Host",
