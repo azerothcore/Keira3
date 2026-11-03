@@ -2021,7 +2021,11 @@
     "STARTUP_WAITING": "waiting",
     "STARTUP_READING": "reading…",
     "STARTUP_DONE": "read",
-    "STARTUP_FAILED": "couldn't be read (see the console)"
+    "STARTUP_FAILED": "couldn't be read (see the console)",
+    "MODEL_VIEWER": "3D previews (creatures, gameobjects)",
+    "MODEL_VIEWER_WOWHEAD": "Wowhead (online)",
+    "MODEL_VIEWER_GAME_DATA": "Game data (the client folder above)",
+    "MODEL_VIEWER_HELP": "Game data shows this server's own models (patched or custom ones too), read from the client folder; a display it hasn't is shown from Wowhead. Items still use Wowhead."
   },
   "SETTINGS": {
     "TITLE": "Settings",

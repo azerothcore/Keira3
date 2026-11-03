@@ -34,3 +34,4 @@ export * from './world-style';
 export * from './game-map.component';
 export * from './game-map-pois';
 export * from './game-data-folders.component';
+export * from './local-model-viewer.component';

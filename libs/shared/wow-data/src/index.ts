@@ -29,3 +29,4 @@ export * from './map-preload.service';
 export * from './script-spawns';
 export * from './script-names';
 export * from './startup-load.service';
+export * from './model-viewer-setting.service';
