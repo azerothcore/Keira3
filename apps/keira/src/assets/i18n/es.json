@@ -369,7 +369,13 @@
       "SEARCH_BROADCAST_TEXT": "Buscar en MaleText o FemaleText",
       "COPY_TO_ROW": "Copiar a la fila seleccionada",
       "MATCHED_ROW": "La fila que coincidió con tu búsqueda"
-    }
+    },
+    "FORMATION_LEADER": "Formación del líder (guid del spawn)",
+    "FORMATION_LEADS": "{{guid}}: lidera a {{count}} (mapa {{map}})",
+    "FORMATION_LED_BY": "{{guid}}: líder del spawn {{member}}",
+    "FORMATION_NONE": "{{guid}}: sin formación aún (mapa {{map}})",
+    "FORMATION_NO_SPAWNS": "Esta criatura no tiene spawns: una formación se hace con spawns (guids de creature).",
+    "FORMATION_HELP": "creature_formations es por spawn: sus filas son los miembros del líder (la fila del propio líder lo tiene como miembro)."
   },
   "QUEST": {
     "TEMPLATE": {

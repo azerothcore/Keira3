@@ -369,7 +369,13 @@
       "SEARCH_BROADCAST_TEXT": "Search MaleText or FemaleText",
       "COPY_TO_ROW": "Copy to Selected Row",
       "MATCHED_ROW": "The row your search matched"
-    }
+    },
+    "FORMATION_LEADER": "Formation of the leader (spawn guid)",
+    "FORMATION_LEADS": "{{guid}}: leads {{count}} (map {{map}})",
+    "FORMATION_LED_BY": "{{guid}}: leader of spawn {{member}}",
+    "FORMATION_NONE": "{{guid}}: no formation yet (map {{map}})",
+    "FORMATION_NO_SPAWNS": "This creature has no spawns: a formation is made of spawns (creature guids).",
+    "FORMATION_HELP": "creature_formations is per spawn: its rows are the leader's members (the leader's own row has its guid as member)."
   },
   "QUEST": {
     "TEMPLATE": {
