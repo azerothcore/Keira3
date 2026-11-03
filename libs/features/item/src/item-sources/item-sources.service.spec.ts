@@ -47,6 +47,18 @@ describe(ItemSourcesService.name, () => {
     expect(sql).toContain('WHERE 1907 IN (`StartItem`)');
   });
 
+  it('says when the list of what drops the loot was cut', async () => {
+    const long = Array.from({ length: 200 }, (_, i) => `${i} Creature`)
+      .join(', ')
+      .slice(0, 1024);
+    const { service } = setup({ 'WHERE `l`.`Item` = 2': [{ lootTable: 'creature_loot_template', Entry: 1, usedBy: long }] });
+
+    const [row] = (await service.load(2)).loot;
+
+    expect(row.usedBy?.endsWith(', …')).toBe(true);
+    expect(row.usedBy?.length).toBeLessThan(1024);
+  });
+
   it('does not look for users of references when no reference has the item', async () => {
     const { service, query } = setup({});
 

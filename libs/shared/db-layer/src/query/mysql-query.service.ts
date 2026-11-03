@@ -754,8 +754,8 @@ export class MysqlQueryService extends BaseQueryService {
   }
 
   // Utility to format a value for SQL (quote strings, keep numbers unquoted)
-  private toSqlValue(value: unknown): string {
-    // (an integer string, as an id from a form, stays a number; the rest, binary and dates included, escaped)
+  /** An id (a number, or an integer string from a form) as a number; anything else escaped. */
+  private toSqlValue(value: string | number): string {
     if (typeof value === 'string' && /^-?\d+$/.test(value)) {
       return value;
     }
@@ -776,6 +776,7 @@ export class MysqlQueryService extends BaseQueryService {
 
     const query =
       `DELETE FROM \`${tableName}\` WHERE \`${idField}\` = ${entryRef};\n` +
+      `DROP TEMPORARY TABLE IF EXISTS temp_copy_table;\n` +
       `CREATE TEMPORARY TABLE temp_copy_table AS\n` +
       `  SELECT * FROM \`${tableName}\` WHERE \`${idField}\` = ${sourceRef};\n` +
       `UPDATE temp_copy_table SET \`${idField}\` = ${entryRef};\n` +
@@ -868,7 +869,7 @@ export class MysqlQueryService extends BaseQueryService {
             return entryRef;
           }
           // (NULL, numbers, text, binary: as MySQL reads them)
-          return this.toSqlValue(row[col] ?? null);
+          return escape(row[col] ?? null);
         });
         return `(${values.join(', ')})`;
       })
@@ -880,6 +881,6 @@ export class MysqlQueryService extends BaseQueryService {
   }
 
   getRowsCount(tableName: string, idField: string, idValue: string | number): Observable<number | null> {
-    return this.queryValue<number>(`SELECT COUNT(1) AS v FROM \`${tableName}\` WHERE \`${idField}\` = ${idValue};\n`);
+    return this.queryValue<number>(`SELECT COUNT(1) AS v FROM \`${tableName}\` WHERE \`${idField}\` = ${this.toSqlValue(idValue)};\n`);
   }
 }

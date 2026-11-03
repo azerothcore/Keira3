@@ -47,11 +47,13 @@ export class MoneyInputComponent implements OnInit {
       });
   }
 
-  protected change(unit: keyof Money, text: string): void {
-    const amount = Math.max(0, Math.trunc(Number(text) || 0));
+  protected change(unit: keyof Money, input: HTMLInputElement): void {
+    const amount = Math.max(0, Math.trunc(Number(input.value) || 0));
     const copper = joinMoney({ ...this.money(), [unit]: amount });
     const control = this.control();
     control.setValue(this.negative() ? -copper : copper);
     control.markAsDirty();
+    // (100 silver is 1 gold, "abc" is 0: the box shows what the field now holds, even when its binding didn't change)
+    input.value = String(this.money()[unit]);
   }
 }

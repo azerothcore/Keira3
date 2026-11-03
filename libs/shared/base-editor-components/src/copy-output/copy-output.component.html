@@ -57,6 +57,7 @@
                           type="checkbox"
                           id="include-{{ r.tableName }}"
                           [checked]="r.included"
+                          [disabled]="r.tableName === tableName()"
                           (change)="toggleRelatedTable(r.tableName)"
                         />
                       </td>
@@ -119,7 +120,13 @@
               <i class="fa fa-copy fa-sm"></i> {{ 'COPY_OUTPUT.COPY' | translate }}
             </button>
 
-            <button id="execute-btn" class="btn btn-primary" (click)="execute()" type="button" [disabled]="executing() || executed()">
+            <button
+              id="execute-btn"
+              class="btn btn-primary"
+              (click)="execute()"
+              type="button"
+              [disabled]="executing() || executed() || generating()"
+            >
               <i class="fa fa-bolt fa-sm"></i>
               @if (executing()) {
                 <i class="fas fa-spinner fa-spin"></i>

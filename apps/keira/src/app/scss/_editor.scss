@@ -29,9 +29,10 @@
 }
 
 .edit-form {
-  // (a number field left empty: its column would get NULL, #3236)
-  input.ng-invalid:not(:disabled) {
-    border-color: var(--bs-danger, #dc3545);
+  // (a number field emptied, once touched: its column would get NULL, #3236)
+  input.ng-invalid.ng-touched:not(:disabled),
+  input.ng-invalid.ng-dirty:not(:disabled) {
+    border-color: var(--keira-error, #dc3545);
     box-shadow: 0 0 0 0.15rem rgba(220, 53, 69, 0.25);
   }
 

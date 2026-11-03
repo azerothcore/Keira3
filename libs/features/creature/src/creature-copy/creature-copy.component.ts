@@ -22,6 +22,8 @@ import {
   NPC_VENDOR_ID,
   CREATURE_DEFAULT_TRAINER_ID,
   CREATURE_QUESTITEM_ID,
+  CREATURE_TEMPLATE_LOCALE_TABLE,
+  CREATURE_TEMPLATE_LOCALE_ID,
 } from '@keira/shared/acore-world-model';
 import { CopyOutputComponent } from '@keira/shared/base-editor-components';
 import { CreatureHandlerService } from '../creature-handler.service';
@@ -45,6 +47,7 @@ export class CreatureCopyComponent {
   protected readonly idField = CREATURE_TEMPLATE_ID;
 
   protected readonly relatedTables = [
+    { tableName: CREATURE_TEMPLATE_LOCALE_TABLE, idField: CREATURE_TEMPLATE_LOCALE_ID },
     { tableName: CREATURE_TEMPLATE_ADDON_TABLE, idField: CREATURE_TEMPLATE_ADDON_ID },
     { tableName: CREATURE_TEMPLATE_MODEL_TABLE, idField: CREATURE_TEMPLATE_MODEL_ID },
     { tableName: CREATURE_TEMPLATE_RESISTANCE_TABLE, idField: CREATURE_TEMPLATE_RESISTANCE_ID },

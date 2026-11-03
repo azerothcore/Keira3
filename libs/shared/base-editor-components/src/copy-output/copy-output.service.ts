@@ -42,11 +42,6 @@ export class CopyOutputService {
 
     const selectedTables = states.filter((t) => t.included);
 
-    if (selectedTables.length === 0) {
-      const q = setVars + this.queryService.getCopyQuery(mainTableName, sourceId, newId, mainIdField, true);
-      return of(q);
-    }
-
     const hasAnyRaw = selectedTables.some((t) => t.copyMode === 'RAW');
 
     if (!hasAnyRaw) {
