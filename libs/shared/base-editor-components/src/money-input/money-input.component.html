@@ -11,7 +11,7 @@
         [attr.data-testid]="'money-' + unit"
         [value]="money()[unit]"
         [disabled]="control().disabled"
-        (change)="change(unit, $any($event.target).value)"
+        (change)="change(unit, $any($event.target))"
       />
       <span class="money-coin money-{{ unit }}" [attr.aria-label]="'MONEY.' + unit.toUpperCase() | translate">{{
         'MONEY.' + unit.toUpperCase() + '_SHORT' | translate

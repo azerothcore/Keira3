@@ -68,6 +68,17 @@ describe(MoneyInputComponent.name, () => {
     expect(control.value).toBe(215900);
   });
 
+  it('carries 100 silver into a gold, and shows it', () => {
+    const { page, control } = setup(0);
+
+    page.type('silver', '100');
+
+    expect(control.value).toBe(10000);
+    expect([page.value('gold'), page.value('silver'), page.value('copper')]).toEqual(['1', '0', '0']);
+    page.type('copper', 'abc');
+    expect(page.value('copper')).toBe('0');
+  });
+
   it('keeps the sign of a negative amount', () => {
     const { page, control } = setup(-250);
 

@@ -92,13 +92,15 @@ describe('SearchService', () => {
 
       service.searchExact('entry', 25, mockChangeDetectorRef);
 
-      expect(service.fields.getRawValue()).toEqual(expect.objectContaining({ entry: 25, name: null }));
-      expect(build).toHaveBeenCalledWith(service['entityTable'], service.queryForm.getRawValue(), undefined, undefined, undefined, {
+      expect(build).toHaveBeenCalledWith(service['entityTable'], expect.anything(), undefined, undefined, undefined, {
         numbers: true,
         names: false,
       });
+      expect((build.mock.calls.at(-2)?.[1] as { fields: { entry: number } }).fields.entry).toBe(25);
       expect(run).toHaveBeenCalledWith(newQuery);
       expect(service.rows).toEqual([{ entry: 25 }] as never);
+      expect(service.fields.getRawValue()).toEqual(expect.objectContaining({ entry: null, name: null }));
+      expect(service.query).toEqual(newQuery);
     });
 
     it('does nothing for a field the search does not have', () => {

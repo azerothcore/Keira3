@@ -54,8 +54,8 @@ export abstract class SearchService<T extends TableRow> extends SubscriptionHand
   }
 
   /**
-   * Shows the row(s) whose `field` is exactly `value`, in the form too: a selector opened on a field already set shows
-   * what it holds (#3245). Nothing when the search has no such field.
+   * Shows the row(s) whose `field` is exactly `value`: a selector opened on a field already set shows what it holds
+   * (#3245), the rest of the form cleared. Nothing when the search has no such field.
    */
   searchExact(field: string, value: string | number, changeDetectorRef: ChangeDetectorRef): void {
     const control = (this.fields.controls as Record<string, FormControl>)[field];
@@ -73,6 +73,9 @@ export abstract class SearchService<T extends TableRow> extends SubscriptionHand
       { numbers: true, names: this.editorSettings.search(this.entityTable).exactNames },
     );
     this.onSearch(changeDetectorRef);
+    // (the field is left empty again: a search typed next isn't narrowed to this row)
+    control.reset(undefined, { emitEvent: false });
+    this.query = this.settingsSearchQuery();
   }
 
   onSearch(changeDetectorRef: ChangeDetectorRef): void {

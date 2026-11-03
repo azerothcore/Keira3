@@ -409,14 +409,16 @@
       "COMMENT_FROM_CREATURE": "Use the creature's name",
       "TEXT_FROM_BROADCAST_TEXT": "Read the text from the BroadcastTextId (MaleText, or FemaleText)",
       "NO_BROADCAST_TEXT_ID": "Set a BroadcastTextId first.",
-      "BROADCAST_TEXT_NOT_FOUND": "No broadcast_text with this ID (or it has no text)."
+      "BROADCAST_TEXT_NOT_FOUND": "No broadcast_text with this ID (or it has no text).",
+      "BROADCAST_TEXT_UNREADABLE": "The broadcast_text could not be read (see the error in the console)."
     },
     "FORMATION_LEADER": "Formation of the leader (spawn guid)",
     "FORMATION_LEADS": "{{guid}}: leads {{count}} (map {{map}})",
     "FORMATION_LED_BY": "{{guid}}: leader of spawn {{member}}",
     "FORMATION_NONE": "{{guid}}: no formation yet (map {{map}})",
     "FORMATION_NO_SPAWNS": "This creature has no spawns: a formation is made of spawns (creature guids).",
-    "FORMATION_HELP": "creature_formations is per spawn: its rows are the leader's members (the leader's own row has its guid as member)."
+    "FORMATION_HELP": "creature_formations is per spawn: its rows are the leader's members (the leader's own row has its guid as member).",
+    "FORMATION_UNSAVED": "Execute or discard the changes to pick another leader."
   },
   "QUEST": {
     "TEMPLATE": {

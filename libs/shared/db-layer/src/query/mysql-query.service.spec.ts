@@ -1341,6 +1341,7 @@ describe('MysqlQueryService', () => {
           const q = service.getCopyQuery('t', 10, 20, 'id');
           expect(q).toEqual(
             'DELETE FROM `t` WHERE `id` = 20;\n' +
+              'DROP TEMPORARY TABLE IF EXISTS temp_copy_table;\n' +
               'CREATE TEMPORARY TABLE temp_copy_table AS\n' +
               '  SELECT * FROM `t` WHERE `id` = 10;\n' +
               'UPDATE temp_copy_table SET `id` = 20;\n' +
@@ -1408,6 +1409,11 @@ describe('MysqlQueryService', () => {
           expect(res).toEqual(42);
         });
         expect(service.queryValue).toHaveBeenCalledWith('SELECT COUNT(1) AS v FROM `t` WHERE `id` = 123;\n');
+      });
+
+      it('getCopyQueryRawWithValues keeps text that looks like a number as text', () => {
+        const full = service.getCopyQueryRawWithValues('t', [{ id: 1, code: '007' }], 20, 'id', ['id', 'code']);
+        expect(full).toContain("(20, '007')");
       });
 
       it('getCopyQueryRawWithValues should derive columns from first row when columns param is empty', () => {

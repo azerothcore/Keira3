@@ -8,6 +8,8 @@ import {
   PROSPECTING_LOOT_TEMPLATE_TABLE,
   MILLING_LOOT_TEMPLATE_TABLE,
   LOOT_TEMPLATE_ID,
+  ITEM_TEMPLATE_LOCALE_TABLE,
+  ITEM_TEMPLATE_LOCALE_ID,
 } from '@keira/shared/acore-world-model';
 
 @Component({
@@ -29,6 +31,7 @@ export class ItemCopyComponent {
   protected readonly idField = ITEM_TEMPLATE_ID;
 
   protected readonly relatedTables = [
+    { tableName: ITEM_TEMPLATE_LOCALE_TABLE, idField: ITEM_TEMPLATE_LOCALE_ID },
     // (not item_enchantment_template nor the disenchant loot: they're found by the template's RandomProperty/RandomSuffix
     // and DisenchantID, copied with it, and shared with other items)
     { tableName: ITEM_LOOT_TEMPLATE_TABLE, idField: LOOT_TEMPLATE_ID },

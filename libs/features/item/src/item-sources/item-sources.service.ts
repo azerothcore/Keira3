@@ -46,6 +46,11 @@ export interface ItemSources {
 const names = (from: string, where: string): string =>
   `(SELECT GROUP_CONCAT(CONCAT(\`u\`.\`entry\`, ' ', \`u\`.\`name\`) ORDER BY \`u\`.\`entry\` SEPARATOR ', ') FROM \`${from}\` \`u\` WHERE ${where})`;
 
+/** MySQL cuts GROUP_CONCAT at group_concat_max_len (1024 by default): a cut list says so. */
+export const GROUP_CONCAT_MAX = 1024;
+const shortened = (usedBy: string | null): string | null =>
+  usedBy && usedBy.length >= GROUP_CONCAT_MAX ? `${usedBy.slice(0, usedBy.lastIndexOf(', '))}, …` : usedBy;
+
 /** The loot tables, and how to tell what uses each one's Entry. */
 export const ITEM_LOOT_TABLES: { table: string; usedBy: string | null }[] = [
   { table: 'creature_loot_template', usedBy: names('creature_template', '`u`.`lootid` = `l`.`Entry`') },
@@ -73,14 +78,16 @@ export class ItemSourcesService {
 
   async load(itemId: number | string): Promise<ItemSources> {
     const id = Number(itemId);
-    const loot = await this.rows<ItemLootSource>(
-      ITEM_LOOT_TABLES.map(
-        ({ table, usedBy }) =>
-          `SELECT '${table}' AS \`lootTable\`, \`l\`.\`Entry\`, \`l\`.\`Chance\`, \`l\`.\`QuestRequired\`, \`l\`.\`GroupId\`, ` +
-          `\`l\`.\`MinCount\`, \`l\`.\`MaxCount\`, ${usedBy ?? 'NULL'} AS \`usedBy\` ` +
-          `FROM \`${table}\` \`l\` WHERE \`l\`.\`Item\` = ${id} AND \`l\`.\`Reference\` = 0`,
-      ).join(' UNION ALL '),
-    );
+    const loot = (
+      await this.rows<ItemLootSource>(
+        ITEM_LOOT_TABLES.map(
+          ({ table, usedBy }) =>
+            `SELECT '${table}' AS \`lootTable\`, \`l\`.\`Entry\`, \`l\`.\`Chance\`, \`l\`.\`QuestRequired\`, \`l\`.\`GroupId\`, ` +
+            `\`l\`.\`MinCount\`, \`l\`.\`MaxCount\`, ${usedBy ?? 'NULL'} AS \`usedBy\` ` +
+            `FROM \`${table}\` \`l\` WHERE \`l\`.\`Item\` = ${id} AND \`l\`.\`Reference\` = 0`,
+        ).join(' UNION ALL '),
+      )
+    ).map((row) => ({ ...row, usedBy: shortened(row.usedBy) }));
     const references = [...new Set(loot.filter((row) => row.lootTable === 'reference_loot_template').map((row) => Number(row.Entry)))];
     const referenceUsers = references.length
       ? await this.rows<ItemReferenceUser>(

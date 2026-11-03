@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CopyOutputComponent } from '@keira/shared/base-editor-components';
 import { PageTextHandlerService } from './page-text-handler.service';
-import { PAGE_TEXT_TABLE, PAGE_TEXT_ID } from '@keira/shared/acore-world-model';
+import { PAGE_TEXT_TABLE, PAGE_TEXT_ID, PAGE_TEXT_LOCALE_TABLE, PAGE_TEXT_LOCALE_ID } from '@keira/shared/acore-world-model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -21,5 +21,5 @@ export class PageTextCopyComponent {
   protected readonly tableName = PAGE_TEXT_TABLE;
   protected readonly idField = PAGE_TEXT_ID;
 
-  protected readonly relatedTables: Array<{ tableName: string; idField: string }> = [];
+  protected readonly relatedTables = [{ tableName: PAGE_TEXT_LOCALE_TABLE, idField: PAGE_TEXT_LOCALE_ID }];
 }

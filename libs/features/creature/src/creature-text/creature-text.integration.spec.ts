@@ -8,7 +8,7 @@ import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
@@ -434,19 +434,34 @@ describe('CreatureText integration tests', () => {
       page.clickElement(page.query<HTMLButtonElement>('#text-from-broadcast-text'));
       await settle(page);
       expect(page.query('#text-problem').textContent).toContain('CREATURE.TEXT.BROADCAST_TEXT_NOT_FOUND');
+
+      vi.spyOn(console, 'error').mockImplementation(() => undefined);
+      querySpy.mockReturnValue(throwError(() => new Error('down')));
+      page.clickElement(page.query<HTMLButtonElement>('#text-from-broadcast-text'));
+      await settle(page);
+      expect(page.query('#text-problem').textContent).toContain('CREATURE.TEXT.BROADCAST_TEXT_UNREADABLE');
     });
 
-    it("uses the creature's name as the comment", () => {
-      const { page, handlerService } = setup(false);
+    it("uses the creature's name as the comment, read from its template when not known", async () => {
+      const { page, handlerService, queryService } = setup(false);
+      const byId = vi.spyOn(queryService, 'getCreatureNameById').mockResolvedValue('');
       page.clickRowOfDatatable(0);
 
       handlerService.selectedName = '';
       page.clickElement(page.query<HTMLButtonElement>('#comment-from-creature'));
+      await settle(page);
       expect(page.getInputById('comment').value).toBe('');
+      expect(byId).toHaveBeenCalledWith('1234');
 
-      handlerService.selectedName = 'Hogger';
+      byId.mockResolvedValue('Hogger');
       page.clickElement(page.query<HTMLButtonElement>('#comment-from-creature'));
+      await settle(page);
       expect(page.getInputById('comment').value).toBe('Hogger');
+
+      handlerService.selectedName = 'Hogger the Second';
+      page.clickElement(page.query<HTMLButtonElement>('#comment-from-creature'));
+      await settle(page);
+      expect(page.getInputById('comment').value).toBe('Hogger the Second');
     });
 
     it('keeps the buttons disabled while no row is selected', () => {

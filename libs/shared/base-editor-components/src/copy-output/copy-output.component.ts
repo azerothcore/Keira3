@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal, input } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
+import { Subject, switchMap } from 'rxjs';
 import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { ClipboardService } from 'ngx-clipboard';
 import { HandlerService } from '@keira/shared/base-abstract-classes';
@@ -43,6 +44,9 @@ export class CopyOutputComponent<T extends TableRow> extends SubscriptionHandler
   protected executing = signal<boolean>(false);
   protected executed = signal<boolean>(false);
   protected sqlExpanded = signal<boolean>(false);
+  /** The query is being made again (after a change): it can't be executed meanwhile. */
+  protected readonly generating = signal<boolean>(false);
+  private readonly regenerate = new Subject<void>();
 
   protected readonly sourceId = signal<string | number>('');
   protected readonly newId = signal<string | number>('');
@@ -55,6 +59,25 @@ export class CopyOutputComponent<T extends TableRow> extends SubscriptionHandler
     }
     this.sourceId.set(handler.sourceId);
     this.newId.set(handler.selected);
+    // (only the query of the latest states is kept)
+    this.subscriptions.push(
+      this.regenerate
+        .pipe(
+          switchMap(() =>
+            this.copyOutputService.generateCopyQueryForStates(
+              this.relatedTableStates(),
+              this.sourceId(),
+              this.newId(),
+              this.tableName(),
+              this.idField(),
+            ),
+          ),
+        )
+        .subscribe((query) => {
+          this.copyQuery.set(query);
+          this.generating.set(false);
+        }),
+    );
     this.populateRelatedTables();
   }
 
@@ -84,13 +107,8 @@ export class CopyOutputComponent<T extends TableRow> extends SubscriptionHandler
   }
 
   protected generateCopyQuery(): void {
-    this.subscriptions.push(
-      this.copyOutputService
-        .generateCopyQueryForStates(this.relatedTableStates(), this.sourceId(), this.newId(), this.tableName(), this.idField())
-        .subscribe((query) => {
-          this.copyQuery.set(query);
-        }),
-    );
+    this.generating.set(true);
+    this.regenerate.next();
   }
 
   protected copy(): void {
@@ -102,7 +120,8 @@ export class CopyOutputComponent<T extends TableRow> extends SubscriptionHandler
   }
 
   protected setAllIncluded(included: boolean): void {
-    this.updateStates(() => ({ included }));
+    // (the main table is always copied: the rest belongs to it)
+    this.updateStates((state) => ({ included: included || state.tableName === this.tableName() }));
   }
 
   protected allIncluded(): boolean {
@@ -132,6 +151,8 @@ export class CopyOutputComponent<T extends TableRow> extends SubscriptionHandler
         next: () => {
           this.executing.set(false);
           this.executed.set(true);
+          // (the entry exists now: the editors read it rather than make a new one, even without Continue)
+          this.handlerService().select(false, this.newId(), undefined, false);
         },
         error: (error: QueryError) => {
           this.executing.set(false);

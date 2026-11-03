@@ -409,14 +409,16 @@
       "COMMENT_FROM_CREATURE": "使用生物名称",
       "TEXT_FROM_BROADCAST_TEXT": "根据 BroadcastTextId 读取文本（MaleText 或 FemaleText）",
       "NO_BROADCAST_TEXT_ID": "请先设置 BroadcastTextId。",
-      "BROADCAST_TEXT_NOT_FOUND": "没有此 ID 的 broadcast_text（或其没有文本）。"
+      "BROADCAST_TEXT_NOT_FOUND": "没有此 ID 的 broadcast_text（或其没有文本）。",
+      "BROADCAST_TEXT_UNREADABLE": "无法读取 broadcast_text（错误见控制台）。"
     },
     "FORMATION_LEADER": "领队的编队（刷新点 guid）",
     "FORMATION_LEADS": "{{guid}}：带领 {{count}} 个（地图 {{map}}）",
     "FORMATION_LED_BY": "{{guid}}：刷新点 {{member}} 的领队",
     "FORMATION_NONE": "{{guid}}：暂无编队（地图 {{map}}）",
     "FORMATION_NO_SPAWNS": "该生物没有刷新点：编队由刷新点（creature guid）组成。",
-    "FORMATION_HELP": "creature_formations 按刷新点设置：其行是领队的成员（领队自己那一行以其 guid 作为成员）。"
+    "FORMATION_HELP": "creature_formations 按刷新点设置：其行是领队的成员（领队自己那一行以其 guid 作为成员）。",
+    "FORMATION_UNSAVED": "请先执行或放弃更改，再选择其他领队。"
   },
   "QUEST": {
     "TEMPLATE": {

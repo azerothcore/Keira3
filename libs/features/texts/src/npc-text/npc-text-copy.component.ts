@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CopyOutputComponent } from '@keira/shared/base-editor-components';
 import { NpcTextHandlerService } from './npc-text-handler.service';
-import { NPC_TEXT_TABLE, NPC_TEXT_ID } from '@keira/shared/acore-world-model';
+import { NPC_TEXT_TABLE, NPC_TEXT_ID, NPC_TEXT_LOCALE_TABLE, NPC_TEXT_LOCALE_ID } from '@keira/shared/acore-world-model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -21,5 +21,5 @@ export class NpcTextCopyComponent {
   protected readonly tableName = NPC_TEXT_TABLE;
   protected readonly idField = NPC_TEXT_ID;
 
-  protected readonly relatedTables: Array<{ tableName: string; idField: string }> = [];
+  protected readonly relatedTables = [{ tableName: NPC_TEXT_LOCALE_TABLE, idField: NPC_TEXT_LOCALE_ID }];
 }

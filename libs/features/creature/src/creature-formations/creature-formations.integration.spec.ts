@@ -426,10 +426,24 @@ describe('CreatureFormations integration tests', () => {
       expect(selectAll).toHaveBeenLastCalledWith('creature_formations', 'leaderGUID', 12);
     });
 
-    it('says when the creature has no spawns', () => {
+    it('says when the creature has no spawns, and offers no rows to add', () => {
       const { page, selectAll } = spawnsOf([]);
       expect(page.query('#formation-no-spawns')).toBeTruthy();
       expect(selectAll).not.toHaveBeenCalled();
+      expect(page.query('#leaderGUID', false)).toBeFalsy();
+    });
+
+    it('keeps the leader while its formation has unsaved changes', () => {
+      const { page } = spawnsOf([
+        { guid: 11, map: 1, leads: 3, ledBy: null },
+        { guid: 12, map: 1, leads: 0, ledBy: null },
+      ]);
+      expect(page.query<HTMLSelectElement>('#formation-leader').disabled).toBe(false);
+
+      page.addNewRow();
+
+      expect(page.query<HTMLSelectElement>('#formation-leader').disabled).toBe(true);
+      expect(page.query('#formation-leader-unsaved')).toBeTruthy();
     });
   });
 });

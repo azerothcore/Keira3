@@ -151,8 +151,9 @@ describe(CopyOutputComponent.name, () => {
     expect(page.include('creature_template_addon', false)).toBeFalsy();
   });
 
-  it('leaves a table out, then all of them (the main one is still copied)', async () => {
+  it('leaves a table out, then all of them but the main one, always copied', async () => {
     const { page } = await setup();
+    expect(page.include('creature_template').nativeElement.disabled).toBe(true);
 
     await page.click(page.include('creature_template_addon'));
     expect(page.includeAll().nativeElement.checked).toBe(false);
@@ -163,9 +164,17 @@ describe(CopyOutputComponent.name, () => {
     expect(page.sqlText()).toContain('creature_template_addon');
 
     await page.click(page.includeAll());
-    expect(page.include('creature_template').nativeElement.checked).toBe(false);
-    expect(page.sqlText()).toContain('CREATE TEMPORARY TABLE');
+    expect(page.include('creature_template').nativeElement.checked).toBe(true);
+    expect(page.sqlText()).toContain('INSERT INTO `creature_template`');
     expect(page.sqlText()).not.toContain('creature_template_addon');
+  });
+
+  it('marks the entry as existing once the copy ran', async () => {
+    const { page, handlerService } = await setup();
+
+    await page.click(page.executeButton());
+
+    expect(handlerService.select).toHaveBeenCalledWith(false, '2', undefined, false);
   });
 
   it('copies a table, then all of them, through a temporary table', async () => {

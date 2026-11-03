@@ -4,6 +4,7 @@ import {
   CREATURE_FORMATIONS_MEMBER_GUID,
   CREATURE_FORMATIONS_TABLE,
   CreatureFormation,
+  CREATURE_SPAWN_ID,
 } from '@keira/shared/acore-world-model';
 import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
 import { TableRow } from '@keira/shared/constants';
@@ -57,7 +58,7 @@ export class CreatureFormationsService extends MultiRowEditorService<CreatureFor
         'SELECT `c`.`guid`, `c`.`map`, ' +
           '(SELECT COUNT(*) FROM `creature_formations` `f` WHERE `f`.`leaderGUID` = `c`.`guid` AND `f`.`memberGUID` <> `c`.`guid`) AS `leads`, ' +
           '(SELECT `f`.`leaderGUID` FROM `creature_formations` `f` WHERE `f`.`memberGUID` = `c`.`guid` AND `f`.`leaderGUID` <> `c`.`guid` LIMIT 1) AS `ledBy` ' +
-          `FROM \`creature\` \`c\` WHERE \`c\`.\`id\` = ${Math.trunc(Number(entry))} ORDER BY \`c\`.\`guid\` LIMIT 500`,
+          `FROM \`creature\` \`c\` WHERE \`c\`.\`${CREATURE_SPAWN_ID}\` = ${Math.trunc(Number(entry))} ORDER BY \`c\`.\`guid\` LIMIT 500`,
       )
       .pipe(
         map((rows) =>

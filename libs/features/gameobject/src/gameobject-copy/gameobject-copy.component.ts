@@ -6,6 +6,8 @@ import {
   GAMEOBJECT_TEMPLATE_ADDON_ID,
   GAMEOBJECT_QUESTITEM_TABLE,
   GAMEOBJECT_QUESTITEM_ID,
+  GAMEOBJECT_TEMPLATE_LOCALE_TABLE,
+  GAMEOBJECT_TEMPLATE_LOCALE_ID,
 } from '@keira/shared/acore-world-model';
 import { CopyOutputComponent } from '@keira/shared/base-editor-components';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
@@ -29,6 +31,7 @@ export class GameobjectCopyComponent {
   protected readonly idField = GAMEOBJECT_TEMPLATE_ID;
 
   protected readonly relatedTables = [
+    { tableName: GAMEOBJECT_TEMPLATE_LOCALE_TABLE, idField: GAMEOBJECT_TEMPLATE_LOCALE_ID },
     { tableName: GAMEOBJECT_TEMPLATE_ADDON_TABLE, idField: GAMEOBJECT_TEMPLATE_ADDON_ID },
     { tableName: GAMEOBJECT_QUESTITEM_TABLE, idField: GAMEOBJECT_QUESTITEM_ID },
     // (not the loot: it's found by the template's Data1, copied with it, not by the gameobject's entry)

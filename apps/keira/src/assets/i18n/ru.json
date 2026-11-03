@@ -409,14 +409,16 @@
       "COMMENT_FROM_CREATURE": "Использовать имя существа",
       "TEXT_FROM_BROADCAST_TEXT": "Прочитать текст по BroadcastTextId (MaleText или FemaleText)",
       "NO_BROADCAST_TEXT_ID": "Сначала укажите BroadcastTextId.",
-      "BROADCAST_TEXT_NOT_FOUND": "Нет broadcast_text с этим ID (или в нём нет текста)."
+      "BROADCAST_TEXT_NOT_FOUND": "Нет broadcast_text с этим ID (или в нём нет текста).",
+      "BROADCAST_TEXT_UNREADABLE": "Не удалось прочитать broadcast_text (ошибка в консоли)."
     },
     "FORMATION_LEADER": "Строй лидера (guid спавна)",
     "FORMATION_LEADS": "{{guid}}: ведёт {{count}} (карта {{map}})",
     "FORMATION_LED_BY": "{{guid}}: лидер спавна {{member}}",
     "FORMATION_NONE": "{{guid}}: строя пока нет (карта {{map}})",
     "FORMATION_NO_SPAWNS": "У этого существа нет спавнов: строй состоит из спавнов (guid в creature).",
-    "FORMATION_HELP": "creature_formations задаётся для спавнов: строки — это члены строя лидера (строка самого лидера содержит его guid как члена)."
+    "FORMATION_HELP": "creature_formations задаётся для спавнов: строки — это члены строя лидера (строка самого лидера содержит его guid как члена).",
+    "FORMATION_UNSAVED": "Выполните или отмените изменения, чтобы выбрать другого лидера."
   },
   "QUEST": {
     "TEMPLATE": {

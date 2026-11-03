@@ -12,18 +12,26 @@
     } @else if (!leaders().length) {
       <p class="small text-muted mb-0" id="formation-no-spawns">{{ 'CREATURE.FORMATION_NO_SPAWNS' | translate }}</p>
     } @else {
-      <select class="form-select form-select-sm w-auto" id="formation-leader" (change)="pickLeader(+$any($event.target).value)">
+      <select
+        class="form-select form-select-sm w-auto"
+        id="formation-leader"
+        [disabled]="handlerService.isCreatureFormationUnsaved()"
+        (change)="pickLeader(+$any($event.target).value)"
+      >
         @for (leader of leaders(); track leader.guid) {
           <option [value]="leader.guid" [selected]="leader.guid === editorService.leader">
             {{ leader.key | translate: leader.params }}
           </option>
         }
       </select>
+      @if (handlerService.isCreatureFormationUnsaved()) {
+        <p class="small text-warning mt-1 mb-0" id="formation-leader-unsaved">{{ 'CREATURE.FORMATION_UNSAVED' | translate }}</p>
+      }
       <p class="small text-muted mt-1 mb-0">{{ 'CREATURE.FORMATION_HELP' | translate }}</p>
     }
   </div>
 
-  @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
+  @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading && editorService.leader !== undefined) {
     <div>
       <div class="content-block">
         <keira-query-output

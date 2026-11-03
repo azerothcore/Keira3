@@ -409,14 +409,16 @@
       "COMMENT_FROM_CREATURE": "Usar el nombre de la criatura",
       "TEXT_FROM_BROADCAST_TEXT": "Leer el texto del BroadcastTextId (MaleText, o FemaleText)",
       "NO_BROADCAST_TEXT_ID": "Primero pon un BroadcastTextId.",
-      "BROADCAST_TEXT_NOT_FOUND": "No hay broadcast_text con este ID (o no tiene texto)."
+      "BROADCAST_TEXT_NOT_FOUND": "No hay broadcast_text con este ID (o no tiene texto).",
+      "BROADCAST_TEXT_UNREADABLE": "No se pudo leer el broadcast_text (mira el error en la consola)."
     },
     "FORMATION_LEADER": "Formación del líder (guid del spawn)",
     "FORMATION_LEADS": "{{guid}}: lidera a {{count}} (mapa {{map}})",
     "FORMATION_LED_BY": "{{guid}}: líder del spawn {{member}}",
     "FORMATION_NONE": "{{guid}}: sin formación aún (mapa {{map}})",
     "FORMATION_NO_SPAWNS": "Esta criatura no tiene spawns: una formación se hace con spawns (guids de creature).",
-    "FORMATION_HELP": "creature_formations es por spawn: sus filas son los miembros del líder (la fila del propio líder lo tiene como miembro)."
+    "FORMATION_HELP": "creature_formations es por spawn: sus filas son los miembros del líder (la fila del propio líder lo tiene como miembro).",
+    "FORMATION_UNSAVED": "Ejecuta o descarta los cambios para elegir otro líder."
   },
   "QUEST": {
     "TEMPLATE": {

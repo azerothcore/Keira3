@@ -1,4 +1,9 @@
 <p class="h5" [translate]="'CREATE.CREATE_NEW'"></p>
+<p
+  class="control-label mb-2"
+  id="create-help"
+  [innerHTML]="'CREATE.CREATE_A_NEW' | translate: { ENTITY_TABLE: entityTable, ENTITY_ID_FIELD: entityIdField }"
+></p>
 
 @if (allowCopy) {
   <div class="row mb-2">
@@ -69,9 +74,7 @@
       </div>
 
       <div class="form-group col-sm-6 col-md-4 col-lg-3 col-xl-2">
-        <label class="control-label visually-hidden" for="id">
-          {{ 'CREATE.NEW_ENTRY' | translate: { ENTITY_TABLE: entityTable, ENTITY_ID_FIELD: entityIdField } }}
-        </label>
+        <label class="control-label visually-hidden" for="id">{{ entityIdField }}</label>
         <div class="input-group input-group-sm">
           <input
             type="number"
