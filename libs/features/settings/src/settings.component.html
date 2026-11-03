@@ -151,6 +151,7 @@
         @if (soapAnswer(); as answer) {
           <pre class="small mt-1 mb-0" [class.text-danger]="answer.failed" data-testid="soap-answer">{{ answer.text }}</pre>
         }
+        <keira-soap-account (created)="testSoap()" />
       }
     </div>
   </section>

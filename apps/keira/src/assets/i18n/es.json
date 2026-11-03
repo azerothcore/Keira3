@@ -1979,7 +1979,15 @@
     "SEARCH_DEFAULT": "Predeterminado (todas las tablas)",
     "EXACT_NUMBERS": "Números exactos",
     "EXACT_NAMES": "Nombres exactos",
-    "SEARCH_LIMIT": "Filas"
+    "SEARCH_LIMIT": "Filas",
+    "SOAP_ACCOUNT_WANTED": "Quiero que Keira cree una cuenta SOAP",
+    "SOAP_ACCOUNT_HELP": "Una cuenta de juego con nivel GM 3 en todos los reinos, creada en la base de datos auth con el login de Keira (necesita permiso de escritura allí), como harían `account create` y `account set gmlevel`. O copia el SQL y ejecútalo tú.",
+    "SOAP_ACCOUNT_REGENERATE": "Otro nombre y contraseña",
+    "AUTH_DATABASE": "Base de datos auth",
+    "SOAP_ACCOUNT_CREATE": "Crear la cuenta",
+    "SOAP_ACCOUNT_COPY": "Copiar como SQL",
+    "SOAP_ACCOUNT_CREATED": "Cuenta creada: ahora es el login SOAP (probado arriba).",
+    "SOAP_ACCOUNT_COPIED": "SQL copiado: ejecútalo en la base auth y luego escribe este nombre y contraseña arriba."
   },
   "WAYPOINTS": {
     "SELECT_PATH": "Selecciona una ruta existente",

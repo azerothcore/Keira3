@@ -1979,7 +1979,15 @@
     "SEARCH_DEFAULT": "По умолчанию (все таблицы)",
     "EXACT_NUMBERS": "Точные числа",
     "EXACT_NAMES": "Точные имена",
-    "SEARCH_LIMIT": "Строк"
+    "SEARCH_LIMIT": "Строк",
+    "SOAP_ACCOUNT_WANTED": "Я хочу, чтобы Keira создала учётную запись SOAP",
+    "SOAP_ACCOUNT_HELP": "Игровая учётная запись с уровнем GM 3 во всех мирах, создаётся в базе auth под логином Keira (нужно право записи), как `account create` и `account set gmlevel`. Или скопируйте SQL и выполните его сами.",
+    "SOAP_ACCOUNT_REGENERATE": "Другие имя и пароль",
+    "AUTH_DATABASE": "База auth",
+    "SOAP_ACCOUNT_CREATE": "Создать учётную запись",
+    "SOAP_ACCOUNT_COPY": "Копировать как SQL",
+    "SOAP_ACCOUNT_CREATED": "Учётная запись создана: теперь это логин SOAP (проверка выше).",
+    "SOAP_ACCOUNT_COPIED": "SQL скопирован: выполните его в базе auth, затем введите эти имя и пароль выше."
   },
   "WAYPOINTS": {
     "SELECT_PATH": "Выберите существующий маршрут",

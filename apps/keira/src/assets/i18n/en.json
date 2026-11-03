@@ -1979,7 +1979,15 @@
     "SEARCH_DEFAULT": "Default (all tables)",
     "EXACT_NUMBERS": "Exact numbers",
     "EXACT_NAMES": "Exact names",
-    "SEARCH_LIMIT": "Rows"
+    "SEARCH_LIMIT": "Rows",
+    "SOAP_ACCOUNT_WANTED": "I want Keira to create a SOAP account",
+    "SOAP_ACCOUNT_HELP": "A game account with GM level 3 on every realm, made in the auth database with Keira's login (it needs to be allowed to write there), as `account create` and `account set gmlevel` would. Or copy the SQL and run it yourself.",
+    "SOAP_ACCOUNT_REGENERATE": "Another name and password",
+    "AUTH_DATABASE": "Auth database",
+    "SOAP_ACCOUNT_CREATE": "Create the account",
+    "SOAP_ACCOUNT_COPY": "Copy as SQL",
+    "SOAP_ACCOUNT_CREATED": "Account created: it is now the SOAP login (tested above).",
+    "SOAP_ACCOUNT_COPIED": "The SQL is copied: run it on the auth database, then enter this name and password above."
   },
   "WAYPOINTS": {
     "SELECT_PATH": "Select an existing path",

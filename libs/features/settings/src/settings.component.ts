@@ -12,6 +12,7 @@ import { GameDataFoldersComponent } from '@keira/shared/world-viewer';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { EditorSettingsComponent } from './editor-settings.component';
+import { SoapAccountComponent } from './soap-account/soap-account.component';
 
 /**
  * Keira's settings: how it behaves and looks on this computer: its theme (light, dark, the computer's, or one someone
@@ -22,7 +23,7 @@ import { EditorSettingsComponent } from './editor-settings.component';
   selector: 'keira-settings',
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss'],
-  imports: [GameDataFoldersComponent, TranslatePipe, EditorSettingsComponent],
+  imports: [GameDataFoldersComponent, TranslatePipe, EditorSettingsComponent, SoapAccountComponent],
 })
 export class SettingsComponent {
   private readonly toastr = inject(ToastrService);
