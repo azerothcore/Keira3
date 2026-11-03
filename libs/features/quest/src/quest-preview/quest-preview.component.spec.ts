@@ -330,6 +330,37 @@ describe('QuestPreviewComponent', () => {
     fixture.debugElement.nativeElement.remove();
   });
 
+  it('should show the experience at the level picked (#662)', async () => {
+    const { fixture, service, page } = setup();
+    const questTemplate = createMockObject({ RewardXPDifficulty: 2, QuestLevel: 10 }, QuestTemplate);
+    vi.spyOn(service, 'rewardXP$', 'get').mockReturnValue(Promise.resolve('200'));
+    vi.spyOn(service, 'questTemplate', 'get').mockReturnValue(questTemplate);
+    let answer: ((xp: number) => void) | undefined;
+    const rewardXPAt = vi
+      .spyOn(service, 'rewardXPAt')
+      .mockImplementation((level) => (level === 20 ? new Promise((resolve) => (answer = resolve)) : Promise.resolve(level * 10)));
+
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(rewardXPAt).toHaveBeenCalledWith(80);
+    expect(page.query('#xp-at-level').textContent).toContain('800 experience');
+
+    const slider = page.query<HTMLInputElement>('#xp-player-level');
+    slider.value = '20';
+    slider.dispatchEvent(new Event('input'));
+    slider.value = '30';
+    slider.dispatchEvent(new Event('input'));
+    await fixture.whenStable();
+    answer?.(1);
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(page.query('#rewardXPAtLevel').textContent).toContain('At level 30');
+    expect(page.query('#xp-at-level').textContent).toContain('300 experience');
+    fixture.debugElement.nativeElement.remove();
+  });
+
   it('should show RewardTalents', () => {
     const { fixture, page, service } = setup();
     const questTemplate = createMockObject({ RewardTalents: 2 }, QuestTemplate);
