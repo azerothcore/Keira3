@@ -65,9 +65,9 @@
                 </ng-template>
               </ngx-datatable-column>
               <ngx-datatable-column name="id" prop="id" [minWidth]="80" [maxWidth]="150" />
-              <ngx-datatable-column name="Name" [minWidth]="200">
+              <ngx-datatable-column name="Name" prop="id" [minWidth]="200" [comparator]="names.compare">
                 <ng-template let-row="row" ngx-datatable-cell-template>
-                  {{ editorService.queryService.getGameObjectNameById(row.id) | async }}
+                  {{ names.name(row.id) }}
                 </ng-template>
               </ngx-datatable-column>
             </ngx-datatable>

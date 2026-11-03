@@ -1,3 +1,4 @@
+import { NameCache } from '@keira/shared/utils';
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -30,6 +31,11 @@ import { GameobjectQuestitemService } from './gameobject-questitem.service';
   ],
 })
 export class GameobjectQuestitemComponent extends MultiRowEditorComponent<GameobjectQuestitem> {
+  /** The names shown, read once each: the table sorts by them. */
+  protected readonly itemNames = new NameCache(
+    (id) => this.editorService.queryService.getItemNameById(id),
+    () => this.changeDetectorRef.markForCheck(),
+  );
   protected override readonly editorService = inject(GameobjectQuestitemService);
   readonly handlerService = inject(GameobjectHandlerService);
 }
