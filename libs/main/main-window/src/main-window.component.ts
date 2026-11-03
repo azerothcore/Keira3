@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { WowMapPreloadService } from '@keira/shared/wow-data';
+import { StartupLoadService, WowMapPreloadService } from '@keira/shared/wow-data';
 import { RouterOutlet } from '@angular/router';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { TabBarComponent } from './tabs/tab-bar.component';
@@ -18,5 +18,7 @@ export class MainWindowComponent {
   constructor() {
     // every map's pictures, read in the background once Keira has started (when the world editor's cache asks for it)
     inject(WowMapPreloadService).startup();
+    // the game data folders asked for in Settings, read now instead of the first time a page needs them
+    inject(StartupLoadService).startup();
   }
 }

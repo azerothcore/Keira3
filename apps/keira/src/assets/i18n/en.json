@@ -1942,7 +1942,12 @@
     "PLAYERS_ERROR": "Can't read {{database}}.characters (Settings > Server: the database name, and that the login can read it).",
     "LEGEND_PLAYER": "Player online",
     "LEGEND_OFFLINE_PLAYER": "Offline character",
-    "POOL_MOTHER": "In pool"
+    "POOL_MOTHER": "In pool",
+    "LOAD_ON_STARTUP": "Read it when Keira starts",
+    "STARTUP_WAITING": "waiting",
+    "STARTUP_READING": "reading…",
+    "STARTUP_DONE": "read",
+    "STARTUP_FAILED": "couldn't be read (see the console)"
   },
   "SETTINGS": {
     "TITLE": "Settings",

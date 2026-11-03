@@ -1942,7 +1942,12 @@
     "PLAYERS_ERROR": "无法读取 {{database}}.characters（设置 > 服务器：检查数据库名称以及该账号是否有读取权限）。",
     "LEGEND_PLAYER": "在线玩家",
     "LEGEND_OFFLINE_PLAYER": "离线角色",
-    "POOL_MOTHER": "所属池"
+    "POOL_MOTHER": "所属池",
+    "LOAD_ON_STARTUP": "Keira 启动时读取",
+    "STARTUP_WAITING": "等待中",
+    "STARTUP_READING": "读取中…",
+    "STARTUP_DONE": "已读取",
+    "STARTUP_FAILED": "无法读取（见控制台）"
   },
   "SETTINGS": {
     "TITLE": "设置",

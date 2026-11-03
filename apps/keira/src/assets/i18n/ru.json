@@ -1942,7 +1942,12 @@
     "PLAYERS_ERROR": "Не удаётся прочитать {{database}}.characters (Настройки > Сервер: имя базы и права пользователя на чтение).",
     "LEGEND_PLAYER": "Игрок в сети",
     "LEGEND_OFFLINE_PLAYER": "Персонаж не в сети",
-    "POOL_MOTHER": "В пуле"
+    "POOL_MOTHER": "В пуле",
+    "LOAD_ON_STARTUP": "Читать при запуске Keira",
+    "STARTUP_WAITING": "ожидание",
+    "STARTUP_READING": "чтение…",
+    "STARTUP_DONE": "прочитано",
+    "STARTUP_FAILED": "не удалось прочитать (см. консоль)"
   },
   "SETTINGS": {
     "TITLE": "Настройки",
