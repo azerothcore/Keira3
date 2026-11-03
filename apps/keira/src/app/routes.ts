@@ -194,6 +194,15 @@ import {
   GameEventBattlegroundHolidayComponent,
 } from '@keira/features/game-events';
 import { DisablesHandlerService, SelectDisablesComponent, DisablesComponent } from '@keira/features/disables';
+import {
+  AreaTriggerHandlerService,
+  SelectAreaTriggerComponent,
+  AreatriggerTeleportComponent,
+  AreatriggerTavernComponent,
+  AreatriggerInvolvedrelationComponent,
+  AreatriggerScriptsComponent,
+  AreatriggerComponent,
+} from '@keira/features/area-triggers';
 import { UnusedGuidSearchComponent } from '@keira/features/unused-guid-search';
 import { WORLD_EDITOR_LINKS } from '@keira/shared/constants';
 import { worldEditorLinks } from './world-editor-links';
@@ -893,6 +902,40 @@ export const KEIRA_ROUTES: Routes = [
       {
         path: 'select',
         component: SelectDisablesComponent,
+      },
+    ],
+  },
+  {
+    path: 'area-triggers',
+    children: [
+      {
+        path: 'select',
+        component: SelectAreaTriggerComponent,
+      },
+      {
+        path: 'areatrigger-teleport',
+        component: AreatriggerTeleportComponent,
+        canActivate: [AreaTriggerHandlerService],
+      },
+      {
+        path: 'areatrigger-tavern',
+        component: AreatriggerTavernComponent,
+        canActivate: [AreaTriggerHandlerService],
+      },
+      {
+        path: 'areatrigger-involvedrelation',
+        component: AreatriggerInvolvedrelationComponent,
+        canActivate: [AreaTriggerHandlerService],
+      },
+      {
+        path: 'areatrigger-scripts',
+        component: AreatriggerScriptsComponent,
+        canActivate: [AreaTriggerHandlerService],
+      },
+      {
+        path: 'areatrigger',
+        component: AreatriggerComponent,
+        canActivate: [AreaTriggerHandlerService],
       },
     ],
   },

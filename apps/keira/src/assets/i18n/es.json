@@ -274,6 +274,15 @@
       "TITLE": "Desactivaciones",
       "SEARCH": "Buscar desactivaciones",
       "DISABLES": "Desactivaciones de este tipo"
+    },
+    "AREA_TRIGGERS": {
+      "TITLE": "Activadores de área",
+      "SEARCH": "Buscar activadores",
+      "AREATRIGGER_TELEPORT": "Teletransporte",
+      "AREATRIGGER_TAVERN": "Taberna (zona de descanso)",
+      "AREATRIGGER_INVOLVEDRELATION": "Objetivo de misión",
+      "AREATRIGGER_SCRIPTS": "Script",
+      "AREATRIGGER": "Forma (personalizada)"
     }
   },
   "DASHBOARD": {
@@ -2283,9 +2292,17 @@
     "NPC_SPELLCLICK_SPELLS": "Los hechizos lanzados al hacer clic en la criatura (vehículos, monturas, NPC de misión): cast_flags 1 = el jugador lanza, 2 = sobre el jugador; user_type 0 amigo, 1 banda, 2 grupo, 3 jugador.",
     "VEHICLE_TEMPLATE_ACCESSORY": "Las criaturas que van en este vehículo, por asiento (minion 1: mueren con él; summontype y summontimer como TempSummonType).",
     "SPELL_AREA": "Dónde se aplica el hechizo (area) y a quién: misiones empezadas/terminadas con sus máscaras de estado, un aura, razas (racemask), género (2 = ambos); autocast 1 lo lanza al entrar.",
-    "DISABLES": "Lo que el servidor desactiva, para este sourceType: cada entry (un hechizo, misión, mapa…) con sus flags (según el tipo: mapas 1 normal, 2 heroico…; hechizos 1 jugador, 2 criatura, 4 mascota…) y params (mapas o zonas, separados por comas)."
+    "DISABLES": "Lo que el servidor desactiva, para este sourceType: cada entry (un hechizo, misión, mapa…) con sus flags (según el tipo: mapas 1 normal, 2 heroico…; hechizos 1 jugador, 2 criatura, 4 mascota…) y params (mapas o zonas, separados por comas).",
+    "AREATRIGGER_TELEPORT": "A dónde lleva el activador al jugador (entradas de instancias, portales).",
+    "AREATRIGGER_TAVERN": "Una zona de descanso: los jugadores dentro descansan (faction 0 todos, 2 solo Horda, 4 solo Alianza).",
+    "AREATRIGGER_INVOLVEDRELATION": "La misión cuyo objetivo de exploración completa este activador.",
+    "AREATRIGGER_SCRIPTS": "El script del núcleo que se ejecuta al entrar un jugador.",
+    "AREATRIGGER": "Un activador que no está en los datos del cliente (AreaTrigger.dbc): dónde está y su tamaño (esfera por radio, o caja por largo, ancho y alto)."
   },
   "DISABLES": {
     "OPEN_TYPE": "Abrir las desactivaciones de un tipo:"
+  },
+  "AREA_TRIGGERS": {
+    "CREATE_HELP": "Un id nuevo (por encima de los de AreaTrigger.dbc del cliente para uno personalizado, con su forma), o el id de un activador de los datos del cliente para darle teletransporte, zona de descanso, objetivo de misión o script."
   }
 }
