@@ -986,7 +986,7 @@ describe('SaiCommentGeneratorService', () => {
           target_type: SAI_TARGETS.CREATURE_RANGE,
           target_param1: UNIT_FLAGS.SERVER_CONTROLLED,
         },
-        expected: `MockEntity - In Combat - Move To Closest Creature 'mockCreatureNameById1'`,
+        expected: `MockEntity - In Combat - Move To Creature in Range 'mockCreatureNameById1'`,
       },
       {
         name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.CREATURE_DISTANCE)`,
@@ -995,7 +995,17 @@ describe('SaiCommentGeneratorService', () => {
           target_type: SAI_TARGETS.CREATURE_DISTANCE,
           target_param1: 0,
         },
-        expected: `MockEntity - In Combat - Move To Closest Creature 'mockCreatureNameById0'`,
+        expected: `MockEntity - In Combat - Move To Creatures in Distance`,
+      },
+      {
+        name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.CREATURE_RANGE, all creatures)`,
+        input: { action_type: SAI_ACTIONS.MOVE_TO_POS, target_type: SAI_TARGETS.CREATURE_RANGE, target_param1: 0 },
+        expected: `MockEntity - In Combat - Move To Creatures in Range`,
+      },
+      {
+        name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.CREATURE_DISTANCE, one entry)`,
+        input: { action_type: SAI_ACTIONS.MOVE_TO_POS, target_type: SAI_TARGETS.CREATURE_DISTANCE, target_param1: 3 },
+        expected: `MockEntity - In Combat - Move To Creature in Distance 'mockCreatureNameById3'`,
       },
       {
         name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.CLOSEST_CREATURE)`,
@@ -1031,7 +1041,17 @@ describe('SaiCommentGeneratorService', () => {
           target_type: SAI_TARGETS.GAMEOBJECT_RANGE,
           target_param1: 0,
         },
-        expected: `MockEntity - In Combat - Move To Closest Gameobject 'mockGameobjectNameById0'`,
+        expected: `MockEntity - In Combat - Move To Gameobjects in Range`,
+      },
+      {
+        name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.GAMEOBJECT_RANGE, one entry)`,
+        input: { action_type: SAI_ACTIONS.MOVE_TO_POS, target_type: SAI_TARGETS.GAMEOBJECT_RANGE, target_param1: 4 },
+        expected: `MockEntity - In Combat - Move To Gameobject in Range 'mockGameobjectNameById4'`,
+      },
+      {
+        name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.GAMEOBJECT_DISTANCE, one entry)`,
+        input: { action_type: SAI_ACTIONS.MOVE_TO_POS, target_type: SAI_TARGETS.GAMEOBJECT_DISTANCE, target_param1: 5 },
+        expected: `MockEntity - In Combat - Move To Gameobject in Distance 'mockGameobjectNameById5'`,
       },
       {
         name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.GAMEOBJECT_DISTANCE)`,
@@ -1040,7 +1060,7 @@ describe('SaiCommentGeneratorService', () => {
           target_type: SAI_TARGETS.GAMEOBJECT_DISTANCE,
           target_param1: 0,
         },
-        expected: `MockEntity - In Combat - Move To Closest Gameobject 'mockGameobjectNameById0'`,
+        expected: `MockEntity - In Combat - Move To Gameobjects in Distance`,
       },
       {
         name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.CLOSEST_GAMEOBJECT)`,
@@ -1771,6 +1791,36 @@ describe('SaiCommentGeneratorService', () => {
           event_flags: EVENT_FLAGS.DEBUG_ONLY,
         },
         expected: `MockEntity - In Combat - Mount To Model 1 (Phase 2) (Debug)`,
+      },
+      {
+        name: `SAI_EVENTS.MOVEMENTINFORM (point)`,
+        input: { event_type: SAI_EVENTS.MOVEMENTINFORM, event_param1: 8, event_param2: 13 },
+        expected: `MockEntity - On Reached Point 13 - No Action Type`,
+      },
+      {
+        name: `SAI_EVENTS.MOVEMENTINFORM (any movement, of a path)`,
+        input: { event_type: SAI_EVENTS.MOVEMENTINFORM, event_param1: 0, event_param2: 2, event_param3: 7 },
+        expected: `MockEntity - On Reached Point 2 Of Path 7 - No Action Type`,
+      },
+      {
+        name: `SAI_EVENTS.MOVEMENTINFORM (escort)`,
+        input: { event_type: SAI_EVENTS.MOVEMENTINFORM, event_param1: 17, event_param2: 4 },
+        expected: `MockEntity - On Reached Escort Point 4 - No Action Type`,
+      },
+      {
+        name: `SAI_EVENTS.MOVEMENTINFORM (another movement type)`,
+        input: { event_type: SAI_EVENTS.MOVEMENTINFORM, event_param1: 5, event_param2: 1 },
+        expected: `MockEntity - On Reached Movement Type 5 Point 1 - No Action Type`,
+      },
+      {
+        name: `SAI_ACTIONS.PLAY_EMOTE with the emote's name`,
+        input: { action_type: SAI_ACTIONS.PLAY_EMOTE, action_param1: 1 },
+        expected: `MockEntity - In Combat - Play Emote 1 (ONESHOT_TALK)`,
+      },
+      {
+        name: `SAI_ACTIONS.SET_EMOTE_STATE of an unknown emote`,
+        input: { action_type: SAI_ACTIONS.SET_EMOTE_STATE, action_param1: 99999 },
+        expected: `MockEntity - In Combat - Set Emote State 99999`,
       },
       {
         name: `SAI_EVENTS.SPELLHIT, SAI_ACTIONS.CAST`,
