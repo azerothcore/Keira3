@@ -1979,7 +1979,15 @@
     "SEARCH_DEFAULT": "默认（所有表）",
     "EXACT_NUMBERS": "精确数字",
     "EXACT_NAMES": "精确名称",
-    "SEARCH_LIMIT": "行数"
+    "SEARCH_LIMIT": "行数",
+    "SOAP_ACCOUNT_WANTED": "我希望 Keira 创建一个 SOAP 账号",
+    "SOAP_ACCOUNT_HELP": "一个在所有服务器上 GM 等级为 3 的游戏账号，使用 Keira 的登录在 auth 数据库中创建（需要写入权限），与 `account create` 和 `account set gmlevel` 相同。也可以复制 SQL 自行执行。",
+    "SOAP_ACCOUNT_REGENERATE": "换一个名称和密码",
+    "AUTH_DATABASE": "Auth 数据库",
+    "SOAP_ACCOUNT_CREATE": "创建账号",
+    "SOAP_ACCOUNT_COPY": "复制为 SQL",
+    "SOAP_ACCOUNT_CREATED": "账号已创建：现在它是 SOAP 登录（已在上方测试）。",
+    "SOAP_ACCOUNT_COPIED": "SQL 已复制：在 auth 数据库中执行，然后在上方填写此名称和密码。"
   },
   "WAYPOINTS": {
     "SELECT_PATH": "选择现有路径",

@@ -7,6 +7,8 @@ import { Injectable, signal } from '@angular/core';
 export interface ServerSettings {
   /** The characters database's name (`acore_characters`). */
   charactersDatabase: string;
+  /** The auth database's name (`acore_auth`): where Keira can make the SOAP account. */
+  authDatabase: string;
   /** The worldserver's SOAP (worldserver.conf: SOAP.Enabled, SOAP.IP, SOAP.Port) and a GM account for it. */
   soapEnabled: boolean;
   soapHost: string;
@@ -21,6 +23,7 @@ export const SERVER_SETTINGS_KEY = 'keira3.serverSettings';
 
 export const DEFAULT_SERVER_SETTINGS: ServerSettings = {
   charactersDatabase: 'acore_characters',
+  authDatabase: 'acore_auth',
   soapEnabled: false,
   soapHost: '127.0.0.1',
   soapPort: 7878,
