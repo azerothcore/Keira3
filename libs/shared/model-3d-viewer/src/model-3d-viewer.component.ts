@@ -5,6 +5,7 @@ import { CREATURE_RACE_OPTION_ICON } from '@keira/shared/acore-world-model';
 import { Option, TableRow } from '@keira/shared/constants';
 import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
 import { GenericOptionSelectorComponent } from '@keira/shared/selectors';
+import { TranslatePipe } from '@ngx-translate/core';
 import * as jquery from 'jquery';
 import { BehaviorSubject, catchError, filter, Observable, of, Subscription } from 'rxjs';
 import {
@@ -29,7 +30,7 @@ declare const ZamModelViewer: any;
   selector: 'keira-model-3d-viewer',
   templateUrl: './model-3d-viewer.component.html',
   styleUrl: './model-3d-viewer.component.scss',
-  imports: [GenericOptionSelectorComponent, ReactiveFormsModule, FormsModule],
+  imports: [GenericOptionSelectorComponent, ReactiveFormsModule, FormsModule, TranslatePipe],
 })
 export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   private readonly queryService = inject(MysqlQueryService);
@@ -48,6 +49,8 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   protected readonly backgroundColor = new FormControl<string>('#000000');
 
   protected readonly showSettings = signal(false);
+  /** A helmet, shoulders or weapon shown worn by a character rather than alone (#3502). */
+  protected readonly onCharacter = signal(false);
 
   private readonly windowRef = window as typeof window & {
     jQuery: any;
@@ -195,8 +198,27 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
     return `${CONTENT_WOTLK}meta/item/${this.displayId()}.json`;
   }
 
+  /** The item can be shown alone or worn: a helmet, shoulders or a weapon (#3502). */
+  protected canShowOnCharacter(itemInventoryType: InventoryType | undefined = this.itemInventoryType()): boolean {
+    return (
+      this.viewerType() === VIEWER_TYPE.ITEM &&
+      !!itemInventoryType &&
+      (WEAPONS_INVENTORY_TYPE.includes(itemInventoryType) ||
+        itemInventoryType === InventoryType.HEAD ||
+        itemInventoryType === InventoryType.SHOULDERS)
+    );
+  }
+
+  protected toggleOnCharacter(on: boolean): void {
+    this.onCharacter.set(on);
+    this.show3Dmodel();
+  }
+
   protected getModelType(itemInventoryType: InventoryType | undefined = this.itemInventoryType()): MODEL_TYPE | -1 {
     const viewerType = this.viewerType();
+    if (this.onCharacter() && this.canShowOnCharacter(itemInventoryType)) {
+      return MODEL_TYPE.CHARACTER;
+    }
     if (viewerType === VIEWER_TYPE.ITEM) {
       if (itemInventoryType && WEAPONS_INVENTORY_TYPE.includes(itemInventoryType)) {
         return MODEL_TYPE.WEAPON;
