@@ -175,3 +175,8 @@ export * from './entities/game-event-gameobject-quest.type';
 export * from './entities/game-event-seasonal-questrelation.type';
 export * from './entities/game-event-battleground-holiday.type';
 export * from './options/disable-source-type';
+export * from './entities/areatrigger-teleport.type';
+export * from './entities/areatrigger-tavern.type';
+export * from './entities/areatrigger-involvedrelation.type';
+export * from './entities/areatrigger-scripts.type';
+export * from './entities/areatrigger.type';

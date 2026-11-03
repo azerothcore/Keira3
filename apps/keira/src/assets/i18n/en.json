@@ -274,6 +274,15 @@
       "TITLE": "Disables",
       "SEARCH": "Search disables",
       "DISABLES": "Disables of this type"
+    },
+    "AREA_TRIGGERS": {
+      "TITLE": "Area triggers",
+      "SEARCH": "Search area triggers",
+      "AREATRIGGER_TELEPORT": "Teleport",
+      "AREATRIGGER_TAVERN": "Tavern (rest area)",
+      "AREATRIGGER_INVOLVEDRELATION": "Quest objective",
+      "AREATRIGGER_SCRIPTS": "Script",
+      "AREATRIGGER": "Shape (custom)"
     }
   },
   "DASHBOARD": {
@@ -2283,9 +2292,17 @@
     "NPC_SPELLCLICK_SPELLS": "The spells cast when a player clicks the creature (vehicles, mounts, quest NPCs): cast_flags 1 = the player casts, 2 = cast on the player; user_type 0 friend, 1 raid, 2 party, 3 player.",
     "VEHICLE_TEMPLATE_ACCESSORY": "The creatures riding this vehicle, by seat (minion 1: they die with it; summontype and summontimer as TempSummonType).",
     "SPELL_AREA": "Where the spell is applied (area), and to whom: quests started/ended with their status masks, an aura, races (racemask), gender (2 = both); autocast 1 casts it on entering.",
-    "DISABLES": "What the server turns off, for this sourceType: each entry (a spell, quest, map…) with its flags (by type: maps 1 normal, 2 heroic…; spells 1 player, 2 creature, 4 pet…) and params (map ids or areas, comma-separated)."
+    "DISABLES": "What the server turns off, for this sourceType: each entry (a spell, quest, map…) with its flags (by type: maps 1 normal, 2 heroic…; spells 1 player, 2 creature, 4 pet…) and params (map ids or areas, comma-separated).",
+    "AREATRIGGER_TELEPORT": "Where the trigger takes the player (instance entrances, portals).",
+    "AREATRIGGER_TAVERN": "A rest area: players inside rest (faction 0 all, 2 Horde only, 4 Alliance only).",
+    "AREATRIGGER_INVOLVEDRELATION": "The quest whose exploration objective this trigger completes.",
+    "AREATRIGGER_SCRIPTS": "The core script run when a player enters the trigger.",
+    "AREATRIGGER": "A trigger the client data hasn't (AreaTrigger.dbc): where it is and its size (a sphere by radius, or a box by length, width and height)."
   },
   "DISABLES": {
     "OPEN_TYPE": "Open the disables of a source type:"
+  },
+  "AREA_TRIGGERS": {
+    "CREATE_HELP": "A new id (above the client's AreaTrigger.dbc ids for a custom one, with its shape), or the id of a trigger of the client data to give it a teleport, rest area, quest objective or script."
   }
 }

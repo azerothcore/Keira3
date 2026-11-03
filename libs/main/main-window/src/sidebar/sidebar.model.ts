@@ -19,6 +19,7 @@ export interface MenuStats {
   creatureImmunities: ToggleType;
   gameEvents: ToggleType;
   disables: ToggleType;
+  areaTriggers: ToggleType;
 }
 
 /**
@@ -44,4 +45,5 @@ export const ROUTE_MENUS: Record<string, keyof MenuStats> = {
   'creature-immunities': 'creatureImmunities',
   'game-events': 'gameEvents',
   disables: 'disables',
+  'area-triggers': 'areaTriggers',
 };

@@ -30,6 +30,7 @@
       "@keira/features/creature-immunities": ["libs/features/creature-immunities/src/index.ts"],
       "@keira/features/game-events": ["libs/features/game-events/src/index.ts"],
       "@keira/features/disables": ["libs/features/disables/src/index.ts"],
+      "@keira/features/area-triggers": ["libs/features/area-triggers/src/index.ts"],
       "@keira/features/dashboard": ["libs/features/dashboard/src/index.ts"],
       "@keira/features/game-tele": ["libs/features/game-tele/src/index.ts"],
       "@keira/features/gameobject": ["libs/features/gameobject/src/index.ts"],
