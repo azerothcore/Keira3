@@ -134,6 +134,9 @@ export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandle
   private readonly editorSettings = inject(EditorSettingsService);
 
   /** Executes the query and copies it: only once it ran (Settings > Editors), so a failed one isn't copied. */
+  /** What "Execute & copy" did with the query, once it ran (an i18n key), or ''. */
+  protected readonly copyNote = signal('');
+
   executeAndCopy(): void {
     const query = this.getQuery();
     if (!query) {
@@ -141,8 +144,16 @@ export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandle
       return;
     }
     const saved = this.editorService.saved;
+    this.copyNote.set('');
     if (this.editorSettings.settings().copyOnlyOnSuccess && saved) {
-      this.subscriptions.push(saved.pipe(take(1)).subscribe((ran) => ran && this.clipboardService.copyFromContent(query)));
+      this.subscriptions.push(
+        saved.pipe(take(1)).subscribe((ran) => {
+          if (ran) {
+            this.clipboardService.copyFromContent(query);
+          }
+          this.copyNote.set(ran ? 'QUERY_OUTPUT.COPIED' : 'QUERY_OUTPUT.NOT_COPIED');
+        }),
+      );
     } else {
       this.copy();
     }

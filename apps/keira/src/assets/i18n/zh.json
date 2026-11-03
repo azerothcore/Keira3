@@ -2222,5 +2222,9 @@
   },
   "MODEL_3D": {
     "ON_CHARACTER": "显示在角色身上"
+  },
+  "QUERY_OUTPUT": {
+    "COPIED": "已复制。",
+    "NOT_COPIED": "执行失败：未复制（你的更改已保留）。"
   }
 }

@@ -2222,5 +2222,9 @@
   },
   "MODEL_3D": {
     "ON_CHARACTER": "Mostrarlo puesto en un personaje"
+  },
+  "QUERY_OUTPUT": {
+    "COPIED": "Copiada.",
+    "NOT_COPIED": "Falló: no se copió (tus cambios se mantienen)."
   }
 }

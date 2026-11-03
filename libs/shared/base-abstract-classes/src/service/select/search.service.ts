@@ -41,8 +41,9 @@ export abstract class SearchService<T extends TableRow> extends SubscriptionHand
       this.fields.addControl(field, new FormControl());
     }
 
-    (this.queryForm.controls.limit as FormControl).setValue(this.editorSettings.search(this.entityTable).limit, { emitEvent: false });
-    this.query = this.settingsSearchQuery();
+    this.applySettings();
+    // (Settings > Editors changed: the next search follows them, no restart needed)
+    this.subscriptions.push(this.editorSettings.changes$.subscribe(() => this.applySettings()));
 
     this.subscriptions.push(
       this.queryForm.valueChanges.subscribe(() => {
@@ -51,6 +52,12 @@ export abstract class SearchService<T extends TableRow> extends SubscriptionHand
         }
       }),
     );
+  }
+
+  /** The row limit and the exact matching of Settings > Editors. */
+  private applySettings(): void {
+    (this.queryForm.controls.limit as FormControl).setValue(this.editorSettings.search(this.entityTable).limit, { emitEvent: false });
+    this.query = this.settingsSearchQuery();
   }
 
   /**
