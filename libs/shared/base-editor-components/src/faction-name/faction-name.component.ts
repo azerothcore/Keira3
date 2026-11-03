@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, input, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormControl } from '@angular/forms';
+import { AbstractControl } from '@angular/forms';
 import { SqliteQueryService } from '@keira/shared/db-layer';
 import { debounceTime, startWith } from 'rxjs';
 
@@ -20,7 +20,7 @@ export class FactionNameComponent implements OnInit {
   private readonly sqliteQueryService = inject(SqliteQueryService);
   private readonly destroyRef = inject(DestroyRef);
 
-  readonly control = input.required<FormControl<number>>();
+  readonly control = input.required<AbstractControl<number | string | null>>();
   /** The field holds a faction template (rather than a faction). */
   readonly template = input(false);
 

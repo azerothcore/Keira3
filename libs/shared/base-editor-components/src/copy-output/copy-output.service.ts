@@ -11,7 +11,7 @@ export class CopyOutputService {
   computeRelatedTableStates(inputTables: RelatedTable[], sourceId: string | number, mainTableName: string) {
     const observables = inputTables.map((table) =>
       this.queryService.getRowsCount(table.tableName, table.idField, sourceId).pipe(
-        map((count) => {
+        map((count): RelatedTableState | null => {
           const num = Number(count ?? 0);
           // (the main table always, the others when the source has rows there)
           return table.tableName === mainTableName || num > 0

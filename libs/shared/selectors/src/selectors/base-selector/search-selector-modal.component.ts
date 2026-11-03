@@ -1,9 +1,10 @@
-import { OnInit } from '@angular/core';
+import { Directive, OnInit } from '@angular/core';
 import { DTCFG } from '@keira/shared/config';
 import { BaseSelectorModalComponent } from './base-selector-modal.component';
 import { TableRow } from '@keira/shared/constants';
 import { SearchService } from '@keira/shared/base-abstract-classes';
 
+@Directive()
 export abstract class SearchSelectorModalComponent<T extends TableRow> extends BaseSelectorModalComponent implements OnInit {
   readonly DTCFG = DTCFG;
 
