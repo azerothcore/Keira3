@@ -1,0 +1,73 @@
+<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
+
+<div class="container-fluid">
+  @if (editorService.loading) {
+    <span [translate]="'LOADING'"></span>
+  }
+
+  @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
+    <div>
+      <p class="small text-muted mt-2" id="game-event-help">{{ 'GAME_EVENT.GAME_EVENT_GAMEOBJECT_REMOVED_HELP' | translate }}</p>
+      <div class="content-block">
+        <keira-query-output
+          [docUrl]="docUrl"
+          [isNew]="editorService.isNew"
+          [diffQuery]="editorService.diffQuery"
+          [fullQuery]="editorService.fullQuery"
+          [error]="editorService.error"
+          [entityTable]="editorService.entityTable"
+          [editorService]="editorService"
+          (executeQuery)="save($event)"
+        />
+      </div>
+      <div class="content-block">
+        <form [formGroup]="editorService.form" class="form-group edit-form">
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2">
+              <label class="control-label" for="event-entry">eventEntry</label>
+              <input [formControlName]="'eventEntry'" id="event-entry" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2">
+              <label class="control-label" for="guid">guid</label>
+              <input [formControlName]="'guid'" id="guid" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
+              <i class="fas fa-exclamation-triangle"></i>
+              <span [innerHTML]="'UNIQUE' | translate: { ENTITY_SECOND_ID_FIELD: editorService.entitySecondIdField }"></span>
+            </div>
+          </div>
+        </form>
+        <div class="row">
+          <div class="col-12">
+            <keira-editor-buttons
+              [selectedRowId]="editorService.selectedRowId"
+              (deleteSelectedRow)="editorService.deleteSelectedRow()"
+              (addNewRow)="editorService.addNewRow()"
+              (duplicateRow)="editorService.addNewRow(true)"
+            />
+            <ngx-datatable
+              id="editor-table"
+              class="bootstrap table table-striped text-center datatable-select"
+              [rows]="editorService.newRows"
+              [headerHeight]="DTCFG.headerHeight"
+              [footerHeight]="DTCFG.footerHeight"
+              [columnMode]="DTCFG.columnMode"
+              [rowHeight]="DTCFG.rowHeight"
+              [selectionType]="DTCFG.selectionType"
+              (select)="editorService.onRowSelection($event)"
+              (keydown.delete)="editorService.deleteSelectedRow()"
+            >
+              <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                  <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="eventEntry" prop="eventEntry" />
+              <ngx-datatable-column name="guid" prop="guid" />
+            </ngx-datatable>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

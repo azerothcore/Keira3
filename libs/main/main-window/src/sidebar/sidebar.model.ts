@@ -17,6 +17,7 @@ export interface MenuStats {
   gameTele: ToggleType;
   trainer: ToggleType;
   creatureImmunities: ToggleType;
+  gameEvents: ToggleType;
 }
 
 /**
@@ -40,4 +41,5 @@ export const ROUTE_MENUS: Record<string, keyof MenuStats> = {
   'game-tele': 'gameTele',
   trainer: 'trainer',
   'creature-immunities': 'creatureImmunities',
+  'game-events': 'gameEvents',
 };

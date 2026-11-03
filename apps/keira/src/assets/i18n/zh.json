@@ -248,6 +248,24 @@
       "BOSS_BOUNDARIES": "首领边界",
       "SCRIPT_SPAWNS": "脚本刷新",
       "TEMPLATE": "新脚本（模板）"
+    },
+    "GAME_EVENTS": {
+      "TITLE": "游戏事件",
+      "SEARCH": "搜索事件",
+      "GAME_EVENT": "游戏事件",
+      "CREATURE": "出现的生物",
+      "CREATURE_REMOVED": "移除的生物",
+      "GAMEOBJECT": "出现的游戏对象",
+      "GAMEOBJECT_REMOVED": "移除的游戏对象",
+      "POOL": "出现的池",
+      "PREREQUISITE": "前置事件",
+      "NPCFLAG": "NPC 标志",
+      "MODEL_EQUIP": "模型和装备",
+      "NPC_VENDOR": "商人物品",
+      "CREATURE_QUEST": "生物任务",
+      "GAMEOBJECT_QUEST": "游戏对象任务",
+      "SEASONAL_QUEST": "季节任务",
+      "BATTLEGROUND_HOLIDAY": "战场假日"
     }
   },
   "DASHBOARD": {
@@ -2230,5 +2248,27 @@
   "QUERY_OUTPUT": {
     "COPIED": "已复制。",
     "NOT_COPIED": "执行失败：未复制（你的更改已保留）。"
+  },
+  "GAME_EVENT": {
+    "TIME": "服务器时间的日期和时间（YYYY-MM-DD hh:mm:ss）。",
+    "OCCURENCE": "两次事件开始之间的分钟数。",
+    "LENGTH": "事件持续的分钟数。",
+    "WORLD_EVENT": "1：世界事件（根据条件开始和结束）。",
+    "ANNOUNCE": "0：不公告，1：公告，2：按 worldserver 配置。",
+    "CREATURES": "生物",
+    "GAMEOBJECTS": "游戏对象",
+    "GAME_EVENT_CREATURE_HELP": "事件期间出现的生物刷新点（game_event_creature，eventEntry = 该事件）。",
+    "GAME_EVENT_CREATURE_REMOVED_HELP": "事件期间移除的生物刷新点（game_event_creature，eventEntry = 负的事件编号）。",
+    "GAME_EVENT_GAMEOBJECT_HELP": "事件期间出现的游戏对象。",
+    "GAME_EVENT_GAMEOBJECT_REMOVED_HELP": "事件期间移除的游戏对象（eventEntry = 负的事件编号）。",
+    "GAME_EVENT_POOL_HELP": "事件期间出现的池。",
+    "GAME_EVENT_PREREQUISITE_HELP": "此事件开始前必须完成的事件。",
+    "GAME_EVENT_NPCFLAG_HELP": "事件期间添加到这些生物的 NPC 标志。",
+    "GAME_EVENT_MODEL_EQUIP_HELP": "事件期间这些生物的模型和装备。",
+    "GAME_EVENT_NPC_VENDOR_HELP": "事件期间这些商人出售的物品。",
+    "GAME_EVENT_CREATURE_QUEST_HELP": "事件期间生物（按 entry）提供的任务。",
+    "GAME_EVENT_GAMEOBJECT_QUEST_HELP": "事件期间游戏对象（按 entry）提供的任务。",
+    "GAME_EVENT_SEASONAL_QUEST_HELP": "每次事件开始时重置的任务。",
+    "GAME_EVENT_BATTLEGROUND_HOLIDAY_HELP": "该事件的战场假日（bgflag）。"
   }
 }
