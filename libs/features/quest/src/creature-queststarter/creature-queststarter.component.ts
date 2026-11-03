@@ -1,5 +1,4 @@
 import { NameCache } from '@keira/shared/utils';
-import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CreatureQueststarter } from '@keira/shared/acore-world-model';
@@ -31,7 +30,6 @@ import { CreatureQueststarterService } from './creature-queststarter.service';
     EditorButtonsComponent,
     NgxDatatableModule,
     QuestPreviewComponent,
-    AsyncPipe,
   ],
 })
 export class CreatureQueststarterComponent extends MultiRowEditorComponent<CreatureQueststarter> {

@@ -2,7 +2,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input, OnInit } from '@angular/core';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
-import { AsyncPipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LOOT_MODE, LootTemplate } from '@keira/shared/acore-world-model';
 import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
@@ -33,7 +32,6 @@ import { syncReferenceCount } from './reference-count';
     EditorButtonsComponent,
     NgxDatatableModule,
     ReferenceViewerComponent,
-    AsyncPipe,
     TranslatePipe,
   ],
 })
