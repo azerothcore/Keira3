@@ -62,17 +62,7 @@ export class CopyOutputComponent<T extends TableRow> extends SubscriptionHandler
     // (only the query of the latest states is kept)
     this.subscriptions.push(
       this.regenerate
-        .pipe(
-          switchMap(() =>
-            this.copyOutputService.generateCopyQueryForStates(
-              this.relatedTableStates(),
-              this.sourceId(),
-              this.newId(),
-              this.tableName(),
-              this.idField(),
-            ),
-          ),
-        )
+        .pipe(switchMap(() => this.copyOutputService.generateCopyQueryForStates(this.relatedTableStates(), this.sourceId(), this.newId())))
         .subscribe((query) => {
           this.copyQuery.set(query);
           this.generating.set(false);

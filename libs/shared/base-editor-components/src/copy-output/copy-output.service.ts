@@ -31,13 +31,7 @@ export class CopyOutputService {
     return forkJoin(observables).pipe(map((results) => results.filter((r): r is RelatedTableState => !!r)));
   }
 
-  generateCopyQueryForStates(
-    states: RelatedTableState[],
-    sourceId: string | number,
-    newId: string | number,
-    mainTableName: string,
-    mainIdField: string,
-  ) {
+  generateCopyQueryForStates(states: RelatedTableState[], sourceId: string | number, newId: string | number) {
     const setVars = this.queryService.getCopyVarsSet(sourceId, newId);
 
     const selectedTables = states.filter((t) => t.included);
