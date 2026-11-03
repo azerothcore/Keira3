@@ -109,7 +109,9 @@
       "TEXT": "Text",
       "FORMATIONS": "Formations",
       "CREATURE_TEMPLATE_LOCALE": "Creature Template Locale",
-      "CREATURE_TEXT_LOCALE": "Creature Text Locale"
+      "CREATURE_TEXT_LOCALE": "Creature Text Locale",
+      "NPC_SPELLCLICK_SPELLS": "Spell click",
+      "VEHICLE_TEMPLATE_ACCESSORY": "Vehicle accessories"
     },
     "QUEST": {
       "TITLE": "Quest",
@@ -199,7 +201,8 @@
     "SPELL_DBC_OVERRIDES": {
       "TITLE": "Spell DBC overrides",
       "SEARCH_SPELL": "Search Spell",
-      "SPELL_DBC_EDITOR": "Spell DBC editor"
+      "SPELL_DBC_EDITOR": "Spell DBC editor",
+      "SPELL_AREA": "Spell area"
     },
     "GAME_TELE": {
       "TITLE": "Game Teleport",
@@ -266,6 +269,11 @@
       "GAMEOBJECT_QUEST": "Gameobject quests",
       "SEASONAL_QUEST": "Seasonal quests",
       "BATTLEGROUND_HOLIDAY": "Battleground holiday"
+    },
+    "DISABLES": {
+      "TITLE": "Disables",
+      "SEARCH": "Search disables",
+      "DISABLES": "Disables of this type"
     }
   },
   "DASHBOARD": {
@@ -2270,5 +2278,14 @@
     "GAME_EVENT_GAMEOBJECT_QUEST_HELP": "Quests gameobjects (by entry) give while the event runs.",
     "GAME_EVENT_SEASONAL_QUEST_HELP": "Quests that reset each time the event starts.",
     "GAME_EVENT_BATTLEGROUND_HOLIDAY_HELP": "The battleground holiday (bgflag) of the event."
+  },
+  "EDITORS_HELP": {
+    "NPC_SPELLCLICK_SPELLS": "The spells cast when a player clicks the creature (vehicles, mounts, quest NPCs): cast_flags 1 = the player casts, 2 = cast on the player; user_type 0 friend, 1 raid, 2 party, 3 player.",
+    "VEHICLE_TEMPLATE_ACCESSORY": "The creatures riding this vehicle, by seat (minion 1: they die with it; summontype and summontimer as TempSummonType).",
+    "SPELL_AREA": "Where the spell is applied (area), and to whom: quests started/ended with their status masks, an aura, races (racemask), gender (2 = both); autocast 1 casts it on entering.",
+    "DISABLES": "What the server turns off, for this sourceType: each entry (a spell, quest, map…) with its flags (by type: maps 1 normal, 2 heroic…; spells 1 player, 2 creature, 4 pet…) and params (map ids or areas, comma-separated)."
+  },
+  "DISABLES": {
+    "OPEN_TYPE": "Open the disables of a source type:"
   }
 }

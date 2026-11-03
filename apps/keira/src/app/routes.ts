@@ -60,6 +60,8 @@ import {
   SkinningLootTemplateComponent,
   CreatureTemplateLocaleComponent,
   CreatureTextLocaleComponent,
+  NpcSpellclickSpellsComponent,
+  VehicleTemplateAccessoryComponent,
 } from '@keira/features/creature';
 import {
   GameobjectHandlerService,
@@ -131,7 +133,13 @@ import {
   QuestCopyComponent,
 } from '@keira/features/quest';
 import { SaiFullEditorComponent, SaiSearchEntityComponent, SaiSearchExistingComponent } from '@keira/features/smart-scripts';
-import { SelectSpellComponent, SpellDbcComponent, SpellCopyComponent, SpellHandlerService } from '@keira/features/spell';
+import {
+  SelectSpellComponent,
+  SpellDbcComponent,
+  SpellCopyComponent,
+  SpellHandlerService,
+  SpellAreaComponent,
+} from '@keira/features/spell';
 import { SqlEditorComponent } from '@keira/features/sql-editor';
 import { SaiHandlerService } from '@keira/shared/sai-editor';
 import {
@@ -185,6 +193,7 @@ import {
   GameEventSeasonalQuestComponent,
   GameEventBattlegroundHolidayComponent,
 } from '@keira/features/game-events';
+import { DisablesHandlerService, SelectDisablesComponent, DisablesComponent } from '@keira/features/disables';
 import { UnusedGuidSearchComponent } from '@keira/features/unused-guid-search';
 import { WORLD_EDITOR_LINKS } from '@keira/shared/constants';
 import { worldEditorLinks } from './world-editor-links';
@@ -201,6 +210,16 @@ export const KEIRA_ROUTES: Routes = [
   {
     path: 'creature',
     children: [
+      {
+        path: 'vehicle-template-accessory',
+        component: VehicleTemplateAccessoryComponent,
+        canActivate: [CreatureHandlerService],
+      },
+      {
+        path: 'npc-spellclick-spells',
+        component: NpcSpellclickSpellsComponent,
+        canActivate: [CreatureHandlerService],
+      },
       {
         path: 'creature-text-locale',
         component: CreatureTextLocaleComponent,
@@ -746,6 +765,11 @@ export const KEIRA_ROUTES: Routes = [
     path: 'spell',
     children: [
       {
+        path: 'spell-area',
+        component: SpellAreaComponent,
+        canActivate: [SpellHandlerService],
+      },
+      {
         path: 'select',
         component: SelectSpellComponent,
       },
@@ -855,6 +879,20 @@ export const KEIRA_ROUTES: Routes = [
         path: 'game-event-battleground-holiday',
         component: GameEventBattlegroundHolidayComponent,
         canActivate: [GameEventHandlerService],
+      },
+    ],
+  },
+  {
+    path: 'disables',
+    children: [
+      {
+        path: 'disables',
+        component: DisablesComponent,
+        canActivate: [DisablesHandlerService],
+      },
+      {
+        path: 'select',
+        component: SelectDisablesComponent,
       },
     ],
   },

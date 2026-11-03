@@ -23,3 +23,5 @@ export * from './skinning-loot-template/skinning-loot-template.component';
 export * from './creature-formations/creature-formations.component';
 export * from './creature-template-locale/creature-template-locale.component';
 export * from './creature-text-locale/creature-text-locale.component';
+export * from './npc-spellclick-spells/npc-spellclick-spells.component';
+export * from './vehicle-template-accessory/vehicle-template-accessory.component';

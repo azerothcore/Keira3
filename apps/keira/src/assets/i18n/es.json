@@ -109,7 +109,9 @@
       "TEXT": "Texto",
       "FORMATIONS": "Formaciones",
       "CREATURE_TEMPLATE_LOCALE": "Locale de Creature Template",
-      "CREATURE_TEXT_LOCALE": "Locale de Creature Text"
+      "CREATURE_TEXT_LOCALE": "Locale de Creature Text",
+      "NPC_SPELLCLICK_SPELLS": "Spell click",
+      "VEHICLE_TEMPLATE_ACCESSORY": "Accesorios de vehículo"
     },
     "QUEST": {
       "TITLE": "Misión",
@@ -199,7 +201,8 @@
     "SPELL_DBC_OVERRIDES": {
       "TITLE": "Anulaciones de Hechizos (Spell DBC)",
       "SEARCH_SPELL": "Buscar Hechizos",
-      "SPELL_DBC_EDITOR": "Editor de Hechizos (Spell DBC)"
+      "SPELL_DBC_EDITOR": "Editor de Hechizos (Spell DBC)",
+      "SPELL_AREA": "Spell area"
     },
     "GAME_TELE": {
       "TITLE": "Teletransporte",
@@ -266,6 +269,11 @@
       "GAMEOBJECT_QUEST": "Misiones de objetos",
       "SEASONAL_QUEST": "Misiones de temporada",
       "BATTLEGROUND_HOLIDAY": "Fin de semana de campo de batalla"
+    },
+    "DISABLES": {
+      "TITLE": "Desactivaciones",
+      "SEARCH": "Buscar desactivaciones",
+      "DISABLES": "Desactivaciones de este tipo"
     }
   },
   "DASHBOARD": {
@@ -2270,5 +2278,14 @@
     "GAME_EVENT_GAMEOBJECT_QUEST_HELP": "Misiones que dan los objetos (por entry) mientras dura el evento.",
     "GAME_EVENT_SEASONAL_QUEST_HELP": "Misiones que se reinician cada vez que empieza el evento.",
     "GAME_EVENT_BATTLEGROUND_HOLIDAY_HELP": "El fin de semana de campo de batalla (bgflag) del evento."
+  },
+  "EDITORS_HELP": {
+    "NPC_SPELLCLICK_SPELLS": "Los hechizos lanzados al hacer clic en la criatura (vehículos, monturas, NPC de misión): cast_flags 1 = el jugador lanza, 2 = sobre el jugador; user_type 0 amigo, 1 banda, 2 grupo, 3 jugador.",
+    "VEHICLE_TEMPLATE_ACCESSORY": "Las criaturas que van en este vehículo, por asiento (minion 1: mueren con él; summontype y summontimer como TempSummonType).",
+    "SPELL_AREA": "Dónde se aplica el hechizo (area) y a quién: misiones empezadas/terminadas con sus máscaras de estado, un aura, razas (racemask), género (2 = ambos); autocast 1 lo lanza al entrar.",
+    "DISABLES": "Lo que el servidor desactiva, para este sourceType: cada entry (un hechizo, misión, mapa…) con sus flags (según el tipo: mapas 1 normal, 2 heroico…; hechizos 1 jugador, 2 criatura, 4 mascota…) y params (mapas o zonas, separados por comas)."
+  },
+  "DISABLES": {
+    "OPEN_TYPE": "Abrir las desactivaciones de un tipo:"
   }
 }

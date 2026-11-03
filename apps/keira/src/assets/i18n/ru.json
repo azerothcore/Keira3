@@ -109,7 +109,9 @@
       "TEXT": "Текст",
       "FORMATIONS": "Формации",
       "CREATURE_TEMPLATE_LOCALE": "Creature Template (локализация)",
-      "CREATURE_TEXT_LOCALE": "Creature Text (локализация)"
+      "CREATURE_TEXT_LOCALE": "Creature Text (локализация)",
+      "NPC_SPELLCLICK_SPELLS": "Spell click",
+      "VEHICLE_TEMPLATE_ACCESSORY": "Аксессуары транспорта"
     },
     "QUEST": {
       "TITLE": "Задания",
@@ -199,7 +201,8 @@
     "SPELL_DBC_OVERRIDES": {
       "TITLE": "Переопределения Spell DBC",
       "SEARCH_SPELL": "Искать заклинание",
-      "SPELL_DBC_EDITOR": "Редактор Spell DBC"
+      "SPELL_DBC_EDITOR": "Редактор Spell DBC",
+      "SPELL_AREA": "Spell area"
     },
     "GAME_TELE": {
       "TITLE": "Телепортация",
@@ -266,6 +269,11 @@
       "GAMEOBJECT_QUEST": "Задания объектов",
       "SEASONAL_QUEST": "Сезонные задания",
       "BATTLEGROUND_HOLIDAY": "Выходные полей боя"
+    },
+    "DISABLES": {
+      "TITLE": "Отключения",
+      "SEARCH": "Поиск отключений",
+      "DISABLES": "Отключения этого типа"
     }
   },
   "DASHBOARD": {
@@ -2270,5 +2278,14 @@
     "GAME_EVENT_GAMEOBJECT_QUEST_HELP": "Задания, выдаваемые объектами (по entry) на время события.",
     "GAME_EVENT_SEASONAL_QUEST_HELP": "Задания, сбрасываемые при каждом начале события.",
     "GAME_EVENT_BATTLEGROUND_HOLIDAY_HELP": "Выходные полей боя (bgflag) этого события."
+  },
+  "EDITORS_HELP": {
+    "NPC_SPELLCLICK_SPELLS": "Заклинания при клике игрока по существу (транспорт, маунты, NPC заданий): cast_flags 1 = кастует игрок, 2 = на игрока; user_type 0 друг, 1 рейд, 2 группа, 3 игрок.",
+    "VEHICLE_TEMPLATE_ACCESSORY": "Существа на местах этого транспорта (minion 1: умирают вместе с ним; summontype и summontimer — TempSummonType).",
+    "SPELL_AREA": "Где применяется заклинание (area) и к кому: начатые/завершённые задания с масками статуса, аура, расы (racemask), пол (2 = оба); autocast 1 — накладывать при входе.",
+    "DISABLES": "Что сервер отключает для этого sourceType: каждая запись (заклинание, задание, карта…) с флагами (по типу: карты 1 обычный, 2 героический…; заклинания 1 игрок, 2 существо, 4 питомец…) и params (карты или зоны через запятую)."
+  },
+  "DISABLES": {
+    "OPEN_TYPE": "Открыть отключения типа:"
   }
 }
