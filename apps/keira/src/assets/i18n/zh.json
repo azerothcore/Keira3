@@ -226,7 +226,8 @@
       "SCRIPT_WAYPOINT": "护送路径点",
       "SCRIPT_NAMES": "脚本名称",
       "BOSS_BOUNDARIES": "首领边界",
-      "SCRIPT_SPAWNS": "脚本刷新"
+      "SCRIPT_SPAWNS": "脚本刷新",
+      "TEMPLATE": "新脚本（模板）"
     }
   },
   "DASHBOARD": {
@@ -2097,7 +2098,30 @@
     "SCRIPT_SPAWNS": "脚本刷新",
     "SCRIPT_SPAWNS_HELP": "由核心脚本自行刷新、不在 gameobject 表中的游戏对象：战场旗帜、旗标和大门，冬拥湖的城墙和塔楼，野外 PvP 占领点。",
     "OPEN_GITHUB": "在 GitHub 上打开（AzerothCore master）",
-    "OPEN_FILE": "在此电脑上打开文件"
+    "OPEN_FILE": "在此电脑上打开文件",
+    "TEMPLATE": "新脚本（模板）",
+    "TEMPLATE_HELP": "AzerothCore 风格的脚本起始文件：含常量的头文件、包含脚本和 AddSC_ 函数的 .cpp、script loader 的行以及在数据库中命名它的 SQL。补全 TODO。",
+    "TEMPLATE_KIND": "类型",
+    "TEMPLATE_KIND_CREATURE": "生物 (ScriptedAI)",
+    "TEMPLATE_KIND_BOSS": "首领 (BossAI)",
+    "TEMPLATE_KIND_GAMEOBJECT": "游戏对象",
+    "TEMPLATE_KIND_SPELL": "法术 (SpellScript)",
+    "TEMPLATE_KIND_AURA": "光环 (AuraScript)",
+    "TEMPLATE_KIND_INSTANCE": "副本",
+    "TEMPLATE_ENTRY_CREATURE": "生物 entry",
+    "TEMPLATE_ENTRY_BOSS": "生物 entry",
+    "TEMPLATE_ENTRY_GAMEOBJECT": "游戏对象 entry",
+    "TEMPLATE_ENTRY_SPELL": "法术 ID",
+    "TEMPLATE_ENTRY_AURA": "法术 ID",
+    "TEMPLATE_ENTRY_INSTANCE": "地图 ID",
+    "TEMPLATE_INSTANCE": "副本（简称）",
+    "TEMPLATE_SPELLS": "法术（名称 = id，每行一个）",
+    "TEMPLATE_EVENTS": "事件（每行一个）",
+    "TEMPLATE_TEXTS": "文本（creature_text 分组，每行一个）",
+    "TEMPLATE_BOSSES": "首领（按顺序，每行一个）",
+    "TEMPLATE_SAVE": "保存",
+    "TEMPLATE_LOADER": "添加到其文件夹的 script loader（声明放在 AddScripts 函数上方，调用放在函数内）：",
+    "TEMPLATE_SQL": "在数据库中命名它的 SQL："
   },
   "COMPARE": {
     "PIN": "固定以比较",

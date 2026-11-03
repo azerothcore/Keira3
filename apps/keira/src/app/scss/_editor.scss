@@ -79,3 +79,14 @@
     opacity: 0.6;
   }
 }
+
+// a script made from a template (Scripts > New script)
+.script-template-code {
+  max-height: 420px;
+  overflow: auto;
+  padding: 8px;
+  font-size: 12px;
+  background: var(--keira-code-bg);
+  border: 1px solid var(--keira-border);
+  border-radius: 4px;
+}

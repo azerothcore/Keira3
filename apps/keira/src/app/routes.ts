@@ -28,6 +28,7 @@ import {
   BossBoundariesComponent,
   ScriptNamesComponent,
   ScriptSpawnsComponent,
+  ScriptTemplateComponent,
   ScriptWaypointComponent,
   ScriptWaypointHandlerService,
   SelectScriptWaypointComponent,
@@ -539,6 +540,7 @@ export const KEIRA_ROUTES: Routes = [
       { path: 'script-names', component: ScriptNamesComponent },
       { path: 'boss-boundaries', component: BossBoundariesComponent },
       { path: 'script-spawns', component: ScriptSpawnsComponent },
+      { path: 'script-template', component: ScriptTemplateComponent },
     ],
   },
   {

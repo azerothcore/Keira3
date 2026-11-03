@@ -226,7 +226,8 @@
       "SCRIPT_WAYPOINT": "Точки пути сопровождения",
       "SCRIPT_NAMES": "Имена скриптов",
       "BOSS_BOUNDARIES": "Границы боссов",
-      "SCRIPT_SPAWNS": "Спавны скриптов"
+      "SCRIPT_SPAWNS": "Спавны скриптов",
+      "TEMPLATE": "Новый скрипт (шаблон)"
     }
   },
   "DASHBOARD": {
@@ -2097,7 +2098,30 @@
     "SCRIPT_SPAWNS": "Спавны скриптов",
     "SCRIPT_SPAWNS_HELP": "Объекты, которые скрипты ядра создают сами, вне таблицы gameobject: флаги, знамёна и двери полей боя, стены и башни Озера Ледяных Оков, точки захвата PvP.",
     "OPEN_GITHUB": "Открыть на GitHub (AzerothCore master)",
-    "OPEN_FILE": "Открыть файл на этом компьютере"
+    "OPEN_FILE": "Открыть файл на этом компьютере",
+    "TEMPLATE": "Новый скрипт (шаблон)",
+    "TEMPLATE_HELP": "Начальные файлы скрипта в стиле AzerothCore: заголовок с константами, .cpp со скриптом и функцией AddSC_, строки для script loader и SQL, задающий его имя в базе. Заполните TODO.",
+    "TEMPLATE_KIND": "Что это",
+    "TEMPLATE_KIND_CREATURE": "Существо (ScriptedAI)",
+    "TEMPLATE_KIND_BOSS": "Босс (BossAI)",
+    "TEMPLATE_KIND_GAMEOBJECT": "Игровой объект",
+    "TEMPLATE_KIND_SPELL": "Заклинание (SpellScript)",
+    "TEMPLATE_KIND_AURA": "Аура (AuraScript)",
+    "TEMPLATE_KIND_INSTANCE": "Подземелье",
+    "TEMPLATE_ENTRY_CREATURE": "Entry существа",
+    "TEMPLATE_ENTRY_BOSS": "Entry существа",
+    "TEMPLATE_ENTRY_GAMEOBJECT": "Entry объекта",
+    "TEMPLATE_ENTRY_SPELL": "ID заклинания",
+    "TEMPLATE_ENTRY_AURA": "ID заклинания",
+    "TEMPLATE_ENTRY_INSTANCE": "ID карты",
+    "TEMPLATE_INSTANCE": "Подземелье (краткое имя)",
+    "TEMPLATE_SPELLS": "Заклинания (имя = id, по одному в строке)",
+    "TEMPLATE_EVENTS": "События (по одному в строке)",
+    "TEMPLATE_TEXTS": "Тексты (группы creature_text, по одному в строке)",
+    "TEMPLATE_BOSSES": "Боссы (по порядку, по одному в строке)",
+    "TEMPLATE_SAVE": "Сохранить",
+    "TEMPLATE_LOADER": "Добавьте в script loader его папки (объявление над функцией AddScripts, вызов внутри):",
+    "TEMPLATE_SQL": "SQL, задающий имя в базе:"
   },
   "COMPARE": {
     "PIN": "Закрепить для сравнения",
