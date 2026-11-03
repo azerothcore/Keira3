@@ -1,5 +1,4 @@
 import { NameCache } from '@keira/shared/utils';
-import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GameobjectQueststarter } from '@keira/shared/acore-world-model';
@@ -31,7 +30,6 @@ import { GameobjectQueststarterService } from './gameobject-queststarter.service
     EditorButtonsComponent,
     NgxDatatableModule,
     QuestPreviewComponent,
-    AsyncPipe,
   ],
 })
 export class GameobjectQueststarterComponent extends MultiRowEditorComponent<GameobjectQueststarter> {
