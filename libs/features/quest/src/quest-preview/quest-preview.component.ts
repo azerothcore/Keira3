@@ -11,6 +11,7 @@ import { PreviewHelperService } from '@keira/shared/preview';
 import { CollapseDirective } from 'ngx-bootstrap/collapse';
 import { Quest } from './quest-preview.model';
 import { QuestPreviewService } from './quest-preview.service';
+import { MAX_PLAYER_LEVEL } from './quest-xp';
 import { from, Observable, of } from 'rxjs';
 
 export const QUEST_PREVIEW_DEBOUNCE_TIME = 300;
@@ -95,6 +96,22 @@ export class QuestPreviewComponent implements OnInit {
     return !!(this.service.ICON_SKILLS as Record<number, string>)[this.service.questTemplateAddon.RequiredSkillID];
   }
 
+  protected readonly MAX_PLAYER_LEVEL = MAX_PLAYER_LEVEL;
+  /** The player level the experience is shown for (#662). */
+  protected readonly xpPlayerLevel = signal(MAX_PLAYER_LEVEL);
+  protected readonly xpAtLevel = signal<number | null>(null);
+  private xpRequest = 0;
+
+  protected async showXpAt(level: number | string = this.xpPlayerLevel()): Promise<void> {
+    const request = ++this.xpRequest;
+    this.xpPlayerLevel.set(Number(level));
+    const xp = await this.service.rewardXPAt(Number(level));
+    // (an answer for an earlier level is dropped)
+    if (request === this.xpRequest) {
+      this.xpAtLevel.set(xp);
+    }
+  }
+
   ngOnInit(): void {
     this.service.initializeServices(this.changeDetectorRef);
 
@@ -105,9 +122,11 @@ export class QuestPreviewComponent implements OnInit {
         this.invalidateObjectivesCache();
         this.changeDetectorRef.markForCheck();
         void this.loadMapData();
+        void this.showXpAt();
       });
 
     void this.loadMapData();
+    void this.showXpAt();
   }
 
   private mapDataRequestId = 0;

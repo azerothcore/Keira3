@@ -1,3 +1,4 @@
+import { questXp } from './quest-xp';
 import { ChangeDetectorRef, Service, inject } from '@angular/core';
 import {
   CREATURE_QUESTENDER_TABLE,
@@ -371,6 +372,16 @@ export class QuestPreviewService {
 
   get rewardXP$(): Promise<string> {
     return this.sqliteQueryService.getRewardXP(this.questTemplate.RewardXPDifficulty, this.questTemplate.QuestLevel);
+  }
+
+  /** The experience the quest gives a player of `playerLevel` (#662). */
+  async rewardXPAt(playerLevel: number): Promise<number> {
+    const questLevel = Number(this.questTemplate.QuestLevel);
+    const base = await this.sqliteQueryService.getRewardXP(
+      this.questTemplate.RewardXPDifficulty,
+      questLevel === -1 ? playerLevel : questLevel,
+    );
+    return questXp(Number(base) || 0, questLevel, playerLevel);
   }
 
   getRepReward$(field: number | string): Promise<QuestReputationReward[]> {

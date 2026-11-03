@@ -205,6 +205,24 @@ describe('QuestPreviewService', () => {
     expect(sqliteQueryService.getRewardXP).toHaveBeenCalledWith(mockDifficulty, mockQuestLevel);
   });
 
+  it('rewardXPAt: the experience at a player level, the quest level -1 read at that level (#662)', async () => {
+    const { service, sqliteQueryService, questTemplateService } = setup();
+    const getRewardXP = vi.spyOn(sqliteQueryService, 'getRewardXP').mockImplementation(() => Promise.resolve('1000'));
+    questTemplateService.form.controls.RewardXPDifficulty.setValue(5);
+    questTemplateService.form.controls.QuestLevel.setValue(10);
+
+    expect(await service.rewardXPAt(10)).toBe(1000);
+    expect(await service.rewardXPAt(16)).toBe(800);
+    expect(getRewardXP).toHaveBeenCalledWith(5, 10);
+
+    questTemplateService.form.controls.QuestLevel.setValue(-1);
+    expect(await service.rewardXPAt(42)).toBe(1000);
+    expect(getRewardXP).toHaveBeenLastCalledWith(5, 42);
+
+    getRewardXP.mockImplementation(() => Promise.resolve(undefined as unknown as string));
+    expect(await service.rewardXPAt(42)).toBe(0);
+  });
+
   it('difficultyLevels', () => {
     const { service, questTemplateService } = setup();
     let difficulty: DifficultyLevel;

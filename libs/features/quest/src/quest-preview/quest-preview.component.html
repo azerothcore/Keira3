@@ -406,6 +406,20 @@
           <p class="title mt-3">Gains</p>
           @if (service.rewardXP$ | async; as xp) {
             <p id="rewardXP">• {{ xp }} experience</p>
+            <p id="rewardXPAtLevel" class="xp-at-level">
+              <label for="xp-player-level">At level {{ xpPlayerLevel() }}:</label>
+              <input
+                id="xp-player-level"
+                type="range"
+                class="align-middle mx-1"
+                style="width: 10rem"
+                min="1"
+                [max]="MAX_PLAYER_LEVEL"
+                [value]="xpPlayerLevel()"
+                (input)="showXpAt($any($event.target).value)"
+              />
+              <span id="xp-at-level">{{ xpAtLevel() ?? '…' }} experience</span>
+            </p>
           }
           @if (service.questTemplate.RewardTalents) {
             <p id="rewardTalents">• {{ service.questTemplate.RewardTalents }} talent points</p>
