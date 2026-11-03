@@ -18,6 +18,7 @@ export interface MenuStats {
   trainer: ToggleType;
   creatureImmunities: ToggleType;
   gameEvents: ToggleType;
+  disables: ToggleType;
 }
 
 /**
@@ -42,4 +43,5 @@ export const ROUTE_MENUS: Record<string, keyof MenuStats> = {
   trainer: 'trainer',
   'creature-immunities': 'creatureImmunities',
   'game-events': 'gameEvents',
+  disables: 'disables',
 };

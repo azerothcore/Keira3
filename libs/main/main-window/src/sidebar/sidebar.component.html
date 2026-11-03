@@ -258,6 +258,22 @@
                         }
                       </a>
                     </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'creature/vehicle-template-accessory'">
+                        {{ 'SIDEBAR.CREATURE.VEHICLE_TEMPLATE_ACCESSORY' | translate }}
+                        @if (creatureHandlerService.isVehicleTemplateAccessoryUnsaved()) {
+                          <keira-unsaved-icon />
+                        }
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'creature/npc-spellclick-spells'">
+                        {{ 'SIDEBAR.CREATURE.NPC_SPELLCLICK_SPELLS' | translate }}
+                        @if (creatureHandlerService.isNpcSpellclickSpellsUnsaved()) {
+                          <keira-unsaved-icon />
+                        }
+                      </a>
+                    </li>
                   }
                 }
               </ul>
@@ -1032,6 +1048,14 @@
                       }
                     </a>
                   </li>
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'spell/spell-area'">
+                      {{ 'SIDEBAR.SPELL_DBC_OVERRIDES.SPELL_AREA' | translate }}
+                      @if (spellHandlerService.isSpellAreaUnsaved()) {
+                        <keira-unsaved-icon />
+                      }
+                    </a>
+                  </li>
                 }
               </ul>
             </div>
@@ -1192,6 +1216,33 @@
                       </a>
                     </li>
                   }
+                }
+              </ul>
+            </div>
+          </li>
+
+          <li class="sidebar-dropdown" [class.active]="menuStates['disables'] === 'down'">
+            <a (click)="toggleState('disables')">
+              <i class="fa fa-ban"></i>
+              <span [translate]="'SIDEBAR.DISABLES.TITLE'"></span>
+            </a>
+
+            <div class="sidebar-submenu" [@slide]="menuStates['disables']">
+              <ul>
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'disables/select'">
+                    {{ 'SIDEBAR.DISABLES.SEARCH' | translate }}
+                  </a>
+                </li>
+                @if (disablesHandlerService.selected) {
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'disables/disables'">
+                      {{ 'SIDEBAR.DISABLES.DISABLES' | translate }}
+                      @if (disablesHandlerService.isDisablesUnsaved()) {
+                        <keira-unsaved-icon />
+                      }
+                    </a>
+                  </li>
                 }
               </ul>
             </div>

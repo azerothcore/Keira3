@@ -22,6 +22,8 @@ import {
   SKINNING_LOOT_TEMPLATE_TABLE,
   CREATURE_TEMPLATE_LOCALE_TABLE,
   CREATURE_TEXT_LOCALE_TABLE,
+  NPC_SPELLCLICK_SPELLS_TABLE,
+  VEHICLE_TEMPLATE_ACCESSORY_TABLE,
 } from '@keira/shared/acore-world-model';
 import { HandlerService } from '@keira/shared/base-abstract-classes';
 import { SaiCreatureHandlerService } from './sai-creature-handler.service';
@@ -98,6 +100,14 @@ export class CreatureHandlerService extends HandlerService<CreatureTemplate> {
     return this.statusMap[CREATURE_TEXT_LOCALE_TABLE].asReadonly();
   }
 
+  get isNpcSpellclickSpellsUnsaved(): Signal<boolean> {
+    return this.statusMap[NPC_SPELLCLICK_SPELLS_TABLE].asReadonly();
+  }
+
+  get isVehicleTemplateAccessoryUnsaved(): Signal<boolean> {
+    return this.statusMap[VEHICLE_TEMPLATE_ACCESSORY_TABLE].asReadonly();
+  }
+
   protected _statusMap = {
     [CREATURE_TEMPLATE_TABLE]: signal(false),
     [CREATURE_TEMPLATE_MODEL_TABLE]: signal(false),
@@ -119,6 +129,8 @@ export class CreatureHandlerService extends HandlerService<CreatureTemplate> {
     [CREATURE_FORMATIONS_TABLE]: signal(false),
     [CREATURE_TEMPLATE_LOCALE_TABLE]: signal(false),
     [CREATURE_TEXT_LOCALE_TABLE]: signal(false),
+    [NPC_SPELLCLICK_SPELLS_TABLE]: signal(false),
+    [VEHICLE_TEMPLATE_ACCESSORY_TABLE]: signal(false),
   };
 
   override select(isNew: boolean, id: string | number | Partial<CreatureTemplate>, name?: string, navigate = true, sourceId?: string) {

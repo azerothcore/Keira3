@@ -109,7 +109,9 @@
       "TEXT": "文本",
       "FORMATIONS": "编队",
       "CREATURE_TEMPLATE_LOCALE": "生物模板本地化",
-      "CREATURE_TEXT_LOCALE": "生物文本本地化"
+      "CREATURE_TEXT_LOCALE": "生物文本本地化",
+      "NPC_SPELLCLICK_SPELLS": "点击施法",
+      "VEHICLE_TEMPLATE_ACCESSORY": "载具附件"
     },
     "QUEST": {
       "TITLE": "任务",
@@ -199,7 +201,8 @@
     "SPELL_DBC_OVERRIDES": {
       "TITLE": "技能DBC修改",
       "SEARCH_SPELL": "搜索技能",
-      "SPELL_DBC_EDITOR": "技能DBC编辑"
+      "SPELL_DBC_EDITOR": "技能DBC编辑",
+      "SPELL_AREA": "区域法术"
     },
     "GAME_TELE": {
       "TITLE": "游戏传送",
@@ -266,6 +269,11 @@
       "GAMEOBJECT_QUEST": "游戏对象任务",
       "SEASONAL_QUEST": "季节任务",
       "BATTLEGROUND_HOLIDAY": "战场假日"
+    },
+    "DISABLES": {
+      "TITLE": "禁用",
+      "SEARCH": "搜索禁用",
+      "DISABLES": "此类型的禁用"
     }
   },
   "DASHBOARD": {
@@ -2270,5 +2278,14 @@
     "GAME_EVENT_GAMEOBJECT_QUEST_HELP": "事件期间游戏对象（按 entry）提供的任务。",
     "GAME_EVENT_SEASONAL_QUEST_HELP": "每次事件开始时重置的任务。",
     "GAME_EVENT_BATTLEGROUND_HOLIDAY_HELP": "该事件的战场假日（bgflag）。"
+  },
+  "EDITORS_HELP": {
+    "NPC_SPELLCLICK_SPELLS": "玩家点击该生物时施放的法术（载具、坐骑、任务 NPC）：cast_flags 1 = 玩家施放，2 = 对玩家施放；user_type 0 友方，1 团队，2 小队，3 玩家。",
+    "VEHICLE_TEMPLATE_ACCESSORY": "乘坐此载具的生物，按座位（minion 1：与载具同死；summontype 和 summontimer 同 TempSummonType）。",
+    "SPELL_AREA": "法术生效的区域（area）及对象：开始/完成的任务及其状态掩码、光环、种族（racemask）、性别（2 = 两者）；autocast 1 表示进入时施放。",
+    "DISABLES": "服务器针对此 sourceType 关闭的内容：每个 entry（法术、任务、地图……）及其 flags（按类型：地图 1 普通、2 英雄……；法术 1 玩家、2 生物、4 宠物……）和 params（地图或区域，用逗号分隔）。"
+  },
+  "DISABLES": {
+    "OPEN_TYPE": "打开某个来源类型的禁用："
   }
 }
