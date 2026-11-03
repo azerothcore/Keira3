@@ -1307,6 +1307,49 @@
             </div>
           </li>
 
+          <li class="sidebar-dropdown" [class.active]="menuStates['dbScripts'] === 'down'">
+            <a (click)="toggleState('dbScripts')">
+              <i class="fa fa-scroll"></i>
+              <span [translate]="'SIDEBAR.DB_SCRIPTS.TITLE'"></span>
+            </a>
+
+            <div class="sidebar-submenu" [@slide]="menuStates['dbScripts']">
+              <ul>
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'db-scripts/select-event-scripts'">
+                    {{ 'SIDEBAR.DB_SCRIPTS.SELECT_EVENT_SCRIPTS' | translate }}
+                  </a>
+                </li>
+                @if (eventScriptsHandlerService.selected) {
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'db-scripts/event-scripts'">
+                      {{ 'SIDEBAR.DB_SCRIPTS.EVENT_SCRIPTS' | translate }}
+                      @if (eventScriptsHandlerService.isEventScriptsUnsaved()) {
+                        <keira-unsaved-icon />
+                      }
+                    </a>
+                  </li>
+                }
+                <hr />
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'db-scripts/select-spell-scripts'">
+                    {{ 'SIDEBAR.DB_SCRIPTS.SELECT_SPELL_SCRIPTS' | translate }}
+                  </a>
+                </li>
+                @if (spellScriptsHandlerService.selected) {
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'db-scripts/spell-scripts'">
+                      {{ 'SIDEBAR.DB_SCRIPTS.SPELL_SCRIPTS' | translate }}
+                      @if (spellScriptsHandlerService.isSpellScriptsUnsaved()) {
+                        <keira-unsaved-icon />
+                      }
+                    </a>
+                  </li>
+                }
+              </ul>
+            </div>
+          </li>
+
           <li class="sidebar-dropdown" [class.active]="menuStates['creatureImmunities'] === 'down'">
             <a (click)="toggleState('creatureImmunities')">
               <i class="fa fa-shield-halved"></i>

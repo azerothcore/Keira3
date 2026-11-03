@@ -180,3 +180,5 @@ export * from './entities/areatrigger-tavern.type';
 export * from './entities/areatrigger-involvedrelation.type';
 export * from './entities/areatrigger-scripts.type';
 export * from './entities/areatrigger.type';
+export * from './entities/event-scripts.type';
+export * from './entities/spell-scripts.type';
