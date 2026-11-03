@@ -39,6 +39,20 @@ describe('EditorService', () => {
     expect(service['fields']).toEqual(['id', 'guid', 'name']);
   });
 
+  it('marks a number field left empty as a mistake, not a text field (#3236)', () => {
+    const { service } = setup();
+    const { guid, name } = service.form.controls;
+
+    guid.setValue(null as never);
+    expect(guid.errors).toEqual({ required: true });
+    guid.setValue('' as never);
+    expect(guid.invalid).toBe(true);
+    guid.setValue(0);
+    expect(guid.valid).toBe(true);
+    name.setValue('');
+    expect(name.valid).toBe(true);
+  });
+
   describe('reload', () => {
     const id = 123456;
     const data = 'mock data result';

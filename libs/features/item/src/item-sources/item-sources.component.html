@@ -1,0 +1,123 @@
+<keira-top-bar
+  [selected]="handlerService.selected"
+  [selectedName]="handlerService.selectedName"
+  [isNew]="handlerService.isNew"
+  [customScssClass]="handlerService.itemQualityScssClass"
+/>
+
+<div class="container-fluid item-sources">
+  <p class="text-muted mt-2">{{ 'ITEM.SOURCES.HELP' | translate }}</p>
+  <button type="button" class="btn btn-sm btn-secondary mb-2" data-testid="reload-sources" (click)="load()">
+    <i class="fa fa-sync"></i> {{ 'ITEM.SOURCES.RELOAD' | translate }}
+  </button>
+
+  @if (error()) {
+    <div class="alert alert-danger" data-testid="sources-error">{{ error() }}</div>
+  } @else if (sources(); as sources) {
+    <h5>{{ 'ITEM.SOURCES.LOOT' | translate }}</h5>
+    @if (sources.loot.length) {
+      <table class="table table-sm table-striped" data-testid="sources-loot">
+        <thead>
+          <tr>
+            <th>{{ 'ITEM.SOURCES.LOOT_TABLE' | translate }}</th>
+            <th>Entry</th>
+            <th>Chance</th>
+            <th>GroupId</th>
+            <th>{{ 'ITEM.SOURCES.COUNT' | translate }}</th>
+            <th>QuestRequired</th>
+            <th>{{ 'ITEM.SOURCES.USED_BY' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of sources.loot; track $index) {
+            <tr>
+              <td>{{ row.lootTable }}</td>
+              <td>{{ row.Entry }}</td>
+              <td>{{ row.Chance }}</td>
+              <td>{{ row.GroupId }}</td>
+              <td>{{ count(row.MinCount, row.MaxCount) }}</td>
+              <td>{{ row.QuestRequired ? '✓' : '' }}</td>
+              <td class="used-by">{{ row.usedBy ?? '-' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    } @else {
+      <p class="text-muted" data-testid="sources-no-loot">{{ 'ITEM.SOURCES.NONE' | translate }}</p>
+    }
+
+    @if (sources.referenceUsers.length) {
+      <h5>{{ 'ITEM.SOURCES.THROUGH_REFERENCE' | translate }}</h5>
+      <table class="table table-sm table-striped" data-testid="sources-references">
+        <thead>
+          <tr>
+            <th>Reference</th>
+            <th>{{ 'ITEM.SOURCES.LOOT_TABLE' | translate }}</th>
+            <th>Entry</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of sources.referenceUsers; track $index) {
+            <tr>
+              <td>{{ row.Reference }}</td>
+              <td>{{ row.lootTable }}</td>
+              <td>{{ row.Entry }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+
+    <h5>{{ 'ITEM.SOURCES.VENDORS' | translate }}</h5>
+    @if (sources.vendors.length) {
+      <table class="table table-sm table-striped" data-testid="sources-vendors">
+        <thead>
+          <tr>
+            <th>entry</th>
+            <th>name</th>
+            <th>maxcount</th>
+            <th>ExtendedCost</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of sources.vendors; track $index) {
+            <tr>
+              <td>{{ row.entry }}</td>
+              <td>{{ row.name ?? '-' }}</td>
+              <td>{{ row.maxcount }}</td>
+              <td>{{ row.ExtendedCost }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    } @else {
+      <p class="text-muted" data-testid="sources-no-vendors">{{ 'ITEM.SOURCES.NONE' | translate }}</p>
+    }
+
+    <h5>{{ 'ITEM.SOURCES.QUESTS' | translate }}</h5>
+    @if (sources.quests.length) {
+      <table class="table table-sm table-striped" data-testid="sources-quests">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>LogTitle</th>
+            <th>{{ 'ITEM.SOURCES.HOW' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of sources.quests; track $index) {
+            <tr>
+              <td>{{ row.ID }}</td>
+              <td>{{ row.LogTitle ?? '-' }}</td>
+              <td>{{ 'ITEM.SOURCES.QUEST_' + row.kind.toUpperCase() | translate }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    } @else {
+      <p class="text-muted" data-testid="sources-no-quests">{{ 'ITEM.SOURCES.NONE' | translate }}</p>
+    }
+  } @else {
+    <p data-testid="sources-loading"><i class="fas fa-spinner fa-spin"></i> {{ 'ITEM.SOURCES.READING' | translate }}</p>
+  }
+</div>

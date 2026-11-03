@@ -429,7 +429,7 @@ describe('QuestPreviewComponent', () => {
     const questTemplate = createMockObject({ RequiredFactionId1: 1, RequiredFactionValue1: 900 }, QuestTemplate);
     vi.spyOn(service, 'getFactionByValue').mockReturnValue('(Neutral)');
     vi.spyOn(service, 'questTemplate', 'get').mockReturnValue(questTemplate);
-    vi.spyOn(sqliteQueryService, 'getFactionNameById').mockReturnValue(Promise.resolve('Mock Faction'));
+    vi.spyOn(sqliteQueryService, 'getFactionNameByNameId').mockReturnValue(Promise.resolve('Mock Faction'));
 
     fixture.detectChanges();
     await fixture.whenStable();

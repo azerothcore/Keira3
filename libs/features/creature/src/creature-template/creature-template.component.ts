@@ -21,7 +21,7 @@ import {
   UNIT_FLAGS_2,
 } from '@keira/shared/acore-world-model';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
-import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
+import { QueryOutputComponent, TopBarComponent, MoneyInputComponent, FactionNameComponent } from '@keira/shared/base-editor-components';
 import {
   BooleanOptionSelectorComponent,
   CreatureSelectorBtnComponent,
@@ -40,6 +40,8 @@ import { CreatureTemplateService } from './creature-template.service';
   selector: 'keira-creature-template',
   templateUrl: './creature-template.component.html',
   imports: [
+    FactionNameComponent,
+    MoneyInputComponent,
     TopBarComponent,
     TranslateDirective,
     TranslatePipe,

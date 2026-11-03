@@ -1,0 +1,137 @@
+<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
+
+<div class="container-fluid">
+  @if (editorService.loading) {
+    <span [translate]="'LOADING'"></span>
+  }
+
+  @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
+    <div>
+      <div class="content-block">
+        <keira-query-output
+          [docUrl]="docUrl"
+          [isNew]="editorService.isNew"
+          [diffQuery]="editorService.diffQuery"
+          [fullQuery]="editorService.fullQuery"
+          [error]="editorService.error"
+          [entityTable]="editorService.entityTable"
+          [editorService]="editorService"
+          (executeQuery)="save($event)"
+        />
+      </div>
+      <div class="content-block">
+        <form [formGroup]="editorService.form" class="form-group edit-form">
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-4">
+              <label class="control-label" for="locale-id">ID</label>
+              <input [formControlName]="'ID'" id="locale-id" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4">
+              <label class="control-label" for="locale">Locale</label>
+              <keira-generic-option-selector [control]="editorService.form.controls.Locale" id="locale" [optionList]="LOCALES" />
+            </div>
+            <div class="form-group col-12 col-md-6">
+              <label class="control-label" for="locale-text0-0">Text0_0</label>
+              <textarea [formControlName]="'Text0_0'" id="locale-text0-0" class="form-control form-control-sm"></textarea>
+            </div>
+            <div class="form-group col-12 col-md-6">
+              <label class="control-label" for="locale-text0-1">Text0_1</label>
+              <textarea [formControlName]="'Text0_1'" id="locale-text0-1" class="form-control form-control-sm"></textarea>
+            </div>
+            <div class="form-group col-12 col-md-6">
+              <label class="control-label" for="locale-text1-0">Text1_0</label>
+              <textarea [formControlName]="'Text1_0'" id="locale-text1-0" class="form-control form-control-sm"></textarea>
+            </div>
+            <div class="form-group col-12 col-md-6">
+              <label class="control-label" for="locale-text1-1">Text1_1</label>
+              <textarea [formControlName]="'Text1_1'" id="locale-text1-1" class="form-control form-control-sm"></textarea>
+            </div>
+            <div class="form-group col-12 col-md-6">
+              <label class="control-label" for="locale-text2-0">Text2_0</label>
+              <textarea [formControlName]="'Text2_0'" id="locale-text2-0" class="form-control form-control-sm"></textarea>
+            </div>
+            <div class="form-group col-12 col-md-6">
+              <label class="control-label" for="locale-text2-1">Text2_1</label>
+              <textarea [formControlName]="'Text2_1'" id="locale-text2-1" class="form-control form-control-sm"></textarea>
+            </div>
+            <div class="form-group col-12 col-md-6">
+              <label class="control-label" for="locale-text3-0">Text3_0</label>
+              <textarea [formControlName]="'Text3_0'" id="locale-text3-0" class="form-control form-control-sm"></textarea>
+            </div>
+            <div class="form-group col-12 col-md-6">
+              <label class="control-label" for="locale-text3-1">Text3_1</label>
+              <textarea [formControlName]="'Text3_1'" id="locale-text3-1" class="form-control form-control-sm"></textarea>
+            </div>
+            <div class="form-group col-12 col-md-6">
+              <label class="control-label" for="locale-text4-0">Text4_0</label>
+              <textarea [formControlName]="'Text4_0'" id="locale-text4-0" class="form-control form-control-sm"></textarea>
+            </div>
+            <div class="form-group col-12 col-md-6">
+              <label class="control-label" for="locale-text4-1">Text4_1</label>
+              <textarea [formControlName]="'Text4_1'" id="locale-text4-1" class="form-control form-control-sm"></textarea>
+            </div>
+            <div class="form-group col-12 col-md-6">
+              <label class="control-label" for="locale-text5-0">Text5_0</label>
+              <textarea [formControlName]="'Text5_0'" id="locale-text5-0" class="form-control form-control-sm"></textarea>
+            </div>
+            <div class="form-group col-12 col-md-6">
+              <label class="control-label" for="locale-text5-1">Text5_1</label>
+              <textarea [formControlName]="'Text5_1'" id="locale-text5-1" class="form-control form-control-sm"></textarea>
+            </div>
+            <div class="form-group col-12 col-md-6">
+              <label class="control-label" for="locale-text6-0">Text6_0</label>
+              <textarea [formControlName]="'Text6_0'" id="locale-text6-0" class="form-control form-control-sm"></textarea>
+            </div>
+            <div class="form-group col-12 col-md-6">
+              <label class="control-label" for="locale-text6-1">Text6_1</label>
+              <textarea [formControlName]="'Text6_1'" id="locale-text6-1" class="form-control form-control-sm"></textarea>
+            </div>
+            <div class="form-group col-12 col-md-6">
+              <label class="control-label" for="locale-text7-0">Text7_0</label>
+              <textarea [formControlName]="'Text7_0'" id="locale-text7-0" class="form-control form-control-sm"></textarea>
+            </div>
+            <div class="form-group col-12 col-md-6">
+              <label class="control-label" for="locale-text7-1">Text7_1</label>
+              <textarea [formControlName]="'Text7_1'" id="locale-text7-1" class="form-control form-control-sm"></textarea>
+            </div>
+            <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
+              <i class="fas fa-exclamation-triangle"></i>
+              <span [innerHTML]="'UNIQUE' | translate: { ENTITY_SECOND_ID_FIELD: editorService.entitySecondIdField }"></span>
+            </div>
+          </div>
+        </form>
+        <div class="row">
+          <div class="col-12">
+            <keira-editor-buttons
+              [selectedRowId]="editorService.selectedRowId"
+              (deleteSelectedRow)="editorService.deleteSelectedRow()"
+              (addNewRow)="editorService.addNewRow()"
+              (duplicateRow)="editorService.addNewRow(true)"
+            />
+            <ngx-datatable
+              id="editor-table"
+              class="bootstrap table table-striped text-center datatable-select"
+              [rows]="editorService.newRows"
+              [headerHeight]="DTCFG.headerHeight"
+              [footerHeight]="DTCFG.footerHeight"
+              [columnMode]="DTCFG.columnMode"
+              [rowHeight]="DTCFG.rowHeight"
+              [selectionType]="DTCFG.selectionType"
+              (select)="editorService.onRowSelection($event)"
+              (keydown.delete)="editorService.deleteSelectedRow()"
+            >
+              <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                  <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="Locale" prop="Locale" [minWidth]="120" />
+              <ngx-datatable-column name="Text0_0" prop="Text0_0" [minWidth]="200" />
+              <ngx-datatable-column name="Text0_1" prop="Text0_1" [minWidth]="200" />
+            </ngx-datatable>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

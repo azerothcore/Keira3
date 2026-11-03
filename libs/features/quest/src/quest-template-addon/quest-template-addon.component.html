@@ -142,7 +142,7 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
               <label class="control-label" for="RequiredMinRepFaction">Req.MinRepFaction</label>
-              <keira-faction-selector-btn
+              <keira-quest-faction-selector-btn
                 [config]="{ name: 'RequiredMinRepFaction' }"
                 [control]="editorService.form.controls.RequiredMinRepFaction"
                 [disabled]="editorService.form.controls.RequiredMinRepFaction.disabled"
@@ -153,6 +153,7 @@
                 type="number"
                 class="form-control form-control-sm"
               />
+              <keira-faction-name [control]="editorService.form.controls.RequiredMinRepFaction" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
               <label class="control-label" for="RequiredMinRepValue">Req.MinRepValue</label>
@@ -166,7 +167,7 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
               <label class="control-label" for="RequiredMaxRepFaction">Req.MaxRepFaction</label>
-              <keira-faction-selector-btn
+              <keira-quest-faction-selector-btn
                 [config]="{ name: 'RequiredMaxRepFaction' }"
                 [control]="editorService.form.controls.RequiredMaxRepFaction"
                 [disabled]="editorService.form.controls.RequiredMaxRepFaction.disabled"
@@ -177,6 +178,7 @@
                 type="number"
                 class="form-control form-control-sm"
               />
+              <keira-faction-name [control]="editorService.form.controls.RequiredMaxRepFaction" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
               <label class="control-label" for="RequiredMaxRepValue">Req.MaxRepValue</label>

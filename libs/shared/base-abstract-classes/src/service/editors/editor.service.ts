@@ -1,7 +1,7 @@
 import { QueryError } from 'mysql2';
 import { ToastrService } from 'ngx-toastr';
 import { Observable, Subject } from 'rxjs';
-import { FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ValidationErrors } from '@angular/forms';
 
 import { Class, StringKeys, TableRow } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
@@ -10,6 +10,10 @@ import { ModelForm, SubscriptionHandler } from '@keira/shared/utils';
 import { HandlerService } from '../handlers/handler.service';
 import { registerTabState } from '../tab-state';
 import { ChangeDetectorRef, inject, signal } from '@angular/core';
+
+/** An empty number field: its column would get NULL (most of them can't have it). */
+export const numberRequired = (control: AbstractControl): ValidationErrors | null =>
+  control.value === null || control.value === '' ? { required: true } : null;
 
 export abstract class EditorService<T extends TableRow> extends SubscriptionHandler {
   readonly queryService = inject(MysqlQueryService);
@@ -98,9 +102,11 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
 
   protected initForm(): void {
     this._form = new FormGroup<ModelForm<T>>({} as any);
+    const defaults = new this._entityClass() as Record<string, unknown>;
 
     for (const field of this.fields) {
-      this._form.addControl(field, new FormControl());
+      // (a number column left empty would be written as NULL: shown as a mistake, #3236)
+      this._form.addControl(field, new FormControl(null, typeof defaults[field] === 'number' ? numberRequired : null));
     }
 
     this.disableEntityIdField();

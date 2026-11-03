@@ -272,7 +272,7 @@
             @for (i of [1, 2]; track i) {
               <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
                 <label class="control-label" for="RequiredFactionId{{ i }}">Req.FactionId{{ i }}</label>
-                <keira-faction-selector-btn
+                <keira-quest-faction-selector-btn
                   [config]="{ name: 'RequiredFactionId' + i }"
                   [control]="editorService.form.controls['RequiredFactionId' + i]"
                   [disabled]="editorService.form.controls['RequiredFactionId' + i].disabled"
@@ -284,6 +284,7 @@
                   type="number"
                   class="form-control form-control-sm"
                 />
+                <keira-faction-name [control]="editorService.form.controls['RequiredFactionId' + i]" />
                 <label class="control-label" for="RequiredFactionValue{{ i }}">Req.FactionValue{{ i }}</label>
                 <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.REQUIRED_FACTION_VALUE' | translate"></i>
                 <input
@@ -359,6 +360,7 @@
               <label class="control-label" for="RewardMoney">RewardMoney</label>
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.REWARD_MONEY' | translate"></i>
               <input [formControlName]="'RewardMoney'" id="RewardMoney" type="number" class="form-control form-control-sm" />
+              <keira-money-input [control]="editorService.form.controls.RewardMoney" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
               <label class="control-label" for="RewardMoneyDifficulty">Rew.MoneyDifficulty</label>
@@ -487,6 +489,7 @@
                       type="number"
                       class="form-control form-control-sm"
                     />
+                    <keira-faction-name [control]="editorService.form.controls['RewardFactionID' + i]" />
                   </div>
                   <div class="col-12">
                     <label class="control-label" for="RewardFactionValue{{ i }}">Rew.FactionValue{{ i }}</label>

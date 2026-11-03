@@ -83,6 +83,34 @@ describe('SearchService', () => {
     expect(service.rows).toEqual(newRows as any);
   });
 
+  describe('searchExact() (#3245)', () => {
+    it('shows the rows having exactly the value, in the form too, the rest of the form cleared', () => {
+      const { service } = setup();
+      service.fields.controls.name.setValue('Sword');
+      const build = vi.spyOn(TestBed.inject(MysqlQueryService), 'getSearchQuery').mockReturnValue(newQuery);
+      const run = vi.spyOn(TestBed.inject(MysqlQueryService), 'query').mockReturnValue(of([{ entry: 25 }]));
+
+      service.searchExact('entry', 25, mockChangeDetectorRef);
+
+      expect(service.fields.getRawValue()).toEqual(expect.objectContaining({ entry: 25, name: null }));
+      expect(build).toHaveBeenCalledWith(service['entityTable'], service.queryForm.getRawValue(), undefined, undefined, undefined, {
+        numbers: true,
+        names: false,
+      });
+      expect(run).toHaveBeenCalledWith(newQuery);
+      expect(service.rows).toEqual([{ entry: 25 }] as never);
+    });
+
+    it('does nothing for a field the search does not have', () => {
+      const { service } = setup();
+      const run = vi.spyOn(TestBed.inject(MysqlQueryService), 'query');
+
+      service.searchExact('nope', 25, mockChangeDetectorRef);
+
+      expect(run).not.toHaveBeenCalled();
+    });
+  });
+
   describe('when the sub-class supplies orderFields', () => {
     @Service()
     class TestOrderedSearchService extends SearchService<ItemTemplate> {

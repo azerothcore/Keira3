@@ -24,15 +24,20 @@ describe('SearchSelectorModalComponent', () => {
     }).compileComponents();
   });
 
-  const setup = () => {
+  const setup = (value?: number) => {
     const searchService = TestBed.inject(ItemSearchService);
     searchService.query = '--mock query';
+    const searchExact = vi.spyOn(searchService, 'searchExact').mockImplementation(() => undefined);
 
     const fixture = TestBed.createComponent(ItemSelectorModalComponent);
     const component = fixture.componentInstance;
+    if (value !== undefined) {
+      // (as the selector button opens it: initialState.value)
+      component.value = value;
+    }
     fixture.detectChanges();
 
-    return { searchService, fixture, component };
+    return { searchService, fixture, component, searchExact };
   };
 
   it('onSelect() should correctly work', () => {
@@ -53,5 +58,17 @@ describe('SearchSelectorModalComponent', () => {
     component.onSearch();
 
     expect(searchService.onSearch).toHaveBeenCalledTimes(1);
+  });
+
+  it('opened on a field already set, shows what it holds (#3245)', () => {
+    const { searchExact } = setup(25);
+
+    expect(searchExact).toHaveBeenCalledWith('entry', 25, expect.anything());
+  });
+
+  it('opened on an empty field, searches nothing', () => {
+    const { searchExact } = setup(0);
+
+    expect(searchExact).not.toHaveBeenCalled();
   });
 });

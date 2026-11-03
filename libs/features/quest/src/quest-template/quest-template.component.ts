@@ -2,9 +2,14 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ALLOWABLE_RACES, QUEST_FLAGS, QUEST_INFO, QUEST_TYPE, QuestTemplate } from '@keira/shared/acore-world-model';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
-import { IconComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import {
-  FactionSelectorBtnComponent,
+  IconComponent,
+  QueryOutputComponent,
+  TopBarComponent,
+  MoneyInputComponent,
+  FactionNameComponent,
+} from '@keira/shared/base-editor-components';
+import {
   FlagsSelectorBtnComponent,
   ItemSelectorBtnComponent,
   QuestFactionSelectorBtnComponent,
@@ -24,6 +29,8 @@ import { QuestTemplateService } from './quest-template.service';
   templateUrl: './quest-template.component.html',
   styleUrls: ['./quest-template.component.scss'],
   imports: [
+    FactionNameComponent,
+    MoneyInputComponent,
     TopBarComponent,
     TranslateDirective,
     TranslatePipe,
@@ -35,7 +42,6 @@ import { QuestTemplateService } from './quest-template.service';
     IconComponent,
     ItemSelectorBtnComponent,
     FlagsSelectorBtnComponent,
-    FactionSelectorBtnComponent,
     SpellSelectorBtnComponent,
     QuestFactionSelectorBtnComponent,
     QuestPreviewComponent,

@@ -53,6 +53,28 @@ export abstract class SearchService<T extends TableRow> extends SubscriptionHand
     );
   }
 
+  /**
+   * Shows the row(s) whose `field` is exactly `value`, in the form too: a selector opened on a field already set shows
+   * what it holds (#3245). Nothing when the search has no such field.
+   */
+  searchExact(field: string, value: string | number, changeDetectorRef: ChangeDetectorRef): void {
+    const control = (this.fields.controls as Record<string, FormControl>)[field];
+    if (!control) {
+      return;
+    }
+    this.fields.reset(undefined, { emitEvent: false });
+    control.setValue(value, { emitEvent: false });
+    this.query = this.queryService.getSearchQuery(
+      this.entityTable,
+      this.queryForm.getRawValue(),
+      this.selectFields,
+      this.groupFields,
+      this.orderFields,
+      { numbers: true, names: this.editorSettings.search(this.entityTable).exactNames },
+    );
+    this.onSearch(changeDetectorRef);
+  }
+
   onSearch(changeDetectorRef: ChangeDetectorRef): void {
     // Reset to the first page
     this.pageOffset = 0;

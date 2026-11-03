@@ -29,6 +29,12 @@
 }
 
 .edit-form {
+  // (a number field left empty: its column would get NULL, #3236)
+  input.ng-invalid:not(:disabled) {
+    border-color: var(--bs-danger, #dc3545);
+    box-shadow: 0 0 0 0.15rem rgba(220, 53, 69, 0.25);
+  }
+
   hr {
     margin-top: 2px;
     margin-bottom: 14px;

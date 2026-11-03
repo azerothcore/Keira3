@@ -116,11 +116,13 @@
               <label class="control-label" for="BuyPrice">BuyPrice</label>
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.BUY_PRICE' | translate"></i>
               <input [formControlName]="'BuyPrice'" id="BuyPrice" type="number" class="form-control form-control-sm" />
+              <keira-money-input [control]="editorService.form.controls.BuyPrice" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="SellPrice">SellPrice</label>
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.SELL_PRICE' | translate"></i>
               <input [formControlName]="'SellPrice'" id="SellPrice" type="number" class="form-control form-control-sm" />
+              <keira-money-input [control]="editorService.form.controls.SellPrice" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="InventoryType">InventoryType</label>
@@ -397,7 +399,7 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="RequiredReputationFaction">Req.Rep.Faction</label>
-              <keira-faction-selector-btn
+              <keira-quest-faction-selector-btn
                 [config]="{ name: 'RequiredReputationFaction' }"
                 [control]="editorService.form.controls.RequiredReputationFaction"
                 [disabled]="editorService.form.controls.RequiredReputationFaction.disabled"
@@ -409,6 +411,7 @@
                 type="number"
                 class="form-control form-control-sm"
               />
+              <keira-faction-name [control]="editorService.form.controls.RequiredReputationFaction" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="RequiredReputationRank">Req.Rep.Rank</label>
