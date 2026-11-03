@@ -105,7 +105,8 @@
       "SMARTAI": "SmartAI",
       "TEXT": "Текст",
       "FORMATIONS": "Формации",
-      "CREATURE_TEMPLATE_LOCALE": "Creature Template (локализация)"
+      "CREATURE_TEMPLATE_LOCALE": "Creature Template (локализация)",
+      "CREATURE_TEXT_LOCALE": "Creature Text (локализация)"
     },
     "QUEST": {
       "TITLE": "Задания",
@@ -178,7 +179,8 @@
       "TITLE": "Разговоры",
       "SELECT_GOSSIP_MENU": "Выбрать меню разговоров",
       "GOSSIP_MENU": "Меню диалогов",
-      "GOSSIP_MENU_OPTION": "Пункт меню диалогов"
+      "GOSSIP_MENU_OPTION": "Пункт меню диалогов",
+      "GOSSIP_MENU_OPTION_LOCALE": "Gossip Menu Option (локализация)"
     },
     "CONDITIONS": {
       "TITLE": "Условия",

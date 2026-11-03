@@ -206,7 +206,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     newRow[this._entityIdField as keyof T] = Number.parseInt(this.loadedEntityId, 10) as T[keyof T];
   }
 
-  private getNewRowId(row: T): string | number {
+  protected getNewRowId(row: T): string | number {
     if (this._entityExtraIdField) {
       return `${row[this._entitySecondIdField]}_${row[this._entityExtraIdField]}`;
     }
@@ -214,7 +214,7 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
     return row[this._entitySecondIdField];
   }
 
-  private getNewRowIdForm(rowControls: FormGroup<ModelForm<T>>['controls']): string | number {
+  protected getNewRowIdForm(rowControls: FormGroup<ModelForm<T>>['controls']): string | number {
     if (this._entityExtraIdField) {
       return `${rowControls[this._entitySecondIdField].value}_${rowControls[this._entityExtraIdField].value}`;
     }

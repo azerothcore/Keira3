@@ -105,7 +105,8 @@
       "SMARTAI": "SmartAI",
       "TEXT": "Text",
       "FORMATIONS": "Formations",
-      "CREATURE_TEMPLATE_LOCALE": "Creature Template Locale"
+      "CREATURE_TEMPLATE_LOCALE": "Creature Template Locale",
+      "CREATURE_TEXT_LOCALE": "Creature Text Locale"
     },
     "QUEST": {
       "TITLE": "Quest",
@@ -178,7 +179,8 @@
       "TITLE": "Gossip",
       "SELECT_GOSSIP_MENU": "Select Gossip Menu",
       "GOSSIP_MENU": "Gossip Menu",
-      "GOSSIP_MENU_OPTION": "Gossip Menu Option"
+      "GOSSIP_MENU_OPTION": "Gossip Menu Option",
+      "GOSSIP_MENU_OPTION_LOCALE": "Gossip Menu Option Locale"
     },
     "CONDITIONS": {
       "TITLE": "Conditions",

@@ -22,3 +22,4 @@ export * from './select-creature/select-creature.component';
 export * from './skinning-loot-template/skinning-loot-template.component';
 export * from './creature-formations/creature-formations.component';
 export * from './creature-template-locale/creature-template-locale.component';
+export * from './creature-text-locale/creature-text-locale.component';

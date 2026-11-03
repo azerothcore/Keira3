@@ -105,7 +105,8 @@
       "SMARTAI": "SmartAI",
       "TEXT": "文本",
       "FORMATIONS": "编队",
-      "CREATURE_TEMPLATE_LOCALE": "生物模板本地化"
+      "CREATURE_TEMPLATE_LOCALE": "生物模板本地化",
+      "CREATURE_TEXT_LOCALE": "生物文本本地化"
     },
     "QUEST": {
       "TITLE": "任务",
@@ -178,7 +179,8 @@
       "TITLE": "闲聊对话",
       "SELECT_GOSSIP_MENU": "选择闲聊对话菜单",
       "GOSSIP_MENU": "闲聊对话菜单",
-      "GOSSIP_MENU_OPTION": "闲聊对话选项"
+      "GOSSIP_MENU_OPTION": "闲聊对话选项",
+      "GOSSIP_MENU_OPTION_LOCALE": "对话菜单选项本地化"
     },
     "CONDITIONS": {
       "TITLE": "条件",

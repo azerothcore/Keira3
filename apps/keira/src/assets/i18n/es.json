@@ -105,7 +105,8 @@
       "SMARTAI": "SmartAI",
       "TEXT": "Texto",
       "FORMATIONS": "Formaciones",
-      "CREATURE_TEMPLATE_LOCALE": "Locale de Creature Template"
+      "CREATURE_TEMPLATE_LOCALE": "Locale de Creature Template",
+      "CREATURE_TEXT_LOCALE": "Locale de Creature Text"
     },
     "QUEST": {
       "TITLE": "Misión",
@@ -178,7 +179,8 @@
       "TITLE": "Ventana de Texto de Criatura",
       "SELECT_GOSSIP_MENU": "Seleccionar Ventana de Texto de Criatura",
       "GOSSIP_MENU": "Menú de Ventana de Texto de Criatura",
-      "GOSSIP_MENU_OPTION": "Opción de Menú de Ventana de Texto de Criatura"
+      "GOSSIP_MENU_OPTION": "Opción de Menú de Ventana de Texto de Criatura",
+      "GOSSIP_MENU_OPTION_LOCALE": "Locale de Gossip Menu Option"
     },
     "CONDITIONS": {
       "TITLE": "Condiciones",
