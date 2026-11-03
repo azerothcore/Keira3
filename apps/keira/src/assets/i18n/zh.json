@@ -47,7 +47,10 @@
   "FILTER_FIELDS": "筛选字段",
   "SELECTORS": {
     "ENABLED": "启用",
-    "DISABLED": "禁用"
+    "DISABLED": "禁用",
+    "ITEM_DISPLAY": "物品外观选择（其他物品使用的外观）",
+    "ITEMS": "物品数",
+    "FOR_EXAMPLE": "例如"
   },
   "CONNECTION_WINDOW": {
     "HOST": "主机",

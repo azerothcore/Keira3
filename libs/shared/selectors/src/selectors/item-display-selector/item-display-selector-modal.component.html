@@ -1,0 +1,72 @@
+<div class="modal-body">
+  <p class="lead text-center mb-1">{{ 'SELECTORS.ITEM_DISPLAY' | translate }}</p>
+
+  <form [formGroup]="searchService.queryForm">
+    <div class="row">
+      <ng-container [formGroup]="searchService.fields">
+        <div class="form-group col-2">
+          <input
+            [formControlName]="'displayid'"
+            type="number"
+            class="form-control form-control-sm"
+            id="displayid"
+            placeholder="displayid"
+          />
+        </div>
+        <div class="form-group col-3">
+          <input [formControlName]="'name'" class="form-control form-control-sm" id="name" placeholder="Item name" />
+        </div>
+        <div class="form-group col-3">
+          <select [formControlName]="'InventoryType'" class="form-select form-select-sm" id="InventoryType">
+            <option [ngValue]="null">InventoryType</option>
+            @for (option of INVENTORY_TYPE; track option.value) {
+              <option [ngValue]="option.value">{{ option.value }} - {{ option.name }}</option>
+            }
+          </select>
+        </div>
+      </ng-container>
+      <div class="form-group col-2">
+        <input [formControlName]="'limit'" class="form-control form-control-sm" id="limit" placeholder="Unlimited" />
+      </div>
+      <div class="col-2">
+        <button id="search-btn" class="btn btn-primary btn-sm" [disabled]="searchService.queryForm.invalid" (click)="onSearch()">
+          <i class="fa fa-search"></i> {{ 'SEARCH' | translate }}
+        </button>
+      </div>
+    </div>
+    <keira-highlightjs-wrapper [code]="searchService.query" />
+  </form>
+
+  @if (searchService.rows) {
+    <div>
+      <ngx-datatable
+        class="bootstrap table table-striped text-center datatable-select highlight-select datatable-icon-list"
+        [rows]="searchService.rows"
+        [headerHeight]="DTCFG.headerHeight"
+        [footerHeight]="DTCFG.footerHeight"
+        [columnMode]="DTCFG.columnMode"
+        [rowHeight]="DTCFG.rowHeightWithIcon"
+        [limit]="DTCFG.limit"
+        [selectionType]="DTCFG.selectionType"
+        (select)="onSelect($event)"
+      >
+        <ngx-datatable-column [minWidth]="42" [maxWidth]="42" [sortable]="false">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <keira-icon [itemDisplayId]="row.displayid" />
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="displayid" prop="displayid" />
+        <ngx-datatable-column [name]="'SELECTORS.ITEMS' | translate" prop="items" />
+        <ngx-datatable-column [name]="'SELECTORS.FOR_EXAMPLE' | translate" prop="name" />
+        <ngx-datatable-column name="InventoryType" prop="InventoryType">
+          <ng-template let-row="row" ngx-datatable-cell-template>{{ slotName(row.InventoryType) }}</ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+    </div>
+  }
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-danger" id="modal-cancel-btn" (click)="onCancel()" [translate]="'CANCEL'"></button>
+  <button type="button" class="btn btn-success" id="modal-select-btn" (click)="onSave()" [translate]="'SELECT'"></button>
+</div>

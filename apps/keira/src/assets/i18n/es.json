@@ -47,7 +47,10 @@
   "FILTER_FIELDS": "Filtrar campos",
   "SELECTORS": {
     "ENABLED": "Habilitado",
-    "DISABLED": "Deshabilitado"
+    "DISABLED": "Deshabilitado",
+    "ITEM_DISPLAY": "Selector de apariencia de objeto (las que usan otros objetos)",
+    "ITEMS": "Objetos",
+    "FOR_EXAMPLE": "Por ejemplo"
   },
   "CONNECTION_WINDOW": {
     "HOST": "Servidor",
