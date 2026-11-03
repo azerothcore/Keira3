@@ -155,9 +155,14 @@ describe('QueryOutputComponent', () => {
     expect(copySpy).not.toHaveBeenCalled();
     saved.next(false);
     expect(copySpy).not.toHaveBeenCalled();
+    page.detectChanges();
+    expect(page.query('#copy-note').textContent).toContain('QUERY_OUTPUT.NOT_COPIED');
     page.clickElement(page.executeAndCopyBtn);
+    expect(page.query('#copy-note', false)).toBeFalsy();
     saved.next(true);
     expect(copySpy).toHaveBeenCalledExactlyOnceWith(diffQuery);
+    page.detectChanges();
+    expect(page.query('#copy-note').textContent).toContain('QUERY_OUTPUT.COPIED');
     // set to always copy
     TestBed.inject(EditorSettingsService).save({ copyOnlyOnSuccess: false });
     page.clickElement(page.executeAndCopyBtn);

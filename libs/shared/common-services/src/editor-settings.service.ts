@@ -1,3 +1,4 @@
+import { Subject } from 'rxjs';
 import { Injectable, signal } from '@angular/core';
 
 /** How a search of one table (or all of them, "default") matches and how many rows it gives. */
@@ -49,10 +50,14 @@ export const SEARCH_TABLES = [
 @Injectable({ providedIn: 'root' })
 export class EditorSettingsService {
   readonly settings = signal<EditorSettings>(this.load());
+  private readonly _changes = new Subject<EditorSettings>();
+  /** Each time the settings are saved (the searches follow them at once). */
+  readonly changes$ = this._changes.asObservable();
 
   save(settings: Partial<EditorSettings>): void {
     const next = { ...this.settings(), ...settings };
     this.settings.set(next);
+    this._changes.next(next);
     try {
       localStorage.setItem(EDITOR_SETTINGS_KEY, JSON.stringify(next));
     } catch {

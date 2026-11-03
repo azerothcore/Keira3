@@ -2222,5 +2222,9 @@
   },
   "MODEL_3D": {
     "ON_CHARACTER": "Show it worn by a character"
+  },
+  "QUERY_OUTPUT": {
+    "COPIED": "Copied.",
+    "NOT_COPIED": "It failed: not copied (your changes are kept)."
   }
 }

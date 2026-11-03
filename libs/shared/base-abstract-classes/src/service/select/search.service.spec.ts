@@ -1,3 +1,4 @@
+import { EditorSettingsService } from '@keira/shared/common-services';
 import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { inject, Service, provideZonelessChangeDetection } from '@angular/core';
@@ -81,6 +82,24 @@ describe('SearchService', () => {
 
     expect(spy).toHaveBeenCalledWith(newQuery);
     expect(service.rows).toEqual(newRows as any);
+  });
+
+  it('follows Settings > Editors as they change (row limit, exact matching), without a restart', () => {
+    const { service } = setup();
+    const settings = TestBed.inject(EditorSettingsService);
+    const before = settings.settings();
+    const build = vi.spyOn(TestBed.inject(MysqlQueryService), 'getSearchQuery').mockReturnValue(newQuery);
+
+    settings.saveSearch(service['entityTable'], { limit: 7, exactNumbers: true });
+
+    expect(service.queryForm.controls.limit?.value).toBe(7);
+    expect(build).toHaveBeenLastCalledWith(service['entityTable'], expect.objectContaining({ limit: 7 }), undefined, undefined, undefined, {
+      numbers: true,
+      names: false,
+    });
+    expect(service.query).toBe(newQuery);
+    settings.save(before);
+    localStorage.clear();
   });
 
   describe('searchExact() (#3245)', () => {
