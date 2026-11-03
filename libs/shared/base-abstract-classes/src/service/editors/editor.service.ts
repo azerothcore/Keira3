@@ -106,7 +106,10 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
 
     for (const field of this.fields) {
       // (a number column left empty would be written as NULL: shown as a mistake, #3236)
-      this._form.addControl(field, new FormControl(null, typeof defaults[field] === 'number' ? numberRequired : null));
+      const control = new FormControl<T[typeof field]>(null as unknown as T[typeof field], {
+        validators: typeof defaults[field] === 'number' ? [numberRequired] : [],
+      });
+      this._form.addControl(field, control as never);
     }
 
     this.disableEntityIdField();
