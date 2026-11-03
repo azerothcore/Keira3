@@ -1112,14 +1112,18 @@ export class ItemPreviewService {
         continue;
       }
 
-      let colorId = 0;
-      for (let i = 0; i < 4; i++) {
-        if (socketColor & (1 << i)) {
-          colorId = i;
-        }
+      // socketColor is a mask (1 meta, 2 red, 4 yellow, 8 blue): red, yellow and blue together are a prismatic socket,
+      // other mixes are named by their colours
+      const colors = [0, 1, 2, 3].filter((i) => socketColor & (1 << i));
+      if ((socketColor & 0b1110) === 0b1110) {
+        socketText += `<br><span class="socket-prismatic q0 socket4">${ITEM_CONSTANTS.prismaticSocket}</span>`;
+      } else if (colors.length > 1) {
+        const names = colors.map((i) => ITEM_CONSTANTS.socket[i].replace(/ Socket$/, '')).join(' / ');
+        socketText += `<br><span class="socket-${ITEM_CONSTANTS.gemColors[colors[0]]} q0 socket${colors[0]}">${names} Socket</span>`;
+      } else {
+        const colorId = colors[0] ?? 0;
+        socketText += `<br><span class="socket-${ITEM_CONSTANTS.gemColors[colorId]} q0 socket${colorId}">${ITEM_CONSTANTS.socket[colorId]}</span>`;
       }
-
-      socketText += `<br><span class="socket-${ITEM_CONSTANTS.gemColors[colorId]} q0 socket${colorId}">${ITEM_CONSTANTS.socket[colorId]}</span>`;
     }
 
     const socketBonus = itemTemplate.socketBonus;

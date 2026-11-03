@@ -835,6 +835,14 @@ describe('ItemPreviewService', () => {
       output: `<br><span class="socket-meta q0 socket0">Meta Socket</span><br><span class="socket-red q0 socket1">Red Socket</span><br><span class="q0">Socket Bonus: mockGetSocketBonusById1</span>`,
     },
     {
+      name: 'Sockets of mixed colours (#3159)',
+      template: { socketColor_1: 14, socketColor_2: 6, socketColor_3: 16 },
+      output:
+        `<br><span class="socket-prismatic q0 socket4">Prismatic Socket</span>` +
+        `<br><span class="socket-red q0 socket1">Red / Yellow Socket</span>` +
+        `<br><span class="socket-meta q0 socket0">Meta Socket</span>`,
+    },
+    {
       name: 'getSpellDesc ',
       template: {
         spellid_1: 1,

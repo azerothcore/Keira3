@@ -44,8 +44,9 @@ export const ITEM_CONSTANTS = {
     'Red Socket',
     'Yellow Socket',
     'Blue Socket',
-    // -1 => 'Prismatic Socket' // TODO
   ],
+  // (socketColor 14: red, yellow and blue)
+  prismaticSocket: 'Prismatic Socket',
   gemColors: [
     // *_GEM
     'meta',
