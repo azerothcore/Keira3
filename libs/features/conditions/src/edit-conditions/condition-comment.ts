@@ -23,7 +23,7 @@ const TYPE_ID: Record<number, string> = { 3: 'creature', 4: 'player', 5: 'gameob
 const TEAM: Record<number, string> = { 469: 'Alliance', 67: 'Horde' };
 
 /** What the condition is on (SourceType, SourceGroup, SourceEntry, SourceId). */
-function sourceText(c: Conditions): string {
+export function sourceText(c: Conditions): string {
   const loot = LOOT[c.SourceTypeOrReferenceId as ST];
   if (loot) {
     return `${loot} loot ${c.SourceGroup}: item ${c.SourceEntry}`;

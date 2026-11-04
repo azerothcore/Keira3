@@ -10,6 +10,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { ConditionsHandlerService } from '../conditions-handler.service';
+import { ConditionsSourceHandlerService } from '../conditions-source/conditions-source-handler.service';
 import { SelectConditionsComponent } from './select-conditions.component';
 import { instance, mock } from 'ts-mockito';
 
@@ -72,6 +73,46 @@ describe('SelectConditions integration tests', () => {
     const { fixture, page } = setup();
     await fixture.whenStable();
     expect(page.queryWrapper.innerText).toContain('SELECT * FROM `conditions` LIMIT 50');
+  });
+
+  describe('all the conditions of a source', () => {
+    it('opens the source searched, an empty field as 0', async () => {
+      const { fixture, page } = setup();
+      const select = vi.spyOn(TestBed.inject(ConditionsSourceHandlerService), 'select').mockImplementation(() => undefined);
+      await fixture.whenStable();
+      TestBed.inject(ConditionsSearchService).fields.reset();
+      TestBed.inject(ConditionsSearchService).fields.patchValue({ SourceTypeOrReferenceId: 22, SourceEntry: 55 });
+
+      page.query<HTMLButtonElement>('#open-source-btn').click();
+
+      expect(select).toHaveBeenCalledWith(false, { SourceTypeOrReferenceId: 22, SourceGroup: 0, SourceEntry: 55, SourceId: 0 });
+    });
+
+    it('opens the source 0 when nothing is searched', async () => {
+      const { fixture, page } = setup();
+      const select = vi.spyOn(TestBed.inject(ConditionsSourceHandlerService), 'select').mockImplementation(() => undefined);
+      await fixture.whenStable();
+      TestBed.inject(ConditionsSearchService).fields.reset();
+
+      page.query<HTMLButtonElement>('#open-source-btn').click();
+
+      expect(select).toHaveBeenCalledWith(false, { SourceTypeOrReferenceId: 0, SourceGroup: 0, SourceEntry: 0, SourceId: 0 });
+    });
+
+    it('opens the source of a row found', async () => {
+      const { fixture, page, querySpy } = setup();
+      const select = vi.spyOn(TestBed.inject(ConditionsSourceHandlerService), 'select').mockImplementation(() => undefined);
+      querySpy.mockReturnValue(
+        of([{ SourceTypeOrReferenceId: 19, SourceGroup: 0, SourceEntry: 13117, SourceId: 0, ConditionTypeOrReference: 8 }]),
+      );
+      page.searchBtn.click();
+      await fixture.whenStable();
+      fixture.detectChanges();
+
+      page.query<HTMLButtonElement>('.open-row-source').click();
+
+      expect(select).toHaveBeenCalledWith(false, { SourceTypeOrReferenceId: 19, SourceGroup: 0, SourceEntry: 13117, SourceId: 0 });
+    });
   });
 
   describe('deep link via query params', () => {

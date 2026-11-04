@@ -1011,6 +1011,16 @@
                     </a>
                   </li>
                 }
+                @if (conditionsSourceHandlerService.selected) {
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'conditions/source'" id="conditions-source-link">
+                      {{ 'SIDEBAR.CONDITIONS.SOURCE' | translate }}
+                      @if (conditionsSourceHandlerService.isConditionsSourceUnsaved()) {
+                        <keira-unsaved-icon />
+                      }
+                    </a>
+                  </li>
+                }
               </ul>
             </div>
           </li>

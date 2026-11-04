@@ -190,7 +190,8 @@
     "CONDITIONS": {
       "TITLE": "条件",
       "SELECT_CONDITIONS": "选择条件",
-      "CONDITIONS": "条件"
+      "CONDITIONS": "条件",
+      "SOURCE": "来源的条件"
     },
     "SMARTAI": {
       "TITLE": "SmartAI",
@@ -962,6 +963,12 @@
       },
       "GENERATE_COMMENT": "生成",
       "GENERATE_COMMENT_TIP": "根据上方字段填写注释，与 SmartAI 注释相同"
+    },
+    "SOURCE": {
+      "HELP": "此来源的所有条件：在表中选择一条在下方修改，可添加、复制或删除。保存时会重新写入整个来源。",
+      "NOT_UNIQUE": "此来源的另一条条件具有相同的 ElseGroup、类型、目标和值。",
+      "OPEN": "来源的全部条件",
+      "OPEN_TIP": "此来源（或搜索到的）的全部条件"
     }
   },
   "SMARTAI": {

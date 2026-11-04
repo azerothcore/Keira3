@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { SelectComplexKeyComponent } from '@keira/shared/base-abstract-classes';
 import { CONDITION_SOURCE_TYPES, Conditions } from '@keira/shared/acore-world-model';
 import { ConditionsHandlerService } from '../conditions-handler.service';
+import { ConditionsSourceHandlerService } from '../conditions-source/conditions-source-handler.service';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-components';
 
@@ -24,6 +25,19 @@ export class SelectConditionsComponent extends SelectComplexKeyComponent<Conditi
   public readonly selectService = inject(ConditionsSearchService);
   protected override readonly handlerService = inject(ConditionsHandlerService);
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly sourceHandler = inject(ConditionsSourceHandlerService);
+
+  /** All the conditions of the source searched (an empty field is 0) or of a row found, in one editor (#3154). */
+  openSource(row?: Partial<Conditions>, event?: Event): void {
+    event?.stopPropagation();
+    const source = row ?? this.selectService.fields.getRawValue();
+    this.sourceHandler.select(false, {
+      SourceTypeOrReferenceId: Number(source.SourceTypeOrReferenceId ?? 0),
+      SourceGroup: Number(source.SourceGroup ?? 0),
+      SourceEntry: Number(source.SourceEntry ?? 0),
+      SourceId: Number(source.SourceId ?? 0),
+    });
+  }
 
   /** Lets other screens deep-link here, e.g. the quest chain linking to a quest's availability conditions. */
   ngOnInit(): void {
