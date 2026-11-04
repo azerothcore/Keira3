@@ -38,6 +38,7 @@ export * from './selectors/npc-text-selector/npc-text-selector-btn.component';
 export * from './selectors/npc-text-selector/npc-text-selector-modal.component';
 export * from './selectors/spell-selector/spell-selector-btn.component';
 export * from './selectors/spell-selector/spell-selector-modal.component';
+export * from './selectors/spell-selector/spell-info-modal.component';
 
 export * from './selectors/base-selector/base-selector-btn.component';
 export * from './selectors/base-selector/base-selector-modal.component';

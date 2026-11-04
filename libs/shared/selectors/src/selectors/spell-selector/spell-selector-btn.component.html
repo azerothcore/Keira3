@@ -1,0 +1,22 @@
+@if (control) {
+  <button
+    type="button"
+    [id]="config()?.name + '-selector-btn'"
+    class="btn btn-secondary btn-sm ms-1"
+    (click)="onClick()"
+    [disabled]="disabled()"
+  >
+    ...
+  </button>
+  @if (canShowInfo() && control.value) {
+    <button
+      type="button"
+      [id]="config()?.name + '-spell-info-btn'"
+      class="btn btn-outline-secondary btn-sm ms-1 spell-info-btn"
+      [title]="'SPELL_INFO.TITLE' | translate"
+      (click)="showInfo()"
+    >
+      <i class="fas fa-info"></i>
+    </button>
+  }
+}

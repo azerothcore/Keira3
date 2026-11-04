@@ -175,7 +175,7 @@ export function parseGameMapTransforms(dbc: DbcFile): GameMapTransform[] {
 }
 
 /** The first filled locale of a localized string (fields `first`…`first + 15`). */
-function localized(dbc: DbcFile, record: number, first: number): string {
+export function localized(dbc: DbcFile, record: number, first: number): string {
   for (let field = first; field < first + 16; field++) {
     const text = dbc.getString(record, field);
     if (text) {

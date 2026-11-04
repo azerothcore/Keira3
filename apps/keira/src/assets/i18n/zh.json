@@ -2401,5 +2401,28 @@
       "broadcastText": "广播文本"
     }
   },
-  "EXPORT_ENTITY": "将此实体的所有表导出为 SQL"
+  "EXPORT_ENTITY": "将此实体的所有表导出为 SQL",
+  "SPELL_INFO": {
+    "TITLE": "法术信息",
+    "SCHOOL": "学派",
+    "COST": "消耗",
+    "CAST_TIME": "施法时间",
+    "INSTANT": "瞬发",
+    "DURATION": "持续时间",
+    "RANGE": "射程",
+    "COOLDOWN": "冷却",
+    "CATEGORY": "类别",
+    "PROC": "触发",
+    "STACKS": "叠加",
+    "MAX_TARGETS": "最大目标数",
+    "EFFECT": "效果 / 光环",
+    "VALUE": "数值",
+    "TARGETS": "目标",
+    "MORE": "更多",
+    "RADIUS": "半径",
+    "EVERY": "每",
+    "TRIGGERS": "触发",
+    "CHAIN": "连锁目标",
+    "NONE": "游戏客户端中没有该法术。"
+  }
 }

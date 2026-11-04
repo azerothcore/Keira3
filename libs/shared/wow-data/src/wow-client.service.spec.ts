@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { buildDbc } from './dbc.mock';
+import { fireball } from './spell-info.mock';
 import { resetLogMemory, setPerfLog } from './perf-log';
 import { EMPTY_COLLISION } from './collision';
 import { buildMmtile } from './navmesh.mock';
@@ -1353,6 +1354,36 @@ describe('WowClientService', () => {
     it('has no minimaps without md5translate.trs', async () => {
       const { service } = setup({ mpqs: { 'common.MPQ': { files: {} } } });
       expect(await service.getMinimap('Azeroth', { tx: 32, ty: 48 })).toBeUndefined();
+    });
+  });
+
+  describe('spells', () => {
+    const rows = (r: (number | string)[][], fields?: number) => Array.from(buildDbc(r, fields));
+    const spellMpqs = (files: Record<string, number[]>): Record<string, FakeMpq> => ({ 'common.MPQ': { files } });
+
+    it('reads a spell from Spell.dbc and its tables, once', async () => {
+      const { service, native } = setup({
+        mpqs: spellMpqs({
+          'DBFilesClient\\Spell.dbc': rows([fireball], 234),
+          'DBFilesClient\\SpellCastTimes.dbc': rows([[3, 1500, 0, 0]]),
+        }),
+      });
+
+      expect((await service.getSpellInfo(133))?.castTime).toBe(1500);
+      expect(await service.getSpellInfo(134)).toBeUndefined();
+      expect(native.readFile).toBeDefined();
+    });
+
+    it('has no spells without Spell.dbc, and reads it again after a failure', async () => {
+      expect(await setup({ mpqs: spellMpqs({}) }).service.getSpellInfo(133)).toBeUndefined();
+      TestBed.resetTestingModule();
+      const { service } = setup({ mpqs: spellMpqs({ 'DBFilesClient\\Spell.dbc': rows([fireball], 234) }) });
+      const read = vi
+        .spyOn(service as unknown as { readDbc: () => Promise<unknown> }, 'readDbc')
+        .mockRejectedValueOnce(new Error('locked'));
+      await expect(service.getSpellInfo(133)).rejects.toThrow('locked');
+      read.mockRestore();
+      expect((await service.getSpellInfo(133))?.name).toBe('Fireball');
     });
   });
 
