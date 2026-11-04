@@ -35,3 +35,4 @@ export * from './game-map.component';
 export * from './game-map-pois';
 export * from './game-data-folders.component';
 export * from './local-model-viewer.component';
+export * from './display-search.component';

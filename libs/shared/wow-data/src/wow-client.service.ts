@@ -233,11 +233,42 @@ export class WowClientService {
 
   /** How a creature display id is drawn (model, size, textures), from the server's DBCs when configured. */
   async getCreatureDisplay(displayId: number): Promise<CreatureDisplay | undefined> {
+    return (await this.allCreatureDisplays()).get(displayId);
+  }
+
+  /**
+   * The creature or gameobject displays whose id or model path has `text` (any case), in id order, at most `limit`
+   * (#3016: finding a display by its model's name).
+   */
+  async findDisplays(kind: 'creature' | 'gameobject', text: string, limit = 200): Promise<{ id: number; model: string }[]> {
+    const needle = text.trim().toLowerCase();
+    const entries: [number, string][] =
+      kind === 'creature'
+        ? [...(await this.allCreatureDisplays()).entries()].map(([id, display]) => [id, display.model])
+        : [...(await this.allGameObjectDisplays()).entries()];
+    return entries
+      .filter(([id, model]) => !needle || String(id) === needle || model.toLowerCase().includes(needle))
+      .sort(([a], [b]) => a - b)
+      .slice(0, limit)
+      .map(([id, model]) => ({ id, model }));
+  }
+
+  private allCreatureDisplays(): Promise<Map<number, CreatureDisplay>> {
     this.creatureDisplays ??= this.loadCreatureDisplays().catch((error) => {
       this.creatureDisplays = undefined;
       throw error;
     });
-    return (await this.creatureDisplays).get(displayId);
+    return this.creatureDisplays;
+  }
+
+  private allGameObjectDisplays(): Promise<Map<number, string>> {
+    this.gameobjectDisplays ??= this.readDbc('GameObjectDisplayInfo.dbc')
+      .then((dbc) => (dbc ? parseGameObjectDisplays(dbc) : new Map<number, string>()))
+      .catch((error) => {
+        this.gameobjectDisplays = undefined;
+        throw error;
+      });
+    return this.gameobjectDisplays;
   }
 
   /**
@@ -441,13 +472,7 @@ export class WowClientService {
 
   /** Model path of a gameobject display id. */
   async getGameObjectDisplay(displayId: number): Promise<string | undefined> {
-    this.gameobjectDisplays ??= this.readDbc('GameObjectDisplayInfo.dbc')
-      .then((dbc) => (dbc ? parseGameObjectDisplays(dbc) : new Map<number, string>()))
-      .catch((error) => {
-        this.gameobjectDisplays = undefined;
-        throw error;
-      });
-    return (await this.gameobjectDisplays).get(displayId);
+    return (await this.allGameObjectDisplays()).get(displayId);
   }
 
   /** Zones of a map (from the world map's DBCs), by name. */
