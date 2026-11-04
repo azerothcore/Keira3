@@ -132,8 +132,9 @@ export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandle
   }
 
   private readonly sessionSql = inject(SessionSqlService);
-  /** The query was just added to the session's SQL. */
-  protected readonly addedToSession = signal(false);
+  /** The query added last to the session's SQL: "added" while it is the one shown. */
+  private readonly addedQuery = signal<string | undefined>(undefined);
+  protected readonly addedToSession = computed(() => this.addedQuery() === this.getQuery());
 
   /** Puts the query aside with the others of the session (#1086): reviewed, saved or executed together later. */
   addToSession(): void {
@@ -142,7 +143,7 @@ export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandle
       return;
     }
     this.sessionSql.add(`${this.entityTable()} ${this.editorService.loadedEntityId}`, query);
-    this.addedToSession.set(true);
+    this.addedQuery.set(query);
   }
 
   private readonly editorSettings = inject(EditorSettingsService);

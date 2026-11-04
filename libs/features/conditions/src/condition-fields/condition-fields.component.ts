@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, input, OnChanges, signal } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import {
   CONDITION_DISTANCE_TO_CV3,
@@ -19,6 +19,7 @@ import {
 } from '@keira/shared/acore-world-model';
 import { FlagsSelectorBtnComponent, SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 import { getEnumKeys, ModelForm } from '@keira/shared/utils';
+import { startWith, Subscription } from 'rxjs';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import {
@@ -46,7 +47,16 @@ import { conditionComment } from '../edit-conditions/condition-comment';
     SingleValueSelectorBtnComponent,
   ],
 })
-export class ConditionFieldsComponent {
+export class ConditionFieldsComponent implements OnChanges {
+  private readonly destroyRef = inject(DestroyRef);
+  /** The condition type as the form has it (followed: a row selected in the editor of a source sets it, #3154). */
+  private readonly type = signal(0);
+  private typeChanges?: Subscription;
+
+  constructor() {
+    this.destroyRef.onDestroy(() => this.typeChanges?.unsubscribe());
+  }
+
   readonly form = input.required<FormGroup<ModelForm<Conditions>>>();
   /** The source type, for the tooltip of ConditionTarget. */
   readonly sourceType = input.required<number>();
@@ -75,8 +85,14 @@ export class ConditionFieldsComponent {
   readonly CONDITION_STAND_STATE_CV1 = CONDITION_STAND_STATE_CV1;
   readonly CONDITION_STAND_STATE_CV2 = CONDITION_STAND_STATE_CV2;
 
+  ngOnChanges(): void {
+    this.typeChanges?.unsubscribe();
+    const control = this.form().controls.ConditionTypeOrReference;
+    this.typeChanges = control.valueChanges.pipe(startWith(control.value)).subscribe((value) => this.type.set(value));
+  }
+
   get conditionType(): number {
-    return this.form().controls.ConditionTypeOrReference.value;
+    return this.type();
   }
 
   get showQuestState(): boolean {

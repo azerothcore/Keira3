@@ -190,6 +190,10 @@ describe('QueryOutputComponent', () => {
     const session = TestBed.inject(SessionSqlService);
     expect(session.entries()).toEqual([expect.objectContaining({ label: 'creature_template 1234', query: diffQuery })]);
     expect(page.query('#add-to-session-btn').textContent).toContain('SESSION_SQL.ADDED');
+    // the other query shown: not added yet
+    host.child().selectedQuery.set('full');
+    page.detectChanges();
+    expect(page.query('#add-to-session-btn').textContent).not.toContain('SESSION_SQL.ADDED');
     // nothing to add
     Object.assign(host.child(), { getQuery: () => '' });
     page.clickElement(page.query<HTMLButtonElement>('#add-to-session-btn'));

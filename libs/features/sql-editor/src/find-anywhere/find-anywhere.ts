@@ -121,7 +121,6 @@ export const FIND_REFERENCES: Record<FindKind, FindReference[]> = {
     { table: 'spell_area', where: any(['spell', 'aura_spell']) },
     { table: 'spell_linked_spell', where: 'ABS(spell_trigger) = @ID OR ABS(spell_effect) = @ID' },
     { table: 'spell_script_names', where: 'ABS(spell_id) = @ID' },
-    { table: 'npc_trainer', where: 'SpellID = @ID' },
     { table: 'trainer_spell', where: 'SpellId = @ID' },
     { table: 'item_template', where: any(numbered('spellid_', 5)) },
     { table: 'quest_template', where: any(['RewardSpell', 'RewardDisplaySpell']) },

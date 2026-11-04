@@ -87,6 +87,19 @@ describe('ConditionsSource integration tests', () => {
     );
   });
 
+  it("shows the pickers of the selected row's condition type", () => {
+    const { page } = setup([
+      condition({ ConditionTypeOrReference: 47, ConditionValue1: 1 }),
+      condition({ ConditionTypeOrReference: 27, ConditionValue1: 2 }),
+    ]);
+
+    page.clickRowOfDatatable(0);
+    expect(page.query('#queststate-flag-selector')).toBeTruthy();
+    page.clickRowOfDatatable(1);
+    expect(page.query('#queststate-flag-selector', false)).toBeFalsy();
+    expect(page.query('#ConditionValue2-selector-btn')).toBeTruthy();
+  });
+
   it('adds conditions, telling apart two empty ones by their ElseGroup, and keeps the rows unique', () => {
     const { page } = setup([]);
 

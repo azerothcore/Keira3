@@ -79,6 +79,26 @@ describe(SniffToSqlComponent.name, () => {
     expect(page.el('sniff-sql').textContent).toContain('SET @PATH := 500;');
     await page.type('sniff-first-path', '');
     expect(page.el('sniff-sql').textContent).toContain('SET @PATH := 1;');
+
+    // another table: its own first free id (the other's would overwrite paths)
+    const select = page.el<HTMLSelectElement>('sniff-table');
+    select.value = 'waypoints';
+    select.dispatchEvent(new Event('change'));
+    await page.settle();
+    expect(query).toHaveBeenCalledWith('SELECT MAX(`entry`) AS max FROM `waypoints`');
+    expect(page.el('sniff-sql').textContent).toContain('SET @PATH := 1;');
+    expect(page.el('sniff-sql').textContent).toContain('INSERT INTO `waypoints`');
+  });
+
+  it('forgets the broadcast texts of the sniff before when the database fails', async () => {
+    const { page, query } = await setup();
+    await page.type('sniff-text', SNIFF);
+    await page.click('sniff-parse');
+    expect(page.el('sniff-sql').textContent).toContain(', 1234, 0,');
+
+    query.mockReturnValue(throwError(() => new Error('down')) as never);
+    await page.click('sniff-parse');
+    expect(page.el('sniff-sql').textContent).not.toContain(', 1234, 0,');
   });
 
   it('writes the paths as waypoints, copies the SQL and keeps it in the session', async () => {

@@ -49,7 +49,7 @@ describe('VehicleAccessory integration tests', () => {
     const { page, querySpy } = setup([row(0), row(1)]);
 
     expect(querySpy).toHaveBeenCalledWith(
-      'SELECT a.* FROM creature AS c INNER JOIN vehicle_accessory AS a ON c.guid = a.guid WHERE c.id1 = 1234 ORDER BY a.guid, a.seat_id',
+      'SELECT a.* FROM creature AS c INNER JOIN vehicle_accessory AS a ON c.guid = a.guid WHERE 1234 IN (c.id1, c.id2, c.id3) ORDER BY a.guid, a.seat_id',
     );
     expect(page.getEditorTableRowsCount()).toBe(2);
     expect(page.query('#editor-help')).toBeTruthy();

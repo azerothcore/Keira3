@@ -20,7 +20,7 @@ export class VehicleAccessoryService extends MultiRowExternalEditorService<Vehic
 
   selectQuery(id: string | number): Observable<VehicleAccessory[]> {
     return this.queryService.query<VehicleAccessory>(
-      `SELECT a.* FROM creature AS c INNER JOIN vehicle_accessory AS a ON c.guid = a.guid WHERE c.id1 = ${Number(id)} ORDER BY a.guid, a.seat_id`,
+      `SELECT a.* FROM creature AS c INNER JOIN vehicle_accessory AS a ON c.guid = a.guid WHERE ${Number(id)} IN (c.id1, c.id2, c.id3) ORDER BY a.guid, a.seat_id`,
     );
   }
 }

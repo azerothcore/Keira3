@@ -41,6 +41,17 @@ describe('SpellSelectorBtnComponent', () => {
     expect(show).toHaveBeenCalledWith(SpellInfoModalComponent, { class: 'modal-lg', initialState: { spellId: 133 } });
   });
 
+  it('follows the spell of the field', () => {
+    const { fixture, infoButton, show } = setup(true, '/wow', 0);
+    expect(infoButton()).toBeNull();
+
+    fixture.componentInstance.control.setValue(118);
+    fixture.detectChanges();
+    infoButton()?.click();
+
+    expect(show).toHaveBeenCalledWith(SpellInfoModalComponent, { class: 'modal-lg', initialState: { spellId: 118 } });
+  });
+
   it('has no info without the game client, or without a spell', () => {
     expect(setup(false, '/wow').infoButton()).toBeNull();
     TestBed.resetTestingModule();

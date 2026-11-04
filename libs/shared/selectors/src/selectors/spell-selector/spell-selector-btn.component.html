@@ -8,7 +8,7 @@
   >
     ...
   </button>
-  @if (canShowInfo() && control.value) {
+  @if (canShowInfo() && spellId()) {
     <button
       type="button"
       [id]="config()?.name + '-spell-info-btn'"

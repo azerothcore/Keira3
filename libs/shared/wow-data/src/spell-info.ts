@@ -12,7 +12,7 @@ export interface SpellEffectInfo {
   effectName: string;
   aura: number;
   auraName: string;
-  /** EffectBasePoints + 1, to EffectBasePoints + EffectDieSides (what the effect does, before modifiers). */
+  /** EffectBasePoints, plus 1 to EffectDieSides when it has dice (what the effect does, before modifiers). */
   min: number;
   max: number;
   targetA: string;
@@ -110,8 +110,9 @@ export function parseSpellInfo(dbcs: SpellDbcs, id: number): SpellInfo | undefin
       effectName: named(SPELL_EFFECT_NAMES, effect),
       aura: u(95 + e),
       auraName: named(SPELL_AURA_NAMES, u(95 + e)),
-      min: base + 1,
-      max: base + Math.max(dieSides, 1),
+      // (SpellEffectInfo::CalcValue: no dice adds nothing, else 1 to DieSides)
+      min: dieSides ? base + Math.min(1, dieSides) : base,
+      max: dieSides ? base + Math.max(1, dieSides) : base,
       targetA: named(SPELL_TARGET_NAMES, u(86 + e)),
       targetB: named(SPELL_TARGET_NAMES, u(89 + e)),
       // (SpellRadius.dbc: 1 RadiusMin)
@@ -129,7 +130,8 @@ export function parseSpellInfo(dbcs: SpellDbcs, id: number): SpellInfo | undefin
     name: localized(spell, r, 136),
     rank: localized(spell, r, 153),
     schoolMask: u(225),
-    powerType: u(41),
+    // (signed: POWER_HEALTH is −2)
+    powerType: i(41),
     manaCost: u(42),
     manaCostPercentage: u(204),
     // (SpellCastTimes.dbc: 1 CastTime; SpellDuration.dbc: 1 Duration; SpellRange.dbc: 1 RangeMin, 3 RangeMax)
