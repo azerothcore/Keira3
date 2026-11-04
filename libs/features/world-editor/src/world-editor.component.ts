@@ -139,6 +139,7 @@ import { LEGEND } from './legend';
 import { WorldEditorSessionService } from './world-editor-session.service';
 import { WORLD_EDITOR_LINKS, WorldEditorLoot } from '@keira/shared/constants';
 import {
+  Quaternion,
   PlaceTemplate,
   AreaPath,
   EditorTool,
@@ -199,9 +200,20 @@ import {
 } from './spawn-groups';
 import { MAP_SORT_KEYS, MapSortKey, savePickerSort, SortRule, sortItems, toggleSort, ZONE_SORT_KEYS, ZoneSortKey } from './picker-sort';
 import { isSpawnVisible, loadSpawnFilters, phaseBits, saveSpawnFilters, SpawnFilters, spawnEvents } from './spawn-filters';
-import { AssetBrowserComponent, AssetPick } from './eden/asset-browser.component';
+import { AssetBrowserComponent, AssetPick, AssetRequest } from './eden/asset-browser.component';
 import { EdenMenuBarComponent } from './eden/eden-menu-bar.component';
 import { EdenAction } from './eden/eden-menu';
+import {
+  gizmoGrid,
+  loadTransform,
+  MOVE_GRID_SIZES,
+  ROTATE_GRID_SIZES,
+  saveTransform,
+  stepMoveSize,
+  TransformSettings,
+} from './eden/transform-grid';
+import { Composition, compositionFrom, CompositionsService } from './eden/compositions';
+import { commentIdOf, commentMarkers, CommentsService, EditorComment } from './eden/comments';
 import { SniffDbService, SniffSpawn } from '@keira/shared/db-layer';
 import { distinctSniffs, SNIFF_RADIUS, SniffEvidence, sniffEvidence, sniffFields, sniffKey, sniffMarkers } from './sniff-evidence';
 import { EdenLights, EdenStatusBarComponent } from './eden/eden-status-bar.component';
@@ -237,6 +249,8 @@ function positiveNumber(event: Event): number | undefined {
 
 /** Quests shown on hover before "+N more": the rest while Alt is held. */
 const HOVER_QUESTS = 1;
+/** A rotation column as the editor writes it (4 decimals). */
+const round4 = (value: number): number => Math.round(value * 10_000) / 10_000;
 
 /** "3175.5 MB (3.18 GB)". */
 export function formatSize(bytes: number): string {
@@ -259,6 +273,16 @@ const EDITOR_ACTIONS = [
   'resetNorth',
   'topView',
   'tree',
+  'widgetNone',
+  'widgetMove',
+  'widgetRotate',
+  'toggleGrid',
+  'gridSmaller',
+  'gridBigger',
+  'assetsCreatures',
+  'assetsGameobjects',
+  'assetsCompositions',
+  'searchAssets',
 ] as const;
 /** Scan the whole map: results listed at most, and the colour of each level. */
 const SCAN_LIST_SIZE = 300;
@@ -867,6 +891,7 @@ export class WorldEditorComponent implements OnInit {
         ...this.travelOverlays().markers.filter((marker) => (isFlight(marker.key) ? layers.flightPaths : layers.travel)),
         ...this.scanMarkers(),
         ...(layers.sniffs ? sniffMarkers(this.sniffEvidence()) : []),
+        ...commentMarkers(this.comments.comments(), this.mapId()),
         ...this.shownPlayers().map((player) => ({
           key: `player:${player.guid}`,
           position: { x: player.x, y: player.y, z: player.z },
@@ -3078,6 +3103,10 @@ export class WorldEditorComponent implements OnInit {
       this.addWaypointAt(result.position);
       return;
     }
+    if (tool === 'place-composition') {
+      await this.placeCompositionAt(result.position);
+      return;
+    }
     await this.placeSpawnAt(tool === 'place-creature' ? 'creature' : 'gameobject', result.position);
   }
 
@@ -3907,6 +3936,24 @@ export class WorldEditorComponent implements OnInit {
     { tool: 'place-gameobject', icon: 'fa-cube' },
     { tool: 'add-waypoint', icon: 'fa-route' },
   ];
+  /** Eden's transformation widget: none, move, rotate (keys 1, 2, 3). */
+  protected readonly WIDGET_ICONS: { mode: GizmoMode; icon: string; label: string }[] = [
+    { mode: 'none', icon: 'fa-ban', label: 'WORLD_EDITOR.EDEN.WIDGET_NONE' },
+    { mode: 'translate', icon: 'fa-arrows-alt', label: 'WORLD_EDITOR.MOVE' },
+    { mode: 'rotate', icon: 'fa-sync-alt', label: 'WORLD_EDITOR.ROTATE' },
+  ];
+  protected readonly MOVE_GRID_SIZES = MOVE_GRID_SIZES;
+  protected readonly ROTATE_GRID_SIZES = ROTATE_GRID_SIZES;
+  /** The widget's axes and grids (kept on this computer). */
+  protected readonly transform = signal<TransformSettings>(loadTransform());
+  protected readonly gizmoGrid = computed(() => gizmoGrid(this.transform()));
+  /** The ground under the cursor (the status bar). */
+  protected readonly cursor = signal<{ position: WorldPosition; distance: number } | undefined>(undefined);
+
+  protected setTransform(change: Partial<TransformSettings>): void {
+    this.transform.update((settings) => ({ ...settings, ...change }));
+    saveTransform(this.transform());
+  }
   /** The layer switches, in the toolbar's Layers menu. */
   protected readonly layersOpen = signal(false);
   /** The pending changes, in order (the Asset browser's History). */
@@ -3956,6 +4003,41 @@ export class WorldEditorComponent implements OnInit {
   private showRightTab(tab: 'assets' | 'attributes' | 'history'): void {
     this.rightTab.set(tab);
     this.panelCollapsed.set(false);
+  }
+
+  // ---------------------------------------------------------------- compositions (Eden's)
+
+  private readonly compositions = inject(CompositionsService);
+  /** What the keys ask of the Asset browser (a mode, the search). */
+  protected readonly assetRequest = signal<AssetRequest>({ n: 0 });
+  /** The composition placed by a click in the view (with the Place composition tool). */
+  protected readonly placingComposition = signal<Composition | undefined>(undefined);
+  /** How many spawns are selected (a composition is saved from them). */
+  protected readonly selectedCount = computed(() => (this.selectedSpawn() ? this.selectionCount() : 0));
+
+  /** Saves the selected spawns as a composition of this computer (Eden's custom composition). */
+  protected onCompositionSaved(name: string): void {
+    this.compositions.save(compositionFrom(name, this.selection()));
+    this.toastr.success(name, this.translate.instant('WORLD_EDITOR.EDEN.COMPOSITION_SAVED'));
+  }
+
+  protected onCompositionPicked(composition: Composition): void {
+    this.placingComposition.set(composition);
+    this.setTool('place-composition');
+  }
+
+  /** Places the composition picked at a point: its spawns as new ones around it, selected together. */
+  private async placeCompositionAt(at: WorldPosition): Promise<void> {
+    const composition = this.placingComposition() as Composition;
+    const keys: string[] = [];
+    for (const item of composition.members) {
+      const guid = await this.newGuid(item.spawn.type);
+      this.changes.placeSpawn({ ...pastedSpawn(item, guid, at), map: this.mapId() });
+      keys.push(spawnKey(item.spawn.type, guid));
+    }
+    this.bump();
+    this.select(keys[0]);
+    this.groupKeys.set(keys.slice(1));
   }
 
   /** A template picked in the Asset browser: placed from now on, by a click in the view. */
@@ -4151,6 +4233,67 @@ export class WorldEditorComponent implements OnInit {
 
   /** A place the player marker turns to face (View: its arrow; the .go of the marker copies the orientation). */
   protected readonly markerLookAt = signal<WorldPosition | undefined>(undefined);
+
+  // ---------------------------------------------------------------- comments (Eden's)
+
+  protected readonly comments = inject(CommentsService);
+  /** The comment being edited (in Attributes). */
+  protected readonly editingCommentId = signal<string | undefined>(undefined);
+  protected readonly editingComment = computed(() => this.comments.comments().find((comment) => comment.id === this.editingCommentId()));
+  /** The comment right-clicked, if any. */
+  protected readonly contextComment = computed(() => {
+    const menu = this.contextMenu();
+    const id = menu && commentIdOf(menu.key);
+    return id ? this.comments.comments().find((comment) => comment.id === id) : undefined;
+  });
+
+  /** Right-click > Place a comment here: a note in the world, only in the editor, opened to be written. */
+  protected placeComment(): void {
+    const position = (this.contextMenu() as ContextRequest).position as WorldPosition;
+    const comment: EditorComment = {
+      id: `${Date.now()}`,
+      map: this.mapId(),
+      x: position.x,
+      y: position.y,
+      z: position.z,
+      title: this.translate.instant('WORLD_EDITOR.EDEN.COMMENT'),
+      text: '',
+    };
+    this.comments.add(comment);
+    this.editComment(comment.id);
+  }
+
+  protected editComment(id: string): void {
+    this.editingCommentId.set(id);
+    this.contextMenu.set(undefined);
+    this.showRightTab('attributes');
+  }
+
+  protected deleteComment(id: string): void {
+    this.comments.remove(id);
+    this.contextMenu.set(undefined);
+    if (this.editingCommentId() === id) {
+      this.editingCommentId.set(undefined);
+    }
+  }
+
+  /** Right-click > Level out: a tilted gameobject stood upright again (turned only around its height). */
+  protected levelOut(): void {
+    const spawn = this.contextSpawn() as SpawnRecord;
+    const [x, y, z, w] = spawn.rotation as Quaternion;
+    this.changes.editSpawnFields(
+      spawn,
+      { rotation0: x, rotation1: y, rotation2: z, rotation3: w },
+      { rotation0: 0, rotation1: 0, rotation2: round4(Math.sin(spawn.o / 2)), rotation3: round4(Math.cos(spawn.o / 2)) },
+    );
+    this.bump();
+    this.contextMenu.set(undefined);
+  }
+
+  /** Whether a gameobject is tilted (turned around more than its height). */
+  protected tilted(spawn: SpawnRecord): boolean {
+    return spawn.type === 'gameobject' && !!spawn.rotation && (Math.abs(spawn.rotation[0]) > 1e-4 || Math.abs(spawn.rotation[1]) > 1e-4);
+  }
 
   /** Right-click > Make the player face here. */
   protected faceMarkerHere(): void {
@@ -4389,7 +4532,7 @@ export class WorldEditorComponent implements OnInit {
       this.selectedKey.set(undefined);
       this.groupKeys.set([]);
     } else if (action === 'toggleGizmo') {
-      this.gizmoMode.update((mode) => (mode === 'rotate' ? 'translate' : 'rotate'));
+      this.gizmoMode.update((mode) => (mode === 'translate' ? 'rotate' : 'translate'));
     } else if (action === 'copy') {
       this.copySelection();
     } else if (action === 'paste') {
@@ -4404,6 +4547,19 @@ export class WorldEditorComponent implements OnInit {
       this.topViewRequest.update((n) => n + 1);
     } else if (action === 'tree') {
       this.toggleTree();
+    } else if (action.startsWith('widget')) {
+      this.gizmoMode.set(action === 'widgetNone' ? 'none' : action === 'widgetMove' ? 'translate' : 'rotate');
+    } else if (action === 'toggleGrid') {
+      this.setTransform({ moveGrid: !this.transform().moveGrid });
+    } else if (action === 'gridSmaller' || action === 'gridBigger') {
+      this.setTransform({ moveGrid: true, moveSize: stepMoveSize(this.transform().moveSize, action === 'gridSmaller' ? -1 : 1) });
+    } else if (action.startsWith('assets') || action === 'searchAssets') {
+      this.showRightTab('assets');
+      const mode = action === 'assetsCreatures' ? 'creature' : action === 'assetsGameobjects' ? 'gameobject' : 'composition';
+      this.assetRequest.update((request) => ({
+        n: request.n + 1,
+        ...(action === 'searchAssets' ? { search: true } : { mode }),
+      }));
     } else {
       // (the compass)
       this.renderSettings.update({ compass: !this.renderSettings.settings().compass });

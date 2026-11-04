@@ -190,6 +190,88 @@
       }
     </div>
     <span class="eden-sep"></span>
+    <div class="btn-group btn-group-sm" role="group" data-testid="eden-widget">
+      @for (option of WIDGET_ICONS; track option.mode) {
+        <button
+          type="button"
+          class="btn"
+          [attr.data-testid]="'gizmo-' + option.mode"
+          [class.btn-secondary]="gizmoMode() === option.mode"
+          [class.btn-outline-secondary]="gizmoMode() !== option.mode"
+          [title]="option.label | translate"
+          (click)="setGizmoMode(option.mode)"
+        >
+          <i class="fa" [class]="option.icon"></i>
+        </button>
+      }
+      <button
+        type="button"
+        class="btn btn-outline-secondary"
+        data-testid="gizmo-space"
+        [title]="(transform().space === 'local' ? 'WORLD_EDITOR.EDEN.SPACE_LOCAL' : 'WORLD_EDITOR.EDEN.SPACE_WORLD') | translate"
+        (click)="setTransform({ space: transform().space === 'local' ? 'world' : 'local' })"
+      >
+        <i class="fa" [class]="transform().space === 'local' ? 'fa-cube' : 'fa-globe'"></i>
+      </button>
+    </div>
+    <div class="d-flex gap-1 align-items-center" data-testid="eden-grids">
+      <button
+        type="button"
+        class="btn btn-sm"
+        data-testid="grid-move"
+        [class.btn-secondary]="transform().moveGrid"
+        [class.btn-outline-secondary]="!transform().moveGrid"
+        [title]="'WORLD_EDITOR.EDEN.MOVE_GRID' | translate"
+        (click)="setTransform({ moveGrid: !transform().moveGrid })"
+      >
+        <i class="fa fa-border-all"></i>
+      </button>
+      <select
+        class="form-select form-select-sm grid-size"
+        data-testid="grid-move-size"
+        [title]="'WORLD_EDITOR.EDEN.MOVE_GRID' | translate"
+        (change)="setTransform({ moveSize: +$any($event.target).value, moveGrid: true })"
+      >
+        @for (size of MOVE_GRID_SIZES; track size) {
+          <option [value]="size" [selected]="size === transform().moveSize">{{ size }} yd</option>
+        }
+      </select>
+      <button
+        type="button"
+        class="btn btn-sm"
+        data-testid="grid-rotate"
+        [class.btn-secondary]="transform().rotateGrid"
+        [class.btn-outline-secondary]="!transform().rotateGrid"
+        [title]="'WORLD_EDITOR.EDEN.ROTATE_GRID' | translate"
+        (click)="setTransform({ rotateGrid: !transform().rotateGrid })"
+      >
+        <i class="fa fa-circle-notch"></i>
+      </button>
+      <select
+        class="form-select form-select-sm grid-size"
+        data-testid="grid-rotate-size"
+        [title]="'WORLD_EDITOR.EDEN.ROTATE_GRID' | translate"
+        (change)="setTransform({ rotateSize: +$any($event.target).value, rotateGrid: true })"
+      >
+        @for (size of ROTATE_GRID_SIZES; track size) {
+          <option [value]="size" [selected]="size === transform().rotateSize">{{ size }}°</option>
+        }
+      </select>
+      <select
+        id="world-editor-snap"
+        class="form-select form-select-sm grid-size"
+        data-testid="snap-mode"
+        [title]="'WORLD_EDITOR.SNAP_TO' | translate"
+        (change)="setSnapMode($event)"
+      >
+        @for (mode of ['ground', 'water', 'wall', 'off']; track mode) {
+          <option [value]="mode" [selected]="mode === snapMode()">
+            {{ 'WORLD_EDITOR.SNAP_' + mode.toUpperCase() | translate }}
+          </option>
+        }
+      </select>
+    </div>
+    <span class="eden-sep"></span>
     <form class="d-flex gap-1 goto-form" [formGroup]="goToForm" (ngSubmit)="goToCoordinates()">
       <input
         type="number"
@@ -314,6 +396,9 @@
         [selectedKey]="selectedKey()"
         [editableKey]="editableKey()"
         [gizmoMode]="gizmoMode()"
+        [gizmoSpace]="transform().space"
+        [gizmoGrid]="gizmoGrid()"
+        (cursorMoved)="cursor.set($event)"
         [snapToGround]="snapToGround()"
         [snapToWall]="snapToWall()"
         [snapToWater]="snapToWater()"
@@ -2503,6 +2588,11 @@
             <button type="button" class="dropdown-item" data-testid="context-select-like" (click)="selectLike()">
               <i class="fa fa-object-group"></i> {{ 'WORLD_EDITOR.SELECT_LIKE' | translate }}
             </button>
+            @if (tilted(spawn)) {
+              <button type="button" class="dropdown-item" data-testid="context-level-out" (click)="levelOut()">
+                <i class="fa fa-level-up-alt"></i> {{ 'WORLD_EDITOR.EDEN.LEVEL_OUT' | translate }}
+              </button>
+            }
             <button type="button" class="dropdown-item" data-testid="context-hide" (click)="hideContext()">
               <i class="fa fa-eye-slash"></i> {{ 'WORLD_EDITOR.HIDE_THIS' | translate }}
             </button>
@@ -2645,6 +2735,20 @@
             </button>
             <h6 class="dropdown-header">{{ 'WORLD_EDITOR.GROUND_BELOW' | translate }}</h6>
           }
+          @if (contextComment(); as comment) {
+            <div class="dropdown-divider"></div>
+            <h6 class="dropdown-header" data-testid="context-comment">{{ comment.title }}</h6>
+            <button type="button" class="dropdown-item" data-testid="context-comment-edit" (click)="editComment(comment.id)">
+              <i class="fa fa-edit"></i> {{ 'WORLD_EDITOR.EDEN.COMMENT_EDIT' | translate }}
+            </button>
+            <button type="button" class="dropdown-item" data-testid="context-comment-delete" (click)="deleteComment(comment.id)">
+              <i class="fa fa-trash"></i> {{ 'WORLD_EDITOR.EDEN.COMMENT_DELETE' | translate }}
+            </button>
+          } @else if (menu.position) {
+            <button type="button" class="dropdown-item" data-testid="context-comment-place" (click)="placeComment()">
+              <i class="fa fa-comment"></i> {{ 'WORLD_EDITOR.EDEN.COMMENT_PLACE' | translate }}
+            </button>
+          }
           @if (menu.position) {
             <button type="button" class="dropdown-item" data-testid="context-copy-go" (click)="copyContextGo('xyz')">
               <i class="fa fa-location-arrow"></i> {{ 'WORLD_EDITOR.COPY_GO' | translate }}
@@ -2690,7 +2794,13 @@
         }
       </div>
       <div [hidden]="rightTab() !== 'assets'" class="eden-tab-assets">
-        <keira-asset-browser (picked)="onAssetPicked($event)" />
+        <keira-asset-browser
+          [selectionCount]="selectedCount()"
+          [request]="assetRequest()"
+          (picked)="onAssetPicked($event)"
+          (compositionPicked)="onCompositionPicked($event)"
+          (compositionSaved)="onCompositionSaved($event)"
+        />
       </div>
       <div [hidden]="rightTab() !== 'history'">
         <div class="card">
@@ -2740,6 +2850,12 @@
           <div class="card-body p-2">
             @if (tool() === 'face') {
               <small class="text-muted d-block mb-1" data-testid="face-hint">{{ 'WORLD_EDITOR.FACE_HINT' | translate }}</small>
+            }
+            @if (tool() === 'place-composition' && placingComposition(); as composition) {
+              <p class="small mb-1" data-testid="composition-hint">
+                <i class="fa fa-object-group"></i>
+                {{ 'WORLD_EDITOR.EDEN.COMPOSITION_HINT' | translate: { name: composition.name, count: composition.members.length } }}
+              </p>
             }
             @if (tool() === 'place-creature' || tool() === 'place-gameobject') {
               <div class="position-relative">
@@ -2907,49 +3023,39 @@
               </div>
             }
 
-            @if (tool() === 'select') {
-              <div class="d-flex gap-1 align-items-center">
-                <div class="btn-group btn-group-sm" role="group">
-                  <button
-                    type="button"
-                    class="btn"
-                    data-testid="gizmo-translate"
-                    [class.btn-secondary]="gizmoMode() === 'translate'"
-                    [class.btn-outline-secondary]="gizmoMode() !== 'translate'"
-                    (click)="setGizmoMode('translate')"
-                  >
-                    <i class="fa fa-arrows-alt"></i> {{ 'WORLD_EDITOR.MOVE' | translate }}
-                  </button>
-                  <button
-                    type="button"
-                    class="btn"
-                    data-testid="gizmo-rotate"
-                    [class.btn-secondary]="gizmoMode() === 'rotate'"
-                    [class.btn-outline-secondary]="gizmoMode() !== 'rotate'"
-                    (click)="setGizmoMode('rotate')"
-                  >
-                    <i class="fa fa-sync-alt"></i> {{ 'WORLD_EDITOR.ROTATE' | translate }}
-                  </button>
-                </div>
-                <label class="d-flex align-items-center gap-1 ms-2 mb-0 small" for="world-editor-snap">
-                  {{ 'WORLD_EDITOR.SNAP_TO' | translate }}
-                  <select
-                    id="world-editor-snap"
-                    class="form-select form-select-sm w-auto"
-                    data-testid="snap-mode"
-                    (change)="setSnapMode($event)"
-                  >
-                    @for (mode of ['ground', 'water', 'wall', 'off']; track mode) {
-                      <option [value]="mode" [selected]="mode === snapMode()">
-                        {{ 'WORLD_EDITOR.SNAP_' + mode.toUpperCase() | translate }}
-                      </option>
-                    }
-                  </select>
-                </label>
-              </div>
-            }
           </div>
         </div>
+
+        @if (editingComment(); as comment) {
+          <div class="card mb-2" data-testid="comment-editor">
+            <div class="card-body p-2">
+              <div class="small fw-bold mb-1"><i class="fa fa-comment"></i> {{ 'WORLD_EDITOR.EDEN.COMMENT' | translate }}</div>
+              <input
+                class="form-control form-control-sm mb-1"
+                data-testid="comment-title"
+                [value]="comment.title"
+                (change)="comments.update(comment.id, { title: $any($event.target).value })"
+              />
+              <textarea
+                class="form-control form-control-sm mb-1"
+                rows="3"
+                data-testid="comment-text"
+                [placeholder]="'WORLD_EDITOR.EDEN.COMMENT_TEXT' | translate"
+                [value]="comment.text"
+                (change)="comments.update(comment.id, { text: $any($event.target).value })"
+              ></textarea>
+              <div class="d-flex gap-1">
+                <button type="button" class="btn btn-sm btn-outline-danger" data-testid="comment-delete" (click)="deleteComment(comment.id)">
+                  <i class="fa fa-trash"></i> {{ 'WORLD_EDITOR.EDEN.COMMENT_DELETE' | translate }}
+                </button>
+                <button type="button" class="btn btn-sm btn-secondary ms-auto" data-testid="comment-done" (click)="editingCommentId.set(undefined)">
+                  {{ 'WORLD_EDITOR.EDEN.COMMENT_DONE' | translate }}
+                </button>
+              </div>
+              <small class="text-muted">{{ 'WORLD_EDITOR.EDEN.COMMENT_LOCAL' | translate }}</small>
+            </div>
+          </div>
+        }
 
         @if (layers().sniffs) {
           <div class="card mb-2" data-testid="sniffs">
@@ -3557,6 +3663,7 @@
   </div>
   <keira-eden-status-bar
     [position]="edenPosition()"
+    [cursor]="cursor()"
     [mapName]="edenMapName()"
     [zoneName]="edenZoneName()"
     [pending]="changeList().length"

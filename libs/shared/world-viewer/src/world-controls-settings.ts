@@ -32,13 +32,23 @@ export type ControlAction =
   | 'cancel'
   | 'copy'
   | 'paste'
+  | 'widgetNone'
+  | 'widgetMove'
+  | 'widgetRotate'
+  | 'toggleGrid'
+  | 'gridSmaller'
+  | 'gridBigger'
   // panels
   | 'worldMap'
   | 'gameMap'
   | 'compass'
   | 'resetNorth'
   | 'topView'
-  | 'tree';
+  | 'tree'
+  | 'assetsCreatures'
+  | 'assetsGameobjects'
+  | 'assetsCompositions'
+  | 'searchAssets';
 
 /** The camera moves held down: along the ground relative to the view, up/down, and turning around what it looks at. Shift makes them faster. */
 export type NavigationAction = Extract<
@@ -75,12 +85,22 @@ export const CONTROL_ACTIONS: { action: ControlAction; group: ControlGroup }[] =
   { action: 'cancel', group: 'editing' },
   { action: 'copy', group: 'editing' },
   { action: 'paste', group: 'editing' },
+  { action: 'widgetNone', group: 'editing' },
+  { action: 'widgetMove', group: 'editing' },
+  { action: 'widgetRotate', group: 'editing' },
+  { action: 'toggleGrid', group: 'editing' },
+  { action: 'gridSmaller', group: 'editing' },
+  { action: 'gridBigger', group: 'editing' },
   { action: 'worldMap', group: 'panels' },
   { action: 'gameMap', group: 'panels' },
   { action: 'compass', group: 'panels' },
   { action: 'resetNorth', group: 'camera' },
   { action: 'topView', group: 'camera' },
   { action: 'tree', group: 'panels' },
+  { action: 'assetsCreatures', group: 'panels' },
+  { action: 'assetsGameobjects', group: 'panels' },
+  { action: 'assetsCompositions', group: 'panels' },
+  { action: 'searchAssets', group: 'panels' },
 ];
 
 export const CONTROL_GROUPS: ControlGroup[] = ['camera', 'marker', 'editing', 'panels'];
@@ -117,6 +137,17 @@ export const DEFAULT_CONTROL_BINDINGS: Record<ControlAction, string[]> = {
   resetNorth: ['KeyN', 'PadSelect'],
   topView: ['KeyV'],
   tree: ['KeyT'],
+  // Eden's
+  widgetNone: ['Digit1'],
+  widgetMove: ['Digit2'],
+  widgetRotate: ['Digit3'],
+  toggleGrid: ['Semicolon'],
+  gridSmaller: ['BracketLeft'],
+  gridBigger: ['BracketRight'],
+  assetsCreatures: ['F1'],
+  assetsGameobjects: ['F2'],
+  assetsCompositions: ['F3'],
+  searchAssets: ['Ctrl+KeyF'],
 };
 
 /** The defaults before Q and E were swapped (Q now goes up): saved settings still on them get the new ones. */

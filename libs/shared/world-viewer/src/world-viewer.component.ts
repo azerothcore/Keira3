@@ -76,7 +76,9 @@ import { PickOptions, WorldScene } from './world-scene';
 import {
   ContextRequest,
   GROUND_KEY,
+  GizmoGrid,
   GizmoMode,
+  GizmoSpace,
   MovementSimulation,
   NavMeshRebuildRequest,
   NavMeshRebuildState,
@@ -141,6 +143,8 @@ const HOVER_PICK = { markersOnly: true, segments: true, areaTriggers: true, over
 const FOCUS_DISTANCE = 40;
 /** How long the mouse rests (ms) before the line under the view names what's under it. */
 const MOUSE_OVER_DELAY = 120;
+/** How long the cursor rests before the ground under it is read (the status bar). */
+const CURSOR_DELAY = 60;
 /** How far from the cursor its hover label is (px). */
 const LABEL_OFFSET = 14;
 /** How far south of straight above the top view puts the camera (yards). */
@@ -214,6 +218,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   readonly selectedKey = input<string | undefined>(undefined);
   readonly editableKey = input<string | undefined>(undefined);
   readonly gizmoMode = input<GizmoMode>('translate');
+  readonly gizmoSpace = input<GizmoSpace>('world');
+  readonly gizmoGrid = input<GizmoGrid>({ move: 0, rotate: 0 });
   readonly snapToGround = input<boolean>(true);
   /** Snaps moved objects onto the water's surface where there is water (onto the ground elsewhere). */
   readonly snapToWater = input<boolean>(false);
@@ -296,6 +302,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   readonly objectMoved = output<ObjectMoved>();
   /** Camera target, emitted after it moved more than ~60 yards (use it to load nearby spawns). */
   readonly centerChanged = output<WorldPosition>();
+  /** The ground under the cursor once it rests (Eden's status bar), and how far it is from the camera; none off the ground. */
+  readonly cursorMoved = output<{ position: WorldPosition; distance: number } | undefined>();
   /** The zone under the camera target (the area's zone, or the area when it is one), when it changes. */
   readonly zoneChanged = output<number | undefined>();
 
@@ -401,6 +409,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
   /** View > Mouse over: what the map shows under the cursor, looked up once the mouse rests. */
   protected readonly mouseOver = signal<SceneThing | undefined>(undefined);
   private mouseOverTimer?: ReturnType<typeof setTimeout>;
+  private cursorTimer?: ReturnType<typeof setTimeout>;
   private areaChunk?: string;
   private readonly spawnModels = new SpawnModels(this.client, this.world, this.textures, () => this.requestRender());
   private readonly zoneLighting = new ZoneLighting(this.client, this.world, () => this.requestRender());
@@ -620,6 +629,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     effect(() => {
       this.editableKey();
       this.gizmoMode();
+      this.gizmoSpace();
+      this.gizmoGrid();
       untracked(() => this.syncGizmo());
     });
     effect(() => {
@@ -725,6 +736,7 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     clearTimeout(this.recheckTimer);
     clearTimeout(this.classifyTimer);
     clearTimeout(this.mouseOverTimer);
+    clearTimeout(this.cursorTimer);
     if (this.markerDisplay) {
       disposeSpawnModel(this.markerDisplay);
     }
@@ -991,6 +1003,16 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
 
   /** Looks up what's under the cursor once the mouse rests (models are many: not at every move). */
   private queueMouseOver(event: PointerEvent): void {
+    clearTimeout(this.cursorTimer);
+    this.cursorTimer = setTimeout(() => {
+      const ground = this.pickAt(event, { groundOnly: true });
+      if (!ground || ground.type !== 'ground') {
+        this.cursorMoved.emit(undefined);
+        return;
+      }
+      const at = worldToScene(ground.position);
+      this.cursorMoved.emit({ position: ground.position, distance: this.world.camera.position.distanceTo(new Vector3(at.x, at.y, at.z)) });
+    }, CURSOR_DELAY);
     clearTimeout(this.mouseOverTimer);
     if (!this.renderSettings().showMouseOver) {
       this.mouseOver.set(undefined);
@@ -1008,6 +1030,8 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
 
   protected onPointerLeave(): void {
     clearTimeout(this.mouseOverTimer);
+    clearTimeout(this.cursorTimer);
+    this.cursorMoved.emit(undefined);
     this.mouseOver.set(undefined);
     this.hoverEvent = undefined;
     this.lastPointer = undefined;
@@ -1452,13 +1476,17 @@ export class WorldViewerComponent implements AfterViewInit, OnDestroy {
     }
     const key = this.editableKey();
     const object = key ? this.world.getObject(key) : undefined;
-    if (!object) {
+    if (!object || this.gizmoMode() === 'none') {
       gizmo.detach();
       this.requestRender();
       return;
     }
     const rotate = this.gizmoMode() === 'rotate' && !parseWaypointKey(key as string);
     gizmo.setMode(rotate ? 'rotate' : 'translate');
+    gizmo.setSpace(this.gizmoSpace());
+    const grid = this.gizmoGrid();
+    gizmo.setTranslationSnap(grid.move > 0 ? grid.move : null);
+    gizmo.setRotationSnap(grid.rotate > 0 ? (grid.rotate * Math.PI) / 180 : null);
     gizmo.showX = !rotate;
     gizmo.showZ = !rotate;
     gizmo.showY = true;
