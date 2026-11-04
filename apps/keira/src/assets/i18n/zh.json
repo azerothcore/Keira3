@@ -299,7 +299,8 @@
     },
     "SESSION_SQL": "会话 SQL",
     "TABLE_BROWSER": "表浏览器",
-    "FIND_ANYWHERE": "全局查找"
+    "FIND_ANYWHERE": "全局查找",
+    "SNIFF_TO_SQL": "嗅探转 SQL"
   },
   "DASHBOARD": {
     "WELCOME": "欢迎使用Keira3",
@@ -2438,5 +2439,14 @@
     "TRIGGERS": "触发",
     "CHAIN": "连锁目标",
     "NONE": "游戏客户端中没有该法术。"
+  },
+  "SNIFF_TO_SQL": {
+    "TITLE": "嗅探转 SQL",
+    "HELP": "粘贴解析后的嗅探（WowPacketParser 的文本输出）：生物走过的路径（SMSG_ON_MONSTER_MOVE 终点）转为 waypoint_data 或 waypoints，它们说的话（SMSG_MESSAGECHAT）转为 creature_text，并按文本匹配 broadcast_text。使用前请检查 SQL：嗅探中的 guid 不是数据库中的 guid。",
+    "PLACEHOLDER": "ServerToClient: SMSG_ON_MONSTER_MOVE …",
+    "PARSE": "读取",
+    "SUMMARY": "{{ paths }} 条路径，{{ texts }} 条文本（在 broadcast_text 中找到 {{ matched }} 条）。",
+    "FIRST_PATH": "起始路径 id",
+    "NOTHING": "未找到生物移动或聊天。"
   }
 }

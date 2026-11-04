@@ -299,7 +299,8 @@
     },
     "SESSION_SQL": "Session SQL",
     "TABLE_BROWSER": "Table browser",
-    "FIND_ANYWHERE": "Find anywhere"
+    "FIND_ANYWHERE": "Find anywhere",
+    "SNIFF_TO_SQL": "Sniff to SQL"
   },
   "DASHBOARD": {
     "WELCOME": "Welcome to Keira3",
@@ -2438,5 +2439,14 @@
     "TRIGGERS": "triggers",
     "CHAIN": "chain targets",
     "NONE": "The game client has no such spell."
+  },
+  "SNIFF_TO_SQL": {
+    "TITLE": "Sniff to SQL",
+    "HELP": "Paste a parsed sniff (WowPacketParser's text output): the paths creatures walked (SMSG_ON_MONSTER_MOVE end points) become waypoint_data or waypoints, what they said (SMSG_MESSAGECHAT) creature_text, matched to broadcast_text by its text. Check the SQL before using it: the sniff's guids are not the database's.",
+    "PLACEHOLDER": "ServerToClient: SMSG_ON_MONSTER_MOVE …",
+    "PARSE": "Read",
+    "SUMMARY": "{{ paths }} paths, {{ texts }} texts ({{ matched }} found in broadcast_text).",
+    "FIRST_PATH": "First path id",
+    "NOTHING": "No creature movement or chat found."
   }
 }

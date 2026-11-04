@@ -299,7 +299,8 @@
     },
     "SESSION_SQL": "SQL de la sesión",
     "TABLE_BROWSER": "Explorador de tablas",
-    "FIND_ANYWHERE": "Buscar en todo"
+    "FIND_ANYWHERE": "Buscar en todo",
+    "SNIFF_TO_SQL": "Sniff a SQL"
   },
   "DASHBOARD": {
     "WELCOME": "Bienvenido a Keira3",
@@ -2438,5 +2439,14 @@
     "TRIGGERS": "activa",
     "CHAIN": "objetivos en cadena",
     "NONE": "El cliente del juego no tiene ese hechizo."
+  },
+  "SNIFF_TO_SQL": {
+    "TITLE": "Sniff a SQL",
+    "HELP": "Pega un sniff analizado (la salida de texto de WowPacketParser): los caminos de las criaturas (puntos finales de SMSG_ON_MONSTER_MOVE) se convierten en waypoint_data o waypoints, lo que dijeron (SMSG_MESSAGECHAT) en creature_text, enlazado a broadcast_text por su texto. Revisa el SQL antes de usarlo: los guid del sniff no son los de la base de datos.",
+    "PLACEHOLDER": "ServerToClient: SMSG_ON_MONSTER_MOVE …",
+    "PARSE": "Leer",
+    "SUMMARY": "{{ paths }} caminos, {{ texts }} textos ({{ matched }} encontrados en broadcast_text).",
+    "FIRST_PATH": "Primer id de camino",
+    "NOTHING": "No se encontró movimiento ni chat de criaturas."
   }
 }

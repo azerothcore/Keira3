@@ -299,7 +299,8 @@
     },
     "SESSION_SQL": "SQL сессии",
     "TABLE_BROWSER": "Обзор таблиц",
-    "FIND_ANYWHERE": "Найти везде"
+    "FIND_ANYWHERE": "Найти везде",
+    "SNIFF_TO_SQL": "Сниф в SQL"
   },
   "DASHBOARD": {
     "WELCOME": "Добро пожаловать в Keira3",
@@ -2438,5 +2439,14 @@
     "TRIGGERS": "вызывает",
     "CHAIN": "целей в цепи",
     "NONE": "В клиенте игры нет такого заклинания."
+  },
+  "SNIFF_TO_SQL": {
+    "TITLE": "Сниф в SQL",
+    "HELP": "Вставьте разобранный сниф (текстовый вывод WowPacketParser): пути существ (конечные точки SMSG_ON_MONSTER_MOVE) станут waypoint_data или waypoints, их реплики (SMSG_MESSAGECHAT) — creature_text, сопоставленным с broadcast_text по тексту. Проверьте SQL перед использованием: guid снифа не совпадают с guid базы.",
+    "PLACEHOLDER": "ServerToClient: SMSG_ON_MONSTER_MOVE …",
+    "PARSE": "Прочитать",
+    "SUMMARY": "Путей: {{ paths }}, реплик: {{ texts }} (в broadcast_text найдено: {{ matched }}).",
+    "FIRST_PATH": "Первый id пути",
+    "NOTHING": "Движение или чат существ не найдены."
   }
 }

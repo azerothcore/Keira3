@@ -23,6 +23,7 @@ export const SINGLE_TAB_SECTIONS = new Set([
   'session-sql',
   'table-browser',
   'find-anywhere',
+  'sniff-to-sql',
   'settings',
   'unused-guid-search',
 ]);
@@ -56,6 +57,7 @@ const SECTION_NAMES: Record<string, string> = {
   'session-sql': 'SIDEBAR.SESSION_SQL',
   'table-browser': 'SIDEBAR.TABLE_BROWSER',
   'find-anywhere': 'SIDEBAR.FIND_ANYWHERE',
+  'sniff-to-sql': 'SIDEBAR.SNIFF_TO_SQL',
   settings: 'SIDEBAR.SETTINGS',
 };
 
@@ -88,6 +90,7 @@ export const SECTION_START: [string, string][] = [
   ['session-sql', '/session-sql'],
   ['table-browser', '/table-browser'],
   ['find-anywhere', '/find-anywhere'],
+  ['sniff-to-sql', '/sniff-to-sql'],
   ['settings', '/settings'],
 ];
 
