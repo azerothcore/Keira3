@@ -567,6 +567,25 @@
       "BAND_ANY": "One of these ({{group}})",
       "BAND_ALL": "All of these ({{group}})",
       "CONDITIONS_TOOLTIP": "{{count}} availability condition(s) — click to open them in the Conditions editor"
+    },
+    "CHECK": {
+      "REQUIRED_ITEM_NO_COUNT": "A required item has no count: the quest can't be done.",
+      "REQUIRED_COUNT_NO_ITEM": "A required count has no item.",
+      "DROP_QUANTITY_NO_ITEM": "An item drop quantity has no item.",
+      "NPC_OR_GO_NO_COUNT": "A required creature or gameobject has no count: the quest can't be done.",
+      "COUNT_NO_NPC_OR_GO": "A required count has no creature or gameobject.",
+      "CHOICE_QUANTITY_NO_ITEM": "A choice reward quantity has no item.",
+      "REWARD_ITEM_NO_AMOUNT": "A reward item has no amount: it won't be given.",
+      "REWARD_AMOUNT_NO_ITEM": "A reward amount has no item.",
+      "REWARD_ITEM_GAP": "A reward item comes after an empty one: it won't be loaded.",
+      "TRACKING_CHOICE": "A tracking quest (flag TRACKING) can't give choice rewards.",
+      "REWARD_FACTION_VALUE_RANGE": "A reputation reward value is outside -9 to 9.",
+      "REWARD_OVERRIDE_NO_FACTION": "A reputation override has no faction.",
+      "FACTION_VALUE_NO_FACTION": "A required faction value has no faction: it has no effect.",
+      "MISSING_ITEM": "These items don't exist.",
+      "MISSING_CREATURE": "These creatures don't exist: the quest can't be done.",
+      "MISSING_GAMEOBJECT": "These gameobjects don't exist: the quest can't be done.",
+      "MISSING_QUEST": "The next quest doesn't exist: the chain won't work."
     }
   },
   "GAMEOBJECT": {

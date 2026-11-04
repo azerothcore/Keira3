@@ -22,6 +22,7 @@ import { QuestHandlerService } from '../quest-handler.service';
 import { QuestPreviewComponent } from '../quest-preview/quest-preview.component';
 import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { QuestTemplateService } from './quest-template.service';
+import { QuestChecksComponent } from '../quest-checks/quest-checks.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -45,6 +46,7 @@ import { QuestTemplateService } from './quest-template.service';
     SpellSelectorBtnComponent,
     QuestFactionSelectorBtnComponent,
     QuestPreviewComponent,
+    QuestChecksComponent,
   ],
 })
 export class QuestTemplateComponent extends SingleRowEditorComponent<QuestTemplate> {

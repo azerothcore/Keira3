@@ -567,6 +567,25 @@
       "BAND_ANY": "Una de estas ({{group}})",
       "BAND_ALL": "Todas estas ({{group}})",
       "CONDITIONS_TOOLTIP": "{{count}} condición(es) de disponibilidad — clic para abrirlas en el editor de Condiciones"
+    },
+    "CHECK": {
+      "REQUIRED_ITEM_NO_COUNT": "Un objeto requerido no tiene cantidad: la misión no se puede hacer.",
+      "REQUIRED_COUNT_NO_ITEM": "Una cantidad requerida no tiene objeto.",
+      "DROP_QUANTITY_NO_ITEM": "Una cantidad de objeto soltado no tiene objeto.",
+      "NPC_OR_GO_NO_COUNT": "Una criatura u objeto requerido no tiene cantidad: la misión no se puede hacer.",
+      "COUNT_NO_NPC_OR_GO": "Una cantidad requerida no tiene criatura ni objeto.",
+      "CHOICE_QUANTITY_NO_ITEM": "Una cantidad de recompensa a elegir no tiene objeto.",
+      "REWARD_ITEM_NO_AMOUNT": "Un objeto de recompensa no tiene cantidad: no se dará.",
+      "REWARD_AMOUNT_NO_ITEM": "Una cantidad de recompensa no tiene objeto.",
+      "REWARD_ITEM_GAP": "Un objeto de recompensa va después de uno vacío: no se cargará.",
+      "TRACKING_CHOICE": "Una misión de seguimiento (flag TRACKING) no puede dar recompensas a elegir.",
+      "REWARD_FACTION_VALUE_RANGE": "Un valor de reputación de recompensa está fuera de -9 a 9.",
+      "REWARD_OVERRIDE_NO_FACTION": "Una reputación forzada no tiene facción.",
+      "FACTION_VALUE_NO_FACTION": "Un valor de facción requerido no tiene facción: no tiene efecto.",
+      "MISSING_ITEM": "Estos objetos no existen.",
+      "MISSING_CREATURE": "Estas criaturas no existen: la misión no se puede hacer.",
+      "MISSING_GAMEOBJECT": "Estos gameobjects no existen: la misión no se puede hacer.",
+      "MISSING_QUEST": "La siguiente misión no existe: la cadena no funcionará."
     }
   },
   "GAMEOBJECT": {

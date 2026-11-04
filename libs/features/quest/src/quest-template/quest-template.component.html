@@ -24,6 +24,7 @@
           (executeQuery)="save($event)"
         />
       </div>
+      <keira-quest-checks [form]="editorService.form" />
       <form [formGroup]="editorService.form" class="form-group edit-form">
         <div class="content-block">
           <span class="category-title" [translate]="'QUEST.TEMPLATE.BASE'"></span>
