@@ -11,6 +11,8 @@ import { QuestChainComponent } from './quest-chain.component';
 import { buildQuestChainGraph } from './quest-chain.layout';
 import { EMPTY_QUEST_CHAIN_GRAPH, QuestChainEntry, QuestChainGraph } from './quest-chain.model';
 import { QuestChainService } from './quest-chain.service';
+import { QuestChainLinksComponent } from './quest-chain-links.component';
+import { By } from '@angular/platform-browser';
 
 class QuestChainComponentPage extends PageObject<QuestChainComponent> {
   get nodes(): NodeListOf<SVGGElement> {
@@ -107,6 +109,18 @@ describe('QuestChainComponent', () => {
     const { page } = await setup(graph);
 
     expect(page.bands.length).toBe(1);
+  });
+
+  it('edits the chain links of the open quest, or of a quest picked in the chain', async () => {
+    const { fixture, page } = await setup(twoQuestGraph());
+    const links = () => fixture.debugElement.query(By.directive(QuestChainLinksComponent))?.componentInstance as QuestChainLinksComponent;
+    expect(links().questId()).toBe(1);
+
+    (page.queryAll<SVGGElement>('.qc-edit')[1] as SVGGElement).dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    fixture.detectChanges();
+
+    expect(links().questId()).toBe(2);
+    expect(links().title()).toBe('Quest 2');
   });
 
   it('should say so when the quest stands alone', async () => {

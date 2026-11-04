@@ -571,7 +571,11 @@
       "LEGEND_CONDITIONS": "Has availability conditions (click to open)",
       "BAND_ANY": "One of these ({{group}})",
       "BAND_ALL": "All of these ({{group}})",
-      "CONDITIONS_TOOLTIP": "{{count}} availability condition(s) — click to open them in the Conditions editor"
+      "CONDITIONS_TOOLTIP": "{{count}} availability condition(s) — click to open them in the Conditions editor",
+      "LINKS_TITLE": "Chain links of quest {{id}} {{title}}",
+      "LINKS_HELP": "PrevQuestID (> 0 completed first, < 0 taken), NextQuestID, ExclusiveGroup (> 0 one of the group, < 0 all of it) and BreadcrumbForQuestId, in quest_template_addon. Pick ✎ on a quest of the chain to edit its links.",
+      "LINKS_EDIT": "Edit the chain links of this quest",
+      "LINKS_RESET": "Undo the changes"
     },
     "CHECK": {
       "REQUIRED_ITEM_NO_COUNT": "A required item has no count: the quest can't be done.",
