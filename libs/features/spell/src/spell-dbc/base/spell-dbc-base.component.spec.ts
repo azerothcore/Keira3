@@ -1,9 +1,11 @@
 import { Component, provideZonelessChangeDetection, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
+import { By } from '@angular/platform-browser';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { SpellDbc } from '@keira/shared/acore-world-model';
+import { SingleValueSelectorBtnComponent, SpellSelectorBtnComponent } from '@keira/shared/selectors';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModelForm } from '@keira/shared/utils';
 import { ModalDirective } from 'ngx-bootstrap/modal';
@@ -130,5 +132,21 @@ describe('SpellDbcBaseComponent', () => {
     for (const field of fields) {
       expect(form.get(field)?.value).toEqual(createMockVal(field));
     }
+  });
+
+  it('should render selectors for aura states and aura spells', () => {
+    const { fixture } = setup();
+
+    const spellSelectors = fixture.debugElement.queryAll(By.directive(SpellSelectorBtnComponent));
+    const spellSelectorNames = spellSelectors.map((s) => s.componentInstance.config()?.name);
+    expect(spellSelectorNames).toContain('CasterAuraSpell');
+    expect(spellSelectorNames).toContain('ExcludeCasterAuraSpell');
+    expect(spellSelectorNames).toContain('TargetAuraSpell');
+    expect(spellSelectorNames).toContain('ExcludeTargetAuraSpell');
+
+    const singleSelectors = fixture.debugElement.queryAll(By.directive(SingleValueSelectorBtnComponent));
+    const singleSelectorNames = singleSelectors.map((s) => s.componentInstance.config()?.name);
+    expect(singleSelectorNames).toContain('ExcludeCasterAuraState');
+    expect(singleSelectorNames).toContain('ExcludeTargetAuraState');
   });
 });

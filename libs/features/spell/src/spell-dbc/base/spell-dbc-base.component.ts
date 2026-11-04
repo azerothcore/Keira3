@@ -12,7 +12,7 @@ import {
   SPELL_SCHOOL_MASK,
   SpellDbc,
 } from '@keira/shared/acore-world-model';
-import { FlagsSelectorBtnComponent, SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
+import { FlagsSelectorBtnComponent, SingleValueSelectorBtnComponent, SpellSelectorBtnComponent } from '@keira/shared/selectors';
 import { ModelForm } from '@keira/shared/utils';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { TooltipDirective } from 'ngx-bootstrap/tooltip';
@@ -29,6 +29,7 @@ import { TooltipDirective } from 'ngx-bootstrap/tooltip';
     TooltipDirective,
     SingleValueSelectorBtnComponent,
     FlagsSelectorBtnComponent,
+    SpellSelectorBtnComponent,
   ],
 })
 export class SpellDbcBaseComponent {

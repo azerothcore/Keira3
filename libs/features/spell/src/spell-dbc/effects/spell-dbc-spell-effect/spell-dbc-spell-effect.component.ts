@@ -9,7 +9,7 @@ import {
 } from '@keira/shared/acore-world-model';
 import { ModelForm } from '@keira/shared/utils';
 import { SpellDbcSpellEffectFieldPrefix } from './spell-dbc-spell-effect.model';
-import { FlagsSelectorBtnComponent, SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
+import { FlagsSelectorBtnComponent, SingleValueSelectorBtnComponent, SpellSelectorBtnComponent } from '@keira/shared/selectors';
 import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 
@@ -25,6 +25,7 @@ import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
     SingleValueSelectorBtnComponent,
     TooltipDirective,
     FlagsSelectorBtnComponent,
+    SpellSelectorBtnComponent,
   ],
 })
 export class SpellDbcSpellEffectComponent {

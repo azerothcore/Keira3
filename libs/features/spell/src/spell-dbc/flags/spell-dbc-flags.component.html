@@ -27,9 +27,9 @@
       <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
         <label class="control-label" for="ShapeshiftExclude">ShapeshiftExclude</label>
         <keira-flags-selector-btn
-          [control]="formGroup().controls.ShapeshiftMask"
-          [disabled]="formGroup().controls.ShapeshiftMask.disabled"
-          [config]="{ flags: SPELL_DBC_STANCES_FLAGS, name: 'ShapeshiftMask' }"
+          [control]="formGroup().controls.ShapeshiftExclude"
+          [disabled]="formGroup().controls.ShapeshiftExclude.disabled"
+          [config]="{ flags: SPELL_DBC_STANCES_FLAGS, name: 'ShapeshiftExclude' }"
           [modalClass]="'modal-md'"
         />
         <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.FLAGS.SHAPESHIFT_EXCLUDE' | translate"></i>
