@@ -2109,6 +2109,7 @@
     "PLAYERS_HELP": "Los personajes conectados, de la base de datos de personajes (Ajustes > Servidor), leídos cada 10 segundos. El servidor guarda su posición cada pocos minutos y al desconectar, así que se muestran donde estuvieron hace poco.",
     "OFFLINE_PLAYERS": "Personajes desconectados",
     "SNIFFS": "Sniffs",
+    "SNIFFS_HELP": "Spawns de los sniffs cargados en la página Sniffs: naranja donde la base de datos no tiene ese spawn, gris donde lo tiene.",
     "SNIFFED_SPAWNS": "Spawns de sniffs",
     "SNIFF_COUNT": "{{count}} vistos, {{missing}} no están en la base de datos",
     "SNIFF_ADD": "Añadir",

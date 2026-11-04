@@ -22,7 +22,7 @@
         [ngModel]="databaseName()"
         (ngModelChange)="databaseName.set($event)"
       />
-      <button type="button" class="btn btn-sm btn-secondary" id="sniffs-db-save" (click)="saveName()">
+      <button type="button" class="btn btn-sm btn-secondary" id="sniffs-db-save" [disabled]="busy()" (click)="saveName()">
         {{ 'SNIFFS.SAVE' | translate }}
       </button>
       <button type="button" class="btn btn-sm btn-primary" id="sniffs-db-create" [disabled]="busy() || exists()" (click)="create()">
@@ -95,8 +95,8 @@
     @if (progress()) {
       <p class="small" id="sniffs-progress">{{ progress() }}</p>
     }
-    @for (result of results(); track result.file) {
-      <p class="small mb-0" [attr.data-testid]="'result-' + result.file">
+    @for (result of results(); track $index) {
+      <p class="small mb-0" [attr.data-testid]="'result-' + $index">
         {{ result.file }}:
         @if (result.alreadyLoaded) {
           {{ 'SNIFFS.ALREADY_LOADED' | translate }}

@@ -27,8 +27,8 @@ export function setConfigValue(config: string, key: string, value: string | numb
   const line = new RegExp(`(<add\\s+key="${key}"\\s+value=")[^"]*(")`);
   const text = escapeXml(String(value));
   return line.test(config)
-    ? config.replace(line, `$1${text}$2`)
-    : config.replace('</appSettings>', `    <add key="${key}" value="${text}" />\n    </appSettings>`);
+    ? config.replace(line, (_, before: string, after: string) => `${before}${text}${after}`)
+    : config.replace('</appSettings>', () => `    <add key="${key}" value="${text}" />\n    </appSettings>`);
 }
 
 /** WPP's config for Keira: the text and SQL output for 3.3.5, and Keira's databases when asked. */
@@ -54,4 +54,21 @@ export function parseOutputs(files: { name: string; modified: number }[], pkt: s
     .filter((file) => file.modified >= since && file.name.includes(base) && /\.(txt|sql)$/i.test(file.name))
     .map((file) => file.name)
     .sort();
+}
+
+/** Whether a path is a full one (`C:\\…`, `\\\\server\\…` or `/…`): a sniff's is needed, WPP running in its own folder. */
+export function isFullPath(path: string): boolean {
+  return /^(?:[A-Za-z]:[\\/]|[\\/])/.test(path);
+}
+
+/** The folder of a full path (the root kept as it is: `C:\\`, `/`). */
+export function folderOf(path: string): string {
+  const i = Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\'));
+  const root = i === 0 || (i === 2 && /^[A-Za-z]:/.test(path));
+  return path.slice(0, root ? i + 1 : i);
+}
+
+/** The .NET version of a build folder (`net10.0` → 10), to take the newest build. */
+export function frameworkVersion(folder: string): number {
+  return Number(/(\d+(?:\.\d+)?)/.exec(folder)?.[1] ?? 0);
 }

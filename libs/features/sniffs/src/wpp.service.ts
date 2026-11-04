@@ -1,7 +1,7 @@
 import { inject, Service, signal } from '@angular/core';
 import { ElectronService } from '@keira/shared/common-services';
 import { MysqlService } from '@keira/shared/db-layer';
-import { keiraWppConfig, parseOutputs, WPP_REPOSITORY, WPP_SOLUTION, WppDatabase } from './wow-packet-parser';
+import { folderOf, frameworkVersion, isFullPath, keiraWppConfig, parseOutputs, WPP_REPOSITORY, WPP_SOLUTION, WppDatabase } from './wow-packet-parser';
 
 export const WPP_FOLDER_KEY = 'keira3.wppFolder';
 
@@ -98,10 +98,9 @@ export class WppService {
       return undefined;
     }
     const found = (fs.readdirSync(release) as string[])
-      .map((framework) => `${release}/${framework}/WowPacketParser.dll`)
-      .filter((dll) => fs.existsSync(dll))
-      .sort();
-    return found[found.length - 1];
+      .filter((framework) => fs.existsSync(`${release}/${framework}/WowPacketParser.dll`))
+      .sort((a, b) => frameworkVersion(a) - frameworkVersion(b));
+    return found.length ? `${release}/${found[found.length - 1]}/WowPacketParser.dll` : undefined;
   }
 
   /** Keira's login and databases for WPP (its own: the sniff database; the world one to compare with). */
@@ -118,26 +117,43 @@ export class WppService {
   }
 
   /**
-   * Parses a sniff with WPP, Keira's config written next to the built WPP (with the databases when given). Its output
-   * goes next to the sniff, as WPP writes it; the files written are returned.
+   * Parses a sniff (its full path) with WPP, Keira's config written next to the built WPP for the run (with the
+   * databases when given; taken away after, as it holds the password). Its output goes next to the sniff, as WPP
+   * writes it; the files written are returned.
    */
   async parse(pkt: string, database: WppDatabase | undefined, onLine: (line: string) => void): Promise<RunResult & { files: string[] }> {
+    const fail = (output: string) => {
+      onLine(output);
+      return { code: -1, output, files: [] };
+    };
     const dll = this.builtDll();
     if (!dll) {
-      return { code: -1, output: 'WowPacketParser is not built', files: [] };
+      return fail('WowPacketParser is not built');
     }
     const fs = this.electron.fs;
-    const dir = dll.slice(0, dll.lastIndexOf('/'));
+    if (!isFullPath(pkt) || !fs.existsSync(pkt)) {
+      return fail(`No sniff at ${pkt} (give its full path)`);
+    }
+    const dir = folderOf(dll);
     const template = fs.readFileSync(`${dir}/WowPacketParser.dll.config`, 'utf8') as string;
     const config = `${dir}/keira.config`;
     fs.writeFileSync(config, keiraWppConfig(template, database));
     const started = Date.now();
-    const result = await this.run('dotnet', [dll, '--ConfigFile', config, pkt], dir, onLine);
-    const pktDir = pkt.slice(0, Math.max(pkt.lastIndexOf('/'), pkt.lastIndexOf('\\')));
+    let result: RunResult;
+    try {
+      result = await this.run('dotnet', [dll, '--ConfigFile', config, pkt], dir, onLine);
+    } finally {
+      try {
+        fs.unlinkSync(config);
+      } catch {
+        // (gone already)
+      }
+    }
+    const pktDir = folderOf(pkt);
     const files = (fs.readdirSync(pktDir) as string[]).map((name) => ({
       name,
       modified: Number(fs.statSync(`${pktDir}/${name}`).mtimeMs),
     }));
-    return { ...result, files: parseOutputs(files, pkt, started).map((name) => `${pktDir}/${name}`) };
+    return { ...result, files: parseOutputs(files, pkt, started).map((name) => `${pktDir.replace(/[\\/]$/, '')}/${name}`) };
   }
 }

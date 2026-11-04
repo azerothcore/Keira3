@@ -76,7 +76,6 @@ describe('SniffDbService', () => {
 
   it('loads a sniff file into its own database only, creating and widening tables, skipping what is not an INSERT', async () => {
     const { service, query } = setup();
-    const known = new Map<string, string[]>();
     query.mockImplementation(((sql: string, values?: string[]) => {
       if (sql.startsWith('SELECT id FROM') && values?.[0] === 'loaded.sql') {
         return of([{ id: 4 }]);
@@ -87,7 +86,11 @@ describe('SniffDbService', () => {
           : of([]);
       }
       if (sql.includes('information_schema.COLUMNS')) {
-        return of((known.get(values?.[1] as string) ?? ['guid', 'id', 'keira_file']).map((name) => ({ name })));
+        return of([
+          { name: 'guid', type: 'bigint' },
+          { name: 'id', type: 'bigint' },
+          { name: 'keira_file', type: 'int' },
+        ]);
       }
       return of(undefined);
     }) as never);
@@ -98,27 +101,55 @@ describe('SniffDbService', () => {
       'INSERT INTO `creature` (`guid`, `id`) VALUES (1, 6), (2, 6);',
       'INSERT INTO `creature` (`guid`, `id`, `map`) VALUES (3, 7, 0);',
       'INSERT INTO `gameobject` (`guid`, `id`) VALUES (1, (SELECT 1));',
-      'INSERT INTO `creature` (`guid`, `id`) VALUES (4, 8);',
+      'INSERT INTO `creature` (`guid`, `id`) VALUES (4, 8.5);',
     ].join('\n');
-    const result = await service.importSql('a.sql', 99, text, progress);
+    // read in pieces
+    const chunks = (async function* () {
+      yield text.slice(0, 50);
+      yield await Promise.resolve(text.slice(50));
+    })();
+    const result = await service.importSql('a.sql', text.length, chunks, progress);
 
     expect(result).toEqual({ file: 'a.sql', rows: 4, tables: ['creature'], skipped: 2 });
     const sql = query.mock.calls.map(([s]) => String(s));
-    expect(sql).toContain("INSERT INTO `acore_wpp_keira`.`keira_sniff_file` (name, size) VALUES ('a.sql', 99)");
+    expect(sql).toContain(`INSERT INTO \`acore_wpp_keira\`.\`keira_sniff_file\` (name, size) VALUES ('a.sql', ${text.length})`);
     expect(sql.filter((s) => s.startsWith('CREATE TABLE IF NOT EXISTS `acore_wpp_keira`.`creature`')).length).toBe(1);
     expect(sql).toContain('ALTER TABLE `acore_wpp_keira`.`creature` ADD COLUMN `map` BIGINT NULL');
+    // a decimal in a whole number column widens it
+    expect(sql).toContain('ALTER TABLE `acore_wpp_keira`.`creature` MODIFY COLUMN `id` DOUBLE NULL');
     expect(sql).toContain('INSERT INTO `acore_wpp_keira`.`creature` (`guid`, `id`, `keira_file`) VALUES\n(1, 6, 7),\n(2, 6, 7)');
     expect(sql.some((s) => /^(DELETE|INSERT INTO `creature`|INSERT INTO `gameobject`)/.test(s))).toBe(false);
-    expect(progress).toHaveBeenLastCalledWith(5, 5);
+    expect(progress).toHaveBeenCalledWith(50, text.length);
+    expect(progress).toHaveBeenLastCalledWith(text.length, text.length);
 
-    expect(await service.importSql('loaded.sql', 1, text)).toEqual({
+    expect(await service.importSql('loaded.sql', 1, [text])).toEqual({
       file: 'loaded.sql',
       rows: 0,
       tables: [],
       skipped: 0,
       alreadyLoaded: true,
     });
-    await service.importSql('b.sql', 1, '');
+    expect((await service.importSql('b.sql', 1, [''])).rows).toBe(0);
+  });
+
+  it('takes a file out again when it fails partway, so it can be loaded once fixed', async () => {
+    const { service, query } = setup();
+    query.mockImplementation(((sql: string) => {
+      if (sql.startsWith('SELECT id FROM')) {
+        return of([{ id: 7 }].filter(() => query.mock.calls.some(([s]) => String(s).startsWith('INSERT INTO `acore_wpp_keira`.`keira_sniff_file`'))));
+      }
+      if (sql.includes('information_schema.COLUMNS') && sql.includes('COLUMN_NAME = ?')) {
+        return of([{ name: 'creature' }]);
+      }
+      if (sql.startsWith('INSERT INTO `acore_wpp_keira`.`creature`')) {
+        return throwError(() => new Error('Out of range value'));
+      }
+      return of([]);
+    }) as never);
+    await expect(service.importSql('a.sql', 1, ['INSERT INTO `creature` (`guid`) VALUES (1)'])).rejects.toThrow('Out of range value');
+    const sql = query.mock.calls.map(([s]) => String(s));
+    expect(sql).toContain('DELETE FROM `acore_wpp_keira`.`creature` WHERE `keira_file` = 7');
+    expect(sql).toContain('DELETE FROM `acore_wpp_keira`.`keira_sniff_file` WHERE id = 7');
   });
 
   it("forgets a file's rows in every table", async () => {
@@ -142,12 +173,17 @@ describe('SniffDbService', () => {
     expect(await service.spawnsNear(0, 10, 20, 100)).toEqual([
       { type: 'creature', entry: 6, map: 0, x: 1, y: 2, z: 3, o: 0, wanderDistance: 5, movementType: 1, file: 2 },
     ]);
-    expect(query.mock.calls[0][0]).toContain('FROM `acore_wpp_keira`.`creature` WHERE map = 0 AND position_x BETWEEN -90 AND 110');
-    expect(query.mock.calls[1][0]).toContain('0 AS wander, 0 AS movement');
+    const sql = query.mock.calls.map(([s]) => String(s));
+    expect(sql[0]).toContain('FROM `acore_wpp_keira`.`creature` WHERE map = 0 AND position_x BETWEEN -90 AND 110');
+    // the gameobjects with their rotations, then without them
+    expect(sql[1]).toContain('0 AS wander, 0 AS movement, rotation0 AS r0');
+    expect(sql[2]).toContain('0 AS movement, keira_file AS file FROM `acore_wpp_keira`.`gameobject`');
 
-    query.mockReturnValue(of([{ id: '9', map: '0', x: '1', y: '2', z: '3', o: '1', wander: null, movement: null, file: '1' }]) as never);
+    query.mockReturnValue(
+      of([{ id: '9', map: '0', x: '1', y: '2', z: '3', o: '1', wander: null, movement: null, r0: '0.1', r3: '0.9', file: '1' }]) as never,
+    );
     expect((await service.spawnsNear(0, 0, 0, 1))[1]).toEqual(
-      expect.objectContaining({ type: 'gameobject', entry: 9, o: 1, wanderDistance: 0, movementType: 0 }),
+      expect.objectContaining({ type: 'gameobject', entry: 9, o: 1, wanderDistance: 0, movementType: 0, rotation: [0.1, 0, 0, 0.9] }),
     );
     query.mockReturnValue(of(undefined) as never);
     expect(await service.spawnsNear(0, 0, 0, 1)).toEqual([]);

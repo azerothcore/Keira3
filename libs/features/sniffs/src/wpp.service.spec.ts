@@ -55,6 +55,12 @@ describe('WppService', () => {
       ],
       readFileSync: (path: string) => files[path],
       writeFileSync: (path: string, text: string) => (written[path] = text),
+      unlinkSync: vi.fn((path: string) => {
+        if (!(path in written)) {
+          throw new Error('ENOENT');
+        }
+        delete written[path];
+      }),
       statSync: (path: string) => ({ mtimeMs: path.endsWith('.pkt') ? 0 : Date.now() + 1000 }),
     };
     TestBed.configureTestingModule({
@@ -67,7 +73,7 @@ describe('WppService', () => {
         },
       ],
     });
-    return { service: TestBed.inject(WppService), spawn, written };
+    return { service: TestBed.inject(WppService), spawn, written, fs };
   };
 
   afterEach(() => localStorage.clear());
@@ -127,6 +133,7 @@ describe('WppService', () => {
       {
         '/wpp/.git/HEAD': '',
         '/wpp/WowPacketParser/bin/Release/net10.0/WowPacketParser.dll': '',
+        '/wpp/WowPacketParser/bin/Release/net9.0/WowPacketParser.dll': '',
         '/wpp/WowPacketParser/bin/Release/x/other': '',
       },
     );
@@ -139,15 +146,22 @@ describe('WppService', () => {
       ['build', 'WowPacketParser.slnx', '-c', 'Release'],
       expect.objectContaining({ cwd: '/wpp' }),
     );
+    // the newest .NET build
     expect(built.service.builtDll()).toBe('/wpp/WowPacketParser/bin/Release/net10.0/WowPacketParser.dll');
+
+    TestBed.resetTestingModule();
+    const unbuilt = setup({}, { '/wpp/WowPacketParser/bin/Release/x/other': '' });
+    unbuilt.service.setFolder('/wpp');
+    expect(unbuilt.service.builtDll()).toBeUndefined();
   });
 
   it("parses a sniff with Keira's config, telling the files it wrote", async () => {
     const dir = '/wpp/WowPacketParser/bin/Release/net10.0';
-    const { service, spawn, written } = setup(
+    const { service, spawn, written, fs } = setup(
       {},
       {
         [`${dir}/WowPacketParser.dll`]: '',
+        'C:\\s\\b.pkt': '',
         [`${dir}/WowPacketParser.dll.config`]: '<appSettings>\n<add key="DBEnabled" value="false" />\n</appSettings>',
         '/sniffs/My.pkt': '',
         '/sniffs/My_parsed.txt': '',
@@ -156,16 +170,35 @@ describe('WppService', () => {
     expect((await service.parse('/sniffs/My.pkt', undefined, () => undefined)).output).toBe('WowPacketParser is not built');
     service.setFolder('/wpp');
 
+    const lines: string[] = [];
+    expect((await service.parse('My.pkt', undefined, (line) => lines.push(line))).code).toBe(-1);
+    expect((await service.parse('/sniffs/None.pkt', undefined, () => undefined)).output).toBe('No sniff at /sniffs/None.pkt (give its full path)');
+    expect(lines).toEqual(['No sniff at My.pkt (give its full path)']);
+    expect(spawn).not.toHaveBeenCalled();
+
+    let config = '';
+    spawn.mockImplementationOnce(((command: string, args: string[]) => {
+      config = written[args[2]];
+      return spawn.getMockImplementation()!(command, args);
+    }) as never);
     const result = await service.parse('/sniffs/My.pkt', service.database('acore_wpp_keira'), () => undefined);
 
-    expect(written[`${dir}/keira.config`]).toContain('<add key="DBEnabled" value="true" />');
-    expect(written[`${dir}/keira.config`]).toContain('value="acore_world"');
+    expect(config).toContain('<add key="DBEnabled" value="true" />');
+    expect(config).toContain('value="acore_world"');
+    // the config (with the password) is taken away after the run
+    expect(written[`${dir}/keira.config`]).toBeUndefined();
     expect(spawn).toHaveBeenLastCalledWith(
       'dotnet',
       [`${dir}/WowPacketParser.dll`, '--ConfigFile', `${dir}/keira.config`, '/sniffs/My.pkt'],
       expect.objectContaining({ cwd: dir }),
     );
     expect(result.files).toEqual(['/sniffs/My_parsed.txt']);
+    // a config already gone is fine
+    fs.unlinkSync.mockImplementationOnce(() => {
+      throw new Error('ENOENT');
+    });
+    expect((await service.parse('/sniffs/My.pkt', undefined, () => undefined)).code).toBe(0);
+    expect((await service.parse('C:\\s\\b.pkt', undefined, () => undefined)).files).toEqual([]);
     expect(service.database('x')).toEqual({
       host: 'db',
       port: 3307,

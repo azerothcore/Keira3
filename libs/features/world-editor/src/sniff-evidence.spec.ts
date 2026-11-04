@@ -1,5 +1,5 @@
 import { SniffSpawn } from '@keira/shared/db-layer';
-import { SNIFF_MATCHED_COLOR, SNIFF_MISSING_COLOR, sniffEvidence, sniffFields, sniffMarkers } from './sniff-evidence';
+import { distinctSniffs, SNIFF_MATCHED_COLOR, SNIFF_MISSING_COLOR, sniffEvidence, sniffFields, sniffKey, sniffMarkers } from './sniff-evidence';
 import { SpawnRecord } from './world-editor.model';
 
 const sniff = (type: SniffSpawn['type'], entry: number, x: number, wanderDistance = 0): SniffSpawn => ({
@@ -30,8 +30,16 @@ const spawn = (type: SpawnRecord['type'], guid: number, entry: number, x: number
 describe('sniff evidence', () => {
   it('counts a spawn sniffed several times once, and finds it in the database', () => {
     const evidence = sniffEvidence(
-      [sniff('creature', 1, 0), sniff('creature', 1, 1), sniff('creature', 1, 10), sniff('gameobject', 1, 0), sniff('creature', 2, 0)],
-      [spawn('creature', 7, 1, 4), spawn('gameobject', 8, 1, 50)],
+      distinctSniffs([
+        sniff('creature', 1, 0),
+        sniff('creature', 1, 1),
+        sniff('creature', 1, 10),
+        sniff('gameobject', 1, 0),
+        sniff('creature', 2, 0),
+        { ...sniff('creature', 3, 0), map: 1 },
+      ]),
+      [spawn('creature', 7, 1, 4), spawn('gameobject', 8, 1, 50), spawn('creature', 9, 1, 100)],
+      0,
     );
     expect(evidence.map(({ sniff, seen, match }) => [sniff.type, sniff.entry, sniff.x, seen, match?.guid])).toEqual([
       ['creature', 1, 0, 2, 7],
@@ -47,6 +55,10 @@ describe('sniff evidence', () => {
       SNIFF_MISSING_COLOR,
     ]);
     expect(markers[0]).toEqual({ key: 'sniff:0', position: { x: 0, y: 0, z: 1 }, color: SNIFF_MATCHED_COLOR, label: 'Sniff: creature 1 · guid 7 · ×2' });
+  });
+
+  it('keys a sniffed spawn by where it was', () => {
+    expect(sniffKey({ sniff: sniff('creature', 1, 2), seen: 1 })).toBe('creature:1:2:0:1');
   });
 
   it('keeps the wandering of a creature', () => {

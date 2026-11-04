@@ -1,4 +1,4 @@
-import { keiraWppConfig, parseOutputs, setConfigValue } from './wow-packet-parser';
+import { folderOf, frameworkVersion, isFullPath, keiraWppConfig, parseOutputs, setConfigValue } from './wow-packet-parser';
 
 const TEMPLATE = `<configuration>
   <appSettings>
@@ -18,6 +18,9 @@ describe('WowPacketParser config', () => {
   it("sets a key, or adds it when it isn't there, its value escaped", () => {
     expect(setConfigValue(TEMPLATE, 'Port', 3307)).toContain('<add key="Port"               value="3307" />');
     expect(setConfigValue(TEMPLATE, 'Password', 'a"<&>')).toContain('value="a&quot;&lt;&amp;&gt;"');
+    // `$` patterns are taken as they are
+    expect(setConfigValue(TEMPLATE, 'Password', "p$&x$1$'")).toContain('<add key="Password"           value="p$&amp;x$1$\'" />');
+    expect(setConfigValue(TEMPLATE, 'Extra', '$&')).toContain('<add key="Extra" value="$&amp;" />');
     expect(setConfigValue(TEMPLATE, 'SplitSQLFile', true)).toContain('    <add key="SplitSQLFile" value="true" />\n    </appSettings>');
   });
 
@@ -54,5 +57,15 @@ describe('WowPacketParser config', () => {
     ];
     expect(parseOutputs(files, 'C:\\sniffs\\My Sniff.pkt', 15)).toEqual(['2026_My Sniff_world.sql', 'My Sniff_parsed.txt']);
     expect(parseOutputs(files, '/sniffs/My Sniff.bin', 15)).toEqual(['2026_My Sniff_world.sql', 'My Sniff_parsed.txt']);
+  });
+
+  it('reads paths: full ones, their folder, the .NET version of a build', () => {
+    expect(['C:\\sniffs\\a.pkt', 'c:/a.pkt', '\\\\server\\a.pkt', '/home/a.pkt'].every(isFullPath)).toBe(true);
+    expect(['a.pkt', 'sniffs/a.pkt', '.\\a.pkt'].some(isFullPath)).toBe(false);
+    expect(folderOf('C:\\sniffs\\a.pkt')).toBe('C:\\sniffs');
+    expect(folderOf('C:\\a.pkt')).toBe('C:\\');
+    expect(folderOf('/a.pkt')).toBe('/');
+    expect(folderOf('/s/a.pkt')).toBe('/s');
+    expect(['net9.0', 'net10.0', 'netcoreapp3.1', 'x'].map(frameworkVersion)).toEqual([9, 10, 3.1, 0]);
   });
 });

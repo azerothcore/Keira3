@@ -4,14 +4,16 @@ import { escape } from 'sqlstring';
 import { firstValueFrom } from 'rxjs';
 import { MysqlQueryService } from '../query/mysql-query.service';
 import {
-  addColumnsSql,
+  alterTableSql,
   createTableSql,
   insertSql,
   isSniffDatabaseName,
   parseInsert,
   SNIFF_FILE_COLUMN,
   SNIFF_FILES_TABLE,
-  splitSqlStatements,
+  serverColumnType,
+  SniffColumnType,
+  SqlStatementSplitter,
 } from './sniff-sql';
 
 export const SNIFF_DB_KEY = 'keira3.sniffDatabase';
@@ -23,7 +25,7 @@ export interface SniffTable {
   rows: number;
 }
 
-/** A file loaded into the sniff database. */
+/** A file loaded into the sniff database (`name`: its path). */
 export interface SniffFile {
   id: number;
   name: string;
@@ -39,6 +41,8 @@ export interface SniffImportResult {
   alreadyLoaded?: boolean;
 }
 
+type Rotation = [number, number, number, number];
+
 /** A spawn seen in a sniff (the sniff database's creature / gameobject rows). */
 export interface SniffSpawn {
   type: 'creature' | 'gameobject';
@@ -50,6 +54,8 @@ export interface SniffSpawn {
   o: number;
   wanderDistance: number;
   movementType: number;
+  /** gameobject.rotation0..3 (x, y, z, w), when the sniff has them. */
+  rotation?: Rotation;
   file: number;
 }
 
@@ -125,61 +131,76 @@ export class SniffDbService {
 
   /**
    * Loads a sniff SQL file's rows (its INSERTs; nothing else is run) into the sniff database, each table created or
-   * widened as its rows need. A file already loaded (same name and size) is left as it is.
+   * widened as its rows need. The file comes in pieces (`chunks`: read a piece at a time, never whole); `size` is its
+   * length, for the progress. A file already loaded (same path and size) is left as it is, and one that fails partway
+   * is taken out again (rows and entry), so it can be loaded once fixed.
    */
   async importSql(
-    fileName: string,
+    path: string,
     size: number,
-    text: string,
+    chunks: AsyncIterable<string> | Iterable<string>,
     progress?: (done: number, total: number) => void,
   ): Promise<SniffImportResult> {
-    const result: SniffImportResult = { file: fileName, rows: 0, tables: [], skipped: 0 };
-    const [loaded] = await this.run(`SELECT id FROM ${this.db}.\`${SNIFF_FILES_TABLE}\` WHERE name = ? AND size = ?`, [
-      fileName,
-      String(size),
-    ]);
-    if (loaded) {
+    const result: SniffImportResult = { file: path, rows: 0, tables: [], skipped: 0 };
+    const find = () => this.run(`SELECT id FROM ${this.db}.\`${SNIFF_FILES_TABLE}\` WHERE name = ? AND size = ?`, [path, String(size)]);
+    if ((await find()).length) {
       return { ...result, alreadyLoaded: true };
     }
-    await this.run(`INSERT INTO ${this.db}.\`${SNIFF_FILES_TABLE}\` (name, size) VALUES (${escape(fileName)}, ${Math.trunc(size)})`);
-    const [file] = await this.run(`SELECT id FROM ${this.db}.\`${SNIFF_FILES_TABLE}\` WHERE name = ? AND size = ?`, [
-      fileName,
-      String(size),
-    ]);
-    const fileId = Number(file['id']);
-    const columns = new Map<string, string[]>();
-    const statements = splitSqlStatements(text);
-    for (const [index, statement] of statements.entries()) {
-      progress?.(index, statements.length);
-      const insert = parseInsert(statement);
-      const sql = insert && insertSql(this.database(), insert, fileId);
-      if (!insert || !sql) {
-        result.skipped++;
-        continue;
+    await this.run(`INSERT INTO ${this.db}.\`${SNIFF_FILES_TABLE}\` (name, size) VALUES (${escape(path)}, ${Math.trunc(size)})`);
+    const fileId = Number((await find())[0]['id']);
+    const known = new Map<string, Map<string, SniffColumnType>>();
+    const splitter = new SqlStatementSplitter();
+    let done = 0;
+    try {
+      for await (const chunk of chunks) {
+        for (const statement of splitter.push(chunk)) {
+          await this.importStatement(statement, fileId, known, result);
+        }
+        done += chunk.length;
+        progress?.(Math.min(done, size), size);
       }
-      let known = columns.get(insert.table);
-      if (!known) {
-        await this.run(createTableSql(this.database(), insert));
-        const rows = await this.run(
-          'SELECT COLUMN_NAME AS name FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?',
-          [this.database(), insert.table],
-        );
-        known = rows.map((row) => String(row['name']));
+      for (const statement of splitter.finish()) {
+        await this.importStatement(statement, fileId, known, result);
       }
-      const widen = addColumnsSql(this.database(), insert, known);
-      if (widen) {
-        await this.run(widen);
-        known = [...known, ...insert.columns.filter((column) => !known?.includes(column))];
-      }
-      columns.set(insert.table, known);
-      await this.run(sql);
-      result.rows += insert.rows.length;
-      if (!result.tables.includes(insert.table)) {
-        result.tables.push(insert.table);
-      }
+    } catch (error) {
+      await this.removeFile(fileId).catch(() => undefined);
+      throw error;
     }
-    progress?.(statements.length, statements.length);
+    progress?.(size, size);
     return result;
+  }
+
+  private async importStatement(
+    statement: string,
+    fileId: number,
+    known: Map<string, Map<string, SniffColumnType>>,
+    result: SniffImportResult,
+  ): Promise<void> {
+    const insert = parseInsert(statement);
+    const sql = insert && insertSql(this.database(), insert, fileId);
+    if (!insert || !sql) {
+      result.skipped++;
+      return;
+    }
+    let columns = known.get(insert.table);
+    if (!columns) {
+      await this.run(createTableSql(this.database(), insert));
+      const rows = await this.run(
+        'SELECT COLUMN_NAME AS name, DATA_TYPE AS type FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?',
+        [this.database(), insert.table],
+      );
+      columns = new Map(rows.map((row) => [String(row['name']), serverColumnType(String(row['type']))]));
+      known.set(insert.table, columns);
+    }
+    const alter = alterTableSql(this.database(), insert, columns);
+    if (alter) {
+      await this.run(alter);
+    }
+    await this.run(sql);
+    result.rows += insert.rows.length;
+    if (!result.tables.includes(insert.table)) {
+      result.tables.push(insert.table);
+    }
   }
 
   /** Forgets a loaded file: its rows in every table, and its entry. */
@@ -194,17 +215,21 @@ export class SniffDbService {
     await this.run(`DELETE FROM ${this.db}.\`${SNIFF_FILES_TABLE}\` WHERE id = ${Math.trunc(fileId)}`);
   }
 
-  /** The spawns the sniffs saw on a map around a place (empty when the sniff database or its tables aren't there). */
+  /**
+   * The spawns the sniffs saw on a map around a place (empty when the sniff database or its tables aren't there; a
+   * gameobject table without rotations read without them).
+   */
   async spawnsNear(map: number, x: number, y: number, radius: number): Promise<SniffSpawn[]> {
-    const near = (type: 'creature' | 'gameobject') => {
+    const near = (type: 'creature' | 'gameobject', withRotation: boolean): Promise<SniffSpawn[]> => {
       const wander = type === 'creature' ? 'wander_distance' : '0';
       const movement = type === 'creature' ? 'movement_type' : '0';
+      const rotation = withRotation ? ', rotation0 AS r0, rotation1 AS r1, rotation2 AS r2, rotation3 AS r3' : '';
       return this.run(
-        `SELECT id, map, position_x AS x, position_y AS y, position_z AS z, orientation AS o, ${wander} AS wander, ${movement} AS movement, ` +
+        `SELECT id, map, position_x AS x, position_y AS y, position_z AS z, orientation AS o, ${wander} AS wander, ${movement} AS movement${rotation}, ` +
           `${SNIFF_FILE_COLUMN} AS file FROM ${this.db}.\`${type}\` WHERE map = ${Math.trunc(map)} ` +
           `AND position_x BETWEEN ${x - radius} AND ${x + radius} AND position_y BETWEEN ${y - radius} AND ${y + radius} LIMIT 2000`,
-      )
-        .then((rows) =>
+      ).then(
+        (rows) =>
           rows.map((row) => ({
             type,
             entry: Number(row['id']),
@@ -215,12 +240,13 @@ export class SniffDbService {
             o: Number(row['o'] ?? 0),
             wanderDistance: Number(row['wander'] ?? 0),
             movementType: Number(row['movement'] ?? 0),
+            ...(withRotation ? { rotation: [row['r0'], row['r1'], row['r2'], row['r3']].map((value) => Number(value ?? 0)) as Rotation } : {}),
             file: Number(row['file']),
           })),
-        )
-        .catch(() => [] as SniffSpawn[]);
+        () => (withRotation ? near(type, false) : []),
+      );
     };
-    const [creatures, gameobjects] = await Promise.all([near('creature'), near('gameobject')]);
+    const [creatures, gameobjects] = await Promise.all([near('creature', false), near('gameobject', true)]);
     return [...creatures, ...gameobjects];
   }
 }
