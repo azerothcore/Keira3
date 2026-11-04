@@ -64,6 +64,7 @@ import {
   parseGameMapTransforms,
   parseGameZones,
 } from './game-map';
+import { parseSpellInfo, SpellDbcs, SpellInfo } from './spell-info';
 import { Ring } from './zone-tracer';
 import { FactionData, parseFactions, parseFactionTemplates } from './factions';
 
@@ -566,6 +567,21 @@ export class WowClientService {
    * What the in-game world map is made of (its DBCs: pages, overlays, floors, zones with their levels), from the client
    * first: patches that add maps (dungeon maps, caves) change these DBCs, and the server doesn't need them.
    */
+  /** A spell as the client's Spell.dbc tells it (#9 of the ideas from other tools: SpellWork); undefined when it has no such spell. */
+  async getSpellInfo(id: number): Promise<SpellInfo | undefined> {
+    this.spellDbcs ??= Promise.all(
+      ['Spell', 'SpellCastTimes', 'SpellDuration', 'SpellRange', 'SpellRadius'].map((name) => this.readDbc(`${name}.dbc`)),
+    ).then(([spell, castTimes, durations, ranges, radius]) => (spell ? { spell, castTimes, durations, ranges, radius } : undefined));
+    try {
+      const dbcs = await this.spellDbcs;
+      return dbcs ? parseSpellInfo(dbcs, id) : undefined;
+    } catch (error) {
+      this.spellDbcs = undefined;
+      throw error;
+    }
+  }
+  private spellDbcs?: Promise<SpellDbcs | undefined>;
+
   getGameMap(): Promise<GameMapData> {
     this.gameMap ??= Promise.all(
       ['WorldMapArea', 'WorldMapOverlay', 'DungeonMap', 'WorldMapTransforms', 'AreaTable', 'LFGDungeons'].map((name) =>

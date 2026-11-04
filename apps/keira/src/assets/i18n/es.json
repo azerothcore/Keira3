@@ -2401,5 +2401,28 @@
       "broadcastText": "Texto de difusión"
     }
   },
-  "EXPORT_ENTITY": "Exportar esta entidad como SQL, todas sus tablas"
+  "EXPORT_ENTITY": "Exportar esta entidad como SQL, todas sus tablas",
+  "SPELL_INFO": {
+    "TITLE": "Información del hechizo",
+    "SCHOOL": "Escuela",
+    "COST": "Coste",
+    "CAST_TIME": "Tiempo de lanzamiento",
+    "INSTANT": "Instantáneo",
+    "DURATION": "Duración",
+    "RANGE": "Alcance",
+    "COOLDOWN": "Reutilización",
+    "CATEGORY": "categoría",
+    "PROC": "Activación",
+    "STACKS": "Acumulaciones",
+    "MAX_TARGETS": "Objetivos máx.",
+    "EFFECT": "Efecto / aura",
+    "VALUE": "Valor",
+    "TARGETS": "Objetivos",
+    "MORE": "Más",
+    "RADIUS": "radio",
+    "EVERY": "cada",
+    "TRIGGERS": "activa",
+    "CHAIN": "objetivos en cadena",
+    "NONE": "El cliente del juego no tiene ese hechizo."
+  }
 }

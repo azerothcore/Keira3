@@ -2401,5 +2401,28 @@
       "broadcastText": "Broadcast text"
     }
   },
-  "EXPORT_ENTITY": "Export this entity as SQL, every table of it"
+  "EXPORT_ENTITY": "Export this entity as SQL, every table of it",
+  "SPELL_INFO": {
+    "TITLE": "Spell info",
+    "SCHOOL": "School",
+    "COST": "Cost",
+    "CAST_TIME": "Cast time",
+    "INSTANT": "Instant",
+    "DURATION": "Duration",
+    "RANGE": "Range",
+    "COOLDOWN": "Cooldown",
+    "CATEGORY": "category",
+    "PROC": "Proc",
+    "STACKS": "Stacks",
+    "MAX_TARGETS": "Max targets",
+    "EFFECT": "Effect / aura",
+    "VALUE": "Value",
+    "TARGETS": "Targets",
+    "MORE": "More",
+    "RADIUS": "radius",
+    "EVERY": "every",
+    "TRIGGERS": "triggers",
+    "CHAIN": "chain targets",
+    "NONE": "The game client has no such spell."
+  }
 }
