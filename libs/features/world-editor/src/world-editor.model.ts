@@ -188,6 +188,8 @@ export interface LayerVisibility {
   players: boolean;
   /** Where offline characters were left. */
   offlinePlayers: boolean;
+  /** The spawns of the sniffs loaded into Keira's sniff database, next to the database ones. */
+  sniffs: boolean;
 }
 
 /** A character of the characters database, where the server last saved it. */
@@ -261,6 +263,7 @@ export const OVERLAY_SWITCHES: LayerSwitch[] = [
   { key: 'sightRanges', id: 'sight-ranges', label: 'WORLD_EDITOR.SIGHT_RANGES' },
   { key: 'players', id: 'players', label: 'WORLD_EDITOR.PLAYERS' },
   { key: 'offlinePlayers', id: 'offline-players', label: 'WORLD_EDITOR.OFFLINE_PLAYERS' },
+  { key: 'sniffs', id: 'sniffs', label: 'WORLD_EDITOR.SNIFFS' },
 ];
 
 /** Rows as returned by the spawn and waypoint queries. */
