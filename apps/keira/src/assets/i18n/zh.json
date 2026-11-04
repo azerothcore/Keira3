@@ -2076,7 +2076,11 @@
     "MODEL_VIEWER": "3D 预览（生物、游戏对象）",
     "MODEL_VIEWER_WOWHEAD": "Wowhead（在线）",
     "MODEL_VIEWER_GAME_DATA": "游戏数据（上方的客户端文件夹）",
-    "MODEL_VIEWER_HELP": "游戏数据会显示本服务器自己的模型（包括补丁或自定义模型），从客户端文件夹读取；其中没有的外观改由 Wowhead 显示。物品仍使用 Wowhead。"
+    "MODEL_VIEWER_HELP": "游戏数据会显示本服务器自己的模型（包括补丁或自定义模型），从客户端文件夹读取；其中没有的外观改由 Wowhead 显示。物品仍使用 Wowhead。",
+    "FIND_DISPLAY": "按模型查找",
+    "FIND_DISPLAY_HELP": "模型名称（wolf、mailbox……）或 id",
+    "FIND_DISPLAY_NONE": "没有符合的外观。",
+    "FIND_DISPLAY_USE": "使用外观 {{ id }}"
   },
   "SETTINGS": {
     "TITLE": "设置",

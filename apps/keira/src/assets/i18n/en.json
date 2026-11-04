@@ -2076,7 +2076,11 @@
     "MODEL_VIEWER": "3D previews (creatures, gameobjects)",
     "MODEL_VIEWER_WOWHEAD": "Wowhead (online)",
     "MODEL_VIEWER_GAME_DATA": "Game data (the client folder above)",
-    "MODEL_VIEWER_HELP": "Game data shows this server's own models (patched or custom ones too), read from the client folder; a display it hasn't is shown from Wowhead. Items still use Wowhead."
+    "MODEL_VIEWER_HELP": "Game data shows this server's own models (patched or custom ones too), read from the client folder; a display it hasn't is shown from Wowhead. Items still use Wowhead.",
+    "FIND_DISPLAY": "Find by model",
+    "FIND_DISPLAY_HELP": "A model name (wolf, mailbox…) or an id",
+    "FIND_DISPLAY_NONE": "No display has it.",
+    "FIND_DISPLAY_USE": "Use display {{ id }}"
   },
   "SETTINGS": {
     "TITLE": "Settings",

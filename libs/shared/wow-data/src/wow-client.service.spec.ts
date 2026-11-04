@@ -460,6 +460,30 @@ describe('WowClientService', () => {
       expect(await service.getGameObjectDisplay(6)).toBeUndefined();
     });
 
+    it('finds displays by id or model name, in id order (#3016)', async () => {
+      const { service } = setup({
+        mpqs: displayMpqs({
+          'DBFilesClient\\GameObjectDisplayInfo.dbc': dbc([
+            [7, 'World\\Generic\\Chest.mdx'],
+            [5, 'World\\Generic\\Mailbox.mdx'],
+            [9, 'World\\Generic\\MAILBOX02.mdx'],
+          ]),
+          'DBFilesClient\\CreatureDisplayInfo.dbc': dbc([[10, 1, 0, 0, 0, 0, 'WolfGrey', '', '']], 9),
+          'DBFilesClient\\CreatureModelData.dbc': dbc([[1, 0, 'Creature\\Wolf\\Wolf.mdx', 0, 0]]),
+        }),
+      });
+      expect((await service.findDisplays('gameobject', 'mailbox')).map((display) => display.id)).toEqual([5, 9]);
+      expect(await service.findDisplays('gameobject', ' 7 ')).toEqual([{ id: 7, model: 'World\\Generic\\Chest.mdx' }]);
+      expect((await service.findDisplays('gameobject', '', 2)).map((display) => display.id)).toEqual([5, 7]);
+      expect(await service.findDisplays('creature', 'wolf')).toEqual([{ id: 10, model: 'Creature\\Wolf\\Wolf.mdx' }]);
+    });
+
+    it('retries gameobject displays after a failure', async () => {
+      const { service } = setup({ mpqs: displayMpqs({ 'DBFilesClient\\GameObjectDisplayInfo.dbc': [1, 2, 3, 4] }) });
+      await expect(service.getGameObjectDisplay(5)).rejects.toThrowError(/WDBC/);
+      await expect(service.findDisplays('gameobject', '')).rejects.toThrowError(/WDBC/);
+    });
+
     it('reads the zone lights of a map by its directory', async () => {
       const row = (id: number, map: number) => [id, map, 0, 0, 0, 0, 0, 1];
       const { service } = setup({

@@ -1,3 +1,4 @@
+import { DisplaySearchComponent } from '@keira/shared/world-viewer';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GAMEOBJECT_ICON, GAMEOBJECT_TYPE, GameobjectTemplate } from '@keira/shared/acore-world-model';
@@ -17,6 +18,7 @@ import { GameobjectTemplateService } from './gameobject-template.service';
   templateUrl: './gameobject-template.component.html',
   styleUrls: ['./gameobject-template.component.scss'],
   imports: [
+    DisplaySearchComponent,
     TopBarComponent,
     TranslateDirective,
     TranslatePipe,
