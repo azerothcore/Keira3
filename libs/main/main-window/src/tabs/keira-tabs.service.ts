@@ -24,6 +24,7 @@ export const SINGLE_TAB_SECTIONS = new Set([
   'table-browser',
   'find-anywhere',
   'sniff-to-sql',
+  'sniffs',
   'settings',
   'unused-guid-search',
 ]);
@@ -58,6 +59,7 @@ const SECTION_NAMES: Record<string, string> = {
   'table-browser': 'SIDEBAR.TABLE_BROWSER',
   'find-anywhere': 'SIDEBAR.FIND_ANYWHERE',
   'sniff-to-sql': 'SIDEBAR.SNIFF_TO_SQL',
+  sniffs: 'SIDEBAR.SNIFFS',
   settings: 'SIDEBAR.SETTINGS',
 };
 
@@ -91,6 +93,7 @@ export const SECTION_START: [string, string][] = [
   ['table-browser', '/table-browser'],
   ['find-anywhere', '/find-anywhere'],
   ['sniff-to-sql', '/sniff-to-sql'],
+  ['sniffs', '/sniffs'],
   ['settings', '/settings'],
 ];
 

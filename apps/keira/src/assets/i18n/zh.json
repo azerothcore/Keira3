@@ -300,7 +300,8 @@
     "SESSION_SQL": "会话 SQL",
     "TABLE_BROWSER": "表浏览器",
     "FIND_ANYWHERE": "全局查找",
-    "SNIFF_TO_SQL": "嗅探转 SQL"
+    "SNIFF_TO_SQL": "嗅探转 SQL",
+    "SNIFFS": "嗅探"
   },
   "DASHBOARD": {
     "WELCOME": "欢迎使用Keira3",
@@ -2107,6 +2108,11 @@
     "PLAYERS": "在线玩家",
     "PLAYERS_HELP": "来自角色数据库（设置 > 服务器）的在线角色，每 10 秒读取一次。服务器每隔几分钟和下线时才保存位置，因此显示的是他们最近所在的位置。",
     "OFFLINE_PLAYERS": "离线角色",
+    "SNIFFS": "嗅探",
+    "SNIFFED_SPAWNS": "嗅探到的刷新点",
+    "SNIFF_COUNT": "发现 {{count}} 个，数据库中缺少 {{missing}} 个",
+    "SNIFF_ADD": "添加",
+    "SNIFF_NONE": "这里没有缺少的嗅探刷新点（在嗅探页面加载嗅探数据）。",
     "OFFLINE_PLAYERS_HELP": "离线角色停留的位置（灰色）。",
     "PLAYERS_ERROR": "无法读取 {{database}}.characters（设置 > 服务器：检查数据库名称以及该账号是否有读取权限）。",
     "LEGEND_PLAYER": "在线玩家",
@@ -2481,5 +2487,40 @@
     "SUMMARY": "{{ paths }} 条路径，{{ texts }} 条文本（在 broadcast_text 中找到 {{ matched }} 条）。",
     "FIRST_PATH": "起始路径 id",
     "NOTHING": "未找到生物移动或聊天。"
+  },
+  "SNIFFS": {
+    "TITLE": "嗅探",
+    "HELP": "嗅探文件只保存在这台电脑和你的 MySQL 服务器上：其中含有玩家的私人信息，请勿放入仓库或分享给他人。",
+    "DESKTOP_ONLY": "读取嗅探文件和运行 WowPacketParser 需要 Keira3 桌面应用。",
+    "DATABASE": "嗅探数据库",
+    "DATABASE_HELP": "你的 MySQL 服务器上的一个独立数据库，使用 Keira 的登录创建（绝不是 world 数据库）：嗅探数据加载到这里，由世界编辑器读取。",
+    "CREATE": "创建",
+    "EXISTS": "{{ name }} 已存在",
+    "MISSING": "{{ name }} 尚未创建",
+    "LOAD": "加载嗅探 SQL",
+    "LOAD_HELP": "一个嗅探 SQL 文件或包含这些文件的文件夹（WowPacketParser 的 SQL、mass parse 等）：只加载其中的 INSERT，写入嗅探数据库，每行记录其来源文件。已加载的文件会跳过。",
+    "PATH": "文件或文件夹",
+    "LOAD_BTN": "加载",
+    "ALREADY_LOADED": "已加载",
+    "LOADED": "{{ rows }} 行写入 {{ tables }} 张表（跳过 {{ skipped }} 条语句）",
+    "WPP_HELP": "TrinityCore/WowPacketParser，下载并编译到你的文件夹（需要 git 和 .NET SDK），然后以 3.3.5 的 SQL 输出运行于 .pkt。其文本和 SQL 写在 .pkt 旁边。",
+    "WPP_FOLDER": "WowPacketParser 文件夹",
+    "WPP_BUILD": "下载并编译",
+    "WPP_BUILT": "WowPacketParser 已编译",
+    "WPP_NOT_BUILT": "WowPacketParser 尚未编译",
+    "PKT": "一个 .pkt 文件",
+    "WPP_DB": "使用数据库",
+    "WPP_DB_HELP": "WowPacketParser 使用 Keira 的登录连接：它自己的数据库是嗅探数据库，并与 world 数据库比较（它为 TrinityCore 编写，可能对 AzerothCore 的表报错）。",
+    "PARSE": "解析",
+    "OPEN": "打开",
+    "SAVE": "保存",
+    "ERROR": {
+      "NAME": "数据库名只能包含字母、数字和下划线。",
+      "NO_GIT": "未安装 git（或不在 PATH 中）。",
+      "NO_DOTNET": "未安装 .NET SDK（或不在 PATH 中）。",
+      "DOWNLOAD_FAILED": "下载 WowPacketParser 失败：请查看下方输出。",
+      "BUILD_FAILED": "编译 WowPacketParser 失败：请查看下方输出。",
+      "PARSE_FAILED": "WowPacketParser 失败：请查看下方输出。"
+    }
   }
 }

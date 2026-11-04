@@ -181,6 +181,7 @@ import {
   CreatureImmunitiesHandlerService,
   SelectCreatureImmunitiesComponent,
 } from '@keira/features/creature-immunities';
+import { SniffsComponent } from '@keira/features/sniffs';
 import {
   SelectTrainerComponent,
   TrainerComponent,
@@ -256,6 +257,10 @@ export const KEIRA_ROUTES: Routes = [
   {
     path: 'sniff-to-sql',
     component: SniffToSqlComponent,
+  },
+  {
+    path: 'sniffs',
+    component: SniffsComponent,
   },
   {
     path: 'creature',

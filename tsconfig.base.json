@@ -28,6 +28,7 @@
       "@keira/features/conditions": ["libs/features/conditions/src/index.ts"],
       "@keira/features/creature": ["libs/features/creature/src/index.ts"],
       "@keira/features/creature-immunities": ["libs/features/creature-immunities/src/index.ts"],
+      "@keira/features/sniffs": ["libs/features/sniffs/src/index.ts"],
       "@keira/features/game-events": ["libs/features/game-events/src/index.ts"],
       "@keira/features/disables": ["libs/features/disables/src/index.ts"],
       "@keira/features/area-triggers": ["libs/features/area-triggers/src/index.ts"],
