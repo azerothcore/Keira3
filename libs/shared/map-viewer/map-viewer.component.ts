@@ -14,6 +14,7 @@ import {
   worldToMapPercent,
 } from './map-viewer.model';
 import { MapViewerService } from './map-viewer.service';
+import { GameMapPageService } from '@keira/shared/wow-data';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -24,6 +25,7 @@ import { MapViewerService } from './map-viewer.service';
 })
 export class MapViewerComponent {
   private readonly mapViewerService = inject(MapViewerService);
+  private readonly gameMapPages = inject(GameMapPageService);
 
   protected readonly loading = signal(false);
   protected readonly loadError = signal<string | null>(null);
@@ -93,13 +95,12 @@ export class MapViewerComponent {
       const overlaysByArea = await this.mapViewerService.getOverlaysByArea();
 
       // Each tile holds the points matched geometrically to one area.
-      const tiles = new Map<string, { area: WorldMapArea; points: MapPoint[] }>();
+      const tiles = new Map<string, { area: WorldMapArea; points: MapPoint[]; imageUrl?: string }>();
 
-      const tileFor = (area: WorldMapArea) => {
-        const uid = `${area.MapID}-${area.AreaID}`;
+      const tileFor = (area: WorldMapArea, uid = `${area.MapID}-${area.AreaID}`, imageUrl?: string) => {
         let tile = tiles.get(uid);
         if (!tile) {
-          tile = { area, points: [] };
+          tile = { area, points: [], imageUrl };
           tiles.set(uid, tile);
         }
         return tile;
@@ -111,6 +112,24 @@ export class MapViewerComponent {
         const candidates = (areasByMapId.get(pt.mapId) ?? []).filter((a) => worldToMapPercent(pt.x, pt.y, a) !== null);
 
         if (!candidates.length) {
+          // (a dungeon or raid, whose map has no bounds: its floor from the game client, when set, #3823)
+          const shown = await this.gameMapPages.pageAt(pt.mapId, pt.x, pt.y);
+          if (shown?.page.bounds) {
+            const { bounds } = shown.page;
+            const area: WorldMapArea = {
+              ID: shown.page.mapAreaId,
+              MapID: shown.page.mapId,
+              AreaID: shown.page.areaId,
+              AreaName: shown.name,
+              LocLeft: bounds.maxY,
+              LocRight: bounds.minY,
+              LocTop: bounds.maxX,
+              LocBottom: bounds.minX,
+              DisplayMapID: -1,
+            };
+            tileFor(area, shown.page.key, shown.imageUrl).points.push(pt);
+            continue;
+          }
           console.warn(`[MapViewer] point "${pt.name}" (x=${pt.x}, y=${pt.y}): no area matched — skipping`);
           continue;
         }
@@ -120,7 +139,7 @@ export class MapViewerComponent {
 
       const result: MapDisplayData[] = [];
 
-      for (const [uid, { area, points }] of tiles) {
+      for (const [uid, { area, points, imageUrl }] of tiles) {
         const imageMapId = this.mapViewerService.resolveMapImageId(area);
 
         const projected = points.map((p) => this.project(p, area));
@@ -129,7 +148,7 @@ export class MapViewerComponent {
         result.push({
           uid,
           mapId: imageMapId,
-          imageUrl: this.mapViewerService.getMapImageUrl(imageMapId),
+          imageUrl: imageUrl ?? this.mapViewerService.getMapImageUrl(imageMapId),
           area,
           points: projected,
         });

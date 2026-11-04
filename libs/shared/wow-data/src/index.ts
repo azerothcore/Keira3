@@ -30,3 +30,4 @@ export * from './script-spawns';
 export * from './script-names';
 export * from './startup-load.service';
 export * from './model-viewer-setting.service';
+export * from './game-map-page.service';
