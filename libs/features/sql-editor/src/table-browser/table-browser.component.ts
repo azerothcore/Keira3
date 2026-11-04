@@ -47,7 +47,7 @@ export class TableBrowserComponent implements OnInit {
   }
 
   protected addCondition(): void {
-    this.conditions.set([...this.conditions(), { join: 'AND', field: this.columns()[0] ?? '', operator: '=', value: '' }]);
+    this.conditions.set([...this.conditions(), { join: 'AND', field: this.columns()[0], operator: '=', value: '' }]);
   }
 
   protected changeCondition(index: number, change: Partial<TableCondition>): void {

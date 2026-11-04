@@ -147,7 +147,13 @@ import {
   SpellHandlerService,
   SpellAreaComponent,
 } from '@keira/features/spell';
-import { FindAnywhereComponent, SessionSqlComponent, SqlEditorComponent, TableBrowserComponent } from '@keira/features/sql-editor';
+import {
+  FindAnywhereComponent,
+  SessionSqlComponent,
+  SniffToSqlComponent,
+  SqlEditorComponent,
+  TableBrowserComponent,
+} from '@keira/features/sql-editor';
 import { SaiHandlerService } from '@keira/shared/sai-editor';
 import {
   BroadcastTextComponent,
@@ -246,6 +252,10 @@ export const KEIRA_ROUTES: Routes = [
   {
     path: 'find-anywhere',
     component: FindAnywhereComponent,
+  },
+  {
+    path: 'sniff-to-sql',
+    component: SniffToSqlComponent,
   },
   {
     path: 'creature',
