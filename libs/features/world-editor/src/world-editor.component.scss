@@ -58,6 +58,13 @@
   width: 90px;
 }
 
+/* the widget's grids and snapping, compact in the toolbar */
+.grid-size {
+  width: auto;
+  max-width: 96px;
+  padding-right: 1.6rem;
+}
+
 .tele-form {
   position: relative;
 

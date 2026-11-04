@@ -277,7 +277,15 @@ export interface ObjectMoved {
   orientation: number;
 }
 
-export type GizmoMode = 'translate' | 'rotate';
+/** The transformation widget (Eden's): none (the object is still dragged), moving or turning. */
+export type GizmoMode = 'none' | 'translate' | 'rotate';
+/** The widget's axes: the world's (X east, Y north) or the object's own. */
+export type GizmoSpace = 'world' | 'local';
+/** Snapping of the widget: moves by steps of `move` yards, turns by steps of `rotate` degrees (0: free). */
+export interface GizmoGrid {
+  move: number;
+  rotate: number;
+}
 
 export const WAYPOINT_KEY_SEPARATOR = '#';
 

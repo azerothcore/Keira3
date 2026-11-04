@@ -4,6 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { WorldEditorService } from '../world-editor.service';
 import { ASSET_SEARCH_DELAY, AssetBrowserComponent, AssetPick, RECENT_ASSETS_KEY } from './asset-browser.component';
+import { Composition, CompositionsService } from './compositions';
 
 class AssetPage extends PageObject<AssetBrowserComponent> {
   el<T extends HTMLElement>(id: string, assert = true): T {
@@ -44,10 +45,15 @@ describe(AssetBrowserComponent.name, () => {
     });
     const page = new AssetPage(TestBed.createComponent(AssetBrowserComponent));
     const picks: AssetPick[] = [];
-    page.fixture.componentInstance.picked.subscribe((pick) => picks.push(pick));
+    const browser = page.fixture.componentInstance;
+    browser.picked.subscribe((pick) => picks.push(pick));
+    const compositions: Composition[] = [];
+    const saved: string[] = [];
+    browser.compositionPicked.subscribe((composition) => compositions.push(composition));
+    browser.compositionSaved.subscribe((name) => saved.push(name));
     page.fixture.detectChanges();
     await page.settle();
-    return { page, browseTemplates, picks };
+    return { page, browseTemplates, picks, compositions, saved };
   };
 
   it('lists the creature templates by type, searched and of one type, picked and kept as recently used', async () => {
@@ -113,5 +119,64 @@ describe(AssetBrowserComponent.name, () => {
     await page.settle();
     expect(page.el('asset-recent-6')).toBeTruthy();
     setItem.mockRestore();
+  });
+
+  it('has the compositions: picked to place, saved from the selection, deleted', async () => {
+    const { page, browseTemplates, compositions, saved } = await setup();
+    TestBed.inject(CompositionsService).save({ id: 'c1', name: 'Camp', members: [{}, {}] } as Composition);
+    browseTemplates.mockClear();
+    page.el('asset-mode-composition').click();
+    await page.settle();
+    expect(browseTemplates).not.toHaveBeenCalled();
+    expect(page.el('composition-c1').textContent).toContain('Camp');
+    page.el('composition-c1').click();
+    await page.settle();
+    expect(compositions.map((c) => c.id)).toEqual(['c1']);
+    expect(page.el('composition-c1').classList).toContain('active');
+
+    // saved from the selection, when there is one and a name
+    const save = page.el<HTMLButtonElement>('composition-save');
+    expect(save.disabled).toBe(true);
+    const name = page.el<HTMLInputElement>('composition-name');
+    name.value = ' Patrol ';
+    name.dispatchEvent(new Event('input'));
+    await page.settle();
+    expect(save.disabled).toBe(true);
+    page.fixture.componentRef.setInput('selectionCount', 3);
+    await page.settle();
+    save.click();
+    await page.settle();
+    expect(saved).toEqual(['Patrol']);
+    expect(name.value).toBe('');
+    // (nothing when the name is empty)
+    (page.fixture.componentInstance as unknown as { saveComposition: () => void }).saveComposition();
+    expect(saved).toEqual(['Patrol']);
+
+    page.el('composition-delete-c1').click();
+    await page.settle();
+    expect(page.el('composition-none')).toBeTruthy();
+    expect(page.el('asset-recent-6', false)).toBeFalsy();
+  });
+
+  it('switches mode and focuses the search when the editor asks (its keys)', async () => {
+    const { page, browseTemplates } = await setup();
+    page.fixture.componentRef.setInput('request', { n: 1, mode: 'gameobject' });
+    await page.settle();
+    expect(browseTemplates).toHaveBeenLastCalledWith('gameobject', null, '');
+    // the same mode again: not read again
+    browseTemplates.mockClear();
+    page.fixture.componentRef.setInput('request', { n: 2, mode: 'gameobject' });
+    await page.settle();
+    expect(browseTemplates).not.toHaveBeenCalled();
+    page.fixture.componentRef.setInput('request', { n: 3, mode: 'composition' });
+    await page.settle();
+    expect(page.el('composition-none')).toBeTruthy();
+    // the search: back to the creatures from the compositions, focused
+    page.fixture.componentRef.setInput('request', { n: 4, search: true });
+    await page.settle(1);
+    expect(document.activeElement).toBe(page.el('asset-search'));
+    page.fixture.componentRef.setInput('request', { n: 5, search: true });
+    await page.settle(1);
+    expect(page.el('asset-mode-creature').classList).toContain('btn-secondary');
   });
 });

@@ -117,6 +117,9 @@ class FakeWorldViewerComponent {
   readonly centerChanged = output<WorldPosition>();
   readonly contextRequested = output<ContextRequest>();
   readonly probeMoved = output<{ which: 'from' | 'to'; position: WorldPosition }>();
+  readonly gizmoSpace = input<'world' | 'local'>('world');
+  readonly gizmoGrid = input({ move: 0, rotate: 0 });
+  readonly cursorMoved = output<{ position: WorldPosition; distance: number } | undefined>();
 }
 
 const keyCode = (key: string): string => (/^[a-z]$/i.test(key) ? `Key${key.toUpperCase()}` : key);
@@ -5983,6 +5986,174 @@ describe(WorldEditorComponent.name, () => {
       await settle(page);
       expect(page.pendingLines()).toEqual(['Place creature 1001 (Marshal McBride)']);
       expect(tab('assets')).toBe(true);
+    });
+  });
+
+  describe('Eden tools', () => {
+    it('sets the widget, its axes and grids from the toolbar and the keys, kept on this computer', async () => {
+      const { page } = await setup();
+      await loadArea(page);
+      page.click('gizmo-none');
+      page.fixture.detectChanges();
+      expect(page.viewer().gizmoMode()).toBe('none');
+      page.key('2', undefined, 'Digit2');
+      page.fixture.detectChanges();
+      expect(page.viewer().gizmoMode()).toBe('translate');
+      page.key('3', undefined, 'Digit3');
+      page.fixture.detectChanges();
+      expect(page.viewer().gizmoMode()).toBe('rotate');
+      page.key('1', undefined, 'Digit1');
+      page.fixture.detectChanges();
+      expect(page.viewer().gizmoMode()).toBe('none');
+
+      page.click('gizmo-space');
+      page.fixture.detectChanges();
+      expect(page.viewer().gizmoSpace()).toBe('local');
+      page.click('gizmo-space');
+      page.fixture.detectChanges();
+      expect(page.viewer().gizmoSpace()).toBe('world');
+
+      expect(page.viewer().gizmoGrid()).toEqual({ move: 0, rotate: 0 });
+      page.click('grid-move');
+      page.fixture.detectChanges();
+      expect(page.viewer().gizmoGrid()).toEqual({ move: 1, rotate: 0 });
+      page.key(']', undefined, 'BracketRight');
+      page.fixture.detectChanges();
+      expect(page.viewer().gizmoGrid().move).toBe(2);
+      page.key('[', undefined, 'BracketLeft');
+      page.key('[', undefined, 'BracketLeft');
+      page.fixture.detectChanges();
+      expect(page.viewer().gizmoGrid().move).toBe(0.5);
+      page.key(';', undefined, 'Semicolon');
+      page.fixture.detectChanges();
+      expect(page.viewer().gizmoGrid().move).toBe(0);
+      const size = page.byId<HTMLSelectElement>('grid-move-size').nativeElement;
+      size.value = '5';
+      size.dispatchEvent(new Event('change'));
+      page.fixture.detectChanges();
+      expect(page.viewer().gizmoGrid().move).toBe(5);
+      page.click('grid-rotate');
+      const angle = page.byId<HTMLSelectElement>('grid-rotate-size').nativeElement;
+      angle.value = '45';
+      angle.dispatchEvent(new Event('change'));
+      page.fixture.detectChanges();
+      expect(page.viewer().gizmoGrid()).toEqual({ move: 5, rotate: 45 });
+      expect(JSON.parse(localStorage.getItem('keira3.worldEditor.transform') as string)).toEqual(
+        expect.objectContaining({ moveGrid: true, moveSize: 5, rotateGrid: true, rotateSize: 45 }),
+      );
+
+      // the status bar: the ground under the cursor
+      expect(page.text('eden-status-cursor')).toBe('-');
+      page.viewer().cursorMoved.emit({ position: { x: 1, y: 2, z: 3 }, distance: 41.6 });
+      page.fixture.detectChanges();
+      expect(page.text('eden-status-cursor')).toContain('X 1.0 · Y 2.0 · Z 3.0 · 42 yd');
+    });
+
+    it('saves the selection as a composition and places it again as new spawns, with the keys of the Asset browser', async () => {
+      const { page } = await setup();
+      await loadArea(page);
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:1', position: { x: 0, y: 0, z: 0 } });
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:2', position: { x: 0, y: 0, z: 0 }, additive: true });
+      await settle(page);
+      // F3: the compositions, on the Assets tab
+      page.key('F3', undefined, 'F3');
+      await settle(page);
+      expect(page.byId('right-tab-assets').nativeElement.classList).toContain('btn-secondary');
+      const name = page.byId<HTMLInputElement>('composition-name').nativeElement;
+      name.value = 'Guards';
+      name.dispatchEvent(new Event('input'));
+      page.fixture.detectChanges();
+      expect(page.text('composition-save')).toContain('WORLD_EDITOR.EDEN.COMPOSITION_SAVE');
+      page.click('composition-save');
+      await settle(page);
+      expect(mocks.toastr.success).toHaveBeenCalledWith('Guards', 'WORLD_EDITOR.EDEN.COMPOSITION_SAVED');
+      const [composition] = JSON.parse(localStorage.getItem('keira3.worldEditor.compositions') as string);
+      page.click(`composition-${composition.id}`);
+      await settle(page);
+      expect((page.fixture.componentInstance as unknown as { tool: () => string }).tool()).toBe('place-composition');
+      page.click('right-tab-attributes');
+      page.fixture.detectChanges();
+      expect(page.text('composition-hint')).toContain('WORLD_EDITOR.EDEN.COMPOSITION_HINT');
+
+      page.viewer().picked.emit({ type: 'ground', position: { x: 100, y: 200, z: 50 } });
+      await settle(page);
+      expect(page.pendingLines()).toEqual(['Place creature 1001 (Deputy Willem)', 'Place creature 1002']);
+      expect(page.text('pending-sql')).toContain('100.5, 200, 50');
+      expect(page.text('pending-sql')).toContain('`wander_distance`');
+      expect(page.viewer().groupKeys()).toEqual(['creature:1002']);
+
+      // F1 / F2, Ctrl+F
+      page.key('F1', undefined, 'F1');
+      page.key('F2', undefined, 'F2');
+      page.key('f', undefined, 'KeyF', { ctrlKey: true });
+      await settle(page);
+      expect(page.byId('asset-mode-creature').nativeElement.classList).toContain('btn-secondary');
+    });
+
+    it('leaves comments in the world, edited and deleted, and levels a tilted gameobject out', async () => {
+      mocks.service.loadSpawns.mockResolvedValue([...SPAWNS.slice(0, 2), spawn('gameobject', 3, { name: 'Sign', rotation: [0.2, 0, 0, 0.98] })]);
+      const { page } = await setup();
+      await loadArea(page);
+      const comments = () =>
+        page
+          .viewer()
+          .markers()
+          .filter((marker) => marker.key.startsWith('comment:'));
+      page.viewer().contextRequested.emit({ key: 'ground', x: 10, y: 10, position: { x: 5, y: 6, z: 7 } });
+      page.fixture.detectChanges();
+      page.click('context-comment-place');
+      page.fixture.detectChanges();
+      expect(page.byId('comment-editor')).toBeTruthy();
+      const title = page.byId<HTMLInputElement>('comment-title').nativeElement;
+      title.value = 'Boss';
+      title.dispatchEvent(new Event('change'));
+      const text = page.byId<HTMLTextAreaElement>('comment-text').nativeElement;
+      text.value = 'Pull from here';
+      text.dispatchEvent(new Event('change'));
+      page.fixture.detectChanges();
+      expect(comments().map((marker) => marker.label)).toEqual(['Boss - Pull from here']);
+      page.click('comment-done');
+      page.fixture.detectChanges();
+      expect(page.byId('comment-editor', false)).toBeFalsy();
+
+      // right-click on it: edit, delete
+      const key = comments()[0].key;
+      page.viewer().contextRequested.emit({ key, x: 10, y: 10, position: { x: 5, y: 6, z: 7 } });
+      page.fixture.detectChanges();
+      expect(page.text('context-comment')).toBe('Boss');
+      expect(page.byId('context-comment-place', false)).toBeFalsy();
+      page.click('context-comment-edit');
+      page.fixture.detectChanges();
+      expect(page.byId<HTMLInputElement>('comment-title').nativeElement.value).toBe('Boss');
+      page.click('comment-delete');
+      page.fixture.detectChanges();
+      expect(comments()).toEqual([]);
+      expect(page.byId('comment-editor', false)).toBeFalsy();
+      page.viewer().contextRequested.emit({ key: 'ground', x: 10, y: 10, position: { x: 1, y: 1, z: 1 } });
+      page.fixture.detectChanges();
+      page.click('context-comment-place');
+      page.fixture.detectChanges();
+      page.click('comment-done');
+      page.fixture.detectChanges();
+      page.viewer().contextRequested.emit({ key: comments()[0].key, x: 10, y: 10 });
+      page.fixture.detectChanges();
+      page.click('context-comment-delete');
+      page.fixture.detectChanges();
+      expect(comments()).toEqual([]);
+
+      // a tilted gameobject stood upright; an upright one has nothing to level
+      page.viewer().contextRequested.emit({ key: 'creature:1', x: 10, y: 10 });
+      page.fixture.detectChanges();
+      expect(page.byId('context-level-out', false)).toBeFalsy();
+      page.viewer().contextRequested.emit({ key: 'gameobject:3', x: 10, y: 10 });
+      page.fixture.detectChanges();
+      page.click('context-level-out');
+      await settle(page);
+      expect(page.text('pending-sql')).toContain('`rotation0` = 0');
+      expect(page.text('pending-sql')).toContain('`rotation3` = 1');
+      page.viewer().contextRequested.emit({ key: 'gameobject:3', x: 10, y: 10 });
+      page.fixture.detectChanges();
+      expect(page.byId('context-level-out', false)).toBeFalsy();
     });
   });
 

@@ -22,6 +22,14 @@ export interface EdenLights {
           -
         }
       </span>
+      <span data-testid="eden-status-cursor" [title]="'WORLD_EDITOR.EDEN.CURSOR' | translate">
+        <i class="fa fa-mouse-pointer"></i>
+        @if (cursor(); as c) {
+          X {{ c.position.x.toFixed(1) }} · Y {{ c.position.y.toFixed(1) }} · Z {{ c.position.z.toFixed(1) }} · {{ c.distance.toFixed(0) }} yd
+        } @else {
+          -
+        }
+      </span>
       <span data-testid="eden-status-place">{{ mapName() }}{{ zoneName() ? ' · ' + zoneName() : '' }}</span>
       <span data-testid="eden-status-pending" [class.text-warning]="pending() > 0">
         {{ 'WORLD_EDITOR.EDEN.PENDING' | translate: { count: pending() } }}
@@ -53,6 +61,8 @@ export interface EdenLights {
 })
 export class EdenStatusBarComponent {
   readonly position = input<{ x: number; y: number; z: number } | undefined>(undefined);
+  /** The ground under the cursor (Eden's status bar), and how far it is from the camera. */
+  readonly cursor = input<{ position: { x: number; y: number; z: number }; distance: number } | undefined>(undefined);
   readonly mapName = input('');
   readonly zoneName = input('');
   readonly pending = input(0);

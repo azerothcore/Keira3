@@ -137,7 +137,11 @@ function waypointUpdates(original: WaypointRecord, current: WaypointRecord): Rec
 /** A spawn as drawn with its edited columns: wandering (wander_distance with MovementType 1) and phase. */
 function withFields(spawn: SpawnRecord, fields: Record<string, number> | undefined): SpawnRecord {
   if (!fields || spawn.type !== 'creature') {
-    return fields?.['phaseMask'] !== undefined ? { ...spawn, phaseMask: fields['phaseMask'] } : spawn;
+    const phased = fields?.['phaseMask'] !== undefined ? { ...spawn, phaseMask: fields['phaseMask'] } : spawn;
+    // a gameobject's rotation written (Level out)
+    return fields?.['rotation3'] !== undefined
+      ? { ...phased, rotation: [fields['rotation0'], fields['rotation1'], fields['rotation2'], fields['rotation3']] }
+      : phased;
   }
   const wanders = (fields['MovementType'] ?? (spawn.wanderDistance !== undefined ? 1 : 0)) === 1;
   const distance = fields['wander_distance'] ?? spawn.wanderDistance ?? 0;

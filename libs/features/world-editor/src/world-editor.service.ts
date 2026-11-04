@@ -2,6 +2,7 @@ import { inject, Service } from '@angular/core';
 import { Season, SEASONS, WeatherChances } from './weather';
 import { TableRow } from '@keira/shared/constants';
 import { MysqlQueryService, MysqlService } from '@keira/shared/db-layer';
+import { assetSearch } from './eden/asset-search';
 import { WorldBounds, WorldPosition } from '@keira/shared/wow-data';
 import {
   GAMEOBJECT_MAILBOX,
@@ -1043,17 +1044,16 @@ export class WorldEditorService {
    * entry or name, by name.
    */
   async browseTemplates(type: SpawnType, group: number | null, text: string, limit = 100): Promise<PlaceTemplate[]> {
-    const search = text.trim();
-    const entry = /^\d+$/.test(search) ? Number(search) : -1;
     const where: string[] = [];
     const params: string[] = [];
     if (group !== null) {
       where.push(type === 'creature' ? 'ct.type = ?' : 'type = ?');
       params.push(String(group));
     }
+    const search = assetSearch(text, type === 'creature' ? 'ct.' : '');
     if (search) {
-      where.push(type === 'creature' ? '(ct.entry = ? OR ct.name LIKE ?)' : '(entry = ? OR name LIKE ?)');
-      params.push(String(entry), `%${search}%`);
+      where.push(search.sql);
+      params.push(...search.params);
     }
     const condition = where.length ? `WHERE ${where.join(' AND ')} ` : '';
     const sql =

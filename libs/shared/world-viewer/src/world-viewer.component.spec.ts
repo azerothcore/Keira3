@@ -101,6 +101,18 @@ vi.mock('three/addons/controls/TransformControls.js', async () => {
     setMode(mode: string): void {
       this.mode = mode;
     }
+    space = 'world';
+    translationSnap: number | null = null;
+    rotationSnap: number | null = null;
+    setSpace(space: string): void {
+      this.space = space;
+    }
+    setTranslationSnap(snap: number | null): void {
+      this.translationSnap = snap;
+    }
+    setRotationSnap(snap: number | null): void {
+      this.rotationSnap = snap;
+    }
     attach(object: InstanceType<typeof three.Object3D>): void {
       this.object = object;
     }
@@ -125,6 +137,9 @@ interface FakeTransformControls extends EventDispatcher<{ 'dragging-changed': { 
   dragging: boolean;
   showX: boolean;
   showZ: boolean;
+  space: string;
+  translationSnap: number | null;
+  rotationSnap: number | null;
 }
 
 // ------------------------------------------------------------------ host
@@ -139,6 +154,8 @@ interface FakeTransformControls extends EventDispatcher<{ 'dragging-changed': { 
       [selectedKey]="selected()"
       [editableKey]="editable()"
       [gizmoMode]="mode()"
+      [gizmoSpace]="space()"
+      [gizmoGrid]="grid()"
       [snapToGround]="snap()"
       [snapToWall]="wall()"
       [snapToWater]="water()"
@@ -183,6 +200,7 @@ interface FakeTransformControls extends EventDispatcher<{ 'dragging-changed': { 
       [placePreview]="preview()"
       (objectMoved)="moves.push($event)"
       (centerChanged)="centers.push($event)"
+      (cursorMoved)="cursors.push($event)"
       (zoneChanged)="zones.push($event)"
       [weather]="weather()"
     />
@@ -195,6 +213,8 @@ class HostComponent {
   readonly selected = signal<string | undefined>(undefined);
   readonly editable = signal<string | undefined>(undefined);
   readonly mode = signal<GizmoMode>('translate');
+  readonly space = signal<'world' | 'local'>('world');
+  readonly grid = signal({ move: 0, rotate: 0 });
   readonly snap = signal(true);
   readonly water = signal(false);
   readonly wall = signal(false);
@@ -239,6 +259,7 @@ class HostComponent {
   readonly preview = signal<{ kind: 'creature' | 'gameobject'; displayId: number; scale: number } | undefined>(undefined);
   readonly moves: ObjectMoved[] = [];
   readonly centers: WorldPosition[] = [];
+  readonly cursors: ({ position: WorldPosition; distance: number } | undefined)[] = [];
   readonly zones: (number | undefined)[] = [];
   readonly weather = signal<WorldWeather | undefined>(undefined);
 }
@@ -1001,6 +1022,24 @@ describe(WorldViewerComponent.name, () => {
       expect(page.label().nativeElement.textContent).toContain('Pin: it has no display');
       expect(warn).toHaveBeenCalledWith(expect.stringContaining('Pin instead of a model: Deputy Willem'));
       warn.mockRestore();
+    });
+
+    it('tells the ground under the resting cursor and how far it is, none off the ground or out of the view', async () => {
+      const pick = vi.spyOn(WorldScene.prototype, 'pick').mockReturnValue({ type: 'ground', position: at(3, 4, 0) });
+      const { page, host, fixture } = await pickSetup();
+      await settle(fixture);
+      page.pointer('pointermove', 40, 40);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      expect(host.cursors.at(-1)?.position).toEqual(at(3, 4, 0));
+      expect(host.cursors.at(-1)?.distance).toBeGreaterThan(0);
+      pick.mockReturnValue(undefined);
+      page.pointer('pointermove', 41, 41);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      expect(host.cursors.at(-1)).toBeUndefined();
+      host.cursors.push(at(0, 0) as never);
+      page.pointer('pointerleave', 41, 41);
+      expect(host.cursors.at(-1)).toBeUndefined();
+      pick.mockRestore();
     });
 
     it('names what the map shows under the resting cursor, and puts hover labels away from the edges', async () => {
@@ -2224,6 +2263,23 @@ describe(WorldViewerComponent.name, () => {
 
       await update(() => host.editable.set('path:1#1'));
       expect(gizmo().mode).toBe('translate');
+
+      // the object's own axes, and the grids
+      expect(gizmo().space).toBe('world');
+      expect(gizmo().translationSnap).toBeNull();
+      await update(() => {
+        host.space.set('local');
+        host.grid.set({ move: 2, rotate: 15 });
+      });
+      expect(gizmo().space).toBe('local');
+      expect(gizmo().translationSnap).toBe(2);
+      expect(gizmo().rotationSnap).toBeCloseTo(Math.PI / 12);
+
+      // no widget: the object is still selected, without it
+      await update(() => host.mode.set('none'));
+      expect(gizmo().object).toBeUndefined();
+      await update(() => host.mode.set('translate'));
+      expect(gizmo().object?.name).toBe('path:1#1');
 
       await update(() => host.editable.set('missing'));
       expect(gizmo().object).toBeUndefined();
