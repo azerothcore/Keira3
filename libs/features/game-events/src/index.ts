@@ -6,6 +6,7 @@ export * from './game-event-creature-removed/game-event-creature-removed.compone
 export * from './game-event-gameobject/game-event-gameobject.component';
 export * from './game-event-gameobject-removed/game-event-gameobject-removed.component';
 export * from './game-event-pool/game-event-pool.component';
+export * from './game-event-pool-removed/game-event-pool-removed.component';
 export * from './game-event-prerequisite/game-event-prerequisite.component';
 export * from './game-event-npcflag/game-event-npcflag.component';
 export * from './game-event-model-equip/game-event-model-equip.component';
@@ -14,3 +15,6 @@ export * from './game-event-creature-quest/game-event-creature-quest.component';
 export * from './game-event-gameobject-quest/game-event-gameobject-quest.component';
 export * from './game-event-seasonal-quest/game-event-seasonal-quest.component';
 export * from './game-event-battleground-holiday/game-event-battleground-holiday.component';
+export * from './game-event-condition/game-event-condition.component';
+export * from './game-event-quest-condition/game-event-quest-condition.component';
+export * from './game-event-arena-season/game-event-arena-season.component';

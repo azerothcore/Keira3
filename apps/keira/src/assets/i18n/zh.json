@@ -111,7 +111,8 @@
       "CREATURE_TEMPLATE_LOCALE": "生物模板本地化",
       "CREATURE_TEXT_LOCALE": "生物文本本地化",
       "NPC_SPELLCLICK_SPELLS": "点击施法",
-      "VEHICLE_TEMPLATE_ACCESSORY": "载具附件"
+      "VEHICLE_TEMPLATE_ACCESSORY": "载具附件",
+      "VEHICLE_ACCESSORY": "载具配件（刷新点）"
     },
     "QUEST": {
       "TITLE": "任务",
@@ -269,7 +270,11 @@
       "CREATURE_QUEST": "生物任务",
       "GAMEOBJECT_QUEST": "游戏对象任务",
       "SEASONAL_QUEST": "季节任务",
-      "BATTLEGROUND_HOLIDAY": "战场假日"
+      "BATTLEGROUND_HOLIDAY": "战场假日",
+      "POOL_REMOVED": "移除的池",
+      "CONDITION": "条件",
+      "QUEST_CONDITION": "任务条件",
+      "ARENA_SEASON": "竞技场赛季"
     },
     "DISABLES": {
       "TITLE": "禁用",
@@ -2340,7 +2345,11 @@
     "GAME_EVENT_CREATURE_QUEST_HELP": "事件期间生物（按 entry）提供的任务。",
     "GAME_EVENT_GAMEOBJECT_QUEST_HELP": "事件期间游戏对象（按 entry）提供的任务。",
     "GAME_EVENT_SEASONAL_QUEST_HELP": "每次事件开始时重置的任务。",
-    "GAME_EVENT_BATTLEGROUND_HOLIDAY_HELP": "该事件的战场假日（bgflag）。"
+    "GAME_EVENT_BATTLEGROUND_HOLIDAY_HELP": "该事件的战场假日（bgflag）。",
+    "GAME_EVENT_POOL_REMOVED_HELP": "事件期间移除的池（game_event_pool，eventEntry = 负的事件编号）。",
+    "GAME_EVENT_CONDITION_HELP": "世界事件结束前需要满足的条件（game_event_condition）：每个条件的 req_num，计数记录在 world state 字段中。",
+    "GAME_EVENT_QUEST_CONDITION_HELP": "完成后计入事件条件的任务（game_event_quest_condition）：每个任务为 condition_id 增加 num。",
+    "GAME_EVENT_ARENA_SEASON_HELP": "该事件对应的竞技场赛季（game_event_arena_seasons）。"
   },
   "EDITORS_HELP": {
     "NPC_SPELLCLICK_SPELLS": "玩家点击该生物时施放的法术（载具、坐骑、任务 NPC）：cast_flags 1 = 玩家施放，2 = 对玩家施放；user_type 0 友方，1 团队，2 小队，3 玩家。",
@@ -2353,7 +2362,8 @@
     "AREATRIGGER_SCRIPTS": "玩家进入触发器时运行的核心脚本。",
     "AREATRIGGER": "客户端数据（AreaTrigger.dbc）中没有的触发器：位置和大小（按半径的球体，或按长宽高的盒子）。",
     "EVENT_SCRIPTS": "由事件（游戏对象和法术事件、飞行路线）运行的脚本步骤：每步的延迟（秒）、命令（同 waypoint_scripts）和数据。",
-    "SPELL_SCRIPTS": "由法术的 SCRIPT_EFFECT/DUMMY 效果（effIndex）运行的步骤，每步含延迟（秒）、命令和数据。"
+    "SPELL_SCRIPTS": "由法术的 SCRIPT_EFFECT/DUMMY 效果（effIndex）运行的步骤，每步含延迟（秒）、命令和数据。",
+    "VEHICLE_ACCESSORY": "乘坐此载具某个刷新点的生物，按 guid 和座位（vehicle_accessory）：覆盖模板的配件。"
   },
   "DISABLES": {
     "OPEN_TYPE": "打开某个来源类型的禁用："

@@ -182,3 +182,7 @@ export * from './entities/areatrigger-scripts.type';
 export * from './entities/areatrigger.type';
 export * from './entities/event-scripts.type';
 export * from './entities/spell-scripts.type';
+export * from './entities/game-event-condition.type';
+export * from './entities/game-event-quest-condition.type';
+export * from './entities/game-event-arena-seasons.type';
+export * from './entities/vehicle-accessory.type';
