@@ -292,7 +292,8 @@
       "TITLE": "Scripts de eventos y hechizos"
     },
     "SESSION_SQL": "SQL de la sesión",
-    "TABLE_BROWSER": "Explorador de tablas"
+    "TABLE_BROWSER": "Explorador de tablas",
+    "FIND_ANYWHERE": "Buscar en todo"
   },
   "DASHBOARD": {
     "WELCOME": "Bienvenido a Keira3",
@@ -2353,5 +2354,19 @@
     "LIMIT": "Filas",
     "ADD_CONDITION": "Condición",
     "ROWS": "{{ count }} filas"
+  },
+  "FIND_ANYWHERE": {
+    "TITLE": "Buscar en todo",
+    "HELP": "Todas las tablas que usan un id: spawns, relaciones de misiones, botín, vendedores, SmartAI, condiciones, los scripts de la base de datos y más. Como mucho 50 filas por tabla.",
+    "ID": "Id",
+    "NONE": "Nada usa este id.",
+    "KIND": {
+      "creature": "Criatura",
+      "gameobject": "Gameobject",
+      "item": "Objeto",
+      "quest": "Misión",
+      "spell": "Hechizo",
+      "broadcastText": "Texto de difusión"
+    }
   }
 }

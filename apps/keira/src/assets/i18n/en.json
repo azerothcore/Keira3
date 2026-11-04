@@ -292,7 +292,8 @@
       "TITLE": "Event and spell scripts"
     },
     "SESSION_SQL": "Session SQL",
-    "TABLE_BROWSER": "Table browser"
+    "TABLE_BROWSER": "Table browser",
+    "FIND_ANYWHERE": "Find anywhere"
   },
   "DASHBOARD": {
     "WELCOME": "Welcome to Keira3",
@@ -2353,5 +2354,19 @@
     "LIMIT": "Rows",
     "ADD_CONDITION": "Condition",
     "ROWS": "{{ count }} rows"
+  },
+  "FIND_ANYWHERE": {
+    "TITLE": "Find anywhere",
+    "HELP": "Every table using an id: spawns, quest relations, loot, vendors, SmartAI, conditions, the DB scripts and more. At most 50 rows per table.",
+    "ID": "Id",
+    "NONE": "Nothing uses this id.",
+    "KIND": {
+      "creature": "Creature",
+      "gameobject": "Gameobject",
+      "item": "Item",
+      "quest": "Quest",
+      "spell": "Spell",
+      "broadcastText": "Broadcast text"
+    }
   }
 }

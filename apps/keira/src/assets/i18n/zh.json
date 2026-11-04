@@ -292,7 +292,8 @@
       "TITLE": "事件和法术脚本"
     },
     "SESSION_SQL": "会话 SQL",
-    "TABLE_BROWSER": "表浏览器"
+    "TABLE_BROWSER": "表浏览器",
+    "FIND_ANYWHERE": "全局查找"
   },
   "DASHBOARD": {
     "WELCOME": "欢迎使用Keira3",
@@ -2353,5 +2354,19 @@
     "LIMIT": "行数",
     "ADD_CONDITION": "条件",
     "ROWS": "{{ count }} 行"
+  },
+  "FIND_ANYWHERE": {
+    "TITLE": "全局查找",
+    "HELP": "所有使用某个 id 的表：刷新点、任务关系、掉落、商人、SmartAI、条件、数据库脚本等。每张表最多 50 行。",
+    "ID": "Id",
+    "NONE": "没有任何地方使用此 id。",
+    "KIND": {
+      "creature": "生物",
+      "gameobject": "游戏对象",
+      "item": "物品",
+      "quest": "任务",
+      "spell": "法术",
+      "broadcastText": "广播文本"
+    }
   }
 }
