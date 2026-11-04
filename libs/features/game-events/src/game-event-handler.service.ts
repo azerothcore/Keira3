@@ -13,6 +13,9 @@ import {
   GAME_EVENT_POOL_TABLE,
   GAME_EVENT_PREREQUISITE_TABLE,
   GAME_EVENT_SEASONAL_QUEST_TABLE,
+  GAME_EVENT_CONDITION_TABLE,
+  GAME_EVENT_QUEST_CONDITION_TABLE,
+  GAME_EVENT_ARENA_SEASON_TABLE,
   GameEvent,
 } from '@keira/shared/acore-world-model';
 
@@ -68,6 +71,18 @@ export class GameEventHandlerService extends HandlerService<GameEvent> {
     return this.statusMap[GAME_EVENT_BATTLEGROUND_HOLIDAY_TABLE].asReadonly();
   }
 
+  get isGameEventConditionUnsaved(): Signal<boolean> {
+    return this.statusMap[GAME_EVENT_CONDITION_TABLE].asReadonly();
+  }
+
+  get isGameEventQuestConditionUnsaved(): Signal<boolean> {
+    return this.statusMap[GAME_EVENT_QUEST_CONDITION_TABLE].asReadonly();
+  }
+
+  get isGameEventArenaSeasonUnsaved(): Signal<boolean> {
+    return this.statusMap[GAME_EVENT_ARENA_SEASON_TABLE].asReadonly();
+  }
+
   protected _statusMap = {
     [GAME_EVENT_TABLE]: signal(false),
     [GAME_EVENT_BATTLEGROUND_HOLIDAY_TABLE]: signal(false),
@@ -81,5 +96,8 @@ export class GameEventHandlerService extends HandlerService<GameEvent> {
     [GAME_EVENT_POOL_TABLE]: signal(false),
     [GAME_EVENT_PREREQUISITE_TABLE]: signal(false),
     [GAME_EVENT_SEASONAL_QUEST_TABLE]: signal(false),
+    [GAME_EVENT_ARENA_SEASON_TABLE]: signal(false),
+    [GAME_EVENT_QUEST_CONDITION_TABLE]: signal(false),
+    [GAME_EVENT_CONDITION_TABLE]: signal(false),
   };
 }

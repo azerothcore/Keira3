@@ -111,7 +111,8 @@
       "CREATURE_TEMPLATE_LOCALE": "Locale de Creature Template",
       "CREATURE_TEXT_LOCALE": "Locale de Creature Text",
       "NPC_SPELLCLICK_SPELLS": "Spell click",
-      "VEHICLE_TEMPLATE_ACCESSORY": "Accesorios de vehículo"
+      "VEHICLE_TEMPLATE_ACCESSORY": "Accesorios de vehículo",
+      "VEHICLE_ACCESSORY": "Accesorios de vehículo (spawns)"
     },
     "QUEST": {
       "TITLE": "Misión",
@@ -269,7 +270,11 @@
       "CREATURE_QUEST": "Misiones de criaturas",
       "GAMEOBJECT_QUEST": "Misiones de objetos",
       "SEASONAL_QUEST": "Misiones de temporada",
-      "BATTLEGROUND_HOLIDAY": "Fin de semana de campo de batalla"
+      "BATTLEGROUND_HOLIDAY": "Fin de semana de campo de batalla",
+      "POOL_REMOVED": "Pools que desaparecen",
+      "CONDITION": "Condiciones",
+      "QUEST_CONDITION": "Condiciones de misiones",
+      "ARENA_SEASON": "Temporadas de arena"
     },
     "DISABLES": {
       "TITLE": "Desactivaciones",
@@ -2340,7 +2345,11 @@
     "GAME_EVENT_CREATURE_QUEST_HELP": "Misiones que dan las criaturas (por entry) mientras dura el evento.",
     "GAME_EVENT_GAMEOBJECT_QUEST_HELP": "Misiones que dan los objetos (por entry) mientras dura el evento.",
     "GAME_EVENT_SEASONAL_QUEST_HELP": "Misiones que se reinician cada vez que empieza el evento.",
-    "GAME_EVENT_BATTLEGROUND_HOLIDAY_HELP": "El fin de semana de campo de batalla (bgflag) del evento."
+    "GAME_EVENT_BATTLEGROUND_HOLIDAY_HELP": "El fin de semana de campo de batalla (bgflag) del evento.",
+    "GAME_EVENT_POOL_REMOVED_HELP": "Los pools que desaparecen mientras dura el evento (game_event_pool, eventEntry = menos el evento).",
+    "GAME_EVENT_CONDITION_HELP": "Las condiciones que espera un evento mundial antes de poder terminar (game_event_condition): req_num de cada una, contadas en los campos de world state.",
+    "GAME_EVENT_QUEST_CONDITION_HELP": "Misiones que cuentan para una condición del evento al completarse (game_event_quest_condition): cada una suma num a condition_id.",
+    "GAME_EVENT_ARENA_SEASON_HELP": "Las temporadas de arena que es el evento (game_event_arena_seasons)."
   },
   "EDITORS_HELP": {
     "NPC_SPELLCLICK_SPELLS": "Los hechizos lanzados al hacer clic en la criatura (vehículos, monturas, NPC de misión): cast_flags 1 = el jugador lanza, 2 = sobre el jugador; user_type 0 amigo, 1 banda, 2 grupo, 3 jugador.",
@@ -2353,7 +2362,8 @@
     "AREATRIGGER_SCRIPTS": "El script del núcleo que se ejecuta al entrar un jugador.",
     "AREATRIGGER": "Un activador que no está en los datos del cliente (AreaTrigger.dbc): dónde está y su tamaño (esfera por radio, o caja por largo, ancho y alto).",
     "EVENT_SCRIPTS": "Los pasos de los scripts que lanzan los eventos (eventos de objetos y hechizos, rutas de vuelo): cada uno con su retraso (segundos), comando (como waypoint_scripts) y datos.",
-    "SPELL_SCRIPTS": "Los pasos que ejecutan los efectos SCRIPT_EFFECT/DUMMY de un hechizo (effIndex), cada uno con su retraso (segundos), comando y datos."
+    "SPELL_SCRIPTS": "Los pasos que ejecutan los efectos SCRIPT_EFFECT/DUMMY de un hechizo (effIndex), cada uno con su retraso (segundos), comando y datos.",
+    "VEHICLE_ACCESSORY": "Las criaturas que montan un spawn de este vehículo, por guid y asiento (vehicle_accessory): sobre los accesorios de la plantilla."
   },
   "DISABLES": {
     "OPEN_TYPE": "Abrir las desactivaciones de un tipo:"

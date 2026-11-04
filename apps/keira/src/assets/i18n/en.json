@@ -111,7 +111,8 @@
       "CREATURE_TEMPLATE_LOCALE": "Creature Template Locale",
       "CREATURE_TEXT_LOCALE": "Creature Text Locale",
       "NPC_SPELLCLICK_SPELLS": "Spell click",
-      "VEHICLE_TEMPLATE_ACCESSORY": "Vehicle accessories"
+      "VEHICLE_TEMPLATE_ACCESSORY": "Vehicle accessories",
+      "VEHICLE_ACCESSORY": "Vehicle accessories (spawns)"
     },
     "QUEST": {
       "TITLE": "Quest",
@@ -269,7 +270,11 @@
       "CREATURE_QUEST": "Creature quests",
       "GAMEOBJECT_QUEST": "Gameobject quests",
       "SEASONAL_QUEST": "Seasonal quests",
-      "BATTLEGROUND_HOLIDAY": "Battleground holiday"
+      "BATTLEGROUND_HOLIDAY": "Battleground holiday",
+      "POOL_REMOVED": "Pools removed",
+      "CONDITION": "Conditions",
+      "QUEST_CONDITION": "Quest conditions",
+      "ARENA_SEASON": "Arena seasons"
     },
     "DISABLES": {
       "TITLE": "Disables",
@@ -2340,7 +2345,11 @@
     "GAME_EVENT_CREATURE_QUEST_HELP": "Quests creatures (by entry) give while the event runs.",
     "GAME_EVENT_GAMEOBJECT_QUEST_HELP": "Quests gameobjects (by entry) give while the event runs.",
     "GAME_EVENT_SEASONAL_QUEST_HELP": "Quests that reset each time the event starts.",
-    "GAME_EVENT_BATTLEGROUND_HOLIDAY_HELP": "The battleground holiday (bgflag) of the event."
+    "GAME_EVENT_BATTLEGROUND_HOLIDAY_HELP": "The battleground holiday (bgflag) of the event.",
+    "GAME_EVENT_POOL_REMOVED_HELP": "The pools removed while the event runs (game_event_pool, eventEntry = minus the event).",
+    "GAME_EVENT_CONDITION_HELP": "The conditions a world event waits for before it can end (game_event_condition): req_num of each, counted in the world state fields.",
+    "GAME_EVENT_QUEST_CONDITION_HELP": "Quests counting towards a condition of the event when done (game_event_quest_condition): each adds num to condition_id.",
+    "GAME_EVENT_ARENA_SEASON_HELP": "The arena seasons the event is (game_event_arena_seasons)."
   },
   "EDITORS_HELP": {
     "NPC_SPELLCLICK_SPELLS": "The spells cast when a player clicks the creature (vehicles, mounts, quest NPCs): cast_flags 1 = the player casts, 2 = cast on the player; user_type 0 friend, 1 raid, 2 party, 3 player.",
@@ -2353,7 +2362,8 @@
     "AREATRIGGER_SCRIPTS": "The core script run when a player enters the trigger.",
     "AREATRIGGER": "A trigger the client data hasn't (AreaTrigger.dbc): where it is and its size (a sphere by radius, or a box by length, width and height).",
     "EVENT_SCRIPTS": "The steps of the scripts run by events (gameobject and spell events, taxi paths): each with its delay (seconds), command (as waypoint_scripts) and data.",
-    "SPELL_SCRIPTS": "The steps run by a spell's SCRIPT_EFFECT/DUMMY effects (effIndex), each with its delay (seconds), command and data."
+    "SPELL_SCRIPTS": "The steps run by a spell's SCRIPT_EFFECT/DUMMY effects (effIndex), each with its delay (seconds), command and data.",
+    "VEHICLE_ACCESSORY": "The creatures riding one spawn of this vehicle, by guid and seat (vehicle_accessory): over the template's accessories."
   },
   "DISABLES": {
     "OPEN_TYPE": "Open the disables of a source type:"

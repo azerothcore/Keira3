@@ -68,6 +68,7 @@ import {
   CreatureTextLocaleComponent,
   NpcSpellclickSpellsComponent,
   VehicleTemplateAccessoryComponent,
+  VehicleAccessoryComponent,
 } from '@keira/features/creature';
 import {
   GameobjectHandlerService,
@@ -187,6 +188,7 @@ import {
   GameEventComponent,
   GameEventCreatureComponent,
   GameEventCreatureRemovedComponent,
+  GameEventRemovedPoolsComponent,
   GameEventGameobjectComponent,
   GameEventGameobjectRemovedComponent,
   GameEventSpawnedPoolsComponent,
@@ -198,6 +200,9 @@ import {
   GameEventGameobjectQuestComponent,
   GameEventSeasonalQuestComponent,
   GameEventBattlegroundHolidayComponent,
+  GameEventArenaSeasonComponent,
+  GameEventQuestConditionComponent,
+  GameEventConditionComponent,
 } from '@keira/features/game-events';
 import { DisablesHandlerService, SelectDisablesComponent, DisablesComponent } from '@keira/features/disables';
 import {
@@ -248,6 +253,11 @@ export const KEIRA_ROUTES: Routes = [
       {
         path: 'vehicle-template-accessory',
         component: VehicleTemplateAccessoryComponent,
+        canActivate: [CreatureHandlerService],
+      },
+      {
+        path: 'vehicle-accessory',
+        component: VehicleAccessoryComponent,
         canActivate: [CreatureHandlerService],
       },
       {
@@ -881,6 +891,11 @@ export const KEIRA_ROUTES: Routes = [
         canActivate: [GameEventHandlerService],
       },
       {
+        path: 'game-event-pool-removed',
+        component: GameEventRemovedPoolsComponent,
+        canActivate: [GameEventHandlerService],
+      },
+      {
         path: 'game-event-prerequisite',
         component: GameEventPrerequisiteComponent,
         canActivate: [GameEventHandlerService],
@@ -918,6 +933,21 @@ export const KEIRA_ROUTES: Routes = [
       {
         path: 'game-event-battleground-holiday',
         component: GameEventBattlegroundHolidayComponent,
+        canActivate: [GameEventHandlerService],
+      },
+      {
+        path: 'game-event-arena-season',
+        component: GameEventArenaSeasonComponent,
+        canActivate: [GameEventHandlerService],
+      },
+      {
+        path: 'game-event-quest-condition',
+        component: GameEventQuestConditionComponent,
+        canActivate: [GameEventHandlerService],
+      },
+      {
+        path: 'game-event-condition',
+        component: GameEventConditionComponent,
         canActivate: [GameEventHandlerService],
       },
     ],

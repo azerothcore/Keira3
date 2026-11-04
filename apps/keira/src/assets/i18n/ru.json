@@ -111,7 +111,8 @@
       "CREATURE_TEMPLATE_LOCALE": "Creature Template (локализация)",
       "CREATURE_TEXT_LOCALE": "Creature Text (локализация)",
       "NPC_SPELLCLICK_SPELLS": "Spell click",
-      "VEHICLE_TEMPLATE_ACCESSORY": "Аксессуары транспорта"
+      "VEHICLE_TEMPLATE_ACCESSORY": "Аксессуары транспорта",
+      "VEHICLE_ACCESSORY": "Аксессуары транспорта (спавны)"
     },
     "QUEST": {
       "TITLE": "Задания",
@@ -269,7 +270,11 @@
       "CREATURE_QUEST": "Задания существ",
       "GAMEOBJECT_QUEST": "Задания объектов",
       "SEASONAL_QUEST": "Сезонные задания",
-      "BATTLEGROUND_HOLIDAY": "Выходные полей боя"
+      "BATTLEGROUND_HOLIDAY": "Выходные полей боя",
+      "POOL_REMOVED": "Убираемые пулы",
+      "CONDITION": "Условия",
+      "QUEST_CONDITION": "Условия заданий",
+      "ARENA_SEASON": "Сезоны арены"
     },
     "DISABLES": {
       "TITLE": "Отключения",
@@ -2340,7 +2345,11 @@
     "GAME_EVENT_CREATURE_QUEST_HELP": "Задания, выдаваемые существами (по entry) на время события.",
     "GAME_EVENT_GAMEOBJECT_QUEST_HELP": "Задания, выдаваемые объектами (по entry) на время события.",
     "GAME_EVENT_SEASONAL_QUEST_HELP": "Задания, сбрасываемые при каждом начале события.",
-    "GAME_EVENT_BATTLEGROUND_HOLIDAY_HELP": "Выходные полей боя (bgflag) этого события."
+    "GAME_EVENT_BATTLEGROUND_HOLIDAY_HELP": "Выходные полей боя (bgflag) этого события.",
+    "GAME_EVENT_POOL_REMOVED_HELP": "Пулы, убираемые на время события (game_event_pool, eventEntry = минус событие).",
+    "GAME_EVENT_CONDITION_HELP": "Условия, которых ждёт мировое событие перед завершением (game_event_condition): req_num каждого, счёт в полях world state.",
+    "GAME_EVENT_QUEST_CONDITION_HELP": "Задания, засчитываемые в условие события при выполнении (game_event_quest_condition): каждое добавляет num к condition_id.",
+    "GAME_EVENT_ARENA_SEASON_HELP": "Сезоны арены, которыми является событие (game_event_arena_seasons)."
   },
   "EDITORS_HELP": {
     "NPC_SPELLCLICK_SPELLS": "Заклинания при клике игрока по существу (транспорт, маунты, NPC заданий): cast_flags 1 = кастует игрок, 2 = на игрока; user_type 0 друг, 1 рейд, 2 группа, 3 игрок.",
@@ -2353,7 +2362,8 @@
     "AREATRIGGER_SCRIPTS": "Скрипт ядра, выполняемый при входе игрока.",
     "AREATRIGGER": "Триггер, которого нет в данных клиента (AreaTrigger.dbc): где он и его размер (сфера по радиусу или коробка по длине, ширине и высоте).",
     "EVENT_SCRIPTS": "Шаги скриптов, запускаемых событиями (события объектов и заклинаний, маршруты полётов): задержка (секунды), команда (как в waypoint_scripts) и данные.",
-    "SPELL_SCRIPTS": "Шаги, выполняемые эффектами SCRIPT_EFFECT/DUMMY заклинания (effIndex): задержка (секунды), команда и данные."
+    "SPELL_SCRIPTS": "Шаги, выполняемые эффектами SCRIPT_EFFECT/DUMMY заклинания (effIndex): задержка (секунды), команда и данные.",
+    "VEHICLE_ACCESSORY": "Существа, едущие на одном спавне этого транспорта, по guid и месту (vehicle_accessory): поверх аксессуаров шаблона."
   },
   "DISABLES": {
     "OPEN_TYPE": "Открыть отключения типа:"
