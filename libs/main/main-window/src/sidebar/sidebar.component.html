@@ -69,6 +69,15 @@
           </li>
 
           <li>
+            <a id="session-sql-toggle" href="#" [routerLink]="'session-sql'">
+              <i class="fa fa-layer-group"></i> {{ 'SIDEBAR.SESSION_SQL' | translate }}
+              @if (sessionSql.entries().length) {
+                <span class="badge bg-secondary ms-1">{{ sessionSql.entries().length }}</span>
+              }
+            </a>
+          </li>
+
+          <li>
             <a id="collapse-all" (click)="collapseAll()">
               <i class="fas fa-angle-double-up"></i> {{ 'SIDEBAR.COLLAPSE_ALL' | translate }}
             </a>

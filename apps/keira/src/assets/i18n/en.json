@@ -290,7 +290,8 @@
       "SPELL_SCRIPTS": "Spell scripts",
       "SELECT_SPELL_SCRIPTS": "Search spell scripts",
       "TITLE": "Event and spell scripts"
-    }
+    },
+    "SESSION_SQL": "Session SQL"
   },
   "DASHBOARD": {
     "WELCOME": "Welcome to Keira3",
@@ -2318,5 +2319,18 @@
     "STEPS": "Steps",
     "COMMANDS": "Commands",
     "GAMEOBJECTS": "Gameobjects starting it"
+  },
+  "SESSION_SQL": {
+    "TITLE": "Session SQL",
+    "HELP": "The queries put aside from the editors (\"To the session\"), in order: review them, copy them, save them as one .sql file or execute them all. Kept on this computer until cleared.",
+    "ADD": "To the session",
+    "ADDED": "In the session",
+    "ADD_TIP": "Put this query aside with the others of the session (Session SQL), to save or execute them together",
+    "COPY": "Copy all",
+    "SAVE": "Save as .sql",
+    "EXECUTE": "Execute all",
+    "CLEAR": "Clear",
+    "EXECUTED": "Executed.",
+    "EMPTY": "Nothing yet: use \"To the session\" next to an editor's query."
   }
 }

@@ -16,7 +16,7 @@ export interface KeiraTab {
 }
 
 /** The parts with one page only (opened again, they show their tab). */
-export const SINGLE_TAB_SECTIONS = new Set(['', 'world-editor', 'sql-editor', 'settings', 'unused-guid-search']);
+export const SINGLE_TAB_SECTIONS = new Set(['', 'world-editor', 'sql-editor', 'session-sql', 'settings', 'unused-guid-search']);
 
 /** The sidebar's names of Keira's parts, by their first path segment. */
 const SECTION_NAMES: Record<string, string> = {
@@ -44,6 +44,7 @@ const SECTION_NAMES: Record<string, string> = {
   'unused-guid-search': 'SIDEBAR.UNUSED_GUID_SEARCH',
   'world-editor': 'SIDEBAR.WORLD_EDITOR',
   'sql-editor': 'SIDEBAR.SQL_EDITOR',
+  'session-sql': 'SIDEBAR.SESSION_SQL',
   settings: 'SIDEBAR.SETTINGS',
 };
 
@@ -73,6 +74,7 @@ export const SECTION_START: [string, string][] = [
   ['trainer', '/trainer/select'],
   ['unused-guid-search', '/unused-guid-search'],
   ['sql-editor', '/sql-editor'],
+  ['session-sql', '/session-sql'],
   ['settings', '/settings'],
 ];
 

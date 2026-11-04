@@ -14,7 +14,7 @@ import { HighlightjsWrapperComponent } from '../highlightjs-wrapper/highlightjs-
 import { QueryErrorComponent } from './query-error/query-error.component';
 import { QueryOutputComponent } from './query-output.component';
 import { tickAsync } from 'ngx-page-object-model';
-import { EditorSettingsService, SoapService } from '@keira/shared/common-services';
+import { EditorSettingsService, SessionSqlService, SoapService } from '@keira/shared/common-services';
 import { Subject } from 'rxjs';
 
 describe('QueryOutputComponent', () => {
@@ -176,6 +176,25 @@ describe('QueryOutputComponent', () => {
     saved.next(true);
     expect(copySpy).toHaveBeenCalledTimes(2);
     expect(emit).not.toHaveBeenCalled();
+  });
+
+  it('puts the query aside in the session SQL (#1086)', () => {
+    localStorage.clear();
+    const { page, host } = setup();
+    host.editorService = { loadedEntityId: '1234', reloadSameEntity() {} } as unknown as EditorService<TableRow>;
+    host.entityTable = 'creature_template';
+    page.detectChanges();
+
+    page.clickElement(page.query<HTMLButtonElement>('#add-to-session-btn'));
+
+    const session = TestBed.inject(SessionSqlService);
+    expect(session.entries()).toEqual([expect.objectContaining({ label: 'creature_template 1234', query: diffQuery })]);
+    expect(page.query('#add-to-session-btn').textContent).toContain('SESSION_SQL.ADDED');
+    // nothing to add
+    Object.assign(host.child(), { getQuery: () => '' });
+    page.clickElement(page.query<HTMLButtonElement>('#add-to-session-btn'));
+    expect(session.entries().length).toBe(1);
+    session.clear();
   });
 
   describe('getQuery', () => {
