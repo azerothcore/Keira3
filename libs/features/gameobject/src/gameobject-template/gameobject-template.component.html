@@ -1,4 +1,9 @@
-<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
+<keira-top-bar
+  [selected]="handlerService.selected"
+  [handler]="handlerService"
+  [selectedName]="handlerService.selectedName"
+  [isNew]="handlerService.isNew"
+/>
 
 <div class="container-fluid editor-with-preview" [class.show-preview]="showGameobjectPreview">
   @if (editorService.loading) {

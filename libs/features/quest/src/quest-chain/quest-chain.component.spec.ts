@@ -23,7 +23,7 @@ class QuestChainComponentPage extends PageObject<QuestChainComponent> {
     return this.queryAll<SVGGElement>('.qc-band');
   }
   get reloadButton(): HTMLButtonElement {
-    return this.query<HTMLButtonElement>('button');
+    return this.query<HTMLButtonElement>('#reload-btn');
   }
   get conditionBadges(): NodeListOf<SVGGElement> {
     return this.queryAll<SVGGElement>('.qc-cond');
