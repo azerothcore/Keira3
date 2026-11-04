@@ -2951,6 +2951,37 @@
           </div>
         </div>
 
+        @if (layers().sniffs) {
+          <div class="card mb-2" data-testid="sniffs">
+            <div class="card-body p-2">
+              <div class="small fw-bold">
+                <i class="fa fa-satellite-dish"></i> {{ 'WORLD_EDITOR.SNIFFED_SPAWNS' | translate }}
+                <span class="text-muted" data-testid="sniff-count">{{
+                  'WORLD_EDITOR.SNIFF_COUNT' | translate: { count: sniffEvidence().length, missing: missingSniffs().length }
+                }}</span>
+              </div>
+              <div class="world-editor-results mt-1">
+                @for (evidence of missingSniffs(); track $index) {
+                  <div class="d-flex align-items-center gap-1 small" [attr.data-testid]="'sniff-missing-' + $index">
+                    <i class="fa" [class]="evidence.sniff.type === 'creature' ? 'fa-dragon' : 'fa-cube'"></i>
+                    <span>{{ evidence.sniff.entry }} · {{ evidence.sniff.x.toFixed(1) }}, {{ evidence.sniff.y.toFixed(1) }} · ×{{ evidence.seen }}</span>
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-success py-0 ms-auto"
+                      [attr.data-testid]="'sniff-add-' + $index"
+                      (click)="addSniffed(evidence)"
+                    >
+                      <i class="fa fa-plus"></i> {{ 'WORLD_EDITOR.SNIFF_ADD' | translate }}
+                    </button>
+                  </div>
+                } @empty {
+                  <small class="text-muted" data-testid="sniff-none">{{ 'WORLD_EDITOR.SNIFF_NONE' | translate }}</small>
+                }
+              </div>
+            </div>
+          </div>
+        }
+
         <div class="card mb-2" data-testid="problems">
           <div class="card-body p-2">
             <div class="d-flex align-items-center gap-2">

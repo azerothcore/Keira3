@@ -60,6 +60,7 @@ import { WorldEditorService } from './world-editor.service';
 import { EdenAction } from './eden/eden-menu';
 import { AssetBrowserComponent } from './eden/asset-browser.component';
 import { WORLD_EDITOR_LINKS } from '@keira/shared/constants';
+import { SniffDbService } from '@keira/shared/db-layer';
 
 /** Stands in for the WebGL viewer: exposes what the editor passes in, and lets tests emit viewer events. */
 @Component({ selector: 'keira-world-viewer', template: '' })
@@ -216,6 +217,7 @@ const CENTER = { x: -8913, y: -137, z: 82 };
 
 describe(WorldEditorComponent.name, () => {
   const mocks = {
+    sniffDb: { spawnsNear: vi.fn() },
     client: {
       isSupported: vi.fn(),
       getMaps: vi.fn(),
@@ -347,6 +349,7 @@ describe(WorldEditorComponent.name, () => {
         { provide: ToastrService, useValue: mocks.toastr },
         { provide: ClipboardService, useValue: mocks.clipboard },
         { provide: ElectronService, useValue: mocks.electron },
+        { provide: SniffDbService, useValue: mocks.sniffDb },
         ...(opts.links === false ? [] : [{ provide: WORLD_EDITOR_LINKS, useValue: links }]),
         {
           provide: ActivatedRoute,
@@ -471,6 +474,7 @@ describe(WorldEditorComponent.name, () => {
     mocks.service.getMaxGuid.mockResolvedValue(1000);
     mocks.service.getFreePathId.mockResolvedValue(20);
     mocks.service.loadPlayers.mockResolvedValue([]);
+    mocks.sniffDb.spawnsNear.mockResolvedValue([]);
     mocks.service.loadPoolMembers.mockResolvedValue([]);
     mocks.service.getEntryName.mockResolvedValue('Marshal McBride');
     mocks.service.getEntryDisplay.mockResolvedValue({ displayId: 1, scale: 1 });
@@ -3730,6 +3734,91 @@ describe(WorldEditorComponent.name, () => {
       page.click('waypoint-insert');
       await settle(page);
       expect(page.placementValue('x')).toBe(-8917.5);
+    });
+  });
+
+  describe('sniffs', () => {
+    const sniffed = (type: 'creature' | 'gameobject', entry: number, x: number, wanderDistance = 0) => ({
+      type,
+      entry,
+      map: 0,
+      x,
+      y: -100,
+      z: 80,
+      o: 1,
+      wanderDistance,
+      movementType: wanderDistance ? 1 : 0,
+      file: 1,
+    });
+
+    it('shows the sniffed spawns next to the database ones, and adds a missing one', async () => {
+      mocks.sniffDb.spawnsNear.mockResolvedValue([
+        // Spawn 1 (entry 101 at -8901): in the database
+        sniffed('creature', 101, -8902),
+        // missing, sniffed twice
+        sniffed('creature', 500, -8950, 6),
+        sniffed('creature', 500, -8951, 6),
+        sniffed('gameobject', 600, -8960),
+      ]);
+      const { page } = await setup();
+      await loadArea(page);
+      expect(mocks.sniffDb.spawnsNear).not.toHaveBeenCalled();
+      expect(page.byId('sniffs', false)).toBeFalsy();
+
+      page.click('view-toggle');
+      page.fixture.detectChanges();
+      page.click('layer-sniffs');
+      await settle(page);
+      expect(mocks.sniffDb.spawnsNear).toHaveBeenCalledWith(0, CENTER.x, CENTER.y, 300);
+      const markers = () =>
+        page
+          .viewer()
+          .markers()
+          .filter((marker) => marker.key.startsWith('sniff:'));
+      expect(markers().map((marker) => marker.label)).toEqual([
+        'Sniff: creature 101 · guid 1 · ×1',
+        'Sniff: creature 500 · not in the database · ×2',
+        'Sniff: gameobject 600 · not in the database · ×1',
+      ]);
+      expect(page.text('sniff-count')).toContain('WORLD_EDITOR.SNIFF_COUNT');
+      expect(page.text('sniff-missing-0')).toContain('500 · -8950.0, -100.0 · ×2');
+
+      page.click('sniff-add-0');
+      await settle(page);
+      expect(page.pendingLines()).toEqual(['Place creature 1001 (Marshal McBride)']);
+      expect(page.text('selected-title')).toContain('Creature (GUID: 1001, Entry: 500)');
+      expect(page.text('sniff-missing-0')).toContain('600');
+      page.click('sniff-add-0');
+      await settle(page);
+      expect(page.pendingLines()).toEqual(['Place creature 1001 (Marshal McBride)', 'Place gameobject 1001 (Marshal McBride)']);
+      expect(page.byId('sniff-none')).toBeTruthy();
+
+      // off: none read or shown
+      page.click('layer-sniffs');
+      await settle(page);
+      expect(markers()).toEqual([]);
+      expect(page.byId('sniffs', false)).toBeFalsy();
+    });
+
+    it('drops the answer of a read for another place', async () => {
+      let answer: (spawns: ReturnType<typeof sniffed>[]) => void = () => undefined;
+      mocks.sniffDb.spawnsNear.mockReturnValueOnce(new Promise((resolve) => (answer = resolve)));
+      const { page } = await setup();
+      await loadArea(page);
+      page.click('view-toggle');
+      page.fixture.detectChanges();
+      page.click('layer-sniffs');
+      await settle(page);
+      page.click('layer-sniffs');
+      await settle(page);
+      answer([sniffed('creature', 500, -8950)]);
+      await settle(page);
+      expect(
+        page
+          .viewer()
+          .markers()
+          .filter((marker) => marker.key.startsWith('sniff:')),
+      ).toEqual([]);
     });
   });
 
