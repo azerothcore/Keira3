@@ -7,6 +7,7 @@ import { ClipboardService } from 'ngx-clipboard';
 import { HandlerService } from '@keira/shared/base-abstract-classes';
 import { TableRow } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';
+import { SessionSqlService } from '@keira/shared/common-services';
 import { SubscriptionHandler } from '@keira/shared/utils';
 import { QueryError } from 'mysql2';
 import { QueryErrorComponent } from '../query-output/query-error/query-error.component';
@@ -27,6 +28,7 @@ export class CopyOutputComponent<T extends TableRow> extends SubscriptionHandler
   protected readonly copyOutputService = inject(CopyOutputService);
 
   private readonly router = inject(Router);
+  private readonly sessionSql = inject(SessionSqlService);
 
   /** The editor's handler: the entry copied (`sourceId`) and the new one (`selected`), chosen in its Create box. */
   readonly handlerService = input.required<HandlerService<T>>();
@@ -50,6 +52,9 @@ export class CopyOutputComponent<T extends TableRow> extends SubscriptionHandler
 
   protected readonly sourceId = signal<string | number>('');
   protected readonly newId = signal<string | number>('');
+  /** The entity's own SQL rather than a copy (#741): every table as raw inserts, nothing to execute. */
+  protected readonly exporting = signal(false);
+  protected readonly addedToSession = signal(false);
 
   ngOnInit(): void {
     const handler = this.handlerService();
@@ -59,6 +64,7 @@ export class CopyOutputComponent<T extends TableRow> extends SubscriptionHandler
     }
     this.sourceId.set(handler.sourceId);
     this.newId.set(handler.selected);
+    this.exporting.set(handler.exporting);
     // (only the query of the latest states is kept)
     this.subscriptions.push(
       this.regenerate
@@ -90,7 +96,8 @@ export class CopyOutputComponent<T extends TableRow> extends SubscriptionHandler
 
     this.subscriptions.push(
       this.copyOutputService.computeRelatedTableStates(inputTables, this.sourceId(), this.tableName()).subscribe((states) => {
-        this.relatedTableStates.set(states);
+        // (an export reads the rows: through a temporary table it would delete them before copying them)
+        this.relatedTableStates.set(this.exporting() ? states.map((state) => ({ ...state, copyMode: 'RAW' as CopyMode })) : states);
         this.generateCopyQuery();
       }),
     );
@@ -103,6 +110,28 @@ export class CopyOutputComponent<T extends TableRow> extends SubscriptionHandler
 
   protected copy(): void {
     this.clipboardService.copyFromContent(this.copyQuery());
+  }
+
+  /** The query as a .sql file (#401). */
+  protected save(): void {
+    const url = URL.createObjectURL(new Blob([this.copyQuery()], { type: 'application/sql' }));
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${this.tableName()}-${this.newId()}${this.exporting() ? '' : `-from-${this.sourceId()}`}.sql`;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
+  /** The query kept in the session's SQL (#1086). */
+  protected addToSession(): void {
+    this.sessionSql.add(`${this.tableName()} ${this.newId()}${this.exporting() ? '' : ` (${this.sourceId()})`}`, this.copyQuery());
+    this.addedToSession.set(true);
+  }
+
+  /** Back to the entity exported. */
+  protected back(): void {
+    const handler = this.handlerService();
+    handler.select(false, this.newId(), handler.selectedName);
   }
 
   protected toggleRelatedTable(tableName: string): void {

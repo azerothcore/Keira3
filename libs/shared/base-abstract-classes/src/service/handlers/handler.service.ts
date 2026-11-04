@@ -14,6 +14,8 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
   isNew = false;
   forceReload = false;
   sourceId?: string;
+  /** The copy page shows the selected entity's own SQL, to save or keep (#741): not a copy. */
+  exporting = false;
 
   constructor() {
     super();
@@ -63,6 +65,7 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
     this.resetStatus();
     this.isNew = isNew;
     this.sourceId = sourceId;
+    this.exporting = false;
 
     const currentSelected = this._selected;
 
@@ -86,6 +89,21 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
         this.router.navigate([this.mainEditorRoutePath]);
       }
     }
+  }
+
+  /** Whether the selected entity can be exported: it exists, and its part of Keira has a copy page. */
+  get canExport(): boolean {
+    return !!this.copyRoutePath && !!this._selected && !this.isNew;
+  }
+
+  /** The selected entity's SQL, every table of it, on the copy page (#741). */
+  exportEntity(): void {
+    if (!this.canExport) {
+      return;
+    }
+    this.sourceId = this._selected;
+    this.exporting = true;
+    void this.router.navigate([this.copyRoutePath]);
   }
 
   canActivate(): boolean {

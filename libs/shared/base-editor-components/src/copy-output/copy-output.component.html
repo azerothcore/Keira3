@@ -3,8 +3,13 @@
     <div class="content-block">
       <div class="row">
         <div class="col-12">
-          <h4>{{ 'COPY_OUTPUT.TITLE' | translate }}</h4>
-          <p>{{ 'COPY_OUTPUT.DESCRIPTION' | translate }}</p>
+          @if (exporting()) {
+            <h4 id="export-title">{{ 'COPY_OUTPUT.EXPORT_TITLE' | translate }}: {{ tableName() }} {{ newId() }}</h4>
+            <p>{{ 'COPY_OUTPUT.EXPORT_DESCRIPTION' | translate }}</p>
+          } @else {
+            <h4>{{ 'COPY_OUTPUT.TITLE' | translate }}</h4>
+            <p>{{ 'COPY_OUTPUT.DESCRIPTION' | translate }}</p>
+          }
         </div>
       </div>
 
@@ -28,7 +33,7 @@
                         (change)="setAllIncluded($any($event.target).checked)"
                       />
                     </th>
-                    <th style="width: 160px">
+                    <th style="width: 160px" [hidden]="exporting()">
                       <div class="form-check form-switch">
                         <input
                           class="form-check-input"
@@ -61,7 +66,7 @@
                           (change)="toggleRelatedTable(r.tableName)"
                         />
                       </td>
-                      <td>
+                      <td [hidden]="exporting()">
                         <div class="form-check form-switch">
                           <input
                             class="form-check-input"
@@ -120,23 +125,44 @@
               <i class="fa fa-copy fa-sm"></i> {{ 'COPY_OUTPUT.COPY' | translate }}
             </button>
 
-            <button
-              id="execute-btn"
-              class="btn btn-primary"
-              (click)="execute()"
-              type="button"
-              [disabled]="executing() || executed() || generating()"
-            >
-              <i class="fa fa-bolt fa-sm"></i>
-              @if (executing()) {
-                <i class="fas fa-spinner fa-spin"></i>
-              }
-              {{ executed() ? ('COPY_OUTPUT.EXECUTED' | translate) : ('COPY_OUTPUT.EXECUTE' | translate) }}
+            <button id="save-sql-btn" class="btn btn-secondary" (click)="save()" type="button" [disabled]="generating()">
+              <i class="fa fa-download fa-sm"></i> {{ 'COPY_OUTPUT.SAVE' | translate }}
             </button>
 
-            <button id="continue-btn" class="btn btn-success" (click)="continue()" type="button" [disabled]="!executed()">
-              <i class="fa fa-arrow-right fa-sm"></i> {{ 'COPY_OUTPUT.CONTINUE' | translate }}
+            <button
+              id="add-to-session-btn"
+              class="btn btn-secondary"
+              (click)="addToSession()"
+              type="button"
+              [disabled]="generating() || addedToSession()"
+            >
+              <i class="fa fa-layer-group fa-sm"></i>
+              {{ (addedToSession() ? 'SESSION_SQL.ADDED' : 'SESSION_SQL.ADD') | translate }}
             </button>
+
+            @if (exporting()) {
+              <button id="back-btn" class="btn btn-primary" (click)="back()" type="button">
+                <i class="fa fa-arrow-left fa-sm"></i> {{ 'COPY_OUTPUT.BACK' | translate }}
+              </button>
+            } @else {
+              <button
+                id="execute-btn"
+                class="btn btn-primary"
+                (click)="execute()"
+                type="button"
+                [disabled]="executing() || executed() || generating()"
+              >
+                <i class="fa fa-bolt fa-sm"></i>
+                @if (executing()) {
+                  <i class="fas fa-spinner fa-spin"></i>
+                }
+                {{ executed() ? ('COPY_OUTPUT.EXECUTED' | translate) : ('COPY_OUTPUT.EXECUTE' | translate) }}
+              </button>
+
+              <button id="continue-btn" class="btn btn-success" (click)="continue()" type="button" [disabled]="!executed()">
+                <i class="fa fa-arrow-right fa-sm"></i> {{ 'COPY_OUTPUT.CONTINUE' | translate }}
+              </button>
+            }
           </div>
         </div>
       </div>

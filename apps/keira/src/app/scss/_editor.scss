@@ -17,6 +17,16 @@
     padding-right: 12px;
     padding-left: 12px;
   }
+
+  .top-bar-export {
+    position: absolute;
+    left: 6px;
+    top: 1px;
+    font-size: 12px;
+    line-height: 20px;
+    color: var(--keira-top-bar-color);
+    text-decoration: none;
+  }
 }
 
 .wiki-link {

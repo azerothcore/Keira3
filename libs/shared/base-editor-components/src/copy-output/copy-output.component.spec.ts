@@ -6,6 +6,7 @@ import { provideRouter, Router } from '@angular/router';
 import { HandlerService } from '@keira/shared/base-abstract-classes';
 import { TableRow } from '@keira/shared/constants';
 import { MysqlQueryService, MysqlService } from '@keira/shared/db-layer';
+import { SessionSqlService } from '@keira/shared/common-services';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ClipboardService } from 'ngx-clipboard';
 import { DebugHtmlElement } from 'ngx-page-object-model';
@@ -45,6 +46,21 @@ class CopyOutputPage extends PageObject<CopyOutputComponent<TableRow>> {
   continueButton(): DebugHtmlElement<HTMLButtonElement> {
     return this.getDebugElementByCss('#continue-btn');
   }
+  saveButton(): DebugHtmlElement<HTMLButtonElement> {
+    return this.getDebugElementByCss('#save-sql-btn');
+  }
+  sessionButton(): DebugHtmlElement<HTMLButtonElement> {
+    return this.getDebugElementByCss('#add-to-session-btn');
+  }
+  backButton(): DebugHtmlElement<HTMLButtonElement> {
+    return this.getDebugElementByCss('#back-btn');
+  }
+  exportTitle(assert = true): DebugHtmlElement<HTMLElement> {
+    return this.getDebugElementByCss('#export-title', assert);
+  }
+  executeButtonShown(): boolean {
+    return this.queryAll('#execute-btn').length > 0;
+  }
   error(assert = true): DebugHtmlElement<HTMLElement> {
     return this.getDebugElementByCss('keira-query-error', assert);
   }
@@ -80,7 +96,7 @@ describe(CopyOutputComponent.name, () => {
   });
 
   const setup = async (
-    config: { relatedTables?: RelatedTable[]; sourceId?: string } = {
+    config: { relatedTables?: RelatedTable[]; sourceId?: string; exporting?: boolean; mainCopyMode?: 'ALL' } = {
       relatedTables: [
         { tableName: 'creature_template_addon', idField: 'entry' },
         { tableName: 'npc_vendor', idField: 'entry' },
@@ -93,7 +109,13 @@ describe(CopyOutputComponent.name, () => {
     const query = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
     const clipboard = vi.spyOn(TestBed.inject(ClipboardService), 'copyFromContent').mockImplementation(() => true);
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
-    const handlerService = { select: vi.fn(), sourceId: 'sourceId' in config ? config.sourceId : '1', selected: '2' };
+    const handlerService = {
+      select: vi.fn(),
+      sourceId: 'sourceId' in config ? config.sourceId : '1',
+      selected: config.exporting ? '1' : '2',
+      selectedName: 'Anub',
+      exporting: !!config.exporting,
+    };
 
     const page = new CopyOutputPage(TestBed.createComponent(CopyOutputComponent<TableRow>));
     page.fixture.componentRef.setInput('handlerService', handlerService as unknown as HandlerService<TableRow>);
@@ -101,6 +123,7 @@ describe(CopyOutputComponent.name, () => {
     page.fixture.componentRef.setInput('tableName', 'creature_template');
     page.fixture.componentRef.setInput('idField', 'entry');
     page.fixture.componentRef.setInput('relatedTables', config.relatedTables);
+    page.fixture.componentRef.setInput('mainCopyMode', config.mainCopyMode);
     page.fixture.detectChanges();
     await page.whenStable();
     page.fixture.detectChanges();
@@ -238,5 +261,54 @@ describe(CopyOutputComponent.name, () => {
     expect(page.error()).toBeTruthy();
     expect(page.executeButton().nativeElement.disabled).toBe(false);
     expect(page.continueButton().nativeElement.disabled).toBe(true);
+  });
+
+  it('saves the query as a .sql file, and keeps it in the session', async () => {
+    const { page } = await setup();
+    const session = TestBed.inject(SessionSqlService);
+    session.clear();
+    const createUrl = vi.fn(() => 'blob:x');
+    const revokeUrl = vi.fn();
+    Object.assign(URL, { createObjectURL: createUrl, revokeObjectURL: revokeUrl });
+    const click = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => undefined);
+
+    await page.click(page.saveButton());
+    expect(click).toHaveBeenCalled();
+    expect((click.mock.contexts[0] as HTMLAnchorElement).download).toBe('creature_template-2-from-1.sql');
+    expect(revokeUrl).toHaveBeenCalledWith('blob:x');
+
+    await page.click(page.sessionButton());
+    expect(session.entries()[0].label).toBe('creature_template 2 (1)');
+    expect(session.entries()[0].query).toContain('SET @ENTRY = 2;');
+    expect(page.sessionButton().nativeElement.disabled).toBe(true);
+    session.clear();
+    click.mockRestore();
+  });
+
+  it('exports the entity: every table as raw inserts, nothing to execute', async () => {
+    const { page, handlerService } = await setup({
+      exporting: true,
+      mainCopyMode: 'ALL',
+      relatedTables: [{ tableName: 'creature_queststarter', idField: 'id', copyMode: 'ALL' }],
+    });
+    const session = TestBed.inject(SessionSqlService);
+    session.clear();
+    const click = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => undefined);
+    Object.assign(URL, { createObjectURL: vi.fn(() => 'blob:x'), revokeObjectURL: vi.fn() });
+
+    expect(page.exportTitle().nativeElement.textContent).toContain('creature_template 1');
+    expect(page.executeButtonShown()).toBe(false);
+    expect(page.sqlText()).not.toContain('CREATE TEMPORARY TABLE');
+    expect(page.sqlText()).toContain("'Anub\\'Rekhan'");
+
+    await page.click(page.saveButton());
+    expect((click.mock.contexts[0] as HTMLAnchorElement).download).toBe('creature_template-1.sql');
+    await page.click(page.sessionButton());
+    expect(session.entries()[0].label).toBe('creature_template 1');
+
+    await page.click(page.backButton());
+    expect(handlerService.select).toHaveBeenCalledWith(false, '1', 'Anub');
+    session.clear();
+    click.mockRestore();
   });
 });

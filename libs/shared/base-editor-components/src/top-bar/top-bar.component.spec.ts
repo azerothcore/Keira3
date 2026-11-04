@@ -1,4 +1,7 @@
+import { vi } from 'vitest';
 import { Component, viewChild, provideZonelessChangeDetection } from '@angular/core';
+import { HandlerService } from '@keira/shared/base-abstract-classes';
+import { TableRow } from '@keira/shared/constants';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
@@ -6,7 +9,15 @@ import { TopBarComponent } from './top-bar.component';
 
 describe(TopBarComponent.name, () => {
   @Component({
-    template: ` <keira-top-bar [selected]="selected" [selectedName]="selectedName" [isNew]="isNew" [customScssClass]="customScssClass" /> `,
+    template: `
+      <keira-top-bar
+        [selected]="selected"
+        [selectedName]="selectedName"
+        [isNew]="isNew"
+        [customScssClass]="customScssClass"
+        [handler]="handler"
+      />
+    `,
     imports: [TopBarComponent],
   })
   class TestHostComponent {
@@ -15,11 +26,16 @@ describe(TopBarComponent.name, () => {
     selectedName: string | undefined;
     isNew: boolean = false;
     customScssClass: string | undefined;
+    handler: HandlerService<TableRow> | undefined;
   }
 
   class Page extends PageObject<TestHostComponent> {
     mainWrapper() {
       return this.getDebugElementByCss('.top-bar');
+    }
+
+    exportButton(assert = true) {
+      return this.getDebugElementByCss('#export-entity-btn', assert);
     }
 
     mainText(assert = true) {
@@ -76,6 +92,29 @@ describe(TopBarComponent.name, () => {
       expect(page.mainText().nativeElement.classList).toContain('main-text');
       expect(page.mainText().nativeElement.classList).toContain('text-truncate');
       expect(page.mainText().nativeElement.classList).not.toContain('item-quality-q6'); // Ensure no custom class
+    });
+  });
+
+  describe('when the entity can be exported', () => {
+    it('exports it through its handler', () => {
+      const { host, page } = setup();
+      const handler = { canExport: true, exportEntity: vi.fn() };
+      host.selected = '1234';
+      host.handler = handler as unknown as HandlerService<TableRow>;
+      page.detectChanges();
+
+      page.exportButton().nativeElement.click();
+
+      expect(handler.exportEntity).toHaveBeenCalled();
+    });
+
+    it('shows no export button otherwise', () => {
+      const { host, page } = setup();
+      host.selected = '1234';
+      host.handler = { canExport: false } as unknown as HandlerService<TableRow>;
+      page.detectChanges();
+
+      expect(page.exportButton(false)).toBeFalsy();
     });
   });
 
