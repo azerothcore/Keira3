@@ -300,7 +300,8 @@
     "SESSION_SQL": "SQL de la sesión",
     "TABLE_BROWSER": "Explorador de tablas",
     "FIND_ANYWHERE": "Buscar en todo",
-    "SNIFF_TO_SQL": "Sniff a SQL"
+    "SNIFF_TO_SQL": "Sniff a SQL",
+    "SNIFFS": "Sniffs"
   },
   "DASHBOARD": {
     "WELCOME": "Bienvenido a Keira3",
@@ -2107,6 +2108,11 @@
     "PLAYERS": "Jugadores conectados",
     "PLAYERS_HELP": "Los personajes conectados, de la base de datos de personajes (Ajustes > Servidor), leídos cada 10 segundos. El servidor guarda su posición cada pocos minutos y al desconectar, así que se muestran donde estuvieron hace poco.",
     "OFFLINE_PLAYERS": "Personajes desconectados",
+    "SNIFFS": "Sniffs",
+    "SNIFFED_SPAWNS": "Spawns de sniffs",
+    "SNIFF_COUNT": "{{count}} vistos, {{missing}} no están en la base de datos",
+    "SNIFF_ADD": "Añadir",
+    "SNIFF_NONE": "No falta ningún spawn de sniffs aquí (carga sniffs en la página Sniffs).",
     "OFFLINE_PLAYERS_HELP": "Donde se quedaron los personajes desconectados (gris).",
     "PLAYERS_ERROR": "No se puede leer {{database}}.characters (Ajustes > Servidor: el nombre de la base de datos, y que el usuario pueda leerla).",
     "LEGEND_PLAYER": "Jugador conectado",
@@ -2481,5 +2487,40 @@
     "SUMMARY": "{{ paths }} caminos, {{ texts }} textos ({{ matched }} encontrados en broadcast_text).",
     "FIRST_PATH": "Primer id de camino",
     "NOTHING": "No se encontró movimiento ni chat de criaturas."
+  },
+  "SNIFFS": {
+    "TITLE": "Sniffs",
+    "HELP": "Los sniffs se quedan en este equipo y tu servidor MySQL: contienen información privada de jugadores, así que mantenlos fuera del repositorio y no los compartas.",
+    "DESKTOP_ONLY": "Leer archivos de sniffs y ejecutar WowPacketParser requiere la aplicación de escritorio de Keira3.",
+    "DATABASE": "Base de datos de sniffs",
+    "DATABASE_HELP": "Una base de datos propia en tu servidor MySQL, creada con el usuario de Keira (nunca la base de datos world): ahí se cargan los sniffs y el editor del mundo los lee.",
+    "CREATE": "Crear",
+    "EXISTS": "{{ name }} existe",
+    "MISSING": "{{ name }} aún no está creada",
+    "LOAD": "Cargar SQL de sniffs",
+    "LOAD_HELP": "Un archivo SQL de sniffs o una carpeta de ellos (SQL de WowPacketParser, mass parses…): solo se cargan sus INSERT, en la base de datos de sniffs, cada fila con el archivo del que viene. Un archivo ya cargado se omite.",
+    "PATH": "Archivo o carpeta",
+    "LOAD_BTN": "Cargar",
+    "ALREADY_LOADED": "ya cargado",
+    "LOADED": "{{ rows }} filas en {{ tables }} tablas ({{ skipped }} sentencias omitidas)",
+    "WPP_HELP": "TrinityCore/WowPacketParser, descargado y compilado en una carpeta tuya (requiere git y el SDK de .NET), y ejecutado sobre un .pkt con la salida SQL para 3.3.5. Su texto y su SQL se escriben junto al .pkt.",
+    "WPP_FOLDER": "Carpeta de WowPacketParser",
+    "WPP_BUILD": "Descargar y compilar",
+    "WPP_BUILT": "WowPacketParser está compilado",
+    "WPP_NOT_BUILT": "WowPacketParser aún no está compilado",
+    "PKT": "Un archivo .pkt",
+    "WPP_DB": "Usar las bases de datos",
+    "WPP_DB_HELP": "WowPacketParser se conecta con el usuario de Keira: su base de datos propia es la de sniffs y compara con la base de datos world (hecho para TrinityCore, puede quejarse de las tablas de AzerothCore).",
+    "PARSE": "Analizar",
+    "OPEN": "Abrir",
+    "SAVE": "Guardar",
+    "ERROR": {
+      "NAME": "Los nombres de base de datos son letras, dígitos y guiones bajos.",
+      "NO_GIT": "git no está instalado (o no está en el PATH).",
+      "NO_DOTNET": "El SDK de .NET no está instalado (o no está en el PATH).",
+      "DOWNLOAD_FAILED": "La descarga de WowPacketParser falló: mira su salida abajo.",
+      "BUILD_FAILED": "La compilación de WowPacketParser falló: mira su salida abajo.",
+      "PARSE_FAILED": "WowPacketParser falló: mira su salida abajo."
+    }
   }
 }
