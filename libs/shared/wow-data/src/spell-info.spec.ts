@@ -34,8 +34,8 @@ describe('parseSpellInfo', () => {
         effectName: 'APPLY_AURA',
         aura: 3,
         auraName: 'PERIODIC_DAMAGE',
-        min: 2,
-        max: 2,
+        min: 1,
+        max: 1,
         amplitude: 2000,
         radius: 5,
       }),
@@ -54,6 +54,17 @@ describe('parseSpellInfo', () => {
     const odd = spellRow({ 0: 7, 71: 999, 95: 999, 86: 999 });
     const [effect] = parseSpellInfo({ spell: new DbcFile(buildDbc([odd], 234)) }, 7)?.effects ?? [];
     expect([effect.effectName, effect.auraName, effect.targetA, effect.targetB]).toEqual(['999', '999', '999', '']);
+  });
+
+  it('reads the dice as the core rolls them, and a health cost', () => {
+    const row = spellRow({ 0: 9, 41: 0xfffffffe, 71: 2, 80: 99, 72: 2, 81: 10, 75: 1, 73: 2, 82: 5, 76: -3 });
+    const info = parseSpellInfo({ spell: new DbcFile(buildDbc([row], 234)) }, 9);
+    expect(info?.powerType).toBe(-2);
+    expect(info?.effects.map((e) => [e.min, e.max])).toEqual([
+      [99, 99],
+      [11, 11],
+      [2, 6],
+    ]);
   });
 
   it('finds a record by id', () => {

@@ -13,7 +13,7 @@
     ></textarea>
 
     <div class="d-flex flex-wrap gap-2 align-items-center mb-2">
-      <select class="form-select form-select-sm w-auto" id="sniff-table" [ngModel]="table()" (ngModelChange)="table.set($event)">
+      <select class="form-select form-select-sm w-auto" id="sniff-table" [ngModel]="table()" (ngModelChange)="changeTable($event)">
         <option value="waypoint_data">waypoint_data (path_id)</option>
         <option value="waypoints">waypoints (SmartAI)</option>
       </select>

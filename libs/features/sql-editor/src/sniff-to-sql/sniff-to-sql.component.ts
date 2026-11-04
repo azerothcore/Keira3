@@ -44,26 +44,44 @@ export class SniffToSqlComponent {
     return [...paths, ...texts].join('\n');
   });
 
+  /** Another table for the paths: its first free id read again (the other's would overwrite paths). */
+  protected async changeTable(table: SniffPathTable): Promise<void> {
+    this.table.set(table);
+    if (this.parsed()) {
+      await this.guard(() => this.readFirstPathId());
+    }
+  }
+
   protected async parse(): Promise<void> {
     const { paths, texts } = parseSniff(this.text());
+    this.broadcast.set(new Map());
+    this.firstGroups.set(new Map());
     this.paths.set(paths);
     this.texts.set(texts);
     this.parsed.set(true);
     this.added.set(false);
     this.error.set('');
+    await this.guard(() => this.readDatabase(texts));
+  }
+
+  private async guard(read: () => Promise<void>): Promise<void> {
     try {
-      await this.readDatabase(texts);
+      await read();
     } catch (error) {
       this.error.set((error as { sqlMessage?: string; message?: string })?.sqlMessage ?? (error as Error)?.message ?? String(error));
     }
   }
 
-  /** The first free path id, the broadcast texts of what was said, and each creature's next free text group. */
-  private async readDatabase(texts: SniffText[]): Promise<void> {
+  private async readFirstPathId(): Promise<void> {
     const column = this.table() === 'waypoint_data' ? 'id' : 'entry';
     const [max] =
       (await firstValueFrom(this.queryService.query<TableRow>(`SELECT MAX(\`${column}\`) AS max FROM \`${this.table()}\``))) ?? [];
     this.firstPathId.set(Number(max?.['max'] ?? 0) + 1);
+  }
+
+  /** The first free path id, the broadcast texts of what was said, and each creature's next free text group. */
+  private async readDatabase(texts: SniffText[]): Promise<void> {
+    await this.readFirstPathId();
     if (!texts.length) {
       return;
     }

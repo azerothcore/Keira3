@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { WowClientService, WowDataSettingsService } from '@keira/shared/wow-data';
 import { TranslatePipe } from '@ngx-translate/core';
+import { startWith } from 'rxjs';
 import { BaseSelectorBtnComponent } from '../base-selector/base-selector-btn.component';
 import { SpellInfoModalComponent } from './spell-info-modal.component';
 import { SpellSelectorModalComponent } from './spell-selector-modal.component';
@@ -12,10 +13,19 @@ import { SpellSelectorModalComponent } from './spell-selector-modal.component';
   styleUrls: ['../base-selector/base-selector-btn.component.scss'],
   imports: [TranslatePipe],
 })
-export class SpellSelectorBtnComponent extends BaseSelectorBtnComponent {
+export class SpellSelectorBtnComponent extends BaseSelectorBtnComponent implements OnInit {
   protected readonly modalComponentClass = SpellSelectorModalComponent;
   private readonly client = inject(WowClientService);
   private readonly wowSettings = inject(WowDataSettingsService);
+
+  /** The field's spell, followed (another row selected, an id typed). */
+  protected readonly spellId = signal(0);
+
+  ngOnInit(): void {
+    this.subscriptions.push(
+      this.control.valueChanges.pipe(startWith(this.control.value)).subscribe((value) => this.spellId.set(Number(value) || 0)),
+    );
+  }
 
   /** The spell's info is read from the game client: the desktop app with its folder set. */
   protected canShowInfo(): boolean {
@@ -23,6 +33,6 @@ export class SpellSelectorBtnComponent extends BaseSelectorBtnComponent {
   }
 
   protected showInfo(): void {
-    this.modalService.show(SpellInfoModalComponent, { class: 'modal-lg', initialState: { spellId: Number(this.control.value) } });
+    this.modalService.show(SpellInfoModalComponent, { class: 'modal-lg', initialState: { spellId: this.spellId() } });
   }
 }
