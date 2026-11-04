@@ -10,6 +10,9 @@
       @if (!!service.level) {
         <p id="level">Level: {{ service.level }}</p>
       }
+      @if (service.suggestedPlayers) {
+        <p id="suggested-players">Suggested players: {{ service.suggestedPlayers }}</p>
+      }
       @if (!!service.minLevel) {
         <p id="minlevel">
           Req. level: {{ service.minLevel }}
@@ -323,26 +326,43 @@
         />
       </div>
 
-      <p class="title text-left cursor-pointer mt-3" (click)="descriptionToggle.set(!descriptionToggle())" id="description-toggle">
-        <i class="fa" [class.fa-caret-right]="descriptionToggle()" [class.fa-caret-down]="!descriptionToggle()"></i> Description
-      </p>
-      <div [collapse]="descriptionToggle()" class="greyed text-sm" id="description-text">
-        {{ service.descriptionText }}
+      <div class="form-check form-switch small mt-2" id="text-sample">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="text-sample-switch"
+          [checked]="!!service.textSample()"
+          (change)="service.showSample($any($event.target).checked)"
+        />
+        <label class="form-check-label" for="text-sample-switch">Show $N, $R, $C, $G for a sample player (Drok, Orc Warrior)</label>
       </div>
 
-      <p class="title text-left cursor-pointer" (click)="progressToggle.set(!progressToggle())" id="progress-toggle">
-        <i class="fa" [class.fa-caret-right]="progressToggle()" [class.fa-caret-down]="!progressToggle()"></i> Progress (CompletionText)
-      </p>
-      <div [collapse]="progressToggle()" class="greyed text-sm" id="progress-text">
-        {{ service.completionText }}
-      </div>
+      @if (service.descriptionText) {
+        <p class="title text-left cursor-pointer mt-3" (click)="descriptionToggle.set(!descriptionToggle())" id="description-toggle">
+          <i class="fa" [class.fa-caret-right]="descriptionToggle()" [class.fa-caret-down]="!descriptionToggle()"></i> Description
+        </p>
+        <div [collapse]="descriptionToggle()" class="greyed text-sm" id="description-text">
+          {{ service.descriptionText }}
+        </div>
+      }
 
-      <p class="title text-left cursor-pointer" (click)="completionToggle.set(!completionToggle())" id="completion-toggle">
-        <i class="fa" [class.fa-caret-right]="completionToggle()" [class.fa-caret-down]="!completionToggle()"></i> Completion (RewardText)
-      </p>
-      <div [collapse]="completionToggle()" class="greyed text-sm" id="completion-text">
-        {{ service.rewardText }}
-      </div>
+      @if (service.completionText) {
+        <p class="title text-left cursor-pointer" (click)="progressToggle.set(!progressToggle())" id="progress-toggle">
+          <i class="fa" [class.fa-caret-right]="progressToggle()" [class.fa-caret-down]="!progressToggle()"></i> Progress (CompletionText)
+        </p>
+        <div [collapse]="progressToggle()" class="greyed text-sm" id="progress-text">
+          {{ service.completionText }}
+        </div>
+      }
+
+      @if (service.rewardText) {
+        <p class="title text-left cursor-pointer" (click)="completionToggle.set(!completionToggle())" id="completion-toggle">
+          <i class="fa" [class.fa-caret-right]="completionToggle()" [class.fa-caret-down]="!completionToggle()"></i> Completion (RewardText)
+        </p>
+        <div [collapse]="completionToggle()" class="greyed text-sm" id="completion-text">
+          {{ service.rewardText }}
+        </div>
+      }
 
       @if (service.isReward()) {
         <div id="rewards">
@@ -439,6 +459,7 @@
                           <span class="colored">{{
                             service.sqliteQueryService.getFactionNameByNameId(service.questTemplate['RewardFactionID' + i]) | async
                           }}</span>
+                          <span class="greyed"> [{{ service.questTemplate['RewardFactionID' + i] }}]</span>
                         </p>
                       }
                     </div>
