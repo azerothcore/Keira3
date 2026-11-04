@@ -236,7 +236,18 @@
             <div class="form-group col-12 col-sm-6">
               <label class="control-label" for="Comment">Comment</label>
               <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'CONDITIONS.EDITOR.COMMENT' | translate"></i>
-              <input [formControlName]="'Comment'" id="Comment" class="form-control form-control-sm" />
+              <div class="input-group input-group-sm">
+                <input [formControlName]="'Comment'" id="Comment" class="form-control form-control-sm" />
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  id="generate-comment-btn"
+                  [title]="'CONDITIONS.EDITOR.GENERATE_COMMENT_TIP' | translate"
+                  (click)="generateComment()"
+                >
+                  <i class="fa fa-magic"></i> {{ 'CONDITIONS.EDITOR.GENERATE_COMMENT' | translate }}
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -343,7 +343,11 @@
     "TEMP_TOOLTIP": "临时表（使用临时表）",
     "GENERATED_SQL": "生成的 SQL",
     "EXPAND": "展开",
-    "COLLAPSE": "收起"
+    "COLLAPSE": "收起",
+    "EXPORT_TITLE": "导出",
+    "EXPORT_DESCRIPTION": "此实体在下方所选各表中的 SQL：删除并插入其行，可保存为 .sql 文件或加入会话。",
+    "SAVE": "保存为 .sql",
+    "BACK": "返回"
   },
   "CREATURE": {
     "TEMPLATE": {
@@ -955,7 +959,9 @@
         "CONDITION_OBJECT_ENTRY_GUID": "0 = 给定类型的任何对象;  1 - 500k = 生物/游戏对象GUID",
         "CONDITION_DISTANCE_TO": "比较类型: 0 = distance must be equal to ConditionValue2; 1 = distance must be higher than ConditionValue2; 2 = distance must be lower than ConditionValue2; 3 = distance must be equal to or higher than ConditionValue2; 4 = distance must be equal to or lower than ConditionValue2",
         "CONDITION_QUEST_OBJECTIVE_PROGRESS": "任务对象(目标)数"
-      }
+      },
+      "GENERATE_COMMENT": "生成",
+      "GENERATE_COMMENT_TIP": "根据上方字段填写注释，与 SmartAI 注释相同"
     }
   },
   "SMARTAI": {
@@ -2368,5 +2374,6 @@
       "spell": "法术",
       "broadcastText": "广播文本"
     }
-  }
+  },
+  "EXPORT_ENTITY": "将此实体的所有表导出为 SQL"
 }

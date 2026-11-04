@@ -343,7 +343,11 @@
     "TEMP_TOOLTIP": "Tabla temporal (usa una tabla temporal)",
     "GENERATED_SQL": "SQL generado",
     "EXPAND": "Expandir",
-    "COLLAPSE": "Contraer"
+    "COLLAPSE": "Contraer",
+    "EXPORT_TITLE": "Exportar",
+    "EXPORT_DESCRIPTION": "El SQL de esta entidad, todas las tablas elegidas abajo: borra e inserta sus filas, para guardarlo como archivo .sql o mantenerlo en la sesión.",
+    "SAVE": "Guardar como .sql",
+    "BACK": "Volver"
   },
   "CREATURE": {
     "TEMPLATE": {
@@ -955,7 +959,9 @@
         "CONDITION_OBJECT_ENTRY_GUID": "0 = Cualquier objeto del tipo dado;  1 - 500k = criatura/objeto del juego GUID",
         "CONDITION_DISTANCE_TO": "ComparisionType: 0 = la distancia debe ser igual a ConditionValue2; 1 = la distancia debe ser superior a ConditionValue2; 2 = la distancia debe ser inferior a ConditionValue2; 3 = la distancia debe ser igual o superior a ConditionValue2; 4 = la distancia debe ser igual o inferior a ConditionValue2",
         "CONDITION_QUEST_OBJECTIVE_PROGRESS": "Recuento de Objetivos de Misión"
-      }
+      },
+      "GENERATE_COMMENT": "Generar",
+      "GENERATE_COMMENT_TIP": "Rellena el comentario a partir de los campos de arriba, como los comentarios de SmartAI"
     }
   },
   "SMARTAI": {
@@ -2368,5 +2374,6 @@
       "spell": "Hechizo",
       "broadcastText": "Texto de difusión"
     }
-  }
+  },
+  "EXPORT_ENTITY": "Exportar esta entidad como SQL, todas sus tablas"
 }

@@ -343,7 +343,11 @@
     "TEMP_TOOLTIP": "Временная таблица (использует временную таблицу)",
     "GENERATED_SQL": "Сгенерированный SQL",
     "EXPAND": "Развернуть",
-    "COLLAPSE": "Свернуть"
+    "COLLAPSE": "Свернуть",
+    "EXPORT_TITLE": "Экспорт",
+    "EXPORT_DESCRIPTION": "SQL этой сущности по всем выбранным ниже таблицам: удаляет и вставляет её строки; можно сохранить как .sql или добавить в сессию.",
+    "SAVE": "Сохранить как .sql",
+    "BACK": "Назад"
   },
   "CREATURE": {
     "TEMPLATE": {
@@ -955,7 +959,9 @@
         "CONDITION_OBJECT_ENTRY_GUID": "0 = Любой объект данного типа;  1 - 500k = GUID существа/объекта",
         "CONDITION_DISTANCE_TO": "ТипСравнения: 0 = расстояние равно ConditionValue2; 1 = больше; 2 = меньше; 3 = равно или больше; 4 = равно или меньше",
         "CONDITION_QUEST_OBJECTIVE_PROGRESS": "Счётчик цели задания"
-      }
+      },
+      "GENERATE_COMMENT": "Создать",
+      "GENERATE_COMMENT_TIP": "Заполнить комментарий по полям выше, как комментарии SmartAI"
     }
   },
   "SMARTAI": {
@@ -2368,5 +2374,6 @@
       "spell": "Заклинание",
       "broadcastText": "Broadcast-текст"
     }
-  }
+  },
+  "EXPORT_ENTITY": "Экспортировать эту сущность в SQL, все её таблицы"
 }
