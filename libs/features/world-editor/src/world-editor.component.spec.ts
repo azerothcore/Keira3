@@ -3738,7 +3738,7 @@ describe(WorldEditorComponent.name, () => {
   });
 
   describe('sniffs', () => {
-    const sniffed = (type: 'creature' | 'gameobject', entry: number, x: number, wanderDistance = 0) => ({
+    const sniffed = (type: 'creature' | 'gameobject', entry: number, x: number, extra: Record<string, unknown> = {}) => ({
       type,
       entry,
       map: 0,
@@ -3746,58 +3746,98 @@ describe(WorldEditorComponent.name, () => {
       y: -100,
       z: 80,
       o: 1,
-      wanderDistance,
-      movementType: wanderDistance ? 1 : 0,
+      wanderDistance: 0,
+      movementType: 0,
       file: 1,
+      ...extra,
     });
+    const sniffMarkers = (page: Page) =>
+      page
+        .viewer()
+        .markers()
+        .filter((marker) => marker.key.startsWith('sniff:'));
+    const showSniffs = async (page: Page) => {
+      page.click('view-toggle');
+      page.fixture.detectChanges();
+      page.click('layer-sniffs');
+      await settle(page);
+    };
 
     it('shows the sniffed spawns next to the database ones, and adds a missing one', async () => {
       mocks.sniffDb.spawnsNear.mockResolvedValue([
         // Spawn 1 (entry 101 at -8901): in the database
         sniffed('creature', 101, -8902),
-        // missing, sniffed twice
-        sniffed('creature', 500, -8950, 6),
-        sniffed('creature', 500, -8951, 6),
-        sniffed('gameobject', 600, -8960),
+        // missing, sniffed twice, wandering
+        sniffed('creature', 500, -8950, { wanderDistance: 6, movementType: 1 }),
+        sniffed('creature', 500, -8951, { wanderDistance: 6, movementType: 1 }),
+        // missing, tilted
+        sniffed('gameobject', 600, -8960, { rotation: [0.1, 0, 0.2, 0.97] }),
+        // another map's
+        sniffed('creature', 700, -8970, { map: 1 }),
       ]);
       const { page } = await setup();
       await loadArea(page);
       expect(mocks.sniffDb.spawnsNear).not.toHaveBeenCalled();
       expect(page.byId('sniffs', false)).toBeFalsy();
 
-      page.click('view-toggle');
+      // on: its card shown, on the Attributes tab
+      page.click('right-tab-history');
       page.fixture.detectChanges();
-      page.click('layer-sniffs');
-      await settle(page);
+      await showSniffs(page);
       expect(mocks.sniffDb.spawnsNear).toHaveBeenCalledWith(0, CENTER.x, CENTER.y, 300);
-      const markers = () =>
-        page
-          .viewer()
-          .markers()
-          .filter((marker) => marker.key.startsWith('sniff:'));
-      expect(markers().map((marker) => marker.label)).toEqual([
+      expect(page.byId('right-tab-attributes').nativeElement.classList).toContain('btn-secondary');
+      expect(sniffMarkers(page).map((marker) => marker.label)).toEqual([
         'Sniff: creature 101 · guid 1 · ×1',
         'Sniff: creature 500 · not in the database · ×2',
         'Sniff: gameobject 600 · not in the database · ×1',
       ]);
-      expect(page.text('sniff-count')).toContain('WORLD_EDITOR.SNIFF_COUNT');
       expect(page.text('sniff-missing-0')).toContain('500 · -8950.0, -100.0 · ×2');
+      expect(page.text('sniff-missing-1')).toContain('600');
+      expect(page.byId('sniff-missing-2', false)).toBeFalsy();
 
+      // added where it was sniffed, wandering as it did; a second click while it is added does nothing
+      page.click('sniff-add-0');
       page.click('sniff-add-0');
       await settle(page);
       expect(page.pendingLines()).toEqual(['Place creature 1001 (Marshal McBride)']);
       expect(page.text('selected-title')).toContain('Creature (GUID: 1001, Entry: 500)');
+      expect(page.text('pending-sql')).toContain('`wander_distance`');
+      expect(page.text('pending-sql')).toContain('`MovementType`');
       expect(page.text('sniff-missing-0')).toContain('600');
+      // a tilted gameobject keeps its tilt
       page.click('sniff-add-0');
       await settle(page);
       expect(page.pendingLines()).toEqual(['Place creature 1001 (Marshal McBride)', 'Place gameobject 1001 (Marshal McBride)']);
+      expect(page.text('pending-sql')).toContain('0.1, 0, 0.2, 0.97');
       expect(page.byId('sniff-none')).toBeTruthy();
+      expect(sniffMarkers(page).map((marker) => marker.label)).toEqual([
+        'Sniff: creature 101 · guid 1 · ×1',
+        'Sniff: creature 500 · guid 1001 · ×2',
+        'Sniff: gameobject 600 · guid 1001 · ×1',
+      ]);
 
       // off: none read or shown
       page.click('layer-sniffs');
       await settle(page);
-      expect(markers()).toEqual([]);
+      expect(sniffMarkers(page)).toEqual([]);
       expect(page.byId('sniffs', false)).toBeFalsy();
+    });
+
+    it('never shows nor adds the sniffs of another place while it reads those of the new one', async () => {
+      mocks.sniffDb.spawnsNear.mockResolvedValueOnce([sniffed('creature', 500, -8950)]);
+      const { page } = await setup();
+      await loadArea(page);
+      await showSniffs(page);
+      expect(sniffMarkers(page)).toHaveLength(1);
+      let answer: (spawns: ReturnType<typeof sniffed>[]) => void = () => undefined;
+      mocks.sniffDb.spawnsNear.mockReturnValueOnce(new Promise((resolve) => (answer = resolve)));
+      page.viewer().centerChanged.emit({ x: CENTER.x + 500, y: CENTER.y, z: CENTER.z });
+      await settle(page);
+      expect(sniffMarkers(page)).toEqual([]);
+      expect(page.byId('sniff-none')).toBeTruthy();
+      answer([sniffed('creature', 501, -8400)]);
+      await settle(page);
+      expect(sniffMarkers(page)).toHaveLength(1);
     });
 
     it('drops the answer of a read for another place', async () => {
@@ -3805,20 +3845,19 @@ describe(WorldEditorComponent.name, () => {
       mocks.sniffDb.spawnsNear.mockReturnValueOnce(new Promise((resolve) => (answer = resolve)));
       const { page } = await setup();
       await loadArea(page);
-      page.click('view-toggle');
-      page.fixture.detectChanges();
-      page.click('layer-sniffs');
-      await settle(page);
+      await showSniffs(page);
       page.click('layer-sniffs');
       await settle(page);
       answer([sniffed('creature', 500, -8950)]);
       await settle(page);
-      expect(
-        page
-          .viewer()
-          .markers()
-          .filter((marker) => marker.key.startsWith('sniff:')),
-      ).toEqual([]);
+      expect(sniffMarkers(page)).toEqual([]);
+    });
+
+    it('does not add a sniffed spawn of another map, nor one being added', async () => {
+      const { page } = await setup();
+      const editor = page.fixture.componentInstance as unknown as { addSniffed: (evidence: object) => Promise<void> };
+      await editor.addSniffed({ sniff: sniffed('creature', 500, 0, { map: 1 }), seen: 1 });
+      expect(page.pendingLines()).toEqual([]);
     });
   });
 
@@ -5920,6 +5959,30 @@ describe(WorldEditorComponent.name, () => {
       expect(page.text('eden-status-position')).toContain(`X ${CENTER.x.toFixed(1)}`);
       expect(page.text('eden-status-place')).toContain('Eastern Kingdoms');
       expect(page.byId('eden-light-gameData').nativeElement.classList).toContain('lit');
+    });
+  });
+
+  describe('right column', () => {
+    it('shows the attributes of a spawn picked, the Asset browser staying while it places', async () => {
+      const { page } = await setup();
+      await loadArea(page);
+      const tab = (name: string) => page.byId(`right-tab-${name}`).nativeElement.classList.contains('btn-secondary');
+      page.click('right-tab-history');
+      page.fixture.detectChanges();
+      page.viewer().picked.emit({ type: 'spawn', key: 'creature:1', position: { x: 0, y: 0, z: 0 } });
+      await settle(page);
+      expect(tab('attributes')).toBe(true);
+
+      page.click('right-tab-assets');
+      page.click('tool-place-creature');
+      await settle(page);
+      page.type('place-entry', '197');
+      page.byId('place-entry').nativeElement.dispatchEvent(new Event('change'));
+      await settle(page);
+      page.viewer().picked.emit({ type: 'ground', position: { x: 1, y: 2, z: 3 } });
+      await settle(page);
+      expect(page.pendingLines()).toEqual(['Place creature 1001 (Marshal McBride)']);
+      expect(tab('assets')).toBe(true);
     });
   });
 

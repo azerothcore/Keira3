@@ -47,10 +47,10 @@ describe(SniffsComponent.name, () => {
         return Promise.resolve();
       }),
       removeFile: vi.fn(() => Promise.resolve()),
-      importSql: vi.fn((name: string, _size: number, _text: string, progress?: (d: number, t: number) => void) => {
+      importSql: vi.fn((name: string, _size: number, _chunks: Iterable<string>, progress?: (d: number, t: number) => void) => {
         progress?.(1, 2);
         return Promise.resolve(
-          name === 'old.sql'
+          name.endsWith('old.sql')
             ? { file: name, rows: 0, tables: [], skipped: 0, alreadyLoaded: true }
             : { file: name, rows: 3, tables: ['creature'], skipped: 1 },
         );
@@ -82,7 +82,7 @@ describe(SniffsComponent.name, () => {
     const fs = {
       statSync: (path: string) => ({ isDirectory: () => !path.endsWith('.sql') && !path.endsWith('.txt'), size: 10 }),
       readdirSync: (path: string) => (path === '/mass' ? ['a', 'notes.txt', 'old.sql'] : ['a.sql']),
-      readFileSync: () => 'INSERT INTO t (a) VALUES (1);',
+      createReadStream: vi.fn(() => ['INSERT INTO t (a) ', 'VALUES (1);']),
     };
     const openPath = vi.fn(() => Promise.resolve(''));
     TestBed.configureTestingModule({
@@ -97,7 +97,7 @@ describe(SniffsComponent.name, () => {
     const page = new SniffsPage(TestBed.createComponent(SniffsComponent));
     page.fixture.detectChanges();
     await page.settle();
-    return { page, sniffDb, wpp, openPath };
+    return { page, sniffDb, wpp, openPath, fs };
   };
 
   it('shows the sniff database, its tables and files, renamed or created', async () => {
@@ -124,20 +124,43 @@ describe(SniffsComponent.name, () => {
   });
 
   it('loads the sniff SQL of a folder, its subfolders too, a file already loaded skipped', async () => {
-    const { page, sniffDb } = await setup();
+    const { page, sniffDb, fs } = await setup();
     expect(page.el<HTMLButtonElement>('#sniffs-load-btn').disabled).toBe(true);
     await page.type('#sniffs-sql-path', '/mass');
     await page.click('#sniffs-load-btn');
 
-    expect(sniffDb.importSql.mock.calls.map(([name]) => name)).toEqual(['a.sql', 'old.sql']);
-    expect(page.text('[data-testid="result-a.sql"]')).toContain('SNIFFS.LOADED');
-    expect(page.text('[data-testid="result-old.sql"]')).toContain('SNIFFS.ALREADY_LOADED');
+    expect(sniffDb.importSql.mock.calls.map(([name]) => name)).toEqual(['/mass/a/a.sql', '/mass/old.sql']);
+    expect(page.text('[data-testid="result-0"]')).toContain('SNIFFS.LOADED');
+    expect(page.text('[data-testid="result-1"]')).toContain('SNIFFS.ALREADY_LOADED');
     expect(page.el('#sniffs-progress', false)).toBeFalsy();
 
     await page.type('#sniffs-sql-path', '/one/x.sql');
     await page.click('#sniffs-load-btn');
-    expect(sniffDb.importSql).toHaveBeenLastCalledWith('x.sql', 10, expect.any(String), expect.any(Function));
+    expect(sniffDb.importSql).toHaveBeenLastCalledWith('/one/x.sql', 10, ['INSERT INTO t (a) ', 'VALUES (1);'], expect.any(Function));
+    // read a piece at a time, never whole
+    expect(fs.createReadStream).toHaveBeenLastCalledWith('/one/x.sql', { encoding: 'utf8', highWaterMark: 1 << 20 });
     (page.fixture.componentInstance as unknown as { load: (path: string) => Promise<void> }).load('');
+  });
+
+  it('stays busy until all its work is done, with the progress of a file', async () => {
+    const { page, sniffDb } = await setup();
+    let finish: () => void = () => undefined;
+    sniffDb.importSql.mockImplementationOnce(((_: string, __: number, ___: unknown, progress: (d: number, t: number) => void) => {
+      progress(5, 10);
+      return new Promise((resolve) => (finish = () => resolve({ file: 'x', rows: 0, tables: [], skipped: 0 })));
+    }) as never);
+    await page.type('#sniffs-sql-path', '/one/x.sql');
+    void page.click('#sniffs-load-btn');
+    await new Promise((resolve) => setTimeout(resolve));
+    page.fixture.detectChanges();
+    expect(page.text('#sniffs-progress')).toBe('1/1 x.sql: 50%');
+    expect(page.el<HTMLButtonElement>('#sniffs-db-save').disabled).toBe(true);
+    expect(page.el<HTMLButtonElement>('#sniffs-refresh').disabled).toBe(true);
+    finish();
+    await new Promise((resolve) => setTimeout(resolve));
+    await page.fixture.whenStable();
+    page.fixture.detectChanges();
+    expect(page.el<HTMLButtonElement>('#sniffs-db-save').disabled).toBe(false);
   });
 
   it('shows the errors of the database', async () => {
@@ -182,7 +205,7 @@ describe(SniffsComponent.name, () => {
     await page.click('[data-testid="open-0"]');
     expect(openPath).toHaveBeenCalledWith('/s/My_parsed.txt');
     await page.click('[data-testid="load-parsed-1"]');
-    expect(sniffDb.importSql).toHaveBeenLastCalledWith('My_world.sql', 10, expect.any(String), expect.any(Function));
+    expect(sniffDb.importSql).toHaveBeenLastCalledWith('/s/My_world.sql', 10, expect.anything(), expect.any(Function));
 
     check.checked = false;
     check.dispatchEvent(new Event('change'));

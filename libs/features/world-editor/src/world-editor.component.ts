@@ -203,7 +203,7 @@ import { AssetBrowserComponent, AssetPick } from './eden/asset-browser.component
 import { EdenMenuBarComponent } from './eden/eden-menu-bar.component';
 import { EdenAction } from './eden/eden-menu';
 import { SniffDbService, SniffSpawn } from '@keira/shared/db-layer';
-import { SNIFF_RADIUS, SniffEvidence, sniffEvidence, sniffFields, sniffMarkers } from './sniff-evidence';
+import { distinctSniffs, SNIFF_RADIUS, SniffEvidence, sniffEvidence, sniffFields, sniffKey, sniffMarkers } from './sniff-evidence';
 import { EdenLights, EdenStatusBarComponent } from './eden/eden-status-bar.component';
 
 /** "Marshal McBride - Creature (GUID: 1, Entry: 197)", as shown on hover and in the selection panel. */
@@ -943,43 +943,67 @@ export class WorldEditorComponent implements OnInit {
   private readonly sniffLayer = computed(() => this.layers().sniffs);
   private readonly loadSniffs = effect((onCleanup) => {
     const [on, center, map] = [this.sniffLayer(), this.spawnsCenter(), this.mapId()];
+    // (the sniffs of another place are never shown, nor added, while these are read)
+    untracked(() => this.sniffSpawns.set([]));
+    // turned on: its card shown (in Attributes)
+    if (on && !this.sniffsWereOn) {
+      untracked(() => this.rightTab.set('attributes'));
+    }
+    this.sniffsWereOn = on;
     if (!on || !center) {
-      untracked(() => this.sniffSpawns.set([]));
       return;
     }
     let cancelled = false;
     void this.sniffDb.spawnsNear(map, center.x, center.y, SNIFF_RADIUS).then((spawns) => !cancelled && this.sniffSpawns.set(spawns));
     onCleanup(() => (cancelled = true));
   });
-  /** The sniffed spawns, compared with the database ones. */
-  protected readonly sniffEvidence = computed<SniffEvidence[]>(() => sniffEvidence(this.sniffSpawns(), this.spawns()));
+  private sniffsWereOn = false;
+  /** The sniffed spawns, each counted once (worked out again only when they are read again). */
+  private readonly distinctSniffs = computed(() => distinctSniffs(this.sniffSpawns()));
+  /** The sniffed spawns of the map shown, compared with the database ones. */
+  protected readonly sniffEvidence = computed<SniffEvidence[]>(() => sniffEvidence(this.distinctSniffs(), this.spawns(), this.mapId()));
   /** The sniffed spawns the database doesn't have. */
   protected readonly missingSniffs = computed(() => this.sniffEvidence().filter((evidence) => !evidence.match));
+  /** The sniffed spawns being added (not added twice). */
+  protected readonly addingSniffs = signal<ReadonlySet<string>>(new Set());
+  protected readonly sniffKey = sniffKey;
 
   /** Adds a sniffed spawn the database doesn't have as a new spawn of this session, where it was sniffed. */
-  protected async addSniffed({ sniff }: SniffEvidence): Promise<void> {
-    const guid = await this.newGuid(sniff.type);
-    const [name, display] = await Promise.all([
-      this.service.getEntryName(sniff.type, sniff.entry),
-      this.service.getEntryDisplay(sniff.type, sniff.entry),
-    ]);
-    const fields = sniffFields(sniff);
-    this.changes.placeSpawn({
-      type: sniff.type,
-      guid,
-      entry: sniff.entry,
-      name,
-      map: sniff.map,
-      x: sniff.x,
-      y: sniff.y,
-      z: sniff.z,
-      o: sniff.o,
-      pathId: 0,
-      ...display,
-      ...(fields ? { fields } : {}),
-    });
-    this.bump();
-    this.select(spawnKey(sniff.type, guid));
+  protected async addSniffed(evidence: SniffEvidence): Promise<void> {
+    const { sniff } = evidence;
+    const key = sniffKey(evidence);
+    if (this.addingSniffs().has(key) || sniff.map !== this.mapId()) {
+      return;
+    }
+    this.addingSniffs.update((adding) => new Set([...adding, key]));
+    try {
+      const guid = await this.newGuid(sniff.type);
+      const [name, display] = await Promise.all([
+        this.service.getEntryName(sniff.type, sniff.entry),
+        this.service.getEntryDisplay(sniff.type, sniff.entry),
+      ]);
+      const fields = sniffFields(sniff);
+      const tilted = sniff.rotation?.some((value) => value !== 0);
+      this.changes.placeSpawn({
+        type: sniff.type,
+        guid,
+        entry: sniff.entry,
+        name,
+        map: sniff.map,
+        x: sniff.x,
+        y: sniff.y,
+        z: sniff.z,
+        o: sniff.o,
+        pathId: 0,
+        ...display,
+        ...(fields ? { fields } : {}),
+        ...(tilted ? { rotation: sniff.rotation } : {}),
+      });
+      this.bump();
+      this.select(spawnKey(sniff.type, guid));
+    } finally {
+      this.addingSniffs.update((adding) => new Set([...adding].filter((other) => other !== key)));
+    }
   }
 
   private readonly travelOverlays = computed(() =>
@@ -3097,6 +3121,10 @@ export class WorldEditorComponent implements OnInit {
     this.selectedKey.set(key);
     const spawn = this.selectedSpawn();
     const waypoint = this.selectedWaypoint();
+    // its attributes shown (while placing from the Asset browser, the browser stays)
+    if ((spawn || waypoint) && !this.tool().startsWith('place-')) {
+      this.rightTab.set('attributes');
+    }
     if (spawn) {
       this.setPlacementForm(spawn);
     } else if (waypoint) {

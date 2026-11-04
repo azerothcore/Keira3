@@ -7,6 +7,8 @@ import { WppService } from './wpp.service';
 
 /** How many lines of a program's output are kept on screen. */
 export const LOG_LINES = 300;
+/** How much of a sniff SQL file is read at a time (they can be hundreds of MB: never read whole). */
+export const SQL_CHUNK = 1 << 20;
 
 const message = (error: unknown): string =>
   (error as { sqlMessage?: string; message?: string })?.sqlMessage ?? (error as Error)?.message ?? String(error);
@@ -51,15 +53,18 @@ export class SniffsComponent implements OnInit {
     this.built.set(this.desktop && !!this.wpp.builtDll());
   }
 
+  /** The work under way (busy until all of it is done). */
+  private running = 0;
+
   private async guard(work: () => Promise<void>): Promise<void> {
-    this.busy.set(true);
+    this.busy.set(++this.running > 0);
     this.error.set('');
     try {
       await work();
     } catch (error) {
       this.error.set(message(error));
     }
-    this.busy.set(false);
+    this.busy.set(--this.running > 0);
   }
 
   protected async refresh(): Promise<void> {
@@ -114,9 +119,9 @@ export class SniffsComponent implements OnInit {
       for (const [i, file] of files.entries()) {
         const name = file.split(/[\\/]/).pop() as string;
         const size = Number(fs.statSync(file).size);
-        const text = fs.readFileSync(file, 'utf8') as string;
-        const result = await this.sniffDb.importSql(name, size, text, (done, total) =>
-          this.progress.set(`${i + 1}/${files.length} ${name}: ${done}/${total}`),
+        const chunks = fs.createReadStream(file, { encoding: 'utf8', highWaterMark: SQL_CHUNK }) as AsyncIterable<string>;
+        const result = await this.sniffDb.importSql(file, size, chunks, (done, total) =>
+          this.progress.set(`${i + 1}/${files.length} ${name}: ${Math.round((done / Math.max(total, 1)) * 100)}%`),
         );
         this.results.set([...this.results(), result]);
       }

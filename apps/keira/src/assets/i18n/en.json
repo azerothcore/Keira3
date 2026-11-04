@@ -2109,6 +2109,7 @@
     "PLAYERS_HELP": "The characters online, from the characters database (Settings > Server), read again every 10 seconds. The server saves where they are every few minutes and on logout, so they're shown where they recently were.",
     "OFFLINE_PLAYERS": "Offline characters",
     "SNIFFS": "Sniffs",
+    "SNIFFS_HELP": "Spawns from the sniffs loaded on the Sniffs page: orange where the database has no such spawn, grey where it has.",
     "SNIFFED_SPAWNS": "Sniffed spawns",
     "SNIFF_COUNT": "{{count}} seen, {{missing}} not in the database",
     "SNIFF_ADD": "Add",
