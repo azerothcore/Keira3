@@ -2155,7 +2155,8 @@
       "SEARCH": "Entry или имя",
       "RECENT": "Недавние",
       "NO_ASSETS": "Шаблоны не найдены.",
-      "NO_CHANGES": "Нет ожидающих изменений."
+      "ATTRIBUTES": "Атрибуты",
+      "LAYERS": "Слои"
     }
   },
   "SETTINGS": {

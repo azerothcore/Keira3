@@ -42,9 +42,9 @@ export const BUTTON_STYLE_KEY = 'keira3.worldEditor.buttonStyle';
 export function loadButtonStyle(): ButtonStyle {
   try {
     const stored = localStorage.getItem(BUTTON_STYLE_KEY) as ButtonStyle;
-    return BUTTON_STYLES.includes(stored) ? stored : 'both';
+    return BUTTON_STYLES.includes(stored) ? stored : 'icons';
   } catch {
-    return 'both';
+    return 'icons';
   }
 }
 

@@ -2155,7 +2155,8 @@
       "SEARCH": "Entry 或名称",
       "RECENT": "最近使用",
       "NO_ASSETS": "未找到模板。",
-      "NO_CHANGES": "没有待处理的更改。"
+      "ATTRIBUTES": "属性",
+      "LAYERS": "图层"
     }
   },
   "SETTINGS": {

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, input, OnInit, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, OnInit, output, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { CREATURE_TYPE, GAMEOBJECT_TYPE } from '@keira/shared/acore-world-model';
@@ -30,8 +30,8 @@ function loadRecent(): Recent {
 }
 
 /**
- * The World Editor's Asset browser (Eden Editor's): Assets, the creature and gameobject templates by type, searched,
- * recently used first, picked to place; History, the pending changes, undone or redone.
+ * The World Editor's Asset browser (Eden Editor's): the creature and gameobject templates by type, searched, recently
+ * used first, picked to place with a click in the view.
  */
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -40,103 +40,62 @@ function loadRecent(): Recent {
   template: `
     <div class="asset-browser d-flex flex-column" data-testid="asset-browser">
       <div class="btn-group btn-group-sm mb-1">
-        <button
-          type="button"
-          class="btn"
-          data-testid="asset-tab-assets"
-          [class.btn-primary]="tab() === 'assets'"
-          [class.btn-outline-primary]="tab() !== 'assets'"
-          (click)="tab.set('assets')"
-        >
-          {{ 'WORLD_EDITOR.EDEN.ASSETS' | translate }}
-        </button>
-        <button
-          type="button"
-          class="btn"
-          data-testid="asset-tab-history"
-          [class.btn-primary]="tab() === 'history'"
-          [class.btn-outline-primary]="tab() !== 'history'"
-          (click)="tab.set('history')"
-        >
-          {{ 'WORLD_EDITOR.EDEN.HISTORY' | translate }} ({{ changes().length }})
-        </button>
+        @for (option of MODES; track option.type; let i = $index) {
+          <button
+            type="button"
+            class="btn"
+            [attr.data-testid]="'asset-mode-' + option.type"
+            [class.btn-secondary]="mode() === option.type"
+            [class.btn-outline-secondary]="mode() !== option.type"
+            [title]="'F' + (i + 1)"
+            (click)="setMode(option.type)"
+          >
+            <i class="fa" [class]="option.icon"></i> {{ option.label | translate }}
+          </button>
+        }
       </div>
+      <select class="form-select form-select-sm mb-1" data-testid="asset-group" [formControl]="group">
+        <option [ngValue]="null">{{ 'WORLD_EDITOR.EDEN.ALL_TYPES' | translate }}</option>
+        @for (option of groups(); track option.value) {
+          <option [ngValue]="option.value">{{ option.value }} - {{ option.name }}</option>
+        }
+      </select>
+      <input
+        class="form-control form-control-sm mb-1"
+        data-testid="asset-search"
+        [placeholder]="'WORLD_EDITOR.EDEN.SEARCH' | translate"
+        [formControl]="search"
+      />
 
-      @if (tab() === 'assets') {
-        <div class="btn-group btn-group-sm mb-1">
-          @for (option of MODES; track option.type; let i = $index) {
-            <button
-              type="button"
-              class="btn"
-              [attr.data-testid]="'asset-mode-' + option.type"
-              [class.btn-secondary]="mode() === option.type"
-              [class.btn-outline-secondary]="mode() !== option.type"
-              [title]="'F' + (i + 1)"
-              (click)="setMode(option.type)"
-            >
-              <i class="fa" [class]="option.icon"></i> {{ option.label | translate }}
+      <div class="asset-list flex-grow-1">
+        @if (recent()[mode()].length) {
+          <div class="asset-group-title">{{ 'WORLD_EDITOR.EDEN.RECENT' | translate }}</div>
+          @for (template of recent()[mode()]; track template.entry) {
+            <button type="button" class="asset-item" [attr.data-testid]="'asset-recent-' + template.entry" (click)="pick(template)">
+              <i class="fa" [class]="mode() === 'creature' ? 'fa-dragon' : 'fa-cube'"></i> {{ template.name || '?' }}
+              <span class="text-muted">{{ template.entry }}</span>
             </button>
           }
-        </div>
-        <select class="form-select form-select-sm mb-1" data-testid="asset-group" [formControl]="group">
-          <option [ngValue]="null">{{ 'WORLD_EDITOR.EDEN.ALL_TYPES' | translate }}</option>
-          @for (option of groups(); track option.value) {
-            <option [ngValue]="option.value">{{ option.value }} - {{ option.name }}</option>
-          }
-        </select>
-        <input
-          class="form-control form-control-sm mb-1"
-          data-testid="asset-search"
-          [placeholder]="'WORLD_EDITOR.EDEN.SEARCH' | translate"
-          [formControl]="search"
-        />
-
-        <div class="asset-list flex-grow-1">
-          @if (recent()[mode()].length) {
-            <div class="asset-group-title">{{ 'WORLD_EDITOR.EDEN.RECENT' | translate }}</div>
-            @for (template of recent()[mode()]; track template.entry) {
-              <button type="button" class="asset-item" [attr.data-testid]="'asset-recent-' + template.entry" (click)="pick(template)">
+        }
+        @if (loading()) {
+          <div class="text-muted small p-1">{{ 'LOADING' | translate }}</div>
+        }
+        @for (section of sections(); track section.group) {
+          <details [open]="sections().length === 1" [attr.data-testid]="'asset-section-' + section.group">
+            <summary class="asset-group-title">{{ section.name }} ({{ section.templates.length }})</summary>
+            @for (template of section.templates; track template.entry) {
+              <button type="button" class="asset-item" [attr.data-testid]="'asset-' + template.entry" (click)="pick(template)">
                 <i class="fa" [class]="mode() === 'creature' ? 'fa-dragon' : 'fa-cube'"></i> {{ template.name || '?' }}
                 <span class="text-muted">{{ template.entry }}</span>
               </button>
             }
+          </details>
+        } @empty {
+          @if (!loading()) {
+            <div class="text-muted small p-1" data-testid="asset-none">{{ 'WORLD_EDITOR.EDEN.NO_ASSETS' | translate }}</div>
           }
-          @if (loading()) {
-            <div class="text-muted small p-1">{{ 'LOADING' | translate }}</div>
-          }
-          @for (section of sections(); track section.group) {
-            <details [open]="sections().length === 1" [attr.data-testid]="'asset-section-' + section.group">
-              <summary class="asset-group-title">{{ section.name }} ({{ section.templates.length }})</summary>
-              @for (template of section.templates; track template.entry) {
-                <button type="button" class="asset-item" [attr.data-testid]="'asset-' + template.entry" (click)="pick(template)">
-                  <i class="fa" [class]="mode() === 'creature' ? 'fa-dragon' : 'fa-cube'"></i> {{ template.name || '?' }}
-                  <span class="text-muted">{{ template.entry }}</span>
-                </button>
-              }
-            </details>
-          } @empty {
-            @if (!loading()) {
-              <div class="text-muted small p-1" data-testid="asset-none">{{ 'WORLD_EDITOR.EDEN.NO_ASSETS' | translate }}</div>
-            }
-          }
-        </div>
-      } @else {
-        <div class="btn-group btn-group-sm mb-1">
-          <button type="button" class="btn btn-outline-secondary" data-testid="asset-undo" [disabled]="!canUndo()" (click)="undo.emit()">
-            <i class="fa fa-undo"></i> {{ 'WORLD_EDITOR.EDEN.UNDO' | translate }}
-          </button>
-          <button type="button" class="btn btn-outline-secondary" data-testid="asset-redo" [disabled]="!canRedo()" (click)="redo.emit()">
-            <i class="fa fa-redo"></i> {{ 'WORLD_EDITOR.EDEN.REDO' | translate }}
-          </button>
-        </div>
-        <ol class="asset-history small ps-3" data-testid="asset-history">
-          @for (change of changes(); track $index) {
-            <li>{{ change }}</li>
-          } @empty {
-            <li class="list-unstyled text-muted">{{ 'WORLD_EDITOR.EDEN.NO_CHANGES' | translate }}</li>
-          }
-        </ol>
-      }
+        }
+      </div>
     </div>
   `,
   styles: `
@@ -176,19 +135,12 @@ export class AssetBrowserComponent implements OnInit {
   private readonly service = inject(WorldEditorService);
   private readonly destroyRef = inject(DestroyRef);
 
-  /** The pending changes, in order (History). */
-  readonly changes = input<string[]>([]);
-  readonly canUndo = input(false);
-  readonly canRedo = input(false);
   readonly picked = output<AssetPick>();
-  readonly undo = output<void>();
-  readonly redo = output<void>();
 
   protected readonly MODES: { type: SpawnType; label: string; icon: string }[] = [
     { type: 'creature', label: 'WORLD_EDITOR.EDEN.CREATURES', icon: 'fa-dragon' },
     { type: 'gameobject', label: 'WORLD_EDITOR.EDEN.GAMEOBJECTS', icon: 'fa-cube' },
   ];
-  protected readonly tab = signal<'assets' | 'history'>('assets');
   protected readonly mode = signal<SpawnType>('creature');
   protected readonly group = new FormControl<number | null>(null);
   protected readonly search = new FormControl('', { nonNullable: true });

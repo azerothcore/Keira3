@@ -96,10 +96,25 @@
   overflow: hidden;
 }
 
-.world-editor-assets {
-  width: 280px;
-  flex-shrink: 0;
-  overflow: hidden;
+.eden-toolbar {
+  .eden-sep {
+    width: 1px;
+    align-self: stretch;
+    margin: 0 2px;
+    background: var(--bs-border-color, #555);
+  }
+}
+
+.eden-layers {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 1050;
+  min-width: 200px;
+}
+
+.eden-tab-assets {
+  height: calc(100% - 40px);
 }
 
 .world-editor-panel {
@@ -426,13 +441,10 @@
 
 // the tree of what's loaded, docked on the right of the view (under the panels)
 .world-editor-tree {
-  position: absolute;
-  top: 40px;
-  right: 8px;
-  bottom: 48px;
-  width: 300px;
-  max-width: 45%;
-  z-index: 6;
+  // the entity list: left of the view (Eden's)
+  width: 280px;
+  flex-shrink: 0;
+  overflow: hidden;
 }
 
 // the cache's sections: the maps' pictures, then each kind of game data

@@ -1,6 +1,6 @@
 <div #root class="world-editor container-fluid" [class.fullscreen]="fullscreen()">
   <keira-eden-menu-bar [pending]="changeList().length" [canUndo]="canUndo()" [canRedo]="canRedo()" (action)="onEdenAction($event)" />
-  <div class="world-editor-toolbar d-flex align-items-center gap-2 mb-1">
+  <div class="world-editor-toolbar eden-toolbar d-flex flex-wrap align-items-center gap-1 mb-1">
     <div class="map-picker">
       <input
         #mapInput
@@ -144,6 +144,52 @@
       }
     </div>
 
+    <ng-container [ngTemplateOutlet]="mapButtonsTemplate" />
+    <span class="eden-sep"></span>
+    <div class="btn-group btn-group-sm" role="group">
+      <button
+        type="button"
+        class="btn btn-outline-secondary"
+        data-testid="undo"
+        [title]="'WORLD_EDITOR.UNDO' | translate"
+        [disabled]="!canUndo()"
+        (click)="undo()"
+      >
+        <i class="fa fa-undo"></i>
+      </button>
+      <button
+        type="button"
+        class="btn btn-outline-secondary"
+        data-testid="redo"
+        [title]="'WORLD_EDITOR.REDO' | translate"
+        [disabled]="!canRedo()"
+        (click)="redo()"
+      >
+        <i class="fa fa-redo"></i>
+      </button>
+    </div>
+    <span class="eden-sep"></span>
+    <div class="btn-group btn-group-sm" role="group" data-testid="eden-tools">
+      @for (option of TOOL_ICONS; track option.tool) {
+        <button
+          type="button"
+          class="btn"
+          [attr.data-testid]="'tool-' + option.tool"
+          [class.btn-primary]="tool() === option.tool"
+          [class.btn-outline-primary]="tool() !== option.tool"
+          [disabled]="option.tool === 'probe' && missing('serverData')"
+          [title]="
+            option.tool === 'probe' && missing('serverData')
+              ? ('WORLD_EDITOR.NEEDS_SERVER_DATA' | translate)
+              : ('WORLD_EDITOR.TOOL.' + option.tool | translate)
+          "
+          (click)="setTool(option.tool)"
+        >
+          <i class="fa" [class]="option.icon"></i>
+        </button>
+      }
+    </div>
+    <span class="eden-sep"></span>
     <form class="d-flex gap-1 goto-form" [formGroup]="goToForm" (ngSubmit)="goToCoordinates()">
       <input
         type="number"
@@ -171,10 +217,6 @@
       />
       <button type="submit" class="btn btn-sm btn-secondary" data-testid="goto-btn">{{ 'WORLD_EDITOR.GO_TO' | translate }}</button>
     </form>
-
-    <ng-container [ngTemplateOutlet]="panelButtonsTemplate" />
-  </div>
-  <div class="world-editor-toolbar d-flex align-items-center gap-2 mb-2">
     <form class="d-flex gap-1 tele-form" (submit)="$event.preventDefault(); searchTele()">
       <input
         class="form-control form-control-sm"
@@ -204,33 +246,49 @@
         </div>
       }
     </form>
-    <ng-container [ngTemplateOutlet]="mapButtonsTemplate" />
-    <div class="ms-auto">
-      <ng-container [ngTemplateOutlet]="layerSwitchesTemplate" />
+    <span class="eden-sep"></span>
+    <ng-container [ngTemplateOutlet]="panelButtonsTemplate" />
+    <div class="ms-auto d-flex align-items-center gap-1">
+      <div class="position-relative">
+        <button
+          type="button"
+          class="btn btn-sm"
+          data-testid="layers-toggle"
+          [class.btn-secondary]="layersOpen()"
+          [class.btn-outline-secondary]="!layersOpen()"
+          [title]="'WORLD_EDITOR.EDEN.LAYERS' | translate"
+          (click)="layersOpen.set(!layersOpen())"
+        >
+          <i class="fa fa-layer-group"></i>
+        </button>
+        <div class="eden-layers card p-2" [hidden]="!layersOpen()">
+          <ng-container [ngTemplateOutlet]="layerSwitchesTemplate" />
+        </div>
+      </div>
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-secondary"
+        data-testid="fullscreen-toggle"
+        [title]="'WORLD_EDITOR.FULLSCREEN' | translate"
+        (click)="toggleFullscreen()"
+      >
+        <i class="fa" [class.fa-expand]="!fullscreen()" [class.fa-compress]="fullscreen()"></i>
+      </button>
     </div>
-    <button
-      type="button"
-      class="btn btn-sm btn-outline-secondary"
-      data-testid="fullscreen-toggle"
-      [title]="'WORLD_EDITOR.FULLSCREEN' | translate"
-      (click)="toggleFullscreen()"
-    >
-      <i class="fa" [class.fa-expand]="!fullscreen()" [class.fa-compress]="fullscreen()"></i>
-    </button>
   </div>
 
   <div class="world-editor-body">
-    @if (assetsOpen()) {
-      <div class="world-editor-assets">
-        <keira-asset-browser
-          [changes]="changeList()"
-          [canUndo]="canUndo()"
-          [canRedo]="canRedo()"
-          (picked)="onAssetPicked($event)"
-          (undo)="undo()"
-          (redo)="redo()"
-        />
-      </div>
+    @if (showTree()) {
+      <keira-spawn-tree
+        class="world-editor-tree"
+        [spawns]="spawns()"
+        [zones]="zones()"
+        [hidden]="treeHidden()"
+        [selectedKey]="selectedKey()"
+        (hiddenChange)="treeHidden.set($event)"
+        (picked)="pickFromTree($event.spawn, $event.snap)"
+        (closed)="showTree.set(false)"
+      />
     }
     <button
       type="button"
@@ -355,18 +413,6 @@
           </button>
         }
       </div>
-      @if (showTree()) {
-        <keira-spawn-tree
-          class="world-editor-tree"
-          [spawns]="spawns()"
-          [zones]="zones()"
-          [hidden]="treeHidden()"
-          [selectedKey]="selectedKey()"
-          (hiddenChange)="treeHidden.set($event)"
-          (picked)="pickFromTree($event.spawn, $event.snap)"
-          (closed)="showTree.set(false)"
-        />
-      }
       <div class="world-editor-panels">
         @if (showFilters()) {
           @let filter = filters();
@@ -2625,877 +2671,854 @@
     </div>
 
     <div class="world-editor-panel" data-testid="side-panel" [hidden]="panelCollapsed()">
-      <div class="card mb-2">
-        <div class="card-header py-1">{{ 'WORLD_EDITOR.TOOLS' | translate }}</div>
-        <div class="card-body p-2">
-          <div class="btn-group btn-group-sm w-100 mb-1" role="group">
-            @for (option of ['select', 'face', 'probe']; track option) {
-              <button
-                type="button"
-                class="btn"
-                [attr.data-testid]="'tool-' + option"
-                [class.btn-primary]="tool() === option"
-                [class.btn-outline-primary]="tool() !== option"
-                [disabled]="option === 'probe' && missing('serverData')"
-                [title]="option === 'probe' && missing('serverData') ? ('WORLD_EDITOR.NEEDS_SERVER_DATA' | translate) : ''"
-                (click)="setTool($any(option))"
-              >
-                {{ 'WORLD_EDITOR.TOOL.' + option | translate }}
-              </button>
+      <div class="btn-group btn-group-sm w-100 mb-2 eden-tabs" role="tablist">
+        @for (tab of RIGHT_TABS; track tab.id) {
+          <button
+            type="button"
+            class="btn"
+            role="tab"
+            [attr.data-testid]="'right-tab-' + tab.id"
+            [class.btn-secondary]="rightTab() === tab.id"
+            [class.btn-outline-secondary]="rightTab() !== tab.id"
+            (click)="rightTab.set(tab.id)"
+          >
+            <i class="fa" [class]="tab.icon"></i> {{ tab.label | translate }}
+            @if (tab.id === 'history' && pendingDescriptions().length) {
+              <span class="badge bg-warning text-dark">{{ pendingDescriptions().length }}</span>
             }
-          </div>
-          <div class="btn-group btn-group-sm w-100 mb-1" role="group">
-            @for (option of ['place-creature', 'place-gameobject', 'add-waypoint']; track option) {
-              <button
-                type="button"
-                class="btn"
-                [attr.data-testid]="'tool-' + option"
-                [class.btn-primary]="tool() === option"
-                [class.btn-outline-primary]="tool() !== option"
-                (click)="setTool($any(option))"
-              >
-                {{ 'WORLD_EDITOR.TOOL.' + option | translate }}
-              </button>
-            }
-          </div>
-
-          @if (tool() === 'face') {
-            <small class="text-muted d-block mb-1" data-testid="face-hint">{{ 'WORLD_EDITOR.FACE_HINT' | translate }}</small>
-          }
-          @if (tool() === 'place-creature' || tool() === 'place-gameobject') {
-            <div class="position-relative">
-              <div class="input-group input-group-sm mb-1">
-                <span class="input-group-text">{{ 'WORLD_EDITOR.ENTRY' | translate }}</span>
-                <input
-                  type="text"
-                  class="form-control"
-                  data-testid="place-entry"
-                  [placeholder]="'WORLD_EDITOR.PLACE_SEARCH' | translate"
-                  [formControl]="placeSearch"
-                  (change)="onPlaceEntryChange()"
-                  (keydown.escape)="placeResults.set([])"
-                />
-                @if (tool() === 'place-creature') {
-                  <keira-creature-selector-btn [control]="placeEntry" [disabled]="false" [config]="{ name: 'place-entry' }" />
-                } @else {
-                  <keira-gameobject-selector-btn [control]="placeEntry" [disabled]="false" [config]="{ name: 'place-entry' }" />
-                }
-              </div>
-              @if (placeResults().length) {
-                <div class="list-group place-results" data-testid="place-results" (mouseleave)="placeHover.set(undefined)">
-                  @for (template of placeResults(); track template.entry) {
-                    <button
-                      type="button"
-                      class="list-group-item list-group-item-action py-1 small"
-                      [attr.data-testid]="'place-result-' + template.entry"
-                      [class.active]="template.entry === placeEntry.value"
-                      (mouseenter)="placeHover.set(template)"
-                      (click)="choosePlaceTemplate(template)"
-                    >
-                      {{ template.entry }} – {{ template.name || '?' }}
-                      @if (!template.displayId) {
-                        <span class="text-muted">({{ 'WORLD_EDITOR.NO_MODEL' | translate }})</span>
-                      }
-                    </button>
-                  }
-                </div>
-              }
-            </div>
-            <small class="text-muted" data-testid="place-entry-name">{{
-              placeEntryName() || ('WORLD_EDITOR.PLACE_HINT' | translate)
-            }}</small>
-          }
-
-          @if (tool() === 'add-waypoint') {
-            <small class="text-muted" data-testid="waypoint-hint">
-              @if (activePathId()) {
-                {{ 'WORLD_EDITOR.ADD_WAYPOINT_HINT' | translate: { path: pathLabel(activePathId()) } }}
-              } @else {
-                {{ 'WORLD_EDITOR.NO_ACTIVE_PATH' | translate }}
-              }
-            </small>
-          }
-
-          @if (tool() === 'probe') {
-            <div class="world-editor-probe" data-testid="probe">
-              <small class="text-muted d-block mb-1">{{
-                (probeFrom() ? 'WORLD_EDITOR.PROBE_PICK_C' : 'WORLD_EDITOR.PROBE_PICK_A') | translate
-              }}</small>
-              <div class="d-flex gap-1 mb-1">
-                <div class="input-group input-group-sm">
-                  <span class="input-group-text">{{ 'WORLD_EDITOR.RANGE' | translate }}</span>
-                  <select class="form-select" data-testid="probe-range-preset" (change)="setProbeRange($event)">
-                    @for (preset of rangePresets; track preset.range) {
-                      <option [value]="preset.range" [selected]="probeRange() === preset.range">
-                        {{ preset.label | translate }} ({{ preset.range }})
-                      </option>
-                    }
-                    @if (!isRangePreset()) {
-                      <option [value]="probeRange()" selected>{{ probeRange() }}</option>
-                    }
-                  </select>
-                  <input
-                    type="number"
-                    class="form-control"
-                    data-testid="probe-range"
-                    min="0"
-                    [value]="probeRange()"
-                    (change)="setProbeRange($event)"
-                  />
-                </div>
-                <div class="input-group input-group-sm world-editor-probe-height">
-                  <span class="input-group-text">{{ 'WORLD_EDITOR.EYE_HEIGHT' | translate }}</span>
-                  <input
-                    type="number"
-                    class="form-control"
-                    data-testid="probe-height"
-                    min="0"
-                    step="0.5"
-                    [value]="probeHeight()"
-                    (change)="setProbeHeight($event)"
-                  />
-                </div>
-              </div>
-              @if (probeResult(); as result) {
-                @if (result.to) {
-                  <ul class="list-unstyled small mb-1" data-testid="probe-result">
-                    @if (probeDistance(); as distance) {
-                      <li data-testid="probe-distance">
-                        <strong>{{ 'WORLD_EDITOR.DISTANCE' | translate }}:</strong>
-                        {{ distance.straight.toFixed(1) }} {{ 'WORLD_EDITOR.YARDS' | translate }}
-                        <span class="text-muted"
-                          >({{ 'WORLD_EDITOR.HORIZONTAL' | translate }} {{ distance.flat.toFixed(1) }},
-                          {{ 'WORLD_EDITOR.HEIGHT' | translate }} {{ distance.height.toFixed(1) }})</span
-                        >
-                      </li>
-                      <li data-testid="probe-time">
-                        <strong>{{ 'WORLD_EDITOR.TRAVEL_TIME' | translate }}:</strong>
-                        {{ 'WORLD_EDITOR.RUNNING' | translate }} {{ probeTime().run }} · {{ 'WORLD_EDITOR.WALKING' | translate }}
-                        {{ probeTime().walk }}
-                        <i
-                          class="fas fa-info-circle ms-1"
-                          placement="auto"
-                          container="body"
-                          [tooltip]="'WORLD_EDITOR.TRAVEL_TIME_HELP' | translate"
-                        ></i>
-                      </li>
-                      <li>
-                        <button type="button" class="btn btn-link btn-sm p-0" data-testid="probe-copy-go-to" (click)="copyGo(result.to)">
-                          .go xyz C
-                        </button>
-                      </li>
-                    }
-                    <li>
-                      <strong>{{ 'WORLD_EDITOR.PATH_LABEL' | translate }}:</strong>
-                      @if (result.noNavMesh) {
-                        {{ 'WORLD_EDITOR.NO_NAVMESH' | translate }}
-                      } @else if (result.tooFar) {
-                        {{ 'WORLD_EDITOR.PROBE_TOO_FAR' | translate }}
-                      } @else if (result.path) {
-                        {{ result.length!.toFixed(1) }} {{ 'WORLD_EDITOR.YARDS' | translate }}
-                      } @else {
-                        <span class="text-danger">{{ 'WORLD_EDITOR.NO_PATH' | translate }}</span>
-                      }
-                    </li>
-                    <li>
-                      <strong>{{ 'WORLD_EDITOR.LINE_OF_SIGHT' | translate }}:</strong>
-                      @if (result.blockedAt; as hit) {
-                        <span class="text-danger">{{ 'WORLD_EDITOR.LOS_BLOCKED' | translate }}</span>
-                        ({{ hit.x.toFixed(1) }} {{ hit.y.toFixed(1) }} {{ hit.z.toFixed(1) }})
-                      } @else {
-                        <span class="text-success">{{ 'WORLD_EDITOR.LOS_CLEAR' | translate }}</span>
-                      }
-                    </li>
-                    <li>
-                      <strong>{{ 'WORLD_EDITOR.ATTACK_FROM' | translate }}:</strong>
-                      @if (result.attackFrom; as spot) {
-                        {{ spot.x.toFixed(1) }} {{ spot.y.toFixed(1) }} {{ spot.z.toFixed(1) }} ({{ result.attackDistance!.toFixed(1) }}
-                        {{ 'WORLD_EDITOR.YARDS' | translate }}, {{ 'WORLD_EDITOR.WALK' | translate }} {{ result.walkToAttack!.toFixed(1) }})
-                        <button type="button" class="btn btn-link btn-sm p-0" data-testid="probe-copy-go" (click)="copyGo(spot)">
-                          .go xyz
-                        </button>
-                      } @else {
-                        <span class="text-danger">{{ 'WORLD_EDITOR.NO_ATTACK_POSITION' | translate }}</span>
-                      }
-                    </li>
-                  </ul>
-                }
-              }
-              <button type="button" class="btn btn-sm btn-outline-secondary" data-testid="probe-clear" (click)="clearProbe()">
-                {{ 'WORLD_EDITOR.CLEAR' | translate }}
-              </button>
-            </div>
-          }
-
-          @if (tool() === 'select') {
-            <div class="d-flex gap-1 align-items-center">
-              <div class="btn-group btn-group-sm" role="group">
-                <button
-                  type="button"
-                  class="btn"
-                  data-testid="gizmo-translate"
-                  [class.btn-secondary]="gizmoMode() === 'translate'"
-                  [class.btn-outline-secondary]="gizmoMode() !== 'translate'"
-                  (click)="setGizmoMode('translate')"
-                >
-                  <i class="fa fa-arrows-alt"></i> {{ 'WORLD_EDITOR.MOVE' | translate }}
-                </button>
-                <button
-                  type="button"
-                  class="btn"
-                  data-testid="gizmo-rotate"
-                  [class.btn-secondary]="gizmoMode() === 'rotate'"
-                  [class.btn-outline-secondary]="gizmoMode() !== 'rotate'"
-                  (click)="setGizmoMode('rotate')"
-                >
-                  <i class="fa fa-sync-alt"></i> {{ 'WORLD_EDITOR.ROTATE' | translate }}
-                </button>
-              </div>
-              <label class="d-flex align-items-center gap-1 ms-2 mb-0 small" for="world-editor-snap">
-                {{ 'WORLD_EDITOR.SNAP_TO' | translate }}
-                <select
-                  id="world-editor-snap"
-                  class="form-select form-select-sm w-auto"
-                  data-testid="snap-mode"
-                  (change)="setSnapMode($event)"
-                >
-                  @for (mode of ['ground', 'water', 'wall', 'off']; track mode) {
-                    <option [value]="mode" [selected]="mode === snapMode()">
-                      {{ 'WORLD_EDITOR.SNAP_' + mode.toUpperCase() | translate }}
-                    </option>
-                  }
-                </select>
-              </label>
-            </div>
-          }
-        </div>
+          </button>
+        }
       </div>
-
-      <div class="card mb-2" data-testid="problems">
-        <div class="card-body p-2">
-          <div class="d-flex align-items-center gap-2">
-            <button type="button" class="btn btn-sm btn-outline-warning" data-testid="check-spawns" (click)="checkSpawns()">
-              <i class="fa fa-stethoscope"></i> {{ 'WORLD_EDITOR.CHECK_SPAWNS' | translate }}
-            </button>
-            @if (spawnProblems(); as problems) {
-              <small class="text-muted" data-testid="problem-count">{{
-                'WORLD_EDITOR.PROBLEM_COUNT' | translate: { count: problems.length }
-              }}</small>
-              <button
-                type="button"
-                class="btn btn-sm btn-link ms-auto p-0"
-                data-testid="problems-close"
-                (click)="spawnProblems.set(undefined)"
-              >
-                <i class="fa fa-times"></i>
-              </button>
-            }
-          </div>
-          <div class="d-flex align-items-center gap-2 mt-1">
-            @if (mapScan(); as scan) {
-              <small class="text-muted" data-testid="scan-progress">{{
-                'WORLD_EDITOR.SCAN_PROGRESS' | translate: { done: scan.done, total: scan.total || '?' }
-              }}</small>
-              <button type="button" class="btn btn-sm btn-link p-0" data-testid="scan-cancel" (click)="cancelScan()">
-                {{ 'WORLD_EDITOR.CANCEL' | translate }}
-              </button>
-            } @else {
-              <button
-                type="button"
-                class="btn btn-sm btn-outline-secondary"
-                data-testid="scan-map"
-                [title]="'WORLD_EDITOR.SCAN_MAP_HELP' | translate"
-                [disabled]="!client.isSupported() || !settings.paths().serverDataPath"
-                (click)="scanMap()"
-              >
-                <i class="fa fa-satellite-dish"></i> {{ 'WORLD_EDITOR.SCAN_MAP' | translate }}
-              </button>
-            }
-            @if (scanResults()) {
-              @let counts = scanCounts();
-              @for (level of scanLevels; track level) {
-                <button
-                  type="button"
-                  class="btn btn-sm py-0 px-1 world-editor-scan-level"
-                  [class]="'scan-' + level"
-                  [class.off]="!scanShown()[level]"
-                  [attr.data-testid]="'scan-level-' + level"
-                  [title]="'WORLD_EDITOR.SCAN_' + level.toUpperCase() | translate"
-                  (click)="toggleScanLevel(level)"
-                >
-                  ! {{ counts[level] }}
-                </button>
-              }
-              <button type="button" class="btn btn-sm btn-link ms-auto p-0" data-testid="scan-close" (click)="scanResults.set(undefined)">
-                <i class="fa fa-times"></i>
-              </button>
-            }
-          </div>
-          @for (group of scanList(); track group.type) {
-            <h6 class="small text-muted mt-2 mb-0" [attr.data-testid]="'scan-group-' + group.type">
-              {{ (group.type === 'creature' ? 'WORLD_EDITOR.CREATURES' : 'WORLD_EDITOR.GAMEOBJECTS') | translate }} ({{ group.count }})
-            </h6>
-            <div class="list-group list-group-flush small world-editor-results" [attr.data-testid]="'scan-list-' + group.type">
-              @for (result of group.results; track result.key) {
-                <button
-                  type="button"
-                  class="list-group-item list-group-item-action py-1 px-2"
-                  [attr.data-testid]="'scan-' + result.key"
-                  (click)="goToResult(result.spawn)"
-                >
-                  <strong class="world-editor-scan-mark" [class]="'scan-' + result.level">!</strong>
-                  {{ result.spawn.name || result.spawn.entry }} ({{ result.spawn.guid }}) - {{ result.text }}
-                </button>
-              }
-            </div>
-          }
-          @if (spawnProblems()?.length) {
-            <div class="list-group list-group-flush small world-editor-results mt-1" data-testid="problem-list">
-              @for (problem of spawnProblems(); track $index) {
-                <button
-                  type="button"
-                  class="list-group-item list-group-item-action py-1 px-2"
-                  [attr.data-testid]="'problem-' + $index"
-                  (click)="goToProblem(problem)"
-                >
-                  <strong [class.text-danger]="problem.severity === 'bad'" [class.text-warning]="problem.severity === 'warn'">!</strong>
-                  {{ spawnTitle(problem.spawn) }} - {{ problem.text }}
-                </button>
-              }
-            </div>
-          }
-        </div>
+      <div [hidden]="rightTab() !== 'assets'" class="eden-tab-assets">
+        <keira-asset-browser (picked)="onAssetPicked($event)" />
       </div>
-
-      <div class="card mb-2" data-testid="search">
-        <div class="card-body p-2">
-          <form class="input-group input-group-sm" (submit)="$event.preventDefault(); searchSpawns()">
-            <input
-              class="form-control"
-              data-testid="search-input"
-              [formControl]="searchForm"
-              [placeholder]="'WORLD_EDITOR.SEARCH_SPAWNS' | translate"
-            />
-            <button type="submit" class="btn btn-secondary" data-testid="search-btn" [disabled]="searching()">
-              <i class="fa fa-search"></i>
-            </button>
-            @if (searchResults().length) {
-              <button type="button" class="btn btn-outline-secondary" data-testid="search-clear" (click)="clearSearch()">
-                <i class="fa fa-times"></i>
-              </button>
-            }
-          </form>
-          @if (searchResults().length) {
-            <div class="list-group list-group-flush small world-editor-results mt-1" data-testid="search-results">
-              @for (result of searchResults(); track result.type + result.guid) {
-                <button
-                  type="button"
-                  class="list-group-item list-group-item-action py-1 px-2"
-                  [attr.data-testid]="'search-result-' + result.type + '-' + result.guid"
-                  (click)="goToResult(result)"
-                >
-                  {{ spawnTitle(result) }}
-                </button>
-              }
-            </div>
-          }
-        </div>
-      </div>
-
-      <div class="card mb-2">
-        <div class="card-header py-1">{{ 'WORLD_EDITOR.SELECTION' | translate }}</div>
-        <div class="card-body p-2" data-testid="selection">
-          @if (checkedPathId() !== undefined && checkedPathId() !== activePathId()) {
-            <div class="mt-1 small" data-testid="path-check-other">
-              {{ 'WORLD_EDITOR.CHECKING_PATH' | translate }} {{ pathLabel(checkedPathId()!) }}
-              <button type="button" class="btn btn-sm btn-link p-0 ms-1" data-testid="clear-other-path-check" (click)="clearPathCheck()">
-                <i class="fa fa-times"></i> {{ 'WORLD_EDITOR.CLEAR_PATH_CHECK' | translate }}
-              </button>
-            </div>
-          }
-          @if (selectedSpawn(); as spawn) {
-            <div class="mb-1" data-testid="selected-title">
-              <strong>{{ spawnTitle(spawn) }}</strong>
-              @if (spawn.pathId) {
-                <span class="badge bg-danger ms-1" data-testid="selected-path"
-                  >path {{ spawn.pathId }}{{ spawn.pathFromTemplate ? ' (template)' : '' }}</span
-                >
-              }
-              @for (sai of spawn.saiPaths ?? []; track sai) {
-                <span class="badge bg-info text-dark ms-1" data-testid="selected-sai-path">{{ pathLabel(sai) }}</span>
-              }
-            </div>
-            @if (spawn.event) {
-              <div class="small mb-1" data-testid="selected-event">
-                <i class="fa fa-calendar-alt me-1"></i>{{ eventLabel(spawn.event) }}
-                @if (!filters().events.includes(spawn.event)) {
-                  <span class="text-muted">· {{ 'WORLD_EDITOR.EVENT_HIDDEN' | translate }}</span>
-                }
-              </div>
-            }
-            @if (spawnStored(); as stored) {
-              <keira-spawn-panel [spawn]="spawn" [stored]="stored.values" [edits]="spawnEdits()" (edited)="editSpawn($event)" />
-            }
-            <keira-pool-panel
-              [member]="selectedPool()"
-              [count]="selectionCount()"
-              [canOpen]="!!links"
-              [problems]="selectedPoolProblems()"
-              (template)="editPool($event)"
-              (mother)="setPoolMother($event)"
-              (chance)="setPoolChance($event)"
-              (leave)="leavePool()"
-              (join)="joinPool($event)"
-              (create)="createPool($event)"
-              (open)="openPool($event)"
-            />
-          } @else if (selectedWaypoint(); as waypoint) {
-            <div class="mb-1" data-testid="selected-title">
-              <strong>{{ pathLabel(waypoint.pathId) }}</strong> <span class="text-muted">· point {{ waypoint.point }}</span>
-            </div>
-            <div class="small mb-1" data-testid="selected-path-owners">
-              {{ 'WORLD_EDITOR.WALKED_BY' | translate }}:
-              {{ pathOwners().get(waypoint.pathId)?.join(', ') }}
-            </div>
-            <keira-waypoint-panel
-              [waypoint]="waypoint"
-              (edited)="editSelectedWaypoint($event)"
-              (insertAfter)="insertWaypointAfter()"
-              (renumber)="renumberPath()"
-            />
-            @let info = waypointInfo(waypoint);
-            @if (info.length) {
-              <ul class="small mb-1 ps-3" data-testid="selected-waypoint-info">
-                @for (line of info; track $index) {
+      <div [hidden]="rightTab() !== 'history'">
+        <div class="card">
+          <div class="card-header py-1">
+            {{ 'WORLD_EDITOR.PENDING_CHANGES' | translate }}
+            <span class="badge bg-secondary" data-testid="pending-count">{{ pendingDescriptions().length }}</span>
+          </div>
+          <div class="card-body p-2">
+            @if (pendingDescriptions().length) {
+              <ul class="pending-list small mb-2" data-testid="pending-list">
+                @for (line of pendingDescriptions(); track $index) {
                   <li>{{ line }}</li>
                 }
               </ul>
-            }
-          } @else {
-            <small class="text-muted" data-testid="nothing-selected">{{ 'WORLD_EDITOR.NOTHING_SELECTED' | translate }}</small>
-          }
-
-          @if (selectedSpawn() || selectedWaypoint()) {
-            <form class="placement-form" [formGroup]="placementForm" (ngSubmit)="applyPlacementForm()">
-              <div class="row g-1 mb-1">
-                @for (field of ['x', 'y', 'z', 'o']; track field) {
-                  <div class="col-6" [hidden]="field === 'o' && !selectedSpawn()">
-                    <div class="input-group input-group-sm">
-                      <span class="input-group-text">{{ field }}</span>
-                      <input
-                        type="number"
-                        step="any"
-                        class="form-control"
-                        [attr.data-testid]="'placement-' + field"
-                        [formControlName]="field"
-                      />
-                    </div>
-                  </div>
-                }
-              </div>
-              <div class="d-flex gap-1 flex-wrap">
-                <button type="submit" class="btn btn-sm btn-primary" data-testid="placement-apply" [disabled]="selectedLocked()">
-                  {{ 'WORLD_EDITOR.APPLY' | translate }}
+              <keira-highlightjs-wrapper [code]="pendingSql()" data-testid="pending-sql" />
+              <div class="d-flex gap-1 mt-2">
+                <button type="button" class="btn btn-sm btn-secondary" data-testid="copy-sql" (click)="copySql()">
+                  <i class="fa fa-copy"></i> {{ 'COPY' | translate }}
                 </button>
-                <button
-                  type="button"
-                  class="btn btn-sm btn-danger"
-                  data-testid="delete-selected"
-                  [disabled]="selectedLocked()"
-                  (click)="deleteSelected()"
-                >
-                  <i class="fa fa-trash"></i> {{ 'WORLD_EDITOR.DELETE' | translate }}
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-sm"
-                  data-testid="lock-selected"
-                  [class.btn-warning]="selectedLocked()"
-                  [class.btn-outline-secondary]="!selectedLocked()"
-                  [title]="'WORLD_EDITOR.LOCK_HELP' | translate"
-                  (click)="toggleLock(selectedKey()!)"
-                >
-                  <i class="fa" [class.fa-lock]="selectedLocked()" [class.fa-lock-open]="!selectedLocked()"></i>
-                  {{ (selectedLocked() ? 'WORLD_EDITOR.UNLOCK' : 'WORLD_EDITOR.LOCK') | translate }}
-                </button>
-                @if (selectedSpawn()?.type === 'creature' && !selectedSpawn()?.pathId) {
-                  <button type="button" class="btn btn-sm btn-outline-danger" data-testid="create-path" (click)="createPath()">
-                    {{ 'WORLD_EDITOR.CREATE_PATH' | translate }}
-                  </button>
-                }
-              </div>
-              @if (activePathId()) {
-                <div class="mt-1">
-                  <button
-                    type="button"
-                    class="btn btn-sm"
-                    data-testid="check-path"
-                    [class.btn-success]="checkedPathId() === activePathId()"
-                    [class.btn-outline-success]="checkedPathId() !== activePathId()"
-                    [title]="'WORLD_EDITOR.CHECK_PATH_HINT' | translate"
-                    (click)="toggleCheckPath()"
-                  >
-                    <i class="fa fa-check-circle"></i> {{ 'WORLD_EDITOR.CHECK_PATH' | translate }} ({{ pathLabel(activePathId()) }})
-                  </button>
-                  @if (checkedPathId() === activePathId()) {
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-outline-secondary ms-1"
-                      data-testid="clear-path-check"
-                      (click)="clearPathCheck()"
-                    >
-                      <i class="fa fa-times"></i> {{ 'WORLD_EDITOR.CLEAR_PATH_CHECK' | translate }}
-                    </button>
-                  }
-                  @if (checkedPathId() === activePathId() && waypointChecks().length) {
-                    <ul class="list-unstyled small mb-0 mt-1 world-editor-checks" data-testid="path-checks">
-                      @for (check of waypointChecks(); track check.key) {
-                        <li [attr.data-testid]="'path-check-' + check.point">
-                          <strong [style.color]="'#' + checkColors[check.status].toString(16).padStart(6, '0')">!</strong>
-                          #{{ check.point }}
-                          <span class="text-muted">({{ 'WORLD_EDITOR.PLACE_' + check.place.toUpperCase() | translate }})</span>
-                          {{ check.reason | translate: check.params }}
-                        </li>
-                      }
-                    </ul>
-                  }
-                </div>
-              }
-              @if (selectedSpawn()) {
-                <div class="d-flex gap-1 flex-wrap align-items-center mt-1" data-testid="group-tools">
-                  <button type="button" class="btn btn-sm btn-outline-secondary" data-testid="copy-selection" (click)="copySelection()">
-                    <i class="fa fa-copy"></i> {{ 'COPY' | translate }}
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-sm btn-outline-secondary"
-                    data-testid="copy-in-place"
-                    [title]="'WORLD_EDITOR.COPY_IN_PLACE_HELP' | translate"
-                    (click)="copyInPlace()"
-                  >
-                    <i class="fa fa-clone"></i> {{ 'WORLD_EDITOR.COPY_IN_PLACE' | translate }}
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-sm btn-outline-secondary"
-                    data-testid="paste-copied"
-                    [disabled]="!copied().length"
-                    (click)="pasteCopied()"
-                  >
-                    <i class="fa fa-paste"></i> {{ 'WORLD_EDITOR.PASTE' | translate }}
-                  </button>
-                  <small class="text-muted" data-testid="group-count">{{
-                    groupKeys().length
-                      ? ('WORLD_EDITOR.GROUP_COUNT' | translate: { count: groupKeys().length + 1 })
-                      : ('WORLD_EDITOR.GROUP_HINT' | translate)
-                  }}</small>
-                </div>
-                @if (canSimulate()) {
-                  <div class="d-flex gap-1 align-items-center mt-1" data-testid="simulation">
-                    <button
-                      type="button"
-                      class="btn btn-sm"
-                      data-testid="simulate"
-                      [class.btn-primary]="simulation()"
-                      [class.btn-outline-primary]="!simulation()"
-                      (click)="toggleSimulation()"
-                    >
-                      <i class="fa" [class.fa-play]="!simulation()" [class.fa-stop]="simulation()"></i>
-                      {{ (simulation() ? 'WORLD_EDITOR.SIMULATE_STOP' : 'WORLD_EDITOR.SIMULATE') | translate }}
-                    </button>
-                    @if (simulationEnded()) {
-                      <button
-                        type="button"
-                        class="btn btn-sm btn-outline-primary"
-                        data-testid="simulation-replay"
-                        (click)="replaySimulation()"
-                      >
-                        <i class="fa fa-redo"></i> {{ 'WORLD_EDITOR.SIMULATE_REPLAY' | translate }}
-                      </button>
-                    }
-                    @if (selectedFormation()) {
-                      <div
-                        class="form-check form-check-inline mb-0 ms-1"
-                        [tooltip]="'WORLD_EDITOR.SIMULATE_FORMATION_HELP' | translate"
-                        container="body"
-                      >
-                        <input
-                          class="form-check-input"
-                          type="checkbox"
-                          id="world-editor-simulate-formation"
-                          data-testid="simulate-formation"
-                          [checked]="simulateFormation()"
-                          (change)="simulateFormation.set($any($event.target).checked)"
-                        />
-                        <label class="form-check-label" for="world-editor-simulate-formation">{{
-                          'WORLD_EDITOR.SIMULATE_FORMATION' | translate
-                        }}</label>
-                      </div>
-                    }
-                    <select class="form-select form-select-sm w-auto" data-testid="simulation-rate" (change)="setSimulationRate($event)">
-                      @for (rate of [1, 2, 4, 8]; track rate) {
-                        <option [value]="rate" [selected]="simulationRate() === rate">×{{ rate }}</option>
-                      }
-                    </select>
-                  </div>
-                }
-                <!-- (inside the placement form: not a form of its own) -->
-                <div
-                  class="input-group input-group-sm mt-1"
-                  data-testid="array"
-                  [formGroup]="arrayForm"
-                  (keydown.enter)="$event.preventDefault(); arraySelected()"
-                >
-                  <span class="input-group-text">{{ 'WORLD_EDITOR.ARRAY' | translate }}</span>
-                  <input type="number" min="1" max="50" class="form-control" data-testid="array-count" formControlName="count" />
-                  <select class="form-select" data-testid="array-side" formControlName="side">
-                    @for (option of stackSides; track option.side) {
-                      <option [value]="option.side">{{ option.label | translate }}</option>
-                    }
-                  </select>
-                  <input
-                    type="number"
-                    min="0"
-                    step="any"
-                    class="form-control"
-                    data-testid="array-spacing"
-                    formControlName="spacing"
-                    [placeholder]="'WORLD_EDITOR.ARRAY_TOUCHING' | translate"
-                  />
-                  <button type="button" class="btn btn-outline-secondary" data-testid="array-place" (click)="arraySelected()">
-                    <i class="fa fa-th"></i>
-                  </button>
-                </div>
-                <div class="world-editor-stack mt-1" data-testid="stack" [title]="'WORLD_EDITOR.STACK_HINT' | translate">
-                  <span class="small text-muted">{{ 'WORLD_EDITOR.STACK' | translate }}</span>
-                  @for (option of stackSides; track option.side) {
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-outline-secondary"
-                      [attr.data-testid]="'stack-' + option.side"
-                      (click)="stackSelected(option.side)"
-                    >
-                      <i class="fa {{ option.icon }}"></i> {{ option.label | translate }}
-                    </button>
-                  }
-                </div>
-              }
-            </form>
-          }
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header py-1">
-          {{ 'WORLD_EDITOR.PENDING_CHANGES' | translate }}
-          <span class="badge bg-secondary" data-testid="pending-count">{{ pendingDescriptions().length }}</span>
-          <span class="float-end btn-group btn-group-sm">
-            <button
-              type="button"
-              class="btn btn-link btn-sm py-0"
-              data-testid="undo"
-              [title]="'WORLD_EDITOR.UNDO' | translate"
-              [disabled]="!canUndo()"
-              (click)="undo()"
-            >
-              <i class="fa fa-undo"></i>
-            </button>
-            <button
-              type="button"
-              class="btn btn-link btn-sm py-0"
-              data-testid="redo"
-              [title]="'WORLD_EDITOR.REDO' | translate"
-              [disabled]="!canRedo()"
-              (click)="redo()"
-            >
-              <i class="fa fa-redo"></i>
-            </button>
-          </span>
-        </div>
-        <div class="card-body p-2">
-          @if (pendingDescriptions().length) {
-            <ul class="pending-list small mb-2" data-testid="pending-list">
-              @for (line of pendingDescriptions(); track $index) {
-                <li>{{ line }}</li>
-              }
-            </ul>
-            <keira-highlightjs-wrapper [code]="pendingSql()" data-testid="pending-sql" />
-            <div class="d-flex gap-1 mt-2">
-              <button type="button" class="btn btn-sm btn-secondary" data-testid="copy-sql" (click)="copySql()">
-                <i class="fa fa-copy"></i> {{ 'COPY' | translate }}
-              </button>
-              <button
-                type="button"
-                class="btn btn-sm btn-primary"
-                data-testid="execute-sql"
-                [disabled]="executing()"
-                (click)="executeSql()"
-              >
-                <i class="fa fa-bolt"></i> {{ 'EXECUTE' | translate }}
-              </button>
-              <button type="button" class="btn btn-sm btn-outline-danger ms-auto" data-testid="discard-changes" (click)="discardChanges()">
-                {{ 'WORLD_EDITOR.DISCARD' | translate }}
-              </button>
-            </div>
-          } @else {
-            <small class="text-muted" data-testid="no-changes">{{ 'WORLD_EDITOR.NO_CHANGES' | translate }}</small>
-          }
-        </div>
-      </div>
-
-      @if (navMeshTile(); as info) {
-        <div class="card mb-2" data-testid="mmap-tile">
-          <div class="card-header py-1">{{ info.file }}</div>
-          <div class="card-body p-2">
-            @if (info.config; as config) {
-              <table class="table table-sm table-borderless align-middle small mb-1">
-                <thead>
-                  <tr>
-                    <th scope="col">{{ 'WORLD_EDITOR.SETTING' | translate }}</th>
-                    <th scope="col">{{ 'WORLD_EDITOR.IN_TILE' | translate }}</th>
-                    <th scope="col">{{ 'WORLD_EDITOR.NEW_VALUE' | translate }}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @for (key of mmapKeys; track key) {
-                    <tr [class.table-warning]="mmapChanges()[key] !== undefined">
-                      <td>{{ key }}</td>
-                      <td>{{ config[key] }}</td>
-                      <td>
-                        <input
-                          type="number"
-                          class="form-control form-control-sm"
-                          [attr.data-testid]="'mmap-' + key"
-                          [value]="mmapChanges()[key] ?? config[key]"
-                          (change)="setMmapValue(key, $event)"
-                        />
-                      </td>
-                    </tr>
-                  }
-                </tbody>
-              </table>
-              <div class="input-group input-group-sm mb-1">
-                <span class="input-group-text">{{ 'WORLD_EDITOR.OVERRIDE_FOR' | translate }}</span>
-                <select class="form-select" data-testid="mmap-scope" (change)="setMmapScope($event)">
-                  <option value="tile" [selected]="mmapScope() === 'tile'">
-                    {{ 'WORLD_EDITOR.THIS_TILE' | translate }} ({{ info.tile.ty }},{{ info.tile.tx }})
-                  </option>
-                  <option value="map" [selected]="mmapScope() === 'map'">
-                    {{ 'WORLD_EDITOR.WHOLE_MAP' | translate }} ({{ info.mapId }})
-                  </option>
-                </select>
-              </div>
-              <div class="d-flex gap-1 align-items-center mb-1">
                 <button
                   type="button"
                   class="btn btn-sm btn-primary"
-                  data-testid="mmap-preview"
-                  [disabled]="navMeshRebuildState()?.status === 'reading' || navMeshRebuildState()?.status === 'building'"
-                  (click)="previewMmap()"
+                  data-testid="execute-sql"
+                  [disabled]="executing()"
+                  (click)="executeSql()"
                 >
-                  <i class="fa fa-cubes"></i> {{ 'WORLD_EDITOR.MMAP_PREVIEW' | translate }}
+                  <i class="fa fa-bolt"></i> {{ 'EXECUTE' | translate }}
                 </button>
-                @if (navMeshRebuildState()) {
-                  <button
-                    type="button"
-                    class="btn btn-sm btn-outline-secondary"
-                    data-testid="mmap-preview-clear"
-                    (click)="clearMmapPreview()"
-                  >
-                    {{ 'WORLD_EDITOR.CLEAR' | translate }}
-                  </button>
-                }
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-danger ms-auto"
+                  data-testid="discard-changes"
+                  (click)="discardChanges()"
+                >
+                  {{ 'WORLD_EDITOR.DISCARD' | translate }}
+                </button>
               </div>
-              @if (navMeshRebuildState(); as state) {
-                <div class="mb-1 small" data-testid="mmap-preview-state">
-                  @switch (state.status) {
-                    @case ('reading') {
-                      <span class="text-muted">{{ 'WORLD_EDITOR.MMAP_PREVIEW_READING' | translate }}</span>
-                    }
-                    @case ('building') {
-                      <div class="progress world-editor-preview-progress" role="progressbar">
-                        <div class="progress-bar" [style.width.%]="(state.done / state.total) * 100"></div>
-                        <span>{{ state.done }} / {{ state.total }}</span>
-                      </div>
-                    }
-                    @case ('done') {
-                      <span class="world-editor-preview-done">
-                        {{
-                          (state.source === 'server' ? 'WORLD_EDITOR.MMAP_PREVIEW_DONE_SERVER' : 'WORLD_EDITOR.MMAP_PREVIEW_DONE')
-                            | translate: { triangles: state.triangles }
-                        }}
-                      </span>
-                      <div class="form-check form-switch mb-0">
-                        <input
-                          class="form-check-input"
-                          type="checkbox"
-                          id="mmap-hide-real"
-                          data-testid="mmap-hide-real"
-                          [checked]="hideRealNavMesh()"
-                          (change)="hideRealNavMesh.set($any($event.target).checked)"
-                        />
-                        <label class="form-check-label" for="mmap-hide-real">{{ 'WORLD_EDITOR.MMAP_HIDE_REAL' | translate }}</label>
-                      </div>
-                    }
-                    @default {
-                      <span class="text-danger">{{ 'WORLD_EDITOR.MMAP_PREVIEW_FAILED' | translate }}</span>
-                    }
-                  }
-                </div>
-              }
-              @if (mmapChanged()) {
-                <pre class="small mb-1 world-editor-yaml" data-testid="mmap-yaml">{{ mmapYaml() }}</pre>
-                <div class="d-flex gap-1">
-                  <button type="button" class="btn btn-sm btn-secondary" data-testid="mmap-copy" (click)="copyMmapYaml()">
-                    <i class="fa fa-copy"></i> {{ 'COPY' | translate }}
-                  </button>
-                  <button type="button" class="btn btn-sm btn-secondary" data-testid="mmap-download" (click)="downloadMmapYaml()">
-                    <i class="fa fa-download"></i> .yaml
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-sm btn-outline-secondary ms-auto"
-                    data-testid="mmap-reset"
-                    (click)="mmapChanges.set({})"
-                  >
-                    {{ 'WORLD_EDITOR.RESET_KEYS' | translate }}
-                  </button>
-                </div>
-                <small class="text-muted d-block mt-1">{{ 'WORLD_EDITOR.MMAP_YAML_HINT' | translate }}</small>
-              } @else {
-                <small class="text-muted" data-testid="mmap-hint">{{ 'WORLD_EDITOR.MMAP_EDIT_HINT' | translate }}</small>
-              }
-            } @else if (info.missing) {
-              <small class="text-danger" data-testid="mmap-missing">{{ 'WORLD_EDITOR.MMTILE_MISSING_HELP' | translate }}</small>
             } @else {
-              <small class="text-muted" data-testid="mmap-loading">{{ 'LOADING' | translate }}</small>
+              <small class="text-muted" data-testid="no-changes">{{ 'WORLD_EDITOR.NO_CHANGES' | translate }}</small>
             }
           </div>
         </div>
-      }
+      </div>
+      <div [hidden]="rightTab() !== 'attributes'">
+        <div class="card mb-2">
+          <div class="card-header py-1">{{ 'WORLD_EDITOR.TOOLS' | translate }}</div>
+          <div class="card-body p-2">
+            @if (tool() === 'face') {
+              <small class="text-muted d-block mb-1" data-testid="face-hint">{{ 'WORLD_EDITOR.FACE_HINT' | translate }}</small>
+            }
+            @if (tool() === 'place-creature' || tool() === 'place-gameobject') {
+              <div class="position-relative">
+                <div class="input-group input-group-sm mb-1">
+                  <span class="input-group-text">{{ 'WORLD_EDITOR.ENTRY' | translate }}</span>
+                  <input
+                    type="text"
+                    class="form-control"
+                    data-testid="place-entry"
+                    [placeholder]="'WORLD_EDITOR.PLACE_SEARCH' | translate"
+                    [formControl]="placeSearch"
+                    (change)="onPlaceEntryChange()"
+                    (keydown.escape)="placeResults.set([])"
+                  />
+                  @if (tool() === 'place-creature') {
+                    <keira-creature-selector-btn [control]="placeEntry" [disabled]="false" [config]="{ name: 'place-entry' }" />
+                  } @else {
+                    <keira-gameobject-selector-btn [control]="placeEntry" [disabled]="false" [config]="{ name: 'place-entry' }" />
+                  }
+                </div>
+                @if (placeResults().length) {
+                  <div class="list-group place-results" data-testid="place-results" (mouseleave)="placeHover.set(undefined)">
+                    @for (template of placeResults(); track template.entry) {
+                      <button
+                        type="button"
+                        class="list-group-item list-group-item-action py-1 small"
+                        [attr.data-testid]="'place-result-' + template.entry"
+                        [class.active]="template.entry === placeEntry.value"
+                        (mouseenter)="placeHover.set(template)"
+                        (click)="choosePlaceTemplate(template)"
+                      >
+                        {{ template.entry }} – {{ template.name || '?' }}
+                        @if (!template.displayId) {
+                          <span class="text-muted">({{ 'WORLD_EDITOR.NO_MODEL' | translate }})</span>
+                        }
+                      </button>
+                    }
+                  </div>
+                }
+              </div>
+              <small class="text-muted" data-testid="place-entry-name">{{
+                placeEntryName() || ('WORLD_EDITOR.PLACE_HINT' | translate)
+              }}</small>
+            }
 
-      <div class="card mb-2 world-editor-help-card">
-        <div class="card-header py-1">{{ 'WORLD_EDITOR.CONTROLS' | translate }}</div>
-        <div class="card-body p-2">
-          <table class="table table-sm table-borderless small mb-0" data-testid="controls-help">
-            <tbody>
-              @for (line of mouseHelp; track line.label) {
-                <tr>
-                  <td class="text-nowrap pe-2">{{ line.input | translate }}</td>
-                  <td>{{ line.label | translate }}</td>
-                </tr>
+            @if (tool() === 'add-waypoint') {
+              <small class="text-muted" data-testid="waypoint-hint">
+                @if (activePathId()) {
+                  {{ 'WORLD_EDITOR.ADD_WAYPOINT_HINT' | translate: { path: pathLabel(activePathId()) } }}
+                } @else {
+                  {{ 'WORLD_EDITOR.NO_ACTIVE_PATH' | translate }}
+                }
+              </small>
+            }
+
+            @if (tool() === 'probe') {
+              <div class="world-editor-probe" data-testid="probe">
+                <small class="text-muted d-block mb-1">{{
+                  (probeFrom() ? 'WORLD_EDITOR.PROBE_PICK_C' : 'WORLD_EDITOR.PROBE_PICK_A') | translate
+                }}</small>
+                <div class="d-flex gap-1 mb-1">
+                  <div class="input-group input-group-sm">
+                    <span class="input-group-text">{{ 'WORLD_EDITOR.RANGE' | translate }}</span>
+                    <select class="form-select" data-testid="probe-range-preset" (change)="setProbeRange($event)">
+                      @for (preset of rangePresets; track preset.range) {
+                        <option [value]="preset.range" [selected]="probeRange() === preset.range">
+                          {{ preset.label | translate }} ({{ preset.range }})
+                        </option>
+                      }
+                      @if (!isRangePreset()) {
+                        <option [value]="probeRange()" selected>{{ probeRange() }}</option>
+                      }
+                    </select>
+                    <input
+                      type="number"
+                      class="form-control"
+                      data-testid="probe-range"
+                      min="0"
+                      [value]="probeRange()"
+                      (change)="setProbeRange($event)"
+                    />
+                  </div>
+                  <div class="input-group input-group-sm world-editor-probe-height">
+                    <span class="input-group-text">{{ 'WORLD_EDITOR.EYE_HEIGHT' | translate }}</span>
+                    <input
+                      type="number"
+                      class="form-control"
+                      data-testid="probe-height"
+                      min="0"
+                      step="0.5"
+                      [value]="probeHeight()"
+                      (change)="setProbeHeight($event)"
+                    />
+                  </div>
+                </div>
+                @if (probeResult(); as result) {
+                  @if (result.to) {
+                    <ul class="list-unstyled small mb-1" data-testid="probe-result">
+                      @if (probeDistance(); as distance) {
+                        <li data-testid="probe-distance">
+                          <strong>{{ 'WORLD_EDITOR.DISTANCE' | translate }}:</strong>
+                          {{ distance.straight.toFixed(1) }} {{ 'WORLD_EDITOR.YARDS' | translate }}
+                          <span class="text-muted"
+                            >({{ 'WORLD_EDITOR.HORIZONTAL' | translate }} {{ distance.flat.toFixed(1) }},
+                            {{ 'WORLD_EDITOR.HEIGHT' | translate }} {{ distance.height.toFixed(1) }})</span
+                          >
+                        </li>
+                        <li data-testid="probe-time">
+                          <strong>{{ 'WORLD_EDITOR.TRAVEL_TIME' | translate }}:</strong>
+                          {{ 'WORLD_EDITOR.RUNNING' | translate }} {{ probeTime().run }} · {{ 'WORLD_EDITOR.WALKING' | translate }}
+                          {{ probeTime().walk }}
+                          <i
+                            class="fas fa-info-circle ms-1"
+                            placement="auto"
+                            container="body"
+                            [tooltip]="'WORLD_EDITOR.TRAVEL_TIME_HELP' | translate"
+                          ></i>
+                        </li>
+                        <li>
+                          <button type="button" class="btn btn-link btn-sm p-0" data-testid="probe-copy-go-to" (click)="copyGo(result.to)">
+                            .go xyz C
+                          </button>
+                        </li>
+                      }
+                      <li>
+                        <strong>{{ 'WORLD_EDITOR.PATH_LABEL' | translate }}:</strong>
+                        @if (result.noNavMesh) {
+                          {{ 'WORLD_EDITOR.NO_NAVMESH' | translate }}
+                        } @else if (result.tooFar) {
+                          {{ 'WORLD_EDITOR.PROBE_TOO_FAR' | translate }}
+                        } @else if (result.path) {
+                          {{ result.length!.toFixed(1) }} {{ 'WORLD_EDITOR.YARDS' | translate }}
+                        } @else {
+                          <span class="text-danger">{{ 'WORLD_EDITOR.NO_PATH' | translate }}</span>
+                        }
+                      </li>
+                      <li>
+                        <strong>{{ 'WORLD_EDITOR.LINE_OF_SIGHT' | translate }}:</strong>
+                        @if (result.blockedAt; as hit) {
+                          <span class="text-danger">{{ 'WORLD_EDITOR.LOS_BLOCKED' | translate }}</span>
+                          ({{ hit.x.toFixed(1) }} {{ hit.y.toFixed(1) }} {{ hit.z.toFixed(1) }})
+                        } @else {
+                          <span class="text-success">{{ 'WORLD_EDITOR.LOS_CLEAR' | translate }}</span>
+                        }
+                      </li>
+                      <li>
+                        <strong>{{ 'WORLD_EDITOR.ATTACK_FROM' | translate }}:</strong>
+                        @if (result.attackFrom; as spot) {
+                          {{ spot.x.toFixed(1) }} {{ spot.y.toFixed(1) }} {{ spot.z.toFixed(1) }} ({{ result.attackDistance!.toFixed(1) }}
+                          {{ 'WORLD_EDITOR.YARDS' | translate }}, {{ 'WORLD_EDITOR.WALK' | translate }}
+                          {{ result.walkToAttack!.toFixed(1) }})
+                          <button type="button" class="btn btn-link btn-sm p-0" data-testid="probe-copy-go" (click)="copyGo(spot)">
+                            .go xyz
+                          </button>
+                        } @else {
+                          <span class="text-danger">{{ 'WORLD_EDITOR.NO_ATTACK_POSITION' | translate }}</span>
+                        }
+                      </li>
+                    </ul>
+                  }
+                }
+                <button type="button" class="btn btn-sm btn-outline-secondary" data-testid="probe-clear" (click)="clearProbe()">
+                  {{ 'WORLD_EDITOR.CLEAR' | translate }}
+                </button>
+              </div>
+            }
+
+            @if (tool() === 'select') {
+              <div class="d-flex gap-1 align-items-center">
+                <div class="btn-group btn-group-sm" role="group">
+                  <button
+                    type="button"
+                    class="btn"
+                    data-testid="gizmo-translate"
+                    [class.btn-secondary]="gizmoMode() === 'translate'"
+                    [class.btn-outline-secondary]="gizmoMode() !== 'translate'"
+                    (click)="setGizmoMode('translate')"
+                  >
+                    <i class="fa fa-arrows-alt"></i> {{ 'WORLD_EDITOR.MOVE' | translate }}
+                  </button>
+                  <button
+                    type="button"
+                    class="btn"
+                    data-testid="gizmo-rotate"
+                    [class.btn-secondary]="gizmoMode() === 'rotate'"
+                    [class.btn-outline-secondary]="gizmoMode() !== 'rotate'"
+                    (click)="setGizmoMode('rotate')"
+                  >
+                    <i class="fa fa-sync-alt"></i> {{ 'WORLD_EDITOR.ROTATE' | translate }}
+                  </button>
+                </div>
+                <label class="d-flex align-items-center gap-1 ms-2 mb-0 small" for="world-editor-snap">
+                  {{ 'WORLD_EDITOR.SNAP_TO' | translate }}
+                  <select
+                    id="world-editor-snap"
+                    class="form-select form-select-sm w-auto"
+                    data-testid="snap-mode"
+                    (change)="setSnapMode($event)"
+                  >
+                    @for (mode of ['ground', 'water', 'wall', 'off']; track mode) {
+                      <option [value]="mode" [selected]="mode === snapMode()">
+                        {{ 'WORLD_EDITOR.SNAP_' + mode.toUpperCase() | translate }}
+                      </option>
+                    }
+                  </select>
+                </label>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="card mb-2" data-testid="problems">
+          <div class="card-body p-2">
+            <div class="d-flex align-items-center gap-2">
+              <button type="button" class="btn btn-sm btn-outline-warning" data-testid="check-spawns" (click)="checkSpawns()">
+                <i class="fa fa-stethoscope"></i> {{ 'WORLD_EDITOR.CHECK_SPAWNS' | translate }}
+              </button>
+              @if (spawnProblems(); as problems) {
+                <small class="text-muted" data-testid="problem-count">{{
+                  'WORLD_EDITOR.PROBLEM_COUNT' | translate: { count: problems.length }
+                }}</small>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-link ms-auto p-0"
+                  data-testid="problems-close"
+                  (click)="spawnProblems.set(undefined)"
+                >
+                  <i class="fa fa-times"></i>
+                </button>
               }
-              @for (item of controlActions; track item.action) {
-                @if (controls.settings().bindings[item.action].length) {
+            </div>
+            <div class="d-flex align-items-center gap-2 mt-1">
+              @if (mapScan(); as scan) {
+                <small class="text-muted" data-testid="scan-progress">{{
+                  'WORLD_EDITOR.SCAN_PROGRESS' | translate: { done: scan.done, total: scan.total || '?' }
+                }}</small>
+                <button type="button" class="btn btn-sm btn-link p-0" data-testid="scan-cancel" (click)="cancelScan()">
+                  {{ 'WORLD_EDITOR.CANCEL' | translate }}
+                </button>
+              } @else {
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-secondary"
+                  data-testid="scan-map"
+                  [title]="'WORLD_EDITOR.SCAN_MAP_HELP' | translate"
+                  [disabled]="!client.isSupported() || !settings.paths().serverDataPath"
+                  (click)="scanMap()"
+                >
+                  <i class="fa fa-satellite-dish"></i> {{ 'WORLD_EDITOR.SCAN_MAP' | translate }}
+                </button>
+              }
+              @if (scanResults()) {
+                @let counts = scanCounts();
+                @for (level of scanLevels; track level) {
+                  <button
+                    type="button"
+                    class="btn btn-sm py-0 px-1 world-editor-scan-level"
+                    [class]="'scan-' + level"
+                    [class.off]="!scanShown()[level]"
+                    [attr.data-testid]="'scan-level-' + level"
+                    [title]="'WORLD_EDITOR.SCAN_' + level.toUpperCase() | translate"
+                    (click)="toggleScanLevel(level)"
+                  >
+                    ! {{ counts[level] }}
+                  </button>
+                }
+                <button type="button" class="btn btn-sm btn-link ms-auto p-0" data-testid="scan-close" (click)="scanResults.set(undefined)">
+                  <i class="fa fa-times"></i>
+                </button>
+              }
+            </div>
+            @for (group of scanList(); track group.type) {
+              <h6 class="small text-muted mt-2 mb-0" [attr.data-testid]="'scan-group-' + group.type">
+                {{ (group.type === 'creature' ? 'WORLD_EDITOR.CREATURES' : 'WORLD_EDITOR.GAMEOBJECTS') | translate }} ({{ group.count }})
+              </h6>
+              <div class="list-group list-group-flush small world-editor-results" [attr.data-testid]="'scan-list-' + group.type">
+                @for (result of group.results; track result.key) {
+                  <button
+                    type="button"
+                    class="list-group-item list-group-item-action py-1 px-2"
+                    [attr.data-testid]="'scan-' + result.key"
+                    (click)="goToResult(result.spawn)"
+                  >
+                    <strong class="world-editor-scan-mark" [class]="'scan-' + result.level">!</strong>
+                    {{ result.spawn.name || result.spawn.entry }} ({{ result.spawn.guid }}) - {{ result.text }}
+                  </button>
+                }
+              </div>
+            }
+            @if (spawnProblems()?.length) {
+              <div class="list-group list-group-flush small world-editor-results mt-1" data-testid="problem-list">
+                @for (problem of spawnProblems(); track $index) {
+                  <button
+                    type="button"
+                    class="list-group-item list-group-item-action py-1 px-2"
+                    [attr.data-testid]="'problem-' + $index"
+                    (click)="goToProblem(problem)"
+                  >
+                    <strong [class.text-danger]="problem.severity === 'bad'" [class.text-warning]="problem.severity === 'warn'">!</strong>
+                    {{ spawnTitle(problem.spawn) }} - {{ problem.text }}
+                  </button>
+                }
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="card mb-2" data-testid="search">
+          <div class="card-body p-2">
+            <form class="input-group input-group-sm" (submit)="$event.preventDefault(); searchSpawns()">
+              <input
+                class="form-control"
+                data-testid="search-input"
+                [formControl]="searchForm"
+                [placeholder]="'WORLD_EDITOR.SEARCH_SPAWNS' | translate"
+              />
+              <button type="submit" class="btn btn-secondary" data-testid="search-btn" [disabled]="searching()">
+                <i class="fa fa-search"></i>
+              </button>
+              @if (searchResults().length) {
+                <button type="button" class="btn btn-outline-secondary" data-testid="search-clear" (click)="clearSearch()">
+                  <i class="fa fa-times"></i>
+                </button>
+              }
+            </form>
+            @if (searchResults().length) {
+              <div class="list-group list-group-flush small world-editor-results mt-1" data-testid="search-results">
+                @for (result of searchResults(); track result.type + result.guid) {
+                  <button
+                    type="button"
+                    class="list-group-item list-group-item-action py-1 px-2"
+                    [attr.data-testid]="'search-result-' + result.type + '-' + result.guid"
+                    (click)="goToResult(result)"
+                  >
+                    {{ spawnTitle(result) }}
+                  </button>
+                }
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="card mb-2">
+          <div class="card-header py-1">{{ 'WORLD_EDITOR.SELECTION' | translate }}</div>
+          <div class="card-body p-2" data-testid="selection">
+            @if (checkedPathId() !== undefined && checkedPathId() !== activePathId()) {
+              <div class="mt-1 small" data-testid="path-check-other">
+                {{ 'WORLD_EDITOR.CHECKING_PATH' | translate }} {{ pathLabel(checkedPathId()!) }}
+                <button type="button" class="btn btn-sm btn-link p-0 ms-1" data-testid="clear-other-path-check" (click)="clearPathCheck()">
+                  <i class="fa fa-times"></i> {{ 'WORLD_EDITOR.CLEAR_PATH_CHECK' | translate }}
+                </button>
+              </div>
+            }
+            @if (selectedSpawn(); as spawn) {
+              <div class="mb-1" data-testid="selected-title">
+                <strong>{{ spawnTitle(spawn) }}</strong>
+                @if (spawn.pathId) {
+                  <span class="badge bg-danger ms-1" data-testid="selected-path"
+                    >path {{ spawn.pathId }}{{ spawn.pathFromTemplate ? ' (template)' : '' }}</span
+                  >
+                }
+                @for (sai of spawn.saiPaths ?? []; track sai) {
+                  <span class="badge bg-info text-dark ms-1" data-testid="selected-sai-path">{{ pathLabel(sai) }}</span>
+                }
+              </div>
+              @if (spawn.event) {
+                <div class="small mb-1" data-testid="selected-event">
+                  <i class="fa fa-calendar-alt me-1"></i>{{ eventLabel(spawn.event) }}
+                  @if (!filters().events.includes(spawn.event)) {
+                    <span class="text-muted">· {{ 'WORLD_EDITOR.EVENT_HIDDEN' | translate }}</span>
+                  }
+                </div>
+              }
+              @if (spawnStored(); as stored) {
+                <keira-spawn-panel [spawn]="spawn" [stored]="stored.values" [edits]="spawnEdits()" (edited)="editSpawn($event)" />
+              }
+              <keira-pool-panel
+                [member]="selectedPool()"
+                [count]="selectionCount()"
+                [canOpen]="!!links"
+                [problems]="selectedPoolProblems()"
+                (template)="editPool($event)"
+                (mother)="setPoolMother($event)"
+                (chance)="setPoolChance($event)"
+                (leave)="leavePool()"
+                (join)="joinPool($event)"
+                (create)="createPool($event)"
+                (open)="openPool($event)"
+              />
+            } @else if (selectedWaypoint(); as waypoint) {
+              <div class="mb-1" data-testid="selected-title">
+                <strong>{{ pathLabel(waypoint.pathId) }}</strong> <span class="text-muted">· point {{ waypoint.point }}</span>
+              </div>
+              <div class="small mb-1" data-testid="selected-path-owners">
+                {{ 'WORLD_EDITOR.WALKED_BY' | translate }}:
+                {{ pathOwners().get(waypoint.pathId)?.join(', ') }}
+              </div>
+              <keira-waypoint-panel
+                [waypoint]="waypoint"
+                (edited)="editSelectedWaypoint($event)"
+                (insertAfter)="insertWaypointAfter()"
+                (renumber)="renumberPath()"
+              />
+              @let info = waypointInfo(waypoint);
+              @if (info.length) {
+                <ul class="small mb-1 ps-3" data-testid="selected-waypoint-info">
+                  @for (line of info; track $index) {
+                    <li>{{ line }}</li>
+                  }
+                </ul>
+              }
+            } @else {
+              <small class="text-muted" data-testid="nothing-selected">{{ 'WORLD_EDITOR.NOTHING_SELECTED' | translate }}</small>
+            }
+
+            @if (selectedSpawn() || selectedWaypoint()) {
+              <form class="placement-form" [formGroup]="placementForm" (ngSubmit)="applyPlacementForm()">
+                <div class="row g-1 mb-1">
+                  @for (field of ['x', 'y', 'z', 'o']; track field) {
+                    <div class="col-6" [hidden]="field === 'o' && !selectedSpawn()">
+                      <div class="input-group input-group-sm">
+                        <span class="input-group-text">{{ field }}</span>
+                        <input
+                          type="number"
+                          step="any"
+                          class="form-control"
+                          [attr.data-testid]="'placement-' + field"
+                          [formControlName]="field"
+                        />
+                      </div>
+                    </div>
+                  }
+                </div>
+                <div class="d-flex gap-1 flex-wrap">
+                  <button type="submit" class="btn btn-sm btn-primary" data-testid="placement-apply" [disabled]="selectedLocked()">
+                    {{ 'WORLD_EDITOR.APPLY' | translate }}
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-danger"
+                    data-testid="delete-selected"
+                    [disabled]="selectedLocked()"
+                    (click)="deleteSelected()"
+                  >
+                    <i class="fa fa-trash"></i> {{ 'WORLD_EDITOR.DELETE' | translate }}
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-sm"
+                    data-testid="lock-selected"
+                    [class.btn-warning]="selectedLocked()"
+                    [class.btn-outline-secondary]="!selectedLocked()"
+                    [title]="'WORLD_EDITOR.LOCK_HELP' | translate"
+                    (click)="toggleLock(selectedKey()!)"
+                  >
+                    <i class="fa" [class.fa-lock]="selectedLocked()" [class.fa-lock-open]="!selectedLocked()"></i>
+                    {{ (selectedLocked() ? 'WORLD_EDITOR.UNLOCK' : 'WORLD_EDITOR.LOCK') | translate }}
+                  </button>
+                  @if (selectedSpawn()?.type === 'creature' && !selectedSpawn()?.pathId) {
+                    <button type="button" class="btn btn-sm btn-outline-danger" data-testid="create-path" (click)="createPath()">
+                      {{ 'WORLD_EDITOR.CREATE_PATH' | translate }}
+                    </button>
+                  }
+                </div>
+                @if (activePathId()) {
+                  <div class="mt-1">
+                    <button
+                      type="button"
+                      class="btn btn-sm"
+                      data-testid="check-path"
+                      [class.btn-success]="checkedPathId() === activePathId()"
+                      [class.btn-outline-success]="checkedPathId() !== activePathId()"
+                      [title]="'WORLD_EDITOR.CHECK_PATH_HINT' | translate"
+                      (click)="toggleCheckPath()"
+                    >
+                      <i class="fa fa-check-circle"></i> {{ 'WORLD_EDITOR.CHECK_PATH' | translate }} ({{ pathLabel(activePathId()) }})
+                    </button>
+                    @if (checkedPathId() === activePathId()) {
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-secondary ms-1"
+                        data-testid="clear-path-check"
+                        (click)="clearPathCheck()"
+                      >
+                        <i class="fa fa-times"></i> {{ 'WORLD_EDITOR.CLEAR_PATH_CHECK' | translate }}
+                      </button>
+                    }
+                    @if (checkedPathId() === activePathId() && waypointChecks().length) {
+                      <ul class="list-unstyled small mb-0 mt-1 world-editor-checks" data-testid="path-checks">
+                        @for (check of waypointChecks(); track check.key) {
+                          <li [attr.data-testid]="'path-check-' + check.point">
+                            <strong [style.color]="'#' + checkColors[check.status].toString(16).padStart(6, '0')">!</strong>
+                            #{{ check.point }}
+                            <span class="text-muted">({{ 'WORLD_EDITOR.PLACE_' + check.place.toUpperCase() | translate }})</span>
+                            {{ check.reason | translate: check.params }}
+                          </li>
+                        }
+                      </ul>
+                    }
+                  </div>
+                }
+                @if (selectedSpawn()) {
+                  <div class="d-flex gap-1 flex-wrap align-items-center mt-1" data-testid="group-tools">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-testid="copy-selection" (click)="copySelection()">
+                      <i class="fa fa-copy"></i> {{ 'COPY' | translate }}
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-secondary"
+                      data-testid="copy-in-place"
+                      [title]="'WORLD_EDITOR.COPY_IN_PLACE_HELP' | translate"
+                      (click)="copyInPlace()"
+                    >
+                      <i class="fa fa-clone"></i> {{ 'WORLD_EDITOR.COPY_IN_PLACE' | translate }}
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-secondary"
+                      data-testid="paste-copied"
+                      [disabled]="!copied().length"
+                      (click)="pasteCopied()"
+                    >
+                      <i class="fa fa-paste"></i> {{ 'WORLD_EDITOR.PASTE' | translate }}
+                    </button>
+                    <small class="text-muted" data-testid="group-count">{{
+                      groupKeys().length
+                        ? ('WORLD_EDITOR.GROUP_COUNT' | translate: { count: groupKeys().length + 1 })
+                        : ('WORLD_EDITOR.GROUP_HINT' | translate)
+                    }}</small>
+                  </div>
+                  @if (canSimulate()) {
+                    <div class="d-flex gap-1 align-items-center mt-1" data-testid="simulation">
+                      <button
+                        type="button"
+                        class="btn btn-sm"
+                        data-testid="simulate"
+                        [class.btn-primary]="simulation()"
+                        [class.btn-outline-primary]="!simulation()"
+                        (click)="toggleSimulation()"
+                      >
+                        <i class="fa" [class.fa-play]="!simulation()" [class.fa-stop]="simulation()"></i>
+                        {{ (simulation() ? 'WORLD_EDITOR.SIMULATE_STOP' : 'WORLD_EDITOR.SIMULATE') | translate }}
+                      </button>
+                      @if (simulationEnded()) {
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-outline-primary"
+                          data-testid="simulation-replay"
+                          (click)="replaySimulation()"
+                        >
+                          <i class="fa fa-redo"></i> {{ 'WORLD_EDITOR.SIMULATE_REPLAY' | translate }}
+                        </button>
+                      }
+                      @if (selectedFormation()) {
+                        <div
+                          class="form-check form-check-inline mb-0 ms-1"
+                          [tooltip]="'WORLD_EDITOR.SIMULATE_FORMATION_HELP' | translate"
+                          container="body"
+                        >
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="world-editor-simulate-formation"
+                            data-testid="simulate-formation"
+                            [checked]="simulateFormation()"
+                            (change)="simulateFormation.set($any($event.target).checked)"
+                          />
+                          <label class="form-check-label" for="world-editor-simulate-formation">{{
+                            'WORLD_EDITOR.SIMULATE_FORMATION' | translate
+                          }}</label>
+                        </div>
+                      }
+                      <select class="form-select form-select-sm w-auto" data-testid="simulation-rate" (change)="setSimulationRate($event)">
+                        @for (rate of [1, 2, 4, 8]; track rate) {
+                          <option [value]="rate" [selected]="simulationRate() === rate">×{{ rate }}</option>
+                        }
+                      </select>
+                    </div>
+                  }
+                  <!-- (inside the placement form: not a form of its own) -->
+                  <div
+                    class="input-group input-group-sm mt-1"
+                    data-testid="array"
+                    [formGroup]="arrayForm"
+                    (keydown.enter)="$event.preventDefault(); arraySelected()"
+                  >
+                    <span class="input-group-text">{{ 'WORLD_EDITOR.ARRAY' | translate }}</span>
+                    <input type="number" min="1" max="50" class="form-control" data-testid="array-count" formControlName="count" />
+                    <select class="form-select" data-testid="array-side" formControlName="side">
+                      @for (option of stackSides; track option.side) {
+                        <option [value]="option.side">{{ option.label | translate }}</option>
+                      }
+                    </select>
+                    <input
+                      type="number"
+                      min="0"
+                      step="any"
+                      class="form-control"
+                      data-testid="array-spacing"
+                      formControlName="spacing"
+                      [placeholder]="'WORLD_EDITOR.ARRAY_TOUCHING' | translate"
+                    />
+                    <button type="button" class="btn btn-outline-secondary" data-testid="array-place" (click)="arraySelected()">
+                      <i class="fa fa-th"></i>
+                    </button>
+                  </div>
+                  <div class="world-editor-stack mt-1" data-testid="stack" [title]="'WORLD_EDITOR.STACK_HINT' | translate">
+                    <span class="small text-muted">{{ 'WORLD_EDITOR.STACK' | translate }}</span>
+                    @for (option of stackSides; track option.side) {
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-secondary"
+                        [attr.data-testid]="'stack-' + option.side"
+                        (click)="stackSelected(option.side)"
+                      >
+                        <i class="fa {{ option.icon }}"></i> {{ option.label | translate }}
+                      </button>
+                    }
+                  </div>
+                }
+              </form>
+            }
+          </div>
+        </div>
+
+        @if (navMeshTile(); as info) {
+          <div class="card mb-2" data-testid="mmap-tile">
+            <div class="card-header py-1">{{ info.file }}</div>
+            <div class="card-body p-2">
+              @if (info.config; as config) {
+                <table class="table table-sm table-borderless align-middle small mb-1">
+                  <thead>
+                    <tr>
+                      <th scope="col">{{ 'WORLD_EDITOR.SETTING' | translate }}</th>
+                      <th scope="col">{{ 'WORLD_EDITOR.IN_TILE' | translate }}</th>
+                      <th scope="col">{{ 'WORLD_EDITOR.NEW_VALUE' | translate }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (key of mmapKeys; track key) {
+                      <tr [class.table-warning]="mmapChanges()[key] !== undefined">
+                        <td>{{ key }}</td>
+                        <td>{{ config[key] }}</td>
+                        <td>
+                          <input
+                            type="number"
+                            class="form-control form-control-sm"
+                            [attr.data-testid]="'mmap-' + key"
+                            [value]="mmapChanges()[key] ?? config[key]"
+                            (change)="setMmapValue(key, $event)"
+                          />
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+                <div class="input-group input-group-sm mb-1">
+                  <span class="input-group-text">{{ 'WORLD_EDITOR.OVERRIDE_FOR' | translate }}</span>
+                  <select class="form-select" data-testid="mmap-scope" (change)="setMmapScope($event)">
+                    <option value="tile" [selected]="mmapScope() === 'tile'">
+                      {{ 'WORLD_EDITOR.THIS_TILE' | translate }} ({{ info.tile.ty }},{{ info.tile.tx }})
+                    </option>
+                    <option value="map" [selected]="mmapScope() === 'map'">
+                      {{ 'WORLD_EDITOR.WHOLE_MAP' | translate }} ({{ info.mapId }})
+                    </option>
+                  </select>
+                </div>
+                <div class="d-flex gap-1 align-items-center mb-1">
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-primary"
+                    data-testid="mmap-preview"
+                    [disabled]="navMeshRebuildState()?.status === 'reading' || navMeshRebuildState()?.status === 'building'"
+                    (click)="previewMmap()"
+                  >
+                    <i class="fa fa-cubes"></i> {{ 'WORLD_EDITOR.MMAP_PREVIEW' | translate }}
+                  </button>
+                  @if (navMeshRebuildState()) {
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-secondary"
+                      data-testid="mmap-preview-clear"
+                      (click)="clearMmapPreview()"
+                    >
+                      {{ 'WORLD_EDITOR.CLEAR' | translate }}
+                    </button>
+                  }
+                </div>
+                @if (navMeshRebuildState(); as state) {
+                  <div class="mb-1 small" data-testid="mmap-preview-state">
+                    @switch (state.status) {
+                      @case ('reading') {
+                        <span class="text-muted">{{ 'WORLD_EDITOR.MMAP_PREVIEW_READING' | translate }}</span>
+                      }
+                      @case ('building') {
+                        <div class="progress world-editor-preview-progress" role="progressbar">
+                          <div class="progress-bar" [style.width.%]="(state.done / state.total) * 100"></div>
+                          <span>{{ state.done }} / {{ state.total }}</span>
+                        </div>
+                      }
+                      @case ('done') {
+                        <span class="world-editor-preview-done">
+                          {{
+                            (state.source === 'server' ? 'WORLD_EDITOR.MMAP_PREVIEW_DONE_SERVER' : 'WORLD_EDITOR.MMAP_PREVIEW_DONE')
+                              | translate: { triangles: state.triangles }
+                          }}
+                        </span>
+                        <div class="form-check form-switch mb-0">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="mmap-hide-real"
+                            data-testid="mmap-hide-real"
+                            [checked]="hideRealNavMesh()"
+                            (change)="hideRealNavMesh.set($any($event.target).checked)"
+                          />
+                          <label class="form-check-label" for="mmap-hide-real">{{ 'WORLD_EDITOR.MMAP_HIDE_REAL' | translate }}</label>
+                        </div>
+                      }
+                      @default {
+                        <span class="text-danger">{{ 'WORLD_EDITOR.MMAP_PREVIEW_FAILED' | translate }}</span>
+                      }
+                    }
+                  </div>
+                }
+                @if (mmapChanged()) {
+                  <pre class="small mb-1 world-editor-yaml" data-testid="mmap-yaml">{{ mmapYaml() }}</pre>
+                  <div class="d-flex gap-1">
+                    <button type="button" class="btn btn-sm btn-secondary" data-testid="mmap-copy" (click)="copyMmapYaml()">
+                      <i class="fa fa-copy"></i> {{ 'COPY' | translate }}
+                    </button>
+                    <button type="button" class="btn btn-sm btn-secondary" data-testid="mmap-download" (click)="downloadMmapYaml()">
+                      <i class="fa fa-download"></i> .yaml
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-secondary ms-auto"
+                      data-testid="mmap-reset"
+                      (click)="mmapChanges.set({})"
+                    >
+                      {{ 'WORLD_EDITOR.RESET_KEYS' | translate }}
+                    </button>
+                  </div>
+                  <small class="text-muted d-block mt-1">{{ 'WORLD_EDITOR.MMAP_YAML_HINT' | translate }}</small>
+                } @else {
+                  <small class="text-muted" data-testid="mmap-hint">{{ 'WORLD_EDITOR.MMAP_EDIT_HINT' | translate }}</small>
+                }
+              } @else if (info.missing) {
+                <small class="text-danger" data-testid="mmap-missing">{{ 'WORLD_EDITOR.MMTILE_MISSING_HELP' | translate }}</small>
+              } @else {
+                <small class="text-muted" data-testid="mmap-loading">{{ 'LOADING' | translate }}</small>
+              }
+            </div>
+          </div>
+        }
+
+        <div class="card mb-2 world-editor-help-card">
+          <div class="card-header py-1">{{ 'WORLD_EDITOR.CONTROLS' | translate }}</div>
+          <div class="card-body p-2">
+            <table class="table table-sm table-borderless small mb-0" data-testid="controls-help">
+              <tbody>
+                @for (line of mouseHelp; track line.label) {
                   <tr>
-                    <td class="text-nowrap pe-2">{{ bindingsLabel(item.action) }}</td>
-                    <td>{{ 'WORLD_EDITOR.CONTROL_' + item.action.toUpperCase() | translate }}</td>
+                    <td class="text-nowrap pe-2">{{ line.input | translate }}</td>
+                    <td>{{ line.label | translate }}</td>
                   </tr>
                 }
-              }
-            </tbody>
-          </table>
-          <small class="text-muted d-block mt-1" data-testid="waypoint-shapes">{{ 'WORLD_EDITOR.WAYPOINT_SHAPES' | translate }}</small>
+                @for (item of controlActions; track item.action) {
+                  @if (controls.settings().bindings[item.action].length) {
+                    <tr>
+                      <td class="text-nowrap pe-2">{{ bindingsLabel(item.action) }}</td>
+                      <td>{{ 'WORLD_EDITOR.CONTROL_' + item.action.toUpperCase() | translate }}</td>
+                    </tr>
+                  }
+                }
+              </tbody>
+            </table>
+            <small class="text-muted d-block mt-1" data-testid="waypoint-shapes">{{ 'WORLD_EDITOR.WAYPOINT_SHAPES' | translate }}</small>
+          </div>
         </div>
       </div>
     </div>
@@ -3539,7 +3562,7 @@
 </div>
 
 <ng-template #layerSwitchesTemplate>
-  <div class="d-flex align-items-center gap-3 world-editor-layers">
+  <div class="d-flex flex-column gap-1 world-editor-layers">
     @for (layer of layerSwitches; track layer.key) {
       <div class="form-check form-switch mb-0">
         <input

@@ -3813,8 +3813,24 @@ export class WorldEditorComponent implements OnInit {
 
   // ---------------------------------------------------------------- Eden Editor's menu bar, Asset browser, status bar
 
-  /** The Asset browser (left of the view) shown. */
-  protected readonly assetsOpen = signal(false);
+  /** The right column's tabs (Eden's Asset browser, the attributes of what's selected, the pending changes). */
+  protected readonly RIGHT_TABS: { id: 'assets' | 'attributes' | 'history'; label: string; icon: string }[] = [
+    { id: 'assets', label: 'WORLD_EDITOR.EDEN.ASSETS', icon: 'fa-boxes-stacked' },
+    { id: 'attributes', label: 'WORLD_EDITOR.EDEN.ATTRIBUTES', icon: 'fa-sliders' },
+    { id: 'history', label: 'WORLD_EDITOR.EDEN.HISTORY', icon: 'fa-clock-rotate-left' },
+  ];
+  protected readonly rightTab = signal<'assets' | 'attributes' | 'history'>('attributes');
+  /** The toolbar's tools, as icons. */
+  protected readonly TOOL_ICONS: { tool: EditorTool; icon: string }[] = [
+    { tool: 'select', icon: 'fa-arrow-pointer' },
+    { tool: 'face', icon: 'fa-compass' },
+    { tool: 'probe', icon: 'fa-ruler' },
+    { tool: 'place-creature', icon: 'fa-dragon' },
+    { tool: 'place-gameobject', icon: 'fa-cube' },
+    { tool: 'add-waypoint', icon: 'fa-route' },
+  ];
+  /** The layer switches, in the toolbar's Layers menu. */
+  protected readonly layersOpen = signal(false);
   /** The pending changes, in order (the Asset browser's History). */
   protected readonly changeList = computed(() => (this.revision(), this.changes.describe()));
   protected readonly edenMapName = computed(() => this.maps().find((map) => map.id === this.mapId())?.name ?? '');
@@ -3839,7 +3855,8 @@ export class WorldEditorComponent implements OnInit {
       toolFace: () => this.setTool('face'),
       toolPlaceCreature: () => this.setTool('place-creature'),
       toolPlaceGameobject: () => this.setTool('place-gameobject'),
-      assets: () => this.assetsOpen.set(!this.assetsOpen()),
+      assets: () => this.showRightTab('assets'),
+      history: () => this.showRightTab('history'),
       worldMap: () => this.toggleMap(),
       gameMap: () => this.toggleGameMap(),
       filters: () => this.toggleFilters(),
@@ -3855,6 +3872,12 @@ export class WorldEditorComponent implements OnInit {
       wiki: () => window.open(WORLD_EDITOR_WIKI, '_blank'),
     };
     void run[action]();
+  }
+
+  /** A tab of the right column, the column shown. */
+  private showRightTab(tab: 'assets' | 'attributes' | 'history'): void {
+    this.rightTab.set(tab);
+    this.panelCollapsed.set(false);
   }
 
   /** A template picked in the Asset browser: placed from now on, by a click in the view. */

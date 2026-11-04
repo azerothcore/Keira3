@@ -2155,7 +2155,8 @@
       "SEARCH": "Entry or name",
       "RECENT": "Recently used",
       "NO_ASSETS": "No templates found.",
-      "NO_CHANGES": "No pending changes."
+      "ATTRIBUTES": "Attributes",
+      "LAYERS": "Layers"
     }
   },
   "SETTINGS": {

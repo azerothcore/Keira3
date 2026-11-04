@@ -114,27 +114,4 @@ describe(AssetBrowserComponent.name, () => {
     expect(page.el('asset-recent-6')).toBeTruthy();
     setItem.mockRestore();
   });
-
-  it('shows the pending changes, undone and redone', async () => {
-    const { page } = await setup();
-    const [undo, redo] = [vi.fn(), vi.fn()];
-    page.fixture.componentInstance.undo.subscribe(undo);
-    page.fixture.componentInstance.redo.subscribe(redo);
-    page.el('asset-tab-history').click();
-    await page.settle();
-    expect(page.el('asset-history').textContent).toContain('WORLD_EDITOR.EDEN.NO_CHANGES');
-    expect(page.el<HTMLButtonElement>('asset-undo').disabled).toBe(true);
-
-    page.fixture.componentRef.setInput('changes', ['Moved creature 1', 'Added gameobject 2']);
-    page.fixture.componentRef.setInput('canUndo', true);
-    page.fixture.componentRef.setInput('canRedo', true);
-    await page.settle();
-    expect(page.el('asset-history').querySelectorAll('li').length).toBe(2);
-    page.el('asset-undo').click();
-    page.el('asset-redo').click();
-    expect([undo.mock.calls.length, redo.mock.calls.length]).toEqual([1, 1]);
-    page.el('asset-tab-assets').click();
-    await page.settle();
-    expect(page.el('asset-search')).toBeTruthy();
-  });
 });

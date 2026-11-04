@@ -62,19 +62,19 @@ describe(ButtonLabelComponent.name, () => {
 describe('button style', () => {
   afterEach(() => localStorage.removeItem(BUTTON_STYLE_KEY));
 
-  it('is kept on this computer, both by default', () => {
-    expect(loadButtonStyle()).toBe('both');
-    saveButtonStyle('icons');
+  it('is kept on this computer, icons by default', () => {
     expect(loadButtonStyle()).toBe('icons');
-    localStorage.setItem(BUTTON_STYLE_KEY, 'huge');
+    saveButtonStyle('both');
     expect(loadButtonStyle()).toBe('both');
+    localStorage.setItem(BUTTON_STYLE_KEY, 'huge');
+    expect(loadButtonStyle()).toBe('icons');
     const getItem = vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
       throw new Error('blocked');
     });
     const setItem = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
       throw new Error('full');
     });
-    expect(loadButtonStyle()).toBe('both');
+    expect(loadButtonStyle()).toBe('icons');
     saveButtonStyle('text');
     getItem.mockRestore();
     setItem.mockRestore();

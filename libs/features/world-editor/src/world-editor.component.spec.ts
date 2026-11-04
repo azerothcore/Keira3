@@ -4560,10 +4560,14 @@ describe(WorldEditorComponent.name, () => {
 
     it('shows the toolbar buttons as icons, names or both (kept), named in their tooltips', async () => {
       const { page } = await setup();
-      expect(page.text('filters-toggle')).toContain('WORLD_EDITOR.FILTERS');
+      // icons by default (Eden's toolbar)
+      expect(page.text('filters-toggle')).not.toContain('WORLD_EDITOR.FILTERS');
       expect(page.byId('filters-toggle').nativeElement.querySelector('i')).toBeTruthy();
       page.click('view-toggle');
       page.fixture.detectChanges();
+      page.click('button-style-both');
+      page.fixture.detectChanges();
+      expect(page.text('filters-toggle')).toContain('WORLD_EDITOR.FILTERS');
       page.click('button-style-icons');
       page.fixture.detectChanges();
       expect(page.text('filters-toggle')).not.toContain('WORLD_EDITOR.FILTERS');
@@ -5788,13 +5792,22 @@ describe(WorldEditorComponent.name, () => {
       editor['onEdenAction'].call(fixture.componentInstance, 'topView' as never);
       expect((fixture.componentInstance as unknown as { topViewRequest: () => number }).topViewRequest()).toBe(top + 1);
 
-      // the Asset browser, from the View menu: a template picked is placed from now on
+      // the Asset browser, from the View menu (the right column's Assets tab): a template picked is placed from now on
+      page.click('panel-toggle');
+      page.fixture.detectChanges();
       page.click('eden-menu-2');
       page.fixture.detectChanges();
       page.click('eden-item-assets');
       await settle(page);
+      expect(page.byId('right-tab-assets').nativeElement.classList).toContain('btn-secondary');
+      expect(page.byId('side-panel').nativeElement.hidden).toBe(false);
+      editor['onEdenAction'].call(fixture.componentInstance, 'history' as never);
+      page.fixture.detectChanges();
+      expect(page.byId('right-tab-history').nativeElement.classList).toContain('btn-secondary');
+      page.click('right-tab-attributes');
+      page.fixture.detectChanges();
+      expect(page.byId('right-tab-attributes').nativeElement.classList).toContain('btn-secondary');
       const browser = page.fixture.debugElement.query((el) => el.name === 'keira-asset-browser');
-      expect(browser).toBeTruthy();
       (browser.componentInstance as AssetBrowserComponent).picked.emit({
         type: 'gameobject',
         template: { entry: 55, name: 'Chest', displayId: 3, scale: 1 },
@@ -5808,8 +5821,11 @@ describe(WorldEditorComponent.name, () => {
       });
       await settle(page);
       expect((fixture.componentInstance as unknown as { tool: () => string }).tool()).toBe('place-creature');
-      (browser.componentInstance as AssetBrowserComponent).undo.emit();
-      (browser.componentInstance as AssetBrowserComponent).redo.emit();
+
+      // the layer switches, in the toolbar's Layers menu
+      page.click('layers-toggle');
+      page.fixture.detectChanges();
+      expect(page.byId('layers-toggle').nativeElement.classList).toContain('btn-secondary');
 
       // the status bar: where the camera is, the map, the folders read
       expect(page.text('eden-status-position')).toContain(`X ${CENTER.x.toFixed(1)}`);
