@@ -223,6 +223,25 @@ describe('QuestPreviewService', () => {
     expect(await service.rewardXPAt(42)).toBe(0);
   });
 
+  it('keeps the sample player choice, and goes on when the storage is blocked', () => {
+    localStorage.setItem('keira3.questPreviewSample', '1');
+    const { service, questTemplateService } = setup();
+    expect(service.textSample()).toBeTruthy();
+    questTemplateService.form.controls.SuggestedGroupNum.setValue(0);
+    expect(service.suggestedPlayers).toBe(0);
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('blocked');
+    });
+    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+      throw new Error('blocked');
+    });
+    service.showSample(false);
+    expect(service.textSample()).toBeUndefined();
+    expect(service['loadSample']()).toBeUndefined();
+    vi.restoreAllMocks();
+    localStorage.clear();
+  });
+
   it('difficultyLevels', () => {
     const { service, questTemplateService } = setup();
     let difficulty: DifficultyLevel;

@@ -494,7 +494,10 @@ describe('QuestPreviewComponent', () => {
     });
 
     it('should correctly toggle', () => {
-      const { fixture, page } = setup();
+      const { fixture, page, service } = setup();
+      vi.spyOn(service, 'descriptionText', 'get').mockReturnValue('d');
+      vi.spyOn(service, 'completionText', 'get').mockReturnValue('p');
+      vi.spyOn(service, 'rewardText', 'get').mockReturnValue('r');
 
       fixture.detectChanges();
 
@@ -515,6 +518,34 @@ describe('QuestPreviewComponent', () => {
       page.clickElement(page.completionToggle);
       page.expectNotCollapsed(page.completionToggle);
 
+      page.removeNativeElement();
+    });
+
+    it('hides the empty texts, shows the suggested players and writes the texts for a sample player (#3133)', () => {
+      localStorage.clear();
+      const { fixture, service, page } = setup();
+      const questTemplate = createMockObject(
+        { QuestDescription: 'Hello $N, $r $C. $gBrother:Sister;!', SuggestedGroupNum: 3 },
+        QuestTemplate,
+      );
+      vi.spyOn(service, 'questTemplate', 'get').mockReturnValue(questTemplate);
+      vi.spyOn(service, 'questRequestItems', 'get').mockReturnValue(createMockObject({ CompletionText: '' }, QuestRequestItems));
+      vi.spyOn(service, 'questOfferReward', 'get').mockReturnValue(createMockObject({ RewardText: '' }, QuestOfferReward));
+      fixture.detectChanges();
+
+      expect(page.query('#suggested-players').textContent).toContain('Suggested players: 3');
+      expect(page.query('#progress-text', false)).toBeFalsy();
+      expect(page.query('#completion-text', false)).toBeFalsy();
+      expect(page.descriptionText.textContent).toContain('Hello $N');
+
+      page.clickElement(page.query<HTMLInputElement>('#text-sample-switch'));
+      fixture.detectChanges();
+      expect(page.descriptionText.textContent).toContain('Hello Drok, Orc Warrior. Brother!');
+      expect(localStorage.getItem('keira3.questPreviewSample')).toBe('1');
+
+      page.clickElement(page.query<HTMLInputElement>('#text-sample-switch'));
+      fixture.detectChanges();
+      expect(page.descriptionText.textContent).toContain('Hello $N');
       page.removeNativeElement();
     });
 
