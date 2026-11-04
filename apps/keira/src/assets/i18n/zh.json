@@ -392,7 +392,15 @@
       "ITEMID2": "这是来自Item.dbc中左手使用的装备物品编号。",
       "ITEMID3": "这是来自Item.dbc中远程栏位使用的装备物品编号。",
       "FACTION": "当引用生物的阵营ID时，它是选择器中左侧的'ID'列，更多信息请查看wiki中的'faction'。",
-      "IMMUNITIES": "Entry here refers to the ID in creature_immunities"
+      "IMMUNITIES": "Entry here refers to the ID in creature_immunities",
+      "FINAL_STATS": "应用修正后（其职业的 creature_classlevelstats）：",
+      "FINAL_HEALTH": "生命值",
+      "FINAL_MANA": "法力值",
+      "FINAL_ARMOR": "护甲",
+      "FINAL_DAMAGE": "近战伤害",
+      "FINAL_ATTACK_POWER": "攻击强度",
+      "FINAL_STATS_HELP": "按核心计算，未计光环和难度；伤害按 BaseAttackTime。经验 × {{ xp }}。",
+      "FINAL_STATS_NONE": "没有其职业和等级对应的 creature_classlevelstats 行。"
     },
     "TEMPLATE_ADDON": {
       "ENTRY": "链接至creature_template表的entry字段",

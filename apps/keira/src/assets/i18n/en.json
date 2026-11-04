@@ -392,7 +392,15 @@
       "ITEMID2": "This is the item number of the equipment used in the left hand from Item.dbc.",
       "ITEMID3": "This is the item number of the equipment used in the ranged slot from Item.dbc.",
       "FACTION": "When refering to the Creature's Faction ID it's the column on the left 'ID' in the selector, more information check 'faction' in the wiki.",
-      "IMMUNITIES": "Entry here refers to the ID in creature_immunities"
+      "IMMUNITIES": "Entry here refers to the ID in creature_immunities",
+      "FINAL_STATS": "With the modifiers (creature_classlevelstats of its class):",
+      "FINAL_HEALTH": "Health",
+      "FINAL_MANA": "Mana",
+      "FINAL_ARMOR": "Armor",
+      "FINAL_DAMAGE": "Melee damage",
+      "FINAL_ATTACK_POWER": "Attack power",
+      "FINAL_STATS_HELP": "As the core computes them, before auras and difficulty; damage by BaseAttackTime. Experience × {{ xp }}.",
+      "FINAL_STATS_NONE": "no creature_classlevelstats row for its class and levels."
     },
     "TEMPLATE_ADDON": {
       "ENTRY": "Link to creature_template.entry",
