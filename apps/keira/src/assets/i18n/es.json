@@ -571,7 +571,11 @@
       "LEGEND_CONDITIONS": "Tiene condiciones de disponibilidad (clic para abrir)",
       "BAND_ANY": "Una de estas ({{group}})",
       "BAND_ALL": "Todas estas ({{group}})",
-      "CONDITIONS_TOOLTIP": "{{count}} condición(es) de disponibilidad — clic para abrirlas en el editor de Condiciones"
+      "CONDITIONS_TOOLTIP": "{{count}} condición(es) de disponibilidad — clic para abrirlas en el editor de Condiciones",
+      "LINKS_TITLE": "Enlaces de cadena de la misión {{id}} {{title}}",
+      "LINKS_HELP": "PrevQuestID (> 0 completada antes, < 0 aceptada), NextQuestID, ExclusiveGroup (> 0 una del grupo, < 0 todas) y BreadcrumbForQuestId, en quest_template_addon. Pulsa ✎ en una misión de la cadena para editar sus enlaces.",
+      "LINKS_EDIT": "Editar los enlaces de cadena de esta misión",
+      "LINKS_RESET": "Deshacer los cambios"
     },
     "CHECK": {
       "REQUIRED_ITEM_NO_COUNT": "Un objeto requerido no tiene cantidad: la misión no se puede hacer.",

@@ -571,7 +571,11 @@
       "LEGEND_CONDITIONS": "存在可接取条件（点击查看）",
       "BAND_ANY": "其中之一（{{group}}）",
       "BAND_ALL": "全部这些（{{group}}）",
-      "CONDITIONS_TOOLTIP": "{{count}} 条可接取条件 — 点击在条件编辑器中打开"
+      "CONDITIONS_TOOLTIP": "{{count}} 条可接取条件 — 点击在条件编辑器中打开",
+      "LINKS_TITLE": "任务 {{id}} {{title}} 的任务链链接",
+      "LINKS_HELP": "quest_template_addon 中的 PrevQuestID（> 0 需先完成，< 0 需已接受）、NextQuestID、ExclusiveGroup（> 0 组内任一，< 0 组内全部）和 BreadcrumbForQuestId。点击任务链中任务上的 ✎ 以编辑其链接。",
+      "LINKS_EDIT": "编辑此任务的任务链链接",
+      "LINKS_RESET": "撤销更改"
     },
     "CHECK": {
       "REQUIRED_ITEM_NO_COUNT": "需要的物品没有数量：任务无法完成。",
