@@ -756,6 +756,32 @@ describe('WorldEditorService', () => {
     expect(queryService.query.mock.calls[1][1]).toEqual(['-1', '%Mailbox%', '-1']);
   });
 
+  it('browses the templates of a type or all, by entry or name (the Asset browser)', async () => {
+    const { service, queryService } = setup();
+    queryService.query
+      .mockReturnValueOnce(
+        of([
+          { entry: '6', name: 'Kobold', grp: '7', displayId: '60', scale: '1' },
+          { entry: '7', name: 'Y', grp: '7' },
+        ]),
+      )
+      .mockReturnValueOnce(of(undefined))
+      .mockReturnValueOnce(of([]));
+    expect(await service.browseTemplates('creature', 7, ' kob ')).toEqual([
+      { entry: 6, name: 'Kobold', displayId: 60, scale: 1, group: 7 },
+      { entry: 7, name: 'Y', displayId: 0, scale: 1, group: 7 },
+    ]);
+    expect(queryService.query.mock.calls[0][0]).toContain(
+      'WHERE ct.type = ? AND (ct.entry = ? OR ct.name LIKE ?) ORDER BY ct.name LIMIT 100',
+    );
+    expect(queryService.query.mock.calls[0][1]).toEqual(['7', '-1', '%kob%']);
+    expect(await service.browseTemplates('gameobject', null, '', 20)).toEqual([]);
+    expect(queryService.query.mock.calls[1][0]).toContain('FROM gameobject_template ORDER BY name LIMIT 20');
+    await service.browseTemplates('gameobject', 3, '12');
+    expect(queryService.query.mock.calls[2][0]).toContain('WHERE type = ? AND (entry = ? OR name LIKE ?)');
+    expect(queryService.query.mock.calls[2][1]).toEqual(['3', '12', '%12%']);
+  });
+
   it('finds a good place to arrive on a map: an instance entrance, else a teleport location', async () => {
     const { service, queryService } = setup();
     queryService.query.mockReturnValueOnce(of([{ x: '1', y: '2', z: '3', source: '0' }])).mockReturnValueOnce(of(undefined));

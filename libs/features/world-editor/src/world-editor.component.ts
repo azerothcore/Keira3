@@ -199,6 +199,10 @@ import {
 } from './spawn-groups';
 import { MAP_SORT_KEYS, MapSortKey, savePickerSort, SortRule, sortItems, toggleSort, ZONE_SORT_KEYS, ZoneSortKey } from './picker-sort';
 import { isSpawnVisible, loadSpawnFilters, phaseBits, saveSpawnFilters, SpawnFilters, spawnEvents } from './spawn-filters';
+import { AssetBrowserComponent, AssetPick } from './eden/asset-browser.component';
+import { EdenMenuBarComponent } from './eden/eden-menu-bar.component';
+import { EdenAction } from './eden/eden-menu';
+import { EdenLights, EdenStatusBarComponent } from './eden/eden-status-bar.component';
 
 /** "Marshal McBride - Creature (GUID: 1, Entry: 197)", as shown on hover and in the selection panel. */
 export function spawnTitle(spawn: { type: SpawnType; name: string; guid: number; entry: number }): string {
@@ -468,12 +472,18 @@ export function buildKind(dev = isDevMode()): 'development' | 'release' {
   return dev ? 'development' : 'release';
 }
 
+/** AzerothCore's wiki, from the Help menu. */
+export const WORLD_EDITOR_WIKI = 'https://www.azerothcore.org/wiki/';
+
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-world-editor',
   templateUrl: './world-editor.component.html',
   styleUrls: ['./world-editor.component.scss', './world-editor-pickers.scss'],
   imports: [
+    AssetBrowserComponent,
+    EdenMenuBarComponent,
+    EdenStatusBarComponent,
     NgTemplateOutlet,
     TooltipDirective,
     ReactiveFormsModule,
@@ -3800,6 +3810,58 @@ export class WorldEditorComponent implements OnInit {
   }
 
   // ---------------------------------------------------------------- undo / redo
+
+  // ---------------------------------------------------------------- Eden Editor's menu bar, Asset browser, status bar
+
+  /** The Asset browser (left of the view) shown. */
+  protected readonly assetsOpen = signal(false);
+  /** The pending changes, in order (the Asset browser's History). */
+  protected readonly changeList = computed(() => (this.revision(), this.changes.describe()));
+  protected readonly edenMapName = computed(() => this.maps().find((map) => map.id === this.mapId())?.name ?? '');
+  protected readonly edenZoneName = computed(() => this.zones().find((zone) => zone.areaId === this.cameraZone())?.name ?? '');
+  protected readonly edenLights = computed<EdenLights>(() => ({
+    database: true,
+    gameData: !!this.settings.paths().clientPath,
+    source: !!this.settings.paths().sourcePath,
+  }));
+  protected readonly edenPosition = computed(() => this.cameraCenter());
+
+  /** What the menu bar's items do: the toolbar's and panels' own actions. */
+  protected onEdenAction(action: EdenAction): void {
+    const run: Record<EdenAction, () => unknown> = {
+      execute: () => this.executeSql(),
+      copySql: () => this.copySql(),
+      discard: () => this.discardChanges(),
+      refresh: () => this.refresh(),
+      undo: () => this.undo(),
+      redo: () => this.redo(),
+      toolSelect: () => this.setTool('select'),
+      toolFace: () => this.setTool('face'),
+      toolPlaceCreature: () => this.setTool('place-creature'),
+      toolPlaceGameobject: () => this.setTool('place-gameobject'),
+      assets: () => this.assetsOpen.set(!this.assetsOpen()),
+      worldMap: () => this.toggleMap(),
+      gameMap: () => this.toggleGameMap(),
+      filters: () => this.toggleFilters(),
+      view: () => this.toggleView(),
+      tree: () => this.toggleTree(),
+      topView: () => this.topViewRequest.update((n) => n + 1),
+      resetNorth: () => this.resetNorth(),
+      legend: () => this.toggleLegend(),
+      style: () => this.toggleStyle(),
+      fullscreen: () => this.toggleFullscreen(),
+      controls: () => this.toggleControls(),
+      settings: () => this.toggleSettings(),
+      wiki: () => window.open(WORLD_EDITOR_WIKI, '_blank'),
+    };
+    void run[action]();
+  }
+
+  /** A template picked in the Asset browser: placed from now on, by a click in the view. */
+  protected onAssetPicked(pick: AssetPick): void {
+    this.setTool(pick.type === 'creature' ? 'place-creature' : 'place-gameobject');
+    this.choosePlaceTemplate(pick.template);
+  }
 
   protected undo(): void {
     if (this.canUndo()) {

@@ -54,9 +54,11 @@ import { DebugHtmlElement, PageObjectModel, typeInElement } from 'ngx-page-objec
 import { ClipboardService } from 'ngx-clipboard';
 import { ElectronService } from '@keira/shared/common-services';
 import { ToastrService } from 'ngx-toastr';
-import { buildKind, difficultyLabel, WorldEditorComponent } from './world-editor.component';
+import { buildKind, difficultyLabel, WORLD_EDITOR_WIKI, WorldEditorComponent } from './world-editor.component';
 import { SpawnRecord, WaypointRecord } from './world-editor.model';
 import { WorldEditorService } from './world-editor.service';
+import { EdenAction } from './eden/eden-menu';
+import { AssetBrowserComponent } from './eden/asset-browser.component';
 import { WORLD_EDITOR_LINKS } from '@keira/shared/constants';
 
 /** Stands in for the WebGL viewer: exposes what the editor passes in, and lets tests emit viewer events. */
@@ -264,6 +266,7 @@ describe(WorldEditorComponent.name, () => {
       loadLandingSpot: vi.fn(),
       loadAreaPaths: vi.fn(),
       searchTemplates: vi.fn(),
+      browseTemplates: vi.fn(),
       loadMapSpawnPositions: vi.fn(),
       loadScriptEntries: vi.fn(),
       loadObjectTemplates: vi.fn(),
@@ -436,6 +439,7 @@ describe(WorldEditorComponent.name, () => {
     mocks.service.loadLandingSpot.mockResolvedValue(undefined);
     mocks.service.loadAreaPaths.mockResolvedValue([]);
     mocks.service.searchTemplates.mockResolvedValue([]);
+    mocks.service.browseTemplates.mockResolvedValue([]);
     mocks.service.loadMapSpawnPositions.mockResolvedValue([]);
     mocks.client.getVmapTile.mockResolvedValue(undefined);
     mocks.client.getTaxiNodes.mockResolvedValue([]);
@@ -5735,6 +5739,82 @@ describe(WorldEditorComponent.name, () => {
       await settle(page);
       expect(page.byId('tool-select').nativeElement.classList).toContain('btn-primary');
       expect(page.byId('nothing-selected')).toBeTruthy();
+    });
+  });
+
+  describe("Eden Editor's menu bar, Asset browser and status bar", () => {
+    it('runs the toolbar and panel actions from the menus', async () => {
+      const { page, fixture } = await setup();
+      await loadArea(page);
+      const editor = fixture.componentInstance as unknown as Record<string, () => unknown>;
+      const actions: [EdenAction, string][] = [
+        ['execute', 'executeSql'],
+        ['copySql', 'copySql'],
+        ['discard', 'discardChanges'],
+        ['refresh', 'refresh'],
+        ['undo', 'undo'],
+        ['redo', 'redo'],
+        ['worldMap', 'toggleMap'],
+        ['gameMap', 'toggleGameMap'],
+        ['filters', 'toggleFilters'],
+        ['view', 'toggleView'],
+        ['tree', 'toggleTree'],
+        ['resetNorth', 'resetNorth'],
+        ['legend', 'toggleLegend'],
+        ['style', 'toggleStyle'],
+        ['fullscreen', 'toggleFullscreen'],
+        ['controls', 'toggleControls'],
+        ['settings', 'toggleSettings'],
+      ];
+      for (const [action, method] of actions) {
+        const spy = vi.spyOn(editor, method).mockImplementation(() => undefined);
+        editor['onEdenAction'].call(fixture.componentInstance, action as never);
+        expect(spy).toHaveBeenCalled();
+      }
+      const open = vi.fn();
+      vi.stubGlobal('open', open);
+      editor['onEdenAction'].call(fixture.componentInstance, 'wiki' as never);
+      expect(open).toHaveBeenCalledWith(WORLD_EDITOR_WIKI, '_blank');
+      for (const [action, tool] of [
+        ['toolFace', 'face'],
+        ['toolPlaceGameobject', 'place-gameobject'],
+        ['toolPlaceCreature', 'place-creature'],
+        ['toolSelect', 'select'],
+      ]) {
+        editor['onEdenAction'].call(fixture.componentInstance, action as never);
+        expect((fixture.componentInstance as unknown as { tool: () => string }).tool()).toBe(tool);
+      }
+      const top = (fixture.componentInstance as unknown as { topViewRequest: () => number }).topViewRequest();
+      editor['onEdenAction'].call(fixture.componentInstance, 'topView' as never);
+      expect((fixture.componentInstance as unknown as { topViewRequest: () => number }).topViewRequest()).toBe(top + 1);
+
+      // the Asset browser, from the View menu: a template picked is placed from now on
+      page.click('eden-menu-2');
+      page.fixture.detectChanges();
+      page.click('eden-item-assets');
+      await settle(page);
+      const browser = page.fixture.debugElement.query((el) => el.name === 'keira-asset-browser');
+      expect(browser).toBeTruthy();
+      (browser.componentInstance as AssetBrowserComponent).picked.emit({
+        type: 'gameobject',
+        template: { entry: 55, name: 'Chest', displayId: 3, scale: 1 },
+      });
+      await settle(page);
+      expect((fixture.componentInstance as unknown as { tool: () => string }).tool()).toBe('place-gameobject');
+      expect(page.byId<HTMLInputElement>('place-entry').nativeElement.value).toBe('55');
+      (browser.componentInstance as AssetBrowserComponent).picked.emit({
+        type: 'creature',
+        template: { entry: 197, name: 'Marshal', displayId: 1, scale: 1 },
+      });
+      await settle(page);
+      expect((fixture.componentInstance as unknown as { tool: () => string }).tool()).toBe('place-creature');
+      (browser.componentInstance as AssetBrowserComponent).undo.emit();
+      (browser.componentInstance as AssetBrowserComponent).redo.emit();
+
+      // the status bar: where the camera is, the map, the folders read
+      expect(page.text('eden-status-position')).toContain(`X ${CENTER.x.toFixed(1)}`);
+      expect(page.text('eden-status-place')).toContain('Eastern Kingdoms');
+      expect(page.byId('eden-light-gameData').nativeElement.classList).toContain('lit');
     });
   });
 
