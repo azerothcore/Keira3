@@ -190,7 +190,8 @@
     "CONDITIONS": {
       "TITLE": "Condiciones",
       "SELECT_CONDITIONS": "Seleccionar Condiciones",
-      "CONDITIONS": "Condiciones"
+      "CONDITIONS": "Condiciones",
+      "SOURCE": "Condiciones de la fuente"
     },
     "SMARTAI": {
       "TITLE": "SmartAI",
@@ -962,6 +963,12 @@
       },
       "GENERATE_COMMENT": "Generar",
       "GENERATE_COMMENT_TIP": "Rellena el comentario a partir de los campos de arriba, como los comentarios de SmartAI"
+    },
+    "SOURCE": {
+      "HELP": "Todas las condiciones de esta fuente: elige una en la tabla para cambiarla abajo, añade, copia o borra. Al guardar se escribe de nuevo toda la fuente.",
+      "NOT_UNIQUE": "Otra condición de esta fuente tiene el mismo ElseGroup, tipo, objetivo y valores.",
+      "OPEN": "Todas las condiciones de la fuente",
+      "OPEN_TIP": "Las condiciones de esta fuente (o las buscadas), todas juntas"
     }
   },
   "SMARTAI": {

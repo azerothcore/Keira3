@@ -190,7 +190,8 @@
     "CONDITIONS": {
       "TITLE": "Conditions",
       "SELECT_CONDITIONS": "Select Conditions",
-      "CONDITIONS": "Conditions"
+      "CONDITIONS": "Conditions",
+      "SOURCE": "Conditions of the source"
     },
     "SMARTAI": {
       "TITLE": "SmartAI",
@@ -962,6 +963,12 @@
       },
       "GENERATE_COMMENT": "Generate",
       "GENERATE_COMMENT_TIP": "Fill the comment from the fields above, as SmartAI comments are"
+    },
+    "SOURCE": {
+      "HELP": "Every condition of this source: pick one in the table to change it below, add, copy or delete. Saving writes the whole source again.",
+      "NOT_UNIQUE": "Another condition of this source has these ElseGroup, type, target and values.",
+      "OPEN": "All the conditions of the source",
+      "OPEN_TIP": "The conditions of this source (or the ones searched), all together"
     }
   },
   "SMARTAI": {

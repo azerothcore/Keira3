@@ -34,7 +34,13 @@ import {
   SelectScriptWaypointComponent,
 } from '@keira/features/scripts';
 
-import { ConditionsComponent, ConditionsHandlerService, SelectConditionsComponent } from '@keira/features/conditions';
+import {
+  ConditionsComponent,
+  ConditionsHandlerService,
+  ConditionsSourceComponent,
+  ConditionsSourceHandlerService,
+  SelectConditionsComponent,
+} from '@keira/features/conditions';
 import {
   CreatureCopyComponent,
   CreatureEquipTemplateComponent,
@@ -769,6 +775,11 @@ export const KEIRA_ROUTES: Routes = [
         path: 'conditions',
         component: ConditionsComponent,
         canActivate: [ConditionsHandlerService],
+      },
+      {
+        path: 'source',
+        component: ConditionsSourceComponent,
+        canActivate: [ConditionsSourceHandlerService],
       },
     ],
   },

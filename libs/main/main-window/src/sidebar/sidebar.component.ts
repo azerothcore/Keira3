@@ -5,7 +5,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TitleCasePipe } from '@angular/common';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { filter } from 'rxjs';
-import { ConditionsHandlerService } from '@keira/features/conditions';
+import { ConditionsHandlerService, ConditionsSourceHandlerService } from '@keira/features/conditions';
 import { CreatureHandlerService } from '@keira/features/creature';
 import { GameobjectHandlerService } from '@keira/features/gameobject';
 import { GossipHandlerService } from '@keira/features/gossip';
@@ -113,6 +113,7 @@ export class SidebarComponent {
   /** Whether the AzerothCore source folder is set: the script pages reading it are greyed out without it. */
   protected readonly sourceFolderSet = computed(() => !!this.wowDataSettings.paths().sourcePath);
   protected readonly conditionsHandlerService = inject(ConditionsHandlerService);
+  protected readonly conditionsSourceHandlerService = inject(ConditionsSourceHandlerService);
   protected readonly saiHandlerService = inject(SaiHandlerService);
   protected readonly referenceLootHandlerService = inject(ReferenceLootHandlerService);
   protected readonly spellLootHandlerService = inject(SpellLootHandlerService);
