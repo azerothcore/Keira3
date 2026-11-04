@@ -2155,7 +2155,8 @@
       "SEARCH": "Entry o nombre",
       "RECENT": "Usados recientemente",
       "NO_ASSETS": "No se encontraron plantillas.",
-      "NO_CHANGES": "No hay cambios pendientes."
+      "ATTRIBUTES": "Atributos",
+      "LAYERS": "Capas"
     }
   },
   "SETTINGS": {

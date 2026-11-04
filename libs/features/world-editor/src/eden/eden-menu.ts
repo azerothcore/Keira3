@@ -11,6 +11,7 @@ export type EdenAction =
   | 'toolPlaceCreature'
   | 'toolPlaceGameobject'
   | 'assets'
+  | 'history'
   | 'worldMap'
   | 'gameMap'
   | 'filters'
@@ -65,6 +66,7 @@ export const EDEN_MENUS: EdenMenu[] = [
     label: 'WORLD_EDITOR.EDEN.MENU_VIEW',
     items: [
       { action: 'assets', label: 'WORLD_EDITOR.EDEN.ASSETS' },
+      { action: 'history', label: 'WORLD_EDITOR.EDEN.HISTORY' },
       { action: 'tree', label: 'WORLD_EDITOR.TREE' },
       { action: 'filters', label: 'WORLD_EDITOR.FILTERS' },
       { action: 'view', label: 'WORLD_EDITOR.VIEW' },
