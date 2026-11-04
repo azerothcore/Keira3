@@ -140,7 +140,7 @@ import {
   SpellHandlerService,
   SpellAreaComponent,
 } from '@keira/features/spell';
-import { SessionSqlComponent, SqlEditorComponent } from '@keira/features/sql-editor';
+import { SessionSqlComponent, SqlEditorComponent, TableBrowserComponent } from '@keira/features/sql-editor';
 import { SaiHandlerService } from '@keira/shared/sai-editor';
 import {
   BroadcastTextComponent,
@@ -227,6 +227,10 @@ export const KEIRA_ROUTES: Routes = [
   {
     path: 'session-sql',
     component: SessionSqlComponent,
+  },
+  {
+    path: 'table-browser',
+    component: TableBrowserComponent,
   },
   {
     path: 'creature',

@@ -69,6 +69,12 @@
           </li>
 
           <li>
+            <a id="table-browser-toggle" href="#" [routerLink]="'table-browser'">
+              <i class="fa fa-table"></i> {{ 'SIDEBAR.TABLE_BROWSER' | translate }}
+            </a>
+          </li>
+
+          <li>
             <a id="session-sql-toggle" href="#" [routerLink]="'session-sql'">
               <i class="fa fa-layer-group"></i> {{ 'SIDEBAR.SESSION_SQL' | translate }}
               @if (sessionSql.entries().length) {

@@ -291,7 +291,8 @@
       "SELECT_SPELL_SCRIPTS": "Buscar scripts de hechizos",
       "TITLE": "Scripts de eventos y hechizos"
     },
-    "SESSION_SQL": "SQL de la sesión"
+    "SESSION_SQL": "SQL de la sesión",
+    "TABLE_BROWSER": "Explorador de tablas"
   },
   "DASHBOARD": {
     "WELCOME": "Bienvenido a Keira3",
@@ -2344,5 +2345,13 @@
     "CLEAR": "Borrar",
     "EXECUTED": "Ejecutado.",
     "EMPTY": "Nada aún: usa \"A la sesión\" junto a la consulta de un editor."
+  },
+  "TABLE_BROWSER": {
+    "TITLE": "Explorador de tablas",
+    "HELP": "Cualquier tabla de la base de datos world, buscada por condiciones en sus columnas (para las tablas sin editor en Keira). Solo lectura.",
+    "TABLE": "Tabla",
+    "LIMIT": "Filas",
+    "ADD_CONDITION": "Condición",
+    "ROWS": "{{ count }} filas"
   }
 }

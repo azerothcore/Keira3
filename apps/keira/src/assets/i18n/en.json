@@ -291,7 +291,8 @@
       "SELECT_SPELL_SCRIPTS": "Search spell scripts",
       "TITLE": "Event and spell scripts"
     },
-    "SESSION_SQL": "Session SQL"
+    "SESSION_SQL": "Session SQL",
+    "TABLE_BROWSER": "Table browser"
   },
   "DASHBOARD": {
     "WELCOME": "Welcome to Keira3",
@@ -2344,5 +2345,13 @@
     "CLEAR": "Clear",
     "EXECUTED": "Executed.",
     "EMPTY": "Nothing yet: use \"To the session\" next to an editor's query."
+  },
+  "TABLE_BROWSER": {
+    "TITLE": "Table browser",
+    "HELP": "Any table of the world database, searched by conditions on its columns (for the tables Keira has no editor for). Read only.",
+    "TABLE": "Table",
+    "LIMIT": "Rows",
+    "ADD_CONDITION": "Condition",
+    "ROWS": "{{ count }} rows"
   }
 }
