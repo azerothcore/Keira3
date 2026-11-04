@@ -35,7 +35,12 @@ const triangle = (): M2Mesh =>
   }) as unknown as M2Mesh;
 
 describe(LocalModelViewerComponent.name, () => {
-  const setup = (client: Partial<Record<keyof WowClientService, unknown>>, kind: 'creature' | 'gameobject' = 'creature', displayId = 5) => {
+  const setup = (
+    client: Partial<Record<keyof WowClientService, unknown>>,
+    kind: 'creature' | 'gameobject' | 'item' = 'creature',
+    displayId = 5,
+    inventoryType?: number,
+  ) => {
     const renderer = { setPixelRatio: vi.fn(), setSize: vi.fn(), render: vi.fn(), dispose: vi.fn() };
     TestBed.configureTestingModule({
       imports: [LocalModelViewerComponent],
@@ -50,6 +55,7 @@ describe(LocalModelViewerComponent.name, () => {
     page.fixture.componentInstance.failed.subscribe(failed);
     page.fixture.componentRef.setInput('kind', kind);
     page.fixture.componentRef.setInput('displayId', displayId);
+    page.fixture.componentRef.setInput('inventoryType', inventoryType);
     page.fixture.detectChanges();
     return { page, renderer, failed };
   };
@@ -87,6 +93,28 @@ describe(LocalModelViewerComponent.name, () => {
 
     page.fixture.destroy();
     expect(renderer.dispose).toHaveBeenCalled();
+  });
+
+  it('draws an item alone from its display, its texture in the object slot', async () => {
+    const getItemDisplayInfo = vi.fn().mockResolvedValue({ models: ['Sword_1H.mdx', ''], textures: ['Sword_1H', ''] });
+    const getM2 = vi.fn().mockResolvedValue(triangle());
+    const { page, renderer, failed } = setup({ getItemDisplayInfo, getM2 }, 'item', 400, 13);
+    await page.settle();
+
+    expect(getItemDisplayInfo).toHaveBeenCalledWith(400);
+    expect(getM2).toHaveBeenCalledWith('Item\\ObjectComponents\\Weapon\\Sword_1H.m2');
+    expect(renderer.render).toHaveBeenCalled();
+    expect(failed).not.toHaveBeenCalled();
+  });
+
+  it('says it cannot draw an item without a display or worn on the body', async () => {
+    const missing = setup({ getItemDisplayInfo: vi.fn().mockResolvedValue(undefined) }, 'item', 400, 13);
+    await missing.page.settle();
+    expect(missing.failed).toHaveBeenCalledWith('display 400 is not in the game data');
+    TestBed.resetTestingModule();
+    const chest = setup({ getItemDisplayInfo: vi.fn().mockResolvedValue({ models: ['Robe', ''], textures: ['', ''] }) }, 'item', 401, 5);
+    await chest.page.settle();
+    expect(chest.failed).toHaveBeenCalledWith('display 401 is not in the game data');
   });
 
   it('draws a gameobject display, and shows the next display asked for', async () => {

@@ -207,7 +207,17 @@ describe('Model3DViewerComponent', () => {
       fixture.detectChanges();
       expect(fixture.debugElement.query(By.directive(LocalModelViewerComponent))).toBeTruthy();
 
+      // an item held or worn alone (a helmet here): from the game data, its slot given; on a character, Wowhead's
       fixture.componentRef.setInput('viewerType', VIEWER_TYPE.ITEM);
+      fixture.detectChanges();
+      const item = fixture.debugElement.query(By.directive(LocalModelViewerComponent));
+      expect(item.componentInstance.kind()).toBe('item');
+      expect(item.componentInstance.inventoryType()).toBe(InventoryType.HEAD);
+      component['onCharacter'].set(true);
+      fixture.detectChanges();
+      expect(fixture.debugElement.query(By.directive(LocalModelViewerComponent))).toBeFalsy();
+      component['onCharacter'].set(false);
+      fixture.componentRef.setInput('itemInventoryType', InventoryType.CHEST);
       fixture.detectChanges();
       expect(fixture.debugElement.query(By.directive(LocalModelViewerComponent))).toBeFalsy();
     });

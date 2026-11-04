@@ -10,7 +10,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { CreatureDisplay, WowClientService } from '@keira/shared/wow-data';
+import { CreatureDisplay, itemModelDisplay, WowClientService } from '@keira/shared/wow-data';
 import { AmbientLight, DirectionalLight, Group, Mesh, Object3D, PerspectiveCamera, Scene, Sphere, Vector3 } from 'three';
 import { disposeM2Template } from './m2-object';
 import { DisplayModel, displayModel } from './spawn-models';
@@ -67,7 +67,9 @@ export class LocalModelViewerComponent implements OnChanges, OnDestroy {
   private readonly client = inject(WowClientService);
   private readonly rendererFactory = inject(WORLD_RENDERER_FACTORY);
 
-  readonly kind = input.required<'creature' | 'gameobject'>();
+  readonly kind = input.required<'creature' | 'gameobject' | 'item'>();
+  /** An item's slot (item_template.InventoryType): where its model is. */
+  readonly inventoryType = input<number>();
   readonly displayId = input.required<number>();
   /** The display or its model isn't in the game data (the caller may show Wowhead's instead). */
   readonly failed = output<string>();
@@ -106,9 +108,13 @@ export class LocalModelViewerComponent implements OnChanges, OnDestroy {
       const display: CreatureDisplay | undefined =
         this.kind() === 'creature'
           ? await this.client.getCreatureDisplay(id)
-          : await this.client
-              .getGameObjectDisplay(id)
-              .then((model) => (model ? ({ model, scale: 1, textures: {} } as CreatureDisplay) : undefined));
+          : this.kind() === 'item'
+            ? await this.client
+                .getItemDisplayInfo(id)
+                .then((item) => (item ? itemModelDisplay(item, Number(this.inventoryType())) : undefined))
+            : await this.client
+                .getGameObjectDisplay(id)
+                .then((model) => (model ? ({ model, scale: 1, textures: {} } as CreatureDisplay) : undefined));
       let reason = display ? '' : `display ${id} is not in the game data`;
       // (buildings are drawn by the World Editor, not here)
       if (display && /\.wmo$/i.test(display.model)) {

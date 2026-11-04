@@ -1,4 +1,4 @@
-import { DbcFile } from './dbc';
+import { CreatureDisplay, DbcFile } from './dbc';
 
 /** M2 attachment points (M2Attachment.id) where items go on a character. */
 export const ATTACH_SHIELD = 0;
@@ -179,6 +179,38 @@ export function weaponAttachment(display: ItemDisplay, hand: 'right' | 'left', s
     point: shield ? ATTACH_SHIELD : hand === 'right' ? ATTACH_HAND_RIGHT : ATTACH_HAND_LEFT,
     model: `Item\\ObjectComponents\\${folder}\\${baseName(display.models[0])}.m2`,
     texture: display.textures[0] ? `Item\\ObjectComponents\\${folder}\\${baseName(display.textures[0])}.blp` : undefined,
+  };
+}
+
+/** Where the model of an item worn or held in a slot (InventoryType) is, under Item\ObjectComponents; undefined for slots drawn on the body. */
+export function itemModelFolder(inventoryType: number): string | undefined {
+  // INVTYPE_HEAD, SHOULDERS, SHIELD; WEAPON, RANGED, 2HWEAPON, WEAPONMAINHAND, WEAPONOFFHAND, HOLDABLE, THROWN, RANGEDRIGHT
+  if (inventoryType === 1) {
+    return 'Head';
+  }
+  if (inventoryType === 3) {
+    return 'Shoulder';
+  }
+  if (inventoryType === 14) {
+    return 'Shield';
+  }
+  return [13, 15, 17, 21, 22, 23, 25, 26].includes(inventoryType) ? 'Weapon' : undefined;
+}
+
+/**
+ * An item's model alone (a weapon, a shield, a shoulder, a helmet as a human male wears it), as a display with its
+ * texture in the object slot (texture component 2).
+ */
+export function itemModelDisplay(display: ItemDisplay, inventoryType: number): CreatureDisplay | undefined {
+  const folder = itemModelFolder(inventoryType);
+  if (!folder || !display.models[0]) {
+    return undefined;
+  }
+  const suffix = folder === 'Head' ? '_HuM' : '';
+  return {
+    model: `Item\\ObjectComponents\\${folder}\\${baseName(display.models[0])}${suffix}.m2`,
+    scale: 1,
+    textures: display.textures[0] ? { 2: `Item\\ObjectComponents\\${folder}\\${baseName(display.textures[0])}.blp` } : {},
   };
 }
 
