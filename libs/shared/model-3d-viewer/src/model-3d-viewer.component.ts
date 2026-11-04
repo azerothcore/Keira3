@@ -19,7 +19,7 @@ import { GenericOptionSelectorComponent } from '@keira/shared/selectors';
 import { TranslatePipe } from '@ngx-translate/core';
 import * as jquery from 'jquery';
 import { LocalModelViewerComponent } from '@keira/shared/world-viewer';
-import { ModelViewerSettingService } from '@keira/shared/wow-data';
+import { itemModelFolder, ModelViewerSettingService } from '@keira/shared/wow-data';
 import { BehaviorSubject, catchError, filter, Observable, of, Subscription } from 'rxjs';
 import {
   CHAR_DISPLAYABLE_INVENTORY_TYPE,
@@ -53,17 +53,23 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   private readonly modelViewerSetting = inject(ModelViewerSettingService);
   /** The game data's model of this display couldn't be shown: Wowhead's is. */
   protected readonly localFailed = signal(false);
-  /** Creatures and gameobjects are drawn from the game data when Settings > Game data say so. */
+  /**
+   * Creatures, gameobjects and items held or worn on their own (weapons, shields, shoulders, helmets) are drawn from the
+   * game data when Settings > Game data say so; an item on a character stays Wowhead's.
+   */
   protected readonly local = computed(
     () =>
       this.modelViewerSetting.useGameData() &&
       !this.localFailed() &&
-      (this.viewerType() === VIEWER_TYPE.NPC || this.viewerType() === VIEWER_TYPE.OBJECT),
+      (this.viewerType() === VIEWER_TYPE.NPC ||
+        this.viewerType() === VIEWER_TYPE.OBJECT ||
+        (this.viewerType() === VIEWER_TYPE.ITEM && !this.onCharacter() && !!itemModelFolder(Number(this.itemInventoryType())))),
   );
-  protected readonly LOCAL_KIND = { [VIEWER_TYPE.NPC]: 'creature', [VIEWER_TYPE.OBJECT]: 'gameobject' } as Record<
-    number,
-    'creature' | 'gameobject'
-  >;
+  protected readonly LOCAL_KIND = {
+    [VIEWER_TYPE.NPC]: 'creature',
+    [VIEWER_TYPE.OBJECT]: 'gameobject',
+    [VIEWER_TYPE.ITEM]: 'item',
+  } as Record<number, 'creature' | 'gameobject' | 'item'>;
 
   protected CREATURE_RACE = signal<Option[]>(CREATURE_RACE_OPTION_ICON);
   protected readonly raceControl = new FormControl<Race>(Race.HUMAN);

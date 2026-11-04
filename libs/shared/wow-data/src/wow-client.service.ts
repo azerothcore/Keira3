@@ -1120,6 +1120,21 @@ export class WowClientService {
 
   /** How an item looks when held (Item.dbc → ItemDisplayInfo.dbc), and whether it's a shield. */
   async getItemDisplay(itemId: number): Promise<{ display: ItemDisplay; shield: boolean } | undefined> {
+    const { items, displays } = await this.readItemData();
+    const item = items.get(itemId);
+    const display = item && displays.get(item.displayId);
+    return display && { display, shield: item.inventoryType === INVENTORY_TYPE_SHIELD };
+  }
+
+  /** An ItemDisplayInfo.dbc row (item_template.displayid). */
+  async getItemDisplayInfo(displayId: number): Promise<ItemDisplay | undefined> {
+    return (await this.readItemData()).displays.get(displayId);
+  }
+
+  private readItemData(): Promise<{
+    items: Map<number, { displayId: number; inventoryType: number }>;
+    displays: Map<number, ItemDisplay>;
+  }> {
     this.itemData ??= Promise.all([this.readDbc('Item.dbc'), this.readDbc('ItemDisplayInfo.dbc')])
       .then(([items, displays]) => ({
         items: items ? parseItemDbc(items) : new Map<number, { displayId: number; inventoryType: number }>(),
@@ -1129,10 +1144,7 @@ export class WowClientService {
         this.itemData = undefined;
         throw error;
       });
-    const { items, displays } = await this.itemData;
-    const item = items.get(itemId);
-    const display = item && displays.get(item.displayId);
-    return display && { display, shield: item.inventoryType === INVENTORY_TYPE_SHIELD };
+    return this.itemData;
   }
   private itemData?: Promise<{ items: Map<number, { displayId: number; inventoryType: number }>; displays: Map<number, ItemDisplay> }>;
 

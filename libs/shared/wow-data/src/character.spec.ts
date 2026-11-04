@@ -1,4 +1,12 @@
-import { characterAttachments, characterGeosets, ItemDisplay, parseItemDbc, weaponAttachment } from './character';
+import {
+  characterAttachments,
+  characterGeosets,
+  ItemDisplay,
+  itemModelDisplay,
+  itemModelFolder,
+  parseItemDbc,
+  weaponAttachment,
+} from './character';
 import { DbcFile } from './dbc';
 import { buildDbc } from './dbc.mock';
 
@@ -61,5 +69,39 @@ describe('character', () => {
   it('reads the look of each item', () => {
     const dbc = new DbcFile(buildDbc([[25, 2, 7, 0, 0, 1234, 13, 3]], 8));
     expect([...parseItemDbc(dbc)]).toEqual([[25, { displayId: 1234, inventoryType: 13 }]]);
+  });
+});
+
+describe('itemModelDisplay', () => {
+  const item = (model: string, texture = ''): ItemDisplay => ({
+    models: [model, ''],
+    textures: [texture, ''],
+    geosetGroups: [0, 0, 0],
+    helmetVis: [0, 0],
+  });
+
+  it('finds the model of an item worn or held alone, by its slot', () => {
+    expect([1, 3, 14, 13, 17, 26, 5, 0].map(itemModelFolder)).toEqual([
+      'Head',
+      'Shoulder',
+      'Shield',
+      'Weapon',
+      'Weapon',
+      'Weapon',
+      undefined,
+      undefined,
+    ]);
+    expect(itemModelDisplay(item('Sword_1H.mdx', 'Sword_1H'), 13)).toEqual({
+      model: 'Item\\ObjectComponents\\Weapon\\Sword_1H.m2',
+      scale: 1,
+      textures: { 2: 'Item\\ObjectComponents\\Weapon\\Sword_1H.blp' },
+    });
+    expect(itemModelDisplay(item('Helm_Plate_D_01.mdx'), 1)).toEqual({
+      model: 'Item\\ObjectComponents\\Head\\Helm_Plate_D_01_HuM.m2',
+      scale: 1,
+      textures: {},
+    });
+    expect(itemModelDisplay(item(''), 13)).toBeUndefined();
+    expect(itemModelDisplay(item('Robe.mdx'), 5)).toBeUndefined();
   });
 });

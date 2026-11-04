@@ -1,6 +1,11 @@
 <div class="model-viewer" [style]="{ 'background-color': backgroundColor.value }">
   @if (local()) {
-    <keira-local-model-viewer [kind]="LOCAL_KIND[viewerType()]" [displayId]="displayId()" (failed)="onLocalFailed()" />
+    <keira-local-model-viewer
+      [kind]="LOCAL_KIND[viewerType()]"
+      [displayId]="displayId()"
+      [inventoryType]="itemInventoryType()"
+      (failed)="onLocalFailed()"
+    />
   }
   <div [id]="`model_3d_${uniqueId}`" [hidden]="local()"></div>
 

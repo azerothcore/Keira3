@@ -986,6 +986,8 @@ describe('WowClientService', () => {
       expect((await service.getItemDisplay(26))?.shield).toBe(true);
       expect(await service.getItemDisplay(27)).toBeUndefined();
       expect(await service.getItemDisplay(28)).toBeUndefined();
+      expect((await service.getItemDisplayInfo(500))?.models[0]).toBe('Sword.mdx');
+      expect(await service.getItemDisplayInfo(501)).toBeUndefined();
 
       TestBed.resetTestingModule();
       const broken = setup({ mpqs: { 'common.MPQ': { files: { 'DBFilesClient\\Item.dbc': [1, 2, 3, 4] } } } }).service;
