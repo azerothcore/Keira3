@@ -291,7 +291,8 @@
       "SELECT_SPELL_SCRIPTS": "搜索法术脚本",
       "TITLE": "事件和法术脚本"
     },
-    "SESSION_SQL": "会话 SQL"
+    "SESSION_SQL": "会话 SQL",
+    "TABLE_BROWSER": "表浏览器"
   },
   "DASHBOARD": {
     "WELCOME": "欢迎使用Keira3",
@@ -2344,5 +2345,13 @@
     "CLEAR": "清除",
     "EXECUTED": "已执行。",
     "EMPTY": "暂无：在编辑器查询旁使用“加入会话”。"
+  },
+  "TABLE_BROWSER": {
+    "TITLE": "表浏览器",
+    "HELP": "world 数据库中的任意表，按列条件搜索（用于 Keira 没有编辑器的表）。只读。",
+    "TABLE": "表",
+    "LIMIT": "行数",
+    "ADD_CONDITION": "条件",
+    "ROWS": "{{ count }} 行"
   }
 }
