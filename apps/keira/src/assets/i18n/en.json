@@ -343,7 +343,11 @@
     "TEMP_TOOLTIP": "Temp Table (uses a temporary table)",
     "GENERATED_SQL": "Generated SQL",
     "EXPAND": "Expand",
-    "COLLAPSE": "Collapse"
+    "COLLAPSE": "Collapse",
+    "EXPORT_TITLE": "Export",
+    "EXPORT_DESCRIPTION": "The SQL of this entity, every table of it chosen below: it deletes and inserts its rows, to save as a .sql file or keep in the session.",
+    "SAVE": "Save as .sql",
+    "BACK": "Back"
   },
   "CREATURE": {
     "TEMPLATE": {
@@ -955,7 +959,9 @@
         "CONDITION_OBJECT_ENTRY_GUID": "0 = Any object of given type;  1 - 500k = creature/gameobject GUID",
         "CONDITION_DISTANCE_TO": "ComparisionType: 0 = distance must be equal to ConditionValue2; 1 = distance must be higher than ConditionValue2; 2 = distance must be lower than ConditionValue2; 3 = distance must be equal to or higher than ConditionValue2; 4 = distance must be equal to or lower than ConditionValue2",
         "CONDITION_QUEST_OBJECTIVE_PROGRESS": "Quest Objective Count"
-      }
+      },
+      "GENERATE_COMMENT": "Generate",
+      "GENERATE_COMMENT_TIP": "Fill the comment from the fields above, as SmartAI comments are"
     }
   },
   "SMARTAI": {
@@ -2368,5 +2374,6 @@
       "spell": "Spell",
       "broadcastText": "Broadcast text"
     }
-  }
+  },
+  "EXPORT_ENTITY": "Export this entity as SQL, every table of it"
 }

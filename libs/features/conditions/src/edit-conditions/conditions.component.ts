@@ -34,6 +34,7 @@ import {
   SOURCE_GROUP_TOOLTIPS,
 } from './conditions-constants';
 import { ConditionsService } from './conditions.service';
+import { conditionComment } from './condition-comment';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -141,6 +142,13 @@ export class ConditionsComponent extends SingleRowEditorComponent<Conditions> {
 
   get showStandState(): boolean {
     return this.conditionType === CONDITION_TYPES.CONDITION_STAND_STATE;
+  }
+
+  /** Fills the comment from the condition's fields (#3153). */
+  generateComment(): void {
+    const form = this.editorService.form;
+    form.controls.Comment.setValue(conditionComment(form.getRawValue() as Conditions));
+    form.controls.Comment.markAsDirty();
   }
 
   override readonly editorService = inject(ConditionsService);
