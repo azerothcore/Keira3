@@ -290,7 +290,8 @@
       "SPELL_SCRIPTS": "法术脚本",
       "SELECT_SPELL_SCRIPTS": "搜索法术脚本",
       "TITLE": "事件和法术脚本"
-    }
+    },
+    "SESSION_SQL": "会话 SQL"
   },
   "DASHBOARD": {
     "WELCOME": "欢迎使用Keira3",
@@ -2318,5 +2319,18 @@
     "STEPS": "步骤",
     "COMMANDS": "命令",
     "GAMEOBJECTS": "启动它的游戏对象"
+  },
+  "SESSION_SQL": {
+    "TITLE": "会话 SQL",
+    "HELP": "从编辑器中暂存的查询（“加入会话”），按顺序：检查、复制、保存为一个 .sql 文件或全部执行。保存在本机直到清除。",
+    "ADD": "加入会话",
+    "ADDED": "已在会话中",
+    "ADD_TIP": "将此查询与会话中的其他查询一起暂存（会话 SQL），以便一起保存或执行",
+    "COPY": "全部复制",
+    "SAVE": "保存为 .sql",
+    "EXECUTE": "全部执行",
+    "CLEAR": "清除",
+    "EXECUTED": "已执行。",
+    "EMPTY": "暂无：在编辑器查询旁使用“加入会话”。"
   }
 }

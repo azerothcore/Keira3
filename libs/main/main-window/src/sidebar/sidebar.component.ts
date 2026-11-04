@@ -35,7 +35,7 @@ import { GameEventHandlerService } from '@keira/features/game-events';
 import { DisablesHandlerService } from '@keira/features/disables';
 import { AreaTriggerHandlerService } from '@keira/features/area-triggers';
 import { EventScriptsHandlerService, SpellScriptsHandlerService } from '@keira/features/db-scripts';
-import { LocationService } from '@keira/shared/common-services';
+import { LocationService, SessionSqlService } from '@keira/shared/common-services';
 import { MysqlService } from '@keira/shared/db-layer';
 import { SaiHandlerService } from '@keira/shared/sai-editor';
 import { SwitchLanguageComponent } from '@keira/shared/switch-language';
@@ -127,6 +127,7 @@ export class SidebarComponent {
   protected readonly trainerHandlerService = inject(TrainerHandlerService);
   protected readonly creatureImmunitiesHandlerService = inject(CreatureImmunitiesHandlerService);
   protected readonly gameEventHandlerService = inject(GameEventHandlerService);
+  protected readonly sessionSql = inject(SessionSqlService);
   protected readonly disablesHandlerService = inject(DisablesHandlerService);
   protected readonly areaTriggerHandlerService = inject(AreaTriggerHandlerService);
   protected readonly eventScriptsHandlerService = inject(EventScriptsHandlerService);

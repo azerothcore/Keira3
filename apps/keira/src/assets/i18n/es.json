@@ -290,7 +290,8 @@
       "SPELL_SCRIPTS": "Scripts de hechizos",
       "SELECT_SPELL_SCRIPTS": "Buscar scripts de hechizos",
       "TITLE": "Scripts de eventos y hechizos"
-    }
+    },
+    "SESSION_SQL": "SQL de la sesión"
   },
   "DASHBOARD": {
     "WELCOME": "Bienvenido a Keira3",
@@ -2318,5 +2319,18 @@
     "STEPS": "Pasos",
     "COMMANDS": "Comandos",
     "GAMEOBJECTS": "Objetos que lo inician"
+  },
+  "SESSION_SQL": {
+    "TITLE": "SQL de la sesión",
+    "HELP": "Las consultas apartadas de los editores (\"A la sesión\"), en orden: revísalas, cópialas, guárdalas en un .sql o ejecútalas todas. Se guardan en este equipo hasta que las borres.",
+    "ADD": "A la sesión",
+    "ADDED": "En la sesión",
+    "ADD_TIP": "Apartar esta consulta con las demás de la sesión (SQL de la sesión) para guardarlas o ejecutarlas juntas",
+    "COPY": "Copiar todo",
+    "SAVE": "Guardar como .sql",
+    "EXECUTE": "Ejecutar todo",
+    "CLEAR": "Borrar",
+    "EXECUTED": "Ejecutado.",
+    "EMPTY": "Nada aún: usa \"A la sesión\" junto a la consulta de un editor."
   }
 }

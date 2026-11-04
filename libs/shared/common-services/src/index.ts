@@ -6,3 +6,4 @@ export * from './server-settings.service';
 export * from './soap-transport';
 export * from './soap.service';
 export * from './editor-settings.service';
+export * from './session-sql.service';

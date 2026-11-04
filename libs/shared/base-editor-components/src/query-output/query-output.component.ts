@@ -23,7 +23,7 @@ import { HighlightjsWrapperComponent } from '../highlightjs-wrapper/highlightjs-
 import { ModalConfirmComponent } from '../modal-confirm/modal-confirm.component';
 import { QueryErrorComponent } from './query-error/query-error.component';
 import { QueryError } from 'mysql2';
-import { EditorSettingsService, reloadCommand, SoapService } from '@keira/shared/common-services';
+import { EditorSettingsService, reloadCommand, SessionSqlService, SoapService } from '@keira/shared/common-services';
 import { CompareResult, compareEntities, EntityCompareService, EntitySnapshot } from './entity-compare';
 
 @Component({
@@ -129,6 +129,20 @@ export class QueryOutputComponent<T extends TableRow> extends SubscriptionHandle
 
   execute(): void {
     this.executeQuery.emit(this.getQuery());
+  }
+
+  private readonly sessionSql = inject(SessionSqlService);
+  /** The query was just added to the session's SQL. */
+  protected readonly addedToSession = signal(false);
+
+  /** Puts the query aside with the others of the session (#1086): reviewed, saved or executed together later. */
+  addToSession(): void {
+    const query = this.getQuery();
+    if (!query) {
+      return;
+    }
+    this.sessionSql.add(`${this.entityTable()} ${this.editorService.loadedEntityId}`, query);
+    this.addedToSession.set(true);
   }
 
   private readonly editorSettings = inject(EditorSettingsService);

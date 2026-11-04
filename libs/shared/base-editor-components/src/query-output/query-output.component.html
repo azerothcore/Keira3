@@ -32,6 +32,15 @@
   <button type="button" class="btn btn-success btn-sm" (click)="executeAndCopy()" id="execute-and-copy-btn">
     <i class="fa fa-bolt fa-sm"></i> {{ 'EXECUTE_AND_COPY' | translate }} <i class="fa fa-copy fa-sm"></i>
   </button>
+  <button
+    type="button"
+    class="btn btn-outline-secondary btn-sm ms-1"
+    (click)="addToSession()"
+    id="add-to-session-btn"
+    [title]="'SESSION_SQL.ADD_TIP' | translate"
+  >
+    <i class="fa fa-layer-group fa-sm"></i> {{ (addedToSession() ? 'SESSION_SQL.ADDED' : 'SESSION_SQL.ADD') | translate }}
+  </button>
   @if (copyNote()) {
     <small class="ms-1 align-middle" id="copy-note" [class.text-warning]="copyNote() === 'QUERY_OUTPUT.NOT_COPIED'">{{
       copyNote() | translate
