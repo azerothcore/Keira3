@@ -1,4 +1,5 @@
 <div #root class="world-editor container-fluid" [class.fullscreen]="fullscreen()">
+  <keira-eden-menu-bar [pending]="changeList().length" [canUndo]="canUndo()" [canRedo]="canRedo()" (action)="onEdenAction($event)" />
   <div class="world-editor-toolbar d-flex align-items-center gap-2 mb-1">
     <div class="map-picker">
       <input
@@ -219,6 +220,18 @@
   </div>
 
   <div class="world-editor-body">
+    @if (assetsOpen()) {
+      <div class="world-editor-assets">
+        <keira-asset-browser
+          [changes]="changeList()"
+          [canUndo]="canUndo()"
+          [canRedo]="canRedo()"
+          (picked)="onAssetPicked($event)"
+          (undo)="undo()"
+          (redo)="redo()"
+        />
+      </div>
+    }
     <button
       type="button"
       class="btn btn-sm btn-secondary world-editor-panel-toggle"
@@ -3487,6 +3500,13 @@
       </div>
     </div>
   </div>
+  <keira-eden-status-bar
+    [position]="edenPosition()"
+    [mapName]="edenMapName()"
+    [zoneName]="edenZoneName()"
+    [pending]="changeList().length"
+    [lights]="edenLights()"
+  />
   @if (confirmingDelete(); as what) {
     <div class="world-editor-confirm-backdrop" data-testid="delete-confirm">
       <div class="card world-editor-confirm" role="dialog" aria-modal="true" (keydown.escape)="answerDelete(false, false)">

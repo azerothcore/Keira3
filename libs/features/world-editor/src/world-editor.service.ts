@@ -1038,6 +1038,42 @@ export class WorldEditorService {
     }));
   }
 
+  /**
+   * Templates to browse (the Asset browser): of a type (creature_template.type / gameobject_template.type) or all, by
+   * entry or name, by name.
+   */
+  async browseTemplates(type: SpawnType, group: number | null, text: string, limit = 100): Promise<PlaceTemplate[]> {
+    const search = text.trim();
+    const entry = /^\d+$/.test(search) ? Number(search) : -1;
+    const where: string[] = [];
+    const params: string[] = [];
+    if (group !== null) {
+      where.push(type === 'creature' ? 'ct.type = ?' : 'type = ?');
+      params.push(String(group));
+    }
+    if (search) {
+      where.push(type === 'creature' ? '(ct.entry = ? OR ct.name LIKE ?)' : '(entry = ? OR name LIKE ?)');
+      params.push(String(entry), `%${search}%`);
+    }
+    const condition = where.length ? `WHERE ${where.join(' AND ')} ` : '';
+    const sql =
+      type === 'creature'
+        ? "SELECT ct.entry, IFNULL(ct.name, '') AS name, ct.type AS grp, IFNULL(ctm.CreatureDisplayID, 0) AS displayId, " +
+          'IFNULL(ctm.DisplayScale, 1) AS scale FROM creature_template ct ' +
+          'LEFT JOIN creature_template_model ctm ON ctm.CreatureID = ct.entry AND ctm.Idx = 0 ' +
+          `${condition}ORDER BY ct.name LIMIT ${Math.trunc(limit)}`
+        : "SELECT entry, IFNULL(name, '') AS name, type AS grp, displayId, size AS scale FROM gameobject_template " +
+          `${condition}ORDER BY name LIMIT ${Math.trunc(limit)}`;
+    const rows = await firstValueFrom(this.queryService.query<TableRow>(sql, params));
+    return (rows ?? []).map((row) => ({
+      entry: Number(row['entry']),
+      name: String(row['name']),
+      displayId: Number(row['displayId'] ?? 0),
+      scale: Number(row['scale'] ?? 1),
+      group: Number(row['grp']),
+    }));
+  }
+
   async searchTele(text: string): Promise<TeleRow[]> {
     const rows = await firstValueFrom(
       this.queryService.query<TeleRow>(

@@ -328,6 +328,8 @@ export interface PlaceTemplate {
   /** Its model (0: none) and size. */
   displayId: number;
   scale: number;
+  /** creature_template.type / gameobject_template.type, when browsed (the Asset browser's groups). */
+  group?: number;
 }
 
 /** A path shown only with View > Every path in the area (drawn, not edited). */
