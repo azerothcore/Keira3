@@ -567,6 +567,25 @@
       "BAND_ANY": "其中之一（{{group}}）",
       "BAND_ALL": "全部这些（{{group}}）",
       "CONDITIONS_TOOLTIP": "{{count}} 条可接取条件 — 点击在条件编辑器中打开"
+    },
+    "CHECK": {
+      "REQUIRED_ITEM_NO_COUNT": "需要的物品没有数量：任务无法完成。",
+      "REQUIRED_COUNT_NO_ITEM": "需要的数量没有物品。",
+      "DROP_QUANTITY_NO_ITEM": "物品掉落数量没有物品。",
+      "NPC_OR_GO_NO_COUNT": "需要的生物或游戏对象没有数量：任务无法完成。",
+      "COUNT_NO_NPC_OR_GO": "需要的数量没有生物或游戏对象。",
+      "CHOICE_QUANTITY_NO_ITEM": "可选奖励数量没有物品。",
+      "REWARD_ITEM_NO_AMOUNT": "奖励物品没有数量：不会发放。",
+      "REWARD_AMOUNT_NO_ITEM": "奖励数量没有物品。",
+      "REWARD_ITEM_GAP": "奖励物品位于空位之后：不会被加载。",
+      "TRACKING_CHOICE": "追踪任务（TRACKING 标志）不能提供可选奖励。",
+      "REWARD_FACTION_VALUE_RANGE": "声望奖励值超出 -9 到 9。",
+      "REWARD_OVERRIDE_NO_FACTION": "声望覆盖值没有阵营。",
+      "FACTION_VALUE_NO_FACTION": "需要的阵营值没有阵营：没有效果。",
+      "MISSING_ITEM": "这些物品不存在。",
+      "MISSING_CREATURE": "这些生物不存在：任务无法完成。",
+      "MISSING_GAMEOBJECT": "这些游戏对象不存在：任务无法完成。",
+      "MISSING_QUEST": "下一个任务不存在：任务链将无法工作。"
     }
   },
   "GAMEOBJECT": {
