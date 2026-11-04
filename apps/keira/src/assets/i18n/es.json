@@ -392,7 +392,15 @@
       "ITEMID2": "Este es el número de objeto del equipamiento usado en la mano izquierda de Item.dbc.",
       "ITEMID3": "Este es el número de objeto del equipamiento usado en la ranura de distancia de Item.dbc.",
       "FACTION": "Cuando se refiere al ID de Facción de la Criatura, es la columna de la izquierda 'ID' en el selector, para más información consulta 'faction' en la wiki.",
-      "IMMUNITIES": "Entry here refers to the ID in creature_immunities"
+      "IMMUNITIES": "Entry here refers to the ID in creature_immunities",
+      "FINAL_STATS": "Con los modificadores (creature_classlevelstats de su clase):",
+      "FINAL_HEALTH": "Vida",
+      "FINAL_MANA": "Maná",
+      "FINAL_ARMOR": "Armadura",
+      "FINAL_DAMAGE": "Daño cuerpo a cuerpo",
+      "FINAL_ATTACK_POWER": "Poder de ataque",
+      "FINAL_STATS_HELP": "Como los calcula el núcleo, antes de auras y dificultad; daño según BaseAttackTime. Experiencia × {{ xp }}.",
+      "FINAL_STATS_NONE": "no hay fila de creature_classlevelstats para su clase y niveles."
     },
     "TEMPLATE_ADDON": {
       "ENTRY": "Enlazado con creature_template.entry (ID de la Criatura)",

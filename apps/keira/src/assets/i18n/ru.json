@@ -392,7 +392,15 @@
       "ITEMID2": "Номер предмета экипировки в левой руке из Item.dbc.",
       "ITEMID3": "Номер предмета экипировки в слоте дальнего боя из Item.dbc.",
       "FACTION": "При указании ID фракции существа используется левый столбец 'ID' в селекторе, подробнее смотрите 'faction' в вики.",
-      "IMMUNITIES": "Entry here refers to the ID in creature_immunities"
+      "IMMUNITIES": "Entry here refers to the ID in creature_immunities",
+      "FINAL_STATS": "С модификаторами (creature_classlevelstats его класса):",
+      "FINAL_HEALTH": "Здоровье",
+      "FINAL_MANA": "Мана",
+      "FINAL_ARMOR": "Броня",
+      "FINAL_DAMAGE": "Урон в ближнем бою",
+      "FINAL_ATTACK_POWER": "Сила атаки",
+      "FINAL_STATS_HELP": "Как считает ядро, без аур и сложности; урон по BaseAttackTime. Опыт × {{ xp }}.",
+      "FINAL_STATS_NONE": "нет строки creature_classlevelstats для его класса и уровней."
     },
     "TEMPLATE_ADDON": {
       "ENTRY": "Ссылка на creature_template.entry",

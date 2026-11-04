@@ -1,0 +1,32 @@
+<div class="creature-final-stats small mt-2" id="creature-final-stats">
+  <span class="fw-semibold">{{ 'CREATURE.TEMPLATE.FINAL_STATS' | translate }}</span>
+  @if (stats().length) {
+    <table class="table table-sm table-borderless mb-0 w-auto" id="final-stats-table">
+      <thead>
+        <tr>
+          <th>level</th>
+          <th>{{ 'CREATURE.TEMPLATE.FINAL_HEALTH' | translate }}</th>
+          <th>{{ 'CREATURE.TEMPLATE.FINAL_MANA' | translate }}</th>
+          <th>{{ 'CREATURE.TEMPLATE.FINAL_ARMOR' | translate }}</th>
+          <th>{{ 'CREATURE.TEMPLATE.FINAL_DAMAGE' | translate }}</th>
+          <th>{{ 'CREATURE.TEMPLATE.FINAL_ATTACK_POWER' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of stats(); track row.level) {
+          <tr>
+            <td>{{ row.level }}</td>
+            <td>{{ row.health }}</td>
+            <td>{{ row.mana }}</td>
+            <td>{{ row.armor }}</td>
+            <td>{{ row.minDamage }} - {{ row.maxDamage }}</td>
+            <td>{{ row.attackPower }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    <span class="text-muted" id="final-stats-help">{{ 'CREATURE.TEMPLATE.FINAL_STATS_HELP' | translate: { xp: experience() } }}</span>
+  } @else {
+    <span class="text-muted ms-1" id="final-stats-none">{{ 'CREATURE.TEMPLATE.FINAL_STATS_NONE' | translate }}</span>
+  }
+</div>

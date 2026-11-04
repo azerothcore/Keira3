@@ -33,6 +33,7 @@ import {
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
+import { CreatureFinalStatsComponent } from './final-stats/creature-final-stats.component';
 import { CreatureTemplateService } from './creature-template.service';
 
 @Component({
@@ -40,6 +41,7 @@ import { CreatureTemplateService } from './creature-template.service';
   selector: 'keira-creature-template',
   templateUrl: './creature-template.component.html',
   imports: [
+    CreatureFinalStatsComponent,
     FactionNameComponent,
     MoneyInputComponent,
     TopBarComponent,
