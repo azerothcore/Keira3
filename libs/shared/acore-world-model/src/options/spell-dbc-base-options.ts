@@ -101,7 +101,7 @@ export const SPELL_DBC_CASTER_AURA_STATE: Option[] = [
   { value: 13, name: 'Health <= 35%' },
   { value: 17, name: 'Enrage' },
   { value: 22, name: 'Unknown 2' },
-  { value: 23, name: 'Health => 75%' },
+  { value: 23, name: 'Health > 75%' },
 ];
 
 export const SPELL_DBC_PREVENTION_TYPE: Option[] = [
