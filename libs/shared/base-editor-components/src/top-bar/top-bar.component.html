@@ -1,4 +1,4 @@
-<div class="top-bar">
+<div class="top-bar position-relative">
   @if (selected) {
     <span [class]="scssClass">
       @if (isNew()) {
@@ -7,5 +7,17 @@
         Editing: {{ selectedName() }} ({{ selected }})
       }
     </span>
+    @if (handler()?.canExport) {
+      <button
+        type="button"
+        class="btn btn-link btn-sm p-0 top-bar-export"
+        id="export-entity-btn"
+        [title]="'EXPORT_ENTITY' | translate"
+        (click)="handler()!.exportEntity()"
+      >
+        <i class="fa fa-file-export"></i> SQL
+      </button>
+    }
+    <keira-field-filter />
   }
 </div>

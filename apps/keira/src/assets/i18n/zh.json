@@ -14,7 +14,13 @@
     "CREATE_A_NEW": "新建一个 <strong>{{ ENTITY_TABLE }}</strong>，选择一个未使用的 <strong>{{ ENTITY_ID_FIELD }}</strong>:",
     "FREE_ENTRY": "{{ ENTITY_ID_FIELD }}是",
     "FREE": "可用的",
-    "ALREADY_USE": "已在使用中"
+    "ALREADY_USE": "已在使用中",
+    "SOURCE_ENTRY": "{{ ENTITY_ID_FIELD }}",
+    "EXISTS": "存在",
+    "DOES_NOT_EXIST": "不存在",
+    "START_FROM_BLANK": "从空白开始",
+    "COPY_FROM_EXISTING": "从现有条目复制",
+    "COPY_DISABLED": "此类型不支持从现有条目复制"
   },
   "CONNECTED": "连接",
   "SEARCH": "搜索",
@@ -37,9 +43,14 @@
   "EXECUTE_AND_COPY": "执行并复制",
   "RELOAD": "重新加载",
   "CANCEL": "取消",
+  "CLOSE_TAB": "关闭标签页",
+  "FILTER_FIELDS": "筛选字段",
   "SELECTORS": {
     "ENABLED": "启用",
-    "DISABLED": "禁用"
+    "DISABLED": "禁用",
+    "ITEM_DISPLAY": "物品外观选择（其他物品使用的外观）",
+    "ITEMS": "物品数",
+    "FOR_EXAMPLE": "例如"
   },
   "CONNECTION_WINDOW": {
     "HOST": "主机",
@@ -62,7 +73,9 @@
     "LOAD_RECENT": "加载最近的",
     "CLEAR_ALL": "全部清除",
     "CONNECT": "连接",
-    "CREATED_BY": "创建者"
+    "CREATED_BY": "创建者",
+    "TIMEOUT": "超时（毫秒）",
+    "TIMEOUT_TOOLTIP": "放弃前等待数据库的时间（毫秒；10000 即 10 秒）。服务器较慢或较远时请调高。"
   },
   "SIDEBAR": {
     "DASHBOARD": "仪表盘",
@@ -153,8 +166,8 @@
       "SELECT_PAGE_TEXT": "选择页面文本",
       "PAGE_TEXT": "页面文本",
       "ACORE_STRING_TEXT": "Acore字符串",
-      "ACORE_STRING_LOCALE": "Acore字符串本地化",
-      "SELECT_ACORE_STRING_TEXT": "选择Acore字符串"
+      "SELECT_ACORE_STRING_TEXT": "选择Acore字符串",
+      "ACORE_STRING_LOCALE": "Acore字符串本地化"
     },
     "GOSSIP": {
       "TITLE": "闲聊对话",
@@ -194,7 +207,35 @@
       "SELECT_TRAINER": "训练师",
       "TRAINER_SPELL": "训练师法术"
     },
-    "UNUSED_GUID_SEARCH": "未使用的GUID"
+    "UNUSED_GUID_SEARCH": "未使用的GUID",
+    "WORLD_EDITOR": "3D世界编辑器",
+    "SETTINGS": "设置",
+    "WAYPOINTS": {
+      "TITLE": "路径点"
+    },
+    "POOLS": {
+      "TITLE": "刷新池"
+    },
+    "SCRIPTS": {
+      "TITLE": "脚本"
+    },
+    "GAME_EVENTS": {
+      "TITLE": "游戏事件"
+    },
+    "DISABLES": {
+      "TITLE": "禁用"
+    },
+    "AREA_TRIGGERS": {
+      "TITLE": "区域触发器"
+    },
+    "DB_SCRIPTS": {
+      "TITLE": "事件和法术脚本"
+    },
+    "SESSION_SQL": "会话 SQL",
+    "TABLE_BROWSER": "表浏览器",
+    "FIND_ANYWHERE": "全局查找",
+    "SNIFF_TO_SQL": "嗅探转 SQL",
+    "SNIFFS": "嗅探"
   },
   "DASHBOARD": {
     "WELCOME": "欢迎使用Keira3",
@@ -223,6 +264,27 @@
     "AFFECTED_ROWS": "受影响的行:",
     "HIDE_TRACE": "隐藏追踪",
     "SHOW_TRACE": "显示追踪"
+  },
+  "COPY_OUTPUT": {
+    "TITLE": "复制条目的 SQL",
+    "DESCRIPTION": "检查并执行下面的 SQL 以复制该条目。你可以复制查询手动执行，或使用“执行”按钮直接运行。",
+    "COPY": "复制",
+    "EXECUTE": "执行",
+    "EXECUTED": "已执行",
+    "CONTINUE": "前往编辑器",
+    "TABLE": "表",
+    "RAW": "直接 INSERT",
+    "TEMP": "临时表",
+    "RAW_COLUMNS": "直接 INSERT（指定列）",
+    "RAW_INFERRED": "直接 INSERT（自动推断列）",
+    "TEMP_TOOLTIP": "临时表（使用临时表）",
+    "GENERATED_SQL": "生成的 SQL",
+    "EXPAND": "展开",
+    "COLLAPSE": "收起",
+    "EXPORT_TITLE": "导出",
+    "EXPORT_DESCRIPTION": "此实体在下方所选各表中的 SQL：删除并插入其行，可保存为 .sql 文件或加入会话。",
+    "SAVE": "保存为 .sql",
+    "BACK": "返回"
   },
   "CREATURE": {
     "TEMPLATE": {
@@ -574,7 +636,8 @@
     "GROUP_ID": "一组战利品定义，查看wiki以获取更多详细信息",
     "MIN_COUNT": "在一次战利品获取中可以掉落物品的最高数量。作为参考，该参数将被忽略。",
     "MAX_COUNT": "在一次战利品获取中可以掉落物品的最大数量。作为参考，这是EXACT计数值。",
-    "COMMENT": "被内核忽略的注释"
+    "COMMENT": "被内核忽略的注释",
+    "REFERENCE_COUNT": "引用行会按 MaxCount 次掉落其引用：MinCount 跟随 MaxCount（AzerothCore 不支持其他值）。"
   },
   "LOOT_TEMPLATE": {
     "SET_FIELD": "你必须设置 <strong>`{{ LOOT_FIELD }}`</strong> 字段在 <strong>{{ ENTITY_TABLE }}</strong> 中才能启用此功能。",
@@ -804,7 +867,12 @@
       "GENERATE_COMMENTS_ALL": "生成注释（全部）",
       "CONDITIONS_TOOLTIP": "此事件附加了 {{count}} 条条件 — 点击在条件编辑器中打开",
       "ADD_NEW_CONDITION": "添加条件",
-      "CONDITIONS_ADD_TOOLTIP": "在条件编辑器中为选中的事件创建条件"
+      "CONDITIONS_ADD_TOOLTIP": "在条件编辑器中为选中的事件创建条件",
+      "GUID_SCRIPTS": "拥有专属脚本的刷新点",
+      "GUID_SCRIPTS_TOOLTIP": "按 GUID 的 SmartAI：该 entry 的刷新点中，专属脚本（entryorguid = -guid）会取代此脚本的那些。",
+      "GUID_SCRIPT_ROWS": "行数",
+      "OPEN_GUID_SCRIPT": "打开",
+      "NO_GUID_SCRIPTS": "该 entry 的刷新点都没有专属脚本。"
     },
     "SEARCH_BY_EXISTING": {
       "SOURCE_TYPE": "源类型：",
@@ -815,6 +883,18 @@
     },
     "SEARCH_BY_ENTITY": {
       "SOURCE_TYPE": "选择源类型"
+    },
+    "CHECK": {
+      "MIN_MAX": "计时器的最小值大于最大值：服务器会跳过这些行。",
+      "PHASE_MASK": "阶段掩码超过第 12 阶段（4095）：服务器会跳过这些行。",
+      "PHASE_NEVER_SET": "这些行只在某些阶段运行，但此脚本中没有任何内容设置阶段。",
+      "LINK_SELF": "这些行链接到自身（无限循环）：已跳过。",
+      "LINK_MISSING": "这些行链接到此脚本中不存在的 id。",
+      "LINK_NOT_LINK_EVENT": "这些行链接到事件不是 LINK（61）的行：那一行也会单独运行。",
+      "LINK_ORPHAN": "没有任何行链接到的 LINK 事件（61）：永远不会运行。",
+      "SET_PHASE_RANGE": "SET_EVENT_PHASE 超过第 12 阶段：服务器会跳过这些行。",
+      "INC_PHASE_ZERO": "INC_EVENT_PHASE 增量为 0：这些行没有任何作用。",
+      "ACTIONLIST_ZERO": "CALL_TIMED_ACTIONLIST 缺少动作列表 id。"
     }
   },
   "SPELL_DBC": {
@@ -1003,5 +1083,85 @@
     "NO_DATA": "没有可用的地图数据",
     "SHOW": "显示地图",
     "HIDE": "隐藏地图"
+  },
+  "POOLS": {
+    "PROBLEM_EMPTY": "刷新池为空：服务器不会刷出它。",
+    "PROBLEM_MIXED": "生物、游戏对象和子刷新池分别刷新，各自最多 max_limit 个。",
+    "PROBLEM_QUEST_IN_MOTHER": "任务刷新池不能属于母刷新池（此池属于 {{mother}}）：其任务被跳过。",
+    "PROBLEM_NO_TEMPLATE": "刷新池不在 pool_template 中：其成员被跳过。请先保存刷新池。",
+    "PROBLEM_CHANCE_RANGE": "{{count}} 个几率不在 0 到 100 之间：这些成员被跳过。",
+    "PROBLEM_CHANCE_IGNORED": "几率被忽略：刷新池一次刷 {{max}} 个（只有 max_limit 为 1 时才使用几率）。",
+    "PROBLEM_CHANCE_SUM": "几率总和为 {{sum}}%，不是 100：服务器不会刷出该池。请使总和为 100，或将部分设为 0。",
+    "PROBLEM_CHANCE_EQUAL_NEVER": "几率总和已达 {{sum}}%：几率为 0 的 {{count}} 个成员永远不会刷出。",
+    "PROBLEM_MISSING_SPAWN": "没有 guid 为 {{guids}} 的刷新点：已跳过。",
+    "PROBLEM_MANY_MAPS": "刷新点位于多个地图（{{maps}}）：服务器跳过不在第一个地图上的。",
+    "PROBLEM_NOT_POOLABLE": "只有宝箱、goober 和钓鱼点可以放入刷新池：{{guids}} 已跳过。",
+    "PROBLEM_OTHER_POOL": "已在另一个刷新池中（guid 或 entry，然后是池）：{{list}}。每个只能属于一个池。",
+    "PROBLEM_POOL_LOOP": "刷新池不能包含自身或其所属的刷新池。",
+    "PROBLEM_CHILD_NO_TEMPLATE": "不在 pool_template 中：{{ids}}。已跳过。",
+    "PROBLEM_OTHER_MOTHER": "已在另一个母刷新池中（池，然后是母池）：{{list}}。每个只能有一个母池。",
+    "PROBLEM_MISSING_QUEST": "没有 ID 为 {{ids}} 的任务：已跳过。",
+    "PROBLEM_QUEST_NOT_REPEATING": "不是日常或周常任务（请改用 ExclusiveGroup）：{{ids}}。已跳过。",
+    "PROBLEM_QUEST_MIXED": "一个刷新池中不能混合日常和周常任务。",
+    "PROBLEM_ONE_EVENT": "一个刷新池只有一个游戏事件：只保留一行。",
+    "PROBLEM_MISSING_EVENT": "没有游戏事件 {{ids}}。",
+    "PROBLEM_MAX_LIMIT_ZERO": "max_limit 为 0：服务器不会刷出该池的任何成员。"
+  },
+  "COMPARE": {
+    "PIN": "固定以比较",
+    "UNPIN": "已固定（取消）",
+    "PIN_TIP": "保留此条目，以便与此编辑器中的另一条比较（打开另一条，然后点比较）",
+    "WITH": "与 #{{id}} 比较",
+    "SAME": "没有差异。",
+    "FIELD": "字段",
+    "ONLY_IN": "只有 #{{id}} 有的行："
+  },
+  "TABS": {
+    "OPEN": "在标签页中打开 Keira 的某个部分"
+  },
+  "SOAP": {
+    "RELOAD_TIP": "在 worldserver 上执行 {{command}}，让它重新读取该表（执行查询之后）"
+  },
+  "MONEY": {
+    "HELP": "以金、银、铜表示的数额（修改任意一项会更新该字段）",
+    "GOLD": "金",
+    "SILVER": "银",
+    "COPPER": "铜",
+    "GOLD_SHORT": "金",
+    "SILVER_SHORT": "银",
+    "COPPER_SHORT": "铜"
+  },
+  "QUERY_OUTPUT": {
+    "COPIED": "已复制。",
+    "NOT_COPIED": "执行失败：未复制（你的更改已保留）。"
+  },
+  "SESSION_SQL": {
+    "ADD": "加入会话",
+    "ADDED": "已在会话中",
+    "ADD_TIP": "将此查询与会话中的其他查询一起暂存（会话 SQL），以便一起保存或执行"
+  },
+  "EXPORT_ENTITY": "将此实体的所有表导出为 SQL",
+  "SPELL_INFO": {
+    "TITLE": "法术信息",
+    "SCHOOL": "学派",
+    "COST": "消耗",
+    "CAST_TIME": "施法时间",
+    "INSTANT": "瞬发",
+    "DURATION": "持续时间",
+    "RANGE": "射程",
+    "COOLDOWN": "冷却",
+    "CATEGORY": "类别",
+    "PROC": "触发",
+    "STACKS": "叠加",
+    "MAX_TARGETS": "最大目标数",
+    "EFFECT": "效果 / 光环",
+    "VALUE": "数值",
+    "TARGETS": "目标",
+    "MORE": "更多",
+    "RADIUS": "半径",
+    "EVERY": "每",
+    "TRIGGERS": "触发",
+    "CHAIN": "连锁目标",
+    "NONE": "游戏客户端中没有该法术。"
   }
 }

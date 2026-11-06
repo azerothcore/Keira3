@@ -8,7 +8,11 @@ test.describe('Check Home Page', () => {
   let context: BrowserContext;
 
   test.beforeAll(async () => {
-    app = await electron.launch({ args: [PATH.join(__dirname, '../../main.js'), PATH.join(__dirname, '../../app/package.json')] });
+    app = await electron.launch({
+      args: [PATH.join(__dirname, '../../main.js'), PATH.join(__dirname, '../../app/package.json')],
+      // (unpackaged, so the developer tools would open by themselves)
+      env: { ...process.env, KEIRA_NO_DEVTOOLS: '1' },
+    });
     context = app.context();
     await context.tracing.start({ screenshots: true, snapshots: true });
     firstWindow = await app.firstWindow();

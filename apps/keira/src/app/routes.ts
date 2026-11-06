@@ -466,6 +466,7 @@ export const KEIRA_ROUTES: Routes = [
       },
     ],
   },
+
   {
     path: 'conditions',
     children: [
@@ -525,6 +526,7 @@ export const KEIRA_ROUTES: Routes = [
       },
     ],
   },
+
   {
     path: 'creature-immunities',
     children: [

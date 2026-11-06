@@ -128,7 +128,7 @@ describe('BroadcastText integration tests', () => {
       const expectedQuery =
         'UPDATE `broadcast_text` SET `LanguageID` = 0, ' +
         "`MaleText` = '1', `FemaleText` = '2', `EmoteID1` = 3, `EmoteID2` = 4, `EmoteID3` = 5, " +
-        '`EmoteDelay1` = 6, `EmoteDelay2` = 7, `EmoteDelay3` = 8, `SoundEntriesId` = 9, `EmotesID` = 10, `Flags` = 11 ' +
+        '`EmoteDelay1` = 6, `EmoteDelay2` = 7, `EmoteDelay3` = 8, `SoundEntriesId` = 9, `EmotesID` = 10, `Flags` = (`Flags` | 3) & ~4 ' +
         'WHERE (`ID` = 1234);';
       querySpy.mockClear();
 

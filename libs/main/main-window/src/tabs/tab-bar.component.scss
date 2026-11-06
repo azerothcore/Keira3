@@ -1,0 +1,102 @@
+// Keira's tabs: one per part opened, the one shown lit
+.keira-tab-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 4px 6px 0;
+  border-bottom: 1px solid var(--bs-border-color, #dee2e6);
+  background: var(--bs-tertiary-bg, #f1f3f5);
+}
+
+.keira-tab {
+  display: flex;
+  align-items: stretch;
+  max-width: 240px;
+  border: 1px solid var(--bs-border-color, #dee2e6);
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  background: var(--bs-secondary-bg, #e9ecef);
+
+  &.active {
+    background: var(--bs-body-bg, #fff);
+    font-weight: 600;
+  }
+
+  button {
+    border: none;
+    background: none;
+    color: inherit;
+  }
+}
+
+.keira-tab-number {
+  font-weight: bold;
+  color: var(--keira-accent);
+}
+
+.keira-tab-open {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+  padding: 3px 4px 3px 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  small {
+    opacity: 0.7;
+    font-weight: normal;
+  }
+}
+
+.keira-tab-close {
+  padding: 0 8px;
+  opacity: 0.6;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+// the launcher: any part of Keira, in a grid, opened in a tab
+.keira-tab-launcher {
+  position: relative;
+  align-self: center;
+}
+
+.keira-tab-new {
+  border: none;
+  background: none;
+  color: inherit;
+  padding: 2px 8px;
+}
+
+.keira-tab-grid {
+  position: absolute;
+  z-index: 1050;
+  top: 100%;
+  left: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(140px, 1fr));
+  gap: 4px;
+  padding: 6px;
+  border: 1px solid var(--bs-border-color, #dee2e6);
+  border-radius: 6px;
+  background: var(--bs-body-bg, #fff);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.keira-tab-grid-item {
+  border: 1px solid var(--bs-border-color, #dee2e6);
+  border-radius: 4px;
+  background: var(--bs-secondary-bg, #e9ecef);
+  color: inherit;
+  padding: 6px 8px;
+  text-align: left;
+
+  &.open {
+    font-weight: 600;
+    border-color: var(--bs-primary, #0d6efd);
+  }
+}

@@ -4,6 +4,7 @@ select {
 
 option,
 optgroup {
-  color: #000;
+  color: var(--bs-body-color);
+  background-color: var(--bs-body-bg);
   text-align: left;
 }

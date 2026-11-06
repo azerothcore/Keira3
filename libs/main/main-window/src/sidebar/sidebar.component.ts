@@ -1,5 +1,5 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, computed, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { TitleCasePipe } from '@angular/common';
@@ -9,6 +9,7 @@ import { ConditionsHandlerService } from '@keira/features/conditions';
 import { CreatureHandlerService } from '@keira/features/creature';
 import { GameobjectHandlerService } from '@keira/features/gameobject';
 import { GossipHandlerService } from '@keira/features/gossip';
+import { WowDataSettingsService } from '@keira/shared/wow-data';
 import { ItemHandlerService } from '@keira/features/item';
 import {
   FishingLootHandlerService,
@@ -27,7 +28,7 @@ import {
 import { GameTeleHandlerService } from '@keira/features/game-tele';
 import { TrainerHandlerService } from '@keira/features/trainer';
 import { CreatureImmunitiesHandlerService } from '@keira/features/creature-immunities';
-import { LocationService } from '@keira/shared/common-services';
+import { LocationService, SessionSqlService } from '@keira/shared/common-services';
 import { MysqlService } from '@keira/shared/db-layer';
 import { SaiHandlerService } from '@keira/shared/sai-editor';
 import { SwitchLanguageComponent } from '@keira/shared/switch-language';
@@ -73,10 +74,17 @@ export class SidebarComponent {
     conditions: 'up',
     texts: 'up',
     gossip: 'up',
+    waypoints: 'up',
+    pools: 'up',
+    scripts: 'up',
     spell: 'up',
     gameTele: 'up',
     trainer: 'up',
     creatureImmunities: 'up',
+    gameEvents: 'up',
+    disables: 'up',
+    areaTriggers: 'up',
+    dbScripts: 'up',
   };
   private readonly IMAGES_COUNT = 7;
   private readonly RANDOM_IMAGE = Math.floor(Math.random() * this.IMAGES_COUNT) + 1;
@@ -89,6 +97,9 @@ export class SidebarComponent {
   protected readonly gameobjectHandlerService = inject(GameobjectHandlerService);
   protected readonly itemHandlerService = inject(ItemHandlerService);
   protected readonly gossipHandlerService = inject(GossipHandlerService);
+  private readonly wowDataSettings = inject(WowDataSettingsService);
+  /** Whether the AzerothCore source folder is set: the script pages reading it are greyed out without it. */
+  protected readonly sourceFolderSet = computed(() => !!this.wowDataSettings.paths().sourcePath);
   protected readonly conditionsHandlerService = inject(ConditionsHandlerService);
   protected readonly saiHandlerService = inject(SaiHandlerService);
   protected readonly referenceLootHandlerService = inject(ReferenceLootHandlerService);
@@ -103,6 +114,7 @@ export class SidebarComponent {
   protected readonly gameTeleHandlerService = inject(GameTeleHandlerService);
   protected readonly trainerHandlerService = inject(TrainerHandlerService);
   protected readonly creatureImmunitiesHandlerService = inject(CreatureImmunitiesHandlerService);
+  protected readonly sessionSql = inject(SessionSqlService);
   private readonly locationService = inject(LocationService);
   private readonly router = inject(Router);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
@@ -161,10 +173,17 @@ export class SidebarComponent {
     this.menuStates.smartAi = 'up';
     this.menuStates.conditions = 'up';
     this.menuStates.gossip = 'up';
+    this.menuStates.waypoints = 'up';
+    this.menuStates.pools = 'up';
+    this.menuStates.scripts = 'up';
     this.menuStates.spell = 'up';
     this.menuStates.gameTele = 'up';
     this.menuStates.trainer = 'up';
     this.menuStates.creatureImmunities = 'up';
+    this.menuStates.gameEvents = 'up';
+    this.menuStates.disables = 'up';
+    this.menuStates.areaTriggers = 'up';
+    this.menuStates.dbScripts = 'up';
   }
 
   logout(): void {

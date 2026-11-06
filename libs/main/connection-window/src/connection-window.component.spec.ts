@@ -150,10 +150,24 @@ describe('ConnectionWindowComponent', () => {
       sshUser: '',
       sshPassword: '',
       sshPrivateKey: '',
+      connectTimeout: 10000,
       ssl: { rejectUnauthorized: false },
     });
     expect(component.error).toBeUndefined();
     expect(page.errorElement.innerHTML).not.toContain('error-box');
+  });
+
+  it('falls back to the default timeout when it is left empty or too short', () => {
+    const { page, connectSpy } = setup();
+    page.setInputValue(page.query<HTMLInputElement>('#connect-timeout'), '');
+    page.clickElement(page.connectBtn);
+    expect(connectSpy.mock.calls.at(-1)?.[0]).toEqual(expect.objectContaining({ connectTimeout: 10000 }));
+    page.setInputValue(page.query<HTMLInputElement>('#connect-timeout'), 5);
+    page.clickElement(page.connectBtn);
+    expect(connectSpy.mock.calls.at(-1)?.[0]).toEqual(expect.objectContaining({ connectTimeout: 10000 }));
+    page.setInputValue(page.query<HTMLInputElement>('#connect-timeout'), 30000);
+    page.clickElement(page.connectBtn);
+    expect(connectSpy.mock.calls.at(-1)?.[0]).toEqual(expect.objectContaining({ connectTimeout: 30000 }));
   });
 
   it('the latest config should be loaded by default (if any)', () => {
@@ -178,6 +192,7 @@ describe('ConnectionWindowComponent', () => {
       sshUser: '',
       sshPassword: '',
       sshPrivateKey: '',
+      connectTimeout: 10000,
     });
 
     expect(component.error).toBeUndefined();
@@ -214,6 +229,7 @@ describe('ConnectionWindowComponent', () => {
       sshUser: '',
       sshPassword: '',
       sshPrivateKey: '',
+      connectTimeout: 10000,
     });
     expect(component.error).toBeUndefined();
     expect(page.errorElement.innerHTML).not.toContain('error-box');
@@ -307,6 +323,7 @@ describe('ConnectionWindowComponent', () => {
         sshUser: '',
         sshPassword: '',
         sshPrivateKey: '',
+        connectTimeout: 10000,
       });
       expect(connectSpy).toHaveBeenCalledTimes(1);
       expect(connectSpy).toHaveBeenCalledWith({
@@ -322,6 +339,7 @@ describe('ConnectionWindowComponent', () => {
         sshUser: '',
         sshPassword: '',
         sshPrivateKey: '',
+        connectTimeout: 10000,
       });
     });
 
@@ -348,6 +366,7 @@ describe('ConnectionWindowComponent', () => {
         sshUser: '',
         sshPassword: '',
         sshPrivateKey: '',
+        connectTimeout: 10000,
       });
       expect(connectSpy).toHaveBeenCalledTimes(1);
       expect(connectSpy).toHaveBeenCalledWith({
@@ -363,6 +382,7 @@ describe('ConnectionWindowComponent', () => {
         sshUser: '',
         sshPassword: '',
         sshPrivateKey: '',
+        connectTimeout: 10000,
       });
     });
   });

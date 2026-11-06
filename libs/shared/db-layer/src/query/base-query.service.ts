@@ -54,11 +54,19 @@ export abstract class BaseQueryService {
     selectFields: string[] | null = null,
     groupFields: string[] | null = null,
     orderFields: string[] | null = null,
+    exact: { numbers?: boolean; names?: boolean } = {}, // what's looked up exactly (`= x`) instead of as a part (`LIKE '%x%'`)
   ): string {
     const query = squel.select(squelConfig).from(table);
 
     if (selectFields) {
-      query.fields(selectFields);
+      for (const field of selectFields) {
+        // (a subquery, "(SELECT …) AS `name`", goes as it's written)
+        if (field.startsWith('(')) {
+          query.field(squel.rstr(field));
+        } else {
+          query.field(field);
+        }
+      }
     }
 
     const filters = queryForm.fields;
@@ -66,9 +74,12 @@ export abstract class BaseQueryService {
     for (const filterKey in filters) {
       const filter = filters[filterKey];
       if (filter !== undefined && filter !== null && filter !== '') {
-        const value = escape(`%${filter}%`);
-
-        query.where(`\`${filterKey}\` LIKE ${value}`);
+        const number = /^-?\d+(\.\d+)?$/.test(String(filter).trim());
+        if (number ? exact.numbers : exact.names) {
+          query.where(`\`${filterKey}\` = ${escape(number ? String(filter).trim() : filter)}`);
+        } else {
+          query.where(`\`${filterKey}\` LIKE ${escape(`%${filter}%`)}`);
+        }
       }
     }
 

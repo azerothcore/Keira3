@@ -14,7 +14,13 @@
     "CREATE_A_NEW": "Crear nuevo <strong>{{ ENTITY_TABLE }}</strong> seleccionando un <strong>{{ ENTITY_ID_FIELD }}</strong>:",
     "FREE_ENTRY": "El o La {{ ENTITY_ID_FIELD }} es",
     "FREE": "Libre",
-    "ALREADY_USE": "Está en uso"
+    "ALREADY_USE": "Está en uso",
+    "SOURCE_ENTRY": "El o La {{ ENTITY_ID_FIELD }}",
+    "EXISTS": "existe",
+    "DOES_NOT_EXIST": "no existe",
+    "START_FROM_BLANK": "Empezar en blanco",
+    "COPY_FROM_EXISTING": "Copiar de uno existente",
+    "COPY_DISABLED": "Copiar de uno existente no está disponible para esta entidad"
   },
   "CONNECTED": "Conectado",
   "SEARCH": "Buscar",
@@ -37,9 +43,14 @@
   "EXECUTE_AND_COPY": "Ejecutar y copiar",
   "RELOAD": "Recargar",
   "CANCEL": "Cancelar",
+  "CLOSE_TAB": "Cerrar pestaña",
+  "FILTER_FIELDS": "Filtrar campos",
   "SELECTORS": {
     "ENABLED": "Habilitado",
-    "DISABLED": "Deshabilitado"
+    "DISABLED": "Deshabilitado",
+    "ITEM_DISPLAY": "Selector de apariencia de objeto (las que usan otros objetos)",
+    "ITEMS": "Objetos",
+    "FOR_EXAMPLE": "Por ejemplo"
   },
   "CONNECTION_WINDOW": {
     "HOST": "Servidor",
@@ -62,7 +73,9 @@
     "LOAD_RECENT": "Cargar Reciente",
     "CLEAR_ALL": "Limpiar Todo",
     "CONNECT": "Conectar",
-    "CREATED_BY": "Creado originalmente por"
+    "CREATED_BY": "Creado originalmente por",
+    "TIMEOUT": "Tiempo de espera (ms)",
+    "TIMEOUT_TOOLTIP": "Cuánto esperar a la base de datos antes de rendirse (milisegundos; 10000 son 10 segundos). Súbelo para servidores lentos o lejanos."
   },
   "SIDEBAR": {
     "DASHBOARD": "Tablero",
@@ -153,8 +166,8 @@
       "SELECT_PAGE_TEXT": "Seleccionar Texto de Página",
       "PAGE_TEXT": "Texto de Página",
       "ACORE_STRING_TEXT": "Cadenas de Acore",
-      "ACORE_STRING_LOCALE": "Traducción de Cadenas de Acore",
-      "SELECT_ACORE_STRING_TEXT": "Seleccionar Cadenas de Acore"
+      "SELECT_ACORE_STRING_TEXT": "Seleccionar Cadenas de Acore",
+      "ACORE_STRING_LOCALE": "Traducción de Cadenas de Acore"
     },
     "GOSSIP": {
       "TITLE": "Ventana de Texto de Criatura",
@@ -194,7 +207,35 @@
       "SELECT_TRAINER": "Entrenador",
       "TRAINER_SPELL": "Hechizo de Entrenador"
     },
-    "UNUSED_GUID_SEARCH": "GUIDs sin Usar"
+    "UNUSED_GUID_SEARCH": "GUIDs sin Usar",
+    "WORLD_EDITOR": "Editor de Mundo 3D",
+    "SETTINGS": "Ajustes",
+    "WAYPOINTS": {
+      "TITLE": "Puntos de ruta"
+    },
+    "POOLS": {
+      "TITLE": "Pools"
+    },
+    "SCRIPTS": {
+      "TITLE": "Scripts"
+    },
+    "GAME_EVENTS": {
+      "TITLE": "Eventos del juego"
+    },
+    "DISABLES": {
+      "TITLE": "Desactivaciones"
+    },
+    "AREA_TRIGGERS": {
+      "TITLE": "Activadores de área"
+    },
+    "DB_SCRIPTS": {
+      "TITLE": "Scripts de eventos y hechizos"
+    },
+    "SESSION_SQL": "SQL de la sesión",
+    "TABLE_BROWSER": "Explorador de tablas",
+    "FIND_ANYWHERE": "Buscar en todo",
+    "SNIFF_TO_SQL": "Sniff a SQL",
+    "SNIFFS": "Sniffs"
   },
   "DASHBOARD": {
     "WELCOME": "Bienvenido a Keira3",
@@ -223,6 +264,27 @@
     "AFFECTED_ROWS": "Líneas afectadas:",
     "HIDE_TRACE": "Ocultar traza",
     "SHOW_TRACE": "Mostrar traza"
+  },
+  "COPY_OUTPUT": {
+    "TITLE": "SQL para copiar la entrada",
+    "DESCRIPTION": "Revisa y ejecuta el SQL de abajo para copiar la entrada. Puedes copiar la consulta para ejecutarla a mano, o usar el botón Ejecutar para hacerlo directamente.",
+    "COPY": "Copiar",
+    "EXECUTE": "Ejecutar",
+    "EXECUTED": "Ejecutado",
+    "CONTINUE": "Continuar al editor",
+    "TABLE": "Tabla",
+    "RAW": "INSERT directo",
+    "TEMP": "Tabla temporal",
+    "RAW_COLUMNS": "INSERT directo (columnas explícitas)",
+    "RAW_INFERRED": "INSERT directo (columnas deducidas)",
+    "TEMP_TOOLTIP": "Tabla temporal (usa una tabla temporal)",
+    "GENERATED_SQL": "SQL generado",
+    "EXPAND": "Expandir",
+    "COLLAPSE": "Contraer",
+    "EXPORT_TITLE": "Exportar",
+    "EXPORT_DESCRIPTION": "El SQL de esta entidad, todas las tablas elegidas abajo: borra e inserta sus filas, para guardarlo como archivo .sql o mantenerlo en la sesión.",
+    "SAVE": "Guardar como .sql",
+    "BACK": "Volver"
   },
   "CREATURE": {
     "TEMPLATE": {
@@ -574,7 +636,8 @@
     "GROUP_ID": "Conjunto de Definiciones de Botín, consulte la Wiki de Azerothcore (en este caso la sección en español) para más detalles acerca de éste y otros campos más",
     "MIN_COUNT": "El Número Mínimo de copias del Item que pueden aparecer en un sólo Botín individual. En el caso de las Referencias de Botín, este campo es ignorado directamente.",
     "MAX_COUNT": "El Número Máximo de copias del Item que pueden aparecer en un sólo Botín individual. En el caso de las Referencias de Botín, este campo es el valor del recuento EXACTO.",
-    "COMMENT": "Un comentario el cual ignora el emulador (usado para dejar anotaciones al respecto)"
+    "COMMENT": "Un comentario el cual ignora el emulador (usado para dejar anotaciones al respecto)",
+    "REFERENCE_COUNT": "Una fila de referencia suelta su referencia MaxCount veces: MinCount sigue a MaxCount (AzerothCore no admite otra cosa)."
   },
   "LOOT_TEMPLATE": {
     "SET_FIELD": "Debes establecer el campo <strong>`{{ LOOT_FIELD }}`</strong> de <strong>{{ ENTITY_TABLE }}</strong> para poder habilitar esta funcionalidad.",
@@ -804,7 +867,12 @@
       "GENERATE_COMMENTS_ALL": "Generar comentarios (todos)",
       "CONDITIONS_TOOLTIP": "{{count}} condición(es) adjuntas a este evento — clic para abrirlas en el editor de Condiciones",
       "ADD_NEW_CONDITION": "Añadir condición",
-      "CONDITIONS_ADD_TOOLTIP": "Crea una condición para el evento seleccionado en el editor de Condiciones"
+      "CONDITIONS_ADD_TOOLTIP": "Crea una condición para el evento seleccionado en el editor de Condiciones",
+      "GUID_SCRIPTS": "Spawns con script propio",
+      "GUID_SCRIPTS_TOOLTIP": "SmartAI por GUID: spawns de esta entry cuyo script propio (entryorguid = -guid) sustituye a este.",
+      "GUID_SCRIPT_ROWS": "Filas",
+      "OPEN_GUID_SCRIPT": "Abrir",
+      "NO_GUID_SCRIPTS": "Ningún spawn de esta entry tiene script propio."
     },
     "SEARCH_BY_EXISTING": {
       "SOURCE_TYPE": "Tipo de Origen:",
@@ -815,6 +883,18 @@
     },
     "SEARCH_BY_ENTITY": {
       "SOURCE_TYPE": "Selecciona un Tipo de Origen"
+    },
+    "CHECK": {
+      "MIN_MAX": "El mínimo de un temporizador supera su máximo: el servidor ignora estas filas.",
+      "PHASE_MASK": "La máscara de fases pasa de la fase 12 (4095): el servidor ignora estas filas.",
+      "PHASE_NEVER_SET": "Estas filas solo se ejecutan en algunas fases, pero nada en este script cambia la fase.",
+      "LINK_SELF": "Estas filas se enlazan a sí mismas (bucle infinito): se ignoran.",
+      "LINK_MISSING": "Estas filas enlazan a un id que este script no tiene.",
+      "LINK_NOT_LINK_EVENT": "Estas filas enlazan a una fila cuyo evento no es LINK (61): esa fila también se ejecuta sola.",
+      "LINK_ORPHAN": "Eventos LINK (61) a los que ninguna fila enlaza: nunca se ejecutan.",
+      "SET_PHASE_RANGE": "SET_EVENT_PHASE más allá de la fase 12: el servidor ignora estas filas.",
+      "INC_PHASE_ZERO": "INC_EVENT_PHASE en 0: estas filas no hacen nada.",
+      "ACTIONLIST_ZERO": "CALL_TIMED_ACTIONLIST sin id de lista de acciones."
     }
   },
   "SPELL_DBC": {
@@ -1003,5 +1083,85 @@
     "NO_DATA": "No hay datos de mapa disponibles",
     "SHOW": "Mostrar mapa",
     "HIDE": "Ocultar mapa"
+  },
+  "POOLS": {
+    "PROBLEM_EMPTY": "El pool está vacío: el servidor no lo generará.",
+    "PROBLEM_MIXED": "Criaturas, objetos y pools hijos se generan por separado, cada uno hasta max_limit.",
+    "PROBLEM_QUEST_IN_MOTHER": "Los pools de misiones no pueden estar en un pool madre (este está en el pool {{mother}}): sus misiones se ignoran.",
+    "PROBLEM_NO_TEMPLATE": "El pool no está en pool_template: sus miembros se ignoran. Guarda primero el pool.",
+    "PROBLEM_CHANCE_RANGE": "{{count}} probabilidad(es) fuera de 0 a 100: esos miembros se ignoran.",
+    "PROBLEM_CHANCE_IGNORED": "Las probabilidades se ignoran: el pool genera {{max}} a la vez (solo se usan con max_limit 1).",
+    "PROBLEM_CHANCE_SUM": "Las probabilidades suman {{sum}}%, no 100: el servidor no generará el pool. Haz que sumen 100 o pon algunas a 0.",
+    "PROBLEM_CHANCE_EQUAL_NEVER": "Las probabilidades ya suman {{sum}}%: los {{count}} miembro(s) con 0 nunca aparecen.",
+    "PROBLEM_MISSING_SPAWN": "No hay spawn con guid {{guids}}: se ignora.",
+    "PROBLEM_MANY_MAPS": "Los spawns están en varios mapas ({{maps}}): el servidor ignora los que no están en el primero.",
+    "PROBLEM_NOT_POOLABLE": "Solo cofres, goobers y bancos de peces pueden ir en un pool: {{guids}} se ignoran.",
+    "PROBLEM_OTHER_POOL": "Ya está en otro pool (guid o entry, luego pool): {{list}}. Un pool cada uno.",
+    "PROBLEM_POOL_LOOP": "Un pool no puede contenerse a sí mismo ni al pool en el que está.",
+    "PROBLEM_CHILD_NO_TEMPLATE": "No están en pool_template: {{ids}}. Se ignoran.",
+    "PROBLEM_OTHER_MOTHER": "Ya está en otro pool madre (pool, luego madre): {{list}}. Una madre cada uno.",
+    "PROBLEM_MISSING_QUEST": "No hay misión con ID {{ids}}: se ignora.",
+    "PROBLEM_QUEST_NOT_REPEATING": "No son diarias ni semanales (usa un ExclusiveGroup): {{ids}}. Se ignoran.",
+    "PROBLEM_QUEST_MIXED": "No se pueden mezclar misiones diarias y semanales en un pool.",
+    "PROBLEM_ONE_EVENT": "Un pool tiene un solo evento: solo se guarda una fila.",
+    "PROBLEM_MISSING_EVENT": "No existe el evento {{ids}}.",
+    "PROBLEM_MAX_LIMIT_ZERO": "max_limit es 0: el servidor no genera ningún miembro del pool."
+  },
+  "COMPARE": {
+    "PIN": "Fijar para comparar",
+    "UNPIN": "Fijado (quitar)",
+    "PIN_TIP": "Guarda esta entidad para comparar otra de este editor con ella (abre la otra y luego Comparar)",
+    "WITH": "Comparar con #{{id}}",
+    "SAME": "No hay diferencias.",
+    "FIELD": "Campo",
+    "ONLY_IN": "Filas que solo tiene #{{id}}:"
+  },
+  "TABS": {
+    "OPEN": "Abrir una parte de Keira en una pestaña"
+  },
+  "SOAP": {
+    "RELOAD_TIP": "Ejecutar {{command}} en el worldserver para que vuelva a leer la tabla (tras ejecutar la consulta)"
+  },
+  "MONEY": {
+    "HELP": "La cantidad en oro, plata y cobre (cambiar uno cambia el campo)",
+    "GOLD": "Oro",
+    "SILVER": "Plata",
+    "COPPER": "Cobre",
+    "GOLD_SHORT": "o",
+    "SILVER_SHORT": "p",
+    "COPPER_SHORT": "c"
+  },
+  "QUERY_OUTPUT": {
+    "COPIED": "Copiada.",
+    "NOT_COPIED": "Falló: no se copió (tus cambios se mantienen)."
+  },
+  "SESSION_SQL": {
+    "ADD": "A la sesión",
+    "ADDED": "En la sesión",
+    "ADD_TIP": "Apartar esta consulta con las demás de la sesión (SQL de la sesión) para guardarlas o ejecutarlas juntas"
+  },
+  "EXPORT_ENTITY": "Exportar esta entidad como SQL, todas sus tablas",
+  "SPELL_INFO": {
+    "TITLE": "Información del hechizo",
+    "SCHOOL": "Escuela",
+    "COST": "Coste",
+    "CAST_TIME": "Tiempo de lanzamiento",
+    "INSTANT": "Instantáneo",
+    "DURATION": "Duración",
+    "RANGE": "Alcance",
+    "COOLDOWN": "Reutilización",
+    "CATEGORY": "categoría",
+    "PROC": "Activación",
+    "STACKS": "Acumulaciones",
+    "MAX_TARGETS": "Objetivos máx.",
+    "EFFECT": "Efecto / aura",
+    "VALUE": "Valor",
+    "TARGETS": "Objetivos",
+    "MORE": "Más",
+    "RADIUS": "radio",
+    "EVERY": "cada",
+    "TRIGGERS": "activa",
+    "CHAIN": "objetivos en cadena",
+    "NONE": "El cliente del juego no tiene ese hechizo."
   }
 }

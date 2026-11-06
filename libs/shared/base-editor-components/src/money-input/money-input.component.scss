@@ -1,0 +1,38 @@
+.money-input {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.25rem;
+}
+
+.money-unit {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  margin: 0;
+
+  input {
+    width: 5.5rem;
+  }
+}
+
+.money-coin {
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.money-gold {
+  color: #c9a227;
+}
+
+.money-silver {
+  color: #8f9aa3;
+}
+
+.money-copper {
+  color: #b5651d;
+}
+
+.money-sign {
+  font-weight: 600;
+}

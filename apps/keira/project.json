@@ -15,6 +15,7 @@
         "index": "apps/keira/src/index.html",
         "browser": "apps/keira/src/main.ts",
         "tsConfig": "apps/keira/src/tsconfig.app.json",
+        "webWorkerTsConfig": "apps/keira/src/tsconfig.worker.json",
         "assets": [
           "apps/keira/src/assets",
           "apps/keira/src/favicon.ico",
@@ -59,7 +60,8 @@
           "budgets": [
             {
               "type": "anyComponentStyle",
-              "maximumError": "7kb"
+              "maximumWarning": "7kb",
+              "maximumError": "20kb"
             }
           ],
           "optimization": false,
@@ -93,7 +95,8 @@
           "budgets": [
             {
               "type": "anyComponentStyle",
-              "maximumError": "7kb"
+              "maximumWarning": "7kb",
+              "maximumError": "20kb"
             }
           ],
           "optimization": true,

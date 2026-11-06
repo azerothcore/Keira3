@@ -1,5 +1,5 @@
 import { Service, inject } from '@angular/core';
-import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
+import { EMOTE, SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
 import { SAI_ACTION_COMMENTS, SAI_EVENT_COMMENTS } from './constants/sai-comments';
 import {
@@ -17,6 +17,32 @@ import {
 } from './constants/sai-constants';
 import { SAI_EVENTS } from './constants/sai-event';
 import { SAI_TARGETS } from './constants/sai-targets';
+
+/** An emote with its name (Emotes.dbc, #3704): `1 (ONESHOT_TALK)`, or the number alone when unknown. */
+export function emoteName(id: string | number): string {
+  const emote = EMOTE.find((option) => Number(option.value) === Number(id));
+  return emote ? `${id} (${emote.name})` : `${id}`;
+}
+
+/** The kinds of movement SMART_EVENT_MOVEMENTINFORM tells about (MovementGeneratorType). */
+const MOVEMENT_INFORM_KINDS: Record<number, string> = {
+  2: 'Waypoint',
+  7: 'Flight Point',
+  8: 'Point',
+  16: 'Jump Point',
+  17: 'Escort Point',
+};
+
+/**
+ * SMART_EVENT_MOVEMENTINFORM (#3697): `On Reached Point 13` for the usual point movement (8) or any movement (0), the
+ * kind otherwise (`On Reached Waypoint 3`), and the path when one is given.
+ */
+export function movementInformComment({ event_param1, event_param2, event_param3 }: SmartScripts): string {
+  const type = Number(event_param1);
+  const kind = type === 0 ? 'Point' : (MOVEMENT_INFORM_KINDS[type] ?? `Movement Type ${type} Point`);
+  const path = Number(event_param3) ? ` Of Path ${event_param3}` : '';
+  return `On Reached ${kind} ${event_param2}${path}`;
+}
 
 @Service()
 export class SaiCommentGeneratorService {
@@ -42,7 +68,13 @@ export class SaiCommentGeneratorService {
       case SAI_TARGETS.POSITION:
         return 'Position';
       case SAI_TARGETS.CREATURE_RANGE:
+        return this.inArea('Creature in Range', 'Creatures in Range', smartScript.target_param1, (id) =>
+          this.queryService.getCreatureNameById(id),
+        );
       case SAI_TARGETS.CREATURE_DISTANCE:
+        return this.inArea('Creature in Distance', 'Creatures in Distance', smartScript.target_param1, (id) =>
+          this.queryService.getCreatureNameById(id),
+        );
       case SAI_TARGETS.CLOSEST_CREATURE:
         return `Closest Creature '${await this.queryService.getCreatureNameById(smartScript.target_param1)}'`;
       case SAI_TARGETS.STORED:
@@ -50,7 +82,13 @@ export class SaiCommentGeneratorService {
       case SAI_TARGETS.CREATURE_GUID:
         return `Closest Creature '${await this.queryService.getCreatureNameByGuid(smartScript.target_param1)}'`;
       case SAI_TARGETS.GAMEOBJECT_RANGE:
+        return this.inArea('Gameobject in Range', 'Gameobjects in Range', smartScript.target_param1, (id) =>
+          this.queryService.getGameObjectNameById(id),
+        );
       case SAI_TARGETS.GAMEOBJECT_DISTANCE:
+        return this.inArea('Gameobject in Distance', 'Gameobjects in Distance', smartScript.target_param1, (id) =>
+          this.queryService.getGameObjectNameById(id),
+        );
       case SAI_TARGETS.CLOSEST_GAMEOBJECT:
         return `Closest Gameobject '${await this.queryService.getGameObjectNameById(smartScript.target_param1)}'`;
       case SAI_TARGETS.GAMEOBJECT_GUID:
@@ -96,6 +134,11 @@ export class SaiCommentGeneratorService {
       default:
         return '[unsupported target type]';
     }
+  }
+
+  /** The creatures/gameobjects of an area target: of one entry (named), or all of them (0) (#3697). */
+  private async inArea(one: string, all: string, entry: string | number, name: (id: string | number) => Promise<string>): Promise<string> {
+    return Number(entry) ? `${one} '${await name(entry)}'` : all;
   }
 
   /* Get previous script of links chain */
@@ -164,6 +207,10 @@ export class SaiCommentGeneratorService {
     }
 
     eventLine = eventLine.replace('_previousLineComment_', 'MISSING LINK');
+
+    if (eventLine.indexOf('_movementInformEvent_') > -1) {
+      eventLine = eventLine.replace('_movementInformEvent_', movementInformComment(smartScript));
+    }
 
     eventLine = eventLine.replace('_eventParamOne_', `${smartScript.event_param1}`);
     eventLine = eventLine.replace('_eventParamTwo_', `${smartScript.event_param2}`);
@@ -558,6 +605,10 @@ export class SaiCommentGeneratorService {
       }
 
       actionLine = actionLine.replace('_waypointStartActionParamThree_', waypointReplace);
+    }
+
+    if (actionLine.indexOf('_emoteActionParamOne_') > -1) {
+      actionLine = actionLine.replace('_emoteActionParamOne_', emoteName(smartScript.action_param1));
     }
 
     if (actionLine.indexOf('_movementTypeActionParamOne_') > -1) {

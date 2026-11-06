@@ -20,8 +20,34 @@ import {
 } from '@keira/shared/constants';
 import { from, map, Observable, of, tap } from 'rxjs';
 import squel, { Delete, Insert, Update } from 'squel';
+import { escape } from 'sqlstring';
 import { MysqlService } from '../mysql.service';
 import { BaseQueryService } from './base-query.service';
+
+/** The bits set and cleared from one value of a flags column to another (both whole and not negative), else undefined. */
+export function bitsChanged(from: unknown, to: unknown): { set: bigint; cleared: bigint } | undefined {
+  const whole = (value: unknown): boolean => (typeof value === 'number' || typeof value === 'string') && /^\d+$/.test(String(value));
+  if (!whole(from) || !whole(to)) {
+    return undefined;
+  }
+  const [a, b] = [BigInt(from as number), BigInt(to as number)];
+  return { set: b & ~a, cleared: a & ~b };
+}
+
+/** `(\`flags\` | set) & ~cleared`: the bits changed, keeping the others as they are in the database. */
+export function bitsExpression(field: string, { set, cleared }: { set: bigint; cleared: bigint }): string {
+  let expression = `\`${field}\``;
+  if (set) {
+    expression = `(${expression} | ${set})`;
+  }
+  if (cleared) {
+    expression = `${expression} & ~${cleared}`;
+  }
+  return expression;
+}
+
+/** Whether a column holds flags or a mask (updated by its bits when set so). */
+export const isFlagsColumn = (field: string): boolean => /flag|mask/i.test(field);
 
 @Service()
 export class MysqlQueryService extends BaseQueryService {
@@ -71,6 +97,7 @@ export class MysqlQueryService extends BaseQueryService {
     tableName: string, // the name of the table (example: 'creature_template')
     currentRow: T, // object of the original row
     newRow: T, // object of the new row
+    bitwise?: (field: string) => boolean, // the columns updated by their bits
   ): Update | undefined {
     let diff = false;
     const query = squel.update(squelConfig).table(tableName);
@@ -78,7 +105,12 @@ export class MysqlQueryService extends BaseQueryService {
     for (const key in currentRow) {
       if (currentRow[key] !== newRow[key]) {
         diff = true;
-        query.set(key, newRow[key]);
+        const bits = bitwise?.(key) ? bitsChanged(currentRow[key], newRow[key]) : undefined;
+        if (bits) {
+          query.set(key, squel.rstr(bitsExpression(key, bits)));
+        } else {
+          query.set(key, newRow[key]);
+        }
       }
     }
 
@@ -91,8 +123,9 @@ export class MysqlQueryService extends BaseQueryService {
     primaryKey: string, // the key that uniquely identifies the row in the table
     currentRow: T, // object of the original row
     newRow: T, // object of the new row
+    bitwise?: (field: string) => boolean, // the columns updated by their bits (`flags = (flags | 2) & ~1`)
   ): string {
-    const query = this.getUpdateQueryBase(tableName, currentRow, newRow);
+    const query = this.getUpdateQueryBase(tableName, currentRow, newRow, bitwise);
 
     if (!query) {
       return '';
@@ -325,8 +358,9 @@ export class MysqlQueryService extends BaseQueryService {
     currentRow: T, // the original row, it MUST contain ALL the primaryKeys
     newRow: T, // the original row, it MUST contain ALL the primaryKeys
     primaryKeys: string[], // array of the primary keys
+    bitwise?: (field: string) => boolean, // the columns updated by their bits
   ) {
-    const updateQuery = this.getUpdateQueryBase(tableName, currentRow, newRow);
+    const updateQuery = this.getUpdateQueryBase(tableName, currentRow, newRow, bitwise);
     if (!updateQuery) {
       return '';
     }
@@ -717,5 +751,136 @@ export class MysqlQueryService extends BaseQueryService {
 
   getColumns(tableName: string): Observable<TableRow[]> {
     return this.query(`SHOW COLUMNS FROM \`${tableName}\``);
+  }
+
+  // Utility to format a value for SQL (quote strings, keep numbers unquoted)
+  /** An id (a number, or an integer string from a form) as a number; anything else escaped. */
+  private toSqlValue(value: string | number): string {
+    if (typeof value === 'string' && /^-?\d+$/.test(value)) {
+      return value;
+    }
+    return escape(value);
+  }
+
+  getCopyVarsSet(sourceId: string | number, newId: string | number): string {
+    const source = this.toSqlValue(sourceId);
+    const entry = this.toSqlValue(newId);
+    return `SET @SOURCE = ${source};\nSET @ENTRY = ${entry};\n`;
+  }
+
+  // Generates SQL to copy an entry from one ID to another using temporary table
+  // If useVars is true, the query uses @SOURCE and @ENTRY session variables instead of concrete values
+  getCopyQuery(tableName: string, sourceId: string | number, newId: string | number, idField: string, useVars: boolean = false): string {
+    const sourceRef = useVars ? '@SOURCE' : this.toSqlValue(sourceId);
+    const entryRef = useVars ? '@ENTRY' : this.toSqlValue(newId);
+
+    const query =
+      `DELETE FROM \`${tableName}\` WHERE \`${idField}\` = ${entryRef};\n` +
+      `DROP TEMPORARY TABLE IF EXISTS temp_copy_table;\n` +
+      `CREATE TEMPORARY TABLE temp_copy_table AS\n` +
+      `  SELECT * FROM \`${tableName}\` WHERE \`${idField}\` = ${sourceRef};\n` +
+      `UPDATE temp_copy_table SET \`${idField}\` = ${entryRef};\n` +
+      `INSERT INTO \`${tableName}\` SELECT * FROM temp_copy_table;\n` +
+      `DROP TEMPORARY TABLE temp_copy_table;\n`;
+
+    return this.formatQuery(query);
+  }
+
+  /**
+   * Generates SQL to copy entries with explicit column names (RAW mode)
+   *
+   * Use RAW mode when:
+   * - Table has multiple rows per ID (e.g., creature_queststarter, npc_vendor)
+   * - You want to preserve exact data including additional columns
+   * - The table has simple structure with few columns
+   *
+   * Use ALL mode (getCopyQuery) when:
+   * - Table has single row per ID (e.g., creature_template, quest_template)
+   * - Table has many columns (easier to use SELECT *)
+   *
+   * @param tableName - The table name
+   * @param sourceId - The source entry ID to copy from
+   * @param newId - The new entry ID to copy to
+   * @param idField - The primary ID field name
+   * @param columns - Array of all column names to include in the copy
+   * @param useVars - Whether to use @SOURCE/@ENTRY variables instead of concrete values
+   */
+  getCopyQueryRaw(
+    tableName: string,
+    sourceId: string | number,
+    newId: string | number,
+    idField: string,
+    columns: string[],
+    useVars: boolean = false,
+  ): string {
+    const sourceRef = useVars ? '@SOURCE' : this.toSqlValue(sourceId);
+    const entryRef = useVars ? '@ENTRY' : this.toSqlValue(newId);
+
+    // Build the column list for INSERT
+    const columnList = columns.map((col) => `\`${col}\``).join(', ');
+
+    // Build the SELECT list - replace idField with new value
+    const selectList = columns.map((col) => (col === idField ? `${entryRef} AS \`${col}\`` : `\`${col}\``)).join(', ');
+
+    const query =
+      `DELETE FROM \`${tableName}\` WHERE \`${idField}\` = ${entryRef};\n` +
+      `INSERT INTO \`${tableName}\` (${columnList})\n` +
+      `  SELECT ${selectList}\n` +
+      `  FROM \`${tableName}\`\n` +
+      `  WHERE \`${idField}\` = ${sourceRef};\n`;
+
+    return this.formatQuery(query);
+  }
+
+  // Generates SQL to copy entries with explicit column names and VALUES (RAW mode)
+  // This generates INSERT statements with actual row data, not SELECT statements
+  getCopyQueryRawWithValues(
+    tableName: string,
+    rows: any[],
+    newId: string | number,
+    idField: string,
+    columns: string[],
+    useVars: boolean = false,
+  ): string {
+    const entryRef = useVars ? '@ENTRY' : this.toSqlValue(newId);
+
+    // Always include DELETE against the destination entry
+    let query = `DELETE FROM \`${tableName}\` WHERE \`${idField}\` = ${entryRef};\n`;
+
+    if (!rows || rows.length === 0) {
+      // Nothing to insert, return only the delete statement
+      return this.formatQuery(query);
+    }
+
+    // If no explicit columns were provided, derive from the first row
+    if (!columns || columns.length === 0) {
+      columns = Object.keys(rows[0]);
+    }
+
+    // Build the column list for INSERT
+    const columnList = columns.map((col) => `\`${col}\``).join(', ');
+
+    // Build VALUES list
+    const valuesList = rows
+      .map((row) => {
+        const values = columns.map((col) => {
+          // Replace the ID field with the new entry value
+          if (col === idField) {
+            return entryRef;
+          }
+          // (NULL, numbers, text, binary: as MySQL reads them)
+          return escape(row[col] ?? null);
+        });
+        return `(${values.join(', ')})`;
+      })
+      .join(',\n');
+
+    query += `INSERT INTO \`${tableName}\` (${columnList}) VALUES\n${valuesList};\n`;
+
+    return this.formatQuery(query);
+  }
+
+  getRowsCount(tableName: string, idField: string, idValue: string | number): Observable<number | null> {
+    return this.queryValue<number>(`SELECT COUNT(1) AS v FROM \`${tableName}\` WHERE \`${idField}\` = ${this.toSqlValue(idValue)};\n`);
   }
 }
