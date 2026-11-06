@@ -220,7 +220,26 @@
       "TITLE": "Scripts"
     },
     "GAME_EVENTS": {
-      "TITLE": "Eventos del juego"
+      "TITLE": "Eventos del juego",
+      "SEARCH": "Buscar eventos",
+      "GAME_EVENT": "Evento del juego",
+      "CREATURE": "Criaturas que aparecen",
+      "CREATURE_REMOVED": "Criaturas que desaparecen",
+      "GAMEOBJECT": "Objetos que aparecen",
+      "GAMEOBJECT_REMOVED": "Objetos que desaparecen",
+      "POOL": "Pools que aparecen",
+      "PREREQUISITE": "Eventos previos",
+      "NPCFLAG": "NPC flags",
+      "MODEL_EQUIP": "Modelos y equipo",
+      "NPC_VENDOR": "Objetos de vendedor",
+      "CREATURE_QUEST": "Misiones de criaturas",
+      "GAMEOBJECT_QUEST": "Misiones de objetos",
+      "SEASONAL_QUEST": "Misiones de temporada",
+      "BATTLEGROUND_HOLIDAY": "Fin de semana de campo de batalla",
+      "POOL_REMOVED": "Pools que desaparecen",
+      "CONDITION": "Condiciones",
+      "QUEST_CONDITION": "Condiciones de misiones",
+      "ARENA_SEASON": "Temporadas de arena"
     },
     "DISABLES": {
       "TITLE": "Desactivaciones"
@@ -1447,6 +1466,32 @@
   "QUERY_OUTPUT": {
     "COPIED": "Copiada.",
     "NOT_COPIED": "Falló: no se copió (tus cambios se mantienen)."
+  },
+  "GAME_EVENT": {
+    "TIME": "Fecha y hora (AAAA-MM-DD hh:mm:ss) del servidor.",
+    "OCCURENCE": "Minutos entre dos inicios del evento.",
+    "LENGTH": "Minutos que dura el evento.",
+    "WORLD_EVENT": "1: un evento del mundo (empieza y termina según sus condiciones).",
+    "ANNOUNCE": "0: sin anuncio, 1: anunciado, 2: según la configuración del worldserver.",
+    "CREATURES": "Criaturas",
+    "GAMEOBJECTS": "Objetos",
+    "GAME_EVENT_CREATURE_HELP": "Las criaturas que aparecen mientras dura el evento (game_event_creature, eventEntry = el evento).",
+    "GAME_EVENT_CREATURE_REMOVED_HELP": "Las criaturas que desaparecen mientras dura el evento (game_event_creature, eventEntry = menos el evento).",
+    "GAME_EVENT_GAMEOBJECT_HELP": "Los objetos que aparecen mientras dura el evento.",
+    "GAME_EVENT_GAMEOBJECT_REMOVED_HELP": "Los objetos que desaparecen mientras dura el evento (eventEntry = menos el evento).",
+    "GAME_EVENT_POOL_HELP": "Los pools que aparecen mientras dura el evento.",
+    "GAME_EVENT_PREREQUISITE_HELP": "Eventos que deben haber ocurrido antes de que empiece este.",
+    "GAME_EVENT_NPCFLAG_HELP": "NPC flags añadidos a estas criaturas mientras dura el evento.",
+    "GAME_EVENT_MODEL_EQUIP_HELP": "El modelo y el equipo de estas criaturas mientras dura el evento.",
+    "GAME_EVENT_NPC_VENDOR_HELP": "Objetos que venden estos vendedores mientras dura el evento.",
+    "GAME_EVENT_CREATURE_QUEST_HELP": "Misiones que dan las criaturas (por entry) mientras dura el evento.",
+    "GAME_EVENT_GAMEOBJECT_QUEST_HELP": "Misiones que dan los objetos (por entry) mientras dura el evento.",
+    "GAME_EVENT_SEASONAL_QUEST_HELP": "Misiones que se reinician cada vez que empieza el evento.",
+    "GAME_EVENT_BATTLEGROUND_HOLIDAY_HELP": "El fin de semana de campo de batalla (bgflag) del evento.",
+    "GAME_EVENT_POOL_REMOVED_HELP": "Los pools que desaparecen mientras dura el evento (game_event_pool, eventEntry = menos el evento).",
+    "GAME_EVENT_CONDITION_HELP": "Las condiciones que espera un evento mundial antes de poder terminar (game_event_condition): req_num de cada una, contadas en los campos de world state.",
+    "GAME_EVENT_QUEST_CONDITION_HELP": "Misiones que cuentan para una condición del evento al completarse (game_event_quest_condition): cada una suma num a condition_id.",
+    "GAME_EVENT_ARENA_SEASON_HELP": "Las temporadas de arena que es el evento (game_event_arena_seasons)."
   },
   "SESSION_SQL": {
     "ADD": "A la sesión",

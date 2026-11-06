@@ -1,0 +1,75 @@
+<keira-top-bar
+  [selected]="handlerService.selected"
+  [handler]="handlerService"
+  [selectedName]="handlerService.selectedName"
+  [isNew]="handlerService.isNew"
+/>
+
+<div class="container-fluid">
+  <div class="content-block">
+    <keira-create
+      [entityTable]="entityTable"
+      [entityIdField]="entityIdField"
+      [customStartingId]="customStartingId"
+      [maxEntryValue]="maxId"
+      [handlerService]="handlerService"
+      [queryService]="queryService"
+    />
+  </div>
+
+  <div class="content-block">
+    <p class="lead" [translate]="'SELECT_EXISTING'"></p>
+    <form [formGroup]="selectService.queryForm" class="mb-2">
+      <div class="row">
+        <ng-container [formGroup]="selectService.fields">
+          <div class="form-group col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <input
+              formControlName="eventEntry"
+              type="number"
+              class="form-control form-control-sm"
+              id="search-id"
+              placeholder="eventEntry"
+            />
+          </div>
+          <div class="form-group col-sm-6 col-md-4 col-lg-3 col-xl-3">
+            <input formControlName="description" class="form-control form-control-sm" id="description" placeholder="description" />
+          </div>
+        </ng-container>
+        <div class="form-group col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <input formControlName="limit" class="form-control form-control-sm" id="limit" placeholder="Limit" />
+        </div>
+        <div class="mb-2 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <button id="search-btn" class="btn btn-primary btn-sm" [disabled]="selectService.queryForm.invalid" (click)="onSearch()">
+            <i class="fa fa-search"></i> {{ 'SEARCH' | translate }}
+          </button>
+        </div>
+      </div>
+      <keira-highlightjs-wrapper [code]="selectService.query" />
+    </form>
+
+    @if (selectService.rows) {
+      <div>
+        <ngx-datatable
+          class="bootstrap table table-striped text-center datatable-select"
+          [rows]="selectService.rows"
+          [headerHeight]="DTCFG.headerHeight"
+          [footerHeight]="DTCFG.footerHeight"
+          [columnMode]="DTCFG.columnMode"
+          [rowHeight]="DTCFG.rowHeight"
+          [limit]="DTCFG.limit"
+          [selectionType]="DTCFG.selectionType"
+          (select)="selectService.onSelect($event)"
+        >
+          <ngx-datatable-column name="eventEntry" prop="eventEntry" [maxWidth]="110" />
+          <ngx-datatable-column name="description" prop="description" [minWidth]="220" />
+          <ngx-datatable-column name="holiday" prop="holiday" [maxWidth]="100" />
+          <ngx-datatable-column name="start_time" prop="start_time" />
+          <ngx-datatable-column name="occurence" prop="occurence" />
+          <ngx-datatable-column name="length" prop="length" />
+          <ngx-datatable-column [name]="'GAME_EVENT.CREATURES' | translate" prop="creatures" [maxWidth]="110" />
+          <ngx-datatable-column [name]="'GAME_EVENT.GAMEOBJECTS' | translate" prop="gameobjects" [maxWidth]="110" />
+        </ngx-datatable>
+      </div>
+    }
+  </div>
+</div>

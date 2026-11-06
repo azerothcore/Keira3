@@ -220,7 +220,26 @@
       "TITLE": "Скрипты"
     },
     "GAME_EVENTS": {
-      "TITLE": "Игровые события"
+      "TITLE": "Игровые события",
+      "SEARCH": "Поиск событий",
+      "GAME_EVENT": "Игровое событие",
+      "CREATURE": "Появляющиеся существа",
+      "CREATURE_REMOVED": "Убираемые существа",
+      "GAMEOBJECT": "Появляющиеся объекты",
+      "GAMEOBJECT_REMOVED": "Убираемые объекты",
+      "POOL": "Появляющиеся пулы",
+      "PREREQUISITE": "Предварительные события",
+      "NPCFLAG": "Флаги NPC",
+      "MODEL_EQUIP": "Модели и снаряжение",
+      "NPC_VENDOR": "Товары торговцев",
+      "CREATURE_QUEST": "Задания существ",
+      "GAMEOBJECT_QUEST": "Задания объектов",
+      "SEASONAL_QUEST": "Сезонные задания",
+      "BATTLEGROUND_HOLIDAY": "Выходные полей боя",
+      "POOL_REMOVED": "Убираемые пулы",
+      "CONDITION": "Условия",
+      "QUEST_CONDITION": "Условия заданий",
+      "ARENA_SEASON": "Сезоны арены"
     },
     "DISABLES": {
       "TITLE": "Отключения"
@@ -1447,6 +1466,32 @@
   "QUERY_OUTPUT": {
     "COPIED": "Скопировано.",
     "NOT_COPIED": "Ошибка: не скопировано (изменения сохранены)."
+  },
+  "GAME_EVENT": {
+    "TIME": "Дата и время (ГГГГ-ММ-ДД чч:мм:сс) по времени сервера.",
+    "OCCURENCE": "Минуты между двумя началами события.",
+    "LENGTH": "Продолжительность события в минутах.",
+    "WORLD_EVENT": "1: мировое событие (начинается и заканчивается по условиям).",
+    "ANNOUNCE": "0: без объявления, 1: объявляется, 2: по настройке worldserver.",
+    "CREATURES": "Существа",
+    "GAMEOBJECTS": "Объекты",
+    "GAME_EVENT_CREATURE_HELP": "Существа, появляющиеся на время события (game_event_creature, eventEntry = событие).",
+    "GAME_EVENT_CREATURE_REMOVED_HELP": "Существа, убираемые на время события (game_event_creature, eventEntry = минус событие).",
+    "GAME_EVENT_GAMEOBJECT_HELP": "Объекты, появляющиеся на время события.",
+    "GAME_EVENT_GAMEOBJECT_REMOVED_HELP": "Объекты, убираемые на время события (eventEntry = минус событие).",
+    "GAME_EVENT_POOL_HELP": "Пулы, появляющиеся на время события.",
+    "GAME_EVENT_PREREQUISITE_HELP": "События, которые должны пройти до начала этого.",
+    "GAME_EVENT_NPCFLAG_HELP": "Флаги NPC, добавляемые этим существам на время события.",
+    "GAME_EVENT_MODEL_EQUIP_HELP": "Модель и снаряжение этих существ на время события.",
+    "GAME_EVENT_NPC_VENDOR_HELP": "Товары, продаваемые этими торговцами на время события.",
+    "GAME_EVENT_CREATURE_QUEST_HELP": "Задания, выдаваемые существами (по entry) на время события.",
+    "GAME_EVENT_GAMEOBJECT_QUEST_HELP": "Задания, выдаваемые объектами (по entry) на время события.",
+    "GAME_EVENT_SEASONAL_QUEST_HELP": "Задания, сбрасываемые при каждом начале события.",
+    "GAME_EVENT_BATTLEGROUND_HOLIDAY_HELP": "Выходные полей боя (bgflag) этого события.",
+    "GAME_EVENT_POOL_REMOVED_HELP": "Пулы, убираемые на время события (game_event_pool, eventEntry = минус событие).",
+    "GAME_EVENT_CONDITION_HELP": "Условия, которых ждёт мировое событие перед завершением (game_event_condition): req_num каждого, счёт в полях world state.",
+    "GAME_EVENT_QUEST_CONDITION_HELP": "Задания, засчитываемые в условие события при выполнении (game_event_quest_condition): каждое добавляет num к condition_id.",
+    "GAME_EVENT_ARENA_SEASON_HELP": "Сезоны арены, которыми является событие (game_event_arena_seasons)."
   },
   "SESSION_SQL": {
     "ADD": "В сессию",

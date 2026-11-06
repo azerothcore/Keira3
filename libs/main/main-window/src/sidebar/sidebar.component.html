@@ -795,6 +795,168 @@
             </div>
           </li>
 
+          <li class="sidebar-dropdown" [class.active]="menuStates['gameEvents'] === 'down'">
+            <a (click)="toggleState('gameEvents')">
+              <i class="fa fa-calendar-days"></i>
+              <span [translate]="'SIDEBAR.GAME_EVENTS.TITLE'"></span>
+            </a>
+
+            <div class="sidebar-submenu" [@slide]="menuStates['gameEvents']">
+              <ul>
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'game-events/select'">
+                    {{ 'SIDEBAR.GAME_EVENTS.SEARCH' | translate }}
+                  </a>
+                </li>
+                @if (gameEventHandlerService.selected) {
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'game-events/game-event'">
+                      {{ 'SIDEBAR.GAME_EVENTS.GAME_EVENT' | translate }}
+                      @if (gameEventHandlerService.isGameEventUnsaved()) {
+                        <keira-unsaved-icon />
+                      }
+                    </a>
+                  </li>
+                  @if (!gameEventHandlerService.isNew) {
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'game-events/game-event-creature'">
+                        {{ 'SIDEBAR.GAME_EVENTS.CREATURE' | translate }}
+                        @if (gameEventHandlerService.isGameEventCreatureUnsaved()) {
+                          <keira-unsaved-icon />
+                        }
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'game-events/game-event-creature-removed'">
+                        {{ 'SIDEBAR.GAME_EVENTS.CREATURE_REMOVED' | translate }}
+                        @if (gameEventHandlerService.isGameEventCreatureUnsaved()) {
+                          <keira-unsaved-icon />
+                        }
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'game-events/game-event-gameobject'">
+                        {{ 'SIDEBAR.GAME_EVENTS.GAMEOBJECT' | translate }}
+                        @if (gameEventHandlerService.isGameEventGameobjectUnsaved()) {
+                          <keira-unsaved-icon />
+                        }
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'game-events/game-event-gameobject-removed'">
+                        {{ 'SIDEBAR.GAME_EVENTS.GAMEOBJECT_REMOVED' | translate }}
+                        @if (gameEventHandlerService.isGameEventGameobjectUnsaved()) {
+                          <keira-unsaved-icon />
+                        }
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'game-events/game-event-pool'">
+                        {{ 'SIDEBAR.GAME_EVENTS.POOL' | translate }}
+                        @if (gameEventHandlerService.isGameEventPoolUnsaved()) {
+                          <keira-unsaved-icon />
+                        }
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'game-events/game-event-pool-removed'">
+                        {{ 'SIDEBAR.GAME_EVENTS.POOL_REMOVED' | translate }}
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'game-events/game-event-prerequisite'">
+                        {{ 'SIDEBAR.GAME_EVENTS.PREREQUISITE' | translate }}
+                        @if (gameEventHandlerService.isGameEventPrerequisiteUnsaved()) {
+                          <keira-unsaved-icon />
+                        }
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'game-events/game-event-npcflag'">
+                        {{ 'SIDEBAR.GAME_EVENTS.NPCFLAG' | translate }}
+                        @if (gameEventHandlerService.isGameEventNpcflagUnsaved()) {
+                          <keira-unsaved-icon />
+                        }
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'game-events/game-event-model-equip'">
+                        {{ 'SIDEBAR.GAME_EVENTS.MODEL_EQUIP' | translate }}
+                        @if (gameEventHandlerService.isGameEventModelEquipUnsaved()) {
+                          <keira-unsaved-icon />
+                        }
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'game-events/game-event-npc-vendor'">
+                        {{ 'SIDEBAR.GAME_EVENTS.NPC_VENDOR' | translate }}
+                        @if (gameEventHandlerService.isGameEventNpcVendorUnsaved()) {
+                          <keira-unsaved-icon />
+                        }
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'game-events/game-event-creature-quest'">
+                        {{ 'SIDEBAR.GAME_EVENTS.CREATURE_QUEST' | translate }}
+                        @if (gameEventHandlerService.isGameEventCreatureQuestUnsaved()) {
+                          <keira-unsaved-icon />
+                        }
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'game-events/game-event-gameobject-quest'">
+                        {{ 'SIDEBAR.GAME_EVENTS.GAMEOBJECT_QUEST' | translate }}
+                        @if (gameEventHandlerService.isGameEventGameobjectQuestUnsaved()) {
+                          <keira-unsaved-icon />
+                        }
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'game-events/game-event-seasonal-quest'">
+                        {{ 'SIDEBAR.GAME_EVENTS.SEASONAL_QUEST' | translate }}
+                        @if (gameEventHandlerService.isGameEventSeasonalQuestUnsaved()) {
+                          <keira-unsaved-icon />
+                        }
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'game-events/game-event-battleground-holiday'">
+                        {{ 'SIDEBAR.GAME_EVENTS.BATTLEGROUND_HOLIDAY' | translate }}
+                        @if (gameEventHandlerService.isGameEventBattlegroundHolidayUnsaved()) {
+                          <keira-unsaved-icon />
+                        }
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'game-events/game-event-arena-season'">
+                        {{ 'SIDEBAR.GAME_EVENTS.ARENA_SEASON' | translate }}
+                        @if (gameEventHandlerService.isGameEventArenaSeasonUnsaved()) {
+                          <keira-unsaved-icon />
+                        }
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'game-events/game-event-quest-condition'">
+                        {{ 'SIDEBAR.GAME_EVENTS.QUEST_CONDITION' | translate }}
+                        @if (gameEventHandlerService.isGameEventQuestConditionUnsaved()) {
+                          <keira-unsaved-icon />
+                        }
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'game-events/game-event-condition'">
+                        {{ 'SIDEBAR.GAME_EVENTS.CONDITION' | translate }}
+                        @if (gameEventHandlerService.isGameEventConditionUnsaved()) {
+                          <keira-unsaved-icon />
+                        }
+                      </a>
+                    </li>
+                  }
+                }
+              </ul>
+            </div>
+          </li>
+
           <li class="sidebar-dropdown" [class.active]="menuStates['creatureImmunities'] === 'down'">
             <a (click)="toggleState('creatureImmunities')">
               <i class="fa fa-shield-halved"></i>
