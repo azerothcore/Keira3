@@ -179,7 +179,8 @@
       "SELECT_ACORE_STRING_TEXT": "选择Acore字符串",
       "PAGE_TEXT_LOCALE": "页面文本本地化",
       "NPC_TEXT_LOCALE": "NPC 文本本地化",
-      "BROADCAST_TEXT_LOCALE": "广播文本本地化"
+      "BROADCAST_TEXT_LOCALE": "广播文本本地化",
+      "ACORE_STRING_LOCALE": "Acore字符串本地化"
     },
     "GOSSIP": {
       "TITLE": "闲聊对话",

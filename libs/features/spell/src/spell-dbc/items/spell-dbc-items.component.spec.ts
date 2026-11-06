@@ -29,6 +29,8 @@ describe('SpellDbcItemsComponent', () => {
   const fields: string[] = [
     'Totem_1',
     'Totem_2',
+    'RequiredTotemCategoryID_1',
+    'RequiredTotemCategoryID_2',
     'EquippedItemClass',
     'EquippedItemSubclass',
     'EquippedItemInvTypes',

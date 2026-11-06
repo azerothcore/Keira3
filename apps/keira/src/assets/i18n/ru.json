@@ -179,7 +179,8 @@
       "SELECT_ACORE_STRING_TEXT": "Выбрать строки Acore",
       "PAGE_TEXT_LOCALE": "Page Text (локализация)",
       "NPC_TEXT_LOCALE": "Npc Text (локализация)",
-      "BROADCAST_TEXT_LOCALE": "Broadcast Text (локализация)"
+      "BROADCAST_TEXT_LOCALE": "Broadcast Text (локализация)",
+      "ACORE_STRING_LOCALE": "Локализация строк Acore"
     },
     "GOSSIP": {
       "TITLE": "Разговоры",

@@ -1,9 +1,11 @@
 import { Component, provideZonelessChangeDetection, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
+import { By } from '@angular/platform-browser';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { SpellDbc } from '@keira/shared/acore-world-model';
+import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModelForm } from '@keira/shared/utils';
 import { ModalDirective } from 'ngx-bootstrap/modal';
@@ -54,6 +56,8 @@ describe('SpellDbcFlagsComponent', () => {
     'AttributesEx7',
     'TargetCreatureType',
     'ShapeshiftMask',
+    'ShapeshiftExclude',
+    'FacingCasterFlags',
   ];
   const createMockVal = (field: string): number => field.length;
 
@@ -103,5 +107,16 @@ describe('SpellDbcFlagsComponent', () => {
     for (const field of fields) {
       expect(form.get(field)?.value).toEqual(createMockVal(field));
     }
+  });
+
+  it('should correctly configure flags selectors including ShapeshiftExclude', () => {
+    const { fixture, form } = setup();
+
+    const flagSelectors = fixture.debugElement.queryAll(By.directive(FlagsSelectorBtnComponent));
+    const shapeshiftExcludeSelector = flagSelectors.find(
+      (s) => (s.componentInstance.config()?.name ?? s.componentInstance.config?.name) === 'ShapeshiftExclude',
+    );
+    expect(shapeshiftExcludeSelector).toBeTruthy();
+    expect(shapeshiftExcludeSelector?.componentInstance.control).toBe(form.controls.ShapeshiftExclude);
   });
 });

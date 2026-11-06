@@ -170,6 +170,7 @@ import {
   AcoreStringComponent,
   AcoreStringHandlerService,
   AcoreStringCopyComponent,
+  AcoreStringLocaleComponent,
   SelectAcoreStringComponent,
   PageTextLocaleComponent,
   NpcTextLocaleComponent,
@@ -703,6 +704,11 @@ export const KEIRA_ROUTES: Routes = [
       {
         path: 'acore-string-copy',
         component: AcoreStringCopyComponent,
+        canActivate: [AcoreStringHandlerService],
+      },
+      {
+        path: 'acore-string-locale',
+        component: AcoreStringLocaleComponent,
         canActivate: [AcoreStringHandlerService],
       },
       {

@@ -19,3 +19,4 @@ export { AcoreStringCopyComponent } from './acore-string/acore-string-copy.compo
 export * from './page-text-locale/page-text-locale.component';
 export * from './npc-text-locale/npc-text-locale.component';
 export * from './broadcast-text-locale/broadcast-text-locale.component';
+export { AcoreStringLocaleComponent } from './acore-string-locale/acore-string-locale.component';

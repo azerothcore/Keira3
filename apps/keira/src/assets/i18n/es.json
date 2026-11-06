@@ -179,7 +179,8 @@
       "SELECT_ACORE_STRING_TEXT": "Seleccionar Cadenas de Acore",
       "PAGE_TEXT_LOCALE": "Locale de Page Text",
       "NPC_TEXT_LOCALE": "Locale de Npc Text",
-      "BROADCAST_TEXT_LOCALE": "Locale de Broadcast Text"
+      "BROADCAST_TEXT_LOCALE": "Locale de Broadcast Text",
+      "ACORE_STRING_LOCALE": "Traducción de Cadenas de Acore"
     },
     "GOSSIP": {
       "TITLE": "Ventana de Texto de Criatura",

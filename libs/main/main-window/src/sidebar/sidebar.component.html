@@ -693,6 +693,16 @@
                       }
                     </a>
                   </li>
+                  @if (!acoreStringHandlerService.isNew) {
+                    <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'texts/acore-string-locale'">
+                        {{ 'SIDEBAR.TEXTS.ACORE_STRING_LOCALE' | translate }}
+                        @if (acoreStringHandlerService.isAcoreStringLocaleUnsaved()) {
+                          <keira-unsaved-icon />
+                        }
+                      </a>
+                    </li>
+                  }
                 }
                 <hr />
                 <li>
