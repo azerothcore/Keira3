@@ -795,6 +795,65 @@
             </div>
           </li>
 
+          <li class="sidebar-dropdown" [class.active]="menuStates['areaTriggers'] === 'down'">
+            <a (click)="toggleState('areaTriggers')">
+              <i class="fa fa-street-view"></i>
+              <span [translate]="'SIDEBAR.AREA_TRIGGERS.TITLE'"></span>
+            </a>
+
+            <div class="sidebar-submenu" [@slide]="menuStates['areaTriggers']">
+              <ul>
+                <li>
+                  <a href="#" routerLinkActive="active" [routerLink]="'area-triggers/select'">
+                    {{ 'SIDEBAR.AREA_TRIGGERS.SEARCH' | translate }}
+                  </a>
+                </li>
+                @if (areaTriggerHandlerService.selected) {
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'area-triggers/areatrigger-teleport'">
+                      {{ 'SIDEBAR.AREA_TRIGGERS.AREATRIGGER_TELEPORT' | translate }}
+                      @if (areaTriggerHandlerService.isAreatriggerTeleportUnsaved()) {
+                        <keira-unsaved-icon />
+                      }
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'area-triggers/areatrigger-tavern'">
+                      {{ 'SIDEBAR.AREA_TRIGGERS.AREATRIGGER_TAVERN' | translate }}
+                      @if (areaTriggerHandlerService.isAreatriggerTavernUnsaved()) {
+                        <keira-unsaved-icon />
+                      }
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'area-triggers/areatrigger-involvedrelation'">
+                      {{ 'SIDEBAR.AREA_TRIGGERS.AREATRIGGER_INVOLVEDRELATION' | translate }}
+                      @if (areaTriggerHandlerService.isAreatriggerInvolvedrelationUnsaved()) {
+                        <keira-unsaved-icon />
+                      }
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'area-triggers/areatrigger-scripts'">
+                      {{ 'SIDEBAR.AREA_TRIGGERS.AREATRIGGER_SCRIPTS' | translate }}
+                      @if (areaTriggerHandlerService.isAreatriggerScriptsUnsaved()) {
+                        <keira-unsaved-icon />
+                      }
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" routerLinkActive="active" [routerLink]="'area-triggers/areatrigger'">
+                      {{ 'SIDEBAR.AREA_TRIGGERS.AREATRIGGER' | translate }}
+                      @if (areaTriggerHandlerService.isAreatriggerUnsaved()) {
+                        <keira-unsaved-icon />
+                      }
+                    </a>
+                  </li>
+                }
+              </ul>
+            </div>
+          </li>
+
           <li class="sidebar-dropdown" [class.active]="menuStates['creatureImmunities'] === 'down'">
             <a (click)="toggleState('creatureImmunities')">
               <i class="fa fa-shield-halved"></i>

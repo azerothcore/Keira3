@@ -226,7 +226,13 @@
       "TITLE": "Desactivaciones"
     },
     "AREA_TRIGGERS": {
-      "TITLE": "Activadores de área"
+      "TITLE": "Activadores de área",
+      "SEARCH": "Buscar activadores",
+      "AREATRIGGER_TELEPORT": "Teletransporte",
+      "AREATRIGGER_TAVERN": "Taberna (zona de descanso)",
+      "AREATRIGGER_INVOLVEDRELATION": "Objetivo de misión",
+      "AREATRIGGER_SCRIPTS": "Script",
+      "AREATRIGGER": "Forma (personalizada)"
     },
     "DB_SCRIPTS": {
       "TITLE": "Scripts de eventos y hechizos"
@@ -1447,6 +1453,16 @@
   "QUERY_OUTPUT": {
     "COPIED": "Copiada.",
     "NOT_COPIED": "Falló: no se copió (tus cambios se mantienen)."
+  },
+  "EDITORS_HELP": {
+    "AREATRIGGER_TELEPORT": "A dónde lleva el activador al jugador (entradas de instancias, portales).",
+    "AREATRIGGER_TAVERN": "Una zona de descanso: los jugadores dentro descansan (faction 0 todos, 2 solo Horda, 4 solo Alianza).",
+    "AREATRIGGER_INVOLVEDRELATION": "La misión cuyo objetivo de exploración completa este activador.",
+    "AREATRIGGER_SCRIPTS": "El script del núcleo que se ejecuta al entrar un jugador.",
+    "AREATRIGGER": "Un activador que no está en los datos del cliente (AreaTrigger.dbc): dónde está y su tamaño (esfera por radio, o caja por largo, ancho y alto)."
+  },
+  "AREA_TRIGGERS": {
+    "CREATE_HELP": "Un id nuevo (por encima de los de AreaTrigger.dbc del cliente para uno personalizado, con su forma), o el id de un activador de los datos del cliente para darle teletransporte, zona de descanso, objetivo de misión o script."
   },
   "SESSION_SQL": {
     "ADD": "A la sesión",

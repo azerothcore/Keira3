@@ -1,0 +1,69 @@
+<keira-top-bar
+  [selected]="handlerService.selected"
+  [handler]="handlerService"
+  [selectedName]="handlerService.selectedName"
+  [isNew]="handlerService.isNew"
+/>
+
+<div class="container-fluid">
+  @if (editorService.loading) {
+    <span [translate]="'LOADING'"></span>
+  }
+
+  @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
+    <div>
+      <p class="small text-muted mt-2" id="editor-help">{{ 'EDITORS_HELP.AREATRIGGER_TELEPORT' | translate }}</p>
+      <div class="content-block">
+        <keira-query-output
+          [docUrl]="docUrl"
+          [isNew]="editorService.isNew"
+          [diffQuery]="editorService.diffQuery"
+          [fullQuery]="editorService.fullQuery"
+          [error]="editorService.error"
+          [entityTable]="editorService.entityTable"
+          [editorService]="editorService"
+          (executeQuery)="save($event)"
+        />
+      </div>
+      <form [formGroup]="editorService.form" class="form-group edit-form">
+        <div class="content-block">
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2">
+              <label class="control-label" for="f-i-d">ID</label>
+              <input [formControlName]="'ID'" id="f-i-d" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-4">
+              <label class="control-label" for="f-name">Name</label>
+              <input [formControlName]="'Name'" id="f-name" type="text" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2">
+              <label class="control-label" for="f-target-map">target_map</label>
+              <input [formControlName]="'target_map'" id="f-target-map" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2">
+              <label class="control-label" for="f-target-position-x">target_position_x</label>
+              <input [formControlName]="'target_position_x'" id="f-target-position-x" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2">
+              <label class="control-label" for="f-target-position-y">target_position_y</label>
+              <input [formControlName]="'target_position_y'" id="f-target-position-y" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2">
+              <label class="control-label" for="f-target-position-z">target_position_z</label>
+              <input [formControlName]="'target_position_z'" id="f-target-position-z" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2">
+              <label class="control-label" for="f-target-orientation">target_orientation</label>
+              <input
+                [formControlName]="'target_orientation'"
+                id="f-target-orientation"
+                type="number"
+                class="form-control form-control-sm"
+              />
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  }
+</div>

@@ -103,6 +103,15 @@ import {
   SelectCreatureImmunitiesComponent,
 } from '@keira/features/creature-immunities';
 import { SelectTrainerComponent, TrainerComponent, TrainerHandlerService, TrainerSpellComponent } from '@keira/features/trainer';
+import {
+  AreaTriggerHandlerService,
+  SelectAreaTriggerComponent,
+  AreatriggerTeleportComponent,
+  AreatriggerTavernComponent,
+  AreatriggerInvolvedrelationComponent,
+  AreatriggerScriptsComponent,
+  AreatriggerComponent,
+} from '@keira/features/area-triggers';
 import { UnusedGuidSearchComponent } from '@keira/features/unused-guid-search';
 
 export const KEIRA_ROUTES: Routes = [
@@ -524,6 +533,41 @@ export const KEIRA_ROUTES: Routes = [
         path: 'tele',
         component: GameTeleComponent,
         canActivate: [GameTeleHandlerService],
+      },
+    ],
+  },
+
+  {
+    path: 'area-triggers',
+    children: [
+      {
+        path: 'select',
+        component: SelectAreaTriggerComponent,
+      },
+      {
+        path: 'areatrigger-teleport',
+        component: AreatriggerTeleportComponent,
+        canActivate: [AreaTriggerHandlerService],
+      },
+      {
+        path: 'areatrigger-tavern',
+        component: AreatriggerTavernComponent,
+        canActivate: [AreaTriggerHandlerService],
+      },
+      {
+        path: 'areatrigger-involvedrelation',
+        component: AreatriggerInvolvedrelationComponent,
+        canActivate: [AreaTriggerHandlerService],
+      },
+      {
+        path: 'areatrigger-scripts',
+        component: AreatriggerScriptsComponent,
+        canActivate: [AreaTriggerHandlerService],
+      },
+      {
+        path: 'areatrigger',
+        component: AreatriggerComponent,
+        canActivate: [AreaTriggerHandlerService],
       },
     ],
   },

@@ -41,6 +41,9 @@
       "@keira/features/creature-immunities": [
         "libs/features/creature-immunities/src/index.ts"
       ],
+      "@keira/features/area-triggers": [
+        "libs/features/area-triggers/src/index.ts"
+      ],
       "@keira/features/dashboard": [
         "libs/features/dashboard/src/index.ts"
       ],

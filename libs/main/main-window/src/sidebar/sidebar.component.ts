@@ -28,6 +28,7 @@ import {
 import { GameTeleHandlerService } from '@keira/features/game-tele';
 import { TrainerHandlerService } from '@keira/features/trainer';
 import { CreatureImmunitiesHandlerService } from '@keira/features/creature-immunities';
+import { AreaTriggerHandlerService } from '@keira/features/area-triggers';
 import { LocationService, SessionSqlService } from '@keira/shared/common-services';
 import { MysqlService } from '@keira/shared/db-layer';
 import { SaiHandlerService } from '@keira/shared/sai-editor';
@@ -115,6 +116,7 @@ export class SidebarComponent {
   protected readonly trainerHandlerService = inject(TrainerHandlerService);
   protected readonly creatureImmunitiesHandlerService = inject(CreatureImmunitiesHandlerService);
   protected readonly sessionSql = inject(SessionSqlService);
+  protected readonly areaTriggerHandlerService = inject(AreaTriggerHandlerService);
   private readonly locationService = inject(LocationService);
   private readonly router = inject(Router);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
