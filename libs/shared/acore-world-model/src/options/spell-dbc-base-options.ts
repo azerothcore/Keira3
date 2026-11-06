@@ -95,14 +95,13 @@ export const SPELL_DBC_CASTER_AURA_STATE: Option[] = [
   { value: 1, name: 'Defense' },
   { value: 2, name: 'Health <= 20%' },
   { value: 3, name: 'Berserking' },
-  { value: 4, name: 'Judgement' },
-  { value: 5, name: 'Hunter Parry' },
-  { value: 6, name: 'Victory Rush' },
-  { value: 7, name: 'Unknown 1' },
-  { value: 8, name: 'Health <= 35%' },
-  { value: 9, name: 'Enrage' },
-  { value: 10, name: 'Unknown 2' },
-  { value: 11, name: 'Health => 75%' },
+  { value: 5, name: 'Judgement' },
+  { value: 7, name: 'Hunter Parry' },
+  { value: 10, name: 'Victory Rush' },
+  { value: 13, name: 'Health <= 35%' },
+  { value: 17, name: 'Enrage' },
+  { value: 22, name: 'Unknown 2' },
+  { value: 23, name: 'Health > 75%' },
 ];
 
 export const SPELL_DBC_PREVENTION_TYPE: Option[] = [
@@ -113,13 +112,14 @@ export const SPELL_DBC_PREVENTION_TYPE: Option[] = [
 
 export const SPELL_DBC_TARGET_AURA_STATE: Option[] = [
   { value: 0, name: 'None' },
-  { value: 1, name: 'Health <= 20%' },
-  { value: 2, name: 'Berserking' },
-  { value: 3, name: 'Health <= 35%' },
-  { value: 4, name: 'Conflagrate' },
-  { value: 5, name: 'Swiftmend' },
-  { value: 6, name: 'Deadly Poison' },
-  { value: 7, name: 'Bleeding' },
+  { value: 2, name: 'Health <= 20%' },
+  { value: 3, name: 'Berserking' },
+  { value: 4, name: 'Frozen' },
+  { value: 13, name: 'Health <= 35%' },
+  { value: 14, name: 'Conflagrate' },
+  { value: 15, name: 'Swiftmend' },
+  { value: 16, name: 'Deadly Poison' },
+  { value: 18, name: 'Bleeding' },
 ];
 
 export const SPELL_DBC_DAMAGE_CLASS: Option[] = [

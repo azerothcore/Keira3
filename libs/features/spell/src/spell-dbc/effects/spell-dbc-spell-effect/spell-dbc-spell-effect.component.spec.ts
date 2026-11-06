@@ -1,11 +1,13 @@
 import { Component, viewChild, provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FormGroup } from '@angular/forms';
 import { provideRouter } from '@angular/router';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModelForm } from '@keira/shared/utils';
 import { SpellDbc } from '@keira/shared/acore-world-model';
+import { SpellSelectorBtnComponent } from '@keira/shared/selectors';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
@@ -106,5 +108,16 @@ describe('SpellDbcSpellEffectComponent', () => {
     for (const field of SPELL_DBC_SPELL_EFFECT_FIELDS) {
       expect(form.get(`${field}_${testIndex}`)?.value).toEqual(createMockVal(field));
     }
+  });
+
+  it('should render spell selector for EffectTriggerSpell', async () => {
+    const { host, fixture, page } = setup();
+    host.index = testIndex;
+    page.detectChanges();
+    await page.whenStable();
+
+    const spellSelectors = fixture.debugElement.queryAll(By.directive(SpellSelectorBtnComponent));
+    const spellSelectorNames = spellSelectors.map((s) => s.componentInstance.config()?.name);
+    expect(spellSelectorNames).toContain(`EffectTriggerSpell_${testIndex}`);
   });
 });

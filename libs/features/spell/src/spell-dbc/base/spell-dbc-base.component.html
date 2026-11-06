@@ -195,6 +195,12 @@
       </div>
       <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
         <label class="control-label" for="ExcludeCasterAuraState">ExcludeCasterAuraState</label>
+        <keira-single-value-selector-btn
+          [control]="formGroup().controls.ExcludeCasterAuraState"
+          [disabled]="formGroup().controls.ExcludeCasterAuraState.disabled"
+          [config]="{ options: SPELL_DBC_CASTER_AURA_STATE, name: 'ExcludeCasterAuraState' }"
+          [modalClass]="'modal-md'"
+        />
         <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.BASE.EXCLUDE_CASTER_AURA_STATE' | translate"></i>
         <input
           [formControlName]="'ExcludeCasterAuraState'"
@@ -205,11 +211,23 @@
       </div>
       <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
         <label class="control-label" for="CasterAuraSpell">CasterAuraSpell</label>
+        <keira-spell-selector-btn
+          [control]="formGroup().controls.CasterAuraSpell"
+          [disabled]="formGroup().controls.CasterAuraSpell.disabled"
+          [config]="{ name: 'CasterAuraSpell' }"
+          [modalClass]="'modal-lg'"
+        />
         <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.BASE.CASTER_AURA_SPELL' | translate"></i>
         <input [formControlName]="'CasterAuraSpell'" id="CasterAuraSpell" type="number" class="form-control form-control-sm" />
       </div>
       <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
         <label class="control-label" for="ExcludeCasterAuraSpell">ExcludeCasterAuraSpell</label>
+        <keira-spell-selector-btn
+          [control]="formGroup().controls.ExcludeCasterAuraSpell"
+          [disabled]="formGroup().controls.ExcludeCasterAuraSpell.disabled"
+          [config]="{ name: 'ExcludeCasterAuraSpell' }"
+          [modalClass]="'modal-lg'"
+        />
         <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.BASE.EXCLUDE_CASTER_AURA_SPELL' | translate"></i>
         <input
           [formControlName]="'ExcludeCasterAuraSpell'"
@@ -231,6 +249,12 @@
       </div>
       <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
         <label class="control-label" for="ExcludeTargetAuraState">ExcludeTargetAuraState</label>
+        <keira-single-value-selector-btn
+          [control]="formGroup().controls.ExcludeTargetAuraState"
+          [disabled]="formGroup().controls.ExcludeTargetAuraState.disabled"
+          [config]="{ options: SPELL_DBC_TARGET_AURA_STATE, name: 'ExcludeTargetAuraState' }"
+          [modalClass]="'modal-md'"
+        />
         <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.BASE.EXCLUDE_TARGET_AURA_STATE' | translate"></i>
         <input
           [formControlName]="'ExcludeTargetAuraState'"
@@ -241,11 +265,23 @@
       </div>
       <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
         <label class="control-label" for="TargetAuraSpell">TargetAuraSpell</label>
+        <keira-spell-selector-btn
+          [control]="formGroup().controls.TargetAuraSpell"
+          [disabled]="formGroup().controls.TargetAuraSpell.disabled"
+          [config]="{ name: 'TargetAuraSpell' }"
+          [modalClass]="'modal-lg'"
+        />
         <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.BASE.TARGET_AURA_SPELL' | translate"></i>
         <input [formControlName]="'TargetAuraSpell'" id="TargetAuraSpell" type="number" class="form-control form-control-sm" />
       </div>
       <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
         <label class="control-label" for="ExcludeTargetAuraSpell">ExcludeTargetAuraSpell</label>
+        <keira-spell-selector-btn
+          [control]="formGroup().controls.ExcludeTargetAuraSpell"
+          [disabled]="formGroup().controls.ExcludeTargetAuraSpell.disabled"
+          [config]="{ name: 'ExcludeTargetAuraSpell' }"
+          [modalClass]="'modal-lg'"
+        />
         <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SPELL_DBC.BASE.EXCLUDE_TARGET_AURA_SPELL' | translate"></i>
         <input
           [formControlName]="'ExcludeTargetAuraSpell'"
