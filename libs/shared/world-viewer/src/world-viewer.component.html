@@ -1,0 +1,263 @@
+<div
+  #host
+  class="world-viewer"
+  data-testid="world-viewer"
+  (pointerdown)="onPointerDown($event)"
+  (pointerup)="onPointerUp($event)"
+  (pointermove)="onPointerMove($event)"
+  (pointerleave)="onPointerLeave()"
+  (contextmenu)="$event.preventDefault()"
+>
+  <canvas
+    #canvas
+    class="world-viewer-canvas"
+    data-testid="world-viewer-canvas"
+    tabindex="0"
+    (keydown)="onKeyDown($event)"
+    (keyup)="onKeyUp($event)"
+    (blur)="onBlur()"
+  ></canvas>
+
+  @if (hoverLabel(); as label) {
+    <div
+      class="world-viewer-label"
+      data-testid="world-viewer-label"
+      [class.flip-x]="label.flipX"
+      [class.flip-y]="label.flipY"
+      [style.left.px]="label.x"
+      [style.top.px]="label.y"
+    >
+      {{ label.text }}
+      @if (label.more) {
+        <div class="world-viewer-label-hint" data-testid="world-viewer-label-hint">{{ 'WORLD_EDITOR.ALT_FOR_MORE' | translate }}</div>
+      }
+    </div>
+  }
+
+  @for (label of probeLabels(); track label.which) {
+    <div
+      class="world-viewer-probe-label"
+      [class.end]="label.which === 'to'"
+      [attr.data-testid]="'world-viewer-probe-' + label.which"
+      [style.left.px]="label.x"
+      [style.top.px]="label.y"
+    >
+      {{ (label.which === 'from' ? 'WORLD_EDITOR.PROBE_START' : 'WORLD_EDITOR.PROBE_END') | translate }}
+    </div>
+  }
+
+  @for (label of pathEndLabels(); track label.which) {
+    <div
+      class="world-viewer-probe-label"
+      [class.end]="label.which === 'end'"
+      [class.spawn]="label.which === 'spawn'"
+      [attr.data-testid]="'world-viewer-path-' + label.which"
+      [style.left.px]="label.x"
+      [style.top.px]="label.y"
+    >
+      {{ 'WORLD_EDITOR.PATH_' + label.which.toUpperCase() | translate }}
+      @if (label.which === 'end' && pathEnds()?.endText) {
+        <span class="world-viewer-path-then" data-testid="world-viewer-path-then"
+          >· {{ 'WORLD_EDITOR.PATH_THEN' | translate }} {{ pathEnds()?.endText }}</span
+        >
+      }
+    </div>
+  }
+
+  @for (tag of tagLabels(); track tag.key) {
+    <div
+      class="world-viewer-tag"
+      [attr.data-testid]="'world-viewer-tag-' + tag.key"
+      [style.left.px]="tag.x"
+      [style.top.px]="tag.y"
+      [style.background]="tagColor()"
+    >
+      {{ tag.text }}
+    </div>
+  }
+
+  <div class="world-viewer-crosshair" aria-hidden="true"></div>
+  @if (snapToGround() || snapToWall() || snapToWater()) {
+    <div class="world-viewer-snap" data-testid="world-viewer-snap">
+      {{ 'WORLD_EDITOR.SNAP_TO' | translate }}:
+      {{ (snapToWall() ? 'WORLD_EDITOR.SNAP_WALL' : snapToWater() ? 'WORLD_EDITOR.SNAP_WATER' : 'WORLD_EDITOR.SNAP_GROUND') | translate }}
+    </div>
+  }
+  @if (simulationStatus() && ghostBubble(); as bubble) {
+    <div class="world-viewer-bubble" data-testid="world-viewer-bubble" [style.left.px]="bubble.x" [style.top.px]="bubble.y">
+      {{ simulationDoing() }}
+    </div>
+  }
+  @if (simulationStatus()) {
+    <div class="world-viewer-simulation" data-testid="world-viewer-simulation">▶ {{ simulationText() }}</div>
+  }
+  @if (renderSettings().showMouseOver && mouseOver(); as thing) {
+    <div class="world-viewer-mouseover" data-testid="world-viewer-mouseover">
+      @switch (thing.kind) {
+        @case ('terrain') {
+          {{ 'WORLD_EDITOR.MOUSE_OVER_TERRAIN' | translate }} {{ thing.tile!.tx }}_{{ thing.tile!.ty }}
+        }
+        @default {
+          {{ (thing.kind === 'building' ? 'WORLD_EDITOR.MOUSE_OVER_BUILDING' : 'WORLD_EDITOR.MOUSE_OVER_DOODAD') | translate }}
+          {{ thing.path }}
+          @if (thing.group !== undefined) {
+            · {{ 'WORLD_EDITOR.MOUSE_OVER_GROUP' | translate }} {{ thing.group }}
+          }
+          @if (thing.invisible) {
+            · <span class="text-info">{{ 'WORLD_EDITOR.MOUSE_OVER_INVISIBLE' | translate }}</span>
+          }
+          · {{ thing.batches }} {{ 'WORLD_EDITOR.MOUSE_OVER_BATCHES' | translate }}, {{ thing.faces }}
+          {{ 'WORLD_EDITOR.MOUSE_OVER_FACES' | translate }}
+          @if (thing.id !== undefined) {
+            · id {{ thing.id }}
+          }
+        }
+      }
+    </div>
+  }
+  @if (cameraTarget(); as target) {
+    <div class="world-viewer-target" data-testid="world-viewer-target">
+      {{ 'WORLD_EDITOR.CAMERA' | translate }}: X {{ target.x }} Y {{ target.y }} Z {{ target.z }}
+      @if (areaName(); as area) {
+        <span class="world-viewer-area" data-testid="world-viewer-area">· {{ area }}</span>
+      }
+      @if (renderSettings().showLiquidInfo && liquidHere(); as liquid) {
+        <span class="world-viewer-liquid" data-testid="world-viewer-liquid"
+          >· {{ 'WORLD_EDITOR.LIQUID_' + liquid.kind.toUpperCase() | translate }}
+          @if (liquid.deep) {
+            <span class="text-warning">({{ 'WORLD_EDITOR.LIQUID_DEEP' | translate }})</span>
+          }
+        </span>
+      }
+      @if (cameraPhase(); as phase) {
+        <span class="world-viewer-phase" data-testid="world-viewer-phase">· {{ 'WORLD_EDITOR.PHASE' | translate }} {{ phase }}</span>
+      }
+    </div>
+    @if (navMeshInfo(); as info) {
+      <div class="world-viewer-mmtile" data-testid="world-viewer-mmtile" [class.missing]="info.missing">
+        {{ info.file }}
+        @if (info.missing) {
+          - {{ 'WORLD_EDITOR.MMTILE_MISSING' | translate }}
+        }
+      </div>
+    }
+    <div class="world-viewer-speed" data-testid="world-viewer-speed" [title]="'WORLD_EDITOR.SPEED_HELP' | translate">
+      {{ 'WORLD_EDITOR.SPEED' | translate }} ×{{ navigation().speed }}
+    </div>
+  }
+
+  @if (renderSettings().compass) {
+    @let view = renderSettings();
+    <keira-world-compass
+      class="world-viewer-compass"
+      data-testid="world-viewer-compass"
+      (click)="faceNorth()"
+      [heading]="heading()"
+      [northUp]="view.compassNorthUp"
+      [northArrow]="view.compassNorthArrow"
+      [points]="view.compassPoints"
+      [degrees]="view.compassDegrees"
+      [mils]="view.compassMils"
+      [opacity]="view.compassOpacity / 100"
+    />
+  }
+
+  @if (renderSettings().showStats && stats(); as s) {
+    <div class="world-viewer-stats" data-testid="world-viewer-stats">
+      <div>{{ s.fps }} fps · {{ s.frameMs.toFixed(1) }} ms</div>
+      <div>
+        {{ 'WORLD_EDITOR.STATS_DRAWS' | translate }} {{ s.calls }} · {{ 'WORLD_EDITOR.STATS_TRIANGLES' | translate }} {{ s.triangles }}
+      </div>
+      <div>
+        {{ 'WORLD_EDITOR.STATS_GPU' | translate }}: {{ s.geometries }} {{ 'WORLD_EDITOR.STATS_GEOMETRIES' | translate }} · {{ s.textures }}
+        {{ 'WORLD_EDITOR.STATS_TEXTURES' | translate }} · {{ s.programs }} {{ 'WORLD_EDITOR.STATS_SHADERS' | translate }}
+      </div>
+      @if (memory(); as m) {
+        @let view = renderSettings();
+        @if (m.used !== undefined) {
+          <div data-testid="world-viewer-memory">
+            {{ 'WORLD_EDITOR.STATS_MEMORY' | translate }} {{ formatBytes(m.used) }}
+            @if (m.total) {
+              / {{ formatBytes(m.total) }}
+            }
+            @if (view.memoryCapMb) {
+              ({{ 'WORLD_EDITOR.STATS_CAPPED' | translate }} {{ formatBytes(view.memoryCapMb * MB) }})
+            }
+          </div>
+        }
+        <div data-testid="world-viewer-gpu-memory">
+          {{ 'WORLD_EDITOR.STATS_GPU_MEMORY' | translate }} ~{{ formatBytes(m.gpu) }}
+          @if (gpuTotal(); as total) {
+            / {{ formatBytes(total) }}
+          }
+          @if (view.gpuCapMb) {
+            ({{ 'WORLD_EDITOR.STATS_CAPPED' | translate }} {{ formatBytes(view.gpuCapMb * MB) }})
+          }
+        </div>
+        @if (m.over) {
+          <div class="world-viewer-stats-over" data-testid="world-viewer-over-budget">{{ 'WORLD_EDITOR.STATS_OVER' | translate }}</div>
+        }
+      }
+      <div>
+        {{ 'WORLD_EDITOR.TERRAIN' | translate }} {{ s.tiles }} · {{ 'WORLD_EDITOR.BUILDINGS' | translate }} {{ s.buildings }} ·
+        {{ 'WORLD_EDITOR.DOODADS' | translate }} {{ s.props }} · {{ 'WORLD_EDITOR.MODELS' | translate }} {{ s.models }} /
+        {{ s.spawns }}
+      </div>
+    </div>
+  }
+
+  @if (activity() || spawnsLoading()) {
+    @let busy = activity() ?? { terrain: 0, buildings: 0, props: 0, models: 0, waypoints: 0, percent: 0 };
+    <div class="world-viewer-activity" data-testid="world-viewer-activity" role="status">
+      <div
+        class="progress"
+        role="progressbar"
+        [attr.aria-valuenow]="activity() ? busy.percent : null"
+        aria-valuemin="0"
+        aria-valuemax="100"
+      >
+        @if (activity()) {
+          <div
+            class="progress-bar progress-bar-striped progress-bar-animated"
+            data-testid="world-viewer-activity-bar"
+            [style.width.%]="busy.percent"
+          ></div>
+        } @else {
+          <div class="progress-bar progress-bar-striped progress-bar-animated w-100"></div>
+        }
+      </div>
+      <small>
+        {{ 'WORLD_EDITOR.LOADING' | translate }}
+        @if (activity()) {
+          <span data-testid="world-viewer-activity-percent">{{ busy.percent }}%</span>
+        }
+        @if (busy.terrain) {
+          · {{ 'WORLD_EDITOR.TERRAIN' | translate }} {{ busy.terrain }}
+        }
+        @if (busy.buildings) {
+          · {{ 'WORLD_EDITOR.BUILDINGS' | translate }} {{ busy.buildings }}
+        }
+        @if (busy.props) {
+          · {{ 'WORLD_EDITOR.DOODADS' | translate }} {{ busy.props }}
+        }
+        @if (busy.models) {
+          · {{ 'WORLD_EDITOR.MODELS' | translate }} {{ busy.models }}
+        }
+        @if (busy.waypoints) {
+          · <span data-testid="world-viewer-activity-waypoints">{{ 'WORLD_EDITOR.WAYPOINTS' | translate }} {{ busy.waypoints }}</span>
+        }
+        @if (spawnsLoading()) {
+          · <span data-testid="world-viewer-activity-spawns">{{ 'WORLD_EDITOR.SPAWNS' | translate }}</span>
+        }
+      </small>
+    </div>
+  }
+
+  @if (loading()) {
+    <div class="world-viewer-status" data-testid="world-viewer-loading">{{ 'WORLD_EDITOR.LOADING_TERRAIN' | translate }}</div>
+  }
+
+  @if (error(); as message) {
+    <div class="world-viewer-status world-viewer-error" data-testid="world-viewer-error">{{ message | translate }}</div>
+  }
+</div>

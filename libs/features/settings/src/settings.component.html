@@ -1,0 +1,165 @@
+<div class="container-fluid keira-settings" data-testid="settings-page">
+  <h3 class="mt-3">{{ 'SETTINGS.TITLE' | translate }}</h3>
+  <section class="card mb-3" data-testid="appearance">
+    <div class="card-header">{{ 'SETTINGS.APPEARANCE' | translate }}</div>
+    <div class="card-body">
+      <div class="row g-2 align-items-center mb-2">
+        <label class="col-auto col-form-label" for="theme-select">{{ 'SETTINGS.THEME' | translate }}</label>
+        <div class="col-auto">
+          <select class="form-select form-select-sm" id="theme-select" data-testid="theme-select" (change)="selectTheme($event)">
+            @for (name of builtIn; track name) {
+              <option [value]="name" [selected]="theme.choice() === name">{{ 'SETTINGS.THEME_' + name.toUpperCase() | translate }}</option>
+            }
+            @for (custom of theme.custom(); track custom.name) {
+              <option [value]="custom.name" [selected]="theme.choice() === custom.name">{{ custom.name }}</option>
+            }
+          </select>
+        </div>
+        <div class="col-auto">
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-testid="theme-copy" (click)="copyTheme()">
+            <i class="fa fa-copy"></i> {{ 'SETTINGS.THEME_COPY' | translate }}
+          </button>
+          @if (isCustom(theme.choice())) {
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-danger ms-1"
+              data-testid="theme-remove"
+              (click)="theme.removeTheme(theme.choice())"
+            >
+              <i class="fa fa-trash"></i> {{ 'SETTINGS.THEME_REMOVE' | translate }}
+            </button>
+          }
+        </div>
+      </div>
+      <p class="text-muted small mb-1">{{ 'SETTINGS.THEME_HELP' | translate }}</p>
+      <textarea
+        class="form-control form-control-sm font-monospace mb-1"
+        rows="4"
+        data-testid="theme-json"
+        [value]="themeJson()"
+        [placeholder]="'{ &quot;name&quot;: &quot;My theme&quot;, &quot;base&quot;: &quot;dark&quot;, &quot;colors&quot;: { &quot;--keira-accent&quot;: &quot;#e67e22&quot; } }'"
+        (input)="setThemeJson($event)"
+      ></textarea>
+      @if (themeError()) {
+        <div class="text-danger small mb-1" data-testid="theme-error">{{ themeError() }}</div>
+      }
+      <button
+        type="button"
+        class="btn btn-sm btn-primary"
+        data-testid="theme-import"
+        [disabled]="!themeJson().trim()"
+        (click)="importTheme()"
+      >
+        {{ 'SETTINGS.THEME_IMPORT' | translate }}
+      </button>
+      <label class="btn btn-sm btn-outline-primary ms-1 mb-0">
+        <i class="fa fa-file-import"></i> {{ 'SETTINGS.THEME_IMPORT_FILE' | translate }}
+        <input type="file" accept=".json,application/json" hidden data-testid="theme-file" (change)="importThemeFile($event)" />
+      </label>
+    </div>
+  </section>
+  <keira-editor-settings />
+  <section class="card mb-3" data-testid="server">
+    <div class="card-header">{{ 'SETTINGS.SERVER' | translate }}</div>
+    <div class="card-body">
+      <div class="row g-2 align-items-center">
+        <label class="col-auto col-form-label" for="characters-database">{{ 'SETTINGS.CHARACTERS_DATABASE' | translate }}</label>
+        <div class="col-auto">
+          <input
+            class="form-control form-control-sm"
+            id="characters-database"
+            data-testid="characters-database"
+            [value]="server.settings().charactersDatabase"
+            (change)="setCharactersDatabase($event)"
+          />
+        </div>
+        @if (databaseError()) {
+          <div class="col-auto text-danger small" data-testid="characters-database-error">
+            {{ 'SETTINGS.DATABASE_NAME_ERROR' | translate }}
+          </div>
+        }
+      </div>
+      <p class="text-muted small mt-1">{{ 'SETTINGS.CHARACTERS_DATABASE_HELP' | translate }}</p>
+      @let soap = server.settings();
+      <div class="form-check form-switch mb-1">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="soap-enabled"
+          data-testid="soap-enabled"
+          [checked]="soap.soapEnabled"
+          (change)="setSoap('soapEnabled', $event)"
+        />
+        <label class="form-check-label" for="soap-enabled">{{ 'SETTINGS.SOAP' | translate }}</label>
+      </div>
+      <p class="text-muted small mb-1">{{ 'SETTINGS.SOAP_HELP' | translate }}</p>
+      @if (soap.soapEnabled) {
+        <div class="row g-2 mb-1">
+          <div class="col-6 col-md-3">
+            <input
+              class="form-control form-control-sm"
+              data-testid="soap-host"
+              placeholder="SOAP.IP"
+              [value]="soap.soapHost"
+              (change)="setSoap('soapHost', $event)"
+            />
+          </div>
+          <div class="col-6 col-md-2">
+            <input
+              class="form-control form-control-sm"
+              type="number"
+              data-testid="soap-port"
+              placeholder="SOAP.Port"
+              [value]="soap.soapPort"
+              (change)="setSoap('soapPort', $event)"
+            />
+          </div>
+          <div class="col-6 col-md-3">
+            <input
+              class="form-control form-control-sm"
+              data-testid="soap-user"
+              [placeholder]="'SETTINGS.SOAP_USER' | translate"
+              [value]="soap.soapUser"
+              (change)="setSoap('soapUser', $event)"
+            />
+          </div>
+          <div class="col-6 col-md-3">
+            <input
+              class="form-control form-control-sm"
+              type="password"
+              data-testid="soap-password"
+              [placeholder]="'SETTINGS.SOAP_PASSWORD' | translate"
+              [value]="soap.soapPassword"
+              (change)="setSoap('soapPassword', $event)"
+            />
+          </div>
+        </div>
+        <div class="form-check mb-2">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="soap-remember-password"
+            data-testid="soap-remember-password"
+            [checked]="soap.soapRememberPassword"
+            (change)="setSoap('soapRememberPassword', $event)"
+          />
+          <label class="form-check-label" for="soap-remember-password">{{ 'SETTINGS.SOAP_REMEMBER_PASSWORD' | translate }}</label>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-primary" data-testid="soap-test" (click)="testSoap()">
+          {{ 'SETTINGS.SOAP_TEST' | translate }}
+        </button>
+        @if (soapAnswer(); as answer) {
+          <pre class="small mt-1 mb-0" [class.text-danger]="answer.failed" data-testid="soap-answer">{{ answer.text }}</pre>
+        }
+        <keira-soap-account (created)="testSoap()" />
+      }
+    </div>
+  </section>
+  <section class="card mb-3">
+    <div class="card-header">{{ 'SETTINGS.GAME_DATA' | translate }}</div>
+    <div class="card-body">
+      <p class="text-muted small">{{ 'SETTINGS.GAME_DATA_HELP' | translate }}</p>
+      <keira-game-data-folders [title]="'SETTINGS.TITLE' | translate" (saved)="onSaved()" />
+    </div>
+  </section>
+</div>

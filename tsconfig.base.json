@@ -77,6 +77,9 @@
       "@keira/features/trainer": [
         "libs/features/trainer/src/index.ts"
       ],
+      "@keira/features/settings": [
+        "libs/features/settings/src/index.ts"
+      ],
       "@keira/features/unused-guid-search": [
         "libs/features/unused-guid-search/src/index.ts"
       ],
@@ -136,6 +139,9 @@
       ],
       "@keira/shared/utils": [
         "libs/shared/utils/src/index.ts"
+      ],
+      "@keira/shared/world-viewer": [
+        "libs/shared/world-viewer/src/index.ts"
       ],
       "@keira/shared/wow-data": [
         "libs/shared/wow-data/src/index.ts"

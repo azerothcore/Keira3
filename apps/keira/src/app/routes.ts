@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 
 import { DashboardComponent } from '@keira/features/dashboard';
+import { SettingsComponent } from '@keira/features/settings';
 
 import { ConditionsComponent, ConditionsHandlerService, SelectConditionsComponent } from '@keira/features/conditions';
 import {
@@ -563,5 +564,9 @@ export const KEIRA_ROUTES: Routes = [
   {
     path: 'unused-guid-search',
     component: UnusedGuidSearchComponent,
+  },
+  {
+    path: 'settings',
+    component: SettingsComponent,
   },
 ];

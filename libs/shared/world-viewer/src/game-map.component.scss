@@ -1,0 +1,966 @@
+// in the look of AoWoW's maps page (dark panels, gold text, the game's tooltip)
+:host {
+  display: block;
+  position: absolute;
+  inset: 0;
+  --marker: 20px;
+  --gold: #ffd100;
+  --green: #1eff00;
+}
+
+.game-map {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  background: #141414;
+  color: #ccc;
+  user-select: none;
+  font-size: 13px;
+}
+
+// ---------------------------------------------------------------- side panel
+
+.game-map-panel {
+  flex: 0 0 16rem;
+  overflow: hidden auto;
+  padding: 0.5rem;
+  background: #1a1a1a;
+  border-right: 1px solid #2c2c2c;
+}
+
+.game-map-box {
+  margin-bottom: 0.6rem;
+  padding: 0.5rem 0.6rem;
+  background: #101010;
+  border: 1px solid #2c2c2c;
+  border-radius: 4px;
+
+  h6 {
+    margin: 0 0 0.3rem;
+    color: var(--gold);
+    font-size: 13px;
+    font-weight: 600;
+  }
+}
+
+.game-map-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.12rem 0;
+  color: var(--gold);
+  cursor: pointer;
+
+  input[type='checkbox'] {
+    margin: 0;
+  }
+
+  .form-range {
+    width: 7rem;
+  }
+}
+
+.game-map-bands {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.5rem;
+  margin: 0.15rem 0 0.25rem;
+  font-size: 11px;
+
+  i {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 3px;
+    vertical-align: -1px;
+    border: 1px solid #000;
+  }
+}
+
+.game-map-help {
+  display: block;
+  margin-top: 0.4rem;
+  color: #888;
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+.game-map-show {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem;
+  margin-bottom: 0.4rem;
+  color: #999;
+
+  span {
+    flex: 1 0 100%;
+  }
+
+  .btn {
+    padding: 0.05rem 0.4rem;
+    font-size: 11px;
+    color: #ddd;
+    background: #2a2a2a;
+    border: 1px solid #444;
+  }
+}
+
+.game-map-group {
+  margin-top: 0.35rem;
+}
+
+.game-map-group-title {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--gold);
+  font-weight: 600;
+  cursor: pointer;
+
+  input {
+    margin: 0;
+  }
+
+  small {
+    margin-left: auto;
+    color: #888;
+    font-weight: normal;
+  }
+}
+
+.game-map-part {
+  margin: 0.2rem 0 0.05rem 1.2rem;
+  color: #c79c38;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.game-map-layer {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.08rem 0 0.08rem 1.2rem;
+  color: #ddd;
+  cursor: pointer;
+
+  input {
+    margin: 0;
+  }
+
+  > span:first-of-type {
+    flex: 1 1 auto;
+  }
+}
+
+.game-map-icon {
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  &.square {
+    border: 1px solid #000;
+    border-radius: 3px;
+    box-shadow: 0 0 0 1px #555;
+    overflow: hidden;
+  }
+}
+
+// ---------------------------------------------------------------- map
+
+.game-map-main {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.game-map-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  padding: 0.3rem 0.4rem;
+  background: #1a1a1a;
+  border-bottom: 1px solid #2c2c2c;
+}
+
+.game-map-copied {
+  font-size: 12px;
+  color: #8fdc8f;
+  font-family: monospace;
+}
+
+.game-map-viewport {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  container-type: size;
+  cursor: grab;
+  touch-action: none;
+  background: #0b0b0b;
+
+  &.pointer {
+    cursor: pointer;
+  }
+}
+
+.game-map-stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  // as big as fits keeping the picture's shape (1002 × 668), times the zoom
+  width: calc(min(100cqw, 100cqh * 1002 / 668) * var(--zoom, 1));
+  aspect-ratio: 1002 / 668;
+  box-shadow: 0 0 0 1px #3a2a10;
+}
+
+// the switch between the pages and the seamless map
+.game-map-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 4px;
+  padding-left: 2.5em;
+  color: #ddd;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  cursor: pointer;
+
+  .form-check-input {
+    cursor: pointer;
+  }
+}
+
+// the seamless map: zones' pictures and the ground's minimaps over the continent
+.game-map-seamless {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.game-map-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}
+
+// zones: AoWoW's colours, a gold outline on the one under the pointer
+.game-map-shapes {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+
+  path {
+    vector-effect: non-scaling-stroke;
+    stroke-linejoin: round;
+    transition:
+      fill-opacity 0.12s ease,
+      stroke-opacity 0.12s ease;
+  }
+
+  &.colored .plain {
+    fill-opacity: 0.12;
+    stroke-opacity: 0.45;
+
+    &.hover {
+      fill-opacity: 0.3;
+      stroke-opacity: 1;
+    }
+  }
+
+  .plain {
+    fill: var(--gold);
+    fill-opacity: 0;
+    stroke: var(--gold);
+    stroke-opacity: 0;
+    stroke-width: 1.5px;
+
+    &.hover {
+      fill-opacity: 0.22;
+      stroke-opacity: 1;
+    }
+  }
+
+  .zone {
+    fill: var(--c, var(--gold));
+    fill-opacity: 0.42;
+    stroke: #1a1006;
+    stroke-opacity: 0;
+    stroke-width: 1px;
+
+    &.hover {
+      fill-opacity: 0.7;
+      stroke: var(--gold);
+      stroke-opacity: 1;
+      stroke-width: 2px;
+    }
+  }
+
+  // neighbouring zones on a zone: dotted green
+  .neighbour {
+    fill: var(--green);
+    fill-opacity: 0.05;
+    stroke: #6dff4d;
+    stroke-opacity: 0.9;
+    stroke-width: 1.6px;
+    stroke-dasharray: 1px 4px;
+    stroke-linecap: round;
+
+    &.hover {
+      fill-opacity: 0.16;
+      stroke-opacity: 1;
+      stroke-width: 2.2px;
+    }
+  }
+
+  // cities inside a zone (they have their own map): like neighbours
+  .sub.link {
+    fill: var(--green);
+    fill-opacity: 0.05;
+    stroke: #6dff4d;
+    stroke-opacity: 0.9;
+    stroke-width: 1.6px;
+    stroke-dasharray: 1px 4px;
+    stroke-linecap: round;
+
+    &.hover {
+      fill-opacity: 0.16;
+      stroke-opacity: 1;
+      stroke-width: 2.2px;
+    }
+  }
+
+  // sub-zones: a faint gold line
+  .sub:not(.link) {
+    fill: var(--gold);
+    fill-opacity: 0;
+    stroke: var(--gold);
+    stroke-opacity: 0.32;
+    stroke-width: 1px;
+
+    &.hover {
+      fill-opacity: 0.16;
+      stroke-opacity: 1;
+      stroke-width: 1.5px;
+    }
+  }
+}
+
+.game-map-stage.borders .game-map-shapes {
+  .plain {
+    stroke-opacity: 0.45;
+  }
+
+  .zone {
+    stroke-opacity: 0.55;
+  }
+}
+
+.game-map-routes {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+
+  path {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .case {
+    stroke: rgba(0, 0, 0, 0.55);
+    stroke-width: 4px;
+  }
+
+  .line {
+    stroke: #ffd100;
+    stroke-width: 2px;
+    stroke-dasharray: 6px 5px;
+  }
+
+  .side-a .line {
+    stroke: #4da6ff;
+  }
+
+  .side-h .line {
+    stroke: #ff4d4d;
+  }
+
+  .hl .line {
+    stroke-width: 3.5px;
+    stroke-dasharray: none;
+  }
+
+  .hl .case {
+    stroke-width: 6px;
+    stroke: rgba(0, 0, 0, 0.75);
+  }
+}
+
+// AoWoW's arrows (the way it goes), stops (a bar where it waits, the wait beside it) and line numbers (its ID)
+.game-map-route-marks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  .side-a {
+    --route: #4da6ff;
+  }
+
+  .side-h {
+    --route: #ff4d4d;
+  }
+}
+
+.game-map-route-arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 5px 0 5px 9px;
+  border-color: transparent transparent transparent var(--route, #ffd100);
+  transform: translate(-50%, -50%) rotate(var(--a, 0deg));
+  filter: drop-shadow(0 0 1px #000) drop-shadow(0 0 1px #000);
+}
+
+.game-map-route-stop {
+  position: absolute;
+  z-index: 2;
+  width: 5px;
+  height: 16px;
+  background: var(--route, #ffd100);
+  border: 1px solid #000;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
+  transform: translate(-50%, -50%) rotate(var(--a, 0deg));
+}
+
+.game-map-route-wait {
+  position: absolute;
+  z-index: 2;
+  height: 15px;
+  padding: 0 5px;
+  font:
+    bold 9px/13px Verdana,
+    sans-serif;
+  white-space: nowrap;
+  color: var(--route, #ffd100);
+  background: rgba(17, 17, 17, 0.88);
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  transform: translate(-50%, -50%) translate(var(--dx, 0px), var(--dy, 0px));
+}
+
+.game-map-route-no {
+  position: absolute;
+  z-index: 1;
+  min-width: 15px;
+  height: 15px;
+  padding: 0 3px;
+  font:
+    bold 10px/11px Verdana,
+    sans-serif;
+  text-align: center;
+  white-space: nowrap;
+  color: var(--route, #ffd100);
+  background: #111;
+  border: 2px solid currentColor;
+  border-radius: 8px;
+  transform: translate(-50%, -50%) rotate(var(--r, 0deg));
+}
+
+// a neighbouring zone's name, which opens it
+.game-map-chip {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 7px;
+  font-size: 11px;
+  line-height: 16px;
+  white-space: nowrap;
+  color: var(--gold);
+  background: rgba(0, 0, 0, 0.72);
+  border: 1px solid rgba(109, 255, 77, 0.55);
+  border-radius: 10px;
+  cursor: pointer;
+
+  span {
+    color: var(--green);
+  }
+
+  i {
+    font-style: normal;
+    font-size: 14px;
+  }
+
+  &:hover,
+  &.hover {
+    color: #fff;
+    border-color: #6dff4d;
+    background: rgba(0, 0, 0, 0.88);
+  }
+
+  // a neighbour the picture doesn't show: at the edge facing it
+  &.edge {
+    border-style: dashed;
+    background: rgba(0, 0, 0, 0.8);
+  }
+}
+
+.game-map-pin {
+  position: absolute;
+  width: var(--marker);
+  height: var(--marker);
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(var(--marker) * 0.75);
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.8));
+  transition: transform 0.1s ease;
+
+  > img:first-child {
+    width: 100%;
+    height: 100%;
+    display: block;
+    pointer-events: none;
+    image-rendering: auto;
+  }
+
+  &.square,
+  &.shield {
+    width: calc(var(--marker) * 1.2);
+    height: calc(var(--marker) * 1.2);
+  }
+
+  &.dot {
+    width: calc(var(--marker) * 0.4);
+    height: calc(var(--marker) * 0.4);
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.7);
+  }
+
+  &.opens {
+    cursor: pointer;
+  }
+
+  &:hover {
+    transform: translate(-50%, -50%) scale(1.35);
+    z-index: 5;
+  }
+}
+
+// a square (spell or item) icon inside AoWoW's round frame
+.game-map-spell {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+
+  > img {
+    position: absolute;
+    left: 15.4%;
+    top: 15.4%;
+    width: 69.2%;
+    height: 69.2%;
+    display: block;
+  }
+
+  > img.frame {
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+// how many markers of its kind are on this spot
+.game-map-more {
+  position: absolute;
+  right: -6px;
+  bottom: -4px;
+  min-width: 13px;
+  padding: 0 3px;
+  font-size: 9px;
+  line-height: 12px;
+  font-weight: 700;
+  text-align: center;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid #6b5a3a;
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+// the sides that may use a marker: small badges above it
+.game-map-badges {
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  display: flex;
+  gap: 1px;
+  margin-bottom: -2px;
+  transform: translateX(-50%);
+  pointer-events: none;
+
+  img {
+    display: block;
+    width: 11px;
+    height: 11px;
+    filter: drop-shadow(0 0 1px #000);
+  }
+}
+
+.game-map-camera {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ff3b3b;
+  border: 2px solid #fff;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 3;
+}
+
+// over the map, as on AoWoW
+.game-map-title,
+.game-map-back,
+.game-map-zoom button {
+  position: absolute;
+  z-index: 6;
+  color: var(--gold);
+  background: rgba(0, 0, 0, 0.75);
+  border: 1px solid #5a4a1a;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.game-map-title {
+  left: 0.6rem;
+  top: 0.6rem;
+  padding: 0.2rem 0.6rem;
+}
+
+.game-map-back {
+  right: 0.6rem;
+  top: 0.6rem;
+  padding: 0.2rem 0.6rem;
+  font-weight: normal;
+  cursor: pointer;
+
+  b {
+    color: var(--gold);
+  }
+
+  &:hover {
+    color: #fff;
+  }
+}
+
+.game-map-zoom {
+  position: absolute;
+  right: 0.6rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  button {
+    position: static;
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    font-size: 15px;
+    line-height: 1;
+    cursor: pointer;
+
+    &:hover {
+      color: #fff;
+    }
+  }
+}
+
+.game-map-coords,
+.game-map-tip {
+  position: absolute;
+  bottom: 0.4rem;
+  z-index: 6;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  text-shadow: 0 0 3px #000;
+  pointer-events: none;
+}
+
+.game-map-coords {
+  left: 0.6rem;
+}
+
+.game-map-tip {
+  right: 0.6rem;
+}
+
+// the game's tooltip
+.game-map-tooltip {
+  position: absolute;
+  z-index: 7;
+  padding: 0.3rem 0.55rem;
+  max-width: 22rem;
+  background: rgba(4, 6, 24, 0.92);
+  border: 1px solid #9d9fa8;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.35;
+  pointer-events: none;
+  white-space: nowrap;
+
+  b {
+    color: var(--gold);
+    font-size: 13px;
+  }
+
+  .levels {
+    color: var(--green);
+  }
+
+  .hint {
+    color: #9d9d9d;
+  }
+
+  .side.alliance {
+    color: #4d8dff;
+  }
+
+  .side.horde {
+    color: #ff4d4d;
+  }
+}
+
+.game-map-message {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: #fff;
+  text-align: center;
+  padding: 1rem;
+  pointer-events: none;
+}
+
+// the title's expansion badge
+.game-map-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  img {
+    display: block;
+    height: 13px;
+  }
+}
+
+.game-map-tooltip .id {
+  color: #9d9d9d;
+  font-size: 11px;
+}
+
+// what a right click copied (or why nothing), by the pointer
+.game-map-toast {
+  position: absolute;
+  z-index: 8;
+  padding: 3px 8px;
+  font-size: 12px;
+  font-family: monospace;
+  white-space: nowrap;
+  color: #8fdc8f;
+  background: rgba(0, 0, 0, 0.88);
+  border: 1px solid #444;
+  border-radius: 3px;
+  pointer-events: none;
+
+  &.error {
+    color: #ff6b6b;
+  }
+}
+
+// AoWoW's menu of maps
+.game-map-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+}
+
+.game-map-nav-item {
+  padding: 0.15rem 0.55rem;
+  font-size: 13px;
+  color: var(--gold);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  cursor: pointer;
+
+  &:hover {
+    color: #fff;
+    border-color: #5a4a1a;
+  }
+
+  i {
+    font-size: 10px;
+    opacity: 0.7;
+  }
+}
+
+.game-map-nav-group {
+  position: relative;
+
+  &.open > .game-map-nav-item {
+    color: #fff;
+    border-color: #5a4a1a;
+    background: rgba(0, 0, 0, 0.5);
+  }
+}
+
+.game-map-nav-drop {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  z-index: 20;
+  display: flex;
+  max-height: 70vh;
+  max-width: calc(100vw - 16px);
+  overflow: auto;
+  background: #141414;
+  border: 1px solid #5a4a1a;
+  border-radius: 3px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.7);
+
+  ul {
+    margin: 0;
+    padding: 4px 0;
+    list-style: none;
+    min-width: 12rem;
+
+    & + ul {
+      border-left: 1px solid #2c2c2c;
+    }
+  }
+
+  button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    padding: 0.15rem 0.7rem;
+    font-size: 12px;
+    text-align: left;
+    white-space: nowrap;
+    color: var(--gold);
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+
+    &:hover {
+      color: #fff;
+      background: #2a2a2a;
+    }
+
+    img {
+      height: 12px;
+    }
+  }
+}
+
+// the user's pins (Shift + click) and the measuring tool
+.game-map-user-pin {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  color: #ff4d4d;
+  font-size: 18px;
+  text-shadow: 0 0 2px #000;
+  pointer-events: none;
+}
+
+.game-map-measure {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+
+  polyline {
+    fill: none;
+    stroke: #ffd200;
+    stroke-width: 2;
+    stroke-dasharray: 6 4;
+  }
+}
+
+.game-map-measure-point {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ffd200;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.game-map-pins-menu {
+  position: relative;
+}
+
+.game-map-pins-list {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 20;
+  min-width: 240px;
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 6px;
+  background: rgba(10, 10, 10, 0.92);
+  border: 1px solid #555;
+  border-radius: 4px;
+}
+
+.game-map-pins-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+}

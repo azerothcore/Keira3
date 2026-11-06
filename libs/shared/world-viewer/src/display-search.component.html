@@ -1,0 +1,49 @@
+@if (available()) {
+  <button type="button" class="btn btn-link btn-sm p-0 ms-1" id="display-search-toggle" (click)="open.set(!open())">
+    <i class="fa fa-search"></i> {{ 'WORLD_EDITOR.FIND_DISPLAY' | translate }}
+  </button>
+  @if (open()) {
+    <div class="display-search border rounded p-2 mt-1" id="display-search">
+      <div class="input-group input-group-sm mb-2">
+        <input
+          #text
+          type="text"
+          class="form-control"
+          id="display-search-text"
+          [placeholder]="'WORLD_EDITOR.FIND_DISPLAY_HELP' | translate"
+          (keydown.enter)="search(text.value)"
+        />
+        <button type="button" class="btn btn-primary" id="display-search-btn" (click)="search(text.value)">
+          <i class="fa fa-search"></i>
+        </button>
+      </div>
+      @if (error()) {
+        <small class="text-danger" id="display-search-error">{{ error() }}</small>
+      }
+      @if (results(); as results) {
+        <div class="display-search-results" style="max-height: 12rem; overflow: auto">
+          @for (result of results; track result.id) {
+            <button
+              type="button"
+              class="btn btn-sm w-100 text-start"
+              [class.btn-primary]="picked() === result.id"
+              [class.btn-outline-secondary]="picked() !== result.id"
+              [attr.data-testid]="'display-' + result.id"
+              (click)="picked.set(result.id)"
+            >
+              {{ result.id }} · <small>{{ result.model }}</small>
+            </button>
+          } @empty {
+            <small class="text-muted" id="display-search-none">{{ 'WORLD_EDITOR.FIND_DISPLAY_NONE' | translate }}</small>
+          }
+        </div>
+      }
+      @if (picked(); as id) {
+        <keira-local-model-viewer [kind]="kind()" [displayId]="id" />
+        <button type="button" class="btn btn-sm btn-success mt-1" id="display-search-use" (click)="use()">
+          {{ 'WORLD_EDITOR.FIND_DISPLAY_USE' | translate: { id: id } }}
+        </button>
+      }
+    </div>
+  }
+}

@@ -1,0 +1,499 @@
+import { FactionTemplate } from '@keira/shared/wow-data';
+
+/**
+ * What the game map can show, in groups like AoWoW's map menu: the map's own layers (level colours, borders, names…),
+ * then points of interest (townsfolk, professions, vendors, travel, locations), each with an icon from the client.
+ */
+
+/** A point of interest: a creature or object that serves players (a flight master, a mailbox…), or a place. */
+export interface GameMapPoi {
+  /** One of the layer keys below (`flight`, `prof:171`…). */
+  kind: string;
+  mapId: number;
+  x: number;
+  y: number;
+  z: number;
+  name: string;
+  subname?: string;
+  /** Its faction template, to tell whose side it serves. */
+  faction?: number;
+  /** The zone it is in (AreaTable id; 0 when the server hasn't worked it out). */
+  zoneId?: number;
+}
+
+/** How close quest givers are to make a hub (yards), and how many it takes. */
+export const QUEST_HUB_RADIUS = 80;
+export const QUEST_HUB_MIN = 3;
+
+/**
+ * Quest hubs: places where at least `min` quest givers stand within `radius` yards of each other (on one map), each as
+ * one marker in their middle naming how many there are and who.
+ */
+export function questHubs(givers: GameMapPoi[], radius = QUEST_HUB_RADIUS, min = QUEST_HUB_MIN): GameMapPoi[] {
+  // (a grid of `radius` cells: only the 9 cells around a giver can hold its neighbours)
+  const cellOf = (giver: GameMapPoi) => [giver.mapId, Math.floor(giver.x / radius), Math.floor(giver.y / radius)];
+  const grid = new Map<string, GameMapPoi[]>();
+  for (const giver of givers) {
+    const key = cellOf(giver).join(':');
+    grid.set(key, [...(grid.get(key) ?? []), giver]);
+  }
+  const taken = new Set<GameMapPoi>();
+  const hubs: GameMapPoi[] = [];
+  for (const seed of givers) {
+    if (taken.has(seed)) {
+      continue;
+    }
+    taken.add(seed);
+    const group = [seed];
+    // grow the group with every giver near one of it
+    for (let i = 0; i < group.length; i++) {
+      const [map, cx, cy] = cellOf(group[i]);
+      for (let dx = -1; dx <= 1; dx++) {
+        for (let dy = -1; dy <= 1; dy++) {
+          for (const other of grid.get(`${map}:${cx + dx}:${cy + dy}`) ?? []) {
+            if (!taken.has(other) && Math.hypot(other.x - group[i].x, other.y - group[i].y) <= radius) {
+              taken.add(other);
+              group.push(other);
+            }
+          }
+        }
+      }
+    }
+    if (group.length >= min) {
+      const mean = (key: 'x' | 'y' | 'z') => group.reduce((sum, giver) => sum + giver[key], 0) / group.length;
+      const names = [...new Set(group.map((giver) => giver.name))];
+      hubs.push({
+        kind: 'questHub',
+        mapId: seed.mapId,
+        x: mean('x'),
+        y: mean('y'),
+        z: mean('z'),
+        name: `${group.length} quest givers`,
+        subname: names.slice(0, 6).join(', ') + (names.length > 6 ? '…' : ''),
+        zoneId: seed.zoneId,
+      });
+    }
+  }
+  return hubs;
+}
+
+/**
+ * A transport (a boat, a zeppelin…): its taxi path and faction; its description (`transports.name`: where it goes, the
+ * ship and its side), and its speed and acceleration (gameobject_template Data1, Data2) for how long it takes.
+ */
+export interface GameMapTransport {
+  entry: number;
+  name: string;
+  path: number;
+  faction: number;
+  description?: string;
+  speed?: number;
+  accel?: number;
+}
+
+/** An area trigger teleporting to another map (an instance's entrance, the Dark Portal…), with where it sends to. */
+export interface GameMapTeleport {
+  id: number;
+  name: string;
+  targetMap: number;
+  target?: { x: number; y: number };
+}
+
+/** A portal object (gameobject type 22, a spellcaster) and where its spell sends to (spell_target_position). */
+export interface GameMapPortal {
+  name: string;
+  mapId: number;
+  x: number;
+  y: number;
+  targetMap: number;
+  tx: number;
+  ty: number;
+}
+
+/**
+ * How a layer's markers look: a picture of the client (a whole file, a part of it, or a cell of the world map's icon
+ * atlas), drawn as it is or (a square spell / item icon) in a round frame; one of AoWoW's own icons that Keira ships
+ * (`asset`, under `assets/img/map/poi/`); or a Font Awesome icon in a colour.
+ */
+export interface GameMapIcon {
+  path?: string;
+  /** One of AoWoW's map icons Keira ships (its file name, without `.png`). */
+  asset?: string;
+  /** A cell of `POI_ATLAS`. */
+  atlas?: number;
+  /** A part of the picture: [x, y, width, height]. */
+  crop?: [number, number, number, number];
+  /** A square ability-like icon, drawn in a frame. */
+  square?: boolean;
+  fa?: string;
+  color?: string;
+}
+
+export interface GameMapLayer {
+  key: string;
+  /** i18n key of its name. */
+  label: string;
+  icon?: GameMapIcon;
+  /** Shown before the user chooses. */
+  shown: boolean;
+}
+
+export interface GameMapLayerGroup {
+  key: string;
+  label: string;
+  /** Sub-headings: the layers from each index on (Primary / Secondary…). */
+  parts?: { label: string; from: number }[];
+  layers: GameMapLayer[];
+}
+
+const TRACKING = 'Interface\\Minimap\\Tracking\\';
+const ICONS = 'Interface\\Icons\\';
+/** The world map's icon atlas: graveyards, towers, flags, crests, zeppelins, anchors… 14 icons of 16 pixels a row, 18 apart. */
+export const POI_ATLAS = 'Interface\\Minimap\\POIIcons.blp';
+export const POI_ATLAS_COLUMNS = 14;
+export const POI_ATLAS_PITCH = 18;
+export const POI_ATLAS_CELL = 16;
+/** Its cells used here. */
+export const ATLAS = {
+  graveyard: 8,
+  allianceCrest: 46,
+  hordeCrest: 48,
+  zeppelin: { neutral: 140, alliance: 141, horde: 143 },
+  boat: { neutral: 145, alliance: 146, horde: 148 },
+};
+
+/** Crossed swords (its top left quarter), the game's sign of a fight. */
+const COMBAT_SWORDS = 'Interface\\WorldStateFrame\\CombatSwords.blp';
+
+/** The layers shown on continents (as AoWoW's): how to get around and where the instances are. */
+export const CONTINENT_LAYERS = new Set([
+  'flight',
+  'boat',
+  'zeppelin',
+  'gunship',
+  'portal',
+  'transport',
+  'routes',
+  'dungeon',
+  'raid',
+  'pvp',
+  'relations',
+]);
+
+const tracking = (file: string): GameMapIcon => ({ path: `${TRACKING}${file}.blp` });
+const aowow = (asset: string): GameMapIcon => ({ asset });
+/** Where Keira's copies of AoWoW's map icons are. */
+export const POI_ASSETS = 'assets/img/map/poi/';
+/** The small Alliance / Horde badges above a marker (who may use it): the game's world-state icons. */
+export const BADGE_ICONS: Record<'alliance' | 'horde', GameMapIcon> = {
+  alliance: { path: 'Interface\\WorldStateFrame\\AllianceIcon.blp' },
+  horde: { path: 'Interface\\WorldStateFrame\\HordeIcon.blp' },
+};
+/** AoWoW's boat and zeppelin icons by side (gunships use the zeppelins). */
+export const TRAVEL_ICONS = {
+  boat: { alliance: aowow('boat-a'), horde: aowow('boat-h'), neutral: aowow('boat-n') },
+  zeppelin: { alliance: aowow('zep-a'), horde: aowow('zep-h'), neutral: aowow('zep-n') },
+};
+/** Territory shields on continents, by side. */
+export const TERRITORY_ICONS = { alliance: aowow('ta'), horde: aowow('th') };
+/** Markers that never carry a side's badge (AoWoW's rule). */
+export const NO_BADGE = new Set(['dungeon', 'raid', 'pvp', 'relations', 'mailbox', 'stone']);
+const square = (file: string): GameMapIcon => ({ path: `${ICONS}${file}.blp`, square: true });
+
+/** Professions (SkillLine ids) with their icons; the first 11 primary, then secondary. */
+export const PROFESSIONS: [number, string, string][] = [
+  [171, 'WORLD_EDITOR.PROF_ALCHEMY', 'Trade_Alchemy'],
+  [164, 'WORLD_EDITOR.PROF_BLACKSMITHING', 'Trade_BlackSmithing'],
+  [333, 'WORLD_EDITOR.PROF_ENCHANTING', 'Trade_Engraving'],
+  [202, 'WORLD_EDITOR.PROF_ENGINEERING', 'Trade_Engineering'],
+  [182, 'WORLD_EDITOR.PROF_HERBALISM', 'Trade_Herbalism'],
+  [773, 'WORLD_EDITOR.PROF_INSCRIPTION', 'INV_Inscription_Tradeskill01'],
+  [755, 'WORLD_EDITOR.PROF_JEWELCRAFTING', 'INV_Misc_Gem_01'],
+  [165, 'WORLD_EDITOR.PROF_LEATHERWORKING', 'Trade_LeatherWorking'],
+  [186, 'WORLD_EDITOR.PROF_MINING', 'Trade_Mining'],
+  [393, 'WORLD_EDITOR.PROF_SKINNING', 'INV_Misc_Pelt_Wolf_01'],
+  [197, 'WORLD_EDITOR.PROF_TAILORING', 'Trade_Tailoring'],
+  [185, 'WORLD_EDITOR.PROF_COOKING', 'INV_Misc_Food_15'],
+  [129, 'WORLD_EDITOR.PROF_FIRST_AID', 'Spell_Holy_SealOfSacrifice'],
+  [356, 'WORLD_EDITOR.PROF_FISHING', 'Trade_Fishing'],
+];
+
+/** The map's own layers (colours, borders, names…), apart from the markers. */
+export const GAME_MAP_OPTIONS: GameMapLayer[] = [
+  { key: 'levels', label: 'WORLD_EDITOR.GAME_MAP_LEVEL_COLOURS', shown: true },
+  { key: 'territory', label: 'WORLD_EDITOR.GAME_MAP_TERRITORY', shown: false },
+  { key: 'borders', label: 'WORLD_EDITOR.GAME_MAP_BORDERS', shown: true },
+  { key: 'subBorders', label: 'WORLD_EDITOR.GAME_MAP_SUB_BORDERS', shown: true },
+  { key: 'transitions', label: 'WORLD_EDITOR.GAME_MAP_TRANSITIONS', shown: true },
+  { key: 'names', label: 'WORLD_EDITOR.GAME_MAP_NAMES', shown: true },
+  { key: 'badges', label: 'WORLD_EDITOR.GAME_MAP_BADGES', shown: true },
+  { key: 'camera', label: 'WORLD_EDITOR.GAME_MAP_CAMERA', shown: true },
+  { key: 'spawns', label: 'WORLD_EDITOR.GAME_MAP_SPAWNS', shown: false },
+];
+
+export const GAME_MAP_LAYER_GROUPS: GameMapLayerGroup[] = [
+  {
+    key: 'townsfolk',
+    label: 'WORLD_EDITOR.GAME_MAP_GROUP_TOWNSFOLK',
+    layers: [
+      { key: 'auction', label: 'WORLD_EDITOR.POI_AUCTION', icon: tracking('Auctioneer'), shown: true },
+      { key: 'bank', label: 'WORLD_EDITOR.POI_BANK', icon: tracking('Banker'), shown: false },
+      { key: 'barber', label: 'WORLD_EDITOR.POI_BARBER', icon: aowow('barber'), shown: false },
+      { key: 'battle', label: 'WORLD_EDITOR.POI_BATTLE', icon: tracking('BattleMaster'), shown: false },
+      { key: 'classTrainer', label: 'WORLD_EDITOR.POI_CLASS_TRAINER', icon: tracking('Class'), shown: false },
+      { key: 'flight', label: 'WORLD_EDITOR.POI_FLIGHT', icon: tracking('FlightMaster'), shown: true },
+      { key: 'inn', label: 'WORLD_EDITOR.POI_INN', icon: tracking('Innkeeper'), shown: false },
+      { key: 'mailbox', label: 'WORLD_EDITOR.POI_MAILBOX', icon: tracking('Mailbox'), shown: false },
+      { key: 'repair', label: 'WORLD_EDITOR.POI_REPAIR', icon: tracking('Repair'), shown: false },
+      { key: 'riding', label: 'WORLD_EDITOR.POI_RIDING', icon: square('Ability_Mount_RidingHorse'), shown: false },
+      { key: 'spirit', label: 'WORLD_EDITOR.POI_SPIRIT', icon: aowow('sh'), shown: true },
+      { key: 'stable', label: 'WORLD_EDITOR.POI_STABLE', icon: tracking('StableMaster'), shown: false },
+      { key: 'weaponMaster', label: 'WORLD_EDITOR.POI_WEAPON_MASTER', icon: aowow('wm'), shown: false },
+    ],
+  },
+  {
+    key: 'professions',
+    label: 'WORLD_EDITOR.GAME_MAP_GROUP_PROFESSIONS',
+    parts: [
+      { label: 'WORLD_EDITOR.GAME_MAP_PRIMARY', from: 0 },
+      { label: 'WORLD_EDITOR.GAME_MAP_SECONDARY', from: 11 },
+    ],
+    layers: PROFESSIONS.map(([skill, label, icon]) => ({ key: `prof:${skill}`, label, icon: square(icon), shown: false })),
+  },
+  {
+    key: 'vendors',
+    label: 'WORLD_EDITOR.GAME_MAP_GROUP_VENDORS',
+    parts: [
+      { label: 'WORLD_EDITOR.GAME_MAP_CONSUMABLES', from: 0 },
+      { label: 'WORLD_EDITOR.GAME_MAP_SUPPLIES', from: 1 },
+    ],
+    layers: [
+      { key: 'food', label: 'WORLD_EDITOR.POI_FOOD', icon: tracking('Food'), shown: false },
+      { key: 'ammo', label: 'WORLD_EDITOR.POI_AMMO', icon: tracking('Ammunition'), shown: false },
+      { key: 'poison', label: 'WORLD_EDITOR.POI_POISON', icon: tracking('Poisons'), shown: false },
+      { key: 'reagent', label: 'WORLD_EDITOR.POI_REAGENT', icon: tracking('Reagents'), shown: false },
+    ],
+  },
+  {
+    key: 'travel',
+    label: 'WORLD_EDITOR.GAME_MAP_GROUP_TRAVEL',
+    layers: [
+      { key: 'boat', label: 'WORLD_EDITOR.GAME_MAP_BOATS', icon: aowow('boat-n'), shown: true },
+      { key: 'zeppelin', label: 'WORLD_EDITOR.GAME_MAP_ZEPPELINS', icon: aowow('zep-n'), shown: true },
+      { key: 'gunship', label: 'WORLD_EDITOR.GAME_MAP_GUNSHIPS', icon: aowow('zep-n'), shown: true },
+      { key: 'portal', label: 'WORLD_EDITOR.GAME_MAP_PORTALS', icon: aowow('portal'), shown: true },
+      { key: 'transport', label: 'WORLD_EDITOR.GAME_MAP_OTHER_TRANSPORTS', icon: { fa: 'fa-train', color: '#ffd200' }, shown: true },
+      { key: 'routes', label: 'WORLD_EDITOR.GAME_MAP_ROUTES', icon: aowow('boat-n'), shown: true },
+    ],
+  },
+  {
+    key: 'quests',
+    label: 'WORLD_EDITOR.GAME_MAP_GROUP_QUESTS',
+    layers: [
+      { key: 'questHub', label: 'WORLD_EDITOR.POI_QUEST_HUB', icon: aowow('qh'), shown: false },
+      {
+        key: 'questGiver',
+        label: 'WORLD_EDITOR.POI_QUEST_GIVER',
+        icon: { path: 'Interface\\GossipFrame\\AvailableQuestIcon.blp' },
+        shown: false,
+      },
+    ],
+  },
+  {
+    key: 'locations',
+    label: 'WORLD_EDITOR.GAME_MAP_GROUP_LOCATIONS',
+    layers: [
+      { key: 'stone', label: 'WORLD_EDITOR.POI_STONE', icon: aowow('stone'), shown: true },
+      { key: 'dungeon', label: 'WORLD_EDITOR.GAME_MAP_DUNGEONS', icon: aowow('dg'), shown: true },
+      { key: 'raid', label: 'WORLD_EDITOR.GAME_MAP_RAIDS', icon: aowow('rd'), shown: true },
+      { key: 'pvp', label: 'WORLD_EDITOR.GAME_MAP_WORLD_PVP', icon: { path: COMBAT_SWORDS, crop: [0, 0, 32, 32] }, shown: true },
+      { key: 'relations', label: 'WORLD_EDITOR.GAME_MAP_RELATIONS', icon: TERRITORY_ICONS.alliance, shown: true },
+    ],
+  },
+];
+
+export const GAME_MAP_LAYERS: GameMapLayer[] = [...GAME_MAP_OPTIONS, ...GAME_MAP_LAYER_GROUPS.flatMap((group) => group.layers)];
+
+/**
+ * Where the layers shown and the size of the markers are kept (a new name when the defaults changed for everyone: v2,
+ * AoWoW's defaults; layers saved before some layers existed had them off).
+ */
+export const GAME_MAP_LAYERS_KEY = 'keira3.worldEditor.gameMapLayers.v2';
+export const GAME_MAP_MARKER_KEY = 'keira3.worldEditor.gameMapMarkers';
+
+/**
+ * The layers shown: as last chosen on this computer (layers added since as they are by default), else the default ones.
+ */
+export function loadShownLayers(): Set<string> {
+  try {
+    const stored: unknown = JSON.parse(localStorage.getItem(GAME_MAP_LAYERS_KEY) ?? 'null');
+    const kept = stored as { shown?: unknown[]; known?: unknown[] } | null;
+    if (Array.isArray(kept?.shown) && Array.isArray(kept.known)) {
+      const { shown, known } = kept as { shown: unknown[]; known: unknown[] };
+      return new Set(
+        GAME_MAP_LAYERS.filter((layer) => (known.includes(layer.key) ? shown.includes(layer.key) : layer.shown)).map((l) => l.key),
+      );
+    }
+  } catch {
+    // (unreadable: the defaults)
+  }
+  return new Set(GAME_MAP_LAYERS.filter((layer) => layer.shown).map((layer) => layer.key));
+}
+
+/** Keeps the layers shown, with the layers there are (so layers added later start as they are by default). */
+export function saveShownLayers(keys: Set<string>): void {
+  try {
+    localStorage.setItem(GAME_MAP_LAYERS_KEY, JSON.stringify({ shown: [...keys], known: GAME_MAP_LAYERS.map((layer) => layer.key) }));
+  } catch {
+    // (not kept)
+  }
+}
+
+/** How big markers are drawn (pixels), as last chosen. */
+export const MARKER_SIZES = [12, 16, 20, 26, 32];
+export function loadMarkerSize(): number {
+  try {
+    const stored = Number(localStorage.getItem(GAME_MAP_MARKER_KEY));
+    return MARKER_SIZES.includes(stored) ? stored : 20;
+  } catch {
+    return 20;
+  }
+}
+
+export function saveMarkerSize(size: number): void {
+  try {
+    localStorage.setItem(GAME_MAP_MARKER_KEY, String(size));
+  } catch {
+    // (not kept)
+  }
+}
+
+/** NPC flags (creature_template.npcflag) of the kinds; a trainer's kind comes from its trainer's type instead. */
+export const NPC_FLAG_KINDS: [number, string][] = [
+  [0x2000, 'flight'],
+  [0x10000, 'inn'],
+  [0x20000, 'bank'],
+  [0x200000, 'auction'],
+  [0x400000, 'stable'],
+  [0x100000, 'battle'],
+  [0x1000, 'repair'],
+  [0x200, 'food'],
+  [0x100, 'ammo'],
+  [0x400, 'poison'],
+  [0x800, 'reagent'],
+  [0x4000 | 0x8000, 'spirit'],
+];
+/** UNIT_NPC_FLAG_TRAINER, and trainer.Type of class (0), riding (1) and profession (2) trainers. */
+export const NPC_FLAG_TRAINER = 0x10;
+export const TRAINER_CLASS = 0;
+export const TRAINER_RIDING = 1;
+export const TRAINER_PROFESSION = 2;
+/** Gameobject types: mailbox (19) and meeting stone (23). */
+export const GAMEOBJECT_MAILBOX = 19;
+export const GAMEOBJECT_MEETING_STONE = 23;
+
+/** The kinds a creature with these NPC flags (trainer type and skill, −1 for none; and its subname) is shown as. */
+export function npcPoiKinds(npcFlags: number, trainerType: number, skill = 0, subname = ''): string[] {
+  const kinds = NPC_FLAG_KINDS.filter(([flag]) => npcFlags & flag).map(([, kind]) => kind);
+  // (no flag of their own)
+  if (/^barber$/i.test(subname)) {
+    kinds.push('barber');
+  } else if (/^weapon master$/i.test(subname)) {
+    kinds.push('weaponMaster');
+  }
+  if (npcFlags & NPC_FLAG_TRAINER) {
+    if (trainerType === TRAINER_CLASS) {
+      kinds.push('classTrainer');
+    } else if (trainerType === TRAINER_RIDING) {
+      kinds.push('riding');
+    } else if (trainerType === TRAINER_PROFESSION && PROFESSIONS.some(([id]) => id === skill)) {
+      kinds.push(`prof:${skill}`);
+    }
+  }
+  return kinds;
+}
+
+/** The kind of a transport, by its name. */
+export function transportKind(name: string): 'boat' | 'zeppelin' | 'gunship' | 'transport' {
+  if (/gunship|skybreaker|orgrim's hammer/i.test(name)) {
+    return 'gunship';
+  }
+  if (/zeppelin/i.test(name)) {
+    return 'zeppelin';
+  }
+  return /boat|ship|turtle|bravery|mehley|moonspray|feathermoon|kraken|maiden|lady|galley|northspear|rabbit/i.test(name)
+    ? 'boat'
+    : 'transport';
+}
+
+/** Which sides a faction template is friendly to (AoWoW's reaction > 0): FactionGroup masks 2 (Alliance) and 4 (Horde). */
+export function friendlySides(template: FactionTemplate | undefined): { alliance: boolean; horde: boolean } {
+  const friends = template ? template.ourMask | template.friendMask : 0;
+  const enemies = template ? template.enemyMask : 0;
+  return { alliance: (friends & 2) !== 0 && (enemies & 2) === 0, horde: (friends & 4) !== 0 && (enemies & 4) === 0 };
+}
+
+/** Whose side a faction template serves: FactionGroup masks 2 (Alliance) and 4 (Horde). */
+export function factionSide(template: FactionTemplate | undefined): 'alliance' | 'horde' | undefined {
+  if (!template) {
+    return undefined;
+  }
+  const friends = template.ourMask | template.friendMask;
+  const alliance = (friends & 2) !== 0 && (template.enemyMask & 2) === 0;
+  const horde = (friends & 4) !== 0 && (template.enemyMask & 4) === 0;
+  return alliance && !horde ? 'alliance' : horde && !alliance ? 'horde' : undefined;
+}
+
+/** A creature spawn that tells a sub-zone's levels: where it is, its levels and faction template. */
+export interface GameMapSpawnLevel {
+  x: number;
+  y: number;
+  minLevel: number;
+  maxLevel: number;
+  faction: number;
+}
+
+/** A sub-zone needs this many spawns to get levels; the levels are these shares of its spawns' lowest and highest. */
+const LEVEL_MIN_SPAWNS = 4;
+const LEVEL_LOW = 0.1;
+const LEVEL_HIGH = 0.9;
+
+/**
+ * Sub-zones' levels from the creatures spawned in them, as AoWoW works them out: the hostile and neutral spawns in a
+ * sub-zone's outline (not those of a side's faction or friendly to players, nor outside the zone itself: `inZone`), at
+ * least 4, from the 10th percentile of their lowest levels to the 90th of their highest (so a single boss doesn't
+ * stretch the range). `place` gives a spawn's place on the zone's picture (percent).
+ */
+export function subzoneLevels(
+  spawns: GameMapSpawnLevel[],
+  subzones: Map<string, number[][]>,
+  place: (spawn: GameMapSpawnLevel) => [number, number],
+  inZone: (spawn: GameMapSpawnLevel) => boolean,
+  friendly: (faction: number) => boolean,
+  pointIn: (x: number, y: number, rings: number[][]) => boolean,
+): Map<string, [number, number]> {
+  const lows = new Map<string, number[]>();
+  const highs = new Map<string, number[]>();
+  for (const spawn of spawns) {
+    if (friendly(spawn.faction) || !inZone(spawn)) {
+      continue;
+    }
+    const [u, v] = place(spawn);
+    const area = [...subzones].find(([, rings]) => pointIn(u, v, rings))?.[0];
+    if (area) {
+      lows.set(area, [...(lows.get(area) ?? []), spawn.minLevel]);
+      highs.set(area, [...(highs.get(area) ?? []), spawn.maxLevel]);
+    }
+  }
+  const levels = new Map<string, [number, number]>();
+  lows.forEach((low, area) => {
+    if (low.length >= LEVEL_MIN_SPAWNS) {
+      const high = (highs.get(area) as number[]).sort((a, b) => a - b);
+      low.sort((a, b) => a - b);
+      const min = low[Math.floor((low.length - 1) * LEVEL_LOW)];
+      const max = high[Math.ceil((high.length - 1) * LEVEL_HIGH)];
+      levels.set(area, [Math.min(min, max), Math.max(min, max)]);
+    }
+  });
+  return levels;
+}
