@@ -2,6 +2,15 @@ import { Routes } from '@angular/router';
 
 import { DashboardComponent } from '@keira/features/dashboard';
 import { SettingsComponent } from '@keira/features/settings';
+import {
+  BossBoundariesComponent,
+  ScriptNamesComponent,
+  ScriptSpawnsComponent,
+  ScriptTemplateComponent,
+  ScriptWaypointComponent,
+  ScriptWaypointHandlerService,
+  SelectScriptWaypointComponent,
+} from '@keira/features/scripts';
 
 import { ConditionsComponent, ConditionsHandlerService, SelectConditionsComponent } from '@keira/features/conditions';
 import {
@@ -468,6 +477,17 @@ export const KEIRA_ROUTES: Routes = [
     ],
   },
 
+  {
+    path: 'scripts',
+    children: [
+      { path: 'select-script-waypoint', component: SelectScriptWaypointComponent },
+      { path: 'script-waypoint', component: ScriptWaypointComponent, canActivate: [ScriptWaypointHandlerService] },
+      { path: 'script-names', component: ScriptNamesComponent },
+      { path: 'boss-boundaries', component: BossBoundariesComponent },
+      { path: 'script-spawns', component: ScriptSpawnsComponent },
+      { path: 'script-template', component: ScriptTemplateComponent },
+    ],
+  },
   {
     path: 'conditions',
     children: [

@@ -217,7 +217,13 @@
       "TITLE": "Пулы"
     },
     "SCRIPTS": {
-      "TITLE": "Скрипты"
+      "TITLE": "Скрипты",
+      "SELECT_SCRIPT_WAYPOINT": "Поиск пути сопровождения",
+      "SCRIPT_WAYPOINT": "Точки пути сопровождения",
+      "SCRIPT_NAMES": "Имена скриптов",
+      "BOSS_BOUNDARIES": "Границы боссов",
+      "SCRIPT_SPAWNS": "Спавны скриптов",
+      "TEMPLATE": "Новый скрипт (шаблон)"
     },
     "GAME_EVENTS": {
       "TITLE": "Игровые события"
@@ -1394,6 +1400,12 @@
     "SOAP_ACCOUNT_CREATED": "Учётная запись создана: теперь это логин SOAP (проверка выше).",
     "SOAP_ACCOUNT_COPIED": "SQL скопирован: выполните его в базе auth, затем введите эти имя и пароль выше."
   },
+  "WAYPOINTS": {
+    "DELAY_TOOLTIP": "Сколько существо ждёт в точке (миллисекунды)",
+    "COL_NAME": "Существо",
+    "COL_POINTS": "Точки",
+    "COL_MAP": "Карта"
+  },
   "POOLS": {
     "PROBLEM_EMPTY": "Пул пуст: сервер не будет его создавать.",
     "PROBLEM_MIXED": "Существа, объекты и дочерние пулы создаются отдельно, каждый до max_limit.",
@@ -1416,6 +1428,59 @@
     "PROBLEM_ONE_EVENT": "У пула одно событие: сохраняется только одна строка.",
     "PROBLEM_MISSING_EVENT": "Нет игрового события {{ids}}.",
     "PROBLEM_MAX_LIMIT_ZERO": "max_limit равен 0: сервер не создаёт ни одного члена пула."
+  },
+  "SCRIPTS": {
+    "SELECT_SCRIPT_WAYPOINT": "Выберите существующий путь сопровождения (script_waypoint, по entry существа)",
+    "SHOW_IN_3D": "Показать в редакторе мира",
+    "ESCORT_CREATURE": "Существо, идущее по нему",
+    "NOT_SPAWNED": "Нигде не заспавнено.",
+    "NO_CREATURE": "Нет creature_template с этим entry.",
+    "NEEDS_SOURCE": "Нужна папка исходников AzerothCore: укажите её в",
+    "READING_SOURCE": "Чтение папки исходников...",
+    "FILTER": "Фильтр",
+    "SCRIPT_NAMES": "Имена скриптов",
+    "SCRIPT_NAMES_HELP": "Скрипты, регистрируемые исходниками AzerothCore, и что их использует в базе данных (столбцы ScriptName, spell_script_names, areatrigger_scripts, instance_template).",
+    "ALL_KINDS": "Все типы",
+    "SHOW_ALL": "Все скрипты",
+    "SHOW_UNUSED": "Не используются",
+    "SHOW_MISSING": "Используются, но нет в исходниках",
+    "SHOWING": "Показано {{shown}} из {{total}}",
+    "KIND": "Тип",
+    "FILE": "Файл",
+    "USED_BY": "Используется",
+    "OPEN": "Открыть",
+    "BOSS_BOUNDARIES": "Границы боссов",
+    "BOSS_BOUNDARIES_HELP": "Области, в которых скрипты подземелий удерживают каждого босса (выход из них вызывает сброс), то, что показывает .debug boundary.",
+    "INSTANCE": "Подземелье",
+    "BOSS": "Босс",
+    "SHAPES": "Фигуры",
+    "SCRIPT_SPAWNS": "Спавны скриптов",
+    "SCRIPT_SPAWNS_HELP": "Объекты, которые скрипты ядра создают сами, вне таблицы gameobject: флаги, знамёна и двери полей боя, стены и башни Озера Ледяных Оков, точки захвата PvP.",
+    "OPEN_GITHUB": "Открыть на GitHub (AzerothCore master)",
+    "OPEN_FILE": "Открыть файл на этом компьютере",
+    "TEMPLATE": "Новый скрипт (шаблон)",
+    "TEMPLATE_HELP": "Начальные файлы скрипта в стиле AzerothCore: заголовок с константами, .cpp со скриптом и функцией AddSC_, строки для script loader и SQL, задающий его имя в базе. Заполните TODO.",
+    "TEMPLATE_KIND": "Что это",
+    "TEMPLATE_KIND_CREATURE": "Существо (ScriptedAI)",
+    "TEMPLATE_KIND_BOSS": "Босс (BossAI)",
+    "TEMPLATE_KIND_GAMEOBJECT": "Игровой объект",
+    "TEMPLATE_KIND_SPELL": "Заклинание (SpellScript)",
+    "TEMPLATE_KIND_AURA": "Аура (AuraScript)",
+    "TEMPLATE_KIND_INSTANCE": "Подземелье",
+    "TEMPLATE_ENTRY_CREATURE": "Entry существа",
+    "TEMPLATE_ENTRY_BOSS": "Entry существа",
+    "TEMPLATE_ENTRY_GAMEOBJECT": "Entry объекта",
+    "TEMPLATE_ENTRY_SPELL": "ID заклинания",
+    "TEMPLATE_ENTRY_AURA": "ID заклинания",
+    "TEMPLATE_ENTRY_INSTANCE": "ID карты",
+    "TEMPLATE_INSTANCE": "Подземелье (краткое имя)",
+    "TEMPLATE_SPELLS": "Заклинания (имя = id, по одному в строке)",
+    "TEMPLATE_EVENTS": "События (по одному в строке)",
+    "TEMPLATE_TEXTS": "Тексты (группы creature_text, по одному в строке)",
+    "TEMPLATE_BOSSES": "Боссы (по порядку, по одному в строке)",
+    "TEMPLATE_SAVE": "Сохранить",
+    "TEMPLATE_LOADER": "Добавьте в script loader его папки (объявление над функцией AddScripts, вызов внутри):",
+    "TEMPLATE_SQL": "SQL, задающий имя в базе:"
   },
   "COMPARE": {
     "PIN": "Закрепить для сравнения",

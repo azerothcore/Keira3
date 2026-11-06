@@ -1,0 +1,115 @@
+<div class="container-fluid">
+  <div class="content-block">
+    <p class="lead">{{ 'SCRIPTS.TEMPLATE' | translate }}</p>
+    <p class="small text-muted">{{ 'SCRIPTS.TEMPLATE_HELP' | translate }}</p>
+    <div class="row g-2 mb-2">
+      <div class="col-6 col-md-2">
+        <label class="form-label small" for="template-kind">{{ 'SCRIPTS.TEMPLATE_KIND' | translate }}</label>
+        <select class="form-select form-select-sm" id="template-kind" (change)="setKind($any($event.target).value)">
+          @for (option of KINDS; track option) {
+            <option [value]="option" [selected]="option === kind()">
+              {{ 'SCRIPTS.TEMPLATE_KIND_' + option.toUpperCase() | translate }}
+            </option>
+          }
+        </select>
+      </div>
+      <div class="col-6 col-md-3">
+        <label class="form-label small" for="template-name">ScriptName</label>
+        <input class="form-control form-control-sm" id="template-name" [value]="name()" (input)="name.set($any($event.target).value)" />
+      </div>
+      <div class="col-6 col-md-2">
+        <label class="form-label small" for="template-entry">{{ 'SCRIPTS.TEMPLATE_ENTRY_' + kind().toUpperCase() | translate }}</label>
+        <input class="form-control form-control-sm" id="template-entry" type="number" (input)="setEntry($any($event.target).value)" />
+      </div>
+      @if (uses('instance')) {
+        <div class="col-6 col-md-3">
+          <label class="form-label small" for="template-instance">{{ 'SCRIPTS.TEMPLATE_INSTANCE' | translate }}</label>
+          <input
+            class="form-control form-control-sm"
+            id="template-instance"
+            placeholder="Naxxramas"
+            [value]="instance()"
+            (input)="instance.set($any($event.target).value)"
+          />
+        </div>
+      }
+    </div>
+    <div class="row g-2 mb-3">
+      @if (uses('spells')) {
+        <div class="col-12 col-md-3">
+          <label class="form-label small" for="template-spells">{{ 'SCRIPTS.TEMPLATE_SPELLS' | translate }}</label>
+          <textarea
+            class="form-control form-control-sm"
+            id="template-spells"
+            rows="4"
+            placeholder="Fireball = 133"
+            (input)="spells.set($any($event.target).value)"
+          ></textarea>
+        </div>
+      }
+      @if (uses('events')) {
+        <div class="col-12 col-md-3">
+          <label class="form-label small" for="template-events">{{ 'SCRIPTS.TEMPLATE_EVENTS' | translate }}</label>
+          <textarea
+            class="form-control form-control-sm"
+            id="template-events"
+            rows="4"
+            placeholder="Fireball"
+            (input)="events.set($any($event.target).value)"
+          ></textarea>
+        </div>
+      }
+      @if (uses('texts')) {
+        <div class="col-12 col-md-3">
+          <label class="form-label small" for="template-texts">{{ 'SCRIPTS.TEMPLATE_TEXTS' | translate }}</label>
+          <textarea
+            class="form-control form-control-sm"
+            id="template-texts"
+            rows="4"
+            placeholder="Aggro"
+            (input)="texts.set($any($event.target).value)"
+          ></textarea>
+        </div>
+      }
+      @if (uses('bosses')) {
+        <div class="col-12 col-md-3">
+          <label class="form-label small" for="template-bosses">{{ 'SCRIPTS.TEMPLATE_BOSSES' | translate }}</label>
+          <textarea
+            class="form-control form-control-sm"
+            id="template-bosses"
+            rows="4"
+            placeholder="Patchwerk"
+            (input)="bosses.set($any($event.target).value)"
+          ></textarea>
+        </div>
+      }
+    </div>
+    @let made = result();
+    @for (file of made.files; track file.name) {
+      <div class="d-flex align-items-center gap-2 mb-1">
+        <strong [id]="'file-' + $index">{{ file.name }}</strong>
+        <button type="button" class="btn btn-sm btn-outline-secondary" [id]="'copy-file-' + $index" (click)="copy(file.text)">
+          <i class="fa fa-copy"></i> {{ 'COPY' | translate }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary"
+          [id]="'save-file-' + $index"
+          (click)="download(file.name, file.text)"
+        >
+          <i class="fa fa-download"></i> {{ 'SCRIPTS.TEMPLATE_SAVE' | translate }}
+        </button>
+      </div>
+      <pre class="script-template-code mb-3" [id]="'code-' + $index">{{ file.text }}</pre>
+    }
+    <p class="small mb-1">{{ 'SCRIPTS.TEMPLATE_LOADER' | translate }}</p>
+    <pre class="script-template-code mb-3" id="loader">{{ made.loader }}</pre>
+    <div class="d-flex align-items-center gap-2 mb-1">
+      <span class="small">{{ 'SCRIPTS.TEMPLATE_SQL' | translate }}</span>
+      <button type="button" class="btn btn-sm btn-outline-secondary" id="copy-sql" (click)="copy(made.sql)">
+        <i class="fa fa-copy"></i> {{ 'COPY' | translate }}
+      </button>
+    </div>
+    <pre class="script-template-code" id="sql">{{ made.sql }}</pre>
+  </div>
+</div>

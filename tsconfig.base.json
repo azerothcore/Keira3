@@ -83,6 +83,9 @@
       "@keira/features/unused-guid-search": [
         "libs/features/unused-guid-search/src/index.ts"
       ],
+      "@keira/features/scripts": [
+        "libs/features/scripts/src/index.ts"
+      ],
       "@keira/main/connection-window": [
         "libs/main/connection-window/src/index.ts"
       ],

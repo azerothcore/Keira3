@@ -217,7 +217,13 @@
       "TITLE": "刷新池"
     },
     "SCRIPTS": {
-      "TITLE": "脚本"
+      "TITLE": "脚本",
+      "SELECT_SCRIPT_WAYPOINT": "搜索护送路径",
+      "SCRIPT_WAYPOINT": "护送路径点",
+      "SCRIPT_NAMES": "脚本名称",
+      "BOSS_BOUNDARIES": "首领边界",
+      "SCRIPT_SPAWNS": "脚本刷新",
+      "TEMPLATE": "新脚本（模板）"
     },
     "GAME_EVENTS": {
       "TITLE": "游戏事件"
@@ -1394,6 +1400,12 @@
     "SOAP_ACCOUNT_CREATED": "账号已创建：现在它是 SOAP 登录（已在上方测试）。",
     "SOAP_ACCOUNT_COPIED": "SQL 已复制：在 auth 数据库中执行，然后在上方填写此名称和密码。"
   },
+  "WAYPOINTS": {
+    "DELAY_TOOLTIP": "生物在该点等待的时间（毫秒）",
+    "COL_NAME": "生物",
+    "COL_POINTS": "路点数",
+    "COL_MAP": "地图"
+  },
   "POOLS": {
     "PROBLEM_EMPTY": "刷新池为空：服务器不会刷出它。",
     "PROBLEM_MIXED": "生物、游戏对象和子刷新池分别刷新，各自最多 max_limit 个。",
@@ -1416,6 +1428,59 @@
     "PROBLEM_ONE_EVENT": "一个刷新池只有一个游戏事件：只保留一行。",
     "PROBLEM_MISSING_EVENT": "没有游戏事件 {{ids}}。",
     "PROBLEM_MAX_LIMIT_ZERO": "max_limit 为 0：服务器不会刷出该池的任何成员。"
+  },
+  "SCRIPTS": {
+    "SELECT_SCRIPT_WAYPOINT": "选择已有的护送路径（script_waypoint，按生物 entry）",
+    "SHOW_IN_3D": "在世界编辑器中显示",
+    "ESCORT_CREATURE": "沿路径行走的生物",
+    "NOT_SPAWNED": "未在任何地方刷新。",
+    "NO_CREATURE": "没有该 entry 的 creature_template。",
+    "NEEDS_SOURCE": "需要 AzerothCore 源码文件夹：请在此设置",
+    "READING_SOURCE": "正在读取源码文件夹...",
+    "FILTER": "筛选",
+    "SCRIPT_NAMES": "脚本名称",
+    "SCRIPT_NAMES_HELP": "AzerothCore 源码注册的脚本，以及数据库中使用它们的内容（ScriptName 列、spell_script_names、areatrigger_scripts、instance_template）。",
+    "ALL_KINDS": "所有类型",
+    "SHOW_ALL": "所有脚本",
+    "SHOW_UNUSED": "未被使用",
+    "SHOW_MISSING": "已使用但源码中没有",
+    "SHOWING": "显示 {{shown}} / {{total}}",
+    "KIND": "类型",
+    "FILE": "文件",
+    "USED_BY": "使用者",
+    "OPEN": "打开",
+    "BOSS_BOUNDARIES": "首领边界",
+    "BOSS_BOUNDARIES_HELP": "副本脚本将每个首领限制在其中的区域（离开会脱战），即 .debug boundary 显示的内容。",
+    "INSTANCE": "副本",
+    "BOSS": "首领",
+    "SHAPES": "形状",
+    "SCRIPT_SPAWNS": "脚本刷新",
+    "SCRIPT_SPAWNS_HELP": "由核心脚本自行刷新、不在 gameobject 表中的游戏对象：战场旗帜、旗标和大门，冬拥湖的城墙和塔楼，野外 PvP 占领点。",
+    "OPEN_GITHUB": "在 GitHub 上打开（AzerothCore master）",
+    "OPEN_FILE": "在此电脑上打开文件",
+    "TEMPLATE": "新脚本（模板）",
+    "TEMPLATE_HELP": "AzerothCore 风格的脚本起始文件：含常量的头文件、包含脚本和 AddSC_ 函数的 .cpp、script loader 的行以及在数据库中命名它的 SQL。补全 TODO。",
+    "TEMPLATE_KIND": "类型",
+    "TEMPLATE_KIND_CREATURE": "生物 (ScriptedAI)",
+    "TEMPLATE_KIND_BOSS": "首领 (BossAI)",
+    "TEMPLATE_KIND_GAMEOBJECT": "游戏对象",
+    "TEMPLATE_KIND_SPELL": "法术 (SpellScript)",
+    "TEMPLATE_KIND_AURA": "光环 (AuraScript)",
+    "TEMPLATE_KIND_INSTANCE": "副本",
+    "TEMPLATE_ENTRY_CREATURE": "生物 entry",
+    "TEMPLATE_ENTRY_BOSS": "生物 entry",
+    "TEMPLATE_ENTRY_GAMEOBJECT": "游戏对象 entry",
+    "TEMPLATE_ENTRY_SPELL": "法术 ID",
+    "TEMPLATE_ENTRY_AURA": "法术 ID",
+    "TEMPLATE_ENTRY_INSTANCE": "地图 ID",
+    "TEMPLATE_INSTANCE": "副本（简称）",
+    "TEMPLATE_SPELLS": "法术（名称 = id，每行一个）",
+    "TEMPLATE_EVENTS": "事件（每行一个）",
+    "TEMPLATE_TEXTS": "文本（creature_text 分组，每行一个）",
+    "TEMPLATE_BOSSES": "首领（按顺序，每行一个）",
+    "TEMPLATE_SAVE": "保存",
+    "TEMPLATE_LOADER": "添加到其文件夹的 script loader（声明放在 AddScripts 函数上方，调用放在函数内）：",
+    "TEMPLATE_SQL": "在数据库中命名它的 SQL："
   },
   "COMPARE": {
     "PIN": "固定以比较",

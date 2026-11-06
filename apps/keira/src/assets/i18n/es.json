@@ -217,7 +217,13 @@
       "TITLE": "Pools"
     },
     "SCRIPTS": {
-      "TITLE": "Scripts"
+      "TITLE": "Scripts",
+      "SELECT_SCRIPT_WAYPOINT": "Buscar ruta de escolta",
+      "SCRIPT_WAYPOINT": "Puntos de ruta de escolta",
+      "SCRIPT_NAMES": "Nombres de scripts",
+      "BOSS_BOUNDARIES": "Límites de jefes",
+      "SCRIPT_SPAWNS": "Spawns de scripts",
+      "TEMPLATE": "Nuevo script (plantilla)"
     },
     "GAME_EVENTS": {
       "TITLE": "Eventos del juego"
@@ -1394,6 +1400,12 @@
     "SOAP_ACCOUNT_CREATED": "Cuenta creada: ahora es el login SOAP (probado arriba).",
     "SOAP_ACCOUNT_COPIED": "SQL copiado: ejecútalo en la base auth y luego escribe este nombre y contraseña arriba."
   },
+  "WAYPOINTS": {
+    "DELAY_TOOLTIP": "Cuánto espera la criatura en el punto (milisegundos)",
+    "COL_NAME": "Criatura",
+    "COL_POINTS": "Puntos",
+    "COL_MAP": "Mapa"
+  },
   "POOLS": {
     "PROBLEM_EMPTY": "El pool está vacío: el servidor no lo generará.",
     "PROBLEM_MIXED": "Criaturas, objetos y pools hijos se generan por separado, cada uno hasta max_limit.",
@@ -1416,6 +1428,59 @@
     "PROBLEM_ONE_EVENT": "Un pool tiene un solo evento: solo se guarda una fila.",
     "PROBLEM_MISSING_EVENT": "No existe el evento {{ids}}.",
     "PROBLEM_MAX_LIMIT_ZERO": "max_limit es 0: el servidor no genera ningún miembro del pool."
+  },
+  "SCRIPTS": {
+    "SELECT_SCRIPT_WAYPOINT": "Selecciona una ruta de escolta existente (script_waypoint, por entry de criatura)",
+    "SHOW_IN_3D": "Ver en el editor de mundo",
+    "ESCORT_CREATURE": "La criatura que la recorre",
+    "NOT_SPAWNED": "No aparece en ningún sitio.",
+    "NO_CREATURE": "No hay creature_template con este entry.",
+    "NEEDS_SOURCE": "Necesita la carpeta del código de AzerothCore: configúrala en",
+    "READING_SOURCE": "Leyendo la carpeta del código...",
+    "FILTER": "Filtrar",
+    "SCRIPT_NAMES": "Nombres de scripts",
+    "SCRIPT_NAMES_HELP": "Los scripts que registra el código de AzerothCore y qué los usa en la base de datos (columnas ScriptName, spell_script_names, areatrigger_scripts, instance_template).",
+    "ALL_KINDS": "Todos los tipos",
+    "SHOW_ALL": "Todos los scripts",
+    "SHOW_UNUSED": "Sin usar",
+    "SHOW_MISSING": "Usados, pero no en el código",
+    "SHOWING": "{{shown}} de {{total}} mostrados",
+    "KIND": "Tipo",
+    "FILE": "Archivo",
+    "USED_BY": "Usado por",
+    "OPEN": "Abrir",
+    "BOSS_BOUNDARIES": "Límites de jefes",
+    "BOSS_BOUNDARIES_HELP": "Las zonas en las que los scripts de instancia mantienen a cada jefe (si sale, evade), lo que muestra .debug boundary.",
+    "INSTANCE": "Instancia",
+    "BOSS": "Jefe",
+    "SHAPES": "Formas",
+    "SCRIPT_SPAWNS": "Spawns de scripts",
+    "SCRIPT_SPAWNS_HELP": "Los objetos que generan los propios scripts del núcleo, fuera de la tabla gameobject: banderas, estandartes y puertas de campos de batalla, muros y torres de Conquista del Invierno, puntos de captura JcJ.",
+    "OPEN_GITHUB": "Abrir en GitHub (AzerothCore master)",
+    "OPEN_FILE": "Abrir el archivo en este equipo",
+    "TEMPLATE": "Nuevo script (plantilla)",
+    "TEMPLATE_HELP": "Archivos iniciales para un script al estilo de AzerothCore: la cabecera con sus constantes, el .cpp con el script y su función AddSC_, las líneas del script loader y el SQL que lo nombra en la base de datos. Completa los TODO.",
+    "TEMPLATE_KIND": "Qué es",
+    "TEMPLATE_KIND_CREATURE": "Criatura (ScriptedAI)",
+    "TEMPLATE_KIND_BOSS": "Jefe (BossAI)",
+    "TEMPLATE_KIND_GAMEOBJECT": "Gameobject",
+    "TEMPLATE_KIND_SPELL": "Hechizo (SpellScript)",
+    "TEMPLATE_KIND_AURA": "Aura (AuraScript)",
+    "TEMPLATE_KIND_INSTANCE": "Instancia",
+    "TEMPLATE_ENTRY_CREATURE": "Entry de criatura",
+    "TEMPLATE_ENTRY_BOSS": "Entry de criatura",
+    "TEMPLATE_ENTRY_GAMEOBJECT": "Entry de gameobject",
+    "TEMPLATE_ENTRY_SPELL": "ID de hechizo",
+    "TEMPLATE_ENTRY_AURA": "ID de hechizo",
+    "TEMPLATE_ENTRY_INSTANCE": "ID de mapa",
+    "TEMPLATE_INSTANCE": "Instancia (nombre corto)",
+    "TEMPLATE_SPELLS": "Hechizos (nombre = id, uno por línea)",
+    "TEMPLATE_EVENTS": "Eventos (uno por línea)",
+    "TEMPLATE_TEXTS": "Textos (grupos de creature_text, uno por línea)",
+    "TEMPLATE_BOSSES": "Jefes (en orden, uno por línea)",
+    "TEMPLATE_SAVE": "Guardar",
+    "TEMPLATE_LOADER": "Añade al script loader de su carpeta (la declaración encima de su función AddScripts, la llamada dentro):",
+    "TEMPLATE_SQL": "SQL que lo nombra en la base de datos:"
   },
   "COMPARE": {
     "PIN": "Fijar para comparar",

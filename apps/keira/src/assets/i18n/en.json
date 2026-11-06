@@ -217,7 +217,13 @@
       "TITLE": "Pools"
     },
     "SCRIPTS": {
-      "TITLE": "Scripts"
+      "TITLE": "Scripts",
+      "SELECT_SCRIPT_WAYPOINT": "Search escort path",
+      "SCRIPT_WAYPOINT": "Escort path points",
+      "SCRIPT_NAMES": "Script names",
+      "BOSS_BOUNDARIES": "Boss boundaries",
+      "SCRIPT_SPAWNS": "Scripted spawns",
+      "TEMPLATE": "New script (template)"
     },
     "GAME_EVENTS": {
       "TITLE": "Game events"
@@ -1394,6 +1400,12 @@
     "SOAP_ACCOUNT_CREATED": "Account created: it is now the SOAP login (tested above).",
     "SOAP_ACCOUNT_COPIED": "The SQL is copied: run it on the auth database, then enter this name and password above."
   },
+  "WAYPOINTS": {
+    "DELAY_TOOLTIP": "How long the creature waits at the point (milliseconds)",
+    "COL_NAME": "Creature",
+    "COL_POINTS": "Points",
+    "COL_MAP": "Map"
+  },
   "POOLS": {
     "PROBLEM_EMPTY": "The pool holds nothing: the world server won't spawn it.",
     "PROBLEM_MIXED": "Creatures, gameobjects and child pools are spawned separately, each up to max_limit.",
@@ -1416,6 +1428,59 @@
     "PROBLEM_ONE_EVENT": "A pool has one game event: only one row is kept.",
     "PROBLEM_MISSING_EVENT": "No game event {{ids}}.",
     "PROBLEM_MAX_LIMIT_ZERO": "max_limit is 0: the world server spawns none of the pool's members."
+  },
+  "SCRIPTS": {
+    "SELECT_SCRIPT_WAYPOINT": "Select an existing escort path (script_waypoint, by creature entry)",
+    "SHOW_IN_3D": "Show in the World Editor",
+    "ESCORT_CREATURE": "The creature walking it",
+    "NOT_SPAWNED": "Not spawned anywhere.",
+    "NO_CREATURE": "No creature_template with this entry.",
+    "NEEDS_SOURCE": "Needs the AzerothCore source folder: set it in",
+    "READING_SOURCE": "Reading the source folder...",
+    "FILTER": "Filter",
+    "SCRIPT_NAMES": "Script names",
+    "SCRIPT_NAMES_HELP": "The scripts the AzerothCore source registers, and what in the database uses each (ScriptName columns, spell_script_names, areatrigger_scripts, instance_template).",
+    "ALL_KINDS": "All kinds",
+    "SHOW_ALL": "All scripts",
+    "SHOW_UNUSED": "Used by nothing",
+    "SHOW_MISSING": "Used, but not in the source",
+    "SHOWING": "{{shown}} of {{total}} shown",
+    "KIND": "Kind",
+    "FILE": "File",
+    "USED_BY": "Used by",
+    "OPEN": "Open",
+    "BOSS_BOUNDARIES": "Boss boundaries",
+    "BOSS_BOUNDARIES_HELP": "The areas the instance scripts keep each boss in (leaving them makes it evade), what .debug boundary shows.",
+    "INSTANCE": "Instance",
+    "BOSS": "Boss",
+    "SHAPES": "Shapes",
+    "SCRIPT_SPAWNS": "Scripted spawns",
+    "SCRIPT_SPAWNS_HELP": "The gameobjects the core's scripts spawn themselves, not in the gameobject table: battleground flags, banners and doors, Wintergrasp's walls and towers, outdoor PvP capture points.",
+    "OPEN_GITHUB": "Open on GitHub (AzerothCore master)",
+    "OPEN_FILE": "Open the file on this computer",
+    "TEMPLATE": "New script (template)",
+    "TEMPLATE_HELP": "Starting files for a script in AzerothCore's own way: the header with its constants, the .cpp with the script and its AddSC_ function, the script loader lines and the SQL naming it in the database. Fill in the TODOs.",
+    "TEMPLATE_KIND": "What it is",
+    "TEMPLATE_KIND_CREATURE": "Creature (ScriptedAI)",
+    "TEMPLATE_KIND_BOSS": "Boss (BossAI)",
+    "TEMPLATE_KIND_GAMEOBJECT": "Gameobject",
+    "TEMPLATE_KIND_SPELL": "Spell (SpellScript)",
+    "TEMPLATE_KIND_AURA": "Aura (AuraScript)",
+    "TEMPLATE_KIND_INSTANCE": "Instance",
+    "TEMPLATE_ENTRY_CREATURE": "Creature entry",
+    "TEMPLATE_ENTRY_BOSS": "Creature entry",
+    "TEMPLATE_ENTRY_GAMEOBJECT": "Gameobject entry",
+    "TEMPLATE_ENTRY_SPELL": "Spell ID",
+    "TEMPLATE_ENTRY_AURA": "Spell ID",
+    "TEMPLATE_ENTRY_INSTANCE": "Map ID",
+    "TEMPLATE_INSTANCE": "Instance (short name)",
+    "TEMPLATE_SPELLS": "Spells (name = id, one per line)",
+    "TEMPLATE_EVENTS": "Events (one per line)",
+    "TEMPLATE_TEXTS": "Texts (creature_text groups, one per line)",
+    "TEMPLATE_BOSSES": "Bosses (in order, one per line)",
+    "TEMPLATE_SAVE": "Save",
+    "TEMPLATE_LOADER": "Add to the script loader of its folder (the declaration above its AddScripts function, the call inside it):",
+    "TEMPLATE_SQL": "SQL naming it in the database:"
   },
   "COMPARE": {
     "PIN": "Pin to compare",

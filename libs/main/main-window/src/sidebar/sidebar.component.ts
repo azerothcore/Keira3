@@ -9,6 +9,7 @@ import { ConditionsHandlerService } from '@keira/features/conditions';
 import { CreatureHandlerService } from '@keira/features/creature';
 import { GameobjectHandlerService } from '@keira/features/gameobject';
 import { GossipHandlerService } from '@keira/features/gossip';
+import { ScriptWaypointHandlerService } from '@keira/features/scripts';
 import { WowDataSettingsService } from '@keira/shared/wow-data';
 import { ItemHandlerService } from '@keira/features/item';
 import {
@@ -97,6 +98,7 @@ export class SidebarComponent {
   protected readonly gameobjectHandlerService = inject(GameobjectHandlerService);
   protected readonly itemHandlerService = inject(ItemHandlerService);
   protected readonly gossipHandlerService = inject(GossipHandlerService);
+  protected readonly scriptWaypointHandlerService = inject(ScriptWaypointHandlerService);
   private readonly wowDataSettings = inject(WowDataSettingsService);
   /** Whether the AzerothCore source folder is set: the script pages reading it are greyed out without it. */
   protected readonly sourceFolderSet = computed(() => !!this.wowDataSettings.paths().sourcePath);
