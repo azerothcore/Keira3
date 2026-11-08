@@ -5,4 +5,7 @@ export * from './item-template/item-template.component';
 export * from './milling-loot-template/milling-loot-template.component';
 export * from './prospecting-loot-template/prospecting-loot-template.component';
 export * from './select-item/select-item.component';
+export { ItemCopyComponent } from './item-copy/item-copy.component';
 export * from './item-handler.service';
+export * from './item-sources/item-sources.component';
+export * from './item-template-locale/item-template-locale.component';

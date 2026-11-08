@@ -168,6 +168,17 @@ describe('Conditions integration tests', () => {
       expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
 
+    it('generates the comment from the fields', () => {
+      const { page } = setup(false);
+      page.setInputValueById('SourceEntry', '1234');
+      page.setInputValueById('ConditionValue1', '50');
+
+      page.clickElement(page.getDebugElementByCss('#generate-comment-btn').nativeElement);
+
+      expect(page.getInputById('Comment').value).toBe('Creature loot 2: item 1234 - Target always');
+      page.expectDiffQueryToContain("`Comment` = 'Creature loot 2: item 1234 - Target always'");
+    });
+
     it('changing values should correctly update the queries', () => {
       const { page } = setup(false);
       page.setInputValueById('SourceGroup', '1');

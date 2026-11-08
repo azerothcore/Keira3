@@ -12,3 +12,6 @@ export * from './quest-template-addon/quest-template-addon.component';
 export * from './select-quest/select-quest.component';
 export * from './quest-handler.service';
 export * from './quest-template-locale/quest-template-locale.component';
+export * from './quest-request-items-locale/quest-request-items-locale.component';
+export * from './quest-offer-reward-locale/quest-offer-reward-locale.component';
+export { QuestCopyComponent } from './quest-copy/quest-copy.component';

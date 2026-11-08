@@ -1,0 +1,190 @@
+<div class="container-fluid">
+  <div class="content-block">
+    <h4>{{ 'SNIFFS.TITLE' | translate }}</h4>
+    <p class="text-muted small">{{ 'SNIFFS.HELP' | translate }}</p>
+    @if (!desktop) {
+      <div class="alert alert-info" id="sniffs-desktop-only">{{ 'SNIFFS.DESKTOP_ONLY' | translate }}</div>
+    }
+    @if (error(); as code) {
+      <div class="alert alert-danger py-1" id="sniffs-error">
+        {{ code === code.toUpperCase() ? ('SNIFFS.ERROR.' + code | translate) : code }}
+      </div>
+    }
+  </div>
+
+  <div class="content-block" id="sniffs-database">
+    <h5>{{ 'SNIFFS.DATABASE' | translate }}</h5>
+    <p class="small text-muted">{{ 'SNIFFS.DATABASE_HELP' | translate }}</p>
+    <div class="d-flex gap-2 align-items-center mb-2">
+      <input
+        class="form-control form-control-sm w-auto"
+        id="sniffs-db-name"
+        [ngModel]="databaseName()"
+        (ngModelChange)="databaseName.set($event)"
+      />
+      <button type="button" class="btn btn-sm btn-secondary" id="sniffs-db-save" [disabled]="busy()" (click)="saveName()">
+        {{ 'SNIFFS.SAVE' | translate }}
+      </button>
+      <button type="button" class="btn btn-sm btn-primary" id="sniffs-db-create" [disabled]="busy() || exists()" (click)="create()">
+        <i class="fa fa-database"></i> {{ 'SNIFFS.CREATE' | translate }}
+      </button>
+      <button type="button" class="btn btn-sm btn-outline-secondary" id="sniffs-refresh" [disabled]="busy()" (click)="refresh()">
+        <i class="fa fa-sync"></i>
+      </button>
+      <span class="small" id="sniffs-db-state">
+        @if (exists() === true) {
+          <i class="fas fa-circle text-success"></i> {{ 'SNIFFS.EXISTS' | translate: { name: sniffDb.database() } }}
+        } @else if (exists() === false) {
+          <i class="fas fa-circle text-secondary"></i> {{ 'SNIFFS.MISSING' | translate: { name: sniffDb.database() } }}
+        }
+      </span>
+    </div>
+    @if (tables().length) {
+      <div class="small mb-2" id="sniffs-tables">
+        @for (table of tables(); track table.name) {
+          <span class="badge bg-secondary me-1">{{ table.name }} {{ table.rows }}</span>
+        }
+      </div>
+    }
+    @if (files().length) {
+      <table class="table table-sm small mb-0" id="sniffs-files">
+        <tbody>
+          @for (file of files(); track file.id) {
+            <tr>
+              <td>{{ file.id }}</td>
+              <td>{{ file.name }}</td>
+              <td>{{ (file.size / 1048576).toFixed(1) }} MB</td>
+              <td class="text-end">
+                <button
+                  type="button"
+                  class="btn btn-link btn-sm p-0 text-danger"
+                  [attr.data-testid]="'remove-file-' + file.id"
+                  (click)="removeFile(file)"
+                >
+                  <i class="fa fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+
+  <div class="content-block" id="sniffs-load">
+    <h5>{{ 'SNIFFS.LOAD' | translate }}</h5>
+    <p class="small text-muted">{{ 'SNIFFS.LOAD_HELP' | translate }}</p>
+    <div class="d-flex gap-2 mb-2">
+      <input
+        class="form-control form-control-sm"
+        id="sniffs-sql-path"
+        [placeholder]="'SNIFFS.PATH' | translate"
+        [ngModel]="sqlPath()"
+        (ngModelChange)="sqlPath.set($event)"
+      />
+      <button
+        type="button"
+        class="btn btn-sm btn-primary"
+        id="sniffs-load-btn"
+        [disabled]="!desktop || busy() || !sqlPath().trim()"
+        (click)="load()"
+      >
+        <i class="fa fa-file-import"></i> {{ 'SNIFFS.LOAD_BTN' | translate }}
+      </button>
+    </div>
+    @if (progress()) {
+      <p class="small" id="sniffs-progress">{{ progress() }}</p>
+    }
+    @for (result of results(); track $index) {
+      <p class="small mb-0" [attr.data-testid]="'result-' + $index">
+        {{ result.file }}:
+        @if (result.alreadyLoaded) {
+          {{ 'SNIFFS.ALREADY_LOADED' | translate }}
+        } @else {
+          {{ 'SNIFFS.LOADED' | translate: { rows: result.rows, tables: result.tables.length, skipped: result.skipped } }}
+        }
+      </p>
+    }
+  </div>
+
+  <div class="content-block" id="sniffs-wpp">
+    <h5>WowPacketParser</h5>
+    <p class="small text-muted">{{ 'SNIFFS.WPP_HELP' | translate }}</p>
+    <div class="d-flex gap-2 mb-2">
+      <input
+        class="form-control form-control-sm"
+        id="sniffs-wpp-folder"
+        [placeholder]="'SNIFFS.WPP_FOLDER' | translate"
+        [ngModel]="wppFolder()"
+        (ngModelChange)="wppFolder.set($event)"
+      />
+      <button type="button" class="btn btn-sm btn-secondary" id="sniffs-wpp-save" [disabled]="!desktop" (click)="saveWppFolder()">
+        {{ 'SNIFFS.SAVE' | translate }}
+      </button>
+      <button
+        type="button"
+        class="btn btn-sm btn-primary text-nowrap"
+        id="sniffs-wpp-build"
+        [disabled]="!desktop || busy() || !wppFolder().trim()"
+        (click)="downloadAndBuild()"
+      >
+        <i class="fa fa-download"></i> {{ 'SNIFFS.WPP_BUILD' | translate }}
+      </button>
+    </div>
+    <p class="small" id="sniffs-wpp-state">
+      @if (built()) {
+        <i class="fas fa-circle text-success"></i> {{ 'SNIFFS.WPP_BUILT' | translate }}
+      } @else {
+        <i class="fas fa-circle text-secondary"></i> {{ 'SNIFFS.WPP_NOT_BUILT' | translate }}
+      }
+    </p>
+    <div class="d-flex gap-2 align-items-center mb-2">
+      <input
+        class="form-control form-control-sm"
+        id="sniffs-pkt"
+        [placeholder]="'SNIFFS.PKT' | translate"
+        [ngModel]="pktPath()"
+        (ngModelChange)="pktPath.set($event)"
+      />
+      <div class="form-check text-nowrap mb-0">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="sniffs-wpp-db"
+          [checked]="useDatabases()"
+          (change)="useDatabases.set($any($event.target).checked)"
+        />
+        <label class="form-check-label small" for="sniffs-wpp-db" [title]="'SNIFFS.WPP_DB_HELP' | translate">{{
+          'SNIFFS.WPP_DB' | translate
+        }}</label>
+      </div>
+      <button
+        type="button"
+        class="btn btn-sm btn-primary"
+        id="sniffs-parse"
+        [disabled]="!built() || busy() || !pktPath().trim()"
+        (click)="parse()"
+      >
+        <i class="fa fa-cogs"></i> {{ 'SNIFFS.PARSE' | translate }}
+      </button>
+    </div>
+    @for (file of parsedFiles(); track file) {
+      <div class="d-flex gap-2 align-items-center small" [attr.data-testid]="'parsed-' + $index">
+        <span class="text-truncate">{{ file }}</span>
+        <button type="button" class="btn btn-link btn-sm p-0" [attr.data-testid]="'open-' + $index" (click)="open(file)">
+          {{ 'SNIFFS.OPEN' | translate }}
+        </button>
+        @if (file.toLowerCase().endsWith('.sql')) {
+          <button type="button" class="btn btn-link btn-sm p-0" [attr.data-testid]="'load-parsed-' + $index" (click)="loadParsedSql(file)">
+            {{ 'SNIFFS.LOAD_BTN' | translate }}
+          </button>
+        }
+      </div>
+    }
+    @if (log().length) {
+      <pre class="small p-2 rounded mt-2" id="sniffs-log" style="background: var(--keira-code-bg); max-height: 300px; overflow: auto">{{
+        log().join('\n')
+      }}</pre>
+    }
+  </div>
+</div>

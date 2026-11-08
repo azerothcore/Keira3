@@ -1,3 +1,4 @@
+import { EditorSettingsService } from '@keira/shared/common-services';
 import { provideRouter } from '@angular/router';
 import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
@@ -6,7 +7,7 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { ToastrService } from 'ngx-toastr';
 import { instance, mock } from 'ts-mockito';
-import { MysqlQueryService } from '@keira/shared/db-layer';
+import { MysqlQueryService, isFlagsColumn } from '@keira/shared/db-layer';
 import { SingleRowEditorService } from './single-row-editor.service';
 
 import { MockEntity, MockHandlerService, MockSingleRowEditorService } from '../../core.mock';
@@ -94,9 +95,15 @@ describe('SingleRowEditorService', () => {
       service['_entityIdField'],
       service['_originalValue'],
       service.form.getRawValue(),
+      isFlagsColumn,
     );
     expect(service.diffQuery).toEqual(queryResult);
     expect(service['updateEditorStatus']).toHaveBeenCalledTimes(1);
+    // flags set as they are (Settings > Editors)
+    TestBed.inject(EditorSettingsService).save({ bitwiseFlags: false });
+    service['updateDiffQuery']();
+    expect(getQuerySpy.mock.calls[1][4]).toBeUndefined();
+    localStorage.clear();
   });
 
   it('updateFullQuery() should correctly work', () => {

@@ -4,6 +4,8 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { of } from 'rxjs';
 import { vi } from 'vitest';
+import { ThemeService } from '@keira/shared/common-services';
+import { githubDark, githubLight } from '@uiw/codemirror-theme-github';
 import { SqlEditorService } from './sql-editor.service';
 
 describe('SqlEditorService', () => {
@@ -18,6 +20,15 @@ describe('SqlEditorService', () => {
     const mysqlQueryService = TestBed.inject(MysqlQueryService);
     return { service, mysqlQueryService };
   }
+
+  it("draws the editor in the page's light or dark colours", () => {
+    const { service } = setup();
+    const theme = TestBed.inject(ThemeService);
+    theme.dark.set(false);
+    expect(service.extensions()[0]).toBe(githubLight);
+    theme.dark.set(true);
+    expect(service.extensions()[0]).toBe(githubDark);
+  });
 
   it('should be created', () => {
     const { service } = setup();

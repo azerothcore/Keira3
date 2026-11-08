@@ -1,4 +1,9 @@
-<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
+<keira-top-bar
+  [selected]="handlerService.selected"
+  [handler]="handlerService"
+  [selectedName]="handlerService.selectedName"
+  [isNew]="handlerService.isNew"
+/>
 
 <div class="container-fluid editor-with-preview" [class.show-preview]="showGameobjectPreview">
   @if (editorService.loading) {
@@ -40,6 +45,7 @@
               <label class="control-label" for="displayId">displayId</label>
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'GAMEOBJECT.TEMPLATE.DISPLAY_ID' | translate"></i>
               <input [formControlName]="'displayId'" id="displayId" type="number" class="form-control form-control-sm" />
+              <keira-display-search [kind]="'gameobject'" [control]="editorService.form.controls.displayId" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="IconName">IconName</label>

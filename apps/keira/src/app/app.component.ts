@@ -12,7 +12,7 @@ import { TranslateDirective } from '@ngx-translate/core';
 import { ConnectionWindowComponent } from '@keira/main/connection-window';
 import { MainWindowComponent } from '@keira/main/main-window';
 import { MysqlService, SqliteQueryService } from '@keira/shared/db-layer';
-import { ElectronService } from '@keira/shared/common-services';
+import { ElectronService, ThemeService } from '@keira/shared/common-services';
 import { SubscriptionHandler } from '@keira/shared/utils';
 
 @Component({
@@ -33,6 +33,8 @@ export class AppComponent extends SubscriptionHandler implements OnInit {
   private readonly electronService = inject(ElectronService);
   private readonly http = inject(HttpClient);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
+  /** (puts the theme chosen in Settings on the page, from the login window on) */
+  protected readonly theme = inject(ThemeService);
 
   ngOnInit(): void {
     this.handleConnectionLostAlerts();

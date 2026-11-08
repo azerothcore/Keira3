@@ -2,7 +2,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input, OnInit } from '@angular/core';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
-import { AsyncPipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LOOT_MODE, LootTemplate } from '@keira/shared/acore-world-model';
 import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
@@ -10,11 +9,12 @@ import { EditorButtonsComponent, IconComponent, QueryOutputComponent } from '@ke
 import { DTCFG } from '@keira/shared/config';
 import { WIKI_BASE_URL } from '@keira/shared/constants';
 import { FlagsSelectorBtnComponent, ItemSelectorBtnComponent } from '@keira/shared/selectors';
-import { compareObjFn, SubscriptionHandler } from '@keira/shared/utils';
+import { compareObjFn, SubscriptionHandler, NameCache } from '@keira/shared/utils';
 import { TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { ReferenceViewerComponent } from './reference-viewer.component';
+import { syncReferenceCount } from './reference-count';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,11 +32,15 @@ import { ReferenceViewerComponent } from './reference-viewer.component';
     EditorButtonsComponent,
     NgxDatatableModule,
     ReferenceViewerComponent,
-    AsyncPipe,
     TranslatePipe,
   ],
 })
 export class LootEditorComponent<T extends LootTemplate> extends SubscriptionHandler implements OnInit {
+  /** The names shown, read once each: the table sorts by them. */
+  protected readonly itemNames = new NameCache(
+    (id) => this.editorService.queryService.getItemNameById(id),
+    () => this.changeDetectorRef.markForCheck(),
+  );
   @Input() editorService!: MultiRowEditorService<T>;
 
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
@@ -63,6 +67,7 @@ export class LootEditorComponent<T extends LootTemplate> extends SubscriptionHan
           this.changeDetectorRef.markForCheck();
         });
       }),
+      syncReferenceCount(this.editorService.form),
     );
   }
 

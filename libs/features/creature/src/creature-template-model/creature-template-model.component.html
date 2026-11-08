@@ -1,4 +1,9 @@
-<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
+<keira-top-bar
+  [selected]="handlerService.selected"
+  [handler]="handlerService"
+  [selectedName]="handlerService.selectedName"
+  [isNew]="handlerService.isNew"
+/>
 
 <div class="container-fluid">
   @if (editorService.loading) {
@@ -30,6 +35,7 @@
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="CreatureDisplayID">CreatureDisplayID</label>
               <input [formControlName]="'CreatureDisplayID'" id="CreatureDisplayID" type="number" class="form-control form-control-sm" />
+              <keira-display-search [kind]="'creature'" [control]="editorService.form.controls.CreatureDisplayID" />
             </div>
 
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">

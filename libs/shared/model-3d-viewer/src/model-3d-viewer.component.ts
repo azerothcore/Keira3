@@ -1,11 +1,25 @@
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, inject, input, OnChanges, OnDestroy, OnInit, signal, SimpleChanges } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  signal,
+  SimpleChanges,
+} from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CREATURE_RACE_OPTION_ICON } from '@keira/shared/acore-world-model';
 import { Option, TableRow } from '@keira/shared/constants';
 import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
 import { GenericOptionSelectorComponent } from '@keira/shared/selectors';
+import { TranslatePipe } from '@ngx-translate/core';
 import * as jquery from 'jquery';
+import { LocalModelViewerComponent } from '@keira/shared/world-viewer';
+import { itemModelFolder, ModelViewerSettingService } from '@keira/shared/wow-data';
 import { BehaviorSubject, catchError, filter, Observable, of, Subscription } from 'rxjs';
 import {
   CHAR_DISPLAYABLE_INVENTORY_TYPE,
@@ -29,13 +43,33 @@ declare const ZamModelViewer: any;
   selector: 'keira-model-3d-viewer',
   templateUrl: './model-3d-viewer.component.html',
   styleUrl: './model-3d-viewer.component.scss',
-  imports: [GenericOptionSelectorComponent, ReactiveFormsModule, FormsModule],
+  imports: [GenericOptionSelectorComponent, ReactiveFormsModule, FormsModule, TranslatePipe, LocalModelViewerComponent],
 })
 export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   private readonly queryService = inject(MysqlQueryService);
   private readonly sqliteQueryService = inject(SqliteQueryService);
   private readonly http = inject(HttpClient);
   private readonly model3DViewerService = inject(Model3DViewerService);
+  private readonly modelViewerSetting = inject(ModelViewerSettingService);
+  /** The game data's model of this display couldn't be shown: Wowhead's is. */
+  protected readonly localFailed = signal(false);
+  /**
+   * Creatures, gameobjects and items held or worn on their own (weapons, shields, shoulders, helmets) are drawn from the
+   * game data when Settings > Game data say so; an item on a character stays Wowhead's.
+   */
+  protected readonly local = computed(
+    () =>
+      this.modelViewerSetting.useGameData() &&
+      !this.localFailed() &&
+      (this.viewerType() === VIEWER_TYPE.NPC ||
+        this.viewerType() === VIEWER_TYPE.OBJECT ||
+        (this.viewerType() === VIEWER_TYPE.ITEM && !this.onCharacter() && !!itemModelFolder(Number(this.itemInventoryType())))),
+  );
+  protected readonly LOCAL_KIND = {
+    [VIEWER_TYPE.NPC]: 'creature',
+    [VIEWER_TYPE.OBJECT]: 'gameobject',
+    [VIEWER_TYPE.ITEM]: 'item',
+  } as Record<number, 'creature' | 'gameobject' | 'item'>;
 
   protected CREATURE_RACE = signal<Option[]>(CREATURE_RACE_OPTION_ICON);
   protected readonly raceControl = new FormControl<Race>(Race.HUMAN);
@@ -48,6 +82,8 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   protected readonly backgroundColor = new FormControl<string>('#000000');
 
   protected readonly showSettings = signal(false);
+  /** A helmet, shoulders or weapon shown worn by a character rather than alone (#3502). */
+  protected readonly onCharacter = signal(false);
 
   private readonly windowRef = window as typeof window & {
     jQuery: any;
@@ -79,6 +115,9 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (changes['displayId']) {
+      this.localFailed.set(false);
+    }
     if (!this.windowRef.jQuery) {
       return;
     }
@@ -94,7 +133,16 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
+  /** The game data hasn't this display: Wowhead's model instead. */
+  protected onLocalFailed(): void {
+    this.localFailed.set(true);
+    setTimeout(() => this.show3Dmodel());
+  }
+
   protected show3Dmodel(): void {
+    if (this.local()) {
+      return;
+    }
     if (this.viewerType() === VIEWER_TYPE.ITEM) {
       this.subscriptions.add(
         this.getItemData$().subscribe((data) => {
@@ -195,8 +243,27 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
     return `${CONTENT_WOTLK}meta/item/${this.displayId()}.json`;
   }
 
+  /** The item can be shown alone or worn: a helmet, shoulders or a weapon (#3502). */
+  protected canShowOnCharacter(itemInventoryType: InventoryType | undefined = this.itemInventoryType()): boolean {
+    return (
+      this.viewerType() === VIEWER_TYPE.ITEM &&
+      !!itemInventoryType &&
+      (WEAPONS_INVENTORY_TYPE.includes(itemInventoryType) ||
+        itemInventoryType === InventoryType.HEAD ||
+        itemInventoryType === InventoryType.SHOULDERS)
+    );
+  }
+
+  protected toggleOnCharacter(on: boolean): void {
+    this.onCharacter.set(on);
+    this.show3Dmodel();
+  }
+
   protected getModelType(itemInventoryType: InventoryType | undefined = this.itemInventoryType()): MODEL_TYPE | -1 {
     const viewerType = this.viewerType();
+    if (this.onCharacter() && this.canShowOnCharacter(itemInventoryType)) {
+      return MODEL_TYPE.CHARACTER;
+    }
     if (viewerType === VIEWER_TYPE.ITEM) {
       if (itemInventoryType && WEAPONS_INVENTORY_TYPE.includes(itemInventoryType)) {
         return MODEL_TYPE.WEAPON;

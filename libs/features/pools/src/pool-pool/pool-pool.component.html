@@ -1,0 +1,106 @@
+<keira-top-bar
+  [selected]="handlerService.selected"
+  [handler]="handlerService"
+  [selectedName]="handlerService.selectedName"
+  [isNew]="handlerService.isNew"
+/>
+
+<div class="container-fluid">
+  @if (editorService.loading) {
+    <span [translate]="'LOADING'"></span>
+  }
+
+  @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
+    <div>
+      <div class="content-block">
+        <keira-query-output
+          [docUrl]="docUrl"
+          [isNew]="editorService.isNew"
+          [diffQuery]="editorService.diffQuery"
+          [fullQuery]="editorService.fullQuery"
+          [error]="editorService.error"
+          [entityTable]="editorService.entityTable"
+          [editorService]="editorService"
+          (executeQuery)="save($event)"
+        />
+      </div>
+      <div class="content-block">
+        <p class="small text-muted mb-2" id="max-limit">
+          {{ 'POOLS.MAX_LIMIT_IS' | translate: { max: maxLimit() ?? '?' } }}
+        </p>
+        @for (problem of problems(); track problem.key) {
+          <div class="alert alert-warning py-1 px-2 small" [id]="'problem-' + problem.key">
+            <i class="fas fa-exclamation-triangle me-1"></i>{{ 'POOLS.PROBLEM_' + problem.key | translate: problem.params }}
+          </div>
+        }
+        <form [formGroup]="editorService.form" class="form-group edit-form">
+          <div class="row">
+            <div class="form-group col-6 col-md-3 col-xl-2">
+              <label class="control-label" for="pool_id">pool_id</label>
+              <input [formControlName]="'pool_id'" id="pool_id" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-6 col-md-3 col-xl-2">
+              <label class="control-label" for="chance">chance</label>
+              <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'POOLS.CHANCE_TOOLTIP' | translate"></i>
+              <input [formControlName]="'chance'" id="chance" type="number" step="any" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-md-6 col-xl-8">
+              <label class="control-label" for="description">description</label>
+              <input [formControlName]="'description'" id="description" class="form-control form-control-sm" />
+            </div>
+            <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
+              <i class="fas fa-exclamation-triangle"></i>
+              <span [innerHTML]="'UNIQUE' | translate: { ENTITY_SECOND_ID_FIELD: editorService.entitySecondIdField }"></span>
+            </div>
+          </div>
+        </form>
+        <div class="row">
+          <div class="col-12">
+            <keira-editor-buttons
+              [selectedRowId]="editorService.selectedRowId"
+              (deleteSelectedRow)="editorService.deleteSelectedRow()"
+              (addNewRow)="editorService.addNewRow()"
+              (duplicateRow)="editorService.addNewRow(true)"
+            />
+            <ngx-datatable
+              id="editor-table"
+              class="bootstrap table table-striped text-center datatable-select"
+              [rows]="editorService.newRows"
+              [headerHeight]="DTCFG.headerHeight"
+              [footerHeight]="DTCFG.footerHeight"
+              [columnMode]="DTCFG.columnMode"
+              [rowHeight]="DTCFG.rowHeight"
+              [selectionType]="DTCFG.selectionType"
+              (select)="editorService.onRowSelection($event)"
+              (keydown.delete)="editorService.deleteSelectedRow()"
+            >
+              <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                  <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="pool_id" prop="pool_id" [minWidth]="80" />
+              <ngx-datatable-column [name]="'POOLS.POOL_NAME' | translate" [minWidth]="200">
+                <ng-template let-row="row" ngx-datatable-cell-template>{{ childName(row.pool_id) }}</ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="chance" prop="chance" [minWidth]="60" />
+              <ngx-datatable-column name="description" prop="description" [minWidth]="160" />
+              <ngx-datatable-column [minWidth]="100" [sortable]="false">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                  <button
+                    type="button"
+                    class="btn btn-link btn-sm py-0"
+                    [id]="'open-' + row.pool_id"
+                    (click)="$event.stopPropagation(); openPool(row.pool_id)"
+                  >
+                    <i class="fa fa-external-link-alt"></i> {{ 'POOLS.OPEN' | translate }}
+                  </button>
+                </ng-template>
+              </ngx-datatable-column>
+            </ngx-datatable>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

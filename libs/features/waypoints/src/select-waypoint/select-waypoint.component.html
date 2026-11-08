@@ -1,0 +1,115 @@
+<keira-top-bar
+  [selected]="handlerService.selected"
+  [handler]="handlerService"
+  [selectedName]="handlerService.selectedName"
+  [isNew]="handlerService.isNew"
+/>
+
+<div class="container-fluid">
+  <div class="content-block">
+    <keira-create
+      [entityTable]="entityTable"
+      [entityIdField]="entityIdField"
+      [customStartingId]="customStartingId"
+      [handlerService]="handlerService"
+      [queryService]="queryService"
+    />
+  </div>
+
+  <div class="content-block">
+    <p class="lead" [translate]="'WAYPOINTS.SELECT_PATH'"></p>
+    <form [formGroup]="selectService.queryForm">
+      <div class="row">
+        <ng-container [formGroup]="selectService.fields">
+          <div class="form-group col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <input [formControlName]="'id'" type="number" class="form-control form-control-sm" id="search-id" placeholder="id" />
+          </div>
+          <div class="form-group col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <input [formControlName]="'point'" type="number" class="form-control form-control-sm" id="search-point" placeholder="point" />
+          </div>
+          <div class="form-group col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <input
+              [formControlName]="'action'"
+              type="number"
+              class="form-control form-control-sm"
+              id="search-action"
+              placeholder="action"
+            />
+          </div>
+          <div class="form-group col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <input
+              [formControlName]="'move_type'"
+              type="number"
+              class="form-control form-control-sm"
+              id="search-move_type"
+              placeholder="move_type"
+            />
+          </div>
+          <div class="form-group col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <input [formControlName]="'delay'" type="number" class="form-control form-control-sm" id="search-delay" placeholder="delay" />
+          </div>
+          <div class="form-group col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <input
+              [formControlName]="'velocity'"
+              type="number"
+              class="form-control form-control-sm"
+              id="search-velocity"
+              placeholder="velocity"
+            />
+          </div>
+          <div class="form-group col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <input
+              [formControlName]="'wpguid'"
+              type="number"
+              class="form-control form-control-sm"
+              id="search-wpguid"
+              placeholder="wpguid"
+            />
+          </div>
+        </ng-container>
+        <div class="form-group col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <input [formControlName]="'limit'" class="form-control form-control-sm" id="limit" placeholder="Limit" />
+        </div>
+        <div class="mb-2 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <button id="search-btn" class="btn btn-primary btn-sm" [disabled]="selectService.queryForm.invalid" (click)="onSearch()">
+            <i class="fa fa-search"></i> {{ 'SEARCH' | translate }}
+          </button>
+        </div>
+      </div>
+      <keira-highlightjs-wrapper [code]="selectService.query" />
+    </form>
+
+    @if (selectService.rows) {
+      <div>
+        <ngx-datatable
+          class="bootstrap table table-striped text-center datatable-select"
+          [rows]="selectService.rows"
+          [headerHeight]="DTCFG.headerHeight"
+          [footerHeight]="DTCFG.footerHeight"
+          [columnMode]="DTCFG.columnMode"
+          [rowHeight]="DTCFG.rowHeight"
+          [limit]="DTCFG.limit"
+          [selectionType]="DTCFG.selectionType"
+          (select)="selectService.onSelect($event)"
+          [offset]="selectService.pageOffset"
+          (page)="onPage($event)"
+        >
+          <ngx-datatable-column name="id" prop="id" [minWidth]="80" />
+          <ngx-datatable-column [name]="'WAYPOINTS.COL_NAME' | translate" prop="name" [minWidth]="200">
+            <ng-template let-row="row" ngx-datatable-cell-template>{{ row.name ?? '—' }}</ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column [name]="'WAYPOINTS.COL_POINTS' | translate" prop="points" [minWidth]="80" />
+          <ngx-datatable-column [name]="'WAYPOINTS.COL_GUID' | translate" prop="guid" [minWidth]="90">
+            <ng-template let-row="row" ngx-datatable-cell-template>{{ row.guid ?? '—' }}</ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column [name]="'WAYPOINTS.COL_ENTRY' | translate" prop="entry" [minWidth]="90">
+            <ng-template let-row="row" ngx-datatable-cell-template>{{ row.entry ?? '—' }}</ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column [name]="'WAYPOINTS.COL_MAP' | translate" prop="map" [minWidth]="80">
+            <ng-template let-row="row" ngx-datatable-cell-template>{{ row.map ?? '—' }}</ng-template>
+          </ngx-datatable-column>
+        </ngx-datatable>
+      </div>
+    }
+  </div>
+</div>

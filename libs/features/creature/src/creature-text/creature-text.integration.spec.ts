@@ -8,7 +8,7 @@ import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { MultiRowEditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
@@ -392,6 +392,83 @@ describe('CreatureText integration tests', () => {
       page.clickBroadcastTextRow(0);
 
       expect(page.query<HTMLButtonElement>('#copy-to-creature-text-btn').disabled).toBe(true);
+    });
+  });
+
+  describe('Filling a row (#3568)', () => {
+    const settle = async (page: CreatureTextPage) => {
+      await page.whenStable();
+      await Promise.resolve();
+      page.detectChanges();
+    };
+
+    it('reads the Text and Language from the BroadcastTextId, the MaleText first then the FemaleText', async () => {
+      const { page, querySpy } = setup(false);
+      page.clickRowOfDatatable(0);
+      page.setInputValueById('BroadcastTextId', 25);
+
+      querySpy.mockReturnValue(of([{ MaleText: 'Hi!', FemaleText: 'Hello!', LanguageID: 7 }]));
+      page.clickElement(page.query<HTMLButtonElement>('#text-from-broadcast-text'));
+      await settle(page);
+      expect(querySpy).toHaveBeenCalledWith('SELECT `MaleText`, `FemaleText`, `LanguageID` FROM `broadcast_text` WHERE `ID` = 25');
+      expect(page.getInputById('Text').value).toBe('Hi!');
+      expect(page.getInputById('Language').value).toBe('7');
+
+      querySpy.mockReturnValue(of([{ MaleText: '', FemaleText: 'Hello!', LanguageID: 0 }]));
+      page.clickElement(page.query<HTMLButtonElement>('#text-from-broadcast-text'));
+      await settle(page);
+      expect(page.getInputById('Text').value).toBe('Hello!');
+      expect(page.query('#text-problem', false)).toBeFalsy();
+    });
+
+    it('says why the Text cannot be read', async () => {
+      const { page, querySpy } = setup(false);
+      page.clickRowOfDatatable(0);
+
+      page.clickElement(page.query<HTMLButtonElement>('#text-from-broadcast-text'));
+      await settle(page);
+      expect(page.query('#text-problem').textContent).toContain('CREATURE.TEXT.NO_BROADCAST_TEXT_ID');
+
+      page.setInputValueById('BroadcastTextId', 99);
+      querySpy.mockReturnValue(of(undefined as never));
+      page.clickElement(page.query<HTMLButtonElement>('#text-from-broadcast-text'));
+      await settle(page);
+      expect(page.query('#text-problem').textContent).toContain('CREATURE.TEXT.BROADCAST_TEXT_NOT_FOUND');
+
+      vi.spyOn(console, 'error').mockImplementation(() => undefined);
+      querySpy.mockReturnValue(throwError(() => new Error('down')));
+      page.clickElement(page.query<HTMLButtonElement>('#text-from-broadcast-text'));
+      await settle(page);
+      expect(page.query('#text-problem').textContent).toContain('CREATURE.TEXT.BROADCAST_TEXT_UNREADABLE');
+    });
+
+    it("uses the creature's name as the comment, read from its template when not known", async () => {
+      const { page, handlerService, queryService } = setup(false);
+      const byId = vi.spyOn(queryService, 'getCreatureNameById').mockResolvedValue('');
+      page.clickRowOfDatatable(0);
+
+      handlerService.selectedName = '';
+      page.clickElement(page.query<HTMLButtonElement>('#comment-from-creature'));
+      await settle(page);
+      expect(page.getInputById('comment').value).toBe('');
+      expect(byId).toHaveBeenCalledWith('1234');
+
+      byId.mockResolvedValue('Hogger');
+      page.clickElement(page.query<HTMLButtonElement>('#comment-from-creature'));
+      await settle(page);
+      expect(page.getInputById('comment').value).toBe('Hogger');
+
+      handlerService.selectedName = 'Hogger the Second';
+      page.clickElement(page.query<HTMLButtonElement>('#comment-from-creature'));
+      await settle(page);
+      expect(page.getInputById('comment').value).toBe('Hogger the Second');
+    });
+
+    it('keeps the buttons disabled while no row is selected', () => {
+      const { page } = setup(false);
+
+      expect(page.query<HTMLButtonElement>('#text-from-broadcast-text').disabled).toBe(true);
+      expect(page.query<HTMLButtonElement>('#comment-from-creature').disabled).toBe(true);
     });
   });
 

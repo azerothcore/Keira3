@@ -1,0 +1,50 @@
+<nav class="keira-tab-bar" data-testid="tab-bar">
+  @for (tab of tabs.tabs(); track tab.id) {
+    <div class="keira-tab" [class.active]="tab.id === tabs.activeId()" [attr.data-testid]="'tab-' + tabs.testId(tab)">
+      <button type="button" class="keira-tab-open" [attr.data-testid]="'tab-open-' + tabs.testId(tab)" (click)="tabs.show(tab)">
+        <span>{{ tabs.titleKey(tab) | translate }}</span>
+        @if (tabs.number(tab); as number) {
+          <span class="keira-tab-number">{{ number }}</span>
+        }
+        @if (tabs.pageName(tab); as page) {
+          <small>{{ page }}</small>
+        }
+      </button>
+      <button
+        type="button"
+        class="keira-tab-close"
+        [attr.data-testid]="'tab-close-' + tabs.testId(tab)"
+        [title]="'CLOSE_TAB' | translate"
+        (click)="tabs.close(tab)"
+      >
+        <i class="fa fa-times"></i>
+      </button>
+    </div>
+  }
+  <div class="keira-tab-launcher">
+    <button
+      type="button"
+      class="keira-tab-new"
+      data-testid="tab-launcher"
+      [title]="'TABS.OPEN' | translate"
+      (click)="launcherOpen.set(!launcherOpen())"
+    >
+      <i class="fa fa-plus"></i>
+    </button>
+    @if (launcherOpen()) {
+      <div class="keira-tab-grid" data-testid="tab-launcher-grid">
+        @for (item of sections; track item.section) {
+          <button
+            type="button"
+            class="keira-tab-grid-item"
+            [class.open]="tabs.isOpen(item.section)"
+            [attr.data-testid]="'tab-launch-' + (item.section || 'dashboard')"
+            (click)="launch(item.section)"
+          >
+            {{ tabs.titleKey(item) | translate }}
+          </button>
+        }
+      </div>
+    }
+  </div>
+</nav>

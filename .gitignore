@@ -75,4 +75,4 @@ Thumbs.db
 
 .nx/cache
 .angular
-**/node_modules/*
+**/node_modules/*coverage-tmp

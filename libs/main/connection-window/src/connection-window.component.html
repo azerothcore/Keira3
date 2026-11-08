@@ -38,6 +38,15 @@
             <input [formControlName]="'database'" class="form-control" id="database" />
           </div>
           <div class="form-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text"
+                ><i class="fas fa-hourglass-half"></i>{{ 'CONNECTION_WINDOW.TIMEOUT' | translate }}
+                <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CONNECTION_WINDOW.TIMEOUT_TOOLTIP' | translate"></i
+              ></span>
+            </div>
+            <input [formControlName]="'connectTimeout'" type="number" min="1000" step="1000" class="form-control" id="connect-timeout" />
+          </div>
+          <div class="form-group">
             <div class="form-check">
               <input class="form-check-input" type="checkbox" id="ssl-enabled" [formControlName]="'sslEnabled'" />
               <label class="form-check-label text-white" for="ssl-enabled">

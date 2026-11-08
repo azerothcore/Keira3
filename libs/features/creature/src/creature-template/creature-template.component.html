@@ -1,4 +1,9 @@
-<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
+<keira-top-bar
+  [selected]="handlerService.selected"
+  [handler]="handlerService"
+  [selectedName]="handlerService.selectedName"
+  [isNew]="handlerService.isNew"
+/>
 
 <div class="container-fluid editor-with-preview" [class.show-preview]="showCreaturePreview">
   @if (editorService.loading) {
@@ -64,6 +69,7 @@
                 [disabled]="editorService.form.controls.faction.disabled"
               />
               <input [formControlName]="'faction'" id="faction" type="number" class="form-control form-control-sm" />
+              <keira-faction-name [control]="editorService.form.controls.faction" [template]="true" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="npcflag">npcflag</label>
@@ -193,11 +199,13 @@
                   <label class="control-label" for="mingold">mingold</label>
                   <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.MINGOLD' | translate"></i>
                   <input [formControlName]="'mingold'" id="mingold" type="number" class="form-control form-control-sm" />
+                  <keira-money-input [control]="editorService.form.controls.mingold" />
                 </div>
                 <div class="form-group col-12 col-sm-6 col-md-6 col-lg-3 col-xl-6">
                   <label class="control-label" for="maxgold">maxgold</label>
                   <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'CREATURE.TEMPLATE.MAXGOLD' | translate"></i>
                   <input [formControlName]="'maxgold'" id="maxgold" type="number" class="form-control form-control-sm" />
+                  <keira-money-input [control]="editorService.form.controls.maxgold" />
                 </div>
               </div>
             </div>
@@ -400,6 +408,7 @@
               <input [formControlName]="'detection_range'" id="detection_range" type="number" class="form-control form-control-sm" />
             </div>
           </div>
+          <keira-creature-final-stats [form]="editorService.form" />
         </div>
         <!-- <div class="content-block">
         <span class="category-title">

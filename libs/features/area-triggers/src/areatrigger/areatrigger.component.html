@@ -1,0 +1,76 @@
+<keira-top-bar
+  [selected]="handlerService.selected"
+  [handler]="handlerService"
+  [selectedName]="handlerService.selectedName"
+  [isNew]="handlerService.isNew"
+/>
+
+<div class="container-fluid">
+  @if (editorService.loading) {
+    <span [translate]="'LOADING'"></span>
+  }
+
+  @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
+    <div>
+      <p class="small text-muted mt-2" id="editor-help">{{ 'EDITORS_HELP.AREATRIGGER' | translate }}</p>
+      <div class="content-block">
+        <keira-query-output
+          [docUrl]="docUrl"
+          [isNew]="editorService.isNew"
+          [diffQuery]="editorService.diffQuery"
+          [fullQuery]="editorService.fullQuery"
+          [error]="editorService.error"
+          [entityTable]="editorService.entityTable"
+          [editorService]="editorService"
+          (executeQuery)="save($event)"
+        />
+      </div>
+      <form [formGroup]="editorService.form" class="form-group edit-form">
+        <div class="content-block">
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2">
+              <label class="control-label" for="f-entry">entry</label>
+              <input [formControlName]="'entry'" id="f-entry" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2">
+              <label class="control-label" for="f-map">map</label>
+              <input [formControlName]="'map'" id="f-map" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2">
+              <label class="control-label" for="f-x">x</label>
+              <input [formControlName]="'x'" id="f-x" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2">
+              <label class="control-label" for="f-y">y</label>
+              <input [formControlName]="'y'" id="f-y" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2">
+              <label class="control-label" for="f-z">z</label>
+              <input [formControlName]="'z'" id="f-z" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2">
+              <label class="control-label" for="f-radius">radius</label>
+              <input [formControlName]="'radius'" id="f-radius" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2">
+              <label class="control-label" for="f-length">length</label>
+              <input [formControlName]="'length'" id="f-length" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2">
+              <label class="control-label" for="f-width">width</label>
+              <input [formControlName]="'width'" id="f-width" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2">
+              <label class="control-label" for="f-height">height</label>
+              <input [formControlName]="'height'" id="f-height" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2">
+              <label class="control-label" for="f-orientation">orientation</label>
+              <input [formControlName]="'orientation'" id="f-orientation" type="number" class="form-control form-control-sm" />
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  }
+</div>

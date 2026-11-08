@@ -1,0 +1,4593 @@
+import { chanceProblems, PoolProblem } from '@keira/shared/utils';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { rollWeather, Season, seasonOf } from './weather';
+import { debounceTime, skip } from 'rxjs';
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import packageInfo from '../../../../package.json';
+import {
+  afterNextRender,
+  ChangeDetectionStrategy,
+  DestroyRef,
+  isDevMode,
+  Injector,
+  Component,
+  computed,
+  effect,
+  ElementRef,
+  inject,
+  OnInit,
+  signal,
+  untracked,
+  viewChild,
+  WritableSignal,
+} from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-components';
+import {
+  scanSpawnPositions,
+  SpawnScanLevel,
+  SpawnScanResult,
+  ContextRequest,
+  ExtraBuilding,
+  GROUND_KEY,
+  GizmoMode,
+  CONTROL_ACTIONS,
+  CONTROL_GROUPS,
+  ControlAction,
+  controlFor,
+  inputLabel,
+  inputOf,
+  isModifierCode,
+  NAVIGATION_ACTIONS,
+  MOUSE_INPUTS,
+  DOUBLE_TAP,
+  DOUBLE_TAP_MS,
+  GamepadInputService,
+  NavMeshRebuildRequest,
+  NavMeshRebuildState,
+  NavMeshTileInfo,
+  ObjectMoved,
+  parseWaypointKey,
+  PathProbeRequest,
+  PathProbeResult,
+  PickResult,
+  waypointKey,
+  WaypointPath,
+  WorldControlsSettingsService,
+  WorldRenderSettingsService,
+  WorldAreaTrigger,
+  WorldSpawn,
+  WorldViewerComponent,
+  spawnModelBox,
+  WAYPOINT_CHECK_COLORS,
+  WaypointCheck,
+  WaypointCheckRequest,
+  WorldLink,
+  WorldMarker,
+  MovementSimulation,
+  SimulationFollower,
+  WorldStyleService,
+  colorNumber,
+  WorldMapComponent,
+  WorldMapDot,
+  GameMapPoi,
+  GameMapPortal,
+  GameMapSpawnLevel,
+  GameMapTeleport,
+  GameMapTransport,
+  GameDataFoldersComponent,
+  GameMapComponent,
+  RENDER_SCALES,
+  WorldBoundary,
+  WeatherKind,
+  WorldRenderSettings,
+  WorldWeather,
+} from '@keira/shared/world-viewer';
+import {
+  CacheUsage,
+  ScriptSpawn,
+  TILE_SIZE,
+  tileCenter,
+  TileCoord,
+  tileKey,
+  tilesInBounds,
+  WowClientService,
+  perfTime,
+  setPerfLog,
+  perfLogActive,
+  perfNote,
+  gameMapPages,
+  perfLogFileName,
+  MapDifficulty,
+  captureProblems,
+  describeError,
+  logFact,
+  logProblem,
+  describeFaction,
+  FactionData,
+  WowDataCacheService,
+  WowMapPreloadService,
+  CacheSection,
+  WowDataSettingsService,
+  WowMap,
+  mapKind,
+  EXPANSIONS,
+  WowZone,
+  WorldPosition,
+  AreaTriggerInfo,
+  MMAP_CONFIG_KEYS,
+  mmapOverrideYaml,
+  MmapRecastConfig,
+  serverHeightAt,
+  TaxiNode,
+  WorldBounds,
+  worldToTile,
+  TaxiPath,
+  PLAYER_RACES,
+  BossBoundary,
+  describeBoundary,
+} from '@keira/shared/wow-data';
+import { ElectronService, ServerSettingsService } from '@keira/shared/common-services';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TooltipDirective } from 'ngx-bootstrap/tooltip';
+import { NgTemplateOutlet } from '@angular/common';
+import { ClipboardService } from 'ngx-clipboard';
+import { ToastrService } from 'ngx-toastr';
+import { ChangesSnapshot } from './world-editor-changes';
+import { LEGEND } from './legend';
+import { WorldEditorSessionService } from './world-editor-session.service';
+import { WORLD_EDITOR_LINKS, WorldEditorLoot } from '@keira/shared/constants';
+import {
+  Quaternion,
+  PlaceTemplate,
+  AreaPath,
+  EditorTool,
+  LayerVisibility,
+  objectRange,
+  ObjectTemplate,
+  Requirement,
+  WorldZone,
+  ZoneKind,
+  pathKey,
+  pathLabel,
+  FormationMember,
+  Graveyard,
+  SPAWN_FIELDS,
+  LAYER_SWITCHES,
+  SPAWN_LOAD_RADIUS,
+  SPAWN_RELOAD_DISTANCE,
+  TELE_SEARCH_DELAY,
+  OVERLAY_SWITCHES,
+  Teleport,
+  PoolMember,
+  PoolSpawn,
+  SpawnQuest,
+  SpawnRecord,
+  spawnKey,
+  SpawnType,
+  TeleRow,
+  WaypointRecord,
+  Player,
+  playerLabel,
+} from './world-editor.model';
+import { WorldEditorService } from './world-editor.service';
+import { GpsLocation, parseGpsOutput } from './gps';
+import { describeWaypoint, WaypointSaiRow, WaypointScriptStep } from './waypoint-info';
+import { arrayPositions, boxExtent, STACK_SIDES, StackSide, stackPosition } from './stack';
+import { EMPTY_TRAVEL, TravelData, travelOverlays } from './travel';
+import { copySpawns, followPlacement, newSpawnFrom, pastedSpawn } from './group-edit';
+import { WaypointEdits, WaypointPanelComponent } from './waypoint-panel.component';
+import { CreatureSelectorBtnComponent, GameobjectSelectorBtnComponent } from '@keira/shared/selectors';
+import { PoolPanelComponent } from './pool-panel.component';
+import { SpawnPanelComponent } from './spawn-panel.component';
+import { SpawnTreeComponent } from './spawn-tree.component';
+import { StylePanelComponent } from './style-panel.component';
+import { BUTTON_STYLES, ButtonLabelComponent, ButtonStyle, buttonTitle, loadButtonStyle, saveButtonStyle } from './toolbar-buttons';
+import { findSpawnProblems, SpawnProblem } from './spawn-problems';
+import { pathSimulation, wanderSimulation } from './simulation-plan';
+import { PathEnding, pathEnding, PathStart } from './path-ending';
+import {
+  FOLLOW_LEADER,
+  Formation,
+  formationKeys,
+  formationLinks,
+  formationOf,
+  formationSlots,
+  formationTags,
+  groupDetails,
+  poolOverlays,
+} from './spawn-groups';
+import { MAP_SORT_KEYS, MapSortKey, savePickerSort, SortRule, sortItems, toggleSort, ZONE_SORT_KEYS, ZoneSortKey } from './picker-sort';
+import { isSpawnVisible, loadSpawnFilters, phaseBits, saveSpawnFilters, SpawnFilters, spawnEvents } from './spawn-filters';
+import { AssetBrowserComponent, AssetPick, AssetRequest } from './eden/asset-browser.component';
+import { EdenMenuBarComponent } from './eden/eden-menu-bar.component';
+import { EdenAction } from './eden/eden-menu';
+import {
+  gizmoGrid,
+  loadTransform,
+  MOVE_GRID_SIZES,
+  ROTATE_GRID_SIZES,
+  saveTransform,
+  stepMoveSize,
+  TransformSettings,
+} from './eden/transform-grid';
+import { Composition, compositionFrom, CompositionsService } from './eden/compositions';
+import { commentIdOf, commentMarkers, CommentsService, EditorComment } from './eden/comments';
+import { SniffDbService, SniffSpawn } from '@keira/shared/db-layer';
+import { distinctSniffs, SNIFF_RADIUS, SniffEvidence, sniffEvidence, sniffFields, sniffKey, sniffMarkers } from './sniff-evidence';
+import { EdenLights, EdenStatusBarComponent } from './eden/eden-status-bar.component';
+
+/** "Marshal McBride - Creature (GUID: 1, Entry: 197)", as shown on hover and in the selection panel. */
+export function spawnTitle(spawn: { type: SpawnType; name: string; guid: number; entry: number }): string {
+  const type = spawn.type === 'creature' ? 'Creature' : 'GameObject';
+  return `${spawn.name || spawn.entry} - ${type} (GUID: ${spawn.guid}, Entry: ${spawn.entry})`;
+}
+
+/** Creatures walking each path ("Name (guid)"), by path id. */
+function pathOwners(spawns: SpawnRecord[]): Map<number, string[]> {
+  const owners = new Map<number, string[]>();
+  for (const spawn of spawns) {
+    for (const pathId of pathsOf(spawn)) {
+      owners.set(pathId, [...(owners.get(pathId) ?? []), `${spawn.name || spawn.entry} (${spawn.guid})`]);
+    }
+  }
+  return owners;
+}
+
+/** The paths a spawn walks: its `waypoint_data` path, then the paths its SmartAI starts (each once). */
+function pathsOf(spawn: SpawnRecord): number[] {
+  return spawn.saiPaths ? [...new Set([...(spawn.pathId ? [spawn.pathId] : []), ...spawn.saiPaths])] : spawn.pathId ? [spawn.pathId] : [];
+}
+
+/** The number typed in a field, when it is one and not negative (empty fields give nothing). */
+function positiveNumber(event: Event): number | undefined {
+  const text = (event.target as HTMLInputElement).value;
+  const value = Number(text);
+  return text !== '' && Number.isFinite(value) && value >= 0 ? value : undefined;
+}
+
+/** Quests shown on hover before "+N more": the rest while Alt is held. */
+const HOVER_QUESTS = 1;
+/** A rotation column as the editor writes it (4 decimals). */
+const round4 = (value: number): number => Math.round(value * 10_000) / 10_000;
+
+/** "3175.5 MB (3.18 GB)". */
+export function formatSize(bytes: number): string {
+  return `${(bytes / 1_000_000).toFixed(1)} MB (${(bytes / 1_000_000_000).toFixed(2)} GB)`;
+}
+
+const LAST_VIEW_KEY = 'keira3.worldEditor.lastView';
+/** Actions the editor itself runs (the view runs the camera moves and the marker). */
+const EDITOR_ACTIONS = [
+  'undo',
+  'redo',
+  'delete',
+  'toggleGizmo',
+  'cancel',
+  'copy',
+  'paste',
+  'worldMap',
+  'gameMap',
+  'compass',
+  'resetNorth',
+  'topView',
+  'tree',
+  'widgetNone',
+  'widgetMove',
+  'widgetRotate',
+  'toggleGrid',
+  'gridSmaller',
+  'gridBigger',
+  'assetsCreatures',
+  'assetsGameobjects',
+  'assetsCompositions',
+  'searchAssets',
+] as const;
+/** Scan the whole map: results listed at most, and the colour of each level. */
+const SCAN_LIST_SIZE = 300;
+const SCAN_COLORS: Record<SpawnScanLevel, number> = { ok: 0x2ecc71, warn: 0xf1c40f, bad: 0xe74c3c };
+/**
+ * The name of a difficulty (its index is the spawnMask bit): a raid's 10 / 25 Normal / Heroic, a dungeon's Normal /
+ * Heroic (a dungeon's second difficulty, a raid's third and fourth, are the heroic ones).
+ */
+export function difficultyLabel({ difficulty, maxPlayers }: MapDifficulty): string {
+  const raid = maxPlayers > 5;
+  const heroic = raid ? difficulty >= 2 : difficulty === 1;
+  return raid && (maxPlayers === 10 || maxPlayers === 25)
+    ? `WORLD_EDITOR.DIFFICULTY_${maxPlayers}${heroic ? 'H' : 'N'}`
+    : `WORLD_EDITOR.DIFFICULTY_${heroic ? 'HEROIC' : 'NORMAL'}`;
+}
+/** Ask before deleting ("false" once told not to). */
+const CONFIRM_DELETE_KEY = 'keira3.worldEditor.confirmDelete';
+
+/** The order of the kinds of map when sorting by type (as on the world map's atlas). */
+const MAP_KIND_ORDER = ['world', 'dungeon', 'raid', 'battleground', 'arena', 'transport'];
+
+/** Words each expansion is found by in the map picker (by Map.dbc ExpansionID). */
+const EXPANSION_SEARCH = ['vanilla classic', 'tbc the burning crusade', 'wotlk wrath of the lich king'];
+
+interface LastView extends WorldPosition {
+  mapId: number;
+}
+
+/** Map and camera position the editor was last looking at, saved on this computer. */
+function loadLastView(): LastView | undefined {
+  try {
+    const view = JSON.parse(localStorage.getItem(LAST_VIEW_KEY) ?? 'null') as Partial<LastView> | null;
+    const valid = view && [view.mapId, view.x, view.y, view.z].every((value) => typeof value === 'number' && Number.isFinite(value));
+    return valid ? (view as LastView) : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function saveLastView(view: LastView): void {
+  localStorage.setItem(LAST_VIEW_KEY, JSON.stringify(view));
+}
+
+/** How many steps can be undone. */
+const HISTORY_SIZE = 100;
+
+type BrightnessKey = 'brightnessNight' | 'brightnessMorning' | 'brightnessDay' | 'brightnessEvening';
+/** Minutes in a day. */
+const DAY_MINUTES = 1440;
+
+type RenderFlagKey =
+  | 'showRoofs'
+  | 'showBuildings'
+  | 'showDoodads'
+  | 'showIndoor'
+  | 'showInvisible'
+  | 'showMapEdge'
+  | 'showLiquidInfo'
+  | 'showMouseOver'
+  | 'showTileGrid'
+  | 'showSteepSlopes'
+  | 'showContours'
+  | 'showWireframe'
+  | 'showSeaLevel'
+  | 'showPathToFirst'
+  | 'showPathFromLast'
+  | 'showEquipment'
+  | 'animateIdle'
+  | 'animateWalk'
+  | 'showTrees'
+  | 'showProps'
+  | 'showCreatureModels'
+  | 'showGameobjectModels'
+  | 'showModels'
+  | 'showFacingArrows'
+  | 'showWanderRadius'
+  | 'showBounds'
+  | 'showAggroRadius'
+  | 'showAssistRadius'
+  | 'showStats'
+  | 'perfLog'
+  | 'solidSelection'
+  | 'showCollision'
+  | 'showNavMesh'
+  | 'zoneLighting'
+  | 'fog'
+  | 'edgeFog'
+  | 'markerOnLiquid'
+  | 'skybox'
+  | 'skyboxSpin'
+  | 'timeFollowsClock'
+  | 'compass'
+  | 'compassNorthUp'
+  | 'compassNorthArrow'
+  | 'compassPoints'
+  | 'compassDegrees'
+  | 'compassMils'
+  | 'advancedDistances'
+  | 'loadWholeZone';
+type RenderDistanceKey =
+  'drawDistance' | 'largeDoodadDistance' | 'smallDoodadDistance' | 'creatureDistance' | 'gameobjectDistance' | 'memoryCapMb' | 'gpuCapMb';
+
+/**
+ * 3D world editor: shows the terrain of a map with its creature/gameobject spawns and waypoint paths, and turns
+ * placing, moving, rotating and deleting them into SQL that the user reviews before executing.
+ */
+/** The array tool places at most this many copies at once. */
+const MAX_ARRAY = 50;
+/** The panels under the toolbar: one open at a time. */
+type Panel = 'map' | 'gameMap' | 'filters' | 'view' | 'controls' | 'settings' | 'legend' | 'style';
+/** A player's combat reach, and the shortest melee range the server uses (NOMINAL_MELEE_RANGE). */
+const PLAYER_COMBAT_REACH = 1.5;
+/** The context menu keeps this far from the window's edges (px). */
+const CONTEXT_MARGIN = 8;
+
+/** Where a context menu goes on the page (fixed): by its top-left corner, or its other corners past the middle. */
+export interface ContextPlacement {
+  left?: number;
+  right?: number;
+  top?: number;
+  bottom?: number;
+  maxHeight: number;
+}
+
+/**
+ * Places a context menu opened at (`x`, `y`) in the view on the page, so it's never cut off: in the right half of the
+ * window it opens to the left of the cursor, in the lower half upwards, and it scrolls when taller than the room left.
+ */
+export function contextPlacement(view: { left: number; top: number }, at: { x: number; y: number }): ContextPlacement {
+  const [x, y] = [view.left + at.x, view.top + at.y];
+  const [width, height] = [window.innerWidth, window.innerHeight];
+  const across = x > width / 2 ? { right: width - x } : { left: x };
+  const down = y > height / 2 ? { bottom: height - y, maxHeight: y - CONTEXT_MARGIN } : { top: y, maxHeight: height - y - CONTEXT_MARGIN };
+  return { ...across, ...down };
+}
+/** How far a creature pulled into a fight calls the ones around it to help (the server's default CreatureFamilyAssistanceRadius). */
+const ASSIST_RADIUS = 10;
+/** What In-game view turns off. */
+const IN_GAME_VIEW: Partial<WorldRenderSettings> = {
+  showWanderRadius: false,
+  showBounds: false,
+  showAggroRadius: false,
+  showAssistRadius: false,
+  showFacingArrows: false,
+  showCollision: false,
+  showNavMesh: false,
+  showInvisible: false,
+  showMapEdge: false,
+  showMouseOver: false,
+  showTileGrid: false,
+  showSteepSlopes: false,
+  showContours: false,
+  showWireframe: false,
+  showSeaLevel: false,
+  showStats: false,
+  compass: false,
+};
+/** A player's run and walk speed (yards a second). */
+const PLAYER_RUN_SPEED = 7;
+const PLAYER_WALK_SPEED = 2.5;
+
+/** Seconds as "1m 05s". */
+export function travelTime(seconds: number): string {
+  const whole = Math.round(seconds);
+  return `${Math.floor(whole / 60)}m ${String(whole % 60).padStart(2, '0')}s`;
+}
+const MIN_MELEE_RANGE = 5;
+/** A creature's bounding radius and combat reach (creature_model_info), at its scale. */
+const spawnBounds = (spawn: SpawnRecord): { radius: number; reach: number } | undefined =>
+  spawn.boundingRadius
+    ? // (the service reads both together)
+      { radius: spawn.boundingRadius * (spawn.scale ?? 1), reach: (spawn.combatReach as number) * (spawn.scale ?? 1) }
+    : undefined;
+/** A dungeon is loaded whole: its building's extents, and this much around them (yards). */
+const INSTANCE_PADDING = 50;
+/** Colours of the boss boundaries, one per boss. */
+const BOUNDARY_COLORS = [0xff9ff3, 0x48dbfb, 0xfeca57, 0x1dd1a1, 0x5f27cd, 0xff6b6b];
+/** The colours of the areas with a range, by kind. */
+export const ZONE_COLORS: Record<ZoneKind, number> = {
+  capture: 0xffa500,
+  start: 0x3b82f6,
+  trap: 0xef4444,
+  focus: 0xf59e0b,
+  damage: 0xdc2626,
+  flag: 0x22c55e,
+  fishing: 0x06b6d4,
+  aura: 0xa855f7,
+  sight: 0xec4899,
+};
+/** The keys of the gameobjects scripts spawn (drawn, never selected). */
+const SCRIPT_OBJECT_KEY = 'script-object:';
+/** How often the players are read again (ms). */
+export const PLAYERS_REFRESH_MS = 10_000;
+const PLAYER_COLOR = 0x4dff88;
+const OFFLINE_PLAYER_COLOR = 0x9aa0a6;
+/** Which layer shows each kind of area. */
+const ZONE_LAYERS: Record<ZoneKind, keyof LayerVisibility> = {
+  capture: 'captureZones',
+  start: 'captureZones',
+  trap: 'objectRanges',
+  focus: 'objectRanges',
+  damage: 'objectRanges',
+  flag: 'objectRanges',
+  fishing: 'objectRanges',
+  aura: 'objectRanges',
+  sight: 'sightRanges',
+};
+/** Flight masters and flight paths (their own layer) among the travel overlays. */
+const isFlight = (key: string): boolean => key.startsWith('flight:') || key.startsWith('taxi:');
+
+/** The kind of build Keira is (for the log): a development one, or a release (production) one. */
+export function buildKind(dev = isDevMode()): 'development' | 'release' {
+  return dev ? 'development' : 'release';
+}
+
+/** AzerothCore's wiki, from the Help menu. */
+export const WORLD_EDITOR_WIKI = 'https://www.azerothcore.org/wiki/';
+
+@Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'keira-world-editor',
+  templateUrl: './world-editor.component.html',
+  styleUrls: ['./world-editor.component.scss', './world-editor-pickers.scss'],
+  imports: [
+    AssetBrowserComponent,
+    EdenMenuBarComponent,
+    EdenStatusBarComponent,
+    NgTemplateOutlet,
+    TooltipDirective,
+    ReactiveFormsModule,
+    TranslatePipe,
+    WorldViewerComponent,
+    GameDataFoldersComponent,
+    WorldMapComponent,
+    GameMapComponent,
+    HighlightjsWrapperComponent,
+    WaypointPanelComponent,
+    SpawnPanelComponent,
+    PoolPanelComponent,
+    CreatureSelectorBtnComponent,
+    GameobjectSelectorBtnComponent,
+    SpawnTreeComponent,
+    StylePanelComponent,
+    ButtonLabelComponent,
+  ],
+  host: {
+    '(keydown)': 'onKeydown($event)',
+    '(keyup)': 'onKeyup($event)',
+    '(document:pointerdown)': 'onDocumentPointerDown($event)',
+    '(document:fullscreenchange)': 'onFullscreenChange()',
+  },
+})
+export class WorldEditorComponent implements OnInit {
+  /** What the editor is in the middle of, kept across visits. */
+  private readonly session = inject(WorldEditorSessionService);
+  private readonly service = inject(WorldEditorService);
+  protected readonly client = inject(WowClientService);
+  private readonly translate = inject(TranslateService);
+  protected readonly electron = inject(ElectronService);
+  protected readonly settings = inject(WowDataSettingsService);
+  protected readonly renderSettings = inject(WorldRenderSettingsService);
+  protected readonly cache = inject(WowDataCacheService);
+  /** The folder performance logs go to (the cache's); undefined outside the desktop app. */
+  protected readonly perfLogPath = computed(() => this.cache.root());
+  /**
+   * View > Write a performance log: each time it's turned on, a new file in that folder named
+   * `dd_mm_yyyy_<commit>_<keira version>_hh_mm_ss.log`, appended to while on.
+   */
+  // (its own signal: other settings changing don't start a new file)
+  private readonly perfLogOn = computed(() => this.renderSettings.settings().perfLog);
+  private readonly perfLog = effect(() => {
+    const folder = this.perfLogOn() ? this.perfLogPath() : undefined;
+    untracked(() => {
+      const path = folder && `${folder}/${perfLogFileName(new Date(), this.gitCommit(), packageInfo.version)}`;
+      if (path) {
+        this.logStartFacts();
+      }
+      setPerfLog(path ? (text) => this.electron.fs.appendFileSync(path, text) : undefined);
+      this.loggedSettings = undefined;
+      this.logSettings();
+    });
+  });
+  /** Warnings and errors (the console's, and the ones nothing caught) go in the log while the editor is open. */
+  private readonly stopCapture = (() => {
+    const release = captureProblems();
+    inject(DestroyRef).onDestroy(release);
+    return release;
+  })();
+  /** What the log starts with: Keira and the system, the game data and server folders, the cache and the database. */
+  private logStartFacts(): void {
+    const process = (globalThis as { process?: { versions?: Record<string, string>; getSystemVersion?: () => string } }).process;
+    const versions = process?.versions;
+    logFact('keira', `${packageInfo.version} | commit ${this.gitCommit()} | ${buildKind()} build`);
+    logFact(
+      'system',
+      [
+        navigator.userAgent,
+        ...(versions?.['electron'] ? [`Electron ${versions['electron']}, Chrome ${versions['chrome']}, Node ${versions['node']}`] : []),
+        ...(process?.getSystemVersion ? [`OS version ${process.getSystemVersion()}`] : []),
+        `${navigator.hardwareConcurrency} threads`,
+        `screen ${screen.width}×${screen.height}`,
+      ].join(' | '),
+    );
+    const { clientPath, serverDataPath } = this.settings.paths();
+    const exists = (path: string) => {
+      try {
+        return this.electron.fs.existsSync(path);
+      } catch {
+        return false;
+      }
+    };
+    const serverFolders = ['maps', 'vmaps', 'mmaps', 'dbc'].map(
+      (folder) => `${folder} ${exists(`${serverDataPath}/${folder}`) ? 'yes' : 'MISSING'}`,
+    );
+    logFact(
+      'folders',
+      `client ${clientPath || 'not set'} (Data ${clientPath && exists(`${clientPath}/Data`) ? 'found' : 'MISSING'}) | ` +
+        `server data ${serverDataPath ? `${serverDataPath} (${serverFolders.join(', ')})` : 'not set'}`,
+    );
+    logFact(
+      'cache',
+      // (the log lives in the cache's folder: there is one)
+      this.cache.enabled() ? `${this.cache.root()} | up to ${(this.cache.maxBytes() / 1e9).toFixed(1)} GB` : 'turned off',
+    );
+    void this.service.describeDatabase().then(
+      (text) => logFact('database', text),
+      (error) => logFact('database', `could not be described: ${describeError(error)}`),
+    );
+  }
+  /** Where the editor is, and what's selected, as it changes. */
+  private readonly logWhere = effect(() => {
+    const id = this.mapId();
+    const directory = this.mapDirectory();
+    // (once the maps are known)
+    untracked(() => directory && perfNote(`map: ${id} ${this.maps().find((m) => m.id === id)?.name} (${directory})`));
+  });
+  private readonly logZone = effect(() => {
+    const zoneId = this.zoneId();
+    untracked(() => perfNote(`zone: ${zoneId} ${this.zones().find((zone) => zone.areaId === zoneId)?.name ?? ''}`.trim()));
+  });
+  private readonly logSelection = effect(() => {
+    const key = this.selectedKey();
+    const tool = this.tool();
+    untracked(() => perfNote(`selected: ${key ?? '-'} | tool ${tool}`));
+  });
+  /** An error shown to the user, and written in the log. */
+  private showError(error: unknown, title = 'World Editor'): void {
+    logProblem('error', `${title}: ${describeError(error)}`);
+    this.toastr.error((error as Error).message, title);
+  }
+  /** A warning shown to the user, and written in the log. */
+  private showWarning(message: string, title = 'World Editor'): void {
+    logProblem('warning', `${title}: ${message}`);
+    this.toastr.warning(message, title);
+  }
+  /** For something read that the editor does without when it fails: `fallback`, with the reason in the console (so the log). */
+  private quietly<T>(what: string, fallback: T): (error: unknown) => T {
+    return (error) => {
+      console.warn(`[World Editor] Could not ${what}:`, error);
+      return fallback;
+    };
+  }
+  /** The settings in use go in the performance log when it starts and whenever they change. */
+  private readonly perfSettings = effect(() => {
+    this.renderSettings.settings();
+    this.controls.settings();
+    untracked(() => this.logSettings());
+  });
+  private loggedSettings?: string;
+  private logSettings(): void {
+    if (!perfLogActive()) {
+      return;
+    }
+    const { perfLog: _perfLog, ...render } = this.renderSettings.settings();
+    const line =
+      `settings: camera speed ×${this.controls.settings().speed} | window ${window.innerWidth}×${window.innerHeight} ` +
+      `at ${window.devicePixelRatio}× | ${Object.entries(render)
+        .map(([key, value]) => `${key}=${value}`)
+        .join(' ')}`;
+    if (line !== this.loggedSettings) {
+      this.loggedSettings = line;
+      perfNote(line);
+    }
+  }
+  private commit?: string;
+  /** The commit Keira runs from (a checkout); "release" when it isn't one. */
+  private gitCommit(): string {
+    if (this.commit === undefined) {
+      try {
+        this.commit = this.electron.childProcess
+          .execSync('git rev-parse --short HEAD', { encoding: 'utf8', timeout: 3000, stdio: ['ignore', 'pipe', 'ignore'] })
+          .trim();
+      } catch {
+        this.commit = '';
+      }
+      this.commit ||= 'release';
+    }
+    return this.commit;
+  }
+  private readonly stopPerfLog = inject(DestroyRef).onDestroy(() => setPerfLog(undefined));
+  protected readonly controls = inject(WorldControlsSettingsService);
+  protected readonly controlActions = CONTROL_ACTIONS;
+  protected readonly controlGroups = CONTROL_GROUPS;
+  protected readonly inputLabel = inputLabel;
+  protected readonly showControls = this.session.showControls;
+  /** Mouse controls for the help card (keys are listed from the bindings). */
+  protected readonly mouseHelp = [
+    { input: 'WORLD_EDITOR.HELP_LEFT_DRAG', label: 'WORLD_EDITOR.HELP_PAN' },
+    { input: 'WORLD_EDITOR.HELP_RIGHT_DRAG', label: 'WORLD_EDITOR.HELP_ROTATE' },
+    { input: 'WORLD_EDITOR.HELP_WHEEL', label: 'WORLD_EDITOR.HELP_ZOOM' },
+    { input: 'WORLD_EDITOR.HELP_SHIFT_WHEEL', label: 'WORLD_EDITOR.HELP_SPEED' },
+    { input: 'WORLD_EDITOR.HELP_SHIFT', label: 'WORLD_EDITOR.HELP_FAST' },
+    { input: 'WORLD_EDITOR.HELP_ALT_CLICK', label: 'WORLD_EDITOR.HELP_MOVE_SELECTION' },
+    { input: 'WORLD_EDITOR.HELP_RIGHT_CLICK', label: 'WORLD_EDITOR.HELP_MENU' },
+    { input: 'WORLD_EDITOR.HELP_ALT_RIGHT_CLICK', label: 'WORLD_EDITOR.HELP_FACE' },
+    { input: 'WORLD_EDITOR.HELP_SHIFT_SPACE', label: 'WORLD_EDITOR.HELP_MARKER_LIQUID' },
+    // the world map and the in-game map
+    { input: 'WORLD_EDITOR.HELP_MAP_DRAG', label: 'WORLD_EDITOR.HELP_MAP_MOVE' },
+    { input: 'WORLD_EDITOR.HELP_MAP_RIGHT_CLICK', label: 'WORLD_EDITOR.HELP_MAP_GO' },
+    { input: 'WORLD_EDITOR.HELP_MAP_CLICK', label: 'WORLD_EDITOR.HELP_MAP_OPEN' },
+  ];
+  /** Path / LOS tool: A, C, the attack range and eye height, and the answer. */
+  protected readonly probeFrom = this.session.probeFrom;
+  protected readonly probeTo = this.session.probeTo;
+  protected readonly probeRange = this.session.probeRange;
+  protected readonly probeHeight = this.session.probeHeight;
+  protected readonly probeResult = signal<PathProbeResult | undefined>(undefined);
+  protected readonly rangePresets = [
+    { range: 5, label: 'WORLD_EDITOR.RANGE_MELEE' },
+    { range: 20, label: 'WORLD_EDITOR.RANGE_SHORT' },
+    { range: 30, label: 'WORLD_EDITOR.RANGE_RANGED' },
+    { range: 40, label: 'WORLD_EDITOR.RANGE_LONG' },
+  ];
+  /** The mmtile under the camera (navigation mesh shown), the settings changed for it and the YAML to regenerate it. */
+  protected readonly navMeshTile = signal<NavMeshTileInfo | undefined>(undefined);
+  protected readonly mmapKeys = MMAP_CONFIG_KEYS;
+  protected readonly mmapChanges = signal<Partial<MmapRecastConfig>>({});
+  protected readonly mmapScope = signal<'tile' | 'map'>('tile');
+  protected readonly mmapChanged = computed(() => Object.keys(this.mmapChanges()).length > 0);
+  protected readonly mmapYaml = computed(() => {
+    const info = this.navMeshTile() as NavMeshTileInfo;
+    return mmapOverrideYaml(info.mapId, this.mmapScope() === 'tile' ? info.tile : undefined, this.mmapChanges());
+  });
+  /** The tile rebuilt with the new values and drawn over the real one (the "Preview" button), and how it's going. */
+  protected readonly navMeshRebuild = signal<NavMeshRebuildRequest | undefined>(undefined);
+  protected readonly navMeshRebuildState = signal<NavMeshRebuildState | undefined>(undefined);
+  protected readonly hideRealNavMesh = signal(false);
+  protected readonly stackSides = STACK_SIDES;
+  /** The array tool: how many copies, towards which side, how far apart (empty: touching, by the model's size). */
+  protected readonly arrayForm = new FormGroup({
+    count: new FormControl<number | null>(3),
+    side: new FormControl<StackSide>('front', { nonNullable: true }),
+    spacing: new FormControl<number | null>(null),
+  });
+  /** The selected spawn's columns as stored (or a new spawn's defaults), for the properties panel. */
+  protected readonly spawnStored = signal<{ key: string; values: Record<string, number> } | undefined>(undefined);
+  /** The columns changed for the selected spawn. */
+  protected readonly spawnEdits = computed(() => {
+    this.revision();
+    // (only read while a spawn is selected)
+    const spawn = this.selectedSpawn() as SpawnRecord;
+    return this.changes.spawnFields(spawn.type, spawn.guid);
+  });
+  /** Another region to load whole: its spawns are loaded too. */
+  private readonly reloadForRegion = effect(() => {
+    const region = this.region();
+    untracked(() => region && void this.reloadSpawns());
+  });
+  /** The world map's tiles, for the map shown (also when coming back with the world map open). */
+  private readonly loadWorldMapTiles = effect(() => {
+    const directory = this.showMap() ? this.mapDirectory() : undefined;
+    untracked(() => directory && void this.loadMapTiles(directory));
+  });
+  private readonly loadStoredFields = effect(() => {
+    const spawn = this.selectedSpawn();
+    const key = spawn && spawnKey(spawn.type, spawn.guid);
+    untracked(() => {
+      if (!spawn || !key) {
+        this.spawnStored.set(undefined);
+      } else if (key !== this.spawnStored()?.key) {
+        void this.loadSpawnFields(spawn, key);
+      }
+    });
+  });
+  protected readonly groupKeys = this.session.groupKeys;
+  protected readonly copied = this.session.copied;
+  /** The spawns selected along with the main one. */
+  private readonly groupSpawns = computed(() =>
+    this.groupKeys()
+      .map((key) => this.findSpawn(key))
+      .filter((spawn): spawn is SpawnRecord => !!spawn),
+  );
+  /** The ones of them that aren't locked: moved and deleted with the main one. */
+  private readonly unlockedGroup = computed(() => this.groupSpawns().filter((s) => !this.lockedKeys().has(spawnKey(s.type, s.guid))));
+  /** The spawns (as edited, and as loaded) by key, for looking them up without going through them all. */
+  private readonly spawnsByKey = computed(() => new Map(this.spawns().map((s) => [spawnKey(s.type, s.guid), s])));
+  private readonly loadedByKey = computed(() => new Map(this.loadedSpawns().map((s) => [spawnKey(s.type, s.guid), s])));
+  protected readonly simulation = signal<MovementSimulation | undefined>(undefined);
+  protected readonly simulationRate = signal(1);
+  /** The simulation got to its end: it can be played again. */
+  protected readonly simulationEnded = signal(false);
+  /** The selected creature can be simulated: it has a path, or wanders. */
+  /** The formation of the selected creature (while formations are shown). */
+  protected readonly selectedFormation = computed(() => {
+    const spawn = this.selectedSpawn();
+    return spawn?.type === 'creature' && this.layers().formations ? formationOf(spawn.guid, this.formations()) : undefined;
+  });
+  /** "Leader" and 1, 2, 3… over the members of the selected creature's formation. */
+  protected readonly worldTags = computed(() => {
+    const formation = this.selectedFormation();
+    return formation ? formationTags(formation, this.visibleSpawns()) : [];
+  });
+  /** Simulate: the whole formation moves (its leader walking, the members beside it), rather than the creature alone. */
+  protected readonly simulateFormation = signal(false);
+  protected readonly canSimulate = computed(() => {
+    const spawn = this.selectedSpawn();
+    return spawn?.type === 'creature' && (this.activePathId() !== 0 || (spawn.wanderDistance ?? 0) > 0 || !!this.selectedFormation());
+  });
+  /** The Path / LOS tool as a ruler: from A to C in a straight line, along the ground, and in height. */
+  // (only read while the result has a C)
+  protected readonly probeDistance = computed(() => {
+    const { from, to } = this.probeResult() as { from: WorldPosition; to: WorldPosition };
+    const flat = Math.hypot(to.x - from.x, to.y - from.y);
+    return { straight: Math.hypot(flat, to.z - from.z), flat, height: to.z - from.z };
+  });
+  /** How long a player takes from A to C (along the walking path when there is one), running and walking. */
+  protected readonly probeTime = computed(() => {
+    const result = this.probeResult() as PathProbeResult;
+    const distance = result.path ? (result.length as number) : this.probeDistance().straight;
+    return { run: travelTime(distance / PLAYER_RUN_SPEED), walk: travelTime(distance / PLAYER_WALK_SPEED) };
+  });
+  protected readonly layerSwitches = LAYER_SWITCHES;
+  protected readonly overlaySwitches = OVERLAY_SWITCHES;
+  /** Lines drawn in the view: formation members to their leader, pools to their spawns. */
+  protected readonly worldLinks = computed<WorldLink[]>(() =>
+    perfTime('editor worldLinks', () => {
+      const layers = this.layers();
+      const spawns = this.visibleSpawns();
+      return [
+        ...(layers.formations ? formationLinks(spawns, this.formations(), colorNumber(this.styles.style().formation.color)) : []),
+        ...(layers.pools ? poolOverlays(spawns, this.poolRows()).links : []),
+        ...this.travelOverlays().links.filter((link) => (isFlight(link.key) ? layers.flightPaths : layers.travel)),
+        ...this.spawnToPathLinks(),
+      ];
+    }),
+  );
+  /** View > Path to the first waypoint: where each shown walker goes from its spawn point to start its path. */
+  private readonly spawnToPathLinks = computed<WorldLink[]>(() => {
+    if (!this.layers().waypoints || !this.renderSettings.settings().showPathToFirst) {
+      return [];
+    }
+    const firsts = new Map<number, WaypointRecord>();
+    for (const w of this.waypoints()) {
+      const first = firsts.get(w.pathId);
+      if (!first || w.point < first.point) {
+        firsts.set(w.pathId, w);
+      }
+    }
+    return this.visibleSpawns().flatMap((spawn) => {
+      const first = spawn.type === 'creature' && spawn.pathId ? firsts.get(spawn.pathId) : undefined;
+      return first
+        ? [
+            {
+              key: `to-path:${spawn.guid}`,
+              from: { x: spawn.x, y: spawn.y, z: spawn.z },
+              to: { x: first.x, y: first.y, z: first.z },
+              color: colorNumber(this.styles.style().pathStart.color),
+              arrow: true,
+              dashed: true,
+              label: `${spawnTitle(spawn)} → ${pathLabel(spawn.pathId)} #${first.point}`,
+            },
+          ]
+        : [];
+    });
+  });
+  /**
+   * "Start" over the selected creature's spawn point (or the first walker's of the selected waypoint's path), "Start
+   * waypoint" and "End waypoint" over the first and last points of its path.
+   */
+  protected readonly pathEnds = computed(() => {
+    const pathId = this.activePathId();
+    const points = this.waypoints()
+      .filter((w) => w.pathId === pathId)
+      .sort((a, b) => a.point - b.point);
+    if (!pathId || points.length < 2 || !this.layers().waypoints) {
+      return undefined;
+    }
+    const [first, last] = [points[0], points[points.length - 1]];
+    const walker = this.selectedSpawn() ?? this.visibleSpawns().find((s) => pathsOf(s).includes(pathId));
+    return {
+      ...(walker ? { spawn: { x: walker.x, y: walker.y, z: walker.z } } : {}),
+      start: { x: first.x, y: first.y, z: first.z },
+      end: { x: last.x, y: last.y, z: last.z },
+      // what it does after it
+      endText: this.pathEndings().get(pathId)?.text,
+    };
+  });
+  /** Labelled markers: pools, and the formation places of the selected creature's formation. */
+  protected readonly worldMarkers = computed<WorldMarker[]>(() =>
+    perfTime('editor worldMarkers', () => {
+      const layers = this.layers();
+      const spawns = this.visibleSpawns();
+      return [
+        ...(layers.pools ? poolOverlays(spawns, this.poolRows()).markers : []),
+        ...(layers.formations ? formationSlots(spawns, this.formations(), this.selectedSpawn()) : []),
+        ...this.travelOverlays().markers.filter((marker) => (isFlight(marker.key) ? layers.flightPaths : layers.travel)),
+        ...this.scanMarkers(),
+        ...(layers.sniffs ? sniffMarkers(this.sniffEvidence()) : []),
+        ...commentMarkers(this.comments.comments(), this.mapId()),
+        ...this.shownPlayers().map((player) => ({
+          key: `player:${player.guid}`,
+          position: { x: player.x, y: player.y, z: player.z },
+          color: player.online ? PLAYER_COLOR : OFFLINE_PLAYER_COLOR,
+          label: playerLabel(player),
+        })),
+      ];
+    }),
+  );
+
+  // ---------------------------------------------------------------- players
+
+  private readonly serverSettings = inject(ServerSettingsService);
+  /** The characters of the map shown, from the characters database (refreshed every few seconds). */
+  protected readonly players = signal<Player[]>([]);
+  /** Why the characters database can't be read (none: it can, or isn't asked). */
+  protected readonly playersError = signal('');
+  protected readonly serverSettingsDb = computed(() => this.serverSettings.settings().charactersDatabase);
+  protected readonly shownPlayers = computed(() => {
+    const layers = this.layers();
+    return this.players().filter((player) => (player.online ? layers.players : layers.offlinePlayers));
+  });
+  private readonly onlineLayer = computed(() => this.layers().players);
+  private readonly offlineLayer = computed(() => this.layers().offlinePlayers);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  /**
+   * Reads the players again every few seconds while a players layer is on (the server saves them every few minutes):
+   * one read at a time, none while the editor's tab isn't shown (the page is kept, off the screen), and the answer of a
+   * read for another map or setting dropped.
+   */
+  private readonly pollPlayers = effect((onCleanup) => {
+    const [online, offline, map, database] = [this.onlineLayer(), this.offlineLayer(), this.mapId(), this.serverSettingsDb()];
+    if (!online && !offline) {
+      untracked(() => this.players.set([]));
+      return;
+    }
+    let cancelled = false;
+    let reading = false;
+    const read = () => {
+      if (reading || !this.host.nativeElement.isConnected) {
+        return;
+      }
+      reading = true;
+      void this.service
+        .loadPlayers(database, map, offline)
+        .then(
+          (players) => {
+            if (!cancelled) {
+              this.players.set(players);
+              this.playersError.set('');
+            }
+          },
+          (error: unknown) => {
+            if (!cancelled) {
+              this.players.set([]);
+              this.playersError.set(describeError(error));
+            }
+          },
+        )
+        .finally(() => (reading = false));
+    };
+    untracked(read);
+    const timer = setInterval(read, PLAYERS_REFRESH_MS);
+    onCleanup(() => {
+      cancelled = true;
+      clearInterval(timer);
+    });
+  });
+  // ---------------------------------------------------------------- sniffs
+
+  private readonly sniffDb = inject(SniffDbService);
+  /** The spawns of Keira's sniff database around the spawns loaded (with the Sniffs layer on). */
+  protected readonly sniffSpawns = signal<SniffSpawn[]>([]);
+  private readonly sniffLayer = computed(() => this.layers().sniffs);
+  private readonly loadSniffs = effect((onCleanup) => {
+    const [on, center, map] = [this.sniffLayer(), this.spawnsCenter(), this.mapId()];
+    // (the sniffs of another place are never shown, nor added, while these are read)
+    untracked(() => this.sniffSpawns.set([]));
+    // turned on: its card shown (in Attributes)
+    if (on && !this.sniffsWereOn) {
+      untracked(() => this.rightTab.set('attributes'));
+    }
+    this.sniffsWereOn = on;
+    if (!on || !center) {
+      return;
+    }
+    let cancelled = false;
+    void this.sniffDb.spawnsNear(map, center.x, center.y, SNIFF_RADIUS).then((spawns) => !cancelled && this.sniffSpawns.set(spawns));
+    onCleanup(() => (cancelled = true));
+  });
+  private sniffsWereOn = false;
+  /** The sniffed spawns, each counted once (worked out again only when they are read again). */
+  private readonly distinctSniffs = computed(() => distinctSniffs(this.sniffSpawns()));
+  /** The sniffed spawns of the map shown, compared with the database ones. */
+  protected readonly sniffEvidence = computed<SniffEvidence[]>(() => sniffEvidence(this.distinctSniffs(), this.spawns(), this.mapId()));
+  /** The sniffed spawns the database doesn't have. */
+  protected readonly missingSniffs = computed(() => this.sniffEvidence().filter((evidence) => !evidence.match));
+  /** The sniffed spawns being added (not added twice). */
+  protected readonly addingSniffs = signal<ReadonlySet<string>>(new Set());
+  protected readonly sniffKey = sniffKey;
+
+  /** Adds a sniffed spawn the database doesn't have as a new spawn of this session, where it was sniffed. */
+  protected async addSniffed(evidence: SniffEvidence): Promise<void> {
+    const { sniff } = evidence;
+    const key = sniffKey(evidence);
+    if (this.addingSniffs().has(key) || sniff.map !== this.mapId()) {
+      return;
+    }
+    this.addingSniffs.update((adding) => new Set([...adding, key]));
+    try {
+      const guid = await this.newGuid(sniff.type);
+      const [name, display] = await Promise.all([
+        this.service.getEntryName(sniff.type, sniff.entry),
+        this.service.getEntryDisplay(sniff.type, sniff.entry),
+      ]);
+      const fields = sniffFields(sniff);
+      const tilted = sniff.rotation?.some((value) => value !== 0);
+      this.changes.placeSpawn({
+        type: sniff.type,
+        guid,
+        entry: sniff.entry,
+        name,
+        map: sniff.map,
+        x: sniff.x,
+        y: sniff.y,
+        z: sniff.z,
+        o: sniff.o,
+        pathId: 0,
+        ...display,
+        ...(fields ? { fields } : {}),
+        ...(tilted ? { rotation: sniff.rotation } : {}),
+      });
+      this.bump();
+      this.select(spawnKey(sniff.type, guid));
+    } finally {
+      this.addingSniffs.update((adding) => new Set([...adding].filter((other) => other !== key)));
+    }
+  }
+
+  private readonly travelOverlays = computed(() =>
+    travelOverlays(this.travel(), this.areaTriggerList(), new Map(this.maps().map((map) => [map.id, map.name])), this.spawnsCenter()),
+  );
+  protected readonly checkedPathId = this.session.checkedPathId;
+  /** "Check path": the points of the checked path, sorted; equal points don't ask the viewer again. */
+  protected readonly waypointCheckRequest = computed<WaypointCheckRequest | undefined>(
+    () => {
+      const pathId = this.checkedPathId();
+      if (pathId === undefined) {
+        return undefined;
+      }
+      const points = this.waypoints()
+        .filter((w) => w.pathId === pathId)
+        .sort((a, b) => a.point - b.point)
+        .map((w) => ({ point: w.point, position: { x: w.x, y: w.y, z: w.z } }));
+      return { pathKey: pathKey(pathId), points };
+    },
+    { equal: (a, b) => JSON.stringify(a) === JSON.stringify(b) },
+  );
+  protected readonly waypointChecks = signal<WaypointCheck[]>([]);
+  /** What the line of sight (and the hitboxes) use, as the viewer reports it. */
+  protected readonly collisionSource = signal<'server' | 'client' | undefined>(undefined);
+  protected readonly checkColors = WAYPOINT_CHECK_COLORS;
+  protected readonly isRangePreset = computed(() => this.rangePresets.some((preset) => preset.range === this.probeRange()));
+  protected readonly probeRequest = computed<PathProbeRequest | undefined>(() => {
+    const from = this.probeFrom();
+    return this.tool() === 'probe' && from ? { from, to: this.probeTo(), range: this.probeRange(), height: this.probeHeight() } : undefined;
+  });
+  /** The action waiting for a key press to be bound to it. */
+  protected readonly capturing = signal<ControlAction | undefined>(undefined);
+  /** While binding: the action's bindings when it started (Esc puts them back), a modifier held on its own, the last input bound. */
+  private captureStart?: string[];
+  protected readonly pendingModifier = signal<string | undefined>(undefined);
+  private lastBound?: { input: string; time: number };
+  /** View > Debugging: limits on the memory and graphics memory (0 = none, the default). */
+  protected readonly memoryCaps: { key: 'memoryCapMb' | 'gpuCapMb'; label: string }[] = [
+    { key: 'memoryCapMb', label: 'WORLD_EDITOR.MEMORY_CAP' },
+    { key: 'gpuCapMb', label: 'WORLD_EDITOR.GPU_CAP' },
+  ];
+  protected readonly memoryCapSizes = [0, 512, 1024, 2048, 4096, 8192];
+  /** The mouse inputs offered while binding (camera moves need a press and a release: no wheel steps). */
+  protected readonly mouseInputs = computed(() =>
+    (NAVIGATION_ACTIONS as ControlAction[]).includes(this.capturing() as ControlAction)
+      ? MOUSE_INPUTS.filter((input) => !input.includes('Wheel'))
+      : MOUSE_INPUTS,
+  );
+  private readonly toastr = inject(ToastrService);
+  private readonly clipboard = inject(ClipboardService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
+  protected readonly links = inject(WORLD_EDITOR_LINKS, { optional: true });
+
+  private readonly changes = this.session.changes;
+  /** Bumped on every pending edit, so the computed views below recompute. */
+  private readonly revision = signal(0);
+  private get history(): ChangesSnapshot[] {
+    return this.session.history;
+  }
+  private set history(history: ChangesSnapshot[]) {
+    this.session.history = history;
+  }
+  private get historyIndex(): number {
+    return this.session.historyIndex;
+  }
+  private set historyIndex(index: number) {
+    this.session.historyIndex = index;
+  }
+  protected readonly canUndo = computed(() => (this.revision(), this.historyIndex > 0));
+  protected readonly canRedo = computed(() => (this.revision(), this.historyIndex < this.history.length - 1));
+
+  // ---------------------------------------------------------------- state
+
+  protected readonly maps = signal<WowMap[]>([]);
+  protected readonly mapId = signal(0);
+  protected readonly mapDirectory = computed(() => this.maps().find((m) => m.id === this.mapId())?.directory);
+  protected readonly focus = signal<WorldPosition | undefined>(undefined);
+  /** Goes up to turn the camera to the north. */
+  protected readonly resetNorthRequest = signal(0);
+  /**
+   * View > In-game view: every editor overlay off at once (paths, markers, circles, grids, collision…), the view as the
+   * game shows it; turned off, everything comes back as it was.
+   */
+  protected readonly inGameView = signal(false);
+  protected readonly viewSettings = computed(() =>
+    this.inGameView() ? { ...this.renderSettings.settings(), ...IN_GAME_VIEW } : this.renderSettings.settings(),
+  );
+  /** Goes up to look straight down from above. */
+  protected readonly topViewRequest = signal(0);
+  /** Looking straight down (the Top view button shows pressed; pressed again, back to the angle before). */
+  protected readonly inTopView = signal(false);
+  /** How the toolbar's buttons show (icon, name or both), kept on this computer. */
+  protected readonly buttonStyle = signal(loadButtonStyle());
+  protected readonly buttonStyles = BUTTON_STYLES;
+  protected readonly buttonTitle = buttonTitle;
+  /** The tree of what's loaded, docked on the right of the view, and the spawns its tick boxes hide. */
+  protected readonly showTree = signal(false);
+  protected readonly treeHidden = signal<ReadonlySet<string>>(new Set());
+  protected readonly cacheSize = signal(0);
+  /** Megabytes, for the settings panel. */
+  protected readonly cacheSizeText = computed(() => formatSize(this.cacheSize()));
+  protected readonly formatSize = formatSize;
+  /** How full the cache is, in % of its maximum size. */
+  protected readonly cacheFill = computed(() => {
+    const max = this.cache.maxBytes();
+    return max > 0 ? Math.min(100, (100 * this.cacheSize()) / max) : 100;
+  });
+  /** Green, then yellow from 50%, orange from 75% and red from 90%. */
+  protected readonly cacheFillLevel = computed(() => {
+    const fill = this.cacheFill();
+    return fill >= 90 ? 'full' : fill >= 75 ? 'high' : fill >= 50 ? 'half' : 'low';
+  });
+  /** The preload running: the current map's steps, and which of how many maps it is on. */
+  protected readonly preloading = signal<
+    { label: string; directory: string; done: number; total: number; map: number; maps: number } | undefined
+  >(undefined);
+  /** The preload's progress on the taskbar icon too (desktop app), so it's seen with Keira in the background. */
+  private readonly taskbarProgress = effect(() => {
+    const progress = this.preloading();
+    const fraction = progress ? (progress.map + progress.done / Math.max(1, progress.total)) / Math.max(1, progress.maps) : -1;
+    // "done" (which flashes the taskbar button) only after a preload, not each time the editor opens
+    if (this.electron.isElectron() && (fraction >= 0 || this.taskbarShown)) {
+      this.electron.ipcRenderer.send('keira:progress', fraction);
+      this.taskbarShown = fraction >= 0;
+    }
+  });
+  private taskbarShown = false;
+
+  /** Whole percent of `done` out of `total` (0 when nothing is known yet). */
+  protected percent(done: number, total: number): number {
+    return total ? Math.floor((100 * done) / total) : 0;
+  }
+  protected readonly cacheUsage = signal<CacheUsage | undefined>(undefined);
+  /** What each map takes in the cache, biggest first, for the settings panel. */
+  protected cacheRows(cache: CacheUsage): { directory: string; name: string; tiles: number; bytes: number }[] {
+    const maps = this.maps();
+    return cache.maps
+      .map((usage) => ({
+        directory: usage.directory,
+        name: maps.find((map) => map.directory.toLowerCase() === usage.directory)?.name ?? usage.directory,
+        tiles: usage.tiles,
+        bytes: usage.bytes,
+      }))
+      .sort((a, b) => b.bytes - a.bytes);
+  }
+  private preloadCancelled = false;
+  protected readonly zones = signal<WowZone[]>([]);
+  protected readonly zoneId = this.session.zoneId;
+  /** A dungeon made of one building: the area around it, always loaded whole (building, props, spawns, models). */
+  private readonly instanceRegion = signal<WorldBounds | undefined>(undefined);
+  private readonly loadInstanceRegion = effect(() => {
+    const directory = this.mapDirectory();
+    untracked(() => void this.updateInstanceRegion(directory));
+  });
+  /** What is loaded whole: the area picked on the world map, the dungeon, or the selected zone when the View panel asks for it. */
+  protected readonly region = computed(
+    () =>
+      this.mapRegion() ??
+      this.instanceRegion() ??
+      (this.renderSettings.settings().loadWholeZone ? this.zones().find((zone) => zone.areaId === this.zoneId())?.bounds : undefined),
+  );
+  protected readonly showMap = this.session.showMap;
+  /** The spawn problems report: the positions asked to the view, and what was found. */
+  protected readonly groundQuery = signal<{ key: string; position: WorldPosition }[] | undefined>(undefined);
+  protected readonly spawnProblems = signal<SpawnProblem[] | undefined>(undefined);
+  protected readonly searchForm = new FormControl('', { nonNullable: true });
+  protected readonly searchResults = signal<SpawnRecord[]>([]);
+  protected readonly searching = signal(false);
+  /** A spawn to select once it's loaded (after flying to a search result). */
+  private pendingSelect?: string;
+  protected readonly mapRegion = this.session.mapRegion;
+  /** The ship of a transport map, drawn at its middle (passengers are placed relative to it). */
+  protected readonly transportBuildings = signal<ExtraBuilding[]>([]);
+  private readonly loadTransportBuildings = effect(() => {
+    const mapId = this.mapId();
+    untracked(() => void this.loadTransport(mapId));
+  });
+
+  private async loadTransport(mapId: number): Promise<void> {
+    this.transportBuildings.set([]);
+    try {
+      const transports = await this.service.loadTransports(mapId);
+      const buildings: ExtraBuilding[] = [];
+      for (const transport of transports) {
+        const path = await this.client.getGameObjectDisplay(transport.displayId);
+        if (path) {
+          buildings.push({ key: `transport:${transport.entry}`, path, position: { x: 0, y: 0, z: 0 }, orientation: 0 });
+        }
+      }
+      if (mapId === this.mapId()) {
+        this.transportBuildings.set(buildings);
+      }
+    } catch (error) {
+      this.showError(error);
+    }
+  }
+
+  /** Faction templates and factions, for who can interact with spawns (undefined until read, or unreadable). */
+  private readonly factionData = signal<FactionData | undefined>(undefined);
+
+  /** The tiles of the current map (for the world map). */
+  protected readonly mapTiles = signal<TileCoord[]>([]);
+  /** Spawns (and search results) as dots on the world map. */
+  protected readonly mapDots = computed<WorldMapDot[]>(() => [
+    ...this.visibleSpawns().map((s) => ({
+      key: spawnKey(s.type, s.guid),
+      position: s,
+      color: s.type === 'creature' ? '#ffc107' : '#0dcaf0',
+      title: spawnTitle(s),
+    })),
+    ...this.shownPlayers().map((player) => ({
+      key: `player:${player.guid}`,
+      position: { x: player.x, y: player.y, z: player.z },
+      color: player.online ? '#4dff88' : '#9aa0a6',
+      title: playerLabel(player),
+    })),
+    ...this.searchResults().map((r) => ({
+      key: `search:${spawnKey(r.type, r.guid)}`,
+      position: r,
+      color: '#ff4d6d',
+      title: spawnTitle(r),
+    })),
+  ]);
+  /** What the in-game map shows from the database (points of interest, entrances, transports), read when first opened. */
+  protected readonly gameMapPois = signal<GameMapPoi[]>([]);
+  protected readonly gameMapTeleports = signal<GameMapTeleport[]>([]);
+  protected readonly gameMapPortals = signal<GameMapPortal[]>([]);
+  /** The creatures of an area, for the levels of the in-game map's sub-zones. */
+  protected readonly readSpawnLevels = (mapId: number, bounds: WorldBounds): Promise<GameMapSpawnLevel[]> =>
+    this.service.loadSpawnLevels(mapId, bounds);
+  protected readonly gameMapTransports = signal<GameMapTransport[]>([]);
+  private gameMapDataLoading = false;
+  private loadGameMapData(): void {
+    if (this.gameMapDataLoading) {
+      return;
+    }
+    this.gameMapDataLoading = true;
+    const started = performance.now();
+    void Promise.all([
+      this.service.loadMapPois().catch(this.quietly<GameMapPoi[]>('read the points of interest', [])),
+      this.service.loadMapTeleports().catch(this.quietly<GameMapTeleport[]>('read the teleports for the in-game map', [])),
+      this.service.loadTransportRoutes().catch(this.quietly<GameMapTransport[]>('read the transports for the in-game map', [])),
+      this.service.loadMapPortals().catch(this.quietly<GameMapPortal[]>('read the portals for the in-game map', [])),
+    ]).then(([pois, teleports, transports, portals]) => {
+      perfNote(
+        `in-game map: ${pois.length} points of interest, ${teleports.length} teleports, ${transports.length} transports read in ${Math.round(performance.now() - started)} ms`,
+      );
+      this.gameMapPois.set(pois);
+      this.gameMapTeleports.set(teleports);
+      this.gameMapTransports.set(transports);
+      this.gameMapPortals.set(portals);
+    });
+  }
+  /** The in-game map (its own panel). */
+  protected readonly showGameMap = signal(false);
+  protected toggleGameMap(): void {
+    this.togglePanel('gameMap');
+    if (this.showGameMap()) {
+      this.loadGameMapData();
+    }
+  }
+  /** The in-game map's pictures are made at the start (continents first), so it opens at once. */
+  private gameMapPrefetched = false;
+  private async prefetchGameMap(): Promise<void> {
+    if (this.gameMapPrefetched) {
+      return;
+    }
+    this.gameMapPrefetched = true;
+    const started = performance.now();
+    try {
+      const data = await this.client.getGameMap();
+      const pages = [...gameMapPages(data).values()].filter((page) => page.kind !== 'zone' && page.kind !== 'floor');
+      for (const page of pages) {
+        await this.client.getGameMapPicture(page);
+        await this.client.getGameMapOutlines(page);
+      }
+      perfNote(`in-game map: ${pages.length} maps made ready in ${Math.round(performance.now() - started)} ms`);
+    } catch (error) {
+      this.quietly('prepare the in-game map', undefined)(error);
+    }
+  }
+  /** The zone under the camera (0 until the view says). */
+  protected readonly cameraZone = computed(() => this.weatherZone() ?? 0);
+  /** Which server files each tile of the map has (only read while the world map is open). */
+  protected readonly mapCoverage = computed(() => this.client.getServerCoverage(this.mapId(), this.mapTiles()));
+  protected readonly layers = this.session.layers;
+  /** Area triggers of the current map, with what the database does with them. */
+  private readonly areaTriggerList = signal<AreaTriggerInfo[]>([]);
+  private readonly areaTriggerInfo = signal(new Map<number, string[]>());
+  protected readonly worldAreaTriggers = computed<WorldAreaTrigger[]>(() =>
+    perfTime('editor worldAreaTriggers', () => {
+      if (!this.layers().areaTriggers) {
+        return [];
+      }
+      const info = this.areaTriggerInfo();
+      return this.areaTriggerList().map((trigger) => ({
+        key: `areatrigger:${trigger.id}`,
+        label: [`Area trigger ${trigger.id}`, ...(info.get(trigger.id) ?? [])].join('\n'),
+        position: { x: trigger.x, y: trigger.y, z: trigger.z },
+        radius: trigger.radius,
+        box: trigger.box,
+      }));
+    }),
+  );
+  protected readonly filters = signal<SpawnFilters>(loadSpawnFilters());
+  protected readonly showFilters = this.session.showFilters;
+  private readonly eventNames = signal(new Map<number, string>());
+  /** Game events with spawns around, for the Filters panel. */
+  protected readonly events = computed(() => spawnEvents(this.spawns(), this.eventNames()));
+  /** How many of the loaded spawns the filters hide. */
+  protected readonly hiddenCount = computed(() => this.spawns().length - this.visibleSpawns().length);
+  protected readonly tool = this.session.tool;
+  protected readonly gizmoMode = this.session.gizmoMode;
+  /** Where moved objects snap: nowhere, onto the ground/floor below, or against the nearest wall. */
+  protected readonly snapMode = this.session.snapMode;
+  protected readonly snapToGround = computed(() => this.snapMode() === 'ground');
+  protected readonly snapToWall = computed(() => this.snapMode() === 'wall');
+  protected readonly snapToWater = computed(() => this.snapMode() === 'water');
+  protected readonly selectedKey = this.session.selectedKey;
+  protected readonly showSettings = signal(!this.settings.isConfigured());
+  protected readonly showLegend = this.session.showLegend;
+  protected readonly legend = LEGEND;
+  protected readonly fullscreen = signal(false);
+  /** The side panel (tools, selection, changes) folded away, for a bigger view. */
+  protected readonly panelCollapsed = signal(false);
+  private readonly root = viewChild.required<ElementRef<HTMLElement>>('root');
+  protected readonly viewFullscreen = signal(false);
+  /** The view's own fullscreen: its top tab's menu (the main buttons, and the layers under Expand more). */
+  protected readonly quickOpen = signal(false);
+  protected readonly quickMore = signal(false);
+  private readonly view = viewChild.required<ElementRef<HTMLElement>>('view');
+  protected readonly renderScales = RENDER_SCALES;
+  protected readonly playerRaces = PLAYER_RACES;
+  protected readonly showView = this.session.showView;
+  /** Draw distances offered, in yards (0 = off, per group in advanced mode only). */
+  protected readonly drawDistances = [50, 100, 250, 500, 1000];
+  protected readonly groupDistances = [0, ...this.drawDistances];
+  /** The advanced per-group distances, as rows of the View panel's table. */
+  protected readonly distanceGroups: { key: RenderDistanceKey; label: string }[] = [
+    { key: 'largeDoodadDistance', label: 'WORLD_EDITOR.LARGE_DOODADS' },
+    { key: 'smallDoodadDistance', label: 'WORLD_EDITOR.SMALL_DOODADS' },
+    { key: 'creatureDistance', label: 'WORLD_EDITOR.CREATURE_MODELS' },
+    { key: 'gameobjectDistance', label: 'WORLD_EDITOR.GAMEOBJECT_MODELS' },
+  ];
+  protected readonly loadingSpawns = signal(false);
+  protected readonly teleResults = signal<TeleRow[]>([]);
+  protected readonly placeEntryName = signal('');
+  protected readonly executing = signal(false);
+
+  private readonly loadedSpawns = signal<SpawnRecord[]>([]);
+  private readonly loadedWaypoints = signal<WaypointRecord[]>([]);
+  private readonly waypointScripts = signal(new Map<number, WaypointScriptStep[]>());
+  private readonly waypointSai = signal<WaypointSaiRow[]>([]);
+  /** How the SmartAI of the loaded creatures starts them on paths (whether they repeat, despawn at the end). */
+  private readonly pathStarts = signal<PathStart[]>([]);
+  /** The entries and −guids of the creatures walking each loaded path. */
+  private readonly pathWalkerIds = computed(() => {
+    const walkerIds = new Map<number, Set<number>>();
+    for (const spawn of this.spawns()) {
+      for (const pathId of pathsOf(spawn)) {
+        const ids = walkerIds.get(pathId) ?? new Set<number>();
+        ids.add(spawn.entry).add(-spawn.guid);
+        walkerIds.set(pathId, ids);
+      }
+    }
+    return walkerIds;
+  });
+  /** What the creatures do once at the end of each loaded path: start over, stay, despawn or die. */
+  protected readonly pathEndings = computed(() => {
+    const byPath = new Map<number, WaypointRecord>();
+    // (the waypoints come sorted by path and point: the last one met is the last point)
+    for (const waypoint of this.waypoints()) {
+      byPath.set(waypoint.pathId, waypoint);
+    }
+    const scripts = this.waypointScripts();
+    const sai = this.waypointSai();
+    const starts = this.pathStarts();
+    const endings = new Map<number, PathEnding>();
+    for (const [pathId, last] of byPath) {
+      const ids = this.pathWalkerIds().get(pathId) ?? new Set<number>();
+      endings.set(
+        pathId,
+        pathEnding(
+          pathId,
+          last,
+          starts.filter((s) => ids.has(s.owner)),
+          scripts,
+          sai.filter((row) => ids.has(row.entryorguid)),
+        ),
+      );
+    }
+    return endings;
+  });
+  private readonly formations = signal<FormationMember[]>([]);
+  private readonly travel = signal<TravelData>(EMPTY_TRAVEL);
+  /** Boss boundaries of the current map (from the AzerothCore source folder), with the entries of their creatures. */
+  private readonly bossBoundaries = signal<(BossBoundary & { entries: number[] })[]>([]);
+  /** Boss boundaries drawn in the view: at the height of a loaded boss (or of the camera), named with their bosses. */
+  protected readonly worldBoundaries = computed<WorldBoundary[]>(() => [...this.bossBoundaryShapes(), ...this.zoneShapes()]);
+
+  /**
+   * The areas with a range near the camera, each as a circle: capture points and battleground starts, the gameobjects
+   * acting on what comes near, SmartAI creatures' sight; and the capture points of the gameobjects scripts spawn.
+   */
+  private readonly zoneShapes = computed<WorldBoundary[]>(() =>
+    perfTime('editor zoneShapes', () => {
+      const layers = this.layers();
+      const center = this.spawnsCenter();
+      const near = (zone: WorldZone) => !center || Math.hypot(zone.x - center.x, zone.y - center.y) <= SPAWN_LOAD_RADIUS + zone.radius;
+      return [...this.mapZones(), ...this.scriptZones()]
+        .filter((zone) => layers[ZONE_LAYERS[zone.kind]] && near(zone))
+        .map((zone) => ({
+          key: zone.key,
+          label: [
+            `${zone.name} - ${this.translate.instant(`WORLD_EDITOR.ZONE_${zone.kind.toUpperCase()}`)} (${zone.radius} yd)`,
+            zone.detail,
+          ].join('\n'),
+          color: ZONE_COLORS[zone.kind],
+          z: zone.z,
+          shapes: [{ type: 'circle' as const, center: { x: zone.x, y: zone.y }, radius: zone.radius, inverted: false }],
+        }));
+    }),
+  );
+
+  /** The areas with a range of the current map, from the database. */
+  private readonly mapZones = signal<WorldZone[]>([]);
+  /** The gameobjects the scripts spawn on the current map (with the source folder), with their templates and models. */
+  private readonly scriptObjects = signal<{ spawn: ScriptSpawn; template: ObjectTemplate; path?: string }[]>([]);
+  /** The capture points of the gameobjects the scripts spawn. */
+  private readonly scriptZones = computed<WorldZone[]>(() =>
+    this.scriptObjects().flatMap(({ spawn, template }, i) => {
+      const radius = spawn.radius ?? (template.type === 29 ? objectRange(template) : 0);
+      return radius > 0
+        ? [
+            {
+              key: `zone:script:${i}`,
+              kind: 'capture' as const,
+              x: spawn.x,
+              y: spawn.y,
+              z: spawn.z,
+              radius,
+              name: template.name,
+              detail: `Scripted gameobject (Entry: ${template.entry}, ${spawn.file})`,
+            },
+          ]
+        : [];
+    }),
+  );
+  /**
+   * The gameobjects the scripts spawn that aren't buildings (flags, banners, doors…), drawn with their models like
+   * spawns, named with where they're spawned; they can't be selected or moved (they aren't in the database).
+   */
+  private readonly scriptSpawns = computed<WorldSpawn[]>(() =>
+    this.layers().scriptObjects
+      ? this.scriptObjects().flatMap(({ spawn, template, path }, i) =>
+          path
+            ? []
+            : [
+                {
+                  key: `${SCRIPT_OBJECT_KEY}${i}`,
+                  kind: 'gameobject' as const,
+                  guid: 0,
+                  entry: template.entry,
+                  label: `${template.name} - ${this.translate.instant('WORLD_EDITOR.SCRIPT_OBJECT')} (Entry: ${template.entry}, ${spawn.file})`,
+                  position: { x: spawn.x, y: spawn.y, z: spawn.z },
+                  orientation: spawn.o,
+                  displayId: template.displayId,
+                  scale: template.size,
+                },
+              ],
+        )
+      : [],
+  );
+  /** The buildings (walls, towers, gates) the scripts spawn, drawn as they are, with the transports' ships. */
+  protected readonly extraBuildings = computed<ExtraBuilding[]>(() => [
+    ...this.transportBuildings(),
+    ...(this.layers().scriptObjects
+      ? this.scriptObjects().flatMap(({ spawn, path }, i) =>
+          path ? [{ key: `script-object:${i}`, path, position: { x: spawn.x, y: spawn.y, z: spawn.z }, orientation: spawn.o }] : [],
+        )
+      : []),
+  ]);
+
+  /** Boss boundaries drawn in the view: at the height of a loaded boss (or of the camera), named with their bosses. */
+  private readonly bossBoundaryShapes = computed<WorldBoundary[]>(() =>
+    perfTime('editor worldBoundaries', () => {
+      if (!this.layers().bossBoundaries) {
+        return [];
+      }
+      const spawns = this.spawns();
+      const camera = this.spawnsCenter();
+      return this.bossBoundaries().map((boundary, i) => {
+        const bosses = spawns.filter((s) => s.type === 'creature' && boundary.entries.includes(s.entry));
+        const names = [...new Set(bosses.map((s) => s.name || s.entry))].join(', ');
+        const shapes = boundary.shapes.map((shape) => `· ${describeBoundary(shape)}`);
+        return {
+          key: `boundary:${boundary.boss}`,
+          label: [
+            `Boss boundary ${boundary.boss} (${boundary.instance})${names ? ` - ${names}` : ''}`,
+            ...(shapes.length > 1 ? ['must stay inside all of:'] : []),
+            ...shapes,
+          ].join('\n'),
+          color: BOUNDARY_COLORS[i % BOUNDARY_COLORS.length],
+          z: bosses[0]?.z ?? camera?.z ?? 0,
+          shapes: boundary.shapes,
+        };
+      });
+    }),
+  );
+  /** Where the camera looks (the last reported centre), for what's drawn near it. */
+  private readonly cameraCenter = signal<WorldPosition | undefined>(undefined);
+  /**
+   * Where the spawns were last loaded around: flight paths and boss boundaries near the camera follow this (it changes
+   * every 150 yards or so) rather than every move, which redrew all of them.
+   */
+  private readonly spawnsCenter = signal<WorldPosition | undefined>(undefined);
+  /** The pools of the loaded spawns, as stored. */
+  private readonly pools = signal<PoolMember[]>([]);
+  /** The pools of the loaded spawns, with the pending changes. */
+  private readonly poolRows = computed(() => {
+    this.revision();
+    return this.changes.applyToPools(this.pools());
+  });
+  /** Quests started or ended by the loaded entries, by `type:entry`. */
+  private readonly quests = signal(new Map<string, SpawnQuest[]>());
+  private center?: WorldPosition;
+  private spawnRequest = 0;
+  /** Where the spawns were last loaded around. */
+  private spawnLoadCenter?: { mapId: number; x: number; y: number };
+  private readonly nextGuids = this.session.nextGuids;
+  private get reservedPathIds(): number[] {
+    return this.session.reservedPathIds;
+  }
+  private set reservedPathIds(ids: number[]) {
+    this.session.reservedPathIds = ids;
+  }
+
+  protected readonly spawns = computed(() =>
+    perfTime('editor spawns', () => {
+      this.revision();
+      return this.changes.applyToSpawns(this.loadedSpawns(), this.mapId());
+    }),
+  );
+
+  private readonly pathIds = computed(() => [...new Set(this.spawns().flatMap(pathsOf))]);
+
+  private readonly waypoints = computed(() => {
+    this.revision();
+    return this.changes.applyToWaypoints(this.loadedWaypoints(), this.pathIds());
+  });
+
+  /** The difficulty shown in a dungeon or raid (a spawnMask bit), or every one (undefined). */
+  protected readonly difficulty = signal<number | undefined>(undefined);
+  /** The difficulties of the map shown, as the client's MapDifficulty.dbc tells them. */
+  private readonly mapDifficulties = signal<MapDifficulty[]>([]);
+  private readonly loadDifficulties = effect(() => {
+    const mapId = this.mapId();
+    untracked(() => {
+      this.mapDifficulties.set([]);
+      if (this.client.isSupported() && this.settings.isConfigured()) {
+        void this.client
+          .getMapDifficulties(mapId)
+          .catch(this.quietly(`read the difficulties of map ${mapId}`, [] as MapDifficulty[]))
+          .then((list) => mapId === this.mapId() && this.mapDifficulties.set(list));
+      }
+    });
+  });
+  /**
+   * The difficulties to choose from (only for maps with more than one): 10 / 25 Normal / Heroic in a raid (Onyxia's Lair
+   * and Naxxramas: 10 and 25 Normal; other Vanilla and Burning Crusade raids none), Normal / Heroic in a dungeon.
+   */
+  protected readonly difficulties = computed(() => {
+    const list = this.mapDifficulties();
+    return list.length < 2 ? [] : list.map((entry) => ({ bit: entry.difficulty, label: difficultyLabel(entry) }));
+  });
+
+  /** Spawns the filters (and the difficulty) let through; the paths they walk are the only ones drawn. */
+  private readonly visibleSpawns = computed(() => {
+    const selectedEvent = this.filters().showSelectedEvent ? this.selectedSpawn()?.event : undefined;
+    const filters = selectedEvent ? { ...this.filters(), events: [...this.filters().events, selectedEvent] } : this.filters();
+    const difficulty = this.difficulties().length ? this.difficulty() : undefined;
+    const hidden = this.treeHidden();
+    return this.spawns().filter(
+      (s) =>
+        isSpawnVisible(s, filters) &&
+        (difficulty === undefined || ((s.spawnMask ?? 1) & (1 << difficulty)) !== 0) &&
+        !hidden.has(spawnKey(s.type, s.guid)),
+    );
+  });
+
+  protected setDifficulty(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value;
+    this.difficulty.set(value === '' ? undefined : Number(value));
+  }
+
+  protected readonly worldSpawns = computed<WorldSpawn[]>(() =>
+    perfTime('editor worldSpawns', () => {
+      const layers = this.layers();
+      const { showWanderRadius: showWander, showBounds, showAggroRadius, showAssistRadius } = this.renderSettings.settings();
+      return this.visibleSpawns()
+        .filter((s) => (s.type === 'creature' ? layers.creatures : layers.gameobjects))
+        .map((s): WorldSpawn => ({
+          key: spawnKey(s.type, s.guid),
+          kind: s.type,
+          guid: s.guid,
+          entry: s.entry,
+          label: `${spawnTitle(s)}${pathsOf(s).length ? ` · ${pathsOf(s).map(pathLabel).join(', ')}` : ''}`,
+          ...this.spawnDetails(s),
+          position: { x: s.x, y: s.y, z: s.z },
+          orientation: s.o,
+          pending: this.changes.isNewSpawn(spawnKey(s.type, s.guid)),
+          displayId: s.displayId,
+          scale: s.scale,
+          wanderRadius: showWander ? s.wanderDistance : undefined,
+          bounds: showBounds ? spawnBounds(s) : undefined,
+          // (creatures that fight: not the invisible triggers)
+          ...(showAggroRadius && s.detectionRange && !s.trigger ? { aggroRadius: s.detectionRange } : {}),
+          ...(showAssistRadius && s.type === 'creature' && !s.trigger ? { assistRadius: ASSIST_RADIUS } : {}),
+          ...(s.weapons ? { weapons: s.weapons } : {}),
+          ...(s.pathId || s.wanderDistance ? { moves: true } : {}),
+        }))
+        .concat(this.scriptSpawns());
+    }),
+  );
+
+  /** View > Every path in the area: the paths nothing loaded walks, drawn but not edited. */
+  private readonly areaPaths = signal<AreaPath[]>([]);
+  private readonly areaWorldPaths = computed<WaypointPath[]>(() =>
+    this.renderSettings.settings().showAllPaths
+      ? this.areaPaths().map((path) => {
+          const label =
+            path.source === 'script'
+              ? `Escort script path ${path.id} (script_waypoint)`
+              : `${path.source === 'sai' ? 'SmartAI path' : 'Path'} ${path.id} (no walker loaded)`;
+          return {
+            key: `area:${path.source}:${path.id}`,
+            label,
+            closed: path.source === 'data',
+            points: path.points.map((p) => ({
+              point: p.point,
+              position: { x: p.x, y: p.y, z: p.z },
+              delay: p.delay,
+              info: [`${label} · #${p.point}`, ...(p.delay ? [`Waits ${p.delay / 1000} s`] : [])],
+            })),
+          };
+        })
+      : [],
+  );
+
+  /** Turns View > Every path in the area on or off, loading them (or not) with the spawns. */
+  protected setAllPaths(event: Event): void {
+    this.renderSettings.update({ showAllPaths: (event.target as HTMLInputElement).checked });
+    void this.reloadSpawns();
+  }
+
+  protected readonly worldPaths = computed<WaypointPath[]>(() =>
+    perfTime('editor worldPaths', () => {
+      if (!this.layers().waypoints) {
+        return [];
+      }
+      // only the paths walked by a creature the filters show
+      const owners = pathOwners(this.visibleSpawns());
+      const byPath = new Map<number, WaypointRecord[]>();
+      for (const waypoint of this.waypoints().filter((w) => owners.has(w.pathId))) {
+        const list = byPath.get(waypoint.pathId);
+        if (list) {
+          list.push(waypoint);
+        } else {
+          byPath.set(waypoint.pathId, [waypoint]);
+        }
+      }
+      // the SmartAI rows of the creatures walking each path, worked out once per path (not per point)
+      const walkerIds = this.pathWalkerIds();
+      const endings = this.pathEndings();
+      const sai = this.waypointSai();
+      const scripts = this.waypointScripts();
+      const walked = [...byPath].map(([pathId, points]) => {
+        // (a shown path is walked by a creature shown)
+        const ids = walkerIds.get(pathId) as Set<number>;
+        const pathSai = sai.filter((row) => ids.has(row.entryorguid));
+        const ending = endings.get(pathId) as PathEnding;
+        // (in order)
+        const last = points[points.length - 1];
+        return {
+          key: pathKey(pathId),
+          label: pathLabel(pathId),
+          owners: owners.get(pathId) as string[],
+          // (after its last point it goes back to the first, for a path that starts over: View > Path from the last waypoint)
+          closed: ending.kind === 'loop' && this.renderSettings.settings().showPathFromLast,
+          points: points.map((p) => ({
+            point: p.point,
+            position: { x: p.x, y: p.y, z: p.z },
+            orientation: p.orientation ?? null,
+            delay: p.delay,
+            info: [...describeWaypoint(pathId, p.point, p, scripts, pathSai), ...(p === last ? [`then: ${ending.text}`] : [])],
+          })),
+        };
+      });
+      return [...walked, ...this.areaWorldPaths()];
+    }),
+  );
+
+  /** What happens at a waypoint (wait, move type, script, SmartAI of the creatures walking the path). */
+  protected readonly spawnTitle = spawnTitle;
+  protected readonly pathLabel = pathLabel;
+
+  /** "Event 26 (Festive mug)": a game event with its name, when known. */
+  protected eventLabel(id: number): string {
+    return `Event ${id} (${this.eventNames().get(id) || '?'})`;
+  }
+
+  /** Hover lines of a spawn: its event, its phase when not 1, and its quests (all of them with Alt). */
+  private spawnDetails(spawn: SpawnRecord): { details?: string[]; allDetails?: string[] } {
+    const lines: string[] = [];
+    if (spawn.event) {
+      lines.push(this.eventLabel(spawn.event));
+    }
+    // (where the phase goes, also with Alt)
+    const phaseAt = lines.length;
+    if (spawn.phaseMask !== undefined && spawn.phaseMask !== 1) {
+      lines.push(`Phase mask ${spawn.phaseMask}`);
+    }
+    // with Alt: the phases of its mask, and whether the camera's phase sees it
+    const phaseDetails =
+      spawn.phaseMask === undefined
+        ? []
+        : [
+            `Phase mask ${spawn.phaseMask} = phases ${phaseBits(spawn.phaseMask).join(' + ') || 'none'} · ` +
+              `${spawn.phaseMask & this.filters().phase ? 'seen' : 'not seen'} from the camera's phase ${this.filters().phase}`,
+          ];
+    const bounds = this.renderSettings.settings().showBounds ? spawnBounds(spawn) : undefined;
+    if (bounds) {
+      // the server's melee range against a player (combat reach 1.5): both reaches + 4/3, at least 5 yards
+      const melee = Math.max(MIN_MELEE_RANGE, bounds.reach + PLAYER_COMBAT_REACH + 4 / 3);
+      lines.push(
+        `Bounding radius ${bounds.radius.toFixed(2)} yd · combat reach ${bounds.reach.toFixed(2)} yd · melee range ${melee.toFixed(2)} yd`,
+      );
+    }
+    lines.push(...groupDetails(spawn, this.formations(), this.poolRows()));
+    // who can talk to it, use it or loot it; with Alt, each race's standing and the faction
+    const factions = this.factionData();
+    const faction = factions && spawn.faction ? describeFaction(spawn.faction, factions) : undefined;
+    const factionDetails = faction?.details ?? [];
+    if (faction) {
+      lines.push(faction.line);
+    } else if (spawn.type === 'gameobject' && !spawn.faction) {
+      lines.push('Interact: everyone');
+    }
+    const quests = (this.quests().get(`${spawn.type}:${spawn.entry}`) ?? []).map(
+      (q) => `${q.role === 'starts' ? 'Starts' : 'Ends'} quest ${q.quest} (${q.title || '?'})`,
+    );
+    if (lines.length === 0 && quests.length === 0 && phaseDetails.length === 0) {
+      return {};
+    }
+    // (the view tells to hold Alt when there is more)
+    const more = quests.length - HOVER_QUESTS;
+    return {
+      details: [...lines, ...quests.slice(0, HOVER_QUESTS), ...(more > 0 ? [`+${more} more quests`] : [])],
+      allDetails: [
+        ...lines.slice(0, phaseAt),
+        ...phaseDetails,
+        ...lines.slice(phaseAt).filter((line) => !line.startsWith('Phase mask')),
+        ...quests,
+        ...factionDetails,
+      ],
+    };
+  }
+
+  /** What happens at one waypoint (for the selected one). */
+  protected waypointInfo(waypoint: WaypointRecord): string[] {
+    const walkers = this.spawns().filter((s) => s.type === 'creature' && pathsOf(s).includes(waypoint.pathId));
+    const ids = new Set(walkers.flatMap((s) => [s.entry, -s.guid]));
+    const sai = this.waypointSai().filter((row) => ids.has(row.entryorguid));
+    const last = Math.max(
+      ...this.waypoints()
+        .filter((w) => w.pathId === waypoint.pathId)
+        .map((w) => w.point),
+    );
+    const ending = waypoint.point === last ? this.pathEndings().get(waypoint.pathId) : undefined;
+    return [
+      ...describeWaypoint(waypoint.pathId, waypoint.point, waypoint, this.waypointScripts(), sai),
+      ...(ending ? [`then: ${ending.text}`] : []),
+    ];
+  }
+
+  /** Creatures walking each loaded path ("Name (guid)"). */
+  protected readonly pathOwners = computed(() => pathOwners(this.spawns()));
+
+  /** The right-click menu: what it is about and where (pixels in the 3D view). */
+  protected readonly contextMenu = signal<ContextRequest | undefined>(undefined);
+  /** Where the context menu is on the page, and how tall it can be. */
+  protected readonly contextPlace = signal<ContextPlacement>({ maxHeight: 0 });
+  // (only read while the menu is open)
+  protected readonly contextSpawn = computed(() => this.findSpawn((this.contextMenu() as ContextRequest).key));
+  protected readonly contextWaypoint = computed(() => this.findWaypoint((this.contextMenu() as ContextRequest).key));
+  protected readonly selectedSpawn = computed(() => this.findSpawn(this.selectedKey() ?? ''));
+  protected readonly selectedWaypoint = computed(() => this.findWaypoint(this.selectedKey() ?? ''));
+
+  /** Path new waypoints are appended to: the selected waypoint's path, or the selected creature's. */
+  protected readonly activePathId = computed(() => {
+    const spawn = this.selectedSpawn();
+    return this.selectedWaypoint()?.pathId ?? (spawn ? (pathsOf(spawn)[0] ?? 0) : 0);
+  });
+
+  /** Paths coming from creature_template_addon: shared by every creature of an entry. */
+  private readonly templatePathIds = computed(
+    () =>
+      new Set(
+        this.spawns()
+          .filter((s) => s.pathFromTemplate)
+          .map((s) => s.pathId),
+      ),
+  );
+
+  /** Spawns locked against moving and deleting (right-click > Lock), and whether the selection is one. */
+  protected readonly lockedKeys = signal<ReadonlySet<string>>(new Set());
+  protected readonly selectedLocked = computed(() => this.lockedKeys().has(this.selectedKey() as string));
+  protected readonly editableKey = computed(() =>
+    this.tool() === 'select' && (this.selectedSpawn() || this.selectedWaypoint()) && !this.selectedLocked()
+      ? this.selectedKey()
+      : undefined,
+  );
+
+  protected readonly pendingSql = computed(() => {
+    this.revision();
+    return this.changes.toSql();
+  });
+
+  protected readonly pendingDescriptions = computed(() => {
+    this.revision();
+    return this.changes.describe();
+  });
+
+  // ---------------------------------------------------------------- forms
+
+  protected readonly placeEntry = new FormControl<number | null>(null);
+  /** The place tools' search: an entry or part of a name; an entry typed is the one placed. */
+  protected readonly placeSearch = new FormControl('', { nonNullable: true });
+  protected readonly placeResults = signal<PlaceTemplate[]>([]);
+  /** The result hovered (previewed in the view), and the template chosen. */
+  protected readonly placeHover = signal<PlaceTemplate | undefined>(undefined);
+  private readonly placeChosen = signal<PlaceTemplate | undefined>(undefined);
+  private readonly livePlaceSearch = this.placeSearch.valueChanges.pipe(takeUntilDestroyed()).subscribe((text) => {
+    const entry = /^\d+$/.test(text.trim()) ? Number(text.trim()) : null;
+    this.placeEntry.setValue(entry);
+  });
+  /** An entry picked in the Creature / GameObject search (the selector button): the one placed. */
+  private readonly pickedPlaceEntry = this.placeEntry.valueChanges.pipe(takeUntilDestroyed()).subscribe((entry) => {
+    if (entry && String(entry) !== this.placeSearch.value.trim()) {
+      this.placeSearch.setValue(String(entry), { emitEvent: false });
+      this.placeResults.set([]);
+      void this.onPlaceEntryChange();
+    }
+  });
+  private readonly livePlaceResults = this.placeSearch.valueChanges
+    .pipe(debounceTime(TELE_SEARCH_DELAY), takeUntilDestroyed())
+    .subscribe((text) => void this.searchPlaceTemplates(text));
+  /** The model about to be placed, shown see-through in the view: the result hovered, or the template chosen. */
+  protected readonly placePreview = computed(() => {
+    const tool = this.tool();
+    const template = tool === 'place-creature' || tool === 'place-gameobject' ? (this.placeHover() ?? this.placeChosen()) : undefined;
+    return template?.displayId
+      ? {
+          kind: (tool === 'place-gameobject' ? 'gameobject' : 'creature') as SpawnType,
+          displayId: template.displayId,
+          scale: template.scale,
+        }
+      : undefined;
+  });
+  protected readonly teleSearch = new FormControl('', { nonNullable: true });
+  /** Teleports are looked up while typing (a pasted `.gps` goes there instead). */
+  private readonly liveTele = this.teleSearch.valueChanges
+    .pipe(debounceTime(TELE_SEARCH_DELAY), takeUntilDestroyed())
+    .subscribe((text) => !parseGpsOutput(text) && void this.searchTele());
+  protected readonly goToForm = new FormGroup({
+    x: new FormControl<number | null>(null),
+    y: new FormControl<number | null>(null),
+    z: new FormControl<number | null>(null),
+  });
+  protected readonly placementForm = new FormGroup({
+    x: new FormControl(0, { nonNullable: true }),
+    y: new FormControl(0, { nonNullable: true }),
+    z: new FormControl(0, { nonNullable: true }),
+    o: new FormControl(0, { nonNullable: true }),
+  });
+
+  ngOnInit(): void {
+    const params = this.route.snapshot.queryParamMap;
+    const map = Number(params.get('map') ?? 0);
+    this.mapId.set(Number.isFinite(map) ? map : 0);
+    const [x, y, z] = ['x', 'y', 'z'].map((name) => Number(params.get(name)));
+    if (params.has('x') && params.has('y') && Number.isFinite(x) && Number.isFinite(y)) {
+      this.focus.set({ x, y, z: Number.isFinite(z) ? z : 0 });
+    } else if (!params.has('map')) {
+      // reopen where the user left off
+      const last = loadLastView();
+      if (last) {
+        this.mapId.set(last.mapId);
+        this.focus.set({ x: last.x, y: last.y, z: last.z });
+      }
+    }
+    const select = params.get('select');
+    if (select) {
+      this.selectedKey.set(select);
+    }
+    void this.loadMaps();
+    // (kept alive in its tab: opened again from another editor with a place to show, e.g. a path)
+    this.route.queryParamMap?.pipe(skip(1), takeUntilDestroyed(this.destroyRef)).subscribe((next) => this.showPlace(next));
+  }
+
+  /** Goes to the place another editor asks for (`map`, `x`, `y`, `z`) and selects what it names (`select`). */
+  private showPlace(params: ParamMap): void {
+    const [map, x, y, z] = ['map', 'x', 'y', 'z'].map((name) => Number(params.get(name)));
+    if (params.has('x') && params.has('y') && Number.isFinite(x) && Number.isFinite(y)) {
+      this.goTo(Number.isFinite(map) ? map : this.mapId(), { x, y, z: Number.isFinite(z) ? z : 0 });
+    }
+    const select = params.get('select');
+    if (select) {
+      this.selectedKey.set(select);
+    }
+  }
+
+  // ---------------------------------------------------------------- settings & navigation
+
+  protected toggleView(): void {
+    this.togglePanel('view');
+    // the skyboxes to choose from, read once
+    if (this.showView() && !this.skyboxes().length && this.client.isSupported() && this.settings.isConfigured()) {
+      void this.client
+        .getSkyboxes()
+        .then((skyboxes) => this.skyboxes.set(skyboxes))
+        .catch(this.quietly('list the skyboxes', undefined));
+    }
+  }
+  /** Every skybox model of the client, for View > Skybox. */
+  protected readonly skyboxes = signal<string[]>([]);
+  /** A skybox's name from its path: `Environments\Stars\NagrandSkyBox.m2` → "NagrandSkyBox". */
+  protected skyboxName(path: string): string {
+    return path.replace(/^.*\\/, '').replace(/\.m2$/i, '');
+  }
+
+  protected setSkyboxModel(event: Event): void {
+    this.renderSettings.update({ skyboxModel: (event.target as HTMLSelectElement).value });
+  }
+
+  /**
+   * Opens a panel (closing the others: one at a time, floating over the 3D view so it never gets resized), or closes
+   * it when it's the one open.
+   */
+  private togglePanel(panel: Panel): void {
+    const panels: Record<Panel, WritableSignal<boolean>> = {
+      map: this.showMap,
+      gameMap: this.showGameMap,
+      filters: this.showFilters,
+      view: this.showView,
+      controls: this.showControls,
+      settings: this.showSettings,
+      legend: this.showLegend,
+      style: this.showStyle,
+    };
+    const open = !panels[panel]();
+    for (const [name, shown] of Object.entries(panels)) {
+      shown.set(open && name === panel);
+    }
+  }
+
+  protected toggleLegend(): void {
+    this.togglePanel('legend');
+  }
+
+  /** View > Colours and shapes. */
+  protected readonly showStyle = signal(false);
+  protected readonly styles = inject(WorldStyleService);
+  protected toggleStyle(): void {
+    this.togglePanel('style');
+  }
+
+  protected toggleTree(): void {
+    this.showTree.update((shown) => !shown);
+  }
+
+  /** Turns the camera to face north, still looking at the same place. */
+  protected resetNorth(): void {
+    this.resetNorthRequest.update((n) => n + 1);
+  }
+
+  protected setButtonStyle(style: ButtonStyle): void {
+    this.buttonStyle.set(style);
+    saveButtonStyle(style);
+  }
+
+  /** A spawn picked in the tree: selected, and the camera flies there when asked. */
+  protected pickFromTree(spawn: SpawnRecord, snap: boolean): void {
+    const key = spawnKey(spawn.type, spawn.guid);
+    // a spawn hidden in the tree shows again when picked
+    if (this.treeHidden().has(key)) {
+      this.treeHidden.update((hidden) => new Set([...hidden].filter((k) => k !== key)));
+    }
+    this.groupKeys.set([]);
+    this.select(key);
+    if (snap) {
+      this.focus.set({ x: spawn.x, y: spawn.y, z: spawn.z });
+    }
+  }
+
+  protected async toggleFullscreen(): Promise<void> {
+    if (document.fullscreenElement) {
+      await document.exitFullscreen();
+    } else {
+      await this.root().nativeElement.requestFullscreen();
+    }
+  }
+
+  /** The 3D view alone, full screen (with the world map and panels floating over it). */
+  protected async toggleViewFullscreen(): Promise<void> {
+    if (document.fullscreenElement) {
+      await document.exitFullscreen();
+    } else {
+      await this.view().nativeElement.requestFullscreen();
+    }
+  }
+
+  protected onFullscreenChange(): void {
+    this.fullscreen.set(document.fullscreenElement === this.root().nativeElement);
+    this.viewFullscreen.set(document.fullscreenElement === this.view().nativeElement);
+  }
+
+  protected setRenderScale(scale: number): void {
+    this.renderSettings.update({ renderScale: scale });
+  }
+
+  protected setMarkerModel(event: Event): void {
+    this.renderSettings.update({ markerModel: (event.target as HTMLSelectElement).value });
+  }
+
+  protected setLowDetailTerrain(event: Event): void {
+    this.renderSettings.update({ lowDetailTerrain: (event.target as HTMLInputElement).checked });
+  }
+
+  protected setKeyboardNavigation(event: Event): void {
+    this.controls.setKeyboardNavigation((event.target as HTMLInputElement).checked);
+  }
+
+  /** "W / ↑" */
+  protected bindingsLabel(action: ControlAction): string {
+    return this.controls.settings().bindings[action].map(inputLabel).join(' / ');
+  }
+
+  protected setProbeRange(event: Event): void {
+    const value = positiveNumber(event);
+    if (value !== undefined) {
+      this.probeRange.set(value);
+    }
+  }
+
+  protected setProbeHeight(event: Event): void {
+    const value = positiveNumber(event);
+    if (value !== undefined) {
+      this.probeHeight.set(value);
+    }
+  }
+
+  protected onNavMeshTile(info: NavMeshTileInfo | undefined): void {
+    if (info?.file !== this.navMeshTile()?.file) {
+      this.mmapChanges.set({});
+    }
+    if (!info) {
+      // navigation mesh hidden: the preview goes too
+      this.clearMmapPreview();
+    }
+    this.navMeshTile.set(info);
+  }
+
+  /** Rebuilds the tile from the client files with its settings and the new values, drawn over the real one. */
+  protected previewMmap(): void {
+    const info = this.navMeshTile() as NavMeshTileInfo;
+    const config = { ...(info.config as MmapRecastConfig), ...this.mmapChanges() };
+    this.navMeshRebuildState.set({ status: 'reading', done: 0, total: 0, triangles: 0 });
+    this.navMeshRebuild.set({ tile: info.tile, config });
+  }
+
+  protected clearMmapPreview(): void {
+    this.navMeshRebuild.set(undefined);
+    this.navMeshRebuildState.set(undefined);
+    this.hideRealNavMesh.set(false);
+  }
+
+  /** A setting typed for the tile; empty, invalid or the tile's own value puts the tile's value back. */
+  protected setMmapValue(key: keyof MmapRecastConfig, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const value = Number(input.value);
+    const { [key]: _, ...others } = this.mmapChanges();
+    const original = (this.navMeshTile() as NavMeshTileInfo).config?.[key];
+    if (input.value === '' || !Number.isFinite(value) || value === original) {
+      // back to the tile's own value
+      input.value = String(original);
+      this.mmapChanges.set(others);
+    } else {
+      this.mmapChanges.set({ ...others, [key]: value });
+    }
+  }
+
+  protected setMmapScope(event: Event): void {
+    this.mmapScope.set((event.target as HTMLSelectElement).value === 'map' ? 'map' : 'tile');
+  }
+
+  protected copyMmapYaml(): void {
+    this.clipboard.copyFromContent(this.mmapYaml());
+  }
+
+  /** Saves the YAML as a file next to the user's downloads. */
+  protected downloadMmapYaml(): void {
+    const info = this.navMeshTile() as NavMeshTileInfo;
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(new Blob([this.mmapYaml()], { type: 'text/yaml' }));
+    link.download = `mmaps-config-${info.file.replace('.mmtile', '')}.yaml`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+  }
+
+  protected clearProbe(): void {
+    this.probeFrom.set(undefined);
+    this.probeTo.set(undefined);
+    this.probeResult.set(undefined);
+  }
+
+  /** Copies a `.go xyz` command to that spot. */
+  protected copyGo(position: WorldPosition): void {
+    this.clipboard.copyFromContent(`.go xyz ${position.x.toFixed(2)} ${position.y.toFixed(2)} ${position.z.toFixed(2)} ${this.mapId()}`);
+  }
+
+  protected toggleControls(): void {
+    this.togglePanel('controls');
+  }
+
+  protected setRenderFlag(key: RenderFlagKey, event: Event): void {
+    this.renderSettings.update({ [key]: (event.target as HTMLInputElement).checked });
+  }
+
+  /** The time of day lit with zone lighting, from its slider (10-minute steps). */
+  protected setTimeOfDay(event: Event): void {
+    this.renderSettings.update({ timeOfDay: Number((event.target as HTMLInputElement).value) });
+  }
+
+  // ---------------------------------------------------------------- weather
+
+  protected readonly weatherModes = ['off', 'database', 'rain', 'snow', 'storm'] as const;
+  /** The zone under the camera (from the view), for its game_weather row. */
+  private readonly weatherZone = signal<number | undefined>(undefined);
+  /** What game_weather says for the zone and the season, and what was rolled from it. */
+  protected readonly weatherRoll = signal<
+    { zone: number; season: Season; chances?: Record<WeatherKind, number>; weather?: WorldWeather } | undefined
+  >(undefined);
+  private weatherRequest = 0;
+  /** The weather drawn: none, the one chosen, or the one rolled for the zone. */
+  protected readonly weather = computed<WorldWeather | undefined>(() => {
+    const { weather, weatherIntensity } = this.renderSettings.settings();
+    if (weather === 'database') {
+      return this.weatherRoll()?.weather;
+    }
+    return weather === 'rain' || weather === 'snow' || weather === 'storm'
+      ? { kind: weather, intensity: weatherIntensity / 100 }
+      : undefined;
+  });
+
+  protected setWeatherMode(event: Event): void {
+    this.renderSettings.update({ weather: (event.target as HTMLSelectElement).value as WorldRenderSettings['weather'] });
+    void this.rollZoneWeather();
+  }
+
+  protected setWeatherIntensity(event: Event): void {
+    this.renderSettings.update({ weatherIntensity: Number((event.target as HTMLInputElement).value) });
+  }
+
+  protected onZoneChanged(zone: number | undefined): void {
+    this.weatherZone.set(zone);
+    void this.rollZoneWeather();
+  }
+
+  /** Rolls the zone's weather from game_weather, for today's season (with "From the database"). */
+  protected async rollZoneWeather(): Promise<void> {
+    const request = ++this.weatherRequest;
+    const zone = this.weatherZone();
+    if (this.renderSettings.settings().weather !== 'database' || zone === undefined) {
+      this.weatherRoll.set(undefined);
+      return;
+    }
+    const season = seasonOf(new Date());
+    try {
+      const chances = await this.service.loadWeather(zone);
+      if (request === this.weatherRequest) {
+        this.weatherRoll.set({ zone, season, chances: chances?.[season], weather: chances && rollWeather(chances, season) });
+      }
+    } catch (error) {
+      this.weatherRoll.set(undefined);
+      this.showError(error);
+    }
+  }
+
+  /** The time of day typed in as hours and minutes (open while editing). */
+  protected readonly editingTime = signal(false);
+
+  protected clockPart(minutes: number, part: 'hours' | 'minutes'): number {
+    return part === 'hours' ? Math.floor(minutes / 60) : minutes % 60;
+  }
+
+  /** Hours or minutes typed (or stepped with the arrows): past 23 / 59 goes round, carrying into the hours. */
+  protected setClockPart(part: 'hours' | 'minutes', event: Event): void {
+    const text = (event.target as HTMLInputElement).value;
+    const value = Number(text);
+    if (text === '' || !Number.isInteger(value)) {
+      return;
+    }
+    const current = this.renderSettings.settings().timeOfDay;
+    const total = part === 'hours' ? value * 60 + (current % 60) : Math.floor(current / 60) * 60 + value;
+    this.renderSettings.update({ timeOfDay: ((total % DAY_MINUTES) + DAY_MINUTES) % DAY_MINUTES });
+  }
+
+  protected readonly brightnessParts: { key: BrightnessKey; label: string }[] = [
+    { key: 'brightnessNight', label: 'WORLD_EDITOR.BRIGHTNESS_NIGHT' },
+    { key: 'brightnessMorning', label: 'WORLD_EDITOR.BRIGHTNESS_MORNING' },
+    { key: 'brightnessDay', label: 'WORLD_EDITOR.BRIGHTNESS_DAY' },
+    { key: 'brightnessEvening', label: 'WORLD_EDITOR.BRIGHTNESS_EVENING' },
+  ];
+
+  /** A number of the view settings from its slider. */
+  protected setRenderNumber(key: BrightnessKey | 'compassOpacity' | 'treeOpacity' | 'propOpacity' | 'buildingOpacity', event: Event): void {
+    this.renderSettings.update({ [key]: Number((event.target as HTMLInputElement).value) });
+  }
+
+  /**
+   * A percentage typed beside its slider (any value, to a tenth: 25.5), kept between `min` and `max`; one that isn't a
+   * number puts the current one back.
+   */
+  protected setPercent(
+    key: BrightnessKey | 'compassOpacity' | 'treeOpacity' | 'propOpacity' | 'buildingOpacity' | 'weatherIntensity',
+    event: Event,
+    min: number,
+    max: number,
+  ): void {
+    const input = event.target as HTMLInputElement;
+    const typed = parseFloat(input.value);
+    if (Number.isNaN(typed)) {
+      input.value = String(this.renderSettings.settings()[key]);
+      return;
+    }
+    const value = Math.round(Math.min(max, Math.max(min, typed)) * 10) / 10;
+    input.value = String(value);
+    this.renderSettings.update({ [key]: value });
+  }
+
+  /** Minutes since midnight as "hh:mm". */
+  protected clockText(minutes: number): string {
+    return `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`;
+  }
+
+  protected setRenderDistance(key: RenderDistanceKey, event: Event): void {
+    this.renderSettings.update({ [key]: Number((event.target as HTMLSelectElement).value) });
+  }
+
+  protected setLoadAhead(event: Event): void {
+    this.renderSettings.update({ loadAhead: Number((event.target as HTMLSelectElement).value) });
+  }
+
+  /** Where drawing stops: no limit, the terrain loaded, or a number of tiles around the camera. */
+  protected readonly drawLimitOptions = [
+    { value: 'all', label: 'WORLD_EDITOR.DRAW_LIMIT_ALL', tiles: 0 },
+    { value: 'view', label: 'WORLD_EDITOR.DRAW_LIMIT_VIEW', tiles: 0 },
+    ...[1, 2, 3, 4, 5].map((tiles) => ({ value: `tiles:${tiles}`, label: 'WORLD_EDITOR.DRAW_LIMIT_TILES', tiles })),
+  ];
+  protected readonly drawLimitValue = computed(() => {
+    const settings = this.renderSettings.settings();
+    return settings.drawLimit === 'tiles' ? `tiles:${settings.drawLimitTiles}` : settings.drawLimit;
+  });
+
+  protected setDrawLimit(event: Event): void {
+    const [limit, tiles] = (event.target as HTMLSelectElement).value.split(':');
+    this.renderSettings.update(
+      tiles ? { drawLimit: 'tiles', drawLimitTiles: Number(tiles) } : { drawLimit: limit as WorldRenderSettings['drawLimit'] },
+    );
+  }
+
+  protected setTerrainRadius(event: Event): void {
+    this.renderSettings.update({ terrainRadius: Number((event.target as HTMLSelectElement).value) });
+  }
+
+  protected toggleSettings(): void {
+    this.togglePanel('settings');
+    if (this.showSettings()) {
+      // counting the cache folder takes a moment: the panel shows first
+      requestAnimationFrame(() => setTimeout(() => void this.refreshCacheUsage()));
+    }
+  }
+
+  /** The game data folders saved (in the settings panel): the maps of the client set are read. */
+  protected async onFoldersSaved(): Promise<void> {
+    void this.refreshCacheUsage();
+    this.showSettings.set(false);
+    await this.loadMaps();
+  }
+
+  // ---------------------------------------------------------------- cache
+
+  /** Total size, and per map when the client can be read. */
+  private async refreshCacheUsage(): Promise<void> {
+    // (counted off the window's thread: thousands of files)
+    if (this.client.isSupported() && this.settings.isConfigured()) {
+      try {
+        const usage = await this.client.cacheUsage();
+        this.cacheUsage.set(usage);
+        this.cacheSize.set(usage.totalBytes);
+        return;
+      } catch {
+        // the client can't be opened (yet): the total is still shown
+        this.cacheUsage.set(undefined);
+      }
+    }
+    this.cacheSize.set(await this.cache.size());
+  }
+
+  protected setCacheMaxGb(event: Event): void {
+    this.cache.setMaxBytes(Number((event.target as HTMLInputElement).value) * 1_000_000_000);
+  }
+
+  protected setCacheEnabled(event: Event): void {
+    this.cache.setEnabled((event.target as HTMLInputElement).checked);
+  }
+
+  /** Every map's pictures, read in the background into the cache (when Keira starts, or now). */
+  protected readonly mapPreload = inject(WowMapPreloadService);
+  /** The kinds of game data cached each on its own. */
+  protected readonly gameDataSections: { key: CacheSection; label: string }[] = [
+    { key: 'terrain', label: 'WORLD_EDITOR.CACHE_TERRAIN' },
+    { key: 'buildings', label: 'WORLD_EDITOR.CACHE_BUILDINGS' },
+    { key: 'models', label: 'WORLD_EDITOR.CACHE_MODELS' },
+    { key: 'textures', label: 'WORLD_EDITOR.CACHE_TEXTURES' },
+  ];
+
+  protected setCacheSection(section: CacheSection, event: Event): void {
+    this.cache.setSection(section, (event.target as HTMLInputElement).checked);
+  }
+
+  protected setPreloadMaps(event: Event): void {
+    const on = (event.target as HTMLInputElement).checked;
+    this.cache.setPreloadMaps(on);
+    if (on) {
+      this.preloadMapsNow();
+    }
+  }
+
+  protected preloadMapsNow(): void {
+    void this.mapPreload.run();
+  }
+
+  protected clearCache(): void {
+    this.cache.clear();
+    void this.refreshCacheUsage();
+  }
+
+  /** The cache got full while preloading: offers to double its maximum and go on. */
+  protected readonly cacheFull = signal<{ scope: 'zone' | 'map' | 'all'; maxGb: number } | undefined>(undefined);
+
+  protected raiseCacheAndPreload(): void {
+    const full = this.cacheFull() as { scope: 'zone' | 'map' | 'all'; maxGb: number };
+    this.cacheFull.set(undefined);
+    this.cache.setMaxBytes(Math.max(1, full.maxGb) * 2 * 1_000_000_000);
+    void this.preload(full.scope);
+  }
+
+  /** Processes the selected zone, the whole map, or every map into the disk cache. */
+  protected async preload(scope: 'zone' | 'map' | 'all'): Promise<void> {
+    this.preloadCancelled = false;
+    this.cacheFull.set(undefined);
+    this.preloading.set({ label: '', directory: '', done: 0, total: 0, map: 0, maps: 0 });
+    let tileCount = 0;
+    const began = performance.now();
+    try {
+      const jobs = await this.preloadJobs(scope);
+      perfNote(`preload (${scope}): ${jobs.map((job) => `${job.name} ${job.tiles.length} tiles`).join(', ') || 'nothing to preload'}`);
+      for (const [index, job] of jobs.entries()) {
+        if (this.preloadCancelled) {
+          break;
+        }
+        const label = jobs.length > 1 ? `${index + 1}/${jobs.length} ${job.name}` : job.name;
+        const directory = job.directory.toLowerCase();
+        const maps = jobs.length;
+        this.preloading.set({ label, directory, done: 0, total: job.tiles.length, map: index, maps });
+        const completed = await this.client.preload(
+          job.directory,
+          job.tiles,
+          (done, total) => this.preloading.set({ label, directory, done, total, map: index, maps }),
+          () => this.preloadCancelled,
+        );
+        await this.refreshCacheUsage();
+        if (!completed) {
+          logProblem('warning', `preload stopped: the cache is full (${(this.cache.maxBytes() / 1e9).toFixed(1)} GB) at ${label}`);
+          // ask to make room and go on (what's cached already is skipped quickly)
+          this.cacheFull.set({ scope, maxGb: this.cache.maxBytes() / 1_000_000_000 });
+          return;
+        }
+        tileCount += job.tiles.length;
+      }
+      perfNote(
+        `preload ${this.preloadCancelled ? 'cancelled' : 'done'}: ${tileCount} tiles in ${((performance.now() - began) / 1000).toFixed(0)}s`,
+      );
+      if (!this.preloadCancelled) {
+        this.toastr.success(`Preloaded ${tileCount} tiles.`, 'World Editor');
+      }
+    } catch (error) {
+      this.showError(error);
+    } finally {
+      this.preloading.set(undefined);
+      await this.refreshCacheUsage();
+    }
+  }
+
+  /** The maps and tiles a preload covers (maps without terrain, like most dungeons, have no tiles to preload). */
+  private async preloadJobs(scope: 'zone' | 'map' | 'all'): Promise<{ directory: string; name: string; tiles: TileCoord[] }[]> {
+    const maps = scope === 'all' ? this.maps() : this.maps().filter((map) => map.id === this.mapId());
+    const jobs = [];
+    for (const [index, map] of maps.entries()) {
+      if (this.preloadCancelled) {
+        break;
+      }
+      this.preloading.set({ label: `${map.name}…`, directory: '', done: index, total: maps.length, map: 0, maps: 0 });
+      // one unreadable map shouldn't stop the others
+      let tiles = await this.client.getMapTiles(map.directory).catch(this.quietly<TileCoord[]>(`read the tiles of ${map.directory}`, []));
+      const zone = this.zones().find((z) => z.areaId === this.zoneId());
+      if (scope === 'zone' && zone) {
+        const inZone = new Set(tilesInBounds(zone.bounds, { tx: 32, ty: 32 }).map(tileKey));
+        tiles = tiles.filter((tile) => inZone.has(tileKey(tile)));
+      }
+      if (tiles.length > 0) {
+        jobs.push({ directory: map.directory, name: scope === 'zone' && zone ? zone.name : map.name, tiles });
+      }
+    }
+    return jobs;
+  }
+
+  protected cancelPreload(): void {
+    this.preloadCancelled = true;
+  }
+
+  private async loadMaps(): Promise<void> {
+    if (!this.client.isSupported() || !this.settings.isConfigured()) {
+      return;
+    }
+    try {
+      this.maps.set(await this.client.getMaps());
+      void this.prefetchGameMap();
+      void this.client.getFactions().then((data) => this.factionData.set(data), this.quietly('read the factions', undefined));
+      if (!this.focus()) {
+        await this.focusMapCenter();
+      }
+      // the view may have reported where it looks before the maps were known (e.g. when coming back to the editor)
+      void this.reloadSpawns();
+      await this.loadZones(true);
+    } catch (error) {
+      this.showError(error);
+    }
+  }
+
+  /** What's typed in the map picker (undefined: closed, showing the current map). */
+  protected readonly mapSearch = signal<string | undefined>(undefined);
+  protected readonly currentMapLabel = computed(() => {
+    const map = this.maps().find((m) => m.id === this.mapId());
+    return map ? `${map.id} – ${map.name}` : '';
+  });
+  /**
+   * Maps matching every word typed: in their id, name or folder, their kind (raid, dungeon…, also translated) or the
+   * expansion that added them (vanilla, tbc / burning crusade, wotlk / wrath).
+   */
+  protected readonly filteredMaps = computed(() => {
+    // (only read while the picker is open)
+    const words = (this.mapSearch() as string).trim().toLowerCase().split(/\s+/).filter(Boolean);
+    return this.sortedMaps().filter((map) => {
+      const kind = mapKind(map);
+      const text = [
+        map.id,
+        map.name,
+        map.directory,
+        kind,
+        this.translate.instant(`WORLD_EDITOR.MAP_KIND_${kind.toUpperCase()}`),
+        EXPANSION_SEARCH[map.expansion ?? -1] ?? '',
+      ]
+        .join(' ')
+        .toLowerCase();
+      return words.every((word) => text.includes(word));
+    });
+  });
+  protected readonly expansions = EXPANSIONS;
+
+  // ---------------------------------------------------------------- picker sorting
+
+  protected readonly mapSort = this.session.mapSort;
+  protected readonly zoneSort = this.session.zoneSort;
+  protected readonly mapSortKeys = MAP_SORT_KEYS;
+  protected readonly zoneSortKeys = ZONE_SORT_KEYS;
+  /** The maps in the picker's order (also the order of the next / previous map buttons). */
+  private readonly sortedMaps = computed(() =>
+    sortItems(this.maps(), this.mapSort(), (map, key: MapSortKey) =>
+      key === 'id'
+        ? map.id
+        : key === 'name'
+          ? map.name
+          : key === 'expansion'
+            ? (map.expansion ?? -1)
+            : MAP_KIND_ORDER.indexOf(mapKind(map)),
+    ),
+  );
+  private readonly sortedZones = computed(() =>
+    sortItems(this.zones(), this.zoneSort(), (zone, key: ZoneSortKey) => (key === 'id' ? zone.areaId : zone.name)),
+  );
+
+  /** Where a key stands in a sort (1: first), and which way, for its button. */
+  protected sortState(rules: SortRule<string>[], key: string): { at: number; desc: boolean } | undefined {
+    const at = rules.findIndex((rule) => rule.key === key);
+    return at < 0 ? undefined : { at: at + 1, desc: rules[at].desc };
+  }
+
+  protected toggleMapSort(key: MapSortKey): void {
+    this.mapSort.set(toggleSort(this.mapSort(), key));
+  }
+
+  protected toggleZoneSort(key: ZoneSortKey): void {
+    this.zoneSort.set(toggleSort(this.zoneSort(), key));
+  }
+
+  /** Makes the pickers' current sort the one they start with (the session keeps whatever is chosen meanwhile). */
+  protected saveSortPreference(): void {
+    savePickerSort({ maps: this.mapSort(), zones: this.zoneSort() });
+    this.toastr.success(this.translate.instant('WORLD_EDITOR.SORT_SAVED'), 'World Editor');
+  }
+
+  private readonly mapList = viewChild<ElementRef<HTMLElement>>('mapList');
+  private readonly injector = inject(Injector);
+  /** Opens the map list, scrolled to the map shown. */
+  protected openMapPicker(): void {
+    this.mapSearch.set('');
+    afterNextRender(
+      // (unless closed meanwhile)
+      () => this.mapList()?.nativeElement.querySelector('.active')?.scrollIntoView({ block: 'center' }),
+      { injector: this.injector },
+    );
+  }
+
+  /** What kind of map it is, for the colour of its badge in the picker. */
+  protected readonly mapKind = mapKind;
+
+  /** Goes to the next (or previous) map of the list, round the end. */
+  protected stepMap(step: number): void {
+    const maps = this.sortedMaps();
+    const at = maps.findIndex((map) => map.id === this.mapId());
+    void this.pickMap(maps[(at + step + maps.length) % maps.length].id);
+  }
+
+  /** What's typed in the zone picker (undefined: closed, showing the current zone). */
+  protected readonly zoneSearch = signal<string | undefined>(undefined);
+  protected readonly currentZoneLabel = computed(() => {
+    const zone = this.zones().find((z) => z.areaId === this.zoneId());
+    return zone ? `${zone.areaId} – ${zone.name}` : '';
+  });
+  /** Zones whose id or name contain what's typed. */
+  protected readonly filteredZones = computed(() => {
+    // (only read while the picker is open)
+    const text = (this.zoneSearch() as string).trim().toLowerCase();
+    return this.sortedZones().filter((zone) => !text || `${zone.areaId} ${zone.name}`.toLowerCase().includes(text));
+  });
+
+  protected pickFirstZone(): void {
+    const first = this.filteredZones()[0];
+    if (first) {
+      this.pickZone(first.areaId);
+    }
+  }
+
+  /** Looks at the middle of the chosen zone (0: none). */
+  protected pickZone(areaId: number): void {
+    this.zoneSearch.set(undefined);
+    const zone = this.zones().find((z) => z.areaId === areaId);
+    this.zoneId.set(zone?.areaId ?? 0);
+    if (zone) {
+      const { minX, maxX, minY, maxY } = zone.bounds;
+      this.focus.set({ x: (minX + maxX) / 2, y: (minY + maxY) / 2, z: 0 });
+    }
+  }
+
+  protected pickFirstMap(): void {
+    const first = this.filteredMaps()[0];
+    if (first) {
+      void this.pickMap(first.id);
+    }
+  }
+
+  protected async pickMap(id: number): Promise<void> {
+    this.mapSearch.set(undefined);
+    this.mapId.set(id);
+    // (picking the map shown loads it again)
+    this.leaveMap();
+    await this.focusLandingSpot();
+    await this.loadZones();
+  }
+
+  /**
+   * Arrives on the map picked somewhere one can stand: where its instance entrance leads, or its first teleport
+   * location; failing those, its middle (on the server's ground there when known).
+   */
+  private async focusLandingSpot(): Promise<void> {
+    const mapId = this.mapId();
+    const spot = await this.service.loadLandingSpot(mapId).catch(this.quietly(`read where to arrive on map ${mapId}`, undefined));
+    if (mapId !== this.mapId()) {
+      return;
+    }
+    if (spot) {
+      this.focus.set(spot);
+      return;
+    }
+    await this.focusMapCenter();
+  }
+
+  /** Forgets what was loaded for the map shown: its spawns are loaded again, and an area chosen on it is let go. */
+  private leaveMap(): void {
+    // what belongs to the map left: its selection, difficulty, checked path, simulation, hidden and locked spawns, probe
+    this.selectedKey.set(undefined);
+    this.groupKeys.set([]);
+    this.difficulty.set(undefined);
+    this.checkedPathId.set(undefined);
+    this.simulation.set(undefined);
+    this.treeHidden.set(new Set());
+    this.lockedKeys.set(new Set());
+    this.probeFrom.set(undefined);
+    this.probeTo.set(undefined);
+    this.probeResult.set(undefined);
+    this.loadedSpawns.set([]);
+    this.loadedWaypoints.set([]);
+    this.spawnLoadCenter = undefined;
+    this.mapRegion.set(undefined);
+    // (a scan is of the map it was made on)
+    this.scanResults.set(undefined);
+  }
+
+  /** The area triggers of the current map, and their database rows. */
+  private async loadAreaTriggers(): Promise<void> {
+    const mapId = this.mapId();
+    try {
+      const triggers = await this.client.getAreaTriggers(mapId);
+      // a database without one of the areatrigger_* tables still shows the triggers
+      const info = await this.service
+        .loadAreaTriggerInfo(triggers.map((trigger) => trigger.id))
+        .catch(this.quietly('read the area triggers', new Map<number, string[]>()));
+      if (mapId === this.mapId()) {
+        this.areaTriggerList.set(triggers);
+        this.areaTriggerInfo.set(info);
+      }
+      void this.loadBossBoundaries(mapId);
+      void this.loadMapZones(mapId);
+      void this.loadScriptObjects(mapId);
+      await this.loadTravel(mapId, triggers);
+    } catch (error) {
+      this.areaTriggerList.set([]);
+      this.showError(error);
+    }
+  }
+
+  /** Graveyards, teleports, flight masters and flight paths of a map (each left out when it can't be read). */
+  private async loadTravel(mapId: number, triggers: AreaTriggerInfo[]): Promise<void> {
+    const none = <T>(what: string) => this.quietly<T[]>(`read the ${what} of map ${mapId}`, []);
+    const [graveyards, teleports, taxiNodes, taxiPaths] = await Promise.all([
+      this.service.loadGraveyards(mapId).catch(none<Graveyard>('graveyards')),
+      this.service.loadTeleports(triggers.map((trigger) => trigger.id)).catch(none<Teleport>('teleports')),
+      this.client.getTaxiNodes(mapId).catch(none<TaxiNode>('flight masters')),
+      this.client.getTaxiPaths(mapId).catch(none<TaxiPath>('flight paths')),
+    ]);
+    if (mapId === this.mapId()) {
+      this.travel.set({ mapId, graveyards, teleports, taxiNodes, taxiPaths });
+    }
+  }
+
+  /** The areas with a range of a map: gameobjects with one, battleground starts, SmartAI sight (each left out if unreadable). */
+  private async loadMapZones(mapId: number): Promise<void> {
+    const [objects, starts, sight] = await Promise.all([
+      this.service.loadObjectZones(mapId).catch(this.quietly<WorldZone[]>('read the gameobjects with a range', [])),
+      this.service.loadBattlegroundStarts(mapId).catch(this.quietly<WorldZone[]>('read the battleground starts', [])),
+      this.service.loadSightZones(mapId).catch(this.quietly<WorldZone[]>('read the SmartAI sight ranges', [])),
+    ]);
+    if (mapId === this.mapId()) {
+      this.mapZones.set([...objects, ...starts, ...sight]);
+    }
+  }
+
+  /**
+   * The gameobjects the scripts spawn on a map (from the source folder): those the database has a template for, with
+   * the models of the buildings among them (walls, towers, gates).
+   */
+  private async loadScriptObjects(mapId: number): Promise<void> {
+    const spawns = await this.client
+      .getScriptSpawns(mapId)
+      .catch(this.quietly<ScriptSpawn[]>('read the gameobjects spawned by scripts', []));
+    const templates = await this.service
+      .loadObjectTemplates(spawns.map((spawn) => spawn.entry))
+      .catch(this.quietly('read the templates of the gameobjects spawned by scripts', new Map<number, ObjectTemplate>()));
+    const objects: { spawn: ScriptSpawn; template: ObjectTemplate; path?: string }[] = [];
+    for (const spawn of spawns) {
+      const template = templates.get(spawn.entry);
+      if (template) {
+        const path = await this.client.getGameObjectDisplay(template.displayId).catch(() => undefined);
+        objects.push({ spawn, template, ...(path && /\.wmo$/i.test(path) ? { path } : {}) });
+      }
+    }
+    if (mapId === this.mapId()) {
+      this.scriptObjects.set(objects);
+    }
+  }
+
+  /** Whether what a switch needs is missing (the source folder, the server's data folder): it's greyed out then. */
+  protected missing(requirement: Requirement | undefined): boolean {
+    const paths = this.settings.paths();
+    return requirement === 'source' ? !paths.sourcePath : requirement === 'serverData' ? !paths.serverDataPath : false;
+  }
+
+  /** The boss boundaries of a map, and the creatures they apply to (none when the scripts or the database can't tell). */
+  private async loadBossBoundaries(mapId: number): Promise<void> {
+    const boundaries = await this.client
+      .getBossBoundaries(mapId)
+      .catch(this.quietly<BossBoundary[]>(`read the boss boundaries of map ${mapId}`, []));
+    const entries = await this.service
+      .loadScriptEntries(boundaries.flatMap((boundary) => boundary.scriptNames))
+      .catch(this.quietly('read the creatures of the boss scripts', new Map<string, number[]>()));
+    if (mapId === this.mapId()) {
+      this.bossBoundaries.set(
+        boundaries.map((boundary) => ({ ...boundary, entries: boundary.scriptNames.flatMap((name) => entries.get(name) ?? []) })),
+      );
+    }
+  }
+
+  /** The zones of the current map; `keepZone` keeps the chosen one (coming back to the editor on the same map). */
+  private async loadZones(keepZone = false): Promise<void> {
+    void this.loadAreaTriggers();
+    const kept = keepZone ? this.zoneId() : 0;
+    const mapId = this.mapId();
+    this.zoneId.set(0);
+    try {
+      const zones = await this.client.getZones(mapId);
+      if (mapId !== this.mapId()) {
+        return;
+      }
+      this.zones.set(zones);
+      this.zoneId.set(zones.some((zone) => zone.areaId === kept) ? kept : 0);
+    } catch (error) {
+      this.zones.set([]);
+      this.showError(error);
+    }
+  }
+
+  /** Where the one building of a dungeon stands (undefined for a map with terrain, or unreadable). */
+  private async buildingBounds(directory: string | undefined): Promise<(WorldBounds & { minZ: number; maxZ: number }) | undefined> {
+    return directory
+      ? (await this.client.getMapBuilding(directory).catch(this.quietly(`read the building of ${directory}`, undefined)))?.bounds
+      : undefined;
+  }
+
+  private async updateInstanceRegion(directory: string | undefined): Promise<void> {
+    const b = await this.buildingBounds(directory);
+    // (another map may have been chosen meanwhile)
+    if (directory === this.mapDirectory()) {
+      const pad = INSTANCE_PADDING;
+      this.instanceRegion.set(b && { minX: b.minX - pad, maxX: b.maxX + pad, minY: b.minY - pad, maxY: b.maxY + pad });
+    }
+  }
+
+  /** Looks at the middle of the dungeon, or of the map's terrain tiles (maps rarely have anything at 0,0). */
+  private async focusMapCenter(): Promise<void> {
+    const mapId = this.mapId();
+    const directory = this.mapDirectory();
+    const b = await this.buildingBounds(directory);
+    const tiles = !b && directory ? await this.client.getMapTiles(directory) : [];
+    let focus: WorldPosition = { x: 0, y: 0, z: 0 };
+    if (b) {
+      // the middle of the dungeon
+      focus = { x: (b.minX + b.maxX) / 2, y: (b.minY + b.maxY) / 2, z: (b.minZ + b.maxZ) / 2 };
+    } else if (tiles.length) {
+      // on the server's ground there, when known
+      const middle = tiles[Math.floor(tiles.length / 2)];
+      const center = tileCenter(middle);
+      const server = await this.client.getServerMap(mapId, middle).catch(() => undefined);
+      focus = { ...center, z: (server && serverHeightAt(server, middle, center.x, center.y)) ?? center.z };
+    }
+    // (unless another map was picked meanwhile: it looks at its own middle)
+    if (mapId === this.mapId()) {
+      this.focus.set(focus);
+    }
+  }
+
+  protected async searchTele(): Promise<void> {
+    const text = this.teleSearch.value.trim();
+    const gps = parseGpsOutput(text);
+    if (gps) {
+      this.teleSearch.setValue('');
+      this.goToGps(gps);
+      return;
+    }
+    // (only the last search counts, and none after Esc)
+    const request = ++this.teleSearchRequest;
+    const results = text ? await this.service.searchTele(text) : [];
+    if (request === this.teleSearchRequest) {
+      this.teleResults.set(results);
+    }
+  }
+  private teleSearchRequest = 0;
+
+  /** Esc in the teleport search: no results, and nothing typed. */
+  protected closeTeleSearch(): void {
+    this.teleSearchRequest++;
+    this.teleSearch.setValue('', { emitEvent: false });
+    this.teleResults.set([]);
+  }
+
+  protected goToTele(tele: TeleRow): void {
+    this.goTo(Number(tele.map), { x: Number(tele.x), y: Number(tele.y), z: Number(tele.z) });
+    this.teleResults.set([]);
+  }
+
+  /** Pasting the output of the in-game `.gps` command goes straight to that place. */
+  protected onPasteLocation(event: ClipboardEvent): void {
+    const gps = parseGpsOutput(event.clipboardData?.getData('text') ?? '');
+    if (gps) {
+      event.preventDefault();
+      this.goToGps(gps);
+    }
+  }
+
+  private goToGps(gps: GpsLocation): void {
+    this.goToForm.setValue({ x: gps.x, y: gps.y, z: gps.z });
+    this.goTo(gps.map, { x: gps.x, y: gps.y, z: gps.z });
+  }
+
+  /** A place picked on another map (the world map's atlas): there, at the server's ground height. */
+  protected async goToPlace(map: number, position: WorldPosition): Promise<void> {
+    const tile = worldToTile(position.x, position.y);
+    const server = await this.client.getServerMap(map, tile).catch(() => undefined);
+    const z = (server && serverHeightAt(server, tile, position.x, position.y)) ?? position.z;
+    this.goTo(map, { x: position.x, y: position.y, z });
+    this.showMap.set(false);
+  }
+
+  private goTo(map: number, position: WorldPosition): void {
+    const changedMap = map !== this.mapId();
+    if (changedMap) {
+      this.leaveMap();
+    }
+    this.mapId.set(map);
+    this.focus.set(position);
+    if (changedMap) {
+      void this.loadZones();
+    }
+  }
+
+  protected goToCoordinates(): void {
+    const { x, y, z } = this.goToForm.getRawValue();
+    if (x === null || y === null) {
+      return;
+    }
+    this.focus.set({ x, y, z: z ?? 0 });
+  }
+
+  protected toggleFilters(): void {
+    this.togglePanel('filters');
+  }
+
+  protected setFilters(changes: Partial<SpawnFilters>): void {
+    const filters = { ...this.filters(), ...changes };
+    this.filters.set(filters);
+    saveSpawnFilters(filters);
+  }
+
+  protected setFilterFlag(key: 'showTriggers' | 'onlyVisiblePhases' | 'showSelectedEvent', event: Event): void {
+    this.setFilters({ [key]: (event.target as HTMLInputElement).checked });
+  }
+
+  /**
+   * Turns one phase (bit) of the camera's phase mask on or off; at least one stays on. Choosing a phase also turns
+   * "Only show visible phases" on: that's what one picks a phase for.
+   */
+  protected togglePhase(bit: number): void {
+    const phase = this.filters().phase ^ bit;
+    if (phase) {
+      this.setFilters({ phase, onlyVisiblePhases: true });
+    }
+  }
+
+  /** "2 + 4": the phases of the camera's mask. */
+  protected phaseParts(): string {
+    return phaseBits(this.filters().phase).join(' + ');
+  }
+
+  /** The camera's phase mask, typed in. */
+  protected setPhase(event: Event): void {
+    const phase = positiveNumber(event);
+    if (phase && Number.isInteger(phase) && phase <= 0xffffffff) {
+      this.setFilters({ phase, onlyVisiblePhases: true });
+    }
+  }
+
+  protected readonly phaseButtons = [1, 2, 4, 8, 16, 32, 64, 128];
+
+  protected phaseOn(bit: number): boolean {
+    return (this.filters().phase & bit) !== 0;
+  }
+
+  protected setFilterSearch(event: Event): void {
+    this.setFilters({ search: (event.target as HTMLInputElement).value });
+  }
+
+  protected toggleEvent(id: number, event: Event): void {
+    const others = this.filters().events.filter((shown) => shown !== id);
+    this.setFilters({ events: (event.target as HTMLInputElement).checked ? [...others, id] : others });
+  }
+
+  /** Shows the spawns of every listed event, or of none. */
+  protected setAllEvents(shown: boolean): void {
+    this.setFilters({ events: shown ? this.events().map((e) => e.id) : [] });
+  }
+
+  protected toggleLayer(layer: keyof LayerVisibility): void {
+    this.layers.update((layers) => ({ ...layers, [layer]: !layers[layer] }));
+  }
+
+  // ---------------------------------------------------------------- viewer events
+
+  protected async onCenterChanged(center: WorldPosition): Promise<void> {
+    this.center = center;
+    this.cameraCenter.set(center);
+    saveLastView({ mapId: this.mapId(), ...center });
+    // the spawns are loaded well beyond what's in sight: they're loaded again only once the camera went some way
+    const last = this.spawnLoadCenter;
+    if (last && last.mapId === this.mapId() && Math.hypot(center.x - last.x, center.y - last.y) < SPAWN_RELOAD_DISTANCE) {
+      return;
+    }
+    await this.reloadSpawns();
+  }
+
+  /** Loads everything again: the spawns around the camera (and their paths, scripts…), the zones and boss boundaries. */
+  protected async refresh(): Promise<void> {
+    void this.loadBossBoundaries(this.mapId());
+    void this.loadMapZones(this.mapId());
+    void this.loadScriptObjects(this.mapId());
+    void this.loadZones(true);
+    await this.reloadSpawns();
+  }
+
+  private async reloadSpawns(): Promise<void> {
+    const center = this.center;
+    if (!center || !this.mapDirectory()) {
+      return;
+    }
+    const request = ++this.spawnRequest;
+    this.spawnLoadCenter = { mapId: this.mapId(), x: center.x, y: center.y };
+    this.spawnsCenter.set(center);
+    this.loadingSpawns.set(true);
+    const began = performance.now();
+    try {
+      // with a region (Load the whole zone, an area of the world map), its spawns too
+      const region = this.region();
+      const loaded = await (region
+        ? this.service.loadSpawns(this.mapId(), center, SPAWN_LOAD_RADIUS, region)
+        : this.service.loadSpawns(this.mapId(), center));
+      const { paths: saiPaths, starts } = await this.service.loadSaiPaths(loaded.filter((s) => s.type === 'creature'));
+      if (request !== this.spawnRequest) {
+        return;
+      }
+      const spawns = loaded.map((s) => {
+        const paths = s.type === 'creature' ? [...new Set([...(saiPaths.get(s.entry) ?? []), ...(saiPaths.get(-s.guid) ?? [])])] : [];
+        return paths.length ? { ...s, saiPaths: paths } : s;
+      });
+      const waypoints = await this.service.loadWaypoints([...new Set(this.changes.applyToSpawns(spawns, this.mapId()).flatMap(pathsOf))]);
+      if (request !== this.spawnRequest) {
+        return;
+      }
+      const known = [...new Set(waypoints.map((w) => w.pathId))];
+      const areaPaths = this.renderSettings.settings().showAllPaths
+        ? await (region
+            ? this.service.loadAreaPaths(this.mapId(), center, known, SPAWN_LOAD_RADIUS, region)
+            : this.service.loadAreaPaths(this.mapId(), center, known))
+        : [];
+      const walkers = spawns.filter((s) => s.type === 'creature' && pathsOf(s).length);
+      const [scripts, sai, eventNames, quests, formations, pools] = await Promise.all([
+        this.service.loadWaypointScripts(waypoints.map((w) => w.action ?? 0)),
+        this.service.loadWaypointSai(walkers),
+        this.service.loadEventNames(spawns.map((s) => s.event ?? 0)),
+        this.service.loadQuests(spawns),
+        this.service.loadFormations(spawns.filter((s) => s.type === 'creature').map((s) => s.guid)),
+        this.service.loadPools(spawns),
+      ]);
+      if (request === this.spawnRequest) {
+        // all at once: the view redraws once
+        this.loadedSpawns.set(spawns);
+        this.loadedWaypoints.set(waypoints);
+        const creatures = spawns.filter((s) => s.type === 'creature').length;
+        perfNote(
+          `spawns loaded: ${creatures} creatures, ${spawns.length - creatures} gameobjects, ${waypoints.length} waypoints, ` +
+            `${areaPaths.length} other paths around ${center.x.toFixed(0)} ${center.y.toFixed(0)}${region ? ' and in the zone or area picked' : ''} ` +
+            `in ${(performance.now() - began).toFixed(0)}ms`,
+        );
+        this.areaPaths.set(areaPaths);
+        this.waypointScripts.set(scripts);
+        this.waypointSai.set(sai);
+        this.pathStarts.set(starts);
+        this.formations.set(formations);
+        this.pools.set(pools);
+        this.poolMembersRead.clear();
+        // (read again: saved changes are in them now)
+        this.selectedPoolMembers.set(undefined);
+        this.eventNames.set(eventNames);
+        const byEntry = new Map<string, SpawnQuest[]>();
+        for (const quest of quests) {
+          const key = `${quest.type}:${quest.entry}`;
+          byEntry.set(key, [...(byEntry.get(key) ?? []), quest]);
+        }
+        this.quests.set(byEntry);
+        if (this.pendingSelect && this.findSpawn(this.pendingSelect)) {
+          this.groupKeys.set([]);
+          this.select(this.pendingSelect);
+          this.pendingSelect = undefined;
+        }
+      }
+    } catch (error) {
+      // tried again on the next move
+      this.spawnLoadCenter = undefined;
+      this.showError(error);
+    } finally {
+      if (request === this.spawnRequest) {
+        this.loadingSpawns.set(false);
+      }
+    }
+  }
+
+  protected async onPicked(result: PickResult): Promise<void> {
+    const tool = this.tool();
+    // (the gameobjects scripts spawn are only shown)
+    if (result.type === 'spawn' && result.key.startsWith(SCRIPT_OBJECT_KEY)) {
+      return;
+    }
+    if (tool === 'select') {
+      if (result.additive && result.type === 'spawn') {
+        this.toggleInGroup(result.key);
+        return;
+      }
+      this.groupKeys.set([]);
+      this.select(result.type === 'spawn' || result.type === 'waypoint' ? result.key : undefined);
+      return;
+    }
+    if (tool === 'face') {
+      this.faceSelectedTo(result.position);
+      return;
+    }
+    if (tool === 'probe') {
+      // A, then C; a third click starts again from A
+      if (!this.probeFrom() || this.probeTo()) {
+        this.probeFrom.set(result.position);
+        this.probeTo.set(undefined);
+        this.probeResult.set(undefined);
+      } else {
+        this.probeTo.set(result.position);
+      }
+      return;
+    }
+    if (result.type !== 'ground') {
+      return;
+    }
+    if (tool === 'add-waypoint') {
+      this.addWaypointAt(result.position);
+      return;
+    }
+    if (tool === 'place-composition') {
+      await this.placeCompositionAt(result.position);
+      return;
+    }
+    await this.placeSpawnAt(tool === 'place-creature' ? 'creature' : 'gameobject', result.position);
+  }
+
+  /** The Face tool: the selected spawn (and the ones selected with it) turns to look at the clicked place. */
+  private faceSelectedTo(target: WorldPosition): void {
+    const spawn = this.selectedSpawn();
+    if (!spawn || this.selectedLocked()) {
+      return;
+    }
+    const o = (Math.atan2(target.y - spawn.y, target.x - spawn.x) + Math.PI * 2) % (Math.PI * 2);
+    this.applyPlacement(spawnKey(spawn.type, spawn.guid), { x: spawn.x, y: spawn.y, z: spawn.z, o });
+  }
+
+  protected onObjectMoved(moved: ObjectMoved): void {
+    const placement = { x: moved.position.x, y: moved.position.y, z: moved.position.z, o: moved.orientation };
+    // (the gizmo let go without moving: no step to undo)
+    const before = this.findSpawn(moved.key) ?? this.findWaypoint(moved.key);
+    const o = (before as { o?: number } | undefined)?.o ?? moved.orientation;
+    const still =
+      before && [before.x - placement.x, before.y - placement.y, before.z - placement.z, o - placement.o].every((d) => Math.abs(d) < 1e-4);
+    if (!still) {
+      this.applyPlacement(moved.key, placement);
+    }
+  }
+
+  // ---------------------------------------------------------------- editing
+
+  protected setTool(tool: EditorTool): void {
+    this.tool.set(tool);
+  }
+
+  protected setGizmoMode(mode: GizmoMode): void {
+    this.gizmoMode.set(mode);
+  }
+
+  protected setSnapMode(event: Event): void {
+    this.snapMode.set((event.target as HTMLSelectElement).value as 'off' | 'ground' | 'water' | 'wall');
+  }
+
+  private select(key: string | undefined): void {
+    this.selectedKey.set(key);
+    const spawn = this.selectedSpawn();
+    const waypoint = this.selectedWaypoint();
+    // its attributes shown (while placing from the Asset browser, the browser stays)
+    if ((spawn || waypoint) && !this.tool().startsWith('place-')) {
+      this.rightTab.set('attributes');
+    }
+    if (spawn) {
+      this.setPlacementForm(spawn);
+    } else if (waypoint) {
+      this.setPlacementForm({ ...waypoint, o: 0 });
+    }
+  }
+
+  protected async onPlaceEntryChange(): Promise<void> {
+    const entry = this.placeEntry.value;
+    const type: SpawnType = this.tool() === 'place-gameobject' ? 'gameobject' : 'creature';
+    if (!entry) {
+      this.placeEntryName.set('');
+      this.placeChosen.set(undefined);
+      return;
+    }
+    const [name, display] = await Promise.all([this.service.getEntryName(type, entry), this.service.getEntryDisplay(type, entry)]);
+    this.placeEntryName.set(name);
+    this.placeChosen.set({ entry, name, ...display });
+  }
+
+  /** Templates matching what's typed in the place tools' search (an entry, or at least 2 letters of a name). */
+  private async searchPlaceTemplates(text: string): Promise<void> {
+    const search = text.trim();
+    const type: SpawnType = this.tool() === 'place-gameobject' ? 'gameobject' : 'creature';
+    const results =
+      /^\d+$/.test(search) || search.length >= 2
+        ? await this.service.searchTemplates(type, search).catch(this.quietly(`search the ${type} templates`, []))
+        : [];
+    // (unless typed on meanwhile)
+    if (search === this.placeSearch.value.trim()) {
+      this.placeResults.set(results);
+    }
+  }
+
+  /** A result of the place tools' search picked: the template placed from now on. */
+  protected choosePlaceTemplate(template: PlaceTemplate): void {
+    this.placeSearch.setValue(String(template.entry), { emitEvent: false });
+    this.placeEntry.setValue(template.entry);
+    this.placeEntryName.set(template.name);
+    this.placeChosen.set(template);
+    this.placeResults.set([]);
+    this.placeHover.set(undefined);
+  }
+
+  private async placeSpawnAt(type: SpawnType, position: WorldPosition): Promise<void> {
+    const entry = this.placeEntry.value;
+    if (!entry || entry <= 0) {
+      this.showWarning(`Enter the ${type} entry to place first.`, 'World Editor');
+      return;
+    }
+    const guid = await this.newGuid(type);
+    const [name, display] = await Promise.all([this.service.getEntryName(type, entry), this.service.getEntryDisplay(type, entry)]);
+    this.changes.placeSpawn({ type, guid, entry, name, map: this.mapId(), ...position, o: 0, pathId: 0, ...display });
+    this.bump();
+    this.select(spawnKey(type, guid));
+  }
+
+  /** The next free guid of a type, chained so quick consecutive placements never get the same one. */
+  private newGuid(type: SpawnType): Promise<number> {
+    // after the last one handed out, and after anything added to the table meanwhile (elsewhere in Keira, say)
+    const handedOut = this.nextGuids.get(type)?.catch(() => 0) ?? Promise.resolve(0);
+    const next = Promise.all([handedOut, this.service.getMaxGuid(type)]).then(([last, max]) => Math.max(last, max) + 1);
+    this.nextGuids.set(type, next);
+    // (a failed read is tried again next time)
+    next.catch(() => this.nextGuids.get(type) === next && this.nextGuids.delete(type));
+    return next;
+  }
+
+  /**
+   * Stack: places a copy of the selected spawn right against it on that side, where their collision boxes meet (the
+   * box of the model's collision, or of its mesh), turned the same way, and selects it to stack further.
+   */
+  protected async stackSelected(side: StackSide): Promise<void> {
+    const spawn = this.selectedSpawn() as SpawnRecord;
+    const box = spawn.displayId
+      ? await spawnModelBox(this.client, spawn.type, spawn.displayId, spawn.scale).catch(
+          this.quietly(`read the model of ${spawn.name}`, undefined),
+        )
+      : undefined;
+    if (!box) {
+      this.showWarning(`The model of ${spawn.name} could not be read, so its size is unknown.`, 'World Editor');
+      return;
+    }
+    const guid = await this.newGuid(spawn.type);
+    this.changes.placeSpawn(newSpawnFrom(spawn, guid, stackPosition(spawn, box, side)));
+    this.bump();
+    this.select(spawnKey(spawn.type, guid));
+  }
+
+  /** Places a row of copies of the selected spawn (the array tool) and selects them along with it. */
+  protected async arraySelected(): Promise<void> {
+    const spawn = this.selectedSpawn() as SpawnRecord;
+    const { count, side, spacing } = this.arrayForm.getRawValue();
+    const copies = Math.min(MAX_ARRAY, Math.max(1, Math.round(Number(count) || 1)));
+    let distance = spacing !== null && spacing > 0 ? spacing : undefined;
+    if (distance === undefined) {
+      const box = spawn.displayId
+        ? await spawnModelBox(this.client, spawn.type, spawn.displayId, spawn.scale).catch(
+            this.quietly(`read the model of ${spawn.name}`, undefined),
+          )
+        : undefined;
+      if (!box) {
+        this.showWarning(`The model of ${spawn.name} could not be read: give the spacing.`, 'World Editor');
+        return;
+      }
+      distance = boxExtent(box, side);
+    }
+    const keys: string[] = [];
+    for (const position of arrayPositions(spawn, side, distance, copies)) {
+      const guid = await this.newGuid(spawn.type);
+      this.changes.placeSpawn(newSpawnFrom(spawn, guid, position));
+      keys.push(spawnKey(spawn.type, guid));
+    }
+    this.bump();
+    this.groupKeys.set(keys);
+  }
+
+  private addWaypointAt(position: WorldPosition): void {
+    const pathId = this.activePathId();
+    if (!pathId) {
+      this.showWarning('Select a creature with a path (or create one) before adding waypoints.', 'World Editor');
+      return;
+    }
+    if (this.templatePathIds().has(pathId)) {
+      this.showWarning(
+        `${pathLabel(pathId)} comes from creature_template_addon and is shared by every creature of this entry; edit it in the creature template instead.`,
+        'World Editor',
+      );
+      return;
+    }
+    const points = this.waypoints().filter((w) => w.pathId === pathId);
+    const point = points.reduce((max, w) => Math.max(max, w.point), 0) + 1;
+    this.changes.addWaypoint({ pathId, point, ...position, delay: 0 });
+    this.bump();
+    this.select(waypointKey(pathKey(pathId), point));
+  }
+
+  /** The placement form is only shown while something is selected. */
+  protected applyPlacementForm(): void {
+    const values = Object.values(this.placementForm.getRawValue());
+    // locked, or a box left empty (not moved to 0)
+    if (this.selectedLocked() || values.some((value) => value === null || !Number.isFinite(Number(value)))) {
+      return;
+    }
+    this.applyPlacement(this.selectedKey() as string, this.placementForm.getRawValue());
+  }
+
+  private applyPlacement(key: string, placement: { x: number; y: number; z: number; o: number }): void {
+    const spawn = this.findSpawn(key);
+    if (spawn) {
+      const original = (s: SpawnRecord) => this.loadedByKey().get(spawnKey(s.type, s.guid)) ?? s;
+      // the spawns selected with it follow
+      if (key === this.selectedKey()) {
+        // (but the locked ones)
+        for (const member of this.unlockedGroup()) {
+          this.changes.moveSpawn(original(member), followPlacement(spawn, placement, member));
+        }
+      }
+      this.changes.moveSpawn(original(spawn), placement);
+    } else {
+      const waypoint = this.findWaypoint(key);
+      if (!waypoint) {
+        return;
+      }
+      const original = this.loadedWaypoints().find((w) => w.pathId === waypoint.pathId && w.point === waypoint.point) ?? waypoint;
+      this.changes.moveWaypoint(original, placement);
+    }
+    this.bump();
+    if (key === this.selectedKey()) {
+      this.setPlacementForm(placement);
+    }
+  }
+
+  /** Asks before deleting (unless told not to again: saved on this computer, turned back on in Controls). */
+  protected readonly askBeforeDelete = signal(localStorage.getItem(CONFIRM_DELETE_KEY) !== 'false');
+  /** What the delete confirmation asks about (open while set). */
+  protected readonly confirmingDelete = signal<string | undefined>(undefined);
+
+  protected setAskBeforeDelete(ask: boolean): void {
+    this.askBeforeDelete.set(ask);
+    localStorage.setItem(CONFIRM_DELETE_KEY, String(ask));
+  }
+
+  /** Deletes the selection, after asking when asked to. */
+  protected deleteSelected(): void {
+    const spawn = this.selectedSpawn();
+    const waypoint = this.selectedWaypoint();
+    if ((!spawn && !waypoint) || this.selectedLocked()) {
+      return;
+    }
+    if (!this.askBeforeDelete()) {
+      this.deleteSelectedNow();
+      return;
+    }
+    const count = this.unlockedGroup().length + 1;
+    this.confirmingDelete.set(
+      spawn
+        ? count > 1
+          ? this.translate.instant('WORLD_EDITOR.DELETE_SPAWNS', { count })
+          : spawnTitle(spawn)
+        : `${pathLabel((waypoint as WaypointRecord).pathId)} · point ${(waypoint as WaypointRecord).point}`,
+    );
+  }
+
+  /** The confirmation's answer; "don't ask again" sticks only when deleting. */
+  protected answerDelete(confirmed: boolean, dontAskAgain: boolean): void {
+    this.confirmingDelete.set(undefined);
+    if (confirmed) {
+      if (dontAskAgain) {
+        this.setAskBeforeDelete(false);
+      }
+      this.deleteSelectedNow();
+    }
+  }
+
+  private deleteSelectedNow(): void {
+    const spawn = this.selectedSpawn();
+    const waypoint = this.selectedWaypoint();
+    if (spawn) {
+      // (but the locked ones)
+      this.unlockedGroup().forEach((member) => this.changes.deleteSpawn(member));
+      this.groupKeys.set([]);
+      this.changes.deleteSpawn(spawn);
+    } else {
+      this.changes.deleteWaypoint(waypoint as WaypointRecord);
+    }
+    this.selectedKey.set(undefined);
+    this.bump();
+  }
+
+  /** Turns "Check path" on for the active path (the selected creature's or waypoint's), or off. */
+  protected toggleCheckPath(): void {
+    const pathId = this.activePathId();
+    this.waypointChecks.set([]);
+    this.checkedPathId.set(this.checkedPathId() === pathId ? undefined : pathId);
+  }
+
+  /** Takes the path check's marks away. */
+  protected clearPathCheck(): void {
+    this.waypointChecks.set([]);
+    this.checkedPathId.set(undefined);
+  }
+
+  /** Ctrl + click: adds a spawn to the selection, or takes it out (the first one left becomes the main one). */
+  private toggleInGroup(key: string): void {
+    const selected = this.selectedKey();
+    const group = this.groupKeys();
+    if (!selected || !this.selectedSpawn()) {
+      this.select(key);
+    } else if (key === selected) {
+      const [next, ...rest] = group;
+      this.groupKeys.set(rest);
+      this.select(next);
+    } else {
+      this.groupKeys.set(group.includes(key) ? group.filter((k) => k !== key) : [...group, key]);
+    }
+  }
+
+  /** Copies the selected spawns (Ctrl + C), with where they stand relative to the main one. */
+  protected copySelection(): void {
+    const spawn = this.selectedSpawn();
+    if (spawn) {
+      this.copied.set(copySpawns([spawn, ...this.groupSpawns()]));
+    }
+  }
+
+  /** Pastes the copied spawns as new ones (Ctrl + V), the main one at the crosshair, and selects them. */
+  protected async pasteCopied(at = this.cameraCenter() as WorldPosition): Promise<void> {
+    const copied = this.copied();
+    // (something was copied from spawns loaded around the camera, so it has a target)
+    if (copied.length === 0) {
+      return;
+    }
+    const keys: string[] = [];
+    for (const item of copied) {
+      const guid = await this.newGuid(item.spawn.type);
+      this.changes.placeSpawn({ ...pastedSpawn(item, guid, at), map: this.mapId() });
+      keys.push(spawnKey(item.spawn.type, guid));
+    }
+    this.bump();
+    this.select(keys[0]);
+    this.groupKeys.set(keys.slice(1));
+  }
+
+  /** Copy in place: new spawns just like the selected ones, where they are (to move one away, or stack them). */
+  protected async copyInPlace(): Promise<void> {
+    const spawn = this.selectedSpawn() as SpawnRecord;
+    this.copySelection();
+    await this.pasteCopied({ x: spawn.x, y: spawn.y, z: spawn.z });
+  }
+
+  /** Plays the selected creature walking its path, or wandering, in the view; again stops it. */
+  protected toggleSimulation(): void {
+    this.simulationEnded.set(false);
+    if (this.simulation()) {
+      this.simulation.set(undefined);
+      return;
+    }
+    // the whole formation: its leader walks (its path), the members following it keep their places beside it
+    const formation = this.simulateFormation() ? this.selectedFormation() : undefined;
+    const leader = formation && this.findSpawn(spawnKey('creature', formation.leader));
+    const spawn = leader ?? (this.selectedSpawn() as SpawnRecord);
+    const key = spawnKey(spawn.type, spawn.guid);
+    const pathId = leader ? (pathsOf(leader)[0] ?? 0) : this.activePathId();
+    const points = this.waypoints().filter((w) => w.pathId === pathId);
+    // what it does at each point: its scripts and SmartAI (the waits and move types show as it goes)
+    const path = this.worldPaths().find((p) => p.key === pathKey(pathId as number));
+    const actions = new Map(
+      (path?.points ?? []).map((p) => [p.point, (p.info as string[]).filter((line) => /^(script|SAI:)/.test(line))] as const),
+    );
+    // (repeating paths go on round after round from point 1; the others stop at the end, saying what happens then)
+    const ending = this.pathEndings().get(pathId as number);
+    const simulation = pathSimulation(spawn, points, key, actions, ending) ?? wanderSimulation(spawn, key);
+    const followers = formation ? this.formationFollowers(formation) : [];
+    this.simulation.set(simulation && followers.length ? { ...simulation, followers } : simulation);
+  }
+
+  /** The members of a formation that walk beside its leader (GROUP_AI_FLAG_FOLLOW_LEADER), at their distance and angle. */
+  private formationFollowers(formation: Formation): SimulationFollower[] {
+    return formation.members
+      .filter((row) => (row.groupAI & FOLLOW_LEADER) !== 0 && this.findSpawn(spawnKey('creature', row.member)))
+      .map((row) => ({ key: spawnKey('creature', row.member), dist: row.dist, angle: (row.angle * Math.PI) / 180 }));
+  }
+
+  /** Plays the simulation that ended again, from the start. */
+  protected replaySimulation(): void {
+    this.simulationEnded.set(false);
+    this.simulation.update((simulation) => simulation && { ...simulation });
+  }
+
+  protected setSimulationRate(event: Event): void {
+    // (the simulation goes on at the new rate)
+    this.simulationRate.set(Number((event.target as HTMLSelectElement).value));
+  }
+
+  private async loadSpawnFields(spawn: SpawnRecord, key: string): Promise<void> {
+    this.spawnStored.set(undefined);
+    const values = this.changes.isNewSpawn(key)
+      ? Object.fromEntries(SPAWN_FIELDS[spawn.type].map((field) => [field.column, field.default]))
+      : await this.service
+          .loadSpawnFields(spawn.type, spawn.guid)
+          .catch(this.quietly(`read the columns of ${spawn.type} ${spawn.guid}`, undefined));
+    // still the spawn selected?
+    const selected = this.selectedSpawn();
+    const current = values && selected && spawnKey(selected.type, selected.guid) === key;
+    this.spawnStored.update((stored) => (current ? { key, values } : stored));
+  }
+
+  /** A column changed in the properties panel. */
+  // ---------------------------------------------------------------- pools
+
+  /** The selected spawn's pool (with the pending changes). */
+  protected readonly selectedPool = computed(() => {
+    const spawn = this.selectedSpawn();
+    return spawn && this.poolRows().find((row) => row.type === spawn.type && row.guid === spawn.guid);
+  });
+  /** How many spawns are selected: the pool panel acts on all of them. */
+  protected readonly selectionCount = computed(() => 1 + this.groupSpawns().length);
+
+  /** Changes the chance of the selected spawns in their pools. */
+  protected setPoolChance(chance: number): void {
+    for (const spawn of this.selection()) {
+      const current = this.poolRows().find((row) => row.type === spawn.type && row.guid === spawn.guid);
+      if (current) {
+        this.changes.setPoolMember({ type: spawn.type, guid: spawn.guid, pool: current.pool, chance }, this.storedPool(spawn));
+      }
+    }
+    this.bump();
+  }
+
+  /** Takes the selected spawns out of their pools. */
+  protected leavePool(): void {
+    for (const spawn of this.selection()) {
+      this.changes.setPoolMember({ type: spawn.type, guid: spawn.guid, pool: null, chance: 0 }, this.storedPool(spawn));
+    }
+    this.bump();
+  }
+
+  /** Puts the selected spawns in a pool. */
+  protected joinPool({ pool, chance }: { pool: number; chance: number }): void {
+    for (const spawn of this.selection()) {
+      this.changes.setPoolMember({ type: spawn.type, guid: spawn.guid, pool, chance }, this.storedPool(spawn));
+    }
+    this.bump();
+  }
+
+  /** Makes a pool (the next free `pool_template.entry`) holding the selected spawns. */
+  protected async createPool({ maxLimit, description }: { maxLimit: number; description: string }): Promise<void> {
+    if (this.creatingPool) {
+      return;
+    }
+    // (the spawns selected when asked, whatever is selected by the time the free entry is known)
+    const spawns = this.selection();
+    this.creatingPool = true;
+    try {
+      const entry = await this.service.getFreePoolId(this.changes.newPools().map((pool) => pool.entry));
+      this.changes.createPool({ entry, maxLimit, description });
+      for (const spawn of spawns) {
+        this.changes.setPoolMember({ type: spawn.type, guid: spawn.guid, pool: entry, chance: 0 }, this.storedPool(spawn));
+      }
+      this.bump();
+    } catch (error) {
+      this.showError(error);
+    } finally {
+      this.creatingPool = false;
+    }
+  }
+  /** A pool being made (its free entry being read): not twice at once. */
+  private creatingPool = false;
+
+  /** The selected pool as the database has it (max_limit, description, mother pool). */
+  private storedPoolTemplate(pool: number): PoolMember | undefined {
+    return this.pools().find((member) => member.pool === pool);
+  }
+
+  /** Changes the selected spawn's pool: its max_limit and description. */
+  protected editPool(edit: { maxLimit: number; description: string }): void {
+    const pool = (this.selectedPool() as PoolMember).pool;
+    const stored = this.storedPoolTemplate(pool);
+    this.changes.editPool(pool, edit, { maxLimit: stored?.maxLimit ?? 0, description: stored?.description ?? '' });
+    this.bump();
+  }
+
+  /** Puts the selected spawn's pool in a mother pool, or takes it out of it (null). */
+  protected setPoolMother(mother: { mother: number | null; chance: number }): void {
+    const pool = (this.selectedPool() as PoolMember).pool;
+    const stored = this.storedPoolTemplate(pool);
+    this.changes.setPoolMother(pool, mother, { mother: stored?.mother ?? null, chance: stored?.motherChance ?? 0 });
+    this.bump();
+  }
+
+  /** The members of each pool read (once per load of the spawns: the panel and the context menu share them). */
+  private readonly poolMembersRead = new Map<number, Promise<PoolSpawn[]>>();
+  private readPoolMembers(pool: number): Promise<PoolSpawn[]> {
+    let read = this.poolMembersRead.get(pool);
+    if (!read) {
+      read = this.service.loadPoolMembers(pool);
+      // (a failed read is tried again next time)
+      read.catch(() => this.poolMembersRead.delete(pool));
+      this.poolMembersRead.set(pool, read);
+    }
+    return read;
+  }
+
+  /** Every member of the selected spawn's pool, wherever it is (for its chance checks). */
+  private readonly selectedPoolMembers = signal<{ pool: number; members: PoolSpawn[] } | undefined>(undefined);
+  private readonly loadSelectedPoolMembers = effect(() => {
+    const pool = this.selectedPool()?.pool;
+    if (pool === undefined || untracked(() => this.selectedPoolMembers()?.pool) === pool) {
+      return;
+    }
+    untracked(() => this.selectedPoolMembers.set(undefined));
+    void this.readPoolMembers(pool).then(
+      (members) => this.selectedPool()?.pool === pool && this.selectedPoolMembers.set({ pool, members }),
+      this.quietly<void>('read the members of the pool', undefined),
+    );
+  });
+
+  /** What the world server will say about the selected pool's chances (with the pending changes). */
+  protected readonly selectedPoolProblems = computed<PoolProblem[]>(() => {
+    const member = this.selectedPool();
+    const loaded = this.selectedPoolMembers();
+    if (!member || loaded?.pool !== member.pool) {
+      return [];
+    }
+    this.revision();
+    const stored = loaded.members.map((spawn) => ({ ...member, type: spawn.type, guid: spawn.guid, chance: spawn.chance as number }));
+    const rows = this.changes.applyToPools(stored).filter((row) => row.pool === member.pool);
+    // (the world server checks a pool's creatures and its gameobjects apart)
+    const problems = (['creature', 'gameobject'] as SpawnType[]).flatMap((type) => {
+      const chances = rows.filter((row) => row.type === type).map((row) => row.chance);
+      return chances.length ? chanceProblems(chances, member.maxLimit) : [];
+    });
+    return problems.filter((problem, i) => problems.findIndex((other) => other.key === problem.key) === i);
+  });
+
+  protected openPool(id: number): void {
+    (this.links as NonNullable<typeof this.links>).openPool(id);
+  }
+
+  /** The selected spawn and the ones selected with it. */
+  private selection(): SpawnRecord[] {
+    return [this.selectedSpawn() as SpawnRecord, ...this.groupSpawns()];
+  }
+
+  /** The pool a spawn is in, in the database. */
+  private storedPool(spawn: SpawnRecord): { pool: number; chance: number } | null {
+    const row = this.pools().find((member) => member.type === spawn.type && member.guid === spawn.guid);
+    return row ? { pool: row.pool, chance: row.chance } : null;
+  }
+
+  protected editSpawn(fields: Record<string, number>): void {
+    const spawn = this.selectedSpawn() as SpawnRecord;
+    this.changes.editSpawnFields(spawn, (this.spawnStored() as { values: Record<string, number> }).values, fields);
+    this.bump();
+  }
+
+  /** Checks the spawns shown for problems: the view tells the ground under them first. */
+  protected checkSpawns(): void {
+    this.groundQuery.set(this.visibleSpawns().map((s) => ({ key: spawnKey(s.type, s.guid), position: { x: s.x, y: s.y, z: s.z } })));
+  }
+
+  protected onGroundHeights(heights: Record<string, number | null>): void {
+    this.groundQuery.set(undefined);
+    this.spawnProblems.set(findSpawnProblems(this.visibleSpawns(), heights, this.waypoints()));
+  }
+
+  /** Scan the whole map: every spawn of the map against the server's floors (progress while it runs). */
+  protected readonly mapScan = signal<{ done: number; total: number } | undefined>(undefined);
+  protected readonly scanResults = signal<(SpawnScanResult & { spawn: PoolSpawn })[] | undefined>(undefined);
+  /** Which results are listed and marked in the view: on the ground (green), off a little (yellow), wrong (red). */
+  protected readonly scanShown = signal<Record<SpawnScanLevel, boolean>>({ ok: false, warn: true, bad: true });
+  protected readonly scanLevels: SpawnScanLevel[] = ['ok', 'warn', 'bad'];
+  private scanCancelled = false;
+  protected readonly scanCounts = computed(() => {
+    const counts: Record<SpawnScanLevel, number> = { ok: 0, warn: 0, bad: 0 };
+    // (only read once there are results)
+    (this.scanResults() as SpawnScanResult[]).forEach((result) => counts[result.level]++);
+    return counts;
+  });
+  /** The results shown, creatures and objects apart, worst first (the first few hundred of each). */
+  protected readonly scanList = computed(() => {
+    const shown = this.scanShown();
+    const order: Record<SpawnScanLevel, number> = { bad: 0, warn: 1, ok: 2 };
+    const results = (this.scanResults() ?? []).filter((result) => shown[result.level]).sort((a, b) => order[a.level] - order[b.level]);
+    return (['creature', 'gameobject'] as const)
+      .map((type) => {
+        const ofType = results.filter((result) => result.spawn.type === type);
+        return { type, count: ofType.length, results: ofType.slice(0, SCAN_LIST_SIZE) };
+      })
+      .filter((group) => group.count > 0);
+  });
+
+  protected async scanMap(): Promise<void> {
+    const mapId = this.mapId();
+    this.scanCancelled = false;
+    this.scanResults.set(undefined);
+    this.mapScan.set({ done: 0, total: 0 });
+    try {
+      const spawns = await this.service.loadMapSpawnPositions(mapId);
+      const byKey = new Map(spawns.map((spawn) => [spawnKey(spawn.type, spawn.guid), spawn]));
+      const results = await scanSpawnPositions(
+        this.client,
+        mapId,
+        spawns.map((spawn) => ({
+          key: spawnKey(spawn.type, spawn.guid),
+          kind: spawn.type,
+          position: { x: spawn.x, y: spawn.y, z: spawn.z },
+          flying: spawn.flying,
+        })),
+        (done, total) => this.mapScan.set({ done, total }),
+        () => this.scanCancelled || mapId !== this.mapId(),
+      );
+      if (mapId === this.mapId()) {
+        this.scanResults.set(results.map((result) => ({ ...result, spawn: byKey.get(result.key) as PoolSpawn })));
+      }
+    } catch (error) {
+      this.showError(error);
+    } finally {
+      this.mapScan.set(undefined);
+    }
+  }
+
+  protected cancelScan(): void {
+    this.scanCancelled = true;
+  }
+
+  protected toggleScanLevel(level: SpawnScanLevel): void {
+    this.scanShown.update((shown) => ({ ...shown, [level]: !shown[level] }));
+  }
+
+  /** The scan's results near the camera, as "!" markers in their colour. */
+  private readonly scanMarkers = computed<WorldMarker[]>(() => {
+    const center = this.spawnsCenter();
+    const shown = this.scanShown();
+    return center
+      ? (this.scanResults() ?? [])
+          .filter((result) => shown[result.level] && Math.hypot(result.spawn.x - center.x, result.spawn.y - center.y) <= SPAWN_LOAD_RADIUS)
+          .map((result) => ({
+            key: `scan:${result.key}`,
+            position: { x: result.spawn.x, y: result.spawn.y, z: result.spawn.z },
+            color: SCAN_COLORS[result.level],
+            label: `! ${result.spawn.name || result.spawn.entry} (${result.spawn.guid}): ${result.text}`,
+          }))
+      : [];
+  });
+
+  protected goToProblem(problem: SpawnProblem): void {
+    this.groupKeys.set([]);
+    this.select(problem.key);
+    this.focus.set({ x: problem.spawn.x, y: problem.spawn.y, z: problem.spawn.z });
+  }
+
+  /** Finds spawns of the map by GUID, entry or name. */
+  protected async searchSpawns(): Promise<void> {
+    this.searching.set(true);
+    try {
+      this.searchResults.set(await this.service.searchSpawns(this.mapId(), this.searchForm.value));
+    } catch (error) {
+      this.showError(error);
+    } finally {
+      this.searching.set(false);
+    }
+  }
+
+  /** Flies to a search result and selects it once it's loaded. */
+  protected goToResult(result: PoolSpawn): void {
+    const key = spawnKey(result.type, result.guid);
+    if (this.findSpawn(key)) {
+      this.groupKeys.set([]);
+      this.select(key);
+    } else {
+      this.pendingSelect = key;
+    }
+    this.focus.set({ x: result.x, y: result.y, z: result.z });
+  }
+
+  protected clearSearch(): void {
+    this.searchResults.set([]);
+    this.searchForm.setValue('');
+  }
+
+  protected toggleMap(): void {
+    this.togglePanel('map');
+  }
+
+  private async loadMapTiles(directory: string): Promise<void> {
+    this.mapTiles.set([]);
+    const tiles = await this.client.getMapTiles(directory).catch(this.quietly<TileCoord[]>(`read the tiles of ${directory}`, []));
+    // another map chosen meanwhile: its own tiles are on the way
+    this.mapTiles.update((current) => (directory === this.mapDirectory() ? tiles : current));
+  }
+
+  /** A click on the world map: the camera goes there (at the server's terrain height when known). */
+  protected async onMapGoTo(position: WorldPosition): Promise<void> {
+    const tile = worldToTile(position.x, position.y);
+    const map = await this.client.getServerMap(this.mapId(), tile).catch(() => undefined);
+    const z = (map && serverHeightAt(map, tile, position.x, position.y)) ?? position.z;
+    this.focus.set({ x: position.x, y: position.y, z });
+    this.showMap.set(false);
+  }
+
+  /** Shift + drag on the world map: that area is loaded whole, and the camera goes to its middle. */
+  protected onMapRegion(bounds: WorldBounds): void {
+    this.mapRegion.set(bounds);
+    void this.onMapGoTo({ x: (bounds.minX + bounds.maxX) / 2, y: (bounds.minY + bounds.maxY) / 2, z: 0 });
+  }
+
+  /** The waypoint panel's settings for the selected point. */
+  protected editSelectedWaypoint(edits: WaypointEdits): void {
+    const waypoint = this.selectedWaypoint() as WaypointRecord;
+    const original = this.loadedWaypoints().find((w) => w.pathId === waypoint.pathId && w.point === waypoint.point) ?? waypoint;
+    this.changes.editWaypoint(original, edits);
+    this.bump();
+  }
+
+  /** Inserts a point after the selected one, halfway to the next (or 5 yards on), renumbering the points after it. */
+  protected insertWaypointAfter(): void {
+    const waypoint = this.selectedWaypoint() as WaypointRecord;
+    const points = this.pathPoints(waypoint.pathId);
+    const next = points.find((w) => w.point > waypoint.point);
+    const previous = [...points].reverse().find((w) => w.point < waypoint.point);
+    const ahead = next ?? {
+      x: waypoint.x + (previous ? waypoint.x - previous.x : 5),
+      y: waypoint.y + (previous ? waypoint.y - previous.y : 0),
+      z: waypoint.z,
+    };
+    const inserted: WaypointRecord = {
+      pathId: waypoint.pathId,
+      point: waypoint.point + 1,
+      x: (waypoint.x + ahead.x) / 2,
+      y: (waypoint.y + ahead.y) / 2,
+      z: (waypoint.z + ahead.z) / 2,
+      delay: 0,
+    };
+    const target = [
+      ...points.filter((w) => w.point <= waypoint.point),
+      inserted,
+      ...points.filter((w) => w.point > waypoint.point).map((w) => ({ ...w, point: w.point + 1 })),
+    ];
+    this.changes.setPathPoints(points, target);
+    this.bump();
+    this.select(waypointKey(pathKey(waypoint.pathId), inserted.point));
+  }
+
+  /** Numbers the selected point's path 1, 2, 3… again (after points were deleted). */
+  protected renumberPath(): void {
+    const waypoint = this.selectedWaypoint() as WaypointRecord;
+    const points = this.pathPoints(waypoint.pathId);
+    const index = points.findIndex((w) => w.point === waypoint.point);
+    this.changes.setPathPoints(
+      points,
+      points.map((w, i) => ({ ...w, point: i + 1 })),
+    );
+    this.bump();
+    this.select(waypointKey(pathKey(waypoint.pathId), index + 1));
+  }
+
+  private pathPoints(pathId: number): WaypointRecord[] {
+    return this.waypoints()
+      .filter((w) => w.pathId === pathId)
+      .sort((a, b) => a.point - b.point);
+  }
+
+  /** Only offered for a selected creature without a path. */
+  protected async createPath(): Promise<void> {
+    const spawn = this.selectedSpawn() as SpawnRecord;
+    const pathId = await this.service.getFreePathId(spawn.guid, this.reservedPathIds);
+    this.reservedPathIds = [...this.reservedPathIds, pathId];
+    this.changes.createPath(spawn.guid, pathId);
+    this.bump();
+    this.tool.set('add-waypoint');
+  }
+
+  // ---------------------------------------------------------------- pending changes
+
+  protected copySql(): void {
+    this.clipboard.copyFromContent(this.pendingSql());
+  }
+
+  /**
+   * Runs the pending SQL in one transaction, so a failing statement leaves the database untouched (Keira uses a single
+   * connection, so the ROLLBACK reaches the same session). Only offered while there are pending changes.
+   */
+  protected async executeSql(): Promise<void> {
+    this.executing.set(true);
+    const changes = this.changes.describe();
+    try {
+      await this.service.execute(`START TRANSACTION;\n${this.pendingSql()}\nCOMMIT;`);
+      perfNote(`executed ${changes.length} changes: ${changes.join('; ')}`);
+      this.toastr.success('Query executed successfully', 'Success');
+      this.clearChanges();
+      await this.reloadSpawns();
+      // the selected spawn's columns as saved now (the panel compares edits with them)
+      const spawn = this.selectedSpawn();
+      if (spawn) {
+        await this.loadSpawnFields(spawn, spawnKey(spawn.type, spawn.guid));
+      }
+    } catch (error) {
+      await this.service.execute('ROLLBACK;').catch(this.quietly('roll back', undefined));
+      logProblem('error', `executing ${changes.length} changes failed (rolled back): ${describeError(error)} | ${changes.join('; ')}`);
+      this.toastr.error((error as { message?: string }).message ?? 'Error when executing the query!', 'Query error');
+    } finally {
+      this.executing.set(false);
+    }
+  }
+
+  protected discardChanges(): void {
+    perfNote(`discarded ${this.changes.count} changes`);
+    this.clearChanges();
+    this.selectedKey.set(undefined);
+  }
+
+  private clearChanges(): void {
+    this.changes.clear();
+    this.nextGuids.clear();
+    this.reservedPathIds = [];
+    this.history = [this.changes.snapshot()];
+    this.historyIndex = 0;
+    this.revision.update((r) => r + 1);
+  }
+
+  // ---------------------------------------------------------------- undo / redo
+
+  // ---------------------------------------------------------------- Eden Editor's menu bar, Asset browser, status bar
+
+  /** The right column's tabs (Eden's Asset browser, the attributes of what's selected, the pending changes). */
+  protected readonly RIGHT_TABS: { id: 'assets' | 'attributes' | 'history'; label: string; icon: string }[] = [
+    { id: 'assets', label: 'WORLD_EDITOR.EDEN.ASSETS', icon: 'fa-boxes-stacked' },
+    { id: 'attributes', label: 'WORLD_EDITOR.EDEN.ATTRIBUTES', icon: 'fa-sliders' },
+    { id: 'history', label: 'WORLD_EDITOR.EDEN.HISTORY', icon: 'fa-clock-rotate-left' },
+  ];
+  protected readonly rightTab = signal<'assets' | 'attributes' | 'history'>('attributes');
+  /** The toolbar's tools, as icons. */
+  protected readonly TOOL_ICONS: { tool: EditorTool; icon: string }[] = [
+    { tool: 'select', icon: 'fa-arrow-pointer' },
+    { tool: 'face', icon: 'fa-compass' },
+    { tool: 'probe', icon: 'fa-ruler' },
+    { tool: 'place-creature', icon: 'fa-dragon' },
+    { tool: 'place-gameobject', icon: 'fa-cube' },
+    { tool: 'add-waypoint', icon: 'fa-route' },
+  ];
+  /** Eden's transformation widget: none, move, rotate (keys 1, 2, 3). */
+  protected readonly WIDGET_ICONS: { mode: GizmoMode; icon: string; label: string }[] = [
+    { mode: 'none', icon: 'fa-ban', label: 'WORLD_EDITOR.EDEN.WIDGET_NONE' },
+    { mode: 'translate', icon: 'fa-arrows-alt', label: 'WORLD_EDITOR.MOVE' },
+    { mode: 'rotate', icon: 'fa-sync-alt', label: 'WORLD_EDITOR.ROTATE' },
+  ];
+  protected readonly MOVE_GRID_SIZES = MOVE_GRID_SIZES;
+  protected readonly ROTATE_GRID_SIZES = ROTATE_GRID_SIZES;
+  /** The widget's axes and grids (kept on this computer). */
+  protected readonly transform = signal<TransformSettings>(loadTransform());
+  protected readonly gizmoGrid = computed(() => gizmoGrid(this.transform()));
+  /** The ground under the cursor (the status bar). */
+  protected readonly cursor = signal<{ position: WorldPosition; distance: number } | undefined>(undefined);
+
+  protected setTransform(change: Partial<TransformSettings>): void {
+    this.transform.update((settings) => ({ ...settings, ...change }));
+    saveTransform(this.transform());
+  }
+  /** The layer switches, in the toolbar's Layers menu. */
+  protected readonly layersOpen = signal(false);
+  /** The pending changes, in order (the Asset browser's History). */
+  protected readonly changeList = computed(() => (this.revision(), this.changes.describe()));
+  protected readonly edenMapName = computed(() => this.maps().find((map) => map.id === this.mapId())?.name ?? '');
+  protected readonly edenZoneName = computed(() => this.zones().find((zone) => zone.areaId === this.cameraZone())?.name ?? '');
+  protected readonly edenLights = computed<EdenLights>(() => ({
+    database: true,
+    gameData: !!this.settings.paths().clientPath,
+    source: !!this.settings.paths().sourcePath,
+  }));
+  protected readonly edenPosition = computed(() => this.cameraCenter());
+
+  /** What the menu bar's items do: the toolbar's and panels' own actions. */
+  protected onEdenAction(action: EdenAction): void {
+    const run: Record<EdenAction, () => unknown> = {
+      execute: () => this.executeSql(),
+      copySql: () => this.copySql(),
+      discard: () => this.discardChanges(),
+      refresh: () => this.refresh(),
+      undo: () => this.undo(),
+      redo: () => this.redo(),
+      toolSelect: () => this.setTool('select'),
+      toolFace: () => this.setTool('face'),
+      toolPlaceCreature: () => this.setTool('place-creature'),
+      toolPlaceGameobject: () => this.setTool('place-gameobject'),
+      assets: () => this.showRightTab('assets'),
+      history: () => this.showRightTab('history'),
+      worldMap: () => this.toggleMap(),
+      gameMap: () => this.toggleGameMap(),
+      filters: () => this.toggleFilters(),
+      view: () => this.toggleView(),
+      tree: () => this.toggleTree(),
+      topView: () => this.topViewRequest.update((n) => n + 1),
+      resetNorth: () => this.resetNorth(),
+      legend: () => this.toggleLegend(),
+      style: () => this.toggleStyle(),
+      fullscreen: () => this.toggleFullscreen(),
+      controls: () => this.toggleControls(),
+      settings: () => this.toggleSettings(),
+      wiki: () => window.open(WORLD_EDITOR_WIKI, '_blank'),
+    };
+    void run[action]();
+  }
+
+  /** A tab of the right column, the column shown. */
+  private showRightTab(tab: 'assets' | 'attributes' | 'history'): void {
+    this.rightTab.set(tab);
+    this.panelCollapsed.set(false);
+  }
+
+  // ---------------------------------------------------------------- compositions (Eden's)
+
+  private readonly compositions = inject(CompositionsService);
+  /** What the keys ask of the Asset browser (a mode, the search). */
+  protected readonly assetRequest = signal<AssetRequest>({ n: 0 });
+  /** The composition placed by a click in the view (with the Place composition tool). */
+  protected readonly placingComposition = signal<Composition | undefined>(undefined);
+  /** How many spawns are selected (a composition is saved from them). */
+  protected readonly selectedCount = computed(() => (this.selectedSpawn() ? this.selectionCount() : 0));
+
+  /** Saves the selected spawns as a composition of this computer (Eden's custom composition). */
+  protected onCompositionSaved(name: string): void {
+    this.compositions.save(compositionFrom(name, this.selection()));
+    this.toastr.success(name, this.translate.instant('WORLD_EDITOR.EDEN.COMPOSITION_SAVED'));
+  }
+
+  protected onCompositionPicked(composition: Composition): void {
+    this.placingComposition.set(composition);
+    this.setTool('place-composition');
+  }
+
+  /** Places the composition picked at a point: its spawns as new ones around it, selected together. */
+  private async placeCompositionAt(at: WorldPosition): Promise<void> {
+    const composition = this.placingComposition() as Composition;
+    const keys: string[] = [];
+    for (const item of composition.members) {
+      const guid = await this.newGuid(item.spawn.type);
+      this.changes.placeSpawn({ ...pastedSpawn(item, guid, at), map: this.mapId() });
+      keys.push(spawnKey(item.spawn.type, guid));
+    }
+    this.bump();
+    this.select(keys[0]);
+    this.groupKeys.set(keys.slice(1));
+  }
+
+  /** A template picked in the Asset browser: placed from now on, by a click in the view. */
+  protected onAssetPicked(pick: AssetPick): void {
+    this.setTool(pick.type === 'creature' ? 'place-creature' : 'place-gameobject');
+    this.choosePlaceTemplate(pick.template);
+  }
+
+  protected undo(): void {
+    if (this.canUndo()) {
+      this.changes.restore(this.history[--this.historyIndex]);
+      this.revision.update((r) => r + 1);
+    }
+  }
+
+  protected redo(): void {
+    if (this.canRedo()) {
+      this.changes.restore(this.history[++this.historyIndex]);
+      this.revision.update((r) => r + 1);
+    }
+  }
+
+  protected onContextRequested(request: ContextRequest): void {
+    if (request.key.startsWith(SCRIPT_OBJECT_KEY)) {
+      return;
+    }
+    if (request.key !== GROUND_KEY) {
+      this.select(request.key);
+    }
+    this.contextPlace.set(contextPlacement(this.view().nativeElement.getBoundingClientRect(), request));
+    this.contextMenu.set(request);
+  }
+
+  /** A press anywhere but on the menu closes it. */
+  protected onDocumentPointerDown(event: PointerEvent): void {
+    if (!(event.target as HTMLElement).closest('[data-testid="context-menu"]')) {
+      this.contextMenu.set(undefined);
+    }
+  }
+
+  protected openContextEntry(target: 'creature' | 'sai' | 'gameobject'): void {
+    const spawn = this.contextSpawn() as SpawnRecord;
+    const links = this.links as NonNullable<typeof this.links>;
+    this.contextMenu.set(undefined);
+    if (target === 'creature') {
+      links.openCreature(spawn.entry, spawn.name);
+    } else if (target === 'gameobject') {
+      links.openGameObject(spawn.entry, spawn.name);
+    } else if (spawn.type === 'creature') {
+      links.openCreatureSai(spawn.entry, spawn.name);
+    } else {
+      links.openGameObjectSai(spawn.entry, spawn.name);
+    }
+  }
+
+  /** Opens a path (not a SmartAI one) in the Waypoint Editor, and a waypoint action in the Waypoint Scripts editor. */
+  protected openContextPath(pathId: number): void {
+    this.contextMenu.set(undefined);
+    (this.links as NonNullable<typeof this.links>).openPath(pathId);
+  }
+
+  protected openContextScript(id: number): void {
+    this.contextMenu.set(undefined);
+    (this.links as NonNullable<typeof this.links>).openWaypointScript(id);
+  }
+
+  /** The loot tables of the right-clicked spawn, for opening their editors. */
+  protected readonly contextLoot = computed(() => {
+    const spawn = this.contextSpawn() as SpawnRecord;
+    const loot = spawn.loot ?? {};
+    const kinds: { kind: WorldEditorLoot; id?: number; label: string }[] =
+      spawn.type === 'creature'
+        ? [
+            { kind: 'creature', id: loot.loot, label: 'WORLD_EDITOR.OPEN_LOOT' },
+            { kind: 'pickpocketing', id: loot.pickpocketing, label: 'WORLD_EDITOR.OPEN_PICKPOCKET_LOOT' },
+            { kind: 'skinning', id: loot.skinning, label: 'WORLD_EDITOR.OPEN_SKINNING_LOOT' },
+          ]
+        : [{ kind: 'gameobject', id: loot.loot, label: 'WORLD_EDITOR.OPEN_LOOT' }];
+    return kinds.filter((kind) => kind.id);
+  });
+
+  protected openContextLoot(kind: WorldEditorLoot): void {
+    const spawn = this.contextSpawn() as SpawnRecord;
+    this.contextMenu.set(undefined);
+    (this.links as NonNullable<typeof this.links>).openLoot(kind, spawn.entry, spawn.name);
+  }
+
+  /** The area trigger right-clicked (its id), if that's what it was. */
+  protected readonly contextAreaTrigger = computed(() => {
+    const match = /^areatrigger:(\d+)$/.exec((this.contextMenu() as ContextRequest).key);
+    return match ? Number(match[1]) : undefined;
+  });
+
+  /** Where the right-clicked area trigger teleports to (instance entrances, portals), if anywhere. */
+  protected readonly contextTeleport = computed(() => {
+    // (only read for an area trigger)
+    const id = this.contextAreaTrigger();
+    return this.travel().teleports.find((teleport) => teleport.id === id);
+  });
+
+  /** "id – name" of a map. */
+  protected mapLabel(id: number): string {
+    const map = this.maps().find((m) => m.id === id);
+    return map ? `${map.id} – ${map.name}` : String(id);
+  }
+
+  /** Goes where an area trigger teleports: inside the instance of an entrance. */
+  protected goThrough(teleport: Teleport): void {
+    this.contextMenu.set(undefined);
+    this.goTo(teleport.map, { x: teleport.x, y: teleport.y, z: teleport.z });
+  }
+
+  protected openTriggerSai(id: number): void {
+    this.contextMenu.set(undefined);
+    (this.links as NonNullable<typeof this.links>).openAreaTriggerSai(id);
+  }
+
+  /** The pool of what was right-clicked: a pooled spawn, or a pool's label or line. */
+  protected readonly contextPool = computed(() => {
+    const key = (this.contextMenu() as ContextRequest).key;
+    const overlay = /^pool:(\d+)/.exec(key);
+    if (overlay) {
+      return Number(overlay[1]);
+    }
+    const spawn = this.findSpawn(key);
+    return spawn && this.poolRows().find((row) => row.type === spawn.type && row.guid === spawn.guid)?.pool;
+  });
+  /** Every spawn of that pool (undefined while they load). */
+  protected readonly contextPoolMembers = signal<PoolSpawn[] | undefined>(undefined);
+  private readonly loadContextPool = effect(() => {
+    const pool = this.contextMenu() ? this.contextPool() : undefined;
+    untracked(() => {
+      this.contextPoolMembers.set(undefined);
+      if (pool !== undefined) {
+        void this.service.loadPoolMembers(pool).then(
+          (members) =>
+            pool === untracked(() => (this.contextMenu() ? this.contextPool() : undefined)) && this.contextPoolMembers.set(members),
+          (error: Error) => this.showError(error),
+        );
+      }
+    });
+  });
+  /** The pool's spawns loaded in the view (they can be selected). */
+  protected readonly loadedPoolKeys = computed(() =>
+    // (only read once they're loaded)
+    (this.contextPoolMembers() as PoolSpawn[]).map((member) => spawnKey(member.type, member.guid)).filter((key) => this.findSpawn(key)),
+  );
+
+  /** Selects every loaded spawn of the pool. */
+  protected selectPool(): void {
+    const [first, ...rest] = this.loadedPoolKeys();
+    this.contextMenu.set(undefined);
+    this.select(first);
+    this.groupKeys.set(rest);
+  }
+
+  protected goToPoolMember(member: PoolSpawn): void {
+    this.contextMenu.set(undefined);
+    this.goToResult(member);
+  }
+
+  /** Copies what was right-clicked: its hover text and where it is. */
+  protected copyContextInfo(): void {
+    const menu = this.contextMenu() as ContextRequest;
+    const where = menu.position ? `\n${menu.position.x.toFixed(4)} ${menu.position.y.toFixed(4)} ${menu.position.z.toFixed(4)}` : '';
+    this.clipboard.copyFromContent(`${menu.label ?? menu.key}${where}`);
+    this.contextMenu.set(undefined);
+  }
+
+  /**
+   * Copies a command going where was right-clicked (or to the player marker): `.go xyz`, `.go xyz` with only x and y
+   * (the server finds the ground; on the map the player is on) or `.go grid` (x = (gridX − 31.5) × 533.33, cs_go.cpp).
+   */
+  protected copyContextGo(kind: 'xyz' | 'xy' | 'grid' | 'marker' | 'liquid'): void {
+    const menu = this.contextMenu() as ContextRequest;
+    const { x, y, z } =
+      kind === 'liquid'
+        ? { ...(menu.position as WorldPosition), z: (menu.liquid as { z: number }).z }
+        : ((kind === 'marker' ? menu.marker : menu.position) as WorldPosition);
+    const map = this.mapId();
+    const grid = (value: number) => (value / TILE_SIZE + 31.5).toFixed(4);
+    const command =
+      kind === 'xy'
+        ? `.go xyz ${x.toFixed(4)} ${y.toFixed(4)}`
+        : kind === 'grid'
+          ? `.go grid ${grid(x)} ${grid(y)} ${map}`
+          : `.go xyz ${x.toFixed(4)} ${y.toFixed(4)} ${z.toFixed(4)} ${map}${
+              kind === 'marker' && menu.markerOrientation !== undefined ? ` ${menu.markerOrientation.toFixed(4)}` : ''
+            }`;
+    this.clipboard.copyFromContent(command);
+    this.contextMenu.set(undefined);
+  }
+
+  /** A place the player marker turns to face (View: its arrow; the .go of the marker copies the orientation). */
+  protected readonly markerLookAt = signal<WorldPosition | undefined>(undefined);
+
+  // ---------------------------------------------------------------- comments (Eden's)
+
+  protected readonly comments = inject(CommentsService);
+  /** The comment being edited (in Attributes). */
+  protected readonly editingCommentId = signal<string | undefined>(undefined);
+  protected readonly editingComment = computed(() => this.comments.comments().find((comment) => comment.id === this.editingCommentId()));
+  /** The comment right-clicked, if any. */
+  protected readonly contextComment = computed(() => {
+    const menu = this.contextMenu();
+    const id = menu && commentIdOf(menu.key);
+    return id ? this.comments.comments().find((comment) => comment.id === id) : undefined;
+  });
+
+  /** Right-click > Place a comment here: a note in the world, only in the editor, opened to be written. */
+  protected placeComment(): void {
+    const position = (this.contextMenu() as ContextRequest).position as WorldPosition;
+    const comment: EditorComment = {
+      id: `${Date.now()}`,
+      map: this.mapId(),
+      x: position.x,
+      y: position.y,
+      z: position.z,
+      title: this.translate.instant('WORLD_EDITOR.EDEN.COMMENT'),
+      text: '',
+    };
+    this.comments.add(comment);
+    this.editComment(comment.id);
+  }
+
+  protected editComment(id: string): void {
+    this.editingCommentId.set(id);
+    this.contextMenu.set(undefined);
+    this.showRightTab('attributes');
+  }
+
+  protected deleteComment(id: string): void {
+    this.comments.remove(id);
+    this.contextMenu.set(undefined);
+    if (this.editingCommentId() === id) {
+      this.editingCommentId.set(undefined);
+    }
+  }
+
+  /** Right-click > Level out: a tilted gameobject stood upright again (turned only around its height). */
+  protected levelOut(): void {
+    const spawn = this.contextSpawn() as SpawnRecord;
+    const [x, y, z, w] = spawn.rotation as Quaternion;
+    this.changes.editSpawnFields(
+      spawn,
+      { rotation0: x, rotation1: y, rotation2: z, rotation3: w },
+      { rotation0: 0, rotation1: 0, rotation2: round4(Math.sin(spawn.o / 2)), rotation3: round4(Math.cos(spawn.o / 2)) },
+    );
+    this.bump();
+    this.contextMenu.set(undefined);
+  }
+
+  /** Whether a gameobject is tilted (turned around more than its height). */
+  protected tilted(spawn: SpawnRecord): boolean {
+    return spawn.type === 'gameobject' && !!spawn.rotation && (Math.abs(spawn.rotation[0]) > 1e-4 || Math.abs(spawn.rotation[1]) > 1e-4);
+  }
+
+  /** Right-click > Make the player face here. */
+  protected faceMarkerHere(): void {
+    this.markerLookAt.set({ ...((this.contextMenu() as ContextRequest).position as WorldPosition) });
+    this.contextMenu.set(undefined);
+  }
+
+  /** A or C of the Path / LOS tool dragged somewhere else. */
+  protected onProbeMoved(moved: { which: 'from' | 'to'; position: WorldPosition }): void {
+    (moved.which === 'from' ? this.probeFrom : this.probeTo).set(moved.position);
+  }
+
+  /** Copies `.go creature <guid>`, `.go gameobject <guid>` or `.go trigger <id>` for what was right-clicked. */
+  protected copyContextGoTo(): void {
+    const spawn = this.contextSpawn();
+    this.clipboard.copyFromContent(spawn ? `.go ${spawn.type} ${spawn.guid}` : `.go trigger ${this.contextAreaTrigger()}`);
+    this.contextMenu.set(undefined);
+  }
+
+  /** Right-click > Hide: the spawn leaves the view (and is unticked in the tree). */
+  protected hideContext(): void {
+    const key = (this.contextMenu() as ContextRequest).key;
+    this.treeHidden.update((hidden) => new Set([...hidden, key]));
+    this.contextMenu.set(undefined);
+  }
+
+  /** The formation of the right-clicked creature (only read while the menu is open). */
+  protected readonly contextFormation = computed(() => {
+    const spawn = this.contextSpawn();
+    return spawn?.type === 'creature' ? formationOf(spawn.guid, this.formations()) : undefined;
+  });
+  /** Whether every loaded member of the right-clicked creature's formation is locked. */
+  protected readonly contextFormationLocked = computed(() => {
+    // (the right-clicked one is loaded: never none)
+    const keys = formationKeys(this.contextFormation() as Formation).filter((key) => this.findSpawn(key));
+    return keys.every((key) => this.lockedKeys().has(key));
+  });
+
+  /** Right-click > Select the formation: its leader, and its members with it. */
+  protected selectFormation(): void {
+    const keys = formationKeys(this.contextFormation() as Formation).filter((key) => this.findSpawn(key));
+    this.select(keys[0]);
+    this.groupKeys.set(keys.slice(1));
+    this.contextMenu.set(undefined);
+  }
+
+  /** Right-click > Hide the formation. */
+  protected hideFormation(): void {
+    const keys = formationKeys(this.contextFormation() as Formation);
+    this.treeHidden.update((hidden) => new Set([...hidden, ...keys]));
+    this.contextMenu.set(undefined);
+  }
+
+  /** Right-click > Lock the formation (or unlock it, when all of it is locked). */
+  protected toggleFormationLock(): void {
+    const keys = formationKeys(this.contextFormation() as Formation);
+    const unlock = this.contextFormationLocked();
+    this.lockedKeys.update((locked) => {
+      const next = new Set(locked);
+      keys.forEach((key) => (unlock ? next.delete(key) : next.add(key)));
+      return next;
+    });
+    this.contextMenu.set(undefined);
+  }
+
+  /** Right-click > Hide all others: only this spawn stays. */
+  protected hideOthers(): void {
+    const key = (this.contextMenu() as ContextRequest).key;
+    this.treeHidden.set(
+      new Set(
+        this.spawns()
+          .map((s) => spawnKey(s.type, s.guid))
+          .filter((k) => k !== key),
+      ),
+    );
+    this.contextMenu.set(undefined);
+  }
+
+  protected showHidden(): void {
+    this.treeHidden.set(new Set());
+    this.contextMenu.set(undefined);
+  }
+
+  /** Right-click > Select all like this: every shown spawn of the same entry, this one first. */
+  protected selectLike(): void {
+    const spawn = this.contextSpawn() as SpawnRecord;
+    const key = spawnKey(spawn.type, spawn.guid);
+    this.select(key);
+    this.groupKeys.set(
+      this.visibleSpawns()
+        .filter((s) => s.type === spawn.type && s.entry === spawn.entry)
+        .map((s) => spawnKey(s.type, s.guid))
+        .filter((k) => k !== key),
+    );
+    this.contextMenu.set(undefined);
+  }
+
+  /** Locks a spawn against moving and deleting, or unlocks it. */
+  protected toggleLock(key: string): void {
+    this.lockedKeys.update((locked) => {
+      const next = new Set(locked);
+      if (!next.delete(key)) {
+        next.add(key);
+      }
+      return next;
+    });
+    this.contextMenu.set(undefined);
+  }
+
+  /** Right-click > Lock all others: only this spawn can still be moved. */
+  protected lockOthers(): void {
+    const key = (this.contextMenu() as ContextRequest).key;
+    this.lockedKeys.set(
+      new Set(
+        this.spawns()
+          .map((s) => spawnKey(s.type, s.guid))
+          .filter((k) => k !== key),
+      ),
+    );
+    this.contextMenu.set(undefined);
+  }
+
+  protected unlockAll(): void {
+    this.lockedKeys.set(new Set());
+    this.contextMenu.set(undefined);
+  }
+
+  protected copyContextGuid(): void {
+    this.clipboard.copyFromContent(String((this.contextSpawn() as SpawnRecord).guid));
+    this.contextMenu.set(undefined);
+  }
+
+  protected onKeydown(event: KeyboardEvent): void {
+    if (this.capturing()) {
+      event.preventDefault();
+      // (a key held down repeats: one press)
+      if (event.repeat) {
+        return;
+      }
+      // Esc cancels; a modifier on its own waits for the key it goes with (or is bound itself when let go)
+      if (event.code === 'Escape' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+        this.cancelCapture();
+      } else if (isModifierCode(event.code)) {
+        this.pendingModifier.set(event.code);
+      } else if (inputOf(event)) {
+        this.pendingModifier.set(undefined);
+        this.bindInput(inputOf(event) as string);
+      }
+      return;
+    }
+    const target = event.target as HTMLElement;
+    if (['INPUT', 'SELECT', 'TEXTAREA'].includes(target.tagName)) {
+      return;
+    }
+    if (this.runControl(controlFor(this.controls.settings(), EDITOR_ACTIONS, event))) {
+      event.preventDefault();
+    }
+  }
+
+  protected onKeyup(event: KeyboardEvent): void {
+    // a modifier let go with nothing pressed with it: bound on its own
+    if (this.capturing() && this.pendingModifier() === event.code) {
+      this.pendingModifier.set(undefined);
+      this.bindInput(event.code);
+    }
+  }
+
+  /** A mouse button or wheel step in the view bound to an editing action. */
+  protected onViewInput(event: MouseEvent): void {
+    if (!this.capturing()) {
+      this.runControl(controlFor(this.controls.settings(), EDITOR_ACTIONS, event));
+    }
+  }
+
+  /** Gamepad inputs while binding the camera's and the marker's actions (the gamepad only moves the view). */
+  private readonly padInputs = inject(GamepadInputService)
+    .inputs.pipe(takeUntilDestroyed())
+    .subscribe((event) => {
+      const action = this.capturing();
+      const group = CONTROL_ACTIONS.find((item) => item.action === action)?.group;
+      if (event.pressed && (group === 'camera' || group === 'marker')) {
+        this.bindInput(event.input);
+      }
+    });
+
+  /** Controls > Add: binds what's pressed next (a key, a mouse input from the list, a gamepad input) to an action. */
+  protected startCapture(action: ControlAction): void {
+    this.capturing.set(action);
+    this.captureStart = [...this.controls.settings().bindings[action]];
+    this.pendingModifier.set(undefined);
+    this.lastBound = undefined;
+  }
+
+  protected finishCapture(): void {
+    this.capturing.set(undefined);
+    this.pendingModifier.set(undefined);
+  }
+
+  /** Esc: the action's bindings as they were. */
+  protected cancelCapture(): void {
+    this.controls.setActionBindings(this.capturing() as ControlAction, this.captureStart as string[]);
+    this.finishCapture();
+  }
+
+  /** Binds an input to the action being bound; the same input again quickly makes it a double tap ("2x K"). */
+  protected bindInput(input: string): void {
+    const action = this.capturing() as ControlAction;
+    const now = performance.now();
+    const current = this.controls.settings().bindings[action];
+    if (this.lastBound?.input === input && now - this.lastBound.time <= DOUBLE_TAP_MS && current.includes(input)) {
+      this.controls.setActionBindings(
+        action,
+        current.map((binding) => (binding === input ? DOUBLE_TAP + input : binding)),
+      );
+      this.lastBound = undefined;
+      return;
+    }
+    this.controls.addBinding(action, input);
+    this.lastBound = { input, time: now };
+  }
+
+  /** Runs an editing action; whether there was one. */
+  private runControl(action: (typeof EDITOR_ACTIONS)[number] | undefined): boolean {
+    if (!action) {
+      return false;
+    }
+    if (action === 'redo') {
+      this.redo();
+    } else if (action === 'undo') {
+      this.undo();
+    } else if (action === 'delete') {
+      this.deleteSelected();
+    } else if (action === 'cancel') {
+      this.contextMenu.set(undefined);
+      this.tool.set('select');
+      this.selectedKey.set(undefined);
+      this.groupKeys.set([]);
+    } else if (action === 'toggleGizmo') {
+      this.gizmoMode.update((mode) => (mode === 'translate' ? 'rotate' : 'translate'));
+    } else if (action === 'copy') {
+      this.copySelection();
+    } else if (action === 'paste') {
+      void this.pasteCopied();
+    } else if (action === 'worldMap') {
+      this.toggleMap();
+    } else if (action === 'gameMap') {
+      this.toggleGameMap();
+    } else if (action === 'resetNorth') {
+      this.resetNorth();
+    } else if (action === 'topView') {
+      this.topViewRequest.update((n) => n + 1);
+    } else if (action === 'tree') {
+      this.toggleTree();
+    } else if (action.startsWith('widget')) {
+      this.gizmoMode.set(action === 'widgetNone' ? 'none' : action === 'widgetMove' ? 'translate' : 'rotate');
+    } else if (action === 'toggleGrid') {
+      this.setTransform({ moveGrid: !this.transform().moveGrid });
+    } else if (action === 'gridSmaller' || action === 'gridBigger') {
+      this.setTransform({ moveGrid: true, moveSize: stepMoveSize(this.transform().moveSize, action === 'gridSmaller' ? -1 : 1) });
+    } else if (action.startsWith('assets') || action === 'searchAssets') {
+      this.showRightTab('assets');
+      const mode = action === 'assetsCreatures' ? 'creature' : action === 'assetsGameobjects' ? 'gameobject' : 'composition';
+      this.assetRequest.update((request) => ({
+        n: request.n + 1,
+        ...(action === 'searchAssets' ? { search: true } : { mode }),
+      }));
+    } else {
+      // (the compass)
+      this.renderSettings.update({ compass: !this.renderSettings.settings().compass });
+    }
+    return true;
+  }
+
+  // ---------------------------------------------------------------- helpers
+
+  private setPlacementForm(p: { x: number; y: number; z: number; o: number }): void {
+    const round = (value: number): number => Math.round(value * 10_000) / 10_000;
+    this.placementForm.setValue({ x: round(p.x), y: round(p.y), z: round(p.z), o: round(p.o) });
+  }
+
+  /** After every change: remembers the new state for undo (dropping what could be redone). */
+  private bump(): void {
+    this.history = [...this.history.slice(0, this.historyIndex + 1), this.changes.snapshot()].slice(-HISTORY_SIZE);
+    this.historyIndex = this.history.length - 1;
+    this.revision.update((r) => r + 1);
+  }
+
+  private findSpawn(key: string): SpawnRecord | undefined {
+    return this.spawnsByKey().get(key);
+  }
+
+  private findWaypoint(key: string): WaypointRecord | undefined {
+    const parsed = parseWaypointKey(key);
+    const pathId = parsed ? Number(parsed.pathKey.replace('path:', '')) : undefined;
+    return this.waypoints().find((w) => w.pathId === pathId && w.point === parsed?.point);
+  }
+}

@@ -198,6 +198,21 @@ describe('NpcVendor integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(3);
     });
 
+    it('sorts the items by their names (#734)', async () => {
+      const names: Record<string, string> = { '0': 'Zebra hide', '1': 'Apple', '2': 'Mango' };
+      vi.spyOn(TestBed.inject(MysqlQueryService), 'getItemNameById').mockImplementation((itemId) => Promise.resolve(names[String(itemId)]));
+      const { page, fixture } = setup(false);
+      await new Promise((resolve) => setTimeout(resolve));
+      fixture.detectChanges();
+      const header = [...page.queryAll<HTMLElement>('.datatable-header-cell')].find((cell) =>
+        cell.textContent?.includes('Name'),
+      ) as HTMLElement;
+      page.clickElement(header.querySelector('.datatable-header-cell-label') as HTMLElement);
+      const names_ = () => [...page.queryAll<HTMLElement>('.datatable-body-row')].map((row) => row.textContent ?? '');
+      expect(names_()[0]).toContain('Apple');
+      expect(names_()[2]).toContain('Zebra hide');
+    });
+
     it('deleting rows should correctly work', () => {
       const { page } = setup(false);
       page.deleteRow(1);

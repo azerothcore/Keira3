@@ -1,0 +1,87 @@
+<keira-top-bar
+  [selected]="handlerService.selected"
+  [handler]="handlerService"
+  [selectedName]="handlerService.selectedName"
+  [isNew]="handlerService.isNew"
+/>
+
+<div class="container-fluid">
+  @if (editorService.loading) {
+    <span [translate]="'LOADING'"></span>
+  }
+
+  @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
+    <div>
+      <div class="content-block">
+        <keira-query-output
+          [docUrl]="docUrl"
+          [isNew]="editorService.isNew"
+          [diffQuery]="editorService.diffQuery"
+          [fullQuery]="editorService.fullQuery"
+          [error]="editorService.error"
+          [entityTable]="editorService.entityTable"
+          [editorService]="editorService"
+          (executeQuery)="save($event)"
+        />
+      </div>
+      <div class="content-block">
+        <p class="small text-muted">{{ 'WAYPOINTS.SPLINE_HELP' | translate }}</p>
+        <form [formGroup]="editorService.form" class="form-group edit-form">
+          <div class="row">
+            <div class="form-group col-6 col-md-3 col-xl-1">
+              <label class="control-label" for="PointID">PointID</label>
+              <input [formControlName]="'PointID'" id="PointID" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-6 col-md-3 col-xl-2">
+              <label class="control-label" for="SplinePointIndex">SplinePointIndex</label>
+              <input [formControlName]="'SplinePointIndex'" id="SplinePointIndex" type="number" class="form-control form-control-sm" />
+            </div>
+            @for (field of ['PositionX', 'PositionY', 'PositionZ']; track field) {
+              <div class="form-group col-6 col-md-3 col-xl-2">
+                <label class="control-label" [for]="field">{{ field }}</label>
+                <input [formControlName]="field" [id]="field" type="number" step="any" class="form-control form-control-sm" />
+              </div>
+            }
+            <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
+              <i class="fas fa-exclamation-triangle"></i>
+              <span [innerHTML]="'UNIQUE' | translate: { ENTITY_SECOND_ID_FIELD: 'PointID, SplinePointIndex' }"></span>
+            </div>
+          </div>
+        </form>
+        <div class="row">
+          <div class="col-12">
+            <keira-editor-buttons
+              [selectedRowId]="editorService.selectedRowId"
+              (deleteSelectedRow)="editorService.deleteSelectedRow()"
+              (addNewRow)="editorService.addNewRow()"
+              (duplicateRow)="editorService.addNewRow(true)"
+            />
+            <ngx-datatable
+              id="editor-table"
+              class="bootstrap table table-striped text-center datatable-select"
+              [rows]="editorService.newRows"
+              [headerHeight]="DTCFG.headerHeight"
+              [footerHeight]="DTCFG.footerHeight"
+              [columnMode]="DTCFG.columnMode"
+              [rowHeight]="DTCFG.rowHeight"
+              [selectionType]="DTCFG.selectionType"
+              (select)="editorService.onRowSelection($event)"
+              (keydown.delete)="editorService.deleteSelectedRow()"
+            >
+              <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                  <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="PointID" prop="PointID" [minWidth]="60" />
+              <ngx-datatable-column name="SplinePointIndex" prop="SplinePointIndex" [minWidth]="60" />
+              <ngx-datatable-column name="PositionX" prop="PositionX" [minWidth]="90" />
+              <ngx-datatable-column name="PositionY" prop="PositionY" [minWidth]="90" />
+              <ngx-datatable-column name="PositionZ" prop="PositionZ" [minWidth]="90" />
+            </ngx-datatable>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

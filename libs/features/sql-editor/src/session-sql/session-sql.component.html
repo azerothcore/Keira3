@@ -1,0 +1,56 @@
+<div class="container-fluid">
+  <div class="content-block">
+    <h4>{{ 'SESSION_SQL.TITLE' | translate }}</h4>
+    <p class="text-muted">{{ 'SESSION_SQL.HELP' | translate }}</p>
+
+    @if (session.entries().length) {
+      <table class="table table-sm" id="session-entries">
+        <tbody>
+          @for (entry of session.entries(); track entry.id; let first = $first; let last = $last) {
+            <tr>
+              <td class="fw-semibold">{{ entry.label }}</td>
+              <td class="text-muted small">{{ entry.at.slice(0, 16).replace('T', ' ') }}</td>
+              <td class="text-end">
+                <button type="button" class="btn btn-sm btn-outline-secondary" [disabled]="first" (click)="session.move(entry.id, -1)">
+                  <i class="fa fa-arrow-up"></i>
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-secondary ms-1" [disabled]="last" (click)="session.move(entry.id, 1)">
+                  <i class="fa fa-arrow-down"></i>
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-danger ms-1" (click)="session.remove(entry.id)">
+                  <i class="fa fa-times"></i>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      <keira-highlightjs-wrapper [code]="session.combined()" />
+
+      @if (error()) {
+        <keira-query-error [error]="error()!" />
+      }
+
+      <div class="d-flex flex-wrap gap-2 mt-2">
+        <button type="button" class="btn btn-sm btn-secondary" id="session-copy" (click)="copy()">
+          <i class="fa fa-copy"></i> {{ 'SESSION_SQL.COPY' | translate }}
+        </button>
+        <button type="button" class="btn btn-sm btn-secondary" id="session-save" (click)="save()">
+          <i class="fa fa-download"></i> {{ 'SESSION_SQL.SAVE' | translate }}
+        </button>
+        <button type="button" class="btn btn-sm btn-primary" id="session-execute" [disabled]="executing()" (click)="execute()">
+          <i class="fa fa-bolt"></i> {{ 'SESSION_SQL.EXECUTE' | translate }}
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-danger" id="session-clear" (click)="clear()">
+          <i class="fa fa-trash"></i> {{ 'SESSION_SQL.CLEAR' | translate }}
+        </button>
+        @if (executed()) {
+          <span class="text-success align-self-center" id="session-executed">{{ 'SESSION_SQL.EXECUTED' | translate }}</span>
+        }
+      </div>
+    } @else {
+      <p id="session-empty">{{ 'SESSION_SQL.EMPTY' | translate }}</p>
+    }
+  </div>
+</div>

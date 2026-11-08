@@ -1,9 +1,48 @@
 import { Routes } from '@angular/router';
 
 import { DashboardComponent } from '@keira/features/dashboard';
-
-import { ConditionsComponent, ConditionsHandlerService, SelectConditionsComponent } from '@keira/features/conditions';
+import { SettingsComponent } from '@keira/features/settings';
 import {
+  SaiWaypointsComponent,
+  SaiWaypointsHandlerService,
+  SelectSaiWaypointsComponent,
+  SelectWaypointComponent,
+  SelectWaypointScriptsComponent,
+  WaypointDataAddonComponent,
+  WaypointDataComponent,
+  WaypointHandlerService,
+  WaypointScriptsComponent,
+  WaypointScriptsHandlerService,
+} from '@keira/features/waypoints';
+import {
+  GameEventPoolComponent,
+  PoolCreatureComponent,
+  PoolGameobjectComponent,
+  PoolHandlerService,
+  PoolPoolComponent,
+  PoolQuestComponent,
+  PoolTemplateComponent,
+  SelectPoolComponent,
+} from '@keira/features/pools';
+import {
+  BossBoundariesComponent,
+  ScriptNamesComponent,
+  ScriptSpawnsComponent,
+  ScriptTemplateComponent,
+  ScriptWaypointComponent,
+  ScriptWaypointHandlerService,
+  SelectScriptWaypointComponent,
+} from '@keira/features/scripts';
+
+import {
+  ConditionsComponent,
+  ConditionsHandlerService,
+  ConditionsSourceComponent,
+  ConditionsSourceHandlerService,
+  SelectConditionsComponent,
+} from '@keira/features/conditions';
+import {
+  CreatureCopyComponent,
   CreatureEquipTemplateComponent,
   CreatureFormationsComponent,
   CreatureHandlerService,
@@ -25,9 +64,15 @@ import {
   SaiCreatureComponent,
   SelectCreatureComponent,
   SkinningLootTemplateComponent,
+  CreatureTemplateLocaleComponent,
+  CreatureTextLocaleComponent,
+  NpcSpellclickSpellsComponent,
+  VehicleTemplateAccessoryComponent,
+  VehicleAccessoryComponent,
 } from '@keira/features/creature';
 import {
   GameobjectHandlerService,
+  GameobjectCopyComponent,
   GameobjectLootTemplateComponent,
   GameobjectQuestitemComponent,
   GameobjectSpawnAddonComponent,
@@ -36,23 +81,38 @@ import {
   GameobjectTemplateComponent,
   SaiGameobjectComponent,
   SelectGameobjectComponent,
+  GameobjectTemplateLocaleComponent,
 } from '@keira/features/gameobject';
-import { GossipHandlerService, GossipMenuComponent, GossipMenuOptionComponent, SelectGossipComponent } from '@keira/features/gossip';
+import {
+  GossipHandlerService,
+  GossipMenuComponent,
+  GossipMenuOptionComponent,
+  SelectGossipComponent,
+  GossipCopyComponent,
+  GossipMenuOptionLocaleComponent,
+} from '@keira/features/gossip';
 import {
   DisenchantLootTemplateComponent,
   ItemEnchantmentTemplateComponent,
   ItemHandlerService,
+  ItemCopyComponent,
   ItemLootTemplateComponent,
+  ItemSourcesComponent,
   ItemTemplateComponent,
   MillingLootTemplateComponent,
   ProspectingLootTemplateComponent,
   SelectItemComponent,
+  ItemTemplateLocaleComponent,
 } from '@keira/features/item';
 import {
   FishingLootHandlerService,
   FishingLootTemplateComponent,
   MailLootHandlerService,
   MailLootTemplateComponent,
+  FishingLootCopyComponent,
+  SpellLootCopyComponent,
+  MailLootCopyComponent,
+  ReferenceLootCopyComponent,
   ReferenceLootHandlerService,
   ReferenceLootTemplateComponent,
   SelectFishingLootComponent,
@@ -73,12 +133,27 @@ import {
   QuestRequestItemsComponent,
   QuestTemplateAddonComponent,
   QuestTemplateLocaleComponent,
+  QuestRequestItemsLocaleComponent,
+  QuestOfferRewardLocaleComponent,
   QuestTemplateComponent,
   SelectQuestComponent,
+  QuestCopyComponent,
 } from '@keira/features/quest';
 import { SaiFullEditorComponent, SaiSearchEntityComponent, SaiSearchExistingComponent } from '@keira/features/smart-scripts';
-import { SelectSpellComponent, SpellDbcComponent } from '@keira/features/spell';
-import { SqlEditorComponent } from '@keira/features/sql-editor';
+import {
+  SelectSpellComponent,
+  SpellDbcComponent,
+  SpellCopyComponent,
+  SpellHandlerService,
+  SpellAreaComponent,
+} from '@keira/features/spell';
+import {
+  FindAnywhereComponent,
+  SessionSqlComponent,
+  SniffToSqlComponent,
+  SqlEditorComponent,
+  TableBrowserComponent,
+} from '@keira/features/sql-editor';
 import { SaiHandlerService } from '@keira/shared/sai-editor';
 import {
   BroadcastTextComponent,
@@ -87,22 +162,77 @@ import {
   NpcTextHandlerService,
   PageTextComponent,
   PageTextHandlerService,
+  PageTextCopyComponent,
+  NpcTextCopyComponent,
   SelectBroadcastTextComponent,
   SelectNpcTextComponent,
   SelectPageTextComponent,
   AcoreStringComponent,
   AcoreStringHandlerService,
+  AcoreStringCopyComponent,
   AcoreStringLocaleComponent,
   SelectAcoreStringComponent,
+  PageTextLocaleComponent,
+  NpcTextLocaleComponent,
+  BroadcastTextLocaleComponent,
 } from '@keira/features/texts';
-import { GameTeleComponent, GameTeleHandlerService, SelectGameTeleComponent } from '@keira/features/game-tele';
+import { GameTeleComponent, GameTeleCopyComponent, GameTeleHandlerService, SelectGameTeleComponent } from '@keira/features/game-tele';
 import {
   CreatureImmunitiesComponent,
   CreatureImmunitiesHandlerService,
   SelectCreatureImmunitiesComponent,
 } from '@keira/features/creature-immunities';
-import { SelectTrainerComponent, TrainerComponent, TrainerHandlerService, TrainerSpellComponent } from '@keira/features/trainer';
+import { SniffsComponent } from '@keira/features/sniffs';
+import {
+  SelectTrainerComponent,
+  TrainerComponent,
+  TrainerCopyComponent,
+  TrainerHandlerService,
+  TrainerSpellComponent,
+} from '@keira/features/trainer';
+import {
+  GameEventHandlerService,
+  SelectGameEventComponent,
+  GameEventComponent,
+  GameEventCreatureComponent,
+  GameEventCreatureRemovedComponent,
+  GameEventRemovedPoolsComponent,
+  GameEventGameobjectComponent,
+  GameEventGameobjectRemovedComponent,
+  GameEventSpawnedPoolsComponent,
+  GameEventPrerequisiteComponent,
+  GameEventNpcflagComponent,
+  GameEventModelEquipComponent,
+  GameEventNpcVendorComponent,
+  GameEventCreatureQuestComponent,
+  GameEventGameobjectQuestComponent,
+  GameEventSeasonalQuestComponent,
+  GameEventBattlegroundHolidayComponent,
+  GameEventArenaSeasonComponent,
+  GameEventQuestConditionComponent,
+  GameEventConditionComponent,
+} from '@keira/features/game-events';
+import { DisablesHandlerService, SelectDisablesComponent, DisablesComponent } from '@keira/features/disables';
+import {
+  AreaTriggerHandlerService,
+  SelectAreaTriggerComponent,
+  AreatriggerTeleportComponent,
+  AreatriggerTavernComponent,
+  AreatriggerInvolvedrelationComponent,
+  AreatriggerScriptsComponent,
+  AreatriggerComponent,
+} from '@keira/features/area-triggers';
+import {
+  EventScriptsComponent,
+  EventScriptsHandlerService,
+  SelectEventScriptsComponent,
+  SelectSpellScriptsComponent,
+  SpellScriptsComponent,
+  SpellScriptsHandlerService,
+} from '@keira/features/db-scripts';
 import { UnusedGuidSearchComponent } from '@keira/features/unused-guid-search';
+import { WORLD_EDITOR_LINKS } from '@keira/shared/constants';
+import { worldEditorLinks } from './world-editor-links';
 
 export const KEIRA_ROUTES: Routes = [
   {
@@ -114,11 +244,61 @@ export const KEIRA_ROUTES: Routes = [
     component: SqlEditorComponent,
   },
   {
+    path: 'session-sql',
+    component: SessionSqlComponent,
+  },
+  {
+    path: 'table-browser',
+    component: TableBrowserComponent,
+  },
+  {
+    path: 'find-anywhere',
+    component: FindAnywhereComponent,
+  },
+  {
+    path: 'sniff-to-sql',
+    component: SniffToSqlComponent,
+  },
+  {
+    path: 'sniffs',
+    component: SniffsComponent,
+  },
+  {
     path: 'creature',
     children: [
       {
+        path: 'vehicle-template-accessory',
+        component: VehicleTemplateAccessoryComponent,
+        canActivate: [CreatureHandlerService],
+      },
+      {
+        path: 'vehicle-accessory',
+        component: VehicleAccessoryComponent,
+        canActivate: [CreatureHandlerService],
+      },
+      {
+        path: 'npc-spellclick-spells',
+        component: NpcSpellclickSpellsComponent,
+        canActivate: [CreatureHandlerService],
+      },
+      {
+        path: 'creature-text-locale',
+        component: CreatureTextLocaleComponent,
+        canActivate: [CreatureHandlerService],
+      },
+      {
+        path: 'creature-template-locale',
+        component: CreatureTemplateLocaleComponent,
+        canActivate: [CreatureHandlerService],
+      },
+      {
         path: 'select',
         component: SelectCreatureComponent,
+      },
+      {
+        path: 'copy',
+        component: CreatureCopyComponent,
+        canActivate: [CreatureHandlerService],
       },
       {
         path: 'creature-template',
@@ -231,6 +411,11 @@ export const KEIRA_ROUTES: Routes = [
         canActivate: [QuestHandlerService],
       },
       {
+        path: 'copy',
+        component: QuestCopyComponent,
+        canActivate: [QuestHandlerService],
+      },
+      {
         path: 'quest-template-addon',
         component: QuestTemplateAddonComponent,
         canActivate: [QuestHandlerService],
@@ -238,6 +423,16 @@ export const KEIRA_ROUTES: Routes = [
       {
         path: 'quest-template-locale',
         component: QuestTemplateLocaleComponent,
+        canActivate: [QuestHandlerService],
+      },
+      {
+        path: 'quest-offer-reward-locale',
+        component: QuestOfferRewardLocaleComponent,
+        canActivate: [QuestHandlerService],
+      },
+      {
+        path: 'quest-request-items-locale',
+        component: QuestRequestItemsLocaleComponent,
         canActivate: [QuestHandlerService],
       },
       {
@@ -281,12 +476,22 @@ export const KEIRA_ROUTES: Routes = [
     path: 'gameobject',
     children: [
       {
+        path: 'gameobject-template-locale',
+        component: GameobjectTemplateLocaleComponent,
+        canActivate: [GameobjectHandlerService],
+      },
+      {
         path: 'select',
         component: SelectGameobjectComponent,
       },
       {
         path: 'gameobject-template',
         component: GameobjectTemplateComponent,
+        canActivate: [GameobjectHandlerService],
+      },
+      {
+        path: 'copy',
+        component: GameobjectCopyComponent,
         canActivate: [GameobjectHandlerService],
       },
       {
@@ -325,12 +530,22 @@ export const KEIRA_ROUTES: Routes = [
     path: 'item',
     children: [
       {
+        path: 'item-template-locale',
+        component: ItemTemplateLocaleComponent,
+        canActivate: [ItemHandlerService],
+      },
+      {
         path: 'select',
         component: SelectItemComponent,
       },
       {
         path: 'item-template',
         component: ItemTemplateComponent,
+        canActivate: [ItemHandlerService],
+      },
+      {
+        path: 'copy',
+        component: ItemCopyComponent,
         canActivate: [ItemHandlerService],
       },
       {
@@ -341,6 +556,11 @@ export const KEIRA_ROUTES: Routes = [
       {
         path: 'item-loot-template',
         component: ItemLootTemplateComponent,
+        canActivate: [ItemHandlerService],
+      },
+      {
+        path: 'item-sources',
+        component: ItemSourcesComponent,
         canActivate: [ItemHandlerService],
       },
       {
@@ -373,6 +593,16 @@ export const KEIRA_ROUTES: Routes = [
         canActivate: [ReferenceLootHandlerService],
       },
       {
+        path: 'reference-copy',
+        component: ReferenceLootCopyComponent,
+        canActivate: [ReferenceLootHandlerService],
+      },
+      {
+        path: 'spell-copy',
+        component: SpellLootCopyComponent,
+        canActivate: [SpellLootHandlerService],
+      },
+      {
         path: 'select-spell',
         component: SelectSpellLootComponent,
       },
@@ -391,6 +621,11 @@ export const KEIRA_ROUTES: Routes = [
         canActivate: [FishingLootHandlerService],
       },
       {
+        path: 'fishing-copy',
+        component: FishingLootCopyComponent,
+        canActivate: [FishingLootHandlerService],
+      },
+      {
         path: 'select-mail',
         component: SelectMailLootComponent,
       },
@@ -399,14 +634,39 @@ export const KEIRA_ROUTES: Routes = [
         component: MailLootTemplateComponent,
         canActivate: [MailLootHandlerService],
       },
+      {
+        path: 'mail-copy',
+        component: MailLootCopyComponent,
+        canActivate: [MailLootHandlerService],
+      },
     ],
   },
   {
     path: 'texts',
     children: [
       {
+        path: 'broadcast-text-locale',
+        component: BroadcastTextLocaleComponent,
+        canActivate: [BroadcastTextHandlerService],
+      },
+      {
+        path: 'npc-text-locale',
+        component: NpcTextLocaleComponent,
+        canActivate: [NpcTextHandlerService],
+      },
+      {
+        path: 'page-text-locale',
+        component: PageTextLocaleComponent,
+        canActivate: [PageTextHandlerService],
+      },
+      {
         path: 'select-page-text',
         component: SelectPageTextComponent,
+      },
+      {
+        path: 'page-text-copy',
+        component: PageTextCopyComponent,
+        canActivate: [PageTextHandlerService],
       },
       {
         path: 'page-text',
@@ -427,6 +687,11 @@ export const KEIRA_ROUTES: Routes = [
         component: SelectNpcTextComponent,
       },
       {
+        path: 'npc-text-copy',
+        component: NpcTextCopyComponent,
+        canActivate: [NpcTextHandlerService],
+      },
+      {
         path: 'npc-text',
         component: NpcTextComponent,
         canActivate: [NpcTextHandlerService],
@@ -434,6 +699,11 @@ export const KEIRA_ROUTES: Routes = [
       {
         path: 'acore-string',
         component: AcoreStringComponent,
+        canActivate: [AcoreStringHandlerService],
+      },
+      {
+        path: 'acore-string-copy',
+        component: AcoreStringCopyComponent,
         canActivate: [AcoreStringHandlerService],
       },
       {
@@ -451,8 +721,18 @@ export const KEIRA_ROUTES: Routes = [
     path: 'gossip',
     children: [
       {
+        path: 'gossip-menu-option-locale',
+        component: GossipMenuOptionLocaleComponent,
+        canActivate: [GossipHandlerService],
+      },
+      {
         path: 'select',
         component: SelectGossipComponent,
+      },
+      {
+        path: 'copy',
+        component: GossipCopyComponent,
+        canActivate: [GossipHandlerService],
       },
       {
         path: 'gossip-menu',
@@ -467,6 +747,55 @@ export const KEIRA_ROUTES: Routes = [
     ],
   },
   {
+    path: 'waypoints',
+    children: [
+      {
+        path: 'select',
+        component: SelectWaypointComponent,
+      },
+      {
+        path: 'waypoint-data',
+        component: WaypointDataComponent,
+        canActivate: [WaypointHandlerService],
+      },
+      {
+        path: 'select-scripts',
+        component: SelectWaypointScriptsComponent,
+      },
+      {
+        path: 'waypoint-scripts',
+        component: WaypointScriptsComponent,
+        canActivate: [WaypointScriptsHandlerService],
+      },
+      { path: 'waypoint-data-addon', component: WaypointDataAddonComponent, canActivate: [WaypointHandlerService] },
+      { path: 'select-sai', component: SelectSaiWaypointsComponent },
+      { path: 'sai-waypoints', component: SaiWaypointsComponent, canActivate: [SaiWaypointsHandlerService] },
+    ],
+  },
+  {
+    path: 'pools',
+    children: [
+      { path: 'select', component: SelectPoolComponent },
+      { path: 'pool-template', component: PoolTemplateComponent, canActivate: [PoolHandlerService] },
+      { path: 'pool-creature', component: PoolCreatureComponent, canActivate: [PoolHandlerService] },
+      { path: 'pool-gameobject', component: PoolGameobjectComponent, canActivate: [PoolHandlerService] },
+      { path: 'pool-pool', component: PoolPoolComponent, canActivate: [PoolHandlerService] },
+      { path: 'pool-quest', component: PoolQuestComponent, canActivate: [PoolHandlerService] },
+      { path: 'game-event-pool', component: GameEventPoolComponent, canActivate: [PoolHandlerService] },
+    ],
+  },
+  {
+    path: 'scripts',
+    children: [
+      { path: 'select-script-waypoint', component: SelectScriptWaypointComponent },
+      { path: 'script-waypoint', component: ScriptWaypointComponent, canActivate: [ScriptWaypointHandlerService] },
+      { path: 'script-names', component: ScriptNamesComponent },
+      { path: 'boss-boundaries', component: BossBoundariesComponent },
+      { path: 'script-spawns', component: ScriptSpawnsComponent },
+      { path: 'script-template', component: ScriptTemplateComponent },
+    ],
+  },
+  {
     path: 'conditions',
     children: [
       {
@@ -477,6 +806,11 @@ export const KEIRA_ROUTES: Routes = [
         path: 'conditions',
         component: ConditionsComponent,
         canActivate: [ConditionsHandlerService],
+      },
+      {
+        path: 'source',
+        component: ConditionsSourceComponent,
+        canActivate: [ConditionsSourceHandlerService],
       },
     ],
   },
@@ -502,12 +836,22 @@ export const KEIRA_ROUTES: Routes = [
     path: 'spell',
     children: [
       {
+        path: 'spell-area',
+        component: SpellAreaComponent,
+        canActivate: [SpellHandlerService],
+      },
+      {
         path: 'select',
         component: SelectSpellComponent,
       },
       {
         path: 'spell-dbc',
         component: SpellDbcComponent,
+      },
+      {
+        path: 'copy',
+        component: SpellCopyComponent,
+        canActivate: [SpellHandlerService],
       },
     ],
   },
@@ -519,9 +863,184 @@ export const KEIRA_ROUTES: Routes = [
         component: SelectGameTeleComponent,
       },
       {
+        path: 'copy',
+        component: GameTeleCopyComponent,
+        canActivate: [GameTeleHandlerService],
+      },
+      {
         path: 'tele',
         component: GameTeleComponent,
         canActivate: [GameTeleHandlerService],
+      },
+    ],
+  },
+  {
+    path: 'game-events',
+    children: [
+      {
+        path: 'select',
+        component: SelectGameEventComponent,
+      },
+      {
+        path: 'game-event',
+        component: GameEventComponent,
+        canActivate: [GameEventHandlerService],
+      },
+      {
+        path: 'game-event-creature',
+        component: GameEventCreatureComponent,
+        canActivate: [GameEventHandlerService],
+      },
+      {
+        path: 'game-event-creature-removed',
+        component: GameEventCreatureRemovedComponent,
+        canActivate: [GameEventHandlerService],
+      },
+      {
+        path: 'game-event-gameobject',
+        component: GameEventGameobjectComponent,
+        canActivate: [GameEventHandlerService],
+      },
+      {
+        path: 'game-event-gameobject-removed',
+        component: GameEventGameobjectRemovedComponent,
+        canActivate: [GameEventHandlerService],
+      },
+      {
+        path: 'game-event-pool',
+        component: GameEventSpawnedPoolsComponent,
+        canActivate: [GameEventHandlerService],
+      },
+      {
+        path: 'game-event-pool-removed',
+        component: GameEventRemovedPoolsComponent,
+        canActivate: [GameEventHandlerService],
+      },
+      {
+        path: 'game-event-prerequisite',
+        component: GameEventPrerequisiteComponent,
+        canActivate: [GameEventHandlerService],
+      },
+      {
+        path: 'game-event-npcflag',
+        component: GameEventNpcflagComponent,
+        canActivate: [GameEventHandlerService],
+      },
+      {
+        path: 'game-event-model-equip',
+        component: GameEventModelEquipComponent,
+        canActivate: [GameEventHandlerService],
+      },
+      {
+        path: 'game-event-npc-vendor',
+        component: GameEventNpcVendorComponent,
+        canActivate: [GameEventHandlerService],
+      },
+      {
+        path: 'game-event-creature-quest',
+        component: GameEventCreatureQuestComponent,
+        canActivate: [GameEventHandlerService],
+      },
+      {
+        path: 'game-event-gameobject-quest',
+        component: GameEventGameobjectQuestComponent,
+        canActivate: [GameEventHandlerService],
+      },
+      {
+        path: 'game-event-seasonal-quest',
+        component: GameEventSeasonalQuestComponent,
+        canActivate: [GameEventHandlerService],
+      },
+      {
+        path: 'game-event-battleground-holiday',
+        component: GameEventBattlegroundHolidayComponent,
+        canActivate: [GameEventHandlerService],
+      },
+      {
+        path: 'game-event-arena-season',
+        component: GameEventArenaSeasonComponent,
+        canActivate: [GameEventHandlerService],
+      },
+      {
+        path: 'game-event-quest-condition',
+        component: GameEventQuestConditionComponent,
+        canActivate: [GameEventHandlerService],
+      },
+      {
+        path: 'game-event-condition',
+        component: GameEventConditionComponent,
+        canActivate: [GameEventHandlerService],
+      },
+    ],
+  },
+  {
+    path: 'disables',
+    children: [
+      {
+        path: 'disables',
+        component: DisablesComponent,
+        canActivate: [DisablesHandlerService],
+      },
+      {
+        path: 'select',
+        component: SelectDisablesComponent,
+      },
+    ],
+  },
+  {
+    path: 'area-triggers',
+    children: [
+      {
+        path: 'select',
+        component: SelectAreaTriggerComponent,
+      },
+      {
+        path: 'areatrigger-teleport',
+        component: AreatriggerTeleportComponent,
+        canActivate: [AreaTriggerHandlerService],
+      },
+      {
+        path: 'areatrigger-tavern',
+        component: AreatriggerTavernComponent,
+        canActivate: [AreaTriggerHandlerService],
+      },
+      {
+        path: 'areatrigger-involvedrelation',
+        component: AreatriggerInvolvedrelationComponent,
+        canActivate: [AreaTriggerHandlerService],
+      },
+      {
+        path: 'areatrigger-scripts',
+        component: AreatriggerScriptsComponent,
+        canActivate: [AreaTriggerHandlerService],
+      },
+      {
+        path: 'areatrigger',
+        component: AreatriggerComponent,
+        canActivate: [AreaTriggerHandlerService],
+      },
+    ],
+  },
+  {
+    path: 'db-scripts',
+    children: [
+      {
+        path: 'select-event-scripts',
+        component: SelectEventScriptsComponent,
+      },
+      {
+        path: 'event-scripts',
+        component: EventScriptsComponent,
+        canActivate: [EventScriptsHandlerService],
+      },
+      {
+        path: 'select-spell-scripts',
+        component: SelectSpellScriptsComponent,
+      },
+      {
+        path: 'spell-scripts',
+        component: SpellScriptsComponent,
+        canActivate: [SpellScriptsHandlerService],
       },
     ],
   },
@@ -547,6 +1066,11 @@ export const KEIRA_ROUTES: Routes = [
         component: SelectTrainerComponent,
       },
       {
+        path: 'copy',
+        component: TrainerCopyComponent,
+        canActivate: [TrainerHandlerService],
+      },
+      {
         path: 'trainer',
         component: TrainerComponent,
         canActivate: [TrainerHandlerService],
@@ -561,5 +1085,17 @@ export const KEIRA_ROUTES: Routes = [
   {
     path: 'unused-guid-search',
     component: UnusedGuidSearchComponent,
+  },
+  {
+    path: 'settings',
+    component: SettingsComponent,
+  },
+  {
+    path: 'world-editor',
+    // kept alive in its tab while other parts of Keira are open (see KeepAliveRouteStrategy)
+    data: { keepAlive: true },
+    // Lazy: keeps Three.js and the game-data parsers out of the startup bundle.
+    loadComponent: () => import('@keira/features/world-editor').then((m) => m.WorldEditorComponent),
+    providers: [{ provide: WORLD_EDITOR_LINKS, useFactory: worldEditorLinks }],
   },
 ];

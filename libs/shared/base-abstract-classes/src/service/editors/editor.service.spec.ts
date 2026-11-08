@@ -6,7 +6,7 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { QueryError } from 'mysql2';
 import { ToastrService } from 'ngx-toastr';
-import { of, throwError } from 'rxjs';
+import { of, Subject, throwError } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { EditorService } from './editor.service';
@@ -37,6 +37,20 @@ describe('EditorService', () => {
   it('after creating, the fields should correctly set', () => {
     const { service } = setup();
     expect(service['fields']).toEqual(['id', 'guid', 'name']);
+  });
+
+  it('marks a number field left empty as a mistake, not a text field (#3236)', () => {
+    const { service } = setup();
+    const { guid, name } = service.form.controls;
+
+    guid.setValue(null as never);
+    expect(guid.errors).toEqual({ required: true });
+    guid.setValue('' as never);
+    expect(guid.invalid).toBe(true);
+    guid.setValue(0);
+    expect(guid.valid).toBe(true);
+    name.setValue('');
+    expect(name.valid).toBe(true);
   });
 
   describe('reload', () => {
@@ -121,8 +135,11 @@ describe('EditorService', () => {
       const { service, querySpy, reloadSpy, toastrSuccessSpy, toastrErrorSpy } = setupSave();
       service['_error'] = { code: 'some previous error', errno: 123 } as QueryError;
       querySpy.mockReturnValue(of('mock result' as any));
+      const saved: boolean[] = [];
+      service.saved.subscribe((ran) => saved.push(ran));
 
       service.save(mockChangeDetectorRef, query);
+      expect(saved).toEqual([true]);
 
       expect(querySpy).toHaveBeenCalledWith(query);
       expect(reloadSpy).toHaveBeenCalledWith(mockChangeDetectorRef, service.loadedEntityId);
@@ -135,8 +152,11 @@ describe('EditorService', () => {
     it('should correctly work when the query errors', () => {
       const { service, querySpy, reloadSpy, toastrSuccessSpy, toastrErrorSpy } = setupSave();
       querySpy.mockReturnValue(throwError(error));
+      const saved: boolean[] = [];
+      service.saved.subscribe((ran) => saved.push(ran));
 
       service.save(mockChangeDetectorRef, query);
+      expect(saved).toEqual([false]);
 
       expect(querySpy).toHaveBeenCalledWith(query);
       expect(reloadSpy).toHaveBeenCalledTimes(0);
@@ -144,6 +164,47 @@ describe('EditorService', () => {
       expect(toastrErrorSpy).toHaveBeenCalledTimes(1);
       expect(service.loading).toBe(false);
       expect(service.error).toEqual(error);
+    });
+  });
+
+  describe('when another tab takes the editor over meanwhile', () => {
+    it('drops the rows read for the earlier tab, and its error', () => {
+      const { service } = setup();
+      const answer = new Subject<MockEntity[]>();
+      vi.spyOn(TestBed.inject(MysqlQueryService), 'selectAll').mockReturnValue(answer as never);
+      const onReloadSuccessful = vi.spyOn<any>(service, 'onReloadSuccessful').mockImplementation(() => undefined);
+      service.reload(mockChangeDetectorRef, 1);
+      service['_tabGeneration']++;
+      answer.next([]);
+      expect(onReloadSuccessful).not.toHaveBeenCalled();
+      const failing = new Subject<MockEntity[]>();
+      vi.spyOn(TestBed.inject(MysqlQueryService), 'selectAll').mockReturnValue(failing as never);
+      service.reload(mockChangeDetectorRef, 1);
+      service['_tabGeneration']++;
+      failing.error(error);
+      expect(service.error).toBeUndefined();
+    });
+
+    it("tells the query ran or failed, and leaves the other tab's rows alone", () => {
+      const { service } = setup();
+      vi.spyOn(TestBed.inject(ToastrService), 'success').mockImplementation(() => undefined as never);
+      vi.spyOn(TestBed.inject(ToastrService), 'error').mockImplementation(() => undefined as never);
+      const reload = vi.spyOn(service, 'reload').mockImplementation(() => undefined);
+      const saved: boolean[] = [];
+      service.saved.subscribe((ran) => saved.push(ran));
+      const ran = new Subject<MockEntity[]>();
+      vi.spyOn(TestBed.inject(MysqlQueryService), 'query').mockReturnValue(ran as never);
+      service.save(mockChangeDetectorRef, '-- q');
+      service['_tabGeneration']++;
+      ran.next([]);
+      expect(reload).not.toHaveBeenCalled();
+      const failed = new Subject<MockEntity[]>();
+      vi.spyOn(TestBed.inject(MysqlQueryService), 'query').mockReturnValue(failed as never);
+      service.save(mockChangeDetectorRef, '-- q');
+      service['_tabGeneration']++;
+      failed.error(error);
+      expect(service.error).toBeUndefined();
+      expect(saved).toEqual([true, false]);
     });
   });
 });

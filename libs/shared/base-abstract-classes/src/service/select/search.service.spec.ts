@@ -1,3 +1,4 @@
+import { EditorSettingsService } from '@keira/shared/common-services';
 import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { inject, Service, provideZonelessChangeDetection } from '@angular/core';
@@ -52,7 +53,10 @@ describe('SearchService', () => {
       const { service, spy } = setupQueryFormChanged();
       service.queryForm.controls.limit?.setValue(123);
 
-      expect(spy).toHaveBeenCalledWith(service['entityTable'], service.queryForm.getRawValue(), undefined, undefined, undefined);
+      expect(spy).toHaveBeenCalledWith(service['entityTable'], service.queryForm.getRawValue(), undefined, undefined, undefined, {
+        numbers: false,
+        names: false,
+      });
       expect(service.query).toEqual(newQuery);
     });
 
@@ -80,6 +84,54 @@ describe('SearchService', () => {
     expect(service.rows).toEqual(newRows as any);
   });
 
+  it('follows Settings > Editors as they change (row limit, exact matching), without a restart', () => {
+    const { service } = setup();
+    const settings = TestBed.inject(EditorSettingsService);
+    const before = settings.settings();
+    const build = vi.spyOn(TestBed.inject(MysqlQueryService), 'getSearchQuery').mockReturnValue(newQuery);
+
+    settings.saveSearch(service['entityTable'], { limit: 7, exactNumbers: true });
+
+    expect(service.queryForm.controls.limit?.value).toBe(7);
+    expect(build).toHaveBeenLastCalledWith(service['entityTable'], expect.objectContaining({ limit: 7 }), undefined, undefined, undefined, {
+      numbers: true,
+      names: false,
+    });
+    expect(service.query).toBe(newQuery);
+    settings.save(before);
+    localStorage.clear();
+  });
+
+  describe('searchExact() (#3245)', () => {
+    it('shows the rows having exactly the value, in the form too, the rest of the form cleared', () => {
+      const { service } = setup();
+      service.fields.controls.name.setValue('Sword');
+      const build = vi.spyOn(TestBed.inject(MysqlQueryService), 'getSearchQuery').mockReturnValue(newQuery);
+      const run = vi.spyOn(TestBed.inject(MysqlQueryService), 'query').mockReturnValue(of([{ entry: 25 }]));
+
+      service.searchExact('entry', 25, mockChangeDetectorRef);
+
+      expect(build).toHaveBeenCalledWith(service['entityTable'], expect.anything(), undefined, undefined, undefined, {
+        numbers: true,
+        names: false,
+      });
+      expect((build.mock.calls.at(-2)?.[1] as { fields: { entry: number } }).fields.entry).toBe(25);
+      expect(run).toHaveBeenCalledWith(newQuery);
+      expect(service.rows).toEqual([{ entry: 25 }] as never);
+      expect(service.fields.getRawValue()).toEqual(expect.objectContaining({ entry: null, name: null }));
+      expect(service.query).toEqual(newQuery);
+    });
+
+    it('does nothing for a field the search does not have', () => {
+      const { service } = setup();
+      const run = vi.spyOn(TestBed.inject(MysqlQueryService), 'query');
+
+      service.searchExact('nope', 25, mockChangeDetectorRef);
+
+      expect(run).not.toHaveBeenCalled();
+    });
+  });
+
   describe('when the sub-class supplies orderFields', () => {
     @Service()
     class TestOrderedSearchService extends SearchService<ItemTemplate> {
@@ -98,7 +150,10 @@ describe('SearchService', () => {
 
       const service = TestBed.inject(TestOrderedSearchService);
 
-      expect(spy).toHaveBeenCalledWith(service['entityTable'], service.queryForm.getRawValue(), undefined, undefined, ['entry']);
+      expect(spy).toHaveBeenCalledWith(service['entityTable'], service.queryForm.getRawValue(), undefined, undefined, ['entry'], {
+        numbers: false,
+        names: false,
+      });
       expect(service.query).toEqual(newQuery);
     });
   });

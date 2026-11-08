@@ -1,4 +1,9 @@
-<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
+<keira-top-bar
+  [selected]="handlerService.selected"
+  [handler]="handlerService"
+  [selectedName]="handlerService.selectedName"
+  [isNew]="handlerService.isNew"
+/>
 
 <div class="container-fluid">
   @if (editorService.loading) {
@@ -76,9 +81,9 @@
               </ngx-datatable-column>
               <ngx-datatable-column name="Idx" prop="Idx" [minWidth]="80" [maxWidth]="120" />
               <ngx-datatable-column name="ItemId" prop="ItemId" [maxWidth]="150" />
-              <ngx-datatable-column name="Name" [minWidth]="200">
+              <ngx-datatable-column name="Name" prop="ItemId" [minWidth]="200" [comparator]="itemNames.compare">
                 <ng-template let-row="row" ngx-datatable-cell-template>
-                  {{ editorService.queryService.getItemNameById(row.ItemId) | async }}
+                  {{ itemNames.name(row.ItemId) }}
                 </ng-template>
               </ngx-datatable-column>
             </ngx-datatable>

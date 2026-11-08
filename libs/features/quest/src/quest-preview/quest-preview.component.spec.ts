@@ -330,6 +330,37 @@ describe('QuestPreviewComponent', () => {
     fixture.debugElement.nativeElement.remove();
   });
 
+  it('should show the experience at the level picked (#662)', async () => {
+    const { fixture, service, page } = setup();
+    const questTemplate = createMockObject({ RewardXPDifficulty: 2, QuestLevel: 10 }, QuestTemplate);
+    vi.spyOn(service, 'rewardXP$', 'get').mockReturnValue(Promise.resolve('200'));
+    vi.spyOn(service, 'questTemplate', 'get').mockReturnValue(questTemplate);
+    let answer: ((xp: number) => void) | undefined;
+    const rewardXPAt = vi
+      .spyOn(service, 'rewardXPAt')
+      .mockImplementation((level) => (level === 20 ? new Promise((resolve) => (answer = resolve)) : Promise.resolve(level * 10)));
+
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(rewardXPAt).toHaveBeenCalledWith(80);
+    expect(page.query('#xp-at-level').textContent).toContain('800 experience');
+
+    const slider = page.query<HTMLInputElement>('#xp-player-level');
+    slider.value = '20';
+    slider.dispatchEvent(new Event('input'));
+    slider.value = '30';
+    slider.dispatchEvent(new Event('input'));
+    await fixture.whenStable();
+    answer?.(1);
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(page.query('#rewardXPAtLevel').textContent).toContain('At level 30');
+    expect(page.query('#xp-at-level').textContent).toContain('300 experience');
+    fixture.debugElement.nativeElement.remove();
+  });
+
   it('should show RewardTalents', () => {
     const { fixture, page, service } = setup();
     const questTemplate = createMockObject({ RewardTalents: 2 }, QuestTemplate);
@@ -429,7 +460,7 @@ describe('QuestPreviewComponent', () => {
     const questTemplate = createMockObject({ RequiredFactionId1: 1, RequiredFactionValue1: 900 }, QuestTemplate);
     vi.spyOn(service, 'getFactionByValue').mockReturnValue('(Neutral)');
     vi.spyOn(service, 'questTemplate', 'get').mockReturnValue(questTemplate);
-    vi.spyOn(sqliteQueryService, 'getFactionNameById').mockReturnValue(Promise.resolve('Mock Faction'));
+    vi.spyOn(sqliteQueryService, 'getFactionNameByNameId').mockReturnValue(Promise.resolve('Mock Faction'));
 
     fixture.detectChanges();
     await fixture.whenStable();
@@ -463,7 +494,10 @@ describe('QuestPreviewComponent', () => {
     });
 
     it('should correctly toggle', () => {
-      const { fixture, page } = setup();
+      const { fixture, page, service } = setup();
+      vi.spyOn(service, 'descriptionText', 'get').mockReturnValue('d');
+      vi.spyOn(service, 'completionText', 'get').mockReturnValue('p');
+      vi.spyOn(service, 'rewardText', 'get').mockReturnValue('r');
 
       fixture.detectChanges();
 
@@ -484,6 +518,34 @@ describe('QuestPreviewComponent', () => {
       page.clickElement(page.completionToggle);
       page.expectNotCollapsed(page.completionToggle);
 
+      page.removeNativeElement();
+    });
+
+    it('hides the empty texts, shows the suggested players and writes the texts for a sample player (#3133)', () => {
+      localStorage.clear();
+      const { fixture, service, page } = setup();
+      const questTemplate = createMockObject(
+        { QuestDescription: 'Hello $N, $r $C. $gBrother:Sister;!', SuggestedGroupNum: 3 },
+        QuestTemplate,
+      );
+      vi.spyOn(service, 'questTemplate', 'get').mockReturnValue(questTemplate);
+      vi.spyOn(service, 'questRequestItems', 'get').mockReturnValue(createMockObject({ CompletionText: '' }, QuestRequestItems));
+      vi.spyOn(service, 'questOfferReward', 'get').mockReturnValue(createMockObject({ RewardText: '' }, QuestOfferReward));
+      fixture.detectChanges();
+
+      expect(page.query('#suggested-players').textContent).toContain('Suggested players: 3');
+      expect(page.query('#progress-text', false)).toBeFalsy();
+      expect(page.query('#completion-text', false)).toBeFalsy();
+      expect(page.descriptionText.textContent).toContain('Hello $N');
+
+      page.clickElement(page.query<HTMLInputElement>('#text-sample-switch'));
+      fixture.detectChanges();
+      expect(page.descriptionText.textContent).toContain('Hello Drok, Orc Warrior. Brother!');
+      expect(localStorage.getItem('keira3.questPreviewSample')).toBe('1');
+
+      page.clickElement(page.query<HTMLInputElement>('#text-sample-switch'));
+      fixture.detectChanges();
+      expect(page.descriptionText.textContent).toContain('Hello $N');
       page.removeNativeElement();
     });
 

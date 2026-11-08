@@ -1,4 +1,9 @@
-<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
+<keira-top-bar
+  [selected]="handlerService.selected"
+  [handler]="handlerService"
+  [selectedName]="handlerService.selectedName"
+  [isNew]="handlerService.isNew"
+/>
 
 <div class="container-fluid editor-with-preview" [class.show-preview]="questPreviewService.showPreview">
   @if (editorService.loading) {
@@ -64,9 +69,9 @@
                 </ng-template>
               </ngx-datatable-column>
               <ngx-datatable-column name="id" prop="id" [minWidth]="80" [maxWidth]="150" />
-              <ngx-datatable-column name="Name" [minWidth]="200">
+              <ngx-datatable-column name="Name" prop="id" [minWidth]="200" [comparator]="names.compare">
                 <ng-template let-row="row" ngx-datatable-cell-template>
-                  {{ editorService.queryService.getGameObjectNameById(row.id) | async }}
+                  {{ names.name(row.id) }}
                 </ng-template>
               </ngx-datatable-column>
             </ngx-datatable>

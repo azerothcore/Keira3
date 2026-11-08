@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CreatureText, EMOTE, TEXT_RANGE, TEXT_TYPE } from '@keira/shared/acore-world-model';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
@@ -38,4 +38,11 @@ export class CreatureTextComponent extends MultiRowEditorComponent<CreatureText>
 
   protected override readonly editorService = inject(CreatureTextService);
   protected override readonly handlerService = inject(CreatureHandlerService);
+
+  /** Why the Text couldn't be read from the broadcast_text (an i18n key), or ''. */
+  protected readonly textProblem = signal('');
+
+  protected async textFromBroadcastText(): Promise<void> {
+    this.textProblem.set(await this.editorService.textFromBroadcastText());
+  }
 }

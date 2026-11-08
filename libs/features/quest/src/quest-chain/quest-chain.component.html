@@ -1,4 +1,9 @@
-<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
+<keira-top-bar
+  [selected]="handlerService.selected"
+  [handler]="handlerService"
+  [selectedName]="handlerService.selectedName"
+  [isNew]="handlerService.isNew"
+/>
 
 <div class="container-fluid">
   <div class="content-block quest-chain">
@@ -73,6 +78,13 @@
                 <text class="qc-node__title" x="10" y="22">{{ shortLabel(node) }}</text>
                 <text class="qc-node__id" x="10" y="40">[{{ node.id }}]</text>
 
+                @if (!node.missing) {
+                  <g class="qc-edit" [attr.transform]="'translate(' + (NODE_WIDTH - 20) + ',4)'" (click)="editLinks(node, $event)">
+                    <title>{{ 'QUEST.CHAIN.LINKS_EDIT' | translate }}</title>
+                    <rect width="16" height="15" rx="4" />
+                    <text x="8" y="11">✎</text>
+                  </g>
+                }
                 @if (node.conditionCount > 0) {
                   <g class="qc-cond" [attr.transform]="'translate(' + (NODE_WIDTH - 34) + ',30)'" (click)="openConditions(node, $event)">
                     <title>{{ 'QUEST.CHAIN.CONDITIONS_TOOLTIP' | translate: { count: node.conditionCount } }}</title>
@@ -87,4 +99,7 @@
       </div>
     }
   </div>
+  @if (!loading() && editedQuest().id > 0) {
+    <keira-quest-chain-links [questId]="editedQuest().id" [title]="editedQuest().title" (changed)="load()" />
+  }
 </div>

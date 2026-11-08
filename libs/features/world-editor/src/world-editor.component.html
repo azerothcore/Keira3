@@ -1,0 +1,3893 @@
+<div #root class="world-editor container-fluid" [class.fullscreen]="fullscreen()">
+  <keira-eden-menu-bar [pending]="changeList().length" [canUndo]="canUndo()" [canRedo]="canRedo()" (action)="onEdenAction($event)" />
+  <div class="world-editor-toolbar eden-toolbar d-flex flex-wrap align-items-center gap-1 mb-1">
+    <div class="map-picker">
+      <input
+        #mapInput
+        class="form-control form-control-sm map-select"
+        data-testid="map-search"
+        [value]="mapSearch() ?? currentMapLabel()"
+        [placeholder]="'WORLD_EDITOR.MAP_SEARCH' | translate"
+        (focus)="openMapPicker()"
+        (input)="mapSearch.set($any($event.target).value)"
+        (keydown.enter)="pickFirstMap(); mapInput.blur()"
+        (keydown.escape)="mapSearch.set(undefined); $any($event.target).blur()"
+        (blur)="mapSearch.set(undefined)"
+      />
+      @if (mapSearch() !== undefined) {
+        <div #mapList class="list-group map-picker-list" data-testid="map-options">
+          <div class="map-picker-sort" [attr.data-testid]="'map-sort'">
+            <small class="text-muted">{{ 'WORLD_EDITOR.SORT' | translate }}</small>
+            @for (key of mapSortKeys; track key) {
+              @let state = sortState(mapSort(), key);
+              <button
+                type="button"
+                class="btn btn-sm py-0 px-1"
+                [class.btn-secondary]="state"
+                [class.btn-outline-secondary]="!state"
+                [attr.data-testid]="'map-sort-' + key"
+                (mousedown)="$event.preventDefault(); toggleMapSort(key)"
+              >
+                {{ 'WORLD_EDITOR.SORT_' + key.toUpperCase() | translate }}
+                @if (state) {
+                  {{ state.desc ? '▼' : '▲' }}
+                  @if (mapSort().length > 1) {
+                    <sup>{{ state.at }}</sup>
+                  }
+                }
+              </button>
+            }
+            <button
+              type="button"
+              class="btn btn-sm btn-link py-0 px-1 ms-auto"
+              [attr.data-testid]="'map-sort-save'"
+              [title]="'WORLD_EDITOR.SORT_SAVE' | translate"
+              (mousedown)="$event.preventDefault(); saveSortPreference()"
+            >
+              <i class="fa fa-thumbtack"></i>
+            </button>
+          </div>
+          @for (map of filteredMaps(); track map.id) {
+            <button
+              type="button"
+              class="list-group-item list-group-item-action py-1 map-expansion"
+              [class]="'map-expansion-' + map.expansion"
+              [class.active]="map.id === mapId()"
+              [attr.data-testid]="'map-option-' + map.id"
+              [title]="expansions[map.expansion ?? -1] ?? ''"
+              (mousedown)="$event.preventDefault(); pickMap(map.id); mapInput.blur()"
+            >
+              @let kind = mapKind(map);
+              <span class="d-flex align-items-center gap-2">
+                <span class="flex-grow-1 text-truncate">{{ map.id }} – {{ map.name }}</span>
+                <span class="badge map-kind" [class]="'map-kind-' + kind" [attr.data-testid]="'map-kind-' + map.id">{{
+                  'WORLD_EDITOR.MAP_KIND_' + kind.toUpperCase() | translate
+                }}</span>
+              </span>
+            </button>
+          } @empty {
+            <div class="list-group-item py-1 text-muted">{{ 'WORLD_EDITOR.NO_RESULTS' | translate }}</div>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="map-picker zone-picker">
+      <input
+        #zoneInput
+        class="form-control form-control-sm zone-select"
+        data-testid="zone-search"
+        [value]="zoneSearch() ?? currentZoneLabel()"
+        [placeholder]="('WORLD_EDITOR.ZONE' | translate) + '…'"
+        [disabled]="zones().length === 0"
+        (focus)="zoneSearch.set('')"
+        (input)="zoneSearch.set($any($event.target).value)"
+        (keydown.enter)="pickFirstZone(); zoneInput.blur()"
+        (keydown.escape)="zoneSearch.set(undefined); $any($event.target).blur()"
+        (blur)="zoneSearch.set(undefined)"
+      />
+      @if (zoneSearch() !== undefined) {
+        <div class="list-group map-picker-list" data-testid="zone-options">
+          <div class="map-picker-sort" [attr.data-testid]="'zone-sort'">
+            <small class="text-muted">{{ 'WORLD_EDITOR.SORT' | translate }}</small>
+            @for (key of zoneSortKeys; track key) {
+              @let state = sortState(zoneSort(), key);
+              <button
+                type="button"
+                class="btn btn-sm py-0 px-1"
+                [class.btn-secondary]="state"
+                [class.btn-outline-secondary]="!state"
+                [attr.data-testid]="'zone-sort-' + key"
+                (mousedown)="$event.preventDefault(); toggleZoneSort(key)"
+              >
+                {{ 'WORLD_EDITOR.SORT_' + key.toUpperCase() | translate }}
+                @if (state) {
+                  {{ state.desc ? '▼' : '▲' }}
+                  @if (zoneSort().length > 1) {
+                    <sup>{{ state.at }}</sup>
+                  }
+                }
+              </button>
+            }
+            <button
+              type="button"
+              class="btn btn-sm btn-link py-0 px-1 ms-auto"
+              [attr.data-testid]="'zone-sort-save'"
+              [title]="'WORLD_EDITOR.SORT_SAVE' | translate"
+              (mousedown)="$event.preventDefault(); saveSortPreference()"
+            >
+              <i class="fa fa-thumbtack"></i>
+            </button>
+          </div>
+          <button
+            type="button"
+            class="list-group-item list-group-item-action py-1 text-muted"
+            data-testid="zone-option-0"
+            (mousedown)="$event.preventDefault(); pickZone(0); zoneInput.blur()"
+          >
+            {{ 'WORLD_EDITOR.ZONE_NONE' | translate }}
+          </button>
+          @for (zone of filteredZones(); track zone.areaId) {
+            <button
+              type="button"
+              class="list-group-item list-group-item-action py-1"
+              [class.active]="zone.areaId === zoneId()"
+              [attr.data-testid]="'zone-option-' + zone.areaId"
+              (mousedown)="$event.preventDefault(); pickZone(zone.areaId); zoneInput.blur()"
+            >
+              {{ zone.areaId }} – {{ zone.name }}
+            </button>
+          } @empty {
+            <div class="list-group-item py-1 text-muted">{{ 'WORLD_EDITOR.NO_RESULTS' | translate }}</div>
+          }
+        </div>
+      }
+    </div>
+
+    <ng-container [ngTemplateOutlet]="mapButtonsTemplate" />
+    <span class="eden-sep"></span>
+    <div class="btn-group btn-group-sm" role="group">
+      <button
+        type="button"
+        class="btn btn-outline-secondary"
+        data-testid="undo"
+        [title]="'WORLD_EDITOR.UNDO' | translate"
+        [disabled]="!canUndo()"
+        (click)="undo()"
+      >
+        <i class="fa fa-undo"></i>
+      </button>
+      <button
+        type="button"
+        class="btn btn-outline-secondary"
+        data-testid="redo"
+        [title]="'WORLD_EDITOR.REDO' | translate"
+        [disabled]="!canRedo()"
+        (click)="redo()"
+      >
+        <i class="fa fa-redo"></i>
+      </button>
+    </div>
+    <span class="eden-sep"></span>
+    <div class="btn-group btn-group-sm" role="group" data-testid="eden-tools">
+      @for (option of TOOL_ICONS; track option.tool) {
+        <button
+          type="button"
+          class="btn"
+          [attr.data-testid]="'tool-' + option.tool"
+          [class.btn-primary]="tool() === option.tool"
+          [class.btn-outline-primary]="tool() !== option.tool"
+          [disabled]="option.tool === 'probe' && missing('serverData')"
+          [title]="
+            option.tool === 'probe' && missing('serverData')
+              ? ('WORLD_EDITOR.NEEDS_SERVER_DATA' | translate)
+              : ('WORLD_EDITOR.TOOL.' + option.tool | translate)
+          "
+          (click)="setTool(option.tool)"
+        >
+          <i class="fa" [class]="option.icon"></i>
+        </button>
+      }
+    </div>
+    <span class="eden-sep"></span>
+    <div class="btn-group btn-group-sm" role="group" data-testid="eden-widget">
+      @for (option of WIDGET_ICONS; track option.mode) {
+        <button
+          type="button"
+          class="btn"
+          [attr.data-testid]="'gizmo-' + option.mode"
+          [class.btn-secondary]="gizmoMode() === option.mode"
+          [class.btn-outline-secondary]="gizmoMode() !== option.mode"
+          [title]="option.label | translate"
+          (click)="setGizmoMode(option.mode)"
+        >
+          <i class="fa" [class]="option.icon"></i>
+        </button>
+      }
+      <button
+        type="button"
+        class="btn btn-outline-secondary"
+        data-testid="gizmo-space"
+        [title]="(transform().space === 'local' ? 'WORLD_EDITOR.EDEN.SPACE_LOCAL' : 'WORLD_EDITOR.EDEN.SPACE_WORLD') | translate"
+        (click)="setTransform({ space: transform().space === 'local' ? 'world' : 'local' })"
+      >
+        <i class="fa" [class]="transform().space === 'local' ? 'fa-cube' : 'fa-globe'"></i>
+      </button>
+    </div>
+    <div class="d-flex gap-1 align-items-center" data-testid="eden-grids">
+      <button
+        type="button"
+        class="btn btn-sm"
+        data-testid="grid-move"
+        [class.btn-secondary]="transform().moveGrid"
+        [class.btn-outline-secondary]="!transform().moveGrid"
+        [title]="'WORLD_EDITOR.EDEN.MOVE_GRID' | translate"
+        (click)="setTransform({ moveGrid: !transform().moveGrid })"
+      >
+        <i class="fa fa-border-all"></i>
+      </button>
+      <select
+        class="form-select form-select-sm grid-size"
+        data-testid="grid-move-size"
+        [title]="'WORLD_EDITOR.EDEN.MOVE_GRID' | translate"
+        (change)="setTransform({ moveSize: +$any($event.target).value, moveGrid: true })"
+      >
+        @for (size of MOVE_GRID_SIZES; track size) {
+          <option [value]="size" [selected]="size === transform().moveSize">{{ size }} yd</option>
+        }
+      </select>
+      <button
+        type="button"
+        class="btn btn-sm"
+        data-testid="grid-rotate"
+        [class.btn-secondary]="transform().rotateGrid"
+        [class.btn-outline-secondary]="!transform().rotateGrid"
+        [title]="'WORLD_EDITOR.EDEN.ROTATE_GRID' | translate"
+        (click)="setTransform({ rotateGrid: !transform().rotateGrid })"
+      >
+        <i class="fa fa-circle-notch"></i>
+      </button>
+      <select
+        class="form-select form-select-sm grid-size"
+        data-testid="grid-rotate-size"
+        [title]="'WORLD_EDITOR.EDEN.ROTATE_GRID' | translate"
+        (change)="setTransform({ rotateSize: +$any($event.target).value, rotateGrid: true })"
+      >
+        @for (size of ROTATE_GRID_SIZES; track size) {
+          <option [value]="size" [selected]="size === transform().rotateSize">{{ size }}°</option>
+        }
+      </select>
+      <select
+        id="world-editor-snap"
+        class="form-select form-select-sm grid-size"
+        data-testid="snap-mode"
+        [title]="'WORLD_EDITOR.SNAP_TO' | translate"
+        (change)="setSnapMode($event)"
+      >
+        @for (mode of ['ground', 'water', 'wall', 'off']; track mode) {
+          <option [value]="mode" [selected]="mode === snapMode()">
+            {{ 'WORLD_EDITOR.SNAP_' + mode.toUpperCase() | translate }}
+          </option>
+        }
+      </select>
+    </div>
+    <span class="eden-sep"></span>
+    <form class="d-flex gap-1 goto-form" [formGroup]="goToForm" (ngSubmit)="goToCoordinates()">
+      <input
+        type="number"
+        class="form-control form-control-sm"
+        data-testid="goto-x"
+        formControlName="x"
+        (paste)="onPasteLocation($event)"
+        placeholder="X"
+      />
+      <input
+        type="number"
+        class="form-control form-control-sm"
+        data-testid="goto-y"
+        formControlName="y"
+        (paste)="onPasteLocation($event)"
+        placeholder="Y"
+      />
+      <input
+        type="number"
+        class="form-control form-control-sm"
+        data-testid="goto-z"
+        formControlName="z"
+        (paste)="onPasteLocation($event)"
+        placeholder="Z"
+      />
+      <button type="submit" class="btn btn-sm btn-secondary" data-testid="goto-btn">{{ 'WORLD_EDITOR.GO_TO' | translate }}</button>
+    </form>
+    <form class="d-flex gap-1 tele-form" (submit)="$event.preventDefault(); searchTele()">
+      <input
+        class="form-control form-control-sm"
+        data-testid="tele-search"
+        (paste)="onPasteLocation($event)"
+        [formControl]="teleSearch"
+        [placeholder]="'WORLD_EDITOR.TELEPORT_PLACEHOLDER' | translate"
+        [title]="'WORLD_EDITOR.TELEPORT_HELP' | translate"
+        (keydown.escape)="closeTeleSearch(); $any($event.target).blur()"
+        (blur)="teleResults.set([])"
+      />
+      <button type="submit" class="btn btn-sm btn-secondary" data-testid="tele-search-btn"><i class="fa fa-search"></i></button>
+      <!-- over the view, not pushing it down (which resized the view at every key typed) -->
+      @if (teleResults().length) {
+        <div class="list-group map-picker-list tele-results" data-testid="tele-results">
+          @for (tele of teleResults(); track tele.id) {
+            <button
+              type="button"
+              class="list-group-item list-group-item-action py-1"
+              [attr.data-testid]="'tele-' + tele.id"
+              (mousedown)="$event.preventDefault()"
+              (click)="goToTele(tele)"
+            >
+              {{ tele.name }} <small class="text-muted">({{ mapLabel(+tele.map) }})</small>
+            </button>
+          }
+        </div>
+      }
+    </form>
+    <span class="eden-sep"></span>
+    <ng-container [ngTemplateOutlet]="panelButtonsTemplate" />
+    <div class="ms-auto d-flex align-items-center gap-1">
+      <div class="position-relative">
+        <button
+          type="button"
+          class="btn btn-sm"
+          data-testid="layers-toggle"
+          [class.btn-secondary]="layersOpen()"
+          [class.btn-outline-secondary]="!layersOpen()"
+          [title]="'WORLD_EDITOR.EDEN.LAYERS' | translate"
+          (click)="layersOpen.set(!layersOpen())"
+        >
+          <i class="fa fa-layer-group"></i>
+        </button>
+        <div class="eden-layers card p-2" [hidden]="!layersOpen()">
+          <ng-container [ngTemplateOutlet]="layerSwitchesTemplate" />
+        </div>
+      </div>
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-secondary"
+        data-testid="fullscreen-toggle"
+        [title]="'WORLD_EDITOR.FULLSCREEN' | translate"
+        (click)="toggleFullscreen()"
+      >
+        <i class="fa" [class.fa-expand]="!fullscreen()" [class.fa-compress]="fullscreen()"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="world-editor-body">
+    @if (showTree()) {
+      <keira-spawn-tree
+        class="world-editor-tree"
+        [spawns]="spawns()"
+        [zones]="zones()"
+        [hidden]="treeHidden()"
+        [selectedKey]="selectedKey()"
+        (hiddenChange)="treeHidden.set($event)"
+        (picked)="pickFromTree($event.spawn, $event.snap)"
+        (closed)="showTree.set(false)"
+      />
+    }
+    <button
+      type="button"
+      class="btn btn-sm btn-secondary world-editor-panel-toggle"
+      data-testid="panel-toggle"
+      [class.collapsed]="panelCollapsed()"
+      [title]="(panelCollapsed() ? 'WORLD_EDITOR.PANEL_SHOW' : 'WORLD_EDITOR.PANEL_HIDE') | translate"
+      (click)="panelCollapsed.set(!panelCollapsed())"
+    >
+      <i class="fa" [class.fa-angles-left]="panelCollapsed()" [class.fa-angles-right]="!panelCollapsed()"></i>
+    </button>
+    <div
+      #view
+      class="world-editor-view"
+      [class.view-fullscreen]="viewFullscreen()"
+      (pointerdown)="onViewInput($event)"
+      (wheel)="onViewInput($event)"
+    >
+      <keira-world-viewer
+        [mapDirectory]="mapDirectory()"
+        [spawns]="worldSpawns()"
+        [paths]="inGameView() ? [] : worldPaths()"
+        [selectedKey]="selectedKey()"
+        [editableKey]="editableKey()"
+        [gizmoMode]="gizmoMode()"
+        [gizmoSpace]="transform().space"
+        [gizmoGrid]="gizmoGrid()"
+        (cursorMoved)="cursor.set($event)"
+        [snapToGround]="snapToGround()"
+        [snapToWall]="snapToWall()"
+        [snapToWater]="snapToWater()"
+        [groundOnly]="tool() !== 'select'"
+        [renderSettings]="viewSettings()"
+        [navigation]="controls.settings()"
+        [markerLookAt]="markerLookAt()"
+        [placePreview]="placePreview()"
+        [region]="region()"
+        [focus]="focus()"
+        [pathEnds]="inGameView() ? undefined : pathEnds()"
+        [tags]="inGameView() ? [] : worldTags()"
+        [worldStyle]="styles.style()"
+        [resetNorth]="resetNorthRequest()"
+        [topView]="topViewRequest()"
+        (topViewChanged)="inTopView.set($event)"
+        (picked)="onPicked($event)"
+        (objectMoved)="onObjectMoved($event)"
+        (centerChanged)="onCenterChanged($event)"
+        (contextRequested)="onContextRequested($event)"
+        (speedChanged)="controls.setSpeed($event)"
+        (probed)="probeResult.set($event)"
+        (navMeshTileChanged)="onNavMeshTile($event)"
+        [navMeshRebuild]="navMeshRebuild()"
+        [hideRealNavMesh]="hideRealNavMesh()"
+        (navMeshRebuilt)="navMeshRebuildState.set($event)"
+        [waypointCheck]="waypointCheckRequest()"
+        (waypointsChecked)="waypointChecks.set($event)"
+        (collisionSourceChanged)="collisionSource.set($event)"
+        [groundQuery]="groundQuery()"
+        (groundHeights)="onGroundHeights($event)"
+        [links]="inGameView() ? [] : worldLinks()"
+        [groupKeys]="groupKeys()"
+        [simulation]="simulation()"
+        (simulationEnded)="simulationEnded.set(true)"
+        [simulationRate]="simulationRate()"
+        [markers]="inGameView() ? [] : worldMarkers()"
+        [probe]="probeRequest()"
+        [areaTriggers]="inGameView() ? [] : worldAreaTriggers()"
+        [boundaries]="inGameView() ? [] : worldBoundaries()"
+        [spawnsLoading]="loadingSpawns()"
+        [cameraPhase]="filters().phase"
+        [weather]="weather()"
+        (zoneChanged)="onZoneChanged($event)"
+        [buildings]="extraBuildings()"
+        (probeMoved)="onProbeMoved($event)"
+      />
+      <button
+        type="button"
+        class="btn btn-sm btn-dark world-editor-view-fullscreen"
+        data-testid="view-fullscreen"
+        [title]="'WORLD_EDITOR.VIEW_FULLSCREEN' | translate"
+        (click)="toggleViewFullscreen()"
+      >
+        <i class="fa" [class.fa-expand]="!viewFullscreen()" [class.fa-compress]="viewFullscreen()"></i>
+      </button>
+      @if (viewFullscreen()) {
+        <div class="world-editor-quick" data-testid="quick-menu">
+          @if (quickOpen()) {
+            <div class="card card-body p-1 world-editor-quick-bar" data-testid="quick-bar">
+              <div class="d-flex flex-wrap align-items-center gap-1">
+                <ng-container [ngTemplateOutlet]="mapButtonsTemplate" />
+                <ng-container [ngTemplateOutlet]="panelButtonsTemplate" />
+                <button type="button" class="btn btn-sm btn-link" data-testid="quick-more" (click)="quickMore.set(!quickMore())">
+                  {{ (quickMore() ? 'WORLD_EDITOR.SHOW_LESS' : 'WORLD_EDITOR.EXPAND_MORE') | translate }}
+                </button>
+              </div>
+              @if (quickMore()) {
+                <div class="d-flex flex-wrap align-items-center gap-3 mt-1" data-testid="quick-more-row">
+                  <ng-container [ngTemplateOutlet]="layerSwitchesTemplate" />
+                </div>
+              }
+            </div>
+          }
+          <button
+            type="button"
+            class="btn btn-sm btn-dark world-editor-quick-tab"
+            data-testid="quick-tab"
+            (click)="quickOpen.set(!quickOpen())"
+          >
+            <i class="fa" [class.fa-chevron-down]="!quickOpen()" [class.fa-chevron-up]="quickOpen()"></i>
+            {{ 'WORLD_EDITOR.MENU' | translate }}
+          </button>
+        </div>
+      }
+      <div class="btn-group btn-group-sm world-editor-resolution" role="group" [title]="'WORLD_EDITOR.RESOLUTION_HELP' | translate">
+        @for (scale of renderScales; track scale) {
+          <button
+            type="button"
+            class="btn"
+            [attr.data-testid]="'resolution-' + scale * 100"
+            [class.btn-light]="scale === renderSettings.settings().renderScale"
+            [class.btn-dark]="scale !== renderSettings.settings().renderScale"
+            (click)="setRenderScale(scale)"
+          >
+            {{ scale * 100 }}%
+          </button>
+        }
+      </div>
+      <div class="world-editor-panels">
+        @if (showFilters()) {
+          @let filter = filters();
+          <div class="card card-body mb-2 world-editor-filters py-2" data-testid="filters">
+            <div class="d-flex flex-row flex-wrap align-items-center gap-4">
+              <input
+                type="search"
+                class="form-control form-control-sm world-editor-filter-search"
+                data-testid="filter-search"
+                [placeholder]="'WORLD_EDITOR.FILTER_SEARCH' | translate"
+                [value]="filter.search"
+                (input)="setFilterSearch($event)"
+              />
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-filter-triggers"
+                  data-testid="filter-triggers"
+                  [checked]="filter.showTriggers"
+                  (change)="setFilterFlag('showTriggers', $event)"
+                />
+                <label class="form-check-label" for="world-editor-filter-triggers">{{ 'WORLD_EDITOR.SHOW_TRIGGERS' | translate }}</label>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-filter-phases"
+                  data-testid="filter-phases"
+                  [checked]="filter.onlyVisiblePhases"
+                  (change)="setFilterFlag('onlyVisiblePhases', $event)"
+                />
+                <label class="form-check-label" for="world-editor-filter-phases">{{ 'WORLD_EDITOR.ONLY_VISIBLE_PHASES' | translate }}</label
+                ><i
+                  class="fas fa-info-circle ms-1"
+                  placement="auto"
+                  container="body"
+                  [tooltip]="'WORLD_EDITOR.ONLY_VISIBLE_PHASES_HELP' | translate"
+                ></i>
+              </div>
+              <div class="d-flex align-items-center flex-wrap gap-1" data-testid="filter-phase">
+                <label for="world-editor-filter-phase" class="mb-0 text-nowrap">{{ 'WORLD_EDITOR.CAMERA_PHASE' | translate }}</label
+                ><i
+                  class="fas fa-info-circle me-1"
+                  placement="auto"
+                  container="body"
+                  [tooltip]="'WORLD_EDITOR.CAMERA_PHASE_HELP' | translate"
+                ></i>
+                <div class="btn-group btn-group-sm" role="group">
+                  @for (bit of phaseButtons; track bit) {
+                    <button
+                      type="button"
+                      class="btn btn-outline-secondary px-1 world-editor-phase-bit"
+                      [class.active]="phaseOn(bit)"
+                      [attr.data-testid]="'filter-phase-' + bit"
+                      (click)="togglePhase(bit)"
+                    >
+                      {{ bit }}
+                    </button>
+                  }
+                </div>
+                <input
+                  id="world-editor-filter-phase"
+                  type="number"
+                  min="1"
+                  class="form-control form-control-sm world-editor-phase-mask"
+                  data-testid="filter-phase-mask"
+                  [value]="filter.phase"
+                  (change)="setPhase($event)"
+                />
+                <small class="text-muted" data-testid="filter-phase-parts">= {{ phaseParts() }}</small>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-filter-selected-event"
+                  data-testid="filter-selected-event"
+                  [checked]="filter.showSelectedEvent"
+                  (change)="setFilterFlag('showSelectedEvent', $event)"
+                />
+                <label class="form-check-label" for="world-editor-filter-selected-event">{{
+                  'WORLD_EDITOR.SHOW_SELECTED_EVENT' | translate
+                }}</label
+                ><i
+                  class="fas fa-info-circle ms-1"
+                  placement="auto"
+                  container="body"
+                  [tooltip]="'WORLD_EDITOR.SHOW_SELECTED_EVENT_HELP' | translate"
+                ></i>
+              </div>
+            </div>
+
+            <div class="d-flex align-items-center gap-2 mt-2">
+              <strong>{{ 'WORLD_EDITOR.GAME_EVENTS' | translate }}</strong>
+              @if (events().length) {
+                <button type="button" class="btn btn-link btn-sm p-0" data-testid="events-all" (click)="setAllEvents(true)">
+                  {{ 'WORLD_EDITOR.SHOW_ALL' | translate }}
+                </button>
+                <button type="button" class="btn btn-link btn-sm p-0" data-testid="events-none" (click)="setAllEvents(false)">
+                  {{ 'WORLD_EDITOR.HIDE_ALL' | translate }}
+                </button>
+              }
+            </div>
+            @if (events().length) {
+              <div class="world-editor-events" data-testid="events">
+                @for (gameEvent of events(); track gameEvent.id) {
+                  <div class="form-check mb-0">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      [id]="'world-editor-event-' + gameEvent.id"
+                      [attr.data-testid]="'event-' + gameEvent.id"
+                      [checked]="filter.events.includes(gameEvent.id)"
+                      (change)="toggleEvent(gameEvent.id, $event)"
+                    />
+                    <label class="form-check-label" [for]="'world-editor-event-' + gameEvent.id">
+                      {{ gameEvent.name }} <small class="text-muted">({{ gameEvent.id }} · {{ gameEvent.spawns }})</small>
+                    </label>
+                  </div>
+                }
+              </div>
+            } @else {
+              <small class="text-muted" data-testid="no-events">{{ 'WORLD_EDITOR.NO_EVENTS' | translate }}</small>
+            }
+          </div>
+        }
+
+        @if (showControls()) {
+          @let bindings = controls.settings().bindings;
+          <div class="card card-body mb-2 py-2 world-editor-controls" data-testid="controls">
+            <div class="d-flex align-items-center gap-3 mb-1">
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-keyboard"
+                  data-testid="controls-navigation"
+                  [checked]="controls.settings().keyboardNavigation"
+                  (change)="setKeyboardNavigation($event)"
+                />
+                <label class="form-check-label" for="world-editor-keyboard">{{ 'WORLD_EDITOR.KEYBOARD_NAVIGATION' | translate }}</label>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-ask-delete"
+                  data-testid="controls-ask-delete"
+                  [checked]="askBeforeDelete()"
+                  (change)="setAskBeforeDelete($any($event.target).checked)"
+                />
+                <label class="form-check-label" for="world-editor-ask-delete">{{ 'WORLD_EDITOR.ASK_BEFORE_DELETE' | translate }}</label>
+              </div>
+              <small class="text-muted">{{ 'WORLD_EDITOR.CONTROLS_HINT' | translate }}</small>
+              <button type="button" class="btn btn-sm btn-link ms-auto" data-testid="controls-reset" (click)="controls.reset()">
+                {{ 'WORLD_EDITOR.RESET_KEYS' | translate }}
+              </button>
+            </div>
+            @if (capturing(); as action) {
+              <div class="alert alert-secondary py-2 px-2 mb-2 small" data-testid="capture">
+                <div class="d-flex align-items-center gap-2 mb-1">
+                  <strong>{{ 'WORLD_EDITOR.CONTROL_' + action.toUpperCase() | translate }}</strong>
+                  <span class="text-muted" data-testid="capture-hint">{{
+                    (pendingModifier() ? 'WORLD_EDITOR.CAPTURE_MODIFIER' : 'WORLD_EDITOR.CAPTURE_HINT') | translate
+                  }}</span>
+                  <button type="button" class="btn btn-sm btn-primary ms-auto" data-testid="capture-done" (click)="finishCapture()">
+                    {{ 'WORLD_EDITOR.DONE' | translate }}
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-secondary" data-testid="capture-cancel" (click)="cancelCapture()">
+                    {{ 'WORLD_EDITOR.CANCEL' | translate }}
+                  </button>
+                </div>
+                <div class="d-flex flex-wrap align-items-center gap-1">
+                  <span class="me-1">{{ 'WORLD_EDITOR.MOUSE_AND_WHEEL' | translate }}</span>
+                  @for (input of mouseInputs(); track input) {
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-secondary py-0 px-1"
+                      [attr.data-testid]="'capture-' + input"
+                      (click)="bindInput(input)"
+                    >
+                      {{ inputLabel(input) }}
+                    </button>
+                  }
+                </div>
+              </div>
+            }
+            <table class="table table-sm table-borderless align-middle mb-0">
+              @for (group of controlGroups; track group) {
+                <tbody>
+                  <tr>
+                    <th colspan="3" class="world-editor-control-group">
+                      {{ 'WORLD_EDITOR.CONTROL_GROUP_' + group.toUpperCase() | translate }}
+                    </th>
+                  </tr>
+                  @for (item of controlActions; track item.action) {
+                    @if (item.group === group) {
+                      <tr [attr.data-testid]="'control-' + item.action">
+                        <td>{{ 'WORLD_EDITOR.CONTROL_' + item.action.toUpperCase() | translate }}</td>
+                        <td>
+                          @for (input of bindings[item.action]; track input) {
+                            @let conflict = controls.conflict(item.action, input);
+                            <span
+                              class="badge world-editor-binding"
+                              [class.bg-danger]="conflict === 'clash'"
+                              [class.bg-warning]="conflict === 'shared'"
+                              [class.bg-secondary]="conflict === 'none'"
+                              [title]="
+                                conflict === 'none' ? '' : ('WORLD_EDITOR.' + (conflict === 'clash' ? 'CLASH' : 'SHARED') | translate)
+                              "
+                            >
+                              {{ inputLabel(input) }}
+                              <button
+                                type="button"
+                                class="btn-close btn-close-white"
+                                [attr.data-testid]="'unbind-' + item.action + '-' + input"
+                                [attr.aria-label]="'WORLD_EDITOR.REMOVE' | translate"
+                                (click)="controls.removeBinding(item.action, input)"
+                              ></button>
+                            </span>
+                          }
+                          <button
+                            type="button"
+                            class="btn btn-sm btn-outline-secondary world-editor-key"
+                            [attr.data-testid]="'bind-' + item.action"
+                            [class.active]="capturing() === item.action"
+                            (click)="startCapture(item.action)"
+                          >
+                            {{ (capturing() === item.action ? 'WORLD_EDITOR.PRESS_A_KEY' : 'WORLD_EDITOR.ADD_KEY') | translate }}
+                          </button>
+                        </td>
+                        <td class="text-end">
+                          <button
+                            type="button"
+                            class="btn btn-sm btn-link"
+                            [attr.data-testid]="'default-' + item.action"
+                            (click)="controls.resetAction(item.action)"
+                          >
+                            {{ 'WORLD_EDITOR.DEFAULT' | translate }}
+                          </button>
+                        </td>
+                      </tr>
+                    }
+                  }
+                </tbody>
+              }
+            </table>
+          </div>
+        }
+
+        @if (showView()) {
+          <div class="card card-body mb-2 world-editor-view-settings py-2" data-testid="view-settings">
+            <!-- (in columns, filled top to bottom: no gaps under short groups) -->
+            <div class="world-editor-view-columns">
+              <section class="world-editor-view-group" data-testid="view-group-toolbar">
+                <h6 class="world-editor-view-group-title">{{ 'WORLD_EDITOR.VIEW_TOOLBAR' | translate }}</h6>
+                <div class="d-flex align-items-center gap-1">
+                  <div class="btn-group btn-group-sm" role="group">
+                    @for (style of buttonStyles; track style) {
+                      <button
+                        type="button"
+                        class="btn py-0"
+                        [attr.data-testid]="'button-style-' + style"
+                        [class.btn-secondary]="buttonStyle() === style"
+                        [class.btn-outline-secondary]="buttonStyle() !== style"
+                        (click)="setButtonStyle(style)"
+                      >
+                        {{ 'WORLD_EDITOR.BUTTON_STYLE_' + style.toUpperCase() | translate }}
+                      </button>
+                    }
+                  </div>
+                  <i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.BUTTON_STYLE_HELP' | translate"
+                  ></i>
+                </div>
+              </section>
+              <section class="world-editor-view-group" data-testid="view-group-overlays">
+                <h6 class="world-editor-view-group-title">{{ 'WORLD_EDITOR.VIEW_OVERLAYS' | translate }}</h6>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-in-game"
+                    data-testid="view-in-game"
+                    [checked]="inGameView()"
+                    (change)="inGameView.set($any($event.target).checked)"
+                  />
+                  <label class="form-check-label" for="world-editor-in-game">{{ 'WORLD_EDITOR.IN_GAME_VIEW' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.IN_GAME_VIEW_HELP' | translate"
+                  ></i>
+                </div>
+                @for (layer of overlaySwitches; track layer.key) {
+                  @let unavailable = missing(layer.requires);
+                  <div class="form-check form-switch mb-0" [class.world-editor-unavailable]="unavailable">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="world-editor-layer-{{ layer.id }}"
+                      [attr.data-testid]="'layer-' + layer.id"
+                      [checked]="layers()[layer.key] && !unavailable"
+                      [disabled]="unavailable"
+                      (change)="toggleLayer(layer.key)"
+                    />
+                    <label class="form-check-label" for="world-editor-layer-{{ layer.id }}">{{ layer.label | translate }}</label>
+                    <i class="fas fa-info-circle ms-1" placement="auto" container="body" [tooltip]="layer.label + '_HELP' | translate"></i>
+                    @if (unavailable) {
+                      <small class="text-muted ms-1" [attr.data-testid]="'needs-' + layer.id">{{
+                        'WORLD_EDITOR.NEEDS_' + (layer.requires === 'source' ? 'SOURCE' : 'SERVER_DATA') | translate
+                      }}</small>
+                    }
+                    @if (layer.key === 'players' && playersError() && (layers().players || layers().offlinePlayers)) {
+                      <small class="text-danger d-block" data-testid="players-error">{{
+                        'WORLD_EDITOR.PLAYERS_ERROR' | translate: { database: serverSettingsDb() }
+                      }}</small>
+                    }
+                  </div>
+                }
+              </section>
+              <section class="world-editor-view-group" data-testid="view-group-world">
+                <h6 class="world-editor-view-group-title">{{ 'WORLD_EDITOR.VIEW_WORLD' | translate }}</h6>
+                <div class="world-editor-view-sub">{{ 'WORLD_EDITOR.VIEW_SUB_TERRAIN' | translate }}</div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-low-detail"
+                    data-testid="view-low-detail"
+                    [checked]="renderSettings.settings().lowDetailTerrain"
+                    (change)="setLowDetailTerrain($event)"
+                  />
+                  <label class="form-check-label" for="world-editor-low-detail">{{ 'WORLD_EDITOR.LOW_DETAIL_TERRAIN' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.LOW_DETAIL_TERRAIN_HELP' | translate"
+                  ></i>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-map-edge"
+                    data-testid="view-map-edge"
+                    [checked]="renderSettings.settings().showMapEdge"
+                    (change)="setRenderFlag('showMapEdge', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-map-edge">{{ 'WORLD_EDITOR.MAP_EDGE' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.MAP_EDGE_HELP' | translate"
+                  ></i>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-liquid-info"
+                    data-testid="view-liquid-info"
+                    [checked]="renderSettings.settings().showLiquidInfo"
+                    (change)="setRenderFlag('showLiquidInfo', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-liquid-info">{{ 'WORLD_EDITOR.LIQUID_INFO' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.LIQUID_INFO_HELP' | translate"
+                  ></i>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-mouse-over"
+                    data-testid="view-mouse-over"
+                    [checked]="renderSettings.settings().showMouseOver"
+                    (change)="setRenderFlag('showMouseOver', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-mouse-over">{{ 'WORLD_EDITOR.MOUSE_OVER' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.MOUSE_OVER_HELP' | translate"
+                  ></i>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-tile-grid"
+                    data-testid="view-tile-grid"
+                    [checked]="renderSettings.settings().showTileGrid"
+                    (change)="setRenderFlag('showTileGrid', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-tile-grid">{{ 'WORLD_EDITOR.TILE_GRID' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.TILE_GRID_HELP' | translate"
+                  ></i>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-steep-slopes"
+                    data-testid="view-steep-slopes"
+                    [checked]="renderSettings.settings().showSteepSlopes"
+                    (change)="setRenderFlag('showSteepSlopes', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-steep-slopes">{{ 'WORLD_EDITOR.STEEP_SLOPES' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.STEEP_SLOPES_HELP' | translate"
+                  ></i>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-contours"
+                    data-testid="view-contours"
+                    [checked]="renderSettings.settings().showContours"
+                    (change)="setRenderFlag('showContours', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-contours">{{ 'WORLD_EDITOR.CONTOURS' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.CONTOURS_HELP' | translate"
+                  ></i>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-wireframe"
+                    data-testid="view-wireframe"
+                    [checked]="renderSettings.settings().showWireframe"
+                    (change)="setRenderFlag('showWireframe', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-wireframe">{{ 'WORLD_EDITOR.WIREFRAME' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.WIREFRAME_HELP' | translate"
+                  ></i>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-sea-level"
+                    data-testid="view-sea-level"
+                    [checked]="renderSettings.settings().showSeaLevel"
+                    (change)="setRenderFlag('showSeaLevel', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-sea-level">{{ 'WORLD_EDITOR.SEA_LEVEL' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.SEA_LEVEL_HELP' | translate"
+                  ></i>
+                </div>
+                <div class="world-editor-view-sub">{{ 'WORLD_EDITOR.VIEW_SUB_BUILDINGS' | translate }}</div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-buildings"
+                    data-testid="view-buildings"
+                    [checked]="renderSettings.settings().showBuildings"
+                    (change)="setRenderFlag('showBuildings', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-buildings">{{ 'WORLD_EDITOR.BUILDINGS' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.BUILDINGS_HELP' | translate"
+                  ></i>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-roofs"
+                    data-testid="view-roofs"
+                    [checked]="renderSettings.settings().showRoofs"
+                    [disabled]="!renderSettings.settings().showBuildings"
+                    (change)="setRenderFlag('showRoofs', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-roofs">{{ 'WORLD_EDITOR.ROOFS' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.ROOFS_HELP' | translate"
+                  ></i>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-indoor"
+                    data-testid="view-indoor"
+                    [checked]="renderSettings.settings().showIndoor"
+                    [disabled]="!renderSettings.settings().showBuildings"
+                    (change)="setRenderFlag('showIndoor', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-indoor">{{ 'WORLD_EDITOR.INDOOR' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.INDOOR_HELP' | translate"
+                  ></i>
+                </div>
+                <div class="d-flex align-items-center gap-2" data-testid="view-building-opacity-row">
+                  <label for="world-editor-view-building-opacity" class="mb-0 text-nowrap">{{
+                    'WORLD_EDITOR.BUILDING_OPACITY' | translate
+                  }}</label>
+                  <input
+                    id="world-editor-view-building-opacity"
+                    type="range"
+                    class="form-range"
+                    min="10"
+                    max="100"
+                    step="5"
+                    [attr.data-testid]="'view-building-opacity'"
+                    [value]="renderSettings.settings().buildingOpacity"
+                    (input)="setRenderNumber('buildingOpacity', $event)"
+                  />
+                  <span class="world-editor-percent"
+                    ><input
+                      type="number"
+                      class="form-control form-control-sm"
+                      step="0.1"
+                      min="10"
+                      max="100"
+                      [attr.data-testid]="'view-building-opacity-value'"
+                      [attr.aria-label]="'WORLD_EDITOR.PERCENT' | translate"
+                      [value]="renderSettings.settings().buildingOpacity"
+                      (change)="setPercent('buildingOpacity', $event, 10, 100)"
+                    />%</span
+                  >
+                </div>
+                <div class="world-editor-view-sub">{{ 'WORLD_EDITOR.VIEW_SUB_DOODADS' | translate }}</div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-doodads"
+                    data-testid="view-doodads"
+                    [checked]="renderSettings.settings().showDoodads"
+                    (change)="setRenderFlag('showDoodads', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-doodads">{{ 'WORLD_EDITOR.DOODADS' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.DOODADS_HELP' | translate"
+                  ></i>
+                </div>
+                <div class="form-check form-switch mb-0 ms-3">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-trees"
+                    data-testid="view-trees"
+                    [checked]="renderSettings.settings().showTrees"
+                    [disabled]="!renderSettings.settings().showDoodads"
+                    (change)="setRenderFlag('showTrees', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-trees">{{ 'WORLD_EDITOR.TREES' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.TREES_HELP' | translate"
+                  ></i>
+                </div>
+                <div class="form-check form-switch mb-0 ms-3">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-props"
+                    data-testid="view-props"
+                    [checked]="renderSettings.settings().showProps"
+                    [disabled]="!renderSettings.settings().showDoodads"
+                    (change)="setRenderFlag('showProps', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-props">{{ 'WORLD_EDITOR.PROPS' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.PROPS_HELP' | translate"
+                  ></i>
+                </div>
+                <div class="d-flex align-items-center gap-2" data-testid="view-tree-opacity-row">
+                  <label for="world-editor-view-tree-opacity" class="mb-0 text-nowrap">{{ 'WORLD_EDITOR.TREE_OPACITY' | translate }}</label>
+                  <input
+                    id="world-editor-view-tree-opacity"
+                    type="range"
+                    class="form-range"
+                    min="10"
+                    max="100"
+                    step="5"
+                    [attr.data-testid]="'view-tree-opacity'"
+                    [value]="renderSettings.settings().treeOpacity"
+                    (input)="setRenderNumber('treeOpacity', $event)"
+                  />
+                  <span class="world-editor-percent"
+                    ><input
+                      type="number"
+                      class="form-control form-control-sm"
+                      step="0.1"
+                      min="10"
+                      max="100"
+                      [attr.data-testid]="'view-tree-opacity-value'"
+                      [attr.aria-label]="'WORLD_EDITOR.PERCENT' | translate"
+                      [value]="renderSettings.settings().treeOpacity"
+                      (change)="setPercent('treeOpacity', $event, 10, 100)"
+                    />%</span
+                  >
+                </div>
+                <div class="d-flex align-items-center gap-2" data-testid="view-prop-opacity-row">
+                  <label for="world-editor-view-prop-opacity" class="mb-0 text-nowrap">{{ 'WORLD_EDITOR.PROP_OPACITY' | translate }}</label>
+                  <input
+                    id="world-editor-view-prop-opacity"
+                    type="range"
+                    class="form-range"
+                    min="10"
+                    max="100"
+                    step="5"
+                    [attr.data-testid]="'view-prop-opacity'"
+                    [value]="renderSettings.settings().propOpacity"
+                    (input)="setRenderNumber('propOpacity', $event)"
+                  />
+                  <span class="world-editor-percent"
+                    ><input
+                      type="number"
+                      class="form-control form-control-sm"
+                      step="0.1"
+                      min="10"
+                      max="100"
+                      [attr.data-testid]="'view-prop-opacity-value'"
+                      [attr.aria-label]="'WORLD_EDITOR.PERCENT' | translate"
+                      [value]="renderSettings.settings().propOpacity"
+                      (change)="setPercent('propOpacity', $event, 10, 100)"
+                    />%</span
+                  >
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-invisible"
+                    data-testid="view-invisible"
+                    [checked]="renderSettings.settings().showInvisible"
+                    (change)="setRenderFlag('showInvisible', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-invisible">{{ 'WORLD_EDITOR.INVISIBLE_WALLS' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.INVISIBLE_WALLS_HELP' | translate"
+                  ></i>
+                </div>
+              </section>
+              <section class="world-editor-view-group" data-testid="view-group-sky">
+                <h6 class="world-editor-view-group-title">{{ 'WORLD_EDITOR.VIEW_SKY' | translate }}</h6>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-zone-lighting"
+                    data-testid="view-zone-lighting"
+                    [checked]="renderSettings.settings().zoneLighting"
+                    (change)="setRenderFlag('zoneLighting', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-zone-lighting">{{ 'WORLD_EDITOR.ZONE_LIGHTING' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.ZONE_LIGHTING_HELP' | translate"
+                  ></i>
+                </div>
+                @if (renderSettings.settings().zoneLighting) {
+                  @let minutes = renderSettings.settings().timeOfDay;
+                  <div class="d-flex align-items-center gap-2 world-editor-time" data-testid="view-time">
+                    <label for="world-editor-time" class="mb-0 text-nowrap">{{ 'WORLD_EDITOR.TIME_OF_DAY' | translate }}</label>
+                    <input
+                      id="world-editor-time"
+                      type="range"
+                      class="form-range"
+                      data-testid="view-time-of-day"
+                      min="0"
+                      max="1430"
+                      step="10"
+                      [value]="minutes"
+                      [disabled]="renderSettings.settings().timeFollowsClock"
+                      (input)="setTimeOfDay($event)"
+                    />
+                    @if (editingTime() && !renderSettings.settings().timeFollowsClock) {
+                      <span class="d-flex align-items-center gap-1" data-testid="view-time-edit">
+                        <input
+                          type="number"
+                          class="form-control form-control-sm world-editor-time-part"
+                          data-testid="view-time-hours"
+                          min="-1"
+                          max="24"
+                          [attr.aria-label]="'WORLD_EDITOR.HOURS' | translate"
+                          [value]="clockPart(minutes, 'hours')"
+                          (input)="setClockPart('hours', $event)"
+                          (keydown.enter)="editingTime.set(false)"
+                        />:<input
+                          type="number"
+                          class="form-control form-control-sm world-editor-time-part"
+                          data-testid="view-time-minutes"
+                          min="-1"
+                          max="60"
+                          [attr.aria-label]="'WORLD_EDITOR.MINUTES' | translate"
+                          [value]="clockPart(minutes, 'minutes')"
+                          (input)="setClockPart('minutes', $event)"
+                          (keydown.enter)="editingTime.set(false)"
+                        />
+                        <button type="button" class="btn btn-sm btn-link p-0" data-testid="view-time-done" (click)="editingTime.set(false)">
+                          <i class="fa fa-check"></i>
+                        </button>
+                      </span>
+                    } @else {
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-link p-0 world-editor-time-value"
+                        data-testid="view-time-value"
+                        [title]="'WORLD_EDITOR.TIME_EDIT' | translate"
+                        [disabled]="renderSettings.settings().timeFollowsClock"
+                        (click)="editingTime.set(true)"
+                      >
+                        {{ clockText(minutes) }}
+                      </button>
+                    }
+                  </div>
+                  <div class="world-editor-brightness" data-testid="view-brightness">
+                    <small class="text-muted"
+                      >{{ 'WORLD_EDITOR.BRIGHTNESS' | translate
+                      }}<i
+                        class="fas fa-info-circle ms-1"
+                        placement="auto"
+                        container="body"
+                        [tooltip]="'WORLD_EDITOR.BRIGHTNESS_HELP' | translate"
+                      ></i
+                    ></small>
+                    @for (part of brightnessParts; track part.key) {
+                      <div class="d-flex align-items-center gap-2">
+                        <label [for]="'world-editor-' + part.key" class="mb-0 text-nowrap world-editor-brightness-label">{{
+                          part.label | translate
+                        }}</label>
+                        <input
+                          [id]="'world-editor-' + part.key"
+                          type="range"
+                          class="form-range"
+                          min="25"
+                          max="200"
+                          step="5"
+                          [attr.data-testid]="'view-' + part.key"
+                          [value]="renderSettings.settings()[part.key]"
+                          (input)="setRenderNumber(part.key, $event)"
+                        />
+                        <span class="world-editor-percent"
+                          ><input
+                            type="number"
+                            class="form-control form-control-sm"
+                            step="0.1"
+                            min="25"
+                            max="200"
+                            [attr.data-testid]="'view-' + part.key + '-value'"
+                            [attr.aria-label]="'WORLD_EDITOR.PERCENT' | translate"
+                            [value]="renderSettings.settings()[part.key]"
+                            (change)="setPercent(part.key, $event, 25, 200)"
+                          />%</span
+                        >
+                      </div>
+                    }
+                  </div>
+                  <div class="form-check form-switch mb-0">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="world-editor-time-clock"
+                      data-testid="view-time-clock"
+                      [checked]="renderSettings.settings().timeFollowsClock"
+                      (change)="setRenderFlag('timeFollowsClock', $event)"
+                    />
+                    <label class="form-check-label" for="world-editor-time-clock">{{
+                      'WORLD_EDITOR.TIME_FOLLOWS_CLOCK' | translate
+                    }}</label>
+                  </div>
+                }
+                @let weatherMode = renderSettings.settings().weather;
+                <div class="d-flex align-items-center gap-2" data-testid="view-weather">
+                  <label for="world-editor-weather" class="mb-0 text-nowrap"
+                    >{{ 'WORLD_EDITOR.WEATHER' | translate
+                    }}<i
+                      class="fas fa-info-circle ms-1"
+                      placement="auto"
+                      container="body"
+                      [tooltip]="'WORLD_EDITOR.WEATHER_HELP' | translate"
+                    ></i
+                  ></label>
+                  <select
+                    id="world-editor-weather"
+                    class="form-select form-select-sm"
+                    data-testid="view-weather-mode"
+                    (change)="setWeatherMode($event)"
+                  >
+                    @for (mode of weatherModes; track mode) {
+                      <option [value]="mode" [selected]="mode === weatherMode">
+                        {{ 'WORLD_EDITOR.WEATHER_' + mode.toUpperCase() | translate }}
+                      </option>
+                    }
+                  </select>
+                </div>
+                @if (weatherMode === 'database') {
+                  <div class="small d-flex align-items-center gap-2" data-testid="view-weather-roll">
+                    @if (weatherRoll(); as roll) {
+                      <span class="flex-grow-1">
+                        {{ 'WORLD_EDITOR.ZONE' | translate }} {{ roll.zone }},
+                        {{ 'WORLD_EDITOR.SEASON_' + roll.season.toUpperCase() | translate }}:
+                        @if (roll.chances; as chances) {
+                          {{ 'WORLD_EDITOR.WEATHER_RAIN' | translate }} {{ chances.rain }}%, {{ 'WORLD_EDITOR.WEATHER_SNOW' | translate }}
+                          {{ chances.snow }}%, {{ 'WORLD_EDITOR.WEATHER_STORM' | translate }} {{ chances.storm }}% →
+                          <strong data-testid="view-weather-result">{{
+                            (roll.weather ? 'WORLD_EDITOR.WEATHER_' + roll.weather.kind.toUpperCase() : 'WORLD_EDITOR.WEATHER_FINE')
+                              | translate
+                          }}</strong>
+                        } @else {
+                          <span class="text-muted" data-testid="view-weather-none">{{ 'WORLD_EDITOR.WEATHER_NO_ROW' | translate }}</span>
+                        }
+                      </span>
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-secondary py-0"
+                        data-testid="view-weather-reroll"
+                        [title]="'WORLD_EDITOR.WEATHER_REROLL' | translate"
+                        (click)="rollZoneWeather()"
+                      >
+                        <i class="fa fa-dice"></i>
+                      </button>
+                    } @else {
+                      <span class="text-muted">{{ 'WORLD_EDITOR.WEATHER_NO_ZONE' | translate }}</span>
+                    }
+                  </div>
+                } @else if (weatherMode !== 'off') {
+                  <div class="d-flex align-items-center gap-2">
+                    <label for="world-editor-weather-intensity" class="mb-0 text-nowrap">{{
+                      'WORLD_EDITOR.WEATHER_INTENSITY' | translate
+                    }}</label>
+                    <input
+                      id="world-editor-weather-intensity"
+                      type="range"
+                      class="form-range"
+                      min="5"
+                      max="100"
+                      step="5"
+                      data-testid="view-weather-intensity"
+                      [value]="renderSettings.settings().weatherIntensity"
+                      (input)="setWeatherIntensity($event)"
+                    />
+                    <span class="world-editor-percent"
+                      ><input
+                        type="number"
+                        class="form-control form-control-sm"
+                        step="0.1"
+                        min="5"
+                        max="100"
+                        [attr.data-testid]="'view-weather-intensity-value'"
+                        [attr.aria-label]="'WORLD_EDITOR.PERCENT' | translate"
+                        [value]="renderSettings.settings().weatherIntensity"
+                        (change)="setPercent('weatherIntensity', $event, 5, 100)"
+                      />%</span
+                    >
+                  </div>
+                }
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-fog"
+                    data-testid="view-fog"
+                    [checked]="renderSettings.settings().fog"
+                    (change)="setRenderFlag('fog', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-fog">{{ 'WORLD_EDITOR.FOG' | translate }}</label
+                  ><i class="fas fa-info-circle ms-1" placement="auto" container="body" [tooltip]="'WORLD_EDITOR.FOG_HELP' | translate"></i>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-skybox"
+                    data-testid="view-skybox"
+                    [checked]="renderSettings.settings().skybox"
+                    (change)="setRenderFlag('skybox', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-skybox">{{ 'WORLD_EDITOR.SKYBOX' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.SKYBOX_HELP' | translate"
+                  ></i>
+                </div>
+                @if (renderSettings.settings().skybox) {
+                  <select
+                    class="form-select form-select-sm"
+                    data-testid="view-skybox-model"
+                    [attr.aria-label]="'WORLD_EDITOR.SKYBOX' | translate"
+                    (change)="setSkyboxModel($event)"
+                  >
+                    <option value="" [selected]="!renderSettings.settings().skyboxModel">
+                      {{ 'WORLD_EDITOR.SKYBOX_ZONE' | translate }}
+                    </option>
+                    @for (path of skyboxes(); track path) {
+                      <option [value]="path" [selected]="path === renderSettings.settings().skyboxModel">{{ skyboxName(path) }}</option>
+                    }
+                  </select>
+                  <div class="form-check form-switch mb-0">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="world-editor-skybox-spin"
+                      data-testid="view-skybox-spin"
+                      [checked]="renderSettings.settings().skyboxSpin"
+                      (change)="setRenderFlag('skyboxSpin', $event)"
+                    />
+                    <label class="form-check-label" for="world-editor-skybox-spin">{{ 'WORLD_EDITOR.SKYBOX_SPIN' | translate }}</label>
+                  </div>
+                }
+              </section>
+              <section class="world-editor-view-group" data-testid="view-group-spawns">
+                <h6 class="world-editor-view-group-title">{{ 'WORLD_EDITOR.VIEW_SPAWNS' | translate }}</h6>
+                <div class="world-editor-view-sub">{{ 'WORLD_EDITOR.VIEW_SUB_MODELS' | translate }}</div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-models"
+                    data-testid="view-models"
+                    [checked]="renderSettings.settings().showModels"
+                    (change)="setRenderFlag('showModels', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-models">{{ 'WORLD_EDITOR.MODELS' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.MODELS_HELP' | translate"
+                  ></i>
+                </div>
+                <div class="form-check form-switch mb-0 ms-3">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-creature-models"
+                    data-testid="view-creature-models"
+                    [checked]="renderSettings.settings().showCreatureModels"
+                    [disabled]="!renderSettings.settings().showModels"
+                    (change)="setRenderFlag('showCreatureModels', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-creature-models">{{
+                    'WORLD_EDITOR.CREATURE_MODELS_SHOW' | translate
+                  }}</label>
+                </div>
+                <div class="form-check form-switch mb-0 ms-3">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-gameobject-models"
+                    data-testid="view-gameobject-models"
+                    [checked]="renderSettings.settings().showGameobjectModels"
+                    [disabled]="!renderSettings.settings().showModels"
+                    (change)="setRenderFlag('showGameobjectModels', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-gameobject-models">{{
+                    'WORLD_EDITOR.GAMEOBJECT_MODELS_SHOW' | translate
+                  }}</label>
+                </div>
+                <div class="world-editor-view-sub">{{ 'WORLD_EDITOR.VIEW_SUB_MARKERS' | translate }}</div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-facing"
+                    data-testid="view-facing"
+                    [checked]="renderSettings.settings().showFacingArrows"
+                    (change)="setRenderFlag('showFacingArrows', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-facing">{{ 'WORLD_EDITOR.FACING_ARROWS' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.FACING_ARROWS_HELP' | translate"
+                  ></i>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-path-to-first"
+                    data-testid="view-path-to-first"
+                    [checked]="renderSettings.settings().showPathToFirst"
+                    (change)="setRenderFlag('showPathToFirst', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-path-to-first">{{ 'WORLD_EDITOR.PATH_TO_FIRST' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.PATH_TO_FIRST_HELP' | translate"
+                  ></i>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-path-from-last"
+                    data-testid="view-path-from-last"
+                    [checked]="renderSettings.settings().showPathFromLast"
+                    (change)="setRenderFlag('showPathFromLast', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-path-from-last">{{ 'WORLD_EDITOR.PATH_FROM_LAST' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.PATH_FROM_LAST_HELP' | translate"
+                  ></i>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-wander"
+                    data-testid="view-wander"
+                    [checked]="renderSettings.settings().showWanderRadius"
+                    (change)="setRenderFlag('showWanderRadius', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-wander">{{ 'WORLD_EDITOR.WANDER_RADIUS' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.WANDER_RADIUS_HELP' | translate"
+                  ></i>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-bounds"
+                    data-testid="view-bounds"
+                    [checked]="renderSettings.settings().showBounds"
+                    (change)="setRenderFlag('showBounds', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-bounds">{{ 'WORLD_EDITOR.BOUNDS' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.BOUNDS_HELP' | translate"
+                  ></i>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-aggro"
+                    data-testid="view-aggro"
+                    [checked]="renderSettings.settings().showAggroRadius"
+                    (change)="setRenderFlag('showAggroRadius', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-aggro">{{ 'WORLD_EDITOR.AGGRO_RADIUS' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.AGGRO_RADIUS_HELP' | translate"
+                  ></i>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-assist"
+                    data-testid="view-assist"
+                    [checked]="renderSettings.settings().showAssistRadius"
+                    (change)="setRenderFlag('showAssistRadius', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-assist">{{ 'WORLD_EDITOR.ASSIST_RADIUS' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.ASSIST_RADIUS_HELP' | translate"
+                  ></i>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-solid-selection"
+                    data-testid="view-solid-selection"
+                    [checked]="renderSettings.settings().solidSelection"
+                    (change)="setRenderFlag('solidSelection', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-solid-selection">{{
+                    'WORLD_EDITOR.SOLID_SELECTION' | translate
+                  }}</label>
+                </div>
+                <div class="world-editor-view-sub">{{ 'WORLD_EDITOR.VIEW_SUB_PATHS' | translate }}</div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-all-paths"
+                    data-testid="view-all-paths"
+                    [checked]="renderSettings.settings().showAllPaths"
+                    (change)="setAllPaths($event)"
+                  />
+                  <label class="form-check-label" for="world-editor-all-paths" [title]="'WORLD_EDITOR.ALL_PATHS_HELP' | translate">{{
+                    'WORLD_EDITOR.ALL_PATHS' | translate
+                  }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.SOLID_SELECTION_HELP' | translate"
+                  ></i>
+                </div>
+              </section>
+              <section class="world-editor-view-group" data-testid="view-group-cosmetic">
+                <h6 class="world-editor-view-group-title">{{ 'WORLD_EDITOR.VIEW_COSMETIC' | translate }}</h6>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-edge-fog"
+                    data-testid="view-edge-fog"
+                    [checked]="renderSettings.settings().edgeFog"
+                    (change)="setRenderFlag('edgeFog', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-edge-fog">{{ 'WORLD_EDITOR.EDGE_FOG' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.EDGE_FOG_HELP' | translate"
+                  ></i>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-equipment"
+                    data-testid="view-equipment"
+                    [checked]="renderSettings.settings().showEquipment"
+                    (change)="setRenderFlag('showEquipment', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-equipment">{{ 'WORLD_EDITOR.SHOW_EQUIPMENT' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.SHOW_EQUIPMENT_HELP' | translate"
+                  ></i>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-animate-idle"
+                    data-testid="view-animate-idle"
+                    [checked]="renderSettings.settings().animateIdle"
+                    (change)="setRenderFlag('animateIdle', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-animate-idle">{{ 'WORLD_EDITOR.ANIMATE_IDLE' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.ANIMATE_IDLE_HELP' | translate"
+                  ></i>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-animate-walk"
+                    data-testid="view-animate-walk"
+                    [checked]="renderSettings.settings().animateWalk"
+                    (change)="setRenderFlag('animateWalk', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-animate-walk">{{ 'WORLD_EDITOR.ANIMATE_WALK' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.ANIMATE_WALK_HELP' | translate"
+                  ></i>
+                </div>
+              </section>
+              <section class="world-editor-view-group" data-testid="view-group-marker">
+                <h6 class="world-editor-view-group-title">{{ 'WORLD_EDITOR.VIEW_MARKER' | translate }}</h6>
+                <div class="d-flex align-items-center gap-2">
+                  <label for="world-editor-marker-model" class="mb-0">{{ 'WORLD_EDITOR.MARKER_MODEL' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.MARKER_MODEL_HELP' | translate"
+                  ></i>
+                  <select
+                    id="world-editor-marker-model"
+                    class="form-select form-select-sm w-auto"
+                    data-testid="view-marker-model"
+                    (change)="setMarkerModel($event)"
+                  >
+                    <option value="" [selected]="renderSettings.settings().markerModel === ''">
+                      {{ 'WORLD_EDITOR.MARKER_BEAM' | translate }}
+                    </option>
+                    @for (race of playerRaces; track race.id) {
+                      @for (sex of [0, 1]; track sex) {
+                        <option [value]="race.id + ':' + sex" [selected]="renderSettings.settings().markerModel === race.id + ':' + sex">
+                          {{ race.name }} {{ (sex ? 'WORLD_EDITOR.FEMALE' : 'WORLD_EDITOR.MALE') | translate }}
+                        </option>
+                      }
+                    }
+                  </select>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-marker-liquid"
+                    data-testid="view-marker-liquid"
+                    [checked]="renderSettings.settings().markerOnLiquid"
+                    (change)="setRenderFlag('markerOnLiquid', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-marker-liquid">{{ 'WORLD_EDITOR.MARKER_ON_LIQUID' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.MARKER_ON_LIQUID_HELP' | translate"
+                  ></i>
+                </div>
+              </section>
+              <section class="world-editor-view-group" data-testid="view-group-compass">
+                <h6 class="world-editor-view-group-title">{{ 'WORLD_EDITOR.VIEW_COMPASS' | translate }}</h6>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-compass"
+                    data-testid="view-compass"
+                    [checked]="renderSettings.settings().compass"
+                    (change)="setRenderFlag('compass', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-compass">{{ 'WORLD_EDITOR.COMPASS_SHOW' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.COMPASS_HELP' | translate"
+                  ></i>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-compass-north-up"
+                    data-testid="view-compass-north-up"
+                    [checked]="renderSettings.settings().compassNorthUp"
+                    (change)="setRenderFlag('compassNorthUp', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-compass-north-up">{{
+                    'WORLD_EDITOR.COMPASS_NORTH_UP' | translate
+                  }}</label>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-compass-north-arrow"
+                    data-testid="view-compass-north-arrow"
+                    [checked]="renderSettings.settings().compassNorthArrow"
+                    (change)="setRenderFlag('compassNorthArrow', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-compass-north-arrow">{{
+                    'WORLD_EDITOR.COMPASS_NORTH_ARROW' | translate
+                  }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.COMPASS_NORTH_UP_HELP' | translate"
+                  ></i>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-compass-points"
+                    data-testid="view-compass-points"
+                    [checked]="renderSettings.settings().compassPoints"
+                    (change)="setRenderFlag('compassPoints', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-compass-points">{{ 'WORLD_EDITOR.COMPASS_POINTS' | translate }}</label>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-compass-degrees"
+                    data-testid="view-compass-degrees"
+                    [checked]="renderSettings.settings().compassDegrees"
+                    (change)="setRenderFlag('compassDegrees', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-compass-degrees">{{
+                    'WORLD_EDITOR.COMPASS_DEGREES' | translate
+                  }}</label>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-compass-mils"
+                    data-testid="view-compass-mils"
+                    [checked]="renderSettings.settings().compassMils"
+                    (change)="setRenderFlag('compassMils', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-compass-mils">{{ 'WORLD_EDITOR.COMPASS_MILS' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.COMPASS_MILS_HELP' | translate"
+                  ></i>
+                </div>
+                <div class="d-flex align-items-center gap-2" data-testid="view-compass-opacity-row">
+                  <label for="world-editor-compass-opacity" class="mb-0 text-nowrap">{{
+                    'WORLD_EDITOR.COMPASS_OPACITY' | translate
+                  }}</label>
+                  <input
+                    id="world-editor-compass-opacity"
+                    type="range"
+                    class="form-range"
+                    min="10"
+                    max="100"
+                    step="5"
+                    data-testid="view-compass-opacity"
+                    [value]="renderSettings.settings().compassOpacity"
+                    (input)="setRenderNumber('compassOpacity', $event)"
+                  />
+                  <span class="world-editor-percent"
+                    ><input
+                      type="number"
+                      class="form-control form-control-sm"
+                      step="0.1"
+                      min="10"
+                      max="100"
+                      [attr.data-testid]="'view-compass-opacity-value'"
+                      [attr.aria-label]="'WORLD_EDITOR.PERCENT' | translate"
+                      [value]="renderSettings.settings().compassOpacity"
+                      (change)="setPercent('compassOpacity', $event, 10, 100)"
+                    />%</span
+                  >
+                </div>
+              </section>
+              <section class="world-editor-view-group" data-testid="view-group-collision">
+                <h6 class="world-editor-view-group-title">{{ 'WORLD_EDITOR.VIEW_COLLISION' | translate }}</h6>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-collision"
+                    data-testid="view-collision"
+                    [checked]="renderSettings.settings().showCollision"
+                    (change)="setRenderFlag('showCollision', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-collision">{{ 'WORLD_EDITOR.COLLISION' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.COLLISION_HELP' | translate"
+                  ></i>
+                  @if (collisionSource(); as source) {
+                    <small class="d-block text-muted" data-testid="collision-source">{{
+                      (source === 'server' ? 'WORLD_EDITOR.COLLISION_SERVER' : 'WORLD_EDITOR.COLLISION_CLIENT') | translate
+                    }}</small>
+                  }
+                </div>
+                <div class="form-check form-switch mb-0" [class.world-editor-unavailable]="missing('serverData')">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-navmesh"
+                    data-testid="view-navmesh"
+                    [checked]="renderSettings.settings().showNavMesh && !missing('serverData')"
+                    [disabled]="missing('serverData')"
+                    (change)="setRenderFlag('showNavMesh', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-navmesh">{{ 'WORLD_EDITOR.NAVMESH' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.NAVMESH_HELP' | translate"
+                  ></i>
+                  @if (missing('serverData')) {
+                    <small class="text-muted ms-1" data-testid="needs-navmesh">{{ 'WORLD_EDITOR.NEEDS_SERVER_DATA' | translate }}</small>
+                  }
+                </div>
+              </section>
+              <section class="world-editor-view-group" data-testid="view-group-loading">
+                <h6 class="world-editor-view-group-title">{{ 'WORLD_EDITOR.VIEW_LOADING' | translate }}</h6>
+                <div class="d-flex align-items-center gap-2">
+                  <label for="world-editor-load-ahead" class="mb-0">{{ 'WORLD_EDITOR.LOAD_AHEAD' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.LOAD_AHEAD_HELP' | translate"
+                  ></i>
+                  <select
+                    id="world-editor-load-ahead"
+                    class="form-select form-select-sm w-auto"
+                    data-testid="view-load-ahead"
+                    (change)="setLoadAhead($event)"
+                  >
+                    @for (rings of [0, 1, 2, 3]; track rings) {
+                      <option [value]="rings" [selected]="rings === renderSettings.settings().loadAhead">
+                        @if (rings) {
+                          +{{ rings }} {{ 'WORLD_EDITOR.TILES' | translate }}
+                        } @else {
+                          {{ 'WORLD_EDITOR.OFF' | translate }}
+                        }
+                      </option>
+                    }
+                  </select>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <label for="world-editor-terrain-radius" class="mb-0">{{ 'WORLD_EDITOR.TERRAIN_RANGE' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.TERRAIN_RANGE_HELP' | translate"
+                  ></i>
+                  <select
+                    id="world-editor-terrain-radius"
+                    class="form-select form-select-sm w-auto"
+                    data-testid="view-terrain-radius"
+                    (change)="setTerrainRadius($event)"
+                  >
+                    @for (radius of [1, 2, 3]; track radius) {
+                      <option [value]="radius" [selected]="radius === renderSettings.settings().terrainRadius">
+                        {{ (radius * 2 + 1) * (radius * 2 + 1) }} {{ 'WORLD_EDITOR.TILES' | translate }}
+                      </option>
+                    }
+                  </select>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <label for="world-editor-draw-limit" class="mb-0">{{ 'WORLD_EDITOR.DRAW_LIMIT' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.DRAW_LIMIT_HELP' | translate"
+                  ></i>
+                  <select
+                    id="world-editor-draw-limit"
+                    class="form-select form-select-sm w-auto"
+                    data-testid="view-draw-limit"
+                    (change)="setDrawLimit($event)"
+                  >
+                    @for (option of drawLimitOptions; track option.value) {
+                      <option [value]="option.value" [selected]="option.value === drawLimitValue()">
+                        {{ option.label | translate: { tiles: option.tiles } }}
+                      </option>
+                    }
+                  </select>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-whole-zone"
+                    data-testid="view-whole-zone"
+                    [checked]="renderSettings.settings().loadWholeZone"
+                    (change)="setRenderFlag('loadWholeZone', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-whole-zone">{{ 'WORLD_EDITOR.LOAD_WHOLE_ZONE' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.LOAD_WHOLE_ZONE_HELP' | translate"
+                  ></i>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <label for="world-editor-draw-distance" class="mb-0">{{ 'WORLD_EDITOR.DRAW_DISTANCE' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.DRAW_DISTANCE_HELP' | translate"
+                  ></i>
+                  <select
+                    id="world-editor-draw-distance"
+                    class="form-select form-select-sm w-auto"
+                    data-testid="view-draw-distance"
+                    [disabled]="renderSettings.settings().advancedDistances"
+                    (change)="setRenderDistance('drawDistance', $event)"
+                  >
+                    @for (distance of drawDistances; track distance) {
+                      <option [value]="distance" [selected]="distance === renderSettings.settings().drawDistance">
+                        {{ distance }} {{ 'WORLD_EDITOR.YARDS' | translate }}
+                      </option>
+                    }
+                  </select>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-advanced-distances"
+                    data-testid="view-advanced"
+                    [checked]="renderSettings.settings().advancedDistances"
+                    (change)="setRenderFlag('advancedDistances', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-advanced-distances">{{ 'WORLD_EDITOR.ADVANCED' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.ADVANCED_HELP' | translate"
+                  ></i>
+                </div>
+              </section>
+              <section class="world-editor-view-group" data-testid="view-group-debug">
+                <h6 class="world-editor-view-group-title">{{ 'WORLD_EDITOR.VIEW_DEBUG' | translate }}</h6>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-stats"
+                    data-testid="view-stats"
+                    [checked]="renderSettings.settings().showStats"
+                    (change)="setRenderFlag('showStats', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-stats">{{ 'WORLD_EDITOR.STATS' | translate }}</label
+                  ><i
+                    class="fas fa-info-circle ms-1"
+                    placement="auto"
+                    container="body"
+                    [tooltip]="'WORLD_EDITOR.STATS_HELP' | translate"
+                  ></i>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="world-editor-perf-log"
+                    data-testid="view-perf-log"
+                    [checked]="renderSettings.settings().perfLog"
+                    [disabled]="!perfLogPath()"
+                    (change)="setRenderFlag('perfLog', $event)"
+                  />
+                  <label class="form-check-label" for="world-editor-perf-log" [title]="perfLogPath() ?? ''">{{
+                    'WORLD_EDITOR.PERF_LOG' | translate
+                  }}</label>
+                </div>
+                @for (cap of memoryCaps; track cap.key) {
+                  <div class="d-flex align-items-center gap-2">
+                    <label [for]="'world-editor-' + cap.key" class="mb-0">{{ cap.label | translate }}</label
+                    ><i
+                      class="fas fa-info-circle ms-1"
+                      placement="auto"
+                      container="body"
+                      [tooltip]="'WORLD_EDITOR.MEMORY_CAP_HELP' | translate"
+                    ></i>
+                    <select
+                      [id]="'world-editor-' + cap.key"
+                      class="form-select form-select-sm w-auto"
+                      [attr.data-testid]="'view-' + cap.key"
+                      (change)="setRenderDistance(cap.key, $event)"
+                    >
+                      @for (mb of memoryCapSizes; track mb) {
+                        <option [value]="mb" [selected]="mb === renderSettings.settings()[cap.key]">
+                          {{ mb ? (mb >= 1024 ? mb / 1024 + ' GB' : mb + ' MB') : ('WORLD_EDITOR.NO_LIMIT' | translate) }}
+                        </option>
+                      }
+                    </select>
+                  </div>
+                }
+              </section>
+            </div>
+            @if (renderSettings.settings().advancedDistances) {
+              <table class="table table-sm table-borderless align-middle mb-0 world-editor-distances" data-testid="view-distances">
+                <thead>
+                  <tr>
+                    <th scope="col">{{ 'WORLD_EDITOR.GROUP' | translate }}</th>
+                    <th scope="col">{{ 'WORLD_EDITOR.DRAW_DISTANCE' | translate }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (group of distanceGroups; track group.key) {
+                    <tr>
+                      <td>{{ group.label | translate }}</td>
+                      <td>
+                        <select
+                          class="form-select form-select-sm"
+                          [attr.data-testid]="'view-distance-' + group.key"
+                          [attr.aria-label]="group.label | translate"
+                          (change)="setRenderDistance(group.key, $event)"
+                        >
+                          @for (distance of groupDistances; track distance) {
+                            <option [value]="distance" [selected]="distance === renderSettings.settings()[group.key]">
+                              @if (distance) {
+                                {{ distance }} {{ 'WORLD_EDITOR.YARDS' | translate }}
+                              } @else {
+                                {{ 'WORLD_EDITOR.OFF' | translate }}
+                              }
+                            </option>
+                          }
+                        </select>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            }
+          </div>
+        }
+
+        @if (showSettings()) {
+          <div class="card card-body mb-2 world-editor-settings" data-testid="settings">
+            <keira-game-data-folders [locked]="true" (saved)="onFoldersSaved()" />
+            <hr />
+            <div class="d-flex flex-wrap align-items-center gap-2 world-editor-cache" data-testid="cache">
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="world-editor-cache-enabled"
+                  data-testid="cache-enabled"
+                  [checked]="cache.enabled()"
+                  (change)="setCacheEnabled($event)"
+                />
+                <label class="form-check-label" for="world-editor-cache-enabled">{{ 'WORLD_EDITOR.CACHE_ENABLED' | translate }}</label>
+              </div>
+              <span class="text-muted" data-testid="cache-size">{{ cacheSizeText() }}</span>
+              <div class="world-editor-cache-meter">
+                <span class="world-editor-cache-percent" data-testid="cache-percent">{{ cacheFill().toFixed(0) }}%</span>
+                <div
+                  class="progress world-editor-cache-fill"
+                  data-testid="cache-fill"
+                  role="progressbar"
+                  [attr.aria-valuenow]="cacheFill().toFixed(0)"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                  [title]="cacheFill().toFixed(1) + '%'"
+                >
+                  <div [class]="'progress-bar fill-' + cacheFillLevel()" [style.width.%]="cacheFill()"></div>
+                </div>
+                <!-- where the colour changes: yellow, orange, red -->
+                @for (mark of [50, 75, 90]; track mark) {
+                  <span class="world-editor-cache-mark" [style.left.%]="mark"></span>
+                }
+              </div>
+              <label class="d-flex align-items-center gap-1 mb-0">
+                {{ 'WORLD_EDITOR.CACHE_MAX' | translate }}
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  class="form-control form-control-sm cache-max"
+                  data-testid="cache-max"
+                  [value]="cache.maxBytes() / 1000000000"
+                  (change)="setCacheMaxGb($event)"
+                />
+                GB
+              </label>
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-danger"
+                data-testid="cache-clear"
+                [disabled]="!!preloading()"
+                (click)="clearCache()"
+              >
+                {{ 'WORLD_EDITOR.CACHE_CLEAR' | translate }}
+              </button>
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-secondary"
+                data-testid="preload-zone"
+                [disabled]="!cache.enabled() || !!preloading() || !mapDirectory() || zoneId() === 0"
+                (click)="preload('zone')"
+              >
+                {{ 'WORLD_EDITOR.PRELOAD_ZONE' | translate }}
+              </button>
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-secondary"
+                data-testid="preload-map"
+                [disabled]="!cache.enabled() || !!preloading() || !mapDirectory()"
+                (click)="preload('map')"
+              >
+                {{ 'WORLD_EDITOR.PRELOAD_MAP' | translate }}
+              </button>
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-secondary"
+                data-testid="preload-all"
+                [title]="'WORLD_EDITOR.PRELOAD_ALL_HELP' | translate"
+                [disabled]="!cache.enabled() || !!preloading() || maps().length === 0"
+                (click)="preload('all')"
+              >
+                {{ 'WORLD_EDITOR.PRELOAD_ALL' | translate }}
+              </button>
+              @if (cacheFull(); as full) {
+                <div class="alert alert-warning py-1 px-2 mb-0 d-flex align-items-center gap-2 w-100" data-testid="cache-full">
+                  {{ 'WORLD_EDITOR.CACHE_FULL' | translate: { gb: full.maxGb } }}
+                  <button type="button" class="btn btn-sm btn-warning" data-testid="cache-raise" (click)="raiseCacheAndPreload()">
+                    {{ 'WORLD_EDITOR.CACHE_RAISE' | translate: { gb: full.maxGb * 2 || 2 } }}
+                  </button>
+                  <button type="button" class="btn btn-sm btn-link" data-testid="cache-full-dismiss" (click)="cacheFull.set(undefined)">
+                    {{ 'WORLD_EDITOR.CLOSE' | translate }}
+                  </button>
+                </div>
+              }
+              @if (preloading(); as progress) {
+                <span class="text-muted" data-testid="preload-label">{{ progress.label }}</span>
+                <div class="flex-grow-1">
+                  <div class="progress world-editor-preload" data-testid="preload-progress">
+                    <div class="progress-bar" role="progressbar" [style.width.%]="percent(progress.done, progress.total)"></div>
+                    <span class="world-editor-preload-text"
+                      >{{ progress.done }} / {{ progress.total }} ({{ percent(progress.done, progress.total) }}%)</span
+                    >
+                  </div>
+                  @if (progress.maps > 1) {
+                    <div
+                      class="progress world-editor-preload-maps"
+                      data-testid="preload-maps"
+                      [title]="progress.map + ' / ' + progress.maps"
+                    >
+                      <div class="progress-bar bg-success" [style.width.%]="percent(progress.map, progress.maps)"></div>
+                    </div>
+                  }
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-secondary" data-testid="preload-cancel" (click)="cancelPreload()">
+                  {{ 'CANCEL' | translate }}
+                </button>
+              }
+            </div>
+            <!-- what is cached: the maps' pictures (and loading them all at start), then each kind of game data -->
+            <div class="world-editor-cache-sections" data-testid="cache-sections">
+              <section>
+                <h6>{{ 'WORLD_EDITOR.CACHE_MAPS' | translate }}</h6>
+                <div class="d-flex flex-wrap align-items-center gap-3">
+                  <div class="form-check form-switch mb-0">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="world-editor-cache-maps"
+                      data-testid="cache-section-maps"
+                      [checked]="cache.sections().maps"
+                      [disabled]="!cache.enabled()"
+                      (change)="setCacheSection('maps', $event)"
+                    />
+                    <label class="form-check-label" for="world-editor-cache-maps">{{ 'WORLD_EDITOR.CACHE_KEEP' | translate }}</label>
+                  </div>
+                  <div class="form-check form-switch mb-0">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="world-editor-cache-preload-maps"
+                      data-testid="cache-preload-maps"
+                      [checked]="cache.preloadMaps()"
+                      [disabled]="!cache.enabled() || !cache.sections().maps"
+                      (change)="setPreloadMaps($event)"
+                    />
+                    <label class="form-check-label" for="world-editor-cache-preload-maps">{{
+                      'WORLD_EDITOR.CACHE_PRELOAD_MAPS' | translate
+                    }}</label>
+                  </div>
+                  @if (mapPreload.running()) {
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-secondary"
+                      data-testid="cache-preload-maps-stop"
+                      (click)="mapPreload.stop()"
+                    >
+                      {{ 'WORLD_EDITOR.CACHE_PRELOAD_STOP' | translate }}
+                    </button>
+                  } @else {
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-secondary"
+                      data-testid="cache-preload-maps-now"
+                      [disabled]="!cache.enabled() || !cache.sections().maps"
+                      (click)="preloadMapsNow()"
+                    >
+                      {{ 'WORLD_EDITOR.CACHE_PRELOAD_MAPS_NOW' | translate }}
+                    </button>
+                  }
+                  @if (mapPreload.progress(); as progress) {
+                    <span class="text-muted" data-testid="cache-preload-maps-progress">{{
+                      'WORLD_EDITOR.CACHE_MAPS_PROGRESS'
+                        | translate: { done: progress.done, total: progress.total, percent: percent(progress.done, progress.total) }
+                    }}</span>
+                  }
+                </div>
+              </section>
+              <section>
+                <h6>{{ 'WORLD_EDITOR.CACHE_GAME_DATA' | translate }}</h6>
+                <div class="d-flex flex-wrap align-items-center gap-3">
+                  @for (section of gameDataSections; track section.key) {
+                    <div class="form-check form-switch mb-0">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        [id]="'world-editor-cache-' + section.key"
+                        [attr.data-testid]="'cache-section-' + section.key"
+                        [checked]="cache.sections()[section.key]"
+                        [disabled]="!cache.enabled()"
+                        (change)="setCacheSection(section.key, $event)"
+                      />
+                      <label class="form-check-label" [for]="'world-editor-cache-' + section.key">{{ section.label | translate }}</label>
+                    </div>
+                  }
+                </div>
+              </section>
+            </div>
+            @if (cacheUsage(); as usage) {
+              <table class="table table-sm table-borderless align-middle mt-2 mb-0 world-editor-cache-maps" data-testid="cache-maps">
+                <thead>
+                  <tr>
+                    <th scope="col">{{ 'WORLD_EDITOR.MAP' | translate }}</th>
+                    <th scope="col">{{ 'WORLD_EDITOR.TILES_CACHED' | translate }}</th>
+                    <th scope="col">{{ 'WORLD_EDITOR.SIZE' | translate }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="fw-bold" data-testid="cache-total">
+                    <td>{{ 'WORLD_EDITOR.TOTAL' | translate }}</td>
+                    <td></td>
+                    <td>{{ cacheSizeText() }}</td>
+                  </tr>
+                  @for (row of cacheRows(usage); track row.directory) {
+                    <tr [attr.data-testid]="'cache-map-' + row.directory" [class.table-active]="preloading()?.directory === row.directory">
+                      <td>{{ row.name }}</td>
+                      <td>{{ row.tiles }}</td>
+                      <td>{{ formatSize(row.bytes) }}</td>
+                    </tr>
+                  }
+                  <tr class="text-muted" data-testid="cache-buildings">
+                    <td>{{ 'WORLD_EDITOR.BUILDINGS' | translate }}</td>
+                    <td></td>
+                    <td>{{ formatSize(usage.buildingBytes) }}</td>
+                  </tr>
+                  <tr class="text-muted" data-testid="cache-textures">
+                    <td>{{ 'WORLD_EDITOR.TEXTURES' | translate }}</td>
+                    <td></td>
+                    <td>{{ formatSize(usage.textureBytes) }}</td>
+                  </tr>
+                  <tr class="text-muted" data-testid="cache-models">
+                    <td>{{ 'WORLD_EDITOR.MODELS' | translate }}</td>
+                    <td></td>
+                    <td>{{ formatSize(usage.modelBytes) }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            }
+          </div>
+        }
+        @if (showStyle()) {
+          <keira-style-panel />
+        }
+        @if (showLegend()) {
+          <div class="card card-body world-editor-legend py-2" data-testid="legend">
+            @for (section of legend; track section.title) {
+              <div class="world-editor-legend-section">
+                <strong>{{ section.title | translate }}</strong>
+                @for (item of section.items; track item.label) {
+                  <div class="world-editor-legend-item">
+                    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                      @switch (item.shape) {
+                        @case ('pin') {
+                          <path d="M12 22 L6 8 A6 6 0 1 1 18 8 Z" [attr.fill]="item.color" />
+                        }
+                        @case ('cube') {
+                          <rect x="5" y="5" width="14" height="14" [attr.fill]="item.color" />
+                        }
+                        @case ('cone') {
+                          <path d="M12 3 L19 20 A7 2.5 0 0 1 5 20 Z" [attr.fill]="item.color" />
+                        }
+                        @case ('square') {
+                          <path d="M12 3 L20 19 L12 22 L4 19 Z M12 3 L12 22" [attr.fill]="item.color" stroke="#0006" />
+                        }
+                        @case ('pentagon') {
+                          <path d="M12 3 L20 15 L16 21 L8 21 L4 15 Z M12 3 L12 21" [attr.fill]="item.color" stroke="#0006" />
+                        }
+                        @case ('triangle') {
+                          <path d="M12 3 L21 20 L3 20 Z" [attr.fill]="item.color" />
+                        }
+                        @case ('diamond') {
+                          <path d="M12 2 L18 9 L12 16 L6 9 Z M11.3 16 h1.4 v6 h-1.4 Z" [attr.fill]="item.color" />
+                        }
+                        @case ('ring') {
+                          <circle cx="12" cy="12" r="8" fill="none" [attr.stroke]="item.color" stroke-width="2.5" />
+                        }
+                        @case ('dashed') {
+                          <path d="M2 12 H18" [attr.stroke]="item.color" stroke-width="2.5" stroke-dasharray="4 3" />
+                          <path d="M17 7 L23 12 L17 17 Z" [attr.fill]="item.color" />
+                        }
+                        @case ('beam') {
+                          <rect x="10.5" y="1" width="3" height="18" [attr.fill]="item.color" />
+                          <ellipse cx="12" cy="20" rx="8" ry="2.5" fill="none" [attr.stroke]="item.color" stroke-width="2" />
+                        }
+                        @case ('check') {
+                          <rect x="10" y="3" width="4" height="12" rx="1" [attr.fill]="item.color" />
+                          <circle cx="12" cy="20" r="2.5" [attr.fill]="item.color" />
+                        }
+                        @case ('tile') {
+                          <rect x="3" y="3" width="18" height="18" [attr.fill]="item.color" stroke="#fff6" />
+                        }
+                        @default {
+                          <path d="M2 12 H17" [attr.stroke]="item.color" stroke-width="2.5" />
+                          <path d="M16 7 L23 12 L16 17 Z" [attr.fill]="item.color" />
+                        }
+                      }
+                    </svg>
+                    <span>{{ item.label | translate }}</span>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+      @if (showMap()) {
+        <div class="world-editor-map">
+          <keira-world-map
+            [directory]="mapDirectory()"
+            [mapId]="mapId()"
+            [tiles]="mapTiles()"
+            [camera]="cameraCenter()"
+            [dots]="mapDots()"
+            [zones]="zones()"
+            [coverage]="mapCoverage()"
+            [maps]="maps()"
+            (mapPicked)="pickMap($event)"
+            (atlasPicked)="goToPlace($event.mapId, $event.position)"
+            (goTo)="onMapGoTo($event)"
+            (regionSelected)="onMapRegion($event)"
+            (closed)="toggleMap()"
+          />
+        </div>
+      }
+      @if (showGameMap()) {
+        <div class="world-editor-map">
+          <keira-game-map
+            [mapId]="mapId()"
+            [camera]="cameraCenter()"
+            [zoneId]="cameraZone()"
+            [dots]="mapDots()"
+            [pois]="gameMapPois()"
+            [teleports]="gameMapTeleports()"
+            [portals]="gameMapPortals()"
+            [spawnLevels]="readSpawnLevels"
+            [transports]="gameMapTransports()"
+            [maps]="maps()"
+            (regionSelected)="onMapRegion($event)"
+            (closed)="toggleGameMap()"
+          />
+        </div>
+      }
+      @if (mapRegion()) {
+        <button
+          type="button"
+          class="btn btn-sm btn-warning world-editor-region"
+          data-testid="map-region-clear"
+          (click)="mapRegion.set(undefined)"
+        >
+          {{ 'WORLD_EDITOR.MAP_REGION_CLEAR' | translate }} <i class="fa fa-times"></i>
+        </button>
+      }
+      @if (contextMenu(); as menu) {
+        @let place = contextPlace();
+        <div
+          class="dropdown-menu show world-editor-context"
+          data-testid="context-menu"
+          [style.left.px]="place.left"
+          [style.right.px]="place.right"
+          [style.top.px]="place.top"
+          [style.bottom.px]="place.bottom"
+          [style.max-height.px]="place.maxHeight"
+        >
+          @if (contextSpawn(); as spawn) {
+            <h6 class="dropdown-header">{{ spawnTitle(spawn) }}</h6>
+            @if (spawn.aiName) {
+              <span class="dropdown-item-text small text-muted" data-testid="context-ai-name">AIName: {{ spawn.aiName }}</span>
+            }
+            @if (spawn.scriptName) {
+              <span class="dropdown-item-text small text-muted" data-testid="context-script-name">ScriptName: {{ spawn.scriptName }}</span>
+            }
+            @if (spawn.type === 'creature') {
+              <button
+                type="button"
+                class="dropdown-item"
+                data-testid="context-creature"
+                [disabled]="!links"
+                (click)="openContextEntry('creature')"
+              >
+                <i class="fa fa-paw"></i> {{ 'WORLD_EDITOR.OPEN_CREATURE' | translate }}
+              </button>
+            } @else {
+              <button
+                type="button"
+                class="dropdown-item"
+                data-testid="context-gameobject"
+                [disabled]="!links"
+                (click)="openContextEntry('gameobject')"
+              >
+                <i class="fa fa-cube"></i> {{ 'WORLD_EDITOR.OPEN_GAMEOBJECT' | translate }}
+              </button>
+            }
+            <button type="button" class="dropdown-item" data-testid="context-sai" [disabled]="!links" (click)="openContextEntry('sai')">
+              <i class="fa fa-code"></i> {{ 'WORLD_EDITOR.OPEN_SAI' | translate }}
+            </button>
+            @for (loot of contextLoot(); track loot.kind) {
+              <button
+                type="button"
+                class="dropdown-item"
+                [attr.data-testid]="'context-loot-' + loot.kind"
+                [disabled]="!links"
+                (click)="openContextLoot(loot.kind)"
+              >
+                <i class="fa fa-gem"></i> {{ loot.label | translate }} ({{ loot.id }})
+              </button>
+            }
+            <button type="button" class="dropdown-item" data-testid="context-copy-guid" (click)="copyContextGuid()">
+              <i class="fa fa-copy"></i> {{ 'WORLD_EDITOR.COPY_GUID' | translate }}
+            </button>
+            <button type="button" class="dropdown-item" data-testid="context-copy-go-guid" (click)="copyContextGoTo()">
+              <i class="fa fa-location-arrow"></i> {{ 'WORLD_EDITOR.COPY_GO_GUID' | translate }}
+            </button>
+            <div class="dropdown-divider"></div>
+            <button type="button" class="dropdown-item" data-testid="context-select-like" (click)="selectLike()">
+              <i class="fa fa-object-group"></i> {{ 'WORLD_EDITOR.SELECT_LIKE' | translate }}
+            </button>
+            @if (tilted(spawn)) {
+              <button type="button" class="dropdown-item" data-testid="context-level-out" (click)="levelOut()">
+                <i class="fa fa-level-up-alt"></i> {{ 'WORLD_EDITOR.EDEN.LEVEL_OUT' | translate }}
+              </button>
+            }
+            <button type="button" class="dropdown-item" data-testid="context-hide" (click)="hideContext()">
+              <i class="fa fa-eye-slash"></i> {{ 'WORLD_EDITOR.HIDE_THIS' | translate }}
+            </button>
+            <button type="button" class="dropdown-item" data-testid="context-hide-others" (click)="hideOthers()">
+              <i class="fa fa-low-vision"></i> {{ 'WORLD_EDITOR.HIDE_OTHERS' | translate }}
+            </button>
+            <button type="button" class="dropdown-item" data-testid="context-lock" (click)="toggleLock(menu.key)">
+              @if (lockedKeys().has(menu.key)) {
+                <i class="fa fa-lock-open"></i> {{ 'WORLD_EDITOR.UNLOCK' | translate }}
+              } @else {
+                <i class="fa fa-lock"></i> {{ 'WORLD_EDITOR.LOCK' | translate }}
+              }
+            </button>
+            <button type="button" class="dropdown-item" data-testid="context-lock-others" (click)="lockOthers()">
+              <i class="fa fa-lock"></i> {{ 'WORLD_EDITOR.LOCK_OTHERS' | translate }}
+            </button>
+            @if (contextFormation(); as formation) {
+              <div class="dropdown-divider"></div>
+              <h6 class="dropdown-header" data-testid="context-formation">
+                {{ 'WORLD_EDITOR.FORMATION' | translate }} ·
+                {{ 'WORLD_EDITOR.FORMATION_MEMBERS' | translate: { count: formation.members.length + 1 } }}
+              </h6>
+              <button type="button" class="dropdown-item" data-testid="context-select-formation" (click)="selectFormation()">
+                <i class="fa fa-object-group"></i> {{ 'WORLD_EDITOR.SELECT_FORMATION' | translate }}
+              </button>
+              <button type="button" class="dropdown-item" data-testid="context-hide-formation" (click)="hideFormation()">
+                <i class="fa fa-eye-slash"></i> {{ 'WORLD_EDITOR.HIDE_FORMATION' | translate }}
+              </button>
+              <button type="button" class="dropdown-item" data-testid="context-lock-formation" (click)="toggleFormationLock()">
+                @if (contextFormationLocked()) {
+                  <i class="fa fa-lock-open"></i> {{ 'WORLD_EDITOR.UNLOCK_FORMATION' | translate }}
+                } @else {
+                  <i class="fa fa-lock"></i> {{ 'WORLD_EDITOR.LOCK_FORMATION' | translate }}
+                }
+              </button>
+            }
+          } @else if (contextWaypoint(); as waypoint) {
+            <h6 class="dropdown-header">{{ 'WORLD_EDITOR.PATH' | translate }} {{ waypoint.pathId }} · #{{ waypoint.point }}</h6>
+            <button
+              type="button"
+              class="dropdown-item"
+              data-testid="context-waypoints"
+              [disabled]="!links"
+              (click)="openContextPath(waypoint.pathId)"
+            >
+              <i class="fa fa-map-signs"></i> {{ 'WORLD_EDITOR.OPEN_WAYPOINTS' | translate }}
+            </button>
+            @if (waypoint.action) {
+              <button
+                type="button"
+                class="dropdown-item"
+                data-testid="context-waypoint-script"
+                [disabled]="!links"
+                (click)="openContextScript(waypoint.action)"
+              >
+                <i class="fa fa-scroll"></i> {{ 'WORLD_EDITOR.OPEN_WAYPOINT_SCRIPT' | translate }} ({{ waypoint.action }})
+              </button>
+            }
+          } @else {
+            <h6 class="dropdown-header world-editor-context-label" data-testid="context-label">{{ menu.label }}</h6>
+            @if (contextAreaTrigger(); as trigger) {
+              @if (contextTeleport(); as teleport) {
+                <button type="button" class="dropdown-item" data-testid="context-trigger-go" (click)="goThrough(teleport)">
+                  <i class="fa fa-sign-in"></i> {{ 'WORLD_EDITOR.GO_THROUGH' | translate }} ({{ mapLabel(teleport.map) }})
+                </button>
+              }
+              <button
+                type="button"
+                class="dropdown-item"
+                data-testid="context-trigger-sai"
+                [disabled]="!links"
+                (click)="openTriggerSai(trigger)"
+              >
+                <i class="fa fa-code"></i> {{ 'WORLD_EDITOR.OPEN_SAI' | translate }}
+              </button>
+              <button type="button" class="dropdown-item" data-testid="context-copy-go-trigger" (click)="copyContextGoTo()">
+                <i class="fa fa-location-arrow"></i> {{ 'WORLD_EDITOR.COPY_GO_TRIGGER' | translate }}
+              </button>
+            }
+          }
+          @if (treeHidden().size || lockedKeys().size) {
+            <div class="dropdown-divider"></div>
+            @if (treeHidden().size) {
+              <button type="button" class="dropdown-item" data-testid="context-show-hidden" (click)="showHidden()">
+                <i class="fa fa-eye"></i> {{ 'WORLD_EDITOR.SHOW_HIDDEN' | translate }} ({{ treeHidden().size }})
+              </button>
+            }
+            @if (lockedKeys().size) {
+              <button type="button" class="dropdown-item" data-testid="context-unlock-all" (click)="unlockAll()">
+                <i class="fa fa-lock-open"></i> {{ 'WORLD_EDITOR.UNLOCK_ALL' | translate }} ({{ lockedKeys().size }})
+              </button>
+            }
+          }
+          @if (contextPool(); as pool) {
+            <div class="dropdown-divider"></div>
+            <h6 class="dropdown-header" data-testid="context-pool">{{ 'WORLD_EDITOR.POOL' | translate }} {{ pool }}</h6>
+            @if (contextPoolMembers(); as members) {
+              <button
+                type="button"
+                class="dropdown-item"
+                data-testid="context-pool-select"
+                [disabled]="!loadedPoolKeys().length"
+                (click)="selectPool()"
+              >
+                <i class="fa fa-object-group"></i> {{ 'WORLD_EDITOR.SELECT_POOL' | translate }} ({{ loadedPoolKeys().length }} /
+                {{ members.length }})
+              </button>
+              <div class="world-editor-pool-list">
+                @for (member of members; track member.type + member.guid; let i = $index) {
+                  <button
+                    type="button"
+                    class="dropdown-item small py-0"
+                    [attr.data-testid]="'context-pool-member-' + i"
+                    [class.text-muted]="member.map !== mapId()"
+                    [disabled]="member.map !== mapId()"
+                    (click)="goToPoolMember(member)"
+                  >
+                    <i class="fa" [class.fa-paw]="member.type === 'creature'" [class.fa-cube]="member.type === 'gameobject'"></i>
+                    {{ member.name || member.entry }} ({{ member.guid }})
+                  </button>
+                }
+              </div>
+            } @else {
+              <span class="dropdown-item-text small text-muted" data-testid="context-pool-loading">{{ 'LOADING' | translate }}</span>
+            }
+          }
+          <button type="button" class="dropdown-item" data-testid="context-copy" (click)="copyContextInfo()">
+            <i class="fa fa-clipboard"></i> {{ 'WORLD_EDITOR.COPY_INFO' | translate }}
+          </button>
+          @if (menu.liquid; as liquid) {
+            <div class="dropdown-divider"></div>
+            <h6 class="dropdown-header" data-testid="context-liquid">
+              {{ 'WORLD_EDITOR.LIQUID_' + liquid.kind.toUpperCase() | translate }} · {{ liquid.z.toFixed(2) }}
+              @if (liquid.deep) {
+                · <span class="text-warning" data-testid="context-liquid-deep">{{ 'WORLD_EDITOR.LIQUID_DEEP' | translate }}</span>
+              }
+            </h6>
+            <button type="button" class="dropdown-item" data-testid="context-copy-go-liquid" (click)="copyContextGo('liquid')">
+              <i class="fa fa-water"></i> {{ 'WORLD_EDITOR.COPY_GO_LIQUID' | translate }}
+            </button>
+            <h6 class="dropdown-header">{{ 'WORLD_EDITOR.GROUND_BELOW' | translate }}</h6>
+          }
+          @if (contextComment(); as comment) {
+            <div class="dropdown-divider"></div>
+            <h6 class="dropdown-header" data-testid="context-comment">{{ comment.title }}</h6>
+            <button type="button" class="dropdown-item" data-testid="context-comment-edit" (click)="editComment(comment.id)">
+              <i class="fa fa-edit"></i> {{ 'WORLD_EDITOR.EDEN.COMMENT_EDIT' | translate }}
+            </button>
+            <button type="button" class="dropdown-item" data-testid="context-comment-delete" (click)="deleteComment(comment.id)">
+              <i class="fa fa-trash"></i> {{ 'WORLD_EDITOR.EDEN.COMMENT_DELETE' | translate }}
+            </button>
+          } @else if (menu.position) {
+            <button type="button" class="dropdown-item" data-testid="context-comment-place" (click)="placeComment()">
+              <i class="fa fa-comment"></i> {{ 'WORLD_EDITOR.EDEN.COMMENT_PLACE' | translate }}
+            </button>
+          }
+          @if (menu.position) {
+            <button type="button" class="dropdown-item" data-testid="context-copy-go" (click)="copyContextGo('xyz')">
+              <i class="fa fa-location-arrow"></i> {{ 'WORLD_EDITOR.COPY_GO' | translate }}
+            </button>
+            <button type="button" class="dropdown-item" data-testid="context-copy-go-xy" (click)="copyContextGo('xy')">
+              <i class="fa fa-location-arrow"></i> {{ 'WORLD_EDITOR.COPY_GO_XY' | translate }}
+            </button>
+            <button type="button" class="dropdown-item" data-testid="context-copy-go-grid" (click)="copyContextGo('grid')">
+              <i class="fa fa-th"></i> {{ 'WORLD_EDITOR.COPY_GO_GRID' | translate }}
+            </button>
+          }
+          @if (menu.marker) {
+            <button type="button" class="dropdown-item" data-testid="context-copy-marker" (click)="copyContextGo('marker')">
+              <i class="fa fa-street-view"></i> {{ 'WORLD_EDITOR.COPY_GO_MARKER' | translate }}
+            </button>
+            @if (menu.position) {
+              <button type="button" class="dropdown-item" data-testid="context-face-here" (click)="faceMarkerHere()">
+                <i class="fa fa-compass"></i> {{ 'WORLD_EDITOR.FACE_HERE' | translate }}
+              </button>
+            }
+          }
+        </div>
+      }
+    </div>
+
+    <div class="world-editor-panel" data-testid="side-panel" [hidden]="panelCollapsed()">
+      <div class="btn-group btn-group-sm w-100 mb-2 eden-tabs" role="tablist">
+        @for (tab of RIGHT_TABS; track tab.id) {
+          <button
+            type="button"
+            class="btn"
+            role="tab"
+            [attr.data-testid]="'right-tab-' + tab.id"
+            [class.btn-secondary]="rightTab() === tab.id"
+            [class.btn-outline-secondary]="rightTab() !== tab.id"
+            (click)="rightTab.set(tab.id)"
+          >
+            <i class="fa" [class]="tab.icon"></i> {{ tab.label | translate }}
+            @if (tab.id === 'history' && pendingDescriptions().length) {
+              <span class="badge bg-warning text-dark">{{ pendingDescriptions().length }}</span>
+            }
+          </button>
+        }
+      </div>
+      <div [hidden]="rightTab() !== 'assets'" class="eden-tab-assets">
+        <keira-asset-browser
+          [selectionCount]="selectedCount()"
+          [request]="assetRequest()"
+          (picked)="onAssetPicked($event)"
+          (compositionPicked)="onCompositionPicked($event)"
+          (compositionSaved)="onCompositionSaved($event)"
+        />
+      </div>
+      <div [hidden]="rightTab() !== 'history'">
+        <div class="card">
+          <div class="card-header py-1">
+            {{ 'WORLD_EDITOR.PENDING_CHANGES' | translate }}
+            <span class="badge bg-secondary" data-testid="pending-count">{{ pendingDescriptions().length }}</span>
+          </div>
+          <div class="card-body p-2">
+            @if (pendingDescriptions().length) {
+              <ul class="pending-list small mb-2" data-testid="pending-list">
+                @for (line of pendingDescriptions(); track $index) {
+                  <li>{{ line }}</li>
+                }
+              </ul>
+              <keira-highlightjs-wrapper [code]="pendingSql()" data-testid="pending-sql" />
+              <div class="d-flex gap-1 mt-2">
+                <button type="button" class="btn btn-sm btn-secondary" data-testid="copy-sql" (click)="copySql()">
+                  <i class="fa fa-copy"></i> {{ 'COPY' | translate }}
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-primary"
+                  data-testid="execute-sql"
+                  [disabled]="executing()"
+                  (click)="executeSql()"
+                >
+                  <i class="fa fa-bolt"></i> {{ 'EXECUTE' | translate }}
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-danger ms-auto"
+                  data-testid="discard-changes"
+                  (click)="discardChanges()"
+                >
+                  {{ 'WORLD_EDITOR.DISCARD' | translate }}
+                </button>
+              </div>
+            } @else {
+              <small class="text-muted" data-testid="no-changes">{{ 'WORLD_EDITOR.NO_CHANGES' | translate }}</small>
+            }
+          </div>
+        </div>
+      </div>
+      <div [hidden]="rightTab() !== 'attributes'">
+        <div class="card mb-2">
+          <div class="card-header py-1">{{ 'WORLD_EDITOR.TOOLS' | translate }}</div>
+          <div class="card-body p-2">
+            @if (tool() === 'face') {
+              <small class="text-muted d-block mb-1" data-testid="face-hint">{{ 'WORLD_EDITOR.FACE_HINT' | translate }}</small>
+            }
+            @if (tool() === 'place-composition' && placingComposition(); as composition) {
+              <p class="small mb-1" data-testid="composition-hint">
+                <i class="fa fa-object-group"></i>
+                {{ 'WORLD_EDITOR.EDEN.COMPOSITION_HINT' | translate: { name: composition.name, count: composition.members.length } }}
+              </p>
+            }
+            @if (tool() === 'place-creature' || tool() === 'place-gameobject') {
+              <div class="position-relative">
+                <div class="input-group input-group-sm mb-1">
+                  <span class="input-group-text">{{ 'WORLD_EDITOR.ENTRY' | translate }}</span>
+                  <input
+                    type="text"
+                    class="form-control"
+                    data-testid="place-entry"
+                    [placeholder]="'WORLD_EDITOR.PLACE_SEARCH' | translate"
+                    [formControl]="placeSearch"
+                    (change)="onPlaceEntryChange()"
+                    (keydown.escape)="placeResults.set([])"
+                  />
+                  @if (tool() === 'place-creature') {
+                    <keira-creature-selector-btn [control]="placeEntry" [disabled]="false" [config]="{ name: 'place-entry' }" />
+                  } @else {
+                    <keira-gameobject-selector-btn [control]="placeEntry" [disabled]="false" [config]="{ name: 'place-entry' }" />
+                  }
+                </div>
+                @if (placeResults().length) {
+                  <div class="list-group place-results" data-testid="place-results" (mouseleave)="placeHover.set(undefined)">
+                    @for (template of placeResults(); track template.entry) {
+                      <button
+                        type="button"
+                        class="list-group-item list-group-item-action py-1 small"
+                        [attr.data-testid]="'place-result-' + template.entry"
+                        [class.active]="template.entry === placeEntry.value"
+                        (mouseenter)="placeHover.set(template)"
+                        (click)="choosePlaceTemplate(template)"
+                      >
+                        {{ template.entry }} – {{ template.name || '?' }}
+                        @if (!template.displayId) {
+                          <span class="text-muted">({{ 'WORLD_EDITOR.NO_MODEL' | translate }})</span>
+                        }
+                      </button>
+                    }
+                  </div>
+                }
+              </div>
+              <small class="text-muted" data-testid="place-entry-name">{{
+                placeEntryName() || ('WORLD_EDITOR.PLACE_HINT' | translate)
+              }}</small>
+            }
+
+            @if (tool() === 'add-waypoint') {
+              <small class="text-muted" data-testid="waypoint-hint">
+                @if (activePathId()) {
+                  {{ 'WORLD_EDITOR.ADD_WAYPOINT_HINT' | translate: { path: pathLabel(activePathId()) } }}
+                } @else {
+                  {{ 'WORLD_EDITOR.NO_ACTIVE_PATH' | translate }}
+                }
+              </small>
+            }
+
+            @if (tool() === 'probe') {
+              <div class="world-editor-probe" data-testid="probe">
+                <small class="text-muted d-block mb-1">{{
+                  (probeFrom() ? 'WORLD_EDITOR.PROBE_PICK_C' : 'WORLD_EDITOR.PROBE_PICK_A') | translate
+                }}</small>
+                <div class="d-flex gap-1 mb-1">
+                  <div class="input-group input-group-sm">
+                    <span class="input-group-text">{{ 'WORLD_EDITOR.RANGE' | translate }}</span>
+                    <select class="form-select" data-testid="probe-range-preset" (change)="setProbeRange($event)">
+                      @for (preset of rangePresets; track preset.range) {
+                        <option [value]="preset.range" [selected]="probeRange() === preset.range">
+                          {{ preset.label | translate }} ({{ preset.range }})
+                        </option>
+                      }
+                      @if (!isRangePreset()) {
+                        <option [value]="probeRange()" selected>{{ probeRange() }}</option>
+                      }
+                    </select>
+                    <input
+                      type="number"
+                      class="form-control"
+                      data-testid="probe-range"
+                      min="0"
+                      [value]="probeRange()"
+                      (change)="setProbeRange($event)"
+                    />
+                  </div>
+                  <div class="input-group input-group-sm world-editor-probe-height">
+                    <span class="input-group-text">{{ 'WORLD_EDITOR.EYE_HEIGHT' | translate }}</span>
+                    <input
+                      type="number"
+                      class="form-control"
+                      data-testid="probe-height"
+                      min="0"
+                      step="0.5"
+                      [value]="probeHeight()"
+                      (change)="setProbeHeight($event)"
+                    />
+                  </div>
+                </div>
+                @if (probeResult(); as result) {
+                  @if (result.to) {
+                    <ul class="list-unstyled small mb-1" data-testid="probe-result">
+                      @if (probeDistance(); as distance) {
+                        <li data-testid="probe-distance">
+                          <strong>{{ 'WORLD_EDITOR.DISTANCE' | translate }}:</strong>
+                          {{ distance.straight.toFixed(1) }} {{ 'WORLD_EDITOR.YARDS' | translate }}
+                          <span class="text-muted"
+                            >({{ 'WORLD_EDITOR.HORIZONTAL' | translate }} {{ distance.flat.toFixed(1) }},
+                            {{ 'WORLD_EDITOR.HEIGHT' | translate }} {{ distance.height.toFixed(1) }})</span
+                          >
+                        </li>
+                        <li data-testid="probe-time">
+                          <strong>{{ 'WORLD_EDITOR.TRAVEL_TIME' | translate }}:</strong>
+                          {{ 'WORLD_EDITOR.RUNNING' | translate }} {{ probeTime().run }} · {{ 'WORLD_EDITOR.WALKING' | translate }}
+                          {{ probeTime().walk }}
+                          <i
+                            class="fas fa-info-circle ms-1"
+                            placement="auto"
+                            container="body"
+                            [tooltip]="'WORLD_EDITOR.TRAVEL_TIME_HELP' | translate"
+                          ></i>
+                        </li>
+                        <li>
+                          <button type="button" class="btn btn-link btn-sm p-0" data-testid="probe-copy-go-to" (click)="copyGo(result.to)">
+                            .go xyz C
+                          </button>
+                        </li>
+                      }
+                      <li>
+                        <strong>{{ 'WORLD_EDITOR.PATH_LABEL' | translate }}:</strong>
+                        @if (result.noNavMesh) {
+                          {{ 'WORLD_EDITOR.NO_NAVMESH' | translate }}
+                        } @else if (result.tooFar) {
+                          {{ 'WORLD_EDITOR.PROBE_TOO_FAR' | translate }}
+                        } @else if (result.path) {
+                          {{ result.length!.toFixed(1) }} {{ 'WORLD_EDITOR.YARDS' | translate }}
+                        } @else {
+                          <span class="text-danger">{{ 'WORLD_EDITOR.NO_PATH' | translate }}</span>
+                        }
+                      </li>
+                      <li>
+                        <strong>{{ 'WORLD_EDITOR.LINE_OF_SIGHT' | translate }}:</strong>
+                        @if (result.blockedAt; as hit) {
+                          <span class="text-danger">{{ 'WORLD_EDITOR.LOS_BLOCKED' | translate }}</span>
+                          ({{ hit.x.toFixed(1) }} {{ hit.y.toFixed(1) }} {{ hit.z.toFixed(1) }})
+                        } @else {
+                          <span class="text-success">{{ 'WORLD_EDITOR.LOS_CLEAR' | translate }}</span>
+                        }
+                      </li>
+                      <li>
+                        <strong>{{ 'WORLD_EDITOR.ATTACK_FROM' | translate }}:</strong>
+                        @if (result.attackFrom; as spot) {
+                          {{ spot.x.toFixed(1) }} {{ spot.y.toFixed(1) }} {{ spot.z.toFixed(1) }} ({{ result.attackDistance!.toFixed(1) }}
+                          {{ 'WORLD_EDITOR.YARDS' | translate }}, {{ 'WORLD_EDITOR.WALK' | translate }}
+                          {{ result.walkToAttack!.toFixed(1) }})
+                          <button type="button" class="btn btn-link btn-sm p-0" data-testid="probe-copy-go" (click)="copyGo(spot)">
+                            .go xyz
+                          </button>
+                        } @else {
+                          <span class="text-danger">{{ 'WORLD_EDITOR.NO_ATTACK_POSITION' | translate }}</span>
+                        }
+                      </li>
+                    </ul>
+                  }
+                }
+                <button type="button" class="btn btn-sm btn-outline-secondary" data-testid="probe-clear" (click)="clearProbe()">
+                  {{ 'WORLD_EDITOR.CLEAR' | translate }}
+                </button>
+              </div>
+            }
+
+          </div>
+        </div>
+
+        @if (editingComment(); as comment) {
+          <div class="card mb-2" data-testid="comment-editor">
+            <div class="card-body p-2">
+              <div class="small fw-bold mb-1"><i class="fa fa-comment"></i> {{ 'WORLD_EDITOR.EDEN.COMMENT' | translate }}</div>
+              <input
+                class="form-control form-control-sm mb-1"
+                data-testid="comment-title"
+                [value]="comment.title"
+                (change)="comments.update(comment.id, { title: $any($event.target).value })"
+              />
+              <textarea
+                class="form-control form-control-sm mb-1"
+                rows="3"
+                data-testid="comment-text"
+                [placeholder]="'WORLD_EDITOR.EDEN.COMMENT_TEXT' | translate"
+                [value]="comment.text"
+                (change)="comments.update(comment.id, { text: $any($event.target).value })"
+              ></textarea>
+              <div class="d-flex gap-1">
+                <button type="button" class="btn btn-sm btn-outline-danger" data-testid="comment-delete" (click)="deleteComment(comment.id)">
+                  <i class="fa fa-trash"></i> {{ 'WORLD_EDITOR.EDEN.COMMENT_DELETE' | translate }}
+                </button>
+                <button type="button" class="btn btn-sm btn-secondary ms-auto" data-testid="comment-done" (click)="editingCommentId.set(undefined)">
+                  {{ 'WORLD_EDITOR.EDEN.COMMENT_DONE' | translate }}
+                </button>
+              </div>
+              <small class="text-muted">{{ 'WORLD_EDITOR.EDEN.COMMENT_LOCAL' | translate }}</small>
+            </div>
+          </div>
+        }
+
+        @if (layers().sniffs) {
+          <div class="card mb-2" data-testid="sniffs">
+            <div class="card-body p-2">
+              <div class="small fw-bold">
+                <i class="fa fa-satellite-dish"></i> {{ 'WORLD_EDITOR.SNIFFED_SPAWNS' | translate }}
+                <span class="text-muted" data-testid="sniff-count">{{
+                  'WORLD_EDITOR.SNIFF_COUNT' | translate: { count: sniffEvidence().length, missing: missingSniffs().length }
+                }}</span>
+              </div>
+              <div class="world-editor-results mt-1">
+                @for (evidence of missingSniffs(); track $index) {
+                  <div class="d-flex align-items-center gap-1 small" [attr.data-testid]="'sniff-missing-' + $index">
+                    <i class="fa" [class]="evidence.sniff.type === 'creature' ? 'fa-dragon' : 'fa-cube'"></i>
+                    <span>{{ evidence.sniff.entry }} · {{ evidence.sniff.x.toFixed(1) }}, {{ evidence.sniff.y.toFixed(1) }} · ×{{ evidence.seen }}</span>
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-success py-0 ms-auto"
+                      [attr.data-testid]="'sniff-add-' + $index"
+                      [disabled]="addingSniffs().has(sniffKey(evidence))"
+                      (click)="addSniffed(evidence)"
+                    >
+                      <i class="fa fa-plus"></i> {{ 'WORLD_EDITOR.SNIFF_ADD' | translate }}
+                    </button>
+                  </div>
+                } @empty {
+                  <small class="text-muted" data-testid="sniff-none">{{ 'WORLD_EDITOR.SNIFF_NONE' | translate }}</small>
+                }
+              </div>
+            </div>
+          </div>
+        }
+
+        <div class="card mb-2" data-testid="problems">
+          <div class="card-body p-2">
+            <div class="d-flex align-items-center gap-2">
+              <button type="button" class="btn btn-sm btn-outline-warning" data-testid="check-spawns" (click)="checkSpawns()">
+                <i class="fa fa-stethoscope"></i> {{ 'WORLD_EDITOR.CHECK_SPAWNS' | translate }}
+              </button>
+              @if (spawnProblems(); as problems) {
+                <small class="text-muted" data-testid="problem-count">{{
+                  'WORLD_EDITOR.PROBLEM_COUNT' | translate: { count: problems.length }
+                }}</small>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-link ms-auto p-0"
+                  data-testid="problems-close"
+                  (click)="spawnProblems.set(undefined)"
+                >
+                  <i class="fa fa-times"></i>
+                </button>
+              }
+            </div>
+            <div class="d-flex align-items-center gap-2 mt-1">
+              @if (mapScan(); as scan) {
+                <small class="text-muted" data-testid="scan-progress">{{
+                  'WORLD_EDITOR.SCAN_PROGRESS' | translate: { done: scan.done, total: scan.total || '?' }
+                }}</small>
+                <button type="button" class="btn btn-sm btn-link p-0" data-testid="scan-cancel" (click)="cancelScan()">
+                  {{ 'WORLD_EDITOR.CANCEL' | translate }}
+                </button>
+              } @else {
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-secondary"
+                  data-testid="scan-map"
+                  [title]="'WORLD_EDITOR.SCAN_MAP_HELP' | translate"
+                  [disabled]="!client.isSupported() || !settings.paths().serverDataPath"
+                  (click)="scanMap()"
+                >
+                  <i class="fa fa-satellite-dish"></i> {{ 'WORLD_EDITOR.SCAN_MAP' | translate }}
+                </button>
+              }
+              @if (scanResults()) {
+                @let counts = scanCounts();
+                @for (level of scanLevels; track level) {
+                  <button
+                    type="button"
+                    class="btn btn-sm py-0 px-1 world-editor-scan-level"
+                    [class]="'scan-' + level"
+                    [class.off]="!scanShown()[level]"
+                    [attr.data-testid]="'scan-level-' + level"
+                    [title]="'WORLD_EDITOR.SCAN_' + level.toUpperCase() | translate"
+                    (click)="toggleScanLevel(level)"
+                  >
+                    ! {{ counts[level] }}
+                  </button>
+                }
+                <button type="button" class="btn btn-sm btn-link ms-auto p-0" data-testid="scan-close" (click)="scanResults.set(undefined)">
+                  <i class="fa fa-times"></i>
+                </button>
+              }
+            </div>
+            @for (group of scanList(); track group.type) {
+              <h6 class="small text-muted mt-2 mb-0" [attr.data-testid]="'scan-group-' + group.type">
+                {{ (group.type === 'creature' ? 'WORLD_EDITOR.CREATURES' : 'WORLD_EDITOR.GAMEOBJECTS') | translate }} ({{ group.count }})
+              </h6>
+              <div class="list-group list-group-flush small world-editor-results" [attr.data-testid]="'scan-list-' + group.type">
+                @for (result of group.results; track result.key) {
+                  <button
+                    type="button"
+                    class="list-group-item list-group-item-action py-1 px-2"
+                    [attr.data-testid]="'scan-' + result.key"
+                    (click)="goToResult(result.spawn)"
+                  >
+                    <strong class="world-editor-scan-mark" [class]="'scan-' + result.level">!</strong>
+                    {{ result.spawn.name || result.spawn.entry }} ({{ result.spawn.guid }}) - {{ result.text }}
+                  </button>
+                }
+              </div>
+            }
+            @if (spawnProblems()?.length) {
+              <div class="list-group list-group-flush small world-editor-results mt-1" data-testid="problem-list">
+                @for (problem of spawnProblems(); track $index) {
+                  <button
+                    type="button"
+                    class="list-group-item list-group-item-action py-1 px-2"
+                    [attr.data-testid]="'problem-' + $index"
+                    (click)="goToProblem(problem)"
+                  >
+                    <strong [class.text-danger]="problem.severity === 'bad'" [class.text-warning]="problem.severity === 'warn'">!</strong>
+                    {{ spawnTitle(problem.spawn) }} - {{ problem.text }}
+                  </button>
+                }
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="card mb-2" data-testid="search">
+          <div class="card-body p-2">
+            <form class="input-group input-group-sm" (submit)="$event.preventDefault(); searchSpawns()">
+              <input
+                class="form-control"
+                data-testid="search-input"
+                [formControl]="searchForm"
+                [placeholder]="'WORLD_EDITOR.SEARCH_SPAWNS' | translate"
+              />
+              <button type="submit" class="btn btn-secondary" data-testid="search-btn" [disabled]="searching()">
+                <i class="fa fa-search"></i>
+              </button>
+              @if (searchResults().length) {
+                <button type="button" class="btn btn-outline-secondary" data-testid="search-clear" (click)="clearSearch()">
+                  <i class="fa fa-times"></i>
+                </button>
+              }
+            </form>
+            @if (searchResults().length) {
+              <div class="list-group list-group-flush small world-editor-results mt-1" data-testid="search-results">
+                @for (result of searchResults(); track result.type + result.guid) {
+                  <button
+                    type="button"
+                    class="list-group-item list-group-item-action py-1 px-2"
+                    [attr.data-testid]="'search-result-' + result.type + '-' + result.guid"
+                    (click)="goToResult(result)"
+                  >
+                    {{ spawnTitle(result) }}
+                  </button>
+                }
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="card mb-2">
+          <div class="card-header py-1">{{ 'WORLD_EDITOR.SELECTION' | translate }}</div>
+          <div class="card-body p-2" data-testid="selection">
+            @if (checkedPathId() !== undefined && checkedPathId() !== activePathId()) {
+              <div class="mt-1 small" data-testid="path-check-other">
+                {{ 'WORLD_EDITOR.CHECKING_PATH' | translate }} {{ pathLabel(checkedPathId()!) }}
+                <button type="button" class="btn btn-sm btn-link p-0 ms-1" data-testid="clear-other-path-check" (click)="clearPathCheck()">
+                  <i class="fa fa-times"></i> {{ 'WORLD_EDITOR.CLEAR_PATH_CHECK' | translate }}
+                </button>
+              </div>
+            }
+            @if (selectedSpawn(); as spawn) {
+              <div class="mb-1" data-testid="selected-title">
+                <strong>{{ spawnTitle(spawn) }}</strong>
+                @if (spawn.pathId) {
+                  <span class="badge bg-danger ms-1" data-testid="selected-path"
+                    >path {{ spawn.pathId }}{{ spawn.pathFromTemplate ? ' (template)' : '' }}</span
+                  >
+                }
+                @for (sai of spawn.saiPaths ?? []; track sai) {
+                  <span class="badge bg-info text-dark ms-1" data-testid="selected-sai-path">{{ pathLabel(sai) }}</span>
+                }
+              </div>
+              @if (spawn.event) {
+                <div class="small mb-1" data-testid="selected-event">
+                  <i class="fa fa-calendar-alt me-1"></i>{{ eventLabel(spawn.event) }}
+                  @if (!filters().events.includes(spawn.event)) {
+                    <span class="text-muted">· {{ 'WORLD_EDITOR.EVENT_HIDDEN' | translate }}</span>
+                  }
+                </div>
+              }
+              @if (spawnStored(); as stored) {
+                <keira-spawn-panel [spawn]="spawn" [stored]="stored.values" [edits]="spawnEdits()" (edited)="editSpawn($event)" />
+              }
+              <keira-pool-panel
+                [member]="selectedPool()"
+                [count]="selectionCount()"
+                [canOpen]="!!links"
+                [problems]="selectedPoolProblems()"
+                (template)="editPool($event)"
+                (mother)="setPoolMother($event)"
+                (chance)="setPoolChance($event)"
+                (leave)="leavePool()"
+                (join)="joinPool($event)"
+                (create)="createPool($event)"
+                (open)="openPool($event)"
+              />
+            } @else if (selectedWaypoint(); as waypoint) {
+              <div class="mb-1" data-testid="selected-title">
+                <strong>{{ pathLabel(waypoint.pathId) }}</strong> <span class="text-muted">· point {{ waypoint.point }}</span>
+              </div>
+              <div class="small mb-1" data-testid="selected-path-owners">
+                {{ 'WORLD_EDITOR.WALKED_BY' | translate }}:
+                {{ pathOwners().get(waypoint.pathId)?.join(', ') }}
+              </div>
+              <keira-waypoint-panel
+                [waypoint]="waypoint"
+                (edited)="editSelectedWaypoint($event)"
+                (insertAfter)="insertWaypointAfter()"
+                (renumber)="renumberPath()"
+              />
+              @let info = waypointInfo(waypoint);
+              @if (info.length) {
+                <ul class="small mb-1 ps-3" data-testid="selected-waypoint-info">
+                  @for (line of info; track $index) {
+                    <li>{{ line }}</li>
+                  }
+                </ul>
+              }
+            } @else {
+              <small class="text-muted" data-testid="nothing-selected">{{ 'WORLD_EDITOR.NOTHING_SELECTED' | translate }}</small>
+            }
+
+            @if (selectedSpawn() || selectedWaypoint()) {
+              <form class="placement-form" [formGroup]="placementForm" (ngSubmit)="applyPlacementForm()">
+                <div class="row g-1 mb-1">
+                  @for (field of ['x', 'y', 'z', 'o']; track field) {
+                    <div class="col-6" [hidden]="field === 'o' && !selectedSpawn()">
+                      <div class="input-group input-group-sm">
+                        <span class="input-group-text">{{ field }}</span>
+                        <input
+                          type="number"
+                          step="any"
+                          class="form-control"
+                          [attr.data-testid]="'placement-' + field"
+                          [formControlName]="field"
+                        />
+                      </div>
+                    </div>
+                  }
+                </div>
+                <div class="d-flex gap-1 flex-wrap">
+                  <button type="submit" class="btn btn-sm btn-primary" data-testid="placement-apply" [disabled]="selectedLocked()">
+                    {{ 'WORLD_EDITOR.APPLY' | translate }}
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-danger"
+                    data-testid="delete-selected"
+                    [disabled]="selectedLocked()"
+                    (click)="deleteSelected()"
+                  >
+                    <i class="fa fa-trash"></i> {{ 'WORLD_EDITOR.DELETE' | translate }}
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-sm"
+                    data-testid="lock-selected"
+                    [class.btn-warning]="selectedLocked()"
+                    [class.btn-outline-secondary]="!selectedLocked()"
+                    [title]="'WORLD_EDITOR.LOCK_HELP' | translate"
+                    (click)="toggleLock(selectedKey()!)"
+                  >
+                    <i class="fa" [class.fa-lock]="selectedLocked()" [class.fa-lock-open]="!selectedLocked()"></i>
+                    {{ (selectedLocked() ? 'WORLD_EDITOR.UNLOCK' : 'WORLD_EDITOR.LOCK') | translate }}
+                  </button>
+                  @if (selectedSpawn()?.type === 'creature' && !selectedSpawn()?.pathId) {
+                    <button type="button" class="btn btn-sm btn-outline-danger" data-testid="create-path" (click)="createPath()">
+                      {{ 'WORLD_EDITOR.CREATE_PATH' | translate }}
+                    </button>
+                  }
+                </div>
+                @if (activePathId()) {
+                  <div class="mt-1">
+                    <button
+                      type="button"
+                      class="btn btn-sm"
+                      data-testid="check-path"
+                      [class.btn-success]="checkedPathId() === activePathId()"
+                      [class.btn-outline-success]="checkedPathId() !== activePathId()"
+                      [title]="'WORLD_EDITOR.CHECK_PATH_HINT' | translate"
+                      (click)="toggleCheckPath()"
+                    >
+                      <i class="fa fa-check-circle"></i> {{ 'WORLD_EDITOR.CHECK_PATH' | translate }} ({{ pathLabel(activePathId()) }})
+                    </button>
+                    @if (checkedPathId() === activePathId()) {
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-secondary ms-1"
+                        data-testid="clear-path-check"
+                        (click)="clearPathCheck()"
+                      >
+                        <i class="fa fa-times"></i> {{ 'WORLD_EDITOR.CLEAR_PATH_CHECK' | translate }}
+                      </button>
+                    }
+                    @if (checkedPathId() === activePathId() && waypointChecks().length) {
+                      <ul class="list-unstyled small mb-0 mt-1 world-editor-checks" data-testid="path-checks">
+                        @for (check of waypointChecks(); track check.key) {
+                          <li [attr.data-testid]="'path-check-' + check.point">
+                            <strong [style.color]="'#' + checkColors[check.status].toString(16).padStart(6, '0')">!</strong>
+                            #{{ check.point }}
+                            <span class="text-muted">({{ 'WORLD_EDITOR.PLACE_' + check.place.toUpperCase() | translate }})</span>
+                            {{ check.reason | translate: check.params }}
+                          </li>
+                        }
+                      </ul>
+                    }
+                  </div>
+                }
+                @if (selectedSpawn()) {
+                  <div class="d-flex gap-1 flex-wrap align-items-center mt-1" data-testid="group-tools">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-testid="copy-selection" (click)="copySelection()">
+                      <i class="fa fa-copy"></i> {{ 'COPY' | translate }}
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-secondary"
+                      data-testid="copy-in-place"
+                      [title]="'WORLD_EDITOR.COPY_IN_PLACE_HELP' | translate"
+                      (click)="copyInPlace()"
+                    >
+                      <i class="fa fa-clone"></i> {{ 'WORLD_EDITOR.COPY_IN_PLACE' | translate }}
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-secondary"
+                      data-testid="paste-copied"
+                      [disabled]="!copied().length"
+                      (click)="pasteCopied()"
+                    >
+                      <i class="fa fa-paste"></i> {{ 'WORLD_EDITOR.PASTE' | translate }}
+                    </button>
+                    <small class="text-muted" data-testid="group-count">{{
+                      groupKeys().length
+                        ? ('WORLD_EDITOR.GROUP_COUNT' | translate: { count: groupKeys().length + 1 })
+                        : ('WORLD_EDITOR.GROUP_HINT' | translate)
+                    }}</small>
+                  </div>
+                  @if (canSimulate()) {
+                    <div class="d-flex gap-1 align-items-center mt-1" data-testid="simulation">
+                      <button
+                        type="button"
+                        class="btn btn-sm"
+                        data-testid="simulate"
+                        [class.btn-primary]="simulation()"
+                        [class.btn-outline-primary]="!simulation()"
+                        (click)="toggleSimulation()"
+                      >
+                        <i class="fa" [class.fa-play]="!simulation()" [class.fa-stop]="simulation()"></i>
+                        {{ (simulation() ? 'WORLD_EDITOR.SIMULATE_STOP' : 'WORLD_EDITOR.SIMULATE') | translate }}
+                      </button>
+                      @if (simulationEnded()) {
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-outline-primary"
+                          data-testid="simulation-replay"
+                          (click)="replaySimulation()"
+                        >
+                          <i class="fa fa-redo"></i> {{ 'WORLD_EDITOR.SIMULATE_REPLAY' | translate }}
+                        </button>
+                      }
+                      @if (selectedFormation()) {
+                        <div
+                          class="form-check form-check-inline mb-0 ms-1"
+                          [tooltip]="'WORLD_EDITOR.SIMULATE_FORMATION_HELP' | translate"
+                          container="body"
+                        >
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="world-editor-simulate-formation"
+                            data-testid="simulate-formation"
+                            [checked]="simulateFormation()"
+                            (change)="simulateFormation.set($any($event.target).checked)"
+                          />
+                          <label class="form-check-label" for="world-editor-simulate-formation">{{
+                            'WORLD_EDITOR.SIMULATE_FORMATION' | translate
+                          }}</label>
+                        </div>
+                      }
+                      <select class="form-select form-select-sm w-auto" data-testid="simulation-rate" (change)="setSimulationRate($event)">
+                        @for (rate of [1, 2, 4, 8]; track rate) {
+                          <option [value]="rate" [selected]="simulationRate() === rate">×{{ rate }}</option>
+                        }
+                      </select>
+                    </div>
+                  }
+                  <!-- (inside the placement form: not a form of its own) -->
+                  <div
+                    class="input-group input-group-sm mt-1"
+                    data-testid="array"
+                    [formGroup]="arrayForm"
+                    (keydown.enter)="$event.preventDefault(); arraySelected()"
+                  >
+                    <span class="input-group-text">{{ 'WORLD_EDITOR.ARRAY' | translate }}</span>
+                    <input type="number" min="1" max="50" class="form-control" data-testid="array-count" formControlName="count" />
+                    <select class="form-select" data-testid="array-side" formControlName="side">
+                      @for (option of stackSides; track option.side) {
+                        <option [value]="option.side">{{ option.label | translate }}</option>
+                      }
+                    </select>
+                    <input
+                      type="number"
+                      min="0"
+                      step="any"
+                      class="form-control"
+                      data-testid="array-spacing"
+                      formControlName="spacing"
+                      [placeholder]="'WORLD_EDITOR.ARRAY_TOUCHING' | translate"
+                    />
+                    <button type="button" class="btn btn-outline-secondary" data-testid="array-place" (click)="arraySelected()">
+                      <i class="fa fa-th"></i>
+                    </button>
+                  </div>
+                  <div class="world-editor-stack mt-1" data-testid="stack" [title]="'WORLD_EDITOR.STACK_HINT' | translate">
+                    <span class="small text-muted">{{ 'WORLD_EDITOR.STACK' | translate }}</span>
+                    @for (option of stackSides; track option.side) {
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-secondary"
+                        [attr.data-testid]="'stack-' + option.side"
+                        (click)="stackSelected(option.side)"
+                      >
+                        <i class="fa {{ option.icon }}"></i> {{ option.label | translate }}
+                      </button>
+                    }
+                  </div>
+                }
+              </form>
+            }
+          </div>
+        </div>
+
+        @if (navMeshTile(); as info) {
+          <div class="card mb-2" data-testid="mmap-tile">
+            <div class="card-header py-1">{{ info.file }}</div>
+            <div class="card-body p-2">
+              @if (info.config; as config) {
+                <table class="table table-sm table-borderless align-middle small mb-1">
+                  <thead>
+                    <tr>
+                      <th scope="col">{{ 'WORLD_EDITOR.SETTING' | translate }}</th>
+                      <th scope="col">{{ 'WORLD_EDITOR.IN_TILE' | translate }}</th>
+                      <th scope="col">{{ 'WORLD_EDITOR.NEW_VALUE' | translate }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (key of mmapKeys; track key) {
+                      <tr [class.table-warning]="mmapChanges()[key] !== undefined">
+                        <td>{{ key }}</td>
+                        <td>{{ config[key] }}</td>
+                        <td>
+                          <input
+                            type="number"
+                            class="form-control form-control-sm"
+                            [attr.data-testid]="'mmap-' + key"
+                            [value]="mmapChanges()[key] ?? config[key]"
+                            (change)="setMmapValue(key, $event)"
+                          />
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+                <div class="input-group input-group-sm mb-1">
+                  <span class="input-group-text">{{ 'WORLD_EDITOR.OVERRIDE_FOR' | translate }}</span>
+                  <select class="form-select" data-testid="mmap-scope" (change)="setMmapScope($event)">
+                    <option value="tile" [selected]="mmapScope() === 'tile'">
+                      {{ 'WORLD_EDITOR.THIS_TILE' | translate }} ({{ info.tile.ty }},{{ info.tile.tx }})
+                    </option>
+                    <option value="map" [selected]="mmapScope() === 'map'">
+                      {{ 'WORLD_EDITOR.WHOLE_MAP' | translate }} ({{ info.mapId }})
+                    </option>
+                  </select>
+                </div>
+                <div class="d-flex gap-1 align-items-center mb-1">
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-primary"
+                    data-testid="mmap-preview"
+                    [disabled]="navMeshRebuildState()?.status === 'reading' || navMeshRebuildState()?.status === 'building'"
+                    (click)="previewMmap()"
+                  >
+                    <i class="fa fa-cubes"></i> {{ 'WORLD_EDITOR.MMAP_PREVIEW' | translate }}
+                  </button>
+                  @if (navMeshRebuildState()) {
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-secondary"
+                      data-testid="mmap-preview-clear"
+                      (click)="clearMmapPreview()"
+                    >
+                      {{ 'WORLD_EDITOR.CLEAR' | translate }}
+                    </button>
+                  }
+                </div>
+                @if (navMeshRebuildState(); as state) {
+                  <div class="mb-1 small" data-testid="mmap-preview-state">
+                    @switch (state.status) {
+                      @case ('reading') {
+                        <span class="text-muted">{{ 'WORLD_EDITOR.MMAP_PREVIEW_READING' | translate }}</span>
+                      }
+                      @case ('building') {
+                        <div class="progress world-editor-preview-progress" role="progressbar">
+                          <div class="progress-bar" [style.width.%]="(state.done / state.total) * 100"></div>
+                          <span>{{ state.done }} / {{ state.total }}</span>
+                        </div>
+                      }
+                      @case ('done') {
+                        <span class="world-editor-preview-done">
+                          {{
+                            (state.source === 'server' ? 'WORLD_EDITOR.MMAP_PREVIEW_DONE_SERVER' : 'WORLD_EDITOR.MMAP_PREVIEW_DONE')
+                              | translate: { triangles: state.triangles }
+                          }}
+                        </span>
+                        <div class="form-check form-switch mb-0">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="mmap-hide-real"
+                            data-testid="mmap-hide-real"
+                            [checked]="hideRealNavMesh()"
+                            (change)="hideRealNavMesh.set($any($event.target).checked)"
+                          />
+                          <label class="form-check-label" for="mmap-hide-real">{{ 'WORLD_EDITOR.MMAP_HIDE_REAL' | translate }}</label>
+                        </div>
+                      }
+                      @default {
+                        <span class="text-danger">{{ 'WORLD_EDITOR.MMAP_PREVIEW_FAILED' | translate }}</span>
+                      }
+                    }
+                  </div>
+                }
+                @if (mmapChanged()) {
+                  <pre class="small mb-1 world-editor-yaml" data-testid="mmap-yaml">{{ mmapYaml() }}</pre>
+                  <div class="d-flex gap-1">
+                    <button type="button" class="btn btn-sm btn-secondary" data-testid="mmap-copy" (click)="copyMmapYaml()">
+                      <i class="fa fa-copy"></i> {{ 'COPY' | translate }}
+                    </button>
+                    <button type="button" class="btn btn-sm btn-secondary" data-testid="mmap-download" (click)="downloadMmapYaml()">
+                      <i class="fa fa-download"></i> .yaml
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-secondary ms-auto"
+                      data-testid="mmap-reset"
+                      (click)="mmapChanges.set({})"
+                    >
+                      {{ 'WORLD_EDITOR.RESET_KEYS' | translate }}
+                    </button>
+                  </div>
+                  <small class="text-muted d-block mt-1">{{ 'WORLD_EDITOR.MMAP_YAML_HINT' | translate }}</small>
+                } @else {
+                  <small class="text-muted" data-testid="mmap-hint">{{ 'WORLD_EDITOR.MMAP_EDIT_HINT' | translate }}</small>
+                }
+              } @else if (info.missing) {
+                <small class="text-danger" data-testid="mmap-missing">{{ 'WORLD_EDITOR.MMTILE_MISSING_HELP' | translate }}</small>
+              } @else {
+                <small class="text-muted" data-testid="mmap-loading">{{ 'LOADING' | translate }}</small>
+              }
+            </div>
+          </div>
+        }
+
+        <div class="card mb-2 world-editor-help-card">
+          <div class="card-header py-1">{{ 'WORLD_EDITOR.CONTROLS' | translate }}</div>
+          <div class="card-body p-2">
+            <table class="table table-sm table-borderless small mb-0" data-testid="controls-help">
+              <tbody>
+                @for (line of mouseHelp; track line.label) {
+                  <tr>
+                    <td class="text-nowrap pe-2">{{ line.input | translate }}</td>
+                    <td>{{ line.label | translate }}</td>
+                  </tr>
+                }
+                @for (item of controlActions; track item.action) {
+                  @if (controls.settings().bindings[item.action].length) {
+                    <tr>
+                      <td class="text-nowrap pe-2">{{ bindingsLabel(item.action) }}</td>
+                      <td>{{ 'WORLD_EDITOR.CONTROL_' + item.action.toUpperCase() | translate }}</td>
+                    </tr>
+                  }
+                }
+              </tbody>
+            </table>
+            <small class="text-muted d-block mt-1" data-testid="waypoint-shapes">{{ 'WORLD_EDITOR.WAYPOINT_SHAPES' | translate }}</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <keira-eden-status-bar
+    [position]="edenPosition()"
+    [cursor]="cursor()"
+    [mapName]="edenMapName()"
+    [zoneName]="edenZoneName()"
+    [pending]="changeList().length"
+    [lights]="edenLights()"
+  />
+  @if (confirmingDelete(); as what) {
+    <div class="world-editor-confirm-backdrop" data-testid="delete-confirm">
+      <div class="card world-editor-confirm" role="dialog" aria-modal="true" (keydown.escape)="answerDelete(false, false)">
+        <div class="card-body">
+          <p class="mb-2">
+            {{ 'WORLD_EDITOR.DELETE_CONFIRM' | translate }} <strong data-testid="delete-confirm-what">{{ what }}</strong>
+          </p>
+          <p class="small text-muted mb-2">{{ 'WORLD_EDITOR.DELETE_CONFIRM_HINT' | translate }}</p>
+          <div class="form-check mb-2">
+            <input #dontAsk class="form-check-input" type="checkbox" id="world-editor-dont-ask" data-testid="delete-dont-ask" />
+            <label class="form-check-label" for="world-editor-dont-ask">{{ 'WORLD_EDITOR.DONT_ASK_AGAIN' | translate }}</label>
+          </div>
+          <div class="d-flex gap-2 justify-content-end">
+            <button type="button" class="btn btn-sm btn-secondary" data-testid="delete-cancel" (click)="answerDelete(false, false)">
+              {{ 'WORLD_EDITOR.CANCEL' | translate }}
+            </button>
+            <button
+              type="button"
+              class="btn btn-sm btn-danger"
+              data-testid="delete-confirm-btn"
+              (click)="answerDelete(true, dontAsk.checked)"
+            >
+              <i class="fa fa-trash"></i> {{ 'WORLD_EDITOR.DELETE' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>
+
+<ng-template #layerSwitchesTemplate>
+  <div class="d-flex flex-column gap-1 world-editor-layers">
+    @for (layer of layerSwitches; track layer.key) {
+      <div class="form-check form-switch mb-0">
+        <input
+          class="form-check-input layer-{{ layer.id }}"
+          type="checkbox"
+          id="world-editor-layer-{{ layer.id }}"
+          [attr.data-testid]="'layer-' + layer.id"
+          [checked]="layers()[layer.key]"
+          (change)="toggleLayer(layer.key)"
+        />
+        <label class="form-check-label" for="world-editor-layer-{{ layer.id }}">{{ layer.label | translate }}</label>
+      </div>
+    }
+  </div>
+</ng-template>
+
+<ng-template #mapButtonsTemplate>
+  <div class="btn-group btn-group-sm" role="group">
+    <button
+      type="button"
+      class="btn btn-outline-secondary"
+      data-testid="map-previous"
+      [title]="'WORLD_EDITOR.MAP_PREVIOUS' | translate"
+      [disabled]="!maps().length"
+      (click)="stepMap(-1)"
+    >
+      <i class="fa fa-chevron-left"></i>
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-secondary"
+      data-testid="map-next"
+      [title]="'WORLD_EDITOR.MAP_NEXT' | translate"
+      [disabled]="!maps().length"
+      (click)="stepMap(1)"
+    >
+      <keira-button-label button="mapNext" [mode]="buttonStyle()" />
+    </button>
+  </div>
+  @if (difficulties().length) {
+    <select
+      class="form-select form-select-sm w-auto"
+      data-testid="difficulty"
+      [title]="'WORLD_EDITOR.DIFFICULTY_HELP' | translate"
+      (change)="setDifficulty($event)"
+    >
+      <option value="" [selected]="difficulty() === undefined">{{ 'WORLD_EDITOR.DIFFICULTY_ALL' | translate }}</option>
+      @for (option of difficulties(); track option.bit) {
+        <option [value]="option.bit" [selected]="difficulty() === option.bit">{{ option.label | translate }}</option>
+      }
+    </select>
+  }
+</ng-template>
+
+<!-- the panels and actions: on the first row, where there's room -->
+<ng-template #panelButtonsTemplate>
+  <button
+    type="button"
+    class="btn btn-sm ms-auto"
+    data-testid="map-toggle"
+    [class.btn-secondary]="showMap()"
+    [class.btn-outline-secondary]="!showMap()"
+    [title]="buttonTitle('worldMap') | translate"
+    (click)="toggleMap()"
+  >
+    <keira-button-label button="worldMap" [mode]="buttonStyle()" />
+  </button>
+  <button
+    type="button"
+    class="btn btn-sm"
+    data-testid="game-map-toggle"
+    [class.btn-secondary]="showGameMap()"
+    [class.btn-outline-secondary]="!showGameMap()"
+    [title]="buttonTitle('gameMap') | translate"
+    (click)="toggleGameMap()"
+  >
+    <keira-button-label button="gameMap" [mode]="buttonStyle()" />
+  </button>
+  <button
+    type="button"
+    class="btn btn-sm"
+    data-testid="filters-toggle"
+    [class.btn-secondary]="showFilters()"
+    [class.btn-outline-secondary]="!showFilters()"
+    [title]="buttonTitle('filters') | translate"
+    (click)="toggleFilters()"
+  >
+    <keira-button-label button="filters" [mode]="buttonStyle()" />
+    @if (hiddenCount()) {
+      <span class="badge bg-secondary world-editor-hidden-count" data-testid="hidden-count">{{ hiddenCount() }}</span>
+    }
+  </button>
+  <button
+    type="button"
+    class="btn btn-sm"
+    data-testid="view-toggle"
+    [class.btn-secondary]="showView()"
+    [class.btn-outline-secondary]="!showView()"
+    [title]="buttonTitle('view') | translate"
+    (click)="toggleView()"
+  >
+    <keira-button-label button="view" [mode]="buttonStyle()" />
+  </button>
+  <button
+    type="button"
+    class="btn btn-sm"
+    data-testid="tree-toggle"
+    [class.btn-secondary]="showTree()"
+    [class.btn-outline-secondary]="!showTree()"
+    [title]="buttonTitle('tree') | translate"
+    (click)="toggleTree()"
+  >
+    <keira-button-label button="tree" [mode]="buttonStyle()" />
+  </button>
+  <button
+    type="button"
+    class="btn btn-sm btn-outline-secondary"
+    data-testid="reset-north"
+    [title]="buttonTitle('resetNorth') | translate"
+    (click)="resetNorth()"
+  >
+    <keira-button-label button="resetNorth" [mode]="buttonStyle()" />
+  </button>
+  <button
+    type="button"
+    class="btn btn-sm btn-outline-secondary"
+    data-testid="top-view"
+    [class.active]="inTopView()"
+    [attr.aria-pressed]="inTopView()"
+    [title]="buttonTitle('topView') | translate"
+    (click)="topViewRequest.update((n) => n + 1)"
+  >
+    <keira-button-label button="topView" [mode]="buttonStyle()" />
+  </button>
+  <button
+    type="button"
+    class="btn btn-sm"
+    data-testid="controls-toggle"
+    [class.btn-secondary]="showControls()"
+    [class.btn-outline-secondary]="!showControls()"
+    [title]="buttonTitle('controls') | translate"
+    (click)="toggleControls()"
+  >
+    <keira-button-label button="controls" [mode]="buttonStyle()" />
+  </button>
+  <button
+    type="button"
+    class="btn btn-sm"
+    data-testid="settings-toggle"
+    [class.btn-secondary]="showSettings()"
+    [class.btn-outline-secondary]="!showSettings()"
+    [title]="buttonTitle('settings') | translate"
+    (click)="toggleSettings()"
+  >
+    <keira-button-label button="settings" [mode]="buttonStyle()" />
+  </button>
+  <button
+    type="button"
+    class="btn btn-sm"
+    data-testid="legend-toggle"
+    [class.btn-secondary]="showLegend()"
+    [class.btn-outline-secondary]="!showLegend()"
+    [title]="buttonTitle('legend') | translate"
+    (click)="toggleLegend()"
+  >
+    <keira-button-label button="legend" [mode]="buttonStyle()" />
+  </button>
+  <button
+    type="button"
+    class="btn btn-sm"
+    data-testid="style-toggle"
+    [class.btn-secondary]="showStyle()"
+    [class.btn-outline-secondary]="!showStyle()"
+    [title]="buttonTitle('style') | translate"
+    (click)="toggleStyle()"
+  >
+    <keira-button-label button="style" [mode]="buttonStyle()" />
+  </button>
+  <button
+    type="button"
+    class="btn btn-sm btn-outline-secondary"
+    data-testid="refresh"
+    [title]="buttonTitle('refresh') | translate"
+    [disabled]="loadingSpawns()"
+    (click)="refresh()"
+  >
+    <keira-button-label button="refresh" [mode]="buttonStyle()" [spin]="loadingSpawns()" />
+  </button>
+</ng-template>

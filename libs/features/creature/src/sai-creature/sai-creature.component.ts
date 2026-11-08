@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EditorButtonsComponent, QueryOutputComponent } from '@keira/shared/base-editor-components';
-import { SaiEditorComponent, SaiTopBarComponent, TimedActionlistComponent } from '@keira/shared/sai-editor';
+import { GuidScriptsComponent, SaiEditorComponent, SaiTopBarComponent, TimedActionlistComponent } from '@keira/shared/sai-editor';
 import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
@@ -27,6 +27,7 @@ import { AsyncPipe } from '@angular/common';
     EditorButtonsComponent,
     NgxDatatableModule,
     TimedActionlistComponent,
+    GuidScriptsComponent,
     AsyncPipe,
   ],
 })

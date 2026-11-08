@@ -1,4 +1,4 @@
-import { AsyncPipe } from '@angular/common';
+import { NameCache } from '@keira/shared/utils';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GameobjectQuestender } from '@keira/shared/acore-world-model';
@@ -30,10 +30,14 @@ import { GameobjectQuestenderService } from './gameobject-questender.service';
     EditorButtonsComponent,
     NgxDatatableModule,
     QuestPreviewComponent,
-    AsyncPipe,
   ],
 })
 export class GameobjectQuestenderComponent extends MultiRowEditorComponent<GameobjectQuestender> {
+  /** The names shown, read once each: the table sorts by them. */
+  protected readonly names = new NameCache(
+    (id) => this.editorService.queryService.getGameObjectNameById(id),
+    () => this.changeDetectorRef.markForCheck(),
+  );
   protected override readonly editorService = inject(GameobjectQuestenderService);
   readonly handlerService = inject(QuestHandlerService);
   readonly questPreviewService = inject(QuestPreviewService);

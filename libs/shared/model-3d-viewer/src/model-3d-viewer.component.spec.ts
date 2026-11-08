@@ -1,7 +1,11 @@
+import { ModelViewerSettingService } from '@keira/shared/wow-data';
+import { LocalModelViewerComponent } from '@keira/shared/world-viewer';
+import { By } from '@angular/platform-browser';
+import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { vi } from 'vitest';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideZonelessChangeDetection } from '@angular/core';
+import { provideZonelessChangeDetection, signal, SimpleChange } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -16,7 +20,7 @@ import { CONTENT_WOTLK, Gender, InventoryType, MODEL_TYPE, Race, VIEWER_TYPE } f
 describe('Model3DViewerComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalDirective, ReactiveFormsModule, GenericOptionSelectorComponent, Model3DViewerComponent],
+      imports: [ModalDirective, ReactiveFormsModule, GenericOptionSelectorComponent, Model3DViewerComponent, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
@@ -167,6 +171,96 @@ describe('Model3DViewerComponent', () => {
       fixture.componentRef.setInput('displayId', mockDisplayId);
 
       expect(component['getContentPathUrl'](1)).toBe(`${CONTENT_WOTLK}meta/item/${mockDisplayId}.json`);
+    });
+  });
+
+  describe('from the game data', () => {
+    it('draws creatures and gameobjects from the game data when set so, Wowhead when it has not the display', () => {
+      const setting = TestBed.inject(ModelViewerSettingService);
+      const local = signal(true);
+      vi.spyOn(setting, 'useGameData').mockImplementation(() => local());
+      const { component, fixture } = setup({
+        displayId: 3,
+        viewerType: VIEWER_TYPE.NPC,
+        itemClass: 0,
+        itemInventoryType: InventoryType.HEAD,
+      });
+      const generate = vi.spyOn<any>(component, 'generate3Dmodel').mockImplementation(() => undefined);
+      fixture.detectChanges();
+      const viewer = fixture.debugElement.query(By.directive(LocalModelViewerComponent));
+      expect(viewer.componentInstance.kind()).toBe('creature');
+
+      component['show3Dmodel']();
+      expect(generate).not.toHaveBeenCalled();
+
+      vi.useFakeTimers();
+      (viewer.componentInstance as LocalModelViewerComponent).failed.emit('display 3 is not in the game data');
+      vi.runAllTimers();
+      vi.useRealTimers();
+      fixture.detectChanges();
+      expect(generate).toHaveBeenCalled();
+      expect(fixture.debugElement.query(By.directive(LocalModelViewerComponent))).toBeFalsy();
+
+      // another display: the game data is tried again
+      fixture.componentRef.setInput('displayId', 4);
+      component.ngOnChanges({ displayId: new SimpleChange(3, 4, false) });
+      fixture.detectChanges();
+      expect(fixture.debugElement.query(By.directive(LocalModelViewerComponent))).toBeTruthy();
+
+      // an item held or worn alone (a helmet here): from the game data, its slot given; on a character, Wowhead's
+      fixture.componentRef.setInput('viewerType', VIEWER_TYPE.ITEM);
+      fixture.detectChanges();
+      const item = fixture.debugElement.query(By.directive(LocalModelViewerComponent));
+      expect(item.componentInstance.kind()).toBe('item');
+      expect(item.componentInstance.inventoryType()).toBe(InventoryType.HEAD);
+      component['onCharacter'].set(true);
+      fixture.detectChanges();
+      expect(fixture.debugElement.query(By.directive(LocalModelViewerComponent))).toBeFalsy();
+      component['onCharacter'].set(false);
+      fixture.componentRef.setInput('itemInventoryType', InventoryType.CHEST);
+      fixture.detectChanges();
+      expect(fixture.debugElement.query(By.directive(LocalModelViewerComponent))).toBeFalsy();
+    });
+  });
+
+  describe('worn by a character (#3502)', () => {
+    const toggle = (fixture: { nativeElement: HTMLElement }) =>
+      fixture.nativeElement.querySelector<HTMLInputElement>('.model-3d-on-character input');
+
+    it('shows a helmet, shoulders or weapon worn by a character when asked', () => {
+      const { component, fixture } = setup();
+      const show = vi.spyOn<any>(component, 'show3Dmodel').mockImplementation(() => undefined);
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('.model-3d-race')).toBeFalsy();
+
+      toggle(fixture).click();
+      fixture.detectChanges();
+
+      expect(show).toHaveBeenCalled();
+      expect(component['getModelType']()).toBe(MODEL_TYPE.CHARACTER);
+      expect(fixture.nativeElement.querySelector('.model-3d-race')).toBeTruthy();
+      toggle(fixture).click();
+      fixture.detectChanges();
+      expect(component['getModelType']()).toBe(MODEL_TYPE.HELMET);
+    });
+
+    it('offers it only for items that can be worn that way', () => {
+      const { fixture } = setup({ displayId: 2, viewerType: VIEWER_TYPE.NPC, itemClass: 0, itemInventoryType: InventoryType.HEAD });
+      vi.spyOn<any>(fixture.componentInstance, 'show3Dmodel').mockImplementation(() => undefined);
+      fixture.detectChanges();
+      expect(toggle(fixture)).toBeFalsy();
+
+      fixture.componentRef.setInput('viewerType', VIEWER_TYPE.ITEM);
+      fixture.componentRef.setInput('itemInventoryType', InventoryType.FEET);
+      fixture.detectChanges();
+      expect(toggle(fixture)).toBeFalsy();
+
+      fixture.componentRef.setInput('itemInventoryType', InventoryType.WEAPON);
+      fixture.detectChanges();
+      expect(toggle(fixture)).toBeTruthy();
+      fixture.componentRef.setInput('itemInventoryType', undefined);
+      fixture.detectChanges();
+      expect(toggle(fixture)).toBeFalsy();
     });
   });
 

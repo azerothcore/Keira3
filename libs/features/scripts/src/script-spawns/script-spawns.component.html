@@ -1,0 +1,59 @@
+<div class="container-fluid">
+  <div class="content-block">
+    <p class="lead">{{ 'SCRIPTS.SCRIPT_SPAWNS' | translate }}</p>
+    <p class="small text-muted">{{ 'SCRIPTS.SCRIPT_SPAWNS_HELP' | translate }}</p>
+    @if (!hasSource()) {
+      <div class="alert alert-info" id="no-source">
+        {{ 'SCRIPTS.NEEDS_SOURCE' | translate }} <a routerLink="/settings">{{ 'SIDEBAR.SETTINGS' | translate }}</a>
+      </div>
+    } @else if (spawns() === undefined) {
+      <p id="reading">{{ 'SCRIPTS.READING_SOURCE' | translate }}</p>
+    } @else {
+      @if (error()) {
+        <div class="alert alert-danger" id="source-error">{{ error() }}</div>
+      }
+      <input
+        class="form-control form-control-sm mb-2"
+        id="spawn-filter"
+        [placeholder]="'SCRIPTS.FILTER' | translate"
+        (input)="setFilter($event)"
+      />
+      <table class="table table-sm table-striped" id="script-spawns">
+        <thead>
+          <tr>
+            <th class="keira-sortable" [id]="'sort-entry'" (click)="sort.toggle('entry')">
+              entry <i class="fa fa-xs" [class]="'fa ' + sort.icon('entry')"></i>
+            </th>
+            <th class="keira-sortable" [id]="'sort-name'" (click)="sort.toggle('name')">
+              name <i class="fa fa-xs" [class]="'fa ' + sort.icon('name')"></i>
+            </th>
+            <th class="keira-sortable" [id]="'sort-map'" (click)="sort.toggle('map')">
+              map <i class="fa fa-xs" [class]="'fa ' + sort.icon('map')"></i>
+            </th>
+            <th>x, y, z</th>
+            <th class="keira-sortable" [id]="'sort-file'" (click)="sort.toggle('file')">
+              {{ 'SCRIPTS.FILE' | translate }} <i class="fa fa-xs" [class]="'fa ' + sort.icon('file')"></i>
+            </th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (spawn of sorted(); track $index) {
+            <tr>
+              <td>{{ spawn.entry }}</td>
+              <td>{{ name(spawn.entry) }}</td>
+              <td>{{ spawn.mapId }}</td>
+              <td class="small">{{ spawn.x }}, {{ spawn.y }}, {{ spawn.z }}</td>
+              <td class="small text-muted">{{ spawn.file }}</td>
+              <td>
+                <button type="button" class="btn btn-link btn-sm py-0" [id]="'show-' + $index" (click)="showIn3d(spawn)">
+                  <i class="fa fa-cube"></i> {{ 'SCRIPTS.SHOW_IN_3D' | translate }}
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

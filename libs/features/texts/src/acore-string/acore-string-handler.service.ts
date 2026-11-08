@@ -5,6 +5,7 @@ import { ACORE_STRING_LOCALE_TABLE, ACORE_STRING_TABLE, AcoreString } from '@kei
 @Service()
 export class AcoreStringHandlerService extends HandlerService<AcoreString> {
   protected readonly mainEditorRoutePath = 'texts/acore-string';
+  protected override readonly copyRoutePath = 'texts/acore-string-copy';
 
   get isUnsaved(): Signal<boolean> {
     return this.statusMap[ACORE_STRING_TABLE].asReadonly();

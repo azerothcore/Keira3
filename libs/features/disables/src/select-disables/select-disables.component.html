@@ -1,0 +1,78 @@
+<keira-top-bar
+  [selected]="handlerService.selected"
+  [handler]="handlerService"
+  [selectedName]="handlerService.selectedName"
+  [isNew]="handlerService.isNew"
+/>
+
+<div class="container-fluid">
+  <div class="content-block">
+    <p class="lead">{{ 'DISABLES.OPEN_TYPE' | translate }}</p>
+    <div class="d-flex flex-wrap gap-1">
+      @for (type of SOURCE_TYPES; track type.value) {
+        <button type="button" class="btn btn-sm btn-outline-primary" [id]="'source-type-' + type.value" (click)="open(+(type.value ?? 0))">
+          {{ type.value }} - {{ type.name }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <div class="content-block">
+    <p class="lead" [translate]="'SELECT_EXISTING'"></p>
+    <form [formGroup]="selectService.queryForm" class="mb-2">
+      <div class="row">
+        <ng-container [formGroup]="selectService.fields">
+          <div class="form-group col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <input
+              formControlName="sourceType"
+              type="number"
+              class="form-control form-control-sm"
+              id="search-id"
+              placeholder="sourceType"
+            />
+          </div>
+          <div class="form-group col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <input formControlName="entry" type="number" class="form-control form-control-sm" id="search-entry" placeholder="entry" />
+          </div>
+          <div class="form-group col-sm-6 col-md-4 col-lg-3 col-xl-3">
+            <input formControlName="comment" class="form-control form-control-sm" id="search-comment" placeholder="comment" />
+          </div>
+        </ng-container>
+        <div class="form-group col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <input formControlName="limit" class="form-control form-control-sm" id="limit" placeholder="Limit" />
+        </div>
+        <div class="mb-2 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <button id="search-btn" class="btn btn-primary btn-sm" [disabled]="selectService.queryForm.invalid" (click)="onSearch()">
+            <i class="fa fa-search"></i> {{ 'SEARCH' | translate }}
+          </button>
+        </div>
+      </div>
+      <keira-highlightjs-wrapper [code]="selectService.query" />
+    </form>
+
+    @if (selectService.rows) {
+      <div>
+        <ngx-datatable
+          class="bootstrap table table-striped text-center datatable-select"
+          [rows]="selectService.rows"
+          [headerHeight]="DTCFG.headerHeight"
+          [footerHeight]="DTCFG.footerHeight"
+          [columnMode]="DTCFG.columnMode"
+          [rowHeight]="DTCFG.rowHeight"
+          [limit]="DTCFG.limit"
+          [selectionType]="DTCFG.selectionType"
+          (select)="selectService.onSelect($event)"
+        >
+          <ngx-datatable-column name="sourceType" prop="sourceType">
+            <ng-template let-row="row" ngx-datatable-cell-template>{{ row.sourceType }} - {{ sourceTypeName(row.sourceType) }}</ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="entry" prop="entry" />
+          <ngx-datatable-column name="flags" prop="flags" />
+          <ngx-datatable-column name="params_0" prop="params_0" />
+          <ngx-datatable-column name="params_1" prop="params_1" />
+          <ngx-datatable-column name="comment" prop="comment" [minWidth]="220" />
+        </ngx-datatable>
+      </div>
+    }
+  </div>
+</div>

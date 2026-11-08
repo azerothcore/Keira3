@@ -1,0 +1,127 @@
+<keira-top-bar
+  [selected]="handlerService.selected"
+  [handler]="handlerService"
+  [selectedName]="handlerService.selectedName"
+  [isNew]="handlerService.isNew"
+/>
+
+<div class="container-fluid">
+  @if (editorService.loading) {
+    <span [translate]="'LOADING'"></span>
+  }
+
+  @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
+    <div>
+      <div class="content-block">
+        <keira-query-output
+          [docUrl]="docUrl"
+          [isNew]="editorService.isNew"
+          [diffQuery]="editorService.diffQuery"
+          [fullQuery]="editorService.fullQuery"
+          [error]="editorService.error"
+          [entityTable]="editorService.entityTable"
+          [editorService]="editorService"
+          (executeQuery)="save($event)"
+        />
+      </div>
+      <div class="content-block">
+        <form [formGroup]="editorService.form" class="form-group edit-form">
+          <div class="row">
+            <div class="form-group col-6 col-md-3 col-xl-1">
+              <label class="control-label" for="guid">guid</label>
+              <input [formControlName]="'guid'" id="guid" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-6 col-md-3 col-xl-1">
+              <label class="control-label" for="delay">delay</label>
+              <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'WAYPOINTS.SCRIPT_DELAY_TOOLTIP' | translate"></i>
+              <input [formControlName]="'delay'" id="delay" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-md-6 col-xl-3">
+              <label class="control-label" for="command">command</label>
+              <keira-single-value-selector-btn
+                [control]="editorService.form.controls.command"
+                [disabled]="editorService.form.controls.command.disabled"
+                [config]="{ options: COMMAND, name: 'command' }"
+                [modalClass]="'modal-xl'"
+              />
+              <input [formControlName]="'command'" id="command" type="number" class="form-control form-control-sm" />
+            </div>
+            @for (field of ['datalong', 'datalong2', 'dataint']; track field) {
+              <div class="form-group col-6 col-md-3 col-xl-1">
+                <label class="control-label" [for]="field">{{ field }}</label>
+                <input [formControlName]="field" [id]="field" type="number" class="form-control form-control-sm" />
+              </div>
+            }
+            @for (field of ['x', 'y', 'z', 'o']; track field) {
+              <div class="form-group col-6 col-md-3 col-xl-1">
+                <label class="control-label" [for]="field">{{ field }}</label>
+                <input [formControlName]="field" [id]="field" type="number" step="any" class="form-control form-control-sm" />
+              </div>
+            }
+            <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
+              <i class="fas fa-exclamation-triangle"></i>
+              <span [innerHTML]="'UNIQUE' | translate: { ENTITY_SECOND_ID_FIELD: editorService.entitySecondIdField }"></span>
+            </div>
+          </div>
+        </form>
+        <div class="row">
+          <div class="col-12">
+            <keira-editor-buttons
+              [selectedRowId]="editorService.selectedRowId"
+              (deleteSelectedRow)="editorService.deleteSelectedRow()"
+              (addNewRow)="editorService.addNewRow()"
+              (duplicateRow)="editorService.addNewRow(true)"
+            />
+            <ngx-datatable
+              id="editor-table"
+              class="bootstrap table table-striped text-center datatable-select"
+              [rows]="editorService.newRows"
+              [headerHeight]="DTCFG.headerHeight"
+              [footerHeight]="DTCFG.footerHeight"
+              [columnMode]="DTCFG.columnMode"
+              [rowHeight]="DTCFG.rowHeight"
+              [selectionType]="DTCFG.selectionType"
+              (select)="editorService.onRowSelection($event)"
+              (keydown.delete)="editorService.deleteSelectedRow()"
+            >
+              <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                  <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="guid" prop="guid" [minWidth]="70" />
+              <ngx-datatable-column name="delay" prop="delay" [minWidth]="60" />
+              <ngx-datatable-column name="command" [minWidth]="140">
+                <ng-template let-row="row" ngx-datatable-cell-template>{{ commandName(row.command) }}</ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="datalong" prop="datalong" [minWidth]="70" />
+              <ngx-datatable-column name="datalong2" prop="datalong2" [minWidth]="70" />
+              <ngx-datatable-column name="dataint" prop="dataint" [minWidth]="70" />
+            </ngx-datatable>
+          </div>
+        </div>
+      </div>
+      <div class="content-block">
+        <p class="lead">{{ 'WAYPOINTS.USED_AT' | translate }}</p>
+        @if (usedAt().length) {
+          <ul id="used-at">
+            @for (place of usedAt(); track place.id + ':' + place.point) {
+              <li>
+                <button
+                  type="button"
+                  class="btn btn-link btn-sm py-0"
+                  [id]="'open-path-' + place.id + '-' + place.point"
+                  (click)="openPath(place.id)"
+                >
+                  {{ 'WAYPOINTS.PATH_POINT' | translate: { id: place.id, point: place.point } }}
+                </button>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="text-muted" id="not-used">{{ 'WAYPOINTS.NOT_USED' | translate }}</p>
+        }
+      </div>
+    </div>
+  }
+</div>
