@@ -1,0 +1,28 @@
+@if (scripts().length) {
+  <table class="table table-sm table-striped mb-0" id="guid-scripts">
+    <thead>
+      <tr>
+        <th>guid</th>
+        <th>map</th>
+        <th>{{ 'SMARTAI.EDITOR.GUID_SCRIPT_ROWS' | translate }}</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (script of scripts(); track script.guid) {
+        <tr>
+          <td>{{ script.guid }}</td>
+          <td>{{ script.map }}</td>
+          <td>{{ script.rows }}</td>
+          <td>
+            <button type="button" class="btn btn-link btn-sm py-0" [id]="'open-guid-script-' + script.guid" (click)="open(script)">
+              {{ 'SMARTAI.EDITOR.OPEN_GUID_SCRIPT' | translate }}
+            </button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+} @else {
+  <p class="text-muted small mb-0" id="no-guid-scripts">{{ 'SMARTAI.EDITOR.NO_GUID_SCRIPTS' | translate }}</p>
+}

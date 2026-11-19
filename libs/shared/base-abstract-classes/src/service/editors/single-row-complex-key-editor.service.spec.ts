@@ -1,3 +1,4 @@
+import { EditorSettingsService } from '@keira/shared/common-services';
 import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
@@ -8,7 +9,7 @@ import { QueryError } from 'mysql2';
 import { instance, mock } from 'ts-mockito';
 import { ToastrService } from 'ngx-toastr';
 
-import { MysqlQueryService } from '@keira/shared/db-layer';
+import { MysqlQueryService, isFlagsColumn } from '@keira/shared/db-layer';
 import { SingleRowComplexKeyEditorService } from './single-row-complex-key-editor.service';
 
 import { getPartial } from '@keira/shared/utils';
@@ -69,8 +70,13 @@ describe('SingleRowComplexKeyEditorService', () => {
         service['_originalValue'],
         service['_form'].getRawValue(),
         service['entityIdFields'],
+        isFlagsColumn,
       );
       expect(service['updateEditorStatus']).toHaveBeenCalledTimes(1);
+      TestBed.inject(EditorSettingsService).save({ bitwiseFlags: false });
+      service['updateDiffQuery']();
+      expect(getUpdateMultipleKeysQuerySpy.mock.calls[1][4]).toBeUndefined();
+      localStorage.clear();
     });
 
     it('updateFullQuery()', () => {

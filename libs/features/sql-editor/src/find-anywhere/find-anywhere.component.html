@@ -1,0 +1,72 @@
+<div class="container-fluid">
+  <div class="content-block">
+    <h4>{{ 'FIND_ANYWHERE.TITLE' | translate }}</h4>
+    <p class="text-muted small">{{ 'FIND_ANYWHERE.HELP' | translate }}</p>
+
+    <div class="d-flex flex-wrap gap-2 align-items-center mb-2">
+      <div class="btn-group btn-group-sm">
+        @for (option of KINDS; track option) {
+          <button
+            type="button"
+            class="btn"
+            [class.btn-primary]="kind() === option"
+            [class.btn-outline-primary]="kind() !== option"
+            [attr.data-testid]="'kind-' + option"
+            (click)="kind.set(option)"
+          >
+            {{ 'FIND_ANYWHERE.KIND.' + option | translate }}
+          </button>
+        }
+      </div>
+      <form class="d-flex gap-2" (ngSubmit)="find()">
+        <input
+          type="number"
+          name="id"
+          class="form-control form-control-sm"
+          id="find-anywhere-id"
+          [placeholder]="'FIND_ANYWHERE.ID' | translate"
+          [ngModel]="id()"
+          (ngModelChange)="id.set($event)"
+        />
+        <button type="submit" class="btn btn-sm btn-primary" id="find-anywhere-btn" [disabled]="searching() || id() === null">
+          <i class="fa fa-search"></i> {{ 'SEARCH' | translate }}
+        </button>
+      </form>
+    </div>
+
+    @if (results(); as results) {
+      @if (!results.length) {
+        <p class="text-muted" id="find-anywhere-none">{{ 'FIND_ANYWHERE.NONE' | translate }}</p>
+      }
+      @for (result of results; track result.table) {
+        <div class="mt-3 find-anywhere-result" [attr.data-testid]="'result-' + result.table">
+          <h6>
+            {{ result.table }}
+            @if (!result.error) {
+              <span class="badge bg-secondary">{{ result.rows.length }}{{ result.rows.length === LIMIT ? '+' : '' }}</span>
+            }
+          </h6>
+          <code class="small d-block mb-1">{{ result.query }}</code>
+          @if (result.error) {
+            <p class="text-danger small" [attr.data-testid]="'error-' + result.table">{{ result.error }}</p>
+          } @else {
+            <ngx-datatable
+              class="bootstrap table table-striped text-center"
+              [rows]="result.rows"
+              [headerHeight]="DTCFG.headerHeight"
+              [footerHeight]="DTCFG.footerHeight"
+              [columnMode]="'force'"
+              [rowHeight]="DTCFG.rowHeight"
+              [limit]="10"
+              [scrollbarH]="true"
+            >
+              @for (column of result.columns; track column) {
+                <ngx-datatable-column [name]="column" [prop]="column" [minWidth]="90" />
+              }
+            </ngx-datatable>
+          }
+        </div>
+      }
+    }
+  </div>
+</div>

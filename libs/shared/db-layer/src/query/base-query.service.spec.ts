@@ -75,6 +75,24 @@ describe('BaseQueryService', () => {
       );
     });
 
+    it('selects subqueries as they are written', () => {
+      const { service } = setup();
+      expect(
+        service.getSearchQuery(table, { fields: {} }, ['entry', '(SELECT COUNT(*) FROM `x` WHERE `x`.`id` = `entry`) AS `n`']),
+      ).toEqual('SELECT `entry`, (SELECT COUNT(*) FROM `x` WHERE `x`.`id` = `entry`) AS `n` FROM `my_keira3`');
+    });
+
+    it('looks up numbers or names exactly when asked', () => {
+      const { service } = setup();
+      const queryForm: QueryForm<any> = { fields: { entry: ' 120 ', name: 'Hogger' } };
+      expect(service.getSearchQuery(table, queryForm, null, null, null, { numbers: true })).toEqual(
+        "SELECT * FROM `my_keira3` WHERE (`entry` = '120') AND (`name` LIKE '%Hogger%')",
+      );
+      expect(service.getSearchQuery(table, queryForm, null, null, null, { names: true })).toEqual(
+        "SELECT * FROM `my_keira3` WHERE (`entry` LIKE '% 120 %') AND (`name` = 'Hogger')",
+      );
+    });
+
     it('should properly work when using fields that contain special characters', () => {
       const { service } = setup();
       const queryForm: QueryForm<any> = {

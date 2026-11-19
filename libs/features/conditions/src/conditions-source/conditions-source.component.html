@@ -1,0 +1,66 @@
+<keira-top-bar [selected]="handlerService.selected" [handler]="handlerService" [selectedName]="sourceName" [isNew]="handlerService.isNew" />
+
+<div class="container-fluid">
+  @if (editorService.loading) {
+    <span [translate]="'LOADING'"></span>
+  }
+
+  @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
+    <div>
+      <p class="small text-muted mt-2" id="conditions-source-help">{{ 'CONDITIONS.SOURCE.HELP' | translate }}</p>
+      <div class="content-block">
+        <keira-query-output
+          [docUrl]="docUrl"
+          [isNew]="editorService.isNew"
+          [diffQuery]="editorService.diffQuery"
+          [fullQuery]="editorService.fullQuery"
+          [error]="editorService.error"
+          [entityTable]="editorService.entityTable"
+          [editorService]="editorService"
+          (executeQuery)="save($event)"
+        />
+      </div>
+      <div class="content-block">
+        <h6 id="conditions-source-name">{{ sourceName }}</h6>
+        <keira-editor-buttons
+          [selectedRowId]="editorService.selectedRowId"
+          (deleteSelectedRow)="editorService.deleteSelectedRow()"
+          (addNewRow)="editorService.addNewRow()"
+          (duplicateRow)="editorService.addNewRow(true)"
+        />
+        <ngx-datatable
+          id="editor-table"
+          class="bootstrap table table-striped text-center datatable-select"
+          [rows]="editorService.newRows"
+          [headerHeight]="DTCFG.headerHeight"
+          [footerHeight]="DTCFG.footerHeight"
+          [columnMode]="DTCFG.columnMode"
+          [rowHeight]="DTCFG.rowHeight"
+          [selectionType]="DTCFG.selectionType"
+          (select)="editorService.onRowSelection($event)"
+          (keydown.delete)="editorService.deleteSelectedRow()"
+        >
+          <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="ElseGroup" prop="ElseGroup" [maxWidth]="90" />
+          <ngx-datatable-column name="Type" prop="ConditionTypeOrReference" [maxWidth]="70" />
+          <ngx-datatable-column name="Target" prop="ConditionTarget" [maxWidth]="70" />
+          <ngx-datatable-column name="Value1" prop="ConditionValue1" [maxWidth]="90" />
+          <ngx-datatable-column name="Value2" prop="ConditionValue2" [maxWidth]="90" />
+          <ngx-datatable-column name="Value3" prop="ConditionValue3" [maxWidth]="90" />
+          <ngx-datatable-column name="Negative" prop="NegativeCondition" [maxWidth]="80" />
+          <ngx-datatable-column name="Comment" prop="Comment" />
+        </ngx-datatable>
+        <div class="form-error" [hidden]="editorService.isFormIdUnique()">
+          <i class="fas fa-exclamation-triangle"></i> {{ 'CONDITIONS.SOURCE.NOT_UNIQUE' | translate }}
+        </div>
+      </div>
+      <form [formGroup]="editorService.form" class="form-group edit-form">
+        <keira-condition-fields [form]="editorService.form" [sourceType]="source.SourceTypeOrReferenceId" />
+      </form>
+    </div>
+  }
+</div>

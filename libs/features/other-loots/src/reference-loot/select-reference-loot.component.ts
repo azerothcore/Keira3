@@ -33,4 +33,6 @@ export class SelectReferenceLootComponent extends SelectComponent<ReferenceLootT
   readonly customStartingId = REFERENCE_LOOT_TEMPLATE_CUSTOM_STARTING_ID;
   readonly selectService = inject(SelectReferenceLootService);
   readonly handlerService = inject(ReferenceLootHandlerService);
+  /** How many loot rows use each reference. */
+  protected readonly showUsedBy = true;
 }

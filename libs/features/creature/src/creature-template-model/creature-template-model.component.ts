@@ -1,3 +1,4 @@
+import { DisplaySearchComponent } from '@keira/shared/world-viewer';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CreatureTemplateModel } from '@keira/shared/acore-world-model';
@@ -15,6 +16,7 @@ import { CreatureTemplateModelService } from './creature-template-model.service'
   templateUrl: './creature-template-model.component.html',
   styleUrls: ['./creature-template-model.component.scss'],
   imports: [
+    DisplaySearchComponent,
     TopBarComponent,
     TranslateDirective,
     TranslatePipe,

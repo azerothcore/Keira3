@@ -1,5 +1,13 @@
 <div class="model-viewer" [style]="{ 'background-color': backgroundColor.value }">
-  <div [id]="`model_3d_${uniqueId}`"></div>
+  @if (local()) {
+    <keira-local-model-viewer
+      [kind]="LOCAL_KIND[viewerType()]"
+      [displayId]="displayId()"
+      [inventoryType]="itemInventoryType()"
+      (failed)="onLocalFailed()"
+    />
+  }
+  <div [id]="`model_3d_${uniqueId}`" [hidden]="local()"></div>
 
   @if (enableBgSettings()) {
     <div class="d-flex justify-content-center align-items-center p-1 gap-2 mt-2">
@@ -21,6 +29,19 @@
     </div>
   }
 </div>
+
+@if (canShowOnCharacter()) {
+  <div class="form-check form-switch mt-2 model-3d-on-character">
+    <input
+      class="form-check-input"
+      type="checkbox"
+      [id]="`model_3d_on_character_${uniqueId}`"
+      [checked]="onCharacter()"
+      (change)="toggleOnCharacter($any($event.target).checked)"
+    />
+    <label class="form-check-label" [for]="`model_3d_on_character_${uniqueId}`">{{ 'MODEL_3D.ON_CHARACTER' | translate }}</label>
+  </div>
+}
 
 @if (getModelType() === MODEL_TYPE_CHARACTER) {
   <div class="model-3d-race">

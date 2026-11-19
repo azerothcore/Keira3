@@ -8,7 +8,7 @@ import { MaxRow, MinRow, TableRow } from '@keira/shared/constants';
 import { lastValueFrom, of } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
 import { MysqlService } from '../mysql.service';
-import { MysqlQueryService } from './mysql-query.service';
+import { bitsChanged, isFlagsColumn, MysqlQueryService } from './mysql-query.service';
 
 interface MockRow extends TableRow {
   entry: number;
@@ -431,6 +431,24 @@ describe('MysqlQueryService', () => {
         ]) {
           expect(service.getUpdateQuery(tableName, primaryKey, currentRow, newRow)).toEqual(expectedQuery);
         }
+      });
+
+      it('updates flags columns by their bits when asked, keeping the other bits as they are in the database', () => {
+        const { service } = setup();
+        const flags = { entry: 1, npcflag: 3, unit_flags: 4294967295, flags_extra: 0, name: 'a' } as unknown as MockRow;
+        const changed = { entry: 1, npcflag: 6, unit_flags: 2147483647, flags_extra: 128, name: 'b' } as unknown as MockRow;
+        expect(service.getUpdateQuery(tableName, primaryKey, flags, changed, isFlagsColumn)).toEqual(
+          'UPDATE `my_table` SET `npcflag` = (`npcflag` | 4) & ~1, `unit_flags` = `unit_flags` & ~2147483648, ' +
+            "`flags_extra` = (`flags_extra` | 128), `name` = 'b' WHERE (`entry` = 1);",
+        );
+        // a negative value (or not a number) is set as it is
+        const negative = { entry: 1, npcflag: -1 } as unknown as MockRow;
+        expect(
+          service.getUpdateQuery(tableName, primaryKey, negative, { entry: 1, npcflag: 2 } as unknown as MockRow, isFlagsColumn),
+        ).toEqual('UPDATE `my_table` SET `npcflag` = 2 WHERE (`entry` = 1);');
+        expect(bitsChanged('x', 1)).toBeUndefined();
+        expect(bitsChanged(null, 1)).toBeUndefined();
+        expect(service.getUpdateMultipleKeysQuery(tableName, flags, changed, ['entry'], isFlagsColumn)).toContain('(`npcflag` | 4) & ~1');
       });
     });
 
@@ -1300,6 +1318,119 @@ describe('MysqlQueryService', () => {
       expect(service.query).toHaveBeenCalledTimes(1);
       expect(service.query).toHaveBeenCalledWith(`SELECT * FROM reputation_reward_rate WHERE faction = ${id}`);
       expect(service['cache'].size).toBe(1);
+    });
+
+    describe('copy', () => {
+      let service: MysqlQueryService;
+      beforeEach(() => {
+        service = setupHelpers().service;
+      });
+
+      describe('copy query helpers', () => {
+        it('toSqlValue should format numbers and strings correctly', () => {
+          expect((service as any).toSqlValue(123)).toEqual('123');
+          expect((service as any).toSqlValue('456')).toEqual('456');
+          expect((service as any).toSqlValue("Anub'Rekhan")).toEqual("'Anub\\'Rekhan'");
+        });
+
+        it('getCopyVarsSet should return proper SET statements', () => {
+          expect(service.getCopyVarsSet(10, 20)).toEqual('SET @SOURCE = 10;\nSET @ENTRY = 20;\n');
+        });
+
+        it('getCopyQuery should generate temporary table copy SQL', () => {
+          const q = service.getCopyQuery('t', 10, 20, 'id');
+          expect(q).toEqual(
+            'DELETE FROM `t` WHERE `id` = 20;\n' +
+              'DROP TEMPORARY TABLE IF EXISTS temp_copy_table;\n' +
+              'CREATE TEMPORARY TABLE temp_copy_table AS\n' +
+              '  SELECT * FROM `t` WHERE `id` = 10;\n' +
+              'UPDATE temp_copy_table SET `id` = 20;\n' +
+              'INSERT INTO `t` SELECT * FROM temp_copy_table;\n' +
+              'DROP TEMPORARY TABLE temp_copy_table;\n',
+          );
+        });
+
+        it('getCopyQueryRaw should generate INSERT ... SELECT SQL with explicit columns', () => {
+          const q = service.getCopyQueryRaw('t', 10, 20, 'id', ['a', 'b', 'id']);
+          expect(q).toEqual(
+            'DELETE FROM `t` WHERE `id` = 20;\n' +
+              'INSERT INTO `t` (`a`, `b`, `id`)\n' +
+              '  SELECT `a`, `b`, 20 AS `id`\n' +
+              '  FROM `t`\n' +
+              '  WHERE `id` = 10;\n',
+          );
+        });
+
+        it('getCopyQueryRawWithValues should return only delete for empty rows and full insert for values', () => {
+          const empty = service.getCopyQueryRawWithValues('t', [], 20, 'id', ['id', 'a', 'b']);
+          expect(empty).toEqual('DELETE FROM `t` WHERE `id` = 20;\n');
+
+          const rows = [
+            { id: 1, a: 'x', b: null },
+            { id: 2, a: "Anub'Rekhan", b: 3 },
+          ];
+
+          const full = service.getCopyQueryRawWithValues('t', rows, 20, 'id', ['id', 'a', 'b']);
+          expect(full).toEqual(
+            'DELETE FROM `t` WHERE `id` = 20;\n' +
+              'INSERT INTO `t` (`id`, `a`, `b`) VALUES\n' +
+              "(20, 'x', NULL),\n" +
+              "(20, 'Anub\\'Rekhan', 3);\n",
+          );
+        });
+      });
+
+      describe('copy query helpers using vars', () => {
+        it('getCopyQuery should use @SOURCE and @ENTRY when useVars is true', () => {
+          const q = service.getCopyQuery('t', 10, 20, 'id', true);
+          expect(q).toContain('WHERE `id` = @ENTRY');
+          expect(q).toContain('WHERE `id` = @SOURCE');
+        });
+
+        it('getCopyQueryRaw should use @ENTRY when useVars is true', () => {
+          const q = service.getCopyQueryRaw('t', 10, 20, 'id', ['a', 'id'], true);
+          expect(q).toContain('SELECT `a`, @ENTRY AS `id`');
+          expect(q).toContain('WHERE `id` = @SOURCE');
+        });
+
+        it('getCopyQueryRawWithValues should use @ENTRY when useVars is true', () => {
+          const rows = [{ id: 1, a: 'x' }];
+          const q = service.getCopyQueryRawWithValues('t', rows, 20, 'id', ['id', 'a'], true);
+          expect(q).toContain('DELETE FROM `t` WHERE `id` = @ENTRY;');
+          expect(q).toContain('INSERT INTO `t` (`id`, `a`)');
+          expect(q).toContain('(@ENTRY,');
+        });
+      });
+
+      it('getRowsCount should call queryValue with COUNT SQL and return observable', () => {
+        // `queryValue` is already spied in the surrounding beforeEach; reuse and change its return
+        vi.spyOn(service, 'queryValue').mockReturnValue(of(42));
+        service.getRowsCount('t', 'id', 123).subscribe((res) => {
+          expect(res).toEqual(42);
+        });
+        expect(service.queryValue).toHaveBeenCalledWith('SELECT COUNT(1) AS v FROM `t` WHERE `id` = 123;\n');
+      });
+
+      it('getCopyQueryRawWithValues keeps text that looks like a number as text', () => {
+        const full = service.getCopyQueryRawWithValues('t', [{ id: 1, code: '007' }], 20, 'id', ['id', 'code']);
+        expect(full).toContain("(20, '007')");
+      });
+
+      it('getCopyQueryRawWithValues should derive columns from first row when columns param is empty', () => {
+        const rows = [
+          { id: 1, a: 'x', b: null, c: 7 },
+          { id: 2, a: "Anub'Rekhan", b: 3, c: 8 },
+        ];
+
+        // pass undefined columns so implementation derives them from rows[0]
+        const full = service.getCopyQueryRawWithValues('t', rows, 20, 'id', undefined as any);
+
+        // columns order derived from Object.keys(rows[0]) can vary, but ensure key patterns exist
+        expect(full).toContain('DELETE FROM `t` WHERE `id` = 20;\n');
+        expect(full).toContain('INSERT INTO `t`');
+        expect(full).toContain("(20, 'x'");
+        expect(full).toContain("(20, 'Anub\\'Rekhan'");
+      });
     });
   });
 });

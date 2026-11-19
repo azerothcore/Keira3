@@ -2,6 +2,8 @@ import { TableRow } from '@keira/shared/constants';
 
 export const LOOT_TEMPLATE_ID = 'Entry';
 export const LOOT_TEMPLATE_ID_2 = 'Item';
+/** (the same item can be in several groups of a loot: `GroupId` is in the key too) */
+export const LOOT_TEMPLATE_ID_3 = 'GroupId';
 
 export class LootTemplate extends TableRow {
   Entry: number = 0;

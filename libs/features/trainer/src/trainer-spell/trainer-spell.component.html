@@ -1,4 +1,9 @@
-<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
+<keira-top-bar
+  [selected]="handlerService.selected"
+  [handler]="handlerService"
+  [selectedName]="handlerService.selectedName"
+  [isNew]="handlerService.isNew"
+/>
 
 <div class="container-fluid">
   @if (editorService.loading) {
@@ -36,6 +41,7 @@
               <label class="control-label" for="MoneyCost">MoneyCost</label>
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'TRAINER.SPELL.MONEY_COST' | translate"></i>
               <input [formControlName]="'MoneyCost'" id="MoneyCost" type="number" class="form-control form-control-sm" />
+              <keira-money-input [control]="editorService.form.controls.MoneyCost" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
               <label class="control-label" for="ReqSkillLine">ReqSkillLine</label>

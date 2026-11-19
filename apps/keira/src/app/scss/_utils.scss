@@ -3,7 +3,7 @@ pre {
 }
 
 code.hljs {
-  background-color: #efefef;
+  background-color: var(--keira-code-bg);
   padding: 10px;
   min-height: 38px;
 }

@@ -1,0 +1,122 @@
+<div class="container-fluid">
+  <div class="content-block">
+    <h4>{{ 'TABLE_BROWSER.TITLE' | translate }}</h4>
+    <p class="text-muted small">{{ 'TABLE_BROWSER.HELP' | translate }}</p>
+
+    <div class="row g-2 mb-2">
+      <div class="col-12 col-md-4">
+        <input
+          class="form-control form-control-sm"
+          list="table-browser-tables"
+          id="table-browser-table"
+          [placeholder]="'TABLE_BROWSER.TABLE' | translate"
+          (change)="pickTable($any($event.target).value)"
+        />
+        <datalist id="table-browser-tables">
+          @for (name of tables(); track name) {
+            <option [value]="name"></option>
+          }
+        </datalist>
+      </div>
+      <div class="col-6 col-md-2">
+        <input
+          type="number"
+          class="form-control form-control-sm"
+          id="table-browser-limit"
+          [ngModel]="limit()"
+          (ngModelChange)="limit.set($event)"
+          [placeholder]="'TABLE_BROWSER.LIMIT' | translate"
+        />
+      </div>
+    </div>
+
+    @if (table() && columns().length) {
+      @for (condition of conditions(); track $index; let i = $index) {
+        <div class="row g-1 mb-1 table-browser-condition">
+          <div class="col-2 col-md-1">
+            @if (i > 0) {
+              <select
+                class="form-select form-select-sm"
+                [attr.data-testid]="'join-' + i"
+                [value]="condition.join"
+                (change)="changeCondition(i, { join: $any($event.target).value })"
+              >
+                <option value="AND">AND</option>
+                <option value="OR">OR</option>
+              </select>
+            }
+          </div>
+          <div class="col-4 col-md-3">
+            <select
+              class="form-select form-select-sm"
+              [attr.data-testid]="'field-' + i"
+              (change)="changeCondition(i, { field: $any($event.target).value })"
+            >
+              @for (column of columns(); track column) {
+                <option [value]="column" [selected]="column === condition.field">{{ column }}</option>
+              }
+            </select>
+          </div>
+          <div class="col-3 col-md-2">
+            <select
+              class="form-select form-select-sm"
+              [attr.data-testid]="'operator-' + i"
+              (change)="changeCondition(i, { operator: $any($event.target).value })"
+            >
+              @for (operator of OPERATORS; track operator) {
+                <option [value]="operator" [selected]="operator === condition.operator">{{ operator }}</option>
+              }
+            </select>
+          </div>
+          <div class="col-3 col-md-4">
+            @if (!condition.operator.startsWith('IS')) {
+              <input
+                class="form-control form-control-sm"
+                [attr.data-testid]="'value-' + i"
+                [value]="condition.value"
+                (input)="changeCondition(i, { value: $any($event.target).value })"
+              />
+            }
+          </div>
+          <div class="col-12 col-md-1">
+            <button type="button" class="btn btn-sm btn-outline-danger" [attr.data-testid]="'remove-' + i" (click)="removeCondition(i)">
+              <i class="fa fa-times"></i>
+            </button>
+          </div>
+        </div>
+      }
+      <div class="d-flex gap-2 my-2">
+        <button type="button" class="btn btn-sm btn-outline-secondary" id="table-browser-add" (click)="addCondition()">
+          <i class="fa fa-plus"></i> {{ 'TABLE_BROWSER.ADD_CONDITION' | translate }}
+        </button>
+        <button type="button" class="btn btn-sm btn-primary" id="table-browser-search" (click)="search()">
+          <i class="fa fa-search"></i> {{ 'SEARCH' | translate }}
+        </button>
+      </div>
+      <pre class="small p-2 rounded" id="table-browser-query" style="background: var(--keira-code-bg)">{{ query() }}</pre>
+    }
+
+    @if (error()) {
+      <keira-query-error [error]="error()!" />
+    }
+
+    @if (rows(); as rows) {
+      <p class="small mt-2" id="table-browser-count">{{ 'TABLE_BROWSER.ROWS' | translate: { count: rows.length } }}</p>
+      <ngx-datatable
+        class="bootstrap table table-striped text-center"
+        id="table-browser-rows"
+        [rows]="rows"
+        [headerHeight]="DTCFG.headerHeight"
+        [footerHeight]="DTCFG.footerHeight"
+        [columnMode]="'force'"
+        [rowHeight]="DTCFG.rowHeight"
+        [limit]="DTCFG.limit"
+        [scrollbarH]="true"
+      >
+        @for (column of columns(); track column) {
+          <ngx-datatable-column [name]="column" [prop]="column" [minWidth]="90" />
+        }
+      </ngx-datatable>
+    }
+  </div>
+</div>

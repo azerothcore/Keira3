@@ -1,0 +1,114 @@
+<keira-top-bar
+  [selected]="handlerService.selected"
+  [handler]="handlerService"
+  [selectedName]="handlerService.selectedName"
+  [isNew]="handlerService.isNew"
+/>
+
+<div class="container-fluid">
+  @if (editorService.loading) {
+    <span [translate]="'LOADING'"></span>
+  }
+
+  @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
+    <div>
+      <p class="small text-muted mt-2" id="editor-help">{{ 'EDITORS_HELP.EVENT_SCRIPTS' | translate }}</p>
+      <div class="content-block">
+        <keira-query-output
+          [docUrl]="docUrl"
+          [isNew]="editorService.isNew"
+          [diffQuery]="editorService.diffQuery"
+          [fullQuery]="editorService.fullQuery"
+          [error]="editorService.error"
+          [entityTable]="editorService.entityTable"
+          [editorService]="editorService"
+          (executeQuery)="save($event)"
+        />
+      </div>
+      <div class="content-block">
+        <form [formGroup]="editorService.form" class="form-group edit-form">
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2">
+              <label class="control-label" for="f-id">id</label>
+              <input [formControlName]="'id'" id="f-id" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2">
+              <label class="control-label" for="f-delay">delay</label>
+              <input [formControlName]="'delay'" id="f-delay" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2">
+              <label class="control-label" for="f-command">command</label>
+              <keira-generic-option-selector [control]="editorService.form.controls.command" id="f-command" [optionList]="COMMANDS" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2">
+              <label class="control-label" for="f-datalong">datalong</label>
+              <input [formControlName]="'datalong'" id="f-datalong" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2">
+              <label class="control-label" for="f-datalong2">datalong2</label>
+              <input [formControlName]="'datalong2'" id="f-datalong2" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2">
+              <label class="control-label" for="f-dataint">dataint</label>
+              <input [formControlName]="'dataint'" id="f-dataint" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2">
+              <label class="control-label" for="f-x">x</label>
+              <input [formControlName]="'x'" id="f-x" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2">
+              <label class="control-label" for="f-y">y</label>
+              <input [formControlName]="'y'" id="f-y" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2">
+              <label class="control-label" for="f-z">z</label>
+              <input [formControlName]="'z'" id="f-z" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2">
+              <label class="control-label" for="f-o">o</label>
+              <input [formControlName]="'o'" id="f-o" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="col-12 form-error" [hidden]="editorService.isFormIdUnique()">
+              <i class="fas fa-exclamation-triangle"></i>
+              <span [innerHTML]="'UNIQUE' | translate: { ENTITY_SECOND_ID_FIELD: editorService.entitySecondIdField }"></span>
+            </div>
+          </div>
+        </form>
+        <div class="row">
+          <div class="col-12">
+            <keira-editor-buttons
+              [selectedRowId]="editorService.selectedRowId"
+              (deleteSelectedRow)="editorService.deleteSelectedRow()"
+              (addNewRow)="editorService.addNewRow()"
+              (duplicateRow)="editorService.addNewRow(true)"
+            />
+            <ngx-datatable
+              id="editor-table"
+              class="bootstrap table table-striped text-center datatable-select"
+              [rows]="editorService.newRows"
+              [headerHeight]="DTCFG.headerHeight"
+              [footerHeight]="DTCFG.footerHeight"
+              [columnMode]="DTCFG.columnMode"
+              [rowHeight]="DTCFG.rowHeight"
+              [selectionType]="DTCFG.selectionType"
+              (select)="editorService.onRowSelection($event)"
+              (keydown.delete)="editorService.deleteSelectedRow()"
+            >
+              <ngx-datatable-column [minWidth]="30" [maxWidth]="30" [sortable]="false">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                  <i [hidden]="!editorService.isRowSelected(row)" class="fas fa-chevron-right"></i>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="delay" prop="delay" />
+              <ngx-datatable-column name="command" prop="command" />
+              <ngx-datatable-column name="datalong" prop="datalong" />
+              <ngx-datatable-column name="datalong2" prop="datalong2" />
+              <ngx-datatable-column name="dataint" prop="dataint" />
+              <ngx-datatable-column name="x" prop="x" />
+            </ngx-datatable>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

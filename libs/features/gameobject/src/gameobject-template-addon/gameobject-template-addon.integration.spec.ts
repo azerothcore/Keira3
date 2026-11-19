@@ -115,7 +115,7 @@ describe('GameobjectTemplateAddon integration tests', () => {
       const { page, querySpy } = setup(false);
       const expectedQuery =
         'UPDATE `gameobject_template_addon` SET ' +
-        '`flags` = 1, `mingold` = 2, `maxgold` = 3, `artkit0` = 4, `artkit1` = 5, `artkit2` = 6, `artkit3` = 7 WHERE (`entry` = ' +
+        '`flags` = (`flags` | 1), `mingold` = 2, `maxgold` = 3, `artkit0` = 4, `artkit1` = 5, `artkit2` = 6, `artkit3` = 7 WHERE (`entry` = ' +
         id +
         ');';
 
@@ -151,7 +151,7 @@ describe('GameobjectTemplateAddon integration tests', () => {
       await page.whenReady();
 
       expect(page.getInputById(field).value).toEqual('10');
-      page.expectDiffQueryToContain('UPDATE `gameobject_template_addon` SET `flags` = 10 WHERE (`entry` = ' + id + ');');
+      page.expectDiffQueryToContain('UPDATE `gameobject_template_addon` SET `flags` = (`flags` | 10) WHERE (`entry` = ' + id + ');');
 
       page.expectFullQueryToContain(
         'DELETE FROM `gameobject_template_addon` WHERE (`entry` = ' +

@@ -2,6 +2,7 @@ import { inject, WritableSignal } from '@angular/core';
 import { Router } from '@angular/router';
 import { TableRow } from '@keira/shared/constants';
 import { SubscriptionHandler } from '@keira/shared/utils';
+import { registerTabState } from '../tab-state';
 
 export abstract class HandlerService<T extends TableRow> extends SubscriptionHandler {
   protected readonly router = inject(Router);
@@ -12,9 +13,19 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
   selectedName!: string;
   isNew = false;
   forceReload = false;
+  sourceId?: string;
+  /** The copy page shows the selected entity's own SQL, to save or keep (#741): not a copy. */
+  exporting = false;
+
+  constructor() {
+    super();
+    // (each tab of this part of Keira keeps its own selection)
+    registerTabState(this);
+  }
 
   protected abstract _statusMap: { [key: string]: WritableSignal<boolean> };
   protected abstract readonly mainEditorRoutePath: string;
+  protected readonly copyRoutePath?: string;
 
   /* istanbul ignore next */ // TODO: fix coverage
   get statusMap(): { [key: string]: WritableSignal<boolean> } {
@@ -50,9 +61,11 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
     return this._customItemScssClass;
   }
 
-  select(isNew: boolean, id: string | number | Partial<T>, name?: string, navigate = true) {
+  select(isNew: boolean, id: string | number | Partial<T>, name?: string, navigate = true, sourceId?: string) {
     this.resetStatus();
     this.isNew = isNew;
+    this.sourceId = sourceId;
+    this.exporting = false;
 
     const currentSelected = this._selected;
 
@@ -70,8 +83,27 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
     this.selectedName = name as string;
 
     if (navigate) {
-      this.router.navigate([this.mainEditorRoutePath]);
+      if (this.copyRoutePath && isNew && sourceId) {
+        this.router.navigate([this.copyRoutePath]);
+      } else {
+        this.router.navigate([this.mainEditorRoutePath]);
+      }
     }
+  }
+
+  /** Whether the selected entity can be exported: it exists, and its part of Keira has a copy page. */
+  get canExport(): boolean {
+    return !!this.copyRoutePath && !!this._selected && !this.isNew;
+  }
+
+  /** The selected entity's SQL, every table of it, on the copy page (#741). */
+  exportEntity(): void {
+    if (!this.canExport) {
+      return;
+    }
+    this.sourceId = this._selected;
+    this.exporting = true;
+    void this.router.navigate([this.copyRoutePath]);
   }
 
   canActivate(): boolean {

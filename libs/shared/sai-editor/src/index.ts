@@ -6,6 +6,7 @@ export * from './constants/sai-comments';
 export * from './sai-editor.service';
 export * from './sai-comment-generator.service';
 export * from './timed-actionlist/timed-actionlist.component';
+export * from './guid-scripts/guid-scripts.component';
 export * from './sai-editor.component';
 export * from './sai-top-bar/sai-top-bar.component';
 export * from './sai-handler.service';

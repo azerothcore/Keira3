@@ -51,7 +51,11 @@ describe('CreatureFormations integration tests', () => {
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
-    const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
+    // (the creature's spawn 1234 leads a formation)
+    const querySpy = vi
+      .spyOn(queryService, 'query')
+      .mockImplementation(((sql: string) =>
+        of(sql.includes('FROM `creature` `c`') ? [{ guid: 1234, map: 0, leads: 2, ledBy: null }] : [])) as never);
 
     vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
@@ -378,6 +382,68 @@ describe('CreatureFormations integration tests', () => {
       page.setInputValueById('memberGUID', 1234); // Replaced 0 with 1234
 
       page.expectUniqueError();
+    });
+  });
+
+  describe('the leader (#3354)', () => {
+    const spawnsOf = (spawns: unknown[]) => {
+      const handlerService = TestBed.inject(CreatureHandlerService);
+      handlerService['_selected'] = '11043';
+      handlerService.isNew = false;
+      const queryService = TestBed.inject(MysqlQueryService);
+      vi.spyOn(queryService, 'query').mockImplementation(((sql: string) => of(sql.includes('FROM `creature` `c`') ? spawns : [])) as never);
+      const selectAll = vi.spyOn(queryService, 'selectAll').mockReturnValue(of([]));
+      const fixture = TestBed.createComponent(CreatureFormationsComponent);
+      const page = new CreatureFormationPage(fixture);
+      fixture.autoDetectChanges(true);
+      fixture.detectChanges();
+      return { page, selectAll, queryService };
+    };
+
+    it("edits the formation a spawn leads or is in (by guid, not the creature's entry), and starts one for a spawn", () => {
+      const { page, selectAll, queryService } = spawnsOf([
+        { guid: 10, map: 0, leads: 0, ledBy: 77 },
+        { guid: 11, map: 1, leads: 3, ledBy: null },
+        { guid: 12, map: 1, leads: 0, ledBy: null },
+      ]);
+      expect((queryService.query as unknown as { mock: { calls: string[][] } }).mock.calls[0][0]).toContain('WHERE `c`.`id` = 11043');
+      const options = [...page.queryAll<HTMLOptionElement>('#formation-leader option')].map((option) => option.textContent?.trim());
+      expect(options).toEqual(['CREATURE.FORMATION_LED_BY', 'CREATURE.FORMATION_LEADS', 'CREATURE.FORMATION_NONE']);
+      expect(selectAll).toHaveBeenLastCalledWith('creature_formations', 'leaderGUID', 77);
+      page.setInputValueById('formation-leader', '12');
+      expect(selectAll).toHaveBeenLastCalledWith('creature_formations', 'leaderGUID', 12);
+      page.addNewRow();
+      expect(page.getInputById('leaderGUID').value).toBe('12');
+    });
+
+    it('keeps the leader picked when the page opens again for the same creature', () => {
+      const spawns = [
+        { guid: 11, map: 1, leads: 3, ledBy: null },
+        { guid: 12, map: 1, leads: 0, ledBy: null },
+      ];
+      spawnsOf(spawns).page.setInputValueById('formation-leader', '12');
+      const { selectAll } = spawnsOf(spawns);
+      expect(selectAll).toHaveBeenLastCalledWith('creature_formations', 'leaderGUID', 12);
+    });
+
+    it('says when the creature has no spawns, and offers no rows to add', () => {
+      const { page, selectAll } = spawnsOf([]);
+      expect(page.query('#formation-no-spawns')).toBeTruthy();
+      expect(selectAll).not.toHaveBeenCalled();
+      expect(page.query('#leaderGUID', false)).toBeFalsy();
+    });
+
+    it('keeps the leader while its formation has unsaved changes', () => {
+      const { page } = spawnsOf([
+        { guid: 11, map: 1, leads: 3, ledBy: null },
+        { guid: 12, map: 1, leads: 0, ledBy: null },
+      ]);
+      expect(page.query<HTMLSelectElement>('#formation-leader').disabled).toBe(false);
+
+      page.addNewRow();
+
+      expect(page.query<HTMLSelectElement>('#formation-leader').disabled).toBe(true);
+      expect(page.query('#formation-leader-unsaved')).toBeTruthy();
     });
   });
 });

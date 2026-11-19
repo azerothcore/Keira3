@@ -33,4 +33,5 @@ export class SelectSpellLootComponent extends SelectComponent<SpellLootTemplate>
   readonly customStartingId = SPELL_LOOT_TEMPLATE_CUSTOM_STARTING_ID;
   readonly selectService = inject(SelectSpellLootService);
   readonly handlerService = inject(SpellLootHandlerService);
+  protected readonly showUsedBy = false;
 }

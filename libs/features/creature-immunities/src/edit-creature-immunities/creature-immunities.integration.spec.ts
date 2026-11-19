@@ -159,7 +159,9 @@ describe('CreatureImmunities integration tests', () => {
       const value = await page.openFlagsAndToggle('SchoolMask', [0, 1, 2, 3, 4, 5, 6]);
 
       expect(value).toBe(127);
-      page.expectDiffQueryToContain(`UPDATE \`creature_immunities\` SET \`SchoolMask\` = 127 WHERE (\`ID\` = ${ID_EMPTY});`);
+      page.expectDiffQueryToContain(
+        `UPDATE \`creature_immunities\` SET \`SchoolMask\` = (\`SchoolMask\` | 127) WHERE (\`ID\` = ${ID_EMPTY});`,
+      );
     });
 
     it('should show the dispel type checklist without the NONE entry', async () => {
@@ -183,7 +185,9 @@ describe('CreatureImmunities integration tests', () => {
       const value = await page.openFlagsAndToggle('DispelTypeMask', [0]);
 
       expect(value).toBe(2);
-      page.expectDiffQueryToContain(`UPDATE \`creature_immunities\` SET \`DispelTypeMask\` = 2 WHERE (\`ID\` = ${ID_95});`);
+      page.expectDiffQueryToContain(
+        `UPDATE \`creature_immunities\` SET \`DispelTypeMask\` = (\`DispelTypeMask\` | 2) WHERE (\`ID\` = ${ID_95});`,
+      );
     });
 
     it('should show the mechanics of the stored mask as checked', async () => {
@@ -222,7 +226,9 @@ describe('CreatureImmunities integration tests', () => {
       const value = await page.openFlagsAndToggle('MechanicsMask', [11]);
 
       expect(value).toBe(4096);
-      page.expectDiffQueryToContain(`UPDATE \`creature_immunities\` SET \`MechanicsMask\` = 4096 WHERE (\`ID\` = ${ID_EMPTY});`);
+      page.expectDiffQueryToContain(
+        `UPDATE \`creature_immunities\` SET \`MechanicsMask\` = (\`MechanicsMask\` | 4096) WHERE (\`ID\` = ${ID_EMPTY});`,
+      );
     });
 
     it('should list the effects without the NONE entry', async () => {

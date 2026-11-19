@@ -67,6 +67,8 @@ import {
 import { SaiEditorService } from './sai-editor.service';
 import { SaiHandlerService } from './sai-handler.service';
 import { TimedActionlistComponent } from './timed-actionlist/timed-actionlist.component';
+import { GuidScriptsComponent } from './guid-scripts/guid-scripts.component';
+import { checkSmartScripts, SaiProblem } from './sai-checks';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -96,6 +98,7 @@ import { AsyncPipe } from '@angular/common';
     EditorButtonsComponent,
     NgxDatatableModule,
     TimedActionlistComponent,
+    GuidScriptsComponent,
     AsyncPipe,
   ],
 })
@@ -179,6 +182,24 @@ export class SaiEditorComponent extends MultiRowEditorComponent<SmartScripts> im
     return (
       this.handlerService.parsedSelected.source_type === SAI_TYPES.SAI_TYPE_CREATURE && this.handlerService.parsedSelected.entryorguid > 0
     );
+  }
+
+  /** A creature's or gameobject's script (by entry): its spawns' own scripts are listed too. */
+  get showGuidScripts(): boolean {
+    const { source_type, entryorguid } = this.handlerService.parsedSelected;
+    return (source_type === SAI_TYPES.SAI_TYPE_CREATURE || source_type === SAI_TYPES.SAI_TYPE_GAMEOBJECT) && entryorguid > 0;
+  }
+
+  private checkedRows?: SmartScripts[];
+  private checked: SaiProblem[] = [];
+  /** What's wrong with the script as edited (checked again when its rows change). */
+  checks(): SaiProblem[] {
+    const rows = this.editorService.newRows;
+    if (rows !== this.checkedRows) {
+      this.checkedRows = rows;
+      this.checked = checkSmartScripts(rows);
+    }
+    return this.checked;
   }
 
   get entryOrGuid(): number {

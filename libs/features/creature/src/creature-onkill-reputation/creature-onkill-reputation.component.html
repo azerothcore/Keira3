@@ -1,4 +1,9 @@
-<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
+<keira-top-bar
+  [selected]="handlerService.selected"
+  [handler]="handlerService"
+  [selectedName]="handlerService.selectedName"
+  [isNew]="handlerService.isNew"
+/>
 
 <div class="container-fluid">
   @if (editorService.loading) {
@@ -29,7 +34,7 @@
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="RewOnKillRepFaction1">RewOnKillRepFaction1</label>
-              <keira-faction-selector-btn
+              <keira-quest-faction-selector-btn
                 [config]="{ name: 'RewOnKillRepFaction1' }"
                 [control]="editorService.form.controls.RewOnKillRepFaction1"
                 [disabled]="editorService.form.controls.RewOnKillRepFaction1.disabled"
@@ -40,10 +45,11 @@
                 type="number"
                 class="form-control form-control-sm"
               />
+              <keira-faction-name [control]="editorService.form.controls.RewOnKillRepFaction1" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="RewOnKillRepFaction2">RewOnKillRepFaction2</label>
-              <keira-faction-selector-btn
+              <keira-quest-faction-selector-btn
                 [config]="{ name: 'RewOnKillRepFaction2' }"
                 [control]="editorService.form.controls.RewOnKillRepFaction2"
                 [disabled]="editorService.form.controls.RewOnKillRepFaction2.disabled"
@@ -54,6 +60,7 @@
                 type="number"
                 class="form-control form-control-sm"
               />
+              <keira-faction-name [control]="editorService.form.controls.RewOnKillRepFaction2" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="MaxStanding1">MaxStanding1</label>

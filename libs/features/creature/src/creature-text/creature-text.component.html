@@ -1,4 +1,9 @@
-<keira-top-bar [selected]="handlerService.selected" [selectedName]="handlerService.selectedName" [isNew]="handlerService.isNew" />
+<keira-top-bar
+  [selected]="handlerService.selected"
+  [handler]="handlerService"
+  [selectedName]="handlerService.selectedName"
+  [isNew]="handlerService.isNew"
+/>
 
 <div class="container-fluid">
   @if (editorService.loading) {
@@ -83,13 +88,40 @@
             </div>
             <div class="form-group col-12 col-md-8 col-lg-4 col-xl-4">
               <label class="control-label" for="comment">comment</label>
-              <input [formControlName]="'comment'" id="comment" type="text" class="form-control form-control-sm" />
+              <div class="input-group input-group-sm">
+                <input [formControlName]="'comment'" id="comment" type="text" class="form-control form-control-sm" />
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  id="comment-from-creature"
+                  [disabled]="!editorService.hasSelectedRow()"
+                  [tooltip]="'CREATURE.TEXT.COMMENT_FROM_CREATURE' | translate"
+                  (click)="editorService.commentFromCreature()"
+                >
+                  <i class="fas fa-magic"></i>
+                </button>
+              </div>
             </div>
           </div>
           <div class="row">
             <div class="form-group col-12">
               <label class="control-label" for="Text">Text</label>
-              <input [formControlName]="'Text'" id="Text" type="text" class="form-control form-control-sm" />
+              <div class="input-group input-group-sm">
+                <input [formControlName]="'Text'" id="Text" type="text" class="form-control form-control-sm" />
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  id="text-from-broadcast-text"
+                  [disabled]="!editorService.hasSelectedRow()"
+                  [tooltip]="'CREATURE.TEXT.TEXT_FROM_BROADCAST_TEXT' | translate"
+                  (click)="textFromBroadcastText()"
+                >
+                  <i class="fas fa-magic"></i>
+                </button>
+              </div>
+              @if (textProblem()) {
+                <small class="text-danger" id="text-problem">{{ textProblem() | translate }}</small>
+              }
             </div>
           </div>
         </form>

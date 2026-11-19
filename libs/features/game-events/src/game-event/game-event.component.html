@@ -1,0 +1,88 @@
+<keira-top-bar
+  [selected]="handlerService.selected"
+  [handler]="handlerService"
+  [selectedName]="handlerService.selectedName"
+  [isNew]="handlerService.isNew"
+/>
+
+<div class="container-fluid">
+  @if (editorService.loading) {
+    <span [translate]="'LOADING'"></span>
+  }
+
+  @if (editorService.form && !!editorService.loadedEntityId && !editorService.loading) {
+    <div>
+      <div class="content-block">
+        <keira-query-output
+          [docUrl]="docUrl"
+          [isNew]="editorService.isNew"
+          [diffQuery]="editorService.diffQuery"
+          [fullQuery]="editorService.fullQuery"
+          [error]="editorService.error"
+          [entityTable]="editorService.entityTable"
+          [editorService]="editorService"
+          (executeQuery)="save($event)"
+        />
+      </div>
+      <form [formGroup]="editorService.form" class="form-group edit-form">
+        <div class="content-block">
+          <div class="row">
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2">
+              <label class="control-label" for="eventEntry">eventEntry</label>
+              <input [formControlName]="'eventEntry'" id="eventEntry" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-md-8 col-lg-6">
+              <label class="control-label" for="description">description</label>
+              <input [formControlName]="'description'" id="description" type="text" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2">
+              <label class="control-label" for="holiday">holiday</label>
+              <keira-holiday-selector-btn
+                [control]="editorService.form.controls.holiday"
+                [disabled]="editorService.form.controls.holiday.disabled"
+                [config]="{ name: 'holiday' }"
+              />
+              <input [formControlName]="'holiday'" id="holiday" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2">
+              <label class="control-label" for="holidayStage">holidayStage</label>
+              <input [formControlName]="'holidayStage'" id="holidayStage" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3">
+              <label class="control-label" for="start_time">start_time</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'GAME_EVENT.TIME' | translate"></i>
+              <input [formControlName]="'start_time'" id="start_time" type="text" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3">
+              <label class="control-label" for="end_time">end_time</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'GAME_EVENT.TIME' | translate"></i>
+              <input [formControlName]="'end_time'" id="end_time" type="text" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3">
+              <label class="control-label" for="occurence">occurence</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'GAME_EVENT.OCCURENCE' | translate"></i>
+              <input [formControlName]="'occurence'" id="occurence" type="number" class="form-control form-control-sm" />
+              <small class="text-muted" id="occurence-text">{{ minutesText(editorService.form.controls.occurence.value) }}</small>
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3">
+              <label class="control-label" for="length">length</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'GAME_EVENT.LENGTH' | translate"></i>
+              <input [formControlName]="'length'" id="length" type="number" class="form-control form-control-sm" />
+              <small class="text-muted" id="length-text">{{ minutesText(editorService.form.controls.length.value) }}</small>
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2">
+              <label class="control-label" for="world_event">world_event</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'GAME_EVENT.WORLD_EVENT' | translate"></i>
+              <input [formControlName]="'world_event'" id="world_event" type="number" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2">
+              <label class="control-label" for="announce">announce</label>
+              <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'GAME_EVENT.ANNOUNCE' | translate"></i>
+              <input [formControlName]="'announce'" id="announce" type="number" class="form-control form-control-sm" />
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  }
+</div>

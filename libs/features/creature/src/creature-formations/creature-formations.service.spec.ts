@@ -1,3 +1,5 @@
+import { of } from 'rxjs';
+import { CreatureFormation } from '@keira/shared/acore-world-model';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -30,5 +32,17 @@ describe('CreatureSpawnService', () => {
   it('should be created', () => {
     const service: CreatureFormationsService = TestBed.inject(CreatureFormationsService);
     expect(service).toBeTruthy();
+  });
+
+  it('reads no spawns when the database gives none, and starts a row in no formation without a leader', () => {
+    const service = TestBed.inject(CreatureFormationsService);
+    vi.spyOn(TestBed.inject(MysqlQueryService), 'query').mockReturnValue(of(undefined) as never);
+    let spawns: unknown;
+    service.getSpawns(1).subscribe((rows) => (spawns = rows));
+    expect(spawns).toEqual([]);
+    const row = new CreatureFormation();
+    row.leaderGUID = 5;
+    service['addIdToNewRow'](row);
+    expect(row.leaderGUID).toBe(0);
   });
 });

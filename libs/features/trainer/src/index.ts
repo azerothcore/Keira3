@@ -5,3 +5,4 @@ export * from './edit-trainer/trainer.component';
 export * from './edit-trainer/trainer.service';
 export * from './trainer-spell/trainer-spell.component';
 export * from './trainer-spell/trainer-spell.service';
+export { TrainerCopyComponent } from './trainer-copy/trainer-copy.component';

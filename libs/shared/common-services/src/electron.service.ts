@@ -24,6 +24,11 @@ export class ElectronService {
     }
   }
 
+  /** Opens a file in the program set for it on this computer (an error message when it can't, else ''). */
+  openPath(path: string): Promise<string> {
+    return window.require('electron').shell.openPath(path);
+  }
+
   isElectron = () => {
     return window && window.process && window.process.type;
   };

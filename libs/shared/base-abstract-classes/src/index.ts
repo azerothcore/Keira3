@@ -17,3 +17,4 @@ export * from './service/select/search.service';
 export * from './service/handlers/complex-key.handler.service';
 export * from './service/handlers/handler.service';
 export * from './core.mock';
+export * from './service/tab-state';

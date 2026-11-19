@@ -8,11 +8,13 @@ import {
   ItemTemplate,
   MILLING_LOOT_TEMPLATE_TABLE,
   PROSPECTING_LOOT_TEMPLATE_TABLE,
+  ITEM_TEMPLATE_LOCALE_TABLE,
 } from '@keira/shared/acore-world-model';
 
 @Service()
 export class ItemHandlerService extends HandlerService<ItemTemplate> {
   protected readonly mainEditorRoutePath = 'item/item-template';
+  protected override readonly copyRoutePath = 'item/copy';
 
   get isItemTemplateUnsaved(): Signal<boolean> {
     return this.statusMap[ITEM_TEMPLATE_TABLE].asReadonly();
@@ -38,6 +40,10 @@ export class ItemHandlerService extends HandlerService<ItemTemplate> {
     return this.statusMap[MILLING_LOOT_TEMPLATE_TABLE].asReadonly();
   }
 
+  get isItemTemplateLocaleUnsaved(): Signal<boolean> {
+    return this.statusMap[ITEM_TEMPLATE_LOCALE_TABLE].asReadonly();
+  }
+
   protected _statusMap = {
     [ITEM_TEMPLATE_TABLE]: signal(false),
     [ITEM_ENCHANTMENT_TEMPLATE_TABLE]: signal(false),
@@ -45,5 +51,6 @@ export class ItemHandlerService extends HandlerService<ItemTemplate> {
     [DISENCHANT_LOOT_TEMPLATE_TABLE]: signal(false),
     [PROSPECTING_LOOT_TEMPLATE_TABLE]: signal(false),
     [MILLING_LOOT_TEMPLATE_TABLE]: signal(false),
+    [ITEM_TEMPLATE_LOCALE_TABLE]: signal(false),
   };
 }

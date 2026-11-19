@@ -3,7 +3,7 @@
   padding: 9.5px;
   word-break: break-all;
   word-wrap: break-word;
-  background-color: #f5f5f5;
-  border: 1px solid #ccc;
+  background-color: var(--keira-code-bg);
+  border: 1px solid var(--bs-border-color);
   border-radius: 4px;
 }

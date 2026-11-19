@@ -330,3 +330,9 @@ $img-border-color: rgba(255, 255, 255, 0.1);
   bottom: 10px;
   left: 10px;
 }
+
+// a page that needs something not set yet (the AzerothCore source folder)
+.sidebar-disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}

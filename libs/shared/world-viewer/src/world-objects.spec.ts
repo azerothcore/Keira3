@@ -1,0 +1,249 @@
+import { ModelPlacement, tileCenter, TileCoord, WmoModel } from '@keira/shared/wow-data';
+import { Group, Material, Mesh, Object3D } from 'three';
+import { TextureCache } from './texture-cache';
+import { ObjectSource, WorldObjects } from './world-objects';
+
+const model: WmoModel = {
+  materials: [
+    { texture: 'a.blp', twoSided: false, unlit: false, blend: 0 },
+    { twoSided: false, unlit: false, blend: 0 },
+  ],
+  groups: [
+    {
+      positions: new Float32Array(9),
+      normals: new Float32Array(9),
+      uvs: new Float32Array(6),
+      indices: new Uint16Array([0, 1, 2]),
+      batches: [{ start: 0, count: 3, material: 0 }],
+      indoor: false,
+    },
+    {
+      positions: new Float32Array(9),
+      normals: new Float32Array(9),
+      uvs: new Float32Array(6),
+      colors: new Float32Array(9),
+      indices: new Uint16Array([0, 1, 2]),
+      batches: [{ start: 0, count: 3, material: 1 }],
+      indoor: true,
+    },
+  ],
+};
+const placement = (uniqueId: number, path = 'abbey.wmo'): ModelPlacement => ({
+  uniqueId,
+  path,
+  position: [0, 0, 0],
+  rotation: [0, 0, 0, 1],
+  scale: 1,
+});
+
+describe('WorldObjects', () => {
+  const setup = (placementsByTile: Record<string, ModelPlacement[]> = {}) => {
+    const source: ObjectSource = {
+      getTilePlacements: vi.fn().mockImplementation((_d: string, tile: TileCoord) => {
+        const wmos = placementsByTile[`${tile.tx}_${tile.ty}`];
+        return Promise.resolve(wmos ? { wmos, doodads: [] } : undefined);
+      }),
+      getWmo: vi.fn().mockImplementation((path: string) => Promise.resolve(path === 'missing.wmo' ? undefined : model)),
+    };
+    const group = new Group();
+    const textures = new TextureCache(() => Promise.resolve(undefined));
+    const onChange = vi.fn();
+    const objects = new WorldObjects(source, group, textures, onChange);
+    objects.configure({ showBuildings: true, radius: 0 });
+    return { source, group, objects, onChange };
+  };
+
+  it('places the buildings of the tiles around the camera, once per unique id and file', async () => {
+    const { objects, group, source, onChange } = setup({
+      '32_48': [placement(1), placement(2, 'missing.wmo')],
+      '33_48': [placement(1), placement(3)],
+    });
+    objects.setMap('Azeroth');
+    objects.configure({ showBuildings: true, radius: 1 });
+    await objects.update(tileCenter({ tx: 32, ty: 48 }));
+    expect(objects.placedCount).toBe(2);
+    expect(group.children.map((c) => c.name).sort()).toEqual(['wmo:1', 'wmo:3']);
+    expect(source.getWmo).toHaveBeenCalledTimes(2);
+    expect(onChange).toHaveBeenCalled();
+
+    await objects.update(tileCenter({ tx: 32, ty: 48 }));
+    expect(source.getTilePlacements).toHaveBeenCalledTimes(9);
+  });
+
+  it('keeps shared buildings until no loaded tile lists them', async () => {
+    const { objects, group } = setup({ '32_48': [placement(1)], '34_48': [placement(1), placement(2)] });
+    objects.setMap('Azeroth');
+    objects.configure({ showBuildings: true, radius: 2 });
+    await objects.update(tileCenter({ tx: 32, ty: 48 }));
+    expect(objects.placedCount).toBe(2);
+
+    // moving east drops tile 32 (> radius + 1 away) but 34 still lists building 1
+    await objects.update(tileCenter({ tx: 36, ty: 48 }));
+    expect(objects.loadedTiles).not.toContain('32_48');
+    expect(group.children.map((c) => c.name).sort()).toEqual(['wmo:1', 'wmo:2']);
+
+    await objects.update(tileCenter({ tx: 40, ty: 48 }));
+    expect(objects.placedCount).toBe(0);
+  });
+
+  it('keeps the buildings of a whole region', async () => {
+    const { objects, source } = setup({ '32_48': [placement(1)], '32_52': [placement(2)] });
+    objects.setMap('Azeroth');
+    const far = tileCenter({ tx: 32, ty: 52 });
+    objects.setRegion({ minX: far.x, maxX: far.x, minY: far.y, maxY: far.y });
+    await objects.update(tileCenter({ tx: 32, ty: 48 }));
+    expect(objects.placedCount).toBe(2);
+    expect(source.getTilePlacements).toHaveBeenCalledWith('Azeroth', { tx: 32, ty: 52 });
+
+    objects.setRegion(undefined);
+    await objects.update(tileCenter({ tx: 32, ty: 48 }));
+    expect(objects.placedCount).toBe(1);
+  });
+
+  it('does nothing without a map or with buildings hidden', async () => {
+    const { objects, source } = setup({ '32_48': [placement(1)] });
+    await objects.update(tileCenter({ tx: 32, ty: 48 }));
+    objects.setMap('Azeroth');
+    objects.configure({ showBuildings: false, radius: 0 });
+    objects.configure({ showBuildings: false, radius: 0 });
+    await objects.update(tileCenter({ tx: 32, ty: 48 }));
+    expect(source.getTilePlacements).not.toHaveBeenCalled();
+  });
+
+  it('drops what a tile placed when the camera leaves while it loads, and ignores loads of a previous map', async () => {
+    const { objects, group, source } = setup({ '32_48': [placement(1), placement(2, 'second.wmo')] });
+    let release: () => void = () => undefined;
+    vi.mocked(source.getWmo)
+      .mockImplementationOnce(() => Promise.resolve(model))
+      .mockImplementationOnce(
+        () =>
+          new Promise((resolve) => {
+            release = () => resolve(model);
+          }),
+      );
+    objects.setMap('Azeroth');
+    const loading = objects.update(tileCenter({ tx: 32, ty: 48 }));
+    // building 1 is placed, building 2 is still loading
+    await vi.waitFor(() => expect(source.getWmo).toHaveBeenCalledTimes(2));
+    await objects.update(tileCenter({ tx: 40, ty: 48 }));
+    release();
+    await loading;
+    // first building loaded, second still pending when the camera moved: both gone
+    expect(group.children.length).toBe(0);
+
+    const second = setup({ '32_48': [placement(1)] });
+    let releaseMap: () => void = () => undefined;
+    vi.mocked(second.source.getWmo).mockImplementation(() => new Promise((resolve) => (releaseMap = () => resolve(model))));
+    second.objects.setMap('Azeroth');
+    const stale = second.objects.update(tileCenter({ tx: 32, ty: 48 }));
+    await vi.waitFor(() => expect(second.source.getWmo).toHaveBeenCalled());
+    second.objects.setMap('Kalimdor');
+    releaseMap();
+    await stale;
+    expect(second.group.children.length).toBe(0);
+
+    // a tile of the previous map listed after the change isn't taken as one of the new map's tiles
+    const third = setup({ '32_48': [placement(1)] });
+    let list: () => void = () => undefined;
+    vi.mocked(third.source.getTilePlacements).mockImplementationOnce(
+      () => new Promise((resolve) => (list = () => resolve({ wmos: [], doodads: [] }))),
+    );
+    third.objects.setMap('Azeroth');
+    const old = third.objects.update(tileCenter({ tx: 32, ty: 48 }));
+    third.objects.setMap('Kalimdor');
+    list();
+    await old;
+    await third.objects.update(tileCenter({ tx: 32, ty: 48 }));
+    expect(third.group.children.length).toBe(1);
+  });
+
+  it('places buildings asked for by key (a transport on its map), replacing the previous ones', async () => {
+    const { objects, group, onChange, source } = setup();
+    await objects.setExtras([{ key: 'transport:1', path: 'ship.wmo', position: { x: 0, y: 0, z: 0 }, orientation: Math.PI }]);
+    expect(group.children.map((child) => child.name)).toEqual(['transport:1']);
+    expect(onChange).toHaveBeenCalled();
+    // another map: its buildings are freed, but the one the editor placed is kept
+    objects.setMap('Azeroth');
+    objects.setMap('Kalimdor');
+    const reads = vi.mocked(source.getWmo).mock.calls.length;
+    await objects.setExtras([{ key: 'transport:1', path: 'ship.wmo', position: { x: 0, y: 0, z: 0 }, orientation: Math.PI }]);
+    expect(vi.mocked(source.getWmo).mock.calls.length).toBe(reads);
+    // a file that isn't there or can't be read, and a change while loading
+    await objects.setExtras([{ key: 'transport:2', path: 'missing.wmo', position: { x: 0, y: 0, z: 0 }, orientation: 0 }]);
+    expect(group.children).toEqual([]);
+    vi.mocked(source.getWmo).mockRejectedValueOnce(new Error('bad wmo'));
+    await objects.setExtras([{ key: 'transport:4', path: 'bad.wmo', position: { x: 0, y: 0, z: 0 }, orientation: 0 }]);
+    expect(group.children).toEqual([]);
+    const first = objects.setExtras([{ key: 'transport:3', path: 'a.wmo', position: { x: 0, y: 0, z: 0 }, orientation: 0 }]);
+    const second = objects.setExtras([]);
+    await Promise.all([first, second]);
+    expect(group.children).toEqual([]);
+    objects.dispose();
+  });
+
+  it('warns about tiles that fail, retries failed files, and disposes templates', async () => {
+    const { objects, source } = setup({ '32_48': [placement(1)] });
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    vi.mocked(source.getWmo).mockRejectedValueOnce(new Error('bad wmo'));
+    objects.setMap('Azeroth');
+    await objects.update(tileCenter({ tx: 32, ty: 48 }));
+    expect(warn).toHaveBeenCalledWith('[World Editor] Could not load the buildings of Azeroth_32_48: bad wmo');
+
+    objects.setMap('Azeroth');
+    await objects.update(tileCenter({ tx: 32, ty: 48 }));
+    expect(objects.placedCount).toBe(1);
+    objects.setMap('Azeroth');
+    vi.mocked(source.getTilePlacements).mockResolvedValueOnce({ wmos: [placement(5, 'missing.wmo')], doodads: [] });
+    await objects.update(tileCenter({ tx: 32, ty: 48 }));
+    objects.dispose();
+    expect(objects.placedCount).toBe(0);
+  });
+
+  it('makes the buildings see-through when asked, loaded ones and those to come', async () => {
+    const { objects, group, onChange } = setup({ '32_48': [placement(1)], '33_48': [placement(2, 'other.wmo')] });
+    objects.setMap('Azeroth');
+    await objects.update(tileCenter({ tx: 32, ty: 48 }));
+    const opacities = (object: Object3D) => {
+      const found: number[] = [];
+      object.traverse((child) => {
+        const material = (child as Mesh).material;
+        (Array.isArray(material) ? material : material ? [material] : []).forEach((m) => found.push(m.opacity));
+      });
+      return found;
+    };
+    onChange.mockClear();
+    objects.setOpacity(0.5);
+    objects.setOpacity(0.5);
+    expect(onChange).toHaveBeenCalledTimes(1);
+    await new Promise((resolve) => setTimeout(resolve));
+    expect(opacities(group.children[0]).every((o) => o <= 0.5)).toBe(true);
+    objects.configure({ showBuildings: true, radius: 1 });
+    await objects.update(tileCenter({ tx: 32, ty: 48 }));
+    const later = group.children.find((child) => child.name === 'wmo:2') as Object3D;
+    expect(opacities(later).every((o) => o <= 0.5)).toBe(true);
+    objects.setOpacity(1);
+    await new Promise((resolve) => setTimeout(resolve));
+    expect(opacities(later).some((o) => o === 1)).toBe(true);
+  });
+
+  it('hides the indoor parts of the buildings when asked, loaded ones and those to come', async () => {
+    const { objects, group, onChange } = setup({ '32_48': [placement(1)], '33_48': [placement(2, 'other.wmo')] });
+    objects.setMap('Azeroth');
+    await objects.update(tileCenter({ tx: 32, ty: 48 }));
+    const indoorOf = (object: Object3D) =>
+      ((object.children.find((child) => (child as Mesh).geometry?.getAttribute('color')) as Mesh).material as Material[])[0];
+    onChange.mockClear();
+    objects.setIndoorVisible(false);
+    objects.setIndoorVisible(false);
+    expect(onChange).toHaveBeenCalledTimes(1);
+    await new Promise((resolve) => setTimeout(resolve));
+    expect(indoorOf(group.children[0]).visible).toBe(false);
+    objects.configure({ showBuildings: true, radius: 1 });
+    await objects.update(tileCenter({ tx: 32, ty: 48 }));
+    const later = group.children.find((child) => child.name === 'wmo:2') as Object3D;
+    expect(indoorOf(later).visible).toBe(false);
+    objects.setIndoorVisible(true);
+    await new Promise((resolve) => setTimeout(resolve));
+    expect(indoorOf(later).visible).toBe(true);
+  });
+});

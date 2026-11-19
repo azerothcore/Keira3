@@ -39,7 +39,7 @@ describe('ReferenceLootTemplate integration tests', () => {
     }).compileComponents();
   });
 
-  function setup(creatingNew: boolean) {
+  function setup(creatingNew: boolean, rows = [originalRow0, originalRow1, originalRow2]) {
     const handlerService = TestBed.inject(ReferenceLootHandlerService);
     handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
@@ -48,7 +48,7 @@ describe('ReferenceLootTemplate integration tests', () => {
     const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
     vi.spyOn(queryService, 'queryValue').mockReturnValue(of());
 
-    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : rows));
 
     const fixture = TestBed.createComponent(ReferenceLootTemplateComponent);
     const page = new ReferenceLootTemplatePage(fixture);
@@ -263,6 +263,21 @@ describe('ReferenceLootTemplate integration tests', () => {
           "(1234, 0, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
           "(1234, 1, 0, 100, 0, 1, 0, 1, 1, ''),\n" +
           "(1234, 2, 0, 100, 0, 1, 2, 1, 1, '');",
+      );
+    });
+
+    it('edits the right row of an item in two groups (#2242)', () => {
+      const group1 = Object.assign(new ReferenceLootTemplate(), { Entry: id, Item: 5, GroupId: 1 });
+      const group2 = Object.assign(new ReferenceLootTemplate(), { Entry: id, Item: 5, GroupId: 2 });
+      const { page } = setup(false, [group1, group2]);
+      page.clickRowOfDatatable(1);
+      page.setInputValueById('LootMode', 3);
+      page.expectDiffQueryToContain(
+        'DELETE FROM `reference_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (5));\n' +
+          'INSERT INTO `reference_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+          '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 5, 0, 100, 0, 1, 1, 1, 1, ''),\n" +
+          "(1234, 5, 0, 100, 0, 3, 2, 1, 1, '');",
       );
     });
 

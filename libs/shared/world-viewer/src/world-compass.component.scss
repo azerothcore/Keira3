@@ -1,0 +1,99 @@
+.world-compass {
+  width: 132px;
+  pointer-events: none;
+  user-select: none;
+  text-align: center;
+
+  svg {
+    width: 132px;
+    height: 132px;
+    display: block;
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.6));
+  }
+}
+
+.world-compass-ring {
+  fill: rgba(12, 14, 17, 0.8);
+  stroke: #8a8a8a;
+  stroke-width: 1;
+}
+
+.world-compass-face {
+  fill: rgba(20, 24, 28, 0.72);
+  stroke: #c9c9c9;
+  stroke-width: 2;
+}
+
+.world-compass-tick {
+  stroke: #d8d8d8;
+  stroke-width: 0.8;
+}
+
+.world-compass-mark {
+  fill: #f0a030;
+  stroke: #f0a030;
+
+  line {
+    stroke-width: 2;
+    stroke-dasharray: 1.6 1.4;
+  }
+
+  path {
+    stroke: none;
+  }
+
+  &.north {
+    fill: #ff4a3a;
+    stroke: #ff4a3a;
+  }
+}
+
+.world-compass-label {
+  fill: #e8e8e8;
+  stroke: none;
+  font-size: 8px;
+  text-anchor: middle;
+  dominant-baseline: middle;
+
+  &.point {
+    font-size: 11px;
+    font-weight: 700;
+    fill: #f0a030;
+
+    &.between {
+      font-size: 8px;
+    }
+  }
+
+  &.north {
+    fill: #ff4a3a;
+  }
+}
+
+.world-compass-north {
+  fill: #f0c675;
+}
+
+.world-compass-lubber {
+  fill: #ff6b5b;
+}
+
+.world-compass-needle {
+  fill: #c9c9c9;
+}
+
+.world-compass-hub {
+  fill: #c39361;
+}
+
+.world-compass-readout {
+  display: inline-flex;
+  gap: 0.4em;
+  margin-top: 2px;
+  padding: 0 6px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.6);
+}

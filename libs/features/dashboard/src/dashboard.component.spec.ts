@@ -1,3 +1,4 @@
+import { provideRouter } from '@angular/router';
 import { vi } from 'vitest';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
@@ -61,6 +62,7 @@ describe('DashboardComponent', () => {
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
+        provideRouter([]),
         { provide: MysqlQueryService, useValue: instance(MockedMysqlQueryService) },
       ],
     }).compileComponents();

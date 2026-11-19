@@ -1,0 +1,61 @@
+<div class="container-fluid">
+  <div class="content-block">
+    <h4>{{ 'SNIFF_TO_SQL.TITLE' | translate }}</h4>
+    <p class="text-muted small">{{ 'SNIFF_TO_SQL.HELP' | translate }}</p>
+
+    <textarea
+      class="form-control form-control-sm font-monospace mb-2"
+      id="sniff-text"
+      rows="10"
+      [placeholder]="'SNIFF_TO_SQL.PLACEHOLDER' | translate"
+      [ngModel]="text()"
+      (ngModelChange)="text.set($event)"
+    ></textarea>
+
+    <div class="d-flex flex-wrap gap-2 align-items-center mb-2">
+      <select class="form-select form-select-sm w-auto" id="sniff-table" [ngModel]="table()" (ngModelChange)="changeTable($event)">
+        <option value="waypoint_data">waypoint_data (path_id)</option>
+        <option value="waypoints">waypoints (SmartAI)</option>
+      </select>
+      <button type="button" class="btn btn-primary btn-sm" id="sniff-parse" [disabled]="!text().trim()" (click)="parse()">
+        <i class="fa fa-cogs"></i> {{ 'SNIFF_TO_SQL.PARSE' | translate }}
+      </button>
+    </div>
+
+    @if (parsed()) {
+      <p class="small" id="sniff-summary">
+        {{ 'SNIFF_TO_SQL.SUMMARY' | translate: { paths: paths().length, texts: texts().length, matched: matched() } }}
+      </p>
+      @if (error()) {
+        <p class="text-danger small" id="sniff-error">{{ error() }}</p>
+      }
+      @if (paths().length) {
+        <div class="d-flex gap-2 align-items-center mb-2">
+          <label class="small" for="sniff-first-path">{{ 'SNIFF_TO_SQL.FIRST_PATH' | translate }}</label>
+          <input
+            type="number"
+            class="form-control form-control-sm w-auto"
+            id="sniff-first-path"
+            [ngModel]="firstPathId()"
+            (ngModelChange)="firstPathId.set(+$event || 1)"
+          />
+        </div>
+      }
+      @if (sql()) {
+        <pre class="small p-2 rounded" id="sniff-sql" style="background: var(--keira-code-bg); max-height: 400px; overflow: auto">{{
+          sql()
+        }}</pre>
+        <div class="d-flex gap-2">
+          <button type="button" class="btn btn-secondary btn-sm" id="sniff-copy" (click)="copy()">
+            <i class="fa fa-copy fa-sm"></i> {{ 'COPY_OUTPUT.COPY' | translate }}
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" id="sniff-session" [disabled]="added()" (click)="addToSession()">
+            <i class="fa fa-layer-group fa-sm"></i> {{ (added() ? 'SESSION_SQL.ADDED' : 'SESSION_SQL.ADD') | translate }}
+          </button>
+        </div>
+      } @else {
+        <p class="text-muted small" id="sniff-nothing">{{ 'SNIFF_TO_SQL.NOTHING' | translate }}</p>
+      }
+    }
+  </div>
+</div>

@@ -1,4 +1,4 @@
-import { BrowserWindow, Menu, MenuItem, app, nativeImage, shell } from 'electron';
+import { BrowserWindow, Menu, MenuItem, app, ipcMain, nativeImage, shell } from 'electron';
 import * as settings from 'electron-settings';
 import * as path from 'path';
 import * as url from 'url';
@@ -6,6 +6,8 @@ import * as url from 'url';
 let win;
 const args = process.argv.slice(1);
 const serve = args.some((val) => val === '--serve');
+/** Developer tools open by themselves in development (served, or not packaged), unless KEIRA_NO_DEVTOOLS is set (e2e tests). */
+const openDevTools = (serve || !app.isPackaged) && !process.env['KEIRA_NO_DEVTOOLS'];
 
 function createWindow() {
   const hasPreviousSettings = settings.hasSync('user_settings.width');
@@ -25,6 +27,8 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false, // TODO: change this once Spectron supports it
+      // long jobs (preloading the world editor's cache) keep going while the window is in the background
+      backgroundThrottling: false,
     },
     icon: nativeImage.createFromPath('src/assets/img/ac.png'),
   });
@@ -44,7 +48,7 @@ function createWindow() {
     );
   }
 
-  if (serve) {
+  if (openDevTools) {
     win.webContents.openDevTools();
   }
 
@@ -65,6 +69,18 @@ function createWindow() {
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     win = null;
+  });
+
+  // progress of a long job on the taskbar icon (0..1; below 0 removes it, and flashes the icon when not focused)
+  ipcMain.removeAllListeners('keira:progress');
+  ipcMain.on('keira:progress', (_event, progress: number) => {
+    if (!win) {
+      return;
+    }
+    win.setProgressBar(progress < 0 ? -1 : Math.min(1, progress));
+    if (progress < 0 && !win.isFocused()) {
+      win.flashFrame(true);
+    }
   });
 
   // open links in the default browser

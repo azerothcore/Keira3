@@ -3,6 +3,7 @@ import { MultiRowEditorService } from '@keira/shared/base-abstract-classes';
 import {
   LOOT_TEMPLATE_ID,
   LOOT_TEMPLATE_ID_2,
+  LOOT_TEMPLATE_ID_3,
   PROSPECTING_LOOT_TEMPLATE_TABLE,
   ProspectingLootTemplate,
 } from '@keira/shared/acore-world-model';
@@ -15,6 +16,7 @@ export class ProspectingLootTemplateService extends MultiRowEditorService<Prospe
   protected override readonly _entityTable = PROSPECTING_LOOT_TEMPLATE_TABLE;
   protected override readonly _entityIdField = LOOT_TEMPLATE_ID;
   protected override readonly _entitySecondIdField = LOOT_TEMPLATE_ID_2;
+  protected override readonly _entityExtraIdField = LOOT_TEMPLATE_ID_3;
 
   constructor() {
     super();

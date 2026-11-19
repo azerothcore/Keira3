@@ -1,6 +1,6 @@
 /* istanbul ignore file */ // TODO: fix coverage
 
-import { LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2, LootTemplate } from '@keira/shared/acore-world-model';
+import { LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2, LOOT_TEMPLATE_ID_3, LootTemplate } from '@keira/shared/acore-world-model';
 import { Observable } from 'rxjs';
 import { MultiRowEditorService } from './multi-row-editor.service';
 
@@ -15,6 +15,8 @@ export abstract class LootEditorIdService<T extends LootTemplate> extends MultiR
 
   protected override _entityIdField = LOOT_TEMPLATE_ID;
   protected override _entitySecondIdField = LOOT_TEMPLATE_ID_2;
+  // (the same item can be in several groups: GroupId tells the rows apart)
+  protected override readonly _entityExtraIdField: string | undefined = LOOT_TEMPLATE_ID_3;
   protected abstract _entityTemplateTable: string; // e.g. creature_template
   protected abstract _entityTemplateIdField: string; // e.g. entry
   protected abstract _entityTemplateLootField: string; // e.g. lootid

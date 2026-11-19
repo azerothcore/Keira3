@@ -12,7 +12,7 @@
     .datatable-header-cell {
       vertical-align: bottom;
       padding: 0.75rem;
-      border-left: 1px solid #e7e7e7;
+      border-left: 1px solid var(--keira-border);
       line-height: 1;
 
       .datatable-header-cell-label {
@@ -31,21 +31,21 @@
 
     .datatable-body-row {
       vertical-align: top;
-      border-top: 1px solid #e7e7e7;
-      background-color: #f7f7f7;
+      border-top: 1px solid var(--keira-border);
+      background-color: var(--keira-row-bg);
 
       &.datatable-row-even {
         background-color: $content-block-bg-color;
       }
 
       &:hover {
-        background-color: #eee;
+        background-color: var(--keira-row-hover);
       }
 
       .datatable-body-cell {
         text-align: left;
         vertical-align: top;
-        border-left: 1px solid #e7e7e7;
+        border-left: 1px solid var(--keira-border);
         padding: 4px;
         word-wrap: break-word;
       }
@@ -56,21 +56,21 @@
     }
 
     .datatable-scroll {
-      border-bottom: 1px solid #e7e7e7;
+      border-bottom: 1px solid var(--keira-border);
     }
 
     .empty-row {
-      border-top: 1px solid #e7e7e7;
-      border-bottom: 1px solid #e7e7e7;
+      border-top: 1px solid var(--keira-border);
+      border-bottom: 1px solid var(--keira-border);
       padding: 10px;
       text-align: center;
-      background-color: #f7f7f7;
+      background-color: var(--keira-row-bg);
     }
   }
 
   .datatable-footer {
     background-color: $content-block-bg-color;
-    color: #666;
+    color: var(--keira-muted);
     margin-top: -3px;
 
     .page-count {
@@ -91,8 +91,8 @@
             &.active,
             &:hover {
               a {
-                background-color: #8261a7;
-                border-color: #8261a7;
+                background-color: var(--keira-accent);
+                border-color: var(--keira-accent);
                 color: #fff;
               }
             }
@@ -135,7 +135,7 @@
         text-align: center;
         text-decoration: none;
         vertical-align: bottom;
-        color: #5d176a;
+        color: var(--keira-link);
       }
 
       .datatable-icon-left,
@@ -150,7 +150,7 @@
         text-align: center;
         text-decoration: none;
         vertical-align: bottom;
-        color: #5d176a;
+        color: var(--keira-link);
       }
     }
   }

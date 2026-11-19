@@ -1,0 +1,303 @@
+// The map and zone pickers, and the View settings (apart: the component's stylesheet has a size budget)
+
+.map-picker {
+  position: relative;
+
+  .map-select {
+    width: 260px;
+  }
+}
+
+.map-picker-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 20;
+  width: 420px;
+  max-width: 90vw;
+  max-height: 60vh;
+  overflow-y: auto;
+  // long names are cut with "…": never a sideways scroll
+  overflow-x: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+.zone-picker .zone-select {
+  width: 200px;
+}
+
+/* the kind of each map in the picker */
+.map-kind {
+  font-weight: 500;
+  min-width: 84px;
+  flex-shrink: 0;
+}
+.map-kind-world {
+  background: #6c757d;
+}
+.map-kind-dungeon {
+  background: #198754;
+}
+.map-kind-raid {
+  background: #b02a37;
+}
+.map-kind-battleground {
+  background: #d97706;
+}
+.map-kind-arena {
+  background: #7c3aed;
+}
+.map-kind-transport {
+  background: #0e7490;
+}
+
+/* the expansion that added each map: a coloured edge (Vanilla, The Burning Crusade, Wrath of the Lich King) */
+.map-expansion {
+  border-left: 4px solid transparent;
+}
+.map-expansion-0 {
+  border-left-color: #c39361;
+}
+.map-expansion-1 {
+  border-left-color: #62c907;
+}
+.map-expansion-2 {
+  border-left-color: #5daceb;
+}
+
+// View: the groups flow through as many columns as fit, balanced, so no column is left half empty; a group may go on in
+// the next column, but a switch (or a heading without what follows it) never splits
+.world-editor-view-settings {
+  display: block;
+  // (everything fits its column: no sideways scrolling)
+  overflow-x: hidden;
+
+  .world-editor-distances {
+    margin-top: 0.5rem;
+  }
+}
+
+.world-editor-view-columns {
+  column-width: 230px;
+  column-gap: 1.5rem;
+}
+
+.world-editor-view-group {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+
+  // selects, sliders and tables shrink to the column too
+  select,
+  input[type='range'],
+  table {
+    max-width: 100%;
+  }
+  margin-bottom: 0.5rem;
+
+  > * + * {
+    margin-top: 0.25rem;
+  }
+
+  > * {
+    break-inside: avoid;
+  }
+
+  .world-editor-view-group-title,
+  .world-editor-view-sub {
+    break-after: avoid;
+  }
+}
+
+.world-editor-view-group-title {
+  margin: 0 0 0.15rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.7;
+}
+
+.world-editor-time {
+  .form-range {
+    min-width: 100px;
+  }
+}
+
+.world-editor-time-value {
+  font-variant-numeric: tabular-nums;
+  min-width: 3em;
+}
+
+// the place tools' search results, over the panel below
+.place-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  max-height: 40vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+// Scan the whole map: green on the ground, yellow off a little (the core puts it right), red wrong
+.world-editor-scan-level {
+  color: #fff;
+  font-weight: 700;
+
+  &.off {
+    opacity: 0.35;
+  }
+}
+
+.scan-ok {
+  --scan-color: #2ecc71;
+}
+.scan-warn {
+  --scan-color: #f1c40f;
+}
+.scan-bad {
+  --scan-color: #e74c3c;
+}
+
+.world-editor-scan-level.scan-ok,
+.world-editor-scan-level.scan-warn,
+.world-editor-scan-level.scan-bad {
+  background: var(--scan-color);
+}
+
+.world-editor-scan-mark {
+  color: var(--scan-color);
+}
+
+// the layer switches in two rows, so the toolbar stays narrow
+.world-editor-layers {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(2, auto);
+  gap: 0 1rem;
+  font-size: 0.85rem;
+}
+
+.world-editor-body {
+  position: relative;
+}
+
+// the side panel's fold button: its bottom-right corner (the view's right edge when folded)
+.world-editor-panel-toggle {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  z-index: 9;
+  opacity: 0.85;
+  padding: 0 6px;
+
+  &.collapsed {
+    bottom: 50%;
+    right: 0;
+  }
+}
+
+// the view's fullscreen: a tab at the top opening the main buttons
+.world-editor-quick {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 95%;
+}
+
+.world-editor-quick-tab {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  opacity: 0.85;
+  padding: 0 10px;
+}
+
+.world-editor-quick-bar {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+.world-editor-phase-bit {
+  min-width: 2em;
+}
+
+.world-editor-phase-mask {
+  width: 8em;
+}
+
+.map-picker-sort {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px 6px;
+  background: var(--bs-body-bg);
+  border-bottom: 1px solid var(--bs-border-color);
+}
+
+.world-editor-confirm-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.world-editor-confirm {
+  width: 360px;
+  max-width: 90vw;
+}
+
+.world-editor-time-part {
+  width: 4.2em;
+  padding-left: 4px;
+  padding-right: 2px;
+}
+
+.world-editor-brightness-label {
+  min-width: 5.5em;
+}
+
+.world-editor-view-sub {
+  margin-top: 0.3rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  opacity: 0.55;
+}
+
+// every option on one line: a long name is cut with "…" (its tooltip says the rest)
+.world-editor-view-group .form-check {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: 0;
+
+  // the switch centred on its label: no float, margins or padding of Bootstrap's own layout to push it off
+  &.form-switch,
+  & {
+    padding-left: 0;
+  }
+
+  .form-check-input {
+    float: none;
+    flex-shrink: 0;
+    margin: 0 0.25rem 0 0;
+  }
+
+  // a long label wraps within its column (never wider than it)
+  .form-check-label {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    line-height: 1.25;
+  }
+}

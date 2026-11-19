@@ -29,11 +29,100 @@
   <button type="button" class="btn btn-primary btn-sm" (click)="execute()" id="execute-btn">
     <i class="fa fa-bolt fa-sm"></i> {{ 'EXECUTE' | translate }}
   </button>
-  <button type="button" class="btn btn-success btn-sm" (click)="copy(); execute()" id="execute-and-copy-btn">
+  <button type="button" class="btn btn-success btn-sm" (click)="executeAndCopy()" id="execute-and-copy-btn">
     <i class="fa fa-bolt fa-sm"></i> {{ 'EXECUTE_AND_COPY' | translate }} <i class="fa fa-copy fa-sm"></i>
   </button>
+  <button
+    type="button"
+    class="btn btn-outline-secondary btn-sm ms-1"
+    (click)="addToSession()"
+    id="add-to-session-btn"
+    [title]="'SESSION_SQL.ADD_TIP' | translate"
+  >
+    <i class="fa fa-layer-group fa-sm"></i> {{ (addedToSession() ? 'SESSION_SQL.ADDED' : 'SESSION_SQL.ADD') | translate }}
+  </button>
+  @if (copyNote()) {
+    <small class="ms-1 align-middle" id="copy-note" [class.text-warning]="copyNote() === 'QUERY_OUTPUT.NOT_COPIED'">{{
+      copyNote() | translate
+    }}</small>
+  }
+  @if (reloadCommand(); as command) {
+    <button
+      type="button"
+      class="btn btn-outline-success btn-sm ms-1"
+      (click)="reloadOnServer(command)"
+      id="reload-server-btn"
+      [title]="'SOAP.RELOAD_TIP' | translate: { command: '.' + command }"
+    >
+      <i class="fa fa-server fa-sm"></i> .{{ command }}
+    </button>
+  }
+  <button
+    type="button"
+    class="btn btn-sm ms-1"
+    [class.btn-warning]="isPinnedHere()"
+    [class.btn-outline-secondary]="!isPinnedHere()"
+    (click)="togglePin()"
+    id="compare-pin-btn"
+    [title]="'COMPARE.PIN_TIP' | translate"
+  >
+    <i class="fa fa-thumbtack fa-sm"></i> {{ (isPinnedHere() ? 'COMPARE.UNPIN' : 'COMPARE.PIN') | translate }}
+  </button>
+  @if (canCompare()) {
+    <button type="button" class="btn btn-outline-info btn-sm ms-1" (click)="showCompare.set(!showCompare())" id="compare-btn">
+      <i class="fa fa-columns fa-sm"></i> {{ 'COMPARE.WITH' | translate: { id: pinned()?.id } }}
+    </button>
+  }
   <button type="button" class="btn btn-danger btn-sm float-end" (click)="reload()" id="reload-btn">
     <i class="fa fa-sync fa-sm"></i> {{ 'RELOAD' | translate }}
   </button>
 </div>
+@if (showCompare() && canCompare()) {
+  @let result = comparison();
+  <div class="compare-panel mt-2" id="compare-panel">
+    @if (!result.differences.length && !result.onlyPinned.length && !result.onlyCurrent.length) {
+      <p class="text-muted small mb-0" id="compare-same">{{ 'COMPARE.SAME' | translate }}</p>
+    } @else {
+      <table class="table table-sm table-striped small mb-1" id="compare-table">
+        <thead>
+          <tr>
+            @if (pinned()?.key) {
+              <th>{{ pinned()?.key }}</th>
+            }
+            <th>{{ 'COMPARE.FIELD' | translate }}</th>
+            <th>#{{ pinned()?.id }}</th>
+            <th>#{{ editorService.loadedEntityId }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (difference of result.differences; track difference.row + difference.field) {
+            <tr>
+              @if (pinned()?.key) {
+                <td>{{ difference.row }}</td>
+              }
+              <td>{{ difference.field }}</td>
+              <td>{{ difference.pinned }}</td>
+              <td>{{ difference.current }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      @if (result.onlyPinned.length) {
+        <p class="small mb-0" id="compare-only-pinned">
+          {{ 'COMPARE.ONLY_IN' | translate: { id: pinned()?.id } }} {{ result.onlyPinned.join(', ') }}
+        </p>
+      }
+      @if (result.onlyCurrent.length) {
+        <p class="small mb-0" id="compare-only-current">
+          {{ 'COMPARE.ONLY_IN' | translate: { id: editorService.loadedEntityId } }} {{ result.onlyCurrent.join(', ') }}
+        </p>
+      }
+    }
+  </div>
+}
+@if (shownReloadAnswer(); as answer) {
+  <div class="small mt-1" [class.text-danger]="answer.failed" [class.text-success]="!answer.failed" id="reload-server-answer">
+    <i class="fa fa-server me-1"></i>{{ answer.text }}
+  </div>
+}
 <keira-query-error [error]="error()" />

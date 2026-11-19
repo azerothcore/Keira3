@@ -2,13 +2,13 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ALLOWABLE_CLASSES, QuestTemplateAddon, SPECIAL_FLAGS } from '@keira/shared/acore-world-model';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
-import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
+import { QueryOutputComponent, TopBarComponent, FactionNameComponent } from '@keira/shared/base-editor-components';
 import {
-  FactionSelectorBtnComponent,
   FlagsSelectorBtnComponent,
   QuestSelectorBtnComponent,
   SkillSelectorBtnComponent,
   SpellSelectorBtnComponent,
+  QuestFactionSelectorBtnComponent,
 } from '@keira/shared/selectors';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { TooltipDirective } from 'ngx-bootstrap/tooltip';
@@ -23,6 +23,8 @@ import { QuestTemplateAddonService } from './quest-template-addon.service';
   templateUrl: './quest-template-addon.component.html',
   styleUrls: ['./quest-template-addon.component.scss'],
   imports: [
+    FactionNameComponent,
+    QuestFactionSelectorBtnComponent,
     TopBarComponent,
     TranslateDirective,
     TranslatePipe,
@@ -34,7 +36,6 @@ import { QuestTemplateAddonService } from './quest-template-addon.service';
     FlagsSelectorBtnComponent,
     SpellSelectorBtnComponent,
     SkillSelectorBtnComponent,
-    FactionSelectorBtnComponent,
     QuestPreviewComponent,
   ],
 })

@@ -1,0 +1,126 @@
+<div class="container-fluid">
+  <div class="content-block">
+    <p class="lead">{{ 'SCRIPTS.SCRIPT_NAMES' | translate }}</p>
+    <p class="small text-muted">{{ 'SCRIPTS.SCRIPT_NAMES_HELP' | translate }}</p>
+    @if (!hasSource()) {
+      <div class="alert alert-info" id="no-source">
+        {{ 'SCRIPTS.NEEDS_SOURCE' | translate }} <a routerLink="/settings" id="go-settings">{{ 'SIDEBAR.SETTINGS' | translate }}</a>
+      </div>
+    } @else if (names() === undefined) {
+      <p id="reading">{{ 'SCRIPTS.READING_SOURCE' | translate }}</p>
+    } @else {
+      @if (error()) {
+        <div class="alert alert-danger" id="source-error">{{ error() }}</div>
+      }
+      <div class="row g-2 mb-2">
+        <div class="col-12 col-md-4">
+          <input
+            class="form-control form-control-sm"
+            id="script-filter"
+            [placeholder]="'SCRIPTS.FILTER' | translate"
+            (input)="setFilter($event)"
+          />
+        </div>
+        <div class="col-6 col-md-3">
+          <select class="form-select form-select-sm" id="script-kind" (change)="setKind($event)">
+            <option value="">{{ 'SCRIPTS.ALL_KINDS' | translate }}</option>
+            @for (kind of kinds(); track kind) {
+              <option [value]="kind">{{ kind }}</option>
+            }
+          </select>
+        </div>
+        <div class="col-6 col-md-3">
+          <select class="form-select form-select-sm" id="script-show" (change)="setShow($event)">
+            <option value="all">{{ 'SCRIPTS.SHOW_ALL' | translate }}</option>
+            <option value="unused">{{ 'SCRIPTS.SHOW_UNUSED' | translate }}</option>
+            <option value="missing">{{ 'SCRIPTS.SHOW_MISSING' | translate }}</option>
+          </select>
+        </div>
+      </div>
+      <p class="small text-muted" id="script-count">
+        {{ 'SCRIPTS.SHOWING' | translate: { shown: rows().length > SHOWN ? SHOWN : rows().length, total: rows().length } }}
+      </p>
+      <table class="table table-sm table-striped" id="script-names">
+        <thead>
+          <tr>
+            <th class="keira-sortable" [id]="'sort-name'" (click)="sort.toggle('name')">
+              ScriptName <i class="fa fa-xs" [class]="'fa ' + sort.icon('name')"></i>
+            </th>
+            <th class="keira-sortable" [id]="'sort-kind'" (click)="sort.toggle('kind')">
+              {{ 'SCRIPTS.KIND' | translate }} <i class="fa fa-xs" [class]="'fa ' + sort.icon('kind')"></i>
+            </th>
+            <th class="keira-sortable" [id]="'sort-file'" (click)="sort.toggle('file')">
+              {{ 'SCRIPTS.FILE' | translate }} <i class="fa fa-xs" [class]="'fa ' + sort.icon('file')"></i>
+            </th>
+            <th class="keira-sortable" [id]="'sort-users'" (click)="sort.toggle('users')">
+              {{ 'SCRIPTS.USED_BY' | translate }} <i class="fa fa-xs" [class]="'fa ' + sort.icon('users')"></i>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of sorted().slice(0, SHOWN); track row.name) {
+            <tr>
+              <td>
+                <code>{{ row.name }}</code>
+              </td>
+              <td>{{ row.kind }}</td>
+              <td class="small text-muted">
+                @if (githubUrl(row); as url) {
+                  <a [href]="url" target="_blank" [id]="'github-' + row.name" [title]="'SCRIPTS.OPEN_GITHUB' | translate">{{ row.file }}</a>
+                } @else {
+                  {{ row.file }}
+                }
+                @if (row.line) {
+                  <span>:{{ row.line }}</span>
+                }
+                @if (canOpenFiles() && row.path) {
+                  <button
+                    type="button"
+                    class="btn btn-link btn-sm py-0"
+                    [id]="'open-file-' + row.name"
+                    [title]="'SCRIPTS.OPEN_FILE' | translate"
+                    (click)="openFile(row.path)"
+                  >
+                    <i class="fa fa-folder-open"></i>
+                  </button>
+                }
+              </td>
+              <td>
+                @if (row.users.length) {
+                  <button type="button" class="btn btn-link btn-sm p-0" [id]="'users-' + row.name" (click)="toggle(row.name)">
+                    {{ row.users.length }}
+                  </button>
+                } @else {
+                  <span class="text-muted">0</span>
+                }
+              </td>
+            </tr>
+            @if (expanded() === row.name) {
+              <tr>
+                <td colspan="4">
+                  <ul class="mb-0 small" [id]="'user-list-' + row.name">
+                    @for (user of row.users; track user.kind + user.id) {
+                      <li>
+                        {{ user.kind }} {{ user.id }} {{ user.name }}
+                        @if (links && (user.kind === 'creature' || user.kind === 'gameobject')) {
+                          <button
+                            type="button"
+                            class="btn btn-link btn-sm py-0"
+                            [id]="'open-' + user.kind + '-' + user.id"
+                            (click)="open(user)"
+                          >
+                            {{ 'SCRIPTS.OPEN' | translate }}
+                          </button>
+                        }
+                      </li>
+                    }
+                  </ul>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

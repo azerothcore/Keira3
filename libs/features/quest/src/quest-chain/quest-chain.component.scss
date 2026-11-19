@@ -233,3 +233,18 @@ $qc-condition: #ffd100;
     }
   }
 }
+
+.qc-edit {
+  cursor: pointer;
+
+  rect {
+    fill: var(--bs-secondary-bg, #e9ecef);
+    stroke: var(--bs-border-color, #adb5bd);
+  }
+
+  text {
+    font-size: 10px;
+    text-anchor: middle;
+    fill: var(--bs-body-color, #212529);
+  }
+}

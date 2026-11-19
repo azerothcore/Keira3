@@ -18,6 +18,16 @@
         (executeQuery)="save($event)"
       />
     </div>
+    @if (checks().length) {
+      <div class="content-block" id="sai-checks">
+        @for (problem of checks(); track problem.key) {
+          <div class="alert alert-warning py-1 px-2 small mb-1" [id]="'sai-check-' + problem.key">
+            <i class="fas fa-exclamation-triangle me-1"></i>{{ 'SMARTAI.CHECK.' + problem.key | translate }}
+            <span class="text-muted">(id {{ problem.ids.join(', ') }})</span>
+          </div>
+        }
+      </div>
+    }
     <div class="content-block">
       <form [formGroup]="editorService.form" class="edit-form mb-2">
         <div class="row">
@@ -603,6 +613,15 @@
       </div>
     </div>
 
+    @if (showGuidScripts) {
+      <div class="content-block" id="guid-scripts-block">
+        <p class="lead">
+          {{ 'SMARTAI.EDITOR.GUID_SCRIPTS' | translate }}
+          <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'SMARTAI.EDITOR.GUID_SCRIPTS_TOOLTIP' | translate"></i>
+        </p>
+        <keira-guid-scripts [sourceType]="handlerService.parsedSelected.source_type" [entry]="entryOrGuid" />
+      </div>
+    }
     @if (showTimedActionlists) {
       <div class="content-block">
         <p class="lead">

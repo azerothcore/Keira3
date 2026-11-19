@@ -1,0 +1,92 @@
+<form class="game-data-folders" data-testid="game-data-folders" [formGroup]="form" (ngSubmit)="save()">
+  @for (folder of folders; track folder.key) {
+    @let path = folderOf(folder.key);
+    <div class="mb-2">
+      <label class="form-label" [for]="'game-data-' + folder.id">{{ folder.label | translate }}</label>
+      <div class="input-group input-group-sm">
+        <input
+          class="form-control form-control-sm"
+          [id]="'game-data-' + folder.id"
+          [attr.data-testid]="folder.id"
+          [formControlName]="folder.key"
+          [readOnly]="readOnly()"
+          [placeholder]="folder.key === 'cacheFolder' ? (cache.root() ?? '') : folder.placeholder"
+        />
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          [attr.data-testid]="folder.id + '-copy'"
+          [title]="'WORLD_EDITOR.COPY_PATH' | translate"
+          [disabled]="!path"
+          (click)="copyPath(path)"
+        >
+          <i class="fa fa-copy"></i>
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          [attr.data-testid]="folder.id + '-open'"
+          [title]="'WORLD_EDITOR.OPEN_FOLDER' | translate"
+          [disabled]="!electron.isElectron() || !path"
+          (click)="openFolder(path)"
+        >
+          <i class="fa fa-folder-open"></i>
+        </button>
+      </div>
+      <small class="form-text text-muted">{{ folder.help | translate }}</small>
+      @if (startupFolder(folder.key); as startup) {
+        <div class="form-check small mb-0">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            [id]="'startup-' + folder.id"
+            [attr.data-testid]="'startup-' + folder.id"
+            [checked]="startupLoad.chosen()[startup]"
+            (change)="startupLoad.choose(startup, $any($event.target).checked)"
+          />
+          <label class="form-check-label" [for]="'startup-' + folder.id">{{ 'WORLD_EDITOR.LOAD_ON_STARTUP' | translate }}</label>
+          @if (startupLoad.states()[startup]; as state) {
+            <span class="ms-1" [class.text-danger]="state === 'failed'" [attr.data-testid]="'startup-state-' + folder.id">
+              · {{ 'WORLD_EDITOR.STARTUP_' + state.toUpperCase() | translate }}
+            </span>
+          }
+        </div>
+      }
+      <details class="game-data-more-info small" [attr.data-testid]="'more-info-' + folder.id">
+        <summary>{{ 'WORLD_EDITOR.MORE_INFO' | translate }}</summary>
+        <div class="text-muted">{{ folder.info | translate }}</div>
+      </details>
+    </div>
+  }
+  <div class="mb-2" data-testid="model-viewer-source">
+    <span class="form-label d-block">{{ 'WORLD_EDITOR.MODEL_VIEWER' | translate }}</span>
+    @for (source of modelSources; track source) {
+      <div class="form-check form-check-inline">
+        <input
+          class="form-check-input"
+          type="radio"
+          name="model-viewer-source"
+          [id]="'model-viewer-' + source"
+          [attr.data-testid]="'model-viewer-' + source"
+          [checked]="modelViewer.source() === source"
+          (change)="modelViewer.choose(source)"
+        />
+        <label class="form-check-label" [for]="'model-viewer-' + source">{{
+          'WORLD_EDITOR.MODEL_VIEWER_' + source.toUpperCase().replace('-', '_') | translate
+        }}</label>
+      </div>
+    }
+    <small class="form-text text-muted d-block">{{ 'WORLD_EDITOR.MODEL_VIEWER_HELP' | translate }}</small>
+  </div>
+  <div>
+    @if (readOnly()) {
+      <button type="button" class="btn btn-sm btn-outline-primary" data-testid="folders-modify" (click)="modify()">
+        <i class="fa fa-pencil"></i> {{ 'WORLD_EDITOR.MODIFY' | translate }}
+      </button>
+    } @else {
+      <button type="submit" class="btn btn-sm btn-primary" data-testid="settings-save">
+        {{ 'WORLD_EDITOR.SAVE' | translate }}
+      </button>
+    }
+  </div>
+</form>

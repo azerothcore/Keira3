@@ -1,8 +1,8 @@
 @use 'variables' as *;
 
 .top-bar {
-  background-color: #000;
-  color: $content-block-bg-color;
+  background-color: var(--keira-top-bar-bg);
+  color: var(--keira-top-bar-color);
   font-family: monospace;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   height: 24px;
@@ -17,11 +17,21 @@
     padding-right: 12px;
     padding-left: 12px;
   }
+
+  .top-bar-export {
+    position: absolute;
+    left: 6px;
+    top: 1px;
+    font-size: 12px;
+    line-height: 20px;
+    color: var(--keira-top-bar-color);
+    text-decoration: none;
+  }
 }
 
 .wiki-link {
   text-align: right;
-  color: #337ab7;
+  color: var(--bs-link-color);
 
   a:hover {
     text-decoration: none;
@@ -29,6 +39,13 @@
 }
 
 .edit-form {
+  // (a number field emptied, once touched: its column would get NULL, #3236)
+  input.ng-invalid.ng-touched:not(:disabled),
+  input.ng-invalid.ng-dirty:not(:disabled) {
+    border-color: var(--keira-error, #dc3545);
+    box-shadow: 0 0 0 0.15rem rgba(220, 53, 69, 0.25);
+  }
+
   hr {
     margin-top: 2px;
     margin-bottom: 14px;
@@ -54,12 +71,39 @@
   }
 
   .ng-dirty {
-    border-color: #5b6cff87;
-    box-shadow: 0 0 0 0.2rem rgba(16, 0, 255, 0.13);
+    border-color: var(--keira-dirty);
+    box-shadow: 0 0 0 0.2rem var(--keira-dirty-glow);
   }
 
   .form-error {
     text-align: left;
-    color: red;
+    color: var(--keira-error);
   }
+}
+
+// a field the field filter (in the top bar) leaves out
+.keira-filtered-out {
+  display: none !important;
+}
+
+// a table header sorting its table (clicked: up, down, as it was)
+.keira-sortable {
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+
+  i {
+    opacity: 0.6;
+  }
+}
+
+// a script made from a template (Scripts > New script)
+.script-template-code {
+  max-height: 420px;
+  overflow: auto;
+  padding: 8px;
+  font-size: 12px;
+  background: var(--keira-code-bg);
+  border: 1px solid var(--keira-border);
+  border-radius: 4px;
 }

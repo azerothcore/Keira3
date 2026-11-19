@@ -34,4 +34,5 @@ export class SelectFishingLootComponent extends SelectComponent<FishingLootTempl
   readonly customStartingId = FISHING_LOOT_TEMPLATE_CUSTOM_STARTING_ID;
   readonly selectService = inject(SelectFishingLootService);
   readonly handlerService = inject(FishingLootHandlerService);
+  protected readonly showUsedBy = false;
 }

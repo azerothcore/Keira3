@@ -10,10 +10,17 @@ export interface MenuStats {
   conditions: ToggleType;
   texts: ToggleType;
   gossip: ToggleType;
+  waypoints: ToggleType;
+  pools: ToggleType;
+  scripts: ToggleType;
   spell: ToggleType;
   gameTele: ToggleType;
   trainer: ToggleType;
   creatureImmunities: ToggleType;
+  gameEvents: ToggleType;
+  disables: ToggleType;
+  areaTriggers: ToggleType;
+  dbScripts: ToggleType;
 }
 
 /**
@@ -30,8 +37,15 @@ export const ROUTE_MENUS: Record<string, keyof MenuStats> = {
   conditions: 'conditions',
   texts: 'texts',
   gossip: 'gossip',
+  waypoints: 'waypoints',
+  pools: 'pools',
+  scripts: 'scripts',
   spell: 'spell',
   'game-tele': 'gameTele',
   trainer: 'trainer',
   'creature-immunities': 'creatureImmunities',
+  'game-events': 'gameEvents',
+  disables: 'disables',
+  'area-triggers': 'areaTriggers',
+  'db-scripts': 'dbScripts',
 };

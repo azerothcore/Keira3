@@ -193,7 +193,7 @@ describe('ItemTemplate integration tests', () => {
       await tickAsync();
       const expectedQuery =
         'UPDATE `item_template` SET ' +
-        "`subclass` = 1, `SoundOverrideSubclass` = 2, `name` = '3', `displayid` = 4, `Quality` = 5, `Flags` = 6, `FlagsExtra` = 7, " +
+        "`subclass` = 1, `SoundOverrideSubclass` = 2, `name` = '3', `displayid` = 4, `Quality` = 5, `Flags` = (`Flags` | 6), `FlagsExtra` = (`FlagsExtra` | 7), " +
         '`BuyCount` = 8, `BuyPrice` = 9, `SellPrice` = 10, `InventoryType` = 11, `AllowableClass` = 12, `AllowableRace` = 13, ' +
         '`ItemLevel` = 14, `RequiredLevel` = 15, `RequiredSkill` = 16, `RequiredSkillRank` = 17, `requiredspell` = 18, ' +
         '`requiredhonorrank` = 19, `RequiredCityRank` = 20, `RequiredReputationFaction` = 21, `RequiredReputationRank` = 22, ' +
@@ -217,7 +217,7 @@ describe('ItemTemplate integration tests', () => {
         '`TotemCategory` = 111, `socketColor_1` = 112, `socketContent_1` = 113, `socketColor_2` = 114, `socketContent_2` = 115, ' +
         '`socketColor_3` = 116, `socketContent_3` = 117, `socketBonus` = 118, `GemProperties` = 119, `RequiredDisenchantSkill` = 120, ' +
         "`ArmorDamageModifier` = 121, `duration` = 122, `ItemLimitCategory` = 123, `HolidayId` = 124, `ScriptName` = '125', " +
-        '`DisenchantID` = 126, `FoodType` = 127, `minMoneyLoot` = 128, `maxMoneyLoot` = 129, `flagsCustom` = 130 WHERE (`entry` = 1234);';
+        '`DisenchantID` = 126, `FoodType` = 127, `minMoneyLoot` = 128, `maxMoneyLoot` = 129, `flagsCustom` = (`flagsCustom` | 130) WHERE (`entry` = 1234);';
 
       const spelltriggers = {
         spelltrigger_1: 1,
@@ -276,7 +276,7 @@ describe('ItemTemplate integration tests', () => {
       await page.whenReady();
 
       expect(page.getInputById(field).value).toEqual('4100');
-      page.expectDiffQueryToContain('UPDATE `item_template` SET `Flags` = 4100 WHERE (`entry` = 1234);');
+      page.expectDiffQueryToContain('UPDATE `item_template` SET `Flags` = (`Flags` | 4100) WHERE (`entry` = 1234);');
 
       // Note: full query check has been shortened here because the table is too big, don't do this in other tests unless necessary
       page.expectFullQueryToContain('4100');

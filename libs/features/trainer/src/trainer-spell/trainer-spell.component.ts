@@ -3,7 +3,13 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TrainerSpell } from '@keira/shared/acore-world-model';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
-import { EditorButtonsComponent, IconComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
+import {
+  EditorButtonsComponent,
+  IconComponent,
+  QueryOutputComponent,
+  TopBarComponent,
+  MoneyInputComponent,
+} from '@keira/shared/base-editor-components';
 import { SqliteQueryService } from '@keira/shared/db-layer';
 import { SkillSelectorBtnComponent, SpellSelectorBtnComponent } from '@keira/shared/selectors';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
@@ -18,6 +24,7 @@ import { TrainerSpellService } from './trainer-spell.service';
   templateUrl: './trainer-spell.component.html',
   styleUrls: ['./trainer-spell.component.scss'],
   imports: [
+    MoneyInputComponent,
     TopBarComponent,
     TranslateDirective,
     TranslatePipe,

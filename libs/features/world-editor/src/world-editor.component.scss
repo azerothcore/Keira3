@@ -1,0 +1,490 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.world-editor {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 40px);
+  padding-top: 8px;
+  // the panels scroll inside: the page itself never gets a scrollbar that would shift the toolbar
+  overflow: hidden;
+}
+
+.world-editor-filters,
+.world-editor-view-settings,
+.world-editor-settings,
+.world-editor-controls {
+  // .card-body would make them grow into the editor's free height
+  flex: 0 1 auto;
+  align-content: flex-start;
+  align-items: center;
+  min-height: 0;
+  max-height: 45vh;
+  overflow-y: auto;
+}
+
+// a fixed width, so the buttons beside it don't move when the number changes
+.world-editor-hidden-count {
+  display: inline-block;
+  min-width: 3.2em;
+}
+
+.world-editor-preload-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  // dark text with a light halo: readable on the filled and on the empty part
+  color: #111;
+  text-shadow:
+    0 0 3px #fff,
+    0 0 3px #fff,
+    0 0 2px #fff;
+  font-weight: 600;
+  font-size: 0.75rem;
+  pointer-events: none;
+}
+
+.map-select,
+.zone-select {
+  width: auto;
+  max-width: 260px;
+}
+
+.goto-form input {
+  width: 90px;
+}
+
+/* the widget's grids and snapping, compact in the toolbar */
+.grid-size {
+  width: auto;
+  max-width: 96px;
+  padding-right: 1.6rem;
+}
+
+.tele-form {
+  position: relative;
+
+  input {
+    width: 320px;
+  }
+}
+
+// two fixed rows: nothing wraps, so no button moves when another one changes
+.world-editor-toolbar {
+  // what doesn't fit goes on another row rather than out of sight
+  flex-wrap: wrap;
+  row-gap: 4px;
+  white-space: nowrap;
+}
+
+.tele-results {
+  max-height: 220px;
+  overflow-y: auto;
+  max-width: 420px;
+}
+
+.world-editor-body {
+  display: flex;
+  flex: 1;
+  gap: 8px;
+  // the 3D view always keeps some room; the open panels above scroll instead
+  min-height: 260px;
+}
+
+.world-editor-view {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  // its overlays (help line, labels, menus) never spill over the panels
+  overflow: hidden;
+}
+
+.eden-toolbar {
+  .eden-sep {
+    width: 1px;
+    align-self: stretch;
+    margin: 0 2px;
+    background: var(--bs-border-color, #555);
+  }
+}
+
+.eden-layers {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 1050;
+  min-width: 200px;
+}
+
+.eden-tab-assets {
+  height: calc(100% - 40px);
+}
+
+.world-editor-panel {
+  width: 360px;
+  flex-shrink: 0;
+  overflow-y: auto;
+}
+
+.pending-list {
+  max-height: 140px;
+  overflow-y: auto;
+  padding-left: 1.1rem;
+}
+
+.world-editor-distances {
+  width: auto;
+
+  th {
+    font-weight: normal;
+    opacity: 0.7;
+  }
+}
+
+.world-editor-key {
+  min-width: 3.5rem;
+}
+
+.cache-max {
+  width: 5rem;
+}
+
+.world-editor-filter-search {
+  width: 220px;
+}
+
+.world-editor-events {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  column-gap: 1rem;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.world-editor-preload {
+  position: relative;
+  min-width: 240px;
+  height: 1.25rem;
+}
+
+.world-editor-preload-maps {
+  height: 0.35rem;
+  margin-top: 2px;
+}
+
+.world-editor-cache-meter {
+  position: relative;
+  width: 140px;
+  padding-top: 0.9rem;
+}
+
+.world-editor-cache-percent {
+  position: absolute;
+  top: -0.2rem;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 0.7rem;
+  line-height: 1;
+}
+
+.world-editor-cache-mark {
+  position: absolute;
+  bottom: -2px;
+  width: 2px;
+  height: calc(0.75rem + 4px);
+  background: var(--bs-body-color);
+  opacity: 0.45;
+}
+
+.world-editor-cache-fill {
+  height: 0.75rem;
+
+  .fill-low {
+    background-color: var(--bs-success);
+  }
+  .fill-half {
+    background-color: var(--bs-warning);
+  }
+  .fill-high {
+    background-color: #fd7e14;
+  }
+  .fill-full {
+    background-color: var(--bs-danger);
+  }
+}
+
+.world-editor-context {
+  // on the page, over everything: scrolls when it's taller than the room left in the window
+  position: fixed;
+  z-index: 1050;
+  overflow-y: auto;
+  max-width: calc(100vw - 16px);
+}
+
+.world-editor-controls {
+  .world-editor-control-group {
+    padding-top: 0.5rem;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+
+  .world-editor-binding {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-right: 0.35rem;
+    font-size: 0.8rem;
+
+    .btn-close {
+      width: 0.5em;
+      height: 0.5em;
+      padding: 0;
+    }
+  }
+}
+
+.world-editor-probe-height {
+  max-width: 110px;
+}
+
+.world-editor-yaml {
+  max-height: 180px;
+  overflow: auto;
+  padding: 4px 6px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+// the layer switches, each in the colour of what it shows
+.world-editor-layers {
+  .form-check-input {
+    cursor: pointer;
+  }
+  .layer-creatures:checked {
+    background-color: #ffc107;
+    border-color: #ffc107;
+  }
+  .layer-gameobjects:checked {
+    background-color: #0dcaf0;
+    border-color: #0dcaf0;
+  }
+  .layer-waypoints:checked {
+    background-color: #dc3545;
+    border-color: #dc3545;
+  }
+  .layer-area-triggers:checked {
+    background-color: #c77dff;
+    border-color: #c77dff;
+  }
+  .layer-formations:checked {
+    background-color: #9b5de5;
+    border-color: #9b5de5;
+  }
+  .layer-pools:checked {
+    background-color: #00b894;
+    border-color: #00b894;
+  }
+  .layer-travel:checked {
+    background-color: #f0c419;
+    border-color: #f0c419;
+  }
+}
+
+.world-editor-preview-progress {
+  position: relative;
+  height: 1.1rem;
+  min-width: 10rem;
+
+  span {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    color: var(--bs-body-color);
+    text-shadow: 0 0 2px var(--bs-body-bg);
+  }
+}
+
+.world-editor-preview-done {
+  color: #ff40ff;
+}
+
+.world-editor-stack {
+  display: grid;
+  grid-template-columns: auto repeat(3, 1fr);
+  gap: 0.25rem;
+  align-items: center;
+
+  span {
+    grid-row: span 2;
+  }
+}
+
+.world-editor-checks {
+  max-height: 10rem;
+  overflow-y: auto;
+
+  strong {
+    display: inline-block;
+    width: 0.75rem;
+    text-align: center;
+  }
+}
+
+// the world map and the in-game map take the whole window (over Keira's sidebar too), until closed
+.world-editor-map {
+  position: fixed;
+  inset: 0;
+  z-index: 1030;
+  background: #0b0b0b;
+}
+
+.world-editor-region {
+  position: absolute;
+  left: 50%;
+  top: 8px;
+  transform: translateX(-50%);
+  z-index: 4;
+}
+
+.world-editor-results {
+  max-height: 12rem;
+  overflow-y: auto;
+}
+
+// the panels float over the 3D view (one at a time), so opening one never resizes it
+.world-editor-panels {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 8;
+
+  > .card {
+    margin: 0 0 0 0;
+    max-height: 70vh;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  }
+}
+
+.world-editor-settings {
+  // labels and inputs use the whole width
+  align-items: stretch;
+}
+
+.world-editor-resolution {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 3;
+  opacity: 0.85;
+
+  .btn {
+    padding: 0 6px;
+    font-size: 0.75rem;
+  }
+}
+
+.world-editor.fullscreen {
+  height: 100vh;
+  background: var(--bs-body-bg, #fff);
+}
+
+.world-editor-context-label {
+  white-space: pre-line;
+  max-width: 420px;
+}
+
+.world-editor-legend {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  overflow-y: auto;
+  max-height: 70vh;
+}
+
+.world-editor-legend-section {
+  min-width: 220px;
+
+  strong {
+    display: block;
+    margin-bottom: 4px;
+  }
+}
+
+.world-editor-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+.world-editor-view-fullscreen {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 3;
+  opacity: 0.85;
+  padding: 0 6px;
+}
+
+.world-editor-view.view-fullscreen {
+  width: 100vw;
+  height: 100vh;
+}
+
+// the tree of what's loaded, docked on the right of the view (under the panels)
+.world-editor-tree {
+  // the entity list: left of the view (Eden's)
+  width: 280px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+// the cache's sections: the maps' pictures, then each kind of game data
+.world-editor-cache-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+
+  h6 {
+    margin-bottom: 0.25rem;
+    font-size: 0.85rem;
+  }
+}
+
+// a switch whose requirement (the source folder, the server's data folder) is missing
+.world-editor-unavailable {
+  opacity: 0.55;
+
+  .form-check-label {
+    cursor: not-allowed;
+  }
+}
+
+// a percentage beside its slider, typed (25.5)
+.world-editor-percent {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  white-space: nowrap;
+
+  input {
+    width: 4.6rem;
+    padding: 0 0.25rem;
+  }
+}

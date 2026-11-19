@@ -1,4 +1,6 @@
-import { ChangeDetectorRef, Service, inject } from '@angular/core';
+import { DEFAULT_QUEST_TEXT_SAMPLE, QUEST_TEXT_SAMPLE_KEY, questText, QuestTextSample } from './quest-text';
+import { questXp } from './quest-xp';
+import { ChangeDetectorRef, Service, inject, signal } from '@angular/core';
 import {
   CREATURE_QUESTENDER_TABLE,
   CREATURE_QUESTSTARTER_TABLE,
@@ -126,17 +128,41 @@ export class QuestPreviewService {
   get startItemName$(): Promise<string> {
     return this.mysqlQueryService.getItemNameById(this.startItem);
   }
+  /** The texts are shown for a sample player ($N, $R, $C, $G), when asked (#3133). */
+  readonly textSample = signal<QuestTextSample | undefined>(this.loadSample());
+
+  showSample(on: boolean): void {
+    this.textSample.set(on ? DEFAULT_QUEST_TEXT_SAMPLE : undefined);
+    try {
+      localStorage.setItem(QUEST_TEXT_SAMPLE_KEY, on ? '1' : '0');
+    } catch {
+      // (storage blocked: until Keira closes)
+    }
+  }
+
+  private loadSample(): QuestTextSample | undefined {
+    try {
+      return localStorage.getItem(QUEST_TEXT_SAMPLE_KEY) === '1' ? DEFAULT_QUEST_TEXT_SAMPLE : undefined;
+    } catch {
+      return undefined;
+    }
+  }
+
   get objectiveText(): string {
-    return this.questTemplate.LogDescription?.replace(/\$B/g, '\n') ?? '';
+    return questText(this.questTemplate.LogDescription, this.textSample());
   }
   get descriptionText(): string {
-    return this.questTemplate.QuestDescription?.replace(/\$B/g, '\n') ?? '';
+    return questText(this.questTemplate.QuestDescription, this.textSample());
   }
   get completionText(): string {
-    return this.questRequestItems.CompletionText?.replace(/\$B/g, '\n') ?? '';
+    return questText(this.questRequestItems.CompletionText, this.textSample());
   }
   get rewardText(): string {
-    return this.questOfferReward.RewardText?.replace(/\$B/g, '\n') ?? '';
+    return questText(this.questOfferReward.RewardText, this.textSample());
+  }
+  /** How many players the quest suggests (SuggestedGroupNum), 0 when it doesn't. */
+  get suggestedPlayers(): number {
+    return Number(this.questTemplate.SuggestedGroupNum) || 0;
   }
 
   get rewardMoney(): number {
@@ -371,6 +397,16 @@ export class QuestPreviewService {
 
   get rewardXP$(): Promise<string> {
     return this.sqliteQueryService.getRewardXP(this.questTemplate.RewardXPDifficulty, this.questTemplate.QuestLevel);
+  }
+
+  /** The experience the quest gives a player of `playerLevel` (#662). */
+  async rewardXPAt(playerLevel: number): Promise<number> {
+    const questLevel = Number(this.questTemplate.QuestLevel);
+    const base = await this.sqliteQueryService.getRewardXP(
+      this.questTemplate.RewardXPDifficulty,
+      questLevel === -1 ? playerLevel : questLevel,
+    );
+    return questXp(Number(base) || 0, questLevel, playerLevel);
   }
 
   getRepReward$(field: number | string): Promise<QuestReputationReward[]> {

@@ -4,7 +4,8 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { provideRouter, withHashLocation } from '@angular/router';
+import { provideRouter, RouteReuseStrategy, withHashLocation } from '@angular/router';
+import { KeepAliveRouteStrategy } from '@keira/main/main-window';
 import { KEIRA_APP_CONFIG_TOKEN, highlightOptions, toastrConfig, uiSwitchConfig } from '@keira/shared/config';
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -38,6 +39,8 @@ bootstrapApplication(AppComponent, {
     }),
     /* Config */
     provideRouter(KEIRA_ROUTES, withHashLocation()),
+    // (the World Editor stays alive in its tab while other parts of Keira are open)
+    { provide: RouteReuseStrategy, useExisting: KeepAliveRouteStrategy },
     { provide: KEIRA_APP_CONFIG_TOKEN, useValue: KEIRA_APP_CONFIG },
     {
       provide: HIGHLIGHT_OPTIONS,

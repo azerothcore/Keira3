@@ -17,6 +17,21 @@ class SelectReferenceLootComponentPage extends SelectPageObject<SelectReferenceL
 }
 
 describe('SelectReferenceLoot integration tests', () => {
+  const FIELDS =
+    '`Entry`, (COUNT(*)) AS `items`, (COUNT(DISTINCT `GroupId`)) AS `lootGroups`, (' +
+    '(SELECT COUNT(*) FROM `creature_loot_template` WHERE `Reference` = `reference_loot_template`.`Entry`) + ' +
+    '(SELECT COUNT(*) FROM `gameobject_loot_template` WHERE `Reference` = `reference_loot_template`.`Entry`) + ' +
+    '(SELECT COUNT(*) FROM `item_loot_template` WHERE `Reference` = `reference_loot_template`.`Entry`) + ' +
+    '(SELECT COUNT(*) FROM `pickpocketing_loot_template` WHERE `Reference` = `reference_loot_template`.`Entry`) + ' +
+    '(SELECT COUNT(*) FROM `skinning_loot_template` WHERE `Reference` = `reference_loot_template`.`Entry`) + ' +
+    '(SELECT COUNT(*) FROM `disenchant_loot_template` WHERE `Reference` = `reference_loot_template`.`Entry`) + ' +
+    '(SELECT COUNT(*) FROM `prospecting_loot_template` WHERE `Reference` = `reference_loot_template`.`Entry`) + ' +
+    '(SELECT COUNT(*) FROM `milling_loot_template` WHERE `Reference` = `reference_loot_template`.`Entry`) + ' +
+    '(SELECT COUNT(*) FROM `fishing_loot_template` WHERE `Reference` = `reference_loot_template`.`Entry`) + ' +
+    '(SELECT COUNT(*) FROM `mail_loot_template` WHERE `Reference` = `reference_loot_template`.`Entry`) + ' +
+    '(SELECT COUNT(*) FROM `spell_loot_template` WHERE `Reference` = `reference_loot_template`.`Entry`) + ' +
+    '(SELECT COUNT(*) FROM `reference_loot_template` `r` WHERE `r`.`Reference` = `reference_loot_template`.`Entry`)' +
+    ') AS `usedBy`';
   const value = 1200;
 
   beforeEach(() => {
@@ -49,7 +64,7 @@ describe('SelectReferenceLoot integration tests', () => {
     expect(page.createInput.value).toEqual(`${component.customStartingId}`);
     page.expectNewEntityFree();
     expect(querySpy).toHaveBeenCalledWith('SELECT MAX(Entry) AS max FROM reference_loot_template;');
-    expect(page.queryWrapper.innerText).toContain('SELECT `Entry` FROM `reference_loot_template` GROUP BY Entry LIMIT 50');
+    expect(page.queryWrapper.innerText).toContain(`SELECT ${FIELDS} FROM \`reference_loot_template\` GROUP BY Entry LIMIT 50`);
   });
 
   it('should correctly behave when inserting and selecting free entry', async () => {
@@ -91,7 +106,7 @@ describe('SelectReferenceLoot integration tests', () => {
       id: 1,
       entry: 1200,
       limit: '100',
-      expectedQuery: 'SELECT `Entry` FROM `reference_loot_template` ' + "WHERE (`Entry` LIKE '%1200%') GROUP BY Entry LIMIT 100",
+      expectedQuery: `SELECT ${FIELDS} FROM \`reference_loot_template\` ` + "WHERE (`Entry` LIKE '%1200%') GROUP BY Entry LIMIT 100",
     },
   ]) {
     it(`searching an existing entity should correctly work [${id}]`, () => {

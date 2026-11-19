@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GAMEOBJECT_FLAGS, GameobjectTemplateAddon } from '@keira/shared/acore-world-model';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
-import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
+import { QueryOutputComponent, TopBarComponent, MoneyInputComponent, FactionNameComponent } from '@keira/shared/base-editor-components';
 import { FactionSelectorBtnComponent, FlagsSelectorBtnComponent } from '@keira/shared/selectors';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { TooltipDirective } from 'ngx-bootstrap/tooltip';
@@ -15,6 +15,8 @@ import { GameobjectTemplateAddonService } from './gameobject-template-addon.serv
   templateUrl: './gameobject-template-addon.component.html',
   styleUrls: ['./gameobject-template-addon.component.scss'],
   imports: [
+    FactionNameComponent,
+    MoneyInputComponent,
     TopBarComponent,
     TranslateDirective,
     TranslatePipe,

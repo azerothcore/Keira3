@@ -205,6 +205,43 @@ describe('QuestPreviewService', () => {
     expect(sqliteQueryService.getRewardXP).toHaveBeenCalledWith(mockDifficulty, mockQuestLevel);
   });
 
+  it('rewardXPAt: the experience at a player level, the quest level -1 read at that level (#662)', async () => {
+    const { service, sqliteQueryService, questTemplateService } = setup();
+    const getRewardXP = vi.spyOn(sqliteQueryService, 'getRewardXP').mockImplementation(() => Promise.resolve('1000'));
+    questTemplateService.form.controls.RewardXPDifficulty.setValue(5);
+    questTemplateService.form.controls.QuestLevel.setValue(10);
+
+    expect(await service.rewardXPAt(10)).toBe(1000);
+    expect(await service.rewardXPAt(16)).toBe(800);
+    expect(getRewardXP).toHaveBeenCalledWith(5, 10);
+
+    questTemplateService.form.controls.QuestLevel.setValue(-1);
+    expect(await service.rewardXPAt(42)).toBe(1000);
+    expect(getRewardXP).toHaveBeenLastCalledWith(5, 42);
+
+    getRewardXP.mockImplementation(() => Promise.resolve(undefined as unknown as string));
+    expect(await service.rewardXPAt(42)).toBe(0);
+  });
+
+  it('keeps the sample player choice, and goes on when the storage is blocked', () => {
+    localStorage.setItem('keira3.questPreviewSample', '1');
+    const { service, questTemplateService } = setup();
+    expect(service.textSample()).toBeTruthy();
+    questTemplateService.form.controls.SuggestedGroupNum.setValue(0);
+    expect(service.suggestedPlayers).toBe(0);
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('blocked');
+    });
+    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+      throw new Error('blocked');
+    });
+    service.showSample(false);
+    expect(service.textSample()).toBeUndefined();
+    expect(service['loadSample']()).toBeUndefined();
+    vi.restoreAllMocks();
+    localStorage.clear();
+  });
+
   it('difficultyLevels', () => {
     const { service, questTemplateService } = setup();
     let difficulty: DifficultyLevel;

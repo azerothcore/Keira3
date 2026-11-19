@@ -1,0 +1,21 @@
+<div class="money-input" [class.money-negative]="negative()" [attr.title]="'MONEY.HELP' | translate">
+  @if (negative()) {
+    <span class="money-sign">-</span>
+  }
+  @for (unit of units; track unit) {
+    <label class="money-unit">
+      <input
+        type="number"
+        min="0"
+        class="form-control form-control-sm"
+        [attr.data-testid]="'money-' + unit"
+        [value]="money()[unit]"
+        [disabled]="control().disabled"
+        (change)="change(unit, $any($event.target))"
+      />
+      <span class="money-coin money-{{ unit }}" [attr.aria-label]="'MONEY.' + unit.toUpperCase() | translate">{{
+        'MONEY.' + unit.toUpperCase() + '_SHORT' | translate
+      }}</span>
+    </label>
+  }
+</div>

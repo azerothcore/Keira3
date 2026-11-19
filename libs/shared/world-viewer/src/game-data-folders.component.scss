@@ -1,0 +1,17 @@
+// the folders, greyed while locked (read only until Modify)
+.game-data-folders input[readonly] {
+  background: var(--bs-secondary-bg, #e9ecef);
+  color: var(--bs-secondary-color, #6c757d);
+}
+
+.game-data-more-info {
+  summary {
+    cursor: pointer;
+    color: var(--bs-link-color, #0d6efd);
+  }
+
+  div {
+    white-space: pre-line;
+    padding: 4px 0 0 12px;
+  }
+}
