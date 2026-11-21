@@ -10,3 +10,6 @@ updates:
     ignore:
       # patched via patch-package, bump by hand (see patches/README.md)
       - dependency-name: ngx-bootstrap
+      # Angular pins the supported TypeScript range, bump it together with Angular
+      - dependency-name: typescript
+        update-types: ['version-update:semver-minor', 'version-update:semver-major']
