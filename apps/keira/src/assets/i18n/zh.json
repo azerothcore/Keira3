@@ -259,7 +259,7 @@
       "RANGE_ATTACK_TIME": "远程攻击间隔时间(单位：毫秒)。",
       "SCRIPT_NAME": "覆盖AIName。此生物使用独立的C++脚本在这里输入脚本名称。",
       "GOSSIP_MENU_ID": "gossip_menu表中的entry字段",
-      "MOVEMENT_ID": "看起来这个字段是直接传递给客户端，没有关于它的信息",
+      "MOVEMENT_ID": "链接到 CreatureMovementInfo.dbc。",
       "HOVER_HEIGHT": "如果设置了MOVEMENTFLAG_DISABLE_GRAVITY，则生物悬停在地面上的距离在这里设置",
       "SCALE": "生物尺寸控制(生物模型的大小)。如果为0，则使用DBC默认模型大小。",
       "DAMAGE_MODIFIER": "伤害倍数，影响mindmg和maxdmg",
