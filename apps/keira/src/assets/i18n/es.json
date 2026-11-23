@@ -259,7 +259,7 @@
       "RANGE_ATTACK_TIME": "Tiempo base (en millisegundos) que determina cuánto tiempo debe esperar una criatura entre ataques a distancia.",
       "SCRIPT_NAME": "Anula AIName. El nombre del script escrito en C++ que utiliza esta criatura en particular, si existe, claro está.",
       "GOSSIP_MENU_ID": "Enlazado con gossip_menu.entry (Ventana de Texto de Criatura)",
-      "MOVEMENT_ID": "Parece que este campo pasa directamente al cliente, en donde no hay información al respecto.",
+      "MOVEMENT_ID": "Referencia a CreatureMovementInfo.dbc.",
       "HOVER_HEIGHT": "Distancia sobre el suelo a la que se elevará la criatura si tiene MOVEMENTFLAG_DISABLE_GRAVITY habilitado.",
       "SCALE": "Multiplicador de tamaño (qué tan grande (o pequeño) parece el modelo de criatura). Si es igual a 0, utiliza el tamaño del modelo dentro del DBC que viene por defecto.",
       "DAMAGE_MODIFIER": "Multiplicador de daño, afecta a mindmg (MínimoDaño) y maxdmg (MáximoDaño)",
