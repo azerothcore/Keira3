@@ -1,5 +1,5 @@
 import { Service, inject } from '@angular/core';
-import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
+import { EMOTE, SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
 import { SAI_ACTION_COMMENTS, SAI_EVENT_COMMENTS } from './constants/sai-comments';
 import {
@@ -96,6 +96,23 @@ export class SaiCommentGeneratorService {
       default:
         return '[unsupported target type]';
     }
+  }
+
+  private getEmoteLabel(emoteId: number): string {
+    const emote = EMOTE.find((option) => option.value === Number(emoteId));
+    return emote ? `${emoteId} (${emote.name})` : `${emoteId}`;
+  }
+
+  private getRandomActionParams(smartScript: SmartScripts): number[] {
+    const params = [smartScript.action_param1, smartScript.action_param2];
+
+    for (const param of [smartScript.action_param3, smartScript.action_param4, smartScript.action_param5, smartScript.action_param6]) {
+      if (param > 0) {
+        params.push(param);
+      }
+    }
+
+    return params;
   }
 
   /* Get previous script of links chain */
@@ -283,26 +300,21 @@ export class SaiCommentGeneratorService {
       actionLine = actionLine.replace('_followGroupParamTwo_', _followGroupParamTwo_);
     }
 
+    if (actionLine.indexOf('_emoteActionParamOne_') > -1) {
+      actionLine = actionLine.replace('_emoteActionParamOne_', this.getEmoteLabel(smartScript.action_param1));
+    }
+
     if (actionLine.indexOf('_actionRandomParameters_') > -1) {
-      let randomEmotes = smartScript.action_param1 + ', ' + smartScript.action_param2;
+      actionLine = actionLine.replace('_actionRandomParameters_', this.getRandomActionParams(smartScript).join(', '));
+    }
 
-      if (smartScript.action_param3 > 0) {
-        randomEmotes += ', ' + smartScript.action_param3;
-      }
-
-      if (smartScript.action_param4 > 0) {
-        randomEmotes += ', ' + smartScript.action_param4;
-      }
-
-      if (smartScript.action_param5 > 0) {
-        randomEmotes += ', ' + smartScript.action_param5;
-      }
-
-      if (smartScript.action_param6 > 0) {
-        randomEmotes += ', ' + smartScript.action_param6;
-      }
-
-      actionLine = actionLine.replace('_actionRandomParameters_', randomEmotes);
+    if (actionLine.indexOf('_emoteActionRandomParameters_') > -1) {
+      actionLine = actionLine.replace(
+        '_emoteActionRandomParameters_',
+        this.getRandomActionParams(smartScript)
+          .map((emoteId) => this.getEmoteLabel(emoteId))
+          .join(', '),
+      );
     }
 
     if (actionLine.indexOf('_creatureNameActionParamOne_') > -1) {

@@ -229,7 +229,41 @@ describe('SaiCommentGeneratorService', () => {
           action_param5: 5,
           action_param6: 6,
         },
-        expected: `MockEntity - In Combat - Play Random Emote (1, 2, 3, 4, 5, 6)`,
+        expected:
+          'MockEntity - In Combat - Play Random Emote (1 (ONESHOT_TALK), 2 (ONESHOT_BOW), 3 (ONESHOT_WAVE), 4 (ONESHOT_CHEER), 5 (ONESHOT_EXCLAMATION), 6 (ONESHOT_QUESTION))',
+      },
+      {
+        name: 'SAI_ACTIONS.RANDOM_EMOTE skips unset params 3,4,5,6 and keeps unknown emote ids as numbers',
+        input: {
+          action_type: SAI_ACTIONS.RANDOM_EMOTE,
+          action_param1: 10,
+          action_param2: 99999,
+        },
+        expected: `MockEntity - In Combat - Play Random Emote (10 (STATE_DANCE), 99999)`,
+      },
+      {
+        name: 'SAI_ACTIONS.PLAY_EMOTE check emote name',
+        input: {
+          action_type: SAI_ACTIONS.PLAY_EMOTE,
+          action_param1: 13,
+        },
+        expected: `MockEntity - In Combat - Play Emote 13 (STATE_SIT)`,
+      },
+      {
+        name: 'SAI_ACTIONS.PLAY_EMOTE unknown emote id',
+        input: {
+          action_type: SAI_ACTIONS.PLAY_EMOTE,
+          action_param1: 99999,
+        },
+        expected: `MockEntity - In Combat - Play Emote 99999`,
+      },
+      {
+        name: 'SAI_ACTIONS.SET_EMOTE_STATE check emote name',
+        input: {
+          action_type: SAI_ACTIONS.SET_EMOTE_STATE,
+          action_param1: 12,
+        },
+        expected: `MockEntity - In Combat - Set Emote State 12 (STATE_SLEEP)`,
       },
       {
         name: 'SAI_ACTIONS.RANDOM_PHASE check action params 1,2,3,4,5,6',
