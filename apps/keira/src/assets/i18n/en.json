@@ -1003,5 +1003,8 @@
     "NO_DATA": "No map data available",
     "SHOW": "Show map",
     "HIDE": "Hide map"
+  },
+  "MODEL_3D_VIEWER": {
+    "SHOW_ON_CHARACTER": "Show on character"
   }
 }
