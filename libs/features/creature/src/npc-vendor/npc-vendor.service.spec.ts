@@ -164,6 +164,20 @@ describe('NpcVendorService', () => {
       expect(getItemNameByIdSpy).toHaveBeenCalledWith(6948);
     });
 
+    it('clearCache should forget the loaded item names so they are queried again', async () => {
+      const service: NpcVendorService = TestBed.inject(NpcVendorService);
+      const getItemNameByIdSpy = vi.spyOn(service.queryService, 'getItemNameById').mockReturnValue(Promise.resolve('Apple'));
+      const clearQueryCacheSpy = vi.spyOn(service.queryService, 'clearCache');
+      await service.getItemName(1);
+
+      service.clearCache();
+
+      expect(clearQueryCacheSpy).toHaveBeenCalledTimes(1);
+      expect(service.compareItemNames(undefined, undefined, createRow(1), createRow(2))).toBe(0);
+      await service.getItemName(1);
+      expect(getItemNameByIdSpy).toHaveBeenCalledTimes(2);
+    });
+
     it('compareItemNames should compare the rows by their loaded item names', async () => {
       const service: NpcVendorService = TestBed.inject(NpcVendorService);
       const names: Record<number, string> = { 1: 'Bread', 2: 'Apple' };

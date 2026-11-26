@@ -84,6 +84,12 @@ export class NpcVendorService extends MultiRowEditorService<NpcVendor> {
     return name;
   }
 
+  override clearCache(): void {
+    super.clearCache();
+    this.itemNamePromises.clear();
+    this.itemNames.clear();
+  }
+
   readonly compareItemNames = (_nameA: unknown, _nameB: unknown, rowA: NpcVendor, rowB: NpcVendor): number =>
     (this.itemNames.get(rowA.item) ?? '').localeCompare(this.itemNames.get(rowB.item) ?? '');
 }
