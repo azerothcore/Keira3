@@ -39,3 +39,11 @@ jobs:
 
       - name: electron:windows:ci
         run: npm run electron:windows:ci
+
+      - name: Upload binaries
+        if: github.event_name == 'push' && matrix.os == 'windows-2025'
+        uses: actions/upload-artifact@v7
+        with:
+          name: Keira3-windows-${{ github.sha }}
+          path: release/*.exe
+          if-no-files-found: error
