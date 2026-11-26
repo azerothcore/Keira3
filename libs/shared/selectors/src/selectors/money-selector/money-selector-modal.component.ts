@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, computed, OnInit, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { TranslateDirective } from '@ngx-translate/core';
 
 import { BaseSelectorModalComponent } from '../base-selector/base-selector-modal.component';
@@ -9,7 +8,7 @@ import { joinMoney, splitMoney, toInteger } from './money';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-money-selector-modal',
   templateUrl: './money-selector-modal.component.html',
-  imports: [FormsModule, TranslateDirective],
+  imports: [TranslateDirective],
 })
 export class MoneySelectorModalComponent extends BaseSelectorModalComponent implements OnInit {
   readonly gold = signal(0);
@@ -34,8 +33,13 @@ export class MoneySelectorModalComponent extends BaseSelectorModalComponent impl
     this.copper.set(copper);
   }
 
-  setCoin(coin: 'gold' | 'silver' | 'copper', value: unknown): void {
+  setCoin(coin: 'gold' | 'silver' | 'copper', value: string): void {
     this[coin].set(Math.max(0, toInteger(value)));
+  }
+
+  // [value] isn't re-applied when the corrected coin equals the previous one (e.g. "-3" over 0), so the box is rewritten on blur.
+  showCoin(coin: 'gold' | 'silver' | 'copper', input: HTMLInputElement): void {
+    input.value = `${this[coin]()}`;
   }
 
   override onSave(): void {

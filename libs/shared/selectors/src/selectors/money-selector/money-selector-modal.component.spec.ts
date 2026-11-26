@@ -66,6 +66,20 @@ describe('MoneySelectorModalComponent', () => {
     expect(component.copper()).toEqual(7);
   });
 
+  it('should show the corrected coin once the input loses focus', async () => {
+    const { fixture, input, total, type } = await setup(0);
+
+    await type('silver', '-3');
+    input('silver').dispatchEvent(new Event('blur'));
+    await type('copper', '7.8');
+    input('copper').dispatchEvent(new Event('blur'));
+    fixture.detectChanges();
+
+    expect(input('silver').value).toEqual('0');
+    expect(input('copper').value).toEqual('7');
+    expect(total()).toEqual('7');
+  });
+
   it('should keep the sign of a negative initial value', async () => {
     const { component, input, total, type } = await setup(-15000);
 
