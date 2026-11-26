@@ -5,7 +5,7 @@ import { TrainerSpell } from '@keira/shared/acore-world-model';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { EditorButtonsComponent, IconComponent, QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 import { SqliteQueryService } from '@keira/shared/db-layer';
-import { SkillSelectorBtnComponent, SpellSelectorBtnComponent } from '@keira/shared/selectors';
+import { MoneySelectorBtnComponent, SkillSelectorBtnComponent, SpellSelectorBtnComponent } from '@keira/shared/selectors';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { TooltipDirective } from 'ngx-bootstrap/tooltip';
@@ -27,6 +27,7 @@ import { TrainerSpellService } from './trainer-spell.service';
     SpellSelectorBtnComponent,
     TooltipDirective,
     SkillSelectorBtnComponent,
+    MoneySelectorBtnComponent,
     EditorButtonsComponent,
     NgxDatatableModule,
     AsyncPipe,

@@ -259,6 +259,25 @@ describe('ItemTemplate integration tests', () => {
       page.expectFullQueryToContain('22');
     });
 
+    it('changing a value via MoneySelector should correctly work', async () => {
+      const { page } = setup(false);
+      await tickAsync();
+      const field = 'BuyPrice';
+      page.clickElement(page.getSelectorBtn(field));
+      await page.whenReady();
+      page.expectModalDisplayed();
+
+      page.setInputValue(page.queryOutsideComponent<HTMLInputElement>('#money-gold'), 21);
+      page.setInputValue(page.queryOutsideComponent<HTMLInputElement>('#money-silver'), 59);
+      page.setInputValue(page.queryOutsideComponent<HTMLInputElement>('#money-copper'), 37);
+      await page.whenReady();
+      page.clickModalSelect();
+      await page.whenReady();
+
+      expect(page.getInputById(field).value).toEqual('215937');
+      page.expectDiffQueryToContain('UPDATE `item_template` SET `BuyPrice` = 215937 WHERE (`entry` = 1234);');
+    });
+
     it.skip('changing a value via FlagsSelector should correctly work', async () => {
       const { page } = setup(false);
       await tickAsync();

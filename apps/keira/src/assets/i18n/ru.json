@@ -39,7 +39,13 @@
   "CANCEL": "Отменить",
   "SELECTORS": {
     "ENABLED": "Включено",
-    "DISABLED": "Отключено"
+    "DISABLED": "Отключено",
+    "MONEY": {
+      "GOLD": "Золото",
+      "SILVER": "Серебро",
+      "COPPER": "Медь",
+      "TOTAL": "Всего в меди"
+    }
   },
   "CONNECTION_WINDOW": {
     "HOST": "Хост",

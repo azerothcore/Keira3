@@ -358,6 +358,12 @@
             <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">
               <label class="control-label" for="RewardMoney">RewardMoney</label>
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'QUEST.TEMPLATE.REWARD_MONEY' | translate"></i>
+              <keira-money-selector-btn
+                [control]="editorService.form.controls.RewardMoney"
+                [disabled]="editorService.form.controls.RewardMoney.disabled"
+                [config]="{ name: 'RewardMoney' }"
+                [modalClass]="'modal-md'"
+              />
               <input [formControlName]="'RewardMoney'" id="RewardMoney" type="number" class="form-control form-control-sm" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-5 col-lg-4 col-xl-2">

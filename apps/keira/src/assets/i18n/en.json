@@ -39,7 +39,13 @@
   "CANCEL": "Cancel",
   "SELECTORS": {
     "ENABLED": "Enabled",
-    "DISABLED": "Disabled"
+    "DISABLED": "Disabled",
+    "MONEY": {
+      "GOLD": "Gold",
+      "SILVER": "Silver",
+      "COPPER": "Copper",
+      "TOTAL": "Total in copper"
+    }
   },
   "CONNECTION_WINDOW": {
     "HOST": "Host",
