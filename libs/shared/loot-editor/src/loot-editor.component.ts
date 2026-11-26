@@ -63,7 +63,16 @@ export class LootEditorComponent<T extends LootTemplate> extends SubscriptionHan
           this.changeDetectorRef.markForCheck();
         });
       }),
+      this.editorService.form.valueChanges.subscribe(() => this.syncReferenceMinCount()),
     );
+  }
+
+  // The core ignores MinCount on reference rows and its startup check expects it to equal MaxCount
+  private syncReferenceMinCount(): void {
+    const { Reference, MinCount, MaxCount } = this.editorService.form.controls;
+    if (!this.editorService.loading && Reference.value !== 0 && MinCount.value !== MaxCount.value) {
+      MinCount.setValue(MaxCount.value);
+    }
   }
 
   isReference(row: LootTemplate): boolean {
