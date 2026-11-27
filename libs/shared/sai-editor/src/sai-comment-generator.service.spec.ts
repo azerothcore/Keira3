@@ -1020,7 +1020,7 @@ describe('SaiCommentGeneratorService', () => {
           target_type: SAI_TARGETS.CREATURE_RANGE,
           target_param1: UNIT_FLAGS.SERVER_CONTROLLED,
         },
-        expected: `MockEntity - In Combat - Move To Closest Creature 'mockCreatureNameById1'`,
+        expected: `MockEntity - In Combat - Move To Creature in Range 'mockCreatureNameById1'`,
       },
       {
         name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.CREATURE_DISTANCE)`,
@@ -1029,7 +1029,7 @@ describe('SaiCommentGeneratorService', () => {
           target_type: SAI_TARGETS.CREATURE_DISTANCE,
           target_param1: 0,
         },
-        expected: `MockEntity - In Combat - Move To Closest Creature 'mockCreatureNameById0'`,
+        expected: `MockEntity - In Combat - Move To Creature in Distance 'mockCreatureNameById0'`,
       },
       {
         name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.CLOSEST_CREATURE)`,
@@ -1065,7 +1065,7 @@ describe('SaiCommentGeneratorService', () => {
           target_type: SAI_TARGETS.GAMEOBJECT_RANGE,
           target_param1: 0,
         },
-        expected: `MockEntity - In Combat - Move To Closest Gameobject 'mockGameobjectNameById0'`,
+        expected: `MockEntity - In Combat - Move To Gameobject in Range 'mockGameobjectNameById0'`,
       },
       {
         name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.GAMEOBJECT_DISTANCE)`,
@@ -1074,7 +1074,7 @@ describe('SaiCommentGeneratorService', () => {
           target_type: SAI_TARGETS.GAMEOBJECT_DISTANCE,
           target_param1: 0,
         },
-        expected: `MockEntity - In Combat - Move To Closest Gameobject 'mockGameobjectNameById0'`,
+        expected: `MockEntity - In Combat - Move To Gameobject in Distance 'mockGameobjectNameById0'`,
       },
       {
         name: `SAI_ACTIONS.MOVE_TO_POS check target type (SAI_TARGETS.CLOSEST_GAMEOBJECT)`,
@@ -1846,6 +1846,41 @@ describe('SaiCommentGeneratorService', () => {
           event_type: SAI_EVENTS.ESCORT_REACHED,
         },
         expected: `MockEntity - On Point Any of Path Any Reached - No Action Type`,
+      },
+      {
+        name: `SAI_EVENTS.MOVEMENTINFORM`,
+        input: {
+          event_type: SAI_EVENTS.MOVEMENTINFORM,
+          event_param1: 8,
+          event_param2: 10,
+        },
+        expected: `MockEntity - On Point 10 Reached (Point Movement) - No Action Type`,
+      },
+      {
+        name: `SAI_EVENTS.MOVEMENTINFORM with path`,
+        input: {
+          event_type: SAI_EVENTS.MOVEMENTINFORM,
+          event_param1: 2,
+          event_param2: 5,
+          event_param3: 2840610,
+        },
+        expected: `MockEntity - On Point 5 of Path 2840610 Reached (Waypoint Movement) - No Action Type`,
+      },
+      {
+        name: `SAI_EVENTS.MOVEMENTINFORM any`,
+        input: {
+          event_type: SAI_EVENTS.MOVEMENTINFORM,
+        },
+        expected: `MockEntity - On Point Any Reached (Any Movement) - No Action Type`,
+      },
+      {
+        name: `SAI_EVENTS.MOVEMENTINFORM unknown motion type`,
+        input: {
+          event_type: SAI_EVENTS.MOVEMENTINFORM,
+          event_param1: 99,
+          event_param2: 1,
+        },
+        expected: `MockEntity - On Point 1 Reached (Type 99 Movement) - No Action Type`,
       },
       {
         name: `SAI_EVENTS.VICTIM_CASTING, SAI_ACTIONS.INTERRUPT_SPELL`,
