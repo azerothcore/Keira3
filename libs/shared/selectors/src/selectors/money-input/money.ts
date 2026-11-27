@@ -1,6 +1,8 @@
 export const COPPER_PER_SILVER = 100;
 export const COPPER_PER_GOLD = 10000;
 
+export type Coin = 'gold' | 'silver' | 'copper';
+
 export interface Money {
   gold: number;
   silver: number;

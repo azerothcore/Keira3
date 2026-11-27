@@ -3,7 +3,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GAMEOBJECT_FLAGS, GameobjectTemplateAddon } from '@keira/shared/acore-world-model';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
-import { FactionSelectorBtnComponent, FlagsSelectorBtnComponent, MoneySelectorBtnComponent } from '@keira/shared/selectors';
+import { FactionSelectorBtnComponent, FlagsSelectorBtnComponent, MoneyInputComponent } from '@keira/shared/selectors';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
@@ -24,7 +24,7 @@ import { GameobjectTemplateAddonService } from './gameobject-template-addon.serv
     TooltipDirective,
     FactionSelectorBtnComponent,
     FlagsSelectorBtnComponent,
-    MoneySelectorBtnComponent,
+    MoneyInputComponent,
   ],
 })
 export class GameobjectTemplateAddonComponent extends SingleRowEditorComponent<GameobjectTemplateAddon> {

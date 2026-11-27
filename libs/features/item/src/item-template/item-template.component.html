@@ -112,27 +112,15 @@
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.BUY_COUNT' | translate"></i>
               <input [formControlName]="'BuyCount'" id="BuyCount" type="number" class="form-control form-control-sm" />
             </div>
-            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <div class="form-group col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
               <label class="control-label" for="BuyPrice">BuyPrice</label>
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.BUY_PRICE' | translate"></i>
-              <keira-money-selector-btn
-                [control]="editorService.form.controls.BuyPrice"
-                [disabled]="editorService.form.controls.BuyPrice.disabled"
-                [config]="{ name: 'BuyPrice' }"
-                [modalClass]="'modal-md'"
-              />
-              <input [formControlName]="'BuyPrice'" id="BuyPrice" type="number" class="form-control form-control-sm" />
+              <keira-money-input [control]="editorService.form.controls.BuyPrice" id="BuyPrice" />
             </div>
-            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <div class="form-group col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
               <label class="control-label" for="SellPrice">SellPrice</label>
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.SELL_PRICE' | translate"></i>
-              <keira-money-selector-btn
-                [control]="editorService.form.controls.SellPrice"
-                [disabled]="editorService.form.controls.SellPrice.disabled"
-                [config]="{ name: 'SellPrice' }"
-                [modalClass]="'modal-md'"
-              />
-              <input [formControlName]="'SellPrice'" id="SellPrice" type="number" class="form-control form-control-sm" />
+              <keira-money-input [control]="editorService.form.controls.SellPrice" id="SellPrice" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="InventoryType">InventoryType</label>
@@ -239,27 +227,15 @@
               />
               <input [formControlName]="'FoodType'" id="FoodType" type="number" class="form-control form-control-sm" />
             </div>
-            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <div class="form-group col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
               <label class="control-label" for="minMoneyLoot">minMoneyLoot</label>
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.MIN_MONEY_LOOT' | translate"></i>
-              <keira-money-selector-btn
-                [control]="editorService.form.controls.minMoneyLoot"
-                [disabled]="editorService.form.controls.minMoneyLoot.disabled"
-                [config]="{ name: 'minMoneyLoot' }"
-                [modalClass]="'modal-md'"
-              />
-              <input [formControlName]="'minMoneyLoot'" id="minMoneyLoot" type="number" class="form-control form-control-sm" />
+              <keira-money-input [control]="editorService.form.controls.minMoneyLoot" id="minMoneyLoot" />
             </div>
-            <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <div class="form-group col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
               <label class="control-label" for="maxMoneyLoot">maxMoneyLoot</label>
               <i class="fas fa-info-circle ms-1" placement="auto" [tooltip]="'ITEM.TEMPLATE.MAX_MONEY_LOOT' | translate"></i>
-              <keira-money-selector-btn
-                [control]="editorService.form.controls.maxMoneyLoot"
-                [disabled]="editorService.form.controls.maxMoneyLoot.disabled"
-                [config]="{ name: 'maxMoneyLoot' }"
-                [modalClass]="'modal-md'"
-              />
-              <input [formControlName]="'maxMoneyLoot'" id="maxMoneyLoot" type="number" class="form-control form-control-sm" />
+              <keira-money-input [control]="editorService.form.controls.maxMoneyLoot" id="maxMoneyLoot" />
             </div>
             <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
               <label class="control-label" for="itemset">itemset</label>

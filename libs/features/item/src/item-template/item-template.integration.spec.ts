@@ -259,22 +259,16 @@ describe('ItemTemplate integration tests', () => {
       page.expectFullQueryToContain('22');
     });
 
-    it('changing a value via MoneySelector should correctly work', async () => {
+    it('changing a value via the gold, silver and copper boxes should correctly work', async () => {
       const { page } = setup(false);
       await tickAsync();
-      const field = 'BuyPrice';
-      page.clickElement(page.getSelectorBtn(field));
-      await page.whenReady();
-      page.expectModalDisplayed();
+      const box = (coin: string) => page.query<HTMLInputElement>(`#BuyPrice input.money-${coin}`);
 
-      page.setInputValue(page.queryOutsideComponent<HTMLInputElement>('#money-gold'), 21);
-      page.setInputValue(page.queryOutsideComponent<HTMLInputElement>('#money-silver'), 59);
-      page.setInputValue(page.queryOutsideComponent<HTMLInputElement>('#money-copper'), 37);
-      await page.whenReady();
-      page.clickModalSelect();
+      page.setInputValue(box('gold'), 21);
+      page.setInputValue(box('silver'), 59);
+      page.setInputValue(box('copper'), 37);
       await page.whenReady();
 
-      expect(page.getInputById(field).value).toEqual('215937');
       page.expectDiffQueryToContain('UPDATE `item_template` SET `BuyPrice` = 215937 WHERE (`entry` = 1234);');
     });
 

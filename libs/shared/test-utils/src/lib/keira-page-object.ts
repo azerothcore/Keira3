@@ -62,7 +62,10 @@ export abstract class PageObject<ComponentType> extends PageObjectModel<Componen
   }
 
   setInputValueById(inputId: string, value: string | number): void {
-    this.setInputValue(this.getInputById(inputId), value);
+    const element = this.getInputById(inputId);
+    // keira-money-input splits a copper amount into three boxes; its copper box accepts any amount and carries the excess over.
+    const copperBox = element.querySelector<HTMLInputElement>('input.money-copper');
+    this.setInputValue(copperBox ?? element, value);
   }
 
   clickElements(elements: HTMLElement[]): void {

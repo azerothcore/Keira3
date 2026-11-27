@@ -1,0 +1,31 @@
+:host {
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+input {
+  flex: 0 1 auto;
+  width: calc(2ch + 0.5rem + 2px);
+  min-width: 0;
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+  text-align: right;
+}
+
+input.money-gold {
+  flex: 1 1 auto;
+  width: calc(4ch + 0.5rem + 2px);
+}
+
+.money-icon {
+  flex: 0 0 auto;
+  width: 9px;
+  height: 9px;
+  margin-right: 0.25rem;
+
+  &:last-child {
+    margin-right: 0;
+  }
+}

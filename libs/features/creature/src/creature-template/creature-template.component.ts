@@ -28,7 +28,7 @@ import {
   FactionSelectorBtnComponent,
   FlagsSelectorBtnComponent,
   GenericOptionSelectorComponent,
-  MoneySelectorBtnComponent,
+  MoneyInputComponent,
   SingleValueSelectorBtnComponent,
 } from '@keira/shared/selectors';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
@@ -54,7 +54,7 @@ import { CreatureTemplateService } from './creature-template.service';
     CreatureSelectorBtnComponent,
     GenericOptionSelectorComponent,
     BooleanOptionSelectorComponent,
-    MoneySelectorBtnComponent,
+    MoneyInputComponent,
   ],
 })
 export class CreatureTemplateComponent extends SingleRowEditorComponent<CreatureTemplate> {

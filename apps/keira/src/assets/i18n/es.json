@@ -43,8 +43,7 @@
     "MONEY": {
       "GOLD": "Oro",
       "SILVER": "Plata",
-      "COPPER": "Cobre",
-      "TOTAL": "Total en cobre"
+      "COPPER": "Cobre"
     }
   },
   "CONNECTION_WINDOW": {

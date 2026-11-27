@@ -43,8 +43,7 @@
     "MONEY": {
       "GOLD": "Золото",
       "SILVER": "Серебро",
-      "COPPER": "Медь",
-      "TOTAL": "Всего в меди"
+      "COPPER": "Медь"
     }
   },
   "CONNECTION_WINDOW": {
