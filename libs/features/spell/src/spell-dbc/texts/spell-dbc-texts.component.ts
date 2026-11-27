@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ModelForm } from '@keira/shared/utils';
 import { SpellDbc } from '@keira/shared/acore-world-model';
@@ -10,7 +10,6 @@ import { TabDirective, TabsetComponent } from 'ngx-bootstrap/tabs';
 import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-spell-dbc-texts',
   templateUrl: './spell-dbc-texts.component.html',
   imports: [FormsModule, ReactiveFormsModule, TooltipDirective, TabsetComponent, TabDirective, SpellDbcLocaleComponent, TranslatePipe],

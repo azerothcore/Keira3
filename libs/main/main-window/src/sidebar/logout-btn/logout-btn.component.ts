@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
@@ -8,7 +8,6 @@ import { LocationService } from '@keira/shared/common-services';
 import { ModalConfirmComponent } from '@keira/shared/base-editor-components';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-logout-btn',
   templateUrl: './logout-btn.component.html',
   styleUrls: ['./logout-btn.component.scss'],

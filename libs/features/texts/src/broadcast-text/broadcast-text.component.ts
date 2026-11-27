@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BroadcastText, EMOTE } from '@keira/shared/acore-world-model';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
@@ -10,7 +10,6 @@ import { BroadcastTextHandlerService } from './broadcast-text-handler.service';
 import { BroadcastTextService } from './broadcast-text.service';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './broadcast-text.component.html',
   imports: [
     TopBarComponent,

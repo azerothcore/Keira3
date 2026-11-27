@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CreatureDefaultTrainer } from '@keira/shared/acore-world-model';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
@@ -9,7 +9,6 @@ import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureDefaultTrainerService } from './creature-default-trainer.service';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-creature-default-trainer',
   templateUrl: './creature-default-trainer.component.html',
   imports: [TopBarComponent, TranslateDirective, TranslatePipe, QueryOutputComponent, FormsModule, ReactiveFormsModule, TooltipDirective],

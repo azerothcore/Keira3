@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { NPC_TEXT_ID, NpcText } from '@keira/shared/acore-world-model';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
@@ -10,7 +10,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-components';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-npc-text-selector-modal',
   templateUrl: './npc-text-selector-modal.component.html',
   imports: [FormsModule, ReactiveFormsModule, HighlightjsWrapperComponent, NgxDatatableModule, TranslateDirective, TranslatePipe],

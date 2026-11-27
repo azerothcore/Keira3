@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GossipMenuOption, OPTION_ICON, OPTION_TYPE } from '@keira/shared/acore-world-model';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
@@ -12,7 +12,6 @@ import { GossipMenuOptionPreviewComponent } from '../gossip-menu-option-preview/
 import { GossipMenuOptionService } from './gossip-menu-option.service';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-gossip-menu-option',
   templateUrl: './gossip-menu-option.component.html',
   imports: [

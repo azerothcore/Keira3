@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { SelectComponent } from '@keira/shared/base-abstract-classes';
 import { TRAINER_ID, TRAINER_TABLE, Trainer } from '@keira/shared/acore-world-model';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
@@ -10,7 +10,6 @@ import { WIKI_BASE_URL } from '@keira/shared/constants';
 import { CreateComponent, HighlightjsWrapperComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './select-trainer.component.html',
   imports: [
     FormsModule,

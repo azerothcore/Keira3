@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { SelectComponent } from '@keira/shared/base-abstract-classes';
 import {
@@ -16,7 +16,6 @@ import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { CreateComponent, HighlightjsWrapperComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './select-creature.component.html',
   styleUrls: ['./select-creature.component.scss'],
   imports: [

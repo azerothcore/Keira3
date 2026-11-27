@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { SelectComplexKeyComponent } from '@keira/shared/base-abstract-classes';
 import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
@@ -11,7 +11,6 @@ import { SaiSearchService } from '@keira/shared/selectors';
 import { getEnumKeys } from '@keira/shared/utils';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-sai-search-existing',
   templateUrl: './sai-search-existing.component.html',
   styleUrls: ['./sai-search-existing.component.scss'],

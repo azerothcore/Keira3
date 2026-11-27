@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 
 import { AC_DISCORD_URL, KEIRA3_REPO_URL, PAYPAL_DONATE_URL, VersionRow } from '@keira/shared/constants';
 // eslint-disable-next-line @nx/enforce-module-boundaries
@@ -12,7 +12,6 @@ import { MysqlQueryService, MysqlService } from '@keira/shared/db-layer';
 import { ConfigService } from '@keira/shared/common-services';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-home',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],

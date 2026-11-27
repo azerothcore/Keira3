@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ALLOWABLE_CLASSES, QuestTemplateAddon, SPECIAL_FLAGS } from '@keira/shared/acore-world-model';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
@@ -18,7 +18,6 @@ import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { QuestTemplateAddonService } from './quest-template-addon.service';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-quest-template-addon',
   templateUrl: './quest-template-addon.component.html',
   styleUrls: ['./quest-template-addon.component.scss'],

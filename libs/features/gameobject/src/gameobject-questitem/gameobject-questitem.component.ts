@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GameobjectQuestitem } from '@keira/shared/acore-world-model';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
@@ -11,7 +11,6 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { GameobjectQuestitemService } from './gameobject-questitem.service';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-gameobject-questitem',
   templateUrl: './gameobject-questitem.component.html',
   styleUrls: ['./gameobject-questitem.component.scss'],

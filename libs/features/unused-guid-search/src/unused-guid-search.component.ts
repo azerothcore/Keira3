@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, signal, DestroyRef } from '@angular/core';
+import { Component, inject, signal, DestroyRef } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -23,7 +23,6 @@ import { UnusedGuidService, DbOptions, MAX_INT_UNSIGNED_VALUE } from './unused-g
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-features-unused-guid-search',
   templateUrl: './unused-guid-search.component.html',
   styleUrl: './unused-guid-search.component.scss',

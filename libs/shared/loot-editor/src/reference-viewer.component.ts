@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, input, OnChanges } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, input, OnChanges } from '@angular/core';
 import { DTCFG } from '@keira/shared/config';
 
 import { AsyncPipe } from '@angular/common';
@@ -11,7 +11,6 @@ import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { ReferenceViewerService } from './reference-viewer.service';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-reference-viewer',
   templateUrl: './reference-viewer.component.html',
   styleUrls: ['./loot-editor.component.scss'],

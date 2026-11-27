@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { GAME_TELE_ID, GameTele } from '@keira/shared/acore-world-model';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
@@ -8,7 +8,6 @@ import { GameTeleSearchService } from '../../search/game-tele-search.service';
 import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-components';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-game-tele-selector-modal',
   templateUrl: './game-tele-selector-modal.component.html',
   imports: [FormsModule, ReactiveFormsModule, NgxDatatableModule, TranslateDirective, TranslatePipe, HighlightjsWrapperComponent],

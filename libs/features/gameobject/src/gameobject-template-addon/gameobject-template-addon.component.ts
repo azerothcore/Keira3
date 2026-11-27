@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GAMEOBJECT_FLAGS, GameobjectTemplateAddon } from '@keira/shared/acore-world-model';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
@@ -10,7 +10,6 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { GameobjectTemplateAddonService } from './gameobject-template-addon.service';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-gameobject-template-addon',
   templateUrl: './gameobject-template-addon.component.html',
   styleUrls: ['./gameobject-template-addon.component.scss'],

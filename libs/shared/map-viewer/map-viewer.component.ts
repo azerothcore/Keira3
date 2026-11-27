@@ -1,5 +1,5 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, effect, inject, input, output, signal, viewChild } from '@angular/core';
+import { Component, effect, inject, input, output, signal, viewChild } from '@angular/core';
 import { TranslateDirective } from '@ngx-translate/core';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import {
@@ -16,7 +16,6 @@ import {
 import { MapViewerService } from './map-viewer.service';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-map-viewer',
   imports: [TranslateDirective, NgTemplateOutlet, ModalDirective],
   templateUrl: './map-viewer.component.html',

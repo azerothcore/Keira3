@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   GAMEOBJECT_TEMPLATE_CUSTOM_STARTING_ID,
   GAMEOBJECT_TEMPLATE_ID,
@@ -17,7 +17,6 @@ import { GenericOptionSelectorComponent } from '@keira/shared/selectors';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './select-gameobject.component.html',
   imports: [
     TopBarComponent,

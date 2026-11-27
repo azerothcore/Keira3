@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { Spell, SPELL_ID } from '@keira/shared/acore-world-model';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
@@ -10,7 +10,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HighlightjsWrapperComponent, IconComponent } from '@keira/shared/base-editor-components';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-spell-selector-modal',
   templateUrl: './spell-selector-modal.component.html',
   imports: [

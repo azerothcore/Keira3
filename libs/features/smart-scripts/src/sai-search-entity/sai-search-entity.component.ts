@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { SAI_TYPES, SmartScripts } from '@keira/shared/acore-world-model';
@@ -9,7 +9,6 @@ import { SaiHandlerService } from '@keira/shared/sai-editor';
 import { getEnumKeys, ModelForm } from '@keira/shared/utils';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-sai-search-entity',
   templateUrl: './sai-search-entity.component.html',
   styleUrls: ['./sai-search-entity.component.scss'],

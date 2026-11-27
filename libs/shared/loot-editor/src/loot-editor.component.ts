@@ -1,5 +1,5 @@
 /* istanbul ignore file */ // TODO: fix coverage
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, Input, OnInit } from '@angular/core';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 import { AsyncPipe } from '@angular/common';
@@ -17,7 +17,6 @@ import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { ReferenceViewerComponent } from './reference-viewer.component';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-loot-editor',
   templateUrl: './loot-editor.component.html',
   styleUrls: ['./loot-editor.component.scss'],

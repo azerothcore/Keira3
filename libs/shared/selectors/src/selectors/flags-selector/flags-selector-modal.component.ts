@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 
 import { BaseSelectorModalComponent } from '../base-selector/base-selector-modal.component';
 import { FlagsService } from './flags.service';
@@ -7,7 +7,6 @@ import { TranslateDirective } from '@ngx-translate/core';
 import { UiSwitchModule } from 'ngx-ui-switch';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-flags-selector-modal',
   templateUrl: './flags-selector-modal.component.html',
   styleUrls: ['./flags-selector-modal.component.scss'],

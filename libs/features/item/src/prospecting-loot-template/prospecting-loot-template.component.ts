@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { LootTemplateComponent } from '@keira/shared/base-abstract-classes';
 import { ProspectingLootTemplate } from '@keira/shared/acore-world-model';
 import { ItemHandlerService } from '../item-handler.service';
@@ -8,7 +8,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
 import { TranslateDirective } from '@ngx-translate/core';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-prospecting-loot-template',
   templateUrl: '../../../../shared/base-abstract-classes/src/components/editors/loot-template/loot-template.component.html',
   imports: [TopBarComponent, TranslateDirective, LootEditorComponent],

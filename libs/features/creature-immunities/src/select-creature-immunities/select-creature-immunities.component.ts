@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SelectComponent } from '@keira/shared/base-abstract-classes';
 import {
@@ -14,7 +14,6 @@ import { CreatureImmunitiesHandlerService } from '../creature-immunities-handler
 import { SelectCreatureImmunitiesService } from './select-creature-immunities.service';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-select-creature-immunities',
   templateUrl: './select-creature-immunities.component.html',
   imports: [

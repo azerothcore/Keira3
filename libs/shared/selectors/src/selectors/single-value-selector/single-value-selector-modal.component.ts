@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { BaseSelectorModalComponent } from '../base-selector/base-selector-modal.component';
 import { DTCFG } from '@keira/shared/config';
@@ -8,7 +8,6 @@ import { TranslateDirective } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-single-value-selector-modal',
   templateUrl: './single-value-selector-modal.component.html',
   styleUrls: ['./single-value-selector-modal.component.scss'],

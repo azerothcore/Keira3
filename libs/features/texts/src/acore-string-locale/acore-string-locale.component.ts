@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AcoreStringLocale, CLIENT_LOCALE } from '@keira/shared/acore-world-model';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
@@ -10,7 +10,6 @@ import { AcoreStringHandlerService } from '../acore-string/acore-string-handler.
 import { AcoreStringLocaleService } from './acore-string-locale.service';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-acore-string-locale',
   templateUrl: './acore-string-locale.component.html',
   imports: [

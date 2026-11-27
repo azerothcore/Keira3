@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, inject, input, OnChanges, OnDestroy, OnInit, signal, SimpleChanges } from '@angular/core';
+import { Component, inject, input, OnChanges, OnDestroy, OnInit, signal, SimpleChanges } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CREATURE_RACE_OPTION_ICON } from '@keira/shared/acore-world-model';
 import { Option, TableRow } from '@keira/shared/constants';
@@ -26,7 +26,6 @@ import { Model3DViewerService } from './model-3d-viewer.service';
 declare const ZamModelViewer: any;
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-model-3d-viewer',
   templateUrl: './model-3d-viewer.component.html',
   styleUrl: './model-3d-viewer.component.scss',

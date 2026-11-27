@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnChanges, input } from '@angular/core';
+import { Component, inject, OnChanges, input } from '@angular/core';
 import { DTCFG } from '@keira/shared/config';
 
 import { SmartScripts } from '@keira/shared/acore-world-model';
@@ -11,7 +11,6 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
   selector: 'keira-timed-actionlist',
   templateUrl: './timed-actionlist.component.html',
   styleUrls: ['./timed-actionlist.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [NgxDatatableModule, AsyncPipe],
 })
 export class TimedActionlistComponent implements OnChanges {

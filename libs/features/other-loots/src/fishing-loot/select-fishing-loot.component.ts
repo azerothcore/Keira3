@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { SelectComponent } from '@keira/shared/base-abstract-classes';
 import {
   FISHING_LOOT_TEMPLATE_CUSTOM_STARTING_ID,
@@ -15,7 +15,6 @@ import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { CreateComponent, HighlightjsWrapperComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: '../select-loot.component.html',
   imports: [
     TopBarComponent,

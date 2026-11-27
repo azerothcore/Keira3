@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { DTCFG } from '@keira/shared/config';
 import { SubscriptionHandler } from '@keira/shared/utils';
 import { TableRow } from '@keira/shared/constants';
@@ -16,7 +16,6 @@ import { MysqlQueryService } from '@keira/shared/db-layer';
 import { CodeEditor } from '@acrodata/code-editor';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-sql-editor',
   templateUrl: './sql-editor.component.html',
   styleUrls: ['./sql-editor.component.scss'],
