@@ -63,7 +63,13 @@
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="MinCount">MinCount</label>
           <i class="fas fa-info-circle ms-1" [placement]="'auto'" [tooltip]="'LOOT_EDITOR.MIN_COUNT' | translate"></i>
-          <input [formControlName]="'MinCount'" id="MinCount" type="number" class="form-control form-control-sm" />
+          <input
+            [formControlName]="'MinCount'"
+            [readonly]="editorService.form.controls.Reference.value !== 0"
+            id="MinCount"
+            type="number"
+            class="form-control form-control-sm"
+          />
         </div>
         <div class="form-group col-12 col-sm-6 col-md-4 col-lg-2 col-xl-2">
           <label class="control-label" for="MaxCount">MaxCount</label>
